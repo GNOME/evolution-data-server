@@ -264,7 +264,7 @@ folder_filter (CamelSession *session,
 {
 	CamelMessageInfo *info;
 	CamelStore *parent_store;
-	gint i, status = 0;
+	gint i;
 	CamelJunkFilter *junk_filter;
 	gboolean synchronize = FALSE;
 	const gchar *full_name;
@@ -394,9 +394,6 @@ folder_filter (CamelSession *session,
 		goto exit;
 
 	if (data->driver && data->recents) {
-		CamelService *service;
-		const gchar *store_uid;
-
 		camel_operation_push_message (
 			cancellable, dngettext (GETTEXT_PACKAGE,
 			/* Translators: The first “%s” is replaced with an account name and the second “%s”
@@ -411,30 +408,7 @@ folder_filter (CamelSession *session,
 		camel_filter_driver_log_info (data->driver, "\nReported %d recent messages in '%s : %s'",
 			data->recents->len, camel_service_get_display_name (CAMEL_SERVICE (parent_store)), full_name);
 
-		service = CAMEL_SERVICE (parent_store);
-		store_uid = camel_service_get_uid (service);
-
-		for (i = 0; status == 0 && i < data->recents->len; i++) {
-			gchar *uid = data->recents->pdata[i];
-			gint pc = 100 * i / data->recents->len;
-
-			camel_operation_progress (cancellable, pc);
-
-			info = camel_folder_get_message_info (
-				data->folder, uid);
-			if (info == NULL) {
-				g_debug (
-					"uid '%s' vanished from folder '%s : %s'",
-					uid, camel_service_get_display_name (CAMEL_SERVICE (parent_store)), full_name);
-				continue;
-			}
-
-			status = camel_filter_driver_filter_message (
-				data->driver, NULL, info, uid, data->folder,
-				store_uid, store_uid, cancellable, error);
-
-			g_clear_object (&info);
-		}
+		camel_filter_driver_filter_folder (data->driver, data->folder, NULL, data->recents, FALSE, cancellable, error);
 
 		camel_operation_pop_message (cancellable);
 

@@ -45,6 +45,7 @@
 #include "camel-store.h"
 #include "camel-stream-fs.h"
 #include "camel-stream-mem.h"
+#include "camel-string-utils.h"
 
 #define d(x)
 
@@ -116,6 +117,9 @@ struct _CamelFilterDriverPrivate {
 
 	GError *error;
 
+	GHashTable *transfers;     /* CamelFolder * ~> MessageTransferData * */
+	GSList *delete_after_transfer; /* CamelMessageInfo * to delete after transfers are done */
+
 	/* evaluator */
 	CamelSExp *eval;
 };
@@ -123,7 +127,7 @@ struct _CamelFilterDriverPrivate {
 static void camel_filter_driver_log (CamelFilterDriver *driver, enum filter_log_t status, const gchar *desc, ...);
 
 static CamelFolder *open_folder (CamelFilterDriver *d, const gchar *folder_url);
-static gint close_folders (CamelFilterDriver *d, GCancellable *cancellable);
+static gint close_folders (CamelFilterDriver *d, gboolean can_call_refresh, GCancellable *cancellable);
 
 static CamelSExpResult *do_delete (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
 static CamelSExpResult *do_forward_to (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
@@ -141,6 +145,18 @@ static CamelSExpResult *do_beep (struct _CamelSExp *f, gint argc, struct _CamelS
 static CamelSExpResult *play_sound (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
 static CamelSExpResult *do_only_once (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
 static CamelSExpResult *pipe_message (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
+
+static gint
+filter_driver_filter_message_internal (CamelFilterDriver *driver,
+				       gboolean can_process_transfers,
+				       CamelMimeMessage *message,
+				       CamelMessageInfo *info,
+				       const gchar *uid,
+				       CamelFolder *source,
+				       const gchar *store_uid,
+				       const gchar *original_store_uid,
+				       GCancellable *cancellable,
+				       GError **error);
 
 /* these are our filter actions - each must have a callback */
 static struct {
@@ -169,6 +185,137 @@ static struct {
 
 G_DEFINE_TYPE (CamelFilterDriver, camel_filter_driver, G_TYPE_OBJECT)
 
+typedef struct _MessageTransferData {
+	GPtrArray *copy_uids;
+	GPtrArray *move_uids;
+} MessageTransferData;
+
+static void
+message_transfer_data_free (gpointer ptr)
+{
+	MessageTransferData *mtd = ptr;
+
+	if (mtd) {
+		if (mtd->copy_uids)
+			g_ptr_array_free (mtd->copy_uids, TRUE);
+		if (mtd->move_uids)
+			g_ptr_array_free (mtd->move_uids, TRUE);
+		g_free (mtd);
+	}
+}
+
+static void
+filter_driver_add_to_transfers (CamelFilterDriver *driver,
+				CamelFolder *destination,
+				const gchar *uid,
+				gboolean is_move)
+{
+	MessageTransferData *mtd;
+	GPtrArray **parray;
+
+	g_return_if_fail (CAMEL_IS_FILTER_DRIVER (driver));
+	g_return_if_fail (CAMEL_IS_FOLDER (destination));
+	g_return_if_fail (uid);
+
+	if (!driver->priv->transfers)
+		driver->priv->transfers = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, message_transfer_data_free);
+
+	mtd = g_hash_table_lookup (driver->priv->transfers, destination);
+
+	if (!mtd) {
+		mtd = g_new0 (MessageTransferData, 1);
+		g_hash_table_insert (driver->priv->transfers, g_object_ref (destination), mtd);
+	}
+
+	if (is_move)
+		parray = &(mtd->move_uids);
+	else
+		parray = &(mtd->copy_uids);
+
+	if (!*parray)
+		*parray = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
+
+	g_ptr_array_add (*parray, (gpointer) camel_pstring_strdup (uid));
+}
+
+static gboolean
+filter_driver_process_transfers (CamelFilterDriver *driver,
+				 GCancellable *cancellable,
+				 GError **error)
+{
+	gboolean success = TRUE;
+	GSList *link;
+
+	g_return_val_if_fail (CAMEL_IS_FILTER_DRIVER (driver), FALSE);
+
+	if (driver->priv->transfers) {
+		CamelStore *parent_store;
+		GHashTableIter iter;
+		gpointer key, value;
+		guint ii, sz;
+
+		parent_store = camel_folder_get_parent_store (driver->priv->source);
+
+		/* Translators: The first “%s” is replaced with an account name and the second “%s”
+		   is replaced with a full path name. The spaces around “:” are intentional, as
+		   the whole “%s : %s” is meant as an absolute identification of the folder. */
+		camel_operation_push_message (cancellable, _("Transferring filtered messages in “%s : %s”"),
+			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
+			camel_folder_get_full_name (driver->priv->source));
+
+		ii = 0;
+		sz = g_hash_table_size (driver->priv->transfers);
+
+		if (!sz)
+			sz = 1;
+
+		camel_operation_progress (cancellable, ii * 100 / sz);
+
+		g_hash_table_iter_init (&iter, driver->priv->transfers);
+		while (success && g_hash_table_iter_next (&iter, &key, &value)) {
+			CamelFolder *destination = key;
+			MessageTransferData *mtd = value;
+
+			g_warn_if_fail (CAMEL_IS_FOLDER (destination));
+			g_warn_if_fail (mtd != NULL);
+
+			if (mtd->copy_uids) {
+				success = camel_folder_transfer_messages_to_sync (driver->priv->source,
+					mtd->copy_uids, destination, FALSE, NULL, cancellable, error);
+			}
+
+			if (success && mtd->move_uids) {
+				success = camel_folder_transfer_messages_to_sync (driver->priv->source,
+					mtd->move_uids, destination, TRUE, NULL, cancellable, error);
+			}
+
+			ii++;
+			camel_operation_progress (cancellable, ii * 100 / sz);
+		}
+
+		camel_operation_pop_message (cancellable);
+
+		g_hash_table_destroy (driver->priv->transfers);
+		driver->priv->transfers = NULL;
+	}
+
+	for (link = driver->priv->delete_after_transfer; link && success; link = g_slist_next (link)) {
+		CamelMessageInfo *nfo = link->data;
+
+		camel_message_info_set_flags (
+			nfo,
+			CAMEL_MESSAGE_DELETED |
+			CAMEL_MESSAGE_SEEN |
+			CAMEL_MESSAGE_FOLDER_FLAGGED,
+			~0);
+	}
+
+	g_slist_free_full (driver->priv->delete_after_transfer, g_object_unref);
+	driver->priv->delete_after_transfer = NULL;
+
+	return success;
+}
+
 static void
 free_hash_strings (gpointer key,
                    gpointer value,
@@ -191,6 +338,14 @@ filter_driver_dispose (GObject *object)
 	CamelFilterDriverPrivate *priv;
 
 	priv = CAMEL_FILTER_DRIVER_GET_PRIVATE (object);
+
+	if (priv->transfers) {
+		g_hash_table_destroy (priv->transfers);
+		priv->transfers = NULL;
+	}
+
+	g_slist_free_full (priv->delete_after_transfer, g_object_unref);
+	priv->delete_after_transfer = NULL;
 
 	if (priv->defaultfolder != NULL) {
 		camel_folder_thaw (priv->defaultfolder);
@@ -216,7 +371,7 @@ filter_driver_finalize (GObject *object)
 	priv = CAMEL_FILTER_DRIVER_GET_PRIVATE (object);
 
 	/* close all folders that were opened for appending */
-	close_folders (CAMEL_FILTER_DRIVER (object), NULL);
+	close_folders (CAMEL_FILTER_DRIVER (object), FALSE, NULL);
 	g_hash_table_destroy (priv->folders);
 
 	g_hash_table_foreach (priv->globals, free_hash_strings, object);
@@ -607,19 +762,8 @@ do_copy (struct _CamelSExp *f,
 			if (!driver->priv->modified &&
 			    driver->priv->uid != NULL &&
 			    driver->priv->source != NULL &&
-			    camel_folder_has_summary_capability (
-					driver->priv->source)) {
-				GPtrArray *uids;
-
-				uids = g_ptr_array_new ();
-				g_ptr_array_add (
-					uids, (gchar *) driver->priv->uid);
-				/* FIXME Pass a GCancellable */
-				camel_folder_transfer_messages_to_sync (
-					driver->priv->source,
-					uids, outbox, FALSE, NULL, NULL,
-					&driver->priv->error);
-				g_ptr_array_free (uids, TRUE);
+			    camel_folder_has_summary_capability (driver->priv->source)) {
+				filter_driver_add_to_transfers (driver, outbox, driver->priv->uid, FALSE);
 			} else {
 				if (driver->priv->message == NULL)
 					/* FIXME Pass a GCancellable */
@@ -678,15 +822,7 @@ do_move (struct _CamelSExp *f,
 			last = (i == argc - 1);
 
 			if (!driver->priv->modified && driver->priv->uid && driver->priv->source && camel_folder_has_summary_capability (driver->priv->source)) {
-				GPtrArray *uids;
-
-				uids = g_ptr_array_new ();
-				g_ptr_array_add (uids, (gchar *) driver->priv->uid);
-				/* FIXME Pass a GCancellable */
-				camel_folder_transfer_messages_to_sync (
-					driver->priv->source, uids, outbox, last,
-					NULL, NULL, &driver->priv->error);
-				g_ptr_array_free (uids, TRUE);
+				filter_driver_add_to_transfers (driver, outbox, driver->priv->uid, last);
 			} else {
 				if (driver->priv->message == NULL)
 					/* FIXME Pass a GCancellable */
@@ -1220,6 +1356,7 @@ open_folder (CamelFilterDriver *driver,
 
 typedef struct _CloseFolderData {
 	CamelFilterDriver *driver;
+	gboolean can_call_refresh;
 	GCancellable *cancellable;
 } CloseFolderData;
 
@@ -1242,7 +1379,7 @@ close_folder (gpointer key,
 	if (folder != FOLDER_INVALID) {
 		if (camel_folder_synchronize_sync (folder, FALSE, cfd->cancellable,
 			(driver->priv->error != NULL) ? NULL : &driver->priv->error)) {
-			if (cfd->cancellable) {
+			if (cfd->can_call_refresh && cfd->cancellable) {
 				camel_folder_refresh_info_sync (
 					folder, cfd->cancellable,
 					(driver->priv->error != NULL) ? NULL : &driver->priv->error);
@@ -1262,6 +1399,7 @@ close_folder (gpointer key,
 /* flush/close all folders */
 static gint
 close_folders (CamelFilterDriver *driver,
+	       gboolean can_call_refresh,
 	       GCancellable *cancellable)
 {
 	CloseFolderData cfd;
@@ -1273,6 +1411,7 @@ close_folders (CamelFilterDriver *driver,
 	driver->priv->closed = 0;
 
 	cfd.driver = driver;
+	cfd.can_call_refresh = can_call_refresh;
 	cfd.cancellable = cancellable;
 
 	g_hash_table_foreach (driver->priv->folders, close_folder, &cfd);
@@ -1478,6 +1617,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 	gint status;
 	goffset last = 0;
 	gint ret = -1;
+	GError *local_error = NULL;
 
 	fd = g_open (mbox, O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
@@ -1500,6 +1640,14 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 	}
 	fd = -1;
 
+	if (driver->priv->transfers) {
+		g_hash_table_destroy (driver->priv->transfers);
+		driver->priv->transfers = NULL;
+	}
+
+	g_slist_free_full (driver->priv->delete_after_transfer, g_object_unref);
+	driver->priv->delete_after_transfer = NULL;
+
 	source_url = g_filename_to_uri (mbox, NULL, NULL);
 
 	while (camel_mime_parser_step (mp, NULL, NULL) == CAMEL_MIME_PARSER_STATE_FROM) {
@@ -1509,7 +1657,6 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		CamelMimePart *mime_part;
 		gint pc = 0;
 		const gchar *xev;
-		GError *local_error = NULL;
 
 		if (st.st_size > 0)
 			pc = (gint)(100.0 * ((double) camel_mime_parser_tell (mp) / (double) st.st_size));
@@ -1543,8 +1690,8 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		camel_message_info_set_size (info, camel_mime_parser_tell (mp) - last);
 
 		last = camel_mime_parser_tell (mp);
-		status = camel_filter_driver_filter_message (
-			driver, message, info, NULL, NULL, source_url,
+		status = filter_driver_filter_message_internal (
+			driver, FALSE, message, info, NULL, NULL, source_url,
 			original_source_url ? original_source_url :
 			source_url, cancellable, &local_error);
 		g_object_unref (message);
@@ -1554,6 +1701,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 				100, _("Failed on message %d"), i);
 			g_clear_object (&info);
 			g_propagate_error (error, local_error);
+			local_error = NULL;
 			goto fail;
 		}
 
@@ -1563,6 +1711,14 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		camel_mime_parser_step (mp, NULL, NULL);
 
 		g_clear_object (&info);
+	}
+
+	if (!filter_driver_process_transfers (driver, cancellable, &local_error)) {
+		report_status (
+			driver, CAMEL_FILTER_STATUS_END,
+			100, _("Failed to transfer messages: %s"), local_error ? local_error->message : _("Unknown error"));
+		g_propagate_error (error, local_error);
+		goto fail;
 	}
 
 	camel_operation_progress (cancellable, 100);
@@ -1621,6 +1777,7 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 	const gchar *store_uid;
 	gint status = 0;
 	gint i;
+	GError *local_error = NULL;
 
 	parent_store = camel_folder_get_parent_store (folder);
 	store_uid = camel_service_get_uid (CAMEL_SERVICE (parent_store));
@@ -1630,9 +1787,16 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 		freeuids = TRUE;
 	}
 
+	if (driver->priv->transfers) {
+		g_hash_table_destroy (driver->priv->transfers);
+		driver->priv->transfers = NULL;
+	}
+
+	g_slist_free_full (driver->priv->delete_after_transfer, g_object_unref);
+	driver->priv->delete_after_transfer = NULL;
+
 	for (i = 0; i < uids->len; i++) {
 		gint pc = (100 * i) / uids->len;
-		GError *local_error = NULL;
 
 		camel_operation_progress (cancellable, pc);
 
@@ -1646,8 +1810,8 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 		else
 			info = NULL;
 
-		status = camel_filter_driver_filter_message (
-			driver, NULL, info, uids->pdata[i], folder,
+		status = filter_driver_filter_message_internal (
+			driver, FALSE, NULL, info, uids->pdata[i], folder,
 			store_uid, store_uid, cancellable, &local_error);
 
 		if (camel_folder_has_summary_capability (folder))
@@ -1659,20 +1823,34 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 				_("Failed at message %d of %d"),
 				i + 1, uids->len);
 			g_propagate_error (error, local_error);
+			local_error = NULL;
 			status = -1;
 			break;
 		}
 
-		if (remove)
+		if (remove && !driver->priv->copied && !driver->priv->moved) {
 			camel_folder_set_message_flags (
 				folder, uids->pdata[i],
 				CAMEL_MESSAGE_DELETED |
 				CAMEL_MESSAGE_SEEN, ~0);
+		} else if (remove) {
+			info = camel_folder_get_message_info (folder, uids->pdata[i]);
+			if (info)
+				driver->priv->delete_after_transfer = g_slist_prepend (driver->priv->delete_after_transfer, info);
+		}
 
 		if (cache)
 			camel_uid_cache_save_uid (cache, uids->pdata[i]);
 		if (cache && (i % 10) == 0)
 			camel_uid_cache_save (cache);
+	}
+
+	if (!filter_driver_process_transfers (driver, cancellable, &local_error)) {
+		report_status (
+			driver, CAMEL_FILTER_STATUS_END,
+			100, _("Failed to transfer messages: %s"), local_error ? local_error->message : _("Unknown error"));
+		g_propagate_error (error, local_error);
+		status = -1;
 	}
 
 	camel_operation_progress (cancellable, 100);
@@ -1689,7 +1867,7 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 			driver->priv->defaultfolder, FALSE, cancellable, NULL);
 	}
 
-	if (i == uids->len)
+	if (i == uids->len && status != -1)
 		report_status (
 			driver, CAMEL_FILTER_STATUS_END,
 			100, _("Complete"));
@@ -1697,7 +1875,7 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 	if (freeuids)
 		camel_folder_free_uids (folder, uids);
 
-	close_folders (driver, cancellable);
+	close_folders (driver, remove, cancellable);
 
 	return status;
 }
@@ -1735,38 +1913,17 @@ get_message_cb (gpointer data,
 	return message;
 }
 
-/**
- * camel_filter_driver_filter_message:
- * @driver: CamelFilterDriver
- * @message: message to filter or NULL
- * @info: message info or NULL
- * @uid: message uid or NULL
- * @source: source folder or NULL
- * @store_uid: UID of source store, or %NULL
- * @original_store_uid: UID of source store (pre-movemail), or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Filters a message based on rules defined in the FilterDriver
- * object. If the source folder (@source) and the uid (@uid) are
- * provided, the filter will operate on the CamelFolder (which in
- * certain cases is more efficient than using the default
- * camel_folder_append_message() function).
- *
- * Returns: -1 if errors were encountered during filtering,
- * otherwise returns 0.
- *
- **/
-gint
-camel_filter_driver_filter_message (CamelFilterDriver *driver,
-                                    CamelMimeMessage *message,
-                                    CamelMessageInfo *info,
-                                    const gchar *uid,
-                                    CamelFolder *source,
-                                    const gchar *store_uid,
-                                    const gchar *original_store_uid,
-                                    GCancellable *cancellable,
-                                    GError **error)
+static gint
+filter_driver_filter_message_internal (CamelFilterDriver *driver,
+				       gboolean can_process_transfers,
+				       CamelMimeMessage *message,
+				       CamelMessageInfo *info,
+				       const gchar *uid,
+				       CamelFolder *source,
+				       const gchar *store_uid,
+				       const gchar *original_store_uid,
+				       GCancellable *cancellable,
+				       GError **error)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 	gboolean freeinfo = FALSE;
@@ -1800,6 +1957,16 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 
 		if (message)
 			g_object_ref (message);
+	}
+
+	if (can_process_transfers) {
+		if (driver->priv->transfers) {
+			g_hash_table_destroy (driver->priv->transfers);
+			driver->priv->transfers = NULL;
+		}
+
+		g_slist_free_full (driver->priv->delete_after_transfer, g_object_unref);
+		driver->priv->delete_after_transfer = NULL;
 	}
 
 	driver->priv->terminated = FALSE;
@@ -1911,18 +2078,36 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 		}
 	}
 
+	if (can_process_transfers) {
+		if (!filter_driver_process_transfers (driver, cancellable, &driver->priv->error))
+			goto error;
+	}
+
 	/* *Now* we can set the DELETED flag... */
 	if (driver->priv->deleted) {
-		if (driver->priv->source && driver->priv->uid && camel_folder_has_summary_capability (driver->priv->source))
-			camel_folder_set_message_flags (
-				driver->priv->source, driver->priv->uid,
-				CAMEL_MESSAGE_DELETED |
-				CAMEL_MESSAGE_SEEN, ~0);
-		else
-			camel_message_info_set_flags (
-				info, CAMEL_MESSAGE_DELETED |
-				CAMEL_MESSAGE_SEEN |
-				CAMEL_MESSAGE_FOLDER_FLAGGED, ~0);
+		if (can_process_transfers || (!driver->priv->moved && !driver->priv->copied)) {
+			if (driver->priv->source && driver->priv->uid && camel_folder_has_summary_capability (driver->priv->source))
+				camel_folder_set_message_flags (
+					driver->priv->source, driver->priv->uid,
+					CAMEL_MESSAGE_DELETED |
+					CAMEL_MESSAGE_SEEN, ~0);
+			else
+				camel_message_info_set_flags (
+					info, CAMEL_MESSAGE_DELETED |
+					CAMEL_MESSAGE_SEEN |
+					CAMEL_MESSAGE_FOLDER_FLAGGED, ~0);
+		} else {
+			/* Set the DELETED flag only after the messages are really transferred */
+			CamelMessageInfo *nfo;
+
+			if (driver->priv->source && driver->priv->uid && camel_folder_has_summary_capability (driver->priv->source))
+				nfo = camel_folder_get_message_info (driver->priv->source, driver->priv->uid);
+			else
+				nfo = g_object_ref (info);
+
+			if (nfo)
+				driver->priv->delete_after_transfer = g_slist_prepend (driver->priv->delete_after_transfer, nfo);
+		}
 	}
 
 	/* Logic: if !Moved and there exists a default folder... */
@@ -1934,14 +2119,18 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 			"Copy to default folder");
 
 		if (!driver->priv->modified && driver->priv->uid && driver->priv->source && camel_folder_has_summary_capability (driver->priv->source)) {
-			GPtrArray *uids;
+			if (can_process_transfers) {
+				GPtrArray *uids;
 
-			uids = g_ptr_array_new ();
-			g_ptr_array_add (uids, (gchar *) driver->priv->uid);
-			camel_folder_transfer_messages_to_sync (
-				driver->priv->source, uids, driver->priv->defaultfolder,
-				FALSE, NULL, cancellable, &driver->priv->error);
-			g_ptr_array_free (uids, TRUE);
+				uids = g_ptr_array_new ();
+				g_ptr_array_add (uids, (gchar *) driver->priv->uid);
+				camel_folder_transfer_messages_to_sync (
+					driver->priv->source, uids, driver->priv->defaultfolder,
+					FALSE, NULL, cancellable, &driver->priv->error);
+				g_ptr_array_free (uids, TRUE);
+			} else {
+				filter_driver_add_to_transfers (driver, driver->priv->defaultfolder, driver->priv->uid, FALSE);
+			}
 		} else {
 			if (driver->priv->message == NULL) {
 				driver->priv->message = camel_folder_get_message_sync (
@@ -1981,6 +2170,43 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 	driver->priv->error = NULL;
 
 	return -1;
+}
+
+/**
+ * camel_filter_driver_filter_message:
+ * @driver: CamelFilterDriver
+ * @message: message to filter or NULL
+ * @info: message info or NULL
+ * @uid: message uid or NULL
+ * @source: source folder or NULL
+ * @store_uid: UID of source store, or %NULL
+ * @original_store_uid: UID of source store (pre-movemail), or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Filters a message based on rules defined in the FilterDriver
+ * object. If the source folder (@source) and the uid (@uid) are
+ * provided, the filter will operate on the CamelFolder (which in
+ * certain cases is more efficient than using the default
+ * camel_folder_append_message() function).
+ *
+ * Returns: -1 if errors were encountered during filtering,
+ * otherwise returns 0.
+ *
+ **/
+gint
+camel_filter_driver_filter_message (CamelFilterDriver *driver,
+                                    CamelMimeMessage *message,
+                                    CamelMessageInfo *info,
+                                    const gchar *uid,
+                                    CamelFolder *source,
+                                    const gchar *store_uid,
+                                    const gchar *original_store_uid,
+                                    GCancellable *cancellable,
+                                    GError **error)
+{
+	return filter_driver_filter_message_internal (driver, TRUE, message,
+		info, uid, source, store_uid, original_store_uid, cancellable, error);
 }
 
 /**
