@@ -247,6 +247,16 @@ gboolean	e_cal_util_event_dates_match	(icalcomponent *icalcomp1,
  **/
 #define CAL_STATIC_CAPABILITY_TASK_NO_ALARM		"task-no-alarm"
 
+/**
+ * CAL_STATIC_CAPABILITY_COMPONENT_COLOR:
+ *
+ * When the capability is set, the client supports storing color
+ * for individual components.
+ *
+ * Since: 3.30
+ **/
+#define CAL_STATIC_CAPABILITY_COMPONENT_COLOR		"component-color"
+
 /* Recurrent events. Management for instances */
 icalcomponent *	e_cal_util_construct_instance	(icalcomponent *icalcomp,
 						 struct icaltimetype rid);
