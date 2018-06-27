@@ -26,6 +26,8 @@
 
 struct _CamelStreamNullPrivate {
 	gsize written;
+	gboolean ends_with_crlf;
+	gboolean ends_with_cr; /* Just for cases when the CRLF is split into two writes, CR and LF */
 };
 
 static void camel_stream_null_seekable_init (GSeekableIface *iface);
@@ -40,7 +42,17 @@ stream_null_write (CamelStream *stream,
                    GCancellable *cancellable,
                    GError **error)
 {
-	CAMEL_STREAM_NULL (stream)->priv->written += n;
+	CamelStreamNull *stream_null = CAMEL_STREAM_NULL (stream);
+
+	stream_null->priv->written += n;
+
+	if (n >= 2) {
+		stream_null->priv->ends_with_crlf = buffer[n - 2] == '\r' && buffer[n - 1] == '\n';
+		stream_null->priv->ends_with_cr = buffer[n - 1] == '\r';
+	} else if (n == 1) {
+		stream_null->priv->ends_with_crlf = stream_null->priv->ends_with_cr && buffer[n - 1] == '\n';
+		stream_null->priv->ends_with_cr = buffer[n - 1] == '\r';
+	}
 
 	return n;
 }
@@ -128,6 +140,8 @@ static void
 camel_stream_null_init (CamelStreamNull *stream_null)
 {
 	stream_null->priv = G_TYPE_INSTANCE_GET_PRIVATE (stream_null, CAMEL_TYPE_STREAM_NULL, CamelStreamNullPrivate);
+	stream_null->priv->ends_with_crlf = FALSE;
+	stream_null->priv->ends_with_cr = FALSE;
 }
 
 /**
@@ -159,4 +173,20 @@ camel_stream_null_get_bytes_written (CamelStreamNull *stream_null)
 	g_return_val_if_fail (CAMEL_IS_STREAM_NULL (stream_null), -1);
 
 	return stream_null->priv->written;
+}
+
+/**
+ * camel_stream_null_get_ends_with_crlf:
+ * @stream_null: a #CamelStreamNull
+ *
+ * Returns: Whether the data being written to @stream_null ended with CRLF.
+ *
+ * Since: 3.28.4
+ **/
+gboolean
+camel_stream_null_get_ends_with_crlf (CamelStreamNull *stream_null)
+{
+	g_return_val_if_fail (CAMEL_IS_STREAM_NULL (stream_null), FALSE);
+
+	return stream_null->priv->ends_with_crlf;
 }

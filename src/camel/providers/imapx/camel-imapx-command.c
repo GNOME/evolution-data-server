@@ -371,6 +371,30 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 	g_string_append_len (buffer, ps, p - ps - 1);
 }
 
+static gboolean
+imapx_file_ends_with_crlf (const gchar *filename)
+{
+	CamelStream *null_stream, *input_stream;
+	gboolean ends_with_crlf;
+
+	g_return_val_if_fail (filename != NULL, FALSE);
+
+	input_stream = camel_stream_fs_new_with_name (filename, O_RDONLY, 0, NULL);
+	if (!input_stream)
+		return FALSE;
+
+	null_stream = camel_stream_null_new ();
+	camel_stream_write_to_stream (input_stream, null_stream, NULL, NULL);
+	camel_stream_flush (input_stream, NULL, NULL);
+	g_object_unref (input_stream);
+
+	ends_with_crlf = camel_stream_null_get_ends_with_crlf (CAMEL_STREAM_NULL (null_stream));
+
+	g_object_unref (null_stream);
+
+	return ends_with_crlf;
+}
+
 void
 camel_imapx_command_add_part (CamelIMAPXCommand *ic,
                               CamelIMAPXCommandPartType type,
@@ -379,6 +403,7 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 	CamelIMAPXCommandPart *cp;
 	GString *buffer;
 	guint ob_size = 0;
+	gboolean ends_with_crlf = TRUE;
 
 	buffer = ((CamelIMAPXRealCommand *) ic)->buffer;
 
@@ -396,6 +421,7 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 		g_object_ref (ob);
 		ob_size = camel_null_output_stream_get_bytes_written (
 			CAMEL_NULL_OUTPUT_STREAM (stream));
+		ends_with_crlf = camel_null_output_stream_get_ends_with_crlf (CAMEL_NULL_OUTPUT_STREAM (stream));
 		g_object_unref (stream);
 		break;
 	}
@@ -420,6 +446,8 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 		if (g_stat (path, &st) == 0) {
 			data = g_strdup (data);
 			ob_size = st.st_size;
+
+			ends_with_crlf = imapx_file_ends_with_crlf (data);
 		} else
 			data = NULL;
 
@@ -436,8 +464,13 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 	}
 
 	if (type & CAMEL_IMAPX_COMMAND_LITERAL_PLUS) {
+		guint total_size = ob_size;
+
+		if (ic->job_kind == CAMEL_IMAPX_JOB_APPEND_MESSAGE && !ends_with_crlf)
+			total_size += 2;
+
 		g_string_append_c (buffer, '{');
-		g_string_append_printf (buffer, "%u", ob_size);
+		g_string_append_printf (buffer, "%u", total_size);
 		if (camel_imapx_server_have_capability (ic->is, IMAPX_CAPABILITY_LITERALPLUS)) {
 			g_string_append_c (buffer, '+');
 		} else {
@@ -453,6 +486,7 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 	cp->ob = data;
 	cp->data_size = buffer->len;
 	cp->data = g_strdup (buffer->str);
+	cp->ends_with_crlf = ends_with_crlf;
 
 	g_string_set_size (buffer, 0);
 

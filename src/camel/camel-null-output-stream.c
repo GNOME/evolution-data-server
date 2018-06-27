@@ -35,6 +35,8 @@
 
 struct _CamelNullOutputStreamPrivate {
 	gsize bytes_written;
+	gboolean ends_with_crlf;
+	gboolean ends_with_cr; /* Just for cases when the CRLF is split into two writes, CR and LF */
 };
 
 G_DEFINE_TYPE (
@@ -50,10 +52,19 @@ null_output_stream_write (GOutputStream *stream,
                           GError **error)
 {
 	CamelNullOutputStreamPrivate *priv;
+	const guchar *data = buffer;
 
 	priv = CAMEL_NULL_OUTPUT_STREAM_GET_PRIVATE (stream);
 
 	priv->bytes_written += count;
+
+	if (count >= 2) {
+		priv->ends_with_crlf = data[count - 2] == '\r' && data[count - 1] == '\n';
+		priv->ends_with_cr = data[count - 1] == '\r';
+	} else if (count == 1) {
+		priv->ends_with_crlf = priv->ends_with_cr && data[count - 1] == '\n';
+		priv->ends_with_cr = data[count - 1] == '\r';
+	}
 
 	return count;
 }
@@ -74,6 +85,8 @@ static void
 camel_null_output_stream_init (CamelNullOutputStream *null_stream)
 {
 	null_stream->priv = CAMEL_NULL_OUTPUT_STREAM_GET_PRIVATE (null_stream);
+	null_stream->priv->ends_with_crlf = FALSE;
+	null_stream->priv->ends_with_cr = FALSE;
 }
 
 /**
@@ -109,3 +122,18 @@ camel_null_output_stream_get_bytes_written (CamelNullOutputStream *null_stream)
 	return null_stream->priv->bytes_written;
 }
 
+/**
+ * camel_null_output_stream_get_ends_with_crlf:
+ * @null_stream: a #CamelNullOutputStream
+ *
+ * Returns: Whether the data being written to @null_stream ended with CRLF.
+ *
+ * Since: 3.28.4
+ **/
+gboolean
+camel_null_output_stream_get_ends_with_crlf (CamelNullOutputStream *null_stream)
+{
+	g_return_val_if_fail (CAMEL_IS_NULL_OUTPUT_STREAM (null_stream), FALSE);
+
+	return null_stream->priv->ends_with_crlf;
+}

@@ -2267,6 +2267,15 @@ imapx_continuation (CamelIMAPXServer *is,
 		return FALSE;
 	}
 
+	if (ic->job_kind == CAMEL_IMAPX_JOB_APPEND_MESSAGE && !cp->ends_with_crlf) {
+		g_mutex_lock (&is->priv->stream_lock);
+		n_bytes_written = g_output_stream_write_all (
+			output_stream, "\r\n", 2, NULL, cancellable, error);
+		g_mutex_unlock (&is->priv->stream_lock);
+		if (n_bytes_written < 0)
+			return FALSE;
+	}
+
 	if (!litplus) {
 		success = camel_imapx_input_stream_skip (
 			CAMEL_IMAPX_INPUT_STREAM (input_stream),

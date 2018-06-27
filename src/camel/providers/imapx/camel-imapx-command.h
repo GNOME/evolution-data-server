@@ -58,6 +58,7 @@ struct _CamelIMAPXCommandPart {
 
 	gint ob_size;
 	gpointer ob;
+	gboolean ends_with_crlf;
 };
 
 struct _CamelIMAPXCommand {
