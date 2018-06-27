@@ -67,6 +67,8 @@ GOutputStream *	camel_null_output_stream_new
 					(void);
 gsize		camel_null_output_stream_get_bytes_written
 					(CamelNullOutputStream *null_stream);
+gboolean	camel_null_output_stream_get_ends_with_crlf
+					(CamelNullOutputStream *null_stream);
 
 G_END_DECLS
 
