@@ -145,6 +145,8 @@ struct _GpgCtx {
 	gchar *photos_filename;
 	gchar *viewer_cmd;
 
+	GString *decrypt_extra_text; /* Text received during decryption, which is in the blob, but is not encrypted */
+
 	gint exit_status;
 
 	guint exited : 1;
@@ -171,6 +173,7 @@ struct _GpgCtx {
 	guint trust : 3;
 	guint processing : 1;
 	guint bad_decrypt : 1;
+	guint in_decrypt_stage : 1;
 	guint noseckey : 1;
 	GString *signers;
 	GHashTable *signers_keyid;
@@ -241,12 +244,14 @@ gpg_ctx_new (CamelCipherContext *context)
 	gpg->trust = GPG_TRUST_NONE;
 	gpg->processing = FALSE;
 	gpg->bad_decrypt = FALSE;
+	gpg->in_decrypt_stage = FALSE;
 	gpg->noseckey = FALSE;
 	gpg->signers = NULL;
 	gpg->signers_keyid = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
 	gpg->istream = NULL;
 	gpg->ostream = NULL;
+	gpg->decrypt_extra_text = NULL;
 
 	gpg->diagbuf = g_byte_array_new ();
 	gpg->diagflushed = FALSE;
@@ -503,6 +508,9 @@ gpg_ctx_free (struct _GpgCtx *gpg)
 
 	g_free (gpg->photos_filename);
 	g_free (gpg->viewer_cmd);
+
+	if (gpg->decrypt_extra_text)
+		g_string_free (gpg->decrypt_extra_text, TRUE);
 
 	g_free (gpg);
 }
@@ -1188,10 +1196,12 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 		case GPG_CTX_MODE_DECRYPT:
 			if (!strncmp ((gchar *) status, "BEGIN_DECRYPTION", 16)) {
 				gpg->bad_decrypt = FALSE;
-				/* nothing to do... but we know to expect data on stdout soon */
+				/* Mark it's expected to get decrypted data on stdout */
+				gpg->in_decrypt_stage = TRUE;
 				break;
 			} else if (!strncmp ((gchar *) status, "END_DECRYPTION", 14)) {
-				/* nothing to do, but we know the end is near? */
+				/* Mark to no longer expect decrypted data */
+				gpg->in_decrypt_stage = FALSE;
 				break;
 			} else if (!strncmp ((gchar *) status, "NO_SECKEY ", 10)) {
 				gpg->noseckey = TRUE;
@@ -1428,11 +1438,18 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 			goto exception;
 
 		if (nread > 0) {
-			gsize written = camel_stream_write (
-				gpg->ostream, buffer, (gsize)
-				nread, cancellable, error);
-			if (written != nread)
-				return -1;
+			if (gpg->mode != GPG_CTX_MODE_DECRYPT ||
+			    gpg->in_decrypt_stage) {
+				gsize written = camel_stream_write (
+					gpg->ostream, buffer, (gsize)
+					nread, cancellable, error);
+				if (written != nread)
+					return -1;
+			} else {
+				if (!gpg->decrypt_extra_text)
+					gpg->decrypt_extra_text = g_string_new ("");
+				g_string_append_len (gpg->decrypt_extra_text, buffer, nread);
+			}
 		} else {
 			gpg->seen_eof1 = TRUE;
 		}
@@ -2649,6 +2666,11 @@ gpg_decrypt_sync (CamelCipherContext *context,
 		goto fail;
 	}
 
+	/* Decrypted nothing, write at least CRLF */
+	if (!g_seekable_tell (G_SEEKABLE (ostream))) {
+		g_warn_if_fail (2 == camel_stream_write (ostream, "\r\n", 2, cancellable, NULL));
+	}
+
 	g_seekable_seek (G_SEEKABLE (ostream), 0, G_SEEK_SET, NULL, NULL);
 
 	if (gpg->bad_decrypt && gpg->noseckey) {
@@ -2691,7 +2713,10 @@ gpg_decrypt_sync (CamelCipherContext *context,
 
 	if (success) {
 		valid = camel_cipher_validity_new ();
-		valid->encrypt.description = g_strdup (_("Encrypted content"));
+		if (gpg->decrypt_extra_text)
+			valid->encrypt.description = g_strdup_printf (_("GPG blob contains unencrypted text: %s"), gpg->decrypt_extra_text->str);
+		else
+			valid->encrypt.description = g_strdup (_("Encrypted content"));
 		valid->encrypt.status = CAMEL_CIPHER_VALIDITY_ENCRYPT_ENCRYPTED;
 
 		if (gpg->hadsig) {
