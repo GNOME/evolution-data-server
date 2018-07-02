@@ -291,7 +291,7 @@ struct _CamelIMAPXServerPrivate {
 	GCancellable *idle_cancellable;
 	guint idle_stamp;
 
-	gboolean is_cyrus;
+	gboolean is_broken_cyrus;
 
 	/* Info about the current connection; guarded by priv->stream_lock */
 	struct _capability_info *cinfo;
@@ -619,7 +619,7 @@ imapx_server_stash_command_arguments (CamelIMAPXServer *is)
 	is->priv->status_data_items = g_string_free (buffer, FALSE);
 
 	g_free (is->priv->list_return_opts);
-	if (!is->priv->is_cyrus && CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, LIST_EXTENDED)) {
+	if (!is->priv->is_broken_cyrus && CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, LIST_EXTENDED)) {
 		buffer = g_string_new ("CHILDREN SUBSCRIBED");
 		if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, LIST_STATUS))
 			g_string_append_printf (
@@ -1837,6 +1837,49 @@ imapx_untagged_preauth (CamelIMAPXServer *is,
 }
 
 static gboolean
+imapx_server_check_is_good_cyrus (const gchar *response_text)
+{
+	const gchar *pp;
+	gint vermajor = 0, verminor = 0, vermicro = 0;
+
+	if (!response_text || !*response_text)
+		return FALSE;
+
+	/* Expects "Cyrus IMAP v1.2.3", eventually "Cyrus IMAP 4.5.6" (with or without 'v' prefix) */
+	pp = camel_strstrcase (response_text, "cyrus");
+	if (!pp)
+		return FALSE;
+
+	#define skip_word() \
+		while (*pp && *pp != ' ') {	\
+			pp++;			\
+		}				\
+						\
+		if (!*pp)			\
+			return FALSE;		\
+						\
+		pp++;
+
+	/* Skip the 'Cyrus' word */
+	skip_word ();
+
+	/* Skip the 'IMAP' word */
+	skip_word ();
+
+	#undef skip_word
+
+	/* Now is at version with or without 'v' prefix */
+	if (*pp == 'v')
+		pp++;
+
+	if (sscanf (pp, "%d.%d.%d", &vermajor, &verminor, &vermicro) != 3)
+		return FALSE;
+
+	/* The 2.5.11, inclusive, has the issue fixed, thus check for that version. */
+	return vermajor > 2 || (vermajor == 2 && (verminor > 5 || (verminor == 5 && vermicro >= 11)));
+}
+
+static gboolean
 imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
                           GInputStream *input_stream,
                           GCancellable *cancellable,
@@ -1965,8 +2008,8 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 			if (is->priv->context->sinfo->text) {
 				guint32 list_extended = imapx_lookup_capability ("LIST-EXTENDED");
 
-				is->priv->is_cyrus = is->priv->is_cyrus || camel_strstrcase (is->priv->context->sinfo->text, "cyrus");
-				if (is->priv->is_cyrus && is->priv->cinfo && (is->priv->cinfo->capa & list_extended) != 0) {
+				is->priv->is_broken_cyrus = is->priv->is_broken_cyrus || !imapx_server_check_is_good_cyrus (is->priv->context->sinfo->text);
+				if (is->priv->is_broken_cyrus && is->priv->cinfo && (is->priv->cinfo->capa & list_extended) != 0) {
 					/* Disable LIST-EXTENDED for cyrus servers */
 					c (is->priv->tagprefix, "Disabling LIST-EXTENDED extension for a Cyrus server\n");
 					is->priv->cinfo->capa &= ~list_extended;
@@ -2426,8 +2469,8 @@ imapx_completion (CamelIMAPXServer *is,
 	if (ic->status->condition == IMAPX_CAPABILITY) {
 		guint32 list_extended = imapx_lookup_capability ("LIST-EXTENDED");
 
-		is->priv->is_cyrus = is->priv->is_cyrus || (ic->status->text && camel_strstrcase (ic->status->text, "cyrus"));
-		if (is->priv->is_cyrus && ic->status->u.cinfo && (ic->status->u.cinfo->capa & list_extended) != 0) {
+		is->priv->is_broken_cyrus = is->priv->is_broken_cyrus || (ic->status->text && !imapx_server_check_is_good_cyrus (ic->status->text));
+		if (is->priv->is_broken_cyrus && ic->status->u.cinfo && (ic->status->u.cinfo->capa & list_extended) != 0) {
 			/* Disable LIST-EXTENDED for cyrus servers */
 			c (is->priv->tagprefix, "Disabling LIST-EXTENDED extension for a Cyrus server\n");
 			ic->status->u.cinfo->capa &= ~list_extended;
@@ -3524,7 +3567,7 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 	is->priv->cancellable = g_cancellable_new ();
 
 	is->priv->state = IMAPX_DISCONNECTED;
-	is->priv->is_cyrus = FALSE;
+	is->priv->is_broken_cyrus = FALSE;
 	is->priv->copyuid_status = NULL;
 
 	is->priv->changes = camel_folder_change_info_new ();
@@ -4006,7 +4049,7 @@ imapx_disconnect (CamelIMAPXServer *is)
 	g_weak_ref_set (&is->priv->select_pending, NULL);
 	g_mutex_unlock (&is->priv->select_lock);
 
-	is->priv->is_cyrus = FALSE;
+	is->priv->is_broken_cyrus = FALSE;
 	is->priv->state = IMAPX_DISCONNECTED;
 
 	g_mutex_lock (&is->priv->idle_lock);
@@ -4034,7 +4077,7 @@ camel_imapx_server_connect_sync (CamelIMAPXServer *is,
 	if (is->priv->state >= IMAPX_INITIALISED)
 		return TRUE;
 
-	is->priv->is_cyrus = FALSE;
+	is->priv->is_broken_cyrus = FALSE;
 
 	if (!imapx_reconnect (is, cancellable, error))
 		return FALSE;
