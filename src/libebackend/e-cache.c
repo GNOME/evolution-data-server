@@ -39,6 +39,7 @@
 #include <glib/gstdio.h>
 
 #include <camel/camel.h>
+#include <libedataserver/libedataserver.h>
 
 #include "e-sqlite3-vfs.h"
 
@@ -510,8 +511,10 @@ e_cache_column_info_free (gpointer info)
 		} else if (code == SQLITE_ABORT || code == SQLITE_INTERRUPT) { \
 			g_set_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED, "Operation cancelled: %s", message); \
 		} else { \
+			gchar *valid_utf8 = e_util_utf8_make_valid (stmt); \
 			g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_ENGINE, \
-				"SQLite error code '%d': %s (statement:%s)", code, message, stmt); \
+				"SQLite error code '%d': %s (statement:%s)", code, message, valid_utf8 ? valid_utf8 : stmt); \
+			g_free (valid_utf8); \
 		} \
 	} G_STMT_END
 

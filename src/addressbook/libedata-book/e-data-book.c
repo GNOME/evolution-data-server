@@ -1789,10 +1789,16 @@ void
 e_data_book_report_error (EDataBook *book,
                           const gchar *message)
 {
+	gchar *valid_utf8;
+
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 	g_return_if_fail (message != NULL);
 
-	e_dbus_address_book_emit_error (book->priv->dbus_interface, message);
+	valid_utf8 = e_util_utf8_make_valid (message);
+
+	e_dbus_address_book_emit_error (book->priv->dbus_interface, valid_utf8 ? valid_utf8 : message);
+
+	g_free (valid_utf8);
 }
 
 /**
