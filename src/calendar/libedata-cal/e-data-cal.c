@@ -2379,10 +2379,16 @@ void
 e_data_cal_report_error (EDataCal *cal,
                          const gchar *message)
 {
+	gchar *valid_utf8;
+
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 	g_return_if_fail (message != NULL);
 
-	e_dbus_calendar_emit_error (cal->priv->dbus_interface, message);
+	valid_utf8 = e_util_utf8_make_valid (message);
+
+	e_dbus_calendar_emit_error (cal->priv->dbus_interface, valid_utf8 ? valid_utf8 : message);
+
+	g_free (valid_utf8);
 }
 
 /**
