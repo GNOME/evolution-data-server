@@ -27,6 +27,7 @@
 #include <libebook/e-book-client.h>
 #include <libebook/e-book-enumtypes.h>
 #include <libebook/e-book-types.h>
+#include <libebook/e-book-utils.h>
 #include <libebook/e-book-view.h>
 #include <libebook/e-book.h>
 #include <libebook/e-destination.h>

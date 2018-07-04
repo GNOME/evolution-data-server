@@ -419,6 +419,22 @@ typedef enum {
 } CamelSaslAnonTraceType;
 
 /**
+ * CamelRecipientCertificateFlags:
+ * @CAMEL_RECIPIENT_CERTIFICATE_SMIME: Retrieve S/MIME certificates; this cannot be used
+ *    together with @CAMEL_RECIPIENT_CERTIFICATE_PGP
+ * @CAMEL_RECIPIENT_CERTIFICATE_PGP: Retrieve PGP keys; this cannot be used
+ *    together with @CAMEL_RECIPIENT_CERTIFICATE_SMIME.
+ *
+ * Flags used to camel_session_get_recipient_certificates_sync() call.
+ *
+ * Since: 3.30
+ **/
+typedef enum { /*< flags >*/
+	CAMEL_RECIPIENT_CERTIFICATE_SMIME = 1 << 0,
+	CAMEL_RECIPIENT_CERTIFICATE_PGP = 1 << 1
+} CamelRecipientCertificateFlags;
+
+/**
  * CamelServiceConnectionStatus:
  * @CAMEL_SERVICE_DISCONNECTED:
  *   #CamelService is disconnected from a remote server.

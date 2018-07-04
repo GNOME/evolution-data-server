@@ -1963,3 +1963,60 @@ camel_session_get_oauth2_access_token_sync (CamelSession *session,
 
 	return klass->get_oauth2_access_token_sync (session, service, out_access_token, out_expires_in, cancellable, error);
 }
+
+/**
+ * camel_session_get_recipient_certificates_sync:
+ * @session: a #CamelSession
+ * @flags: bit-or of #CamelRecipientCertificateFlags
+ * @recipients: (element-type utf8): a #GPtrArray of recipients
+ * @out_certificates: (element-type utf8) (out): a #GSList of gathered certificates
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Searches for S/MIME certificates or PGP keys for the given @recipients,
+ * which are returned as base64 encoded strings in @out_certificates.
+ * This is used when encrypting messages. The @flags influence what
+ * the @out_certificates will contain. The order of items in @out_certificates
+ * should match the order of items in @recipients, with %NULL data for those
+ * which could not be found.
+ *
+ * The function should return failure only if some fatal error happened.
+ * It's not an error when certificates for some, or all, recipients
+ * could not be found.
+ *
+ * This method is optional and the default implementation returns %TRUE
+ * and sets the @out_certificates to %NULL. It's the only exception
+ * when the length of @recipients and @out_certificates can differ.
+ * In all other cases the length of the two should match.
+ *
+ * The @out_certificates will be freed with g_slist_free_full (certificates, g_free);
+ * when done with it.
+ *
+ * Returns: Whether succeeded, or better whether no fatal error happened.
+ *
+ * Since: 3.30
+ **/
+gboolean
+camel_session_get_recipient_certificates_sync (CamelSession *session,
+					       guint32 flags, /* bit-or of CamelRecipientCertificateFlags */
+					       const GPtrArray *recipients, /* gchar * */
+					       GSList **out_certificates, /* gchar * */
+					       GCancellable *cancellable,
+					       GError **error)
+{
+	CamelSessionClass *klass;
+
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
+	g_return_val_if_fail (recipients != NULL, FALSE);
+	g_return_val_if_fail (out_certificates != NULL, FALSE);
+
+	*out_certificates = NULL;
+
+	klass = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (klass != NULL, FALSE);
+
+	if (!klass->get_recipient_certificates_sync)
+		return TRUE;
+
+	return klass->get_recipient_certificates_sync (session, flags, recipients, out_certificates, cancellable, error);
+}

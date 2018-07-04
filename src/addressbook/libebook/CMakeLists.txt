@@ -17,6 +17,7 @@ set(SOURCES
 	e-book-client.c
 	e-book-client-cursor.c
 	e-book-client-view.c
+	e-book-utils.c
 	e-book-view-private.h
 	e-book-view.c
 	e-destination.c
@@ -30,8 +31,9 @@ set(HEADERS
 	e-book-client.h
 	e-book-client-cursor.h
 	e-book-client-view.h
-	e-book-view.h
 	e-book-types.h
+	e-book-utils.h
+	e-book-view.h
 	e-destination.h
 	${CMAKE_CURRENT_BINARY_DIR}/e-book-enumtypes.h
 )

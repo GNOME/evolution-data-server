@@ -139,9 +139,16 @@ struct _CamelSessionClass {
 						 gint *out_expires_in,
 						 GCancellable *cancellable,
 						 GError **error);
+	gboolean	(*get_recipient_certificates_sync)
+						(CamelSession *session,
+						 guint32 flags, /* bit-or of CamelRecipientCertificateFlags */
+						 const GPtrArray *recipients, /* gchar * */
+						 GSList **out_certificates, /* gchar * */
+						 GCancellable *cancellable,
+						 GError **error);
 
 	/* Padding for future expansion */
-	gpointer reserved_methods[20];
+	gpointer reserved_methods[19];
 
 	/* Signals */
 	void		(*job_started)		(CamelSession *session,
@@ -271,6 +278,13 @@ gboolean	camel_session_get_oauth2_access_token_sync
 						 CamelService *service,
 						 gchar **out_access_token,
 						 gint *out_expires_in,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_session_get_recipient_certificates_sync
+						(CamelSession *session,
+						 guint32 flags, /* bit-or of CamelRecipientCertificateFlags */
+						 const GPtrArray *recipients, /* gchar * */
+						 GSList **out_certificates, /* gchar * */
 						 GCancellable *cancellable,
 						 GError **error);
 

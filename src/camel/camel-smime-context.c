@@ -1228,10 +1228,16 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 	CamelDataWrapper *dw;
 	CamelContentType *ct;
 	GByteArray *buffer;
+	GSList *gathered_certificates = NULL, *link;
+
+	if (!camel_session_get_recipient_certificates_sync (camel_cipher_context_get_session (context),
+		CAMEL_RECIPIENT_CERTIFICATE_SMIME, recipients, &gathered_certificates, cancellable, error))
+		return FALSE;
 
 	poolp = PORT_NewArena (1024);
 	if (poolp == NULL) {
 		set_nss_error (error, g_strerror (ENOMEM));
+		g_slist_free_full (gathered_certificates, g_free);
 		return FALSE;
 	}
 
@@ -1239,6 +1245,7 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 	recipient_certs = (CERTCertificate **) PORT_ArenaZAlloc (poolp, sizeof (recipient_certs[0]) * (recipients->len + 1));
 	if (recipient_certs == NULL) {
 		set_nss_error (error, g_strerror (ENOMEM));
+		g_slist_free_full (gathered_certificates, g_free);
 		goto fail;
 	}
 
@@ -1251,6 +1258,30 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 	}
 	frd.certs_missing = g_hash_table_size (frd.recipients_table);
 	frd.now = PR_Now();
+
+	for (link = gathered_certificates; link; link = g_slist_next (link)) {
+		const gchar *certstr = link->data;
+
+		if (certstr && *certstr) {
+			CERTCertificate *cert = NULL;
+			gsize len = 0;
+			guchar *data;
+
+			data = g_base64_decode (certstr, &len);
+
+			if (data && len)
+				cert = CERT_DecodeCertFromPackage ((gchar *) data, len);
+
+			g_free (data);
+
+			if (cert) {
+				camel_smime_find_recipients_certs (cert, NULL, &frd);
+				CERT_DestroyCertificate (cert);
+			}
+		}
+	}
+
+	g_slist_free_full (gathered_certificates, g_free);
 
 	/* Just ignore the return value */
 	(void) PK11_TraverseSlotCerts (camel_smime_find_recipients_certs, &frd, NULL);

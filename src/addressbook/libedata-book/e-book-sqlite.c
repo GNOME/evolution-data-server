@@ -270,7 +270,7 @@ ebsql_origin_str (EbSqlCursorOrigin origin)
 		} \
 	} G_STMT_END
 
-#define FOLDER_VERSION                11
+#define FOLDER_VERSION                12
 #define INSERT_MULTI_STMT_BYTES       128
 #define COLUMN_DEFINITION_BYTES       32
 #define GENERATED_QUERY_BYTES         1024
@@ -443,6 +443,7 @@ static EContactField default_summary_fields[] = {
 	E_CONTACT_LIST_SHOW_ADDRESSES,
 	E_CONTACT_WANTS_HTML,
 	E_CONTACT_X509_CERT,
+	E_CONTACT_PGP_CERT
 };
 
 /* Create indexes on full_name and email fields as autocompletion 
@@ -2423,6 +2424,13 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 			}
 
 		}
+
+		if (previous_schema < 12) {
+			if (summary_field_array_index (summary_fields, E_CONTACT_PGP_CERT) < 0) {
+				summary_field_append (summary_fields, ebsql->priv->folderid,
+						      E_CONTACT_PGP_CERT, NULL);
+			}
+		}
 	}
 
  introspect_summary_finish:
@@ -3084,6 +3092,13 @@ ebsql_new_internal (const gchar *path,
 		success = ebsql_init_locale (
 			ebsql, previous_schema,
 			already_exists, error);
+
+
+	/* Schema 12 added E_CONTACT_PGP_CERT column into the summary;
+	   the ebsql_init_locale() also calls ebsql_upgrade() for schema 10-,
+	   thus call it here only for schema 11, to populate the PGP column */
+	if (success && previous_schema == 11)
+		success = ebsql_upgrade (ebsql, EBSQL_CHANGE_LAST, error);
 
 	if (success)
 		success = ebsql_commit_transaction (ebsql, error);

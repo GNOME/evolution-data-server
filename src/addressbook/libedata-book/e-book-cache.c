@@ -49,7 +49,7 @@
 
 #include "e-book-cache.h"
 
-#define E_BOOK_CACHE_VERSION		1
+#define E_BOOK_CACHE_VERSION		2
 #define INSERT_MULTI_STMT_BYTES		128
 #define COLUMN_DEFINITION_BYTES		32
 #define GENERATED_QUERY_BYTES		1024
@@ -228,7 +228,8 @@ static EContactField default_summary_fields[] = {
 	E_CONTACT_IS_LIST,
 	E_CONTACT_LIST_SHOW_ADDRESSES,
 	E_CONTACT_WANTS_HTML,
-	E_CONTACT_X509_CERT
+	E_CONTACT_X509_CERT,
+	E_CONTACT_PGP_CERT
 };
 
 /* Create indexes on full_name and email fields as autocompletion
@@ -4229,6 +4230,41 @@ e_book_cache_gather_table_names_cb (ECache *cache,
 }
 
 static gboolean
+e_book_cache_fill_pgp_cert_column (ECache *cache,
+				   const gchar *uid,
+				   const gchar *revision,
+				   const gchar *object,
+				   EOfflineState offline_state,
+				   gint ncols,
+				   const gchar *column_names[],
+				   const gchar *column_values[],
+				   gchar **out_revision,
+				   gchar **out_object,
+				   EOfflineState *out_offline_state,
+				   ECacheColumnValues **out_other_columns,
+				   gpointer user_data)
+{
+	EContact *contact;
+	EContactCert *cert;
+
+	g_return_val_if_fail (object != NULL, FALSE);
+	g_return_val_if_fail (out_other_columns != NULL, FALSE);
+
+	contact = e_contact_new_from_vcard (object);
+	if (!contact)
+		return TRUE;
+
+	*out_other_columns = e_cache_column_values_new ();
+	cert = e_contact_get (contact, E_CONTACT_PGP_CERT);
+
+	e_cache_column_values_take_value (*out_other_columns, e_contact_field_name (E_CONTACT_PGP_CERT), g_strdup_printf ("%d", cert ? 1 : 0));
+
+	e_contact_cert_free (cert);
+
+	return TRUE;
+}
+
+static gboolean
 e_book_cache_migrate (ECache *cache,
 		      gint from_version,
 		      GCancellable *cancellable,
@@ -4297,8 +4333,12 @@ e_book_cache_migrate (ECache *cache,
 	}
 
 	/* Add any version-related changes here */
-	/*if (from_version < E_BOOK_CACHE_VERSION) {
-	}*/
+	if (success && from_version > 0 && from_version < E_BOOK_CACHE_VERSION) {
+		if (from_version == 1) {
+			/* Version 2 added E_CONTACT_PGP_CERT existence into the summary */
+			success = e_cache_foreach_update (cache, E_CACHE_INCLUDE_DELETED, NULL, e_book_cache_fill_pgp_cert_column, NULL, cancellable, error);
+		}
+	}
 
 	return success;
 }
