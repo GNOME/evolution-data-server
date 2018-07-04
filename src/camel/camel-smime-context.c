@@ -1523,9 +1523,21 @@ fail:
 }
 
 static void
+camel_smime_context_finalize (GObject *object)
+{
+	CamelSMIMEContext *smime = CAMEL_SMIME_CONTEXT (object);
+
+	g_free (smime->priv->encrypt_key);
+
+	/* Chain up to parent's method. */
+	G_OBJECT_CLASS (camel_smime_context_parent_class)->finalize (object);
+}
+
+static void
 camel_smime_context_class_init (CamelSMIMEContextClass *class)
 {
 	CamelCipherContextClass *cipher_context_class;
+	GObjectClass *object_class;
 
 	g_type_class_add_private (class, sizeof (CamelSMIMEContextPrivate));
 
@@ -1539,6 +1551,9 @@ camel_smime_context_class_init (CamelSMIMEContextClass *class)
 	cipher_context_class->verify_sync = smime_context_verify_sync;
 	cipher_context_class->encrypt_sync = smime_context_encrypt_sync;
 	cipher_context_class->decrypt_sync = smime_context_decrypt_sync;
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = camel_smime_context_finalize;
 }
 
 static void
