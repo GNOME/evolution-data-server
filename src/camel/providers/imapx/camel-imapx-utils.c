@@ -1528,6 +1528,12 @@ imapx_parse_body (CamelIMAPXInputStream *stream,
 		} else if (tok == ')' && nested_extension > 0) {
 			tok = 0; /* To not be used as the stop condition */
 			nested_extension--;
+		} else if (tok == IMAPX_TOK_LITERAL) {
+			camel_imapx_input_stream_set_literal (stream, len);
+
+			do {
+				tok = camel_imapx_input_stream_getl (stream, &token, &len, cancellable, error);
+			} while (tok > 0);
 		}
 	} while ((nested_extension > 0 || tok != ')') && tok != IMAPX_TOK_ERROR);
 
