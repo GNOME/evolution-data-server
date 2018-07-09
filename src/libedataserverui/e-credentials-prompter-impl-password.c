@@ -43,9 +43,9 @@ G_DEFINE_TYPE (ECredentialsPrompterImplPassword, e_credentials_prompter_impl_pas
 static gboolean
 password_dialog_map_event_cb (GtkWidget *dialog,
 			      GdkEvent *event,
-			      GtkWidget *password_entry)
+			      GtkWidget *entry)
 {
-	gtk_widget_grab_focus (password_entry);
+	gtk_widget_grab_focus (entry);
 
 	return FALSE;
 }
@@ -205,7 +205,7 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 	GString *info_markup;
 	gint row = 0;
 	ESourceAuthentication *auth_extension = NULL;
-	gboolean success;
+	gboolean success, is_scratch_source = TRUE;
 
 	g_return_val_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_PASSWORD (prompter_password), FALSE);
 	g_return_val_if_fail (prompter_password->priv->prompt_id != NULL, FALSE);
@@ -280,9 +280,15 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 	row++;
 
 	if (e_source_has_extension (prompter_password->priv->cred_source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+		GDBusObject *dbus_object;
+
+		dbus_object = e_source_ref_dbus_object (prompter_password->priv->cred_source);
+		is_scratch_source = !dbus_object;
+		g_clear_object (&dbus_object);
+
 		auth_extension = e_source_get_extension (prompter_password->priv->cred_source, E_SOURCE_EXTENSION_AUTHENTICATION);
 
-		if (e_source_get_writable (prompter_password->priv->cred_source)) {
+		if (is_scratch_source || e_source_get_writable (prompter_password->priv->cred_source)) {
 			gchar *username;
 
 			username = e_source_authentication_dup_user (auth_extension);
@@ -332,7 +338,8 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 	if (e_named_parameters_get (prompter_password->priv->credentials, E_SOURCE_CREDENTIAL_PASSWORD))
 		gtk_entry_set_text (password_entry, e_named_parameters_get (prompter_password->priv->credentials, E_SOURCE_CREDENTIAL_PASSWORD));
 
-	g_signal_connect (dialog, "map-event", G_CALLBACK (password_dialog_map_event_cb), password_entry);
+	g_signal_connect (dialog, "map-event", G_CALLBACK (password_dialog_map_event_cb),
+		(username_entry && g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (username_entry)), "") == 0) ? username_entry : password_entry);
 
 	gtk_grid_attach (grid, GTK_WIDGET (password_entry), 1, row, 1, 1);
 	row++;
@@ -364,7 +371,7 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 		gtk_grid_attach (grid, widget, 0, row - 1, 1, 1);
 	}
 
-	if (auth_extension) {
+	if (auth_extension && !is_scratch_source) {
 		/* Remember password check */
 		widget = gtk_check_button_new_with_mnemonic (_("_Add this password to your keyring"));
 		remember_toggle = GTK_TOGGLE_BUTTON (widget);

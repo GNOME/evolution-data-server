@@ -678,6 +678,14 @@ e_webdav_discover_content_credentials_prompt_done_cb (GObject *source_object,
 		rd->credentials = credentials;
 		credentials = NULL;
 
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION) &&
+		    rd->credentials && e_named_parameters_exists (rd->credentials, E_SOURCE_CREDENTIAL_USERNAME)) {
+			ESourceAuthentication *auth_extension;
+
+			auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+			e_source_authentication_set_user (auth_extension, e_named_parameters_get (rd->credentials, E_SOURCE_CREDENTIAL_USERNAME));
+		}
+
 		e_webdav_discover_sources (source, rd->base_url, E_WEBDAV_DISCOVER_SUPPORTS_NONE, rd->credentials, rd->cancellable,
 			e_webdav_discover_content_refresh_done_cb, rd);
 	}
@@ -824,20 +832,6 @@ e_webdav_discover_content_refresh (GtkWidget *content,
 		simple = g_simple_async_result_new (G_OBJECT (content), callback, user_data, e_webdav_discover_content_refresh);
 		g_simple_async_result_set_error (simple, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
 			_("Invalid URL"));
-		g_simple_async_result_complete_in_idle (simple);
-		g_object_unref (simple);
-
-		return;
-	}
-
-	if (!soup_uri_get_user (soup_uri)) {
-		GSimpleAsyncResult *simple;
-
-		soup_uri_free (soup_uri);
-
-		simple = g_simple_async_result_new (G_OBJECT (content), callback, user_data, e_webdav_discover_content_refresh);
-		g_simple_async_result_set_error (simple, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
-			_("User name not filled"));
 		g_simple_async_result_complete_in_idle (simple);
 		g_object_unref (simple);
 
