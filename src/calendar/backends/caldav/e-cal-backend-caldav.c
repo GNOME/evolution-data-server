@@ -163,6 +163,7 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 				if (privilege) {
 					is_writable =
 						privilege->hint == E_WEBDAV_PRIVILEGE_HINT_WRITE ||
+						privilege->hint == E_WEBDAV_PRIVILEGE_HINT_WRITE_CONTENT ||
 						privilege->hint == E_WEBDAV_PRIVILEGE_HINT_ALL;
 				}
 			}

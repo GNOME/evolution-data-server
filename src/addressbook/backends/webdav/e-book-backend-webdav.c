@@ -176,6 +176,7 @@ ebb_webdav_connect_sync (EBookMetaBackend *meta_backend,
 
 				if (privilege) {
 					is_writable = privilege->hint == E_WEBDAV_PRIVILEGE_HINT_WRITE ||
+						privilege->hint == E_WEBDAV_PRIVILEGE_HINT_WRITE_CONTENT ||
 						privilege->hint == E_WEBDAV_PRIVILEGE_HINT_ALL;
 				}
 			}
