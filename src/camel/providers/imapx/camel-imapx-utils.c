@@ -1306,7 +1306,7 @@ imapx_parse_body (CamelIMAPXInputStream *stream,
                   GCancellable *cancellable,
                   GError **error)
 {
-	gint tok;
+	gint tok, nested_extension = 0;
 	guint len;
 	guchar *token;
 	struct _CamelMessageContentInfo * cinfo = NULL;
@@ -1516,14 +1516,20 @@ imapx_parse_body (CamelIMAPXInputStream *stream,
 	}
 
 	/* soak up any other extension fields that may be present */
-	/* there should only be simple tokens, no lists */
 	do {
 		tok = camel_imapx_input_stream_token (
 			stream, &token, &len, cancellable, &local_error);
 
 		if (local_error)
 			goto error;
-	} while (tok != ')' && tok != IMAPX_TOK_ERROR);
+
+		if (tok == '(') {
+			nested_extension++;
+		} else if (tok == ')' && nested_extension > 0) {
+			tok = 0; /* To not be used as the stop condition */
+			nested_extension--;
+		}
+	} while ((nested_extension > 0 || tok != ')') && tok != IMAPX_TOK_ERROR);
 
  error:
 	/* CHEN TODO handle exceptions better */
