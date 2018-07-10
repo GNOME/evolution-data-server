@@ -1855,7 +1855,14 @@ imapx_server_check_is_broken_cyrus (const gchar *response_text,
 		return FALSE;
 
 	/* Expects "Cyrus IMAP v1.2.3", eventually "Cyrus IMAP 4.5.6" (with or without 'v' prefix) */
-	pp = camel_strstrcase (response_text, "cyrus");
+	pp = response_text;
+	while (pp = camel_strstrcase (pp, "cyrus"), pp) {
+		/* It's a whole word */
+		if ((pp == response_text || g_ascii_isspace (pp[-1])) && g_ascii_isspace (pp[5]))
+			break;
+		pp++;
+	}
+
 	if (!pp)
 		return FALSE;
 
@@ -1892,7 +1899,18 @@ imapx_server_check_is_broken_cyrus (const gchar *response_text,
 
 		vermajor = 0;
 
-		from = camel_strstrcase (from + 1, "cyrus");
+		pp = from + 1;
+		from = NULL;
+
+		while (pp = camel_strstrcase (pp, "cyrus"), pp) {
+			/* It's a whole word */
+			if (g_ascii_isspace (pp[-1]) && g_ascii_isspace (pp[5])) {
+				from = pp;
+				break;
+			}
+
+			pp++;
+		}
 	}
 
 	/* The 2.5.11, inclusive, has the issue fixed, thus check for that version. */
