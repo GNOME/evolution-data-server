@@ -2120,6 +2120,31 @@ cal_cache_count_tmd_refs (ECalCache *cal_cache,
 }
 
 static gboolean
+e_cal_cache_table_refs_column_exists_cb (ECache *cache,
+					 gint ncols,
+					 const gchar *column_names[],
+					 const gchar *column_values[],
+					 gpointer user_data)
+{
+	gboolean *prefs_column_exists = user_data;
+	gint ii;
+
+	g_return_val_if_fail (prefs_column_exists != NULL, FALSE);
+	g_return_val_if_fail (column_names != NULL, FALSE);
+	g_return_val_if_fail (column_values != NULL, FALSE);
+
+	for (ii = 0; ii < ncols && !*prefs_column_exists; ii++) {
+		if (column_names[ii] && camel_strcase_equal (column_names[ii], "name")) {
+			if (column_values[ii])
+				*prefs_column_exists = camel_strcase_equal (column_values[ii], "refs");
+			break;
+		}
+	}
+
+	return TRUE;
+}
+
+static gboolean
 e_cal_cache_migrate (ECache *cache,
 		     gint from_version,
 		     GCancellable *cancellable,
@@ -2132,13 +2157,21 @@ e_cal_cache_migrate (ECache *cache,
 	/* Add any version-related changes here (E_CAL_CACHE_VERSION) */
 
 	if (from_version > 0 && from_version < 3) {
+		gboolean refs_column_exists = FALSE;
 		gchar *stmt;
 
 		g_rec_mutex_lock (&cal_cache->priv->timezones_lock);
 
-		stmt = e_cache_sqlite_stmt_printf ("ALTER TABLE %Q ADD COLUMN refs INTEGER", ECC_TABLE_TIMEZONES);
-		success = e_cache_sqlite_exec (E_CACHE (cal_cache), stmt, cancellable, error);
-		e_cache_sqlite_stmt_free (stmt);
+		/* In case an older version modified the local cache version,
+		   then the ALTER TABLE command can fail due to duplicate 'refs' column */
+		success = e_cache_sqlite_select (E_CACHE (cal_cache), "PRAGMA table_info (" ECC_TABLE_TIMEZONES ")",
+			e_cal_cache_table_refs_column_exists_cb, &refs_column_exists, cancellable, NULL);
+
+		if (!success || !refs_column_exists) {
+			stmt = e_cache_sqlite_stmt_printf ("ALTER TABLE %Q ADD COLUMN refs INTEGER", ECC_TABLE_TIMEZONES);
+			success = e_cache_sqlite_exec (E_CACHE (cal_cache), stmt, cancellable, error);
+			e_cache_sqlite_stmt_free (stmt);
+		}
 
 		if (success) {
 			timezones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, timezone_migration_data_free);
