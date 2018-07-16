@@ -1,3 +1,32 @@
+Evolution-Data-Server 3.29.4 2018-07-16
+---------------------------------------
+
+Bug Fixes:
+	Bug 702127 - Crash under cal_backend_store_save_cache_now() ][ (Milan Crha)
+	Bug 704246 - Cannot send encrypted mail to contact with certificate (Milan Crha)
+	I#9 - [IMAPx] Remove stale cache files in a dedicated thread (Milan Crha)
+	I#10 - [CalDAV/CardDAV] Avoid GET after PUT when the server didn't modify the component (Milan Crha)
+	I#11 - Better error message when WebDAV GET response has missing href or ETag (Дилян Палаузов)
+	I#12 - vCard REV attribute should be a timestamp (Milan Crha)
+	evo-I#37 - Color support for iCalendar entries (Milan Crha)
+	I#13 - [IMAPx] Fails to append message to Yahoo! with no CRLF at the end (Milan Crha)
+	I#3 - [GPG] Mails that are not encrypted look encrypted (Milan Crha)
+	I#14 - [IMAPx] Use extended LIST with Cyrus IMAP >= 2.5.11 (Milan Crha)
+	I#16 - [IMAPx] BODYSTRUCTURE extension fields not skipped properly (Milan Crha)
+	I#17 - [EWebDAVDiscoverWidget] Do not require filled user name (Milan Crha)
+
+Miscellaneous:
+	Use Unicode in new translatable strings (Piotr Drąg)
+	[Camel] Bulk message copy/move during folder filtering (Milan Crha)
+	Make sure errors reported from backends are valid UTF-8 strings (Milan Crha)
+	[CamelSMIMEContext] Fix a memory leak (Milan Crha)
+	[CalDAV/CardDAV] Consider collection writable also with DAV:write-content hint (Milan Crha)
+	[IMAPx] Search for whole word "Cyrus" when parsing version from the server response (Milan Crha)
+	[ECalCache] Alter timezones table only if the 'refs' column doesn't exist (Milan Crha)
+
+Translations:
+	Fabio Tomat (fu)
+
 Evolution-Data-Server 3.29.3 2018-06-18
 ---------------------------------------
 
