@@ -1,3 +1,18 @@
+Evolution-Data-Server 3.28.4 2018-07-16
+---------------------------------------
+
+Bug Fixes:
+	Bug 796174 - strcat() considered unsafe for buffer overflow (Milan Crha)
+	Bug 702127 - Crash under cal_backend_store_save_cache_now() ][ (Milan Crha)
+	I#12 - vCard REV attribute should be a timestamp (Milan Crha)
+	I#13 - [IMAPx] Fails to append message to Yahoo! with no CRLF at the end (Milan Crha)
+	I#14 - [IMAPx] Use extended LIST with Cyrus IMAP >= 2.5.11 (Milan Crha)
+
+Miscellaneous:
+	Make sure errors reported from backends are valid UTF-8 strings (Milan Crha)
+	[CamelSMIMEContext] Fix a memory leak (Milan Crha)
+	[IMAPx] Search for whole word "Cyrus" when parsing version from the server response (Milan Crha)
+
 Evolution-Data-Server 3.28.3 2018-06-18
 ---------------------------------------
 
