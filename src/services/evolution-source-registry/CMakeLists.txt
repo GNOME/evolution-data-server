@@ -23,13 +23,13 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.gnome.evolution.dataserver.Sources
 
 set(builtin_sources_files
 	caldav-stub.source
+	carddav-stub.source
 	contacts-stub.source
 	google-stub.source
 	ldap-stub.source
 	local-stub.source
 	weather-stub.source
 	webcal-stub.source
-	webdav-stub.source
 	birthdays.source
 	local.source
 	sendmail.source

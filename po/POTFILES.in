@@ -1,12 +1,12 @@
 # List of source files containing translatable strings.
 # Please keep this list in alphabetic order.
 [encoding: UTF-8]
+src/addressbook/backends/carddav/e-book-backend-carddav.c
 src/addressbook/backends/file/e-book-backend-file.c
 src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c
 src/addressbook/backends/google/e-book-backend-google.c
 src/addressbook/backends/google/e-book-google-utils.c
 src/addressbook/backends/ldap/e-book-backend-ldap.c
-src/addressbook/backends/webdav/e-book-backend-webdav.c
 src/addressbook/libebook-contacts/e-book-contacts-types.c
 src/addressbook/libebook-contacts/e-contact.c
 src/addressbook/libebook-contacts/e-phone-number.c
@@ -240,6 +240,7 @@ src/services/evolution-alarm-notify/e-alarm-notify.c
 src/services/evolution-calendar-factory/evolution-calendar-factory.c
 [type: gettext/ini]src/services/evolution-source-registry/builtin/birthdays.source.in
 [type: gettext/ini]src/services/evolution-source-registry/builtin/caldav-stub.source.in
+[type: gettext/ini]src/services/evolution-source-registry/builtin/carddav-stub.source.in
 [type: gettext/ini]src/services/evolution-source-registry/builtin/contacts-stub.source.in
 [type: gettext/ini]src/services/evolution-source-registry/builtin/google-stub.source.in
 [type: gettext/ini]src/services/evolution-source-registry/builtin/ldap-stub.source.in
@@ -254,7 +255,6 @@ src/services/evolution-calendar-factory/evolution-calendar-factory.c
 [type: gettext/ini]src/services/evolution-source-registry/builtin/vfolder.source.in
 [type: gettext/ini]src/services/evolution-source-registry/builtin/weather-stub.source.in
 [type: gettext/ini]src/services/evolution-source-registry/builtin/webcal-stub.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/webdav-stub.source.in
 src/services/evolution-source-registry/evolution-source-registry.c
 src/services/evolution-user-prompter/evolution-user-prompter.c
 src/services/evolution-user-prompter/prompt-user-gtk.c

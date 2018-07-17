@@ -2,13 +2,13 @@
 <gresources>
   <gresource prefix="/org/gnome/evolution-data-server/ro-sources">
     <file>caldav-stub.source</file>
+    <file>carddav-stub.source</file>
     <file>contacts-stub.source</file>
     <file>google-stub.source</file>
     <file>ldap-stub.source</file>
     <file>local-stub.source</file>
     <file>weather-stub.source</file>
     <file>webcal-stub.source</file>
-    <file>webdav-stub.source</file>
   </gresource>
   <gresource prefix="/org/gnome/evolution-data-server/rw-sources">
     <file>birthdays.source</file>

@@ -1,4 +1,4 @@
-/* e-book-backend-webdav-factory.c - Webdav contact backend.
+/* e-book-backend-carddav-factory.c - CardDAV contact backend.
  *
  * Copyright (C) 2008 Matthias Braun <matze@braunis.de>
  *
@@ -19,12 +19,12 @@
 
 #include "evolution-data-server-config.h"
 
-#include "e-book-backend-webdav.h"
+#include "e-book-backend-carddav.h"
 
-#define FACTORY_NAME "webdav"
+#define FACTORY_NAME "carddav"
 
-typedef EBookBackendFactory EBookBackendWebdavFactory;
-typedef EBookBackendFactoryClass EBookBackendWebdavFactoryClass;
+typedef EBookBackendFactory EBookBackendCardDAVFactory;
+typedef EBookBackendFactoryClass EBookBackendCardDAVFactoryClass;
 
 static EModule *e_module;
 
@@ -33,15 +33,15 @@ void e_module_load (GTypeModule *type_module);
 void e_module_unload (GTypeModule *type_module);
 
 /* Forward Declarations */
-GType e_book_backend_webdav_factory_get_type (void);
+GType e_book_backend_carddav_factory_get_type (void);
 
 G_DEFINE_DYNAMIC_TYPE (
-	EBookBackendWebdavFactory,
-	e_book_backend_webdav_factory,
+	EBookBackendCardDAVFactory,
+	e_book_backend_carddav_factory,
 	E_TYPE_BOOK_BACKEND_FACTORY)
 
 static void
-e_book_backend_webdav_factory_class_init (EBookBackendFactoryClass *class)
+e_book_backend_carddav_factory_class_init (EBookBackendFactoryClass *class)
 {
 	EBackendFactoryClass *backend_factory_class;
 
@@ -50,16 +50,16 @@ e_book_backend_webdav_factory_class_init (EBookBackendFactoryClass *class)
 	backend_factory_class->share_subprocess = TRUE;
 
 	class->factory_name = FACTORY_NAME;
-	class->backend_type = E_TYPE_BOOK_BACKEND_WEBDAV;
+	class->backend_type = E_TYPE_BOOK_BACKEND_CARDDAV;
 }
 
 static void
-e_book_backend_webdav_factory_class_finalize (EBookBackendFactoryClass *class)
+e_book_backend_carddav_factory_class_finalize (EBookBackendFactoryClass *class)
 {
 }
 
 static void
-e_book_backend_webdav_factory_init (EBookBackendFactory *factory)
+e_book_backend_carddav_factory_init (EBookBackendFactory *factory)
 {
 }
 
@@ -68,7 +68,7 @@ e_module_load (GTypeModule *type_module)
 {
 	e_module = E_MODULE (type_module);
 
-	e_book_backend_webdav_factory_register_type (type_module);
+	e_book_backend_carddav_factory_register_type (type_module);
 }
 
 G_MODULE_EXPORT void

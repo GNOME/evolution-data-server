@@ -109,7 +109,7 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 	switch (source_type) {
 	case E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS:
 		backend_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
-		provider = "webdav";
+		provider = "carddav";
 		identity_prefix = "contacts";
 		break;
 	case E_WEBDAV_DISCOVER_SUPPORTS_EVENTS:
