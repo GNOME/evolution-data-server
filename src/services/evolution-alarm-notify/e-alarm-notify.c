@@ -195,7 +195,7 @@ e_alarm_notify_build_notif_id (const EReminderData *rd)
 		e_cal_component_free_id (id);
 	}
 
-	g_string_append_printf (string, "%" G_GINT64_FORMAT, rd->instance.trigger);
+	g_string_append_printf (string, "%" G_GINT64_FORMAT, (gint64) rd->instance.trigger);
 
 	return g_string_free (string, FALSE);
 }

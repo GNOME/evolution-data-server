@@ -542,13 +542,13 @@ e_reminder_data_to_string (const EReminderData *rd)
 		g_string_append (str, rd->instance.auid);
 	g_string_append_c (str, '\n');
 
-	g_string_append_printf (str, "%" G_GINT64_FORMAT, rd->instance.trigger);
+	g_string_append_printf (str, "%" G_GINT64_FORMAT, (gint64) rd->instance.trigger);
 	g_string_append_c (str, '\n');
 
-	g_string_append_printf (str, "%" G_GINT64_FORMAT, rd->instance.occur_start);
+	g_string_append_printf (str, "%" G_GINT64_FORMAT, (gint64) rd->instance.occur_start);
 	g_string_append_c (str, '\n');
 
-	g_string_append_printf (str, "%" G_GINT64_FORMAT, rd->instance.occur_end);
+	g_string_append_printf (str, "%" G_GINT64_FORMAT, (gint64) rd->instance.occur_end);
 	g_string_append_c (str, '\n');
 
 	g_string_append (str, icalstr);
