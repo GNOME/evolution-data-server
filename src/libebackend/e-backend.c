@@ -84,14 +84,21 @@ enum {
 
 G_DEFINE_ABSTRACT_TYPE (EBackend, e_backend, G_TYPE_OBJECT)
 
+typedef struct _CanReachData {
+	EBackend *backend;
+	GCancellable *cancellable;
+} CanReachData;
+
 static void
 backend_network_monitor_can_reach_cb (GObject *source_object,
                                       GAsyncResult *result,
                                       gpointer user_data)
 {
-	EBackend *backend = E_BACKEND (user_data);
+	CanReachData *crd = user_data;
 	gboolean host_is_reachable;
 	GError *error = NULL;
+
+	g_return_if_fail (crd != NULL);
 
 	host_is_reachable = g_network_monitor_can_reach_finish (
 		G_NETWORK_MONITOR (source_object), result, &error);
@@ -101,25 +108,32 @@ backend_network_monitor_can_reach_cb (GObject *source_object,
 		(host_is_reachable && (error == NULL)) ||
 		(!host_is_reachable && (error != NULL)));
 
+	g_mutex_lock (&crd->backend->priv->network_monitor_cancellable_lock);
+	if (crd->backend->priv->network_monitor_cancellable == crd->cancellable)
+		g_clear_object (&crd->backend->priv->network_monitor_cancellable);
+	g_mutex_unlock (&crd->backend->priv->network_monitor_cancellable_lock);
+
 	if (G_IS_IO_ERROR (error, G_IO_ERROR_CANCELLED) ||
-	    host_is_reachable == e_backend_get_online (backend)) {
+	    host_is_reachable == e_backend_get_online (crd->backend)) {
 		g_clear_error (&error);
-		g_object_unref (backend);
+		g_object_unref (crd->backend);
+		g_free (crd);
 		return;
 	}
 
 	g_clear_error (&error);
 
-	e_backend_set_online (backend, host_is_reachable);
+	e_backend_set_online (crd->backend, host_is_reachable);
 
 	if (!host_is_reachable) {
 		ESource *source;
 
-		source = e_backend_get_source (backend);
+		source = e_backend_get_source (crd->backend);
 		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 	}
 
-	g_object_unref (backend);
+	g_object_unref (crd->backend);
+	g_free (crd);
 }
 
 static GSocketConnectable *
@@ -184,13 +198,19 @@ backend_update_online_state_timeout_cb (gpointer user_data)
 
 		e_backend_set_online (backend, TRUE);
 	} else {
+		CanReachData *crd;
+
 		cancellable = g_cancellable_new ();
+
+		crd = g_new0 (CanReachData, 1);
+		crd->backend = g_object_ref (backend);
+		crd->cancellable = cancellable;
 
 		g_network_monitor_can_reach_async (
 			backend->priv->network_monitor,
 			connectable, cancellable,
 			backend_network_monitor_can_reach_cb,
-			g_object_ref (backend));
+			crd);
 
 		backend->priv->network_monitor_cancellable = cancellable;
 		g_mutex_unlock (&backend->priv->network_monitor_cancellable_lock);
@@ -301,6 +321,15 @@ static void
 authenticate_thread_data_free (AuthenticateThreadData *data)
 {
 	if (data) {
+		if (data->backend) {
+			g_mutex_lock (&data->backend->priv->authenticate_cancellable_lock);
+			if (data->backend->priv->authenticate_cancellable &&
+			    data->backend->priv->authenticate_cancellable == data->cancellable) {
+				g_clear_object (&data->backend->priv->authenticate_cancellable);
+			}
+			g_mutex_unlock (&data->backend->priv->authenticate_cancellable_lock);
+		}
+
 		g_clear_object (&data->backend);
 		g_clear_object (&data->cancellable);
 		e_named_parameters_free (data->credentials);

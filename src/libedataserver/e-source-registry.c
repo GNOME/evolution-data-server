@@ -261,6 +261,8 @@ thread_closure_free (ThreadClosure *closure)
 {
 	/* The registry member is not referenced. */
 
+	g_warn_if_fail (!g_main_context_pending (closure->main_context));
+
 	g_main_context_unref (closure->main_context);
 	g_main_loop_unref (closure->main_loop);
 	g_cond_clear (&closure->main_loop_cond);
@@ -1180,6 +1182,13 @@ notify:
 		g_object_unref (object_manager);
 	}
 
+	/* Make sure the queue is flushed, because items in it can reference
+	   the main_context, effectively causing it to leak, together with
+	   its GWakeup ([eventfd]) file descriptor. */
+	while (g_main_context_pending (closure->main_context)) {
+		g_main_context_iteration (closure->main_context, FALSE);
+	}
+
 	g_main_context_pop_thread_default (closure->main_context);
 
 	return NULL;
@@ -1292,15 +1301,6 @@ source_registry_dispose (GObject *object)
 
 	priv = E_SOURCE_REGISTRY_GET_PRIVATE (object);
 
-	/* Terminate the manager thread first. */
-	if (priv->manager_thread != NULL) {
-		g_main_loop_quit (priv->thread_closure->main_loop);
-		g_thread_join (priv->manager_thread);
-		thread_closure_free (priv->thread_closure);
-		priv->manager_thread = NULL;
-		priv->thread_closure = NULL;
-	}
-
 	if (priv->dbus_object_manager != NULL) {
 		g_object_unref (priv->dbus_object_manager);
 		priv->dbus_object_manager = NULL;
@@ -1309,6 +1309,19 @@ source_registry_dispose (GObject *object)
 	if (priv->dbus_source_manager != NULL) {
 		g_object_unref (priv->dbus_source_manager);
 		priv->dbus_source_manager = NULL;
+	}
+
+	/* Terminate the manager thread after GDBus objects,
+	   because they can schedule GSource-s in the main context there. */
+	if (priv->manager_thread != NULL) {
+		g_main_loop_quit (priv->thread_closure->main_loop);
+		g_thread_join (priv->manager_thread);
+		priv->manager_thread = NULL;
+	}
+
+	if (priv->thread_closure) {
+		thread_closure_free (priv->thread_closure);
+		priv->thread_closure = NULL;
 	}
 
 	g_hash_table_remove_all (priv->object_path_table);
