@@ -21,6 +21,7 @@
 
 #include <glib/gi18n-lib.h>
 
+#include "camel-debug.h"
 #include "camel-folder.h"
 #include "camel-network-service.h"
 #include "camel-offline-folder.h"
@@ -50,37 +51,67 @@ enum {
 G_DEFINE_TYPE (CamelOfflineStore, camel_offline_store, CAMEL_TYPE_STORE)
 
 static void
-offline_store_downsync_folders_thread (CamelSession *session,
-				       GCancellable *cancellable,
-				       gpointer user_data,
-				       GError **error)
+offline_store_downsync_folders_sync (CamelStore *store,
+				     GCancellable *cancellable,
+				     GError **error)
 {
-	CamelStore *store = user_data;
 	GPtrArray *folders;
 	guint ii;
 
 	g_return_if_fail (CAMEL_IS_OFFLINE_STORE (store));
 
 	folders = camel_offline_store_dup_downsync_folders (CAMEL_OFFLINE_STORE (store));
+
+	if (camel_debug ("downsync"))
+		printf ("[downsync] %p (%s): got %d folders to downsync\n", store, camel_service_get_display_name (CAMEL_SERVICE (store)), folders ? folders->len : -1);
+
 	if (!folders)
 		return;
 
 	for (ii = 0; ii < folders->len && !g_cancellable_is_cancelled (cancellable); ii++) {
 		CamelFolder *folder = folders->pdata[ii];
 		CamelOfflineFolder *offline_folder;
+		GError *local_error = NULL;
 
-		if (!CAMEL_IS_OFFLINE_FOLDER (folder))
+		if (!CAMEL_IS_OFFLINE_FOLDER (folder)) {
+			if (camel_debug ("downsync"))
+				printf ("[downsync]    %p: [%d] not an offline folder\n", store, ii);
 			continue;
+		}
 
 		offline_folder = CAMEL_OFFLINE_FOLDER (folder);
 
-		if (camel_offline_folder_can_downsync (offline_folder) &&
-		    !camel_offline_folder_downsync_sync (offline_folder, NULL, cancellable, error))
+		if (!camel_offline_folder_can_downsync (offline_folder)) {
+			if (camel_debug ("downsync"))
+				printf ("[downsync]    %p: [%d] skipping folder '%s', not for downsync\n", store, ii, camel_folder_get_full_name (folder));
+			continue;
+		}
+
+		if (!camel_offline_folder_downsync_sync (offline_folder, NULL, cancellable, &local_error)) {
+			if (camel_debug ("downsync"))
+				printf ("[downsync]    %p: [%d] failed to downsync folder '%s'; cancelled:%d error: %s\n", store, ii, camel_folder_get_full_name (folder), g_cancellable_is_cancelled (cancellable), local_error ? local_error->message : "Unknown error");
+			if (local_error)
+				g_propagate_error (error, local_error);
 			break;
+		}
+
+		if (camel_debug ("downsync"))
+			printf ("[downsync]    %p: [%d] finished downsync of folder '%s'\n", store, ii, camel_folder_get_full_name (folder));
 	}
 
 	g_ptr_array_foreach (folders, (GFunc) g_object_unref, NULL);
 	g_ptr_array_free (folders, TRUE);
+}
+
+static void
+offline_store_downsync_folders_thread (CamelSession *session,
+				       GCancellable *cancellable,
+				       gpointer user_data,
+				       GError **error)
+{
+	CamelStore *store = user_data;
+
+	offline_store_downsync_folders_sync (store, cancellable, error);
 }
 
 static void
@@ -262,7 +293,10 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 		session = camel_service_ref_session (service);
 		folders = session ? camel_offline_store_dup_downsync_folders (store) : NULL;
 
-		if (folders && session) {
+		/* Schedule job only if the store is going online, otherwise, when going offline,
+		   the download could be cancelled due to the switch to the disconnect, thus
+		   synchronize immediately. */
+		if (folders && session && online) {
 			gchar *description;
 
 			description = g_strdup_printf (_("Syncing messages in account “%s” to disk"),
@@ -273,6 +307,16 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 				g_object_ref (store), g_object_unref);
 
 			g_free (description);
+		} else if (folders && session) {
+			GError *local_error = NULL;
+
+			/* Ignore errors, because the move to offline won't fail here */
+			offline_store_downsync_folders_sync (CAMEL_STORE (store), cancellable, &local_error);
+
+			if (local_error && camel_debug ("downsync"))
+				printf ("[downsync]    %p (%s): Finished with error when going offline: %s\n", store, camel_service_get_display_name (CAMEL_SERVICE (store)), local_error->message);
+
+			g_clear_error (&local_error);
 		}
 
 		g_clear_object (&session);
