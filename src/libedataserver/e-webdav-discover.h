@@ -74,6 +74,43 @@ gboolean	e_webdav_discover_sources_sync		(ESource *source,
 							 GCancellable *cancellable,
 							 GError **error);
 
+/**
+ * EWebDAVDiscoverRefSourceFunc:
+ * @user_data: user data, as passed to e_webdav_discover_sources_full() or
+ *     e_webdav_discover_sources_full_sync()
+ * @uid: an #ESource UID to return
+ *
+ * Returns: (transfer full) (nullable): an #ESource with UID @uid, or %NULL, if not found.
+ *    Dereference the returned non-NULL #ESource with g_object_unref(), when no longer needed.
+ *
+ * Since: 3.28.5
+ **/
+typedef ESource * (* EWebDAVDiscoverRefSourceFunc)	(gpointer user_data,
+							 const gchar *uid);
+
+void		e_webdav_discover_sources_full		(ESource *source,
+							 const gchar *url_use_path,
+							 guint32 only_supports,
+							 const ENamedParameters *credentials,
+							 EWebDAVDiscoverRefSourceFunc ref_source_func,
+							 gpointer ref_source_func_user_data,
+							 GCancellable *cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer user_data);
+
+gboolean	e_webdav_discover_sources_full_sync	(ESource *source,
+							 const gchar *url_use_path,
+							 guint32 only_supports,
+							 const ENamedParameters *credentials,
+							 EWebDAVDiscoverRefSourceFunc ref_source_func,
+							 gpointer ref_source_func_user_data,
+							 gchar **out_certificate_pem,
+							 GTlsCertificateFlags *out_certificate_errors,
+							 GSList **out_discovered_sources,
+							 GSList **out_calendar_user_addresses,
+							 GCancellable *cancellable,
+							 GError **error);
+
 G_END_DECLS
 
 #endif /* E_WEBDAV_DISCOVER_H */

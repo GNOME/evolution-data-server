@@ -307,6 +307,8 @@ typedef struct _EWebDAVDiscoverContext {
 	gchar *url_use_path;
 	guint32 only_supports;
 	ENamedParameters *credentials;
+	EWebDAVDiscoverRefSourceFunc ref_source_func;
+	gpointer ref_source_func_user_data;
 	gchar *out_certificate_pem;
 	GTlsCertificateFlags out_certificate_errors;
 	GSList *out_discovered_sources;
@@ -317,7 +319,9 @@ static EWebDAVDiscoverContext *
 e_webdav_discover_context_new (ESource *source,
 			       const gchar *url_use_path,
 			       guint32 only_supports,
-			       const ENamedParameters *credentials)
+			       const ENamedParameters *credentials,
+			       EWebDAVDiscoverRefSourceFunc ref_source_func,
+			       gpointer ref_source_func_user_data)
 {
 	EWebDAVDiscoverContext *context;
 
@@ -326,6 +330,8 @@ e_webdav_discover_context_new (ESource *source,
 	context->url_use_path = g_strdup (url_use_path);
 	context->only_supports = only_supports;
 	context->credentials = e_named_parameters_new_clone (credentials);
+	context->ref_source_func = ref_source_func;
+	context->ref_source_func_user_data = ref_source_func_user_data;
 	context->out_certificate_pem = NULL;
 	context->out_certificate_errors = 0;
 	context->out_discovered_sources = NULL;
@@ -393,8 +399,9 @@ e_webdav_discover_sources_thread (GTask *task,
 	g_return_if_fail (context != NULL);
 	g_return_if_fail (E_IS_SOURCE (source_object));
 
-	success = e_webdav_discover_sources_sync (E_SOURCE (source_object),
+	success = e_webdav_discover_sources_full_sync (E_SOURCE (source_object),
 		context->url_use_path, context->only_supports, context->credentials,
+		context->ref_source_func, context->ref_source_func_user_data,
 		&context->out_certificate_pem, &context->out_certificate_errors,
 		&context->out_discovered_sources, &context->out_calendar_user_addresses,
 		cancellable, &local_error);
@@ -409,6 +416,8 @@ e_webdav_discover_sources_thread (GTask *task,
 static gboolean
 e_webdav_discover_setup_proxy_resolver (EWebDAVSession *webdav,
 					ESource *cred_source,
+					EWebDAVDiscoverRefSourceFunc ref_source_func,
+					gpointer ref_source_func_user_data,
 					GCancellable *cancellable,
 					GError **error)
 {
@@ -428,14 +437,18 @@ e_webdav_discover_setup_proxy_resolver (EWebDAVSession *webdav,
 	uid = e_source_authentication_dup_proxy_uid (auth_extension);
 
 	if (uid != NULL) {
-		ESourceRegistry * registry;
-
-		registry = e_source_registry_new_sync (cancellable, error);
-		if (!registry) {
-			success = FALSE;
+		if (ref_source_func) {
+			source = ref_source_func (ref_source_func_user_data, uid);
 		} else {
-			source = e_source_registry_ref_source (registry, uid);
-			g_object_unref (registry);
+			ESourceRegistry *registry;
+
+			registry = e_source_registry_new_sync (cancellable, error);
+			if (!registry) {
+				success = FALSE;
+			} else {
+				source = e_source_registry_ref_source (registry, uid);
+				g_object_unref (registry);
+			}
 		}
 
 		g_free (uid);
@@ -486,12 +499,51 @@ e_webdav_discover_sources (ESource *source,
 			   GAsyncReadyCallback callback,
 			   gpointer user_data)
 {
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	e_webdav_discover_sources_full (source, url_use_path, only_supports, credentials, NULL, NULL, cancellable, callback, user_data);
+}
+
+/**
+ * e_webdav_discover_sources_full:
+ * @source: an #ESource from which to take connection details
+ * @url_use_path: (nullable): optional URL override, or %NULL
+ * @only_supports: bit-or of EWebDAVDiscoverSupports, to limit what type of sources to search
+ * @credentials: (nullable): credentials to use for authentication to the server
+ * @ref_source_func: (nullable): optional callback to use to get an ESource
+ * @ref_source_func_user_data: (nullable): user data for @ref_source_func
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the request
+ *            is satisfied
+ * @user_data: (closure): data to pass to the callback function
+ *
+ * This is the same as e_webdav_discover_sources(), it only allows to
+ * provide a callback function (with its user_data), to reference an additional
+ * #ESource. It's good to avoid creating its own #ESourceRegistry instance to
+ * get it.
+ *
+ * When the operation is finished, @callback will be called. You can then
+ * call e_webdav_discover_sources_finish() to get the result of the operation.
+ *
+ * Since: 3.28.5
+ **/
+void
+e_webdav_discover_sources_full (ESource *source,
+				const gchar *url_use_path,
+				guint32 only_supports,
+				const ENamedParameters *credentials,
+				EWebDAVDiscoverRefSourceFunc ref_source_func,
+				gpointer ref_source_func_user_data,
+				GCancellable *cancellable,
+				GAsyncReadyCallback callback,
+				gpointer user_data)
+{
 	EWebDAVDiscoverContext *context;
 	GTask *task;
 
 	g_return_if_fail (E_IS_SOURCE (source));
 
-	context = e_webdav_discover_context_new (source, url_use_path, only_supports, credentials);
+	context = e_webdav_discover_context_new (source, url_use_path, only_supports, credentials, ref_source_func, ref_source_func_user_data);
 
 	task = g_task_new (source, cancellable, callback, user_data);
 	g_task_set_source_tag (task, e_webdav_discover_sources);
@@ -650,6 +702,55 @@ e_webdav_discover_sources_sync (ESource *source,
 				GCancellable *cancellable,
 				GError **error)
 {
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	return e_webdav_discover_sources_full_sync (source, url_use_path, only_supports, credentials, NULL, NULL,
+		out_certificate_pem, out_certificate_errors, out_discovered_sources, out_calendar_user_addresses, cancellable, error);
+}
+
+/**
+ * e_webdav_discover_sources_full_sync:
+ * @source: an #ESource from which to take connection details
+ * @url_use_path: (nullable): optional URL override, or %NULL
+ * @only_supports: bit-or of EWebDAVDiscoverSupports, to limit what type of sources to search
+ * @credentials: (nullable): credentials to use for authentication to the server
+ * @ref_source_func: (nullable): optional callback to use to get an ESource
+ * @ref_source_func_user_data: (nullable): user data for @ref_source_func
+ * @out_certificate_pem: (out) (nullable): optional return location
+ *   for a server SSL certificate in PEM format, when the operation failed
+ *   with an SSL error
+ * @out_certificate_errors: (out) (nullable): optional #GTlsCertificateFlags,
+ *   with certificate error flags when the operation failed with SSL error
+ * @out_discovered_sources: (out) (element-type EWebDAVDiscoveredSource): a #GSList
+ *   of all discovered sources
+ * @out_calendar_user_addresses: (out) (nullable) (element-type utf8): a #GSList of
+ *   all discovered mail addresses for calendar sources
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * This is the same as e_webdav_discover_sources_sync(), it only allows to
+ * provide a callback function (with its user_data), to reference an additional
+ * #ESource. It's good to avoid creating its own #ESourceRegistry instance to
+ * get it.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.28.5
+ **/
+gboolean
+e_webdav_discover_sources_full_sync (ESource *source,
+				     const gchar *url_use_path,
+				     guint32 only_supports,
+				     const ENamedParameters *credentials,
+				     EWebDAVDiscoverRefSourceFunc ref_source_func,
+				     gpointer ref_source_func_user_data,
+				     gchar **out_certificate_pem,
+				     GTlsCertificateFlags *out_certificate_errors,
+				     GSList **out_discovered_sources,
+				     GSList **out_calendar_user_addresses,
+				     GCancellable *cancellable,
+				     GError **error)
+{
 	ESourceWebdav *webdav_extension;
 	EWebDAVSession *webdav;
 	SoupURI *soup_uri;
@@ -696,7 +797,7 @@ e_webdav_discover_sources_sync (ESource *source,
 
 	webdav = e_webdav_session_new (source);
 
-	if (!e_webdav_discover_setup_proxy_resolver (webdav, source, cancellable, error)) {
+	if (!e_webdav_discover_setup_proxy_resolver (webdav, source, ref_source_func, ref_source_func_user_data, cancellable, error)) {
 		soup_uri_free (soup_uri);
 		g_object_unref (webdav);
 

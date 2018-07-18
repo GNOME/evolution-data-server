@@ -452,6 +452,7 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 					   GError **error)
 {
 	ECollectionBackend *collection;
+	ESourceRegistryServer *server;
 	ESourceCollection *collection_extension;
 	ESource *source;
 	ESourceAuthenticationResult result;
@@ -488,11 +489,13 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 	g_list_foreach (sources, webdav_collection_add_uid_to_hashtable, known_sources);
 	g_list_free_full (sources, g_object_unref);
 
+	server = e_collection_backend_ref_server (collection);
+
 	if (e_source_collection_get_calendar_enabled (collection_extension) && calendar_url &&
-	    e_webdav_discover_sources_sync (source, calendar_url,
+	    e_webdav_discover_sources_full_sync (source, calendar_url,
 		E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS,
-		credentials, out_certificate_pem, out_certificate_errors,
-		&discovered_sources, NULL, cancellable, &local_error)) {
+		credentials, (EWebDAVDiscoverRefSourceFunc) e_source_registry_server_ref_source, server,
+		out_certificate_pem, out_certificate_errors, &discovered_sources, NULL, cancellable, &local_error)) {
 		EWebDAVDiscoverSupports source_types[] = {
 			E_WEBDAV_DISCOVER_SUPPORTS_EVENTS,
 			E_WEBDAV_DISCOVER_SUPPORTS_MEMOS,
@@ -507,9 +510,9 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 	}
 
 	if (!local_error && e_source_collection_get_contacts_enabled (collection_extension) && contacts_url &&
-	    e_webdav_discover_sources_sync (source, contacts_url, E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS,
-		credentials, out_certificate_pem, out_certificate_errors,
-		&discovered_sources, NULL, cancellable, &local_error)) {
+	    e_webdav_discover_sources_full_sync (source, contacts_url, E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS,
+		credentials, (EWebDAVDiscoverRefSourceFunc) e_source_registry_server_ref_source, server,
+		out_certificate_pem, out_certificate_errors, &discovered_sources, NULL, cancellable, &local_error)) {
 		EWebDAVDiscoverSupports source_types[] = {
 			E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS
 		};
@@ -521,23 +524,18 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 		any_success = TRUE;
 	}
 
-	if (any_success) {
-		ESourceRegistryServer *server;
+	if (any_success && server) {
+		RemoveSourcesData rsd;
 
-		server = e_collection_backend_ref_server (collection);
+		rsd.server = server;
+		rsd.webdav_backend = webdav_backend;
 
-		if (server) {
-			RemoveSourcesData rsd;
-
-			rsd.server = server;
-			rsd.webdav_backend = webdav_backend;
-
-			g_hash_table_foreach (known_sources, webdav_collection_remove_unknown_sources_cb, &rsd);
-			g_object_unref (server);
-		}
+		g_hash_table_foreach (known_sources, webdav_collection_remove_unknown_sources_cb, &rsd);
 
 		g_clear_error (&local_error);
 	}
+
+	g_clear_object (&server);
 
 	if (local_error == NULL) {
 		result = E_SOURCE_AUTHENTICATION_ACCEPTED;

@@ -580,6 +580,7 @@ typedef struct _RefreshData {
 	GSimpleAsyncResult *simple;
 	gchar *base_url;
 	ENamedParameters *credentials;
+	ESourceRegistry *registry;
 } RefreshData;
 
 static void
@@ -608,6 +609,7 @@ refresh_data_free (gpointer ptr)
 		g_clear_object (&rd->content);
 		g_clear_object (&rd->cancellable);
 		g_clear_object (&rd->simple);
+		g_clear_object (&rd->registry);
 		g_free (rd->base_url);
 		e_named_parameters_free (rd->credentials);
 		g_free (rd);
@@ -640,8 +642,9 @@ e_webdav_discover_content_trust_prompt_done_cb (GObject *source_object,
 		refresh_data_free (rd);
 	} else if (response == E_TRUST_PROMPT_RESPONSE_ACCEPT || response == E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY) {
 		/* Use NULL credentials to reuse those from the last time. */
-		e_webdav_discover_sources (source, rd->base_url, E_WEBDAV_DISCOVER_SUPPORTS_NONE, rd->credentials, rd->cancellable,
-			e_webdav_discover_content_refresh_done_cb, rd);
+		e_webdav_discover_sources_full (source, rd->base_url, E_WEBDAV_DISCOVER_SUPPORTS_NONE, rd->credentials,
+			rd->registry ? (EWebDAVDiscoverRefSourceFunc) e_source_registry_ref_source : NULL, rd->registry,
+			rd->cancellable, e_webdav_discover_content_refresh_done_cb, rd);
 	} else {
 		g_cancellable_cancel (rd->cancellable);
 		g_warn_if_fail (g_cancellable_set_error_if_cancelled (rd->cancellable, &local_error));
@@ -678,8 +681,9 @@ e_webdav_discover_content_credentials_prompt_done_cb (GObject *source_object,
 		rd->credentials = credentials;
 		credentials = NULL;
 
-		e_webdav_discover_sources (source, rd->base_url, E_WEBDAV_DISCOVER_SUPPORTS_NONE, rd->credentials, rd->cancellable,
-			e_webdav_discover_content_refresh_done_cb, rd);
+		e_webdav_discover_sources_full (source, rd->base_url, E_WEBDAV_DISCOVER_SUPPORTS_NONE, rd->credentials,
+			rd->registry ? (EWebDAVDiscoverRefSourceFunc) e_source_registry_ref_source : NULL, rd->registry,
+			rd->cancellable, e_webdav_discover_content_refresh_done_cb, rd);
 	}
 
 	e_named_parameters_free (credentials);
@@ -850,6 +854,10 @@ e_webdav_discover_content_refresh (GtkWidget *content,
 	rd->simple = g_simple_async_result_new (G_OBJECT (content), callback, user_data, e_webdav_discover_content_refresh);
 	rd->base_url = g_strdup (data->base_url);
 	rd->credentials = NULL;
+	rd->registry = e_credentials_prompter_get_registry (data->credentials_prompter);
+
+	if (rd->registry)
+		g_object_ref (rd->registry);
 
 	if (data->source) {
 		source = g_object_ref (data->source);
@@ -894,8 +902,9 @@ e_webdav_discover_content_refresh (GtkWidget *content,
 
 	gtk_grid_attach (GTK_GRID (content), GTK_WIDGET (data->info_bar), 0, 2, 1, 1);
 
-	e_webdav_discover_sources (source, rd->base_url, E_WEBDAV_DISCOVER_SUPPORTS_NONE, rd->credentials, rd->cancellable,
-		e_webdav_discover_content_refresh_done_cb, rd);
+	e_webdav_discover_sources_full (source, rd->base_url, E_WEBDAV_DISCOVER_SUPPORTS_NONE, rd->credentials,
+		rd->registry ? (EWebDAVDiscoverRefSourceFunc) e_source_registry_ref_source : NULL, rd->registry,
+		rd->cancellable, e_webdav_discover_content_refresh_done_cb, rd);
 
 	g_object_unref (source);
 	soup_uri_free (soup_uri);
