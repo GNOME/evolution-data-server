@@ -446,11 +446,29 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 
 		uids = camel_folder_search_by_expression (folder, search_sexp, cancellable, NULL);
 
+		if (camel_debug ("downsync")) {
+			printf ("[downsync]       %p: (%s : %s): got %d uids for limit expr '%s'\n", camel_folder_get_parent_store (folder),
+				camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))), camel_folder_get_full_name (folder),
+				uids ? uids->len : -1, search_sexp);
+		}
+
 		g_free (search_sexp);
 	} else if (expression) {
 		uids = camel_folder_search_by_expression (folder, expression, cancellable, NULL);
+
+		if (camel_debug ("downsync")) {
+			printf ("[downsync]       %p: (%s : %s): got %d uids for expr '%s'\n", camel_folder_get_parent_store (folder),
+				camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))), camel_folder_get_full_name (folder),
+				uids ? uids->len : -1, expression);
+		}
 	} else {
 		uids = camel_folder_get_uids (folder);
+
+		if (camel_debug ("downsync")) {
+			printf ("[downsync]       %p: (%s : %s): got all %d uids\n", camel_folder_get_parent_store (folder),
+				camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))), camel_folder_get_full_name (folder),
+				uids ? uids->len : -1);
+		}
 	}
 
 	if (!uids)
@@ -463,6 +481,12 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 	else
 		camel_folder_free_uids (folder, uids);
 
+	if (camel_debug ("downsync")) {
+		printf ("[downsync]       %p: (%s : %s): claimed %d uncached uids\n", camel_folder_get_parent_store (folder),
+			camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))), camel_folder_get_full_name (folder),
+			uncached_uids ? uncached_uids->len : -1);
+	}
+
 	if (!uncached_uids)
 		goto done;
 
@@ -474,8 +498,14 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 			CamelMessageInfo *mi;
 
 			mi = camel_folder_get_message_info (folder, uid);
-			if (!mi)
+			if (!mi) {
+				if (camel_debug ("downsync")) {
+					printf ("[downsync]          %p: (%s : %s): mi for uid '%s' not found, skipping\n", camel_folder_get_parent_store (folder),
+						camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))), camel_folder_get_full_name (folder),
+						uid);
+				}
 				continue;
+			}
 
 			download = camel_message_info_get_date_sent (mi) > limit_time;
 
@@ -483,6 +513,7 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 		}
 
 		if (download) {
+			GError *local_error = NULL;
 			/* Translators: The first “%d” is the sequence number of the message, the second “%d”
 			   is the total number of messages to synchronize.
 			   The first “%s” is replaced with an account name and the second “%s”
@@ -494,12 +525,26 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 				camel_folder_get_full_name (folder));
 
 			/* Stop on failure */
-			if (!camel_folder_synchronize_message_sync (folder, uid, cancellable, NULL)) {
+			if (!camel_folder_synchronize_message_sync (folder, uid, cancellable, &local_error)) {
+				if (camel_debug ("downsync")) {
+					printf ("[downsync]          %p: (%s : %s): aborting, failed to download uid:%s error:%s\n", camel_folder_get_parent_store (folder),
+						camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))), camel_folder_get_full_name (folder),
+						uid, local_error ? local_error->message : "Unknown error");
+				}
+				g_clear_error (&local_error);
 				camel_operation_pop_message (cancellable);
 				break;
+			} else if (camel_debug ("downsync")) {
+				printf ("[downsync]          %p: (%s : %s): uid '%s' downloaded\n", camel_folder_get_parent_store (folder),
+					camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))), camel_folder_get_full_name (folder),
+					uid);
 			}
 
 			camel_operation_pop_message (cancellable);
+		} else if (camel_debug ("downsync")) {
+			printf ("[downsync]       %p: (%s : %s): skipping download of uid '%s'\n", camel_folder_get_parent_store (folder),
+				camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))), camel_folder_get_full_name (folder),
+				uid);
 		}
 
 		camel_operation_progress (cancellable, i * 100 / uncached_uids->len);
