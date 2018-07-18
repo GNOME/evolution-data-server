@@ -147,6 +147,8 @@ void		camel_pointer_tracker_untrack	(gpointer ptr);
 void		camel_pointer_tracker_dump	(void);
 
 GString *	camel_debug_get_backtrace	(void);
+GString *	camel_debug_get_raw_backtrace	(void);
+void		camel_debug_demangle_backtrace	(GString *bt);
 
 void		camel_debug_ref_unref_push_backtrace
 						(const GString *backtrace,

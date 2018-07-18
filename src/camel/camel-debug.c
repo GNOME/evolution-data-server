@@ -284,6 +284,8 @@ free_pt_data (gpointer ptr)
 	g_free (ptd);
 }
 
+static void demangle_bt (GString *bt);
+
 static void
 dump_left_ptrs_cb (gpointer key,
                    gpointer value,
@@ -294,7 +296,11 @@ dump_left_ptrs_cb (gpointer key,
 	gboolean have_info = ptd && ptd->info;
 	gboolean have_bt = ptd && ptd->backtrace && ptd->backtrace->str && *ptd->backtrace->str;
 
+	if (have_bt)
+		demangle_bt (ptd->backtrace);
+
 	*left = (*left) - 1;
+
 	g_print ("      %p %s%s%s%s%s%s\n", key, have_info ? "(" : "", have_info ? ptd->info : "", have_info ? ")" : "", have_bt ? "\n" : "", have_bt ? ptd->backtrace->str : "", have_bt && *left > 0 ? "\n" : "");
 }
 
@@ -336,6 +342,9 @@ dump_by_backtrace_cb (gpointer key,
 	} else {
 		gboolean have_info = ptd && ptd->info;
 		gboolean have_bt = ptd && ptd->backtrace && ptd->backtrace->str && *ptd->backtrace->str;
+
+		if (have_bt)
+			demangle_bt (ptd->backtrace);
 
 		*left = (*left) - 1;
 
@@ -519,6 +528,81 @@ addr_lookup (gpointer addr,
 
 #endif /* HAVE_BACKTRACE_SYMBOLS */
 
+static void
+demangle_bt (GString *bt)
+{
+#ifdef HAVE_BACKTRACE_SYMBOLS
+	gchar **btparts;
+	gint ii;
+	gboolean any_changed = FALSE;
+
+	if (!bt || !bt->len)
+		return;
+
+	btparts = g_strsplit (bt->str, "\n", -1);
+	if (!btparts)
+		return;
+
+	g_string_truncate (bt, 0);
+
+	for (ii = 0; btparts[ii]; ii++) {
+		gint lineno = -1;
+		const gchar *file_path = NULL;
+		const gchar *str, *bt_sym;
+		gpointer btptr = NULL;
+
+		if (!g_str_has_prefix (btparts[ii], "0x") ||
+		    !strchr (btparts[ii], '\t') ||
+		    sscanf (btparts[ii], "%p\t", &btptr) != 1) {
+			btptr = NULL;
+		}
+
+		if (btptr) {
+			bt_sym = strchr (btparts[ii], '\t');
+			if (bt_sym)
+				bt_sym++;
+		} else {
+			bt_sym = NULL;
+		}
+
+		if (!bt_sym || !*bt_sym) {
+			if (bt->len)
+				g_string_append_c (bt, '\n');
+			g_string_append (bt, btparts[ii]);
+			continue;
+		}
+
+		str = addr_lookup (btptr, &file_path, &lineno, bt_sym);
+
+		if (!str) {
+			str = btparts[ii];
+			file_path = NULL;
+			lineno = -1;
+		}
+
+		if (!str)
+			continue;
+
+		any_changed = TRUE;
+		if (bt->len)
+			g_string_append (bt, "\n\t   by ");
+		g_string_append (bt, str);
+		if (str != btparts[ii])
+			g_string_append (bt, "()");
+
+		if (file_path && lineno > 0) {
+			const gchar *lastsep = strrchr (file_path, G_DIR_SEPARATOR);
+			g_string_append_printf (bt, " at %s:%d", lastsep ? lastsep + 1 : file_path, lineno);
+		}
+	}
+
+	g_strfreev (btparts);
+
+	if (bt->len != 0 && any_changed)
+		g_string_insert (bt, 0, "\t   at ");
+#endif /* HAVE_BACKTRACE_SYMBOLS */
+}
+
 static GString *
 get_current_backtrace (void)
 {
@@ -539,27 +623,9 @@ get_current_backtrace (void)
 
 	bt_str = g_string_new ("");
 	for (ii = 2; ii < nptrs; ii++) {
-		gint lineno = -1;
-		const gchar *file_path = NULL;
-		const gchar *str = addr_lookup (bt[ii], &file_path, &lineno, bt_syms[ii]);
-		if (!str) {
-			str = bt_syms[ii];
-			file_path = NULL;
-			lineno = -1;
-		}
-		if (!str)
-			continue;
-
 		if (bt_str->len)
-			g_string_append (bt_str, "\n\t   by ");
-		g_string_append (bt_str, str);
-		if (str != bt_syms[ii])
-			g_string_append (bt_str, "()");
-
-		if (file_path && lineno > 0) {
-			const gchar *lastsep = strrchr (file_path, G_DIR_SEPARATOR);
-			g_string_append_printf (bt_str, " at %s:%d", lastsep ? lastsep + 1 : file_path, lineno);
-		}
+			g_string_append (bt_str, "\n");
+		g_string_append_printf (bt_str, "%p\t%s", bt[ii], bt_syms[ii]);
 	}
 
 	g_free (bt_syms);
@@ -567,8 +633,6 @@ get_current_backtrace (void)
 	if (bt_str->len == 0) {
 		g_string_free (bt_str, TRUE);
 		bt_str = NULL;
-	} else {
-		g_string_insert (bt_str, 0, "\t   at ");
 	}
 
 	return bt_str;
@@ -681,19 +745,76 @@ camel_pointer_tracker_dump (void)
 /**
  * camel_debug_get_backtrace:
  *
- * Gets current backtrace leading to this function call.
+ * Gets current backtrace leading to this function call and demangles it.
  *
  * Returns: Current backtrace, or %NULL, if cannot determine it.
  *
  * Note: Getting backtraces only works if the library was
  * configured with --enable-backtraces.
  *
+ * See also camel_debug_get_raw_backtrace()
+ *
  * Since: 3.12
  **/
 GString *
 camel_debug_get_backtrace (void)
 {
+	GString *bt;
+
+	bt = get_current_backtrace ();
+
+	if (!bt)
+		return NULL;
+
+	demangle_bt (bt);
+
+	return bt;
+}
+
+/**
+ * camel_debug_get_raw_backtrace:
+ *
+ * Gets current raw backtrace leading to this function call.
+ * This is quicker than camel_debug_get_backtrace(), because it
+ * doesn't demangle the backtrace. To demangle it (replace addresses
+ * with actual function calls and eventually line numbers, if
+ * available) call camel_debug_demangle_backtrace().
+ *
+ * Returns: Current raw backtrace, or %NULL, if cannot determine it.
+ *
+ * Note: Getting backtraces only works if the library was
+ * configured with --enable-backtraces.
+ *
+ * See also camel_debug_get_backtrace()
+ *
+ * Since: 3.30
+ **/
+GString *
+camel_debug_get_raw_backtrace (void)
+{
 	return get_current_backtrace ();
+}
+
+/**
+ * camel_debug_demangle_backtrace:
+ * @bt: (inout) (nullable): a #GString with a raw backtrace, or %NULL
+ *
+ * Demangles @bt, possibly got from camel_debug_get_raw_backtrace(), by
+ * replacing addresses with actual function calls and eventually line numbers, if
+ * available. It modifies lines of @bt, but skips those it cannot parse.
+ *
+ * Note: Getting backtraces only works if the library was
+ * configured with --enable-backtraces.
+ *
+ * See also camel_debug_get_raw_backtrace()
+ *
+ * Since: 3.30
+ **/
+void
+camel_debug_demangle_backtrace (GString *bt)
+{
+	if (bt)
+		demangle_bt (bt);
 }
 
 G_LOCK_DEFINE_STATIC (ref_unref_backtraces);
