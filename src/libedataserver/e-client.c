@@ -945,7 +945,7 @@ e_client_init (EClient *client)
 {
 	client->priv = E_CLIENT_GET_PRIVATE (client);
 
-	client->priv->readonly = TRUE;
+	client->priv->readonly = FALSE;
 	client->priv->main_context = g_main_context_ref_thread_default ();
 
 	g_rec_mutex_init (&client->priv->prop_mutex);
