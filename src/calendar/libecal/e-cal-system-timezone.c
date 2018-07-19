@@ -35,6 +35,7 @@
 #define ETC_SYSCONFIG_CLOCK "/etc/sysconfig/clock"
 #define ETC_CONF_D_CLOCK    "/etc/conf.d/clock"
 #define ETC_LOCALTIME       "/etc/localtime"
+#define VAR_DB_ZONEINFO     "/var/db/zoneinfo"
 
 #define TZ_MAGIC "TZif"
 
@@ -66,7 +67,7 @@ system_timezone_strip_path_if_valid (const gchar *filename)
 
 /* Read the soft symlink from /etc/localtime */
 static gchar *
-system_timezone_read_etc_localtime_softlink (GHashTable *ical_zones)
+system_timezone_read_etc_localtime_softlink (void)
 {
 	gchar *file;
 	gchar *tz;
@@ -77,6 +78,24 @@ system_timezone_read_etc_localtime_softlink (GHashTable *ical_zones)
 	file = g_file_read_link (ETC_LOCALTIME, NULL);
 	tz = system_timezone_strip_path_if_valid (file);
 	g_free (file);
+
+	return tz;
+}
+
+/* Read from /var/db/zoneinfo, where tzsetup utility on FreeBSD stores the zone name */
+static gchar *
+system_timezone_read_var_db_zoneinfo (void)
+{
+	gchar *tz = NULL;
+
+	if (!g_file_get_contents (VAR_DB_ZONEINFO, &tz, NULL, NULL))
+		return NULL;
+
+	if (tz)
+		g_strchomp (tz);
+
+	if (!tz || !*tz)
+		g_clear_pointer (&tz, g_free);
 
 	return tz;
 }
@@ -546,7 +565,9 @@ system_timezone_find (void)
 	}
 
 	/* softlink is the best option, it points to the correct file */
-	tz = system_timezone_read_etc_localtime_softlink (ical_zones);
+	tz = system_timezone_read_etc_localtime_softlink ();
+	if (!tz)
+		tz = system_timezone_read_var_db_zoneinfo ();
 	if (system_timezone_is_valid (tz, ical_zones)) {
 		g_hash_table_destroy (ical_zones);
 		return tz;
