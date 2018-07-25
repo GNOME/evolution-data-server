@@ -208,10 +208,12 @@ offline_folder_schedule_store_changes_job (gpointer user_data)
 	g_mutex_lock (&offline_folder->priv->store_changes_lock);
 	if (offline_folder->priv->store_changes_id == g_source_get_id (source)) {
 		CamelSession *session;
+		CamelStore *parent_store;
 
 		offline_folder->priv->store_changes_id = 0;
 
-		session = camel_service_ref_session (CAMEL_SERVICE (camel_folder_get_parent_store (CAMEL_FOLDER (offline_folder))));
+		parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (offline_folder));
+		session = parent_store ? camel_service_ref_session (CAMEL_SERVICE (parent_store)) : NULL;
 		if (session) {
 			gchar *description;
 
@@ -219,7 +221,7 @@ offline_folder_schedule_store_changes_job (gpointer user_data)
 			   is replaced with a full path name. The spaces around “:” are intentional, as
 			   the whole “%s : %s” is meant as an absolute identification of the folder. */
 			description = g_strdup_printf (_("Storing changes in folder “%s : %s”"),
-				camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (CAMEL_FOLDER (offline_folder)))),
+				camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
 				camel_folder_get_full_name (CAMEL_FOLDER (offline_folder)));
 
 			camel_session_submit_job (session, description,
@@ -259,7 +261,7 @@ offline_folder_maybe_schedule_folder_change_store (CamelOfflineFolder *offline_f
 	}
 
 	store = camel_folder_get_parent_store (CAMEL_FOLDER (offline_folder));
-	session = camel_service_ref_session (CAMEL_SERVICE (store));
+	session = store ? camel_service_ref_session (CAMEL_SERVICE (store)) : NULL;
 
 	if (session && camel_session_get_online (session) && CAMEL_IS_OFFLINE_STORE (store) &&
 	    camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store))) {
@@ -291,6 +293,9 @@ offline_folder_changed (CamelFolder *folder,
 	CamelSession *session;
 
 	store = camel_folder_get_parent_store (folder);
+	if (!store)
+		return;
+
 	session = camel_service_ref_session (CAMEL_SERVICE (store));
 
 	if (!session)
@@ -309,7 +314,7 @@ offline_folder_changed (CamelFolder *folder,
 		   is replaced with a full path name. The spaces around “:” are intentional, as
 		   the whole “%s : %s” is meant as an absolute identification of the folder. */
 		description = g_strdup_printf (_("Checking download of new messages for offline in “%s : %s”"),
-			camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
+			camel_service_get_display_name (CAMEL_SERVICE (store)),
 			camel_folder_get_full_name (folder));
 
 		camel_session_submit_job (
@@ -659,12 +664,17 @@ camel_offline_folder_can_downsync (CamelOfflineFolder *folder)
 {
 	CamelService *service;
 	CamelSettings *settings;
+	CamelStore *parent_store;
 	CamelThreeState sync_folder;
 	gboolean sync_store;
 
 	g_return_val_if_fail (CAMEL_IS_OFFLINE_FOLDER (folder), FALSE);
 
-	service = CAMEL_SERVICE (camel_folder_get_parent_store (CAMEL_FOLDER (folder)));
+	parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (folder));
+	if (!parent_store)
+		return FALSE;
+
+	service = CAMEL_SERVICE (parent_store);
 	settings = camel_service_ref_settings (service);
 
 	sync_store = camel_offline_settings_get_stay_synchronized (CAMEL_OFFLINE_SETTINGS (settings));
