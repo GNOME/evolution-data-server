@@ -23,8 +23,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-02-28 21:13+0000\n"
-"PO-Revision-Date: 2018-03-01 12:59+0100\n"
+"POT-Creation-Date: 2018-07-18 17:33+0000\n"
+"PO-Revision-Date: 2018-04-07 14:48+0200\n"
 "Last-Translator: Guillaume Bernard <associations@guillaume-bernard.fr>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "Language: fr\n"
@@ -6608,6 +6608,10 @@ msgstr "Sur des serveurs LDAP"
 #: ../src/services/evolution-source-registry/builtin/local-stub.source.in.h:1
 msgid "On This Computer"
 msgstr "Sur cet ordinateur"
+
+#: ../src/services/evolution-source-registry/builtin/system-proxy.source.in.h:1
+msgid "Default Proxy Settings"
+msgstr "Paramètres du serveur mandataire par défaut"
 
 #: ../src/services/evolution-source-registry/builtin/vfolder.source.in.h:1
 msgid "Search Folders"
