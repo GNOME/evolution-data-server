@@ -834,11 +834,12 @@ camel_mime_message_get_source (CamelMimeMessage *mime_message)
 	return src;
 }
 
-typedef gboolean (*CamelPartFunc)(CamelMimeMessage *, CamelMimePart *, gpointer data);
+typedef gboolean (*CamelPartFunc)(CamelMimeMessage *message, CamelMimePart *part, CamelMimePart *parent_part, gpointer data);
 
 static gboolean
 message_foreach_part_rec (CamelMimeMessage *msg,
                           CamelMimePart *part,
+			  CamelMimePart *parent_part,
                           CamelPartFunc callback,
                           gpointer data)
 {
@@ -846,7 +847,7 @@ message_foreach_part_rec (CamelMimeMessage *msg,
 	gint parts, i;
 	gint go = TRUE;
 
-	if (callback (msg, part, data) == FALSE)
+	if (callback (msg, part, parent_part, data) == FALSE)
 		return FALSE;
 
 	containee = camel_medium_get_content (CAMEL_MEDIUM (part));
@@ -860,10 +861,10 @@ message_foreach_part_rec (CamelMimeMessage *msg,
 		for (i = 0; go && i < parts; i++) {
 			CamelMimePart *mpart = camel_multipart_get_part (CAMEL_MULTIPART (containee), i);
 
-			go = message_foreach_part_rec (msg, mpart, callback, data);
+			go = message_foreach_part_rec (msg, mpart, part, callback, data);
 		}
 	} else if (CAMEL_IS_MIME_MESSAGE (containee)) {
-		go = message_foreach_part_rec (msg, (CamelMimePart *) containee, callback, data);
+		go = message_foreach_part_rec (msg, (CamelMimePart *) containee, part, callback, data);
 	}
 
 	return go;
@@ -876,12 +877,13 @@ camel_mime_message_foreach_part (CamelMimeMessage *msg,
                                  CamelPartFunc callback,
                                  gpointer data)
 {
-	message_foreach_part_rec (msg, (CamelMimePart *) msg, callback, data);
+	message_foreach_part_rec (msg, (CamelMimePart *) msg, NULL, callback, data);
 }
 
 static gboolean
 check_8bit (CamelMimeMessage *msg,
             CamelMimePart *part,
+            CamelMimePart *parent_part,
             gpointer data)
 {
 	CamelTransferEncoding encoding;
@@ -1065,6 +1067,7 @@ struct _enc_data {
 static gboolean
 best_encoding (CamelMimeMessage *msg,
                CamelMimePart *part,
+               CamelMimePart *parent_part,
                gpointer datap)
 {
 	struct _enc_data *data = datap;
@@ -1161,6 +1164,7 @@ struct _check_content_id {
 static gboolean
 check_content_id (CamelMimeMessage *message,
                   CamelMimePart *part,
+                  CamelMimePart *parent_part,
                   gpointer data)
 {
 	struct _check_content_id *check = (struct _check_content_id *) data;
@@ -1286,10 +1290,11 @@ camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 static gboolean
 find_attachment (CamelMimeMessage *msg,
                  CamelMimePart *part,
+                 CamelMimePart *parent_part,
                  gpointer data)
 {
 	const CamelContentDisposition *cd;
-	CamelContentType *ct;
+	CamelContentType *ct, *parent_ct = NULL;
 	gboolean *found = (gboolean *) data;
 
 	g_return_val_if_fail (part != NULL, FALSE);
@@ -1300,7 +1305,10 @@ find_attachment (CamelMimeMessage *msg,
 	ct = camel_mime_part_get_content_type (part);
 	cd = camel_mime_part_get_content_disposition (part);
 
-	*found = camel_content_disposition_is_attachment (cd, ct);
+	if (parent_part)
+		parent_ct = camel_mime_part_get_content_type (parent_part);
+
+	*found = camel_content_disposition_is_attachment_ex (cd, ct, parent_ct);
 
 	return !(*found);
 }

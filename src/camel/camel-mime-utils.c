@@ -3871,19 +3871,40 @@ gboolean
 camel_content_disposition_is_attachment (const CamelContentDisposition *disposition,
 					 const CamelContentType *content_type)
 {
-	if (!disposition)
-		return FALSE;
+	return camel_content_disposition_is_attachment_ex (disposition, content_type, NULL);
+}
 
+gboolean
+camel_content_disposition_is_attachment_ex (const CamelContentDisposition *disposition,
+					    const CamelContentType *content_type,
+					    const CamelContentType *parent_content_type)
+{
 	if (content_type && (
 	    camel_content_type_is (content_type, "application", "xpkcs7mime") ||
 	    camel_content_type_is (content_type, "application", "x-pkcs7-mime") ||
-	    camel_content_type_is (content_type, "application", "pkcs7-mime") ||
+	    camel_content_type_is (content_type, "application", "pkcs7-mime")))
+		return FALSE;
+
+	if (content_type && (
+	    camel_content_type_is (content_type, "application", "pgp-encrypted")))
+		return !parent_content_type || !camel_content_type_is (parent_content_type, "multipart", "encrypted");
+
+	if (content_type && camel_content_type_is (content_type, "application", "octet-stream") &&
+	    parent_content_type && camel_content_type_is (parent_content_type, "multipart", "encrypted"))
+		return FALSE;
+
+	if (content_type && (
 	    camel_content_type_is (content_type, "application", "pkcs7-signature") ||
 	    camel_content_type_is (content_type, "application", "xpkcs7-signature") ||
 	    camel_content_type_is (content_type, "application", "x-pkcs7-signature") ||
 	    camel_content_type_is (content_type, "application", "pkcs7-signature") ||
-	    camel_content_type_is (content_type, "application", "pgp-signature") ||
-	    camel_content_type_is (content_type, "application", "pgp-encrypted")))
+	    camel_content_type_is (content_type, "application", "pgp-signature")))
+		return !parent_content_type || !camel_content_type_is (parent_content_type, "multipart", "signed");
+
+	if (parent_content_type && content_type && camel_content_type_is (content_type, "message", "rfc822"))
+		return TRUE;
+
+	if (!disposition)
 		return FALSE;
 
 	if (disposition->disposition && g_ascii_strcasecmp (disposition->disposition, "attachment") == 0)

@@ -144,6 +144,7 @@ CamelContentDisposition *camel_content_disposition_ref (CamelContentDisposition 
 void camel_content_disposition_unref (CamelContentDisposition *disposition);
 gchar *camel_content_disposition_format (CamelContentDisposition *disposition);
 gboolean camel_content_disposition_is_attachment (const CamelContentDisposition *disposition, const CamelContentType *content_type);
+gboolean camel_content_disposition_is_attachment_ex (const CamelContentDisposition *disposition, const CamelContentType *content_type, const CamelContentType *parent_content_type);
 
 /* decode the contents of a content-encoding header */
 gchar *camel_content_transfer_encoding_decode (const gchar *in);
