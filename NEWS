@@ -1,3 +1,22 @@
+Evolution-Data-Server 3.29.90 2018-07-30
+----------------------------------------
+
+Bug Fixes:
+	Bug 788370 - Rename address book WebDAV backend to CardDAV (Milan Crha)
+	I#22 - [Camel] Store disconnect can abort just started downsync for offline (Milan Crha)
+	I#19 - Check also /var/db/zoneinfo when looking for system timezone (Milan Crha)
+
+Miscellaneous:
+	ESourceRegistry's thread main_context can leak (Milan Crha)
+	Correct format specifier arguments to work on both 32-bit and 64-bit arches (Milan Crha)
+	[EClient] Really default readonly property to FALSE (Milan Crha)
+	[CamelDebug] Change when backtraces are demangled in pointer tracker (Milan Crha)
+	[CamelOfflineFolder] Fix a runtime warning on application exit (Milan Crha)
+	Enhance attachment detection in a MIME message (Milan Crha)
+
+Translations:
+	Aurimas Černius (lt)
+
 Evolution-Data-Server 3.29.4 2018-07-16
 ---------------------------------------
 
