@@ -32,10 +32,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
-"product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-04-01 15:03+0000\n"
-"PO-Revision-Date: 2018-04-17 01:40+0200\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
+"issues\n"
+"POT-Creation-Date: 2018-07-31 10:36+0000\n"
+"PO-Revision-Date: 2018-08-19 22:48+0300\n"
 "Last-Translator: Efstathios Iosifidis <iosifidis@opensuse.org>\n"
 "Language-Team: Ελληνικά <>\n"
 "Language: el\n"
@@ -43,101 +43,37 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 2.1.1\n"
 "X-Project-Style: gnome\n"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:120
-#, c-format
-msgid "Failed to remove file “%s”: %s"
-msgstr "Αποτυχία αφαίρεσης αρχείου «%s»: %s"
-
-#: ../src/addressbook/backends/file/e-book-backend-file.c:148
-#, c-format
-msgid "Failed to make directory %s: %s"
-msgstr "Αποτυχία δημιουργίας καταλόγου %s: %s"
-
-#: ../src/addressbook/backends/file/e-book-backend-file.c:419
-#, c-format
-msgid "Failed to create hardlink for resource “%s”: %s"
-msgstr "Αποτυχία δημιουργίας σκληρού δεσμού για πόρο «%s»: %s"
-
-#: ../src/addressbook/backends/file/e-book-backend-file.c:524
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1257
-msgid "No UID in the contact"
-msgstr "Χωρίς UID στην επαφή"
-
-#: ../src/addressbook/backends/file/e-book-backend-file.c:852
-#, c-format
-msgid "Conflicting UIDs found in added contacts"
-msgstr "Βρέθηκαν συγκρουόμενα UIDs στις επαφές που προστέθηκαν"
-
-#: ../src/addressbook/backends/file/e-book-backend-file.c:991
-msgid "Loading..."
-msgstr "Φόρτωση..."
-
-#: ../src/addressbook/backends/file/e-book-backend-file.c:993
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4444
-msgid "Searching..."
-msgstr "Αναζήτηση..."
-
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1285
-#, c-format
-msgid "Tried to modify contact “%s” with out of sync revision"
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:220
+#, fuzzy, c-format
+#| msgid "Given URL “%s” doesn’t reference WebDAV address book"
+msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr ""
-"Προσπάθεια για τροποποίηση της επαφής «%s» εκτός της αναθεώρησης συγχρονισμού"
+"Η δοθείσα διεύθυνση URL «%s» δεν αναφέρεται στο βιβλίο διευθύνσεων WebDAV"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1476
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1561
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3085
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7342
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7411
-#, c-format
-msgid "Contact “%s” not found"
-msgstr "Δε βρέθηκε η επαφή «%s»"
-
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1621
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1702
-#, c-format
-msgid "Query “%s” not supported"
-msgstr "Δεν υποστηρίζεται το ερώτημα «%s»"
-
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1630
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1711
-#, c-format
-msgid "Invalid Query “%s”"
-msgstr "Μη έγκυρο ερώτημα «%s»"
-
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1976
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2015
-msgid "Requested to delete an unrelated cursor"
-msgstr "Ζητήθηκε η διαγραφή ενός άσχετου δρομέα"
-
-#: ../src/addressbook/backends/file/e-book-backend-file.c:2047
-#, c-format
-msgid "Failed to rename old database from “%s” to “%s”: %s"
-msgstr "Αποτυχία μετονομασίας της παλιάς βάσης δεδομένων από «%s» σε «%s»: %s"
-
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:279
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:148
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1159
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4334
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:239
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4326
 #: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:49
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
 #: ../src/addressbook/libebook/e-book.c:1079
-#: ../src/addressbook/libebook/e-book-client.c:2129
-#: ../src/addressbook/libebook/e-book-client.c:2301
-#: ../src/addressbook/libebook/e-book-client.c:2514
-#: ../src/addressbook/libebook/e-book-client.c:2645
-#: ../src/addressbook/libebook/e-book-client.c:2804
-#: ../src/addressbook/libebook/e-book-client.c:2938
-#: ../src/addressbook/libebook/e-book-client.c:3069
-#: ../src/addressbook/libebook/e-book-client.c:3227
-#: ../src/addressbook/libebook/e-book-client.c:3422
-#: ../src/addressbook/libebook/e-book-client.c:3640
+#: ../src/addressbook/libebook/e-book-client.c:2130
+#: ../src/addressbook/libebook/e-book-client.c:2302
+#: ../src/addressbook/libebook/e-book-client.c:2515
+#: ../src/addressbook/libebook/e-book-client.c:2646
+#: ../src/addressbook/libebook/e-book-client.c:2805
+#: ../src/addressbook/libebook/e-book-client.c:2939
+#: ../src/addressbook/libebook/e-book-client.c:3070
+#: ../src/addressbook/libebook/e-book-client.c:3228
+#: ../src/addressbook/libebook/e-book-client.c:3423
+#: ../src/addressbook/libebook/e-book-client.c:3641
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:877
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:222
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:263
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:274
-#: ../src/calendar/backends/http/e-cal-backend-http.c:204
+#: ../src/calendar/backends/http/e-cal-backend-http.c:210
 #: ../src/calendar/libecal/e-cal.c:2334
 #: ../src/calendar/libecal/e-cal-client.c:277
 #: ../src/calendar/libecal/e-cal-client.c:3544
@@ -158,35 +94,125 @@ msgstr "Αποτυχία μετονομασίας της παλιάς βάσης
 #: ../src/calendar/libecal/e-cal-client.c:6476
 #: ../src/calendar/libecal/e-cal-client.c:6839
 #: ../src/calendar/libecal/e-cal-client.c:7061
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1742
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3029
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3035
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3045
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3057
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1757
+#: ../src/camel/camel-filter-driver.c:1719
+#: ../src/camel/camel-filter-driver.c:1851
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3204
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3210
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3220
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3232
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:501
 #: ../src/libedataserver/e-client.c:188
-#: ../src/libedataserver/e-soup-session.c:1119
+#: ../src/libedataserver/e-soup-session.c:1136
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
+#: ../src/libedataserverui/e-reminders-widget.c:1780
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Άγνωστο σφάλμα"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:924
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1017
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1036
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1192
+#, fuzzy
+#| msgid "Signon service did not return a secret"
+msgid "Server didn’t return object’s href"
+msgstr "Η υπηρεσία σύνδεσης δεν επέστρεψε απόρρητο"
+
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1038
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1194
+msgid "Server didn’t return object’s ETag"
+msgstr ""
+
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1040
+msgid "Received object is not a valid vCard"
+msgstr "Το ληφθέν αντικείμενο δεν είναι έγκυρη κάρτα vCard"
+
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1147
+#: ../src/addressbook/backends/google/e-book-backend-google.c:1010
 msgid "Object to save is not a valid vCard"
 msgstr "Το αντικείμενο αποθήκευσης δεν είναι έγκυρη κάρτα vCard"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:976
+#: ../src/addressbook/backends/file/e-book-backend-file.c:120
+#, c-format
+msgid "Failed to remove file “%s”: %s"
+msgstr "Αποτυχία αφαίρεσης αρχείου «%s»: %s"
+
+#: ../src/addressbook/backends/file/e-book-backend-file.c:148
+#, c-format
+msgid "Failed to make directory %s: %s"
+msgstr "Αποτυχία δημιουργίας καταλόγου %s: %s"
+
+#: ../src/addressbook/backends/file/e-book-backend-file.c:419
+#, c-format
+msgid "Failed to create hardlink for resource “%s”: %s"
+msgstr "Αποτυχία δημιουργίας σκληρού δεσμού για πόρο «%s»: %s"
+
+#: ../src/addressbook/backends/file/e-book-backend-file.c:524
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1260
+msgid "No UID in the contact"
+msgstr "Χωρίς UID στην επαφή"
+
+#: ../src/addressbook/backends/file/e-book-backend-file.c:856
+#, c-format
+msgid "Conflicting UIDs found in added contacts"
+msgstr "Βρέθηκαν συγκρουόμενα UIDs στις επαφές που προστέθηκαν"
+
+#: ../src/addressbook/backends/file/e-book-backend-file.c:994
+msgid "Loading..."
+msgstr "Φόρτωση..."
+
+#: ../src/addressbook/backends/file/e-book-backend-file.c:996
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4436
+msgid "Searching..."
+msgstr "Αναζήτηση..."
+
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1288
+#, c-format
+msgid "Tried to modify contact “%s” with out of sync revision"
+msgstr ""
+"Προσπάθεια για τροποποίηση της επαφής «%s» εκτός της αναθεώρησης συγχρονισμού"
+
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1479
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1564
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3085
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7365
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7434
+#, c-format
+msgid "Contact “%s” not found"
+msgstr "Δε βρέθηκε η επαφή «%s»"
+
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1624
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1705
+#, c-format
+msgid "Query “%s” not supported"
+msgstr "Δεν υποστηρίζεται το ερώτημα «%s»"
+
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1633
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1714
+#, c-format
+msgid "Invalid Query “%s”"
+msgstr "Μη έγκυρο ερώτημα «%s»"
+
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1979
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2015
+msgid "Requested to delete an unrelated cursor"
+msgstr "Ζητήθηκε η διαγραφή ενός άσχετου δρομέα"
+
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2050
+#, c-format
+msgid "Failed to rename old database from “%s” to “%s”: %s"
+msgstr "Αποτυχία μετονομασίας της παλιάς βάσης δεδομένων από «%s» σε «%s»: %s"
+
+#: ../src/addressbook/backends/google/e-book-backend-google.c:1066
 msgid "Failed to create contact from returned server data"
 msgstr "Αποτυχία δημιουργίας επαφής από τα δεδομένα διακομιστή που επστράφησαν"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:992
+#: ../src/addressbook/backends/google/e-book-backend-google.c:1082
 msgid "Server returned contact without UID"
 msgstr "Ο διακομιστής επέστρεψε επαφή χωρίς UID"
 
 #. System Group: My Contacts
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1658
+#: ../src/addressbook/backends/google/e-book-google-utils.c:1656
 #: ../src/services/evolution-source-registry/builtin/system-address-book.source.in.h:1
 #: ../src/services/evolution-source-registry/builtin/system-calendar.source.in.h:1
 #: ../src/services/evolution-source-registry/builtin/system-memo-list.source.in.h:1
@@ -195,17 +221,17 @@ msgid "Personal"
 msgstr "Προσωπικά"
 
 #. System Group: Friends
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1660
+#: ../src/addressbook/backends/google/e-book-google-utils.c:1658
 msgid "Friends"
 msgstr "Φίλοι"
 
 #. System Group: Family
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1662
+#: ../src/addressbook/backends/google/e-book-google-utils.c:1660
 msgid "Family"
 msgstr "Οικογένεια"
 
 #. System Group: Coworkers
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1664
+#: ../src/addressbook/backends/google/e-book-google-utils.c:1662
 msgid "Coworkers"
 msgstr "Συνεργάτες"
 
@@ -228,77 +254,67 @@ msgid "Invalid DN syntax"
 msgstr "Άκυρη σύνταξη DN"
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1156
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4333
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4325
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "Σφάλμα LDAP 0x%x (%s)"
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1772
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2114
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2127
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2116
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2129
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: Επιστράφηκε NULL από το ldap_first_entry"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2041
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2187
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2043
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2190
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: Επιστράφηκε μη διαχειρίσιμος τύπος αποτελέσματος %d"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2331
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2469
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2335
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2474
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: Επιστράφηκε μη διαχειρίσιμος τύπος αποτελέσματος %d της αναζήτησης"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4270
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4261
 msgid "Receiving LDAP search results..."
 msgstr "Λήψη αποτελεσμάτων αναζήτησης από LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4470
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4462
 msgid "Error performing search"
 msgstr "Σφάλμα εκτέλεσης αναζήτησης"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4610
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4602
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Λαμβάνονται οι επαφές (%d)..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5101
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5093
 msgid "The backend does not support bulk additions"
 msgstr "Το σύστημα υποστήριξης δεν υποστηρίζει μαζικές προσθέσεις"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5184
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5176
 msgid "Adding contact to LDAP server..."
 msgstr "Προσθήκη επαφής στον διακομιστή LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5241
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5233
 msgid "The backend does not support bulk modifications"
 msgstr "Το σύστημα υποστήριξης δεν υποστηρίζει μαζικές τροποποιήσεις"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5263
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5255
 msgid "Modifying contact from LDAP server..."
 msgstr "Τροποποίηση επαφής από τον διακομιστή LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5333
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5325
 msgid "Removing contact from LDAP server..."
 msgstr "Αφαίρεση επαφής από τον διακομιστή LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5751
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5743
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "Αποτυχία λήψης DN για τον χρήστη «%s»"
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:180
-#, c-format
-msgid "Given URL “%s” doesn’t reference WebDAV address book"
-msgstr ""
-"Η δοθείσα διεύθυνση URL «%s» δεν αναφέρεται στο βιβλίο διευθύνσεων WebDAV"
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:941
-msgid "Received object is not a valid vCard"
-msgstr "Το ληφθέν αντικείμενο δεν είναι έγκυρη κάρτα vCard"
 
 #: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:38
 msgid "No such book"
@@ -964,25 +980,25 @@ msgstr "Αδυναμία σύνδεσης στο «%s»: "
 #: ../src/calendar/libecal/e-cal-client-view.c:679
 #, c-format
 msgid "Client disappeared"
-msgstr "O πελάτης εξαφανίστηκε "
+msgstr "Ο πελάτης εξαφανίστηκε "
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:905
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:2254
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:2255
 #, fuzzy, c-format
 #| msgid "Error introspecting unknown summary field '%s'"
 msgid "Error introspecting unknown summary field “%s”"
 msgstr "Σφάλμα αυτοανάλυσης άγνωστο πεδίο περίληψης '%s'"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1515
-#: ../src/addressbook/libedata-book/e-book-cache.c:542
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:1393
+#: ../src/addressbook/libedata-book/e-book-cache.c:543
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:1394
 msgid "Error parsing regular expression"
 msgstr "Σφάλμα κατά την ανάλυση κανονικής έκφρασης"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1560
-#: ../src/addressbook/libedata-book/e-book-cache.c:4475
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:1877
-#: ../src/camel/camel-db.c:802
+#: ../src/addressbook/libedata-book/e-book-cache.c:4522
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:1878
+#: ../src/camel/camel-db.c:820
 #, c-format
 msgid "Insufficient memory"
 msgstr "Ανεπαρκής μνήμη"
@@ -993,8 +1009,8 @@ msgid "Invalid contact field “%d” specified in summary"
 msgstr "Μη έγκυρο πεδίο επαφής «%d» που ορίστηκε στην περίληψη"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1731
-#: ../src/addressbook/libedata-book/e-book-cache.c:365
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:604
+#: ../src/addressbook/libedata-book/e-book-cache.c:366
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:605
 #, c-format
 msgid ""
 "Contact field “%s” of type “%s” specified in summary, but only boolean, "
@@ -1015,8 +1031,8 @@ msgstr ""
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4308
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4401
-#: ../src/addressbook/libedata-book/e-book-cache.c:3433
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:5817
+#: ../src/addressbook/libedata-book/e-book-cache.c:3441
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:5840
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Το ερώτημα περιέχει ανυποστήρικτα στοιχεία"
@@ -1082,8 +1098,8 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Αδύνατη η ταξινόμηση κατά πεδίο που μπορεί να έχει πολλαπλές τιμές"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6219
-#: ../src/addressbook/libedata-book/e-book-cache.c:5561
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:8116
+#: ../src/addressbook/libedata-book/e-book-cache.c:5608
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:8139
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1093,8 +1109,8 @@ msgstr ""
 "ήδη στην αρχή του καταλόγου επαφών"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6227
-#: ../src/addressbook/libedata-book/e-book-cache.c:5568
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:8124
+#: ../src/addressbook/libedata-book/e-book-cache.c:5615
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:8147
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1103,79 +1119,79 @@ msgstr ""
 "Έγινε προσπάθεια να προχωρήσει ένας δρομέας προς τα μπρος, αλλά ο δρομέας "
 "είναι ήδη στο τέλος του καταλόγου επαφών"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:330
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:570
+#: ../src/addressbook/libedata-book/e-book-cache.c:331
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:571
 #, c-format
 msgid "Unsupported contact field “%d” specified in summary"
 msgstr "Μη υποστηριζόμενο πεδίο επαφής «%d» που ορίστηκε στην περίληψη"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:3428
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:5810
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1607
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2917
+#: ../src/addressbook/libedata-book/e-book-cache.c:3436
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:5833
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1621
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3314
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Άκυρο ερώτημα: %s"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:3598
+#: ../src/addressbook/libedata-book/e-book-cache.c:3606
 msgid "Invalid query for a book cursor"
 msgstr "Μη έγκυρο ερώτημα για έναν δρομέα βιβλίου"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:4479
-#: ../src/libebackend/e-cache.c:756
+#: ../src/addressbook/libedata-book/e-book-cache.c:4526
+#: ../src/libebackend/e-cache.c:759
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Αδυναμία ανοίγματος βάσης δεδομένων %s: %s"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5082
-#: ../src/addressbook/libedata-book/e-book-cache.c:5134
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2333
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2396
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2567
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1335
-#: ../src/libebackend/e-cache.c:1385 ../src/libebackend/e-cache.c:2238
-#: ../src/libebackend/e-cache.c:2278
+#: ../src/addressbook/libedata-book/e-book-cache.c:5129
+#: ../src/addressbook/libedata-book/e-book-cache.c:5181
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2730
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2793
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2964
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1342
+#: ../src/libebackend/e-cache.c:1374 ../src/libebackend/e-cache.c:2298
+#: ../src/libebackend/e-cache.c:2338
 #, c-format
 msgid "Object “%s” not found"
 msgstr "Δε βρέθηκε το αντικείμενο «%s»"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5194
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2458
+#: ../src/addressbook/libedata-book/e-book-cache.c:5241
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2855
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Δε βρέθηκε το αντικείμενο με επιπλέον «%s»"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5348
+#: ../src/addressbook/libedata-book/e-book-cache.c:5395
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 "Πρέπει να οριστεί τουλάχιστον ένα πεδίο ταξινόμησης για να χρησιμοποιηθεί "
 "ένας δρομέας"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5357
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7956
+#: ../src/addressbook/libedata-book/e-book-cache.c:5404
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7979
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Αδύνατη η ταξινόμηση κατά πεδίο που δεν είναι τύπος συμβολοσειράς"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1050
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1056
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1063
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Το προφορτωμένο αντικείμενο για το UID «%s» δεν είναι έγκυρο"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1058
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1064
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1071
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Το ληφθέν αντικείμενο για το UID «%s» δεν είναι έγκυρο"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1885
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:2333
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3151
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3210
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Αδυναμία δημιουργίας λανθάνουσας μνήμης «%s»:"
 
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:1950
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:1951
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the “folders” table first."
@@ -1184,11 +1200,11 @@ msgstr ""
 "περισσότερα από ένα βιβλία διευθύνσεων. Διαγράψτε μια από τις καταχωρίσεις "
 "στον πίνακα «φάκελοι» πρώτα."
 
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:5985
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:6008
 msgid "Invalid query for EbSqlCursor"
 msgstr "Άκυρο ερώτημα για το EbSqlCursor"
 
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7938
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7961
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 "Τουλάχιστον ένα είδος πεδίου πρέπει να οριστεί για να χρησιμοποιήσει ένα "
@@ -1369,11 +1385,11 @@ msgstr "Αδύνατη η τροποποίηση επαφών: "
 msgid "Cannot remove contacts: "
 msgstr "Αδύνατη η αφαίρεση των επαφών: "
 
-#: ../src/addressbook/libedata-book/e-data-book-cursor.c:774
+#: ../src/addressbook/libedata-book/e-data-book-cursor.c:777
 msgid "Cursor does not support setting the search expression"
 msgstr "Ο δρομέας δεν υποστηρίζει τον ορισμό της έκφρασης αναζήτησης"
 
-#: ../src/addressbook/libedata-book/e-data-book-cursor.c:857
+#: ../src/addressbook/libedata-book/e-data-book-cursor.c:864
 msgid "Cursor does not support step"
 msgstr "Ο δρομέας δεν υποστηρίζει βηματισμό"
 
@@ -1396,12 +1412,12 @@ msgstr "Εκτός αναθεώρησης συγχρονισμού κατά τη
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Το αλφαβητικό ευρετήριο ορίστηκε για εσφαλμένη τοπική ρύθμιση"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:165
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:206
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Η δοθείσα διεύθυνση URL «%s» δεν αναφέρεται στο ημερολόγιο CalDAV"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1616
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1783
 msgid "Failed to parse response data"
 msgstr "Αποτυχία ανάλυσης δεδομένων απόκρισης"
 
@@ -1428,21 +1444,21 @@ msgstr "Αποτυχία αποθήκευσης δεδομένων ημερολ�
 msgid "Cannot save calendar data"
 msgstr "Αδυναμία αποθήκευσης δεδομένων ημερολογίου"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:135
+#: ../src/calendar/backends/http/e-cal-backend-http.c:141
 msgid "URI not set"
 msgstr "To URI δεν ορίστηκε"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:203
+#: ../src/calendar/backends/http/e-cal-backend-http.c:209
 #, c-format
 msgid "Malformed URI “%s”: %s"
 msgstr "Κακοδιατυπωμένο URI «%s»: %s"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:349
+#: ../src/calendar/backends/http/e-cal-backend-http.c:372
 #, c-format
 msgid "Bad file format."
 msgstr "Λανθασμένη μορφή αρχείου."
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:358
+#: ../src/calendar/backends/http/e-cal-backend-http.c:381
 #, c-format
 msgid "Not a calendar."
 msgstr "Δεν είναι ημερολόγιο."
@@ -1612,166 +1628,166 @@ msgstr "Αδύνατη η αλλαγή τιμής της ιδιότητας ημ
 msgid "Untitled appointment"
 msgstr "Άτιτλη συνάντηση"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4744
+#: ../src/calendar/libecal/e-cal-recur.c:4751
 msgid "1st"
 msgstr "1η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4745
+#: ../src/calendar/libecal/e-cal-recur.c:4752
 msgid "2nd"
 msgstr "2η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4746
+#: ../src/calendar/libecal/e-cal-recur.c:4753
 msgid "3rd"
 msgstr "3η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4747
+#: ../src/calendar/libecal/e-cal-recur.c:4754
 msgid "4th"
 msgstr "4η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4748
+#: ../src/calendar/libecal/e-cal-recur.c:4755
 msgid "5th"
 msgstr "5η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4749
+#: ../src/calendar/libecal/e-cal-recur.c:4756
 msgid "6th"
 msgstr "6η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4750
+#: ../src/calendar/libecal/e-cal-recur.c:4757
 msgid "7th"
 msgstr "7η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4751
+#: ../src/calendar/libecal/e-cal-recur.c:4758
 msgid "8th"
 msgstr "8η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4752
+#: ../src/calendar/libecal/e-cal-recur.c:4759
 msgid "9th"
 msgstr "9η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4753
+#: ../src/calendar/libecal/e-cal-recur.c:4760
 msgid "10th"
 msgstr "10η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4754
+#: ../src/calendar/libecal/e-cal-recur.c:4761
 msgid "11th"
 msgstr "11η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4755
+#: ../src/calendar/libecal/e-cal-recur.c:4762
 msgid "12th"
 msgstr "12η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4756
+#: ../src/calendar/libecal/e-cal-recur.c:4763
 msgid "13th"
 msgstr "13η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4757
+#: ../src/calendar/libecal/e-cal-recur.c:4764
 msgid "14th"
 msgstr "14η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4758
+#: ../src/calendar/libecal/e-cal-recur.c:4765
 msgid "15th"
 msgstr "15η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4759
+#: ../src/calendar/libecal/e-cal-recur.c:4766
 msgid "16th"
 msgstr "16η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4760
+#: ../src/calendar/libecal/e-cal-recur.c:4767
 msgid "17th"
 msgstr "17η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4761
+#: ../src/calendar/libecal/e-cal-recur.c:4768
 msgid "18th"
 msgstr "18η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4762
+#: ../src/calendar/libecal/e-cal-recur.c:4769
 msgid "19th"
 msgstr "19η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4763
+#: ../src/calendar/libecal/e-cal-recur.c:4770
 msgid "20th"
 msgstr "20η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4764
+#: ../src/calendar/libecal/e-cal-recur.c:4771
 msgid "21st"
 msgstr "21η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4765
+#: ../src/calendar/libecal/e-cal-recur.c:4772
 msgid "22nd"
 msgstr "22η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4766
+#: ../src/calendar/libecal/e-cal-recur.c:4773
 msgid "23rd"
 msgstr "23η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4767
+#: ../src/calendar/libecal/e-cal-recur.c:4774
 msgid "24th"
 msgstr "24η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4768
+#: ../src/calendar/libecal/e-cal-recur.c:4775
 msgid "25th"
 msgstr "25η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4769
+#: ../src/calendar/libecal/e-cal-recur.c:4776
 msgid "26th"
 msgstr "26η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4770
+#: ../src/calendar/libecal/e-cal-recur.c:4777
 msgid "27th"
 msgstr "27η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4771
+#: ../src/calendar/libecal/e-cal-recur.c:4778
 msgid "28th"
 msgstr "28η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4772
+#: ../src/calendar/libecal/e-cal-recur.c:4779
 msgid "29th"
 msgstr "29η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4773
+#: ../src/calendar/libecal/e-cal-recur.c:4780
 msgid "30th"
 msgstr "30η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4774
+#: ../src/calendar/libecal/e-cal-recur.c:4781
 msgid "31st"
 msgstr "31η"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4933
+#: ../src/calendar/libecal/e-cal-recur.c:4940
 #, c-format
 msgid "every day forever"
 msgid_plural "every %d days forever"
 msgstr[0] "κάθε ημέρα για πάντα"
 msgstr[1] "κάθε %d ημέρες για πάντα"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4939
+#: ../src/calendar/libecal/e-cal-recur.c:4946
 #, c-format
 msgid "Every day forever"
 msgid_plural "Every %d days forever"
 msgstr[0] "Κάθε ημέρα για πάντα"
 msgstr[1] "Κάθε %d ημέρες για πάντα"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4947
+#: ../src/calendar/libecal/e-cal-recur.c:4954
 #, c-format
 msgid "every day"
 msgid_plural "every %d days"
 msgstr[0] "κάθε ημέρα"
 msgstr[1] "κάθε %d ημέρες"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4953
+#: ../src/calendar/libecal/e-cal-recur.c:4960
 #, c-format
 msgid "Every day"
 msgid_plural "Every %d days"
 msgstr[0] "Κάθε ημέρα"
 msgstr[1] "Κάθε %d ημέρες"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5043
+#: ../src/calendar/libecal/e-cal-recur.c:5050
 #, c-format
 msgid "every week"
 msgid_plural "every %d weeks"
 msgstr[0] "κάθε εβδομάδα"
 msgstr[1] "κάθε %d εβδομάδες"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5049
+#: ../src/calendar/libecal/e-cal-recur.c:5056
 #, c-format
 msgid "Every week"
 msgid_plural "Every %d weeks"
@@ -1783,558 +1799,556 @@ msgstr[1] "Κάθε %d εβδομάδες"
 #. with ", DAYNAME" or " and DAYNAME", thus it can be something like "on Monday and Tuesday"
 #. or "on Monday, Wednesday and Friday" or simply "on Saturday". The '%1$s' is replaced with
 #. the previously gathered text, while the '%2$s' is replaced with the text to append.
-#: ../src/calendar/libecal/e-cal-recur.c:5063
+#: ../src/calendar/libecal/e-cal-recur.c:5070
 #, c-format
 msgctxt "recur-description-dayname"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5080
+#: ../src/calendar/libecal/e-cal-recur.c:5087
 msgctxt "recur-description"
 msgid "on Sunday"
 msgstr "την Κυριακή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5081
+#: ../src/calendar/libecal/e-cal-recur.c:5088
 msgctxt "recur-description"
 msgid ", Sunday"
 msgstr ", Κυριακή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5082
+#: ../src/calendar/libecal/e-cal-recur.c:5089
 msgctxt "recur-description"
 msgid " and Sunday"
 msgstr " και την Κυριακή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5085
+#: ../src/calendar/libecal/e-cal-recur.c:5092
 msgctxt "recur-description"
 msgid "on Monday"
 msgstr "την Δευτέρα"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5086
+#: ../src/calendar/libecal/e-cal-recur.c:5093
 msgctxt "recur-description"
 msgid ", Monday"
 msgstr ", Δευτέρα"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5087
+#: ../src/calendar/libecal/e-cal-recur.c:5094
 msgctxt "recur-description"
 msgid " and Monday"
 msgstr " και Δευτέρα"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5090
+#: ../src/calendar/libecal/e-cal-recur.c:5097
 msgctxt "recur-description"
 msgid "on Tuesday"
 msgstr "την Τρίτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5091
+#: ../src/calendar/libecal/e-cal-recur.c:5098
 msgctxt "recur-description"
 msgid ", Tuesday"
 msgstr ", Τρίτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5092
+#: ../src/calendar/libecal/e-cal-recur.c:5099
 msgctxt "recur-description"
 msgid " and Tuesday"
 msgstr " και την Τρίτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5095
+#: ../src/calendar/libecal/e-cal-recur.c:5102
 msgctxt "recur-description"
 msgid "on Wednesday"
 msgstr "την Τετάρτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5096
+#: ../src/calendar/libecal/e-cal-recur.c:5103
 msgctxt "recur-description"
 msgid ", Wednesday"
 msgstr ", Τετάρτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5097
+#: ../src/calendar/libecal/e-cal-recur.c:5104
 msgctxt "recur-description"
 msgid " and Wednesday"
 msgstr " και την Τετάρτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5100
+#: ../src/calendar/libecal/e-cal-recur.c:5107
 msgctxt "recur-description"
 msgid "on Thursday"
 msgstr "την Πέμπτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5101
+#: ../src/calendar/libecal/e-cal-recur.c:5108
 msgctxt "recur-description"
 msgid ", Thursday"
 msgstr ", Πέμπτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5102
+#: ../src/calendar/libecal/e-cal-recur.c:5109
 msgctxt "recur-description"
 msgid " and Thursday"
 msgstr " και την Πέμπτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5105
-#| msgctxt "CategoryName"
-#| msgid "Holiday"
+#: ../src/calendar/libecal/e-cal-recur.c:5112
 msgctxt "recur-description"
 msgid "on Friday"
 msgstr "την Παρασκευή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5106
+#: ../src/calendar/libecal/e-cal-recur.c:5113
 msgctxt "recur-description"
 msgid ", Friday"
 msgstr ", Παρασκευή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5107
+#: ../src/calendar/libecal/e-cal-recur.c:5114
 msgctxt "recur-description"
 msgid " and Friday"
 msgstr " και την Παρασκευή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5110
+#: ../src/calendar/libecal/e-cal-recur.c:5117
 msgctxt "recur-description"
 msgid "on Saturday"
 msgstr "το Σάββατο"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5111
+#: ../src/calendar/libecal/e-cal-recur.c:5118
 msgctxt "recur-description"
 msgid ", Saturday"
 msgstr ", Σάββατο"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5112
+#: ../src/calendar/libecal/e-cal-recur.c:5119
 msgctxt "recur-description"
 msgid " and Saturday"
 msgstr " και το Σάββατο"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5245
+#: ../src/calendar/libecal/e-cal-recur.c:5252
 #, c-format
 msgid "every month"
 msgid_plural "every %d months"
 msgstr[0] "κάθε μήνα"
 msgstr[1] "κάθε %d μήνες"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5251
+#: ../src/calendar/libecal/e-cal-recur.c:5258
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
 msgstr[0] "Κάθε μήνα"
 msgstr[1] "Κάθε %d μήνες"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5261
-#: ../src/calendar/libecal/e-cal-recur.c:5582
+#: ../src/calendar/libecal/e-cal-recur.c:5268
+#: ../src/calendar/libecal/e-cal-recur.c:5589
 msgctxt "recur-description"
 msgid "on the last Sunday"
 msgstr "την τελευταία Κυριακή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5264
-#: ../src/calendar/libecal/e-cal-recur.c:5432
+#: ../src/calendar/libecal/e-cal-recur.c:5271
+#: ../src/calendar/libecal/e-cal-recur.c:5439
 msgctxt "recur-description"
 msgid "on the last Monday"
 msgstr "την τελευταία Δευτέρα"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5267
-#: ../src/calendar/libecal/e-cal-recur.c:5457
+#: ../src/calendar/libecal/e-cal-recur.c:5274
+#: ../src/calendar/libecal/e-cal-recur.c:5464
 msgctxt "recur-description"
 msgid "on the last Tuesday"
 msgstr "την τελευταία Τρίτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5270
-#: ../src/calendar/libecal/e-cal-recur.c:5482
+#: ../src/calendar/libecal/e-cal-recur.c:5277
+#: ../src/calendar/libecal/e-cal-recur.c:5489
 msgctxt "recur-description"
 msgid "on the last Wednesday"
 msgstr "την τελευταία Τετάρτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5273
-#: ../src/calendar/libecal/e-cal-recur.c:5507
+#: ../src/calendar/libecal/e-cal-recur.c:5280
+#: ../src/calendar/libecal/e-cal-recur.c:5514
 msgctxt "recur-description"
 msgid "on the last Thursday"
 msgstr "την τελευταία Πέμπτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5276
-#: ../src/calendar/libecal/e-cal-recur.c:5532
+#: ../src/calendar/libecal/e-cal-recur.c:5283
+#: ../src/calendar/libecal/e-cal-recur.c:5539
 msgctxt "recur-description"
 msgid "on the last Friday"
 msgstr "την τελευταία Παρασκευή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5279
-#: ../src/calendar/libecal/e-cal-recur.c:5557
+#: ../src/calendar/libecal/e-cal-recur.c:5286
+#: ../src/calendar/libecal/e-cal-recur.c:5564
 msgctxt "recur-description"
 msgid "on the last Saturday"
 msgstr "το τελευταίο Σάββατο"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5289
+#: ../src/calendar/libecal/e-cal-recur.c:5296
 msgctxt "recur-description"
 msgid "on the 1st day"
 msgstr "την 1η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5293
+#: ../src/calendar/libecal/e-cal-recur.c:5300
 msgctxt "recur-description"
 msgid "on the 2nd day"
 msgstr "την 2η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5297
+#: ../src/calendar/libecal/e-cal-recur.c:5304
 msgctxt "recur-description"
 msgid "on the 3rd day"
 msgstr "την 3η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5301
+#: ../src/calendar/libecal/e-cal-recur.c:5308
 msgctxt "recur-description"
 msgid "on the 4th day"
 msgstr "την 4η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5305
+#: ../src/calendar/libecal/e-cal-recur.c:5312
 msgctxt "recur-description"
 msgid "on the 5th day"
 msgstr "την 5η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5309
+#: ../src/calendar/libecal/e-cal-recur.c:5316
 msgctxt "recur-description"
 msgid "on the 6th day"
 msgstr "την 6η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5313
+#: ../src/calendar/libecal/e-cal-recur.c:5320
 msgctxt "recur-description"
 msgid "on the 7th day"
 msgstr "την 7η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5317
+#: ../src/calendar/libecal/e-cal-recur.c:5324
 msgctxt "recur-description"
 msgid "on the 8th day"
 msgstr "την 8η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5321
+#: ../src/calendar/libecal/e-cal-recur.c:5328
 msgctxt "recur-description"
 msgid "on the 9th day"
 msgstr "την 9η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5325
+#: ../src/calendar/libecal/e-cal-recur.c:5332
 msgctxt "recur-description"
 msgid "on the 10th day"
 msgstr "την 10η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5329
+#: ../src/calendar/libecal/e-cal-recur.c:5336
 msgctxt "recur-description"
 msgid "on the 11th day"
 msgstr "την 11η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5333
+#: ../src/calendar/libecal/e-cal-recur.c:5340
 msgctxt "recur-description"
 msgid "on the 12th day"
 msgstr "την 12η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5337
+#: ../src/calendar/libecal/e-cal-recur.c:5344
 msgctxt "recur-description"
 msgid "on the 13th day"
 msgstr "την 13η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5341
+#: ../src/calendar/libecal/e-cal-recur.c:5348
 msgctxt "recur-description"
 msgid "on the 14th day"
 msgstr "την 14η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5345
+#: ../src/calendar/libecal/e-cal-recur.c:5352
 msgctxt "recur-description"
 msgid "on the 15th day"
 msgstr "την 15η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5349
+#: ../src/calendar/libecal/e-cal-recur.c:5356
 msgctxt "recur-description"
 msgid "on the 16th day"
 msgstr "την 16η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5353
+#: ../src/calendar/libecal/e-cal-recur.c:5360
 msgctxt "recur-description"
 msgid "on the 17th day"
 msgstr "την 17η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5357
+#: ../src/calendar/libecal/e-cal-recur.c:5364
 msgctxt "recur-description"
 msgid "on the 18th day"
 msgstr "την 18η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5361
+#: ../src/calendar/libecal/e-cal-recur.c:5368
 msgctxt "recur-description"
 msgid "on the 19th day"
 msgstr "την 19η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5365
+#: ../src/calendar/libecal/e-cal-recur.c:5372
 msgctxt "recur-description"
 msgid "on the 20th day"
 msgstr "την 20η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5369
+#: ../src/calendar/libecal/e-cal-recur.c:5376
 msgctxt "recur-description"
 msgid "on the 21st day"
 msgstr "την 21η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5373
+#: ../src/calendar/libecal/e-cal-recur.c:5380
 msgctxt "recur-description"
 msgid "on the 22nd day"
 msgstr "την 22η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5377
+#: ../src/calendar/libecal/e-cal-recur.c:5384
 msgctxt "recur-description"
 msgid "on the 23rd day"
 msgstr "την 23η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5381
+#: ../src/calendar/libecal/e-cal-recur.c:5388
 msgctxt "recur-description"
 msgid "on the 24th day"
 msgstr "την 24η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5385
+#: ../src/calendar/libecal/e-cal-recur.c:5392
 msgctxt "recur-description"
 msgid "on the 25th day"
 msgstr "την 25η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5389
+#: ../src/calendar/libecal/e-cal-recur.c:5396
 msgctxt "recur-description"
 msgid "on the 26th day"
 msgstr "την 26η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5393
+#: ../src/calendar/libecal/e-cal-recur.c:5400
 msgctxt "recur-description"
 msgid "on the 27th day"
 msgstr "την 27η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5397
+#: ../src/calendar/libecal/e-cal-recur.c:5404
 msgctxt "recur-description"
 msgid "on the 28th day"
 msgstr "την 28η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5401
+#: ../src/calendar/libecal/e-cal-recur.c:5408
 msgctxt "recur-description"
 msgid "on the 29th day"
 msgstr "την 29η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5405
+#: ../src/calendar/libecal/e-cal-recur.c:5412
 msgctxt "recur-description"
 msgid "on the 30th day"
 msgstr "την 30η ημέρα"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5409
+#: ../src/calendar/libecal/e-cal-recur.c:5416
 msgctxt "recur-description"
 msgid "on the 31st day"
 msgstr "την 31η ημέρα"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5417
+#: ../src/calendar/libecal/e-cal-recur.c:5424
 msgctxt "recur-description"
 msgid "on the first Monday"
 msgstr "την πρώτη Δευτέρα"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5420
+#: ../src/calendar/libecal/e-cal-recur.c:5427
 msgctxt "recur-description"
 msgid "on the second Monday"
 msgstr "την δεύτερη Δευτέρα"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5423
+#: ../src/calendar/libecal/e-cal-recur.c:5430
 msgctxt "recur-description"
 msgid "on the third Monday"
 msgstr "την τρίτη Δευτέρα"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5426
+#: ../src/calendar/libecal/e-cal-recur.c:5433
 msgctxt "recur-description"
 msgid "on the fourth Monday"
 msgstr "την τέταρτη Δευτέρα"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5429
+#: ../src/calendar/libecal/e-cal-recur.c:5436
 msgctxt "recur-description"
 msgid "on the fifth Monday"
 msgstr "την πέμπτη Δευτέρα"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5442
+#: ../src/calendar/libecal/e-cal-recur.c:5449
 msgctxt "recur-description"
 msgid "on the first Tuesday"
 msgstr "την πρώτη Τρίτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5445
+#: ../src/calendar/libecal/e-cal-recur.c:5452
 msgctxt "recur-description"
 msgid "on the second Tuesday"
 msgstr "την δεύτερη Τρίτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5448
+#: ../src/calendar/libecal/e-cal-recur.c:5455
 msgctxt "recur-description"
 msgid "on the third Tuesday"
 msgstr "την τρίτη Τρίτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5451
+#: ../src/calendar/libecal/e-cal-recur.c:5458
 msgctxt "recur-description"
 msgid "on the fourth Tuesday"
 msgstr "την τετάρτη Τρίτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5454
+#: ../src/calendar/libecal/e-cal-recur.c:5461
 msgctxt "recur-description"
 msgid "on the fifth Tuesday"
 msgstr "την πέμπτη Τρίτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5467
+#: ../src/calendar/libecal/e-cal-recur.c:5474
 msgctxt "recur-description"
 msgid "on the first Wednesday"
 msgstr "την πρώτη Τετάρτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5470
+#: ../src/calendar/libecal/e-cal-recur.c:5477
 msgctxt "recur-description"
 msgid "on the second Wednesday"
 msgstr "την δεύτερη Τετάρτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5473
+#: ../src/calendar/libecal/e-cal-recur.c:5480
 msgctxt "recur-description"
 msgid "on the third Wednesday"
 msgstr "την τρίτη Τετάρτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5476
+#: ../src/calendar/libecal/e-cal-recur.c:5483
 msgctxt "recur-description"
 msgid "on the fourth Wednesday"
 msgstr "την τέταρτη Τετάρτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5479
+#: ../src/calendar/libecal/e-cal-recur.c:5486
 msgctxt "recur-description"
 msgid "on the fifth Wednesday"
 msgstr "την πέμτη Τετάρτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5492
+#: ../src/calendar/libecal/e-cal-recur.c:5499
 msgctxt "recur-description"
 msgid "on the first Thursday"
 msgstr "την πρώτη Πέμπτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5495
+#: ../src/calendar/libecal/e-cal-recur.c:5502
 msgctxt "recur-description"
 msgid "on the second Thursday"
 msgstr "την δεύτερη Πέμπτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5498
+#: ../src/calendar/libecal/e-cal-recur.c:5505
 msgctxt "recur-description"
 msgid "on the third Thursday"
 msgstr "την τρίτη Πέμπτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5501
+#: ../src/calendar/libecal/e-cal-recur.c:5508
 msgctxt "recur-description"
 msgid "on the fourth Thursday"
 msgstr "την τέταρτη Πέμπτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5504
+#: ../src/calendar/libecal/e-cal-recur.c:5511
 msgctxt "recur-description"
 msgid "on the fifth Thursday"
 msgstr "την πέμπτη Πέμπτη"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5517
+#: ../src/calendar/libecal/e-cal-recur.c:5524
 msgctxt "recur-description"
 msgid "on the first Friday"
 msgstr "την πρώτη Παρασκευή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5520
+#: ../src/calendar/libecal/e-cal-recur.c:5527
 msgctxt "recur-description"
 msgid "on the second Friday"
 msgstr "την δεύτερη Παρασκευή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5523
+#: ../src/calendar/libecal/e-cal-recur.c:5530
 msgctxt "recur-description"
 msgid "on the third Friday"
 msgstr "την τρίτη Παρασκευή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5526
+#: ../src/calendar/libecal/e-cal-recur.c:5533
 msgctxt "recur-description"
 msgid "on the fourth Friday"
 msgstr "την τέταρτη Παρασκευή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5529
+#: ../src/calendar/libecal/e-cal-recur.c:5536
 msgctxt "recur-description"
 msgid "on the fifth Friday"
 msgstr "την πέμπτη Παρασκευή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5542
+#: ../src/calendar/libecal/e-cal-recur.c:5549
 msgctxt "recur-description"
 msgid "on the first Saturday"
 msgstr "το πρώτο Σάββατο"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5545
+#: ../src/calendar/libecal/e-cal-recur.c:5552
 msgctxt "recur-description"
 msgid "on the second Saturday"
 msgstr "το δεύτερο Σάββατο"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5548
+#: ../src/calendar/libecal/e-cal-recur.c:5555
 msgctxt "recur-description"
 msgid "on the third Saturday"
 msgstr "το τρίτο Σάββατο"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5551
+#: ../src/calendar/libecal/e-cal-recur.c:5558
 msgctxt "recur-description"
 msgid "on the fourth Saturday"
 msgstr "το τέταρτο Σάββατο"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5554
+#: ../src/calendar/libecal/e-cal-recur.c:5561
 msgctxt "recur-description"
 msgid "on the fifth Saturday"
 msgstr "το πέμπτη Σάββατο"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5567
+#: ../src/calendar/libecal/e-cal-recur.c:5574
 msgctxt "recur-description"
 msgid "on the first Sunday"
 msgstr "την πρώτη Κυριακή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5570
+#: ../src/calendar/libecal/e-cal-recur.c:5577
 msgctxt "recur-description"
 msgid "on the second Sunday"
 msgstr "την δεύτερη Κυριακή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5573
+#: ../src/calendar/libecal/e-cal-recur.c:5580
 msgctxt "recur-description"
 msgid "on the third Sunday"
 msgstr "την τρίτη Κυριακή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5576
+#: ../src/calendar/libecal/e-cal-recur.c:5583
 msgctxt "recur-description"
 msgid "on the fourth Sunday"
 msgstr "την τέταρτη Κυριακή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5579
+#: ../src/calendar/libecal/e-cal-recur.c:5586
 msgctxt "recur-description"
 msgid "on the fifth Sunday"
 msgstr "την πέμπτη Κυριακή"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5608
+#: ../src/calendar/libecal/e-cal-recur.c:5615
 #, c-format
 msgid "every year forever"
 msgid_plural "every %d years forever"
 msgstr[0] "κάθε χρόνο για πάντα"
 msgstr[1] "κάθε %d χρόνια για πάντα"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5614
+#: ../src/calendar/libecal/e-cal-recur.c:5621
 #, c-format
 msgid "Every year forever"
 msgid_plural "Every %d years forever"
 msgstr[0] "Κάθε χρόνο για πάντα"
 msgstr[1] "Κάθε %d χρόνια για πάντα"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5622
+#: ../src/calendar/libecal/e-cal-recur.c:5629
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
 msgstr[0] "κάθε χρόνο"
 msgstr[1] "κάθε %d χρόνια"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5628
+#: ../src/calendar/libecal/e-cal-recur.c:5635
 #, c-format
 msgid "Every year"
 msgid_plural "Every %d years"
@@ -2344,7 +2358,7 @@ msgstr[1] "Κάθε %d χρόνια"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 3 days for 10 occurrences"
-#: ../src/calendar/libecal/e-cal-recur.c:5647
+#: ../src/calendar/libecal/e-cal-recur.c:5654
 #, c-format
 msgid "for one occurrence"
 msgid_plural "for %d occurrences"
@@ -2355,7 +2369,7 @@ msgstr[1] "για %d εμφανίσεις"
 #. The '%s' is replaced with actual date, thus it can create something like
 #. "until Mon 15.1.2018". The text is appended at the end of the complete
 #. recurrence description, making it for example: "Every 3 days until Mon 15.1.2018"
-#: ../src/calendar/libecal/e-cal-recur.c:5682
+#: ../src/calendar/libecal/e-cal-recur.c:5689
 #, c-format
 msgctxt "recur-description"
 msgid "until %s"
@@ -2364,7 +2378,7 @@ msgstr "μέχρι %s"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 2 months on Tuesday, Thursday and Friday forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5688
+#: ../src/calendar/libecal/e-cal-recur.c:5695
 msgctxt "recur-description"
 msgid "forever"
 msgstr "για πάντα"
@@ -2372,7 +2386,7 @@ msgstr "για πάντα"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
 #. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
 #. together one sentence: "Every 2 weeks on Tuesday and Friday for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5698
+#: ../src/calendar/libecal/e-cal-recur.c:5705
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s %3$s"
@@ -2381,7 +2395,7 @@ msgstr "%1$s %2$s %3$s"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
 #. the '%2$s' is like "for 10 occurrences", constructing together one sentence:
 #. "Every 2 days for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5703
+#: ../src/calendar/libecal/e-cal-recur.c:5710
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s"
@@ -2389,7 +2403,7 @@ msgstr "%1$s %2$s"
 
 #. Translators: This text is appended at the end of complete recur description using "%s%s" in
 #. context "recur-description"
-#: ../src/calendar/libecal/e-cal-recur.c:5719
+#: ../src/calendar/libecal/e-cal-recur.c:5726
 #, c-format
 msgid ", with one exception"
 msgid_plural ", with %d exceptions"
@@ -2399,34 +2413,35 @@ msgstr[1] ""
 #. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
 #. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
 #. It will form something like: "Every 2 weeks on Tuesday and Friday for 10 occurrences, with 3 exceptions"
-#: ../src/calendar/libecal/e-cal-recur.c:5726
+#: ../src/calendar/libecal/e-cal-recur.c:5733
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5739
-#: ../src/calendar/libecal/e-cal-recur.c:5762
+#: ../src/calendar/libecal/e-cal-recur.c:5746
+#: ../src/calendar/libecal/e-cal-recur.c:5769
 msgctxt "recur-description"
 msgid "The meeting recurs"
 msgstr "Η συνάντηση επαναλαμβάνεται"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5741
-#: ../src/calendar/libecal/e-cal-recur.c:5764
+#: ../src/calendar/libecal/e-cal-recur.c:5748
+#: ../src/calendar/libecal/e-cal-recur.c:5771
 #, fuzzy
 #| msgid "Untitled appointment"
 msgctxt "recur-description"
 msgid "The appointment recurs"
 msgstr "Άτιτλη συνάντηση"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5744
-#: ../src/calendar/libecal/e-cal-recur.c:5767
+#: ../src/calendar/libecal/e-cal-recur.c:5751
+#: ../src/calendar/libecal/e-cal-recur.c:5774
 msgctxt "recur-description"
 msgid "The task recurs"
-msgstr ""
+msgstr "Η εργασία επαναλαμβάνεται"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5746
-#: ../src/calendar/libecal/e-cal-recur.c:5769
+#. if (icalcomponent_isa (icalcomp) == ICAL_VJOURNAL_COMPONENT)
+#: ../src/calendar/libecal/e-cal-recur.c:5753
+#: ../src/calendar/libecal/e-cal-recur.c:5776
 msgctxt "recur-description"
 msgid "The memo recurs"
 msgstr ""
@@ -2435,49 +2450,122 @@ msgstr ""
 #. The '%1$s' is replaced with something like "The meeting recurs" and
 #. the '%2$s' with something like "every 2 days forever", thus forming
 #. sentence like "This meeting recurs every 2 days forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5753
+#: ../src/calendar/libecal/e-cal-recur.c:5760
 #, c-format
 msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#: ../src/calendar/libecal/e-cal-util.c:708
-#: ../src/calendar/libecal/e-cal-util.c:735
+#: ../src/calendar/libecal/e-cal-util.c:746
+#: ../src/calendar/libecal/e-cal-util.c:773
 msgctxt "Priority"
 msgid "High"
 msgstr "Υψηλή"
 
-#: ../src/calendar/libecal/e-cal-util.c:710
-#: ../src/calendar/libecal/e-cal-util.c:737
+#: ../src/calendar/libecal/e-cal-util.c:748
+#: ../src/calendar/libecal/e-cal-util.c:775
 msgctxt "Priority"
 msgid "Normal"
 msgstr "Κανονική"
 
-#: ../src/calendar/libecal/e-cal-util.c:712
-#: ../src/calendar/libecal/e-cal-util.c:739
+#: ../src/calendar/libecal/e-cal-util.c:750
+#: ../src/calendar/libecal/e-cal-util.c:777
 msgctxt "Priority"
 msgid "Low"
 msgstr "Χαμηλή"
 
 #. An empty string is the same as 'None'.
-#: ../src/calendar/libecal/e-cal-util.c:733
+#: ../src/calendar/libecal/e-cal-util.c:771
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Αόριστη"
 
+#: ../src/calendar/libecal/e-cal-util.c:813
+#: ../src/libedataserverui/e-reminders-widget.c:291
+#, c-format
+msgid "%d week"
+msgid_plural "%d weeks"
+msgstr[0] "%d εβδομάδα"
+msgstr[1] "%d εβδομάδες"
+
+#: ../src/calendar/libecal/e-cal-util.c:822
+#: ../src/libedataserverui/e-reminders-widget.c:287
+#, c-format
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] "%d ημέρα"
+msgstr[1] "%d ημέρες"
+
+#: ../src/calendar/libecal/e-cal-util.c:831
+#: ../src/libedataserverui/e-reminders-widget.c:283
+#, c-format
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] "%d ώρα"
+msgstr[1] "%d ώρες"
+
+#: ../src/calendar/libecal/e-cal-util.c:840
+#: ../src/libedataserverui/e-reminders-widget.c:279
+#, c-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d λεπτό"
+msgstr[1] "%d λεπτά"
+
+#. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
+#: ../src/calendar/libecal/e-cal-util.c:845
+#, c-format
+msgid "%d second"
+msgid_plural "%d seconds"
+msgstr[0] "%d δευτερόλεπτο"
+msgstr[1] "%d δευτερόλεπτα"
+
+#: ../src/calendar/libecal/e-reminder-watcher.c:2522
+msgid "No Summary"
+msgstr "Χωρίς περίληψη"
+
+#. Translators: The first %s is replaced with the time string,
+#. the second %s with a duration, and the third %s with an event location,
+#. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
+#: ../src/calendar/libecal/e-reminder-watcher.c:2538
+#, c-format
+#| msgid "%s (%s)"
+msgctxt "overdue"
+msgid "%s (%s) %s"
+msgstr "%s (%s) %s"
+
+#. Translators: The first %s is replaced with the time string,
+#. the second %s with a duration, making is something like:
+#. "24.1.2018 10:30 (30 minutes)"
+#: ../src/calendar/libecal/e-reminder-watcher.c:2543
+#, c-format
+#| msgid "%s (%s)"
+msgctxt "overdue"
+msgid "%s (%s)"
+msgstr "%s (%s)"
+
+#. Translators: The first %s is replaced with the time string,
+#. the second %s with an event location, making it something like:
+#. "24.1.2018 10:30 Meeting room A1"
+#: ../src/calendar/libecal/e-reminder-watcher.c:2548
+#, c-format
+msgctxt "overdue"
+msgid "%s %s"
+msgstr "%s %s"
+
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:83
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1083
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1396
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1523
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1572
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1086
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1399
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1526
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1575
 #, c-format
 msgid "“%s” expects one argument"
 msgstr "Το «%s» αναμένει ένα όρισμα"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:90
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:686
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1403
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1411
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:689
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1406
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1414
 #, c-format
 msgid "“%s” expects the first argument to be a string"
 msgstr "Το «%s» αναμένει ότι το πρώτο όρισμα είναι συμβολοσειρά"
@@ -2490,11 +2578,11 @@ msgstr "Το «%s» αναμένει δύο ή τρία ορίσματα"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:172
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:261
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:323
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:836
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1090
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1472
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1530
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1579
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:839
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1093
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1475
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1533
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1582
 #, c-format
 msgid "“%s” expects the first argument to be a time_t"
 msgstr "Το «%s» αναμένει το πρώτο όρισμα να είναι time_t"
@@ -2502,7 +2590,7 @@ msgstr "Το «%s» αναμένει το πρώτο όρισμα να είνα�
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:181
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:269
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:333
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:845
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:848
 #, c-format
 msgid "“%s” expects the second argument to be a time_t"
 msgstr "Το «%s» αναμένει το δεύτερο όρισμα να είναι time_t"
@@ -2518,30 +2606,30 @@ msgid "“%s” expects none or two arguments"
 msgstr "Το «%s» αναμένει κανένα ή δύο ορίσματα"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:316
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:679
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:829
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1465
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:682
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:832
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1468
 #, c-format
 msgid "“%s” expects two arguments"
 msgstr "Το «%s» αναμένει δυο ορίσματα"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:612
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:635
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:761
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:793
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1002
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1035
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1357
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:615
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:638
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:764
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:796
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1005
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1038
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1360
 #, c-format
 msgid "“%s” expects no arguments"
 msgstr "Το «%s» δεν αναμένει ορίσματα"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:695
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:698
 #, c-format
 msgid "“%s” expects the second argument to be a string"
 msgstr "Το «%s» αναμένει το δεύτερο όρισμα να είναι συμβολοσειρά"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:726
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:729
 #, c-format
 msgid ""
 "“%s” expects the first argument to be either “any”, “summary”, or "
@@ -2551,12 +2639,12 @@ msgstr ""
 "Το «%s» αναμένει ότι το πρώτο όρισμα να είναι ένα από τα «any», «summary», "
 "«description», «location», «attendee», «organizer», ή «classification»"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:897
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:900
 #, c-format
 msgid "“%s” expects at least one argument"
 msgstr "Το «%s» αναμένει τουλάχιστον ένα όρισμα"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:912
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:915
 #, c-format
 msgid ""
 "“%s” expects all arguments to be strings or one and only one argument to be "
@@ -2565,50 +2653,49 @@ msgstr ""
 "Το «%s» αναμένει ότι όλα τα ορίσματα θα είναι συμβολοσειρές ή ένα και μόνο "
 "ένα όρισμα θα είναι ψευδής λογική τιμή (#f)"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1420
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1423
 #, c-format
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 "Το «%s» αναμένει το πρώτο όρισμα να είναι συμβολοσειρά ημερομηνίας/χρόνου "
 "κατά ISO 8601"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1481
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1484
 #, c-format
 msgid "“%s” expects the second argument to be an integer"
 msgstr "Το «%s» αναμένει το δεύτερο όρισμα να είναι ακέραιος"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1741
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1756
 #, c-format
 msgid "Failed to create SQLite function, error code “%d”: %s"
 msgstr "Αποτυχία δημιουργίας συνάρτησης SQLite, κωδικός σφάλματος «%d»:%s"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2331
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2394
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2728
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2791
 #, c-format
-#| msgid "Object not found"
 msgid "Object “%s”, “%s” not found"
 msgstr "Το αντικείμενο «%s», «%s» δεν βρέθηκε"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3089
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3531
 msgid "Cannot add timezone without tzid"
 msgstr "Αδυναμία προσθήκες ζώνης ώρας χωρίς το tzid"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3095
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3540
 msgid "Cannot add timezone without component"
 msgstr "Αδυναμία προσθήκης ζώνης ώρας χωρίς συστατικό"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3101
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3546
 msgid "Cannot add timezone with invalid component"
 msgstr "Αδυναμία προσθήκης ζώνης ώρας με μη έγκυρο συστατικό"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1111
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1118
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr ""
 "Το ληφθέν αντικείμενο για το UID «%s» δεν περιέχει κανένα αναμενόμενο "
 "συστατικό"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3955
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4037
 msgid "attachment.dat"
 msgstr "attachment.dat"
 
@@ -2710,15 +2797,15 @@ msgstr "Η κρυπτογράφηση δεν υποστηρίζεται από �
 msgid "Decryption is not supported by this cipher"
 msgstr "Η αποκρυπτογράφηση δεν υποστηρίζεται από αυτό τον αλγόριθμο"
 
-#: ../src/camel/camel-cipher-context.c:361
+#: ../src/camel/camel-cipher-context.c:362
 msgid "Signing message"
 msgstr "Υπογραφή μηνύματος"
 
-#: ../src/camel/camel-cipher-context.c:651
+#: ../src/camel/camel-cipher-context.c:654
 msgid "Encrypting message"
 msgstr "Κρυπτογράφηση μηνύματος"
 
-#: ../src/camel/camel-cipher-context.c:823
+#: ../src/camel/camel-cipher-context.c:827
 msgid "Decrypting message"
 msgstr "Αποκρυπτογράφηση μηνύματος"
 
@@ -2736,91 +2823,107 @@ msgstr "Κενό αρχείο κρυφής μνήμης"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Αδυναμία απομάκρυνσης καταχώρισης κρυφής μνήμης: %s: %s"
 
-#: ../src/camel/camel-db.c:855
+#: ../src/camel/camel-db.c:874
 #: ../src/camel/providers/local/camel-mbox-store.c:904
 #, c-format
 msgid "Could not rename “%s” to %s: %s"
 msgstr "Αδυναμία μετονομασίας του «%s» σε %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:991
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. the whole “%s : %s” is meant as an absolute identification of the folder.
+#: ../src/camel/camel-filter-driver.c:262
+#, fuzzy, c-format
+#| msgid "Scanning for changed messages in “%s : %s”"
+msgid "Transferring filtered messages in “%s : %s”"
+msgstr "Σάρωση για αλλαγμένα μηνύματα στο «%s : %s»"
+
+#: ../src/camel/camel-filter-driver.c:1127
 #: ../src/camel/camel-filter-search.c:930
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "Αποτυχία δημιουργίας κατιούσας διεργασίας «%s»: %s"
 
-#: ../src/camel/camel-filter-driver.c:1039
+#: ../src/camel/camel-filter-driver.c:1175
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Λήψη άκυρης ροής μηνύματος από %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1259
-#: ../src/camel/camel-filter-driver.c:1271
+#: ../src/camel/camel-filter-driver.c:1396
+#: ../src/camel/camel-filter-driver.c:1409
 msgid "Syncing folders"
 msgstr "Συγχρονισμός φακέλων"
 
-#: ../src/camel/camel-filter-driver.c:1378
+#: ../src/camel/camel-filter-driver.c:1517
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Σφάλμα ανάλυσης φίλτρου: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1389
+#: ../src/camel/camel-filter-driver.c:1528
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Σφάλμα εκτέλεσης φίλτρου: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1486
+#: ../src/camel/camel-filter-driver.c:1626
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Αδυναμία ανοίγματος φακέλου ετεροχρονισμού"
 
-#: ../src/camel/camel-filter-driver.c:1498
+#: ../src/camel/camel-filter-driver.c:1638
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Αδυναμία επεξεργασίας φακέλου ετεροχρονισμού"
 
-#: ../src/camel/camel-filter-driver.c:1522
+#: ../src/camel/camel-filter-driver.c:1669
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Λήψη μηνύματος %d (%d%%)"
 
-#: ../src/camel/camel-filter-driver.c:1531
-#: ../src/camel/camel-filter-driver.c:1554
+#: ../src/camel/camel-filter-driver.c:1678
+#: ../src/camel/camel-filter-driver.c:1701
 #, c-format
 msgid "Failed on message %d"
 msgstr "Αποτυχία στο μήνυμα %d"
 
-#: ../src/camel/camel-filter-driver.c:1573
-#: ../src/camel/camel-filter-driver.c:1687
+#: ../src/camel/camel-filter-driver.c:1719
+#: ../src/camel/camel-filter-driver.c:1851
+#, fuzzy, c-format
+#| msgid "Failed to cache message %s: %s"
+msgid "Failed to transfer messages: %s"
+msgstr "Αποτυχία του μηνύματος κρυφής μνήμης %s: %s"
+
+#: ../src/camel/camel-filter-driver.c:1729
+#: ../src/camel/camel-filter-driver.c:1865
 msgid "Syncing folder"
 msgstr "Συγχρονισμός φακέλου"
 
-#: ../src/camel/camel-filter-driver.c:1578
-#: ../src/camel/camel-filter-driver.c:1695
+#: ../src/camel/camel-filter-driver.c:1734
+#: ../src/camel/camel-filter-driver.c:1873
 msgid "Complete"
 msgstr "Ολοκληρώθηκε"
 
-#: ../src/camel/camel-filter-driver.c:1641
+#: ../src/camel/camel-filter-driver.c:1805
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Λήψη μηνύματος %d από %d"
 
-#: ../src/camel/camel-filter-driver.c:1659
+#: ../src/camel/camel-filter-driver.c:1823
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Αποτυχία στο μήνυμα %d από %d"
 
-#: ../src/camel/camel-filter-driver.c:1866
-#: ../src/camel/camel-filter-driver.c:1890
+#: ../src/camel/camel-filter-driver.c:2033
+#: ../src/camel/camel-filter-driver.c:2057
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Αποτυχία εκτέλεσης του φίλτρου «%s»: "
 
-#: ../src/camel/camel-filter-driver.c:1880
+#: ../src/camel/camel-filter-driver.c:2047
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Σφάλμα ανάλυσης φίλτρου «%s»: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1899
+#: ../src/camel/camel-filter-driver.c:2066
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Σφάλμα εκτέλεσης φίλτρου «%s»: %s: %s"
@@ -2870,26 +2973,26 @@ msgstr[1] "Εκμάθηση νέων επιθυμητών μηνυμάτων σ�
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:405
+#: ../src/camel/camel-folder.c:402
 #, c-format
 msgid "Filtering new message in “%s : %s”"
 msgid_plural "Filtering new messages in “%s : %s”"
 msgstr[0] "Φιλτράρισμα νέου μηνύματος σε «%s : %s»"
 msgstr[1] "Φιλτράρισμα νέων μηνυμάτων σε «%s : %s»"
 
-#: ../src/camel/camel-folder.c:1030
+#: ../src/camel/camel-folder.c:1004
 #: ../src/camel/providers/local/camel-maildir-folder.c:331
 msgid "Moving messages"
 msgstr "Μετακίνηση μηνυμάτων"
 
-#: ../src/camel/camel-folder.c:1033
+#: ../src/camel/camel-folder.c:1007
 msgid "Copying messages"
 msgstr "Αντιγραφή μηνυμάτων"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1078
+#: ../src/camel/camel-folder.c:1052
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
 msgstr "Πληροφορίες ποσόστωσης δεν υποστηρίζονται για το φάκελο «%s : %s»"
@@ -2897,7 +3000,7 @@ msgstr "Πληροφορίες ποσόστωσης δεν υποστηρίζο�
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1180
+#: ../src/camel/camel-folder.c:1154
 #, c-format
 msgid "Filtering folder “%s : %s”"
 msgstr "Φιλτράρισμα φακέλου «%s : %s»"
@@ -2905,7 +3008,7 @@ msgstr "Φιλτράρισμα φακέλου «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:2985
+#: ../src/camel/camel-folder.c:2987
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "Διαγραφή φακέλου «%s : %s»"
@@ -2913,7 +3016,7 @@ msgstr "Διαγραφή φακέλου «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3119
+#: ../src/camel/camel-folder.c:3122
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "Ανάκτηση μηνύματος «%s» σε «%s : %s»"
@@ -2921,7 +3024,7 @@ msgstr "Ανάκτηση μηνύματος «%s» σε «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3341
+#: ../src/camel/camel-folder.c:3347
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "Ανάκτηση πληροφοριών ποσόστωσης για «%s : %s»"
@@ -2929,45 +3032,45 @@ msgstr "Ανάκτηση πληροφοριών ποσόστωσης για «%s
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3639
+#: ../src/camel/camel-folder.c:3647
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "Ανανέωση φακέλου «%s : %s»"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:905
-#: ../src/camel/camel-folder-search.c:948
+#: ../src/camel/camel-folder-search.c:920
+#: ../src/camel/camel-folder-search.c:963
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "Το (%s) απαιτεί ένα μοναδικό αποτέλεσμα Μπουλ"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:986
+#: ../src/camel/camel-folder-search.c:1001
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "Το (%s) δεν επιτρέπεται μέσα στο %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:993
-#: ../src/camel/camel-folder-search.c:1001
+#: ../src/camel/camel-folder-search.c:1008
+#: ../src/camel/camel-folder-search.c:1016
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "Το (%s) απαιτεί συμβολοσειρά τύπου ταιριάσματος"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1029
+#: ../src/camel/camel-folder-search.c:1044
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "Το (%s) περιμένει ένα πίνακα ως αποτέλεσμα"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1039
+#: ../src/camel/camel-folder-search.c:1054
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "Το (%s) απαιτεί τον ορισμό φακέλου"
 
-#: ../src/camel/camel-folder-search.c:2125
-#: ../src/camel/camel-folder-search.c:2299
+#: ../src/camel/camel-folder-search.c:2196
+#: ../src/camel/camel-folder-search.c:2370
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2976,8 +3079,8 @@ msgstr ""
 "Αδυναμία ανάλυσης έκφρασης αναζήτησης: %s:\n"
 "%s"
 
-#: ../src/camel/camel-folder-search.c:2137
-#: ../src/camel/camel-folder-search.c:2311
+#: ../src/camel/camel-folder-search.c:2208
+#: ../src/camel/camel-folder-search.c:2382
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2989,29 +3092,29 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder-summary.c:1668
+#: ../src/camel/camel-folder-summary.c:1663
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Απελευθέρωση αχρησιμοποίητης μνήμης για τον φάκελο «%s : %s»"
 
 #. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: ../src/camel/camel-gpg-context.c:417
+#: ../src/camel/camel-gpg-context.c:451
 #, c-format
 msgid "Output from %s:"
 msgstr "Αποτέλεσμα από %s:"
 
-#: ../src/camel/camel-gpg-context.c:834 ../src/camel/camel-gpg-context.c:839
-#: ../src/camel/camel-gpg-context.c:1543
+#: ../src/camel/camel-gpg-context.c:916 ../src/camel/camel-gpg-context.c:921
+#: ../src/camel/camel-gpg-context.c:1634
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Αποτυχία εκτέλεσης gpg: %s"
 
-#: ../src/camel/camel-gpg-context.c:839
+#: ../src/camel/camel-gpg-context.c:921
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1127
 msgid "Unknown"
 msgstr "Άγνωστο"
 
-#: ../src/camel/camel-gpg-context.c:951
+#: ../src/camel/camel-gpg-context.c:1033
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -3022,17 +3125,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/camel/camel-gpg-context.c:987
+#: ../src/camel/camel-gpg-context.c:1069
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Αποτυχία ανάλυσης gpg συμβουλής id χρήστη."
 
-#: ../src/camel/camel-gpg-context.c:1012 ../src/camel/camel-gpg-context.c:1027
+#: ../src/camel/camel-gpg-context.c:1094 ../src/camel/camel-gpg-context.c:1109
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Αποτυχία ανάλυσης gpg αίτησης συνθηματικού."
 
-#: ../src/camel/camel-gpg-context.c:1048
+#: ../src/camel/camel-gpg-context.c:1130
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -3041,7 +3144,7 @@ msgstr ""
 "Χρειάζεστε ένα PIN για το ξεκλείδωμα του κλειδιού για\n"
 "την SmartCard: «%s»"
 
-#: ../src/camel/camel-gpg-context.c:1052
+#: ../src/camel/camel-gpg-context.c:1134
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -3050,12 +3153,12 @@ msgstr ""
 "Χρειάζεστε συνθηματικό για το ξεκλείδωμα του κλειδιού για\n"
 "χρήστη: «%s»"
 
-#: ../src/camel/camel-gpg-context.c:1058
+#: ../src/camel/camel-gpg-context.c:1140
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "Αναπάντεχο αίτημα από GnuPG για «%s»"
 
-#: ../src/camel/camel-gpg-context.c:1070
+#: ../src/camel/camel-gpg-context.c:1152
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -3064,32 +3167,32 @@ msgstr ""
 "σχετικά με έναν παραλήπτη, συνεπώς θα υπάρχει μια προτροπή συνθηματικού για "
 "κάθε αποθηκευμένο ιδιωτικό κλειδί."
 
-#: ../src/camel/camel-gpg-context.c:1101 ../src/camel/camel-net-utils.c:522
+#: ../src/camel/camel-gpg-context.c:1183 ../src/camel/camel-net-utils.c:522
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:405
 #: ../src/libedataserver/e-client.c:161
 #, c-format
 msgid "Cancelled"
 msgstr "Ακυρώθηκε"
 
-#: ../src/camel/camel-gpg-context.c:1122
+#: ../src/camel/camel-gpg-context.c:1204
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr ""
 "Αποτυχία ξεκλειδώματος μυστικού κλειδιού: δόθηκαν 3 εσφαλμένα συνθηματικά."
 
-#: ../src/camel/camel-gpg-context.c:1135
+#: ../src/camel/camel-gpg-context.c:1217
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Αναπάντεχη απάντηση από GnuPG: %s"
 
-#: ../src/camel/camel-gpg-context.c:1249
+#: ../src/camel/camel-gpg-context.c:1333
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Αποτυχία κρυπτογράφησης: δεν έχουν οριστεί έγκυροι παραλήπτες."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: ../src/camel/camel-gpg-context.c:1262
+#: ../src/camel/camel-gpg-context.c:1346
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
@@ -3099,56 +3202,60 @@ msgstr ""
 "ζήτημα είναι ότι το αρχείο %s δεν έχει εισαγάγει δημόσιο κλειδί για αυτόν "
 "τον παραλήπτη."
 
-#: ../src/camel/camel-gpg-context.c:2054
-#: ../src/camel/camel-smime-context.c:841
+#: ../src/camel/camel-gpg-context.c:2145 ../src/camel/camel-smime-context.c:873
 msgid "Could not generate signing data: "
 msgstr "Αδυναμία δημιουργίας δεδομένων υπογραφής: "
 
-#: ../src/camel/camel-gpg-context.c:2105 ../src/camel/camel-gpg-context.c:2341
-#: ../src/camel/camel-gpg-context.c:2457 ../src/camel/camel-gpg-context.c:2633
+#: ../src/camel/camel-gpg-context.c:2196 ../src/camel/camel-gpg-context.c:2435
+#: ../src/camel/camel-gpg-context.c:2574 ../src/camel/camel-gpg-context.c:2751
 msgid "Failed to execute gpg."
 msgstr "Αποτυχία εκτέλεσης gpg."
 
-#: ../src/camel/camel-gpg-context.c:2211 ../src/camel/camel-gpg-context.c:2219
-#: ../src/camel/camel-gpg-context.c:2227 ../src/camel/camel-gpg-context.c:2247
-#: ../src/camel/camel-smime-context.c:970
-#: ../src/camel/camel-smime-context.c:984
-#: ../src/camel/camel-smime-context.c:993
+#: ../src/camel/camel-gpg-context.c:2303 ../src/camel/camel-gpg-context.c:2311
+#: ../src/camel/camel-gpg-context.c:2319 ../src/camel/camel-gpg-context.c:2339
+#: ../src/camel/camel-smime-context.c:1002
+#: ../src/camel/camel-smime-context.c:1016
+#: ../src/camel/camel-smime-context.c:1025
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Αδυναμία επαλήθευσης υπογραφής μηνύματος: Εσφαλμένη μορφή μηνύματος"
 
-#: ../src/camel/camel-gpg-context.c:2293
+#: ../src/camel/camel-gpg-context.c:2385
 msgid "Cannot verify message signature: "
 msgstr "Αδύνατη η επαλήθευση υπογραφής μηνύματος: "
 
-#: ../src/camel/camel-gpg-context.c:2422
+#: ../src/camel/camel-gpg-context.c:2533
 msgid "Could not generate encrypting data: "
 msgstr "Αδύνατη η δημιουργία κρυπτογραφημένων δεδομένων: "
 
-#: ../src/camel/camel-gpg-context.c:2497
+#: ../src/camel/camel-gpg-context.c:2614
 msgid "This is a digitally encrypted message part"
 msgstr "Αυτό το μέρος του μηνύματος είναι ψηφιακά υπογεγραμμένο"
 
-#: ../src/camel/camel-gpg-context.c:2556 ../src/camel/camel-gpg-context.c:2565
-#: ../src/camel/camel-gpg-context.c:2588
+#: ../src/camel/camel-gpg-context.c:2674 ../src/camel/camel-gpg-context.c:2683
+#: ../src/camel/camel-gpg-context.c:2706
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Αδυναμία αποκρυπτογράφησης μηνύματος: Εσφαλμένη μορφή μηνύματος"
 
-#: ../src/camel/camel-gpg-context.c:2576
+#: ../src/camel/camel-gpg-context.c:2694
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Αποτυχία αποκρυπτογράφησης τμήματος MIME: σφάλμα πρωτοκόλλου"
 
-#: ../src/camel/camel-gpg-context.c:2643
+#: ../src/camel/camel-gpg-context.c:2766
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr ""
 "Αποτυχία αποκρυπτογράφησης τμήματος MIME: δεν βρέθηκε το μυστικό κλειδί"
 
-#: ../src/camel/camel-gpg-context.c:2679
-#: ../src/camel/camel-smime-context.c:1286
+#: ../src/camel/camel-gpg-context.c:2803
+#, c-format
+msgid "GPG blob contains unencrypted text: %s"
+msgstr ""
+
+#: ../src/camel/camel-gpg-context.c:2805
+#: ../src/camel/camel-smime-context.c:1545
 msgid "Encrypted content"
 msgstr "Κρυπτογραφημένο περιεχόμενο"
 
@@ -3304,7 +3411,7 @@ msgstr "Λήψη νέων μηνυμάτων για λειτουργία χωρ�
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:221
+#: ../src/camel/camel-offline-folder.c:223
 #, c-format
 msgid "Storing changes in folder “%s : %s”"
 msgstr "Αποθήκευση αλλαγών στον φάκελο «%s : %s»"
@@ -3312,7 +3419,7 @@ msgstr "Αποθήκευση αλλαγών στον φάκελο «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:311
+#: ../src/camel/camel-offline-folder.c:316
 #, c-format
 msgid "Checking download of new messages for offline in “%s : %s”"
 msgstr ""
@@ -3321,7 +3428,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:428
+#: ../src/camel/camel-offline-folder.c:433
 #, c-format
 msgid "Syncing messages in folder “%s : %s” to disk"
 msgstr "Συγχρονισμός μηνυμάτων σε φάκελο «%s : %s» στο δίσκο"
@@ -3331,16 +3438,16 @@ msgstr "Συγχρονισμός μηνυμάτων σε φάκελο «%s : %s�
 #. The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:476
+#: ../src/camel/camel-offline-folder.c:527
 #, c-format
 msgid "Syncing message %d of %d in folder “%s : %s” to disk"
 msgstr "Συγχρονισμός μηνυμάτων %d από %d σε φάκελο «%s : %s» στο δίσκο"
 
-#: ../src/camel/camel-offline-folder.c:527
+#: ../src/camel/camel-offline-folder.c:592
 msgid "Copy folder content locally for _offline operation"
 msgstr "Αντιγραφή περιεχομένων φακέλου τοπικά για εργασία χ_ωρίς σύνδεση"
 
-#: ../src/camel/camel-offline-store.c:268
+#: ../src/camel/camel-offline-store.c:302
 #, c-format
 msgid "Syncing messages in account “%s” to disk"
 msgstr "Συγχρονισμός μηνυμάτων στον λογαριασμό «%s» στο δίσκο"
@@ -3353,26 +3460,25 @@ msgstr "Πάροχος εικονικού φακέλου ηλ. αλληλογρ�
 msgid "For reading mail as a query of another set of folders"
 msgstr "Για την ανάγνωση αλληλογραφίας ως ερώτηση ενός άλλου συνόλου φακέλων"
 
-#: ../src/camel/camel-provider.c:295
+#: ../src/camel/camel-provider.c:299
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr ""
 "Αδυναμία φόρτωσης του %s: Η φόρτωση αρθρωμάτων δεν υποστηρίζεται σε αυτό το "
 "σύστημα."
 
-#: ../src/camel/camel-provider.c:304
+#: ../src/camel/camel-provider.c:308
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "Αδυναμία φόρτωσης του %s: %s"
 
-#: ../src/camel/camel-provider.c:313
+#: ../src/camel/camel-provider.c:317
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "Αδυναμία φόρτωσης του %s: Χωρίς κώδικα αρχικοποίησης στο άρθρωμα."
 
-#: ../src/camel/camel-provider.c:459 ../src/camel/camel-session.c:434
+#: ../src/camel/camel-provider.c:463 ../src/camel/camel-session.c:434
 #, c-format
-#| msgid "No provider available for protocol '%s'"
 msgid "No provider available for protocol “%s”"
 msgstr "Χωρίς διαθέσιμο πάροχο για το πρωτόκολλο «%s»"
 
@@ -3484,12 +3590,21 @@ msgstr ""
 "Με την επιλογή αυτή θα συνδεθείτε στον διακομιστή με την πιστοποίηση "
 "Kerberos 5."
 
-#: ../src/camel/camel-sasl-gssapi.c:146
+#: ../src/camel/camel-sasl-gssapi.c:149
 #, c-format
 msgid "(Unknown GSSAPI mechanism code: %x)"
 msgstr "(Άγνωστος κώδικας μηχανισμού GSSAPI: %x)"
 
-#: ../src/camel/camel-sasl-gssapi.c:179
+#. Translators: the first '%s' is replaced with a generic error message,
+#. the second '%s' is replaced with additional error information.
+#: ../src/camel/camel-sasl-gssapi.c:172 ../src/camel/camel-sasl-gssapi.c:244
+#, c-format
+#| msgid "%s (%s)"
+msgctxt "gssapi_error"
+msgid "%s (%s)"
+msgstr "%s (%s)"
+
+#: ../src/camel/camel-sasl-gssapi.c:194
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
@@ -3497,11 +3612,11 @@ msgstr ""
 "Ο καθορισμένος μηχανισμός δεν υποστηρίζεται από τα παρεχόμενα "
 "διαπιστευτήρια, ή δεν αναγνωρίζεται στην εφαρμογή του."
 
-#: ../src/camel/camel-sasl-gssapi.c:184
+#: ../src/camel/camel-sasl-gssapi.c:199
 msgid "The provided target_name parameter was ill-formed."
 msgstr "Η παρεχόμενη παράμετρος target_name είναι κακοδιατυπωμένη."
 
-#: ../src/camel/camel-sasl-gssapi.c:187
+#: ../src/camel/camel-sasl-gssapi.c:202
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
@@ -3509,7 +3624,7 @@ msgstr ""
 "Η παρεχόμενη παράμετρος target_name περιείχε ένα άκυρο ή ανυποστήρικτο τύπο "
 "ονόματος."
 
-#: ../src/camel/camel-sasl-gssapi.c:191
+#: ../src/camel/camel-sasl-gssapi.c:206
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
@@ -3517,14 +3632,14 @@ msgstr ""
 "Το input_token περιέχει διαφορετικές συνδέσεις καναλιού από εκείνες που "
 "καθορίζονται μέσω της παραμέτρου input_chan_bindings."
 
-#: ../src/camel/camel-sasl-gssapi.c:196
+#: ../src/camel/camel-sasl-gssapi.c:211
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
 msgstr ""
 "Το input_token περιέχει μια άκυρη υπογραφή, ή μια ανεπιβεβαίωτη υπογραφή."
 
-#: ../src/camel/camel-sasl-gssapi.c:200
+#: ../src/camel/camel-sasl-gssapi.c:215
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -3532,31 +3647,45 @@ msgstr ""
 "Τα παρεχόμενα διαπιστευτήρια δεν ήταν έγκυρα για αρχικοποίηση περιεχομένου, "
 "ή ο χειρισμός διαπιστευτηρίων δεν ανέφερε διαπιστευτήρια."
 
-#: ../src/camel/camel-sasl-gssapi.c:205
+#: ../src/camel/camel-sasl-gssapi.c:220
 msgid "The supplied context handle did not refer to a valid context."
 msgstr ""
 "Το παρεχόμενο χειριστήριο περιεχομένου δεν αναφέρεται σε έγκυρο περιεχόμενο."
 
-#: ../src/camel/camel-sasl-gssapi.c:208
+#: ../src/camel/camel-sasl-gssapi.c:223
 msgid "The consistency checks performed on the input_token failed."
 msgstr "Οι έλεγχοι συνάφειας που έγιναν στο input_token απέτυχαν."
 
-#: ../src/camel/camel-sasl-gssapi.c:211
+#: ../src/camel/camel-sasl-gssapi.c:226
 msgid "The consistency checks performed on the credential failed."
 msgstr "Οι έλεγχοι συνάφειας που έγιναν στο διαπιστευτήριο απέτυχαν."
 
-#: ../src/camel/camel-sasl-gssapi.c:214
+#: ../src/camel/camel-sasl-gssapi.c:229
 msgid "The referenced credentials have expired."
 msgstr "Τα αναφερόμενα διαπιστευτήρια έχουν λήξει."
 
-#: ../src/camel/camel-sasl-gssapi.c:220 ../src/camel/camel-sasl-gssapi.c:402
-#: ../src/camel/camel-sasl-gssapi.c:451 ../src/camel/camel-sasl-gssapi.c:468
+#: ../src/camel/camel-sasl-gssapi.c:235 ../src/camel/camel-sasl-gssapi.c:439
+#: ../src/camel/camel-sasl-gssapi.c:489 ../src/camel/camel-sasl-gssapi.c:506
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:802
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Εσφαλμένη απάντηση πιστοποίησης από τον διακομιστή."
 
-#: ../src/camel/camel-sasl-gssapi.c:480
+#: ../src/camel/camel-sasl-gssapi.c:286
+#, fuzzy
+#| msgid "Could not get message"
+msgid "Could not get session bus:"
+msgstr "Δεν ήταν δυνατή η λήψη μηνύματος"
+
+#: ../src/camel/camel-sasl-gssapi.c:320
+#, c-format
+msgid ""
+"Cannot ask for Kerberos ticket. Obtain the ticket manually, like on command "
+"line with “kinit” or open “Online Accounts” in “Settings” and add the "
+"Kerberos account there. Reported error was: %s"
+msgstr ""
+
+#: ../src/camel/camel-sasl-gssapi.c:518
 #, c-format
 msgid "Unsupported security layer."
 msgstr "Ανυποστήρικτη στρώση ασφάλειας."
@@ -3662,9 +3791,9 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "Μη έγκυρος GType καταχωρημένος για το πρωτόκολλο «%s»"
 
 #: ../src/camel/camel-session.c:512
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2978
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3153
 #: ../src/camel/providers/pop3/camel-pop3-store.c:306
-#: ../src/camel/providers/pop3/camel-pop3-store.c:788
+#: ../src/camel/providers/pop3/camel-pop3-store.c:790
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:670
 #, c-format
 msgid "No support for %s authentication"
@@ -3679,244 +3808,249 @@ msgstr "Η πιστοποίηση %s απέτυχε"
 msgid "Forwarding messages is not supported"
 msgstr "Δεν υποστηρίζεται η προώθηση μηνυμάτων"
 
-#: ../src/camel/camel-smime-context.c:346
-#: ../src/camel/camel-smime-context.c:1073
+#: ../src/camel/camel-smime-context.c:347
 #, c-format
 msgid "Cannot find certificate for “%s”"
 msgstr "Αδυναμία εύρεσης πιστοποιητικού για «%s»"
 
-#: ../src/camel/camel-smime-context.c:374
+#: ../src/camel/camel-smime-context.c:375
 msgid "Cannot create CMS message"
 msgstr "Αδυναμία δημιουργίας μηνύματος CMS"
 
-#: ../src/camel/camel-smime-context.c:379
+#: ../src/camel/camel-smime-context.c:380
 msgid "Cannot create CMS signed data"
 msgstr "Αδυναμία δημιουργίας υπογεγραμμένων δεδομένων CMS"
 
-#: ../src/camel/camel-smime-context.c:385
+#: ../src/camel/camel-smime-context.c:386
 msgid "Cannot attach CMS signed data"
 msgstr "Αδυναμία επισύναψης υπογεγραμμένων δεδομένων CMS"
 
-#: ../src/camel/camel-smime-context.c:392
+#: ../src/camel/camel-smime-context.c:393
 msgid "Cannot attach CMS data"
 msgstr "Αδυναμία επισύναψης δεδομένων CMS"
 
-#: ../src/camel/camel-smime-context.c:398
+#: ../src/camel/camel-smime-context.c:399
 msgid "Cannot create CMS Signer information"
 msgstr "Αδυναμία δημιουργίας πληροφοριών υπογραφής CMS"
 
-#: ../src/camel/camel-smime-context.c:404
+#: ../src/camel/camel-smime-context.c:405
 msgid "Cannot find certificate chain"
 msgstr "Αδυναμία εύρεσης πιστοποιητικού αλυσίδας"
 
-#: ../src/camel/camel-smime-context.c:410
+#: ../src/camel/camel-smime-context.c:411
 msgid "Cannot add CMS Signing time"
 msgstr "Αδυναμία προσθήκης χρόνου υπογραφής CMS"
 
-#: ../src/camel/camel-smime-context.c:434
-#: ../src/camel/camel-smime-context.c:449
+#: ../src/camel/camel-smime-context.c:435
+#: ../src/camel/camel-smime-context.c:450
 #, c-format
 msgid "Encryption certificate for “%s” does not exist"
 msgstr "Το πιστοποιητικό κρυπτογράφησης για το «%s» δεν υπάρχει"
 
-#: ../src/camel/camel-smime-context.c:456
+#: ../src/camel/camel-smime-context.c:457
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
 msgstr "Αδυναμία προσθήκης γνωρίσματος SMIMEEncKeyPrefs"
 
-#: ../src/camel/camel-smime-context.c:461
+#: ../src/camel/camel-smime-context.c:462
 msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
 msgstr "Αδυναμία προσθήκης γνωρίσματος MS SMIMEEncKeyPrefs"
 
-#: ../src/camel/camel-smime-context.c:466
+#: ../src/camel/camel-smime-context.c:467
 msgid "Cannot add encryption certificate"
 msgstr "Αποτυχία προσθήκης πιστοποιητικού κρυπτογράφησης"
 
-#: ../src/camel/camel-smime-context.c:472
+#: ../src/camel/camel-smime-context.c:473
 msgid "Cannot add CMS Signer information"
 msgstr "Αδυναμία προσθήκης πληροφοριών υπογραφής CMS Signer"
 
 #. Translators: A fallback message when couldn't verify an SMIME signature
-#: ../src/camel/camel-smime-context.c:505
+#: ../src/camel/camel-smime-context.c:506
 msgid "Unverified"
 msgstr "Ανεπιβεβαίωτο"
 
-#: ../src/camel/camel-smime-context.c:507
+#: ../src/camel/camel-smime-context.c:508
 msgid "Good signature"
 msgstr "Καλή υπογραφή"
 
-#: ../src/camel/camel-smime-context.c:509
+#: ../src/camel/camel-smime-context.c:510
 msgid "Bad signature"
 msgstr "Κακή υπογραφή"
 
-#: ../src/camel/camel-smime-context.c:511
+#: ../src/camel/camel-smime-context.c:512
 msgid "Content tampered with or altered in transit"
 msgstr "Το περιεχόμενο αλλοιώθηκε ή πλαστογραφήθηκε κατά τη μεταφορά"
 
-#: ../src/camel/camel-smime-context.c:513
+#: ../src/camel/camel-smime-context.c:514
 msgid "Signing certificate not found"
 msgstr "Το πιστοποιητικό υπογραφής δε βρέθηκε"
 
-#: ../src/camel/camel-smime-context.c:515
+#: ../src/camel/camel-smime-context.c:516
 msgid "Signing certificate not trusted"
 msgstr "Το πιστοποιητικό υπογραφής δεν είναι έμπιστο"
 
-#: ../src/camel/camel-smime-context.c:517
+#: ../src/camel/camel-smime-context.c:518
 msgid "Signature algorithm unknown"
 msgstr "Άγνωστο αλγόριθμος υπογραφής"
 
-#: ../src/camel/camel-smime-context.c:519
+#: ../src/camel/camel-smime-context.c:520
 msgid "Signature algorithm unsupported"
 msgstr "Μη υποστηριζόμενος αλγόριθμος υπογραφής"
 
-#: ../src/camel/camel-smime-context.c:521
+#: ../src/camel/camel-smime-context.c:522
 msgid "Malformed signature"
 msgstr "Κακοδιατυπωμένη υπογραφή"
 
-#: ../src/camel/camel-smime-context.c:523
+#: ../src/camel/camel-smime-context.c:524
 msgid "Processing error"
 msgstr "Σφάλμα διεργασίας"
 
-#: ../src/camel/camel-smime-context.c:568
+#: ../src/camel/camel-smime-context.c:569
 msgid "No signed data in signature"
 msgstr "Δεν υπάρχουν υπογεγραμμένα δεδομένα στην υπογραφή"
 
-#: ../src/camel/camel-smime-context.c:573
+#: ../src/camel/camel-smime-context.c:574
 msgid "Digests missing from enveloped data"
 msgstr "Λείπουν περιλήψεις από τα περιβαλόμενα δεδομένα"
 
-#: ../src/camel/camel-smime-context.c:586
-#: ../src/camel/camel-smime-context.c:597
+#: ../src/camel/camel-smime-context.c:587
+#: ../src/camel/camel-smime-context.c:598
 msgid "Cannot calculate digests"
 msgstr "Αδυναμία υπολογισμού περιλήψεων"
 
-#: ../src/camel/camel-smime-context.c:604
-#: ../src/camel/camel-smime-context.c:608
+#: ../src/camel/camel-smime-context.c:605
+#: ../src/camel/camel-smime-context.c:609
 msgid "Cannot set message digests"
 msgstr "Αδυναμία ορισμού μηνύματος περιλήψεων"
 
-#: ../src/camel/camel-smime-context.c:618
-#: ../src/camel/camel-smime-context.c:623
+#: ../src/camel/camel-smime-context.c:619
+#: ../src/camel/camel-smime-context.c:624
 msgid "Certificate import failed"
 msgstr "Αποτυχία εισαγωγής πιστοποιητικού"
 
-#: ../src/camel/camel-smime-context.c:633
+#: ../src/camel/camel-smime-context.c:634
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr ""
 "Μήνυμα που περιέχει μόνο πιστοποιητικό, δεν μπορεί να επιβεβαιώσει "
 "πιστοποιητικά"
 
-#: ../src/camel/camel-smime-context.c:636
+#: ../src/camel/camel-smime-context.c:637
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr ""
 "Μήνυμα μόνο με πιστοποιητικό, τα πιστοποιητικά εισήχθησαν και επιβεβαιώθηκαν"
 
-#: ../src/camel/camel-smime-context.c:640
+#: ../src/camel/camel-smime-context.c:641
 msgid "Cannot find signature digests"
 msgstr "Αδυναμία εύρεσης υπογραφής περιλήψεων"
 
-#: ../src/camel/camel-smime-context.c:657
+#: ../src/camel/camel-smime-context.c:660
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
 msgstr "Υπογράφων: %s <%s>: %s\n"
 
-#: ../src/camel/camel-smime-context.c:853
-#: ../src/camel/camel-smime-context.c:1147
+#: ../src/camel/camel-smime-context.c:885
+#: ../src/camel/camel-smime-context.c:1402
 msgid "Cannot create encoder context"
 msgstr "Αδυναμία δημιουργίας περιεχομένου κωδικοποιητή"
 
-#: ../src/camel/camel-smime-context.c:859
+#: ../src/camel/camel-smime-context.c:891
 msgid "Failed to add data to CMS encoder"
 msgstr "Αποτυχία προσθήκης δεδομένων στον κωδικοποιητή CMS"
 
-#: ../src/camel/camel-smime-context.c:864
-#: ../src/camel/camel-smime-context.c:1164
+#: ../src/camel/camel-smime-context.c:896
+#: ../src/camel/camel-smime-context.c:1419
 msgid "Failed to encode data"
 msgstr "Αποτυχία κωδικοποίησης δεδομένων"
 
-#: ../src/camel/camel-smime-context.c:1012
-#: ../src/camel/camel-smime-context.c:1261
+#: ../src/camel/camel-smime-context.c:1044
+#: ../src/camel/camel-smime-context.c:1520
 msgid "Decoder failed"
 msgstr "Αποτυχία αποκωδικοποιητή"
 
-#: ../src/camel/camel-smime-context.c:1081
+#: ../src/camel/camel-smime-context.c:1296
+#, fuzzy, c-format
+#| msgid "Cannot find certificate for “%s”"
+msgid "No valid or appropriate certificate for “%s” was found"
+msgstr "Αδυναμία εύρεσης πιστοποιητικού για «%s»"
+
+#: ../src/camel/camel-smime-context.c:1336
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "Αδυναμία εύρεσης κοινού μαζικού αλγόριθμου κρυπτογράφησης"
 
-#: ../src/camel/camel-smime-context.c:1089
+#: ../src/camel/camel-smime-context.c:1344
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "Αδυναμία κατανομής υποδοχής για κλειδί μαζικής κρυπτογράφησης"
 
-#: ../src/camel/camel-smime-context.c:1100
+#: ../src/camel/camel-smime-context.c:1355
 msgid "Cannot create CMS Message"
 msgstr "Αδυναμία δημιουργίας μηνύματος CMS"
 
-#: ../src/camel/camel-smime-context.c:1106
+#: ../src/camel/camel-smime-context.c:1361
 msgid "Cannot create CMS Enveloped data"
 msgstr "Αδυναμία δημιουργίας ενσωματωμένων δεδομένων CMS"
 
-#: ../src/camel/camel-smime-context.c:1112
+#: ../src/camel/camel-smime-context.c:1367
 msgid "Cannot attach CMS Enveloped data"
 msgstr "Αδυναμία επισύναψης ενσωματωμένων δεδομένων CMS"
 
-#: ../src/camel/camel-smime-context.c:1118
+#: ../src/camel/camel-smime-context.c:1373
 msgid "Cannot attach CMS data object"
 msgstr "Αδυναμία επισύναψης αντικειμένου δεδομένων CMS"
 
-#: ../src/camel/camel-smime-context.c:1127
+#: ../src/camel/camel-smime-context.c:1382
 msgid "Cannot create CMS Recipient information"
 msgstr "Αδυναμία δημιουργίας πληροφοριών παραλήπτη CMS"
 
-#: ../src/camel/camel-smime-context.c:1132
+#: ../src/camel/camel-smime-context.c:1387
 msgid "Cannot add CMS Recipient information"
 msgstr "Αδυναμία προσθήκης πληροφοριών παραλήπτη CMS"
 
-#: ../src/camel/camel-smime-context.c:1158
+#: ../src/camel/camel-smime-context.c:1413
 msgid "Failed to add data to encoder"
 msgstr "Αποτυχία προσθήκης δεδομένων στον αποκωδικοποιητή"
 
-#: ../src/camel/camel-smime-context.c:1268
+#: ../src/camel/camel-smime-context.c:1527
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "Αποκρυπτογράφηση S/MIME: Δεν βρέθηκε κρυπτογραφημένο περιεχόμενο"
 
-#: ../src/camel/camel-store.c:1401
+#: ../src/camel/camel-store.c:1421
 #, c-format
 msgid "Opening folder “%s”"
 msgstr "Άνοιγμα φακέλου «%s»"
 
-#: ../src/camel/camel-store.c:1696
+#: ../src/camel/camel-store.c:1718
 #, c-format
 msgid "Scanning folders in “%s”"
 msgstr "Σάρωση φακέλων στο «%s»"
 
-#: ../src/camel/camel-store.c:1724 ../src/camel/camel-store.c:1769
+#: ../src/camel/camel-store.c:1746 ../src/camel/camel-store.c:1791
 #: ../src/camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Απορρίμματα"
 
-#: ../src/camel/camel-store.c:1738 ../src/camel/camel-store.c:1786
+#: ../src/camel/camel-store.c:1760 ../src/camel/camel-store.c:1808
 #: ../src/camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Ανεπιθύμητα"
 
-#: ../src/camel/camel-store.c:2387
+#: ../src/camel/camel-store.c:2413
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Αδυναμία δημιουργίας φακέλου %s: ο φάκελος υπάρχει"
 
-#: ../src/camel/camel-store.c:2394
+#: ../src/camel/camel-store.c:2420
 #, c-format
 msgid "Creating folder “%s”"
 msgstr "Δημιουργία φακέλου «%s»"
 
-#: ../src/camel/camel-store.c:2571 ../src/camel/camel-vee-store.c:423
+#: ../src/camel/camel-store.c:2598 ../src/camel/camel-vee-store.c:430
 #: ../src/camel/providers/local/camel-maildir-store.c:344
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Αδυναμία διαγραφής του φακέλου: %s: Άκυρη λειτουργία"
 
-#: ../src/camel/camel-store.c:2761 ../src/camel/camel-vee-store.c:474
+#: ../src/camel/camel-store.c:2789 ../src/camel/camel-vee-store.c:481
 #: ../src/camel/providers/local/camel-maildir-store.c:912
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3935,7 +4069,7 @@ msgstr "Ο τύπος ροής «%s» δεν είναι αναζητήσιμος
 msgid "Only reset to beginning is supported with CamelStreamFilter"
 msgstr "Μόνο η επανεκκίνηση στην αρχή υποστηρίζεται με το CamelStreamFilter"
 
-#: ../src/camel/camel-stream-null.c:76
+#: ../src/camel/camel-stream-null.c:88
 msgid "Only reset to beginning is supported with CamelHttpStream"
 msgstr "Μόνο η επανεκκίνηση στην αρχή υποστηρίζεται με το CamelHttpStream"
 
@@ -3970,7 +4104,7 @@ msgstr "Αδυναμία ανάλυσης διεύθυνσης «%s»"
 msgid "Updating folder “%s”"
 msgstr "Ανανέωση φακέλου «%s»"
 
-#: ../src/camel/camel-vee-folder.c:958 ../src/camel/camel-vee-folder.c:1075
+#: ../src/camel/camel-vee-folder.c:965 ../src/camel/camel-vee-folder.c:1082
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Αδυναμία αντιγραφής ή μετακίνησης μηνυμάτων σε ένα εικονικό φάκελο"
@@ -3979,17 +4113,17 @@ msgstr "Αδυναμία αντιγραφής ή μετακίνησης μηνυ
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: ../src/camel/camel-vee-folder.c:995
+#: ../src/camel/camel-vee-folder.c:1002
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "Κανένα τέτοιο μήνυμα %s στο «%s : %s»"
 
-#: ../src/camel/camel-vee-folder.c:1051
+#: ../src/camel/camel-vee-folder.c:1058
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "Σφάλμα αποθήκευσης «%s»: "
 
-#: ../src/camel/camel-vee-folder.c:1301
+#: ../src/camel/camel-vee-folder.c:1308
 msgid "Automatically _update on change in source folders"
 msgstr "Αυτόματη ε_νημέρωση όταν αλλάζουν οι φάκελοι πηγής"
 
@@ -3999,21 +4133,21 @@ msgstr "Αυτόματη ε_νημέρωση όταν αλλάζουν οι φά
 msgid "Unmatched"
 msgstr "Αταίριαστο"
 
-#: ../src/camel/camel-vee-store.c:449
+#: ../src/camel/camel-vee-store.c:456
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
 msgstr "Αδυναμία διαγραφής του φακέλου: %s: Δεν υπάρχει ο φάκελος"
 
-#: ../src/camel/camel-vee-store.c:484
+#: ../src/camel/camel-vee-store.c:491
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "Αδυναμία μετονομασίας του φακέλου: %s: Δεν υπάρχει τέτοιος φάκελος"
 
-#: ../src/camel/camel-vee-store.c:547
+#: ../src/camel/camel-vee-store.c:554
 msgid "Enable _Unmatched folder"
 msgstr "Ενεργοποίηση α_ταίριαστου φακέλου"
 
-#: ../src/camel/camel-vee-store.c:1101
+#: ../src/camel/camel-vee-store.c:1109
 msgid "Updating Unmatched search folder"
 msgstr "Ενημερώνεται ο φάκελος ασύμφωνων αναζητήσεων"
 
@@ -4033,20 +4167,20 @@ msgstr ""
 "(%s)"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:993
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3117
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3292
 #: ../src/camel/providers/nntp/camel-nntp-store.c:351
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1346
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2158
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2306
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:450
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:633
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:920
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:1134
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:922
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:1136
 #: ../src/camel/providers/pop3/camel-pop3-store.c:294
-#: ../src/camel/providers/pop3/camel-pop3-store.c:527
-#: ../src/camel/providers/pop3/camel-pop3-store.c:575
-#: ../src/camel/providers/pop3/camel-pop3-store.c:670
-#: ../src/camel/providers/pop3/camel-pop3-store.c:1105
+#: ../src/camel/providers/pop3/camel-pop3-store.c:529
+#: ../src/camel/providers/pop3/camel-pop3-store.c:577
+#: ../src/camel/providers/pop3/camel-pop3-store.c:672
+#: ../src/camel/providers/pop3/camel-pop3-store.c:1107
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:541
 #, c-format
 msgid "You must be working online to complete this operation"
@@ -4080,21 +4214,31 @@ msgid "No quota information available for folder “%s : %s”"
 msgstr ""
 "Δεν υπάρχουν διαθέσιμες πληροφορίες ποσόστωσης για τον φάκελο «%s : %s»"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1038
+#. transfer ownership to 'rcf'
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. the whole “%s : %s” is meant as an absolute identification of the folder.
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1025
+#, fuzzy, c-format
+#| msgid "Storing changes in folder “%s : %s”"
+msgid "Removing stale cache files in folder “%s : %s”"
+msgstr "Αποθήκευση αλλαγών στον φάκελο «%s : %s»"
+
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1119
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:841
 msgid "Apply message _filters to this folder"
 msgstr "Εφαρμογή μηνύματος _φίλτρων σε αυτόν τον φάκελο"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1049
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1130
 msgid "Always check for _new mail in this folder"
 msgstr "Πάντα έλεγχος για _νέα μηνύματα σε αυτό το φάκελο"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1162
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1243
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Αδύνατη η δημιουργία περίληψης φακέλου για %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1174
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1255
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Αδύνατη η δημιουργία κρυφής μνήμης για %s: "
@@ -4102,7 +4246,7 @@ msgstr "Αδύνατη η δημιουργία κρυφής μνήμης για 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1379
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1460
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "Δεν υπάρχει διαθέσιμο γραμματοκιβώτιο για τον φάκελο «%s : %s»"
@@ -4211,203 +4355,203 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Για ανάγνωση και αποθήκευση αλληλογραφίας σε διακομιστές IMAP."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:1116
+#: ../src/camel/providers/imapx/camel-imapx-server.c:1139
 msgid "Error writing to cache stream"
 msgstr "Σφάλμα εγγραφής στην ροή κρυφής μνήμης"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2793
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2881
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3150
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2968
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3056
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3325
 msgid "Failed to get capabilities"
 msgstr "Αποτυχία λήψης δυνατοτήτων"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2812
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2987
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Αποτυχία σύνδεσης με τον διακομιστή IMAP %s σε ασφαλή λειτουργία: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2813
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2988
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:279
 msgid "STARTTLS not supported"
 msgstr "Το STARTTLS δεν υποστηρίζεται"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2822
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2997
 msgid "Failed to issue STARTTLS"
 msgstr "Αποτυχία έκδοσης STARTTLS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2870
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3045
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Αποτυχία σύνδεσης με τον διακομιστή IMAP %s σε ασφαλή λειτουργία: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2965
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3140
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Ο διακομιστής IMAP %s δεν υποστηρίζει την πιστοποίηση %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2996
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3171
 #: ../src/camel/providers/nntp/camel-nntp-store.c:457
 #: ../src/camel/providers/nntp/camel-nntp-store.c:599
 msgid "Cannot authenticate without a username"
 msgstr "Αδυναμία πιστοποίησης χωρίς όνομα χρήστη"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3005
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3180
 #: ../src/camel/providers/nntp/camel-nntp-store.c:608
-#: ../src/camel/providers/pop3/camel-pop3-store.c:688
-#: ../src/camel/providers/pop3/camel-pop3-store.c:726
+#: ../src/camel/providers/pop3/camel-pop3-store.c:690
+#: ../src/camel/providers/pop3/camel-pop3-store.c:728
 msgid "Authentication password not available"
 msgstr "Ο κωδικός πρόσβασης πιστοποίησης δεν είναι διαθέσιμος"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3013
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3188
 msgid "Failed to authenticate"
 msgstr "Αποτυχία πιστοποίησης"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3172
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3347
 msgid "Failed to issue NAMESPACE"
 msgstr "Αποτυχία έκδοσης NAMESPACE"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3190
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3365
 msgid "Failed to enable QResync"
 msgstr "Αποτυχία ενεργοποίησης QResync"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3222
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3397
 msgid "Failed to issue NOTIFY"
 msgstr "Αποτυχία έκδοσης NOTIFY"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3700
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3876
 msgid "Failed to select mailbox"
 msgstr "Αποτυχία επιλογής γραμματοκιβωτίου"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3803
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3979
 msgid "Cannot issue command, no stream available"
 msgstr "Αδυναμία έκδοσης εντολής, δεν υπάρχει διαθέσιμη ροή"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4067
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4245
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Αδυναμία λήψης μηνύματος με ID μηνύματος %s: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4068
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4246
 msgid "No such message available."
 msgstr "Δεν υπάρχει τέτοιο μήνυμα διαθέσιμο."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4116
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4141
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4180
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4294
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4319
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4358
 msgid "Error fetching message"
 msgstr "Σφάλμα ανάκτησης μηνύματος"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4158
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4917
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4336
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5099
 msgid "Error performing NOOP"
 msgstr "Σφάλμα εκτέλεσης NOOP"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4173
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4351
 msgid "Failed to close the tmp stream"
 msgstr "Αποτυχία κλεισίματος της ροής tmp"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4204
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4382
 msgid "Failed to copy the tmp file"
 msgstr "Αποτυχία αντιγραφής του αρχείου tmp"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4440
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4620
 msgid "Error moving messages"
 msgstr "Σφάλμα μετακίνησης μηνυμάτων"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4440
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4620
 msgid "Error copying messages"
 msgstr "Σφάλμα αντιγραφής μηνυμάτων"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4710
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4731
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4892
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4913
 msgid "Cannot create spool file: "
 msgstr "Αδυναμία δημιουργίας αρχείου ετεροχρονισμού: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4817
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4999
 msgid "Error appending message"
 msgstr "Σφάλμα προσάρτησης μηνύματος"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5070
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5252
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Σάρωση για αλλαγμένα μηνύματα στο «%s : %s»"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5074
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5256
 msgid "Error scanning changes"
 msgstr "Σφάλμα σάρωσης αλλαγών"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5095
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5277
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr ""
 "Γίνεται ανάκτηση περίληψης πληροφοριών για τα νέα μηνύματα στο «%s : %s»"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5113
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5295
 msgid "Error fetching message info"
 msgstr "Σφάλμα ανάκτησης πληροφοριών μηνύματος"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5219
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5401
 msgid "Error running STATUS"
 msgstr "Σφάλμα εκτέλεσης STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5765
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5795
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5830
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5947
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5977
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6012
 msgid "Error syncing changes"
 msgstr "Σφάλμα συγχρονισμού αλλαγών"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5968
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6150
 msgid "Error expunging message"
 msgstr "Σφάλμα διαγραφής μηνύματος"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6040
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6228
 msgid "Error fetching folders"
 msgstr "Σφάλμα ανάκτησης φακέλων"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6051
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6236
 msgid "Error fetching subscribed folders"
 msgstr "Σφάλμα ανάκτησης φακέλων με συνδρομή"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6073
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6291
 msgid "Error creating folder"
 msgstr "Σφάλμα δημιουργίας φακέλου"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6129
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6347
 msgid "Error deleting folder"
 msgstr "Σφάλμα κατά τη διαγραφή του φακέλου"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6175
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6393
 msgid "Error renaming folder"
 msgstr "Σφάλμα δημιουργίας φακέλου"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6207
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6425
 msgid "Error subscribing to folder"
 msgstr "Σφάλμα εγγραφής στον φάκελο"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6243
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6461
 msgid "Error unsubscribing from folder"
 msgstr "Σφάλμα αφαίρεσης εγγραφής από φάκελο"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6283
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6501
 msgid "IMAP server does not support quotas"
 msgstr "Ο διακομιστής IMAP δεν υποστηρίζει ποσοστώσεις"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6295
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6513
 msgid "Error retrieving quota information"
 msgstr "Σφάλμα ανάκτησης πληροφοριών ποσόστωσης"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6358
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6576
 msgid "Search failed"
 msgstr "Αποτυχία αναζήτησης"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6476
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6694
 msgid "Error running IDLE"
 msgstr "Σφάλμα εκτέλεσης IDLE"
 
@@ -5131,7 +5275,7 @@ msgstr "Εσωτερικό σφάλμα: UID σε άκυρη μορφή: %s"
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:287
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:292
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:575
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:1090
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:1092
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "Αδυναμία λήψης μηνύματος %s: %s"
@@ -5376,7 +5520,7 @@ msgstr "Αδυναμία λήψης περίληψης POP: "
 msgid "Expunging old messages"
 msgstr "Εξάλειψη παλαιών μηνυμάτων"
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:925
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:927
 msgid "Expunging deleted messages"
 msgstr "Εξάλειψη των διαγραμμένων μηνυμάτων"
 
@@ -5476,29 +5620,29 @@ msgstr "Αποτυχία σύνδεσης με τον διακομιστή POP %
 msgid "Failed to connect to POP server %s in secure mode: "
 msgstr "Αποτυχία σύνδεσης με τον διακομιστή POP %s σε ασφαλή λειτουργία: "
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:355
+#: ../src/camel/providers/pop3/camel-pop3-store.c:357
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "Αδυναμία σύνδεσης στον διακομιστή POP %s: σφάλμα πρωτοκόλλου SASL"
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:377
+#: ../src/camel/providers/pop3/camel-pop3-store.c:379
 #, c-format
 msgid "Failed to authenticate on POP server %s: "
 msgstr "Αποτυχία πιστοποίησης στο διακομιστή POP %s: "
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:485
+#: ../src/camel/providers/pop3/camel-pop3-store.c:487
 #, c-format
 msgid "POP3 server %s"
 msgstr "Διακομιστής POP3 %s"
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:488
+#: ../src/camel/providers/pop3/camel-pop3-store.c:490
 #, c-format
 msgid "POP3 server for %s on %s"
 msgstr "Διακομιστής POP3 για %s στο %s"
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:700
-#: ../src/camel/providers/pop3/camel-pop3-store.c:713
-#: ../src/camel/providers/pop3/camel-pop3-store.c:799
+#: ../src/camel/providers/pop3/camel-pop3-store.c:702
+#: ../src/camel/providers/pop3/camel-pop3-store.c:715
+#: ../src/camel/providers/pop3/camel-pop3-store.c:801
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -5508,7 +5652,7 @@ msgstr ""
 "Σφάλμα αποστολής κωδικού πρόσβασης: "
 
 #. Translators: Do not translate APOP.
-#: ../src/camel/providers/pop3/camel-pop3-store.c:740
+#: ../src/camel/providers/pop3/camel-pop3-store.c:742
 #, c-format
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
@@ -5519,7 +5663,7 @@ msgstr ""
 
 #. Translators: Last %s is an optional explanation
 #. * beginning with ": " separator.
-#: ../src/camel/providers/pop3/camel-pop3-store.c:814
+#: ../src/camel/providers/pop3/camel-pop3-store.c:816
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -5528,12 +5672,12 @@ msgstr ""
 "Αδυναμία σύνδεσης με τον διακομιστή POP %s.\n"
 "Σφάλμα αποστολής ονόματος χρήστη %s"
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:898
+#: ../src/camel/providers/pop3/camel-pop3-store.c:900
 #, c-format
 msgid "No such folder “%s”."
 msgstr "Δεν υπάρχει τέτοιος φάκελος «%s»."
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:915
+#: ../src/camel/providers/pop3/camel-pop3-store.c:917
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "Η αποθήκευση με POP3 δεν έχει ιεραρχία φακέλων"
@@ -5888,6 +6032,74 @@ msgid ""
 msgstr ""
 "Μονάδες για υπενθύμιση γενεθλίων και επετείων, «λεπτά», «ώρες» ή «ημέρες»"
 
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:7
+msgid "Past reminders for EReminderWatcher"
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:8
+msgid "Snoozed reminders for EReminderWatcher"
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:9
+msgid "Reminder programs"
+msgstr "Προγράμματα υπενθύμισης"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:10
+msgid "Programs that are allowed to be run by reminders"
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:11
+msgid "Show reminders in notification tray only"
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:12
+msgid ""
+"When set to true, the reminders are shown only in the notification tray, "
+"otherwise the reminders dialog is shown immediately"
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:13
+msgid "Show reminder notification dialog always on top"
+msgstr "Εμφάνιση του διαλόγου ειδοποίησης υπενθύμισης πάντα στην κορυφή"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:14
+msgid ""
+"Whether or not to show reminder notification dialog always on top. Note this "
+"works only as a hint for the window manager, which may or may not obey it."
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:15
+msgid "X position of the reminder notification dialog"
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:16
+msgid "Y position of the reminder notification dialog"
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:17
+msgid "Width of the reminder notification dialog"
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:18
+msgid "Height of the reminder notification dialog"
+msgstr "Ύψος του διαλόγου ειδοποίησης υπενθύμισης"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
+msgid "Show reminder notification for completed tasks"
+msgstr "Εμφάνιση ειδοποίησης υπενθύμισης για ολοκληρωμένες εργασίες"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
+msgid "Show reminder notification for past events"
+msgstr "Εμφάνιση ειδοποίησης υπενθύμισης για περασμένα συμβάντα"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
+msgid "The last used snooze time, in minutes"
+msgstr "Ο τελευταίος χρόνος αναβολής, σε λεπτά"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
+msgid "User-defined snooze times, in minutes"
+msgstr "Χρόνος αναβολής καθορισμένος από τον χρήστη, σε λεπτά"
+
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:1
 msgid "Whether the migration of old setting was already done"
 msgstr "Αν ολοκληρώθηκε η μεταφορά της παλιάς ρύθμισης"
@@ -5987,18 +6199,18 @@ msgstr "Λίστα συμβουλών για υπηρεσίες OAuth2"
 msgid ""
 "Users can extend the list of supported protocols and hostnames for defined "
 "OAuth2 services, in addition to those hard-coded. Each line can be of the "
-"form: servicename[-protocol]:hostname1,hostname2,... where 'servicename' is "
-"the actual service name; the '-protocol' is optional, and if written, then "
-"the service can be used only if both 'protocol' and 'hostnameX' match; the "
-"'hostnameX' is the actual host name to compare with, case insensitively. "
+"form: servicename[-protocol]:hostname1,hostname2,... where “servicename” is "
+"the actual service name; the “-protocol” is optional, and if written, then "
+"the service can be used only if both “protocol” and “hostnameX” match; the "
+"“hostnameX” is the actual host name to compare with, case insensitively. "
 "Each line can contain multiple values, separated by comma. There can be "
 "provided multiple lines for one OAuth2 service. Note that the actual URL "
 "where the token is requested and refreshed cannot be changed here, the "
 "hostname is to allow other servers, where the OAuth2 service can be used. "
-"Examples: Company:mail.company.com - enables 'Company' OAuth2 authentication "
-"for 'mail.company.com' host Company-CalDAV:caldav.company.com - enables "
-"'Company' OAuth2 authentication for any 'CalDAV' source, which reads data "
-"from 'caldav.company.com' host"
+"Examples: Company:mail.company.com — enables “Company” OAuth2 authentication "
+"for “mail.company.com” host Company-CalDAV:caldav.company.com — enables "
+"“Company” OAuth2 authentication for any “CalDAV” source, which reads data "
+"from “caldav.company.com” host"
 msgstr ""
 "Οι χρήστες μπορούν να επεκτείνουν τη λίστα των υποστηριζόμενων πρωτοκόλλων "
 "και ονομάτων κεντρικών υπολογιστών για συγκεκριμένες υπηρεσίες OAuth2, εκτός "
@@ -6083,28 +6295,37 @@ msgstr "(Παρωχημένο) Αριθμός θύρας για αιτήματα
 msgid "(Deprecated) Automatic proxy configuration URL"
 msgstr "(Παρωχημένη) Διεύθυνση αυτόματης ρύθμισης διαμεσολαβητή"
 
-#: ../src/libebackend/e-cache.c:751
+#: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:1
+msgid "Evolution Alarm Notify"
+msgstr "Ειδοποίηση ξυπνητηριού Evolution"
+
+#: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:2
+#, fuzzy
+#| msgid "Calendar authentication request"
+msgid "Calendar event notifications"
+msgstr "Απαιτείται πιστοποίηση ημερολογίου"
+
+#: ../src/libebackend/e-cache.c:754
 msgid "Out of memory"
 msgstr "Η μνήμη εξαντλήθηκε"
 
-#: ../src/libebackend/e-cache.c:943
+#: ../src/libebackend/e-cache.c:946
 #, c-format
 msgid "Can not make parent directory: %s"
 msgstr "Αδυναμία δημιουργίας του γονικού καταλόγου: %s"
 
-#: ../src/libebackend/e-collection-backend.c:1017
+#: ../src/libebackend/e-collection-backend.c:1008
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s δεν υποστηρίζει απομακρυσμένη δημιουργία πόρων"
 
-#: ../src/libebackend/e-collection-backend.c:1076
+#: ../src/libebackend/e-collection-backend.c:1067
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s δεν υποστηρίζει απομακρυσμένη διαγραφή πόρων"
 
-#: ../src/libebackend/e-data-factory.c:1480
+#: ../src/libebackend/e-data-factory.c:1492
 #, c-format
-#| msgid "Backend factory for source '%s' and extension '%s' cannot be found."
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr ""
 "Αδύνατη η εύρεση υποστηρικτικού κατασκευαστή για την πηγή «%s» και την "
@@ -6117,7 +6338,7 @@ msgstr "Από την πηγή δεδομένων λείπει μια ομάδα
 
 #: ../src/libebackend/e-server-side-source.c:470
 msgid "Failed to lookup credentials: "
-msgstr "Αποτυχία αναζήτησης διαπιστευτηρίων:"
+msgstr "Αποτυχία αναζήτησης διαπιστευτηρίων: "
 
 #: ../src/libebackend/e-server-side-source.c:1395
 #: ../src/libedataserver/e-source.c:1583
@@ -6164,25 +6385,42 @@ msgstr "Το αρχείο πρέπει να έχει μια επέκταση «.
 msgid "UID “%s” is already in use"
 msgstr "Το UID «%s» χρησιμοποιείται ήδη"
 
-#: ../src/libebackend/e-subprocess-factory.c:277
+#: ../src/libebackend/e-source-registry-server.c:447
+#, fuzzy, c-format
+#| msgid "Cannot find certificate for “%s”"
+msgid "Cannot find corresponding collection backend for source “%s”"
+msgstr "Αδυναμία εύρεσης πιστοποιητικού για «%s»"
+
+#: ../src/libebackend/e-source-registry-server.c:451
+#, fuzzy, c-format
+#| msgid "Source “%s” (%s) is not a valid OAuth2 source"
+msgid "Source “%s” is not a collection source"
+msgstr "Η πηγή «%s» (%s) δεν είναι έγκυρη πηγή OAuth2"
+
+#: ../src/libebackend/e-source-registry-server.c:457
+#, c-format
+msgid "Cannot find source “%s”"
+msgstr "Αδυναμία εύρεσης πηγής «%s»"
+
+#: ../src/libebackend/e-subprocess-factory.c:281
 #, c-format
 msgid "Module “%s” for source UID “%s” cannot be loaded"
 msgstr ""
 "Δεν είναι δυνατή η φόρτωση του αρθρώματος «%s» για το UID προέλευσης «%s»"
 
-#: ../src/libebackend/e-subprocess-factory.c:289
+#: ../src/libebackend/e-subprocess-factory.c:293
 #, c-format
 msgid "No such source for UID “%s”"
 msgstr "Δεν υπάρχει πηγή για UID «%s»"
 
-#: ../src/libebackend/e-subprocess-factory.c:300
+#: ../src/libebackend/e-subprocess-factory.c:302
 #, c-format
 msgid "Failed to create backend of type “%s” for source UID “%s”"
 msgstr ""
 "Αποτυχία δημιουργίας συστήματος υποστήριξης του τύπου «%s» για το πηγαίο UID "
 "«%s»"
 
-#: ../src/libebackend/e-user-prompter-server.c:303
+#: ../src/libebackend/e-user-prompter-server.c:304
 #, c-format
 msgid "Extension dialog “%s” not found."
 msgstr "Δε βρέθηκε ο διάλογος επέκτασης «%s»."
@@ -6326,7 +6564,6 @@ msgstr "Έφτασε το όριο χρόνου"
 #. the third is the name of the OAuth service.
 #: ../src/libedataserver/e-oauth2-service.c:1208
 #, c-format
-#| msgid "Source '%s' (%s) is not a valid Google source"
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Η πηγή «%s» (%s) δεν είναι έγκυρη πηγή την υπηρεσία «%s» OAuth2"
 
@@ -6371,11 +6608,11 @@ msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
 
-#: ../src/libedataserver/e-soup-session.c:824
+#: ../src/libedataserver/e-soup-session.c:861
 msgid "Operation was cancelled"
 msgstr "Η λειτουργία ακυρώθηκε"
 
-#: ../src/libedataserver/e-soup-session.c:827
+#: ../src/libedataserver/e-soup-session.c:867
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Αποτυχία με σφάλμα HTTP %d: %s"
@@ -6629,8 +6866,8 @@ msgstr "Αποτυχία αποστολής δεδομένων"
 #: ../src/libedataserver/e-webdav-session.c:1350
 #: ../src/libedataserver/e-webdav-session.c:1425
 #: ../src/libedataserver/e-webdav-session.c:1529
-#: ../src/libedataserver/e-webdav-session.c:2784
-#: ../src/libedataserver/e-webdav-session.c:4036
+#: ../src/libedataserver/e-webdav-session.c:2778
+#: ../src/libedataserver/e-webdav-session.c:4030
 msgid "Failed to get input XML content"
 msgstr "Αποτυχία λήψης XML περιεχομένου εισαγωγής"
 
@@ -6674,89 +6911,89 @@ msgstr "Αποτυχία ανάγνωσης από την πηγή"
 msgid "Cannot rewind input stream: Not supported"
 msgstr "Δεν υποστηρίζεται η αποθήκευση διαπιστευτηρίων"
 
-#: ../src/libedataserver/e-webdav-session.c:2299
-#: ../src/libedataserver/e-webdav-session.c:2451
+#: ../src/libedataserver/e-webdav-session.c:2311
+#: ../src/libedataserver/e-webdav-session.c:2455
 msgid "Failed to put data"
 msgstr "Αποτυχία τοποθέτησης δεδομένων"
 
-#: ../src/libedataserver/e-webdav-session.c:2318
-#: ../src/libedataserver/e-webdav-session.c:2459
+#: ../src/libedataserver/e-webdav-session.c:2330
+#: ../src/libedataserver/e-webdav-session.c:2463
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr ""
 "Αποτυχία τοποθέτησης δεδομένων στον διακομιστή, κωδικός σφάλματος %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:2561
+#: ../src/libedataserver/e-webdav-session.c:2555
 msgid "Failed to delete resource"
 msgstr "Αποτυχία διαγραφής πηγής"
 
-#: ../src/libedataserver/e-webdav-session.c:2628
+#: ../src/libedataserver/e-webdav-session.c:2622
 msgid "Failed to copy resource"
 msgstr "Αποτυχία αντιγραφής πηγής"
 
-#: ../src/libedataserver/e-webdav-session.c:2690
+#: ../src/libedataserver/e-webdav-session.c:2684
 msgid "Failed to move resource"
 msgstr "Αποτυχία μετακίνησης πηγής"
 
-#: ../src/libedataserver/e-webdav-session.c:2795
+#: ../src/libedataserver/e-webdav-session.c:2789
 msgid "Failed to lock resource"
 msgstr "Αποτυχία κλειδώματος πηγής"
 
-#: ../src/libedataserver/e-webdav-session.c:2809
-#: ../src/libedataserver/e-webdav-session.c:3011
+#: ../src/libedataserver/e-webdav-session.c:2803
+#: ../src/libedataserver/e-webdav-session.c:3005
 msgid "Expected application/xml response, but none returned"
 msgstr "Αναμενόμενη απάντηση application/xml, αλλά καμία δεν επεστράφη"
 
-#: ../src/libedataserver/e-webdav-session.c:2812
-#: ../src/libedataserver/e-webdav-session.c:3014
+#: ../src/libedataserver/e-webdav-session.c:2806
+#: ../src/libedataserver/e-webdav-session.c:3008
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "Αναμενόμενη απάντηση application/xml, αλλά %s επεστράφη"
 
-#: ../src/libedataserver/e-webdav-session.c:2824
-#: ../src/libedataserver/e-webdav-session.c:3027
+#: ../src/libedataserver/e-webdav-session.c:2818
+#: ../src/libedataserver/e-webdav-session.c:3021
 msgid "Failed to parse XML data"
 msgstr "Αποτυχία ανάλυσης δεδομένων XML"
 
-#: ../src/libedataserver/e-webdav-session.c:2903
+#: ../src/libedataserver/e-webdav-session.c:2897
 msgid "Failed to refresh lock"
 msgstr "Αποτυχία ανανέωσης κλειδώματος"
 
-#: ../src/libedataserver/e-webdav-session.c:2962
+#: ../src/libedataserver/e-webdav-session.c:2956
 msgid "Failed to unlock"
 msgstr "Αποτυχία ξεκλειδώματος"
 
-#: ../src/libedataserver/e-webdav-session.c:2999
+#: ../src/libedataserver/e-webdav-session.c:2993
 #, fuzzy, c-format
 #| msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Αναπάντεχος κώδικας κατάστασης HTTP %d επέστρεψε (%s) για URI: %s"
 
-#: ../src/libedataserver/e-webdav-session.c:4046
+#: ../src/libedataserver/e-webdav-session.c:4040
 msgid "Failed to get access control list"
 msgstr "Αποτυχία λήψης λίστας ελέγχου πρόσβασης"
 
-#: ../src/libedataserver/e-webdav-session.c:4787
+#: ../src/libedataserver/e-webdav-session.c:4781
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:4794
+#: ../src/libedataserver/e-webdav-session.c:4788
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:4801
+#: ../src/libedataserver/e-webdav-session.c:4795
 msgid "Cannot store property-based Access Control Entry."
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:4808
+#: ../src/libedataserver/e-webdav-session.c:4802
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:4816
+#: ../src/libedataserver/e-webdav-session.c:4810
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:4875
+#: ../src/libedataserver/e-webdav-session.c:4869
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr ""
 
@@ -6910,7 +7147,7 @@ msgstr ""
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:602
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1067
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1070
 msgid "_Cancel"
 msgstr "Άκ_υρο"
 
@@ -6969,22 +7206,99 @@ msgid "Please enter the password for account “%s”."
 msgstr "Παρακαλούμε εισάγετε το συνθηματικό για τον λογαριασμό «%s»."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1068
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1071
 msgid "_OK"
 msgstr "Εντά_ξει"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:341
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:348
 msgid "_User Name:"
 msgstr "Όνομα _χρήστη:"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:353
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:360
 msgid "_Password:"
 msgstr "Κ_ωδικός πρόσβασης:"
 
 #. Remember password check
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:369
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:376
 msgid "_Add this password to your keyring"
 msgstr "Προσ_θήκη αυτού του κωδικού πρόσβασης στην κλειδοθήκη σας"
+
+#: ../src/libedataserverui/e-reminders-widget.c:225
+msgid "Add custom time…"
+msgstr "Προσθήκη προσαρμοσμένης ώρας…"
+
+#: ../src/libedataserverui/e-reminders-widget.c:229
+msgid "Clear custom times"
+msgstr "Εκκαθάριση προσαρμοσμένων ωρών"
+
+#: ../src/libedataserverui/e-reminders-widget.c:277
+msgctxt "overdue"
+msgid "now"
+msgstr "τώρα"
+
+#: ../src/libedataserverui/e-reminders-widget.c:295
+#, c-format
+msgid "%d year"
+msgid_plural "%d years"
+msgstr[0] "%d έτος"
+msgstr[1] "%d έτη"
+
+#: ../src/libedataserverui/e-reminders-widget.c:301
+msgctxt "overdue"
+msgid "overdue"
+msgstr ""
+
+#: ../src/libedataserverui/e-reminders-widget.c:912
+#, c-format
+msgid "Failed to launch URI “%s”:"
+msgstr "Αποτυχία εκκίνησης URI «%s»:"
+
+#: ../src/libedataserverui/e-reminders-widget.c:953
+msgid "Failed to dismiss reminder:"
+msgstr "Αποτυχία αποδέσμευσης υπενθύμισης:"
+
+#: ../src/libedataserverui/e-reminders-widget.c:974
+msgid "Failed to dismiss all:"
+msgstr "Αποτυχία αποδέσμευσης όλων:"
+
+#: ../src/libedataserverui/e-reminders-widget.c:1110
+msgid "Set a custom snooze time for"
+msgstr "Ορισμός προσαρμοσμένου χρόνου αναβολής για"
+
+#. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
+#: ../src/libedataserverui/e-reminders-widget.c:1123
+msgctxt "reminders-snooze"
+msgid "da_ys"
+msgstr "_ημέρες"
+
+#. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
+#: ../src/libedataserverui/e-reminders-widget.c:1139
+msgctxt "reminders-snooze"
+msgid "_hours"
+msgstr "ώ_ρες"
+
+#. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
+#: ../src/libedataserverui/e-reminders-widget.c:1155
+msgctxt "reminders-snooze"
+msgid "_minutes"
+msgstr "_λεπτά"
+
+#: ../src/libedataserverui/e-reminders-widget.c:1161
+msgid "_Add Snooze time"
+msgstr "_Προσθήκη χρόνου αναβολής"
+
+#: ../src/libedataserverui/e-reminders-widget.c:1428
+#: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
+msgid "_Dismiss"
+msgstr "_Ακύρωση"
+
+#: ../src/libedataserverui/e-reminders-widget.c:1429
+msgid "Dismiss _All"
+msgstr "Αποδέσμευση ό_λων"
+
+#: ../src/libedataserverui/e-reminders-widget.c:1431
+msgid "_Snooze"
+msgstr "_Αναβολή"
 
 #: ../src/libedataserverui/e-trust-prompt.c:111
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:117
@@ -7089,19 +7403,15 @@ msgctxt "WebDAVDiscover"
 msgid "Tasks"
 msgstr "Εργασίες"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:826
+#: ../src/libedataserverui/e-webdav-discover-widget.c:838
 msgid "Invalid URL"
 msgstr "Άκυρο URL"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:840
-msgid "User name not filled"
-msgstr "Δεν συμπληρώθηκε το όνομα χρήστη"
-
-#: ../src/libedataserverui/e-webdav-discover-widget.c:881
+#: ../src/libedataserverui/e-webdav-discover-widget.c:883
 msgid "Cancel"
 msgstr "Άκυρο"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:884
+#: ../src/libedataserverui/e-webdav-discover-widget.c:886
 msgid "Searching server sources..."
 msgstr "Αναζήτηση πηγών διακομιστή..."
 
@@ -7154,7 +7464,7 @@ msgstr "Αποτυχία εύρεσης στοιχείου λογαριασμο�
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Αποτυχία εύρεσης ASUrl και OABUrl σε απόκριση αυτόματης εύρεσης"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1428
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1405
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -7163,12 +7473,12 @@ msgstr ""
 "Αδυναμία εύρεσης αντίστοιχου λογαριασμού στην υπηρεσία org.gnome."
 "OnlineAccounts από την οποία παίρνετε ένα διακριτικό πρόσβασης για το «%s»"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1478
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1455
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Αποτυχία λήψης διακριτικού πρόσβασης για το «%s»: "
 
-#: ../src/modules/google-backend/module-google-backend.c:587
+#: ../src/modules/google-backend/module-google-backend.c:589
 #: ../src/modules/ubuntu-online-accounts/contacts.service-type.in.in.h:1
 #: ../src/services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
@@ -7284,6 +7594,67 @@ msgid ""
 "disable, any other value is to use compile-time option"
 msgstr ""
 
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:223
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:250
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:755
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:964
+msgid "Reminders"
+msgstr "Υπενθυμίσεις"
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:362
+msgid "Warning"
+msgstr "Προειδοποίηση"
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:363
+msgid "_No"
+msgstr "Ό_χι"
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:364
+msgid "_Yes"
+msgstr "_Ναι"
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:368
+#, c-format
+msgid ""
+"A calendar reminder is about to trigger. This reminder is configured to run "
+"the following program:\n"
+"\n"
+"        %s\n"
+"\n"
+"Are you sure you want to run this program?"
+msgstr ""
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:382
+msgid "Do not ask me about this program again"
+msgstr ""
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:660
+msgid "Display reminders in notification area _only"
+msgstr ""
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:661
+msgid "Keep reminder notification window always on _top"
+msgstr ""
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:662
+msgid "Display reminders for _completed tasks"
+msgstr ""
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:663
+msgid "Display reminders for _past events"
+msgstr ""
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:677
+msgid "Reminders Options:"
+msgstr "Επιλογές υπενθυμίσεων:"
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:771
+#, c-format
+msgid "You have %d reminder"
+msgid_plural "You have %d reminders"
+msgstr[0] "Έχετε %d υπενθύμιση"
+msgstr[1] "Έχετε %d υπενθυμίσεις"
+
 #: ../src/services/evolution-source-registry/builtin/birthdays.source.in.h:1
 msgid "Birthdays & Anniversaries"
 msgstr "Γενέθλια και επέτειοι"
@@ -7291,6 +7662,10 @@ msgstr "Γενέθλια και επέτειοι"
 #: ../src/services/evolution-source-registry/builtin/caldav-stub.source.in.h:1
 msgid "CalDAV"
 msgstr "CalDAV"
+
+#: ../src/services/evolution-source-registry/builtin/carddav-stub.source.in.h:1
+msgid "CardDAV"
+msgstr "CardDAV"
 
 #: ../src/services/evolution-source-registry/builtin/google-stub.source.in.h:1
 msgid "Google"
@@ -7321,18 +7696,10 @@ msgstr "Καιρός"
 msgid "On The Web"
 msgstr "Στον Ιστό"
 
-#: ../src/services/evolution-source-registry/builtin/webdav-stub.source.in.h:1
-msgid "CardDAV"
-msgstr "CardDAV"
-
 #: ../src/services/evolution-source-registry/evolution-source-registry.c:41
 msgid "Don’t migrate user data from previous versions of Evolution"
 msgstr ""
 "Να μην μεταφερθούν δεδομένα χρήστη από προηγούμενες εκδόσεις του Evolution"
-
-#: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
-msgid "_Dismiss"
-msgstr "_Ακύρωση"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:69
 #: ../src/tools/addressbook-export/addressbook-export.c:781
@@ -7538,6 +7905,9 @@ msgstr "Αποτυχία σύνδεσης με το μητρώο προέλευ�
 msgid "No sources had been found\n"
 msgstr "Δεν βρέθηκαν πηγές\n"
 
+#~ msgid "User name not filled"
+#~ msgstr "Δεν συμπληρώθηκε το όνομα χρήστη"
+
 #~ msgid "Querying for updated contacts…"
 #~ msgstr "Ερώτημα για ενημερωμένες επαφές…"
 
@@ -7669,10 +8039,6 @@ msgstr "Δεν βρέθηκαν πηγές\n"
 
 #~ msgid "WebDAV"
 #~ msgstr "WebDAV"
-
-#~| msgid "Failed on message %d"
-#~ msgid "Failed to issue DONE"
-#~ msgstr "Αποτυχία έκδοσης DONE"
 
 #~ msgid "Server disconnected"
 #~ msgstr "Ο διακομιστής αποσυνδέθηκε"
@@ -8266,9 +8632,6 @@ msgstr "Δεν βρέθηκαν πηγές\n"
 #~ msgid "Could not open cache directory: "
 #~ msgstr "Αδύνατο το άνοιγμα του καταλόγου κρυφής μνήμης: "
 
-#~ msgid "Failed to cache message %s: %s"
-#~ msgstr "Αποτυχία του μηνύματος κρυφής μνήμης %s: %s"
-
 #~ msgid "Failed to cache message %s: "
 #~ msgstr "Αποτυχία του μηνύματος κρυφής μνήμης %s: "
 
@@ -8607,9 +8970,6 @@ msgstr "Δεν βρέθηκαν πηγές\n"
 #~ msgid "Checking for deleted messages %s"
 #~ msgstr "Έλεγχος για διαγραμμένα μηνύματα %s"
 
-#~ msgid "Could not get message"
-#~ msgstr "Δεν ήταν δυνατή η λήψη μηνύματος"
-
 #~ msgid "Cannot append message to folder '%s': %s"
 #~ msgstr "Δεν είναι δυνατή η προσθήκη του μηνύματος στο φάκελο '%s': %s"
 
@@ -8833,9 +9193,6 @@ msgstr "Δεν βρέθηκαν πηγές\n"
 #~ msgid "Unsupported operation: search by UIDs: for %s"
 #~ msgstr ""
 #~ "Μη υποστηριζόμενη λειτουργία: αναζήτηση βάσει ταυτοτήτων χρήστη: για %s"
-
-#~ msgid "Learning junk"
-#~ msgstr "Εκμάθηση ανεπιθύμητης αλληλογραφίας"
 
 #~ msgid "Learning non-junk"
 #~ msgstr "Εκμάθηση επιθυμητής αλληλογραφίας"
