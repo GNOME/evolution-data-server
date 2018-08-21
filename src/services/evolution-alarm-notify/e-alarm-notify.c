@@ -223,7 +223,7 @@ e_alarm_notify_display (EAlarmNotify *an,
 		notification = g_notification_new (_("Reminders"));
 		g_notification_set_body (notification, description);
 
-		icon_info = gtk_icon_theme_lookup_icon (gtk_icon_theme_get_default (), "appointment-soon", GTK_ICON_SIZE_DIALOG, 0);
+		icon_info = gtk_icon_theme_lookup_icon (gtk_icon_theme_get_default (), "appointment-soon", 48, 0);
 		if (icon_info) {
 			const gchar *filename;
 
