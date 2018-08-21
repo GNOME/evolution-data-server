@@ -947,12 +947,14 @@ imapx_parse_body_fields (CamelIMAPXInputStream *stream,
                          GCancellable *cancellable,
                          GError **error)
 {
+	gint tok;
+	guint len;
 	guchar *token;
 	gchar  *type;
 	gsize type_len;
 	guint64 number;
 	struct _CamelMessageContentInfo *cinfo;
-	gboolean success;
+	gboolean success, is_broken_response = FALSE;
 
 	/* body_fields     ::= body_fld_param SPACE body_fld_id SPACE
 	 * body_fld_desc SPACE body_fld_enc SPACE
@@ -971,11 +973,26 @@ imapx_parse_body_fields (CamelIMAPXInputStream *stream,
 	type = alloca (type_len);
 	g_strlcpy (type, (gchar *) token, type_len);
 
-	success = camel_imapx_input_stream_astring (
-		stream, &token, cancellable, error);
+	/* Peek what follows, as Gmail can return invalid multipart/mixed response
+	   when it contains another multipart/mixed with the same boundary. */
+	tok = camel_imapx_input_stream_token (stream, &token, &len, cancellable, error);
 
-	if (!success)
+	if (tok == IMAPX_TOK_ERROR)
 		goto error;
+
+	camel_imapx_input_stream_ungettoken (stream, tok, token, len);
+
+	if (tok == '(') {
+		/* Broken response, has missing 'type', contains only 'subtype' */
+		is_broken_response = TRUE;
+		token = (guchar *) type;
+		type = (gchar *) "multipart";
+	} else {
+		success = camel_imapx_input_stream_astring (stream, &token, cancellable, error);
+
+		if (!success)
+			goto error;
+	}
 
 	cinfo->type = camel_content_type_new (type, (gchar *) token);
 
@@ -984,6 +1001,36 @@ imapx_parse_body_fields (CamelIMAPXInputStream *stream,
 
 	if (!success)
 		goto error;
+
+	if (is_broken_response) {
+		gint nested_level = 0;
+
+		/* Ignore everything until the last ')' */
+		do {
+			tok = camel_imapx_input_stream_token (stream, &token, &len, cancellable, error);
+
+			if (tok == IMAPX_TOK_ERROR)
+				goto error;
+
+			if (tok == '(') {
+				nested_level++;
+			} else if (tok == ')' && nested_level > 0) {
+				tok = 0; /* To not be used as the stop condition */
+				nested_level--;
+			} else if (tok == IMAPX_TOK_LITERAL) {
+				camel_imapx_input_stream_set_literal (stream, len);
+
+				do {
+					tok = camel_imapx_input_stream_getl (stream, &token, &len, cancellable, error);
+				} while (tok > 0);
+			}
+		} while ((nested_level > 0 || tok != ')') && tok != IMAPX_TOK_ERROR);
+
+		if (tok == ')')
+			camel_imapx_input_stream_ungettoken (stream, tok, token, len);
+
+		return cinfo;
+	}
 
 	/* body_fld_id     ::= nstring */
 	success = camel_imapx_input_stream_nstring (
@@ -1402,8 +1449,8 @@ imapx_parse_body (CamelIMAPXInputStream *stream,
 				stream, tok, token, len);
 
 			if (tok == '(' || tok == IMAPX_TOK_TOKEN) {
-				dinfo = imapx_parse_ext_optional (
-					stream, cancellable, &local_error);
+				if (tok == '(')
+					dinfo = imapx_parse_ext_optional (stream, cancellable, &local_error);
 
 				if (local_error)
 					goto error;
@@ -1505,8 +1552,8 @@ imapx_parse_body (CamelIMAPXInputStream *stream,
 			camel_imapx_input_stream_ungettoken (
 				stream, tok, token, len);
 			if (tok == '(' || tok == IMAPX_TOK_TOKEN) {
-				dinfo = imapx_parse_ext_optional (
-					stream, cancellable, &local_error);
+				if (tok == '(')
+					dinfo = imapx_parse_ext_optional (stream, cancellable, &local_error);
 
 				if (local_error)
 					goto error;
