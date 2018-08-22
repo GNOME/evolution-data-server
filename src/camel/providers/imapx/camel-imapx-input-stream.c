@@ -826,8 +826,6 @@ camel_imapx_input_stream_token (CamelIMAPXInputStream *is,
 					*len = o - is->priv->tokenbuf;
 					return IMAPX_TOK_STRING;
 				}
-				if (c == '\n' || c == '\r')
-					goto protocol_error;
 				if (o >= oe) {
 					camel_imapx_input_stream_grow (is, 0, &p, &o);
 					oe = is->priv->tokenbuf + is->priv->bufsize - 1;
