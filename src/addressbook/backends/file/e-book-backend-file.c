@@ -652,8 +652,20 @@ e_book_backend_file_new_revision (EBookBackendFile *bf,
 
 	t = time (NULL);
 	tm = gmtime (&t);
-	if (tm)
-		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+	if (tm) {
+		struct tm ttm = *tm;
+
+		if (!with_counter && bf->priv->revision_guards) {
+			gint value = g_atomic_int_add (&bf->priv->rev_counter, 1);
+
+			/* Artificial time, which encodes the revision counter */
+			ttm.tm_sec = value % 60;
+			ttm.tm_min = (value / 60 ) % 60;
+			ttm.tm_hour = (value / 3600) % 24;
+		}
+
+		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", &ttm);
+	}
 
 	if (with_counter)
 		return g_strdup_printf ("%s(%d)", time_string, g_atomic_int_add (&bf->priv->rev_counter, 1));
