@@ -1007,6 +1007,25 @@ vee_folder_get_message_sync (CamelFolder *folder,
 	return msg;
 }
 
+static CamelMimeMessage *
+vee_folder_get_message_cached (CamelFolder *folder,
+			       const gchar *message_uid,
+			       GCancellable *cancellable)
+{
+	CamelVeeMessageInfo *mi;
+	CamelMimeMessage *msg = NULL;
+
+	mi = (CamelVeeMessageInfo *) camel_folder_summary_get (camel_folder_get_folder_summary (folder), message_uid);
+	if (mi) {
+		msg = camel_folder_get_message_cached (
+			camel_vee_message_info_get_original_folder (mi), camel_message_info_get_uid (CAMEL_MESSAGE_INFO (mi)) + 8,
+			cancellable);
+		g_clear_object (&mi);
+	}
+
+	return msg;
+}
+
 static gboolean
 vee_folder_refresh_info_sync (CamelFolder *folder,
                               GCancellable *cancellable,
@@ -1289,6 +1308,7 @@ camel_vee_folder_class_init (CamelVeeFolderClass *class)
 	folder_class->append_message_sync = vee_folder_append_message_sync;
 	folder_class->expunge_sync = vee_folder_expunge_sync;
 	folder_class->get_message_sync = vee_folder_get_message_sync;
+	folder_class->get_message_cached = vee_folder_get_message_cached;
 	folder_class->refresh_info_sync = vee_folder_refresh_info_sync;
 	folder_class->synchronize_sync = vee_folder_synchronize_sync;
 	folder_class->transfer_messages_to_sync = vee_folder_transfer_messages_to_sync;
