@@ -206,7 +206,7 @@ eval_eq (struct _CamelSExp *f,
 			} else {
 				g_warn_if_reached ();
 			}
-		} else if (!strstr (str->str, "completed-on") && !strstr (str->str, "follow-up")) {
+		} else if (!strstr (str->str, "(followup_flag ") && !strstr (str->str, "(followup_completed_on ")) {
 			gboolean ut = FALSE;
 
 			if (strstr (str->str, "usertags"))
@@ -528,10 +528,11 @@ user_tag (struct _CamelSExp *f,
 
 	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_STRING);
 	/* Hacks no otherway to fix these really :( */
+	/* If the "(followup..." expression changes, update also eval_eq() appropriately. */
 	if (g_strcmp0 (argv[0]->value.string, "completed-on") == 0)
-		r->value.string = g_strdup_printf ("(usertags LIKE '%ccompleted-on 0%c' AND usertags LIKE '%ccompleted-on%c')", '%', '%', '%', '%');
+		r->value.string = g_strdup ("(followup_completed_on IS NULL OR followup_completed_on='')");
 	else if (g_strcmp0 (argv[0]->value.string, "follow-up") == 0)
-		r->value.string = g_strdup_printf ("usertags NOT LIKE '%cfollow-up%c'", '%', '%');
+		r->value.string = g_strdup ("(followup_flag IS NULL)");
 	else
 		r->value.string = g_strdup ("usertags");
 
