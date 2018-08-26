@@ -7,6 +7,7 @@
 # İşbaran Akçayır <isbaran@gmail.com>, 2015.
 # Hanifi Çakmak <hanifi0507@gmail.com>, 2017.
 # Muhammet Kara <muhammetk@gmail.com>, 2011, 2014, 2015, 2017, 2018.
+# Çağatay Yiğit Şahin <cyigitsahin@outlook.com>, 2018.
 # Emin Tufan Çetin <etcetin@gmail.com>, 2017, 2018.
 #
 msgid ""
@@ -14,8 +15,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.tr\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2018-08-21 16:17+0000\n"
-"PO-Revision-Date: 2018-08-21 21:09+0300\n"
+"POT-Creation-Date: 2018-08-24 09:32+0000\n"
+"PO-Revision-Date: 2018-08-26 19:38+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -124,31 +125,31 @@ msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "“%s” kaynağı için hardlink oluşturulamadı: %s"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:524
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1260
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1272
 msgid "No UID in the contact"
 msgstr "Bağlantıda UID yok"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:856
+#: ../src/addressbook/backends/file/e-book-backend-file.c:868
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "Eklenen bağlantılarda çakışan UIDʼler bulundu"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:994
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1006
 msgid "Loading..."
 msgstr "Yükleniyor..."
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:996
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1008
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4436
 msgid "Searching..."
 msgstr "Aranıyor..."
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1288
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1300
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr "“%s” kişisi eşlenmemiş bir sürümle düzenlenmeye çalışıldı"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1479
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1564
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1491
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1576
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3085
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7365
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7434
@@ -156,24 +157,24 @@ msgstr "“%s” kişisi eşlenmemiş bir sürümle düzenlenmeye çalışıldı
 msgid "Contact “%s” not found"
 msgstr "“%s” kişisi bulunamadı"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1624
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1705
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1636
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1717
 #, c-format
 msgid "Query “%s” not supported"
 msgstr "“%s” sorgusu desteklenmiyor"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1633
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1714
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1645
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1726
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr "Geçersiz Sorgu “%s”"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1979
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1991
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:2015
 msgid "Requested to delete an unrelated cursor"
 msgstr "İlgisiz bir imlecin silinmesi istendi"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:2050
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2062
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Eski veri tabanının “%s”den “%s”e adlandırılması başarısız: %s"
@@ -1721,37 +1722,37 @@ msgstr "31."
 #, c-format
 msgid "every day forever"
 msgid_plural "every %d days forever"
-msgstr[0] "her %d gün sürekli"
+msgstr[0] "her %d günde bir sürekli"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4946
 #, c-format
 msgid "Every day forever"
 msgid_plural "Every %d days forever"
-msgstr[0] "Her %d gün sürekli"
+msgstr[0] "Her %d günde bir sürekli"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4954
 #, c-format
 msgid "every day"
 msgid_plural "every %d days"
-msgstr[0] "her %d gün"
+msgstr[0] "her %d günde bir"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4960
 #, c-format
 msgid "Every day"
 msgid_plural "Every %d days"
-msgstr[0] "Her %d gün"
+msgstr[0] "Her %d günde bir"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5050
 #, c-format
 msgid "every week"
 msgid_plural "every %d weeks"
-msgstr[0] "her %d hafta"
+msgstr[0] "her %d haftada bir"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5056
 #, c-format
 msgid "Every week"
 msgid_plural "Every %d weeks"
-msgstr[0] "Her %d hafta"
+msgstr[0] "Her %d haftada bir"
 
 #. Translators: This is used to merge set of week day names in a recurrence, which can contain any
 #. of the week day names. The string always starts with "on DAYNAME", then it can continue either
@@ -1762,553 +1763,551 @@ msgstr[0] "Her %d hafta"
 #, c-format
 msgctxt "recur-description-dayname"
 msgid "%1$s%2$s"
-msgstr ""
+msgstr "%1$s%2$s"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5087
 msgctxt "recur-description"
 msgid "on Sunday"
-msgstr ""
+msgstr "pazar"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5088
 msgctxt "recur-description"
 msgid ", Sunday"
-msgstr ""
+msgstr ", pazar"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5089
 msgctxt "recur-description"
 msgid " and Sunday"
-msgstr ""
+msgstr " ve pazar"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5092
 msgctxt "recur-description"
 msgid "on Monday"
-msgstr ""
+msgstr "pazartesi"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5093
 msgctxt "recur-description"
 msgid ", Monday"
-msgstr ""
+msgstr ", pazartesi"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5094
 msgctxt "recur-description"
 msgid " and Monday"
-msgstr ""
+msgstr " ve pazartesi"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5097
 msgctxt "recur-description"
 msgid "on Tuesday"
-msgstr ""
+msgstr "salı"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5098
 msgctxt "recur-description"
 msgid ", Tuesday"
-msgstr ""
+msgstr ", salı"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5099
 msgctxt "recur-description"
 msgid " and Tuesday"
-msgstr ""
+msgstr " ve salı"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5102
 msgctxt "recur-description"
 msgid "on Wednesday"
-msgstr ""
+msgstr "çarşamba"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5103
 msgctxt "recur-description"
 msgid ", Wednesday"
-msgstr ""
+msgstr ", çarşamba"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5104
 msgctxt "recur-description"
 msgid " and Wednesday"
-msgstr ""
+msgstr " ve çarşamba"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5107
 msgctxt "recur-description"
 msgid "on Thursday"
-msgstr ""
+msgstr "perşembe"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5108
 msgctxt "recur-description"
 msgid ", Thursday"
-msgstr ""
+msgstr ", perşembe"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5109
 msgctxt "recur-description"
 msgid " and Thursday"
-msgstr ""
+msgstr " ve perşembe"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5112
-#| msgctxt "CategoryName"
-#| msgid "Holiday"
 msgctxt "recur-description"
 msgid "on Friday"
-msgstr "Tat"
+msgstr "cuma"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5113
 msgctxt "recur-description"
 msgid ", Friday"
-msgstr ""
+msgstr ", cuma"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5114
 msgctxt "recur-description"
 msgid " and Friday"
-msgstr ""
+msgstr " ve cuma"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5117
 msgctxt "recur-description"
 msgid "on Saturday"
-msgstr ""
+msgstr "cumartesi"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5118
 msgctxt "recur-description"
 msgid ", Saturday"
-msgstr ""
+msgstr ", cumartesi"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5119
 msgctxt "recur-description"
 msgid " and Saturday"
-msgstr ""
+msgstr " ve cumartesi"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5252
 #, c-format
 msgid "every month"
 msgid_plural "every %d months"
-msgstr[0] ""
+msgstr[0] "her %d ayda bir"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5258
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
-msgstr[0] ""
+msgstr[0] "Her %d ayda bir"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5268
 #: ../src/calendar/libecal/e-cal-recur.c:5589
 msgctxt "recur-description"
 msgid "on the last Sunday"
-msgstr ""
+msgstr "son pazar"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5271
 #: ../src/calendar/libecal/e-cal-recur.c:5439
 msgctxt "recur-description"
 msgid "on the last Monday"
-msgstr ""
+msgstr "son pazartesi"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5274
 #: ../src/calendar/libecal/e-cal-recur.c:5464
 msgctxt "recur-description"
 msgid "on the last Tuesday"
-msgstr ""
+msgstr "son salı"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5277
 #: ../src/calendar/libecal/e-cal-recur.c:5489
 msgctxt "recur-description"
 msgid "on the last Wednesday"
-msgstr ""
+msgstr "son çarşamba"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5280
 #: ../src/calendar/libecal/e-cal-recur.c:5514
 msgctxt "recur-description"
 msgid "on the last Thursday"
-msgstr ""
+msgstr "son perşembe"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5283
 #: ../src/calendar/libecal/e-cal-recur.c:5539
 msgctxt "recur-description"
 msgid "on the last Friday"
-msgstr ""
+msgstr "son cuma"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5286
 #: ../src/calendar/libecal/e-cal-recur.c:5564
 msgctxt "recur-description"
 msgid "on the last Saturday"
-msgstr ""
+msgstr "son cumartesi"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5296
 msgctxt "recur-description"
 msgid "on the 1st day"
-msgstr ""
+msgstr "1. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5300
 msgctxt "recur-description"
 msgid "on the 2nd day"
-msgstr ""
+msgstr "2. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5304
 msgctxt "recur-description"
 msgid "on the 3rd day"
-msgstr ""
+msgstr "3. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5308
 msgctxt "recur-description"
 msgid "on the 4th day"
-msgstr ""
+msgstr "4. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5312
 msgctxt "recur-description"
 msgid "on the 5th day"
-msgstr ""
+msgstr "5. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5316
 msgctxt "recur-description"
 msgid "on the 6th day"
-msgstr ""
+msgstr "6. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5320
 msgctxt "recur-description"
 msgid "on the 7th day"
-msgstr ""
+msgstr "7. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5324
 msgctxt "recur-description"
 msgid "on the 8th day"
-msgstr ""
+msgstr "8. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5328
 msgctxt "recur-description"
 msgid "on the 9th day"
-msgstr ""
+msgstr "9. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5332
 msgctxt "recur-description"
 msgid "on the 10th day"
-msgstr ""
+msgstr "10. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5336
 msgctxt "recur-description"
 msgid "on the 11th day"
-msgstr ""
+msgstr "11. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5340
 msgctxt "recur-description"
 msgid "on the 12th day"
-msgstr ""
+msgstr "12. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5344
 msgctxt "recur-description"
 msgid "on the 13th day"
-msgstr ""
+msgstr "13. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5348
 msgctxt "recur-description"
 msgid "on the 14th day"
-msgstr ""
+msgstr "14. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5352
 msgctxt "recur-description"
 msgid "on the 15th day"
-msgstr ""
+msgstr "15. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5356
 msgctxt "recur-description"
 msgid "on the 16th day"
-msgstr ""
+msgstr "16. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5360
 msgctxt "recur-description"
 msgid "on the 17th day"
-msgstr ""
+msgstr "17. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5364
 msgctxt "recur-description"
 msgid "on the 18th day"
-msgstr ""
+msgstr "18. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5368
 msgctxt "recur-description"
 msgid "on the 19th day"
-msgstr ""
+msgstr "19. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5372
 msgctxt "recur-description"
 msgid "on the 20th day"
-msgstr ""
+msgstr "20. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5376
 msgctxt "recur-description"
 msgid "on the 21st day"
-msgstr ""
+msgstr "21. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5380
 msgctxt "recur-description"
 msgid "on the 22nd day"
-msgstr ""
+msgstr "22. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5384
 msgctxt "recur-description"
 msgid "on the 23rd day"
-msgstr ""
+msgstr "23. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5388
 msgctxt "recur-description"
 msgid "on the 24th day"
-msgstr ""
+msgstr "24. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5392
 msgctxt "recur-description"
 msgid "on the 25th day"
-msgstr ""
+msgstr "25. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5396
 msgctxt "recur-description"
 msgid "on the 26th day"
-msgstr ""
+msgstr "26. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5400
 msgctxt "recur-description"
 msgid "on the 27th day"
-msgstr ""
+msgstr "27. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5404
 msgctxt "recur-description"
 msgid "on the 28th day"
-msgstr ""
+msgstr "28. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5408
 msgctxt "recur-description"
 msgid "on the 29th day"
-msgstr ""
+msgstr "29. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5412
 msgctxt "recur-description"
 msgid "on the 30th day"
-msgstr ""
+msgstr "30. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5416
 msgctxt "recur-description"
 msgid "on the 31st day"
-msgstr ""
+msgstr "31. gün"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5424
 msgctxt "recur-description"
 msgid "on the first Monday"
-msgstr ""
+msgstr "birinci pazartesi"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5427
 msgctxt "recur-description"
 msgid "on the second Monday"
-msgstr ""
+msgstr "ikinci pazartesi"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5430
 msgctxt "recur-description"
 msgid "on the third Monday"
-msgstr ""
+msgstr "üçüncü pazartesi"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5433
 msgctxt "recur-description"
 msgid "on the fourth Monday"
-msgstr ""
+msgstr "dördüncü pazartesi"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5436
 msgctxt "recur-description"
 msgid "on the fifth Monday"
-msgstr ""
+msgstr "beşinci pazartesi"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5449
 msgctxt "recur-description"
 msgid "on the first Tuesday"
-msgstr ""
+msgstr "birinci salı"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5452
 msgctxt "recur-description"
 msgid "on the second Tuesday"
-msgstr ""
+msgstr "ikinci salı"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5455
 msgctxt "recur-description"
 msgid "on the third Tuesday"
-msgstr ""
+msgstr "üçüncü salı"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5458
 msgctxt "recur-description"
 msgid "on the fourth Tuesday"
-msgstr ""
+msgstr "dördüncü salı"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5461
 msgctxt "recur-description"
 msgid "on the fifth Tuesday"
-msgstr ""
+msgstr "beşinci salı"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5474
 msgctxt "recur-description"
 msgid "on the first Wednesday"
-msgstr ""
+msgstr "birinci çarşamba"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5477
 msgctxt "recur-description"
 msgid "on the second Wednesday"
-msgstr ""
+msgstr "ikinci  çarşamba"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5480
 msgctxt "recur-description"
 msgid "on the third Wednesday"
-msgstr ""
+msgstr "üçüncü çarşamba"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5483
 msgctxt "recur-description"
 msgid "on the fourth Wednesday"
-msgstr ""
+msgstr "dördüncü çarşamba"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5486
 msgctxt "recur-description"
 msgid "on the fifth Wednesday"
-msgstr ""
+msgstr "beşinci çarşamba"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5499
 msgctxt "recur-description"
 msgid "on the first Thursday"
-msgstr ""
+msgstr "birinci perşembe"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5502
 msgctxt "recur-description"
 msgid "on the second Thursday"
-msgstr ""
+msgstr "ikinci perşembe"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5505
 msgctxt "recur-description"
 msgid "on the third Thursday"
-msgstr ""
+msgstr "üçüncü perşembe"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5508
 msgctxt "recur-description"
 msgid "on the fourth Thursday"
-msgstr ""
+msgstr "dördüncü perşembe"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5511
 msgctxt "recur-description"
 msgid "on the fifth Thursday"
-msgstr ""
+msgstr "beşinci perşembe"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5524
 msgctxt "recur-description"
 msgid "on the first Friday"
-msgstr ""
+msgstr "birinci cuma"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5527
 msgctxt "recur-description"
 msgid "on the second Friday"
-msgstr ""
+msgstr "ikinci cuma"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5530
 msgctxt "recur-description"
 msgid "on the third Friday"
-msgstr ""
+msgstr "üçüncü cuma"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5533
 msgctxt "recur-description"
 msgid "on the fourth Friday"
-msgstr ""
+msgstr "dördüncü cuma"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5536
 msgctxt "recur-description"
 msgid "on the fifth Friday"
-msgstr ""
+msgstr "beşinci cuma"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5549
 msgctxt "recur-description"
 msgid "on the first Saturday"
-msgstr ""
+msgstr "birinci cumartesi"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5552
 msgctxt "recur-description"
 msgid "on the second Saturday"
-msgstr ""
+msgstr "ikinci cumartesi"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5555
 msgctxt "recur-description"
 msgid "on the third Saturday"
-msgstr ""
+msgstr "üçüncü cumartesi"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5558
 msgctxt "recur-description"
 msgid "on the fourth Saturday"
-msgstr ""
+msgstr "dördüncü cumartesi"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5561
 msgctxt "recur-description"
 msgid "on the fifth Saturday"
-msgstr ""
+msgstr "beşinci cumartesi"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5574
 msgctxt "recur-description"
 msgid "on the first Sunday"
-msgstr ""
+msgstr "birinci pazar"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5577
 msgctxt "recur-description"
 msgid "on the second Sunday"
-msgstr ""
+msgstr "ikinci pazar"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5580
 msgctxt "recur-description"
 msgid "on the third Sunday"
-msgstr ""
+msgstr "üçüncü pazar"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5583
 msgctxt "recur-description"
 msgid "on the fourth Sunday"
-msgstr ""
+msgstr "dördüncü pazar"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5586
 msgctxt "recur-description"
 msgid "on the fifth Sunday"
-msgstr ""
+msgstr "beşinci pazar"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5615
 #, c-format
 msgid "every year forever"
 msgid_plural "every %d years forever"
-msgstr[0] ""
+msgstr[0] "sonsuza dek her %d yılda bir"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5621
 #, c-format
 msgid "Every year forever"
 msgid_plural "Every %d years forever"
-msgstr[0] ""
+msgstr[0] "Sonsuza dek her %d yılda bir"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5629
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
-msgstr[0] ""
+msgstr[0] "her %d yılda bir"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5635
 #, c-format
 msgid "Every year"
 msgid_plural "Every %d years"
-msgstr[0] ""
+msgstr[0] "Her %d yılda bir"
 
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
@@ -2317,7 +2316,7 @@ msgstr[0] ""
 #, c-format
 msgid "for one occurrence"
 msgid_plural "for %d occurrences"
-msgstr[0] ""
+msgstr[0] "%d kez"
 
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The '%s' is replaced with actual date, thus it can create something like
@@ -2327,7 +2326,7 @@ msgstr[0] ""
 #, c-format
 msgctxt "recur-description"
 msgid "until %s"
-msgstr ""
+msgstr "%s tarihine dek"
 
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
@@ -2335,7 +2334,7 @@ msgstr ""
 #: ../src/calendar/libecal/e-cal-recur.c:5695
 msgctxt "recur-description"
 msgid "forever"
-msgstr ""
+msgstr "sonsuza dek"
 
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
 #. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
@@ -2344,7 +2343,7 @@ msgstr ""
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s %3$s"
-msgstr ""
+msgstr "%1$s %2$s %3$s"
 
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
 #. the '%2$s' is like "for 10 occurrences", constructing together one sentence:
@@ -2353,7 +2352,7 @@ msgstr ""
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s"
-msgstr ""
+msgstr "%1$s %2$s"
 
 #. Translators: This text is appended at the end of complete recur description using "%s%s" in
 #. context "recur-description"
@@ -2361,7 +2360,7 @@ msgstr ""
 #, c-format
 msgid ", with one exception"
 msgid_plural ", with %d exceptions"
-msgstr[0] ""
+msgstr[0] ", %d istisnayla"
 
 #. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
 #. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
@@ -2370,33 +2369,32 @@ msgstr[0] ""
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s%2$s"
-msgstr ""
+msgstr "%1$s%2$s"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5746
 #: ../src/calendar/libecal/e-cal-recur.c:5769
 msgctxt "recur-description"
 msgid "The meeting recurs"
-msgstr ""
+msgstr "toplantı yinelenir"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5748
 #: ../src/calendar/libecal/e-cal-recur.c:5771
-#| msgid "Untitled appointment"
 msgctxt "recur-description"
 msgid "The appointment recurs"
-msgstr ""
+msgstr "randevu yinelenir"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5751
 #: ../src/calendar/libecal/e-cal-recur.c:5774
 msgctxt "recur-description"
 msgid "The task recurs"
-msgstr ""
+msgstr "görev yinelenir"
 
 #. if (icalcomponent_isa (icalcomp) == ICAL_VJOURNAL_COMPONENT)
 #: ../src/calendar/libecal/e-cal-recur.c:5753
 #: ../src/calendar/libecal/e-cal-recur.c:5776
 msgctxt "recur-description"
 msgid "The memo recurs"
-msgstr ""
+msgstr "not yinelenir"
 
 #. Translators: This adds a prefix in front of the complete recurrence description.
 #. The '%1$s' is replaced with something like "The meeting recurs" and
@@ -2406,7 +2404,7 @@ msgstr ""
 #, c-format
 msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
-msgstr ""
+msgstr "%2$s %1$s"
 
 #: ../src/calendar/libecal/e-cal-util.c:746
 #: ../src/calendar/libecal/e-cal-util.c:773
@@ -2418,7 +2416,7 @@ msgstr "Yüksek"
 #: ../src/calendar/libecal/e-cal-util.c:775
 msgctxt "Priority"
 msgid "Normal"
-msgstr "Normal"
+msgstr "Olağan"
 
 #: ../src/calendar/libecal/e-cal-util.c:750
 #: ../src/calendar/libecal/e-cal-util.c:777
@@ -2437,35 +2435,35 @@ msgstr "Tanımlanmamış"
 #, c-format
 msgid "%d week"
 msgid_plural "%d weeks"
-msgstr[0] ""
+msgstr[0] "%d hafta"
 
 #: ../src/calendar/libecal/e-cal-util.c:822
 #: ../src/libedataserverui/e-reminders-widget.c:287
 #, c-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
+msgstr[0] "%d gün"
 
 #: ../src/calendar/libecal/e-cal-util.c:831
 #: ../src/libedataserverui/e-reminders-widget.c:283
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] ""
+msgstr[0] "%d saat"
 
 #: ../src/calendar/libecal/e-cal-util.c:840
 #: ../src/libedataserverui/e-reminders-widget.c:279
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
+msgstr[0] "%d dakika"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
 #: ../src/calendar/libecal/e-cal-util.c:845
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
-msgstr[0] ""
+msgstr[0] "%d saniye"
 
 #: ../src/calendar/libecal/e-reminder-watcher.c:2522
 msgid "No Summary"
@@ -2476,20 +2474,18 @@ msgstr "Özet Yok"
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
 #: ../src/calendar/libecal/e-reminder-watcher.c:2538
 #, c-format
-#| msgid "%s (%s)"
 msgctxt "overdue"
 msgid "%s (%s) %s"
-msgstr ""
+msgstr "%s (%s) %s"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
 #: ../src/calendar/libecal/e-reminder-watcher.c:2543
 #, c-format
-#| msgid "%s (%s)"
 msgctxt "overdue"
 msgid "%s (%s)"
-msgstr ""
+msgstr "%s (%s)"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
@@ -2498,7 +2494,7 @@ msgstr ""
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
-msgstr ""
+msgstr "%s %s"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:83
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1086
@@ -2779,7 +2775,6 @@ msgstr "“%s”, %s olarak yeniden adlandırılamadı: %s"
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-filter-driver.c:262
 #, c-format
-#| msgid "Scanning for changed messages in “%s : %s”"
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr "“%s : %s” içerisindeki süzülen iletiler aktarılıyor"
 
@@ -2833,7 +2828,6 @@ msgstr "%d iletisinde hata"
 #: ../src/camel/camel-filter-driver.c:1719
 #: ../src/camel/camel-filter-driver.c:1851
 #, c-format
-#| msgid "Failed to cache message %s: %s"
 msgid "Failed to transfer messages: %s"
 msgstr "İletiler aktarılamadı: %s"
 
@@ -3537,10 +3531,9 @@ msgstr "(Bilinmeyen GSSAPI mekanizma kodu: %x)"
 #. the second '%s' is replaced with additional error information.
 #: ../src/camel/camel-sasl-gssapi.c:172 ../src/camel/camel-sasl-gssapi.c:244
 #, c-format
-#| msgid "%s (%s)"
 msgctxt "gssapi_error"
 msgid "%s (%s)"
-msgstr ""
+msgstr "%s (%s)"
 
 #: ../src/camel/camel-sasl-gssapi.c:194
 msgid ""
@@ -3608,7 +3601,6 @@ msgid "Bad authentication response from server."
 msgstr "Sunucudan hatalı kimlik doğrulama yanıtı."
 
 #: ../src/camel/camel-sasl-gssapi.c:286
-#| msgid "Could not get message"
 msgid "Could not get session bus:"
 msgstr "Oturum busʼı alınamadı:"
 
@@ -3900,7 +3892,6 @@ msgstr "Kod çözme başarısız"
 
 #: ../src/camel/camel-smime-context.c:1296
 #, c-format
-#| msgid "Cannot find certificate for “%s”"
 msgid "No valid or appropriate certificate for “%s” was found"
 msgstr "“%s” için geçerli veya uygun sertifika bulunamadı"
 
@@ -4034,7 +4025,7 @@ msgstr "URL “%s” ayrıştırılamadı"
 msgid "Updating folder “%s”"
 msgstr "“%s” klasörü güncelleniyor"
 
-#: ../src/camel/camel-vee-folder.c:965 ../src/camel/camel-vee-folder.c:1082
+#: ../src/camel/camel-vee-folder.c:965 ../src/camel/camel-vee-folder.c:1101
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "İletiler Sanal Klasöre kopyalanamıyor ya da taşınamıyor"
@@ -4048,12 +4039,12 @@ msgstr "İletiler Sanal Klasöre kopyalanamıyor ya da taşınamıyor"
 msgid "No such message %s in “%s : %s”"
 msgstr "“%2$s : %3$s” içerisinde %1$s iletisi yok"
 
-#: ../src/camel/camel-vee-folder.c:1058
+#: ../src/camel/camel-vee-folder.c:1077
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "“%s” depolanırken hata oluştu: "
 
-#: ../src/camel/camel-vee-folder.c:1308
+#: ../src/camel/camel-vee-folder.c:1328
 msgid "Automatically _update on change in source folders"
 msgstr "Kaynak klasörlerde değişikliklerde otomatik _güncelleme yap"
 
@@ -4147,7 +4138,6 @@ msgstr "“%s : %s” klasörü için kullanılabilir kota bilgisi yok"
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1025
 #, c-format
-#| msgid "Storing changes in folder “%s : %s”"
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr "“%s : %s” klasöründeki eski önbellek dosyaları kaldırılıyor"
 
@@ -6084,22 +6074,6 @@ msgid "A list of hints for OAuth2 services"
 msgstr "OAuth2 hizmetleri için ipuçları listesi"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
-#| msgid ""
-#| "Users can extend the list of supported protocols and hostnames for "
-#| "defined OAuth2 services, in addition to those hard-coded. Each line can "
-#| "be of the form: servicename[-protocol]:hostname1,hostname2,... where "
-#| "'servicename' is the actual service name; the '-protocol' is optional, "
-#| "and if written, then the service can be used only if both 'protocol' and "
-#| "'hostnameX' match; the 'hostnameX' is the actual host name to compare "
-#| "with, case insensitively. Each line can contain multiple values, "
-#| "separated by comma. There can be provided multiple lines for one OAuth2 "
-#| "service. Note that the actual URL where the token is requested and "
-#| "refreshed cannot be changed here, the hostname is to allow other servers, "
-#| "where the OAuth2 service can be used. Examples: Company:mail.company.com "
-#| "- enables 'Company' OAuth2 authentication for 'mail.company.com' host "
-#| "Company-CalDAV:caldav.company.com - enables 'Company' OAuth2 "
-#| "authentication for any 'CalDAV' source, which reads data from 'caldav."
-#| "company.com' host"
 msgid ""
 "Users can extend the list of supported protocols and hostnames for defined "
 "OAuth2 services, in addition to those hard-coded. Each line can be of the "
@@ -6199,7 +6173,6 @@ msgid "Evolution Alarm Notify"
 msgstr "Evolution Alarm Bildirimi"
 
 #: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:2
-#| msgid "Calendar authentication request"
 msgid "Calendar event notifications"
 msgstr "Takvim olay bildirimleri"
 
@@ -7120,12 +7093,12 @@ msgstr "şimdi"
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
-msgstr[0] ""
+msgstr[0] "%d yıl"
 
 #: ../src/libedataserverui/e-reminders-widget.c:301
 msgctxt "overdue"
 msgid "overdue"
-msgstr ""
+msgstr "zamanı geçmiş"
 
 #: ../src/libedataserverui/e-reminders-widget.c:912
 #, c-format
@@ -7142,29 +7115,29 @@ msgstr "Tümünden vazgeçilemedi:"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1110
 msgid "Set a custom snooze time for"
-msgstr ""
+msgstr "Özel erteleme zamanı ayarla"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1123
 msgctxt "reminders-snooze"
 msgid "da_ys"
-msgstr ""
+msgstr "_gün"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1139
 msgctxt "reminders-snooze"
 msgid "_hours"
-msgstr ""
+msgstr "_saat"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1155
 msgctxt "reminders-snooze"
 msgid "_minutes"
-msgstr ""
+msgstr "_dakika"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1161
 msgid "_Add Snooze time"
-msgstr ""
+msgstr "_Erteleme zamanı ekle"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1428
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
@@ -7177,7 +7150,7 @@ msgstr "_Tümünden Vazgeç"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1431
 msgid "_Snooze"
-msgstr ""
+msgstr "_Ertele"
 
 #: ../src/libedataserverui/e-trust-prompt.c:111
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:117
@@ -7459,7 +7432,7 @@ msgstr "Son istemci kapandıktan sonra çalışmaya devam et"
 #: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:40
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:42
 msgid "Wait running until at least one client is connected"
-msgstr "En az bir istemci bağlanana kadar çalışmaya devam et"
+msgstr "En az bir istemci bağlanana dek çalışmaya devam et"
 
 #: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:42
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:44
