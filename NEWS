@@ -1,3 +1,32 @@
+Evolution-Data-Server 3.29.92 2018-08-27
+----------------------------------------
+
+Bug Fixes:
+	I#23 - [IMAPx] Fails to parse some BODYSTRUCTURE responses (Milan Crha)
+	I#27 - [IMAPx] Ignore DavMail's CR/LF in BODYSTRUCTURE response (Igor Makarov)
+	I#26 - test-book-client-write-write test is failing (Milan Crha)
+	I#25 - [CamelVeeFolder] Implement CamelFolderClass::get_message_cached() (Milan Crha)
+	evo-I#83 - Follow Up "is not Completed" search condition does not work (Milan Crha)
+
+Miscellaneous:
+	Correct build when nss/nspr do not provide pkg-config files (Milan Crha)
+	Use 48 pixel icon in reminder notification (Milan Crha)
+	[evolution-alarm-notify] Do not show a window with a list of pending reminders by default (Milan Crha)
+	GNOME Shell doesn't show evolution-alarm-notification reminders (Milan Crha)
+	Correct few annotations in developer comments (Milan Crha)
+
+Translations:
+	Claude Paroz (fr)
+	Piotr Drąg (pl)
+	Jiri Grönroos (fi)
+	Bruce Cowan (en_GB)
+	Efstathios Iosifidis (el)
+	Cheng-Chia Tseng (zh_TW)
+	Emin Tufan Çetin (tr)
+	Baurzhan Muftakhidinov (kk)
+	Kukuh Syafaat (id)
+	Çağatay Yiğit Şahin (tr)
+
 Evolution-Data-Server 3.29.91 2018-08-13
 ----------------------------------------
 
