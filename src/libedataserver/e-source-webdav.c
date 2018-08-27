@@ -863,7 +863,7 @@ e_source_webdav_dup_color (ESourceWebdav *extension)
 /**
  * e_source_webdav_set_color:
  * @extension: an #ESourceWebdav
- * @color: (optional): the color of the WebDAV resource, or %NULL
+ * @color: (nullable): the color of the WebDAV resource, or %NULL
  *
  * Updates the last known color of a WebDAV resource, as provided by the server.
  *

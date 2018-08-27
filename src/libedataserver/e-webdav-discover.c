@@ -510,7 +510,7 @@ e_webdav_discover_sources (ESource *source,
  * @url_use_path: (nullable): optional URL override, or %NULL
  * @only_supports: bit-or of EWebDAVDiscoverSupports, to limit what type of sources to search
  * @credentials: (nullable): credentials to use for authentication to the server
- * @ref_source_func: (nullable): optional callback to use to get an ESource
+ * @ref_source_func: (nullable) (scope async): optional callback to use to get an ESource
  * @ref_source_func_user_data: (nullable): user data for @ref_source_func
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: (scope async): a #GAsyncReadyCallback to call when the request
@@ -714,7 +714,7 @@ e_webdav_discover_sources_sync (ESource *source,
  * @url_use_path: (nullable): optional URL override, or %NULL
  * @only_supports: bit-or of EWebDAVDiscoverSupports, to limit what type of sources to search
  * @credentials: (nullable): credentials to use for authentication to the server
- * @ref_source_func: (nullable): optional callback to use to get an ESource
+ * @ref_source_func: (nullable) (scope call): optional callback to use to get an ESource
  * @ref_source_func_user_data: (nullable): user data for @ref_source_func
  * @out_certificate_pem: (out) (nullable): optional return location
  *   for a server SSL certificate in PEM format, when the operation failed
