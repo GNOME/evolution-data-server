@@ -3,6 +3,7 @@
 # ********************************
 
 set(autostartdir ${SYSCONF_INSTALL_DIR}/xdg/autostart)
+set(desktopdir ${SHARE_INSTALL_PREFIX}/applications)
 
 configure_file(org.gnome.Evolution-alarm-notify.desktop.in.in
 	org.gnome.Evolution-alarm-notify.desktop.in
@@ -13,6 +14,11 @@ intltool_merge(${CMAKE_CURRENT_BINARY_DIR}/org.gnome.Evolution-alarm-notify.desk
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.gnome.Evolution-alarm-notify.desktop
 	DESTINATION ${autostartdir}
+)
+
+# To have GNOME Shell show the GNotification notifications from it; otherwise it ignores them
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.gnome.Evolution-alarm-notify.desktop
+	DESTINATION ${desktopdir}
 )
 
 # ********************************
