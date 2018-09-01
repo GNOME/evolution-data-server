@@ -16,12 +16,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server-master-po-gl-71644\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-"
-"server/issues\n"
-"POT-Creation-Date: 2018-07-17 12:28+0000\n"
-"PO-Revision-Date: 2018-08-30 23:15+0200\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
+"issues\n"
+"POT-Creation-Date: 2018-08-30 21:16+0000\n"
+"PO-Revision-Date: 2018-09-01 15:10+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
-"Language-Team: Proxecto Trasno <proxecto@trasno.gal>\n"
+"Language-Team: Galician\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -33,7 +33,6 @@ msgstr ""
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:220
 #, c-format
-#| msgid "Given URL “%s” doesn’t reference WebDAV address book"
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr ""
 "O URL fornecido «%s» non fai referencia a un caderno de enderezos CardDAV"
@@ -98,7 +97,6 @@ msgstr "Erro descoñecido"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1036
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1192
-#| msgid "Signon service did not return a secret"
 msgid "Server didn’t return object’s href"
 msgstr "O servidor non devolveu unha referencia de obxecto"
 
@@ -132,32 +130,32 @@ msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "Produciuse un erro ao crear unha ligazón dura para o recurso «%s»: %s"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:524
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1260
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1272
 msgid "No UID in the contact"
 msgstr "O contacto non ten ningún UID"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:856
+#: ../src/addressbook/backends/file/e-book-backend-file.c:868
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "Atopáronse UID conflitivos nos contactos engadidos"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:994
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1006
 msgid "Loading..."
 msgstr "Cargando…"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:996
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1008
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4436
 msgid "Searching..."
 msgstr "Buscando…"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1288
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1300
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr ""
 "Tentouse modificar o contacto «%s» con unha revisión fóra da sincronización"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1479
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1564
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1491
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1576
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3085
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7365
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7434
@@ -165,24 +163,24 @@ msgstr ""
 msgid "Contact “%s” not found"
 msgstr "Contacto «%s» non atopado"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1624
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1705
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1636
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1717
 #, c-format
 msgid "Query “%s” not supported"
 msgstr "A consulta «%s» non é compatíbel"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1633
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1714
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1645
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1726
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr "Consulta non válida «%s»"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1979
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1991
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:2015
 msgid "Requested to delete an unrelated cursor"
 msgstr "Solicitouse eliminar un cursor non relacionado"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:2050
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2062
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Non foi posíbel renomear a base de datos antiga de «%s» a «%s»: %s"
@@ -1864,8 +1862,6 @@ msgid " and Thursday"
 msgstr " e Xoves"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5112
-#| msgctxt "CategoryName"
-#| msgid "Holiday"
 msgctxt "recur-description"
 msgid "on Friday"
 msgstr "o Venres"
@@ -2233,7 +2229,6 @@ msgid "on the fourth Thursday"
 msgstr "o cuarto Xoves"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5511
-#, fuzzy
 msgctxt "recur-description"
 msgid "on the fifth Thursday"
 msgstr "o quinto Xoves"
@@ -2259,7 +2254,6 @@ msgid "on the fourth Friday"
 msgstr "o cuarto Venres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5536
-#, fuzzy
 msgctxt "recur-description"
 msgid "on the fifth Friday"
 msgstr "o quinto Venres"
@@ -2285,7 +2279,6 @@ msgid "on the fourth Saturday"
 msgstr "o cuarto Sábado"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5561
-#, fuzzy
 msgctxt "recur-description"
 msgid "on the fifth Saturday"
 msgstr "o quinto Sábado"
@@ -2415,7 +2408,6 @@ msgstr "A reunión repítese"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5748
 #: ../src/calendar/libecal/e-cal-recur.c:5771
-#| msgid "Untitled appointment"
 msgctxt "recur-description"
 msgid "The appointment recurs"
 msgstr "O apuntamento repítese"
@@ -2516,7 +2508,6 @@ msgstr "Sen resumo"
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
 #: ../src/calendar/libecal/e-reminder-watcher.c:2538
 #, c-format
-#| msgid "%s (%s)"
 msgctxt "overdue"
 msgid "%s (%s) %s"
 msgstr "%s (%s) %s"
@@ -2526,7 +2517,6 @@ msgstr "%s (%s) %s"
 #. "24.1.2018 10:30 (30 minutes)"
 #: ../src/calendar/libecal/e-reminder-watcher.c:2543
 #, c-format
-#| msgid "%s (%s)"
 msgctxt "overdue"
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -2821,7 +2811,6 @@ msgstr "Non foi posíbel renomear «%s» a %s: %s"
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-filter-driver.c:262
 #, c-format
-#| msgid "Scanning for changed messages in “%s : %s”"
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr "Transferindo mensaxes filtradas en «%s: %s»"
 
@@ -2875,7 +2864,6 @@ msgstr "Fallo na mensaxe %d"
 #: ../src/camel/camel-filter-driver.c:1719
 #: ../src/camel/camel-filter-driver.c:1851
 #, c-format
-#| msgid "Failed to cache message %s: %s"
 msgid "Failed to transfer messages: %s"
 msgstr "Produciuse un erro ao transferir a mensaxe: %s"
 
@@ -3407,7 +3395,7 @@ msgstr "Descargando as mensaxes novas para o modo sen conexión en «%s: %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:221
+#: ../src/camel/camel-offline-folder.c:223
 #, c-format
 msgid "Storing changes in folder “%s : %s”"
 msgstr "Gardando cambios no cartafol «%s: %s»"
@@ -3415,7 +3403,7 @@ msgstr "Gardando cambios no cartafol «%s: %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:311
+#: ../src/camel/camel-offline-folder.c:316
 #, c-format
 msgid "Checking download of new messages for offline in “%s : %s”"
 msgstr ""
@@ -3425,7 +3413,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:428
+#: ../src/camel/camel-offline-folder.c:433
 #, c-format
 msgid "Syncing messages in folder “%s : %s” to disk"
 msgstr "Sincronizando as mensaxes no cartafol «%s: %s» para o disco"
@@ -3435,18 +3423,18 @@ msgstr "Sincronizando as mensaxes no cartafol «%s: %s» para o disco"
 #. The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:491
+#: ../src/camel/camel-offline-folder.c:527
 #, c-format
 msgid "Syncing message %d of %d in folder “%s : %s” to disk"
 msgstr "Sincronizando a mensaxes %d de %d no cartafol %s: %s no disco"
 
-#: ../src/camel/camel-offline-folder.c:542
+#: ../src/camel/camel-offline-folder.c:592
 msgid "Copy folder content locally for _offline operation"
 msgstr ""
 "Copiar o contido do cartafol localmente para unha _operación en modo sen "
 "conexión"
 
-#: ../src/camel/camel-offline-store.c:268
+#: ../src/camel/camel-offline-store.c:302
 #, c-format
 msgid "Syncing messages in account “%s” to disk"
 msgstr "Sincronizando as mensaxes no cartafol «%s» no disco"
@@ -3595,7 +3583,6 @@ msgstr "(Código do mecanismo GSSAPI descoñecido: %x)"
 #. the second '%s' is replaced with additional error information.
 #: ../src/camel/camel-sasl-gssapi.c:172 ../src/camel/camel-sasl-gssapi.c:244
 #, c-format
-#| msgid "%s (%s)"
 msgctxt "gssapi_error"
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -3674,7 +3661,6 @@ msgid "Bad authentication response from server."
 msgstr "A resposta de autenticación desde o servidor non é valida."
 
 #: ../src/camel/camel-sasl-gssapi.c:286
-#| msgid "Could not get message"
 msgid "Could not get session bus:"
 msgstr "Non foi posíbel o bus de sesión:"
 
@@ -3967,7 +3953,6 @@ msgstr "O descodificador fallou"
 
 #: ../src/camel/camel-smime-context.c:1296
 #, c-format
-#| msgid "Cannot find certificate for “%s”"
 msgid "No valid or appropriate certificate for “%s” was found"
 msgstr "Non se atopou un certificado válido ou axeitado para «%s»"
 
@@ -4101,7 +4086,7 @@ msgstr "Non foi posíbel analizar o URL «%s»"
 msgid "Updating folder “%s”"
 msgstr "Actualizando o cartafol «%s»"
 
-#: ../src/camel/camel-vee-folder.c:965 ../src/camel/camel-vee-folder.c:1082
+#: ../src/camel/camel-vee-folder.c:965 ../src/camel/camel-vee-folder.c:1101
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Non é posíbel copiar ou mover as mensaxes a un cartafol virtual"
@@ -4115,12 +4100,12 @@ msgstr "Non é posíbel copiar ou mover as mensaxes a un cartafol virtual"
 msgid "No such message %s in “%s : %s”"
 msgstr "Non existe a mensaxe %s en «%s: %s»"
 
-#: ../src/camel/camel-vee-folder.c:1058
+#: ../src/camel/camel-vee-folder.c:1077
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "Produciuse un erro ao almacenar «%s»:"
 
-#: ../src/camel/camel-vee-folder.c:1308
+#: ../src/camel/camel-vee-folder.c:1328
 msgid "Automatically _update on change in source folders"
 msgstr "Actualizar a_utomaticamente ao cambiar os cartafoles de fontes"
 
@@ -4213,7 +4198,6 @@ msgstr "Información de cota non dispoñíbel para o cartafol «%s: %s»"
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1025
 #, c-format
-#| msgid "Storing changes in folder “%s : %s”"
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr "Eliminando os ficheiros de caché non fresca no cartafol «%s: %s»"
 
@@ -6021,67 +6005,73 @@ msgstr "Os recordatorios pasados para EReminderWatcher"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:8
 msgid "Snoozed reminders for EReminderWatcher"
-msgstr ""
+msgstr "Os recordatorios adiados para EReminderWatcher"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:9
 msgid "Reminder programs"
-msgstr ""
+msgstr "Programas de recordatorio"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:10
 msgid "Programs that are allowed to be run by reminders"
-msgstr ""
+msgstr "Os programas que poden executarse nos recordatorios"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:11
 msgid "Show reminders in notification tray only"
-msgstr ""
+msgstr "Só mostrar os recordatorios na bandexa de notificacións"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:12
 msgid ""
 "When set to true, the reminders are shown only in the notification tray, "
 "otherwise the reminders dialog is shown immediately"
 msgstr ""
+"Se está a verdadeiro, os recordatorios só se mostrarán na bandexa de "
+"notificacións, en caso contrario mostrarase un diálogo de recordatorio "
+"inmediatamente"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:13
 msgid "Show reminder notification dialog always on top"
-msgstr ""
+msgstr "Mostrar notificacións de recordatorios sempre enriba"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:14
 msgid ""
 "Whether or not to show reminder notification dialog always on top. Note this "
 "works only as a hint for the window manager, which may or may not obey it."
 msgstr ""
+"Indica se mostrar ou non os diálogos de notificación de recordatorios sempre "
+"enriba. Teña en conta que isto funciona simplemente como unha axuda ao "
+"xestor de xanelas, que pode ou non facer caso a isto."
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:15
 msgid "X position of the reminder notification dialog"
-msgstr ""
+msgstr "Posición X do diálogo de notificación de recordatorios"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:16
 msgid "Y position of the reminder notification dialog"
-msgstr ""
+msgstr "Posición Y do diálogo de notificación de recordatorios"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:17
 msgid "Width of the reminder notification dialog"
-msgstr ""
+msgstr "Anchura do diálogo de notificación de recordatorios"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:18
 msgid "Height of the reminder notification dialog"
-msgstr ""
+msgstr "Altura do diálogo de notificación de recordatorios"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
 msgid "Show reminder notification for completed tasks"
-msgstr ""
+msgstr "Mostrar a notificación dos recordatorios para as tarefas completadas"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
 msgid "Show reminder notification for past events"
-msgstr ""
+msgstr "Mostrar a notificación dos recordatorios para as tarefas pasadas"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
 msgid "The last used snooze time, in minutes"
-msgstr ""
+msgstr "O último tempo de adiado usada, en minutos"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
 msgid "User-defined snooze times, in minutes"
-msgstr ""
+msgstr "Tempo de adiado definidos polo usuario, en minutos"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:1
 msgid "Whether the migration of old setting was already done"
@@ -6163,7 +6153,6 @@ msgid "A list of hints for OAuth2 services"
 msgstr "Unhal ista de suxestións para os servizos de OAuth2"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
-#, fuzzy
 #| msgid ""
 #| "Users can extend the list of supported protocols and hostnames for "
 #| "defined OAuth2 services, in addition to those hard-coded. Each line can "
@@ -6198,19 +6187,19 @@ msgid ""
 msgstr ""
 "Os usuarios poden estender a lista dos protocolos compatíbeis e nomes de "
 "equipos para os servizos OAuth2 definidos, ademáis dos que están embebidos. "
-"Cada liña pode ser da seguinte forma: nomeservizo[-protocolo]:nomeequipo1,"
-"nomeequipo2,... onde «nomeservizo» é o nome do servizo actual; o «-protocol» "
-"é opcional, e se se escribe, entón o servizo pode usarse só se tanto o "
-"«protocolo» e o «nomeequipoX» coinciden;  «nomeequipoX» é o nome de equipo "
-"actual co que comparar, con distinción de maiúsculas. Cada liña pode conter "
-"varios valores, separados por comas. Pode fornecer varias liñas para cada "
-"servizo OAuth2. Teña en conta que o URL actual onde se solicita o token non "
-"pode cambiarse aquí, o nome de equipo non permite outros servidores, onde "
-"pode usarse o servizo OAuth2. Exemplos: Empresa:mail.empresa.gal - activa a "
-"autenticación OAuth2 de «Empresa» para o equipo 'mail.empresa.gal' Empresa-"
-"CalDAV:caldav.company.com - activa a autenticación mediante unha orixe "
-"«CalDAV» da «Empresa», que se lee datos desde o equipo 'caldav."
-"caldavdaempresa.gal'"
+"Cada liña pode ser da seguinte forma: nomeservizo[-protocolo]:"
+"nomeequipo1,nomeequipo2,... onde «nomeservizo» é o nome do servizo actual; o "
+"«-protocol» é opcional, e se se escribe, entón o servizo pode usarse só se "
+"tanto o «protocolo» e o «nomeequipoX» coinciden;  «nomeequipoX» é o nome de "
+"equipo actual co que comparar, con distinción de maiúsculas. Cada liña pode "
+"conter varios valores, separados por comas. Pode fornecer varias liñas para "
+"cada servizo OAuth2. Teña en conta que o URL actual onde se solicita o token "
+"non pode cambiarse aquí, o nome de equipo non permite outros servidores, "
+"onde pode usarse o servizo OAuth2. Exemplos: Empresa:mail.empresa.gal - "
+"activa a autenticación OAuth2 de «Empresa» para o equipo 'mail.empresa.gal' "
+"Empresa-CalDAV:caldav.company.com - activa a autenticación mediante unha "
+"orixe «CalDAV» da «Empresa», que se lee datos desde o equipo "
+"'caldav.caldavdaempresa.gal'"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
@@ -6277,13 +6266,12 @@ msgstr "(Obsoleto) URL para a configuración automática do proxy"
 
 #: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:1
 msgid "Evolution Alarm Notify"
-msgstr ""
+msgstr "Notificar alarma de Evolution"
 
 #: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:2
-#, fuzzy
 #| msgid "Calendar authentication request"
 msgid "Calendar event notifications"
-msgstr "Autenticación requirida para o calendario"
+msgstr "Notificacións de evento de calendario"
 
 #: ../src/libebackend/e-cache.c:754
 msgid "Out of memory"
@@ -6364,22 +6352,22 @@ msgid "UID “%s” is already in use"
 msgstr "O UID «%s» xa está en uso"
 
 #: ../src/libebackend/e-source-registry-server.c:447
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot find certificate for “%s”"
 msgid "Cannot find corresponding collection backend for source “%s”"
-msgstr "Non é posíbel atopar o certificado para «%s»"
+msgstr "Non é posíbel atopar o motor de colección para o orixe «%s»"
 
 #: ../src/libebackend/e-source-registry-server.c:451
-#, fuzzy, c-format
+#, c-format
 #| msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgid "Source “%s” is not a collection source"
-msgstr "A orixe «%s» (%s) non é unha orixe de OAuth2 válida"
+msgstr "A orixe «%s» non é unha orixe de colección"
 
 #: ../src/libebackend/e-source-registry-server.c:457
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot find certificate for “%s”"
 msgid "Cannot find source “%s”"
-msgstr "Non é posíbel atopar o certificado para «%s»"
+msgstr "Non é posíbel atopar «%s»"
 
 #: ../src/libebackend/e-subprocess-factory.c:281
 #, c-format
@@ -7130,7 +7118,7 @@ msgstr ""
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:602
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1061
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1070
 msgid "_Cancel"
 msgstr "_Cancelar"
 
@@ -7187,7 +7175,7 @@ msgid "Please enter the password for account “%s”."
 msgstr "Escriba o contrasinal para a conta «%s»."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1062
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1071
 msgid "_OK"
 msgstr "_Aceptar"
 
@@ -7206,74 +7194,71 @@ msgstr "_Engadir este contrasinal ao seu anel de chaves"
 
 #: ../src/libedataserverui/e-reminders-widget.c:225
 msgid "Add custom time…"
-msgstr ""
+msgstr "Engdir hora personalizada…"
 
 #: ../src/libedataserverui/e-reminders-widget.c:229
 msgid "Clear custom times"
-msgstr ""
+msgstr "Limpar as horas personalizadas"
 
 #: ../src/libedataserverui/e-reminders-widget.c:277
-#, fuzzy
 #| msgid "no"
 msgctxt "overdue"
 msgid "now"
-msgstr "non"
+msgstr "agora"
 
 #: ../src/libedataserverui/e-reminders-widget.c:295
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d ano"
+msgstr[1] "%d anos"
 
 #: ../src/libedataserverui/e-reminders-widget.c:301
 msgctxt "overdue"
 msgid "overdue"
-msgstr ""
+msgstr "atrasado"
 
 #: ../src/libedataserverui/e-reminders-widget.c:912
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to create cache “%s”:"
 msgid "Failed to launch URI “%s”:"
-msgstr "Non foi posíbel crear a caché «%s»"
+msgstr "Non foi posíbel iniciar URI «%s»:"
 
 #: ../src/libedataserverui/e-reminders-widget.c:953
-#, fuzzy
 #| msgid "Could not discard reminder: "
 msgid "Failed to dismiss reminder:"
-msgstr "Non é posíbel rexeitar o recordatorio:"
+msgstr "Non foi posíbel omitir o recordatorio:"
 
 #: ../src/libedataserverui/e-reminders-widget.c:974
-#, fuzzy
 #| msgid "Failed to issue DONE"
 msgid "Failed to dismiss all:"
-msgstr "Produciuse un executar DONE"
+msgstr "Produciuse un fallo ao omitir todo:"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1110
 msgid "Set a custom snooze time for"
-msgstr ""
+msgstr "Estabelecer o tempo de adiado personalizado a"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1123
 msgctxt "reminders-snooze"
 msgid "da_ys"
-msgstr ""
+msgstr "dí_as"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1139
 msgctxt "reminders-snooze"
 msgid "_hours"
-msgstr ""
+msgstr "_horas"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1155
 msgctxt "reminders-snooze"
 msgid "_minutes"
-msgstr ""
+msgstr "_minutos"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1161
 msgid "_Add Snooze time"
-msgstr ""
+msgstr "_Engadir hora de adiado"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1428
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
@@ -7281,14 +7266,13 @@ msgid "_Dismiss"
 msgstr "_Ignorar"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1429
-#, fuzzy
 #| msgid "_Dismiss"
 msgid "Dismiss _All"
-msgstr "_Ignorar"
+msgstr "_Ignorar todo"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1431
 msgid "_Snooze"
-msgstr ""
+msgstr "_Adiar"
 
 #: ../src/libedataserverui/e-trust-prompt.c:111
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:117
@@ -7390,15 +7374,15 @@ msgctxt "WebDAVDiscover"
 msgid "Tasks"
 msgstr "Tarefas"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:834
+#: ../src/libedataserverui/e-webdav-discover-widget.c:838
 msgid "Invalid URL"
 msgstr "URI non válido"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:875
+#: ../src/libedataserverui/e-webdav-discover-widget.c:883
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:878
+#: ../src/libedataserverui/e-webdav-discover-widget.c:886
 msgid "Searching server sources..."
 msgstr "Buscando orixes de servidores…"
 
@@ -7586,27 +7570,26 @@ msgstr ""
 "opción de tempo de compilación"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:223
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:250
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:755
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:964
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:251
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:756
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:965
 msgid "Reminders"
-msgstr ""
-
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:362
-#, fuzzy
-#| msgid "Learning junk"
-msgid "Warning"
-msgstr "Aprendendo de correo lixo"
+msgstr "Recordatorios"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:363
-msgid "_No"
-msgstr ""
+#| msgid "Learning junk"
+msgid "Warning"
+msgstr "Aviso"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:364
-msgid "_Yes"
-msgstr ""
+msgid "_No"
+msgstr "_Non"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:368
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:365
+msgid "_Yes"
+msgstr "_Si"
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:369
 #, c-format
 msgid ""
 "A calendar reminder is about to trigger. This reminder is configured to run "
@@ -7616,37 +7599,43 @@ msgid ""
 "\n"
 "Are you sure you want to run this program?"
 msgstr ""
+"Vaise activar un aviso de calendario. Este aviso configurouse para executar "
+"o seguinte programa:\n"
+"\n"
+"        %s\n"
+"\n"
+"Está seguro de que desexa executar este programa?"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:382
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:383
 msgid "Do not ask me about this program again"
-msgstr ""
-
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:660
-msgid "Display reminders in notification area _only"
-msgstr ""
+msgstr "Non preguntarme sobre este programa de novo"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:661
-msgid "Keep reminder notification window always on _top"
-msgstr ""
+msgid "Display reminders in notification area _only"
+msgstr "_Só mostrar os recordatorios na bandexa de notificacións"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:662
-msgid "Display reminders for _completed tasks"
-msgstr ""
+msgid "Keep reminder notification window always on _top"
+msgstr "Mostrar notificacións de recordatorios sempre _enriba"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:663
+msgid "Display reminders for _completed tasks"
+msgstr "Mostrar os recordatorios para as tarefas _completadas"
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:664
 msgid "Display reminders for _past events"
-msgstr ""
+msgstr "Mostrar os recordatorios para os eventos _pasados"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:677
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:678
 msgid "Reminders Options:"
-msgstr ""
+msgstr "Opcións dos recordatorios:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:771
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:772
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ten %d recordatorio"
+msgstr[1] "Ten %d recordatorios"
 
 #: ../src/services/evolution-source-registry/builtin/birthdays.source.in.h:1
 msgid "Birthdays & Anniversaries"
@@ -7675,7 +7664,7 @@ msgstr "Neste computador"
 
 #: ../src/services/evolution-source-registry/builtin/system-proxy.source.in.h:1
 msgid "Default Proxy Settings"
-msgstr ""
+msgstr "Preferencias do proxi por omisión"
 
 #: ../src/services/evolution-source-registry/builtin/vfolder.source.in.h:1
 msgid "Search Folders"
