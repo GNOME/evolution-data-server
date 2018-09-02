@@ -34,7 +34,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/issues\n"
 "POT-Creation-Date: 2018-07-17 12:28+0000\n"
-"PO-Revision-Date: 2018-09-01 21:09+0200\n"
+"PO-Revision-Date: 2018-08-30 22:35+0200\n"
 "Last-Translator: Ask Hjorth Larsen <asklarsen@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -1911,229 +1911,229 @@ msgstr[1] "Hver %d. måned"
 #: ../src/calendar/libecal/e-cal-recur.c:5589
 msgctxt "recur-description"
 msgid "on the last Sunday"
-msgstr "på den sidste søndag"
+msgstr "på sidste søndag"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5271
 #: ../src/calendar/libecal/e-cal-recur.c:5439
 msgctxt "recur-description"
 msgid "on the last Monday"
-msgstr "på den sidste mandag"
+msgstr "på sidste søndag"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5274
 #: ../src/calendar/libecal/e-cal-recur.c:5464
 msgctxt "recur-description"
 msgid "on the last Tuesday"
-msgstr "på den sidste tirsdag"
+msgstr "på sidste tirsdag"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5277
 #: ../src/calendar/libecal/e-cal-recur.c:5489
 msgctxt "recur-description"
 msgid "on the last Wednesday"
-msgstr "på den sidste onsdag"
+msgstr "på sidste onsdag"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5280
 #: ../src/calendar/libecal/e-cal-recur.c:5514
 msgctxt "recur-description"
 msgid "on the last Thursday"
-msgstr "på den sidste torsdag"
+msgstr "på sidste torsdag"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5283
 #: ../src/calendar/libecal/e-cal-recur.c:5539
 msgctxt "recur-description"
 msgid "on the last Friday"
-msgstr "på den sidste fredag"
+msgstr "på sidste fredag"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5286
 #: ../src/calendar/libecal/e-cal-recur.c:5564
 msgctxt "recur-description"
 msgid "on the last Saturday"
-msgstr "på den sidste lørdag"
+msgstr "på sidste lørdag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5296
 msgctxt "recur-description"
 msgid "on the 1st day"
-msgstr "på den 1. dag"
+msgstr "på første dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5300
 msgctxt "recur-description"
 msgid "on the 2nd day"
-msgstr "på den 2. dag"
+msgstr "på anden dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5304
 msgctxt "recur-description"
 msgid "on the 3rd day"
-msgstr "på den 3. dag"
+msgstr "på tredje dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5308
 msgctxt "recur-description"
 msgid "on the 4th day"
-msgstr "på den 4. dag"
+msgstr "på fjerde dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5312
 msgctxt "recur-description"
 msgid "on the 5th day"
-msgstr "på den 5. dag"
+msgstr "på femte dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5316
 msgctxt "recur-description"
 msgid "on the 6th day"
-msgstr "på den 6. dag"
+msgstr "på 6. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5320
 msgctxt "recur-description"
 msgid "on the 7th day"
-msgstr "på den 7. dag"
+msgstr "på 7. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5324
 msgctxt "recur-description"
 msgid "on the 8th day"
-msgstr "på den 8. dag"
+msgstr "på 8. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5328
 msgctxt "recur-description"
 msgid "on the 9th day"
-msgstr "på den 9. dag"
+msgstr "på 9. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5332
 msgctxt "recur-description"
 msgid "on the 10th day"
-msgstr "på den 10. dag"
+msgstr "på 10. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5336
 msgctxt "recur-description"
 msgid "on the 11th day"
-msgstr "på den 11. dag"
+msgstr "på 11. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5340
 msgctxt "recur-description"
 msgid "on the 12th day"
-msgstr "på den 12. dag"
+msgstr "på 12. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5344
 msgctxt "recur-description"
 msgid "on the 13th day"
-msgstr "på den 13. dag"
+msgstr "på 13. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5348
 msgctxt "recur-description"
 msgid "on the 14th day"
-msgstr "på den 14. dag"
+msgstr "på 14. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5352
 msgctxt "recur-description"
 msgid "on the 15th day"
-msgstr "på den 15. dag"
+msgstr "på 15. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5356
 msgctxt "recur-description"
 msgid "on the 16th day"
-msgstr "på den 16. dag"
+msgstr "på 16. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5360
 msgctxt "recur-description"
 msgid "on the 17th day"
-msgstr "på den 17. dag"
+msgstr "på 17. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5364
 msgctxt "recur-description"
 msgid "on the 18th day"
-msgstr "på den 18. dag"
+msgstr "på 18. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5368
 msgctxt "recur-description"
 msgid "on the 19th day"
-msgstr "på den 19. dag"
+msgstr "på 19. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5372
 msgctxt "recur-description"
 msgid "on the 20th day"
-msgstr "på den 20. dag"
+msgstr "på 20. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5376
 msgctxt "recur-description"
 msgid "on the 21st day"
-msgstr "på den 21. dag"
+msgstr "på 21. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5380
 msgctxt "recur-description"
 msgid "on the 22nd day"
-msgstr "på den 22. dag"
+msgstr "på 22. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5384
 msgctxt "recur-description"
 msgid "on the 23rd day"
-msgstr "på den 23. dag"
+msgstr "på 23. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5388
 msgctxt "recur-description"
 msgid "on the 24th day"
-msgstr "på den 24. dag"
+msgstr "på 24. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5392
 msgctxt "recur-description"
 msgid "on the 25th day"
-msgstr "på den 25. dag"
+msgstr "på 25. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5396
 msgctxt "recur-description"
 msgid "on the 26th day"
-msgstr "på den 26. dag"
+msgstr "på 26. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5400
 msgctxt "recur-description"
 msgid "on the 27th day"
-msgstr "på den 27. dag"
+msgstr "på 27. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5404
 msgctxt "recur-description"
 msgid "on the 28th day"
-msgstr "på den 28. dag"
+msgstr "på 28. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5408
 msgctxt "recur-description"
 msgid "on the 29th day"
-msgstr "på den 29. dag"
+msgstr "på 29. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5412
 msgctxt "recur-description"
 msgid "on the 30th day"
-msgstr "på den 30. dag"
+msgstr "på 30. dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5416
 msgctxt "recur-description"
 msgid "on the 31st day"
-msgstr "på den 31. dag"
+msgstr "på 31. dag"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5424
 msgctxt "recur-description"
@@ -2315,7 +2315,7 @@ msgstr "på femte søndag"
 msgid "every year forever"
 msgid_plural "every %d years forever"
 msgstr[0] "Hvert år for evigt"
-msgstr[1] "Hvert %d. år for evigt"
+msgstr[1] "Hvert %d år for evigt"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5621
 #, c-format
@@ -2364,7 +2364,7 @@ msgstr "indtil %s"
 #: ../src/calendar/libecal/e-cal-recur.c:5695
 msgctxt "recur-description"
 msgid "forever"
-msgstr "for evigt"
+msgstr "for altid"
 
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
 #. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
@@ -6024,7 +6024,7 @@ msgstr "Påmindelsesdialogens højde"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
 msgid "Show reminder notification for completed tasks"
-msgstr "Vis påmindelse for fuldførte opgaver"
+msgstr "Vos påmindelse for fuldførte opgaver"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
 msgid "Show reminder notification for past events"
@@ -7507,7 +7507,7 @@ msgid ""
 "\n"
 "Are you sure you want to run this program?"
 msgstr ""
-"En kalenderpåmindelse udløses snart.\n"
+"En kalenderpåhukommelselse udløses snart.\n"
 "Denne påmindelse er konfigureret til at køre følgende program:\n"
 "\n"
 "        %s\n"
