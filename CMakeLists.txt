@@ -12,7 +12,7 @@ set(PROJECT_BUGREPORT "https://gitlab.gnome.org/GNOME/evolution-data-server/issu
 # Base Version: This is for API/version tracking for things like
 # D-Bus server files. This should always be the major/minor of
 # the stable version or stable version to be.
-set(BASE_VERSION 3.30)
+set(BASE_VERSION 3.32)
 
 # This number is meaningless, but we're now stuck with it in our
 # library names for backward compatibility.
