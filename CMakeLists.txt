@@ -31,6 +31,7 @@ set(PROJECT_DISTCONFIGURE_PARAMS
 	-DENABLE_VALA_BINDINGS=ON
 	-DENABLE_INSTALLED_TESTS=ON
 	-DENABLE_GTK_DOC=ON
+	-DENABLE_DBUS_SESSION_TOOL=ON
 	-DWITH_PRIVATE_DOCS=ON
 )
 
@@ -991,6 +992,12 @@ if(ENABLE_VALA_BINDINGS)
 	endif(NOT VAPIGEN)
 
 endif(ENABLE_VALA_BINDINGS)
+
+# ******************************
+# D-Bus session tool, a Flatpak helper
+# ******************************
+
+add_printable_option(ENABLE_DBUS_SESSION_TOOL "Build evolution-dbus-session tool" OFF)
 
 # Generate the ${PROJECT_NAME}-config.h file
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config.h)
