@@ -303,6 +303,7 @@ html_convert (CamelMimeFilter *mime_filter,
 	outend = mime_filter->outbuf + mime_filter->outsize;
 
 	if (priv->flags & CAMEL_MIME_FILTER_TOHTML_PRE && !priv->pre_open) {
+		outptr = check_size (mime_filter, outptr, &outend, 6);
 		outptr = g_stpcpy (outptr, "<pre>");
 		priv->pre_open = TRUE;
 	}
@@ -339,13 +340,13 @@ html_convert (CamelMimeFilter *mime_filter,
 
 			depth = citation_depth (start, inend, &skip);
 			while (priv->blockquote_depth < depth) {
-				outptr = check_size (mime_filter, outptr, &outend, 30);
-				outptr = g_stpcpy (outptr, "<blockquote type=\"cite\">\n");
+				outptr = check_size (mime_filter, outptr, &outend, 25);
+				outptr = g_stpcpy (outptr, "<blockquote type=\"cite\">");
 				priv->blockquote_depth++;
 			}
 			while (priv->blockquote_depth > depth) {
-				outptr = check_size (mime_filter, outptr, &outend, 15);
-				outptr = g_stpcpy (outptr, "</blockquote>\n");
+				outptr = check_size (mime_filter, outptr, &outend, 14);
+				outptr = g_stpcpy (outptr, "</blockquote>");
 				priv->blockquote_depth--;
 			}
 #if FOOLISHLY_UNMUNGE_FROM
@@ -463,14 +464,14 @@ html_convert (CamelMimeFilter *mime_filter,
 				outptr, &outend);
 
 		while (priv->blockquote_depth > 0) {
-			outptr = check_size (mime_filter, outptr, &outend, 15);
+			outptr = check_size (mime_filter, outptr, &outend, 14);
 			outptr = g_stpcpy (outptr, "</blockquote>");
 			priv->blockquote_depth--;
 		}
 
 		if (priv->pre_open) {
 			/* close the pre-tag */
-			outptr = check_size (mime_filter, outptr, &outend, 10);
+			outptr = check_size (mime_filter, outptr, &outend, 7);
 			outptr = g_stpcpy (outptr, "</pre>");
 			priv->pre_open = FALSE;
 		}
