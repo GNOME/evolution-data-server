@@ -922,6 +922,7 @@ eos_send_message (SoupSession *session,
 			success = TRUE;
 		} else {
 			status_code = SOUP_STATUS_MALFORMED;
+			g_set_error_literal (error, SOUP_HTTP_ERROR, status_code, _("Malformed, no message body set"));
 		}
 	} else if (status_code != SOUP_STATUS_CANCELLED) {
 		GString *error_msg;

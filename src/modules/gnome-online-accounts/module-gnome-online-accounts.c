@@ -1282,6 +1282,7 @@ gnome_online_accounts_create_client_cb (GObject *source_object,
 		extension->goa_client, "account-swapped",
 		G_CALLBACK (gnome_online_accounts_account_swapped_cb),
 		extension);
+	extension->account_swapped_handler_id = handler_id;
 }
 
 static void
