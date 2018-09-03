@@ -2243,7 +2243,14 @@ camel_nntp_command (CamelNNTPStore *nntp_store,
 			/* If we successfully connected then
 			 * we should obtain a CamelNNTPStream. */
 			nntp_stream = camel_nntp_store_ref_stream (nntp_store);
-			g_return_val_if_fail (nntp_stream != NULL, -1);
+			if (!nntp_stream) {
+				g_set_error (
+					error, CAMEL_SERVICE_ERROR,
+					CAMEL_SERVICE_ERROR_NOT_CONNECTED,
+					_("Not connected."));
+				ret = -1;
+				goto exit;
+			}
 		}
 
 		camel_nntp_stream_lock (nntp_stream);
@@ -2352,9 +2359,7 @@ camel_nntp_command (CamelNNTPStore *nntp_store,
 		}
 
 		if (ret == -1) {
-			if (nntp_stream)
-				camel_nntp_stream_unlock (nntp_stream);
-
+			camel_nntp_stream_unlock (nntp_stream);
 			g_clear_object (&nntp_stream);
 		}
 
