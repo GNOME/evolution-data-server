@@ -79,6 +79,7 @@ typedef struct _BookRecord {
 	ECalBackendContacts *cbc;
 	EBookClient *book_client;
 	EBookClientView *book_view;
+	GCancellable *cancellable;
 	gboolean online;
 	gulong notify_online_id;
 } BookRecord;
@@ -143,9 +144,9 @@ create_book_record (ECalBackendContacts *cbc,
 	br->ref_count = 1;
 	g_mutex_init (&br->lock);
 	br->cbc = g_object_ref (cbc);
+	br->cancellable = g_cancellable_new ();
 
-	e_book_client_connect (
-		source, 30, NULL, book_client_connected_cb, br);
+	e_book_client_connect (source, 30, br->cancellable, book_client_connected_cb, br);
 }
 
 static BookRecord *
@@ -166,24 +167,41 @@ book_record_unref (BookRecord *br)
 	g_return_if_fail (br->ref_count > 0);
 
 	if (g_atomic_int_dec_and_test (&br->ref_count)) {
-		g_rec_mutex_lock (&br->cbc->priv->tracked_contacts_lock);
-		g_hash_table_foreach_remove (
-			br->cbc->priv->tracked_contacts,
-			remove_by_book, br->book_client);
-		g_rec_mutex_unlock (&br->cbc->priv->tracked_contacts_lock);
+		g_cancellable_cancel (br->cancellable);
+
+		if (br->book_client) {
+			g_rec_mutex_lock (&br->cbc->priv->tracked_contacts_lock);
+			g_hash_table_foreach_remove (
+				br->cbc->priv->tracked_contacts,
+				remove_by_book, br->book_client);
+			g_rec_mutex_unlock (&br->cbc->priv->tracked_contacts_lock);
+		}
+
+		g_mutex_lock (&br->lock);
 
 		if (br->notify_online_id)
 			g_signal_handler_disconnect (br->book_client, br->notify_online_id);
 
-		g_mutex_clear (&br->lock);
-		g_object_unref (br->cbc);
-		g_object_unref (br->book_client);
+		g_clear_object (&br->cbc);
+		g_clear_object (&br->cancellable);
+		g_clear_object (&br->book_client);
+		g_clear_object (&br->book_view);
 
-		if (br->book_view != NULL)
-			g_object_unref (br->book_view);
+		g_mutex_unlock (&br->lock);
+		g_mutex_clear (&br->lock);
 
 		g_slice_free (BookRecord, br);
 	}
+}
+
+static void
+cancel_and_unref_book_record (BookRecord *br)
+{
+	g_return_if_fail (br != NULL);
+
+	if (br->cancellable)
+		g_cancellable_cancel (br->cancellable);
+	book_record_unref (br);
 }
 
 static void
@@ -264,8 +282,7 @@ book_record_get_view_thread (gpointer user_data)
 	query_sexp = e_book_query_to_string (query);
 	e_book_query_unref (query);
 
-	if (!e_book_client_get_view_sync (
-		br->book_client, query_sexp, &book_view, NULL, &error)) {
+	if (!e_book_client_get_view_sync (br->book_client, query_sexp, &book_view, br->cancellable, &error)) {
 
 		if (!error)
 			error = g_error_new_literal (
@@ -390,7 +407,7 @@ book_client_connected_cb (GObject *source_object,
 
 		g_warning ("%s: %s", G_STRFUNC, error->message);
 		g_error_free (error);
-		g_slice_free (BookRecord, br);
+		book_record_unref (br);
 		return;
 	}
 
@@ -400,8 +417,8 @@ book_client_connected_cb (GObject *source_object,
 	br->notify_online_id = g_signal_connect (client, "notify::online", G_CALLBACK (book_client_notify_online_cb), br);
 	cal_backend_contacts_insert_book_record (br->cbc, source, br);
 
-	thread = g_thread_new (
-		NULL, book_record_get_view_thread, book_record_ref (br));
+	/* Let it consume the 'br' reference */
+	thread = g_thread_new (NULL, book_record_get_view_thread, br);
 	g_thread_unref (thread);
 
 	g_object_unref (client);
@@ -552,6 +569,7 @@ ecb_contacts_watcher_appeared_cb (ESourceRegistryWatcher *watcher,
 	g_return_if_fail (E_IS_SOURCE (source));
 	g_return_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbcontacts));
 
+	cal_backend_contacts_remove_book_record (cbcontacts, source);
 	create_book_record (cbcontacts, source);
 }
 
@@ -1365,7 +1383,7 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 		(GHashFunc) e_source_hash,
 		(GEqualFunc) e_source_equal,
 		(GDestroyNotify) g_object_unref,
-		(GDestroyNotify) book_record_unref);
+		(GDestroyNotify) cancel_and_unref_book_record);
 
 	cbc->priv->tracked_contacts = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
