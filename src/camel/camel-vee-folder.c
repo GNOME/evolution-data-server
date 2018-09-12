@@ -1265,7 +1265,7 @@ vee_folder_folder_changed (CamelVeeFolder *vee_folder,
 	if (!vee_folder->priv->change_queue_busy) {
 		gchar *description;
 
-		description = g_strdup_printf ("Updating search folder '%s'", camel_folder_get_full_name (CAMEL_FOLDER (vee_folder)));
+		description = g_strdup_printf (_("Updating search folder “%s”"), camel_folder_get_full_name (CAMEL_FOLDER (vee_folder)));
 
 		camel_session_submit_job (
 			session, description, (CamelSessionCallback)
