@@ -1422,6 +1422,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 	GPollFD polls[6];
 	gint status, i;
 	gboolean read_data = FALSE, wrote_data = FALSE;
+	gboolean was_in_decrypt_stage;
 
 	for (i = 0; i < 6; i++) {
 		polls[i].fd = -1;
@@ -1474,6 +1475,8 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 	 * can to all of them. If one fails along the way, return
 	 * -1. */
 
+	was_in_decrypt_stage = gpg->in_decrypt_stage;
+
 	if (polls[2].revents & (G_IO_IN | G_IO_HUP)) {
 		/* read the status message and decide what to do... */
 		gchar buffer[4096];
@@ -1513,7 +1516,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 
 		if (nread > 0) {
 			if (gpg->mode != GPG_CTX_MODE_DECRYPT ||
-			    gpg->in_decrypt_stage) {
+			    gpg->in_decrypt_stage || was_in_decrypt_stage) {
 				gsize written = camel_stream_write (
 					gpg->ostream, buffer, (gsize)
 					nread, cancellable, error);
