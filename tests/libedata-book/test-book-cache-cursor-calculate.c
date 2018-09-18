@@ -18,6 +18,7 @@
 #include <locale.h>
 #include <libebook/libebook.h>
 
+#include "e-test-server-utils.h"
 #include "test-book-cache-utils.h"
 
 static TCUCursorClosure ascending_closure = {
@@ -691,5 +692,5 @@ main (gint argc,
 		test_cursor_calculate_descending_after_modification,
 		tcu_cursor_fixture_teardown);
 
-	return g_test_run ();
+	return e_test_server_utils_run_full (0);
 }

@@ -926,6 +926,9 @@ set(E_DATA_SERVER_LDFLAGS ${E_DATA_SERVER_LDFLAGS} ${MANUAL_NSPR_LIBS} ${MANUAL_
 pkg_check_modules(BACKEND REQUIRED gio-2.0 gmodule-2.0 libsecret-1 libsoup-2.4 libxml-2.0)
 pkg_check_modules(ADDRESSBOOK REQUIRED gio-2.0 libxml-2.0 libsoup-2.4 libsecret-1)
 pkg_check_modules(CALENDAR REQUIRED gio-2.0 libical>=${libical_minimum_version} libsoup-2.4 libxml-2.0 libsecret-1)
+set(ADDRESSBOOK_CFLAGS ${ADDRESSBOOK_CFLAGS} ${PHONENUMBER_DEFINITIONS})
+set(ADDRESSBOOK_INCLUDE_DIRS ${ADDRESSBOOK_INCLUDE_DIRS} ${PHONENUMBER_INCLUDE_DIRS})
+set(ADDRESSBOOK_LDFLAGS ${ADDRESSBOOK_LDFLAGS} ${PHONENUMBER_LDFLAGS})
 set(CALENDAR_CFLAGS ${CALENDAR_CFLAGS} ${LIBICAL_EXTRA_CFLAGS})
 
 pkg_check_modules(CAMEL REQUIRED gio-2.0 gmodule-2.0 ${mozilla_nss} ${mozilla_nspr} sqlite3>=${sqlite_minimum_version})

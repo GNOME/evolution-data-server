@@ -18,6 +18,7 @@
 #include <locale.h>
 #include <libebook/libebook.h>
 
+#include "e-test-server-utils.h"
 #include "data-test-utils.h"
 
 static void
@@ -78,5 +79,5 @@ main (gint argc,
 			paths[i], EbSqlFixture, &closures[i],
 			e_sqlite_fixture_setup, test_get_contact, e_sqlite_fixture_teardown);
 
-	return g_test_run ();
+	return e_test_server_utils_run_full (0);
 }

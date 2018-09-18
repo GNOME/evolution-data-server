@@ -18,6 +18,7 @@
 #include <locale.h>
 #include <libebook/libebook.h>
 
+#include "e-test-server-utils.h"
 #include "test-book-cache-utils.h"
 
 static void
@@ -74,5 +75,5 @@ main (gint argc,
 			tcu_fixture_setup, test_get_contact, tcu_fixture_teardown);
 	}
 
-	return g_test_run ();
+	return e_test_server_utils_run_full (0);
 }

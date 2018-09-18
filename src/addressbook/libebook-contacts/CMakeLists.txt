@@ -165,6 +165,7 @@ set(gir_libdirs
 	${CMAKE_BINARY_DIR}/src/private
 	${CMAKE_BINARY_DIR}/src/camel
 	${CMAKE_BINARY_DIR}/src/libedataserver
+	${PHONENUMBER_LIB_DIRS}
 )
 set(gir_libs
 	ebook-contacts
