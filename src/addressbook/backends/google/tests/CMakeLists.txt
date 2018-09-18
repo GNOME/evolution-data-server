@@ -3,7 +3,6 @@ set(DEPENDENCIES
 )
 
 add_executable(ebookbackendgoogle-phonenumber
-	EXCLUDE_FROM_ALL
 	phone-numbers.c
 )
 

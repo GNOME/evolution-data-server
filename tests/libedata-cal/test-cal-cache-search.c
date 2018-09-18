@@ -19,6 +19,7 @@
 #include <locale.h>
 #include <libecal/libecal.h>
 
+#include "e-test-server-utils.h"
 #include "test-cal-cache-utils.h"
 
 #define dd(x)
@@ -469,5 +470,5 @@ main (gint argc,
 	g_test_add ("/ECalCache/Search/Complex", TCUFixture, &closure_events,
 		tcu_fixture_setup, test_search_complex, tcu_fixture_teardown);
 
-	return g_test_run ();
+	return e_test_server_utils_run_full (0);
 }

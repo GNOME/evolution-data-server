@@ -199,11 +199,16 @@ e_sqlite_fixture_setup (EbSqlFixture *fixture,
 	EbSqlClosure *closure = (EbSqlClosure *) user_data;
 	ESourceBackendSummarySetup *setup = NULL;
 	gchar  *filename, *directory;
+	const gchar *provider_dir;
 	GError *error = NULL;
 
-	if (!g_file_test (CAMEL_PROVIDERDIR, G_FILE_TEST_IS_DIR | G_FILE_TEST_EXISTS)) {
-		if (g_mkdir_with_parents (CAMEL_PROVIDERDIR, 0700) == -1)
-			g_warning ("%s: Failed to create folder '%s': %s\n", G_STRFUNC, CAMEL_PROVIDERDIR, g_strerror (errno));
+	provider_dir = g_getenv (EDS_CAMEL_PROVIDER_DIR);
+	if (!provider_dir)
+		provider_dir = CAMEL_PROVIDERDIR;
+
+	if (!g_file_test (provider_dir, G_FILE_TEST_IS_DIR | G_FILE_TEST_EXISTS)) {
+		if (g_mkdir_with_parents (provider_dir, 0700) == -1)
+			g_warning ("%s: Failed to create folder '%s': %s\n", G_STRFUNC, provider_dir, g_strerror (errno));
 	}
 
 	fixture->contacts =

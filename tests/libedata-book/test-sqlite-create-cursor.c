@@ -18,6 +18,7 @@
 #include <locale.h>
 #include <libebook/libebook.h>
 
+#include "e-test-server-utils.h"
 #include "data-test-utils.h"
 
 static EbSqlClosure closure = { FALSE, NULL };
@@ -121,5 +122,5 @@ main (gint argc,
 		"/EbSqlCursor/Create/MissingSort", EbSqlFixture, &closure,
 		e_sqlite_fixture_setup, test_create_cursor_missing_sort, e_sqlite_fixture_teardown);
 
-	return g_test_run ();
+	return e_test_server_utils_run_full (0);
 }

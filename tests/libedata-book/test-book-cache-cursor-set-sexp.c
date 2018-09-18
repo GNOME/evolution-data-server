@@ -18,6 +18,7 @@
 #include <locale.h>
 #include <libebook/libebook.h>
 
+#include "e-test-server-utils.h"
 #include "test-book-cache-utils.h"
 
 static TCUCursorClosure book_closure = { { NULL }, NULL, E_BOOK_CURSOR_SORT_ASCENDING };
@@ -151,5 +152,5 @@ main (gint argc,
 		test_cursor_sexp_and_step,
 		tcu_cursor_fixture_teardown);
 
-	return g_test_run ();
+	return e_test_server_utils_run_full (0);
 }

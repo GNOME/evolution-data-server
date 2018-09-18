@@ -8,6 +8,7 @@
 #    PHONENUMBER_RAW_INPUT_NEEDED - Whether Parse() or ParseAndKeepRawInput() must be used to get the country-code source
 #    PHONENUMBER_DEFINITIONS - definitions to use with target_compile_definitions() and similar commands
 #    PHONENUMBER_INCLUDE_DIRS - include directories to use with target_include_directories() and similar commands
+#    PHONENUMBER_LIB_DIRS - directory where libphonenumber can be found
 #    PHONENUMBER_LDFLAGS - LDFLAGS to use with target_link_libraries() and similar commands
 
 include(PrintableOptions)
@@ -21,6 +22,7 @@ endif(NOT WITH_PHONENUMBER)
 
 set(PHONENUMBER_DEFINITIONS -DI18N_PHONENUMBERS_USE_BOOST)
 set(PHONENUMBER_INCLUDE_DIRS)
+set(PHONENUMBER_LIB_DIRS)
 set(PHONENUMBER_LDFLAGS -lphonenumber)
 
 string(LENGTH "${CMAKE_BINARY_DIR}" bindirlen)
@@ -35,10 +37,12 @@ string(TOUPPER "${WITH_PHONENUMBER}" optupper)
 if(("${optupper}" STREQUAL "ON") OR ("${substr}" STREQUAL "${CMAKE_BINARY_DIR}"))
 	set(WITH_PHONENUMBER "ON")
 	set(PHONENUMBER_INCLUDE_DIRS "${INCLUDE_INSTALL_DIR}")
-	set(PHONENUMBER_LDFLAGS -L${LIB_INSTALL_DIR} ${PHONENUMBER_LDFLAGS})
+	set(PHONENUMBER_LIB_DIRS ${LIB_INSTALL_DIR})
+	set(PHONENUMBER_LDFLAGS -L${PHONENUMBER_LIB_DIRS} ${PHONENUMBER_LDFLAGS})
 else(("${optupper}" STREQUAL "ON") OR ("${substr}" STREQUAL "${CMAKE_BINARY_DIR}"))
 	set(PHONENUMBER_INCLUDE_DIRS "${WITH_PHONENUMBER}/include")
-	set(PHONENUMBER_LDFLAGS -L${WITH_PHONENUMBER}/lib${LIB_SUFFIX} ${PHONENUMBER_LDFLAGS})
+	set(PHONENUMBER_LIB_DIRS ${WITH_PHONENUMBER}/lib${LIB_SUFFIX})
+	set(PHONENUMBER_LDFLAGS -L${PHONENUMBER_LIB_DIRS} ${PHONENUMBER_LDFLAGS})
 endif(("${optupper}" STREQUAL "ON") OR ("${substr}" STREQUAL "${CMAKE_BINARY_DIR}"))
 
 unset(bindirlen)

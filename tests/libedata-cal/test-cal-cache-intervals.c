@@ -18,6 +18,7 @@
 #include <locale.h>
 #include <libecal/libecal.h>
 
+#include "e-test-server-utils.h"
 #include "test-cal-cache-utils.h"
 
 #define NUM_INTERVALS_CLOSED	100
@@ -340,5 +341,5 @@ main (gint argc,
 	g_test_add ("/ECalCache/Intervals", TCUFixture, NULL,
 		tcu_fixture_setup, test_intervals, tcu_fixture_teardown);
 
-	return g_test_run ();
+	return e_test_server_utils_run_full (0);
 }

@@ -18,6 +18,7 @@
 #include <locale.h>
 #include <libebook/libebook.h>
 
+#include "e-test-server-utils.h"
 #include "test-book-cache-utils.h"
 
 struct {
@@ -98,5 +99,5 @@ main (gint argc,
 	}
 
 	/* On this case, we want to delete the work directory and start fresh */
-	return g_test_run ();
+	return e_test_server_utils_run_full (0);
 }

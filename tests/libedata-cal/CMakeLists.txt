@@ -2,6 +2,7 @@ set(extra_deps
 	ebackend
 	ecal
 	edata-cal
+	etestserverutils
 )
 
 set(extra_defines

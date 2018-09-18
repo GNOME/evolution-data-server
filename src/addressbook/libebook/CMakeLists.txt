@@ -107,6 +107,7 @@ set(gir_libdirs
 	${CMAKE_BINARY_DIR}/src/libedataserver
 	${CMAKE_BINARY_DIR}/src/addressbook/libebook-contacts
 	${CMAKE_BINARY_DIR}/src/addressbook/libedata-book
+	${PHONENUMBER_LIB_DIRS}
 )
 set(gir_libs
 	camel
