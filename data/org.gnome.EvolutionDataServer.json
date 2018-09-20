@@ -1,0 +1,205 @@
+{
+    "app-id" : "org.gnome.EvolutionDataServer",
+    "runtime" : "org.gnome.Sdk",
+    "runtime-version" : "master",
+    "sdk" : "org.gnome.Sdk",
+    "tags" : [
+        "nightly"
+    ],
+    "finish-args" : [
+        "--share=ipc",
+        "--share=network",
+        "--socket=x11",
+        "--socket=wayland",
+        "--socket=pulseaudio",
+        "--talk-name=org.freedesktop.Notifications",
+        "--talk-name=org.freedesktop.portal.Desktop",
+        "--talk-name=org.gnome.OnlineAccounts"
+    ],
+    "x-run-args" : [
+        "--standalone",
+        "-vvvv"
+    ],
+    "build-options" : {
+        "cflags" : "-O2 -g",
+        "cxxflags" : "-O2 -g",
+        "env" : {
+            "BASH_COMPLETIONSDIR" : "/app/share/bash-completion/completions",
+            "MOUNT_FUSE_PATH" : "../tmp/",
+            "V" : "1"
+        }
+    },
+    "cleanup" : [
+        "/include",
+        "/lib/pkgconfig",
+        "/lib/cmake",
+        "/share/pkgconfig",
+        "/share/aclocal",
+        "/man",
+        "/share/man",
+        "/share/gtk-doc",
+        "/share/vala",
+        "/share/bash-completions",
+        "*.la",
+        "*.a"
+    ],
+    "modules" : [
+        {
+            "name": "libical",
+            "cleanup": [ "/lib/cmake" ],
+            "buildsystem": "cmake-ninja",
+            "config-opts": [
+                "-DCMAKE_INSTALL_LIBDIR:PATH=/app/lib",
+                "-DBUILD_SHARED_LIBS:BOOL=ON",
+                "-DGOBJECT_INTROSPECTION:BOOL=OFF"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/libical/libical/releases/download/v3.0.3/libical-3.0.3.tar.gz",
+                    "sha256": "5b91eb8ad2d2dcada39d2f81d5e3ac15895823611dc7df91df39a35586f39241"
+                }
+            ]
+        },
+        {
+            "name": "liboauth",
+            "config-opts": [ "--enable-nss" ],
+            "cleanup": [ "/share/man" ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://downloads.sourceforge.net/project/liboauth/liboauth-1.0.3.tar.gz",
+                    "sha256": "0df60157b052f0e774ade8a8bac59d6e8d4b464058cc55f9208d72e41156811f"
+                }
+            ]
+        },
+        {
+            "name": "openldap",
+            "rm-configure": true,
+            "cleanup": [
+                "/bin",
+                "/share/man"
+            ],
+            "config-opts": [
+                "--disable-backends",
+                "--disable-overlays",
+                "--disable-slapd",
+                "--disable-debug",
+                "--enable-dynamic",
+                "--without-threads",
+                "--with-tls=gnutls"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.46.tgz",
+                    "sha256": "9a90dcb86b99ae790ccab93b7585a31fbcbeec8c94bf0f7ab0ca0a87ea0c4b2d"
+                },
+
+                {
+                    "type": "script",
+                    "dest-filename": "autogen.sh",
+                    "commands": [
+                        "AUTOMAKE=\"/bin/true\" autoreconf -vfi"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "libgdata",
+            "config-opts": [
+                "--disable-always-build-tests",
+                "--disable-goa",
+                "--disable-gtk-doc",
+                "--disable-introspection",
+                "--disable-installed-tests",
+                "--disable-vala"
+            ],
+            "cleanup": [
+                "/share/gtk-doc"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://gitlab.gnome.org/GNOME/libgdata.git"
+                }
+            ]
+        },
+        {
+            "name": "gnome-online-accounts",
+            "config-opts": [ "--disable-Werror", "--disable-telepathy", "--disable-documentation", "--disable-backend" ],
+            "cleanup": [ "/bin", "/share/GConf" ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://gitlab.gnome.org/GNOME/gnome-online-accounts.git"
+                }
+            ]
+        },
+        {
+            "name": "geocode-glib",
+            "config-opts": [
+                "--disable-introspection",
+                "--disable-gtk-doc"
+            ],
+            "cleanup": [
+                "/share/gtk-doc"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://gitlab.gnome.org/GNOME/geocode-glib.git"
+                }
+            ]
+        },
+        {
+            "name": "libgweather",
+            "buildsystem" : "meson",
+            "builddir" : true,
+            "config-opts" : [
+                "--libdir=/app/lib",
+                "--buildtype=debugoptimized",
+                "-Dglade_catalog=false",
+                "-Denable_vala=false"
+            ],
+            "cleanup": [
+                "/share/gtk-doc"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://gitlab.gnome.org/GNOME/libgweather.git"
+                }
+            ]
+        },
+        {
+            "name": "evolution-data-server",
+            "buildsystem": "cmake-ninja",
+            "cleanup": [ "/share/GConf" ],
+            "config-opts": [
+                "-DENABLE_FILE_LOCKING=fcntl",
+                "-DENABLE_DOT_LOCKING=OFF",
+                "-DENABLE_OAUTH2=ON",
+                "-DENABLE_GTK=ON",
+                "-DENABLE_UOA=OFF",
+                "-DENABLE_GOA=ON",
+                "-DENABLE_EXAMPLES=ON",
+                "-DENABLE_INTROSPECTION=ON",
+                "-DENABLE_VALA_BINDINGS=ON",
+                "-DENABLE_INSTALLED_TESTS=ON",
+                "-DENABLE_GTK_DOC=OFF",
+                "-DENABLE_DBUS_SESSION_TOOL=ON",
+                "-DWITH_PRIVATE_DOCS=ON",
+                "-DWITH_PHONENUMBER=OFF",
+                "-DWITH_SYSTEMDUSERUNITDIR=OFF"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://gitlab.gnome.org/GNOME/evolution-data-server.git",
+                    "branch": "master"
+                }
+            ]
+        }
+    ]
+}
