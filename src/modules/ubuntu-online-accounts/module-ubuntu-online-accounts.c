@@ -34,7 +34,8 @@
 
 typedef struct _EUbuntuOnlineAccounts EUbuntuOnlineAccounts;
 typedef struct _EUbuntuOnlineAccountsClass EUbuntuOnlineAccountsClass;
-typedef struct _AsyncContext AsyncContext;
+typedef struct _AccessTokenData AccessTokenData;
+typedef struct _UserInfoData UserInfoData;
 
 struct _EUbuntuOnlineAccounts {
 	EExtension parent;
@@ -49,11 +50,14 @@ struct _EUbuntuOnlineAccountsClass {
 	EExtensionClass parent_class;
 };
 
-struct _AsyncContext {
-	EUbuntuOnlineAccounts *extension;
-	EBackendFactory *backend_factory;
+struct _AccessTokenData	{
 	gchar *access_token;
 	gint expires_in;
+};
+
+struct _UserInfoData {
+	EUbuntuOnlineAccounts *extension;
+	EBackendFactory *backend_factory;
 };
 
 /* Module Entry Points */
@@ -75,17 +79,22 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED (
 		e_ubuntu_online_accounts_oauth2_support_init))
 
 static void
-async_context_free (AsyncContext *async_context)
+ubuntu_online_accounts_access_token_data_free (AccessTokenData *data) {
+	g_free (data->access_token);
+
+	g_slice_free (AccessTokenData, data);
+}
+
+static void
+ubuntu_online_accounts_user_info_data_free (UserInfoData *data)
 {
-	if (async_context->extension != NULL)
-		g_object_unref (async_context->extension);
+	if (data->extension != NULL)
+		g_object_unref (data->extension);
 
-	if (async_context->backend_factory != NULL)
-		g_object_unref (async_context->backend_factory);
+	if (data->backend_factory != NULL)
+		g_object_unref (data->backend_factory);
 
-	g_free (async_context->access_token);
-
-	g_slice_free (AsyncContext, async_context);
+	g_slice_free (UserInfoData, data);
 }
 
 static const gchar *
@@ -646,7 +655,7 @@ ubuntu_online_accounts_got_userinfo_cb (GObject *source_object,
                                         gpointer user_data)
 {
 	AgAccount *ag_account;
-	AsyncContext *async_context = user_data;
+	UserInfoData *user_info_data = user_data;
 	gchar *user_identity = NULL;
 	gchar *email_address = NULL;
 	gchar *imap_user_name = NULL;
@@ -665,8 +674,8 @@ ubuntu_online_accounts_got_userinfo_cb (GObject *source_object,
 
 	if (local_error == NULL) {
 		ubuntu_online_accounts_create_collection (
-			async_context->extension,
-			async_context->backend_factory,
+			user_info_data->extension,
+			user_info_data->backend_factory,
 			ag_account,
 			user_identity,
 			email_address,
@@ -687,7 +696,7 @@ ubuntu_online_accounts_got_userinfo_cb (GObject *source_object,
 	g_free (imap_user_name);
 	g_free (smtp_user_name);
 
-	async_context_free (async_context);
+	ubuntu_online_accounts_user_info_data_free (user_info_data);
 }
 
 static void
@@ -695,20 +704,20 @@ ubuntu_online_accounts_collect_userinfo (EUbuntuOnlineAccounts *extension,
                                          EBackendFactory *backend_factory,
                                          AgAccount *ag_account)
 {
-	AsyncContext *async_context;
+	UserInfoData *user_info_data;
 
 	/* Before we create a collection we need to collect user info from
 	 * the online service.  GNOME Online Accounts does this for us, but
 	 * no such luck with libaccounts-glib or libsignon-glib. */
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->extension = g_object_ref (extension);
-	async_context->backend_factory = g_object_ref (backend_factory);
+	user_info_data = g_slice_new0 (UserInfoData);
+	user_info_data->extension = g_object_ref (extension);
+	user_info_data->backend_factory = g_object_ref (backend_factory);
 
 	e_ag_account_collect_userinfo (
 		ag_account, NULL,
 		ubuntu_online_accounts_got_userinfo_cb,
-		async_context);
+		user_info_data);
 }
 
 static void
@@ -990,41 +999,41 @@ ubuntu_online_accounts_session_process_cb (GObject *source_object,
                                            GAsyncResult *result,
                                            gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 	GVariant *session_data;
 	GError *local_error = NULL;
 
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	task = G_TASK (user_data);
 
 	session_data = signon_auth_session_process_finish (
 		SIGNON_AUTH_SESSION (source_object), result, &local_error);
 
 	/* Sanity check. */
-	g_return_if_fail (
+	g_warn_if_fail (
 		((session_data != NULL) && (local_error == NULL)) ||
 		((session_data == NULL) && (local_error != NULL)));
 
 	if (session_data != NULL) {
+		AccessTokenData *access_token_data;
+		access_token_data = g_slice_new0 (AccessTokenData);
 		g_variant_lookup (
 			session_data, "AccessToken", "s",
-			&async_context->access_token);
+			&access_token_data->access_token);
 
 		g_variant_lookup (
 			session_data, "ExpiresIn", "i",
-			&async_context->expires_in);
+			&access_token_data->expires_in);
 
-		g_warn_if_fail (async_context->access_token != NULL);
+		g_warn_if_fail (access_token_data->access_token != NULL);
 		g_variant_unref (session_data);
+		g_task_return_pointer (
+			task, access_token_data,
+			(GDestroyNotify) ubuntu_online_accounts_access_token_data_free);
+	} else {
+		g_task_return_error (task, local_error);
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
-
-	g_simple_async_result_complete (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 static void
@@ -1034,36 +1043,26 @@ ubuntu_online_accounts_get_access_token (EOAuth2Support *support,
                                          GAsyncReadyCallback callback,
                                          gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 	SignonAuthSession *session;
 	AgAccountService *ag_account_service;
 	AgAuthData *ag_auth_data;
 	GError *local_error = NULL;
 
-	async_context = g_slice_new0 (AsyncContext);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (support), callback, user_data,
-		ubuntu_online_accounts_get_access_token);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	task = g_task_new (support, cancellable, callback, user_data);
+	g_task_set_source_tag (task, ubuntu_online_accounts_get_access_token);
 
 	ag_account_service = ubuntu_online_accounts_ref_account_service (
 		E_UBUNTU_ONLINE_ACCOUNTS (support), source);
 
 	if (ag_account_service == NULL) {
-		g_simple_async_result_set_error (
-			simple, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+		g_task_return_new_error (
+			task, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
 			_("Cannot find a corresponding account "
 			"service in the accounts database from "
 			"which to obtain an access token for “%s”"),
 			e_source_get_display_name (source));
-		g_simple_async_result_complete_in_idle (simple);
-		g_object_unref (simple);
+		g_object_unref (task);
 		return;
 	}
 
@@ -1075,13 +1074,12 @@ ubuntu_online_accounts_get_access_token (EOAuth2Support *support,
 	 *     a provider use OAuth 2.0, and an ESource for one of the
 	 *     ones that DOESN'T could mistakenly request the token. */
 	if (!ubuntu_online_accounts_supports_oauth2 (ag_account_service)) {
-		g_simple_async_result_set_error (
-			simple, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		g_task_return_new_error (
+			task, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
 			_("Data source “%s” does not "
 			"support OAuth 2.0 authentication"),
 			e_source_get_display_name (source));
-		g_simple_async_result_complete_in_idle (simple);
-		g_object_unref (simple);
+		g_object_unref (task);
 		return;
 	}
 
@@ -1092,7 +1090,7 @@ ubuntu_online_accounts_get_access_token (EOAuth2Support *support,
 		ag_auth_data_get_method (ag_auth_data), &local_error);
 
 	/* Sanity check. */
-	g_return_if_fail (
+	g_warn_if_fail (
 		((session != NULL) && (local_error == NULL)) ||
 		((session == NULL) && (local_error != NULL)));
 
@@ -1103,17 +1101,16 @@ ubuntu_online_accounts_get_access_token (EOAuth2Support *support,
 			ag_auth_data_get_mechanism (ag_auth_data),
 			cancellable,
 			ubuntu_online_accounts_session_process_cb,
-			g_object_ref (simple));
+			task);
 		g_object_unref (session);
 	} else {
-		g_simple_async_result_take_error (simple, local_error);
-		g_simple_async_result_complete_in_idle (simple);
+		g_task_return_error (task, local_error);
+		g_object_unref (task);
 	}
 
 	ag_auth_data_unref (ag_auth_data);
 
 	g_object_unref (ag_account_service);
-	g_object_unref (simple);
 }
 
 static gboolean
@@ -1123,30 +1120,26 @@ ubuntu_online_accounts_get_access_token_finish (EOAuth2Support *support,
                                                 gint *out_expires_in,
                                                 GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
+	AccessTokenData *access_token_data;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (support),
-		ubuntu_online_accounts_get_access_token), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, support), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	task = G_TASK (result);
+	access_token_data = g_task_propagate_pointer (task, error);
+	if (access_token_data == NULL)
 		return FALSE;
 
-	g_return_val_if_fail (async_context->access_token != NULL, FALSE);
+	g_return_val_if_fail (access_token_data->access_token != NULL, FALSE);
 
 	if (out_access_token != NULL) {
-		*out_access_token = async_context->access_token;
-		async_context->access_token = NULL;
+		*out_access_token = g_steal_pointer (&access_token_data->access_token);
 	}
 
 	if (out_expires_in != NULL)
-		*out_expires_in = async_context->expires_in;
+		*out_expires_in = access_token_data->expires_in;
 
+	ubuntu_online_accounts_access_token_data_free (access_token_data);
 	return TRUE;
 }
 

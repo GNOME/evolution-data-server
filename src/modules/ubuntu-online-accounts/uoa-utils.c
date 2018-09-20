@@ -33,22 +33,25 @@
 typedef struct _AsyncContext AsyncContext;
 
 struct _AsyncContext {
-	GCancellable *cancellable;
 	gchar *user_identity;
-	gchar *email_address;
-	gchar *imap_user_name;
-	gchar *smtp_user_name;
+	gchar *address;
 };
+
+static AsyncContext *
+async_context_new (const gchar* user_identity,
+                   const gchar* address)
+{
+	AsyncContext *async_context = g_slice_new0 (AsyncContext);
+	async_context->user_identity = g_strdup (user_identity);
+	async_context->address = g_strdup (address);
+	return async_context;
+}
 
 static void
 async_context_free (AsyncContext *async_context)
 {
-	g_clear_object (&async_context->cancellable);
-
 	g_free (async_context->user_identity);
-	g_free (async_context->email_address);
-	g_free (async_context->imap_user_name);
-	g_free (async_context->smtp_user_name);
+	g_free (async_context->address);
 
 	g_slice_free (AsyncContext, async_context);
 }
@@ -61,32 +64,32 @@ e_ag_account_google_got_userinfo_cb (RestProxyCall *call,
                                      GObject *weak_object,
                                      gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task = NULL;
 	JsonParser *json_parser;
 	JsonObject *json_object;
 	JsonNode *json_node;
 	const gchar *email;
 	GError *local_error = NULL;
 
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	task = G_TASK (user_data);
 
 	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		goto exit;
+		g_task_return_error (task, g_error_copy (error));
+		g_object_unref (task);
+		return;
 	}
 
 	/* This is shamelessly stolen from goagoogleprovider.c */
 
 	if (rest_proxy_call_get_status_code (call) != 200) {
-		g_simple_async_result_set_error (
-			simple, G_IO_ERROR, G_IO_ERROR_FAILED,
+		g_task_return_new_error (
+			task, G_IO_ERROR, G_IO_ERROR_FAILED,
 			_("Expected status 200 when requesting your "
 			"identity, instead got status %d (%s)"),
 			rest_proxy_call_get_status_code (call),
 			rest_proxy_call_get_status_message (call));
-		goto exit;
+		g_object_unref (task);
+		return;
 	}
 
 	json_parser = json_parser_new ();
@@ -100,9 +103,10 @@ e_ag_account_google_got_userinfo_cb (RestProxyCall *call,
 		g_prefix_error (
 			&local_error,
 			_("Error parsing response as JSON: "));
-		g_simple_async_result_take_error (simple, local_error);
+		g_task_return_error (task, local_error);
 		g_object_unref (json_parser);
-		goto exit;
+		g_object_unref (task);
+		return;
 	}
 
 	json_node = json_parser_get_root (json_parser);
@@ -110,22 +114,16 @@ e_ag_account_google_got_userinfo_cb (RestProxyCall *call,
 	email = json_object_get_string_member (json_object, "email");
 
 	if (email != NULL) {
-		async_context->user_identity = g_strdup (email);
-		async_context->email_address = g_strdup (email);
-		async_context->imap_user_name = g_strdup (email);
-		async_context->smtp_user_name = g_strdup (email);
+		AsyncContext *async_context = async_context_new (email, email);
+		g_task_return_pointer (task, async_context, (GDestroyNotify) async_context_free);
 	} else {
-		g_simple_async_result_set_error (
-			simple, G_IO_ERROR, G_IO_ERROR_FAILED,
+		g_task_return_new_error (
+			task, G_IO_ERROR, G_IO_ERROR_FAILED,
 			_("Didn’t find “email” in JSON data"));
 	}
 
 	g_object_unref (json_parser);
-
-exit:
-	g_simple_async_result_complete (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 static void
@@ -133,19 +131,14 @@ e_ag_account_google_session_process_cb (GObject *source_object,
                                         GAsyncResult *result,
                                         gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	GVariant *session_data;
 	GError *local_error = NULL;
 
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
+	task = G_TASK (user_data);
 
 	session_data = signon_auth_session_process_finish (
 		SIGNON_AUTH_SESSION (source_object), result, &local_error);
-
-	/* Sanity check. */
-	g_return_if_fail (
-		((session_data != NULL) && (local_error == NULL)) ||
-		((session_data == NULL) && (local_error != NULL)));
 
 	/* Use the access token to obtain the user's email address. */
 
@@ -171,52 +164,47 @@ e_ag_account_google_session_process_cb (GObject *source_object,
 			g_free (access_token);
 		}
 
-		/* XXX The 3rd argument is supposed to be a GObject
-		 *     that RestProxyCall weakly references such that
-		 *     its disposal cancels the call.  This obviously
-		 *     predates GCancellable.  Too bizarre to bother. */
 		rest_proxy_call_async (
 			call, e_ag_account_google_got_userinfo_cb,
-			NULL, g_object_ref (simple), &local_error);
+			NULL, task, &local_error);
 
 		if (local_error != NULL) {
-			/* Undo the reference added to the async call. */
-			g_object_unref (simple);
+			g_object_unref (task);
 		}
 
 		g_object_unref (proxy);
 		g_object_unref (call);
+	} else {
+		g_task_return_error (task, local_error);
+			g_object_unref (task);
 	}
-
-	if (local_error != NULL) {
-		g_simple_async_result_take_error (simple, local_error);
-		g_simple_async_result_complete (simple);
-	}
-
-	g_object_unref (simple);
 }
 
 static void
-e_ag_account_collect_google_userinfo (GSimpleAsyncResult *simple,
-                                      AgAccount *ag_account,
-                                      GCancellable *cancellable)
+e_ag_account_collect_google_userinfo (GTask *task)
 {
+	AgAccount *ag_account = NULL;
+	AgService *ag_service = NULL;
 	AgAccountService *ag_account_service = NULL;
 	SignonAuthSession *session;
 	AgAuthData *ag_auth_data;
 	GList *list;
 	GError *local_error = NULL;
 
+	g_assert (G_IS_TASK (task));
+
+	ag_account = g_task_get_source_object (task);
+
 	/* First obtain an OAuth 2.0 access token. */
 
 	list = ag_account_list_services_by_type (ag_account, "mail");
 	if (list != NULL) {
-		ag_account_service = ag_account_service_new (
-			ag_account, (AgService *) list->data);
+		ag_service = ag_service_ref ((AgService *) list->data);
 		ag_service_list_free (list);
 	}
 
-	g_return_if_fail (ag_account_service != NULL);
+	ag_account_service = ag_account_service_new (ag_account, ag_service);
+	ag_service_unref (ag_service);
 
 	ag_auth_data = ag_account_service_get_auth_data (ag_account_service);
 
@@ -224,28 +212,21 @@ e_ag_account_collect_google_userinfo (GSimpleAsyncResult *simple,
 		ag_auth_data_get_credentials_id (ag_auth_data),
 		ag_auth_data_get_method (ag_auth_data), &local_error);
 
-	/* Sanity check. */
-	g_return_if_fail (
-		((session != NULL) && (local_error == NULL)) ||
-		((session == NULL) && (local_error != NULL)));
-
 	if (session != NULL) {
 		signon_auth_session_process_async (
 			session,
 			ag_auth_data_get_login_parameters (ag_auth_data, NULL),
 			ag_auth_data_get_mechanism (ag_auth_data),
-			cancellable,
+			g_task_get_cancellable (task),
 			e_ag_account_google_session_process_cb,
-			g_object_ref (simple));
+			task);
 	} else {
-		g_simple_async_result_take_error (simple, local_error);
-		g_simple_async_result_complete_in_idle (simple);
+		g_task_return_error (task, local_error);
+		g_object_unref (task);
 	}
 
 	ag_auth_data_unref (ag_auth_data);
-
 	g_object_unref (ag_account_service);
-	g_object_unref (simple);
 }
 
 /*************************** Windows Live Provider ***************************/
@@ -256,34 +237,34 @@ e_ag_account_windows_live_got_me_cb (RestProxyCall *call,
                                      GObject *weak_object,
                                      gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 	JsonParser *json_parser;
 	JsonObject *json_object;
 	JsonNode *json_node;
 	const gchar *json_string;
-	gchar *id;
-	gchar *email;
+	const gchar *id;
+	const gchar *email;
 	GError *local_error = NULL;
 
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	task = G_TASK (user_data);
 
 	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		goto exit;
+		g_task_return_error (task, g_error_copy (error));
+		g_object_unref (task);
+		return;
 	}
 
 	/* This is shamelessly stolen from goawindowsliveprovider.c */
 
 	if (rest_proxy_call_get_status_code (call) != 200) {
-		g_simple_async_result_set_error (
-			simple, G_IO_ERROR, G_IO_ERROR_FAILED,
+		g_task_return_new_error (
+			task, G_IO_ERROR, G_IO_ERROR_FAILED,
 			_("Expected status 200 when requesting your "
 			"identity, instead got status %d (%s)"),
 			rest_proxy_call_get_status_code (call),
 			rest_proxy_call_get_status_message (call));
-		goto exit;
+		g_object_unref (task);
+		return;
 	}
 
 	json_parser = json_parser_new ();
@@ -297,42 +278,34 @@ e_ag_account_windows_live_got_me_cb (RestProxyCall *call,
 		g_prefix_error (
 			&local_error,
 			_("Error parsing response as JSON: "));
-		g_simple_async_result_take_error (simple, local_error);
+		g_task_return_error (task, local_error);
 		g_object_unref (json_parser);
-		goto exit;
+		g_object_unref (task);
+		return;
 	}
 
 	json_node = json_parser_get_root (json_parser);
 	json_object = json_node_get_object (json_node);
-	json_string = json_object_get_string_member (json_object, "id");
-	id = g_strdup (json_string);
+	id = json_object_get_string_member (json_object, "id");
 
 	json_object = json_object_get_object_member (json_object, "emails");
-	json_string = json_object_get_string_member (json_object, "account");
-	email = g_strdup (json_string);
+	email = json_object_get_string_member (json_object, "account");
 
 	if (id == NULL) {
-		g_simple_async_result_set_error (
-			simple, G_IO_ERROR, G_IO_ERROR_FAILED,
+		g_task_return_new_error (
+			task, G_IO_ERROR, G_IO_ERROR_FAILED,
 			_("Didn’t find “id” in JSON data"));
-		g_free (email);
 	} else if (email == NULL) {
-		g_simple_async_result_set_error (
-			simple, G_IO_ERROR, G_IO_ERROR_FAILED,
+		g_task_return_new_error (
+			task, G_IO_ERROR, G_IO_ERROR_FAILED,
 			_("Didn’t find “emails.account” in JSON data"));
 	} else {
-		async_context->user_identity = id;
-		async_context->email_address = email;
-		async_context->imap_user_name = g_strdup (email);
-		async_context->smtp_user_name = g_strdup (email);
+		AsyncContext *async_context = async_context_new (id, email);
+		g_task_return_pointer (task, async_context, (GDestroyNotify) async_context_free);
 	}
 
 	g_object_unref (json_parser);
-
-exit:
-	g_simple_async_result_complete (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 static void
@@ -340,19 +313,14 @@ e_ag_account_windows_live_session_process_cb (GObject *source_object,
                                               GAsyncResult *result,
                                               gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	GVariant *session_data;
 	GError *local_error = NULL;
 
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
+	task = G_TASK (user_data);
 
 	session_data = signon_auth_session_process_finish (
 		SIGNON_AUTH_SESSION (source_object), result, &local_error);
-
-	/* Sanity check. */
-	g_return_if_fail (
-		((session_data != NULL) && (local_error == NULL)) ||
-		((session_data == NULL) && (local_error != NULL)));
 
 	/* Use the access token to obtain the user's email address. */
 
@@ -378,52 +346,47 @@ e_ag_account_windows_live_session_process_cb (GObject *source_object,
 			g_free (access_token);
 		}
 
-		/* XXX The 3rd argument is supposed to be a GObject
-		 *     that RestProxyCall weakly references such that
-		 *     its disposal cancels the call.  This obviously
-		 *     predates GCancellable.  Too bizarre to bother. */
 		rest_proxy_call_async (
 			call, e_ag_account_windows_live_got_me_cb,
-			NULL, g_object_ref (simple), &local_error);
+			NULL, task, &local_error);
 
 		if (local_error != NULL) {
-			/* Undo the reference added to the async call. */
-			g_object_unref (simple);
+			g_object_unref (task);
 		}
 
 		g_object_unref (proxy);
 		g_object_unref (call);
+	} else {
+		g_task_return_error (task, local_error);
+		g_object_unref (task);
 	}
-
-	if (local_error != NULL) {
-		g_simple_async_result_take_error (simple, local_error);
-		g_simple_async_result_complete (simple);
-	}
-
-	g_object_unref (simple);
 }
 
 static void
-e_ag_account_collect_windows_live_userinfo (GSimpleAsyncResult *simple,
-                                            AgAccount *ag_account,
-                                            GCancellable *cancellable)
+e_ag_account_collect_windows_live_userinfo (GTask *task)
 {
+	AgAccount *ag_account = NULL;
+	AgService *ag_service = NULL;
 	AgAccountService *ag_account_service = NULL;
 	SignonAuthSession *session;
 	AgAuthData *ag_auth_data;
 	GList *list;
 	GError *local_error = NULL;
 
+	g_assert (G_IS_TASK (task));
+
+	ag_account = g_task_get_source_object (task);
+
 	/* First obtain an OAuth 2.0 access token. */
 
 	list = ag_account_list_services_by_type (ag_account, "mail");
 	if (list != NULL) {
-		ag_account_service = ag_account_service_new (
-			ag_account, (AgService *) list->data);
+		ag_service = ag_service_ref ((AgService *) list->data);
 		ag_service_list_free (list);
 	}
 
-	g_return_if_fail (ag_account_service != NULL);
+	ag_account_service = ag_account_service_new (ag_account, ag_service);
+	ag_service_unref (ag_service);
 
 	ag_auth_data = ag_account_service_get_auth_data (ag_account_service);
 
@@ -431,40 +394,36 @@ e_ag_account_collect_windows_live_userinfo (GSimpleAsyncResult *simple,
 		ag_auth_data_get_credentials_id (ag_auth_data),
 		ag_auth_data_get_method (ag_auth_data), &local_error);
 
-	/* Sanity check. */
-	g_return_if_fail (
-		((session != NULL) && (local_error == NULL)) ||
-		((session == NULL) && (local_error != NULL)));
-
 	if (session != NULL) {
 		signon_auth_session_process_async (
 			session,
 			ag_auth_data_get_login_parameters (ag_auth_data, NULL),
 			ag_auth_data_get_mechanism (ag_auth_data),
-			cancellable,
+			g_task_get_cancellable (task),
 			e_ag_account_windows_live_session_process_cb,
-			g_object_ref (simple));
+			task);
 	} else {
-		g_simple_async_result_take_error (simple, local_error);
-		g_simple_async_result_complete_in_idle (simple);
+		g_task_return_error (task, local_error);
+		g_object_unref (task);
 	}
 
 	ag_auth_data_unref (ag_auth_data);
-
 	g_object_unref (ag_account_service);
-	g_object_unref (simple);
 }
 
 /****************************** Yahoo! Provider ******************************/
 
 static void
-e_ag_account_collect_yahoo_userinfo (GSimpleAsyncResult *simple,
-                                     AgAccount *ag_account,
-                                     GCancellable *cancellable)
+e_ag_account_collect_yahoo_userinfo (GTask *task)
 {
+	AgAccount *ag_account = NULL;
 	AsyncContext *async_context;
 	GString *email_address;
 	const gchar *display_name;
+
+	g_assert (G_IS_TASK (task));
+
+	ag_account = g_task_get_source_object (task);
 
 	/* XXX This is a bit of a hack just to get *something* working
 	 *     for Yahoo! accounts.  The proper way to obtain userinfo
@@ -476,22 +435,15 @@ e_ag_account_collect_yahoo_userinfo (GSimpleAsyncResult *simple,
 	 *     display name has no domain part, assume "@yahoo.com". */
 
 	display_name = ag_account_get_display_name (ag_account);
-	g_return_if_fail (display_name != NULL);
 
 	email_address = g_string_new (display_name);
 	if (strchr (email_address->str, '@') == NULL)
 		g_string_append (email_address, "@yahoo.com");
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	async_context->user_identity = g_strdup (email_address->str);
-	async_context->email_address = g_strdup (email_address->str);
-	async_context->imap_user_name = g_strdup (email_address->str);
-	async_context->smtp_user_name = g_strdup (email_address->str);
-
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	async_context = async_context_new (email_address->str,
+	                                   email_address->str);
+	g_task_return_pointer (task, async_context, (GDestroyNotify) async_context_free);
+	g_object_unref (task);
 }
 
 /************************ End Provider-Specific Code *************************/
@@ -502,8 +454,7 @@ e_ag_account_collect_userinfo (AgAccount *ag_account,
                                GAsyncReadyCallback callback,
                                gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 	const gchar *provider_name;
 
 	g_return_if_fail (AG_IS_ACCOUNT (ag_account));
@@ -511,37 +462,23 @@ e_ag_account_collect_userinfo (AgAccount *ag_account,
 	provider_name = ag_account_get_provider_name (ag_account);
 	g_return_if_fail (provider_name != NULL);
 
-	async_context = g_slice_new0 (AsyncContext);
-
-	if (G_IS_CANCELLABLE (cancellable))
-		async_context->cancellable = g_object_ref (cancellable);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (ag_account), callback,
-		user_data, e_ag_account_collect_userinfo);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	task = g_task_new (ag_account, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_ag_account_collect_userinfo);
+	g_task_set_check_cancellable (task, TRUE);
 
 	/* XXX This has to be done differently for each provider. */
 
 	if (g_str_equal (provider_name, "google")) {
-		e_ag_account_collect_google_userinfo (
-			g_object_ref (simple), ag_account, cancellable);
+		e_ag_account_collect_google_userinfo (task);
 	} else if (g_str_equal (provider_name, "windows-live")) {
-		e_ag_account_collect_windows_live_userinfo (
-			g_object_ref (simple), ag_account, cancellable);
+		e_ag_account_collect_windows_live_userinfo (task);
 	} else if (g_str_equal (provider_name, "yahoo")) {
-		e_ag_account_collect_yahoo_userinfo (
-			g_object_ref (simple), ag_account, cancellable);
+		e_ag_account_collect_yahoo_userinfo (task);
 	} else {
 		g_warn_if_reached ();
-		g_simple_async_result_complete_in_idle (simple);
+		g_task_return_pointer (task, NULL, NULL);
+		g_object_unref (task);
 	}
-
-	g_object_unref (simple);
 }
 
 gboolean
@@ -553,42 +490,35 @@ e_ag_account_collect_userinfo_finish (AgAccount *ag_account,
                                       gchar **out_smtp_user_name,
                                       GError **error)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (ag_account),
-		e_ag_account_collect_userinfo), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, ag_account), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	task = G_TASK (result);
+	async_context = g_task_propagate_pointer (task, error);
+	if (async_context == NULL)
 		return FALSE;
 
 	/* The result strings may be NULL without an error. */
 
 	if (out_user_identity != NULL) {
-		*out_user_identity = async_context->user_identity;
-		async_context->user_identity = NULL;
+		*out_user_identity = g_steal_pointer (&async_context->user_identity);
 	}
 
 	if (out_email_address != NULL) {
-		*out_email_address = async_context->email_address;
-		async_context->email_address = NULL;
+		*out_email_address = g_strdup (async_context->address);
 	}
 
 	if (out_imap_user_name != NULL) {
-		*out_imap_user_name = async_context->imap_user_name;
-		async_context->imap_user_name = NULL;
+		*out_imap_user_name = g_strdup (async_context->address);
 	}
 
 	if (out_smtp_user_name != NULL) {
-		*out_smtp_user_name = async_context->smtp_user_name;
-		async_context->smtp_user_name = NULL;
+		*out_smtp_user_name = g_strdup (async_context->address);
 	}
 
+	async_context_free (async_context);
 	return TRUE;
 }
 
