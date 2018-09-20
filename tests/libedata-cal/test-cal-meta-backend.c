@@ -1287,6 +1287,7 @@ static void
 test_get_attachment_uris (ECalMetaBackend *meta_backend)
 {
 	ECalBackendSyncClass *backend_class;
+	gchar *expected_uri, *filename;
 	GSList *uris = NULL;
 	GError *error = NULL;
 
@@ -1319,7 +1320,13 @@ test_get_attachment_uris (ECalMetaBackend *meta_backend)
 	g_assert_no_error (error);
 	g_assert_nonnull (uris);
 	g_assert_cmpint (g_slist_length (uris), ==, 1);
-	g_assert_cmpstr (uris->data, ==, "file:///usr/share/icons/hicolor/48x48/apps/evolution.png");
+
+	filename = tcu_get_test_case_filename ("event-1");
+	expected_uri = g_filename_to_uri (filename, NULL, NULL);
+	g_free (filename);
+
+	g_assert_cmpstr (uris->data, ==, expected_uri);
+	g_free (expected_uri);
 
 	g_slist_free_full (uris, g_free);
 }
