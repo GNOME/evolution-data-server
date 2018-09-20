@@ -46,6 +46,7 @@ ECalComponent *	tcu_new_component_from_test_case	(const gchar *case_name);
 void		tcu_add_component_from_test_case	(TCUFixture *fixture,
 							 const gchar *case_name,
 							 ECalComponent **out_component);
+gchar *		tcu_get_test_case_filename		(const gchar *case_name);
 
 G_END_DECLS
 

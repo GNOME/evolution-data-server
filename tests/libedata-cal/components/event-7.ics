@@ -6,7 +6,7 @@ DTEND;TZID=/freeassociation.sourceforge.net/America/New_York:20170221T145000
 SEQUENCE:1
 SUMMARY:With attachment
 TRANSP:OPAQUE
-ATTACH:file:///usr/share/icons/hicolor/48x48/apps/evolution.png
+ATTACH:$EVENT1URI$
 CLASS:PUBLIC
 CREATED:20170221T125054Z
 LAST-MODIFIED:20170221T125054Z
