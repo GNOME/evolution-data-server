@@ -1,0 +1,51 @@
+stages:
+    - test
+    - review
+
+variables:
+    BUNDLE: "evolution-data-server-git.flatpak"
+
+flatpak:
+    image: "registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master"
+    stage: test
+    variables:
+        GIT_SUBMODULE_STRATEGY: normal
+
+        # Replace with your manifest path
+        MANIFEST_PATH: "data/org.gnome.EvolutionDataServer.json"
+        RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
+        # Replace with your application name, as written in the manifest
+        FLATPAK_MODULE: "evolution-data-server"
+        # Make sure to keep this in sync with the Flatpak manifest, all arguments
+        # are passed except the config-args because we build it ourselves
+        CMAKE_ARGS: "-DENABLE_FILE_LOCKING=fcntl -DENABLE_DOT_LOCKING=OFF -DENABLE_OAUTH2=ON -DENABLE_GTK=ON -DENABLE_UOA=OFF -DENABLE_GOA=ON -DENABLE_EXAMPLES=ON -DENABLE_INTROSPECTION=ON -DENABLE_VALA_BINDINGS=ON -DENABLE_INSTALLED_TESTS=ON -DENABLE_GTK_DOC=OFF -DENABLE_DBUS_SESSION_TOOL=ON -DWITH_PRIVATE_DOCS=ON -DWITH_PHONENUMBER=OFF -DWITH_SYSTEMDUSERUNITDIR=OFF -DWITH_LIBDB=OFF"
+        DBUS_ID: "org.gnome.EvolutionDataServer"
+
+    script:
+        - mkdir _build
+        - mkdir .flatpak-builder -p
+        - mv .flatpak-builder _build/.flatpak-builder
+        - cd _build
+        - flatpak-builder --stop-at=${FLATPAK_MODULE} app ../${MANIFEST_PATH}
+        # Make sure to keep this in sync with the Flatpak manifest, all arguments
+        # are passed except the config-args because we build it ourselves
+        - flatpak build app cmake -DCMAKE_INSTALL_PREFIX=/app ${CMAKE_ARGS} ..
+        - flatpak build app make install
+        - flatpak build app make test
+        - flatpak-builder --finish-only --repo=repo app ../${MANIFEST_PATH}
+        # Generate a Flatpak bundle
+        - flatpak build-bundle repo ../${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
+        - mv .flatpak-builder ../.flatpak-builder
+
+    artifacts:
+        paths:
+            - ${BUNDLE}
+            - _build/Testing/Temporary/LastTestsFailed.log
+            - _build/Testing/Temporary/LastTest.log
+        expire_in: 30 days
+        
+    cache:
+        paths:
+            - .flatpak-builder/downloads/
+            - .flatpak-builder/git/
+
