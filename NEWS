@@ -1,3 +1,22 @@
+Evolution-Data-Server 3.30.1 2018-09-24
+---------------------------------------
+
+Bug Fixes:
+	I#3 - [GPG] Mails that are not encrypted look encrypted ][ (Milan Crha)
+	I#24 - The 'contacts' calendar backend leaks BookRecord (Milan Crha)
+	I#29 - Changed user name not propagated to collection child sources (Milan Crha)
+	I#30 - Some of the tests fail to run with disabled RPATH (Milan Crha)
+	I#32 - test-cal-meta-backend cannot run without installed Evolution (Milan Crha)
+	evo-I#86 - Quoting of plain text mail into HTML mode mangles deeper levels (Milan Crha)
+
+Miscellaneous:
+	Add an optionally built evolution-dbus-session tool (Milan Crha)
+
+Translations:
+	Marek Cernocky (cs)
+	Rūdolfs Mazurs (lv)
+	Gábor Kelemen (hu)
+
 Evolution-Data-Server 3.30.0 2018-09-03
 ---------------------------------------
 
