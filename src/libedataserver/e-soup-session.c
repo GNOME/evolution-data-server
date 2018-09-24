@@ -52,6 +52,8 @@ struct _ESoupSessionPrivate {
 
 	GError *bearer_auth_error;
 	ESoupAuthBearer *using_bearer_auth;
+
+	gboolean auth_prefilled; /* When TRUE, the first 'retrying' is ignored in the "authenticate" handler */
 };
 
 enum {
@@ -63,47 +65,51 @@ enum {
 G_DEFINE_TYPE (ESoupSession, e_soup_session, SOUP_TYPE_SESSION)
 
 static void
-e_soup_session_ensure_bearer_auth_usage (ESoupSession *session,
-					 SoupMessage *message,
-					 ESoupAuthBearer *bearer)
+e_soup_session_ensure_auth_usage (ESoupSession *session,
+				  SoupURI *in_soup_uri,
+				  SoupMessage *message,
+				  SoupAuth *soup_auth)
 {
 	SoupSessionFeature *feature;
 	SoupURI *soup_uri;
+	GType auth_type;
 
 	g_return_if_fail (E_IS_SOUP_SESSION (session));
-
-	/* Preload the SoupAuthManager with a valid "Bearer" token
-	 * when using OAuth 2.0. This avoids an extra unauthorized
-	 * HTTP round-trip, which apparently Google doesn't like. */
+	g_return_if_fail (SOUP_IS_AUTH (soup_auth));
 
 	feature = soup_session_get_feature (SOUP_SESSION (session), SOUP_TYPE_AUTH_MANAGER);
 
-	if (!soup_session_feature_has_feature (feature, E_TYPE_SOUP_AUTH_BEARER)) {
-		/* Add the "Bearer" auth type to support OAuth 2.0. */
-		soup_session_feature_add_feature (feature, E_TYPE_SOUP_AUTH_BEARER);
+	auth_type = G_OBJECT_TYPE (soup_auth);
+
+	if (!soup_session_feature_has_feature (feature, auth_type)) {
+		/* Add the SoupAuth type to support it. */
+		soup_session_feature_add_feature (feature, auth_type);
 	}
 
-	soup_uri = message ? soup_message_get_uri (message) : NULL;
-	if (soup_uri && soup_uri->host && *soup_uri->host) {
-		soup_uri = soup_uri_copy_host (soup_uri);
+	if (in_soup_uri) {
+		soup_uri = in_soup_uri;
 	} else {
-		soup_uri = NULL;
+		soup_uri = message ? soup_message_get_uri (message) : NULL;
+		if (soup_uri && soup_uri->host && *soup_uri->host) {
+			soup_uri = soup_uri_copy_host (soup_uri);
+		} else {
+			soup_uri = NULL;
+		}
+
+		if (!soup_uri) {
+			ESourceWebdav *extension;
+			ESource *source;
+
+			source = e_soup_session_get_source (session);
+			extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+			soup_uri = e_source_webdav_dup_soup_uri (extension);
+		}
 	}
 
-	if (!soup_uri) {
-		ESourceWebdav *extension;
-		ESource *source;
+	soup_auth_manager_use_auth (SOUP_AUTH_MANAGER (feature), soup_uri, soup_auth);
 
-		source = e_soup_session_get_source (session);
-		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-		soup_uri = e_source_webdav_dup_soup_uri (extension);
-	}
-
-	soup_auth_manager_use_auth (
-		SOUP_AUTH_MANAGER (feature),
-		soup_uri, SOUP_AUTH (bearer));
-
-	soup_uri_free (soup_uri);
+	if (!in_soup_uri)
+		soup_uri_free (soup_uri);
 }
 
 static gboolean
@@ -130,8 +136,11 @@ e_soup_session_setup_bearer_auth (ESoupSession *session,
 	if (success) {
 		e_soup_auth_bearer_set_access_token (bearer, access_token, expires_in_seconds);
 
+		/* Preload the SoupAuthManager with a valid "Bearer" token
+		 * when using OAuth 2.0. This avoids an extra unauthorized
+		 * HTTP round-trip, which apparently Google doesn't like. */
 		if (!is_in_authenticate_handler)
-			e_soup_session_ensure_bearer_auth_usage (session, message, bearer);
+			e_soup_session_ensure_auth_usage (session, NULL, message, SOUP_AUTH (bearer));
 	}
 
 	g_free (access_token);
@@ -141,36 +150,15 @@ e_soup_session_setup_bearer_auth (ESoupSession *session,
 
 static gboolean
 e_soup_session_maybe_prepare_bearer_auth (ESoupSession *session,
-					  SoupRequestHTTP *request,
+					  SoupURI *soup_uri,
+					  SoupMessage *message,
 					  GCancellable *cancellable,
 					  GError **error)
 {
-	ESource *source;
-	SoupMessage *message;
-	gchar *auth_method = NULL;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_SOUP_SESSION (session), FALSE);
-
-	source = e_soup_session_get_source (session);
-
-	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
-		ESourceAuthentication *extension;
-
-		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
-		auth_method = e_source_authentication_dup_method (extension);
-	} else {
-		return TRUE;
-	}
-
-	if (g_strcmp0 (auth_method, "OAuth2") != 0 && !e_oauth2_services_is_oauth2_alias_static (auth_method)) {
-		g_free (auth_method);
-		return TRUE;
-	}
-
-	g_free (auth_method);
-
-	message = soup_request_http_get_message (request);
+	g_return_val_if_fail (soup_uri != NULL, FALSE);
 
 	g_mutex_lock (&session->priv->property_lock);
 	if (session->priv->using_bearer_auth) {
@@ -183,23 +171,8 @@ e_soup_session_maybe_prepare_bearer_auth (ESoupSession *session,
 		g_clear_object (&using_bearer_auth);
 	} else {
 		SoupAuth *soup_auth;
-		SoupURI *soup_uri;
 
 		g_mutex_unlock (&session->priv->property_lock);
-
-		soup_uri = message ? soup_message_get_uri (message) : NULL;
-		if (soup_uri && soup_uri->host && *soup_uri->host) {
-			soup_uri = soup_uri_copy_host (soup_uri);
-		} else {
-			soup_uri = NULL;
-		}
-
-		if (!soup_uri) {
-			ESourceWebdav *extension;
-
-			extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-			soup_uri = e_source_webdav_dup_soup_uri (extension);
-		}
 
 		soup_auth = g_object_new (
 			E_TYPE_SOUP_AUTH_BEARER,
@@ -214,10 +187,111 @@ e_soup_session_maybe_prepare_bearer_auth (ESoupSession *session,
 		}
 
 		g_object_unref (soup_auth);
-		soup_uri_free (soup_uri);
 	}
 
+	return success;
+}
+
+static gboolean
+e_soup_session_maybe_prepare_basic_auth (ESoupSession *session,
+					 SoupURI *soup_uri,
+					 SoupMessage *message,
+					 const gchar *in_username,
+					 const ENamedParameters *credentials,
+					 GCancellable *cancellable,
+					 GError **error)
+{
+	SoupAuth *soup_auth;
+	const gchar *username;
+
+	g_return_val_if_fail (E_IS_SOUP_SESSION (session), FALSE);
+	g_return_val_if_fail (soup_uri != NULL, FALSE);
+
+	if (!credentials || !e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_PASSWORD)) {
+		/* This error message won't get into the UI */
+		g_set_error_literal (error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED, soup_status_get_phrase (SOUP_STATUS_UNAUTHORIZED));
+		return FALSE;
+	}
+
+	username = e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_USERNAME);
+	if (!username || !*username)
+		username = in_username;
+
+	soup_auth = soup_auth_new (SOUP_TYPE_AUTH_BASIC, message, "Basic");
+
+	soup_auth_authenticate (soup_auth, username, e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_PASSWORD));
+
+	g_mutex_lock (&session->priv->property_lock);
+	session->priv->auth_prefilled = TRUE;
+	g_mutex_unlock (&session->priv->property_lock);
+
+	e_soup_session_ensure_auth_usage (session, soup_uri, message, soup_auth);
+
+	g_clear_object (&soup_auth);
+
+	return TRUE;
+}
+
+static gboolean
+e_soup_session_maybe_prepare_auth (ESoupSession *session,
+				   SoupRequestHTTP *request,
+				   GCancellable *cancellable,
+				   GError **error)
+{
+	ESource *source;
+	ENamedParameters *credentials;
+	SoupMessage *message;
+	SoupURI *soup_uri;
+	gchar *auth_method = NULL, *user = NULL;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (E_IS_SOUP_SESSION (session), FALSE);
+
+	source = e_soup_session_get_source (session);
+
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+		ESourceAuthentication *extension;
+
+		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		auth_method = e_source_authentication_dup_method (extension);
+		user = e_source_authentication_dup_user (extension);
+	} else {
+		return TRUE;
+	}
+
+	credentials = e_soup_session_dup_credentials (session);
+	message = soup_request_http_get_message (request);
+	soup_uri = message ? soup_message_get_uri (message) : NULL;
+	if (soup_uri && soup_uri->host && *soup_uri->host) {
+		soup_uri = soup_uri_copy_host (soup_uri);
+	} else {
+		soup_uri = NULL;
+	}
+
+	if (!soup_uri) {
+		ESourceWebdav *extension;
+
+		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+		soup_uri = e_source_webdav_dup_soup_uri (extension);
+	}
+
+	g_mutex_lock (&session->priv->property_lock);
+	session->priv->auth_prefilled = FALSE;
+	g_mutex_unlock (&session->priv->property_lock);
+
+	if (g_strcmp0 (auth_method, "OAuth2") == 0 ||
+	    e_oauth2_services_is_oauth2_alias_static (auth_method)) {
+		success = e_soup_session_maybe_prepare_bearer_auth (session, soup_uri, message, cancellable, error);
+	} else if (user && *user) {
+		/* Default to Basic authentication when user is filled */
+		success = e_soup_session_maybe_prepare_basic_auth (session, soup_uri, message, user, credentials, cancellable, error);
+	}
+
+	e_named_parameters_free (credentials);
 	g_clear_object (&message);
+	soup_uri_free (soup_uri);
+	g_free (auth_method);
+	g_free (user);
 
 	return success;
 }
@@ -245,8 +319,13 @@ e_soup_session_authenticate_cb (SoupSession *soup_session,
 		session->priv->using_bearer_auth = E_SOUP_AUTH_BEARER (auth);
 	}
 
-	if (retrying)
+	g_mutex_lock (&session->priv->property_lock);
+	if (retrying && !session->priv->auth_prefilled) {
+		g_mutex_unlock (&session->priv->property_lock);
 		return;
+	}
+	session->priv->auth_prefilled = FALSE;
+	g_mutex_unlock (&session->priv->property_lock);
 
 	if (session->priv->using_bearer_auth) {
 		GError *local_error = NULL;
@@ -425,6 +504,7 @@ e_soup_session_init (ESoupSession *session)
 	session->priv = G_TYPE_INSTANCE_GET_PRIVATE (session, E_TYPE_SOUP_SESSION, ESoupSessionPrivate);
 	session->priv->ssl_info_set = FALSE;
 	session->priv->log_level = SOUP_LOGGER_LOG_NONE;
+	session->priv->auth_prefilled = FALSE;
 
 	g_mutex_init (&session->priv->property_lock);
 
@@ -926,7 +1006,7 @@ e_soup_session_send_request_sync (ESoupSession *session,
 	g_return_val_if_fail (E_IS_SOUP_SESSION (session), NULL);
 	g_return_val_if_fail (SOUP_IS_REQUEST_HTTP (request), NULL);
 
-	if (!e_soup_session_maybe_prepare_bearer_auth (session, request, cancellable, error))
+	if (!e_soup_session_maybe_prepare_auth (session, request, cancellable, error))
 		return NULL;
 
 	g_mutex_lock (&session->priv->property_lock);
