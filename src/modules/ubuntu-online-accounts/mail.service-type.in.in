@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<service-type id="mail">
-  <_name>Mail</_name>
-  <_description>Integrate your mailboxes</_description>
-  <icon>emblem-mail</icon>
-  <translations>@GETTEXT_PACKAGE@</translations>
-</service-type>

@@ -25,7 +25,6 @@ set(GETTEXT_PO_DIR ${CMAKE_SOURCE_DIR}/po)
 # Required for 'disttest' and 'ditcheck' of DistTarget module
 set(PROJECT_DISTCONFIGURE_PARAMS
 	-DENABLE_GOA=ON
-	-DENABLE_UOA=ON
 	-DENABLE_EXAMPLES=ON
 	-DENABLE_INTROSPECTION=ON
 	-DENABLE_VALA_BINDINGS=ON
@@ -439,21 +438,6 @@ if(ENABLE_GOA)
 
 	set(HAVE_GOA 1)
 endif(ENABLE_GOA)
-
-# ********************************
-# Check for Ubuntu Online Accounts
-# ********************************
-
-add_printable_option(ENABLE_UOA "Enable Ubuntu Online Accounts support" ON)
-
-if(ENABLE_UOA)
-	pkg_check_modules_for_option(ENABLE_UOA "Ubuntu Online Accounts support" LIBACCOUNTS_GLIB libaccounts-glib>=${libaccounts_glib_minimum_version})
-	pkg_check_modules_for_option(ENABLE_UOA "Ubuntu Online Accounts support" LIBSIGNON_GLIB libsignon-glib>=${libsignon_glib_minimum_version})
-	pkg_check_modules_for_option(ENABLE_UOA "Ubuntu Online Accounts support" JSON_GLIB json-glib-1.0)
-	pkg_check_modules_for_option(ENABLE_UOA "Ubuntu Online Accounts support" REST rest-0.7)
-
-	set(HAVE_UOA 1)
-endif(ENABLE_UOA)
 
 # **********************************************
 # Check if backend per process should be enabled

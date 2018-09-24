@@ -221,19 +221,6 @@ src/modules/gnome-online-accounts/module-gnome-online-accounts.c
 src/modules/google-backend/module-google-backend.c
 src/modules/trust-prompt/module-trust-prompt.c
 src/modules/trust-prompt/trust-prompt-gtk.c
-[type: gettext/xml]src/modules/ubuntu-online-accounts/calendar.service-type.in.in
-[type: gettext/xml]src/modules/ubuntu-online-accounts/contacts.service-type.in.in
-src/modules/ubuntu-online-accounts/e-signon-session-password.c
-src/modules/ubuntu-online-accounts/evolution-data-server-uoa.desktop.in.in
-[type: gettext/xml]src/modules/ubuntu-online-accounts/google-calendar.service.in.in
-[type: gettext/xml]src/modules/ubuntu-online-accounts/google-contacts.service.in.in
-[type: gettext/xml]src/modules/ubuntu-online-accounts/google-gmail.service.in.in
-[type: gettext/xml]src/modules/ubuntu-online-accounts/mail.service-type.in.in
-src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c
-src/modules/ubuntu-online-accounts/uoa-utils.c
-[type: gettext/xml]src/modules/ubuntu-online-accounts/windows-live-mail.service.in.in
-[type: gettext/xml]src/modules/ubuntu-online-accounts/yahoo-calendar.service.in.in
-[type: gettext/xml]src/modules/ubuntu-online-accounts/yahoo-mail.service.in.in
 src/modules/yahoo-backend/module-yahoo-backend.c
 src/services/evolution-addressbook-factory/evolution-addressbook-factory.c
 src/services/evolution-alarm-notify/e-alarm-notify.c

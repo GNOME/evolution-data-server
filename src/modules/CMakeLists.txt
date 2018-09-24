@@ -80,10 +80,6 @@ if(HAVE_GOA)
 	add_subdirectory(gnome-online-accounts)
 endif(HAVE_GOA)
 
-if(HAVE_UOA)
-	add_subdirectory(ubuntu-online-accounts)
-endif(HAVE_UOA)
-
 if(NOT WIN32)
 	add_subdirectory(secret-monitor)
 endif(NOT WIN32)
