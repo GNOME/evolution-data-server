@@ -32,6 +32,7 @@
 
 #define GTASKS_DEFAULT_TASKLIST_NAME "@default"
 #define X_EVO_GTASKS_SELF_LINK	"X-EVOLUTION-GTASKS-SELF-LINK"
+#define X_EVO_GTASKS_POSITION	"X-EVOLUTION-GTASKS-POSITION"
 
 /* Current data version; when doesn't match with the stored,
    then fetches everything again. */
@@ -100,6 +101,8 @@ ecb_gtasks_gdata_to_comp (GDataTasksTask *task)
 	GDataLink *data_link;
 	ECalComponent *comp;
 	icalcomponent *icomp;
+	const gchar *position;
+	const gchar *parent;
 	const gchar *text;
 	struct icaltimetype tt;
 
@@ -165,6 +168,14 @@ ecb_gtasks_gdata_to_comp (GDataTasksTask *task)
 	if (data_link)
 		e_cal_util_set_x_property (icomp, X_EVO_GTASKS_SELF_LINK, gdata_link_get_uri (data_link));
 
+	position = gdata_tasks_task_get_position (task);
+	if (position)
+		e_cal_util_set_x_property (icomp, X_EVO_GTASKS_POSITION, position);
+
+	parent = gdata_tasks_task_get_parent (task);
+	if (parent)
+		icalcomponent_add_property (icomp, icalproperty_new_relatedto (parent));
+
 	comp = e_cal_component_new_from_icalcomponent (icomp);
 	g_warn_if_fail (comp != NULL);
 
@@ -181,6 +192,9 @@ ecb_gtasks_comp_to_gdata (ECalComponent *comp,
 	icalcomponent *icomp;
 	icalproperty *prop;
 	const gchar *text;
+#if GDATA_CHECK_VERSION(0, 17, 10)
+	gchar *position;
+#endif
 	gchar *tmp;
 	struct icaltimetype tt;
 
@@ -251,6 +265,39 @@ ecb_gtasks_comp_to_gdata (ECalComponent *comp,
 	}
 
 	g_free (tmp);
+
+#if GDATA_CHECK_VERSION(0, 17, 10)
+	/* Position */
+	position = e_cal_util_dup_x_property (icomp, X_EVO_GTASKS_POSITION);
+	if (!position || !*position) {
+		g_free (position);
+		position = NULL;
+
+		/* If the passed-in component doesn't contain the libgdata position,
+		   then get it from the cached comp */
+		if (cached_comp) {
+			position = e_cal_util_dup_x_property (
+				e_cal_component_get_icalcomponent (cached_comp),
+				X_EVO_GTASKS_POSITION);
+		}
+	}
+
+	if (position && *position)
+		gdata_tasks_task_set_position (task, position);
+
+	g_free (position);
+
+	/* Parent */
+	prop = icalcomponent_get_first_property (icomp, ICAL_RELATEDTO_PROPERTY);
+	if (!prop && cached_comp) {
+		prop = icalcomponent_get_first_property (
+			e_cal_component_get_icalcomponent (cached_comp),
+			ICAL_RELATEDTO_PROPERTY);
+	}
+
+	if (prop)
+		gdata_tasks_task_set_parent (task, icalproperty_get_relatedto (prop));
+#endif
 
 	return task;
 }
