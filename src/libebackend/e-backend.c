@@ -368,7 +368,8 @@ backend_source_authenticate_thread (gpointer user_data)
 		&certificate_pem, &certificate_errors, thread_data->cancellable, &local_error);
 
 	empty_crendetials = auth_result == E_SOURCE_AUTHENTICATION_REQUIRED &&
-		(!thread_data->credentials || !e_named_parameters_count (thread_data->credentials));
+		(!thread_data->credentials || !e_named_parameters_count (thread_data->credentials)) &&
+		!g_cancellable_is_cancelled (thread_data->cancellable);
 
 	if (empty_crendetials && thread_data->backend->priv->tried_with_empty_credentials) {
 		/* When tried repeatedly with empty credentials and both resulted in 'REQUIRED',
