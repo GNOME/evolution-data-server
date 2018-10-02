@@ -3383,19 +3383,26 @@ preauthed:
 
 		g_mutex_unlock (&is->priv->stream_lock);
 
+		#define NOTIFY_CMD(x) "NOTIFY SET " \
+			"(selected " \
+			"(MessageNew (UID RFC822.SIZE RFC822.HEADER FLAGS" x ")" \
+			" MessageExpunge" \
+			" FlagChange)) " \
+			"(personal " \
+			"(MessageNew" \
+			" MessageExpunge" \
+			" MailboxName" \
+			" SubscriptionChange))"
+
 		/* XXX The list of FETCH attributes is negotiable. */
-		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_NOTIFY, "NOTIFY SET "
-			"(selected "
-			"(MessageNew (UID RFC822.SIZE RFC822.HEADER BODYSTRUCTURE FLAGS)"
-			" MessageExpunge"
-			" FlagChange)) "
-			"(personal "
-			"(MessageNew"
-			" MessageExpunge"
-			" MailboxName"
-			" SubscriptionChange))");
+		if (camel_imapx_store_get_bodystructure_enabled (store))
+			ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_NOTIFY, NOTIFY_CMD (" BODYSTRUCTURE"));
+		else
+			ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_NOTIFY, NOTIFY_CMD (""));
 		camel_imapx_server_process_command_sync (is, ic, _("Failed to issue NOTIFY"), cancellable, &local_error);
 		camel_imapx_command_unref (ic);
+
+		#undef NOTIFY_CMD
 
 		if (local_error != NULL) {
 			g_propagate_error (error, local_error);
@@ -5290,12 +5297,36 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 				ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_REFRESH_INFO, "UID FETCH ");
 
 			if (imapx_uidset_add (&uidset, ic, uid) == 1 || (!link->next && ic && imapx_uidset_done (&uidset, ic))) {
-				camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER BODYSTRUCTURE FLAGS)");
+				GError *local_error = NULL;
+				gboolean bodystructure_enabled;
+				CamelIMAPXStore *imapx_store;
 
-				success = camel_imapx_server_process_command_sync (is, ic, _("Error fetching message info"), cancellable, error);
+				imapx_store = camel_imapx_server_ref_store (is);
+				bodystructure_enabled = imapx_store && camel_imapx_store_get_bodystructure_enabled (imapx_store);
+
+				if (bodystructure_enabled)
+					camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER BODYSTRUCTURE FLAGS)");
+				else
+					camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER FLAGS)");
+
+				success = camel_imapx_server_process_command_sync (is, ic, _("Error fetching message info"), cancellable, &local_error);
 
 				camel_imapx_command_unref (ic);
 				ic = NULL;
+
+				/* Some servers can return broken BODYSTRUCTURE response, thus disable it
+				   even when it's not 100% sure the BODYSTRUCTURE response was the broken one. */
+				if (bodystructure_enabled && !success &&
+				    g_error_matches (local_error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED)) {
+					camel_imapx_store_set_bodystructure_enabled (imapx_store, FALSE);
+					local_error->domain = CAMEL_IMAPX_SERVER_ERROR;
+					local_error->code = CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT;
+				}
+
+				g_clear_object (&imapx_store);
+
+				if (local_error)
+					g_propagate_error (error, local_error);
 
 				if (!success)
 					break;

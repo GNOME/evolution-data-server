@@ -80,6 +80,11 @@ struct _CamelIMAPXStoreClass {
 GType		camel_imapx_store_get_type	(void);
 gboolean	camel_imapx_store_is_gmail_server
 						(CamelIMAPXStore *store);
+gboolean	camel_imapx_store_get_bodystructure_enabled
+						(CamelIMAPXStore *store);
+void		camel_imapx_store_set_bodystructure_enabled
+						(CamelIMAPXStore *store,
+						 gboolean enabled);
 CamelIMAPXConnManager *
 		camel_imapx_store_get_conn_manager
 						(CamelIMAPXStore *store);
