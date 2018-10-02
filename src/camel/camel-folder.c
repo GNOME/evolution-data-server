@@ -4060,6 +4060,24 @@ camel_folder_synchronize_message_finish (CamelFolder *folder,
 	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
+typedef struct _UidIndexPair {
+	GPtrArray *uids; /* gchar * */
+	GPtrArray *indexes; /* GUINT_TO_POINTER () */
+} UidIndexPair;
+
+static void
+uid_index_pair_free (gpointer ptr)
+{
+	UidIndexPair *uip = ptr;
+
+	if (uip) {
+		g_ptr_array_unref (uip->uids);
+		if (uip->indexes)
+			g_ptr_array_unref (uip->indexes);
+		g_free (uip);
+	}
+}
+
 /**
  * camel_folder_transfer_messages_to_sync:
  * @source: the source #CamelFolder
@@ -4092,7 +4110,7 @@ camel_folder_transfer_messages_to_sync (CamelFolder *source,
 	CamelFolderClass *class;
 	CamelStore *source_store;
 	CamelStore *destination_store;
-	gboolean success;
+	gboolean success, done = FALSE;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (source), FALSE);
 	g_return_val_if_fail (CAMEL_IS_FOLDER (destination), FALSE);
@@ -4124,7 +4142,118 @@ camel_folder_transfer_messages_to_sync (CamelFolder *source,
 		success = class->transfer_messages_to_sync (
 			source, message_uids, destination, delete_originals,
 			transferred_uids, cancellable, error);
-	} else {
+
+		done = TRUE;
+	}
+
+	/* When the source folder is a virtual folder then split the transfer operation
+	   to respective real folder(s). */
+	if (!done && CAMEL_IS_VEE_FOLDER (source)) {
+		GHashTable *todo; /* CamelFolder * ~> UidIndexPair * */
+		CamelVeeFolder *vfolder = CAMEL_VEE_FOLDER (source);
+		guint ii;
+
+		todo = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, uid_index_pair_free);
+
+		for (ii = 0; ii < message_uids->len; ii++) {
+			CamelMessageInfo *nfo = camel_folder_get_message_info (source, message_uids->pdata[ii]);
+			CamelFolder *folder;
+			gchar *real_uid = NULL;
+
+			if (!nfo)
+				continue;
+
+			folder = camel_vee_folder_get_location (vfolder, CAMEL_VEE_MESSAGE_INFO (nfo), &real_uid);
+			if (folder && real_uid) {
+				UidIndexPair *uip;
+
+				uip = g_hash_table_lookup (todo, folder);
+				if (!uip) {
+					uip = g_new0 (UidIndexPair, 1);
+					uip->uids = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
+					if (transferred_uids)
+						uip->indexes = g_ptr_array_new ();
+
+					g_hash_table_insert (todo, g_object_ref (folder), uip);
+				}
+
+				g_ptr_array_add (uip->uids, (gpointer) camel_pstring_strdup (real_uid));
+				if (uip->indexes)
+					g_ptr_array_add (uip->indexes, GUINT_TO_POINTER (ii));
+			}
+
+			g_object_unref (nfo);
+			g_free (real_uid);
+		}
+
+		done = g_hash_table_size (todo) > 0;
+
+		if (done) {
+			GHashTableIter iter;
+			gpointer key, value;
+
+			if (transferred_uids) {
+				*transferred_uids = g_ptr_array_new ();
+				g_ptr_array_set_size (*transferred_uids, message_uids->len);
+			}
+
+			g_hash_table_iter_init (&iter, todo);
+			while (g_hash_table_iter_next (&iter, &key, &value) && success) {
+				CamelFolder *folder = key;
+				UidIndexPair *uip = value;
+				GPtrArray *transferred = NULL;
+
+				source_store = camel_folder_get_parent_store (folder);
+
+				if (source_store == destination_store) {
+					/* If either folder is a vtrash, we need to use the
+					 * vtrash transfer method. */
+					if (CAMEL_IS_VTRASH_FOLDER (destination))
+						class = CAMEL_FOLDER_GET_CLASS (destination);
+					else
+						class = CAMEL_FOLDER_GET_CLASS (folder);
+
+					g_warn_if_fail (class != NULL);
+
+					success = class && class->transfer_messages_to_sync (
+						folder, uip->uids, destination, delete_originals,
+						transferred_uids ? &transferred : NULL, cancellable, error);
+				} else {
+					success = folder_transfer_messages_to_sync (
+						folder, uip->uids, destination, delete_originals,
+						transferred_uids ? &transferred : NULL, cancellable, error);
+				}
+
+				if (transferred) {
+					g_warn_if_fail (transferred->len != uip->indexes->len);
+
+					for (ii = 0; ii < transferred->len && ii < uip->indexes->len; ii++) {
+						guint idx = GPOINTER_TO_UINT (uip->indexes->pdata[ii]);
+
+						g_warn_if_fail (idx < (*transferred_uids)->len);
+
+						if (idx < (*transferred_uids)->len) {
+							(*transferred_uids)->pdata[idx] = transferred->pdata[ii];
+							transferred->pdata[ii] = NULL;
+						}
+					}
+
+					g_ptr_array_foreach (transferred, (GFunc) g_free, NULL);
+					g_ptr_array_free (transferred, TRUE);
+				}
+			}
+
+			if (!success && transferred_uids) {
+				g_ptr_array_foreach (*transferred_uids, (GFunc) g_free, NULL);
+				g_ptr_array_free (*transferred_uids, TRUE);
+				*transferred_uids = NULL;
+			}
+		}
+
+		g_hash_table_destroy (todo);
+	}
+
+	if (!done) {
 		success = folder_transfer_messages_to_sync (
 			source, message_uids, destination, delete_originals,
 			transferred_uids, cancellable, error);

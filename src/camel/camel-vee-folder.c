@@ -1901,7 +1901,7 @@ camel_vee_folder_get_location (CamelVeeFolder *vf,
  * @vfolder: a #CamelVeeFolder
  * @vee_message_uid: a virtual message info UID
  *
- * Returns: (transfer none) (nullable): a #CamelFolder to which the @vee_message_info
+ * Returns: (transfer none) (nullable): a #CamelFolder to which the @vee_message_uid
  *    belongs, or %NULL, when it could not be found.
  *
  * Since: 3.6
