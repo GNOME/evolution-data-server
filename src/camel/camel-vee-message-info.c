@@ -87,7 +87,8 @@ vee_message_info_notify_mi_changed (CamelFolder *folder,
 		g_return_val_if_fail (CAMEL_IS_VEE_MESSAGE_INFO (mi), _err_ret);		\
 												\
 		vmi = CAMEL_VEE_MESSAGE_INFO (mi);						\
-		g_return_val_if_fail (vmi->priv->orig_summary != NULL, _err_ret);		\
+		if (!vmi->priv->orig_summary)							\
+			return (_err_ret);							\
 												\
 		uid = camel_message_info_pooldup_uid (mi);					\
 		g_return_val_if_fail (uid != NULL, _err_ret);					\
@@ -101,7 +102,7 @@ vee_message_info_notify_mi_changed (CamelFolder *folder,
 												\
 		orig_mi = (CamelMessageInfo *) camel_folder_summary_get (vmi->priv->orig_summary, uid + 8);		\
 		if (!orig_mi) {									\
-			g_warning ("%s: Failed to get orig uid '%s'\n", G_STRFUNC, uid);	\
+			/* It can be NULL when it had been removed from the orig folder */	\
 			camel_pstring_free (uid);						\
 			return _err_ret;							\
 		}										\
@@ -147,7 +148,8 @@ vee_message_info_read_flags_from_orig_summary (const CamelMessageInfo *mi,
 	g_return_val_if_fail (out_flags != NULL, FALSE);
 
 	vmi = CAMEL_VEE_MESSAGE_INFO (mi);
-	g_return_val_if_fail (vmi->priv->orig_summary != NULL, FALSE);
+	if (!vmi->priv->orig_summary)
+		return FALSE;
 
 	uid = camel_message_info_pooldup_uid (mi);
 	g_return_val_if_fail (uid != NULL, FALSE);
