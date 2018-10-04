@@ -172,7 +172,7 @@ handle_method_call_cb (GDBusConnection *connection,
 
 	result = g_dbus_connection_call_sync (g_dbus_proxy_get_connection (pd->proxy),
 		g_dbus_proxy_get_name (pd->proxy),
-		g_dbus_proxy_get_object_path (pd->proxy),
+		object_path,
 		interface_name,
 		method_name,
 		parameters,
@@ -206,7 +206,7 @@ handle_get_property_cb (GDBusConnection *connection,
 
 	return g_dbus_connection_call_sync (g_dbus_proxy_get_connection (pd->proxy),
 		g_dbus_proxy_get_name (pd->proxy),
-		g_dbus_proxy_get_object_path (pd->proxy),
+		object_path,
 		"org.freedesktop.DBus.Properties",
 		"Get",
 		g_variant_new ("(ss)", interface_name, property_name),
@@ -234,7 +234,7 @@ handle_set_property_cb (GDBusConnection *connection,
 
 	result = g_dbus_connection_call_sync (g_dbus_proxy_get_connection (pd->proxy),
 		g_dbus_proxy_get_name (pd->proxy),
-		g_dbus_proxy_get_object_path (pd->proxy),
+		object_path,
 		"org.freedesktop.DBus.Properties",
 		"Set",
 		g_variant_new ("(ssv)", interface_name, property_name, value),
@@ -266,15 +266,16 @@ handle_signal_cb (GDBusConnection *connection,
 
 	g_return_if_fail (pd != NULL);
 
-	if (!g_dbus_connection_emit_signal (pd->regs_connection, NULL, g_dbus_proxy_get_object_path (pd->proxy),
+	if (!g_dbus_connection_emit_signal (pd->regs_connection, NULL, object_path,
 		interface_name, signal_name, parameters, &error)) {
 		g_clear_error (&error);
 	}
 }
 
 static void
-proxy_data_reg_interfaces (ProxyData *pd,
-			   GDBusConnection *connection)
+proxy_data_reg_interfaces_for_object_path (ProxyData *pd,
+					   GDBusConnection *connection,
+					   const gchar *object_path)
 {
 	const GDBusInterfaceVTable interface_vtable = {
 		handle_method_call_cb,
@@ -286,16 +287,16 @@ proxy_data_reg_interfaces (ProxyData *pd,
 	const gchar *xml_data;
 	guint regid;
 	gint ii;
+	gboolean is_object_manager = FALSE;
 	GError *error = NULL;
 
 	g_return_if_fail (pd != NULL);
 	g_return_if_fail (pd->proxy != NULL);
-	g_return_if_fail (pd->regs_connection == NULL);
 	g_return_if_fail (connection != NULL);
 
 	result = g_dbus_connection_call_sync (g_dbus_proxy_get_connection (pd->proxy),
 		g_dbus_proxy_get_name (pd->proxy),
-		g_dbus_proxy_get_object_path (pd->proxy),
+		object_path,
 		"org.freedesktop.DBus.Introspectable",
 		"Introspect",
 		NULL,
@@ -328,7 +329,7 @@ proxy_data_reg_interfaces (ProxyData *pd,
 		if (!iface_info)
 			continue;
 
-		regid = g_dbus_connection_register_object (pd->regs_connection, g_dbus_proxy_get_object_path (pd->proxy),
+		regid = g_dbus_connection_register_object (pd->regs_connection, object_path,
 			iface_info,
 			&interface_vtable,
 			pd,
@@ -347,7 +348,7 @@ proxy_data_reg_interfaces (ProxyData *pd,
 					sigid = g_dbus_connection_signal_subscribe (g_dbus_proxy_get_connection (pd->proxy), NULL,
 						iface_info->name,
 						iface_info->signals[jj]->name,
-						g_dbus_proxy_get_object_path (pd->proxy),
+						object_path,
 						NULL, G_DBUS_SIGNAL_FLAGS_NONE,
 						handle_signal_cb, pd, NULL);
 
@@ -357,10 +358,12 @@ proxy_data_reg_interfaces (ProxyData *pd,
 			}
 
 			if (g_strcmp0 (iface_info->name, "org.freedesktop.DBus.ObjectManager") == 0) {
+				is_object_manager = TRUE;
+
 				pd->object_manager = g_dbus_object_manager_client_new_sync (g_dbus_proxy_get_connection (pd->proxy),
 					G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_NONE,
 					g_dbus_proxy_get_name (pd->proxy),
-					g_dbus_proxy_get_object_path (pd->proxy),
+					object_path,
 					NULL, NULL, NULL, NULL, &error);
 
 				if (pd->object_manager) {
@@ -388,7 +391,39 @@ proxy_data_reg_interfaces (ProxyData *pd,
 		}
 	}
 
+	if (!is_object_manager && introspection_data->nodes) {
+		for (ii = 0; introspection_data->nodes[ii]; ii++) {
+			GDBusNodeInfo *node_info = introspection_data->nodes[ii];
+
+			if (node_info && node_info->path) {
+				gchar *path;
+
+				if (node_info->path[0] == '/')
+					path = g_strdup (node_info->path);
+				else
+					path = g_strconcat (object_path, "/", node_info->path, NULL);
+
+				if (g_variant_is_object_path (path))
+					proxy_data_reg_interfaces_for_object_path (pd, connection, path);
+
+				g_free (path);
+			}
+		}
+	}
+
 	g_dbus_node_info_unref (introspection_data);
+}
+
+static void
+proxy_data_reg_interfaces (ProxyData *pd,
+			   GDBusConnection *connection)
+{
+	g_return_if_fail (pd != NULL);
+	g_return_if_fail (pd->proxy != NULL);
+	g_return_if_fail (pd->regs_connection == NULL);
+	g_return_if_fail (connection != NULL);
+
+	proxy_data_reg_interfaces_for_object_path (pd, connection, g_dbus_proxy_get_object_path (pd->proxy));
 }
 
 static void
