@@ -320,6 +320,8 @@ struct _CamelIMAPXServerPrivate {
 	GHashTable *list_responses_hash; /* ghar *mailbox-name ~> CamelIMAPXListResponse *, both owned by list_responses */
 	GSList *list_responses;
 	GSList *lsub_responses;
+
+	gboolean utf8_accept; /* RFC 6855 */
 };
 
 enum {
@@ -3339,6 +3341,8 @@ preauthed:
 	/* Fetch namespaces (if supported). */
 	g_mutex_lock (&is->priv->stream_lock);
 
+	is->priv->utf8_accept = FALSE;
+
 	/* RFC 6855 */
 	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, UTF8_ACCEPT) ||
 	    CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, UTF8_ONLY)) {
@@ -3356,6 +3360,8 @@ preauthed:
 		}
 
 		g_mutex_lock (&is->priv->stream_lock);
+
+		is->priv->utf8_accept = TRUE;
 	}
 
 	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, NAMESPACE)) {
@@ -6592,8 +6598,10 @@ camel_imapx_server_uid_search_sync (CamelIMAPXServer *is,
 	if (!success)
 		return FALSE;
 
-	for (ii = 0; !need_charset && words && words[ii]; ii++) {
-		need_charset = !imapx_util_all_is_ascii (words[ii]);
+	if (!camel_imapx_server_get_utf8_accept (is)) {
+		for (ii = 0; !need_charset && words && words[ii]; ii++) {
+			need_charset = !imapx_util_all_is_ascii (words[ii]);
+		}
 	}
 
 	ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_UID_SEARCH, "UID SEARCH");
@@ -7179,6 +7187,14 @@ camel_imapx_server_set_tagprefix (CamelIMAPXServer *is,
 	g_return_if_fail ((tagprefix >= 'A' && tagprefix <= 'Z') || (tagprefix >= 'a' && tagprefix <= 'z'));
 
 	is->priv->tagprefix = tagprefix;
+}
+
+gboolean
+camel_imapx_server_get_utf8_accept (CamelIMAPXServer *is)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
+
+	return is->priv->utf8_accept;
 }
 
 CamelIMAPXCommand *

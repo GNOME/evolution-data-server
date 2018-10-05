@@ -198,6 +198,7 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 	GString *buffer;
 	gchar *utf7_name = NULL;
 	const gchar *name;
+	gboolean use_utf8_string = FALSE;
 
 	g_return_if_fail (CAMEL_IS_IMAPX_COMMAND (ic));
 
@@ -265,14 +266,19 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 				break;
 			case 's': /* simple string */
 				s = va_arg (ap, gchar *);
+				use_utf8_string = FALSE;
 				c (camel_imapx_server_get_tagprefix (ic->is), "got string '%s'\n", g_str_has_prefix (format, "LOGIN") ? "***" : s);
 			output_string:
 				if (s && *s) {
 					guchar mask = imapx_is_mask (s);
 
-					if (mask & IMAPX_TYPE_ATOM_CHAR)
+					if (use_utf8_string && !(mask & IMAPX_TYPE_ATOM_CHAR)) {
+						g_string_append_c (buffer, '"');
 						g_string_append (buffer, s);
-					else if (mask & IMAPX_TYPE_TEXT_CHAR) {
+						g_string_append_c (buffer, '"');
+					} else if (mask & IMAPX_TYPE_ATOM_CHAR) {
+						g_string_append (buffer, s);
+					} else if (mask & IMAPX_TYPE_TEXT_CHAR) {
 						gboolean is_gmail_search = FALSE;
 
 						g_string_append_c (buffer, '"');
@@ -312,13 +318,23 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 			case 'M': /* CamelIMAPXMailbox */
 				mailbox = va_arg (ap, CamelIMAPXMailbox *);
 				name = camel_imapx_mailbox_get_name (mailbox);
-				utf7_name = camel_utf8_utf7 (name);
-				s = utf7_name;
+				if (camel_imapx_server_get_utf8_accept (ic->is)) {
+					use_utf8_string = TRUE;
+					s = (gchar *) name;
+				} else {
+					utf7_name = camel_utf8_utf7 (name);
+					s = utf7_name;
+				}
 				goto output_string;
 			case 'm': /* UTF-8 mailbox name */
 				name = va_arg (ap, gchar *);
-				utf7_name = camel_utf8_utf7 (name);
-				s = utf7_name;
+				if (camel_imapx_server_get_utf8_accept (ic->is)) {
+					use_utf8_string = TRUE;
+					s = (gchar *) name;
+				} else {
+					utf7_name = camel_utf8_utf7 (name);
+					s = utf7_name;
+				}
 				goto output_string;
 			case 'F': /* IMAP flags set */
 				f = va_arg (ap, guint32);

@@ -147,6 +147,8 @@ gchar		camel_imapx_server_get_tagprefix
 void		camel_imapx_server_set_tagprefix
 						(CamelIMAPXServer *is,
 						 gchar tagprefix);
+gboolean	camel_imapx_server_get_utf8_accept
+						(CamelIMAPXServer *is);
 CamelIMAPXCommand *
 		camel_imapx_server_ref_current_command
 						(CamelIMAPXServer *is);
