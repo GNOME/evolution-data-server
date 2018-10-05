@@ -3338,6 +3338,26 @@ imapx_reconnect (CamelIMAPXServer *is,
 preauthed:
 	/* Fetch namespaces (if supported). */
 	g_mutex_lock (&is->priv->stream_lock);
+
+	/* RFC 6855 */
+	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, UTF8_ACCEPT) ||
+	    CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, UTF8_ONLY)) {
+		GError *local_error = NULL;
+
+		g_mutex_unlock (&is->priv->stream_lock);
+
+		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_NAMESPACE, "ENABLE UTF8=ACCEPT");
+		camel_imapx_server_process_command_sync (is, ic, "Failed to issue ENABLE UTF8=ACCEPT", cancellable, &local_error);
+		camel_imapx_command_unref (ic);
+
+		if (local_error != NULL) {
+			g_propagate_error (error, local_error);
+			goto exception;
+		}
+
+		g_mutex_lock (&is->priv->stream_lock);
+	}
+
 	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, NAMESPACE)) {
 		GError *local_error = NULL;
 
