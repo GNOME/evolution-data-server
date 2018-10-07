@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2018-10-07 06:52+0000\n"
+"POT-Creation-Date: 2018-10-07 13:51+0000\n"
 "PO-Revision-Date: 2018-10-07 16:50+0300\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
@@ -81,7 +81,7 @@ msgstr "Pateiktas URL „%s“ nenurodo WebDAV adresų knygos"
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:501
 #: ../src/libedataserver/e-client.c:188
-#: ../src/libedataserver/e-soup-session.c:1216
+#: ../src/libedataserver/e-soup-session.c:1136
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
 #: ../src/libedataserverui/e-reminders-widget.c:1780
 #: ../src/tools/list-sources/list-sources.c:429
@@ -4084,12 +4084,6 @@ msgstr "Nėra tokio laiško %s aplanke „%s : %s“"
 msgid "Error storing “%s”: "
 msgstr "Klaida įrašant „%s“:"
 
-#: ../src/camel/camel-vee-folder.c:1268
-#, c-format
-#| msgid "Updating folder “%s”"
-msgid "Updating search folder “%s”"
-msgstr "Atnaujinamas paieškos aplankas „%s“"
-
 #: ../src/camel/camel-vee-folder.c:1328
 msgid "Automatically _update on change in source folders"
 msgstr "Automatiškai atna_ujinti podėlyje šaltinio aplankuose"
@@ -4136,7 +4130,7 @@ msgstr "Norėdami užbaigti šią operaciją turite dirbti prisijungę (%s)"
 #: ../src/camel/providers/nntp/camel-nntp-store.c:351
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1346
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2158
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2313
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2306
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:450
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:633
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:922
@@ -4366,11 +4360,6 @@ msgstr "Tapatybės patvirtinimo slaptažodis neprieinamas"
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3190
 msgid "Failed to authenticate"
 msgstr "Nepavyko patvirtinti tapatybės"
-
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3354
-#| msgid "Failed to issue NAMESPACE"
-msgid "Failed to issue ENABLE UTF8=ACCEPT"
-msgstr "Nepavyko išduoti ENABLE UTF8=ACCEPT"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3373
 msgid "Failed to issue NAMESPACE"
@@ -5407,12 +5396,11 @@ msgid "NNTP Command failed: "
 msgstr "NNTP komandos klaida:"
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2215
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2250
 #, c-format
 msgid "Not connected."
 msgstr "Neprisijungta."
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2327
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2320
 #, c-format
 msgid "No such folder: %s"
 msgstr "Nėra tokio aplanko: %s"
@@ -6294,6 +6282,7 @@ msgstr ""
 
 #: ../src/libebackend/e-server-side-source.c:1482
 #: ../src/libedataserver/e-source.c:1792
+#: ../src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1080
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
 msgstr "Duomenų šaltinis „%s“ nepalaiko OAuth 2.0 tapatybės nustatymo"
@@ -6478,39 +6467,34 @@ msgstr "D-Bus klaida"
 msgid "Timeout was reached"
 msgstr "Baigėsi laikas"
 
-#: ../src/libedataserver/e-oauth2-service.c:925
-#| msgid "Failed on message %d"
-msgid "Malformed, no message body set"
-msgstr "Blogai suformuotas, nenustatytas laiško turinys"
-
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: ../src/libedataserver/e-oauth2-service.c:1209
+#: ../src/libedataserver/e-oauth2-service.c:1208
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Šaltinis „%s“ (%s) nėra tinkamas „%s“ OAuth2 šaltinis"
 
-#: ../src/libedataserver/e-oauth2-service.c:1224
+#: ../src/libedataserver/e-oauth2-service.c:1223
 msgid "OAuth2 secret not found"
 msgstr "OAuth2 paslaptis nerasta"
 
-#: ../src/libedataserver/e-oauth2-service.c:1412
+#: ../src/libedataserver/e-oauth2-service.c:1411
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Gautas neteisingas atsakymas iš serverio %s"
 
-#: ../src/libedataserver/e-oauth2-service.c:1421
+#: ../src/libedataserver/e-oauth2-service.c:1420
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 "Nepavyko atnaujinti prieigos leksemos. Dar kartą prisijunkite prie serverio."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: ../src/libedataserver/e-oauth2-service.c:1463
+#: ../src/libedataserver/e-oauth2-service.c:1462
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Šaltinis „%s“ (%s) nėra tinkamas OAuth2 šaltinis"
 
-#: ../src/libedataserver/e-oauth2-service.c:1536
+#: ../src/libedataserver/e-oauth2-service.c:1535
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -6530,11 +6514,11 @@ msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
 
-#: ../src/libedataserver/e-soup-session.c:941
+#: ../src/libedataserver/e-soup-session.c:861
 msgid "Operation was cancelled"
 msgstr "Veiksmas buvo atšauktas"
 
-#: ../src/libedataserver/e-soup-session.c:947
+#: ../src/libedataserver/e-soup-session.c:867
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Nepavyko su HTTP klaida %d: %s"
@@ -7374,7 +7358,7 @@ msgstr "Nepavyko rasti Account elemento"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Nepavyko rasti ASUrl ir OABUrl automatinio aptikimo atsake"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1406
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1405
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -7383,15 +7367,106 @@ msgstr ""
 "Nepavyko rasti atitinkamos paskyros org.gnome.OnlineAccounts tarnyboje, iš "
 "kurios gaunama „%s“ prieigos leksema"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1456
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1455
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Nepavyko gauti prieigos „%s“ leksemos:"
 
 #: ../src/modules/google-backend/module-google-backend.c:589
+#: ../src/modules/ubuntu-online-accounts/contacts.service-type.in.in.h:1
 #: ../src/services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
 msgstr "Kontaktai"
+
+#: ../src/modules/ubuntu-online-accounts/calendar.service-type.in.in.h:1
+#: ../src/tools/list-sources/list-sources.c:148
+msgid "Calendar"
+msgstr "Kalendorius"
+
+#: ../src/modules/ubuntu-online-accounts/calendar.service-type.in.in.h:2
+msgid "Integrate your calendars"
+msgstr "Integruokite savo kalendorius"
+
+#: ../src/modules/ubuntu-online-accounts/contacts.service-type.in.in.h:2
+msgid "Integrate your contacts"
+msgstr "Integruokite savo kontaktus"
+
+#: ../src/modules/ubuntu-online-accounts/e-signon-session-password.c:273
+msgid "Signon service did not return a secret"
+msgstr "Prisijungimo tarnyba negrąžino paslapties"
+
+#: ../src/modules/ubuntu-online-accounts/evolution-data-server-uoa.desktop.in.in.h:1
+msgid "Evolution Data Server"
+msgstr "Evolution duomenų serveris"
+
+#: ../src/modules/ubuntu-online-accounts/evolution-data-server-uoa.desktop.in.in.h:2
+msgid "Required to have EDS appear in UOA"
+msgstr "Būtinas, kad EDS būtų matomas UOA"
+
+#: ../src/modules/ubuntu-online-accounts/google-calendar.service.in.in.h:1
+msgid "Google Calendar"
+msgstr "Google kalendorius"
+
+#: ../src/modules/ubuntu-online-accounts/google-contacts.service.in.in.h:1
+msgid "Google Contacts"
+msgstr "Google kontaktai"
+
+#: ../src/modules/ubuntu-online-accounts/google-gmail.service.in.in.h:1
+msgid "GMail"
+msgstr "GMail"
+
+#: ../src/modules/ubuntu-online-accounts/mail.service-type.in.in.h:1
+msgid "Mail"
+msgstr "Paštas"
+
+#: ../src/modules/ubuntu-online-accounts/mail.service-type.in.in.h:2
+msgid "Integrate your mailboxes"
+msgstr "Integruokite savo pašto dėžutes"
+
+#: ../src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1061
+#, c-format
+msgid ""
+"Cannot find a corresponding account service in the accounts database from "
+"which to obtain an access token for “%s”"
+msgstr ""
+"Nepavyko rasti atitinkamos paskyros paskyrų duomenų bazėje, iš kurios "
+"gaunama „%s“ prieigos leksema"
+
+#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:85
+#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:282
+#, c-format
+msgid ""
+"Expected status 200 when requesting your identity, instead got status %d (%s)"
+msgstr "Prašant identiteto tikėtasi būsenos 200, bet gauta %d (%s)"
+
+#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:102
+#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:299
+msgid "Error parsing response as JSON: "
+msgstr "Klaida skaitant atsakymą kaip JSON:"
+
+#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:120
+msgid "Didn’t find “email” in JSON data"
+msgstr "JSON duomenyse nerastas „email“ narys"
+
+#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:317
+msgid "Didn’t find “id” in JSON data"
+msgstr "JSON duomenyse nerastas „id“"
+
+#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:322
+msgid "Didn’t find “emails.account” in JSON data"
+msgstr "JSON duomenyse nerastas „emails.account“"
+
+#: ../src/modules/ubuntu-online-accounts/windows-live-mail.service.in.in.h:1
+msgid "Windows Live Mail"
+msgstr "Windows Live Mail"
+
+#: ../src/modules/ubuntu-online-accounts/yahoo-calendar.service.in.in.h:1
+msgid "Yahoo! Calendar"
+msgstr "Yahoo! kalendorius"
+
+#: ../src/modules/ubuntu-online-accounts/yahoo-mail.service.in.in.h:1
+msgid "Yahoo! Mail"
+msgstr "Yahoo! paštas"
 
 #: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:38
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:40
@@ -7620,10 +7695,6 @@ msgstr "Kolekcija/Ubuntu internetinės paskyros"
 msgid "Address Book"
 msgstr "Adresų knyga"
 
-#: ../src/tools/list-sources/list-sources.c:148
-msgid "Calendar"
-msgstr "Kalendorius"
-
 #: ../src/tools/list-sources/list-sources.c:149
 msgid "Memo List"
 msgstr "Raštelių sąrašas"
@@ -7735,68 +7806,17 @@ msgstr "Nepavyko prisijungti prie šaltinio registro: %s\n"
 msgid "No sources had been found\n"
 msgstr "Nerasta šaltinių\n"
 
-#~ msgid "Integrate your calendars"
-#~ msgstr "Integruokite savo kalendorius"
+#~| msgid "Updating folder “%s”"
+#~ msgid "Updating search folder “%s”"
+#~ msgstr "Atnaujinamas paieškos aplankas „%s“"
 
-#~ msgid "Integrate your contacts"
-#~ msgstr "Integruokite savo kontaktus"
+#~| msgid "Failed to issue NAMESPACE"
+#~ msgid "Failed to issue ENABLE UTF8=ACCEPT"
+#~ msgstr "Nepavyko išduoti ENABLE UTF8=ACCEPT"
 
-#~ msgid "Signon service did not return a secret"
-#~ msgstr "Prisijungimo tarnyba negrąžino paslapties"
-
-#~ msgid "Evolution Data Server"
-#~ msgstr "Evolution duomenų serveris"
-
-#~ msgid "Required to have EDS appear in UOA"
-#~ msgstr "Būtinas, kad EDS būtų matomas UOA"
-
-#~ msgid "Google Calendar"
-#~ msgstr "Google kalendorius"
-
-#~ msgid "Google Contacts"
-#~ msgstr "Google kontaktai"
-
-#~ msgid "GMail"
-#~ msgstr "GMail"
-
-#~ msgid "Mail"
-#~ msgstr "Paštas"
-
-#~ msgid "Integrate your mailboxes"
-#~ msgstr "Integruokite savo pašto dėžutes"
-
-#~ msgid ""
-#~ "Cannot find a corresponding account service in the accounts database from "
-#~ "which to obtain an access token for “%s”"
-#~ msgstr ""
-#~ "Nepavyko rasti atitinkamos paskyros paskyrų duomenų bazėje, iš kurios "
-#~ "gaunama „%s“ prieigos leksema"
-
-#~ msgid ""
-#~ "Expected status 200 when requesting your identity, instead got status %d "
-#~ "(%s)"
-#~ msgstr "Prašant identiteto tikėtasi būsenos 200, bet gauta %d (%s)"
-
-#~ msgid "Error parsing response as JSON: "
-#~ msgstr "Klaida skaitant atsakymą kaip JSON:"
-
-#~ msgid "Didn’t find “email” in JSON data"
-#~ msgstr "JSON duomenyse nerastas „email“ narys"
-
-#~ msgid "Didn’t find “id” in JSON data"
-#~ msgstr "JSON duomenyse nerastas „id“"
-
-#~ msgid "Didn’t find “emails.account” in JSON data"
-#~ msgstr "JSON duomenyse nerastas „emails.account“"
-
-#~ msgid "Windows Live Mail"
-#~ msgstr "Windows Live Mail"
-
-#~ msgid "Yahoo! Calendar"
-#~ msgstr "Yahoo! kalendorius"
-
-#~ msgid "Yahoo! Mail"
-#~ msgstr "Yahoo! paštas"
+#~| msgid "Failed on message %d"
+#~ msgid "Malformed, no message body set"
+#~ msgstr "Blogai suformuotas, nenustatytas laiško turinys"
 
 #~ msgid "User name not filled"
 #~ msgstr "Neįvestas naudotojo vardas"
