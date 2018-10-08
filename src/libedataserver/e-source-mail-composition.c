@@ -50,6 +50,7 @@ struct _ESourceMailCompositionPrivate {
 	gchar **cc;
 	gchar *drafts_folder;
 	gchar *templates_folder;
+	gchar *language;
 	gboolean sign_imip;
 	ESourceMailCompositionReplyStyle reply_style;
 	EThreeState start_bottom;
@@ -65,7 +66,8 @@ enum {
 	PROP_SIGN_IMIP,
 	PROP_TEMPLATES_FOLDER,
 	PROP_START_BOTTOM,
-	PROP_TOP_SIGNATURE
+	PROP_TOP_SIGNATURE,
+	PROP_LANGUAGE
 };
 
 G_DEFINE_TYPE (
@@ -94,6 +96,12 @@ source_mail_composition_set_property (GObject *object,
 
 		case PROP_DRAFTS_FOLDER:
 			e_source_mail_composition_set_drafts_folder (
+				E_SOURCE_MAIL_COMPOSITION (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_LANGUAGE:
+			e_source_mail_composition_set_language (
 				E_SOURCE_MAIL_COMPOSITION (object),
 				g_value_get_string (value));
 			return;
@@ -160,6 +168,13 @@ source_mail_composition_get_property (GObject *object,
 				E_SOURCE_MAIL_COMPOSITION (object)));
 			return;
 
+		case PROP_LANGUAGE:
+			g_value_take_string (
+				value,
+				e_source_mail_composition_dup_language (
+				E_SOURCE_MAIL_COMPOSITION (object)));
+			return;
+
 		case PROP_REPLY_STYLE:
 			g_value_set_enum (
 				value,
@@ -210,6 +225,7 @@ source_mail_composition_finalize (GObject *object)
 	g_strfreev (priv->cc);
 	g_free (priv->drafts_folder);
 	g_free (priv->templates_folder);
+	g_free (priv->language);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_mail_composition_parent_class)->
@@ -335,6 +351,19 @@ e_source_mail_composition_class_init (ESourceMailCompositionClass *class)
 			"Whether place signature at the top on reply or forward",
 			E_TYPE_THREE_STATE,
 			E_THREE_STATE_INCONSISTENT,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_LANGUAGE,
+		g_param_spec_string (
+			"language",
+			"Language",
+			"Preferred language",
+			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS |
@@ -872,4 +901,88 @@ e_source_mail_composition_set_top_signature (ESourceMailComposition *extension,
 	extension->priv->top_signature = top_signature;
 
 	g_object_notify (G_OBJECT (extension), "top-signature");
+}
+
+/**
+ * e_source_mail_composition_get_language:
+ * @extension: an #ESourceMailComposition
+ *
+ * Returns a string identifying the preferred language, like "en_US".
+ *
+ * Returns: (nullable): an identifier for the preferred language, or %NULL for none
+ *
+ * Since: 3.32
+ **/
+const gchar *
+e_source_mail_composition_get_language (ESourceMailComposition *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension), NULL);
+
+	return extension->priv->language;
+}
+
+/**
+ * e_source_mail_composition_dup_language:
+ * @extension: an #ESourceMailComposition
+ *
+ * Thread-safe variation of e_source_mail_composition_get_language().
+ * Use this function when accessing @extension from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #ESourceMailComposition:language
+ *
+ * Since: 3.32
+ **/
+gchar *
+e_source_mail_composition_dup_language (ESourceMailComposition *extension)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension), NULL);
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	protected = e_source_mail_composition_get_language (extension);
+	duplicate = g_strdup (protected);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	return duplicate;
+}
+
+/**
+ * e_source_mail_composition_set_language:
+ * @extension: an #ESourceMailComposition
+ * @language: (nullable): an identifier for the preferred language, or %NULL
+ *
+ * Sets the preferred language by an identifier string, like "en_US".
+ * Use %NULL to unset any previous value.
+ *
+ * The internal copy of @language is automatically stripped of
+ * leading and trailing whitespace.  If the resulting string is empty,
+ * %NULL is set instead.
+ *
+ * Since: 3.32
+ **/
+void
+e_source_mail_composition_set_language (ESourceMailComposition *extension,
+					const gchar *language)
+{
+	g_return_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension));
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	if (g_strcmp0 (extension->priv->language, language) == 0) {
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+		return;
+	}
+
+	g_free (extension->priv->language);
+	extension->priv->language = e_util_strdup_strip (language);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	g_object_notify (G_OBJECT (extension), "language");
 }

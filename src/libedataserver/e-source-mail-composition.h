@@ -131,6 +131,13 @@ EThreeState	e_source_mail_composition_get_top_signature
 void		e_source_mail_composition_set_top_signature
 					(ESourceMailComposition *extension,
 					 EThreeState top_signature);
+const gchar *	e_source_mail_composition_get_language
+					(ESourceMailComposition *extension);
+gchar *		e_source_mail_composition_dup_language
+					(ESourceMailComposition *extension);
+void		e_source_mail_composition_set_language
+					(ESourceMailComposition *extension,
+					 const gchar *language);
 
 G_END_DECLS
 
