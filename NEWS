@@ -1,3 +1,35 @@
+Evolution-Data-Server 3.31.1 2018-10-08
+---------------------------------------
+
+Bug Fixes:
+	evo-I#86 - Quoting of plain text mail into HTML mode mangles deeper levels (Milan Crha)
+	I#3 - [GPG] Mails that are not encrypted look encrypted ][ (Milan Crha)
+	I#24 - The 'contacts' calendar backend leaks BookRecord (Milan Crha)
+	I#29 - Changed user name not propagated to collection child sources (Milan Crha)
+	I#30 - Some of the tests fail to run with disabled RPATH (Milan Crha)
+	I#31 - [ESoupSession] Preset authentication when username is filled (Milan Crha)
+	I#32 - test-cal-meta-backend cannot run without installed Evolution (Milan Crha)
+	I#34 - Remove Ubuntu Online Accounts from master (Milan Crha)
+	I#35 - [IMAPx] Ignore incomplete BODYSTRUCTURE responses (Milan Crha)
+	I#36 - Asks for password after going online, even it's stored (Milan Crha)
+	I#37 - [IMAPx] Disable request of BODYSTRUCTURE when its response is broken (Milan Crha)
+	I#38 - Archive from search folder should use original folder for transfer (Milan Crha)
+	I#40 - [IMAPx] Support RFC 6855 (IMAP Support for UTF-8) (Milan Crha)
+	M!2 - Expose GData 'parent' and 'position' task fields (Georges Basile Stavracas Neto)
+
+Miscellaneous:
+	Add an optionally built evolution-dbus-session tool (Milan Crha)
+	[NNTP] Address REVERSE_INULL Coverity scan issue (Milan Crha)
+	Address two Clang warnings (Milan Crha)
+	Mark string for a translation (Milan Crha)
+	Fix a memory leak in ebmb_start_view_thread_func() (Milan Crha)
+	[evolution-dbus-session] Proxy also D-Bus subtrees (Milan Crha)
+
+Translations:
+	Marek Cernocky (cs)
+	Gábor Kelemen (hu)
+	Aurimas Černius (lt)
+
 Evolution-Data-Server 3.30.0 2018-09-03
 ---------------------------------------
 
