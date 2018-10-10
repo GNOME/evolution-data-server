@@ -56,7 +56,7 @@ e_webdav_discover_split_resources (WebDAVDiscoverData *wdd,
 			EWebDAVDiscoveredSource *discovered;
 
 			if (resource->kind == E_WEBDAV_RESOURCE_KIND_CALENDAR &&
-			    wdd->only_supports != E_WEBDAV_DISCOVER_SUPPORTS_NONE &&
+			    (wdd->only_supports & (~E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE)) != E_WEBDAV_DISCOVER_SUPPORTS_NONE &&
 			    (resource->supports & wdd->only_supports) == 0)
 				continue;
 
@@ -281,13 +281,13 @@ e_webdav_discover_propfind_uri_sync (EWebDAVSession *webdav,
 		e_xml_document_add_empty_element (xml, E_WEBDAV_NS_DAV, "principal-URL");
 	}
 
-	if ((wdd->only_supports == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
+	if (((wdd->only_supports & (~E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE)) == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
 	    (wdd->only_supports & (E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS)) != 0)) {
 		e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CALDAV, "calendar-home-set");
 		e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CALDAV, "calendar-user-address-set");
 	}
 
-	if ((wdd->only_supports == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
+	if (((wdd->only_supports & (~E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE)) == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
 	    (wdd->only_supports & (E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS)) != 0)) {
 		e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CARDDAV, "addressbook-home-set");
 	}
@@ -826,9 +826,10 @@ e_webdav_discover_sources_full_sync (ESource *source,
 
 		g_free (uri);
 
-		if (!g_cancellable_is_cancelled (cancellable) && !wdd.calendars && (only_supports == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
-		   (only_supports & (E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS)) != 0) &&
-		   (!soup_uri_get_path (soup_uri) || !strstr (soup_uri_get_path (soup_uri), "/.well-known/"))) {
+		if (!g_cancellable_is_cancelled (cancellable) && !wdd.calendars &&
+		    ((only_supports & (~E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE)) == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
+		    (only_supports & (E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS)) != 0) &&
+		    (!soup_uri_get_path (soup_uri) || !strstr (soup_uri_get_path (soup_uri), "/.well-known/"))) {
 			gchar *saved_path;
 			GError *local_error_2nd = NULL;
 
@@ -854,7 +855,8 @@ e_webdav_discover_sources_full_sync (ESource *source,
 			wdd.error = NULL;
 		}
 
-		if (!g_cancellable_is_cancelled (cancellable) && !wdd.addressbooks && (only_supports == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
+		if (!g_cancellable_is_cancelled (cancellable) && !wdd.addressbooks &&
+		    ((only_supports & (~E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE)) == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
 		    (only_supports & (E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS)) != 0) &&
 		    (!soup_uri_get_path (soup_uri) || !strstr (soup_uri_get_path (soup_uri), "/.well-known/"))) {
 			gchar *saved_path;
@@ -890,6 +892,28 @@ e_webdav_discover_sources_full_sync (ESource *source,
 		}
 
 		if (out_discovered_sources) {
+			if (only_supports == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
+			    (only_supports & E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE) != 0) {
+				GSList *link;
+
+				for (link = wdd.calendars; link && !g_cancellable_is_cancelled (cancellable); link = g_slist_next (link)) {
+					EWebDAVDiscoveredSource *discovered = link->data;
+					GHashTable *allows = NULL, *capabilities = NULL;
+
+					if (discovered && discovered->href &&
+					    e_webdav_session_options_sync (webdav, discovered->href, &capabilities, &allows, cancellable, NULL)) {
+						if (capabilities && g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_AUTO_SCHEDULE))
+							discovered->supports |= E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE;
+					}
+
+					if (allows)
+						g_hash_table_destroy (allows);
+
+					if (capabilities)
+						g_hash_table_destroy (capabilities);
+				}
+			}
+
 			if (wdd.calendars)
 				*out_discovered_sources = g_slist_concat (*out_discovered_sources, wdd.calendars);
 			if (wdd.addressbooks)

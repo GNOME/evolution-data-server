@@ -88,6 +88,7 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 				    SoupURI *uri,
 				    const gchar *display_name,
 				    const gchar *color,
+				    gboolean calendar_auto_schedule,
 				    GHashTable *known_sources)
 {
 	ESourceRegistryServer *server;
@@ -195,21 +196,25 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 		e_source_webdav_set_display_name (webdav_extension, display_name);
 		e_source_set_enabled (source, TRUE);
 
-		/* Also check whether the color format is as expected; it cannot
-		   be used gdk_rgba_parse here, because it required gdk/gtk. */
-		if (source_type != E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS && color &&
-		    sscanf (color, "#%02x%02x%02x", &rr, &gg, &bb) == 3) {
-			gchar *safe_color;
+		if (source_type != E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS) {
+			/* Also check whether the color format is as expected; cannot
+			   use gdk_rgba_parse() here, because it requires gdk/gtk. */
+			if (color && sscanf (color, "#%02x%02x%02x", &rr, &gg, &bb) == 3) {
+				gchar *safe_color;
 
-			/* In case an #RRGGBBAA is returned */
-			safe_color = g_strdup_printf ("#%02x%02x%02x", rr, gg, bb);
+				/* In case an #RRGGBBAA is returned */
+				safe_color = g_strdup_printf ("#%02x%02x%02x", rr, gg, bb);
 
-			if (is_new || g_strcmp0 (e_source_webdav_get_color (webdav_extension), e_source_selectable_get_color (E_SOURCE_SELECTABLE (backend))) == 0)
-				e_source_selectable_set_color (E_SOURCE_SELECTABLE (backend), safe_color);
+				if (is_new || g_strcmp0 (e_source_webdav_get_color (webdav_extension), e_source_selectable_get_color (E_SOURCE_SELECTABLE (backend))) == 0)
+					e_source_selectable_set_color (E_SOURCE_SELECTABLE (backend), safe_color);
 
-			e_source_webdav_set_color (webdav_extension, safe_color);
+				e_source_webdav_set_color (webdav_extension, safe_color);
 
-			g_free (safe_color);
+				g_free (safe_color);
+			}
+
+			if (is_new && calendar_auto_schedule)
+				e_source_webdav_set_calendar_auto_schedule (webdav_extension, TRUE);
 		}
 
 		if (is_new)
@@ -245,7 +250,9 @@ webdav_collection_process_discovered_sources (ECollectionBackend *collection,
 		for (ii = 0; ii < n_source_types; ii++) {
 			if ((discovered_source->supports & source_types[ii]) == source_types[ii])
 				webdav_collection_add_found_source (collection, source_types[ii], soup_uri,
-					discovered_source->display_name, discovered_source->color, known_sources);
+					discovered_source->display_name, discovered_source->color,
+					(discovered_source->supports & E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE) != 0,
+					known_sources);
 		}
 
 		soup_uri_free (soup_uri);
@@ -502,7 +509,7 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 
 	if (e_source_collection_get_calendar_enabled (collection_extension) && calendar_url &&
 	    e_webdav_discover_sources_full_sync (source, calendar_url,
-		E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS,
+		E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS | E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE,
 		credentials, (EWebDAVDiscoverRefSourceFunc) e_source_registry_server_ref_source, server,
 		out_certificate_pem, out_certificate_errors, &discovered_sources, NULL, cancellable, &local_error)) {
 		EWebDAVDiscoverSupports source_types[] = {
