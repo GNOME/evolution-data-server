@@ -4537,7 +4537,7 @@ e_cal_backend_notify_error (ECalBackend *backend,
  * e_cal_backend_notify_property_changed:
  * @backend: an #ECalBackend
  * @prop_name: property name, which changed
- * @prop_value: new property value
+ * @prop_value: (nullable): new property value
  *
  * Notifies client about property value change.
  *
@@ -4552,13 +4552,11 @@ e_cal_backend_notify_property_changed (ECalBackend *backend,
 
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (prop_name != NULL);
-	g_return_if_fail (prop_value != NULL);
 
 	data_cal = e_cal_backend_ref_data_cal (backend);
 
 	if (data_cal != NULL) {
-		e_data_cal_report_backend_property_changed (
-			data_cal, prop_name, prop_value);
+		e_data_cal_report_backend_property_changed (data_cal, prop_name, prop_value ? prop_value : "");
 		g_object_unref (data_cal);
 	}
 }

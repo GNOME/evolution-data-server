@@ -3579,7 +3579,7 @@ e_book_backend_notify_error (EBookBackend *backend,
  * e_book_backend_notify_property_changed:
  * @backend: an #EBookBackend
  * @prop_name: property name, which changed
- * @prop_value: new property value
+ * @prop_value: (nullable): new property value
  *
  * Notifies clients about property value change.
  *
@@ -3594,13 +3594,11 @@ e_book_backend_notify_property_changed (EBookBackend *backend,
 
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (prop_name != NULL);
-	g_return_if_fail (prop_value != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
 
 	if (data_book != NULL) {
-		e_data_book_report_backend_property_changed (
-			data_book, prop_name, prop_value);
+		e_data_book_report_backend_property_changed (data_book, prop_name, prop_value ? prop_value : "");
 		g_object_unref (data_book);
 	}
 }
