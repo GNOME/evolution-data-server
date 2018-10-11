@@ -1404,6 +1404,13 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 	icalcomponent_free (icalcomp);
 	g_free (etag);
 
+	/* Ignore not found errors, this was a delete and the resource is gone.
+	   It can be that it had been deleted on the server by other application. */
+	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+		g_clear_error (&local_error);
+		success = TRUE;
+	}
+
 	if (local_error) {
 		ecb_caldav_check_credentials_error (cbdav, webdav, local_error);
 		g_propagate_error (error, local_error);
