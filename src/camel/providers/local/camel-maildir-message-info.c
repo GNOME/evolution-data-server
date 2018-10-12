@@ -164,7 +164,8 @@ camel_maildir_message_info_class_init (CamelMaildirMessageInfoClass *class)
 			"Filename",
 			NULL,
 			NULL,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 }
 
 static void

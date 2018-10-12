@@ -626,6 +626,7 @@ camel_session_class_init (CamelSessionClass *class)
 			"Classifies messages as junk or not junk",
 			CAMEL_TYPE_JUNK_FILTER,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -649,6 +650,7 @@ camel_session_class_init (CamelSessionClass *class)
 			NULL,
 			G_TYPE_NETWORK_MONITOR,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -661,6 +663,7 @@ camel_session_class_init (CamelSessionClass *class)
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -673,6 +676,7 @@ camel_session_class_init (CamelSessionClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -685,6 +689,7 @@ camel_session_class_init (CamelSessionClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	signals[JOB_STARTED] = g_signal_new (

@@ -44,6 +44,8 @@ const gchar *	e_get_user_data_dir		(void);
 gboolean	e_util_strv_equal		(gconstpointer v1,
 						 gconstpointer v2);
 gchar *		e_util_strdup_strip		(const gchar *string);
+gint		e_util_strcmp0			(const gchar *str1,
+						 const gchar *str2);
 gchar *		e_util_strstrcase		(const gchar *haystack,
 						 const gchar *needle);
 gchar *		e_util_unicode_get_utf8		(const gchar *text,

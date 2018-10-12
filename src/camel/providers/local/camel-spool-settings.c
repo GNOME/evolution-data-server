@@ -91,6 +91,7 @@ camel_spool_settings_class_init (CamelSpoolSettingsClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 }
 

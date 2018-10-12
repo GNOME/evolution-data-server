@@ -495,6 +495,7 @@ e_soup_session_class_init (ESoupSessionClass *klass)
 			NULL,
 			E_TYPE_NAMED_PARAMETERS,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 }
 

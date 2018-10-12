@@ -553,7 +553,8 @@ camel_vee_store_class_init (CamelVeeStoreClass *class)
 			"Unmatched Enabled",
 			_("Enable _Unmatched folder"),
 			TRUE,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 }
 
 static void

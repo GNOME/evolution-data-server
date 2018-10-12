@@ -91,6 +91,7 @@ camel_store_settings_class_init (CamelStoreSettingsClass *class)
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 }
 

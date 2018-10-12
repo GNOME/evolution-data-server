@@ -593,6 +593,7 @@ camel_offline_folder_class_init (CamelOfflineFolderClass *class)
 			CAMEL_TYPE_THREE_STATE,
 			CAMEL_THREE_STATE_INCONSISTENT,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			CAMEL_PARAM_PERSISTENT));
 }
 

@@ -120,6 +120,7 @@ e_source_backend_class_init (ESourceBackendClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 }
@@ -200,7 +201,7 @@ e_source_backend_set_backend_name (ESourceBackend *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->backend_name, backend_name) == 0) {
+	if (e_util_strcmp0 (extension->priv->backend_name, backend_name) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}

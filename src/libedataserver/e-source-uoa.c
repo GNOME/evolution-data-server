@@ -117,6 +117,7 @@ e_source_uoa_class_init (ESourceUoaClass *class)
 			0, G_MAXUINT, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 }

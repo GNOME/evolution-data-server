@@ -2492,6 +2492,7 @@ e_book_meta_backend_class_init (EBookMetaBackendClass *klass)
 			"Book Cache",
 			E_TYPE_BOOK_CACHE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/* This signal is meant for testing purposes mainly */

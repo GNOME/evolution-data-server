@@ -2173,6 +2173,7 @@ e_source_class_init (ESourceClass *class)
 			_("Unnamed"),
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -2186,6 +2187,7 @@ e_source_class_init (ESourceClass *class)
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -2211,6 +2213,7 @@ e_source_class_init (ESourceClass *class)
 			"The unique identity of the parent data source",
 			NULL,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -2723,7 +2726,7 @@ e_source_set_parent (ESource *source,
 
 	g_mutex_lock (&source->priv->property_lock);
 
-	if (g_strcmp0 (source->priv->parent, parent) == 0) {
+	if (e_util_strcmp0 (source->priv->parent, parent) == 0) {
 		g_mutex_unlock (&source->priv->property_lock);
 		return;
 	}

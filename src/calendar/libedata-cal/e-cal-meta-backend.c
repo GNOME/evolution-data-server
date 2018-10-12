@@ -3369,6 +3369,7 @@ e_cal_meta_backend_class_init (ECalMetaBackendClass *klass)
 			"Calendar Cache",
 			E_TYPE_CAL_CACHE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/* This signal is meant for testing purposes mainly */

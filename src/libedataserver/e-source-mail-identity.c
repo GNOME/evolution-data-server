@@ -215,6 +215,7 @@ e_source_mail_identity_class_init (ESourceMailIdentityClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -228,6 +229,7 @@ e_source_mail_identity_class_init (ESourceMailIdentityClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -241,6 +243,7 @@ e_source_mail_identity_class_init (ESourceMailIdentityClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -254,6 +257,7 @@ e_source_mail_identity_class_init (ESourceMailIdentityClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -267,6 +271,7 @@ e_source_mail_identity_class_init (ESourceMailIdentityClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -280,6 +285,7 @@ e_source_mail_identity_class_init (ESourceMailIdentityClass *class)
 			"none",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 }
@@ -361,7 +367,7 @@ e_source_mail_identity_set_address (ESourceMailIdentity *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->address, address) == 0) {
+	if (e_util_strcmp0 (extension->priv->address, address) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -443,8 +449,7 @@ e_source_mail_identity_set_name (ESourceMailIdentity *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (extension->priv->name != NULL &&
-	    g_strcmp0 (extension->priv->name, name) == 0) {
+	if (e_util_strcmp0 (extension->priv->name, name) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -527,7 +532,7 @@ e_source_mail_identity_set_organization (ESourceMailIdentity *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->organization, organization) == 0) {
+	if (e_util_strcmp0 (extension->priv->organization, organization) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -612,7 +617,7 @@ e_source_mail_identity_set_reply_to (ESourceMailIdentity *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->reply_to, reply_to) == 0) {
+	if (e_util_strcmp0 (extension->priv->reply_to, reply_to) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -792,7 +797,7 @@ e_source_mail_identity_set_aliases (ESourceMailIdentity *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->aliases, aliases) == 0) {
+	if (e_util_strcmp0 (extension->priv->aliases, aliases) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}

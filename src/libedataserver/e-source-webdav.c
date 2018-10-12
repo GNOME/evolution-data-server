@@ -513,6 +513,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -526,6 +527,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -538,6 +540,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -550,6 +553,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -562,6 +566,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -574,6 +579,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -586,6 +592,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -596,7 +603,8 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			"SoupURI",
 			"WebDAV service as a SoupURI",
 			SOUP_TYPE_URI,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	g_object_class_install_property (
 		object_class,
@@ -608,6 +616,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 }
 
@@ -798,7 +807,7 @@ e_source_webdav_set_display_name (ESourceWebdav *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->display_name, display_name) == 0) {
+	if (e_util_strcmp0 (extension->priv->display_name, display_name) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -881,7 +890,7 @@ e_source_webdav_set_color (ESourceWebdav *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->color, color) == 0) {
+	if (e_util_strcmp0 (extension->priv->color, color) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -966,7 +975,7 @@ e_source_webdav_set_email_address (ESourceWebdav *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->email_address, email_address) == 0) {
+	if (e_util_strcmp0 (extension->priv->email_address, email_address) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -1050,7 +1059,7 @@ e_source_webdav_set_resource_path (ESourceWebdav *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->resource_path, resource_path) == 0) {
+	if (e_util_strcmp0 (extension->priv->resource_path, resource_path) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -1144,7 +1153,7 @@ e_source_webdav_set_resource_query (ESourceWebdav *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->resource_query, resource_query) == 0) {
+	if (e_util_strcmp0 (extension->priv->resource_query, resource_query) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -1231,7 +1240,7 @@ e_source_webdav_set_ssl_trust (ESourceWebdav *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->ssl_trust, ssl_trust) == 0) {
+	if (e_util_strcmp0 (extension->priv->ssl_trust, ssl_trust) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}

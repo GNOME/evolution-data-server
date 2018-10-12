@@ -983,6 +983,7 @@ e_cal_backend_class_init (ECalBackendClass *class)
 			"The backend's cache directory",
 			NULL,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -1032,6 +1033,7 @@ e_cal_backend_class_init (ECalBackendClass *class)
 			"Whether the backend will accept changes",
 			FALSE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/**

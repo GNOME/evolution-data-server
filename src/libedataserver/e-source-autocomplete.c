@@ -114,6 +114,7 @@ e_source_autocomplete_class_init (ESourceAutocompleteClass *class)
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 }

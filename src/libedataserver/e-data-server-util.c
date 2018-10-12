@@ -199,6 +199,32 @@ e_util_strdup_strip (const gchar *string)
 }
 
 /**
+ * e_util_strcmp0:
+ * @str1: a C string on %NULL
+ * @str2: another C string or %NULL
+ *
+ * Compares @str1 and @str2 like g_strcmp0(), except it handles %NULL and
+ * empty strings as equal.
+ *
+ * Returns: an integer less than 0 when @str1 is before @str2; 0 when
+ *    the strings are equal and an integer greated than 0 when @str1 is after @str2.
+ *
+ * Since: 3.32
+ **/
+gint
+e_util_strcmp0 (const gchar *str1,
+		const gchar *str2)
+{
+	if (str1 && !*str1)
+		str1 = NULL;
+
+	if (str2 && !*str2)
+		str2 = NULL;
+
+	return g_strcmp0 (str1, str2);
+}
+
+/**
  * e_util_strstrcase:
  * @haystack: The string to search in.
  * @needle: The string to search for.

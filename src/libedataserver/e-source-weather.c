@@ -127,6 +127,7 @@ e_source_weather_class_init (ESourceWeatherClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -140,6 +141,7 @@ e_source_weather_class_init (ESourceWeatherClass *class)
 			E_SOURCE_WEATHER_UNITS_CENTIGRADE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 }
 
@@ -183,7 +185,7 @@ e_source_weather_set_location (ESourceWeather *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->location, location) == 0) {
+	if (e_util_strcmp0 (extension->priv->location, location) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}

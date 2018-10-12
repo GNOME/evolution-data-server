@@ -150,7 +150,8 @@ camel_data_cache_class_init (CamelDataCacheClass *class)
 			NULL,
 			NULL,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT));
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	g_object_class_install_property (
 		object_class,
@@ -161,7 +162,8 @@ camel_data_cache_class_init (CamelDataCacheClass *class)
 			NULL,
 			TRUE,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT));
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY));
 }
 
 static void

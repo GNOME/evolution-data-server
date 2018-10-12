@@ -214,6 +214,7 @@ e_source_collection_class_init (ESourceCollectionClass *class)
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -227,6 +228,7 @@ e_source_collection_class_init (ESourceCollectionClass *class)
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -241,6 +243,7 @@ e_source_collection_class_init (ESourceCollectionClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -254,6 +257,7 @@ e_source_collection_class_init (ESourceCollectionClass *class)
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -267,6 +271,7 @@ e_source_collection_class_init (ESourceCollectionClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -280,6 +285,7 @@ e_source_collection_class_init (ESourceCollectionClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 }
@@ -362,7 +368,7 @@ e_source_collection_set_identity (ESourceCollection *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->identity, identity) == 0) {
+	if (e_util_strcmp0 (extension->priv->identity, identity) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -606,7 +612,7 @@ e_source_collection_set_calendar_url (ESourceCollection *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->calendar_url, calendar_url) == 0) {
+	if (e_util_strcmp0 (extension->priv->calendar_url, calendar_url) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -689,7 +695,7 @@ e_source_collection_set_contacts_url (ESourceCollection *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->contacts_url, contacts_url) == 0) {
+	if (e_util_strcmp0 (extension->priv->contacts_url, contacts_url) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}

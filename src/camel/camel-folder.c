@@ -1221,7 +1221,8 @@ camel_folder_class_init (CamelFolderClass *class)
 			"The folder's description",
 			NULL,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT));
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelFolder:display-name
@@ -1237,7 +1238,8 @@ camel_folder_class_init (CamelFolderClass *class)
 			"The folder's display name",
 			NULL,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT));
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelFolder:full-name
@@ -1253,7 +1255,8 @@ camel_folder_class_init (CamelFolderClass *class)
 			"The folder's fully qualified name",
 			NULL,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT));
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelFolder:parent-store

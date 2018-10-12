@@ -765,6 +765,7 @@ e_book_backend_class_init (EBookBackendClass *class)
 			"The backend's cache directory",
 			NULL,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -799,6 +800,7 @@ e_book_backend_class_init (EBookBackendClass *class)
 			"Whether the backend will accept changes",
 			FALSE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/**

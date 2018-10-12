@@ -158,7 +158,8 @@ camel_medium_class_init (CamelMediumClass *class)
 			"Content",
 			NULL,
 			CAMEL_TYPE_DATA_WRAPPER,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 }
 
 static void

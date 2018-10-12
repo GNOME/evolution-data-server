@@ -808,6 +808,7 @@ e_client_class_init (EClientClass *class)
 			"Capabilities",
 			"The capabilities of this client",
 			G_PARAM_READABLE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -842,6 +843,7 @@ e_client_class_init (EClientClass *class)
 			"Whether this client is online",
 			FALSE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/**

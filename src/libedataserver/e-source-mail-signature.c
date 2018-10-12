@@ -224,6 +224,7 @@ e_source_mail_signature_class_init (ESourceMailSignatureClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 }
@@ -335,7 +336,7 @@ e_source_mail_signature_set_mime_type (ESourceMailSignature *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->mime_type, mime_type) == 0) {
+	if (e_util_strcmp0 (extension->priv->mime_type, mime_type) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}

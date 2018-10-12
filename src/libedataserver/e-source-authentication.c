@@ -282,6 +282,7 @@ e_source_authentication_class_init (ESourceAuthenticationClass *class)
 			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -295,6 +296,7 @@ e_source_authentication_class_init (ESourceAuthenticationClass *class)
 			"none",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -308,6 +310,7 @@ e_source_authentication_class_init (ESourceAuthenticationClass *class)
 			0, G_MAXUINT16, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -321,6 +324,7 @@ e_source_authentication_class_init (ESourceAuthenticationClass *class)
 			"system-proxy",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -335,6 +339,7 @@ e_source_authentication_class_init (ESourceAuthenticationClass *class)
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -348,6 +353,7 @@ e_source_authentication_class_init (ESourceAuthenticationClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -363,6 +369,7 @@ e_source_authentication_class_init (ESourceAuthenticationClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 }
@@ -501,7 +508,7 @@ e_source_authentication_set_host (ESourceAuthentication *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->host, host) == 0) {
+	if (e_util_strcmp0 (extension->priv->host, host) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -593,7 +600,7 @@ e_source_authentication_set_method (ESourceAuthentication *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->method, method) == 0) {
+	if (e_util_strcmp0 (extension->priv->method, method) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -858,7 +865,7 @@ e_source_authentication_set_user (ESourceAuthentication *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->user, user) == 0) {
+	if (e_util_strcmp0 (extension->priv->user, user) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -947,7 +954,7 @@ e_source_authentication_set_credential_name (ESourceAuthentication *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->credential_name, credential_name) == 0) {
+	if (e_util_strcmp0 (extension->priv->credential_name, credential_name) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}

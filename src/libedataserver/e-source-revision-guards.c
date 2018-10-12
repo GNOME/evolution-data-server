@@ -123,6 +123,7 @@ e_source_revision_guards_class_init (ESourceRevisionGuardsClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 }
 

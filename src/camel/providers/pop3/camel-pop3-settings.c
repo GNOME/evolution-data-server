@@ -248,6 +248,7 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 			0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -260,6 +261,7 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -272,6 +274,7 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/* Inherited from CamelNetworkSettings. */
@@ -290,6 +293,7 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -304,6 +308,7 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 			0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -316,6 +321,7 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/* Inherited from CamelNetworkSettings. */

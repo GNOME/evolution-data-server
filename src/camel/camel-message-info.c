@@ -634,7 +634,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"UID",
 			NULL,
 			NULL,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelMessageInfo:dirty
@@ -652,7 +653,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"Dirty",
 			NULL,
 			FALSE,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelMessageInfo:folder-flagged
@@ -672,7 +674,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"Folder Flagged",
 			NULL,
 			FALSE,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelMessageInfo:folder-flagged-stamp
@@ -711,7 +714,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"Abort Notifications",
 			NULL,
 			FALSE,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelMessageInfo:flags
@@ -728,7 +732,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"Flags",
 			NULL,
 			0, G_MAXUINT32, 0,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelMessageInfo:user-flags
@@ -747,7 +752,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"User Flags",
 			NULL,
 			CAMEL_TYPE_NAMED_FLAGS,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelMessageInfo:user-tags
@@ -766,7 +772,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"User tags",
 			NULL,
 			CAMEL_TYPE_NAME_VALUE_ARRAY,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelMessageInfo:subject
@@ -783,7 +790,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"Subject",
 			NULL,
 			NULL,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelMessageInfo:from
@@ -800,7 +808,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"From",
 			NULL,
 			NULL,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelMessageInfo:to
@@ -817,7 +826,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"To",
 			NULL,
 			NULL,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelMessageInfo:cc
@@ -834,7 +844,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"CC",
 			NULL,
 			NULL,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelMessageInfo:mlist
@@ -851,7 +862,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"mlist",
 			NULL,
 			NULL,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelMessageInfo:size
@@ -868,7 +880,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"Size",
 			NULL,
 			0, G_MAXUINT32, 0,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelMessageInfo:date-sent
@@ -885,7 +898,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"Date Sent",
 			NULL,
 			G_MININT64, G_MAXINT64, 0,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelMessageInfo:date-received
@@ -902,7 +916,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"Date Received",
 			NULL,
 			G_MININT64, G_MAXINT64, 0,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelMessageInfo:message-id
@@ -920,7 +935,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"Message ID",
 			NULL,
 			0, G_MAXUINT64, 0,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelMessageInfo:references
@@ -939,7 +955,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"References",
 			NULL,
 			G_TYPE_ARRAY,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/**
 	 * CamelMessageInfo:headers
@@ -956,7 +973,8 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"Headers",
 			NULL,
 			CAMEL_TYPE_NAME_VALUE_ARRAY,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 }
 
 static void

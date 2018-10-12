@@ -118,7 +118,7 @@ source_backend_summary_setup_set_literal_fields (ESourceBackendSummarySetup *ext
 
 	g_mutex_lock (&extension->priv->property_lock);
 
-	if (g_strcmp0 (*target, literal_fields) == 0) {
+	if (e_util_strcmp0 (*target, literal_fields) == 0) {
 		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
@@ -212,6 +212,7 @@ e_source_backend_summary_setup_class_init (ESourceBackendSummarySetupClass *clas
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -226,6 +227,7 @@ e_source_backend_summary_setup_class_init (ESourceBackendSummarySetupClass *clas
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 }

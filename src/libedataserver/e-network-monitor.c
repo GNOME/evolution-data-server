@@ -313,6 +313,7 @@ e_network_monitor_class_init (ENetworkMonitorClass *class)
 			NULL,
 			NULL,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_override_property (object_class, PROP_NETWORK_AVAILABLE, "network-available");

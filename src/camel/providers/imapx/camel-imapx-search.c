@@ -662,6 +662,7 @@ camel_imapx_search_class_init (CamelIMAPXSearchClass *class)
 			"IMAPX Store for server-side searches",
 			CAMEL_TYPE_IMAPX_STORE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 }
 

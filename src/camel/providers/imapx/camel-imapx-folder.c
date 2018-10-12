@@ -1119,6 +1119,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 			_("Apply message _filters to this folder"),
 			FALSE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			CAMEL_PARAM_PERSISTENT));
 
 	g_object_class_install_property (
@@ -1130,6 +1131,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 			_("Always check for _new mail in this folder"),
 			FALSE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			CAMEL_PARAM_PERSISTENT));
 
 	g_object_class_install_property (
@@ -1141,6 +1143,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 			"IMAP mailbox for this folder",
 			CAMEL_TYPE_IMAPX_MAILBOX,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 }
 

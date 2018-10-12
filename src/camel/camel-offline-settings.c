@@ -156,6 +156,7 @@ camel_offline_settings_class_init (CamelOfflineSettingsClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -170,6 +171,7 @@ camel_offline_settings_class_init (CamelOfflineSettingsClass *class)
 			3,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -182,6 +184,7 @@ camel_offline_settings_class_init (CamelOfflineSettingsClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -195,6 +198,7 @@ camel_offline_settings_class_init (CamelOfflineSettingsClass *class)
 			CAMEL_TIME_UNIT_YEARS,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -209,6 +213,7 @@ camel_offline_settings_class_init (CamelOfflineSettingsClass *class)
 			1,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 }
 

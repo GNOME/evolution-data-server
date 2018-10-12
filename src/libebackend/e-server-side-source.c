@@ -1649,6 +1649,7 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 			"The object providing OAuth 2.0 support",
 			E_TYPE_OAUTH2_SUPPORT,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/* This overrides the "remote-creatable" property
@@ -1663,6 +1664,7 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 			"can create remote resources",
 			FALSE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/* This overrides the "remote-deletable" property
@@ -1677,6 +1679,7 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 			"can delete remote resources",
 			FALSE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/* This overrides the "removable" property
@@ -1690,6 +1693,7 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 			"Whether the data source is removable",
 			FALSE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -1715,6 +1719,7 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 			"Whether the data source is writable",
 			FALSE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/* Do not use G_PARAM_CONSTRUCT.  We initialize the
@@ -1728,6 +1733,7 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 			"Directory in which to write changes to disk",
 			NULL,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 }
 

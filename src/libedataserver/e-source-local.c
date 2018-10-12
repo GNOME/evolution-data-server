@@ -114,6 +114,7 @@ e_source_local_class_init (ESourceLocalClass *class)
 			G_TYPE_FILE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 }
 

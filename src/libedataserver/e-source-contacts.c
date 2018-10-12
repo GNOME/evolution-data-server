@@ -129,6 +129,7 @@ e_source_contacts_class_init (ESourceContactsClass *class)
 			"Include this address book in the contacts calendar",
 			FALSE,  /* see constructed () */
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 }
 

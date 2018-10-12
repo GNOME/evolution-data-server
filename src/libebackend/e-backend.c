@@ -737,6 +737,7 @@ e_backend_class_init (EBackendClass *class)
 			"Socket endpoint of a network service",
 			G_TYPE_SOCKET_CONNECTABLE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -760,6 +761,7 @@ e_backend_class_init (EBackendClass *class)
 			"Whether the backend is online",
 			TRUE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (

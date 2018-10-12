@@ -195,6 +195,7 @@ e_source_goa_class_init (ESourceGoaClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -208,6 +209,7 @@ e_source_goa_class_init (ESourceGoaClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -221,6 +223,7 @@ e_source_goa_class_init (ESourceGoaClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -234,6 +237,7 @@ e_source_goa_class_init (ESourceGoaClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -247,6 +251,7 @@ e_source_goa_class_init (ESourceGoaClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 }
@@ -329,7 +334,7 @@ e_source_goa_set_account_id (ESourceGoa *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->account_id, account_id) == 0) {
+	if (e_util_strcmp0 (extension->priv->account_id, account_id) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -416,7 +421,7 @@ e_source_goa_set_calendar_url (ESourceGoa *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->calendar_url, calendar_url) == 0) {
+	if (e_util_strcmp0 (extension->priv->calendar_url, calendar_url) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -503,7 +508,7 @@ e_source_goa_set_contacts_url (ESourceGoa *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->contacts_url, contacts_url) == 0) {
+	if (e_util_strcmp0 (extension->priv->contacts_url, contacts_url) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -589,7 +594,7 @@ e_source_goa_set_name (ESourceGoa *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->name, name) == 0) {
+	if (e_util_strcmp0 (extension->priv->name, name) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -675,7 +680,7 @@ e_source_goa_set_address (ESourceGoa *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->address, address) == 0) {
+	if (e_util_strcmp0 (extension->priv->address, address) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}

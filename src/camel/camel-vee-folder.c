@@ -1328,6 +1328,7 @@ camel_vee_folder_class_init (CamelVeeFolderClass *class)
 			_("Automatically _update on change in source folders"),
 			TRUE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			CAMEL_PARAM_PERSISTENT));
 }
 

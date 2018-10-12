@@ -460,6 +460,7 @@ e_source_proxy_class_init (ESourceProxyClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -473,6 +474,7 @@ e_source_proxy_class_init (ESourceProxyClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -486,6 +488,7 @@ e_source_proxy_class_init (ESourceProxyClass *class)
 			0, G_MAXUINT16, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -499,6 +502,7 @@ e_source_proxy_class_init (ESourceProxyClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -512,6 +516,7 @@ e_source_proxy_class_init (ESourceProxyClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -525,6 +530,7 @@ e_source_proxy_class_init (ESourceProxyClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -538,6 +544,7 @@ e_source_proxy_class_init (ESourceProxyClass *class)
 			0, G_MAXUINT16, 8080,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -552,6 +559,7 @@ e_source_proxy_class_init (ESourceProxyClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -565,6 +573,7 @@ e_source_proxy_class_init (ESourceProxyClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -578,6 +587,7 @@ e_source_proxy_class_init (ESourceProxyClass *class)
 			0, G_MAXUINT16, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -591,6 +601,7 @@ e_source_proxy_class_init (ESourceProxyClass *class)
 			G_TYPE_STRV,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -605,6 +616,7 @@ e_source_proxy_class_init (ESourceProxyClass *class)
 			E_PROXY_METHOD_DEFAULT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -618,6 +630,7 @@ e_source_proxy_class_init (ESourceProxyClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
@@ -631,6 +644,7 @@ e_source_proxy_class_init (ESourceProxyClass *class)
 			0, G_MAXUINT16, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 }
@@ -760,7 +774,7 @@ e_source_proxy_set_autoconfig_url (ESourceProxy *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (autoconfig_url, extension->priv->autoconfig_url) == 0) {
+	if (e_util_strcmp0 (autoconfig_url, extension->priv->autoconfig_url) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -941,7 +955,7 @@ e_source_proxy_set_ftp_host (ESourceProxy *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (ftp_host, extension->priv->ftp_host) == 0) {
+	if (e_util_strcmp0 (ftp_host, extension->priv->ftp_host) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -1065,7 +1079,7 @@ e_source_proxy_set_http_host (ESourceProxy *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (http_host, extension->priv->http_host) == 0) {
+	if (e_util_strcmp0 (http_host, extension->priv->http_host) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -1240,7 +1254,7 @@ e_source_proxy_set_http_auth_user (ESourceProxy *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (http_auth_user, extension->priv->http_auth_user) == 0) {
+	if (e_util_strcmp0 (http_auth_user, extension->priv->http_auth_user) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -1321,7 +1335,7 @@ e_source_proxy_set_http_auth_password (ESourceProxy *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (http_auth_password, extension->priv->http_auth_password) == 0) {
+	if (e_util_strcmp0 (http_auth_password, extension->priv->http_auth_password) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -1402,7 +1416,7 @@ e_source_proxy_set_https_host (ESourceProxy *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (https_host, extension->priv->https_host) == 0) {
+	if (e_util_strcmp0 (https_host, extension->priv->https_host) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
@@ -1526,7 +1540,7 @@ e_source_proxy_set_socks_host (ESourceProxy *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (socks_host, extension->priv->socks_host) == 0) {
+	if (e_util_strcmp0 (socks_host, extension->priv->socks_host) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}

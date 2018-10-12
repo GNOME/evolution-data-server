@@ -1574,6 +1574,7 @@ e_cal_client_class_init (ECalClientClass *class)
 			"Timezone used to resolve DATE "
 			"and floating DATE-TIME values",
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (

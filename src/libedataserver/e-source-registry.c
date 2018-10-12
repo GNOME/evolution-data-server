@@ -1505,6 +1505,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 			"The default address book ESource",
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -1521,6 +1522,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 			"The default calendar ESource",
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -1537,6 +1539,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 			"The default mail account ESource",
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -1553,6 +1556,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 			"The default mail identity ESource",
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -1569,6 +1573,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 			"The default memo list ESource",
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -1585,6 +1590,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 			"The default task list ESource",
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	/**

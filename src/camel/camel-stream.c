@@ -377,6 +377,7 @@ camel_stream_class_init (CamelStreamClass *class)
 			"The base GIOStream",
 			G_TYPE_IO_STREAM,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 }
 

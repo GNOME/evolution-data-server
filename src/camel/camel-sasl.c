@@ -299,7 +299,8 @@ camel_sasl_class_init (CamelSaslClass *class)
 			"Authenticated",
 			NULL,
 			FALSE,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	g_object_class_install_property (
 		object_class,

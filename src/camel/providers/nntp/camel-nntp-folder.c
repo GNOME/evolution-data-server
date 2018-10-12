@@ -841,6 +841,7 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 			_("Apply message _filters to this folder"),
 			FALSE,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			CAMEL_PARAM_PERSISTENT));
 }
 

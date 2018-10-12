@@ -2866,7 +2866,8 @@ camel_gpg_context_class_init (CamelGpgContextClass *class)
 			NULL,
 			FALSE,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT));
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	g_object_class_install_property (
 		object_class,
@@ -2877,7 +2878,8 @@ camel_gpg_context_class_init (CamelGpgContextClass *class)
 			NULL,
 			FALSE,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT));
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY));
 }
 
 static void

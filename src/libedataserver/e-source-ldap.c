@@ -362,7 +362,8 @@ e_source_ldap_class_init (ESourceLDAPClass *class)
 			"LDAP authentication method",
 			E_TYPE_SOURCE_LDAP_AUTHENTICATION,
 			E_SOURCE_LDAP_AUTHENTICATION_NONE,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	g_object_class_install_property (
 		object_class,
@@ -374,6 +375,7 @@ e_source_ldap_class_init (ESourceLDAPClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -386,6 +388,7 @@ e_source_ldap_class_init (ESourceLDAPClass *class)
 			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -398,6 +401,7 @@ e_source_ldap_class_init (ESourceLDAPClass *class)
 			0, G_MAXUINT, 100,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -410,6 +414,7 @@ e_source_ldap_class_init (ESourceLDAPClass *class)
 			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -423,6 +428,7 @@ e_source_ldap_class_init (ESourceLDAPClass *class)
 			E_SOURCE_LDAP_SCOPE_ONELEVEL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
 
 	/* This is bound to the security extension.
@@ -436,7 +442,8 @@ e_source_ldap_class_init (ESourceLDAPClass *class)
 			"LDAP security method",
 			E_TYPE_SOURCE_LDAP_SECURITY,
 			E_SOURCE_LDAP_SECURITY_NONE,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY));
 }
 
 static void
@@ -606,7 +613,7 @@ e_source_ldap_set_root_dn (ESourceLDAP *extension,
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (g_strcmp0 (extension->priv->root_dn, root_dn) == 0) {
+	if (e_util_strcmp0 (extension->priv->root_dn, root_dn) == 0) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}

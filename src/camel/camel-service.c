@@ -976,6 +976,7 @@ camel_service_class_init (CamelServiceClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -988,6 +989,7 @@ camel_service_class_init (CamelServiceClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -1011,6 +1013,7 @@ camel_service_class_init (CamelServiceClass *class)
 			"The proxy resolver for the service",
 			G_TYPE_PROXY_RESOLVER,
 			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -1035,6 +1038,7 @@ camel_service_class_init (CamelServiceClass *class)
 			CAMEL_TYPE_SETTINGS,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
