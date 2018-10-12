@@ -142,7 +142,7 @@ param_spec_clone (GParamSpec *pspec)
 	name = g_param_spec_get_name (pspec);
 	nick = g_param_spec_get_nick (pspec);
 	blurb = g_param_spec_get_blurb (pspec);
-	flags = (pspec->flags & ~(G_PARAM_STATIC_STRINGS));
+	flags = (pspec->flags & ~(G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS));
 
 	if (G_IS_PARAM_SPEC_BOOLEAN (pspec)) {
 		GParamSpecBoolean *pspec_boolean = G_PARAM_SPEC_BOOLEAN (pspec);
