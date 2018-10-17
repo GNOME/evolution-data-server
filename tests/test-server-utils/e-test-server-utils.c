@@ -199,6 +199,7 @@ assert_object_finalized (ETestServerFixture *fixture,
 typedef struct {
 	ETestServerFixture *fixture;
 	ETestServerClosure *closure;
+	guint retries;
 } FixturePair;
 
 static gboolean
@@ -333,12 +334,15 @@ e_test_server_utils_bootstrap_timeout (FixturePair *pair)
 	return FALSE;
 }
 
+static gboolean e_test_server_utils_retry_open_client_cb (gpointer user_data);
+
 static void
 e_test_server_utils_client_ready (GObject *source_object,
                                   GAsyncResult *res,
                                   gpointer user_data)
 {
 	FixturePair *pair = (FixturePair *) user_data;
+	gboolean need_retry = FALSE;
 	GError *error = NULL;
 
 	switch (pair->closure->type) {
@@ -346,7 +350,10 @@ e_test_server_utils_client_ready (GObject *source_object,
 		pair->fixture->service.book_client = (EBookClient *)
 			e_book_client_connect_finish (res, &error);
 
-		if (!pair->fixture->service.book_client)
+		if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND) &&
+		    pair->retries < 3)
+			need_retry = TRUE;
+		else if (!pair->fixture->service.book_client)
 			g_error ("Unable to create the test book: %s", error->message);
 
 		break;
@@ -354,7 +361,10 @@ e_test_server_utils_client_ready (GObject *source_object,
 		pair->fixture->service.book_client = (EBookClient *)
 			e_book_client_connect_direct_finish (res, &error);
 
-		if (!pair->fixture->service.book_client)
+		if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND) &&
+		    pair->retries < 3)
+			need_retry = TRUE;
+		else if (!pair->fixture->service.book_client)
 			g_error ("Unable to create the test book: %s", error->message);
 
 		break;
@@ -362,7 +372,10 @@ e_test_server_utils_client_ready (GObject *source_object,
 		pair->fixture->service.calendar_client = (ECalClient *)
 			e_cal_client_connect_finish (res, &error);
 
-		if (!pair->fixture->service.calendar_client)
+		if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND) &&
+		    pair->retries < 3)
+			need_retry = TRUE;
+		else if (!pair->fixture->service.calendar_client)
 			g_error ("Unable to create the test calendar: %s", error->message);
 
 		break;
@@ -370,6 +383,14 @@ e_test_server_utils_client_ready (GObject *source_object,
 	case E_TEST_SERVER_DEPRECATED_CALENDAR:
 	case E_TEST_SERVER_NONE:
 		g_assert_not_reached ();
+	}
+
+	g_clear_error (&error);
+
+	if (need_retry) {
+		pair->retries++;
+		g_timeout_add_seconds (1, e_test_server_utils_retry_open_client_cb, pair);
+		return;
 	}
 
 	/* Track ref counts now that we have a client */
@@ -383,6 +404,7 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
                                   ESource *source,
                                   FixturePair *pair)
 {
+	gboolean need_retry = FALSE;
 	GError  *error = NULL;
 
 	if (g_strcmp0 (e_source_get_uid (source), pair->fixture->source_name) != 0)
@@ -410,8 +432,13 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 		}
 
 		if (!pair->closure->use_async_connect &&
-		    !pair->fixture->service.book_client)
-			g_error ("Unable to create the test book: %s", error ? error->message : "Unknown error");
+		    !pair->fixture->service.book_client) {
+			if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND) &&
+			    pair->retries < 3)
+				need_retry = TRUE;
+			else
+				g_error ("Unable to create the test book: %s", error ? error->message : "Unknown error");
+		}
 
 		break;
 
@@ -422,8 +449,13 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 		if (!pair->fixture->service.book)
 			g_error ("Unable to create the test book: %s", error->message);
 
-		if (!e_book_open (pair->fixture->service.book, FALSE, &error))
-			g_error ("Unable to open book: %s", error->message);
+		if (!e_book_open (pair->fixture->service.book, FALSE, &error)) {
+			if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND) &&
+			    pair->retries < 3)
+				need_retry = TRUE;
+			else
+				g_error ("Unable to open book: %s", error->message);
+		}
 
 		break;
 
@@ -440,8 +472,13 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 				e_cal_client_connect_sync (
 					source,
 					pair->closure->calendar_source_type, (guint32) -1, NULL, &error);
-			if (!pair->fixture->service.calendar_client)
-				g_error ("Unable to create the test calendar: %s", error->message);
+			if (!pair->fixture->service.calendar_client) {
+				if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND) &&
+				    pair->retries < 3)
+					need_retry = TRUE;
+				else
+					g_error ("Unable to create the test calendar: %s", error->message);
+			}
 		}
 
 		break;
@@ -453,12 +490,25 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 		if (!pair->fixture->service.calendar)
 			g_error ("Unable to create the test calendar");
 
-		if (!e_cal_open (pair->fixture->service.calendar, FALSE, &error))
-			g_error ("Unable to open calendar: %s", error->message);
+		if (!e_cal_open (pair->fixture->service.calendar, FALSE, &error)) {
+			if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND) &&
+			    pair->retries < 3)
+				need_retry = TRUE;
+			else
+				g_error ("Unable to open calendar: %s", error->message);
+		}
 
 		break;
 
 	case E_TEST_SERVER_NONE:
+		return;
+	}
+
+	g_clear_error (&error);
+
+	if (need_retry) {
+		pair->retries++;
+		g_timeout_add_seconds (1, e_test_server_utils_retry_open_client_cb, pair);
 		return;
 	}
 
@@ -469,6 +519,22 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 
 	if (!pair->closure->use_async_connect)
 		g_main_loop_quit (pair->fixture->loop);
+}
+
+static gboolean
+e_test_server_utils_retry_open_client_cb (gpointer user_data)
+{
+	FixturePair *pair = user_data;
+	ESource *source;
+
+	source = e_source_registry_ref_source (pair->fixture->registry, pair->fixture->source_name);
+
+	g_assert (E_IS_SOURCE (source));
+
+	e_test_server_utils_source_added (pair->fixture->registry, source, pair);
+	g_object_unref (source);
+
+	return FALSE;
 }
 
 static gboolean
@@ -579,7 +645,7 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
                            gconstpointer user_data)
 {
 	ETestServerClosure *closure = (ETestServerClosure *) user_data;
-	FixturePair         pair = { fixture, closure };
+	FixturePair         pair = { fixture, closure, 0 };
 
 	/* Create work directory */
 	if (!test_installed_services ())
