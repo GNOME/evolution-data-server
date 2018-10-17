@@ -1342,6 +1342,13 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 	priv = data_factory->priv;
 
 	source = e_source_registry_ref_source (priv->registry, uid);
+
+	if (!source) {
+		g_set_error (
+			&error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+			_("No such source for UID “%s”"), uid);
+	}
+
 	if (source && e_source_has_extension (source, extension_name)) {
 		ESourceBackend *extension;
 
@@ -1487,7 +1494,7 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 			NULL);
 
 		g_object_unref (subprocess);
-	} else {
+	} else if (!error) {
 		error = g_error_new (G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
 			_("Backend factory for source “%s” and extension “%s” cannot be found."),
 			uid, extension_name);
