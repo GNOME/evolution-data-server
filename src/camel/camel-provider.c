@@ -135,7 +135,7 @@ provider_register_internal (CamelProvider *provider)
 	conf = provider->extra_conf;
 	if (conf != NULL) {
 		for (ii = 0; conf[ii].type != CAMEL_PROVIDER_CONF_END; ii++) {
-			if (conf[ii].text != NULL)
+			if (conf[ii].text && conf[ii].text[0])
 				conf[ii].text = P_(conf[ii].text);
 		}
 	}
