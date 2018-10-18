@@ -98,6 +98,33 @@ ecb_http_dup_uri (ECalBackendHttp *cbhttp)
 	return uri;
 }
 
+static gchar *
+ecb_http_read_stream_sync (GInputStream *input_stream,
+			   goffset expected_length,
+			   GCancellable *cancellable,
+			   GError **error)
+{
+	GString *icalstr;
+	void *buffer;
+	gsize nread = 0;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (G_IS_INPUT_STREAM (input_stream), NULL);
+
+	icalstr = g_string_sized_new ((expected_length > 0 && expected_length <= 1024 * 1024) ? expected_length + 1 : 1024);
+
+	buffer = g_malloc (16384);
+
+	while (success = g_input_stream_read_all (input_stream, buffer, 16384, &nread, cancellable, error),
+	       success && nread > 0) {
+		g_string_append_len (icalstr, (const gchar *) buffer, nread);
+	}
+
+	g_free (buffer);
+
+	return g_string_free (icalstr, !success);
+}
+
 static gboolean
 ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 		       const ENamedParameters *credentials,
@@ -159,6 +186,17 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 		success = input_stream != NULL;
 
 		if (success && message && !SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
+			if (input_stream && e_soup_session_get_log_level (cbhttp->priv->session) == SOUP_LOGGER_LOG_BODY) {
+				gchar *response = ecb_http_read_stream_sync (input_stream, -1, cancellable, NULL);
+
+				if (response) {
+					printf ("%s\n", response);
+					fflush (stdout);
+
+					g_free (response);
+				}
+			}
+
 			g_clear_object (&input_stream);
 			success = FALSE;
 		}
@@ -260,33 +298,6 @@ ecb_http_disconnect_sync (ECalMetaBackend *meta_backend,
 	return TRUE;
 }
 
-static gchar *
-ecb_http_read_stream_sync (GInputStream *input_stream,
-			   goffset expected_length,
-			   GCancellable *cancellable,
-			   GError **error)
-{
-	GString *icalstr;
-	void *buffer;
-	gsize nread = 0;
-	gboolean success = FALSE;
-
-	g_return_val_if_fail (G_IS_INPUT_STREAM (input_stream), NULL);
-
-	icalstr = g_string_sized_new (expected_length > 0 ? expected_length + 1 : 1024);
-
-	buffer = g_malloc (16384);
-
-	while (success = g_input_stream_read_all (input_stream, buffer, 16384, &nread, cancellable, error),
-	       success && nread > 0) {
-		g_string_append_len (icalstr, (const gchar *) buffer, nread);
-	}
-
-	g_free (buffer);
-
-	return g_string_free (icalstr, !success);
-}
-
 static gboolean
 ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 			   const gchar *last_sync_tag,
@@ -356,6 +367,11 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 		e_cal_meta_backend_empty_cache_sync (meta_backend, cancellable, NULL);
 		ecb_http_disconnect_sync (meta_backend, cancellable, NULL);
 		return FALSE;
+	}
+
+	if (e_soup_session_get_log_level (cbhttp->priv->session) == SOUP_LOGGER_LOG_BODY) {
+		printf ("%s\n", icalstring);
+		fflush (stdout);
 	}
 
 	/* Skip the UTF-8 marker at the beginning of the string */
