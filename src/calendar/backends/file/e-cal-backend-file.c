@@ -2292,10 +2292,17 @@ e_cal_backend_file_create_objects (ECalBackendSync *backend,
 		comp = e_cal_component_new ();
 		e_cal_component_set_icalcomponent (comp, icalcomp);
 
-		/* Set the created and last modified times on the component */
+		/* Set the created and last modified times on the component, if not there already */
 		current = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-		e_cal_component_set_created (comp, &current);
-		e_cal_component_set_last_modified (comp, &current);
+
+		if (!icalcomponent_get_first_property (icalcomp, ICAL_CREATED_PROPERTY)) {
+			/* Update both when CREATED is missing, to make sure the LAST-MODIFIED
+			   is not before CREATED */
+			e_cal_component_set_created (comp, &current);
+			e_cal_component_set_last_modified (comp, &current);
+		} else if (!icalcomponent_get_first_property (icalcomp, ICAL_LASTMODIFIED_PROPERTY)) {
+			e_cal_component_set_last_modified (comp, &current);
+		}
 
 		/* sanitize the component*/
 		sanitize_component (cbfile, comp);
@@ -3389,10 +3396,17 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 		comp = e_cal_component_new ();
 		e_cal_component_set_icalcomponent (comp, subcomp);
 
-		/* Set the created and last modified times on the component */
+		/* Set the created and last modified times on the component, if not there already */
 		current = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-		e_cal_component_set_created (comp, &current);
-		e_cal_component_set_last_modified (comp, &current);
+
+		if (!icalcomponent_get_first_property (icalcomp, ICAL_CREATED_PROPERTY)) {
+			/* Update both when CREATED is missing, to make sure the LAST-MODIFIED
+			   is not before CREATED */
+			e_cal_component_set_created (comp, &current);
+			e_cal_component_set_last_modified (comp, &current);
+		} else if (!icalcomponent_get_first_property (icalcomp, ICAL_LASTMODIFIED_PROPERTY)) {
+			e_cal_component_set_last_modified (comp, &current);
+		}
 
 		e_cal_component_get_uid (comp, &uid);
 		rid = e_cal_component_get_recurid_as_string (comp);
