@@ -1238,7 +1238,7 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 
 	cbdav = E_CAL_BACKEND_CALDAV (meta_backend);
 
-	vcalendar = e_cal_meta_backend_merge_instances (meta_backend, instances, cbdav->priv->is_icloud);
+	vcalendar = e_cal_meta_backend_merge_instances (meta_backend, instances, TRUE);
 	g_return_val_if_fail (vcalendar != NULL, FALSE);
 
 	for (subcomp = icalcomponent_get_first_component (vcalendar, ICAL_ANY_COMPONENT);
