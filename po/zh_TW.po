@@ -10,23 +10,23 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 3.3.91\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2018-07-17 12:28+0000\n"
-"PO-Revision-Date: 2018-08-22 00:00+0800\n"
-"Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
+"POT-Creation-Date: 2018-10-19 10:04+0000\n"
+"PO-Revision-Date: 2018-10-20 17:28+0800\n"
+"Last-Translator: pan93412 <pan93412@gmail.com>\n"
 "Language-Team: Chinese (traditional)\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2\n"
 "X-Project-Style: gnome\n"
 "X-Poedit-Bookmarks: -1,257,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:220
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
-msgstr ""
+msgstr "給定的 URL「%s」未參考 CardDAV 通訊錄"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:279
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:148
@@ -47,39 +47,39 @@ msgstr ""
 #: ../src/addressbook/libebook/e-book-client.c:3641
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:877
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:263
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:274
-#: ../src/calendar/backends/http/e-cal-backend-http.c:210
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:291
+#: ../src/calendar/backends/http/e-cal-backend-http.c:248
 #: ../src/calendar/libecal/e-cal.c:2334
 #: ../src/calendar/libecal/e-cal-client.c:277
-#: ../src/calendar/libecal/e-cal-client.c:3544
-#: ../src/calendar/libecal/e-cal-client.c:3717
-#: ../src/calendar/libecal/e-cal-client.c:3981
-#: ../src/calendar/libecal/e-cal-client.c:4222
-#: ../src/calendar/libecal/e-cal-client.c:4412
-#: ../src/calendar/libecal/e-cal-client.c:4605
-#: ../src/calendar/libecal/e-cal-client.c:4814
-#: ../src/calendar/libecal/e-cal-client.c:4983
-#: ../src/calendar/libecal/e-cal-client.c:5186
-#: ../src/calendar/libecal/e-cal-client.c:5336
-#: ../src/calendar/libecal/e-cal-client.c:5530
-#: ../src/calendar/libecal/e-cal-client.c:5683
-#: ../src/calendar/libecal/e-cal-client.c:5900
-#: ../src/calendar/libecal/e-cal-client.c:6054
-#: ../src/calendar/libecal/e-cal-client.c:6280
-#: ../src/calendar/libecal/e-cal-client.c:6476
-#: ../src/calendar/libecal/e-cal-client.c:6839
-#: ../src/calendar/libecal/e-cal-client.c:7061
+#: ../src/calendar/libecal/e-cal-client.c:3545
+#: ../src/calendar/libecal/e-cal-client.c:3718
+#: ../src/calendar/libecal/e-cal-client.c:3982
+#: ../src/calendar/libecal/e-cal-client.c:4223
+#: ../src/calendar/libecal/e-cal-client.c:4413
+#: ../src/calendar/libecal/e-cal-client.c:4606
+#: ../src/calendar/libecal/e-cal-client.c:4815
+#: ../src/calendar/libecal/e-cal-client.c:4984
+#: ../src/calendar/libecal/e-cal-client.c:5187
+#: ../src/calendar/libecal/e-cal-client.c:5337
+#: ../src/calendar/libecal/e-cal-client.c:5531
+#: ../src/calendar/libecal/e-cal-client.c:5684
+#: ../src/calendar/libecal/e-cal-client.c:5901
+#: ../src/calendar/libecal/e-cal-client.c:6055
+#: ../src/calendar/libecal/e-cal-client.c:6281
+#: ../src/calendar/libecal/e-cal-client.c:6477
+#: ../src/calendar/libecal/e-cal-client.c:6840
+#: ../src/calendar/libecal/e-cal-client.c:7062
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1757
 #: ../src/camel/camel-filter-driver.c:1719
 #: ../src/camel/camel-filter-driver.c:1851
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3204
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3210
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3220
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3232
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3206
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3212
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3222
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3234
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:501
 #: ../src/libedataserver/e-client.c:188
-#: ../src/libedataserver/e-soup-session.c:1136
+#: ../src/libedataserver/e-soup-session.c:1217
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
 #: ../src/libedataserverui/e-reminders-widget.c:1780
 #: ../src/tools/list-sources/list-sources.c:429
@@ -88,24 +88,22 @@ msgstr "不明的錯誤"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1036
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1192
-#, fuzzy
-#| msgid "Signon service did not return a secret"
 msgid "Server didn’t return object’s href"
-msgstr "Signon 服務尚未傳回機密"
+msgstr "伺服器未回傳物件的連結 (href)"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1038
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1194
 msgid "Server didn’t return object’s ETag"
-msgstr ""
+msgstr "伺服器未回傳物件之 ETag"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1040
 msgid "Received object is not a valid vCard"
-msgstr ""
+msgstr "接收到的物件不是有效的 vCard"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1147
 #: ../src/addressbook/backends/google/e-book-backend-google.c:1010
 msgid "Object to save is not a valid vCard"
-msgstr ""
+msgstr "要儲存的物件不是個有效的 vCard"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
@@ -123,31 +121,31 @@ msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "無法建立資源「%s」的硬連結：%s"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:524
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1260
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1272
 msgid "No UID in the contact"
 msgstr "在連絡人中沒有 UID"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:856
+#: ../src/addressbook/backends/file/e-book-backend-file.c:868
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "在加入的連絡人中發現衝突的 UID"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:994
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1006
 msgid "Loading..."
 msgstr "載入中…"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:996
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1008
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4436
 msgid "Searching..."
 msgstr "搜尋中…"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1288
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1300
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr "嘗試不使用同步修訂來修改連絡人「%s」"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1479
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1564
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1491
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1576
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3085
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7365
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7434
@@ -155,37 +153,35 @@ msgstr "嘗試不使用同步修訂來修改連絡人「%s」"
 msgid "Contact “%s” not found"
 msgstr "找不到連絡人「%s」"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1624
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1705
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1636
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1717
 #, c-format
 msgid "Query “%s” not supported"
 msgstr "查詢「%s」不支援"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1633
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1714
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1645
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1726
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr "無效的查詢「%s」"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1979
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2015
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1991
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2017
 msgid "Requested to delete an unrelated cursor"
 msgstr "已要求刪除無關的游標"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:2050
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2062
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "無法將舊資料庫「%s」重新命名為「%s」： %s"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:1066
-#, fuzzy
-#| msgid "Failed to authenticate on POP server %s: "
 msgid "Failed to create contact from returned server data"
-msgstr "無法核對 POP 伺服器 %s："
+msgstr "無法從回傳的伺服器資料建立聯絡人"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:1082
 msgid "Server returned contact without UID"
-msgstr ""
+msgstr "伺服器回傳了沒有 UID 的通訊錄"
 
 #. System Group: My Contacts
 #: ../src/addressbook/backends/google/e-book-google-utils.c:1656
@@ -782,7 +778,7 @@ msgid "Birth Date"
 msgstr "出生日期"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:291
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:936
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:954
 msgid "Anniversary"
 msgstr "週年紀念日"
 
@@ -943,8 +939,8 @@ msgstr "不能改變通訊錄屬性「%s」的數值"
 #: ../src/addressbook/libebook/e-book-client.c:1388
 #: ../src/addressbook/libebook/e-book-client.c:1619
 #: ../src/addressbook/libebook/e-book-client.c:1896
-#: ../src/calendar/libecal/e-cal-client.c:1715
-#: ../src/calendar/libecal/e-cal-client.c:1953
+#: ../src/calendar/libecal/e-cal-client.c:1716
+#: ../src/calendar/libecal/e-cal-client.c:1954
 #, c-format
 msgid "Unable to connect to “%s”: "
 msgstr "無法連線至「%s」："
@@ -1093,17 +1089,14 @@ msgid "Invalid query: %s"
 msgstr "無效的查詢：%s"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:3606
-#, fuzzy
-#| msgid "Invalid query for EbSqlCursor"
 msgid "Invalid query for a book cursor"
-msgstr "EbSqlCursor 的無效查詢"
+msgstr "無效的書籍游標查詢"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:4526
 #: ../src/libebackend/e-cache.c:759
-#, fuzzy, c-format
-#| msgid "Cannot open mailbox: %s: "
+#, c-format
 msgid "Can’t open database %s: %s"
-msgstr "不能開啟 mailbox：%s"
+msgstr "不能開啟 %s 資料庫：%s"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5129
 #: ../src/addressbook/libedata-book/e-book-cache.c:5181
@@ -1113,48 +1106,43 @@ msgstr "不能開啟 mailbox：%s"
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1342
 #: ../src/libebackend/e-cache.c:1374 ../src/libebackend/e-cache.c:2298
 #: ../src/libebackend/e-cache.c:2338
-#, fuzzy, c-format
-#| msgid "Contact “%s” not found"
+#, c-format
 msgid "Object “%s” not found"
-msgstr "找不到連絡人「%s」"
+msgstr "找不到「%s」物件"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5241
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2855
-#, fuzzy, c-format
-#| msgid "Contact “%s” not found"
+#, c-format
 msgid "Object with extra “%s” not found"
-msgstr "找不到連絡人「%s」"
+msgstr "找不到包含延伸項目的物件「%s」"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5395
-#, fuzzy
-#| msgid "At least one sort field must be specified to use an EbSdbCursor"
 msgid "At least one sort field must be specified to use a cursor"
-msgstr "必須選擇至少一項排序欄位使用 EbSdbCursor"
+msgstr "必須指定至少一個排序欄位才能使用游標"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5404
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7979
 msgid "Cannot sort by a field that is not a string type"
 msgstr "不能排序不是字串類型的欄位"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1050
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1052
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1063
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
-msgstr ""
+msgstr "UID「%s」的預載物件無效"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1058
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1060
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1071
 #, c-format
 msgid "Received object for UID “%s” is invalid"
-msgstr ""
+msgstr "從 UID「%s」接收到的物件無效"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1885
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2333
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3210
-#, fuzzy, c-format
-#| msgid "Failed to create child process “%s”: %s"
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1887
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2335
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3217
+#, c-format
 msgid "Failed to create cache “%s”:"
-msgstr "無法建構子代處理「%s」：%s"
+msgstr "無法建立「%s」快取："
 
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1951
 msgid ""
@@ -1305,7 +1293,7 @@ msgstr "其他錯誤"
 #: ../src/addressbook/libedata-book/e-data-book.c:1169
 #: ../src/calendar/libedata-cal/e-data-cal.c:1461
 msgid "Invalid query: "
-msgstr "無效的查詢："
+msgstr "無效查詢："
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1418
@@ -1340,7 +1328,7 @@ msgstr "不能加入連絡人："
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1706
 msgid "Cannot modify contacts: "
-msgstr "不能修改連絡人"
+msgstr "不能修改連絡人："
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1759
@@ -1377,24 +1365,22 @@ msgstr "字母排序索引設定了不正確地區"
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:206
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
-msgstr ""
+msgstr "給定的 URL「%s」未參考 CalDAV 行事曆"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1783
-#, fuzzy
-#| msgid "Failed to encode data"
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1790
 msgid "Failed to parse response data"
-msgstr "無法編碼資料"
+msgstr "無法解析回應資料"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:938
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:956
 msgid "Birthday"
 msgstr "生日"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:974
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:992
 #, c-format
 msgid "Birthday: %s"
 msgstr "生日：%s"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1005
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1023
 #, c-format
 msgid "Anniversary: %s"
 msgstr "紀念日：%s"
@@ -1408,24 +1394,21 @@ msgstr "無法儲存行事曆資料：URI 的格式不正確。"
 msgid "Cannot save calendar data"
 msgstr "不能儲存行事曆資料"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:141
-#, fuzzy
-#| msgid "URI not loaded"
+#: ../src/calendar/backends/http/e-cal-backend-http.c:168
 msgid "URI not set"
-msgstr "URI 未載入"
+msgstr "未設定 URI"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:209
-#, fuzzy, c-format
-#| msgid "Malformed URI: %s"
+#: ../src/calendar/backends/http/e-cal-backend-http.c:247
+#, c-format
 msgid "Malformed URI “%s”: %s"
-msgstr "格式不良的 URI：%s"
+msgstr "格式不良的 URI「%s」：%s"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:372
+#: ../src/calendar/backends/http/e-cal-backend-http.c:388
 #, c-format
 msgid "Bad file format."
 msgstr "錯誤的檔案格式。"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:381
+#: ../src/calendar/backends/http/e-cal-backend-http.c:397
 #, c-format
 msgid "Not a calendar."
 msgstr "並非行事曆。"
@@ -1723,37 +1706,37 @@ msgstr "31日"
 #, c-format
 msgid "every day forever"
 msgid_plural "every %d days forever"
-msgstr[0] ""
+msgstr[0] "永遠每 %d 天"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4946
 #, c-format
 msgid "Every day forever"
 msgid_plural "Every %d days forever"
-msgstr[0] ""
+msgstr[0] "永遠每 %d 天"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4954
 #, c-format
 msgid "every day"
 msgid_plural "every %d days"
-msgstr[0] ""
+msgstr[0] "每 %d 天"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4960
 #, c-format
 msgid "Every day"
 msgid_plural "Every %d days"
-msgstr[0] ""
+msgstr[0] "每 %d 天"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5050
 #, c-format
 msgid "every week"
 msgid_plural "every %d weeks"
-msgstr[0] ""
+msgstr[0] "每 %d 週"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5056
 #, c-format
 msgid "Every week"
 msgid_plural "Every %d weeks"
-msgstr[0] ""
+msgstr[0] "每 %d 週"
 
 #. Translators: This is used to merge set of week day names in a recurrence, which can contain any
 #. of the week day names. The string always starts with "on DAYNAME", then it can continue either
@@ -1764,554 +1747,551 @@ msgstr[0] ""
 #, c-format
 msgctxt "recur-description-dayname"
 msgid "%1$s%2$s"
-msgstr ""
+msgstr "%1$s%2$s"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5087
 msgctxt "recur-description"
 msgid "on Sunday"
-msgstr ""
+msgstr "在週日"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5088
 msgctxt "recur-description"
 msgid ", Sunday"
-msgstr ""
+msgstr "、週日"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5089
 msgctxt "recur-description"
 msgid " and Sunday"
-msgstr ""
+msgstr "和週日"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5092
 msgctxt "recur-description"
 msgid "on Monday"
-msgstr ""
+msgstr "在週一"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5093
 msgctxt "recur-description"
 msgid ", Monday"
-msgstr ""
+msgstr "、週一"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5094
 msgctxt "recur-description"
 msgid " and Monday"
-msgstr ""
+msgstr "和週一"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5097
 msgctxt "recur-description"
 msgid "on Tuesday"
-msgstr ""
+msgstr "在週二"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5098
 msgctxt "recur-description"
 msgid ", Tuesday"
-msgstr ""
+msgstr "、週二"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5099
 msgctxt "recur-description"
 msgid " and Tuesday"
-msgstr ""
+msgstr "和週二"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5102
 msgctxt "recur-description"
 msgid "on Wednesday"
-msgstr ""
+msgstr "在週三"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5103
 msgctxt "recur-description"
 msgid ", Wednesday"
-msgstr ""
+msgstr "、週三"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5104
 msgctxt "recur-description"
 msgid " and Wednesday"
-msgstr ""
+msgstr "和週三"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5107
 msgctxt "recur-description"
 msgid "on Thursday"
-msgstr ""
+msgstr "在週四"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5108
 msgctxt "recur-description"
 msgid ", Thursday"
-msgstr ""
+msgstr "、週四"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5109
 msgctxt "recur-description"
 msgid " and Thursday"
-msgstr ""
+msgstr "和週四"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5112
-#, fuzzy
-#| msgctxt "CategoryName"
-#| msgid "Holiday"
 msgctxt "recur-description"
 msgid "on Friday"
-msgstr "假日"
+msgstr "週五"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5113
 msgctxt "recur-description"
 msgid ", Friday"
-msgstr ""
+msgstr "、週五"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5114
 msgctxt "recur-description"
 msgid " and Friday"
-msgstr ""
+msgstr "和週五"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5117
 msgctxt "recur-description"
 msgid "on Saturday"
-msgstr ""
+msgstr "在週五"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5118
 msgctxt "recur-description"
 msgid ", Saturday"
-msgstr ""
+msgstr "、週六"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5119
 msgctxt "recur-description"
 msgid " and Saturday"
-msgstr ""
+msgstr "和週六"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5252
 #, c-format
 msgid "every month"
 msgid_plural "every %d months"
-msgstr[0] ""
+msgstr[0] "每 %d 個月"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5258
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
-msgstr[0] ""
+msgstr[0] "每 %d 個月"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5268
 #: ../src/calendar/libecal/e-cal-recur.c:5589
 msgctxt "recur-description"
 msgid "on the last Sunday"
-msgstr ""
+msgstr "在最後一個週日"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5271
 #: ../src/calendar/libecal/e-cal-recur.c:5439
 msgctxt "recur-description"
 msgid "on the last Monday"
-msgstr ""
+msgstr "在最後一個週一"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5274
 #: ../src/calendar/libecal/e-cal-recur.c:5464
 msgctxt "recur-description"
 msgid "on the last Tuesday"
-msgstr ""
+msgstr "在最後一個週二"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5277
 #: ../src/calendar/libecal/e-cal-recur.c:5489
 msgctxt "recur-description"
 msgid "on the last Wednesday"
-msgstr ""
+msgstr "在最後一個週三"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5280
 #: ../src/calendar/libecal/e-cal-recur.c:5514
 msgctxt "recur-description"
 msgid "on the last Thursday"
-msgstr ""
+msgstr "在最後一個週四"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5283
 #: ../src/calendar/libecal/e-cal-recur.c:5539
 msgctxt "recur-description"
 msgid "on the last Friday"
-msgstr ""
+msgstr "在最後一個週五"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5286
 #: ../src/calendar/libecal/e-cal-recur.c:5564
 msgctxt "recur-description"
 msgid "on the last Saturday"
-msgstr ""
+msgstr "在最後一個週六"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5296
 msgctxt "recur-description"
 msgid "on the 1st day"
-msgstr ""
+msgstr "在第一天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5300
 msgctxt "recur-description"
 msgid "on the 2nd day"
-msgstr ""
+msgstr "在第二天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5304
 msgctxt "recur-description"
 msgid "on the 3rd day"
-msgstr ""
+msgstr "在第三天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5308
 msgctxt "recur-description"
 msgid "on the 4th day"
-msgstr ""
+msgstr "在第四天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5312
 msgctxt "recur-description"
 msgid "on the 5th day"
-msgstr ""
+msgstr "在第五天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5316
 msgctxt "recur-description"
 msgid "on the 6th day"
-msgstr ""
+msgstr "在第六天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5320
 msgctxt "recur-description"
 msgid "on the 7th day"
-msgstr ""
+msgstr "在第七天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5324
 msgctxt "recur-description"
 msgid "on the 8th day"
-msgstr ""
+msgstr "在第八天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5328
 msgctxt "recur-description"
 msgid "on the 9th day"
-msgstr ""
+msgstr "在第九天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5332
 msgctxt "recur-description"
 msgid "on the 10th day"
-msgstr ""
+msgstr "在第十天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5336
 msgctxt "recur-description"
 msgid "on the 11th day"
-msgstr ""
+msgstr "在第十一天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5340
 msgctxt "recur-description"
 msgid "on the 12th day"
-msgstr ""
+msgstr "在第十二天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5344
 msgctxt "recur-description"
 msgid "on the 13th day"
-msgstr ""
+msgstr "在第十三天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5348
 msgctxt "recur-description"
 msgid "on the 14th day"
-msgstr ""
+msgstr "在第十四天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5352
 msgctxt "recur-description"
 msgid "on the 15th day"
-msgstr ""
+msgstr "在第十五天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5356
 msgctxt "recur-description"
 msgid "on the 16th day"
-msgstr ""
+msgstr "在第十六天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5360
 msgctxt "recur-description"
 msgid "on the 17th day"
-msgstr ""
+msgstr "在第十七天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5364
 msgctxt "recur-description"
 msgid "on the 18th day"
-msgstr ""
+msgstr "在第十八天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5368
 msgctxt "recur-description"
 msgid "on the 19th day"
-msgstr ""
+msgstr "在第十九天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5372
 msgctxt "recur-description"
 msgid "on the 20th day"
-msgstr ""
+msgstr "在第二十天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5376
 msgctxt "recur-description"
 msgid "on the 21st day"
-msgstr ""
+msgstr "在第二十一天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5380
 msgctxt "recur-description"
 msgid "on the 22nd day"
-msgstr ""
+msgstr "在第二十二天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5384
 msgctxt "recur-description"
 msgid "on the 23rd day"
-msgstr ""
+msgstr "在第二十三天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5388
 msgctxt "recur-description"
 msgid "on the 24th day"
-msgstr ""
+msgstr "在第二十四天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5392
 msgctxt "recur-description"
 msgid "on the 25th day"
-msgstr ""
+msgstr "在第二十五天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5396
 msgctxt "recur-description"
 msgid "on the 26th day"
-msgstr ""
+msgstr "在第二十六天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5400
 msgctxt "recur-description"
 msgid "on the 27th day"
-msgstr ""
+msgstr "在第二十七天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5404
 msgctxt "recur-description"
 msgid "on the 28th day"
-msgstr ""
+msgstr "在第二十八天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5408
 msgctxt "recur-description"
 msgid "on the 29th day"
-msgstr ""
+msgstr "在第二十九天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5412
 msgctxt "recur-description"
 msgid "on the 30th day"
-msgstr ""
+msgstr "在第三十天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5416
 msgctxt "recur-description"
 msgid "on the 31st day"
-msgstr ""
+msgstr "在第三十一天"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5424
 msgctxt "recur-description"
 msgid "on the first Monday"
-msgstr ""
+msgstr "在第一個週一"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5427
 msgctxt "recur-description"
 msgid "on the second Monday"
-msgstr ""
+msgstr "在第二個週一"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5430
 msgctxt "recur-description"
 msgid "on the third Monday"
-msgstr ""
+msgstr "在第三個週一"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5433
 msgctxt "recur-description"
 msgid "on the fourth Monday"
-msgstr ""
+msgstr "在第四個週一"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5436
 msgctxt "recur-description"
 msgid "on the fifth Monday"
-msgstr ""
+msgstr "在第五個週一"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5449
 msgctxt "recur-description"
 msgid "on the first Tuesday"
-msgstr ""
+msgstr "在第一個週二"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5452
 msgctxt "recur-description"
 msgid "on the second Tuesday"
-msgstr ""
+msgstr "在第二個週二"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5455
 msgctxt "recur-description"
 msgid "on the third Tuesday"
-msgstr ""
+msgstr "在第三個週二"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5458
 msgctxt "recur-description"
 msgid "on the fourth Tuesday"
-msgstr ""
+msgstr "在第四個週二"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5461
 msgctxt "recur-description"
 msgid "on the fifth Tuesday"
-msgstr ""
+msgstr "在第五個週二"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5474
 msgctxt "recur-description"
 msgid "on the first Wednesday"
-msgstr ""
+msgstr "在第一個週三"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5477
 msgctxt "recur-description"
 msgid "on the second Wednesday"
-msgstr ""
+msgstr "在第二個週三"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5480
 msgctxt "recur-description"
 msgid "on the third Wednesday"
-msgstr ""
+msgstr "在第三個週三"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5483
 msgctxt "recur-description"
 msgid "on the fourth Wednesday"
-msgstr ""
+msgstr "在第四個週三"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5486
 msgctxt "recur-description"
 msgid "on the fifth Wednesday"
-msgstr ""
+msgstr "在第五個週三"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5499
 msgctxt "recur-description"
 msgid "on the first Thursday"
-msgstr ""
+msgstr "在第一個週四"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5502
 msgctxt "recur-description"
 msgid "on the second Thursday"
-msgstr ""
+msgstr "在第二個週四"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5505
 msgctxt "recur-description"
 msgid "on the third Thursday"
-msgstr ""
+msgstr "在第三個週四"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5508
 msgctxt "recur-description"
 msgid "on the fourth Thursday"
-msgstr ""
+msgstr "在第四個週四"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5511
 msgctxt "recur-description"
 msgid "on the fifth Thursday"
-msgstr ""
+msgstr "在第五個週四"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5524
 msgctxt "recur-description"
 msgid "on the first Friday"
-msgstr ""
+msgstr "在第一個週五"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5527
 msgctxt "recur-description"
 msgid "on the second Friday"
-msgstr ""
+msgstr "在第二個週五"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5530
 msgctxt "recur-description"
 msgid "on the third Friday"
-msgstr ""
+msgstr "在第三個週五"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5533
 msgctxt "recur-description"
 msgid "on the fourth Friday"
-msgstr ""
+msgstr "在第四個週五"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5536
 msgctxt "recur-description"
 msgid "on the fifth Friday"
-msgstr ""
+msgstr "在第五個週五"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5549
 msgctxt "recur-description"
 msgid "on the first Saturday"
-msgstr ""
+msgstr "在第一個週六"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5552
 msgctxt "recur-description"
 msgid "on the second Saturday"
-msgstr ""
+msgstr "在第二個週六"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5555
 msgctxt "recur-description"
 msgid "on the third Saturday"
-msgstr ""
+msgstr "在第三個週六"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5558
 msgctxt "recur-description"
 msgid "on the fourth Saturday"
-msgstr ""
+msgstr "在第四個週六"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5561
 msgctxt "recur-description"
 msgid "on the fifth Saturday"
-msgstr ""
+msgstr "在第五個週六"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5574
 msgctxt "recur-description"
 msgid "on the first Sunday"
-msgstr ""
+msgstr "在第一個週日"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5577
 msgctxt "recur-description"
 msgid "on the second Sunday"
-msgstr ""
+msgstr "在第二個週日"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5580
 msgctxt "recur-description"
 msgid "on the third Sunday"
-msgstr ""
+msgstr "在第三個週日"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5583
 msgctxt "recur-description"
 msgid "on the fourth Sunday"
-msgstr ""
+msgstr "在第四個週日"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5586
 msgctxt "recur-description"
 msgid "on the fifth Sunday"
-msgstr ""
+msgstr "在第五個週日"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5615
 #, c-format
 msgid "every year forever"
 msgid_plural "every %d years forever"
-msgstr[0] ""
+msgstr[0] "永遠每 %d 年"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5621
 #, c-format
 msgid "Every year forever"
 msgid_plural "Every %d years forever"
-msgstr[0] ""
+msgstr[0] "永遠每 %d 年"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5629
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
-msgstr[0] ""
+msgstr[0] "每 %d 年"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5635
 #, c-format
 msgid "Every year"
 msgid_plural "Every %d years"
-msgstr[0] ""
+msgstr[0] "每 %d 年"
 
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
@@ -2320,7 +2300,7 @@ msgstr[0] ""
 #, c-format
 msgid "for one occurrence"
 msgid_plural "for %d occurrences"
-msgstr[0] ""
+msgstr[0] "對 %d 個事件"
 
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The '%s' is replaced with actual date, thus it can create something like
@@ -2330,7 +2310,7 @@ msgstr[0] ""
 #, c-format
 msgctxt "recur-description"
 msgid "until %s"
-msgstr ""
+msgstr "直到 %s"
 
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
@@ -2338,7 +2318,7 @@ msgstr ""
 #: ../src/calendar/libecal/e-cal-recur.c:5695
 msgctxt "recur-description"
 msgid "forever"
-msgstr ""
+msgstr "永遠"
 
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
 #. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
@@ -2347,7 +2327,7 @@ msgstr ""
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s %3$s"
-msgstr ""
+msgstr "%1$s %2$s %3$s"
 
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
 #. the '%2$s' is like "for 10 occurrences", constructing together one sentence:
@@ -2356,7 +2336,7 @@ msgstr ""
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s"
-msgstr ""
+msgstr "%1$s %2$s"
 
 #. Translators: This text is appended at the end of complete recur description using "%s%s" in
 #. context "recur-description"
@@ -2364,7 +2344,7 @@ msgstr ""
 #, c-format
 msgid ", with one exception"
 msgid_plural ", with %d exceptions"
-msgstr[0] ""
+msgstr[0] "、與 %d 個例外"
 
 #. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
 #. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
@@ -2373,34 +2353,32 @@ msgstr[0] ""
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s%2$s"
-msgstr ""
+msgstr "%1$s%2$s"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5746
 #: ../src/calendar/libecal/e-cal-recur.c:5769
 msgctxt "recur-description"
 msgid "The meeting recurs"
-msgstr ""
+msgstr "再次發生的會議"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5748
 #: ../src/calendar/libecal/e-cal-recur.c:5771
-#, fuzzy
-#| msgid "Untitled appointment"
 msgctxt "recur-description"
 msgid "The appointment recurs"
-msgstr "未命名的約會"
+msgstr "再次約會"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5751
 #: ../src/calendar/libecal/e-cal-recur.c:5774
 msgctxt "recur-description"
 msgid "The task recurs"
-msgstr ""
+msgstr "再次發生的作業"
 
 #. if (icalcomponent_isa (icalcomp) == ICAL_VJOURNAL_COMPONENT)
 #: ../src/calendar/libecal/e-cal-recur.c:5753
 #: ../src/calendar/libecal/e-cal-recur.c:5776
 msgctxt "recur-description"
 msgid "The memo recurs"
-msgstr ""
+msgstr "再次發生的備忘錄"
 
 #. Translators: This adds a prefix in front of the complete recurrence description.
 #. The '%1$s' is replaced with something like "The meeting recurs" and
@@ -2410,7 +2388,7 @@ msgstr ""
 #, c-format
 msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
-msgstr ""
+msgstr "%1$s %2$s"
 
 #: ../src/calendar/libecal/e-cal-util.c:746
 #: ../src/calendar/libecal/e-cal-util.c:773
@@ -2441,56 +2419,54 @@ msgstr "未定義"
 #, c-format
 msgid "%d week"
 msgid_plural "%d weeks"
-msgstr[0] ""
+msgstr[0] "%d週 "
 
 #: ../src/calendar/libecal/e-cal-util.c:822
 #: ../src/libedataserverui/e-reminders-widget.c:287
 #, c-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
+msgstr[0] "%d天"
 
 #: ../src/calendar/libecal/e-cal-util.c:831
 #: ../src/libedataserverui/e-reminders-widget.c:283
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] ""
+msgstr[0] "%d時"
 
 #: ../src/calendar/libecal/e-cal-util.c:840
 #: ../src/libedataserverui/e-reminders-widget.c:279
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
+msgstr[0] "%d分"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
 #: ../src/calendar/libecal/e-cal-util.c:845
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
-msgstr[0] ""
+msgstr[0] "%d秒"
 
-#: ../src/calendar/libecal/e-reminder-watcher.c:2522
+#: ../src/calendar/libecal/e-reminder-watcher.c:2524
 msgid "No Summary"
-msgstr ""
+msgstr "無摘要"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2538
-#, fuzzy, c-format
-#| msgid "%s (%s)"
+#: ../src/calendar/libecal/e-reminder-watcher.c:2540
+#, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
-msgstr "%s (%s)"
+msgstr "%s (%s) %s"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2543
-#, fuzzy, c-format
-#| msgid "%s (%s)"
+#: ../src/calendar/libecal/e-reminder-watcher.c:2545
+#, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -2498,11 +2474,11 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2548
+#: ../src/calendar/libecal/e-reminder-watcher.c:2550
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
-msgstr ""
+msgstr "%s %s"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:83
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1086
@@ -2613,44 +2589,36 @@ msgid "“%s” expects the second argument to be an integer"
 msgstr "「%s」的第二個引數必須為整數"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1756
-#, fuzzy, c-format
-#| msgid "Failed to create hardlink for resource “%s”: %s"
+#, c-format
 msgid "Failed to create SQLite function, error code “%d”: %s"
-msgstr "無法建立資源「%s」的硬連結：%s"
+msgstr "無法建立 SQLite 函數，錯誤代碼為「%d」：%s"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2728
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2791
-#, fuzzy, c-format
-#| msgid "Contact “%s” not found"
+#, c-format
 msgid "Object “%s”, “%s” not found"
-msgstr "找不到連絡人「%s」"
+msgstr "找不到「%s」、「%s」物件"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3531
-#, fuzzy
-#| msgid "Cannot add contact: "
 msgid "Cannot add timezone without tzid"
-msgstr "不能加入連絡人："
+msgstr "無法在沒有 tzid 的情況下增加時區"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3540
-#, fuzzy
-#| msgid "Cannot authenticate without a username"
 msgid "Cannot add timezone without component"
-msgstr "不能核對沒有使用者名稱"
+msgstr "無法在沒有功能的情況下增加時區"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3546
-#, fuzzy
-#| msgid "Cannot send message: one or more invalid recipients"
 msgid "Cannot add timezone with invalid component"
-msgstr "不能傳送郵件：一或多個無效的收件者"
+msgstr "無法使用無效的功能來增加時區"
 
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1118
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
-msgstr ""
+msgstr "UID「%s」的已接收物件未包含任何預期的內容"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4037
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4045
 msgid "attachment.dat"
-msgstr ""
+msgstr "attachment.dat"
 
 #: ../src/calendar/libedata-cal/e-data-cal.c:421
 msgid "Unsupported method"
@@ -2713,7 +2681,7 @@ msgstr "不能傳送行事曆物件："
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:2229
 msgid "Could not retrieve attachment uris: "
-msgstr "無法取得附件 URI："
+msgstr "無法接收附件 URI："
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:2275
@@ -2762,16 +2730,16 @@ msgstr "正在加密訊息"
 msgid "Decrypting message"
 msgstr "正在解密訊息"
 
-#: ../src/camel/camel-data-cache.c:203
+#: ../src/camel/camel-data-cache.c:205
 #, c-format
 msgid "Unable to create cache path"
 msgstr "無法建構快取路徑"
 
-#: ../src/camel/camel-data-cache.c:532
+#: ../src/camel/camel-data-cache.c:534
 msgid "Empty cache file"
 msgstr "清空快取檔案"
 
-#: ../src/camel/camel-data-cache.c:609
+#: ../src/camel/camel-data-cache.c:611
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
 msgstr "無法移除快取項目： %s： %s"
@@ -2786,10 +2754,9 @@ msgstr "無法將「%s」重新命名成 %s：%s"
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-filter-driver.c:262
-#, fuzzy, c-format
-#| msgid "Scanning for changed messages in “%s : %s”"
+#, c-format
 msgid "Transferring filtered messages in “%s : %s”"
-msgstr "掃描「%s：%s」中變更過的郵件"
+msgstr "正在傳遞「%s : %s」中已篩選過的訊息"
 
 #: ../src/camel/camel-filter-driver.c:1127
 #: ../src/camel/camel-filter-search.c:930
@@ -2840,10 +2807,9 @@ msgstr "在第 %d 封郵件發生錯誤"
 
 #: ../src/camel/camel-filter-driver.c:1719
 #: ../src/camel/camel-filter-driver.c:1851
-#, fuzzy, c-format
-#| msgid "Failed on message %d"
+#, c-format
 msgid "Failed to transfer messages: %s"
-msgstr "在第 %d 封郵件發生錯誤"
+msgstr "無法傳遞郵件：%s"
 
 #: ../src/camel/camel-filter-driver.c:1729
 #: ../src/camel/camel-filter-driver.c:1865
@@ -2869,7 +2835,7 @@ msgstr "在第 %d / %d 封郵件失敗"
 #: ../src/camel/camel-filter-driver.c:2057
 #, c-format
 msgid "Execution of filter “%s” failed: "
-msgstr "過濾器「%s」的執行失敗："
+msgstr "執行過濾器「%s」失敗："
 
 #: ../src/camel/camel-filter-driver.c:2047
 #, c-format
@@ -2958,7 +2924,7 @@ msgstr "過濾資料夾「%s：%s」"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:2987
+#: ../src/camel/camel-folder.c:2990
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "刪除資料夾「%s：%s」"
@@ -2966,7 +2932,7 @@ msgstr "刪除資料夾「%s：%s」"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3122
+#: ../src/camel/camel-folder.c:3125
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "接收「%2$s：%3$s」中的郵件「%1$s」"
@@ -2974,7 +2940,7 @@ msgstr "接收「%2$s：%3$s」中的郵件「%1$s」"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3347
+#: ../src/camel/camel-folder.c:3350
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "取得「%s：%s」的用量限額資訊"
@@ -2982,7 +2948,7 @@ msgstr "取得「%s：%s」的用量限額資訊"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3647
+#: ../src/camel/camel-folder.c:3650
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "重新整理資料夾「%s：%s」"
@@ -3054,7 +3020,7 @@ msgid "Output from %s:"
 msgstr "輸出自 %s："
 
 #: ../src/camel/camel-gpg-context.c:916 ../src/camel/camel-gpg-context.c:921
-#: ../src/camel/camel-gpg-context.c:1634
+#: ../src/camel/camel-gpg-context.c:1637
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "執行 gpg 失敗： %s"
@@ -3148,17 +3114,17 @@ msgstr ""
 "無法加密：指定了無效的收件者 %s。常見的問題是 %s 沒有匯入這個收件者的公開金"
 "鑰。"
 
-#: ../src/camel/camel-gpg-context.c:2145 ../src/camel/camel-smime-context.c:873
+#: ../src/camel/camel-gpg-context.c:2148 ../src/camel/camel-smime-context.c:873
 msgid "Could not generate signing data: "
 msgstr "無法產生簽章資料："
 
-#: ../src/camel/camel-gpg-context.c:2196 ../src/camel/camel-gpg-context.c:2435
-#: ../src/camel/camel-gpg-context.c:2574 ../src/camel/camel-gpg-context.c:2751
+#: ../src/camel/camel-gpg-context.c:2199 ../src/camel/camel-gpg-context.c:2438
+#: ../src/camel/camel-gpg-context.c:2577 ../src/camel/camel-gpg-context.c:2754
 msgid "Failed to execute gpg."
 msgstr "執行 gpg 失敗。"
 
-#: ../src/camel/camel-gpg-context.c:2303 ../src/camel/camel-gpg-context.c:2311
-#: ../src/camel/camel-gpg-context.c:2319 ../src/camel/camel-gpg-context.c:2339
+#: ../src/camel/camel-gpg-context.c:2306 ../src/camel/camel-gpg-context.c:2314
+#: ../src/camel/camel-gpg-context.c:2322 ../src/camel/camel-gpg-context.c:2342
 #: ../src/camel/camel-smime-context.c:1002
 #: ../src/camel/camel-smime-context.c:1016
 #: ../src/camel/camel-smime-context.c:1025
@@ -3166,40 +3132,40 @@ msgstr "執行 gpg 失敗。"
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "不能驗證此郵件的簽章：錯誤的訊息格式"
 
-#: ../src/camel/camel-gpg-context.c:2385
+#: ../src/camel/camel-gpg-context.c:2388
 msgid "Cannot verify message signature: "
 msgstr "不能驗證此郵件的簽章："
 
-#: ../src/camel/camel-gpg-context.c:2533
+#: ../src/camel/camel-gpg-context.c:2536
 msgid "Could not generate encrypting data: "
 msgstr "無法產生加密資料："
 
-#: ../src/camel/camel-gpg-context.c:2614
+#: ../src/camel/camel-gpg-context.c:2617
 msgid "This is a digitally encrypted message part"
 msgstr "這是數位化加密訊息部份"
 
-#: ../src/camel/camel-gpg-context.c:2674 ../src/camel/camel-gpg-context.c:2683
-#: ../src/camel/camel-gpg-context.c:2706
+#: ../src/camel/camel-gpg-context.c:2677 ../src/camel/camel-gpg-context.c:2686
+#: ../src/camel/camel-gpg-context.c:2709
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "不能解密此郵件：錯誤的訊息格式"
 
-#: ../src/camel/camel-gpg-context.c:2694
+#: ../src/camel/camel-gpg-context.c:2697
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "解密 MIME 組件時失敗：通訊協定錯誤"
 
-#: ../src/camel/camel-gpg-context.c:2766
+#: ../src/camel/camel-gpg-context.c:2769
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "解密 MIME 組件時失敗：找不到密鑰"
 
-#: ../src/camel/camel-gpg-context.c:2803
+#: ../src/camel/camel-gpg-context.c:2806
 #, c-format
 msgid "GPG blob contains unencrypted text: %s"
-msgstr ""
+msgstr "GPG blob 包含未加密文字：%s"
 
-#: ../src/camel/camel-gpg-context.c:2805
+#: ../src/camel/camel-gpg-context.c:2808
 #: ../src/camel/camel-smime-context.c:1545
 msgid "Encrypted content"
 msgstr "加密內容"
@@ -3341,7 +3307,7 @@ msgstr "查詢主機「%s」失敗：%s"
 #: ../src/camel/camel-network-service.c:1127
 #, c-format
 msgid "Checking reach-ability of account “%s”"
-msgstr ""
+msgstr "檢查帳號「%s」的到達能力"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -3354,7 +3320,7 @@ msgstr "正在下載「%s：%s」的新郵件用於離線模式"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:221
+#: ../src/camel/camel-offline-folder.c:223
 #, c-format
 msgid "Storing changes in folder “%s : %s”"
 msgstr "正在儲存資料夾「%s：%s」的變更"
@@ -3362,7 +3328,7 @@ msgstr "正在儲存資料夾「%s：%s」的變更"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:311
+#: ../src/camel/camel-offline-folder.c:316
 #, c-format
 msgid "Checking download of new messages for offline in “%s : %s”"
 msgstr "正在檢查「%s：%s」的新郵件用於離線模式"
@@ -3370,7 +3336,7 @@ msgstr "正在檢查「%s：%s」的新郵件用於離線模式"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:428
+#: ../src/camel/camel-offline-folder.c:433
 #, c-format
 msgid "Syncing messages in folder “%s : %s” to disk"
 msgstr "正在將資料夾「%s：%s」中的郵件同步到磁碟"
@@ -3380,21 +3346,19 @@ msgstr "正在將資料夾「%s：%s」中的郵件同步到磁碟"
 #. The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:491
-#, fuzzy, c-format
-#| msgid "Syncing messages in folder “%s : %s” to disk"
+#: ../src/camel/camel-offline-folder.c:527
+#, c-format
 msgid "Syncing message %d of %d in folder “%s : %s” to disk"
-msgstr "正在將資料夾「%s：%s」中的郵件同步到磁碟"
+msgstr "正在從「%3$s : %4$s」資料夾中同步第 %1$d/%2$d 則訊息至硬碟"
 
-#: ../src/camel/camel-offline-folder.c:542
+#: ../src/camel/camel-offline-folder.c:592
 msgid "Copy folder content locally for _offline operation"
 msgstr "複製資料夾內容至本地用於離線作業(_O)"
 
-#: ../src/camel/camel-offline-store.c:268
-#, fuzzy, c-format
-#| msgid "Syncing messages in folder “%s : %s” to disk"
+#: ../src/camel/camel-offline-store.c:302
+#, c-format
 msgid "Syncing messages in account “%s” to disk"
-msgstr "正在將資料夾「%s：%s」中的郵件同步到磁碟"
+msgstr "正在同步「%s」帳號中的訊息到硬碟中"
 
 #: ../src/camel/camel-provider.c:89
 msgid "Virtual folder email provider"
@@ -3535,8 +3499,7 @@ msgstr "(不明的 GSSAPI 機制代碼：%x)"
 #. Translators: the first '%s' is replaced with a generic error message,
 #. the second '%s' is replaced with additional error information.
 #: ../src/camel/camel-sasl-gssapi.c:172 ../src/camel/camel-sasl-gssapi.c:244
-#, fuzzy, c-format
-#| msgid "%s (%s)"
+#, c-format
 msgctxt "gssapi_error"
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -3600,10 +3563,8 @@ msgid "Bad authentication response from server."
 msgstr "來自伺服器的不良許可回應。"
 
 #: ../src/camel/camel-sasl-gssapi.c:286
-#, fuzzy
-#| msgid "Could not parse response"
 msgid "Could not get session bus:"
-msgstr "無法解析回應"
+msgstr "無法取得工作階段匯流排："
 
 #: ../src/camel/camel-sasl-gssapi.c:320
 #, c-format
@@ -3612,11 +3573,13 @@ msgid ""
 "line with “kinit” or open “Online Accounts” in “Settings” and add the "
 "Kerberos account there. Reported error was: %s"
 msgstr ""
+"無法請求 Kerberos 權證。若要手動取得權證，可以在指令列上使用「kinit」取得、或"
+"是開啟《設定》中的《線上帳號》並在該處增加 Kerberos 帳號。回報的錯誤爲：%s"
 
 #: ../src/camel/camel-sasl-gssapi.c:518
 #, c-format
 msgid "Unsupported security layer."
-msgstr "不支援的類型"
+msgstr "不支援的安全層。"
 
 #: ../src/camel/camel-sasl-login.c:35
 msgid "Login"
@@ -3651,7 +3614,7 @@ msgstr "POP 先於 SMTP"
 
 #: ../src/camel/camel-sasl-popb4smtp.c:43
 msgid "This option will authorise a POP connection before attempting SMTP"
-msgstr "這個選項將會在進行 SMTP 之前允許 POP連線"
+msgstr "這個選項將會在進行 SMTP 之前允許 POP 連線"
 
 #: ../src/camel/camel-sasl-popb4smtp.c:81
 msgid "POP Source UID"
@@ -3670,31 +3633,31 @@ msgstr "以 %s 服務嘗試 POP 先於 SMTP 核對"
 
 #: ../src/camel/camel-sasl-xoauth2.c:26
 msgid "OAuth2"
-msgstr ""
+msgstr "OAuth2"
 
 #: ../src/camel/camel-sasl-xoauth2.c:27
 msgid "This option will use an OAuth 2.0 access token to connect to the server"
-msgstr ""
+msgstr "這個選項將會使用 OAuth 2.0 存取權杖來連線伺服器"
 
 #: ../src/camel/camel-sasl-xoauth2-google.c:23
 msgid "OAuth2 (Google)"
-msgstr ""
+msgstr "OAuth2 (Google)"
 
 #: ../src/camel/camel-sasl-xoauth2-google.c:24
 msgid ""
 "This option will use an OAuth 2.0 access token to connect to the Google "
 "server"
-msgstr ""
+msgstr "這個選項將會使用 OAuth 2.0 存取權杖來連線 Google 伺服器"
 
 #: ../src/camel/camel-sasl-xoauth2-outlook.c:23
 msgid "OAuth2 (Outlook)"
-msgstr ""
+msgstr "OAuth2 (Outlook)"
 
 #: ../src/camel/camel-sasl-xoauth2-outlook.c:24
 msgid ""
 "This option will use an OAuth 2.0 access token to connect to the Outlook.com "
 "server"
-msgstr ""
+msgstr "這個選項將會使用 OAuth 2.0 存取權杖來連線 Outlook.com 伺服器"
 
 #: ../src/camel/camel-search-private.c:114
 #, c-format
@@ -3707,7 +3670,7 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "通訊協定「%s」註冊了無效的 GType"
 
 #: ../src/camel/camel-session.c:512
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3153
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3155
 #: ../src/camel/providers/pop3/camel-pop3-store.c:306
 #: ../src/camel/providers/pop3/camel-pop3-store.c:790
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:670
@@ -3882,10 +3845,9 @@ msgid "Decoder failed"
 msgstr "解碼器失敗"
 
 #: ../src/camel/camel-smime-context.c:1296
-#, fuzzy, c-format
-#| msgid "Cannot find certificate for “%s”"
+#, c-format
 msgid "No valid or appropriate certificate for “%s” was found"
-msgstr "找不到「%s」的憑證"
+msgstr "無效或找不到適合給「%s」的憑證"
 
 #: ../src/camel/camel-smime-context.c:1336
 msgid "Cannot find common bulk encryption algorithm"
@@ -4017,7 +3979,7 @@ msgstr "無法解析 URL「%s」"
 msgid "Updating folder “%s”"
 msgstr "更新資料夾「%s」"
 
-#: ../src/camel/camel-vee-folder.c:965 ../src/camel/camel-vee-folder.c:1082
+#: ../src/camel/camel-vee-folder.c:965 ../src/camel/camel-vee-folder.c:1101
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "不能複製或移動郵件到虛擬資料夾中"
@@ -4031,12 +3993,17 @@ msgstr "不能複製或移動郵件到虛擬資料夾中"
 msgid "No such message %s in “%s : %s”"
 msgstr "沒有 %s 這類郵件在「%s：%s」中"
 
-#: ../src/camel/camel-vee-folder.c:1058
+#: ../src/camel/camel-vee-folder.c:1077
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "儲存「%s」發生錯誤："
 
-#: ../src/camel/camel-vee-folder.c:1308
+#: ../src/camel/camel-vee-folder.c:1268
+#, c-format
+msgid "Updating search folder “%s”"
+msgstr "正在更新搜尋資料夾「%s」"
+
+#: ../src/camel/camel-vee-folder.c:1328
 msgid "Automatically _update on change in source folders"
 msgstr "來源資料夾中變更時自動更新(_U)"
 
@@ -4060,7 +4027,7 @@ msgstr "不能重新命名資料夾： %s ：沒有這個資料夾"
 msgid "Enable _Unmatched folder"
 msgstr "啟用未符合資料夾(_U)"
 
-#: ../src/camel/camel-vee-store.c:1109
+#: ../src/camel/camel-vee-store.c:1110
 msgid "Updating Unmatched search folder"
 msgstr "更新未符合搜尋資料夾"
 
@@ -4078,11 +4045,11 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "您必須於線上工作才能完成此操作 (%s)"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:993
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3292
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3294
 #: ../src/camel/providers/nntp/camel-nntp-store.c:351
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1346
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2158
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2306
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2313
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:450
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:633
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:922
@@ -4112,10 +4079,8 @@ msgid "Unable to move deleted messages"
 msgstr "無法移動刪除的郵件"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1818
-#, fuzzy
-#| msgid "Unable to move junk messages"
 msgid "Unable to move messages to Inbox"
-msgstr "無法移動垃圾郵件"
+msgstr "無法移動訊息至收件夾"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -4130,26 +4095,25 @@ msgstr "資料夾「%s：%s」不支援限額資訊"
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1025
-#, fuzzy, c-format
-#| msgid "Storing changes in folder “%s : %s”"
+#, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
-msgstr "正在儲存資料夾「%s：%s」的變更"
+msgstr "正在於「%s : %s」資料夾移除過時的快取檔案"
 
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1119
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:841
 msgid "Apply message _filters to this folder"
 msgstr "將郵件過濾條件套用到這個資料夾(_F)"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1130
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1131
 msgid "Always check for _new mail in this folder"
 msgstr "永遠檢查這個資料夾中是否有新郵件(_N)"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1243
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1246
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "無法建立 %s 的資料夾摘要"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1255
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1258
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "無法建立 %s 的快取："
@@ -4157,7 +4121,7 @@ msgstr "無法建立 %s 的快取："
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1460
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1463
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "資料夾「%s：%s」沒有 IMAP 郵箱可用"
@@ -4210,7 +4174,7 @@ msgstr "覆蓋伺服器提供之資料夾的命名空間(_V)"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:59
 msgid "Namespace:"
-msgstr "命名空間"
+msgstr "命名空間："
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:62
 #: ../src/camel/providers/local/camel-local-provider.c:37
@@ -4257,8 +4221,6 @@ msgid "IMAP over TLS"
 msgstr "IMAP 透過 TLS"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:87
-#, fuzzy
-#| msgid "IMAP+"
 msgid "IMAP"
 msgstr "IMAP"
 
@@ -4266,207 +4228,211 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "用作讀取及儲存郵件於 IMAP 伺服器。"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:1139
+#: ../src/camel/providers/imapx/camel-imapx-server.c:1141
 msgid "Error writing to cache stream"
 msgstr "寫入快取串流時發生錯誤"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2968
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3056
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3325
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2970
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3058
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3327
 msgid "Failed to get capabilities"
 msgstr "無法取得功能"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2987
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2989
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "以安全模式連線到 IMAP 伺服器 %s 時失敗了： %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2988
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2990
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:279
 msgid "STARTTLS not supported"
 msgstr "不支援 STARTTLS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2997
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2999
 msgid "Failed to issue STARTTLS"
 msgstr "無法發出 STARTTLS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3045
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3047
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "以安全模式連線到 IMAP 伺服器 %s 時失敗了： "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3140
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3142
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP 伺服器 %s 不支援 %s 核對"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3171
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3173
 #: ../src/camel/providers/nntp/camel-nntp-store.c:457
 #: ../src/camel/providers/nntp/camel-nntp-store.c:599
 msgid "Cannot authenticate without a username"
 msgstr "不能核對沒有使用者名稱"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3180
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3182
 #: ../src/camel/providers/nntp/camel-nntp-store.c:608
 #: ../src/camel/providers/pop3/camel-pop3-store.c:690
 #: ../src/camel/providers/pop3/camel-pop3-store.c:728
 msgid "Authentication password not available"
 msgstr "沒有核對的密碼"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3188
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3190
 msgid "Failed to authenticate"
 msgstr "無法核對"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3347
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3354
+msgid "Failed to issue ENABLE UTF8=ACCEPT"
+msgstr "無法發出 ENABLE UTF8=ACCEPT"
+
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3373
 msgid "Failed to issue NAMESPACE"
 msgstr "無法發出 NAMESPACE"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3365
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3391
 msgid "Failed to enable QResync"
 msgstr "無法啟用 QResync"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3397
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3428
 msgid "Failed to issue NOTIFY"
 msgstr "無法發出 NOTIFY"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3876
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3909
 msgid "Failed to select mailbox"
 msgstr "無法選擇信箱"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3979
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4012
 msgid "Cannot issue command, no stream available"
 msgstr "不能發出指令，沒有可用的串流"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4245
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4278
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "無法取得郵件 ID 為 %s 的郵件： %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4246
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4279
 msgid "No such message available."
 msgstr "沒有這個郵件。"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4294
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4319
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4358
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4327
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4352
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4391
 msgid "Error fetching message"
 msgstr "取回郵件時發生錯誤"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4336
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5099
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4369
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5132
 msgid "Error performing NOOP"
 msgstr "進行 NOOP 時發生錯誤"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4351
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4384
 msgid "Failed to close the tmp stream"
 msgstr "無法關閉 tmp 的串流"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4382
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4415
 msgid "Failed to copy the tmp file"
 msgstr "無法複製 tmp 檔案"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4620
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4653
 msgid "Error moving messages"
 msgstr "移動郵件時發生錯誤"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4620
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4653
 msgid "Error copying messages"
 msgstr "複製郵件時發生錯誤"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4892
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4913
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4925
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4946
 msgid "Cannot create spool file: "
 msgstr "不能建立排程器檔案："
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4999
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5032
 msgid "Error appending message"
 msgstr "附加郵件時發生錯誤"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5252
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5285
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "掃描「%s：%s」中變更過的郵件"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5256
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5289
 msgid "Error scanning changes"
 msgstr "掃描變更時發生錯誤"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5277
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5310
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "正取得「%s：%s」中新郵件的摘要資訊"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5295
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5338
 msgid "Error fetching message info"
 msgstr "取回郵件資訊時發生錯誤"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5401
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5458
 msgid "Error running STATUS"
 msgstr "執行STATUS 時發生錯誤"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5947
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5977
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6012
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6004
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6034
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6069
 msgid "Error syncing changes"
 msgstr "同步變更時發生錯誤"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6150
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6207
 msgid "Error expunging message"
 msgstr "清空郵件時發生錯誤"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6228
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6285
 msgid "Error fetching folders"
 msgstr "取回資料夾時發生錯誤"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6236
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6293
 msgid "Error fetching subscribed folders"
 msgstr "取回已訂閱的資料夾的錯誤"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6291
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6348
 msgid "Error creating folder"
-msgstr "建立資料夾時發生錯誤。"
+msgstr "建立資料夾時發生錯誤"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6347
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6404
 msgid "Error deleting folder"
 msgstr "刪除資料夾時發生錯誤"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6393
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6450
 msgid "Error renaming folder"
 msgstr "重新命名資料夾時發生錯誤"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6425
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6482
 msgid "Error subscribing to folder"
 msgstr "訂閱到資料夾時發生錯誤"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6461
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6518
 msgid "Error unsubscribing from folder"
 msgstr "取消訂閱資料夾發生錯誤"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6501
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6558
 msgid "IMAP server does not support quotas"
 msgstr "IMAP 伺服器不支援限額"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6513
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6570
 msgid "Error retrieving quota information"
 msgstr "取得用量限額資訊時發生錯誤"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6576
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6635
 msgid "Search failed"
 msgstr "搜尋失敗"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6694
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6753
 msgid "Error running IDLE"
 msgstr "執行 IDLE 時發生錯誤"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../src/camel/providers/imapx/camel-imapx-store.c:354
+#: ../src/camel/providers/imapx/camel-imapx-store.c:356
 #: ../src/camel/providers/local/camel-maildir-folder.c:476
 #: ../src/camel/providers/local/camel-maildir-store.c:345
 #: ../src/camel/providers/local/camel-maildir-store.c:824
@@ -4476,47 +4442,47 @@ msgstr "執行 IDLE 時發生錯誤"
 msgid "Inbox"
 msgstr "收件匣"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:957
+#: ../src/camel/providers/imapx/camel-imapx-store.c:959
 #, c-format
 msgid "IMAP server %s"
 msgstr "IMAP 伺服器 %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:960
+#: ../src/camel/providers/imapx/camel-imapx-store.c:962
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "%s 的 IMAP 服務於 %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1051
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1053
 msgid "No IMAPx connection object provided"
 msgstr "沒有提供 IMAPx 連線物件"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1068
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1070
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:95
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:80
 msgid "Password"
 msgstr "密碼"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1070
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1072
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "這個選項將會使用簡易的密碼連線至 IMAP 伺服器。"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1157
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1159
 #, c-format
 msgid "No such folder %s"
 msgstr "沒有這個資料夾 %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1622
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1624
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
 msgstr "資料夾路徑「%s」沒有 IMAP 命名空間可用"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1890
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2124
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1892
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2126
 #, c-format
 msgid "Retrieving folder list for “%s”"
 msgstr "取得「%s」的資料夾列表"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2341
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2343
 #, c-format
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "資料夾名稱「%s」無效，因為它包括字元「%c」"
@@ -4526,97 +4492,97 @@ msgstr "資料夾名稱「%s」無效，因為它包括字元「%c」"
 #. version as well. It's always the folder name (eventually path) as provided by the server,
 #. when returned in given localization. it can be checked semi-easily in the case of
 #. the GMail variants, by changing the GMail interface language in the GMail Preferences.
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2718
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2738
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
 msgstr "[Gmail]/草稿"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2719
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2739
 msgctxt "IMAPDefaults"
 msgid "Drafts"
 msgstr "草稿"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2720
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2740
 msgctxt "IMAPDefaults"
 msgid "Draft"
 msgstr "草稿"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2723
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2743
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "範本"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2726
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2746
 msgctxt "IMAPDefaults"
 msgid "Archive"
 msgstr "封存"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2729
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2749
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[Gmail]/發送郵件"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2730
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2750
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "已傳送"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2731
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2751
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "傳送項目"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2732
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2752
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "傳送郵件"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2735
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2755
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "[Gmail]/垃圾郵件"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2736
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2756
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "垃圾郵件"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2737
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2757
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "垃圾郵件"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2738
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2758
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "垃圾郵件"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2739
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2759
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "垃圾郵件"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2740
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2760
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "大宗郵件"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2743
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2763
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr "[Gmail]/垃圾桶"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2744
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2764
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "垃圾桶"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2745
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2765
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "已删除的項目"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2746
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2766
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "刪除郵件"
@@ -4661,7 +4627,7 @@ msgstr "索引郵件內文資料(_I)"
 #. Translators: The first %s is replaced with a message ID,
 #. * the second %s is replaced with the folder path,
 #. * the third %s is replaced with a detailed error string
-#: ../src/camel/providers/local/camel-local-folder.c:749
+#: ../src/camel/providers/local/camel-local-folder.c:750
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -4783,7 +4749,7 @@ msgstr "不能刪除資料夾中繼檔案「%s」：%s"
 #: ../src/camel/providers/local/camel-local-store.c:585
 #, c-format
 msgid "Could not rename “%s”: %s"
-msgstr "無法重新命名「%s」：%s "
+msgstr "無法重新命名「%s」：%s"
 
 #: ../src/camel/providers/local/camel-maildir-folder.c:107
 #: ../src/camel/providers/local/camel-maildir-folder.c:345
@@ -4896,12 +4862,12 @@ msgstr "儲存資料夾"
 #: ../src/camel/providers/local/camel-mbox-folder.c:205
 #, c-format
 msgid "Cannot open mailbox: %s: "
-msgstr "不能開啟 mailbox：%s"
+msgstr "不能開啟 mailbox：%s："
 
 #: ../src/camel/providers/local/camel-mbox-folder.c:266
 #, c-format
 msgid "Cannot append message to mbox file: %s: "
-msgstr "不能將郵件儲存到 mbox 檔案：%s"
+msgstr "不能將郵件儲存到 mbox 檔案：%s："
 
 #: ../src/camel/providers/local/camel-mbox-folder.c:399
 msgid "The folder appears to be irrecoverably corrupted."
@@ -4917,7 +4883,7 @@ msgstr "不能建構資料夾鎖定 %s ： %s"
 #: ../src/camel/providers/local/camel-mbox-store.c:578
 #, c-format
 msgid "Cannot create a folder by this name."
-msgstr "無法建構以此為名的資料夾"
+msgstr "無法建立以此為名的資料夾。"
 
 #: ../src/camel/providers/local/camel-mbox-store.c:431
 #, c-format
@@ -5012,7 +4978,7 @@ msgstr "無法關閉暫存資料夾： %s"
 #: ../src/camel/providers/local/camel-mbox-summary.c:662
 #, c-format
 msgid "Could not rename folder: %s"
-msgstr "無法重新命名資料夾：%s "
+msgstr "無法重新命名資料夾：%s"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:762
 #: ../src/camel/providers/local/camel-mbox-summary.c:1033
@@ -5079,7 +5045,7 @@ msgstr "排程器「%s」不能被開啟：%s"
 #: ../src/camel/providers/local/camel-spool-store.c:107
 #, c-format
 msgid "Spool “%s” is not a regular file or directory"
-msgstr "排程器「%s」不是一般檔案或目錄。"
+msgstr "排程器「%s」不是一般檔案或目錄"
 
 #: ../src/camel/providers/local/camel-spool-store.c:422
 #, c-format
@@ -5224,7 +5190,7 @@ msgstr "在訂閱對話方塊，顯示相關資料夾名稱(_D)"
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:51
 #, c-format
 msgid "Download only up to %s latest messages"
-msgstr ""
+msgstr "只下載最多 %s 個最新訊息"
 
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:57
 msgid "Default NNTP port"
@@ -5337,11 +5303,12 @@ msgid "NNTP Command failed: "
 msgstr "NNTP 指令失敗："
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2215
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2250
 #, c-format
 msgid "Not connected."
 msgstr "未連線。"
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2320
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2327
 #, c-format
 msgid "No such folder: %s"
 msgstr "沒有這個資料夾： %s"
@@ -5368,16 +5335,14 @@ msgid "Operation failed: %s"
 msgstr "作業失敗： %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:457
-#, fuzzy, c-format
-#| msgid "%s: Scanning new messages"
+#, c-format
 msgid "%s: Scanning existing messages"
-msgstr "%s：掃描新郵件"
+msgstr "%s：正在掃描存在郵件"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:470
-#, fuzzy, c-format
-#| msgid "Unexpected server response from xover: %s"
+#, c-format
 msgid "Unexpected server response from listgroup: %s"
-msgstr "xover 傳來意外的伺服器回應：%s"
+msgstr "從 listgroup 取得非預期的伺服器回應：%s"
 
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:358
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:442
@@ -5658,7 +5623,7 @@ msgstr "使用 SMTP 連線到遠端 mailhub 來傳送郵件。"
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:235
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:242
 msgid "Welcome response error: "
-msgstr "迎接的回應錯誤："
+msgstr "「歡迎」回應錯誤："
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:278
 #, c-format
@@ -5768,7 +5733,7 @@ msgstr "此服務仍未可用，傳輸通道關閉"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1092
 msgid "Requested mail action okay, completed"
-msgstr " 所要求的郵件動作已成功完成"
+msgstr "所要求的郵件動作已成功完成"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1094
 msgid "User not local; will forward to <forward-path>"
@@ -5906,71 +5871,74 @@ msgstr ""
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:7
 msgid "Past reminders for EReminderWatcher"
-msgstr ""
+msgstr "EReminderWatcher 的過去提醒器"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:8
 msgid "Snoozed reminders for EReminderWatcher"
-msgstr ""
+msgstr "EReminderWatcher 的延後提醒器"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:9
 msgid "Reminder programs"
-msgstr ""
+msgstr "提醒程式"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:10
 msgid "Programs that are allowed to be run by reminders"
-msgstr ""
+msgstr "允許由提醒器執行的程式"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:11
 msgid "Show reminders in notification tray only"
-msgstr ""
+msgstr "只在通知區域顯示提醒器"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:12
 msgid ""
 "When set to true, the reminders are shown only in the notification tray, "
 "otherwise the reminders dialog is shown immediately"
 msgstr ""
+"當設定為 true，提醒器將只會在通知區域顯示，否則提醒器對話框將會立即顯示"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:13
 msgid "Show reminder notification dialog always on top"
-msgstr ""
+msgstr "永遠在最上層顯示提醒器通知對話框"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:14
 msgid ""
 "Whether or not to show reminder notification dialog always on top. Note this "
 "works only as a hint for the window manager, which may or may not obey it."
 msgstr ""
+"是否永遠在最上層顯示提醒器通知對話框。注意這只會提示視窗管理器這麼做，而視窗"
+"管理器可能或不會遵守這提示。"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:15
 msgid "X position of the reminder notification dialog"
-msgstr ""
+msgstr "提醒器通知對話框的 X 座標"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:16
 msgid "Y position of the reminder notification dialog"
-msgstr ""
+msgstr "提醒器通知對話框的 Y 座標"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:17
 msgid "Width of the reminder notification dialog"
-msgstr ""
+msgstr "提醒器通知對話框的寬度"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:18
 msgid "Height of the reminder notification dialog"
-msgstr ""
+msgstr "提醒器通知對話框的高度"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
 msgid "Show reminder notification for completed tasks"
-msgstr ""
+msgstr "顯示完成作業的提醒器通知"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
 msgid "Show reminder notification for past events"
-msgstr ""
+msgstr "顯示過去活動的提醒器通知"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
 msgid "The last used snooze time, in minutes"
-msgstr ""
+msgstr "上次使用的貪睡時間 (分)"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
 msgid "User-defined snooze times, in minutes"
-msgstr ""
+msgstr "使用者定義的貪睡時間 (分)"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:1
 msgid "Whether the migration of old setting was already done"
@@ -6040,7 +6008,7 @@ msgstr ""
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
 msgid "A list of hints for OAuth2 services"
-msgstr ""
+msgstr "OAuth2 服務的提示列表"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
 msgid ""
@@ -6059,6 +6027,16 @@ msgid ""
 "“Company” OAuth2 authentication for any “CalDAV” source, which reads data "
 "from “caldav.company.com” host"
 msgstr ""
+"使用者能展開 OAuth2 服務支援通訊協議與主機名稱的列表，除了寫死的項目，每一行"
+"都可以是這種格式：servicename[-protocol]:hostname1,hostname2,... 其中的 "
+"servicename 是實際的服務名稱；-protocol 是選用的，若填寫則服務將只能用在 "
+"protocol 和 hostnameX 都符合的情況下；hostnameX 則是要比較的實際主機名稱，不"
+"區分大小寫。每一行都能包含多個值，以逗號分割。能對一個 OAuth2 服務提供多行。"
+"注意用來請求與重新整理 token 的實際 URL 不能於此修改，主機名稱允許其他可以使"
+"用 OAuth2 的主機。範例：Company:mail.company.com — 啟用「Company」對「mail."
+"company.com」主機的 OAuth2 授權 Company-CalDAV:caldav.company.com — 啟用"
+"「Company」對所有從「caldav.company.com」讀取資料的「CalDAV」來源的 OAuth2 授"
+"權"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
@@ -6123,23 +6101,20 @@ msgstr "(已廢棄) 自動代理伺服器設定網址"
 
 #: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:1
 msgid "Evolution Alarm Notify"
-msgstr ""
+msgstr "Evolution 響鈴通知"
 
 #: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:2
-#, fuzzy
-#| msgid "Calendar authentication request"
 msgid "Calendar event notifications"
-msgstr "行事曆核對要求"
+msgstr "行事曆活動通知"
 
 #: ../src/libebackend/e-cache.c:754
 msgid "Out of memory"
-msgstr ""
+msgstr "記憶體溢出"
 
 #: ../src/libebackend/e-cache.c:946
-#, fuzzy, c-format
-#| msgid "Failed to make directory %s: %s"
+#, c-format
 msgid "Can not make parent directory: %s"
-msgstr "無法建立目錄「%s」：%s"
+msgstr "無法建立父目錄：%s"
 
 #: ../src/libebackend/e-collection-backend.c:1008
 #, c-format
@@ -6151,7 +6126,13 @@ msgstr "%s 不支援建立遠端資源"
 msgid "%s does not support deleting remote resources"
 msgstr "%s 不支援刪除遠端資源"
 
-#: ../src/libebackend/e-data-factory.c:1492
+#: ../src/libebackend/e-data-factory.c:1349
+#: ../src/libebackend/e-subprocess-factory.c:293
+#, c-format
+msgid "No such source for UID “%s”"
+msgstr "沒有 UID「%s」的這類來源"
+
+#: ../src/libebackend/e-data-factory.c:1499
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr "找不到來源「%s」與擴充功能「%s」的後端工廠。"
@@ -6191,12 +6172,11 @@ msgstr "資料來源「%s」沒有用來刪除遠端資料的收集後端"
 
 #: ../src/libebackend/e-server-side-source.c:1482
 #: ../src/libedataserver/e-source.c:1792
-#: ../src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1080
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
 msgstr "資料來源「%s」不支援 OAuth 2.0 核對"
 
-#: ../src/libebackend/e-server-side-source.c:1860
+#: ../src/libebackend/e-server-side-source.c:1866
 #, c-format
 msgid "File must have a “.source” extension"
 msgstr "檔案必須以「.source」做為延伸檔名"
@@ -6207,32 +6187,24 @@ msgid "UID “%s” is already in use"
 msgstr "UID 「%s」已經在使用中"
 
 #: ../src/libebackend/e-source-registry-server.c:447
-#, fuzzy, c-format
-#| msgid "Cannot find certificate for “%s”"
+#, c-format
 msgid "Cannot find corresponding collection backend for source “%s”"
-msgstr "找不到「%s」的憑證"
+msgstr "無法找到與「%s」相應的集合後端"
 
 #: ../src/libebackend/e-source-registry-server.c:451
-#, fuzzy, c-format
-#| msgid "Source “%s” (%s) is not a valid Google source"
+#, c-format
 msgid "Source “%s” is not a collection source"
-msgstr "來源「%s」(%s) 不是有效的 Google 來源"
+msgstr "來源「%s」不是個集合來源"
 
 #: ../src/libebackend/e-source-registry-server.c:457
-#, fuzzy, c-format
-#| msgid "Cannot find certificate for “%s”"
+#, c-format
 msgid "Cannot find source “%s”"
-msgstr "找不到「%s」的憑證"
+msgstr "找不到「%s」來源"
 
 #: ../src/libebackend/e-subprocess-factory.c:281
 #, c-format
 msgid "Module “%s” for source UID “%s” cannot be loaded"
 msgstr "來源 UID「%2$s」模組「%1$s」不能載入"
-
-#: ../src/libebackend/e-subprocess-factory.c:293
-#, c-format
-msgid "No such source for UID “%s”"
-msgstr "沒有 UID「%s」的這類來源"
 
 #: ../src/libebackend/e-subprocess-factory.c:302
 #, c-format
@@ -6375,53 +6347,48 @@ msgstr "離線無法使用"
 msgid "D-Bus error"
 msgstr "D-Bus 錯誤"
 
-#: ../src/libedataserver/e-client.c:2021
+#: ../src/libedataserver/e-client.c:2023
 msgid "Timeout was reached"
 msgstr "已達逾時時間"
 
+#: ../src/libedataserver/e-oauth2-service.c:925
+msgid "Malformed, no message body set"
+msgstr "格式不良，沒有設定訊息內容"
+
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: ../src/libedataserver/e-oauth2-service.c:1208
-#, fuzzy, c-format
-#| msgid "Source “%s” (%s) is not a valid Google source"
+#: ../src/libedataserver/e-oauth2-service.c:1209
+#, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
-msgstr "來源「%s」(%s) 不是有效的 Google 來源"
+msgstr "來源「%s」(%s) 對「%s」OAuth2 服務無效"
 
-#: ../src/libedataserver/e-oauth2-service.c:1223
-#, fuzzy
-#| msgid "Google secret not found"
+#: ../src/libedataserver/e-oauth2-service.c:1224
 msgid "OAuth2 secret not found"
-msgstr "找不到 Google 密碼"
+msgstr "找不到 OAuth2 密鑰"
 
-#: ../src/libedataserver/e-oauth2-service.c:1411
-#, fuzzy, c-format
-#| msgid "Unexpected server response from xover: %s"
+#: ../src/libedataserver/e-oauth2-service.c:1412
+#, c-format
 msgid "Received incorrect response from server “%s”."
-msgstr "xover 傳來意外的伺服器回應：%s"
+msgstr "接收到來自「%s」伺服器的不正確回應。"
 
-#: ../src/libedataserver/e-oauth2-service.c:1420
-#, fuzzy
-#| msgid "Failed to get access token from refresh_token server response"
+#: ../src/libedataserver/e-oauth2-service.c:1421
 msgid "Failed to refresh access token. Sign to the server again, please."
-msgstr "無法從 refresh_token 伺服器回應獲得存取記號"
+msgstr "無法重新整理存取權杖，請重新登入伺服器。"
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: ../src/libedataserver/e-oauth2-service.c:1462
-#, fuzzy, c-format
-#| msgid "Source “%s” (%s) is not a valid Google source"
+#: ../src/libedataserver/e-oauth2-service.c:1463
+#, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
-msgstr "來源「%s」(%s) 不是有效的 Google 來源"
+msgstr "來源「%s」(%s) 不是個有效的 OAuth2 服務"
 
-#: ../src/libedataserver/e-oauth2-service.c:1535
+#: ../src/libedataserver/e-oauth2-service.c:1536
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
-msgstr ""
+msgstr "存取權杖已經過期並無法重新整理它。請重新登入伺服器。"
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: ../src/libedataserver/e-oauth2-service-google.c:56
-#, fuzzy
-#| msgid "Google"
 msgctxt "OAuth2Service"
 msgid "Google"
 msgstr "Google"
@@ -6430,19 +6397,16 @@ msgstr "Google"
 #: ../src/libedataserver/e-oauth2-service-outlook.c:57
 msgctxt "OAuth2Service"
 msgid "Outlook"
-msgstr ""
+msgstr "Outlook"
 
-#: ../src/libedataserver/e-soup-session.c:861
-#, fuzzy
-#| msgid "Operation has been cancelled"
+#: ../src/libedataserver/e-soup-session.c:942
 msgid "Operation was cancelled"
 msgstr "操作已取消"
 
-#: ../src/libedataserver/e-soup-session.c:867
-#, fuzzy, c-format
-#| msgid "Failed to make directory %s: %s"
+#: ../src/libedataserver/e-soup-session.c:948
+#, c-format
 msgid "Failed with HTTP error %d: %s"
-msgstr "無法建立目錄「%s」：%s"
+msgstr "失敗，並回傳 HTTP 錯誤代碼 %d：%s"
 
 #: ../src/libedataserver/e-source.c:772
 #, c-format
@@ -6479,12 +6443,12 @@ msgstr "不支援憑證刪除"
 msgid "Password not found"
 msgstr "找不到密碼"
 
-#: ../src/libedataserver/e-source-mail-signature.c:483
+#: ../src/libedataserver/e-source-mail-signature.c:484
 #, c-format
 msgid "Signature script must be a local file"
 msgstr "簽章必須是本地端檔案"
 
-#: ../src/libedataserver/e-source-proxy.c:1642
+#: ../src/libedataserver/e-source-proxy.c:1656
 #, c-format
 msgid "Source “%s” does not support proxy lookups"
 msgstr "來源「%s」不支援代理伺服器查詢"
@@ -6630,7 +6594,7 @@ msgstr "%I %p"
 
 #: ../src/libedataserver/e-webdav-session.c:670
 msgid "Cannot determine destination URL without WebDAV extension"
-msgstr ""
+msgstr "無法決定沒有 WebDAV 外掛的目標 URL"
 
 #: ../src/libedataserver/e-webdav-session.c:955
 #, c-format
@@ -6638,13 +6602,15 @@ msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request. The used URI was: %s"
 msgstr ""
+"伺服器以一個 HTML 頁面回應，可能代表伺服器或客戶端請求發生錯誤。使用的 URI "
+"爲：%s"
 
 #: ../src/libedataserver/e-webdav-session.c:957
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request."
-msgstr ""
+msgstr "伺服器以一個 HTML 頁面回應，可能代表伺服器或客戶端請求發生錯誤。"
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
@@ -6654,7 +6620,7 @@ msgstr ""
 #: ../src/libedataserver/e-webdav-session.c:978
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
-msgstr ""
+msgstr "%s：HTTP 錯誤代碼 %d (%s)：%s"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
@@ -6662,7 +6628,7 @@ msgstr ""
 #: ../src/libedataserver/e-webdav-session.c:986
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
-msgstr ""
+msgstr "發生錯誤，HTTP 錯誤代碼 %d (%s)：%s"
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
@@ -6671,207 +6637,168 @@ msgstr ""
 #: ../src/libedataserver/e-webdav-session.c:1001
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
-msgstr ""
+msgstr "%s：HTTP 錯誤代碼 %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #: ../src/libedataserver/e-webdav-session.c:1007
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
-msgstr ""
+msgstr "發生錯誤，HTTP 錯誤代碼 %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:1257
-#, fuzzy
-#| msgid "Failed to encode data"
 msgid "Failed to post data"
-msgstr "無法編碼資料"
+msgstr "無法 POST 資料"
 
 #: ../src/libedataserver/e-webdav-session.c:1350
 #: ../src/libedataserver/e-webdav-session.c:1425
 #: ../src/libedataserver/e-webdav-session.c:1529
 #: ../src/libedataserver/e-webdav-session.c:2778
 #: ../src/libedataserver/e-webdav-session.c:4030
-#, fuzzy
-#| msgid "Failed to find Account element"
 msgid "Failed to get input XML content"
-msgstr "找不到帳號元素"
+msgstr "無法取得輸入 XML 內容"
 
 #: ../src/libedataserver/e-webdav-session.c:1361
-#, fuzzy
-#| msgid "Failed to get capabilities"
 msgid "Failed to get properties"
-msgstr "無法取得功能"
+msgstr "無法取得屬性"
 
 #: ../src/libedataserver/e-webdav-session.c:1435
-#, fuzzy
-#| msgid "Failed to authenticate"
 msgid "Failed to update properties"
-msgstr "無法核對"
+msgstr "無法更新屬性"
 
 #: ../src/libedataserver/e-webdav-session.c:1539
-#, fuzzy
-#| msgid "Failed to issue NOTIFY"
 msgid "Failed to issue REPORT"
-msgstr "無法發出 NOTIFY"
+msgstr "無法提出 REPORT"
 
 #: ../src/libedataserver/e-webdav-session.c:1598
-#, fuzzy
-#| msgid "Failed to refresh token"
 msgid "Failed to create collection"
-msgstr "更新記號失敗"
+msgstr "無法建立集合"
 
 #: ../src/libedataserver/e-webdav-session.c:1689
 #: ../src/libedataserver/e-webdav-session.c:1843
-#, fuzzy
-#| msgid "Failed to refresh token"
 msgid "Failed to get XML request content"
-msgstr "更新記號失敗"
+msgstr "無法取得 XML 請求內容"
 
 #: ../src/libedataserver/e-webdav-session.c:1701
-#, fuzzy
-#| msgid "Failed to read From address"
 msgid "Failed to create address book"
-msgstr "讀取寄件者位址失敗"
+msgstr "無法建立通訊錄"
 
 #: ../src/libedataserver/e-webdav-session.c:1856
-#, fuzzy
-#| msgid "Unable to create cache path"
 msgid "Failed to create calendar"
-msgstr "無法建構快取路徑"
+msgstr "無法建立行事曆"
 
 #: ../src/libedataserver/e-webdav-session.c:1988
 #: ../src/libedataserver/e-webdav-session.c:1999
-#, fuzzy
-#| msgid "Failed to read From address"
 msgid "Failed to read resource"
-msgstr "讀取寄件者位址失敗"
+msgstr "無法讀取資源"
 
 #: ../src/libedataserver/e-webdav-session.c:2148
-#, fuzzy
-#| msgid "Credentials store is not supported"
 msgid "Cannot rewind input stream: Not supported"
-msgstr "不支援憑證儲存"
+msgstr "無法倒轉輸入串流：不支援"
 
 #: ../src/libedataserver/e-webdav-session.c:2311
 #: ../src/libedataserver/e-webdav-session.c:2455
-#, fuzzy
-#| msgid "Failed to encode data"
 msgid "Failed to put data"
-msgstr "無法編碼資料"
+msgstr "無法 PUT 資料"
 
 #: ../src/libedataserver/e-webdav-session.c:2330
 #: ../src/libedataserver/e-webdav-session.c:2463
-#, fuzzy, c-format
-#| msgid "Failed to add data to encoder"
+#, c-format
 msgid "Failed to put data to server, error code %d (%s)"
-msgstr "無法新增資料至編碼器"
+msgstr "無法 PUT 資料到伺服器，錯誤代碼：%d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:2555
-#, fuzzy
-#| msgid "Failed to enable QResync"
 msgid "Failed to delete resource"
-msgstr "無法啟用 QResync"
+msgstr "無法刪除資源"
 
 #: ../src/libedataserver/e-webdav-session.c:2622
-#, fuzzy
-#| msgid "Failed to copy the tmp file"
 msgid "Failed to copy resource"
-msgstr "無法複製 tmp 檔案"
+msgstr "無法複製資源"
 
 #: ../src/libedataserver/e-webdav-session.c:2684
-#, fuzzy
-#| msgid "Failed to refresh token"
 msgid "Failed to move resource"
-msgstr "更新記號失敗"
+msgstr "無法移動資源"
 
 #: ../src/libedataserver/e-webdav-session.c:2789
-#, fuzzy
-#| msgid "Failed to refresh token"
 msgid "Failed to lock resource"
-msgstr "更新記號失敗"
+msgstr "無法鎖定資源"
 
 #: ../src/libedataserver/e-webdav-session.c:2803
 #: ../src/libedataserver/e-webdav-session.c:3005
 msgid "Expected application/xml response, but none returned"
-msgstr ""
+msgstr "得到預期的應用程式 / XML 回應，但回傳了 None"
 
 #: ../src/libedataserver/e-webdav-session.c:2806
 #: ../src/libedataserver/e-webdav-session.c:3008
 #, c-format
 msgid "Expected application/xml response, but %s returned"
-msgstr ""
+msgstr "得到預期的應用程式 / XML 回應，但回傳了 %s"
 
 #: ../src/libedataserver/e-webdav-session.c:2818
 #: ../src/libedataserver/e-webdav-session.c:3021
-#, fuzzy
-#| msgid "Failed to encode data"
 msgid "Failed to parse XML data"
-msgstr "無法編碼資料"
+msgstr "無法解析 XML 資料"
 
 #: ../src/libedataserver/e-webdav-session.c:2897
-#, fuzzy
-#| msgid "Failed to refresh token"
 msgid "Failed to refresh lock"
-msgstr "更新記號失敗"
+msgstr "無法重新整理鎖"
 
 #: ../src/libedataserver/e-webdav-session.c:2956
-#, fuzzy
-#| msgid "Failed to authenticate"
 msgid "Failed to unlock"
-msgstr "無法核對"
+msgstr "無法解鎖"
 
 #: ../src/libedataserver/e-webdav-session.c:2993
-#, fuzzy, c-format
-#| msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
+#, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
-msgstr "未預期的 HTTP 回應狀態碼 %d (%s) URI：%s"
+msgstr "期望多狀態的回應，卻只得到 %d 回傳代碼 (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:4040
-#, fuzzy
-#| msgid "Failed to get lock using fcntl(2): %s"
 msgid "Failed to get access control list"
-msgstr "使用 fcntl(2) 取得鎖失敗： %s"
+msgstr "無法取得存取控制列表"
 
 #: ../src/libedataserver/e-webdav-session.c:4781
 msgid "Cannot store protected nor inherited Access Control Entry."
-msgstr ""
+msgstr "無法儲存受保護和繼承存取控制項目 (Access Control Entry, ACE)。"
 
 #: ../src/libedataserver/e-webdav-session.c:4788
 msgid "Provided invalid principal kind for Access Control Entry."
-msgstr ""
+msgstr "對存取控制項目 (Access Control Entry, ACE) 提供了無效的父類別。"
 
 #: ../src/libedataserver/e-webdav-session.c:4795
 msgid "Cannot store property-based Access Control Entry."
-msgstr ""
+msgstr "無法儲存基於屬性的存取控制項目 (Access Control Entry, ACE)。"
 
 #: ../src/libedataserver/e-webdav-session.c:4802
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
+"存取控制項目 (Access Control Entry, ACE) 只能爲「允許」或「拒絕」，而不能爲"
+"「None」。"
 
 #: ../src/libedataserver/e-webdav-session.c:4810
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
+"存取控制項目 (Access Control Entry, ACE) 只能爲「允許」或「拒絕」，而不能兩個"
+"一起提供。"
 
 #: ../src/libedataserver/e-webdav-session.c:4869
 msgid "Access Control Entry privilege cannot be NULL."
-msgstr ""
+msgstr "存取控制項目 (Access Control Entry, ACE) 特權不能爲 NULL。"
 
 #: ../src/libedataserverui/e-credentials-prompter.c:258
-#: ../src/libedataserverui/e-credentials-prompter.c:1576
-#: ../src/libedataserverui/e-credentials-prompter.c:1620
+#: ../src/libedataserverui/e-credentials-prompter.c:1690
+#: ../src/libedataserverui/e-credentials-prompter.c:1734
 msgid "Credentials prompt was cancelled"
 msgstr "憑證提示已取消"
 
-#: ../src/libedataserverui/e-credentials-prompter.c:662
+#: ../src/libedataserverui/e-credentials-prompter.c:775
 #, c-format
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "來源「%s」不支援憑證提示"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:202
-#, fuzzy, c-format
-#| msgid "Failed to obtain an access token for “%s”: "
+#, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
-msgstr "無法獲得「%s」的存取記號："
+msgstr "無法從「%s」位址取得存取權杖：%s"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:246
 msgid "Requesting access token, please wait..."
@@ -6880,147 +6807,120 @@ msgstr "正請求存取記號，請稍候..."
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:472
-#, fuzzy, c-format
-#| msgid "Address book authentication request"
+#, c-format
 msgid "%s Address Book authentication request"
-msgstr "通訊錄核對要求"
+msgstr "%s 通訊錄核對請求"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:477
-#, fuzzy, c-format
-#| msgid "Calendar authentication request"
+#, c-format
 msgid "%s Calendar authentication request"
-msgstr "行事曆核對要求"
+msgstr "%s 行事曆核對請求"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:482
-#, fuzzy, c-format
-#| msgid "Google Memo List authentication request"
+#, c-format
 msgid "%s Memo List authentication request"
-msgstr "Google 備忘錄列表核對要求"
+msgstr "%s 備忘錄列表核對要求"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:487
-#, fuzzy, c-format
-#| msgid "Google Task List authentication request"
+#, c-format
 msgid "%s Task List authentication request"
-msgstr "Google 任務列表核對要求"
+msgstr "%s 任務列表核對要求"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:493
-#, fuzzy, c-format
-#| msgid "Mail authentication request"
+#, c-format
 msgid "%s Mail authentication request"
-msgstr "郵件核對要求"
+msgstr "%s 郵件核對要求"
 
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:498
-#, fuzzy, c-format
-#| msgid "Google account authentication request"
+#, c-format
 msgid "%s account authentication request"
-msgstr "Google 帳號核對要求"
+msgstr "%s 帳號核對請求"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:512
-#, fuzzy, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your address book “%s”."
+#, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "address book “%s”."
-msgstr "登入您的 Google 帳號並接受條款來存取您的通訊錄「%s」。"
+msgstr "請登入到您的 %s 帳號，並同意條款後才能存取您的「%s」通訊錄。"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:519
-#, fuzzy, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your calendar “%s”."
+#, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "calendar “%s”."
-msgstr "登入您的 Google 帳號並接受條款來存取您的行事曆「%s」。"
+msgstr "請登入到您的 %s 帳號，並同意條款後才能存取您的「%s」行事曆。"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:526
-#, fuzzy, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your mail account “%s”."
+#, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "account “%s”."
-msgstr "登入您的 Google 帳號並接受條款來存取您的郵件帳號「%s」。"
+msgstr "請登入到您的 %s 帳號，並同意條款後才能存取您的「%s」郵件帳號。"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:533
-#, fuzzy, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your mail transport “%s”."
+#, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "transport “%s”."
-msgstr "登入您的 Google 帳號並接受條款來存取您的郵件「%s」。"
+msgstr "請登入到您的 %s 帳號，並同意條款後才能存取您的「%s」郵件傳遞。"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:540
-#, fuzzy, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your memo list “%s”."
+#, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
 "list “%s”."
-msgstr "登入您的 Google 帳號並接受條款來存取您的備忘錄列表「%s」。"
+msgstr "請登入到您的 %s 帳號，並同意條款後才能存取您的「%s」備忘錄列表。"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:547
-#, fuzzy, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your task list “%s”."
+#, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
 "list “%s”."
-msgstr "登入您的 Google 帳號並接受條款來存取您的工作列表「%s」。"
+msgstr "請登入到您的 %s 帳號，並同意條款後才能存取您的「%s」作業列表。"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:554
-#, fuzzy, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your account “%s”."
+#, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "account “%s”."
-msgstr "登入您的 Google 帳號並接受條款來存取您的帳號「%s」。"
+msgstr "請登入到您的 %s 帳號，並同意條款後才能存取您的「%s」帳號。"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:602
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1061
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1070
 msgid "_Cancel"
 msgstr "取消(_C)"
 
@@ -7077,7 +6977,7 @@ msgid "Please enter the password for account “%s”."
 msgstr "請輸入帳號「%s」的密碼 。"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1062
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1071
 msgid "_OK"
 msgstr "確定(_O)"
 
@@ -7096,74 +6996,66 @@ msgstr "將密碼加入您的鑰匙圈(_A)"
 
 #: ../src/libedataserverui/e-reminders-widget.c:225
 msgid "Add custom time…"
-msgstr ""
+msgstr "增加自訂時間…"
 
 #: ../src/libedataserverui/e-reminders-widget.c:229
 msgid "Clear custom times"
-msgstr ""
+msgstr "清除自訂時間"
 
 #: ../src/libedataserverui/e-reminders-widget.c:277
-#, fuzzy
-#| msgctxt "Priority"
-#| msgid "Low"
 msgctxt "overdue"
 msgid "now"
-msgstr "低"
+msgstr "現在"
 
 #: ../src/libedataserverui/e-reminders-widget.c:295
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
-msgstr[0] ""
+msgstr[0] "%d 年"
 
 #: ../src/libedataserverui/e-reminders-widget.c:301
 msgctxt "overdue"
 msgid "overdue"
-msgstr ""
+msgstr "過期"
 
 #: ../src/libedataserverui/e-reminders-widget.c:912
-#, fuzzy, c-format
-#| msgid "Failed to open client “%s”: %s"
+#, c-format
 msgid "Failed to launch URI “%s”:"
-msgstr "無法開啟客戶端「%s」：%s"
+msgstr "無法開啟 URI「%s」："
 
 #: ../src/libedataserverui/e-reminders-widget.c:953
-#, fuzzy
-#| msgid "Could not discard reminder: "
 msgid "Failed to dismiss reminder:"
-msgstr "無法取消提醒："
+msgstr "無法撤銷提醒器："
 
 #: ../src/libedataserverui/e-reminders-widget.c:974
-#, fuzzy
-#| msgid "Failed to issue DONE"
 msgid "Failed to dismiss all:"
-msgstr "無法發出 DONE"
+msgstr "無法全部撤銷："
 
 #: ../src/libedataserverui/e-reminders-widget.c:1110
 msgid "Set a custom snooze time for"
-msgstr ""
+msgstr "設定自訂的貪睡時間"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1123
 msgctxt "reminders-snooze"
 msgid "da_ys"
-msgstr ""
+msgstr "日 (_Y)"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1139
 msgctxt "reminders-snooze"
 msgid "_hours"
-msgstr ""
+msgstr "時 (_H)"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1155
 msgctxt "reminders-snooze"
 msgid "_minutes"
-msgstr ""
+msgstr "分 (_M)"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1161
 msgid "_Add Snooze time"
-msgstr ""
+msgstr "增加貪睡時間 (_A)"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1428
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
@@ -7171,14 +7063,12 @@ msgid "_Dismiss"
 msgstr "解除(_D)"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1429
-#, fuzzy
-#| msgid "_Dismiss"
 msgid "Dismiss _All"
-msgstr "解除(_D)"
+msgstr "全部撤銷(_A)"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1431
 msgid "_Snooze"
-msgstr ""
+msgstr "貪睡(_S)"
 
 #: ../src/libedataserverui/e-trust-prompt.c:111
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:117
@@ -7277,15 +7167,15 @@ msgctxt "WebDAVDiscover"
 msgid "Tasks"
 msgstr "工作"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:834
+#: ../src/libedataserverui/e-webdav-discover-widget.c:838
 msgid "Invalid URL"
 msgstr "無效的 URL"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:875
+#: ../src/libedataserverui/e-webdav-discover-widget.c:883
 msgid "Cancel"
 msgstr "取消"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:878
+#: ../src/libedataserverui/e-webdav-discover-widget.c:886
 msgid "Searching server sources..."
 msgstr "正在搜尋伺服器來源…"
 
@@ -7338,7 +7228,7 @@ msgstr "找不到帳號元素"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "在自動探索回應中找不到 ASUrl 與 OABUrl"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1405
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1406
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -7347,104 +7237,15 @@ msgstr ""
 "找不到在 org.gnome 中對應的帳號。這是 OnlineAccounts 服務用來獲得「%s」的存取"
 "記號的地方"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1455
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1456
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
-msgstr "無法獲得「%s」的存取記號："
+msgstr "無法獲得「%s」的存取權杖："
 
 #: ../src/modules/google-backend/module-google-backend.c:589
-#: ../src/modules/ubuntu-online-accounts/contacts.service-type.in.in.h:1
 #: ../src/services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
 msgstr "連絡人"
-
-#: ../src/modules/ubuntu-online-accounts/calendar.service-type.in.in.h:1
-#: ../src/tools/list-sources/list-sources.c:148
-msgid "Calendar"
-msgstr "行事曆"
-
-#: ../src/modules/ubuntu-online-accounts/calendar.service-type.in.in.h:2
-msgid "Integrate your calendars"
-msgstr "整合您的行事曆"
-
-#: ../src/modules/ubuntu-online-accounts/contacts.service-type.in.in.h:2
-msgid "Integrate your contacts"
-msgstr "整合您的連絡人"
-
-#: ../src/modules/ubuntu-online-accounts/e-signon-session-password.c:273
-msgid "Signon service did not return a secret"
-msgstr "Signon 服務尚未傳回機密"
-
-#: ../src/modules/ubuntu-online-accounts/evolution-data-server-uoa.desktop.in.in.h:1
-msgid "Evolution Data Server"
-msgstr "Evolution 資料伺服器"
-
-#: ../src/modules/ubuntu-online-accounts/evolution-data-server-uoa.desktop.in.in.h:2
-msgid "Required to have EDS appear in UOA"
-msgstr "要求 UOA 中要出現 EDS"
-
-#: ../src/modules/ubuntu-online-accounts/google-calendar.service.in.in.h:1
-msgid "Google Calendar"
-msgstr "Google 日曆"
-
-#: ../src/modules/ubuntu-online-accounts/google-contacts.service.in.in.h:1
-msgid "Google Contacts"
-msgstr "Google 聯絡人"
-
-#: ../src/modules/ubuntu-online-accounts/google-gmail.service.in.in.h:1
-msgid "GMail"
-msgstr "GMail"
-
-#: ../src/modules/ubuntu-online-accounts/mail.service-type.in.in.h:1
-msgid "Mail"
-msgstr "郵件"
-
-#: ../src/modules/ubuntu-online-accounts/mail.service-type.in.in.h:2
-msgid "Integrate your mailboxes"
-msgstr "整合您的信箱"
-
-#: ../src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1061
-#, c-format
-msgid ""
-"Cannot find a corresponding account service in the accounts database from "
-"which to obtain an access token for “%s”"
-msgstr "在帳號資料庫中找不到對應的帳號服務以獲得「%s」的存取記號"
-
-#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:85
-#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:282
-#, c-format
-msgid ""
-"Expected status 200 when requesting your identity, instead got status %d (%s)"
-msgstr "請求您的身分識別時預期的狀態為 200，但卻取得狀態 %d (%s)"
-
-#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:102
-#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:299
-msgid "Error parsing response as JSON: "
-msgstr "以 JSON 解析回應時發生錯誤："
-
-#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:120
-msgid "Didn’t find “email” in JSON data"
-msgstr "在 JSON 資料中找不到「email」"
-
-#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:317
-msgid "Didn’t find “id” in JSON data"
-msgstr "在 JSON 資料中找不到「id」"
-
-#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:322
-msgid "Didn’t find “emails.account” in JSON data"
-msgstr "在 JSON 資料中找不到「email.account」"
-
-#: ../src/modules/ubuntu-online-accounts/windows-live-mail.service.in.in.h:1
-msgid "Windows Live Mail"
-msgstr "Windows Live Mail"
-
-#: ../src/modules/ubuntu-online-accounts/yahoo-calendar.service.in.in.h:1
-msgid "Yahoo! Calendar"
-msgstr "Yahoo! 行事曆"
-
-#: ../src/modules/ubuntu-online-accounts/yahoo-mail.service.in.in.h:1
-msgid "Yahoo! Mail"
-msgstr "Yahoo! 電子信箱"
 
 #: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:38
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:40
@@ -7463,27 +7264,29 @@ msgid ""
 "Overrides compile-time backend per process option; use 1 to enable, 0 to "
 "disable, any other value is to use compile-time option"
 msgstr ""
+"覆蓋每個執行程序選項的編譯時間後端；使用 1 啟用，0 停用，其他值則為使用 "
+"compile-time 選項"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:223
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:250
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:755
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:964
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:251
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:756
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:965
 msgid "Reminders"
-msgstr ""
-
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:362
-msgid "Warning"
-msgstr ""
+msgstr "提醒器"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:363
-msgid "_No"
-msgstr ""
+msgid "Warning"
+msgstr "警告"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:364
-msgid "_Yes"
-msgstr ""
+msgid "_No"
+msgstr "否(_N)"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:368
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:365
+msgid "_Yes"
+msgstr "是(_Y)"
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:369
 #, c-format
 msgid ""
 "A calendar reminder is about to trigger. This reminder is configured to run "
@@ -7493,36 +7296,41 @@ msgid ""
 "\n"
 "Are you sure you want to run this program?"
 msgstr ""
+"有一個關於觸發器的行事曆提醒器。這提醒器設定用來執行以下程式：\n"
+"\n"
+"        %s\n"
+"\n"
+"確認執行此程式？"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:382
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:383
 msgid "Do not ask me about this program again"
-msgstr ""
-
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:660
-msgid "Display reminders in notification area _only"
-msgstr ""
+msgstr "不再提醒"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:661
-msgid "Keep reminder notification window always on _top"
-msgstr ""
+msgid "Display reminders in notification area _only"
+msgstr "只在通知區域顯示提醒器(_O)"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:662
-msgid "Display reminders for _completed tasks"
-msgstr ""
+msgid "Keep reminder notification window always on _top"
+msgstr "保持提醒器通知視窗於最上層(_T)"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:663
+msgid "Display reminders for _completed tasks"
+msgstr "顯示完成作業的提醒器(_C)"
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:664
 msgid "Display reminders for _past events"
-msgstr ""
+msgstr "顯示先前活動的提醒器(_P)"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:677
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:678
 msgid "Reminders Options:"
-msgstr ""
+msgstr "提醒器選項："
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:771
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:772
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
-msgstr[0] ""
+msgstr[0] "您有 %d 個提醒器"
 
 #: ../src/services/evolution-source-registry/builtin/birthdays.source.in.h:1
 msgid "Birthdays & Anniversaries"
@@ -7534,7 +7342,7 @@ msgstr "CalDAV"
 
 #: ../src/services/evolution-source-registry/builtin/carddav-stub.source.in.h:1
 msgid "CardDAV"
-msgstr ""
+msgstr "CardDAV"
 
 #: ../src/services/evolution-source-registry/builtin/google-stub.source.in.h:1
 msgid "Google"
@@ -7551,7 +7359,7 @@ msgstr "我的電腦"
 
 #: ../src/services/evolution-source-registry/builtin/system-proxy.source.in.h:1
 msgid "Default Proxy Settings"
-msgstr ""
+msgstr "預設 Proxy 設定"
 
 #: ../src/services/evolution-source-registry/builtin/vfolder.source.in.h:1
 msgid "Search Folders"
@@ -7613,344 +7421,163 @@ msgid "Only support csv or vcard format."
 msgstr "僅支援 csv 或 vcard 格式。"
 
 #: ../src/tools/list-sources/list-sources.c:83
-#, fuzzy
-#| msgid "_Show only subscribed folders"
 msgid "Show only enabled sources"
-msgstr "只顯示已訂閱的資料夾(_S)"
+msgstr "只顯示啟用的來源"
 
 #: ../src/tools/list-sources/list-sources.c:86
-#, fuzzy
-#| msgid "POP Source UID"
 msgid "Show source’s UID"
-msgstr "POP 來源 UID"
+msgstr "顯示來源的 UID"
 
 #: ../src/tools/list-sources/list-sources.c:89
-#, fuzzy
-#| msgid "Unsupported authentication method"
 msgid "Show source’s authentication information"
-msgstr "不支援的核對方法"
+msgstr "顯示來源的核對資訊"
 
 #: ../src/tools/list-sources/list-sources.c:92
 msgid ""
 "Write in machine readable format (one source per line, without localized "
 "property names and tab as separator)"
 msgstr ""
+"以機器可讀格式儲存 (一行一個來源，而不包含本地化過的屬性名稱，並以 Tab 分割)"
 
 #: ../src/tools/list-sources/list-sources.c:95
 msgid "Limit only to sources with given extension name"
-msgstr ""
+msgstr "限制只允許有給定副檔名的來源"
 
 #: ../src/tools/list-sources/list-sources.c:106
 msgid "yes"
-msgstr ""
+msgstr "是"
 
 #: ../src/tools/list-sources/list-sources.c:106
 msgid "no"
-msgstr ""
+msgstr "否"
 
 #: ../src/tools/list-sources/list-sources.c:126
-#, fuzzy
-#| msgctxt "CategoryName"
-#| msgid "Competition"
 msgid "Collection"
-msgstr "競爭者"
+msgstr "集合"
 
 #: ../src/tools/list-sources/list-sources.c:132
 msgid "Collection/GNOME Online Accounts"
-msgstr ""
+msgstr "集合/GNOME 線上帳號"
 
 #: ../src/tools/list-sources/list-sources.c:137
 msgid "Collection/Ubuntu Online Accounts"
-msgstr ""
+msgstr "集合/Ubuntu 線上帳號"
 
 #: ../src/tools/list-sources/list-sources.c:147
-#, fuzzy
-#| msgid "Address List"
 msgid "Address Book"
-msgstr "地址列表"
+msgstr "通訊錄"
+
+#: ../src/tools/list-sources/list-sources.c:148
+msgid "Calendar"
+msgstr "行事曆"
 
 #: ../src/tools/list-sources/list-sources.c:149
-#, fuzzy
-#| msgctxt "WebDAVDiscover"
-#| msgid "Memos"
 msgid "Memo List"
-msgstr "備忘錄"
+msgstr "備忘錄列表"
 
 #: ../src/tools/list-sources/list-sources.c:150
-#, fuzzy
-#| msgid "Tasks"
 msgid "Task List"
-msgstr "工作"
+msgstr "作業列表"
 
 #: ../src/tools/list-sources/list-sources.c:151
 msgid "Mail Account"
-msgstr ""
+msgstr "郵件帳號"
 
 #: ../src/tools/list-sources/list-sources.c:152
 msgid "Mail Transport"
-msgstr ""
+msgstr "郵件傳輸"
 
 #: ../src/tools/list-sources/list-sources.c:153
 msgid "Mail Identity"
-msgstr ""
+msgstr "郵件身份"
 
 #: ../src/tools/list-sources/list-sources.c:154
-#, fuzzy
-#| msgid "Message submission port"
 msgid "Mail Submission"
-msgstr "郵件提交連接埠"
+msgstr "郵件提交"
 
 #: ../src/tools/list-sources/list-sources.c:155
-#, fuzzy
-#| msgid "Bad signature"
 msgid "Mail Signature"
-msgstr "錯誤的簽章"
+msgstr "郵件簽名"
 
 #: ../src/tools/list-sources/list-sources.c:156
 msgid "Proxy"
-msgstr ""
+msgstr "Proxy"
 
 #: ../src/tools/list-sources/list-sources.c:224
 #, c-format
 msgid "UID: %s"
-msgstr ""
+msgstr "UID：%s"
 
 #: ../src/tools/list-sources/list-sources.c:228
-#, fuzzy, c-format
-#| msgid "Malformed URI: %s"
+#, c-format
 msgid "Parent UID: %s"
-msgstr "格式不良的 URI：%s"
+msgstr "父 UID：%s"
 
 #: ../src/tools/list-sources/list-sources.c:231
-#, fuzzy, c-format
-#| msgid "Posting failed: %s"
+#, c-format
 msgid "Enabled: %s"
-msgstr "張貼失敗：%s"
+msgstr "已啟用：%s"
 
 #: ../src/tools/list-sources/list-sources.c:233
-#, fuzzy, c-format
-#| msgid "Backend is busy"
+#, c-format
 msgid "Backend: %s"
-msgstr "後端忙碌中"
+msgstr "後端：%s"
 
 #: ../src/tools/list-sources/list-sources.c:238
-#, fuzzy, c-format
-#| msgid "Calendar does not exist"
+#, c-format
 msgid "Calendar enabled: %s"
-msgstr "行事曆不存在"
+msgstr "啟用的行事曆：%s"
 
 #: ../src/tools/list-sources/list-sources.c:239
-#, fuzzy, c-format
-#| msgid "Contact ID already exists"
+#, c-format
 msgid "Contacts enabled: %s"
-msgstr "連絡人 ID 已經存在"
+msgstr "已啟用聯絡人：%s"
 
 #: ../src/tools/list-sources/list-sources.c:240
-#, fuzzy, c-format
-#| msgid "Operation failed: %s"
+#, c-format
 msgid "Mail enabled: %s"
-msgstr "作業失敗： %s"
+msgstr "啟用的郵件：%s"
 
 #: ../src/tools/list-sources/list-sources.c:247
 #, c-format
 msgid "MIME Type: %s"
-msgstr ""
+msgstr "MIME 類別：%s"
 
 #: ../src/tools/list-sources/list-sources.c:269
 #, c-format
 msgid "Auth Host: %s:%d"
-msgstr ""
+msgstr "認證主機：%s：%d"
 
 #: ../src/tools/list-sources/list-sources.c:275
 #, c-format
 msgid "Auth Host: %s"
-msgstr ""
+msgstr "認證主機：%s"
 
 #: ../src/tools/list-sources/list-sources.c:283
 #, c-format
 msgid "Auth User: %s"
-msgstr ""
+msgstr "認證使用者：%s"
 
 #: ../src/tools/list-sources/list-sources.c:291
 #, c-format
 msgid "Auth Method: %s"
-msgstr ""
+msgstr "認證方法：%s"
 
 #: ../src/tools/list-sources/list-sources.c:299
 #, c-format
 msgid "Auth Proxy UID: %s"
-msgstr ""
+msgstr "認證 Proxy UID：%s"
 
 #: ../src/tools/list-sources/list-sources.c:420
-#, fuzzy
-#| msgid "Failed to parse autodiscover response XML"
 msgid "Failed to parse arguments: Unknown error"
-msgstr "無法解析自動偵測回應的 XML"
+msgstr "無法解析引數：未知錯誤"
 
 #: ../src/tools/list-sources/list-sources.c:429
-#, fuzzy, c-format
-#| msgid "Failed to connect to a server using SSL/TLS: %s"
+#, c-format
 msgid "Failed to connect to source registry: %s\n"
-msgstr "無法使用 SSL/TLS 連線至伺服器：%s"
+msgstr "無法連線到來源登錄表：%s\n"
 
 #: ../src/tools/list-sources/list-sources.c:445
 #, c-format
 msgid "No sources had been found\n"
-msgstr ""
-
-#~ msgid "Querying for updated contacts…"
-#~ msgstr "查詢更新的連絡人…"
-
-#~ msgid "Querying for updated groups…"
-#~ msgstr "查詢更新的群組…"
-
-#~ msgid "The backend does not support bulk removals"
-#~ msgstr "後端不支援大量移除"
-
-#~ msgid "Loading…"
-#~ msgstr "載入中…"
-
-#~ msgid "Loading Addressbook summary..."
-#~ msgstr "載入通訊錄摘要…"
-
-#~ msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
-#~ msgstr "webdav PROPFIND 失敗，HTTP 狀態：%d (%s)"
-
-#~ msgid "No response body in webdav PROPFIND result"
-#~ msgstr "在 webdav PROPFIND 結果沒有回應本體"
-
-#~ msgid "Loading Contacts (%d%%)"
-#~ msgstr "載入聯絡人 (%d%%)"
-
-#~ msgid "Cannot transform SoupURI to string"
-#~ msgstr "不能將 SoupURI 轉換為字串"
-
-#~ msgid "Create resource “%s” failed with HTTP status %d (%s)"
-#~ msgstr "建立資源「%s」失敗，HTTP 狀態：%d (%s)"
-
-#~ msgid "Contact on server changed -> not modifying"
-#~ msgstr "伺服器上的連絡人已變更 -> 尚未修改"
-
-#~ msgid "Modify contact failed with HTTP status %d (%s)"
-#~ msgstr "修改連絡人失敗，HTTP 狀態：%d (%s)"
-
-#~ msgid "DELETE failed with HTTP status %d"
-#~ msgstr "DELETE 失敗，HTTP 狀態：%d"
-
-#~ msgid "Server is unreachable (%s)"
-#~ msgstr "無法連接伺服器 (%s)"
-
-#~ msgid "Failed to login to the server: %s"
-#~ msgstr "無法登入伺服器：%s"
-
-#~ msgid "CalDAV backend is not loaded yet"
-#~ msgstr "CalDAV 後端尚未載入"
-
-#~ msgid "Invalid Redirect URL"
-#~ msgstr "無效的重新導向 URL"
-
-#~ msgid "Cannot create local cache folder “%s”"
-#~ msgstr "不能建立本地快取資料夾「%s」"
-
-#~ msgid ""
-#~ "Server is unreachable, calendar is opened in read-only mode.\n"
-#~ "Error message: %s"
-#~ msgstr ""
-#~ "無法連接伺服器，行事曆會以唯讀模式開啟。\n"
-#~ "錯誤訊息：%s"
-
-#~ msgid "CalDAV does not support bulk additions"
-#~ msgstr "CalDAV 不支援大量增加"
-
-#~ msgid "CalDAV does not support bulk modifications"
-#~ msgstr "CalDAV 不支援大量修改"
-
-#~ msgid "CalDAV does not support bulk removals"
-#~ msgstr "CalDAV 不支援大量移除"
-
-#~ msgid "Calendar doesn’t support Free/Busy"
-#~ msgstr "行事曆不支援空閒/忙碌"
-
-#~ msgid "Schedule outbox url not found"
-#~ msgstr "找不到排程的寄件匣 url"
-
-#~ msgid "Unexpected result in schedule-response"
-#~ msgstr "在排程-回應中未預期的結果"
-
-#~ msgid "Redirected to Invalid URI"
-#~ msgstr "重新指向無效的 URI"
-
-#~ msgid "Google authentication is not supported"
-#~ msgstr "不支援 Google 憑證"
-
-#~ msgid "Failed to get Google secret from credentials"
-#~ msgstr "無法從憑證取得 Google 秘件"
-
-#~ msgid "Refresh token not found in Google secret"
-#~ msgstr "在 Google 密件找不到更新的記號"
-
-#~ msgid "Failed to construct refresh_token request"
-#~ msgstr "建構 refresh_token 要求失敗"
-
-#~ msgid "Failed to encode new access token to Google secret"
-#~ msgstr "無法編碼新的存取記號到 Google 秘件"
-
-#~ msgid "HTTP Error: %s"
-#~ msgstr "HTTP 錯誤： %s"
-
-#~ msgid "Empty response"
-#~ msgstr "空白的回應"
-
-#~ msgid "Unexpected reply from server"
-#~ msgstr "來自伺服器未預期的回應"
-
-#~ msgid "Failed to obtain access token from address “%s”. Error code %d (%s)"
-#~ msgstr "無法從位址「%s」獲得位址存取記號：錯誤代碼 %d (%s)"
-
-#~ msgid "Google Address book authentication request"
-#~ msgstr "Google 通訊錄核對要求"
-
-#~ msgid "Google Calendar authentication request"
-#~ msgstr "Google 行事曆核對要求"
-
-#~ msgid "Google Mail authentication request"
-#~ msgstr "Google 郵件核對要求"
-
-#~ msgid "User name not filled"
-#~ msgstr "使用者名稱未填"
-
-#~ msgid "WebDAV"
-#~ msgstr "WebDAV"
-
-#~ msgid "Update preview data for folder '%s'"
-#~ msgstr "更新資料夾「%s」的預覽資料"
-
-#~ msgid "Cannot create folder '%s': %s"
-#~ msgstr "不能建立資料夾「%s」：%s"
-
-#~ msgid "Cannot get folder '%s': %s"
-#~ msgstr "不能建立資料夾「%s」：%s"
-
-#~ msgid "No such folder '%s'."
-#~ msgstr "沒有這個資料夾「%s」。"
-
-#~ msgid "Not authenticated"
-#~ msgstr "尚未核對"
-
-#~ msgid "Server disconnected"
-#~ msgstr "伺服器斷線"
-
-#~ msgid "Error performing IDLE"
-#~ msgstr "進行 IDLE 時發生錯誤"
-
-#~ msgid "Error fetching message headers"
-#~ msgstr "取回郵件檔頭時發生錯誤"
-
-#~ msgid "Error retrieving message"
-#~ msgstr "取回郵件時發生錯誤"
-
-#~ msgid "Error fetching new messages"
-#~ msgstr "取回新郵件時發生錯誤"
-
-#~ msgid "Error refreshing folder"
-#~ msgstr "重新整理資料夾時發生錯誤"
+msgstr "找不到來源\n"
