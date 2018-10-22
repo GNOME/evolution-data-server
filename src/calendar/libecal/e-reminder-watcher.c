@@ -3044,13 +3044,9 @@ e_reminder_watcher_dismiss_one_sync (ECalClient *client,
 			local_error ? local_error->message : success ? "" : "Unknown error",
 			(!success || local_error) ? ")" : "");
 
-		if (g_error_matches (local_error, E_CLIENT_ERROR, E_CLIENT_ERROR_NOT_SUPPORTED) ||
-		    g_error_matches (local_error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND)) {
-			success = TRUE;
-			g_clear_error (&local_error);
-		} else if (local_error) {
-			g_propagate_error (error, local_error);
-		}
+		/* Ignore all errors here, users cannot usually do anything with it anyway */
+		success = TRUE;
+		g_clear_error (&local_error);
 
 		e_cal_component_free_id (id);
 	}
