@@ -1,3 +1,26 @@
+Evolution-Data-Server 3.30.2 2018-10-22
+---------------------------------------
+
+Bug Fixes:
+	I#35 - [IMAPx] Ignore incomplete BODYSTRUCTURE responses (Milan Crha)
+	I#36 - Asks for password after going online, even it's stored (Milan Crha)
+	I#37 - [IMAPx] Disable request of BODYSTRUCTURE when its response is broken (Milan Crha)
+	I#38 - Archive from search folder should use original folder for transfer (Milan Crha)
+	I#40 - [IMAPx] Support RFC 6855 (IMAP Support for UTF-8) (Milan Crha)
+	I#44 - [CalDAV/CardDAV] Ignore Not Found error on resource delete (Milan Crha)
+	I#50 - [Reminders] Ignore all errors on a reminder dismiss (Milan Crha)
+
+Miscellaneous:
+	Fix a memory leak in ebmb_start_view_thread_func() (Milan Crha)
+	[evolution-dbus-session] Proxy also D-Bus subtrees (Milan Crha)
+	[CamelProvider] Do not localize empty strings in provider configuration (Milan Crha)
+	Make tests retry when factory doesn't know about added ESource yet (Milan Crha)
+	[On The Web calendar] Log also response body when requested (Milan Crha)
+
+Translations:
+	Yi-Jyun Pan (zh_TW)
+	Aurimas Černius (lt)
+
 Evolution-Data-Server 3.30.1 2018-09-24
 ---------------------------------------
 
