@@ -2111,7 +2111,7 @@ e_cache_foreach_update_cb (ECache *cache,
 	rd->revision = g_strdup (column_values[fu->revision_index]);
 	rd->object = g_strdup (column_values[fu->object_index]);
 	rd->offline_state = offline_state;
-	rd->ncols = ncols;
+	rd->ncols = cvalues->len;
 	rd->column_values = cvalues;
 
 	if (cnames)
@@ -2119,7 +2119,7 @@ e_cache_foreach_update_cb (ECache *cache,
 
 	fu->rows = g_slist_prepend (fu->rows, rd);
 
-	g_return_val_if_fail (fu->column_names && (gint) fu->column_names->len != ncols, FALSE);
+	g_return_val_if_fail (fu->column_names && (gint) fu->column_names->len == rd->ncols, FALSE);
 
 	return TRUE;
 }
@@ -2139,6 +2139,10 @@ e_cache_foreach_update_cb (ECache *cache,
  * necessary. The return value of @func is used to determine whether the call
  * was successful, not whether there are any changes to be saved. If anything
  * fails during the call then the all changes are reverted.
+ *
+ * When there are requested any changes by the @func, this function also
+ * calls e_cache_copy_missing_to_column_values() to ensure no descendant
+ * column data is lost.
  *
  * Returns: Whether succeeded.
  *
@@ -2235,6 +2239,14 @@ e_cache_foreach_update (ECache *cache,
 					    (new_object && g_strcmp0 (new_object, fr->object) != 0) ||
 					    (new_offline_state != fr->offline_state) ||
 					    (new_other_columns && e_cache_column_values_get_size (new_other_columns) > 0))) {
+						if (!new_other_columns)
+							new_other_columns = e_cache_column_values_new ();
+
+						e_cache_copy_missing_to_column_values (cache, fr->ncols,
+							(const gchar **) fu.column_names->pdata,
+							(const gchar **) fr->column_values->pdata,
+							new_other_columns);
+
 						success = e_cache_put_locked (cache,
 							fr->uid,
 							new_revision ? new_revision : fr->revision,
@@ -2267,6 +2279,48 @@ e_cache_foreach_update (ECache *cache,
 	e_cache_unlock (cache, success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
 
 	return success;
+}
+
+/**
+ * e_cache_copy_missing_to_column_values:
+ * @cache: an #ECache
+ * @ncols: count of columns, items in column_names and column_values
+ * @column_names: column names
+ * @column_values: column values
+ * @other_columns: (in out): an #ECacheColumnValues to fill
+ *
+ * Adds every column value which is not part of the @other_columns to it,
+ * except of E_CACHE_COLUMN_UID, E_CACHE_COLUMN_REVISION, E_CACHE_COLUMN_OBJECT
+ * and E_CACHE_COLUMN_STATE columns.
+ *
+ * This can be used within the callback of e_cache_foreach_update().
+ *
+ * Since: 3.30.3
+ **/
+void
+e_cache_copy_missing_to_column_values (ECache *cache,
+				       gint ncols,
+				       const gchar *column_names[],
+				       const gchar *column_values[],
+				       ECacheColumnValues *other_columns)
+{
+	gint ii;
+
+	g_return_if_fail (E_IS_CACHE (cache));
+	g_return_if_fail (column_names != NULL);
+	g_return_if_fail (column_values != NULL);
+	g_return_if_fail (other_columns != NULL);
+
+	for (ii = 0; ii < ncols; ii++) {
+		if (column_names[ii] && column_values[ii] &&
+		    !e_cache_column_values_contains (other_columns, column_names[ii]) &&
+		    g_ascii_strcasecmp (column_names[ii], E_CACHE_COLUMN_UID) != 0 &&
+		    g_ascii_strcasecmp (column_names[ii], E_CACHE_COLUMN_REVISION) != 0 &&
+		    g_ascii_strcasecmp (column_names[ii], E_CACHE_COLUMN_OBJECT) != 0 &&
+		    g_ascii_strcasecmp (column_names[ii], E_CACHE_COLUMN_STATE) != 0) {
+			e_cache_column_values_put (other_columns, column_names[ii], column_values[ii]);
+		}
+	}
 }
 
 /**

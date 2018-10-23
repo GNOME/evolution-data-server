@@ -462,6 +462,12 @@ gboolean	e_cache_foreach_update		(ECache *cache,
 						 gpointer user_data,
 						 GCancellable *cancellable,
 						 GError **error);
+void		e_cache_copy_missing_to_column_values
+						(ECache *cache,
+						 gint ncols,
+						 const gchar *column_names[],
+						 const gchar *column_values[],
+						 ECacheColumnValues *other_columns);
 
 /* Offline support */
 EOfflineState	e_cache_get_offline_state	(ECache *cache,
