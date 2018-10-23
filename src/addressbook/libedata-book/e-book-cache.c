@@ -4260,6 +4260,7 @@ e_book_cache_fill_pgp_cert_column (ECache *cache,
 	e_cache_column_values_take_value (*out_other_columns, e_contact_field_name (E_CONTACT_PGP_CERT), g_strdup_printf ("%d", cert ? 1 : 0));
 
 	e_contact_cert_free (cert);
+	g_object_unref (contact);
 
 	return TRUE;
 }

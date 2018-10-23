@@ -1315,6 +1315,9 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 		}
 
 		g_free (new_etag);
+	} else if (uid && ical_string) {
+		success = FALSE;
+		g_propagate_error (error, EDC_ERROR_EX (InvalidObject, _("Missing information about component URL, local cache is possibly incomplete or broken. Remove it, please.")));
 	} else {
 		success = FALSE;
 		g_propagate_error (error, EDC_ERROR (InvalidObject));
