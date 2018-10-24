@@ -575,6 +575,38 @@ exit:
 }
 
 static CamelMimeMessage *
+imapx_message_from_stream_sync (CamelIMAPXFolder *imapx_folder,
+				CamelStream *stream,
+				GCancellable *cancellable,
+				GError **error)
+{
+	CamelMimeMessage *msg;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (imapx_folder), NULL);
+
+	if (!stream)
+		return NULL;
+
+	msg = camel_mime_message_new ();
+
+	g_mutex_lock (&imapx_folder->stream_lock);
+
+	/* Make sure the stream is at the beginning. It can be, when there are two
+	   concurrent requests for a message, they both use the same underlying stream
+	   from the local cache (encapsulated in the CamelStream), where one reads
+	   it completely and lefts it at the end, thus the second caller reads
+	   the stream from a wrong position. */
+	g_seekable_seek (G_SEEKABLE (stream), 0, G_SEEK_SET, cancellable, NULL);
+
+	if (!camel_data_wrapper_construct_from_stream_sync (CAMEL_DATA_WRAPPER (msg), stream, cancellable, error))
+		g_clear_object (&msg);
+
+	g_mutex_unlock (&imapx_folder->stream_lock);
+
+	return msg;
+}
+
+static CamelMimeMessage *
 imapx_get_message_cached (CamelFolder *folder,
 			  const gchar *message_uid,
 			  GCancellable *cancellable)
@@ -596,18 +628,8 @@ imapx_get_message_cached (CamelFolder *folder,
 	}
 
 	if (stream != NULL) {
-		gboolean success;
+		msg = imapx_message_from_stream_sync (imapx_folder, stream, cancellable, NULL);
 
-		msg = camel_mime_message_new ();
-
-		g_mutex_lock (&imapx_folder->stream_lock);
-		success = camel_data_wrapper_construct_from_stream_sync (
-			CAMEL_DATA_WRAPPER (msg), stream, cancellable, NULL);
-		if (!success) {
-			g_object_unref (msg);
-			msg = NULL;
-		}
-		g_mutex_unlock (&imapx_folder->stream_lock);
 		g_object_unref (stream);
 	}
 
@@ -672,18 +694,8 @@ imapx_get_message_sync (CamelFolder *folder,
 	}
 
 	if (stream != NULL) {
-		gboolean success;
+		msg = imapx_message_from_stream_sync (imapx_folder, stream, cancellable, error);
 
-		msg = camel_mime_message_new ();
-
-		g_mutex_lock (&imapx_folder->stream_lock);
-		success = camel_data_wrapper_construct_from_stream_sync (
-			CAMEL_DATA_WRAPPER (msg), stream, cancellable, error);
-		if (!success) {
-			g_object_unref (msg);
-			msg = NULL;
-		}
-		g_mutex_unlock (&imapx_folder->stream_lock);
 		g_object_unref (stream);
 	}
 
