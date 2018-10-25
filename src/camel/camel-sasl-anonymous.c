@@ -78,6 +78,9 @@ sasl_anonymous_challenge_sync (CamelSasl *sasl,
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+				/* Translators: the 'trace information' term comes from https://tools.ietf.org/html/rfc4505
+				   In this case the user set to use an email address as the trace information,
+				   but the provided value is not a valid email address. */
 				_("Invalid email address trace information:\n%s"),
 				sasl_anon->priv->trace_info);
 			g_object_unref (cia);
@@ -92,6 +95,9 @@ sasl_anonymous_challenge_sync (CamelSasl *sasl,
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+				/* Translators: the 'trace information' term comes from https://tools.ietf.org/html/rfc4505
+				   In this case the user set to use an opaque trace information,
+				   but the provided value looks like an email address. */
 				_("Invalid opaque trace information:\n%s"),
 				sasl_anon->priv->trace_info);
 			return NULL;
@@ -103,11 +109,10 @@ sasl_anonymous_challenge_sync (CamelSasl *sasl,
 		ret = g_byte_array_new ();
 		break;
 	default:
-		g_set_error (
+		g_set_error_literal (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-			_("Invalid trace information:\n%s"),
-			sasl_anon->priv->trace_info);
+			_("Invalid argument"));
 		return NULL;
 	}
 
