@@ -151,28 +151,65 @@ host_ends_with (const gchar *host,
 }
 
 static gboolean
-google_backend_is_google_host (ESourceAuthentication *auth_extension)
+google_backend_is_google_host (ESourceAuthentication *auth_extension,
+			       gboolean *out_requires_oauth2)
 {
 	gboolean is_google;
+	gboolean requires_oauth2;
 	gchar *host;
 
 	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATION (auth_extension), FALSE);
 
 	host = e_source_authentication_dup_host (auth_extension);
 
-	is_google = host && (
+	requires_oauth2 = host && host_ends_with (host, "googleusercontent.com");
+
+	is_google = requires_oauth2 || (host && (
 		host_ends_with (host, "gmail.com") ||
 		host_ends_with (host, "googlemail.com") ||
-		host_ends_with (host, "google.com") ||
-		host_ends_with (host, "googleusercontent.com"));
+		host_ends_with (host, "google.com")));
 
 	g_free (host);
+
+	if (out_requires_oauth2)
+		*out_requires_oauth2 = requires_oauth2;
 
 	return is_google;
 }
 
+static gboolean
+google_backend_is_oauth2 (const gchar *method)
+{
+	return g_strcmp0 (method, GOOGLE_OAUTH2_METHOD) == 0 ||
+		g_strcmp0 (method, "OAuth2") == 0 ||
+		g_strcmp0 (method, "XOAUTH2") == 0;
+}
+
+static gboolean
+google_backend_can_change_auth_method (ESourceAuthentication *auth_extension,
+				       const gchar *new_method)
+{
+	gchar *cur_method;
+	gboolean can_change;
+
+	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATION (auth_extension), FALSE);
+
+	if (!new_method)
+		return FALSE;
+
+	cur_method = e_source_authentication_dup_method (auth_extension);
+
+	/* Only when turning off OAuth2 */
+	can_change = google_backend_is_oauth2 (cur_method) && !google_backend_is_oauth2 (new_method);
+
+	g_free (cur_method);
+
+	return can_change;
+}
+
 static void
-google_backend_mail_update_auth_method (ESource *child_source,
+google_backend_mail_update_auth_method (ECollectionBackend *collection_backend,
+					ESource *child_source,
 					ESource *master_source)
 {
 	ESourceAuthentication *auth_extension;
@@ -182,7 +219,7 @@ google_backend_mail_update_auth_method (ESource *child_source,
 
 	auth_extension = e_source_get_extension (child_source, E_SOURCE_EXTENSION_AUTHENTICATION);
 
-	if (!google_backend_is_google_host (auth_extension))
+	if (!google_backend_is_google_host (auth_extension, NULL))
 		return;
 
 	oauth2_support = e_server_side_source_ref_oauth2_support (E_SERVER_SIDE_SOURCE (child_source));
@@ -201,7 +238,8 @@ google_backend_mail_update_auth_method (ESource *child_source,
 		method = NULL;
 	}
 
-	if (method)
+	if (method && (e_collection_backend_is_new_source (collection_backend, child_source) ||
+	    google_backend_can_change_auth_method (auth_extension, method)))
 		e_source_authentication_set_method (auth_extension, method);
 
 	g_clear_object (&oauth2_support);
@@ -212,21 +250,22 @@ google_backend_mail_update_auth_method_cb (ESource *child_source,
 					   GParamSpec *param,
 					   EBackend *backend)
 {
-	google_backend_mail_update_auth_method (child_source, e_backend_get_source (backend));
+	google_backend_mail_update_auth_method (E_COLLECTION_BACKEND (backend), child_source, e_backend_get_source (backend));
 }
 
 static void
-google_backend_calendar_update_auth_method (ESource *child_source,
+google_backend_calendar_update_auth_method (ECollectionBackend *collection_backend,
+					    ESource *child_source,
 					    ESource *master_source)
 {
 	EOAuth2Support *oauth2_support;
 	ESourceAuthentication *auth_extension;
 	const gchar *method;
-	gboolean can_use_google_auth;
+	gboolean can_use_google_auth, requires_oauth2 = FALSE;
 
 	auth_extension = e_source_get_extension (child_source, E_SOURCE_EXTENSION_AUTHENTICATION);
 
-	if (!google_backend_is_google_host (auth_extension))
+	if (!google_backend_is_google_host (auth_extension, &requires_oauth2))
 		return;
 
 	oauth2_support = e_server_side_source_ref_oauth2_support (E_SERVER_SIDE_SOURCE (child_source));
@@ -245,7 +284,10 @@ google_backend_calendar_update_auth_method (ESource *child_source,
 		method = "plain/password";
 	}
 
-	e_source_authentication_set_method (auth_extension, method);
+	if (requires_oauth2 ||
+	    e_collection_backend_is_new_source (collection_backend, child_source) ||
+	    google_backend_can_change_auth_method (auth_extension, method))
+		e_source_authentication_set_method (auth_extension, method);
 
 	g_clear_object (&oauth2_support);
 }
@@ -255,7 +297,7 @@ google_backend_calendar_update_auth_method_cb (ESource *child_source,
 					       GParamSpec *param,
 					       EBackend *backend)
 {
-	google_backend_calendar_update_auth_method (child_source, e_backend_get_source (backend));
+	google_backend_calendar_update_auth_method (E_COLLECTION_BACKEND (backend), child_source, e_backend_get_source (backend));
 }
 
 static void
@@ -269,7 +311,7 @@ google_backend_contacts_update_auth_method (ESource *child_source,
 
 	extension = e_source_get_extension (child_source, E_SOURCE_EXTENSION_AUTHENTICATION);
 
-	if (!google_backend_is_google_host (extension))
+	if (!google_backend_is_google_host (extension, NULL))
 		return;
 
 	oauth2_support = e_server_side_source_ref_oauth2_support (E_SERVER_SIDE_SOURCE (child_source));
@@ -476,7 +518,7 @@ google_backend_authenticate_sync (EBackend *backend,
 	/* When the WebDAV extension is created, the auth method can be reset, thus ensure
 	   it's there before setting correct authentication method on the master source. */
 	(void) e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-	google_backend_calendar_update_auth_method (source, NULL);
+	google_backend_calendar_update_auth_method (collection, source, NULL);
 
 	if (goa_extension) {
 		calendar_url = e_source_goa_get_calendar_url (goa_extension);
@@ -751,7 +793,7 @@ google_backend_child_added (ECollectionBackend *backend,
 
 		if (e_source_has_extension (child_source, E_SOURCE_EXTENSION_MAIL_ACCOUNT) ||
 		    e_source_has_extension (child_source, E_SOURCE_EXTENSION_MAIL_TRANSPORT)) {
-			google_backend_mail_update_auth_method (child_source, collection_source);
+			google_backend_mail_update_auth_method (backend, child_source, collection_source);
 			g_signal_connect (
 				child_source, "notify::oauth2-support",
 				G_CALLBACK (google_backend_mail_update_auth_method_cb),
@@ -780,7 +822,7 @@ google_backend_child_added (ECollectionBackend *backend,
 			g_free (today);
 		}
 
-		google_backend_calendar_update_auth_method (child_source, collection_source);
+		google_backend_calendar_update_auth_method (backend, child_source, collection_source);
 		g_signal_connect (
 			child_source, "notify::oauth2-support",
 			G_CALLBACK (google_backend_calendar_update_auth_method_cb),

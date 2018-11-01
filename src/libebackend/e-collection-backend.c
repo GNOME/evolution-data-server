@@ -71,6 +71,7 @@ struct _ECollectionBackendPrivate {
 	/* Resource ID -> ESource */
 	GHashTable *unclaimed_resources;
 	GMutex unclaimed_resources_lock;
+	GHashTable *new_sources; /* ESource::uid ~> NULL, uses the unclaimed_resources_lock */
 
 	gulong source_added_handler_id;
 	gulong source_removed_handler_id;
@@ -342,6 +343,13 @@ collection_backend_claim_resource (ECollectionBackend *backend,
 		GFile *file = collection_backend_new_user_file (backend);
 		source = collection_backend_new_source (backend, file, error);
 		g_object_unref (file);
+
+		if (source) {
+			if (!backend->priv->new_sources)
+				backend->priv->new_sources = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+			g_hash_table_insert (backend->priv->new_sources, e_source_dup_uid (source), NULL);
+		}
 	}
 
 	g_mutex_unlock (&backend->priv->unclaimed_resources_lock);
@@ -547,6 +555,21 @@ collection_backend_source_enabled_cb (ESource *source,
 	g_object_notify (collection, "mail-enabled");
 }
 
+static void
+collection_backend_forget_new_sources (ECollectionBackend *backend)
+{
+	g_return_if_fail (E_IS_COLLECTION_BACKEND (backend));
+
+	g_mutex_lock (&backend->priv->unclaimed_resources_lock);
+
+	if (backend->priv->new_sources) {
+		g_hash_table_destroy (backend->priv->new_sources);
+		backend->priv->new_sources = NULL;
+	}
+
+	g_mutex_unlock (&backend->priv->unclaimed_resources_lock);
+}
+
 static gboolean
 collection_backend_populate_idle_cb (gpointer user_data)
 {
@@ -560,6 +583,10 @@ collection_backend_populate_idle_cb (gpointer user_data)
 	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
 	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->populate != NULL, FALSE);
+
+	/* Any new sources found during the last populate() are not
+	   considered new anymore. */
+	collection_backend_forget_new_sources (backend);
 
 	class->populate (backend);
 
@@ -773,6 +800,8 @@ collection_backend_dispose (GObject *object)
 
 	g_mutex_lock (&priv->unclaimed_resources_lock);
 	g_hash_table_remove_all (priv->unclaimed_resources);
+	if (priv->new_sources)
+		g_hash_table_remove_all (priv->new_sources);
 	g_mutex_unlock (&priv->unclaimed_resources_lock);
 
 	/* Chain up to parent's dispose() method. */
@@ -792,6 +821,8 @@ collection_backend_finalize (GObject *object)
 	g_mutex_clear (&priv->property_lock);
 
 	g_hash_table_destroy (priv->unclaimed_resources);
+	if (priv->new_sources)
+		g_hash_table_destroy (priv->new_sources);
 	g_mutex_clear (&priv->unclaimed_resources_lock);
 
 	g_weak_ref_clear (&priv->server);
@@ -1201,6 +1232,7 @@ e_collection_backend_init (ECollectionBackend *backend)
 	g_mutex_init (&backend->priv->children_lock);
 	g_mutex_init (&backend->priv->property_lock);
 	backend->priv->unclaimed_resources = unclaimed_resources;
+	backend->priv->new_sources = NULL;
 	g_mutex_init (&backend->priv->unclaimed_resources_lock);
 	g_weak_ref_init (&backend->priv->server, NULL);
 }
@@ -1254,6 +1286,39 @@ e_collection_backend_new_child (ECollectionBackend *backend,
 		e_source_get_uid (child_source), resource_id);
 
 	return child_source;
+}
+
+/**
+ * e_collection_backend_is_new_source:
+ * @backend: an #ECollectionBackend
+ * @source: a child #ESource
+ *
+ * Returns whether the @source is a newly created child or not. New sources
+ * are remembered between two populate calls only.
+ *
+ * Returns: %TRUE, when the @source is a new child; %FALSE when
+ *    it had been known before.
+ *
+ * Since: 3.30.3
+ **/
+gboolean
+e_collection_backend_is_new_source (ECollectionBackend *backend,
+				    ESource *source)
+{
+	gboolean is_new;
+
+	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	g_return_val_if_fail (e_source_get_uid (source) != NULL, FALSE);
+
+	g_mutex_lock (&backend->priv->unclaimed_resources_lock);
+
+	is_new = backend->priv->new_sources &&
+		g_hash_table_contains (backend->priv->new_sources, e_source_get_uid (source));
+
+	g_mutex_unlock (&backend->priv->unclaimed_resources_lock);
+
+	return is_new;
 }
 
 /**
