@@ -115,6 +115,9 @@ struct _ECollectionBackendClass {
 GType		e_collection_backend_get_type	(void) G_GNUC_CONST;
 ESource *	e_collection_backend_new_child	(ECollectionBackend *backend,
 						 const gchar *resource_id);
+gboolean	e_collection_backend_is_new_source
+						(ECollectionBackend *backend,
+						 ESource *source);
 GProxyResolver *
 		e_collection_backend_ref_proxy_resolver
 						(ECollectionBackend *backend);
