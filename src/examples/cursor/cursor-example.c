@@ -22,7 +22,6 @@
 #include "cursor-example.h"
 #include "cursor-navigator.h"
 #include "cursor-search.h"
-#include "cursor-slot.h"
 #include "cursor-data.h"
 #include "cursor-slot.h"
 
