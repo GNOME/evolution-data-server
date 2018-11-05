@@ -998,6 +998,7 @@ add_subdirectory(po)
 add_subdirectory(src)
 add_subdirectory(tests)
 
+# Add it as the last, because it looks for targets defined above
 if(ENABLE_GTK_DOC)
 	add_subdirectory(docs)
 endif(ENABLE_GTK_DOC)

@@ -2359,7 +2359,7 @@ e_reminder_watcher_get_timers_enabled (EReminderWatcher *watcher)
 /**
  * e_reminder_watcher_set_timers_enabled:
  * @watcher: an #EReminderWatcher
- * @enable: a value to set
+ * @enabled: a value to set
  *
  * The @watcher can be used both for scheduling the timers for the reminders
  * and respond to them through the "triggered" signal, or only to listen for
