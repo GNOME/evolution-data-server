@@ -26,6 +26,7 @@
 
 #include "camel-db.h"
 #include "camel-debug.h"
+#include "camel-enumtypes.h"
 #include "camel-filter-driver.h"
 #include "camel-folder.h"
 #include "camel-mempool.h"
@@ -70,6 +71,9 @@ struct _CamelFolderPrivate {
 	gchar *full_name;
 	gchar *display_name;
 	gchar *description;
+
+	CamelThreeState mark_seen;
+	gint mark_seen_timeout;
 };
 
 struct _AsyncContext {
@@ -112,7 +116,9 @@ enum {
 	PROP_DESCRIPTION,
 	PROP_DISPLAY_NAME,
 	PROP_FULL_NAME,
-	PROP_PARENT_STORE
+	PROP_PARENT_STORE,
+	PROP_MARK_SEEN,
+	PROP_MARK_SEEN_TIMEOUT
 };
 
 enum {
@@ -587,6 +593,18 @@ folder_set_property (GObject *object,
 				CAMEL_FOLDER (object),
 				g_value_get_object (value));
 			return;
+
+		case PROP_MARK_SEEN:
+			camel_folder_set_mark_seen (
+				CAMEL_FOLDER (object),
+				g_value_get_enum (value));
+			return;
+
+		case PROP_MARK_SEEN_TIMEOUT:
+			camel_folder_set_mark_seen_timeout (
+				CAMEL_FOLDER (object),
+				g_value_get_int (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -620,6 +638,18 @@ folder_get_property (GObject *object,
 		case PROP_PARENT_STORE:
 			g_value_set_object (
 				value, camel_folder_get_parent_store (
+				CAMEL_FOLDER (object)));
+			return;
+
+		case PROP_MARK_SEEN:
+			g_value_set_enum (
+				value, camel_folder_get_mark_seen (
+				CAMEL_FOLDER (object)));
+			return;
+
+		case PROP_MARK_SEEN_TIMEOUT:
+			g_value_set_int (
+				value, camel_folder_get_mark_seen_timeout (
 				CAMEL_FOLDER (object)));
 			return;
 	}
@@ -1275,6 +1305,50 @@ camel_folder_class_init (CamelFolderClass *class)
 			G_PARAM_CONSTRUCT_ONLY));
 
 	/**
+	 * CamelFolder:mark-seen
+	 *
+	 * A #CamelThreeState persistent option of the folder,
+	 * which can override global option to mark messages
+	 * as seen after certain interval.
+	 *
+	 * Since: 3.32
+	 **/
+	g_object_class_install_property (
+		object_class,
+		PROP_MARK_SEEN,
+		g_param_spec_enum (
+			"mark-seen",
+			"Mark Seen",
+			"Mark messages as read after N seconds",
+			CAMEL_TYPE_THREE_STATE,
+			CAMEL_THREE_STATE_INCONSISTENT,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			CAMEL_PARAM_PERSISTENT));
+
+	/**
+	 * CamelFolder:mark-seen-timeout
+	 *
+	 * Timeout in milliseconds for marking messages as seen.
+	 *
+	 * Since: 3.32
+	 **/
+	g_object_class_install_property (
+		object_class,
+		PROP_MARK_SEEN_TIMEOUT,
+		g_param_spec_int (
+			"mark-seen-timeout",
+			"Mark Seen Timeout",
+			"Mark seen timeout",
+			0, G_MAXINT32,
+			1500,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			CAMEL_PARAM_PERSISTENT));
+
+	/**
 	 * CamelFolder::changed
 	 * @folder: the #CamelFolder which emitted the signal
 	 * @changes: the #CamelFolderChangeInfo with the list of changes
@@ -1763,6 +1837,90 @@ camel_folder_set_flags (CamelFolder *folder,
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
 	folder->priv->folder_flags = folder_flags;
+}
+
+/**
+ * camel_folder_get_mark_seen:
+ * @folder: a #CamelFolder
+ *
+ * Returns: a #CamelThreeState, whether messages in this @folder
+ *    should be marked as seen automatically.
+ *
+ * Since: 3.32
+ **/
+CamelThreeState
+camel_folder_get_mark_seen (CamelFolder *folder)
+{
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), CAMEL_THREE_STATE_INCONSISTENT);
+
+	return folder->priv->mark_seen;
+}
+
+/**
+ * camel_folder_set_mark_seen:
+ * @folder: a #CamelFolder
+ * @mark_seen: a #CamelThreeState as the value to set
+ *
+ * Sets whether the messages in this @folder should be marked
+ * as seen automatically. An inconsistent state means to use
+ * global option.
+ *
+ * Since: 3.32
+ **/
+void
+camel_folder_set_mark_seen (CamelFolder *folder,
+			    CamelThreeState mark_seen)
+{
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	if (folder->priv->mark_seen == mark_seen)
+		return;
+
+	folder->priv->mark_seen = mark_seen;
+
+	g_object_notify (G_OBJECT (folder), "mark-seen");
+}
+
+/**
+ * camel_folder_get_mark_seen_timeout:
+ * @folder: a #CamelFolder
+ *
+ * Returns: timeout in milliseconds for marking messages
+ *    as seen in this @folder
+ *
+ * Since: 3.32
+ **/
+gint
+camel_folder_get_mark_seen_timeout (CamelFolder *folder)
+{
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), -1);
+
+	return folder->priv->mark_seen_timeout;
+}
+
+/**
+ * camel_folder_set_mark_seen_timeout:
+ * @folder: a #CamelFolder
+ * @timeout: a timeout in milliseconds
+ *
+ * Sets the @timeout in milliseconds for marking messages
+ * as seen in this @folder. Whether the timeout is used
+ * depends on camel_folder_get_mark_seen().
+ *
+ * Since: 3.32
+ **/
+void
+camel_folder_set_mark_seen_timeout (CamelFolder *folder,
+				    gint timeout)
+{
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	if (folder->priv->mark_seen_timeout == timeout)
+		return;
+
+	folder->priv->mark_seen_timeout = timeout;
+
+	g_object_notify (G_OBJECT (folder), "mark-seen-timeout");
 }
 
 /**

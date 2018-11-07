@@ -23,6 +23,7 @@
 #define E_SOURCE_MAIL_ACCOUNT_H
 
 #include <libedataserver/e-source-backend.h>
+#include <libedataserver/e-source-enums.h>
 
 /* Standard GObject macros */
 #define E_TYPE_SOURCE_MAIL_ACCOUNT \
@@ -98,6 +99,16 @@ gboolean	e_source_mail_account_get_needs_initial_setup
 void		e_source_mail_account_set_needs_initial_setup
 					(ESourceMailAccount *extension,
 					 gboolean needs_initial_setup);
+EThreeState	e_source_mail_account_get_mark_seen
+					(ESourceMailAccount *extension);
+void		e_source_mail_account_set_mark_seen
+					(ESourceMailAccount *extension,
+					 EThreeState mark_seen);
+gint		e_source_mail_account_get_mark_seen_timeout
+					(ESourceMailAccount *extension);
+void		e_source_mail_account_set_mark_seen_timeout
+					(ESourceMailAccount *extension,
+					 gint timeout);
 
 G_END_DECLS
 

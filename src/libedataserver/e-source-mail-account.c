@@ -48,13 +48,17 @@ struct _ESourceMailAccountPrivate {
 	gchar *identity_uid;
 	gchar *archive_folder;
 	gboolean needs_initial_setup;
+	EThreeState mark_seen;
+	gint mark_seen_timeout;
 };
 
 enum {
 	PROP_0,
 	PROP_IDENTITY_UID,
 	PROP_ARCHIVE_FOLDER,
-	PROP_NEEDS_INITIAL_SETUP
+	PROP_NEEDS_INITIAL_SETUP,
+	PROP_MARK_SEEN,
+	PROP_MARK_SEEN_TIMEOUT
 };
 
 G_DEFINE_TYPE (
@@ -86,6 +90,18 @@ source_mail_account_set_property (GObject *object,
 				E_SOURCE_MAIL_ACCOUNT (object),
 				g_value_get_boolean (value));
 			return;
+
+		case PROP_MARK_SEEN:
+			e_source_mail_account_set_mark_seen (
+				E_SOURCE_MAIL_ACCOUNT (object),
+				g_value_get_enum (value));
+			return;
+
+		case PROP_MARK_SEEN_TIMEOUT:
+			e_source_mail_account_set_mark_seen_timeout (
+				E_SOURCE_MAIL_ACCOUNT (object),
+				g_value_get_int (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -116,6 +132,20 @@ source_mail_account_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				e_source_mail_account_get_needs_initial_setup (
+				E_SOURCE_MAIL_ACCOUNT (object)));
+			return;
+
+		case PROP_MARK_SEEN:
+			g_value_set_enum (
+				value,
+				e_source_mail_account_get_mark_seen (
+				E_SOURCE_MAIL_ACCOUNT (object)));
+			return;
+
+		case PROP_MARK_SEEN_TIMEOUT:
+			g_value_set_int (
+				value,
+				e_source_mail_account_get_mark_seen_timeout (
 				E_SOURCE_MAIL_ACCOUNT (object)));
 			return;
 	}
@@ -189,6 +219,36 @@ e_source_mail_account_class_init (ESourceMailAccountClass *class)
 			"Needs Initial Setup",
 			"Whether the account needs to do an initial setup",
 			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_MARK_SEEN,
+		g_param_spec_enum (
+			"mark-seen",
+			"Mark Seen",
+			"Three-state option for Mark messages as read after N seconds",
+			E_TYPE_THREE_STATE,
+			E_THREE_STATE_INCONSISTENT,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_MARK_SEEN_TIMEOUT,
+		g_param_spec_int (
+			"mark-seen-timeout",
+			"Mark Seen Timeout",
+			"Timeout in milliseconds for Mark messages as read after N seconds",
+			0, G_MAXINT,
+			1500,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -407,4 +467,88 @@ e_source_mail_account_set_needs_initial_setup (ESourceMailAccount *extension,
 	extension->priv->needs_initial_setup = needs_initial_setup;
 
 	g_object_notify (G_OBJECT (extension), "needs-initial-setup");
+}
+
+/**
+ * e_source_mail_account_get_mark_seen:
+ * @extension: an #ESourceMailAccount
+ *
+ * Returns: an #EThreeState, whether messages in this account
+ *    should be marked as seen automatically.
+ *
+ * Since: 3.32
+ **/
+EThreeState
+e_source_mail_account_get_mark_seen (ESourceMailAccount *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_MAIL_ACCOUNT (extension), E_THREE_STATE_INCONSISTENT);
+
+	return extension->priv->mark_seen;
+}
+
+/**
+ * e_source_mail_account_set_mark_seen:
+ * @extension: an #ESourceMailAccount
+ * @mark_seen: an #EThreeState as the value to set
+ *
+ * Sets whether the messages in this account should be marked
+ * as seen automatically. An inconsistent state means to use
+ * global option.
+ *
+ * Since: 3.32
+ **/
+void
+e_source_mail_account_set_mark_seen (ESourceMailAccount *extension,
+				     EThreeState mark_seen)
+{
+	g_return_if_fail (E_IS_SOURCE_MAIL_ACCOUNT (extension));
+
+	if (extension->priv->mark_seen == mark_seen)
+		return;
+
+	extension->priv->mark_seen = mark_seen;
+
+	g_object_notify (G_OBJECT (extension), "mark-seen");
+}
+
+/**
+ * e_source_mail_account_get_mark_seen_timeout:
+ * @extension: an #ESourceMailAccount
+ *
+ * Returns: timeout in milliseconds for marking messages
+ *    as seen in this account
+ *
+ * Since: 3.32
+ **/
+gint
+e_source_mail_account_get_mark_seen_timeout (ESourceMailAccount *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_MAIL_ACCOUNT (extension), -1);
+
+	return extension->priv->mark_seen_timeout;
+}
+
+/**
+ * e_source_mail_account_set_mark_seen_timeout:
+ * @extension: an #ESourceMailAccount
+ * @timeout: a timeout in milliseconds
+ *
+ * Sets the @timeout in milliseconds for marking messages
+ * as seen in this account. Whether the timeout is used
+ * depends on e_source_mail_account_get_mark_seen().
+ *
+ * Since: 3.32
+ **/
+void
+e_source_mail_account_set_mark_seen_timeout (ESourceMailAccount *extension,
+					     gint timeout)
+{
+	g_return_if_fail (E_IS_SOURCE_MAIL_ACCOUNT (extension));
+
+	if (extension->priv->mark_seen_timeout == timeout)
+		return;
+
+	extension->priv->mark_seen_timeout = timeout;
+
+	g_object_notify (G_OBJECT (extension), "mark-seen-timeout");
 }

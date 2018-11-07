@@ -301,6 +301,14 @@ void		camel_folder_set_description	(CamelFolder *folder,
 guint32		camel_folder_get_flags		(CamelFolder *folder);
 void		camel_folder_set_flags		(CamelFolder *folder,
 						 guint32 folder_flags);
+CamelThreeState	camel_folder_get_mark_seen	(CamelFolder *folder);
+void		camel_folder_set_mark_seen	(CamelFolder *folder,
+						 CamelThreeState mark_seen);
+gint		camel_folder_get_mark_seen_timeout
+						(CamelFolder *folder);
+void		camel_folder_set_mark_seen_timeout
+						(CamelFolder *folder,
+						 gint timeout);
 guint32		camel_folder_get_permanent_flags
 						(CamelFolder *folder);
 #ifndef CAMEL_DISABLE_DEPRECATED

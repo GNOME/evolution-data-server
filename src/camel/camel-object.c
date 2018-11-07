@@ -200,6 +200,7 @@ object_state_read (CamelObject *object,
 	for (ii = 0; ii < count; ii++) {
 		gboolean property_set = FALSE;
 		guint32 tag, v_uint32;
+		gint32 v_int32;
 
 		if (camel_file_util_decode_uint32 (fp, &tag) == -1)
 			goto exit;
@@ -212,6 +213,12 @@ object_state_read (CamelObject *object,
 					goto exit;
 				g_value_init (&value, G_TYPE_BOOLEAN);
 				g_value_set_boolean (&value, (gboolean) v_uint32);
+				break;
+			case CAMEL_ARG_INT:
+				if (camel_file_util_decode_fixed_int32 (fp, &v_int32) == -1)
+					goto exit;
+				g_value_init (&value, G_TYPE_INT);
+				g_value_set_int (&value, v_int32);
 				break;
 			case CAMEL_ARG_3ST:
 				if (camel_file_util_decode_uint32 (fp, &v_uint32) == -1)
@@ -320,6 +327,7 @@ object_state_write (CamelObject *object,
 	for (ii = 0; ii < n_properties; ii++) {
 		GParamSpec *pspec = properties[ii];
 		guint32 tag, v_uint32;
+		gint32 v_int32;
 
 		if ((pspec->flags & CAMEL_PARAM_PERSISTENT) == 0)
 			continue;
@@ -340,6 +348,14 @@ object_state_write (CamelObject *object,
 				if (camel_file_util_encode_uint32 (fp, tag) == -1)
 					goto exit;
 				if (camel_file_util_encode_uint32 (fp, v_uint32) == -1)
+					goto exit;
+				break;
+			case G_TYPE_INT:
+				tag |= CAMEL_ARG_INT;
+				v_int32 = g_value_get_int (&value);
+				if (camel_file_util_encode_uint32 (fp, tag) == -1)
+					goto exit;
+				if (camel_file_util_encode_fixed_int32 (fp, v_int32) == -1)
 					goto exit;
 				break;
 			default:
