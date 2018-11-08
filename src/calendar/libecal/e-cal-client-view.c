@@ -38,7 +38,7 @@
 #include "e-cal-client.h"
 #include "e-cal-client-view.h"
 
-#include "e-gdbus-cal-view.h"
+#include "e-dbus-calendar-view.h"
 
 #define E_CAL_CLIENT_VIEW_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -48,7 +48,7 @@ typedef struct _SignalClosure SignalClosure;
 
 struct _ECalClientViewPrivate {
 	ECalClient *client;
-	GDBusProxy *dbus_proxy;
+	EDBusCalendarView *dbus_proxy;
 	GDBusConnection *connection;
 	gchar *object_path;
 	gboolean running;
@@ -300,7 +300,7 @@ cal_client_view_emit_complete_idle_cb (gpointer user_data)
 }
 
 static void
-cal_client_view_objects_added_cb (EGdbusCalView *dbus_proxy,
+cal_client_view_objects_added_cb (EDBusCalendarView *dbus_proxy,
                                   const gchar * const *objects,
                                   GWeakRef *client_view_weak_ref)
 {
@@ -340,7 +340,7 @@ cal_client_view_objects_added_cb (EGdbusCalView *dbus_proxy,
 }
 
 static void
-cal_client_view_objects_modified_cb (EGdbusCalView *dbus_proxy,
+cal_client_view_objects_modified_cb (EDBusCalendarView *dbus_proxy,
                                      const gchar * const *objects,
                                      GWeakRef *client_view_weak_ref)
 {
@@ -380,7 +380,7 @@ cal_client_view_objects_modified_cb (EGdbusCalView *dbus_proxy,
 }
 
 static void
-cal_client_view_objects_removed_cb (EGdbusCalView *dbus_proxy,
+cal_client_view_objects_removed_cb (EDBusCalendarView *dbus_proxy,
                                     const gchar * const *uids,
                                     GWeakRef *client_view_weak_ref)
 {
@@ -420,7 +420,7 @@ cal_client_view_objects_removed_cb (EGdbusCalView *dbus_proxy,
 }
 
 static void
-cal_client_view_progress_cb (EGdbusCalView *dbus_proxy,
+cal_client_view_progress_cb (EDBusCalendarView *dbus_proxy,
                              guint percent,
                              const gchar *message,
                              GWeakRef *client_view_weak_ref)
@@ -462,8 +462,9 @@ cal_client_view_progress_cb (EGdbusCalView *dbus_proxy,
 }
 
 static void
-cal_client_view_complete_cb (EGdbusCalView *dbus_proxy,
-                             const gchar * const *arg_error,
+cal_client_view_complete_cb (EDBusCalendarView *dbus_proxy,
+			     const gchar *arg_error_name,
+			     const gchar *arg_error_message,
                              GWeakRef *client_view_weak_ref)
 {
 	ECalClientView *client_view;
@@ -482,8 +483,13 @@ cal_client_view_complete_cb (EGdbusCalView *dbus_proxy,
 
 		signal_closure = g_slice_new0 (SignalClosure);
 		g_weak_ref_init (&signal_closure->client_view, client_view);
-		e_gdbus_templates_decode_error (
-			arg_error, &signal_closure->error);
+		if (arg_error_name && *arg_error_name && arg_error_message)
+			signal_closure->error = g_dbus_error_new_for_dbus_error (arg_error_name, arg_error_message);
+		else
+			signal_closure->error = NULL;
+
+		if (signal_closure->error)
+			g_dbus_error_strip_remote_error (signal_closure->error);
 
 		main_context = cal_client_view_ref_main_context (client_view);
 
@@ -633,7 +639,7 @@ cal_client_view_dispose (GObject *object)
 		 * Also omit a callback function, so the GDBusMessage
 		 * uses G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED.
 		 */
-		e_gdbus_cal_view_call_dispose (priv->dbus_proxy, NULL, NULL, NULL);
+		e_dbus_calendar_view_call_dispose (priv->dbus_proxy, NULL, NULL, NULL);
 		g_object_unref (priv->dbus_proxy);
 		priv->dbus_proxy = NULL;
 	}
@@ -665,7 +671,7 @@ cal_client_view_initable_init (GInitable *initable,
 {
 	ECalClient *cal_client;
 	ECalClientViewPrivate *priv;
-	EGdbusCalView *gdbus_calview;
+	EDBusCalendarView *dbus_calview;
 	gulong handler_id;
 	gchar *bus_name;
 
@@ -684,7 +690,7 @@ cal_client_view_initable_init (GInitable *initable,
 	bus_name = e_client_dup_bus_name (E_CLIENT (cal_client));
 	g_object_unref (cal_client);
 
-	gdbus_calview = e_gdbus_cal_view_proxy_new_sync (
+	dbus_calview = e_dbus_calendar_view_proxy_new_sync (
 		priv->connection,
 		G_DBUS_PROXY_FLAGS_NONE,
 		bus_name,
@@ -693,10 +699,10 @@ cal_client_view_initable_init (GInitable *initable,
 
 	g_free (bus_name);
 
-	if (gdbus_calview == NULL)
+	if (dbus_calview == NULL)
 		return FALSE;
 
-	priv->dbus_proxy = G_DBUS_PROXY (gdbus_calview);
+	priv->dbus_proxy = dbus_calview;
 
 	handler_id = g_signal_connect_data (
 		priv->dbus_proxy, "objects-added",
@@ -1011,7 +1017,7 @@ e_cal_client_view_start (ECalClientView *client_view,
 
 	client_view->priv->running = TRUE;
 
-	e_gdbus_cal_view_call_start_sync (
+	e_dbus_calendar_view_call_start_sync (
 		client_view->priv->dbus_proxy, NULL, &local_error);
 
 	if (local_error != NULL) {
@@ -1040,7 +1046,7 @@ e_cal_client_view_stop (ECalClientView *client_view,
 
 	client_view->priv->running = FALSE;
 
-	e_gdbus_cal_view_call_stop_sync (
+	e_dbus_calendar_view_call_stop_sync (
 		client_view->priv->dbus_proxy, NULL, &local_error);
 
 	if (local_error != NULL) {
@@ -1079,7 +1085,7 @@ e_cal_client_view_set_fields_of_interest (ECalClientView *client_view,
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (client_view));
 
 	strv = e_client_util_slist_to_strv (fields_of_interest);
-	e_gdbus_cal_view_call_set_fields_of_interest_sync (
+	e_dbus_calendar_view_call_set_fields_of_interest_sync (
 		client_view->priv->dbus_proxy,
 		(const gchar * const *) strv,
 		NULL, &local_error);
@@ -1110,7 +1116,7 @@ e_cal_client_view_set_flags (ECalClientView *client_view,
 
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (client_view));
 
-	e_gdbus_cal_view_call_set_flags_sync (
+	e_dbus_calendar_view_call_set_flags_sync (
 		client_view->priv->dbus_proxy, flags, NULL, &local_error);
 
 	if (local_error != NULL) {

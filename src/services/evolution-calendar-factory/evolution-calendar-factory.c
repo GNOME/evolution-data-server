@@ -92,7 +92,6 @@ main (gint argc,
 	icaltzutil_set_exact_vtimezones_support (0);
 #endif
 
-	e_gdbus_templates_init_main_thread ();
 	e_xml_initialize_in_main ();
 
  reload:

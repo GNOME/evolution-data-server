@@ -32,7 +32,6 @@
 #include <libedataserver/e-flag.h>
 #include <libedataserver/e-free-form-exp.h>
 #include <libedataserver/e-gdata-oauth2-authorizer.h>
-#include <libedataserver/e-gdbus-templates.h>
 #include <libedataserver/e-iterator.h>
 #include <libedataserver/e-list-iterator.h>
 #include <libedataserver/e-list.h>

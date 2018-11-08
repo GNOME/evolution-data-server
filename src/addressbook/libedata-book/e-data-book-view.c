@@ -40,7 +40,7 @@
 #include "e-data-book.h"
 #include "e-book-backend.h"
 
-#include "e-gdbus-book-view.h"
+#include "e-dbus-address-book-view.h"
 
 #define E_DATA_BOOK_VIEW_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -54,7 +54,7 @@
 
 struct _EDataBookViewPrivate {
 	GDBusConnection *connection;
-	EGdbusBookView *gdbus_object;
+	EDBusAddressBookView *dbus_object;
 	gchar *object_path;
 
 	EBookBackend *backend;
@@ -158,8 +158,8 @@ send_pending_adds (EDataBookView *view)
 	if (view->priv->adds->len == 0)
 		return;
 
-	e_gdbus_book_view_emit_objects_added (
-		view->priv->gdbus_object,
+	e_dbus_address_book_view_emit_objects_added (
+		view->priv->dbus_object,
 		(const gchar * const *) view->priv->adds->data);
 	reset_array (view->priv->adds);
 }
@@ -170,8 +170,8 @@ send_pending_changes (EDataBookView *view)
 	if (view->priv->changes->len == 0)
 		return;
 
-	e_gdbus_book_view_emit_objects_modified (
-		view->priv->gdbus_object,
+	e_dbus_address_book_view_emit_objects_modified (
+		view->priv->dbus_object,
 		(const gchar * const *) view->priv->changes->data);
 	reset_array (view->priv->changes);
 }
@@ -182,8 +182,8 @@ send_pending_removes (EDataBookView *view)
 	if (view->priv->removes->len == 0)
 		return;
 
-	e_gdbus_book_view_emit_objects_removed (
-		view->priv->gdbus_object,
+	e_dbus_address_book_view_emit_objects_removed (
+		view->priv->dbus_object,
 		(const gchar * const *) view->priv->removes->data);
 	reset_array (view->priv->removes);
 }
@@ -231,7 +231,7 @@ bookview_start_thread (gpointer data)
 }
 
 static gboolean
-impl_DataBookView_start (EGdbusBookView *object,
+impl_DataBookView_start (EDBusAddressBookView *object,
                          GDBusMethodInvocation *invocation,
                          EDataBookView *view)
 {
@@ -244,7 +244,7 @@ impl_DataBookView_start (EGdbusBookView *object,
 		NULL, bookview_start_thread, g_object_ref (view));
 	g_thread_unref (thread);
 
-	e_gdbus_book_view_complete_start (object, invocation, NULL);
+	e_dbus_address_book_view_complete_start (object, invocation);
 
 	return TRUE;
 }
@@ -262,7 +262,7 @@ bookview_stop_thread (gpointer data)
 }
 
 static gboolean
-impl_DataBookView_stop (EGdbusBookView *object,
+impl_DataBookView_stop (EDBusAddressBookView *object,
                         GDBusMethodInvocation *invocation,
                         EDataBookView *view)
 {
@@ -275,30 +275,30 @@ impl_DataBookView_stop (EGdbusBookView *object,
 		NULL, bookview_stop_thread, g_object_ref (view));
 	g_thread_unref (thread);
 
-	e_gdbus_book_view_complete_stop (object, invocation, NULL);
+	e_dbus_address_book_view_complete_stop (object, invocation);
 
 	return TRUE;
 }
 
 static gboolean
-impl_DataBookView_setFlags (EGdbusBookView *object,
+impl_DataBookView_setFlags (EDBusAddressBookView *object,
                             GDBusMethodInvocation *invocation,
                             EBookClientViewFlags flags,
                             EDataBookView *view)
 {
 	view->priv->flags = flags;
 
-	e_gdbus_book_view_complete_set_flags (object, invocation, NULL);
+	e_dbus_address_book_view_complete_set_flags (object, invocation);
 
 	return TRUE;
 }
 
 static gboolean
-impl_DataBookView_dispose (EGdbusBookView *object,
+impl_DataBookView_dispose (EDBusAddressBookView *object,
                            GDBusMethodInvocation *invocation,
                            EDataBookView *view)
 {
-	e_gdbus_book_view_complete_dispose (object, invocation, NULL);
+	e_dbus_address_book_view_complete_dispose (object, invocation);
 
 	e_book_backend_stop_view (view->priv->backend, view);
 	view->priv->running = FALSE;
@@ -308,7 +308,7 @@ impl_DataBookView_dispose (EGdbusBookView *object,
 }
 
 static gboolean
-impl_DataBookView_set_fields_of_interest (EGdbusBookView *object,
+impl_DataBookView_set_fields_of_interest (EDBusAddressBookView *object,
                                           GDBusMethodInvocation *invocation,
                                           const gchar * const *in_fields_of_interest,
                                           EDataBookView *view)
@@ -348,8 +348,7 @@ impl_DataBookView_set_fields_of_interest (EGdbusBookView *object,
 			g_strdup (field), GINT_TO_POINTER (1));
 	}
 
-	e_gdbus_book_view_complete_set_fields_of_interest (
-		object, invocation, NULL);
+	e_dbus_address_book_view_complete_set_fields_of_interest (object, invocation);
 
 	return TRUE;
 }
@@ -485,7 +484,7 @@ data_book_view_dispose (GObject *object)
 	g_mutex_unlock (&priv->pending_mutex);
 
 	g_clear_object (&priv->connection);
-	g_clear_object (&priv->gdbus_object);
+	g_clear_object (&priv->dbus_object);
 	g_clear_object (&priv->backend);
 	g_clear_object (&priv->sexp);
 
@@ -529,8 +528,8 @@ data_book_view_initable_init (GInitable *initable,
 
 	view = E_DATA_BOOK_VIEW (initable);
 
-	return e_gdbus_book_view_register_object (
-		view->priv->gdbus_object,
+	return g_dbus_interface_skeleton_export (
+		G_DBUS_INTERFACE_SKELETON (view->priv->dbus_object),
 		view->priv->connection,
 		view->priv->object_path,
 		error);
@@ -613,21 +612,21 @@ e_data_book_view_init (EDataBookView *view)
 
 	view->priv->flags = E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL;
 
-	view->priv->gdbus_object = e_gdbus_book_view_stub_new ();
+	view->priv->dbus_object = e_dbus_address_book_view_skeleton_new ();
 	g_signal_connect (
-		view->priv->gdbus_object, "handle-start",
+		view->priv->dbus_object, "handle-start",
 		G_CALLBACK (impl_DataBookView_start), view);
 	g_signal_connect (
-		view->priv->gdbus_object, "handle-stop",
+		view->priv->dbus_object, "handle-stop",
 		G_CALLBACK (impl_DataBookView_stop), view);
 	g_signal_connect (
-		view->priv->gdbus_object, "handle-set-flags",
+		view->priv->dbus_object, "handle-set-flags",
 		G_CALLBACK (impl_DataBookView_setFlags), view);
 	g_signal_connect (
-		view->priv->gdbus_object, "handle-dispose",
+		view->priv->dbus_object, "handle-dispose",
 		G_CALLBACK (impl_DataBookView_dispose), view);
 	g_signal_connect (
-		view->priv->gdbus_object, "handle-set-fields-of-interest",
+		view->priv->dbus_object, "handle-set-fields-of-interest",
 		G_CALLBACK (impl_DataBookView_set_fields_of_interest), view);
 
 	view->priv->fields_of_interest = NULL;
@@ -1073,7 +1072,7 @@ void
 e_data_book_view_notify_complete (EDataBookView *view,
                                   const GError *error)
 {
-	gchar **strv_error;
+	gchar *error_name, *error_message;
 
 	g_return_if_fail (E_IS_DATA_BOOK_VIEW (view));
 
@@ -1091,11 +1090,25 @@ e_data_book_view_notify_complete (EDataBookView *view,
 
 	g_mutex_unlock (&view->priv->pending_mutex);
 
-	strv_error = e_gdbus_templates_encode_error (error);
-	e_gdbus_book_view_emit_complete (
-		view->priv->gdbus_object,
-		(const gchar * const *) strv_error);
-	g_strfreev (strv_error);
+	if (error) {
+		gchar *dbus_error_name = g_dbus_error_encode_gerror (error);
+
+		error_name = e_util_utf8_make_valid (dbus_error_name ? dbus_error_name : "");
+		error_message = e_util_utf8_make_valid (error->message);
+
+		g_free (dbus_error_name);
+	} else {
+		error_name = g_strdup ("");
+		error_message = g_strdup ("");
+	}
+
+	e_dbus_address_book_view_emit_complete (
+		view->priv->dbus_object,
+		error_name,
+		error_message);
+
+	g_free (error_name);
+	g_free (error_message);
 }
 
 /**
@@ -1115,18 +1128,18 @@ e_data_book_view_notify_progress (EDataBookView *view,
                                   guint percent,
                                   const gchar *message)
 {
-	gchar *gdbus_message = NULL;
+	gchar *dbus_message = NULL;
 
 	g_return_if_fail (E_IS_DATA_BOOK_VIEW (view));
 
 	if (!view->priv->running)
 		return;
 
-	e_gdbus_book_view_emit_progress (
-		view->priv->gdbus_object, percent,
-		e_util_ensure_gdbus_string (message, &gdbus_message));
+	e_dbus_address_book_view_emit_progress (
+		view->priv->dbus_object, percent,
+		e_util_ensure_gdbus_string (message, &dbus_message));
 
-	g_free (gdbus_message);
+	g_free (dbus_message);
 }
 
 /**

@@ -82,7 +82,6 @@ main (gint argc,
 		exit (EXIT_FAILURE);
 	}
 
-	e_gdbus_templates_init_main_thread ();
 	e_xml_initialize_in_main ();
 
  reload:

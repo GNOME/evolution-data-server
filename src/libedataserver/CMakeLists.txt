@@ -58,7 +58,6 @@ set(SOURCES
 	e-flag.c
 	e-free-form-exp.c
 	e-gdata-oauth2-authorizer.c
-	e-gdbus-templates.c
 	e-iterator.c
 	e-list.c
 	e-list-iterator.c
@@ -147,7 +146,6 @@ set(HEADERS
 	e-flag.h
 	e-free-form-exp.h
 	e-gdata-oauth2-authorizer.h
-	e-gdbus-templates.h
 	e-iterator.h
 	e-list.h
 	e-list-iterator.h

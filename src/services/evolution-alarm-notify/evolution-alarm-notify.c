@@ -67,7 +67,6 @@ main (gint argc,
 		exit (EXIT_FAILURE);
 	}
 
-	e_gdbus_templates_init_main_thread ();
 	e_xml_initialize_in_main ();
 
 	alarm_notify = e_alarm_notify_new (NULL, &error);

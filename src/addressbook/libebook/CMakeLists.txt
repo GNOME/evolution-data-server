@@ -9,7 +9,6 @@ set(DEPENDENCIES
 	edbus-private
 	edataserver
 	edata-book
-	egdbus-book
 )
 
 set(SOURCES
@@ -67,12 +66,10 @@ target_include_directories(ebook PUBLIC
 	${CMAKE_BINARY_DIR}
 	${CMAKE_BINARY_DIR}/src
 	${CMAKE_BINARY_DIR}/src/addressbook
-	${CMAKE_BINARY_DIR}/src/addressbook/libegdbus
 	${CMAKE_BINARY_DIR}/src/private
 	${CMAKE_SOURCE_DIR}/src
 	${CMAKE_SOURCE_DIR}/src/private
 	${CMAKE_SOURCE_DIR}/src/addressbook
-	${CMAKE_SOURCE_DIR}/src/addressbook/libegdbus
 	${CMAKE_CURRENT_BINARY_DIR}
 	${ADDRESSBOOK_INCLUDE_DIRS}
 )

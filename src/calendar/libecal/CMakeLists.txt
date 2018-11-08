@@ -5,7 +5,6 @@ add_pkgconfig_file(libecal.pc.in libecal-${API_VERSION}.pc)
 set(DEPENDENCIES
 	edbus-private
 	edataserver
-	egdbus-cal
 )
 
 set(SOURCES
@@ -72,12 +71,10 @@ target_include_directories(ecal PUBLIC
 	${CMAKE_BINARY_DIR}
 	${CMAKE_BINARY_DIR}/src
 	${CMAKE_BINARY_DIR}/src/calendar
-	${CMAKE_BINARY_DIR}/src/calendar/libegdbus
 	${CMAKE_BINARY_DIR}/src/private
 	${CMAKE_SOURCE_DIR}/src
-	${CMAKE_SOURCE_DIR}/src/private
 	${CMAKE_SOURCE_DIR}/src/calendar
-	${CMAKE_SOURCE_DIR}/src/calendar/libegdbus
+	${CMAKE_SOURCE_DIR}/src/private
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CALENDAR_INCLUDE_DIRS}
 )

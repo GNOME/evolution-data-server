@@ -39,7 +39,7 @@
 #include "e-cal-backend.h"
 #include "e-cal-backend-sexp.h"
 #include "e-data-cal-view.h"
-#include "e-gdbus-cal-view.h"
+#include "e-dbus-calendar-view.h"
 
 #define E_DATA_CAL_VIEW_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -53,7 +53,7 @@
 
 struct _EDataCalViewPrivate {
 	GDBusConnection *connection;
-	EGdbusCalView *gdbus_object;
+	EDBusCalendarView *dbus_object;
 	gchar *object_path;
 
 	/* The backend we are monitoring */
@@ -187,7 +187,7 @@ calview_start_thread (gpointer data)
 }
 
 static gboolean
-impl_DataCalView_start (EGdbusCalView *object,
+impl_DataCalView_start (EDBusCalendarView *object,
                         GDBusMethodInvocation *invocation,
                         EDataCalView *view)
 {
@@ -206,7 +206,7 @@ impl_DataCalView_start (EGdbusCalView *object,
 		g_thread_unref (thread);
 	}
 
-	e_gdbus_cal_view_complete_start (object, invocation, NULL);
+	e_dbus_calendar_view_complete_start (object, invocation);
 
 	return TRUE;
 }
@@ -224,7 +224,7 @@ calview_stop_thread (gpointer data)
 }
 
 static gboolean
-impl_DataCalView_stop (EGdbusCalView *object,
+impl_DataCalView_stop (EDBusCalendarView *object,
                        GDBusMethodInvocation *invocation,
                        EDataCalView *view)
 {
@@ -235,30 +235,30 @@ impl_DataCalView_stop (EGdbusCalView *object,
 	thread = g_thread_new (NULL, calview_stop_thread, g_object_ref (view));
 	g_thread_unref (thread);
 
-	e_gdbus_cal_view_complete_stop (object, invocation, NULL);
+	e_dbus_calendar_view_complete_stop (object, invocation);
 
 	return TRUE;
 }
 
 static gboolean
-impl_DataCalView_setFlags (EGdbusCalView *object,
+impl_DataCalView_setFlags (EDBusCalendarView *object,
                            GDBusMethodInvocation *invocation,
                            ECalClientViewFlags flags,
                            EDataCalView *view)
 {
 	view->priv->flags = flags;
 
-	e_gdbus_cal_view_complete_set_flags (object, invocation, NULL);
+	e_dbus_calendar_view_complete_set_flags (object, invocation);
 
 	return TRUE;
 }
 
 static gboolean
-impl_DataCalView_dispose (EGdbusCalView *object,
+impl_DataCalView_dispose (EDBusCalendarView *object,
                           GDBusMethodInvocation *invocation,
                           EDataCalView *view)
 {
-	e_gdbus_cal_view_complete_dispose (object, invocation, NULL);
+	e_dbus_calendar_view_complete_dispose (object, invocation);
 
 	e_cal_backend_stop_view (view->priv->backend, view);
 	view->priv->stopped = TRUE;
@@ -268,7 +268,7 @@ impl_DataCalView_dispose (EGdbusCalView *object,
 }
 
 static gboolean
-impl_DataCalView_set_fields_of_interest (EGdbusCalView *object,
+impl_DataCalView_set_fields_of_interest (EDBusCalendarView *object,
                                          GDBusMethodInvocation *invocation,
                                          const gchar * const *in_fields_of_interest,
                                          EDataCalView *view)
@@ -301,8 +301,7 @@ impl_DataCalView_set_fields_of_interest (EGdbusCalView *object,
 			g_strdup (field), GINT_TO_POINTER (1));
 	}
 
-	e_gdbus_cal_view_complete_set_fields_of_interest (
-		object, invocation, NULL);
+	e_dbus_calendar_view_complete_set_fields_of_interest (object, invocation);
 
 	return TRUE;
 }
@@ -438,7 +437,7 @@ data_cal_view_dispose (GObject *object)
 	g_mutex_unlock (&priv->pending_mutex);
 
 	g_clear_object (&priv->connection);
-	g_clear_object (&priv->gdbus_object);
+	g_clear_object (&priv->dbus_object);
 	g_clear_object (&priv->backend);
 	g_clear_object (&priv->sexp);
 
@@ -483,8 +482,8 @@ data_cal_view_initable_init (GInitable *initable,
 
 	view = E_DATA_CAL_VIEW (initable);
 
-	return e_gdbus_cal_view_register_object (
-		view->priv->gdbus_object,
+	return g_dbus_interface_skeleton_export (
+		G_DBUS_INTERFACE_SKELETON (view->priv->dbus_object),
 		view->priv->connection,
 		view->priv->object_path,
 		error);
@@ -567,21 +566,21 @@ e_data_cal_view_init (EDataCalView *view)
 
 	view->priv->flags = E_CAL_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL;
 
-	view->priv->gdbus_object = e_gdbus_cal_view_stub_new ();
+	view->priv->dbus_object = e_dbus_calendar_view_skeleton_new ();
 	g_signal_connect (
-		view->priv->gdbus_object, "handle-start",
+		view->priv->dbus_object, "handle-start",
 		G_CALLBACK (impl_DataCalView_start), view);
 	g_signal_connect (
-		view->priv->gdbus_object, "handle-stop",
+		view->priv->dbus_object, "handle-stop",
 		G_CALLBACK (impl_DataCalView_stop), view);
 	g_signal_connect (
-		view->priv->gdbus_object, "handle-set-flags",
+		view->priv->dbus_object, "handle-set-flags",
 		G_CALLBACK (impl_DataCalView_setFlags), view);
 	g_signal_connect (
-		view->priv->gdbus_object, "handle-dispose",
+		view->priv->dbus_object, "handle-dispose",
 		G_CALLBACK (impl_DataCalView_dispose), view);
 	g_signal_connect (
-		view->priv->gdbus_object, "handle-set-fields-of-interest",
+		view->priv->dbus_object, "handle-set-fields-of-interest",
 		G_CALLBACK (impl_DataCalView_set_fields_of_interest), view);
 
 	view->priv->backend = NULL;
@@ -649,8 +648,8 @@ send_pending_adds (EDataCalView *view)
 	if (view->priv->adds->len == 0)
 		return;
 
-	e_gdbus_cal_view_emit_objects_added (
-		view->priv->gdbus_object,
+	e_dbus_calendar_view_emit_objects_added (
+		view->priv->dbus_object,
 		(const gchar * const *) view->priv->adds->data);
 	reset_array (view->priv->adds);
 }
@@ -661,8 +660,8 @@ send_pending_changes (EDataCalView *view)
 	if (view->priv->changes->len == 0)
 		return;
 
-	e_gdbus_cal_view_emit_objects_modified (
-		view->priv->gdbus_object,
+	e_dbus_calendar_view_emit_objects_modified (
+		view->priv->dbus_object,
 		(const gchar * const *) view->priv->changes->data);
 	reset_array (view->priv->changes);
 }
@@ -674,8 +673,8 @@ send_pending_removes (EDataCalView *view)
 		return;
 
 	/* send ECalComponentIds as <uid>[\n<rid>], as encoded in notify_remove() */
-	e_gdbus_cal_view_emit_objects_removed (
-		view->priv->gdbus_object,
+	e_dbus_calendar_view_emit_objects_removed (
+		view->priv->dbus_object,
 		(const gchar * const *) view->priv->removes->data);
 	reset_array (view->priv->removes);
 }
@@ -1359,18 +1358,18 @@ e_data_cal_view_notify_progress (EDataCalView *view,
                                  gint percent,
                                  const gchar *message)
 {
-	gchar *gdbus_message = NULL;
+	gchar *dbus_message = NULL;
 
 	g_return_if_fail (E_IS_DATA_CAL_VIEW (view));
 
 	if (!view->priv->started || view->priv->stopped)
 		return;
 
-	e_gdbus_cal_view_emit_progress (
-		view->priv->gdbus_object, percent,
-		e_util_ensure_gdbus_string (message, &gdbus_message));
+	e_dbus_calendar_view_emit_progress (
+		view->priv->dbus_object, percent,
+		e_util_ensure_gdbus_string (message, &dbus_message));
 
-	g_free (gdbus_message);
+	g_free (dbus_message);
 }
 
 /**
@@ -1387,7 +1386,7 @@ void
 e_data_cal_view_notify_complete (EDataCalView *view,
                                  const GError *error)
 {
-	gchar **error_strv;
+	gchar *error_name, *error_message;
 
 	g_return_if_fail (E_IS_DATA_CAL_VIEW (view));
 
@@ -1402,13 +1401,25 @@ e_data_cal_view_notify_complete (EDataCalView *view,
 	send_pending_changes (view);
 	send_pending_removes (view);
 
-	error_strv = e_gdbus_templates_encode_error (error);
+	if (error) {
+		gchar *dbus_error_name = g_dbus_error_encode_gerror (error);
 
-	e_gdbus_cal_view_emit_complete (
-		view->priv->gdbus_object,
-		(const gchar * const *) error_strv);
+		error_name = e_util_utf8_make_valid (dbus_error_name ? dbus_error_name : "");
+		error_message = e_util_utf8_make_valid (error->message);
 
-	g_strfreev (error_strv);
+		g_free (dbus_error_name);
+	} else {
+		error_name = g_strdup ("");
+		error_message = g_strdup ("");
+	}
+
+	e_dbus_calendar_view_emit_complete (
+		view->priv->dbus_object,
+		error_name,
+		error_message);
+
+	g_free (error_name);
+	g_free (error_message);
 
 	g_mutex_unlock (&view->priv->pending_mutex);
 }

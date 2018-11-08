@@ -88,6 +88,18 @@ gdbus_codegen(org.gnome.evolution.dataserver.AddressBookCursor.xml
 	e-dbus-address-book-cursor
 	GENERATED_DBUS_ADDRESS_BOOK_CURSOR)
 
+set(GENERATED_DBUS_ADDRESS_BOOK_VIEW
+	e-dbus-address-book-view.c
+	e-dbus-address-book-view.h
+	e-dbus-address-book-view-org.gnome.evolution.dataserver.AddressBookView.xml
+)
+
+gdbus_codegen(org.gnome.evolution.dataserver.AddressBookView.xml
+	org.gnome.evolution.dataserver.
+	E_DBus
+	e-dbus-address-book-view
+	GENERATED_DBUS_ADDRESS_BOOK_VIEW)
+
 set(GENERATED_DBUS_DIRECT_BOOK
 	e-dbus-direct-book.c
 	e-dbus-direct-book.h
@@ -136,6 +148,18 @@ gdbus_codegen(org.gnome.evolution.dataserver.CalendarFactory.xml
 	e-dbus-calendar-factory
 	GENERATED_DBUS_CALENDAR_FACTORY)
 
+set(GENERATED_DBUS_CALENDAR_VIEW
+	e-dbus-calendar-view.c
+	e-dbus-calendar-view.h
+	e-dbus-calendar-view-org.gnome.evolution.dataserver.CalendarView.xml
+)
+
+gdbus_codegen(org.gnome.evolution.dataserver.CalendarView.xml
+	org.gnome.evolution.dataserver.
+	E_DBus
+	e-dbus-calendar-view
+	GENERATED_DBUS_CALENDAR_VIEW)
+
 set(GENERATED_DBUS_SUBPROCESS_BACKEND
 	e-dbus-subprocess-backend.c
 	e-dbus-subprocess-backend.h
@@ -156,10 +180,12 @@ add_library(edbus-private SHARED
 	${GENERATED_DBUS_AUTHENTICATOR}
 	${GENERATED_DBUS_ADDRESS_BOOK}
 	${GENERATED_DBUS_ADDRESS_BOOK_CURSOR}
+	${GENERATED_DBUS_ADDRESS_BOOK_VIEW}
 	${GENERATED_DBUS_DIRECT_BOOK}
 	${GENERATED_DBUS_ADDRESS_BOOK_FACTORY}
 	${GENERATED_DBUS_CALENDAR}
 	${GENERATED_DBUS_CALENDAR_FACTORY}
+	${GENERATED_DBUS_CALENDAR_VIEW}
 	${GENERATED_DBUS_USER_PROMPTER}
 	${GENERATED_DBUS_SUBPROCESS_BACKEND}
 )

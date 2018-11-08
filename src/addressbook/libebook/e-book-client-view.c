@@ -38,7 +38,7 @@
 
 #include "e-book-client.h"
 #include "e-book-client-view.h"
-#include "e-gdbus-book-view.h"
+#include "e-dbus-address-book-view.h"
 
 #define E_BOOK_CLIENT_VIEW_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -48,7 +48,7 @@ typedef struct _SignalClosure SignalClosure;
 
 struct _EBookClientViewPrivate {
 	EBookClient *client;
-	GDBusProxy *dbus_proxy;
+	EDBusAddressBookView *dbus_proxy;
 	GDBusConnection *connection;
 	gchar *object_path;
 	guint running : 1;
@@ -446,7 +446,7 @@ direct_contacts_fetch (EBookClientView *client_view,
 }
 
 static void
-book_client_view_objects_added_cb (EGdbusBookView *object,
+book_client_view_objects_added_cb (EDBusAddressBookView *object,
                                    const gchar * const *vcards,
                                    GWeakRef *client_view_weak_ref)
 {
@@ -491,7 +491,7 @@ book_client_view_objects_added_cb (EGdbusBookView *object,
 }
 
 static void
-book_client_view_objects_modified_cb (EGdbusBookView *object,
+book_client_view_objects_modified_cb (EDBusAddressBookView *object,
                                       const gchar * const *vcards,
                                       GWeakRef *client_view_weak_ref)
 {
@@ -536,8 +536,8 @@ book_client_view_objects_modified_cb (EGdbusBookView *object,
 }
 
 static void
-book_client_view_objects_removed_cb (EGdbusBookView *object,
-                                     const gchar * const *ids,
+book_client_view_objects_removed_cb (EDBusAddressBookView *object,
+                                     const gchar * const *uids,
                                      GWeakRef *client_view_weak_ref)
 {
 	EBookClientView *client_view;
@@ -556,8 +556,8 @@ book_client_view_objects_removed_cb (EGdbusBookView *object,
 			return;
 		}
 
-		for (ii = 0; ids[ii] != NULL; ii++)
-			list = g_slist_prepend (list, g_strdup (ids[ii]));
+		for (ii = 0; uids[ii] != NULL; ii++)
+			list = g_slist_prepend (list, g_strdup (uids[ii]));
 
 		signal_closure = g_slice_new0 (SignalClosure);
 		g_weak_ref_init (&signal_closure->client_view, client_view);
@@ -581,7 +581,7 @@ book_client_view_objects_removed_cb (EGdbusBookView *object,
 }
 
 static void
-book_client_view_progress_cb (EGdbusBookView *object,
+book_client_view_progress_cb (EDBusAddressBookView *object,
                               guint percent,
                               const gchar *message,
                               GWeakRef *client_view_weak_ref)
@@ -623,8 +623,9 @@ book_client_view_progress_cb (EGdbusBookView *object,
 }
 
 static void
-book_client_view_complete_cb (EGdbusBookView *object,
-                              const gchar * const *in_error_strv,
+book_client_view_complete_cb (EDBusAddressBookView *object,
+			      const gchar *arg_error_name,
+			      const gchar *arg_error_message,
                               GWeakRef *client_view_weak_ref)
 {
 	EBookClientView *client_view;
@@ -643,8 +644,11 @@ book_client_view_complete_cb (EGdbusBookView *object,
 
 		signal_closure = g_slice_new0 (SignalClosure);
 		g_weak_ref_init (&signal_closure->client_view, client_view);
-		e_gdbus_templates_decode_error (
-			in_error_strv, &signal_closure->error);
+		if (arg_error_name && *arg_error_name && arg_error_message)
+			signal_closure->error = g_dbus_error_new_for_dbus_error (arg_error_name, arg_error_message);
+		else
+			signal_closure->error = NULL;
+
 		if (signal_closure->error)
 			g_dbus_error_strip_remote_error (signal_closure->error);
 
@@ -822,7 +826,7 @@ book_client_view_dispose (GObject *object)
 		 * Also omit a callback function, so the GDBusMessage
 		 * uses G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED.
 		 */
-		e_gdbus_book_view_call_dispose (priv->dbus_proxy, NULL, NULL, NULL);
+		e_dbus_address_book_view_call_dispose (priv->dbus_proxy, NULL, NULL, NULL);
 		g_object_unref (priv->dbus_proxy);
 		priv->dbus_proxy = NULL;
 	}
@@ -854,7 +858,7 @@ book_client_view_initable_init (GInitable *initable,
 {
 	EBookClient *book_client;
 	EBookClientViewPrivate *priv;
-	EGdbusBookView *gdbus_bookview;
+	EDBusAddressBookView *dbus_bookview;
 	gulong handler_id;
 	gchar *bus_name;
 
@@ -873,7 +877,7 @@ book_client_view_initable_init (GInitable *initable,
 	bus_name = e_client_dup_bus_name (E_CLIENT (book_client));
 	g_object_unref (book_client);
 
-	gdbus_bookview = e_gdbus_book_view_proxy_new_sync (
+	dbus_bookview = e_dbus_address_book_view_proxy_new_sync (
 		priv->connection,
 		G_DBUS_PROXY_FLAGS_NONE,
 		bus_name,
@@ -882,10 +886,10 @@ book_client_view_initable_init (GInitable *initable,
 
 	g_free (bus_name);
 
-	if (gdbus_bookview == NULL)
+	if (dbus_bookview == NULL)
 		return FALSE;
 
-	priv->dbus_proxy = G_DBUS_PROXY (gdbus_bookview);
+	priv->dbus_proxy = dbus_bookview;
 
 	handler_id = g_signal_connect_data (
 		priv->dbus_proxy, "objects-added",
@@ -1169,7 +1173,7 @@ e_book_client_view_start (EBookClientView *client_view,
 
 	client_view->priv->running = TRUE;
 
-	e_gdbus_book_view_call_start_sync (
+	e_dbus_address_book_view_call_start_sync (
 		client_view->priv->dbus_proxy, NULL, &local_error);
 
 	if (local_error != NULL) {
@@ -1196,7 +1200,7 @@ e_book_client_view_stop (EBookClientView *client_view,
 
 	client_view->priv->running = FALSE;
 
-	e_gdbus_book_view_call_stop_sync (
+	e_dbus_address_book_view_call_stop_sync (
 		client_view->priv->dbus_proxy, NULL, &local_error);
 
 	if (local_error != NULL) {
@@ -1224,7 +1228,7 @@ e_book_client_view_set_flags (EBookClientView *client_view,
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (client_view));
 
-	e_gdbus_book_view_call_set_flags_sync (
+	e_dbus_address_book_view_call_set_flags_sync (
 		client_view->priv->dbus_proxy, flags, NULL, &local_error);
 
 	if (local_error != NULL) {
@@ -1274,7 +1278,7 @@ e_book_client_view_set_fields_of_interest (EBookClientView *client_view,
 	} else
 		strv = e_client_util_slist_to_strv (fields_of_interest);
 
-	e_gdbus_book_view_call_set_fields_of_interest_sync (
+	e_dbus_address_book_view_call_set_fields_of_interest_sync (
 		client_view->priv->dbus_proxy,
 		(const gchar * const *) strv,
 		NULL, &local_error);
