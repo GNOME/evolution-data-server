@@ -41,7 +41,7 @@ CamelProviderConfEntry imapx_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use-qresync", NULL,
 	  N_("Use _Quick Resync if the server supports it"), "0" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use-idle", NULL,
-	  N_("_Listen for server change notifications"), "0" },
+	  N_("_Listen for server change notifications"), "1" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "cmdsection", NULL,
 	  N_("Connection to Server") },
