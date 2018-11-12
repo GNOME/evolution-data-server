@@ -1,3 +1,39 @@
+Evolution-Data-Server 3.31.2 2018-11-12
+---------------------------------------
+
+Bug Fixes:
+	Bug 228772 - Allow to specify a default language for a given identity (Milan Crha)
+	Bug 606071 - [Calendar] Preserve existing CREATED/LAST-MODIFIED on create (Milan Crha)
+	I#41 - Documentation doesn't go through gtkdoc-scangobj (Milan Crha)
+	I#42 - [Collection CalDAV] Populate calendar-auto-schedule for discovered sources (Milan Crha)
+	I#43 - [CalDAV] Change of calendar-auto-schedule not used immediately (Milan Crha)
+	I#44 - [CalDAV/CardDAV] Ignore Not Found error on resource delete (Milan Crha)
+	I#48 - [CalDAV] Use Location as TZID (Milan Crha)
+	I#49 - [CardDAV] Local cache made broken after update (Milan Crha)
+	I#50 - [Reminders] Ignore all errors on a reminder dismiss (Milan Crha)
+	I#51 - [Gmail] Change from OAuth2 to other authentication doesn't stick (Milan Crha)
+	I#52 - cursor-example.c includes cursor-slot.h twice (Milan Crha)
+	evo-I#113 - Make 'Mark messages as read' a folder/account option (Milan Crha)
+	evo-I#196 - Build developer documentation in a fix order (Milan Crha)
+
+Miscellaneous:
+	Use G_PARAM_EXPLICIT_NOTIFY flag to avoid false property change notifications (Milan Crha)
+	Correct e-source-camel.c to unset G_PARAM_EXPLICIT_NOTIFY (Milan Crha)
+	[CamelProvider] Do not localize empty strings in provider configuration (Milan Crha)
+	Make tests retry when factory doesn't know about added ESource yet (Milan Crha)
+	[On The Web calendar] Log also response body when requested (Milan Crha)
+	[IMAPx] Fix a concurrent message download issue (Milan Crha)
+	Suppress libxml2 warnings when parsing data with e_xml_parse_data() (Milan Crha)
+	Add translator comments into camel-sasl-anonymous.c (Milan Crha)
+	Make sure intltool-merge cache is created only once (Milan Crha)
+	Remove e-gdbus-templates from libedataserver (Milan Crha)
+
+Translations:
+	Yi-Jyun Pan (zh_TW)
+	Matej Urbančič (sl)
+	Cédric Valmary (oc)
+	Kristjan SCHMIDT (eo)
+
 Evolution-Data-Server 3.31.1 2018-10-08
 ---------------------------------------
 
