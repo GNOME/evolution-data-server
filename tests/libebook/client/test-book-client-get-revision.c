@@ -50,7 +50,7 @@ get_revision_compare_cycle (EBookClient *client)
 
 	g_assert (revision_before);
 	g_assert (revision_after);
-	g_assert (strcmp (revision_before, revision_after) != 0);
+	g_assert_cmpstr (revision_before, !=, revision_after);
 
 	g_message (
 		"Passed cycle, revision before '%s' revision after '%s'",
