@@ -1808,6 +1808,7 @@ tail_recurse:
 	case CAMEL_MIME_PARSER_STATE_HEADER:
 		s->state = CAMEL_MIME_PARSER_STATE_BODY;
 		/* coverity[fallthrough] */
+		/* falls through */
 
 	case CAMEL_MIME_PARSER_STATE_BODY:
 		h = s->parts;

@@ -345,7 +345,7 @@ gint string_equal (const gchar *a, const gchar *b)
 			bp++;
 
 		if (ap - a != bp - a
-		    && ap - 1 > 0
+		    && ap - a > 0
 		    && memcmp (a, b, ap - a) != 0) {
 			return 0;
 		}

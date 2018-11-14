@@ -213,7 +213,7 @@ writeln (CamelMimeFilter *mime_filter,
 				} while (priv->column % 8);
 				break;
 			}
-			/* otherwise, FALL THROUGH */
+			/* falls through */
 		case ' ':
 			if (priv->flags & CAMEL_MIME_FILTER_TOHTML_CONVERT_SPACES
 			    && ((inptr == (in + 1) || (inptr < inend && (*inptr == ' ' || *inptr == '\t'))))) {
@@ -221,7 +221,7 @@ writeln (CamelMimeFilter *mime_filter,
 				priv->column++;
 				break;
 			}
-			/* otherwise, FALL THROUGH */
+			/* falls through */
 		default:
 			if (u == '\r' && inptr >= inend) {
 				/* This constructs \r\n sequence at the end of the line, thus pass it in

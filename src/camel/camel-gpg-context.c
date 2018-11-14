@@ -1286,6 +1286,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 			}
 			/* let if fall through to verify possible signatures too */
 			/* break; */
+			/* falls through */
 		case GPG_CTX_MODE_VERIFY:
 			if (!strncmp ((gchar *) status, "TRUST_", 6)) {
 				status += 6;

@@ -4680,6 +4680,7 @@ query_preflight_check (PreflightContext *context,
 							     i, FALSE,
 							     check_different_fields_cb,
 							     &data);
+				/* falls through */
 			case BOOK_QUERY_SUB_AND:
 				sub_query_context_push (ctx, elements[i]->query, data.condition);
 				break;

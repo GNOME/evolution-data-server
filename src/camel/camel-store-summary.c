@@ -790,7 +790,7 @@ camel_store_summary_info_new (CamelStoreSummary *summary)
 	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), NULL);
 
 	class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
-	g_return_val_if_fail (class > 0, NULL);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->store_info_size > 0, NULL);
 
 	info = g_slice_alloc0 (class->store_info_size);

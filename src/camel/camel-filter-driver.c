@@ -2070,6 +2070,7 @@ filter_driver_filter_message_internal (CamelFilterDriver *driver,
 				goto error;
 			}
 			camel_sexp_result_free (driver->priv->eval, r);
+			break;
 		case CAMEL_SEARCH_NOMATCH:
 			camel_filter_driver_log (driver, FILTER_LOG_INFO, "   Filter '%s' did not match\n", rule->name);
 			break;

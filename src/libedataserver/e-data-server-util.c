@@ -370,8 +370,9 @@ stripped_char (gunichar ch)
 		/* Ignore those */
 		return 0;
 	default:
-		/* Convert to lowercase, fall through */
+		/* Convert to lowercase */
 		ch = g_unichar_tolower (ch);
+		/* falls through */
 	case G_UNICODE_LOWERCASE_LETTER:
 		if ((dlen = g_unichar_fully_decompose (ch, FALSE, decomp, 4))) {
 			retval = decomp[0];

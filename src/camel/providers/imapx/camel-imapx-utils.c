@@ -548,6 +548,7 @@ imapx_parse_capability (CamelIMAPXInputStream *stream,
 				token = (guchar *) g_strconcat ((gchar *) token, "+", NULL);
 				free_token = TRUE;
 				/* coverity[fallthrough] */
+				/* falls through */
 			case IMAPX_TOK_TOKEN:
 			case IMAPX_TOK_STRING:
 				p = token;
@@ -560,6 +561,7 @@ imapx_parse_capability (CamelIMAPXInputStream *stream,
 						GINT_TO_POINTER (1));
 					break;
 				}
+				/* falls through */
 			case IMAPX_TOK_INT:
 				cinfo->capa |= imapx_lookup_capability ((gchar *) token);
 				if (free_token) {

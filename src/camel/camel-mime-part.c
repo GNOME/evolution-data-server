@@ -967,6 +967,7 @@ mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
 		/* set the default type of a message always */
 		camel_data_wrapper_take_mime_type_field (dw, camel_content_type_decode ("message/rfc822"));
 		/* coverity[fallthrough] */
+		/* falls through */
 
 	case CAMEL_MIME_PARSER_STATE_HEADER:
 	case CAMEL_MIME_PARSER_STATE_MULTIPART:
