@@ -178,33 +178,29 @@ handle_method_call_cb (GDBusConnection *connection,
 	message = g_dbus_method_invocation_get_message (invocation);
 	in_fd_list = g_dbus_message_get_unix_fd_list (message);
 
-	if (in_fd_list) {
-		result = g_dbus_connection_call_with_unix_fd_list_sync (g_dbus_proxy_get_connection (pd->proxy),
-			g_dbus_proxy_get_name (pd->proxy),
-			object_path,
-			interface_name,
-			method_name,
-			parameters,
-			NULL,
-			G_DBUS_CALL_FLAGS_NONE,
-			DBUS_CALL_TIMEOUT,
-			in_fd_list,
-			&out_fd_list,
-			NULL, &error);
-	} else {
-#endif
-		result = g_dbus_connection_call_sync (g_dbus_proxy_get_connection (pd->proxy),
-			g_dbus_proxy_get_name (pd->proxy),
-			object_path,
-			interface_name,
-			method_name,
-			parameters,
-			NULL,
-			G_DBUS_CALL_FLAGS_NONE,
-			DBUS_CALL_TIMEOUT,
-			NULL, &error);
-#ifdef G_OS_UNIX
-	}
+	result = g_dbus_connection_call_with_unix_fd_list_sync (g_dbus_proxy_get_connection (pd->proxy),
+		g_dbus_proxy_get_name (pd->proxy),
+		object_path,
+		interface_name,
+		method_name,
+		parameters,
+		NULL,
+		G_DBUS_CALL_FLAGS_NONE,
+		DBUS_CALL_TIMEOUT,
+		in_fd_list,
+		&out_fd_list,
+		NULL, &error);
+#else
+	result = g_dbus_connection_call_sync (g_dbus_proxy_get_connection (pd->proxy),
+		g_dbus_proxy_get_name (pd->proxy),
+		object_path,
+		interface_name,
+		method_name,
+		parameters,
+		NULL,
+		G_DBUS_CALL_FLAGS_NONE,
+		DBUS_CALL_TIMEOUT,
+		NULL, &error);
 #endif
 
 	if (result) {
@@ -212,9 +208,12 @@ handle_method_call_cb (GDBusConnection *connection,
 		if (out_fd_list) {
 			g_dbus_method_invocation_return_value_with_unix_fd_list (invocation, result, out_fd_list);
 			g_object_unref (out_fd_list);
-		} else
-		#endif
+		} else {
 			g_dbus_method_invocation_return_value (invocation, result);
+		}
+		#else
+		g_dbus_method_invocation_return_value (invocation, result);
+		#endif
 		g_variant_unref (result);
 	} else {
 		g_dbus_method_invocation_return_gerror (invocation, error);
