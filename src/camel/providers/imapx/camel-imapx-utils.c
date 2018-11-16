@@ -1500,9 +1500,6 @@ imapx_parse_body (CamelIMAPXInputStream *stream,
 				if (local_error)
 					goto error;
 				/* other extension fields?, soaked up below */
-			} else {
-				camel_imapx_input_stream_ungettoken (
-					stream, tok, token, len);
 			}
 		}
 	} else {
