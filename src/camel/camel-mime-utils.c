@@ -2686,12 +2686,14 @@ header_decode_mailbox (const gchar **in,
 
 	addr = g_string_new ("");
 
+ start:
 	/* for each address */
 	pre = header_decode_word (&inptr);
 	header_decode_lwsp (&inptr);
 	if (!(*inptr == '.' || *inptr == '@' || *inptr == ',' || *inptr == '\0')) {
 		/* ',' and '\0' required incase it is a simple address, no @ domain part (buggy writer) */
-		name = g_string_new ("");
+		if (!name)
+			name = g_string_new ("");
 		while (pre) {
 			gchar *text, *last;
 
@@ -2886,7 +2888,35 @@ header_decode_mailbox (const gchar **in,
 		}
 	}
 
+	header_decode_lwsp (&inptr);
+
+	if (*inptr && *inptr != ',') {
+		if (addr->len > 0) {
+			if (!name) {
+				name = g_string_sized_new (addr->len + 5);
+			} else {
+				g_string_append_c (name, ' ');
+			}
+
+			g_string_append_c (name, '<');
+			g_string_append (name, addr->str);
+			g_string_append_c (name, '>');
+			g_string_append_c (name, ' ');
+
+			g_string_truncate (addr, 0);
+		}
+
+		goto start;
+	}
+
 	*in = inptr;
+
+	if (name) {
+		/* Trim any trailing spaces */
+		while (name->len > 0 && name->str[name->len - 1] == ' ') {
+			g_string_truncate (name, name->len - 1);
+		}
+	}
 
 	if (addr->len > 0) {
 		if (!g_utf8_validate (addr->str, addr->len, NULL)) {
@@ -3202,11 +3232,11 @@ camel_header_address_decode (const gchar *in,
 	} while (inptr != last);
 
 	if (*inptr) {
-		w (g_warning ("Invalid input detected at %c (%d): %s\n or at: %s", *inptr, inptr - in, in, inptr));
+		w (g_warning ("Invalid input detected at %c (%d): '%s'\n or at: '%s'", *inptr, (gint) (inptr - in), in, inptr));
 	}
 
 	if (inptr == last) {
-		w (g_warning ("detected invalid input loop at : %s", last));
+		w (g_warning ("detected invalid input loop at : '%s' for '%s'", last, in));
 	}
 
 	return list;
@@ -4983,6 +5013,36 @@ camel_header_address_list_clear (CamelHeaderAddress **addrlistp)
 	*addrlistp = NULL;
 }
 
+static gchar *
+maybe_quote_name (const gchar *name,
+		  gboolean *out_free_result)
+{
+	if (out_free_result)
+		*out_free_result = FALSE;
+
+	if (name && *name && (strchr (name, ',') || strchr (name, ';') || strchr (name, '\"') || strchr (name, '<') || strchr (name, '>'))) {
+		GString *quoted;
+
+		if (out_free_result)
+			*out_free_result = TRUE;
+
+		quoted = g_string_sized_new (strlen (name) + 2);
+		g_string_append_c (quoted, '\"');
+
+		while (*name) {
+			if (*name != '\"')
+				g_string_append_c (quoted, *name);
+			name++;
+		}
+
+		g_string_append_c (quoted, '\"');
+
+		return g_string_free (quoted, FALSE);
+	}
+
+	return (gchar *) name;
+}
+
 /* if encode is true, then the result is suitable for mailing, otherwise
  * the result is suitable for display only (and may not even be re-parsable) */
 static void
@@ -4993,12 +5053,14 @@ header_address_list_encode_append (GString *out,
 	gchar *text;
 
 	while (a) {
+		gboolean free_text = FALSE;
+
 		switch (a->type) {
 		case CAMEL_HEADER_ADDRESS_NAME:
 			if (encode)
 				text = camel_header_encode_phrase ((guchar *) a->name);
 			else
-				text = a->name;
+				text = maybe_quote_name (a->name, &free_text);
 			if (text && *text)
 				g_string_append_printf (out, "%s <%s>", text, a->v.addr);
 			else
@@ -5010,7 +5072,7 @@ header_address_list_encode_append (GString *out,
 			if (encode)
 				text = camel_header_encode_phrase ((guchar *) a->name);
 			else
-				text = a->name;
+				text = maybe_quote_name (a->name, &free_text);
 			g_string_append_printf (out, "%s: ", text);
 			header_address_list_encode_append (out, encode, a->v.members);
 			g_string_append_printf (out, ";");
@@ -5021,9 +5083,13 @@ header_address_list_encode_append (GString *out,
 			g_warning ("Invalid address type");
 			break;
 		}
+
 		a = a->next;
 		if (a)
 			g_string_append (out, ", ");
+
+		if (free_text)
+			g_free (text);
 	}
 }
 
