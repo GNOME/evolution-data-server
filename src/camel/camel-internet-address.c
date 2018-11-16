@@ -608,10 +608,10 @@ camel_internet_address_encode_address (gint *inlen,
 	len -= out->len;
 
 	if (name && name[0])
-		g_string_append_printf (out, " <");
+		g_string_append (out, " <");
 	cia_encode_addrspec (out, addr);
 	if (name && name[0])
-		g_string_append_printf (out, ">");
+		g_string_append (out, ">");
 
 	len += out->len;
 
@@ -648,7 +648,7 @@ camel_internet_address_format_address (const gchar *name,
 		gchar *o, c;
 
 		while ((c = *p++)) {
-			if (c == '\"' || c == ',') {
+			if (c == ',' || c == ';' || c == '\"' || c == '<' || c == '>') {
 				o = ret = g_malloc (strlen (name) + 3 + strlen (addr) + 3 + 1);
 				p = name;
 				*o++ = '\"';
