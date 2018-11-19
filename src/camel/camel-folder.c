@@ -279,25 +279,41 @@ folder_filter (CamelSession *session,
 
 	/* Reset junk learn flag so that we don't process it again */
 	if (data->junk) {
+		CamelFolderSummary *summary;
+
+		summary = camel_folder_get_folder_summary (data->folder);
+
+		camel_folder_summary_lock (summary);
+
 		for (i = 0; i < data->junk->len; i++) {
-			info = camel_folder_summary_get (camel_folder_get_folder_summary (data->folder), data->junk->pdata[i]);
+			info = camel_folder_summary_get (summary, data->junk->pdata[i]);
 			if (!info)
 				continue;
 
 			camel_message_info_set_flags (info, CAMEL_MESSAGE_JUNK_LEARN, 0);
 			g_clear_object (&info);
 		}
+
+		camel_folder_summary_unlock (summary);
 	}
 
 	if (data->notjunk) {
+		CamelFolderSummary *summary;
+
+		summary = camel_folder_get_folder_summary (data->folder);
+
+		camel_folder_summary_lock (summary);
+
 		for (i = 0; i < data->notjunk->len; i++) {
-			info = camel_folder_summary_get (camel_folder_get_folder_summary (data->folder), data->notjunk->pdata[i]);
+			info = camel_folder_summary_get (summary, data->notjunk->pdata[i]);
 			if (!info)
 				continue;
 
 			camel_message_info_set_flags (info, CAMEL_MESSAGE_JUNK_LEARN, 0);
 			g_clear_object (&info);
 		}
+
+		camel_folder_summary_unlock (summary);
 	}
 
 	if (data->junk) {
@@ -719,12 +735,18 @@ folder_set_message_flags (CamelFolder *folder,
 
 	g_return_val_if_fail (folder->priv->summary != NULL, FALSE);
 
+	camel_folder_summary_lock (folder->priv->summary);
+
 	info = camel_folder_summary_get (folder->priv->summary, uid);
-	if (info == NULL)
+	if (info == NULL) {
+		camel_folder_summary_unlock (folder->priv->summary);
 		return FALSE;
+	}
 
 	res = camel_message_info_set_flags (info, mask, set);
 	g_clear_object (&info);
+
+	camel_folder_summary_unlock (folder->priv->summary);
 
 	return res;
 }
@@ -759,12 +781,18 @@ folder_set_message_user_flag (CamelFolder *folder,
 
 	g_return_if_fail (folder->priv->summary != NULL);
 
+	camel_folder_summary_lock (folder->priv->summary);
+
 	info = camel_folder_summary_get (folder->priv->summary, uid);
-	if (info == NULL)
+	if (info == NULL) {
+		camel_folder_summary_unlock (folder->priv->summary);
 		return;
+	}
 
 	camel_message_info_set_user_flag (info, name, value);
 	g_clear_object (&info);
+
+	camel_folder_summary_unlock (folder->priv->summary);
 }
 
 static const gchar *
@@ -797,12 +825,18 @@ folder_set_message_user_tag (CamelFolder *folder,
 
 	g_return_if_fail (folder->priv->summary != NULL);
 
+	camel_folder_summary_lock (folder->priv->summary);
+
 	info = camel_folder_summary_get (folder->priv->summary, uid);
-	if (info == NULL)
+	if (info == NULL) {
+		camel_folder_summary_unlock (folder->priv->summary);
 		return;
+	}
 
 	camel_message_info_set_user_tag (info, name, value);
 	g_clear_object (&info);
+
+	camel_folder_summary_unlock (folder->priv->summary);
 }
 
 static GPtrArray *

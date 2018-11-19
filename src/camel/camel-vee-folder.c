@@ -139,6 +139,8 @@ vee_folder_note_added_uid (CamelVeeFolder *vfolder,
 {
 	const gchar *vuid;
 
+	camel_folder_summary_lock (CAMEL_FOLDER_SUMMARY (vsummary));
+
 	vuid = camel_vee_message_info_data_get_vee_message_uid (added_mi_data);
 	if (!camel_folder_summary_check_uid (CAMEL_FOLDER_SUMMARY (vsummary), vuid)) {
 		/* add it only if it wasn't in yet */
@@ -158,6 +160,8 @@ vee_folder_note_added_uid (CamelVeeFolder *vfolder,
 		if (included_as_changed && changes)
 			camel_folder_change_info_change_uid (changes, vuid);
 	}
+
+	camel_folder_summary_unlock (CAMEL_FOLDER_SUMMARY (vsummary));
 }
 
 static void
