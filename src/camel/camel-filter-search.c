@@ -91,6 +91,8 @@ static CamelSExpResult *get_size (struct _CamelSExp *f, gint argc, struct _Camel
 static CamelSExpResult *pipe_message (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
 static CamelSExpResult *junk_test (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
 static CamelSExpResult *message_location (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
+static CamelSExpResult *make_time_func (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
+static CamelSExpResult *compare_date_func (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
 
 /* builtin functions */
 static struct {
@@ -122,7 +124,9 @@ static struct {
 	{ "get-size",           (CamelSExpFunc) get_size,           0 },
 	{ "pipe-message",       (CamelSExpFunc) pipe_message,       0 },
 	{ "junk-test",          (CamelSExpFunc) junk_test,          0 },
-	{ "message-location",   (CamelSExpFunc) message_location,   0 }
+	{ "message-location",   (CamelSExpFunc) message_location,   0 },
+	{ "make-time",          (CamelSExpFunc) make_time_func,     0 },
+	{ "compare-date",       (CamelSExpFunc) compare_date_func,  0 }
 };
 
 static void
@@ -1254,6 +1258,62 @@ message_location (struct _CamelSExp *f,
 	r->value.boolean = same;
 
 	return r;
+}
+
+static CamelSExpResult *
+make_time_func (CamelSExp *sexp,
+		gint argc,
+		CamelSExpResult **argv,
+		FilterMessageSearch *fms)
+{
+	CamelSExpResult *res;
+
+	camel_filter_search_log (fms, "Calling 'make-time'");
+
+	res = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_TIME);
+	res->value.time = camel_folder_search_util_make_time (argc, argv);
+
+	return res;
+}
+
+static CamelSExpResult *
+compare_date_func (CamelSExp *sexp,
+		   gint argc,
+		   CamelSExpResult **argv,
+		   FilterMessageSearch *fms)
+{
+	CamelSExpResult *res;
+
+	res = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_INT);
+	res->value.number = 0;
+
+	if (argc == 2) {
+		gint64 t1, t2;
+
+		if (argv[0]->type == CAMEL_SEXP_RES_INT)
+			t1 = argv[0]->value.number;
+		else if (argv[0]->type == CAMEL_SEXP_RES_TIME)
+			t1 = (gint64) argv[0]->value.time;
+		else {
+			camel_filter_search_log (fms, "compare-date result:%d (incorrect first argument type)", res->value.number);
+			return res;
+		}
+
+		if (argv[1]->type == CAMEL_SEXP_RES_INT)
+			t2 = argv[1]->value.number;
+		else if (argv[1]->type == CAMEL_SEXP_RES_TIME)
+			t2 = (gint64) argv[1]->value.time;
+		else {
+			camel_filter_search_log (fms, "compare-date result:%d (incorrect second argument type)", res->value.number);
+			return res;
+		}
+
+		res->value.number = camel_folder_search_util_compare_date (t1, t2);
+	}
+
+	camel_filter_search_log (fms, "compare-date result:%d", res->value.number);
+
+	return res;
 }
 
 static const gchar *
