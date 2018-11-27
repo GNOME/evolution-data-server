@@ -1665,6 +1665,31 @@ folder_scan_init_with_stream (struct _header_scan_state *s,
 	return 0;
 }
 
+static gboolean
+part_is_encoded (CamelHeaderRaw **headers)
+{
+	const gchar *encoding;
+
+	encoding = header_raw_find (headers, "Content-Transfer-Encoding", NULL);
+
+	if (!encoding || !*encoding)
+		return FALSE;
+
+	if (*encoding == ' ' || *encoding == '\t')
+		encoding++;
+
+	switch (camel_transfer_encoding_from_string (encoding)) {
+	case CAMEL_TRANSFER_ENCODING_BASE64:
+	case CAMEL_TRANSFER_ENCODING_QUOTEDPRINTABLE:
+	case CAMEL_TRANSFER_ENCODING_UUENCODE:
+		return TRUE;
+	default:
+		break;
+	}
+
+	return FALSE;
+}
+
 #define USE_FROM
 
 static void
@@ -1781,16 +1806,19 @@ tail_recurse:
 					/*g_warning("Multipart with no boundary, treating as text/plain");*/
 				}
 			} else if (!g_ascii_strcasecmp (ct->type, "message")) {
-				if (!g_ascii_strcasecmp (ct->subtype, "rfc822")
-				    || !g_ascii_strcasecmp (ct->subtype, "news")
-				    /*|| !g_ascii_strcasecmp(ct->subtype, "partial")*/) {
+				if ((!g_ascii_strcasecmp (ct->subtype, "rfc2822") ||
+				    !g_ascii_strcasecmp (ct->subtype, "rfc822") ||
+				    !g_ascii_strcasecmp (ct->subtype, "global") ||
+				    !g_ascii_strcasecmp (ct->subtype, "news")) &&
+				    !part_is_encoded (&h->headers)) {
 					type = CAMEL_MIME_PARSER_STATE_MESSAGE;
 				}
 			}
 		} else {
 			/* make the default type for multipart/digest be message/rfc822 */
-			if ((s->parts
-			     && camel_content_type_is (s->parts->content_type, "multipart", "digest"))) {
+			if (s->parts &&
+			    camel_content_type_is (s->parts->content_type, "multipart", "digest") &&
+			    !part_is_encoded (&h->headers)) {
 				ct = camel_content_type_decode ("message/rfc822");
 				type = CAMEL_MIME_PARSER_STATE_MESSAGE;
 				d (printf ("parent was multipart/digest, autoupgrading to message/rfc822?\n"));
