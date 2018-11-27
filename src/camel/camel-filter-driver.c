@@ -759,28 +759,21 @@ do_copy (struct _CamelSExp *f,
 			if (outbox == driver->priv->source)
 				break;
 
-			if (!driver->priv->modified &&
-			    driver->priv->uid != NULL &&
-			    driver->priv->source != NULL &&
-			    camel_folder_has_summary_capability (driver->priv->source)) {
-				filter_driver_add_to_transfers (driver, outbox, driver->priv->uid, FALSE);
-			} else {
-				if (driver->priv->message == NULL)
-					/* FIXME Pass a GCancellable */
-					driver->priv->message = camel_folder_get_message_sync (
-						driver->priv->source,
-						driver->priv->uid, NULL,
-						&driver->priv->error);
-
-				if (!driver->priv->message)
-					continue;
-
+			if (driver->priv->message == NULL)
 				/* FIXME Pass a GCancellable */
-				camel_folder_append_message_sync (
-					outbox, driver->priv->message,
-					driver->priv->info, NULL, NULL,
+				driver->priv->message = camel_folder_get_message_sync (
+					driver->priv->source,
+					driver->priv->uid, NULL,
 					&driver->priv->error);
-			}
+
+			if (!driver->priv->message)
+				continue;
+
+			/* FIXME Pass a GCancellable */
+			camel_folder_append_message_sync (
+				outbox, driver->priv->message,
+				driver->priv->info, NULL, NULL,
+				&driver->priv->error);
 
 			if (driver->priv->error == NULL)
 				driver->priv->copied = TRUE;
@@ -2119,18 +2112,14 @@ filter_driver_filter_message_internal (CamelFilterDriver *driver,
 			"Copy to default folder");
 
 		if (!driver->priv->modified && driver->priv->uid && driver->priv->source && camel_folder_has_summary_capability (driver->priv->source)) {
-			if (can_process_transfers) {
-				GPtrArray *uids;
+			GPtrArray *uids;
 
-				uids = g_ptr_array_new ();
-				g_ptr_array_add (uids, (gchar *) driver->priv->uid);
-				camel_folder_transfer_messages_to_sync (
-					driver->priv->source, uids, driver->priv->defaultfolder,
-					FALSE, NULL, cancellable, &driver->priv->error);
-				g_ptr_array_free (uids, TRUE);
-			} else {
-				filter_driver_add_to_transfers (driver, driver->priv->defaultfolder, driver->priv->uid, FALSE);
-			}
+			uids = g_ptr_array_new ();
+			g_ptr_array_add (uids, (gchar *) driver->priv->uid);
+			camel_folder_transfer_messages_to_sync (
+				driver->priv->source, uids, driver->priv->defaultfolder,
+				FALSE, NULL, cancellable, &driver->priv->error);
+			g_ptr_array_free (uids, TRUE);
 		} else {
 			if (driver->priv->message == NULL) {
 				driver->priv->message = camel_folder_get_message_sync (
