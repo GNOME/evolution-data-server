@@ -43,26 +43,26 @@ setup_fixture (ETestServerFixture *fixture,
 	/* Create the mail identity */
 	scratch = e_source_new_with_uid (MAIL_IDENTITY_UID, NULL, &error);
 	if (!scratch)
-		g_error ("Failed to create scratch source for an email user: %s", error->message);
+		g_error ("Failed to create scratch source for a mail identity: %s", error->message);
 
 	mail_identity = e_source_get_extension (scratch, E_SOURCE_EXTENSION_MAIL_IDENTITY);
 	e_source_mail_identity_set_address (mail_identity, USER_EMAIL);
 
 	if (!e_source_registry_commit_source_sync (fixture->registry, scratch, NULL, &error))
-		g_error ("Unable to add new addressbook source to the registry: %s", error->message);
+		g_error ("Unable to add new scratch mail identity source to the registry: %s", error->message);
 
 	g_object_unref (scratch);
 
 	/* Create the mail account */
 	scratch = e_source_new_with_uid (MAIL_ACCOUNT_UID, NULL, &error);
 	if (!scratch)
-		g_error ("Failed to create scratch source for an email user: %s", error->message);
+		g_error ("Failed to create scratch source for a mail account: %s", error->message);
 
 	mail_account = e_source_get_extension (scratch, E_SOURCE_EXTENSION_MAIL_ACCOUNT);
 	e_source_mail_account_set_identity_uid (mail_account, MAIL_IDENTITY_UID);
 
 	if (!e_source_registry_commit_source_sync (fixture->registry, scratch, NULL, &error))
-		g_error ("Unable to add new addressbook source to the registry: %s", error->message);
+		g_error ("Unable to add new scratch mail account source to the registry: %s", error->message);
 
 	g_object_unref (scratch);
 }
