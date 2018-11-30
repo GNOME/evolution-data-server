@@ -120,6 +120,14 @@
 
 G_DEFINE_TYPE (EVCard, e_vcard, G_TYPE_OBJECT)
 
+static EVCardAttribute *e_vcard_attribute_ref (EVCardAttribute *attr);
+static void e_vcard_attribute_unref (EVCardAttribute *attr);
+static EVCardAttributeParam *e_vcard_attribute_param_ref (EVCardAttributeParam *param);
+static void e_vcard_attribute_param_unref (EVCardAttributeParam *param);
+
+G_DEFINE_BOXED_TYPE (EVCardAttribute, e_vcard_attribute, e_vcard_attribute_ref, e_vcard_attribute_unref)
+G_DEFINE_BOXED_TYPE (EVCardAttributeParam, e_vcard_attribute_param, e_vcard_attribute_param_ref, e_vcard_attribute_param_unref)
+
 /* Encoding used in v-card
  * Note: v-card spec defines additional 7BIT 8BIT and X- encoding
  */
@@ -135,6 +143,7 @@ struct _EVCardPrivate {
 };
 
 struct _EVCardAttribute {
+	gint ref_count;
 	gchar  *group;
 	gchar  *name;
 	GList *params; /* EVCardParam */
@@ -145,6 +154,7 @@ struct _EVCardAttribute {
 };
 
 struct _EVCardAttributeParam {
+	gint ref_count;
 	gchar     *name;
 	GList    *values;  /* GList of gchar *'s */
 };
@@ -1555,6 +1565,7 @@ e_vcard_attribute_new (const gchar *attr_group,
 	if (attr_group != NULL && *attr_group == '\0')
 		attr_group = NULL;
 
+	attr->ref_count = 1;
 	attr->group = g_strdup (attr_group);
 	attr->name = g_strdup (attr_name);
 
@@ -1572,14 +1583,34 @@ e_vcard_attribute_free (EVCardAttribute *attr)
 {
 	g_return_if_fail (attr != NULL);
 
-	g_free (attr->group);
-	g_free (attr->name);
+	e_vcard_attribute_unref (attr);
+}
 
-	e_vcard_attribute_remove_values (attr);
+static EVCardAttribute *
+e_vcard_attribute_ref (EVCardAttribute *attr)
+{
+	g_return_val_if_fail (attr != NULL, NULL);
 
-	e_vcard_attribute_remove_params (attr);
+	g_atomic_int_inc (&attr->ref_count);
 
-	g_slice_free (EVCardAttribute, attr);
+	return attr;
+}
+
+static void
+e_vcard_attribute_unref (EVCardAttribute *attr)
+{
+	g_return_if_fail (attr != NULL);
+
+	if (g_atomic_int_dec_and_test (&attr->ref_count)) {
+		g_free (attr->group);
+		g_free (attr->name);
+
+		e_vcard_attribute_remove_values (attr);
+
+		e_vcard_attribute_remove_params (attr);
+
+		g_slice_free (EVCardAttribute, attr);
+	}
 }
 
 /**
@@ -1607,25 +1638,6 @@ e_vcard_attribute_copy (EVCardAttribute *attr)
 		e_vcard_attribute_add_param (a, e_vcard_attribute_param_copy (p->data));
 
 	return a;
-}
-
-GType
-e_vcard_attribute_get_type (void)
-{
-	static volatile gsize type_id__volatile = 0;
-
-	if (g_once_init_enter (&type_id__volatile)) {
-		GType type_id;
-
-		type_id = g_boxed_type_register_static (
-			"EVCardAttribute",
-			(GBoxedCopyFunc) e_vcard_attribute_copy,
-			(GBoxedFreeFunc) e_vcard_attribute_free);
-
-		g_once_init_leave (&type_id__volatile, type_id);
-	}
-
-	return type_id__volatile;
 }
 
 /**
@@ -2068,25 +2080,6 @@ e_vcard_attribute_remove_params (EVCardAttribute *attr)
 	attr->encoding = EVC_ENCODING_RAW;
 }
 
-GType
-e_vcard_attribute_param_get_type (void)
-{
-	static volatile gsize type_id__volatile = 0;
-
-	if (g_once_init_enter (&type_id__volatile)) {
-		GType type_id;
-
-		type_id = g_boxed_type_register_static (
-			"EVCardAttributeParam",
-			(GBoxedCopyFunc) e_vcard_attribute_param_copy,
-			(GBoxedFreeFunc) e_vcard_attribute_param_free);
-
-		g_once_init_leave (&type_id__volatile, type_id);
-	}
-
-	return type_id__volatile;
-}
-
 /**
  * e_vcard_attribute_param_new:
  * @name: the name of the new parameter
@@ -2099,6 +2092,8 @@ EVCardAttributeParam *
 e_vcard_attribute_param_new (const gchar *name)
 {
 	EVCardAttributeParam *param = g_slice_new (EVCardAttributeParam);
+
+	param->ref_count = 1;
 	param->values = NULL;
 	param->name = g_strdup (name);
 
@@ -2116,11 +2111,31 @@ e_vcard_attribute_param_free (EVCardAttributeParam *param)
 {
 	g_return_if_fail (param != NULL);
 
-	g_free (param->name);
+	e_vcard_attribute_param_unref (param);
+}
 
-	e_vcard_attribute_param_remove_values (param);
+static EVCardAttributeParam *
+e_vcard_attribute_param_ref (EVCardAttributeParam *param)
+{
+	g_return_val_if_fail (param != NULL, NULL);
 
-	g_slice_free (EVCardAttributeParam, param);
+	g_atomic_int_inc (&param->ref_count);
+
+	return param;
+}
+
+static void
+e_vcard_attribute_param_unref (EVCardAttributeParam *param)
+{
+	g_return_if_fail (param != NULL);
+
+	if (g_atomic_int_dec_and_test (&param->ref_count)) {
+		g_free (param->name);
+
+		e_vcard_attribute_param_remove_values (param);
+
+		g_slice_free (EVCardAttributeParam, param);
+	}
 }
 
 /**
