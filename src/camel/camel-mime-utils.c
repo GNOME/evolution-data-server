@@ -5050,9 +5050,8 @@ header_address_list_encode_append (GString *out,
                                    gint encode,
                                    CamelHeaderAddress *a)
 {
-	gchar *text;
-
 	while (a) {
+		gchar *text = NULL;
 		gboolean free_text = FALSE;
 
 		switch (a->type) {
