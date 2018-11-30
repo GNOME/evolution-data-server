@@ -1583,7 +1583,10 @@ e_cal_util_get_system_timezone (void)
 	icaltimezone *zone;
 
 	location = e_cal_system_timezone_get_location ();
-	g_return_val_if_fail (location != NULL, NULL);
+
+	/* Can be NULL when failed to detect system time zone */
+	if (!location)
+		return NULL;
 
 	zone = icaltimezone_get_builtin_timezone (location);
 
