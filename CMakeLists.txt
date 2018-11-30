@@ -31,13 +31,13 @@ set(PROJECT_DISTCONFIGURE_PARAMS
 	-DENABLE_VALA_BINDINGS=ON
 	-DENABLE_INSTALLED_TESTS=ON
 	-DENABLE_GTK_DOC=ON
-	-DENABLE_DBUS_SESSION_TOOL=ON
 	-DWITH_PRIVATE_DOCS=ON
 )
 
 # ******************************
 # D-Bus versioning
 # ******************************
+# Actual name can be modified with DBUS_SERVICES_PREFIX option
 set(ADDRESS_BOOK_DBUS_SERVICE_NAME	"org.gnome.evolution.dataserver.AddressBook9")
 set(CALENDAR_DBUS_SERVICE_NAME		"org.gnome.evolution.dataserver.Calendar7")
 set(SOURCES_DBUS_SERVICE_NAME		"org.gnome.evolution.dataserver.Sources5")
@@ -170,6 +170,15 @@ ensure_default_value(LIBEXEC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/libexec")
 ensure_default_value(SHARE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/share")
 ensure_default_value(LOCALE_INSTALL_DIR "${SHARE_INSTALL_PREFIX}/locale")
 ensure_default_value(SYSCONF_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/etc")
+
+add_printable_variable(DBUS_SERVICES_PREFIX "Prefix for D-Bus services, usually left empty, without trailing dot" "")
+
+if(NOT ("${DBUS_SERVICES_PREFIX}" STREQUAL ""))
+	set(ADDRESS_BOOK_DBUS_SERVICE_NAME	"${DBUS_SERVICES_PREFIX}.${ADDRESS_BOOK_DBUS_SERVICE_NAME}")
+	set(CALENDAR_DBUS_SERVICE_NAME		"${DBUS_SERVICES_PREFIX}.${CALENDAR_DBUS_SERVICE_NAME}")
+	set(SOURCES_DBUS_SERVICE_NAME		"${DBUS_SERVICES_PREFIX}.${SOURCES_DBUS_SERVICE_NAME}")
+	set(USER_PROMPTER_DBUS_SERVICE_NAME	"${DBUS_SERVICES_PREFIX}.${USER_PROMPTER_DBUS_SERVICE_NAME}")
+endif(NOT ("${DBUS_SERVICES_PREFIX}" STREQUAL ""))
 
 # ******************************
 # Special directories
@@ -995,12 +1004,6 @@ if(ENABLE_VALA_BINDINGS)
 	endif(NOT VAPIGEN)
 
 endif(ENABLE_VALA_BINDINGS)
-
-# ******************************
-# D-Bus session tool, a Flatpak helper
-# ******************************
-
-add_printable_option(ENABLE_DBUS_SESSION_TOOL "Build evolution-dbus-session tool" OFF)
 
 # Generate the ${PROJECT_NAME}-config.h file
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config.h)
