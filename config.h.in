@@ -18,6 +18,9 @@
 /* Package name for gettext */
 #define GETTEXT_PACKAGE "@GETTEXT_PACKAGE@"
 
+/* Defined to prefix used by the D-Bus services (usually when run in Flatpak) */
+#cmakedefine DBUS_SERVICES_PREFIX "@DBUS_SERVICES_PREFIX@"
+
 /* D-Bus service name for the address book factory */
 #define ADDRESS_BOOK_DBUS_SERVICE_NAME "@ADDRESS_BOOK_DBUS_SERVICE_NAME@"
 

@@ -57,6 +57,12 @@ struct _ESecretMonitorClass {
 #define KEYRING_ITEM_ATTRIBUTE_ORIGIN	"eds-origin"
 #define KEYRING_ITEM_DISPLAY_FORMAT	"Evolution Data Source '%s'"
 
+#ifdef DBUS_SERVICES_PREFIX
+#define ORIGIN_KEY DBUS_SERVICES_PREFIX "." PACKAGE
+#else
+#define ORIGIN_KEY PACKAGE
+#endif
+
 static SecretSchema password_schema = {
 	"org.gnome.Evolution.Data.Source",
 	SECRET_SCHEMA_DONT_MATCH_NAME,
@@ -104,7 +110,7 @@ secret_monitor_scan_secrets_thread (gpointer user_data)
 	server = E_SOURCE_REGISTRY_SERVER (user_data);
 
 	attributes = g_hash_table_new (g_str_hash, g_str_equal);
-	g_hash_table_insert (attributes, (gpointer) KEYRING_ITEM_ATTRIBUTE_ORIGIN, (gpointer) PACKAGE);
+	g_hash_table_insert (attributes, (gpointer) KEYRING_ITEM_ATTRIBUTE_ORIGIN, (gpointer) ORIGIN_KEY);
 
 	/* List all items under our custom SecretSchema. */
 	list = secret_service_search_sync (
@@ -187,7 +193,7 @@ secret_monitor_scan_secrets_timeout_cb (gpointer user_data)
 	extension = E_SECRET_MONITOR (user_data);
 	server = secret_monitor_get_server (extension);
 
-	g_debug ("Scanning and pruning saved passwords");
+	e_source_registry_debug_print ("Scanning and pruning saved passwords\n");
 
 	/* Do the real work in a thread, so we can use synchronous
 	 * libsecret calls and keep the logic flow easy to follow. */
