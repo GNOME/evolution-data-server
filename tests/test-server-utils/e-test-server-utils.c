@@ -446,8 +446,15 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 
 		/* Dont bother testing the Async apis for deprecated APIs */
 		pair->fixture->service.book = e_book_new (source, &error);
-		if (!pair->fixture->service.book)
-			g_error ("Unable to create the test book: %s", error->message);
+		if (!pair->fixture->service.book) {
+			if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND) &&
+			    pair->retries < 3)
+				need_retry = TRUE;
+			else
+				g_error ("Unable to create the test book: %s", error->message);
+
+			break;
+		}
 
 		if (!e_book_open (pair->fixture->service.book, FALSE, &error)) {
 			if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND) &&
@@ -487,8 +494,14 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 
 		/* Dont bother testing the Async apis for deprecated APIs */
 		pair->fixture->service.calendar = e_cal_new (source, pair->closure->calendar_source_type);
-		if (!pair->fixture->service.calendar)
-			g_error ("Unable to create the test calendar");
+		if (!pair->fixture->service.calendar) {
+			if (pair->retries < 3)
+				need_retry = TRUE;
+			else
+				g_error ("Unable to create the test calendar");
+
+			break;
+		}
 
 		if (!e_cal_open (pair->fixture->service.calendar, FALSE, &error)) {
 			if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND) &&
