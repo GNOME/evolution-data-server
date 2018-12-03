@@ -94,6 +94,49 @@ teardown_fixture (ETestServerFixture *fixture,
 }
 
 static void
+add_component_sync (ECalClient *cal_client)
+{
+	const gchar *comp_str =
+		"BEGIN:VEVENT\r\n"
+		"UID:test-fb-event-1\r\n"
+		"DTSTAMP:20040212T000000Z\r\n"
+		"DTSTART:20040213T060000Z\r\n"
+		"DTEND:20040213T080000Z\r\n"
+		"SUMMARY:Test event\r\n"
+		"TRANSP:OPAQUE\r\n"
+		"CLASS:PUBLIC\r\n"
+		"CREATED:20040211T080000Z\r\n"
+		"LAST-MODIFIED:20040211T080000Z\r\n"
+		"END:VEVENT\r\n";
+	icalcomponent *icalcomp;
+	GError *error = NULL;
+
+	icalcomp = icalcomponent_new_from_string (comp_str);
+	g_assert_nonnull (icalcomp);
+
+	if (!e_cal_client_create_object_sync (cal_client, icalcomp, NULL, NULL, &error))
+		g_error ("Failed to add component: %s", error ? error->message : "Unknown error");
+
+	icalcomponent_free (icalcomp);
+	g_clear_error (&error);
+}
+
+static void
+wait_for_dbus_signal (GMainLoop *loop)
+{
+	GMainContext *main_context;
+	gint retries = 0;
+
+	main_context = g_main_loop_get_context (loop);
+
+	while (!received_free_busy_data && retries < 5) {
+		retries++;
+
+		g_main_context_iteration (main_context, TRUE);
+	}
+}
+
+static void
 free_busy_data_cb (ECalClient *client,
                    const GSList *free_busy,
                    const gchar *func_name)
@@ -114,8 +157,12 @@ test_get_free_busy_sync (ETestServerFixture *fixture,
 
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
+	add_component_sync (cal_client);
+
 	/* This is set by the free-busy-data callback */
 	received_free_busy_data = FALSE;
+
+	g_signal_connect (cal_client, "free-busy-data", G_CALLBACK (free_busy_data_cb), (gpointer) G_STRFUNC);
 
 	utc = icaltimezone_get_utc_timezone ();
 	start = time_from_isodate ("20040212T000000Z");
@@ -127,6 +174,9 @@ test_get_free_busy_sync (ETestServerFixture *fixture,
 
 	g_slist_free (users);
 
+	wait_for_dbus_signal (fixture->loop);
+
+	g_assert (received_free_busy_data);
 	g_assert (freebusy_data);
 
 	g_slist_free_full (freebusy_data, g_object_unref);
@@ -147,6 +197,8 @@ async_get_free_busy_result_ready (GObject *source_object,
 	if (!e_cal_client_get_free_busy_finish (cal_client, result, &freebusy_data, &error))
 		g_error ("create object finish: %s", error->message);
 
+	wait_for_dbus_signal (loop);
+
 	g_assert (received_free_busy_data);
 	g_assert (freebusy_data);
 
@@ -165,6 +217,8 @@ test_get_free_busy_async (ETestServerFixture *fixture,
 	time_t start, end;
 
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
+
+	add_component_sync (cal_client);
 
 	/* This is set by the free-busy-data callback */
 	received_free_busy_data = FALSE;
