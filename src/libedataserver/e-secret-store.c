@@ -254,6 +254,12 @@ e_win32_secret_delete_secret_sync (const gchar *uid,
 #define KEYRING_ITEM_ATTRIBUTE_UID	"e-source-uid"
 #define KEYRING_ITEM_ATTRIBUTE_ORIGIN	"eds-origin"
 
+#ifdef DBUS_SERVICES_PREFIX
+#define ORIGIN_KEY DBUS_SERVICES_PREFIX "." PACKAGE
+#else
+#define ORIGIN_KEY PACKAGE
+#endif
+
 static SecretSchema password_schema = {
 	"org.gnome.Evolution.Data.Source",
 	SECRET_SCHEMA_DONT_MATCH_NAME,
@@ -316,7 +322,7 @@ e_secret_store_store_sync (const gchar *uid,
 		collection, label, secret,
 		cancellable, error,
 		KEYRING_ITEM_ATTRIBUTE_UID, uid,
-		KEYRING_ITEM_ATTRIBUTE_ORIGIN, PACKAGE,
+		KEYRING_ITEM_ATTRIBUTE_ORIGIN, ORIGIN_KEY,
 		NULL);
 #endif
 
