@@ -44,7 +44,26 @@ test_get_contact (TCUFixture *fixture,
 	g_object_unref (other);
 }
 
+static void
+test_search_boolean (TCUFixture *fixture,
+		     gconstpointer user_data)
+{
+	GSList *uids = NULL;
+	GError *error = NULL;
+
+	tcu_add_contact_from_test_case (fixture, "simple-1", NULL);
+
+	if (!e_book_cache_search_uids (fixture->book_cache, "(exists \"wants_html\")", &uids, NULL, &error))
+		g_error ("Failed to search for contact: %s", error->message);
+
+	g_assert_cmpint (g_slist_length (uids), ==, 1);
+
+	g_slist_free_full (uids, g_free);
+}
+
 static TCUClosure closures[] = {
+	{ NULL },
+	{ tcu_setup_empty_book },
 	{ NULL },
 	{ tcu_setup_empty_book }
 };
@@ -52,6 +71,8 @@ static TCUClosure closures[] = {
 static const gchar *paths[] = {
 	"/EBookCache/DefaultSummary/GetContact",
 	"/EBookCache/EmptySummary/GetContact",
+	"/EBookCache/DefaultSummary/SearchBoolean",
+	"/EBookCache/EmptySummary/SearchBoolean"
 };
 
 gint
@@ -72,7 +93,7 @@ main (gint argc,
 	for (ii = 0; ii < G_N_ELEMENTS (closures); ii++) {
 		g_test_add (
 			paths[ii], TCUFixture, &closures[ii],
-			tcu_fixture_setup, test_get_contact, tcu_fixture_teardown);
+			tcu_fixture_setup, ii < 2 ? test_get_contact : test_search_boolean, tcu_fixture_teardown);
 	}
 
 	return e_test_server_utils_run_full (0);

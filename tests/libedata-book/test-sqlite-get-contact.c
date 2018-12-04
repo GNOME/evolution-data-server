@@ -45,7 +45,28 @@ test_get_contact (EbSqlFixture *fixture,
 	g_object_unref (other);
 }
 
+static void
+test_search_boolean (EbSqlFixture *fixture,
+		     gconstpointer user_data)
+{
+	GSList *uids = NULL;
+	GError *error = NULL;
+
+	add_contact_from_test_case (fixture, "simple-1", NULL);
+
+	if (!e_book_sqlite_search_uids (fixture->ebsql, "(exists \"wants_html\")", &uids, NULL, &error))
+		g_error ("Failed to search for contact: %s", error->message);
+
+	g_assert_cmpint (g_slist_length (uids), ==, 1);
+
+	g_slist_free_full (uids, g_free);
+}
+
 static EbSqlClosure closures[] = {
+	{ FALSE, NULL },
+	{ TRUE, NULL },
+	{ FALSE, setup_empty_book },
+	{ TRUE, setup_empty_book },
 	{ FALSE, NULL },
 	{ TRUE, NULL },
 	{ FALSE, setup_empty_book },
@@ -56,7 +77,11 @@ static const gchar *paths[] = {
 	"/EBookSqlite/DefaultSummary/StoreVCards/GetContact",
 	"/EBookSqlite/DefaultSummary/NoVCards/GetContact",
 	"/EBookSqlite/EmptySummary/StoreVCards/GetContact",
-	"/EBookSqlite/EmptrySummary/NoVCards/GetContact"
+	"/EBookSqlite/EmptrySummary/NoVCards/GetContact",
+	"/EBookSqlite/DefaultSummary/StoreVCards/SearchBoolean",
+	"/EBookSqlite/DefaultSummary/NoVCards/SearchBoolean",
+	"/EBookSqlite/EmptySummary/StoreVCards/SearchBoolean",
+	"/EBookSqlite/EmptrySummary/NoVCards/SearchBoolean"
 };
 
 gint
@@ -77,7 +102,7 @@ main (gint argc,
 	for (i = 0; i < G_N_ELEMENTS (closures); i++)
 		g_test_add (
 			paths[i], EbSqlFixture, &closures[i],
-			e_sqlite_fixture_setup, test_get_contact, e_sqlite_fixture_teardown);
+			e_sqlite_fixture_setup, i < 4 ? test_get_contact : test_search_boolean, e_sqlite_fixture_teardown);
 
 	return e_test_server_utils_run_full (0);
 }
