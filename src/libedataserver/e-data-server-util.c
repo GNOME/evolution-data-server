@@ -3259,11 +3259,13 @@ e_util_can_use_collection_as_credential_source (ESource *collection_source,
 			if (can_use_collection) {
 				gchar *method_source, *method_collection;
 
-				/* Also check the method; if different, then rather not use the collection */
+				/* Also check the method; if different, then rather not use the collection.
+				   Consider 'none' method on the child as the same as the collection method. */
 				method_source = e_source_authentication_dup_method (auth_source);
 				method_collection = e_source_authentication_dup_method (auth_collection);
 
 				can_use_collection = !method_source || !method_collection ||
+					g_ascii_strcasecmp (method_source, "none") == 0 ||
 					g_ascii_strcasecmp (method_source, method_collection) == 0;
 
 				g_free (method_source);
