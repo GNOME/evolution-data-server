@@ -623,11 +623,11 @@ ecb_caldav_search_changes_cb (ECalCache *cal_cache,
 	g_return_val_if_fail (ccd != NULL, FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	/* Can be NULL for added components in offline mode */
-	if (extra && *extra && (!rid || !*rid)) {
+	/* The 'extra' can be NULL for added components in offline mode */
+	if (((extra && *extra) || offline_state != E_OFFLINE_STATE_LOCALLY_CREATED) && (!rid || !*rid)) {
 		ECalMetaBackendInfo *nfo;
 
-		nfo = g_hash_table_lookup (ccd->known_items, extra);
+		nfo = (extra && *extra) ? g_hash_table_lookup (ccd->known_items, extra) : NULL;
 		if (nfo) {
 			if (g_strcmp0 (revision, nfo->revision) == 0) {
 				g_hash_table_remove (ccd->known_items, extra);
