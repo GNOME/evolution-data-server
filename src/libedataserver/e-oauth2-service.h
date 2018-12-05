@@ -82,8 +82,9 @@ typedef enum {
 
 /**
  * EOAuth2ServiceRefSourceFunc:
- * @user_data: user data, as passed to e_oauth2_service_get_token_sync()
- *    or e_oauth2_service_refresh_token_sync()
+ * @user_data: user data, as passed to e_oauth2_service_get_access_token_sync()
+ *    or e_oauth2_service_receive_and_store_token_sync(),
+ *    or e_oauth2_service_refresh_and_store_token_sync()
  * @uid: an #ESource UID to return
  *
  * Returns: (transfer full) (nullable): an #ESource with UID @uid, or %NULL, if not found.
