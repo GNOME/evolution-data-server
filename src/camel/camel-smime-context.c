@@ -720,7 +720,7 @@ sm_verify_cmsg (CamelCipherContext *context,
 		}
 	}
 
-	camel_cipher_validity_set_valid (valid, status == NSSCMSVS_GoodSignature);
+	camel_cipher_validity_set_valid (valid, camel_cipher_validity_get_valid (valid) && status == NSSCMSVS_GoodSignature);
 	camel_cipher_validity_set_description (valid, description->str);
 	g_string_free (description, TRUE);
 
