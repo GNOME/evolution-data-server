@@ -4844,7 +4844,7 @@ e_cal_meta_backend_get_changes_sync (ECalMetaBackend *meta_backend,
  * of loading it with e_cal_meta_backend_load_component_sync().
  *
  * It is mandatory to implement this virtual method by the descendant, unless
- * it implements its own get_changes_sync().
+ * it implements its own #ECalMetaBackendClass.get_changes_sync().
  *
  * The @out_existing_objects #GSList should be freed with
  * g_slist_free_full (objects, e_cal_meta_backend_info_free);

@@ -1173,10 +1173,8 @@ e_data_cal_view_get_component_string (EDataCalView *view,
  *
  * Notifies all view listeners of the addition of a list of components.
  *
- * Like e_data_cal_view_notify_objects_added() except takes a list
- * of #ECalComponent-s instead of ical string representations and uses the 
- * #EDataCalView's fields-of-interest to filter out unwanted information 
- * from ical strings sent over the bus.
+ * Uses the #EDataCalView's fields-of-interest to filter out unwanted
+ * information from ical strings sent over the bus.
  *
  * Since: 3.4
  */
@@ -1211,10 +1209,8 @@ e_data_cal_view_notify_components_added (EDataCalView *view,
  *
  * Notifies all the view listeners of the addition of a single object.
  *
- * Like e_data_cal_view_notify_objects_added_1() except takes an #ECalComponent
- * instead of an ical string representation and uses the #EDataCalView's
- * fields-of-interest to filter out unwanted information from ical strings
- * sent over the bus.
+ * Uses the #EDataCalView's fields-of-interest to filter out unwanted
+ * information from ical strings sent over the bus.
  *
  * Since: 3.4
  */
@@ -1238,10 +1234,8 @@ e_data_cal_view_notify_components_added_1 (EDataCalView *view,
  *
  * Notifies all view listeners of the modification of a list of components.
  *
- * Like e_data_cal_view_notify_objects_modified() except takes a list of
- * #ECalComponent instead of a ical string representations and uses the
- * #EDataCalView's fields-of-interest to filter out unwanted information
- * from ical strings sent over the bus.
+ * Uses the #EDataCalView's fields-of-interest to filter out unwanted
+ * information from ical strings sent over the bus.
  *
  * Since: 3.4
  */
@@ -1276,10 +1270,8 @@ e_data_cal_view_notify_components_modified (EDataCalView *view,
  *
  * Notifies all view listeners of the modification of @component.
  * 
- * Like e_data_cal_view_notify_objects_modified_1() except takes an
- * #ECalComponent instead of an ical string representation and uses the
- * #EDataCalView's fields-of-interest to filter out unwanted information
- * from ical strings sent over the bus.
+ * Uses the #EDataCalView's fields-of-interest to filter out unwanted
+ * information from ical strings sent over the bus.
  *
  * Since: 3.4
  */

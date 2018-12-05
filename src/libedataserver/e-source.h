@@ -91,7 +91,7 @@
  * to have up-to-date data on the server side, when the client side
  * just saved the SSL trust change, which might not be propagated
  * into the server (factory) side quickly enough. The key is added into
- * the credentials in invoke_authenticate() automatically, if the
+ * the credentials in e_source_invoke_authenticate() automatically, if the
  * corresponding ESource contain a WebDAV extension and the key
  * is not part of the credentials already.
  *

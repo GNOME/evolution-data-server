@@ -1278,7 +1278,7 @@ e_cal_backend_set_writable (ECalBackend *backend,
  * Checks if @backend's storage has been opened (and
  * authenticated, if necessary) and the backend itself
  * is ready for accessing. This property is changed automatically
- * within call of e_cal_backend_notify_opened().
+ * within call of e_cal_backend_open().
  *
  * Returns: %TRUE if fully opened, %FALSE otherwise.
  *
@@ -1296,8 +1296,7 @@ e_cal_backend_is_opened (ECalBackend *backend)
  * e_cal_backend_is_readonly:
  * @backend: an #ECalBackend
  *
- * Returns: Whether is backend read-only. This value is the last used
- * in a call of e_cal_backend_notify_readonly().
+ * Returns: Whether is backend read-only.
  *
  * Since: 3.2
  **/
@@ -4367,10 +4366,8 @@ e_cal_backend_stop_view (ECalBackend *backend,
  *
  * Notifies each of the backend's listeners about a new object.
  *
- * Like e_cal_backend_notify_object_created() except takes an #ECalComponent
- * instead of an ical string representation and uses the #EDataCalView's
- * fields-of-interest to filter out unwanted information from ical strings
- * sent over the bus.
+ * Uses the #EDataCalView's fields-of-interest to filter out unwanted
+ * information from ical strings sent over the bus.
  *
  * Since: 3.4
  **/
@@ -4429,10 +4426,8 @@ match_view_and_notify_component (EDataCalView *view,
  *
  * Notifies each of the backend's listeners about a modified object.
  *
- * Like e_cal_backend_notify_object_modified() except takes an #ECalComponent
- * instead of an ical string representation and uses the #EDataCalView's
- * fields-of-interest to filter out unwanted information from ical strings
- * sent over the bus.
+ * Uses the #EDataCalView's fields-of-interest to filter out unwanted
+ * information from ical strings sent over the bus.
  *
  * Since: 3.4
  **/
@@ -4468,10 +4463,8 @@ e_cal_backend_notify_component_modified (ECalBackend *backend,
  *
  * Notifies each of the backend's listeners about a removed object.
  *
- * Like e_cal_backend_notify_object_removed() except takes an #ECalComponent
- * instead of an ical string representation and uses the #EDataCalView's
- * fields-of-interest to filter out unwanted information from ical strings
- * sent over the bus.
+ * Uses the #EDataCalView's fields-of-interest to filter out unwanted
+ * information from ical strings sent over the bus.
  *
  * Since: 3.4
  **/

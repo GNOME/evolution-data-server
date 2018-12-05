@@ -1495,7 +1495,7 @@ e_source_proxy_get_socks_host (ESourceProxy *extension)
  * e_source_proxy_dup_socks_host:
  * @extension: an #ESourceProxy
  *
- * Thread-safe variation of e_source-proxy_get_socks_host().
+ * Thread-safe variation of e_source_proxy_get_socks_host().
  * Use this function when accessing @extension from multiple threads.
  *
  * The returned string should be freed with g_free() when no longer needed.

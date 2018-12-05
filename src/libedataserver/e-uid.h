@@ -29,7 +29,9 @@
 
 G_BEGIN_DECLS
 
+#ifndef EDS_DISABLE_DEPRECATED
 gchar *		e_uid_new			(void);
+#endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

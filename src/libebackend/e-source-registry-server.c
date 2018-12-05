@@ -1475,7 +1475,7 @@ e_source_registry_server_load_all (ESourceRegistryServer *server,
  * not be opened.  If a key file fails to load, the error is broadcast
  * through the #ESourceRegistryServer::load-error signal.
  *
- * If the #E_DBUS_LOAD_DIRECTORY_REMOVABLE flag is given, then the @server
+ * If the #E_SOURCE_PERMISSION_REMOVABLE flag is given, then the @server
  * will emit signals on the D-Bus interface when key files are created or
  * deleted in @path.
  *
@@ -1819,7 +1819,7 @@ e_source_registry_server_load_file (ESourceRegistryServer *server,
 
 /**
  * e_source_registry_server_load_error:
- * @server: an #EBusSourceServer
+ * @server: an #ESourceRegistryServer
  * @file: the #GFile that failed to load
  * @error: a #GError describing the load error
  *

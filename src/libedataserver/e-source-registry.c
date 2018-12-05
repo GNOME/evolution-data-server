@@ -1686,7 +1686,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 	 * The ::credentials-required signal is emitted when the @source
 	 * requires credentials to connect to (possibly remote)
 	 * data store. The credentials can be passed to the source using
-	 * e_source_authenticate() function. The signal is emitted in
+	 * e_source_invoke_authenticate() function. The signal is emitted in
 	 * the thread-default main context from the time the @registry was created.
 	 *
 	 * Note: This is just a proxy signal for the ESource::credentials-required signal.

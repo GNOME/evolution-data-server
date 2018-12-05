@@ -802,7 +802,7 @@ e_data_book_cursor_set_sexp (EDataBookCursor *cursor,
  * @origin: The #EBookCursorOrigin from whence to step
  * @count: a positive or negative amount of contacts to try and fetch
  * @results: (out) (allow-none) (element-type utf8) (transfer full):
- *   A return location to store the results, or %NULL if %E_BOOK_CURSOR_STEP_FETCH is not specified in %flags
+ *   A return location to store the results, or %NULL if %E_BOOK_CURSOR_STEP_FETCH is not specified in @flags
  * @cancellable: (allow-none): A #GCancellable
  * @error: (out) (allow-none): return location for a #GError, or %NULL
  *
@@ -818,7 +818,7 @@ e_data_book_cursor_set_sexp (EDataBookCursor *cursor,
  * to step beyond the end of the list after having reached the end of the list
  * will however trigger an %E_CLIENT_ERROR_QUERY_REFUSED error.
  *
- * If %E_BOOK_CURSOR_STEP_FETCH is specified in %flags, a pointer to 
+ * If %E_BOOK_CURSOR_STEP_FETCH is specified in @flags, a pointer to 
  * a %NULL #GSList pointer should be provided for the @results parameter.
  *
  * The result list will be stored to @results and should be freed with g_slist_free()

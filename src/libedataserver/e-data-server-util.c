@@ -2749,7 +2749,7 @@ e_timeout_add_with_name (gint priority,
  *          or %NULL
  *
  * Similar to g_timeout_add_seconds_full(), but also names the #GSource as
- * %name.
+ * @name.
  *
  * You might find e_named_timeout_add_seconds() or
  * e_named_timeout_add_seconds_full() more convenient.  Those macros name
@@ -2834,9 +2834,9 @@ e_source_registry_debug_print (const gchar *format,
  * in a consistent format:
  * [domain] YYYY-MM-DD hh:mm:ss.ms - format
  *
- * Since: 3.30
- *
  * See: e_util_debug_printv()
+ *
+ * Since: 3.30
  **/
 void
 e_util_debug_print (const gchar *domain,
@@ -2863,9 +2863,9 @@ e_util_debug_print (const gchar *domain,
  * in a consistent form:
  * [@domain] YYYY-MM-DD hh:mm:ss.ms - @format
  *
- * Since: 3.30
- *
  * See: e_util_debug_print()
+ *
+ * Since: 3.30
  **/
 void
 e_util_debug_printv (const gchar *domain,

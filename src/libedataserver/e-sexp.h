@@ -66,10 +66,29 @@ struct _ESExpResult {
 	time_t occuring_end;
 };
 
+
+/**
+ * ESExpFunc:
+ * @sexp: a #ESExp
+ * @argc: the number of #ESExpResult elements
+ * @argv: (array length=argc): an array of #ESExpResult
+ * @user_data: data to pass to the callback function
+ *
+ * Returns: 
+ */
 typedef struct _ESExpResult *(ESExpFunc)(struct _ESExp *sexp, gint argc,
 					 struct _ESExpResult **argv,
 					 gpointer data);
 
+/**
+ * ESExpIFunc:
+ * @sexp: a #ESExp
+ * @argc: the number of #ESExpTerm elements
+ * @argv: (array length=argc): an array of #ESExpTerm
+ * @user_data: data to pass to the callback function
+ *
+ * Returns: 
+ */
 typedef struct _ESExpResult *(ESExpIFunc)(struct _ESExp *sexp, gint argc,
 					  struct _ESExpTerm **argv,
 					  gpointer data);
@@ -126,12 +145,12 @@ void		e_sexp_add_function	(ESExp *sexp,
 					 gint scope,
 					 const gchar *name,
 					 ESExpFunc *func,
-					 gpointer data);
+					 gpointer user_data);
 void		e_sexp_add_ifunction	(ESExp *sexp,
 					 gint scope,
 					 const gchar *name,
 					 ESExpIFunc *func,
-					 gpointer data);
+					 gpointer user_data);
 void		e_sexp_add_variable	(ESExp *sexp,
 					 gint scope,
 					 gchar *name,

@@ -2315,7 +2315,7 @@ e_source_class_init (ESourceClass *class)
 	 * The ::credentials-required signal is emitted when the @source
 	 * requires credentials to connect to (possibly remote)
 	 * data store. The credentials can be passed to the backend using
-	 * e_source_authenticate() function.
+	 * e_source_invoke_authenticate() function.
 	 **/
 	signals[CREDENTIALS_REQUIRED] = g_signal_new (
 		"credentials-required",
@@ -4456,7 +4456,7 @@ e_source_delete_password_finish (ESource *source,
  * @error: (allow-none): return location for a #GError, or %NULL
  *
  * Let's the client-side know that credentials are required. The @reason defines which
- * parameters are used. The client passed the credentials with an e_source_authenticate()
+ * parameters are used. The client passed the credentials with an e_source_invoke_authenticate()
  * call.
  *
  * The %E_SOURCE_CREDENTIALS_REASON_REQUIRED is used for the first credentials prompt,

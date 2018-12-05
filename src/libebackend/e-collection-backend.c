@@ -1361,7 +1361,7 @@ e_collection_backend_ref_proxy_resolver (ECollectionBackend *backend)
  * Unreference the #ESourceRegistryServer with g_object_unref() when
  * finished with it.
  *
- * Returns: the #ESourceRegisterServer for @backend
+ * Returns: the #ESourceRegistryServer for @backend
  *
  * Since: 3.6
  **/

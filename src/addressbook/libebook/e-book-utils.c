@@ -197,7 +197,7 @@ book_utils_get_recipient_certificates_thread (gpointer data,
  * @error: return location for a #GError, or %NULL
  *
  * Synchronously searches for @recipients S/MIME or PGP certificates either
- * in provided @only_clients #EBookClient-s, or, when %NULL, in each found
+ * in provided @only_clients #EBookClient, or, when %NULL, in each found
  * address book configured for auto-completion.
  *
  * This function can be used within camel_session_get_recipient_certificates_sync()
