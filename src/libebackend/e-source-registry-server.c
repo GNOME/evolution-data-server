@@ -1212,9 +1212,9 @@ e_source_registry_server_new (void)
  * e_source_registry_server_ref_credentials_provider:
  * @server: an #ESourceRegistryServer
  *
- * Returns a referenced #ESourceRegistryCredentialsProvider.
+ * Returns a referenced #ESourceCredentialsProvider.
  *
- * Returns: A referenced #ESourceRegistryCredentialsProvider. Unref it with
+ * Returns: A referenced #ESourceCredentialsProvider. Unref it with
  *    g_object_unref(), when no longer needed.
  *
  * Since: 3.16

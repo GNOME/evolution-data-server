@@ -32,9 +32,7 @@
  * server or else poll the remote server at regular intervals and then
  * update the data source collection accordingly.
  *
- * As most remote servers require authentication, the backend may also
- * wish to implement the #ESourceAuthenticator interface so it can submit
- * its own #EAuthenticationSession instances to the #ESourceRegistryServer.
+ * The client is responsible to provide credentials to use to authenticate.
  **/
 
 #include "evolution-data-server-config.h"

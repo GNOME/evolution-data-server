@@ -152,7 +152,7 @@ e_oauth2_support_default_init (EOAuth2SupportInterface *iface)
 
 /**
  * e_oauth2_support_get_access_token_sync:
- * @support: an #EOAuthSupport
+ * @support: an #EOAuth2Support
  * @source: an #ESource
  * @cancellable: optional #GCancellable object, or %NULL
  * @out_access_token: return location for the access token, or %NULL

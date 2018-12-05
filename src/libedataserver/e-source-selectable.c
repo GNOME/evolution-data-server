@@ -22,7 +22,7 @@
  * @see_also: #ESourceCalendar, #ESourceMemoList, #ESourceTaskList
  *
  * #ESourceSelectable is an abstract base class for data sources
- * that can be selected in an #ESourceSelector or similar widget.
+ * that can be selected.
  **/
 
 #include "e-source-selectable.h"

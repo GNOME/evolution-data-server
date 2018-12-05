@@ -2123,9 +2123,8 @@ e_server_side_source_get_server (EServerSideSource *source)
  * Returns whether @source has been exported over D-Bus.
  *
  * The function returns %FALSE after @source is initially created, %TRUE
- * after passing @source to e_source_registry_add_source() (provided that
- * @source's #ESource:parent is also exported), and %FALSE after passing
- * @source to e_source_registry_remove_source().
+ * after passing @source uid to e_source_registry_server_ref_source() (provided
+ * that @source's #ESource:parent is also exported).
  *
  * Returns: whether @source has been exported
  *
