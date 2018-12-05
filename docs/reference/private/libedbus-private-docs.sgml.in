@@ -13,9 +13,11 @@
     <xi:include href="xml/e-dbus-address-book-cursor.xml"/>
     <xi:include href="xml/e-dbus-address-book-factory.xml"/>
     <xi:include href="xml/e-dbus-address-book.xml"/>
+    <xi:include href="xml/e-dbus-address-book-view.xml"/>
     <xi:include href="xml/e-dbus-authenticator.xml"/>
     <xi:include href="xml/e-dbus-calendar-factory.xml"/>
     <xi:include href="xml/e-dbus-calendar.xml"/>
+    <xi:include href="xml/e-dbus-calendar-view.xml"/>
     <xi:include href="xml/e-dbus-direct-book.xml"/>
     <xi:include href="xml/e-dbus-source-manager.xml"/>
     <xi:include href="xml/e-dbus-source.xml"/>
@@ -34,8 +36,10 @@
     <xi:include href="@CMAKE_BINARY_DIR@/src/private/e-dbus-source-manager-org.gnome.evolution.dataserver.SourceManager.xml"/>
     <xi:include href="@CMAKE_BINARY_DIR@/src/private/e-dbus-authenticator-org.gnome.evolution.dataserver.Authenticator.xml"/>
     <xi:include href="@CMAKE_BINARY_DIR@/src/private/e-dbus-address-book-org.gnome.evolution.dataserver.AddressBook.xml"/>
+    <xi:include href="@CMAKE_BINARY_DIR@/src/private/e-dbus-address-book-view-org.gnome.evolution.dataserver.AddressBookView.xml"/>
     <xi:include href="@CMAKE_BINARY_DIR@/src/private/e-dbus-address-book-factory-org.gnome.evolution.dataserver.AddressBookFactory.xml"/>
     <xi:include href="@CMAKE_BINARY_DIR@/src/private/e-dbus-calendar-org.gnome.evolution.dataserver.Calendar.xml"/>
+    <xi:include href="@CMAKE_BINARY_DIR@/src/private/e-dbus-calendar-view-org.gnome.evolution.dataserver.CalendarView.xml"/>
     <xi:include href="@CMAKE_BINARY_DIR@/src/private/e-dbus-calendar-factory-org.gnome.evolution.dataserver.CalendarFactory.xml"/>
     <xi:include href="@CMAKE_BINARY_DIR@/src/private/e-dbus-user-prompter-org.gnome.evolution.dataserver.UserPrompter.xml"/>
   </chapter>
@@ -45,6 +49,10 @@
     <xi:include href="xml/api-index-full.xml"><xi:fallback /></xi:include>
   </index>
 
+  <index id="api-index-3-32" role="3.32">
+    <title>Index of new symbols in 3.32</title>
+    <xi:include href="xml/api-index-3.32.xml"><xi:fallback /></xi:include>
+  </index>
   <index id="api-index-3-18" role="3.18">
     <title>Index of new symbols in 3.18</title>
     <xi:include href="xml/api-index-3.18.xml"><xi:fallback /></xi:include>
