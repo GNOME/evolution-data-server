@@ -34,7 +34,11 @@
 
 #include "e-alarm-notify.h"
 
+#ifdef DBUS_SERVICES_PREFIX
+#define APPLICATION_ID DBUS_SERVICES_PREFIX "." "org.gnome.Evolution-alarm-notify"
+#else
 #define APPLICATION_ID "org.gnome.Evolution-alarm-notify"
+#endif
 
 struct _EAlarmNotifyPrivate {
 	ESourceRegistry *registry;
