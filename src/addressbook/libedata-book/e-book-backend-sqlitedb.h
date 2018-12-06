@@ -110,7 +110,7 @@ struct _EBookBackendSqliteDB {
 /**
  * EBookBackendSqliteDBClass:
  *
- * Class structure for the #EBookBackendSqlite class.
+ * Class structure for the #EBookBackendSqliteDB class.
  *
  * Deprecated: 3.12: Use #EBookSqlite instead
  */
@@ -145,7 +145,7 @@ typedef struct {
 } EbSdbSearchData;
 
 /**
- * EbSdbCuror:
+ * EbSdbCursor:
  *
  * An opaque cursor pointer
  *
@@ -164,7 +164,7 @@ typedef struct _EbSdbCursor EbSdbCursor;
  * Specifies the start position to in the list of traversed contacts
  * in calls to e_book_backend_sqlitedb_cursor_step().
  *
- * When an #EbSdbCuror is created, the current position implied by %EBSDB_CURSOR_ORIGIN_CURRENT
+ * When an #EbSdbCursor is created, the current position implied by %EBSDB_CURSOR_ORIGIN_CURRENT
  * is the same as %EBSDB_CURSOR_ORIGIN_BEGIN.
  *
  * Since: 3.12

@@ -80,7 +80,7 @@ typedef gboolean (*EDataBookCursorSetSexpFunc) (EDataBookCursor     *cursor,
  * @origin: The #EBookCursorOrigin from whence to step
  * @count: a positive or negative amount of contacts to try and fetch
  * @results: (out) (allow-none) (element-type utf8) (transfer full):
- *   A return location to store the results, or %NULL if %E_BOOK_CURSOR_STEP_FETCH is not specified in %flags
+ *   A return location to store the results, or %NULL if %E_BOOK_CURSOR_STEP_FETCH is not specified in @flags
  * @cancellable: (allow-none): A #GCancellable
  * @error: (out) (allow-none): return location for a #GError, or %NULL
  *

@@ -170,7 +170,8 @@ typedef enum {
  * @type: a type of the symbol, either CAMEL_SEXP_TERM_FUNC or CAMEL_SEXP_TERM_VAR
  * @name: name of the symbol
  * @data: user data for the callback
- * @f: a #CamelSExpFunc or a #CamelSExpIFunc callback
+ * @f.func: a #CamelSExpFunc callback
+ * @f.ifunc: a #CamelSExpIFunc callback
  *
  * Describes a function or a variable symbol
  *

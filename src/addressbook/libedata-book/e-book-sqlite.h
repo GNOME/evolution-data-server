@@ -61,7 +61,7 @@
  * This key can be used with e_book_sqlite_get_key_value().
  *
  * In the case of a migration from an older SQLite, any value which
- * was previously stored with e_book_sqlitedb_set_is_populated()
+ * was previously stored with e_book_backend_sqlitedb_set_is_populated()
  * can be retrieved with this key.
  *
  * Since: 3.12
@@ -74,7 +74,7 @@
  * This key can be used with e_book_sqlite_get_key_value().
  *
  * In the case of a migration from an older SQLite, any value which
- * was previously stored with e_book_sqlitedb_set_sync_data()
+ * was previously stored with e_book_backend_sqlitedb_set_sync_data()
  * can be retrieved with this key.
  *
  * Since: 3.12
@@ -273,7 +273,7 @@ struct _EBookSqliteClass {
 };
 
 /**
- * EbSqlCuror:
+ * EbSqlCursor:
  *
  * An opaque cursor pointer
  *
@@ -290,7 +290,7 @@ typedef struct _EbSqlCursor EbSqlCursor;
  * Specifies the start position to in the list of traversed contacts
  * in calls to e_book_sqlite_cursor_step().
  *
- * When an #EbSqlCuror is created, the current position implied by %EBSQL_CURSOR_ORIGIN_CURRENT
+ * When an #EbSqlCursor is created, the current position implied by %EBSQL_CURSOR_ORIGIN_CURRENT
  * is the same as %EBSQL_CURSOR_ORIGIN_BEGIN.
  *
  * Since: 3.12

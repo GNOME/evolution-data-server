@@ -8072,7 +8072,7 @@ collect_results_for_cursor_cb (gpointer ref,
  * @origin: The #EbSqlCursorOrigin from whence to step
  * @count: A positive or negative amount of contacts to try and fetch
  * @results: (out) (allow-none) (element-type EbSqlSearchData) (transfer full):
- *   A return location to store the results, or %NULL if %EBSQL_CURSOR_STEP_FETCH is not specified in %flags.
+ *   A return location to store the results, or %NULL if %EBSQL_CURSOR_STEP_FETCH is not specified in @flags.
  * @cancellable: (allow-none): A #GCancellable
  * @error: A return location to store any error that might be reported.
  *
@@ -8083,12 +8083,12 @@ collect_results_for_cursor_cb (gpointer ref,
  *
  * If @cursor reaches the beginning or end of the query results, then the
  * returned list might not contain the amount of desired contacts, or might
- * return no results if the cursor currently points to the last contact. 
+ * return no results if the cursor currently points to the last contact.
  * Reaching the end of the list is not considered an error condition. Attempts
  * to step beyond the end of the list after having reached the end of the list
  * will however trigger an %E_BOOK_SQLITE_ERROR_END_OF_LIST error.
  *
- * If %EBSQL_CURSOR_STEP_FETCH is specified in %flags, a pointer to 
+ * If %EBSQL_CURSOR_STEP_FETCH is specified in @flags, a pointer to
  * a %NULL #GSList pointer should be provided for the @results parameter.
  *
  * The result list will be stored to @results and should be freed with g_slist_free()

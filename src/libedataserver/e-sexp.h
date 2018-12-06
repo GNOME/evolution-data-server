@@ -66,13 +66,37 @@ struct _ESExpResult {
 	time_t occuring_end;
 };
 
-typedef struct _ESExpResult *(ESExpFunc)(struct _ESExp *sexp, gint argc,
+/**
+ * ESExpFunc:
+ * @sexp: a #ESExp
+ * @argc: count of arguments
+ * @argv: (in) (array length=argc): array of values of the arguments
+ * @user_data: user data as passed to e_sexp_add_function()
+ *
+ * Callback type for function symbols used with e_sexp_add_function().
+ *
+ * Returns: Result of the function call, allocated by e_sexp_result_new().
+ */
+typedef struct _ESExpResult *(ESExpFunc)(struct _ESExp *sexp,
+					 gint argc,
 					 struct _ESExpResult **argv,
-					 gpointer data);
+					 gpointer user_data);
 
-typedef struct _ESExpResult *(ESExpIFunc)(struct _ESExp *sexp, gint argc,
+/**
+ * ESExpIFunc:
+ * @sexp: a #ESExp
+ * @argc: count of arguments
+ * @argv: (in) (array length=argc): array of values of the arguments
+ * @user_data: user data as passed to e_sexp_add_ifunction()
+ *
+ * Callback type for function symbols used with e_sexp_add_ifunction().
+ *
+ * Returns: Result of the function call, allocated by e_sexp_result_new().
+ */
+typedef struct _ESExpResult *(ESExpIFunc)(struct _ESExp *sexp,
+					  gint argc,
 					  struct _ESExpTerm **argv,
-					  gpointer data);
+					  gpointer user_data);
 
 typedef enum {
 	ESEXP_TERM_INT	= 0,	/* integer literal */
@@ -126,12 +150,12 @@ void		e_sexp_add_function	(ESExp *sexp,
 					 gint scope,
 					 const gchar *name,
 					 ESExpFunc *func,
-					 gpointer data);
+					 gpointer user_data);
 void		e_sexp_add_ifunction	(ESExp *sexp,
 					 gint scope,
 					 const gchar *name,
 					 ESExpIFunc *func,
-					 gpointer data);
+					 gpointer user_data);
 void		e_sexp_add_variable	(ESExp *sexp,
 					 gint scope,
 					 gchar *name,

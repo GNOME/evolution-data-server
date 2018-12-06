@@ -96,7 +96,7 @@ void		e_cal_cache_offline_change_free	(/* ECalCacheOfflineChange */ gpointer cha
  * such as e_cal_cache_search().
  *
  * The @extra parameter will contain any data which was
- * previously passed for this component in e_cal_cache_add_component()
+ * previously passed for this component in e_cal_cache_put_component()
  * or set with e_cal_cache_set_component_extra().
  *
  * These should be freed with e_cal_cache_search_data_free().

@@ -1253,7 +1253,7 @@ eos_lookup_token_sync (EOAuth2Service *service,
  * @source: an #ESource
  * @authorization_code: authorization code provided by the server
  * @ref_source: (scope call): an #EOAuth2ServiceRefSourceFunc function to obtain an #ESource
- * @ref_source_user_data user data for @ref_source
+ * @ref_source_user_data: user data for @ref_source
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -1541,7 +1541,7 @@ e_oauth2_service_get_access_token_sync (EOAuth2Service *service,
 
 /**
  * e_oauth2_service_util_set_to_form:
- * @form: a #GHashTable
+ * @form: (element-type utf8 utf8): a #GHashTable
  * @name: a property name
  * @value: (nullable): a property value
  *
@@ -1571,7 +1571,7 @@ e_oauth2_service_util_set_to_form (GHashTable *form,
 
 /**
  * e_oauth2_service_util_take_to_form:
- * @form: a #GHashTable
+ * @form: (element-type utf8 utf8): a #GHashTable
  * @name: a property name
  * @value: (transfer full) (nullable): a property value
  *

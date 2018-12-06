@@ -26,7 +26,7 @@
  * a sorted list of contacts in the addressbook.
  *
  * Aside from the documentation found here, a fully functional example
- * progrem <link linkend="eds-cursor-example">can be found here</link>.
+ * program <link linkend="eds-cursor-example">can be found here</link>.
  *
  * <refsect2 id="cursor-sort-keys">
  * <title>Sort Keys</title>
@@ -880,7 +880,7 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 * cursor position, inclusive of the current cursor
 	 * position.
 	 *
-	 * If the position value is %0, then the cursor is positioned
+	 * If the position value is 0, then the cursor is positioned
 	 * before the contact list in the symbolic %E_BOOK_CURSOR_ORIGIN_BEGIN
 	 * position. If the position value is greater than 
 	 * #EBookClientCursor:total, this indicates that the cursor is
@@ -2539,15 +2539,15 @@ e_book_client_cursor_step_finish (EBookClientCursor *cursor,
  *
  * If @cursor reaches the beginning or end of the query results, then the
  * returned list might not contain the amount of desired contacts, or might
- * return no results if the cursor currently points to the last contact. 
+ * return no results if the cursor currently points to the last contact.
  * Reaching the end of the list is not considered an error condition. Attempts
  * to step beyond the end of the list after having reached the end of the list
  * will however trigger an %E_CLIENT_ERROR_QUERY_REFUSED error.
  *
- * If %E_BOOK_CURSOR_STEP_FETCH is specified in %flags, a pointer to 
+ * If %E_BOOK_CURSOR_STEP_FETCH is specified in @flags, a pointer to
  * a %NULL #GSList pointer should be provided for the @results parameter.
  *
- * If %E_BOOK_CURSOR_STEP_MOVE is specified in %flags, then the cursor's
+ * If %E_BOOK_CURSOR_STEP_MOVE is specified in @flags, then the cursor's
  * state will be modified and the <link linkend="cursor-pos-total">position</link>
  * property will be updated as a result.
  *

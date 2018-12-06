@@ -3267,7 +3267,7 @@ e_book_backend_get_backend_property (EBookBackend *backend,
  * Checks if @backend's storage has been opened (and
  * authenticated, if necessary) and the backend itself
  * is ready for accessing. This property is changed automatically
- * within call of e_book_backend_notify_opened().
+ * after the @backend is successfully opened.
  *
  * Returns: %TRUE if fully opened, %FALSE otherwise.
  *
