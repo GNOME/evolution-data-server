@@ -846,6 +846,43 @@ imapx_untagged_expunge (CamelIMAPXServer *is,
 	return TRUE;
 }
 
+typedef struct _GatherExistingUidsData {
+	CamelIMAPXServer *is;
+	CamelFolderSummary *summary;
+	GList *uid_list;
+	guint32 n_uids;
+} GatherExistingUidsData;
+
+static gboolean
+imapx_gather_existing_uids_cb (guint32 uid,
+			       gpointer user_data)
+{
+	GatherExistingUidsData *geud = user_data;
+	gchar *uid_str;
+
+	g_return_val_if_fail (geud != NULL, FALSE);
+	g_return_val_if_fail (geud->is != NULL, FALSE);
+	g_return_val_if_fail (geud->summary != NULL, FALSE);
+
+	geud->n_uids++;
+
+	uid_str = g_strdup_printf ("%u", uid);
+
+	if (camel_folder_summary_check_uid (geud->summary, uid_str)) {
+		e (geud->is->priv->tagprefix, "vanished known UID: %u\n", uid);
+		if (!geud->uid_list)
+			g_mutex_lock (&geud->is->priv->changes_lock);
+
+		geud->uid_list = g_list_prepend (geud->uid_list, uid_str);
+		camel_folder_change_info_remove_uid (geud->is->priv->changes, uid_str);
+	} else {
+		e (geud->is->priv->tagprefix, "vanished unknown UID: %u\n", uid);
+		g_free (uid_str);
+	}
+
+	return TRUE;
+}
+
 static gboolean
 imapx_untagged_vanished (CamelIMAPXServer *is,
                          GInputStream *input_stream,
@@ -854,10 +891,8 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 {
 	CamelFolder *folder;
 	CamelIMAPXMailbox *mailbox;
-	GArray *uids;
-	GList *uid_list = NULL;
+	GatherExistingUidsData geud;
 	gboolean unsolicited = TRUE;
-	guint ii = 0;
 	guint len = 0;
 	guchar *token = NULL;
 	gint tok = 0;
@@ -885,58 +920,52 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 			tok, token, len);
 	}
 
-	uids = imapx_parse_uids (
-		CAMEL_IMAPX_INPUT_STREAM (input_stream), cancellable, error);
-	if (uids == NULL)
-		return FALSE;
+	g_return_val_if_fail (is->priv->changes != NULL, FALSE);
 
 	mailbox = camel_imapx_server_ref_pending_or_selected (is);
-
 	g_return_val_if_fail (mailbox != NULL, FALSE);
 
 	folder = imapx_server_ref_folder (is, mailbox);
 	g_return_val_if_fail (folder != NULL, FALSE);
+
+	geud.is = is;
+	geud.summary = camel_folder_get_folder_summary (folder);
+	geud.uid_list = NULL;
+	geud.n_uids = 0;
+
+	if (!imapx_parse_uids_with_callback (CAMEL_IMAPX_INPUT_STREAM (input_stream), imapx_gather_existing_uids_cb, &geud, cancellable, error)) {
+		g_object_unref (folder);
+		g_object_unref (mailbox);
+		return FALSE;
+	}
+
+	/* It's locked by imapx_gather_existing_uids_cb() when the first known UID is found */
+	if (geud.uid_list)
+		g_mutex_unlock (&is->priv->changes_lock);
 
 	if (unsolicited) {
 		guint32 messages;
 
 		messages = camel_imapx_mailbox_get_messages (mailbox);
 
-		if (messages < uids->len) {
+		if (messages < geud.n_uids) {
 			c (
 				is->priv->tagprefix,
 				"Error: mailbox messages (%u) is "
 				"fewer than vanished %u\n",
-				messages, uids->len);
+				messages, geud.n_uids);
 			messages = 0;
 		} else {
-			messages -= uids->len;
+			messages -= geud.n_uids;
 		}
 
 		camel_imapx_mailbox_set_messages (mailbox, messages);
 	}
 
-	g_return_val_if_fail (is->priv->changes != NULL, FALSE);
-
-	g_mutex_lock (&is->priv->changes_lock);
-
-	for (ii = 0; ii < uids->len; ii++) {
-		guint32 uid;
-		gchar *str;
-
-		uid = g_array_index (uids, guint32, ii);
-
-		e (is->priv->tagprefix, "vanished: %u\n", uid);
-
-		str = g_strdup_printf ("%u", uid);
-		uid_list = g_list_prepend (uid_list, str);
-		camel_folder_change_info_remove_uid (is->priv->changes, str);
+	if (geud.uid_list) {
+		geud.uid_list = g_list_reverse (geud.uid_list);
+		camel_folder_summary_remove_uids (geud.summary, geud.uid_list);
 	}
-
-	g_mutex_unlock (&is->priv->changes_lock);
-
-	uid_list = g_list_reverse (uid_list);
-	camel_folder_summary_remove_uids (camel_folder_get_folder_summary (folder), uid_list);
 
 	/* If the response is truly unsolicited (e.g. via NOTIFY)
 	 * then go ahead and emit the change notification now. */
@@ -954,7 +983,7 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 
 			g_mutex_unlock (&is->priv->changes_lock);
 
-			camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
+			camel_folder_summary_save (geud.summary, NULL);
 			imapx_update_store_summary (folder);
 
 			camel_folder_changed (folder, changes);
@@ -966,9 +995,7 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 		COMMAND_UNLOCK (is);
 	}
 
-	g_list_free_full (uid_list, (GDestroyNotify) g_free);
-	g_array_free (uids, TRUE);
-
+	g_list_free_full (geud.uid_list, g_free);
 	g_object_unref (folder);
 	g_object_unref (mailbox);
 
@@ -1215,7 +1242,10 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 			c (is->priv->tagprefix, "flag changed: %lu\n", is->priv->context->id);
 
-			select_folder = imapx_server_ref_folder (is, select_mailbox);
+			if (select_pending)
+				select_folder = imapx_server_ref_folder (is, select_pending);
+			else
+				select_folder = imapx_server_ref_folder (is, select_mailbox);
 			if (!select_folder) {
 				g_warn_if_fail (select_folder != NULL);
 
@@ -1246,14 +1276,30 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 						camel_imapx_mailbox_get_permanentflags (select_mailbox),
 						select_folder,
 						(select_pending == NULL));
+					c (is->priv->tagprefix, "found uid %s in '%s', changed:%d\n", uid,
+						camel_folder_get_full_name (select_folder), changed);
 				} else {
 					/* This (UID + FLAGS for previously unknown message) might
 					 * happen during a SELECT (QRESYNC). We should use it. */
-					c (is->priv->tagprefix, "flags changed for unknown uid %s\n.", uid);
+					c (is->priv->tagprefix, "flags changed for unknown uid %s in '%s'\n", uid,
+						camel_folder_get_full_name (select_folder));
 				}
 			}
 
 			if (changed) {
+				CamelIMAPXSummary *imapx_summary;
+
+				imapx_summary = CAMEL_IMAPX_SUMMARY (camel_folder_get_folder_summary (select_folder));
+
+				if (imapx_summary && (finfo->got & FETCH_MODSEQ) != 0 &&
+				    imapx_summary->modseq < finfo->modseq) {
+					c (is->priv->tagprefix, "updating summary modseq %" G_GUINT64_FORMAT "~>%" G_GUINT64_FORMAT " in '%s'\n",
+						imapx_summary->modseq, finfo->modseq, camel_folder_get_full_name (select_folder));
+					imapx_summary->modseq = finfo->modseq;
+
+					camel_folder_summary_touch (CAMEL_FOLDER_SUMMARY (imapx_summary));
+				}
+
 				g_mutex_lock (&is->priv->changes_lock);
 				if (is->priv->changes)
 					camel_folder_change_info_change_uid (is->priv->changes, uid);
@@ -2487,7 +2533,7 @@ imapx_completion (CamelIMAPXServer *is,
 
 			g_mutex_unlock (&is->priv->changes_lock);
 
-			mailbox = camel_imapx_server_ref_selected (is);
+			mailbox = camel_imapx_server_ref_pending_or_selected (is);
 
 			g_warn_if_fail (mailbox != NULL);
 
@@ -5501,12 +5547,13 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 				is->priv->tagprefix,
 				"Eep, after QRESYNC we're out of sync. "
 				"total %u / %u, unread %u / %u, modseq %"
-				G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT "\n",
+				G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT " in folder:'%s'\n",
 				total, messages,
 				camel_folder_summary_get_unread_count (CAMEL_FOLDER_SUMMARY (imapx_summary)),
 				unseen,
 				imapx_summary->modseq,
-				highestmodseq);
+				highestmodseq,
+				camel_folder_get_full_name (folder));
 		} else {
 			imapx_summary->uidnext = uidnext;
 
@@ -5518,12 +5565,13 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 				is->priv->tagprefix,
 				"OK, after QRESYNC we're still in sync. "
 				"total %u / %u, unread %u / %u, modseq %"
-				G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT "\n",
+				G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT " in folder:'%s'\n",
 				total, messages,
 				camel_folder_summary_get_unread_count (CAMEL_FOLDER_SUMMARY (imapx_summary)),
 				unseen,
 				imapx_summary->modseq,
-				highestmodseq);
+				highestmodseq,
+				camel_folder_get_full_name (folder));
 			g_object_unref (folder);
 			return TRUE;
 		}
