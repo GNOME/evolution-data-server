@@ -136,6 +136,11 @@ enum {
 GArray *	imapx_parse_uids		(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
+gboolean	imapx_parse_uids_with_callback	(CamelIMAPXInputStream *stream,
+						 gboolean (* func) (guint32 uid, gpointer user_data),
+						 gpointer user_data,
+						 GCancellable *cancellable,
+						 GError **error);
 gboolean	imapx_parse_flags		(CamelIMAPXInputStream *stream,
 						 guint32 *flagsp,
 						 CamelNamedFlags *user_flags,

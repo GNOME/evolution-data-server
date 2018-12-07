@@ -2232,37 +2232,51 @@ exit:
 	return finfo;
 }
 
-GArray *
-imapx_parse_uids (CamelIMAPXInputStream *stream,
-                  GCancellable *cancellable,
-                  GError **error)
+static gboolean
+imapx_fill_uids_array_cb (guint32 uid,
+			  gpointer user_data)
 {
-	GArray *array;
+	GArray *array = user_data;
+
+	g_return_val_if_fail (array != NULL, FALSE);
+
+	g_array_append_val (array, uid);
+
+	return TRUE;
+}
+
+gboolean
+imapx_parse_uids_with_callback (CamelIMAPXInputStream *stream,
+				gboolean (* func) (guint32 uid, gpointer user_data),
+				gpointer user_data,
+				GCancellable *cancellable,
+				GError **error)
+{
+	gboolean can_continue = TRUE;
 	guchar *token = NULL;
 	gchar **splits;
-	guint len, str_len;
+	guint len;
 	gint tok, ii;
 
-	g_return_val_if_fail (CAMEL_IS_IMAPX_INPUT_STREAM (stream), NULL);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_INPUT_STREAM (stream), FALSE);
+	g_return_val_if_fail (func != NULL, FALSE);
 
 	tok = camel_imapx_input_stream_token (
 		stream, &token, &len, cancellable, error);
 	if (tok < 0)
-		return NULL;
+		return FALSE;
 
 	if (!token) {
 		g_set_error (error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_IGNORE, "server response truncated");
 
 		camel_imapx_input_stream_ungettoken (stream, tok, token, len);
 
-		return NULL;
+		return FALSE;
 	}
 
-	array = g_array_new (FALSE, FALSE, sizeof (guint32));
 	splits = g_strsplit ((gchar *) token, ",", -1);
-	str_len = g_strv_length (splits);
 
-	for (ii = 0; ii < str_len; ii++) {
+	for (ii = 0; can_continue && splits[ii]; ii++) {
 		guint32 uid;
 
 		if (g_strstr_len (splits[ii], -1, ":")) {
@@ -2270,17 +2284,37 @@ imapx_parse_uids (CamelIMAPXInputStream *stream,
 			guint32 first = strtoul (seq[0], NULL, 10);
 			guint32 last = strtoul (seq[1], NULL, 10);
 
-			for (uid = first; uid <= last; uid++)
-				g_array_append_val (array, uid);
+			for (uid = first; uid <= last && can_continue; uid++) {
+				can_continue = func (uid, user_data);
+			}
 
 			g_strfreev (seq);
 		} else {
 			uid = strtoul (splits[ii], NULL, 10);
-			g_array_append_val (array, uid);
+			can_continue = func (uid, user_data);
 		}
 	}
 
 	g_strfreev (splits);
+
+	return TRUE;
+}
+
+GArray *
+imapx_parse_uids (CamelIMAPXInputStream *stream,
+                  GCancellable *cancellable,
+                  GError **error)
+{
+	GArray *array;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_INPUT_STREAM (stream), NULL);
+
+	array = g_array_new (FALSE, FALSE, sizeof (guint32));
+
+	if (!imapx_parse_uids_with_callback (stream, imapx_fill_uids_array_cb, array, cancellable, error)) {
+		g_array_free (array, TRUE);
+		array = NULL;
+	}
 
 	return array;
 }
