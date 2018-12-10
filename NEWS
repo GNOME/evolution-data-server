@@ -1,3 +1,41 @@
+Evolution-Data-Server 3.30.3 2018-12-10
+---------------------------------------
+
+Bug Fixes:
+	Bug 719328 - [IMAPx] Fails to update folder content with QResync (Milan Crha)
+	evo-I#196 - Build developer documentation in a fix order (Milan Crha)
+	I#5 - Compare only date when searching with Sent/Received dates ][ (Milan Crha)
+	I#49 - [CardDAV] Local cache made broken after update (Milan Crha)
+	I#51 - [Gmail] Change from OAuth2 to other authentication doesn't stick (Milan Crha)
+	I#55 - [IMAPx] Flags after certain BODYSTRUCTURE not recognized (Milan Crha)
+	I#56 - [Camel] Can stop parsing mail address header too early (Milan Crha)
+	I#62 - Make EVCardAttribute/EVCardAttributeParam structures ref-counted internally (Milan Crha)
+	I#63 - [CalDAV/CardDAV] Incorrectly thinks an object is created in offline (Milan Crha)
+	I#64 - S/MIME: Two signerInfos (one *invalid*, one valid) are merged into a single valid indicator (Milan Crha)
+
+Miscellaneous:
+	[IMAPx] Fix a concurrent message download issue (Milan Crha)
+	Make sure intltool-merge cache is created only once (Milan Crha)
+	test-cal-client-get-revision could fail due to delayed D-Bus property change notification (Milan Crha)
+	[evolution-dbus-session] Handle method calls with GUnixFDList (Milan Crha)
+	Deadlock when marking as read message in a search folder (Milan Crha)
+	[CalDAV/CardDAV] Can add component to local cache with incomplete info (Milan Crha)
+	Copy messages within mail filters immediately (Milan Crha)
+	Correct use-after-free in e_vcard_attribute_remove_param_value() (Milan Crha)
+	Replace evolution-dbus-session tool with DBUS_SERVICES_PREFIX option (Milan Crha)
+	[Camel] Address compiler warning in header_address_list_encode_append() (Milan Crha)
+	Relax runtime check in e_cal_util_get_system_timezone() (Milan Crha)
+	[Flatpak] Save passwords in libsecret with the same prefix as used by D-Bus services (Milan Crha)
+	[test-server-utils] Correct when open of deprecated book/calendar is retried (Milan Crha)
+	[test-cal-client-get-free-busy] Enhance the test execution (Milan Crha)
+	[Flatpak] Make alarm-notify use the D-Bus services prefix, if specified (Milan Crha)
+
+Translations:
+	Cédric Valmary (oc)
+	Dušan Kazik (sk)
+	Carmen Bianca BAKKER (eo)
+	Iñaki Larrañaga Murgoitio (eu)
+
 Evolution-Data-Server 3.30.2 2018-10-22
 ---------------------------------------
 
