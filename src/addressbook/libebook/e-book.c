@@ -1105,7 +1105,7 @@ get_contact_reply (GObject *source_object,
  *
  * Retrieves a contact specified by @id from @book.
  *
- * Returns: %FALSE if successful, %TRUE otherwise
+ * Returns: %TRUE if successful, %FALSE otherwise
  *
  * Deprecated: 3.0: Use e_book_get_contact_async() instead.
  **/
@@ -1141,7 +1141,7 @@ e_book_async_get_contact (EBook *book,
  *
  * Retrieves a contact specified by @id from @book.
  *
- * Returns: %FALSE if successful, %TRUE otherwise
+ * Returns: %TRUE if successful, %FALSE otherwise
  *
  * Since: 2.32
  *
@@ -1674,7 +1674,7 @@ get_book_view_reply (GObject *source_object,
  * Query @book with @query, creating a #EBookView with the fields
  * specified by @requested_fields and limited at @max_results records.
  *
- * Returns: %FALSE if successful, %TRUE otherwise
+ * Returns: %TRUE if successful, %FALSE otherwise
  *
  * Deprecated: 3.0: Use e_book_get_book_view_async() instead.
  **/
@@ -1722,7 +1722,7 @@ e_book_async_get_book_view (EBook *book,
  * Query @book with @query, creating a #EBookView with the fields
  * specified by @requested_fields and limited at @max_results records.
  *
- * Returns: %FALSE if successful, %TRUE otherwise
+ * Returns: %TRUE if successful, %FALSE otherwise
  *
  * Since: 2.32
  *
@@ -2180,7 +2180,7 @@ open_reply (GObject *source_object,
  * Opens the addressbook, making it ready for queries and other operations.
  * This function does not block.
  *
- * Returns: %FALSE if successful, %TRUE otherwise.
+ * Returns: %TRUE if successful, %FALSE otherwise
  *
  * Deprecated: 3.0: Use e_book_open_async() instead.
  **/
@@ -2217,7 +2217,7 @@ e_book_async_open (EBook *book,
  * Opens the addressbook, making it ready for queries and other operations.
  * This function does not block.
  *
- * Returns: %FALSE if successful, %TRUE otherwise.
+ * Returns: %TRUE if successful, %FALSE otherwise
  *
  * Since: 2.32
  *
@@ -2307,7 +2307,7 @@ remove_reply (GObject *source_object,
  * Remove the backing data for this #EBook. For example, with the file backend this
  * deletes the database file. You cannot get it back!
  *
- * Returns: %FALSE if successful, %TRUE otherwise.
+ * Returns: %TRUE if successful, %FALSE otherwise
  *
  * Deprecated: 3.0: Use e_book_remove_async() instead.
  **/
@@ -2342,7 +2342,7 @@ e_book_async_remove (EBook *book,
  * Remove the backing data for this #EBook. For example, with the file
  * backend this deletes the database file. You cannot get it back!
  *
- * Returns: %FALSE if successful, %TRUE otherwise.
+ * Returns: %TRUE if successful, %FALSE otherwise
  *
  * Since: 2.32
  *
