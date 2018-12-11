@@ -195,6 +195,26 @@ e_vcard_init (EVCard *evc)
 	evc->priv = E_VCARD_GET_PRIVATE (evc);
 }
 
+static EVCardAttribute *
+e_vcard_attribute_new_take (gchar *attr_group,
+			    gchar *attr_name)
+{
+	EVCardAttribute *attr;
+
+	attr = g_slice_new0 (EVCardAttribute);
+
+	if (attr_group && !*attr_group) {
+		g_free (attr_group);
+		attr_group = NULL;
+	}
+
+	attr->ref_count = 1;
+	attr->group = attr_group;
+	attr->name = attr_name;
+
+	return attr;
+}
+
 /* Case insensitive version of strstr */
 static gchar *
 strstr_nocase (const gchar *haystack,
@@ -286,8 +306,7 @@ skip_newline (gchar *str,
 static void
 skip_to_next_line (gchar **p)
 {
-	gchar *lp;
-	lp = *p;
+	gchar *lp = *p;
 
 	while (*lp != '\n' && *lp != '\r' && *lp != '\0')
 		lp = g_utf8_next_char (lp);
@@ -335,16 +354,25 @@ read_attribute_value (EVCardAttribute *attr,
                       const gchar *charset)
 {
 	gchar *lp = *p;
+	const gchar *chunk_start = NULL;
 	GString *str;
 
+	#define WRITE_CHUNK() G_STMT_START { \
+		if (chunk_start) { \
+			g_string_append_len (str, chunk_start, lp - chunk_start); \
+			chunk_start = NULL; \
+		} } G_STMT_END
+
 	/* read in the value */
-	str = g_string_new ("");
+	str = g_string_sized_new (16);
 	for (lp = skip_newline ( *p, quoted_printable);
 	     *lp != '\n' && *lp != '\r' && *lp != '\0';
 	     lp = skip_newline ( lp, quoted_printable ) ) {
 
 		if (*lp == '=' && quoted_printable) {
 			gunichar a, b;
+
+			WRITE_CHUNK ();
 
 			/* it's for the '=' */
 			lp++;
@@ -373,10 +401,12 @@ read_attribute_value (EVCardAttribute *attr,
 				g_string_append_c (str, c); /* add decoded byte (this is not a unicode yet) */
 			} else {
 				g_string_append_c (str, '=');
-				g_string_append_unichar (str, a);
-				g_string_append_unichar (str, b);
+				g_string_insert_unichar (str, -1, a);
+				g_string_insert_unichar (str, -1, b);
 			}
 		} else if (*lp == '\\') {
+			WRITE_CHUNK ();
+
 			/* convert back to the non-escaped version of
 			 * the characters */
 			lp = g_utf8_next_char (lp);
@@ -401,13 +431,14 @@ read_attribute_value (EVCardAttribute *attr,
 			default:
 				g_warning ("invalid escape, passing it through");
 				g_string_append_c (str, '\\');
-				g_string_append_unichar (str, g_utf8_get_char (lp));
+				chunk_start = lp;
 				break;
 			}
 			lp = g_utf8_next_char (lp);
 		}
 		else if ((*lp == ';') ||
 			 (*lp == ',' && !g_ascii_strcasecmp (attr->name, "CATEGORIES"))) {
+			WRITE_CHUNK ();
 			if (charset) {
 				gchar *tmp;
 
@@ -419,14 +450,24 @@ read_attribute_value (EVCardAttribute *attr,
 			}
 
 			e_vcard_attribute_add_value (attr, str->str);
-			g_string_assign (str, "");
+			g_string_set_size (str, 0);
 			lp = g_utf8_next_char (lp);
 		}
 		else {
-			g_string_append_unichar (str, g_utf8_get_char (lp));
+			if (!chunk_start)
+				chunk_start = lp;
+
 			lp = g_utf8_next_char (lp);
 		}
+
+		if (*lp == '\n' || *lp == '\r')
+			WRITE_CHUNK ();
 	}
+
+	WRITE_CHUNK ();
+
+	#undef WRITE_CHUNK
+
 	if (str) {
 		if (charset) {
 			gchar *tmp;
@@ -454,21 +495,32 @@ read_attribute_params (EVCardAttribute *attr,
                        gchar **charset)
 {
 	gchar *lp;
+	const gchar *chunk_start = NULL;
 	GString *str;
 	EVCardAttributeParam *param = NULL;
 	gboolean in_quote = FALSE;
 
-	str = g_string_new ("");
+	#define WRITE_CHUNK() G_STMT_START { \
+		if (chunk_start) { \
+			g_string_append_len (str, chunk_start, lp - chunk_start); \
+			chunk_start = NULL; \
+		} } G_STMT_END
+
+	str = g_string_sized_new (16);
 	for (lp = skip_newline ( *p, *quoted_printable);
 	     *lp != '\n' && *lp != '\r' && *lp != '\0';
 	     lp = skip_newline ( lp, *quoted_printable ) ) {
+		gunichar uc;
 
 		if (*lp == '"') {
+			WRITE_CHUNK ();
+
 			in_quote = !in_quote;
 			lp = g_utf8_next_char (lp);
-		}
-		else if (in_quote || g_unichar_isalnum (g_utf8_get_char (lp)) || *lp == '-' || *lp == '_') {
-			g_string_append_unichar (str, g_utf8_get_char (lp));
+		} else  if (uc = g_utf8_get_char (lp), in_quote || *lp == '-' || *lp == '_' || g_unichar_isalnum (uc)) {
+			WRITE_CHUNK ();
+
+			g_string_insert_unichar (str, -1, uc);
 			lp = g_utf8_next_char (lp);
 		}
 		/* accumulate until we hit the '=' or ';'.  If we hit
@@ -478,9 +530,11 @@ read_attribute_params (EVCardAttribute *attr,
 		 * QUOTED-PRINTABLE) or TYPE (in any other case.)
 		 */
 		else if (*lp == '=') {
+			WRITE_CHUNK ();
+
 			if (str->len > 0) {
 				param = e_vcard_attribute_param_new (str->str);
-				g_string_assign (str, "");
+				g_string_set_size (str, 0);
 				lp = g_utf8_next_char (lp);
 			}
 			else {
@@ -501,10 +555,12 @@ read_attribute_params (EVCardAttribute *attr,
 			gboolean colon = (*lp == ':');
 			gboolean comma = (*lp == ',');
 
+			WRITE_CHUNK ();
+
 			if (param) {
 				if (str->len > 0) {
 					e_vcard_attribute_param_add_value (param, str->str);
-					g_string_assign (str, "");
+					g_string_set_size (str, 0);
 					if (!colon)
 						lp = g_utf8_next_char (lp);
 				}
@@ -565,7 +621,7 @@ read_attribute_params (EVCardAttribute *attr,
 						param = e_vcard_attribute_param_new (param_name);
 						e_vcard_attribute_param_add_value (param, str->str);
 					}
-					g_string_assign (str, "");
+					g_string_set_size (str, 0);
 					if (!colon)
 						lp = g_utf8_next_char (lp);
 				}
@@ -595,16 +651,24 @@ read_attribute_params (EVCardAttribute *attr,
 		} else if (param) {
 			/* reading param value, which is SAFE-CHAR, aka
 			 * any character except CTLs, DQUOTE, ";", ":", "," */
-			g_string_append_unichar (str, g_utf8_get_char (lp));
+			if (!chunk_start)
+				chunk_start = lp;
+
 			lp = g_utf8_next_char (lp);
 		} else {
 			g_warning ("invalid character (%c/0x%02x) found in parameter spec (%s)", *lp, *lp, lp);
-			g_string_assign (str, "");
+			chunk_start = NULL;
+			g_string_set_size (str, 0);
 			/*			skip_until (&lp, ":;"); */
 
 			skip_to_next_line ( &lp );
 		}
+
+		if (*lp == '\n' || *lp == '\r')
+			WRITE_CHUNK ();
 	}
+
+	#undef WRITE_CHUNK
 
 	if (str)
 		g_string_free (str, TRUE);
@@ -626,10 +690,11 @@ read_attribute (gchar **p)
 	gchar *charset = NULL;
 
 	/* first read in the group/name */
-	str = g_string_new ("");
+	str = g_string_sized_new (16);
 	for (lp = skip_newline ( *p, is_qp);
 	     *lp != '\n' && *lp != '\r' && *lp != '\0';
 	     lp = skip_newline ( lp, is_qp ) ) {
+		gunichar uc;
 
 		if (*lp == ':' || *lp == ';') {
 			if (str->len != 0) {
@@ -656,16 +721,15 @@ read_attribute (gchar **p)
 				g_warning (
 					"extra `.' in attribute specification.  ignoring extra group `%s'",
 					str->str);
-				g_string_free (str, TRUE);
-				str = g_string_new ("");
+				g_string_set_size (str, 0);
 			}
 			if (str->len != 0) {
 				attr_group = g_string_free (str, FALSE);
-				str = g_string_new ("");
+				str = g_string_sized_new (16);
 			}
 		}
-		else if (g_unichar_isalnum (g_utf8_get_char (lp)) || *lp == '-' || *lp == '_') {
-			g_string_append_unichar (str, g_utf8_get_char (lp));
+		else if (uc = g_utf8_get_char (lp), *lp == '-' || *lp == '_' || g_unichar_isalnum (uc)) {
+			g_string_insert_unichar (str, -1, uc);
 		}
 		else {
 			g_warning ("invalid character found in attribute group/name");
@@ -683,9 +747,8 @@ read_attribute (gchar **p)
 		goto lose;
 	}
 
-	attr = e_vcard_attribute_new (attr_group, attr_name);
-	g_free (attr_group);
-	g_free (attr_name);
+	/* This consumes (takes) both strings */
+	attr = e_vcard_attribute_new_take (attr_group, attr_name);
 
 	if (*lp == ';') {
 		/* skip past the ';' */
@@ -841,7 +904,10 @@ e_vcard_escape_semicolons (const gchar *s)
 	GString *str;
 	const gchar *p;
 
-	str = g_string_new ("");
+	if (s)
+		str = g_string_sized_new (strlen (s));
+	else
+		str = g_string_new ("");
 
 	for (p = s; p && *p; p++) {
 		if (*p == ';')
@@ -867,7 +933,10 @@ e_vcard_escape_string (const gchar *s)
 	GString *str;
 	const gchar *p;
 
-	str = g_string_new ("");
+	if (s)
+		str = g_string_sized_new (strlen (s));
+	else
+		str = g_string_new ("");
 
 	/* Escape a string as described in RFC2426, section 5 */
 	for (p = s; p && *p; p++) {
@@ -914,7 +983,7 @@ e_vcard_unescape_string (const gchar *s)
 
 	g_return_val_if_fail (s != NULL, NULL);
 
-	str = g_string_new ("");
+	str = g_string_sized_new (strlen (s));
 
 	/* Unescape a string as described in RFC2426, section 5 */
 	for (p = s; *p; p++) {
@@ -1066,7 +1135,7 @@ e_vcard_qp_encode (const gchar *txt,
                    gboolean can_wrap)
 {
 	const gchar *p = txt;
-	GString *escaped = g_string_new ("");
+	GString *escaped = g_string_sized_new (strlen (txt));
 	gint count = 0;
 
 	while (*p != '\0') {
@@ -1205,7 +1274,7 @@ e_vcard_to_string_vcard_21 (EVCard *evc)
 		if (empty)
 			continue;
 
-		attr_str = g_string_new ("");
+		attr_str = g_string_sized_new (strlen (attr->name) + (attr->group ? strlen (attr->group) + 1 : 0));
 
 		/* From vCard 2.1 spec page 27, 28
 		 *
@@ -1316,7 +1385,7 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 		if (!g_ascii_strcasecmp (attr->name, "VERSION"))
 			continue;
 
-		attr_str = g_string_new ("");
+		attr_str = g_string_sized_new (strlen (attr->name) + (attr->group ? strlen (attr->group) + 1 : 0));
 
 		/* From rfc2425, 5.8.2
 		 *
@@ -1558,18 +1627,7 @@ EVCardAttribute *
 e_vcard_attribute_new (const gchar *attr_group,
                        const gchar *attr_name)
 {
-	EVCardAttribute *attr;
-
-	attr = g_slice_new0 (EVCardAttribute);
-
-	if (attr_group != NULL && *attr_group == '\0')
-		attr_group = NULL;
-
-	attr->ref_count = 1;
-	attr->group = g_strdup (attr_group);
-	attr->name = g_strdup (attr_name);
-
-	return attr;
+	return e_vcard_attribute_new_take ((attr_group && *attr_group) ? g_strdup (attr_group) : NULL, g_strdup (attr_name));
 }
 
 /**
