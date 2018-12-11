@@ -891,7 +891,8 @@ e_destination_get_email_num (const EDestination *dest)
  * @dest: an #EDestination
  *
  * Gets the full name of @dest's addressee, or if the addressee is
- * a contact list, the name the list was filed under.
+ * a contact list, the name the list was filed under. The name can
+ * be encoded in quoted printable.
  *
  * Returns: (nullable): The full name of the addressee, or %NULL if none was set.
  **/
@@ -1122,7 +1123,8 @@ e_destination_set_raw (EDestination *dest,
  * @include_email: whether to include the e-mail address
  *
  * Generates a textual representation of @dest, suitable for referring
- * to the destination during user interaction.
+ * to the destination during user interaction. The name can be encoded
+ * in quoted printable.
  *
  * Returns: A textual representation of the destination.
  **/
