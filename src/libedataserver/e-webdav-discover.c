@@ -110,7 +110,7 @@ e_webdav_discover_traverse_propfind_response_cb (EWebDAVSession *webdav,
 
 			length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
 
-			for (ii = 0; ii < length; ii++) {
+			for (ii = 0; ii < length && !g_cancellable_is_cancelled (wdd->cancellable); ii++) {
 				gchar *home_set_href;
 
 				full_href = NULL;
@@ -145,7 +145,7 @@ e_webdav_discover_traverse_propfind_response_cb (EWebDAVSession *webdav,
 
 			length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
 
-			for (ii = 0; ii < length; ii++) {
+			for (ii = 0; ii < length && !g_cancellable_is_cancelled (wdd->cancellable); ii++) {
 				gchar *home_set_href, *full_href = NULL;
 
 				home_set_href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/C:calendar-home-set/D:href[%d]", xpath_prop_prefix, ii + 1);
@@ -204,7 +204,7 @@ e_webdav_discover_traverse_propfind_response_cb (EWebDAVSession *webdav,
 		}
 
 		principal_href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:current-user-principal/D:href", xpath_prop_prefix);
-		if (principal_href && *principal_href) {
+		if (principal_href && *principal_href && !g_cancellable_is_cancelled (wdd->cancellable)) {
 			full_href = e_webdav_session_ensure_full_uri (webdav, request_uri, principal_href);
 
 			if (full_href && *full_href)
@@ -219,7 +219,7 @@ e_webdav_discover_traverse_propfind_response_cb (EWebDAVSession *webdav,
 		g_free (principal_href);
 
 		principal_href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:principal-URL/D:href", xpath_prop_prefix);
-		if (principal_href && *principal_href) {
+		if (principal_href && *principal_href && !g_cancellable_is_cancelled (wdd->cancellable)) {
 			full_href = e_webdav_session_ensure_full_uri (webdav, request_uri, principal_href);
 
 			if (full_href && *full_href)
@@ -238,6 +238,7 @@ e_webdav_discover_traverse_propfind_response_cb (EWebDAVSession *webdav,
 			GSList *resources = NULL;
 
 			if (!g_hash_table_contains (wdd->covered_hrefs, href) &&
+			    !g_cancellable_is_cancelled (wdd->cancellable) &&
 			    e_webdav_session_list_sync (webdav, href, E_WEBDAV_DEPTH_THIS,
 				E_WEBDAV_LIST_SUPPORTS | E_WEBDAV_LIST_DISPLAY_NAME | E_WEBDAV_LIST_DESCRIPTION | E_WEBDAV_LIST_COLOR,
 				&resources, wdd->cancellable, wdd->error)) {
