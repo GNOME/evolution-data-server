@@ -1859,7 +1859,7 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 	if (local_error)
 		g_propagate_error (error, local_error);
 
-	return local_error != NULL;
+	return !local_error;
 }
 
 static gboolean
