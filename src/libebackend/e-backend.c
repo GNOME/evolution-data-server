@@ -69,6 +69,7 @@ struct _EBackendPrivate {
 	GMutex network_monitor_cancellable_lock;
 	GCancellable *network_monitor_cancellable;
 
+	GMutex authenticate_lock; /* To not run multiple authenticate requests simultaneously */
 	GMutex authenticate_cancellable_lock;
 	GCancellable *authenticate_cancellable;
 };
@@ -285,6 +286,7 @@ e_backend_authenticate_sync (EBackend *backend,
 			     GError **error)
 {
 	EBackendClass *class;
+	ESourceAuthenticationResult res;
 
 	g_return_val_if_fail (E_IS_BACKEND (backend), E_SOURCE_AUTHENTICATION_ERROR);
 	g_return_val_if_fail (credentials != NULL, E_SOURCE_AUTHENTICATION_ERROR);
@@ -293,7 +295,16 @@ e_backend_authenticate_sync (EBackend *backend,
 	g_return_val_if_fail (class != NULL, E_SOURCE_AUTHENTICATION_ERROR);
 	g_return_val_if_fail (class->authenticate_sync != NULL, E_SOURCE_AUTHENTICATION_ERROR);
 
-	return class->authenticate_sync (backend, credentials, out_certificate_pem, out_certificate_errors, cancellable, error);
+	g_mutex_lock (&backend->priv->authenticate_lock);
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, error))
+		res = E_SOURCE_AUTHENTICATION_ERROR;
+	else
+		res = class->authenticate_sync (backend, credentials, out_certificate_pem, out_certificate_errors, cancellable, error);
+
+	g_mutex_unlock (&backend->priv->authenticate_lock);
+
+	return res;
 }
 
 typedef struct _AuthenticateThreadData {
@@ -625,6 +636,7 @@ backend_finalize (GObject *object)
 	g_mutex_clear (&priv->property_lock);
 	g_mutex_clear (&priv->update_online_state_lock);
 	g_mutex_clear (&priv->network_monitor_cancellable_lock);
+	g_mutex_clear (&priv->authenticate_lock);
 	g_mutex_clear (&priv->authenticate_cancellable_lock);
 
 	/* Chain up to parent's finalize() method. */
@@ -800,6 +812,7 @@ e_backend_init (EBackend *backend)
 	g_mutex_init (&backend->priv->property_lock);
 	g_mutex_init (&backend->priv->update_online_state_lock);
 	g_mutex_init (&backend->priv->network_monitor_cancellable_lock);
+	g_mutex_init (&backend->priv->authenticate_lock);
 	g_mutex_init (&backend->priv->authenticate_cancellable_lock);
 
 	backend->priv->authenticate_cancellable = NULL;

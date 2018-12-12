@@ -147,7 +147,6 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 		g_warn_if_fail (source != NULL);
 	} else {
 		source = e_source_registry_server_ref_source (server, source_uid);
-		g_warn_if_fail (source != NULL);
 
 		g_hash_table_remove (known_sources, identity);
 	}
@@ -501,6 +500,7 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 	server = e_collection_backend_ref_server (collection);
 
 	if (e_source_collection_get_calendar_enabled (collection_extension) && calendar_url &&
+	    !g_cancellable_is_cancelled (cancellable) &&
 	    e_webdav_discover_sources_full_sync (source, calendar_url,
 		E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS,
 		credentials, (EWebDAVDiscoverRefSourceFunc) e_source_registry_server_ref_source, server,
@@ -519,6 +519,7 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 	}
 
 	if (!local_error && e_source_collection_get_contacts_enabled (collection_extension) && contacts_url &&
+	    !g_cancellable_is_cancelled (cancellable) &&
 	    e_webdav_discover_sources_full_sync (source, contacts_url, E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS,
 		credentials, (EWebDAVDiscoverRefSourceFunc) e_source_registry_server_ref_source, server,
 		out_certificate_pem, out_certificate_errors, &discovered_sources, NULL, cancellable, &local_error)) {
@@ -533,7 +534,7 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 		any_success = TRUE;
 	}
 
-	if (any_success && server) {
+	if (any_success && server && !g_cancellable_is_cancelled (cancellable)) {
 		RemoveSourcesData rsd;
 
 		rsd.server = server;

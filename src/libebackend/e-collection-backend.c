@@ -144,6 +144,38 @@ collection_backend_children_list (ECollectionBackend *backend)
 	return list;
 }
 
+static ESource *
+collection_backend_ref_child_source (ECollectionBackend *backend,
+				     const gchar *resource_id)
+{
+	ESource *source = NULL;
+	GHashTableIter iter;
+	gpointer key;
+
+	g_mutex_lock (&backend->priv->children_lock);
+
+	g_hash_table_iter_init (&iter, backend->priv->children);
+
+	while (!source && g_hash_table_iter_next (&iter, &key, NULL)) {
+		ESource *candidate = key;
+		gchar *candidate_resource_id;
+
+		if (!candidate)
+			continue;
+
+		candidate_resource_id = e_collection_backend_dup_resource_id (backend, candidate);
+		if (g_strcmp0 (candidate_resource_id, resource_id) == 0) {
+			source = g_object_ref (candidate);
+		}
+
+		g_free (candidate_resource_id);
+	}
+
+	g_mutex_unlock (&backend->priv->children_lock);
+
+	return source;
+}
+
 static GFile *
 collection_backend_new_user_file (ECollectionBackend *backend)
 {
@@ -340,15 +372,19 @@ collection_backend_claim_resource (ECollectionBackend *backend,
 		g_object_ref (source);
 		g_hash_table_remove (unclaimed_resources, resource_id);
 	} else {
-		GFile *file = collection_backend_new_user_file (backend);
-		source = collection_backend_new_source (backend, file, error);
-		g_object_unref (file);
+		source = collection_backend_ref_child_source (backend, resource_id);
 
-		if (source) {
-			if (!backend->priv->new_sources)
-				backend->priv->new_sources = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+		if (!source) {
+			GFile *file = collection_backend_new_user_file (backend);
+			source = collection_backend_new_source (backend, file, error);
+			g_object_unref (file);
 
-			g_hash_table_insert (backend->priv->new_sources, e_source_dup_uid (source), NULL);
+			if (source) {
+				if (!backend->priv->new_sources)
+					backend->priv->new_sources = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+				g_hash_table_insert (backend->priv->new_sources, e_source_dup_uid (source), NULL);
+			}
 		}
 	}
 
