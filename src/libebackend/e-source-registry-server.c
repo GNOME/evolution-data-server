@@ -1724,7 +1724,7 @@ source_registry_server_tweak_key_file (ESourceRegistryServer *server,
  * The returned #ESource is referenced for thread-safety.  Unreference
  * the #ESource with g_object_unref() when finished with it.
  *
- * Returns: the newly-added #ESource, or %NULL on error
+ * Returns: (transfer full): the newly-added #ESource, or %NULL on error
  *
  * Since: 3.6
  **/
@@ -1849,7 +1849,7 @@ e_source_registry_server_load_error (ESourceRegistryServer *server,
  * The returned #ESource is referenced for thread-safety and must be
  * unreferenced with g_object_unref() when finished with it.
  *
- * Returns: an #ESource, or %NULL if no match was found
+ * Returns: (transfer full): an #ESource, or %NULL if no match was found
  *
  * Since: 3.6
  **/
@@ -1882,7 +1882,7 @@ e_source_registry_server_ref_source (ESourceRegistryServer *server,
  *   g_list_free_full (list, g_object_unref);
  * ]|
  *
- * Returns: a sorted list of sources
+ * Returns: (transfer full): a sorted list of sources
  *
  * Since: 3.6
  **/
@@ -1944,7 +1944,7 @@ e_source_registry_server_list_sources (ESourceRegistryServer *server,
  * instead of the #ESourceExtension itself because extension instances are
  * not to be referenced directly (see e_source_get_extension()).
  *
- * Returns: an #ESource, or %NULL if no match was found
+ * Returns: (transfer full): an #ESource, or %NULL if no match was found
  *
  * Since: 3.8
  **/
@@ -1996,7 +1996,7 @@ e_source_registry_server_find_extension (ESourceRegistryServer *server,
  * Unreference the #ECollectionBackend with g_object_unref() when finished
  * with it.
  *
- * Returns: the #ECollectionBackend for @source, or %NULL
+ * Returns: (transfer full): the #ECollectionBackend for @source, or %NULL
  *
  * Since: 3.6
  **/
@@ -2038,7 +2038,8 @@ e_source_registry_server_ref_backend (ESourceRegistryServer *server,
  * Unreference the #ECollectionBackendFactory with g_object_unref() when
  * finished with it.
  *
- * Returns: the #ECollectionBackendFactory for @source, or %NULL
+ * Returns: (transfer full): the #ECollectionBackendFactory for @source, or
+ * %NULL
  *
  * Since: 3.6
  **/
