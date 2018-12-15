@@ -143,6 +143,7 @@
 #include <camel/camel-vee-summary.h>
 #include <camel/camel-vtrash-folder.h>
 #include <camel/camel-weak-ref-group.h>
+#include <camel/camel-autocleanups.h>
 
 #undef __CAMEL_H_INSIDE__
 

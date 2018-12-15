@@ -153,6 +153,7 @@ endif(WIN32)
 set(HEADERS
 	camel.h
 	camel-address.h
+	camel-autocleanups.h
 	camel-async-closure.h
 	camel-block-file.h
 	camel-certdb.h
