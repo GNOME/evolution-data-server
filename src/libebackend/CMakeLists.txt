@@ -36,6 +36,7 @@ set(SOURCES
 set(HEADERS
 	libebackend.h
 	e-backend.h
+	e-backend-autocleanups.h
 	e-backend-enums.h
 	e-backend-factory.h
 	e-cache.h

@@ -44,6 +44,8 @@
 #include <libebackend/e-user-prompter-server-extension.h>
 #include <libebackend/e-webdav-collection-backend.h>
 
+#include <libebackend/e-backend-autocleanups.h>
+
 #undef __LIBEBACKEND_H_INSIDE__
 
 #endif /* LIBEBACKEND_H */
