@@ -92,7 +92,7 @@ e_backend_factory_get_hash_key (EBackendFactory *factory)
  *
  * Returns a new #EBackend instance for @source.
  *
- * Returns: a new #EBackend instance for @source
+ * Returns: (transfer full): a new #EBackend instance for @source
  *
  * Since: 3.4
  **/

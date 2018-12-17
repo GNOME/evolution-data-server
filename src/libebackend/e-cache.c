@@ -1945,7 +1945,7 @@ e_cache_foreach_cb (ECache *cache,
  * @cache: an #ECache
  * @deleted_flag: one of #ECacheDeletedFlag enum
  * @where_clause: (nullable): an optional SQLite WHERE clause part, or %NULL
- * @func: an #ECacheForeachFunc function to call for each object
+ * @func: (scope call): an #ECacheForeachFunc function to call for each object
  * @user_data: user data for the @func
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -2129,7 +2129,7 @@ e_cache_foreach_update_cb (ECache *cache,
  * @cache: an #ECache
  * @deleted_flag: one of #ECacheDeletedFlag enum
  * @where_clause: (nullable): an optional SQLite WHERE clause part, or %NULL
- * @func: an #ECacheUpdateFunc function to call for each object
+ * @func: (scope call): an #ECacheUpdateFunc function to call for each object
  * @user_data: user data for the @func
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -2285,9 +2285,9 @@ e_cache_foreach_update (ECache *cache,
  * e_cache_copy_missing_to_column_values:
  * @cache: an #ECache
  * @ncols: count of columns, items in column_names and column_values
- * @column_names: column names
- * @column_values: column values
- * @other_columns: (in out): an #ECacheColumnValues to fill
+ * @column_names: (array length=ncols) (element-type utf8): column names
+ * @column_values: (array length=ncols) (element-type utf8): column values
+ * @other_columns: (inout): an #ECacheColumnValues to fill
  *
  * Adds every column value which is not part of the @other_columns to it,
  * except of E_CACHE_COLUMN_UID, E_CACHE_COLUMN_REVISION, E_CACHE_COLUMN_OBJECT
@@ -2745,7 +2745,7 @@ e_cache_sqlite_exec (ECache *cache,
  * e_cache_sqlite_select:
  * @cache: an #ECache
  * @sql_stmt: an SQLite SELECT statement to execute
- * @func: an #ECacheSelectFunc function to call for each row
+ * @func: (scope call): an #ECacheSelectFunc function to call for each row
  * @user_data: user data for @func
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL

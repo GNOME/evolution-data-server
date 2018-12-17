@@ -155,8 +155,10 @@ e_oauth2_support_default_init (EOAuth2SupportInterface *iface)
  * @support: an #EOAuth2Support
  * @source: an #ESource
  * @cancellable: optional #GCancellable object, or %NULL
- * @out_access_token: return location for the access token, or %NULL
- * @out_expires_in: return location for the token expiry, or %NULL
+ * @out_access_token: (out) (optional): return location for the access token,
+ * or %NULL
+ * @out_expires_in: (out) (optional): return location for the token expiry,
+ * or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Obtains the OAuth 2.0 access token for @source along with its expiry
@@ -230,8 +232,10 @@ e_oauth2_support_get_access_token (EOAuth2Support *support,
  * e_oauth2_support_get_access_token_finish:
  * @support: an #EOAuth2Support
  * @result: a #GAsyncResult
- * @out_access_token: return location for the access token, or %NULL
- * @out_expires_in: return location for the token expiry, or %NULL
+ * @out_access_token: (out) (optional): return location for the access token,
+ * or %NULL
+ * @out_expires_in: (out) (optional): return location for the token expiry,
+ * or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_oauth2_support_get_access_token().

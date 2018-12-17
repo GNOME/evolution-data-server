@@ -1173,7 +1173,7 @@ e_data_factory_init (EDataFactory *data_factory)
  * Unreference the #EBackendFactory with g_object_unref() when finished
  * with it.
  *
- * Returns: the #EBackendFactory for @hash_key, or %NULL
+ * Returns: (transfer full): the #EBackendFactory for @hash_key, or %NULL
  *
  * Since: 3.6
  **/
@@ -1214,7 +1214,7 @@ e_data_factory_ref_backend_factory (EDataFactory *data_factory,
  *
  * Returns the #ESourceRegistry owned by @data_factory.
  *
- * Returns: the #ESourceRegistry
+ * Returns: (transfer none): the #ESourceRegistry
  *
  * Since: 3.16
  **/
@@ -1632,8 +1632,17 @@ e_data_factory_use_backend_per_process (EDataFactory *data_factory)
 	return backend_per_process;
 }
 
-/* Used only when backend-per-process is off. Free the returned pointer
-   with g_object_unref(), if not NULL and no longer needed */
+/**
+ * e_data_factory_create_backend:
+ * @data_factory: an #EDataFactory
+ *
+ * Used only when backend-per-process is off.
+ *
+ * Free the returned pointer with g_object_unref(), if not NULL and no longer
+ * needed.
+ *
+ * Returns: (transfer full): a newly-created #EBackend
+ **/
 EBackend *
 e_data_factory_create_backend (EDataFactory *data_factory,
 			       EBackendFactory *backend_factory,
@@ -1686,7 +1695,24 @@ e_data_factory_backend_closed (EDataFactory *data_factory,
 	g_object_unref (backend);
 }
 
-/* free with g_list_free_full (list, g_object_unref);, element is 'EBackend *' */
+/**
+ * e_data_factory_list_opened_backends:
+ * @data_factory: an #EDataFactory
+ *
+ * Lists the currently opened backends.
+ *
+ * The sources returned in the list are referenced for thread-safety.
+ * They must each be unreferenced with g_object_unref() when finished
+ * with them.  Free the returned #GSList itself with g_slist_free().
+ *
+ * An easy way to free the list properly in one step is as follows:
+ *
+ * |[
+ *   g_slist_free_full (list, g_object_unref);
+ * ]|
+ *
+ * Returns: (element-type EBackend) (transfer full): a #GSList of #EBackend
+ **/
 GSList *
 e_data_factory_list_opened_backends (EDataFactory *data_factory)
 {

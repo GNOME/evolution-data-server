@@ -1798,7 +1798,7 @@ e_server_side_source_get_user_dir (void)
  *
  * Note the data source file itself is not created here, only its name.
  *
- * Returns: the #GFile for a new data source
+ * Returns: (transfer full): the #GFile for a new data source
  *
  * Since: 3.6
  **/
@@ -2062,7 +2062,7 @@ e_server_side_source_load (EServerSideSource *source,
  * Returns the #GFile from which data source content is loaded and to
  * which changes are saved.  Note the @source may not have a #GFile.
  *
- * Returns: the #GFile for @source, or %NULL
+ * Returns: (transfer none) (nullable): the #GFile for @source, or %NULL
  *
  * Since: 3.6
  **/
@@ -2086,7 +2086,7 @@ e_server_side_source_get_file (EServerSideSource *source)
  * Note that accessing other data sources this way is not thread-safe,
  * and this therefore function may be replaced at some later date.
  *
- * Returns: a #GNode, or %NULL
+ * Returns: (transfer none) (nullable): a #GNode, or %NULL
  *
  * Since: 3.6
  **/
@@ -2104,7 +2104,7 @@ e_server_side_source_get_node (EServerSideSource *source)
  *
  * Returns the #ESourceRegistryServer to which @source belongs.
  *
- * Returns: the #ESourceRegistryServer for @source
+ * Returns: (transfer none): the #ESourceRegistryServer for @source
  *
  * Since: 3.6
  **/
@@ -2432,7 +2432,7 @@ e_server_side_source_set_remote_deletable (EServerSideSource *source,
  * The returned #EOAuth2Support object is referenced for thread-safety.
  * Unreference the object with g_object_unref() when finished with it.
  *
- * Returns: an #EOAuth2Support object, or %NULL
+ * Returns: (transfer full): an #EOAuth2Support object, or %NULL
  *
  * Since: 3.8
  **/

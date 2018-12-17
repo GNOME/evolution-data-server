@@ -377,7 +377,7 @@ add_object_to_slist (const gchar *key,
  * Returns a list of objects in @cache.  The objects are owned by @cache and
  * must not be modified or freed.  Free the returned list with g_slist_free().
  *
- * Returns: a list of objects
+ * Returns: (element-type utf8) (transfer container): a list of objects
  */
 GSList *
 e_file_cache_get_objects (EFileCache *cache)
@@ -400,7 +400,7 @@ e_file_cache_get_objects (EFileCache *cache)
  * Returns a list of keys in @cache.  The keys are owned by @cache and must
  * not be modified or freed.  Free the returned list with g_slist_free().
  *
- * Returns: a list of keys
+ * Returns: (element-type utf8) (transfer container): a list of keys
  */
 GSList *
 e_file_cache_get_keys (EFileCache *cache)

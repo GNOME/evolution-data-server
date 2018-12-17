@@ -242,8 +242,8 @@ typedef struct _ECachePrivate ECachePrivate;
  * @object: the object itself
  * @offline_state: objects offline state, one of #EOfflineState
  * @ncols: count of columns, items in column_names and column_values
- * @column_names: column names
- * @column_values: column values
+ * @column_names: (array length=ncols) (element-type utf8): column names
+ * @column_values: (array length=ncols) (element-type utf8): column values
  * @user_data: user data, as used in e_cache_foreach()
  *
  * A callback called for each object row when using e_cache_foreach() function.
@@ -270,8 +270,8 @@ typedef gboolean (* ECacheForeachFunc)	(ECache *cache,
  * @object: the object itself
  * @offline_state: objects offline state, one of #EOfflineState
  * @ncols: count of columns, items in column_names and column_values
- * @column_names: column names
- * @column_values: column values
+ * @column_names: (array length=ncols) (element-type utf8): column names
+ * @column_values: (array length=ncols) (element-type utf8): column values
  * @out_revision: (out): the new object revision to set; keep it untouched to not change
  * @out_object: (out): the new object to set; keep it untouched to not change
  * @out_offline_state: (out): the offline state to set; the default is the same as @offline_state
@@ -303,8 +303,8 @@ typedef gboolean (* ECacheUpdateFunc)	(ECache *cache,
  * ECacheSelectFunc:
  * @cache: an #ECache
  * @ncols: count of columns, items in column_names and column_values
- * @column_names: column names
- * @column_values: column values
+ * @column_names: (array length=ncols) (element-type utf8): column names
+ * @column_values: (array length=ncols) (element-type utf8): column values
  * @user_data: user data, as used in e_cache_sqlite_select()
  *
  * A callback called for each row of a SELECT statement executed
