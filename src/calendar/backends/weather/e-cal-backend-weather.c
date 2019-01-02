@@ -636,6 +636,9 @@ create_weather (ECalBackendWeather *cbw,
 	description->altrep = "";
 	text_list = g_slist_append (text_list, description);
 	e_cal_component_set_description_list (cal_comp, text_list);
+	g_slist_free (text_list);
+	g_free ((gchar *) (description->value));
+	g_free (description);
 	g_free ((gchar *) comp_summary.value);
 
 	/* Set category and visibility */
