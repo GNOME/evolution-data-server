@@ -3376,8 +3376,9 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 	}
 
 	/* Merge the iCalendar components with our existing VCALENDAR,
-	 * resolving any conflicting TZIDs. */
+	 * resolving any conflicting TZIDs. It also frees the toplevel_comp. */
 	icalcomponent_merge_component (priv->icalcomp, toplevel_comp);
+	toplevel_comp = NULL;
 
 	/* Now we manipulate the components we care about */
 	comps = g_list_sort (comps, masters_first_cmp);
@@ -3502,8 +3503,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 									id, old_component, new_component);
 
 				/* remove the component from the toplevel VCALENDAR */
-				icalcomponent_remove_component (toplevel_comp, subcomp);
-				icalcomponent_free (subcomp);
+				icalcomponent_remove_component (priv->icalcomp, subcomp);
 				e_cal_component_free_id (id);
 
 				if (new_component)
