@@ -3293,6 +3293,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 		zone = icaltimezone_new ();
 		if (icaltimezone_set_component (zone, subcomp))
 			g_hash_table_insert (tzdata.zones, g_strdup (icaltimezone_get_tzid (zone)), NULL);
+		icaltimezone_free (zone, 1);
 
 		subcomp = icalcomponent_get_next_component (toplevel_comp, ICAL_VTIMEZONE_COMPONENT);
 	}
