@@ -1284,7 +1284,7 @@ e_collection_backend_init (ECollectionBackend *backend)
  * The returned data source should be passed to
  * e_source_registry_server_add_source() to export it over D-Bus.
  *
- * Return: a newly-created data source
+ * Return: (transfer full): a newly-created data source
  *
  * Since: 3.6
  **/
@@ -1366,7 +1366,7 @@ e_collection_backend_is_new_source (ECollectionBackend *backend,
  * The returned #GProxyResolver is referenced for thread-safety and must
  * be unreferenced with g_object_unref() when finished with it.
  *
- * Returns: a #GProxyResolver, or %NULL
+ * Returns: (transfer full) (nullable): a #GProxyResolver, or %NULL
  *
  * Since: 3.12
  **/
@@ -1397,7 +1397,7 @@ e_collection_backend_ref_proxy_resolver (ECollectionBackend *backend)
  * Unreference the #ESourceRegistryServer with g_object_unref() when
  * finished with it.
  *
- * Returns: the #ESourceRegistryServer for @backend
+ * Returns: (transfer full) (type ESourceRegistryServer): the #ESourceRegistryServer for @backend
  *
  * Since: 3.6
  **/
@@ -1509,7 +1509,7 @@ e_collection_backend_dup_resource_id (ECollectionBackend *backend,
  *   g_list_free_full (list, g_object_unref);
  * ]|
  *
- * Returns: a list of previously used sources
+ * Returns: (element-type ESource) (transfer full): a list of previously used sources
  *
  * Since: 3.6
  **/
@@ -1550,7 +1550,7 @@ e_collection_backend_claim_all_resources (ECollectionBackend *backend)
  *   g_list_free_full (list, g_object_unref);
  * ]|
  *
- * Returns: a list of calendar sources
+ * Returns: (element-type ESource) (transfer full): a list of calendar sources
  *
  * Since: 3.6
  **/
@@ -1593,7 +1593,7 @@ e_collection_backend_list_calendar_sources (ECollectionBackend *backend)
  *   g_list_free_full (list, g_object_unref);
  * ]|
  *
- * Returns: a list of address book sources
+ * Returns: (element-type ESource) (transfer full): a list of address book sources
  *
  * Since: 3.6
  **/
@@ -1636,7 +1636,7 @@ e_collection_backend_list_contacts_sources (ECollectionBackend *backend)
  *   g_list_free_full (list, g_object_unref);
  * ]|
  *
- * Returns: a list of mail sources
+ * Returns: (element-type ESource) (transfer full): a list of mail sources
  *
  * Since: 3.6
  **/

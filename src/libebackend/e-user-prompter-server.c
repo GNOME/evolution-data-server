@@ -423,6 +423,18 @@ e_user_prompter_server_class_init (EUserPrompterServerClass *class)
 	dbus_server_class->bus_acquired = user_prompter_server_bus_acquired;
 	dbus_server_class->quit_server = user_prompter_server_quit_server;
 
+	/**
+	 * EUserPrompterServer::prompt:
+	 * @server: an #EUserPrompterServer which emited the signal
+	 * @prompt_id: the id of the prompt
+	 * @type: (nullable): type of the prompt; can be %NULL
+	 * @title: (nullable): window title of the prompt; can be %NULL
+	 * @primary_text: (nullable): primary text of the prompt; can be %NULL
+	 * @secondary_text: (nullable): secondary text of the prompt; can be %NULL
+	 * @use_markup: whether both texts are with markup
+	 * @button_captions: (type GStrv) (nullable): captions of buttons to
+	 * use in the message; can be %NULL
+	 **/
 	signals[PROMPT] = g_signal_new (
 		"prompt",
 		G_OBJECT_CLASS_TYPE (object_class),

@@ -234,7 +234,7 @@ e_subprocess_factory_init (ESubprocessFactory *subprocess_factory)
  * If no suitable #EBackendFactory exists, or if the #EBackend fails to
  * initialize, the function sets @error and returns %NULL.
  *
- * Returns: an #EBackend for @source, or %NULL
+ * Returns: (transfer full) (nullable): an #EBackend for @source, or %NULL
  *
  * Since: 3.16
  **/
@@ -324,7 +324,7 @@ exit:
  *
  * Returns the #ESourceRegistry owned by @subprocess_factory.
  *
- * Returns: the #ESourceRegistry
+ * Returns: (transfer none): the #ESourceRegistry
  *
  * Since: 3.16
  **/
@@ -422,8 +422,9 @@ e_subprocess_factory_open_backend (ESubprocessFactory *subprocess_factory,
  *
  * Returns a list of used backends.
  *
- * Returns: A #GList that contains a list of used backends. The list should be freed
- * by the caller using: g_list_free_full (backends, g_object_unref).
+ * Returns: (transfer full) (element-type EBackend): A #GList that contains a
+ *    list of used backends. The list should be freed by the caller using:
+ *    g_list_free_full (backends, g_object_unref).
  *
  * Since: 3.16
  **/

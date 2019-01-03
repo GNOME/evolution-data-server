@@ -326,7 +326,8 @@ user_prompter_prompt_thread (GSimpleAsyncResult *simple,
  * @primary_text: (allow-none): primary text of the prompt; can be %NULL
  * @secondary_text: (allow-none): secondary text of the prompt; can be %NULL
  * @use_markup: whether both texts are with markup
- * @button_captions: (allow-none): captions of buttons to use in the message; can be %NULL
+ * @button_captions: (allow-none) (element-type utf8): captions of buttons to
+ *    use in the message; can be %NULL
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: (scope async): a #GAsyncReadyCallback to call when the request
  *            is satisfied
@@ -433,7 +434,8 @@ e_user_prompter_prompt_finish (EUserPrompter *prompter,
  * @primary_text: (allow-none): primary text of the prompt; can be %NULL
  * @secondary_text: (allow-none): secondary text of the prompt; can be %NULL
  * @use_markup: whether both texts are with markup
- * @button_captions: (allow-none): captions of buttons to use in the message; can be %NULL
+ * @button_captions: (allow-none) (element-type utf8): captions of buttons to
+ *    use in the message; can be %NULL
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
