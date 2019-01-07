@@ -1517,11 +1517,35 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 		if (nread > 0) {
 			if (gpg->mode != GPG_CTX_MODE_DECRYPT ||
 			    gpg->in_decrypt_stage || was_in_decrypt_stage) {
-				gsize written = camel_stream_write (
-					gpg->ostream, buffer, (gsize)
-					nread, cancellable, error);
-				if (written != nread)
-					return -1;
+				gboolean done = FALSE;
+
+				while (!done) {
+					gsize written = camel_stream_write (
+						gpg->ostream, buffer, (gsize)
+						nread, cancellable, error);
+					if (written != nread)
+						return -1;
+
+					done = TRUE;
+
+					/* Read everything cached */
+					do {
+						polls[0].revents = 0;
+						status = g_poll (polls, 1, 5);
+					} while (status == -1 && errno == EINTR);
+
+					if (status != -1 && status != 0 && (polls[0].revents & (G_IO_IN | G_IO_HUP))) {
+						do {
+							nread = read (gpg->stdout_fd, buffer, sizeof (buffer));
+							d (printf ("   cached read %d bytes (%.*s)\n", (gint) nread, (gint) nread, buffer));
+						} while (nread == -1 && (errno == EINTR || errno == EAGAIN));
+
+						if (nread == -1)
+							goto exception;
+
+						done = !nread;
+					}
+				}
 			} else {
 				if (!gpg->decrypt_extra_text)
 					gpg->decrypt_extra_text = g_string_new ("");
