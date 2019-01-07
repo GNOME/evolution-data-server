@@ -1,3 +1,16 @@
+Evolution-Data-Server 3.30.4 2019-01-07
+---------------------------------------
+
+Bug Fixes:
+	I#68 - WebDAV registry backend Refresh can remove existing sources (Milan Crha)
+	M!7 - [CalDAV] Perform free-busy-query on the correct principal (Jamie McClymont)
+	M!8 - [CalDAV] Invert success value of schedule outbox free_busy (Jamie McClymont)
+
+Miscellaneous:
+	Correct developer documentation of some EBook asynchronous API (Milan Crha)
+	Crash on meeting cancellation receive in local calendar (Milan Crha)
+	Fix few memory leaks in calendar backends (Milan Crha)
+
 Evolution-Data-Server 3.30.3 2018-12-10
 ---------------------------------------
 
