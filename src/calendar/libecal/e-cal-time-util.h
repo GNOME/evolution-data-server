@@ -28,7 +28,7 @@
 #define TIMEUTIL_H
 
 #include <time.h>
-#include <libical/ical.h>
+#include <libical-glib/libical-glib.h>
 #include <glib.h>
 
 G_BEGIN_DECLS

@@ -193,6 +193,9 @@ void		e_cal_backend_store_interval_tree_add_comp
 						 time_t occurence_start,
 						 time_t occurence_end);
 
+gboolean
+e_cal_backend_cache_remove (const gchar *dirname,
+                            const gchar *basename);
 G_END_DECLS
 
 #endif /* E_CAL_BACKEND_STORE_H */

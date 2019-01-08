@@ -539,14 +539,6 @@ gboolean	e_cal_client_add_timezone_sync	(ECalClient *client,
 						 GCancellable *cancellable,
 						 GError **error);
 
-#ifndef EDS_DISABLE_DEPRECATED
-ECalClient *	e_cal_client_new		(ESource *source,
-						 ECalClientSourceType source_type,
-						 GError **error);
-GError *	e_cal_client_error_create	(ECalClientError code,
-						 const gchar *custom_msg);
-#endif /* EDS_DISABLE_DEPRECATED */
-
 G_END_DECLS
 
 #endif /* E_CAL_CLIENT_H */

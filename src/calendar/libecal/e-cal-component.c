@@ -394,22 +394,6 @@ e_cal_component_init (ECalComponent *comp)
 }
 
 /**
- * e_cal_component_gen_uid:
- *
- * Generates a unique identifier suitable for calendar components.
- *
- * Returns: A unique identifier string.  Every time this function is called
- * a different string is returned.
- *
- * Deprecated: Since 3.26, use e_util_generate_uid() instead
- **/
-gchar *
-e_cal_component_gen_uid (void)
-{
-	return e_util_generate_uid ();
-}
-
-/**
  * e_cal_component_new:
  *
  * Creates a new empty calendar component object.  Once created, you should set it from an

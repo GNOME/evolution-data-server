@@ -1,6 +1,6 @@
 glib_mkenums(e-cal-enumtypes e-cal-types.h E_CAL_ENUMTYPES_H)
 
-add_pkgconfig_file(libecal.pc.in libecal-${API_VERSION}.pc)
+add_pkgconfig_file(libecal.pc.in libecal-${CAL_API_VERSION}.pc)
 
 set(DEPENDENCIES
 	edbus-private
@@ -8,7 +8,6 @@ set(DEPENDENCIES
 )
 
 set(SOURCES
-	e-cal.c
 	e-cal-client.c
 	e-cal-client-view.c
 	e-cal-component.c
@@ -17,8 +16,6 @@ set(SOURCES
 	e-cal-check-timezones.c
 	e-cal-system-timezone.c
 	e-cal-util.c
-	e-cal-view.c
-	e-cal-view-private.h
 	e-reminder-watcher.c
 	e-timezone-cache.c
 	${CMAKE_CURRENT_BINARY_DIR}/e-cal-enumtypes.c
@@ -26,7 +23,6 @@ set(SOURCES
 
 set(HEADERS
 	libecal.h
-	e-cal.h
 	e-cal-client.h
 	e-cal-client-view.h
 	e-cal-component.h
@@ -36,7 +32,6 @@ set(HEADERS
 	e-cal-system-timezone.h
 	e-cal-types.h
 	e-cal-util.h
-	e-cal-view.h
 	e-reminder-watcher.h
 	e-timezone-cache.h
 	${CMAKE_CURRENT_BINARY_DIR}/e-cal-enumtypes.h
@@ -54,7 +49,7 @@ add_dependencies(ecal
 set_target_properties(ecal PROPERTIES
 	VERSION "${LIBECAL_CURRENT}.${LIBECAL_REVISION}.${LIBECAL_AGE}"
 	SOVERSION ${LIBECAL_CURRENT}
-	OUTPUT_NAME ecal-${API_VERSION}
+	OUTPUT_NAME ecal-${CAL_API_VERSION}
 )
 
 target_compile_definitions(ecal PRIVATE

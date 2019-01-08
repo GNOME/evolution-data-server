@@ -1223,7 +1223,6 @@ static ECalRecurVTable cal_obj_secondly_vtable = {
 	cal_obj_bysecond_filter
 };
 
-#ifdef HAVE_LIBICAL_2_0
 struct BackwardCompatibilityData
 {
 	ECalComponent *comp;
@@ -1276,8 +1275,6 @@ backward_compatibility_instance_cb (icalcomponent *comp,
 	return FALSE;
 }
 
-#endif
-
 /**
  * e_cal_recur_generate_instances:
  * @comp: A calendar component object
@@ -1319,7 +1316,6 @@ e_cal_recur_generate_instances (ECalComponent *comp,
                                 gpointer tz_cb_data,
                                 icaltimezone *default_timezone)
 {
-#ifdef HAVE_LIBICAL_2_0
 	struct icaltimetype istart, iend;
 	struct BackwardCompatibilityData bcd;
 
@@ -1336,12 +1332,6 @@ e_cal_recur_generate_instances (ECalComponent *comp,
 		backward_compatibility_instance_cb, &bcd,
 		backward_compatibility_resolve_timezone_cb, &bcd,
 		default_timezone, NULL, NULL);
-#else
-	e_cal_recur_generate_instances_of_rule (
-		comp, NULL, start, end,
-		cb, cb_data, tz_cb, tz_cb_data,
-		default_timezone);
-#endif
 }
 
 /*
@@ -4735,19 +4725,7 @@ e_cal_recur_set_rule_end_date (icalproperty *prop,
 	g_free (end_date_string);
 }
 
-#ifdef G_OS_WIN32
-#undef e_cal_recur_nth
-static
-#endif
-/**
- * e_cal_recur_nth:
- *
- * An array of 31 translated strings for each day of the month (i.e. "1st",
- * "2nd", and so on).
- *
- * Deprecated: 3.28: Use e_cal_recur_get_localized_nth() instead
- */
-const gchar *e_cal_recur_nth[31] = {
+static const gchar *e_cal_recur_nth[31] = {
 	N_("1st"),
 	N_("2nd"),
 	N_("3rd"),
@@ -4780,26 +4758,6 @@ const gchar *e_cal_recur_nth[31] = {
 	N_("30th"),
 	N_("31st")
 };
-
-#ifdef G_OS_WIN32
-
-/**
- * e_cal_get_recur_nth:
- *
- * Returns an array of 31 translated strings for each day of the month
- * (i.e. "1st", "2nd", and so on).
- *
- * Returns: a pointer to an array of strings.  This array is static, do not free it.
- *
- * Deprecated: 3.28: Use e_cal_recur_get_localized_nth() instead
- */
-const gchar **
-e_cal_get_recur_nth (void)
-{
-	return e_cal_recur_nth;
-}
-
-#endif
 
 /**
  * e_cal_recur_get_localized_nth:

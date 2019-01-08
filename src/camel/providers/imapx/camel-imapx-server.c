@@ -27,7 +27,7 @@
 #include <glib/gi18n-lib.h>
 #include <gio/gnetworking.h>
 
-#include <libical/ical.h>
+#include <libical-glib/libical-glib.h>
 
 #ifndef G_OS_WIN32
 #include <glib-unix.h>

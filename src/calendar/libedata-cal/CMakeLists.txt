@@ -1,4 +1,4 @@
-add_pkgconfig_file(libedata-cal.pc.in libedata-cal-${API_VERSION}.pc)
+add_pkgconfig_file(libedata-cal.pc.in libedata-cal-${CAL_API_VERSION}.pc)
 
 set(DEPENDENCIES
 	ebackend
@@ -9,7 +9,6 @@ set(DEPENDENCIES
 
 set(SOURCES
 	e-cal-backend.c
-	e-cal-backend-cache.c
 	e-cal-backend-factory.c
 	e-cal-backend-intervaltree.c
 	e-cal-backend-sexp.c
@@ -27,7 +26,6 @@ set(SOURCES
 set(HEADERS
 	libedata-cal.h
 	e-cal-backend.h
-	e-cal-backend-cache.h
 	e-cal-backend-factory.h
 	e-cal-backend-intervaltree.h
 	e-cal-backend-sync.h
@@ -54,7 +52,7 @@ add_dependencies(edata-cal
 set_target_properties(edata-cal PROPERTIES
 	VERSION "${LIBEDATACAL_CURRENT}.${LIBEDATACAL_REVISION}.${LIBEDATACAL_AGE}"
 	SOVERSION ${LIBEDATACAL_CURRENT}
-	OUTPUT_NAME edata-cal-${API_VERSION}
+	OUTPUT_NAME edata-cal-${CAL_API_VERSION}
 )
 
 target_compile_definitions(edata-cal PRIVATE

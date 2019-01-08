@@ -26,7 +26,7 @@
 
 #include "evolution-data-server-config.h"
 
-#include <libical/ical.h>
+#include <libical-glib/libical-glib.h>
 #include <glib/gi18n-lib.h>
 #include <unistd.h>
 

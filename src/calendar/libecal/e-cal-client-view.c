@@ -910,36 +910,6 @@ e_cal_client_view_ref_client (ECalClientView *client_view)
 }
 
 /**
- * e_cal_client_view_get_client:
- * @client_view: an #ECalClientView
- *
- * Returns the #ECalClientView:client associated with @client_view.
- *
- * Returns: (transfer none): an #ECalClient
- *
- * Deprecated: 3.10: Use e_cal_client_view_ref_client() instead.
- *
- * Since: 3.2
- **/
-ECalClient *
-e_cal_client_view_get_client (ECalClientView *client_view)
-{
-	ECalClient *client;
-
-	g_return_val_if_fail (E_IS_CAL_CLIENT_VIEW (client_view), NULL);
-
-	client = e_cal_client_view_ref_client (client_view);
-
-	/* XXX Drop the ECalClient reference for backward-compatibility.
-	 *     This is risky.  Without a reference, the ECalClient could
-	 *     be finalized while the caller is still using it. */
-	if (client != NULL)
-		g_object_unref (client);
-
-	return client;
-}
-
-/**
  * e_cal_client_view_get_connection:
  * @client_view: an #ECalClientView
  *

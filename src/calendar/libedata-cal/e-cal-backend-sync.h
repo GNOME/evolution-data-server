@@ -64,7 +64,6 @@ struct _ECalBackendSync {
  * ECalBackendSyncClass:
  * @open_sync: Open the calendar
  * @refresh_sync: Refresh the calendar
- * @set_backend_property_sync: Deprecated: Set backend property
  * @get_object_sync: Get single object
  * @get_object_list_sync: Get multiple objects at once
  * @get_free_busy_sync: Get Free/Busy objects
@@ -96,15 +95,6 @@ struct _ECalBackendSyncClass {
 	void		(*refresh_sync)		(ECalBackendSync *backend,
 						 EDataCal *cal,
 						 GCancellable *cancellable,
-						 GError **error);
-
-	/* This method is deprecated. */
-	gboolean	(*set_backend_property_sync)
-						(ECalBackendSync *backend,
-						 EDataCal *cal,
-						 GCancellable *cancellable,
-						 const gchar *prop_name,
-						 const gchar *prop_value,
 						 GError **error);
 
 	void		(*get_object_sync)	(ECalBackendSync *backend,
@@ -189,6 +179,9 @@ struct _ECalBackendSyncClass {
 						 GCancellable *cancellable,
 						 const gchar *tzobject,
 						 GError **error);
+
+	/* Padding for future expansion */
+	gpointer reserved_padding[20];
 };
 
 GType		e_cal_backend_sync_get_type	(void) G_GNUC_CONST;

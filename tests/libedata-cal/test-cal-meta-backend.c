@@ -3689,10 +3689,6 @@ main (gint argc,
 	g_assert (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
 	setlocale (LC_ALL, "");
 
-#ifdef HAVE_ICALTZUTIL_SET_EXACT_VTIMEZONES_SUPPORT
-	icaltzutil_set_exact_vtimezones_support (0);
-#endif
-
 	e_test_server_utils_prepare_run (0);
 	e_test_server_utils_setup (&tsfixture, &tsclosure);
 
