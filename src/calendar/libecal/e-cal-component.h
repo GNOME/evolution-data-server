@@ -26,7 +26,7 @@
 
 #include <time.h>
 #include <glib-object.h>
-#include <libical/ical.h>
+#include <libical-glib/libical-glib.h>
 
 /* Standard GObject macros */
 #define E_TYPE_CAL_COMPONENT \
@@ -330,10 +330,6 @@ struct _ECalComponentClass {
 /* Calendar component */
 
 GType		e_cal_component_get_type	(void);
-
-/* #ifndef EDS_DISABLE_DEPRECATED*/
-gchar *		e_cal_component_gen_uid		(void);
-/*#endif / * EDS_DISABLE_DEPRECATED */
 
 ECalComponent *	e_cal_component_new		(void);
 ECalComponent *	e_cal_component_new_from_string	(const gchar *calobj);

@@ -277,32 +277,6 @@ e_cal_client_error_to_string (ECalClientError code)
 	return _("Unknown error");
 }
 
-/**
- * e_cal_client_error_create:
- * @code: an #ECalClientError code to create
- * @custom_msg: custom message to use for the error; can be %NULL
- *
- * Returns: a new #GError containing an E_CAL_CLIENT_ERROR of the given
- * @code. If the @custom_msg is NULL, then the error message is
- * the one returned from e_cal_client_error_to_string() for the @code,
- * otherwise the given message is used.
- *
- * Returned pointer should be freed with g_error_free().
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Just use the #GError API directly.
- **/
-GError *
-e_cal_client_error_create (ECalClientError code,
-                           const gchar *custom_msg)
-{
-	if (custom_msg == NULL)
-		custom_msg = e_cal_client_error_to_string (code);
-
-	return g_error_new_literal (E_CAL_CLIENT_ERROR, code, custom_msg);
-}
-
 static gpointer
 cal_client_dbus_thread (gpointer user_data)
 {
@@ -1957,42 +1931,6 @@ e_cal_client_connect_finish (GAsyncResult *result,
 	}
 
 	return E_CLIENT (g_async_result_get_source_object (result));
-}
-
-/**
- * e_cal_client_new:
- * @source: An #ESource pointer
- * @source_type: source type of the calendar
- * @error: A #GError pointer
- *
- * Creates a new #ECalClient corresponding to the given source.  There are
- * only two operations that are valid on this calendar at this point:
- * e_client_open(), and e_client_remove().
- *
- * Returns: a new but unopened #ECalClient.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: It covertly makes synchronous D-Bus calls, with no
- *                  way to cancel.  Use e_cal_client_connect() instead,
- *                  which combines e_cal_client_new() and e_client_open()
- *                  into one step.
- **/
-ECalClient *
-e_cal_client_new (ESource *source,
-                  ECalClientSourceType source_type,
-                  GError **error)
-{
-	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
-	g_return_val_if_fail (
-		source_type == E_CAL_CLIENT_SOURCE_TYPE_EVENTS ||
-		source_type == E_CAL_CLIENT_SOURCE_TYPE_TASKS ||
-		source_type == E_CAL_CLIENT_SOURCE_TYPE_MEMOS, NULL);
-
-	return g_initable_new (
-		E_TYPE_CAL_CLIENT, NULL, error,
-		"source", source,
-		"source-type", source_type, NULL);
 }
 
 /**

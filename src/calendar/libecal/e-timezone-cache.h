@@ -23,7 +23,7 @@
 #define E_TIMEZONE_CACHE_H
 
 #include <glib-object.h>
-#include <libical/ical.h>
+#include <libical-glib/libical-glib.h>
 
 /* Standard GObject macros */
 #define E_TYPE_TIMEZONE_CACHE \

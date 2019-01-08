@@ -25,7 +25,7 @@
 #ifndef E_CAL_BACKEND_FACTORY_H
 #define E_CAL_BACKEND_FACTORY_H
 
-#include <libical/ical.h>
+#include <libical-glib/libical-glib.h>
 #include <libebackend/libebackend.h>
 
 /* Standard GObject macros */

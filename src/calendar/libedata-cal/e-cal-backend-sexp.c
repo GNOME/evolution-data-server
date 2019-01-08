@@ -590,10 +590,8 @@ matches_status (ECalComponent *comp ,const gchar *str)
 		return g_str_equal (str, "PENDING");
 	case ICAL_STATUS_FAILED:
 		return g_str_equal (str, "FAILED");
-#ifdef HAVE_ICAL_STATUS_DELETED
 	case ICAL_STATUS_DELETED:
 		return g_str_equal (str, "DELETED");
-#endif
 	case ICAL_STATUS_X:
 		break;
 	}

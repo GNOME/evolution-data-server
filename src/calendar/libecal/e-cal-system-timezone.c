@@ -19,6 +19,8 @@
 #include <glib/gstdio.h>
 #include <gio/gio.h>
 #include <string.h>
+#include <libical-glib/libical-glib.h>
+
 #include "e-cal-system-timezone.h"
 
 #ifndef G_OS_WIN32

@@ -29,7 +29,6 @@
 #include <glib/gi18n-lib.h>
 
 #include "e-cal-backend.h"
-#include "e-cal-backend-cache.h"
 
 #define E_CAL_BACKEND_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -4554,56 +4553,6 @@ e_cal_backend_notify_property_changed (ECalBackend *backend,
 		e_data_cal_report_backend_property_changed (data_cal, prop_name, prop_value ? prop_value : "");
 		g_object_unref (data_cal);
 	}
-}
-
-/**
- * e_cal_backend_empty_cache:
- * @backend: an #ECalBackend
- * @cache: Backend's cache to empty.
- *
- * Empties backend's cache with all notifications and so on, thus all listening
- * will know there is nothing in this backend.
- *
- * Since: 2.28
- **/
-void
-e_cal_backend_empty_cache (ECalBackend *backend,
-                           ECalBackendCache *cache)
-{
-	GList *comps_in_cache;
-
-	g_return_if_fail (backend != NULL);
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-
-	if (!cache)
-		return;
-
-	g_return_if_fail (E_IS_CAL_BACKEND_CACHE (cache));
-
-	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
-
-	for (comps_in_cache = e_cal_backend_cache_get_components (cache);
-	     comps_in_cache;
-	     comps_in_cache = comps_in_cache->next) {
-		ECalComponentId *id;
-		ECalComponent *comp = comps_in_cache->data;
-
-		id = e_cal_component_get_id (comp);
-
-		if (id) {
-			e_cal_backend_cache_remove_component (cache, id->uid, id->rid);
-
-			e_cal_backend_notify_component_removed (backend, id, comp, NULL);
-
-			e_cal_component_free_id (id);
-		}
-
-		g_object_unref (comp);
-	}
-
-	g_list_free (comps_in_cache);
-
-	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 }
 
 /**

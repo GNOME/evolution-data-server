@@ -17,7 +17,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <libecal/libecal.h>
-#include <libical/ical.h>
 
 #include "e-test-server-utils.h"
 

@@ -95,8 +95,6 @@
 
 G_BEGIN_DECLS
 
-struct _ECalBackendCache;
-
 typedef struct _ECalBackend ECalBackend;
 typedef struct _ECalBackendClass ECalBackendClass;
 typedef struct _ECalBackendPrivate ECalBackendPrivate;
@@ -247,6 +245,9 @@ struct _ECalBackendClass {
 	void		(*closed)		(ECalBackend *backend,
 						 const gchar *sender);
 	void		(*shutdown)		(ECalBackend *backend);
+
+	/* Padding for future expansion */
+	gpointer reserved_padding[20];
 };
 
 GType		e_cal_backend_get_type		(void) G_GNUC_CONST;
@@ -519,9 +520,6 @@ void		e_cal_backend_notify_property_changed
 						(ECalBackend *backend,
 						 const gchar *prop_name,
 						 const gchar *prop_value);
-
-void		e_cal_backend_empty_cache	(ECalBackend *backend,
-						 struct _ECalBackendCache *cache);
 
 GSimpleAsyncResult *
 		e_cal_backend_prepare_for_completion

@@ -1673,3 +1673,51 @@ e_cal_backend_store_interval_tree_add_comp (ECalBackendStore *store,
 		store->priv->intervaltree,
 		occurence_start, occurence_end, comp);
 }
+
+gboolean
+e_cal_backend_cache_remove (const gchar *dirname,
+                            const gchar *basename)
+{
+	gchar *filename;
+
+	g_return_val_if_fail (dirname != NULL, FALSE);
+	g_return_val_if_fail (basename != NULL, FALSE);
+
+	filename = g_build_filename (dirname, basename, NULL);
+
+	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
+		gchar *full_path;
+		const gchar *fname;
+		GDir *dir;
+		gboolean success;
+
+		/* remove all files in the directory */
+		dir = g_dir_open (dirname, 0, NULL);
+		if (dir) {
+			while ((fname = g_dir_read_name (dir))) {
+				full_path = g_build_filename (dirname, fname, NULL);
+				if (g_unlink (full_path) != 0) {
+					g_free (full_path);
+					g_dir_close (dir);
+
+					return FALSE;
+				}
+
+				g_free (full_path);
+			}
+
+			g_dir_close (dir);
+		}
+
+		/* remove the directory itself */
+		success = g_rmdir (dirname) == 0;
+
+		/* free all memory */
+		g_free (filename);
+		return success;
+	}
+
+	g_free (filename);
+
+	return FALSE;
+}

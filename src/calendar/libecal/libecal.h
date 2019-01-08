@@ -20,9 +20,9 @@
 
 #define __LIBECAL_H_INSIDE__
 
+#include <libical-glib/libical-glib.h>
 #include <libedataserver/libedataserver.h>
 
-#include <libecal/e-cal.h>
 #include <libecal/e-cal-check-timezones.h>
 #include <libecal/e-cal-client-view.h>
 #include <libecal/e-cal-client.h>
@@ -33,7 +33,6 @@
 #include <libecal/e-cal-time-util.h>
 #include <libecal/e-cal-types.h>
 #include <libecal/e-cal-util.h>
-#include <libecal/e-cal-view.h>
 #include <libecal/e-reminder-watcher.h>
 #include <libecal/e-timezone-cache.h>
 

@@ -24,7 +24,7 @@
 #ifndef E_CAL_UTIL_H
 #define E_CAL_UTIL_H
 
-#include <libical/ical.h>
+#include <libical-glib/libical-glib.h>
 #include <time.h>
 #include <libecal/e-cal-component.h>
 #include <libecal/e-cal-recur.h>
@@ -308,21 +308,6 @@ gboolean	e_cal_util_mark_task_complete_sync
 						 struct _ECalClient *cal_client,
 						 GCancellable *cancellable,
 						 GError **error);
-
-#ifndef EDS_DISABLE_DEPRECATED
-/* Used for mode stuff */
-typedef enum {
-	CAL_MODE_INVALID = -1,
-	CAL_MODE_LOCAL = 1 << 0,
-	CAL_MODE_REMOTE = 1 << 1,
-	CAL_MODE_ANY = 0x07
-} CalMode;
-
-#define cal_mode_to_corba(mode) \
-	(mode == CAL_MODE_LOCAL ? Local : \
-	 mode == CAL_MODE_REMOTE ? Remote : \
-	 AnyMode)
-#endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

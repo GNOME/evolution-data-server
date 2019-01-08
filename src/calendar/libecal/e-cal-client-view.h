@@ -135,11 +135,6 @@ void		e_cal_client_view_set_flags	(ECalClientView *client_view,
 						 ECalClientViewFlags flags,
 						 GError **error);
 
-#ifndef EDS_DISABLE_DEPRECATED
-struct _ECalClient *
-		e_cal_client_view_get_client	(ECalClientView *client_view);
-#endif /* EDS_DISABLE_DEPRECATED */
-
 G_END_DECLS
 
 #endif /* E_CAL_CLIENT_VIEW_H */

@@ -23,7 +23,6 @@
 #include <libecal/libecal.h>
 #include <libebackend/libebackend.h>
 
-#include <libedata-cal/e-cal-backend-cache.h>
 #include <libedata-cal/e-cal-backend-factory.h>
 #include <libedata-cal/e-cal-backend.h>
 #include <libedata-cal/e-cal-backend-intervaltree.h>

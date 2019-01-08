@@ -174,18 +174,6 @@
 /* Have <et/com_err.h> */
 #cmakedefine HAVE_ET_COM_ERR_H 1
 
-/* Define if compiled with libical 2.0 */
-#cmakedefine HAVE_LIBICAL_2_0 1
-
-/* libical provides ical_set_unknown_token_handling_setting function */
-#cmakedefine HAVE_ICAL_UNKNOWN_TOKEN_HANDLING 1
-
-/* libical provides icaltzutil_set_exact_vtimezones_support function */
-#cmakedefine HAVE_ICALTZUTIL_SET_EXACT_VTIMEZONES_SUPPORT 1
-
-/* libical has ICAL_STATUS_DELETED icalproperty_status value */
-#cmakedefine HAVE_ICAL_STATUS_DELETED 1
-
 /* Define to 1 if you have the libgdata package */
 #cmakedefine HAVE_LIBGDATA 1
 

@@ -62,7 +62,6 @@ typedef void (* ETestSourceCustomizeFunc) (ESource            *scratch,
  * @E_TEST_SERVER_DIRECT_ADDRESS_BOOK: An #EBookClient in direct read access mode will be created and opened for the test
  * @E_TEST_SERVER_CALENDAR: An #ECalClient will be created and opened for the test
  * @E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK: An #EBook will be created and opened for the test
- * @E_TEST_SERVER_DEPRECATED_CALENDAR: An #ECal will be created and opened for the test
  *
  * The type of service to test
  */
@@ -71,16 +70,14 @@ typedef enum {
 	E_TEST_SERVER_ADDRESS_BOOK,
 	E_TEST_SERVER_DIRECT_ADDRESS_BOOK,
 	E_TEST_SERVER_CALENDAR,
-	E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK,
-	E_TEST_SERVER_DEPRECATED_CALENDAR
+	E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK
 } ETestServiceType;
 
 /**
  * ETestServerClosure:
  * @type:                 An #ETestServiceType, type of the service
  * @customize:            An #ETestSourceCustomizeFunc to use to parameterize the scratch #ESource, or %NULL
- * @calendar_source_type: An #ECalClientSourceType or #ECalSourceType; for %E_TEST_SERVER_CALENDAR
- *                        and %E_TEST_SERVER_DEPRECATED_CALENDAR tests
+ * @calendar_source_type: An #ECalClientSourceType for %E_TEST_SERVER_CALENDAR tests
  * @keep_work_directory:  If specified, the work directory will not be deleted between tests
  * @destroy_closure_func: A function to destroy an allocated #ETestServerClosure, this it
  *                        typically used by sub-fixtures which embed this structure in their closures.
@@ -94,7 +91,7 @@ typedef enum {
 struct _ETestServerClosure {
 	ETestServiceType         type;
 	ETestSourceCustomizeFunc customize;
-	gint                     calendar_source_type;
+	ECalClientSourceType     calendar_source_type;
 	gboolean                 keep_work_directory;
 	GDestroyNotify           destroy_closure_func;
 	gboolean                 use_async_connect;
@@ -106,7 +103,6 @@ struct _ETestServerClosure {
  * @book_client: An #EBookClient, created for %E_TEST_SERVER_ADDRESS_BOOK tests
  * @calendar_client: An #ECalClient, created for %E_TEST_SERVER_CALENDAR tests
  * @book: An #EBook, created for %E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK tests
- * @calendar: An #ECal, created for %E_TEST_SERVER_DEPRECATED_CALENDAR tests
  *
  * A union of service types, holds the object to test in a #ETestServerFixture.
  *
@@ -116,7 +112,6 @@ typedef union {
 	EBookClient *book_client;
 	ECalClient  *calendar_client;
 	EBook       *book;
-	ECal        *calendar;
 } ETestService;
 
 /**
