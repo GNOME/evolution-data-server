@@ -53,7 +53,7 @@
 /**
  * CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS:
  *
- * FIXME: Document me.
+ * An email address associated with the calendar.
  *
  * Since: 3.2
  **/
@@ -62,7 +62,7 @@
 /**
  * CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS:
  *
- * FIXME: Document me.
+ * An email address preferred for e-mail reminders by the calendar.
  *
  * Since: 3.2
  **/
@@ -71,16 +71,29 @@
 /**
  * CAL_BACKEND_PROPERTY_DEFAULT_OBJECT:
  *
- * FIXME: Document me.
+ * A default object for the calendar. Calendars use VEVENT, memo lists VJOURNAL
+ * and task lists VTODO, which can have prefilled values by the backend.
  *
  * Since: 3.2
  **/
 #define CAL_BACKEND_PROPERTY_DEFAULT_OBJECT		"default-object"
 
 /**
+ * CAL_BACKEND_PROPERTY_REVISION:
+ *
+ * The current overall revision string, this can be used as
+ * a quick check to see if data has changed at all since the
+ * last time the calendar revision was observed.
+ *
+ * Since: 3.4
+ **/
+#define CAL_BACKEND_PROPERTY_REVISION			"revision"
+
+/**
  * E_CAL_CLIENT_ERROR:
  *
- * FIXME: Document me.
+ * An error domain associated with #ECalClient. The error codes
+ * are from #ECalClientError.
  *
  * Since: 3.2
  **/

@@ -29,6 +29,45 @@
 #include <libebook-contacts/e-contact.h>
 
 /**
+ * BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS: (value "required-fields")
+ *
+ * Provides comma-separated list of required fields by the book backend.
+ * All of these attributes should be set, otherwise the backend will reject
+ * saving the contact.
+ *
+ * The e_contact_field_id() can be used to transform the field name
+ * into an #EContactField.
+ *
+ * Since: 3.2
+ **/
+#define BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS		"required-fields"
+
+/**
+ * BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS: (value "supported-fields")
+ *
+ * Provides comma-separated list of supported fields by the book backend.
+ * Attributes other than those listed here can be discarded. This can be
+ * used to enable/show only supported elements in GUI.
+ *
+ * The e_contact_field_id() can be used to transform the field name
+ * into an #EContactField.
+ *
+ * Since: 3.2
+ **/
+#define BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS		"supported-fields"
+
+/**
+ * BOOK_BACKEND_PROPERTY_REVISION: (value "revision")
+ *
+ * The current overall revision string, this can be used as
+ * a quick check to see if data has changed at all since the
+ * last time the addressbook revision was observed.
+ *
+ * Since: 3.4
+ **/
+#define BOOK_BACKEND_PROPERTY_REVISION			"revision"
+
+/**
  * E_BOOK_CLIENT_ERROR:
  *
  * Error domain for #EBookClient errors

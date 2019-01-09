@@ -46,53 +46,6 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), E_TYPE_CAL_BACKEND, ECalBackendClass))
 
-/**
- * CLIENT_BACKEND_PROPERTY_CAPABILITIES:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-#define CLIENT_BACKEND_PROPERTY_CAPABILITIES		"capabilities"
-
-/**
- * CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-#define CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS		"cal-email-address"
-
-/**
- * CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-#define CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS	"alarm-email-address"
-
-/**
- * CAL_BACKEND_PROPERTY_DEFAULT_OBJECT:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-#define CAL_BACKEND_PROPERTY_DEFAULT_OBJECT		"default-object"
-
-/**
- * CAL_BACKEND_PROPERTY_REVISION:
- *
- * The current overall revision string, this can be used as
- * a quick check to see if data has changed at all since the
- * last time the calendar revision was observed.
- *
- * Since: 3.4
- **/
-#define CAL_BACKEND_PROPERTY_REVISION			"revision"
-
 G_BEGIN_DECLS
 
 struct _ECalBackendCache;

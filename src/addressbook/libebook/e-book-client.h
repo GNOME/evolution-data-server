@@ -50,24 +50,6 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), E_TYPE_BOOK_CLIENT, EBookClientClass))
 
-/**
- * BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS: (value "required-fields")
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-#define BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS		"required-fields"
-
-/**
- * BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS: (value "supported-fields")
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-#define BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS		"supported-fields"
-
 G_BEGIN_DECLS
 
 typedef struct _EBookClient EBookClient;
