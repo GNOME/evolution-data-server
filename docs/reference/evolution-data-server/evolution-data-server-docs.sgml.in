@@ -200,7 +200,6 @@
     <chapter>
       <title>Calendar Backend Classes</title>
       <xi:include href="xml/e-cal-backend.xml"/>
-      <xi:include href="xml/e-cal-backend-cache.xml"/>
       <xi:include href="xml/e-cal-backend-factory.xml"/>
       <xi:include href="xml/e-cal-backend-sexp.xml"/>
       <xi:include href="xml/e-cal-backend-store.xml"/>
@@ -324,8 +323,6 @@
       <title>Client Deprecated Classes</title>
       <xi:include href="xml/e-book.xml"/>
       <xi:include href="xml/e-book-view.xml"/>
-      <xi:include href="xml/e-cal.xml"/>
-      <xi:include href="xml/e-cal-view.xml"/>
       <xi:include href="xml/e-book-types.xml"/>
     </chapter>
     <chapter>
