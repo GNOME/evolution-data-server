@@ -202,7 +202,6 @@
       <xi:include href="xml/e-cal-backend.xml"/>
       <xi:include href="xml/e-cal-backend-factory.xml"/>
       <xi:include href="xml/e-cal-backend-sexp.xml"/>
-      <xi:include href="xml/e-cal-backend-store.xml"/>
       <xi:include href="xml/e-cal-backend-sync.xml"/>
       <xi:include href="xml/e-cal-backend-intervaltree.xml"/>
       <xi:include href="xml/e-cal-cache.xml"/>
