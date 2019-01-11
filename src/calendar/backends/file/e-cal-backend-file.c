@@ -456,7 +456,7 @@ bump_revision (ECalBackendFile *cbfile)
 	icalproperty_set_x (prop, revision);
 
 	e_cal_backend_notify_property_changed (E_CAL_BACKEND (cbfile),
-					      CAL_BACKEND_PROPERTY_REVISION,
+					      E_CAL_BACKEND_PROPERTY_REVISION,
 					      revision);
 
 	g_free (revision);
@@ -474,26 +474,26 @@ e_cal_backend_file_get_backend_property (ECalBackend *backend,
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
 		return g_strjoin (
 			",",
-			CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS,
-			CAL_STATIC_CAPABILITY_NO_THISANDPRIOR,
-			CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED,
-			CAL_STATIC_CAPABILITY_REMOVE_ONLY_THIS,
-			CAL_STATIC_CAPABILITY_BULK_ADDS,
-			CAL_STATIC_CAPABILITY_BULK_MODIFIES,
-			CAL_STATIC_CAPABILITY_BULK_REMOVES,
-			CAL_STATIC_CAPABILITY_ALARM_DESCRIPTION,
-			CAL_STATIC_CAPABILITY_TASK_CAN_RECUR,
-			CAL_STATIC_CAPABILITY_COMPONENT_COLOR,
+			E_CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS,
+			E_CAL_STATIC_CAPABILITY_NO_THISANDPRIOR,
+			E_CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED,
+			E_CAL_STATIC_CAPABILITY_REMOVE_ONLY_THIS,
+			E_CAL_STATIC_CAPABILITY_BULK_ADDS,
+			E_CAL_STATIC_CAPABILITY_BULK_MODIFIES,
+			E_CAL_STATIC_CAPABILITY_BULK_REMOVES,
+			E_CAL_STATIC_CAPABILITY_ALARM_DESCRIPTION,
+			E_CAL_STATIC_CAPABILITY_TASK_CAN_RECUR,
+			E_CAL_STATIC_CAPABILITY_COMPONENT_COLOR,
 			NULL);
 
-	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
-		   g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
+	} else if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
+		   g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
 		/* A file backend has no particular email address associated
 		 * with it (although that would be a useful feature some day).
 		 */
 		return NULL;
 
-	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
+	} else if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
 		ECalComponent *comp;
 		gchar *prop_value;
 
@@ -520,7 +520,7 @@ e_cal_backend_file_get_backend_property (ECalBackend *backend,
 
 		return prop_value;
 
-	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_REVISION)) {
+	} else if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_REVISION)) {
 		icalproperty *prop;
 		const gchar *revision = NULL;
 
@@ -1102,7 +1102,7 @@ cal_backend_file_take_icalcomp (ECalBackendFile *cbfile,
 
 	e_cal_backend_notify_property_changed (
 		E_CAL_BACKEND (cbfile),
-		CAL_BACKEND_PROPERTY_REVISION,
+		E_CAL_BACKEND_PROPERTY_REVISION,
 		icalproperty_get_x (prop));
 }
 

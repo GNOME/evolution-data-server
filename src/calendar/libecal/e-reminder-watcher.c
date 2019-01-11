@@ -2417,7 +2417,7 @@ e_reminder_watcher_get_alarm_summary (EReminderWatcher *watcher,
 
 		client = e_reminder_watcher_ref_opened_client (watcher, rd->source_uid);
 
-		if (client && e_client_check_capability (E_CLIENT (client), CAL_STATIC_CAPABILITY_ALARM_DESCRIPTION)) {
+		if (client && e_client_check_capability (E_CLIENT (client), E_CAL_STATIC_CAPABILITY_ALARM_DESCRIPTION)) {
 			e_cal_component_alarm_get_description (alarm, &alarm_text);
 			if (!alarm_text.value || !*alarm_text.value)
 				alarm_text.value = NULL;

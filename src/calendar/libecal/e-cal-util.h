@@ -102,122 +102,122 @@ gboolean	e_cal_util_event_dates_match	(icalcomponent *icalcomp1,
 						 icalcomponent *icalcomp2);
 
 /* The static capabilities to be supported by backends */
-#define CAL_STATIC_CAPABILITY_NO_ALARM_REPEAT		"no-alarm-repeat"
-#define CAL_STATIC_CAPABILITY_NO_AUDIO_ALARMS		"no-audio-alarms"
-#define CAL_STATIC_CAPABILITY_NO_DISPLAY_ALARMS		"no-display-alarms"
-#define CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS		"no-email-alarms"
-#define CAL_STATIC_CAPABILITY_NO_PROCEDURE_ALARMS	"no-procedure-alarms"
-#define CAL_STATIC_CAPABILITY_NO_TASK_ASSIGNMENT	"no-task-assignment"
-#define CAL_STATIC_CAPABILITY_NO_THISANDFUTURE		"no-thisandfuture"
-#define CAL_STATIC_CAPABILITY_NO_THISANDPRIOR		"no-thisandprior"
-#define CAL_STATIC_CAPABILITY_NO_TRANSPARENCY		"no-transparency"
+#define E_CAL_STATIC_CAPABILITY_NO_ALARM_REPEAT		"no-alarm-repeat"
+#define E_CAL_STATIC_CAPABILITY_NO_AUDIO_ALARMS		"no-audio-alarms"
+#define E_CAL_STATIC_CAPABILITY_NO_DISPLAY_ALARMS	"no-display-alarms"
+#define E_CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS		"no-email-alarms"
+#define E_CAL_STATIC_CAPABILITY_NO_PROCEDURE_ALARMS	"no-procedure-alarms"
+#define E_CAL_STATIC_CAPABILITY_NO_TASK_ASSIGNMENT	"no-task-assignment"
+#define E_CAL_STATIC_CAPABILITY_NO_THISANDFUTURE	"no-thisandfuture"
+#define E_CAL_STATIC_CAPABILITY_NO_THISANDPRIOR		"no-thisandprior"
+#define E_CAL_STATIC_CAPABILITY_NO_TRANSPARENCY		"no-transparency"
 
 /**
- * CAL_STATIC_CAPABILITY_MEMO_START_DATE:
+ * E_CAL_STATIC_CAPABILITY_MEMO_START_DATE:
  *
  * Flag indicating that the backend does not support memo's start date
  *
  * Since: 3.12
  */
-#define CAL_STATIC_CAPABILITY_NO_MEMO_START_DATE	"no-memo-start-date"
+#define E_CAL_STATIC_CAPABILITY_NO_MEMO_START_DATE	"no-memo-start-date"
 
 /**
- * CAL_STATIC_CAPABILITY_ALARM_DESCRIPTION:
+ * E_CAL_STATIC_CAPABILITY_ALARM_DESCRIPTION:
  *
  * Flag indicating that the backend supports alarm description
  *
  * Since: 3.8
  */
-#define CAL_STATIC_CAPABILITY_ALARM_DESCRIPTION		"alarm-description"
+#define E_CAL_STATIC_CAPABILITY_ALARM_DESCRIPTION	"alarm-description"
 
 /**
- * CAL_STATIC_CAPABILITY_NO_ALARM_AFTER_START:
+ * E_CAL_STATIC_CAPABILITY_NO_ALARM_AFTER_START:
  *
  * Flag indicating that the backend does not support alarm after start the event
  *
  * Since: 3.8
  */
-#define CAL_STATIC_CAPABILITY_NO_ALARM_AFTER_START	"no-alarm-after-start"
+#define E_CAL_STATIC_CAPABILITY_NO_ALARM_AFTER_START	"no-alarm-after-start"
 
 /**
- * CAL_STATIC_CAPABILITY_BULK_ADDS:
+ * E_CAL_STATIC_CAPABILITY_BULK_ADDS:
  *
  * Flag indicating that the backend supports bulk additions.
  *
  * Since: 3.6
  */
-#define CAL_STATIC_CAPABILITY_BULK_ADDS			"bulk-adds"
+#define E_CAL_STATIC_CAPABILITY_BULK_ADDS		"bulk-adds"
 
 /**
- * CAL_STATIC_CAPABILITY_BULK_MODIFIES:
+ * E_CAL_STATIC_CAPABILITY_BULK_MODIFIES:
  *
  * Flag indicating that the backend supports bulk modifications.
  *
  * Since: 3.6
  */
-#define CAL_STATIC_CAPABILITY_BULK_MODIFIES		"bulk-modifies"
+#define E_CAL_STATIC_CAPABILITY_BULK_MODIFIES		"bulk-modifies"
 
 /**
- * CAL_STATIC_CAPABILITY_BULK_REMOVES:
+ * E_CAL_STATIC_CAPABILITY_BULK_REMOVES:
  *
  * Flag indicating that the backend supports bulk removals.
  *
  * Since: 3.6
  */
-#define CAL_STATIC_CAPABILITY_BULK_REMOVES		"bulk-removes"
+#define E_CAL_STATIC_CAPABILITY_BULK_REMOVES		"bulk-removes"
 
 /**
- * CAL_STATIC_CAPABILITY_REMOVE_ONLY_THIS:
+ * E_CAL_STATIC_CAPABILITY_REMOVE_ONLY_THIS:
  *
  * FIXME: Document me.
  *
  * Since: 3.2
  **/
-#define CAL_STATIC_CAPABILITY_REMOVE_ONLY_THIS		"remove-only-this"
+#define E_CAL_STATIC_CAPABILITY_REMOVE_ONLY_THIS	"remove-only-this"
 
-#define CAL_STATIC_CAPABILITY_ONE_ALARM_ONLY		"one-alarm-only"
-#define CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ATTEND	"organizer-must-attend"
-#define CAL_STATIC_CAPABILITY_ORGANIZER_NOT_EMAIL_ADDRESS	"organizer-not-email-address"
-#define CAL_STATIC_CAPABILITY_REMOVE_ALARMS		"remove-alarms"
+#define E_CAL_STATIC_CAPABILITY_ONE_ALARM_ONLY		"one-alarm-only"
+#define E_CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ATTEND	"organizer-must-attend"
+#define E_CAL_STATIC_CAPABILITY_ORGANIZER_NOT_EMAIL_ADDRESS	"organizer-not-email-address"
+#define E_CAL_STATIC_CAPABILITY_REMOVE_ALARMS		"remove-alarms"
 
 /**
- * CAL_STATIC_CAPABILITY_CREATE_MESSAGES:
+ * E_CAL_STATIC_CAPABILITY_CREATE_MESSAGES:
  *
  * Since: 2.26
  **/
-#define CAL_STATIC_CAPABILITY_CREATE_MESSAGES		"create-messages"
+#define E_CAL_STATIC_CAPABILITY_CREATE_MESSAGES		"create-messages"
 
-#define CAL_STATIC_CAPABILITY_SAVE_SCHEDULES		"save-schedules"
-#define CAL_STATIC_CAPABILITY_NO_CONV_TO_ASSIGN_TASK	"no-conv-to-assign-task"
-#define CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR		"no-conv-to-recur"
-#define CAL_STATIC_CAPABILITY_NO_GEN_OPTIONS		"no-general-options"
-#define CAL_STATIC_CAPABILITY_REQ_SEND_OPTIONS		"require-send-options"
-#define CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER	"recurrences-no-master-object"
-#define CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ACCEPT	"organizer-must-accept"
-#define CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED	"delegate-support"
-#define CAL_STATIC_CAPABILITY_NO_ORGANIZER		"no-organizer"
-#define CAL_STATIC_CAPABILITY_DELEGATE_TO_MANY		"delegate-to-many"
-#define CAL_STATIC_CAPABILITY_HAS_UNACCEPTED_MEETING	"has-unaccepted-meeting"
+#define E_CAL_STATIC_CAPABILITY_SAVE_SCHEDULES		"save-schedules"
+#define E_CAL_STATIC_CAPABILITY_NO_CONV_TO_ASSIGN_TASK	"no-conv-to-assign-task"
+#define E_CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR	"no-conv-to-recur"
+#define E_CAL_STATIC_CAPABILITY_NO_GEN_OPTIONS		"no-general-options"
+#define E_CAL_STATIC_CAPABILITY_REQ_SEND_OPTIONS	"require-send-options"
+#define E_CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER	"recurrences-no-master-object"
+#define E_CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ACCEPT	"organizer-must-accept"
+#define E_CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED	"delegate-support"
+#define E_CAL_STATIC_CAPABILITY_NO_ORGANIZER		"no-organizer"
+#define E_CAL_STATIC_CAPABILITY_DELEGATE_TO_MANY	"delegate-to-many"
+#define E_CAL_STATIC_CAPABILITY_HAS_UNACCEPTED_MEETING	"has-unaccepted-meeting"
 
 /**
- * CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED:
+ * E_CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED:
  *
  * Since: 2.30
  **/
-#define CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED		"refresh-supported"
+#define E_CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED	"refresh-supported"
 
 /**
- * CAL_STATIC_CAPABILITY_ALL_DAY_EVENT_AS_TIME:
+ * E_CAL_STATIC_CAPABILITY_ALL_DAY_EVENT_AS_TIME:
  *
  * Let the client know that it should store All Day event times as time
  * with a time zone, rather than as a date.
  *
  * Since: 3.18
  **/
-#define CAL_STATIC_CAPABILITY_ALL_DAY_EVENT_AS_TIME	"all-day-event-as-time"
+#define E_CAL_STATIC_CAPABILITY_ALL_DAY_EVENT_AS_TIME	"all-day-event-as-time"
 
 /**
- * CAL_STATIC_CAPABILITY_TASK_DATE_ONLY:
+ * E_CAL_STATIC_CAPABILITY_TASK_DATE_ONLY:
  *
  * Let the client know that the Task Start date, Due date and Completed date
  * can be entered only as dates. When the capability is not set, then these
@@ -225,37 +225,37 @@ gboolean	e_cal_util_event_dates_match	(icalcomponent *icalcomp1,
  *
  * Since: 3.24
  **/
-#define CAL_STATIC_CAPABILITY_TASK_DATE_ONLY		"task-date-only"
+#define E_CAL_STATIC_CAPABILITY_TASK_DATE_ONLY		"task-date-only"
 
 /**
- * CAL_STATIC_CAPABILITY_TASK_CAN_RECUR:
+ * E_CAL_STATIC_CAPABILITY_TASK_CAN_RECUR:
  *
  * When the capability is set, the client can store and provide recurring
  * tasks, otherwise it cannot.
  *
  * Since: 3.30
  **/
-#define CAL_STATIC_CAPABILITY_TASK_CAN_RECUR		"task-can-recur"
+#define E_CAL_STATIC_CAPABILITY_TASK_CAN_RECUR		"task-can-recur"
 
 /**
- * CAL_STATIC_CAPABILITY_TASK_NO_ALARM:
+ * E_CAL_STATIC_CAPABILITY_TASK_NO_ALARM:
  *
  * When the capability is set, the client cannot store reminders
  * on tasks, otherwise it can.
  *
  * Since: 3.30
  **/
-#define CAL_STATIC_CAPABILITY_TASK_NO_ALARM		"task-no-alarm"
+#define E_CAL_STATIC_CAPABILITY_TASK_NO_ALARM		"task-no-alarm"
 
 /**
- * CAL_STATIC_CAPABILITY_COMPONENT_COLOR:
+ * E_CAL_STATIC_CAPABILITY_COMPONENT_COLOR:
  *
  * When the capability is set, the client supports storing color
  * for individual components.
  *
  * Since: 3.30
  **/
-#define CAL_STATIC_CAPABILITY_COMPONENT_COLOR		"component-color"
+#define E_CAL_STATIC_CAPABILITY_COMPONENT_COLOR		"component-color"
 
 /* Recurrent events. Management for instances */
 icalcomponent *	e_cal_util_construct_instance	(icalcomponent *icalcomp,

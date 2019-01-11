@@ -1465,7 +1465,7 @@ ecmb_get_free_busy_sync (ECalBackendSync *sync_backend,
 	if (!users)
 		return;
 
-	cal_email_address = e_cal_backend_get_backend_property (E_CAL_BACKEND (meta_backend), CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS);
+	cal_email_address = e_cal_backend_get_backend_property (E_CAL_BACKEND (meta_backend), E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS);
 	if (!cal_email_address)
 		return;
 
@@ -2778,7 +2778,7 @@ ecmb_get_backend_property (ECalBackend *cal_backend,
 	g_return_val_if_fail (E_IS_CAL_META_BACKEND (cal_backend), NULL);
 	g_return_val_if_fail (prop_name != NULL, NULL);
 
-	if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_REVISION)) {
+	if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_REVISION)) {
 		ECalCache *cal_cache;
 		gchar *revision = NULL;
 
@@ -2791,7 +2791,7 @@ ecmb_get_backend_property (ECalBackend *cal_backend,
 		}
 
 		return revision;
-	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
+	} else if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
 		ECalComponent *comp;
 		gchar *prop_value;
 
@@ -3451,10 +3451,10 @@ e_cal_meta_backend_get_capabilities (ECalMetaBackend *meta_backend)
 {
 	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), NULL);
 
-	return CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED ","
-		CAL_STATIC_CAPABILITY_BULK_ADDS ","
-		CAL_STATIC_CAPABILITY_BULK_MODIFIES ","
-		CAL_STATIC_CAPABILITY_BULK_REMOVES;
+	return E_CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED ","
+		E_CAL_STATIC_CAPABILITY_BULK_ADDS ","
+		E_CAL_STATIC_CAPABILITY_BULK_MODIFIES ","
+		E_CAL_STATIC_CAPABILITY_BULK_REMOVES;
 }
 
 /**
@@ -3633,7 +3633,7 @@ ecmb_cache_revision_changed_cb (ECache *cache,
 	revision = e_cache_dup_revision (cache);
 	if (revision) {
 		e_cal_backend_notify_property_changed (E_CAL_BACKEND (meta_backend),
-			CAL_BACKEND_PROPERTY_REVISION, revision);
+			E_CAL_BACKEND_PROPERTY_REVISION, revision);
 		g_free (revision);
 	}
 }

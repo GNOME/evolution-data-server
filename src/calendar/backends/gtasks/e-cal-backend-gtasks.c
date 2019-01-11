@@ -438,14 +438,14 @@ ecb_gtasks_get_backend_property (ECalBackend *cal_backend,
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
 		return g_strjoin (",",
-			CAL_STATIC_CAPABILITY_NO_THISANDFUTURE,
-			CAL_STATIC_CAPABILITY_NO_THISANDPRIOR,
-			CAL_STATIC_CAPABILITY_TASK_DATE_ONLY,
-			CAL_STATIC_CAPABILITY_TASK_NO_ALARM,
+			E_CAL_STATIC_CAPABILITY_NO_THISANDFUTURE,
+			E_CAL_STATIC_CAPABILITY_NO_THISANDPRIOR,
+			E_CAL_STATIC_CAPABILITY_TASK_DATE_ONLY,
+			E_CAL_STATIC_CAPABILITY_TASK_NO_ALARM,
 			e_cal_meta_backend_get_capabilities (E_CAL_META_BACKEND (cal_backend)),
 			NULL);
-	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
-		   g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
+	} else if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
+		   g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
 		ESourceAuthentication *authentication;
 		ESource *source;
 		const gchar *user;

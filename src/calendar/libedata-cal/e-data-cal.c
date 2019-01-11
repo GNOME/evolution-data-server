@@ -2461,13 +2461,13 @@ e_data_cal_report_backend_property_changed (EDataCal *cal,
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_REVISION))
 		e_dbus_calendar_set_revision (dbus_interface, prop_value);
 
-	if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS))
+	if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS))
 		e_dbus_calendar_set_cal_email_address (dbus_interface, prop_value);
 
-	if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS))
+	if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS))
 		e_dbus_calendar_set_alarm_email_address (dbus_interface, prop_value);
 
-	if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT))
+	if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_DEFAULT_OBJECT))
 		e_dbus_calendar_set_default_object (dbus_interface, prop_value);
 
 	/* Disregard anything else. */
@@ -2651,19 +2651,19 @@ data_cal_constructed (GObject *object)
 		cal, prop_name, prop_value);
 	g_free (prop_value);
 
-	prop_name = CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS;
+	prop_name = E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS;
 	prop_value = e_cal_backend_get_backend_property (backend, prop_name);
 	e_data_cal_report_backend_property_changed (
 		cal, prop_name, prop_value);
 	g_free (prop_value);
 
-	prop_name = CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS;
+	prop_name = E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS;
 	prop_value = e_cal_backend_get_backend_property (backend, prop_name);
 	e_data_cal_report_backend_property_changed (
 		cal, prop_name, prop_value);
 	g_free (prop_value);
 
-	prop_name = CAL_BACKEND_PROPERTY_DEFAULT_OBJECT;
+	prop_name = E_CAL_BACKEND_PROPERTY_DEFAULT_OBJECT;
 	prop_value = e_cal_backend_get_backend_property (backend, prop_name);
 	e_data_cal_report_backend_property_changed (
 		cal, prop_name, prop_value);

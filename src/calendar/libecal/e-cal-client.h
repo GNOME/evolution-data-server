@@ -51,35 +51,35 @@
 	((obj), E_TYPE_CAL_CLIENT, ECalClientClass))
 
 /**
- * CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS:
+ * E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS:
  *
  * An email address associated with the calendar.
  *
  * Since: 3.2
  **/
-#define CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS		"cal-email-address"
+#define E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS	"cal-email-address"
 
 /**
- * CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS:
+ * E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS:
  *
  * An email address preferred for e-mail reminders by the calendar.
  *
  * Since: 3.2
  **/
-#define CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS	"alarm-email-address"
+#define E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS	"alarm-email-address"
 
 /**
- * CAL_BACKEND_PROPERTY_DEFAULT_OBJECT:
+ * E_CAL_BACKEND_PROPERTY_DEFAULT_OBJECT:
  *
  * A default object for the calendar. Calendars use VEVENT, memo lists VJOURNAL
  * and task lists VTODO, which can have prefilled values by the backend.
  *
  * Since: 3.2
  **/
-#define CAL_BACKEND_PROPERTY_DEFAULT_OBJECT		"default-object"
+#define E_CAL_BACKEND_PROPERTY_DEFAULT_OBJECT		"default-object"
 
 /**
- * CAL_BACKEND_PROPERTY_REVISION:
+ * E_CAL_BACKEND_PROPERTY_REVISION:
  *
  * The current overall revision string, this can be used as
  * a quick check to see if data has changed at all since the
@@ -87,7 +87,7 @@
  *
  * Since: 3.4
  **/
-#define CAL_BACKEND_PROPERTY_REVISION			"revision"
+#define E_CAL_BACKEND_PROPERTY_REVISION			"revision"
 
 /**
  * E_CAL_CLIENT_ERROR:

@@ -230,11 +230,11 @@ free_zone_cb (gpointer zone)
 
 /*
  * Well-known calendar backend properties:
- * @CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS: Contains default calendar's email
+ * @E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS: Contains default calendar's email
  *   address suggested by the backend.
- * @CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS: Contains default alarm email
+ * @E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS: Contains default alarm email
  *   address suggested by the backend.
- * @CAL_BACKEND_PROPERTY_DEFAULT_OBJECT: Contains iCal component string
+ * @E_CAL_BACKEND_PROPERTY_DEFAULT_OBJECT: Contains iCal component string
  *   of an #icalcomponent with the default values for properties needed.
  *   Preferred way of retrieving this property is by
  *   calling e_cal_client_get_default_object().
@@ -561,7 +561,7 @@ cal_client_dbus_proxy_property_changed (EClient *client,
 	g_return_if_fail (property_name != NULL);
 
 	if (g_str_equal (property_name, "alarm-email-address")) {
-		backend_prop_name = CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS;
+		backend_prop_name = E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS;
 	}
 
 	if (g_str_equal (property_name, "cache-dir")) {
@@ -569,7 +569,7 @@ cal_client_dbus_proxy_property_changed (EClient *client,
 	}
 
 	if (g_str_equal (property_name, "cal-email-address")) {
-		backend_prop_name = CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS;
+		backend_prop_name = E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS;
 	}
 
 	if (g_str_equal (property_name, "capabilities")) {
@@ -587,7 +587,7 @@ cal_client_dbus_proxy_property_changed (EClient *client,
 	}
 
 	if (g_str_equal (property_name, "default-object")) {
-		backend_prop_name = CAL_BACKEND_PROPERTY_DEFAULT_OBJECT;
+		backend_prop_name = E_CAL_BACKEND_PROPERTY_DEFAULT_OBJECT;
 	}
 
 	if (g_str_equal (property_name, "online")) {
@@ -1017,17 +1017,17 @@ cal_client_get_backend_property_sync (EClient *client,
 		return TRUE;
 	}
 
-	if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
+	if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
 		*prop_value = e_dbus_calendar_dup_alarm_email_address (dbus_proxy);
 		return TRUE;
 	}
 
-	if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS)) {
+	if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS)) {
 		*prop_value = e_dbus_calendar_dup_cal_email_address (dbus_proxy);
 		return TRUE;
 	}
 
-	if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
+	if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
 		*prop_value = e_dbus_calendar_dup_default_object (dbus_proxy);
 		return TRUE;
 	}
@@ -2075,7 +2075,7 @@ e_cal_client_check_one_alarm_only (ECalClient *client)
 
 	return e_client_check_capability (
 		E_CLIENT (client),
-		CAL_STATIC_CAPABILITY_ONE_ALARM_ONLY);
+		E_CAL_STATIC_CAPABILITY_ONE_ALARM_ONLY);
 }
 
 /**
@@ -2095,7 +2095,7 @@ e_cal_client_check_save_schedules (ECalClient *client)
 
 	return e_client_check_capability (
 		E_CLIENT (client),
-		CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
+		E_CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
 }
 
 /**
@@ -2116,7 +2116,7 @@ e_cal_client_check_organizer_must_attend (ECalClient *client)
 
 	return e_client_check_capability (
 		E_CLIENT (client),
-		CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ATTEND);
+		E_CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ATTEND);
 }
 
 /**
@@ -2138,7 +2138,7 @@ e_cal_client_check_organizer_must_accept (ECalClient *client)
 
 	return e_client_check_capability (
 		E_CLIENT (client),
-		CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ACCEPT);
+		E_CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ACCEPT);
 }
 
 /**
@@ -2159,7 +2159,7 @@ e_cal_client_check_recurrences_no_master (ECalClient *client)
 
 	return e_client_check_capability (
 		E_CLIENT (client),
-		CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER);
+		E_CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER);
 }
 
 /**
@@ -3165,7 +3165,7 @@ e_cal_client_generate_instances_for_object (ECalClient *client,
 
 	/* If the backend stores it as individual instances and does not
 	 * have a master object - do not expand */
-	if (is_single_instance || e_client_check_capability (E_CLIENT (client), CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER)) {
+	if (is_single_instance || e_client_check_capability (E_CLIENT (client), E_CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER)) {
 		/* return the same instance */
 		(* cb)  (comp,
 			icaltime_as_timet_with_zone (
@@ -3274,7 +3274,7 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
 
 	/* If the backend stores it as individual instances and does not
 	 * have a master object - do not expand */
-	if (is_single_instance || e_client_check_capability (E_CLIENT (client), CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER)) {
+	if (is_single_instance || e_client_check_capability (E_CLIENT (client), E_CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER)) {
 		/* return the same instance */
 		(* cb)  (comp,
 			icaltime_as_timet_with_zone (

@@ -2041,16 +2041,16 @@ ecb_caldav_get_backend_property (ECalBackend *backend,
 		gchar *usermail;
 
 		caps = g_string_new (
-			CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
-			CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED ","
-			CAL_STATIC_CAPABILITY_TASK_CAN_RECUR ","
-			CAL_STATIC_CAPABILITY_COMPONENT_COLOR);
+			E_CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
+			E_CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED ","
+			E_CAL_STATIC_CAPABILITY_TASK_CAN_RECUR ","
+			E_CAL_STATIC_CAPABILITY_COMPONENT_COLOR);
 		g_string_append (caps, ",");
 		g_string_append (caps, e_cal_meta_backend_get_capabilities (E_CAL_META_BACKEND (backend)));
 
 		usermail = ecb_caldav_get_usermail (cbdav);
 		if (!usermail || !*usermail)
-			g_string_append (caps, "," CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS);
+			g_string_append (caps, "," E_CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS);
 		g_free (usermail);
 
 		source = e_backend_get_source (E_BACKEND (backend));
@@ -2059,13 +2059,13 @@ ecb_caldav_get_backend_property (ECalBackend *backend,
 		if (e_source_webdav_get_calendar_auto_schedule (extension)) {
 			g_string_append (
 				caps,
-				"," CAL_STATIC_CAPABILITY_CREATE_MESSAGES
-				"," CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
+				"," E_CAL_STATIC_CAPABILITY_CREATE_MESSAGES
+				"," E_CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
 		}
 
 		return g_string_free (caps, FALSE);
-	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
-		   g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
+	} else if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
+		   g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
 		return ecb_caldav_get_usermail (E_CAL_BACKEND_CALDAV (backend));
 	}
 
@@ -2098,9 +2098,9 @@ ecb_caldav_notify_property_changed_cb (GObject *object,
 	}
 
 	if (email_address_changed) {
-		value = ecb_caldav_get_backend_property (cal_backend, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS);
-		e_cal_backend_notify_property_changed (cal_backend, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS, value);
-		e_cal_backend_notify_property_changed (cal_backend, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS, value);
+		value = ecb_caldav_get_backend_property (cal_backend, E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS);
+		e_cal_backend_notify_property_changed (cal_backend, E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS, value);
+		e_cal_backend_notify_property_changed (cal_backend, E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS, value);
 		g_free (value);
 	}
 }

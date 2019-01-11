@@ -262,9 +262,9 @@ e_cal_meta_backend_test_get_backend_property (ECalBackend *cal_backend,
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
 		return g_strjoin (",",
 			e_cal_meta_backend_get_capabilities (E_CAL_META_BACKEND (cal_backend)),
-			CAL_STATIC_CAPABILITY_ALARM_DESCRIPTION,
+			E_CAL_STATIC_CAPABILITY_ALARM_DESCRIPTION,
 			NULL);
-	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS)) {
+	} else if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS)) {
 		return g_strdup ("user@no.where");
 	}
 

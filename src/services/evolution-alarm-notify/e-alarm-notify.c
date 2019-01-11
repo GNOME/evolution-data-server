@@ -283,7 +283,7 @@ e_alarm_notify_email (EAlarmNotify *an,
 	g_return_val_if_fail (alarm != NULL, FALSE);
 
 	client = e_reminder_watcher_ref_opened_client (an->priv->watcher, rd->source_uid);
-	if (client && !e_client_check_capability (E_CLIENT (client), CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS)) {
+	if (client && !e_client_check_capability (E_CLIENT (client), E_CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS)) {
 		g_object_unref (client);
 		return FALSE;
 	}
