@@ -104,6 +104,8 @@
 #include <libedataserver/e-xml-utils.h>
 #include <libedataserver/eds-version.h>
 
+#include <libedataserver/e-dataserver-autocleanups.h>
+
 #undef __LIBEDATASERVER_H_INSIDE__
 
 #endif /* LIBEDATASERVER_H */
