@@ -141,7 +141,6 @@ set(HEADERS
 	e-client.h
 	e-collator.h
 	e-credentials.h
-	e-dataserver-autocleanups.h
 	e-extensible.h
 	e-extension.h
 	e-flag.h
