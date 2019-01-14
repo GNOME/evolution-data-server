@@ -27,7 +27,9 @@
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EClient, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ECollator, e_collator_unref)
+#ifndef EDS_DISABLE_DEPRECATED
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ECredentials, e_credentials_free)
+#endif /* EDS_DISABLE_DEPRECATED */
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EAsyncClosure, e_async_closure_free)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ENamedParameters, e_named_parameters_free)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(GWeakRef, e_weak_ref_free)
@@ -35,9 +37,11 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC(EExtensible, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EExtension, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EFlag, e_flag_free)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EGDataOAuth2Authorizer, g_object_unref)
+#ifndef EDS_DISABLE_DEPRECATED
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EIterator, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EList, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EListIterator, g_object_unref)
+#endif /* EDS_DISABLE_DEPRECATED */
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EMemChunk, e_memchunk_destroy)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EModule, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ENetworkMonitor, g_object_unref)
@@ -47,7 +51,9 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC(EOAuth2ServiceGoogle, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EOAuth2ServiceOutlook, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EOAuth2Services, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EOperationPool, e_operation_pool_free)
+#ifndef EDS_DISABLE_DEPRECATED
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EProxy, g_object_unref)
+#endif /* EDS_DISABLE_DEPRECATED */
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ESExp, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ESoupAuthBearer, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ESoupSession, g_object_unref)
@@ -93,7 +99,9 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC(ESourceTaskList, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ESourceUoa, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ESourceWeather, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ESourceWebdav, g_object_unref)
+#ifndef EDS_DISABLE_DEPRECATED
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EUri, e_uri_free)
+#endif /* EDS_DISABLE_DEPRECATED */
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EWebDAVSession, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EWebDAVResource, e_webdav_resource_free)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EWebDAVPropertyChange, e_webdav_property_change_free)
