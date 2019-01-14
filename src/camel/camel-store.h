@@ -251,13 +251,11 @@ GType		camel_folder_info_get_type		(void);
 CamelFolderInfo *
 		camel_folder_info_new		(void);
 void		camel_folder_info_free		(CamelFolderInfo *fi);
-#ifndef CAMEL_DISABLE_DEPRECATED
 CamelFolderInfo *
 		camel_folder_info_build		(GPtrArray *folders,
 						 const gchar *namespace_,
 						 gchar separator,
 						 gboolean short_names);
-#endif /* CAMEL_DISABLE_DEPRECATED */
 CamelFolderInfo *
 		camel_folder_info_clone		(CamelFolderInfo *fi);
 gboolean	camel_store_can_refresh_folder	(CamelStore *store,

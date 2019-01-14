@@ -1155,10 +1155,6 @@ folder_info_cmp (gconstpointer ap,
  * %NULL urls to fill in gaps in the tree. The value of @short_names
  * is used in constructing the names of these intermediate folders.
  *
- * NOTE: This is deprected, do not use this.
- * FIXME: remove this/move it to imap, which is the only user of it now.
- *
- * Deprecated:
  * Returns: the top level of the tree of linked folder info.
  **/
 CamelFolderInfo *
