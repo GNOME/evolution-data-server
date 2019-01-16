@@ -86,3 +86,29 @@ install(TARGETS ecal
 install(FILES ${HEADERS}
 	DESTINATION ${privincludedir}/libecal
 )
+
+set(gir_sources ${SOURCES} ${HEADERS})
+set(gir_identifies_prefixes ECal)
+set(gir_includes GObject-2.0 Gio-2.0 Soup-2.4 libxml2-2.0)
+set(gir_cflags
+	-DLIBECAL_COMPILATION
+	-I${CMAKE_BINARY_DIR}/src/calendar
+	-I${CMAKE_SOURCE_DIR}/src/calendar
+)
+set(gir_libdirs)
+set(gir_libs ecal)
+set(gir_deps)
+
+gir_add_introspection_simple(
+	ECal
+	libecal
+	${CAL_API_VERSION}
+	"libecal/libecal.h"
+	gir_identifies_prefixes
+	gir_includes
+	gir_cflags
+	gir_libdirs
+	gir_libs
+	gir_deps
+	gir_sources
+)

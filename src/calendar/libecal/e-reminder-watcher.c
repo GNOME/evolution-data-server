@@ -2116,7 +2116,7 @@ e_reminder_watcher_class_init (EReminderWatcherClass *klass)
 	 * @watcher: an #EReminderWatcher
 	 * @rd: an #EReminderData
 	 * @itt: a pointer to struct icaltimetype
-	 * @inout_buffer: (caller allocates) (inout): a pointer to a buffer to fill with formatted @itt
+	 * @inout_buffer: (inout): a pointer to a buffer to fill with formatted @itt
 	 * @buffer_size: size of inout_buffer
 	 *
 	 * Formats time @itt to a string and writes it to @inout_buffer, which can hold
