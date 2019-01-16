@@ -6987,7 +6987,7 @@ msgstr "No s'ha pogut suprimir el recurs"
 
 #: ../src/libedataserver/e-webdav-session.c:2620
 msgid "Failed to copy resource"
-msgstr "No s'ha pogut copiar el recursl"
+msgstr "No s'ha pogut copiar el recurs"
 
 #: ../src/libedataserver/e-webdav-session.c:2682
 msgid "Failed to move resource"
@@ -7705,7 +7705,7 @@ msgstr "_No"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:364
 msgid "_Yes"
-msgstr "_Si"
+msgstr "_Sí"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:368
 #, c-format
