@@ -1,4 +1,4 @@
-glib_mkenums(e-cal-enumtypes e-cal-types.h E_CAL_ENUMTYPES_H)
+glib_mkenums(e-cal-enumtypes e-cal-enums.h E_CAL_ENUMS_H)
 
 add_pkgconfig_file(libecal.pc.in libecal-${CAL_API_VERSION}.pc)
 
@@ -11,6 +11,18 @@ set(SOURCES
 	e-cal-client.c
 	e-cal-client-view.c
 	e-cal-component.c
+	e-cal-component-alarm.c
+	e-cal-component-alarm-instance.c
+	e-cal-component-alarm-repeat.c
+	e-cal-component-alarm-trigger.c
+	e-cal-component-alarms.c
+	e-cal-component-attendee.c
+	e-cal-component-datetime.c
+	e-cal-component-id.c
+	e-cal-component-organizer.c
+	e-cal-component-period.c
+	e-cal-component-range.c
+	e-cal-component-text.c
 	e-cal-recur.c
 	e-cal-time-util.c
 	e-cal-check-timezones.c
@@ -26,11 +38,23 @@ set(HEADERS
 	e-cal-client.h
 	e-cal-client-view.h
 	e-cal-component.h
+	e-cal-component-alarm.h
+	e-cal-component-alarm-instance.h
+	e-cal-component-alarm-repeat.h
+	e-cal-component-alarm-trigger.h
+	e-cal-component-alarms.h
+	e-cal-component-attendee.h
+	e-cal-component-datetime.h
+	e-cal-component-id.h
+	e-cal-component-organizer.h
+	e-cal-component-period.h
+	e-cal-component-range.h
+	e-cal-component-text.h
+	e-cal-enums.h
 	e-cal-recur.h
 	e-cal-time-util.h
         e-cal-check-timezones.h
 	e-cal-system-timezone.h
-	e-cal-types.h
 	e-cal-util.h
 	e-reminder-watcher.h
 	e-timezone-cache.h

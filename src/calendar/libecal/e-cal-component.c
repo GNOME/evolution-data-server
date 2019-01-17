@@ -20,7 +20,7 @@
 /**
  * SECTION:e-cal-component
  * @short_description: A convenience interface for interacting with events
- * @include: libebook-contacts/libebook-contacts.h
+ * @include: libecal/libecal.h
  *
  * This is the main user facing interface used for representing an event
  * or other component in a given calendar.
@@ -49,17 +49,10 @@
 	((obj), E_TYPE_CAL_COMPONENT, ECalComponentPrivate))
 
 G_DEFINE_TYPE (ECalComponent, e_cal_component, G_TYPE_OBJECT)
-G_DEFINE_BOXED_TYPE (ECalComponentId,
-		e_cal_component_id,
-		e_cal_component_id_copy,
-		e_cal_component_free_id)
 G_DEFINE_BOXED_TYPE (ECalComponentAlarm,
 		e_cal_component_alarm,
 		e_cal_component_alarm_clone,
 		e_cal_component_alarm_free)
-
-/* Extension property for alarm components so that we can reference them by UID */
-#define EVOLUTION_ALARM_UID_PROPERTY "X-EVOLUTION-ALARM-UID"
 
 struct attendee {
 	icalproperty *prop;
@@ -189,31 +182,6 @@ struct _ECalComponentPrivate {
 	 * object over the wire.
 	 */
 	guint need_sequence_inc : 1;
-};
-
-/* Private structure for alarms */
-struct _ECalComponentAlarm {
-	/* Alarm icalcomponent we wrap */
-	icalcomponent *icalcomp;
-
-	/* Our extension UID property */
-	icalproperty *uid;
-
-	/* Properties */
-
-	icalproperty *action;
-	icalproperty *attach; /* FIXME: see scan_alarm_property () below */
-
-	struct {
-		icalproperty *prop;
-		icalparameter *altrep_param;
-	} description;
-
-	icalproperty *duration;
-	icalproperty *repeat;
-	icalproperty *trigger;
-
-	GSList *attendee_list;
 };
 
 /* Does a simple g_free() of the elements of a GSList and then frees the list
@@ -5030,24 +4998,6 @@ e_cal_component_free_categories_list (GSList *categ_list)
 }
 
 /**
- * e_cal_component_free_datetime:
- * @dt: A date/time structure.
- *
- * Frees a date/time structure.
- **/
-void
-e_cal_component_free_datetime (ECalComponentDateTime *dt)
-{
-	g_return_if_fail (dt != NULL);
-
-	g_free (dt->value);
-	g_free ((gchar *) dt->tzid);
-
-	dt->value = NULL;
-	dt->tzid = NULL;
-}
-
-/**
  * e_cal_component_free_range:
  * @range: A #ECalComponentRange.
  *
@@ -5190,128 +5140,6 @@ e_cal_component_free_sequence (gint *sequence)
 	g_return_if_fail (sequence != NULL);
 
 	g_free (sequence);
-}
-
-/**
- * e_cal_component_free_id:
- * @id: an #ECalComponentId
- *
- * Frees the @id.
- **/
-void
-e_cal_component_free_id (ECalComponentId *id)
-{
-	g_return_if_fail (id != NULL);
-
-	g_free (id->uid);
-	g_free (id->rid);
-
-	g_free (id);
-}
-
-/**
- * e_cal_component_id_new:
- * @uid: a unique ID string
- * @rid: (allow-none): an optional recurrence ID string
- *
- * Creates a new #ECalComponentId from @uid and @rid, which should be
- * freed with e_cal_component_free_id().
- *
- * Returns: an #ECalComponentId
- *
- * Since: 3.10
- **/
-ECalComponentId *
-e_cal_component_id_new (const gchar *uid,
-                        const gchar *rid)
-{
-	ECalComponentId *id;
-
-	g_return_val_if_fail (uid != NULL, NULL);
-
-	/* Normalize an empty recurrence ID to NULL. */
-	if (rid != NULL && *rid == '\0')
-		rid = NULL;
-
-	id = g_new0 (ECalComponentId, 1);
-	id->uid = g_strdup (uid);
-	id->rid = g_strdup (rid);
-
-	return id;
-}
-
-/**
- * e_cal_component_id_copy:
- * @id: an #ECalComponentId
- *
- * Returns a newly-allocated copy of @id, which should be freed with
- * e_cal_component_free_id().
- *
- * Returns: a newly-allocated copy of @id
- *
- * Since: 3.10
- **/
-ECalComponentId *
-e_cal_component_id_copy (const ECalComponentId *id)
-{
-	g_return_val_if_fail (id != NULL, NULL);
-
-	return e_cal_component_id_new (id->uid, id->rid);
-}
-
-/**
- * e_cal_component_id_hash:
- * @id: an #ECalComponentId
- *
- * Generates a hash value for @id.
- *
- * Returns: a hash value for @id
- *
- * Since: 3.10
- **/
-guint
-e_cal_component_id_hash (const ECalComponentId *id)
-{
-	guint uid_hash;
-	guint rid_hash;
-
-	g_return_val_if_fail (id != NULL, 0);
-
-	uid_hash = g_str_hash (id->uid);
-	rid_hash = (id->rid != NULL) ? g_str_hash (id->rid) : 0;
-
-	return uid_hash ^ rid_hash;
-}
-
-/**
- * e_cal_component_id_equal:
- * @id1: the first #ECalComponentId
- * @id2: the second #ECalComponentId
- *
- * Compares two #ECalComponentId structs for equality.
- *
- * Returns: %TRUE if @id1 and @id2 are equal
- *
- * Since: 3.10
- **/
-gboolean
-e_cal_component_id_equal (const ECalComponentId *id1,
-                          const ECalComponentId *id2)
-{
-	gboolean uids_equal;
-	gboolean rids_equal;
-
-	if (id1 == id2)
-		return TRUE;
-
-	/* Safety check before we dereference. */
-	g_return_val_if_fail (id1 != NULL, FALSE);
-	g_return_val_if_fail (id2 != NULL, FALSE);
-
-	uids_equal = (g_strcmp0 (id1->uid, id2->uid) == 0);
-	rids_equal = (g_strcmp0 (id1->rid, id2->rid) == 0);
-
-	return uids_equal && rids_equal;
 }
 
 /**
