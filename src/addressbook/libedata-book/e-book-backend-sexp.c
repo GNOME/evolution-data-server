@@ -432,10 +432,10 @@ entry_compare (SearchContext *ctx,
 				saw_any = TRUE;
 				info = &prop_info_table[i];
 
-				if (any_field && info->field_id == E_CONTACT_UID) {
-					/* We need to skip UID from any field contains search
-					 * any-field search should be supported for the
-					 * visible fields only.
+				if (any_field && (info->field_id == E_CONTACT_UID ||
+				    (info->prop_type == PROP_TYPE_LIST && g_strcmp0 (info->query_prop, "photo") == 0))) {
+					/* We need to skip UID and PHOTO from any field contains search
+					 * any-field search should be supported for the visible fields only.
 					 */
 					truth = FALSE;
 				}
