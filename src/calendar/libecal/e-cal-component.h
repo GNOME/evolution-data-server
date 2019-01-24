@@ -90,12 +90,11 @@ ECalComponent *	e_cal_component_clone		(ECalComponent *comp);
 void		e_cal_component_set_new_vtype	(ECalComponent *comp,
 						 ECalComponentVType type);
 
-icalcomponent *	e_cal_component_get_icalcomponent
+ICalComponent *	e_cal_component_get_icalcomponent
 						(ECalComponent *comp);
 gboolean	e_cal_component_set_icalcomponent
 						(ECalComponent *comp,
-						 icalcomponent *icalcomp);
-void		e_cal_component_rescan		(ECalComponent *comp);
+						 ICalComponent *icalcomp);
 void		e_cal_component_strip_errors	(ECalComponent *comp);
 
 ECalComponentVType
@@ -106,154 +105,132 @@ gchar *		e_cal_component_get_as_string	(ECalComponent *comp);
 void		e_cal_component_commit_sequence	(ECalComponent *comp);
 void		e_cal_component_abort_sequence	(ECalComponent *comp);
 
-void		e_cal_component_get_uid		(ECalComponent *comp,
-						 const gchar **uid);
+const gchar *	e_cal_component_get_uid		(ECalComponent *comp);
 void		e_cal_component_set_uid		(ECalComponent *comp,
 						 const gchar *uid);
 
 ECalComponentId *
 		e_cal_component_get_id		(ECalComponent *comp);
 
-void		e_cal_component_get_categories	(ECalComponent *comp,
-						 const gchar **categories);
+gchar *		e_cal_component_get_categories	(ECalComponent *comp);
 void		e_cal_component_set_categories	(ECalComponent *comp,
 						 const gchar *categories);
-void		e_cal_component_get_categories_list
-						(ECalComponent *comp,
-						 GSList **categ_list);
+GSList *	e_cal_component_get_categories_list /* gchar * */
+						(ECalComponent *comp);
 void		e_cal_component_set_categories_list
 						(ECalComponent *comp,
-						 GSList *categ_list);
+						 const GSList *categ_list); /* gchar * */
 
-void		e_cal_component_get_classification
-						(ECalComponent *comp,
-						 ECalComponentClassification *classif);
+ECalComponentClassification
+		e_cal_component_get_classification
+						(ECalComponent *comp);
 void		e_cal_component_set_classification
 						(ECalComponent *comp,
 						 ECalComponentClassification classif);
 
-void		e_cal_component_get_comment_list
-						(ECalComponent *comp,
-						 GSList **text_list);
+GSList *	e_cal_component_get_comment_list /* ECalComponentText * */
+						(ECalComponent *comp);
 void		e_cal_component_set_comment_list
 						(ECalComponent *comp,
-						 GSList *text_list);
+						 const GSList *text_list); /* ECalComponentText * */
 
-void		e_cal_component_get_completed	(ECalComponent *comp,
-						 struct icaltimetype **t);
+ICalTimetype *	e_cal_component_get_completed	(ECalComponent *comp);
 void		e_cal_component_set_completed	(ECalComponent *comp,
-						 struct icaltimetype *t);
+						 const ICalTimetype *tt);
 
-void		e_cal_component_get_contact_list
-						(ECalComponent *comp,
-						 GSList **text_list);
+GSList *	e_cal_component_get_contact_list /* ECalComponentText * */
+						(ECalComponent *comp);
 void		e_cal_component_set_contact_list
 						(ECalComponent *comp,
-						 GSList *text_list);
+						 const GSList *text_list); /* ECalComponentText * */
 
-void		e_cal_component_get_created	(ECalComponent *comp,
-						 struct icaltimetype **t);
+ICalTimetype *	e_cal_component_get_created	(ECalComponent *comp);
 void		e_cal_component_set_created	(ECalComponent *comp,
-						 struct icaltimetype *t);
+						 const ICalTimetype *tt);
 
-void		e_cal_component_get_description_list
-						(ECalComponent *comp,
-						 GSList **text_list);
+GSList *	e_cal_component_get_description_list /* ECalComponentText * */
+						(ECalComponent *comp);
 void		e_cal_component_set_description_list
 						(ECalComponent *comp,
-						 GSList *text_list);
+						 const GSList *text_list); /* ECalComponentText * */
 
-void		e_cal_component_get_dtend	(ECalComponent *comp,
-						 ECalComponentDateTime *dt);
+ECalComponentDateTime *
+		e_cal_component_get_dtend	(ECalComponent *comp);
 void		e_cal_component_set_dtend	(ECalComponent *comp,
-						 ECalComponentDateTime *dt);
+						 const ECalComponentDateTime *dt);
 
-void		e_cal_component_get_dtstamp	(ECalComponent *comp,
-						 struct icaltimetype *t);
+ICalTimetype *	e_cal_component_get_dtstamp	(ECalComponent *comp);
 void		e_cal_component_set_dtstamp	(ECalComponent *comp,
-						 struct icaltimetype *t);
+						 const ICalTimetype *tt);
 
-void		e_cal_component_get_dtstart	(ECalComponent *comp,
-						 ECalComponentDateTime *dt);
+ECalComponentDateTime *
+		e_cal_component_get_dtstart	(ECalComponent *comp);
 void		e_cal_component_set_dtstart	(ECalComponent *comp,
-						 ECalComponentDateTime *dt);
+						 const ECalComponentDateTime *dt);
 
-void		e_cal_component_get_due		(ECalComponent *comp,
-						 ECalComponentDateTime *dt);
+ECalComponentDateTime *dt
+		e_cal_component_get_due		(ECalComponent *comp);
 void		e_cal_component_set_due		(ECalComponent *comp,
-						 ECalComponentDateTime *dt);
+						 const ECalComponentDateTime *dt);
 
-void		e_cal_component_get_exdate_list	(ECalComponent *comp,
+GSList *	e_cal_component_get_exdate_list	(ECalComponent *comp, /* ECalComponentDateTime * */
 						 GSList **exdate_list);
 void		e_cal_component_set_exdate_list	(ECalComponent *comp,
-						 GSList *exdate_list);
+						 const GSList *exdate_list); /* ECalComponentDateTime * */
 gboolean	e_cal_component_has_exdates	(ECalComponent *comp);
 
-void		e_cal_component_get_exrule_list	(ECalComponent *comp,
-						 GSList **recur_list);
-void		e_cal_component_get_exrule_property_list
-						(ECalComponent *comp,
-						 GSList **recur_list);
+GSList *	e_cal_component_get_exrule_list	(ECalComponent *comp); /* ICalRecurrenceType * */
+GSList *	e_cal_component_get_exrule_property_list /* ICalProperty * */
+						(ECalComponent *comp);
 void		e_cal_component_set_exrule_list	(ECalComponent *comp,
-						 GSList *recur_list);
+						 const GSList *recur_list); /* ICalRecurrenceType * */
 gboolean	e_cal_component_has_exrules	(ECalComponent *comp);
 
 gboolean	e_cal_component_has_exceptions	(ECalComponent *comp);
 
-void		e_cal_component_get_geo		(ECalComponent *comp,
-						 struct icalgeotype **geo);
+ICalGeoType *	e_cal_component_get_geo		(ECalComponent *comp);
 void		e_cal_component_set_geo		(ECalComponent *comp,
-						 struct icalgeotype *geo);
+						 const ICalGeoType *geo);
 
-void		e_cal_component_get_last_modified
-						(ECalComponent *comp,
-						 struct icaltimetype **t);
+ICalTimetype *	e_cal_component_get_last_modified
+						(ECalComponent *comp);
 void		e_cal_component_set_last_modified
 						(ECalComponent *comp,
-						 struct icaltimetype *t);
+						 const ICalTimetype *tt);
 
-void		e_cal_component_get_organizer	(ECalComponent *comp,
-						 ECalComponentOrganizer *organizer);
+ECalComponentOrganizer *
+		e_cal_component_get_organizer	(ECalComponent *comp);
 void		e_cal_component_set_organizer	(ECalComponent *comp,
-						 ECalComponentOrganizer *organizer);
+						 const ECalComponentOrganizer *organizer);
 gboolean	e_cal_component_has_organizer	(ECalComponent *comp);
 
-gint		e_cal_component_get_percent_as_int
+gint		e_cal_component_get_percent_complete
 						(ECalComponent *comp);
-void		e_cal_component_set_percent_as_int
+void		e_cal_component_set_percent_complete
 						(ECalComponent *comp,
 						 gint percent);
 
-void		e_cal_component_get_percent	(ECalComponent *comp,
-						 gint **percent);
-void		e_cal_component_set_percent	(ECalComponent *comp,
-						 gint *percent);
-
-void		e_cal_component_get_priority	(ECalComponent *comp,
-						 gint **priority);
+gint		e_cal_component_get_priority	(ECalComponent *comp);
 void		e_cal_component_set_priority	(ECalComponent *comp,
-						 gint *priority);
+						 gint priority);
 
-void		e_cal_component_get_recurid	(ECalComponent *comp,
-						 ECalComponentRange *recur_id);
+ECalComponentRange *
+		e_cal_component_get_recurid	(ECalComponent *comp);
 gchar *		e_cal_component_get_recurid_as_string
 						(ECalComponent *comp);
 void		e_cal_component_set_recurid	(ECalComponent *comp,
-						 ECalComponentRange *recur_id);
+						 const ECalComponentRange *recur_id);
 
-void		e_cal_component_get_rdate_list	(ECalComponent *comp,
-						 GSList **period_list);
+GSList *	e_cal_component_get_rdate_list	(ECalComponent *comp); /* ECalComponentPeriod * */
 void		e_cal_component_set_rdate_list	(ECalComponent *comp,
-						 GSList *period_list);
+						 const GSList *rdate_list); /* ECalComponentPeriod * */
 gboolean	e_cal_component_has_rdates	(ECalComponent *comp);
 
-void		e_cal_component_get_rrule_list	(ECalComponent *comp,
-						 GSList **recur_list);
-void		e_cal_component_get_rrule_property_list
-						(ECalComponent *comp,
-						 GSList **recur_list);
+GSList *	e_cal_component_get_rrule_list	(ECalComponent *comp); /* ICalRecurrenceType * */
+GSList *	e_cal_component_get_rrule_property_list /* ICalProperty * */
+						(ECalComponent *comp);
 void		e_cal_component_set_rrule_list	(ECalComponent *comp,
-						 GSList *recur_list);
+						 const GSList *recur_list); /* ICalRecurrenceType * */
 gboolean	e_cal_component_has_rrules	(ECalComponent *comp);
 
 gboolean	e_cal_component_has_recurrences	(ECalComponent *comp);
@@ -261,81 +238,51 @@ gboolean	e_cal_component_has_simple_recurrence
 						(ECalComponent *comp);
 gboolean	e_cal_component_is_instance	(ECalComponent *comp);
 
-void		e_cal_component_get_sequence	(ECalComponent *comp,
-						 gint **sequence);
+gint		e_cal_component_get_sequence	(ECalComponent *comp);
 void		e_cal_component_set_sequence	(ECalComponent *comp,
-						 gint *sequence);
+						 gint sequence);
 
-void		e_cal_component_get_status	(ECalComponent *comp,
-						 icalproperty_status *status);
+ICalPropertyStatus
+		e_cal_component_get_status	(ECalComponent *comp);
 void		e_cal_component_set_status	(ECalComponent *comp,
-						 icalproperty_status status);
+						 ICalPropertyStatus status);
 
 void		e_cal_component_get_summary	(ECalComponent *comp,
 						 ECalComponentText *summary);
 void		e_cal_component_set_summary	(ECalComponent *comp,
 						 ECalComponentText *summary);
 
-void		e_cal_component_get_transparency
-						(ECalComponent *comp,
-						 ECalComponentTransparency *transp);
-void		e_cal_component_set_transparency
-						(ECalComponent *comp,
+ECalComponentTransparency
+		e_cal_component_get_transparency(ECalComponent *comp);
+void		e_cal_component_set_transparency(ECalComponent *comp,
 						 ECalComponentTransparency transp);
 
-void		e_cal_component_get_url		(ECalComponent *comp,
-						 const gchar **url);
+gchar *		e_cal_component_get_url		(ECalComponent *comp);
 void		e_cal_component_set_url		(ECalComponent *comp,
 						 const gchar *url);
 
-void		e_cal_component_get_attendee_list
-						(ECalComponent *comp,
-						 GSList **attendee_list);
+GSList *	e_cal_component_get_attendee_list /* ECalComponentAttendee * */
+						(ECalComponent *comp);
 void		e_cal_component_set_attendee_list
 						(ECalComponent *comp,
-						 GSList *attendee_list);
+						 const GSList *attendee_list); /* ECalComponentAttendee * */
 gboolean	e_cal_component_has_attendees	(ECalComponent *comp);
 
-void		e_cal_component_get_location	(ECalComponent *comp,
-						 const gchar **location);
+gchar *		e_cal_component_get_location	(ECalComponent *comp);
 void		e_cal_component_set_location	(ECalComponent *comp,
 						 const gchar *location);
 
 /* Attachment handling */
-void		e_cal_component_get_attachment_list
-						(ECalComponent *comp,
-						 GSList **attachment_list);
-void		e_cal_component_set_attachment_list
-						(ECalComponent *comp,
-						 GSList *attachment_list);
+GSList *	e_cal_component_get_attachments	(ECalComponent *comp); /* ICalAttach * */
+void		e_cal_component_set_attachments	(ECalComponent *comp,
+						 const GSList *attachments); /* ICalAttach * */
 gboolean	e_cal_component_has_attachments	(ECalComponent *comp);
-gint		e_cal_component_get_num_attachments
-						(ECalComponent *comp);
 
 gboolean	e_cal_component_event_dates_match
 						(ECalComponent *comp1,
 						 ECalComponent *comp2);
 
-/* Functions to free returned values */
-
-void		e_cal_component_free_categories_list
-						(GSList *categ_list);
-void		e_cal_component_free_range	(ECalComponentRange *range);
-void		e_cal_component_free_exdate_list
-						(GSList *exdate_list);
-void		e_cal_component_free_geo	(struct icalgeotype *geo);
-void		e_cal_component_free_icaltimetype
-						(struct icaltimetype *t);
-void		e_cal_component_free_percent	(gint *percent);
-void		e_cal_component_free_priority	(gint *priority);
-void		e_cal_component_free_period_list
-						(GSList *period_list);
-void		e_cal_component_free_recur_list	(GSList *recur_list);
-void		e_cal_component_free_sequence	(gint *sequence);
-void		e_cal_component_free_text_list	(GSList *text_list);
-void		e_cal_component_free_attendee_list
-						(GSList *attendee_list);
-
+/* Alarms */
 gboolean	e_cal_component_has_alarms	(ECalComponent *comp);
 void		e_cal_component_add_alarm	(ECalComponent *comp,
 						 ECalComponentAlarm *alarm);
@@ -344,10 +291,11 @@ void		e_cal_component_remove_alarm	(ECalComponent *comp,
 void		e_cal_component_remove_all_alarms
 						(ECalComponent *comp);
 
-GList *		e_cal_component_get_alarm_uids	(ECalComponent *comp);
+GSList *	e_cal_component_get_alarm_uids	(ECalComponent *comp);
 ECalComponentAlarm *
 		e_cal_component_get_alarm	(ECalComponent *comp,
 						 const gchar *auid);
+GSList *	e_cal_component_get_all_alarms	(ECalComponent *comp);
 
 G_END_DECLS
 

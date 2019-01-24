@@ -58,24 +58,26 @@ ECalComponentAlarm *
 		e_cal_component_alarm_new_from_component
 						(const ICalComponent *component);
 ECalComponentAlarm *
-		e_cal_component_alarm_copy	(ECalComponentAlarm *alarm);
+		e_cal_component_alarm_copy	(const ECalComponentAlarm *alarm);
 void		e_cal_component_alarm_free	(ECalComponentAlarm *alarm);
 void		e_cal_component_alarm_set_from_component
 						(ECalComponentAlarm *alarm,
 						 const ICalComponent *component);
 ICalComponent *	e_cal_component_alarm_get_as_component
-						(ECalComponentAlarm *alarm);
+						(const ECalComponentAlarm *alarm);
 void		e_cal_component_alarm_fill_component
 						(const ECalComponentAlarm *alarm,
 						 ICalComponent *component);
-const gchar *	e_cal_component_alarm_get_uid	(ECalComponentAlarm *alarm);
+const gchar *	e_cal_component_alarm_get_uid	(const ECalComponentAlarm *alarm);
+void		e_cal_component_alarm_set_uid	(ECalComponentAlarm *alarm,
+						 const gchar *uid);
 ECalComponentAlarmAction
-		e_cal_component_alarm_get_action(ECalComponentAlarm *alarm);
+		e_cal_component_alarm_get_action(const ECalComponentAlarm *alarm);
 void		e_cal_component_alarm_set_action(ECalComponentAlarm *alarm,
 						 ECalComponentAlarmAction action);
 ECalComponentText *
 		e_cal_component_alarm_get_description
-						(ECalComponentAlarm *alarm);
+						(const ECalComponentAlarm *alarm);
 void		e_cal_component_alarm_set_description
 						(ECalComponentAlarm *alarm,
 						 const ECalComponentText *description);
@@ -83,7 +85,7 @@ void		e_cal_component_alarm_take_description
 						(ECalComponentAlarm *alarm,
 						 ECalComponentText *description);
 ECalComponentAlarmRepeat *
-		e_cal_component_alarm_get_repeat(ECalComponentAlarm *alarm);
+		e_cal_component_alarm_get_repeat(const ECalComponentAlarm *alarm);
 void		e_cal_component_alarm_set_repeat(ECalComponentAlarm *alarm,
 						 const ECalComponentAlarmRepeat *repeat);
 void		e_cal_component_alarm_take_repeat
@@ -91,7 +93,7 @@ void		e_cal_component_alarm_take_repeat
 						 ECalComponentAlarmRepeat *repeat);
 ECalComponentAlarmTrigger *
 		e_cal_component_alarm_get_trigger
-						(ECalComponentAlarm *alarm);
+						(const ECalComponentAlarm *alarm);
 void		e_cal_component_alarm_set_trigger
 						(ECalComponentAlarm *alarm,
 						 const ECalComponentAlarmTrigger *trigger);
@@ -99,9 +101,9 @@ void		e_cal_component_alarm_take_trigger
 						(ECalComponentAlarm *alarm,
 						 ECalComponentAlarmTrigger *trigger);
 gboolean	e_cal_component_alarm_has_attendees
-						(ECalComponentAlarm *alarm);
+						(const ECalComponentAlarm *alarm);
 GSList *	e_cal_component_alarm_get_attendees /* ECalComponentAttendee * */
-						(ECalComponentAlarm *alarm);
+						(const ECalComponentAlarm *alarm);
 void		e_cal_component_alarm_set_attendees
 						(ECalComponentAlarm *alarm,
 						 const GSList *attendees); /* ECalComponentAttendee * */
@@ -109,9 +111,9 @@ void		e_cal_component_alarm_take_attendees
 						(ECalComponentAlarm *alarm,
 						 GSList *attendees); /* ECalComponentAttendee * */
 gboolean	e_cal_component_alarm_has_attachments
-						(ECalComponentAlarm *alarm);
+						(const ECalComponentAlarm *alarm);
 GSList *	e_cal_component_alarm_get_attachments /* ICalAttach * */
-						(ECalComponentAlarm *alarm);
+						(const ECalComponentAlarm *alarm);
 void		e_cal_component_alarm_set_attachments
 						(ECalComponentAlarm *alarm,
 						 const GSList *attachments); /* ICalAttach * */

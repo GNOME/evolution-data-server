@@ -43,6 +43,10 @@ ECalComponentDateTime *
 		e_cal_component_datetime_new	(const ICalTimetype *value,
 						 const gchar *tzid);
 ECalComponentDateTime *
+		e_cal_component_datetime_new_take
+						(ICalTimetype *value,
+						 gchar *tzid);
+ECalComponentDateTime *
 		e_cal_component_datetime_copy	(const ECalComponentDateTime *dt);
 void		e_cal_component_datetime_free	(gpointer dt); /* ECalComponentDateTime * */
 void		e_cal_component_datetime_set	(ECalComponentDateTime *dt,

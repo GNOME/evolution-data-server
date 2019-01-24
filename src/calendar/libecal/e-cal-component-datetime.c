@@ -66,6 +66,36 @@ e_cal_component_datetime_new (const ICalTimetype *value,
 }
 
 /**
+ * e_cal_component_datetime_new:
+ * @value: (transfer full) (not nullable): an #ICalTimetype as a value
+ * @tzid: (transfer full) (nullable): timezone ID for the @value, or %NULL
+ *
+ * Creates a new #ECalComponentDateTime instance, which holds
+ * the @value and @tzid. It is similar to e_cal_component_datetime_new(),
+ * except this function assumes ownership of the @value and @tzid.
+ * The returned structure should be freed with e_cal_component_datetime_free(),
+ * when no longer needed.
+ *
+ * Returns: (transfer full): a new #ECalComponentDateTime
+ *
+ * Since: 3.36
+ **/
+ECalComponentDateTime *
+e_cal_component_datetime_new_take (ICalTimetype *value,
+				   gchar *tzid)
+{
+	ECalComponentDateTime *dt;
+
+	g_return_val_if_fail (I_CAL_IS_TIMETYPE (value), NULL);
+
+	dt = g_new0 (ECalComponentDateTime, 1);
+	dt->value = value;
+	dt->tzid = tzid;
+
+	return dt;
+}
+
+/**
  * e_cal_component_datetime_copy:
  * @dt: (not nullable): an #ECalComponentDateTime
  *
@@ -90,9 +120,9 @@ e_cal_component_datetime_copy (const ECalComponentDateTime *dt)
  * e_cal_component_datetime_free: (skip)
  * @dt: (type ECalComponentDateTime) (nullable): an #ECalComponentDateTime to free
  *
- * Free @dt, previously created by e_cal_component_datetime_new() or
- * e_cal_component_datetime_copy(). The function does nothing, if @dt
- * is %NULL.
+ * Free @dt, previously created by e_cal_component_datetime_new(),
+ * e_cal_component_datetime_new_take() or e_cal_component_datetime_copy().
+ * The function does nothing, if @dt is %NULL.
  *
  * Since: 3.36
  **/
