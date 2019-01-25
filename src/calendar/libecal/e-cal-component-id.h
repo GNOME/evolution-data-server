@@ -23,7 +23,7 @@
 #ifndef E_CAL_COMPONENT_ID_H
 #define E_CAL_COMPONENT_ID_H
 
-#include <glib.h>
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
@@ -40,6 +40,9 @@ GType		e_cal_component_id_get_type	(void);
 ECalComponentId *
 		e_cal_component_id_new		(const gchar *uid,
 						 const gchar *rid);
+ECalComponentId *
+		e_cal_component_id_new_take	(gchar *uid,
+						 gchar *rid);
 ECalComponentId *
 		e_cal_component_id_copy		(const ECalComponentId *id);
 void		e_cal_component_id_free		(gpointer id); /* ECalComponentId * */

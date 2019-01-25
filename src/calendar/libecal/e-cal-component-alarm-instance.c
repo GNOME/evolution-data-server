@@ -57,8 +57,7 @@ struct _ECalComponentAlarmInstance {
  * Since: 3.36
  **/
 ECalComponentAlarmInstance *
-e_cal_component_alarm_instance_new (ECalComponentAlarmInstanceKind kind,
-				    const gchar *uid,
+e_cal_component_alarm_instance_new (const gchar *uid,
 				    time_t instance_time,
 				    time_t occur_start,
 				    time_t occur_end)
@@ -128,7 +127,7 @@ e_cal_component_alarm_instance_free (gpointer instance)
  * Since: 3.36
  **/
 const gchar *
-e_cal_component_alarm_instance_get_uid (ECalComponentAlarmInstance *instance)
+e_cal_component_alarm_instance_get_uid (const ECalComponentAlarmInstance *instance)
 {
 	g_return_val_if_fail (instance != NULL, NULL);
 
@@ -166,7 +165,7 @@ e_cal_component_alarm_instance_set_uid (ECalComponentAlarmInstance *instance,
  * Since: 3.36
  **/
 time_t
-e_cal_component_alarm_instance_get_ (ECalComponentAlarmInstance *instance)
+e_cal_component_alarm_instance_get_time (const ECalComponentAlarmInstance *instance)
 {
 	g_return_val_if_fail (instance != NULL, (time_t) 0);
 
@@ -202,7 +201,7 @@ e_cal_component_alarm_instance_set_time (ECalComponentAlarmInstance *instance,
  * Since: 3.36
  **/
 time_t
-e_cal_component_alarm_instance_get_occur_start (ECalComponentAlarmInstance *instance)
+e_cal_component_alarm_instance_get_occur_start (const ECalComponentAlarmInstance *instance)
 {
 	g_return_val_if_fail (instance != NULL, (time_t) 0);
 
@@ -238,7 +237,7 @@ e_cal_component_alarm_instance_set_occur_start (ECalComponentAlarmInstance *inst
  * Since: 3.36
  **/
 time_t
-e_cal_component_alarm_instance_get_occur_end (ECalComponentAlarmInstance *instance)
+e_cal_component_alarm_instance_get_occur_end (const ECalComponentAlarmInstance *instance)
 {
 	g_return_val_if_fail (instance != NULL, (time_t) 0);
 

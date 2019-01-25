@@ -23,7 +23,7 @@
 #ifndef E_CAL_COMPONENT_PERIOD_H
 #define E_CAL_COMPONENT_PERIOD_H
 
-#include <glib.h>
+#include <glib-object.h>
 #include <libical-glib/libical-glib.h>
 #include <libecal/e-cal-enums.h>
 
@@ -45,7 +45,7 @@ ECalComponentPeriod *
 ECalComponentPeriod *
 		e_cal_component_period_new_duration
 						(const ICalTimetype *start,
-						 const ICalDurationtype *duration);
+						 const ICalDurationType *duration);
 ECalComponentPeriod *
 		e_cal_component_period_copy	(const ECalComponentPeriod *period);
 void		e_cal_component_period_free	(gpointer period); /* ECalComponentPeriod * */
@@ -58,19 +58,19 @@ void		e_cal_component_period_set_datetime_full
 void		e_cal_component_period_set_duration_full
 						(ECalComponentPeriod *period,
 						 const ICalTimetype *start,
-						 const ICalDurationtype *duration);
+						 const ICalDurationType *duration);
 ICalTimetype *	e_cal_component_period_get_start(const ECalComponentPeriod *period);
 void		e_cal_component_period_set_start(ECalComponentPeriod *period,
 						 const ICalTimetype *start);
 ICalTimetype *	e_cal_component_period_get_end	(const ECalComponentPeriod *period);
 void		e_cal_component_period_set_end	(ECalComponentPeriod *period,
 						 const ICalTimetype *end);
-ICalDurationtype *
+ICalDurationType *
 		e_cal_component_period_get_duration
 						(const ECalComponentPeriod *period);
 void		e_cal_component_period_set_duration
 						(ECalComponentPeriod *period,
-						 const ICalDurationtype *duration);
+						 const ICalDurationType *duration);
 
 G_END_DECLS
 

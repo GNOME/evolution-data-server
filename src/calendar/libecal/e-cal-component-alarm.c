@@ -168,7 +168,7 @@ e_cal_component_alarm_copy (const ECalComponentAlarm *alarm)
 
 				data = i_cal_attach_get_data (src_attach);
 				if (data)
-					attach = i_cal_attach_new_from_data (data, NULL, NULL);
+					attach = i_cal_attach_new_from_data ((gchar *) data, NULL, NULL);
 			}
 
 			if (attach)
@@ -249,7 +249,6 @@ e_cal_component_alarm_set_from_component (ECalComponentAlarm *alarm,
 	     prop;
 	     g_object_unref (prop), prop = i_cal_component_get_next_property (comp, I_CAL_ANY_PROPERTY)) {
 		ECalComponentAttendee *attendee;
-		ECalComponentText *text;
 		ICalAttach *attach;
 		const gchar *xname;
 
@@ -289,12 +288,12 @@ e_cal_component_alarm_set_from_component (ECalComponentAlarm *alarm,
 			break;
 
 		case I_CAL_DESCRIPTION_PROPERTY:
-			ICalParameter *param;
-
 			if (i_cal_property_get_description (prop)) {
+				ICalParameter *param;
+
 				param = i_cal_property_get_first_parameter (prop, I_CAL_ALTREP_PARAMETER);
 				alarm->description = e_cal_component_text_new (i_cal_property_get_description (prop),
-					param ? i_cal_property_get_altrep (param) : NULL);
+					param ? i_cal_parameter_get_altrep (param) : NULL);
 				g_clear_object (&param);
 			}
 			break;
@@ -354,6 +353,7 @@ e_cal_component_alarm_set_from_component (ECalComponentAlarm *alarm,
  * @alarm: an #ECalComponentAlarm
  *
  * Creates a VALARM #ICalComponent filled with data from the @alarm.
+ * In case the @alarm doesn't have set 'uid', a new is assigned.
  * Free the returned component with g_object_unref(), when no longer
  * needed.
  *
@@ -363,7 +363,7 @@ e_cal_component_alarm_set_from_component (ECalComponentAlarm *alarm,
  * Since: 3.36
  **/
 ICalComponent *
-e_cal_component_alarm_get_as_component (const ECalComponentAlarm *alarm)
+e_cal_component_alarm_get_as_component (ECalComponentAlarm *alarm)
 {
 	ICalComponent *valarm;
 
@@ -383,12 +383,13 @@ e_cal_component_alarm_get_as_component (const ECalComponentAlarm *alarm)
  *
  * Fills @component with data from @alarm. The @component should
  * be of %I_CAL_VALARM_COMPONENT kind - the function does nothing,
- * if it's not.
+ * if it's not. In case the @alarm doesn't have set 'uid', a new
+ * is assigned.
  *
  * Since: 3.36
  **/
 void
-e_cal_component_alarm_fill_component (const ECalComponentAlarm *alarm,
+e_cal_component_alarm_fill_component (ECalComponentAlarm *alarm,
 				      ICalComponent *component)
 {
 	ICalPropertyKind remove_props[] = {
@@ -412,7 +413,7 @@ e_cal_component_alarm_fill_component (const ECalComponentAlarm *alarm,
 	/* Remove used properties first */
 
 	for (ii = 0; ii < G_N_ELEMENTS (remove_props); ii++) {
-		if (remove_props == I_CAL_ACTION_PROPERTY &&
+		if (remove_props[ii] == I_CAL_ACTION_PROPERTY &&
 		    alarm->action == E_CAL_COMPONENT_ALARM_UNKNOWN)
 			continue;
 
@@ -442,7 +443,7 @@ e_cal_component_alarm_fill_component (const ECalComponentAlarm *alarm,
 	/* Tried all existing and none was the E_CAL_EVOLUTION_ALARM_UID_PROPERTY, thus add it */
 	if (!prop) {
 		prop = i_cal_property_new_x (alarm->uid);
-		i_cal_property_set_xname (prop, E_CAL_EVOLUTION_ALARM_UID_PROPERTY);
+		i_cal_property_set_x_name (prop, E_CAL_EVOLUTION_ALARM_UID_PROPERTY);
 		i_cal_component_take_property (component, prop);
 	}
 
@@ -467,6 +468,9 @@ e_cal_component_alarm_fill_component (const ECalComponentAlarm *alarm,
 
 	case E_CAL_COMPONENT_ALARM_NONE:
 		prop = i_cal_property_new_action (I_CAL_ACTION_NONE);
+		break;
+
+	case E_CAL_COMPONENT_ALARM_UNKNOWN:
 		break;
 	}
 
@@ -514,7 +518,7 @@ e_cal_component_alarm_fill_component (const ECalComponentAlarm *alarm,
 		ECalComponentAttendee *attendee = link->data;
 
 		if (!attendee)
-			continue
+			continue;
 
 		prop = e_cal_component_attendee_get_as_property (attendee);
 		if (prop)
@@ -544,7 +548,7 @@ e_cal_component_alarm_fill_component (const ECalComponentAlarm *alarm,
  * Since: 3.36
  **/
 const gchar *
-e_cal_component_alarm_get_uid (const ECalComponentAlarm *alarm);
+e_cal_component_alarm_get_uid (const ECalComponentAlarm *alarm)
 {
 	g_return_val_if_fail (alarm != NULL, NULL);
 
@@ -708,9 +712,9 @@ e_cal_component_alarm_set_repeat (ECalComponentAlarm *alarm,
 	g_return_if_fail (alarm != NULL);
 
 	if (repeat != alarm->repeat) {
-		e_cal_component_repeat_free (alarm->repeat);
+		e_cal_component_alarm_repeat_free (alarm->repeat);
 
-		alarm->repeat = repeat ? e_cal_component_repeat_copy (repeat) : NULL;
+		alarm->repeat = repeat ? e_cal_component_alarm_repeat_copy (repeat) : NULL;
 	}
 }
 
@@ -731,7 +735,7 @@ e_cal_component_alarm_take_repeat (ECalComponentAlarm *alarm,
 	g_return_if_fail (alarm != NULL);
 
 	if (repeat != alarm->repeat) {
-		e_cal_component_repeat_free (alarm->repeat);
+		e_cal_component_alarm_repeat_free (alarm->repeat);
 		alarm->repeat = repeat;
 	}
 }
@@ -770,9 +774,9 @@ e_cal_component_alarm_set_trigger (ECalComponentAlarm *alarm,
 	g_return_if_fail (alarm != NULL);
 
 	if (trigger != alarm->trigger) {
-		e_cal_component_trigger_free (alarm->trigger);
+		e_cal_component_alarm_trigger_free (alarm->trigger);
 
-		alarm->trigger = trigger ? e_cal_component_trigger_copy (trigger) : NULL;
+		alarm->trigger = trigger ? e_cal_component_alarm_trigger_copy (trigger) : NULL;
 	}
 }
 
@@ -793,7 +797,7 @@ e_cal_component_alarm_take_trigger (ECalComponentAlarm *alarm,
 	g_return_if_fail (alarm != NULL);
 
 	if (trigger != alarm->trigger) {
-		e_cal_component_trigger_free (alarm->trigger);
+		e_cal_component_alarm_trigger_free (alarm->trigger);
 		alarm->trigger = trigger;
 	}
 }
@@ -856,7 +860,7 @@ e_cal_component_alarm_set_attendees (ECalComponentAlarm *alarm,
 	if (alarm->attendees == attendees)
 		return;
 
-	for (link = attendees; link; link = g_slist_next (link)) {
+	for (link = (GSList *) attendees; link; link = g_slist_next (link)) {
 		ECalComponentAttendee *attendee = link->data;
 
 		if (attendee)
@@ -865,7 +869,7 @@ e_cal_component_alarm_set_attendees (ECalComponentAlarm *alarm,
 
 	to_take = g_slist_reverse (to_take);
 
-	e_cal_component_alarm_take_attendees (to_take);
+	e_cal_component_alarm_take_attendees (alarm, to_take);
 }
 
 /**
@@ -931,7 +935,7 @@ e_cal_component_alarm_get_attachments (const ECalComponentAlarm *alarm)
 /**
  * e_cal_component_alarm_set_attachments:
  * @alarm: an #ECalComponentAlarm
- * @attachemnts: (transfer none) (nullable) (element-type ICalAttach): a #GSList
+ * @attachments: (transfer none) (nullable) (element-type ICalAttach): a #GSList
  *    of an #ICalAttach objects to set as attachments, or %NULL to unset
  *
  * Set the list of attachments, as a #GSList of an #ICalAttach.
@@ -949,7 +953,7 @@ e_cal_component_alarm_set_attachments (ECalComponentAlarm *alarm,
 	if (alarm->attachments == attachments)
 		return;
 
-	for (link = attachments; link; link = g_slist_next (link)) {
+	for (link = (GSList *) attachments; link; link = g_slist_next (link)) {
 		ICalAttach *attach = link->data;
 
 		if (attach)
@@ -958,13 +962,13 @@ e_cal_component_alarm_set_attachments (ECalComponentAlarm *alarm,
 
 	to_take = g_slist_reverse (to_take);
 
-	e_cal_component_alarm_take_attachments (to_take);
+	e_cal_component_alarm_take_attachments (alarm, to_take);
 }
 
 /**
  * e_cal_component_alarm_take_attachments: (skip)
  * @alarm: an #ECalComponentAlarm
- * @attachemnts: (transfer full) (nullable) (element-type ICalAttach): a #GSList
+ * @attachments: (transfer full) (nullable) (element-type ICalAttach): a #GSList
  *    of an #ICalAttach objects to set as attachments, or %NULL to unset
  *
  * Sets the list of attachments, as a #GSList of an #ICalAttach and assumes

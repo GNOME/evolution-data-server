@@ -168,13 +168,12 @@ ECalComponentDateTime *
 void		e_cal_component_set_dtstart	(ECalComponent *comp,
 						 const ECalComponentDateTime *dt);
 
-ECalComponentDateTime *dt
+ECalComponentDateTime *
 		e_cal_component_get_due		(ECalComponent *comp);
 void		e_cal_component_set_due		(ECalComponent *comp,
 						 const ECalComponentDateTime *dt);
 
-GSList *	e_cal_component_get_exdate_list	(ECalComponent *comp, /* ECalComponentDateTime * */
-						 GSList **exdate_list);
+GSList *	e_cal_component_get_exdate_list	(ECalComponent *comp); /* ECalComponentDateTime * */
 void		e_cal_component_set_exdate_list	(ECalComponent *comp,
 						 const GSList *exdate_list); /* ECalComponentDateTime * */
 gboolean	e_cal_component_has_exdates	(ECalComponent *comp);
@@ -247,10 +246,10 @@ ICalPropertyStatus
 void		e_cal_component_set_status	(ECalComponent *comp,
 						 ICalPropertyStatus status);
 
-void		e_cal_component_get_summary	(ECalComponent *comp,
-						 ECalComponentText *summary);
+ECalComponentText *
+		e_cal_component_get_summary	(ECalComponent *comp);
 void		e_cal_component_set_summary	(ECalComponent *comp,
-						 ECalComponentText *summary);
+						 const ECalComponentText *summary);
 
 ECalComponentTransparency
 		e_cal_component_get_transparency(ECalComponent *comp);
@@ -278,10 +277,6 @@ void		e_cal_component_set_attachments	(ECalComponent *comp,
 						 const GSList *attachments); /* ICalAttach * */
 gboolean	e_cal_component_has_attachments	(ECalComponent *comp);
 
-gboolean	e_cal_component_event_dates_match
-						(ECalComponent *comp1,
-						 ECalComponent *comp2);
-
 /* Alarms */
 gboolean	e_cal_component_has_alarms	(ECalComponent *comp);
 void		e_cal_component_add_alarm	(ECalComponent *comp,
@@ -296,6 +291,10 @@ ECalComponentAlarm *
 		e_cal_component_get_alarm	(ECalComponent *comp,
 						 const gchar *auid);
 GSList *	e_cal_component_get_all_alarms	(ECalComponent *comp);
+
+gboolean	e_cal_component_event_dates_match
+						(ECalComponent *comp1,
+						 ECalComponent *comp2);
 
 G_END_DECLS
 

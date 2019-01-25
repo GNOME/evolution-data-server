@@ -1,4 +1,4 @@
-glib_mkenums(e-cal-enumtypes e-cal-enums.h E_CAL_ENUMS_H)
+glib_mkenums(e-cal-enumtypes e-cal-enums.h E_CAL_ENUMTYPES_H)
 
 add_pkgconfig_file(libecal.pc.in libecal-${CAL_API_VERSION}.pc)
 
@@ -53,7 +53,7 @@ set(HEADERS
 	e-cal-enums.h
 	e-cal-recur.h
 	e-cal-time-util.h
-        e-cal-check-timezones.h
+	e-cal-check-timezones.h
 	e-cal-system-timezone.h
 	e-cal-util.h
 	e-reminder-watcher.h
@@ -113,7 +113,7 @@ install(FILES ${HEADERS}
 
 set(gir_sources ${SOURCES} ${HEADERS})
 set(gir_identifies_prefixes ECal)
-set(gir_includes GObject-2.0 Gio-2.0 Soup-2.4 libxml2-2.0)
+set(gir_includes GObject-2.0 Gio-2.0 Soup-2.4 libxml2-2.0 ICalGLib-3.0)
 set(gir_cflags
 	-DLIBECAL_COMPILATION
 	-I${CMAKE_BINARY_DIR}/src/calendar

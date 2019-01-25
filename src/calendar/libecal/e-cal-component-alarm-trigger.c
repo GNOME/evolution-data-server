@@ -119,7 +119,7 @@ e_cal_component_alarm_trigger_new_from_property (const ICalProperty *property)
 	if (i_cal_property_isa ((ICalProperty *) property) != I_CAL_TRIGGER_PROPERTY)
 		return NULL;
 
-	trigger = e_cal_component_alarm_trigger_new ();
+	trigger = g_new0 (ECalComponentAlarmTrigger, 1);
 
 	e_cal_component_alarm_trigger_set_from_property (trigger, property);
 
@@ -186,6 +186,7 @@ e_cal_component_alarm_trigger_set_from_property (ECalComponentAlarmTrigger *trig
 						 const ICalProperty *property)
 {
 	ICalProperty *prop = (ICalProperty *) property;
+	ICalParameter *param;
 	ICalTriggerType *trgtype;
 	gboolean relative;
 
@@ -236,7 +237,7 @@ e_cal_component_alarm_trigger_set_from_property (ECalComponentAlarmTrigger *trig
 				break;
 
 			default:
-				kind = E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_NONE;
+				kind = E_CAL_COMPONENT_ALARM_TRIGGER_NONE;
 				break;
 			}
 		} else {
@@ -311,22 +312,18 @@ e_cal_component_alarm_trigger_fill_property (const ECalComponentAlarmTrigger *tr
 	g_return_if_fail (I_CAL_IS_PROPERTY (property));
 	g_return_if_fail (i_cal_property_isa (property) == I_CAL_TRIGGER_PROPERTY);
 
-	g_return_if_fail (alarm != NULL);
-	g_return_if_fail (trigger.type != E_CAL_COMPONENT_ALARM_TRIGGER_NONE);
-	g_return_if_fail (alarm->icalcomp != NULL);
-
 	related = I_CAL_RELATED_START;
 	trgtype = i_cal_trigger_type_from_int (0);
 
 	switch (trigger->kind) {
 	case E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START:
-		i_cal_trigger_type_set_duration (trgtype, trigger->duration);
+		i_cal_trigger_type_set_duration (trgtype, trigger->rel_duration);
 		value_type = I_CAL_VALUE_DURATION;
 		related = I_CAL_RELATED_START;
 		break;
 
 	case E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_END:
-		i_cal_trigger_type_set_duration (trgtype, trigger->duration);
+		i_cal_trigger_type_set_duration (trgtype, trigger->rel_duration);
 		value_type = I_CAL_VALUE_DURATION;
 		related = I_CAL_RELATED_END;
 		break;
@@ -340,27 +337,27 @@ e_cal_component_alarm_trigger_fill_property (const ECalComponentAlarmTrigger *tr
 		g_return_if_reached ();
 	}
 
-	i_cal_property_set_trigger (prop, trgtype);
+	i_cal_property_set_trigger (property, trgtype);
 
-	param = icalproperty_get_first_parameter (prop, I_CAL_VALUE_PARAMETER);
+	param = i_cal_property_get_first_parameter (property, I_CAL_VALUE_PARAMETER);
 	if (param) {
 		i_cal_parameter_set_value (param, value_type);
 	} else {
 		param = i_cal_parameter_new_value (value_type);
-		i_cal_property_set_parameter (prop, param);
+		i_cal_property_set_parameter (property, param);
 	}
 	g_clear_object (&param);
 
-	param = i_cal_property_get_first_parameter (prop, I_CAL_RELATED_PARAMETER);
+	param = i_cal_property_get_first_parameter (property, I_CAL_RELATED_PARAMETER);
 	if (trigger->kind != E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE) {
 		if (param) {
 			i_cal_parameter_set_related (param, related);
 		} else {
 			param = i_cal_parameter_new_related (related);
-			i_cal_property_add_parameter (prop, param);
+			i_cal_property_add_parameter (property, param);
 		}
 	} else if (param) {
-		i_cal_property_remove_parameter (prop, param);
+		i_cal_property_remove_parameter_by_kind (property, I_CAL_RELATED_PARAMETER);
 	}
 	g_clear_object (&param);
 }
@@ -416,7 +413,7 @@ e_cal_component_alarm_trigger_set_absolute (ECalComponentAlarmTrigger *trigger,
 	g_clear_object (&trigger->abs_time);
 
 	trigger->kind = E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE;
-	trigger->absolute_time = i_cal_timetype_new_clone (absolute_time);
+	trigger->abs_time = i_cal_timetype_new_clone (absolute_time);
 }
 
 /**
@@ -428,7 +425,7 @@ e_cal_component_alarm_trigger_set_absolute (ECalComponentAlarmTrigger *trigger,
  * Since: 3.36
  **/
 ECalComponentAlarmTriggerKind
-e_cal_component_alarm_trigger_get_kind (ECalComponentAlarmTrigger *trigger)
+e_cal_component_alarm_trigger_get_kind (const ECalComponentAlarmTrigger *trigger)
 {
 	g_return_val_if_fail (trigger != NULL, E_CAL_COMPONENT_ALARM_TRIGGER_NONE);
 
@@ -557,6 +554,6 @@ e_cal_component_alarm_trigger_set_absolute_time (ECalComponentAlarmTrigger *trig
 
 	if (trigger->abs_time != absolute_time) {
 		g_clear_object (&trigger->abs_time);
-		trigger->abs_time = i_cal_timetype_clone (absolute_time);
+		trigger->abs_time = i_cal_timetype_new_clone ((ICalTimetype *) absolute_time);
 	}
 }

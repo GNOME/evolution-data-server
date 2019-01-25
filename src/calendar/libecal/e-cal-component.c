@@ -75,7 +75,7 @@ free_icalcomponent (ECalComponent *comp,
 }
 
 static gboolean
-ecc_property_exists (ICalCompoennt *icalcomp,
+ecc_property_exists (ICalComponent *icalcomp,
 		     ICalPropertyKind prop_kind)
 {
 	ICalProperty *prop;
@@ -108,7 +108,7 @@ foreach_subcomponent (ICalComponent *icalcomp,
 	g_return_if_fail (func != NULL);
 
 	iter = i_cal_component_begin_component (icalcomp, comp_kind);
-	subcomp = i_cal_comp_iter_deref (&iter);
+	subcomp = i_cal_comp_iter_deref (iter);
 	while (subcomp) {
 		if (!func (icalcomp, subcomp, user_data)) {
 			g_object_unref (subcomp);
@@ -131,12 +131,14 @@ foreach_property (ICalComponent *icalcomp,
 				     gpointer user_data),
 		  gpointer user_data)
 {
+	ICalProperty *prop;
+
 	g_return_if_fail (func != NULL);
 
-	for (prop = i_cal_component_get_first_property (icalcomp, kind);
+	for (prop = i_cal_component_get_first_property (icalcomp, prop_kind);
 	     prop;
 	     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, prop_kind)) {
-		if (!func (icalcomp, prop, user_data)
+		if (!func (icalcomp, prop, user_data))
 			break;
 	}
 }
@@ -222,7 +224,7 @@ set_text_altrep_on_prop (ICalProperty *prop,
 	g_return_if_fail (text != NULL);
 
 	altrep = e_cal_component_text_get_altrep (text);
-	param = i_cal_property_get_first_param (prop, I_CAL_ALTREP_PARAMETER);
+	param = i_cal_property_get_first_parameter (prop, I_CAL_ALTREP_PARAMETER);
 
 	if (altrep && *altrep) {
 		if (param) {
@@ -324,7 +326,7 @@ e_cal_component_new_from_string (const gchar *calobj)
  * Since: 3.4
  **/
 ECalComponent *
-e_cal_component_new_from_icalcomponent (icalcomponent *icalcomp)
+e_cal_component_new_from_icalcomponent (ICalComponent *icalcomp)
 {
 	ECalComponent *comp;
 
@@ -618,19 +620,18 @@ e_cal_component_get_as_string (ECalComponent *comp)
 }
 
 /* Ensures that an alarm subcomponent has the mandatory properties it needs. */
-static gpointer
+static gboolean
 ensure_alarm_properties_cb (ICalComponent *icalcomp,
 			    ICalComponent *subcomp,
 			    gpointer user_data)
 {
-	ECalComponent *comp = user_data;
 	ICalProperty *prop;
 	ICalPropertyAction action;
-	const gchar *str;
+	const gchar *summary;
 
 	prop = i_cal_component_get_first_property (subcomp, I_CAL_ACTION_PROPERTY);
 	if (!prop)
-		return;
+		return TRUE;
 
 	action = i_cal_property_get_action (prop);
 
@@ -638,8 +639,6 @@ ensure_alarm_properties_cb (ICalComponent *icalcomp,
 
 	switch (action) {
 	case I_CAL_ACTION_DISPLAY:
-		const gchar *summary;
-
 		summary = i_cal_component_get_summary (icalcomp);
 
 		/* Ensure we have a DESCRIPTION property */
@@ -651,6 +650,8 @@ ensure_alarm_properties_cb (ICalComponent *icalcomp,
 				for (xprop = i_cal_component_get_first_property (subcomp, I_CAL_X_PROPERTY);
 				     xprop;
 				     g_object_unref (xprop), xprop = i_cal_component_get_next_property (subcomp, I_CAL_X_PROPERTY)) {
+					const gchar *str;
+
 					str = i_cal_property_get_x_name (xprop);
 					if (!g_strcmp0 (str, "X-EVOLUTION-NEEDS-DESCRIPTION")) {
 						i_cal_property_set_description (prop, summary);
@@ -685,6 +686,8 @@ ensure_alarm_properties_cb (ICalComponent *icalcomp,
 	default:
 		break;
 	}
+
+	return TRUE;
 }
 
 /**
@@ -760,16 +763,12 @@ e_cal_component_abort_sequence (ECalComponent *comp)
 ECalComponentId *
 e_cal_component_get_id (ECalComponent *comp)
 {
-	ECalComponentId *id;
-
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
 
-	id = g_new0 (ECalComponentId, 1);
-	id->uid = g_strdup (i_cal_component_get_uid (comp->priv->icalcomp));
-	id->rid = e_cal_component_get_recurid_as_string (comp);
-
-	return id;
+	return e_cal_component_id_new_take (
+		g_strdup (i_cal_component_get_uid (comp->priv->icalcomp)),
+		e_cal_component_get_recurid_as_string (comp));
 }
 
 /**
@@ -820,7 +819,7 @@ get_attachments_cb (ICalComponent *icalcomp,
 	attach = i_cal_property_get_attach (prop);
 
 	if (attach)
-		*attaches = g_slist_prepend (*attaches, attach);
+		*pattaches = g_slist_prepend (*pattaches, attach);
 
 	return TRUE;
 }
@@ -850,7 +849,7 @@ e_cal_component_get_attachments (ECalComponent *comp)
 }
 
 /**
- * e_cal_component_get_attachments:
+ * e_cal_component_set_attachments:
  * @comp: A calendar component object
  * @attachments: (nullable) (element-type ICalAttach): a #GSList of an #ICalAttach,
  *    or %NULL to remove any existing
@@ -1070,15 +1069,18 @@ e_cal_component_set_categories_list (ECalComponent *comp,
 ECalComponentClassification
 e_cal_component_get_classification (ECalComponent *comp)
 {
+	ICalProperty *prop;
 	ECalComponentClassification classif;
 
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), E_CAL_COMPONENT_CLASS_UNKNOWN);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, E_CAL_COMPONENT_CLASS_UNKNOWN);
 
-	if (!comp->priv->classification)
+	prop = i_cal_component_get_first_property (comp->priv->icalcomp, I_CAL_CLASS_PROPERTY);
+
+	if (!prop)
 		return E_CAL_COMPONENT_CLASS_NONE;
 
-	switch (i_cal_property_get_class (comp->priv->classification)) {
+	switch (i_cal_property_get_class (prop)) {
 	case I_CAL_CLASS_PUBLIC:
 		classif = E_CAL_COMPONENT_CLASS_PUBLIC;
 		break;
@@ -1092,6 +1094,8 @@ e_cal_component_get_classification (ECalComponent *comp)
 		classif = E_CAL_COMPONENT_CLASS_UNKNOWN;
 		break;
 	}
+
+	g_object_unref (prop);
 
 	return classif;
 }
@@ -1108,16 +1112,19 @@ void
 e_cal_component_set_classification (ECalComponent *comp,
                                     ECalComponentClassification classif)
 {
-	ICalPropertyClass prop_class;
+	ICalProperty_Class prop_class;
+	ICalProperty *prop;
 
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 	g_return_if_fail (classif != E_CAL_COMPONENT_CLASS_UNKNOWN);
 	g_return_if_fail (comp->priv->icalcomp != NULL);
 
+	prop = i_cal_component_get_first_property (comp->priv->icalcomp, I_CAL_CLASS_PROPERTY);
+
 	if (classif == E_CAL_COMPONENT_CLASS_NONE) {
-		if (comp->priv->classification) {
-			i_cal_component_remove_property (comp->priv->icalcomp, comp->priv->classification);
-			g_clear_object (&comp->priv->classification);
+		if (prop) {
+			i_cal_component_remove_property (comp->priv->icalcomp, prop);
+			g_object_unref (prop);
 		}
 
 		return;
@@ -1142,11 +1149,12 @@ e_cal_component_set_classification (ECalComponent *comp,
 		break;
 	}
 
-	if (comp->priv->classification) {
-		i_cal_property_set_class (comp->priv->classification, prop_class);
+	if (prop) {
+		i_cal_property_set_class (prop, prop_class);
+		g_object_unref (prop);
 	} else {
-		comp->priv->classification = i_cal_property_new_class (prop_class);
-		i_cal_component_add_property (comp->priv->icalcomp, comp->priv->classification);
+		prop = i_cal_property_new_class (prop_class);
+		i_cal_component_take_property (comp->priv->icalcomp, prop);
 	}
 }
 
@@ -1253,18 +1261,17 @@ e_cal_component_set_comment_list (ECalComponent *comp,
 /**
  * e_cal_component_get_contact_list:
  * @comp: A calendar component object.
- * @text_list: (out) (transfer full) (element-type ECalComponentText): Return
- * value for the contact properties and their parameters, as a list of
- * #ECalComponentText structures.
  *
  * Queries the contact of a calendar component object.  The contact property can
  * appear several times inside a calendar component, and so a list of
  * #ECalComponentText is returned. Free the returned #GSList with
  * g_slist_free_full (slist, e_cal_component_text_free);, when no longer needed.
+ *
+ * Returns: (transfer full) (element-type ECalComponentText): the contact properties and
+ *    their parameters, as a #GSList of #ECalComponentText structures.
  **/
-void
-e_cal_component_get_contact_list (ECalComponent *comp,
-                                  GSList **text_list)
+GSList *
+e_cal_component_get_contact_list (ECalComponent *comp)
 {
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
@@ -1334,9 +1341,9 @@ set_icaltimetype (ICalComponent *icalcomp,
 	}
 
 	if (prop) {
-		prop_set_func (prop, tt);
+		prop_set_func (prop, (ICalTimetype *) tt);
 	} else {
-		prop = prop_new_func (tt);
+		prop = prop_new_func ((ICalTimetype *) tt);
 		i_cal_component_take_property (icalcomp, prop);
 	}
 }
@@ -1376,7 +1383,7 @@ e_cal_component_set_completed (ECalComponent *comp,
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 	g_return_if_fail (comp->priv->icalcomp != NULL);
 
-	if (tt && tt->is_date) {
+	if (tt && i_cal_timetype_get_is_date ((ICalTimetype *) tt)) {
 		tmp_tt = i_cal_timetype_new_clone (tt);
 		tt = tmp_tt;
 
@@ -1500,8 +1507,8 @@ get_datetime (ICalComponent *icalcomp,
 	/* If the ICalTimetype has is_utc set, we set "UTC" as the TZID.
 	 * This makes the timezone code simpler. */
 	if (param)
-		tzid = i_cal_parameter_get_tzid (param));
-	else if (value && i_cal_timetype_is_utc (value))
+		tzid = g_strdup (i_cal_parameter_get_tzid (param));
+	else if (i_cal_timetype_is_utc (value))
 		tzid = g_strdup ("UTC");
 	else
 		tzid = NULL;
@@ -1584,7 +1591,7 @@ e_cal_component_get_start_plus_duration (ECalComponent *comp)
 {
 	ICalDurationType *duration;
 	ICalTimetype *tt;
-	ECalCoponentDateTime *dt;
+	ECalComponentDateTime *dt;
 	guint dur_days, dur_hours, dur_minutes, dur_seconds;
 
 	duration = i_cal_component_get_duration (comp->priv->icalcomp);
@@ -1595,7 +1602,7 @@ e_cal_component_get_start_plus_duration (ECalComponent *comp)
 	dt = get_datetime (comp->priv->icalcomp, I_CAL_DTSTART_PROPERTY, i_cal_property_get_dtstart);
 	if (!dt) {
 		g_object_unref (duration);
-		return;
+		return NULL;
 	}
 
 	/* The DURATION shouldn't be negative, but just return DTSTART if it
@@ -1611,7 +1618,7 @@ e_cal_component_get_start_plus_duration (ECalComponent *comp)
 	dur_days = i_cal_duration_type_get_days (duration) + (7 * i_cal_duration_type_get_weeks (duration));
 	dur_hours = i_cal_duration_type_get_hours (duration);
 	dur_minutes = i_cal_duration_type_get_minutes (duration);
-	dur_seconds = i_cal_duration_type_get_seconds (duration)
+	dur_seconds = i_cal_duration_type_get_seconds (duration);
 
 	tt = e_cal_component_datetime_get_value (dt);
 	if (i_cal_timetype_get_is_date (tt) && (
@@ -1643,10 +1650,10 @@ e_cal_component_get_dtend (ECalComponent *comp)
 {
 	ECalComponentDateTime *dt;
 
-	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp));
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
 
-	dt = get_datetime (comp->priv->icalcomp, I_CAl_DTEND_PROPERTY, i_cal_property_get_dtend);
+	dt = get_datetime (comp->priv->icalcomp, I_CAL_DTEND_PROPERTY, i_cal_property_get_dtend);
 
 	/* If we don't have a DTEND property, then we try to get DTSTART
 	 * + DURATION. */
@@ -1667,8 +1674,6 @@ void
 e_cal_component_set_dtend (ECalComponent *comp,
                            const ECalComponentDateTime *dt)
 {
-	ICalProperty *prop;
-
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 	g_return_if_fail (comp->priv->icalcomp != NULL);
 
@@ -1721,7 +1726,7 @@ e_cal_component_get_dtstamp (ECalComponent *comp)
 /**
  * e_cal_component_set_dtstamp:
  * @comp: A calendar component object.
- * @t: Date/timestamp value.
+ * @tt: Date/timestamp value.
  *
  * Sets the date/timestamp of a calendar component object.  This should be
  * called whenever a calendar user agent makes a change to a component's
@@ -1742,7 +1747,7 @@ e_cal_component_set_dtstamp (ECalComponent *comp,
 	/* This MUST exist, since we ensured that it did */
 	g_return_if_fail (prop != NULL);
 
-	i_cal_property_set_dtstamp (prop, tt);
+	i_cal_property_set_dtstamp (prop, (ICalTimetype *) tt);
 
 	g_clear_object (&prop);
 }
@@ -1785,14 +1790,12 @@ e_cal_component_set_dtstart (ECalComponent *comp,
 		i_cal_property_set_dtstart,
 		dt);
 
-	priv->need_sequence_inc = TRUE;
+	comp->priv->need_sequence_inc = TRUE;
 }
 
 /**
  * e_cal_component_get_due:
  * @comp: A calendar component object.
- * @dt: (out): Return value for the due date/time.  This should be freed with the
- * e_cal_component_free_datetime() function.
  *
  * Queries the due date/time of a calendar component object. In case there's no DUE,
  * but only DTSTART and DURATION, then the due is computed from the later two.
@@ -1856,8 +1859,7 @@ e_cal_component_set_due (ECalComponent *comp,
 static GSList * /* ECalComponentPeriod * */
 get_period_list (ICalComponent *icalcomp,
 		 ICalPropertyKind prop_kind,
-		 ICalDatetimeperiodType (* get_prop_func) (ICalProperty *prop),
-		 const GSList **list)
+		 ICalDatetimeperiodType * (* get_prop_func) (ICalProperty *prop))
 {
 	GSList *props, *link, *periods = NULL;
 
@@ -1868,7 +1870,7 @@ get_period_list (ICalComponent *icalcomp,
 		ICalParameter *param;
 		ICalPeriodType *icalperiod;
 		ICalDatetimeperiodType *pt;
-		ICalDurationtype *duration = NULL;
+		ICalDurationType *duration = NULL;
 		ICalTimetype *start = NULL, *end = NULL;
 		ECalComponentPeriod *period;
 		ECalComponentPeriodKind period_kind;
@@ -1899,8 +1901,8 @@ get_period_list (ICalComponent *icalcomp,
 				duration = i_cal_period_type_get_duration (icalperiod);
 
 				if (!duration ||
-				    i_cal_durationtype_is_null_duration (duration) ||
-				    i_cal_durationtype_is_bad_duration (duration))
+				    i_cal_duration_type_is_null_duration (duration) ||
+				    i_cal_duration_type_is_bad_duration (duration))
 					period_kind = E_CAL_COMPONENT_PERIOD_DATETIME;
 				else
 					period_kind = E_CAL_COMPONENT_PERIOD_DURATION;
@@ -1963,7 +1965,7 @@ set_period_list (ICalComponent *icalcomp,
 		ICalPeriodType *ic_period;
 		ICalProperty *prop;
 		ICalParameter *param;
-		ICalParameterValue value_type = I_CAL_VALUE_UNKNOWN;
+		ICalParameterValue value_type = I_CAL_VALUE_NONE;
 
 		if (!period)
 			continue;
@@ -1979,7 +1981,7 @@ set_period_list (ICalComponent *icalcomp,
 			break;
 		case E_CAL_COMPONENT_PERIOD_DURATION:
 			value_type = I_CAL_VALUE_DURATION;
-			i_cal_period_type_set_duration (ic_period, e_cal_component_period_get_end (duration));
+			i_cal_period_type_set_duration (ic_period, e_cal_component_period_get_duration (period));
 		}
 
 		ic_datetimeperiod = i_cal_datetimeperiod_type_new ();
@@ -2102,7 +2104,7 @@ e_cal_component_set_exdate_list (ECalComponent *comp,
 		i_cal_component_take_property (comp->priv->icalcomp, prop);
 	}
 
-	priv->need_sequence_inc = TRUE;
+	comp->priv->need_sequence_inc = TRUE;
 }
 
 /**
@@ -2138,7 +2140,7 @@ get_recur_list (ICalComponent *icalcomp,
 		ICalRecurrenceType *rt;
 
 		rt = get_prop_func (prop);
-		if (rc)
+		if (rt)
 			recurs = g_slist_prepend (recurs, rt);
 	}
 
@@ -2166,11 +2168,11 @@ set_recur_list (ICalComponent *icalcomp,
 
 	for (link = (GSList *) rl; link; link = g_slist_next (link)) {
 		ICalProperty *prop;
-		ICalRecurrenceType *recur = l->data;
+		ICalRecurrenceType *recur = link->data;
 
 		if (recur) {
 			prop = (* new_prop_func) (recur);
-			i_cal_component_take_property (comp->priv->icalcomp, prop);
+			i_cal_component_take_property (icalcomp, prop);
 		}
 	}
 }
@@ -2207,8 +2209,7 @@ e_cal_component_get_exrule_list (ECalComponent *comp)
  *    rule properties
  **/
 GSList *
-e_cal_component_get_exrule_property_list (ECalComponent *comp,
-                                          GSList **recur_list)
+e_cal_component_get_exrule_property_list (ECalComponent *comp)
 {
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
@@ -2219,7 +2220,7 @@ e_cal_component_get_exrule_property_list (ECalComponent *comp,
 /**
  * e_cal_component_set_exrule_list:
  * @comp: A calendar component object.
- * @recur_list: (nullable): (element-type ICalRecurrenceType): a #GSList
+ * @recur_list: (nullable) (element-type ICalRecurrenceType): a #GSList
  *    of #ICalRecurrenceType structures, or %NULL.
  *
  * Sets the list of exception rules in a calendar component object.
@@ -2233,7 +2234,7 @@ e_cal_component_set_exrule_list (ECalComponent *comp,
 
 	set_recur_list (comp->priv->icalcomp, I_CAL_EXRULE_PROPERTY, i_cal_property_new_exrule, recur_list);
 
-	priv->need_sequence_inc = TRUE;
+	comp->priv->need_sequence_inc = TRUE;
 }
 
 /**
@@ -2328,9 +2329,9 @@ e_cal_component_set_geo (ECalComponent *comp,
 	}
 
 	if (prop) {
-		i_cal_property_set_geo (prop, geo);
+		i_cal_property_set_geo (prop, (ICalGeoType *) geo);
 	} else {
-		prop = i_cal_property_new_geo (geo);
+		prop = i_cal_property_new_geo ((ICalGeoType *) geo);
 		i_cal_component_add_property (comp->priv->icalcomp, prop);
 	}
 
@@ -2475,8 +2476,8 @@ e_cal_component_get_percent_complete (ECalComponent *comp)
 	ICalProperty *prop;
 	gint percent;
 
-	g_return_if_fail (E_IS_CAL_COMPONENT (comp), -1);
-	g_return_if_fail (comp->priv->icalcomp != NULL, -1);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), -1);
+	g_return_val_if_fail (comp->priv->icalcomp != NULL, -1);
 
 	prop = i_cal_component_get_first_property (comp->priv->icalcomp, I_CAL_PERCENTCOMPLETE_PROPERTY);
 	if (!prop)
@@ -2535,7 +2536,7 @@ e_cal_component_set_percent_complete (ECalComponent *comp,
  *
  * Queries the priority property of a calendar component object.
  *
- * @priority: the priority property value, or -1 if not found
+ * Returns: the priority property value, or -1, if not found
  **/
 gint
 e_cal_component_get_priority (ECalComponent *comp)
@@ -2543,8 +2544,8 @@ e_cal_component_get_priority (ECalComponent *comp)
 	ICalProperty *prop;
 	gint priority;
 
-	g_return_if_fail (E_IS_CAL_COMPONENT (comp), -1);
-	g_return_if_fail (comp->priv->icalcomp != NULL, -1);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), -1);
+	g_return_val_if_fail (comp->priv->icalcomp != NULL, -1);
 
 	prop = i_cal_component_get_first_property (comp->priv->icalcomp, I_CAL_PRIORITY_PROPERTY);
 	if (!prop)
@@ -2609,12 +2610,10 @@ e_cal_component_set_priority (ECalComponent *comp,
 ECalComponentRange *
 e_cal_component_get_recurid (ECalComponent *comp)
 {
-	ECalComponentDatetime *dt;
+	ECalComponentDateTime *dt;
 
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
-
-	recur_id->type = E_CAL_COMPONENT_RANGE_SINGLE;
 
 	dt = get_datetime (comp->priv->icalcomp, I_CAL_RECURRENCEID_PROPERTY, i_cal_property_get_recurrenceid);
 
@@ -2647,9 +2646,9 @@ e_cal_component_get_recurid_as_string (ECalComponent *comp)
 	if (range)
 		dt = e_cal_component_range_get_datetime (range);
 	if (dt)
-		ii = e_cal_component_datetime_get_value (dt);
+		tt = e_cal_component_datetime_get_value (dt);
 
-	if (!range || !dt || !itt) {
+	if (!range || !dt || !tt) {
 		e_cal_component_range_free (range);
 		return g_strdup ("0");
 	}
@@ -2725,7 +2724,7 @@ e_cal_component_set_rdate_list (ECalComponent *comp,
 
 	set_period_list (comp->priv->icalcomp, I_CAL_RDATE_PROPERTY, i_cal_property_new_rdate, rdate_list);
 
-	priv->need_sequence_inc = TRUE;
+	comp->priv->need_sequence_inc = TRUE;
 }
 
 /**
@@ -2802,7 +2801,7 @@ e_cal_component_set_rrule_list (ECalComponent *comp,
 
 	set_recur_list (comp->priv->icalcomp, I_CAL_RRULE_PROPERTY, i_cal_property_new_rrule, recur_list);
 
-	priv->need_sequence_inc = TRUE;
+	comp->priv->need_sequence_inc = TRUE;
 }
 
 /**
@@ -2841,21 +2840,21 @@ e_cal_component_has_recurrences (ECalComponent *comp)
 /* Counts the elements in the by_xxx fields of an ICalRecurrenceType;
    it also frees the 'field' array*/
 static gint
-count_by_xxx (GArray *field) /* gshort */
+count_by_xxx_and_free (GArray *field) /* gshort */
 {
 	gint ii;
 
 	if (!field)
-		return 0
+		return 0;
 
 	for (ii = 0; ii < field->len; ii++) {
 		if (g_array_index (field, gshort, ii) == I_CAL_RECURRENCE_ARRAY_MAX)
 			break;
 	}
 
-	g_array_unref (array);
+	g_array_unref (field);
 
-	return i;
+	return ii;
 }
 
 /**
@@ -2871,7 +2870,6 @@ gboolean
 e_cal_component_has_simple_recurrence (ECalComponent *comp)
 {
 	GSList *rrule_list;
-	GArray *array;
 	ICalRecurrenceType *rt;
 	gint n_by_second, n_by_minute, n_by_hour;
 	gint n_by_day, n_by_month_day, n_by_year_day;
@@ -2899,7 +2897,7 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
 		goto cleanup;
 
 	/* Any funky BY_* */
-#define N_HAS_BY(field) (count_by_xxx (field, G_N_ELEMENTS (field)))
+#define N_HAS_BY(field) (count_by_xxx_and_free (field))
 
 	n_by_second = N_HAS_BY (i_cal_recurrence_type_get_by_second_array (rt));
 	n_by_minute = N_HAS_BY (i_cal_recurrence_type_get_by_minute_array (rt));
@@ -2937,7 +2935,6 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
 		    || n_by_set_pos != 0)
 			goto cleanup;
 
-		array = i_cal_recurrence_type_get_by_day (rt);
 		for (i = 0; i < 8; i++) {
 			gint pos;
 			gshort byday = i_cal_recurrence_type_get_by_day (rt, i);
@@ -2947,13 +2944,9 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
 
 			pos = i_cal_recurrence_type_day_position (byday);
 
-			if (pos != 0) {
-				g_array_unref (array);
+			if (pos != 0)
 				goto cleanup;
-			}
 		}
-
-		g_array_unref (array);
 
 		simple = TRUE;
 		break;
@@ -3050,7 +3043,7 @@ e_cal_component_is_instance (ECalComponent *comp)
 {
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 
-	return return ecc_property_exists (comp->priv->icalcomp, I_CAL_RECURRENCEID_PROPERTY);
+	return ecc_property_exists (comp->priv->icalcomp, I_CAL_RECURRENCEID_PROPERTY);
 }
 
 /**
@@ -3134,7 +3127,7 @@ e_cal_component_get_status (ECalComponent *comp)
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), I_CAL_STATUS_NONE);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, I_CAL_STATUS_NONE);
 
-	prop = i_cal_component_get_fist_property (comp->priv->icalcomp, I_CAL_STATUS_PROPERTY);
+	prop = i_cal_component_get_first_property (comp->priv->icalcomp, I_CAL_STATUS_PROPERTY);
 
 	if (!prop)
 		return I_CAL_STATUS_NONE;
@@ -3164,7 +3157,7 @@ e_cal_component_set_status (ECalComponent *comp,
 
 	comp->priv->need_sequence_inc = TRUE;
 
-	prop = i_cal_component_get_fist_property (comp->priv->icalcomp, I_CAL_STATUS_PROPERTY);
+	prop = i_cal_component_get_first_property (comp->priv->icalcomp, I_CAL_STATUS_PROPERTY);
 
 	if (status == I_CAL_STATUS_NONE) {
 		if (prop) {
@@ -3201,8 +3194,8 @@ e_cal_component_get_summary (ECalComponent *comp)
 	ECalComponentText *text;
 	ICalProperty *prop;
 
-	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp));
-	g_return_val_if_fail (comp->priv->icalcomp != NULL);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
+	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
 
 	prop = i_cal_component_get_first_property (comp->priv->icalcomp, I_CAL_SUMMARY_PROPERTY);
 	if (!prop)
@@ -3220,22 +3213,20 @@ typedef struct {
 	const gchar *new_summary;
 } SetAlarmDescriptionData;
 
-static void
-set_alarm_description_cb (gpointer key,
-                          gpointer value,
-                          gpointer user_data)
+static gboolean
+set_alarm_description_cb (ICalComponent *icalcomp,
+			  ICalComponent *subcomp,
+			  gpointer user_data)
 {
-	ICalComponent *alarm;
 	ICalProperty *icalprop, *desc_prop;
-	SetAlarmDescriptionData *sadd;
+	SetAlarmDescriptionData *sadd = user_data;
 	gboolean changed = FALSE;
 	const gchar *old_summary = NULL;
 
-	alarm = value;
-	sadd = user_data;
+	g_return_val_if_fail (sadd != NULL, FALSE);
 
 	/* set the new description on the alarm */
-	desc_prop = i_cal_component_get_first_property (alarm, I_CAL_DESCRIPTION_PROPERTY);
+	desc_prop = i_cal_component_get_first_property (subcomp, I_CAL_DESCRIPTION_PROPERTY);
 	if (desc_prop) {
 		old_summary = i_cal_property_get_description (desc_prop);
 	} else {
@@ -3243,13 +3234,13 @@ set_alarm_description_cb (gpointer key,
 	}
 
 	/* remove the X-EVOLUTION-NEEDS_DESCRIPTION property */
-	icalprop = i_cal_component_get_first_property (alarm, I_CAL_X_PROPERTY);
+	icalprop = i_cal_component_get_first_property (subcomp, I_CAL_X_PROPERTY);
 	while (icalprop) {
 		const gchar *x_name;
 
 		x_name = i_cal_property_get_x_name (icalprop);
 		if (!g_strcmp0 (x_name, "X-EVOLUTION-NEEDS-DESCRIPTION")) {
-			i_cal_component_remove_property (alarm, icalprop);
+			i_cal_component_remove_property (subcomp, icalprop);
 			g_object_unref (icalprop);
 
 			i_cal_property_set_description (desc_prop, sadd->new_summary);
@@ -3258,7 +3249,7 @@ set_alarm_description_cb (gpointer key,
 		}
 
 		g_object_unref (icalprop);
-		icalprop = i_cal_component_get_next_property (alarm, I_CAL_X_PROPERTY);
+		icalprop = i_cal_component_get_next_property (subcomp, I_CAL_X_PROPERTY);
 	}
 
 	if (!changed) {
@@ -3268,6 +3259,8 @@ set_alarm_description_cb (gpointer key,
 	}
 
 	g_object_unref (desc_prop);
+
+	return TRUE;
 }
 
 /**
@@ -3320,7 +3313,8 @@ e_cal_component_set_summary (ECalComponent *comp,
 
 	/* look for alarms that need a description */
 	sadd.new_summary = e_cal_component_text_get_value (summary);
-	g_hash_table_foreach (comp->priv->alarm_uid_hash, set_alarm_description_cb, &sadd);
+
+	foreach_subcomponent (comp->priv->icalcomp, I_CAL_VALARM_COMPONENT, set_alarm_description_cb, &sadd);
 
 	g_free (sadd.old_summary);
 }
@@ -3340,8 +3334,8 @@ e_cal_component_get_transparency (ECalComponent *comp)
 	ECalComponentTransparency transp;
 	ICalProperty *prop;
 
-	g_return_if_fail (E_IS_CAL_COMPONENT (comp), E_CAL_COMPONENT_TRANSP_NONE);
-	g_return_if_fail (comp->priv->icalcomp != NULL, E_CAL_COMPONENT_TRANSP_NONE);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), E_CAL_COMPONENT_TRANSP_NONE);
+	g_return_val_if_fail (comp->priv->icalcomp != NULL, E_CAL_COMPONENT_TRANSP_NONE);
 
 	prop = i_cal_component_get_first_property (comp->priv->icalcomp, I_CAL_TRANSP_PROPERTY);
 
@@ -3524,11 +3518,10 @@ e_cal_component_get_attendee_list (ECalComponent *comp)
 {
 	GSList *attendees = NULL;
 
-	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp));
-	g_return_val_if_fail (comp->priv->icalcomp != NULL);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
+	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
 
-	foreach_property (comp->priv->icalcomp, I_CAL_ATTENDEE_PROPERTY,
-		get_attendee_list_cb, &attendees);
+	foreach_property (comp->priv->icalcomp, I_CAL_ATTENDEE_PROPERTY, get_attendee_list_cb, &attendees);
 
 	return g_slist_reverse (attendees);
 }
@@ -3605,7 +3598,7 @@ e_cal_component_get_location (ECalComponent *comp)
 	if (!prop)
 		return NULL;
 
-	location = g_strdup (i_cal_property_get_location (prop);
+	location = g_strdup (i_cal_property_get_location (prop));
 
 	g_object_unref (prop);
 
@@ -3734,7 +3727,7 @@ e_cal_component_add_alarm (ECalComponent *comp,
 	for (link = existing_uids; link; link = g_slist_next (link)) {
 		const gchar *existing_auid = link->data;
 
-		if (g_strcmp0 (auid, exisitng_auid) == 0)
+		if (g_strcmp0 (auid, existing_auid) == 0)
 			break;
 	}
 
@@ -3902,7 +3895,7 @@ ECalComponentAlarm *
 e_cal_component_get_alarm (ECalComponent *comp,
                            const gchar *auid)
 {
-	ECalComponentAlarm *alarm;
+	ECalComponentAlarm *alarm = NULL;
 	struct GetAlarmData gad;
 
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
@@ -3916,10 +3909,53 @@ e_cal_component_get_alarm (ECalComponent *comp,
 
 	if (gad.valarm) {
 		alarm = e_cal_component_alarm_new_from_component (gad.valarm);
-		g_object_unref (valarm);
+		g_object_unref (gad.valarm);
 	}
 
 	return alarm;
+}
+
+static gboolean
+get_all_alarms_cb (ICalComponent *icalcomp,
+		   ICalComponent *subcomp,
+		   gpointer user_data)
+{
+	GSList **palarms = user_data;
+	ECalComponentAlarm *alarm;
+
+	g_return_val_if_fail (palarms != NULL, FALSE);
+
+	alarm = e_cal_component_alarm_new_from_component (subcomp);
+	if (alarm)
+		*palarms = g_slist_prepend (*palarms, alarm);
+
+	return TRUE;
+}
+
+/**
+ * e_cal_component_get_all_alarms:
+ * @comp: A calendar component.
+ *
+ * Queries all alarm subcomponents of a calendar component.
+ * Free the returned #GSList with g_slist_free_full (slist, e_cal_component_alarm_free));,
+ * when no longer needed.
+ *
+ * Returns: (transfer full) (nullable) (element-type ECalComponentAlarm): the alarm subcomponents
+ *    as a #GSList of #ECalComponentAlarm, or %NULL, if no alarm exists
+ *
+ * Since: 3.36
+ **/
+GSList *
+e_cal_component_get_all_alarms (ECalComponent *comp)
+{
+	GSList *alarms = NULL;
+
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
+	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
+
+	foreach_subcomponent (comp->priv->icalcomp, I_CAL_VALARM_COMPONENT, get_all_alarms_cb, &alarms);
+
+	return g_slist_reverse (alarms);
 }
 
 /**

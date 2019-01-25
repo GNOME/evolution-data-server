@@ -30,7 +30,7 @@
 
 G_DEFINE_BOXED_TYPE (ECalComponentRange, e_cal_component_range, e_cal_component_range_copy, e_cal_component_range_free)
 
-typedef struct _ECalComponentRange {
+struct _ECalComponentRange {
 	ECalComponentRangeKind kind;
 	ECalComponentDateTime *datetime;
 };

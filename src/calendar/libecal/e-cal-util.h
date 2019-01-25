@@ -28,7 +28,7 @@
 #include <time.h>
 #include <libecal/e-cal-component.h>
 #include <libecal/e-cal-recur.h>
-#include <libecal/e-cal-types.h>
+#include <libecal/e-cal-enums.h>
 
 G_BEGIN_DECLS
 

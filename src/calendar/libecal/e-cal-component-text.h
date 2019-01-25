@@ -23,10 +23,9 @@
 #ifndef E_CAL_COMPONENT_TEXT_H
 #define E_CAL_COMPONENT_TEXT_H
 
-#include <glib.h>
+#include <glib-object.h>
 
 G_BEGIN_DECLS
-
 
 /**
  * ECalComponentText:

@@ -23,7 +23,7 @@
 #ifndef E_CAL_COMPONENT_ALARMS_H
 #define E_CAL_COMPONENT_ALARMS_H
 
-#include <glib.h>
+#include <glib-object.h>
 #include <libecal/e-cal-component-alarm-instance.h>
 
 G_BEGIN_DECLS
@@ -41,11 +41,12 @@ typedef struct _ECalComponentAlarms ECalComponentAlarms;
 
 GType		e_cal_component_alarms_get_type	(void);
 ECalComponentAlarms *
-		e_cal_component_alarms_new	(ECalComponent *comp);
+		e_cal_component_alarms_new	(struct _ECalComponent *comp);
 ECalComponentAlarms *
 		e_cal_component_alarms_copy	(const ECalComponentAlarms *alarms);
 void		e_cal_component_alarms_free	(gpointer alarms); /* ECalComponentAlarms * */
-ECalComponent *	e_cal_component_alarms_get_component
+struct _ECalComponent *
+		e_cal_component_alarms_get_component
 						(const ECalComponentAlarms *alarms);
 GSList *	e_cal_component_alarms_get_instances /* ECalComponentAlarmInstance * */
 						(const ECalComponentAlarms *alarms);

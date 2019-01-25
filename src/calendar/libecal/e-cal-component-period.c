@@ -37,7 +37,7 @@ struct _ECalComponentPeriod {
 
 	/* Only one of 'end' and 'duration' can be set, depending on the kind */
 	ICalTimetype *end;
-	ICalDurationtype *duration;
+	ICalDurationType *duration;
 };
 
 /**
@@ -73,7 +73,7 @@ e_cal_component_period_new_datetime (const ICalTimetype *start,
 /**
  * e_cal_component_period_new_duration:
  * @start: (not nullable): an #ICalTimetype, the start of the period
- * @duration: (not nullable): an #ICalDurationtype, the duration of the period
+ * @duration: (not nullable): an #ICalDurationType, the duration of the period
  *
  * Creates a new #ECalComponentPeriod of kind %E_CAL_COMPONENT_PERIOD_DURATION.
  * The returned structure should be freed with e_cal_component_period_free(),
@@ -85,12 +85,12 @@ e_cal_component_period_new_datetime (const ICalTimetype *start,
  **/
 ECalComponentPeriod *
 e_cal_component_period_new_duration (const ICalTimetype *start,
-				     const ICalDurationtype *duration)
+				     const ICalDurationType *duration)
 {
 	ECalComponentPeriod *period;
 
 	g_return_val_if_fail (I_CAL_IS_TIMETYPE (start), NULL);
-	g_return_val_if_fail (I_CAL_IS_TIMETYPE (end), NULL);
+	g_return_val_if_fail (I_CAL_IS_DURATION_TYPE (duration), NULL);
 
 	period = g_new0 (ECalComponentPeriod, 1);
 	period->kind = E_CAL_COMPONENT_PERIOD_DURATION;
@@ -115,7 +115,7 @@ e_cal_component_period_copy (const ECalComponentPeriod *period)
 {
 	ECalComponentPeriod *copy = NULL;
 
-	g_return_if_val_fail (period != NULL, NULL);
+	g_return_val_if_fail (period != NULL, NULL);
 
 	switch (e_cal_component_period_get_kind (period)) {
 	case E_CAL_COMPONENT_PERIOD_DATETIME:
@@ -209,7 +209,7 @@ e_cal_component_period_set_datetime_full (ECalComponentPeriod *period,
  * e_cal_component_period_set_duration_full:
  * @period: an #ECalComponentPeriod
  * @start: (not nullable): an #ICalTimetype, the start of the @period
- * @duration: (not nullable): an #ICalDurationtype, the duration of the @period
+ * @duration: (not nullable): an #ICalDurationType, the duration of the @period
  *
  * Set the kind of @period to be %E_CAL_COMPONENT_PERIOD_DURATION
  * and fills the content with @start and @duration.
@@ -219,11 +219,11 @@ e_cal_component_period_set_datetime_full (ECalComponentPeriod *period,
 void
 e_cal_component_period_set_duration_full (ECalComponentPeriod *period,
 					  const ICalTimetype *start,
-					  const ICalDurationtype *duration)
+					  const ICalDurationType *duration)
 {
 	g_return_if_fail (period != NULL);
 	g_return_if_fail (I_CAL_IS_TIMETYPE (start));
-	g_return_if_fail (I_CAL_IS_DURATIONTYPE (duration));
+	g_return_if_fail (I_CAL_IS_DURATION_TYPE (duration));
 
 	g_clear_object (&period->end);
 
@@ -327,14 +327,14 @@ e_cal_component_period_set_end (ECalComponentPeriod *period,
  *
  * Returns the duration of the @period. This can be called only on @period
  * objects of kind %E_CAL_COMPONENT_PERIOD_DURATION.
- * The returned #ICalDurationtype object is owned by @period and should not
+ * The returned #ICalDurationType object is owned by @period and should not
  * be freed. It's valid until the @period is freed or its duration changed.
  *
- * Returns: (transfer none): the duration of the period, as an #ICalDurationtype
+ * Returns: (transfer none): the duration of the period, as an #ICalDurationType
  *
  * Since: 3.36
  **/
-ICalDurationtype *
+ICalDurationType *
 e_cal_component_period_get_duration (const ECalComponentPeriod *period)
 {
 	g_return_val_if_fail (period != NULL, NULL);
@@ -344,9 +344,9 @@ e_cal_component_period_get_duration (const ECalComponentPeriod *period)
 }
 
 /**
- * e_cal_component_period_set_end:
+ * e_cal_component_period_set_duration:
  * @period: an #ECalComponentPeriod
- * @duration: (not nullable): an #ICalDurationtype, the duration of the @period
+ * @duration: (not nullable): an #ICalDurationType, the duration of the @period
  *
  * Set the duration of the @period. This can be called only on @period
  * objects of kind %E_CAL_COMPONENT_PERIOD_DURATION.
@@ -355,14 +355,14 @@ e_cal_component_period_get_duration (const ECalComponentPeriod *period)
  **/
 void
 e_cal_component_period_set_duration (ECalComponentPeriod *period,
-				     const ICalDurationtype *duration)
+				     const ICalDurationType *duration)
 {
 	g_return_if_fail (period != NULL);
 	g_return_if_fail (period->kind == E_CAL_COMPONENT_PERIOD_DURATION);
-	g_return_if_fail (I_CAL_IS_DURATIONTYPE (duration));
+	g_return_if_fail (I_CAL_IS_DURATION_TYPE (duration));
 
 	if (period->duration != duration) {
 		g_clear_object (&period->duration);
-		period->duration = i_cal_duration_type_from_int (i_cal_duration_type_as_int ((ICalDurationtype *) duration);
+		period->duration = i_cal_duration_type_from_int (i_cal_duration_type_as_int ((ICalDurationType *) duration));
 	}
 }

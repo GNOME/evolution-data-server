@@ -23,8 +23,8 @@
 #ifndef E_CAL_COMPONENT_ALARM_TRIGGER_H
 #define E_CAL_COMPONENT_ALARM_TRIGGER_H
 
-#include <glib.h>
-#inlcude <libical-glib/libical-glib.h>
+#include <glib-object.h>
+#include <libical-glib/libical-glib.h>
 
 #include <libecal/e-cal-enums.h>
 

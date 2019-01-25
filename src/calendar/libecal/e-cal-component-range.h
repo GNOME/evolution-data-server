@@ -23,7 +23,7 @@
 #ifndef E_CAL_COMPONENT_RANGE_H
 #define E_CAL_COMPONENT_RANGE_H
 
-#include <glib.h>
+#include <glib-object.h>
 #include <libecal/e-cal-enums.h>
 #include <libecal/e-cal-component-datetime.h>
 

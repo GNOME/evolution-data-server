@@ -23,7 +23,8 @@
 #ifndef E_CAL_COMPONENT_ORGANIZER_H
 #define E_CAL_COMPONENT_ORGANIZER_H
 
-#include <glib.h>
+#include <glib-object.h>
+#include <libical-glib/libical-glib.h>
 
 G_BEGIN_DECLS
 
@@ -59,24 +60,23 @@ void		e_cal_component_organizer_fill_property
 						(const ECalComponentOrganizer *organizer,
 						 ICalProperty *property);
 const gchar *	e_cal_component_organizer_get_value
-						(ECalComponentOrganizer *organizer);
+						(const ECalComponentOrganizer *organizer);
 void		e_cal_component_organizer_set_value
 						(ECalComponentOrganizer *organizer,
 						 const gchar *value);
 const gchar *	e_cal_component_organizer_get_sentby
-						(ECalComponentOrganizer *organizer);
+						(const ECalComponentOrganizer *organizer);
 void		e_cal_component_organizer_set_sentby
 						(ECalComponentOrganizer *organizer,
 						 const gchar *sentby);
-const gchar *	e_cal_component_organizer_get_cn(ECalComponentOrganizer *organizer);
+const gchar *	e_cal_component_organizer_get_cn(const ECalComponentOrganizer *organizer);
 void		e_cal_component_organizer_set_cn(ECalComponentOrganizer *organizer,
 						 const gchar *cn);
 const gchar *	e_cal_component_organizer_get_language
-						(ECalComponentOrganizer *organizer);
+						(const ECalComponentOrganizer *organizer);
 void		e_cal_component_organizer_set_language
 						(ECalComponentOrganizer *organizer,
 						 const gchar *language);
-
 
 G_END_DECLS
 

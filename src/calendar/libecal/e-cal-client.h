@@ -28,7 +28,7 @@
 
 #include <libecal/e-cal-client-view.h>
 #include <libecal/e-cal-recur.h>
-#include <libecal/e-cal-types.h>
+#include <libecal/e-cal-enums.h>
 #include <libecal/e-cal-util.h>
 
 /* Standard GObject macros */

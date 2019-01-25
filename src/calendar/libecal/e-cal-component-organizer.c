@@ -254,16 +254,16 @@ e_cal_component_organizer_fill_property (const ECalComponentOrganizer *organizer
 	i_cal_property_set_organizer (property, organizer->value ? organizer->value : "MAILTO:");
 
 	#define fill_param(_param, _val, _filled) \
-		param = i_cal_property_get_first_parameter (prop, _param); \
+		param = i_cal_property_get_first_parameter (property, _param); \
 		if (_filled) { \
 			if (!param) { \
 				param = i_cal_parameter_new (_param); \
 				i_cal_property_add_parameter (property, param); \
 			} \
-			i_cal_parameter_set_ # _val (param, organizer-> _val); \
+			i_cal_parameter_set_ ## _val (param, organizer-> _val); \
 			g_clear_object (&param); \
 		} else if (param) { \
-			i_cal_property_remove_parameter (property, param); \
+			i_cal_property_remove_parameter_by_kind (property, _param); \
 			g_clear_object (&param); \
 		}
 
@@ -283,7 +283,7 @@ e_cal_component_organizer_fill_property (const ECalComponentOrganizer *organizer
  * Since: 3.36
  **/
 const gchar *
-e_cal_component_organizer_get_value (ECalComponentOrganizer *organizer)
+e_cal_component_organizer_get_value (const ECalComponentOrganizer *organizer)
 {
 	g_return_val_if_fail (organizer != NULL, NULL);
 
@@ -324,7 +324,7 @@ e_cal_component_organizer_set_value (ECalComponentOrganizer *organizer,
  * Since: 3.36
  **/
 const gchar *
-e_cal_component_organizer_get_sentby (ECalComponentOrganizer *organizer)
+e_cal_component_organizer_get_sentby (const ECalComponentOrganizer *organizer)
 {
 	g_return_val_if_fail (organizer != NULL, NULL);
 
@@ -365,7 +365,7 @@ e_cal_component_organizer_set_sentby (ECalComponentOrganizer *organizer,
  * Since: 3.36
  **/
 const gchar *
-e_cal_component_organizer_get_cn (ECalComponentOrganizer *organizer)
+e_cal_component_organizer_get_cn (const ECalComponentOrganizer *organizer)
 {
 	g_return_val_if_fail (organizer != NULL, NULL);
 
@@ -406,7 +406,7 @@ e_cal_component_organizer_set_cn (ECalComponentOrganizer *organizer,
  * Since: 3.36
  **/
 const gchar *
-e_cal_component_organizer_get_language (ECalComponentOrganizer *organizer)
+e_cal_component_organizer_get_language (const ECalComponentOrganizer *organizer)
 {
 	g_return_val_if_fail (organizer != NULL, NULL);
 

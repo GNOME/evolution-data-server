@@ -51,17 +51,45 @@ ECalComponentId *
 e_cal_component_id_new (const gchar *uid,
                         const gchar *rid)
 {
+	g_return_val_if_fail (uid != NULL, NULL);
+
+	/* Normalize an empty recurrence ID to NULL. */
+	if (rid && !*rid)
+		rid = NULL;
+
+	return e_cal_component_id_new_take (g_strdup (uid), g_strdup (rid));
+}
+
+/**
+ * e_cal_component_id_new_take:
+ * @uid: (transfer full): a unique ID string
+ * @rid: (transfer full) (nullable): an optional recurrence ID string
+ *
+ * Creates a new #ECalComponentId from @uid and @rid, which should be
+ * freed with e_cal_component_id_free(). The function assumes ownership
+ * of @uid and @rid parameters.
+ *
+ * Returns: (transfer full): an #ECalComponentId
+ *
+ * Since: 3.36
+ **/
+ECalComponentId *
+e_cal_component_id_new_take (gchar *uid,
+			     gchar *rid)
+{
 	ECalComponentId *id;
 
 	g_return_val_if_fail (uid != NULL, NULL);
 
 	/* Normalize an empty recurrence ID to NULL. */
-	if (rid != NULL && *rid == '\0')
+	if (rid && !*rid) {
+		g_free (rid);
 		rid = NULL;
+	}
 
 	id = g_new0 (ECalComponentId, 1);
-	id->uid = g_strdup (uid);
-	id->rid = g_strdup (rid);
+	id->uid = uid;
+	id->rid = rid;
 
 	return id;
 }
@@ -87,18 +115,21 @@ e_cal_component_id_copy (const ECalComponentId *id)
 
 /**
  * e_cal_component_id_free: (skip)
- * @id: (transfer full): an #ECalComponentId
+ * @id: (type ECalComponentId) (transfer full) (nullable): an #ECalComponentId
  *
- * Free the @id.
+ * Free the @id, previously created by e_cal_component_id_new(),
+ * e_cal_component_id_new_take() or e_cal_component_id_copy().
  **/
 void
-e_cal_component_id_free (ECalComponentId *id)
+e_cal_component_id_free (gpointer id)
 {
+	ECalComponentId *eid = id;
+
 	g_return_if_fail (id != NULL);
 
-	g_free (id->uid);
-	g_free (id->rid);
-	g_free (id);
+	g_free (eid->uid);
+	g_free (eid->rid);
+	g_free (eid);
 }
 
 /**
@@ -112,7 +143,7 @@ e_cal_component_id_free (ECalComponentId *id)
  * Since: 3.10
  **/
 guint
-e_cal_component_id_hash (gcontpointer id)
+e_cal_component_id_hash (gconstpointer id)
 {
 	const ECalComponentId *eid = id;
 	guint uid_hash;

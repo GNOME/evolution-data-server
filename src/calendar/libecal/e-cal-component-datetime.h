@@ -23,7 +23,7 @@
 #ifndef E_CAL_COMPONENT_DATETIME_H
 #define E_CAL_COMPONENT_DATETIME_H
 
-#include <glib.h>
+#include <glib-object.h>
 #include <libical-glib/libical-glib.h>
 
 G_BEGIN_DECLS

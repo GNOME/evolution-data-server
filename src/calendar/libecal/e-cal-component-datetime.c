@@ -35,7 +35,7 @@ struct _ECalComponentDateTime {
 	ICalTimetype *value;
 
 	/* Timezone ID */
-	const gchar *tzid;
+	gchar *tzid;
 };
 
 /**
@@ -66,7 +66,7 @@ e_cal_component_datetime_new (const ICalTimetype *value,
 }
 
 /**
- * e_cal_component_datetime_new:
+ * e_cal_component_datetime_new_take:
  * @value: (transfer full) (not nullable): an #ICalTimetype as a value
  * @tzid: (transfer full) (nullable): timezone ID for the @value, or %NULL
  *
@@ -132,9 +132,9 @@ e_cal_component_datetime_free (gpointer dt)
 	ECalComponentDateTime *pdt = dt;
 
 	if (pdt) {
-		g_clear_objct (&pdt->value);
+		g_clear_object (&pdt->value);
 		g_free (pdt->tzid);
-		g_free (pdf);
+		g_free (pdt);
 	}
 }
 

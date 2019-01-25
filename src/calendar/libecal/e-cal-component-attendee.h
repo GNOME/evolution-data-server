@@ -23,7 +23,7 @@
 #ifndef E_CAL_COMPONENT_ATTENDEE_H
 #define E_CAL_COMPONENT_ATTENDEE_H
 
-#include <glib.h>
+#include <glib-object.h>
 #include <libical-glib/libical-glib.h>
 
 G_BEGIN_DECLS
@@ -45,7 +45,7 @@ ECalComponentAttendee *
 						 const gchar *member,
 						 ICalParameterCutype cutype,
 						 ICalParameterRole role,
-						 ICalParameterPartstat status,
+						 ICalParameterPartstat partstat,
 						 gboolean rsvp,
 						 const gchar *delegatedfrom,
 						 const gchar *delegatedto,
@@ -67,58 +67,58 @@ void		e_cal_component_attendee_fill_property
 						(const ECalComponentAttendee *attendee,
 						 ICalProperty *property);
 const gchar *	e_cal_component_attendee_get_value
-						(ECalComponentAttendee *attendee);
+						(const ECalComponentAttendee *attendee);
 void		e_cal_component_attendee_set_value
 						(ECalComponentAttendee *attendee,
 						 const gchar *value);
 const gchar *	e_cal_component_attendee_get_member
-						(ECalComponentAttendee *attendee);
+						(const ECalComponentAttendee *attendee);
 void		e_cal_component_attendee_set_member
 						(ECalComponentAttendee *attendee,
 						 const gchar *member);
 ICalParameterCutype
 		e_cal_component_attendee_get_cutype
-						(ECalComponentAttendee *attendee);
+						(const ECalComponentAttendee *attendee);
 void		e_cal_component_attendee_set_cutype
 						(ECalComponentAttendee *attendee,
 						 ICalParameterCutype cutype);
 ICalParameterRole
 		e_cal_component_attendee_get_role
-						(ECalComponentAttendee *attendee);
+						(const ECalComponentAttendee *attendee);
 void		e_cal_component_attendee_set_role
 						(ECalComponentAttendee *attendee,
 						 ICalParameterRole role);
 ICalParameterPartstat
-		e_cal_component_attendee_get_status
-						(ECalComponentAttendee *attendee);
-void		e_cal_component_attendee_set_status
+		e_cal_component_attendee_get_partstat
+						(const ECalComponentAttendee *attendee);
+void		e_cal_component_attendee_set_partstat
 						(ECalComponentAttendee *attendee,
-						 ICalParameterPartstat status);
+						 ICalParameterPartstat partstat);
 gboolean	e_cal_component_attendee_get_rsvp
-						(ECalComponentAttendee *attendee);
+						(const ECalComponentAttendee *attendee);
 void		e_cal_component_attendee_set_rsvp
 						(ECalComponentAttendee *attendee,
 						 gboolean rsvp);
 const gchar *	e_cal_component_attendee_get_delegatedfrom
-						(ECalComponentAttendee *attendee);
+						(const ECalComponentAttendee *attendee);
 void		e_cal_component_attendee_set_delegatedfrom
 						(ECalComponentAttendee *attendee,
 						 const gchar *delegatedfrom);
 const gchar *	e_cal_component_attendee_get_delegatedto
-						(ECalComponentAttendee *attendee);
+						(const ECalComponentAttendee *attendee);
 void		e_cal_component_attendee_set_delegatedto
 						(ECalComponentAttendee *attendee,
 						 const gchar *delegatedto);
 const gchar *	e_cal_component_attendee_get_sentby
-						(ECalComponentAttendee *attendee);
+						(const ECalComponentAttendee *attendee);
 void		e_cal_component_attendee_set_sentby
 						(ECalComponentAttendee *attendee,
 						 const gchar *sentby);
-const gchar *	e_cal_component_attendee_get_cn	(ECalComponentAttendee *attendee);
+const gchar *	e_cal_component_attendee_get_cn	(const ECalComponentAttendee *attendee);
 void		e_cal_component_attendee_set_cn	(ECalComponentAttendee *attendee,
 						 const gchar *cn);
 const gchar *	e_cal_component_attendee_get_language
-						(ECalComponentAttendee *attendee);
+						(const ECalComponentAttendee *attendee);
 void		e_cal_component_attendee_set_language
 						(ECalComponentAttendee *attendee,
 						 const gchar *language);

@@ -30,13 +30,13 @@
 
 G_DEFINE_BOXED_TYPE (ECalComponentAttendee, e_cal_component_attendee, e_cal_component_attendee_copy, e_cal_component_attendee_free)
 
-typedef struct {
+struct _ECalComponentAttendee {
 	gchar *value;
 
 	gchar *member;
 	ICalParameterCutype cutype;
 	ICalParameterRole role;
-	ICalParameterPartstat status;
+	ICalParameterPartstat partstat;
 	gboolean rsvp;
 
 	gchar *delegatedfrom;
@@ -44,7 +44,7 @@ typedef struct {
 	gchar *sentby;
 	gchar *cn;
 	gchar *language;
-} ECalComponentAttendee;
+};
 
 /**
  * e_cal_component_attendee_new:
@@ -75,7 +75,7 @@ e_cal_component_attendee_new (void)
  * @member: (nullable): member parameter
  * @cutype: type of the attendee, an #ICalParameterCutype
  * @role: role of the attendee, an #ICalParameterRole
- * @status: current status of the attendee, an #ICalParameterPartstat
+ * @partstat: current status of the attendee, an #ICalParameterPartstat
  * @rsvp: whether requires RSVP
  * @delegatedfrom: (nullable): delegated from
  * @delegatedto: (nullable): delegated to
@@ -97,7 +97,7 @@ e_cal_component_attendee_new_full (const gchar *value,
 				   const gchar *member,
 				   ICalParameterCutype cutype,
 				   ICalParameterRole role,
-				   ICalParameterPartstat status,
+				   ICalParameterPartstat partstat,
 				   gboolean rsvp,
 				   const gchar *delegatedfrom,
 				   const gchar *delegatedto,
@@ -112,10 +112,10 @@ e_cal_component_attendee_new_full (const gchar *value,
 	attendee->member = member && *member ? g_strdup (member) : NULL;
 	attendee->cutype = cutype;
 	attendee->role = role;
-	attendee->status = status;
+	attendee->partstat = partstat;
 	attendee->rsvp = rsvp;
 	attendee->delegatedfrom = delegatedfrom && *delegatedfrom ? g_strdup (delegatedfrom) : NULL;
-	attendee->delegateto = delegatedto && *delegatedto ? g_strdup (delegatedto) : NULL;
+	attendee->delegatedto = delegatedto && *delegatedto ? g_strdup (delegatedto) : NULL;
 	attendee->sentby = sentby && *sentby ? g_strdup (sentby) : NULL;
 	attendee->cn = cn && *cn ? g_strdup (cn) : NULL;
 	attendee->language = language && *language ? g_strdup (language) : NULL;
@@ -173,7 +173,7 @@ e_cal_component_attendee_copy (const ECalComponentAttendee *attendee)
 		attendee->member,
 		attendee->cutype,
 		attendee->role,
-		attendee->status,
+		attendee->partstat,
 		attendee->rsvp,
 		attendee->delegatedfrom,
 		attendee->delegatedto,
@@ -231,7 +231,7 @@ e_cal_component_attendee_set_from_property (ECalComponentAttendee *attendee,
 	g_return_if_fail (I_CAL_IS_PROPERTY (property));
 	g_return_if_fail (i_cal_property_isa (prop) == I_CAL_ATTENDEE_PROPERTY);
 
-	e_cal_component_attendee_set_value (attendee, i_cal_property_get_attendee (property));
+	e_cal_component_attendee_set_value (attendee, i_cal_property_get_attendee (prop));
 
 	param = i_cal_property_get_first_parameter (prop, I_CAL_MEMBER_PARAMETER);
 	e_cal_component_attendee_set_member (attendee, param ? i_cal_parameter_get_member (param) : NULL);
@@ -325,16 +325,16 @@ e_cal_component_attendee_fill_property (const ECalComponentAttendee *attendee,
 	i_cal_property_set_attendee (property, attendee->value ? attendee->value : "MAILTO:");
 
 	#define fill_param(_param, _val, _filled) \
-		param = i_cal_property_get_first_parameter (prop, _param); \
+		param = i_cal_property_get_first_parameter (property, _param); \
 		if (_filled) { \
 			if (!param) { \
 				param = i_cal_parameter_new (_param); \
 				i_cal_property_add_parameter (property, param); \
 			} \
-			i_cal_parameter_set_ # _val (param, attendee-> _val); \
+			i_cal_parameter_set_ ## _val (param, attendee-> _val); \
 			g_clear_object (&param); \
 		} else if (param) { \
-			i_cal_property_remove_parameter (property, param); \
+			i_cal_property_remove_parameter_by_kind (property, _param); \
 			g_clear_object (&param); \
 		}
 
@@ -343,7 +343,7 @@ e_cal_component_attendee_fill_property (const ECalComponentAttendee *attendee,
 	fill_param (I_CAL_ROLE_PARAMETER, role, attendee->role != I_CAL_ROLE_NONE);
 	fill_param (I_CAL_PARTSTAT_PARAMETER, partstat, attendee->partstat != I_CAL_PARTSTAT_NONE);
 
-	param = i_cal_property_get_first_parameter (prop, I_CAL_RSVP_PARAMETER);
+	param = i_cal_property_get_first_parameter (property, I_CAL_RSVP_PARAMETER);
 	if (param) {
 		i_cal_parameter_set_rsvp (param, attendee->rsvp ? I_CAL_RSVP_TRUE : I_CAL_RSVP_FALSE);
 		g_clear_object (&param);
@@ -371,7 +371,7 @@ e_cal_component_attendee_fill_property (const ECalComponentAttendee *attendee,
  * Since: 3.36
  **/
 const gchar *
-e_cal_component_attendee_get_value (ECalComponentAttendee *attendee)
+e_cal_component_attendee_get_value (const ECalComponentAttendee *attendee)
 {
 	g_return_val_if_fail (attendee != NULL, NULL);
 
@@ -412,7 +412,7 @@ e_cal_component_attendee_set_value (ECalComponentAttendee *attendee,
  * Since: 3.36
  **/
 const gchar *
-e_cal_component_attendee_get_member (ECalComponentAttendee *attendee)
+e_cal_component_attendee_get_member (const ECalComponentAttendee *attendee)
 {
 	g_return_val_if_fail (attendee != NULL, NULL);
 
@@ -453,7 +453,7 @@ e_cal_component_attendee_set_member (ECalComponentAttendee *attendee,
  * Since: 3.36
  **/
 ICalParameterCutype
-e_cal_component_attendee_get_cutype (ECalComponentAttendee *attendee)
+e_cal_component_attendee_get_cutype (const ECalComponentAttendee *attendee)
 {
 	g_return_val_if_fail (attendee != NULL, I_CAL_CUTYPE_NONE);
 
@@ -489,7 +489,7 @@ e_cal_component_attendee_set_cutype (ECalComponentAttendee *attendee,
  * Since: 3.36
  **/
 ICalParameterRole
-e_cal_component_attendee_get_role (ECalComponentAttendee *attendee)
+e_cal_component_attendee_get_role (const ECalComponentAttendee *attendee)
 {
 	g_return_val_if_fail (attendee != NULL, I_CAL_ROLE_NONE);
 
@@ -517,7 +517,7 @@ e_cal_component_attendee_set_role (ECalComponentAttendee *attendee,
 }
 
 /**
- * e_cal_component_attendee_get_status:
+ * e_cal_component_attendee_get_partstat:
  * @attendee: an #ECalComponentAttendee
  *
  * Returns: the @attendee status, as an #ICalParameterPartstat
@@ -525,30 +525,30 @@ e_cal_component_attendee_set_role (ECalComponentAttendee *attendee,
  * Since: 3.36
  **/
 ICalParameterPartstat
-e_cal_component_attendee_get_status (ECalComponentAttendee *attendee)
+e_cal_component_attendee_get_partstat (const ECalComponentAttendee *attendee)
 {
 	g_return_val_if_fail (attendee != NULL, I_CAL_PARTSTAT_NONE);
 
-	return attendee->status;
+	return attendee->partstat;
 }
 
 /**
- * e_cal_component_attendee_set_status:
+ * e_cal_component_attendee_set_partstat:
  * @attendee: an #ECalComponentAttendee
- * @status: the value to set, as an #ICalParameterPartstat
+ * @partstat: the value to set, as an #ICalParameterPartstat
  *
  * Set the @attendee status, as an #ICalParameterPartstat.
  *
  * Since: 3.36
  **/
 void
-e_cal_component_attendee_set_status (ECalComponentAttendee *attendee,
-				     ICalParameterPartstat status)
+e_cal_component_attendee_set_partstat (ECalComponentAttendee *attendee,
+				       ICalParameterPartstat partstat)
 {
 	g_return_if_fail (attendee != NULL);
 
-	if (attendee->status != status) {
-		attendee->status = status;
+	if (attendee->partstat != partstat) {
+		attendee->partstat = partstat;
 	}
 }
 
@@ -561,7 +561,7 @@ e_cal_component_attendee_set_status (ECalComponentAttendee *attendee,
  * Since: 3.36
  **/
 gboolean
-e_cal_component_attendee_get_rsvp (ECalComponentAttendee *attendee)
+e_cal_component_attendee_get_rsvp (const ECalComponentAttendee *attendee)
 {
 	g_return_val_if_fail (attendee != NULL, FALSE);
 
@@ -597,7 +597,7 @@ e_cal_component_attendee_set_rsvp (ECalComponentAttendee *attendee,
  * Since: 3.36
  **/
 const gchar *
-e_cal_component_attendee_get_delegatedfrom (ECalComponentAttendee *attendee)
+e_cal_component_attendee_get_delegatedfrom (const ECalComponentAttendee *attendee)
 {
 	g_return_val_if_fail (attendee != NULL, NULL);
 
@@ -638,7 +638,7 @@ e_cal_component_attendee_set_delegatedfrom (ECalComponentAttendee *attendee,
  * Since: 3.36
  **/
 const gchar *
-e_cal_component_attendee_get_delegatedto (ECalComponentAttendee *attendee)
+e_cal_component_attendee_get_delegatedto (const ECalComponentAttendee *attendee)
 {
 	g_return_val_if_fail (attendee != NULL, NULL);
 
@@ -679,7 +679,7 @@ e_cal_component_attendee_set_delegatedto (ECalComponentAttendee *attendee,
  * Since: 3.36
  **/
 const gchar *
-e_cal_component_attendee_get_sentby (ECalComponentAttendee *attendee)
+e_cal_component_attendee_get_sentby (const ECalComponentAttendee *attendee)
 {
 	g_return_val_if_fail (attendee != NULL, NULL);
 
@@ -720,7 +720,7 @@ e_cal_component_attendee_set_sentby (ECalComponentAttendee *attendee,
  * Since: 3.36
  **/
 const gchar *
-e_cal_component_attendee_get_cn (ECalComponentAttendee *attendee)
+e_cal_component_attendee_get_cn (const ECalComponentAttendee *attendee)
 {
 	g_return_val_if_fail (attendee != NULL, NULL);
 
@@ -761,7 +761,7 @@ e_cal_component_attendee_set_cn (ECalComponentAttendee *attendee,
  * Since: 3.36
  **/
 const gchar *
-e_cal_component_attendee_get_language (ECalComponentAttendee *attendee)
+e_cal_component_attendee_get_language (const ECalComponentAttendee *attendee)
 {
 	g_return_val_if_fail (attendee != NULL, NULL);
 

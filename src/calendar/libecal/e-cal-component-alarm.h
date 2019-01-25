@@ -23,7 +23,7 @@
 #ifndef E_CAL_COMPONENT_ALARM_H
 #define E_CAL_COMPONENT_ALARM_H
 
-#include <glib.h>
+#include <glib-object.h>
 #include <libical-glib/libical-glib.h>
 
 #include <libecal/e-cal-component-alarm-repeat.h>
@@ -59,14 +59,14 @@ ECalComponentAlarm *
 						(const ICalComponent *component);
 ECalComponentAlarm *
 		e_cal_component_alarm_copy	(const ECalComponentAlarm *alarm);
-void		e_cal_component_alarm_free	(ECalComponentAlarm *alarm);
+void		e_cal_component_alarm_free	(gpointer alarm); /* ECalComponentAlarm * */
 void		e_cal_component_alarm_set_from_component
 						(ECalComponentAlarm *alarm,
 						 const ICalComponent *component);
 ICalComponent *	e_cal_component_alarm_get_as_component
-						(const ECalComponentAlarm *alarm);
+						(ECalComponentAlarm *alarm);
 void		e_cal_component_alarm_fill_component
-						(const ECalComponentAlarm *alarm,
+						(ECalComponentAlarm *alarm,
 						 ICalComponent *component);
 const gchar *	e_cal_component_alarm_get_uid	(const ECalComponentAlarm *alarm);
 void		e_cal_component_alarm_set_uid	(ECalComponentAlarm *alarm,

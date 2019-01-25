@@ -26,24 +26,19 @@
  * Contains functions to work with the #ECalComponentAlarms structure.
  **/
 
+#include "e-cal-component.h"
+
 #include "e-cal-component-alarms.h"
 
 G_DEFINE_BOXED_TYPE (ECalComponentAlarms, e_cal_component_alarms, e_cal_component_alarms_copy, e_cal_component_alarms_free)
 
-/**
- * ECalComponentAlarms:
- * @comp: The actual alarm component
- * @alarms: (element-type ECalComponentAlarms): List of #ECalComponentAlarms structures
- *
- * Alarm trigger instances for a particular component
- **/
-typedef struct {
+struct _ECalComponentAlarms {
 	/* The actual component */
 	ECalComponent *comp;
 
-	/* List of ECalComponentAlarms structures */
-	GSList *alarms;
-} ECalComponentAlarms;
+	/* List of ECalComponentAlarmInstance structures */
+	GSList *instances;
+};
 
 /**
  * e_cal_component_alarms_new_relative:
@@ -61,7 +56,6 @@ e_cal_component_alarms_new (ECalComponent *comp)
 {
 	ECalComponentAlarms *alarms;
 
-	g_return_val_if_fail (uid != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 
 	alarms = g_new0 (ECalComponentAlarms, 1);
@@ -110,7 +104,7 @@ e_cal_component_alarms_free (gpointer alarms)
 	ECalComponentAlarms *alrms = alarms;
 
 	if (alrms) {
-		g_clear_object (&alrms->uid);
+		g_clear_object (&alrms->comp);
 		g_slist_free_full (alrms->instances, e_cal_component_alarm_instance_free);
 		g_free (alrms);
 	}
@@ -127,7 +121,7 @@ e_cal_component_alarms_free (gpointer alarms)
  * Since: 3.36
  **/
 ECalComponent *
-e_cal_component_alarms_get_component (ECalComponentAlarms *alarms)
+e_cal_component_alarms_get_component (const ECalComponentAlarms *alarms)
 {
 	g_return_val_if_fail (alarms != NULL, NULL);
 
@@ -148,7 +142,7 @@ e_cal_component_alarms_get_component (ECalComponentAlarms *alarms)
  * Since: 3.36
  **/
 GSList *
-e_cal_component_alarms_get_component (ECalComponentAlarms *alarms)
+e_cal_component_alarms_get_instances (const ECalComponentAlarms *alarms)
 {
 	g_return_val_if_fail (alarms != NULL, NULL);
 
@@ -172,7 +166,7 @@ e_cal_component_alarms_set_instances (ECalComponentAlarms *alarms,
 
 	g_return_if_fail (alarms != NULL);
 
-	copy = g_slist_copy_deep (instances, (GCopyFunc) e_cal_component_alarm_instance_copy, NULL);
+	copy = g_slist_copy_deep ((GSList *) instances, (GCopyFunc) e_cal_component_alarm_instance_copy, NULL);
 	g_slist_free_full (alarms->instances, e_cal_component_alarm_instance_free);
 	alarms->instances = copy;
 }

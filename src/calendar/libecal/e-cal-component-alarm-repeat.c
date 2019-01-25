@@ -32,7 +32,7 @@ G_DEFINE_BOXED_TYPE (ECalComponentAlarmRepeat, e_cal_component_alarm_repeat, e_c
 
 struct _ECalComponentAlarmRepeat {
 	gint repetitions;
-	ICalDurationtype *interval;
+	ICalDurationType *interval;
 };
 
 /**
@@ -52,7 +52,7 @@ ECalComponentAlarmRepeat *
 e_cal_component_alarm_repeat_new (gint repetitions,
 				  const ICalDurationType *interval)
 {
-	g_return_val_if_fail (I_CAL_IS_DURATIONTYPE (interval), NULL);
+	g_return_val_if_fail (I_CAL_IS_DURATION_TYPE (interval), NULL);
 
 	return e_cal_component_alarm_repeat_new_seconds (repetitions,
 		i_cal_duration_type_as_int ((ICalDurationType *) interval));
@@ -76,8 +76,6 @@ e_cal_component_alarm_repeat_new_seconds (gint repetitions,
 					  gint interval_seconds)
 {
 	ECalComponentAlarmRepeat *repeat;
-
-	g_return_val_if_fail (I_CAL_IS_DURATIONTYPE (interval), NULL);
 
 	repeat = g_new0 (ECalComponentAlarmRepeat, 1);
 	repeat->repetitions = repetitions;
@@ -210,7 +208,7 @@ e_cal_component_alarm_repeat_set_interval (ECalComponentAlarmRepeat *repeat,
  *
  * Returns the interval between repetitions of the @repeat in seconds.
  *
- * Returns: (transfer none): the interval between repetitions of the @repeat
+ * Returns: the interval between repetitions of the @repeat
  *
  * Since: 3.36
  **/
@@ -239,6 +237,6 @@ e_cal_component_alarm_repeat_set_interval_seconds (ECalComponentAlarmRepeat *rep
 
 	if (i_cal_duration_type_as_int (repeat->interval) != interval_seconds) {
 		g_clear_object (&repeat->interval);
-		repeat->interval = i_cal_duration_from_int (interval_seconds);
+		repeat->interval = i_cal_duration_type_from_int (interval_seconds);
 	}
 }

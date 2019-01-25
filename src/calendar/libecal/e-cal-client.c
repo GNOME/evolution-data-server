@@ -42,7 +42,7 @@
 #include "e-cal-check-timezones.h"
 #include "e-cal-enumtypes.h"
 #include "e-cal-time-util.h"
-#include "e-cal-types.h"
+#include "e-cal-enums.h"
 #include "e-timezone-cache.h"
 
 #define E_CAL_CLIENT_GET_PRIVATE(obj) \
