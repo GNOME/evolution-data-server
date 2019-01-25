@@ -227,6 +227,7 @@ macro(gir_add_introspection_simple gir_library pkg_export_prefix gir_library_ver
 		${_gir_extra_libdirs}
 		${_gir_identifies_prefixes}
 		${_gir_deps}
+		--add-include-path=${SHARE_INSTALL_PREFIX}/gir-1.0
 		--library-path=${LIB_INSTALL_DIR}
 		${_extra_library_path}
 		--pkg-export ${pkg_export_prefix}-${gir_library_version}
