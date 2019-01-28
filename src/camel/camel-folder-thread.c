@@ -107,14 +107,17 @@ prune_empty (CamelFolderThread *thread,
 	/* yes, this is intentional */
 	lastc = (CamelFolderThreadNode *) cp;
 	while (lastc->next) {
+		d(CamelSummaryMessageID dbg_message_id);
+
 		c = lastc->next;
 		prune_empty (thread, &c->child);
 
+		d (dbg_message_id.id.id = c->message ? camel_message_info_get_message_id (c->message) : 0);
 		d (printf (
 			"checking message %p %p (%08x%08x)\n", c,
 			c->message,
-			c->message ? c->message->message_id.id.part.hi : 0,
-			c->message ? c->message->message_id.id.part.lo : 0));
+			dbg_message_id.id.part.hi,
+			dbg_message_id.id.part.lo));
 		if (c->message == NULL) {
 			if (c->child == NULL) {
 				d (printf ("removing empty node\n"));
@@ -377,11 +380,13 @@ dump_tree_rec (struct _tree_info *info,
 			message_id.id.id = camel_message_info_get_message_id (c->message);
 
 			printf (
-				"%*s %p Subject: %s <%08x%08x>\n",
+				"%*s %p Subject: %s <%08x%08x> UID:'%s' order:%d\n",
 				indent, "", (gpointer) c,
 				camel_message_info_get_subject (c->message),
 				message_id.id.part.hi,
-				message_id.id.part.lo);
+				message_id.id.part.lo,
+				camel_message_info_get_uid (c->message),
+				c->order);
 			count += 1;
 		} else {
 			printf ("%*s %p <empty>\n", indent, "", (gpointer) c);
@@ -406,9 +411,11 @@ camel_folder_threaded_messages_dump (CamelFolderThreadNode *c)
 }
 
 static gint
-sort_node (gconstpointer a,
-           gconstpointer b)
+sort_node_cb (gconstpointer a,
+	      gconstpointer b,
+	      gpointer user_data)
 {
+	GHashTable *times_cache = user_data;
 	const CamelFolderThreadNode *a1 = ((CamelFolderThreadNode **) a)[0];
 	const CamelFolderThreadNode *b1 = ((CamelFolderThreadNode **) b)[0];
 
@@ -419,6 +426,33 @@ sort_node (gconstpointer a,
 		a1 = a1->child;
 	if (b1->message == NULL)
 		b1 = b1->child;
+
+	/* Sort by sent or received time */
+	if (times_cache) {
+		gint64 *ptime1, *ptime2;
+
+		ptime1 = g_hash_table_lookup (times_cache, a1);
+		if (!ptime1 && a1->message) {
+			ptime1 = g_new (gint64, 1);
+			*ptime1 = camel_message_info_get_date_sent (a1->message);
+			if (*ptime1 <= 0)
+				*ptime1 = camel_message_info_get_date_received (a1->message);
+			g_hash_table_insert (times_cache, (gpointer) a1, ptime1);
+		}
+
+		ptime2 = g_hash_table_lookup (times_cache, b1);
+		if (!ptime2 && b1->message) {
+			ptime2 = g_new (gint64, 1);
+			*ptime2 = camel_message_info_get_date_sent (b1->message);
+			if (*ptime2 <= 0)
+				*ptime2 = camel_message_info_get_date_received (b1->message);
+			g_hash_table_insert (times_cache, (gpointer) b1, ptime2);
+		}
+
+		if (*ptime1 != *ptime2)
+			return *ptime1 < *ptime2 ? -1 : 1;
+	}
+
 	if (a1->order == b1->order)
 		return 0;
 	if (a1->order < b1->order)
@@ -431,6 +465,7 @@ static void
 sort_thread (CamelFolderThreadNode **cp)
 {
 	CamelFolderThreadNode *c, *head, **carray;
+	GHashTable *times_cache;
 	gint size = 0;
 
 	c = *cp;
@@ -453,7 +488,11 @@ sort_thread (CamelFolderThreadNode **cp)
 		c = c->next;
 		size++;
 	}
-	qsort (carray, size, sizeof (CamelFolderThreadNode *), sort_node);
+
+	times_cache = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_free);
+	g_qsort_with_data (carray, size, sizeof (CamelFolderThreadNode *), sort_node_cb, times_cache);
+	g_hash_table_destroy (times_cache);
+
 	size--;
 	head = carray[size];
 	head->next = NULL;
