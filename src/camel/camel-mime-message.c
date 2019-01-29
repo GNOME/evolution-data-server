@@ -212,8 +212,10 @@ mime_message_ensure_required_headers (CamelMimeMessage *message)
 
 	/* FIXME: "To" header needs to be set explicitly as well ... */
 
-	if (!camel_medium_get_header (medium, "Mime-Version"))
-		camel_medium_set_header (medium, "Mime-Version", "1.0");
+	/* Use uppercase MIME, to follow RFC 2045 convention (and to not trigger
+	   some spam-detection rules on some servers/clients). */
+	if (!camel_medium_get_header (medium, "MIME-Version"))
+		camel_medium_set_header (medium, "MIME-Version", "1.0");
 }
 
 static void
