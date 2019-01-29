@@ -656,7 +656,7 @@ match_not_component_id_cb (gpointer data,
 		return FALSE;
 
 	rd_id = e_cal_component_get_id (rd->component);
-	match = rd_id && e_cal_component_id_equal (rd_id, id);
+	match = rd_id && g_strcmp0 (rd_id->uid, id->uid) == 0;
 	e_cal_component_free_id (rd_id);
 
 	return !match;
