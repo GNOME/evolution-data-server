@@ -206,6 +206,7 @@ get_text_from_prop (ICalProperty *prop,
 
 	altrep_param = i_cal_property_get_first_parameter (prop, I_CAL_ALTREP_PARAMETER);
 	altrep = altrep_param ? i_cal_parameter_get_altrep (altrep_param) : NULL;
+	g_clear_object (&altrep_param);
 
 	if (altrep && !*altrep)
 		altrep = NULL;
@@ -270,6 +271,7 @@ static void
 e_cal_component_init (ECalComponent *comp)
 {
 	comp->priv = G_TYPE_INSTANCE_GET_PRIVATE (comp, E_TYPE_CAL_COMPONENT, ECalComponentPrivate);
+	comp->priv->icalcomp = NULL;
 }
 
 /**
@@ -280,11 +282,34 @@ e_cal_component_init (ECalComponent *comp)
  * new empty component type by using e_cal_component_set_new_vtype().
  *
  * Returns: (transfer full): A newly-created calendar component object.
+ *
+ * Since: 3.36
  **/
 ECalComponent *
 e_cal_component_new (void)
 {
 	return E_CAL_COMPONENT (g_object_new (E_TYPE_CAL_COMPONENT, NULL));
+}
+
+/**
+ * e_cal_component_new_vtype:
+ * @vtype: an #ECalComponentVType
+ *
+ * Creates a new #ECalComponent of type @vtype.
+ *
+ * Returns: (transfer full): A newly-created calendar component object with set @vtype.
+ *
+ * Since: 3.36
+ **/
+ECalComponent *
+e_cal_component_new_vtype (ECalComponentVType vtype)
+{
+	ECalComponent *comp;
+
+	comp = e_cal_component_new ();
+	e_cal_component_set_new_vtype (comp, vtype);
+
+	return comp;
 }
 
 /**
@@ -295,6 +320,8 @@ e_cal_component_new (void)
  *
  * Returns: (transfer full): A calendar component representing the given iCalendar string on
  * success, NULL if there was an error.
+ *
+ * Since: 3.36
  **/
 ECalComponent *
 e_cal_component_new_from_string (const gchar *calobj)
@@ -323,7 +350,7 @@ e_cal_component_new_from_string (const gchar *calobj)
  * Returns: (transfer full): An #ECalComponent with @icalcomp assigned on success,
  * NULL if the @icalcomp cannot be assigned to #ECalComponent.
  *
- * Since: 3.4
+ * Since: 3.36
  **/
 ECalComponent *
 e_cal_component_new_from_icalcomponent (ICalComponent *icalcomp)
@@ -352,6 +379,8 @@ e_cal_component_new_from_icalcomponent (ICalComponent *icalcomp)
  *
  * Returns: (transfer full): A newly-created calendar component with the same
  * values as the original one.
+ *
+ * Since: 3.36
  **/
 ECalComponent *
 e_cal_component_clone (ECalComponent *comp)
@@ -419,6 +448,8 @@ ensure_mandatory_properties (ECalComponent *comp)
  * Clears any existing component data from a calendar component object and
  * creates a new #ICalComponent of the specified type for it.  The only property
  * that will be set in the new component will be its unique identifier.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_new_vtype (ECalComponent *comp,
@@ -478,6 +509,45 @@ e_cal_component_set_new_vtype (ECalComponent *comp,
 }
 
 /**
+ * e_cal_component_get_vtype:
+ * @comp: A calendar component object.
+ *
+ * Queries the type of a calendar component object.
+ *
+ * Returns: The type of the component, as defined by RFC 2445.
+ *
+ * Since: 3.36
+ **/
+ECalComponentVType
+e_cal_component_get_vtype (ECalComponent *comp)
+{
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), E_CAL_COMPONENT_NO_TYPE);
+	g_return_val_if_fail (comp->priv->icalcomp != NULL, E_CAL_COMPONENT_NO_TYPE);
+
+	switch (i_cal_component_isa (comp->priv->icalcomp)) {
+	case I_CAL_VEVENT_COMPONENT:
+		return E_CAL_COMPONENT_EVENT;
+
+	case I_CAL_VTODO_COMPONENT:
+		return E_CAL_COMPONENT_TODO;
+
+	case I_CAL_VJOURNAL_COMPONENT:
+		return E_CAL_COMPONENT_JOURNAL;
+
+	case I_CAL_VFREEBUSY_COMPONENT:
+		return E_CAL_COMPONENT_FREEBUSY;
+
+	case I_CAL_VTIMEZONE_COMPONENT:
+		return E_CAL_COMPONENT_TIMEZONE;
+
+	default:
+		/* We should have been loaded with a supported type! */
+		g_warn_if_reached ();
+		return E_CAL_COMPONENT_NO_TYPE;
+	}
+}
+
+/**
  * e_cal_component_set_icalcomponent:
  * @comp: A calendar component object.
  * @icalcomp: (transfer full) (nullable): An #ICalComponent.
@@ -489,6 +559,8 @@ e_cal_component_set_new_vtype (ECalComponent *comp,
  * Supported component types are VEVENT, VTODO, VJOURNAL, VFREEBUSY, and VTIMEZONE.
  *
  * Returns: %TRUE on success, %FALSE if @icalcomp is an unsupported component type.
+ *
+ * Since: 3.36
  **/
 gboolean
 e_cal_component_set_icalcomponent (ECalComponent *comp,
@@ -533,6 +605,8 @@ e_cal_component_set_icalcomponent (ECalComponent *comp,
  *
  * Returns: (transfer none) (nullable): An #ICalComponent structure, or %NULL
  *    if the @comp has no #ICalComponent set to it.
+ *
+ * Since: 3.36
  **/
 ICalComponent *
 e_cal_component_get_icalcomponent (ECalComponent *comp)
@@ -549,7 +623,9 @@ e_cal_component_get_icalcomponent (ECalComponent *comp)
  * Strips all error messages from the calendar component. Those error messages are
  * added to the iCalendar string representation whenever an invalid is used for
  * one of its fields.
- */
+ *
+ * Since: 3.36
+ **/
 void
 e_cal_component_strip_errors (ECalComponent *comp)
 {
@@ -557,43 +633,6 @@ e_cal_component_strip_errors (ECalComponent *comp)
 
 	if (comp->priv->icalcomp)
 		i_cal_component_strip_errors (comp->priv->icalcomp);
-}
-
-/**
- * e_cal_component_get_vtype:
- * @comp: A calendar component object.
- *
- * Queries the type of a calendar component object.
- *
- * Returns: The type of the component, as defined by RFC 2445.
- **/
-ECalComponentVType
-e_cal_component_get_vtype (ECalComponent *comp)
-{
-	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), E_CAL_COMPONENT_NO_TYPE);
-	g_return_val_if_fail (comp->priv->icalcomp != NULL, E_CAL_COMPONENT_NO_TYPE);
-
-	switch (i_cal_component_isa (comp->priv->icalcomp)) {
-	case I_CAL_VEVENT_COMPONENT:
-		return E_CAL_COMPONENT_EVENT;
-
-	case I_CAL_VTODO_COMPONENT:
-		return E_CAL_COMPONENT_TODO;
-
-	case I_CAL_VJOURNAL_COMPONENT:
-		return E_CAL_COMPONENT_JOURNAL;
-
-	case I_CAL_VFREEBUSY_COMPONENT:
-		return E_CAL_COMPONENT_FREEBUSY;
-
-	case I_CAL_VTIMEZONE_COMPONENT:
-		return E_CAL_COMPONENT_TIMEZONE;
-
-	default:
-		/* We should have been loaded with a supported type! */
-		g_warn_if_reached ();
-		return E_CAL_COMPONENT_NO_TYPE;
-	}
 }
 
 /**
@@ -606,6 +645,8 @@ e_cal_component_get_vtype (ECalComponent *comp)
  *
  * Returns: String representation of the calendar component according to
  * RFC 2445.
+ *
+ * Since: 3.36
  **/
 gchar *
 e_cal_component_get_as_string (ECalComponent *comp)
@@ -700,6 +741,8 @@ ensure_alarm_properties_cb (ICalComponent *icalcomp,
  *
  * This function must be called before calling e_cal_component_get_as_string() to
  * ensure that the component is fully consistent.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_commit_sequence (ECalComponent *comp)
@@ -742,7 +785,9 @@ e_cal_component_commit_sequence (ECalComponent *comp)
  * which means it will not require a sequence commit (via
  * e_cal_component_commit_sequence()) even if the changes done require a
  * sequence increment.
- */
+ *
+ * Since: 3.36
+ **/
 void
 e_cal_component_abort_sequence (ECalComponent *comp)
 {
@@ -759,7 +804,9 @@ e_cal_component_abort_sequence (ECalComponent *comp)
  * be freed with e_cal_component_id_free(), when no longer needed.
  *
  * Returns: (transfer full): the id of the component
- */
+ *
+ * Since: 3.36
+ **/
 ECalComponentId *
 e_cal_component_get_id (ECalComponent *comp)
 {
@@ -778,6 +825,8 @@ e_cal_component_get_id (ECalComponent *comp)
  * Queries the unique identifier of a calendar component object.
  *
  * Returns: (transfer none): the UID string
+ *
+ * Since: 3.36
  **/
 const gchar *
 e_cal_component_get_uid (ECalComponent *comp)
@@ -794,6 +843,8 @@ e_cal_component_get_uid (ECalComponent *comp)
  * @uid: Unique identifier.
  *
  * Sets the unique identifier string of a calendar component object.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_uid (ECalComponent *comp,
@@ -834,6 +885,8 @@ get_attachments_cb (ICalComponent *icalcomp,
  *
  * Returns: (transfer full) (nullable) (element-type ICalAttach): a #GSList of
  *    attachments, as #ICalAttach objects
+ *
+ * Since: 3.36
  **/
 GSList *
 e_cal_component_get_attachments (ECalComponent *comp)
@@ -855,6 +908,8 @@ e_cal_component_get_attachments (ECalComponent *comp)
  *    or %NULL to remove any existing
  *
  * Sets the attachments of the calendar component object.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_attachments (ECalComponent *comp,
@@ -888,7 +943,9 @@ e_cal_component_set_attachments (ECalComponent *comp,
  * Queries the component to see if it has attachments.
  *
  * Returns: TRUE if there are attachments, FALSE otherwise.
- */
+ *
+ * Since: 3.36
+ **/
 gboolean
 e_cal_component_has_attachments (ECalComponent *comp)
 {
@@ -931,6 +988,8 @@ stringify_categories (const GSList *categ_list)
  *
  * Returns: (transfer full) (nullable): the categories as string, or %NULL
  *    if none are set
+ *
+ * Since: 3.36
  **/
 gchar *
 e_cal_component_get_categories (ECalComponent *comp)
@@ -958,6 +1017,8 @@ e_cal_component_get_categories (ECalComponent *comp)
  * @categories: Comma-separated list of categories.
  *
  * Sets the list of categories for a calendar component.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_categories (ECalComponent *comp,
@@ -988,6 +1049,8 @@ e_cal_component_set_categories (ECalComponent *comp,
  *
  * Returns: (transfer full) (element-type utf8) (nullable): the #GSList of strings, where each
  *    string is a category, or %NULL, when no category is set.
+ *
+ * Since: 3.36
  **/
 GSList *
 e_cal_component_get_categories_list (ECalComponent *comp)
@@ -1034,6 +1097,8 @@ e_cal_component_get_categories_list (ECalComponent *comp)
  * @categ_list: (element-type utf8): List of strings, one for each category.
  *
  * Sets the list of categories of a calendar component object.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_categories_list (ECalComponent *comp,
@@ -1065,6 +1130,8 @@ e_cal_component_set_categories_list (ECalComponent *comp,
  * #E_CAL_COMPONENT_CLASS_NONE.
  *
  * Retuurns: a classification of the @comp, as an #ECalComponentClassification
+ *
+ * Since: 3.36
  **/
 ECalComponentClassification
 e_cal_component_get_classification (ECalComponent *comp)
@@ -1107,6 +1174,8 @@ e_cal_component_get_classification (ECalComponent *comp)
  *
  * Sets the classification property of a calendar component object.  To unset
  * the property, specify E_CAL_COMPONENT_CLASS_NONE for @classif.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_classification (ECalComponent *comp,
@@ -1184,7 +1253,12 @@ get_text_list (ICalComponent *icalcomp,
 		tl = g_slist_prepend (tl, text);
 	}
 
-	return g_slist_reverse (tl);
+	g_slist_free_full (props, g_object_unref);
+
+	/* No need to reverse it, the props are in reverse order
+	   and processed in the reverse order, thus the result
+	   is in the expected order. */
+	return tl;
 }
 
 /* Sets a text list value */
@@ -1218,7 +1292,7 @@ set_text_list (ICalComponent *icalcomp,
 }
 
 /**
- * e_cal_component_get_comment_list:
+ * e_cal_component_get_comments:
  * @comp: A calendar component object.
  *
  * Queries the comments of a calendar component object.  The comment property can
@@ -1229,9 +1303,11 @@ set_text_list (ICalComponent *icalcomp,
  * Returns: (transfer full) (element-type ECalComponentText) (nullable): the comment properties
  *    and their parameters, as a list of #ECalComponentText structures; or %NULL, when
  *    the component doesn't contain any.
+ *
+ * Since: 3.36
  **/
 GSList *
-e_cal_component_get_comment_list (ECalComponent *comp)
+e_cal_component_get_comments (ECalComponent *comp)
 {
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
@@ -1240,17 +1316,19 @@ e_cal_component_get_comment_list (ECalComponent *comp)
 }
 
 /**
- * e_cal_component_set_comment_list:
+ * e_cal_component_set_comments:
  * @comp: A calendar component object.
  * @text_list: (element-type ECalComponentText): List of #ECalComponentText structures.
  *
  * Sets the comments of a calendar component object.  The comment property can
  * appear several times inside a calendar component, and so a list of
  * #ECalComponentText structures is used.
+ *
+ * Since: 3.36
  **/
 void
-e_cal_component_set_comment_list (ECalComponent *comp,
-                                  const GSList *text_list)
+e_cal_component_set_comments (ECalComponent *comp,
+			      const GSList *text_list)
 {
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 	g_return_if_fail (comp->priv->icalcomp != NULL);
@@ -1259,7 +1337,7 @@ e_cal_component_set_comment_list (ECalComponent *comp,
 }
 
 /**
- * e_cal_component_get_contact_list:
+ * e_cal_component_get_contacts:
  * @comp: A calendar component object.
  *
  * Queries the contact of a calendar component object.  The contact property can
@@ -1269,9 +1347,11 @@ e_cal_component_set_comment_list (ECalComponent *comp,
  *
  * Returns: (transfer full) (element-type ECalComponentText): the contact properties and
  *    their parameters, as a #GSList of #ECalComponentText structures.
+ *
+ * Since: 3.36
  **/
 GSList *
-e_cal_component_get_contact_list (ECalComponent *comp)
+e_cal_component_get_contacts (ECalComponent *comp)
 {
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
@@ -1280,17 +1360,19 @@ e_cal_component_get_contact_list (ECalComponent *comp)
 }
 
 /**
- * e_cal_component_set_contact_list:
+ * e_cal_component_set_contacts:
  * @comp: A calendar component object.
  * @text_list: (element-type ECalComponentText): List of #ECalComponentText structures.
  *
  * Sets the contact of a calendar component object.  The contact property can
  * appear several times inside a calendar component, and so a list of
  * #ECalComponentText structures is used.
+ *
+ * Since: 3.36
  **/
 void
-e_cal_component_set_contact_list (ECalComponent *comp,
-                                  const GSList *text_list)
+e_cal_component_set_contacts (ECalComponent *comp,
+			      const GSList *text_list)
 {
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 	g_return_if_fail (comp->priv->icalcomp != NULL);
@@ -1342,6 +1424,7 @@ set_icaltimetype (ICalComponent *icalcomp,
 
 	if (prop) {
 		prop_set_func (prop, (ICalTimetype *) tt);
+		g_object_unref (prop);
 	} else {
 		prop = prop_new_func ((ICalTimetype *) tt);
 		i_cal_component_take_property (icalcomp, prop);
@@ -1357,6 +1440,8 @@ set_icaltimetype (ICalComponent *icalcomp,
  * no longer needed.
  *
  * Returns: (transfer full): the completion date, as an #ICalTimetype, or %NULL, when none is set
+ *
+ * Since: 3.36
  **/
 ICalTimetype *
 e_cal_component_get_completed (ECalComponent *comp)
@@ -1373,6 +1458,8 @@ e_cal_component_get_completed (ECalComponent *comp)
  * @tt: (nullable): Value for the completion date.
  *
  * Sets the date at which a calendar component object was completed.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_completed (ECalComponent *comp,
@@ -1411,6 +1498,8 @@ e_cal_component_set_completed (ECalComponent *comp,
  * no longer needed.
  *
  * Returns: (transfer full): the creation date, as an #ICalTimetype, or %NULL, when none is set
+ *
+ * Since: 3.36
  **/
 ICalTimetype *
 e_cal_component_get_created (ECalComponent *comp)
@@ -1429,6 +1518,8 @@ e_cal_component_get_created (ECalComponent *comp)
  * Sets the date in which a calendar component object is created in the calendar
  * store.  This should only be used inside a calendar store application, i.e.
  * not by calendar user agents.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_created (ECalComponent *comp,
@@ -1444,7 +1535,7 @@ e_cal_component_set_created (ECalComponent *comp,
 }
 
 /**
- * e_cal_component_get_description_list:
+ * e_cal_component_get_descriptions:
  * @comp: A calendar component object.
  *
  * Queries the description of a calendar component object.  Journal components
@@ -1455,9 +1546,11 @@ e_cal_component_set_created (ECalComponent *comp,
  *
  * Returns: (transfer full) (element-type ECalComponentText) (nullable): the description
  *    properties and their parameters, as a #GSList of #ECalComponentText structures.
+ *
+ * Since: 3.36
  **/
 GSList *
-e_cal_component_get_description_list (ECalComponent *comp)
+e_cal_component_get_descriptions (ECalComponent *comp)
 {
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
@@ -1466,7 +1559,7 @@ e_cal_component_get_description_list (ECalComponent *comp)
 }
 
 /**
- * e_cal_component_set_description_list:
+ * e_cal_component_set_descriptions:
  * @comp: A calendar component object.
  * @text_list: (element-type ECalComponentText): List of #ECalComponentText structures.
  *
@@ -1474,10 +1567,12 @@ e_cal_component_get_description_list (ECalComponent *comp)
  * have more than one description, and as such this function takes in a list of
  * #ECalComponentText structures.  All other types of components can have
  * at most one description.
+ *
+ * Since: 3.36
  **/
 void
-e_cal_component_set_description_list (ECalComponent *comp,
-                                      const GSList *text_list)
+e_cal_component_set_descriptions (ECalComponent *comp,
+				  const GSList *text_list)
 {
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 	g_return_if_fail (comp->priv->icalcomp != NULL);
@@ -1500,8 +1595,10 @@ get_datetime (ICalComponent *icalcomp,
 	if (prop)
 		value = get_prop_func (prop);
 
-	if (!value)
+	if (!value) {
+		g_clear_object (&prop);
 		return NULL;
+	}
 
 	param = i_cal_property_get_first_parameter (prop, I_CAL_TZID_PARAMETER);
 	/* If the ICalTimetype has is_utc set, we set "UTC" as the TZID.
@@ -1512,6 +1609,9 @@ get_datetime (ICalComponent *icalcomp,
 		tzid = g_strdup ("UTC");
 	else
 		tzid = NULL;
+
+	g_clear_object (&param);
+	g_clear_object (&prop);
 
 	return e_cal_component_datetime_new_take (value, tzid);
 }
@@ -1568,7 +1668,7 @@ set_datetime (ICalComponent *icalcomp,
 	param = i_cal_property_get_first_parameter (prop, I_CAL_TZID_PARAMETER);
 
 	/* If the TZID is set to "UTC", we don't want to save the TZID. */
-	if (g_strcmp0 (tzid, "UTC") != 0) {
+	if (tzid && g_strcmp0 (tzid, "UTC") != 0) {
 		if (param) {
 			i_cal_parameter_set_tzid (param, (gchar *) tzid);
 		} else {
@@ -1644,6 +1744,8 @@ e_cal_component_get_start_plus_duration (ECalComponent *comp)
  * when no longer needed.
  *
  * Returns: (transfer full) (nullable): the date/time end, as an #ECalComponentDateTime
+ *
+ * Since: 3.36
  **/
 ECalComponentDateTime *
 e_cal_component_get_dtend (ECalComponent *comp)
@@ -1669,6 +1771,8 @@ e_cal_component_get_dtend (ECalComponent *comp)
  * @dt: (nullable): End date/time, or %NULL, to remove the property.
  *
  * Sets the date/time end property of a calendar component object.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_dtend (ECalComponent *comp,
@@ -1701,6 +1805,8 @@ e_cal_component_set_dtend (ECalComponent *comp,
  * when no longer needed.
  *
  * Returns: (transfer full) (nullable): A value for the date/timestamp, or %NULL, when none found.
+ *
+ * Since: 3.36
  **/
 ICalTimetype *
 e_cal_component_get_dtstamp (ECalComponent *comp)
@@ -1731,6 +1837,8 @@ e_cal_component_get_dtstamp (ECalComponent *comp)
  * Sets the date/timestamp of a calendar component object.  This should be
  * called whenever a calendar user agent makes a change to a component's
  * properties.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_dtstamp (ECalComponent *comp,
@@ -1761,6 +1869,8 @@ e_cal_component_set_dtstamp (ECalComponent *comp,
  * when no longer needed.
  *
  * Returns: (transfer full) (nullable): the date/time start, as an #ECalComponentDateTime
+ *
+ * Since: 3.36
  **/
 ECalComponentDateTime *
 e_cal_component_get_dtstart (ECalComponent *comp)
@@ -1777,6 +1887,8 @@ e_cal_component_get_dtstart (ECalComponent *comp)
  * @dt: (nullable): Start date/time, or %NULL, to remove the property.
  *
  * Sets the date/time start property of a calendar component object.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_dtstart (ECalComponent *comp,
@@ -1803,6 +1915,8 @@ e_cal_component_set_dtstart (ECalComponent *comp,
  * when no longer needed.
  *
  * Returns: (transfer full) (nullable): the due date/time, as an #ECalComponentDateTime
+ *
+ * Since: 3.36
  **/
 ECalComponentDateTime *
 e_cal_component_get_due (ECalComponent *comp)
@@ -1828,6 +1942,8 @@ e_cal_component_get_due (ECalComponent *comp)
  * @dt: (nullable): End date/time, or %NULL, to remove the property.
  *
  * Sets the due date/time property of a calendar component object.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_due (ECalComponent *comp,
@@ -1895,9 +2011,8 @@ get_period_list (ICalComponent *icalcomp,
 
 			if (value_type == I_CAL_VALUE_DATE || value_type == I_CAL_VALUE_DATETIME) {
 				period_kind = E_CAL_COMPONENT_PERIOD_DATETIME;
-			} else if (value_type == I_CAL_VALUE_DURATION) {
-				period_kind = E_CAL_COMPONENT_PERIOD_DURATION;
 			} else if (value_type == I_CAL_VALUE_PERIOD) {
+				period_kind = E_CAL_COMPONENT_PERIOD_DURATION;
 				duration = i_cal_period_type_get_duration (icalperiod);
 
 				if (!duration ||
@@ -1918,10 +2033,16 @@ get_period_list (ICalComponent *icalcomp,
 
 		start = i_cal_period_type_get_start (icalperiod);
 
-		if (period_kind == E_CAL_COMPONENT_PERIOD_DATETIME)
-			end = i_cal_period_type_get_end (icalperiod);
-		else /* if (period_kind == E_CAL_COMPONENT_PERIOD_DURATION) */
+		if (period_kind == E_CAL_COMPONENT_PERIOD_DATETIME) {
+			if (!start || i_cal_time_is_null_time (start)) {
+				g_clear_object (&start);
+				start = i_cal_datetimeperiod_type_get_time (pt);
+			} else {
+				end = i_cal_period_type_get_end (icalperiod);
+			}
+		} else /* if (period_kind == E_CAL_COMPONENT_PERIOD_DURATION) */ {
 			duration = i_cal_period_type_get_duration (icalperiod);
+		}
 
 		period = period_kind == E_CAL_COMPONENT_PERIOD_DATETIME ?
 			e_cal_component_period_new_datetime (start, end) :
@@ -1940,7 +2061,9 @@ get_period_list (ICalComponent *icalcomp,
 
 	g_slist_free_full (props, g_object_unref);
 
-	/* No need to reverse, it's prepended twice, thus in the correct order */
+	/* No need to reverse it, the props are in reverse order
+	   and processed in the reverse order, thus the result
+	   is in the expected order. */
 	return periods;
 }
 
@@ -1965,26 +2088,36 @@ set_period_list (ICalComponent *icalcomp,
 		ICalPeriodType *ic_period;
 		ICalProperty *prop;
 		ICalParameter *param;
-		ICalParameterValue value_type = I_CAL_VALUE_NONE;
+		ICalParameterValue value_type = I_CAL_VALUE_PERIOD;
+		ICalTimetype *end;
 
 		if (!period)
 			continue;
 
 		ic_period = i_cal_period_type_null_period ();
+		ic_datetimeperiod = i_cal_datetimeperiod_type_new ();
 
 		i_cal_period_type_set_start (ic_period, e_cal_component_period_get_start (period));
 
 		switch (e_cal_component_period_get_kind (period)) {
 		case E_CAL_COMPONENT_PERIOD_DATETIME:
-			value_type = I_CAL_VALUE_DATETIME;
-			i_cal_period_type_set_end (ic_period, e_cal_component_period_get_end (period));
+			end = e_cal_component_period_get_end (period);
+			if (!end || i_cal_time_is_null_time (end)) {
+				i_cal_datetimeperiod_type_set_time (ic_datetimeperiod, e_cal_component_period_get_start (period));
+				if (i_cal_timetype_get_is_date (e_cal_component_period_get_start (period))) {
+					value_type = I_CAL_VALUE_DATE;
+				} else {
+					value_type = I_CAL_VALUE_DATETIME;
+				}
+			} else {
+				i_cal_period_type_set_end (ic_period, e_cal_component_period_get_end (period));
+			}
 			break;
 		case E_CAL_COMPONENT_PERIOD_DURATION:
-			value_type = I_CAL_VALUE_DURATION;
 			i_cal_period_type_set_duration (ic_period, e_cal_component_period_get_duration (period));
+			break;
 		}
 
-		ic_datetimeperiod = i_cal_datetimeperiod_type_new ();
 		i_cal_datetimeperiod_type_set_period (ic_datetimeperiod, ic_period);
 
 		prop = new_prop_func (ic_datetimeperiod);
@@ -2026,13 +2159,15 @@ extract_exdate_properties_cb (ICalComponent *icalcomp,
 		}
 
 		*pexdates = g_slist_prepend (*pexdates, e_cal_component_datetime_new_take (tt, tzid));
+
+		g_clear_object (&param);
 	}
 
 	return TRUE;
 }
 
 /**
- * e_cal_component_get_exdate_list:
+ * e_cal_component_get_exdates:
  * @comp: A calendar component object.
  *
  * Queries the list of exception date properties in a calendar component object.
@@ -2041,9 +2176,11 @@ extract_exdate_properties_cb (ICalComponent *icalcomp,
  *
  * Returns: (transfer full) (nullable) (element-type ECalComponentDateTime):
  *    the list of exception dates, as a #GSList of #ECalComponentDateTime
+ *
+ * Since: 3.36
  **/
 GSList *
-e_cal_component_get_exdate_list (ECalComponent *comp)
+e_cal_component_get_exdates (ECalComponent *comp)
 {
 	GSList *exdates = NULL;
 
@@ -2057,15 +2194,17 @@ e_cal_component_get_exdate_list (ECalComponent *comp)
 }
 
 /**
- * e_cal_component_set_exdate_list:
+ * e_cal_component_set_exdates:
  * @comp: A calendar component object.
  * @exdate_list: (nullable) (element-type ECalComponentDateTime): List of #ECalComponentDateTime structures.
  *
  * Sets the list of exception dates in a calendar component object.
+ *
+ * Since: 3.36
  **/
 void
-e_cal_component_set_exdate_list (ECalComponent *comp,
-				 const GSList *exdate_list)
+e_cal_component_set_exdates (ECalComponent *comp,
+			     const GSList *exdate_list)
 {
 	GSList *link;
 
@@ -2115,6 +2254,8 @@ e_cal_component_set_exdate_list (ECalComponent *comp,
  * for it.
  *
  * Returns: TRUE if the component has exception dates, FALSE otherwise.
+ *
+ * Since: 3.36
  **/
 gboolean
 e_cal_component_has_exdates (ECalComponent *comp)
@@ -2147,7 +2288,7 @@ get_recur_list (ICalComponent *icalcomp,
 	g_slist_free_full (props, g_object_unref);
 
 	/* No need to reverse it, the props are in reverse order
-	   and processed in the reverse roder, thus the result
+	   and processed in the reverse order, thus the result
 	   is in the expected order. */
 	return recurs;
 }
@@ -2178,7 +2319,7 @@ set_recur_list (ICalComponent *icalcomp,
 }
 
 /**
- * e_cal_component_get_exrule_list:
+ * e_cal_component_get_exrules:
  * @comp: A calendar component object.
  *
  * Queries the list of exception rule properties of a calendar component
@@ -2187,9 +2328,11 @@ set_recur_list (ICalComponent *icalcomp,
  *
  * Returns: (transfer full) (nullable) (element-type ICalRecurrenceType): a #GSList
  *    of exception rules as #ICalRecurrenceType structures, or %NULL, when none exist.
+ *
+ * Since: 3.36
  **/
 GSList *
-e_cal_component_get_exrule_list (ECalComponent *comp)
+e_cal_component_get_exrules (ECalComponent *comp)
 {
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
@@ -2198,7 +2341,7 @@ e_cal_component_get_exrule_list (ECalComponent *comp)
 }
 
 /**
- * e_cal_component_get_exrule_property_list:
+ * e_cal_component_get_exrule_properties:
  * @comp: A calendar component object.
  *
  * Queries the list of exception rule properties of a calendar component object.
@@ -2207,9 +2350,11 @@ e_cal_component_get_exrule_list (ECalComponent *comp)
  *
  * Returns: (transfer full) (nullable) (element-type ICalProperty): a list of exception
  *    rule properties
+ *
+ * Since: 3.36
  **/
 GSList *
-e_cal_component_get_exrule_property_list (ECalComponent *comp)
+e_cal_component_get_exrule_properties (ECalComponent *comp)
 {
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
@@ -2218,16 +2363,18 @@ e_cal_component_get_exrule_property_list (ECalComponent *comp)
 }
 
 /**
- * e_cal_component_set_exrule_list:
+ * e_cal_component_set_exrules:
  * @comp: A calendar component object.
  * @recur_list: (nullable) (element-type ICalRecurrenceType): a #GSList
  *    of #ICalRecurrenceType structures, or %NULL.
  *
  * Sets the list of exception rules in a calendar component object.
+ *
+ * Since: 3.36
  **/
 void
-e_cal_component_set_exrule_list (ECalComponent *comp,
-				 const GSList *recur_list)
+e_cal_component_set_exrules (ECalComponent *comp,
+			     const GSList *recur_list)
 {
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 	g_return_if_fail (comp->priv->icalcomp != NULL);
@@ -2245,6 +2392,8 @@ e_cal_component_set_exrule_list (ECalComponent *comp,
  * for it.
  *
  * Returns: TRUE if the component has exception rules, FALSE otherwise.
+ *
+ * Since: 3.36
  **/
 gboolean
 e_cal_component_has_exrules (ECalComponent *comp)
@@ -2263,6 +2412,8 @@ e_cal_component_has_exrules (ECalComponent *comp)
  * or exception rules.
  *
  * Returns: TRUE if the component has exceptions, FALSE otherwise.
+ *
+ * Since: 3.36
  **/
 gboolean
 e_cal_component_has_exceptions (ECalComponent *comp)
@@ -2280,6 +2431,8 @@ e_cal_component_has_exceptions (ECalComponent *comp)
  *
  * Returns: (transfer full) (nullable): the geographic position as #ICalGeoType,
  *    or %NULL, when none set.
+ *
+ * Since: 3.36
  **/
 ICalGeoType *
 e_cal_component_get_geo (ECalComponent *comp)
@@ -2307,6 +2460,8 @@ e_cal_component_get_geo (ECalComponent *comp)
  * @geo: (nullable): Value for the geographic position property, or %NULL to unset.
  *
  * Sets the geographic position property on a calendar component object.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_geo (ECalComponent *comp,
@@ -2347,6 +2502,8 @@ e_cal_component_set_geo (ECalComponent *comp,
  * when no longer needed.
  *
  * Returns: (transfer full): the last modified time, as an #ICalTimetype, or %NULL, when none is set
+ *
+ * Since: 3.36
  **/
 ICalTimetype *
 e_cal_component_get_last_modified (ECalComponent *comp)
@@ -2364,6 +2521,8 @@ e_cal_component_get_last_modified (ECalComponent *comp)
  *
  * Sets the time at which a calendar component object was last stored in the
  * calendar store.  This should not be called by plain calendar user agents.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_last_modified (ECalComponent *comp,
@@ -2388,6 +2547,8 @@ e_cal_component_set_last_modified (ECalComponent *comp,
  *
  * Returns: (transfer full) (nullable): an #ECalComponentOrganizer structure
  *    destribing the organizer, or %NULL, when none exists.
+ *
+ * Since: 3.36
  **/
 ECalComponentOrganizer *
 e_cal_component_get_organizer (ECalComponent *comp)
@@ -2415,6 +2576,8 @@ e_cal_component_get_organizer (ECalComponent *comp)
  * @organizer: (nullable): Value for the organizer property, as an #ECalComponentOrganizer
  *
  * Sets the organizer of a calendar component object
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_organizer (ECalComponent *comp,
@@ -2453,6 +2616,8 @@ e_cal_component_set_organizer (ECalComponent *comp,
  * Check whether a calendar component object has an organizer or not.
  *
  * Returns: TRUE if there is an organizer, FALSE otherwise.
+ *
+ * Since: 3.36
  **/
 gboolean
 e_cal_component_has_organizer (ECalComponent *comp)
@@ -2469,6 +2634,8 @@ e_cal_component_has_organizer (ECalComponent *comp)
  * Queries the percent-complete property of a calendar component object.
  *
  * Returns: the percent-complete property value, or -1 if not found
+ *
+ * Since: 3.36
  **/
 gint
 e_cal_component_get_percent_complete (ECalComponent *comp)
@@ -2498,7 +2665,7 @@ e_cal_component_get_percent_complete (ECalComponent *comp)
  * Sets percent complete. The @percent can be between 0 and 100, inclusive.
  * A special value -1 can be used to remove the percent complete property.
  *
- * Since: 2.28
+ * Since: 3.36
  **/
 void
 e_cal_component_set_percent_complete (ECalComponent *comp,
@@ -2537,6 +2704,8 @@ e_cal_component_set_percent_complete (ECalComponent *comp,
  * Queries the priority property of a calendar component object.
  *
  * Returns: the priority property value, or -1, if not found
+ *
+ * Since: 3.36
  **/
 gint
 e_cal_component_get_priority (ECalComponent *comp)
@@ -2566,6 +2735,8 @@ e_cal_component_get_priority (ECalComponent *comp)
  * Sets the priority property of a calendar component object.
  * The @priority can be between 0 and 9, inclusive.
  * A special value -1 can be used to remove the priority property.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_priority (ECalComponent *comp,
@@ -2606,6 +2777,8 @@ e_cal_component_set_priority (ECalComponent *comp,
  * whe no longer needed.
  *
  * Returns: (transfer full) (nullable): the recurrence id property, as an #ECalComponentRange
+ *
+ * Since: 3.36
  **/
 ECalComponentRange *
 e_cal_component_get_recurid (ECalComponent *comp)
@@ -2630,7 +2803,9 @@ e_cal_component_get_recurid (ECalComponent *comp)
  * Gets the recurrence ID property as a string.
  *
  * Returns: the recurrence ID as a string.
- */
+ *
+ * Since: 3.36
+ **/
 gchar *
 e_cal_component_get_recurid_as_string (ECalComponent *comp)
 {
@@ -2669,6 +2844,8 @@ e_cal_component_get_recurid_as_string (ECalComponent *comp)
  * @recur_id: (nullable): Value for the recurrence id property, or %NULL, to remove the property.
  *
  * Sets the recurrence id property of a calendar component object.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_recurid (ECalComponent *comp,
@@ -2688,7 +2865,7 @@ e_cal_component_set_recurid (ECalComponent *comp,
 }
 
 /**
- * e_cal_component_get_rdate_list:
+ * e_cal_component_get_rdates:
  * @comp: A calendar component object.
  *
  * Queries the list of recurrence date properties in a calendar component
@@ -2697,9 +2874,11 @@ e_cal_component_set_recurid (ECalComponent *comp,
  *
  * Returns: (transfer full) (nullable) (element-type ECalComponentPeriod): the list
  *    of recurrence dates, as a #GSList of #ECalComponentPeriod structures.
+ *
+ * Since: 3.36
  **/
 GSList *
-e_cal_component_get_rdate_list (ECalComponent *comp)
+e_cal_component_get_rdates (ECalComponent *comp)
 {
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
@@ -2708,16 +2887,18 @@ e_cal_component_get_rdate_list (ECalComponent *comp)
 }
 
 /**
- * e_cal_component_set_rdate_list:
+ * e_cal_component_set_rdates:
  * @comp: A calendar component object.
  * @rdate_list: (nullable) (element-type ECalComponentPeriod): List of
  *    #ECalComponentPeriod structures, or %NULL to set none
  *
  * Sets the list of recurrence dates in a calendar component object.
+ *
+ * Since: 3.36
  **/
 void
-e_cal_component_set_rdate_list (ECalComponent *comp,
-				const GSList *rdate_list)
+e_cal_component_set_rdates (ECalComponent *comp,
+			    const GSList *rdate_list)
 {
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 	g_return_if_fail (comp->priv->icalcomp != NULL);
@@ -2735,6 +2916,8 @@ e_cal_component_set_rdate_list (ECalComponent *comp,
  * for it.
  *
  * Returns: TRUE if the component has recurrence dates, FALSE otherwise.
+ *
+ * Since: 3.36
  **/
 gboolean
 e_cal_component_has_rdates (ECalComponent *comp)
@@ -2746,7 +2929,7 @@ e_cal_component_has_rdates (ECalComponent *comp)
 }
 
 /**
- * e_cal_component_get_rrule_list:
+ * e_cal_component_get_rrules:
  * @comp: A calendar component object.
  *
  * Queries the list of recurrence rule properties of a calendar component
@@ -2755,9 +2938,11 @@ e_cal_component_has_rdates (ECalComponent *comp)
  *
  * Returns: (transfer full) (nullable) (element-type ICalRecurrenceType): a #GSList
  *    of recurrence rules as #ICalRecurrenceType structures, or %NULL, when none exist.
+ *
+ * Since: 3.36
  **/
 GSList *
-e_cal_component_get_rrule_list (ECalComponent *comp)
+e_cal_component_get_rrules (ECalComponent *comp)
 {
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
@@ -2766,7 +2951,7 @@ e_cal_component_get_rrule_list (ECalComponent *comp)
 }
 
 /**
- * e_cal_component_get_rrule_property_list:
+ * e_cal_component_get_rrule_properties:
  * @comp: A calendar component object.
  *
  * Queries a list of recurrence rule properties of a calendar component object.
@@ -2775,9 +2960,11 @@ e_cal_component_get_rrule_list (ECalComponent *comp)
  *
  * Returns: (transfer full) (nullable) (element-type ICalProperty): a list of recurrence
  *    rule properties
+ *
+ * Since: 3.36
  **/
 GSList *
-e_cal_component_get_rrule_property_list (ECalComponent *comp)
+e_cal_component_get_rrule_properties (ECalComponent *comp)
 {
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
@@ -2786,15 +2973,17 @@ e_cal_component_get_rrule_property_list (ECalComponent *comp)
 }
 
 /**
- * e_cal_component_set_rrule_list:
+ * e_cal_component_set_rrules:
  * @comp: A calendar component object.
  * @recur_list: (nullable) (element-type ICalRecurrenceType): List of #ICalRecurrenceType structures, or %NULL.
  *
  * Sets the list of recurrence rules in a calendar component object.
+ *
+ * Since: 3.36
  **/
 void
-e_cal_component_set_rrule_list (ECalComponent *comp,
-				const GSList *recur_list)
+e_cal_component_set_rrules (ECalComponent *comp,
+			    const GSList *recur_list)
 {
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 	g_return_if_fail (comp->priv->icalcomp != NULL);
@@ -2812,6 +3001,8 @@ e_cal_component_set_rrule_list (ECalComponent *comp,
  * for it.
  *
  * Returns: TRUE if the component has recurrence rules, FALSE otherwise.
+ *
+ * Since: 3.36
  **/
 gboolean
 e_cal_component_has_rrules (ECalComponent *comp)
@@ -2830,6 +3021,8 @@ e_cal_component_has_rrules (ECalComponent *comp)
  * recurrence rules.
  *
  * Returns: TRUE if the component has recurrences, FALSE otherwise.
+ *
+ * Since: 3.36
  **/
 gboolean
 e_cal_component_has_recurrences (ECalComponent *comp)
@@ -2865,7 +3058,9 @@ count_by_xxx_and_free (GArray *field) /* gshort */
  * rules or more complicated ones.
  *
  * Returns: TRUE if it has a simple recurrence rule, FALSE otherwise.
- */
+ *
+ * Since: 3.36
+ **/
 gboolean
 e_cal_component_has_simple_recurrence (ECalComponent *comp)
 {
@@ -2880,7 +3075,7 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
 	if (!e_cal_component_has_recurrences (comp))
 		return TRUE;
 
-	rrule_list = e_cal_component_get_rrule_list (comp);
+	rrule_list = e_cal_component_get_rrules (comp);
 	len = g_slist_length (rrule_list);
 	if (len > 1
 	    || e_cal_component_has_rdates (comp)
@@ -3037,7 +3232,9 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
  * event.
  *
  * Returns: TRUE if it is an instance, FALSE if not.
- */
+ *
+ * Since: 3.36
+ **/
 gboolean
 e_cal_component_is_instance (ECalComponent *comp)
 {
@@ -3053,6 +3250,8 @@ e_cal_component_is_instance (ECalComponent *comp)
  * Queries the sequence number of a calendar component object.
  *
  * Returns: the sequence number, or -1 if not found
+ *
+ * Since: 3.36
  **/
 gint
 e_cal_component_get_sequence (ECalComponent *comp)
@@ -3084,6 +3283,8 @@ e_cal_component_get_sequence (ECalComponent *comp)
  *
  * Normally this function should not be called, since the sequence number
  * is incremented automatically at the proper times.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_sequence (ECalComponent *comp,
@@ -3117,6 +3318,8 @@ e_cal_component_set_sequence (ECalComponent *comp,
  *
  * Returns: the status value; or %I_CAL_STATUS_NONE, if the component
  *   has no status property
+ *
+ * Since: 3.36
  **/
 ICalPropertyStatus
 e_cal_component_get_status (ECalComponent *comp)
@@ -3145,6 +3348,8 @@ e_cal_component_get_status (ECalComponent *comp)
  * @status: Status value, as an #ICalPropertyStatus. Use %I_CAL_STATUS_NONE, to unset the property
  *
  * Sets the status property of a calendar component object.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_status (ECalComponent *comp,
@@ -3187,6 +3392,8 @@ e_cal_component_set_status (ECalComponent *comp,
  *
  * Returns: (transfer full) (nullable): the summary, as an #ECalComponentText,
  *    or %NULL, when none is set
+ *
+ * Since: 3.36
  **/
 ECalComponentText *
 e_cal_component_get_summary (ECalComponent *comp)
@@ -3269,6 +3476,8 @@ set_alarm_description_cb (ICalComponent *icalcomp,
  * @summary: Summary property and its parameters.
  *
  * Sets the summary of a calendar component object.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_summary (ECalComponent *comp,
@@ -3327,6 +3536,8 @@ e_cal_component_set_summary (ECalComponent *comp,
  *
  * Returns: the time transparency, as an #ECalComponentTransparency;
  *    value #E_CAL_COMPONENT_TRANSP_NONE is returned when none is set
+ *
+ * Since: 3.36
  **/
 ECalComponentTransparency
 e_cal_component_get_transparency (ECalComponent *comp)
@@ -3370,6 +3581,8 @@ e_cal_component_get_transparency (ECalComponent *comp)
  *
  * Sets the time transparency of a calendar component object.
  * Use %E_CAL_COMPONENT_TRANSP_NONE to unset the property.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_transparency (ECalComponent *comp,
@@ -3425,6 +3638,8 @@ e_cal_component_set_transparency (ECalComponent *comp,
  * Free the returned URL with g_free(), when no longer needed.
  *
  * Returns: (transfer full) (nullable): the URL, or %NULL, when none is set
+ *
+ * Since: 3.36
  **/
 gchar *
 e_cal_component_get_url (ECalComponent *comp)
@@ -3453,6 +3668,8 @@ e_cal_component_get_url (ECalComponent *comp)
  *
  * Sets the uniform resource locator property of a calendar component object.
  * A %NULL or an empty string removes the property.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_url (ECalComponent *comp,
@@ -3502,7 +3719,7 @@ get_attendee_list_cb (ICalComponent *icalcomp,
 }
 
 /**
- * e_cal_component_get_attendee_list:
+ * e_cal_component_get_attendees:
  * @comp: A calendar component object.
  *
  * Queries the attendee properties of the calendar component object.
@@ -3512,9 +3729,11 @@ get_attendee_list_cb (ICalComponent *icalcomp,
  * Returns: (transfer full) (nullable) (element-type ECalComponentAttendee):
  *    the attendees, as a #GSList of an #ECalComponentAttendee, or %NULL,
  *    when none are set
+ *
+ * Since: 3.36
  **/
 GSList *
-e_cal_component_get_attendee_list (ECalComponent *comp)
+e_cal_component_get_attendees (ECalComponent *comp)
 {
 	GSList *attendees = NULL;
 
@@ -3527,16 +3746,18 @@ e_cal_component_get_attendee_list (ECalComponent *comp)
 }
 
 /**
- * e_cal_component_set_attendee_list:
+ * e_cal_component_set_attendees:
  * @comp: A calendar component object.
  * @attendee_list: (nullable) (element-type ECalComponentAttendee): Values for attendee
  *    properties, or %NULL to unset
  *
  * Sets the attendees of a calendar component object
+ *
+ * Since: 3.36
  **/
 void
-e_cal_component_set_attendee_list (ECalComponent *comp,
-				   const GSList *attendee_list)
+e_cal_component_set_attendees (ECalComponent *comp,
+			       const GSList *attendee_list)
 {
 	GSList *link;
 
@@ -3567,6 +3788,8 @@ e_cal_component_set_attendee_list (ECalComponent *comp,
  * Queries a calendar component object for the existence of attendees.
  *
  * Returns: TRUE if there are attendees, FALSE if not.
+ *
+ * Since: 3.36
  */
 gboolean
 e_cal_component_has_attendees (ECalComponent *comp)
@@ -3583,6 +3806,8 @@ e_cal_component_has_attendees (ECalComponent *comp)
  * Queries the location property of a calendar component object.
  *
  * Returns: (transfer full) (nullable): the locatio, or %NULL, if none is set
+ *
+ * Since: 3.36
  **/
 gchar *
 e_cal_component_get_location (ECalComponent *comp)
@@ -3611,6 +3836,8 @@ e_cal_component_get_location (ECalComponent *comp)
  * @location: (nullable): Location value. Use %NULL or empty string, to unset the property.
  *
  * Sets the location property of a calendar component object.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_set_location (ECalComponent *comp,
@@ -3648,6 +3875,8 @@ e_cal_component_set_location (ECalComponent *comp,
  * Checks whether the component has any alarms.
  *
  * Returns: TRUE if the component has any alarms.
+ *
+ * Since: 3.36
  **/
 gboolean
 e_cal_component_has_alarms (ECalComponent *comp)
@@ -3707,6 +3936,8 @@ dup_alarm_uid_from_component (ICalComponent *valarm)
  * adding the alarm, the @alarm structure is no longer valid because the
  * internal structures may change and you should get rid of it by using
  * e_cal_component_alarm_free().
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_add_alarm (ECalComponent *comp,
@@ -3776,6 +4007,8 @@ remove_alarm_cb (ICalComponent *icalcomp,
  * e_cal_component_get_alarm(), then those alarm structures will be invalid; you
  * should get rid of them with e_cal_component_alarm_free() before using this
  * function.
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_remove_alarm (ECalComponent *comp,
@@ -3803,6 +4036,8 @@ remove_all_alarms_cb (ICalComponent *icalcomp,
  * @comp: A calendar component
  *
  * Remove all alarms from the calendar component
+ *
+ * Since: 3.36
  **/
 void
 e_cal_component_remove_all_alarms (ECalComponent *comp)
@@ -3840,6 +4075,8 @@ get_alarm_uids_cb (ICalComponent *icalcomp,
  *
  * Returns: (transfer full) (nullable) (element-type utf8): a #GSList of unique
  *    identifiers for alarms.
+ *
+ * Since: 3.36
  **/
 GSList *
 e_cal_component_get_alarm_uids (ECalComponent *comp)
@@ -3890,6 +4127,8 @@ get_alarm_cb (ICalComponent *icalcomp,
  *
  * Returns: (transfer full) (nullable): the alarm subcomponent that corresponds
  *    to the specified @auid, or %NULL if no alarm exists with that UID
+ *
+ * Since: 3.36
  **/
 ECalComponentAlarm *
 e_cal_component_get_alarm (ECalComponent *comp,

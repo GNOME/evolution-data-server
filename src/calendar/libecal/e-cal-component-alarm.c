@@ -164,11 +164,11 @@ e_cal_component_alarm_copy (const ECalComponentAlarm *alarm)
 				if (url)
 					attach = i_cal_attach_new_from_url (url);
 			} else {
-				const guchar *data;
+				const gchar *data;
 
 				data = i_cal_attach_get_data (src_attach);
 				if (data)
-					attach = i_cal_attach_new_from_data ((gchar *) data, NULL, NULL);
+					attach = i_cal_attach_new_from_data (data, NULL, NULL);
 			}
 
 			if (attach)

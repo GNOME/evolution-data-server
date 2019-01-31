@@ -81,6 +81,7 @@ struct _ECalComponentClass {
 GType		e_cal_component_get_type	(void);
 
 ECalComponent *	e_cal_component_new		(void);
+ECalComponent *	e_cal_component_new_vtype	(ECalComponentVType vtype);
 ECalComponent *	e_cal_component_new_from_string	(const gchar *calobj);
 ECalComponent *	e_cal_component_new_from_icalcomponent
 						(ICalComponent *icalcomp);
@@ -89,6 +90,8 @@ ECalComponent *	e_cal_component_clone		(ECalComponent *comp);
 
 void		e_cal_component_set_new_vtype	(ECalComponent *comp,
 						 ECalComponentVType type);
+ECalComponentVType
+		e_cal_component_get_vtype	(ECalComponent *comp);
 
 ICalComponent *	e_cal_component_get_icalcomponent
 						(ECalComponent *comp);
@@ -96,9 +99,6 @@ gboolean	e_cal_component_set_icalcomponent
 						(ECalComponent *comp,
 						 ICalComponent *icalcomp);
 void		e_cal_component_strip_errors	(ECalComponent *comp);
-
-ECalComponentVType
-		e_cal_component_get_vtype	(ECalComponent *comp);
 
 gchar *		e_cal_component_get_as_string	(ECalComponent *comp);
 
@@ -128,30 +128,24 @@ void		e_cal_component_set_classification
 						(ECalComponent *comp,
 						 ECalComponentClassification classif);
 
-GSList *	e_cal_component_get_comment_list /* ECalComponentText * */
-						(ECalComponent *comp);
-void		e_cal_component_set_comment_list
-						(ECalComponent *comp,
+GSList *	e_cal_component_get_comments	(ECalComponent *comp); /* ECalComponentText * */
+void		e_cal_component_set_comments	(ECalComponent *comp,
 						 const GSList *text_list); /* ECalComponentText * */
 
 ICalTimetype *	e_cal_component_get_completed	(ECalComponent *comp);
 void		e_cal_component_set_completed	(ECalComponent *comp,
 						 const ICalTimetype *tt);
 
-GSList *	e_cal_component_get_contact_list /* ECalComponentText * */
-						(ECalComponent *comp);
-void		e_cal_component_set_contact_list
-						(ECalComponent *comp,
+GSList *	e_cal_component_get_contacts	(ECalComponent *comp); /* ECalComponentText * */
+void		e_cal_component_set_contacts	(ECalComponent *comp,
 						 const GSList *text_list); /* ECalComponentText * */
 
 ICalTimetype *	e_cal_component_get_created	(ECalComponent *comp);
 void		e_cal_component_set_created	(ECalComponent *comp,
 						 const ICalTimetype *tt);
 
-GSList *	e_cal_component_get_description_list /* ECalComponentText * */
-						(ECalComponent *comp);
-void		e_cal_component_set_description_list
-						(ECalComponent *comp,
+GSList *	e_cal_component_get_descriptions(ECalComponent *comp);  /* ECalComponentText * */
+void		e_cal_component_set_descriptions(ECalComponent *comp,
 						 const GSList *text_list); /* ECalComponentText * */
 
 ECalComponentDateTime *
@@ -173,15 +167,15 @@ ECalComponentDateTime *
 void		e_cal_component_set_due		(ECalComponent *comp,
 						 const ECalComponentDateTime *dt);
 
-GSList *	e_cal_component_get_exdate_list	(ECalComponent *comp); /* ECalComponentDateTime * */
-void		e_cal_component_set_exdate_list	(ECalComponent *comp,
+GSList *	e_cal_component_get_exdates	(ECalComponent *comp); /* ECalComponentDateTime * */
+void		e_cal_component_set_exdates	(ECalComponent *comp,
 						 const GSList *exdate_list); /* ECalComponentDateTime * */
 gboolean	e_cal_component_has_exdates	(ECalComponent *comp);
 
-GSList *	e_cal_component_get_exrule_list	(ECalComponent *comp); /* ICalRecurrenceType * */
-GSList *	e_cal_component_get_exrule_property_list /* ICalProperty * */
+GSList *	e_cal_component_get_exrules	(ECalComponent *comp); /* ICalRecurrenceType * */
+GSList *	e_cal_component_get_exrule_properties /* ICalProperty * */
 						(ECalComponent *comp);
-void		e_cal_component_set_exrule_list	(ECalComponent *comp,
+void		e_cal_component_set_exrules	(ECalComponent *comp,
 						 const GSList *recur_list); /* ICalRecurrenceType * */
 gboolean	e_cal_component_has_exrules	(ECalComponent *comp);
 
@@ -220,15 +214,15 @@ gchar *		e_cal_component_get_recurid_as_string
 void		e_cal_component_set_recurid	(ECalComponent *comp,
 						 const ECalComponentRange *recur_id);
 
-GSList *	e_cal_component_get_rdate_list	(ECalComponent *comp); /* ECalComponentPeriod * */
-void		e_cal_component_set_rdate_list	(ECalComponent *comp,
+GSList *	e_cal_component_get_rdates	(ECalComponent *comp); /* ECalComponentPeriod * */
+void		e_cal_component_set_rdates	(ECalComponent *comp,
 						 const GSList *rdate_list); /* ECalComponentPeriod * */
 gboolean	e_cal_component_has_rdates	(ECalComponent *comp);
 
-GSList *	e_cal_component_get_rrule_list	(ECalComponent *comp); /* ICalRecurrenceType * */
-GSList *	e_cal_component_get_rrule_property_list /* ICalProperty * */
+GSList *	e_cal_component_get_rrules	(ECalComponent *comp); /* ICalRecurrenceType * */
+GSList *	e_cal_component_get_rrule_properties /* ICalProperty * */
 						(ECalComponent *comp);
-void		e_cal_component_set_rrule_list	(ECalComponent *comp,
+void		e_cal_component_set_rrules	(ECalComponent *comp,
 						 const GSList *recur_list); /* ICalRecurrenceType * */
 gboolean	e_cal_component_has_rrules	(ECalComponent *comp);
 
@@ -260,10 +254,8 @@ gchar *		e_cal_component_get_url		(ECalComponent *comp);
 void		e_cal_component_set_url		(ECalComponent *comp,
 						 const gchar *url);
 
-GSList *	e_cal_component_get_attendee_list /* ECalComponentAttendee * */
-						(ECalComponent *comp);
-void		e_cal_component_set_attendee_list
-						(ECalComponent *comp,
+GSList *	e_cal_component_get_attendees	(ECalComponent *comp);  /* ECalComponentAttendee * */
+void		e_cal_component_set_attendees	(ECalComponent *comp,
 						 const GSList *attendee_list); /* ECalComponentAttendee * */
 gboolean	e_cal_component_has_attendees	(ECalComponent *comp);
 

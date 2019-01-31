@@ -43,7 +43,7 @@ struct _ECalComponentPeriod {
 /**
  * e_cal_component_period_new_datetime:
  * @start: (not nullable): an #ICalTimetype, the start of the period
- * @end: (not nullable): an #ICalTimetype, the end of the period
+ * @end: (nullable): an #ICalTimetype, the end of the period
  *
  * Creates a new #ECalComponentPeriod of kind %E_CAL_COMPONENT_PERIOD_DATETIME.
  * The returned structure should be freed with e_cal_component_period_free(),
@@ -60,7 +60,6 @@ e_cal_component_period_new_datetime (const ICalTimetype *start,
 	ECalComponentPeriod *period;
 
 	g_return_val_if_fail (I_CAL_IS_TIMETYPE (start), NULL);
-	g_return_val_if_fail (I_CAL_IS_TIMETYPE (end), NULL);
 
 	period = g_new0 (ECalComponentPeriod, 1);
 	period->kind = E_CAL_COMPONENT_PERIOD_DATETIME;
@@ -181,7 +180,7 @@ e_cal_component_period_get_kind	(const ECalComponentPeriod *period)
  * e_cal_component_period_set_datetime_full:
  * @period: an #ECalComponentPeriod
  * @start: (not nullable): an #ICalTimetype, the start of the @period
- * @end: (not nullable): an #ICalTimetype, the end of the @period
+ * @end: (nullable): an #ICalTimetype, the end of the @period
  *
  * Set the kind of @period to be %E_CAL_COMPONENT_PERIOD_DATETIME
  * and fills the content with @start and @end.
@@ -195,7 +194,6 @@ e_cal_component_period_set_datetime_full (ECalComponentPeriod *period,
 {
 	g_return_if_fail (period != NULL);
 	g_return_if_fail (I_CAL_IS_TIMETYPE (start));
-	g_return_if_fail (I_CAL_IS_TIMETYPE (end));
 
 	g_clear_object (&period->duration);
 
@@ -280,11 +278,14 @@ e_cal_component_period_set_start (ECalComponentPeriod *period,
  * @period: an #ECalComponentPeriod
  *
  * Returns the end of the @period. This can be called only on @period
- * objects of kind %E_CAL_COMPONENT_PERIOD_DATETIME.
+ * objects of kind %E_CAL_COMPONENT_PERIOD_DATETIME. The end time can
+ * be a null-time, in which case the @period corresponds to a single
+ * date/date-time value, not to a period.
+ *
  * The returned #ICalTimetype object is owned by @period and should not
  * be freed. It's valid until the @period is freed or its end time changed.
  *
- * Returns: (transfer none): the end of the period, as an #ICalTimetype
+ * Returns: (transfer none) (nullable): the end of the period, as an #ICalTimetype
  *
  * Since: 3.36
  **/
@@ -300,7 +301,7 @@ e_cal_component_period_get_end (const ECalComponentPeriod *period)
 /**
  * e_cal_component_period_set_end:
  * @period: an #ECalComponentPeriod
- * @end: (not nullable): an #ICalTimetype, the end of the @period
+ * @end: (nullable): an #ICalTimetype, the end of the @period
  *
  * Set the end of the @period. This can be called only on @period
  * objects of kind %E_CAL_COMPONENT_PERIOD_DATETIME.
@@ -313,11 +314,11 @@ e_cal_component_period_set_end (ECalComponentPeriod *period,
 {
 	g_return_if_fail (period != NULL);
 	g_return_if_fail (period->kind == E_CAL_COMPONENT_PERIOD_DATETIME);
-	g_return_if_fail (I_CAL_IS_TIMETYPE (end));
 
 	if (period->end != end) {
 		g_clear_object (&period->end);
-		period->end = i_cal_timetype_new_clone (end);
+		if (end)
+			period->end = i_cal_timetype_new_clone (end);
 	}
 }
 
