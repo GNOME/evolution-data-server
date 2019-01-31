@@ -110,13 +110,18 @@ foreach_subcomponent (ICalComponent *icalcomp,
 	iter = i_cal_component_begin_component (icalcomp, comp_kind);
 	subcomp = i_cal_comp_iter_deref (iter);
 	while (subcomp) {
+		ICalComponent *next_subcomp;
+
+		next_subcomp = i_cal_comp_iter_next (iter);
+
 		if (!func (icalcomp, subcomp, user_data)) {
+			g_clear_object (&next_subcomp);
 			g_object_unref (subcomp);
 			break;
 		}
 
 		g_object_unref (subcomp);
-		subcomp = i_cal_comp_iter_next (iter);
+		subcomp = next_subcomp;
 	}
 
 	g_clear_object (&iter);
@@ -702,12 +707,10 @@ ensure_alarm_properties_cb (ICalComponent *icalcomp,
 						break;
 					}
 				}
-
-				g_object_unref (prop);
-				break;
 			}
 
 			g_object_unref (prop);
+			break;
 		}
 
 		if (!summary || !*summary) {
@@ -4261,7 +4264,6 @@ e_cal_component_event_dates_match (ECalComponent *comp1,
 	}
 
  out:
-
 	e_cal_component_datetime_free (comp1_dtstart);
 	e_cal_component_datetime_free (comp1_dtend);
 	e_cal_component_datetime_free (comp2_dtstart);

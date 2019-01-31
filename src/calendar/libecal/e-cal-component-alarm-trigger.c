@@ -332,12 +332,14 @@ e_cal_component_alarm_trigger_fill_property (const ECalComponentAlarmTrigger *tr
 		i_cal_trigger_type_set_time (trgtype, trigger->abs_time);
 		value_type = I_CAL_VALUE_DATETIME;
 		break;
-
-	default:
-		g_return_if_reached ();
+	case E_CAL_COMPONENT_ALARM_TRIGGER_NONE:
+		g_object_unref (trgtype);
+		return;
 	}
 
 	i_cal_property_set_trigger (property, trgtype);
+
+	g_object_unref (trgtype);
 
 	param = i_cal_property_get_first_parameter (property, I_CAL_VALUE_PARAMETER);
 	if (param) {

@@ -278,11 +278,11 @@ void		e_cal_component_remove_alarm	(ECalComponent *comp,
 void		e_cal_component_remove_all_alarms
 						(ECalComponent *comp);
 
-GSList *	e_cal_component_get_alarm_uids	(ECalComponent *comp);
+GSList *	e_cal_component_get_alarm_uids	(ECalComponent *comp); /* gchar * */
 ECalComponentAlarm *
 		e_cal_component_get_alarm	(ECalComponent *comp,
 						 const gchar *auid);
-GSList *	e_cal_component_get_all_alarms	(ECalComponent *comp);
+GSList *	e_cal_component_get_all_alarms	(ECalComponent *comp); /* ECalComponentAlarm * */
 
 gboolean	e_cal_component_event_dates_match
 						(ECalComponent *comp1,
