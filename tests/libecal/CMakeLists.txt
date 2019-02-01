@@ -32,6 +32,7 @@ set(TESTS
 	test-cal-client-revision-view
 	test-cal-client-get-revision
 	test-cal-client-get-free-busy
+	test-cal-component
 )
 
 foreach(_test ${TESTS})
