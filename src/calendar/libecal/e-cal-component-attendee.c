@@ -63,8 +63,8 @@ e_cal_component_attendee_new (void)
 
 	attendee = g_new0 (ECalComponentAttendee, 1);
 	attendee->cutype = I_CAL_CUTYPE_NONE;
-	attendee->role = I_CAL_ROLE_NONE;
-	attendee->partstat = I_CAL_PARTSTAT_NONE;
+	attendee->role = I_CAL_ROLE_REQPARTICIPANT;
+	attendee->partstat = I_CAL_PARTSTAT_NEEDSACTION;
 
 	return attendee;
 }
@@ -238,7 +238,7 @@ e_cal_component_attendee_set_from_property (ECalComponentAttendee *attendee,
 	g_clear_object (&param);
 
 	param = i_cal_property_get_first_parameter (prop, I_CAL_CUTYPE_PARAMETER);
-	e_cal_component_attendee_set_cutype (attendee, param ? i_cal_parameter_get_cutype (param) : I_CAL_CUTYPE_UNKNOWN);
+	e_cal_component_attendee_set_cutype (attendee, param ? i_cal_parameter_get_cutype (param) : I_CAL_CUTYPE_NONE);
 	g_clear_object (&param);
 
 	param = i_cal_property_get_first_parameter (prop, I_CAL_ROLE_PARAMETER);

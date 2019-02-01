@@ -39,8 +39,7 @@ typedef struct _ECalComponentAlarmRepeat ECalComponentAlarmRepeat;
 GType		e_cal_component_alarm_repeat_get_type
 						(void);
 ECalComponentAlarmRepeat *
-		e_cal_component_alarm_repeat_new
-						(gint repetitions,
+		e_cal_component_alarm_repeat_new(gint repetitions,
 						 const ICalDurationType *interval);
 ECalComponentAlarmRepeat *
 		e_cal_component_alarm_repeat_new_seconds

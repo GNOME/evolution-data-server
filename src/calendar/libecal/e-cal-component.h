@@ -284,10 +284,6 @@ ECalComponentAlarm *
 						 const gchar *auid);
 GSList *	e_cal_component_get_all_alarms	(ECalComponent *comp); /* ECalComponentAlarm * */
 
-gboolean	e_cal_component_event_dates_match
-						(ECalComponent *comp1,
-						 ECalComponent *comp2);
-
 G_END_DECLS
 
 #endif /* E_CAL_COMPONENT_H */

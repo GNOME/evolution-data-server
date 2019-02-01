@@ -41,7 +41,7 @@ struct _ECalComponentAlarms {
 };
 
 /**
- * e_cal_component_alarms_new_relative:
+ * e_cal_component_alarms_new:
  * @comp: (not nullable): the actual alarm component, as #ECalComponent
  *
  * Creates a new #ECalComponentAlarms structure, associated with @comp.

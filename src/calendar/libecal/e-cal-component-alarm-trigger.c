@@ -74,7 +74,8 @@ e_cal_component_alarm_trigger_new_relative (ECalComponentAlarmTriggerKind kind,
  *
  * Creates a new #ECalComponentAlarmTrigger structure, set with
  * the %E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE kind and the @absolute_time as
- * the time of the trigger.
+ * the time of the trigger. The @absolute_time should be date/time (not date) in UTC.
+ *
  * To create a relative trigger use e_cal_component_alarm_trigger_new_relative().
  * Free the trigger with e_cal_component_alarm_trigger_free(), when no longer needed.
  *
@@ -399,7 +400,9 @@ e_cal_component_alarm_trigger_set_relative (ECalComponentAlarmTrigger *trigger,
  * @absolute_time: (not nullable): the absolute time when to trigger the alarm, as an #ICalTimetype
  *
  * Set the @trigegr with the %E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE kind and
- * the @absolute_time as the time of the trigger.
+ * the @absolute_time as the time of the trigger. The @absolute_time
+ * should be date/time (not date) in UTC.
+ *
  * To set a relative trigger use e_cal_component_alarm_trigger_set_relative().
  *
  * Since: 3.36
@@ -539,8 +542,10 @@ e_cal_component_alarm_trigger_get_absolute_time (const ECalComponentAlarmTrigger
  * @trigger: an #ECalComponentAlarmTrigger
  * @absolute_time: absolute time for an absolute trigger, as an #ICalTimetype
  *
- * Sets the @trigger absolute time for an absolute trigger. The function does nothing, when
- * the @trigger is a relative trigger.
+ * Sets the @trigger absolute time for an absolute trigger. The @absolute_time
+ * should be date/time (not date) in UTC.
+ *
+ * The function does nothing, when the @trigger is a relative trigger.
  *
  * Since: 3.36
  **/
@@ -551,7 +556,7 @@ e_cal_component_alarm_trigger_set_absolute_time (ECalComponentAlarmTrigger *trig
 	g_return_if_fail (trigger != NULL);
 	g_return_if_fail (I_CAL_IS_TIMETYPE (absolute_time));
 
-	if (trigger->kind == E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE)
+	if (trigger->kind != E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE)
 		return;
 
 	if (trigger->abs_time != absolute_time) {
