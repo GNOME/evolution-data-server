@@ -1,3 +1,29 @@
+Evolution-Data-Server 3.31.90 2019-02-04
+----------------------------------------
+
+Bug Fixes:
+	I#70 - Add camel-autocleanups header (Corentin Noël)
+	I#71 - Add e-backend-autocleanups header (Corentin Noël)
+	I#73 - Add e-dataserver-autocleanups header (Corentin Noël)
+	I#75 - Sometimes fails to properly decrypt large GPG encrypted messages (Milan Crha)
+	I#79 - [Camel] Threading view depends on message order (Milan Crha)
+	I#81 - Pops up a reminder of a deleted instance of a recurring event (Milan Crha)
+	I#82 - Use uppercase in MIME-Version 1.0 header (Milan Crha)
+
+Miscellaneous:
+	Remove some duplicated #define-s with developer documentation comments (Milan Crha)
+	De-deprecate camel_folder_info_build() (Milan Crha)
+	[libebackend] Do not define autoptr for deprecated EOfflineListener (Milan Crha)
+	[EBookBackendSExp] Skip PHOTO attribute in "Any field contains" search (Milan Crha)
+	Add also $PREFIX/share/gir-1.0 into g-ir-scanner arguments (Milan Crha)
+
+Translations:
+	Jordi Mas (ca)
+	Charles Monzat (fr)
+	Daniel Mustieles (es)
+	Kukuh Syafaat (id)
+	Balázs Úr (hu)
+
 Evolution-Data-Server 3.31.4 2019-01-07
 ---------------------------------------
 
