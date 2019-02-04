@@ -1,3 +1,14 @@
+Evolution-Data-Server 3.30.5 2019-02-04
+---------------------------------------
+
+Bug Fixes:
+	I#75 - Sometimes fails to properly decrypt large GPG encrypted messages (Milan Crha)
+	I#81 - Pops up a reminder of a deleted instance of a recurring event (Milan Crha)
+	I#82 - Use uppercase in MIME-Version 1.0 header (Milan Crha)
+
+Translations:
+	Charles Monzat (fr)
+
 Evolution-Data-Server 3.30.4 2019-01-07
 ---------------------------------------
 
