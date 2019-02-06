@@ -32,75 +32,6 @@
 
 G_BEGIN_DECLS
 
-struct _ECalClient;
-
-/**
- * CalObjInstance:
- * @uid: UID of the object
- * @start: Start time of instance
- * @end: End time of instance
- *
- * Instance of a calendar object.  This can be an actual occurrence, a
- * recurrence, or an alarm trigger of a `real' calendar object.
- **/
-typedef struct {
-	gchar *uid;			/* UID of the object */
-	time_t start;			/* Start time of instance */
-	time_t end;			/* End time of instance */
-} CalObjInstance;
-
-void cal_obj_instance_list_free (GList *list);
-
-void cal_obj_uid_list_free (GList *list);
-
-icalcomponent *	e_cal_util_new_top_level	(void);
-icalcomponent *	e_cal_util_new_component	(icalcomponent_kind kind);
-
-icalcomponent *	e_cal_util_parse_ics_string	(const gchar *string);
-icalcomponent *	e_cal_util_parse_ics_file	(const gchar *filename);
-
-ECalComponentAlarms *
-		e_cal_util_generate_alarms_for_comp
-						(ECalComponent *comp,
-						 time_t start,
-						 time_t end,
-						 ECalComponentAlarmAction *omit,
-						 ECalRecurResolveTimezoneFn resolve_tzid,
-						 gpointer user_data,
-						 icaltimezone *default_timezone);
-gint		e_cal_util_generate_alarms_for_list
-						(GList *comps,
-						 time_t start,
-						 time_t end,
-						 ECalComponentAlarmAction *omit,
-						 GSList **comp_alarms,
-						 ECalRecurResolveTimezoneFn resolve_tzid,
-						 gpointer user_data,
-						 icaltimezone *default_timezone);
-
-const gchar *	e_cal_util_priority_to_string	(gint priority);
-gint		e_cal_util_priority_from_string	(const gchar *string);
-
-gchar *		e_cal_util_seconds_to_string	(gint64 seconds);
-
-void		e_cal_util_add_timezones_from_component
-						(icalcomponent *vcal_comp,
-						 icalcomponent *icalcomp);
-
-gboolean	e_cal_util_component_is_instance
-						(icalcomponent *icalcomp);
-gboolean	e_cal_util_component_has_alarms	(icalcomponent *icalcomp);
-gboolean	e_cal_util_component_has_organizer
-						(icalcomponent *icalcomp);
-gboolean	e_cal_util_component_has_recurrences
-						(icalcomponent *icalcomp);
-gboolean	e_cal_util_component_has_rdates	(icalcomponent *icalcomp);
-gboolean	e_cal_util_component_has_rrules	(icalcomponent *icalcomp);
-gboolean	e_cal_util_component_has_attendee
-						(icalcomponent *icalcomp);
-gboolean	e_cal_util_event_dates_match	(icalcomponent *icalcomp1,
-						 icalcomponent *icalcomp2);
-
 /* The static capabilities to be supported by backends */
 #define E_CAL_STATIC_CAPABILITY_NO_ALARM_REPEAT		"no-alarm-repeat"
 #define E_CAL_STATIC_CAPABILITY_NO_AUDIO_ALARMS		"no-audio-alarms"
@@ -257,53 +188,108 @@ gboolean	e_cal_util_event_dates_match	(icalcomponent *icalcomp1,
  **/
 #define E_CAL_STATIC_CAPABILITY_COMPONENT_COLOR		"component-color"
 
-/* Recurrent events. Management for instances */
-icalcomponent *	e_cal_util_construct_instance	(icalcomponent *icalcomp,
-						 struct icaltimetype rid);
-void		e_cal_util_remove_instances	(icalcomponent *icalcomp,
-						 struct icaltimetype rid,
+struct _ECalClient;
+
+ICalComponent *	e_cal_util_new_top_level	(void);
+ICalComponent *	e_cal_util_new_component	(ICalComponentKind kind);
+ICalTimezone *	e_cal_util_copy_timezone	(const ICalTimezone *zone);
+
+ICalComponent *	e_cal_util_parse_ics_string	(const gchar *string);
+ICalComponent *	e_cal_util_parse_ics_file	(const gchar *filename);
+
+ECalComponentAlarms *
+		e_cal_util_generate_alarms_for_comp
+						(ECalComponent *comp,
+						 time_t start,
+						 time_t end,
+						 ECalComponentAlarmAction *omit,
+						 ECalRecurResolveTimezoneCb resolve_tzid,
+						 gpointer user_data,
+						 ICalTimezone *default_timezone);
+gint		e_cal_util_generate_alarms_for_list
+						(GList *comps, /* ECalComponent * */
+						 time_t start,
+						 time_t end,
+						 ECalComponentAlarmAction *omit,
+						 GSList **comp_alarms,
+						 ECalRecurResolveTimezoneCb resolve_tzid,
+						 gpointer user_data,
+						 ICalTimezone *default_timezone);
+
+const gchar *	e_cal_util_priority_to_string	(gint priority);
+gint		e_cal_util_priority_from_string	(const gchar *string);
+
+gchar *		e_cal_util_seconds_to_string	(gint64 seconds);
+
+void		e_cal_util_add_timezones_from_component
+						(ICalComponent *vcal_comp,
+						 ICalComponent *icalcomp);
+
+gboolean	e_cal_util_component_has_property
+						(ICalComponent *icalcomp,
+						 ICalPropertyKind prop_kind);
+gboolean	e_cal_util_component_is_instance
+						(ICalComponent *icalcomp);
+gboolean	e_cal_util_component_has_alarms	(ICalComponent *icalcomp);
+gboolean	e_cal_util_component_has_organizer
+						(ICalComponent *icalcomp);
+gboolean	e_cal_util_component_has_recurrences
+						(ICalComponent *icalcomp);
+gboolean	e_cal_util_component_has_rdates	(ICalComponent *icalcomp);
+gboolean	e_cal_util_component_has_rrules	(ICalComponent *icalcomp);
+gboolean	e_cal_util_component_has_attendee
+						(ICalComponent *icalcomp);
+ICalComponent *	e_cal_util_construct_instance	(ICalComponent *icalcomp,
+						 const ICalTimetype *rid);
+void		e_cal_util_remove_instances	(ICalComponent *icalcomp,
+						 const ICalTimetype *rid,
 						 ECalObjModType mod);
-icalcomponent *	e_cal_util_split_at_instance	(icalcomponent *icalcomp,
-						 struct icaltimetype rid,
-						 struct icaltimetype master_dtstart);
+ICalComponent *	e_cal_util_split_at_instance	(ICalComponent *icalcomp,
+						 const ICalTimetype *rid,
+						 const ICalTimetype *master_dtstart);
 gboolean	e_cal_util_is_first_instance	(ECalComponent *comp,
-						 struct icaltimetype rid,
-						 ECalRecurResolveTimezoneFn tz_cb,
+						 const ICalTimetype *rid,
+						 ECalRecurResolveTimezoneCb tz_cb,
 						 gpointer tz_cb_data);
 
 gchar *		e_cal_util_get_system_timezone_location (void);
-icaltimezone *	e_cal_util_get_system_timezone (void);
+ICalTimezone *	e_cal_util_get_system_timezone (void);
 void		e_cal_util_get_component_occur_times
 						(ECalComponent *comp,
-						 time_t * start,
-						 time_t * end,
-						 ECalRecurResolveTimezoneFn tz_cb,
+						 time_t *out_start,
+						 time_t *out_end,
+						 ECalRecurResolveTimezoneCb tz_cb,
 						 gpointer tz_cb_data,
-						 const icaltimezone *default_timezone,
-						 icalcomponent_kind kind);
+						 const ICalTimezone *default_timezone,
+						 ICalComponentKind kind);
 
-icalproperty *	e_cal_util_find_x_property	(icalcomponent *icalcomp,
+gboolean	e_cal_util_component_has_x_property
+						(ICalComponent *icalcomp,
 						 const gchar *x_name);
-gchar *		e_cal_util_dup_x_property	(icalcomponent *icalcomp,
+ICalProperty *	e_cal_util_component_find_x_property
+						(ICalComponent *icalcomp,
 						 const gchar *x_name);
-const gchar *	e_cal_util_get_x_property	(icalcomponent *icalcomp,
+gchar *		e_cal_util_component_dup_x_property
+						(ICalComponent *icalcomp,
 						 const gchar *x_name);
-void		e_cal_util_set_x_property	(icalcomponent *icalcomp,
+void		e_cal_util_component_set_x_property
+						(ICalComponent *icalcomp,
 						 const gchar *x_name,
 						 const gchar *value);
-gboolean	e_cal_util_remove_x_property	(icalcomponent *icalcomp,
+gboolean	e_cal_util_component_remove_x_property
+						(ICalComponent *icalcomp,
 						 const gchar *x_name);
-guint		e_cal_util_remove_property_by_kind
-						(icalcomponent *icalcomp,
-						 icalproperty_kind kind,
+guint		e_cal_util_component_remove_property_by_kind
+						(ICalComponent *icalcomp,
+						 ICalPropertyKind kind,
 						 gboolean all);
 
-gboolean	e_cal_util_init_recur_task_sync	(icalcomponent *vtodo,
+gboolean	e_cal_util_init_recur_task_sync	(ICalComponent *vtodo,
 						 struct _ECalClient *cal_client,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_util_mark_task_complete_sync
-						(icalcomponent *vtodo,
+						(ICalComponent *vtodo,
 						 time_t completed_time,
 						 struct _ECalClient *cal_client,
 						 GCancellable *cancellable,

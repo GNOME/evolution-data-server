@@ -34,98 +34,100 @@
 #define _TIME_MAX	((time_t) INT_MAX)
 
 /**
- * cal_obj_instance_list_free:
- * @list: (element-type CalObjInstance): List of #CalObjInstance structures.
- *
- * Frees a list of #CalObjInstance structures.
- **/
-void
-cal_obj_instance_list_free (GList *list)
-{
-	CalObjInstance *i;
-	GList *l;
-
-	for (l = list; l; l = l->next) {
-		i = l->data;
-
-		if (i != NULL && i->uid != NULL) {
-			g_free (i->uid);
-			g_free (i);
-		} else
-			g_warn_if_reached ();
-	}
-
-	g_list_free (list);
-}
-
-/**
- * cal_obj_uid_list_free:
- * @list: (element-type utf8): List of strings with unique identifiers.
- *
- * Frees a list of unique identifiers for calendar objects.
- **/
-void
-cal_obj_uid_list_free (GList *list)
-{
-	g_list_foreach (list, (GFunc) g_free, NULL);
-	g_list_free (list);
-}
-
-/**
  * e_cal_util_new_top_level:
  *
- * Creates a new VCALENDAR component.
+ * Creates a new VCALENDAR component. Free it with g_object_unref(),
+ * when no longer needed.
  *
- * Returns: the newly created top level component.
+ * Returns: (transfer full): the newly created top level component.
  */
-icalcomponent *
+ICalComponent *
 e_cal_util_new_top_level (void)
 {
-	icalcomponent *icalcomp;
-	icalproperty *prop;
+	ICalComponent *icalcomp;
+	ICalProperty *prop;
 
-	icalcomp = icalcomponent_new (ICAL_VCALENDAR_COMPONENT);
+	icalcomp = i_cal_component_new (I_CAL_VCALENDAR_COMPONENT);
 
 	/* RFC 2445, section 4.7.1 */
-	prop = icalproperty_new_calscale ("GREGORIAN");
-	icalcomponent_add_property (icalcomp, prop);
+	prop = i_cal_property_new_calscale ("GREGORIAN");
+	i_cal_component_take_property (icalcomp, prop);
 
        /* RFC 2445, section 4.7.3 */
-	prop = icalproperty_new_prodid ("-//Ximian//NONSGML Evolution Calendar//EN");
-	icalcomponent_add_property (icalcomp, prop);
+	prop = i_cal_property_new_prodid ("-//Ximian//NONSGML Evolution Calendar//EN");
+	i_cal_component_take_property (icalcomp, prop);
 
 	/* RFC 2445, section 4.7.4.  This is the iCalendar spec version, *NOT*
 	 * the product version!  Do not change this!
 	 */
-	prop = icalproperty_new_version ("2.0");
-	icalcomponent_add_property (icalcomp, prop);
+	prop = i_cal_property_new_version ("2.0");
+	i_cal_component_take_property (icalcomp, prop);
 
 	return icalcomp;
 }
 
 /**
  * e_cal_util_new_component:
- * @kind: Kind of the component to create.
+ * @kind: Kind of the component to create, as #ICalComponentKind.
  *
- * Creates a new #icalcomponent of the specified kind.
+ * Creates a new #ICalComponent of the specified kind. Free it
+ * with g_object_unref(), when no longer needed.
  *
- * Returns: the newly created component.
+ * Returns: (transfer full): the newly created component.
  */
-icalcomponent *
-e_cal_util_new_component (icalcomponent_kind kind)
+ICalComponent *
+e_cal_util_new_component (ICalComponentKind kind)
 {
-	icalcomponent *comp;
-	struct icaltimetype dtstamp;
+	ICalComponent *icalcomp;
+	ICalTimetype *dtstamp;
 	gchar *uid;
 
-	comp = icalcomponent_new (kind);
+	icalcomp = i_cal_component_new (kind);
 	uid = e_util_generate_uid ();
-	icalcomponent_set_uid (comp, uid);
+	i_cal_component_set_uid (icalcomp, uid);
 	g_free (uid);
-	dtstamp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-	icalcomponent_set_dtstamp (comp, dtstamp);
+	dtstamp = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+	i_cal_component_set_dtstamp (icalcomp, dtstamp);
+	g_object_unref (dtstamp);
 
-	return comp;
+	return icalcomp;
+}
+
+/**
+ * e_cal_util_copy_timezone:
+ * @zone: an ICalTimezone
+ *
+ * Copies the @zone together with its inner component and
+ * returns it as a new #ICalTimezone object. Free it with
+ * g_object_unref(), when no longer needed.
+ *
+ * Returns: (transfer full): a copy of the @zone
+ *
+ * Since: 3.36
+ **/
+ICalTimezone *
+e_cal_util_copy_timezone (const ICalTimezone *zone)
+{
+	ICalComponent *comp;
+	ICalTimezone *zone_copy;
+
+	g_return_val_if_fail (zone != NULL, NULL);
+
+	zone_copy = i_cal_timezone_copy (zone);
+	if (!zone_copy)
+		return NULL;
+
+	comp = i_cal_timezone_get_component (zone);
+	if (comp) {
+		ICalComponent *comp_copy;
+
+		comp_copy = i_cal_component_new_clone (comp);
+		i_cal_timezone_set_component (zone_copy, comp_copy);
+		g_object_unref (comp_copy);
+		g_object_unref (comp);
+	}
+
+	return zone_copy;
 }
 
 static gchar *
@@ -149,20 +151,22 @@ read_line (const gchar *string)
  * e_cal_util_parse_ics_string:
  * @string: iCalendar string to be parsed.
  *
- * Parses an iCalendar string and returns a new #icalcomponent representing
+ * Parses an iCalendar string and returns a new #ICalComponent representing
  * that string. Note that this function deals with multiple VCALENDAR's in the
  * string, something that Mozilla used to do and which libical does not
  * support.
  *
- * Returns: a newly created #icalcomponent or NULL if the string isn't a
- * valid iCalendar string.
+ * Free the returned non-NULL component with g_object_unref(), when no longer needed.
+ *
+ * Returns: (transfer full) (nullable): a newly created #ICalComponent, or %NULL,
+ *    if the string isn't a valid iCalendar string.
  */
-icalcomponent *
+ICalComponent *
 e_cal_util_parse_ics_string (const gchar *string)
 {
 	GString *comp_str = NULL;
 	gchar *s;
-	icalcomponent *icalcomp = NULL;
+	ICalComponent *icalcomp = NULL;
 
 	g_return_val_if_fail (string != NULL, NULL);
 
@@ -170,7 +174,7 @@ e_cal_util_parse_ics_string (const gchar *string)
 	s = g_strstr_len (string, strlen (string), "BEGIN:VCALENDAR");
 
 	if (s == NULL)
-		return icalparser_parse_string (string);
+		return i_cal_parser_parse_string (string);
 
 	while (*s != '\0') {
 		gchar *line = read_line (s);
@@ -181,13 +185,14 @@ e_cal_util_parse_ics_string (const gchar *string)
 			comp_str = g_string_append (comp_str, line);
 
 		if (strncmp (line, "END:VCALENDAR", 13) == 0) {
-			icalcomponent *tmp;
+			ICalComponent *tmp;
 
-			tmp = icalparser_parse_string (comp_str->str);
-			if (tmp && icalcomponent_isa (tmp) == ICAL_VCALENDAR_COMPONENT) {
-				if (icalcomp)
-					icalcomponent_merge_component (icalcomp, tmp);
-				else
+			tmp = i_cal_parser_parse_string (comp_str->str);
+			if (tmp && i_cal_component_isa (tmp) == I_CAL_VCALENDAR_COMPONENT) {
+				if (icalcomp) {
+					i_cal_component_merge_component (icalcomp, tmp);
+					g_object_unref (tmp);
+				} else
 					icalcomp = tmp;
 			} else {
 				g_warning (
@@ -257,16 +262,18 @@ get_line_fn (gchar *buf,
  * @filename: Name of the file to be parsed.
  *
  * Parses the given file, and, if it contains a valid iCalendar object,
- * parse it and return a new #icalcomponent.
+ * parse it and return a new #ICalComponent.
  *
- * Returns: a newly created #icalcomponent or NULL if the file doesn't
- * contain a valid iCalendar object.
+ * Free the returned non-NULL component with g_object_unref(), when no longer needed.
+ *
+ * Returns: (transfer full) (nullable): a newly created #ICalComponent, or %NULL,
+ *    if the file doesn't contain a valid iCalendar object.
  */
-icalcomponent *
+ICalComponent *
 e_cal_util_parse_ics_file (const gchar *filename)
 {
-	icalparser *parser;
-	icalcomponent *icalcomp;
+	ICalParser *parser;
+	ICalComponent *icalcomp;
 	struct ics_file fl;
 
 	fl.file = g_fopen (filename, "rb");
@@ -275,11 +282,11 @@ e_cal_util_parse_ics_file (const gchar *filename)
 
 	fl.bof = TRUE;
 
-	parser = icalparser_new ();
-	icalparser_set_gen_data (parser, &fl);
+	parser = i_cal_parser_new ();
+	i_cal_parser_set_gen_data (parser, &fl);
 
-	icalcomp = icalparser_parse (parser, get_line_fn);
-	icalparser_free (parser);
+	icalcomp = i_cal_parser_parse (parser, get_line_fn);
+	g_object_unref (parser);
 	fclose (fl.file);
 
 	return icalcomp;
@@ -290,13 +297,13 @@ e_cal_util_parse_ics_file (const gchar *filename)
  */
 static void
 compute_alarm_range (ECalComponent *comp,
-                     GList *alarm_uids,
+                     GSList *alarm_uids,
                      time_t start,
                      time_t end,
                      time_t *alarm_start,
                      time_t *alarm_end)
 {
-	GList *l;
+	GSList *link;
 	time_t repeat_time;
 
 	*alarm_start = start;
@@ -304,41 +311,45 @@ compute_alarm_range (ECalComponent *comp,
 
 	repeat_time = 0;
 
-	for (l = alarm_uids; l; l = l->next) {
+	for (link = alarm_uids; link; link = g_slist_next (link)) {
 		const gchar *auid;
 		ECalComponentAlarm *alarm;
-		ECalComponentAlarmTrigger trigger;
-		struct icaldurationtype *dur;
+		ECalComponentAlarmTrigger *trigger;
+		ICalDurationType *dur;
 		time_t dur_time;
-		ECalComponentAlarmRepeat repeat;
+		ECalComponentAlarmRepeat *repeat;
 
-		auid = l->data;
+		auid = link->data;
 		alarm = e_cal_component_get_alarm (comp, auid);
 		g_return_if_fail (alarm != NULL);
 
-		e_cal_component_alarm_get_trigger (alarm, &trigger);
-		e_cal_component_alarm_get_repeat (alarm, &repeat);
-		e_cal_component_alarm_free (alarm);
+		trigger = e_cal_component_alarm_get_trigger (alarm);
+		repeat = e_cal_component_alarm_get_repeat (alarm);
 
-		switch (trigger.type) {
+		if (!trigger) {
+			e_cal_component_alarm_free (alarm);
+			continue;
+		}
+
+		switch (e_cal_component_alarm_trigger_get_kind (trigger)) {
 		case E_CAL_COMPONENT_ALARM_TRIGGER_NONE:
 		case E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE:
 			break;
 
 		case E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START:
 		case E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_END:
-			dur = &trigger.u.rel_duration;
-			dur_time = icaldurationtype_as_int (*dur);
+			dur = e_cal_component_alarm_trigger_get_duration (trigger);
+			dur_time = i_cal_duration_type_as_int (dur);
 
-			if (repeat.repetitions != 0) {
+			if (repeat && e_cal_component_alarm_repeat_get_repetitions (repeat) != 0) {
 				gint rdur;
 
-				rdur = repeat.repetitions *
-					icaldurationtype_as_int (repeat.duration);
+				rdur = e_cal_component_alarm_repeat_get_repetitions (repeat) *
+					e_cal_component_alarm_repeat_get_interval_seconds (repeat);
 				repeat_time = MAX (repeat_time, rdur);
 			}
 
-			if (dur->is_neg)
+			if (i_cal_duration_type_is_neg (dur))
 				/* If the duration is negative then dur_time
 				 * will be negative as well; that is why we
 				 * subtract to expand the range.
@@ -348,10 +359,9 @@ compute_alarm_range (ECalComponent *comp,
 				*alarm_start = MIN (*alarm_start, start - dur_time);
 
 			break;
-
-		default:
-			g_return_if_reached ();
 		}
+
+		e_cal_component_alarm_free (alarm);
 	}
 
 	*alarm_start -= repeat_time;
@@ -360,31 +370,29 @@ compute_alarm_range (ECalComponent *comp,
 
 /* Closure data to generate alarm occurrences */
 struct alarm_occurrence_data {
+	ECalComponent *comp;
+
 	/* These are the info we have */
-	GList *alarm_uids;
+	GSList *alarm_uids; /* gchar * */
 	time_t start;
 	time_t end;
 	ECalComponentAlarmAction *omit;
 
 	/* This is what we compute */
-	GSList *triggers;
+	GSList *triggers; /* ECalComponentAlarmInstance * */
 	gint n_triggers;
 };
 
 static void
 add_trigger (struct alarm_occurrence_data *aod,
              const gchar *auid,
-             time_t trigger,
+             time_t instance_time,
              time_t occur_start,
              time_t occur_end)
 {
 	ECalComponentAlarmInstance *instance;
 
-	instance = g_new (ECalComponentAlarmInstance, 1);
-	instance->auid = g_strdup (auid);
-	instance->trigger = trigger;
-	instance->occur_start = occur_start;
-	instance->occur_end = occur_end;
+	instance = e_cal_component_alarm_instance_new (auid, instance_time, occur_start, occur_end);
 
 	aod->triggers = g_slist_prepend (aod->triggers, instance);
 	aod->n_triggers++;
@@ -394,51 +402,65 @@ add_trigger (struct alarm_occurrence_data *aod,
  * of a component's RELATIVE alarms.
  */
 static gboolean
-add_alarm_occurrences_cb (ECalComponent *comp,
-                          time_t start,
-                          time_t end,
-                          gpointer data)
+add_alarm_occurrences_cb (ICalComponent *icalcomp,
+			  ICalTimetype *instance_start,
+			  ICalTimetype *instance_end,
+			  gpointer user_data,
+			  GCancellable *cancellable,
+			  GError **error)
 {
 	struct alarm_occurrence_data *aod;
-	GList *l;
+	time_t start, end;
+	GSList *link;
 
-	aod = data;
+	aod = user_data;
+	start = i_cal_time_as_timet (instance_start);
+	end = i_cal_time_as_timet (instance_end);
 
-	for (l = aod->alarm_uids; l; l = l->next) {
+	for (link = aod->alarm_uids; link; link = g_slist_next (link)) {
 		const gchar *auid;
 		ECalComponentAlarm *alarm;
 		ECalComponentAlarmAction action;
-		ECalComponentAlarmTrigger trigger;
-		ECalComponentAlarmRepeat repeat;
-		struct icaldurationtype *dur;
+		ECalComponentAlarmTrigger *trigger;
+		ECalComponentAlarmRepeat *repeat;
+		ICalDurationType *dur;
 		time_t dur_time;
 		time_t occur_time, trigger_time;
 		gint i;
 
-		auid = l->data;
-		alarm = e_cal_component_get_alarm (comp, auid);
+		auid = link->data;
+		alarm = e_cal_component_get_alarm (aod->comp, auid);
 		g_return_val_if_fail (alarm != NULL, FALSE);
 
-		e_cal_component_alarm_get_action (alarm, &action);
-		e_cal_component_alarm_get_trigger (alarm, &trigger);
-		e_cal_component_alarm_get_repeat (alarm, &repeat);
-		e_cal_component_alarm_free (alarm);
+		action = e_cal_component_alarm_get_action (alarm);
+		trigger = e_cal_component_alarm_get_trigger (alarm);
+		repeat = e_cal_component_alarm_get_repeat (alarm);
+
+		if (!trigger) {
+			e_cal_component_alarm_free (alarm);
+			continue;
+		}
 
 		for (i = 0; aod->omit[i] != -1; i++) {
 			if (aod->omit[i] == action)
 				break;
 		}
-		if (aod->omit[i] != -1)
+
+		if (aod->omit[i] != -1) {
+			e_cal_component_alarm_free (alarm);
 			continue;
+		}
 
-		if (trigger.type != E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START
-		    && trigger.type != E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_END)
+		if (e_cal_component_alarm_trigger_get_kind (trigger) != E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START &&
+		    e_cal_component_alarm_trigger_get_kind (trigger) != E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_END) {
+			e_cal_component_alarm_free (alarm);
 			continue;
+		}
 
-		dur = &trigger.u.rel_duration;
-		dur_time = icaldurationtype_as_int (*dur);
+		dur = e_cal_component_alarm_trigger_get_duration (trigger);
+		dur_time = i_cal_duration_type_as_int (dur);
 
-		if (trigger.type == E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START)
+		if (e_cal_component_alarm_trigger_get_kind (trigger) == E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START)
 			occur_time = start;
 		else
 			occur_time = end;
@@ -453,16 +475,17 @@ add_alarm_occurrences_cb (ECalComponent *comp,
 
 		/* Add repeating alarms */
 
-		if (repeat.repetitions != 0) {
-			gint i;
+		if (repeat && e_cal_component_alarm_repeat_get_repetitions (repeat) != 0) {
+			gint ii, repetitions;
 			time_t repeat_time;
 
-			repeat_time = icaldurationtype_as_int (repeat.duration);
+			repeat_time = e_cal_component_alarm_repeat_get_interval_seconds (repeat);
+			repetitions = e_cal_component_alarm_repeat_get_repetitions (repeat);
 
-			for (i = 0; i < repeat.repetitions; i++) {
+			for (ii = 0; ii < repetitions; ii++) {
 				time_t t;
 
-				t = trigger_time + (i + 1) * repeat_time;
+				t = trigger_time + (ii + 1) * repeat_time;
 
 				if (t >= aod->start && t < aod->end)
 					add_trigger (aod, auid, t, start, end);
@@ -473,6 +496,8 @@ add_alarm_occurrences_cb (ECalComponent *comp,
 
 		if (trigger_time >= aod->start && trigger_time < aod->end)
 			add_trigger (aod, auid, trigger_time, start, end);
+
+		e_cal_component_alarm_free (alarm);
 	}
 
 	return TRUE;
@@ -482,93 +507,105 @@ add_alarm_occurrences_cb (ECalComponent *comp,
 static void
 generate_absolute_triggers (ECalComponent *comp,
                             struct alarm_occurrence_data *aod,
-                            ECalRecurResolveTimezoneFn resolve_tzid,
+                            ECalRecurResolveTimezoneCb resolve_tzid,
                             gpointer user_data,
-                            icaltimezone *default_timezone)
+                            ICalTimezone *default_timezone)
 {
-	GList *l;
-	ECalComponentDateTime dt_start, dt_end;
+	GSList *link;
+	ECalComponentDateTime *dtstart, *dtend;
+	time_t occur_start, occur_end;
 
-	e_cal_component_get_dtstart (comp, &dt_start);
-	e_cal_component_get_dtend (comp, &dt_end);
+	dtstart = e_cal_component_get_dtstart (comp);
+	dtend = e_cal_component_get_dtend (comp);
 
-	for (l = aod->alarm_uids; l; l = l->next) {
+	/* No particular occurrence, so just use the times from the
+	 * component */
+
+	if (dtstart && e_cal_component_datetime_get_value (dtstart)) {
+		ICalTimezone *zone;
+		const gchar *tzid = e_cal_component_datetime_get_tzid (dtstart);
+
+		if (tzid && !i_cal_time_is_date (e_cal_component_datetime_get_value (dtstart)))
+			zone = (* resolve_tzid) (tzid, user_data, NULL, NULL);
+		else
+			zone = default_timezone ? g_object_ref (default_timezone) : NULL;
+
+		occur_start = i_cal_time_as_timet_with_zone (e_cal_component_datetime_get_value (dtstart), zone);
+
+		g_clear_object (&zone);
+	} else
+		occur_start = -1;
+
+	if (dtend && e_cal_component_datetime_get_value (dtend)) {
+		ICalTimezone *zone;
+		const gchar *tzid = e_cal_component_datetime_get_tzid (dtend);
+
+		if (tzid && !i_cal_time_is_date (e_cal_component_datetime_get_value (dtend)))
+			zone = (* resolve_tzid) (tzid, user_data, NULL, NULL);
+		else
+			zone = default_timezone ? g_object_ref (default_timezone) : NULL;
+
+		occur_end = i_cal_time_as_timet_with_zone (e_cal_component_datetime_get_value (dtend), zone);
+
+		g_clear_object (&zone);
+	} else
+		occur_end = -1;
+
+	for (link = aod->alarm_uids; link; link = g_slist_next (link)) {
 		const gchar *auid;
 		ECalComponentAlarm *alarm;
 		ECalComponentAlarmAction action;
-		ECalComponentAlarmRepeat repeat;
-		ECalComponentAlarmTrigger trigger;
+		ECalComponentAlarmRepeat *repeat;
+		ECalComponentAlarmTrigger *trigger;
 		time_t abs_time;
-		time_t occur_start, occur_end;
-		icaltimezone *zone;
+		ICalTimezone *zone;
 		gint i;
 
-		auid = l->data;
+		auid = link->data;
 		alarm = e_cal_component_get_alarm (comp, auid);
 		g_return_if_fail (alarm != NULL);
 
-		e_cal_component_alarm_get_action (alarm, &action);
-		e_cal_component_alarm_get_trigger (alarm, &trigger);
-		e_cal_component_alarm_get_repeat (alarm, &repeat);
-		e_cal_component_alarm_free (alarm);
+		action = e_cal_component_alarm_get_action (alarm);
+		trigger = e_cal_component_alarm_get_trigger (alarm);
+		repeat = e_cal_component_alarm_get_repeat (alarm);
 
 		for (i = 0; aod->omit[i] != -1; i++) {
 			if (aod->omit[i] == action)
 				break;
 		}
-		if (aod->omit[i] != -1)
-			continue;
 
-		if (trigger.type != E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE)
+		if (aod->omit[i] != -1) {
+			e_cal_component_alarm_free (alarm);
 			continue;
+		}
+
+		if (e_cal_component_alarm_trigger_get_kind (trigger) != E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE) {
+			e_cal_component_alarm_free (alarm);
+			continue;
+		}
 
 		/* Absolute triggers are always in UTC;
 		 * see RFC 2445 section 4.8.6.3 */
-		zone = icaltimezone_get_utc_timezone ();
+		zone = i_cal_timezone_get_utc_timezone ();
 
-		abs_time = icaltime_as_timet_with_zone (trigger.u.abs_time, zone);
-
-		/* No particular occurrence, so just use the times from the
-		 * component */
-
-		if (dt_start.value) {
-			if (dt_start.tzid && !dt_start.value->is_date)
-				zone = (* resolve_tzid) (dt_start.tzid, user_data);
-			else
-				zone = default_timezone;
-
-			occur_start = icaltime_as_timet_with_zone (
-				*dt_start.value, zone);
-		} else
-			occur_start = -1;
-
-		if (dt_end.value) {
-			if (dt_end.tzid && !dt_end.value->is_date)
-				zone = (* resolve_tzid) (dt_end.tzid, user_data);
-			else
-				zone = default_timezone;
-
-			occur_end = icaltime_as_timet_with_zone (*dt_end.value, zone);
-		} else
-			occur_end = -1;
+		abs_time = i_cal_time_as_timet_with_zone (e_cal_component_alarm_trigger_get_absolute_time (trigger), zone);
 
 		/* Add repeating alarms */
 
-		if (repeat.repetitions != 0) {
-			gint i;
+		if (repeat && e_cal_component_alarm_repeat_get_repetitions (repeat) > 0) {
+			gint ii, repetitions;
 			time_t repeat_time;
 
-			repeat_time = icaldurationtype_as_int (repeat.duration);
+			repeat_time = e_cal_component_alarm_repeat_get_interval_seconds (repeat);
+			repetitions = e_cal_component_alarm_repeat_get_repetitions (repeat);
 
-			for (i = 0; i < repeat.repetitions; i++) {
-				time_t t;
+			for (ii = 0; ii < repetitions; ii++) {
+				time_t tt;
 
-				t = abs_time + (i + 1) * repeat_time;
+				tt = abs_time + (ii + 1) * repeat_time;
 
-				if (t >= aod->start && t < aod->end)
-					add_trigger (
-						aod, auid, t,
-						occur_start, occur_end);
+				if (tt >= aod->start && tt < aod->end)
+					add_trigger (aod, auid, tt, occur_start, occur_end);
 			}
 		}
 
@@ -576,10 +613,12 @@ generate_absolute_triggers (ECalComponent *comp,
 
 		if (abs_time >= aod->start && abs_time < aod->end)
 			add_trigger (aod, auid, abs_time, occur_start, occur_end);
+
+		e_cal_component_alarm_free (alarm);
 	}
 
-	e_cal_component_free_datetime (&dt_start);
-	e_cal_component_free_datetime (&dt_end);
+	e_cal_component_datetime_free (dtstart);
+	e_cal_component_datetime_free (dtend);
 }
 
 /* Compares two alarm instances; called from g_slist_sort() */
@@ -588,13 +627,17 @@ compare_alarm_instance (gconstpointer a,
                         gconstpointer b)
 {
 	const ECalComponentAlarmInstance *aia, *aib;
+	time_t atime, btime;
 
 	aia = a;
 	aib = b;
 
-	if (aia->trigger < aib->trigger)
+	atime = e_cal_component_alarm_instance_get_time (aia);
+	btime = e_cal_component_alarm_instance_get_time (aib);
+
+	if (atime < btime)
 		return -1;
-	else if (aia->trigger > aib->trigger)
+	else if (atime > btime)
 		return 1;
 	else
 		return 0;
@@ -612,35 +655,36 @@ compare_alarm_instance (gconstpointer a,
  * @default_timezone: The timezone used to resolve DATE and floating DATE-TIME
  * values.
  *
- * Generates alarm instances for a calendar component.  Returns the instances
+ * Generates alarm instances for a calendar component. Returns the instances
  * structure, or %NULL if no alarm instances occurred in the specified time
- * range.
+ * range. Free the returned structure with e_cal_component_alarms_free(),
+ * when no longer needed.
  *
- * Returns: (allow-none) (transfer full): a list of all the alarms found for the
- * given component in the given time range. The list of alarms should be freed
- * by using e_cal_component_alarms_free().
+ * Returns: (transfer full) (nullable): a list of all the alarms found
+ *    for the given component in the given time range.
  */
 ECalComponentAlarms *
 e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
                                      time_t start,
                                      time_t end,
                                      ECalComponentAlarmAction *omit,
-                                     ECalRecurResolveTimezoneFn resolve_tzid,
+                                     ECalRecurResolveTimezoneCb resolve_tzid,
                                      gpointer user_data,
-                                     icaltimezone *default_timezone)
+                                     ICalTimezone *default_timezone)
 {
-	GList *alarm_uids;
+	GSList *alarm_uids;
 	time_t alarm_start, alarm_end;
 	struct alarm_occurrence_data aod;
+	ICalTimetype *alarm_start_tt, *alarm_end_tt;
 	ECalComponentAlarms *alarms;
 
 	if (!e_cal_component_has_alarms (comp))
 		return NULL;
 
 	alarm_uids = e_cal_component_get_alarm_uids (comp);
-	compute_alarm_range (
-		comp, alarm_uids, start, end, &alarm_start, &alarm_end);
+	compute_alarm_range (comp, alarm_uids, start, end, &alarm_start, &alarm_end);
 
+	aod.comp = comp;
 	aod.alarm_uids = alarm_uids;
 	aod.start = start;
 	aod.end = end;
@@ -648,27 +692,30 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
 	aod.triggers = NULL;
 	aod.n_triggers = 0;
 
-	e_cal_recur_generate_instances (
-		comp, alarm_start, alarm_end,
+	alarm_start_tt = i_cal_time_from_timet_with_zone (alarm_start, FALSE, i_cal_timezone_get_utc_timezone ());
+	alarm_end_tt = i_cal_time_from_timet_with_zone (alarm_end, FALSE, i_cal_timezone_get_utc_timezone ());
+
+	e_cal_recur_generate_instances_sync (e_cal_component_get_icalcomponent (comp),
+		alarm_start_tt, alarm_end_tt,
 		add_alarm_occurrences_cb, &aod,
 		resolve_tzid, user_data,
-		default_timezone);
+		default_timezone, NULL, NULL);
+
+	g_clear_object (&alarm_start_tt);
+	g_clear_object (&alarm_end_tt);
 
 	/* We add the ABSOLUTE triggers separately */
-	generate_absolute_triggers (
-		comp, &aod, resolve_tzid, user_data, default_timezone);
+	generate_absolute_triggers (comp, &aod, resolve_tzid, user_data, default_timezone);
 
-	cal_obj_uid_list_free (alarm_uids);
+	g_slist_free_full (alarm_uids, g_free);
 
 	if (aod.n_triggers == 0)
 		return NULL;
 
 	/* Create the component alarm instances structure */
 
-	alarms = g_new (ECalComponentAlarms, 1);
-	alarms->comp = comp;
-	g_object_ref (G_OBJECT (alarms->comp));
-	alarms->alarms = g_slist_sort (aod.triggers, compare_alarm_instance);
+	alarms = e_cal_component_alarms_new (comp);
+	e_cal_component_alarms_take_instances (alarms, g_slist_sort (aod.triggers, compare_alarm_instance));
 
 	return alarms;
 }
@@ -688,7 +735,9 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
  * values.
  *
  * Iterates through all the components in the @comps list and generates alarm
- * instances for them; putting them in the @comp_alarms list.
+ * instances for them; putting them in the @comp_alarms list. Free the @comp_alarms
+ * with g_slist_free_full (comp_alarms, e_cal_component_alarms_free);, when
+ * no longer neeed.
  *
  * Returns: the number of elements it added to the list
  */
@@ -698,9 +747,9 @@ e_cal_util_generate_alarms_for_list (GList *comps,
                                      time_t end,
                                      ECalComponentAlarmAction *omit,
                                      GSList **comp_alarms,
-                                     ECalRecurResolveTimezoneFn resolve_tzid,
+                                     ECalRecurResolveTimezoneCb resolve_tzid,
                                      gpointer user_data,
-                                     icaltimezone *default_timezone)
+                                     ICalTimezone *default_timezone)
 {
 	GList *l;
 	gint n;
@@ -856,41 +905,45 @@ e_cal_util_seconds_to_string (gint64 seconds)
 
 /* callback for icalcomponent_foreach_tzid */
 typedef struct {
-	icalcomponent *vcal_comp;
-	icalcomponent *icalcomp;
+	ICalComponent *vcal_comp;
+	ICalComponent *icalcomp;
 } ForeachTzidData;
 
 static void
-add_timezone_cb (icalparameter *param,
-                 gpointer data)
+add_timezone_cb (ICalParameter *param,
+                 gpointer user_data)
 {
-	icaltimezone *tz;
+	ICalTimezone *tz;
 	const gchar *tzid;
-	icalcomponent *vtz_comp;
-	ForeachTzidData *f_data = (ForeachTzidData *) data;
+	ICalComponent *vtz_comp;
+	ForeachTzidData *f_data = user_data;
 
-	tzid = icalparameter_get_tzid (param);
+	tzid = i_cal_parameter_get_tzid (param);
 	if (!tzid)
 		return;
 
-	tz = icalcomponent_get_timezone (f_data->vcal_comp, tzid);
-	if (tz)
+	tz = i_cal_component_get_timezone (f_data->vcal_comp, tzid);
+	if (tz) {
+		g_object_unref (tz);
 		return;
-
-	tz = icalcomponent_get_timezone (f_data->icalcomp, tzid);
-	if (!tz) {
-		tz = icaltimezone_get_builtin_timezone_from_tzid (tzid);
-		if (!tz)
-			return;
 	}
 
-	vtz_comp = icaltimezone_get_component (tz);
-	if (!vtz_comp)
-		return;
+	tz = i_cal_component_get_timezone (f_data->icalcomp, tzid);
+	if (!tz) {
+		tz = i_cal_timezone_get_builtin_timezone_from_tzid (tzid);
+		if (!tz)
+			return;
 
-	icalcomponent_add_component (
-		f_data->vcal_comp,
-		icalcomponent_new_clone (vtz_comp));
+		g_object_ref (tz);
+	}
+
+	vtz_comp = i_cal_timezone_get_component (tz);
+	if (vtz_comp) {
+		i_cal_component_take_component (f_data->vcal_comp, i_cal_component_new_clone (vtz_comp));
+		g_object_unref (vtz_comp);
+	}
+
+	g_object_unref (tz);
 }
 
 /**
@@ -902,8 +955,8 @@ add_timezone_cb (icalparameter *param,
  * in the given @icalcomp.
  */
 void
-e_cal_util_add_timezones_from_component (icalcomponent *vcal_comp,
-                                         icalcomponent *icalcomp)
+e_cal_util_add_timezones_from_component (ICalComponent *vcal_comp,
+					 ICalComponent *icalcomp)
 {
 	ForeachTzidData f_data;
 
@@ -912,103 +965,122 @@ e_cal_util_add_timezones_from_component (icalcomponent *vcal_comp,
 
 	f_data.vcal_comp = vcal_comp;
 	f_data.icalcomp = icalcomp;
-	icalcomponent_foreach_tzid (icalcomp, add_timezone_cb, &f_data);
+	i_cal_component_foreach_tzid (icalcomp, add_timezone_cb, &f_data);
+}
+
+/**
+ * e_cal_util_component_has_property:
+ * @icalcomp: an #ICalComponent
+ * @prop_kind: a property kind to look for, as an %ICalPropertyKind
+ *
+ * Returns, whether the @icalcomp has a property of @prop_kind. To check
+ * for a specific X property use e_cal_util_component_has_x_property().
+ *
+ * Returns: whether the @icalcomp has a property of @prop_kind
+ *
+ * Since: 3.36
+ **/
+gboolean
+e_cal_util_component_has_property (ICalComponent *icalcomp,
+				   ICalPropertyKind prop_kind)
+{
+	ICalProperty *prop;
+
+	g_return_val_if_fail (I_CAL_IS_COMPONENT (icalcomp), FALSE);
+
+	prop = i_cal_component_get_first_property (icalcomp, prop_kind);
+
+	if (!prop)
+		return FALSE;
+
+	g_object_unref (prop);
+
+	return TRUE;
 }
 
 /**
  * e_cal_util_component_is_instance:
- * @icalcomp: An #icalcomponent.
+ * @icalcomp: An #ICalComponent.
  *
- * Checks whether an #icalcomponent is an instance of a recurring appointment.
+ * Checks whether an #ICalComponent is an instance of a recurring appointment.
  *
  * Returns: TRUE if it is an instance, FALSE if not.
  */
 gboolean
-e_cal_util_component_is_instance (icalcomponent *icalcomp)
+e_cal_util_component_is_instance (ICalComponent *icalcomp)
 {
-	icalproperty *prop;
-
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
-	prop = icalcomponent_get_first_property (
-		icalcomp, ICAL_RECURRENCEID_PROPERTY);
-
-	return (prop != NULL);
+	return e_cal_util_component_has_property (icalcomp, I_CAL_RECURRENCEID_PROPERTY);
 }
 
 /**
  * e_cal_util_component_has_alarms:
- * @icalcomp: An #icalcomponent.
+ * @icalcomp: An #ICalComponent.
  *
- * Checks whether an #icalcomponent has any alarm.
+ * Checks whether an #ICalComponent has any alarm.
  *
  * Returns: TRUE if it has alarms, FALSE otherwise.
  */
 gboolean
-e_cal_util_component_has_alarms (icalcomponent *icalcomp)
+e_cal_util_component_has_alarms (ICalComponent *icalcomp)
 {
-	icalcomponent *alarm;
+	ICalComponent *alarm;
 
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
-	alarm = icalcomponent_get_first_component (
-		icalcomp, ICAL_VALARM_COMPONENT);
+	alarm = i_cal_component_get_first_component (icalcomp, I_CAL_VALARM_COMPONENT);
 
-	return (alarm != NULL);
+	if (!alarm)
+		return FALSE;
+
+	g_object_unref (alarm);
+
+	return TRUE;
 }
 
 /**
  * e_cal_util_component_has_organizer:
- * @icalcomp: An #icalcomponent.
+ * @icalcomp: An #ICalComponent.
  *
- * Checks whether an #icalcomponent has an organizer.
+ * Checks whether an #ICalComponent has an organizer.
  *
  * Returns: TRUE if there is an organizer, FALSE if not.
  */
 gboolean
-e_cal_util_component_has_organizer (icalcomponent *icalcomp)
+e_cal_util_component_has_organizer (ICalComponent *icalcomp)
 {
-	icalproperty *prop;
-
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
-	prop = icalcomponent_get_first_property (
-		icalcomp, ICAL_ORGANIZER_PROPERTY);
-
-	return (prop != NULL);
+	return e_cal_util_component_has_property (icalcomp, I_CAL_ORGANIZER_PROPERTY);
 }
 
 /**
  * e_cal_util_component_has_attendee:
- * @icalcomp: An #icalcomponent.
+ * @icalcomp: An #ICalComponent.
  *
- * Checks if an #icalcomponent has any attendees.
+ * Checks if an #ICalComponent has any attendees.
  *
  * Returns: TRUE if there are attendees, FALSE if not.
  */
 gboolean
-e_cal_util_component_has_attendee (icalcomponent *icalcomp)
+e_cal_util_component_has_attendee (ICalComponent *icalcomp)
 {
-	icalproperty *prop;
-
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
-	prop = icalcomponent_get_first_property (
-		icalcomp, ICAL_ATTENDEE_PROPERTY);
-
-	return (prop != NULL);
+	return e_cal_util_component_has_property (icalcomp, I_CAL_ATTENDEE_PROPERTY);
 }
 
 /**
  * e_cal_util_component_has_recurrences:
- * @icalcomp: An #icalcomponent.
+ * @icalcomp: An #ICalComponent.
  *
- * Checks if an #icalcomponent has recurrence dates or rules.
+ * Checks if an #ICalComponent has recurrence dates or rules.
  *
  * Returns: TRUE if there are recurrence dates/rules, FALSE if not.
  */
 gboolean
-e_cal_util_component_has_recurrences (icalcomponent *icalcomp)
+e_cal_util_component_has_recurrences (ICalComponent *icalcomp)
 {
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
@@ -1018,100 +1090,34 @@ e_cal_util_component_has_recurrences (icalcomponent *icalcomp)
 
 /**
  * e_cal_util_component_has_rdates:
- * @icalcomp: An #icalcomponent.
+ * @icalcomp: An #ICalComponent.
  *
- * Checks if an #icalcomponent has recurrence dates.
+ * Checks if an #ICalComponent has recurrence dates.
  *
  * Returns: TRUE if there are recurrence dates, FALSE if not.
  */
 gboolean
-e_cal_util_component_has_rdates (icalcomponent *icalcomp)
+e_cal_util_component_has_rdates (ICalComponent *icalcomp)
 {
-	icalproperty *prop;
-
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
-	prop = icalcomponent_get_first_property (
-		icalcomp, ICAL_RDATE_PROPERTY);
-
-	return (prop != NULL);
+	return e_cal_util_component_has_property (icalcomp, I_CAL_RDATE_PROPERTY);
 }
 
 /**
  * e_cal_util_component_has_rrules:
- * @icalcomp: An #icalcomponent.
+ * @icalcomp: An #ICalComponent.
  *
- * Checks if an #icalcomponent has recurrence rules.
+ * Checks if an #ICalComponent has recurrence rules.
  *
  * Returns: TRUE if there are recurrence rules, FALSE if not.
  */
 gboolean
-e_cal_util_component_has_rrules (icalcomponent *icalcomp)
+e_cal_util_component_has_rrules (ICalComponent *icalcomp)
 {
-	icalproperty *prop;
-
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
-	prop = icalcomponent_get_first_property (
-		icalcomp, ICAL_RRULE_PROPERTY);
-
-	return (prop != NULL);
-}
-
-/**
- * e_cal_util_event_dates_match:
- * @icalcomp1: An #icalcomponent.
- * @icalcomp2: An #icalcomponent.
- *
- * Compare the dates of two #icalcomponent's to check if they match.
- *
- * Returns: TRUE if the dates of both components match, FALSE otherwise.
- */
-gboolean
-e_cal_util_event_dates_match (icalcomponent *icalcomp1,
-                              icalcomponent *icalcomp2)
-{
-	struct icaltimetype c1_dtstart, c1_dtend, c2_dtstart, c2_dtend;
-
-	g_return_val_if_fail (icalcomp1 != NULL, FALSE);
-	g_return_val_if_fail (icalcomp2 != NULL, FALSE);
-
-	c1_dtstart = icalcomponent_get_dtstart (icalcomp1);
-	c1_dtend = icalcomponent_get_dtend (icalcomp1);
-	c2_dtstart = icalcomponent_get_dtstart (icalcomp2);
-	c2_dtend = icalcomponent_get_dtend (icalcomp2);
-
-	/* if either value is NULL, they must both be NULL to match */
-	if (icaltime_is_valid_time (c1_dtstart) || icaltime_is_valid_time (c2_dtstart)) {
-		if (!(icaltime_is_valid_time (c1_dtstart) && icaltime_is_valid_time (c2_dtstart)))
-			return FALSE;
-	} else {
-		if (icaltime_compare (c1_dtstart, c2_dtstart))
-			return FALSE;
-	}
-
-	if (icaltime_is_valid_time (c1_dtend) || icaltime_is_valid_time (c2_dtend)) {
-		if (!(icaltime_is_valid_time (c1_dtend) && icaltime_is_valid_time (c2_dtend)))
-			return FALSE;
-	} else {
-		if (icaltime_compare (c1_dtend, c2_dtend))
-			return FALSE;
-	}
-
-	/* now match the timezones */
-	if (!(!c1_dtstart.zone && !c2_dtstart.zone) ||
-	    (c1_dtstart.zone && c2_dtstart.zone &&
-	     !strcmp (icaltimezone_get_tzid ((icaltimezone *) c1_dtstart.zone),
-		      icaltimezone_get_tzid ((icaltimezone *) c2_dtstart.zone))))
-		return FALSE;
-
-	if (!(!c1_dtend.zone && !c2_dtend.zone) ||
-	    (c1_dtend.zone && c2_dtend.zone &&
-	     !strcmp (icaltimezone_get_tzid ((icaltimezone *) c1_dtend.zone),
-		      icaltimezone_get_tzid ((icaltimezone *) c2_dtend.zone))))
-		return FALSE;
-
-	return TRUE;
+	return e_cal_util_component_has_property (icalcomp, I_CAL_RRULE_PROPERTY);
 }
 
 /* Individual instances management */
@@ -1122,67 +1128,72 @@ struct instance_data {
 };
 
 static void
-check_instance (icalcomponent *comp,
-                struct icaltime_span *span,
-                gpointer data)
+check_instance (ICalComponent *comp,
+		ICalTimeSpan *span,
+		gpointer user_data)
 {
-	struct instance_data *instance = data;
+	struct instance_data *instance = user_data;
 
-	if (span->start == instance->start)
+	if (i_cal_time_span_get_start (span) == instance->start)
 		instance->found = TRUE;
 }
 
 /**
  * e_cal_util_construct_instance:
- * @icalcomp: A recurring #icalcomponent
+ * @icalcomp: A recurring #ICalComponent
  * @rid: The RECURRENCE-ID to construct a component for
  *
  * This checks that @rid indicates a valid recurrence of @icalcomp, and
- * if so, generates a copy of @comp containing a RECURRENCE-ID of @rid.
+ * if so, generates a copy of @icalcomp containing a RECURRENCE-ID of @rid.
  *
- * Returns: the instance, or %NULL.
+ * Free the returned non-NULL component with g_object_unref(), when
+ * no longer needed.
+ *
+ * Returns: (transfer full) (nullable): the instance as a new #ICalComponent, or %NULL.
  **/
-icalcomponent *
-e_cal_util_construct_instance (icalcomponent *icalcomp,
-                               struct icaltimetype rid)
+ICalComponent *
+e_cal_util_construct_instance (ICalComponent *icalcomp,
+			       const ICalTimetype *rid)
 {
 	struct instance_data instance;
-	struct icaltimetype start, end;
+	ICalTimetype *start, *end;
 
 	g_return_val_if_fail (icalcomp != NULL, NULL);
 
 	/* Make sure this is really recurring */
-	if (!icalcomponent_get_first_property (icalcomp, ICAL_RRULE_PROPERTY) &&
-	    !icalcomponent_get_first_property (icalcomp, ICAL_RDATE_PROPERTY))
+	if (!e_cal_util_component_has_recurrences (icalcomp))
 		return NULL;
 
 	/* Make sure the specified instance really exists */
-	start = icaltime_convert_to_zone (rid, icaltimezone_get_utc_timezone ());
-	end = start;
-	icaltime_adjust (&end, 0, 0, 0, 1);
+	start = i_cal_time_convert_to_zone ((ICalTimetype *) rid, i_cal_timezone_get_utc_timezone ());
+	end = i_cal_timetype_new_clone (start);
+	i_cal_time_adjust (end, 0, 0, 0, 1);
 
-	instance.start = icaltime_as_timet (start);
+	instance.start = i_cal_time_as_timet (start);
 	instance.found = FALSE;
-	icalcomponent_foreach_recurrence (icalcomp, start, end,
-					  check_instance, &instance);
+	i_cal_component_foreach_recurrence (icalcomp, start, end, check_instance, &instance);
+
+	g_object_unref (start);
+	g_object_unref (end);
+
 	if (!instance.found)
 		return NULL;
 
 	/* Make the instance */
-	icalcomp = icalcomponent_new_clone (icalcomp);
-	icalcomponent_set_recurrenceid (icalcomp, rid);
+	icalcomp = i_cal_component_new_clone (icalcomp);
+	i_cal_component_set_recurrenceid (icalcomp, (ICalTimetype *) rid);
 
 	return icalcomp;
 }
 
 static inline gboolean
-time_matches_rid (struct icaltimetype itt,
-                  struct icaltimetype rid,
+time_matches_rid (const ICalTimetype *itt,
+                  const ICalTimetype *rid,
                   ECalObjModType mod)
 {
 	gint compare;
 
-	compare = icaltime_compare (itt, rid);
+	compare = i_cal_time_compare ((ICalTimetype *) itt, (ICalTimetype *) rid);
 	if (compare == 0)
 		return TRUE;
 	else if (compare < 0 && (mod & E_CAL_OBJ_MOD_THIS_AND_PRIOR))
@@ -1194,169 +1205,220 @@ time_matches_rid (struct icaltimetype itt,
 }
 
 static void
-e_cal_util_remove_instances_ex (icalcomponent *icalcomp,
-				struct icaltimetype rid,
+e_cal_util_remove_instances_ex (ICalComponent *icalcomp,
+				const ICalTimetype *rid,
 				ECalObjModType mod,
 				gboolean keep_rid,
 				gboolean can_add_exrule)
 {
-	icalproperty *prop;
-	struct icaltimetype itt, recur;
-	struct icalrecurrencetype rule;
-	icalrecur_iterator *iter;
+	ICalProperty *prop;
+	ICalTimetype *itt, *recur;
+	ICalRecurrenceType *rule;
+	ICalRecurIterator *iter;
 	GSList *remove_props = NULL, *rrules = NULL, *link;
 
 	g_return_if_fail (icalcomp != NULL);
 	g_return_if_fail (mod != E_CAL_OBJ_MOD_ALL);
 
 	/* First remove RDATEs and EXDATEs in the indicated range. */
-	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_RDATE_PROPERTY);
+	for (prop = i_cal_component_get_first_property (icalcomp, I_CAL_RDATE_PROPERTY);
 	     prop;
-	     prop = icalcomponent_get_next_property (icalcomp, ICAL_RDATE_PROPERTY)) {
-		struct icaldatetimeperiodtype period;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, I_CAL_RDATE_PROPERTY)) {
+		ICalDatetimeperiodType *period;
+		ICalTimetype *period_time;
 
-		period = icalproperty_get_rdate (prop);
-		if (time_matches_rid (period.time, rid, mod) && (!keep_rid ||
-		    icaltime_compare (period.time, rid) != 0))
-			remove_props = g_slist_prepend (remove_props, prop);
+		period = i_cal_property_get_rdate (prop);
+		if (!period)
+			continue;
+
+		period_time = i_cal_datetimeperiod_type_get_time (period);
+
+		if (time_matches_rid (period_time, rid, mod) && (!keep_rid ||
+		    i_cal_time_compare (period_time, (ICalTimetype *) rid) != 0))
+			remove_props = g_slist_prepend (remove_props, g_object_ref (prop));
+
+		g_clear_object (&period_time);
+		g_object_unref (period);
 	}
-	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_EXDATE_PROPERTY);
+
+	for (prop = i_cal_component_get_first_property (icalcomp, I_CAL_EXDATE_PROPERTY);
 	     prop;
-	     prop = icalcomponent_get_next_property (icalcomp, ICAL_EXDATE_PROPERTY)) {
-		itt = icalproperty_get_exdate (prop);
-		if (time_matches_rid (itt, rid, mod) && (!keep_rid ||
-		    icaltime_compare (itt, rid) != 0))
-			remove_props = g_slist_prepend (remove_props, prop);
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, I_CAL_EXDATE_PROPERTY)) {
+		itt = i_cal_property_get_exdate (prop);
+		if (!itt)
+			continue;
+
+		if (time_matches_rid (itt, rid, mod) && (!keep_rid || i_cal_time_compare (itt, (ICalTimetype *) rid) != 0))
+			remove_props = g_slist_prepend (remove_props, g_object_ref (prop));
+
+		g_object_unref (itt);
 	}
 
 	for (link = remove_props; link; link = g_slist_next (link)) {
 		prop = link->data;
 
-		icalcomponent_remove_property (icalcomp, prop);
+		i_cal_component_remove_property (icalcomp, prop);
 	}
 
-	g_slist_free (remove_props);
+	g_slist_free_full (remove_props, g_object_unref);
 	remove_props = NULL;
 
 	/* If we're only removing one instance, just add an EXDATE. */
 	if (mod == E_CAL_OBJ_MOD_THIS) {
-		prop = icalproperty_new_exdate (rid);
-		icalcomponent_add_property (icalcomp, prop);
+		prop = i_cal_property_new_exdate ((ICalTimetype *) rid);
+		i_cal_component_take_property (icalcomp, prop);
 		return;
 	}
 
 	/* Otherwise, iterate through RRULEs */
 	/* FIXME: this may generate duplicate EXRULEs */
-	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_RRULE_PROPERTY);
+	for (prop = i_cal_component_get_first_property (icalcomp, I_CAL_RRULE_PROPERTY);
 	     prop;
-	     prop = icalcomponent_get_next_property (icalcomp, ICAL_RRULE_PROPERTY)) {
-		rrules = g_slist_prepend (rrules, prop);
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, I_CAL_RRULE_PROPERTY)) {
+		rrules = g_slist_prepend (rrules, g_object_ref (prop));
 	}
 
 	for (link = rrules; link; link = g_slist_next (link)) {
 		prop = link->data;
-		rule = icalproperty_get_rrule (prop);
 
-		iter = icalrecur_iterator_new (rule, rid);
-		recur = icalrecur_iterator_next (iter);
+		rule = i_cal_property_get_rrule (prop);
+		if (!rule)
+			continue;
+
+		iter = i_cal_recur_iterator_new (rule, (ICalTimetype *) rid);
+		recur = i_cal_recur_iterator_next (iter);
+
+		if (!recur) {
+			g_object_unref (rule);
+			g_object_unref (iter);
+			continue;
+		}
 
 		if (mod & E_CAL_OBJ_MOD_THIS_AND_FUTURE) {
 			/* Truncate the rule at rid. */
-			if (!icaltime_is_null_time (recur)) {
-				/* Use count if it was used */
-				if (rule.count > 0) {
-					gint occurrences_count = 0;
-					icalrecur_iterator *count_iter;
-					struct icaltimetype count_recur;
+			if (!i_cal_time_is_null_time (recur)) {
+				gint rule_count = i_cal_recurrence_type_get_count (rule);
 
-					count_iter = icalrecur_iterator_new (rule, icalcomponent_get_dtstart (icalcomp));
-					while (count_recur = icalrecur_iterator_next (count_iter), !icaltime_is_null_time (count_recur) && occurrences_count < rule.count) {
-						if (icaltime_compare (count_recur, rid) >= 0)
+				/* Use count if it was used */
+				if (rule_count > 0) {
+					gint occurrences_count = 0;
+					ICalRecurIterator *count_iter;
+					ICalTimetype *count_recur, *dtstart;
+
+					dtstart = i_cal_component_get_dtstart (icalcomp);
+					count_iter = i_cal_recur_iterator_new (rule, dtstart);
+					while (count_recur = i_cal_recur_iterator_next (count_iter),
+					       count_recur && !i_cal_time_is_null_time (count_recur) && occurrences_count < rule_count) {
+						if (i_cal_time_compare (count_recur, (ICalTimetype *) rid) >= 0)
 							break;
 
 						occurrences_count++;
+						g_object_unref (count_recur);
 					}
 
-					icalrecur_iterator_free (count_iter);
-
-					if (keep_rid && icaltime_compare (count_recur, rid) == 0)
+					if (keep_rid && count_recur && i_cal_time_compare (count_recur, (ICalTimetype *) rid) == 0)
 						occurrences_count++;
 
 					/* The caller should make sure that the remove will keep at least one instance */
 					g_warn_if_fail (occurrences_count > 0);
 
-					rule.count = occurrences_count;
+					i_cal_recurrence_type_set_count (rule, occurrences_count);
+
+					g_clear_object (&count_recur);
+					g_clear_object (&count_iter);
+					g_clear_object (&dtstart);
 				} else {
-					if (keep_rid && icaltime_compare (recur, rid) == 0)
-						rule.until = icaltime_add (rid, icalcomponent_get_duration (icalcomp));
-					else
-						rule.until = rid;
-					icaltime_adjust (&rule.until, 0, 0, 0, -1);
+					ICalTimetype *ttuntil;
+
+					if (keep_rid && i_cal_time_compare (recur, (ICalTimetype *) rid) == 0) {
+						ICalDurationType *dur;
+
+						dur = i_cal_component_get_duration (icalcomp);
+						ttuntil = i_cal_time_add ((ICalTimetype *) rid, dur);
+						g_clear_object (&dur);
+					} else {
+						ttuntil = i_cal_timetype_new_clone (rid);
+					}
+					i_cal_time_adjust (ttuntil, 0, 0, 0, -1);
+					i_cal_recurrence_type_set_until (rule, ttuntil);
+					g_object_unref (ttuntil);
 				}
 
-				icalproperty_set_rrule (prop, rule);
-				icalproperty_remove_parameter_by_name (prop, "X-EVOLUTION-ENDDATE");
+				i_cal_property_set_rrule (prop, rule);
+				i_cal_property_remove_parameter_by_name (prop, "X-EVOLUTION-ENDDATE");
 			}
 		} else {
 			/* (If recur == rid, skip to the next occurrence) */
-			if (!keep_rid && icaltime_compare (recur, rid) == 0)
-				recur = icalrecur_iterator_next (iter);
+			if (!keep_rid && i_cal_time_compare (recur, (ICalTimetype *) rid) == 0) {
+				g_object_unref (recur);
+				recur = i_cal_recur_iterator_next (iter);
+			}
 
 			/* If there is a recurrence after rid, add
 			 * an EXRULE to block instances up to rid.
 			 * Otherwise, just remove the RRULE.
 			 */
-			if (!icaltime_is_null_time (recur)) {
+			if (!i_cal_time_is_null_time (recur)) {
 				if (can_add_exrule) {
-					rule.count = 0;
+					ICalTimetype *ttuntil;
+					ICalDurationType *dur = i_cal_component_get_duration (icalcomp);
+
+					i_cal_recurrence_type_set_count (rule, 0);
+
 					/* iCalendar says we should just use rid
 					 * here, but Outlook/Exchange handle
 					 * UNTIL incorrectly.
 					 */
-					if (keep_rid && icaltime_compare (recur, rid) == 0) {
-						struct icaldurationtype duration = icalcomponent_get_duration (icalcomp);
-						duration.is_neg = !duration.is_neg;
-						rule.until = icaltime_add (rid, duration);
-					} else
-						rule.until = icaltime_add (rid, icalcomponent_get_duration (icalcomp));
-					prop = icalproperty_new_exrule (rule);
-					icalcomponent_add_property (icalcomp, prop);
+					if (keep_rid && i_cal_time_compare (recur, (ICalTimetype *) rid) == 0) {
+						i_cal_duration_type_set_is_neg (dur, !i_cal_duration_type_is_neg (dur));
+						ttuntil = i_cal_time_add ((ICalTimetype *) rid, dur);
+					} else {
+						ttuntil = i_cal_time_add ((ICalTimetype *) rid, dur);
+					}
+
+					i_cal_recurrence_type_set_until (rule, ttuntil);
+
+					g_clear_object (&ttuntil);
+					g_clear_object (&dur);
+
+					prop = i_cal_property_new_exrule (rule);
+					i_cal_component_take_property (icalcomp, prop);
 				}
 			} else {
-				remove_props = g_slist_prepend (remove_props, prop);
+				remove_props = g_slist_prepend (remove_props, g_object_ref (prop));
 			}
 		}
 
-		icalrecur_iterator_free (iter);
+		g_object_unref (recur);
+		g_object_unref (rule);
+		g_object_unref (iter);
 	}
 
 	for (link = remove_props; link; link = g_slist_next (link)) {
 		prop = link->data;
 
-		icalcomponent_remove_property (icalcomp, prop);
+		i_cal_component_remove_property (icalcomp, prop);
 	}
 
-	g_slist_free (remove_props);
-	g_slist_free (rrules);
+	g_slist_free_full (remove_props, g_object_unref);
+	g_slist_free_full (rrules, g_object_unref);
 }
 
 /**
  * e_cal_util_remove_instances:
- * @icalcomp: A (recurring) #icalcomponent
+ * @icalcomp: A (recurring) #ICalComponent
  * @rid: The base RECURRENCE-ID to remove
  * @mod: How to interpret @rid
  *
- * Removes one or more instances from @comp according to @rid and @mod.
- *
- * FIXME: should probably have a return value indicating whether @icalcomp
- *        still has any instances
+ * Removes one or more instances from @icalcomp according to @rid and @mod.
  **/
 void
-e_cal_util_remove_instances (icalcomponent *icalcomp,
-                             struct icaltimetype rid,
+e_cal_util_remove_instances (ICalComponent *icalcomp,
+                             const ICalTimetype *rid,
                              ECalObjModType mod)
 {
 	g_return_if_fail (icalcomp != NULL);
+	g_return_if_fail (rid != NULL);
 	g_return_if_fail (mod != E_CAL_OBJ_MOD_ALL);
 
 	e_cal_util_remove_instances_ex (icalcomp, rid, mod, FALSE, TRUE);
@@ -1364,11 +1426,11 @@ e_cal_util_remove_instances (icalcomponent *icalcomp,
 
 /**
  * e_cal_util_split_at_instance:
- * @icalcomp: A (recurring) #icalcomponent
+ * @icalcomp: A (recurring) #ICalComponent
  * @rid: The base RECURRENCE-ID to remove
- * @master_dtstart: The DTSTART of the master object
+ * @master_dtstart: (nullable): The DTSTART of the master object
  *
- * Splits a recurring @icalcomp into two at time @rid. The returned icalcomponent
+ * Splits a recurring @icalcomp into two at time @rid. The returned #ICalComponent
  * is modified @icalcomp which contains recurrences beginning at @rid, inclusive.
  * The instance identified by @rid should exist. The @master_dtstart can be
  * a null time, then it is read from the @icalcomp.
@@ -1376,136 +1438,187 @@ e_cal_util_remove_instances (icalcomponent *icalcomp,
  * Use e_cal_util_remove_instances() with E_CAL_OBJ_MOD_THIS_AND_FUTURE mode
  * on the @icalcomp to remove the overlapping interval from it, if needed.
  *
- * Returns: the split icalcomponent, or %NULL.
+ * Free the returned non-NULL component with g_object_unref(), when
+ * done with it.
+ *
+ * Returns: (transfer full) (nullable): the split @icalcom, or %NULL.
  *
  * Since: 3.16
  **/
-icalcomponent *
-e_cal_util_split_at_instance (icalcomponent *icalcomp,
-			      struct icaltimetype rid,
-			      struct icaltimetype master_dtstart)
+ICalComponent *
+e_cal_util_split_at_instance (ICalComponent *icalcomp,
+			      const ICalTimetype *rid,
+			      const ICalTimetype *master_dtstart)
 {
-	icalproperty *prop;
+	ICalProperty *prop;
 	struct instance_data instance;
-	struct icaltimetype start, end;
-	struct icaldurationtype duration;
+	ICalTimetype *start, *end, *dtstart = NULL;
+	ICalDurationType *duration;
 	GSList *remove_props = NULL, *link;
 
 	g_return_val_if_fail (icalcomp != NULL, NULL);
-	g_return_val_if_fail (!icaltime_is_null_time (rid), NULL);
+	g_return_val_if_fail (rid != NULL, NULL);
+	g_return_val_if_fail (!i_cal_time_is_null_time ((ICalTimetype *) rid), NULL);
 
 	/* Make sure this is really recurring */
-	if (!icalcomponent_get_first_property (icalcomp, ICAL_RRULE_PROPERTY) &&
-	    !icalcomponent_get_first_property (icalcomp, ICAL_RDATE_PROPERTY))
+	if (!e_cal_util_component_has_recurrences (icalcomp))
 		return NULL;
 
 	/* Make sure the specified instance really exists */
-	start = icaltime_convert_to_zone (rid, icaltimezone_get_utc_timezone ());
-	end = start;
-	icaltime_adjust (&end, 0, 0, 0, 1);
+	start = i_cal_time_convert_to_zone ((ICalTimetype *) rid, i_cal_timezone_get_utc_timezone ());
+	end = i_cal_timetype_new_clone (start);
+	i_cal_time_adjust (end, 0, 0, 0, 1);
 
-	instance.start = icaltime_as_timet (start);
+	instance.start = i_cal_time_as_timet (start);
 	instance.found = FALSE;
-	icalcomponent_foreach_recurrence (icalcomp, start, end,
-					  check_instance, &instance);
+	i_cal_component_foreach_recurrence (icalcomp, start, end, check_instance, &instance);
+	g_clear_object (&start);
+	g_clear_object (&end);
+
 	/* Make the copy */
-	icalcomp = icalcomponent_new_clone (icalcomp);
+	icalcomp = i_cal_component_new_clone (icalcomp);
 
 	e_cal_util_remove_instances_ex (icalcomp, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR, TRUE, FALSE);
 
-	start = rid;
-	if (icaltime_is_null_time (master_dtstart))
-		master_dtstart = icalcomponent_get_dtstart (icalcomp);
-	duration = icalcomponent_get_duration (icalcomp);
+	start = i_cal_timetype_new_clone ((ICalTimetype *) rid);
+
+	if (!master_dtstart || i_cal_time_is_null_time ((ICalTimetype *) master_dtstart)) {
+		dtstart = i_cal_component_get_dtstart (icalcomp);
+		master_dtstart = dtstart;
+	}
+
+	duration = i_cal_component_get_duration (icalcomp);
 
 	/* Expect that DTSTART and DTEND are already set when the instance could not be found */
 	if (instance.found) {
-		icalcomponent_set_dtstart (icalcomp, start);
+		ICalTimetype *dtend;
+
+		dtend = i_cal_component_get_dtend (icalcomp);
+
+		i_cal_component_set_dtstart (icalcomp, start);
+
 		/* Update either DURATION or DTEND */
-		if (icaltime_is_null_time (icalcomponent_get_dtend (icalcomp))) {
-			icalcomponent_set_duration (icalcomp, duration);
+		if (i_cal_time_is_null_time (dtend)) {
+			i_cal_component_set_duration (icalcomp, duration);
 		} else {
-			end = start;
-			if (duration.is_neg)
-				icaltime_adjust (&end, -duration.days - 7 * duration.weeks, -duration.hours, -duration.minutes, -duration.seconds);
+			end = i_cal_timetype_new_clone (start);
+			if (i_cal_duration_type_is_neg (duration))
+				i_cal_time_adjust (end, -i_cal_duration_type_get_days (duration)
+							- 7 * i_cal_duration_type_get_weeks (duration),
+							-i_cal_duration_type_get_hours (duration),
+							-i_cal_duration_type_get_minutes (duration),
+							-i_cal_duration_type_get_seconds (duration));
 			else
-				icaltime_adjust (&end, duration.days + 7 * duration.weeks, duration.hours, duration.minutes, duration.seconds);
-			icalcomponent_set_dtend (icalcomp, end);
+				i_cal_time_adjust (end, i_cal_duration_type_get_days (duration)
+							+ 7 * i_cal_duration_type_get_weeks (duration),
+							i_cal_duration_type_get_hours (duration),
+							i_cal_duration_type_get_minutes (duration),
+							i_cal_duration_type_get_seconds (duration));
+
+			i_cal_component_set_dtend (icalcomp, end);
 		}
+
+		g_clear_object (&dtend);
 	}
 
+	g_clear_object (&start);
+	g_clear_object (&end);
+	g_clear_object (&duration);
+
 	/* any RRULE with 'count' should be shortened */
-	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_RRULE_PROPERTY);
+	for (prop = i_cal_component_get_first_property (icalcomp, ICAL_RRULE_PROPERTY);
 	     prop;
-	     prop = icalcomponent_get_next_property (icalcomp, ICAL_RRULE_PROPERTY)) {
-		struct icaltimetype recur;
-		struct icalrecurrencetype rule;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, ICAL_RRULE_PROPERTY)) {
+		ICalTimetype *recur;
+		ICalRecurrenceType *rule;
+		gint rule_count;
 
-		rule = icalproperty_get_rrule (prop);
+		rule = i_cal_property_get_rrule (prop);
+		if (!rule)
+			continue;
 
-		if (rule.count != 0) {
+		rule_count = i_cal_recurrence_type_get_count (rule);
+
+		if (rule_count != 0) {
 			gint occurrences_count = 0;
-			icalrecur_iterator *iter;
+			ICalRecurIterator *iter;
 
-			iter = icalrecur_iterator_new (rule, master_dtstart);
-			while (recur = icalrecur_iterator_next (iter), !icaltime_is_null_time (recur) && occurrences_count < rule.count) {
-				if (icaltime_compare (recur, rid) >= 0)
+			iter = i_cal_recur_iterator_new (rule, (ICalTimetype *) master_dtstart);
+			while (recur = i_cal_recur_iterator_next (iter),
+			       recur && !i_cal_time_is_null_time (recur) && occurrences_count < rule_count) {
+				if (i_cal_time_compare (recur, (ICalTimetype *) rid) >= 0)
 					break;
 
 				occurrences_count++;
+				g_object_unref (recur);
 			}
 
-			icalrecur_iterator_free (iter);
-
-			if (icaltime_is_null_time (recur)) {
-				remove_props = g_slist_prepend (remove_props, prop);
+			if (!recur || i_cal_time_is_null_time (recur)) {
+				remove_props = g_slist_prepend (remove_props, g_object_ref (prop));
 			} else {
-				rule.count -= occurrences_count;
-				icalproperty_set_rrule (prop, rule);
-				icalproperty_remove_parameter_by_name (prop, "X-EVOLUTION-ENDDATE");
+				i_cal_recurrence_type_set_count (rule, rule_count - occurrences_count);
+				i_cal_property_set_rrule (prop, rule);
+				i_cal_property_remove_parameter_by_name (prop, "X-EVOLUTION-ENDDATE");
 			}
+
+			g_clear_object (&iter);
+			g_clear_object (&recur);
 		}
+
+		g_object_unref (rule);
 	}
 
 	for (link = remove_props; link; link = g_slist_next (link)) {
 		prop = link->data;
 
-		icalcomponent_remove_property (icalcomp, prop);
+		i_cal_component_remove_property (icalcomp, prop);
 	}
 
-	g_slist_free (remove_props);
+	g_slist_free_full (remove_props, g_object_unref);
+	g_clear_object (&dtstart);
 
 	return icalcomp;
 }
 
 typedef struct {
-	struct icaltimetype rid;
+	const ICalTimetype *rid;
 	gboolean matches;
 } CheckFirstInstanceData;
 
 static gboolean
-check_first_instance_cb (ECalComponent *comp,
-			 time_t instance_start,
-			 time_t instance_end,
-			 gpointer user_data)
+check_first_instance_cb (ICalComponent *icalcomp,
+			 ICalTimetype *instance_start,
+			 ICalTimetype *instance_end,
+			 gpointer user_data,
+			 GCancellable *cancellable,
+			 GError **error)
 {
 	CheckFirstInstanceData *ifs = user_data;
-	icalcomponent *icalcomp;
-	struct icaltimetype rid;
+	ICalProperty *prop;
+	ICalTimetype *rid;
 
 	g_return_val_if_fail (ifs != NULL, FALSE);
 
-	icalcomp = e_cal_component_get_icalcomponent (comp);
-	if (icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY) != NULL) {
-		rid = icalcomponent_get_recurrenceid (icalcomp);
+	prop = i_cal_component_get_first_property (icalcomp, I_CAL_RECURRENCEID_PROPERTY);
+	if (prop) {
+		rid = i_cal_property_get_recurrenceid (prop);
+		g_object_unref (prop);
 	} else {
-		struct icaltimetype dtstart;
+		ICalTimetype *dtstart;
+		ICalTimezone *zone;
 
-		dtstart = icalcomponent_get_dtstart (icalcomp);
-		rid = icaltime_from_timet_with_zone (instance_start, dtstart.is_date, dtstart.zone);
+		dtstart = i_cal_component_get_dtstart (icalcomp);
+		zone = i_cal_timetype_get_zone (dtstart);
+
+		rid = i_cal_time_from_timet_with_zone (i_cal_time_as_timet (instance_start), i_cal_time_is_date (dtstart), zone);
+
+		g_clear_object (&zone);
+		g_clear_object (&dtstart);
 	}
 
-	ifs->matches = icaltime_compare (ifs->rid, rid) == 0;
+	ifs->matches = i_cal_time_compare ((ICalTimetype *) ifs->rid, rid) == 0;
+
+	g_clear_object (&rid);
 
 	return FALSE;
 }
@@ -1514,7 +1627,7 @@ check_first_instance_cb (ECalComponent *comp,
  * e_cal_util_is_first_instance:
  * @comp: an #ECalComponent instance
  * @rid: a recurrence ID
- * @tz_cb: (closure tz_cb_data) (scope call): The #ECalRecurResolveTimezoneFn to call
+ * @tz_cb: (closure tz_cb_data) (scope call): The #ECalRecurResolveTimezoneCb to call
  * @tz_cb_data: (closure): User data to be passed to the @tz_cb callback
  *
  * Returns whether the given @rid is the first instance of
@@ -1526,26 +1639,36 @@ check_first_instance_cb (ECalComponent *comp,
  **/
 gboolean
 e_cal_util_is_first_instance (ECalComponent *comp,
-			      struct icaltimetype rid,
-			      ECalRecurResolveTimezoneFn tz_cb,
+			      const ICalTimetype *rid,
+			      ECalRecurResolveTimezoneCb tz_cb,
 			      gpointer tz_cb_data)
 {
 	CheckFirstInstanceData ifs;
-	icalcomponent *icalcomp;
-	time_t start, end;
+	ICalComponent *icalcomp;
+	ICalTimetype *start, *end;
 
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
-	g_return_val_if_fail (!icaltime_is_null_time (rid), FALSE);
+	g_return_val_if_fail (rid && !i_cal_time_is_null_time ((ICalTimetype *) rid), FALSE);
 
 	ifs.rid = rid;
 	ifs.matches = FALSE;
 
 	icalcomp = e_cal_component_get_icalcomponent (comp);
-	start = icaltime_as_timet (icalcomponent_get_dtstart (icalcomp)) - 24 * 60 * 60;
-	end = icaltime_as_timet (icalcomponent_get_dtend (icalcomp)) + 24 * 60 * 60;
 
-	e_cal_recur_generate_instances (comp, start, end, check_first_instance_cb, &ifs,
-		tz_cb, tz_cb_data, icaltimezone_get_utc_timezone ());
+	start = i_cal_component_get_dtstart (icalcomp);
+	i_cal_time_adjust (start, -1, 0, 0, 0);
+
+	end = i_cal_component_get_dtend (icalcomp);
+	i_cal_time_adjust (end, +1, 0, 0, 0);
+
+	e_cal_recur_generate_instances_sync (e_cal_component_get_icalcomponent (comp),
+		start, end,
+		check_first_instance_cb, &ifs,
+		tz_cb, tz_cb_data, i_cal_timezone_get_utc_timezone (),
+		NULL, NULL);
+
+	g_clear_object (&start);
+	g_clear_object (&end);
 
 	return ifs.matches;
 }
@@ -1568,19 +1691,19 @@ e_cal_util_get_system_timezone_location (void)
 /**
  * e_cal_util_get_system_timezone:
  *
- * Fetches system timezone icaltimezone object.
+ * Fetches system timezone ICalTimezone object.
  *
  * The returned pointer is part of the built-in timezones and should not be freed.
  *
- * Returns: (transfer none): The icaltimezone object of the system timezone, or %NULL on an error.
+ * Returns: (transfer none) (nullable): The ICalTimezone object of the system timezone, or %NULL on an error.
  *
  * Since: 2.28
  **/
-icaltimezone *
+ICalTimezone *
 e_cal_util_get_system_timezone (void)
 {
 	gchar *location;
-	icaltimezone *zone;
+	ICalTimezone *zone;
 
 	location = e_cal_system_timezone_get_location ();
 
@@ -1588,7 +1711,7 @@ e_cal_util_get_system_timezone (void)
 	if (!location)
 		return NULL;
 
-	zone = icaltimezone_get_builtin_timezone (location);
+	zone = i_cal_timezone_get_builtin_timezone (location);
 
 	g_free (location);
 
@@ -1597,21 +1720,28 @@ e_cal_util_get_system_timezone (void)
 
 static time_t
 componenttime_to_utc_timet (const ECalComponentDateTime *dt_time,
-                            ECalRecurResolveTimezoneFn tz_cb,
+                            ECalRecurResolveTimezoneCb tz_cb,
                             gpointer tz_cb_data,
-                            const icaltimezone *default_zone)
+                            const ICalTimezone *default_zone)
 {
+	ICalTimetype *value = NULL;
 	time_t timet = -1;
-	icaltimezone *zone = NULL;
 
 	g_return_val_if_fail (dt_time != NULL, -1);
 
-	if (dt_time->value) {
-		if (dt_time->tzid)
-			zone = tz_cb (dt_time->tzid, tz_cb_data);
+	if (dt_time)
+		value = e_cal_component_datetime_get_value (dt_time);
 
-		timet = icaltime_as_timet_with_zone (
-			*dt_time->value, zone ? zone : default_zone);
+	if (value) {
+		ICalTimezone *zone = NULL;
+		const gchar *tzid = e_cal_component_datetime_get_tzid (dt_time);
+
+		if (tzid)
+			zone = tz_cb (tzid, tz_cb_data, NULL, NULL);
+
+		timet = i_cal_time_as_timet_with_zone (value, zone ? zone : (ICalTimezone *) default_zone);
+
+		g_clear_object (&zone);
 	}
 
 	return timet;
@@ -1620,12 +1750,12 @@ componenttime_to_utc_timet (const ECalComponentDateTime *dt_time,
 /**
  * e_cal_util_get_component_occur_times:
  * @comp: an #ECalComponent
- * @start: (out): Location to store the start time
- * @end: (out): Location to store the end time
- * @tz_cb: (closure tz_cb_data) (scope call): The #ECalRecurResolveTimezoneFn to call
+ * @out_start: (out): Location to store the start time
+ * @out_end: (out): Location to store the end time
+ * @tz_cb: (closure tz_cb_data) (scope call): The #ECalRecurResolveTimezoneCb to call
  * @tz_cb_data: (closure): User data to be passed to the @tz_cb callback
  * @default_timezone: The default timezone
- * @kind: the type of component, indicated with an icalcomponent_kind
+ * @kind: the type of component, indicated with an #ICalComponentKind
  *
  * Find out when the component starts and stops, being careful about
  * recurrences.
@@ -1634,68 +1764,66 @@ componenttime_to_utc_timet (const ECalComponentDateTime *dt_time,
  **/
 void
 e_cal_util_get_component_occur_times (ECalComponent *comp,
-                                      time_t *start,
-                                      time_t *end,
-                                      ECalRecurResolveTimezoneFn tz_cb,
+                                      time_t *out_start,
+                                      time_t *out_end,
+                                      ECalRecurResolveTimezoneCb tz_cb,
                                       gpointer tz_cb_data,
-                                      const icaltimezone *default_timezone,
-                                      icalcomponent_kind kind)
+                                      const ICalTimezone *default_timezone,
+                                      ICalComponentKind kind)
 {
-	struct icalrecurrencetype ir;
-	ECalComponentDateTime dt_start, dt_end;
+	ICalTimezone *utc_zone;
+	ECalComponentDateTime *dtstart, *dtend;
 	time_t duration;
 
 	g_return_if_fail (comp != NULL);
-	g_return_if_fail (start != NULL);
-	g_return_if_fail (end != NULL);
+	g_return_if_fail (out_start != NULL);
+	g_return_if_fail (out_end != NULL);
 
-	e_cal_recur_ensure_end_dates (comp, FALSE, tz_cb, tz_cb_data);
+	utc_zone = i_cal_timezone_get_utc_timezone ();
+	e_cal_recur_ensure_end_dates (comp, FALSE, tz_cb, tz_cb_data, NULL, NULL);
 
 	/* Get dtstart of the component and convert it to UTC */
-	e_cal_component_get_dtstart (comp, &dt_start);
+	dtstart = e_cal_component_get_dtstart (comp);
 
-	if ((*start = componenttime_to_utc_timet (&dt_start, tz_cb, tz_cb_data, default_timezone)) == -1)
-		*start = _TIME_MIN;
+	if ((*out_start = componenttime_to_utc_timet (dtstart, tz_cb, tz_cb_data, default_timezone)) == -1)
+		*out_start = _TIME_MIN;
 
-	e_cal_component_free_datetime (&dt_start);
+	e_cal_component_datetime_free (dtstart);
 
-	e_cal_component_get_dtend (comp, &dt_end);
-	duration = componenttime_to_utc_timet (&dt_end, tz_cb, tz_cb_data, default_timezone);
-	if (duration <= 0 || *start == _TIME_MIN || *start > duration)
+	dtend = e_cal_component_get_dtend (comp);
+	duration = componenttime_to_utc_timet (dtend, tz_cb, tz_cb_data, default_timezone);
+	if (duration <= 0 || *out_start == _TIME_MIN || *out_start > duration)
 		duration = 0;
 	else
-		duration = duration - *start;
-	e_cal_component_free_datetime (&dt_end);
+		duration = duration - *out_start;
+	e_cal_component_datetime_free (dtend);
 
 	/* find out end date of component */
-	*end = _TIME_MAX;
+	*out_end = _TIME_MAX;
 
-	if (kind == ICAL_VTODO_COMPONENT) {
+	if (kind == I_CAL_VTODO_COMPONENT) {
 		/* max from COMPLETED and DUE properties */
-		struct icaltimetype *tt = NULL;
+		ICalTimetype *tt;
 		time_t completed_time = -1, due_time = -1, max_time;
-		ECalComponentDateTime dt_due;
+		ECalComponentDateTime *dtdue;
 
-		e_cal_component_get_completed (comp, &tt);
+		tt = e_cal_component_get_completed (comp);
 		if (tt) {
 			/* COMPLETED must be in UTC. */
-			completed_time = icaltime_as_timet_with_zone (
-				*tt, icaltimezone_get_utc_timezone ());
-			e_cal_component_free_icaltimetype (tt);
+			completed_time = i_cal_time_as_timet_with_zone (tt, utc_zone);
+			g_object_unref (tt);
 		}
 
-		e_cal_component_get_due (comp, &dt_due);
-		if (dt_due.value != NULL)
-			due_time = componenttime_to_utc_timet (
-				&dt_due, tz_cb, tz_cb_data,
-				default_timezone);
+		dtdue = e_cal_component_get_due (comp);
+		if (dtdue)
+			due_time = componenttime_to_utc_timet (dtdue, tz_cb, tz_cb_data, default_timezone);
 
-		e_cal_component_free_datetime (&dt_due);
+		e_cal_component_datetime_free (dtdue);
 
 		max_time = MAX (completed_time, due_time);
 
 		if (max_time != -1)
-			*end = max_time;
+			*out_end = max_time;
 
 	} else {
 		/* ALARMS, EVENTS: DTEND and reccurences */
@@ -1705,62 +1833,65 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 		if (e_cal_component_has_recurrences (comp)) {
 			GSList *rrules = NULL;
 			GSList *exrules = NULL;
-			GSList *elem;
 			GSList *rdates = NULL;
+			GSList *elem;
 
 			/* Do the RRULEs, EXRULEs and RDATEs*/
-			e_cal_component_get_rrule_property_list (comp, &rrules);
-			e_cal_component_get_exrule_property_list (comp, &exrules);
-			e_cal_component_get_rdate_list (comp, &rdates);
+			rrules = e_cal_component_get_rrule_properties (comp);
+			exrules = e_cal_component_get_exrule_properties (comp);
+			rdates = e_cal_component_get_rdates (comp);
 
-			for (elem = rrules; elem; elem = elem->next) {
+			for (elem = rrules; elem; elem = g_slist_next (elem)) {
+				ICalProperty *prop = elem->data;
+				ICalRecurrenceType *ir;
 				time_t rule_end;
-				icaltimezone *utc_zone;
-				icalproperty *prop = elem->data;
-				ir = icalproperty_get_rrule (prop);
 
-				utc_zone = icaltimezone_get_utc_timezone ();
-				rule_end = e_cal_recur_obtain_enddate (
-					&ir, prop, utc_zone, TRUE);
+				ir = i_cal_property_get_rrule (prop);
+				rule_end = e_cal_recur_obtain_enddate (ir, prop, utc_zone, TRUE);
 
 				if (rule_end == -1) /* repeats forever */
 					may_end = _TIME_MAX;
 				else if (rule_end + duration > may_end) /* new maximum */
 					may_end = rule_end + duration;
+
+				g_clear_object (&ir);
 			}
 
 			/* Do the EXRULEs. */
-			for (elem = exrules; elem; elem = elem->next) {
-				icalproperty *prop = elem->data;
+			for (elem = exrules; elem; elem = g_slist_next (elem)) {
+				ICalProperty *prop = elem->data;
+				ICalRecurrenceType *ir;
 				time_t rule_end;
-				icaltimezone *utc_zone;
-				ir = icalproperty_get_exrule (prop);
 
-				utc_zone = icaltimezone_get_utc_timezone ();
-				rule_end = e_cal_recur_obtain_enddate (
-					&ir, prop, utc_zone, TRUE);
+				ir = i_cal_property_get_exrule (prop);
+
+				rule_end = e_cal_recur_obtain_enddate (ir, prop, utc_zone, TRUE);
 
 				if (rule_end == -1) /* repeats forever */
 					may_end = _TIME_MAX;
 				else if (rule_end + duration > may_end)
 					may_end = rule_end + duration;
+
+				g_clear_object (&ir);
 			}
 
 			/* Do the RDATEs */
-			for (elem = rdates; elem; elem = elem->next) {
-				ECalComponentPeriod *p = elem->data;
+			for (elem = rdates; elem; elem = g_slist_next (elem)) {
+				const ECalComponentPeriod *period = elem->data;
 				time_t rdate_end = _TIME_MAX;
 
 				/* FIXME: We currently assume RDATEs are in the same timezone
 				 * as DTSTART. We should get the RDATE timezone and convert
 				 * to the DTSTART timezone first. */
 
-				/* Check if the end date or duration is set, libical seems to set
-				 * second to -1 to denote an unset time */
-				if (p->type != E_CAL_COMPONENT_PERIOD_DATETIME || p->u.end.second != -1)
-					rdate_end = icaltime_as_timet (icaltime_add (p->start, p->u.duration));
-				else
-					rdate_end = icaltime_as_timet (p->u.end);
+				if (e_cal_component_period_get_kind (period) != E_CAL_COMPONENT_PERIOD_DATETIME) {
+					ICalTimetype *tt;
+					tt = i_cal_time_add (e_cal_component_period_get_start (period), e_cal_component_period_get_duration (period));
+					rdate_end = i_cal_time_as_timet (tt);
+					g_object_unref (tt);
+				} else {
+					rdate_end = i_cal_time_as_timet (e_cal_component_period_get_end (period));
+				}
 
 				if (rdate_end == -1) /* repeats forever */
 					may_end = _TIME_MAX;
@@ -1768,19 +1899,20 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 					may_end = rdate_end;
 			}
 
-			e_cal_component_free_period_list (rdates);
-		} else if (*start != _TIME_MIN) {
-			may_end = *start;
+			g_slist_free_full (rrules, g_object_unref);
+			g_slist_free_full (exrules, g_object_unref);
+			g_slist_free_full (rdates, e_cal_component_period_free);
+		} else if (*out_start != _TIME_MIN) {
+			may_end = *out_start;
 		}
 
 		/* Get dtend of the component and convert it to UTC */
-		e_cal_component_get_dtend (comp, &dt_end);
+		dtend = e_cal_component_get_dtend (comp);
 
-		if (dt_end.value) {
+		if (dtend) {
 			time_t dtend_time;
 
-			dtend_time = componenttime_to_utc_timet (
-				&dt_end, tz_cb, tz_cb_data, default_timezone);
+			dtend_time = componenttime_to_utc_timet (dtend, tz_cb, tz_cb_data, default_timezone);
 
 			if (dtend_time == -1 || (dtend_time > may_end))
 				may_end = dtend_time;
@@ -1788,39 +1920,71 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 			may_end = _TIME_MAX;
 		}
 
-		e_cal_component_free_datetime (&dt_end);
+		e_cal_component_datetime_free (dtend);
 
-		*end = may_end == _TIME_MIN ? _TIME_MAX : may_end;
+		*out_end = may_end == _TIME_MIN ? _TIME_MAX : may_end;
 	}
 }
 
 /**
- * e_cal_util_find_x_property:
- * @icalcomp: an icalcomponent
+ * e_cal_util_component_has_x_property:
+ * @icalcomp: an #ICalComponent
+ * @x_name: name of the X property
+ *
+ * Returns, whether the @icalcomp contains X property named @x_name. To check
+ * for standard property use e_cal_util_component_has_property().
+ *
+ * Returns: whether the @icalcomp contains X property named @x_name
+ *
+ * Since: 3.36
+ **/
+gboolean
+e_cal_util_component_has_x_property (ICalComponent *icalcomp,
+				     const gchar *x_name)
+{
+	ICalProperty *prop;
+
+	g_return_val_if_fail (I_CAL_IS_COMPONENT (icalcomp), FALSE);
+	g_return_val_if_fail (x_name != NULL, FALSE);
+
+	prop = e_cal_util_component_find_x_property (icalcomp, x_name);
+
+	if (!prop)
+		return FALSE;
+
+	g_object_unref (prop);
+
+	return TRUE;
+}
+
+
+/**
+ * e_cal_util_component_find_x_property:
+ * @icalcomp: an #ICalComponent
  * @x_name: name of the X property
  *
  * Searches for an X property named @x_name within X properties
- * of @icalcomp and returns it.
+ * of @icalcomp and returns it. Free the non-NULL object
+ * with g_object_unref(), when no longer needed.
  *
- * Returns: (nullable) (transfer none): the first X icalproperty named
- *    @x_name, or %NULL, when none found. The returned structure is owned
- *    by @icalcomp.
+ * Returns: (transfer full) (nullable): the first X ICalProperty named
+ *    @x_name, or %NULL, when none found.
  *
- * Since: 3.26
+ * Since: 3.36
  **/
-icalproperty *
-e_cal_util_find_x_property (icalcomponent *icalcomp,
-			    const gchar *x_name)
+ICalProperty *
+e_cal_util_component_find_x_property (ICalComponent *icalcomp,
+				      const gchar *x_name)
 {
-	icalproperty *prop;
+	ICalProperty *prop;
 
 	g_return_val_if_fail (icalcomp != NULL, NULL);
 	g_return_val_if_fail (x_name != NULL, NULL);
 
-	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
+	for (prop = i_cal_component_get_first_property (icalcomp, I_CAL_X_PROPERTY);
 	     prop;
-	     prop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY)) {
-		const gchar *prop_name = icalproperty_get_x_name (prop);
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, I_CAL_X_PROPERTY)) {
+		const gchar *prop_name = i_cal_property_get_x_name (prop);
 
 		if (g_strcmp0 (prop_name, x_name) == 0)
 			break;
@@ -1830,8 +1994,8 @@ e_cal_util_find_x_property (icalcomponent *icalcomp,
 }
 
 /**
- * e_cal_util_dup_x_property:
- * @icalcomp: an icalcomponent
+ * e_cal_util_component_dup_x_property:
+ * @icalcomp: an #ICalComponent
  * @x_name: name of the X property
  *
  * Searches for an X property named @x_name within X properties
@@ -1841,127 +2005,102 @@ e_cal_util_find_x_property (icalcomponent *icalcomp,
  * Returns: (nullable) (transfer full): Newly allocated value of the first @x_name
  *    X property in @icalcomp, or %NULL, if not found.
  *
- * Since: 3.26
+ * Since: 3.36
  **/
 gchar *
-e_cal_util_dup_x_property (icalcomponent *icalcomp,
-			   const gchar *x_name)
+e_cal_util_component_dup_x_property (ICalComponent *icalcomp,
+				     const gchar *x_name)
 {
-	icalproperty *prop;
+	ICalProperty *prop;
+	gchar *x_value;
 
 	g_return_val_if_fail (icalcomp != NULL, NULL);
 	g_return_val_if_fail (x_name != NULL, NULL);
 
-	prop = e_cal_util_find_x_property (icalcomp, x_name);
+	prop = e_cal_util_component_find_x_property (icalcomp, x_name);
 
 	if (!prop)
 		return NULL;
 
-	return icalproperty_get_value_as_string_r (prop);
+	x_value = i_cal_property_get_value_as_string_r (prop);
+
+	g_object_unref (prop);
+
+	return x_value;
 }
 
 /**
- * e_cal_util_get_x_property:
- * @icalcomp: an icalcomponent
- * @x_name: name of the X property
- *
- * Searches for an X property named @x_name within X properties
- * of @icalcomp and returns its value. The returned string is
- * owned by libical. See e_cal_util_dup_x_property().
- *
- * Returns: (nullable) (transfer none): Value of the first @x_name
- *    X property in @icalcomp, or %NULL, if not found.
- *
- * Since: 3.26
- **/
-const gchar *
-e_cal_util_get_x_property (icalcomponent *icalcomp,
-			   const gchar *x_name)
-{
-	icalproperty *prop;
-
-	g_return_val_if_fail (icalcomp != NULL, NULL);
-	g_return_val_if_fail (x_name != NULL, NULL);
-
-	prop = e_cal_util_find_x_property (icalcomp, x_name);
-
-	if (!prop)
-		return NULL;
-
-	return icalproperty_get_value_as_string (prop);
-}
-
-/**
- * e_cal_util_set_x_property:
- * @icalcomp: an icalcomponent
+ * e_cal_util_component_set_x_property:
+ * @icalcomp: an #ICalComponent
  * @x_name: name of the X property
  * @value: (nullable): a value to set, or %NULL
  *
  * Sets a value of the first X property named @x_name in @icalcomp,
  * if any such already exists, or adds a new property with this name
  * and value. As a special case, if @value is %NULL, then removes
- * the first X property names @x_name from @icalcomp instead.
+ * the first X property named @x_name from @icalcomp instead.
  *
- * Since: 3.26
+ * Since: 3.36
  **/
 void
-e_cal_util_set_x_property (icalcomponent *icalcomp,
-			   const gchar *x_name,
-			   const gchar *value)
+e_cal_util_component_set_x_property (ICalComponent *icalcomp,
+				     const gchar *x_name,
+				     const gchar *value)
 {
-	icalproperty *prop;
+	ICalProperty *prop;
 
 	g_return_if_fail (icalcomp != NULL);
 	g_return_if_fail (x_name != NULL);
 
 	if (!value) {
-		e_cal_util_remove_x_property (icalcomp, x_name);
+		e_cal_util_component_remove_x_property (icalcomp, x_name);
 		return;
 	}
 
-	prop = e_cal_util_find_x_property (icalcomp, x_name);
+	prop = e_cal_util_component_find_x_property (icalcomp, x_name);
 	if (prop) {
-		icalproperty_set_value_from_string (prop, value, "NO");
+		i_cal_property_set_value_from_string (prop, value, "NO");
+		g_object_unref (prop);
 	} else {
-		prop = icalproperty_new_x (value);
-		icalproperty_set_x_name (prop, x_name);
-		icalcomponent_add_property (icalcomp, prop);
+		prop = i_cal_property_new_x (value);
+		i_cal_property_set_x_name (prop, x_name);
+		i_cal_component_take_property (icalcomp, prop);
 	}
 }
 
 /**
- * e_cal_util_remove_x_property:
- * @icalcomp: an icalcomponent
+ * e_cal_util_component_remove_x_property:
+ * @icalcomp: an #ICalComponent
  * @x_name: name of the X property
  *
  * Removes the first X property named @x_name in @icalcomp.
  *
  * Returns: %TRUE, when any such had been found and removed, %FALSE otherwise.
  *
- * Since: 3.26
+ * Since: 3.36
  **/
 gboolean
-e_cal_util_remove_x_property (icalcomponent *icalcomp,
-			      const gchar *x_name)
+e_cal_util_component_remove_x_property (ICalComponent *icalcomp,
+					const gchar *x_name)
 {
-	icalproperty *prop;
+	ICalProperty *prop;
 
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 	g_return_val_if_fail (x_name != NULL, FALSE);
 
-	prop = e_cal_util_find_x_property (icalcomp, x_name);
+	prop = e_cal_util_component_find_x_property (icalcomp, x_name);
 	if (!prop)
 		return FALSE;
 
-	icalcomponent_remove_property (icalcomp, prop);
-	icalproperty_free (prop);
+	i_cal_component_remove_property (icalcomp, prop);
+	g_object_unref (prop);
 
 	return TRUE;
 }
 
 /**
- * e_cal_util_remove_property_by_kind:
- * @icalcomp: an icalcomponent
+ * e_cal_util_component_remove_property_by_kind:
+ * @icalcomp: an #ICalComponent
  * @kind: the kind of the property to remove
  * @all: %TRUE to remove all, or %FALSE to remove only the first property of the @kind
  *
@@ -1972,18 +2111,18 @@ e_cal_util_remove_x_property (icalcomponent *icalcomp,
  * Since: 3.30
  **/
 guint
-e_cal_util_remove_property_by_kind (icalcomponent *icalcomp,
-				    icalproperty_kind kind,
-				    gboolean all)
+e_cal_util_component_remove_property_by_kind (ICalComponent *icalcomp,
+					      ICalPropertyKind kind,
+					      gboolean all)
 {
-	icalproperty *prop;
+	ICalProperty *prop;
 	guint count = 0;
 
 	g_return_val_if_fail (icalcomp != NULL, 0);
 
-	while (prop = icalcomponent_get_first_property (icalcomp, kind), prop) {
-		icalcomponent_remove_property (icalcomp, prop);
-		icalproperty_free (prop);
+	while (prop = i_cal_component_get_first_property (icalcomp, kind), prop) {
+		i_cal_component_remove_property (icalcomp, prop);
+		g_object_unref (prop);
 
 		count++;
 
@@ -1995,16 +2134,16 @@ e_cal_util_remove_property_by_kind (icalcomponent *icalcomp,
 }
 
 typedef struct _NextOccurrenceData {
-	struct icaltimetype interval_start;
-	struct icaltimetype next;
+	ICalTimetype *interval_start;
+	ICalTimetype *next;
 	gboolean found_next;
 	gboolean any_hit;
 } NextOccurrenceData;
 
 static gboolean
-ecu_find_next_occurrence_cb (icalcomponent *comp,
-			     struct icaltimetype instance_start,
-			     struct icaltimetype instance_end,
+ecu_find_next_occurrence_cb (ICalComponent *comp,
+			     ICalTimetype *instance_start,
+			     ICalTimetype *instance_end,
 			     gpointer user_data,
 			     GCancellable *cancellable,
 			     GError **error)
@@ -2015,8 +2154,9 @@ ecu_find_next_occurrence_cb (icalcomponent *comp,
 
 	nod->any_hit = TRUE;
 
-	if (icaltime_compare (nod->interval_start, instance_start) < 0) {
-		nod->next = instance_start;
+	if (i_cal_time_compare (nod->interval_start, instance_start) < 0) {
+		g_clear_object (&nod->next);
+		nod->next = g_object_ref (instance_start);
 		nod->found_next = TRUE;
 		return FALSE;
 	}
@@ -2026,17 +2166,17 @@ ecu_find_next_occurrence_cb (icalcomponent *comp,
 
 /* the returned FALSE means failure in timezone resolution, not in @out_time */
 static gboolean
-e_cal_util_find_next_occurrence (icalcomponent *vtodo,
-				 struct icaltimetype for_time,
-				 struct icaltimetype *out_time, /* set to icaltime_null_time() on failure */
+e_cal_util_find_next_occurrence (ICalComponent *vtodo,
+				 ICalTimetype *for_time,
+				 ICalTimetype **out_time, /* set to NULL on failure */
 				 ECalClient *cal_client,
 				 GCancellable *cancellable,
 				 GError **error)
 {
 	NextOccurrenceData nod;
-	struct icaltimetype interval_start = for_time, interval_end, orig_dtstart, orig_due;
+	ICalTimetype *interval_start, *interval_end = NULL, *orig_dtstart, *orig_due;
 	gint advance_days = 8;
-	icalproperty *prop;
+	ICalProperty *prop;
 	gboolean success;
 	GError *local_error = NULL;
 
@@ -2044,39 +2184,50 @@ e_cal_util_find_next_occurrence (icalcomponent *vtodo,
 	g_return_val_if_fail (out_time != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (cal_client), FALSE);
 
-	orig_dtstart = icalcomponent_get_dtstart (vtodo);
-	orig_due = icalcomponent_get_due (vtodo);
+	orig_dtstart = i_cal_component_get_dtstart (vtodo);
+	orig_due = i_cal_component_get_due (vtodo);
 
-	e_cal_util_remove_property_by_kind (vtodo, ICAL_DUE_PROPERTY, TRUE);
+	e_cal_util_component_remove_property_by_kind (vtodo, I_CAL_DUE_PROPERTY, TRUE);
 
-	if (!icaltime_is_null_time (for_time) && icaltime_is_valid_time (for_time)) {
-		icalcomponent_set_dtstart (vtodo, for_time);
+	if (for_time && !i_cal_time_is_null_time (for_time) && i_cal_time_is_valid_time (for_time)) {
+		i_cal_component_set_dtstart (vtodo, for_time);
 	}
 
-	interval_start = icalcomponent_get_dtstart (vtodo);
-	if (icaltime_is_null_time (interval_start) || !icaltime_is_valid_time (interval_start))
-		interval_start = icaltime_current_time_with_zone (e_cal_client_get_default_timezone (cal_client));
+	interval_start = i_cal_component_get_dtstart (vtodo);
+	if (!interval_start || i_cal_time_is_null_time (interval_start) || !i_cal_time_is_valid_time (interval_start)) {
+		g_clear_object (&interval_start);
+		interval_start = i_cal_time_current_time_with_zone (e_cal_client_get_default_timezone (cal_client));
+	}
 
-	prop = icalcomponent_get_first_property (vtodo, ICAL_RRULE_PROPERTY);
+	prop = i_cal_component_get_first_property (vtodo, I_CAL_RRULE_PROPERTY);
 	if (prop) {
-		struct icalrecurrencetype rrule;
+		ICalRecurrenceType *rrule;
 
-		rrule = icalproperty_get_rrule (prop);
+		rrule = i_cal_property_get_rrule (prop);
 
-		if (rrule.freq == ICAL_WEEKLY_RECURRENCE && rrule.interval > 1)
-			advance_days = (rrule.interval * 7) + 1;
-		else if (rrule.freq == ICAL_MONTHLY_RECURRENCE)
-			advance_days = (rrule.interval >= 1 ? rrule.interval * 31 : 31) + 1;
-		else if (rrule.freq == ICAL_YEARLY_RECURRENCE)
-			advance_days = (rrule.interval >= 1 ? rrule.interval * 365 : 365) + 2;
+		if (rrule) {
+			if (i_cal_recurrence_type_get_freq (rrule) == I_CAL_WEEKLY_RECURRENCE && i_cal_recurrence_type_get_interval (rrule) > 1)
+				advance_days = (i_cal_recurrence_type_get_interval (rrule) * 7) + 1;
+			else if (i_cal_recurrence_type_get_freq (rrule) == I_CAL_MONTHLY_RECURRENCE)
+				advance_days = (i_cal_recurrence_type_get_interval (rrule) >= 1 ? i_cal_recurrence_type_get_interval (rrule) * 31 : 31) + 1;
+			else if (i_cal_recurrence_type_get_freq (rrule) == I_CAL_YEARLY_RECURRENCE)
+				advance_days = (i_cal_recurrence_type_get_interval (rrule) >= 1 ? i_cal_recurrence_type_get_interval (rrule) * 365 : 365) + 2;
+		}
+
+		g_clear_object (&rrule);
+		g_clear_object (&prop);
 	}
+
+	nod.next = NULL;
 
 	do {
-		interval_end = interval_start;
-		icaltime_adjust (&interval_end, advance_days, 0, 0, 0);
+		interval_end = i_cal_timetype_new_clone (interval_start);
+		i_cal_time_adjust (interval_end, advance_days, 0, 0, 0);
+
+		g_clear_object (&(nod.next));
 
 		nod.interval_start = interval_start;
-		nod.next = icaltime_null_time ();
+		nod.next = i_cal_time_null_time ();
 		nod.found_next = FALSE;
 		nod.any_hit = FALSE;
 
@@ -2086,28 +2237,36 @@ e_cal_util_find_next_occurrence (icalcomponent *vtodo,
 			e_cal_client_get_default_timezone (cal_client),
 			cancellable, &local_error) || nod.found_next;
 
+		g_object_unref (interval_start);
 		interval_start = interval_end;
-		icaltime_adjust (&interval_start, -1, 0, 0, 0);
+		interval_end = NULL;
+		i_cal_time_adjust (interval_start, -1, 0, 0, 0);
 
 	} while (!local_error && !g_cancellable_is_cancelled (cancellable) && !nod.found_next && nod.any_hit);
 
 	if (success)
-		*out_time = nod.next;
+		*out_time = (nod.next && !i_cal_time_is_null_time (nod.next)) ? g_object_ref (nod.next) : NULL;
 
 	if (local_error)
 		g_propagate_error (error, local_error);
 
-	if (!icaltime_is_null_time (for_time) && icaltime_is_valid_time (for_time)) {
-		if (icaltime_is_null_time (orig_dtstart) || !icaltime_is_valid_time (orig_dtstart))
-			e_cal_util_remove_property_by_kind (vtodo, ICAL_DTSTART_PROPERTY, FALSE);
+	if (for_time && !i_cal_time_is_null_time (for_time) && i_cal_time_is_valid_time (for_time)) {
+		if (!orig_dtstart || i_cal_time_is_null_time (orig_dtstart) || !i_cal_time_is_valid_time (orig_dtstart))
+			e_cal_util_component_remove_property_by_kind (vtodo, I_CAL_DTSTART_PROPERTY, FALSE);
 		else
-			icalcomponent_set_dtstart (vtodo, orig_dtstart);
+			i_cal_component_set_dtstart (vtodo, orig_dtstart);
 	}
 
-	if (icaltime_is_null_time (orig_due) || !icaltime_is_valid_time (orig_due))
-		e_cal_util_remove_property_by_kind (vtodo, ICAL_DUE_PROPERTY, FALSE);
+	if (!orig_due || i_cal_time_is_null_time (orig_due) || !i_cal_time_is_valid_time (orig_due))
+		e_cal_util_component_remove_property_by_kind (vtodo, I_CAL_DUE_PROPERTY, FALSE);
 	else
-		icalcomponent_set_due (vtodo, orig_due);
+		i_cal_component_set_due (vtodo, orig_due);
+
+	g_clear_object (&interval_start);
+	g_clear_object (&interval_end);
+	g_clear_object (&orig_dtstart);
+	g_clear_object (&orig_due);
+	g_clear_object (&(nod.next));
 
 	return success;
 }
@@ -2135,36 +2294,43 @@ e_cal_util_find_next_occurrence (icalcomponent *vtodo,
  * Since: 3.30
  **/
 gboolean
-e_cal_util_init_recur_task_sync (icalcomponent *vtodo,
+e_cal_util_init_recur_task_sync (ICalComponent *vtodo,
 				 ECalClient *cal_client,
 				 GCancellable *cancellable,
 				 GError **error)
 {
-	struct icaltimetype dtstart, due;
+	ICalTimetype *dtstart, *due;
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (vtodo != NULL, FALSE);
-	g_return_val_if_fail (icalcomponent_isa (vtodo) == ICAL_VTODO_COMPONENT, FALSE);
+	g_return_val_if_fail (i_cal_component_isa (vtodo) == I_CAL_VTODO_COMPONENT, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (cal_client), FALSE);
 
 	if (!e_cal_util_component_has_recurrences (vtodo))
 		return TRUE;
 
 	/* DTSTART is required for recurring components */
-	dtstart = icalcomponent_get_dtstart (vtodo);
-	if (icaltime_is_null_time (dtstart) || !icaltime_is_valid_time (dtstart)) {
-		dtstart = icaltime_current_time_with_zone (e_cal_client_get_default_timezone (cal_client));
-		icalcomponent_set_dtstart (vtodo, dtstart);
+	dtstart = i_cal_component_get_dtstart (vtodo);
+	if (!dtstart || i_cal_time_is_null_time (dtstart) || !i_cal_time_is_valid_time (dtstart)) {
+		g_clear_object (&dtstart);
+
+		dtstart = i_cal_time_current_time_with_zone (e_cal_client_get_default_timezone (cal_client));
+		i_cal_component_set_dtstart (vtodo, dtstart);
 	}
 
-	due = icalcomponent_get_due (vtodo);
-	if (icaltime_is_null_time (due) || !icaltime_is_valid_time (due) ||
-	    icaltime_compare (dtstart, due) < 0) {
-		success = e_cal_util_find_next_occurrence (vtodo, icaltime_null_time (), &due, cal_client, cancellable, error);
+	due = i_cal_component_get_due (vtodo);
+	if (!due || i_cal_time_is_null_time (due) || !i_cal_time_is_valid_time (due) ||
+	    i_cal_time_compare (dtstart, due) < 0) {
+		g_clear_object (&due);
 
-		if (!icaltime_is_null_time (due) && icaltime_is_valid_time (due))
-			icalcomponent_set_due (vtodo, due);
+		success = e_cal_util_find_next_occurrence (vtodo, NULL, &due, cal_client, cancellable, error);
+
+		if (due && !i_cal_time_is_null_time (due) && i_cal_time_is_valid_time (due))
+			i_cal_component_set_due (vtodo, due);
 	}
+
+	g_clear_object (&dtstart);
+	g_clear_object (&due);
 
 	return success;
 }
@@ -2198,126 +2364,167 @@ e_cal_util_init_recur_task_sync (icalcomponent *vtodo,
  * Since: 3.30
  **/
 gboolean
-e_cal_util_mark_task_complete_sync (icalcomponent *vtodo,
+e_cal_util_mark_task_complete_sync (ICalComponent *vtodo,
 				    time_t completed_time,
 				    ECalClient *cal_client,
 				    GCancellable *cancellable,
 				    GError **error)
 {
-	icalproperty *prop;
+	ICalProperty *prop;
 
 	g_return_val_if_fail (vtodo != NULL, FALSE);
-	g_return_val_if_fail (icalcomponent_isa (vtodo) == ICAL_VTODO_COMPONENT, FALSE);
+	g_return_val_if_fail (i_cal_component_isa (vtodo) == I_CAL_VTODO_COMPONENT, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (cal_client), FALSE);
 
 	if (e_cal_util_component_has_recurrences (vtodo)) {
 		gboolean is_last = FALSE, change_count = FALSE;
-		struct icaltimetype new_dtstart = icaltime_null_time (), new_due = icaltime_null_time ();
+		ICalTimetype *new_dtstart = NULL, *new_due = NULL;
 
-		for (prop = icalcomponent_get_first_property (vtodo, ICAL_RRULE_PROPERTY);
+		for (prop = i_cal_component_get_first_property (vtodo, I_CAL_RRULE_PROPERTY);
 		     prop && !is_last;
-		     prop = icalcomponent_get_next_property (vtodo, ICAL_RRULE_PROPERTY)) {
-			struct icalrecurrencetype rrule;
+		     g_object_unref (prop), prop = i_cal_component_get_next_property (vtodo, I_CAL_RRULE_PROPERTY)) {
+			ICalRecurrenceType *rrule;
 
-			rrule = icalproperty_get_rrule (prop);
+			rrule = i_cal_property_get_rrule (prop);
 
-			if (rrule.interval > 0) {
-				if (rrule.count > 0) {
-					is_last = rrule.count == 1;
+			if (rrule && i_cal_recurrence_type_get_interval (rrule) > 0) {
+				gint count = i_cal_recurrence_type_get_count (rrule);
+
+				if (count > 0) {
+					is_last = count == 1;
 					change_count = TRUE;
 				}
 			}
+
+			g_clear_object (&rrule);
 		}
 
+		g_clear_object (&prop);
+
 		if (!is_last) {
-			if (!e_cal_util_find_next_occurrence (vtodo, icaltime_null_time (), &new_dtstart, cal_client, cancellable, error))
+			if (!e_cal_util_find_next_occurrence (vtodo, NULL, &new_dtstart, cal_client, cancellable, error)) {
+				g_clear_object (&new_dtstart);
 				return FALSE;
+			}
 
-			if (!icaltime_is_null_time (new_dtstart) && icaltime_is_valid_time (new_dtstart)) {
-				struct icaltimetype old_due;
+			if (new_dtstart && !i_cal_time_is_null_time (new_dtstart) && i_cal_time_is_valid_time (new_dtstart)) {
+				ICalTimetype *old_due;
 
-				old_due = icalcomponent_get_due (vtodo);
+				old_due = i_cal_component_get_due (vtodo);
 
 				/* When the previous DUE is before new DTSTART, then move relatively also the DUE
 				   date, to keep the difference... */
-				if (!icaltime_is_null_time (old_due) && icaltime_is_valid_time (old_due) &&
-				    icaltime_compare (old_due, new_dtstart) < 0) {
-					if (!e_cal_util_find_next_occurrence (vtodo, old_due, &new_due, cal_client, cancellable, error))
+				if (old_due && !i_cal_time_is_null_time (old_due) && i_cal_time_is_valid_time (old_due) &&
+				    i_cal_time_compare (old_due, new_dtstart) < 0) {
+					if (!e_cal_util_find_next_occurrence (vtodo, old_due, &new_due, cal_client, cancellable, error)) {
+						g_clear_object (&new_dtstart);
+						g_clear_object (&new_due);
+						g_clear_object (&old_due);
 						return FALSE;
+					}
 				}
 
 				/* ...  otherwise set the new DUE as the next-next-DTSTART ... */
-				if (icaltime_is_null_time (new_due) || !icaltime_is_valid_time (new_due)) {
-					if (!e_cal_util_find_next_occurrence (vtodo, new_dtstart, &new_due, cal_client, cancellable, error))
+				if (!new_due || i_cal_time_is_null_time (new_due) || !i_cal_time_is_valid_time (new_due)) {
+					g_clear_object (&new_due);
+
+					if (!e_cal_util_find_next_occurrence (vtodo, new_dtstart, &new_due, cal_client, cancellable, error)) {
+						g_clear_object (&new_dtstart);
+						g_clear_object (&new_due);
+						g_clear_object (&old_due);
 						return FALSE;
+					}
 				}
 
 				/* ... eventually fallback to the new DTSTART for the new DUE */
-				if (icaltime_is_null_time (new_due) || !icaltime_is_valid_time (new_due))
-					new_due = new_dtstart;
+				if (!new_due || i_cal_time_is_null_time (new_due) || !i_cal_time_is_valid_time (new_due)) {
+					g_clear_object (&new_due);
+					new_due = i_cal_timetype_new_clone (new_dtstart);
+				}
+
+				g_clear_object (&old_due);
 			}
 		}
 
-		if (!is_last &&
-		    !icaltime_is_null_time (new_dtstart) && icaltime_is_valid_time (new_dtstart) &&
-		    !icaltime_is_null_time (new_due) && icaltime_is_valid_time (new_due)) {
+		if (!is_last && new_dtstart && new_due &&
+		    !i_cal_time_is_null_time (new_dtstart) && i_cal_time_is_valid_time (new_dtstart) &&
+		    !i_cal_time_is_null_time (new_due) && i_cal_time_is_valid_time (new_due)) {
 			/* Move to the next occurrence */
 			if (change_count) {
-				for (prop = icalcomponent_get_first_property (vtodo, ICAL_RRULE_PROPERTY);
+				for (prop = i_cal_component_get_first_property (vtodo, I_CAL_RRULE_PROPERTY);
 				     prop;
-				     prop = icalcomponent_get_next_property (vtodo, ICAL_RRULE_PROPERTY)) {
-					struct icalrecurrencetype rrule;
+				     g_object_unref (prop), prop = i_cal_component_get_next_property (vtodo, I_CAL_RRULE_PROPERTY)) {
+					ICalRecurrenceType *rrule;
 
-					rrule = icalproperty_get_rrule (prop);
+					rrule = i_cal_property_get_rrule (prop);
 
-					if (rrule.interval > 0) {
-						if (rrule.count > 0) {
-							rrule.count--;
-							icalproperty_set_rrule (prop, rrule);
+					if (rrule && i_cal_recurrence_type_get_interval (rrule) > 0) {
+						gint count = i_cal_recurrence_type_get_count (rrule);
+
+						if (count > 0) {
+							i_cal_recurrence_type_set_count (rrule, count - 1);
+							i_cal_property_set_rrule (prop, rrule);
 						}
 					}
+
+					g_clear_object (&rrule);
 				}
 			}
 
-			icalcomponent_set_dtstart (vtodo, new_dtstart);
-			icalcomponent_set_due (vtodo, new_due);
+			i_cal_component_set_dtstart (vtodo, new_dtstart);
+			i_cal_component_set_due (vtodo, new_due);
 
-			e_cal_util_remove_property_by_kind (vtodo, ICAL_COMPLETED_PROPERTY, TRUE);
+			e_cal_util_component_remove_property_by_kind (vtodo, I_CAL_COMPLETED_PROPERTY, TRUE);
 
-			prop = icalcomponent_get_first_property (vtodo, ICAL_PERCENTCOMPLETE_PROPERTY);
-			if (prop)
-				icalproperty_set_percentcomplete (prop, 0);
+			prop = i_cal_component_get_first_property (vtodo, I_CAL_PERCENTCOMPLETE_PROPERTY);
+			if (prop) {
+				i_cal_property_set_percentcomplete (prop, 0);
+				g_object_unref (prop);
+			}
 
-			prop = icalcomponent_get_first_property (vtodo, ICAL_STATUS_PROPERTY);
-			if (prop)
-				icalproperty_set_status (prop, ICAL_STATUS_NEEDSACTION);
+			prop = i_cal_component_get_first_property (vtodo, I_CAL_STATUS_PROPERTY);
+			if (prop) {
+				i_cal_property_set_status (prop, I_CAL_STATUS_NEEDSACTION);
+				g_object_unref (prop);
+			}
+
+			g_clear_object (&new_dtstart);
+			g_clear_object (&new_due);
 
 			return TRUE;
 		}
 	}
 
-	prop = icalcomponent_get_first_property (vtodo, ICAL_COMPLETED_PROPERTY);
-	if (!prop) {
-		prop = icalproperty_new_completed (completed_time != (time_t) -1 ?
-			icaltime_from_timet_with_zone (completed_time, FALSE, icaltimezone_get_utc_timezone ()) :
-			icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ()));
-		icalcomponent_add_property (vtodo, prop);
+	prop = i_cal_component_get_first_property (vtodo, I_CAL_COMPLETED_PROPERTY);
+	if (prop) {
+		g_object_unref (prop);
+	} else {
+		ICalTimetype *tt;
+
+		tt = completed_time != (time_t) -1 ?
+			i_cal_time_from_timet_with_zone (completed_time, FALSE, i_cal_timezone_get_utc_timezone ()) :
+			i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+		prop = i_cal_property_new_completed (tt);
+		i_cal_component_take_property (vtodo, prop);
+		g_object_unref (tt);
 	}
 
-	prop = icalcomponent_get_first_property (vtodo, ICAL_PERCENTCOMPLETE_PROPERTY);
+	prop = i_cal_component_get_first_property (vtodo, I_CAL_PERCENTCOMPLETE_PROPERTY);
 	if (prop) {
-		icalproperty_set_percentcomplete (prop, 100);
+		i_cal_property_set_percentcomplete (prop, 100);
+		g_object_unref (prop);
 	} else {
-		prop = icalproperty_new_percentcomplete (100);
-		icalcomponent_add_property (vtodo, prop);
+		prop = i_cal_property_new_percentcomplete (100);
+		i_cal_component_take_property (vtodo, prop);
 	}
 
-	prop = icalcomponent_get_first_property (vtodo, ICAL_STATUS_PROPERTY);
+	prop = i_cal_component_get_first_property (vtodo, I_CAL_STATUS_PROPERTY);
 	if (prop) {
-		icalproperty_set_status (prop, ICAL_STATUS_COMPLETED);
+		i_cal_property_set_status (prop, I_CAL_STATUS_COMPLETED);
+		g_object_unref (prop);
 	} else {
-		prop = icalproperty_new_status (ICAL_STATUS_COMPLETED);
-		icalcomponent_add_property (vtodo, prop);
+		prop = i_cal_property_new_status (I_CAL_STATUS_COMPLETED);
+		i_cal_component_take_property (vtodo, prop);
 	}
 
 	return TRUE;

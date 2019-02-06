@@ -38,6 +38,7 @@
 
 #include "e-cal-component.h"
 #include "e-cal-time-util.h"
+#include "e-cal-util.h"
 
 #ifdef G_OS_WIN32
 #define getgid() 0
@@ -73,24 +74,6 @@ free_icalcomponent (ECalComponent *comp,
 	/* Clean up */
 	comp->priv->need_sequence_inc = FALSE;
 }
-
-static gboolean
-ecc_property_exists (ICalComponent *icalcomp,
-		     ICalPropertyKind prop_kind)
-{
-	ICalProperty *prop;
-
-	g_return_val_if_fail (I_CAL_IS_COMPONENT (icalcomp), FALSE);
-
-	prop = i_cal_component_get_first_property (icalcomp, prop_kind);
-	if (!prop)
-		return FALSE;
-
-	g_object_unref (prop);
-
-	return TRUE;
-}
-
 
 /* The 'func' returns TRUE to continue */
 static void
@@ -955,7 +938,7 @@ e_cal_component_has_attachments (ECalComponent *comp)
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, FALSE);
 
-	return ecc_property_exists (comp->priv->icalcomp, I_CAL_ATTACH_PROPERTY);
+	return e_cal_util_component_has_property (comp->priv->icalcomp, I_CAL_ATTACH_PROPERTY);
 }
 
 /* Creates a comma-delimited string of categories */
@@ -2266,7 +2249,7 @@ e_cal_component_has_exdates (ECalComponent *comp)
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, FALSE);
 
-	return ecc_property_exists (comp->priv->icalcomp, I_CAL_EXDATE_PROPERTY);
+	return e_cal_util_component_has_property (comp->priv->icalcomp, I_CAL_EXDATE_PROPERTY);
 }
 
 /* Gets a list of recurrence rules */
@@ -2404,7 +2387,7 @@ e_cal_component_has_exrules (ECalComponent *comp)
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, FALSE);
 
-	return ecc_property_exists (comp->priv->icalcomp, I_CAL_EXRULE_PROPERTY);
+	return e_cal_util_component_has_property (comp->priv->icalcomp, I_CAL_EXRULE_PROPERTY);
 }
 
 /**
@@ -2627,7 +2610,7 @@ e_cal_component_has_organizer (ECalComponent *comp)
 {
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 
-	return ecc_property_exists (comp->priv->icalcomp, I_CAL_ORGANIZER_PROPERTY);
+	return e_cal_util_component_has_property (comp->priv->icalcomp, I_CAL_ORGANIZER_PROPERTY);
 }
 
 /**
@@ -2928,7 +2911,7 @@ e_cal_component_has_rdates (ECalComponent *comp)
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, FALSE);
 
-	return ecc_property_exists (comp->priv->icalcomp, I_CAL_RDATE_PROPERTY);
+	return e_cal_util_component_has_property (comp->priv->icalcomp, I_CAL_RDATE_PROPERTY);
 }
 
 /**
@@ -3013,7 +2996,7 @@ e_cal_component_has_rrules (ECalComponent *comp)
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, FALSE);
 
-	return ecc_property_exists (comp->priv->icalcomp, I_CAL_RRULE_PROPERTY);
+	return e_cal_util_component_has_property (comp->priv->icalcomp, I_CAL_RRULE_PROPERTY);
 }
 
 /**
@@ -3243,7 +3226,7 @@ e_cal_component_is_instance (ECalComponent *comp)
 {
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 
-	return ecc_property_exists (comp->priv->icalcomp, I_CAL_RECURRENCEID_PROPERTY);
+	return e_cal_util_component_has_property (comp->priv->icalcomp, I_CAL_RECURRENCEID_PROPERTY);
 }
 
 /**
@@ -3799,7 +3782,7 @@ e_cal_component_has_attendees (ECalComponent *comp)
 {
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 
-	return ecc_property_exists (comp->priv->icalcomp, I_CAL_ATTENDEE_PROPERTY);
+	return e_cal_util_component_has_property (comp->priv->icalcomp, I_CAL_ATTENDEE_PROPERTY);
 }
 
 /**
