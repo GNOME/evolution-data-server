@@ -27,23 +27,26 @@
 #include <glib.h>
 #include <gio/gio.h>
 
+#include <libecal/e-cal-recur.h>
+
 G_BEGIN_DECLS
 
-gboolean	e_cal_client_check_timezones	(icalcomponent *comp,
-						 GList *comps,
-						 icaltimezone *(*tzlookup) (const gchar *tzid, gconstpointer ecalclient, GCancellable *cancellable, GError **error),
-						 gconstpointer ecalclient,
+gboolean	e_cal_client_check_timezones_sync
+						(ICalComponent *vcalendar,
+						 GSList *comps, /* ICalComponent * */
+						 ECalRecurResolveTimezoneCb tzlookup,
+						 gpointer tzlookup_data,
 						 GCancellable *cancellable,
 						 GError **error);
 
-icaltimezone *	e_cal_client_tzlookup		(const gchar *tzid,
-						 gconstpointer ecalclient,
+ICalTimezone *	e_cal_client_tzlookup_cb	(const gchar *tzid,
+						 gpointer ecalclient, /* ECalClient * */
 						 GCancellable *cancellable,
 						 GError **error);
 
-icaltimezone *	e_cal_client_tzlookup_icomp
+ICalTimezone *	e_cal_client_tzlookup_icalcomp_cb
 						(const gchar *tzid,
-						 gconstpointer custom,
+						 gpointer icalcomp, /* ICalComponent * */
 						 GCancellable *cancellable,
 						 GError **error);
 
