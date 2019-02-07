@@ -138,7 +138,7 @@ e_book_backend_db_cache_get_filename (DB *db)
  * newly created, and must be unreffed by the caller when no longer
  * needed.
  *
- * Returns: A cached #EContact, or %NULL if @uid is not cached.
+ * Returns: (transfer full) (nullable): A cached #EContact, or %NULL if @uid is not cached.
  *
  * Deprecated: 3.12: Use #EBookSqlite instead
  **/
@@ -289,7 +289,7 @@ e_book_backend_db_cache_check_contact (DB *db,
  * When done with the list, the caller must unref the contacts and
  * free the list.
  *
- * Returns: A #GList of pointers to #EContact.
+ * Returns: (element-type EContact) (transfer full): A #GList of pointers to #EContact.
  *
  * Deprecated: 3.12: Use #EBookSqlite instead
  **/
@@ -353,7 +353,7 @@ e_book_backend_db_cache_get_contacts (DB *db,
  * in @cache matching @query. When done with the array, the caller must
  * free the ID strings and the array.
  *
- * Returns: A #GPtrArray of pointers to contact ID strings.
+ * Returns: (element-type utf8) (transfer full): A #GPtrArray of pointers to contact ID strings.
  *
  * Deprecated: 3.12: Use #EBookSqlite instead
  **/

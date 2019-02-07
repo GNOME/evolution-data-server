@@ -2426,7 +2426,7 @@ e_book_backend_sqlitedb_new_contact (EBookBackendSqliteDB *ebsdb,
  * e_book_backend_sqlitedb_new_contacts
  * @ebsdb: An #EBookBackendSqliteDB
  * @folderid: folder id
- * @contacts: list of #EContact
+ * @contacts: (element-type EContact): list of #EContact
  * @replace_existing: Whether this contact should replace another contact with the same UID.
  * @error: (allow-none): A location to store any error that may have occurred.
  *
@@ -2522,7 +2522,7 @@ e_book_backend_sqlitedb_add_contact (EBookBackendSqliteDB *ebsdb,
  * e_book_backend_sqlitedb_add_contacts:
  * @ebsdb: An #EBookBackendSqliteDB
  * @folderid: folder id
- * @contacts: list of #EContact
+ * @contacts: (element-type EContact): list of #EContact
  * @partial_content: contact does not contain full information. Used when
  * the backend cache's partial information for auto-completion.
  * @error: (allow-none): A location to store any error that may have occurred.
@@ -2625,7 +2625,7 @@ generate_delete_stmt (const gchar *table,
  * e_book_backend_sqlitedb_remove_contacts:
  * @ebsdb: An #EBookBackendSqliteDB
  * @folderid: folder id
- * @uids: a #GSList of uids indicating which contacts to remove
+ * @uids: (element-type utf8): a #GSList of uids indicating which contacts to remove
  * @error: (allow-none): A location to store any error that may have occurred.
  *
  * Removes the contacts indicated by @uids from the folder @folderid in @ebsdb.
@@ -2771,7 +2771,8 @@ get_vcard_cb (gpointer ref,
  * @ebsdb: An #EBookBackendSqliteDB
  * @folderid: folder id
  * @uid: The uid of the contact to fetch
- * @fields_of_interest: (allow-none): A #GHashTable indicating which fields should be included in returned contacts
+ * @fields_of_interest: (allow-none) (element-type utf8 gint): A #GHashTable indicating which fields
+ *   should be included in returned contacts
  * @with_all_required_fields: (out) (allow-none): Whether all of the fields of interest were available
  * @error: (allow-none): A location to store any error that may have occurred.
  *
@@ -2786,8 +2787,8 @@ get_vcard_cb (gpointer ref,
  * is not stored in @ebsdb, you must pass the @error parameter and check whether
  * it was set by this function.</para></note>
  *
- * Returns: On success the #EContact corresponding to @uid is returned, otherwise %NULL is
- * returned if there was an error or if no contact was found for @uid.
+ * Returns: (transfer full) (nullable): On success the #EContact corresponding to @uid is returned,
+ *   otherwise %NULL is returned if there was an error or if no contact was found for @uid.
  *
  * Since: 3.2
  *
@@ -2844,7 +2845,7 @@ uid_rev_fields (GHashTable *fields_of_interest)
 
 /**
  * e_book_backend_sqlitedb_is_summary_fields:
- * @fields_of_interest: A hash table containing the fields of interest
+ * @fields_of_interest: (element-type utf8 gint): A hash table containing the fields of interest
  * 
  * This only checks if all the fields are part of the default summary fields,
  * not part of the configured summary fields.
@@ -2891,7 +2892,7 @@ e_book_backend_sqlitedb_is_summary_fields (GHashTable *fields_of_interest)
 /**
  * e_book_backend_sqlitedb_check_summary_fields:
  * @ebsdb: An #EBookBackendSqliteDB
- * @fields_of_interest: A #GHashTable containing the fields of interest
+ * @fields_of_interest: (element-type utf8 gint): A #GHashTable containing the fields of interest
  * 
  * Checks if all the specified fields are part of the configured summary
  * fields for @ebsdb
@@ -2996,7 +2997,8 @@ store_data_to_vcard (gpointer ref,
  * @ebsdb: An #EBookBackendSqliteDB
  * @folderid: The folder id
  * @uid: The uid to fetch a vcard for
- * @fields_of_interest: The required fields for this vcard, or %NULL to require all fields.
+ * @fields_of_interest: (element-type utf8 gint) (nullable): The required fields for this vcard,
+ *   or %NULL to require all fields.
  * @with_all_required_fields: (allow-none) (out): Whether all the required fields are present in the returned vcard.
  * @error: (allow-none): A location to store any error that may have occurred.
  *
@@ -3347,7 +3349,7 @@ e_book_backend_sqlitedb_check_summary_query_locked (EBookBackendSqliteDB *ebsdb,
  * e_book_backend_sqlitedb_check_summary_query:
  * @ebsdb: An #EBookBackendSqliteDB
  * @query: the query to check
- * @with_list_attrs: Return location to store whether the query touches upon list attributes
+ * @with_list_attrs: (out): Return location to store whether the query touches upon list attributes
  *
  * Checks whether @query contains only checks for the summary fields
  * configured in @ebsdb
@@ -3384,9 +3386,7 @@ e_book_backend_sqlitedb_check_summary_query (EBookBackendSqliteDB *ebsdb,
  *
  * Since: 3.2
  *
- * Deprecated: 3.8: Use e_book_backend_sqlitedb_check_summary_query() instead
- *
- * Deprecated: 3.12: Use #EBookSqlite instead
+ * Deprecated: 3.8: Use #EBookSqlite instead
  **/
 gboolean
 e_book_backend_sqlitedb_is_summary_query (const gchar *query)
@@ -4238,8 +4238,8 @@ book_backend_sqlitedb_search_full (EBookBackendSqliteDB *ebsdb,
  * @ebsdb: An #EBookBackendSqliteDB
  * @folderid: folder id of the address-book
  * @sexp: (allow-none): search expression; use %NULL or an empty string to get all stored contacts.
- * @fields_of_interest: (allow-none): A #GHashTable indicating which fields should be 
- * included in the returned contacts
+ * @fields_of_interest: (nullable) (element-type utf8 gint): A #GHashTable indicating which fields
+ * should be  included in the returned contacts
  * @searched: (allow-none) (out): Whether @ebsdb was capable of searching
  * for the provided query @sexp.
  * @with_all_required_fields: (allow-none) (out): Whether all the required
@@ -4265,7 +4265,7 @@ book_backend_sqlitedb_search_full (EBookBackendSqliteDB *ebsdb,
  * The returned list should be freed with g_slist_free()
  * and all elements freed with e_book_backend_sqlitedb_search_data_free().
  *
- * Returns: (transfer full): A #GSList of #EbSdbSearchData structures.
+ * Returns: (transfer full) (element-type EbSdbSearchData): A #GSList of #EbSdbSearchData structures.
  *
  * Since: 3.2
  *
@@ -4360,7 +4360,7 @@ e_book_backend_sqlitedb_search (EBookBackendSqliteDB *ebsdb,
  * The returned list should be freed with g_slist_free()
  * and all elements freed with g_free().
  *
- * Returns: (transfer full): A #GSList of allocated contact UID strings.
+ * Returns: (transfer full) (element-type utf8): A #GSList of allocated contact UID strings.
  *
  * Since: 3.2
  *
@@ -4482,7 +4482,7 @@ get_uids_and_rev_cb (gpointer user_data,
  * with g_hash_table_destroy(), if not needed anymore. Each key
  * and value is a newly allocated string.
  *
- * Returns: (transfer full): A #GHashTable of all contact revisions by UID.
+ * Returns: (transfer full) (element-type utf8 utf8): A #GHashTable of all contact revisions by UID.
  *
  * Since: 3.4
  *
@@ -5105,7 +5105,7 @@ e_book_backend_sqlitedb_set_key_value (EBookBackendSqliteDB *ebsdb,
  *
  * Obsolete, do not use, this always ends with an error.
  *
- * Returns: %NULL
+ * Returns: (element-type utf8) (transfer full): %NULL
  *
  * Since: 3.2
  *
