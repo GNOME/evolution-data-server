@@ -1238,7 +1238,7 @@ static const struct {
  *
  * Searches @summary for contacts matching @query.
  *
- * Returns: A #GPtrArray of pointers to contact ID strings.
+ * Returns: (element-type utf8) (transfer container): A #GPtrArray of pointers to contact ID strings.
  *
  * Deprecated: 3.12: Use #EBookSqlite instead
  **/

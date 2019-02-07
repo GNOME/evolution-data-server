@@ -5332,8 +5332,8 @@ e_book_cache_search_uids (EBookCache *book_cache,
  * e_book_cache_search_with_callback:
  * @book_cache: An #EBookCache
  * @sexp: (nullable): search expression; use %NULL or an empty string to get all stored contacts
- * @func: an #EBookCacheSearchFunc callback to call for each found row
- * @user_data: user data for @func
+ * @func: (scope call): an #EBookCacheSearchFunc callback to call for each found row
+ * @user_data: (closure func): user data for @func
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
