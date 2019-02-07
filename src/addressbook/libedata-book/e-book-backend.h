@@ -216,9 +216,9 @@ struct _EBookBackendClass {
 						 const gchar *query);
 
 	void		(*start_view)		(EBookBackend *backend,
-						 EDataBookView *book_view);
+						 EDataBookView *view);
 	void		(*stop_view)		(EBookBackend *backend,
-						 EDataBookView *book_view);
+						 EDataBookView *view);
 
 	void		(*notify_update)	(EBookBackend *backend,
 						 const EContact *contact);

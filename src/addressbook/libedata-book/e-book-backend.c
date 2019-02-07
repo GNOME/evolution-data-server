@@ -954,7 +954,7 @@ e_book_backend_set_cache_dir (EBookBackend *backend,
  * The returned #EDataBook is referenced for thread-safety and must be
  * unreferenced with g_object_unref() when finished with it.
  *
- * Returns: an #EDataBook, or %NULL
+ * Returns: (transfer full) (nullable): an #EDataBook, or %NULL
  *
  * Since: 3.10
  **/
@@ -1007,7 +1007,7 @@ e_book_backend_set_data_book (EBookBackend *backend,
  * The returned #GProxyResolver is referenced for thread-safety and must
  * be unreferenced with g_object_unref() when finished with it.
  *
- * Returns: a #GProxyResolver, or %NULL
+ * Returns: (transfer full) (nullable): a #GProxyResolver, or %NULL
  *
  * Since: 3.12
  **/
@@ -1034,7 +1034,7 @@ e_book_backend_ref_proxy_resolver (EBookBackend *backend)
  *
  * Returns the data source registry to which #EBackend:source belongs.
  *
- * Returns: an #ESourceRegistry
+ * Returns: (transfer none): an #ESourceRegistry
  *
  * Since: 3.6
  **/
@@ -1665,7 +1665,7 @@ book_backend_create_contacts_thread_old_style (GSimpleAsyncResult *simple,
 }
 
 /**
- * e_book_backend_create_contacts
+ * e_book_backend_create_contacts:
  * @backend: an #EBookBackend
  * @vcards: a %NULL-terminated array of vCard strings
  * @cancellable: optional #GCancellable object, or %NULL
@@ -2194,7 +2194,7 @@ book_backend_remove_contacts_thread_old_style (GSimpleAsyncResult *simple,
 /**
  * e_book_backend_remove_contacts:
  * @backend: an #EBookBackend
- * @uids: a %NULL-terminated array of contact ID strings
+ * @uids: (array zero-terminated=1): a %NULL-terminated array of contact ID strings
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
@@ -2321,7 +2321,7 @@ e_book_backend_remove_contacts_finish (EBookBackend *backend,
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
- * Returns: an #EContact, or %NULL
+ * Returns: (transfer full): an #EContact, or %NULL
  *
  * Since: 3.10
  **/
@@ -2527,7 +2527,7 @@ e_book_backend_get_contact (EBookBackend *backend,
  *
  * If an error occurred, the function will set @error and return %NULL.
  *
- * Returns: an #EContact, or %NULL
+ * Returns: (transfer full): an #EContact, or %NULL
  *
  * Since: 3.10
  **/
@@ -3210,7 +3210,7 @@ e_book_backend_remove_view (EBookBackend *backend,
  *   g_list_free_full (list, g_object_unref);
  * ]|
  *
- * Returns: a list of book views
+ * Returns: (transfer full) (element-type EDataBookView): a list of book views
  *
  * Since: 3.8
  **/
@@ -3306,7 +3306,7 @@ e_book_backend_is_readonly (EBookBackend *backend)
  * Tries to create an #EDataBookDirect for @backend if
  * backend supports direct read access.
  *
- * Returns: (transfer full): A new #EDataBookDirect object, or %NULL if
+ * Returns: (transfer full) (nullable): A new #EDataBookDirect object, or %NULL if
  *          @backend does not support direct access
  *
  * Since: 3.8
