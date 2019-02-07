@@ -3349,7 +3349,7 @@ e_book_meta_backend_ensure_connected_sync (EBookMetaBackend *meta_backend,
 /**
  * e_book_meta_backend_split_changes_sync:
  * @meta_backend: an #EBookMetaBackend
- * @objects: (inout caller-allocates) (element-type EBookMetaBackendInfo):
+ * @objects: (inout) (element-type EBookMetaBackendInfo):
  *    a #GSList of #EBookMetaBackendInfo object infos to split
  * @out_created_objects: (out) (element-type EBookMetaBackendInfo) (transfer full):
  *    a #GSList of #EBookMetaBackendInfo object infos which had been created
