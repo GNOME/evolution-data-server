@@ -447,10 +447,16 @@ camel_mime_message_new (void)
 /**
  * camel_mime_message_set_date:
  * @message: a #CamelMimeMessage object
- * @date: a time_t date
- * @offset: an offset from GMT
+ * @date: a time_t date or %CAMEL_MESSAGE_DATE_CURRENT to use the current local date and time
+ * @offset: an offset from UTC in decimal number using the +HHMM format (for instance an offset
+ *   of -10:45 is -1045). If @date set to %CAMEL_MESSAGE_DATE_CURRENT, this parameter is ignored
  *
  * Set the date on a message.
+ *
+ * In most cases, this is used to set the current date:
+ * |[<!-- language="C" -->
+ * camel_mime_message_set_date (message, CAMEL_MESSAGE_DATE_CURRENT, 0);
+ * ]|
  **/
 void
 camel_mime_message_set_date (CamelMimeMessage *message,
@@ -480,9 +486,10 @@ camel_mime_message_set_date (CamelMimeMessage *message,
 /**
  * camel_mime_message_get_date:
  * @message: a #CamelMimeMessage object
- * @offset: output for the GMT offset
+ * @offset: (out): output for the UTC offset
  *
- * Get the date and GMT offset of a message.
+ * Get the date and UTC offset of a message.
+ * See camel_mime_message_set_date() for information about the @offset format.
  *
  * Returns: the date of the message
  **/
@@ -499,9 +506,10 @@ camel_mime_message_get_date (CamelMimeMessage *msg,
 /**
  * camel_mime_message_get_date_received:
  * @message: a #CamelMimeMessage object
- * @offset: output for the GMT offset
+ * @offset: (out): output for the UTC offset
  *
- * Get the received date and GMT offset of a message.
+ * Get the received date and UTC offset of a message.
+ * See camel_mime_message_set_date() for information about the @offset format.
  *
  * Returns: the received date of the message
  **/
@@ -530,7 +538,7 @@ camel_mime_message_get_date_received (CamelMimeMessage *msg,
 /**
  * camel_mime_message_set_message_id:
  * @message: a #CamelMimeMessage object
- * @message_id: id of the message
+ * @message_id: (nullable): id of the message, or %NULL to generate a new one using the from address
  *
  * Set the message-id on a message.
  **/
@@ -574,7 +582,7 @@ camel_mime_message_set_message_id (CamelMimeMessage *mime_message,
  *
  * Get the message-id of a message.
  *
- * Returns: the message-id of a message
+ * Returns: (nullable): the message-id of a message
  **/
 const gchar *
 camel_mime_message_get_message_id (CamelMimeMessage *mime_message)
@@ -589,7 +597,7 @@ camel_mime_message_get_message_id (CamelMimeMessage *mime_message)
 /**
  * camel_mime_message_set_reply_to:
  * @message: a #CamelMimeMessage object
- * @reply_to: a #CamelInternetAddress object
+ * @reply_to: (nullable): a #CamelInternetAddress object
  *
  * Set the Reply-To of a message.
  **/
@@ -620,7 +628,7 @@ camel_mime_message_set_reply_to (CamelMimeMessage *msg,
  *
  * Get the Reply-To of a message.
  *
- * Returns: (transfer none): the Reply-To address of the message
+ * Returns: (transfer none) (nullable): the Reply-To address of the message
  **/
 CamelInternetAddress *
 camel_mime_message_get_reply_to (CamelMimeMessage *mime_message)
@@ -637,7 +645,7 @@ camel_mime_message_get_reply_to (CamelMimeMessage *mime_message)
 /**
  * camel_mime_message_set_subject:
  * @message: a #CamelMimeMessage object
- * @subject: UTF-8 message subject
+ * @subject: (nullable): UTF-8 message subject
  *
  * Set the subject text of a message.
  **/
@@ -669,7 +677,7 @@ camel_mime_message_set_subject (CamelMimeMessage *message,
  *
  * Get the UTF-8 subject text of a message.
  *
- * Returns: the message subject
+ * Returns: (nullable): the message subject
  **/
 const gchar *
 camel_mime_message_get_subject (CamelMimeMessage *mime_message)
@@ -688,7 +696,7 @@ camel_mime_message_get_subject (CamelMimeMessage *mime_message)
 /**
  * camel_mime_message_set_from:
  * @message: a #CamelMimeMessage object
- * @from: a #CamelInternetAddress object
+ * @from: (nullable): a #CamelInternetAddress object
  *
  * Set the from address of a message.
  **/
@@ -719,7 +727,7 @@ camel_mime_message_set_from (CamelMimeMessage *msg,
  *
  * Get the from address of a message.
  *
- * Returns: (transfer none): the from address of the message
+ * Returns: (transfer none) (nullable): the from address of the message
  **/
 CamelInternetAddress *
 camel_mime_message_get_from (CamelMimeMessage *mime_message)
@@ -737,7 +745,8 @@ camel_mime_message_get_from (CamelMimeMessage *mime_message)
  * camel_mime_message_set_recipients:
  * @message: a #CamelMimeMessage object
  * @type: recipient type (one of #CAMEL_RECIPIENT_TYPE_TO, #CAMEL_RECIPIENT_TYPE_CC, or #CAMEL_RECIPIENT_TYPE_BCC)
- * @recipients: a #CamelInternetAddress with the recipient addresses set
+ * @recipients: (nullable): a #CamelInternetAddress with the recipient addresses set or %NULL
+ *   to remove the already defined one
  *
  * Set the recipients of a message.
  **/
@@ -779,7 +788,7 @@ camel_mime_message_set_recipients (CamelMimeMessage *mime_message,
  *
  * Get the message recipients of a specified type.
  *
- * Returns: (transfer none): the requested recipients
+ * Returns: (transfer none) (nullable): the requested recipients
  **/
 CamelInternetAddress *
 camel_mime_message_get_recipients (CamelMimeMessage *mime_message,
@@ -790,42 +799,57 @@ camel_mime_message_get_recipients (CamelMimeMessage *mime_message,
 	return g_hash_table_lookup (mime_message->priv->recipients, type);
 }
 
+/**
+ * camel_mime_message_set_source:
+ * @message: a #CamelMimeMessage object
+ * @source_uid: (nullable): the uid of the source account
+ *
+ * Set the UID of the source account of the message.
+ **/
 void
-camel_mime_message_set_source (CamelMimeMessage *mime_message,
+camel_mime_message_set_source (CamelMimeMessage *message,
                                const gchar *source_uid)
 {
 	CamelMedium *medium;
 	const gchar *name;
 
-	g_return_if_fail (CAMEL_IS_MIME_MESSAGE (mime_message));
+	g_return_if_fail (CAMEL_IS_MIME_MESSAGE (message));
 
 	/* FIXME The header name is Evolution-specific.
 	 *       "X" header prefix should be configurable
 	 *       somehow, perhaps through CamelSession. */
 
 	name = "X-Evolution-Source";
-	medium = CAMEL_MEDIUM (mime_message);
+	medium = CAMEL_MEDIUM (message);
 
 	camel_medium_remove_header (medium, name);
 	if (source_uid != NULL)
 		camel_medium_add_header (medium, name, source_uid);
 }
 
+/**
+ * camel_mime_message_get_source:
+ * @message: a #CamelMimeMessage object
+ *
+ * Get the UID of the source account of the message.
+ *
+ * Returns: (nullable): the uid of the source account
+ **/
 const gchar *
-camel_mime_message_get_source (CamelMimeMessage *mime_message)
+camel_mime_message_get_source (CamelMimeMessage *message)
 {
 	CamelMedium *medium;
 	const gchar *name;
 	const gchar *src;
 
-	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (mime_message), NULL);
+	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), NULL);
 
 	/* FIXME The header name is Evolution-specific.
 	 *       "X" header prefix should be configurable
 	 *       somehow, perhaps through CamelSession. */
 
 	name = "X-Evolution-Source";
-	medium = CAMEL_MEDIUM (mime_message);
+	medium = CAMEL_MEDIUM (message);
 
 	src = camel_medium_get_header (medium, name);
 	if (src != NULL) {
@@ -1189,7 +1213,7 @@ check_content_id (CamelMimeMessage *message,
  *
  * Get a MIME part by id from a message.
  *
- * Returns: (transfer none): the MIME part with the requested id or %NULL if not found
+ * Returns: (transfer none) (nullable): the MIME part with the requested id, or %NULL if not found
  **/
 CamelMimePart *
 camel_mime_message_get_part_by_content_id (CamelMimeMessage *message,
