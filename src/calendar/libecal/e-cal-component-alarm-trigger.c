@@ -305,7 +305,7 @@ e_cal_component_alarm_trigger_fill_property (const ECalComponentAlarmTrigger *tr
 					     ICalProperty *property)
 {
 	ICalParameter *param;
-	ICalParameterValue value_type;
+	ICalParameterValue value_type = I_CAL_VALUE_DATETIME;
 	ICalParameterRelated related;
 	ICalTriggerType *trgtype;
 
@@ -333,6 +333,7 @@ e_cal_component_alarm_trigger_fill_property (const ECalComponentAlarmTrigger *tr
 		i_cal_trigger_type_set_time (trgtype, trigger->abs_time);
 		value_type = I_CAL_VALUE_DATETIME;
 		break;
+
 	case E_CAL_COMPONENT_ALARM_TRIGGER_NONE:
 		g_object_unref (trgtype);
 		return;

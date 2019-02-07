@@ -26,9 +26,11 @@
 
 #include <libedataserver/libedataserver.h>
 
-#include "e-cal-util.h"
 #include "e-cal-client.h"
 #include "e-cal-system-timezone.h"
+#include "e-cal-recur.h"
+
+#include "e-cal-util.h"
 
 #define _TIME_MIN	((time_t) 0)		/* Min valid time_t	*/
 #define _TIME_MAX	((time_t) INT_MAX)
@@ -1345,7 +1347,7 @@ e_cal_util_remove_instances_ex (ICalComponent *icalcomp,
 				}
 
 				i_cal_property_set_rrule (prop, rule);
-				i_cal_property_remove_parameter_by_name (prop, "X-EVOLUTION-ENDDATE");
+				i_cal_property_remove_parameter_by_name (prop, E_CAL_EVOLUTION_ENDDATE_PARAMETER);
 			}
 		} else {
 			/* (If recur == rid, skip to the next occurrence) */
@@ -1558,7 +1560,7 @@ e_cal_util_split_at_instance (ICalComponent *icalcomp,
 			} else {
 				i_cal_recurrence_type_set_count (rule, rule_count - occurrences_count);
 				i_cal_property_set_rrule (prop, rule);
-				i_cal_property_remove_parameter_by_name (prop, "X-EVOLUTION-ENDDATE");
+				i_cal_property_remove_parameter_by_name (prop, E_CAL_EVOLUTION_ENDDATE_PARAMETER);
 			}
 
 			g_clear_object (&iter);

@@ -183,6 +183,25 @@ typedef enum {
 	E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE
 } ECalComponentAlarmTriggerKind;
 
+/**
+ * ECalRecurDescribeRecurrenceFlags:
+ * @E_CAL_RECUR_DESCRIBE_RECURRENCE_FLAG_NONE: no extra flags, either returns %NULL or the recurrence description,
+ *    something like "Every 2 weeks..."
+ * @E_CAL_RECUR_DESCRIBE_RECURRENCE_FLAG_PREFIXED: either returns %NULL or the recurrence description prefixed
+ *    with text like "The meeting recurs", forming something like "The meeting recurs every 2 weeks..."
+ * @E_CAL_RECUR_DESCRIBE_RECURRENCE_FLAG_FALLBACK: returns %NULL only if the component doesn't recur,
+ *    otherwise returns either the recurrence description or at least text like "The meeting recurs"
+ *
+ * Influences behaviour of e_cal_recur_describe_recurrence().
+ *
+ * Since: 3.30
+ **/
+typedef enum {
+	E_CAL_RECUR_DESCRIBE_RECURRENCE_FLAG_NONE	= 0,
+	E_CAL_RECUR_DESCRIBE_RECURRENCE_FLAG_PREFIXED	= (1 << 0),
+	E_CAL_RECUR_DESCRIBE_RECURRENCE_FLAG_FALLBACK	= (1 << 1)
+} ECalRecurDescribeRecurrenceFlags;
+
 G_END_DECLS
 
 #endif /* E_CAL_ENUMS_H */
