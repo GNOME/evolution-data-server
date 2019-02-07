@@ -26,6 +26,7 @@
 
 #include <libedataserver/libedataserver.h>
 
+#include "e-cal-check-timezones.h"
 #include "e-cal-client.h"
 #include "e-cal-system-timezone.h"
 #include "e-cal-recur.h"
@@ -2235,7 +2236,7 @@ e_cal_util_find_next_occurrence (ICalComponent *vtodo,
 
 		success = e_cal_recur_generate_instances_sync (vtodo, interval_start, interval_end,
 			ecu_find_next_occurrence_cb, &nod,
-			e_cal_client_resolve_tzid_sync, cal_client,
+			e_cal_client_tzlookup_cb, cal_client,
 			e_cal_client_get_default_timezone (cal_client),
 			cancellable, &local_error) || nod.found_next;
 
