@@ -707,7 +707,7 @@ e_data_book_view_get_backend (EDataBookView *view)
  *
  * Gets the s-expression used for matching contacts to @view.
  *
- * Returns: The #EBookBackendSExp used.
+ * Returns: (transfer none): The #EBookBackendSExp used.
  *
  * Since: 3.8
  **/
@@ -726,7 +726,7 @@ e_data_book_view_get_sexp (EDataBookView *view)
  * Returns the #GDBusConnection on which the AddressBookView D-Bus
  * interface is exported.
  *
- * Returns: the #GDBusConnection
+ * Returns: (transfer none): the #GDBusConnection
  *
  * Since: 3.8
  **/
@@ -1146,8 +1146,8 @@ e_data_book_view_notify_progress (EDataBookView *view,
  * e_data_book_view_get_fields_of_interest:
  * @view: an #EDataBookView
  *
- * Returns: Hash table of field names which the listener is interested in.
- * Backends can return fully populated objects, but the listener advertised
+ * Returns: (transfer none) (element-type utf8 gint): Hash table of field names which the listener
+ * is interested in. Backends can return fully populated objects, but the listener advertised
  * that it will use only these. Returns %NULL for all available fields.
  *
  * Note: The data pointer in the hash table has no special meaning, it's

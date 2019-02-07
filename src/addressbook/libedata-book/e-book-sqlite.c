@@ -6961,7 +6961,7 @@ e_book_sqlite_add_contact (EBookSqlite *ebsql,
 }
 
 /**
- * e_book_sqlite_new_contacts:
+ * e_book_sqlite_add_contacts:
  * @ebsql: An #EBookSqlite
  * @contacts: (element-type EContact): A list of contacts to add to @ebsql
  * @extra: (allow-none) (element-type utf8): A list of extra data to store in association with this contact
@@ -7100,7 +7100,7 @@ generate_delete_stmt (const gchar *table,
 /**
  * e_book_sqlite_remove_contacts:
  * @ebsql: An #EBookSqlite
- * @uids: a #GSList of uids indicating which contacts to remove
+ * @uids: (element-type utf8): a #GSList of uids indicating which contacts to remove
  * @cancellable: (allow-none): A #GCancellable
  * @error: (allow-none): A location to store any error that may have occurred.
  *
@@ -7604,7 +7604,7 @@ e_book_sqlite_search (EBookSqlite *ebsql,
  * e_book_sqlite_search_uids:
  * @ebsql: An #EBookSqlite
  * @sexp: (allow-none): search expression; use %NULL or an empty string to get all stored contacts.
- * @ret_list: (out) (transfer full): Return location to store a #GSList of contact uids
+ * @ret_list: (out) (transfer full) (element-type utf8): Return location to store a #GSList of contact uids
  * @cancellable: (allow-none): A #GCancellable
  * @error: (allow-none): A location to store any error that may have occurred.
  *
