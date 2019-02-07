@@ -106,13 +106,8 @@ signal_closure_free (SignalClosure *signal_closure)
 {
 	g_weak_ref_clear (&signal_closure->client_view);
 
-	g_slist_free_full (
-		signal_closure->component_list,
-		(GDestroyNotify) icalcomponent_free);
-
-	g_slist_free_full (
-		signal_closure->component_id_list,
-		(GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (signal_closure->component_list, g_object_unref);
+	g_slist_free_full (signal_closure->component_id_list, e_cal_component_id_free);
 
 	g_free (signal_closure->message);
 
@@ -154,7 +149,7 @@ cal_client_view_set_main_context (ECalClientView *client_view,
 	g_mutex_unlock (&client_view->priv->main_context_lock);
 }
 
-static GSList *
+static GSList * /* ICalComponent * */
 build_object_list (const gchar * const *seq)
 {
 	GSList *list;
@@ -162,9 +157,9 @@ build_object_list (const gchar * const *seq)
 
 	list = NULL;
 	for (i = 0; seq[i]; i++) {
-		icalcomponent *comp;
+		ICalComponent *comp;
 
-		comp = icalcomponent_new_from_string ((gchar *) seq[i]);
+		comp = i_cal_component_new_from_string (seq[i]);
 		if (!comp)
 			continue;
 
@@ -174,7 +169,7 @@ build_object_list (const gchar * const *seq)
 	return g_slist_reverse (list);
 }
 
-static GSList *
+static GSList * /* ECalComponentId * */
 build_id_list (const gchar * const *seq)
 {
 	GSList *list;
@@ -184,17 +179,15 @@ build_id_list (const gchar * const *seq)
 	list = NULL;
 	for (i = 0; seq[i]; i++) {
 		ECalComponentId *id;
-		id = g_new (ECalComponentId, 1);
 
 		/* match encoding as in notify_remove()
 		 * in e-data-cal-view.c: <uid>[\n<rid>] */
 		eol = strchr (seq[i], '\n');
 		if (eol) {
-			id->uid = g_strndup (seq[i], eol - seq[i]);
-			id->rid = g_strdup (eol + 1);
+			id = e_cal_component_id_new_take (g_strndup (seq[i], eol - seq[i]),
+							  g_strdup (eol + 1));
 		} else {
-			id->uid = g_strdup (seq[i]);
-			id->rid = NULL;
+			id = e_cal_component_id_new (seq[i], NULL);
 		}
 
 		list = g_slist_prepend (list, id);
@@ -811,7 +804,8 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 	/**
 	 * ECalClientView::objects-added:
 	 * @client_view: the #ECalClientView which emitted the signal
-	 * @objects: (type GSList) (transfer none) (element-type long):
+	 * @objects: (type GSList) (transfer none) (element-type ICalComponent): a #GSList
+	 *    of added #ICalComponent objects into the @client_view.
 	 */
 	signals[OBJECTS_ADDED] = g_signal_new (
 		"objects-added",
@@ -825,7 +819,8 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 	/**
 	 * ECalClientView::objects-modified:
 	 * @client_view: the #ECalClientView which emitted the signal
-	 * @objects: (type GSList) (transfer none) (element-type long):
+	 * @objects: (type GSList) (transfer none) (element-type ICalComponent): a #GSList
+	 *    of modified #ICalComponent objects within the @client_view
 	 */
 	signals[OBJECTS_MODIFIED] = g_signal_new (
 		"objects-modified",
@@ -839,7 +834,8 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 	/**
 	 * ECalClientView::objects-removed:
 	 * @client_view: the #ECalClientView which emitted the signal
-	 * @objects: (type GSList) (transfer none) (element-type ECalComponentId):
+	 * @uids: (type GSList) (transfer none) (element-type ECalComponentId): a #GSList
+	 *    of removed objects, described by their UID and eventually RID, as an #ECalComponentId structure.
 	 */
 	signals[OBJECTS_REMOVED] = g_signal_new (
 		"objects-removed",
@@ -1028,7 +1024,7 @@ e_cal_client_view_stop (ECalClientView *client_view,
 /**
  * e_cal_client_view_set_fields_of_interest:
  * @client_view: an #ECalClientView
- * @fields_of_interest: (element-type utf8) (allow-none): List of field names
+ * @fields_of_interest: (element-type utf8) (nullable): List of field names
  *                      in which the client is interested, or %NULL to reset
  *                      the fields of interest
  * @error: return location for a #GError, or %NULL

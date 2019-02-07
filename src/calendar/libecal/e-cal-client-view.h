@@ -102,11 +102,11 @@ struct _ECalClientViewClass {
 	/*< public >*/
 	/* Signals */
 	void		(*objects_added)	(ECalClientView *client_view,
-						 const GSList *objects);
+						 const GSList *objects); /* ICalComponent * */
 	void		(*objects_modified)	(ECalClientView *client_view,
-						 const GSList *objects);
+						 const GSList *objects); /* ICalComponent * */
 	void		(*objects_removed)	(ECalClientView *client_view,
-						 const GSList *uids);
+						 const GSList *uids); /* ECalComponentId * */
 	void		(*progress)		(ECalClientView *client_view,
 						 guint percent,
 						 const gchar *message);
@@ -125,7 +125,7 @@ const gchar *	e_cal_client_view_get_object_path
 gboolean	e_cal_client_view_is_running	(ECalClientView *client_view);
 void		e_cal_client_view_set_fields_of_interest
 						(ECalClientView *client_view,
-						 const GSList *fields_of_interest,
+						 const GSList *fields_of_interest, /* gchar * */
 						 GError **error);
 void		e_cal_client_view_start		(ECalClientView *client_view,
 						 GError **error);
