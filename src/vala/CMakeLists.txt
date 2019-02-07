@@ -7,6 +7,8 @@ set(valafiles
 	${CMAKE_CURRENT_BINARY_DIR}/libebook-${API_VERSION}.vapi
 	${CMAKE_CURRENT_SOURCE_DIR}/libebook-contacts-${API_VERSION}.deps
 	${CMAKE_CURRENT_BINARY_DIR}/libebook-contacts-${API_VERSION}.vapi
+	${CMAKE_CURRENT_SOURCE_DIR}/libedata-book-${API_VERSION}.deps
+	${CMAKE_CURRENT_BINARY_DIR}/libedata-book-${API_VERSION}.vapi
 )
 
 if(HAVE_GTK)
@@ -161,6 +163,41 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/libebook-${API_VERSION}.va
 		${gir_fullname}
 	DEPENDS libebook-${API_VERSION}.deps
 		${CMAKE_CURRENT_BINARY_DIR}/libedataserver-${API_VERSION}.vapi
+		${CMAKE_CURRENT_BINARY_DIR}/libebook-contacts-${API_VERSION}.vapi
+		${gir_fullname}
+		${gir_deps}
+)
+
+# ***********************************
+# libedata-book
+# ***********************************
+
+set(gir_fullname ${CMAKE_BINARY_DIR}/src/addressbook/libedata-book/EDataBook-${API_VERSION}.gir)
+gir_girfilename_to_target(gir_deps EDataBook-${API_VERSION}.gir)
+
+add_dependencies(vala ${gir_deps})
+
+add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/libedata-book-${API_VERSION}.vapi
+	COMMAND ${VAPIGEN}
+		--vapidir=${CMAKE_CURRENT_SOURCE_DIR}
+		--vapidir=${CMAKE_CURRENT_BINARY_DIR}
+		--girdir=${CMAKE_BINARY_DIR}/src/camel
+		--girdir=${CMAKE_BINARY_DIR}/src/libedataserver
+		--girdir=${CMAKE_BINARY_DIR}/src/addressbook/libebook
+		--girdir=${CMAKE_BINARY_DIR}/src/addressbook/libebook-contacts
+		--pkg libedataserver-${API_VERSION}
+		--pkg libebook-${API_VERSION}
+		--pkg libebook-contacts-${API_VERSION}
+		--pkg gio-2.0
+		--pkg libxml-2.0
+		--pkg libsoup-2.4
+		--pkg posix
+		--library libedata-book-${API_VERSION}
+		--metadatadir=${CMAKE_CURRENT_SOURCE_DIR}
+		${gir_fullname}
+	DEPENDS libedata-book-${API_VERSION}.deps
+		${CMAKE_CURRENT_BINARY_DIR}/libedataserver-${API_VERSION}.vapi
+		${CMAKE_CURRENT_BINARY_DIR}/libebook-${API_VERSION}.vapi
 		${CMAKE_CURRENT_BINARY_DIR}/libebook-contacts-${API_VERSION}.vapi
 		${gir_fullname}
 		${gir_deps}
