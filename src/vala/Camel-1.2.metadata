@@ -37,3 +37,6 @@ CertDB.header_save.ostream type="GLib.FileStream"
 FilterDriver.set_logfile.logfile type="GLib.FileStream"
 
 FolderSummary.prepare_fetch_all#virtual_method name="prepare_fetch_all_v"
+
+// Abstract classes can't have creation methods
+Sasl.new symbol_type="function" name="for_service"
