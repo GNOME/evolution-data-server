@@ -518,12 +518,12 @@ e_data_book_create_error_fmt (EDataBookStatus status,
 
 /**
  * e_data_book_string_slist_to_comma_string:
- * @strings: (element-type gchar *): a list of gchar *
+ * @strings: (element-type utf8): a list of gchar *
  *
  * Takes a list of strings and converts it to a comma-separated string of
  * values; free returned pointer with g_free()
  *
- * Returns: (transfer full): comma-separated newly allocated text of @strings
+ * Returns: comma-separated newly allocated text of @strings
  *
  * Since: 3.2
  **/
@@ -1517,7 +1517,7 @@ e_data_book_respond_get_contact (EDataBook *book,
  * @book: An #EDataBook
  * @opid: An operation ID
  * @error: Operation error, if any, automatically freed if passed it
- * @cards: (allow-none) (element-type gchar *): A list of vCard strings, or %NULL on error
+ * @cards: (allow-none) (element-type utf8): A list of vCard strings, or %NULL on error
  *
  * Finishes a call to get list of vCards which satisfy certain criteria.
  *
@@ -1573,7 +1573,7 @@ e_data_book_respond_get_contact_list (EDataBook *book,
  * @book: An #EDataBook
  * @opid: An operation ID
  * @error: Operation error, if any, automatically freed if passed it
- * @uids: (allow-none) (element-type gchar *): A list of picked UIDs, or %NULL on error
+ * @uids: (allow-none) (element-type utf8): A list of picked UIDs, or %NULL on error
  *
  * Finishes a call to get list of UIDs which satisfy certain criteria.
  *
@@ -1730,7 +1730,7 @@ e_data_book_respond_modify_contacts (EDataBook *book,
  * @book: An #EDataBook
  * @opid: An operation ID
  * @error: Operation error, if any, automatically freed if passed it
- * @ids: (allow-none) (element-type gchar *): A list of removed contact UID-s, or %NULL on error
+ * @ids: (allow-none) (element-type utf8): A list of removed contact UID-s, or %NULL on error
  *
  * Finishes a call to remove a list of contacts.
  *
@@ -2310,7 +2310,7 @@ e_data_book_ref_backend (EDataBook *book)
  * Returns the #GDBusConnection on which the AddressBook D-Bus interface
  * is exported.
  *
- * Returns: the #GDBusConnection
+ * Returns: (transfer none): the #GDBusConnection
  *
  * Since: 3.8
  **/
