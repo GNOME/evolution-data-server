@@ -2251,7 +2251,7 @@ e_data_book_init (EDataBook *data_book)
 
 /**
  * e_data_book_new:
- * @backend: an #EBookBackend
+ * @backend: (type EBookBackend): an #EBookBackend
  * @connection: a #GDBusConnection
  * @object_path: object path for the D-Bus interface
  * @error: return location for a #GError, or %NULL
@@ -2291,7 +2291,7 @@ e_data_book_new (EBookBackend *backend,
  * The returned #EBookBackend is referenced for thread-safety and should
  * be unreferenced with g_object_unref() when finished with it.
  *
- * Returns: an #EBookBackend
+ * Returns: (transfer full) (type EBookBackend): an #EBookBackend
  *
  * Since: 3.10
  **/

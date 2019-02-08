@@ -653,7 +653,7 @@ e_data_book_view_init (EDataBookView *view)
 
 /**
  * e_data_book_view_new:
- * @backend: an #EBookBackend
+ * @backend: (type EBookBackend): an #EBookBackend
  * @sexp: an #EBookBackendSExp
  * @connection: a #GDBusConnection
  * @object_path: an object path for the view
@@ -691,7 +691,7 @@ e_data_book_view_new (EBookBackend *backend,
  *
  * Gets the backend that @view is querying.
  *
- * Returns: The associated #EBookBackend.
+ * Returns: (type EBookBackend) (transfer none): The associated #EBookBackend.
  **/
 EBookBackend *
 e_data_book_view_get_backend (EDataBookView *view)
