@@ -689,7 +689,7 @@ data_book_cursor_handle_dispose (EDBusAddressBookCursor *dbus_object,
  *
  * Gets the backend which created and owns @cursor.
  *
- * Returns: (transfer none): The #EBookBackend owning @cursor.
+ * Returns: (transfer none) (type EBookBackend): The #EBookBackend owning @cursor.
  *
  * Since: 3.12
  */
