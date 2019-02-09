@@ -5,15 +5,15 @@
 # Žygimantas Beručka <zygis@gnome.org>, 2004-2006, 2008-2010, 2011, 2012.
 # Justina Klingaitė <justina.klingaite@gmail.com>, 2005.
 # Gintautas Miliauskas <gintas@akl.lt>, 2007, 2008.
-# Aurimas Černius <aurisc4@gmail.com>, 2013, 2014, 2015, 2016, 2017, 2018.
+# Aurimas Černius <aurisc4@gmail.com>, 2013-2019.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2018-10-07 13:51+0000\n"
-"PO-Revision-Date: 2018-10-07 16:50+0300\n"
+"POT-Creation-Date: 2018-10-25 16:21+0000\n"
+"PO-Revision-Date: 2019-02-09 22:59+0200\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
 "%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: Gtranslator 3.30.1\n"
 "X-Project-Style: gnome\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:220
@@ -50,27 +50,27 @@ msgstr "Pateiktas URL „%s“ nenurodo WebDAV adresų knygos"
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:877
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:263
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:291
-#: ../src/calendar/backends/http/e-cal-backend-http.c:210
+#: ../src/calendar/backends/http/e-cal-backend-http.c:248
 #: ../src/calendar/libecal/e-cal.c:2334
 #: ../src/calendar/libecal/e-cal-client.c:277
-#: ../src/calendar/libecal/e-cal-client.c:3544
-#: ../src/calendar/libecal/e-cal-client.c:3717
-#: ../src/calendar/libecal/e-cal-client.c:3981
-#: ../src/calendar/libecal/e-cal-client.c:4222
-#: ../src/calendar/libecal/e-cal-client.c:4412
-#: ../src/calendar/libecal/e-cal-client.c:4605
-#: ../src/calendar/libecal/e-cal-client.c:4814
-#: ../src/calendar/libecal/e-cal-client.c:4983
-#: ../src/calendar/libecal/e-cal-client.c:5186
-#: ../src/calendar/libecal/e-cal-client.c:5336
-#: ../src/calendar/libecal/e-cal-client.c:5530
-#: ../src/calendar/libecal/e-cal-client.c:5683
-#: ../src/calendar/libecal/e-cal-client.c:5900
-#: ../src/calendar/libecal/e-cal-client.c:6054
-#: ../src/calendar/libecal/e-cal-client.c:6280
-#: ../src/calendar/libecal/e-cal-client.c:6476
-#: ../src/calendar/libecal/e-cal-client.c:6839
-#: ../src/calendar/libecal/e-cal-client.c:7061
+#: ../src/calendar/libecal/e-cal-client.c:3545
+#: ../src/calendar/libecal/e-cal-client.c:3718
+#: ../src/calendar/libecal/e-cal-client.c:3982
+#: ../src/calendar/libecal/e-cal-client.c:4223
+#: ../src/calendar/libecal/e-cal-client.c:4413
+#: ../src/calendar/libecal/e-cal-client.c:4606
+#: ../src/calendar/libecal/e-cal-client.c:4815
+#: ../src/calendar/libecal/e-cal-client.c:4984
+#: ../src/calendar/libecal/e-cal-client.c:5187
+#: ../src/calendar/libecal/e-cal-client.c:5337
+#: ../src/calendar/libecal/e-cal-client.c:5531
+#: ../src/calendar/libecal/e-cal-client.c:5684
+#: ../src/calendar/libecal/e-cal-client.c:5901
+#: ../src/calendar/libecal/e-cal-client.c:6055
+#: ../src/calendar/libecal/e-cal-client.c:6281
+#: ../src/calendar/libecal/e-cal-client.c:6477
+#: ../src/calendar/libecal/e-cal-client.c:6840
+#: ../src/calendar/libecal/e-cal-client.c:7062
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1757
 #: ../src/camel/camel-filter-driver.c:1719
 #: ../src/camel/camel-filter-driver.c:1851
@@ -81,7 +81,7 @@ msgstr "Pateiktas URL „%s“ nenurodo WebDAV adresų knygos"
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:501
 #: ../src/libedataserver/e-client.c:188
-#: ../src/libedataserver/e-soup-session.c:1136
+#: ../src/libedataserver/e-soup-session.c:1217
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
 #: ../src/libedataserverui/e-reminders-widget.c:1780
 #: ../src/tools/list-sources/list-sources.c:429
@@ -103,6 +103,14 @@ msgid "Received object is not a valid vCard"
 msgstr "Gautas objektas nėra tinkama vCard"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1147
+msgid ""
+"Missing information about vCard URL, local cache is possibly incomplete or "
+"broken. Remove it, please."
+msgstr ""
+"Trūksta informacijos apie vCard URL, vietinis podėlis yra galimai nepilnas "
+"arba sugadintas. Pašalinkite jį."
+
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1150
 #: ../src/addressbook/backends/google/e-book-backend-google.c:1010
 msgid "Object to save is not a valid vCard"
 msgstr "Įrašomas objektas nėra tinkama vCard"
@@ -941,8 +949,8 @@ msgstr "Nepavyko pakeisti knygos savybės „%s“ vertės"
 #: ../src/addressbook/libebook/e-book-client.c:1388
 #: ../src/addressbook/libebook/e-book-client.c:1619
 #: ../src/addressbook/libebook/e-book-client.c:1896
-#: ../src/calendar/libecal/e-cal-client.c:1715
-#: ../src/calendar/libecal/e-cal-client.c:1953
+#: ../src/calendar/libecal/e-cal-client.c:1716
+#: ../src/calendar/libecal/e-cal-client.c:1954
 #, c-format
 msgid "Unable to connect to “%s”: "
 msgstr "Nepavyko prisijungti prie „%s“:"
@@ -966,7 +974,7 @@ msgid "Error parsing regular expression"
 msgstr "Klaida vykdant paieškos išraišką"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1560
-#: ../src/addressbook/libedata-book/e-book-cache.c:4522
+#: ../src/addressbook/libedata-book/e-book-cache.c:4523
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1878
 #: ../src/camel/camel-db.c:820
 #, c-format
@@ -1063,7 +1071,7 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Negalima rikiuoti pagal lauką, kuris gali turėti kelias vertes"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6219
-#: ../src/addressbook/libedata-book/e-book-cache.c:5608
+#: ../src/addressbook/libedata-book/e-book-cache.c:5609
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8139
 #, c-format
 msgid ""
@@ -1073,7 +1081,7 @@ msgstr ""
 "Bandyta grįžti žymikliu atgal, bet žymiklis jau yra kontaktų sąrašo pradžioje"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6227
-#: ../src/addressbook/libedata-book/e-book-cache.c:5615
+#: ../src/addressbook/libedata-book/e-book-cache.c:5616
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8147
 #, c-format
 msgid ""
@@ -1101,35 +1109,35 @@ msgstr "Netinkama užklausa: %s"
 msgid "Invalid query for a book cursor"
 msgstr "Netinkama knygos žymiklio užklausa"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:4526
+#: ../src/addressbook/libedata-book/e-book-cache.c:4527
 #: ../src/libebackend/e-cache.c:759
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Nepavyko atverti duomenų bazės %s: %s"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5129
-#: ../src/addressbook/libedata-book/e-book-cache.c:5181
+#: ../src/addressbook/libedata-book/e-book-cache.c:5130
+#: ../src/addressbook/libedata-book/e-book-cache.c:5182
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2730
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2793
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2964
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1342
-#: ../src/libebackend/e-cache.c:1374 ../src/libebackend/e-cache.c:2298
-#: ../src/libebackend/e-cache.c:2338
+#: ../src/libebackend/e-cache.c:1374 ../src/libebackend/e-cache.c:2352
+#: ../src/libebackend/e-cache.c:2392
 #, c-format
 msgid "Object “%s” not found"
 msgstr "Objektas „%s“ nerastas"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5241
+#: ../src/addressbook/libedata-book/e-book-cache.c:5242
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2855
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Objektas be papildomo „%s“ nerastas"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5395
+#: ../src/addressbook/libedata-book/e-book-cache.c:5396
 msgid "At least one sort field must be specified to use a cursor"
 msgstr "Žymikliui naudoti turi būti nurodytas bent vienas rikiavimo laukas"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5404
+#: ../src/addressbook/libedata-book/e-book-cache.c:5405
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7979
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Negalima rikiuoti pagal lauką, kurus nėra simbolių eilutės tipo"
@@ -1148,7 +1156,7 @@ msgstr "Pagal UID „%s“ gautas objektas yra netinkamas"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1887
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:2335
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3210
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3217
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Nepavyko sukurti podėlio „%s“:"
@@ -1268,7 +1276,7 @@ msgstr "Netinkama serverio versija"
 #: ../src/addressbook/libedata-book/e-data-book.c:400
 #: ../src/calendar/libecal/e-cal.c:2300
 #: ../src/calendar/libedata-cal/e-data-cal.c:434
-#: ../src/libedataserver/e-client.c:140
+#: ../src/camel/camel-sasl-anonymous.c:115 ../src/libedataserver/e-client.c:140
 msgid "Invalid argument"
 msgstr "Netinkamas argumentas"
 
@@ -1376,7 +1384,15 @@ msgstr "Alfabetinis indeksas buvo nustatytas į neteisingą lokalę"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Pateiktas URL „%s“ nenurodo CalDAV kalendoriaus"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1783
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1320
+msgid ""
+"Missing information about component URL, local cache is possibly incomplete "
+"or broken. Remove it, please."
+msgstr ""
+"Trūksta informacijos apie komponento URL, vietinis podėlis yra nepilnas arba "
+"sugadintas. Pašalinkite jį."
+
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1793
 msgid "Failed to parse response data"
 msgstr "Nepavyko perskaityti atsako duomenų"
 
@@ -1403,21 +1419,21 @@ msgstr "Nepavyko išsaugoti kalendoriaus duomenų: Netinkamai suformuotas URI."
 msgid "Cannot save calendar data"
 msgstr "Nepavyko išsaugoti kalendoriaus duomenų"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:141
+#: ../src/calendar/backends/http/e-cal-backend-http.c:168
 msgid "URI not set"
 msgstr "URI nenustatytas"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:209
+#: ../src/calendar/backends/http/e-cal-backend-http.c:247
 #, c-format
 msgid "Malformed URI “%s”: %s"
 msgstr "Blogai suformuotas URI „%s“: %s"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:372
+#: ../src/calendar/backends/http/e-cal-backend-http.c:388
 #, c-format
 msgid "Bad file format."
 msgstr "Netaisyklingas failo formatas."
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:381
+#: ../src/calendar/backends/http/e-cal-backend-http.c:397
 #, c-format
 msgid "Not a calendar."
 msgstr "Ne kalendorius."
@@ -2496,14 +2512,14 @@ msgstr[0] "%d sekundę"
 msgstr[1] "%d sekundes"
 msgstr[2] "%d sekundžių"
 
-#: ../src/calendar/libecal/e-reminder-watcher.c:2522
+#: ../src/calendar/libecal/e-reminder-watcher.c:2524
 msgid "No Summary"
 msgstr "Nėra santraukos"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2538
+#: ../src/calendar/libecal/e-reminder-watcher.c:2540
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
@@ -2512,7 +2528,7 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2543
+#: ../src/calendar/libecal/e-reminder-watcher.c:2545
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
@@ -2521,7 +2537,7 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2548
+#: ../src/calendar/libecal/e-reminder-watcher.c:2550
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
@@ -2665,7 +2681,7 @@ msgstr "Negalima pridėti laiko juostos su netinkama komponente"
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Pagal UID „%s“ gautas objektas neturi jokios lauktos komponentės"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4037
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4045
 msgid "attachment.dat"
 msgstr "priedas.dat"
 
@@ -2779,16 +2795,16 @@ msgstr "Šifruojamas laiškas"
 msgid "Decrypting message"
 msgstr "Iššifruojamas laiškas"
 
-#: ../src/camel/camel-data-cache.c:203
+#: ../src/camel/camel-data-cache.c:205
 #, c-format
 msgid "Unable to create cache path"
 msgstr "Nepavyko sukurti talpyklos kelio"
 
-#: ../src/camel/camel-data-cache.c:532
+#: ../src/camel/camel-data-cache.c:534
 msgid "Empty cache file"
 msgstr "Tuščias podėlio failas"
 
-#: ../src/camel/camel-data-cache.c:609
+#: ../src/camel/camel-data-cache.c:611
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Nepavyko pašalinti talpyklos įrašo: %s: %s"
@@ -2979,7 +2995,7 @@ msgstr "Filtruojamas aplankas „%s : %s“"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:2987
+#: ../src/camel/camel-folder.c:2990
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "Išbraukiamas aplankas „%s : %s“"
@@ -2987,7 +3003,7 @@ msgstr "Išbraukiamas aplankas „%s : %s“"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3122
+#: ../src/camel/camel-folder.c:3125
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "Atsiunčiamas laiškas „%s“ aplanke „%s : %s“"
@@ -2995,7 +3011,7 @@ msgstr "Atsiunčiamas laiškas „%s“ aplanke „%s : %s“"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3347
+#: ../src/camel/camel-folder.c:3350
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "Gaunama „%s : %s“ kvotos informacija"
@@ -3003,7 +3019,7 @@ msgstr "Gaunama „%s : %s“ kvotos informacija"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3647
+#: ../src/camel/camel-folder.c:3650
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "Atnaujinamas aplankas „%s : %s“"
@@ -3464,7 +3480,10 @@ msgstr "Naudojant šį parametrą, prie serverio bus jungiamasi anonimiškai."
 msgid "Authentication failed."
 msgstr "Tapatybės nustatyti nepavyko."
 
-#: ../src/camel/camel-sasl-anonymous.c:81
+#. Translators: the 'trace information' term comes from https://tools.ietf.org/html/rfc4505
+#. In this case the user set to use an email address as the trace information,
+#. but the provided value is not a valid email address.
+#: ../src/camel/camel-sasl-anonymous.c:84
 #, c-format
 msgid ""
 "Invalid email address trace information:\n"
@@ -3473,22 +3492,16 @@ msgstr ""
 "Netinkama el. pašto adreso sekimo informacija:\n"
 "%s"
 
-#: ../src/camel/camel-sasl-anonymous.c:95
+#. Translators: the 'trace information' term comes from https://tools.ietf.org/html/rfc4505
+#. In this case the user set to use an opaque trace information,
+#. but the provided value looks like an email address.
+#: ../src/camel/camel-sasl-anonymous.c:101
 #, c-format
 msgid ""
 "Invalid opaque trace information:\n"
 "%s"
 msgstr ""
 "Netinkama nepermatomumo sekimo informacija:\n"
-"%s"
-
-#: ../src/camel/camel-sasl-anonymous.c:109
-#, c-format
-msgid ""
-"Invalid trace information:\n"
-"%s"
-msgstr ""
-"Netinkama sekimo informacija:\n"
 "%s"
 
 #: ../src/camel/camel-sasl-cram-md5.c:41
@@ -4084,6 +4097,11 @@ msgstr "Nėra tokio laiško %s aplanke „%s : %s“"
 msgid "Error storing “%s”: "
 msgstr "Klaida įrašant „%s“:"
 
+#: ../src/camel/camel-vee-folder.c:1268
+#, c-format
+msgid "Updating search folder “%s”"
+msgstr "Atnaujinamas paieškos aplankas „%s“"
+
 #: ../src/camel/camel-vee-folder.c:1328
 msgid "Automatically _update on change in source folders"
 msgstr "Automatiškai atna_ujinti podėlyje šaltinio aplankuose"
@@ -4108,7 +4126,7 @@ msgstr "Nepavyko pervadinti aplanko: %s: Nėra tokio aplanko"
 msgid "Enable _Unmatched folder"
 msgstr "Įjungti _neatitinkančių aplanką"
 
-#: ../src/camel/camel-vee-store.c:1109
+#: ../src/camel/camel-vee-store.c:1110
 msgid "Updating Unmatched search folder"
 msgstr "Atnaujinamas neatitinkančių paieškos aplankas"
 
@@ -4130,7 +4148,7 @@ msgstr "Norėdami užbaigti šią operaciją turite dirbti prisijungę (%s)"
 #: ../src/camel/providers/nntp/camel-nntp-store.c:351
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1346
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2158
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2306
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2313
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:450
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:633
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:922
@@ -4166,7 +4184,7 @@ msgstr "Nepavyko perkelti laiškų į gautųjų aplanką"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:758
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:770
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
 msgstr "Nėra kvotos informacijos aplankui „%s : %s“"
@@ -4175,26 +4193,26 @@ msgstr "Nėra kvotos informacijos aplankui „%s : %s“"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1025
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1037
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr "Šalinami užsilikę podėlio failai aplanke „%s : %s“"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1119
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1131
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:841
 msgid "Apply message _filters to this folder"
 msgstr "Šiam aplankui taikyti laiškų _filtrus"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1130
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1143
 msgid "Always check for _new mail in this folder"
 msgstr "Visada tikrinti, ar nėra naujų laiškų šiame aplanke"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1243
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1258
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Nepavyko sukurti %s aplanko santraukos"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1255
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1270
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Nepavyko %s sukurti podėlio:"
@@ -4202,7 +4220,7 @@ msgstr "Nepavyko %s sukurti podėlio:"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1460
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1475
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "Nėra IMAP pašto dėžės aplankui „%s : %s“"
@@ -4360,6 +4378,10 @@ msgstr "Tapatybės patvirtinimo slaptažodis neprieinamas"
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3190
 msgid "Failed to authenticate"
 msgstr "Nepavyko patvirtinti tapatybės"
+
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3354
+msgid "Failed to issue ENABLE UTF8=ACCEPT"
+msgstr "Nepavyko išduoti ENABLE UTF8=ACCEPT"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3373
 msgid "Failed to issue NAMESPACE"
@@ -4707,7 +4729,7 @@ msgstr "_Indeksuoti pagrindinės laiško dalies duomenis"
 #. Translators: The first %s is replaced with a message ID,
 #. * the second %s is replaced with the folder path,
 #. * the third %s is replaced with a detailed error string
-#: ../src/camel/providers/local/camel-local-folder.c:749
+#: ../src/camel/providers/local/camel-local-folder.c:750
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -5396,11 +5418,12 @@ msgid "NNTP Command failed: "
 msgstr "NNTP komandos klaida:"
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2215
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2250
 #, c-format
 msgid "Not connected."
 msgstr "Neprisijungta."
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2320
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2327
 #, c-format
 msgid "No such folder: %s"
 msgstr "Nėra tokio aplanko: %s"
@@ -6238,7 +6261,13 @@ msgstr "%s nepalaiko nutolusių resursų sukūrimo"
 msgid "%s does not support deleting remote resources"
 msgstr "%s nepalaiko nutolusių resursų trynimo"
 
-#: ../src/libebackend/e-data-factory.c:1492
+#: ../src/libebackend/e-data-factory.c:1349
+#: ../src/libebackend/e-subprocess-factory.c:293
+#, c-format
+msgid "No such source for UID “%s”"
+msgstr "Nėra tokio šaltinio UID „%s“"
+
+#: ../src/libebackend/e-data-factory.c:1499
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr "Realizacijos gamykla šaltiniui „%s“ bei plėtiniui „%s“ nerasta."
@@ -6282,12 +6311,11 @@ msgstr ""
 
 #: ../src/libebackend/e-server-side-source.c:1482
 #: ../src/libedataserver/e-source.c:1792
-#: ../src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1080
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
 msgstr "Duomenų šaltinis „%s“ nepalaiko OAuth 2.0 tapatybės nustatymo"
 
-#: ../src/libebackend/e-server-side-source.c:1860
+#: ../src/libebackend/e-server-side-source.c:1866
 #, c-format
 msgid "File must have a “.source” extension"
 msgstr "Failas turi turėti „.source“ plėtinį"
@@ -6316,11 +6344,6 @@ msgstr "Nepavyko rasti šaltinio „%s“"
 #, c-format
 msgid "Module “%s” for source UID “%s” cannot be loaded"
 msgstr "Nepavyko įkelti modulio „%s“ šaltiniui su UID „%s“"
-
-#: ../src/libebackend/e-subprocess-factory.c:293
-#, c-format
-msgid "No such source for UID “%s”"
-msgstr "Nėra tokio šaltinio UID „%s“"
 
 #: ../src/libebackend/e-subprocess-factory.c:302
 #, c-format
@@ -6463,38 +6486,42 @@ msgstr "Atsijungus nepasiekiama"
 msgid "D-Bus error"
 msgstr "D-Bus klaida"
 
-#: ../src/libedataserver/e-client.c:2021
+#: ../src/libedataserver/e-client.c:2023
 msgid "Timeout was reached"
 msgstr "Baigėsi laikas"
 
+#: ../src/libedataserver/e-oauth2-service.c:925
+msgid "Malformed, no message body set"
+msgstr "Blogai suformuotas, nenustatytas laiško turinys"
+
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: ../src/libedataserver/e-oauth2-service.c:1208
+#: ../src/libedataserver/e-oauth2-service.c:1209
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Šaltinis „%s“ (%s) nėra tinkamas „%s“ OAuth2 šaltinis"
 
-#: ../src/libedataserver/e-oauth2-service.c:1223
+#: ../src/libedataserver/e-oauth2-service.c:1224
 msgid "OAuth2 secret not found"
 msgstr "OAuth2 paslaptis nerasta"
 
-#: ../src/libedataserver/e-oauth2-service.c:1411
+#: ../src/libedataserver/e-oauth2-service.c:1412
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Gautas neteisingas atsakymas iš serverio %s"
 
-#: ../src/libedataserver/e-oauth2-service.c:1420
+#: ../src/libedataserver/e-oauth2-service.c:1421
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 "Nepavyko atnaujinti prieigos leksemos. Dar kartą prisijunkite prie serverio."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: ../src/libedataserver/e-oauth2-service.c:1462
+#: ../src/libedataserver/e-oauth2-service.c:1463
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Šaltinis „%s“ (%s) nėra tinkamas OAuth2 šaltinis"
 
-#: ../src/libedataserver/e-oauth2-service.c:1535
+#: ../src/libedataserver/e-oauth2-service.c:1536
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -6514,11 +6541,11 @@ msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
 
-#: ../src/libedataserver/e-soup-session.c:861
+#: ../src/libedataserver/e-soup-session.c:942
 msgid "Operation was cancelled"
 msgstr "Veiksmas buvo atšauktas"
 
-#: ../src/libedataserver/e-soup-session.c:867
+#: ../src/libedataserver/e-soup-session.c:948
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Nepavyko su HTTP klaida %d: %s"
@@ -6558,12 +6585,12 @@ msgstr "Įgaliojimų trynimas nepalaikomas"
 msgid "Password not found"
 msgstr "Slaptažodis nerastas"
 
-#: ../src/libedataserver/e-source-mail-signature.c:483
+#: ../src/libedataserver/e-source-mail-signature.c:484
 #, c-format
 msgid "Signature script must be a local file"
 msgstr "Parašo scenarijus turi būti vietinis failas"
 
-#: ../src/libedataserver/e-source-proxy.c:1642
+#: ../src/libedataserver/e-source-proxy.c:1656
 #, c-format
 msgid "Source “%s” does not support proxy lookups"
 msgstr "Šaltinis „%s“ nepalaiko tarpinio serverio"
@@ -6898,8 +6925,8 @@ msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Prieigos valdymo įrašo privilegija negali būti NULL."
 
 #: ../src/libedataserverui/e-credentials-prompter.c:258
-#: ../src/libedataserverui/e-credentials-prompter.c:1689
-#: ../src/libedataserverui/e-credentials-prompter.c:1733
+#: ../src/libedataserverui/e-credentials-prompter.c:1690
+#: ../src/libedataserverui/e-credentials-prompter.c:1734
 msgid "Credentials prompt was cancelled"
 msgstr "Įgaliojimų užklausa atšaukta"
 
@@ -7358,7 +7385,7 @@ msgstr "Nepavyko rasti Account elemento"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Nepavyko rasti ASUrl ir OABUrl automatinio aptikimo atsake"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1405
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1406
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -7367,106 +7394,15 @@ msgstr ""
 "Nepavyko rasti atitinkamos paskyros org.gnome.OnlineAccounts tarnyboje, iš "
 "kurios gaunama „%s“ prieigos leksema"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1455
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1456
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Nepavyko gauti prieigos „%s“ leksemos:"
 
 #: ../src/modules/google-backend/module-google-backend.c:589
-#: ../src/modules/ubuntu-online-accounts/contacts.service-type.in.in.h:1
 #: ../src/services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
 msgstr "Kontaktai"
-
-#: ../src/modules/ubuntu-online-accounts/calendar.service-type.in.in.h:1
-#: ../src/tools/list-sources/list-sources.c:148
-msgid "Calendar"
-msgstr "Kalendorius"
-
-#: ../src/modules/ubuntu-online-accounts/calendar.service-type.in.in.h:2
-msgid "Integrate your calendars"
-msgstr "Integruokite savo kalendorius"
-
-#: ../src/modules/ubuntu-online-accounts/contacts.service-type.in.in.h:2
-msgid "Integrate your contacts"
-msgstr "Integruokite savo kontaktus"
-
-#: ../src/modules/ubuntu-online-accounts/e-signon-session-password.c:273
-msgid "Signon service did not return a secret"
-msgstr "Prisijungimo tarnyba negrąžino paslapties"
-
-#: ../src/modules/ubuntu-online-accounts/evolution-data-server-uoa.desktop.in.in.h:1
-msgid "Evolution Data Server"
-msgstr "Evolution duomenų serveris"
-
-#: ../src/modules/ubuntu-online-accounts/evolution-data-server-uoa.desktop.in.in.h:2
-msgid "Required to have EDS appear in UOA"
-msgstr "Būtinas, kad EDS būtų matomas UOA"
-
-#: ../src/modules/ubuntu-online-accounts/google-calendar.service.in.in.h:1
-msgid "Google Calendar"
-msgstr "Google kalendorius"
-
-#: ../src/modules/ubuntu-online-accounts/google-contacts.service.in.in.h:1
-msgid "Google Contacts"
-msgstr "Google kontaktai"
-
-#: ../src/modules/ubuntu-online-accounts/google-gmail.service.in.in.h:1
-msgid "GMail"
-msgstr "GMail"
-
-#: ../src/modules/ubuntu-online-accounts/mail.service-type.in.in.h:1
-msgid "Mail"
-msgstr "Paštas"
-
-#: ../src/modules/ubuntu-online-accounts/mail.service-type.in.in.h:2
-msgid "Integrate your mailboxes"
-msgstr "Integruokite savo pašto dėžutes"
-
-#: ../src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1061
-#, c-format
-msgid ""
-"Cannot find a corresponding account service in the accounts database from "
-"which to obtain an access token for “%s”"
-msgstr ""
-"Nepavyko rasti atitinkamos paskyros paskyrų duomenų bazėje, iš kurios "
-"gaunama „%s“ prieigos leksema"
-
-#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:85
-#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:282
-#, c-format
-msgid ""
-"Expected status 200 when requesting your identity, instead got status %d (%s)"
-msgstr "Prašant identiteto tikėtasi būsenos 200, bet gauta %d (%s)"
-
-#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:102
-#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:299
-msgid "Error parsing response as JSON: "
-msgstr "Klaida skaitant atsakymą kaip JSON:"
-
-#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:120
-msgid "Didn’t find “email” in JSON data"
-msgstr "JSON duomenyse nerastas „email“ narys"
-
-#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:317
-msgid "Didn’t find “id” in JSON data"
-msgstr "JSON duomenyse nerastas „id“"
-
-#: ../src/modules/ubuntu-online-accounts/uoa-utils.c:322
-msgid "Didn’t find “emails.account” in JSON data"
-msgstr "JSON duomenyse nerastas „emails.account“"
-
-#: ../src/modules/ubuntu-online-accounts/windows-live-mail.service.in.in.h:1
-msgid "Windows Live Mail"
-msgstr "Windows Live Mail"
-
-#: ../src/modules/ubuntu-online-accounts/yahoo-calendar.service.in.in.h:1
-msgid "Yahoo! Calendar"
-msgstr "Yahoo! kalendorius"
-
-#: ../src/modules/ubuntu-online-accounts/yahoo-mail.service.in.in.h:1
-msgid "Yahoo! Mail"
-msgstr "Yahoo! paštas"
 
 #: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:38
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:40
@@ -7695,6 +7631,10 @@ msgstr "Kolekcija/Ubuntu internetinės paskyros"
 msgid "Address Book"
 msgstr "Adresų knyga"
 
+#: ../src/tools/list-sources/list-sources.c:148
+msgid "Calendar"
+msgstr "Kalendorius"
+
 #: ../src/tools/list-sources/list-sources.c:149
 msgid "Memo List"
 msgstr "Raštelių sąrašas"
@@ -7806,17 +7746,75 @@ msgstr "Nepavyko prisijungti prie šaltinio registro: %s\n"
 msgid "No sources had been found\n"
 msgstr "Nerasta šaltinių\n"
 
-#~| msgid "Updating folder “%s”"
-#~ msgid "Updating search folder “%s”"
-#~ msgstr "Atnaujinamas paieškos aplankas „%s“"
+#~ msgid ""
+#~ "Invalid trace information:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Netinkama sekimo informacija:\n"
+#~ "%s"
 
-#~| msgid "Failed to issue NAMESPACE"
-#~ msgid "Failed to issue ENABLE UTF8=ACCEPT"
-#~ msgstr "Nepavyko išduoti ENABLE UTF8=ACCEPT"
+#~ msgid "Integrate your calendars"
+#~ msgstr "Integruokite savo kalendorius"
 
-#~| msgid "Failed on message %d"
-#~ msgid "Malformed, no message body set"
-#~ msgstr "Blogai suformuotas, nenustatytas laiško turinys"
+#~ msgid "Integrate your contacts"
+#~ msgstr "Integruokite savo kontaktus"
+
+#~ msgid "Signon service did not return a secret"
+#~ msgstr "Prisijungimo tarnyba negrąžino paslapties"
+
+#~ msgid "Evolution Data Server"
+#~ msgstr "Evolution duomenų serveris"
+
+#~ msgid "Required to have EDS appear in UOA"
+#~ msgstr "Būtinas, kad EDS būtų matomas UOA"
+
+#~ msgid "Google Calendar"
+#~ msgstr "Google kalendorius"
+
+#~ msgid "Google Contacts"
+#~ msgstr "Google kontaktai"
+
+#~ msgid "GMail"
+#~ msgstr "GMail"
+
+#~ msgid "Mail"
+#~ msgstr "Paštas"
+
+#~ msgid "Integrate your mailboxes"
+#~ msgstr "Integruokite savo pašto dėžutes"
+
+#~ msgid ""
+#~ "Cannot find a corresponding account service in the accounts database from "
+#~ "which to obtain an access token for “%s”"
+#~ msgstr ""
+#~ "Nepavyko rasti atitinkamos paskyros paskyrų duomenų bazėje, iš kurios "
+#~ "gaunama „%s“ prieigos leksema"
+
+#~ msgid ""
+#~ "Expected status 200 when requesting your identity, instead got status %d "
+#~ "(%s)"
+#~ msgstr "Prašant identiteto tikėtasi būsenos 200, bet gauta %d (%s)"
+
+#~ msgid "Error parsing response as JSON: "
+#~ msgstr "Klaida skaitant atsakymą kaip JSON:"
+
+#~ msgid "Didn’t find “email” in JSON data"
+#~ msgstr "JSON duomenyse nerastas „email“ narys"
+
+#~ msgid "Didn’t find “id” in JSON data"
+#~ msgstr "JSON duomenyse nerastas „id“"
+
+#~ msgid "Didn’t find “emails.account” in JSON data"
+#~ msgstr "JSON duomenyse nerastas „emails.account“"
+
+#~ msgid "Windows Live Mail"
+#~ msgstr "Windows Live Mail"
+
+#~ msgid "Yahoo! Calendar"
+#~ msgstr "Yahoo! kalendorius"
+
+#~ msgid "Yahoo! Mail"
+#~ msgstr "Yahoo! paštas"
 
 #~ msgid "User name not filled"
 #~ msgstr "Neįvestas naudotojo vardas"
