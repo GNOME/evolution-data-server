@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-06 21:47+0100\n"
-"PO-Revision-Date: 2019-02-06 21:48+0100\n"
+"POT-Creation-Date: 2019-02-11 21:04+0100\n"
+"PO-Revision-Date: 2019-02-11 21:05+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -155,7 +155,7 @@ msgstr ""
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1491
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1576
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3085
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3087
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7369
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7438
 #, c-format
@@ -999,7 +999,7 @@ msgstr ""
 "Podano pole kontaktu „%s” typu „%s” w podsumowaniu, ale obsługiwane są tylko "
 "pola wartości typu zmienna logiczna, ciąg i lista ciągów"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3073
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3075
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4177
 #, c-format
 msgid ""
@@ -6209,6 +6209,74 @@ msgstr ""
 "włącza uwierzytelnianie OAuth2 „Firma” dla serwera „poczta.example.com” "
 "Firma-CalDAV:caldav.example.com — włącza uwierzytelnianie OAuth2 „Firma” dla "
 "każdego źródła „CalDAV”, które odczytuje dane z serwera „caldav.example.com”"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
+msgid ""
+"An OAuth2 client ID to use to connect to Google servers, instead of the one "
+"provided during build time"
+msgstr ""
+"Identyfikator klienta OAuth2 używany do łączenia z serwerami Google, zamiast "
+"identyfikatora podanego podczas budowania"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
+msgid ""
+"User-specified OAuth2 client ID for Google servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Identyfikator klienta OAuth2 dla serwerów Google podany przez użytkownika. "
+"Pusty ciąg oznacza użycie identyfikatora podanego podczas budowania. Zmiana "
+"wymaga ponownego uruchomienia."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
+msgid ""
+"An OAuth2 client secret to use to connect to Google servers, instead of the "
+"one provided during build time"
+msgstr ""
+"Sekret klienta OAuth2 używany do łączenia z serwerami Google, zamiast "
+"sekretu podanego podczas budowania"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
+msgid ""
+"User-specified OAuth2 client secret for Google servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Sekret klienta OAuth2 dla serwerów Google podany przez użytkownika. Pusty "
+"ciąg oznacza użycie sekretu podanego podczas budowania. Zmiana wymaga "
+"ponownego uruchomienia."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
+msgid ""
+"An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
+"provided during build time"
+msgstr ""
+"Identyfikator klienta OAuth2 używany do łączenia z serwerami Outlook, "
+"zamiast identyfikatora podanego podczas budowania"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
+msgid ""
+"User-specified OAuth2 client ID for Outlook servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Identyfikator klienta OAuth2 dla serwerów Outlook podany przez użytkownika. "
+"Pusty ciąg oznacza użycie identyfikatora podanego podczas budowania. Zmiana "
+"wymaga ponownego uruchomienia."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
+msgid ""
+"An OAuth2 client secret to use to connect to Outlook servers, instead of the "
+"one provided during build time"
+msgstr ""
+"Sekret klienta OAuth2 używany do łączenia z serwerami Outlook, zamiast "
+"sekretu podanego podczas budowania"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
+msgid ""
+"User-specified OAuth2 client secret for Outlook servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Sekret klienta OAuth2 dla serwerów Outlook podany przez użytkownika. Pusty "
+"ciąg oznacza użycie sekretu podanego podczas budowania. Zmiana wymaga "
+"ponownego uruchomienia."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
