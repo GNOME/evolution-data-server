@@ -267,7 +267,7 @@ camel_stream_mem_new (void)
 
 /**
  * camel_stream_mem_new_with_buffer:
- * @buffer: (array length=len): a memory buffer to use as the stream data
+ * @buffer: (array length=len) (element-type guint8): a memory buffer to use as the stream data
  * @len: length of @buffer
  *
  * Create a new memory stream using @buffer as the stream data.
@@ -294,7 +294,7 @@ camel_stream_mem_new_with_buffer (const gchar *buffer,
 
 /**
  * camel_stream_mem_new_with_byte_array:
- * @buffer: a #GByteArray to use as the stream data
+ * @buffer: (transfer full): a #GByteArray to use as the stream data
  *
  * Create a new #CamelStreamMem using @buffer as the stream data.
  *
@@ -357,7 +357,7 @@ camel_stream_mem_get_byte_array (CamelStreamMem *mem)
 /**
  * camel_stream_mem_set_byte_array:
  * @mem: a #CamelStreamMem object
- * @buffer: a #GByteArray
+ * @buffer: (transfer full): a #GByteArray
  *
  * Set @buffer to be the backing data to the existing #CamelStreamMem, @mem.
  *
