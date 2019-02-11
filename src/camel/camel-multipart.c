@@ -518,7 +518,7 @@ camel_multipart_get_boundary (CamelMultipart *multipart)
 /**
  * camel_multipart_set_boundary:
  * @multipart: a #CamelMultipart object
- * @boundary: the message boundary, or %NULL
+ * @boundary: (nullable): the message boundary, or %NULL
  *
  * Sets the message boundary for @multipart to @boundary. This should
  * be a string which does not occur anywhere in any of @multipart's

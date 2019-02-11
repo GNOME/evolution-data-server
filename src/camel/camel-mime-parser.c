@@ -701,7 +701,7 @@ camel_mime_parser_step (CamelMimeParser *parser,
 /**
  * camel_mime_parser_read:
  * @parser: MIME parser object
- * @databuffer: (out) (array): The data buffer
+ * @databuffer: (out) (array) (element-type guint8): The data buffer
  * @len: The length of data to read
  * @error: return location for a #GError, or %NULL
  *

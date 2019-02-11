@@ -385,7 +385,7 @@ camel_stream_mem_set_byte_array (CamelStreamMem *mem,
 /**
  * camel_stream_mem_set_buffer:
  * @mem: a #CamelStreamMem object
- * @buffer: (array length=len): a memory buffer
+ * @buffer: (array length=len) (element-type guint8): a memory buffer
  * @len: length of @buffer
  *
  * Set @buffer to be the backing data to the existing #CamelStreamMem, @mem.
