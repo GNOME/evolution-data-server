@@ -46,5 +46,25 @@
          Company:mail.company.com — enables “Company” OAuth2 authentication for “mail.company.com” host
 	 Company-CalDAV:caldav.company.com — enables “Company” OAuth2 authentication for any “CalDAV” source, which reads data from “caldav.company.com” host</_description>
     </key>
+    <key name="oauth2-google-client-id" type="s">
+      <default>''</default>
+      <_summary>An OAuth2 client ID to use to connect to Google servers, instead of the one provided during build time</_summary>
+      <_description>User-specified OAuth2 client ID for Google servers. Empty string means to use the one provided during build time. Change of this requires restart.</_description>
+    </key>
+    <key name="oauth2-google-client-secret" type="s">
+      <default>''</default>
+      <_summary>An OAuth2 client secret to use to connect to Google servers, instead of the one provided during build time</_summary>
+      <_description>User-specified OAuth2 client secret for Google servers. Empty string means to use the one provided during build time. Change of this requires restart.</_description>
+    </key>
+    <key name="oauth2-outlook-client-id" type="s">
+      <default>''</default>
+      <_summary>An OAuth2 client ID to use to connect to Outlook servers, instead of the one provided during build time</_summary>
+      <_description>User-specified OAuth2 client ID for Outlook servers. Empty string means to use the one provided during build time. Change of this requires restart.</_description>
+    </key>
+    <key name="oauth2-outlook-client-secret" type="s">
+      <default>''</default>
+      <_summary>An OAuth2 client secret to use to connect to Outlook servers, instead of the one provided during build time</_summary>
+      <_description>User-specified OAuth2 client secret for Outlook servers. Empty string means to use the one provided during build time. Change of this requires restart.</_description>
+    </key>
   </schema>
 </schemalist>

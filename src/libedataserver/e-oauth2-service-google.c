@@ -57,9 +57,48 @@ eos_google_get_display_name (EOAuth2Service *service)
 }
 
 static const gchar *
+eos_google_read_settings (EOAuth2Service *service,
+			  const gchar *key_name)
+{
+	G_LOCK_DEFINE_STATIC (user_settings);
+	gchar *value;
+
+	G_LOCK (user_settings);
+
+	value = g_object_get_data (G_OBJECT (service), key_name);
+	if (!value) {
+		GSettings *settings;
+
+		settings = g_settings_new ("org.gnome.evolution-data-server");
+		value = g_settings_get_string (settings, key_name);
+		g_object_unref (settings);
+
+		if (value && *value) {
+			g_object_set_data_full (G_OBJECT (service), key_name, value, g_free);
+		} else {
+			g_free (value);
+			value = (gchar *) "";
+
+			g_object_set_data (G_OBJECT (service), key_name, value);
+		}
+	}
+
+	G_UNLOCK (user_settings);
+
+	return value;
+}
+
+static const gchar *
 eos_google_get_client_id (EOAuth2Service *service,
 			  ESource *source)
 {
+	const gchar *client_id;
+
+	client_id = eos_google_read_settings (service, "oauth2-google-client-id");
+
+	if (client_id && *client_id)
+		return client_id;
+
 	return GOOGLE_CLIENT_ID;
 }
 
@@ -67,6 +106,13 @@ static const gchar *
 eos_google_get_client_secret (EOAuth2Service *service,
 			      ESource *source)
 {
+	const gchar *client_secret;
+
+	client_secret = eos_google_read_settings (service, "oauth2-google-client-secret");
+
+	if (client_secret && *client_secret)
+		return client_secret;
+
 	return GOOGLE_CLIENT_SECRET;
 }
 
