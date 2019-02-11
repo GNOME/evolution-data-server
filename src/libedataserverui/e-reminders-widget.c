@@ -262,7 +262,7 @@ reminders_get_reminder_markups (ERemindersWidget *reminders,
 		gboolean in_future;
 		gchar *time_str;
 
-		diff = (g_get_real_time () / G_USEC_PER_SEC) - ((gint64) rd->instance.occur_start);
+		diff = (g_get_real_time () / G_USEC_PER_SEC) - ((gint64) e_cal_component_alarm_instance_get_occur_start (e_reminder_data_get_instance (rd)));
 		in_future = diff < 0;
 		if (in_future)
 			diff = (-1) * diff;
@@ -870,9 +870,9 @@ reminders_widget_row_activated_cb (GtkTreeView *tree_view,
 				const gchar *scheme = NULL;
 				const gchar *comp_uid = NULL;
 
-				e_cal_component_get_uid (rd->component, &comp_uid);
+				comp_uid = e_cal_component_get_uid (e_reminder_data_get_component (rd));
 
-				switch (e_cal_component_get_vtype (rd->component)) {
+				switch (e_cal_component_get_vtype (e_reminder_data_get_component (rd))) {
 					case E_CAL_COMPONENT_EVENT:
 						scheme = "calendar:";
 						break;
@@ -886,7 +886,7 @@ reminders_widget_row_activated_cb (GtkTreeView *tree_view,
 						break;
 				}
 
-				if (scheme && comp_uid && rd->source_uid) {
+				if (scheme && comp_uid && e_reminder_data_get_source_uid (rd)) {
 					GString *uri;
 					gchar *tmp;
 					GError *error = NULL;
@@ -895,7 +895,7 @@ reminders_widget_row_activated_cb (GtkTreeView *tree_view,
 					g_string_append (uri, scheme);
 					g_string_append (uri, "///?");
 
-					tmp = g_uri_escape_string (rd->source_uid, NULL, TRUE);
+					tmp = g_uri_escape_string (e_reminder_data_get_source_uid (rd), NULL, TRUE);
 					g_string_append (uri, "source-uid=");
 					g_string_append (uri, tmp);
 					g_free (tmp);
