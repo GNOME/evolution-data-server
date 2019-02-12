@@ -135,25 +135,25 @@ struct _ECalBackendClass {
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
-						 const GSList *users,
+						 const GSList *users, /* gchar * */
 						 time_t start,
 						 time_t end);
 	void		(*create_objects)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
-						 const GSList *calobjs);
+						 const GSList *calobjs); /* gchar * */
 	void		(*modify_objects)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
-						 const GSList *calobjs,
+						 const GSList *calobjs, /* gchar * */
 						 ECalObjModType mod);
 	void		(*remove_objects)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
-						 const GSList *ids,
+						 const GSList *ids, /* ECalComponentId * */
 						 ECalObjModType mod);
 	void		(*receive_objects)	(ECalBackend *backend,
 						 EDataCal *cal,
@@ -204,7 +204,7 @@ struct _ECalBackendClass {
 };
 
 GType		e_cal_backend_get_type		(void) G_GNUC_CONST;
-icalcomponent_kind
+ICalComponentKind
 		e_cal_backend_get_kind		(ECalBackend *backend);
 EDataCal *	e_cal_backend_ref_data_cal	(ECalBackend *backend);
 void		e_cal_backend_set_data_cal	(ECalBackend *backend,
@@ -276,7 +276,7 @@ gchar *		e_cal_backend_get_object_finish	(ECalBackend *backend,
 gboolean	e_cal_backend_get_object_list_sync
 						(ECalBackend *backend,
 						 const gchar *query,
-						 GQueue *out_objects,
+						 GQueue *out_objects, /* gchar * */
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_backend_get_object_list	(ECalBackend *backend,
@@ -287,14 +287,14 @@ void		e_cal_backend_get_object_list	(ECalBackend *backend,
 gboolean	e_cal_backend_get_object_list_finish
 						(ECalBackend *backend,
 						 GAsyncResult *result,
-						 GQueue *out_objects,
+						 GQueue *out_objects, /* gchar * */
 						 GError **error);
 gboolean	e_cal_backend_get_free_busy_sync
 						(ECalBackend *backend,
 						 time_t start,
 						 time_t end,
 						 const gchar * const *users,
-						 GSList **out_freebusy,
+						 GSList **out_freebusy, /* gchar * */
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_backend_get_free_busy	(ECalBackend *backend,
@@ -307,7 +307,7 @@ void		e_cal_backend_get_free_busy	(ECalBackend *backend,
 gboolean	e_cal_backend_get_free_busy_finish
 						(ECalBackend *backend,
 						 GAsyncResult *result,
-						 GSList **out_freebusy,
+						 GSList **out_freebusy, /* gchar * */
 						 GError **error);
 gboolean	e_cal_backend_create_objects_sync
 						(ECalBackend *backend,
@@ -343,12 +343,12 @@ gboolean	e_cal_backend_modify_objects_finish
 						 GError **error);
 gboolean	e_cal_backend_remove_objects_sync
 						(ECalBackend *backend,
-						 GList *component_ids,
+						 GList *component_ids, /* ECalComponentId * */
 						 ECalObjModType mod,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_backend_remove_objects	(ECalBackend *backend,
-						 GList *component_ids,
+						 GList *component_ids, /* ECalComponentId * */
 						 ECalObjModType mod,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,

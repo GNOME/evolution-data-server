@@ -99,19 +99,22 @@ e_alarm_notify_audio (EAlarmNotify *an,
 		      const EReminderData *rd,
 		      ECalComponentAlarm *alarm)
 {
-	icalattach *attach = NULL;
+	ICalAttach *attach = NULL;
+	GSList *attachments;
 	gboolean did_play = FALSE;
 
 	g_return_val_if_fail (an != NULL, FALSE);
 	g_return_val_if_fail (rd != NULL, FALSE);
 	g_return_val_if_fail (alarm != NULL, FALSE);
 
-	e_cal_component_alarm_get_attach (alarm, &attach);
+	attachments = e_cal_component_alarm_get_attachments (alarm);
+	if (attachments && !attachments->next)
+		attach = attachments->data;
 
-	if (attach && icalattach_get_is_url (attach)) {
+	if (attach && i_cal_attach_get_is_url (attach)) {
 		const gchar *url;
 
-		url = icalattach_get_url (attach);
+		url = i_cal_attach_get_url (attach);
 		if (url && *url) {
 			gchar *filename;
 			GError *error = NULL;
@@ -136,8 +139,7 @@ e_alarm_notify_audio (EAlarmNotify *an,
 	if (!did_play)
 		gdk_beep ();
 
-	if (attach)
-		icalattach_unref (attach);
+	g_slist_free_full (attachments, g_object_unref);
 
 	return FALSE;
 }
@@ -185,7 +187,7 @@ e_alarm_notify_build_notif_id (const EReminderData *rd)
 		g_string_append (string, "\n");
 	}
 
-	id = e_cal_component_get_id (e_reminder_data_get_source_uid (component));
+	id = e_cal_component_get_id (e_reminder_data_get_component (rd));
 	if (id) {
 		if (e_cal_component_id_get_uid (id)) {
 			g_string_append (string, e_cal_component_id_get_uid (id));
@@ -408,8 +410,9 @@ e_alarm_notify_procedure (EAlarmNotify *an,
 			  const EReminderData *rd,
 			  ECalComponentAlarm *alarm)
 {
-	ECalComponentText description;
-	icalattach *attach;
+	ECalComponentText *description;
+	ICalAttach *attach = NULL;
+	GSList *attachments;
 	const gchar *url;
 	gchar *cmd;
 	gboolean result = FALSE;
@@ -418,24 +421,27 @@ e_alarm_notify_procedure (EAlarmNotify *an,
 	g_return_val_if_fail (rd != NULL, FALSE);
 	g_return_val_if_fail (alarm != NULL, FALSE);
 
-	e_cal_component_alarm_get_attach (alarm, &attach);
-	e_cal_component_alarm_get_description (alarm, &description);
+	attachments = e_cal_component_alarm_get_attachments (alarm);
+
+	if (attachments && !attachments->next)
+		attach = attachments->data;
+
+	description = e_cal_component_alarm_get_description (alarm);
 
 	/* If the alarm has no attachment, simply display a notification dialog. */
 	if (!attach)
 		goto fallback;
 
-	if (!icalattach_get_is_url (attach)) {
-		icalattach_unref (attach);
+	if (!i_cal_attach_get_is_url (attach)) {
 		goto fallback;
 	}
 
-	url = icalattach_get_url (attach);
+	url = i_cal_attach_get_url (attach);
 	g_return_val_if_fail (url != NULL, FALSE);
 
 	/* Ask for confirmation before executing the stuff */
-	if (description.value)
-		cmd = g_strconcat (url, " ", description.value, NULL);
+	if (description && e_cal_component_text_get_value (description))
+		cmd = g_strconcat (url, " ", e_cal_component_text_get_value (description), NULL);
 	else
 		cmd = (gchar *) url;
 
@@ -445,15 +451,17 @@ e_alarm_notify_procedure (EAlarmNotify *an,
 	if (cmd != (gchar *) url)
 		g_free (cmd);
 
-	icalattach_unref (attach);
-
 	/* Fall back to display notification if we got an error */
 	if (!result)
 		goto fallback;
 
+	g_slist_free_full (attachments, g_object_unref);
+
 	return FALSE;
 
  fallback:
+	g_slist_free_full (attachments, g_object_unref);
+
 	return e_alarm_notify_display (an, rd, alarm);
 }
 

@@ -112,12 +112,14 @@ func_uid (ESExp *esexp,
 }
 
 static gboolean
-check_instance_time_range_cb (ECalComponent *comp,
-                              time_t instance_start,
-                              time_t instance_end,
-                              gpointer data)
+check_instance_time_range_cb (ICalComponent *comp,
+			      ICalTimetype *instance_start,
+			      ICalTimetype *instance_end,
+			      gpointer user_data,
+			      GCancellable *cancellable,
+			      GError **error)
 {
-	SearchContext *ctx = data;
+	SearchContext *ctx = user_data;
 
 	/* if we get called, the event has an occurrence in the given time range */
 	ctx->occurs = TRUE;
@@ -127,7 +129,9 @@ check_instance_time_range_cb (ECalComponent *comp,
 
 static ICalTimezone *
 resolve_tzid (const gchar *tzid,
-              gpointer user_data)
+	      gpointer user_data,
+	      GCancellable *cancellable,
+	      GError **error)
 {
 	SearchContext *ctx = user_data;
 
@@ -156,7 +160,8 @@ func_occur_in_time_range (ESExp *esexp,
 	SearchContext *ctx = data;
 	time_t start, end;
 	ESExpResult *result;
-	icaltimezone *default_zone = NULL;
+	ICalTimezone *default_zone = NULL, *utc_zone;
+	ICalTimetype *starttt, *endtt;
 
 	/* Check argument types */
 
@@ -194,19 +199,28 @@ func_occur_in_time_range (ESExp *esexp,
 			return NULL;
 		}
 
-		default_zone = resolve_tzid (argv[2]->value.string, ctx);
+		default_zone = resolve_tzid (argv[2]->value.string, ctx, NULL, NULL);
 	}
 
+	utc_zone = i_cal_timezone_get_utc_timezone ();
+
 	if (!default_zone)
-		default_zone = icaltimezone_get_utc_timezone ();
+		default_zone = utc_zone;
 
 	/* See if the object occurs in the specified time range */
 	ctx->occurs = FALSE;
-	e_cal_recur_generate_instances (
-		ctx->comp, start, end,
-		(ECalRecurInstanceFn) check_instance_time_range_cb,
+
+	starttt = i_cal_time_from_timet_with_zone (start, FALSE, utc_zone);
+	endtt = i_cal_time_from_timet_with_zone (end, FALSE, utc_zone);
+
+	e_cal_recur_generate_instances_sync (
+		e_cal_component_get_icalcomponent (ctx->comp), starttt, endtt,
+		check_instance_time_range_cb,
 		ctx, resolve_tzid, ctx,
-		default_zone);
+		default_zone, NULL, NULL);
+
+	g_clear_object (&starttt);
+	g_clear_object (&endtt);
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 	result->value.boolean = ctx->occurs;
@@ -215,12 +229,14 @@ func_occur_in_time_range (ESExp *esexp,
 }
 
 static gboolean
-count_instances_time_range_cb (ECalComponent *comp,
-                               time_t instance_start,
-                               time_t instance_end,
-                               gpointer data)
+count_instances_time_range_cb (ICalComponent *comp,
+			       ICalTimetype *instance_start,
+			       ICalTimetype *instance_end,
+			       gpointer user_data,
+			       GCancellable *cancellable,
+			       GError **error)
 {
-	SearchContext *ctx = data;
+	SearchContext *ctx = user_data;
 
 	ctx->occurrences_count++;
 
@@ -244,7 +260,8 @@ func_occurrences_count (ESExp *esexp,
 	SearchContext *ctx = data;
 	time_t start, end;
 	ESExpResult *result;
-	icaltimezone *default_zone;
+	ICalTimezone *default_zone;
+	ICalTimetype *starttt, *endtt;
 
 	/* Check argument types */
 
@@ -281,13 +298,19 @@ func_occurrences_count (ESExp *esexp,
 		return result;
 	}
 
-	default_zone = icaltimezone_get_utc_timezone ();
+	default_zone = i_cal_timezone_get_utc_timezone ();
+
+	starttt = i_cal_time_from_timet_with_zone (start, FALSE, default_zone);
+	endtt = i_cal_time_from_timet_with_zone (end, FALSE, default_zone);
 
 	ctx->occurrences_count = 0;
-	e_cal_recur_generate_instances (
-		ctx->comp, start, end,
+	e_cal_recur_generate_instances_sync (
+		e_cal_component_get_icalcomponent (ctx->comp), starttt, endtt,
 		count_instances_time_range_cb, ctx,
-		resolve_tzid, ctx, default_zone);
+		resolve_tzid, ctx, default_zone, NULL, NULL);
+
+	g_clear_object (&starttt);
+	g_clear_object (&endtt);
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_INT);
 	result->value.number = ctx->occurrences_count;
@@ -340,7 +363,7 @@ func_due_in_time_range (ESExp *esexp,
 	dt = e_cal_component_get_due (ctx->comp);
 
 	if (dt && e_cal_component_datetime_get_value (dt)) {
-		zone = resolve_tzid (e_cal_component_datetime_get_tzid (dt), ctx);
+		zone = resolve_tzid (e_cal_component_datetime_get_tzid (dt), ctx, NULL, NULL);
 		if (zone)
 			due_t = i_cal_time_as_timet_with_zone (e_cal_component_datetime_get_value (dt), zone);
 		else
@@ -372,7 +395,7 @@ matches_text_list (GSList *text_list,
 		ECalComponentText *text = l->data;
 
 		if (text && e_cal_component_text_get_value (text) &&
-		    e_util_utf8_strstrcasedecomp (e_cal_component_tet_get_value (text), str) != NULL) {
+		    e_util_utf8_strstrcasedecomp (e_cal_component_text_get_value (text), str) != NULL) {
 			matches = TRUE;
 			break;
 		}
@@ -545,7 +568,7 @@ static gboolean
 matches_priority (ECalComponent *comp ,const gchar *pr)
 {
 	gboolean res = FALSE;
-	gint *priority = NULL;
+	gint priority;
 
 	priority = e_cal_component_get_priority (comp);
 
@@ -645,7 +668,7 @@ func_percent_complete (ESExp *esexp,
 		return NULL;
 	}
 
-	percent = e_cal_component_get_percent (ctx->comp);
+	percent = e_cal_component_get_percent_complete (ctx->comp);
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_INT);
 	result->value.number = percent;
@@ -819,7 +842,7 @@ func_has_alarms_in_range (ESExp *esexp,
 {
 	time_t start, end;
 	ESExpResult *result;
-	icaltimezone *default_zone;
+	ICalTimezone *default_zone;
 	ECalComponentAlarms *alarms;
 	ECalComponentAlarmAction omit[] = {-1};
 	SearchContext *ctx = data;
@@ -852,7 +875,7 @@ func_has_alarms_in_range (ESExp *esexp,
 	end = argv[1]->value.time;
 
 	/* See if the object has alarms in the given time range */
-	default_zone = icaltimezone_get_utc_timezone ();
+	default_zone = i_cal_timezone_get_utc_timezone ();
 
 	alarms = e_cal_util_generate_alarms_for_comp (
 		ctx->comp, start, end,
@@ -1042,7 +1065,7 @@ func_is_completed (ESExp *esexp,
 	itt = e_cal_component_get_completed (ctx->comp);
 	if (itt) {
 		complete = TRUE;
-		g_obejct_unref (itt);
+		g_object_unref (itt);
 	} else {
 		ICalPropertyStatus status;
 
@@ -1313,19 +1336,15 @@ e_cal_backend_sexp_match_object (ECalBackendSExp *sexp,
                                  ETimezoneCache *cache)
 {
 	ECalComponent *comp;
-	icalcomponent *icalcomp;
 	gboolean retval;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_SEXP (sexp), FALSE);
 	g_return_val_if_fail (object != NULL, FALSE);
 	g_return_val_if_fail (E_IS_TIMEZONE_CACHE (cache), FALSE);
 
-	icalcomp = icalcomponent_new_from_string ((gchar *) object);
-	if (!icalcomp)
+	comp = e_cal_component_new_from_string (object);
+	if (!comp)
 		return FALSE;
-
-	comp = e_cal_component_new ();
-	e_cal_component_set_icalcomponent (comp, icalcomp);
 
 	retval = e_cal_backend_sexp_match_comp (sexp, comp, cache);
 

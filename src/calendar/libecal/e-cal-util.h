@@ -225,6 +225,9 @@ void		e_cal_util_add_timezones_from_component
 						(ICalComponent *vcal_comp,
 						 ICalComponent *icalcomp);
 
+gboolean	e_cal_util_property_has_parameter
+						(ICalProperty *prop,
+						 ICalParameterKind param_kind);
 gboolean	e_cal_util_component_has_property
 						(ICalComponent *icalcomp,
 						 ICalPropertyKind prop_kind);

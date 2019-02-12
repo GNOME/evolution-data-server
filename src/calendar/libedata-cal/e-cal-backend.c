@@ -45,7 +45,7 @@ struct _ECalBackendPrivate {
 	gboolean opened;
 
 	/* The kind of components for this backend */
-	icalcomponent_kind kind;
+	ICalComponentKind kind;
 
 	GMutex views_mutex;
 	GList *views;
@@ -111,7 +111,7 @@ struct _DispatchNode {
 
 struct _SignalClosure {
 	GWeakRef backend;
-	icaltimezone *cached_zone;
+	ICalTimezone *cached_zone;
 };
 
 enum {
@@ -195,16 +195,10 @@ signal_closure_free (SignalClosure *signal_closure)
 {
 	g_weak_ref_clear (&signal_closure->backend);
 
-	/* The icaltimezone is cached in ECalBackend's internal
+	/* The ICalTimezone is cached in ECalBackend's internal
 	 * "zone_cache" hash table and must not be freed here. */
 
 	g_slice_free (SignalClosure, signal_closure);
-}
-
-static void
-cal_backend_free_zone (icaltimezone *zone)
-{
-	icaltimezone_free (zone, 1);
 }
 
 static void
@@ -389,7 +383,7 @@ static void
 cal_backend_set_default_cache_dir (ECalBackend *backend)
 {
 	ESource *source;
-	icalcomponent_kind kind;
+	ICalComponentKind kind;
 	const gchar *component_type;
 	const gchar *user_cache_dir;
 	const gchar *uid;
@@ -404,13 +398,13 @@ cal_backend_set_default_cache_dir (ECalBackend *backend)
 	g_return_if_fail (uid != NULL);
 
 	switch (kind) {
-		case ICAL_VEVENT_COMPONENT:
+		case I_CAL_VEVENT_COMPONENT:
 			component_type = "calendar";
 			break;
-		case ICAL_VTODO_COMPONENT:
+		case I_CAL_VTODO_COMPONENT:
 			component_type = "tasks";
 			break;
-		case ICAL_VJOURNAL_COMPONENT:
+		case I_CAL_VJOURNAL_COMPONENT:
 			component_type = "memos";
 			break;
 		default:
@@ -546,7 +540,7 @@ cal_backend_emit_timezone_added_idle_cb (gpointer user_data)
 
 static void
 cal_backend_set_kind (ECalBackend *backend,
-                      icalcomponent_kind kind)
+		      ICalComponentKind kind)
 {
 	backend->priv->kind = kind;
 }
@@ -796,7 +790,7 @@ _e_cal_backend_remove_cached_timezones (ECalBackend *cal_backend)
 
 static void
 cal_backend_add_cached_timezone (ETimezoneCache *cache,
-                                 icaltimezone *zone)
+				 ICalTimezone *zone)
 {
 	ECalBackendPrivate *priv;
 	const gchar *tzid;
@@ -805,34 +799,30 @@ cal_backend_add_cached_timezone (ETimezoneCache *cache,
 
 	/* XXX Apparently this function can sometimes return NULL.
 	 *     I'm not sure when or why that happens, but we can't
-	 *     cache the icaltimezone if it has no tzid string. */
-	tzid = icaltimezone_get_tzid (zone);
+	 *     cache the ICalTimezone if it has no tzid string. */
+	tzid = i_cal_timezone_get_tzid (zone);
 	if (tzid == NULL)
 		return;
 
 	g_mutex_lock (&priv->zone_cache_lock);
 
 	/* Avoid replacing an existing cache entry.  We don't want to
-	 * invalidate any icaltimezone pointers that may have already
+	 * invalidate any ICalTimezone pointers that may have already
 	 * been returned through e_timezone_cache_get_timezone(). */
 	if (!g_hash_table_contains (priv->zone_cache, tzid)) {
 		GSource *idle_source;
 		GMainContext *main_context;
 		SignalClosure *signal_closure;
-		icalcomponent *icalcomp;
-		icaltimezone *cached_zone;
+		ICalTimezone *cached_zone;
 
-		cached_zone = icaltimezone_new ();
-		icalcomp = icaltimezone_get_component (zone);
-		icalcomp = icalcomponent_new_clone (icalcomp);
-		icaltimezone_set_component (cached_zone, icalcomp);
+		cached_zone = e_cal_util_copy_timezone (zone);
 
 		g_hash_table_insert (
 			priv->zone_cache,
 			g_strdup (tzid), cached_zone);
 
 		/* The closure's backend reference will keep the
-		 * internally cached icaltimezone alive for the
+		 * internally cached ICalTimezone alive for the
 		 * duration of the idle callback. */
 		signal_closure = g_slice_new0 (SignalClosure);
 		g_weak_ref_init (&signal_closure->backend, cache);
@@ -855,21 +845,21 @@ cal_backend_add_cached_timezone (ETimezoneCache *cache,
 	g_mutex_unlock (&priv->zone_cache_lock);
 }
 
-static icaltimezone *
+static ICalTimezone *
 cal_backend_get_cached_timezone (ETimezoneCache *cache,
                                  const gchar *tzid)
 {
 	ECalBackendPrivate *priv;
-	icaltimezone *zone = NULL;
-	icaltimezone *builtin_zone = NULL;
-	icalcomponent *icalcomp;
-	icalproperty *prop;
+	ICalTimezone *zone = NULL;
+	ICalTimezone *builtin_zone = NULL;
+	ICalComponent *icomp, *clone;
+	ICalProperty *prop;
 	const gchar *builtin_tzid;
 
 	priv = E_CAL_BACKEND_GET_PRIVATE (cache);
 
 	if (g_str_equal (tzid, "UTC"))
-		return icaltimezone_get_utc_timezone ();
+		return i_cal_timezone_get_utc_timezone ();
 
 	g_mutex_lock (&priv->zone_cache_lock);
 
@@ -882,53 +872,46 @@ cal_backend_get_cached_timezone (ETimezoneCache *cache,
 	/* Try to replace the original time zone with a more complete
 	 * and/or potentially updated built-in time zone.  Note this also
 	 * applies to TZIDs which match built-in time zones exactly: they
-	 * are extracted via icaltimezone_get_builtin_timezone_from_tzid(). */
+	 * are extracted via i_cal_timezone_get_builtin_timezone_from_tzid(). */
 
 	builtin_tzid = e_cal_match_tzid (tzid);
 
 	if (builtin_tzid != NULL)
-		builtin_zone = icaltimezone_get_builtin_timezone_from_tzid (
-			builtin_tzid);
+		builtin_zone = i_cal_timezone_get_builtin_timezone_from_tzid (builtin_tzid);
 
 	if (builtin_zone == NULL)
 		goto exit;
 
 	/* Use the built-in time zone *and* rename it.  Likely the caller
 	 * is asking for a specific TZID because it has an event with such
-	 * a TZID.  Returning an icaltimezone with a different TZID would
+	 * a TZID.  Returning an ICalTimezone with a different TZID would
 	 * lead to broken VCALENDARs in the caller. */
 
-	icalcomp = icaltimezone_get_component (builtin_zone);
-	icalcomp = icalcomponent_new_clone (icalcomp);
+	icomp = i_cal_timezone_get_component (builtin_zone);
+	clone = i_cal_component_new_clone (icomp);
+	g_object_unref (icomp);
+	icomp = clone;
 
-	prop = icalcomponent_get_first_property (
-		icalcomp, ICAL_ANY_PROPERTY);
-
-	while (prop != NULL) {
-		if (icalproperty_isa (prop) == ICAL_TZID_PROPERTY) {
-			icalproperty_set_value_from_string (prop, tzid, "NO");
+	for (prop = i_cal_component_get_first_property (icomp, I_CAL_ANY_PROPERTY);
+	     prop;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icomp, I_CAL_ANY_PROPERTY)) {
+		if (i_cal_property_isa (prop) == I_CAL_TZID_PROPERTY) {
+			i_cal_property_set_value_from_string (prop, tzid, "NO");
+			g_object_unref (prop);
 			break;
 		}
-
-		prop = icalcomponent_get_next_property (
-			icalcomp, ICAL_ANY_PROPERTY);
 	}
 
-	if (icalcomp != NULL) {
-		zone = icaltimezone_new ();
-		if (icaltimezone_set_component (zone, icalcomp)) {
-			tzid = icaltimezone_get_tzid (zone);
-			g_hash_table_insert (
-				priv->zone_cache,
-				g_strdup (tzid), zone);
-		} else {
-			icalcomponent_free (icalcomp);
-			icaltimezone_free (zone, 1);
-			zone = NULL;
-		}
+	zone = i_cal_timezone_new ();
+	if (i_cal_timezone_set_component (zone, icomp)) {
+		tzid = i_cal_timezone_get_tzid (zone);
+		g_hash_table_insert (priv->zone_cache, g_strdup (tzid), zone);
+	} else {
+		g_clear_object (&icomp);
+		g_clear_object (&zone);
 	}
 
-exit:
+ exit:
 	g_mutex_unlock (&priv->zone_cache_lock);
 
 	return zone;
@@ -1089,7 +1072,7 @@ e_cal_backend_init (ECalBackend *backend)
 		(GHashFunc) g_str_hash,
 		(GEqualFunc) g_str_equal,
 		(GDestroyNotify) g_free,
-		(GDestroyNotify) cal_backend_free_zone);
+		(GDestroyNotify) g_object_unref);
 
 	backend->priv = E_CAL_BACKEND_GET_PRIVATE (backend);
 
@@ -1116,7 +1099,7 @@ e_cal_backend_init (ECalBackend *backend)
  *
  * Returns: The kind of components for this backend.
  */
-icalcomponent_kind
+ICalComponentKind
 e_cal_backend_get_kind (ECalBackend *backend)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), ICAL_NO_COMPONENT);
@@ -1528,7 +1511,7 @@ e_cal_backend_remove_view (ECalBackend *backend,
  *   g_list_free_full (list, g_object_unref);
  * ]|
  *
- * Returns: (element-type EDataCalView): a list of cal views
+ * Returns: (element-type EDataCalView) (transfer full): a list of cal views
  *
  * Since: 3.8
  **/
@@ -2074,7 +2057,7 @@ e_cal_backend_get_object_finish (ECalBackend *backend,
  * e_cal_backend_get_object_list_sync:
  * @backend: an #ECalBackend
  * @query: a search query in S-expression format
- * @out_objects: a #GQueue in which to deposit results
+ * @out_objects: (element-type utf8): a #GQueue in which to deposit results
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -2218,7 +2201,7 @@ e_cal_backend_get_object_list (ECalBackend *backend,
  * e_cal_backend_get_object_list_finish:
  * @backend: an #ECalBackend
  * @result: a #GAsyncResult
- * @out_objects: a #GQueue in which to deposit results
+ * @out_objects: (element-type utf8): a #GQueue in which to deposit results
  * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_cal_backend_get_object_list().
@@ -2266,8 +2249,8 @@ e_cal_backend_get_object_list_finish (ECalBackend *backend,
  * @backend: an #ECalBackend
  * @start: start time
  * @end: end time
- * @users: a %NULL-terminated array of user strings
- * @out_freebusy: iCalendar strings with overall returned Free/Busy data
+ * @users: (array zero-terminated=1): a %NULL-terminated array of user strings
+ * @out_freebusy: (element-type utf8): iCalendar strings with overall returned Free/Busy data
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -2366,7 +2349,7 @@ cal_backend_get_free_busy_thread (GSimpleAsyncResult *simple,
  * @backend: an #ECalBackend
  * @start: start time
  * @end: end time
- * @users: a %NULL-terminated array of user strings
+ * @users: (array zero-terminated=1): a %NULL-terminated array of user strings
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
@@ -2429,7 +2412,7 @@ e_cal_backend_get_free_busy (ECalBackend *backend,
  * e_cal_backend_get_free_busy_finish:
  * @backend: an #ECalBackend
  * @result: a #GAsyncResult
- * @out_freebusy: iCalendar strings with overall returned Free/Busy data
+ * @out_freebusy: (element-type utf8): iCalendar strings with overall returned Free/Busy data
  * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_cal_backend_get_free_busy().
@@ -2711,7 +2694,7 @@ e_cal_backend_create_objects_finish (ECalBackend *backend,
 }
 
 /**
- * e_cal_backend_modify_objects:
+ * e_cal_backend_modify_objects_sync:
  * @backend: an #ECalBackend
  * @calobjs: a %NULL-terminated array of iCalendar strings
  * @mod: modification type for recurrences
@@ -2946,7 +2929,7 @@ e_cal_backend_modify_objects_finish (ECalBackend *backend,
 /**
  * e_cal_backend_remove_objects_sync:
  * @backend: an #ECalBackend
- * @component_ids: a #GList of #ECalComponentId structs
+ * @component_ids: (element-type ECalComponentId): a #GList of #ECalComponentId structs
  * @mod: modification type for recurrences
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -3036,7 +3019,7 @@ cal_backend_remove_objects_thread (GSimpleAsyncResult *simple,
 /**
  * e_cal_backend_remove_objects:
  * @backend: an #ECalBackend
- * @component_ids: a #GList of #ECalComponentId structs
+ * @component_ids: (element-type ECalComponentId): a #GList of #ECalComponentId structs
  * @mod: modification type for recurrences
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied

@@ -32,7 +32,6 @@
 #include <libedataserver/libedataserver.h>
 
 #include "e-cal-backend-sync.h"
-#include <libical/icaltz-util.h>
 
 #define E_CAL_BACKEND_SYNC_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -577,24 +576,25 @@ e_cal_backend_sync_get_timezone (ECalBackendSync *backend,
 	}
 
 	if (tzobject && !*tzobject) {
-		icaltimezone *zone = NULL;
+		ICalTimezone *zone;
 
-		zone = e_timezone_cache_get_timezone (
-			E_TIMEZONE_CACHE (backend), tzid);
+		zone = e_timezone_cache_get_timezone (E_TIMEZONE_CACHE (backend), tzid);
 
 		if (!zone) {
 			if (error && !*error)
 				g_propagate_error (error, e_data_cal_create_error (ObjectNotFound, NULL));
 		} else {
-			icalcomponent *icalcomp;
+			ICalComponent *icomp;
 
-			icalcomp = icaltimezone_get_component (zone);
+			icomp = i_cal_timezone_get_component (zone);
 
-			if (!icalcomp) {
+			if (!icomp) {
 				if (error && !*error)
 					g_propagate_error (error, e_data_cal_create_error (InvalidObject, NULL));
 			} else {
-				*tzobject = icalcomponent_as_ical_string_r (icalcomp);
+				*tzobject = i_cal_component_as_ical_string_r (icomp);
+
+				g_object_unref (icomp);
 			}
 		}
 	}
@@ -889,38 +889,33 @@ cal_backend_get_timezone (ECalBackend *backend,
 		}
 
 		if (slashes == 1) {
-			icalcomponent *icalcomp = NULL, *free_comp = NULL;
+			ICalComponent *icomp = NULL;
+			ICalTimezone *zone;
 
-			icaltimezone *zone = icaltimezone_get_builtin_timezone (tzid);
-			if (!zone) {
-				/* Try fetching the timezone from zone
-				 * directory. There are some timezones like
-				 * MST, US/Pacific etc. which do not appear
-				 * in zone.tab, so they will not be available
-				 * in the libical builtin timezone */
-				icalcomp = free_comp = icaltzutil_fetch_timezone (tzid);
-			}
+			zone = i_cal_timezone_get_builtin_timezone (tzid);
 
 			if (zone)
-				icalcomp = icaltimezone_get_component (zone);
+				icomp = i_cal_timezone_get_component (zone);
 
-			if (icalcomp) {
-				icalcomponent *clone = icalcomponent_new_clone (icalcomp);
-				icalproperty *prop;
+			if (icomp) {
+				ICalComponent *clone = i_cal_component_new_clone (icomp);
+				ICalProperty *prop;
 
-				prop = icalcomponent_get_first_property (clone, ICAL_TZID_PROPERTY);
+				prop = i_cal_component_get_first_property (clone, I_CAL_TZID_PROPERTY);
 				if (prop) {
 					/* change tzid to our, because the component has the buildin tzid */
-					icalproperty_set_tzid (prop, tzid);
+					i_cal_property_set_tzid (prop, tzid);
 
-					object = icalcomponent_as_ical_string_r (clone);
+					object = i_cal_component_as_ical_string_r (clone);
+
 					g_clear_error (&error);
+					g_object_unref (prop);
 				}
-				icalcomponent_free (clone);
+
+				g_clear_object (&clone);
 			}
 
-			if (free_comp)
-				icalcomponent_free (free_comp);
+			g_clear_object (&icomp);
 		}
 
 		/* also cache this timezone to backend */

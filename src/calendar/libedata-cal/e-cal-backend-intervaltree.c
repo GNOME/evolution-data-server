@@ -380,7 +380,7 @@ intervaltree_fixup_deletion (EIntervalTree *tree,
 	x->red = 0;
 }
 
-/** Caller should hold the lock. **/
+/* * Caller should hold the lock. * */
 static EIntervalNode *
 intervaltree_search_component (EIntervalTree *tree,
                                const gchar *searched_uid,

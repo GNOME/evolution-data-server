@@ -137,7 +137,7 @@ ESubprocessCalFactory *
 e_subprocess_cal_factory_new (GCancellable *cancellable,
 			       GError **error)
 {
-	ical_set_unknown_token_handling_setting (ICAL_DISCARD_TOKEN);
+	i_cal_set_unknown_token_handling_setting (ICAL_DISCARD_TOKEN);
 
 	return g_initable_new (
 		E_TYPE_SUBPROCESS_CAL_FACTORY,

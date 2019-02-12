@@ -26,7 +26,6 @@
 
 #include "evolution-data-server-config.h"
 
-#include <libical-glib/libical-glib.h>
 #include <glib/gi18n-lib.h>
 #include <unistd.h>
 
@@ -1999,7 +1998,7 @@ e_data_cal_respond_modify_objects (EDataCal *cal,
  * @cal: A calendar client interface.
  * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
- * @ids: (element-type: utf8) IDs of the removed objects.
+ * @ids: (element-type utf8): IDs of the removed objects.
  * @old_components: (element-type ECalComponent): The old #ECalComponent(s).
  * @new_components: (element-type ECalComponent): The new #ECalComponent(s).
  *    They will not be NULL only when removing instances of recurring appointments.

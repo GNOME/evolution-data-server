@@ -364,7 +364,7 @@ e_data_cal_factory_new (gint backend_per_process,
 			GCancellable *cancellable,
                         GError **error)
 {
-	ical_set_unknown_token_handling_setting (ICAL_DISCARD_TOKEN);
+	i_cal_set_unknown_token_handling_setting (I_CAL_DISCARD_TOKEN);
 
 	return g_initable_new (E_TYPE_DATA_CAL_FACTORY, cancellable, error,
 		"reload-supported", TRUE,

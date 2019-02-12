@@ -1029,7 +1029,7 @@ e_data_cal_view_get_flags (EDataCalView *view)
 }
 
 static gboolean
-filter_component (icalcomponent *icomponent,
+filter_component (ICalComponent *icomponent,
                   GHashTable *fields_of_interest,
                   GString *string)
 {
@@ -1038,10 +1038,10 @@ filter_component (icalcomponent *icomponent,
 	/* RFC 2445 explicitly says that the newline is *ALWAYS* a \r\n (CRLF)!!!! */
 	const gchar        newline[] = "\r\n";
 
-	icalcomponent_kind kind;
+	ICalComponentKind  kind;
 	const gchar       *kind_string;
-	icalproperty      *prop;
-	icalcomponent     *icomp;
+	ICalProperty      *prop;
+	ICalComponent     *icomp;
 	gboolean           fail = FALSE;
 
 	g_return_val_if_fail (icomponent != NULL, FALSE);
@@ -1049,29 +1049,29 @@ filter_component (icalcomponent *icomponent,
 	/* Open iCalendar string */
 	g_string_append (string, "BEGIN:");
 
-	kind = icalcomponent_isa (icomponent);
+	kind = i_cal_component_isa (icomponent);
 
-	/* if (kind != ICAL_X_COMPONENT) { */
-	/* 	kind_string  = icalcomponent_kind_to_string (kind); */
+	/* if (kind != I_CAL_X_COMPONENT) { */
+	/* 	kind_string  = i_cal_component_kind_to_string (kind); */
 	/* } else { */
 	/* 	kind_string = icomponent->x_name; */
 	/* } */
 
-	kind_string = icalcomponent_kind_to_string (kind);
+	kind_string = i_cal_component_kind_to_string (kind);
 
 	g_string_append (string, kind_string);
 	g_string_append (string, newline);
 
-	for (prop = icalcomponent_get_first_property (icomponent, ICAL_ANY_PROPERTY);
+	for (prop = i_cal_component_get_first_property (icomponent, I_CAL_ANY_PROPERTY);
 	     prop;
-	     prop = icalcomponent_get_next_property (icomponent, ICAL_ANY_PROPERTY)) {
-		const gchar *name;
-		gboolean     is_field_of_interest;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icomponent, I_CAL_ANY_PROPERTY)) {
+		gchar *name;
+		gboolean is_field_of_interest;
 
-		name = icalproperty_get_property_name (prop);
+		name = i_cal_property_get_property_name_r (prop);
 
 		if (!name) {
-			g_warning ("NULL ical property name encountered while serializing component");
+			g_warning ("NULL iCal property name encountered while serializing component");
 			fail = TRUE;
 			break;
 		}
@@ -1080,15 +1080,17 @@ filter_component (icalcomponent *icomponent,
 
 		/* Append any name that is mentioned in the fields-of-interest */
 		if (is_field_of_interest) {
-			str = icalproperty_as_ical_string_r (prop);
+			str = i_cal_property_as_ical_string_r (prop);
 			g_string_append (string, str);
 			g_free (str);
 		}
+
+		g_free (name);
 	}
 
-	for (icomp = icalcomponent_get_first_component (icomponent, ICAL_ANY_COMPONENT);
+	for (icomp = i_cal_component_get_first_component (icomponent, I_CAL_ANY_COMPONENT);
 	     fail == FALSE && icomp;
-	     icomp = icalcomponent_get_next_component (icomponent, ICAL_ANY_COMPONENT)) {
+	     g_object_unref (icomp), icomp = i_cal_component_get_next_component (icomponent, I_CAL_ANY_COMPONENT)) {
 
 		if (!filter_component (icomp, fields_of_interest, string)) {
 			fail = TRUE;
@@ -1096,8 +1098,10 @@ filter_component (icalcomponent *icomponent,
 		}
 	}
 
+	g_clear_object (&icomp);
+
 	g_string_append (string, "END:");
-	g_string_append (string, icalcomponent_kind_to_string (kind));
+	g_string_append (string, i_cal_component_kind_to_string (kind));
 	g_string_append (string, newline);
 
 	return fail == FALSE;
@@ -1128,9 +1132,9 @@ e_data_cal_view_get_component_string (EDataCalView *view,
 
 	if (view->priv->fields_of_interest) {
 		GString *string = g_string_new ("");
-		icalcomponent *icalcomp = e_cal_component_get_icalcomponent (component);
+		ICalComponent *icomp = e_cal_component_get_icalcomponent (component);
 
-		if (filter_component (icalcomp, view->priv->fields_of_interest, string))
+		if (filter_component (icomp, view->priv->fields_of_interest, string))
 			str = g_string_free (string, FALSE);
 		else
 			g_string_free (string, TRUE);
@@ -1150,12 +1154,12 @@ e_data_cal_view_get_component_string (EDataCalView *view,
 /**
  * e_data_cal_view_notify_components_added:
  * @view: an #EDataCalView
- * @ecalcomponents: List of #ECalComponent-s that have been added.
+ * @ecalcomponents: (element-type ECalComponent): List of #ECalComponent-s that have been added.
  *
  * Notifies all view listeners of the addition of a list of components.
  *
  * Uses the #EDataCalView's fields-of-interest to filter out unwanted
- * information from ical strings sent over the bus.
+ * information from iCalendar strings sent over the bus.
  *
  * Since: 3.4
  */
@@ -1191,7 +1195,7 @@ e_data_cal_view_notify_components_added (EDataCalView *view,
  * Notifies all the view listeners of the addition of a single object.
  *
  * Uses the #EDataCalView's fields-of-interest to filter out unwanted
- * information from ical strings sent over the bus.
+ * information from iCalendar strings sent over the bus.
  *
  * Since: 3.4
  */
@@ -1216,7 +1220,7 @@ e_data_cal_view_notify_components_added_1 (EDataCalView *view,
  * Notifies all view listeners of the modification of a list of components.
  *
  * Uses the #EDataCalView's fields-of-interest to filter out unwanted
- * information from ical strings sent over the bus.
+ * information from iCalendar strings sent over the bus.
  *
  * Since: 3.4
  */
@@ -1252,7 +1256,7 @@ e_data_cal_view_notify_components_modified (EDataCalView *view,
  * Notifies all view listeners of the modification of @component.
  * 
  * Uses the #EDataCalView's fields-of-interest to filter out unwanted
- * information from ical strings sent over the bus.
+ * information from iCalendar strings sent over the bus.
  *
  * Since: 3.4
  */

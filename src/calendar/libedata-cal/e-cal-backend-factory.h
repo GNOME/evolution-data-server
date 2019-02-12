@@ -85,7 +85,7 @@ struct _ECalBackendFactoryClass {
 	/* Subclasses just need to set these
 	 * class members, we handle the rest. */
 	const gchar *factory_name;
-	icalcomponent_kind component_kind;
+	ICalComponentKind component_kind;
 	GType backend_type;
 };
 

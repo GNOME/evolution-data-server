@@ -972,6 +972,35 @@ e_cal_util_add_timezones_from_component (ICalComponent *vcal_comp,
 }
 
 /**
+ * e_cal_util_property_has_parameter:
+ * @prop: an #ICalProperty
+ * @param_kind: a parameter kind to look for, as an %ICalParameterKind
+ *
+ * Returns, whether the @prop has a parameter of @param_kind.
+ *
+ * Returns: whether the @prop has a parameter of @prop_kind
+ *
+ * Since: 3.36
+ **/
+gboolean
+e_cal_util_property_has_parameter (ICalProperty *prop,
+				   ICalParameterKind param_kind)
+{
+	ICalParameter *param;
+
+	g_return_val_if_fail (I_CAL_IS_PROPERTY (prop), FALSE);
+
+	param = i_cal_property_get_first_parameter (prop, param_kind);
+
+	if (!param)
+		return FALSE;
+
+	g_object_unref (param);
+
+	return TRUE;
+}
+
+/**
  * e_cal_util_component_has_property:
  * @icalcomp: an #ICalComponent
  * @prop_kind: a property kind to look for, as an %ICalPropertyKind
