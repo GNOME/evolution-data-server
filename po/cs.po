@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2019-02-06 10:37+0000\n"
-"PO-Revision-Date: 2019-02-08 14:38+0100\n"
+"POT-Creation-Date: 2019-02-11 10:54+0000\n"
+"PO-Revision-Date: 2019-02-12 15:59+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: čeština <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -158,7 +158,7 @@ msgstr "Pokus změnit kontakt „%s“ s revizí mimo synchronizaci"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1491
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1576
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3085
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3087
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7369
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7438
 #, c-format
@@ -999,7 +999,7 @@ msgstr ""
 "V souhrnu je pole kontaktu „%s“ typu „%s“, ale podporované typy polí jsou "
 "pouze pravdivostní, řetězec a seznam řetězců."
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3073
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3075
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4177
 #, c-format
 msgid ""
@@ -6167,6 +6167,74 @@ msgstr ""
 "ověření OAuth2 „Company“ pro hostitele „mail.company.com“; Company-CalDAV:"
 "caldav.company.com povolí ověření OAuth2 „Company“ pro nějaký zdroj "
 "„CalDAV“, který čte data z hostitele „caldav.company.com“"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
+msgid ""
+"An OAuth2 client ID to use to connect to Google servers, instead of the one "
+"provided during build time"
+msgstr ""
+"ID klienta OAuth2 pro připojení k serverům Google, které nahradí to "
+"poskytnuté při sestavování"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
+msgid ""
+"User-specified OAuth2 client ID for Google servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Uživatelem určené ID klienta OAuth2 pro servery Google. Prázdný řetězec "
+"znamená, že se použije ID poskytnuté při sestavovaní. Změna údaje vyžaduje "
+"restart."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
+msgid ""
+"An OAuth2 client secret to use to connect to Google servers, instead of the "
+"one provided during build time"
+msgstr ""
+"Tajemství klienta OAuth2 pro připojení k serverům Google, které nahradí to "
+"poskytnuté při sestavování"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
+msgid ""
+"User-specified OAuth2 client secret for Google servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Uživatelem určené tajemství klienta OAuth2 pro servery Google. Prázdný "
+"řetězec znamená, že se použije tajemství poskytnuté při sestavovaní. Změna "
+"údaje vyžaduje restart."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
+msgid ""
+"An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
+"provided during build time"
+msgstr ""
+"ID klienta OAuth2 pro připojení k serverům Outlook, které nahradí to "
+"poskytnuté při sestavování"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
+msgid ""
+"User-specified OAuth2 client ID for Outlook servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Uživatelem určené ID klienta OAuth2 pro servery Outlook. Prázdný řetězec "
+"znamená, že se použije ID poskytnuté při sestavovaní. Změna údaje vyžaduje "
+"restart."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
+msgid ""
+"An OAuth2 client secret to use to connect to Outlook servers, instead of the "
+"one provided during build time"
+msgstr ""
+"Tajemství klienta OAuth2 pro připojení k serverům Outlook, které nahradí to "
+"poskytnuté při sestavování"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
+msgid ""
+"User-specified OAuth2 client secret for Outlook servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Uživatelem určené tajemství klienta OAuth2 pro servery Outlook. Prázdný "
+"řetězec znamená, že se použije tajemství poskytnuté při sestavovaní. Změna "
+"údaje vyžaduje restart."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
