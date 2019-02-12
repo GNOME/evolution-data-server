@@ -72,7 +72,7 @@ func_uid (ESExp *esexp,
           gpointer data)
 {
 	SearchContext *ctx = data;
-	const gchar *uid = NULL, *arg_uid;
+	const gchar *uid, *arg_uid;
 	gboolean equal;
 	ESExpResult *result;
 
@@ -94,7 +94,7 @@ func_uid (ESExp *esexp,
 	}
 
 	arg_uid = argv[0]->value.string;
-	e_cal_component_get_uid (ctx->comp, &uid);
+	uid = e_cal_component_get_uid (ctx->comp);
 
 	if (!arg_uid && !uid)
 		equal = TRUE;
@@ -125,7 +125,7 @@ check_instance_time_range_cb (ECalComponent *comp,
 	return FALSE;
 }
 
-static icaltimezone *
+static ICalTimezone *
 resolve_tzid (const gchar *tzid,
               gpointer user_data)
 {
@@ -304,8 +304,8 @@ func_due_in_time_range (ESExp *esexp,
 	SearchContext *ctx = data;
 	time_t start, end;
 	ESExpResult *result;
-	icaltimezone *zone;
-	ECalComponentDateTime dt;
+	ICalTimezone *zone;
+	ECalComponentDateTime *dt;
 	time_t due_t;
 	gboolean retval;
 
@@ -337,17 +337,17 @@ func_due_in_time_range (ESExp *esexp,
 	}
 
 	end = argv[1]->value.time;
-	e_cal_component_get_due (ctx->comp, &dt);
+	dt = e_cal_component_get_due (ctx->comp);
 
-	if (dt.value != NULL) {
-		zone = resolve_tzid (dt.tzid, ctx);
+	if (dt && e_cal_component_datetime_get_value (dt)) {
+		zone = resolve_tzid (e_cal_component_datetime_get_tzid (dt), ctx);
 		if (zone)
-			due_t = icaltime_as_timet_with_zone (*dt.value,zone);
+			due_t = i_cal_time_as_timet_with_zone (e_cal_component_datetime_get_value (dt), zone);
 		else
-			due_t = icaltime_as_timet (*dt.value);
+			due_t = i_cal_time_as_timet (e_cal_component_datetime_get_value (dt));
 	}
 
-	if (dt.value != NULL && (due_t <= end && due_t >= start))
+	if (dt && e_cal_component_datetime_get_value (dt) && (due_t <= end && due_t >= start))
 		retval = TRUE;
 	else
 		retval = FALSE;
@@ -355,7 +355,7 @@ func_due_in_time_range (ESExp *esexp,
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 	result->value.boolean = retval;
 
-	e_cal_component_free_datetime (&dt);
+	e_cal_component_datetime_free (dt);
 
 	return result;
 }
@@ -366,16 +366,13 @@ matches_text_list (GSList *text_list,
                    const gchar *str)
 {
 	GSList *l;
-	gboolean matches;
-
-	matches = FALSE;
+	gboolean matches = FALSE;
 
 	for (l = text_list; l; l = l->next) {
-		ECalComponentText *text;
+		ECalComponentText *text = l->data;
 
-		text = l->data;
-
-		if (text && e_util_utf8_strstrcasedecomp (text->value, str) != NULL) {
+		if (text && e_cal_component_text_get_value (text) &&
+		    e_util_utf8_strstrcasedecomp (e_cal_component_tet_get_value (text), str) != NULL) {
 			matches = TRUE;
 			break;
 		}
@@ -392,9 +389,9 @@ matches_comment (ECalComponent *comp,
 	GSList *list;
 	gboolean matches;
 
-	e_cal_component_get_comment_list (comp, &list);
+	list = e_cal_component_get_comments (comp);
 	matches = matches_text_list (list, str);
-	e_cal_component_free_text_list (list);
+	g_slist_free_full (list, e_cal_component_text_free);
 
 	return matches;
 }
@@ -407,9 +404,9 @@ matches_description (ECalComponent *comp,
 	GSList *list;
 	gboolean matches;
 
-	e_cal_component_get_description_list (comp, &list);
+	list = e_cal_component_get_descriptions (comp);
 	matches = matches_text_list (list, str);
-	e_cal_component_free_text_list (list);
+	g_slist_free_full (list, e_cal_component_text_free);
 
 	return matches;
 }
@@ -421,22 +418,24 @@ matches_attendee (ECalComponent *comp,
 	GSList *a_list = NULL, *l;
 	gboolean matches = FALSE;
 
-	e_cal_component_get_attendee_list (comp, &a_list);
+	a_list = e_cal_component_get_attendees (comp);
 
 	for (l = a_list; l; l = l->next) {
 		ECalComponentAttendee *att = l->data;
 
-		if ((att->value && e_util_utf8_strstrcasedecomp (att->value, str)) ||
-		    (att->cn != NULL && e_util_utf8_strstrcasedecomp (att->cn, str))) {
+		if (!att)
+			continue;
+
+		if ((e_cal_component_attendee_get_value (att) && e_util_utf8_strstrcasedecomp (e_cal_component_attendee_get_value (att), str)) ||
+		    (e_cal_component_attendee_get_cn (att) && e_util_utf8_strstrcasedecomp (e_cal_component_attendee_get_cn (att), str))) {
 			matches = TRUE;
 			break;
 		}
 	}
 
-	e_cal_component_free_attendee_list (a_list);
+	g_slist_free_full (a_list, e_cal_component_attendee_free);
 
 	return matches;
-
 }
 
 static gboolean
@@ -444,17 +443,22 @@ matches_organizer (ECalComponent *comp,
                    const gchar *str)
 {
 
-	ECalComponentOrganizer org;
+	ECalComponentOrganizer *org;
+	gboolean matches;
 
-	e_cal_component_get_organizer (comp, &org);
 	if (str && !*str)
 		return TRUE;
 
-	if ((org.value && e_util_utf8_strstrcasedecomp (org.value, str)) ||
-	    (org.cn && e_util_utf8_strstrcasedecomp (org.cn, str)))
-		return TRUE;
+	org = e_cal_component_get_organizer (comp);
+	if (!org)
+		return FALSE;
 
-	return FALSE;
+	matches = (e_cal_component_organizer_get_value (org) && e_util_utf8_strstrcasedecomp (e_cal_component_organizer_get_value (org), str)) ||
+		  (e_cal_component_organizer_get_cn (org) && e_util_utf8_strstrcasedecomp (e_cal_component_organizer_get_cn (org), str));
+
+	e_cal_component_organizer_free (org);
+
+	return matches;
 }
 
 static gboolean
@@ -476,7 +480,7 @@ matches_classification (ECalComponent *comp,
 	else
 		classification1 = E_CAL_COMPONENT_CLASS_UNKNOWN;
 
-	e_cal_component_get_classification (comp, &classification);
+	classification = e_cal_component_get_classification (comp);
 
 	return (classification == classification1 ? TRUE : FALSE);
 }
@@ -486,17 +490,20 @@ static gboolean
 matches_summary (ECalComponent *comp,
                  const gchar *str)
 {
-	ECalComponentText text;
-
-	e_cal_component_get_summary (comp, &text);
+	ECalComponentText *text;
+	gboolean matches;
 
 	if (!*str)
 		return TRUE;
 
-	if (!text.value)
-		return FALSE;
+	text = e_cal_component_get_summary (comp);
 
-	return e_util_utf8_strstrcasedecomp (text.value, str) != NULL;
+	matches = text && e_cal_component_text_get_value (text) &&
+		  e_util_utf8_strstrcasedecomp (e_cal_component_text_get_value (text), str) != NULL;
+
+	e_cal_component_text_free (text);
+
+	return matches;
 }
 
 /* Returns whether the location in a component matches the specified string */
@@ -504,14 +511,16 @@ static gboolean
 matches_location (ECalComponent *comp,
                   const gchar *str)
 {
-	const gchar *location = NULL;
+	gchar *location;
+	gboolean matches;
 
-	e_cal_component_get_location (comp, &location);
+	location = e_cal_component_get_location (comp);
 
-	if (!location)
-		return FALSE;
+	matches = location && e_util_utf8_strstrcasedecomp (location, str) != NULL;
 
-	return e_util_utf8_strstrcasedecomp (location, str) != NULL;
+	g_free (location);
+
+	return matches;
 }
 
 /* Returns whether any text field in a component matches the specified string */
@@ -538,19 +547,17 @@ matches_priority (ECalComponent *comp ,const gchar *pr)
 	gboolean res = FALSE;
 	gint *priority = NULL;
 
-	e_cal_component_get_priority (comp, &priority);
+	priority = e_cal_component_get_priority (comp);
 
-	if (!priority)
+	if (priority == -1)
 		return g_str_equal (pr, "UNDEFINED");
 
-	if (g_str_equal (pr, "HIGH") && *priority <= 4)
+	if (g_str_equal (pr, "HIGH") && priority <= 4)
 		res = TRUE;
-	else if (g_str_equal (pr, "NORMAL") && *priority == 5)
+	else if (g_str_equal (pr, "NORMAL") && priority == 5)
 		res = TRUE;
-	else if (g_str_equal (pr, "LOW") && *priority > 5)
+	else if (g_str_equal (pr, "LOW") && priority > 5)
 		res = TRUE;
-
-	e_cal_component_free_priority (priority);
 
 	return res;
 }
@@ -558,41 +565,41 @@ matches_priority (ECalComponent *comp ,const gchar *pr)
 static gboolean
 matches_status (ECalComponent *comp ,const gchar *str)
 {
-	icalproperty_status status;
+	ICalPropertyStatus status;
 
 	if (!*str)
 		return FALSE;
 
-	e_cal_component_get_status (comp, &status);
+	status = e_cal_component_get_status (comp);
 
 	switch (status) {
-	case ICAL_STATUS_NONE:
+	case I_CAL_STATUS_NONE:
 		return g_str_equal (str, "NOT STARTED");
-	case ICAL_STATUS_COMPLETED:
+	case I_CAL_STATUS_COMPLETED:
 		return g_str_equal (str, "COMPLETED");
-	case ICAL_STATUS_CANCELLED:
+	case I_CAL_STATUS_CANCELLED:
 		return g_str_equal (str, "CANCELLED");
-	case ICAL_STATUS_INPROCESS:
+	case I_CAL_STATUS_INPROCESS:
 		return g_str_equal (str, "IN PROGRESS");
-	case ICAL_STATUS_NEEDSACTION:
+	case I_CAL_STATUS_NEEDSACTION:
 		return g_str_equal (str, "NEEDS ACTION");
-	case ICAL_STATUS_TENTATIVE:
+	case I_CAL_STATUS_TENTATIVE:
 		return g_str_equal (str, "TENTATIVE");
-	case ICAL_STATUS_CONFIRMED:
+	case I_CAL_STATUS_CONFIRMED:
 		return g_str_equal (str, "CONFIRMED");
-	case ICAL_STATUS_DRAFT:
+	case I_CAL_STATUS_DRAFT:
 		return g_str_equal (str, "DRAFT");
-	case ICAL_STATUS_FINAL:
+	case I_CAL_STATUS_FINAL:
 		return g_str_equal (str, "FINAL");
-	case ICAL_STATUS_SUBMITTED:
+	case I_CAL_STATUS_SUBMITTED:
 		return g_str_equal (str, "SUBMITTED");
-	case ICAL_STATUS_PENDING:
+	case I_CAL_STATUS_PENDING:
 		return g_str_equal (str, "PENDING");
-	case ICAL_STATUS_FAILED:
+	case I_CAL_STATUS_FAILED:
 		return g_str_equal (str, "FAILED");
-	case ICAL_STATUS_DELETED:
+	case I_CAL_STATUS_DELETED:
 		return g_str_equal (str, "DELETED");
-	case ICAL_STATUS_X:
+	case I_CAL_STATUS_X:
 		break;
 	}
 
@@ -629,7 +636,7 @@ func_percent_complete (ESExp *esexp,
 {
 	SearchContext *ctx = data;
 	ESExpResult *result = NULL;
-	gint *percent;
+	gint percent;
 
 	if (argc != 0) {
 		e_sexp_fatal_error (
@@ -638,16 +645,10 @@ func_percent_complete (ESExp *esexp,
 		return NULL;
 	}
 
-	e_cal_component_get_percent (ctx->comp, &percent);
+	percent = e_cal_component_get_percent (ctx->comp);
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_INT);
-
-	if (percent) {
-		result->value.number = *percent;
-		e_cal_component_free_percent (percent);
-	} else {
-		result->value.number = -1;
-	}
+	result->value.number = percent;
 
 	return result;
 }
@@ -753,7 +754,7 @@ func_has_start (ESExp *esexp,
 {
 	SearchContext *ctx = data;
 	ESExpResult *result;
-	ECalComponentDateTime dt;
+	ECalComponentDateTime *dt;
 
 	/* Check argument types */
 
@@ -764,10 +765,10 @@ func_has_start (ESExp *esexp,
 		return NULL;
 	}
 
-	e_cal_component_get_dtstart (ctx->comp, &dt);
+	dt = e_cal_component_get_dtstart (ctx->comp);
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-	result->value.boolean = dt.value != NULL;
-	e_cal_component_free_datetime (&dt);
+	result->value.boolean = dt && e_cal_component_datetime_get_value (dt);
+	e_cal_component_datetime_free (dt);
 
 	return result;
 }
@@ -925,7 +926,7 @@ func_has_categories (ESExp *esexp,
 	 * whether unfiled components are supposed to match.
 	 */
 
-	e_cal_component_get_categories_list (ctx->comp, &categories);
+	categories = e_cal_component_get_categories_list (ctx->comp);
 	if (!categories) {
 		result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 		result->value.boolean = unfiled;
@@ -940,7 +941,7 @@ func_has_categories (ESExp *esexp,
 		result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 		result->value.boolean = FALSE;
 
-		e_cal_component_free_categories_list (categories);
+		g_slist_free_full (categories, g_free);
 
 		return result;
 	}
@@ -973,7 +974,7 @@ func_has_categories (ESExp *esexp,
 		}
 	}
 
-	e_cal_component_free_categories_list (categories);
+	g_slist_free_full (categories, g_free);
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 	result->value.boolean = matches;
@@ -1026,7 +1027,7 @@ func_is_completed (ESExp *esexp,
 {
 	SearchContext *ctx = data;
 	ESExpResult *result;
-	struct icaltimetype *t;
+	ICalTimetype *itt;
 	gboolean complete = FALSE;
 
 	/* Check argument types */
@@ -1038,16 +1039,16 @@ func_is_completed (ESExp *esexp,
 		return NULL;
 	}
 
-	e_cal_component_get_completed (ctx->comp, &t);
-	if (t) {
+	itt = e_cal_component_get_completed (ctx->comp);
+	if (itt) {
 		complete = TRUE;
-		e_cal_component_free_icaltimetype (t);
+		g_obejct_unref (itt);
 	} else {
-		icalproperty_status status = ICAL_STATUS_NONE;
+		ICalPropertyStatus status;
 
-		e_cal_component_get_status (ctx->comp, &status);
+		status = e_cal_component_get_status (ctx->comp);
 
-		complete = status == ICAL_STATUS_COMPLETED;
+		complete = status == I_CAL_STATUS_COMPLETED;
 	}
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
@@ -1072,8 +1073,8 @@ func_completed_before (ESExp *esexp,
 {
 	SearchContext *ctx = data;
 	ESExpResult *result;
-	struct icaltimetype *tt;
-	icaltimezone *zone;
+	ICalTimetype *itt;
+	ICalTimezone *zone;
 	gboolean retval = FALSE;
 	time_t before_time, completed_time;
 
@@ -1093,13 +1094,14 @@ func_completed_before (ESExp *esexp,
 			"completed-before");
 		return NULL;
 	}
+
 	before_time = argv[0]->value.time;
 
-	e_cal_component_get_completed (ctx->comp, &tt);
-	if (tt) {
+	itt = e_cal_component_get_completed (ctx->comp);
+	if (itt) {
 		/* COMPLETED must be in UTC. */
-		zone = icaltimezone_get_utc_timezone ();
-		completed_time = icaltime_as_timet_with_zone (*tt, zone);
+		zone = i_cal_timezone_get_utc_timezone ();
+		completed_time = i_cal_time_as_timet_with_zone (itt, zone);
 
 		/* We want to return TRUE if before_time is after
 		 * completed_time. */
@@ -1107,7 +1109,7 @@ func_completed_before (ESExp *esexp,
 			retval = TRUE;
 		}
 
-		e_cal_component_free_icaltimetype (tt);
+		g_object_unref (itt);
 	}
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);

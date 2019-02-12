@@ -57,11 +57,17 @@ ICalTimetype *	e_cal_component_datetime_get_value
 void		e_cal_component_datetime_set_value
 						(ECalComponentDateTime *dt,
 						 const ICalTimetype *value);
+void		e_cal_component_datetime_take_value
+						(ECalComponentDateTime *dt,
+						 ICalTimetype *value);
 const gchar *	e_cal_component_datetime_get_tzid
 						(const ECalComponentDateTime *dt);
 void		e_cal_component_datetime_set_tzid
 						(ECalComponentDateTime *dt,
 						 const gchar *tzid);
+void		e_cal_component_datetime_take_tzid
+						(ECalComponentDateTime *dt,
+						 gchar *tzid);
 
 G_END_DECLS
 

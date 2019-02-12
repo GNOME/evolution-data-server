@@ -723,13 +723,13 @@ ecb_gtasks_get_changes_sync (ECalMetaBackend *meta_backend,
 					object = e_cal_component_get_as_string (new_comp);
 
 					if (cached_comp) {
-						struct icaltimetype *cached_tt = NULL, *new_tt = NULL;
+						ICalTimetype *cached_tt, *new_tt;
 
-						e_cal_component_get_last_modified (cached_comp, &cached_tt);
-						e_cal_component_get_last_modified (new_comp, &new_tt);
+						cached_tt = e_cal_component_get_last_modified (cached_comp);
+						new_tt = e_cal_component_get_last_modified (new_comp);
 
 						if (!cached_tt || !new_tt ||
-						    icaltime_compare (*cached_tt, *new_tt) != 0) {
+						    i_cal_time_compare (cached_tt, new_tt) != 0) {
 							/* Google doesn't store/provide 'created', thus use 'created,
 							   as first seen by the backend' */
 							if (cached_tt)
@@ -739,10 +739,8 @@ ecb_gtasks_get_changes_sync (ECalMetaBackend *meta_backend,
 								e_cal_meta_backend_info_new (uid, revision, object, NULL));
 						}
 
-						if (cached_tt)
-							e_cal_component_free_icaltimetype (cached_tt);
-						if (new_tt)
-							e_cal_component_free_icaltimetype (new_tt);
+						g_clear_object (&cached_tt);
+						g_clear_object (&new_tt);
 					} else {
 						*out_created_objects = g_slist_prepend (*out_created_objects,
 							e_cal_meta_backend_info_new (uid, revision, object, NULL));

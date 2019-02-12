@@ -27,17 +27,19 @@ static ETestServerClosure cal_closure_async =
 static void
 print_ecomp (ECalComponent *ecalcomp)
 {
-	const gchar *uid = NULL;
-	ECalComponentText summary = { 0 };
+	const gchar *uid;
+	ECalComponentText *summary;
 
 	g_return_if_fail (ecalcomp != NULL);
 
-	e_cal_component_get_uid (ecalcomp, &uid);
-	e_cal_component_get_summary (ecalcomp, &summary);
+	uid = e_cal_component_get_uid (ecalcomp);
+	summary = e_cal_component_get_summary (ecalcomp);
 
 	g_print ("   Component: %s\n", uid ? uid : "no-uid");
-	g_print ("   Summary: %s\n", summary.value ? summary.value : "NULL");
+	g_print ("   Summary: %s\n", summary && e_cal_component_text_get_value (summary) ? e_cal_component_text_get_value (summary) : "NULL");
 	g_print ("\n");
+
+	e_cal_component_text_free (summary);
 }
 
 static void

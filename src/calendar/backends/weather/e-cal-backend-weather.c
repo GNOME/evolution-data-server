@@ -204,7 +204,7 @@ finished_retrieval_cb (GWeatherInfo *info,
 
 		e_cal_backend_notify_component_removed (E_CAL_BACKEND (cbw), id, NULL, NULL);
 	}
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_id_free);
 	e_cache_remove_all (E_CACHE (priv->cache), NULL, NULL);
 
 	comp = create_weather (cbw, info, unit, FALSE, NULL);

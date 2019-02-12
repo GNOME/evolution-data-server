@@ -50,19 +50,28 @@ subtest_passed (SubTestId id,
 		g_main_loop_quit (loop);
 }
 
-static struct icaltimetype
-get_last_modified (icalcomponent *component)
+static ICalTimetype *
+get_last_modified (ICalComponent *component)
 {
-	icalcomponent *inner = icalcomponent_get_inner (component);
-	icalproperty  *prop;
+	ICalComponent *inner = i_cal_component_get_inner (component);
+	ICalProperty *prop;
+	ICalTimetype *res;
 
-	prop = icalcomponent_get_first_property (inner, ICAL_LASTMODIFIED_PROPERTY);
+	if (!inner)
+		return i_cal_time_null_time ();
 
-	if (prop == 0) {
-		return icaltime_null_time ();
+	prop = i_cal_component_get_first_property (inner, I_CAL_LASTMODIFIED_PROPERTY);
+
+	if (prop) {
+		res = i_cal_property_get_lastmodified (prop);
+		g_object_unref (prop);
+	} else {
+		res = i_cal_time_null_time ();
 	}
 
-	return icalproperty_get_lastmodified (prop);
+	g_clear_object (&innter);
+
+	return res;
 }
 
 static void
@@ -74,17 +83,26 @@ objects_added_cb (GObject *object,
 	GMainLoop *loop = (GMainLoop *) data;
 
 	for (l = objects; l; l = l->next) {
-		icalcomponent      *component = l->data;
-		struct icaltimetype recurrence = icalcomponent_get_recurrenceid (component);
-		struct icaltimetype last_modified = get_last_modified (component);
+		ICalComponent *component = l->data;
+		ICalTimetype *recurrence = i_cal_component_get_recurrenceid (component);
+		ICalTimetype *last_modified = get_last_modified (component);
+		gchar *str_recurrence, *str_last_modified;
+
+		str_recurrence = i_cal_time_as_ical_string (recurrence);
+		str_last_modified = i_cal_time_as_ical_string_r (last_modified);
 
 		g_print (
 			"Object added %s (recurrence id:%s, last-modified:%s)\n",
-			icalcomponent_get_uid (component),
-			icaltime_as_ical_string (recurrence),
-			icaltime_as_ical_string (last_modified));
+			i_cal_component_get_uid (component),
+			str_recurrence,
+			str_last_modified);
 
-		g_assert (icalcomponent_get_summary (component) == NULL);
+		g_clear_object (&recurrence);
+		g_clear_object (&last_modified);
+		g_free (str_recurrence);
+		g_free (str_last_modified);
+
+		g_assert (i_cal_component_get_summary (component) == NULL);
 	}
 
 	subtest_passed (SUBTEST_OBJECTS_ADDED, loop);
@@ -99,15 +117,24 @@ objects_modified_cb (GObject *object,
 	GMainLoop *loop = (GMainLoop *) data;
 
 	for (l = objects; l; l = l->next) {
-		icalcomponent      *component = l->data;
-		struct icaltimetype recurrence = icalcomponent_get_recurrenceid (component);
-		struct icaltimetype last_modified = get_last_modified (component);
+		ICalComponent *component = l->data;
+		ICalTimetype *recurrence = i_cal_component_get_recurrenceid (component);
+		ICalTimetype *last_modified = get_last_modified (component);
+		gchar *str_recurrence, *str_last_modified;
+
+		str_recurrence = i_cal_time_as_ical_string (recurrence);
+		str_last_modified = i_cal_time_as_ical_string_r (last_modified);
 
 		g_print (
 			"Object modified %s (recurrence id:%s, last-modified:%s)\n",
-			icalcomponent_get_uid (component),
-			icaltime_as_ical_string (recurrence),
-			icaltime_as_ical_string (last_modified));
+			i_cal_component_get_uid (component),
+			str_recurrence,
+			str_last_modified);
+
+		g_clear_object (&recurrence);
+		g_clear_object (&last_modified);
+		g_free (str_recurrence);
+		g_free (str_last_modified);
 
 		g_assert (icalcomponent_get_summary (component) == NULL);
 	}
@@ -126,7 +153,7 @@ objects_removed_cb (GObject *object,
 	for (l = objects; l; l = l->next) {
 		ECalComponentId *id = l->data;
 
-		g_print ("Object removed: uid: %s, rid: %s\n", id->uid, id->rid);
+		g_print ("Object removed: uid: %s, rid: %s\n", e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id));
 	}
 
 	subtest_passed (SUBTEST_OBJECTS_REMOVED, loop);
@@ -149,32 +176,36 @@ alter_cal_client (gpointer user_data)
 {
 	ECalClient *cal_client = user_data;
 	GError *error = NULL;
-	icalcomponent *icalcomp;
-	struct icaltimetype now;
+	ICalComponent *comp;
+	ICalTimetype *now, *itt;
 	gchar *uid = NULL;
 
 	g_return_val_if_fail (cal_client != NULL, NULL);
 
-	now = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-	icalcomp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
-	icalcomponent_set_summary (icalcomp, "Initial event summary");
-	icalcomponent_set_dtstart (icalcomp, now);
-	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet_with_zone (icaltime_as_timet (now) + 60 * 60 * 60, 0, NULL));
+	now = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+	itt = i_cal_time_from_timet_with_zone (i_cal_time_as_timet (now) + 60 * 60 * 60, 0, NULL);
 
-	if (!e_cal_client_create_object_sync (cal_client, icalcomp, &uid, NULL, &error))
+	comp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
+	i_cal_component_set_summary (comp, "Initial event summary");
+	i_cal_component_set_dtstart (comp, now);
+	i_cal_component_set_dtend   (comp, itt);
+
+	if (!e_cal_client_create_object_sync (cal_client, comp, &uid, NULL, &error))
 		g_error ("create object sync: %s", error->message);
 
-	icalcomponent_set_uid (icalcomp, uid);
-	icalcomponent_set_summary (icalcomp, "Modified event summary");
+	i_cal_component_set_uid (comp, uid);
+	i_cal_component_set_summary (comp, "Modified event summary");
 
-	if (!e_cal_client_modify_object_sync (cal_client, icalcomp, E_CAL_OBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_modify_object_sync (cal_client, comp, E_CAL_OBJ_MOD_ALL, NULL, &error))
 		g_error ("modify object sync: %s", error->message);
 
 	if (!e_cal_client_remove_object_sync (cal_client, uid, NULL, E_CAL_OBJ_MOD_ALL, NULL, &error))
 		g_error ("remove object sync: %s", error->message);
 
+	g_object_urnef (comp);
+	g_object_unref (now);
+	g_object_unref (itt);
 	g_free (uid);
-	icalcomponent_free (icalcomp);
 
 	return FALSE;
 }

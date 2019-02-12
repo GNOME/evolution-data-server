@@ -640,15 +640,15 @@ ecmb_maybe_remove_from_cache (ECalMetaBackend *meta_backend,
 		id = e_cal_component_get_id (comp);
 		if (id) {
 			if (!e_cal_cache_delete_attachments (cal_cache, e_cal_component_get_icalcomponent (comp), cancellable, error) ||
-			    !e_cal_cache_remove_component (cal_cache, id->uid, id->rid, offline_flag, cancellable, error)) {
-				e_cal_component_free_id (id);
+			    !e_cal_cache_remove_component (cal_cache, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), offline_flag, cancellable, error)) {
+				e_cal_component_id_free (id);
 				g_slist_free_full (comps, g_object_unref);
 
 				return FALSE;
 			}
 
 			e_cal_backend_notify_component_removed (cal_backend, id, comp, NULL);
-			e_cal_component_free_id (id);
+			e_cal_component_id_free (id);
 		}
 	}
 
@@ -888,13 +888,13 @@ ecmb_find_in_instances (const GSList *instances, /* ECalComponent * */
 		if (!id)
 			continue;
 
-		if (g_strcmp0 (id->uid, uid) == 0 &&
-		    g_strcmp0 (id->rid, rid) == 0) {
-			e_cal_component_free_id (id);
+		if (g_strcmp0 (e_cal_component_id_get_uid (id), uid) == 0 &&
+		    g_strcmp0 (e_cal_component_id_get_rid (id), rid) == 0) {
+			e_cal_component_id_free (id);
 			return comp;
 		}
 
-		e_cal_component_free_id (id);
+		e_cal_component_id_free (id);
 	}
 
 	return NULL;
@@ -929,9 +929,9 @@ ecmb_put_one_component (ECalMetaBackend *meta_backend,
 
 		id = e_cal_component_get_id (comp);
 		if (id) {
-			existing = ecmb_find_in_instances (*inout_cache_instances, id->uid, id->rid);
+			existing = ecmb_find_in_instances (*inout_cache_instances, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id));
 
-			e_cal_component_free_id (id);
+			e_cal_component_id_free (id);
 		}
 
 		if (existing) {
@@ -994,11 +994,11 @@ ecmb_put_instances (ECalMetaBackend *meta_backend,
 			if (!success)
 				break;
 
-			success = e_cal_cache_remove_component (cal_cache, id->uid, id->rid, offline_flag, cancellable, error);
+			success = e_cal_cache_remove_component (cal_cache, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), offline_flag, cancellable, error);
 
 			e_cal_backend_notify_component_removed (cal_backend, id, comp, NULL);
 
-			e_cal_component_free_id (id);
+			e_cal_component_id_free (id);
 		}
 	}
 
@@ -1750,28 +1750,28 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 		return FALSE;
 	}
 
-	if (!e_cal_cache_get_components_by_uid (cal_cache, id->uid, &instances, cancellable, &local_error)) {
+	if (!e_cal_cache_get_components_by_uid (cal_cache, e_cal_component_id_get_uid (id), &instances, cancellable, &local_error)) {
 		if (g_error_matches (local_error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND)) {
 			g_clear_error (&local_error);
 			local_error = e_data_cal_create_error (ObjectNotFound, NULL);
 		}
 
 		g_propagate_error (error, local_error);
-		e_cal_component_free_id (id);
+		e_cal_component_id_free (id);
 
 		return FALSE;
 	}
 
-	master_comp = ecmb_find_in_instances (instances, id->uid, NULL);
+	master_comp = ecmb_find_in_instances (instances, e_cal_component_id_get_uid (id), NULL);
 	if (e_cal_component_is_instance (comp)) {
 		/* Set detached instance as the old object */
-		existing_comp = ecmb_find_in_instances (instances, id->uid, id->rid);
+		existing_comp = ecmb_find_in_instances (instances, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id));
 
 		if (!existing_comp && mod == E_CAL_OBJ_MOD_ONLY_THIS) {
 			g_propagate_error (error, e_data_cal_create_error (ObjectNotFound, NULL));
 
 			g_slist_free_full (instances, g_object_unref);
-			e_cal_component_free_id (id);
+			e_cal_component_id_free (id);
 
 			return FALSE;
 		}
@@ -1780,8 +1780,8 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 	if (!existing_comp)
 		existing_comp = master_comp;
 
-	if (!e_cal_cache_get_component_extra (cal_cache, id->uid, id->rid, &extra, cancellable, NULL) && id->rid) {
-		if (!e_cal_cache_get_component_extra (cal_cache, id->uid, NULL, &extra, cancellable, NULL))
+	if (!e_cal_cache_get_component_extra (cal_cache, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), &extra, cancellable, NULL) && id->rid) {
+		if (!e_cal_cache_get_component_extra (cal_cache, e_cal_component_id_get_uid (id), NULL, &extra, cancellable, NULL))
 			extra = NULL;
 	}
 
@@ -1813,7 +1813,7 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 		instances = g_slist_append (instances, e_cal_component_clone (comp));
 		break;
 	case E_CAL_OBJ_MOD_ALL:
-		e_cal_recur_ensure_end_dates (comp, TRUE, e_cal_cache_resolve_timezone_simple_cb, cal_cache);
+		e_cal_recur_ensure_end_dates (comp, TRUE, e_cal_cache_resolve_timezone_cb, cal_cache);
 
 		/* Replace master object */
 		instances = g_slist_remove (instances, master_comp);
@@ -1834,7 +1834,7 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 
 			if (mod == E_CAL_OBJ_MOD_THIS_AND_FUTURE &&
 			    e_cal_util_is_first_instance (master_comp, icalcomponent_get_recurrenceid (icalcomp),
-				e_cal_cache_resolve_timezone_simple_cb, cal_cache)) {
+				e_cal_cache_resolve_timezone_cb, cal_cache)) {
 				icalproperty *prop = icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY);
 
 				if (prop)
@@ -1843,7 +1843,7 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 				e_cal_component_rescan (comp);
 
 				/* Then do it like for "mod_all" */
-				e_cal_recur_ensure_end_dates (comp, TRUE, e_cal_cache_resolve_timezone_simple_cb, cal_cache);
+				e_cal_recur_ensure_end_dates (comp, TRUE, e_cal_cache_resolve_timezone_cb, cal_cache);
 
 				/* Replace master */
 				instances = g_slist_remove (instances, master_comp);
@@ -1870,7 +1870,7 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 				rid = icaltime_convert_to_zone (rid, icaltimezone_get_utc_timezone ());
 				e_cal_util_remove_instances (e_cal_component_get_icalcomponent (master_comp), rid, mod);
 				e_cal_component_rescan (master_comp);
-				e_cal_recur_ensure_end_dates (master_comp, TRUE, e_cal_cache_resolve_timezone_simple_cb, cal_cache);
+				e_cal_recur_ensure_end_dates (master_comp, TRUE, e_cal_cache_resolve_timezone_cb, cal_cache);
 
 				if (out_new_comp) {
 					g_clear_object (&new_comp);
@@ -1887,7 +1887,7 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 
 				g_warn_if_fail (e_cal_component_set_icalcomponent (comp, split_icalcomp));
 
-				e_cal_recur_ensure_end_dates (comp, TRUE, e_cal_cache_resolve_timezone_simple_cb, cal_cache);
+				e_cal_recur_ensure_end_dates (comp, TRUE, e_cal_cache_resolve_timezone_cb, cal_cache);
 
 				success = ecmb_create_object_sync (meta_backend, cal_cache, offline_flag, E_CONFLICT_RESOLUTION_FAIL,
 					comp, NULL, NULL, cancellable, error);
@@ -1914,11 +1914,11 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 
 	if (success && *offline_flag == E_CACHE_IS_ONLINE) {
 		success = ecmb_save_component_wrapper_sync (meta_backend, cal_cache, TRUE, conflict_resolution,
-			instances, extra, id->uid, &requires_put, &new_uid, &new_extra, cancellable, error);
+			instances, extra, e_cal_component_id_get_uid (id), &requires_put, &new_uid, &new_extra, cancellable, error);
 	}
 
 	if (success && requires_put)
-		success = ecmb_put_instances (meta_backend, cal_cache, id->uid, *offline_flag, instances, new_extra ? new_extra : extra, cancellable, error);
+		success = ecmb_put_instances (meta_backend, cal_cache, e_cal_component_id_get_uid (id), *offline_flag, instances, new_extra ? new_extra : extra, cancellable, error);
 
 	if (!success) {
 		g_clear_object (&old_comp);
@@ -1929,7 +1929,7 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 		*out_old_comp = old_comp;
 	if (out_new_comp) {
 		if (new_uid) {
-			if (!e_cal_cache_get_component (cal_cache, new_uid, id->rid, out_new_comp, cancellable, NULL))
+			if (!e_cal_cache_get_component (cal_cache, new_uid, e_cal_component_id_get_rid (id), out_new_comp, cancellable, NULL))
 				*out_new_comp = NULL;
 		} else {
 			*out_new_comp = new_comp ? g_object_ref (new_comp) : NULL;
@@ -1937,7 +1937,7 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 	}
 
 	g_slist_free_full (instances, g_object_unref);
-	e_cal_component_free_id (id);
+	e_cal_component_id_free (id);
 	g_clear_object (&new_comp);
 	g_free (new_extra);
 	g_free (new_uid);
@@ -2024,7 +2024,7 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 			 GCancellable *cancellable,
 			 GError **error)
 {
-	struct icaltimetype itt;
+	ICalTimetype *itt;
 	ECalComponent *old_comp = NULL, *new_comp = NULL, *master_comp, *existing_comp = NULL;
 	GSList *instances = NULL;
 	gboolean success = TRUE;
@@ -2101,24 +2101,32 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 				success = FALSE;
 				g_propagate_error (error, e_data_cal_create_error (ObjectNotFound, NULL));
 			} else {
-				itt = icaltime_from_string (rid);
-				if (!itt.zone) {
-					ECalComponentDateTime dt;
+				itt = i_cal_time_from_string (rid);
+				if (itt && !i_cal_timetype_get_zone (itt)) {
+					ECalComponentDateTime *dt;
+					ICalTimetype *tmp_itt;
 
-					e_cal_component_get_dtstart (master_comp, &dt);
-					if (dt.value && dt.tzid) {
-						icaltimezone *zone = e_cal_cache_resolve_timezone_simple_cb (dt.tzid, cal_cache);
+					dt = e_cal_component_get_dtstart (master_comp);
+					if (dt && e_cal_component_datetime_get_value (dt) && e_cal_component_datetime_get_tzid (dt)) {
+						ICalTimezone *zone = e_cal_cache_resolve_timezone_cb (e_cal_component_datetime_get_tzid (dt), cal_cache);
 
-						if (zone)
-							itt = icaltime_convert_to_zone (itt, zone);
+						if (zone) {
+							tmp_itt = i_cal_time_convert_to_zone (itt, zone);
+							g_object_unref (itt);
+							itt = tmp_itt;
+						}
 					}
-					e_cal_component_free_datetime (&dt);
+					e_cal_component_datetime_free (dt);
 
-					itt = icaltime_convert_to_zone (itt, icaltimezone_get_utc_timezone ());
+					tmp_itt = i_cal_time_convert_to_zone (itt, i_cal_timezone_get_utc_timezone ());
+					g_object_unref (itt);
+					itt = tmp_itt;
 				}
 
 				if (master_comp)
-					e_cal_util_remove_instances (e_cal_component_get_icalcomponent (master_comp), itt, mod);
+					e_cal_util_component_remove_instances (e_cal_component_get_icalcomponent (master_comp), itt, mod);
+
+				g_clear_object (&itt);
 			}
 
 			if (success && out_new_comp && (master_comp || existing_comp))
@@ -2133,30 +2141,37 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 			time_t fromtt, instancett;
 			GSList *link, *previous = instances;
 
-			itt = icaltime_from_string (rid);
-			if (!itt.zone) {
-				ECalComponentDateTime dt;
+			itt = i_cal_time_from_string (rid);
+			if (itt && !i_cal_timetype_get_zone (itt)) {
+				ECalComponentDateTime *dt;
+				ICalTimetype *tmp_itt;
 
-				e_cal_component_get_dtstart (master_comp, &dt);
-				if (dt.value && dt.tzid) {
-					icaltimezone *zone = e_cal_cache_resolve_timezone_simple_cb (dt.tzid, cal_cache);
+				dt = e_cal_component_get_dtstart (master_comp);
+				if (dt && e_cal_component_datetime_get_value (dt) && e_cal_component_datetime_get_tzid (dt)) {
+					icaltimezone *zone = e_cal_cache_resolve_timezone_cb (e_cal_component_datetime_get_tzid (dt), cal_cache);
 
-					if (zone)
-						itt = icaltime_convert_to_zone (itt, zone);
+					if (zone) {
+						tmp_itt = i_cal_time_convert_to_zone (itt, zone);
+						g_object_unref (itt);
+						itt = tmp_itt;
+					}
 				}
-				e_cal_component_free_datetime (&dt);
+				e_cal_component_datetime_free (dt);
 
-				itt = icaltime_convert_to_zone (itt, icaltimezone_get_utc_timezone ());
+				tmp_itt = i_cal_time_convert_to_zone (itt, i_cal_timezone_get_utc_timezone ());
+				g_obejct_unref (itt);
+				itt = tmp_itt;
 			}
 
 			e_cal_util_remove_instances (e_cal_component_get_icalcomponent (master_comp), itt, mod);
 
-			fromtt = icaltime_as_timet (itt);
+			fromtt = i_cal_time_as_timet (itt);
 
 			/* Remove detached instances */
 			for (link = instances; link && fromtt > 0;) {
 				ECalComponent *comp = link->data;
-				ECalComponentRange range;
+				ECalComponentRange *range;
+				ECalComponentDatetime *rangedt;
 
 				if (!e_cal_component_is_instance (comp)) {
 					previous = link;
@@ -2164,12 +2179,13 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 					continue;
 				}
 
-				e_cal_component_get_recurid (comp, &range);
-				if (range.datetime.value)
-					instancett = icaltime_as_timet (*range.datetime.value);
+				range = e_cal_component_get_recurid (comp);
+				rangedt = range ? e_cal_component_range_get_datetime (range) : NULL;
+				if (rangedt && e_cal_component_datetime_get_value (rangedt))
+					instancett = i_cal_time_as_timet (e_cal_component_datetime_get_value (rangedt));
 				else
 					instancett = 0;
-				e_cal_component_free_range (&range);
+				e_cal_component_range_free (range);
 
 				if (instancett > 0 && (
 				    (mod == E_CAL_OBJ_MOD_THIS_AND_PRIOR && instancett <= fromtt) ||
@@ -2189,6 +2205,8 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 					link = g_slist_next (link);
 				}
 			}
+
+			g_clear_object (&itt);
 		} else {
 			mod = E_CAL_OBJ_MOD_ALL;
 		}
@@ -2226,11 +2244,11 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 						if (!id)
 							continue;
 
-						if (!e_cal_cache_get_component_extra (cal_cache, id->uid, id->rid, &comp_extra, cancellable, NULL)) {
+						if (!e_cal_cache_get_component_extra (cal_cache, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), &comp_extra, cancellable, NULL)) {
 							comp_extra = NULL;
 							if (g_cancellable_set_error_if_cancelled (cancellable, &local_error)) {
 								success = FALSE;
-								e_cal_component_free_id (id);
+								e_cal_component_id_free (id);
 								break;
 							}
 
@@ -2240,9 +2258,10 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 						ical_string = e_cal_component_get_as_string (comp);
 
 						/* This pretends the first instance is the master object and the implementations should count with it */
-						success = e_cal_meta_backend_remove_component_sync (meta_backend, conflict_resolution, id->uid, comp_extra, ical_string, cancellable, &local_error);
+						success = e_cal_meta_backend_remove_component_sync (meta_backend, conflict_resolution,
+							e_cal_component_id_get_uid (id), comp_extra, ical_string, cancellable, &local_error);
 
-						e_cal_component_free_id (id);
+						e_cal_component_id_free (id);
 						g_clear_pointer (&ical_string, g_free);
 						g_free (comp_extra);
 
@@ -2266,15 +2285,17 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 			gchar *new_uid = NULL, *new_extra = NULL;
 
 			if (master_comp) {
-				icalcomponent *icalcomp = e_cal_component_get_icalcomponent (master_comp);
+				gint sequence = e_cal_component_get_sequence (master_comp);
 
-				icalcomponent_set_sequence (icalcomp, icalcomponent_get_sequence (icalcomp) + 1);
+				if (sequence < 0)
+					sequence = 0;
 
-				e_cal_component_rescan (master_comp);
+				e_cal_component_set_sequence (master_comp, sequence + 1);
 
 				/* Set the last modified time on the component */
-				itt = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-				e_cal_component_set_last_modified (master_comp, &itt);
+				itt = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+				e_cal_component_set_last_modified (master_comp, itt);
+				g_clear_object (&itt);
 			}
 
 			if (*offline_flag == E_CACHE_IS_ONLINE) {
@@ -2358,7 +2379,7 @@ ecmb_remove_objects_sync (ECalBackendSync *sync_backend,
 		}
 
 		success = ecmb_remove_object_sync (meta_backend, cal_cache, &offline_flag, conflict_resolution,
-			mod, id->uid, id->rid, &old_comp, &new_comp, cancellable, error);
+			mod, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), &old_comp, &new_comp, cancellable, error);
 
 		if (success) {
 			*out_old_components = g_slist_prepend (*out_old_components, old_comp);
@@ -2412,14 +2433,14 @@ ecmb_receive_object_sync (ECalMetaBackend *meta_backend,
 	registry = e_cal_backend_get_registry (cal_backend);
 
 	/* Just to check whether component exists in the cache */
-	is_in_cache = e_cal_cache_contains (cal_cache, id->uid, NULL, E_CACHE_EXCLUDE_DELETED) ||
-		(id->rid && *id->rid && e_cal_cache_contains (cal_cache, id->uid, id->rid, E_CACHE_EXCLUDE_DELETED));
+	is_in_cache = e_cal_cache_contains (cal_cache, e_cal_component_id_get_uid (id), NULL, E_CACHE_EXCLUDE_DELETED) ||
+		(e_cal_component_id_get_rid (id) && e_cal_cache_contains (cal_cache, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), E_CACHE_EXCLUDE_DELETED));
 
 	/* For cases when there's no master object in the cache */
 	if (!is_in_cache) {
 		GSList *icalstrings = NULL;
 
-		if (e_cal_cache_get_components_by_uid_as_string (cal_cache, id->uid, &icalstrings, cancellable, NULL)) {
+		if (e_cal_cache_get_components_by_uid_as_string (cal_cache, e_cal_component_id_get_uid (id), &icalstrings, cancellable, NULL)) {
 			is_in_cache = icalstrings && icalstrings->data;
 			g_slist_free_full (icalstrings, g_free);
 		}
@@ -2438,7 +2459,7 @@ ecmb_receive_object_sync (ECalMetaBackend *meta_backend,
 					mod, comp, NULL, NULL, cancellable, error);
 			} else {
 				success = ecmb_remove_object_sync (meta_backend, cal_cache, offline_flag, conflict_resolution,
-					mod, id->uid, id->rid, NULL, NULL, cancellable, error);
+					mod, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), NULL, NULL, cancellable, error);
 			}
 		} else if (!is_declined) {
 			success = ecmb_create_object_sync (meta_backend, cal_cache, offline_flag, conflict_resolution,
@@ -2448,7 +2469,7 @@ ecmb_receive_object_sync (ECalMetaBackend *meta_backend,
 	case ICAL_METHOD_CANCEL:
 		if (is_in_cache) {
 			success = ecmb_remove_object_sync (meta_backend, cal_cache, offline_flag, conflict_resolution,
-				E_CAL_OBJ_MOD_THIS, id->uid, id->rid, NULL, NULL, cancellable, error);
+				E_CAL_OBJ_MOD_THIS, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), NULL, NULL, cancellable, error);
 		} else {
 			g_propagate_error (error, e_data_cal_create_error (ObjectNotFound, NULL));
 		}
@@ -2459,7 +2480,7 @@ ecmb_receive_object_sync (ECalMetaBackend *meta_backend,
 		break;
 	}
 
-	e_cal_component_free_id (id);
+	e_cal_component_id_free (id);
 
 	return success;
 }
@@ -3735,7 +3756,9 @@ static gint
 sort_master_first_cb (gconstpointer a,
 		      gconstpointer b)
 {
-	icalcomponent *ca, *cb;
+	ICalComponent *ca, *cb;
+	ICalTimetype *rida, *ridb;
+	gint res;
 
 	ca = e_cal_component_get_icalcomponent ((ECalComponent *) a);
 	cb = e_cal_component_get_icalcomponent ((ECalComponent *) b);
@@ -3749,7 +3772,22 @@ sort_master_first_cb (gconstpointer a,
 		return 1;
 	}
 
-	return icaltime_compare (icalcomponent_get_recurrenceid (ca), icalcomponent_get_recurrenceid (cb));
+	rida = icalcomponent_get_recurrenceid (ca);
+	ridb = icalcomponent_get_recurrenceid (cb);
+
+	if (!rida || !ridb) {
+		if (rida == ridb)
+			res = 0;
+		else
+			res = rida ? -1 : 1;
+	} else {
+		res = i_cal_time_compare (rida, ridb);
+	}
+
+	g_clear_object (&rida);
+	g_clear_object (&ridb);
+
+	return res;
 }
 
 typedef struct {
@@ -4185,7 +4223,7 @@ e_cal_meta_backend_empty_cache_sync (ECalMetaBackend *meta_backend,
 		}
 	}
 
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_id_free);
 
 	return success;
 }
@@ -4415,7 +4453,7 @@ e_cal_meta_backend_split_changes_sync (ECalMetaBackend *meta_backend,
 	locally_cached = g_hash_table_new_full (
 		(GHashFunc) e_cal_component_id_hash,
 		(GEqualFunc) e_cal_component_id_equal,
-		(GDestroyNotify) e_cal_component_free_id,
+		(GDestroyNotify) e_cal_component_id_free,
 		g_free);
 
 	if (!e_cal_cache_search_with_callback (cal_cache, NULL,
@@ -4427,20 +4465,19 @@ e_cal_meta_backend_split_changes_sync (ECalMetaBackend *meta_backend,
 
 	for (link = objects; link; link = g_slist_next (link)) {
 		ECalMetaBackendInfo *nfo = link->data;
-		ECalComponentId id;
+		ECalComponentId *id;
 
 		if (!nfo)
 			continue;
 
-		id.uid = nfo->uid;
-		id.rid = NULL;
+		id = e_cal_component_id_new (nfo->uid, NULL);
 
-		if (!g_hash_table_contains (locally_cached, &id)) {
+		if (!g_hash_table_contains (locally_cached, id)) {
 			link->data = NULL;
 
 			*out_created_objects = g_slist_prepend (*out_created_objects, nfo);
 		} else {
-			const gchar *local_revision = g_hash_table_lookup (locally_cached, &id);
+			const gchar *local_revision = g_hash_table_lookup (locally_cached, id);
 
 			if (g_strcmp0 (local_revision, nfo->revision) != 0) {
 				link->data = NULL;
@@ -4448,8 +4485,10 @@ e_cal_meta_backend_split_changes_sync (ECalMetaBackend *meta_backend,
 				*out_modified_objects = g_slist_prepend (*out_modified_objects, nfo);
 			}
 
-			g_hash_table_remove (locally_cached, &id);
+			g_hash_table_remove (locally_cached, id);
 		}
+
+		e_cal_component_id_free (id);
 	}
 
 	if (out_removed_objects) {
@@ -4466,17 +4505,20 @@ e_cal_meta_backend_split_changes_sync (ECalMetaBackend *meta_backend,
 			}
 
 			/* Skit detached instances, if the master object is still in the cache */
-			if (id->rid && *id->rid) {
-				ECalComponentId master_id;
+			if (e_cal_component_id_get_rid (id)) {
+				ECalComponentId *master_id;
 
-				master_id.uid = id->uid;
-				master_id.rid = NULL;
+				master_id = e_cal_component_id_new (e_cal_component_id_get_uid (id), NULL);
 
-				if (!g_hash_table_contains (locally_cached, &master_id))
+				if (!g_hash_table_contains (locally_cached, master_id)) {
+					e_cal_component_id_free (master_id);
 					continue;
+				}
+
+				e_cal_component_id_free (master_id);
 			}
 
-			nfo = e_cal_meta_backend_info_new (id->uid, revision, NULL, NULL);
+			nfo = e_cal_meta_backend_info_new (e_cal_component_id_get_uid (id), revision, NULL, NULL);
 			*out_removed_objects = g_slist_prepend (*out_removed_objects, nfo);
 		}
 

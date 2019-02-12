@@ -223,8 +223,10 @@ e_cal_component_id_set_uid (ECalComponentId *id,
 	g_return_if_fail (id != NULL);
 	g_return_if_fail (uid != NULL);
 
-	g_free (id->uid);
-	id->uid = g_strdup (uid);
+	if (g_strcmp0 (id->uid, uid) != 0) {
+		g_free (id->uid);
+		id->uid = g_strdup (uid);
+	}
 }
 
 /**
@@ -262,6 +264,8 @@ e_cal_component_id_set_rid (ECalComponentId *id,
 {
 	g_return_if_fail (id != NULL);
 
-	g_free (id->rid);
-	id->rid = (rid && *rid) ? g_strdup (rid) : NULL;
+	if (g_strcmp0 (id->rid, rid) != 0) {
+		g_free (id->rid);
+		id->rid = (rid && *rid) ? g_strdup (rid) : NULL;
+	}
 }

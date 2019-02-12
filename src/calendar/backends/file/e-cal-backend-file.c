@@ -569,13 +569,13 @@ check_dup_uid (ECalBackendFile *cbfile,
 {
 	ECalBackendFilePrivate *priv;
 	ECalBackendFileObject *obj_data;
-	const gchar *uid = NULL;
+	const gchar *uid;
 	gchar *new_uid = NULL;
 	gchar *rid = NULL;
 
 	priv = cbfile->priv;
 
-	e_cal_component_get_uid (comp, &uid);
+	uid = e_cal_component_get_uid (comp);
 
 	if (!uid) {
 		g_warning ("Checking for duplicate uid, the component does not have a valid UID skipping it\n");
@@ -616,19 +616,28 @@ check_dup_uid (ECalBackendFile *cbfile,
 	g_free (new_uid);
 }
 
-static struct icaltimetype
-get_rid_icaltime (ECalComponent *comp)
+static time_t
+get_rid_as_time_t (ECalComponent *comp)
 {
-	ECalComponentRange range;
-	struct icaltimetype tt;
+	ECalComponentRange *range;
+	ECalComponentDatetime *dt;
+	time_t tmt = (time_t) -1;
 
-	e_cal_component_get_recurid (comp, &range);
-	if (!range.datetime.value)
-		return icaltime_null_time ();
-	tt = *range.datetime.value;
-	e_cal_component_free_range (&range);
+	range = e_cal_component_get_recurid (comp);
+	if (!range)
+		return tmt;
 
-	return tt;
+	dt = e_cal_component_range_get_datetime (range);
+	if (!dt) {
+		e_cal_component_free_range (range);
+		return tmt;
+	}
+
+	tmt = i_cal_time_as_timet (e_cal_component_datetime_get_value (dt));
+
+	e_cal_component_range_free (range);
+
+	return tmt;
 }
 
 /* Adds component to the interval tree
@@ -665,7 +674,7 @@ static gboolean
 remove_component_from_intervaltree (ECalBackendFile *cbfile,
                                     ECalComponent *comp)
 {
-	const gchar *uid = NULL;
+	const gchar *uid;
 	gchar *rid;
 	gboolean res;
 	ECalBackendFilePrivate *priv;
@@ -675,8 +684,8 @@ remove_component_from_intervaltree (ECalBackendFile *cbfile,
 
 	priv = cbfile->priv;
 
+	uid = e_cal_component_get_uid (comp);
 	rid = e_cal_component_get_recurid_as_string (comp);
-	e_cal_component_get_uid (comp, &uid);
 
 	g_rec_mutex_lock (&priv->idle_save_rmutex);
 	res = e_intervaltree_remove (priv->interval_tree, uid, rid);
@@ -701,11 +710,11 @@ add_component (ECalBackendFile *cbfile,
 {
 	ECalBackendFilePrivate *priv;
 	ECalBackendFileObject *obj_data;
-	const gchar *uid = NULL;
+	const gchar *uid;
 
 	priv = cbfile->priv;
 
-	e_cal_component_get_uid (comp, &uid);
+	uid = e_cal_component_get_uid (comp);
 
 	if (!uid) {
 		g_warning ("The component does not have a valid UID skipping it\n");
@@ -1179,7 +1188,7 @@ notify_removals_cb (gpointer key,
 
 		e_cal_backend_notify_component_removed (context->backend, id, old_obj_data->full_object, NULL);
 
-		e_cal_component_free_id (id);
+		e_cal_component_id_free (id);
 	}
 }
 
@@ -1611,15 +1620,11 @@ static void
 match_object_sexp_to_component (gpointer value,
                                 gpointer data)
 {
-	ECalComponent * comp = value;
+	ECalComponent *comp = value;
 	MatchObjectData *match_data = data;
 	ETimezoneCache *timezone_cache;
-	const gchar *uid;
-
-	e_cal_component_get_uid (comp, &uid);
 
 	g_return_if_fail (comp != NULL);
-
 	g_return_if_fail (match_data->backend != NULL);
 
 	timezone_cache = E_TIMEZONE_CACHE (match_data->backend);
@@ -2151,49 +2156,43 @@ static void
 sanitize_component (ECalBackendFile *cbfile,
                     ECalComponent *comp)
 {
-	ECalComponentDateTime dt;
-	icaltimezone *zone;
+	ECalComponentDateTime *dt;
+	ICalTimezone *zone;
 
 	/* Check dtstart, dtend and due's timezone, and convert it to local
 	 * default timezone if the timezone is not in our builtin timezone
 	 * list */
-	e_cal_component_get_dtstart (comp, &dt);
-	if (dt.value && dt.tzid) {
-		zone = e_timezone_cache_get_timezone (
-			E_TIMEZONE_CACHE (cbfile), dt.tzid);
+	dt = e_cal_component_get_dtstart (comp);
+	if (dt && e_cal_component_datetime_get_value (dt) && e_cal_component_datetime_get_tzid (dt)) {
+		zone = e_timezone_cache_get_timezone (E_TIMEZONE_CACHE (cbfile), e_cal_component_datetime_get_tzid (dt));
 		if (!zone) {
-			g_free ((gchar *) dt.tzid);
-			dt.tzid = g_strdup ("UTC");
-			e_cal_component_set_dtstart (comp, &dt);
+			e_cal_component_datetime_set_tzid (dt, "UTC");
+			e_cal_component_set_dtstart (comp, dt);
 		}
 	}
-	e_cal_component_free_datetime (&dt);
+	e_cal_component_datetime_free (dt);
 
-	e_cal_component_get_dtend (comp, &dt);
-	if (dt.value && dt.tzid) {
-		zone = e_timezone_cache_get_timezone (
-			E_TIMEZONE_CACHE (cbfile), dt.tzid);
+	dt = e_cal_component_get_dtend (comp);
+	if (dt && e_cal_component_datetime_get_value (dt) && e_cal_component_datetime_get_tzid (dt)) {
+		zone = e_timezone_cache_get_timezone (E_TIMEZONE_CACHE (cbfile), e_cal_component_datetime_get_tzid (dt));
 		if (!zone) {
-			g_free ((gchar *) dt.tzid);
-			dt.tzid = g_strdup ("UTC");
-			e_cal_component_set_dtend (comp, &dt);
+			e_cal_component_datetime_set_tzid (dt, "UTC");
+			e_cal_component_set_dtend (comp, dt);
 		}
 	}
-	e_cal_component_free_datetime (&dt);
+	e_cal_component_datetime_free (dt);
 
-	e_cal_component_get_due (comp, &dt);
-	if (dt.value && dt.tzid) {
-		zone = e_timezone_cache_get_timezone (
-			E_TIMEZONE_CACHE (cbfile), dt.tzid);
+	dt = e_cal_component_get_due (comp);
+	if (dt && e_cal_component_datetime_get_value (dt) && e_cal_component_datetime_get_tzid (dt)) {
+		zone = e_timezone_cache_get_timezone (E_TIMEZONE_CACHE (cbfile), e_cal_component_datetime_get_tzid (dt));
 		if (!zone) {
-			g_free ((gchar *) dt.tzid);
-			dt.tzid = g_strdup ("UTC");
-			e_cal_component_set_due (comp, &dt);
+			e_cal_component_datetime_set_tzid (dt, "UTC");
+			e_cal_component_set_due (comp, dt);
 		}
 	}
-	e_cal_component_free_datetime (&dt);
+	e_cal_component_datetime_free (dt);
+
 	e_cal_component_abort_sequence (comp);
-
 }
 
 static void
@@ -2347,7 +2346,7 @@ remove_object_instance_cb (gpointer key,
 	RemoveRecurrenceData *rrdata = user_data;
 
 	fromtt = icaltime_as_timet (icaltime_from_string (rrdata->rid));
-	instancett = icaltime_as_timet (get_rid_icaltime (instance));
+	instancett = get_rid_as_time_t (instance);
 
 	if (fromtt > 0 && instancett > 0) {
 		if ((rrdata->mod == E_CAL_OBJ_MOD_THIS_AND_PRIOR && instancett <= fromtt) ||
@@ -2918,7 +2917,7 @@ notify_comp_removed_cb (gpointer pecalcomp,
 
 	e_cal_backend_notify_component_removed (backend, id, comp, NULL);
 
-	e_cal_component_free_id (id);
+	e_cal_component_id_free (id);
 }
 
 /* Remove_object handler for the file backend */
@@ -2967,8 +2966,8 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 	/* First step, validate the input */
 	for (l = ids; l; l = l->next) {
 		ECalComponentId *id = l->data;
-				/* Make the ID contains a uid */
-		if (!id || !id->uid) {
+		/* Make the ID contains a uid */
+		if (!id || !e_cal_component_id_get_uid (id)) {
 			g_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 			return;
@@ -2976,13 +2975,13 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 				/* Check that it has a recurrence id if mod is E_CAL_OBJ_MOD_THIS_AND_PRIOR
 					 or E_CAL_OBJ_MOD_THIS_AND_FUTURE */
 		if ((mod == E_CAL_OBJ_MOD_THIS_AND_PRIOR || mod == E_CAL_OBJ_MOD_THIS_AND_FUTURE) &&
-			(!id->rid || !*(id->rid))) {
+		    !e_cal_component_id_get_rid (id)) {
 			g_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 			return;
 		}
 				/* Make sure the uid exists in the local hash table */
-		if (!g_hash_table_lookup (priv->comp_uid_hash, id->uid)) {
+		if (!g_hash_table_lookup (priv->comp_uid_hash, e_cal_component_id_get_uid (id))) {
 			g_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 			return;
@@ -2997,10 +2996,8 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 		ECalBackendFileObject *obj_data;
 		ECalComponentId *id = l->data;
 
-		obj_data = g_hash_table_lookup (priv->comp_uid_hash, id->uid);
-
-		if (id->rid && *(id->rid))
-			recur_id = id->rid;
+		obj_data = g_hash_table_lookup (priv->comp_uid_hash, e_cal_component_id_get_uid (id));
+		recur_id = e_cal_component_id_get_rid (id);
 
 		switch (mod) {
 		case E_CAL_OBJ_MOD_ALL :
@@ -3009,7 +3006,7 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 
 			if (obj_data->recurrences_list)
 				g_list_foreach (obj_data->recurrences_list, notify_comp_removed_cb, cbfile);
-			remove_component (cbfile, id->uid, obj_data);
+			remove_component (cbfile, e_cal_component_id_get_uid (id), obj_data);
 			break;
 		case E_CAL_OBJ_MOD_ONLY_THIS:
 		case E_CAL_OBJ_MOD_THIS: {
@@ -3017,7 +3014,7 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 			ECalComponent *new_component = NULL;
 
 			remove_instance (
-				cbfile, obj_data, id->uid, recur_id, mod,
+				cbfile, obj_data, e_cal_component_id_get_uid (id), recur_id, mod,
 				&old_component, &new_component, error);
 
 			*old_components = g_slist_prepend (*old_components, old_component);
@@ -3092,17 +3089,17 @@ cancel_received_object (ECalBackendFile *cbfile,
 	ECalBackendFileObject *obj_data;
 	ECalBackendFilePrivate *priv;
 	gchar *rid;
-	const gchar *uid = NULL;
+	const gchar *uid;
 
 	priv = cbfile->priv;
 
 	*old_comp = NULL;
 	*new_comp = NULL;
 
-	e_cal_component_get_uid (comp, &uid);
+	uid = e_cal_component_get_uid (comp);
 
 	/* Find the old version of the component. */
-	obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
+	obj_data = uid ? g_hash_table_lookup (priv->comp_uid_hash, uid) : NULL;
 	if (!obj_data)
 		return FALSE;
 
@@ -3153,21 +3150,26 @@ static void
 fetch_attachments (ECalBackendSync *backend,
                    ECalComponent *comp)
 {
-	GSList *attach_list = NULL, *new_attach_list = NULL;
+	GSList *attach_list;
 	GSList *l;
 	gchar *dest_url, *dest_file;
 	gint fd, fileindex;
 	const gchar *uid;
 
-	e_cal_component_get_attachment_list (comp, &attach_list);
-	e_cal_component_get_uid (comp, &uid);
+	attach_list = e_cal_component_get_attachments (comp);
+	uid = e_cal_component_get_uid (comp);
 
 	for (l = attach_list, fileindex = 0; l; l = l->next, fileindex++) {
-		gchar *sfname = g_filename_from_uri ((const gchar *) l->data, NULL, NULL);
+		ICalAttach *attach = l->data;
+		gchar *sfname;
 		gchar *filename;
 		GMappedFile *mapped_file;
 		GError *error = NULL;
 
+		if (!attach || !i_cal_attach_get_is_url (attach))
+			continue;
+
+		sfname = g_filename_from_uri (i_cal_attach_get_url (attach), NULL, NULL)
 		if (!sfname)
 			continue;
 
@@ -3201,11 +3203,14 @@ fetch_attachments (ECalBackendSync *backend,
 			close (fd);
 		dest_url = g_filename_to_uri (dest_file, NULL, NULL);
 		g_free (dest_file);
-		new_attach_list = g_slist_append (new_attach_list, dest_url);
+
+		i_cal_attach_set_uri (attach, dest_url);
+
+		g_free (dest_url);
 		g_free (sfname);
 	}
 
-	e_cal_component_set_attachment_list (comp, new_attach_list);
+	g_slist_free_full (attach_list, g_object_unref);
 }
 
 static gint
@@ -3246,7 +3251,6 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 	icalcomponent *subcomp;
 	GList *comps, *del_comps, *l;
 	ECalComponent *comp;
-	struct icaltimetype current;
 	ECalBackendFileTzidData tzdata;
 	GError *err = NULL;
 
@@ -3387,6 +3391,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 	for (l = comps; l; l = l->next) {
 		ECalComponent *old_component = NULL;
 		ECalComponent *new_component = NULL;
+		ICalTimetype *current;
 		const gchar *uid;
 		gchar *rid;
 		ECalBackendFileObject *obj_data;
@@ -3399,18 +3404,20 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 		e_cal_component_set_icalcomponent (comp, subcomp);
 
 		/* Set the created and last modified times on the component, if not there already */
-		current = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
+		current = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
 
 		if (!icalcomponent_get_first_property (icalcomp, ICAL_CREATED_PROPERTY)) {
 			/* Update both when CREATED is missing, to make sure the LAST-MODIFIED
 			   is not before CREATED */
-			e_cal_component_set_created (comp, &current);
-			e_cal_component_set_last_modified (comp, &current);
+			e_cal_component_set_created (comp, current);
+			e_cal_component_set_last_modified (comp, current);
 		} else if (!icalcomponent_get_first_property (icalcomp, ICAL_LASTMODIFIED_PROPERTY)) {
-			e_cal_component_set_last_modified (comp, &current);
+			e_cal_component_set_last_modified (comp, current);
 		}
 
-		e_cal_component_get_uid (comp, &uid);
+		g_clear_object (&current);
+
+		uid = e_cal_component_get_uid (comp);
 		rid = e_cal_component_get_recurid_as_string (comp);
 
 		if (icalcomponent_get_first_property (subcomp, ICAL_METHOD_PROPERTY))
@@ -3459,7 +3466,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 										id, old_component,
 										rid ? comp : NULL);
 
-					e_cal_component_free_id (id);
+					e_cal_component_id_free (id);
 					g_object_unref (comp);
 				}
 
@@ -3505,7 +3512,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 
 				/* remove the component from the toplevel VCALENDAR */
 				icalcomponent_remove_component (priv->icalcomp, subcomp);
-				e_cal_component_free_id (id);
+				e_cal_component_id_free (id);
 
 				if (new_component)
 					g_object_unref (new_component);
@@ -3867,7 +3874,7 @@ write_list (GSList *list)
 		const gchar *str = l->data;
 		ECalComponent *comp = e_cal_component_new_from_string (str);
 		const gchar *uid;
-		e_cal_component_get_uid (comp, &uid);
+		uid = e_cal_component_get_uid (comp);
 		g_print ("%s\n", uid);
 	}
 }
@@ -3884,14 +3891,14 @@ get_difference_of_lists (ECalBackendFile *cbfile,
 		const gchar *uid;
 		ECalComponent *comp = e_cal_component_new_from_string (str);
 		gboolean found = FALSE;
-		e_cal_component_get_uid (comp, &uid);
+		uid = e_cal_component_get_uid (comp);
 
 		for (lsmaller = smaller; lsmaller && !found; lsmaller = lsmaller->next)
 		{
 			gchar *strsmaller = lsmaller->data;
 			const gchar *uidsmaller;
 			ECalComponent *compsmaller = e_cal_component_new_from_string (strsmaller);
-			e_cal_component_get_uid (compsmaller, &uidsmaller);
+			uidsmaller = e_cal_component_get_uid (compsmaller);
 
 			found = strcmp (uid, uidsmaller) == 0;
 

@@ -196,8 +196,33 @@ e_cal_component_datetime_set_value (ECalComponentDateTime *dt,
 	g_return_if_fail (dt != NULL);
 	g_return_if_fail (I_CAL_IS_TIMETYPE (value));
 
-	g_clear_object (&dt->value);
-	dt->value = i_cal_timetype_new_clone (value);
+	if (dt->value != value) {
+		g_clear_object (&dt->value);
+		dt->value = i_cal_timetype_new_clone (value);
+	}
+}
+
+/**
+ * e_cal_component_datetime_take_value:
+ * @dt: an #ECalComponentDateTime
+ * @value: (not nullable) (transfer full): the value to take, as an #ICalTimetype
+ *
+ * Sets the @value of the @dt and assumes ownership of the @value.
+ * Any previously set value is freed.
+ *
+ * Since: 3.36
+ **/
+void
+e_cal_component_datetime_take_value (ECalComponentDateTime *dt,
+				     ICalTimetype *value)
+{
+	g_return_if_fail (dt != NULL);
+	g_return_if_fail (I_CAL_IS_TIMETYPE (value));
+
+	if (dt->value != value) {
+		g_clear_object (&dt->value);
+		dt->value = value;
+	}
 }
 
 /**
@@ -205,9 +230,11 @@ e_cal_component_datetime_set_value (ECalComponentDateTime *dt,
  * @dt: an #ECalComponentDateTime
  *
  * Returns the TZID stored with the @dt. The string is owned by @dt and
- * it's valid until the @dt is freed or its TZID overwritten.
+ * it's valid until the @dt is freed or its TZID overwritten. It never
+ * returns an empty string, it returns either set TZID parameter value
+ * or %NULL, when none is set.
  *
- * Returns: (transfer none): a TZID of @dt
+ * Returns: (transfer none) (nullable): a TZID of @dt, or %NULL
  *
  * Since: 3.36
  **/
@@ -241,5 +268,32 @@ e_cal_component_datetime_set_tzid (ECalComponentDateTime *dt,
 	if (tzid != dt->tzid) {
 		g_free (dt->tzid);
 		dt->tzid = g_strdup (tzid);
+	}
+}
+
+/**
+ * e_cal_component_datetime_take_tzid:
+ * @dt: an #ECalComponentDateTime
+ * @tzid: (nullable) (transfer full): the TZID to take, or %NULL
+ *
+ * Sets the @tzid of the @dt and assumes ownership of @tzid. Any previously
+ * set TZID is freed. An empty string or a %NULL as @tzid is treated as none TZID.
+ *
+ * Since: 3.36
+ **/
+void
+e_cal_component_datetime_take_tzid (ECalComponentDateTime *dt,
+				    gchar *tzid)
+{
+	g_return_if_fail (dt != NULL);
+
+	if (tzid && !*tzid) {
+		g_free (tzid);
+		tzid = NULL;
+	}
+
+	if (tzid != dt->tzid) {
+		g_free (dt->tzid);
+		dt->tzid = tzid;
 	}
 }

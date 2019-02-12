@@ -1083,8 +1083,16 @@ test_component_struct_datetime (void)
 			g_assert_nonnull (tt);
 
 			if (expected) {
-				if (((set_kind + ii) & 1) != 0) {
+				if (((set_kind + ii) % 3) == 0) {
 					e_cal_component_datetime_set (expected, tt, values[ii].tzid);
+				} else if (((set_kind + ii) % 3) == 1) {
+					ICalTimetype *ttcopy;
+
+					ttcopy = i_cal_timetype_new_clone (tt);
+					g_assert_nonnull (ttcopy);
+
+					e_cal_component_datetime_take_value (expected, ttcopy);
+					e_cal_component_datetime_take_tzid (expected, g_strdup (values[ii].tzid));
 				} else {
 					e_cal_component_datetime_set_value (expected, tt);
 					e_cal_component_datetime_set_tzid (expected, values[ii].tzid);

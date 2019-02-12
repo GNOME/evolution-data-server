@@ -92,7 +92,7 @@ search_in_intervals (ETimezoneCache *zone_cache,
 	g_assert_nonnull (sexp);
 
 	res = g_hash_table_new_full ((GHashFunc) e_cal_component_id_hash, (GEqualFunc) e_cal_component_id_equal,
-		(GDestroyNotify) e_cal_component_free_id, g_object_unref);
+		(GDestroyNotify) e_cal_component_id_free, g_object_unref);
 
 	for (link = intervals; link; link = g_slist_next (link)) {
 		IntervalData *data = link->data;
@@ -130,7 +130,7 @@ check_search_results (GSList *ecalcomps,
 
 		g_assert (g_hash_table_contains (from_intervals, id));
 
-		e_cal_component_free_id (id);
+		e_cal_component_id_free (id);
 	}
 }
 
@@ -288,11 +288,12 @@ test_intervals (TCUFixture *fixture,
 			id = e_cal_component_get_id (comp);
 			g_assert (id != NULL);
 
-			success = e_cal_cache_remove_component (fixture->cal_cache, id->uid, id->rid, E_CACHE_IS_ONLINE, NULL, &error);
+			success = e_cal_cache_remove_component (fixture->cal_cache, e_cal_component_id_get_uid (id),
+				e_cal_component_id_get_rid (id), E_CACHE_IS_ONLINE, NULL, &error);
 			g_assert_no_error (error);
 			g_assert (success);
 
-			e_cal_component_free_id (id);
+			e_cal_component_id_free (id);
 
 			interval_data_free (interval);
 			intervals = g_slist_delete_link (intervals, l1);

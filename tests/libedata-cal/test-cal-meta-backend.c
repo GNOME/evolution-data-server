@@ -125,7 +125,7 @@ ecmb_test_gather_ids (va_list args)
 	const gchar *uid, *rid;
 
 	expects = g_hash_table_new_full ((GHashFunc) e_cal_component_id_hash, (GEqualFunc) e_cal_component_id_equal,
-		(GDestroyNotify) e_cal_component_free_id, NULL);
+		e_cal_component_id_free, NULL);
 
 	uid = va_arg (args, const gchar *);
 	while (uid) {
@@ -211,7 +211,7 @@ ecmb_test_cache_contains (ECalCache *cal_cache,
 
 		g_assert_nonnull (id);
 
-		if (e_cal_cache_contains (cal_cache, id->uid, id->rid, E_CACHE_EXCLUDE_DELETED))
+		if (e_cal_cache_contains (cal_cache, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), E_CACHE_EXCLUDE_DELETED))
 			found++;
 	}
 
@@ -2196,7 +2196,7 @@ test_remove_objects (ECalMetaBackend *meta_backend)
 	g_assert_null (old_components);
 	g_assert_null (new_components);
 	g_clear_error (&error);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 
 	/* Remove existing event */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("event-1", NULL));
@@ -2217,7 +2217,7 @@ test_remove_objects (ECalMetaBackend *meta_backend)
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free (new_components);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	old_components = NULL;
 	new_components = NULL;
 
@@ -2248,7 +2248,7 @@ test_remove_objects (ECalMetaBackend *meta_backend)
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free_full (new_components, g_object_unref);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	old_components = NULL;
 	new_components = NULL;
 
@@ -2265,7 +2265,7 @@ test_remove_objects (ECalMetaBackend *meta_backend)
 	g_assert_null (old_components);
 	g_assert_null (new_components);
 	g_clear_error (&error);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 
 	/* Remove non-existing detached instance with THIS - changes master object */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("event-6", "20170227T134900"));
@@ -2290,7 +2290,7 @@ test_remove_objects (ECalMetaBackend *meta_backend)
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free_full (new_components, g_object_unref);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	old_components = NULL;
 	new_components = NULL;
 
@@ -2321,7 +2321,7 @@ test_remove_objects (ECalMetaBackend *meta_backend)
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free (new_components);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	old_components = NULL;
 	new_components = NULL;
 
@@ -2440,7 +2440,7 @@ test_receive_objects (ECalMetaBackend *meta_backend)
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free (new_components);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	old_components = NULL;
 	new_components = NULL;
 
@@ -2604,7 +2604,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free (new_components);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	old_components = NULL;
 	new_components = NULL;
 
@@ -2686,7 +2686,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free_full (new_components, g_object_unref);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	old_components = NULL;
 	new_components = NULL;
 
@@ -2759,7 +2759,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free (new_components);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	old_components = NULL;
 	new_components = NULL;
 
@@ -2819,7 +2819,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free (new_components);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	old_components = NULL;
 	new_components = NULL;
 
@@ -2854,7 +2854,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free (new_components);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	old_components = NULL;
 	new_components = NULL;
 
@@ -2903,7 +2903,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free (new_components);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	old_components = NULL;
 	new_components = NULL;
 
@@ -2950,7 +2950,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free (new_components);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	old_components = NULL;
 	new_components = NULL;
 
@@ -2999,7 +2999,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free (new_components);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	old_components = NULL;
 	new_components = NULL;
 
@@ -3043,7 +3043,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free (new_components);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	old_components = NULL;
 	new_components = NULL;
 
@@ -3094,7 +3094,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free (new_components);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	old_components = NULL;
 	new_components = NULL;
 
@@ -3178,7 +3178,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free_full (new_components, g_object_unref);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	old_components = NULL;
 	new_components = NULL;
 
@@ -3214,7 +3214,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free (new_components);
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	old_components = NULL;
 	new_components = NULL;
 

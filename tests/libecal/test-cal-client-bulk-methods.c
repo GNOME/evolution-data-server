@@ -81,9 +81,7 @@ uid_slist_to_ecalcomponentid_slist (GSList *uids)
 	const GSList *l;
 
 	for (l = uids; l; l = l->next) {
-		ECalComponentId *id = g_new0 (ECalComponentId, 1);
-		id->uid = g_strdup (l->data);
-		ids = g_slist_append (ids, id);
+		ids = g_slist_append (ids, e_cal_component_id_new (l->data, NULL));
 	}
 
 	return ids;
@@ -166,7 +164,7 @@ test_bulk_methods (ECalClient *cal_client,
 	if (!e_cal_client_remove_objects_sync (cal_client, ids, E_CAL_OBJ_MOD_ALL, NULL, &error))
 		g_error ("remove objects sync: %s", error->message);
 
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 
 	/* Check that the objects don't exist anymore */
 	check_removed (cal_client, uids);

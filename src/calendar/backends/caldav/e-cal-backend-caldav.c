@@ -1679,20 +1679,20 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 						    GCancellable *cancellable,
 						    GError **error)
 {
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 	ECalComponent *comp;
-	ECalComponentDateTime dt;
-	ECalComponentOrganizer organizer = { NULL };
+	ECalComponentDateTime *dt;
+	ECalComponentOrganizer *organizer;
 	ESourceAuthentication *auth_extension;
 	ESource *source;
 	EWebDAVSession *webdav;
-	struct icaltimetype dtvalue;
-	icaltimezone *utc;
+	ICalTimetype *dtvalue;
+	ICalTimezone *utc;
 	gchar *str;
 	GSList *link;
-	GSList *attendees = NULL, *to_free = NULL;
+	GSList *attendees = NULL;
 	const gchar *extension_name;
-	gchar *usermail;
+	gchar *usermail, *organizer_value;
 	GByteArray *response = NULL;
 	GError *local_error = NULL;
 
@@ -1716,18 +1716,18 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 	e_cal_component_set_uid (comp, str);
 	g_free (str);
 
-	utc = icaltimezone_get_utc_timezone ();
-	dt.value = &dtvalue;
-	dt.tzid = icaltimezone_get_tzid (utc);
+	utc = i_cal_timezone_get_utc_timezone ();
+	dt = e_cal_component_datetime_new_take (i_cal_time_current_time_with_zone (utc), i_cal_timezone_get_tzid (utc));
 
-	dtvalue = icaltime_current_time_with_zone (utc);
-	e_cal_component_set_dtstamp (comp, &dtvalue);
+	e_cal_component_set_dtstamp (comp, e_cal_component_datetime_get_value (dt));
 
-	dtvalue = icaltime_from_timet_with_zone (start, FALSE, utc);
-	e_cal_component_set_dtstart (comp, &dt);
+	e_cal_component_datetime_take_value (dt, i_cal_time_from_timet_with_zone (start, FALSE, utc));
+	e_cal_component_set_dtstart (comp, dt);
 
-	dtvalue = icaltime_from_timet_with_zone (end, FALSE, utc);
-	e_cal_component_set_dtend (comp, &dt);
+	e_cal_component_datetime_take_value (dt, i_cal_time_from_timet_with_zone (end, FALSE, utc));
+	e_cal_component_set_dtend (comp, dt);
+
+	e_cal_component_datetime_free (dt);
 
 	usermail = ecb_caldav_get_usermail (cbdav);
 	if (usermail != NULL && *usermail == '\0') {
@@ -1742,9 +1742,13 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 	if (!usermail)
 		usermail = e_source_authentication_dup_user (auth_extension);
 
-	organizer.value = g_strconcat ("mailto:", usermail, NULL);
-	e_cal_component_set_organizer (comp, &organizer);
-	g_free ((gchar *) organizer.value);
+	organizer_value = g_strconcat ("mailto:", usermail, NULL);
+	organizer = e_cal_component_organizer_new ();
+	e_cal_component_organizer_set_value (organizer, organizer_value);
+	g_free (organizer_value);
+
+	e_cal_component_set_organizer (comp, organizer);
+	e_cal_component_organizer_free (organizer);
 
 	g_free (usermail);
 
@@ -1752,32 +1756,32 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 		ECalComponentAttendee *ca;
 		gchar *temp = g_strconcat ("mailto:", (const gchar *) link->data, NULL);
 
-		ca = g_new0 (ECalComponentAttendee, 1);
+		ca = e_cal_component_attendee_new ();
 
-		ca->value = temp;
-		ca->cutype = ICAL_CUTYPE_INDIVIDUAL;
-		ca->status = ICAL_PARTSTAT_NEEDSACTION;
-		ca->role = ICAL_ROLE_CHAIR;
+		e_cal_component_attendee_set_value (ca, temp);
+		e_cal_component_attendee_set_cutype (ca, I_CAL_CUTYPE_INDIVIDUAL);
+		e_cal_component_attendee_set_partstat (ca, I_CAL_PARTSTAT_NEEDSACTION);
+		e_cal_component_attendee_set_role (ca, I_CAL_ROLE_CHAIR);
 
-		to_free = g_slist_prepend (to_free, temp);
+		g_free (temp);
+
 		attendees = g_slist_append (attendees, ca);
 	}
 
-	e_cal_component_set_attendee_list (comp, attendees);
+	e_cal_component_set_attendees (comp, attendees);
 
-	g_slist_free_full (attendees, g_free);
-	g_slist_free_full (to_free, g_free);
+	g_slist_free_full (attendees, e_cal_component_attendee_free);
 
 	e_cal_component_abort_sequence (comp);
 
 	/* put the free/busy request to a VCALENDAR */
-	icalcomp = e_cal_util_new_top_level ();
-	icalcomponent_set_method (icalcomp, ICAL_METHOD_REQUEST);
-	icalcomponent_add_component (icalcomp, icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp)));
+	icomp = e_cal_util_new_top_level ();
+	i_cal_component_set_method (icomp, ICAL_METHOD_REQUEST);
+	i_cal_component_take_component (icomp, i_cal_component_new_clone (e_cal_component_get_icalcomponent (comp)));
 
-	str = icalcomponent_as_ical_string_r (icalcomp);
+	str = i_cal_component_as_ical_string_r (icomp);
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (icomp);
 	g_object_unref (comp);
 
 	webdav = ecb_caldav_ref_session (cbdav);

@@ -2189,7 +2189,7 @@ e_reminder_watcher_class_init (EReminderWatcherClass *klass)
 	g_object_class_install_property (
 		object_class,
 		PROP_DEFAULT_ZONE,
-		g_param_spec_boxed (
+		g_param_spec_object (
 			"default-zone",
 			"Default Zone",
 			"The default time zone",
@@ -2252,7 +2252,7 @@ e_reminder_watcher_class_init (EReminderWatcherClass *klass)
 	/**
 	 * EReminderWatcher::triggered:
 	 * @watcher: an #EReminderWatcher
-	 * @reminders: (element-type EReminderData): a #GSList of #EReminderData
+	 * @reminders: (type GSList) (element-type EReminderData): a #GSList of #EReminderData
 	 * @snoozed: %TRUE, when the @reminders had been snoozed, %FALSE otherwise
 	 *
 	 * Signal is emitted when any reminder is either overdue or triggered.
@@ -2356,11 +2356,11 @@ e_reminder_watcher_get_registry (EReminderWatcher *watcher)
 }
 
 /**
- * e_reminders_widget_ref_opened_client:
+ * e_reminder_watcher_ref_opened_client:
  * @watcher: an #EReminderWatcher
  * @source_uid: an #ESource UID of the calendar to return
  *
- * Returns: (nullable) (transfer full): a referenced #ECalClient for the @source_uid,
+ * Returns: (transfer full) (nullable): a referenced #ECalClient for the @source_uid,
  *    if any such is opened; %NULL otherwise.
  *
  * Since: 3.30

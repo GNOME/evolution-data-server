@@ -865,7 +865,8 @@ get_attachments_cb (ICalComponent *icalcomp,
  * e_cal_component_get_attachments:
  * @comp: A calendar component object
  *
- * Queries the attachment properties of the calendar component object.
+ * Queries the attachment properties as #ICalAttach objects of the calendar
+ * component object. Changes on these objects are directly affecting the component.
  * Free the returned #GSList with g_slist_free_full (slist, g_object_unref);,
  * when no longer needed.
  *

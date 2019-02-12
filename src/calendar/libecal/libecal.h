@@ -20,6 +20,8 @@
 
 #define __LIBECAL_H_INSIDE__
 
+#define LIBICAL_GLIB_UNSTABLE_API 1
+
 #include <libical-glib/libical-glib.h>
 #include <libedataserver/libedataserver.h>
 
@@ -48,7 +50,8 @@
 #include <libecal/e-reminder-watcher.h>
 #include <libecal/e-timezone-cache.h>
 
+#undef LIBICAL_GLIB_UNSTABLE_API
+
 #undef __LIBECAL_H_INSIDE__
 
 #endif /* LIBECAL_H */
-

@@ -31,7 +31,7 @@ extract_id_from_component (ECalComponent *component)
 
 	id = e_cal_component_get_id (component);
 	g_assert (id != NULL);
-	g_assert (id->uid != NULL);
+	g_assert (e_cal_component_id_get_uid (id) != NULL);
 
 	return id;
 }
@@ -80,10 +80,10 @@ test_get_one (ECalCache *cal_cache,
 
 		id = extract_id_from_component (component);
 
-		g_assert_cmpstr (id->uid, ==, uid);
-		g_assert_cmpstr (id->rid, ==, rid && *rid ? rid : NULL);
+		g_assert_cmpstr (e_cal_component_id_get_uid (id), ==, uid);
+		g_assert_cmpstr (e_cal_component_id_get_rid (id), ==, rid && *rid ? rid : NULL);
 
-		e_cal_component_free_id (id);
+		e_cal_component_id_free (id);
 		g_object_unref (component);
 	}
 
@@ -101,10 +101,10 @@ test_get_one (ECalCache *cal_cache,
 
 		id = extract_id_from_string (icalstring);
 
-		g_assert_cmpstr (id->uid, ==, uid);
-		g_assert_cmpstr (id->rid, ==, rid && *rid ? rid : NULL);
+		g_assert_cmpstr (e_cal_component_id_get_uid (id), ==, uid);
+		g_assert_cmpstr (e_cal_component_id_get_rid (id), ==, rid && *rid ? rid : NULL);
 
-		e_cal_component_free_id (id);
+		e_cal_component_id_free (id);
 		g_free (icalstring);
 	}
 }
@@ -140,7 +140,7 @@ test_get_all (ECalCache *cal_cache,
 	GError *error = NULL;
 
 	expects = g_hash_table_new_full ((GHashFunc) e_cal_component_id_hash, (GEqualFunc) e_cal_component_id_equal,
-		(GDestroyNotify) e_cal_component_free_id, NULL);
+		(GDestroyNotify) e_cal_component_id_free, NULL);
 
 	va_start (va, uid);
 	tmp = va_arg (va, const gchar *);
@@ -173,10 +173,10 @@ test_get_all (ECalCache *cal_cache,
 		for (link = items; link; link = g_slist_next (link)) {
 			id = extract_id_from_component (link->data);
 
-			g_assert_cmpstr (id->uid, ==, uid);
+			g_assert_cmpstr (e_cal_component_id_get_uid (id), ==, uid);
 			g_assert (g_hash_table_contains (expects, id));
 
-			e_cal_component_free_id (id);
+			e_cal_component_id_free (id);
 		}
 
 		g_slist_free_full (items, g_object_unref);
@@ -201,10 +201,10 @@ test_get_all (ECalCache *cal_cache,
 		for (link = items; link; link = g_slist_next (link)) {
 			id = extract_id_from_string (link->data);
 
-			g_assert_cmpstr (id->uid, ==, uid);
+			g_assert_cmpstr (e_cal_component_id_get_uid (id), ==, uid);
 			g_assert (g_hash_table_contains (expects, id));
 
-			e_cal_component_free_id (id);
+			e_cal_component_id_free (id);
 		}
 
 		g_slist_free_full (items, g_free);

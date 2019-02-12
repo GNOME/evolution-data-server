@@ -158,7 +158,7 @@ async_context_free (AsyncContext *async_context)
 
 	g_slist_free_full (
 		async_context->compid_list,
-		(GDestroyNotify) e_cal_component_free_id);
+		(GDestroyNotify) e_cal_component_id_free);
 
 	g_slist_free_full (
 		async_context->string_list,
@@ -3164,7 +3164,7 @@ e_cal_backend_remove_objects_finish (ECalBackend *backend,
 		e_cal_backend_notify_component_removed (
 			backend, component_id, old_component, new_component);
 
-		e_cal_component_free_id (component_id);
+		e_cal_component_id_free (component_id);
 		g_clear_object (&old_component);
 		g_clear_object (&new_component);
 	}
@@ -4408,12 +4408,11 @@ match_view_and_notify_component (EDataCalView *view,
 	else if (new_match)
 		e_data_cal_view_notify_components_added_1 (view, new_component);
 	else if (old_match) {
-
 		ECalComponentId *id = e_cal_component_get_id (old_component);
 
 		e_data_cal_view_notify_objects_removed_1 (view, id);
 
-		e_cal_component_free_id (id);
+		e_cal_component_id_free (id);
 	}
 }
 

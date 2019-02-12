@@ -508,7 +508,7 @@ e_intervaltree_insert (EIntervalTree *tree,
 
 	g_rec_mutex_lock (&tree->priv->mutex);
 
-	e_cal_component_get_uid (comp, &uid);
+	uid = e_cal_component_get_uid (comp);
 	rid = e_cal_component_get_recurid_as_string (comp);
 	e_intervaltree_remove (tree, uid, rid);
 

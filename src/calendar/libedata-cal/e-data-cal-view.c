@@ -139,25 +139,6 @@ str_ic_equal (gconstpointer a,
 	return stra[ii] == strb[ii];
 }
 
-static guint
-id_hash (gconstpointer key)
-{
-	const ECalComponentId *id = key;
-
-	return g_str_hash (id->uid) ^ (id->rid ? g_str_hash (id->rid) : 0);
-}
-
-static gboolean
-id_equal (gconstpointer a,
-          gconstpointer b)
-{
-	const ECalComponentId *id_a = a;
-	const ECalComponentId *id_b = b;
-
-	return (g_strcmp0 (id_a->uid, id_b->uid) == 0) &&
-		(g_strcmp0 (id_a->rid, id_b->rid) == 0);
-}
-
 static void
 reset_array (GArray *array)
 {
@@ -598,9 +579,9 @@ e_data_cal_view_init (EDataCalView *view)
 		TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
 
 	view->priv->ids = g_hash_table_new_full (
-		(GHashFunc) id_hash,
-		(GEqualFunc) id_equal,
-		(GDestroyNotify) e_cal_component_free_id,
+		(GHashFunc) e_cal_component_id_hash,
+		(GEqualFunc) e_cal_component_id_equal,
+		(GDestroyNotify) e_cal_component_id_free,
 		(GDestroyNotify) NULL);
 
 	g_mutex_init (&view->priv->pending_mutex);
@@ -784,15 +765,15 @@ notify_remove (EDataCalView *view,
 		send_pending_removes (view);
 
 	/* store ECalComponentId as <uid>[\n<rid>] (matches D-Bus API) */
-	if (id->uid) {
-		uid = e_util_utf8_make_valid (id->uid);
+	if (e_cal_component_id_get_uid (id)) {
+		uid = e_util_utf8_make_valid (e_cal_component_id_get_uid (id));
 		uid_len = strlen (uid);
 	} else {
 		uid = NULL;
 		uid_len = 0;
 	}
-	if (id->rid) {
-		rid = e_util_utf8_make_valid (id->rid);
+	if (e_cal_component_id_get_rid (id)) {
+		rid = e_util_utf8_make_valid (e_cal_component_id_get_rid (id));
 		rid_len = strlen (rid);
 	} else {
 		rid = NULL;

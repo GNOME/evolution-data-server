@@ -1109,29 +1109,17 @@ data_cal_handle_remove_objects_cb (EDBusCalendar *dbus_interface,
 
 	n_children = g_variant_n_children (in_uid_rid_array);
 	for (ii = 0; ii < n_children; ii++) {
-		ECalComponentId *id;
+		gchar *uid = NULL, *rid = NULL;
 
-		/* e_cal_component_free_id() uses g_free(),
-		 * not g_slice_free().  Therefore allocate
-		 * with g_malloc(), not g_slice_new(). */
-		id = g_malloc0 (sizeof (ECalComponentId));
+		g_variant_get_child (in_uid_rid_array, ii, "(ss)", &uid, &rid);
 
-		g_variant_get_child (
-			in_uid_rid_array, ii, "(ss)", &id->uid, &id->rid);
-
-		if (id->uid != NULL && *id->uid == '\0') {
-			e_cal_component_free_id (id);
+		if (!uid || !*uid) {
+			g_free (uid);
+			g_free (rid);
 			continue;
 		}
 
-		/* Recurrence ID is optional.  Its omission is denoted
-		 * via D-Bus by an empty string.  Convert it to NULL. */
-		if (id->rid != NULL && *id->rid == '\0') {
-			g_free (id->rid);
-			id->rid = NULL;
-		}
-
-		g_queue_push_tail (&component_ids, id);
+		g_queue_push_tail (&component_ids, e_cal_component_id_new_take (uid, rid));
 	}
 
 	async_context = async_context_new (data_cal, invocation);
@@ -1144,7 +1132,7 @@ data_cal_handle_remove_objects_cb (EDBusCalendar *dbus_interface,
 		async_context);
 
 	while (!g_queue_is_empty (&component_ids))
-		e_cal_component_free_id (g_queue_pop_head (&component_ids));
+		e_cal_component_id_free (g_queue_pop_head (&component_ids));
 
 	g_object_unref (backend);
 

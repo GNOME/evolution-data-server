@@ -112,7 +112,7 @@ install(FILES ${HEADERS}
 )
 
 set(gir_sources ${SOURCES} ${HEADERS})
-set(gir_identifies_prefixes ECal)
+set(gir_identifies_prefixes ECal E)
 set(gir_includes GObject-2.0 Gio-2.0 Soup-2.4 libxml2-2.0 ICalGLib-3.0)
 set(gir_cflags
 	-DLIBECAL_COMPILATION
@@ -121,7 +121,10 @@ set(gir_cflags
 )
 set(gir_libdirs)
 set(gir_libs ecal)
-set(gir_deps)
+set(gir_deps
+	${CMAKE_BINARY_DIR}/src/camel/Camel-${API_VERSION}.gir
+	${CMAKE_BINARY_DIR}/src/libedataserver/EDataServer-${API_VERSION}.gir
+)
 
 gir_add_introspection_simple(
 	ECal

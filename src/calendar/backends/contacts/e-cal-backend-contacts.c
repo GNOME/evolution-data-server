@@ -461,7 +461,7 @@ contact_record_free (ContactRecord *cr)
 		id = e_cal_component_get_id (cr->comp_birthday);
 		e_cal_backend_notify_component_removed (E_CAL_BACKEND (cr->cbc), id, cr->comp_birthday, NULL);
 
-		e_cal_component_free_id (id);
+		e_cal_component_id_free (id);
 		g_object_unref (G_OBJECT (cr->comp_birthday));
 	}
 
@@ -471,7 +471,7 @@ contact_record_free (ContactRecord *cr)
 
 		e_cal_backend_notify_component_removed (E_CAL_BACKEND (cr->cbc), id, cr->comp_anniversary, NULL);
 
-		e_cal_component_free_id (id);
+		e_cal_component_id_free (id);
 		g_object_unref (G_OBJECT (cr->comp_anniversary));
 	}
 
@@ -805,8 +805,9 @@ setup_alarm (ECalBackendContacts *cbc,
              ECalComponent *comp)
 {
 	ECalComponentAlarm *alarm;
-	ECalComponentAlarmTrigger trigger;
-	ECalComponentText summary;
+	ECalComponentAlarmTrigger *trigger;
+	ECalComponentText *summary;
+	ICalDurationType *duration;
 
 	g_return_if_fail (cbc != NULL);
 
@@ -847,27 +848,24 @@ setup_alarm (ECalBackendContacts *cbc,
 		return;
 
 	alarm = e_cal_component_alarm_new ();
-	e_cal_component_get_summary (comp, &summary);
-	e_cal_component_alarm_set_description (alarm, &summary);
+	summary = e_cal_component_get_summary (comp);
+	e_cal_component_alarm_take_description (alarm, summary);
 	e_cal_component_alarm_set_action (alarm, E_CAL_COMPONENT_ALARM_DISPLAY);
 
-	trigger.type = E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START;
-
-	memset (&trigger.u.rel_duration, 0, sizeof (trigger.u.rel_duration));
-
-	trigger.u.rel_duration.is_neg = TRUE;
+	duration = i_cal_duration_type_null_duration ();
+	i_cal_duration_type_set_is_neg (duration, TRUE);
 
 	switch (cbc->priv->alarm_units) {
 	case CAL_MINUTES:
-		trigger.u.rel_duration.minutes = cbc->priv->alarm_interval;
+		i_cal_duration_type_set_minutes (duration, cbc->priv->alarm_interval);
 		break;
 
 	case CAL_HOURS:
-		trigger.u.rel_duration.hours = cbc->priv->alarm_interval;
+		i_cal_duration_type_set_hours (duration, cbc->priv->alarm_interval);
 		break;
 
 	case CAL_DAYS:
-		trigger.u.rel_duration.days = cbc->priv->alarm_interval;
+		i_cal_duration_type_set_days (duration, cbc->priv->alarm_interval);
 		break;
 
 	default:
@@ -876,7 +874,11 @@ setup_alarm (ECalBackendContacts *cbc,
 		return;
 	}
 
-	e_cal_component_alarm_set_trigger (alarm, trigger);
+	trigger = e_cal_component_alarm_trigger_new_relative (E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START, duration);
+
+	g_object_unref (duration);
+
+	e_cal_component_alarm_take_trigger (alarm, trigger);
 	e_cal_component_add_alarm (comp, alarm);
 	e_cal_component_alarm_free (alarm);
 }

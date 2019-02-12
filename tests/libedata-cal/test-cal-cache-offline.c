@@ -79,9 +79,9 @@ test_check_search_result (const GSList *list,
 			const ECalComponentId *id = link->data;
 
 			g_assert (id != NULL);
-			g_assert (id->uid != NULL);
+			g_assert (e_cal_component_id_get_uid (id) != NULL);
 
-			uid = id->uid;
+			uid = e_cal_component_id_get_uid (id);
 		}
 
 		g_assert_nonnull (uid);
@@ -143,7 +143,7 @@ test_basic_search (TCUFixture *fixture,
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (list), ==, expect_total);
 	test_check_search_result (list, flags | EXPECT_EVENT_2);
-	g_slist_free_full (list, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (list, e_cal_component_id_free);
 	list = NULL;
 
 	/* Only Party, aka event-5, as an in-summary query */
@@ -160,7 +160,7 @@ test_basic_search (TCUFixture *fixture,
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (list), ==, 1);
 	test_check_search_result (list, EXPECT_DEFAULT);
-	g_slist_free_full (list, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (list, e_cal_component_id_free);
 	list = NULL;
 
 	/* Only Party, aka event-5, as a non-summarised query */
@@ -177,7 +177,7 @@ test_basic_search (TCUFixture *fixture,
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (list), ==, 1);
 	test_check_search_result (list, EXPECT_DEFAULT);
-	g_slist_free_full (list, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (list, e_cal_component_id_free);
 	list = NULL;
 
 	/* Invalid expression */
@@ -392,9 +392,9 @@ test_offline_basics (TCUFixture *fixture,
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (ids), ==, 1);
 	g_assert_nonnull (ids->data);
-	g_assert_cmpstr (((ECalComponentId *) ids->data)->uid, ==, uid);
+	g_assert_cmpstr (e_cal_component_id_get_uid (ids->data), ==, uid);
 
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	ids = NULL;
 
 	icalcomponent_set_summary (e_cal_component_get_icalcomponent (component), "summ-0");
@@ -470,9 +470,9 @@ test_offline_basics (TCUFixture *fixture,
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (ids), ==, 1);
 	g_assert_nonnull (ids->data);
-	g_assert_cmpstr (((ECalComponentId *) ids->data)->uid, ==, uid);
+	g_assert_cmpstr (e_cal_component_id_get_uid (ids->data), ==, uid);
 
-	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (ids, e_cal_component_id_free);
 	ids = NULL;
 
 	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->cal_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);

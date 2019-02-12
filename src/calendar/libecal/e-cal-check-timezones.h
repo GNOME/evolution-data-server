@@ -33,7 +33,7 @@ G_BEGIN_DECLS
 
 gboolean	e_cal_client_check_timezones_sync
 						(ICalComponent *vcalendar,
-						 GSList *comps, /* ICalComponent * */
+						 GSList *icalcomps, /* ICalComponent * */
 						 ECalRecurResolveTimezoneCb tzlookup,
 						 gpointer tzlookup_data,
 						 GCancellable *cancellable,
