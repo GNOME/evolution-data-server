@@ -699,19 +699,20 @@ contacts_removed_cb (EBookClientView *book_view,
 }
 
 /************************************************************************************/
-static struct icaltimetype
+static ICalTimetype *
 cdate_to_icaltime (EContactDate *cdate)
 {
-	struct icaltimetype ret = icaltime_null_time ();
+	ICalTimetype *ret = i_cal_time_null_time ();
 
-	ret.year = cdate->year;
-	ret.month = cdate->month;
-	ret.day = cdate->day;
-	ret.is_date = TRUE;
-	ret.zone = NULL;
-	ret.is_daylight = FALSE;
-
-	ret.hour = ret.minute = ret.second = 0;
+	i_cal_timetype_set_year (ret, cdate->year);
+	i_cal_timetype_set_month (ret, cdate->month);
+	i_cal_timetype_set_day (ret, cdate->day);
+	i_cal_timetype_set_hour (ret, 0);
+	i_cal_timetype_set_minute (ret, 0);
+	i_cal_timetype_set_second (ret, 0);
+	i_cal_timetype_set_zone (ret, NULL);
+	i_cal_timetype_set_is_daylight (ret, FALSE);
+	i_cal_timetype_set_is_date (ret, TRUE);
 
 	return ret;
 }
@@ -894,32 +895,28 @@ create_component (ECalBackendContacts *cbc,
                   EContactDate *cdate,
                   const gchar *summary)
 {
-	ECalComponent             *cal_comp;
-	ECalComponentText          comp_summary;
-	icalcomponent             *ical_comp;
-	icalproperty		  *prop;
-	struct icaltimetype        itt;
-	ECalComponentDateTime      dt;
-	struct icalrecurrencetype  r;
-	gchar			  *since_year;
-	GSList recur_list;
+	ECalComponent *cal_comp;
+	ECalComponentText *comp_summary;
+	ECalComponentDateTime *dt;
+	ICalComponent *icomp;
+	ICalTimetype *itt;
+	ICalRecurrenceType *rt;
+	gchar *since_year;
+	GSList *recur_list;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbc), NULL);
 
 	if (!cdate)
 		return NULL;
 
-	ical_comp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
+	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
 
 	since_year = g_strdup_printf ("%04d", cdate->year);
-	prop = icalproperty_new_x (since_year);
-	icalproperty_set_x_name (prop, "X-EVOLUTION-SINCE-YEAR");
-	icalcomponent_add_property (ical_comp, prop);
+	e_cal_util_component_set_x_property (icomp, "X-EVOLUTION-SINCE-YEAR", since_year);
 	g_free (since_year);
 
 	/* Create the event object */
-	cal_comp = e_cal_component_new ();
-	e_cal_component_set_icalcomponent (cal_comp, ical_comp);
+	cal_comp = e_cal_component_new_from_icalcomponent (icomp);
 
 	/* Set uid */
 	d (g_message ("Creating UID: %s", uid));
@@ -927,29 +924,29 @@ create_component (ECalBackendContacts *cbc,
 
 	/* Set all-day event's date from contact data */
 	itt = cdate_to_icaltime (cdate);
-	dt.value = &itt;
-	dt.tzid = NULL;
-	e_cal_component_set_dtstart (cal_comp, &dt);
+	dt = e_cal_component_datetime_new_take (itt, NULL);
+	e_cal_component_set_dtstart (cal_comp, dt);
+	e_cal_component_datetime_free (dt);
 
 	itt = cdate_to_icaltime (cdate);
-	icaltime_adjust (&itt, 1, 0, 0, 0);
-	dt.value = &itt;
-	dt.tzid = NULL;
 	/* We have to add 1 day to DTEND, as it is not inclusive. */
-	e_cal_component_set_dtend (cal_comp, &dt);
+	i_cal_time_adjust (itt, 1, 0, 0, 0);
+	dt = e_cal_component_datetime_new_take (itt, NULL);
+	e_cal_component_set_dtend (cal_comp, dt);
+	e_cal_component_datetime_free (dt);
 
 	/* Create yearly recurrence */
-	icalrecurrencetype_clear (&r);
-	r.freq = ICAL_YEARLY_RECURRENCE;
-	r.interval = 1;
-	recur_list.data = &r;
-	recur_list.next = NULL;
-	e_cal_component_set_rrule_list (cal_comp, &recur_list);
+	rt = i_cal_recurrence_type_new ();
+	i_cal_recurrence_type_set_freq (rt, I_CAL_YEARLY_RECURRENCE);
+	i_cal_recurrence_type_set_interval (rt, 1);
+	recur_list = g_slist_prepend (NULL, rt);
+	e_cal_component_set_rrules (cal_comp, recur_list);
+	g_slist_free_full (recur_list, g_object_unref);
 
 	/* Create summary */
-	comp_summary.value = summary;
-	comp_summary.altrep = NULL;
-	e_cal_component_set_summary (cal_comp, &comp_summary);
+	comp_summary = e_cal_component_text_new (summary, NULL);
+	e_cal_component_set_summary (cal_comp, comp_summary);
+	e_cal_component_text_free (comp_summary);
 
 	/* Set category and visibility */
 	if (g_str_has_suffix (uid, ANNIVERSARY_UID_EXT))
@@ -1134,32 +1131,22 @@ e_cal_backend_contacts_get_free_busy (ECalBackendSync *backend,
 {
 	/* Birthdays/anniversaries don't count as busy time */
 
-	icalcomponent *vfb = icalcomponent_new_vfreebusy ();
-	icaltimezone *utc_zone = icaltimezone_get_utc_timezone ();
+	ICalComponent *vfb = i_cal_component_new_vfreebusy ();
+	ICalTimezone *utc_zone = i_cal_timezone_get_utc_timezone ();
+	ICalTimetype *itt;
 	gchar *calobj;
 
-#if 0
-	icalproperty *prop;
-	icalparameter *param;
+	itt = i_cal_time_from_timet_with_zone (start, FALSE, utc_zone);
+	i_cal_component_set_dtstart (vfb, itt);
+	g_object_unref (itt);
 
-	prop = icalproperty_new_organizer (address);
-	if (prop != NULL && cn != NULL) {
-		param = icalparameter_new_cn (cn);
-		icalproperty_add_parameter (prop, param);
-	}
-	if (prop != NULL)
-		icalcomponent_add_property (vfb, prop);
-#endif
+	itt = i_cal_time_from_timet_with_zone (end, FALSE, utc_zone);
+	i_cal_component_set_dtend (vfb, itt);
+	g_object_unref (itt);
 
-	icalcomponent_set_dtstart (vfb, icaltime_from_timet_with_zone (start, FALSE, utc_zone));
-	icalcomponent_set_dtend (vfb, icaltime_from_timet_with_zone (end, FALSE, utc_zone));
-
-	calobj = icalcomponent_as_ical_string_r (vfb);
+	calobj = i_cal_component_as_ical_string_r (vfb);
 	*freebusy = g_slist_append (NULL, calobj);
-	icalcomponent_free (vfb);
-
-	/* WRITE ME */
-	/* Success */
+	g_object_unref (vfb);
 }
 
 static void
@@ -1226,24 +1213,27 @@ e_cal_backend_contacts_add_timezone (ECalBackendSync *backend,
                                      const gchar *tzobj,
                                      GError **error)
 {
-	icalcomponent *tz_comp;
-	icaltimezone *zone;
+	ICalComponent *tz_comp;
+	ICalTimezone *zone;
 
-	tz_comp = icalparser_parse_string (tzobj);
+	tz_comp = i_cal_parser_parse_string (tzobj);
 	if (!tz_comp) {
 		g_propagate_error (error, EDC_ERROR (InvalidObject));
 		return;
 	}
 
-	if (icalcomponent_isa (tz_comp) != ICAL_VTIMEZONE_COMPONENT) {
+	if (i_cal_component_isa (tz_comp) != I_CAL_VTIMEZONE_COMPONENT) {
+		g_object_unref (tz_comp);
 		g_propagate_error (error, EDC_ERROR (InvalidObject));
 		return;
 	}
 
-	zone = icaltimezone_new ();
-	icaltimezone_set_component (zone, tz_comp);
-	e_timezone_cache_add_timezone (E_TIMEZONE_CACHE (backend), zone);
-	icaltimezone_free (zone, TRUE);
+	zone = i_cal_timezone_new ();
+	if (i_cal_timezone_set_component (zone, tz_comp))
+		e_timezone_cache_add_timezone (E_TIMEZONE_CACHE (backend), zone);
+
+	g_object_unref (zone);
+	g_object_unref (tz_comp);
 }
 
 static void
