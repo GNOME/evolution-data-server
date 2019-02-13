@@ -30,48 +30,53 @@ static ETestServerClosure cal_closure_async =
 	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS, FALSE, NULL, TRUE };
 
 static void
-add_attach (icalcomponent *icalcomp,
+add_attach (ICalComponent *icomp,
             const gchar *uri)
 {
-	gsize buf_size;
 	gchar *buf;
-	icalproperty *prop;
-	icalattach *attach;
+	ICalProperty *prop;
+	ICalAttach *attach;
 
-	g_return_if_fail (icalcomp != NULL);
+	g_return_if_fail (icomp != NULL);
 	g_return_if_fail (uri != NULL);
 
-	buf_size = 2 * strlen (uri);
-	buf = g_malloc0 (buf_size);
-	icalvalue_encode_ical_string (uri, buf, buf_size);
-	attach = icalattach_new_from_url (uri);
-	prop = icalproperty_new_attach (attach);
-	icalcomponent_add_property (icalcomp, prop);
-	icalattach_unref (attach);
+	buf = i_cal_value_encode_ical_string (uri);
+	attach = i_cal_attach_new_from_url (buf);
+	prop = i_cal_property_new_attach (attach);
+	i_cal_component_take_property (icomp, prop);
+	g_object_unref (attach);
 	g_free (buf);
 }
 
 static const gchar *
 setup_cal (ECalClient *cal_client)
 {
-	icalcomponent *icalcomp;
-	struct icaltimetype now;
+	ICalComponent *icomp;
+	ICalTimetype *dtstart, *dtend;
 	gchar *uid = NULL;
 	GError *error = NULL;
 
-	now = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-	icalcomp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
-	icalcomponent_set_summary (icalcomp, "Test event summary");
-	icalcomponent_set_dtstart (icalcomp, now);
-	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet_with_zone (icaltime_as_timet (now) + 60 * 60 * 60, 0, NULL));
-	add_attach (icalcomp, ATTACH1);
-	add_attach (icalcomp, ATTACH2);
-	add_attach (icalcomp, ATTACH3);
+	dtstart = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+	dtend = i_cal_timetype_new_clone (dtstart);
+	i_cal_time_adjust (dtend, 0, 1, 0, 0);
 
-	if (!e_cal_client_create_object_sync (cal_client, icalcomp, &uid, NULL, &error))
+	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
+	i_cal_component_set_summary (icomp, "Test event summary");
+	i_cal_component_set_dtstart (icomp, dtstart);
+	i_cal_component_set_dtend (icomp, dtend);
+
+	g_clear_object (&dtstart);
+	g_clear_object (&dtend);
+
+	add_attach (icomp, ATTACH1);
+	add_attach (icomp, ATTACH2);
+	add_attach (icomp, ATTACH3);
+
+	if (!e_cal_client_create_object_sync (cal_client, icomp, &uid, NULL, &error))
 		g_error ("create object sync: %s", error->message);
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (icomp);
+
 	g_object_set_data_full (G_OBJECT (cal_client), "use-uid", uid, g_free);
 
 	return uid;

@@ -107,16 +107,16 @@ add_component_sync (ECalClient *cal_client)
 		"CREATED:20040211T080000Z\r\n"
 		"LAST-MODIFIED:20040211T080000Z\r\n"
 		"END:VEVENT\r\n";
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 	GError *error = NULL;
 
-	icalcomp = icalcomponent_new_from_string (comp_str);
-	g_assert_nonnull (icalcomp);
+	icomp = i_cal_component_new_from_string (comp_str);
+	g_assert_nonnull (icomp);
 
-	if (!e_cal_client_create_object_sync (cal_client, icalcomp, NULL, NULL, &error))
+	if (!e_cal_client_create_object_sync (cal_client, icomp, NULL, NULL, &error))
 		g_error ("Failed to add component: %s", error ? error->message : "Unknown error");
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (icomp);
 	g_clear_error (&error);
 }
 
@@ -150,7 +150,7 @@ test_get_free_busy_sync (ETestServerFixture *fixture,
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
-	icaltimezone *utc;
+	ICalTimezone *utc;
 	GSList *users = NULL, *freebusy_data = NULL;
 	time_t start, end;
 
@@ -163,7 +163,7 @@ test_get_free_busy_sync (ETestServerFixture *fixture,
 
 	g_signal_connect (cal_client, "free-busy-data", G_CALLBACK (free_busy_data_cb), (gpointer) G_STRFUNC);
 
-	utc = icaltimezone_get_utc_timezone ();
+	utc = i_cal_timezone_get_utc_timezone ();
 	start = time_from_isodate ("20040212T000000Z");
 	end = time_add_day_with_zone (start, 2, utc);
 	users = g_slist_append (users, (gpointer) USER_EMAIL);
@@ -211,7 +211,7 @@ test_get_free_busy_async (ETestServerFixture *fixture,
                           gconstpointer user_data)
 {
 	ECalClient *cal_client;
-	icaltimezone *utc;
+	ICalTimezone *utc;
 	GSList *users = NULL;
 	time_t start, end;
 
@@ -222,7 +222,7 @@ test_get_free_busy_async (ETestServerFixture *fixture,
 	/* This is set by the free-busy-data callback */
 	received_free_busy_data = FALSE;
 
-	utc = icaltimezone_get_utc_timezone ();
+	utc = i_cal_timezone_get_utc_timezone ();
 	start = time_from_isodate ("20040212T000000Z");
 	end = time_add_day_with_zone (start, 2, utc);
 	users = g_slist_append (users, (gpointer) USER_EMAIL);

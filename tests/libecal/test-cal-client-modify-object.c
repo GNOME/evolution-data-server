@@ -29,29 +29,35 @@ static ETestServerClosure cal_closure_async =
 static void
 setup_cal (ECalClient *cal_client)
 {
-	struct icaltimetype now;
-	icalcomponent *icalcomp;
+	ICalTimetype *dtstart, *dtend;
+	ICalComponent *icomp;
 	gchar *uid = NULL;
 	GError *error = NULL;
 
-	now = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-	icalcomp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
-	icalcomponent_set_summary (icalcomp, "Initial" EVENT_SUMMARY);
-	icalcomponent_set_dtstart (icalcomp, now);
-	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet_with_zone (icaltime_as_timet (now) + 60 * 60 * 60, 0, NULL));
+	dtstart = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+	dtend = i_cal_timetype_new_clone (dtstart);
+	i_cal_time_adjust (dtend, 0, 1, 0, 0);
 
-	if (!e_cal_client_create_object_sync (cal_client, icalcomp, &uid, NULL, &error))
+	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
+	i_cal_component_set_summary (icomp, "Initial" EVENT_SUMMARY);
+	i_cal_component_set_dtstart (icomp, dtstart);
+	i_cal_component_set_dtend (icomp, dtend);
+
+	g_clear_object (&dtstart);
+	g_clear_object (&dtend);
+
+	if (!e_cal_client_create_object_sync (cal_client, icomp, &uid, NULL, &error))
 		g_error ("create object sync: %s", error->message);
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (icomp);
 	g_object_set_data_full (G_OBJECT (cal_client), "use-uid", uid, g_free);
 }
 
 static void
-test_result (icalcomponent *icalcomp)
+test_result (ICalComponent *icomp)
 {
-	g_assert (icalcomp != NULL);
-	g_assert_cmpstr (icalcomponent_get_summary (icalcomp), ==, EVENT_SUMMARY);
+	g_assert_nonnull (icomp);
+	g_assert_cmpstr (i_cal_component_get_summary (icomp), ==, EVENT_SUMMARY);
 }
 
 static void
@@ -60,7 +66,7 @@ test_modify_object_sync (ETestServerFixture *fixture,
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
-	icalcomponent *icalcomp = NULL;
+	ICalComponent *icomp = NULL;
 	const gchar *uid;
 
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
@@ -69,21 +75,21 @@ test_modify_object_sync (ETestServerFixture *fixture,
 	uid = g_object_get_data (G_OBJECT (cal_client), "use-uid");
 	g_assert (uid != NULL);
 
-	if (!e_cal_client_get_object_sync (cal_client, uid, NULL, &icalcomp, NULL, &error))
+	if (!e_cal_client_get_object_sync (cal_client, uid, NULL, &icomp, NULL, &error))
 		g_error ("get object sync: %s", error->message);
 
-	icalcomponent_set_summary (icalcomp, EVENT_SUMMARY);
+	i_cal_component_set_summary (icomp, EVENT_SUMMARY);
 
-	if (!e_cal_client_modify_object_sync (cal_client, icalcomp, E_CAL_OBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_modify_object_sync (cal_client, icomp, E_CAL_OBJ_MOD_ALL, NULL, &error))
 		g_error ("modify object sync: %s", error->message);
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (icomp);
 
-	if (!e_cal_client_get_object_sync (cal_client, uid, NULL, &icalcomp, NULL, &error))
+	if (!e_cal_client_get_object_sync (cal_client, uid, NULL, &icomp, NULL, &error))
 		g_error ("get object sync after modification: %s", error->message);
 
-	test_result (icalcomp);
-	icalcomponent_free (icalcomp);
+	test_result (icomp);
+	g_object_unref (icomp);
 }
 
 static void
@@ -93,7 +99,7 @@ async_modify_result_ready (GObject *source_object,
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
-	icalcomponent *icalcomp = NULL;
+	ICalComponent *icomp = NULL;
 	const gchar *uid;
 	GMainLoop *loop = (GMainLoop *) user_data;
 
@@ -103,11 +109,11 @@ async_modify_result_ready (GObject *source_object,
 	if (!e_cal_client_modify_object_finish (cal_client, result, &error))
 		g_error ("modify object finish: %s", error->message);
 
-	if (!e_cal_client_get_object_sync (cal_client, uid, NULL, &icalcomp, NULL, &error))
+	if (!e_cal_client_get_object_sync (cal_client, uid, NULL, &icomp, NULL, &error))
 		g_error ("get object sync after async modification: %s", error->message);
 
-	test_result (icalcomp);
-	icalcomponent_free (icalcomp);
+	test_result (icomp);
+	g_object_unref (icomp);
 
 	g_main_loop_quit (loop);
 }
@@ -118,7 +124,7 @@ test_modify_object_async (ETestServerFixture *fixture,
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
-	icalcomponent *icalcomp = NULL;
+	ICalComponent *icomp = NULL;
 	const gchar *uid;
 
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
@@ -127,13 +133,13 @@ test_modify_object_async (ETestServerFixture *fixture,
 	uid = g_object_get_data (G_OBJECT (cal_client), "use-uid");
 	g_assert (uid != NULL);
 
-	if (!e_cal_client_get_object_sync (cal_client, uid, NULL, &icalcomp, NULL, &error))
+	if (!e_cal_client_get_object_sync (cal_client, uid, NULL, &icomp, NULL, &error))
 		g_error ("get object sync: %s", error->message);
 
-	icalcomponent_set_summary (icalcomp, EVENT_SUMMARY);
+	i_cal_component_set_summary (icomp, EVENT_SUMMARY);
 
-	e_cal_client_modify_object (cal_client, icalcomp, E_CAL_OBJ_MOD_ALL, NULL, async_modify_result_ready, fixture->loop);
-	icalcomponent_free (icalcomp);
+	e_cal_client_modify_object (cal_client, icomp, E_CAL_OBJ_MOD_ALL, NULL, async_modify_result_ready, fixture->loop);
+	g_object_unref (icomp);
 
 	g_main_loop_run (fixture->loop);
 }

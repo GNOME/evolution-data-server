@@ -30,29 +30,35 @@ static ETestServerClosure cal_closure_async =
 static void
 setup_cal (ECalClient *cal_client)
 {
-	struct icaltimetype now;
-	icalcomponent *icalcomp;
+	ICalTimetype *dtstart, *dtend;
+	ICalComponent *icomp;
 	gchar *uid = NULL;
 	GError *error = NULL;
 
-	now = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-	icalcomp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
-	icalcomponent_set_summary (icalcomp, EVENT_SUMMARY);
-	icalcomponent_set_dtstart (icalcomp, now);
-	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet_with_zone (icaltime_as_timet (now) + 60 * 60 * 60, 0, NULL));
+	dtstart = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+	dtend = i_cal_timetype_new_clone (dtstart);
+	i_cal_time_adjust (dtend, 0, 1, 0, 0);
 
-	if (!e_cal_client_create_object_sync (cal_client, icalcomp, &uid, NULL, &error))
+	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
+	i_cal_component_set_summary (icomp, EVENT_SUMMARY);
+	i_cal_component_set_dtstart (icomp, dtstart);
+	i_cal_component_set_dtend (icomp, dtend);
+
+	g_clear_object (&dtstart);
+	g_clear_object (&dtend);
+
+	if (!e_cal_client_create_object_sync (cal_client, icomp, &uid, NULL, &error))
 		g_error ("create object sync: %s", error->message);
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (icomp);
 	g_free (uid);
 }
 
 static void
-test_result (icalcomponent *icalcomp)
+test_result (ICalComponent *icomp)
 {
-	g_assert (icalcomp != NULL);
-	g_assert_cmpstr (icalcomponent_get_summary (icalcomp), ==, EVENT_SUMMARY);
+	g_assert_nonnull (icomp);
+	g_assert_cmpstr (i_cal_component_get_summary (icomp), ==, EVENT_SUMMARY);
 }
 
 static void
@@ -60,19 +66,19 @@ test_get_object_list_sync (ETestServerFixture *fixture,
                            gconstpointer user_data)
 {
 	ECalClient *cal_client;
-	GSList *icalcomps = NULL, *ecalcomps = NULL;
+	GSList *icomps = NULL, *ecalcomps = NULL;
 	GError *error = NULL;
 
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 	setup_cal (cal_client);
 
-	if (!e_cal_client_get_object_list_sync (cal_client, EVENT_QUERY, &icalcomps, NULL, &error))
+	if (!e_cal_client_get_object_list_sync (cal_client, EVENT_QUERY, &icomps, NULL, &error))
 		g_error ("get object list sync: %s", error->message);
 
-	g_assert_cmpint (g_slist_length (icalcomps), ==, 1);
-	test_result (icalcomps->data);
+	g_assert_cmpint (g_slist_length (icomps), ==, 1);
+	test_result (icomps->data);
 
-	e_cal_client_free_icalcomp_slist (icalcomps);
+	e_util_free_nullable_object_slist (icomps);
 
 	if (!e_cal_client_get_object_list_as_comps_sync (cal_client, EVENT_QUERY, &ecalcomps, NULL, &error))
 		g_error ("get object list as comps sync: %s", error->message);
@@ -80,7 +86,7 @@ test_get_object_list_sync (ETestServerFixture *fixture,
 	g_assert_cmpint (g_slist_length (ecalcomps), ==, 1);
 	test_result (e_cal_component_get_icalcomponent (ecalcomps->data));
 
-	e_cal_client_free_ecalcomp_slist (ecalcomps);
+	e_util_free_nullable_object_slist (ecalcomps);
 }
 
 static void
@@ -101,7 +107,7 @@ async_get_object_list_as_comps_result_ready (GObject *source_object,
 	g_assert_cmpint (g_slist_length (ecalcomps), ==, 1);
 	test_result (e_cal_component_get_icalcomponent (ecalcomps->data));
 
-	e_cal_client_free_ecalcomp_slist (ecalcomps);
+	e_util_free_nullable_object_slist (ecalcomps);
 	g_main_loop_quit (loop);
 }
 
@@ -112,16 +118,16 @@ async_get_object_list_result_ready (GObject *source_object,
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
-	GSList *icalcomps = NULL;
+	GSList *icomps = NULL;
 
 	cal_client = E_CAL_CLIENT (source_object);
 
-	if (!e_cal_client_get_object_list_finish (cal_client, result, &icalcomps, &error))
+	if (!e_cal_client_get_object_list_finish (cal_client, result, &icomps, &error))
 		g_error ("get object list finish: %s", error->message);
 
-	g_assert_cmpint (g_slist_length (icalcomps), ==, 1);
-	test_result (icalcomps->data);
-	e_cal_client_free_icalcomp_slist (icalcomps);
+	g_assert_cmpint (g_slist_length (icomps), ==, 1);
+	test_result (icomps->data);
+	e_util_free_nullable_object_slist (icomps);
 
 	e_cal_client_get_object_list_as_comps (
 		cal_client, EVENT_QUERY, NULL,

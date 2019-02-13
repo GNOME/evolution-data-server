@@ -25,32 +25,52 @@ static ETestServerClosure cal_closure =
 #define NB_COMPONENTS 5
 
 static void
-test_icalcomps (icalcomponent *icalcomp1,
-                icalcomponent *icalcomp2)
+test_icomps (ICalComponent *icomp1,
+	     ICalComponent *icomp2)
 {
-	struct icaltimetype t1, t2;
+	ICalTimetype *t1, *t2;
 
-	if (!icalcomp2)
+	if (!icomp2)
 		g_error ("Failure: get object returned NULL");
 
-	g_assert_cmpstr (icalcomponent_get_uid (icalcomp1), ==, icalcomponent_get_uid (icalcomp2));
-	g_assert_cmpstr (icalcomponent_get_summary (icalcomp1), ==, icalcomponent_get_summary (icalcomp2));
+	g_assert_cmpstr (i_cal_component_get_uid (icomp1), ==, i_cal_component_get_uid (icomp2));
+	g_assert_cmpstr (i_cal_component_get_summary (icomp1), ==, i_cal_component_get_summary (icomp2));
 
-	t1 = icalcomponent_get_dtstart (icalcomp1);
-	t2 = icalcomponent_get_dtstart (icalcomp2);
+	t1 = i_cal_component_get_dtstart (icomp1);
+	t2 = i_cal_component_get_dtstart (icomp2);
 
-	if (icaltime_compare (t1, t2) != 0)
-		g_error (
-			"Failure: dtend doesn't match, expected '%s', got '%s'\n",
-			icaltime_as_ical_string (t1), icaltime_as_ical_string (t2));
+	if (i_cal_time_compare (t1, t2) != 0) {
+		gchar *str1, *str2;
 
-	t1 = icalcomponent_get_dtend (icalcomp1);
-	t2 = icalcomponent_get_dtend (icalcomp2);
+		str1 = i_cal_time_as_ical_string_r (t1);
+		str2 = i_cal_time_as_ical_string_r (t2);
 
-	if (icaltime_compare (t1, t2) != 0)
-		g_error (
-			"Failure: dtend doesn't match, expected '%s', got '%s'\n",
-			icaltime_as_ical_string (t1), icaltime_as_ical_string (t2));
+		g_error ("Failure: dtend doesn't match, expected '%s', got '%s'\n", str1, str2);
+
+		g_free (str1);
+		g_free (str2);
+	}
+
+	g_clear_object (&t1);
+	g_clear_object (&t2);
+
+	t1 = i_cal_component_get_dtend (icomp1);
+	t2 = i_cal_component_get_dtend (icomp2);
+
+	if (i_cal_time_compare (t1, t2) != 0) {
+		gchar *str1, *str2;
+
+		str1 = i_cal_time_as_ical_string_r (t1);
+		str2 = i_cal_time_as_ical_string_r (t2);
+
+		g_error ("Failure: dtend doesn't match, expected '%s', got '%s'\n", str1, str2);
+
+		g_free (str1);
+		g_free (str2);
+	}
+
+	g_clear_object (&t1);
+	g_clear_object (&t2);
 }
 
 static void
@@ -62,13 +82,19 @@ check_removed (ECalClient *cal_client,
 
 	while (uids) {
 		GError *error = NULL;
-		icalcomponent *icalcomp = NULL;
+		ICalComponent *icomp = NULL;
 
-		if (!e_cal_client_get_object_sync (cal_client, uids->data, NULL, &icalcomp, NULL, &error) &&
-				g_error_matches (error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND)) {
+		if (!e_cal_client_get_object_sync (cal_client, uids->data, NULL, &icomp, NULL, &error) &&
+		    g_error_matches (error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND)) {
 			g_clear_error (&error);
-		} else
+		} else if (error) {
 			g_error ("check objects removed sync: %s", error->message);
+			g_clear_error (&error);
+		} else {
+			g_clear_object (&icomp);
+
+			g_error ("check objects removed sync: object found in the backend");
+		}
 
 		uids = uids->next;
 	}
@@ -88,75 +114,76 @@ uid_slist_to_ecalcomponentid_slist (GSList *uids)
 }
 
 static void
-check_icalcomps_exist (ECalClient *cal_client,
-                       GSList *icalcomps)
+check_icomps_exist (ECalClient *cal_client,
+		    GSList *icomps)
 {
-	const GSList *l;
+	GSList *link;
 
-	for (l = icalcomps; l; l = l->next) {
+	for (link = icomps; link; link = g_slist_next (link)) {
 		GError *error = NULL;
-		icalcomponent *icalcomp = l->data;
-		icalcomponent *icalcomp2 = NULL;
-		const gchar *uid = icalcomponent_get_uid (icalcomp);
+		ICalComponent *icomp = link->data;
+		ICalComponent *icomp2 = NULL;
+		const gchar *uid = i_cal_component_get_uid (icomp);
 
-		if (!e_cal_client_get_object_sync (cal_client, uid, NULL, &icalcomp2, NULL, &error))
+		if (!e_cal_client_get_object_sync (cal_client, uid, NULL, &icomp2, NULL, &error))
 			g_error ("get object sync: %s", error->message);
 
-		g_assert (icalcomp2 != NULL);
+		g_assert_nonnull (icomp2);
 
-		test_icalcomps (icalcomp, icalcomp2);
-		icalcomponent_free (icalcomp2);
+		test_icomps (icomp, icomp2);
+
+		g_object_unref (icomp2);
 	}
 }
 
 static void
 test_bulk_methods (ECalClient *cal_client,
-                   GSList *icalcomps)
+		   GSList *icomps)
 {
 	GError *error = NULL;
 	GSList *uids = NULL, *ids = NULL;
 	const GSList *lcomp, *luid;
 	gint i = 0;
 
-	g_assert (icalcomps != NULL);
+	g_assert_nonnull (icomps);
 
 	/* Create all the objects in bulk */
-	if (!e_cal_client_create_objects_sync (cal_client, icalcomps, &uids, NULL, &error))
+	if (!e_cal_client_create_objects_sync (cal_client, icomps, &uids, NULL, &error))
 		g_error ("create objects sync: %s", error->message);
 
 	g_assert (uids != NULL);
 	g_assert_cmpint (g_slist_length (uids), ==, NB_COMPONENTS);
 
-	/* Update icalcomponents uids */
+	/* Update ICalComponents uids */
 	luid = uids;
-	lcomp = icalcomps;
+	lcomp = icomps;
 	while (luid && lcomp) {
-		icalcomponent_set_uid (lcomp->data, luid->data);
+		i_cal_component_set_uid (lcomp->data, luid->data);
 		luid = luid->next;
 		lcomp = lcomp->next;
 	}
 
 	/* Retrieve all the objects and check that they are the same */
-	check_icalcomps_exist (cal_client, icalcomps);
+	check_icomps_exist (cal_client, icomps);
 
 	/* Modify the objects */
-	for (lcomp = icalcomps; lcomp; lcomp = lcomp->next) {
+	for (lcomp = icomps; lcomp; lcomp = lcomp->next) {
 		gchar *summary;
-		icalcomponent *icalcomp = lcomp->data;
+		ICalComponent *icomp = lcomp->data;
 
 		summary = g_strdup_printf ("Edited test summary %d", i);
-		icalcomponent_set_summary (icalcomp, summary);
+		i_cal_component_set_summary (icomp, summary);
 
 		g_free (summary);
 		++i;
 	}
 
 	/* Save the modified objects in bulk */
-	if (!e_cal_client_modify_objects_sync (cal_client, icalcomps, E_CAL_OBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_modify_objects_sync (cal_client, icomps, E_CAL_OBJ_MOD_ALL, NULL, &error))
 		g_error ("modify objects sync: %s", error->message);
 
 	/* Retrieve all the objects and check that they have been modified */
-	check_icalcomps_exist (cal_client, icalcomps);
+	check_icomps_exist (cal_client, icomps);
 
 	/* Remove all the objects in bulk */
 	ids = uid_slist_to_ecalcomponentid_slist (uids);
@@ -177,33 +204,38 @@ run_test_bulk_methods (ETestServerFixture *fixture,
                        gconstpointer user_data)
 {
 	ECalClient *cal_client;
-	GSList *icalcomps = NULL;
-	struct icaltimetype now;
-	gint i;
+	GSList *icomps = NULL;
+	ICalTimetype *dtstart, *dtend;
+	gint ii;
 
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
-	now = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
+	dtstart = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+	dtend = i_cal_timetype_new_clone (dtstart);
+	i_cal_time_adjust (dtend, 0, 1, 0, 0);
 
 	/* Build up new components */
-	for (i = 0; i < NB_COMPONENTS; ++i) {
-		icalcomponent *icalcomp;
+	for (ii = 0; ii < NB_COMPONENTS; ++ii) {
+		ICalComponent *icomp;
 		gchar *summary;
 
-		icalcomp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
-		summary = g_strdup_printf ("Test summary %d", i);
-		icalcomponent_set_summary (icalcomp, summary);
-		icalcomponent_set_dtstart (icalcomp, now);
-		icalcomponent_set_dtend   (icalcomp, icaltime_from_timet_with_zone (icaltime_as_timet (now) + 60 * 60 * 60, 0, NULL));
+		icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
+		summary = g_strdup_printf ("Test summary %d", ii);
+		i_cal_component_set_summary (icomp, summary);
+		i_cal_component_set_dtstart (icomp, dtstart);
+		i_cal_component_set_dtend (icomp, dtend);
 
-		icalcomps = g_slist_append (icalcomps, icalcomp);
+		icomps = g_slist_append (icomps, icomp);
 		g_free (summary);
 	}
 
-	/* Test synchronous bulk methods */
-	test_bulk_methods (cal_client, icalcomps);
+	g_clear_object (&dtstart);
+	g_clear_object (&dtend);
 
-	g_slist_free_full (icalcomps, (GDestroyNotify) icalcomponent_free);
+	/* Test synchronous bulk methods */
+	test_bulk_methods (cal_client, icomps);
+
+	g_slist_free_full (icomps, g_object_unref);
 }
 
 gint

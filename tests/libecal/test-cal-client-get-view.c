@@ -112,35 +112,37 @@ alter_cal_client (gpointer user_data)
 {
 	ECalClient *cal_client = user_data;
 	GError *error = NULL;
-	ICalComponent *comp;
-	ICalTimetype *now, *itt;
+	ICalComponent *icomp;
+	ICalTimetype *dtstart, *dtend;
 	gchar *uid = NULL;
 
 	g_return_val_if_fail (cal_client != NULL, NULL);
 
-	now = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
-	itt = i_cal_time_from_timet_with_zone (i_cal_time_as_timet (now) + 60 * 60 * 60, 0, NULL);
+	dtstart = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+	dtend = i_cal_timetype_new_clone (dtstart);
+	i_cal_time_adjust (dtend, 0, 1, 0, 0);
 
-	comp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
-	i_cal_component_set_summary (comp, "Initial event summary");
-	i_cal_component_set_dtstart (comp, now);
-	i_cal_component_set_dtend (comp, itt);
+	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
+	i_cal_component_set_summary (icomp, "Initial event summary");
+	i_cal_component_set_dtstart (icomp, dtstart);
+	i_cal_component_set_dtend (icomp, dtend);
 
-	if (!e_cal_client_create_object_sync (cal_client, comp, &uid, NULL, &error))
+	g_clear_object (&dtstart);
+	g_clear_object (&dtend);
+
+	if (!e_cal_client_create_object_sync (cal_client, icomp, &uid, NULL, &error))
 		g_error ("create object sync: %s", error->message);
 
-	i_cal_component_set_uid (comp, uid);
-	i_cal_component_set_summary (comp, "Modified event summary");
+	i_cal_component_set_uid (icomp, uid);
+	i_cal_component_set_summary (icomp, "Modified event summary");
 
-	if (!e_cal_client_modify_object_sync (cal_client, comp, E_CAL_OBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_modify_object_sync (cal_client, icomp, E_CAL_OBJ_MOD_ALL, NULL, &error))
 		g_error ("modify object sync: %s", error->message);
 
 	if (!e_cal_client_remove_object_sync (cal_client, uid, NULL, E_CAL_OBJ_MOD_ALL, NULL, &error))
 		g_error ("remove object sync: %s", error->message);
 
-	g_object_unref (comp);
-	g_object_unref (itt);
-	g_object_unref (now);
+	g_object_unref (icomp);
 	g_free (uid);
 
 	return FALSE;

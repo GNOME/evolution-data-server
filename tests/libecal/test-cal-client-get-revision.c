@@ -28,23 +28,29 @@ static ETestServerClosure cal_closure =
 static void
 get_revision_compare_cycle (ECalClient *client)
 {
-	icalcomponent *icalcomp;
-	struct icaltimetype now;
-	gchar    *revision_before = NULL, *revision_after = NULL, *uid = NULL;
+	ICalComponent *icomp;
+	ICalTimetype *dtstart, *dtend;
+	gchar *revision_before = NULL, *revision_after = NULL, *uid = NULL;
 	GError   *error = NULL;
 
 	/* Build up new component */
-	now = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-	icalcomp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
-	icalcomponent_set_summary (icalcomp, "Test event summary");
-	icalcomponent_set_dtstart (icalcomp, now);
-	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet_with_zone (icaltime_as_timet (now) + 60 * 60 * 60, 0, NULL));
+	dtstart = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+	dtend = i_cal_timetype_new_clone (dtstart);
+	i_cal_time_adjust (dtend, 0, 1, 0, 0);
+
+	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
+	i_cal_component_set_summary (icomp, "Test event summary");
+	i_cal_component_set_dtstart (icomp, dtstart);
+	i_cal_component_set_dtend (icomp, dtend);
+
+	g_clear_object (&dtstart);
+	g_clear_object (&dtend);
 
 	if (!e_client_get_backend_property_sync (E_CLIENT (client), CLIENT_BACKEND_PROPERTY_REVISION,
 						&revision_before, NULL, &error))
 		g_error ("Error getting calendar revision: %s", error->message);
 
-	if (!e_cal_client_create_object_sync (client, icalcomp, &uid, NULL, &error))
+	if (!e_cal_client_create_object_sync (client, icomp, &uid, NULL, &error))
 		g_error ("Error creating object: %s", error->message);
 
 	if (!e_cal_client_remove_object_sync (client, uid, NULL, E_CAL_OBJ_MOD_ALL, NULL, &error))
@@ -66,7 +72,7 @@ get_revision_compare_cycle (ECalClient *client)
 	g_free (revision_after);
 	g_free (uid);
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (icomp);
 }
 
 static void

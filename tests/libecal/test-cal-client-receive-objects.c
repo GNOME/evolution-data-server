@@ -24,19 +24,25 @@ static ETestServerClosure cal_closure_sync =
 static ETestServerClosure cal_closure_async =
 	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS, FALSE, NULL, TRUE };
 
-static icalcomponent *
+static ICalComponent *
 create_object (void)
 {
-	icalcomponent *icalcomp;
-	struct icaltimetype now;
+	ICalTimetype *dtstart, *dtend;
+	ICalComponent *icomp;
 
-	now = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-	icalcomp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
-	icalcomponent_set_summary (icalcomp, "To-be-received event summary");
-	icalcomponent_set_dtstart (icalcomp, now);
-	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet_with_zone (icaltime_as_timet (now) + 60 * 60 * 60, 0, NULL));
+	dtstart = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+	dtend = i_cal_timetype_new_clone (dtstart);
+	i_cal_time_adjust (dtend, 0, 1, 0, 0);
 
-	return icalcomp;
+	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
+	i_cal_component_set_summary (icomp, "To-be-received event summary");
+	i_cal_component_set_dtstart (icomp, dtstart);
+	i_cal_component_set_dtend (icomp, dtend);
+
+	g_clear_object (&dtstart);
+	g_clear_object (&dtend);
+
+	return icomp;
 }
 
 static void
@@ -45,17 +51,17 @@ test_receive_objects_sync (ETestServerFixture *fixture,
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
-	icalcomp = create_object ();
-	g_assert (icalcomp != NULL);
+	icomp = create_object ();
+	g_assert_nonnull (icomp);
 
-	if (!e_cal_client_receive_objects_sync (cal_client, icalcomp, NULL, &error))
+	if (!e_cal_client_receive_objects_sync (cal_client, icomp, NULL, &error))
 		g_error ("receive objects sync: %s", error->message);
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (icomp);
 }
 
 static void
@@ -80,15 +86,15 @@ test_receive_objects_async (ETestServerFixture *fixture,
                             gconstpointer user_data)
 {
 	ECalClient *cal_client;
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
-	icalcomp = create_object ();
-	g_assert (icalcomp != NULL);
+	icomp = create_object ();
+	g_assert_nonnull (icomp);
 
-	e_cal_client_receive_objects (cal_client, icalcomp, NULL, async_receive_result_ready, fixture->loop);
-	icalcomponent_free (icalcomp);
+	e_cal_client_receive_objects (cal_client, icomp, NULL, async_receive_result_ready, fixture->loop);
+	g_object_unref (icomp);
 
 	g_main_loop_run (fixture->loop);
 }

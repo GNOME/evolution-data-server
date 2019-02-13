@@ -69,7 +69,7 @@ get_last_modified (ICalComponent *component)
 		res = i_cal_time_null_time ();
 	}
 
-	g_clear_object (&innter);
+	g_clear_object (&inner);
 
 	return res;
 }
@@ -88,7 +88,7 @@ objects_added_cb (GObject *object,
 		ICalTimetype *last_modified = get_last_modified (component);
 		gchar *str_recurrence, *str_last_modified;
 
-		str_recurrence = i_cal_time_as_ical_string (recurrence);
+		str_recurrence = i_cal_time_as_ical_string_r (recurrence);
 		str_last_modified = i_cal_time_as_ical_string_r (last_modified);
 
 		g_print (
@@ -122,7 +122,7 @@ objects_modified_cb (GObject *object,
 		ICalTimetype *last_modified = get_last_modified (component);
 		gchar *str_recurrence, *str_last_modified;
 
-		str_recurrence = i_cal_time_as_ical_string (recurrence);
+		str_recurrence = i_cal_time_as_ical_string_r (recurrence);
 		str_last_modified = i_cal_time_as_ical_string_r (last_modified);
 
 		g_print (
@@ -136,7 +136,7 @@ objects_modified_cb (GObject *object,
 		g_free (str_recurrence);
 		g_free (str_last_modified);
 
-		g_assert (icalcomponent_get_summary (component) == NULL);
+		g_assert (i_cal_component_get_summary (component) == NULL);
 	}
 
 	subtest_passed (SUBTEST_OBJECTS_MODIFIED, loop);
@@ -176,7 +176,7 @@ alter_cal_client (gpointer user_data)
 {
 	ECalClient *cal_client = user_data;
 	GError *error = NULL;
-	ICalComponent *comp;
+	ICalComponent *icomp;
 	ICalTimetype *now, *itt;
 	gchar *uid = NULL;
 
@@ -185,24 +185,24 @@ alter_cal_client (gpointer user_data)
 	now = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
 	itt = i_cal_time_from_timet_with_zone (i_cal_time_as_timet (now) + 60 * 60 * 60, 0, NULL);
 
-	comp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
-	i_cal_component_set_summary (comp, "Initial event summary");
-	i_cal_component_set_dtstart (comp, now);
-	i_cal_component_set_dtend   (comp, itt);
+	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
+	i_cal_component_set_summary (icomp, "Initial event summary");
+	i_cal_component_set_dtstart (icomp, now);
+	i_cal_component_set_dtend   (icomp, itt);
 
-	if (!e_cal_client_create_object_sync (cal_client, comp, &uid, NULL, &error))
+	if (!e_cal_client_create_object_sync (cal_client, icomp, &uid, NULL, &error))
 		g_error ("create object sync: %s", error->message);
 
-	i_cal_component_set_uid (comp, uid);
-	i_cal_component_set_summary (comp, "Modified event summary");
+	i_cal_component_set_uid (icomp, uid);
+	i_cal_component_set_summary (icomp, "Modified event summary");
 
-	if (!e_cal_client_modify_object_sync (cal_client, comp, E_CAL_OBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_modify_object_sync (cal_client, icomp, E_CAL_OBJ_MOD_ALL, NULL, &error))
 		g_error ("modify object sync: %s", error->message);
 
 	if (!e_cal_client_remove_object_sync (cal_client, uid, NULL, E_CAL_OBJ_MOD_ALL, NULL, &error))
 		g_error ("remove object sync: %s", error->message);
 
-	g_object_urnef (comp);
+	g_object_unref (icomp);
 	g_object_unref (now);
 	g_object_unref (itt);
 	g_free (uid);

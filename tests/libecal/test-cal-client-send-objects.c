@@ -43,46 +43,44 @@ print_ecomp (ECalComponent *ecalcomp)
 }
 
 static void
-print_icomp (icalcomponent *icalcomp)
+print_icomp (ICalComponent *icomp)
 {
 	ECalComponent *ecomp;
 
-	g_return_if_fail (icalcomp != NULL);
+	g_assert_nonnull (icomp);
 
-	ecomp = e_cal_component_new ();
-	icalcomp = icalcomponent_new_clone (icalcomp);
-
-	if (!e_cal_component_set_icalcomponent (ecomp, icalcomp)) {
-		icalcomponent_free (icalcomp);
-		g_object_unref (ecomp);
-		g_printerr ("%s: Failed to assing icalcomp to ECalComponent\n", G_STRFUNC);
-		g_print ("\n");
-		return;
-	}
+	ecomp = e_cal_component_new_from_icalcomponent (i_cal_component_new_clone (icomp));
+	g_assert_nonnull (ecomp);
 
 	print_ecomp (ecomp);
 
 	g_object_unref (ecomp);
 }
 
-static icalcomponent *
+static ICalComponent *
 create_object (void)
 {
-	icalcomponent *icalcomp;
-	struct icaltimetype now;
+	ICalComponent *icomp;
+	ICalTimetype *dtstart, *dtend;
 
-	now = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-	icalcomp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
-	icalcomponent_set_summary (icalcomp, "To-be-sent event summary");
-	icalcomponent_set_dtstart (icalcomp, now);
-	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet_with_zone (icaltime_as_timet (now) + 60 * 60 * 60, 0, NULL));
+	dtstart = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+	dtend = i_cal_timetype_new_clone (dtstart);
+	i_cal_time_adjust (dtend, 0, 1, 0, 0);
 
-	return icalcomp;
+	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
+	i_cal_component_set_summary (icomp, "To-be-sent event summary");
+	i_cal_component_set_dtstart (icomp, dtstart);
+	i_cal_component_set_dtend (icomp, dtend);
+
+	g_clear_object (&dtstart);
+	g_clear_object (&dtend);
+
+	return icomp;
 }
 
 static void
 manage_result (GSList *users,
-               icalcomponent *modified_icalcomp)
+	       ICalComponent *modified_icomp)
 {
 	g_print ("Wishes to send to %d users", g_slist_length (users));
 	if (users) {
@@ -95,14 +93,13 @@ manage_result (GSList *users,
 	}
 	g_print ("\n");
 
-	if (!modified_icalcomp)
-		g_print ("No modified icalcomp, would send the same\n");
+	if (!modified_icomp)
+		g_print ("No modified iCalendar component, would send the same\n");
 	else
-		print_icomp (modified_icalcomp);
+		print_icomp (modified_icomp);
 
 	e_client_util_free_string_slist (users);
-	if (modified_icalcomp)
-		icalcomponent_free (modified_icalcomp);
+	g_clear_object (&modified_icomp);
 }
 
 static void
@@ -111,17 +108,17 @@ test_send_objects_sync (ETestServerFixture *fixture,
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
-	icalcomponent *icalcomp, *modified_icalcomp = NULL;
+	ICalComponent *icomp, *modified_icomp = NULL;
 	GSList *users = NULL;
 
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
-	icalcomp = create_object ();
-	if (!e_cal_client_send_objects_sync (cal_client, icalcomp, &users, &modified_icalcomp, NULL, &error))
+	icomp = create_object ();
+	if (!e_cal_client_send_objects_sync (cal_client, icomp, &users, &modified_icomp, NULL, &error))
 		g_error ("send objects sync: %s", error->message);
 
-	icalcomponent_free (icalcomp);
-	manage_result (users, modified_icalcomp);
+	g_object_unref (icomp);
+	manage_result (users, modified_icomp);
 }
 
 static void
@@ -132,15 +129,15 @@ async_send_result_ready (GObject *source_object,
 	ECalClient *cal_client;
 	GError *error = NULL;
 	GSList *users = NULL;
-	icalcomponent *modified_icalcomp = NULL;
+	ICalComponent *modified_icomp = NULL;
 	GMainLoop *loop = (GMainLoop *) user_data;
 
 	cal_client = E_CAL_CLIENT (source_object);
 
-	if (!e_cal_client_send_objects_finish (cal_client, result, &users, &modified_icalcomp, &error))
+	if (!e_cal_client_send_objects_finish (cal_client, result, &users, &modified_icomp, &error))
 		g_error ("send objects finish: %s", error->message);
 
-	manage_result (users, modified_icalcomp);
+	manage_result (users, modified_icomp);
 	g_main_loop_quit (loop);
 }
 
@@ -149,15 +146,15 @@ test_send_objects_async (ETestServerFixture *fixture,
                         gconstpointer user_data)
 {
 	ECalClient *cal_client;
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
-	icalcomp = create_object ();
-	g_assert (icalcomp);
+	icomp = create_object ();
+	g_assert_nonnull (icomp);
 
-	e_cal_client_send_objects (cal_client, icalcomp, NULL, async_send_result_ready, fixture->loop);
-	icalcomponent_free (icalcomp);
+	e_cal_client_send_objects (cal_client, icomp, NULL, async_send_result_ready, fixture->loop);
+	g_object_unref (icomp);
 
 	g_main_loop_run (fixture->loop);
 }

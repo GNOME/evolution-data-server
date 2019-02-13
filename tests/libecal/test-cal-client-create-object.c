@@ -25,32 +25,52 @@ static ETestServerClosure cal_closure_async =
 	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS, FALSE, NULL, TRUE };
 
 static void
-test_icalcomps (icalcomponent *icalcomp1,
-                icalcomponent *icalcomp2)
+test_icomps (ICalComponent *icomp1,
+	     ICalComponent *icomp2)
 {
-	struct icaltimetype t1, t2;
+	ICalTimetype *t1, *t2;
 
-	if (!icalcomp2)
+	if (!icomp2)
 		g_error ("Failure: get object returned NULL");
 
-	g_assert_cmpstr (icalcomponent_get_uid (icalcomp1), ==, icalcomponent_get_uid (icalcomp2));
-	g_assert_cmpstr (icalcomponent_get_summary (icalcomp1), ==, icalcomponent_get_summary (icalcomp2));
+	g_assert_cmpstr (i_cal_component_get_uid (icomp1), ==, i_cal_component_get_uid (icomp2));
+	g_assert_cmpstr (i_cal_component_get_summary (icomp1), ==, i_cal_component_get_summary (icomp2));
 
-	t1 = icalcomponent_get_dtstart (icalcomp1);
-	t2 = icalcomponent_get_dtstart (icalcomp2);
+	t1 = i_cal_component_get_dtstart (icomp1);
+	t2 = i_cal_component_get_dtstart (icomp2);
 
-	if (icaltime_compare (t1, t2) != 0)
-		g_error (
-			"Failure: dtend doesn't match, expected '%s', got '%s'\n",
-			icaltime_as_ical_string (t1), icaltime_as_ical_string (t2));
+	if (i_cal_time_compare (t1, t2) != 0) {
+		gchar *str1, *str2;
 
-	t1 = icalcomponent_get_dtend (icalcomp1);
-	t2 = icalcomponent_get_dtend (icalcomp2);
+		str1 = i_cal_time_as_ical_string_r (t1);
+		str2 = i_cal_time_as_ical_string_r (t2);
 
-	if (icaltime_compare (t1, t2) != 0)
-		g_error (
-			"Failure: dtend doesn't match, expected '%s', got '%s'\n",
-			icaltime_as_ical_string (t1), icaltime_as_ical_string (t2));
+		g_error ("Failure: dtend doesn't match, expected '%s', got '%s'\n", str1, str2);
+
+		g_free (str1);
+		g_free (str2);
+	}
+
+	g_clear_object (&t1);
+	g_clear_object (&t2);
+
+	t1 = i_cal_component_get_dtend (icomp1);
+	t2 = i_cal_component_get_dtend (icomp2);
+
+	if (i_cal_time_compare (t1, t2) != 0) {
+		gchar *str1, *str2;
+
+		str1 = i_cal_time_as_ical_string_r (t1);
+		str2 = i_cal_time_as_ical_string_r (t2);
+
+		g_error ("Failure: dtend doesn't match, expected '%s', got '%s'\n", str1, str2);
+
+		g_free (str1);
+		g_free (str2);
+	}
+
+	g_clear_object (&t1);
+	g_clear_object (&t2);
 }
 
 static void
@@ -58,9 +78,9 @@ test_create_object_sync (ETestServerFixture *fixture,
                          gconstpointer user_data)
 {
 	ECalClient *cal_client;
-	icalcomponent *icalcomp;
-	icalcomponent *icalcomp2 = NULL, *clone;
-	struct icaltimetype now;
+	ICalComponent *icomp;
+	ICalComponent *icomp2 = NULL, *clone;
+	ICalTimetype *dtstart, *dtend;
 	GError *error = NULL;
 	GSList *ecalcomps = NULL;
 	gchar *uid = NULL;
@@ -68,24 +88,30 @@ test_create_object_sync (ETestServerFixture *fixture,
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
 	/* Build up new component */
-	now = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-	icalcomp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
-	icalcomponent_set_summary (icalcomp, "Test event summary");
-	icalcomponent_set_dtstart (icalcomp, now);
-	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet_with_zone (icaltime_as_timet (now) + 60 * 60 * 60, 0, NULL));
+	dtstart = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+	dtend = i_cal_timetype_new_clone (dtstart);
+	i_cal_time_adjust (dtend, 0, 1, 0, 0);
 
-	if (!e_cal_client_create_object_sync (cal_client, icalcomp, &uid, NULL, &error))
+	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
+	i_cal_component_set_summary (icomp, "Test event summary");
+	i_cal_component_set_dtstart (icomp, dtstart);
+	i_cal_component_set_dtend (icomp, dtend);
+
+	g_clear_object (&dtstart);
+	g_clear_object (&dtend);
+
+	if (!e_cal_client_create_object_sync (cal_client, icomp, &uid, NULL, &error))
 		g_error ("create object sync: %s", error->message);
 
-	if (!e_cal_client_get_object_sync (cal_client, uid, NULL, &icalcomp2, NULL, &error))
+	if (!e_cal_client_get_object_sync (cal_client, uid, NULL, &icomp2, NULL, &error))
 		g_error ("get object sync: %s", error->message);
 
-	clone = icalcomponent_new_clone (icalcomp);
-	icalcomponent_set_uid (clone, uid);
+	clone = i_cal_component_new_clone (icomp);
+	i_cal_component_set_uid (clone, uid);
 
-	test_icalcomps (clone, icalcomp2);
+	test_icomps (clone, icomp2);
 
-	icalcomponent_free (icalcomp2);
+	g_object_unref (icomp2);
 
 	if (!e_cal_client_get_objects_for_uid_sync (cal_client, uid, &ecalcomps, NULL, &error))
 		g_error ("get objects for uid sync: %s", error->message);
@@ -95,18 +121,18 @@ test_create_object_sync (ETestServerFixture *fixture,
 	else {
 		ECalComponent *ecalcomp = ecalcomps->data;
 
-		test_icalcomps (clone, e_cal_component_get_icalcomponent (ecalcomp));
+		test_icomps (clone, e_cal_component_get_icalcomponent (ecalcomp));
 	}
-	e_cal_client_free_ecalcomp_slist (ecalcomps);
+	e_util_free_nullable_object_slist (ecalcomps);
 
-	icalcomponent_free (clone);
+	g_object_unref (clone);
+	g_object_unref (icomp);
 	g_free (uid);
-	icalcomponent_free (icalcomp);
 }
 
 typedef struct {
-	icalcomponent *icalcomp;
-	icalcomponent *clone;
+	ICalComponent *icomp;
+	ICalComponent *clone;
 	GMainLoop *loop;
 } AsyncData;
 
@@ -118,10 +144,10 @@ async_read2_result_ready (GObject *source_object,
 	ECalClient *cal_client;
 	GError *error = NULL;
 	AsyncData *data = (AsyncData *) user_data;
-	icalcomponent *icalcomp1 = data->clone;
+	ICalComponent *icomp1 = data->clone;
 	GSList *ecalcomps = NULL;
 
-	g_return_if_fail (icalcomp1 != NULL);
+	g_return_if_fail (icomp1 != NULL);
 
 	cal_client = E_CAL_CLIENT (source_object);
 
@@ -133,11 +159,11 @@ async_read2_result_ready (GObject *source_object,
 	else {
 		ECalComponent *ecalcomp = ecalcomps->data;
 
-		test_icalcomps (icalcomp1, e_cal_component_get_icalcomponent (ecalcomp));
+		test_icomps (icomp1, e_cal_component_get_icalcomponent (ecalcomp));
 	}
-	e_cal_client_free_ecalcomp_slist (ecalcomps);
+	e_util_free_nullable_object_slist (ecalcomps);
 
-	icalcomponent_free (icalcomp1);
+	g_object_unref (icomp1);
 	g_main_loop_quit (data->loop);
 }
 
@@ -149,19 +175,19 @@ async_read_result_ready (GObject *source_object,
 	ECalClient *cal_client;
 	GError *error = NULL;
 	AsyncData *data = (AsyncData *) user_data;
-	icalcomponent *icalcomp1 = data->clone, *icalcomp2 = NULL;
+	ICalComponent *icomp1 = data->clone, *icomp2 = NULL;
 
-	g_return_if_fail (icalcomp1 != NULL);
+	g_return_if_fail (icomp1 != NULL);
 
 	cal_client = E_CAL_CLIENT (source_object);
-	if (!e_cal_client_get_object_finish (cal_client, result, &icalcomp2, &error))
+	if (!e_cal_client_get_object_finish (cal_client, result, &icomp2, &error))
 		g_error ("get object finish: %s", error->message);
 
-	test_icalcomps (icalcomp1, icalcomp2);
-	icalcomponent_free (icalcomp2);
+	test_icomps (icomp1, icomp2);
+	g_object_unref (icomp2);
 
 	e_cal_client_get_objects_for_uid (cal_client,
-					  icalcomponent_get_uid (icalcomp1), NULL,
+					  i_cal_component_get_uid (icomp1), NULL,
 					  async_read2_result_ready, data);
 }
 
@@ -174,17 +200,17 @@ async_write_result_ready (GObject *source_object,
 	GError *error = NULL;
 	gchar *uid = NULL;
 	AsyncData *data = (AsyncData *) user_data;
-	icalcomponent *clone, *icalcomp = data->icalcomp;
+	ICalComponent *clone, *icomp = data->icomp;
 
-	g_return_if_fail (icalcomp != NULL);
+	g_return_if_fail (icomp != NULL);
 
 	cal_client = E_CAL_CLIENT (source_object);
 
 	if (!e_cal_client_create_object_finish (cal_client, result, &uid, &error))
 		g_error ("create object finish: %s", error->message);
 
-	clone = icalcomponent_new_clone (icalcomp);
-	icalcomponent_set_uid (clone, uid);
+	clone = i_cal_component_new_clone (icomp);
+	i_cal_component_set_uid (clone, uid);
 
 	data->clone = clone;
 	e_cal_client_get_object (cal_client, uid, NULL, NULL, async_read_result_ready, data);
@@ -196,25 +222,31 @@ test_create_object_async (ETestServerFixture *fixture,
                           gconstpointer user_data)
 {
 	ECalClient *cal_client;
-	icalcomponent *icalcomp;
-	struct icaltimetype now;
+	ICalComponent *icomp;
+	ICalTimetype *dtstart, *dtend;
 	AsyncData data = { 0, };
 
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
 	/* Build up new component */
-	now = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-	icalcomp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
-	icalcomponent_set_summary (icalcomp, "Test event summary");
-	icalcomponent_set_dtstart (icalcomp, now);
-	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet_with_zone (icaltime_as_timet (now) + 60 * 60 * 60, 0, NULL));
+	dtstart = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+	dtend = i_cal_timetype_new_clone (dtstart);
+	i_cal_time_adjust (dtend, 0, 1, 0, 0);
 
-	data.icalcomp = icalcomp;
+	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
+	i_cal_component_set_summary (icomp, "Test event summary");
+	i_cal_component_set_dtstart (icomp, dtstart);
+	i_cal_component_set_dtend (icomp, dtend);
+
+	g_clear_object (&dtstart);
+	g_clear_object (&dtend);
+
+	data.icomp = icomp;
 	data.loop = fixture->loop;
-	e_cal_client_create_object (cal_client, icalcomp, NULL, async_write_result_ready, &data);
+	e_cal_client_create_object (cal_client, icomp, NULL, async_write_result_ready, &data);
 	g_main_loop_run (fixture->loop);
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (icomp);
 }
 
 gint
