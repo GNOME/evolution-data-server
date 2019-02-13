@@ -343,7 +343,7 @@ begin_retrieval_cb (ECalBackendWeather *cbw)
 }
 
 static const gchar *
-getCategory (GWeatherInfo *report)
+get_category (GWeatherInfo *report)
 {
 	struct {
 		const gchar *description;
@@ -447,16 +447,16 @@ create_weather (ECalBackendWeather *cbw,
 		GSList *same_day_forecasts)
 {
 	ECalComponent             *cal_comp;
-	ECalComponentText          comp_summary;
-	icalcomponent             *ical_comp;
-	struct icaltimetype        itt;
-	ECalComponentDateTime      dt;
+	ECalComponentText         *comp_summary;
+	ICalComponent             *icomp;
+	ICalTimetype              *itt;
+	ECalComponentDateTime     *dt;
 	gchar			  *uid;
-	GSList                    *text_list = NULL, *link;
+	GSList                    *text_list, *link;
 	ECalComponentText         *description;
-	gchar                     *tmp, *city_name;
+	gchar                     *tmp, *city_name, *summary_text;
 	time_t			   update_time;
-	icaltimezone		  *update_zone = NULL;
+	ICalTimezone		  *update_zone = NULL;
 	const GWeatherLocation    *location;
 	const GWeatherTimezone    *w_timezone;
 	gdouble tmin = 0.0, tmax = 0.0, temp = 0.0;
@@ -467,9 +467,8 @@ create_weather (ECalBackendWeather *cbw,
 		return NULL;
 
 	/* create the component and event object */
-	ical_comp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
-	cal_comp = e_cal_component_new ();
-	e_cal_component_set_icalcomponent (cal_comp, ical_comp);
+	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
+	cal_comp = e_cal_component_new_from_icalcomponent (icomp);
 
 	/* set uid */
 	uid = e_util_generate_uid ();
@@ -479,30 +478,30 @@ create_weather (ECalBackendWeather *cbw,
 	/* use timezone of the location to determine date for which this is set */
 	location = gweather_info_get_location (report);
 	if (location && (w_timezone = gweather_location_get_timezone ((GWeatherLocation *) location)))
-		update_zone = icaltimezone_get_builtin_timezone (gweather_timezone_get_tzid ((GWeatherTimezone *) w_timezone));
+		update_zone = i_cal_timezone_get_builtin_timezone (gweather_timezone_get_tzid ((GWeatherTimezone *) w_timezone));
 
 	if (!update_zone)
-		update_zone = icaltimezone_get_utc_timezone ();
+		update_zone = i_cal_timezone_get_utc_timezone ();
 
 	/* Set all-day event's date from forecast data - cannot set is_date,
 	 * because in that case no timezone conversion is done */
-	itt = icaltime_from_timet_with_zone (update_time, 0, update_zone);
-	itt.hour = 0;
-	itt.minute = 0;
-	itt.second = 0;
-	itt.is_date = 1;
+	itt = i_cal_time_from_timet_with_zone (update_time, 0, update_zone);
+	i_cal_timetype_set_hour (itt, 0);
+	i_cal_timetype_set_minute (itt, 0);
+	i_cal_timetype_set_second (itt, 0);
+	i_cal_timetype_set_is_date (itt, TRUE);
 
-	dt.value = &itt;
-	if (update_zone)
-		dt.tzid = icaltimezone_get_tzid (update_zone);
-	else
-		dt.tzid = NULL;
+	dt = e_cal_component_datetime_new (itt, update_zone ? i_cal_timezone_get_tzid (update_zone) : NULL);
+	e_cal_component_set_dtstart (cal_comp, dt);
+	e_cal_component_datetime_free (dt);
 
-	e_cal_component_set_dtstart (cal_comp, &dt);
-
-	icaltime_adjust (&itt, 1, 0, 0, 0);
 	/* We have to add 1 day to DTEND, as it is not inclusive. */
-	e_cal_component_set_dtend (cal_comp, &dt);
+	i_cal_time_adjust (itt, 1, 0, 0, 0);
+
+	dt = e_cal_component_datetime_new (itt, update_zone ? i_cal_timezone_get_tzid (update_zone) : NULL);
+	e_cal_component_set_dtend (cal_comp, dt);
+	e_cal_component_datetime_free (dt);
+	g_object_unref (itt);
 
 	city_name = gweather_info_get_location_name (report);
 	if (gweather_info_get_value_temp_min (report, unit, &tmin) &&
@@ -512,31 +511,30 @@ create_weather (ECalBackendWeather *cbw,
 
 		min = cal_backend_weather_get_temp (tmin, unit);
 		max = cal_backend_weather_get_temp (tmax, unit);
-		comp_summary.value = g_strdup_printf ("%s : %s / %s", city_name, min, max);
+		summary_text = g_strdup_printf ("%s : %s / %s", city_name, min, max);
 
-		g_free (min); g_free (max);
+		g_free (min);
+		g_free (max);
 	} else if (gweather_info_get_value_temp (report, unit, &temp)) {
 		tmp = cal_backend_weather_get_temp (temp, unit);
-		comp_summary.value = g_strdup_printf ("%s : %s", city_name, tmp);
+		summary_text = g_strdup_printf ("%s : %s", city_name, tmp);
 
 		g_free (tmp);
 	} else {
-		gchar *temp;
-
-		temp = gweather_info_get_temp (report);
-		comp_summary.value = g_strdup_printf ("%s : %s", city_name, temp);
-
-		g_free (temp);
+		tmp = gweather_info_get_temp (report);
+		summary_text = g_strdup_printf ("%s : %s", city_name, tmp);
+		g_free (tmp);
 	}
 	g_free (city_name);
 
-	comp_summary.altrep = NULL;
-	e_cal_component_set_summary (cal_comp, &comp_summary);
-	g_free ((gchar *) comp_summary.value);
+	comp_summary = e_cal_component_text_new (summary_text, NULL);
+	e_cal_component_set_summary (cal_comp, comp_summary);
+	e_cal_component_text_free (comp_summary);
+	g_free (summary_text);
 
-	comp_summary.value = gweather_info_get_weather_summary (report);
+	summary_text = gweather_info_get_weather_summary (report);
 
-	description = g_new0 (ECalComponentText, 1);
+	description = e_cal_component_text_new ("", NULL);
 	{
 		GString *builder;
 		gboolean has_forecast_word = FALSE;
@@ -544,7 +542,7 @@ create_weather (ECalBackendWeather *cbw,
 		builder = g_string_new (NULL);
 
 		if (!is_forecast) {
-			g_string_append (builder, comp_summary.value);
+			g_string_append (builder, summary_text);
 			g_string_append_c (builder, '\n');
 		}
 
@@ -603,19 +601,18 @@ create_weather (ECalBackendWeather *cbw,
 			}
 		}
 
-		description->value = g_string_free (builder, FALSE);
+		e_cal_component_text_set_value (description, builder->str);
+		g_string_free (builder, TRUE);
 		g_free (tmp);
 	}
-	description->altrep = "";
-	text_list = g_slist_append (text_list, description);
-	e_cal_component_set_description_list (cal_comp, text_list);
-	g_slist_free (text_list);
-	g_free ((gchar *) (description->value));
-	g_free (description);
-	g_free ((gchar *) comp_summary.value);
+
+	text_list = g_slist_prepend (NULL, description);
+	e_cal_component_set_descriptions (cal_comp, text_list);
+	g_slist_free_full (text_list, e_cal_component_text_free);
+	g_free (summary_text);
 
 	/* Set category and visibility */
-	e_cal_component_set_categories (cal_comp, getCategory (report));
+	e_cal_component_set_categories (cal_comp, get_category (report));
 	e_cal_component_set_classification (cal_comp, E_CAL_COMPONENT_CLASS_PUBLIC);
 
 	/* Weather is shown as free time */
@@ -820,10 +817,10 @@ e_cal_backend_weather_add_timezone (ECalBackendSync *backend,
                                     const gchar *tzobj,
                                     GError **error)
 {
-	icalcomponent *tz_comp;
-	icaltimezone *zone;
+	ICalComponent *tz_comp;
+	ICalTimezone *zone;
 
-	tz_comp = icalparser_parse_string (tzobj);
+	tz_comp = i_cal_parser_parse_string (tzobj);
 	if (tz_comp == NULL) {
 		g_set_error_literal (
 			error, E_CAL_CLIENT_ERROR,
@@ -833,15 +830,17 @@ e_cal_backend_weather_add_timezone (ECalBackendSync *backend,
 		return;
 	}
 
-	if (icalcomponent_isa (tz_comp) != ICAL_VTIMEZONE_COMPONENT) {
+	if (i_cal_component_isa (tz_comp) != I_CAL_VTIMEZONE_COMPONENT) {
+		g_object_unref (tz_comp);
 		g_propagate_error (error, EDC_ERROR (InvalidObject));
 		return;
 	}
 
-	zone = icaltimezone_new ();
-	icaltimezone_set_component (zone, tz_comp);
-	e_timezone_cache_add_timezone (E_TIMEZONE_CACHE (backend), zone);
-	icaltimezone_free (zone, TRUE);
+	zone = i_cal_timezone_new ();
+	if (i_cal_timezone_set_component (zone, tz_comp))
+		e_timezone_cache_add_timezone (E_TIMEZONE_CACHE (backend), zone);
+	g_object_unref (zone);
+	g_object_unref (tz_comp);
 }
 
 static void
@@ -855,16 +854,22 @@ e_cal_backend_weather_get_free_busy (ECalBackendSync *backend,
                                      GError **perror)
 {
 	/* Weather doesn't count as busy time */
-	icalcomponent *vfb = icalcomponent_new_vfreebusy ();
-	icaltimezone *utc_zone = icaltimezone_get_utc_timezone ();
+	ICalComponent *vfb = i_cal_component_new_vfreebusy ();
+	ICalTimezone *utc_zone = i_cal_timezone_get_utc_timezone ();
+	ICalTimetype *itt;
 	gchar *calobj;
 
-	icalcomponent_set_dtstart (vfb, icaltime_from_timet_with_zone (start, FALSE, utc_zone));
-	icalcomponent_set_dtend (vfb, icaltime_from_timet_with_zone (end, FALSE, utc_zone));
+	itt = i_cal_time_from_timet_with_zone (start, FALSE, utc_zone);
+	i_cal_component_set_dtstart (vfb, itt);
+	g_object_unref (itt);
 
-	calobj = icalcomponent_as_ical_string_r (vfb);
+	itt = i_cal_time_from_timet_with_zone (end, FALSE, utc_zone);
+	i_cal_component_set_dtend (vfb, itt);
+	g_object_unref (itt);
+
+	calobj = i_cal_component_as_ical_string_r (vfb);
 	*freebusy = g_slist_append (NULL, calobj);
-	icalcomponent_free (vfb);
+	g_object_unref (vfb);
 }
 
 static void
