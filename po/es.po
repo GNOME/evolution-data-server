@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2019-02-02 16:49+0000\n"
-"PO-Revision-Date: 2019-02-06 10:20+0100\n"
+"POT-Creation-Date: 2019-02-11 10:54+0000\n"
+"PO-Revision-Date: 2019-02-13 12:14+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: es <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -161,7 +161,7 @@ msgstr ""
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1491
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1576
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3085
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3087
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7369
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7438
 #, c-format
@@ -1006,7 +1006,7 @@ msgstr ""
 "Campo de contacto «%s» de tipo «%s» especificado en el resumen, pero sólo se "
 "permiten campos de tipo booleano, cadena y lista de cadenas"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3073
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3075
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4177
 #, c-format
 msgid ""
@@ -6187,6 +6187,74 @@ msgstr ""
 "com — activa la autenticación OAuth2 de “Empresa” OAuth2 para cualquier "
 "fuente “CalDAV”,que lea datos del equipo “caldav.empresa.com” host"
 
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
+msgid ""
+"An OAuth2 client ID to use to connect to Google servers, instead of the one "
+"provided during build time"
+msgstr ""
+"Se usa un ID de cliente OAuth2 para conectarse a servidores de Google, en "
+"lugar de uno proporcionado durante la construcción"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
+msgid ""
+"User-specified OAuth2 client ID for Google servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Usar un ID de cliente OAuth2 para conectarse a servidores de Google. Una "
+"cadena vacía significa que se usa uno proporcionado durante la construcción. "
+"Cambiar esto requiere reiniciar."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
+msgid ""
+"An OAuth2 client secret to use to connect to Google servers, instead of the "
+"one provided during build time"
+msgstr ""
+"Un secreto de cliente OAuth2 que usar para conectarse a servidores de "
+"Google, en lugar de uno proporcionado durante la construcción"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
+msgid ""
+"User-specified OAuth2 client secret for Google servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Usar un secreto de cliente OAuth2 especificado por el usuario para "
+"conectarse a servidores de Google. Una cadena vacía significa que se usa uno "
+"proporcionado durante la construcción. Cambiar esto requiere reiniciar."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
+msgid ""
+"An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
+"provided during build time"
+msgstr ""
+"Usar un ID de cliente OAuth2 para conectarse a servidores de Outlook, en "
+"lugar de uno proporcionado durante la construcción"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
+msgid ""
+"User-specified OAuth2 client ID for Outlook servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Usar un ID de cliente OAuth2 especificado por el usuario para conectarse a "
+"servidores de Google. Una cadena vacía significa que se usa uno "
+"proporcionado durante la construcción. Cambiar esto requiere reiniciar."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
+msgid ""
+"An OAuth2 client secret to use to connect to Outlook servers, instead of the "
+"one provided during build time"
+msgstr ""
+"Usar un secreto de cliente OAuth2 para conectarse a servidores de Outlook, "
+"en lugar de uno proporcionado durante la construcción"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
+msgid ""
+"User-specified OAuth2 client secret for Outlook servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Usar un secreto de cliente OAuth2 especificado por el usuario para "
+"conectarse a servidores de Google. Una cadena vacía significa que se usa uno "
+"proporcionado durante la construcción. Cambiar esto requiere reiniciar."
+
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
 msgstr "(Obsoleto) Tipo de proxy que usar"
@@ -7445,6 +7513,9 @@ msgid ""
 "Overrides compile-time backend per process option; use 1 to enable, 0 to "
 "disable, any other value is to use compile-time option"
 msgstr ""
+"Omite la opción de tiempo de compilación del «backend» por proceso; use 1 "
+"para activar, 0 para desactivar y cualquier otro valor para usar la opción "
+"de tiempo de compilación"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:227
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:255
