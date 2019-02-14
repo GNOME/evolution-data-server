@@ -71,8 +71,8 @@ test_check_search_result (const GSList *list,
 
 			component = e_cal_component_new_from_string (sd->object);
 			g_assert (E_IS_CAL_COMPONENT (component));
-			g_assert_cmpstr (uid, ==, icalcomponent_get_uid (e_cal_component_get_icalcomponent (component)));
-			g_assert_nonnull (icalcomponent_get_summary (e_cal_component_get_icalcomponent (component)));
+			g_assert_cmpstr (uid, ==, e_cal_component_get_uid (component));
+			g_assert_nonnull (i_cal_component_get_summary (e_cal_component_get_icalcomponent (component)));
 
 			g_clear_object (&component);
 		} else {
@@ -272,7 +272,7 @@ test_check_edit_saved (TCUFixture *fixture,
 	g_assert (e_cal_cache_get_component (fixture->cal_cache, uid, NULL, &component, NULL, &error));
 	g_assert_no_error (error);
 	g_assert_nonnull (component);
-	g_assert_cmpstr (icalcomponent_get_summary (e_cal_component_get_icalcomponent (component)), ==, summ_value);
+	g_assert_cmpstr (i_cal_component_get_summary (e_cal_component_get_icalcomponent (component)), ==, summ_value);
 
 	g_clear_object (&component);
 }
@@ -315,7 +315,7 @@ test_verify_storage (TCUFixture *fixture,
 	g_assert_no_error (error);
 
 	g_assert_cmpstr (saved_extra, ==, expect_extra);
-	g_assert_cmpstr (icalcomponent_get_summary (e_cal_component_get_icalcomponent (component)), ==, expect_summ);
+	g_assert_cmpstr (i_cal_component_get_summary (e_cal_component_get_icalcomponent (component)), ==, expect_summ);
 
 	g_clear_object (&component);
 	g_free (saved_extra);
@@ -372,7 +372,7 @@ test_offline_basics (TCUFixture *fixture,
 	test_fill_cache (fixture, &component);
 	g_assert_nonnull (component);
 
-	uid = icalcomponent_get_uid (e_cal_component_get_icalcomponent (component));
+	uid = e_cal_component_get_uid (component);
 	g_assert_nonnull (uid);
 
 	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->cal_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
@@ -397,7 +397,7 @@ test_offline_basics (TCUFixture *fixture,
 	g_slist_free_full (ids, e_cal_component_id_free);
 	ids = NULL;
 
-	icalcomponent_set_summary (e_cal_component_get_icalcomponent (component), "summ-0");
+	i_cal_component_set_summary (e_cal_component_get_icalcomponent (component), "summ-0");
 
 	test_check_offline_state (fixture, uid, E_OFFLINE_STATE_SYNCED);
 
@@ -450,7 +450,7 @@ test_offline_basics (TCUFixture *fixture,
 	test_check_offline_changes (fixture, NULL);
 
 	/* Edit in online */
-	icalcomponent_set_summary (e_cal_component_get_icalcomponent (component), "summ-1");
+	i_cal_component_set_summary (e_cal_component_get_icalcomponent (component), "summ-1");
 
 	g_assert (e_cal_cache_put_component (fixture->cal_cache, component, NULL, E_CACHE_IS_ONLINE, NULL, &error));
 	g_assert_no_error (error);
@@ -458,7 +458,7 @@ test_offline_basics (TCUFixture *fixture,
 	test_verify_storage (fixture, uid, "summ-1", NULL, E_OFFLINE_STATE_SYNCED);
 	test_check_offline_changes (fixture, NULL);
 
-	icalcomponent_set_summary (e_cal_component_get_icalcomponent (component), "summ-2");
+	i_cal_component_set_summary (e_cal_component_get_icalcomponent (component), "summ-2");
 
 	g_assert (e_cal_cache_put_component (fixture->cal_cache, component, "extra-2", E_CACHE_IS_ONLINE, NULL, &error));
 	g_assert_no_error (error);
@@ -531,7 +531,7 @@ test_offline_add_one (TCUFixture *fixture,
 		component = tcu_new_component_from_test_case (case_name);
 		g_assert_nonnull (component);
 
-		uid = icalcomponent_get_uid (e_cal_component_get_icalcomponent (component));
+		uid = e_cal_component_get_uid (component);
 		g_assert_nonnull (uid);
 
 		test_check_offline_state (fixture, uid, E_OFFLINE_STATE_UNKNOWN);
@@ -614,7 +614,7 @@ test_offline_add_edit (TCUFixture *fixture,
 		NULL);
 
 	/* Modify added in offline */
-	icalcomponent_set_summary (e_cal_component_get_icalcomponent (component), "summ-2");
+	i_cal_component_set_summary (e_cal_component_get_icalcomponent (component), "summ-2");
 
 	g_assert (e_cal_cache_put_component (fixture->cal_cache, component, NULL, E_CACHE_IS_OFFLINE, NULL, &error));
 	g_assert_no_error (error);
@@ -654,7 +654,7 @@ test_offline_add_delete (TCUFixture *fixture,
 		"event-3", E_OFFLINE_STATE_LOCALLY_CREATED,
 		NULL);
 
-	uid = icalcomponent_get_uid (e_cal_component_get_icalcomponent (component));
+	uid = e_cal_component_get_uid (component);
 	g_assert_nonnull (uid);
 
 	/* Delete added in offline */
@@ -693,7 +693,7 @@ test_offline_add_delete_add (TCUFixture *fixture,
 		"event-3", E_OFFLINE_STATE_LOCALLY_CREATED,
 		NULL);
 
-	uid = icalcomponent_get_uid (e_cal_component_get_icalcomponent (component));
+	uid = e_cal_component_get_uid (component);
 	g_assert_nonnull (uid);
 
 	/* Delete added in offline */
@@ -759,7 +759,7 @@ test_offline_edit_common (TCUFixture *fixture,
 	test_fill_cache (fixture, &component);
 	g_assert_nonnull (component);
 
-	uid = icalcomponent_get_uid (e_cal_component_get_icalcomponent (component));
+	uid = e_cal_component_get_uid (component);
 	g_assert_nonnull (uid);
 
 	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->cal_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
@@ -769,7 +769,7 @@ test_offline_edit_common (TCUFixture *fixture,
 	test_check_offline_state (fixture, uid, E_OFFLINE_STATE_SYNCED);
 
 	/* Modify in offline */
-	icalcomponent_set_summary (e_cal_component_get_icalcomponent (component), "summ-2");
+	i_cal_component_set_summary (e_cal_component_get_icalcomponent (component), "summ-2");
 
 	g_assert (e_cal_cache_put_component (fixture->cal_cache, component, NULL, E_CACHE_IS_OFFLINE, NULL, &error));
 	g_assert_no_error (error);
@@ -865,7 +865,7 @@ test_offline_delete (TCUFixture *fixture,
 	test_fill_cache (fixture, &component);
 	g_assert_nonnull (component);
 
-	uid = icalcomponent_get_uid (e_cal_component_get_icalcomponent (component));
+	uid = e_cal_component_get_uid (component);
 	g_assert_nonnull (uid);
 
 	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->cal_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
@@ -903,7 +903,7 @@ test_offline_delete_add (TCUFixture *fixture,
 	test_fill_cache (fixture, &component);
 	g_assert_nonnull (component);
 
-	uid = icalcomponent_get_uid (e_cal_component_get_icalcomponent (component));
+	uid = e_cal_component_get_uid (component);
 	g_assert_nonnull (uid);
 
 	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->cal_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
@@ -952,7 +952,7 @@ test_offline_delete_add (TCUFixture *fixture,
 	test_check_offline_state (fixture, "event-3", E_OFFLINE_STATE_LOCALLY_CREATED);
 
 	/* Modify the previous component and add it again */
-	icalcomponent_set_summary (e_cal_component_get_icalcomponent (component), "summ-3");
+	i_cal_component_set_summary (e_cal_component_get_icalcomponent (component), "summ-3");
 
 	g_assert (e_cal_cache_put_component (fixture->cal_cache, component, NULL, E_CACHE_IS_OFFLINE, NULL, &error));
 	g_assert_no_error (error);
@@ -986,7 +986,7 @@ test_offline_delete_resync (TCUFixture *fixture,
 	test_fill_cache (fixture, &component);
 	g_assert_nonnull (component);
 
-	uid = icalcomponent_get_uid (e_cal_component_get_icalcomponent (component));
+	uid = e_cal_component_get_uid (component);
 	g_assert_nonnull (uid);
 
 	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->cal_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);

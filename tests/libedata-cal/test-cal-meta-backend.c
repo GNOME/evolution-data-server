@@ -37,7 +37,7 @@ void _e_cal_backend_remove_cached_timezones (ECalBackend *cal_backend); /* e-cal
 typedef struct _ECalMetaBackendTest {
 	ECalMetaBackend parent;
 
-	icalcomponent *vcalendar;
+	ICalComponent *vcalendar;
 
 	gint sync_tag_index;
 	gboolean can_connect;
@@ -70,7 +70,7 @@ ecmb_test_add_test_case (ECalMetaBackendTest *test_backend,
 			 const gchar *case_name)
 {
 	gchar *icalstr;
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 
 	g_assert_nonnull (test_backend);
 	g_assert_nonnull (case_name);
@@ -78,11 +78,29 @@ ecmb_test_add_test_case (ECalMetaBackendTest *test_backend,
 	icalstr = tcu_new_icalstring_from_test_case (case_name);
 	g_assert_nonnull (icalstr);
 
-	icalcomp = icalcomponent_new_from_string (icalstr);
-	g_assert_nonnull (icalcomp);
+	icomp = i_cal_component_new_from_string (icalstr);
+	g_assert_nonnull (icomp);
 	g_free (icalstr);
 
-	icalcomponent_add_component (test_backend->vcalendar, icalcomp);
+	i_cal_component_take_component (test_backend->vcalendar, icomp);
+}
+
+static gchar *
+ecmb_test_get_rid_as_string (ICalComponent *icomp)
+{
+	gchar *rid;
+
+	g_assert_nonnull (icomp);
+
+	if (e_cal_util_component_has_property (icomp, I_CAL_RECURRENCEID_PROPERTY)) {
+		ICalTimetype *itt;
+
+		itt = i_cal_component_get_recurrenceid (icomp);
+		rid = i_cal_time_as_ical_string_r (itt);
+		g_clear_object (&itt);
+	}
+
+	return rid;
 }
 
 static void
@@ -90,7 +108,7 @@ ecmb_test_remove_component (ECalMetaBackendTest *test_backend,
 			    const gchar *uid,
 			    const gchar *rid)
 {
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 
 	g_assert_nonnull (test_backend);
 	g_assert_nonnull (uid);
@@ -98,22 +116,27 @@ ecmb_test_remove_component (ECalMetaBackendTest *test_backend,
 	if (rid && !*rid)
 		rid = NULL;
 
-	for (icalcomp = icalcomponent_get_first_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT);
-	     icalcomp;) {
+	for (icomp = i_cal_component_get_first_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT);
+	     icomp;) {
 		const gchar *server_uid;
+		gchar *server_rid = NULL;
 
-		server_uid = icalcomponent_get_uid (icalcomp);
+		server_uid = i_cal_component_get_uid (icomp);
 		g_assert_nonnull (server_uid);
 
-		if (g_str_equal (server_uid, uid) && (!rid || !*rid ||
-		    (icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY) &&
-		    g_str_equal (rid, icaltime_as_ical_string (icalcomponent_get_recurrenceid (icalcomp)))))) {
-			icalcomponent_remove_component (test_backend->vcalendar, icalcomp);
-			icalcomponent_free (icalcomp);
+		server_rid = ecmb_test_get_rid_as_string (icomp);
 
-			icalcomp = icalcomponent_get_first_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT);
+		if (g_str_equal (server_uid, uid) && (!rid || !*rid || (server_rid && g_str_equal (rid, server_rid)))) {
+			i_cal_component_remove_component (test_backend->vcalendar, icomp);
+			g_object_unref (icomp);
+			g_free (server_rid);
+
+			icomp = i_cal_component_get_first_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT);
 		} else {
-			icalcomp = icalcomponent_get_next_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT);
+			g_object_unref (icomp);
+			g_free (server_rid);
+
+			icomp = i_cal_component_get_next_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT);
 		}
 	}
 }
@@ -139,18 +162,18 @@ ecmb_test_gather_ids (va_list args)
 }
 
 static void
-ecmb_test_vcalendar_contains (icalcomponent *vcalendar,
+ecmb_test_vcalendar_contains (ICalComponent *vcalendar,
 			      gboolean negate,
 			      gboolean exact,
 			      ...) /* <uid, rid> pairs, ended with NULL */
 {
 	va_list args;
 	GHashTable *expects;
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 	guint ntotal;
 
 	g_return_if_fail (vcalendar != NULL);
-	g_return_if_fail (icalcomponent_isa (vcalendar) == ICAL_VCALENDAR_COMPONENT);
+	g_return_if_fail (i_cal_component_isa (vcalendar) == I_CAL_VCALENDAR_COMPONENT);
 
 	va_start (args, exact);
 	expects = ecmb_test_gather_ids (args);
@@ -158,25 +181,23 @@ ecmb_test_vcalendar_contains (icalcomponent *vcalendar,
 
 	ntotal = g_hash_table_size (expects);
 
-	for (icalcomp = icalcomponent_get_first_component (vcalendar, ICAL_VEVENT_COMPONENT);
-	     icalcomp;
-	     icalcomp = icalcomponent_get_next_component (vcalendar, ICAL_VEVENT_COMPONENT)) {
-		ECalComponentId id;
+	for (icomp = i_cal_component_get_first_component (vcalendar, I_CAL_VEVENT_COMPONENT);
+	     icomp;
+	     g_object_unref (icomp), icomp = i_cal_component_get_next_component (vcalendar, I_CAL_VEVENT_COMPONENT)) {
+		ECalComponentId *id;
 
-		id.uid = (gpointer) icalcomponent_get_uid (icalcomp);
-		if (icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY))
-			id.rid = (gpointer) icaltime_as_ical_string (icalcomponent_get_recurrenceid (icalcomp));
-		else
-			id.rid = NULL;
+		id = e_cal_component_id_new_take (g_strdup (i_cal_component_get_uid (icomp)), ecmb_test_get_rid_as_string (icomp));
 
 		if (exact) {
 			if (negate)
-				g_assert (!g_hash_table_remove (expects, &id));
+				g_assert (!g_hash_table_remove (expects, id));
 			else
-				g_assert (g_hash_table_remove (expects, &id));
+				g_assert (g_hash_table_remove (expects, id));
 		} else {
-			g_hash_table_remove (expects, &id);
+			g_hash_table_remove (expects, id);
 		}
+
+		e_cal_component_id_free (id);
 	}
 
 	if (negate)
@@ -228,27 +249,29 @@ ecmb_test_cache_contains (ECalCache *cal_cache,
 
 static void
 ecmb_test_cache_and_server_equal (ECalCache *cal_cache,
-				  icalcomponent *vcalendar,
+				  ICalComponent *vcalendar,
 				  ECacheDeletedFlag deleted_flag)
 {
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 
 	g_return_if_fail (E_IS_CAL_CACHE (cal_cache));
 	g_return_if_fail (vcalendar != NULL);
 
 	g_assert_cmpint (e_cache_get_count (E_CACHE (cal_cache), deleted_flag, NULL, NULL), ==,
-		icalcomponent_count_components (vcalendar, ICAL_VEVENT_COMPONENT));
+		i_cal_component_count_components (vcalendar, I_CAL_VEVENT_COMPONENT));
 
-	for (icalcomp = icalcomponent_get_first_component (vcalendar, ICAL_VEVENT_COMPONENT);
-	     icalcomp;
-	     icalcomp = icalcomponent_get_next_component (vcalendar, ICAL_VEVENT_COMPONENT)) {
-		const gchar *uid, *rid = NULL;
+	for (icomp = i_cal_component_get_first_component (vcalendar, I_CAL_VEVENT_COMPONENT);
+	     icomp;
+	     g_object_unref (icomp), icomp = i_cal_component_get_next_component (vcalendar, I_CAL_VEVENT_COMPONENT)) {
+		const gchar *uid;
+		gchar *rid = NULL;
 
-		uid = icalcomponent_get_uid (icalcomp);
-		if (icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY))
-			rid = icaltime_as_ical_string (icalcomponent_get_recurrenceid (icalcomp));
+		uid = i_cal_component_get_uid (icomp);
+		rid = ecmb_test_get_rid_as_string (icomp);
 
 		g_assert (e_cal_cache_contains (cal_cache, uid, rid, deleted_flag));
+
+		g_free (rid);
 	}
 }
 
@@ -369,7 +392,7 @@ e_cal_meta_backend_test_list_existing_sync (ECalMetaBackend *meta_backend,
 {
 	ECalMetaBackendTest *test_backend;
 	ECalCache *cal_cache;
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 
 	g_return_val_if_fail (E_IS_CAL_META_BACKEND_TEST (meta_backend), FALSE);
 	g_return_val_if_fail (out_new_sync_tag, FALSE);
@@ -385,19 +408,19 @@ e_cal_meta_backend_test_list_existing_sync (ECalMetaBackend *meta_backend,
 
 	*out_existing_objects = NULL;
 
-	for (icalcomp = icalcomponent_get_first_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT);
-	     icalcomp;
-	     icalcomp = icalcomponent_get_next_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT)) {
+	for (icomp = i_cal_component_get_first_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT);
+	     icomp;
+	     g_object_unref (icomp), icomp = i_cal_component_get_next_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT)) {
 		const gchar *uid;
 		gchar *revision;
 		ECalMetaBackendInfo *nfo;
 
 		/* Detached instances are stored together with the master object */
-		if (icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY))
+		if (e_cal_util_component_has_property (icomp, I_CAL_RECURRENCEID_PROPERTY))
 			continue;
 
-		uid = icalcomponent_get_uid (icalcomp);
-		revision = e_cal_cache_dup_component_revision (cal_cache, icalcomp);
+		uid = i_cal_component_get_uid (icomp);
+		revision = e_cal_cache_dup_component_revision (cal_cache, icomp);
 
 		nfo = e_cal_meta_backend_info_new (uid, revision, NULL, NULL);
 		*out_existing_objects = g_slist_prepend (*out_existing_objects, nfo);
@@ -422,7 +445,7 @@ e_cal_meta_backend_test_save_component_sync (ECalMetaBackend *meta_backend,
 					     GError **error)
 {
 	ECalMetaBackendTest *test_backend;
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 	const gchar *uid;
 	GSList *link;
 
@@ -435,14 +458,14 @@ e_cal_meta_backend_test_save_component_sync (ECalMetaBackend *meta_backend,
 
 	g_assert (test_backend->is_connected);
 
-	uid = icalcomponent_get_uid (e_cal_component_get_icalcomponent (instances->data));
+	uid = e_cal_component_get_uid (instances->data);
 	g_assert_nonnull (uid);
 
-	for (icalcomp = icalcomponent_get_first_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT);
-	     icalcomp;) {
+	for (icomp = i_cal_component_get_first_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT);
+	     icomp;) {
 		const gchar *server_uid;
 
-		server_uid = icalcomponent_get_uid (icalcomp);
+		server_uid = i_cal_component_get_uid (icomp);
 		g_assert_nonnull (server_uid);
 
 		if (g_str_equal (server_uid, uid)) {
@@ -451,12 +474,13 @@ e_cal_meta_backend_test_save_component_sync (ECalMetaBackend *meta_backend,
 				return FALSE;
 			}
 
-			icalcomponent_remove_component (test_backend->vcalendar, icalcomp);
-			icalcomponent_free (icalcomp);
+			i_cal_component_remove_component (test_backend->vcalendar, icomp);
+			g_object_unref (icomp);
 
-			icalcomp = icalcomponent_get_first_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT);
+			icomp = i_cal_component_get_first_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT);
 		} else {
-			icalcomp = icalcomponent_get_next_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT);
+			g_object_unref (icomp);
+			icomp = i_cal_component_get_next_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT);
 		}
 	}
 
@@ -464,13 +488,13 @@ e_cal_meta_backend_test_save_component_sync (ECalMetaBackend *meta_backend,
 		ECalComponent *comp = link->data;
 		const gchar *comp_uid;
 
-		icalcomp = e_cal_component_get_icalcomponent (comp);
-		g_assert_nonnull (icalcomp);
+		icomp = e_cal_component_get_icalcomponent (comp);
+		g_assert_nonnull (icomp);
 
-		comp_uid = icalcomponent_get_uid (icalcomp);
+		comp_uid = i_cal_component_get_uid (icomp);
 		g_assert_cmpstr (uid, ==, comp_uid);
 
-		icalcomponent_add_component (test_backend->vcalendar, icalcomponent_new_clone (icalcomp));
+		i_cal_component_take_component (test_backend->vcalendar, i_cal_component_new_clone (icomp));
 	}
 
 	*out_new_uid = g_strdup (uid);
@@ -482,13 +506,13 @@ static gboolean
 e_cal_meta_backend_test_load_component_sync (ECalMetaBackend *meta_backend,
 					     const gchar *uid,
 					     const gchar *extra,
-					     icalcomponent **out_instances,
+					     ICalComponent **out_instances,
 					     gchar **out_extra,
 					     GCancellable *cancellable,
 					     GError **error)
 {
 	ECalMetaBackendTest *test_backend;
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 
 	g_return_val_if_fail (E_IS_CAL_META_BACKEND_TEST (meta_backend), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
@@ -502,19 +526,19 @@ e_cal_meta_backend_test_load_component_sync (ECalMetaBackend *meta_backend,
 
 	*out_instances = NULL;
 
-	for (icalcomp = icalcomponent_get_first_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT);
-	     icalcomp;
-	     icalcomp = icalcomponent_get_next_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT)) {
+	for (icomp = i_cal_component_get_first_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT);
+	     icomp;
+	     g_object_unref (icomp), icomp = i_cal_component_get_next_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT)) {
 		const gchar *server_uid;
 
-		server_uid = icalcomponent_get_uid (icalcomp);
+		server_uid = i_cal_component_get_uid (icomp);
 		g_assert_nonnull (server_uid);
 
 		if (g_str_equal (server_uid, uid)) {
 			if (!*out_instances)
 				*out_instances = e_cal_util_new_top_level ();
 
-			icalcomponent_add_component (*out_instances, icalcomponent_new_clone (icalcomp));
+			i_cal_component_take_component (*out_instances, i_cal_component_new_clone (icomp));
 		}
 	}
 
@@ -538,7 +562,7 @@ e_cal_meta_backend_test_remove_component_sync (ECalMetaBackend *meta_backend,
 					       GError **error)
 {
 	ECalMetaBackendTest *test_backend;
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 	gboolean success = FALSE;
 
 	g_return_val_if_fail (E_IS_CAL_META_BACKEND_TEST (meta_backend), FALSE);
@@ -550,11 +574,11 @@ e_cal_meta_backend_test_remove_component_sync (ECalMetaBackend *meta_backend,
 
 	g_assert (test_backend->is_connected);
 
-	for (icalcomp = icalcomponent_get_first_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT);
-	     icalcomp;) {
+	for (icomp = i_cal_component_get_first_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT);
+	     icomp;) {
 		const gchar *server_uid;
 
-		server_uid = icalcomponent_get_uid (icalcomp);
+		server_uid = i_cal_component_get_uid (icomp);
 		g_assert_nonnull (server_uid);
 
 		if (g_str_equal (server_uid, uid)) {
@@ -568,12 +592,13 @@ e_cal_meta_backend_test_remove_component_sync (ECalMetaBackend *meta_backend,
 
 			success = TRUE;
 
-			icalcomponent_remove_component (test_backend->vcalendar, icalcomp);
-			icalcomponent_free (icalcomp);
+			i_cal_component_remove_component (test_backend->vcalendar, icomp);
+			g_object_unref (icomp);
 
-			icalcomp = icalcomponent_get_first_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT);
+			icomp = i_cal_component_get_first_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT);
 		} else {
-			icalcomp = icalcomponent_get_next_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT);
+			g_object_unref (icomp);
+			icomp = i_cal_component_get_next_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT);
 		}
 	}
 
@@ -618,7 +643,7 @@ e_cal_meta_backend_test_finalize (GObject *object)
 
 	g_assert_nonnull (test_backend->vcalendar);
 
-	icalcomponent_free (test_backend->vcalendar);
+	g_object_unref (test_backend->vcalendar);
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (e_cal_meta_backend_test_parent_class)->finalize (object);
@@ -788,12 +813,12 @@ e_cal_meta_backend_test_call_refresh (ECalMetaBackend *meta_backend)
 }
 
 static void
-assert_tzid_matches_cb (icalparameter *param,
+assert_tzid_matches_cb (ICalParameter *param,
 			gpointer user_data)
 {
 	const gchar *expected_tzid = user_data;
 
-	g_assert_cmpstr (icalparameter_get_tzid (param), ==, expected_tzid);
+	g_assert_cmpstr (i_cal_parameter_get_tzid (param), ==, expected_tzid);
 }
 
 static void
@@ -802,8 +827,8 @@ test_merge_instances (TCUFixture *fixture,
 {
 	ECalMetaBackend *meta_backend;
 	GSList *instances = NULL;
-	icalcomponent *icalcomp, *subcomp;
-	icalproperty *prop;
+	ICalComponent *icomp, *subcomp;
+	ICalProperty *prop;
 	gboolean success;
 	GError *error = NULL;
 
@@ -817,28 +842,30 @@ test_merge_instances (TCUFixture *fixture,
 	g_assert_nonnull (instances);
 
 	/* TZID as is */
-	icalcomp = e_cal_meta_backend_merge_instances (meta_backend, instances, FALSE);
-	g_assert_nonnull (icalcomp);
-	g_assert_cmpint (icalcomponent_isa (icalcomp), ==, ICAL_VCALENDAR_COMPONENT);
-	g_assert_cmpint (icalcomponent_count_components (icalcomp, ICAL_ANY_COMPONENT), ==, 1);
+	icomp = e_cal_meta_backend_merge_instances (meta_backend, instances, FALSE);
+	g_assert_nonnull (icomp);
+	g_assert_cmpint (i_cal_component_isa (icomp), ==, I_CAL_VCALENDAR_COMPONENT);
+	g_assert_cmpint (i_cal_component_count_components (icomp, I_CAL_ANY_COMPONENT), ==, 1);
 
-	subcomp = icalcomponent_get_first_component (icalcomp, ICAL_ANY_COMPONENT);
+	subcomp = i_cal_component_get_first_component (icomp, I_CAL_ANY_COMPONENT);
 	g_assert_nonnull (subcomp);
-	g_assert_cmpint (icalcomponent_isa (subcomp), ==, ICAL_VEVENT_COMPONENT);
+	g_assert_cmpint (i_cal_component_isa (subcomp), ==, I_CAL_VEVENT_COMPONENT);
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (subcomp);
+	g_object_unref (icomp);
 
 	/* TZID as location */
-	icalcomp = e_cal_meta_backend_merge_instances (meta_backend, instances, TRUE);
-	g_assert_nonnull (icalcomp);
-	g_assert_cmpint (icalcomponent_isa (icalcomp), ==, ICAL_VCALENDAR_COMPONENT);
-	g_assert_cmpint (icalcomponent_count_components (icalcomp, ICAL_ANY_COMPONENT), ==, 1);
+	icomp = e_cal_meta_backend_merge_instances (meta_backend, instances, TRUE);
+	g_assert_nonnull (icomp);
+	g_assert_cmpint (i_cal_component_isa (icomp), ==, I_CAL_VCALENDAR_COMPONENT);
+	g_assert_cmpint (i_cal_component_count_components (icomp, I_CAL_ANY_COMPONENT), ==, 1);
 
-	subcomp = icalcomponent_get_first_component (icalcomp, ICAL_ANY_COMPONENT);
+	subcomp = i_cal_component_get_first_component (icomp, I_CAL_ANY_COMPONENT);
 	g_assert_nonnull (subcomp);
-	g_assert_cmpint (icalcomponent_isa (subcomp), ==, ICAL_VEVENT_COMPONENT);
+	g_assert_cmpint (i_cal_component_isa (subcomp), ==, I_CAL_VEVENT_COMPONENT);
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (subcomp);
+	g_object_unref (icomp);
 
 	g_slist_free_full (instances, g_object_unref);
 	instances = NULL;
@@ -850,48 +877,56 @@ test_merge_instances (TCUFixture *fixture,
 	g_assert_nonnull (instances);
 
 	/* TZID as is */
-	icalcomp = e_cal_meta_backend_merge_instances (meta_backend, instances, FALSE);
-	g_assert_nonnull (icalcomp);
-	g_assert_cmpint (icalcomponent_isa (icalcomp), ==, ICAL_VCALENDAR_COMPONENT);
-	g_assert_cmpint (icalcomponent_count_components (icalcomp, ICAL_ANY_COMPONENT), ==, 2);
-	g_assert_cmpint (icalcomponent_count_components (icalcomp, ICAL_VTIMEZONE_COMPONENT), ==, 1);
-	g_assert_cmpint (icalcomponent_count_components (icalcomp, ICAL_VEVENT_COMPONENT), ==, 1);
+	icomp = e_cal_meta_backend_merge_instances (meta_backend, instances, FALSE);
+	g_assert_nonnull (icomp);
+	g_assert_cmpint (i_cal_component_isa (icomp), ==, I_CAL_VCALENDAR_COMPONENT);
+	g_assert_cmpint (i_cal_component_count_components (icomp, I_CAL_ANY_COMPONENT), ==, 2);
+	g_assert_cmpint (i_cal_component_count_components (icomp, I_CAL_VTIMEZONE_COMPONENT), ==, 1);
+	g_assert_cmpint (i_cal_component_count_components (icomp, I_CAL_VEVENT_COMPONENT), ==, 1);
 
-	subcomp = icalcomponent_get_first_component (icalcomp, ICAL_VTIMEZONE_COMPONENT);
+	subcomp = i_cal_component_get_first_component (icomp, I_CAL_VTIMEZONE_COMPONENT);
 	g_assert_nonnull (subcomp);
-	g_assert_cmpint (icalcomponent_isa (subcomp), ==, ICAL_VTIMEZONE_COMPONENT);
+	g_assert_cmpint (i_cal_component_isa (subcomp), ==, I_CAL_VTIMEZONE_COMPONENT);
 
-	prop = icalcomponent_get_first_property (subcomp, ICAL_TZID_PROPERTY);
+	prop = i_cal_component_get_first_property (subcomp, I_CAL_TZID_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert_cmpstr (icalproperty_get_tzid (prop), ==, EXPECTED_TZID);
+	g_assert_cmpstr (i_cal_property_get_tzid (prop), ==, EXPECTED_TZID);
 
-	subcomp = icalcomponent_get_first_component (icalcomp, ICAL_VEVENT_COMPONENT);
+	g_object_unref (prop);
+	g_object_unref (subcomp);
+
+	subcomp = i_cal_component_get_first_component (icomp, I_CAL_VEVENT_COMPONENT);
 	g_assert_nonnull (subcomp);
-	icalcomponent_foreach_tzid (subcomp, assert_tzid_matches_cb, (gpointer) icalproperty_get_tzid (prop));
+	i_cal_component_foreach_tzid (subcomp, assert_tzid_matches_cb, (gpointer) EXPECTED_TZID);
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (subcomp);
+	g_object_unref (icomp);
 
 	/* TZID to location */
-	icalcomp = e_cal_meta_backend_merge_instances (meta_backend, instances, TRUE);
-	g_assert_nonnull (icalcomp);
-	g_assert_cmpint (icalcomponent_isa (icalcomp), ==, ICAL_VCALENDAR_COMPONENT);
-	g_assert_cmpint (icalcomponent_count_components (icalcomp, ICAL_ANY_COMPONENT), ==, 2);
-	g_assert_cmpint (icalcomponent_count_components (icalcomp, ICAL_VTIMEZONE_COMPONENT), ==, 1);
-	g_assert_cmpint (icalcomponent_count_components (icalcomp, ICAL_VEVENT_COMPONENT), ==, 1);
+	icomp = e_cal_meta_backend_merge_instances (meta_backend, instances, TRUE);
+	g_assert_nonnull (icomp);
+	g_assert_cmpint (i_cal_component_isa (icomp), ==, I_CAL_VCALENDAR_COMPONENT);
+	g_assert_cmpint (i_cal_component_count_components (icomp, I_CAL_ANY_COMPONENT), ==, 2);
+	g_assert_cmpint (i_cal_component_count_components (icomp, I_CAL_VTIMEZONE_COMPONENT), ==, 1);
+	g_assert_cmpint (i_cal_component_count_components (icomp, I_CAL_VEVENT_COMPONENT), ==, 1);
 
-	subcomp = icalcomponent_get_first_component (icalcomp, ICAL_VTIMEZONE_COMPONENT);
+	subcomp = i_cal_component_get_first_component (icomp, I_CAL_VTIMEZONE_COMPONENT);
 	g_assert_nonnull (subcomp);
-	g_assert_cmpint (icalcomponent_isa (subcomp), ==, ICAL_VTIMEZONE_COMPONENT);
+	g_assert_cmpint (i_cal_component_isa (subcomp), ==, I_CAL_VTIMEZONE_COMPONENT);
 
-	prop = icalcomponent_get_first_property (subcomp, ICAL_TZID_PROPERTY);
+	prop = i_cal_component_get_first_property (subcomp, I_CAL_TZID_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert_cmpstr (icalproperty_get_tzid (prop), ==, EXPECTED_LOCATION);
+	g_assert_cmpstr (i_cal_property_get_tzid (prop), ==, EXPECTED_LOCATION);
 
-	subcomp = icalcomponent_get_first_component (icalcomp, ICAL_VEVENT_COMPONENT);
+	g_object_unref (prop);
+	g_object_unref (subcomp);
+
+	subcomp = i_cal_component_get_first_component (icomp, I_CAL_VEVENT_COMPONENT);
 	g_assert_nonnull (subcomp);
-	icalcomponent_foreach_tzid (subcomp, assert_tzid_matches_cb, (gpointer) icalproperty_get_tzid (prop));
+	i_cal_component_foreach_tzid (subcomp, assert_tzid_matches_cb, (gpointer) EXPECTED_LOCATION);
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (subcomp);
+	g_object_unref (icomp);
 	g_slist_free_full (instances, g_object_unref);
 	instances = NULL;
 
@@ -902,63 +937,74 @@ test_merge_instances (TCUFixture *fixture,
 	g_assert_nonnull (instances);
 
 	/* TZID as is */
-	icalcomp = e_cal_meta_backend_merge_instances (meta_backend, instances, FALSE);
-	g_assert_nonnull (icalcomp);
-	g_assert_cmpint (icalcomponent_isa (icalcomp), ==, ICAL_VCALENDAR_COMPONENT);
-	g_assert_cmpint (icalcomponent_count_components (icalcomp, ICAL_ANY_COMPONENT), ==, 3);
-	g_assert_cmpint (icalcomponent_count_components (icalcomp, ICAL_VTIMEZONE_COMPONENT), ==, 1);
-	g_assert_cmpint (icalcomponent_count_components (icalcomp, ICAL_VEVENT_COMPONENT), ==, 2);
+	icomp = e_cal_meta_backend_merge_instances (meta_backend, instances, FALSE);
+	g_assert_nonnull (icomp);
+	g_assert_cmpint (i_cal_component_isa (icomp), ==, I_CAL_VCALENDAR_COMPONENT);
+	g_assert_cmpint (i_cal_component_count_components (icomp, I_CAL_ANY_COMPONENT), ==, 3);
+	g_assert_cmpint (i_cal_component_count_components (icomp, I_CAL_VTIMEZONE_COMPONENT), ==, 1);
+	g_assert_cmpint (i_cal_component_count_components (icomp, I_CAL_VEVENT_COMPONENT), ==, 2);
 
-	subcomp = icalcomponent_get_first_component (icalcomp, ICAL_VTIMEZONE_COMPONENT);
+	subcomp = i_cal_component_get_first_component (icomp, I_CAL_VTIMEZONE_COMPONENT);
 	g_assert_nonnull (subcomp);
-	g_assert_cmpint (icalcomponent_isa (subcomp), ==, ICAL_VTIMEZONE_COMPONENT);
+	g_assert_cmpint (i_cal_component_isa (subcomp), ==, I_CAL_VTIMEZONE_COMPONENT);
 
-	prop = icalcomponent_get_first_property (subcomp, ICAL_TZID_PROPERTY);
+	prop = i_cal_component_get_first_property (subcomp, I_CAL_TZID_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert_cmpstr (icalproperty_get_tzid (prop), ==, EXPECTED_LOCATION);
+	g_assert_cmpstr (i_cal_property_get_tzid (prop), ==, EXPECTED_LOCATION);
 
-	subcomp = icalcomponent_get_first_component (icalcomp, ICAL_VEVENT_COMPONENT);
+	g_object_unref (subcomp);
+	g_object_unref (prop);
+
+	subcomp = i_cal_component_get_first_component (icomp, I_CAL_VEVENT_COMPONENT);
 	g_assert_nonnull (subcomp);
-	icalcomponent_foreach_tzid (subcomp, assert_tzid_matches_cb, (gpointer) icalproperty_get_tzid (prop));
+	i_cal_component_foreach_tzid (subcomp, assert_tzid_matches_cb, (gpointer) EXPECTED_LOCATION);
 
-	subcomp = icalcomponent_get_next_component (icalcomp, ICAL_VEVENT_COMPONENT);
+	g_object_unref (subcomp);
+
+	subcomp = i_cal_component_get_next_component (icomp, I_CAL_VEVENT_COMPONENT);
 	g_assert_nonnull (subcomp);
-	icalcomponent_foreach_tzid (subcomp, assert_tzid_matches_cb, (gpointer) icalproperty_get_tzid (prop));
+	i_cal_component_foreach_tzid (subcomp, assert_tzid_matches_cb, (gpointer) EXPECTED_LOCATION);
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (subcomp);
+	g_object_unref (icomp);
 
 	/* TZID to location */
-	icalcomp = e_cal_meta_backend_merge_instances (meta_backend, instances, TRUE);
-	g_assert_nonnull (icalcomp);
-	g_assert_cmpint (icalcomponent_isa (icalcomp), ==, ICAL_VCALENDAR_COMPONENT);
-	g_assert_cmpint (icalcomponent_count_components (icalcomp, ICAL_ANY_COMPONENT), ==, 3);
-	g_assert_cmpint (icalcomponent_count_components (icalcomp, ICAL_VTIMEZONE_COMPONENT), ==, 1);
-	g_assert_cmpint (icalcomponent_count_components (icalcomp, ICAL_VEVENT_COMPONENT), ==, 2);
+	icomp = e_cal_meta_backend_merge_instances (meta_backend, instances, TRUE);
+	g_assert_nonnull (icomp);
+	g_assert_cmpint (i_cal_component_isa (icomp), ==, I_CAL_VCALENDAR_COMPONENT);
+	g_assert_cmpint (i_cal_component_count_components (icomp, I_CAL_ANY_COMPONENT), ==, 3);
+	g_assert_cmpint (i_cal_component_count_components (icomp, I_CAL_VTIMEZONE_COMPONENT), ==, 1);
+	g_assert_cmpint (i_cal_component_count_components (icomp, I_CAL_VEVENT_COMPONENT), ==, 2);
 
-	subcomp = icalcomponent_get_first_component (icalcomp, ICAL_VTIMEZONE_COMPONENT);
+	subcomp = i_cal_component_get_first_component (icomp, I_CAL_VTIMEZONE_COMPONENT);
 	g_assert_nonnull (subcomp);
-	g_assert_cmpint (icalcomponent_isa (subcomp), ==, ICAL_VTIMEZONE_COMPONENT);
+	g_assert_cmpint (i_cal_component_isa (subcomp), ==, I_CAL_VTIMEZONE_COMPONENT);
 
-	prop = icalcomponent_get_first_property (subcomp, ICAL_TZID_PROPERTY);
+	prop = i_cal_component_get_first_property (subcomp, I_CAL_TZID_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert_cmpstr (icalproperty_get_tzid (prop), ==, EXPECTED_LOCATION);
+	g_assert_cmpstr (i_cal_property_get_tzid (prop), ==, EXPECTED_LOCATION);
+	g_object_unref (prop);
 
-	subcomp = icalcomponent_get_first_component (icalcomp, ICAL_VEVENT_COMPONENT);
+	g_object_unref (subcomp);
+
+	subcomp = i_cal_component_get_first_component (icomp, I_CAL_VEVENT_COMPONENT);
 	g_assert_nonnull (subcomp);
-	icalcomponent_foreach_tzid (subcomp, assert_tzid_matches_cb, (gpointer) icalproperty_get_tzid (prop));
+	i_cal_component_foreach_tzid (subcomp, assert_tzid_matches_cb, (gpointer) EXPECTED_LOCATION);
+	g_object_unref (subcomp);
 
-	subcomp = icalcomponent_get_next_component (icalcomp, ICAL_VEVENT_COMPONENT);
+	subcomp = i_cal_component_get_next_component (icomp, I_CAL_VEVENT_COMPONENT);
 	g_assert_nonnull (subcomp);
-	icalcomponent_foreach_tzid (subcomp, assert_tzid_matches_cb, (gpointer) icalproperty_get_tzid (prop));
+	i_cal_component_foreach_tzid (subcomp, assert_tzid_matches_cb, (gpointer) EXPECTED_LOCATION);
+	g_object_unref (subcomp);
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (icomp);
 	g_slist_free_full (instances, g_object_unref);
 
 	g_object_unref (meta_backend);
 }
 
 static void
-check_attachment_content (icalattach *attach,
+check_attachment_content (ICalAttach *attach,
 			  const gchar *expected_content,
 			  gsize expected_content_len)
 {
@@ -966,7 +1012,7 @@ check_attachment_content (icalattach *attach,
 	g_assert_nonnull (expected_content);
 	g_assert_cmpint (expected_content_len, >, 0);
 
-	if (icalattach_get_is_url (attach)) {
+	if (i_cal_attach_get_is_url (attach)) {
 		const gchar *url;
 		gboolean success;
 		gchar *filename;
@@ -974,11 +1020,11 @@ check_attachment_content (icalattach *attach,
 		gsize content_len = -1;
 		GError *error = NULL;
 
-		url = icalattach_get_url (attach);
+		url = i_cal_attach_get_url (attach);
 		g_assert_nonnull (url);
 		g_assert (g_str_has_prefix (url, "file://"));
 
-		filename = g_filename_from_uri (icalattach_get_url (attach), NULL, &error);
+		filename = g_filename_from_uri (url, NULL, &error);
 		g_assert_no_error (error);
 		g_assert_nonnull (filename);
 
@@ -996,7 +1042,7 @@ check_attachment_content (icalattach *attach,
 		guchar *base64;
 		gsize base64_len;
 
-		base64 = g_base64_decode ((const gchar *) icalattach_get_data (attach), &base64_len);
+		base64 = g_base64_decode (i_cal_attach_get_data (attach), &base64_len);
 		g_assert_nonnull (base64);
 		g_assert_cmpmem (base64, base64_len, expected_content, expected_content_len);
 
@@ -1012,10 +1058,10 @@ test_attachments (TCUFixture *fixture,
 	gchar *content = NULL;
 	gsize content_len = 0;
 	ECalComponent *comp = NULL;
-	icalcomponent *icalcomp;
-	icalproperty *prop;
-	icalparameter *param;
-	icalattach *attach;
+	ICalComponent *icomp;
+	ICalProperty *prop;
+	ICalParameter *param;
+	ICalAttach *attach;
 	gchar *filename;
 	const gchar *basename;
 	gboolean success;
@@ -1030,19 +1076,19 @@ test_attachments (TCUFixture *fixture,
 	g_assert (success);
 	g_assert_nonnull (comp);
 
-	icalcomp = icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp));
-	g_assert_nonnull (icalcomp);
-	g_assert_cmpint (icalcomponent_count_properties (icalcomp, ICAL_ATTACH_PROPERTY), ==, 1);
+	icomp = i_cal_component_new_clone (e_cal_component_get_icalcomponent (comp));
+	g_assert_nonnull (icomp);
+	g_assert_cmpint (i_cal_component_count_properties (icomp, I_CAL_ATTACH_PROPERTY), ==, 1);
 
-	prop = icalcomponent_get_first_property (icalcomp, ICAL_ATTACH_PROPERTY);
+	prop = i_cal_component_get_first_property (icomp, I_CAL_ATTACH_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert_null (icalproperty_get_first_parameter (prop, ICAL_FILENAME_PARAMETER));
+	g_assert (!e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
 
-	attach = icalproperty_get_attach (prop);
+	attach = i_cal_property_get_attach (prop);
 	g_assert_nonnull (attach);
-	g_assert (icalattach_get_is_url (attach));
+	g_assert (i_cal_attach_get_is_url (attach));
 
-	filename = g_filename_from_uri (icalattach_get_url (attach), NULL, &error);
+	filename = g_filename_from_uri (i_cal_attach_get_url (attach), NULL, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (filename);
 
@@ -1056,115 +1102,139 @@ test_attachments (TCUFixture *fixture,
 	g_assert_nonnull (content);
 	g_assert_cmpint (content_len, >, 0);
 
-	success = e_cal_meta_backend_inline_local_attachments_sync (meta_backend, icalcomp, NULL, &error);
+	success = e_cal_meta_backend_inline_local_attachments_sync (meta_backend, icomp, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (success);
-	g_assert_cmpint (icalcomponent_count_properties (icalcomp, ICAL_ATTACH_PROPERTY), ==, 1);
+	g_assert_cmpint (i_cal_component_count_properties (icomp, I_CAL_ATTACH_PROPERTY), ==, 1);
 
-	prop = icalcomponent_get_first_property (icalcomp, ICAL_ATTACH_PROPERTY);
+	g_object_unref (attach);
+	g_object_unref (prop);
+
+	prop = i_cal_component_get_first_property (icomp, I_CAL_ATTACH_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert_nonnull (icalproperty_get_first_parameter (prop, ICAL_FILENAME_PARAMETER));
-	g_assert_nonnull (icalproperty_get_first_parameter (prop, ICAL_VALUE_PARAMETER));
-	g_assert_nonnull (icalproperty_get_first_parameter (prop, ICAL_ENCODING_PARAMETER));
+	g_assert (e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
+	g_assert (e_cal_util_property_has_parameter (prop, I_CAL_VALUE_PARAMETER));
+	g_assert (e_cal_util_property_has_parameter (prop, I_CAL_ENCODING_PARAMETER));
 
-	param = icalproperty_get_first_parameter (prop, ICAL_FILENAME_PARAMETER);
-	g_assert_cmpstr (icalparameter_get_filename (param), ==, basename);
+	param = i_cal_property_get_first_parameter (prop, I_CAL_FILENAME_PARAMETER);
+	g_assert_cmpstr (i_cal_parameter_get_filename (param), ==, basename);
+	g_object_unref (param);
 
-	attach = icalproperty_get_attach (prop);
+	attach = i_cal_property_get_attach (prop);
 	g_assert_nonnull (attach);
-	g_assert (!icalattach_get_is_url (attach));
+	g_assert (!i_cal_attach_get_is_url (attach));
 
 	check_attachment_content (attach, content, content_len);
 
-	success = e_cal_meta_backend_store_inline_attachments_sync (meta_backend, icalcomp, NULL, &error);
+	g_object_unref (attach);
+	g_object_unref (prop);
+
+	success = e_cal_meta_backend_store_inline_attachments_sync (meta_backend, icomp, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (success);
-	g_assert_cmpint (icalcomponent_count_properties (icalcomp, ICAL_ATTACH_PROPERTY), ==, 1);
+	g_assert_cmpint (i_cal_component_count_properties (icomp, I_CAL_ATTACH_PROPERTY), ==, 1);
 
-	prop = icalcomponent_get_first_property (icalcomp, ICAL_ATTACH_PROPERTY);
+	prop = i_cal_component_get_first_property (icomp, I_CAL_ATTACH_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert_nonnull (icalproperty_get_first_parameter (prop, ICAL_FILENAME_PARAMETER));
-	g_assert_null (icalproperty_get_first_parameter (prop, ICAL_VALUE_PARAMETER));
-	g_assert_null (icalproperty_get_first_parameter (prop, ICAL_ENCODING_PARAMETER));
+	g_assert (e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
+	g_assert (!e_cal_util_property_has_parameter (prop, I_CAL_VALUE_PARAMETER));
+	g_assert (!e_cal_util_property_has_parameter (prop, I_CAL_ENCODING_PARAMETER));
 
-	param = icalproperty_get_first_parameter (prop, ICAL_FILENAME_PARAMETER);
-	g_assert_cmpstr (icalparameter_get_filename (param), ==, basename);
+	param = i_cal_property_get_first_parameter (prop, I_CAL_FILENAME_PARAMETER);
+	g_assert_cmpstr (i_cal_parameter_get_filename (param), ==, basename);
+	g_object_unref (param);
 
-	attach = icalproperty_get_attach (prop);
+	attach = i_cal_property_get_attach (prop);
 	g_assert_nonnull (attach);
-	g_assert (icalattach_get_is_url (attach));
+	g_assert (i_cal_attach_get_is_url (attach));
 
 	check_attachment_content (attach, content, content_len);
+
+	g_object_unref (attach);
+	g_object_unref (prop);
 
 	/* Add a URL attachment which is not pointing to a local file */
-	attach = icalattach_new_from_url (REMOTE_URL);
-	prop = icalproperty_new_attach (attach);
-	icalattach_unref (attach);
-	icalcomponent_add_property (icalcomp, prop);
+	attach = i_cal_attach_new_from_url (REMOTE_URL);
+	prop = i_cal_property_new_attach (attach);
+	g_object_unref (attach);
+	i_cal_component_take_property (icomp, prop);
 
-	g_assert_cmpint (icalcomponent_count_properties (icalcomp, ICAL_ATTACH_PROPERTY), ==, 2);
+	g_assert_cmpint (i_cal_component_count_properties (icomp, I_CAL_ATTACH_PROPERTY), ==, 2);
 
-	success = e_cal_meta_backend_inline_local_attachments_sync (meta_backend, icalcomp, NULL, &error);
+	success = e_cal_meta_backend_inline_local_attachments_sync (meta_backend, icomp, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (success);
-	g_assert_cmpint (icalcomponent_count_properties (icalcomp, ICAL_ATTACH_PROPERTY), ==, 2);
+	g_assert_cmpint (i_cal_component_count_properties (icomp, I_CAL_ATTACH_PROPERTY), ==, 2);
 
-	prop = icalcomponent_get_first_property (icalcomp, ICAL_ATTACH_PROPERTY);
+	prop = i_cal_component_get_first_property (icomp, I_CAL_ATTACH_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert_nonnull (icalproperty_get_first_parameter (prop, ICAL_FILENAME_PARAMETER));
-	g_assert_nonnull (icalproperty_get_first_parameter (prop, ICAL_VALUE_PARAMETER));
-	g_assert_nonnull (icalproperty_get_first_parameter (prop, ICAL_ENCODING_PARAMETER));
+	g_assert (e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
+	g_assert (e_cal_util_property_has_parameter (prop, I_CAL_VALUE_PARAMETER));
+	g_assert (e_cal_util_property_has_parameter (prop, I_CAL_ENCODING_PARAMETER));
 
-	param = icalproperty_get_first_parameter (prop, ICAL_FILENAME_PARAMETER);
-	g_assert_cmpstr (icalparameter_get_filename (param), ==, basename);
+	param = i_cal_property_get_first_parameter (prop, I_CAL_FILENAME_PARAMETER);
+	g_assert_cmpstr (i_cal_parameter_get_filename (param), ==, basename);
+	g_object_unref (param);
 
-	attach = icalproperty_get_attach (prop);
+	attach = i_cal_property_get_attach (prop);
 	g_assert_nonnull (attach);
-	g_assert (!icalattach_get_is_url (attach));
+	g_assert (!i_cal_attach_get_is_url (attach));
 
 	check_attachment_content (attach, content, content_len);
 
+	g_object_unref (attach);
+	g_object_unref (prop);
+
 	/* Verify the remote URL did not change */
-	prop = icalcomponent_get_next_property (icalcomp, ICAL_ATTACH_PROPERTY);
+	prop = i_cal_component_get_next_property (icomp, I_CAL_ATTACH_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert_null (icalproperty_get_first_parameter (prop, ICAL_FILENAME_PARAMETER));
+	g_assert (!e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
 
-	attach = icalproperty_get_attach (prop);
+	attach = i_cal_property_get_attach (prop);
 	g_assert_nonnull (attach);
-	g_assert (icalattach_get_is_url (attach));
-	g_assert_cmpstr (icalattach_get_url (attach), ==, REMOTE_URL);
+	g_assert (i_cal_attach_get_is_url (attach));
+	g_assert_cmpstr (i_cal_attach_get_url (attach), ==, REMOTE_URL);
 
-	success = e_cal_meta_backend_store_inline_attachments_sync (meta_backend, icalcomp, NULL, &error);
+	g_object_unref (attach);
+	g_object_unref (prop);
+
+	success = e_cal_meta_backend_store_inline_attachments_sync (meta_backend, icomp, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (success);
-	g_assert_cmpint (icalcomponent_count_properties (icalcomp, ICAL_ATTACH_PROPERTY), ==, 2);
+	g_assert_cmpint (i_cal_component_count_properties (icomp, I_CAL_ATTACH_PROPERTY), ==, 2);
 
-	prop = icalcomponent_get_first_property (icalcomp, ICAL_ATTACH_PROPERTY);
+	prop = i_cal_component_get_first_property (icomp, I_CAL_ATTACH_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert_nonnull (icalproperty_get_first_parameter (prop, ICAL_FILENAME_PARAMETER));
-	g_assert_null (icalproperty_get_first_parameter (prop, ICAL_VALUE_PARAMETER));
-	g_assert_null (icalproperty_get_first_parameter (prop, ICAL_ENCODING_PARAMETER));
+	g_assert (e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
+	g_assert (!e_cal_util_property_has_parameter (prop, I_CAL_VALUE_PARAMETER));
+	g_assert (!e_cal_util_property_has_parameter (prop, I_CAL_ENCODING_PARAMETER));
 
-	param = icalproperty_get_first_parameter (prop, ICAL_FILENAME_PARAMETER);
-	g_assert_cmpstr (icalparameter_get_filename (param), ==, basename);
+	param = i_cal_property_get_first_parameter (prop, I_CAL_FILENAME_PARAMETER);
+	g_assert_cmpstr (i_cal_parameter_get_filename (param), ==, basename);
+	g_object_unref (param);
 
-	attach = icalproperty_get_attach (prop);
+	attach = i_cal_property_get_attach (prop);
 	g_assert_nonnull (attach);
-	g_assert (icalattach_get_is_url (attach));
+	g_assert (i_cal_attach_get_is_url (attach));
 
 	check_attachment_content (attach, content, content_len);
 
+	g_object_unref (attach);
+	g_object_unref (prop);
+
 	/* Verify the remote URL did not change */
-	prop = icalcomponent_get_next_property (icalcomp, ICAL_ATTACH_PROPERTY);
+	prop = i_cal_component_get_next_property (icomp, I_CAL_ATTACH_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert_null (icalproperty_get_first_parameter (prop, ICAL_FILENAME_PARAMETER));
+	g_assert (!e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
 
-	attach = icalproperty_get_attach (prop);
+	attach = i_cal_property_get_attach (prop);
 	g_assert_nonnull (attach);
-	g_assert (icalattach_get_is_url (attach));
-	g_assert_cmpstr (icalattach_get_url (attach), ==, REMOTE_URL);
+	g_assert (i_cal_attach_get_is_url (attach));
+	g_assert_cmpstr (i_cal_attach_get_url (attach), ==, REMOTE_URL);
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (attach);
+	g_object_unref (prop);
+	g_object_unref (icomp);
 	g_object_unref (meta_backend);
 	g_object_unref (comp);
 	g_free (filename);
@@ -1426,7 +1496,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 	const gchar *in_tz2obj = TZSTRDEF (TZID2, TZLOC2);
 	ECalBackendSyncClass *backend_class;
 	ECalCache *cal_cache;
-	icalcomponent *vcalendar;
+	ICalComponent *vcalendar;
 	ECalComponent *comp;
 	gchar *tzobj = NULL;
 	GList *zones;
@@ -1486,7 +1556,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
 	g_assert_nonnull (cal_cache);
 
-	vcalendar = icalcomponent_new_from_string (
+	vcalendar = i_cal_component_new_from_string (
 		"BEGIN:VCALENDAR\r\n"
 		"BEGIN:VTIMEZONE\r\n"
 		"TZID:tzid1\r\n"
@@ -1593,7 +1663,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 	zones = e_timezone_cache_list_timezones (E_TIMEZONE_CACHE (meta_backend));
 	g_assert_cmpint (g_list_length (zones), ==, 0);
 
-	icalcomponent_free (vcalendar);
+	g_object_unref (vcalendar);
 
 	/* And now when the timezones are actually referenced, thus should be part of the persistent cache */
 
@@ -1772,6 +1842,7 @@ test_get_free_busy (ECalMetaBackend *meta_backend)
 		"END:VFREEBUSY\r\n";
 	ECalBackendSyncClass *backend_class;
 	GSList *users, *objects = NULL;
+	ICalTimetype *itt;
 	time_t start, end;
 	GError *error = NULL;
 
@@ -1784,8 +1855,13 @@ test_get_free_busy (ECalMetaBackend *meta_backend)
 	users = g_slist_prepend (NULL, (gpointer) "user@no.where");
 	users = g_slist_prepend (users, (gpointer) "unknown@no.where");
 
-	start = icaltime_as_timet (icaltime_from_string ("20170102T080000Z"));
-	end = icaltime_as_timet (icaltime_from_string ("20170102T200000Z"));
+	itt = i_cal_time_from_string ("20170102T080000Z");
+	start = i_cal_time_as_timet (itt);
+	g_object_unref (itt);
+
+	itt = i_cal_time_from_string ("20170102T200000Z");
+	end = i_cal_time_as_timet (itt);
+	g_object_unref (itt);
 
 	backend_class->get_free_busy_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, users, start, end, &objects, &error);
@@ -1964,24 +2040,29 @@ ecmb_test_modify_case (const gchar *case_name,
 		       const gchar *ridstr)
 {
 	gchar *calobj;
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 
 	g_assert_nonnull (case_name);
 
 	calobj = tcu_new_icalstring_from_test_case (case_name);
 	g_assert_nonnull (calobj);
-	icalcomp = icalcomponent_new_from_string (calobj);
-	g_assert_nonnull (icalcomp);
+	icomp = i_cal_component_new_from_string (calobj);
+	g_assert_nonnull (icomp);
 	g_free (calobj);
 
-	icalcomponent_set_summary (icalcomp, MODIFIED_SUMMARY_STR);
-	icalcomponent_set_sequence (icalcomp, icalcomponent_get_sequence (icalcomp) + 1);
+	i_cal_component_set_summary (icomp, MODIFIED_SUMMARY_STR);
+	i_cal_component_set_sequence (icomp, i_cal_component_get_sequence (icomp) + 1);
 
-	if (ridstr)
-		icalcomponent_set_recurrenceid (icalcomp, icaltime_from_string (ridstr));
+	if (ridstr) {
+		ICalTimetype *itt;
 
-	calobj = icalcomponent_as_ical_string_r (icalcomp);
-	icalcomponent_free (icalcomp);
+		itt = i_cal_time_from_string (ridstr);
+		i_cal_component_set_recurrenceid (icomp, itt);
+		g_object_unref (itt);
+	}
+
+	calobj = i_cal_component_as_ical_string_r (icomp);
+	g_object_unref (icomp);
 
 	return calobj;
 }
@@ -1994,7 +2075,7 @@ test_modify_objects (ECalMetaBackend *meta_backend)
 	ECalCache *cal_cache;
 	GSList *objects, *old_components = NULL, *new_components = NULL, *offline_changes;
 	gchar *calobj, *tmp;
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 	gint old_sequence;
 	GError *error = NULL;
 
@@ -2036,15 +2117,15 @@ test_modify_objects (ECalMetaBackend *meta_backend)
 	g_assert_cmpint (test_backend->load_count, ==, 1);
 	g_assert_cmpint (test_backend->save_count, ==, 1);
 
-	icalcomp = e_cal_component_get_icalcomponent (old_components->data);
-	old_sequence = icalcomponent_get_sequence (icalcomp);
-	g_assert_cmpstr (icalcomponent_get_summary (icalcomp), !=, MODIFIED_SUMMARY_STR);
-	g_assert_cmpstr (icalcomponent_get_uid (icalcomp), ==, "event-1");
+	icomp = e_cal_component_get_icalcomponent (old_components->data);
+	old_sequence = i_cal_component_get_sequence (icomp);
+	g_assert_cmpstr (i_cal_component_get_summary (icomp), !=, MODIFIED_SUMMARY_STR);
+	g_assert_cmpstr (i_cal_component_get_uid (icomp), ==, "event-1");
 
-	icalcomp = e_cal_component_get_icalcomponent (new_components->data);
-	g_assert_cmpint (old_sequence + 1, ==, icalcomponent_get_sequence (icalcomp));
-	g_assert_cmpstr (icalcomponent_get_summary (icalcomp), ==, MODIFIED_SUMMARY_STR);
-	g_assert_cmpstr (icalcomponent_get_uid (icalcomp), ==, "event-1");
+	icomp = e_cal_component_get_icalcomponent (new_components->data);
+	g_assert_cmpint (old_sequence + 1, ==, i_cal_component_get_sequence (icomp));
+	g_assert_cmpstr (i_cal_component_get_summary (icomp), ==, MODIFIED_SUMMARY_STR);
+	g_assert_cmpstr (i_cal_component_get_uid (icomp), ==, "event-1");
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free_full (new_components, g_object_unref);
@@ -2068,15 +2149,15 @@ test_modify_objects (ECalMetaBackend *meta_backend)
 	g_assert_cmpint (test_backend->load_count, ==, 0);
 	g_assert_cmpint (test_backend->save_count, ==, 0);
 
-	icalcomp = e_cal_component_get_icalcomponent (old_components->data);
-	old_sequence = icalcomponent_get_sequence (icalcomp);
-	g_assert_cmpstr (icalcomponent_get_summary (icalcomp), !=, MODIFIED_SUMMARY_STR);
-	g_assert_cmpstr (icalcomponent_get_uid (icalcomp), ==, "event-2");
+	icomp = e_cal_component_get_icalcomponent (old_components->data);
+	old_sequence = i_cal_component_get_sequence (icomp);
+	g_assert_cmpstr (i_cal_component_get_summary (icomp), !=, MODIFIED_SUMMARY_STR);
+	g_assert_cmpstr (i_cal_component_get_uid (icomp), ==, "event-2");
 
-	icalcomp = e_cal_component_get_icalcomponent (new_components->data);
-	g_assert_cmpint (old_sequence + 1, ==, icalcomponent_get_sequence (icalcomp));
-	g_assert_cmpstr (icalcomponent_get_summary (icalcomp), ==, MODIFIED_SUMMARY_STR);
-	g_assert_cmpstr (icalcomponent_get_uid (icalcomp), ==, "event-2");
+	icomp = e_cal_component_get_icalcomponent (new_components->data);
+	g_assert_cmpint (old_sequence + 1, ==, i_cal_component_get_sequence (icomp));
+	g_assert_cmpstr (i_cal_component_get_summary (icomp), ==, MODIFIED_SUMMARY_STR);
+	g_assert_cmpstr (i_cal_component_get_uid (icomp), ==, "event-2");
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free_full (new_components, g_object_unref);
@@ -2107,15 +2188,15 @@ test_modify_objects (ECalMetaBackend *meta_backend)
 	g_assert_cmpint (test_backend->load_count, ==, 2);
 	g_assert_cmpint (test_backend->save_count, ==, 2);
 
-	icalcomp = e_cal_component_get_icalcomponent (old_components->data);
-	old_sequence = icalcomponent_get_sequence (icalcomp);
-	g_assert_cmpstr (icalcomponent_get_summary (icalcomp), !=, MODIFIED_SUMMARY_STR);
-	g_assert_cmpstr (icalcomponent_get_uid (icalcomp), ==, "event-4");
+	icomp = e_cal_component_get_icalcomponent (old_components->data);
+	old_sequence = i_cal_component_get_sequence (icomp);
+	g_assert_cmpstr (i_cal_component_get_summary (icomp), !=, MODIFIED_SUMMARY_STR);
+	g_assert_cmpstr (i_cal_component_get_uid (icomp), ==, "event-4");
 
-	icalcomp = e_cal_component_get_icalcomponent (new_components->data);
-	g_assert_cmpint (old_sequence + 1, ==, icalcomponent_get_sequence (icalcomp));
-	g_assert_cmpstr (icalcomponent_get_summary (icalcomp), ==, MODIFIED_SUMMARY_STR);
-	g_assert_cmpstr (icalcomponent_get_uid (icalcomp), ==, "event-4");
+	icomp = e_cal_component_get_icalcomponent (new_components->data);
+	g_assert_cmpint (old_sequence + 1, ==, i_cal_component_get_sequence (icomp));
+	g_assert_cmpstr (i_cal_component_get_summary (icomp), ==, MODIFIED_SUMMARY_STR);
+	g_assert_cmpstr (i_cal_component_get_uid (icomp), ==, "event-4");
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free_full (new_components, g_object_unref);
@@ -2147,15 +2228,15 @@ test_modify_objects (ECalMetaBackend *meta_backend)
 	g_assert_cmpint (test_backend->load_count, ==, 3);
 	g_assert_cmpint (test_backend->save_count, ==, 3);
 
-	icalcomp = e_cal_component_get_icalcomponent (old_components->data);
-	old_sequence = icalcomponent_get_sequence (icalcomp);
-	g_assert_cmpstr (icalcomponent_get_uid (icalcomp), ==, "event-6");
-	g_assert_cmpstr (icalcomponent_get_summary (icalcomp), !=, MODIFIED_SUMMARY_STR);
+	icomp = e_cal_component_get_icalcomponent (old_components->data);
+	old_sequence = i_cal_component_get_sequence (icomp);
+	g_assert_cmpstr (i_cal_component_get_uid (icomp), ==, "event-6");
+	g_assert_cmpstr (i_cal_component_get_summary (icomp), !=, MODIFIED_SUMMARY_STR);
 
-	icalcomp = e_cal_component_get_icalcomponent (new_components->data);
-	g_assert_cmpstr (icalcomponent_get_uid (icalcomp), ==, "event-6");
-	g_assert_cmpstr (icalcomponent_get_summary (icalcomp), ==, MODIFIED_SUMMARY_STR);
-	g_assert_cmpint (old_sequence + 1, ==, icalcomponent_get_sequence (icalcomp));
+	icomp = e_cal_component_get_icalcomponent (new_components->data);
+	g_assert_cmpstr (i_cal_component_get_uid (icomp), ==, "event-6");
+	g_assert_cmpstr (i_cal_component_get_summary (icomp), ==, MODIFIED_SUMMARY_STR);
+	g_assert_cmpint (old_sequence + 1, ==, i_cal_component_get_sequence (icomp));
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free_full (new_components, g_object_unref);
@@ -2355,7 +2436,7 @@ test_receive_objects (ECalMetaBackend *meta_backend)
 	ECalBackendSyncClass *backend_class;
 	ECalCache *cal_cache;
 	gchar *calobj;
-	icalcomponent *icalcomp;
+	ICalComponent *icomp, *firsticomp;
 	GSList *ids, *old_components = NULL, *new_components = NULL;
 	GError *error = NULL;
 
@@ -2375,14 +2456,17 @@ test_receive_objects (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-1");
 	g_assert_nonnull (calobj);
 
-	icalcomp = icalcomponent_new_from_string (calobj);
-	g_assert_nonnull (icalcomp);
-	g_assert_nonnull (icalcomponent_get_first_component (icalcomp, ICAL_VEVENT_COMPONENT));
+	icomp = i_cal_component_new_from_string (calobj);
+	g_assert_nonnull (icomp);
+
+	firsticomp = i_cal_component_get_first_component (icomp, ICAL_VEVENT_COMPONENT);
+	g_assert_nonnull (firsticomp);
+
 	g_free (calobj);
 
-	icalcomponent_add_component (test_backend->vcalendar, icalcomponent_new_clone (icalcomponent_get_first_component (icalcomp, ICAL_VEVENT_COMPONENT)));
+	i_cal_component_take_component (test_backend->vcalendar, i_cal_component_new_clone (firsticomp));
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (icomp);
 
 	/* To get the 'invite' component into local cache */
 	e_cal_meta_backend_test_call_refresh (meta_backend);
@@ -3240,7 +3324,7 @@ test_get_object (ECalMetaBackend *meta_backend)
 	ECalMetaBackendTest *test_backend;
 	ECalBackendSyncClass *backend_class;
 	ECalCache *cal_cache;
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 	gchar *calobj = NULL;
 	GError *error = NULL;
 
@@ -3270,11 +3354,11 @@ test_get_object (ECalMetaBackend *meta_backend)
 	g_assert (strstr (calobj, "UID:event-6"));
 	g_assert (strstr (calobj, "RECURRENCE-ID;TZID=America/New_York:20170225T134900"));
 
-	icalcomp = icalcomponent_new_from_string (calobj);
-	g_assert_nonnull (icalcomp);
-	g_assert_cmpint (icalcomponent_isa (icalcomp), ==, ICAL_VCALENDAR_COMPONENT);
-	g_assert_cmpint (icalcomponent_count_components (icalcomp, ICAL_VEVENT_COMPONENT), ==, 2);
-	icalcomponent_free (icalcomp);
+	icomp = i_cal_component_new_from_string (calobj);
+	g_assert_nonnull (icomp);
+	g_assert_cmpint (i_cal_component_isa (icomp), ==, I_CAL_VCALENDAR_COMPONENT);
+	g_assert_cmpint (i_cal_component_count_components (icomp, I_CAL_VEVENT_COMPONENT), ==, 2);
+	g_object_unref (icomp);
 
 	g_free (calobj);
 	calobj = NULL;
@@ -3288,10 +3372,10 @@ test_get_object (ECalMetaBackend *meta_backend)
 	g_assert (strstr (calobj, "UID:event-6"));
 	g_assert (strstr (calobj, "RECURRENCE-ID;TZID=America/New_York:20170225T134900"));
 
-	icalcomp = icalcomponent_new_from_string (calobj);
-	g_assert_nonnull (icalcomp);
-	g_assert_cmpint (icalcomponent_isa (icalcomp), ==, ICAL_VEVENT_COMPONENT);
-	icalcomponent_free (icalcomp);
+	icomp = i_cal_component_new_from_string (calobj);
+	g_assert_nonnull (icomp);
+	g_assert_cmpint (i_cal_component_isa (icomp), ==, I_CAL_VEVENT_COMPONENT);
+	g_object_unref (icomp);
 
 	g_free (calobj);
 	calobj = NULL;
@@ -3385,7 +3469,7 @@ test_refresh (ECalMetaBackend *meta_backend)
 	ECalCache *cal_cache;
 	ECache *cache;
 	guint count;
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 	gchar *sync_tag;
 	GError *error = NULL;
 
@@ -3466,11 +3550,11 @@ test_refresh (ECalMetaBackend *meta_backend)
 		NULL);
 
 	/* Modify the master object, thus the detached instance will be recognized */
-	for (icalcomp = icalcomponent_get_first_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT);
-	     icalcomp;
-	     icalcomp = icalcomponent_get_next_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT)) {
-		if (g_strcmp0 ("event-6", icalcomponent_get_uid (icalcomp)) == 0) {
-			icalcomponent_set_sequence (icalcomp, icalcomponent_get_sequence (icalcomp) + 1);
+	for (icomp = i_cal_component_get_first_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT);
+	     icomp;
+	     g_object_unref (icomp), icomp = i_cal_component_get_next_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT)) {
+		if (g_strcmp0 ("event-6", i_cal_component_get_uid (icomp)) == 0) {
+			i_cal_component_set_sequence (icomp, i_cal_component_get_sequence (icomp) + 1);
 		}
 	}
 
@@ -3531,12 +3615,12 @@ test_refresh (ECalMetaBackend *meta_backend)
 	ecmb_test_remove_component (test_backend, "event-6", NULL);
 	ecmb_test_remove_component (test_backend, "event-6", "20170225T134900");
 
-	for (icalcomp = icalcomponent_get_first_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT);
-	     icalcomp;
-	     icalcomp = icalcomponent_get_next_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT)) {
-		if (g_strcmp0 ("event-5", icalcomponent_get_uid (icalcomp)) == 0 ||
-		    g_strcmp0 ("event-9", icalcomponent_get_uid (icalcomp)) == 0) {
-			icalcomponent_set_sequence (icalcomp, icalcomponent_get_sequence (icalcomp) + 1);
+	for (icomp = i_cal_component_get_first_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT);
+	     icomp;
+	     g_object_unref (icomp), icomp = i_cal_component_get_next_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT)) {
+		if (g_strcmp0 ("event-5", i_cal_component_get_uid (icomp)) == 0 ||
+		    g_strcmp0 ("event-9", i_cal_component_get_uid (icomp)) == 0) {
+			i_cal_component_set_sequence (icomp, i_cal_component_get_sequence (icomp) + 1);
 		}
 	}
 

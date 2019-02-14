@@ -73,20 +73,24 @@ search_in_intervals (ETimezoneCache *zone_cache,
 		     time_t end)
 {
 	ECalBackendSExp *sexp;
-	struct icaltimetype itt_start, itt_end;
+	ICalTimetype *itt_start, *itt_end;
 	gchar *expr;
 	GSList *link;
 	GHashTable *res;
 
-	itt_start = icaltime_from_timet_with_zone (start, FALSE, NULL);
-	itt_end = icaltime_from_timet_with_zone (end, FALSE, NULL);
+	itt_start = i_cal_time_from_timet_with_zone (start, FALSE, NULL);
+	itt_end = i_cal_time_from_timet_with_zone (end, FALSE, NULL);
 
 	expr = g_strdup_printf ("(occur-in-time-range? (make-time \"%04d%02d%02dT%02d%02d%02dZ\") (make-time \"%04d%02d%02dT%02d%02d%02dZ\"))",
-		itt_start.year, itt_start.month, itt_start.day, itt_start.hour, itt_start.minute, itt_start.second,
-		itt_end.year, itt_end.month, itt_end.day, itt_end.hour, itt_end.minute, itt_end.second);
+		i_cal_timetype_get_year (itt_start), i_cal_timetype_get_month (itt_start), i_cal_timetype_get_day (itt_start),
+		i_cal_timetype_get_hour (itt_start), i_cal_timetype_get_minute (itt_start), i_cal_timetype_get_second (itt_start),
+		i_cal_timetype_get_year (itt_end), i_cal_timetype_get_month (itt_end), i_cal_timetype_get_day (itt_end),
+		i_cal_timetype_get_hour (itt_end), i_cal_timetype_get_minute (itt_end), i_cal_timetype_get_second (itt_end));
 
 	sexp = e_cal_backend_sexp_new (expr);
 
+	g_clear_object (&itt_start);
+	g_clear_object (&itt_end);
 	g_free (expr);
 
 	g_assert_nonnull (sexp);
@@ -139,32 +143,40 @@ create_test_component (time_t start,
 		       time_t end)
 {
 	ECalComponent *comp;
-	ECalComponentText summary;
-	struct icaltimetype current, ittstart, ittend;
+	ECalComponentText *summary;
+	ICalTimetype *current, *ittstart, *ittend;
+	gchar *startstr, *endstr, *tmp;
 
 	comp = e_cal_component_new ();
 
 	e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
 
-	ittstart = icaltime_from_timet_with_zone (start, 0, NULL);
-	ittend = icaltime_from_timet_with_zone (end, 0, NULL);
+	ittstart = i_cal_time_from_timet_with_zone (start, 0, NULL);
+	ittend = i_cal_time_from_timet_with_zone (end, 0, NULL);
 
-	icalcomponent_set_dtstart (e_cal_component_get_icalcomponent (comp), ittstart);
-	if (end != _TIME_MAX)
-		icalcomponent_set_dtend (e_cal_component_get_icalcomponent (comp), ittend);
+	i_cal_component_set_dtstart (e_cal_component_get_icalcomponent (comp), ittstart);
+	i_cal_component_set_dtend (e_cal_component_get_icalcomponent (comp), ittend);
 
-	summary.value = g_strdup_printf ("%s - %s", icaltime_as_ical_string (ittstart), icaltime_as_ical_string (ittend));
-	summary.altrep = NULL;
+	startstr = i_cal_time_as_ical_string_r (ittstart);
+	endstr = i_cal_time_as_ical_string_r (ittend);
 
-	e_cal_component_set_summary (comp, &summary);
+	tmp = g_strdup_printf ("%s - %s", startstr, endstr);
+	summary = e_cal_component_text_new (tmp, NULL);
+	g_free (tmp);
 
-	g_free ((gchar *) summary.value);
+	g_object_unref (ittstart);
+	g_object_unref (ittend);
+	g_free (startstr);
+	g_free (endstr);
 
-	current = icaltime_from_timet_with_zone (time (NULL), 0, NULL);
-	e_cal_component_set_created (comp, &current);
-	e_cal_component_set_last_modified (comp, &current);
+	e_cal_component_set_summary (comp, summary);
 
-	e_cal_component_rescan (comp);
+	e_cal_component_text_free (summary);
+
+	current = i_cal_time_from_timet_with_zone (time (NULL), 0, NULL);
+	e_cal_component_set_created (comp, current);
+	e_cal_component_set_last_modified (comp, current);
+	g_object_unref (current);
 
 	return comp;
 }

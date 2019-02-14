@@ -121,15 +121,19 @@ search_data_check_cb (GHashTable *should_be,
 		      gpointer item_data)
 {
 	ECalCacheSearchData *sd = item_data;
-	ECalComponentId id;
+	ECalComponentId *id;
+	gboolean contains;
 
 	g_assert (sd != NULL);
 	g_assert (sd->uid != NULL);
 
-	id.uid = sd->uid;
-	id.rid = sd->rid;
+	id = e_cal_component_id_new (sd->uid, sd->rid);
 
-	return g_hash_table_contains (should_be, &id);
+	contains = g_hash_table_contains (should_be, id);
+
+	e_cal_component_id_free (id);
+
+	return contains;
 }
 
 static gboolean

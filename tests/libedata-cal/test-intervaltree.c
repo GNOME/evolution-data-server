@@ -158,7 +158,7 @@ create_test_component (time_t start,
 
 	txt = g_strdup_printf ("%" G_GINT64_FORMAT "- %" G_GINT64_FORMAT, (gint64) start, (gint64) end);
 
-	summary = e_cal_component_new (txt, NULL);
+	summary = e_cal_component_text_new (txt, NULL);
 	e_cal_component_set_summary (comp, summary);
 	e_cal_component_text_free (summary);
 
@@ -416,7 +416,7 @@ mem_test (void)
 	e_intervaltree_insert (tree, start, end, comp);
 	g_assert (((GObject *) comp)->ref_count == 2);
 
-	e_cal_component_get_uid (comp, &uid);
+	uid = e_cal_component_get_uid (comp);
 	rid = e_cal_component_get_recurid_as_string (comp);
 	e_intervaltree_remove (tree, uid, rid);
 	g_free (rid);
