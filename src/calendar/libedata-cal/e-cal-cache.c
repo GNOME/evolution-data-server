@@ -1855,6 +1855,7 @@ ecc_timezone_from_string (const gchar *icalstring)
 			g_object_unref (component);
 			g_object_unref (zone);
 		} else {
+			g_object_unref (component);
 			return zone;
 		}
 	}
@@ -4243,9 +4244,9 @@ ecc_get_cached_timezone (ETimezoneCache *cache,
 		tzid = i_cal_timezone_get_tzid (zone);
 		g_hash_table_insert (cal_cache->priv->modified_timezones, g_strdup (tzid), zone);
 	} else {
-		g_clear_object (&icomp);
 		g_clear_object (&zone);
 	}
+	g_clear_object (&icomp);
 
  exit:
 	g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);

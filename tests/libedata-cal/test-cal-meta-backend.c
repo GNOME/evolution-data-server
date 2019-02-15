@@ -88,7 +88,7 @@ ecmb_test_add_test_case (ECalMetaBackendTest *test_backend,
 static gchar *
 ecmb_test_get_rid_as_string (ICalComponent *icomp)
 {
-	gchar *rid;
+	gchar *rid = NULL;
 
 	g_assert_nonnull (icomp);
 
@@ -119,7 +119,7 @@ ecmb_test_remove_component (ECalMetaBackendTest *test_backend,
 	for (icomp = i_cal_component_get_first_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT);
 	     icomp;) {
 		const gchar *server_uid;
-		gchar *server_rid = NULL;
+		gchar *server_rid;
 
 		server_uid = i_cal_component_get_uid (icomp);
 		g_assert_nonnull (server_uid);
@@ -2466,6 +2466,7 @@ test_receive_objects (ECalMetaBackend *meta_backend)
 
 	i_cal_component_take_component (test_backend->vcalendar, i_cal_component_new_clone (firsticomp));
 
+	g_object_unref (firsticomp);
 	g_object_unref (icomp);
 
 	/* To get the 'invite' component into local cache */

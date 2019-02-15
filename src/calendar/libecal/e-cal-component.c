@@ -428,6 +428,22 @@ ensure_mandatory_properties (ECalComponent *comp)
 	}
 }
 
+static gboolean
+ensure_alarm_uid_cb (ICalComponent *icalcomp,
+		     ICalComponent *subcomp,
+		     gpointer user_data)
+{
+	if (!e_cal_util_component_has_x_property (subcomp, E_CAL_EVOLUTION_ALARM_UID_PROPERTY)) {
+		gchar *uid;
+
+		uid = e_util_generate_uid ();
+		e_cal_util_component_set_x_property (subcomp, E_CAL_EVOLUTION_ALARM_UID_PROPERTY, uid);
+		g_free (uid);
+	}
+
+	return TRUE;
+}
+
 /**
  * e_cal_component_set_new_vtype:
  * @comp: A calendar component object.
@@ -580,6 +596,8 @@ e_cal_component_set_icalcomponent (ECalComponent *comp,
 	comp->priv->icalcomp = icalcomp;
 
 	ensure_mandatory_properties (comp);
+
+	foreach_subcomponent (icalcomp, I_CAL_VALARM_COMPONENT, ensure_alarm_uid_cb, NULL);
 
 	return TRUE;
 }

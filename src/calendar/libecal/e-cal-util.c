@@ -1759,8 +1759,6 @@ componenttime_to_utc_timet (const ECalComponentDateTime *dt_time,
 	ICalTimetype *value = NULL;
 	time_t timet = -1;
 
-	g_return_val_if_fail (dt_time != NULL, -1);
-
 	if (dt_time)
 		value = e_cal_component_datetime_get_value (dt_time);
 
@@ -1772,8 +1770,6 @@ componenttime_to_utc_timet (const ECalComponentDateTime *dt_time,
 			zone = tz_cb (tzid, tz_cb_data, NULL, NULL);
 
 		timet = i_cal_time_as_timet_with_zone (value, zone ? zone : (ICalTimezone *) default_zone);
-
-		g_clear_object (&zone);
 	}
 
 	return timet;

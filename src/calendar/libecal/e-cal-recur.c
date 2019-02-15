@@ -230,7 +230,7 @@ ensure_timezone (icalcomponent *comp,
 				if (!*pcached_zones)
 					*pcached_zones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 
-				g_hash_table_insert (*pcached_zones, g_strdup (tzid), zone);
+				g_hash_table_insert (*pcached_zones, g_strdup (tzid), g_object_ref (zone));
 			}
 		}
 
@@ -1362,8 +1362,10 @@ e_cal_recur_generate_instances_of_rule (ECalComponent *comp,
 	 * TZID (i.e. floating times) we use the default timezone. */
 	if (e_cal_component_datetime_get_tzid (dtstart) && !dtstarttt->is_date) {
 		gstart_zone = (*tz_cb) (e_cal_component_datetime_get_tzid (dtstart), tz_cb_data, NULL, NULL);
-		if (gstart_zone)
+		if (gstart_zone) {
+			g_object_ref (gstart_zone);
 			start_zone = i_cal_object_get_native (I_CAL_OBJECT (gstart_zone));
+		}
 		if (!start_zone)
 			start_zone = default_timezone;
 	} else {
@@ -1407,8 +1409,10 @@ e_cal_recur_generate_instances_of_rule (ECalComponent *comp,
 
 	if (e_cal_component_datetime_get_tzid (dtend) && dtendtt && !dtendtt->is_date) {
 		gend_zone = (*tz_cb) (e_cal_component_datetime_get_tzid (dtend), tz_cb_data, NULL, NULL);
-		if (gend_zone)
+		if (gend_zone) {
+			g_object_ref (gend_zone);
 			end_zone = i_cal_object_get_native (I_CAL_OBJECT (gend_zone));
+		}
 		if (!end_zone)
 			end_zone = default_timezone;
 	} else {

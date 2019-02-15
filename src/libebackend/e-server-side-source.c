@@ -2019,6 +2019,7 @@ e_server_side_source_load (EServerSideSource *source,
 		return FALSE;
 
 	} else {
+		g_free (source->priv->file_contents);
 		source->priv->file_contents = g_strdup (data);
 	}
 

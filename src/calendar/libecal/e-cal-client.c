@@ -1455,10 +1455,10 @@ cal_client_get_cached_timezone (ETimezoneCache *cache,
 		tzid = i_cal_timezone_get_tzid (zone);
 		g_hash_table_insert (priv->zone_cache, g_strdup (tzid), zone);
 	} else {
-		g_object_unref (icalcomp);
 		g_object_unref (zone);
 		zone = NULL;
 	}
+	g_object_unref (icalcomp);
 
 exit:
 	g_mutex_unlock (&priv->zone_cache_lock);
@@ -6248,6 +6248,8 @@ e_cal_client_get_attachment_uris_sync (ECalClient *client,
 		}
 
 		*out_attachment_uris = g_slist_reverse (tmp);
+
+		g_free (uris);
 	}
 
 	if (local_error != NULL) {

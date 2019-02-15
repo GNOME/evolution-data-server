@@ -123,6 +123,7 @@ test_remove_object_empty_uid (ETestServerFixture *fixture,
 	g_assert_error (
 		error, E_CAL_CLIENT_ERROR,
 		E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND);
+	g_clear_error (&error);
 }
 
 gint

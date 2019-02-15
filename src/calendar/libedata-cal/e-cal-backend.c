@@ -194,9 +194,7 @@ static void
 signal_closure_free (SignalClosure *signal_closure)
 {
 	g_weak_ref_clear (&signal_closure->backend);
-
-	/* The ICalTimezone is cached in ECalBackend's internal
-	 * "zone_cache" hash table and must not be freed here. */
+	g_clear_object (&signal_closure->cached_zone);
 
 	g_slice_free (SignalClosure, signal_closure);
 }
@@ -826,7 +824,7 @@ cal_backend_add_cached_timezone (ETimezoneCache *cache,
 		 * duration of the idle callback. */
 		signal_closure = g_slice_new0 (SignalClosure);
 		g_weak_ref_init (&signal_closure->backend, cache);
-		signal_closure->cached_zone = cached_zone;
+		signal_closure->cached_zone = g_object_ref (cached_zone);
 
 		main_context = e_backend_ref_main_context (E_BACKEND (cache));
 
@@ -907,9 +905,9 @@ cal_backend_get_cached_timezone (ETimezoneCache *cache,
 		tzid = i_cal_timezone_get_tzid (zone);
 		g_hash_table_insert (priv->zone_cache, g_strdup (tzid), zone);
 	} else {
-		g_clear_object (&icomp);
 		g_clear_object (&zone);
 	}
+	g_clear_object (&icomp);
 
  exit:
 	g_mutex_unlock (&priv->zone_cache_lock);

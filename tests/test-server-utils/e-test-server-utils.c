@@ -816,14 +816,9 @@ e_test_server_utils_finish_run (void)
 {
 #if GLOBAL_DBUS_DAEMON
 	if (!test_installed_services ()) {
-		/* Teardown the D-Bus Daemon
-		 *
-		 * Note that we intentionally leak the TestDBus daemon
-		 * in this case, presumably this is due to some leaked
-		 * GDBusConnection reference counting
-		 */
-		g_test_dbus_stop (global_test_dbus);
-		/* g_object_unref (global_test_dbus); */
+		/* Teardown the D-Bus Daemon */
+		g_test_dbus_down (global_test_dbus);
+		g_object_unref (global_test_dbus);
 		global_test_dbus = NULL;
 	}
 #endif

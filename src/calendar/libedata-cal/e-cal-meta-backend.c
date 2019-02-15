@@ -1030,9 +1030,9 @@ ecmb_gather_timezones (ECalMetaBackend *meta_backend,
 		if (i_cal_timezone_set_component (zone, clone)) {
 			if (i_cal_timezone_get_tzid (zone))
 				e_timezone_cache_add_timezone (timezone_cache, zone);
-		} else {
-			g_object_unref (clone);
 		}
+
+		g_object_unref (clone);
 	}
 
 	g_object_unref (zone);
@@ -2657,6 +2657,8 @@ ecmb_add_attachment_uris (ECalComponent *comp,
 				g_free (buf);
 			}
 		}
+
+		g_clear_object (&attach);
 	}
 }
 
@@ -3890,6 +3892,8 @@ add_timezone_cb (ICalParameter *param,
 		}
 
 		i_cal_component_take_component (f_data->vcalendar, clone);
+
+		g_object_unref (vtz_comp);
 	}
 
 	g_object_unref (tz);
@@ -4015,7 +4019,7 @@ e_cal_meta_backend_inline_local_attachments_sync (ECalMetaBackend *meta_backend,
 		ICalAttach *attach;
 
 		attach = i_cal_property_get_attach (prop);
-		if (i_cal_attach_get_is_url (attach)) {
+		if (attach && i_cal_attach_get_is_url (attach)) {
 			const gchar *url;
 
 			url = i_cal_attach_get_url (attach);
@@ -4116,7 +4120,7 @@ e_cal_meta_backend_store_inline_attachments_sync (ECalMetaBackend *meta_backend,
 
 		attach = i_cal_property_get_attach (prop);
 
-		if (!i_cal_attach_get_is_url (attach)) {
+		if (attach && !i_cal_attach_get_is_url (attach)) {
 			ICalParameter *param;
 			const gchar *basename;
 			gsize len = -1;
