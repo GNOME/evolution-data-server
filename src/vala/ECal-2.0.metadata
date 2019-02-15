@@ -1,0 +1,2 @@
+TimezoneCache.add_timezone name="add_tz"
+TimezoneCache.get_timezone name="get_tz"
