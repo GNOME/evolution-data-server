@@ -137,8 +137,8 @@ check_icomps_exist (ECalClient *cal_client,
 }
 
 static void
-test_bulk_methods (ECalClient *cal_client,
-		   GSList *icomps)
+test_bulk_methods_sync (ECalClient *cal_client,
+			GSList *icomps)
 {
 	GError *error = NULL;
 	GSList *uids = NULL, *ids = NULL;
@@ -199,9 +199,138 @@ test_bulk_methods (ECalClient *cal_client,
 	g_slist_free_full (uids, g_free);
 }
 
+typedef struct _AsyncContext {
+	ECalClient *cal_client;
+	GSList *icomps; /* ICalComponent * */
+	GSList *ids; /* ECalComponentId * */
+	GSList *uids; /* gchar * */
+	GMainLoop *main_loop;
+} AsyncContext;
+
 static void
-run_test_bulk_methods (ETestServerFixture *fixture,
-                       gconstpointer user_data)
+bulk_async_remove_objects_cb (GObject *source_object,
+			      GAsyncResult *result,
+			      gpointer user_data)
+{
+	AsyncContext *async_context = user_data;
+	gboolean success;
+	GError *error = NULL;
+
+	g_assert_nonnull (async_context);
+	g_assert (E_IS_CAL_CLIENT (source_object));
+	g_assert (async_context->cal_client == E_CAL_CLIENT (source_object));
+
+	success = e_cal_client_remove_objects_finish (async_context->cal_client, result, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+
+	/* Check that the objects don't exist anymore */
+	check_removed (async_context->cal_client, async_context->uids);
+
+	g_main_loop_quit (async_context->main_loop);
+}
+
+static void
+bulk_async_modify_objects_cb (GObject *source_object,
+			      GAsyncResult *result,
+			      gpointer user_data)
+{
+	AsyncContext *async_context = user_data;
+	gboolean success;
+	GError *error = NULL;
+
+	g_assert_nonnull (async_context);
+	g_assert (E_IS_CAL_CLIENT (source_object));
+	g_assert (async_context->cal_client == E_CAL_CLIENT (source_object));
+
+	success = e_cal_client_modify_objects_finish (async_context->cal_client, result, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+
+	/* Retrieve all the objects and check that they have been modified */
+	check_icomps_exist (async_context->cal_client, async_context->icomps);
+
+	/* Remove all the objects in bulk */
+	async_context->ids = uid_slist_to_ecalcomponentid_slist (async_context->uids);
+
+	e_cal_client_remove_objects (async_context->cal_client, async_context->ids, E_CAL_OBJ_MOD_ALL, NULL,
+		bulk_async_remove_objects_cb, async_context);
+}
+
+static void
+bulk_async_create_objects_cb (GObject *source_object,
+			      GAsyncResult *result,
+			      gpointer user_data)
+{
+	AsyncContext *async_context = user_data;
+	GSList *luid, *lcomp;
+	gboolean success;
+	gint ii;
+	GError *error = NULL;
+
+	g_assert_nonnull (async_context);
+	g_assert (E_IS_CAL_CLIENT (source_object));
+	g_assert (async_context->cal_client == E_CAL_CLIENT (source_object));
+
+	success = e_cal_client_create_objects_finish (async_context->cal_client, result, &async_context->uids, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_nonnull (async_context->uids);
+	g_assert_cmpint (g_slist_length (async_context->uids), ==, NB_COMPONENTS);
+
+	/* Update ICalComponents uids */
+	for (luid = async_context->uids, lcomp = async_context->icomps;
+	     luid && lcomp;
+	     luid = g_slist_next (luid), lcomp = g_slist_next (lcomp)) {
+		i_cal_component_set_uid (lcomp->data, luid->data);
+	}
+
+	/* Retrieve all the objects and check that they are the same */
+	check_icomps_exist (async_context->cal_client, async_context->icomps);
+
+	/* Modify the objects */
+	for (ii = 0, lcomp = async_context->icomps; lcomp; ii++, lcomp = g_slist_next (lcomp)) {
+		gchar *summary;
+		ICalComponent *icomp = lcomp->data;
+
+		summary = g_strdup_printf ("Edited test summary %d", ii);
+		i_cal_component_set_summary (icomp, summary);
+
+		g_free (summary);
+	}
+
+	e_cal_client_modify_objects (async_context->cal_client, async_context->icomps, E_CAL_OBJ_MOD_ALL, NULL,
+		bulk_async_modify_objects_cb, async_context);
+}
+
+static void
+test_bulk_methods_async (ECalClient *cal_client,
+			 GSList *icomps)
+{
+	AsyncContext async_context;
+
+	g_assert_nonnull (icomps);
+
+	async_context.cal_client = cal_client;
+	async_context.icomps = icomps;
+	async_context.ids = NULL;
+	async_context.uids = NULL;
+	async_context.main_loop = g_main_loop_new (NULL, FALSE);
+
+	e_cal_client_create_objects (async_context.cal_client, async_context.icomps, NULL,
+		bulk_async_create_objects_cb, &async_context);
+
+	g_main_loop_run (async_context.main_loop);
+
+	g_slist_free_full (async_context.ids, e_cal_component_id_free);
+	g_slist_free_full (async_context.uids, g_free);
+	g_main_loop_unref (async_context.main_loop);
+}
+
+static void
+run_test_bulk_methods_wrapper (ETestServerFixture *fixture,
+			       void (* func)(ECalClient *cal_client,
+					     GSList *icomps))
 {
 	ECalClient *cal_client;
 	GSList *icomps = NULL;
@@ -233,9 +362,23 @@ run_test_bulk_methods (ETestServerFixture *fixture,
 	g_clear_object (&dtend);
 
 	/* Test synchronous bulk methods */
-	test_bulk_methods (cal_client, icomps);
+	func (cal_client, icomps);
 
 	g_slist_free_full (icomps, g_object_unref);
+}
+
+static void
+run_test_bulk_methods_sync (ETestServerFixture *fixture,
+			    gconstpointer user_data)
+{
+	run_test_bulk_methods_wrapper (fixture, test_bulk_methods_sync);
+}
+
+static void
+run_test_bulk_methods_async (ETestServerFixture *fixture,
+			     gconstpointer user_data)
+{
+	run_test_bulk_methods_wrapper (fixture, test_bulk_methods_async);
 }
 
 gint
@@ -246,11 +389,18 @@ main (gint argc,
 	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	g_test_add (
-		"/ECalClient/BulkMethods",
+		"/ECalClient/BulkMethods/Sync",
 		ETestServerFixture,
 		&cal_closure,
 		e_test_server_utils_setup,
-		run_test_bulk_methods,
+		run_test_bulk_methods_sync,
+		e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalClient/BulkMethods/Async",
+		ETestServerFixture,
+		&cal_closure,
+		e_test_server_utils_setup,
+		run_test_bulk_methods_async,
 		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
