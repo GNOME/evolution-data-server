@@ -56,6 +56,9 @@ camel_provider_module_init (void)
 	sendmail_provider.url_equal = (GEqualFunc) camel_url_equal;
 	sendmail_provider.translation_domain = GETTEXT_PACKAGE;
 
-	camel_provider_register (&sendmail_provider);
+	/* Hide sendmail in Flatpak. It cannot access the host sendmail
+	   anyway, neither any custom binary from the host. */
+	if (!g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS))
+		camel_provider_register (&sendmail_provider);
 }
 
