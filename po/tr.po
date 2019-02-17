@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.tr\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2019-02-08 14:54+0000\n"
-"PO-Revision-Date: 2019-02-09 13:03+0300\n"
+"POT-Creation-Date: 2019-02-15 07:54+0000\n"
+"PO-Revision-Date: 2019-02-17 11:54+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -6128,6 +6128,74 @@ msgstr ""
 "yetkilendirmesini etkinleştirir; Firma-CalDAV:caldav.firma.com - “caldav."
 "firma.com” ana makinesinden okunan verideki her “CalDAV” kaynağı için "
 "“Firma” OAuth2 yetkilendirmesini etkinleştirir"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
+msgid ""
+"An OAuth2 client ID to use to connect to Google servers, instead of the one "
+"provided during build time"
+msgstr ""
+"İnşa zamanında sağlananın yerine Google sunucularına bağlantıda kullanılacak "
+"OAuth2 istemci kimliği"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
+msgid ""
+"User-specified OAuth2 client ID for Google servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Google sunucuları için kullanıcının tanımladığı OAuth2 istemci kimliği. Boş "
+"dizge inşa zamanında sağlananı kullan anlamına gelir. Bunu değiştirmek "
+"yeniden başlatma gerektirir."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
+msgid ""
+"An OAuth2 client secret to use to connect to Google servers, instead of the "
+"one provided during build time"
+msgstr ""
+"İnşa zamanında sağlananın yerine Google sunucularına bağlantıda kullanılacak "
+"OAuth2 istemci gizi"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
+msgid ""
+"User-specified OAuth2 client secret for Google servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Google sunucuları için kullanıcının tanımladığı OAuth2 istemci gizi. Boş "
+"dizge inşa zamanında sağlananı kullan anlamına gelir. Bunu değiştirmek "
+"yeniden başlatma gerektirir."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
+msgid ""
+"An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
+"provided during build time"
+msgstr ""
+"İnşa zamanında sağlananın yerine Outlook sunucularına bağlantıda "
+"kullanılacak OAuth2 istemci kimliği"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
+msgid ""
+"User-specified OAuth2 client ID for Outlook servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Outlook sunucuları için kullanıcının tanımladığı OAuth2 istemci kimliği. Boş "
+"dizge inşa zamanında sağlananı kullan anlamına gelir. Bunu değiştirmek "
+"yeniden başlatma gerektirir."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
+msgid ""
+"An OAuth2 client secret to use to connect to Outlook servers, instead of the "
+"one provided during build time"
+msgstr ""
+"İnşa zamanında sağlananın yerine Outlook sunucularına bağlantıda "
+"kullanılacak OAuth2 istemci gizi"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
+msgid ""
+"User-specified OAuth2 client secret for Outlook servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Outlook sunucuları için kullanıcının tanımladığı OAuth2 istemci gizi. Boş "
+"dizge inşa zamanında sağlananı kullan anlamına gelir. Bunu değiştirmek "
+"yeniden başlatma gerektirir."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
