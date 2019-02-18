@@ -1187,7 +1187,7 @@ e_webdav_session_options_sync (EWebDAVSession *webdav,
 }
 
 /**
- * e_webdav_session_post_sync:
+ * e_webdav_session_post_with_content_type_sync:
  * @webdav: an #EWebDAVSession
  * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
  * @data: data to post to the server
@@ -1209,7 +1209,7 @@ e_webdav_session_options_sync (EWebDAVSession *webdav,
  *
  * Returns: Whether succeeded.
  *
- * Since: 3.26
+ * Since: 3.32
  **/
 gboolean
 e_webdav_session_post_with_content_type_sync (EWebDAVSession *webdav,
@@ -1302,7 +1302,7 @@ e_webdav_session_post_with_content_type_sync (EWebDAVSession *webdav,
  *
  * Returns: Whether succeeded.
  *
- * Since: 3.32
+ * Since: 3.26
  **/
 gboolean
 e_webdav_session_post_sync (EWebDAVSession *webdav,
