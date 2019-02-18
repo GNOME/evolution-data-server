@@ -2903,7 +2903,10 @@ ecmb_authenticate_sync (EBackend *backend,
 		if (auth_result == E_SOURCE_AUTHENTICATION_UNKNOWN)
 			auth_result = E_SOURCE_AUTHENTICATION_ERROR;
 
-		e_source_set_connection_status (e_backend_get_source (backend), E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+		e_source_set_connection_status (e_backend_get_source (backend),
+			auth_result == E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED ?
+			E_SOURCE_CONNECTION_STATUS_SSL_FAILED :
+			E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 	}
 	g_mutex_unlock (&meta_backend->priv->connect_lock);
 

@@ -1533,3 +1533,53 @@ e_source_webdav_unset_temporary_ssl_trust (ESourceWebdav *extension)
 	    response == E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY)
 		e_source_webdav_set_ssl_trust (extension, NULL);
 }
+
+/**
+ * e_source_webdav_get_ssl_trust_response:
+ * @extension: an #ESourceWebdav
+ *
+ * Returns: the last SSL trust response, as #ETrustPromptResponse, if none
+ *    is set, then returns %E_TRUST_PROMPT_RESPONSE_UNKNOWN
+ *
+ * Since: 3.32
+ **/
+ETrustPromptResponse
+e_source_webdav_get_ssl_trust_response (ESourceWebdav *extension)
+{
+	ETrustPromptResponse response = E_TRUST_PROMPT_RESPONSE_UNKNOWN;
+
+	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), E_TRUST_PROMPT_RESPONSE_UNKNOWN);
+
+	if (!decode_ssl_trust (extension, &response, NULL, NULL))
+		response = E_TRUST_PROMPT_RESPONSE_UNKNOWN;
+
+	return response;
+}
+
+/**
+ * e_source_webdav_set_ssl_trust_response:
+ * @extension: an #ESourceWebdav
+ * @response: an #ETrustPromptResponse to set
+ *
+ * Set the SSL trust response, as #ETrustPromptResponse, while keeping
+ * the certificate and host information as before. The function does
+ * nothing, when none SSL trust is set or when %E_TRUST_PROMPT_RESPONSE_UNKNOWN
+ * is used as the @response.
+ *
+ * Since: 3.32
+ **/
+void
+e_source_webdav_set_ssl_trust_response (ESourceWebdav *extension,
+					ETrustPromptResponse response)
+{
+	gchar *host = NULL, *hash = NULL;
+
+	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
+
+	if (response != E_TRUST_PROMPT_RESPONSE_UNKNOWN &&
+	    decode_ssl_trust (extension, NULL, &host, &hash))
+		encode_ssl_trust (extension, response, host, hash);
+
+	g_free (host);
+	g_free (hash);
+}

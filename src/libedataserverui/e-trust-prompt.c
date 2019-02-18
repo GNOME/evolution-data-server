@@ -604,57 +604,55 @@ e_trust_prompt_run_for_source (GtkWindow *parent,
 
 	certificate = g_tls_certificate_new_from_pem (certificate_pem, -1, &save_data->error);
 	if (certificate) {
+		const gchar *source_extension = NULL;
+
 		if (extension_webdav && host)
 			save_data->response = e_source_webdav_verify_ssl_trust (extension_webdav, host, certificate, 0);
 		else
 			save_data->response = E_TRUST_PROMPT_RESPONSE_REJECT_TEMPORARILY;
 
-		if (save_data->response != E_TRUST_PROMPT_RESPONSE_REJECT) {
-			const gchar *source_extension = NULL;
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK))
+			source_extension = E_SOURCE_EXTENSION_ADDRESS_BOOK;
 
-			if (e_source_has_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK))
-				source_extension = E_SOURCE_EXTENSION_ADDRESS_BOOK;
-
-			if (e_source_has_extension (source, E_SOURCE_EXTENSION_CALENDAR)) {
-				if (!source_extension)
-					source_extension = E_SOURCE_EXTENSION_CALENDAR;
-				else
-					source_extension = E_SOURCE_EXTENSION_COLLECTION;
-			}
-
-			if (e_source_has_extension (source, E_SOURCE_EXTENSION_MEMO_LIST)) {
-				if (!source_extension)
-					source_extension = E_SOURCE_EXTENSION_MEMO_LIST;
-				else
-					source_extension = E_SOURCE_EXTENSION_COLLECTION;
-			}
-
-			if (e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST)) {
-				if (!source_extension)
-					source_extension = E_SOURCE_EXTENSION_TASK_LIST;
-				else
-					source_extension = E_SOURCE_EXTENSION_COLLECTION;
-			}
-
-			if (e_source_has_extension (source, E_SOURCE_EXTENSION_MAIL_ACCOUNT)) {
-				if (!source_extension)
-					source_extension = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
-				else
-					source_extension = E_SOURCE_EXTENSION_COLLECTION;
-			}
-
-			if (e_source_has_extension (source, E_SOURCE_EXTENSION_MAIL_TRANSPORT)) {
-				if (!source_extension)
-					source_extension = E_SOURCE_EXTENSION_MAIL_TRANSPORT;
-				else
-					source_extension = E_SOURCE_EXTENSION_COLLECTION;
-			}
-
-			save_data->response = e_trust_prompt_run_with_dialog_ready_callback (parent,
-				source_extension, e_source_get_display_name (source), host,
-				certificate_pem, certificate_errors, error_text,
-				trust_prompt_listen_for_source_changes_cb, source);
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_CALENDAR)) {
+			if (!source_extension)
+				source_extension = E_SOURCE_EXTENSION_CALENDAR;
+			else
+				source_extension = E_SOURCE_EXTENSION_COLLECTION;
 		}
+
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_MEMO_LIST)) {
+			if (!source_extension)
+				source_extension = E_SOURCE_EXTENSION_MEMO_LIST;
+			else
+				source_extension = E_SOURCE_EXTENSION_COLLECTION;
+		}
+
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST)) {
+			if (!source_extension)
+				source_extension = E_SOURCE_EXTENSION_TASK_LIST;
+			else
+				source_extension = E_SOURCE_EXTENSION_COLLECTION;
+		}
+
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_MAIL_ACCOUNT)) {
+			if (!source_extension)
+				source_extension = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
+			else
+				source_extension = E_SOURCE_EXTENSION_COLLECTION;
+		}
+
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_MAIL_TRANSPORT)) {
+			if (!source_extension)
+				source_extension = E_SOURCE_EXTENSION_MAIL_TRANSPORT;
+			else
+				source_extension = E_SOURCE_EXTENSION_COLLECTION;
+		}
+
+		save_data->response = e_trust_prompt_run_with_dialog_ready_callback (parent,
+			source_extension, e_source_get_display_name (source), host,
+			certificate_pem, certificate_errors, error_text,
+			trust_prompt_listen_for_source_changes_cb, source);
 	}
 
 	g_signal_handlers_disconnect_matched (source, G_SIGNAL_MATCH_FUNC, 0, 0, NULL,

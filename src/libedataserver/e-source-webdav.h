@@ -147,6 +147,12 @@ ETrustPromptResponse
 						 GTlsCertificateFlags cert_errors);
 void		e_source_webdav_unset_temporary_ssl_trust
 						(ESourceWebdav *extension);
+ETrustPromptResponse
+		e_source_webdav_get_ssl_trust_response
+						(ESourceWebdav *extension);
+void		e_source_webdav_set_ssl_trust_response
+						(ESourceWebdav *extension,
+						 ETrustPromptResponse response);
 
 G_END_DECLS
 

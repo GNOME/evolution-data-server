@@ -446,7 +446,10 @@ backend_source_authenticate_thread (gpointer user_data)
 		} else {
 			GError *local_error2 = NULL;
 
-			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+			e_source_set_connection_status (source,
+				auth_result == E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED ?
+				E_SOURCE_CONNECTION_STATUS_SSL_FAILED :
+				E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 
 			if (!e_source_invoke_credentials_required_sync (source, reason, certificate_pem, certificate_errors,
 				local_error, thread_data->cancellable, &local_error2)) {
