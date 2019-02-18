@@ -1,3 +1,33 @@
+Evolution-Data-Server 3.31.91 2019-02-18
+----------------------------------------
+
+Bug Fixes:
+	M!9 - [Vala] Make camel_sasl_new usable in Vala (Corentin Noël)
+	M!10 - [Camel] Add more documentation and annotations to CamelMimeMessage (Corentin Noël)
+	M!11 - [EData-Book] fix several annotations (Corentin Noël)
+
+Miscellaneous:
+	[EDataBook] Enforce EBookBackend type (Corentin Noël)
+	[CamelStreamMem] Fix transfer annotations and array element type (Corentin Noël)
+	[OAuth2] Add GSettings keys to override client ID and secret (Milan Crha)
+	[Camel] Fix several annotations for message creation (Corentin Noël)
+	Hide sendmail in Flatpak (Milan Crha)
+
+Translations:
+	Daniel Mustieles (es)
+	Piotr Drąg (pl)
+	Marek Cernocky (cs)
+	Serdar Sağlam (tr)
+	Fran Dieguez (gl)
+	Aurimas Černius (lt)
+	Kukuh Syafaat (id)
+	Matej Urbančič (sl)
+	Balázs Úr (hu)
+	Alan Mortensen (da)
+	Baurzhan Muftakhidinov (kk)
+	Emin Tufan Çetin (tr)
+	Yi-Jyun Pan (zh_TW)
+
 Evolution-Data-Server 3.31.90 2019-02-04
 ----------------------------------------
 
