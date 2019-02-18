@@ -1782,7 +1782,8 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 
 	webdav = ecb_caldav_ref_session (cbdav);
 
-	if (e_webdav_session_post_sync (webdav, cbdav->priv->schedule_outbox_url, str, -1, NULL, &response, cancellable, &local_error) &&
+	if (e_webdav_session_post_with_content_type_sync (webdav, cbdav->priv->schedule_outbox_url, str, -1,
+							  E_WEBDAV_CONTENT_TYPE_CALENDAR, NULL, &response, cancellable, &local_error) &&
 	    response) {
 		/* parse returned xml */
 		xmlDocPtr doc;

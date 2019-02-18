@@ -1192,6 +1192,7 @@ e_webdav_session_options_sync (EWebDAVSession *webdav,
  * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
  * @data: data to post to the server
  * @data_length: length of @data, or -1, when @data is NUL-terminated
+ * @in_content_type: (nullable): a Content-Type of the @data, or %NULL, to use application/xml
  * @out_content_type: (nullable) (transfer full): return location for response Content-Type, or %NULL
  * @out_content: (nullable) (transfer full): return location for response content, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
@@ -1211,14 +1212,15 @@ e_webdav_session_options_sync (EWebDAVSession *webdav,
  * Since: 3.26
  **/
 gboolean
-e_webdav_session_post_sync (EWebDAVSession *webdav,
-			    const gchar *uri,
-			    const gchar *data,
-			    gsize data_length,
-			    gchar **out_content_type,
-			    GByteArray **out_content,
-			    GCancellable *cancellable,
-			    GError **error)
+e_webdav_session_post_with_content_type_sync (EWebDAVSession *webdav,
+					      const gchar *uri,
+					      const gchar *data,
+					      gsize data_length,
+					      const gchar *in_content_type,
+					      gchar **out_content_type,
+					      GByteArray **out_content,
+					      GCancellable *cancellable,
+					      GError **error)
 {
 	SoupRequestHTTP *request;
 	SoupMessage *message;
@@ -1249,7 +1251,7 @@ e_webdav_session_post_sync (EWebDAVSession *webdav,
 		return FALSE;
 	}
 
-	soup_message_set_request (message, E_WEBDAV_CONTENT_TYPE_XML,
+	soup_message_set_request (message, (in_content_type && *in_content_type) ? in_content_type : E_WEBDAV_CONTENT_TYPE_XML,
 		SOUP_MEMORY_COPY, data, data_length);
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
@@ -1274,6 +1276,48 @@ e_webdav_session_post_sync (EWebDAVSession *webdav,
 	g_object_unref (request);
 
 	return success;
+}
+
+/**
+ * e_webdav_session_post_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @data: data to post to the server
+ * @data_length: length of @data, or -1, when @data is NUL-terminated
+ * @out_content_type: (nullable) (transfer full): return location for response Content-Type, or %NULL
+ * @out_content: (nullable) (transfer full): return location for response content, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Issues POST request on the provided @uri, or, in case it's %NULL, on the URI
+ * defined in associated #ESource. The Content-Type of the @data is set to
+ * application/xml. To POST the @data with a different Content-Type use
+ * e_webdav_session_post_with_content_type_sync().
+ *
+ * The optional @out_content_type can be used to get content type of the response.
+ * Free it with g_free(), when no longer needed.
+ *
+ * The optional @out_content can be used to get actual result content. Free it
+ * with g_byte_array_free(), when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.32
+ **/
+gboolean
+e_webdav_session_post_sync (EWebDAVSession *webdav,
+			    const gchar *uri,
+			    const gchar *data,
+			    gsize data_length,
+			    gchar **out_content_type,
+			    GByteArray **out_content,
+			    GCancellable *cancellable,
+			    GError **error)
+{
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (data != NULL, FALSE);
+
+	return e_webdav_session_post_with_content_type_sync (webdav, uri, data, data_length, NULL, out_content_type, out_content, cancellable, error);
 }
 
 /**

@@ -364,6 +364,16 @@ gboolean	e_webdav_session_post_sync		(EWebDAVSession *webdav,
 							 GByteArray **out_content,
 							 GCancellable *cancellable,
 							 GError **error);
+gboolean	e_webdav_session_post_with_content_type_sync
+							(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 const gchar *data,
+							 gsize data_length,
+							 const gchar *in_content_type,
+							 gchar **out_content_type,
+							 GByteArray **out_content,
+							 GCancellable *cancellable,
+							 GError **error);
 gboolean	e_webdav_session_propfind_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 const gchar *depth,
