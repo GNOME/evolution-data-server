@@ -114,6 +114,11 @@ void		e_xml_document_add_attribute_time
 						 const gchar *ns_href,
 						 const gchar *name,
 						 time_t value);
+void		e_xml_document_add_attribute_time_ical
+						(EXmlDocument *xml,
+						 const gchar *ns_href,
+						 const gchar *name,
+						 time_t value);
 void		e_xml_document_write_int	(EXmlDocument *xml,
 						 gint64 value);
 void		e_xml_document_write_double	(EXmlDocument *xml,

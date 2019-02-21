@@ -579,6 +579,45 @@ e_xml_document_add_attribute_time (EXmlDocument *xml,
 }
 
 /**
+ * e_xml_document_add_attribute_time_ical:
+ * @xml: an #EXmlDocument
+ * @ns_href: (nullable): optional namespace href for the new attribute, or %NULL
+ * @name: name of the attribute
+ * @value: time_t value of the attribute
+ *
+ * Adds a new attribute with a time_t value in iCalendar format to the current element.
+ * The format is "YYYYMMDDTHHMMSSZ".
+ * Use %NULL @ns_href, to use the default namespace, otherwise either previously
+ * added namespace with the same href from e_xml_document_add_namespaces() is picked,
+ * or a new namespace with generated prefix is added.
+ *
+ * Since: 3.32
+ **/
+void
+e_xml_document_add_attribute_time_ical (EXmlDocument *xml,
+					const gchar *ns_href,
+					const gchar *name,
+					time_t value)
+{
+	GDateTime *dt;
+	gchar *strvalue;
+
+	g_return_if_fail (E_IS_XML_DOCUMENT (xml));
+	g_return_if_fail (xml->priv->current_element != NULL);
+	g_return_if_fail (name != NULL);
+
+	dt = g_date_time_new_from_unix_utc ((gint64) value);
+	g_return_if_fail (dt != NULL);
+
+	strvalue = g_date_time_format (dt, "%Y%m%dT%H%M%SZ");
+
+	g_date_time_unref (dt);
+
+	e_xml_document_add_attribute (xml, ns_href, name, strvalue);
+	g_free (strvalue);
+}
+
+/**
  * e_xml_document_write_int:
  * @xml: an #EXmlDocument
  * @value: value to write as the content

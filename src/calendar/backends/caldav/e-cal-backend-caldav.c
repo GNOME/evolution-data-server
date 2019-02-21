@@ -1913,8 +1913,8 @@ ecb_caldav_get_free_busy_from_principal_sync (ECalBackendCalDAV *cbdav,
 	xml = e_xml_document_new (E_WEBDAV_NS_CALDAV, "free-busy-query");
 
 	e_xml_document_start_element (xml, NULL, "time-range");
-	e_xml_document_add_attribute_time (xml, NULL, "start", start);
-	e_xml_document_add_attribute_time (xml, NULL, "end", end);
+	e_xml_document_add_attribute_time_ical (xml, NULL, "start", start);
+	e_xml_document_add_attribute_time_ical (xml, NULL, "end", end);
 	e_xml_document_end_element (xml); /* time-range */
 
 	success = e_webdav_session_report_sync (webdav, href, E_WEBDAV_DEPTH_INFINITY, xml, NULL, NULL, &content_type, &content, cancellable, error);
