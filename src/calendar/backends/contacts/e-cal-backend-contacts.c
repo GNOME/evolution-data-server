@@ -901,6 +901,7 @@ create_component (ECalBackendContacts *cbc,
 	struct icalrecurrencetype  r;
 	gchar			  *since_year;
 	GSList recur_list;
+	gboolean is_leap_day;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbc), NULL);
 
@@ -929,6 +930,9 @@ create_component (ECalBackendContacts *cbc,
 	dt.tzid = NULL;
 	e_cal_component_set_dtstart (cal_comp, &dt);
 
+	itt = icaltime_normalize (itt);
+	is_leap_day = itt.day == 29 && itt.month == 2;
+
 	itt = cdate_to_icaltime (cdate);
 	icaltime_adjust (&itt, 1, 0, 0, 0);
 	dt.value = &itt;
@@ -940,6 +944,8 @@ create_component (ECalBackendContacts *cbc,
 	icalrecurrencetype_clear (&r);
 	r.freq = ICAL_YEARLY_RECURRENCE;
 	r.interval = 1;
+	if (is_leap_day)
+		r.by_month_day[0] = -1;
 	recur_list.data = &r;
 	recur_list.next = NULL;
 	e_cal_component_set_rrule_list (cal_comp, &recur_list);
