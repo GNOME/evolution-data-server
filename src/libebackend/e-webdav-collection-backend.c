@@ -430,6 +430,38 @@ e_webdav_collection_backend_is_custom_source (EWebDAVCollectionBackend *webdav_b
 	return klass->is_custom_source (webdav_backend, source);
 }
 
+typedef struct _RemoveSourceTypesData {
+	ESourceRegistryServer *server;
+	gboolean calendars;
+} RemoveSourceTypesData;
+
+static gboolean
+webdav_collection_remove_source_types_cb (gpointer key,
+					  gpointer value,
+					  gpointer user_data)
+{
+	RemoveSourceTypesData *rstd = user_data;
+	const gchar *source_uid = value;
+	ESource *source;
+	gboolean remove;
+
+	g_return_val_if_fail (rstd != NULL, FALSE);
+
+	source = e_source_registry_server_ref_source (rstd->server, source_uid);
+	if (!source)
+		return FALSE;
+
+	remove = (rstd->calendars && (
+		  e_source_has_extension (source, E_SOURCE_EXTENSION_CALENDAR) ||
+		  e_source_has_extension (source, E_SOURCE_EXTENSION_MEMO_LIST) ||
+		  e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST))) ||
+		 (!rstd->calendars && e_source_has_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK));
+
+	g_object_unref (source);
+
+	return remove;
+}
+
 /**
  * e_webdav_collection_backend_discover_sync:
  * @webdav_backend: an #EWebDAVCollectionBackend
@@ -523,6 +555,14 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 		e_webdav_discover_free_discovered_sources (discovered_sources);
 		discovered_sources = NULL;
 		any_success = TRUE;
+	} else if (local_error && local_error->domain == SOUP_HTTP_ERROR && (
+		   SOUP_STATUS_IS_TRANSPORT_ERROR (local_error->code) || SOUP_STATUS_IS_SERVER_ERROR (local_error->code))) {
+		RemoveSourceTypesData rstd;
+
+		rstd.server = server;
+		rstd.calendars = TRUE;
+
+		g_hash_table_foreach_remove (known_sources, webdav_collection_remove_source_types_cb, &rstd);
 	}
 
 	if (!local_error && e_source_collection_get_contacts_enabled (collection_extension) && contacts_url &&
@@ -539,6 +579,14 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 		e_webdav_discover_free_discovered_sources (discovered_sources);
 		discovered_sources = NULL;
 		any_success = TRUE;
+	} else if (any_success && local_error && local_error->domain == SOUP_HTTP_ERROR && (
+		   SOUP_STATUS_IS_TRANSPORT_ERROR (local_error->code) || SOUP_STATUS_IS_SERVER_ERROR (local_error->code))) {
+		RemoveSourceTypesData rstd;
+
+		rstd.server = server;
+		rstd.calendars = FALSE;
+
+		g_hash_table_foreach_remove (known_sources, webdav_collection_remove_source_types_cb, &rstd);
 	}
 
 	if (any_success && server && !g_cancellable_is_cancelled (cancellable)) {
