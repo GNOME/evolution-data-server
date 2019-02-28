@@ -39,6 +39,7 @@
 #include <libecal/e-cal-component-id.h>
 #include <libecal/e-cal-component-organizer.h>
 #include <libecal/e-cal-component-period.h>
+#include <libecal/e-cal-component-property-bag.h>
 #include <libecal/e-cal-component-range.h>
 #include <libecal/e-cal-component-text.h>
 #include <libecal/e-cal-enums.h>

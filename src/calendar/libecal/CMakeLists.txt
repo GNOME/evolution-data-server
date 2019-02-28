@@ -21,6 +21,7 @@ set(SOURCES
 	e-cal-component-id.c
 	e-cal-component-organizer.c
 	e-cal-component-period.c
+	e-cal-component-property-bag.c
 	e-cal-component-range.c
 	e-cal-component-text.c
 	e-cal-recur.c
@@ -48,6 +49,7 @@ set(HEADERS
 	e-cal-component-id.h
 	e-cal-component-organizer.h
 	e-cal-component-period.h
+	e-cal-component-property-bag.h
 	e-cal-component-range.h
 	e-cal-component-text.h
 	e-cal-enums.h

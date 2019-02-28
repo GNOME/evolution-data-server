@@ -29,6 +29,7 @@
 #include <libecal/e-cal-component-alarm-repeat.h>
 #include <libecal/e-cal-component-alarm-trigger.h>
 #include <libecal/e-cal-component-attendee.h>
+#include <libecal/e-cal-component-property-bag.h>
 #include <libecal/e-cal-component-text.h>
 #include <libecal/e-cal-enums.h>
 
@@ -120,6 +121,9 @@ void		e_cal_component_alarm_set_attachments
 void		e_cal_component_alarm_take_attachments
 						(ECalComponentAlarm *alarm,
 						 GSList *attachments); /* ICalAttach * */
+ECalComponentPropertyBag *
+		e_cal_component_alarm_get_property_bag
+						(const ECalComponentAlarm *alarm);
 
 G_END_DECLS
 

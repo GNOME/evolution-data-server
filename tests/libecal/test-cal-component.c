@@ -322,6 +322,43 @@ verify_struct_alarm_trigger_equal (const ECalComponentAlarmTrigger *expected,
 }
 
 static void
+verify_property_bag_equal (const ECalComponentPropertyBag *expected,
+			   const ECalComponentPropertyBag *received)
+{
+	gint ii, count;
+
+	if (!expected) {
+		g_assert_null (received);
+		return;
+	}
+
+	g_assert_nonnull (received);
+
+	g_assert_cmpint (e_cal_component_property_bag_get_count (expected), ==, e_cal_component_property_bag_get_count (received));
+
+	count = e_cal_component_property_bag_get_count (expected);
+	for (ii = 0; ii < count; ii++) {
+		ICalProperty *prop_expected, *prop_received;
+		gchar *value_expected, *value_received;
+
+		prop_expected = e_cal_component_property_bag_get (expected, ii);
+		prop_received = e_cal_component_property_bag_get (received, ii);
+
+		g_assert_nonnull (prop_expected);
+		g_assert_nonnull (prop_received);
+		g_assert_cmpint (i_cal_property_isa (prop_expected), ==, i_cal_property_isa (prop_received));
+
+		value_expected = i_cal_property_as_ical_string_r (prop_expected);
+		value_received = i_cal_property_as_ical_string_r (prop_received);
+
+		g_assert_cmpstr (value_expected, ==, value_received);
+
+		g_free (value_expected);
+		g_free (value_received);
+	}
+}
+
+static void
 verify_struct_alarm_equal (const ECalComponentAlarm *expected,
 			   const ECalComponentAlarm *received)
 {
@@ -353,6 +390,9 @@ verify_struct_alarm_equal (const ECalComponentAlarm *expected,
 
 	verify_ical_attach_list_equal (e_cal_component_alarm_get_attachments (expected),
 				       e_cal_component_alarm_get_attachments (received));
+
+	verify_property_bag_equal (e_cal_component_alarm_get_property_bag (expected),
+				   e_cal_component_alarm_get_property_bag (received));
 }
 
 static void
@@ -420,17 +460,18 @@ test_component_struct_alarm (void)
 		gboolean with_trigger;
 		gboolean with_attendees;
 		gboolean with_attachments;
+		gboolean with_properties;
 	} values[] = {
-		{ "1", E_CAL_COMPONENT_ALARM_AUDIO, NULL, FALSE, FALSE, FALSE, FALSE },
-		{ "2", E_CAL_COMPONENT_ALARM_DISPLAY, "display text", FALSE, FALSE, FALSE, FALSE },
-		{ "3", E_CAL_COMPONENT_ALARM_EMAIL, NULL, TRUE, FALSE, FALSE, FALSE },
-		{ "4", E_CAL_COMPONENT_ALARM_PROCEDURE, "procedure", FALSE, TRUE, FALSE, FALSE },
-		{ "5", E_CAL_COMPONENT_ALARM_AUDIO, NULL, FALSE, FALSE, TRUE, FALSE },
-		{ "6", E_CAL_COMPONENT_ALARM_DISPLAY, "display text", FALSE, FALSE, FALSE, TRUE },
-		{ "7", E_CAL_COMPONENT_ALARM_EMAIL, NULL, TRUE, FALSE, TRUE, FALSE },
-		{ "8", E_CAL_COMPONENT_ALARM_PROCEDURE, "procedure", TRUE, TRUE, TRUE, TRUE }
+		{ "1", E_CAL_COMPONENT_ALARM_AUDIO, NULL, FALSE, FALSE, FALSE, FALSE, FALSE },
+		{ "2", E_CAL_COMPONENT_ALARM_DISPLAY, "display text", FALSE, FALSE, FALSE, FALSE, FALSE },
+		{ "3", E_CAL_COMPONENT_ALARM_EMAIL, NULL, TRUE, FALSE, FALSE, FALSE, FALSE },
+		{ "4", E_CAL_COMPONENT_ALARM_PROCEDURE, "procedure", FALSE, TRUE, FALSE, FALSE, TRUE },
+		{ "5", E_CAL_COMPONENT_ALARM_AUDIO, NULL, FALSE, FALSE, TRUE, FALSE, TRUE },
+		{ "6", E_CAL_COMPONENT_ALARM_DISPLAY, "display text", FALSE, FALSE, FALSE, TRUE, TRUE },
+		{ "7", E_CAL_COMPONENT_ALARM_EMAIL, NULL, TRUE, FALSE, TRUE, FALSE, TRUE },
+		{ "8", E_CAL_COMPONENT_ALARM_PROCEDURE, "procedure", TRUE, TRUE, TRUE, TRUE, TRUE }
 	};
-	gint ii, nth_description = 0, nth_repeat = 0, nth_trigger = 0, nth_attendees = 0, nth_attachments = 0;
+	gint ii, nth_description = 0, nth_repeat = 0, nth_trigger = 0, nth_attendees = 0, nth_attachments = 0, nth_properties = 0;
 
 	for (ii = 0; ii < G_N_ELEMENTS (values); ii++) {
 		ECalComponentAlarm *expected, *received;
@@ -554,6 +595,40 @@ test_component_struct_alarm (void)
 			}
 		}
 
+		if (values[ii].with_properties) {
+			ECalComponentPropertyBag *bag;
+			gint ii;
+
+			nth_properties++;
+
+			bag = e_cal_component_alarm_get_property_bag (expected);
+
+			g_assert_nonnull (bag);
+
+			for (ii = nth_properties; ii > 0; ii--) {
+				ICalProperty *prop;
+
+				if (ii == 0) {
+					prop = i_cal_property_new_url ("https://www.gnome.org");
+				} else if (ii == 1) {
+					prop = i_cal_property_new_voter ("MAILTO:user@no.where");
+				} else {
+					gchar *x_name;
+
+					x_name = g_strdup_printf ("X-CUSTOM-PROP-%d", ii);
+					prop = i_cal_property_new_x (x_name + 2);
+					i_cal_property_set_x_name (prop, x_name);
+					g_free (x_name);
+				}
+
+				g_assert_nonnull (prop);
+
+				e_cal_component_property_bag_take (bag, prop);
+			}
+
+			g_assert_cmpint (e_cal_component_property_bag_get_count (bag), ==, nth_properties);
+		}
+
 		received = e_cal_component_alarm_copy (expected);
 		verify_struct_alarm_equal (expected, received);
 		e_cal_component_alarm_free (received);
@@ -582,6 +657,7 @@ test_component_struct_alarm (void)
 	g_assert_cmpint (nth_trigger, >, 1);
 	g_assert_cmpint (nth_attendees, >, 1);
 	g_assert_cmpint (nth_attachments, >, 1);
+	g_assert_cmpint (nth_properties, >, 1);
 }
 
 static void
@@ -1381,6 +1457,181 @@ test_component_struct_period (void)
 	g_assert_cmpint (flipflop1, >, 2);
 	g_assert_cmpint (flipflop2, >, 2);
 }
+
+#define X_PROP_NAME "X-PROP"
+#define X_PROP_VALUE "xVaLuE"
+
+static gboolean
+test_property_bag_filter_cb (ICalProperty *prop,
+			     gpointer user_data)
+{
+	ICalPropertyKind *expected = user_data, kind;
+	gint ii;
+
+	g_return_val_if_fail (expected != NULL, FALSE);
+
+	kind = i_cal_property_isa (prop);
+
+	for (ii = 0; expected[ii] != I_CAL_ANY_PROPERTY; ii++) {
+		if (kind == expected[ii])
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+static void
+test_check_property_bag (const ECalComponentPropertyBag *bag,
+			 const ICalPropertyKind *expected)
+{
+	ICalProperty *prop;
+	gint ii;
+
+	g_assert_nonnull (bag);
+	g_assert_nonnull (expected);
+
+	for (ii = 0; expected[ii] != I_CAL_ANY_PROPERTY; ii++) {
+		prop = e_cal_component_property_bag_get (bag, ii);
+
+		g_assert_nonnull (prop);
+		g_assert_cmpint (i_cal_property_isa (prop), ==, expected[ii]);
+		if (i_cal_property_isa (prop) == I_CAL_X_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_x_name (prop), ==, X_PROP_NAME);
+			g_assert_cmpstr (i_cal_property_get_x (prop), ==, X_PROP_VALUE);
+		}
+	}
+
+	/* Out of bounds */
+	prop = e_cal_component_property_bag_get (bag, ii);
+	g_assert_null (prop);
+}
+
+static void
+test_component_struct_property_bag (void)
+{
+	const gchar *comp_str =
+		"BEGIN:VTODO\r\n"
+		"UID:1\r\n"
+		"STATUS:CANCELLED\r\n"
+		X_PROP_NAME ":" X_PROP_VALUE "\r\n"
+		"END:VTODO\r\n";
+	ICalPropertyKind expected_unfiltered[] = {
+		I_CAL_UID_PROPERTY,
+		I_CAL_STATUS_PROPERTY,
+		I_CAL_X_PROPERTY,
+		I_CAL_ANY_PROPERTY /* sentinel */
+	},
+	expected_filtered[] = {
+		I_CAL_STATUS_PROPERTY,
+		I_CAL_X_PROPERTY,
+		I_CAL_ANY_PROPERTY /* sentinel */
+	};
+	ICalComponent *icomp;
+	ICalProperty *prop;
+	ECalComponentPropertyBag *bag, *bag2;
+	gint ii;
+
+	icomp = i_cal_component_new_from_string (comp_str);
+	g_assert_nonnull (icomp);
+
+	bag = e_cal_component_property_bag_new ();
+	g_assert_nonnull (bag);
+	e_cal_component_property_bag_set_from_component (bag, icomp, NULL, NULL);
+	g_assert_cmpint (e_cal_component_property_bag_get_count (bag), ==, G_N_ELEMENTS (expected_unfiltered) - 1);
+	test_check_property_bag (bag, expected_unfiltered);
+
+	bag2 = e_cal_component_property_bag_copy (bag);
+	g_assert_nonnull (bag2);
+	g_assert_cmpint (e_cal_component_property_bag_get_count (bag2), ==, G_N_ELEMENTS (expected_unfiltered) - 1);
+	test_check_property_bag (bag2, expected_unfiltered);
+	e_cal_component_property_bag_free (bag2);
+	e_cal_component_property_bag_free (bag);
+
+	bag = e_cal_component_property_bag_new_from_component (icomp, NULL, NULL);
+	g_assert_nonnull (bag);
+	g_assert_cmpint (e_cal_component_property_bag_get_count (bag), ==, G_N_ELEMENTS (expected_unfiltered) - 1);
+	test_check_property_bag (bag, expected_unfiltered);
+	e_cal_component_property_bag_free (bag);
+
+	bag = e_cal_component_property_bag_new ();
+	g_assert_nonnull (bag);
+	e_cal_component_property_bag_set_from_component (bag, icomp, test_property_bag_filter_cb, expected_filtered);
+	g_assert_cmpint (e_cal_component_property_bag_get_count (bag), ==, G_N_ELEMENTS (expected_filtered) - 1);
+	test_check_property_bag (bag, expected_filtered);
+	e_cal_component_property_bag_free (bag);
+
+	bag = e_cal_component_property_bag_new_from_component (icomp, test_property_bag_filter_cb, expected_filtered);
+	g_assert_nonnull (bag);
+	g_assert_cmpint (e_cal_component_property_bag_get_count (bag), ==, G_N_ELEMENTS (expected_filtered) - 1);
+	test_check_property_bag (bag, expected_filtered);
+
+	g_object_unref (icomp);
+
+	icomp = i_cal_component_new_vevent ();
+	g_assert_nonnull (icomp);
+	e_cal_component_property_bag_fill_component (bag, icomp);
+	g_assert_cmpint (i_cal_component_count_properties (icomp, I_CAL_ANY_PROPERTY), ==, e_cal_component_property_bag_get_count (bag));
+	g_object_unref (icomp);
+
+	bag2 = e_cal_component_property_bag_copy (bag);
+
+	while (e_cal_component_property_bag_get_count (bag) > 1) {
+		e_cal_component_property_bag_remove (bag, 1);
+	}
+
+	e_cal_component_property_bag_assign (bag2, bag);
+	g_assert_cmpint (e_cal_component_property_bag_get_count (bag), ==, e_cal_component_property_bag_get_count (bag2));
+	e_cal_component_property_bag_free (bag2);
+
+	icomp = i_cal_component_new_vevent ();
+	g_assert_nonnull (icomp);
+	e_cal_component_property_bag_fill_component (bag, icomp);
+	g_assert_cmpint (i_cal_component_count_properties (icomp, I_CAL_ANY_PROPERTY), ==, 1);
+	g_object_unref (icomp);
+
+	e_cal_component_property_bag_clear (bag);
+
+	icomp = i_cal_component_new_vevent ();
+	g_assert_nonnull (icomp);
+	e_cal_component_property_bag_fill_component (bag, icomp);
+	g_assert_cmpint (i_cal_component_count_properties (icomp, I_CAL_ANY_PROPERTY), ==, 0);
+	g_object_unref (icomp);
+
+	prop = i_cal_property_new_uid ("234");
+	e_cal_component_property_bag_add (bag, prop);
+	g_object_unref (prop);
+
+	prop = i_cal_property_new_status (I_CAL_STATUS_CANCELLED);
+	e_cal_component_property_bag_take (bag, prop);
+
+	g_assert_cmpint (e_cal_component_property_bag_get_count (bag), ==, 2);
+
+	for (ii = 0; ii < 2; ii++) {
+		ICalProperty *prop2;
+
+		prop2 = e_cal_component_property_bag_get (bag, ii);
+		if (ii == 0) {
+			g_assert (prop != prop2);
+			g_assert_cmpint (i_cal_property_isa (prop2), ==, I_CAL_UID_PROPERTY);
+			g_assert_cmpstr (i_cal_property_get_uid (prop2), ==, "234");
+		} else {
+			g_assert (prop == prop2);
+			g_assert_cmpint (i_cal_property_isa (prop2), ==, I_CAL_STATUS_PROPERTY);
+			g_assert_cmpint (i_cal_property_get_status (prop2), ==, I_CAL_STATUS_CANCELLED);
+		}
+	}
+
+	icomp = i_cal_component_new_vevent ();
+	g_assert_nonnull (icomp);
+	e_cal_component_property_bag_fill_component (bag, icomp);
+	g_assert_cmpint (i_cal_component_count_properties (icomp, I_CAL_ANY_PROPERTY), ==, e_cal_component_property_bag_get_count (bag));
+	g_object_unref (icomp);
+
+	e_cal_component_property_bag_free (bag);
+}
+
+#undef X_PROP_NAME
+#undef X_PROP_VALUE
 
 static void
 test_component_struct_range (void)
@@ -3367,6 +3618,7 @@ main (gint argc,
 	g_test_add_func ("/ECalComponent/struct/Id", test_component_struct_id);
 	g_test_add_func ("/ECalComponent/struct/Organizer", test_component_struct_organizer);
 	g_test_add_func ("/ECalComponent/struct/Period", test_component_struct_period);
+	g_test_add_func ("/ECalComponent/struct/PropertyBag", test_component_struct_property_bag);
 	g_test_add_func ("/ECalComponent/struct/Range", test_component_struct_range);
 	g_test_add_func ("/ECalComponent/struct/Text", test_component_struct_text);
 	g_test_add_func ("/ECalComponent/vtype", test_component_vtype);

@@ -46,6 +46,7 @@ struct _ECalComponentAlarm {
 	ECalComponentAlarmTrigger *trigger;
 	GSList *attendees; /* ECalComponentAttendee * */
 	GSList *attachments; /* ICalAttach * */
+	ECalComponentPropertyBag *property_bag;
 };
 
 /**
@@ -66,6 +67,7 @@ e_cal_component_alarm_new (void)
 	alarm = g_new0 (ECalComponentAlarm, 1);
 	alarm->uid = e_util_generate_uid ();
 	alarm->action = E_CAL_COMPONENT_ALARM_UNKNOWN;
+	alarm->property_bag = e_cal_component_property_bag_new ();
 
 	return alarm;
 }
@@ -178,6 +180,8 @@ e_cal_component_alarm_copy (const ECalComponentAlarm *alarm)
 		alrm->attachments = g_slist_reverse (alrm->attachments);
 	}
 
+	e_cal_component_property_bag_assign (alrm->property_bag, alarm->property_bag);
+
 	return alrm;
 }
 
@@ -202,6 +206,7 @@ e_cal_component_alarm_free (gpointer alarm)
 		e_cal_component_text_free (alrm->description);
 		e_cal_component_alarm_repeat_free (alrm->repeat);
 		e_cal_component_alarm_trigger_free (alrm->trigger);
+		e_cal_component_property_bag_free (alrm->property_bag);
 		g_slist_free_full (alrm->attendees, e_cal_component_attendee_free);
 		g_slist_free_full (alrm->attachments, g_object_unref);
 		g_free (alrm);
@@ -244,6 +249,8 @@ e_cal_component_alarm_set_from_component (ECalComponentAlarm *alarm,
 	alarm->trigger = NULL;
 	alarm->attendees = NULL;
 	alarm->attachments = NULL;
+
+	e_cal_component_property_bag_clear (alarm->property_bag);
 
 	for (prop = i_cal_component_get_first_property (comp, I_CAL_ANY_PROPERTY);
 	     prop;
@@ -323,10 +330,13 @@ e_cal_component_alarm_set_from_component (ECalComponentAlarm *alarm,
 			if (g_strcmp0 (xname, E_CAL_EVOLUTION_ALARM_UID_PROPERTY) == 0) {
 				g_free (alarm->uid);
 				alarm->uid = g_strdup (i_cal_property_get_x (prop));
+			} else {
+				e_cal_component_property_bag_add (alarm->property_bag, prop);
 			}
 			break;
 
 		default:
+			e_cal_component_property_bag_add (alarm->property_bag, prop);
 			break;
 		}
 	}
@@ -535,6 +545,8 @@ e_cal_component_alarm_fill_component (ECalComponentAlarm *alarm,
 		if (prop)
 			i_cal_component_take_property (component, prop);
 	}
+
+	e_cal_component_property_bag_fill_component (alarm->property_bag, component);
 }
 
 /**
@@ -986,4 +998,22 @@ e_cal_component_alarm_take_attachments (ECalComponentAlarm *alarm,
 		g_slist_free_full (alarm->attachments, g_object_unref);
 		alarm->attachments = attachments;
 	}
+}
+
+/**
+ * e_cal_component_alarm_get_property_bag:
+ * @alarm: an #ECalComponentAlarm
+ *
+ * Returns: (transfer none): an #ECalComponentPropertyBag with additional
+ *    properties stored with an alarm component, other than those accessible
+ *    with the other functions of the @alarm.
+ *
+ * Since: 3.36
+ **/
+ECalComponentPropertyBag *
+e_cal_component_alarm_get_property_bag (const ECalComponentAlarm *alarm)
+{
+	g_return_val_if_fail (alarm != NULL, NULL);
+
+	return alarm->property_bag;
 }
