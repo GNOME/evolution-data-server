@@ -190,16 +190,16 @@ alter_cal_client (gpointer user_data)
 	i_cal_component_set_dtstart (icomp, now);
 	i_cal_component_set_dtend   (icomp, itt);
 
-	if (!e_cal_client_create_object_sync (cal_client, icomp, &uid, NULL, &error))
+	if (!e_cal_client_create_object_sync (cal_client, icomp, E_CAL_OPERATION_FLAG_NONE, &uid, NULL, &error))
 		g_error ("create object sync: %s", error->message);
 
 	i_cal_component_set_uid (icomp, uid);
 	i_cal_component_set_summary (icomp, "Modified event summary");
 
-	if (!e_cal_client_modify_object_sync (cal_client, icomp, E_CAL_OBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_modify_object_sync (cal_client, icomp, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("modify object sync: %s", error->message);
 
-	if (!e_cal_client_remove_object_sync (cal_client, uid, NULL, E_CAL_OBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_remove_object_sync (cal_client, uid, NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("remove object sync: %s", error->message);
 
 	g_object_unref (icomp);

@@ -47,7 +47,7 @@ setup_cal (ECalClient *cal_client)
 	g_clear_object (&dtstart);
 	g_clear_object (&dtend);
 
-	if (!e_cal_client_create_object_sync (cal_client, icomp, &uid, NULL, &error))
+	if (!e_cal_client_create_object_sync (cal_client, icomp, E_CAL_OPERATION_FLAG_NONE, &uid, NULL, &error))
 		g_error ("create object sync: %s", error->message);
 
 	g_object_unref (icomp);

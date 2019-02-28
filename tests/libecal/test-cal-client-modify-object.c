@@ -46,7 +46,7 @@ setup_cal (ECalClient *cal_client)
 	g_clear_object (&dtstart);
 	g_clear_object (&dtend);
 
-	if (!e_cal_client_create_object_sync (cal_client, icomp, &uid, NULL, &error))
+	if (!e_cal_client_create_object_sync (cal_client, icomp, E_CAL_OPERATION_FLAG_NONE, &uid, NULL, &error))
 		g_error ("create object sync: %s", error->message);
 
 	g_object_unref (icomp);
@@ -80,7 +80,7 @@ test_modify_object_sync (ETestServerFixture *fixture,
 
 	i_cal_component_set_summary (icomp, EVENT_SUMMARY);
 
-	if (!e_cal_client_modify_object_sync (cal_client, icomp, E_CAL_OBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_modify_object_sync (cal_client, icomp, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("modify object sync: %s", error->message);
 
 	g_object_unref (icomp);
@@ -138,7 +138,7 @@ test_modify_object_async (ETestServerFixture *fixture,
 
 	i_cal_component_set_summary (icomp, EVENT_SUMMARY);
 
-	e_cal_client_modify_object (cal_client, icomp, E_CAL_OBJ_MOD_ALL, NULL, async_modify_result_ready, fixture->loop);
+	e_cal_client_modify_object (cal_client, icomp, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, async_modify_result_ready, fixture->loop);
 	g_object_unref (icomp);
 
 	g_main_loop_run (fixture->loop);

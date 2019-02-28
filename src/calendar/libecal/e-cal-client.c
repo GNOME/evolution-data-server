@@ -90,6 +90,7 @@ struct _AsyncContext {
 	ECalObjModType mod;
 	time_t start;
 	time_t end;
+	guint32 opflags;
 };
 
 struct _SignalClosure {
@@ -4597,6 +4598,7 @@ cal_client_create_object_thread (GSimpleAsyncResult *simple,
 	if (!e_cal_client_create_object_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->in_comp,
+		async_context->opflags,
 		&async_context->uid,
 		cancellable, &local_error)) {
 
@@ -4615,6 +4617,7 @@ cal_client_create_object_thread (GSimpleAsyncResult *simple,
  * e_cal_client_create_object:
  * @client: an #ECalClient
  * @icalcomp: The component to create
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -4630,6 +4633,7 @@ cal_client_create_object_thread (GSimpleAsyncResult *simple,
 void
 e_cal_client_create_object (ECalClient *client,
                             ICalComponent *icalcomp,
+			    guint32 opflags,
                             GCancellable *cancellable,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
@@ -4642,6 +4646,7 @@ e_cal_client_create_object (ECalClient *client,
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->in_comp = i_cal_component_new_clone (icalcomp);
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -4707,6 +4712,7 @@ e_cal_client_create_object_finish (ECalClient *client,
  * e_cal_client_create_object_sync:
  * @client: an #ECalClient
  * @icalcomp: The component to create
+ * @opflags: bit-or of #ECalOperationFlags
  * @out_uid: (out) (nullable): Return value for the UID assigned to the new component
  *           by the calendar backend
  * @cancellable: a #GCancellable; can be %NULL
@@ -4725,6 +4731,7 @@ e_cal_client_create_object_finish (ECalClient *client,
 gboolean
 e_cal_client_create_object_sync (ECalClient *client,
                                  ICalComponent *icalcomp,
+				 guint32 opflags,
                                  gchar **out_uid,
                                  GCancellable *cancellable,
                                  GError **error)
@@ -4737,7 +4744,7 @@ e_cal_client_create_object_sync (ECalClient *client,
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
 	success = e_cal_client_create_objects_sync (
-		client, &link, &string_list, cancellable, error);
+		client, &link, opflags, &string_list, cancellable, error);
 
 	/* Sanity check. */
 	g_return_val_if_fail (
@@ -4768,6 +4775,7 @@ cal_client_create_objects_thread (GSimpleAsyncResult *simple,
 	if (!e_cal_client_create_objects_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->comp_list,
+		async_context->opflags,
 		&async_context->string_list,
 		cancellable, &local_error)) {
 
@@ -4786,6 +4794,7 @@ cal_client_create_objects_thread (GSimpleAsyncResult *simple,
  * e_cal_client_create_objects:
  * @client: an #ECalClient
  * @icalcomps: (element-type ICalComponent): The components to create
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -4801,6 +4810,7 @@ cal_client_create_objects_thread (GSimpleAsyncResult *simple,
 void
 e_cal_client_create_objects (ECalClient *client,
                              GSList *icalcomps,
+			     guint32 opflags,
                              GCancellable *cancellable,
                              GAsyncReadyCallback callback,
                              gpointer user_data)
@@ -4814,6 +4824,7 @@ e_cal_client_create_objects (ECalClient *client,
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->comp_list = g_slist_copy_deep (
 		icalcomps, (GCopyFunc) i_cal_component_new_clone, NULL);
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -4879,6 +4890,7 @@ e_cal_client_create_objects_finish (ECalClient *client,
  * e_cal_client_create_objects_sync:
  * @client: an #ECalClient
  * @icalcomps: (element-type ICalComponent): The components to create
+ * @opflags: bit-or of #ECalOperationFlags
  * @out_uids: (out) (nullable) (element-type utf8): Return value for the UIDs assigned
  *            to the new components by the calendar backend
  * @cancellable: (allow-none): a #GCancellable; can be %NULL
@@ -4898,6 +4910,7 @@ e_cal_client_create_objects_finish (ECalClient *client,
 gboolean
 e_cal_client_create_objects_sync (ECalClient *client,
                                   GSList *icalcomps,
+				  guint32 opflags,
                                   GSList **out_uids,
                                   GCancellable *cancellable,
                                   GError **error)
@@ -4925,7 +4938,7 @@ e_cal_client_create_objects_sync (ECalClient *client,
 	e_dbus_calendar_call_create_objects_sync (
 		client->priv->dbus_proxy,
 		(const gchar * const *) strv,
-		&uids, cancellable, &local_error);
+		opflags, &uids, cancellable, &local_error);
 
 	g_strfreev (strv);
 
@@ -4974,6 +4987,7 @@ cal_client_modify_object_thread (GSimpleAsyncResult *simple,
 		E_CAL_CLIENT (source_object),
 		async_context->in_comp,
 		async_context->mod,
+		async_context->opflags,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -4992,6 +5006,7 @@ cal_client_modify_object_thread (GSimpleAsyncResult *simple,
  * @client: an #ECalClient
  * @icalcomp: Component to modify
  * @mod: Type of modification
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -5013,6 +5028,7 @@ void
 e_cal_client_modify_object (ECalClient *client,
                             ICalComponent *icalcomp,
                             ECalObjModType mod,
+			    guint32 opflags,
                             GCancellable *cancellable,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
@@ -5026,6 +5042,7 @@ e_cal_client_modify_object (ECalClient *client,
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->in_comp = i_cal_component_new_clone (icalcomp);
 	async_context->mod = mod;
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -5078,6 +5095,7 @@ e_cal_client_modify_object_finish (ECalClient *client,
  * @client: an #ECalClient
  * @icalcomp: Component to modify
  * @mod: Type of modification
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
@@ -5097,6 +5115,7 @@ gboolean
 e_cal_client_modify_object_sync (ECalClient *client,
                                  ICalComponent *icalcomp,
                                  ECalObjModType mod,
+				 guint32 opflags,
                                  GCancellable *cancellable,
                                  GError **error)
 {
@@ -5106,7 +5125,7 @@ e_cal_client_modify_object_sync (ECalClient *client,
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
 	return e_cal_client_modify_objects_sync (
-		client, &link, mod, cancellable, error);
+		client, &link, mod, opflags, cancellable, error);
 }
 
 /* Helper for e_cal_client_modify_objects() */
@@ -5124,6 +5143,7 @@ cal_client_modify_objects_thread (GSimpleAsyncResult *simple,
 		E_CAL_CLIENT (source_object),
 		async_context->comp_list,
 		async_context->mod,
+		async_context->opflags,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -5142,6 +5162,7 @@ cal_client_modify_objects_thread (GSimpleAsyncResult *simple,
  * @client: an #ECalClient
  * @icalcomps: (element-type ICalComponent): Components to modify
  * @mod: Type of modification
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -5163,6 +5184,7 @@ void
 e_cal_client_modify_objects (ECalClient *client,
                              GSList *icalcomps,
                              ECalObjModType mod,
+			     guint32 opflags,
                              GCancellable *cancellable,
                              GAsyncReadyCallback callback,
                              gpointer user_data)
@@ -5177,6 +5199,7 @@ e_cal_client_modify_objects (ECalClient *client,
 	async_context->comp_list = g_slist_copy_deep (
 		icalcomps, (GCopyFunc) i_cal_component_new_clone, NULL);
 	async_context->mod = mod;
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -5229,6 +5252,7 @@ e_cal_client_modify_objects_finish (ECalClient *client,
  * @client: an #ECalClient
  * @icalcomps: (element-type ICalComponent): Components to modify
  * @mod: Type of modification
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
@@ -5248,12 +5272,13 @@ gboolean
 e_cal_client_modify_objects_sync (ECalClient *client,
                                   GSList *icalcomps,
                                   ECalObjModType mod,
+				  guint32 opflags,
                                   GCancellable *cancellable,
                                   GError **error)
 {
 	GFlagsClass *flags_class;
 	GFlagsValue *flags_value;
-	GString *flags;
+	GString *mod_flags;
 	gchar **strv;
 	gint ii = 0;
 	GError *local_error = NULL;
@@ -5261,13 +5286,13 @@ e_cal_client_modify_objects_sync (ECalClient *client,
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (icalcomps != NULL, FALSE);
 
-	flags = g_string_new (NULL);
+	mod_flags = g_string_new (NULL);
 	flags_class = g_type_class_ref (E_TYPE_CAL_OBJ_MOD_TYPE);
 	flags_value = g_flags_get_first_value (flags_class, mod);
 	while (flags_value != NULL) {
-		if (flags->len > 0)
-			g_string_append_c (flags, ':');
-		g_string_append (flags, flags_value->value_nick);
+		if (mod_flags->len > 0)
+			g_string_append_c (mod_flags, ':');
+		g_string_append (mod_flags, flags_value->value_nick);
 		mod &= ~flags_value->value;
 		flags_value = g_flags_get_first_value (flags_class, mod);
 	}
@@ -5286,12 +5311,12 @@ e_cal_client_modify_objects_sync (ECalClient *client,
 	e_dbus_calendar_call_modify_objects_sync (
 		client->priv->dbus_proxy,
 		(const gchar * const *) strv,
-		flags->str, cancellable, &local_error);
+		mod_flags->str, opflags, cancellable, &local_error);
 
 	g_strfreev (strv);
 
 	g_type_class_unref (flags_class);
-	g_string_free (flags, TRUE);
+	g_string_free (mod_flags, TRUE);
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -5318,6 +5343,7 @@ cal_client_remove_object_thread (GSimpleAsyncResult *simple,
 		async_context->uid,
 		async_context->rid,
 		async_context->mod,
+		async_context->opflags,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -5337,6 +5363,7 @@ cal_client_remove_object_thread (GSimpleAsyncResult *simple,
  * @uid: UID of the object to remove
  * @rid: Recurrence ID of the specific recurrence to remove
  * @mod: Type of the removal
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -5357,6 +5384,7 @@ e_cal_client_remove_object (ECalClient *client,
                             const gchar *uid,
                             const gchar *rid,
                             ECalObjModType mod,
+			    guint32 opflags,
                             GCancellable *cancellable,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
@@ -5372,6 +5400,7 @@ e_cal_client_remove_object (ECalClient *client,
 	async_context->uid = g_strdup (uid);
 	async_context->rid = g_strdup (rid);
 	async_context->mod = mod;
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -5425,6 +5454,7 @@ e_cal_client_remove_object_finish (ECalClient *client,
  * @uid: UID of the object to remove
  * @rid: Recurrence ID of the specific recurrence to remove
  * @mod: Type of the removal
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
@@ -5443,6 +5473,7 @@ e_cal_client_remove_object_sync (ECalClient *client,
                                  const gchar *uid,
                                  const gchar *rid,
                                  ECalObjModType mod,
+				 guint32 opflags,
                                  GCancellable *cancellable,
                                  GError **error)
 {
@@ -5456,7 +5487,7 @@ e_cal_client_remove_object_sync (ECalClient *client,
 	id = e_cal_component_id_new (uid, rid);
 	link = g_slist_prepend (NULL, id);
 
-	success = e_cal_client_remove_objects_sync (client, link, mod, cancellable, error);
+	success = e_cal_client_remove_objects_sync (client, link, mod, opflags, cancellable, error);
 
 	g_slist_free_full (link, e_cal_component_id_free);
 
@@ -5478,6 +5509,7 @@ cal_client_remove_objects_thread (GSimpleAsyncResult *simple,
 		E_CAL_CLIENT (source_object),
 		async_context->ids_list,
 		async_context->mod,
+		async_context->opflags,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -5497,6 +5529,7 @@ cal_client_remove_objects_thread (GSimpleAsyncResult *simple,
  * @ids: (element-type ECalComponentId): A list of #ECalComponentId objects
  * identifying the objects to remove
  * @mod: Type of the removal
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -5515,6 +5548,7 @@ void
 e_cal_client_remove_objects (ECalClient *client,
                              const GSList *ids,
                              ECalObjModType mod,
+			     guint32 opflags,
                              GCancellable *cancellable,
                              GAsyncReadyCallback callback,
                              gpointer user_data)
@@ -5529,6 +5563,7 @@ e_cal_client_remove_objects (ECalClient *client,
 	async_context->ids_list = g_slist_copy_deep (
 		(GSList *) ids, (GCopyFunc) e_cal_component_id_copy, NULL);
 	async_context->mod = mod;
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -5582,6 +5617,7 @@ e_cal_client_remove_objects_finish (ECalClient *client,
  * @ids: (element-type ECalComponentId): a list of #ECalComponentId objects
  *       identifying the objects to remove
  * @mod: Type of the removal
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
@@ -5598,26 +5634,27 @@ gboolean
 e_cal_client_remove_objects_sync (ECalClient *client,
                                   const GSList *ids,
                                   ECalObjModType mod,
+				  guint32 opflags,
                                   GCancellable *cancellable,
                                   GError **error)
 {
 	GVariantBuilder builder;
 	GFlagsClass *flags_class;
 	GFlagsValue *flags_value;
-	GString *flags;
+	GString *mod_flags;
 	guint n_valid_uids = 0;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (ids != NULL, FALSE);
 
-	flags = g_string_new (NULL);
+	mod_flags = g_string_new (NULL);
 	flags_class = g_type_class_ref (E_TYPE_CAL_OBJ_MOD_TYPE);
 	flags_value = g_flags_get_first_value (flags_class, mod);
 	while (flags_value != NULL) {
-		if (flags->len > 0)
-			g_string_append_c (flags, ':');
-		g_string_append (flags, flags_value->value_nick);
+		if (mod_flags->len > 0)
+			g_string_append_c (mod_flags, ':');
+		g_string_append (mod_flags, flags_value->value_nick);
 		mod &= ~flags_value->value;
 		flags_value = g_flags_get_first_value (flags_class, mod);
 	}
@@ -5668,13 +5705,13 @@ e_cal_client_remove_objects_sync (ECalClient *client,
 		e_dbus_calendar_call_remove_objects_sync (
 			client->priv->dbus_proxy,
 			g_variant_builder_end (&builder),
-			flags->str, cancellable, &local_error);
+			mod_flags->str, opflags, cancellable, &local_error);
 	} else {
 		g_variant_builder_clear (&builder);
 	}
 
 	g_type_class_unref (flags_class);
-	g_string_free (flags, TRUE);
+	g_string_free (mod_flags, TRUE);
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -5699,6 +5736,7 @@ cal_client_receive_objects_thread (GSimpleAsyncResult *simple,
 	if (!e_cal_client_receive_objects_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->in_comp,
+		async_context->opflags,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -5716,6 +5754,7 @@ cal_client_receive_objects_thread (GSimpleAsyncResult *simple,
  * e_cal_client_receive_objects:
  * @client: an #ECalClient
  * @icalcomp: An #ICalComponent
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -5732,6 +5771,7 @@ cal_client_receive_objects_thread (GSimpleAsyncResult *simple,
 void
 e_cal_client_receive_objects (ECalClient *client,
                               ICalComponent *icalcomp,
+			      guint32 opflags,
                               GCancellable *cancellable,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
@@ -5744,6 +5784,7 @@ e_cal_client_receive_objects (ECalClient *client,
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->in_comp = i_cal_component_new_clone (icalcomp);
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -5795,6 +5836,7 @@ e_cal_client_receive_objects_finish (ECalClient *client,
  * e_cal_client_receive_objects_sync:
  * @client: an #ECalClient
  * @icalcomp: An #ICalComponent
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
@@ -5809,6 +5851,7 @@ e_cal_client_receive_objects_finish (ECalClient *client,
 gboolean
 e_cal_client_receive_objects_sync (ECalClient *client,
                                    ICalComponent *icalcomp,
+				   guint32 opflags,
                                    GCancellable *cancellable,
                                    GError **error)
 {
@@ -5822,7 +5865,7 @@ e_cal_client_receive_objects_sync (ECalClient *client,
 	utf8_ical_string = e_util_utf8_make_valid (ical_string);
 
 	e_dbus_calendar_call_receive_objects_sync (
-		client->priv->dbus_proxy, utf8_ical_string,
+		client->priv->dbus_proxy, utf8_ical_string, opflags,
 		cancellable, &local_error);
 
 	g_free (utf8_ical_string);
@@ -5851,6 +5894,7 @@ cal_client_send_objects_thread (GSimpleAsyncResult *simple,
 	if (!e_cal_client_send_objects_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->in_comp,
+		async_context->opflags,
 		&async_context->string_list,
 		&async_context->out_comp,
 		cancellable, &local_error)) {
@@ -5870,6 +5914,7 @@ cal_client_send_objects_thread (GSimpleAsyncResult *simple,
  * e_cal_client_send_objects:
  * @client: an #ECalClient
  * @icalcomp: An #ICalComponent to be sent
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -5884,6 +5929,7 @@ cal_client_send_objects_thread (GSimpleAsyncResult *simple,
 void
 e_cal_client_send_objects (ECalClient *client,
                            ICalComponent *icalcomp,
+			   guint32 opflags,
                            GCancellable *cancellable,
                            GAsyncReadyCallback callback,
                            gpointer user_data)
@@ -5896,6 +5942,7 @@ e_cal_client_send_objects (ECalClient *client,
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->in_comp = i_cal_component_new_clone (icalcomp);
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -5972,6 +6019,7 @@ e_cal_client_send_objects_finish (ECalClient *client,
  * e_cal_client_send_objects_sync:
  * @client: an #ECalClient
  * @icalcomp: An #ICalComponent to be sent
+ * @opflags: bit-or of #ECalOperationFlags
  * @out_users: (out) (transfer full) (element-type utf8): List of users to send the
  *             @out_modified_icalcomp to
  * @out_modified_icalcomp: (out) (transfer full): Return value for the #ICalComponent to be sent
@@ -5992,6 +6040,7 @@ e_cal_client_send_objects_finish (ECalClient *client,
 gboolean
 e_cal_client_send_objects_sync (ECalClient *client,
                                 ICalComponent *icalcomp,
+				guint32 opflags,
                                 GSList **out_users,
                                 ICalComponent **out_modified_icalcomp,
                                 GCancellable *cancellable,
@@ -6012,8 +6061,8 @@ e_cal_client_send_objects_sync (ECalClient *client,
 	utf8_ical_string = e_util_utf8_make_valid (ical_string);
 
 	e_dbus_calendar_call_send_objects_sync (
-		client->priv->dbus_proxy, utf8_ical_string, &users,
-		&out_ical_string, cancellable, &local_error);
+		client->priv->dbus_proxy, utf8_ical_string, opflags,
+		&users, &out_ical_string, cancellable, &local_error);
 
 	g_free (utf8_ical_string);
 	g_free (ical_string);
@@ -6277,6 +6326,7 @@ cal_client_discard_alarm_thread (GSimpleAsyncResult *simple,
 		async_context->uid,
 		async_context->rid,
 		async_context->auid,
+		async_context->opflags,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -6296,6 +6346,7 @@ cal_client_discard_alarm_thread (GSimpleAsyncResult *simple,
  * @uid: Unique identifier for a calendar component
  * @rid: Recurrence identifier
  * @auid: Alarm identifier to discard
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -6311,6 +6362,7 @@ e_cal_client_discard_alarm (ECalClient *client,
                             const gchar *uid,
                             const gchar *rid,
                             const gchar *auid,
+			    guint32 opflags,
                             GCancellable *cancellable,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
@@ -6327,6 +6379,7 @@ e_cal_client_discard_alarm (ECalClient *client,
 	async_context->uid = g_strdup (uid);
 	async_context->rid = g_strdup (rid);
 	async_context->auid = g_strdup (auid);
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -6380,6 +6433,7 @@ e_cal_client_discard_alarm_finish (ECalClient *client,
  * @uid: Unique identifier for a calendar component
  * @rid: Recurrence identifier
  * @auid: Alarm identifier to discard
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
@@ -6394,6 +6448,7 @@ e_cal_client_discard_alarm_sync (ECalClient *client,
                                  const gchar *uid,
                                  const gchar *rid,
                                  const gchar *auid,
+				 guint32 opflags,
                                  GCancellable *cancellable,
                                  GError **error)
 {
@@ -6415,7 +6470,7 @@ e_cal_client_discard_alarm_sync (ECalClient *client,
 
 	e_dbus_calendar_call_discard_alarm_sync (
 		client->priv->dbus_proxy,
-		utf8_uid, utf8_rid, utf8_auid,
+		utf8_uid, utf8_rid, utf8_auid, opflags,
 		cancellable, &local_error);
 
 	g_free (utf8_uid);

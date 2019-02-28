@@ -222,7 +222,7 @@ test_intervals (TCUFixture *fixture,
 
 		intervals = g_slist_prepend (intervals, interval);
 
-		success = e_cal_cache_put_component (fixture->cal_cache, comp, NULL, E_CACHE_IS_ONLINE, NULL, &error);
+		success = e_cal_cache_put_component (fixture->cal_cache, comp, NULL, 0, E_CACHE_IS_ONLINE, NULL, &error);
 		g_assert_no_error (error);
 		g_assert (success);
 	}
@@ -242,7 +242,7 @@ test_intervals (TCUFixture *fixture,
 
 		intervals = g_slist_prepend (intervals, interval);
 
-		success = e_cal_cache_put_component (fixture->cal_cache, comp, NULL, E_CACHE_IS_ONLINE, NULL, &error);
+		success = e_cal_cache_put_component (fixture->cal_cache, comp, NULL, 0, E_CACHE_IS_ONLINE, NULL, &error);
 		g_assert_no_error (error);
 		g_assert (success);
 	}
@@ -301,7 +301,7 @@ test_intervals (TCUFixture *fixture,
 			g_assert (id != NULL);
 
 			success = e_cal_cache_remove_component (fixture->cal_cache, e_cal_component_id_get_uid (id),
-				e_cal_component_id_get_rid (id), E_CACHE_IS_ONLINE, NULL, &error);
+				e_cal_component_id_get_rid (id), 0, E_CACHE_IS_ONLINE, NULL, &error);
 			g_assert_no_error (error);
 			g_assert (success);
 

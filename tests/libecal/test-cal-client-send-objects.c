@@ -114,7 +114,7 @@ test_send_objects_sync (ETestServerFixture *fixture,
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
 	icomp = create_object ();
-	if (!e_cal_client_send_objects_sync (cal_client, icomp, &users, &modified_icomp, NULL, &error))
+	if (!e_cal_client_send_objects_sync (cal_client, icomp, E_CAL_OPERATION_FLAG_NONE, &users, &modified_icomp, NULL, &error))
 		g_error ("send objects sync: %s", error->message);
 
 	g_object_unref (icomp);
@@ -153,7 +153,7 @@ test_send_objects_async (ETestServerFixture *fixture,
 	icomp = create_object ();
 	g_assert_nonnull (icomp);
 
-	e_cal_client_send_objects (cal_client, icomp, NULL, async_send_result_ready, fixture->loop);
+	e_cal_client_send_objects (cal_client, icomp, E_CAL_OPERATION_FLAG_NONE, NULL, async_send_result_ready, fixture->loop);
 	g_object_unref (icomp);
 
 	g_main_loop_run (fixture->loop);

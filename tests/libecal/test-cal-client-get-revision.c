@@ -50,10 +50,10 @@ get_revision_compare_cycle (ECalClient *client)
 						&revision_before, NULL, &error))
 		g_error ("Error getting calendar revision: %s", error->message);
 
-	if (!e_cal_client_create_object_sync (client, icomp, &uid, NULL, &error))
+	if (!e_cal_client_create_object_sync (client, icomp, E_CAL_OPERATION_FLAG_NONE, &uid, NULL, &error))
 		g_error ("Error creating object: %s", error->message);
 
-	if (!e_cal_client_remove_object_sync (client, uid, NULL, E_CAL_OBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_remove_object_sync (client, uid, NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("Error removing created object: %s", error->message);
 
 	if (!e_client_get_backend_property_sync (E_CLIENT (client), CLIENT_BACKEND_PROPERTY_REVISION,

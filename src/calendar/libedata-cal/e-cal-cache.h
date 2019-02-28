@@ -131,7 +131,8 @@ void		e_cal_cache_search_data_free	(/* ECalCacheSearchData * */ gpointer ptr);
  * @revision: the object revision
  * @object: the object itself
  * @extra: extra data stored with the object
- * @offline_state: objects offline state, one of #EOfflineState
+ * @custom_flags: object's custom flags
+ * @offline_state: object's offline state, one of #EOfflineState
  * @user_data: user data, as used in e_cal_cache_search_with_callback()
  *
  * A callback called for each object row when using
@@ -147,6 +148,7 @@ typedef gboolean (* ECalCacheSearchFunc)	(ECalCache *cal_cache,
 						 const gchar *revision,
 						 const gchar *object,
 						 const gchar *extra,
+						 guint32 custom_flags,
 						 EOfflineState offline_state,
 						 gpointer user_data);
 
@@ -201,23 +203,27 @@ gboolean	e_cal_cache_contains		(ECalCache *cal_cache,
 gboolean	e_cal_cache_put_component	(ECalCache *cal_cache,
 						 ECalComponent *component,
 						 const gchar *extra,
+						 guint32 custom_flags,
 						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_cache_put_components	(ECalCache *cal_cache,
 						 const GSList *components, /* ECalComponent * */
 						 const GSList *extras, /* gchar * */
+						 const GSList *custom_flags, /* guint32, through GUINT_TO_POINTER() */
 						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_cache_remove_component	(ECalCache *cal_cache,
 						 const gchar *uid,
 						 const gchar *rid,
+						 guint32 custom_flag,
 						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_cache_remove_components	(ECalCache *cal_cache,
 						 const GSList *ids, /* ECalComponentId * */
+						 const GSList *custom_flags, /* guint32, through GUINT_TO_POINTER() */
 						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
@@ -232,6 +238,20 @@ gboolean	e_cal_cache_get_component_as_string
 						 const gchar *uid,
 						 const gchar *rid,
 						 gchar **out_icalstring,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_cal_cache_set_component_custom_flags
+						(ECalCache *cal_cache,
+						 const gchar *uid,
+						 const gchar *rid,
+						 guint32 custom_flags,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_cal_cache_get_component_custom_flags
+						(ECalCache *cal_cache,
+						 const gchar *uid,
+						 const gchar *rid,
+						 guint32 *out_custom_flags,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_cache_set_component_extra	(ECalCache *cal_cache,

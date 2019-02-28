@@ -66,6 +66,7 @@
 #define ECC_COLUMN_HAS_START		"has_start"
 #define ECC_COLUMN_HAS_RECURRENCES	"has_recurrences"
 #define ECC_COLUMN_EXTRA		"bdata"
+#define ECC_COLUMN_CUSTOM_FLAGS		"custom_flags"
 
 struct _ECalCachePrivate {
 	gboolean initializing;
@@ -397,6 +398,26 @@ e_cal_cache_get_strings (ECache *cache,
 	return TRUE;
 }
 
+static gboolean
+e_cal_cache_get_uint64_cb (ECache *cache,
+			   gint ncols,
+			   const gchar **column_names,
+			   const gchar **column_values,
+			   gpointer user_data)
+{
+	guint64 *pui64 = user_data;
+
+	g_return_val_if_fail (pui64 != NULL, FALSE);
+
+	if (ncols == 1) {
+		*pui64 = column_values[0] ? g_ascii_strtoull (column_values[0], NULL, 10) : 0;
+	} else {
+		*pui64 = 0;
+	}
+
+	return TRUE;
+}
+
 static void
 e_cal_cache_populate_other_columns (ECalCache *cal_cache,
 				    GSList **out_other_columns)
@@ -429,6 +450,7 @@ e_cal_cache_populate_other_columns (ECalCache *cal_cache,
 	add_column (ECC_COLUMN_HAS_START, "INTEGER", NULL);
 	add_column (ECC_COLUMN_HAS_RECURRENCES, "INTEGER", NULL);
 	add_column (ECC_COLUMN_EXTRA, "TEXT", NULL);
+	add_column (ECC_COLUMN_CUSTOM_FLAGS, "INTEGER", NULL);
 
 	#undef add_column
 
@@ -1636,6 +1658,7 @@ ecc_convert_sexp_to_sql (ECalCache *cal_cache,
 
 typedef struct {
 	gint extra_idx;
+	gint custom_flags_idx;
 	ECalCacheSearchFunc func;
 	gpointer func_user_data;
 } SearchContext;
@@ -1653,29 +1676,36 @@ ecc_search_foreach_cb (ECache *cache,
 {
 	SearchContext *ctx = user_data;
 	gchar *comp_uid = NULL, *comp_rid = NULL;
+	guint32 custom_flags = 0;
 	gboolean can_continue;
 
 	g_return_val_if_fail (ctx != NULL, FALSE);
 	g_return_val_if_fail (ctx->func != NULL, FALSE);
 
-	if (ctx->extra_idx == -1) {
+	if (ctx->extra_idx == -1 || ctx->custom_flags_idx == -1) {
 		gint ii;
 
-		for (ii = 0; ii < ncols; ii++) {
-			if (column_names[ii] && g_ascii_strcasecmp (column_names[ii], ECC_COLUMN_EXTRA) == 0) {
-				ctx->extra_idx = ii;
-				break;
+		for (ii = 0; ii < ncols && (ctx->extra_idx == -1 || ctx->custom_flags_idx == -1); ii++) {
+			if (column_names[ii]) {
+				if (g_ascii_strcasecmp (column_names[ii], ECC_COLUMN_EXTRA) == 0)
+					ctx->extra_idx = ii;
+				else if (g_ascii_strcasecmp (column_names[ii], ECC_COLUMN_CUSTOM_FLAGS) == 0)
+					ctx->custom_flags_idx = ii;
 			}
 		}
 	}
 
 	g_return_val_if_fail (ctx->extra_idx != -1, FALSE);
+	g_return_val_if_fail (ctx->custom_flags_idx != -1, FALSE);
 
 	g_warn_if_fail (ecc_decode_id_sql (uid, &comp_uid, &comp_rid));
 
+	if (ctx->custom_flags_idx >= 0 && column_values[ctx->custom_flags_idx])
+		custom_flags = g_ascii_strtoull (column_values[ctx->custom_flags_idx], NULL, 10);
+
 	/* This type-cast for performance reason */
 	can_continue = ctx->func ((ECalCache *) cache, comp_uid, comp_rid, revision, object,
-		column_values[ctx->extra_idx], offline_state, ctx->func_user_data);
+		column_values[ctx->extra_idx], custom_flags, offline_state, ctx->func_user_data);
 
 	g_free (comp_uid);
 	g_free (comp_rid);
@@ -1701,6 +1731,7 @@ ecc_search_internal (ECalCache *cal_cache,
 	}
 
 	ctx.extra_idx = -1;
+	ctx.custom_flags_idx = -1;
 	ctx.func = func;
 	ctx.func_user_data = user_data;
 
@@ -1775,8 +1806,10 @@ ecc_init_sqlite_functions (ECalCache *cal_cache,
 typedef struct _ComponentInfo {
 	GSList *online_comps; /* ECalComponent * */
 	GSList *online_extras; /* gchar * */
+	GSList *online_custom_flags; /* guint32 */
 	GSList *offline_comps; /* ECalComponent * */
 	GSList *offline_extras; /* gchar * */
+	GSList *offline_custom_flags; /* guint32 */
 } ComponentInfo;
 
 static void
@@ -1785,8 +1818,10 @@ component_info_clear (ComponentInfo *ci)
 	if (ci) {
 		g_slist_free_full (ci->online_comps, g_object_unref);
 		g_slist_free_full (ci->online_extras, g_free);
+		g_slist_free (ci->online_custom_flags);
 		g_slist_free_full (ci->offline_comps, g_object_unref);
 		g_slist_free_full (ci->offline_extras, g_free);
+		g_slist_free (ci->offline_custom_flags);
 	}
 }
 
@@ -1797,6 +1832,7 @@ cal_cache_gather_v1_affected_cb (ECalCache *cal_cache,
 				 const gchar *revision,
 				 const gchar *object,
 				 const gchar *extra,
+				 guint32 custom_flags,
 				 EOfflineState offline_state,
 				 gpointer user_data)
 {
@@ -1819,18 +1855,21 @@ cal_cache_gather_v1_affected_cb (ECalCache *cal_cache,
 	if (dt && e_cal_component_datetime_get_value (dt) &&
 	    !i_cal_time_is_utc (e_cal_component_datetime_get_value (dt)) &&
 	    !e_cal_component_datetime_get_tzid (dt)) {
-		GSList **pcomps, **pextras;
+		GSList **pcomps, **pextras, **pcustom_flags;
 
 		if (offline_state == E_OFFLINE_STATE_SYNCED) {
 			pcomps = &ci->online_comps;
 			pextras = &ci->online_extras;
+			pcustom_flags = &ci->online_custom_flags;
 		} else {
 			pcomps = &ci->offline_comps;
 			pextras = &ci->offline_extras;
+			pcustom_flags = &ci->offline_custom_flags;
 		}
 
 		*pcomps = g_slist_prepend (*pcomps, g_object_ref (comp));
 		*pextras = g_slist_prepend (*pextras, g_strdup (extra));
+		*pcustom_flags = g_slist_prepend (*pcustom_flags, GUINT_TO_POINTER (custom_flags));
 	}
 
 	e_cal_component_datetime_free (dt);
@@ -2096,6 +2135,7 @@ cal_cache_count_tmd_refs (ECalCache *cal_cache,
 			  const gchar *revision,
 			  const gchar *object,
 			  const gchar *extra,
+			  guint32 custom_flags,
 			  EOfflineState offline_state,
 			  gpointer user_data)
 {
@@ -2190,10 +2230,10 @@ e_cal_cache_migrate (ECache *cache,
 			gboolean success = TRUE;
 
 			if (ci.online_comps)
-				success = e_cal_cache_put_components (cal_cache, ci.online_comps, ci.online_extras, E_CACHE_IS_ONLINE, cancellable, NULL);
+				success = e_cal_cache_put_components (cal_cache, ci.online_comps, ci.online_extras, ci.online_custom_flags, E_CACHE_IS_ONLINE, cancellable, NULL);
 
 			if (success && ci.offline_comps)
-				e_cal_cache_put_components (cal_cache, ci.offline_comps, ci.offline_extras, E_CACHE_IS_OFFLINE, cancellable, NULL);
+				e_cal_cache_put_components (cal_cache, ci.offline_comps, ci.offline_extras, ci.offline_custom_flags, E_CACHE_IS_OFFLINE, cancellable, NULL);
 		}
 
 		component_info_clear (&ci);
@@ -2381,6 +2421,7 @@ e_cal_cache_contains (ECalCache *cal_cache,
  * @cal_cache: an #ECalCache
  * @component: an #ECalComponent to put into the @cal_cache
  * @extra: (nullable): an extra data to store in association with the @component
+ * @custom_flags: custom flags for the @component, not interpreted by the @cal_cache
  * @offline_flag: one of #ECacheOfflineFlag, whether putting this component in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -2396,12 +2437,14 @@ gboolean
 e_cal_cache_put_component (ECalCache *cal_cache,
 			   ECalComponent *component,
 			   const gchar *extra,
+			   guint32 custom_flags,
 			   ECacheOfflineFlag offline_flag,
 			   GCancellable *cancellable,
 			   GError **error)
 {
 	GSList *components = NULL;
 	GSList *extras = NULL;
+	GSList *custom_flags_lst = NULL;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
@@ -2409,9 +2452,11 @@ e_cal_cache_put_component (ECalCache *cal_cache,
 	components = g_slist_prepend (components, component);
 	if (extra)
 		extras = g_slist_prepend (extras, (gpointer) extra);
+	custom_flags_lst = g_slist_prepend (custom_flags_lst, GUINT_TO_POINTER (custom_flags));
 
-	success = e_cal_cache_put_components (cal_cache, components, extras, offline_flag, cancellable, error);
+	success = e_cal_cache_put_components (cal_cache, components, extras, custom_flags_lst, offline_flag, cancellable, error);
 
+	g_slist_free (custom_flags_lst);
 	g_slist_free (components);
 	g_slist_free (extras);
 
@@ -2422,7 +2467,8 @@ e_cal_cache_put_component (ECalCache *cal_cache,
  * e_cal_cache_put_components:
  * @cal_cache: an #ECalCache
  * @components: (element-type ECalComponent): a #GSList of #ECalComponent to put into the @cal_cache
- * @extras: (nullable) (element-type utf8): an extra data to store in association with the @components
+ * @extras: (nullable) (element-type utf8): optional extra data to store in association with the @components
+ * @custom_flags: (nullable) (element-type guint32): optional custom flags to use for the @components
  * @offline_flag: one of #ECacheOfflineFlag, whether putting these components in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -2430,8 +2476,9 @@ e_cal_cache_put_component (ECalCache *cal_cache,
  * Adds a list of @components into the @cal_cache. Any existing with the same UID
  * and RID are replaced.
  *
- * If @extras is not %NULL, it's length should be the same as the length
- * of the @components.
+ * If @extras is not %NULL, its length should be the same as the length
+ * of the @components. Similarly the non-NULL @custom_flags length
+ * should be the same as the length of the @components.
  *
  * Returns: Whether succeeded.
  *
@@ -2441,17 +2488,19 @@ gboolean
 e_cal_cache_put_components (ECalCache *cal_cache,
 			    const GSList *components,
 			    const GSList *extras,
+			    const GSList *custom_flags,
 			    ECacheOfflineFlag offline_flag,
 			    GCancellable *cancellable,
 			    GError **error)
 {
-	const GSList *clink, *elink;
+	const GSList *clink, *elink, *flink;
 	ECache *cache;
 	ECacheColumnValues *other_columns;
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
 	g_return_val_if_fail (extras == NULL || g_slist_length ((GSList *) components) == g_slist_length ((GSList *) extras), FALSE);
+	g_return_val_if_fail (custom_flags == NULL || g_slist_length ((GSList *) components) == g_slist_length ((GSList *) custom_flags), FALSE);
 
 	cache = E_CACHE (cal_cache);
 	other_columns = e_cache_column_values_new ();
@@ -2459,9 +2508,12 @@ e_cal_cache_put_components (ECalCache *cal_cache,
 	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
 	e_cache_freeze_revision_change (cache);
 
-	for (clink = components, elink = extras; clink; clink = g_slist_next (clink), elink = g_slist_next (elink)) {
+	for (clink = components, elink = extras, flink = custom_flags;
+	     clink;
+	     (clink = g_slist_next (clink)), (elink = g_slist_next (elink)), (flink = g_slist_next (flink))) {
 		ECalComponent *component = clink->data;
 		const gchar *extra = elink ? elink->data : NULL;
+		guint32 custom_flags_val = flink ? GPOINTER_TO_UINT (flink->data) : 0;
 		ECalComponentId *id;
 		gchar *uid, *rev, *icalstring;
 
@@ -2474,6 +2526,7 @@ e_cal_cache_put_components (ECalCache *cal_cache,
 
 		if (extra)
 			e_cache_column_values_take_value (other_columns, ECC_COLUMN_EXTRA, g_strdup (extra));
+		e_cache_column_values_take_value (other_columns, ECC_COLUMN_CUSTOM_FLAGS, g_strdup_printf ("%u", custom_flags_val));
 
 		id = e_cal_component_get_id (component);
 		if (id) {
@@ -2509,6 +2562,7 @@ e_cal_cache_put_components (ECalCache *cal_cache,
  * @cal_cache: an #ECalCache
  * @uid: a UID of the component to remove
  * @rid: (nullable): an optional Recurrence-ID to remove
+ * @custom_flags: custom flags for the @component, not interpreted by the @cal_cache
  * @offline_flag: one of #ECacheOfflineFlag, whether removing this component in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -2525,12 +2579,14 @@ gboolean
 e_cal_cache_remove_component (ECalCache *cal_cache,
 			      const gchar *uid,
 			      const gchar *rid,
+			      guint32 custom_flags,
 			      ECacheOfflineFlag offline_flag,
 			      GCancellable *cancellable,
 			      GError **error)
 {
 	ECalComponentId *id;
 	GSList *ids = NULL;
+	GSList *custom_flags_lst = NULL;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
@@ -2538,10 +2594,12 @@ e_cal_cache_remove_component (ECalCache *cal_cache,
 	id = e_cal_component_id_new (uid, rid);
 
 	ids = g_slist_prepend (ids, id);
+	custom_flags_lst = g_slist_prepend (custom_flags_lst, GUINT_TO_POINTER (custom_flags));
 
-	success = e_cal_cache_remove_components (cal_cache, ids, offline_flag, cancellable, error);
+	success = e_cal_cache_remove_components (cal_cache, ids, custom_flags_lst, offline_flag, cancellable, error);
 
 	g_slist_free_full (ids, e_cal_component_id_free);
+	g_slist_free (custom_flags_lst);
 
 	return success;
 }
@@ -2550,6 +2608,7 @@ e_cal_cache_remove_component (ECalCache *cal_cache,
  * e_cal_cache_remove_components:
  * @cal_cache: an #ECalCache
  * @ids: (element-type ECalComponentId): a #GSList of components to remove
+ * @custom_flags: (element-type guint32) (nullable): an optional #GSList of custom flags for the @ids
  * @offline_flag: one of #ECacheOfflineFlag, whether removing these comonents in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -2557,6 +2616,9 @@ e_cal_cache_remove_component (ECalCache *cal_cache,
  * Removes components identified by @uid and @rid from the @cal_cache
  * in the @ids list. When the @rid is %NULL, or an empty string, then
  * removes the master object only, without any detached instance.
+ * The @custom_flags is used, if not %NULL, only if the @offline_flag
+ * is %E_CACHE_IS_OFFLINE. Otherwise it's ignored. The length of
+ * the @custom_flags should match the length of @ids, when not %NULL.
  *
  * Returns: Whether succeeded.
  *
@@ -2565,29 +2627,42 @@ e_cal_cache_remove_component (ECalCache *cal_cache,
 gboolean
 e_cal_cache_remove_components (ECalCache *cal_cache,
 			       const GSList *ids,
+			       const GSList *custom_flags,
 			       ECacheOfflineFlag offline_flag,
 			       GCancellable *cancellable,
 			       GError **error)
 {
 	ECache *cache;
-	const GSList *link;
+	const GSList *link, *flink;
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
+	g_return_val_if_fail (custom_flags == NULL || g_slist_length ((GSList *) ids) == g_slist_length ((GSList *) custom_flags), FALSE);
 
 	cache = E_CACHE (cal_cache);
 
 	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
 	e_cache_freeze_revision_change (cache);
 
-	for (link = ids; success && link; link = g_slist_next (link)) {
+	for (link = ids, flink = custom_flags; success && link; (link = g_slist_next (link)), (flink = g_slist_next (flink))) {
 		const ECalComponentId *id = link->data;
+		guint32 custom_flags_val = flink ? GPOINTER_TO_UINT (flink->data) : 0;
 		gchar *uid;
 
 		g_warn_if_fail (id != NULL);
 
 		if (!id)
 			continue;
+
+		if (offline_flag == E_CACHE_IS_OFFLINE && flink) {
+			success = e_cal_cache_set_component_custom_flags (cal_cache,
+				e_cal_component_id_get_uid (id),
+				e_cal_component_id_get_rid (id),
+				custom_flags_val, cancellable, error);
+
+			if (!success)
+				break;
+		}
 
 		uid = ecc_encode_id_sql (e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id));
 
@@ -2681,6 +2756,123 @@ e_cal_cache_get_component_as_string (ECalCache *cal_cache,
 	g_free (id);
 
 	return *out_icalstring != NULL;
+}
+
+/**
+ * e_cal_cache_set_component_custom_flags:
+ * @cal_cache: an #ECalCache
+ * @uid: a UID of the component
+ * @rid: (nullable): an optional Recurrence-ID
+ * @custom_flags: the custom flags to set for the component
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Sets or replaces the custom flags associated with a component
+ * identified by @uid and optionally @rid.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.36
+ **/
+gboolean
+e_cal_cache_set_component_custom_flags (ECalCache *cal_cache,
+					const gchar *uid,
+					const gchar *rid,
+					guint32 custom_flags,
+					GCancellable *cancellable,
+					GError **error)
+{
+	gchar *id, *stmt;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	id = ecc_encode_id_sql (uid, rid);
+
+	if (!e_cache_contains (E_CACHE (cal_cache), id, E_CACHE_INCLUDE_DELETED)) {
+		g_free (id);
+
+		if (rid && *rid)
+			g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s”, “%s” not found"), uid, rid);
+		else
+			g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s” not found"), uid);
+
+		return FALSE;
+	}
+
+	stmt = e_cache_sqlite_stmt_printf (
+		"UPDATE " E_CACHE_TABLE_OBJECTS " SET " ECC_COLUMN_CUSTOM_FLAGS "=%u"
+		" WHERE " E_CACHE_COLUMN_UID "=%Q",
+		custom_flags, id);
+
+	success = e_cache_sqlite_exec (E_CACHE (cal_cache), stmt, cancellable, error);
+
+	e_cache_sqlite_stmt_free (stmt);
+	g_free (id);
+
+	return success;
+}
+
+/**
+ * e_cal_cache_get_component_custom_flags:
+ * @cal_cache: an #ECalCache
+ * @uid: a UID of the component
+ * @rid: (nullable): an optional Recurrence-ID
+ * @out_custom_flags: (out): return location to store the custom flags
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Gets the custom flags previously set for @uid and @rid, either with
+ * e_cal_cache_set_component_custom_flags(), when adding components or
+ * when removing components in offline.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.36
+ **/
+gboolean
+e_cal_cache_get_component_custom_flags (ECalCache *cal_cache,
+					const gchar *uid,
+					const gchar *rid,
+					guint32 *out_custom_flags,
+					GCancellable *cancellable,
+					GError **error)
+{
+	gchar *id, *stmt;
+	guint64 value = 0;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	id = ecc_encode_id_sql (uid, rid);
+
+	if (!e_cache_contains (E_CACHE (cal_cache), id, E_CACHE_INCLUDE_DELETED)) {
+		g_free (id);
+
+		if (rid && *rid)
+			g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s”, “%s” not found"), uid, rid);
+		else
+			g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s” not found"), uid);
+
+		return FALSE;
+	}
+
+	stmt = e_cache_sqlite_stmt_printf (
+		"SELECT " ECC_COLUMN_CUSTOM_FLAGS " FROM " E_CACHE_TABLE_OBJECTS
+		" WHERE " E_CACHE_COLUMN_UID "=%Q",
+		id);
+
+	success = e_cache_sqlite_select (E_CACHE (cal_cache), stmt, e_cal_cache_get_uint64_cb, &value, cancellable, error);
+
+	e_cache_sqlite_stmt_free (stmt);
+	g_free (id);
+
+	if (out_custom_flags)
+		*out_custom_flags = (guint32) value;
+
+	return success;
 }
 
 /**
@@ -3007,6 +3199,7 @@ ecc_search_icalstrings_cb (ECalCache *cal_cache,
 			   const gchar *revision,
 			   const gchar *object,
 			   const gchar *extra,
+			   guint32 custom_flags,
 			   EOfflineState offline_state,
 			   gpointer user_data)
 {
@@ -3094,6 +3287,7 @@ ecc_search_data_cb (ECalCache *cal_cache,
 		    const gchar *revision,
 		    const gchar *object,
 		    const gchar *extra,
+		    guint32 custom_flags,
 		    EOfflineState offline_state,
 		    gpointer user_data)
 {
@@ -3115,6 +3309,7 @@ ecc_search_components_cb (ECalCache *cal_cache,
 			  const gchar *revision,
 			  const gchar *object,
 			  const gchar *extra,
+			  guint32 custom_flags,
 			  EOfflineState offline_state,
 			  gpointer user_data)
 {
@@ -3136,6 +3331,7 @@ ecc_search_ids_cb (ECalCache *cal_cache,
 		   const gchar *revision,
 		   const gchar *object,
 		   const gchar *extra,
+		   guint32 custom_flags,
 		   EOfflineState offline_state,
 		   gpointer user_data)
 {
@@ -3452,26 +3648,6 @@ e_cal_cache_delete_attachments (ECalCache *cal_cache,
 	}
 
 	g_free (cache_dirname);
-
-	return TRUE;
-}
-
-static gboolean
-e_cal_cache_get_uint64_cb (ECache *cache,
-			   gint ncols,
-			   const gchar **column_names,
-			   const gchar **column_values,
-			   gpointer user_data)
-{
-	guint64 *pui64 = user_data;
-
-	g_return_val_if_fail (pui64 != NULL, FALSE);
-
-	if (ncols == 1) {
-		*pui64 = column_values[0] ? g_ascii_strtoull (column_values[0], NULL, 10) : 0;
-	} else {
-		*pui64 = 0;
-	}
 
 	return TRUE;
 }
@@ -3945,6 +4121,7 @@ ecc_search_delete_attachment_cb (ECalCache *cal_cache,
 				 const gchar *revision,
 				 const gchar *object,
 				 const gchar *extra,
+				 guint32 custom_flags,
 				 EOfflineState offline_state,
 				 gpointer user_data)
 {

@@ -241,6 +241,7 @@ e_cal_backend_sync_get_free_busy (ECalBackendSync *backend,
  * @cal: An EDataCal object.
  * @cancellable: a #GCancellable for the operation
  * @calobjs: The objects to be added.
+ * @opflags: bit-or of #ECalOperationFlags
  * @uids: Placeholder for server-generated UIDs.
  * @new_components: (out) (transfer full): Placeholder for returned #ECalComponent objects.
  * @error: Out parameter for a #GError.
@@ -254,6 +255,7 @@ e_cal_backend_sync_create_objects (ECalBackendSync *backend,
                                    EDataCal *cal,
                                    GCancellable *cancellable,
                                    const GSList *calobjs,
+				   guint32 opflags,
                                    GSList **uids,
                                    GSList **new_components,
                                    GError **error)
@@ -268,7 +270,7 @@ e_cal_backend_sync_create_objects (ECalBackendSync *backend,
 	if (class->create_objects_sync != NULL) {
 		class->create_objects_sync (
 			backend, cal, cancellable,
-			calobjs, uids, new_components, error);
+			calobjs, opflags, uids, new_components, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -285,6 +287,7 @@ e_cal_backend_sync_create_objects (ECalBackendSync *backend,
  * @cancellable: a #GCancellable for the operation
  * @calobjs: Objects to be modified.
  * @mod: Type of modification to be done.
+ * @opflags: bit-or of #ECalOperationFlags
  * @old_components: (out) (transfer full): Placeholder for returning the old components as they were stored on the
  * backend.
  * @new_components: (out) (transfer full): Placeholder for returning the new components as they have been stored
@@ -301,6 +304,7 @@ e_cal_backend_sync_modify_objects (ECalBackendSync *backend,
                                    GCancellable *cancellable,
                                    const GSList *calobjs,
                                    ECalObjModType mod,
+				   guint32 opflags,
                                    GSList **old_components,
                                    GSList **new_components,
                                    GError **error)
@@ -315,7 +319,7 @@ e_cal_backend_sync_modify_objects (ECalBackendSync *backend,
 	if (class->modify_objects_sync != NULL) {
 		class->modify_objects_sync (
 			backend, cal, cancellable,
-			calobjs, mod, old_components, new_components, error);
+			calobjs, mod, opflags, old_components, new_components, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -332,6 +336,7 @@ e_cal_backend_sync_modify_objects (ECalBackendSync *backend,
  * @cancellable: a #GCancellable for the operation
  * @ids: List of #ECalComponentId objects identifying the objects to remove.
  * @mod: Type of removal.
+ * @opflags: bit-or of #ECalOperationFlags
  * @old_components: (out) (transfer full): Placeholder for returning the old components as they were stored on the
  * backend.
  * @new_components: (out) (transfer full): Placeholder for returning the new components as they have been stored
@@ -349,6 +354,7 @@ e_cal_backend_sync_remove_objects (ECalBackendSync *backend,
                                    GCancellable *cancellable,
                                    const GSList *ids,
                                    ECalObjModType mod,
+				   guint32 opflags,
                                    GSList **old_components,
                                    GSList **new_components,
                                    GError **error)
@@ -363,7 +369,7 @@ e_cal_backend_sync_remove_objects (ECalBackendSync *backend,
 	if (class->remove_objects_sync != NULL) {
 		class->remove_objects_sync (
 			backend, cal, cancellable,
-			ids, mod, old_components, new_components, error);
+			ids, mod, opflags, old_components, new_components, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -377,6 +383,7 @@ e_cal_backend_sync_remove_objects (ECalBackendSync *backend,
  * e_cal_backend_sync_receive_objects:
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable for the operation
  * @calobj: iCalendar object to receive.
  * @error: Out parameter for a #GError.
@@ -388,6 +395,7 @@ e_cal_backend_sync_receive_objects (ECalBackendSync *backend,
                                     EDataCal *cal,
                                     GCancellable *cancellable,
                                     const gchar *calobj,
+				    guint32 opflags,
                                     GError **error)
 {
 	ECalBackendSyncClass *class;
@@ -399,7 +407,7 @@ e_cal_backend_sync_receive_objects (ECalBackendSync *backend,
 
 	if (class->receive_objects_sync != NULL) {
 		class->receive_objects_sync (
-			backend, cal, cancellable, calobj, error);
+			backend, cal, cancellable, calobj, opflags, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -415,6 +423,7 @@ e_cal_backend_sync_receive_objects (ECalBackendSync *backend,
  * @cal: An EDataCal object.
  * @cancellable: a #GCancellable for the operation
  * @calobj: The iCalendar object to send.
+ * @opflags: bit-or of #ECalOperationFlags
  * @users: List of users to send notifications to.
  * @modified_calobj: Placeholder for the iCalendar object after being modified.
  * @error: Out parameter for a #GError.
@@ -426,6 +435,7 @@ e_cal_backend_sync_send_objects (ECalBackendSync *backend,
                                  EDataCal *cal,
                                  GCancellable *cancellable,
                                  const gchar *calobj,
+				 guint32 opflags,
                                  GSList **users,
                                  gchar **modified_calobj,
                                  GError **error)
@@ -440,7 +450,7 @@ e_cal_backend_sync_send_objects (ECalBackendSync *backend,
 	if (class->send_objects_sync != NULL) {
 		class->send_objects_sync (
 			backend, cal, cancellable,
-			calobj, users, modified_calobj, error);
+			calobj, opflags, users, modified_calobj, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -502,6 +512,7 @@ e_cal_backend_sync_get_attachment_uris (ECalBackendSync *backend,
  * @uid: Unique id of the calendar object.
  * @rid: Recurrence id of the calendar object.
  * @auid: Alarm ID to remove.
+ * @opflags: bit-or of #ECalOperationFlags
  * @error: Out parameter for a #GError.
  *
  * Calls the discard_alarm_sync method on the given backend.
@@ -513,6 +524,7 @@ e_cal_backend_sync_discard_alarm (ECalBackendSync *backend,
                                   const gchar *uid,
                                   const gchar *rid,
                                   const gchar *auid,
+				  guint32 opflags,
                                   GError **error)
 {
 	ECalBackendSyncClass *class;
@@ -527,7 +539,7 @@ e_cal_backend_sync_discard_alarm (ECalBackendSync *backend,
 	if (class->discard_alarm_sync != NULL) {
 		class->discard_alarm_sync (
 			backend, cal, cancellable,
-			uid, rid, auid, error);
+			uid, rid, auid, opflags, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -740,13 +752,14 @@ cal_backend_create_objects (ECalBackend *backend,
                             EDataCal *cal,
                             guint32 opid,
                             GCancellable *cancellable,
-                            const GSList *calobjs)
+                            const GSList *calobjs,
+			    guint32 opflags)
 {
 	GError *error = NULL;
 	GSList *uids = NULL;
 	GSList *new_components = NULL;
 
-	e_cal_backend_sync_create_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobjs, &uids, &new_components, &error);
+	e_cal_backend_sync_create_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobjs, opflags, &uids, &new_components, &error);
 
 	if (!new_components)
 		new_components = ecalcomponent_slist_from_strings (calobjs);
@@ -763,12 +776,13 @@ cal_backend_modify_objects (ECalBackend *backend,
                             guint32 opid,
                             GCancellable *cancellable,
                             const GSList *calobjs,
-                            ECalObjModType mod)
+                            ECalObjModType mod,
+			    guint32 opflags)
 {
 	GError *error = NULL;
 	GSList *old_components = NULL, *new_components = NULL;
 
-	e_cal_backend_sync_modify_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobjs, mod, &old_components, &new_components, &error);
+	e_cal_backend_sync_modify_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobjs, mod, opflags, &old_components, &new_components, &error);
 
 	if (!old_components)
 		old_components = ecalcomponent_slist_from_strings (calobjs);
@@ -785,12 +799,13 @@ cal_backend_remove_objects (ECalBackend *backend,
                             guint32 opid,
                             GCancellable *cancellable,
                             const GSList *ids,
-                            ECalObjModType mod)
+                            ECalObjModType mod,
+			    guint32 opflags)
 {
 	GError *error = NULL;
 	GSList *old_components = NULL, *new_components = NULL;
 
-	e_cal_backend_sync_remove_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, ids, mod, &old_components, &new_components, &error);
+	e_cal_backend_sync_remove_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, ids, mod, opflags, &old_components, &new_components, &error);
 
 	e_data_cal_respond_remove_objects (cal, opid, error, ids, old_components, new_components);
 
@@ -803,11 +818,12 @@ cal_backend_receive_objects (ECalBackend *backend,
                              EDataCal *cal,
                              guint32 opid,
                              GCancellable *cancellable,
-                             const gchar *calobj)
+                             const gchar *calobj,
+			     guint32 opflags)
 {
 	GError *error = NULL;
 
-	e_cal_backend_sync_receive_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobj, &error);
+	e_cal_backend_sync_receive_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobj, opflags, &error);
 
 	e_data_cal_respond_receive_objects (cal, opid, error);
 }
@@ -817,13 +833,14 @@ cal_backend_send_objects (ECalBackend *backend,
                           EDataCal *cal,
                           guint32 opid,
                           GCancellable *cancellable,
-                          const gchar *calobj)
+                          const gchar *calobj,
+			  guint32 opflags)
 {
 	GError *error = NULL;
 	GSList *users = NULL;
 	gchar *modified_calobj = NULL;
 
-	e_cal_backend_sync_send_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobj, &users, &modified_calobj, &error);
+	e_cal_backend_sync_send_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobj, opflags, &users, &modified_calobj, &error);
 
 	e_data_cal_respond_send_objects (cal, opid, error, users, modified_calobj ? modified_calobj : calobj);
 
@@ -858,11 +875,12 @@ cal_backend_discard_alarm (ECalBackend *backend,
                            GCancellable *cancellable,
                            const gchar *uid,
                            const gchar *rid,
-                           const gchar *auid)
+                           const gchar *auid,
+			   guint32 opflags)
 {
 	GError *error = NULL;
 
-	e_cal_backend_sync_discard_alarm (E_CAL_BACKEND_SYNC (backend), cal, cancellable, uid, rid, auid, &error);
+	e_cal_backend_sync_discard_alarm (E_CAL_BACKEND_SYNC (backend), cal, cancellable, uid, rid, auid, opflags, &error);
 
 	e_data_cal_respond_discard_alarm (cal, opid, error);
 }

@@ -84,6 +84,7 @@ struct _AsyncContext {
 	time_t end;
 	GSList *compid_list;
 	GSList *string_list;
+	guint32 opflags;
 
 	/* Outputs */
 	GQueue result_queue;
@@ -2470,6 +2471,7 @@ e_cal_backend_get_free_busy_finish (ECalBackend *backend,
  * e_cal_backend_create_objects_sync:
  * @backend: an #ECalBackend
  * @calobjs: a %NULL-terminated array of iCalendar strings
+ * @opflags: bit-or of #ECalOperationFlags
  * @out_uids: a #GQueue in which to deposit results
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -2488,6 +2490,7 @@ e_cal_backend_get_free_busy_finish (ECalBackend *backend,
 gboolean
 e_cal_backend_create_objects_sync (ECalBackend *backend,
                                    const gchar * const *calobjs,
+				   guint32 opflags,
                                    GQueue *out_uids,
                                    GCancellable *cancellable,
                                    GError **error)
@@ -2502,7 +2505,7 @@ e_cal_backend_create_objects_sync (ECalBackend *backend,
 	closure = e_async_closure_new ();
 
 	e_cal_backend_create_objects (
-		backend, calobjs, cancellable,
+		backend, calobjs, opflags, cancellable,
 		e_async_closure_callback, closure);
 
 	result = e_async_closure_wait (closure);
@@ -2559,7 +2562,7 @@ cal_backend_create_objects_thread (GSimpleAsyncResult *simple,
 
 		class->create_objects (
 			backend, data_cal, opid, cancellable,
-			async_context->string_list);
+			async_context->string_list, async_context->opflags);
 	}
 
 	g_object_unref (data_cal);
@@ -2569,6 +2572,7 @@ cal_backend_create_objects_thread (GSimpleAsyncResult *simple,
  * e_cal_backend_create_objects:
  * @backend: an #ECalBackend
  * @calobjs: a %NULL-terminated array of iCalendar strings
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisifed
  * @user_data: data to pass to the callback function
@@ -2584,6 +2588,7 @@ cal_backend_create_objects_thread (GSimpleAsyncResult *simple,
 void
 e_cal_backend_create_objects (ECalBackend *backend,
                               const gchar * const *calobjs,
+			      guint32 opflags,
                               GCancellable *cancellable,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
@@ -2601,6 +2606,7 @@ e_cal_backend_create_objects (ECalBackend *backend,
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->string_list = g_slist_reverse (list);
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (backend), callback, user_data,
@@ -2696,6 +2702,7 @@ e_cal_backend_create_objects_finish (ECalBackend *backend,
  * @backend: an #ECalBackend
  * @calobjs: a %NULL-terminated array of iCalendar strings
  * @mod: modification type for recurrences
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -2711,6 +2718,7 @@ gboolean
 e_cal_backend_modify_objects_sync (ECalBackend *backend,
                                    const gchar * const *calobjs,
                                    ECalObjModType mod,
+				   guint32 opflags,
                                    GCancellable *cancellable,
                                    GError **error)
 {
@@ -2724,7 +2732,7 @@ e_cal_backend_modify_objects_sync (ECalBackend *backend,
 	closure = e_async_closure_new ();
 
 	e_cal_backend_modify_objects (
-		backend, calobjs, mod, cancellable,
+		backend, calobjs, mod, opflags, cancellable,
 		e_async_closure_callback, closure);
 
 	result = e_async_closure_wait (closure);
@@ -2782,7 +2790,8 @@ cal_backend_modify_objects_thread (GSimpleAsyncResult *simple,
 		class->modify_objects (
 			backend, data_cal, opid, cancellable,
 			async_context->string_list,
-			async_context->mod);
+			async_context->mod,
+			async_context->opflags);
 	}
 
 	g_object_unref (data_cal);
@@ -2793,6 +2802,7 @@ cal_backend_modify_objects_thread (GSimpleAsyncResult *simple,
  * @backend: an #ECalBackend
  * @calobjs: a %NULL-terminated array of iCalendar strings
  * @mod: modification type for recurrences
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
@@ -2810,6 +2820,7 @@ void
 e_cal_backend_modify_objects (ECalBackend *backend,
                               const gchar * const *calobjs,
                               ECalObjModType mod,
+			      guint32 opflags,
                               GCancellable *cancellable,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
@@ -2828,6 +2839,7 @@ e_cal_backend_modify_objects (ECalBackend *backend,
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->string_list = g_slist_reverse (list);
 	async_context->mod = mod;
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (backend), callback, user_data,
@@ -2929,6 +2941,7 @@ e_cal_backend_modify_objects_finish (ECalBackend *backend,
  * @backend: an #ECalBackend
  * @component_ids: (element-type ECalComponentId): a #GList of #ECalComponentId structs
  * @mod: modification type for recurrences
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -2944,6 +2957,7 @@ gboolean
 e_cal_backend_remove_objects_sync (ECalBackend *backend,
                                    GList *component_ids,
                                    ECalObjModType mod,
+				   guint32 opflags,
                                    GCancellable *cancellable,
                                    GError **error)
 {
@@ -2957,7 +2971,7 @@ e_cal_backend_remove_objects_sync (ECalBackend *backend,
 	closure = e_async_closure_new ();
 
 	e_cal_backend_remove_objects (
-		backend, component_ids, mod, cancellable,
+		backend, component_ids, mod, opflags, cancellable,
 		e_async_closure_callback, closure);
 
 	result = e_async_closure_wait (closure);
@@ -3008,7 +3022,8 @@ cal_backend_remove_objects_thread (GSimpleAsyncResult *simple,
 		class->remove_objects (
 			backend, data_cal, opid, cancellable,
 			async_context->compid_list,
-			async_context->mod);
+			async_context->mod,
+			async_context->opflags);
 	}
 
 	g_object_unref (data_cal);
@@ -3019,6 +3034,7 @@ cal_backend_remove_objects_thread (GSimpleAsyncResult *simple,
  * @backend: an #ECalBackend
  * @component_ids: (element-type ECalComponentId): a #GList of #ECalComponentId structs
  * @mod: modification type for recurrences
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
@@ -3036,6 +3052,7 @@ void
 e_cal_backend_remove_objects (ECalBackend *backend,
                               GList *component_ids,
                               ECalObjModType mod,
+			      guint32 opflags,
                               GCancellable *cancellable,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
@@ -3056,6 +3073,7 @@ e_cal_backend_remove_objects (ECalBackend *backend,
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->compid_list = g_slist_reverse (list);
 	async_context->mod = mod;
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (backend), callback, user_data,
@@ -3168,6 +3186,7 @@ e_cal_backend_remove_objects_finish (ECalBackend *backend,
  * e_cal_backend_receive_objects_sync:
  * @backend: an #ECalBackend
  * @calobj: an iCalendar string
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -3183,6 +3202,7 @@ e_cal_backend_remove_objects_finish (ECalBackend *backend,
 gboolean
 e_cal_backend_receive_objects_sync (ECalBackend *backend,
                                     const gchar *calobj,
+				    guint32 opflags,
                                     GCancellable *cancellable,
                                     GError **error)
 {
@@ -3196,7 +3216,7 @@ e_cal_backend_receive_objects_sync (ECalBackend *backend,
 	closure = e_async_closure_new ();
 
 	e_cal_backend_receive_objects (
-		backend, calobj, cancellable,
+		backend, calobj, opflags, cancellable,
 		e_async_closure_callback, closure);
 
 	result = e_async_closure_wait (closure);
@@ -3246,7 +3266,8 @@ cal_backend_receive_objects_thread (GSimpleAsyncResult *simple,
 
 		class->receive_objects (
 			backend, data_cal, opid, cancellable,
-			async_context->calobj);
+			async_context->calobj,
+			async_context->opflags);
 	}
 
 	g_object_unref (data_cal);
@@ -3256,6 +3277,7 @@ cal_backend_receive_objects_thread (GSimpleAsyncResult *simple,
  * e_cal_backend_receive_objects:
  * @backend: an #ECalBackend
  * @calobj: an iCalendar string
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
@@ -3273,6 +3295,7 @@ cal_backend_receive_objects_thread (GSimpleAsyncResult *simple,
 void
 e_cal_backend_receive_objects (ECalBackend *backend,
                                const gchar *calobj,
+			       guint32 opflags,
                                GCancellable *cancellable,
                                GAsyncReadyCallback callback,
                                gpointer user_data)
@@ -3285,6 +3308,7 @@ e_cal_backend_receive_objects (ECalBackend *backend,
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->calobj = g_strdup (calobj);
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (backend), callback, user_data,
@@ -3342,6 +3366,7 @@ e_cal_backend_receive_objects_finish (ECalBackend *backend,
  * e_cal_backend_send_objects_sync:
  * @backend: an #ECalBackend
  * @calobj: an iCalendar string
+ * @opflags: bit-or of #ECalOperationFlags
  * @out_users: a #GQueue in which to deposit results
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -3362,6 +3387,7 @@ e_cal_backend_receive_objects_finish (ECalBackend *backend,
 gchar *
 e_cal_backend_send_objects_sync (ECalBackend *backend,
                                  const gchar *calobj,
+				 guint32 opflags,
                                  GQueue *out_users,
                                  GCancellable *cancellable,
                                  GError **error)
@@ -3376,7 +3402,7 @@ e_cal_backend_send_objects_sync (ECalBackend *backend,
 	closure = e_async_closure_new ();
 
 	e_cal_backend_send_objects (
-		backend, calobj, cancellable,
+		backend, calobj, opflags, cancellable,
 		e_async_closure_callback, closure);
 
 	result = e_async_closure_wait (closure);
@@ -3426,7 +3452,8 @@ cal_backend_send_objects_thread (GSimpleAsyncResult *simple,
 
 		class->send_objects (
 			backend, data_cal, opid, cancellable,
-			async_context->calobj);
+			async_context->calobj,
+			async_context->opflags);
 	}
 
 	g_object_unref (data_cal);
@@ -3436,6 +3463,7 @@ cal_backend_send_objects_thread (GSimpleAsyncResult *simple,
  * e_cal_backend_send_objects:
  * @backend: an #ECalBackend
  * @calobj: an iCalendar string
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
@@ -3451,6 +3479,7 @@ cal_backend_send_objects_thread (GSimpleAsyncResult *simple,
 void
 e_cal_backend_send_objects (ECalBackend *backend,
                             const gchar *calobj,
+			    guint32 opflags,
                             GCancellable *cancellable,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
@@ -3463,6 +3492,7 @@ e_cal_backend_send_objects (ECalBackend *backend,
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->calobj = g_strdup (calobj);
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (backend), callback, user_data,
@@ -3739,6 +3769,7 @@ e_cal_backend_get_attachment_uris_finish (ECalBackend *backend,
  * @uid: a unique ID for an iCalendar object
  * @rid: a recurrence ID, or %NULL
  * @alarm_uid: a unique ID for an iCalendar VALARM object
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -3756,6 +3787,7 @@ e_cal_backend_discard_alarm_sync (ECalBackend *backend,
                                   const gchar *uid,
                                   const gchar *rid,
                                   const gchar *alarm_uid,
+				  guint32 opflags,
                                   GCancellable *cancellable,
                                   GError **error)
 {
@@ -3771,7 +3803,7 @@ e_cal_backend_discard_alarm_sync (ECalBackend *backend,
 	closure = e_async_closure_new ();
 
 	e_cal_backend_discard_alarm (
-		backend, uid, rid, alarm_uid, cancellable,
+		backend, uid, rid, alarm_uid, opflags, cancellable,
 		e_async_closure_callback, closure);
 
 	result = e_async_closure_wait (closure);
@@ -3830,7 +3862,8 @@ cal_backend_discard_alarm_thread (GSimpleAsyncResult *simple,
 			backend, data_cal, opid, cancellable,
 			async_context->uid,
 			async_context->rid,
-			async_context->alarm_uid);
+			async_context->alarm_uid,
+			async_context->opflags);
 	}
 
 	g_object_unref (data_cal);
@@ -3842,6 +3875,7 @@ cal_backend_discard_alarm_thread (GSimpleAsyncResult *simple,
  * @uid: a unique ID for an iCalendar object
  * @rid: a recurrence ID, or %NULL
  * @alarm_uid: a unique ID for an iCalendar VALARM object
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
@@ -3860,6 +3894,7 @@ e_cal_backend_discard_alarm (ECalBackend *backend,
                              const gchar *uid,
                              const gchar *rid,
                              const gchar *alarm_uid,
+			     guint32 opflags,
                              GCancellable *cancellable,
                              GAsyncReadyCallback callback,
                              gpointer user_data)
@@ -3876,6 +3911,7 @@ e_cal_backend_discard_alarm (ECalBackend *backend,
 	async_context->uid = g_strdup (uid);
 	async_context->rid = g_strdup (rid);
 	async_context->alarm_uid = g_strdup (alarm_uid);
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (backend), callback, user_data,

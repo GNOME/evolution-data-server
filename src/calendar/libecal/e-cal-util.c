@@ -2557,3 +2557,59 @@ e_cal_util_mark_task_complete_sync (ICalComponent *vtodo,
 
 	return TRUE;
 }
+
+/**
+ * e_cal_util_operation_flags_to_conflict_resolution:
+ * @flags: bit-or of #ECalOperationFlags
+ *
+ * Decodes the #EConflictResolution from the bit-or of #ECalOperationFlags.
+ *
+ * Returns: an #EConflictResolution as stored in the @flags
+ *
+ * Since: 3.36
+ **/
+EConflictResolution
+e_cal_util_operation_flags_to_conflict_resolution (guint32 flags)
+{
+	if ((flags & E_CAL_OPERATION_FLAG_CONFLICT_FAIL) != 0)
+		return E_CONFLICT_RESOLUTION_FAIL;
+	else if ((flags & E_CAL_OPERATION_FLAG_CONFLICT_USE_NEWER) != 0)
+		return E_CONFLICT_RESOLUTION_USE_NEWER;
+	else if ((flags & E_CAL_OPERATION_FLAG_CONFLICT_KEEP_SERVER) != 0)
+		return E_CONFLICT_RESOLUTION_KEEP_SERVER;
+	else if ((flags & E_CAL_OPERATION_FLAG_CONFLICT_WRITE_COPY) != 0)
+		return E_CONFLICT_RESOLUTION_WRITE_COPY;
+
+	/* E_CAL_OPERATION_FLAG_CONFLICT_KEEP_LOCAL is the default */
+	return E_CONFLICT_RESOLUTION_KEEP_LOCAL;
+}
+
+/**
+ * e_cal_util_conflict_resolution_to_operation_flags:
+ * @conflict_resolution: an #EConflictResolution
+ *
+ * Encodes the #EConflictResolution into the bit-or of #ECalOperationFlags.
+ * The returned value can be bit-or-ed into other #ECalOperationFlags value.
+ *
+ * Returns: a bit-or #ECalOperationFlags corresponding to the @conflict_resolution
+ *
+ * Since: 3.36
+ **/
+guint32
+e_cal_util_conflict_resolution_to_operation_flags (EConflictResolution conflict_resolution)
+{
+	switch (conflict_resolution) {
+	case E_CONFLICT_RESOLUTION_FAIL:
+		return E_CAL_OPERATION_FLAG_CONFLICT_FAIL;
+	case E_CONFLICT_RESOLUTION_USE_NEWER:
+		return E_CAL_OPERATION_FLAG_CONFLICT_USE_NEWER;
+	case E_CONFLICT_RESOLUTION_KEEP_SERVER:
+		return E_CAL_OPERATION_FLAG_CONFLICT_KEEP_SERVER;
+	case E_CONFLICT_RESOLUTION_KEEP_LOCAL:
+		return E_CAL_OPERATION_FLAG_CONFLICT_KEEP_LOCAL;
+	case E_CONFLICT_RESOLUTION_WRITE_COPY:
+		return E_CAL_OPERATION_FLAG_CONFLICT_WRITE_COPY;
+	}
+
+	return E_CAL_OPERATION_FLAG_CONFLICT_KEEP_LOCAL;
+}

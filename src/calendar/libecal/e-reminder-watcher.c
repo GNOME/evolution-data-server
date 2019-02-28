@@ -3174,6 +3174,7 @@ e_reminder_watcher_dismiss_one_sync (ECalClient *client,
 			e_cal_component_id_get_uid (id),
 			e_cal_component_id_get_rid (id),
 			e_cal_component_alarm_instance_get_uid (rd->instance),
+			E_CAL_OPERATION_FLAG_NONE,
 			cancellable, &local_error);
 
 		e_reminder_watcher_debug_print ("Discard alarm for '%s' from %s (uid:%s rid:%s auid:%s) %s%s%s%s\n",

@@ -72,7 +72,7 @@ setup_cal (ECalClient *cal_client)
 	add_attach (icomp, ATTACH2);
 	add_attach (icomp, ATTACH3);
 
-	if (!e_cal_client_create_object_sync (cal_client, icomp, &uid, NULL, &error))
+	if (!e_cal_client_create_object_sync (cal_client, icomp, E_CAL_OPERATION_FLAG_NONE, &uid, NULL, &error))
 		g_error ("create object sync: %s", error->message);
 
 	g_object_unref (icomp);

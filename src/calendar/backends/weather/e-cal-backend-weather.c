@@ -133,7 +133,7 @@ static void
 put_component_to_store (ECalBackendWeather *cb,
                         ECalComponent *comp)
 {
-	e_cal_cache_put_component (cb->priv->cache, comp, NULL, E_CACHE_IS_ONLINE, NULL, NULL);
+	e_cal_cache_put_component (cb->priv->cache, comp, NULL, 0, E_CACHE_IS_ONLINE, NULL, NULL);
 }
 
 static gint
@@ -732,6 +732,7 @@ e_cal_backend_weather_receive_objects (ECalBackendSync *backend,
                                        EDataCal *cal,
                                        GCancellable *cancellable,
                                        const gchar *calobj,
+				       guint32 opflags,
                                        GError **perror)
 {
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));

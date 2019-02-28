@@ -132,6 +132,7 @@ static gboolean ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
 						  EConflictResolution conflict_resolution,
 						  const GSList *in_instances,
 						  const gchar *extra,
+						  guint32 opflags,
 						  const gchar *orig_uid,
 						  gboolean *out_requires_put,
 						  gchar **out_new_uid,
@@ -309,6 +310,7 @@ ecmb_gather_locally_cached_objects_cb (ECalCache *cal_cache,
 				       const gchar *revision,
 				       const gchar *object,
 				       const gchar *extra,
+				       guint32 opflags,
 				       EOfflineState offline_state,
 				       gpointer user_data)
 {
@@ -547,6 +549,7 @@ ecmb_upload_local_changes_sync (ECalMetaBackend *meta_backend,
 	for (link = offline_changes; link && success; link = g_slist_next (link)) {
 		ECalCacheOfflineChange *change = link->data;
 		gchar *extra = NULL;
+		guint32 opflags = 0;
 
 		success = !g_cancellable_set_error_if_cancelled (cancellable, error);
 		if (!success)
@@ -560,6 +563,9 @@ ecmb_upload_local_changes_sync (ECalMetaBackend *meta_backend,
 		if (!e_cal_cache_get_component_extra (cal_cache, change->uid, NULL, &extra, cancellable, NULL))
 			extra = NULL;
 
+		if (!e_cal_cache_get_component_custom_flags (cal_cache, change->uid, NULL, &opflags, cancellable, NULL))
+			opflags = 0;
+
 		if (change->state == E_OFFLINE_STATE_LOCALLY_CREATED ||
 		    change->state == E_OFFLINE_STATE_LOCALLY_MODIFIED) {
 			GSList *instances = NULL;
@@ -568,7 +574,7 @@ ecmb_upload_local_changes_sync (ECalMetaBackend *meta_backend,
 			if (success) {
 				success = ecmb_save_component_wrapper_sync (meta_backend, cal_cache,
 					change->state == E_OFFLINE_STATE_LOCALLY_MODIFIED,
-					conflict_resolution, instances, extra, change->uid, NULL, NULL, NULL, cancellable, error);
+					conflict_resolution, instances, extra, opflags, change->uid, NULL, NULL, NULL, cancellable, error);
 			}
 
 			g_slist_free_full (instances, g_object_unref);
@@ -576,7 +582,7 @@ ecmb_upload_local_changes_sync (ECalMetaBackend *meta_backend,
 			GError *local_error = NULL;
 
 			success = e_cal_meta_backend_remove_component_sync (meta_backend, conflict_resolution,
-				change->uid, extra, change->object, cancellable, &local_error);
+				change->uid, extra, change->object, opflags, cancellable, &local_error);
 
 			if (!success) {
 				if (g_error_matches (local_error, E_DATA_CAL_ERROR, ObjectNotFound)) {
@@ -607,6 +613,7 @@ ecmb_maybe_remove_from_cache (ECalMetaBackend *meta_backend,
 			      ECalCache *cal_cache,
 			      ECacheOfflineFlag offline_flag,
 			      const gchar *uid,
+			      guint32 custom_flags,
 			      GCancellable *cancellable,
 			      GError **error)
 {
@@ -640,7 +647,7 @@ ecmb_maybe_remove_from_cache (ECalMetaBackend *meta_backend,
 		id = e_cal_component_get_id (comp);
 		if (id) {
 			if (!e_cal_cache_delete_attachments (cal_cache, e_cal_component_get_icalcomponent (comp), cancellable, error) ||
-			    !e_cal_cache_remove_component (cal_cache, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), offline_flag, cancellable, error)) {
+			    !e_cal_cache_remove_component (cal_cache, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), custom_flags, offline_flag, cancellable, error)) {
 				e_cal_component_id_free (id);
 				g_slist_free_full (comps, g_object_unref);
 
@@ -906,6 +913,7 @@ ecmb_put_one_component (ECalMetaBackend *meta_backend,
 			ECacheOfflineFlag offline_flag,
 			ECalComponent *comp,
 			const gchar *extra,
+			guint32 opflags,
 			GSList **inout_cache_instances,
 			GCancellable *cancellable,
 			GError **error)
@@ -920,7 +928,7 @@ ecmb_put_one_component (ECalMetaBackend *meta_backend,
 			e_cal_component_get_icalcomponent (comp), cancellable, error);
 	}
 
-	success = success && e_cal_cache_put_component (cal_cache, comp, extra, offline_flag, cancellable, error);
+	success = success && e_cal_cache_put_component (cal_cache, comp, extra, opflags, offline_flag, cancellable, error);
 
 	if (success) {
 		ECalComponent *existing = NULL;
@@ -953,6 +961,7 @@ ecmb_put_instances (ECalMetaBackend *meta_backend,
 		    ECacheOfflineFlag offline_flag,
 		    const GSList *new_instances, /* ECalComponent * */
 		    const gchar *extra,
+		    guint32 opflags,
 		    GCancellable *cancellable,
 		    GError **error)
 {
@@ -973,7 +982,7 @@ ecmb_put_instances (ECalMetaBackend *meta_backend,
 	for (link = (GSList *) new_instances; link && success; link = g_slist_next (link)) {
 		ECalComponent *comp = link->data;
 
-		success = ecmb_put_one_component (meta_backend, cal_cache, offline_flag, comp, extra, &cache_instances, cancellable, error);
+		success = ecmb_put_one_component (meta_backend, cal_cache, offline_flag, comp, extra, opflags, &cache_instances, cancellable, error);
 	}
 
 	/* What left got removed from the remote side, notify about it */
@@ -993,7 +1002,7 @@ ecmb_put_instances (ECalMetaBackend *meta_backend,
 			if (!success)
 				break;
 
-			success = e_cal_cache_remove_component (cal_cache, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), offline_flag, cancellable, error);
+			success = e_cal_cache_remove_component (cal_cache, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), opflags, offline_flag, cancellable, error);
 
 			e_cal_backend_notify_component_removed (cal_backend, id, comp, NULL);
 
@@ -1109,7 +1118,7 @@ ecmb_load_component_wrapper_sync (ECalMetaBackend *meta_backend,
 		new_instances = g_slist_reverse (new_instances);
 
 		success = ecmb_put_instances (meta_backend, cal_cache, loaded_uid ? loaded_uid : uid, offline_flag,
-			new_instances, extra ? extra : preloaded_extra, cancellable, &local_error);
+			new_instances, extra ? extra : preloaded_extra, 0, cancellable, &local_error);
 
 		if (success && out_new_uid)
 			*out_new_uid = g_strdup (loaded_uid ? loaded_uid : uid);
@@ -1140,6 +1149,7 @@ ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
 				  EConflictResolution conflict_resolution,
 				  const GSList *in_instances,
 				  const gchar *extra,
+				  guint32 opflags,
 				  const gchar *orig_uid,
 				  gboolean *out_requires_put,
 				  gchar **out_new_uid,
@@ -1181,7 +1191,7 @@ ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
 	}
 
 	success = success && e_cal_meta_backend_save_component_sync (meta_backend, overwrite_existing, conflict_resolution,
-		instances ? instances : in_instances, extra, &new_uid, &new_extra, cancellable, &local_error);
+		instances ? instances : in_instances, extra, opflags, &new_uid, &new_extra, cancellable, &local_error);
 
 	if (success && new_uid && *new_uid) {
 		gchar *loaded_uid = NULL;
@@ -1190,7 +1200,7 @@ ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
 			new_extra ? new_extra : extra, &loaded_uid, cancellable, error);
 
 		if (success && g_strcmp0 (loaded_uid, orig_uid) != 0)
-			success = ecmb_maybe_remove_from_cache (meta_backend, cal_cache, E_CACHE_IS_ONLINE, orig_uid, cancellable, error);
+			success = ecmb_maybe_remove_from_cache (meta_backend, cal_cache, E_CACHE_IS_ONLINE, orig_uid, opflags, cancellable, error);
 
 		if (success && out_new_uid)
 			*out_new_uid = loaded_uid;
@@ -1568,6 +1578,7 @@ ecmb_create_object_sync (ECalMetaBackend *meta_backend,
 			 ECalCache *cal_cache,
 			 ECacheOfflineFlag *offline_flag,
 			 EConflictResolution conflict_resolution,
+			 guint32 opflags,
 			 ECalComponent *comp,
 			 gchar **out_new_uid,
 			 ECalComponent **out_new_comp,
@@ -1637,7 +1648,7 @@ ecmb_create_object_sync (ECalMetaBackend *meta_backend,
 
 		instances = g_slist_prepend (NULL, comp);
 
-		if (!ecmb_save_component_wrapper_sync (meta_backend, cal_cache, FALSE, conflict_resolution, instances, NULL, uid,
+		if (!ecmb_save_component_wrapper_sync (meta_backend, cal_cache, FALSE, conflict_resolution, instances, NULL, opflags, uid,
 			&requires_put, &new_uid, &new_extra, cancellable, error)) {
 			g_slist_free (instances);
 			return FALSE;
@@ -1647,7 +1658,7 @@ ecmb_create_object_sync (ECalMetaBackend *meta_backend,
 	}
 
 	if (requires_put) {
-		success = e_cal_cache_put_component (cal_cache, comp, new_extra, *offline_flag, cancellable, error);
+		success = e_cal_cache_put_component (cal_cache, comp, new_extra, opflags, *offline_flag, cancellable, error);
 		if (success && !out_new_comp) {
 			e_cal_backend_notify_component_created (E_CAL_BACKEND (meta_backend), comp);
 		}
@@ -1679,6 +1690,7 @@ ecmb_create_objects_sync (ECalBackendSync *sync_backend,
 			  EDataCal *cal,
 			  GCancellable *cancellable,
 			  const GSList *calobjs,
+			  guint32 opflags,
 			  GSList **out_uids,
 			  GSList **out_new_components,
 			  GError **error)
@@ -1686,7 +1698,7 @@ ecmb_create_objects_sync (ECalBackendSync *sync_backend,
 	ECalMetaBackend *meta_backend;
 	ECalCache *cal_cache;
 	ECacheOfflineFlag offline_flag = E_CACHE_OFFLINE_UNKNOWN;
-	EConflictResolution conflict_resolution = E_CONFLICT_RESOLUTION_FAIL;
+	EConflictResolution conflict_resolution = e_cal_util_operation_flags_to_conflict_resolution (opflags);
 	ICalComponentKind backend_kind;
 	GSList *link;
 	gboolean success = TRUE;
@@ -1725,7 +1737,7 @@ ecmb_create_objects_sync (ECalBackendSync *sync_backend,
 		}
 
 		success = ecmb_create_object_sync (meta_backend, cal_cache, &offline_flag, conflict_resolution,
-			comp, &new_uid, &new_comp, cancellable, error);
+			opflags, comp, &new_uid, &new_comp, cancellable, error);
 
 		if (success) {
 			*out_uids = g_slist_prepend (*out_uids, new_uid);
@@ -1747,6 +1759,7 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 			 ECacheOfflineFlag *offline_flag,
 			 EConflictResolution conflict_resolution,
 			 ECalObjModType mod,
+			 guint32 opflags,
 			 ECalComponent *comp,
 			 ECalComponent **out_old_comp,
 			 ECalComponent **out_new_comp,
@@ -1915,8 +1928,8 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 
 				e_cal_recur_ensure_end_dates (comp, TRUE, e_cal_cache_resolve_timezone_cb, cal_cache, cancellable, NULL);
 
-				success = ecmb_create_object_sync (meta_backend, cal_cache, offline_flag, E_CONFLICT_RESOLUTION_FAIL,
-					comp, NULL, NULL, cancellable, error);
+				success = ecmb_create_object_sync (meta_backend, cal_cache, offline_flag, conflict_resolution,
+					opflags, comp, NULL, NULL, cancellable, error);
 			}
 
 			g_clear_object (&master_dtstart);
@@ -1943,11 +1956,12 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 
 	if (success && *offline_flag == E_CACHE_IS_ONLINE) {
 		success = ecmb_save_component_wrapper_sync (meta_backend, cal_cache, TRUE, conflict_resolution,
-			instances, extra, e_cal_component_id_get_uid (id), &requires_put, &new_uid, &new_extra, cancellable, error);
+			instances, extra, opflags, e_cal_component_id_get_uid (id), &requires_put, &new_uid, &new_extra, cancellable, error);
 	}
 
 	if (success && requires_put)
-		success = ecmb_put_instances (meta_backend, cal_cache, e_cal_component_id_get_uid (id), *offline_flag, instances, new_extra ? new_extra : extra, cancellable, error);
+		success = ecmb_put_instances (meta_backend, cal_cache, e_cal_component_id_get_uid (id), *offline_flag, instances,
+			new_extra ? new_extra : extra, opflags, cancellable, error);
 
 	if (!success) {
 		g_clear_object (&old_comp);
@@ -1981,6 +1995,7 @@ ecmb_modify_objects_sync (ECalBackendSync *sync_backend,
 			  GCancellable *cancellable,
 			  const GSList *calobjs,
 			  ECalObjModType mod,
+			  guint32 opflags,
 			  GSList **out_old_components,
 			  GSList **out_new_components,
 			  GError **error)
@@ -1988,7 +2003,7 @@ ecmb_modify_objects_sync (ECalBackendSync *sync_backend,
 	ECalMetaBackend *meta_backend;
 	ECalCache *cal_cache;
 	ECacheOfflineFlag offline_flag = E_CACHE_OFFLINE_UNKNOWN;
-	EConflictResolution conflict_resolution = E_CONFLICT_RESOLUTION_FAIL;
+	EConflictResolution conflict_resolution = e_cal_util_operation_flags_to_conflict_resolution (opflags);
 	ICalComponentKind backend_kind;
 	GSList *link;
 	gboolean success = TRUE;
@@ -2024,7 +2039,7 @@ ecmb_modify_objects_sync (ECalBackendSync *sync_backend,
 		}
 
 		success = ecmb_modify_object_sync (meta_backend, cal_cache, &offline_flag, conflict_resolution,
-			mod, comp, &old_comp, &new_comp, cancellable, error);
+			mod, opflags, comp, &old_comp, &new_comp, cancellable, error);
 
 		if (success) {
 			*out_old_components = g_slist_prepend (*out_old_components, old_comp);
@@ -2046,6 +2061,7 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 			 ECacheOfflineFlag *offline_flag,
 			 EConflictResolution conflict_resolution,
 			 ECalObjModType mod,
+			 guint32 opflags,
 			 const gchar *uid,
 			 const gchar *rid,
 			 ECalComponent **out_old_comp,
@@ -2254,7 +2270,7 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 
 				/* Use the master object, if exists */
 				if (e_cal_cache_get_component_as_string (cal_cache, uid, NULL, &ical_string, cancellable, NULL)) {
-					success = e_cal_meta_backend_remove_component_sync (meta_backend, conflict_resolution, uid, extra, ical_string, cancellable, &local_error);
+					success = e_cal_meta_backend_remove_component_sync (meta_backend, conflict_resolution, uid, extra, ical_string, opflags, cancellable, &local_error);
 
 					g_free (ical_string);
 				} else {
@@ -2288,7 +2304,7 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 
 						/* This pretends the first instance is the master object and the implementations should count with it */
 						success = e_cal_meta_backend_remove_component_sync (meta_backend, conflict_resolution,
-							e_cal_component_id_get_uid (id), comp_extra, ical_string, cancellable, &local_error);
+							e_cal_component_id_get_uid (id), comp_extra, ical_string, opflags, cancellable, &local_error);
 
 						e_cal_component_id_free (id);
 						g_clear_pointer (&ical_string, g_free);
@@ -2308,7 +2324,7 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 				}
 			}
 
-			success = success && ecmb_maybe_remove_from_cache (meta_backend, cal_cache, *offline_flag, uid, cancellable, error);
+			success = success && ecmb_maybe_remove_from_cache (meta_backend, cal_cache, *offline_flag, uid, opflags, cancellable, error);
 		} else {
 			gboolean requires_put = TRUE;
 			gchar *new_uid = NULL, *new_extra = NULL;
@@ -2329,11 +2345,13 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 
 			if (*offline_flag == E_CACHE_IS_ONLINE) {
 				success = ecmb_save_component_wrapper_sync (meta_backend, cal_cache, TRUE, conflict_resolution,
-					instances, extra, uid, &requires_put, &new_uid, &new_extra, cancellable, error);
+					instances, extra, opflags, uid, &requires_put, &new_uid, &new_extra, cancellable, error);
 			}
 
-			if (success && requires_put)
-				success = ecmb_put_instances (meta_backend, cal_cache, uid, *offline_flag, instances, new_extra ? new_extra : extra, cancellable, error);
+			if (success && requires_put) {
+				success = ecmb_put_instances (meta_backend, cal_cache, uid, *offline_flag, instances,
+					new_extra ? new_extra : extra, opflags, cancellable, error);
+			}
 
 			if (success && new_uid && !requires_put) {
 				g_clear_object (&new_comp);
@@ -2370,6 +2388,7 @@ ecmb_remove_objects_sync (ECalBackendSync *sync_backend,
 			  GCancellable *cancellable,
 			  const GSList *ids,
 			  ECalObjModType mod,
+			  guint32 opflags,
 			  GSList **out_old_components,
 			  GSList **out_new_components,
 			  GError **error)
@@ -2377,7 +2396,7 @@ ecmb_remove_objects_sync (ECalBackendSync *sync_backend,
 	ECalMetaBackend *meta_backend;
 	ECalCache *cal_cache;
 	ECacheOfflineFlag offline_flag = E_CACHE_OFFLINE_UNKNOWN;
-	EConflictResolution conflict_resolution = E_CONFLICT_RESOLUTION_FAIL;
+	EConflictResolution conflict_resolution = e_cal_util_operation_flags_to_conflict_resolution (opflags);
 	GSList *link;
 	gboolean success = TRUE;
 
@@ -2407,8 +2426,8 @@ ecmb_remove_objects_sync (ECalBackendSync *sync_backend,
 			break;
 		}
 
-		success = ecmb_remove_object_sync (meta_backend, cal_cache, &offline_flag, conflict_resolution,
-			mod, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), &old_comp, &new_comp, cancellable, error);
+		success = ecmb_remove_object_sync (meta_backend, cal_cache, &offline_flag, conflict_resolution, mod, opflags,
+			e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), &old_comp, &new_comp, cancellable, error);
 
 		if (success) {
 			*out_old_components = g_slist_prepend (*out_old_components, old_comp);
@@ -2429,6 +2448,7 @@ ecmb_receive_object_sync (ECalMetaBackend *meta_backend,
 			  EConflictResolution conflict_resolution,
 			  ECalComponent *comp,
 			  ICalPropertyMethod method,
+			  guint32 opflags,
 			  GCancellable *cancellable,
 			  GError **error)
 {
@@ -2485,20 +2505,20 @@ ecmb_receive_object_sync (ECalMetaBackend *meta_backend,
 		if (is_in_cache) {
 			if (!is_declined) {
 				success = ecmb_modify_object_sync (meta_backend, cal_cache, offline_flag, conflict_resolution,
-					mod, comp, NULL, NULL, cancellable, error);
+					mod, opflags, comp, NULL, NULL, cancellable, error);
 			} else {
-				success = ecmb_remove_object_sync (meta_backend, cal_cache, offline_flag, conflict_resolution,
-					mod, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), NULL, NULL, cancellable, error);
+				success = ecmb_remove_object_sync (meta_backend, cal_cache, offline_flag, conflict_resolution, mod, opflags,
+					e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), NULL, NULL, cancellable, error);
 			}
 		} else if (!is_declined) {
 			success = ecmb_create_object_sync (meta_backend, cal_cache, offline_flag, conflict_resolution,
-				comp, NULL, NULL, cancellable, error);
+				opflags, comp, NULL, NULL, cancellable, error);
 		}
 		break;
 	case I_CAL_METHOD_CANCEL:
 		if (is_in_cache) {
-			success = ecmb_remove_object_sync (meta_backend, cal_cache, offline_flag, conflict_resolution,
-				E_CAL_OBJ_MOD_THIS, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), NULL, NULL, cancellable, error);
+			success = ecmb_remove_object_sync (meta_backend, cal_cache, offline_flag, conflict_resolution, E_CAL_OBJ_MOD_THIS, opflags,
+				e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), NULL, NULL, cancellable, error);
 		} else {
 			g_propagate_error (error, e_data_cal_create_error (ObjectNotFound, NULL));
 		}
@@ -2519,11 +2539,12 @@ ecmb_receive_objects_sync (ECalBackendSync *sync_backend,
 			   EDataCal *cal,
 			   GCancellable *cancellable,
 			   const gchar *calobj,
+			   guint32 opflags,
 			   GError **error)
 {
 	ECalMetaBackend *meta_backend;
 	ECacheOfflineFlag offline_flag = E_CACHE_OFFLINE_UNKNOWN;
-	EConflictResolution conflict_resolution = E_CONFLICT_RESOLUTION_FAIL;
+	EConflictResolution conflict_resolution = e_cal_util_operation_flags_to_conflict_resolution (opflags);
 	ECalCache *cal_cache;
 	ECalComponent *comp;
 	ICalComponent *icomp, *subcomp;
@@ -2599,7 +2620,7 @@ ecmb_receive_objects_sync (ECalBackendSync *sync_backend,
 		}
 
 		success = ecmb_receive_object_sync (meta_backend, cal_cache, &offline_flag, conflict_resolution,
-			comp, method, cancellable, error);
+			comp, method, opflags, cancellable, error);
 	}
 
 	g_slist_free_full (comps, g_object_unref);
@@ -2612,6 +2633,7 @@ ecmb_send_objects_sync (ECalBackendSync *sync_backend,
 			EDataCal *cal,
 			GCancellable *cancellable,
 			const gchar *calobj,
+			guint32 opflags,
 			GSList **out_users,
 			gchar **out_modified_calobj,
 			GError **error)
@@ -2726,6 +2748,7 @@ ecmb_discard_alarm_sync (ECalBackendSync *sync_backend,
 			 const gchar *uid,
 			 const gchar *rid,
 			 const gchar *auid,
+			 guint32 opflags,
 			 GError **error)
 {
 	g_return_if_fail (E_IS_CAL_META_BACKEND (sync_backend));
@@ -4640,7 +4663,7 @@ e_cal_meta_backend_process_changes_sync (ECalMetaBackend *meta_backend,
 			continue;
 		}
 
-		success = ecmb_maybe_remove_from_cache (meta_backend, cal_cache, E_CACHE_IS_ONLINE, nfo->uid, cancellable, error);
+		success = ecmb_maybe_remove_from_cache (meta_backend, cal_cache, E_CACHE_IS_ONLINE, nfo->uid, 0, cancellable, error);
 	}
 
 	/* Then modified objects */
@@ -5075,6 +5098,7 @@ e_cal_meta_backend_load_component_sync (ECalMetaBackend *meta_backend,
  * @conflict_resolution: one of #EConflictResolution, what to do on conflicts
  * @instances: (element-type ECalComponent): instances of the component to save
  * @extra: (nullable): extra data saved with the components in an #ECalCache
+ * @opflags: bit-or of #ECalOperationFlags
  * @out_new_uid: (out) (transfer full): return location for the UID of the saved component
  * @out_new_extra: (out) (transfer full): return location for the extra data to store with the component
  * @cancellable: optional #GCancellable object, or %NULL
@@ -5120,6 +5144,7 @@ e_cal_meta_backend_save_component_sync (ECalMetaBackend *meta_backend,
 					EConflictResolution conflict_resolution,
 					const GSList *instances,
 					const gchar *extra,
+					guint32 opflags,
 					gchar **out_new_uid,
 					gchar **out_new_extra,
 					GCancellable *cancellable,
@@ -5159,6 +5184,7 @@ e_cal_meta_backend_save_component_sync (ECalMetaBackend *meta_backend,
 			conflict_resolution,
 			instances,
 			extra,
+			opflags,
 			out_new_uid,
 			out_new_extra,
 			cancellable,
@@ -5181,6 +5207,7 @@ e_cal_meta_backend_save_component_sync (ECalMetaBackend *meta_backend,
  * @uid: a component UID
  * @extra: (nullable): extra data being saved with the component in the local cache, or %NULL
  * @object: (nullable): corresponding iCalendar object, as stored in the local cache, or %NULL
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -5201,6 +5228,7 @@ e_cal_meta_backend_remove_component_sync (ECalMetaBackend *meta_backend,
 					  const gchar *uid,
 					  const gchar *extra,
 					  const gchar *object,
+					  guint32 opflags,
 					  GCancellable *cancellable,
 					  GError **error)
 {
@@ -5230,7 +5258,7 @@ e_cal_meta_backend_remove_component_sync (ECalMetaBackend *meta_backend,
 		g_clear_error (&local_error);
 		repeat_count++;
 
-		success = klass->remove_component_sync (meta_backend, conflict_resolution, uid, extra, object, cancellable, &local_error);
+		success = klass->remove_component_sync (meta_backend, conflict_resolution, uid, extra, object, opflags, cancellable, &local_error);
 
 		if (!success && repeat_count <= MAX_REPEAT_COUNT && !ecmb_maybe_wait_for_credentials (meta_backend, wait_credentials_stamp, local_error, cancellable))
 			break;

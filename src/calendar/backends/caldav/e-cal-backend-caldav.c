@@ -617,6 +617,7 @@ ecb_caldav_search_changes_cb (ECalCache *cal_cache,
 			      const gchar *revision,
 			      const gchar *object,
 			      const gchar *extra,
+			      guint32 custom_flags,
 			      EOfflineState offline_state,
 			      gpointer user_data)
 {
@@ -1221,6 +1222,7 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 				EConflictResolution conflict_resolution,
 				const GSList *instances,
 				const gchar *extra,
+				guint32 opflags,
 				gchar **out_new_uid,
 				gchar **out_new_extra,
 				GCancellable *cancellable,
@@ -1348,6 +1350,7 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 				  const gchar *uid,
 				  const gchar *extra,
 				  const gchar *object,
+				  guint32 opflags,
 				  GCancellable *cancellable,
 				  GError **error)
 {

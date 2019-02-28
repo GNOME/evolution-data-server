@@ -196,11 +196,44 @@ typedef enum {
  *
  * Since: 3.30
  **/
-typedef enum {
+typedef enum { /*< flags >*/
 	E_CAL_RECUR_DESCRIBE_RECURRENCE_FLAG_NONE	= 0,
 	E_CAL_RECUR_DESCRIBE_RECURRENCE_FLAG_PREFIXED	= (1 << 0),
 	E_CAL_RECUR_DESCRIBE_RECURRENCE_FLAG_FALLBACK	= (1 << 1)
 } ECalRecurDescribeRecurrenceFlags;
+
+/**
+ * ECalOperationFlags:
+ * @E_CAL_OPERATION_FLAG_NONE: no operation flags defined
+ * @E_CAL_OPERATION_FLAG_CONFLICT_FAIL: conflict resolution mode, to fail and do not
+ *    do any changes, when a conflict is detected
+ * @E_CAL_OPERATION_FLAG_CONFLICT_USE_NEWER: conflict resolution mode, to use newer
+ *    of the local and the server side data, when a conflict is detected
+ * @E_CAL_OPERATION_FLAG_CONFLICT_KEEP_SERVER: conflict resolution mode, to use
+ *    the server data (and local changed), when a conflict is detected
+ * @E_CAL_OPERATION_FLAG_CONFLICT_KEEP_LOCAL: conflict resolution mode, to use
+ *    local data (and always overwrite server data), when a conflict is detected
+ * @E_CAL_OPERATION_FLAG_CONFLICT_WRITE_COPY: conflict resolution mode, to create
+ *    a copy of the data, when a conflict is detected
+ * @E_CAL_OPERATION_FLAG_DISABLE_ITIP_MESSAGE: request to disable send of an iTip
+ *    message by the server; this works only for servers which support iTip handling
+ *
+ * Calendar operation flags, to specify behavior in certain situations. The conflict
+ * resolution mode flags cannot be combined together, where the @E_CAL_OPERATION_FLAG_CONFLICT_KEEP_LOCAL
+ * is the default behavior (and it is used when no other conflict resolution flag is set).
+ * The flags can be ignored when the operation or the backend don't support it.
+ *
+ * Since: 3.36
+ **/
+typedef enum { /*< flags >*/
+	E_CAL_OPERATION_FLAG_NONE			= 0,
+	E_CAL_OPERATION_FLAG_CONFLICT_FAIL		= (1 << 0),
+	E_CAL_OPERATION_FLAG_CONFLICT_USE_NEWER		= (1 << 1),
+	E_CAL_OPERATION_FLAG_CONFLICT_KEEP_SERVER	= (1 << 2),
+	E_CAL_OPERATION_FLAG_CONFLICT_KEEP_LOCAL	= 0,
+	E_CAL_OPERATION_FLAG_CONFLICT_WRITE_COPY	= (1 << 3),
+	E_CAL_OPERATION_FLAG_DISABLE_ITIP_MESSAGE	= (1 << 4)
+} ECalOperationFlags;
 
 G_END_DECLS
 

@@ -46,7 +46,7 @@ create_object (ECalClient *cal_client)
 	g_clear_object (&dtstart);
 	g_clear_object (&dtend);
 
-	if (!e_cal_client_create_object_sync (cal_client, icomp, &uid, NULL, &error))
+	if (!e_cal_client_create_object_sync (cal_client, icomp, E_CAL_OPERATION_FLAG_NONE, &uid, NULL, &error))
 		g_error ("create object sync: %s", error->message);
 
 	g_object_unref (icomp);
@@ -67,7 +67,7 @@ test_remove_object_sync (ETestServerFixture *fixture,
 	uid = create_object (cal_client);
 	g_assert (uid != NULL);
 
-	if (!e_cal_client_remove_object_sync (cal_client, uid, NULL, E_CAL_OBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_remove_object_sync (cal_client, uid, NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("remove object sync: %s", error->message);
 
 	g_free (uid);
@@ -102,7 +102,7 @@ test_remove_object_async (ETestServerFixture *fixture,
 	uid = create_object (cal_client);
 	g_assert (uid != NULL);
 
-	e_cal_client_remove_object (cal_client, uid, NULL, E_CAL_OBJ_MOD_ALL, NULL, async_remove_result_ready, fixture->loop);
+	e_cal_client_remove_object (cal_client, uid, NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, async_remove_result_ready, fixture->loop);
 	g_free (uid);
 	g_main_loop_run (fixture->loop);
 }
@@ -119,7 +119,7 @@ test_remove_object_empty_uid (ETestServerFixture *fixture,
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
 	e_cal_client_remove_object_sync (
-		cal_client, "", NULL, E_CAL_OBJ_MOD_ALL, NULL, &error);
+		cal_client, "", NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, &error);
 	g_assert_error (
 		error, E_CAL_CLIENT_ERROR,
 		E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND);

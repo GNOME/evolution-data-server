@@ -951,6 +951,7 @@ static gboolean
 data_cal_handle_create_objects_cb (EDBusCalendar *dbus_interface,
                                    GDBusMethodInvocation *invocation,
                                    const gchar * const *in_calobjs,
+				   guint32 in_opflags,
                                    EDataCal *data_cal)
 {
 	ECalBackend *backend;
@@ -964,6 +965,7 @@ data_cal_handle_create_objects_cb (EDBusCalendar *dbus_interface,
 	e_cal_backend_create_objects (
 		backend,
 		in_calobjs,
+		in_opflags,
 		async_context->cancellable,
 		data_cal_complete_create_objects_cb,
 		async_context);
@@ -1002,6 +1004,7 @@ data_cal_handle_modify_objects_cb (EDBusCalendar *dbus_interface,
                                    GDBusMethodInvocation *invocation,
                                    const gchar * const *in_ics_objects,
                                    const gchar *in_mod_type,
+				   guint32 in_opflags,
                                    EDataCal *data_cal)
 {
 	ECalBackend *backend;
@@ -1036,7 +1039,7 @@ data_cal_handle_modify_objects_cb (EDBusCalendar *dbus_interface,
 
 	e_cal_backend_modify_objects (
 		backend,
-		in_ics_objects, mod,
+		in_ics_objects, mod, in_opflags,
 		async_context->cancellable,
 		data_cal_complete_modify_objects_cb,
 		async_context);
@@ -1075,6 +1078,7 @@ data_cal_handle_remove_objects_cb (EDBusCalendar *dbus_interface,
                                    GDBusMethodInvocation *invocation,
                                    GVariant *in_uid_rid_array,
                                    const gchar *in_mod_type,
+				   guint32 in_opflags,
                                    EDataCal *data_cal)
 {
 	ECalBackend *backend;
@@ -1125,7 +1129,7 @@ data_cal_handle_remove_objects_cb (EDBusCalendar *dbus_interface,
 
 	e_cal_backend_remove_objects (
 		backend,
-		component_ids.head, mod,
+		component_ids.head, mod, in_opflags,
 		async_context->cancellable,
 		data_cal_complete_remove_objects_cb,
 		async_context);
@@ -1166,6 +1170,7 @@ static gboolean
 data_cal_handle_receive_objects_cb (EDBusCalendar *dbus_interface,
                                     GDBusMethodInvocation *invocation,
                                     const gchar *in_calobj,
+				    guint32 in_opflags,
                                     EDataCal *data_cal)
 {
 	ECalBackend *backend;
@@ -1179,6 +1184,7 @@ data_cal_handle_receive_objects_cb (EDBusCalendar *dbus_interface,
 	e_cal_backend_receive_objects (
 		backend,
 		in_calobj,
+		in_opflags,
 		async_context->cancellable,
 		data_cal_complete_receive_objects_cb,
 		async_context);
@@ -1246,6 +1252,7 @@ static gboolean
 data_cal_handle_send_objects_cb (EDBusCalendar *dbus_interface,
                                  GDBusMethodInvocation *invocation,
                                  const gchar *in_calobj,
+				 guint32 in_opflags,
                                  EDataCal *data_cal)
 {
 	ECalBackend *backend;
@@ -1259,6 +1266,7 @@ data_cal_handle_send_objects_cb (EDBusCalendar *dbus_interface,
 	e_cal_backend_send_objects (
 		backend,
 		in_calobj,
+		in_opflags,
 		async_context->cancellable,
 		data_cal_complete_send_objects_cb,
 		async_context);
@@ -1371,6 +1379,7 @@ data_cal_handle_discard_alarm_cb (EDBusCalendar *dbus_interface,
                                   const gchar *in_uid,
                                   const gchar *in_rid,
                                   const gchar *in_alarm_uid,
+				  guint32 in_opflags,
                                   EDataCal *data_cal)
 {
 	ECalBackend *backend;
@@ -1388,7 +1397,7 @@ data_cal_handle_discard_alarm_cb (EDBusCalendar *dbus_interface,
 
 	e_cal_backend_discard_alarm (
 		backend,
-		in_uid, in_rid, in_alarm_uid,
+		in_uid, in_rid, in_alarm_uid, in_opflags,
 		async_context->cancellable,
 		data_cal_complete_discard_alarm_cb,
 		async_context);

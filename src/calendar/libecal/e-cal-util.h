@@ -26,6 +26,7 @@
 
 #include <libical-glib/libical-glib.h>
 #include <time.h>
+#include <libedataserver/libedataserver.h>
 #include <libecal/e-cal-component.h>
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-enums.h>
@@ -297,6 +298,11 @@ gboolean	e_cal_util_mark_task_complete_sync
 						 struct _ECalClient *cal_client,
 						 GCancellable *cancellable,
 						 GError **error);
+EConflictResolution
+		e_cal_util_operation_flags_to_conflict_resolution
+						(guint32 flags); /* bit-or of ECalOperationFlags */
+guint32		e_cal_util_conflict_resolution_to_operation_flags /* bit-or of ECalOperationFlags */
+						(EConflictResolution conflict_resolution);
 
 G_END_DECLS
 

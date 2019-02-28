@@ -113,7 +113,7 @@ add_component_sync (ECalClient *cal_client)
 	icomp = i_cal_component_new_from_string (comp_str);
 	g_assert_nonnull (icomp);
 
-	if (!e_cal_client_create_object_sync (cal_client, icomp, NULL, NULL, &error))
+	if (!e_cal_client_create_object_sync (cal_client, icomp, E_CAL_OPERATION_FLAG_NONE, NULL, NULL, &error))
 		g_error ("Failed to add component: %s", error ? error->message : "Unknown error");
 
 	g_object_unref (icomp);

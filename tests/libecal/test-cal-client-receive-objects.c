@@ -58,7 +58,7 @@ test_receive_objects_sync (ETestServerFixture *fixture,
 	icomp = create_object ();
 	g_assert_nonnull (icomp);
 
-	if (!e_cal_client_receive_objects_sync (cal_client, icomp, NULL, &error))
+	if (!e_cal_client_receive_objects_sync (cal_client, icomp, E_CAL_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("receive objects sync: %s", error->message);
 
 	g_object_unref (icomp);
@@ -93,7 +93,7 @@ test_receive_objects_async (ETestServerFixture *fixture,
 	icomp = create_object ();
 	g_assert_nonnull (icomp);
 
-	e_cal_client_receive_objects (cal_client, icomp, NULL, async_receive_result_ready, fixture->loop);
+	e_cal_client_receive_objects (cal_client, icomp, E_CAL_OPERATION_FLAG_NONE, NULL, async_receive_result_ready, fixture->loop);
 	g_object_unref (icomp);
 
 	g_main_loop_run (fixture->loop);

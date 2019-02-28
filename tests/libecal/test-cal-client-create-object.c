@@ -100,7 +100,7 @@ test_create_object_sync (ETestServerFixture *fixture,
 	g_clear_object (&dtstart);
 	g_clear_object (&dtend);
 
-	if (!e_cal_client_create_object_sync (cal_client, icomp, &uid, NULL, &error))
+	if (!e_cal_client_create_object_sync (cal_client, icomp, E_CAL_OPERATION_FLAG_NONE, &uid, NULL, &error))
 		g_error ("create object sync: %s", error->message);
 
 	if (!e_cal_client_get_object_sync (cal_client, uid, NULL, &icomp2, NULL, &error))
@@ -243,7 +243,7 @@ test_create_object_async (ETestServerFixture *fixture,
 
 	data.icomp = icomp;
 	data.loop = fixture->loop;
-	e_cal_client_create_object (cal_client, icomp, NULL, async_write_result_ready, &data);
+	e_cal_client_create_object (cal_client, icomp, E_CAL_OPERATION_FLAG_NONE, NULL, async_write_result_ready, &data);
 	g_main_loop_run (fixture->loop);
 
 	g_object_unref (icomp);

@@ -148,7 +148,7 @@ test_bulk_methods_sync (ECalClient *cal_client,
 	g_assert_nonnull (icomps);
 
 	/* Create all the objects in bulk */
-	if (!e_cal_client_create_objects_sync (cal_client, icomps, &uids, NULL, &error))
+	if (!e_cal_client_create_objects_sync (cal_client, icomps, E_CAL_OPERATION_FLAG_NONE, &uids, NULL, &error))
 		g_error ("create objects sync: %s", error->message);
 
 	g_assert (uids != NULL);
@@ -179,7 +179,7 @@ test_bulk_methods_sync (ECalClient *cal_client,
 	}
 
 	/* Save the modified objects in bulk */
-	if (!e_cal_client_modify_objects_sync (cal_client, icomps, E_CAL_OBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_modify_objects_sync (cal_client, icomps, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("modify objects sync: %s", error->message);
 
 	/* Retrieve all the objects and check that they have been modified */
@@ -188,7 +188,7 @@ test_bulk_methods_sync (ECalClient *cal_client,
 	/* Remove all the objects in bulk */
 	ids = uid_slist_to_ecalcomponentid_slist (uids);
 
-	if (!e_cal_client_remove_objects_sync (cal_client, ids, E_CAL_OBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_remove_objects_sync (cal_client, ids, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("remove objects sync: %s", error->message);
 
 	g_slist_free_full (ids, e_cal_component_id_free);
@@ -253,8 +253,8 @@ bulk_async_modify_objects_cb (GObject *source_object,
 	/* Remove all the objects in bulk */
 	async_context->ids = uid_slist_to_ecalcomponentid_slist (async_context->uids);
 
-	e_cal_client_remove_objects (async_context->cal_client, async_context->ids, E_CAL_OBJ_MOD_ALL, NULL,
-		bulk_async_remove_objects_cb, async_context);
+	e_cal_client_remove_objects (async_context->cal_client, async_context->ids, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE,
+		NULL, bulk_async_remove_objects_cb, async_context);
 }
 
 static void
@@ -299,8 +299,8 @@ bulk_async_create_objects_cb (GObject *source_object,
 		g_free (summary);
 	}
 
-	e_cal_client_modify_objects (async_context->cal_client, async_context->icomps, E_CAL_OBJ_MOD_ALL, NULL,
-		bulk_async_modify_objects_cb, async_context);
+	e_cal_client_modify_objects (async_context->cal_client, async_context->icomps, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE,
+		NULL, bulk_async_modify_objects_cb, async_context);
 }
 
 static void
@@ -317,7 +317,7 @@ test_bulk_methods_async (ECalClient *cal_client,
 	async_context.uids = NULL;
 	async_context.main_loop = g_main_loop_new (NULL, FALSE);
 
-	e_cal_client_create_objects (async_context.cal_client, async_context.icomps, NULL,
+	e_cal_client_create_objects (async_context.cal_client, async_context.icomps, E_CAL_OPERATION_FLAG_NONE, NULL,
 		bulk_async_create_objects_cb, &async_context);
 
 	g_main_loop_run (async_context.main_loop);
