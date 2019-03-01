@@ -89,47 +89,6 @@ install(FILES ${HEADERS}
 	DESTINATION ${privincludedir}/libedata-cal
 )
 
-set(gir_sources ${SOURCES} ${HEADERS})
-set(gir_identifies_prefixes EDataCal E)
-set(gir_includes GObject-2.0 Gio-2.0 Soup-2.4 libxml2-2.0 ICalGLib-3.0)
-set(gir_cflags
-	-DLIBEDATA_CAL_COMPILATION
-	-I${CMAKE_BINARY_DIR}/src/calendar
-	-I${CMAKE_SOURCE_DIR}/src/calendar
-)
-set(gir_libdirs
-	${CMAKE_BINARY_DIR}/src/camel
-	${CMAKE_BINARY_DIR}/src/libebackend
-	${CMAKE_BINARY_DIR}/src/libedataserver
-	${CMAKE_BINARY_DIR}/src/calendar/libecal
-	${CMAKE_BINARY_DIR}/src/calendar/libedata-cal
-)
-set(gir_libs
-	ebackend
-	ecal
-	edata-cal
-	edataserver
-)
-set(gir_deps
-	${CMAKE_BINARY_DIR}/src/camel/Camel-${API_VERSION}.gir
-	${CMAKE_BINARY_DIR}/src/libedataserver/EDataServer-${API_VERSION}.gir
-	${CMAKE_BINARY_DIR}/src/calendar/libecal/ECal-${CAL_API_VERSION}.gir
-)
-
-gir_add_introspection_simple(
-	EDataCal
-	libedata-cal
-	${CAL_API_VERSION}
-	"libedata-cal/libedata-cal.h"
-	gir_identifies_prefixes
-	gir_includes
-	gir_cflags
-	gir_libdirs
-	gir_libs
-	gir_deps
-	gir_sources
-)
-
 set(DEPENDENCIES
 	ebackend
 	edataserver

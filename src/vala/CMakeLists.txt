@@ -9,8 +9,6 @@ set(valafiles
 	${CMAKE_CURRENT_BINARY_DIR}/libebook-contacts-${API_VERSION}.vapi
 	${CMAKE_CURRENT_SOURCE_DIR}/libecal-${CAL_API_VERSION}.deps
 	${CMAKE_CURRENT_BINARY_DIR}/libecal-${CAL_API_VERSION}.vapi
-	${CMAKE_CURRENT_SOURCE_DIR}/libedata-cal-${CAL_API_VERSION}.deps
-	${CMAKE_CURRENT_BINARY_DIR}/libedata-cal-${CAL_API_VERSION}.vapi
 )
 
 if(HAVE_GTK)
@@ -197,38 +195,6 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/libecal-${CAL_API_VERSION}
 		${gir_fullname}
 	DEPENDS libecal-${CAL_API_VERSION}.deps
 		${CMAKE_CURRENT_BINARY_DIR}/libedataserver-${API_VERSION}.vapi
-		${gir_fullname}
-		${gir_deps}
-)
-
-# ***********************************
-# libedata-cal
-# ***********************************
-
-set(gir_fullname ${CMAKE_BINARY_DIR}/src/calendar/libedata-cal/EDataCal-${CAL_API_VERSION}.gir)
-gir_girfilename_to_target(gir_deps EDataCal-${CAL_API_VERSION}.gir)
-
-add_dependencies(vala ${gir_deps})
-
-add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/libedata-cal-${CAL_API_VERSION}.vapi
-	COMMAND ${VAPIGEN}
-		--vapidir=${CMAKE_CURRENT_SOURCE_DIR}
-		--vapidir=${CMAKE_CURRENT_BINARY_DIR}
-		--girdir=${CMAKE_BINARY_DIR}/src/camel
-		--girdir=${CMAKE_BINARY_DIR}/src/libedataserver
-		--girdir=${CMAKE_BINARY_DIR}/src/calendar/libecal
-		--pkg libedataserver-${API_VERSION}
-		--pkg libecal-${CAL_API_VERSION}
-		--pkg gio-2.0
-		--pkg libxml-2.0
-		--pkg libsoup-2.4
-		--pkg posix
-		--library libedata-cal-${CAL_API_VERSION}
-		--metadatadir=${CMAKE_CURRENT_SOURCE_DIR}
-		${gir_fullname}
-	DEPENDS libedata-cal-${CAL_API_VERSION}.deps
-		${CMAKE_CURRENT_BINARY_DIR}/libedataserver-${API_VERSION}.vapi
-		${CMAKE_CURRENT_BINARY_DIR}/libecal-${CAL_API_VERSION}.vapi
 		${gir_fullname}
 		${gir_deps}
 )
