@@ -1119,7 +1119,7 @@ e_cal_backend_get_kind (ECalBackend *backend)
  * The returned #EDataCal is referenced for thread-safety and must be
  * unreferenced with g_object_unref() when finished with it.
  *
- * Returns: an #EDataCal, or %NULL
+ * Returns: (transfer full): an #EDataCal, or %NULL
  *
  * Since: 3.10
  **/
@@ -1145,6 +1145,8 @@ e_cal_backend_ref_data_cal (ECalBackend *backend)
  * glue between incoming D-Bus requests and @backend's native API.
  *
  * An #EDataCal should be set only once after @backend is first created.
+ *
+ * The @backend adds its own reference on the @data_cal.
  *
  * Since: 3.10
  **/
@@ -1172,7 +1174,7 @@ e_cal_backend_set_data_cal (ECalBackend *backend,
  * The returned #GProxyResolver is referenced for thread-safety and must
  * be unreferenced with g_object_unref() when finished with it.
  *
- * Returns: a #GProxyResolver, or %NULL
+ * Returns: (transfer full) (nullable): a #GProxyResolver, or %NULL
  *
  * Since: 3.12
  **/
@@ -1199,7 +1201,7 @@ e_cal_backend_ref_proxy_resolver (ECalBackend *backend)
  *
  * Returns the data source registry to which #EBackend:source belongs.
  *
- * Returns: an #ESourceRegistry
+ * Returns: (transfer none): an #ESourceRegistry
  *
  * Since: 3.6
  **/
@@ -1456,7 +1458,7 @@ e_cal_backend_add_view (ECalBackend *backend,
 }
 
 /**
- * e_cal_backend_remove_view
+ * e_cal_backend_remove_view:
  * @backend: an #ECalBackend
  * @view: An #EDataCalView object, previously added with @ref e_cal_backend_add_view.
  *
@@ -4241,7 +4243,7 @@ cal_backend_add_timezone_thread (GSimpleAsyncResult *simple,
 }
 
 /**
- * e_cal_backend_add_timezone
+ * e_cal_backend_add_timezone:
  * @backend: an #ECalBackend
  * @tzobject: an iCalendar VTIMEZONE string
  * @cancellable: optional #GCancellable object, or %NULL

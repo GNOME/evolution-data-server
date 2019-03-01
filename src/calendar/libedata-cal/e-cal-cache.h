@@ -217,7 +217,7 @@ gboolean	e_cal_cache_put_components	(ECalCache *cal_cache,
 gboolean	e_cal_cache_remove_component	(ECalCache *cal_cache,
 						 const gchar *uid,
 						 const gchar *rid,
-						 guint32 custom_flag,
+						 guint32 custom_flags,
 						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);

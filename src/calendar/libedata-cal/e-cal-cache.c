@@ -3483,8 +3483,8 @@ e_cal_cache_search_ids (ECalCache *cal_cache,
  * e_cal_cache_search_with_callback:
  * @cal_cache: an #ECalCache
  * @sexp: (nullable): search expression; use %NULL or an empty string to list all stored components
- * @func: an #ECalCacheSearchFunc callback to call for each row which satisfies @sexp
- * @user_data: user data for @func
+ * @func: (scope call): an #ECalCacheSearchFunc callback to call for each row which satisfies @sexp
+ * @user_data: (closure func): user data for @func
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *

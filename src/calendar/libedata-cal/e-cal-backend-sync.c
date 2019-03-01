@@ -119,7 +119,7 @@ e_cal_backend_sync_refresh (ECalBackendSync *backend,
  * @uid: UID of the object to get.
  * @rid: Recurrence ID of the specific instance to get, or NULL if getting the
  * master object.
- * @calobj: Placeholder for returned object.
+ * @calobj: (out) (transfer full): Placeholder for returned object.
  * @error: Out parameter for a #GError.
  *
  * Calls the get_object_sync method on the given backend.
@@ -159,7 +159,7 @@ e_cal_backend_sync_get_object (ECalBackendSync *backend,
  * @cal: An EDataCal object.
  * @cancellable: a #GCancellable for the operation
  * @sexp: Search query.
- * @calobjs: Placeholder for list of returned objects.
+ * @calobjs: (out) (transfer full) (element-type utf8): Placeholder for list of returned objects.
  * @error: Out parameter for a #GError.
  *
  * Calls the get_object_list_sync method on the given backend.
@@ -197,10 +197,10 @@ e_cal_backend_sync_get_object_list (ECalBackendSync *backend,
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.
  * @cancellable: a #GCancellable for the operation
- * @users: List of users to get F/B info from.
+ * @users: (element-type utf8): List of users to get F/B info from.
  * @start: Time range start.
  * @end: Time range end.
- * @freebusyobjects: Placeholder for F/B information.
+ * @freebusyobjects: (out) (transfer full) (element-type utf8): Placeholder for F/B information.
  * @error: Out parameter for a #GError.
  *
  * Calls the get_free_busy_sync method on the given backend.
@@ -240,10 +240,10 @@ e_cal_backend_sync_get_free_busy (ECalBackendSync *backend,
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.
  * @cancellable: a #GCancellable for the operation
- * @calobjs: The objects to be added.
+ * @calobjs: (element-type utf8): The objects to be added.
  * @opflags: bit-or of #ECalOperationFlags
- * @uids: Placeholder for server-generated UIDs.
- * @new_components: (out) (transfer full): Placeholder for returned #ECalComponent objects.
+ * @uids: (out) (transfer full) (element-type utf8): Placeholder for server-generated UIDs.
+ * @new_components: (out) (transfer full) (element-type ECalComponent): Placeholder for returned #ECalComponent objects.
  * @error: Out parameter for a #GError.
  *
  * Calls the create_objects_sync method on the given backend.
@@ -285,13 +285,13 @@ e_cal_backend_sync_create_objects (ECalBackendSync *backend,
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.
  * @cancellable: a #GCancellable for the operation
- * @calobjs: Objects to be modified.
+ * @calobjs: (element-type utf8): Objects to be modified.
  * @mod: Type of modification to be done.
  * @opflags: bit-or of #ECalOperationFlags
- * @old_components: (out) (transfer full): Placeholder for returning the old components as they were stored on the
- * backend.
- * @new_components: (out) (transfer full): Placeholder for returning the new components as they have been stored
- * on the backend.
+ * @old_components: (out) (transfer full) (element-type ECalComponent): Placeholder for
+ *    returning the old components as they were stored on the backend.
+ * @new_components: (out) (transfer full) (element-type ECalComponent): Placeholder for
+ *    returning the new components as they have been stored on the backend.
  * @error: Out parameter for a #GError.
  *
  * Calls the modify_objects_sync method on the given backend.
@@ -334,14 +334,14 @@ e_cal_backend_sync_modify_objects (ECalBackendSync *backend,
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.
  * @cancellable: a #GCancellable for the operation
- * @ids: List of #ECalComponentId objects identifying the objects to remove.
+ * @ids: (element-type ECalComponentId): List of #ECalComponentId objects identifying the objects to remove.
  * @mod: Type of removal.
  * @opflags: bit-or of #ECalOperationFlags
- * @old_components: (out) (transfer full): Placeholder for returning the old components as they were stored on the
- * backend.
- * @new_components: (out) (transfer full): Placeholder for returning the new components as they have been stored
- * on the backend (when removing individual instances). If removing whole objects,
- * they will be set to %NULL.
+ * @old_components: (out) (transfer full) (element-type ECalComponent): Placeholder for returning the old
+ *    components as they were stored on the backend.
+ * @new_components: (out) (transfer full) (element-type ECalComponent): Placeholder for returning the new
+ *    components as they have been stored on the backend (when removing individual instances). If removing
+ *    whole objects, they will be set to %NULL.
  * @error: Out parameter for a #GError.
  *
  * Calls the remove_objects_sync method on the given backend.
@@ -424,8 +424,8 @@ e_cal_backend_sync_receive_objects (ECalBackendSync *backend,
  * @cancellable: a #GCancellable for the operation
  * @calobj: The iCalendar object to send.
  * @opflags: bit-or of #ECalOperationFlags
- * @users: List of users to send notifications to.
- * @modified_calobj: Placeholder for the iCalendar object after being modified.
+ * @users: (element-type utf8): List of users to send notifications to.
+ * @modified_calobj: (out) (transfer full): Placeholder for the iCalendar object after being modified.
  * @error: Out parameter for a #GError.
  *
  * Calls the send_objects_sync method on the given backend.
@@ -467,7 +467,7 @@ e_cal_backend_sync_send_objects (ECalBackendSync *backend,
  * @cancellable: a #GCancellable for the operation
  * @uid: Unique id of the calendar object.
  * @rid: Recurrence id of the calendar object.
- * @attachments: Placeholder for list of returned attachment uris.
+ * @attachments: (element-type utf8): Placeholder for list of returned attachment uris.
  * @error: Out parameter for a #GError.
  *
  * Calls the get_attachment_uris_sync method on the given backend.

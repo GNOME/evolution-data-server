@@ -600,7 +600,7 @@ e_data_cal_view_init (EDataCalView *view)
  * @connection at @object_path.  If an error occurs while exporting,
  * the function sets @error and returns %NULL.
  *
- * Returns: an #EDataCalView
+ * Returns: (transfer full) (nullable): a new #EDataCalView, or %NULL on error
  **/
 EDataCalView *
 e_data_cal_view_new (ECalBackend *backend,
@@ -809,7 +809,7 @@ notify_remove (EDataCalView *view,
  *
  * Gets the backend that @view is querying.
  *
- * Returns: The associated #ECalBackend.
+ * Returns: (transfer none): The associated #ECalBackend.
  *
  * Since: 3.8
  **/
@@ -828,7 +828,7 @@ e_data_cal_view_get_backend (EDataCalView *view)
  * Returns the #GDBusConnection on which the CalendarView D-Bus
  * interface is exported.
  *
- * Returns: the #GDBusConnection
+ * Returns: (transfer none): the #GDBusConnection
  *
  * Since: 3.8
  **/
@@ -865,7 +865,7 @@ e_data_cal_view_get_object_path (EDataCalView *view)
  *
  * Get the #ECalBackendSExp object used for the given view.
  *
- * Returns: The expression object used to search.
+ * Returns: (transfer none): The expression object used to search.
  *
  * Since: 3.8
  */
@@ -992,7 +992,7 @@ e_data_cal_view_is_completed (EDataCalView *view)
  * e_data_cal_view_get_fields_of_interest:
  * @view: an #EDataCalView
  *
- * Returns: Hash table of field names which the listener is interested in.
+ * Returns: (transfer none): Hash table of field names which the listener is interested in.
  * Backends can return fully populated objects, but the listener advertised
  * that it will use only these. Returns %NULL for all available fields.
  *
@@ -1215,7 +1215,7 @@ e_data_cal_view_notify_components_added_1 (EDataCalView *view,
 /**
  * e_data_cal_view_notify_components_modified:
  * @view: an #EDataCalView
- * @ecalcomponents: List of modified #ECalComponent-s.
+ * @ecalcomponents: (element-type ECalComponent): List of modified #ECalComponent-s.
  *
  * Notifies all view listeners of the modification of a list of components.
  *
@@ -1276,7 +1276,7 @@ e_data_cal_view_notify_components_modified_1 (EDataCalView *view,
 /**
  * e_data_cal_view_notify_objects_removed:
  * @view: an #EDataCalView
- * @ids: List of IDs for the objects that have been removed.
+ * @ids: (element-type ECalComponentId): List of IDs for the objects that have been removed.
  *
  * Notifies all view listener of the removal of a list of objects.
  */

@@ -1755,7 +1755,7 @@ e_data_cal_respond_get_object (EDataCal *cal,
  * @cal: A calendar client interface.
  * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
- * @objects: List of retrieved objects.
+ * @objects: (element-type utf8): List of retrieved objects.
  *
  * Notifies listeners of the completion of the get_object_list method call.
  *
@@ -1810,7 +1810,7 @@ e_data_cal_respond_get_object_list (EDataCal *cal,
  * @cal: A calendar client interface.
  * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
- * @freebusy: a #GSList of iCalendar strings with all gathered free/busy components.
+ * @freebusy: (element-type utf8): a #GSList of iCalendar strings with all gathered free/busy components.
  *
  * Notifies listeners of the completion of the get_free_busy method call.
  * To pass actual free/busy objects to the client asynchronously
@@ -1862,8 +1862,8 @@ e_data_cal_respond_get_free_busy (EDataCal *cal,
  * @cal: A calendar client interface.
  * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
- * @uids: UIDs of the objects created.
- * @new_components: The newly created #ECalComponent objects.
+ * @uids: (element-type utf8): UIDs of the objects created.
+ * @new_components: (element-type ECalComponent): The newly created #ECalComponent objects.
  *
  * Notifies listeners of the completion of the create_objects method call.
  *
@@ -1931,8 +1931,8 @@ e_data_cal_respond_create_objects (EDataCal *cal,
  * @cal: A calendar client interface.
  * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
- * @old_components: The old #ECalComponent(s).
- * @new_components: The new #ECalComponent(s).
+ * @old_components: (element-type ECalComponent): The old #ECalComponent(s).
+ * @new_components: (element-type ECalComponent): The new #ECalComponent(s).
  *
  * Notifies listeners of the completion of the modify_objects method call.
  *
@@ -2007,7 +2007,7 @@ e_data_cal_respond_modify_objects (EDataCal *cal,
  * @cal: A calendar client interface.
  * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
- * @ids: (element-type utf8): IDs of the removed objects.
+ * @ids: (element-type ECalComponentId): IDs of the removed objects.
  * @old_components: (element-type ECalComponent): The old #ECalComponent(s).
  * @new_components: (element-type ECalComponent): The new #ECalComponent(s).
  *    They will not be NULL only when removing instances of recurring appointments.
@@ -2141,7 +2141,7 @@ e_data_cal_respond_receive_objects (EDataCal *cal,
  * @cal: A calendar client interface.
  * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
- * @users: List of users.
+ * @users: (element-type utf8): List of users.
  * @calobj: An iCalendar string representing the object sent.
  *
  * Notifies listeners of the completion of the send_objects method call.
@@ -2196,7 +2196,7 @@ e_data_cal_respond_send_objects (EDataCal *cal,
  * @cal: A calendar client interface.
  * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
- * @attachment_uris: List of retrieved attachment uri's.
+ * @attachment_uris: (element-type utf8): List of retrieved attachment uri's.
  *
  * Notifies listeners of the completion of the get_attachment_uris method call.
  *
@@ -2817,7 +2817,7 @@ e_data_cal_init (EDataCal *data_cal)
 
 /**
  * e_data_cal_new:
- * @backend: an #ECalBackend
+ * @backend: (type ECalBackend): an #ECalBackend
  * @connection: a #GDBusConnection
  * @object_path: object path for the D-Bus interface
  * @error: return location for a #GError, or %NULL
@@ -2857,7 +2857,7 @@ e_data_cal_new (ECalBackend *backend,
  * The returned #ECalBackend is referenced for thread-safety and should
  * be unreferenced with g_object_unref() when finished with it.
  *
- * Returns: an #ECalBackend
+ * Returns: (type ECalBackend) (transfer full) (nullable): an #ECalBackend
  *
  * Since: 3.10
  **/
@@ -2876,7 +2876,7 @@ e_data_cal_ref_backend (EDataCal *cal)
  * Returns the #GDBusConnection on which the Calendar D-Bus interface
  * is exported.
  *
- * Returns: the #GDBusConnection
+ * Returns: (transfer none): the #GDBusConnection
  *
  * Since: 3.8
  **/
