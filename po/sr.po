@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-02-23 13:33+0000\n"
-"PO-Revision-Date: 2018-02-25 08:23+0100\n"
+"POT-Creation-Date: 2018-04-01 15:05+0000\n"
+"PO-Revision-Date: 2018-04-20 20:31+0200\n"
 "Last-Translator: Марко М. Костић <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian <(nothing)>\n"
 "Language: sr\n"
@@ -111,7 +111,7 @@ msgstr "Нисам успео да преименујем стару базу п
 #: ../src/addressbook/libebook/e-book-client.c:3422
 #: ../src/addressbook/libebook/e-book-client.c:3640
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:877
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:200
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:222
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:274
 #: ../src/calendar/backends/http/e-cal-backend-http.c:204
 #: ../src/calendar/libecal/e-cal.c:2334
@@ -136,8 +136,9 @@ msgstr "Нисам успео да преименујем стару базу п
 #: ../src/calendar/libecal/e-cal-client.c:7061
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1742
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3029
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3039
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3051
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3035
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3045
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3057
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:501
 #: ../src/libedataserver/e-client.c:188
@@ -148,7 +149,7 @@ msgid "Unknown error"
 msgstr "Непозната грешка"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:924
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1005
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1017
 msgid "Object to save is not a valid vCard"
 msgstr "Објекат у који треба сачувати није у исправном vCard формату"
 
@@ -270,7 +271,7 @@ msgstr "Нисам успео да добавим назив домена за �
 msgid "Given URL “%s” doesn’t reference WebDAV address book"
 msgstr "Унета адреса „%s“ се не односи на ВебДАВ именик"
 
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:929
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:941
 msgid "Received object is not a valid vCard"
 msgstr "Примљени објекат није исправни vCard"
 
@@ -1098,7 +1099,7 @@ msgstr "Не могу да отворим базу %s: %s"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2333
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2396
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2567
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1331
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1335
 #: ../src/libebackend/e-cache.c:1385 ../src/libebackend/e-cache.c:2238
 #: ../src/libebackend/e-cache.c:2278
 #, c-format
@@ -1121,20 +1122,20 @@ msgid "Cannot sort by a field that is not a string type"
 msgstr "Не могу да поређам према пољу које није врста ниске"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1050
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1052
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1056
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Већ учитани објекат са ЈИБ-ом „%s“ није исправан"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1058
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1060
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1064
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Примљени објекат са ЈИБ-ом „%s“ није исправан"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1885
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:2333
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3100
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3151
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Нисам успео да створим кеш „%s“:"
@@ -1357,12 +1358,12 @@ msgstr "Ван прегледа усаглашавања приликом пре
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Азбучни индекс је подешен за неисправан језик"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:143
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:165
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Наведена адреса „%s“ се не односи на КалДАВ календар"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1579
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1616
 msgid "Failed to parse response data"
 msgstr "Нисам успео да обрадим податке из одговора"
 
@@ -1855,12 +1856,12 @@ msgstr "Не могу да додам временску зону без дел�
 msgid "Cannot add timezone with invalid component"
 msgstr "Не могу да додам временску зону са неисправним делом"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1107
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1111
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Примљени објекат са ЈИБ-ом „%s“ не садржи очекивани део"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3896
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3955
 msgid "attachment.dat"
 msgstr "прилог.dat"
 
@@ -2137,7 +2138,7 @@ msgstr[2] "Издвајам нове поруке у „%s : %s“"
 msgstr[3] "Издвајам нову поруку у „%s : %s“"
 
 #: ../src/camel/camel-folder.c:1030
-#: ../src/camel/providers/local/camel-maildir-folder.c:330
+#: ../src/camel/providers/local/camel-maildir-folder.c:331
 msgid "Moving messages"
 msgstr "Премештам поруке"
 
@@ -3275,7 +3276,7 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "Морате да будете на мрежи да бисте завршили ову радњу (%s)"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:993
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3111
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3117
 #: ../src/camel/providers/nntp/camel-nntp-store.c:351
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1346
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2158
@@ -3455,7 +3456,7 @@ msgstr "Грешка приликом уписа у ток оставе"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:2793
 #: ../src/camel/providers/imapx/camel-imapx-server.c:2881
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3144
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3150
 msgid "Failed to get capabilities"
 msgstr "Не могу да добије могућности"
 
@@ -3500,157 +3501,157 @@ msgstr "Лозинка потврђивања идентитета није до
 msgid "Failed to authenticate"
 msgstr "Нисам успео да потврдим идентитет"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3166
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3172
 msgid "Failed to issue NAMESPACE"
 msgstr "Нисам успео да издам поруку „NAMESPACE“"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3184
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3190
 msgid "Failed to enable QResync"
 msgstr "Нисам успео да омогућим „QResync“"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3216
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3222
 msgid "Failed to issue NOTIFY"
 msgstr "Нисам успео да издам поруку „NOTIFY“"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3694
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3700
 msgid "Failed to select mailbox"
 msgstr "Нисам успео да изаберем сандуче"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3797
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3803
 msgid "Cannot issue command, no stream available"
 msgstr "Не могу да издам наредбу, јер није доступан ток"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4061
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4067
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Не могу да набавим поруку са ИБ-ом „%s“: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4062
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4068
 msgid "No such message available."
 msgstr "Нема такве поруке."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4110
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4135
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4174
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4116
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4141
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4180
 msgid "Error fetching message"
 msgstr "Грешка преузимања поруке"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4152
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4911
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4158
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4917
 msgid "Error performing NOOP"
 msgstr "Грешка у извршењу поруке „NOOP“"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4167
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4173
 msgid "Failed to close the tmp stream"
 msgstr "Нисам успео да затворим привремену датотеку"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4198
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4204
 msgid "Failed to copy the tmp file"
 msgstr "Нисам успео да копирам привремену датотеку"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4434
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4440
 msgid "Error moving messages"
 msgstr "Грешка премештања порука"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4434
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4440
 msgid "Error copying messages"
 msgstr "Грешка при копирању порука"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4704
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4725
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4710
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4731
 msgid "Cannot create spool file: "
 msgstr "Не могу да направим датотеку припреме: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4811
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4817
 msgid "Error appending message"
 msgstr "Грешка прикачињања порука"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5064
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5070
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Прегледам измењене поруке у „%s : %s“"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5068
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5074
 msgid "Error scanning changes"
 msgstr "Грешка скенирања измена"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5089
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5095
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "Прикупљам преглед података нових порука у „%s : %s“"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5107
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5113
 msgid "Error fetching message info"
 msgstr "Грешка преузимања података о поруци"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5213
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5219
 msgid "Error running STATUS"
 msgstr "Грешка у покретању поруке „STATUS“"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5759
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5789
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5824
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5765
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5795
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5830
 msgid "Error syncing changes"
 msgstr "Грешка усклађивања измена"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5962
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5968
 msgid "Error expunging message"
 msgstr "Грешка избацивања поруке"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6034
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6040
 msgid "Error fetching folders"
 msgstr "Грешка преузимања фасцикле"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6045
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6051
 msgid "Error fetching subscribed folders"
 msgstr "Грешка преузимања пријављених фасцикли"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6067
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6073
 msgid "Error creating folder"
 msgstr "Грешка стварања фасцикле"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6123
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6129
 msgid "Error deleting folder"
 msgstr "Грешка брисања фасцикле"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6169
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6175
 msgid "Error renaming folder"
 msgstr "Грешка преименовања фасцикле"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6201
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6207
 msgid "Error subscribing to folder"
 msgstr "Грешка пријављивања на фасциклу"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6237
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6243
 msgid "Error unsubscribing from folder"
 msgstr "Грешка одјављивања са фасцикле"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6277
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6283
 msgid "IMAP server does not support quotas"
 msgstr "ИМАП сервер не подржава количине"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6289
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6295
 msgid "Error retrieving quota information"
 msgstr "Грешка довлачења обавештења о количини"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6352
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6358
 msgid "Search failed"
 msgstr "Претрага није успела"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6470
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6476
 msgid "Error running IDLE"
 msgstr "Грешка у покретању поруке „IDLE“"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../src/camel/providers/imapx/camel-imapx-store.c:354
-#: ../src/camel/providers/local/camel-maildir-folder.c:478
+#: ../src/camel/providers/local/camel-maildir-folder.c:476
 #: ../src/camel/providers/local/camel-maildir-store.c:345
 #: ../src/camel/providers/local/camel-maildir-store.c:824
 #: ../src/camel/providers/local/camel-maildir-store.c:830
@@ -3809,7 +3810,7 @@ msgstr "Обрисане поруке"
 #. * for folders being under $HOME.  The first %s is replaced
 #. * with a relative path under $HOME, the second %s is
 #. * replaced with a protocol name, like mbox/maldir/...
-#: ../src/camel/providers/local/camel-local-folder.c:187
+#: ../src/camel/providers/local/camel-local-folder.c:190
 #, c-format
 msgid "~%s (%s)"
 msgstr "~%s (%s)"
@@ -3823,8 +3824,8 @@ msgstr "~%s (%s)"
 #. * folders being under /var/mail.  The first %s is replaced
 #. * with a relative path under /var/mail, the second %s is
 #. * replaced with a protocol name, like mbox/maldir/...
-#: ../src/camel/providers/local/camel-local-folder.c:197
-#: ../src/camel/providers/local/camel-local-folder.c:206
+#: ../src/camel/providers/local/camel-local-folder.c:200
+#: ../src/camel/providers/local/camel-local-folder.c:209
 #, c-format
 msgid "mailbox: %s (%s)"
 msgstr "сандуче: %s (%s)"
@@ -3833,19 +3834,19 @@ msgstr "сандуче: %s (%s)"
 #. * The first %s is replaced with a folder's full path,
 #. * the second %s is replaced with a protocol name, like
 #. * mbox/maldir/...
-#: ../src/camel/providers/local/camel-local-folder.c:215
+#: ../src/camel/providers/local/camel-local-folder.c:218
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/camel/providers/local/camel-local-folder.c:505
+#: ../src/camel/providers/local/camel-local-folder.c:511
 msgid "_Index message body data"
 msgstr "_Попиши садржаје порука"
 
 #. Translators: The first %s is replaced with a message ID,
 #. * the second %s is replaced with the folder path,
 #. * the third %s is replaced with a detailed error string
-#: ../src/camel/providers/local/camel-local-folder.c:737
+#: ../src/camel/providers/local/camel-local-folder.c:749
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -3972,28 +3973,28 @@ msgid "Could not rename “%s”: %s"
 msgstr "Не могу да преименујем „%s“: %s"
 
 #: ../src/camel/providers/local/camel-maildir-folder.c:107
-#: ../src/camel/providers/local/camel-maildir-folder.c:344
-#: ../src/camel/providers/local/camel-mbox-folder.c:128
-#: ../src/camel/providers/local/camel-mbox-folder.c:336
-#: ../src/camel/providers/local/camel-mh-folder.c:157
+#: ../src/camel/providers/local/camel-maildir-folder.c:345
+#: ../src/camel/providers/local/camel-mbox-folder.c:133
+#: ../src/camel/providers/local/camel-mbox-folder.c:348
+#: ../src/camel/providers/local/camel-mh-folder.c:159
 msgid "No such message"
 msgstr "Нема такве поруке"
 
-#: ../src/camel/providers/local/camel-maildir-folder.c:232
+#: ../src/camel/providers/local/camel-maildir-folder.c:239
 #, c-format
 msgid "Cannot append message to maildir folder: %s: "
 msgstr "Не могу да додам поруку у фасциклу директоријума поште: %s: "
 
-#: ../src/camel/providers/local/camel-maildir-folder.c:282
-#: ../src/camel/providers/local/camel-maildir-folder.c:292
-#: ../src/camel/providers/local/camel-mbox-folder.c:395
-#: ../src/camel/providers/local/camel-mh-folder.c:169
-#: ../src/camel/providers/local/camel-mh-folder.c:179
+#: ../src/camel/providers/local/camel-maildir-folder.c:286
+#: ../src/camel/providers/local/camel-maildir-folder.c:296
+#: ../src/camel/providers/local/camel-mbox-folder.c:407
+#: ../src/camel/providers/local/camel-mh-folder.c:171
+#: ../src/camel/providers/local/camel-mh-folder.c:181
 #, c-format
 msgid "Cannot get message %s from folder %s: "
 msgstr "Не могу да добавим поруку „%s“ из фасцикле „%s“: "
 
-#: ../src/camel/providers/local/camel-maildir-folder.c:362
+#: ../src/camel/providers/local/camel-maildir-folder.c:363
 #, c-format
 msgid "Cannot transfer message to destination folder: %s"
 msgstr "Не могу да пребацим поруку у одредишну фасциклу: %s"
@@ -4079,21 +4080,21 @@ msgstr "Вршим проверу за новим порукама"
 msgid "Storing folder"
 msgstr "Смештам фасциклу"
 
-#: ../src/camel/providers/local/camel-mbox-folder.c:194
+#: ../src/camel/providers/local/camel-mbox-folder.c:205
 #, c-format
 msgid "Cannot open mailbox: %s: "
 msgstr "Не могу да отворим поштанско сандуче: %s: "
 
-#: ../src/camel/providers/local/camel-mbox-folder.c:257
+#: ../src/camel/providers/local/camel-mbox-folder.c:266
 #, c-format
 msgid "Cannot append message to mbox file: %s: "
 msgstr "Не могу да додам поруку у мбокс датотеку: %s: "
 
-#: ../src/camel/providers/local/camel-mbox-folder.c:387
+#: ../src/camel/providers/local/camel-mbox-folder.c:399
 msgid "The folder appears to be irrecoverably corrupted."
 msgstr "Фасцикла изгледа да је непоправљиво оштећена."
 
-#: ../src/camel/providers/local/camel-mbox-folder.c:444
+#: ../src/camel/providers/local/camel-mbox-folder.c:454
 #: ../src/camel/providers/local/camel-spool-folder.c:65
 #, c-format
 msgid "Cannot create folder lock on %s: %s"
@@ -4239,7 +4240,7 @@ msgstr "Нисам успео да запишем у привремено пош
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Нисам успео да запишем у привремено поштанско сандуче: %s: %s"
 
-#: ../src/camel/providers/local/camel-mh-folder.c:114
+#: ../src/camel/providers/local/camel-mh-folder.c:119
 #, c-format
 msgid "Cannot append message to mh folder: %s: "
 msgstr "Не могу да додам поруку у мх фасциклу: %s: "
@@ -5305,7 +5306,7 @@ msgid "Failed to lookup credentials: "
 msgstr "Нисам успео да нађем уверења: "
 
 #: ../src/libebackend/e-server-side-source.c:1395
-#: ../src/libedataserver/e-source.c:1597
+#: ../src/libedataserver/e-source.c:1583
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "Извор података „%s“ не подржава стварање удаљених изворишта"
@@ -5318,7 +5319,7 @@ msgstr ""
 "Извор података „%s“ нема позадинца збирке да би направио удаљено извориште"
 
 #: ../src/libebackend/e-server-side-source.c:1437
-#: ../src/libedataserver/e-source.c:1710
+#: ../src/libedataserver/e-source.c:1696
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "Извор података „%s“ не подржава брисање удаљених изворишта"
@@ -5331,7 +5332,7 @@ msgstr ""
 "Извор података „%s“ нема позадинца збирке да би обрисао удаљено извориште"
 
 #: ../src/libebackend/e-server-side-source.c:1482
-#: ../src/libedataserver/e-source.c:1806
+#: ../src/libedataserver/e-source.c:1792
 #: ../src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1080
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
@@ -5563,17 +5564,17 @@ msgstr "Неуспех са HTTP грешком %d: %s"
 msgid "Source file is missing a [%s] group"
 msgstr "Изворној датотеци недостаје [%s] група"
 
-#: ../src/libedataserver/e-source.c:1377
+#: ../src/libedataserver/e-source.c:1363
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr "Извор података „%s“ се не може уклонити"
 
-#: ../src/libedataserver/e-source.c:1500
+#: ../src/libedataserver/e-source.c:1486
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr "Извор података „%s“ није уписив"
 
-#: ../src/libedataserver/e-source.c:2196
+#: ../src/libedataserver/e-source.c:2173
 msgid "Unnamed"
 msgstr "Неименован"
 
@@ -6477,6 +6478,10 @@ msgstr "На ЛДАП серверима"
 #: ../src/services/evolution-source-registry/builtin/local-stub.source.in.h:1
 msgid "On This Computer"
 msgstr "На овом рачунару"
+
+#: ../src/services/evolution-source-registry/builtin/system-proxy.source.in.h:1
+msgid "Default Proxy Settings"
+msgstr "Подразумевана подешавања посредника"
 
 #: ../src/services/evolution-source-registry/builtin/vfolder.source.in.h:1
 msgid "Search Folders"
