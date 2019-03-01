@@ -60,7 +60,7 @@ e_cal_component_property_bag_new (void)
  * @func: (nullable) (scope call): an optional %ECalComponentPropertyBagFilterFunc callback
  * @user_data: (closure func): user data for the @func
  *
- * Created a new #ECalComponentPropertyBag, filled with properties
+ * Creates a new #ECalComponentPropertyBag, filled with properties
  * from the @component, for which the @func returned %TRUE. When
  * the @func is %NULL, all the properties are included.
  *
@@ -172,7 +172,7 @@ e_cal_component_property_bag_set_from_component (ECalComponentPropertyBag *bag,
  * @bag: an #ECalComponentPropertyBag
  * @component: an #ICalComponent
  *
- * Adds all the stores properties in the @bag to the @component.
+ * Adds all the stored properties in the @bag to the @component.
  * The function doesn't verify whether the @component contains
  * the same property already.
  *

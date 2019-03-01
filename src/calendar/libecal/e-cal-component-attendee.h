@@ -26,6 +26,8 @@
 #include <glib-object.h>
 #include <libical-glib/libical-glib.h>
 
+#include <libecal/e-cal-component-parameter-bag.h>
+
 G_BEGIN_DECLS
 
 /**
@@ -122,6 +124,9 @@ const gchar *	e_cal_component_attendee_get_language
 void		e_cal_component_attendee_set_language
 						(ECalComponentAttendee *attendee,
 						 const gchar *language);
+ECalComponentParameterBag *
+		e_cal_component_attendee_get_parameter_bag
+						(const ECalComponentAttendee *attendee);
 
 G_END_DECLS
 

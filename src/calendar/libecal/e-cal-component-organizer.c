@@ -26,6 +26,8 @@
  * Contains functions to work with the #ECalComponentOrganizer structure.
  **/
 
+#include "e-cal-component-parameter-bag.h"
+
 #include "e-cal-component-organizer.h"
 
 G_DEFINE_BOXED_TYPE (ECalComponentOrganizer, e_cal_component_organizer, e_cal_component_organizer_copy, e_cal_component_organizer_free)
@@ -35,6 +37,8 @@ struct _ECalComponentOrganizer {
 	gchar *sentby;
 	gchar *cn;
 	gchar *language;
+
+	ECalComponentParameterBag *parameter_bag;
 };
 
 /**
@@ -53,6 +57,7 @@ e_cal_component_organizer_new (void)
 	ECalComponentOrganizer *organizer;
 
 	organizer = g_new0 (ECalComponentOrganizer, 1);
+	organizer->parameter_bag = e_cal_component_parameter_bag_new ();
 
 	return organizer;
 }
@@ -134,12 +139,18 @@ e_cal_component_organizer_new_from_property (const ICalProperty *property)
 ECalComponentOrganizer *
 e_cal_component_organizer_copy (const ECalComponentOrganizer *organizer)
 {
+	ECalComponentOrganizer *copy;
+
 	g_return_val_if_fail (organizer != NULL, NULL);
 
-	return e_cal_component_organizer_new_full (organizer->value,
+	copy = e_cal_component_organizer_new_full (organizer->value,
 		organizer->sentby,
 		organizer->cn,
 		organizer->language);
+
+	e_cal_component_parameter_bag_assign (copy->parameter_bag, organizer->parameter_bag);
+
+	return copy;
 }
 
 /**
@@ -159,12 +170,26 @@ e_cal_component_organizer_free (gpointer organizer)
 	ECalComponentOrganizer *org = organizer;
 
 	if (org) {
+		e_cal_component_parameter_bag_free (org->parameter_bag);
 		g_free (org->value);
 		g_free (org->sentby);
 		g_free (org->cn);
 		g_free (org->language);
 		g_free (org);
 	}
+}
+
+static gboolean
+e_cal_component_organizer_filter_params_cb (ICalParameter *param,
+					    gpointer user_data)
+{
+	ICalParameterKind kind;
+
+	kind = i_cal_parameter_isa (param);
+
+	return kind != I_CAL_SENTBY_PARAMETER &&
+	       kind != I_CAL_CN_PARAMETER &&
+	       kind != I_CAL_LANGUAGE_PARAMETER;
 }
 
 /**
@@ -201,6 +226,8 @@ e_cal_component_organizer_set_from_property (ECalComponentOrganizer *organizer,
 	param = i_cal_property_get_first_parameter (prop, I_CAL_LANGUAGE_PARAMETER);
 	e_cal_component_organizer_set_language (organizer, param ? i_cal_parameter_get_language (param) : NULL);
 	g_clear_object (&param);
+
+	e_cal_component_parameter_bag_set_from_property (organizer->parameter_bag, prop, e_cal_component_organizer_filter_params_cb, NULL);
 }
 
 /**
@@ -272,6 +299,8 @@ e_cal_component_organizer_fill_property (const ECalComponentOrganizer *organizer
 	fill_param (I_CAL_LANGUAGE_PARAMETER, language, organizer->language && *organizer->language);
 
 	#undef fill_param
+
+	e_cal_component_parameter_bag_fill_property (organizer->parameter_bag, property);
 }
 
 /**
@@ -436,4 +465,22 @@ e_cal_component_organizer_set_language (ECalComponentOrganizer *organizer,
 		g_free (organizer->language);
 		organizer->language = g_strdup (language);
 	}
+}
+
+/**
+ * e_cal_component_organizer_get_parameter_bag:
+ * @organizer: an #ECalComponentOrganizer
+ *
+ * Returns: (transfer none): an #ECalComponentParameterBag with additional
+ *    parameters stored with the organizer property, other than those accessible
+ *    with the other functions of the @organizer.
+ *
+ * Since: 3.36
+ **/
+ECalComponentParameterBag *
+e_cal_component_organizer_get_parameter_bag (const ECalComponentOrganizer *organizer)
+{
+	g_return_val_if_fail (organizer != NULL, NULL);
+
+	return organizer->parameter_bag;
 }

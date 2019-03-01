@@ -20,6 +20,7 @@ set(SOURCES
 	e-cal-component-datetime.c
 	e-cal-component-id.c
 	e-cal-component-organizer.c
+	e-cal-component-parameter-bag.c
 	e-cal-component-period.c
 	e-cal-component-property-bag.c
 	e-cal-component-range.c
@@ -47,6 +48,7 @@ set(HEADERS
 	e-cal-component-attendee.h
 	e-cal-component-datetime.h
 	e-cal-component-id.h
+	e-cal-component-parameter-bag.h
 	e-cal-component-organizer.h
 	e-cal-component-period.h
 	e-cal-component-property-bag.h

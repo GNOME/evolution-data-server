@@ -157,6 +157,7 @@
       <xi:include href="xml/e-cal-component-datetime.xml"/>
       <xi:include href="xml/e-cal-component-id.xml"/>
       <xi:include href="xml/e-cal-component-organizer.xml"/>
+      <xi:include href="xml/e-cal-component-parameter-bag.xml"/>
       <xi:include href="xml/e-cal-component-period.xml"/>
       <xi:include href="xml/e-cal-component-property-bag.xml"/>
       <xi:include href="xml/e-cal-component-range.xml"/>

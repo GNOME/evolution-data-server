@@ -38,6 +38,7 @@
 #include <libecal/e-cal-component-datetime.h>
 #include <libecal/e-cal-component-id.h>
 #include <libecal/e-cal-component-organizer.h>
+#include <libecal/e-cal-component-parameter-bag.h>
 #include <libecal/e-cal-component-period.h>
 #include <libecal/e-cal-component-property-bag.h>
 #include <libecal/e-cal-component-range.h>

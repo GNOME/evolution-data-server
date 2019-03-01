@@ -31,6 +31,7 @@
 #include "e-cal-component-alarm-repeat.h"
 #include "e-cal-component-alarm-trigger.h"
 #include "e-cal-component-attendee.h"
+#include "e-cal-component-property-bag.h"
 #include "e-cal-component-text.h"
 #include "e-cal-enums.h"
 

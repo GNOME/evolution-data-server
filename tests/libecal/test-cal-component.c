@@ -115,6 +115,80 @@ verify_ical_timetype_equal (ICalTimetype *expected,
 }
 
 static void
+verify_struct_parameter_bag_equal (const ECalComponentParameterBag *expected,
+				   const ECalComponentParameterBag *received)
+{
+	gint ii, count;
+
+	if (!expected) {
+		g_assert_null (received);
+		return;
+	}
+
+	g_assert_nonnull (received);
+
+	g_assert_cmpint (e_cal_component_parameter_bag_get_count (expected), ==, e_cal_component_parameter_bag_get_count (received));
+
+	count = e_cal_component_parameter_bag_get_count (expected);
+	for (ii = 0; ii < count; ii++) {
+		ICalParameter *param_expected, *param_received;
+		gchar *value_expected, *value_received;
+
+		param_expected = e_cal_component_parameter_bag_get (expected, ii);
+		param_received = e_cal_component_parameter_bag_get (received, ii);
+
+		g_assert_nonnull (param_expected);
+		g_assert_nonnull (param_received);
+		g_assert_cmpint (i_cal_parameter_isa (param_expected), ==, i_cal_parameter_isa (param_received));
+
+		value_expected = i_cal_parameter_as_ical_string_r (param_expected);
+		value_received = i_cal_parameter_as_ical_string_r (param_received);
+
+		g_assert_cmpstr (value_expected, ==, value_received);
+
+		g_free (value_expected);
+		g_free (value_received);
+	}
+}
+
+static void
+verify_struct_property_bag_equal (const ECalComponentPropertyBag *expected,
+				  const ECalComponentPropertyBag *received)
+{
+	gint ii, count;
+
+	if (!expected) {
+		g_assert_null (received);
+		return;
+	}
+
+	g_assert_nonnull (received);
+
+	g_assert_cmpint (e_cal_component_property_bag_get_count (expected), ==, e_cal_component_property_bag_get_count (received));
+
+	count = e_cal_component_property_bag_get_count (expected);
+	for (ii = 0; ii < count; ii++) {
+		ICalProperty *prop_expected, *prop_received;
+		gchar *value_expected, *value_received;
+
+		prop_expected = e_cal_component_property_bag_get (expected, ii);
+		prop_received = e_cal_component_property_bag_get (received, ii);
+
+		g_assert_nonnull (prop_expected);
+		g_assert_nonnull (prop_received);
+		g_assert_cmpint (i_cal_property_isa (prop_expected), ==, i_cal_property_isa (prop_received));
+
+		value_expected = i_cal_property_as_ical_string_r (prop_expected);
+		value_received = i_cal_property_as_ical_string_r (prop_received);
+
+		g_assert_cmpstr (value_expected, ==, value_received);
+
+		g_free (value_expected);
+		g_free (value_received);
+	}
+}
+
+static void
 verify_struct_attendee_equal (const ECalComponentAttendee *expected,
 			      const ECalComponentAttendee *received)
 {
@@ -136,6 +210,9 @@ verify_struct_attendee_equal (const ECalComponentAttendee *expected,
 	g_assert_cmpstr (e_cal_component_attendee_get_sentby (expected), ==, e_cal_component_attendee_get_sentby (received));
 	g_assert_cmpstr (e_cal_component_attendee_get_cn (expected), ==, e_cal_component_attendee_get_cn (received));
 	g_assert_cmpstr (e_cal_component_attendee_get_language (expected), ==, e_cal_component_attendee_get_language (received));
+
+	verify_struct_parameter_bag_equal (e_cal_component_attendee_get_parameter_bag (expected),
+					   e_cal_component_attendee_get_parameter_bag (received));
 }
 
 static void
@@ -208,6 +285,9 @@ verify_struct_organizer_equal (const ECalComponentOrganizer *expected,
 	g_assert_cmpstr (e_cal_component_organizer_get_sentby (expected), ==, e_cal_component_organizer_get_sentby (received));
 	g_assert_cmpstr (e_cal_component_organizer_get_cn (expected), ==, e_cal_component_organizer_get_cn (received));
 	g_assert_cmpstr (e_cal_component_organizer_get_language (expected), ==, e_cal_component_organizer_get_language (received));
+
+	verify_struct_parameter_bag_equal (e_cal_component_organizer_get_parameter_bag (expected),
+					   e_cal_component_organizer_get_parameter_bag (received));
 }
 
 static void
@@ -319,43 +399,9 @@ verify_struct_alarm_trigger_equal (const ECalComponentAlarmTrigger *expected,
 					    e_cal_component_alarm_trigger_get_absolute_time (received));
 		break;
 	}
-}
 
-static void
-verify_property_bag_equal (const ECalComponentPropertyBag *expected,
-			   const ECalComponentPropertyBag *received)
-{
-	gint ii, count;
-
-	if (!expected) {
-		g_assert_null (received);
-		return;
-	}
-
-	g_assert_nonnull (received);
-
-	g_assert_cmpint (e_cal_component_property_bag_get_count (expected), ==, e_cal_component_property_bag_get_count (received));
-
-	count = e_cal_component_property_bag_get_count (expected);
-	for (ii = 0; ii < count; ii++) {
-		ICalProperty *prop_expected, *prop_received;
-		gchar *value_expected, *value_received;
-
-		prop_expected = e_cal_component_property_bag_get (expected, ii);
-		prop_received = e_cal_component_property_bag_get (received, ii);
-
-		g_assert_nonnull (prop_expected);
-		g_assert_nonnull (prop_received);
-		g_assert_cmpint (i_cal_property_isa (prop_expected), ==, i_cal_property_isa (prop_received));
-
-		value_expected = i_cal_property_as_ical_string_r (prop_expected);
-		value_received = i_cal_property_as_ical_string_r (prop_received);
-
-		g_assert_cmpstr (value_expected, ==, value_received);
-
-		g_free (value_expected);
-		g_free (value_received);
-	}
+	verify_struct_parameter_bag_equal (e_cal_component_alarm_trigger_get_parameter_bag (expected),
+					   e_cal_component_alarm_trigger_get_parameter_bag (received));
 }
 
 static void
@@ -391,8 +437,8 @@ verify_struct_alarm_equal (const ECalComponentAlarm *expected,
 	verify_ical_attach_list_equal (e_cal_component_alarm_get_attachments (expected),
 				       e_cal_component_alarm_get_attachments (received));
 
-	verify_property_bag_equal (e_cal_component_alarm_get_property_bag (expected),
-				   e_cal_component_alarm_get_property_bag (received));
+	verify_struct_property_bag_equal (e_cal_component_alarm_get_property_bag (expected),
+					  e_cal_component_alarm_get_property_bag (received));
 }
 
 static void
@@ -792,6 +838,38 @@ test_component_struct_alarm_instance (void)
 }
 
 static void
+test_component_add_params_to_bag (ECalComponentParameterBag *bag,
+				  gint n_params)
+{
+	gint ii;
+
+	g_assert_nonnull (bag);
+
+	for (ii = 0; ii < n_params; ii++) {
+		ICalParameter *param;
+
+		if (ii == 0) {
+			param = i_cal_parameter_new_local (I_CAL_LOCAL_TRUE);
+		} else if (ii == 1) {
+			param = i_cal_parameter_new_localize ("en_US");
+		} else {
+			gchar *x_name;
+
+			x_name = g_strdup_printf ("X-CUSTOM-PARAM-%d", ii);
+			param = i_cal_parameter_new_x (x_name + 2);
+			i_cal_parameter_set_xname (param, x_name);
+			g_free (x_name);
+		}
+
+		g_assert_nonnull (param);
+
+		e_cal_component_parameter_bag_take (bag, param);
+	}
+
+	g_assert_cmpint (e_cal_component_parameter_bag_get_count (bag), ==, n_params);
+}
+
+static void
 test_component_struct_alarm_repeat (void)
 {
 	struct _values {
@@ -927,6 +1005,9 @@ test_component_struct_alarm_trigger (void)
 			}
 
 			g_assert_nonnull (expected);
+
+			if (set_kind == 1)
+				test_component_add_params_to_bag (e_cal_component_alarm_trigger_get_parameter_bag (expected), ii + 1);
 
 			g_assert_cmpint (values[ii].kind, ==, e_cal_component_alarm_trigger_get_kind (expected));
 			if (values[ii].kind == E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE) {
@@ -1076,6 +1157,9 @@ test_component_struct_attendee (void)
 			}
 
 			g_assert_nonnull (expected);
+
+			if (set_kind == 1)
+				test_component_add_params_to_bag (e_cal_component_attendee_get_parameter_bag (expected), ii + 1);
 
 			g_assert_cmpstr (e_cal_component_attendee_get_value (expected), ==, values[ii].value);
 			g_assert_cmpstr (e_cal_component_attendee_get_member (expected), ==, values[ii].member);
@@ -1302,6 +1386,9 @@ test_component_struct_organizer (void)
 
 			g_assert_nonnull (expected);
 
+			if (set_kind == 1)
+				test_component_add_params_to_bag (e_cal_component_organizer_get_parameter_bag (expected), ii + 1);
+
 			g_assert_cmpstr (e_cal_component_organizer_get_value (expected), ==, values[ii].value);
 			g_assert_cmpstr (e_cal_component_organizer_get_sentby (expected), ==, values[ii].sentby);
 			g_assert_cmpstr (e_cal_component_organizer_get_cn (expected), ==, values[ii].cn);
@@ -1336,6 +1423,181 @@ test_component_struct_organizer (void)
 		}
 	}
 }
+
+#define X_PARAM_NAME "X-PARAM"
+#define X_PARAM_VALUE "xVaLuE"
+
+static gboolean
+test_parameter_bag_filter_cb (ICalParameter *param,
+			      gpointer user_data)
+{
+	ICalParameterKind *expected = user_data, kind;
+	gint ii;
+
+	g_return_val_if_fail (expected != NULL, FALSE);
+
+	kind = i_cal_parameter_isa (param);
+
+	for (ii = 0; expected[ii] != I_CAL_ANY_PARAMETER; ii++) {
+		if (kind == expected[ii])
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+static void
+test_check_parameter_bag (const ECalComponentParameterBag *bag,
+			  const ICalParameterKind *expected)
+{
+	ICalParameter *param;
+	gint ii;
+
+	g_assert_nonnull (bag);
+	g_assert_nonnull (expected);
+
+	for (ii = 0; expected[ii] != I_CAL_ANY_PARAMETER; ii++) {
+		param = e_cal_component_parameter_bag_get (bag, ii);
+
+		g_assert_nonnull (param);
+		g_assert_cmpint (i_cal_parameter_isa (param), ==, expected[ii]);
+		if (i_cal_parameter_isa (param) == I_CAL_X_PARAMETER) {
+			g_assert_cmpstr (i_cal_parameter_get_xname (param), ==, X_PARAM_NAME);
+			g_assert_cmpstr (i_cal_parameter_get_xvalue (param), ==, X_PARAM_VALUE);
+		}
+	}
+
+	/* Out of bounds */
+	param = e_cal_component_parameter_bag_get (bag, ii);
+	g_assert_null (param);
+}
+
+static void
+test_component_struct_parameter_bag (void)
+{
+	const gchar *prop_str =
+		"ATTENDEE;CHARSET=utf-8;CN=User;CUTYPE=INDIVIDUAL;" X_PARAM_NAME "=" X_PARAM_VALUE ";LANGUAGE=en_US:MAILTO:user@no.where";
+	ICalParameterKind expected_unfiltered[] = {
+		I_CAL_CHARSET_PARAMETER,
+		I_CAL_CN_PARAMETER,
+		I_CAL_CUTYPE_PARAMETER,
+		I_CAL_X_PARAMETER,
+		I_CAL_LANGUAGE_PARAMETER,
+		I_CAL_ANY_PARAMETER /* sentinel */
+	},
+	expected_filtered[] = {
+		I_CAL_CN_PARAMETER,
+		I_CAL_CUTYPE_PARAMETER,
+		I_CAL_X_PARAMETER,
+		I_CAL_ANY_PARAMETER /* sentinel */
+	};
+	ICalProperty *prop;
+	ICalParameter *param;
+	ECalComponentParameterBag *bag, *bag2;
+	gint ii;
+
+	prop = i_cal_property_new_from_string (prop_str);
+	g_assert_nonnull (prop);
+	g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 5);
+
+	bag = e_cal_component_parameter_bag_new ();
+	g_assert_nonnull (bag);
+	e_cal_component_parameter_bag_set_from_property (bag, prop, NULL, NULL);
+	g_assert_cmpint (e_cal_component_parameter_bag_get_count (bag), ==, G_N_ELEMENTS (expected_unfiltered) - 1);
+	test_check_parameter_bag (bag, expected_unfiltered);
+
+	bag2 = e_cal_component_parameter_bag_copy (bag);
+	g_assert_nonnull (bag2);
+	g_assert_cmpint (e_cal_component_parameter_bag_get_count (bag2), ==, G_N_ELEMENTS (expected_unfiltered) - 1);
+	test_check_parameter_bag (bag2, expected_unfiltered);
+	e_cal_component_parameter_bag_free (bag2);
+	e_cal_component_parameter_bag_free (bag);
+
+	bag = e_cal_component_parameter_bag_new_from_property (prop, NULL, NULL);
+	g_assert_nonnull (bag);
+	g_assert_cmpint (e_cal_component_parameter_bag_get_count (bag), ==, G_N_ELEMENTS (expected_unfiltered) - 1);
+	test_check_parameter_bag (bag, expected_unfiltered);
+	e_cal_component_parameter_bag_free (bag);
+
+	bag = e_cal_component_parameter_bag_new ();
+	g_assert_nonnull (bag);
+	e_cal_component_parameter_bag_set_from_property (bag, prop, test_parameter_bag_filter_cb, expected_filtered);
+	g_assert_cmpint (e_cal_component_parameter_bag_get_count (bag), ==, G_N_ELEMENTS (expected_filtered) - 1);
+	test_check_parameter_bag (bag, expected_filtered);
+	e_cal_component_parameter_bag_free (bag);
+
+	bag = e_cal_component_parameter_bag_new_from_property (prop, test_parameter_bag_filter_cb, expected_filtered);
+	g_assert_nonnull (bag);
+	g_assert_cmpint (e_cal_component_parameter_bag_get_count (bag), ==, G_N_ELEMENTS (expected_filtered) - 1);
+	test_check_parameter_bag (bag, expected_filtered);
+
+	g_object_unref (prop);
+
+	prop = i_cal_property_new (I_CAL_COMMENT_PROPERTY);
+	g_assert_nonnull (prop);
+	e_cal_component_parameter_bag_fill_property (bag, prop);
+	g_assert_cmpint (i_cal_property_count_parameters (prop), ==, e_cal_component_parameter_bag_get_count (bag));
+	g_object_unref (prop);
+
+	bag2 = e_cal_component_parameter_bag_copy (bag);
+
+	while (e_cal_component_parameter_bag_get_count (bag) > 1) {
+		e_cal_component_parameter_bag_remove (bag, 1);
+	}
+
+	e_cal_component_parameter_bag_assign (bag2, bag);
+	g_assert_cmpint (e_cal_component_parameter_bag_get_count (bag), ==, e_cal_component_parameter_bag_get_count (bag2));
+	e_cal_component_parameter_bag_free (bag2);
+
+	prop = i_cal_property_new (I_CAL_ATTENDEE_PROPERTY);
+	g_assert_nonnull (prop);
+	e_cal_component_parameter_bag_fill_property (bag, prop);
+	g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 1);
+	g_object_unref (prop);
+
+	e_cal_component_parameter_bag_clear (bag);
+
+	prop = i_cal_property_new (I_CAL_ATTENDEE_PROPERTY);
+	g_assert_nonnull (prop);
+	e_cal_component_parameter_bag_fill_property (bag, prop);
+	g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 0);
+	g_object_unref (prop);
+
+	param = i_cal_parameter_new_cn ("234");
+	e_cal_component_parameter_bag_add (bag, param);
+	g_object_unref (param);
+
+	param = i_cal_parameter_new_cutype (I_CAL_CUTYPE_ROOM);
+	e_cal_component_parameter_bag_take (bag, param);
+
+	g_assert_cmpint (e_cal_component_parameter_bag_get_count (bag), ==, 2);
+
+	for (ii = 0; ii < 2; ii++) {
+		ICalParameter *param2;
+
+		param2 = e_cal_component_parameter_bag_get (bag, ii);
+		if (ii == 0) {
+			g_assert (param != param2);
+			g_assert_cmpint (i_cal_parameter_isa (param2), ==, I_CAL_CN_PARAMETER);
+			g_assert_cmpstr (i_cal_parameter_get_cn (param2), ==, "234");
+		} else {
+			g_assert (param == param2);
+			g_assert_cmpint (i_cal_parameter_isa (param2), ==, I_CAL_CUTYPE_PARAMETER);
+			g_assert_cmpint (i_cal_parameter_get_cutype (param2), ==, I_CAL_CUTYPE_ROOM);
+		}
+	}
+
+	prop = i_cal_property_new (I_CAL_DESCRIPTION_PROPERTY);
+	g_assert_nonnull (prop);
+	e_cal_component_parameter_bag_fill_property (bag, prop);
+	g_assert_cmpint (i_cal_property_count_parameters (prop), ==, e_cal_component_parameter_bag_get_count (bag));
+	g_object_unref (prop);
+
+	e_cal_component_parameter_bag_free (bag);
+}
+
+#undef X_PARAM_NAME
+#undef X_PARAM_VALUE
 
 static void
 test_component_struct_period (void)
@@ -1533,6 +1795,7 @@ test_component_struct_property_bag (void)
 
 	icomp = i_cal_component_new_from_string (comp_str);
 	g_assert_nonnull (icomp);
+	g_assert_cmpint (i_cal_component_count_properties (icomp, I_CAL_ANY_PROPERTY), ==, 3);
 
 	bag = e_cal_component_property_bag_new ();
 	g_assert_nonnull (bag);
@@ -2685,8 +2948,12 @@ test_component_organizer (void)
 	for (ii = 0; ii < G_N_ELEMENTS (values); ii++) {
 		ECalComponentOrganizer *org = NULL;
 
-		if (values[ii].value)
+		if (values[ii].value) {
 			org = e_cal_component_organizer_new_full (values[ii].value, values[ii].sentby, values[ii].cn, values[ii].language);
+
+			if (ii == 0)
+				test_component_add_params_to_bag (e_cal_component_organizer_get_parameter_bag (org), ii + 1);
+		}
 
 		e_cal_component_set_organizer (comp, org);
 		verify_changes (comp, verify_component_organizer, org);
@@ -3204,6 +3471,7 @@ test_component_attendees (void)
 		const gchar *sentby;
 		const gchar *cn;
 		const gchar *language;
+		gboolean with_parameters;
 	} values[] = {
 		{ "MAILTO:att1",
 		   "member",
@@ -3215,9 +3483,10 @@ test_component_attendees (void)
 		   "MAILTO:delgto",
 		   "MAILTO:sentby",
 		   "First attendee",
-		   "en_US" },
-		{ NULL, NULL, I_CAL_CUTYPE_NONE, I_CAL_ROLE_NONE, I_CAL_PARTSTAT_NONE, FALSE, NULL, NULL, NULL, NULL, NULL }, /* terminator */
-		{ NULL, NULL, I_CAL_CUTYPE_NONE, I_CAL_ROLE_NONE, I_CAL_PARTSTAT_NONE, FALSE, NULL, NULL, NULL, NULL, NULL }, /* terminator */
+		   "en_US",
+		   FALSE },
+		{ NULL, NULL, I_CAL_CUTYPE_NONE, I_CAL_ROLE_NONE, I_CAL_PARTSTAT_NONE, FALSE, NULL, NULL, NULL, NULL, NULL, FALSE }, /* terminator */
+		{ NULL, NULL, I_CAL_CUTYPE_NONE, I_CAL_ROLE_NONE, I_CAL_PARTSTAT_NONE, FALSE, NULL, NULL, NULL, NULL, NULL, FALSE }, /* terminator */
 		{ "MAILTO:room",
 		   NULL,
 		   I_CAL_CUTYPE_ROOM,
@@ -3228,7 +3497,8 @@ test_component_attendees (void)
 		   NULL,
 		   NULL,
 		   "Meeting room",
-		   NULL },
+		   NULL,
+		   TRUE },
 		{ "MAILTO:att2",
 		   NULL,
 		   I_CAL_CUTYPE_INDIVIDUAL,
@@ -3239,8 +3509,9 @@ test_component_attendees (void)
 		   NULL,
 		   NULL,
 		   NULL,
-		   "en_US" },
-		{ NULL, NULL, I_CAL_CUTYPE_NONE, I_CAL_ROLE_NONE, I_CAL_PARTSTAT_NONE, FALSE, NULL, NULL, NULL, NULL, NULL } /* terminator */
+		   "en_US",
+		   FALSE },
+		{ NULL, NULL, I_CAL_CUTYPE_NONE, I_CAL_ROLE_NONE, I_CAL_PARTSTAT_NONE, FALSE, NULL, NULL, NULL, NULL, NULL, FALSE } /* terminator */
 	};
 	ECalComponent *comp;
 	GSList *attendees = NULL;
@@ -3264,6 +3535,9 @@ test_component_attendees (void)
 				values[ii].sentby,
 				values[ii].cn,
 				values[ii].language);
+
+			if (values[ii].with_parameters)
+				test_component_add_params_to_bag (e_cal_component_attendee_get_parameter_bag (att), ii + 1);
 
 			attendees = g_slist_prepend (attendees, att);
 		} else {
@@ -3512,14 +3786,15 @@ test_component_alarms (void)
 		ECalComponentAlarmAction action;
 		const gchar *description;
 		gint trigger;
+		gboolean trigger_with_parameters;
 	} values[] = {
-		{ "alarm1", E_CAL_COMPONENT_ALARM_DISPLAY, "display reminder", -5 },
-		{ NULL, E_CAL_COMPONENT_ALARM_NONE, NULL, 0 }, /* terminator */
-		{ NULL, E_CAL_COMPONENT_ALARM_NONE, NULL, 0 }, /* terminator */
-		{ "alarm2", E_CAL_COMPONENT_ALARM_AUDIO, "audio reminder", 10 },
-		{ "alarm3", E_CAL_COMPONENT_ALARM_EMAIL, "email reminder", 0 },
-		{ "alarm4", E_CAL_COMPONENT_ALARM_PROCEDURE, "procedure reminder", -30 },
-		{ NULL, E_CAL_COMPONENT_ALARM_NONE, NULL, 0 }, /* terminator */
+		{ "alarm1", E_CAL_COMPONENT_ALARM_DISPLAY, "display reminder", -5, TRUE },
+		{ NULL, E_CAL_COMPONENT_ALARM_NONE, NULL, 0, FALSE }, /* terminator */
+		{ NULL, E_CAL_COMPONENT_ALARM_NONE, NULL, 0, FALSE }, /* terminator */
+		{ "alarm2", E_CAL_COMPONENT_ALARM_AUDIO, "audio reminder", 10, FALSE },
+		{ "alarm3", E_CAL_COMPONENT_ALARM_EMAIL, "email reminder", 0, TRUE },
+		{ "alarm4", E_CAL_COMPONENT_ALARM_PROCEDURE, "procedure reminder", -30, FALSE },
+		{ NULL, E_CAL_COMPONENT_ALARM_NONE, NULL, 0, FALSE }, /* terminator */
 	};
 	ECalComponent *comp;
 	GSList *alarms = NULL;
@@ -3545,6 +3820,28 @@ test_component_alarms (void)
 			e_cal_component_alarm_set_action (alarm, values[ii].action);
 			e_cal_component_alarm_take_description (alarm, e_cal_component_text_new (values[ii].description, NULL));
 			e_cal_component_alarm_take_trigger (alarm, e_cal_component_alarm_trigger_new_relative (kind, duration));
+
+			if (values[ii].trigger_with_parameters) {
+				ECalComponentAlarmTrigger *trigger;
+
+				trigger = e_cal_component_alarm_get_trigger (alarm);
+				test_component_add_params_to_bag (e_cal_component_alarm_trigger_get_parameter_bag (trigger), ii + 1);
+			}
+
+			if (values[ii].trigger < 0) {
+				ECalComponentPropertyBag *bag;
+				ICalProperty *prop;
+
+				bag = e_cal_component_alarm_get_property_bag (alarm);
+
+				prop = i_cal_property_new_url ("https://www.gnome.org");
+				e_cal_component_property_bag_take (bag, prop);
+
+				prop = i_cal_property_new_carlevel (I_CAL_CARLEVEL_CARFULL1);
+				e_cal_component_property_bag_take (bag, prop);
+
+				g_assert_cmpint (e_cal_component_property_bag_get_count (bag), ==, 2);
+			}
 
 			e_cal_component_add_alarm (comp, alarm);
 			alarms = g_slist_prepend (alarms, alarm);
@@ -3617,6 +3914,7 @@ main (gint argc,
 	g_test_add_func ("/ECalComponent/struct/DateTime", test_component_struct_datetime);
 	g_test_add_func ("/ECalComponent/struct/Id", test_component_struct_id);
 	g_test_add_func ("/ECalComponent/struct/Organizer", test_component_struct_organizer);
+	g_test_add_func ("/ECalComponent/struct/ParameterBag", test_component_struct_parameter_bag);
 	g_test_add_func ("/ECalComponent/struct/Period", test_component_struct_period);
 	g_test_add_func ("/ECalComponent/struct/PropertyBag", test_component_struct_property_bag);
 	g_test_add_func ("/ECalComponent/struct/Range", test_component_struct_range);

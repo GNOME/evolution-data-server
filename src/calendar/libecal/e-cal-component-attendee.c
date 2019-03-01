@@ -26,6 +26,8 @@
  * Contains functions to work with the #ECalComponentAttendee structure.
  **/
 
+#include "e-cal-component-parameter-bag.h"
+
 #include "e-cal-component-attendee.h"
 
 G_DEFINE_BOXED_TYPE (ECalComponentAttendee, e_cal_component_attendee, e_cal_component_attendee_copy, e_cal_component_attendee_free)
@@ -44,6 +46,8 @@ struct _ECalComponentAttendee {
 	gchar *sentby;
 	gchar *cn;
 	gchar *language;
+
+	ECalComponentParameterBag *parameter_bag;
 };
 
 /**
@@ -65,6 +69,7 @@ e_cal_component_attendee_new (void)
 	attendee->cutype = I_CAL_CUTYPE_NONE;
 	attendee->role = I_CAL_ROLE_REQPARTICIPANT;
 	attendee->partstat = I_CAL_PARTSTAT_NEEDSACTION;
+	attendee->parameter_bag = e_cal_component_parameter_bag_new ();
 
 	return attendee;
 }
@@ -167,9 +172,11 @@ e_cal_component_attendee_new_from_property (const ICalProperty *property)
 ECalComponentAttendee *
 e_cal_component_attendee_copy (const ECalComponentAttendee *attendee)
 {
+	ECalComponentAttendee *copy;
+
 	g_return_val_if_fail (attendee != NULL, NULL);
 
-	return e_cal_component_attendee_new_full (attendee->value,
+	copy = e_cal_component_attendee_new_full (attendee->value,
 		attendee->member,
 		attendee->cutype,
 		attendee->role,
@@ -180,6 +187,10 @@ e_cal_component_attendee_copy (const ECalComponentAttendee *attendee)
 		attendee->sentby,
 		attendee->cn,
 		attendee->language);
+
+	e_cal_component_parameter_bag_assign (copy->parameter_bag, attendee->parameter_bag);
+
+	return copy;
 }
 
 /**
@@ -199,6 +210,7 @@ e_cal_component_attendee_free (gpointer attendee)
 	ECalComponentAttendee *att = attendee;
 
 	if (att) {
+		e_cal_component_parameter_bag_free (att->parameter_bag);
 		g_free (att->value);
 		g_free (att->member);
 		g_free (att->delegatedfrom);
@@ -208,6 +220,26 @@ e_cal_component_attendee_free (gpointer attendee)
 		g_free (att->language);
 		g_free (att);
 	}
+}
+
+static gboolean
+e_cal_component_attendee_filter_params_cb (ICalParameter *param,
+					   gpointer user_data)
+{
+	ICalParameterKind kind;
+
+	kind = i_cal_parameter_isa (param);
+
+	return kind != I_CAL_MEMBER_PARAMETER &&
+	       kind != I_CAL_CUTYPE_PARAMETER &&
+	       kind != I_CAL_ROLE_PARAMETER &&
+	       kind != I_CAL_PARTSTAT_PARAMETER &&
+	       kind != I_CAL_RSVP_PARAMETER &&
+	       kind != I_CAL_DELEGATEDFROM_PARAMETER &&
+	       kind != I_CAL_DELEGATEDTO_PARAMETER &&
+	       kind != I_CAL_SENTBY_PARAMETER &&
+	       kind != I_CAL_CN_PARAMETER &&
+	       kind != I_CAL_LANGUAGE_PARAMETER;
 }
 
 /**
@@ -272,6 +304,8 @@ e_cal_component_attendee_set_from_property (ECalComponentAttendee *attendee,
 	param = i_cal_property_get_first_parameter (prop, I_CAL_LANGUAGE_PARAMETER);
 	e_cal_component_attendee_set_language (attendee, param ? i_cal_parameter_get_language (param) : NULL);
 	g_clear_object (&param);
+
+	e_cal_component_parameter_bag_set_from_property (attendee->parameter_bag, prop, e_cal_component_attendee_filter_params_cb, NULL);
 }
 
 /**
@@ -360,6 +394,8 @@ e_cal_component_attendee_fill_property (const ECalComponentAttendee *attendee,
 	fill_param (I_CAL_LANGUAGE_PARAMETER, language, attendee->language && *attendee->language);
 
 	#undef fill_param
+
+	e_cal_component_parameter_bag_fill_property (attendee->parameter_bag, property);
 }
 
 /**
@@ -791,4 +827,22 @@ e_cal_component_attendee_set_language (ECalComponentAttendee *attendee,
 		g_free (attendee->language);
 		attendee->language = g_strdup (language);
 	}
+}
+
+/**
+ * e_cal_component_attendee_get_parameter_bag:
+ * @attendee: an #ECalComponentAttendee
+ *
+ * Returns: (transfer none): an #ECalComponentParameterBag with additional
+ *    parameters stored with the attendee property, other than those accessible
+ *    with the other functions of the @attendee.
+ *
+ * Since: 3.36
+ **/
+ECalComponentParameterBag *
+e_cal_component_attendee_get_parameter_bag (const ECalComponentAttendee *attendee)
+{
+	g_return_val_if_fail (attendee != NULL, NULL);
+
+	return attendee->parameter_bag;
 }

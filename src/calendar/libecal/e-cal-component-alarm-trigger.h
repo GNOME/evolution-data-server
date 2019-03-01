@@ -26,6 +26,7 @@
 #include <glib-object.h>
 #include <libical-glib/libical-glib.h>
 
+#include <libecal/e-cal-component-parameter-bag.h>
 #include <libecal/e-cal-enums.h>
 
 G_BEGIN_DECLS
@@ -87,6 +88,9 @@ ICalTimetype *	e_cal_component_alarm_trigger_get_absolute_time
 void		e_cal_component_alarm_trigger_set_absolute_time
 						(ECalComponentAlarmTrigger *trigger,
 						 const ICalTimetype *absolute_time);
+ECalComponentParameterBag *
+		e_cal_component_alarm_trigger_get_parameter_bag
+						(const ECalComponentAlarmTrigger *trigger);
 
 G_END_DECLS
 

@@ -26,6 +26,8 @@
  * Contains functions to work with the #ECalComponentAlarmTrigger structure.
  **/
 
+#include "e-cal-component-parameter-bag.h"
+
 #include "e-cal-component-alarm-trigger.h"
 
 G_DEFINE_BOXED_TYPE (ECalComponentAlarmTrigger, e_cal_component_alarm_trigger, e_cal_component_alarm_trigger_copy, e_cal_component_alarm_trigger_free)
@@ -36,6 +38,8 @@ struct _ECalComponentAlarmTrigger {
 	/* Only one of the below can be set, depending on the 'kind' */
 	ICalDurationType *rel_duration;
 	ICalTimetype *abs_time;
+
+	ECalComponentParameterBag *parameter_bag;
 };
 
 /**
@@ -62,6 +66,7 @@ e_cal_component_alarm_trigger_new_relative (ECalComponentAlarmTriggerKind kind,
 	g_return_val_if_fail (I_CAL_IS_DURATION_TYPE (duration), NULL);
 
 	trigger = g_new0 (ECalComponentAlarmTrigger, 1);
+	trigger->parameter_bag = e_cal_component_parameter_bag_new ();
 
 	e_cal_component_alarm_trigger_set_relative (trigger, kind, duration);
 
@@ -91,6 +96,7 @@ e_cal_component_alarm_trigger_new_absolute (const ICalTimetype *absolute_time)
 	g_return_val_if_fail (I_CAL_IS_TIMETYPE (absolute_time), NULL);
 
 	trigger = g_new0 (ECalComponentAlarmTrigger, 1);
+	trigger->parameter_bag = e_cal_component_parameter_bag_new ();
 
 	e_cal_component_alarm_trigger_set_absolute (trigger, absolute_time);
 
@@ -121,6 +127,7 @@ e_cal_component_alarm_trigger_new_from_property (const ICalProperty *property)
 		return NULL;
 
 	trigger = g_new0 (ECalComponentAlarmTrigger, 1);
+	trigger->parameter_bag = e_cal_component_parameter_bag_new ();
 
 	e_cal_component_alarm_trigger_set_from_property (trigger, property);
 
@@ -141,12 +148,18 @@ e_cal_component_alarm_trigger_new_from_property (const ICalProperty *property)
 ECalComponentAlarmTrigger *
 e_cal_component_alarm_trigger_copy (const ECalComponentAlarmTrigger *trigger)
 {
+	ECalComponentAlarmTrigger *copy;
+
 	g_return_val_if_fail (trigger != NULL, NULL);
 
 	if (trigger->kind == E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE)
-		return e_cal_component_alarm_trigger_new_absolute (trigger->abs_time);
+		copy = e_cal_component_alarm_trigger_new_absolute (trigger->abs_time);
+	else
+		copy = e_cal_component_alarm_trigger_new_relative (trigger->kind, trigger->rel_duration);
 
-	return e_cal_component_alarm_trigger_new_relative (trigger->kind, trigger->rel_duration);
+	e_cal_component_parameter_bag_assign (copy->parameter_bag, trigger->parameter_bag);
+
+	return copy;
 }
 
 /**
@@ -166,10 +179,23 @@ e_cal_component_alarm_trigger_free (gpointer trigger)
 	ECalComponentAlarmTrigger *trg = trigger;
 
 	if (trg) {
+		e_cal_component_parameter_bag_free (trg->parameter_bag);
 		g_clear_object (&trg->rel_duration);
 		g_clear_object (&trg->abs_time);
 		g_free (trg);
 	}
+}
+
+static gboolean
+e_cal_component_alarm_trigger_bag_filter_params_cb (ICalParameter *param,
+						    gpointer user_data)
+{
+	ICalParameterKind kind;
+
+	kind = i_cal_parameter_isa (param);
+
+	return kind != I_CAL_VALUE_PARAMETER &&
+	       kind != I_CAL_RELATED_PARAMETER;
 }
 
 /**
@@ -260,6 +286,8 @@ e_cal_component_alarm_trigger_set_from_property (ECalComponentAlarmTrigger *trig
 	}
 
 	g_clear_object (&trgtype);
+
+	e_cal_component_parameter_bag_set_from_property (trigger->parameter_bag, prop, e_cal_component_alarm_trigger_bag_filter_params_cb, NULL);
 }
 
 /**
@@ -364,6 +392,8 @@ e_cal_component_alarm_trigger_fill_property (const ECalComponentAlarmTrigger *tr
 		i_cal_property_remove_parameter_by_kind (property, I_CAL_RELATED_PARAMETER);
 	}
 	g_clear_object (&param);
+
+	e_cal_component_parameter_bag_fill_property (trigger->parameter_bag, property);
 }
 
 /**
@@ -564,4 +594,22 @@ e_cal_component_alarm_trigger_set_absolute_time (ECalComponentAlarmTrigger *trig
 		g_clear_object (&trigger->abs_time);
 		trigger->abs_time = i_cal_timetype_new_clone ((ICalTimetype *) absolute_time);
 	}
+}
+
+/**
+ * e_cal_component_alarm_trigger_get_parameter_bag:
+ * @trigger: an #ECalComponentAlarmTrigger
+ *
+ * Returns: (transfer none): an #ECalComponentParameterBag with additional
+ *    parameters stored with the trigger property, other than those accessible
+ *    with the other functions of the @trigger.
+ *
+ * Since: 3.36
+ **/
+ECalComponentParameterBag *
+e_cal_component_alarm_trigger_get_parameter_bag (const ECalComponentAlarmTrigger *trigger)
+{
+	g_return_val_if_fail (trigger != NULL, NULL);
+
+	return trigger->parameter_bag;
 }
