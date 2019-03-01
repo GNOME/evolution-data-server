@@ -91,6 +91,7 @@ if(HAVE_GTK)
 			--vapidir=${CMAKE_CURRENT_BINARY_DIR}
 			--girdir=${CMAKE_BINARY_DIR}/src/camel
 			--girdir=${CMAKE_BINARY_DIR}/src/libedataserver
+			--girdir=${CMAKE_BINARY_DIR}/src/calendar/libecal
 			--pkg libedataserver-${API_VERSION}
 			--pkg gio-2.0
 			--pkg gtk+-3.0
