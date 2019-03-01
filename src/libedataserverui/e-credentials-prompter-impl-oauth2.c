@@ -566,7 +566,9 @@ static gboolean
 e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *prompter_oauth2)
 {
 #ifdef ENABLE_OAUTH2
-	GtkWidget *dialog, *content_area, *widget, *progress_bar, *vbox;
+	GtkWidget *dialog, *content_area, *widget, *progress_bar, *vbox, *hbox, *url_entry;
+	GtkStyleContext *style_context;
+	GtkCssProvider *css_provider;
 	GtkGrid *grid;
 	GtkScrolledWindow *scrolled_window;
 	GtkWindow *dialog_parent;
@@ -576,6 +578,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	GString *info_markup;
 	gint row = 0;
 	gboolean success;
+	GError *error = NULL;
 
 	g_return_val_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_OAUTH2 (prompter_oauth2), FALSE);
 	g_return_val_if_fail (prompter_oauth2->priv->prompt_id != NULL, FALSE);
@@ -603,13 +606,30 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		NULL);
 
 	gtk_window_set_default_size (GTK_WINDOW (dialog), 320, 480);
+	gtk_widget_set_name (dialog, "oauth2-prompt");
+
+	css_provider = gtk_css_provider_new ();
+	gtk_css_provider_load_from_data (css_provider,
+		"#oauth2-prompt { -GtkDialog-action-area-border:0px; -GtkDialog-content-area-border:0px; }",
+		-1, &error);
+	style_context = gtk_widget_get_style_context (dialog);
+	if (error == NULL) {
+		gtk_style_context_add_provider (
+			style_context,
+			GTK_STYLE_PROVIDER (css_provider),
+			GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	} else {
+		g_warning ("%s: %s", G_STRFUNC, error->message);
+		g_clear_error (&error);
+	}
+	g_object_unref (css_provider);
 
 	prompter_oauth2->priv->dialog = GTK_DIALOG (dialog);
 	gtk_window_set_resizable (GTK_WINDOW (dialog), TRUE);
 	if (dialog_parent)
 		gtk_window_set_transient_for (GTK_WINDOW (dialog), dialog_parent);
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
-	gtk_container_set_border_width (GTK_CONTAINER (dialog), 12);
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 6);
 
 	content_area = gtk_dialog_get_content_area (prompter_oauth2->priv->dialog);
 
@@ -652,6 +672,40 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 
 	gtk_grid_attach (grid, vbox, 0, row, 1, 1);
 
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
+
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+
+	widget = gtk_label_new (_("URL:"));
+	g_object_set (
+		G_OBJECT (widget),
+		"hexpand", FALSE,
+		"vexpand", FALSE,
+		"halign", GTK_ALIGN_START,
+		"valign", GTK_ALIGN_CENTER,
+		"xalign", 0.0,
+		NULL);
+
+	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+
+	url_entry = gtk_entry_new ();
+	g_object_set (
+		G_OBJECT (url_entry),
+		"can-default", FALSE,
+		"can-focus", FALSE,
+		"hexpand", TRUE,
+		"vexpand", FALSE,
+		"halign", GTK_ALIGN_FILL,
+		"valign", GTK_ALIGN_CENTER,
+		"editable", FALSE,
+		NULL);
+
+	style_context = gtk_widget_get_style_context (url_entry);
+	gtk_style_context_add_class (style_context, GTK_STYLE_CLASS_LABEL);
+	gtk_style_context_set_state (style_context, GTK_STATE_FLAG_INSENSITIVE);
+
+	gtk_box_pack_start (GTK_BOX (hbox), url_entry, TRUE, TRUE, 2);
+
 	widget = gtk_scrolled_window_new (NULL, NULL);
 	g_object_set (
 		G_OBJECT (widget),
@@ -691,6 +745,16 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	g_object_unref (webkit_settings);
 
 	prompter_oauth2->priv->web_view = WEBKIT_WEB_VIEW (widget);
+
+	e_binding_bind_property (
+		prompter_oauth2->priv->web_view, "uri",
+		url_entry, "text",
+		G_BINDING_DEFAULT);
+
+	e_binding_bind_property (
+		prompter_oauth2->priv->web_view, "uri",
+		url_entry, "tooltip-text",
+		G_BINDING_DEFAULT);
 
 	progress_bar = gtk_progress_bar_new ();
 	g_object_set (
