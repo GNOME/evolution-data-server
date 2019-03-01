@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-11 21:04+0100\n"
-"PO-Revision-Date: 2019-02-11 21:05+0100\n"
+"POT-Creation-Date: 2019-03-01 20:14+0100\n"
+"PO-Revision-Date: 2019-03-01 20:15+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -788,7 +788,7 @@ msgid "Birth Date"
 msgstr "Data urodzenia"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:291
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:954
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:960
 msgid "Anniversary"
 msgstr "Rocznica"
 
@@ -1162,7 +1162,7 @@ msgstr "Odebrany obiekt dla UID „%s” jest nieprawidłowy"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1887
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:2335
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3217
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3220
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Utworzenie bufora „%s” się nie powiodło:"
@@ -1400,20 +1400,20 @@ msgstr ""
 "Brak informacji o adresie URL składnika, lokalna pamięć podręczna jest być "
 "może niepełna lub uszkodzona. Proszę go usunąć."
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1795
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1796
 msgid "Failed to parse response data"
 msgstr "Przetworzenie danych odpowiedzi się nie powiodło"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:956
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:962
 msgid "Birthday"
 msgstr "Urodziny"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:992
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:998
 #, c-format
 msgid "Birthday: %s"
 msgstr "Urodziny: %s"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1023
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1029
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Rocznica: %s"
@@ -2693,7 +2693,7 @@ msgstr "Nie można dodać strefy czasowej z nieprawidłowym składnikiem"
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Odebrany obiekt dla UID „%s” nie zawiera oczekiwanego składnika"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4045
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4048
 msgid "attachment.dat"
 msgstr "załącznik.dat"
 
@@ -6898,140 +6898,140 @@ msgstr "%s: kod błędu HTTP %d (%s)"
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "Niepowodzenie, kod błędu HTTP %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:1257
+#: ../src/libedataserver/e-webdav-session.c:1259
 msgid "Failed to post data"
 msgstr "Wysłanie danych się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:1350
-#: ../src/libedataserver/e-webdav-session.c:1425
-#: ../src/libedataserver/e-webdav-session.c:1529
-#: ../src/libedataserver/e-webdav-session.c:2778
-#: ../src/libedataserver/e-webdav-session.c:4030
+#: ../src/libedataserver/e-webdav-session.c:1394
+#: ../src/libedataserver/e-webdav-session.c:1469
+#: ../src/libedataserver/e-webdav-session.c:1573
+#: ../src/libedataserver/e-webdav-session.c:2822
+#: ../src/libedataserver/e-webdav-session.c:4074
 msgid "Failed to get input XML content"
 msgstr "Uzyskanie wejściowej treści XML się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:1361
+#: ../src/libedataserver/e-webdav-session.c:1405
 msgid "Failed to get properties"
 msgstr "Uzyskanie właściwości się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:1435
+#: ../src/libedataserver/e-webdav-session.c:1479
 msgid "Failed to update properties"
 msgstr "Zaktualizowanie właściwości się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:1539
+#: ../src/libedataserver/e-webdav-session.c:1583
 msgid "Failed to issue REPORT"
 msgstr "Wydanie REPORT się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:1598
+#: ../src/libedataserver/e-webdav-session.c:1642
 msgid "Failed to create collection"
 msgstr "Utworzenie kolekcji się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:1689
-#: ../src/libedataserver/e-webdav-session.c:1843
+#: ../src/libedataserver/e-webdav-session.c:1733
+#: ../src/libedataserver/e-webdav-session.c:1887
 msgid "Failed to get XML request content"
 msgstr "Uzyskanie treści żądania XML się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:1701
+#: ../src/libedataserver/e-webdav-session.c:1745
 msgid "Failed to create address book"
 msgstr "Utworzenie książki adresowej się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:1856
+#: ../src/libedataserver/e-webdav-session.c:1900
 msgid "Failed to create calendar"
 msgstr "Utworzenie kalendarza się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:1988
-#: ../src/libedataserver/e-webdav-session.c:1999
+#: ../src/libedataserver/e-webdav-session.c:2032
+#: ../src/libedataserver/e-webdav-session.c:2043
 msgid "Failed to read resource"
 msgstr "Odczytanie zasobu się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:2148
+#: ../src/libedataserver/e-webdav-session.c:2192
 msgid "Cannot rewind input stream: Not supported"
 msgstr "Nie można przewinąć potoku wejściowego: nieobsługiwane"
 
-#: ../src/libedataserver/e-webdav-session.c:2311
-#: ../src/libedataserver/e-webdav-session.c:2455
+#: ../src/libedataserver/e-webdav-session.c:2355
+#: ../src/libedataserver/e-webdav-session.c:2499
 msgid "Failed to put data"
 msgstr "Umieszczenie danych się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:2330
-#: ../src/libedataserver/e-webdav-session.c:2463
+#: ../src/libedataserver/e-webdav-session.c:2374
+#: ../src/libedataserver/e-webdav-session.c:2507
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Umieszczenie danych na serwerze się nie powiodło, kod błędu %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:2555
+#: ../src/libedataserver/e-webdav-session.c:2599
 msgid "Failed to delete resource"
 msgstr "Usunięcie zasobu się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:2622
+#: ../src/libedataserver/e-webdav-session.c:2666
 msgid "Failed to copy resource"
 msgstr "Skopiowanie zasobu się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:2684
+#: ../src/libedataserver/e-webdav-session.c:2728
 msgid "Failed to move resource"
 msgstr "Przeniesienie zasobu się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:2789
+#: ../src/libedataserver/e-webdav-session.c:2833
 msgid "Failed to lock resource"
 msgstr "Zablokowanie zasobu nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:2803
-#: ../src/libedataserver/e-webdav-session.c:3005
+#: ../src/libedataserver/e-webdav-session.c:2847
+#: ../src/libedataserver/e-webdav-session.c:3049
 msgid "Expected application/xml response, but none returned"
 msgstr "Oczekiwano odpowiedzi „application/xml”, ale nie zwrócono żadnej"
 
-#: ../src/libedataserver/e-webdav-session.c:2806
-#: ../src/libedataserver/e-webdav-session.c:3008
+#: ../src/libedataserver/e-webdav-session.c:2850
+#: ../src/libedataserver/e-webdav-session.c:3052
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "Oczekiwano odpowiedzi „application/xml”, ale nie zwrócono „%s”"
 
-#: ../src/libedataserver/e-webdav-session.c:2818
-#: ../src/libedataserver/e-webdav-session.c:3021
+#: ../src/libedataserver/e-webdav-session.c:2862
+#: ../src/libedataserver/e-webdav-session.c:3065
 msgid "Failed to parse XML data"
 msgstr "Przetworzenie danych XML się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:2897
+#: ../src/libedataserver/e-webdav-session.c:2941
 msgid "Failed to refresh lock"
 msgstr "Odświeżenie blokady się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:2956
+#: ../src/libedataserver/e-webdav-session.c:3000
 msgid "Failed to unlock"
 msgstr "Odblokowanie się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:2993
+#: ../src/libedataserver/e-webdav-session.c:3037
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Oczekiwano odpowiedzi „multistatus”, ale zwrócono %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:4040
+#: ../src/libedataserver/e-webdav-session.c:4084
 msgid "Failed to get access control list"
 msgstr "Uzyskanie listy kontroli dostępu się nie powiodło"
 
-#: ../src/libedataserver/e-webdav-session.c:4781
+#: ../src/libedataserver/e-webdav-session.c:4825
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 "Nie można przechować chronionego lub odziedziczonego wpisu kontroli dostępu."
 
-#: ../src/libedataserver/e-webdav-session.c:4788
+#: ../src/libedataserver/e-webdav-session.c:4832
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Podano nieprawidłowy rodzaj naczelnika dla wpisu kontroli dostępu."
 
-#: ../src/libedataserver/e-webdav-session.c:4795
+#: ../src/libedataserver/e-webdav-session.c:4839
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Nie można przechować wpisu kontroli dostępu opartego na własności."
 
-#: ../src/libedataserver/e-webdav-session.c:4802
+#: ../src/libedataserver/e-webdav-session.c:4846
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Wpis kontroli dostępu może być tylko „Udziel” lub „Zabroń”, ale nie „Brak”."
 
-#: ../src/libedataserver/e-webdav-session.c:4810
+#: ../src/libedataserver/e-webdav-session.c:4854
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Wpis kontroli dostępu może być tylko „Udziel” lub „Zabroń”, ale nie oba."
 
-#: ../src/libedataserver/e-webdav-session.c:4869
+#: ../src/libedataserver/e-webdav-session.c:4913
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Uprawnienie wpisu kontroli dostępu nie może być puste."
 
@@ -7182,12 +7182,16 @@ msgstr ""
 "Należy zalogować się do konta %s i zaakceptować warunki, aby uzyskać dostęp "
 "do konta „%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:602
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:605
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1070
 msgid "_Cancel"
 msgstr "_Anuluj"
+
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:679
+msgid "URL:"
+msgstr "Adres:"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:132
 msgid "Address book authentication request"
