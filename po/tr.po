@@ -15,15 +15,15 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.tr\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2019-02-15 07:54+0000\n"
-"PO-Revision-Date: 2019-02-17 11:54+0300\n"
+"POT-Creation-Date: 2019-03-01 17:43+0000\n"
+"PO-Revision-Date: 2019-03-02 09:40+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 "X-Generator: Gtranslator 3.30.1\n"
 "X-POOTLE-MTIME: 1433363404.000000\n"
 
@@ -790,7 +790,7 @@ msgid "Birth Date"
 msgstr "Doğum Günü"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:291
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:954
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:960
 msgid "Anniversary"
 msgstr "Yıldönümü"
 
@@ -1163,7 +1163,7 @@ msgstr "UID “%s” için alınan nesne geçersiz"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1887
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:2335
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3217
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3220
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "“%s” önbelleği oluşturulamadı:"
@@ -1399,20 +1399,20 @@ msgstr ""
 "Bileşen URLʼsi hakkında eksik bilgi, yerel önbellek eksik veya hatalı, "
 "düzeltin veya kaldırın."
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1795
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1796
 msgid "Failed to parse response data"
 msgstr "Yanıt verisi ayrıştırılamadı"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:956
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:962
 msgid "Birthday"
 msgstr "Doğum günü"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:992
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:998
 #, c-format
 msgid "Birthday: %s"
 msgstr "Doğum günü: %s"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1023
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1029
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Yıldönümü: %s"
@@ -2652,7 +2652,7 @@ msgstr "Geçersiz bileşenle saat dilimi eklenemez"
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "UID “%s” için alınan nesne herhangi bir beklenen bileşeni içermiyor"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4045
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4048
 msgid "attachment.dat"
 msgstr "ek.dat"
 
@@ -6810,141 +6810,141 @@ msgstr "%s: HTTP hata kodu %d (%s)"
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "HTTP hatası %d ile başarısızlık (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:1257
+#: ../src/libedataserver/e-webdav-session.c:1259
 msgid "Failed to post data"
 msgstr "Veri gönderilemedi"
 
-#: ../src/libedataserver/e-webdav-session.c:1350
-#: ../src/libedataserver/e-webdav-session.c:1425
-#: ../src/libedataserver/e-webdav-session.c:1529
-#: ../src/libedataserver/e-webdav-session.c:2778
-#: ../src/libedataserver/e-webdav-session.c:4030
+#: ../src/libedataserver/e-webdav-session.c:1394
+#: ../src/libedataserver/e-webdav-session.c:1469
+#: ../src/libedataserver/e-webdav-session.c:1573
+#: ../src/libedataserver/e-webdav-session.c:2822
+#: ../src/libedataserver/e-webdav-session.c:4074
 msgid "Failed to get input XML content"
 msgstr "Girdi XML içeriği alınamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:1361
+#: ../src/libedataserver/e-webdav-session.c:1405
 msgid "Failed to get properties"
 msgstr "Özellikler alınamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:1435
+#: ../src/libedataserver/e-webdav-session.c:1479
 msgid "Failed to update properties"
 msgstr "Özellikler güncellenemedi"
 
-#: ../src/libedataserver/e-webdav-session.c:1539
+#: ../src/libedataserver/e-webdav-session.c:1583
 msgid "Failed to issue REPORT"
 msgstr "RAPOR bildirilemedi"
 
-#: ../src/libedataserver/e-webdav-session.c:1598
+#: ../src/libedataserver/e-webdav-session.c:1642
 msgid "Failed to create collection"
 msgstr "Koleksiyon oluşturulamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:1689
-#: ../src/libedataserver/e-webdav-session.c:1843
+#: ../src/libedataserver/e-webdav-session.c:1733
+#: ../src/libedataserver/e-webdav-session.c:1887
 msgid "Failed to get XML request content"
 msgstr "XML istek içeriği alınamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:1701
+#: ../src/libedataserver/e-webdav-session.c:1745
 msgid "Failed to create address book"
 msgstr "Adres defteri oluşturulamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:1856
+#: ../src/libedataserver/e-webdav-session.c:1900
 msgid "Failed to create calendar"
 msgstr "Takvim oluşturulamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:1988
-#: ../src/libedataserver/e-webdav-session.c:1999
+#: ../src/libedataserver/e-webdav-session.c:2032
+#: ../src/libedataserver/e-webdav-session.c:2043
 msgid "Failed to read resource"
 msgstr "Kaynak okunamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:2148
+#: ../src/libedataserver/e-webdav-session.c:2192
 msgid "Cannot rewind input stream: Not supported"
 msgstr "Girdi akışı geri sarılamadı: Desteklenmiyor"
 
-#: ../src/libedataserver/e-webdav-session.c:2311
-#: ../src/libedataserver/e-webdav-session.c:2455
+#: ../src/libedataserver/e-webdav-session.c:2355
+#: ../src/libedataserver/e-webdav-session.c:2499
 msgid "Failed to put data"
 msgstr "Veri konulamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:2330
-#: ../src/libedataserver/e-webdav-session.c:2463
+#: ../src/libedataserver/e-webdav-session.c:2374
+#: ../src/libedataserver/e-webdav-session.c:2507
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Veri sunucuya konulamadı, hata kodu %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:2555
+#: ../src/libedataserver/e-webdav-session.c:2599
 msgid "Failed to delete resource"
 msgstr "Kaynak silinemedi"
 
-#: ../src/libedataserver/e-webdav-session.c:2622
+#: ../src/libedataserver/e-webdav-session.c:2666
 msgid "Failed to copy resource"
 msgstr "Kaynak kopyalanamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:2684
+#: ../src/libedataserver/e-webdav-session.c:2728
 msgid "Failed to move resource"
 msgstr "Kaynak taşınamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:2789
+#: ../src/libedataserver/e-webdav-session.c:2833
 msgid "Failed to lock resource"
 msgstr "Kaynak kilitlenemedi"
 
-#: ../src/libedataserver/e-webdav-session.c:2803
-#: ../src/libedataserver/e-webdav-session.c:3005
+#: ../src/libedataserver/e-webdav-session.c:2847
+#: ../src/libedataserver/e-webdav-session.c:3049
 msgid "Expected application/xml response, but none returned"
 msgstr "Uygulama/xml yanıtı beklendi ama hiçbiri dönmedi"
 
-#: ../src/libedataserver/e-webdav-session.c:2806
-#: ../src/libedataserver/e-webdav-session.c:3008
+#: ../src/libedataserver/e-webdav-session.c:2850
+#: ../src/libedataserver/e-webdav-session.c:3052
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "Uygulama/xml yanıtı beklendi ama %s döndü"
 
-#: ../src/libedataserver/e-webdav-session.c:2818
-#: ../src/libedataserver/e-webdav-session.c:3021
+#: ../src/libedataserver/e-webdav-session.c:2862
+#: ../src/libedataserver/e-webdav-session.c:3065
 msgid "Failed to parse XML data"
 msgstr "XML verisi ayrıştırılamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:2897
+#: ../src/libedataserver/e-webdav-session.c:2941
 msgid "Failed to refresh lock"
 msgstr "Kilit yenilenemedi"
 
-#: ../src/libedataserver/e-webdav-session.c:2956
+#: ../src/libedataserver/e-webdav-session.c:3000
 msgid "Failed to unlock"
 msgstr "Kilit kaldırılamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:2993
+#: ../src/libedataserver/e-webdav-session.c:3037
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Çoklu durum yanıtı beklendi, ama %d döndü (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:4040
+#: ../src/libedataserver/e-webdav-session.c:4084
 msgid "Failed to get access control list"
 msgstr "Denetim listesine erişilemiyor"
 
-#: ../src/libedataserver/e-webdav-session.c:4781
+#: ../src/libedataserver/e-webdav-session.c:4825
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr "Ne korunmuş ne de devralınan Erişim Denetimi Girdisi depolanabilir."
 
-#: ../src/libedataserver/e-webdav-session.c:4788
+#: ../src/libedataserver/e-webdav-session.c:4832
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Erişim Denetimi Girdisi için geçersiz temel tür girildi."
 
-#: ../src/libedataserver/e-webdav-session.c:4795
+#: ../src/libedataserver/e-webdav-session.c:4839
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Özellik tabanlı Erişim Denetimi Girdisi depolanamaz."
 
-#: ../src/libedataserver/e-webdav-session.c:4802
+#: ../src/libedataserver/e-webdav-session.c:4846
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Erişim Denetimi Girdisi yalnızca Grant (Ver) veya Deny (Reddet) olabilir, "
 "None (Hiçbiri) olamaz."
 
-#: ../src/libedataserver/e-webdav-session.c:4810
+#: ../src/libedataserver/e-webdav-session.c:4854
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Erişim Denetimi Girdisi yalnızca Grant (Ver) veya Deny (Reddet) olabilir, "
 "her ikisi birden olamaz."
 
-#: ../src/libedataserver/e-webdav-session.c:4869
+#: ../src/libedataserver/e-webdav-session.c:4913
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Erişim Denetimi Girdisi ayrıcalığı NULL olamaz."
 
@@ -7095,12 +7095,16 @@ msgstr ""
 "%s hesabınıza giriş yapın ve “%s” hesabınıza erişmek için koşulları kabul "
 "edin."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:602
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:605
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1070
 msgid "_Cancel"
 msgstr "_İptal"
+
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:679
+msgid "URL:"
+msgstr "URL:"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:132
 msgid "Address book authentication request"
