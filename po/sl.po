@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2019-02-04 11:20+0000\n"
-"PO-Revision-Date: 2019-02-14 20:41+0100\n"
+"POT-Creation-Date: 2019-02-14 19:42+0000\n"
+"PO-Revision-Date: 2019-03-02 20:46+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
 "%100==4 ? 3 : 0);\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:220
 #, c-format
@@ -88,10 +88,8 @@ msgstr "Neznana napaka"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1036
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1192
-#, fuzzy
-#| msgid "Signon service did not return a secret"
 msgid "Server didn’t return object’s href"
-msgstr "Storitev prijave ni vrnila skrivnosti"
+msgstr "Odziv strežnika ne vključuje vrednosti href predmeta"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1038
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1194
@@ -1719,19 +1717,19 @@ msgstr "31."
 #, c-format
 msgid "every day forever"
 msgid_plural "every %d days forever"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "vsakih %d dan za vedno"
+msgstr[1] "vsak %d dan za vedno"
+msgstr[2] "vsaka %d dneva za vedno"
+msgstr[3] "vsake %d dni za vedno"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4946
 #, c-format
 msgid "Every day forever"
 msgid_plural "Every %d days forever"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Vsakih %d dni za vedno"
+msgstr[1] "Vsak %d dan za vedno"
+msgstr[2] "Vsaka %d dneva za vedno"
+msgstr[3] "Vsake %d dni za vedno"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4954
 #, c-format
@@ -2310,37 +2308,37 @@ msgstr "na peto nedeljo"
 #, c-format
 msgid "every year forever"
 msgid_plural "every %d years forever"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "vsakih %d let za vedno"
+msgstr[1] "vsako %d leto za vedno"
+msgstr[2] "vsaki %d leti za vedno"
+msgstr[3] "vsaka %d leta za vedno"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5621
 #, c-format
 msgid "Every year forever"
 msgid_plural "Every %d years forever"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Vsakih %d let za vedno"
+msgstr[1] "Vsako %d leto za vedno"
+msgstr[2] "Vsaki %d leti za vedno"
+msgstr[3] "Vsaka %d leta za vedno"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5629
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "vsakih %d let"
+msgstr[1] "vsako %d leto"
+msgstr[2] "vsaki %d leti"
+msgstr[3] "vsake %d leta"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5635
 #, c-format
 msgid "Every year"
 msgid_plural "Every %d years"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Vsakih %d let"
+msgstr[1] "Vsako %d leto"
+msgstr[2] "Vsaki %d leti"
+msgstr[3] "Vsake %d leta"
 
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
@@ -2349,10 +2347,10 @@ msgstr[3] ""
 #, c-format
 msgid "for one occurrence"
 msgid_plural "for %d occurrences"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "za %d pojavitev"
+msgstr[1] "za %d pojavitev"
+msgstr[2] "za %d pojavitvi"
+msgstr[3] "za %d pojavitve"
 
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The '%s' is replaced with actual date, thus it can create something like
@@ -2396,10 +2394,10 @@ msgstr "%1$s %2$s"
 #, c-format
 msgid ", with one exception"
 msgid_plural ", with %d exceptions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "z izjemami (%d)"
+msgstr[1] "z izjemami (%d)"
+msgstr[2] "z izjemami (%d)"
+msgstr[3] "z izjemami (%d)"
 
 #. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
 #. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
@@ -2494,10 +2492,10 @@ msgstr[3] "%d dnevi"
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%d ur"
+msgstr[1] "%d ura"
+msgstr[2] "%d uri"
+msgstr[3] "%d ure"
 
 #: ../src/calendar/libecal/e-cal-util.c:840
 #: ../src/libedataserverui/e-reminders-widget.c:279
@@ -2826,10 +2824,9 @@ msgstr "Ni mogoče preimenovati »%s« v %s: %s"
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-filter-driver.c:262
-#, fuzzy, c-format
-#| msgid "Scanning for changed messages in “%s : %s”"
+#, c-format
 msgid "Transferring filtered messages in “%s : %s”"
-msgstr "Preiskovanje za spremenjena sporočila v »%s : %s«"
+msgstr "Poteka prenašanje filtriranih sporočil iz »%s : %s«"
 
 #: ../src/camel/camel-filter-driver.c:1120
 #: ../src/camel/camel-filter-search.c:934
@@ -3248,7 +3245,7 @@ msgstr "Dešifriranje MIME je spodletelo: skrivnega ključa ni mogoče najti"
 #: ../src/camel/camel-gpg-context.c:2830
 #, c-format
 msgid "GPG blob contains unencrypted text: %s"
-msgstr ""
+msgstr "Paket GPG vsebuje nešifrirano besedilo: %s"
 
 #: ../src/camel/camel-gpg-context.c:2832
 #: ../src/camel/camel-smime-context.c:1545
@@ -3674,6 +3671,9 @@ msgid ""
 "line with “kinit” or open “Online Accounts” in “Settings” and add the "
 "Kerberos account there. Reported error was: %s"
 msgstr ""
+"Ni mogoče zahtevati določila Kerberos. Pridobiti ga je mogoče ročno, na "
+"primer z ukazom kinit v terminalu ali pa z dodajanjem računa Kerberos med "
+"Spletne račune. Objavljena napaka je: %s."
 
 #: ../src/camel/camel-sasl-gssapi.c:518
 #, c-format
@@ -3953,10 +3953,9 @@ msgid "Decoder failed"
 msgstr "Dejanje odšifrirnika je spodletelo"
 
 #: ../src/camel/camel-smime-context.c:1296
-#, fuzzy, c-format
-#| msgid "Cannot find certificate for “%s”"
+#, c-format
 msgid "No valid or appropriate certificate for “%s” was found"
-msgstr "Ni mogoče najti potrdila za »%s«"
+msgstr "Ni mogoče najti veljavnega oziroma ustreznega potrdila za »%s«"
 
 #: ../src/camel/camel-smime-context.c:1336
 msgid "Cannot find common bulk encryption algorithm"
@@ -4199,10 +4198,9 @@ msgstr "Podatki količinske omejitve za mapo »%s : %s« niso na voljo."
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1037
-#, fuzzy, c-format
-#| msgid "Storing changes in folder “%s : %s”"
+#, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
-msgstr "Shranjevanje sprememb v mapo »%s : %s«"
+msgstr "Poteka odstranjevanje datotek predpomnilnika iz mape »%s : %s«"
 
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1131
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:841
@@ -5995,11 +5993,11 @@ msgstr ""
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:7
 msgid "Past reminders for EReminderWatcher"
-msgstr ""
+msgstr "Pretekli opomniki za EReminderWatcher"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:8
 msgid "Snoozed reminders for EReminderWatcher"
-msgstr ""
+msgstr "Zadržani opomniki za EReminderWatcher"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:9
 msgid "Reminder programs"
@@ -6018,48 +6016,52 @@ msgid ""
 "When set to true, the reminders are shown only in the notification tray, "
 "otherwise the reminders dialog is shown immediately"
 msgstr ""
+"Izbrana možnost določa, da bodo opomniki pokazani le v obvestilni vrstici, "
+"sicer pa je prikazano pogovorno okno."
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:13
 msgid "Show reminder notification dialog always on top"
-msgstr ""
+msgstr "Pokaži opomnike obvestil vedno na vrhu"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:14
 msgid ""
 "Whether or not to show reminder notification dialog always on top. Note this "
 "works only as a hint for the window manager, which may or may not obey it."
 msgstr ""
+"Ali naj bo okno obvestil opomnikov vedno na vrhu. Možnost deluje le kot "
+"namig upravljalnika oken, ki lahko prikaz upošteva, ali pa ne."
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:15
 msgid "X position of the reminder notification dialog"
-msgstr ""
+msgstr "Položaj X pogovornega okna opomnika"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:16
 msgid "Y position of the reminder notification dialog"
-msgstr ""
+msgstr "Položaj Y pogovornega okna opomnika"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:17
 msgid "Width of the reminder notification dialog"
-msgstr ""
+msgstr "Širina pogovornega okna opomnika"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:18
 msgid "Height of the reminder notification dialog"
-msgstr ""
+msgstr "Višina pogovornega okna opomnika"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
 msgid "Show reminder notification for completed tasks"
-msgstr ""
+msgstr "Pokaži opomnike za končane dogodke"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
 msgid "Show reminder notification for past events"
-msgstr ""
+msgstr "Pokaži opomnike za pretekle dogodke"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
 msgid "The last used snooze time, in minutes"
-msgstr ""
+msgstr "Nazadnje uporabljen čas dremeža v minutah:"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
 msgid "User-defined snooze times, in minutes"
-msgstr ""
+msgstr "Uporabniško določen čas dremeža v minutah"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:1
 msgid "Whether the migration of old setting was already done"
@@ -6139,23 +6141,6 @@ msgid "A list of hints for OAuth2 services"
 msgstr "Seznam namigov za storitve OAuth2"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
-#, fuzzy
-#| msgid ""
-#| "Users can extend the list of supported protocols and hostnames for "
-#| "defined OAuth2 services, in addition to those hard-coded. Each line can "
-#| "be of the form: servicename[-protocol]:hostname1,hostname2,... where "
-#| "'servicename' is the actual service name; the '-protocol' is optional, "
-#| "and if written, then the service can be used only if both 'protocol' and "
-#| "'hostnameX' match; the 'hostnameX' is the actual host name to compare "
-#| "with, case insensitively. Each line can contain multiple values, "
-#| "separated by comma. There can be provided multiple lines for one OAuth2 "
-#| "service. Note that the actual URL where the token is requested and "
-#| "refreshed cannot be changed here, the hostname is to allow other servers, "
-#| "where the OAuth2 service can be used. Examples: Company:mail.company.com "
-#| "- enables 'Company' OAuth2 authentication for 'mail.company.com' host "
-#| "Company-CalDAV:caldav.company.com - enables 'Company' OAuth2 "
-#| "authentication for any 'CalDAV' source, which reads data from 'caldav."
-#| "company.com' host"
 msgid ""
 "Users can extend the list of supported protocols and hostnames for defined "
 "OAuth2 services, in addition to those hard-coded. Each line can be of the "
@@ -6173,10 +6158,10 @@ msgid ""
 "from “caldav.company.com” host"
 msgstr ""
 "Uporabniki lahko razširijo seznam podprtih protokolov in gostiteljev za "
-"določene storitve OAuth2. Možnosti je mogoče dodati v boliki zapisa: "
+"določene storitve OAuth2. Možnosti je mogoče dodati v obliki zapisa: "
 "imestoritve[-protokol]:gostitelj1,gostitelj2 ..., kjer je »imestoritve« "
 "dejansko ime storitve, vrednosti »-protokola« je izbirna. Če je navedena, je "
-"storitev možno uporabiti le, če sta skladna oba »protokol« in »gostiteljX«. "
+"storitev mogoče uporabiti le, če sta skladna oba »protokol« in »gostiteljX«. "
 "Vrednost »gostiteljX« je dejansko ime gostitelja, pri čemer se ne upošteva "
 "velikosti črk. Vsaka vrstica lahko vključuje več vrednosti, ločenih z "
 "vejico, mogoče pa je navesti storitve OAuth2 tudi v več vrsticah. Vendar pa "
@@ -6184,8 +6169,8 @@ msgstr ""
 "mestu, saj gostitelj omogoča le storitve OAuth2. Primer: Podjetje:email."
 "podjetje.si omogoči overitev OAuth2 za naslov »mail.company.com« za "
 "»Podjetje«, gostitelj Podjetje-CalDAV:caldav.podjetje.si pa omogoči overitev "
-"OAuth2 za »Podjetje« s podopro za »CalDAV«, ki pridobiva podatke prek "
-"gostitelja »caldav.company.com« ..."
+"OAuth2 za »Podjetje« s podporo za »CalDAV«, ki pridobiva podatke prek "
+"gostitelja »caldav.podjetje.si ..."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
@@ -6347,7 +6332,7 @@ msgstr "UID »%s« je že v uporabi"
 #: ../src/libebackend/e-source-registry-server.c:447
 #, c-format
 msgid "Cannot find corresponding collection backend for source “%s”"
-msgstr ""
+msgstr "Ni mogoče najti ustreznega ozadnjega programa zbirke za vir »%s«"
 
 #: ../src/libebackend/e-source-registry-server.c:451
 #, c-format
@@ -7183,10 +7168,10 @@ msgstr "sedaj"
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%d let"
+msgstr[1] "%d leto"
+msgstr[2] "%d leti"
+msgstr[3] "%d leta"
 
 #: ../src/libedataserverui/e-reminders-widget.c:301
 msgctxt "overdue"
@@ -7208,7 +7193,7 @@ msgstr "Preklic vseh dogodkov je spodletel:"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1110
 msgid "Set a custom snooze time for"
-msgstr ""
+msgstr "Nastavitev privzetega časa dremeža"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1123
@@ -7569,6 +7554,12 @@ msgid ""
 "\n"
 "Are you sure you want to run this program?"
 msgstr ""
+"Opomnik koledarja Evolution se bo sprožil. Opomnik je nastavljen, da zažene "
+"naslednji program:\n"
+"\n"
+"         %s\n"
+"\n"
+"Ali ste prepričani, da želite ta program zagnati?"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:387
 msgid "Do not ask me about this program again"
@@ -7580,15 +7571,15 @@ msgstr "Opomnike prikaži v obvestilnem p_odročju"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:666
 msgid "Keep reminder notification window always on _top"
-msgstr ""
+msgstr "Pusti _okno obvestila opomnikov vedno na vrhu"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:667
 msgid "Display reminders for _completed tasks"
-msgstr ""
+msgstr "Pokaži opomnike _opravljenih nalog"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:668
 msgid "Display reminders for _past events"
-msgstr ""
+msgstr "Pokaži opomnike _preteklih dogodkov"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:682
 msgid "Reminders Options:"
@@ -7598,10 +7589,10 @@ msgstr "Možnosti opomnikov:"
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Imate %d opomnikov"
+msgstr[1] "Imate %d opomnik"
+msgstr[2] "Imate %d opomnika"
+msgstr[3] "Imate %d opomnike"
 
 #: ../src/services/evolution-source-registry/builtin/birthdays.source.in.h:1
 msgid "Birthdays & Anniversaries"
@@ -7860,10 +7851,11 @@ msgstr "Ni najdenih virov\n"
 #~ msgid "Failed to issue ENABLE UTF8=ACCEPT"
 #~ msgstr "Izvajanje ukaza NAMESPACE je spodletelo"
 
-#, fuzzy
-#~| msgid "Failed on message %d"
 #~ msgid "Malformed, no message body set"
-#~ msgstr "Spodletelo opravilo na sporočilu %d"
+#~ msgstr "Nepravilno oblikovan del, ni določenega telesa sporočila"
+
+#~ msgid "URL:"
+#~ msgstr "Naslov URL:"
 
 #~ msgid "User name not filled"
 #~ msgstr "Uporabniško ime: ni vpisano"
