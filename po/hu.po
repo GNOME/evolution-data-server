@@ -8,17 +8,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/iss"
-"ues\n"
-"POT-Creation-Date: 2019-02-15 07:54+0000\n"
-"PO-Revision-Date: 2019-02-15 21:13+0100\n"
-"Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
+"issues\n"
+"POT-Creation-Date: 2019-03-03 10:01+0000\n"
+"PO-Revision-Date: 2019-03-03 19:53+0100\n"
+"Last-Translator: Meskó Balázs <mesko.balazs@fsf.hu>\n"
 "Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Poedit 2.2.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:220
@@ -784,7 +784,7 @@ msgid "Birth Date"
 msgstr "Születési dátum"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:291
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:954
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:960
 msgid "Anniversary"
 msgstr "Évforduló"
 
@@ -1156,7 +1156,7 @@ msgstr "A(z) „%s” UID-hez kapott objektum érvénytelen"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1887
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:2335
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3217
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3220
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Nem sikerült létrehozni a(z) „%s” gyorsítótárat:"
@@ -1393,20 +1393,20 @@ msgstr ""
 "Információk hiányoznak az összetevő URL-lel kapcsolatban, a helyi "
 "gyorsítótár valószínűleg nem teljes vagy törött. Távolítsa el."
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1795
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1796
 msgid "Failed to parse response data"
 msgstr "A válaszadatok feldolgozása sikertelen"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:956
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:962
 msgid "Birthday"
 msgstr "Születésnap"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:992
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:998
 #, c-format
 msgid "Birthday: %s"
 msgstr "Születésnap: %s"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1023
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1029
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Évforduló: %s"
@@ -2664,7 +2664,7 @@ msgid "Received object for UID “%s” doesn’t contain any expected component
 msgstr ""
 "A(z) „%s” UID-hez kapott objektum nem tartalmazza egyik várt összetevőt sem"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4045
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4048
 msgid "attachment.dat"
 msgstr "melléklet.dat"
 
@@ -6174,8 +6174,8 @@ msgid ""
 "An OAuth2 client ID to use to connect to Google servers, instead of the one "
 "provided during build time"
 msgstr ""
-"A Google kiszolgálókhoz történő kapcsolódáshoz használandó OAuth2"
-" ügyfél-azonosító az összeállításkor megadott helyett"
+"A Google kiszolgálókhoz történő kapcsolódáshoz használandó OAuth2 ügyfél-"
+"azonosító az összeállításkor megadott helyett"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
 msgid ""
@@ -6191,8 +6191,8 @@ msgid ""
 "An OAuth2 client secret to use to connect to Google servers, instead of the "
 "one provided during build time"
 msgstr ""
-"A Google kiszolgálókhoz történő kapcsolódáshoz használandó OAuth2 ügyféltitok"
-" az összeállításkor megadott helyett"
+"A Google kiszolgálókhoz történő kapcsolódáshoz használandó OAuth2 "
+"ügyféltitok az összeállításkor megadott helyett"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
 msgid ""
@@ -6208,25 +6208,25 @@ msgid ""
 "An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
 "provided during build time"
 msgstr ""
-"Az Outlook kiszolgálókhoz történő kapcsolódáshoz használandó OAuth2"
-" ügyfél-azonosító az összeállításkor megadott helyett"
+"Az Outlook kiszolgálókhoz történő kapcsolódáshoz használandó OAuth2 ügyfél-"
+"azonosító az összeállításkor megadott helyett"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
 msgid ""
 "User-specified OAuth2 client ID for Outlook servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
 msgstr ""
-"Felhasználó által megadott OAuth2 ügyfél-azonosító az Outlook kiszolgálókhoz. "
-"Az üres karakterlánc azt jelenti, hogy az összeállításkor megadott érték "
-"lesz használva. A módosítása újraindítást igényel."
+"Felhasználó által megadott OAuth2 ügyfél-azonosító az Outlook "
+"kiszolgálókhoz. Az üres karakterlánc azt jelenti, hogy az összeállításkor "
+"megadott érték lesz használva. A módosítása újraindítást igényel."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
 msgid ""
 "An OAuth2 client secret to use to connect to Outlook servers, instead of the "
 "one provided during build time"
 msgstr ""
-"Az Outlook kiszolgálókhoz történő kapcsolódáshoz használandó OAuth2"
-" ügyféltitok az összeállításkor megadott helyett"
+"Az Outlook kiszolgálókhoz történő kapcsolódáshoz használandó OAuth2 "
+"ügyféltitok az összeállításkor megadott helyett"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
 msgid ""
@@ -6859,142 +6859,142 @@ msgstr "%s: %d (%s) HTTP hibakód"
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "Nem sikerült %d (%s) HTTP hibakóddal"
 
-#: ../src/libedataserver/e-webdav-session.c:1257
+#: ../src/libedataserver/e-webdav-session.c:1259
 msgid "Failed to post data"
 msgstr "Sikertelen adatküldés"
 
-#: ../src/libedataserver/e-webdav-session.c:1350
-#: ../src/libedataserver/e-webdav-session.c:1425
-#: ../src/libedataserver/e-webdav-session.c:1529
-#: ../src/libedataserver/e-webdav-session.c:2778
-#: ../src/libedataserver/e-webdav-session.c:4030
+#: ../src/libedataserver/e-webdav-session.c:1394
+#: ../src/libedataserver/e-webdav-session.c:1469
+#: ../src/libedataserver/e-webdav-session.c:1573
+#: ../src/libedataserver/e-webdav-session.c:2822
+#: ../src/libedataserver/e-webdav-session.c:4074
 msgid "Failed to get input XML content"
 msgstr "Nem sikerült lekérni a bemeneti XML tartalmat"
 
-#: ../src/libedataserver/e-webdav-session.c:1361
+#: ../src/libedataserver/e-webdav-session.c:1405
 msgid "Failed to get properties"
 msgstr "A tulajdonságok lekérése meghiúsult"
 
-#: ../src/libedataserver/e-webdav-session.c:1435
+#: ../src/libedataserver/e-webdav-session.c:1479
 msgid "Failed to update properties"
 msgstr "A tulajdonságok frissítése meghiúsult"
 
-#: ../src/libedataserver/e-webdav-session.c:1539
+#: ../src/libedataserver/e-webdav-session.c:1583
 msgid "Failed to issue REPORT"
 msgstr "Nem sikerült a REPORT kiadása"
 
-#: ../src/libedataserver/e-webdav-session.c:1598
+#: ../src/libedataserver/e-webdav-session.c:1642
 msgid "Failed to create collection"
 msgstr "Nem sikerült létrehozni a gyűjteményt"
 
-#: ../src/libedataserver/e-webdav-session.c:1689
-#: ../src/libedataserver/e-webdav-session.c:1843
+#: ../src/libedataserver/e-webdav-session.c:1733
+#: ../src/libedataserver/e-webdav-session.c:1887
 msgid "Failed to get XML request content"
 msgstr "Nem sikerült lekérni az XML kéréstartalmat"
 
-#: ../src/libedataserver/e-webdav-session.c:1701
+#: ../src/libedataserver/e-webdav-session.c:1745
 msgid "Failed to create address book"
 msgstr "A címjegyzék létrehozása meghiúsult"
 
-#: ../src/libedataserver/e-webdav-session.c:1856
+#: ../src/libedataserver/e-webdav-session.c:1900
 msgid "Failed to create calendar"
 msgstr "A naptár létrehozása meghiúsult"
 
-#: ../src/libedataserver/e-webdav-session.c:1988
-#: ../src/libedataserver/e-webdav-session.c:1999
+#: ../src/libedataserver/e-webdav-session.c:2032
+#: ../src/libedataserver/e-webdav-session.c:2043
 msgid "Failed to read resource"
 msgstr "Nem sikerült olvasni az erőforrást"
 
-#: ../src/libedataserver/e-webdav-session.c:2148
+#: ../src/libedataserver/e-webdav-session.c:2192
 msgid "Cannot rewind input stream: Not supported"
 msgstr "A bemeneti adatfolyamban újrapozicionálás nem támogatott"
 
-#: ../src/libedataserver/e-webdav-session.c:2311
-#: ../src/libedataserver/e-webdav-session.c:2455
+#: ../src/libedataserver/e-webdav-session.c:2355
+#: ../src/libedataserver/e-webdav-session.c:2499
 msgid "Failed to put data"
 msgstr "Sikertelen adatelhelyezés"
 
-#: ../src/libedataserver/e-webdav-session.c:2330
-#: ../src/libedataserver/e-webdav-session.c:2463
+#: ../src/libedataserver/e-webdav-session.c:2374
+#: ../src/libedataserver/e-webdav-session.c:2507
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Sikertelen adatelhelyezés a kiszolgálón, %d (%s) hibakóddal"
 
-#: ../src/libedataserver/e-webdav-session.c:2555
+#: ../src/libedataserver/e-webdav-session.c:2599
 msgid "Failed to delete resource"
 msgstr "A erőforrás törlése meghiúsult"
 
-#: ../src/libedataserver/e-webdav-session.c:2622
+#: ../src/libedataserver/e-webdav-session.c:2666
 msgid "Failed to copy resource"
 msgstr "Nem sikerült másolni az erőforrást"
 
-#: ../src/libedataserver/e-webdav-session.c:2684
+#: ../src/libedataserver/e-webdav-session.c:2728
 msgid "Failed to move resource"
 msgstr "Nem sikerült áthelyezni az erőforrást"
 
-#: ../src/libedataserver/e-webdav-session.c:2789
+#: ../src/libedataserver/e-webdav-session.c:2833
 msgid "Failed to lock resource"
 msgstr "Nem sikerült zárolni az erőforrást"
 
-#: ../src/libedataserver/e-webdav-session.c:2803
-#: ../src/libedataserver/e-webdav-session.c:3005
+#: ../src/libedataserver/e-webdav-session.c:2847
+#: ../src/libedataserver/e-webdav-session.c:3049
 msgid "Expected application/xml response, but none returned"
 msgstr "A várt application/xml válasz helyett nem érkezett semmi"
 
-#: ../src/libedataserver/e-webdav-session.c:2806
-#: ../src/libedataserver/e-webdav-session.c:3008
+#: ../src/libedataserver/e-webdav-session.c:2850
+#: ../src/libedataserver/e-webdav-session.c:3052
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "A várt application/xml válasz helyett %s érkezett"
 
-#: ../src/libedataserver/e-webdav-session.c:2818
-#: ../src/libedataserver/e-webdav-session.c:3021
+#: ../src/libedataserver/e-webdav-session.c:2862
+#: ../src/libedataserver/e-webdav-session.c:3065
 msgid "Failed to parse XML data"
 msgstr "A XML adatok feldolgozása sikertelen"
 
-#: ../src/libedataserver/e-webdav-session.c:2897
+#: ../src/libedataserver/e-webdav-session.c:2941
 msgid "Failed to refresh lock"
 msgstr "Nem sikerült a zár frissítése"
 
-#: ../src/libedataserver/e-webdav-session.c:2956
+#: ../src/libedataserver/e-webdav-session.c:3000
 msgid "Failed to unlock"
 msgstr "Nem sikerült a feloldás"
 
-#: ../src/libedataserver/e-webdav-session.c:2993
+#: ../src/libedataserver/e-webdav-session.c:3037
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "A várt több állapotú válasz helyett %d érkezett (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:4040
+#: ../src/libedataserver/e-webdav-session.c:4084
 msgid "Failed to get access control list"
 msgstr "Nem sikerült a hozzáférés-szabályozási lista lekérése"
 
-#: ../src/libedataserver/e-webdav-session.c:4781
+#: ../src/libedataserver/e-webdav-session.c:4825
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 "Nem tárolható sem a védett, sem az örökölt hozzáférés-szabályozási bejegyzés."
 
-#: ../src/libedataserver/e-webdav-session.c:4788
+#: ../src/libedataserver/e-webdav-session.c:4832
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Érvénytelen résztvevőtípus a hozzáférés-szabályozási bejegyzéshez."
 
-#: ../src/libedataserver/e-webdav-session.c:4795
+#: ../src/libedataserver/e-webdav-session.c:4839
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Nem tárolható tulajdonságalapú hozzáférés-szabályozási bejegyzés."
 
-#: ../src/libedataserver/e-webdav-session.c:4802
+#: ../src/libedataserver/e-webdav-session.c:4846
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "A hozzáférés-szabályozási bejegyzés csak a Grant vagy Deny egyike lehet, "
 "None nem."
 
-#: ../src/libedataserver/e-webdav-session.c:4810
+#: ../src/libedataserver/e-webdav-session.c:4854
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "A hozzáférés-szabályozási bejegyzés csak a Grant vagy Deny egyike lehet, "
 "mindkettő nem."
 
-#: ../src/libedataserver/e-webdav-session.c:4869
+#: ../src/libedataserver/e-webdav-session.c:4913
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "A hozzáférés-szabályozási bejegyzés jogosultsága nem lehet NULL."
 
@@ -7145,12 +7145,16 @@ msgstr ""
 "Jelentkezzen be a(z) %s fiókjába, és fogadja el a feltételeket a(z) „%s” "
 "fiók eléréséhez."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:602
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:605
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1070
 msgid "_Cancel"
 msgstr "_Mégse"
+
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:679
+msgid "URL:"
+msgstr "URL:"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:132
 msgid "Address book authentication request"
@@ -7822,4 +7826,3 @@ msgstr "Nem sikerült kapcsolódni a forrásnyilvántartáshoz: %s\n"
 #, c-format
 msgid "No sources had been found\n"
 msgstr "Nem találhatók források\n"
-
