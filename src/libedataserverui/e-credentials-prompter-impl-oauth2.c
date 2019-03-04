@@ -605,7 +605,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		_("_Cancel"), GTK_RESPONSE_CANCEL,
 		NULL);
 
-	gtk_window_set_default_size (GTK_WINDOW (dialog), 320, 480);
+	gtk_window_set_default_size (GTK_WINDOW (dialog), 400, 680);
 	gtk_widget_set_name (dialog, "oauth2-prompt");
 
 	css_provider = gtk_css_provider_new ();
