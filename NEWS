@@ -1,3 +1,33 @@
+Evolution-Data-Server 3.31.92 2019-03-04
+----------------------------------------
+
+Bug Fixes:
+	I#68 - WebDAV registry backend Refresh can remove existing sources ][ (Milan Crha)
+	I#86 - Rejecting connection certificate causes constant connection retries (Milan Crha)
+	I#87 - [CalDAV] Free/busy request uses wrong format for the time-range (Milan Crha)
+	I#88 - Contacts with Birthday on Feb 29th Have No Appointment in Non-leap Years (Milan Crha)
+
+Miscellaneous:
+	[CalDAV] POST data to scheduling outbox with correct Content-Type (Milan Crha)
+	Change order of CFLAGS/LDFLAGS passed to gtk-doc (Milan Crha)
+	[OAuth2 Prompter] Show also current URL in the credentials prompt dialog (Milan Crha)
+	Make the OAuth2 credentials prompt window default size a bit larger (Milan Crha)
+
+Translations:
+	Rafael Fontenelle (pt_BR)
+	Changwoo Ryu (ko)
+	A S Alam (pa)
+	Kukuh Syafaat (id)
+	Марко Костић (sr)
+	Fabio Tomat (fur)
+	Piotr Drąg (pl)
+	Emin Tufan Çetin (tr)
+	Matej Urbančič (sl)
+	Nathan Follens (nl)
+	Aurimas Černius (lt)
+	Marek Cernocky (cs)
+	Fran Dieguez (gl)
+
 Evolution-Data-Server 3.31.91 2019-02-18
 ----------------------------------------
 
