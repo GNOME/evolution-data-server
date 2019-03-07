@@ -1643,7 +1643,7 @@ e_credentials_prompter_prompt (ECredentialsPrompter *prompter,
  * e_credentials_prompter_prompt_finish:
  * @prompter: an #ECredentialsPrompter
  * @result: a #GAsyncResult
- * @out_source: (transfer full): (allow-none): optionally set to an #ESource, on which the prompt was started; can be %NULL
+ * @out_source: (transfer full) (allow-none): optionally set to an #ESource, on which the prompt was started; can be %NULL
  * @out_credentials: (transfer full): set to an #ENamedParameters with provied credentials
  * @error: return location for a #GError, or %NULL
  *
