@@ -1909,7 +1909,7 @@ e_client_wait_for_connected (EClient *client,
  * e_client_wait_for_connected_finish:
  * @client: an #EClient
  * @result: a #GAsyncResult
- * @error: (out): (allow-none): a #GError to set an error, or %NULL
+ * @error: (out) (allow-none): a #GError to set an error, or %NULL
  *
  * Finishes previous call of e_client_wait_for_connected().
  *
@@ -1957,7 +1957,7 @@ client_wait_for_connected_notify_cb (ESource *source,
  * @client: an #EClient
  * @timeout_seconds: a timeout for the wait, in seconds
  * @cancellable: (allow-none): a #GCancellable; or %NULL
- * @error: (out): (allow-none): a #GError to set an error, or %NULL
+ * @error: (out) (allow-none): a #GError to set an error, or %NULL
  *
  * Synchronously waits until the @client is connected (according
  * to @ESource::connection-status property), but not longer than @timeout_seconds.
