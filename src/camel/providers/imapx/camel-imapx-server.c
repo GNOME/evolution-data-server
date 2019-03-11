@@ -5730,14 +5730,19 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 	GArray *on_user = NULL, *off_user = NULL;
 	CamelFolder *folder;
 	CamelMessageInfo *info;
+	CamelFolderChangeInfo *expunged_changes = NULL;
+	GList *expunged_removed_list = NULL;
 	GHashTable *stamps;
 	guint32 permanentflags;
-	struct _uidset_state uidset;
+	struct _uidset_state uidset, uidset_expunge;
 	gint unread_change = 0;
 	gboolean use_real_junk_path = FALSE;
 	gboolean use_real_trash_path = FALSE;
 	gboolean remove_deleted_flags = FALSE;
+	gboolean is_real_trash_folder = FALSE;
 	gboolean is_real_junk_folder = FALSE;
+	gboolean has_uidplus_capability;
+	gboolean expunge_deleted;
 	gboolean nothing_to_do;
 	gboolean success;
 
@@ -5804,8 +5809,10 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 					camel_folder_get_parent_store (folder),
 					real_trash_path, 0, cancellable, NULL);
 
+			is_real_trash_folder = trash_folder == folder;
+
 			/* Remove deleted flags in all but the trash folder itself */
-			remove_deleted_flags = !trash_folder || trash_folder != folder;
+			remove_deleted_flags = !trash_folder || !is_real_trash_folder;
 
 			use_real_trash_path = trash_folder != NULL;
 
@@ -5987,6 +5994,11 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 		return FALSE;
 	}
 
+	imapx_uidset_init (&uidset_expunge, 0, 100);
+
+	has_uidplus_capability = CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, UIDPLUS);
+	expunge_deleted = is_real_trash_folder && !remove_deleted_flags;
+
 	permanentflags = camel_imapx_mailbox_get_permanentflags (mailbox);
 
 	success = TRUE;
@@ -5996,7 +6008,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 
 		for (jj = 0; jj < G_N_ELEMENTS (flags_table) && success; jj++) {
 			guint32 flag = flags_table[jj].flag;
-			CamelIMAPXCommand *ic = NULL;
+			CamelIMAPXCommand *ic = NULL, *ic_expunge = NULL;
 
 			if ((orset & flag) == 0)
 				continue;
@@ -6009,7 +6021,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 				gboolean remove_deleted_flag;
 				guint32 flags;
 				guint32 sflags;
-				gint send;
+				gint send, send_expunge = 0;
 
 				/* the 'stamps' hash table contains only those uid-s,
 				   which were also flagged, not only 'dirty' */
@@ -6037,6 +6049,20 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 					 * message appears normally in the
 					 * real Trash folder when copied. */
 					flags &= ~CAMEL_MESSAGE_DELETED;
+				} else if (expunge_deleted && (flags & CAMEL_MESSAGE_DELETED) != 0) {
+					if (has_uidplus_capability) {
+						if (!ic_expunge)
+							ic_expunge = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_EXPUNGE, "UID EXPUNGE ");
+
+						send_expunge = imapx_uidset_add (&uidset_expunge, ic_expunge, camel_message_info_get_uid (info));
+					}
+
+					if (!expunged_changes)
+						expunged_changes = camel_folder_change_info_new ();
+
+					camel_folder_change_info_remove_uid (expunged_changes, camel_message_info_get_uid (info));
+					expunged_removed_list = g_list_prepend (expunged_removed_list,
+						(gpointer) camel_pstring_strdup (camel_message_info_get_uid (info)));
 				}
 
 				if ( (on && (((flags ^ sflags) & flags) & flag))
@@ -6054,9 +6080,34 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 					camel_imapx_command_unref (ic);
 					ic = NULL;
 
-					if (!success)
+					if (!success) {
+						g_clear_object (&info);
 						break;
+					}
 				}
+
+				if (has_uidplus_capability && (
+				    send_expunge == 1 || (i == changed_uids->len - 1 && ic_expunge && imapx_uidset_done (&uidset_expunge, ic_expunge)))) {
+					success = camel_imapx_server_process_command_sync (is, ic_expunge, _("Error expunging message"), cancellable, error);
+
+					camel_imapx_command_unref (ic_expunge);
+					ic_expunge = NULL;
+
+					if (!success) {
+						g_clear_object (&info);
+						break;
+					}
+
+					camel_folder_changed (folder, expunged_changes);
+					camel_folder_summary_remove_uids (camel_folder_get_folder_summary (folder), expunged_removed_list);
+
+					camel_folder_change_info_free (expunged_changes);
+					expunged_changes = NULL;
+
+					g_list_free_full (expunged_removed_list, (GDestroyNotify) camel_pstring_free);
+					expunged_removed_list = NULL;
+				}
+
 				if (flag == CAMEL_MESSAGE_SEEN) {
 					/* Remember how the server's unread count will change if this
 					 * command succeeds */
@@ -6088,7 +6139,27 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 					break;
 			}
 
+			if (has_uidplus_capability && ic_expunge && imapx_uidset_done (&uidset_expunge, ic_expunge)) {
+				success = camel_imapx_server_process_command_sync (is, ic_expunge, _("Error expunging message"), cancellable, error);
+
+				camel_imapx_command_unref (ic_expunge);
+				ic_expunge = NULL;
+
+				if (!success)
+					break;
+
+				camel_folder_changed (folder, expunged_changes);
+				camel_folder_summary_remove_uids (camel_folder_get_folder_summary (folder), expunged_removed_list);
+
+				camel_folder_change_info_free (expunged_changes);
+				expunged_changes = NULL;
+
+				g_list_free_full (expunged_removed_list, (GDestroyNotify) camel_pstring_free);
+				expunged_removed_list = NULL;
+			}
+
 			g_warn_if_fail (ic == NULL);
+			g_warn_if_fail (ic_expunge == NULL);
 		}
 
 		if (user_set && (permanentflags & CAMEL_MESSAGE_USER) != 0 && success) {
@@ -6101,13 +6172,22 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 				for (i = 0; i < c->infos->len; i++) {
 					CamelMessageInfo *info = c->infos->pdata[i];
 
+					/* When expunging deleted in the real Trash folder, then skip those deleted,
+					   because they are gone now. */
+					if (expunge_deleted && has_uidplus_capability &&
+					    (((camel_message_info_get_flags (info) & CAMEL_IMAPX_SERVER_FLAGS) & permanentflags) & CAMEL_MESSAGE_DELETED) != 0) {
+						if (ic && i == c->infos->len - 1 && imapx_uidset_done (&uidset, ic))
+							goto store_changes;
+						continue;
+					}
+
 					if (ic == NULL)
 						ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_SYNC_CHANGES, "UID STORE ");
 
 					if (imapx_uidset_add (&uidset, ic, camel_message_info_get_uid (info)) == 1
 					    || (i == c->infos->len - 1 && imapx_uidset_done (&uidset, ic))) {
 						gchar *utf7;
-
+ store_changes:
 						utf7 = camel_utf8_utf7 (c->name);
 
 						camel_imapx_command_add (ic, " %tFLAGS.SILENT (%t)", on ? "+" : "-", utf7 ? utf7 : c->name);
@@ -6124,7 +6204,32 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 					}
 				}
 			}
+
+			g_warn_if_fail (ic == NULL);
 		}
+	}
+
+	if (success && expunged_changes && expunge_deleted && !has_uidplus_capability) {
+		CamelIMAPXCommand *ic;
+
+		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_EXPUNGE, "EXPUNGE");
+		success = camel_imapx_server_process_command_sync (is, ic, _("Error expunging message"), cancellable, error);
+		camel_imapx_command_unref (ic);
+	}
+
+	if (success && expunged_changes) {
+		camel_folder_changed (folder, expunged_changes);
+		camel_folder_summary_remove_uids (camel_folder_get_folder_summary (folder), expunged_removed_list);
+	}
+
+	if (expunged_changes) {
+		camel_folder_change_info_free (expunged_changes);
+		expunged_changes = NULL;
+	}
+
+	if (expunged_removed_list) {
+		g_list_free_full (expunged_removed_list, (GDestroyNotify) camel_pstring_free);
+		expunged_removed_list = NULL;
 	}
 
 	if (success) {
