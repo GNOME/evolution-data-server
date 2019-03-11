@@ -257,6 +257,16 @@ gboolean	e_cal_util_event_dates_match	(icalcomponent *icalcomp1,
  **/
 #define CAL_STATIC_CAPABILITY_COMPONENT_COLOR		"component-color"
 
+/**
+ * CAL_STATIC_CAPABILITY_TASK_HANDLE_RECUR:
+ *
+ * When the capability is set, the backend handles task recurrence
+ * completion on its own. This does not imply CAL_STATIC_CAPABILITY_TASK_CAN_RECUR.
+ *
+ * Since: 3.32.1
+ **/
+#define CAL_STATIC_CAPABILITY_TASK_HANDLE_RECUR		"task-handle-recur"
+
 /* Recurrent events. Management for instances */
 icalcomponent *	e_cal_util_construct_instance	(icalcomponent *icalcomp,
 						 struct icaltimetype rid);

@@ -2210,7 +2210,8 @@ e_cal_util_mark_task_complete_sync (icalcomponent *vtodo,
 	g_return_val_if_fail (icalcomponent_isa (vtodo) == ICAL_VTODO_COMPONENT, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (cal_client), FALSE);
 
-	if (e_cal_util_component_has_recurrences (vtodo)) {
+	if (e_cal_util_component_has_recurrences (vtodo) &&
+	    !e_client_check_capability (E_CLIENT (cal_client), CAL_STATIC_CAPABILITY_TASK_HANDLE_RECUR)) {
 		gboolean is_last = FALSE, change_count = FALSE;
 		struct icaltimetype new_dtstart = icaltime_null_time (), new_due = icaltime_null_time ();
 
