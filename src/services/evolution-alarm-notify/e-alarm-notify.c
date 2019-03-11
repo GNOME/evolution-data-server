@@ -661,11 +661,12 @@ e_alarm_notify_status_icon_popup_menu_cb (GtkStatusIcon *status_icon,
 	struct _items {
 		const gchar *label;
 		const gchar *opt_name;
+		guint32 binding_flags;
 	} items[] = {
-		{ N_("Display reminders in notification area _only"), "notify-with-tray" },
-		{ N_("Keep reminder notification window always on _top"), "notify-window-on-top" },
-		{ N_("Display reminders for _completed tasks"), "notify-completed-tasks" },
-		{ N_("Display reminders for _past events"), "notify-past-events" }
+		{ N_("Display Reminders window with _notifications"), "notify-with-tray", G_SETTINGS_BIND_DEFAULT | G_SETTINGS_BIND_INVERT_BOOLEAN },
+		{ N_("Keep reminder notification window always on _top"), "notify-window-on-top", G_SETTINGS_BIND_DEFAULT },
+		{ N_("Display reminders for _completed tasks"), "notify-completed-tasks", G_SETTINGS_BIND_DEFAULT },
+		{ N_("Display reminders for _past events"), "notify-past-events", G_SETTINGS_BIND_DEFAULT }
 	};
 
 	EAlarmNotify *an = user_data;
@@ -692,7 +693,7 @@ e_alarm_notify_status_icon_popup_menu_cb (GtkStatusIcon *status_icon,
 
 		g_settings_bind (an->priv->settings, items[ii].opt_name,
 			item, "active",
-			G_SETTINGS_BIND_DEFAULT);
+			items[ii].binding_flags);
 	}
 
 	g_signal_connect (popup_menu, "deactivate", G_CALLBACK (e_alarm_notify_schedule_popup_destroy), NULL);
