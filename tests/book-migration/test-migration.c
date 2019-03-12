@@ -337,10 +337,15 @@ list_migration_sandboxes (void)
 			EDS_TEST_SQLITE_BOOKS, error->message);
 
 	while ((filename = g_dir_read_name (dir)) != NULL) {
-
 		gchar *fullpath = g_build_filename (EDS_TEST_SQLITE_BOOKS, filename, NULL);
+		gchar *old_bdb, *new_contactsdb;
 
-		if (g_file_test (fullpath, G_FILE_TEST_IS_DIR)) {
+		old_bdb = g_build_filename (fullpath, "addressbook.dump", NULL);
+		new_contactsdb = g_build_filename (fullpath, "contacts.db", NULL);
+
+		if (g_file_test (fullpath, G_FILE_TEST_IS_DIR) && (
+		    g_file_test (old_bdb, G_FILE_TEST_IS_REGULAR) ||
+		    g_file_test (new_contactsdb, G_FILE_TEST_IS_REGULAR))) {
 
 #if defined (TEST_VERSIONS_WITH_BDB)
 			sandboxes = g_list_prepend (sandboxes, g_strdup (filename));
@@ -349,15 +354,13 @@ list_migration_sandboxes (void)
 			 * is the case then we skip the migration tests from versions of EDS where we
 			 * used Berkeley DB
 			 */
-			gchar *old_bdb = g_build_filename (EDS_TEST_SQLITE_BOOKS, filename, "addressbook.dump", NULL);
-
 			if (!g_file_test (old_bdb, G_FILE_TEST_EXISTS))
 				sandboxes = g_list_prepend (sandboxes, g_strdup (filename));
-
-			g_free (old_bdb);
 #endif
 		}
 
+		g_free (old_bdb);
+		g_free (new_contactsdb);
 		g_free (fullpath);
 	}
 
