@@ -138,3 +138,44 @@ install(TARGETS ebackend
 install(FILES ${HEADERS}
 	DESTINATION ${privincludedir}/libebackend
 )
+
+set(gir_sources ${SOURCES} ${HEADERS})
+set(gir_identifies_prefixes E)
+set(gir_includes GObject-2.0 Gio-2.0 Soup-2.4 libxml2-2.0)
+set(gir_cflags
+	-DLIBEBACKEND_COMPILATION
+)
+set(gir_libdirs
+	${CMAKE_BINARY_DIR}/src/private
+	${CMAKE_BINARY_DIR}/src/camel
+	${CMAKE_BINARY_DIR}/src/libedataserver
+)
+set(gir_libs
+	camel
+	edataserver
+	ebackend
+)
+set(gir_deps
+	${CMAKE_BINARY_DIR}/src/camel/Camel-${API_VERSION}.gir
+	${CMAKE_BINARY_DIR}/src/libedataserver/EDataServer-${API_VERSION}.gir
+)
+
+gir_filter_out_sources(gir_sources e-cache-reaper-utils.)
+gir_filter_out_sources(gir_sources e-dbhash.)
+gir_filter_out_sources(gir_sources e-db3-utils.)
+
+gir_add_introspection_simple(
+	EBackend
+	libebackend
+	${API_VERSION}
+	"libebackend/libebackend.h"
+	gir_identifies_prefixes
+	gir_includes
+	gir_cflags
+	gir_libdirs
+	gir_libs
+	gir_deps
+	gir_sources
+	SCANNER_EXTRA_ARGS
+	"--add-init-section=extern void e_cache_reaper_type_register (GTypeModule *type_module)$<SEMICOLON>e_cache_reaper_type_register (NULL)$<SEMICOLON>"
+)
