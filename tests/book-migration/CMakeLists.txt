@@ -1,10 +1,11 @@
+add_subdirectory(db)
+
 set(extra_deps
 	ebook
 	ebook-contacts
 	edbus-private
 	client-test-utils
 )
-
 
 set(extra_defines
 	-DEDS_TEST_WORK_DIR=\"${CMAKE_BINARY_DIR}/tests/test-server-utils/cache\"
@@ -55,6 +56,9 @@ foreach(_test ${TESTS})
 		extra_ldflags
 	)
 	add_check_test(${_test})
+	if(HAVE_DB_LOAD)
+		add_dependencies(${_test} libdb-addressbooks)
+	endif(HAVE_DB_LOAD)
 endforeach(_test)
 
 # This is a little cheat, it's not a real test, but can be built with the macro
@@ -92,5 +96,3 @@ add_custom_target(setup-migration
 	COMMAND ${CMAKE_COMMAND} -E echo "Done."
 	DEPENDS setup-migration-test
 )
-
-add_subdirectory(db)
