@@ -11,6 +11,7 @@
 
 include(PrintableOptions)
 include(PkgConfigEx)
+include(CMakeParseArguments)
 
 add_printable_option(ENABLE_INTROSPECTION "Enable GObject introspection" OFF)
 
@@ -183,12 +184,15 @@ endmacro(_gir_deps_to_includedir)
 macro(gir_add_introspection_simple gir_library pkg_export_prefix gir_library_version c_include gir_identifies_prefixes_var gir_includes_var extra_cflags_var gir_extra_libdirs_var gir_libs_var gir_deps_var gir_sources_var)
 	gir_construct_names(${gir_library} ${gir_library_version} gir_name gir_vars_prefix)
 
+	cmake_parse_arguments(gir "" "" "SCANNER_EXTRA_ARGS" ${ARGN})
+	list(APPEND gir_SCANNER_EXTRA_ARGS "--warn-all")
+
 	unset(INTROSPECTION_SCANNER_ARGS)
 	unset(INTROSPECTION_SCANNER_ENV)
 	unset(INTROSPECTION_COMPILER_ARGS)
 
 	set(${gir_vars_prefix} ${gir_library})
-	set(${gir_vars_prefix}_SCANNERFLAGS "--warn-all")
+	set(${gir_vars_prefix}_SCANNERFLAGS ${gir_SCANNER_EXTRA_ARGS})
 	set(${gir_vars_prefix}_VERSION "${gir_library_version}")
 	set(${gir_vars_prefix}_LIBRARY "${gir_vars_prefix}")
 	set(${gir_vars_prefix}_INCLUDES ${${gir_includes_var}})
