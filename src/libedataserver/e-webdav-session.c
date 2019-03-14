@@ -4173,6 +4173,11 @@ e_webdav_session_extract_privilege_simple (xmlXPathObjectPtr xpath_obj_privilege
 	return privilege;
 }
 
+typedef struct _PrivilegeSetData {
+	gboolean any_found;
+	GSList **out_privileges;
+} PrivilegeSetData;
+
 static gboolean
 e_webdav_session_current_user_privilege_set_cb (EWebDAVSession *webdav,
 						xmlXPathContextPtr xpath_ctx,
@@ -4182,10 +4187,10 @@ e_webdav_session_current_user_privilege_set_cb (EWebDAVSession *webdav,
 						guint status_code,
 						gpointer user_data)
 {
-	GSList **out_privileges = user_data;
+	PrivilegeSetData *psd = user_data;
 
 	g_return_val_if_fail (xpath_ctx != NULL, FALSE);
-	g_return_val_if_fail (out_privileges != NULL, FALSE);
+	g_return_val_if_fail (psd != NULL, FALSE);
 
 	if (!xpath_prop_prefix) {
 		e_xml_xpath_context_register_namespaces (xpath_ctx,
@@ -4194,6 +4199,8 @@ e_webdav_session_current_user_privilege_set_cb (EWebDAVSession *webdav,
 	} else if (status_code == SOUP_STATUS_OK &&
 		   e_xml_xpath_eval_exists (xpath_ctx, "%s/D:current-user-privilege-set/D:privilege", xpath_prop_prefix)) {
 		xmlXPathObjectPtr xpath_obj;
+
+		psd->any_found = TRUE;
 
 		xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/D:current-user-privilege-set/D:privilege", xpath_prop_prefix);
 
@@ -4212,7 +4219,7 @@ e_webdav_session_current_user_privilege_set_cb (EWebDAVSession *webdav,
 
 					privilege = e_webdav_session_extract_privilege_simple (xpath_obj_privilege);
 					if (privilege)
-						*out_privileges = g_slist_prepend (*out_privileges, privilege);
+						*(psd->out_privileges) = g_slist_prepend (*(psd->out_privileges), privilege);
 
 					xmlXPathFreeObject (xpath_obj_privilege);
 				}
@@ -4220,6 +4227,9 @@ e_webdav_session_current_user_privilege_set_cb (EWebDAVSession *webdav,
 
 			xmlXPathFreeObject (xpath_obj);
 		}
+	} else if (status_code == SOUP_STATUS_OK &&
+		   e_xml_xpath_eval_exists (xpath_ctx, "%s/D:current-user-privilege-set", xpath_prop_prefix)) {
+		psd->any_found = TRUE;
 	}
 
 	return TRUE;
@@ -4252,6 +4262,7 @@ e_webdav_session_get_current_user_privilege_set_sync (EWebDAVSession *webdav,
 						      GError **error)
 {
 	EXmlDocument *xml;
+	PrivilegeSetData psd;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
@@ -4266,13 +4277,20 @@ e_webdav_session_get_current_user_privilege_set_sync (EWebDAVSession *webdav,
 	e_xml_document_add_empty_element (xml, NULL, "current-user-privilege-set");
 	e_xml_document_end_element (xml); /* prop */
 
+	psd.any_found = FALSE;
+	psd.out_privileges = out_privileges;
+
 	success = e_webdav_session_propfind_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
-		e_webdav_session_current_user_privilege_set_cb, out_privileges, cancellable, error);
+		e_webdav_session_current_user_privilege_set_cb, &psd, cancellable, error);
 
 	g_object_unref (xml);
 
-	if (success)
+	if (success && !psd.any_found) {
+		success = FALSE;
+		g_set_error_literal (error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND, soup_status_get_phrase (SOUP_STATUS_NOT_FOUND));
+	} else if (success) {
 		*out_privileges = g_slist_reverse (*out_privileges);
+	}
 
 	return success;
 }
