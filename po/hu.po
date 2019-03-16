@@ -8,17 +8,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
-"issues\n"
-"POT-Creation-Date: 2019-03-03 10:01+0000\n"
-"PO-Revision-Date: 2019-03-03 19:53+0100\n"
-"Last-Translator: Meskó Balázs <mesko.balazs@fsf.hu>\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/iss"
+"ues\n"
+"POT-Creation-Date: 2019-03-12 13:59+0000\n"
+"PO-Revision-Date: 2019-03-16 23:23+0100\n"
+"Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
 "Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Lokalize 2.0\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:220
@@ -4465,58 +4465,61 @@ msgstr "Hiba a levél információinak lekérésekor"
 msgid "Error running STATUS"
 msgstr "Hiba a STATUS futtatásakor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6052
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6082
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6117
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6078
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6133
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6197
 msgid "Error syncing changes"
 msgstr "Hiba a változások szinkronizálásakor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6255
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6091
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6143
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6216
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6360
 msgid "Error expunging message"
 msgstr "Hiba a levél törlésekor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6333
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6438
 msgid "Error fetching folders"
 msgstr "Hiba a mappák lekérésekor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6341
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6446
 msgid "Error fetching subscribed folders"
 msgstr "Hiba a feliratkozott mappák lekérésekor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6396
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6501
 msgid "Error creating folder"
 msgstr "Hiba a mappa létrehozásakor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6452
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6557
 msgid "Error deleting folder"
 msgstr "Hiba a mappa törlésekor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6498
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6603
 msgid "Error renaming folder"
 msgstr "Hiba a mappa átnevezésekor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6530
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6635
 msgid "Error subscribing to folder"
 msgstr "Hiba a mappára feliratkozáskor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6566
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6671
 msgid "Error unsubscribing from folder"
 msgstr "Hiba a mappáról leiratkozáskor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6606
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6711
 msgid "IMAP server does not support quotas"
 msgstr "Az IMAP kiszolgáló nem támogatja a kvótákat"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6618
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6723
 msgid "Error retrieving quota information"
 msgstr "Hiba a kvótainformációk lekérésekor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6683
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6788
 msgid "Search failed"
 msgstr "A keresés sikertelen"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6801
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6906
 msgid "Error running IDLE"
 msgstr "Hiba az IDLE futtatásakor"
 
@@ -7508,8 +7511,8 @@ msgstr ""
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:227
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:255
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:760
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:969
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:761
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:970
 msgid "Reminders"
 msgstr "Emlékeztetők"
 
@@ -7546,27 +7549,27 @@ msgstr ""
 msgid "Do not ask me about this program again"
 msgstr "Ne kérdezzen meg többet ezzel a programmal kapcsolatban"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:665
-msgid "Display reminders in notification area _only"
-msgstr "Emlékeztetők megjelenítése _csak az értesítési területen"
-
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:666
+msgid "Display Reminders window with _notifications"
+msgstr "_Emlékeztetők ablak megjelenítése értesítésekkel"
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:667
 msgid "Keep reminder notification window always on _top"
 msgstr "Az emlékeztető értesítési ablak legyen _mindig felül"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:667
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:668
 msgid "Display reminders for _completed tasks"
 msgstr "E_mlékeztetők megjelenítése a befejezett feladatokról"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:668
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:669
 msgid "Display reminders for _past events"
 msgstr "E_mlékeztetők megjelenítése a múltbeli eseményekről"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:682
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:683
 msgid "Reminders Options:"
 msgstr "Emlékeztetők beállításai:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:776
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:777
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
@@ -7826,3 +7829,4 @@ msgstr "Nem sikerült kapcsolódni a forrásnyilvántartáshoz: %s\n"
 #, c-format
 msgid "No sources had been found\n"
 msgstr "Nem találhatók források\n"
+
