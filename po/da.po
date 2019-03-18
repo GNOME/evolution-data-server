@@ -34,8 +34,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2019-03-03 10:01+0000\n"
-"PO-Revision-Date: 2019-02-12 19:13+0100\n"
+"POT-Creation-Date: 2019-03-12 15:18+0000\n"
+"PO-Revision-Date: 2019-03-15 19:39+0100\n"
 "Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -4483,58 +4483,61 @@ msgstr "Fejl under indhentning af brevinfo"
 msgid "Error running STATUS"
 msgstr "Fejl ved kørsel af STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6052
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6082
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6117
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6078
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6133
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6197
 msgid "Error syncing changes"
 msgstr "Fejl under synkronisering af ændringer"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6255
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6091
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6143
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6216
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6360
 msgid "Error expunging message"
 msgstr "Fejl under udrensning af brev"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6333
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6438
 msgid "Error fetching folders"
 msgstr "Fejl under hentning af mapper"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6341
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6446
 msgid "Error fetching subscribed folders"
 msgstr "Fejl under hentning af abonnerede mapper"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6396
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6501
 msgid "Error creating folder"
 msgstr "Fejl under oprettelse af mappe"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6452
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6557
 msgid "Error deleting folder"
 msgstr "Fejl under sletning af mappe"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6498
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6603
 msgid "Error renaming folder"
 msgstr "Fejl under omdøbning af mappe"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6530
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6635
 msgid "Error subscribing to folder"
 msgstr "Fejl under abonnering på mappe"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6566
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6671
 msgid "Error unsubscribing from folder"
 msgstr "Fejl ved annullering af abonnement på mappe"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6606
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6711
 msgid "IMAP server does not support quotas"
 msgstr "IMAP-serveren understøtter ikke kvoter"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6618
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6723
 msgid "Error retrieving quota information"
 msgstr "Fejl under hentning af kvoteinformation"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6683
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6788
 msgid "Search failed"
 msgstr "Søgning slog fejl"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6801
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6906
 msgid "Error running IDLE"
 msgstr "Fejl under kørsel af IDLE"
 
@@ -6185,7 +6188,7 @@ msgid ""
 "An OAuth2 client ID to use to connect to Google servers, instead of the one "
 "provided during build time"
 msgstr ""
-"En OAuth2-klient-id til at forbinde til Google-servere med i stedet for den, "
+"Et OAuth2-klient-id til at forbinde til Google-servere med i stedet for den, "
 "der blev angivet ved kompilering"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
@@ -6201,7 +6204,7 @@ msgid ""
 "An OAuth2 client secret to use to connect to Google servers, instead of the "
 "one provided during build time"
 msgstr ""
-"En OAuth-klienthemmelighed til at forbinde til Google-servere med i stedet "
+"En OAuth2-klienthemmelighed til at forbinde til Google-servere med i stedet "
 "for den, der blev angivet ved kompilering"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
@@ -6218,8 +6221,8 @@ msgid ""
 "An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
 "provided during build time"
 msgstr ""
-"En OAuth-klient-id til at forbinde til Outlook-servere med i stedet for den, "
-"der blev angivet ved kompilering"
+"Et OAuth2-klient-id til at forbinde til Outlook-servere med i stedet for "
+"den, der blev angivet ved kompilering"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
 msgid ""
@@ -6234,7 +6237,7 @@ msgid ""
 "An OAuth2 client secret to use to connect to Outlook servers, instead of the "
 "one provided during build time"
 msgstr ""
-"En OAuth-klienthemmelighed til at forbinde til Outlook-servere med i stedet "
+"En OAuth2-klienthemmelighed til at forbinde til Outlook-servere med i stedet "
 "for den, der blev angivet ved kompilering"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
