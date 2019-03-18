@@ -98,7 +98,7 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 
 	webdav = e_webdav_session_new (source);
 
-	e_soup_session_setup_logging (E_SOUP_SESSION (webdav), g_getenv ("WEBDAV_DEBUG"));
+	e_soup_session_setup_logging (E_SOUP_SESSION (webdav), g_getenv ("CARDDAV_DEBUG"));
 
 	e_binding_bind_property (
 		bbdav, "proxy-resolver",
