@@ -581,6 +581,7 @@ typedef struct _RefreshData {
 	gchar *base_url;
 	ENamedParameters *credentials;
 	ESourceRegistry *registry;
+	guint32 supports_filter;
 } RefreshData;
 
 static void
@@ -642,7 +643,7 @@ e_webdav_discover_content_trust_prompt_done_cb (GObject *source_object,
 		refresh_data_free (rd);
 	} else if (response == E_TRUST_PROMPT_RESPONSE_ACCEPT || response == E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY) {
 		/* Use NULL credentials to reuse those from the last time. */
-		e_webdav_discover_sources_full (source, rd->base_url, E_WEBDAV_DISCOVER_SUPPORTS_NONE, rd->credentials,
+		e_webdav_discover_sources_full (source, rd->base_url, rd->supports_filter, rd->credentials,
 			rd->registry ? (EWebDAVDiscoverRefSourceFunc) e_source_registry_ref_source : NULL, rd->registry,
 			rd->cancellable, e_webdav_discover_content_refresh_done_cb, rd);
 	} else {
@@ -689,7 +690,7 @@ e_webdav_discover_content_credentials_prompt_done_cb (GObject *source_object,
 			e_source_authentication_set_user (auth_extension, e_named_parameters_get (rd->credentials, E_SOURCE_CREDENTIAL_USERNAME));
 		}
 
-		e_webdav_discover_sources_full (source, rd->base_url, E_WEBDAV_DISCOVER_SUPPORTS_NONE, rd->credentials,
+		e_webdav_discover_sources_full (source, rd->base_url, rd->supports_filter, rd->credentials,
 			rd->registry ? (EWebDAVDiscoverRefSourceFunc) e_source_registry_ref_source : NULL, rd->registry,
 			rd->cancellable, e_webdav_discover_content_refresh_done_cb, rd);
 	}
@@ -849,6 +850,7 @@ e_webdav_discover_content_refresh (GtkWidget *content,
 	rd->base_url = g_strdup (data->base_url);
 	rd->credentials = NULL;
 	rd->registry = e_credentials_prompter_get_registry (data->credentials_prompter);
+	rd->supports_filter = data->supports_filter;
 
 	if (rd->registry)
 		g_object_ref (rd->registry);
@@ -896,7 +898,7 @@ e_webdav_discover_content_refresh (GtkWidget *content,
 
 	gtk_grid_attach (GTK_GRID (content), GTK_WIDGET (data->info_bar), 0, 2, 1, 1);
 
-	e_webdav_discover_sources_full (source, rd->base_url, E_WEBDAV_DISCOVER_SUPPORTS_NONE, rd->credentials,
+	e_webdav_discover_sources_full (source, rd->base_url, rd->supports_filter, rd->credentials,
 		rd->registry ? (EWebDAVDiscoverRefSourceFunc) e_source_registry_ref_source : NULL, rd->registry,
 		rd->cancellable, e_webdav_discover_content_refresh_done_cb, rd);
 

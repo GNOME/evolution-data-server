@@ -3618,12 +3618,21 @@ e_webdav_session_list_sync (EWebDAVSession *webdav,
 			    GError **error)
 {
 	EXmlDocument *xml;
+	gboolean calendar_props, addressbook_props;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
 	g_return_val_if_fail (out_resources != NULL, FALSE);
 
 	*out_resources = NULL;
+
+	if (!(flags & (E_WEBDAV_LIST_ONLY_CALENDAR | E_WEBDAV_LIST_ONLY_ADDRESSBOOK))) {
+		calendar_props = TRUE;
+		addressbook_props = TRUE;
+	} else {
+		calendar_props = (flags & E_WEBDAV_LIST_ONLY_CALENDAR) != 0;
+		addressbook_props = (flags & E_WEBDAV_LIST_ONLY_ADDRESSBOOK) != 0;
+	}
 
 	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "propfind");
 	g_return_val_if_fail (xml != NULL, FALSE);
@@ -3632,13 +3641,14 @@ e_webdav_session_list_sync (EWebDAVSession *webdav,
 
 	e_xml_document_add_empty_element (xml, NULL, "resourcetype");
 
-	if ((flags & E_WEBDAV_LIST_SUPPORTS) != 0 ||
+	if (calendar_props && (
+	    (flags & E_WEBDAV_LIST_SUPPORTS) != 0 ||
 	    (flags & E_WEBDAV_LIST_DESCRIPTION) != 0 ||
-	    (flags & E_WEBDAV_LIST_COLOR) != 0) {
+	    (flags & E_WEBDAV_LIST_COLOR) != 0)) {
 		e_xml_document_add_namespaces (xml, "C", E_WEBDAV_NS_CALDAV, NULL);
 	}
 
-	if ((flags & E_WEBDAV_LIST_SUPPORTS) != 0) {
+	if (calendar_props && (flags & E_WEBDAV_LIST_SUPPORTS) != 0) {
 		e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CALDAV, "supported-calendar-component-set");
 	}
 
@@ -3649,9 +3659,11 @@ e_webdav_session_list_sync (EWebDAVSession *webdav,
 	if ((flags & E_WEBDAV_LIST_ETAG) != 0) {
 		e_xml_document_add_empty_element (xml, NULL, "getetag");
 
-		e_xml_document_add_namespaces (xml, "CS", E_WEBDAV_NS_CALENDARSERVER, NULL);
+		if (calendar_props) {
+			e_xml_document_add_namespaces (xml, "CS", E_WEBDAV_NS_CALENDARSERVER, NULL);
 
-		e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CALENDARSERVER, "getctag");
+			e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CALENDARSERVER, "getctag");
+		}
 	}
 
 	if ((flags & E_WEBDAV_LIST_CONTENT_TYPE) != 0) {
@@ -3671,14 +3683,17 @@ e_webdav_session_list_sync (EWebDAVSession *webdav,
 	}
 
 	if ((flags & E_WEBDAV_LIST_DESCRIPTION) != 0) {
-		e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CALDAV, "calendar-description");
+		if (calendar_props)
+			e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CALDAV, "calendar-description");
 
-		e_xml_document_add_namespaces (xml, "A", E_WEBDAV_NS_CARDDAV, NULL);
+		if (addressbook_props) {
+			e_xml_document_add_namespaces (xml, "A", E_WEBDAV_NS_CARDDAV, NULL);
 
-		e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CARDDAV, "addressbook-description");
+			e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CARDDAV, "addressbook-description");
+		}
 	}
 
-	if ((flags & E_WEBDAV_LIST_COLOR) != 0) {
+	if (calendar_props && (flags & E_WEBDAV_LIST_COLOR) != 0) {
 		e_xml_document_add_namespaces (xml, "IC", E_WEBDAV_NS_ICAL, NULL);
 
 		e_xml_document_add_empty_element (xml, E_WEBDAV_NS_ICAL, "calendar-color");
