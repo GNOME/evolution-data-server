@@ -1124,7 +1124,7 @@ camel_network_service_can_reach (CamelNetworkService *service,
 	task = g_task_new (service, cancellable, callback, user_data);
 	g_task_set_source_tag (task, camel_network_service_can_reach);
 
-	description = g_strdup_printf (_("Checking reach-ability of account “%s”"), camel_service_get_display_name (CAMEL_SERVICE (service)));
+	description = g_strdup_printf (_("Checking reachability of account “%s”"), camel_service_get_display_name (CAMEL_SERVICE (service)));
 
 	camel_session_submit_job (session, description, network_service_can_reach_thread, task, g_object_unref);
 
