@@ -58,7 +58,7 @@ camel_provider_module_init (void)
 
 	/* Hide sendmail in Flatpak. It cannot access the host sendmail
 	   anyway, neither any custom binary from the host. */
-	if (!g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS))
+	if (!g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
 		camel_provider_register (&sendmail_provider);
 }
 
