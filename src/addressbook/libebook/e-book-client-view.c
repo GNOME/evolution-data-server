@@ -624,8 +624,7 @@ book_client_view_progress_cb (EDBusAddressBookView *object,
 
 static void
 book_client_view_complete_cb (EDBusAddressBookView *object,
-			      const gchar *arg_error_name,
-			      const gchar *arg_error_message,
+			      const gchar * const *arg_error,
                               GWeakRef *client_view_weak_ref)
 {
 	EBookClientView *client_view;
@@ -644,8 +643,8 @@ book_client_view_complete_cb (EDBusAddressBookView *object,
 
 		signal_closure = g_slice_new0 (SignalClosure);
 		g_weak_ref_init (&signal_closure->client_view, client_view);
-		if (arg_error_name && *arg_error_name && arg_error_message)
-			signal_closure->error = g_dbus_error_new_for_dbus_error (arg_error_name, arg_error_message);
+		if (arg_error && arg_error[0] && *arg_error[0] && arg_error[1])
+			signal_closure->error = g_dbus_error_new_for_dbus_error (arg_error[0], arg_error[1]);
 		else
 			signal_closure->error = NULL;
 

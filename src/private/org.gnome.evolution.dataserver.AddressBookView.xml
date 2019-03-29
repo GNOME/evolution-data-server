@@ -12,40 +12,39 @@
 -->
 <interface name="org.gnome.evolution.dataserver.AddressBookView">
 
-  <signal name="ObjectsAdded">
+  <signal name="objects_added">
     <arg name="objects" type="as"/>
   </signal>
 
-  <signal name="ObjectsModified">
+  <signal name="objects_modified">
     <arg name="objects" type="as"/>
   </signal>
 
-  <signal name="ObjectsRemoved">
+  <signal name="objects_removed">
     <arg name="uids" type="as"/>
   </signal>
 
-  <signal name="Progress">
+  <signal name="progress">
     <arg name="percent" type="u"/>
     <arg name="message" type="s"/>
   </signal>
 
-  <signal name="Complete">
-    <arg name="error_name" type="s"/>
-    <arg name="error_message" type="s"/>
+  <signal name="complete">
+    <arg name="error" type="as"/>
   </signal>
 
-  <method name="Start"/>
+  <method name="start"/>
 
-  <method name="Stop"/>
+  <method name="stop"/>
 
-  <method name="SetFlags">
+  <method name="set_flags">
     <arg name="flags" type="u"/>
   </method>
 
-  <method name="SetFieldsOfInterest">
+  <method name="set_fields_of_interest">
     <arg name="only_fields" direction="in" type="as"/>
   </method>
 
-  <method name="Dispose"/>
+  <method name="dispose"/>
 
 </interface>
