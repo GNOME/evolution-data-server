@@ -1,3 +1,24 @@
+Evolution-Data-Server 3.32.1 2019-04-08
+---------------------------------------
+
+Bug Fixes:
+	I#91 - Verify database presence in test-migration test (Milan Crha)
+	I#92 - [IMAPx] Permanently delete single items in real Trash folder (Milan Crha)
+	I#95 - [WebDAV Session] Ignore empty current-user-privilege-set response (Milan Crha)
+	M!12 - libedataserver: Fix annoations syntax (Marco Trevisan (Treviño))
+	ews-I#39 - Let handle recurring task completion by the server (Milan Crha)
+
+Miscellaneous:
+	[Flatpak] Use a persistent location for an NSS certificate database (Milan Crha)
+	Rename AddressBookView/CalendarView D-Bus members for backward compatibility (Milan Crha)
+
+Translations:
+	Марко Костић (sr)
+	Matej Urbančič (sl)
+	Alan Mortensen (da)
+	Asier Sarasua Garmendia (eu)
+	Carmen Bianca BAKKER (eo)
+
 Evolution-Data-Server 3.32.0 2019-03-11
 ---------------------------------------
 
