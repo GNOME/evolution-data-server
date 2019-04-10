@@ -380,7 +380,7 @@ intervaltree_fixup_deletion (EIntervalTree *tree,
 	x->red = 0;
 }
 
-/** Caller should hold the lock. **/
+/* * Caller should hold the lock. * */
 static EIntervalNode *
 intervaltree_search_component (EIntervalTree *tree,
                                const gchar *searched_uid,
@@ -508,7 +508,7 @@ e_intervaltree_insert (EIntervalTree *tree,
 
 	g_rec_mutex_lock (&tree->priv->mutex);
 
-	e_cal_component_get_uid (comp, &uid);
+	uid = e_cal_component_get_uid (comp);
 	rid = e_cal_component_get_recurid_as_string (comp);
 	e_intervaltree_remove (tree, uid, rid);
 
@@ -678,7 +678,8 @@ e_intervaltree_remove (EIntervalTree *tree,
  * @start: start of the interval
  * @end: end of the interval
  * 
- * Returns: list of nodes that overlaps given interval or %NULL.
+ * Returns: (element-type ECalComponent) (nullable) (transfer full): list of #ECalComponent-s
+ *    that overlap given interval, or %NULL.
  *
  * Since: 2.32
  **/

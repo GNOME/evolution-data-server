@@ -46,25 +46,30 @@
 
   <method name="CreateObjects">
     <arg name="ics_objects" direction="in" type="as"/>
+    <arg name="opflags" direction="in" type="u"/>
     <arg name="uids" direction="out" type="as"/>
   </method>
 
   <method name="ModifyObjects">
     <arg name="ics_objects" direction="in" type="as"/>
     <arg name="mod_type" direction="in" type="s"/>
+    <arg name="opflags" direction="in" type="u"/>
   </method>
 
   <method name="RemoveObjects">
     <arg name="uid_rid_array" direction="in" type="a(ss)"/>
     <arg name="mod_type" direction="in" type="s"/>
+    <arg name="opflags" direction="in" type="u"/>
   </method>
 
   <method name="ReceiveObjects">
     <arg name="ics_object" direction="in" type="s"/>
+    <arg name="opflags" direction="in" type="u"/>
   </method>
 
   <method name="SendObjects">
     <arg name="ics_object" direction="in" type="s"/>
+    <arg name="opflags" direction="in" type="u"/>
     <arg name="users" direction="out" type="as"/>
     <arg name="out_ics_object" direction="out" type="s"/>
   </method>
@@ -97,6 +102,7 @@
     <arg name="uid" direction="in" type="s"/>
     <arg name="rid" direction="in" type="s"/>
     <arg name="alarm_uid" direction="in" type="s"/>
+    <arg name="opflags" direction="in" type="u"/>
   </method>
 
   <method name="GetTimezone">

@@ -19,6 +19,8 @@
 #include <glib/gstdio.h>
 #include <gio/gio.h>
 #include <string.h>
+#include <libical-glib/libical-glib.h>
+
 #include "e-cal-system-timezone.h"
 
 #ifndef G_OS_WIN32
@@ -541,27 +543,29 @@ static gchar *
 system_timezone_find (void)
 {
 	GHashTable *ical_zones;
-	icalarray *builtin_timezones;
-	gint ii;
+	ICalArray *builtin_timezones;
+	gint ii, nelems;
 	gchar *tz, *config_tz = NULL;
 
 	/* return only timezones known to libical */
 	ical_zones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	g_hash_table_add (ical_zones, g_strdup ("UTC"));
 
-	builtin_timezones = icaltimezone_get_builtin_timezones ();
-	for (ii = 0; ii < builtin_timezones->num_elements; ii++) {
-		icaltimezone *zone;
+	builtin_timezones = i_cal_timezone_get_builtin_timezones ();
+	nelems = i_cal_array_size (builtin_timezones);
+
+	for (ii = 0; ii < nelems; ii++) {
+		ICalTimezone *zone;
 		const gchar *location;
 
-		zone = icalarray_element_at (builtin_timezones, ii);
+		zone = i_cal_timezone_array_element_at (builtin_timezones, ii);
 		if (!zone)
 			continue;
 
-		location = icaltimezone_get_location (zone);
+		location = i_cal_timezone_get_location (zone);
 		if (location)
-			g_hash_table_add (
-				ical_zones, g_strdup (location));
+			g_hash_table_add (ical_zones, g_strdup (location));
+		g_object_unref (zone);
 	}
 
 	/* softlink is the best option, it points to the correct file */

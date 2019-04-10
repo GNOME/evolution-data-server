@@ -26,7 +26,6 @@
 
 #include "evolution-data-server-config.h"
 
-#include <libical/ical.h>
 #include <glib/gi18n-lib.h>
 #include <unistd.h>
 
@@ -42,9 +41,6 @@
 #define E_DATA_CAL_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_DATA_CAL, EDataCalPrivate))
-
-#define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
-#define EDC_ERROR_EX(_code, _msg) e_data_cal_create_error (_code, _msg)
 
 typedef struct _AsyncContext AsyncContext;
 
@@ -220,290 +216,7 @@ data_cal_convert_to_client_error (GError *error)
 	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
 		error->domain = E_CAL_CLIENT_ERROR;
 		error->code = E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR;
-
-		return;
 	}
-
-	if (error->domain != E_DATA_CAL_ERROR)
-		return;
-
-	switch (error->code) {
-		case RepositoryOffline:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_REPOSITORY_OFFLINE;
-			break;
-
-		case PermissionDenied:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_PERMISSION_DENIED;
-			break;
-
-		case InvalidRange:
-			error->domain = E_CAL_CLIENT_ERROR;
-			error->code = E_CAL_CLIENT_ERROR_INVALID_RANGE;
-			break;
-
-		case ObjectNotFound:
-			error->domain = E_CAL_CLIENT_ERROR;
-			error->code = E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND;
-			break;
-
-		case InvalidObject:
-			error->domain = E_CAL_CLIENT_ERROR;
-			error->code = E_CAL_CLIENT_ERROR_INVALID_OBJECT;
-			break;
-
-		case ObjectIdAlreadyExists:
-			error->domain = E_CAL_CLIENT_ERROR;
-			error->code = E_CAL_CLIENT_ERROR_OBJECT_ID_ALREADY_EXISTS;
-			break;
-
-		case AuthenticationFailed:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_AUTHENTICATION_FAILED;
-			break;
-
-		case AuthenticationRequired:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_AUTHENTICATION_REQUIRED;
-			break;
-
-		case UnsupportedAuthenticationMethod:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD;
-			break;
-
-		case TLSNotAvailable:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_TLS_NOT_AVAILABLE;
-			break;
-
-		case NoSuchCal:
-			error->domain = E_CAL_CLIENT_ERROR;
-			error->code = E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR;
-			break;
-
-		case UnknownUser:
-			error->domain = E_CAL_CLIENT_ERROR;
-			error->code = E_CAL_CLIENT_ERROR_UNKNOWN_USER;
-			break;
-
-		case OfflineUnavailable:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_OFFLINE_UNAVAILABLE;
-			break;
-
-		case SearchSizeLimitExceeded:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_SEARCH_SIZE_LIMIT_EXCEEDED;
-			break;
-
-		case SearchTimeLimitExceeded:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_SEARCH_TIME_LIMIT_EXCEEDED;
-			break;
-
-		case InvalidQuery:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_INVALID_QUERY;
-			break;
-
-		case QueryRefused:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_QUERY_REFUSED;
-			break;
-
-		case CouldNotCancel:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_COULD_NOT_CANCEL;
-			break;
-
-		case InvalidArg:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_INVALID_ARG;
-			break;
-
-		case NotSupported:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_NOT_SUPPORTED;
-			break;
-
-		case NotOpened:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_NOT_OPENED;
-			break;
-
-		case UnsupportedField:
-		case UnsupportedMethod:
-		case OtherError:
-		case InvalidServerVersion:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_OTHER_ERROR;
-			break;
-
-		default:
-			g_warn_if_reached ();
-	}
-}
-
-/* Create the EDataCal error quark */
-GQuark
-e_data_cal_error_quark (void)
-{
-	#define ERR_PREFIX "org.gnome.evolution.dataserver.Calendar."
-
-	static const GDBusErrorEntry entries[] = {
-		{ Success,				ERR_PREFIX "Success" },
-		{ Busy,					ERR_PREFIX "Busy" },
-		{ RepositoryOffline,			ERR_PREFIX "RepositoryOffline" },
-		{ PermissionDenied,			ERR_PREFIX "PermissionDenied" },
-		{ InvalidRange,				ERR_PREFIX "InvalidRange" },
-		{ ObjectNotFound,			ERR_PREFIX "ObjectNotFound" },
-		{ InvalidObject,			ERR_PREFIX "InvalidObject" },
-		{ ObjectIdAlreadyExists,		ERR_PREFIX "ObjectIdAlreadyExists" },
-		{ AuthenticationFailed,			ERR_PREFIX "AuthenticationFailed" },
-		{ AuthenticationRequired,		ERR_PREFIX "AuthenticationRequired" },
-		{ UnsupportedField,			ERR_PREFIX "UnsupportedField" },
-		{ UnsupportedMethod,			ERR_PREFIX "UnsupportedMethod" },
-		{ UnsupportedAuthenticationMethod,	ERR_PREFIX "UnsupportedAuthenticationMethod" },
-		{ TLSNotAvailable,			ERR_PREFIX "TLSNotAvailable" },
-		{ NoSuchCal,				ERR_PREFIX "NoSuchCal" },
-		{ UnknownUser,				ERR_PREFIX "UnknownUser" },
-		{ OfflineUnavailable,			ERR_PREFIX "OfflineUnavailable" },
-		{ SearchSizeLimitExceeded,		ERR_PREFIX "SearchSizeLimitExceeded" },
-		{ SearchTimeLimitExceeded,		ERR_PREFIX "SearchTimeLimitExceeded" },
-		{ InvalidQuery,				ERR_PREFIX "InvalidQuery" },
-		{ QueryRefused,				ERR_PREFIX "QueryRefused" },
-		{ CouldNotCancel,			ERR_PREFIX "CouldNotCancel" },
-		{ OtherError,				ERR_PREFIX "OtherError" },
-		{ InvalidServerVersion,			ERR_PREFIX "InvalidServerVersion" },
-		{ InvalidArg,				ERR_PREFIX "InvalidArg" },
-		{ NotSupported,				ERR_PREFIX "NotSupported" },
-		{ NotOpened,				ERR_PREFIX "NotOpened" }
-	};
-
-	#undef ERR_PREFIX
-
-	static volatile gsize quark_volatile = 0;
-
-	g_dbus_error_register_error_domain ("e-data-cal-error", &quark_volatile, entries, G_N_ELEMENTS (entries));
-
-	return (GQuark) quark_volatile;
-}
-
-/**
- * e_data_cal_status_to_string:
- * @status: an #EDataCalCallStatus
- *
- * Returns: A localized text representation of the @status.
- *
- * Since: 2.32
- **/
-const gchar *
-e_data_cal_status_to_string (EDataCalCallStatus status)
-{
-	gint i;
-	static struct _statuses {
-		EDataCalCallStatus status;
-		const gchar *msg;
-	} statuses[] = {
-		{ Success,				N_("Success") },
-		{ Busy,					N_("Backend is busy") },
-		{ RepositoryOffline,			N_("Repository offline") },
-		{ PermissionDenied,			N_("Permission denied") },
-		{ InvalidRange,				N_("Invalid range") },
-		{ ObjectNotFound,			N_("Object not found") },
-		{ InvalidObject,			N_("Invalid object") },
-		{ ObjectIdAlreadyExists,		N_("Object ID already exists") },
-		{ AuthenticationFailed,			N_("Authentication Failed") },
-		{ AuthenticationRequired,		N_("Authentication Required") },
-		{ UnsupportedField,			N_("Unsupported field") },
-		{ UnsupportedMethod,			N_("Unsupported method") },
-		{ UnsupportedAuthenticationMethod,	N_("Unsupported authentication method") },
-		{ TLSNotAvailable,			N_("TLS not available") },
-		{ NoSuchCal,				N_("Calendar does not exist") },
-		{ UnknownUser,				N_("Unknown user") },
-		{ OfflineUnavailable,			N_("Not available in offline mode") },
-		{ SearchSizeLimitExceeded,		N_("Search size limit exceeded") },
-		{ SearchTimeLimitExceeded,		N_("Search time limit exceeded") },
-		{ InvalidQuery,				N_("Invalid query") },
-		{ QueryRefused,				N_("Query refused") },
-		{ CouldNotCancel,			N_("Could not cancel") },
-		/* { OtherError,			N_("Other error") }, */
-		{ InvalidServerVersion,			N_("Invalid server version") },
-		{ InvalidArg,				N_("Invalid argument") },
-		/* Translators: The string for NOT_SUPPORTED error */
-		{ NotSupported,				N_("Not supported") },
-		{ NotOpened,				N_("Backend is not opened yet") }
-	};
-
-	for (i = 0; i < G_N_ELEMENTS (statuses); i++) {
-		if (statuses[i].status == status)
-			return _(statuses[i].msg);
-	}
-
-	return _("Other error");
-}
-
-/**
- * e_data_cal_create_error:
- * @status: #EDataCalCallStatus code
- * @custom_msg: Custom message to use for the error. When NULL,
- *              then uses a default message based on the @status code.
- *
- * Returns: (nullable) (transfer full): %NULL, when the @status is Success,
- *          or a newly allocated GError, which should be freed
- *          with g_error_free() call.
- *
- * Since: 2.32
- **/
-GError *
-e_data_cal_create_error (EDataCalCallStatus status,
-                         const gchar *custom_msg)
-{
-	if (status == Success)
-		return NULL;
-
-	return g_error_new_literal (E_DATA_CAL_ERROR, status, custom_msg ? custom_msg : e_data_cal_status_to_string (status));
-}
-
-/**
- * e_data_cal_create_error_fmt:
- * @status: an #EDataCalCallStatus
- * @custom_msg_fmt: (nullable): message format, or %NULL to use the default message for the @status
- * @...: arguments for the format
- *
- * Similar as e_data_cal_create_error(), only here, instead of custom_msg,
- * is used a printf() format to create a custom message for the error.
- *
- * Returns: (nullable) (transfer full): %NULL, when the @status is Success,
- *   or a newly allocated #GError, which should be freed with g_error_free() call.
- *   The #GError has set the custom message, or the default message for
- *   @status, when @custom_msg_fmt is %NULL.
- *
- * Since: 2.32
- **/
-GError *
-e_data_cal_create_error_fmt (EDataCalCallStatus status,
-                             const gchar *custom_msg_fmt,
-                             ...)
-{
-	GError *error;
-	gchar *custom_msg;
-	va_list ap;
-
-	if (!custom_msg_fmt)
-		return e_data_cal_create_error (status, NULL);
-
-	va_start (ap, custom_msg_fmt);
-	custom_msg = g_strdup_vprintf (custom_msg_fmt, ap);
-	va_end (ap);
-
-	error = e_data_cal_create_error (status, custom_msg);
-
-	g_free (custom_msg);
-
-	return error;
 }
 
 static GPtrArray *
@@ -952,6 +665,7 @@ static gboolean
 data_cal_handle_create_objects_cb (EDBusCalendar *dbus_interface,
                                    GDBusMethodInvocation *invocation,
                                    const gchar * const *in_calobjs,
+				   guint32 in_opflags,
                                    EDataCal *data_cal)
 {
 	ECalBackend *backend;
@@ -965,6 +679,7 @@ data_cal_handle_create_objects_cb (EDBusCalendar *dbus_interface,
 	e_cal_backend_create_objects (
 		backend,
 		in_calobjs,
+		in_opflags,
 		async_context->cancellable,
 		data_cal_complete_create_objects_cb,
 		async_context);
@@ -1003,6 +718,7 @@ data_cal_handle_modify_objects_cb (EDBusCalendar *dbus_interface,
                                    GDBusMethodInvocation *invocation,
                                    const gchar * const *in_ics_objects,
                                    const gchar *in_mod_type,
+				   guint32 in_opflags,
                                    EDataCal *data_cal)
 {
 	ECalBackend *backend;
@@ -1037,7 +753,7 @@ data_cal_handle_modify_objects_cb (EDBusCalendar *dbus_interface,
 
 	e_cal_backend_modify_objects (
 		backend,
-		in_ics_objects, mod,
+		in_ics_objects, mod, in_opflags,
 		async_context->cancellable,
 		data_cal_complete_modify_objects_cb,
 		async_context);
@@ -1076,6 +792,7 @@ data_cal_handle_remove_objects_cb (EDBusCalendar *dbus_interface,
                                    GDBusMethodInvocation *invocation,
                                    GVariant *in_uid_rid_array,
                                    const gchar *in_mod_type,
+				   guint32 in_opflags,
                                    EDataCal *data_cal)
 {
 	ECalBackend *backend;
@@ -1109,42 +826,30 @@ data_cal_handle_remove_objects_cb (EDBusCalendar *dbus_interface,
 
 	n_children = g_variant_n_children (in_uid_rid_array);
 	for (ii = 0; ii < n_children; ii++) {
-		ECalComponentId *id;
+		gchar *uid = NULL, *rid = NULL;
 
-		/* e_cal_component_free_id() uses g_free(),
-		 * not g_slice_free().  Therefore allocate
-		 * with g_malloc(), not g_slice_new(). */
-		id = g_malloc0 (sizeof (ECalComponentId));
+		g_variant_get_child (in_uid_rid_array, ii, "(ss)", &uid, &rid);
 
-		g_variant_get_child (
-			in_uid_rid_array, ii, "(ss)", &id->uid, &id->rid);
-
-		if (id->uid != NULL && *id->uid == '\0') {
-			e_cal_component_free_id (id);
+		if (!uid || !*uid) {
+			g_free (uid);
+			g_free (rid);
 			continue;
 		}
 
-		/* Recurrence ID is optional.  Its omission is denoted
-		 * via D-Bus by an empty string.  Convert it to NULL. */
-		if (id->rid != NULL && *id->rid == '\0') {
-			g_free (id->rid);
-			id->rid = NULL;
-		}
-
-		g_queue_push_tail (&component_ids, id);
+		g_queue_push_tail (&component_ids, e_cal_component_id_new_take (uid, rid));
 	}
 
 	async_context = async_context_new (data_cal, invocation);
 
 	e_cal_backend_remove_objects (
 		backend,
-		component_ids.head, mod,
+		component_ids.head, mod, in_opflags,
 		async_context->cancellable,
 		data_cal_complete_remove_objects_cb,
 		async_context);
 
 	while (!g_queue_is_empty (&component_ids))
-		e_cal_component_free_id (g_queue_pop_head (&component_ids));
+		e_cal_component_id_free (g_queue_pop_head (&component_ids));
 
 	g_object_unref (backend);
 
@@ -1179,6 +884,7 @@ static gboolean
 data_cal_handle_receive_objects_cb (EDBusCalendar *dbus_interface,
                                     GDBusMethodInvocation *invocation,
                                     const gchar *in_calobj,
+				    guint32 in_opflags,
                                     EDataCal *data_cal)
 {
 	ECalBackend *backend;
@@ -1192,6 +898,7 @@ data_cal_handle_receive_objects_cb (EDBusCalendar *dbus_interface,
 	e_cal_backend_receive_objects (
 		backend,
 		in_calobj,
+		in_opflags,
 		async_context->cancellable,
 		data_cal_complete_receive_objects_cb,
 		async_context);
@@ -1259,6 +966,7 @@ static gboolean
 data_cal_handle_send_objects_cb (EDBusCalendar *dbus_interface,
                                  GDBusMethodInvocation *invocation,
                                  const gchar *in_calobj,
+				 guint32 in_opflags,
                                  EDataCal *data_cal)
 {
 	ECalBackend *backend;
@@ -1272,6 +980,7 @@ data_cal_handle_send_objects_cb (EDBusCalendar *dbus_interface,
 	e_cal_backend_send_objects (
 		backend,
 		in_calobj,
+		in_opflags,
 		async_context->cancellable,
 		data_cal_complete_send_objects_cb,
 		async_context);
@@ -1384,6 +1093,7 @@ data_cal_handle_discard_alarm_cb (EDBusCalendar *dbus_interface,
                                   const gchar *in_uid,
                                   const gchar *in_rid,
                                   const gchar *in_alarm_uid,
+				  guint32 in_opflags,
                                   EDataCal *data_cal)
 {
 	ECalBackend *backend;
@@ -1401,7 +1111,7 @@ data_cal_handle_discard_alarm_cb (EDBusCalendar *dbus_interface,
 
 	e_cal_backend_discard_alarm (
 		backend,
-		in_uid, in_rid, in_alarm_uid,
+		in_uid, in_rid, in_alarm_uid, in_opflags,
 		async_context->cancellable,
 		data_cal_complete_discard_alarm_cb,
 		async_context);
@@ -1759,7 +1469,7 @@ e_data_cal_respond_get_object (EDataCal *cal,
  * @cal: A calendar client interface.
  * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
- * @objects: List of retrieved objects.
+ * @objects: (element-type utf8): List of retrieved objects.
  *
  * Notifies listeners of the completion of the get_object_list method call.
  *
@@ -1814,7 +1524,7 @@ e_data_cal_respond_get_object_list (EDataCal *cal,
  * @cal: A calendar client interface.
  * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
- * @freebusy: a #GSList of iCalendar strings with all gathered free/busy components.
+ * @freebusy: (element-type utf8): a #GSList of iCalendar strings with all gathered free/busy components.
  *
  * Notifies listeners of the completion of the get_free_busy method call.
  * To pass actual free/busy objects to the client asynchronously
@@ -1866,8 +1576,8 @@ e_data_cal_respond_get_free_busy (EDataCal *cal,
  * @cal: A calendar client interface.
  * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
- * @uids: UIDs of the objects created.
- * @new_components: The newly created #ECalComponent objects.
+ * @uids: (element-type utf8): UIDs of the objects created.
+ * @new_components: (element-type ECalComponent): The newly created #ECalComponent objects.
  *
  * Notifies listeners of the completion of the create_objects method call.
  *
@@ -1935,8 +1645,8 @@ e_data_cal_respond_create_objects (EDataCal *cal,
  * @cal: A calendar client interface.
  * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
- * @old_components: The old #ECalComponent(s).
- * @new_components: The new #ECalComponent(s).
+ * @old_components: (element-type ECalComponent): The old #ECalComponent(s).
+ * @new_components: (element-type ECalComponent): The new #ECalComponent(s).
  *
  * Notifies listeners of the completion of the modify_objects method call.
  *
@@ -2011,7 +1721,7 @@ e_data_cal_respond_modify_objects (EDataCal *cal,
  * @cal: A calendar client interface.
  * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
- * @ids: (element-type: utf8) IDs of the removed objects.
+ * @ids: (element-type ECalComponentId): IDs of the removed objects.
  * @old_components: (element-type ECalComponent): The old #ECalComponent(s).
  * @new_components: (element-type ECalComponent): The new #ECalComponent(s).
  *    They will not be NULL only when removing instances of recurring appointments.
@@ -2145,7 +1855,7 @@ e_data_cal_respond_receive_objects (EDataCal *cal,
  * @cal: A calendar client interface.
  * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
- * @users: List of users.
+ * @users: (element-type utf8): List of users.
  * @calobj: An iCalendar string representing the object sent.
  *
  * Notifies listeners of the completion of the send_objects method call.
@@ -2200,7 +1910,7 @@ e_data_cal_respond_send_objects (EDataCal *cal,
  * @cal: A calendar client interface.
  * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
- * @attachment_uris: List of retrieved attachment uri's.
+ * @attachment_uris: (element-type utf8): List of retrieved attachment uri's.
  *
  * Notifies listeners of the completion of the get_attachment_uris method call.
  *
@@ -2461,13 +2171,13 @@ e_data_cal_report_backend_property_changed (EDataCal *cal,
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_REVISION))
 		e_dbus_calendar_set_revision (dbus_interface, prop_value);
 
-	if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS))
+	if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS))
 		e_dbus_calendar_set_cal_email_address (dbus_interface, prop_value);
 
-	if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS))
+	if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS))
 		e_dbus_calendar_set_alarm_email_address (dbus_interface, prop_value);
 
-	if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT))
+	if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_DEFAULT_OBJECT))
 		e_dbus_calendar_set_default_object (dbus_interface, prop_value);
 
 	/* Disregard anything else. */
@@ -2651,19 +2361,19 @@ data_cal_constructed (GObject *object)
 		cal, prop_name, prop_value);
 	g_free (prop_value);
 
-	prop_name = CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS;
+	prop_name = E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS;
 	prop_value = e_cal_backend_get_backend_property (backend, prop_name);
 	e_data_cal_report_backend_property_changed (
 		cal, prop_name, prop_value);
 	g_free (prop_value);
 
-	prop_name = CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS;
+	prop_name = E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS;
 	prop_value = e_cal_backend_get_backend_property (backend, prop_name);
 	e_data_cal_report_backend_property_changed (
 		cal, prop_name, prop_value);
 	g_free (prop_value);
 
-	prop_name = CAL_BACKEND_PROPERTY_DEFAULT_OBJECT;
+	prop_name = E_CAL_BACKEND_PROPERTY_DEFAULT_OBJECT;
 	prop_value = e_cal_backend_get_backend_property (backend, prop_name);
 	e_data_cal_report_backend_property_changed (
 		cal, prop_name, prop_value);
@@ -2821,7 +2531,7 @@ e_data_cal_init (EDataCal *data_cal)
 
 /**
  * e_data_cal_new:
- * @backend: an #ECalBackend
+ * @backend: (type ECalBackend): an #ECalBackend
  * @connection: a #GDBusConnection
  * @object_path: object path for the D-Bus interface
  * @error: return location for a #GError, or %NULL
@@ -2861,7 +2571,7 @@ e_data_cal_new (ECalBackend *backend,
  * The returned #ECalBackend is referenced for thread-safety and should
  * be unreferenced with g_object_unref() when finished with it.
  *
- * Returns: an #ECalBackend
+ * Returns: (type ECalBackend) (transfer full) (nullable): an #ECalBackend
  *
  * Since: 3.10
  **/
@@ -2880,7 +2590,7 @@ e_data_cal_ref_backend (EDataCal *cal)
  * Returns the #GDBusConnection on which the Calendar D-Bus interface
  * is exported.
  *
- * Returns: the #GDBusConnection
+ * Returns: (transfer none): the #GDBusConnection
  *
  * Since: 3.8
  **/

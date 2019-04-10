@@ -9,6 +9,6 @@ privincludedir=@privincludedir@
 Name: libecal
 Description: Client library for evolution calendars
 Version: @PROJECT_VERSION@
-Requires: libical libedataserver-@API_VERSION@
-Libs: -L${libdir} -lecal-@API_VERSION@
-Cflags: -I${privincludedir} @LIBICAL_EXTRA_CFLAGS@
+Requires: libical-glib libedataserver-@API_VERSION@
+Libs: -L${libdir} -lecal-@CAL_API_VERSION@
+Cflags: -I${privincludedir}

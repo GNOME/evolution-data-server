@@ -96,7 +96,6 @@ add_weak_ref (ETestServerFixture *fixture,
 	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
 	case E_TEST_SERVER_CALENDAR:
 	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
-	case E_TEST_SERVER_DEPRECATED_CALENDAR:
 
 		/* They're all the same object pointer */
 		object = E_TEST_SERVER_UTILS_SERVICE (fixture, GObject);
@@ -152,7 +151,6 @@ assert_object_finalized (ETestServerFixture *fixture,
 		ref = &fixture->client_ref;
 		break;
 	case E_TEST_SERVER_CALENDAR:
-	case E_TEST_SERVER_DEPRECATED_CALENDAR:
 		message = "Timed out waiting for calendar client to finalize";
 		ref = &fixture->client_ref;
 		break;
@@ -380,7 +378,6 @@ e_test_server_utils_client_ready (GObject *source_object,
 
 		break;
 	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
-	case E_TEST_SERVER_DEPRECATED_CALENDAR:
 	case E_TEST_SERVER_NONE:
 		g_assert_not_reached ();
 	}
@@ -490,29 +487,6 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 
 		break;
 
-	case E_TEST_SERVER_DEPRECATED_CALENDAR:
-
-		/* Dont bother testing the Async apis for deprecated APIs */
-		pair->fixture->service.calendar = e_cal_new (source, pair->closure->calendar_source_type);
-		if (!pair->fixture->service.calendar) {
-			if (pair->retries < 3)
-				need_retry = TRUE;
-			else
-				g_error ("Unable to create the test calendar");
-
-			break;
-		}
-
-		if (!e_cal_open (pair->fixture->service.calendar, FALSE, &error)) {
-			if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND) &&
-			    pair->retries < 3)
-				need_retry = TRUE;
-			else
-				g_error ("Unable to open calendar: %s", error->message);
-		}
-
-		break;
-
 	case E_TEST_SERVER_NONE:
 		return;
 	}
@@ -588,7 +562,6 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 
 		break;
 	case E_TEST_SERVER_CALENDAR:
-	case E_TEST_SERVER_DEPRECATED_CALENDAR:
 
 		if (!pair->fixture->source_name)
 			pair->fixture->source_name = generate_source_name ();
@@ -747,15 +720,6 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 		fixture->service.calendar_client = NULL;
 		break;
 
-	case E_TEST_SERVER_DEPRECATED_CALENDAR:
-		if (!closure->keep_work_directory &&
-		    !e_cal_remove (fixture->service.calendar, &error)) {
-			g_message ("Failed to remove test calendar: %s (ignoring)", error->message);
-			g_clear_error (&error);
-		}
-		g_object_unref (fixture->service.calendar);
-		fixture->service.calendar = NULL;
-
 	case E_TEST_SERVER_NONE:
 		break;
 	}
@@ -852,14 +816,9 @@ e_test_server_utils_finish_run (void)
 {
 #if GLOBAL_DBUS_DAEMON
 	if (!test_installed_services ()) {
-		/* Teardown the D-Bus Daemon
-		 *
-		 * Note that we intentionally leak the TestDBus daemon
-		 * in this case, presumably this is due to some leaked
-		 * GDBusConnection reference counting
-		 */
-		g_test_dbus_stop (global_test_dbus);
-		/* g_object_unref (global_test_dbus); */
+		/* Teardown the D-Bus Daemon */
+		g_test_dbus_down (global_test_dbus);
+		g_object_unref (global_test_dbus);
 		global_test_dbus = NULL;
 	}
 #endif

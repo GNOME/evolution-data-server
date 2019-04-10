@@ -23,7 +23,7 @@
 #ifndef E_CAL_SYSTEM_TIMEZONE_H
 #define E_CAL_SYSTEM_TIMEZONE_H
 
-#include <libical/ical.h>
+#include <glib.h>
 
 gchar *e_cal_system_timezone_get_location (void);
 

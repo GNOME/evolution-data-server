@@ -48,8 +48,6 @@
 
 G_BEGIN_DECLS
 
-struct _ECalBackendCache;
-
 typedef struct _ECalBackend ECalBackend;
 typedef struct _ECalBackendClass ECalBackendClass;
 typedef struct _ECalBackendPrivate ECalBackendPrivate;
@@ -137,36 +135,41 @@ struct _ECalBackendClass {
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
-						 const GSList *users,
+						 const GSList *users, /* gchar * */
 						 time_t start,
 						 time_t end);
 	void		(*create_objects)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
-						 const GSList *calobjs);
+						 const GSList *calobjs, /* gchar * */
+						 guint32 opflags); /* bit-or of ECalOperationFlags */
 	void		(*modify_objects)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
-						 const GSList *calobjs,
-						 ECalObjModType mod);
+						 const GSList *calobjs, /* gchar * */
+						 ECalObjModType mod,
+						 guint32 opflags); /* bit-or of ECalOperationFlags */
 	void		(*remove_objects)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
-						 const GSList *ids,
-						 ECalObjModType mod);
+						 const GSList *ids, /* ECalComponentId * */
+						 ECalObjModType mod,
+						 guint32 opflags); /* bit-or of ECalOperationFlags */
 	void		(*receive_objects)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
-						 const gchar *calobj);
+						 const gchar *calobj,
+						 guint32 opflags); /* bit-or of ECalOperationFlags */
 	void		(*send_objects)		(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
-						 const gchar *calobj);
+						 const gchar *calobj,
+						 guint32 opflags); /* bit-or of ECalOperationFlags */
 	void		(*get_attachment_uris)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
@@ -179,7 +182,8 @@ struct _ECalBackendClass {
 						 GCancellable *cancellable,
 						 const gchar *uid,
 						 const gchar *rid,
-						 const gchar *auid);
+						 const gchar *auid,
+						 guint32 opflags); /* bit-or of ECalOperationFlags */
 	void		(*get_timezone)		(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
@@ -200,10 +204,13 @@ struct _ECalBackendClass {
 	void		(*closed)		(ECalBackend *backend,
 						 const gchar *sender);
 	void		(*shutdown)		(ECalBackend *backend);
+
+	/* Padding for future expansion */
+	gpointer reserved_padding[20];
 };
 
 GType		e_cal_backend_get_type		(void) G_GNUC_CONST;
-icalcomponent_kind
+ICalComponentKind
 		e_cal_backend_get_kind		(ECalBackend *backend);
 EDataCal *	e_cal_backend_ref_data_cal	(ECalBackend *backend);
 void		e_cal_backend_set_data_cal	(ECalBackend *backend,
@@ -275,7 +282,7 @@ gchar *		e_cal_backend_get_object_finish	(ECalBackend *backend,
 gboolean	e_cal_backend_get_object_list_sync
 						(ECalBackend *backend,
 						 const gchar *query,
-						 GQueue *out_objects,
+						 GQueue *out_objects, /* gchar * */
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_backend_get_object_list	(ECalBackend *backend,
@@ -286,14 +293,14 @@ void		e_cal_backend_get_object_list	(ECalBackend *backend,
 gboolean	e_cal_backend_get_object_list_finish
 						(ECalBackend *backend,
 						 GAsyncResult *result,
-						 GQueue *out_objects,
+						 GQueue *out_objects, /* gchar * */
 						 GError **error);
 gboolean	e_cal_backend_get_free_busy_sync
 						(ECalBackend *backend,
 						 time_t start,
 						 time_t end,
 						 const gchar * const *users,
-						 GSList **out_freebusy,
+						 GSList **out_freebusy, /* gchar * */
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_backend_get_free_busy	(ECalBackend *backend,
@@ -306,16 +313,18 @@ void		e_cal_backend_get_free_busy	(ECalBackend *backend,
 gboolean	e_cal_backend_get_free_busy_finish
 						(ECalBackend *backend,
 						 GAsyncResult *result,
-						 GSList **out_freebusy,
+						 GSList **out_freebusy, /* gchar * */
 						 GError **error);
 gboolean	e_cal_backend_create_objects_sync
 						(ECalBackend *backend,
 						 const gchar * const *calobjs,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GQueue *out_uids,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_backend_create_objects	(ECalBackend *backend,
 						 const gchar * const *calobjs,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -328,11 +337,13 @@ gboolean	e_cal_backend_modify_objects_sync
 						(ECalBackend *backend,
 						 const gchar * const *calobjs,
 						 ECalObjModType mod,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_backend_modify_objects	(ECalBackend *backend,
 						 const gchar * const *calobjs,
 						 ECalObjModType mod,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -342,13 +353,15 @@ gboolean	e_cal_backend_modify_objects_finish
 						 GError **error);
 gboolean	e_cal_backend_remove_objects_sync
 						(ECalBackend *backend,
-						 GList *component_ids,
+						 GList *component_ids, /* ECalComponentId * */
 						 ECalObjModType mod,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_backend_remove_objects	(ECalBackend *backend,
-						 GList *component_ids,
+						 GList *component_ids, /* ECalComponentId * */
 						 ECalObjModType mod,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -359,10 +372,12 @@ gboolean	e_cal_backend_remove_objects_finish
 gboolean	e_cal_backend_receive_objects_sync
 						(ECalBackend *backend,
 						 const gchar *calobj,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_backend_receive_objects	(ECalBackend *backend,
 						 const gchar *calobj,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -372,11 +387,13 @@ gboolean	e_cal_backend_receive_objects_finish
 						 GError **error);
 gchar *		e_cal_backend_send_objects_sync	(ECalBackend *backend,
 						 const gchar *calobj,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GQueue *out_users,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_backend_send_objects	(ECalBackend *backend,
 						 const gchar *calobj,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -409,12 +426,14 @@ gboolean	e_cal_backend_discard_alarm_sync
 						 const gchar *uid,
 						 const gchar *rid,
 						 const gchar *alarm_uid,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_backend_discard_alarm	(ECalBackend *backend,
 						 const gchar *uid,
 						 const gchar *rid,
 						 const gchar *alarm_uid,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -472,9 +491,6 @@ void		e_cal_backend_notify_property_changed
 						(ECalBackend *backend,
 						 const gchar *prop_name,
 						 const gchar *prop_value);
-
-void		e_cal_backend_empty_cache	(ECalBackend *backend,
-						 struct _ECalBackendCache *cache);
 
 GSimpleAsyncResult *
 		e_cal_backend_prepare_for_completion

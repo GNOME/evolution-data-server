@@ -31,7 +31,6 @@ src/calendar/backends/contacts/e-cal-backend-contacts.c
 src/calendar/backends/file/e-cal-backend-file.c
 src/calendar/backends/http/e-cal-backend-http.c
 src/calendar/backends/weather/e-cal-backend-weather.c
-src/calendar/libecal/e-cal.c
 src/calendar/libecal/e-cal-client.c
 src/calendar/libecal/e-cal-client-view.c
 src/calendar/libecal/e-cal-component.c

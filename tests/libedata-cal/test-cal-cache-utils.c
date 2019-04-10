@@ -208,7 +208,7 @@ tcu_add_component_from_test_case (TCUFixture *fixture,
 
 	component = tcu_new_component_from_test_case (case_name);
 
-	if (!e_cal_cache_put_component (fixture->cal_cache, component, case_name, E_CACHE_IS_ONLINE, NULL, &error))
+	if (!e_cal_cache_put_component (fixture->cal_cache, component, case_name, 0, E_CACHE_IS_ONLINE, NULL, &error))
 		g_error ("Failed to add component: %s", error->message);
 
 	if (out_component)

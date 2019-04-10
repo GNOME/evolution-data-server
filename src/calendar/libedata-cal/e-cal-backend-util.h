@@ -44,7 +44,7 @@ gboolean	e_cal_backend_mail_account_is_valid
 						 const gchar *user,
 						 gchar **name);
 gboolean	e_cal_backend_user_declined	(ESourceRegistry *registry,
-                                                 icalcomponent *icalcomp);
+                                                 ICalComponent *icalcomp);
 
 G_END_DECLS
 
