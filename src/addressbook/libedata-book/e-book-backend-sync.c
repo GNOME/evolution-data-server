@@ -537,7 +537,7 @@ e_book_backend_sync_get_contact_list (EBookBackendSync *backend,
  * e_book_backend_sync_get_contact_list_uids:
  * @backend: an #EBookBackendSync
  * @query: a search query in S-expression format
- * @out_uids: a #GSList in which to deposit results
+ * @out_uids: (out) (element-type utf8): a #GSList in which to deposit results
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
