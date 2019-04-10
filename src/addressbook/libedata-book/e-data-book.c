@@ -1469,16 +1469,16 @@ e_data_book_respond_refresh (EDataBook *book,
  * @book: An #EDataBook
  * @opid: An operation ID
  * @error: (nullable) (transfer full): Operation error, if any, automatically freed if passed it
- * @vcard: (nullable): the found vCard, as string, or %NULL, if it could not be found
+ * @contact: (nullable): the found #EContact, or %NULL, if it could not be found
  *
  * Notifies listeners of the completion of the get_contact method call.
- * Only one of @error and @vcard can be set.
+ * Only one of @error and @contact can be set.
  */
 void
 e_data_book_respond_get_contact (EDataBook *book,
                                  guint32 opid,
                                  GError *error,
-                                 const gchar *vcard)
+                                 const EContact *contact)
 {
 	EBookBackend *backend;
 	GSimpleAsyncResult *simple;
@@ -1497,11 +1497,7 @@ e_data_book_respond_get_contact (EDataBook *book,
 	g_prefix_error (&error, "%s", _("Cannot get contact: "));
 
 	if (error == NULL) {
-		EContact *contact;
-
-		contact = e_contact_new_from_vcard (vcard);
-		g_queue_push_tail (queue, g_object_ref (contact));
-		g_object_unref (contact);
+		g_queue_push_tail (queue, g_object_ref ((EContact *) contact));
 	} else {
 		g_simple_async_result_take_error (simple, error);
 	}
@@ -1517,9 +1513,9 @@ e_data_book_respond_get_contact (EDataBook *book,
  * @book: An #EDataBook
  * @opid: An operation ID
  * @error: Operation error, if any, automatically freed if passed it
- * @cards: (allow-none) (element-type utf8): A list of vCard strings, or %NULL on error
+ * @contacts: (allow-none) (element-type EContact): A list of #EContact, or %NULL on error
  *
- * Finishes a call to get list of vCards which satisfy certain criteria.
+ * Finishes a call to get list of #EContact, which satisfy certain criteria.
  *
  * Since: 3.2
  **/
@@ -1527,7 +1523,7 @@ void
 e_data_book_respond_get_contact_list (EDataBook *book,
                                       guint32 opid,
                                       GError *error,
-                                      const GSList *cards)
+                                      const GSList *contacts)
 {
 	EBookBackend *backend;
 	GSimpleAsyncResult *simple;
@@ -1546,16 +1542,12 @@ e_data_book_respond_get_contact_list (EDataBook *book,
 	g_prefix_error (&error, "%s", _("Cannot get contact list: "));
 
 	if (error == NULL) {
-		GSList *list, *link;
+		GSList *link;
 
-		list = (GSList *) cards;
+		for (link = (GSList *) contacts; link; link = g_slist_next (link)) {
+			EContact *contact = link->data;
 
-		for (link = list; link != NULL; link = g_slist_next (link)) {
-			EContact *contact;
-
-			contact = e_contact_new_from_vcard (link->data);
 			g_queue_push_tail (queue, g_object_ref (contact));
-			g_object_unref (contact);
 		}
 
 	} else {
@@ -1653,12 +1645,10 @@ e_data_book_respond_create_contacts (EDataBook *book,
 	g_prefix_error (&error, "%s", _("Cannot add contact: "));
 
 	if (error == NULL) {
-		GSList *list, *link;
+		GSList *link;
 
-		list = (GSList *) contacts;
-
-		for (link = list; link != NULL; link = g_slist_next (link)) {
-			EContact *contact = E_CONTACT (link->data);
+		for (link = (GSList *) contacts; link; link = g_slist_next (link)) {
+			EContact *contact = link->data;
 			g_queue_push_tail (queue, g_object_ref (contact));
 		}
 
@@ -1706,12 +1696,11 @@ e_data_book_respond_modify_contacts (EDataBook *book,
 	g_prefix_error (&error, "%s", _("Cannot modify contacts: "));
 
 	if (error == NULL) {
-		GSList *list, *link;
+		GSList *link;
 
-		list = (GSList *) contacts;
+		for (link = (GSList *) contacts; link; link = g_slist_next (link)) {
+			EContact *contact = contacts->data;
 
-		for (link = list; link != NULL; link = g_slist_next (link)) {
-			EContact *contact = E_CONTACT (contacts->data);
 			g_queue_push_tail (queue, g_object_ref (contact));
 		}
 
@@ -1759,11 +1748,9 @@ e_data_book_respond_remove_contacts (EDataBook *book,
 	g_prefix_error (&error, "%s", _("Cannot remove contacts: "));
 
 	if (error == NULL) {
-		GSList *list, *link;
+		GSList *link;
 
-		list = (GSList *) ids;
-
-		for (link = list; link != NULL; link = g_slist_next (link))
+		for (link = (GSList *) ids; link; link = g_slist_next (link))
 			g_queue_push_tail (queue, g_strdup (link->data));
 
 	} else {

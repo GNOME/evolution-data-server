@@ -9,12 +9,13 @@ set(DEPENDENCIES
 )
 
 set(SOURCES
+	e-book-backend.c
+	e-book-backend-cache.c
 	e-book-backend-factory.c
 	e-book-backend-sexp.c
-	e-book-backend-summary.c
-	e-book-backend-cache.c
 	e-book-backend-sqlitedb.c
-	e-book-backend.c
+	e-book-backend-summary.c
+	e-book-backend-sync.c
 	e-book-cache.c
 	e-book-meta-backend.c
 	e-book-sqlite.c
@@ -32,10 +33,13 @@ set(SOURCES
 
 set(HEADERS
 	libedata-book.h
+	e-book-backend.h
+	e-book-backend-cache.h
 	e-book-backend-factory.h
 	e-book-backend-sexp.h
+	e-book-backend-sqlitedb.h
 	e-book-backend-summary.h
-	e-book-backend.h
+	e-book-backend-sync.h
 	e-book-cache.h
 	e-book-meta-backend.h
 	e-book-sqlite.h
@@ -46,8 +50,6 @@ set(HEADERS
 	e-data-book-cursor-cache.h
 	e-data-book-cursor-sqlite.h
 	e-data-book-direct.h
-	e-book-backend-cache.h
-	e-book-backend-sqlitedb.h
 	e-subprocess-book-factory.h
 	e-system-locale-watcher.h
 )

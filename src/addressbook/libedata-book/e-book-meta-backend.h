@@ -23,7 +23,7 @@
 #define E_BOOK_META_BACKEND_H
 
 #include <libebackend/libebackend.h>
-#include <libedata-book/e-book-backend.h>
+#include <libedata-book/e-book-backend-sync.h>
 #include <libedata-book/e-book-cache.h>
 #include <libebook-contacts/libebook-contacts.h>
 
@@ -82,7 +82,7 @@ typedef struct _EBookMetaBackendPrivate EBookMetaBackendPrivate;
  **/
 struct _EBookMetaBackend {
 	/*< private >*/
-	EBookBackend parent;
+	EBookBackendSync parent;
 	EBookMetaBackendPrivate *priv;
 };
 
@@ -95,7 +95,7 @@ struct _EBookMetaBackend {
  */
 struct _EBookMetaBackendClass {
 	/*< private >*/
-	EBookBackendClass parent_class;
+	EBookBackendSyncClass parent_class;
 
 	/* For Direct Read Access */
 	const gchar *backend_module_filename;

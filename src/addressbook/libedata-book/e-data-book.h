@@ -105,31 +105,31 @@ void		e_data_book_respond_create_contacts
 						(EDataBook *book,
 						 guint32 opid,
 						 GError *error,
-						 const GSList *contacts);
-void		e_data_book_respond_remove_contacts
-						(EDataBook *book,
-						 guint32 opid,
-						 GError *error,
-						 const GSList *ids);
+						 const GSList *contacts); /* EContact * */
 void		e_data_book_respond_modify_contacts
 						(EDataBook *book,
 						 guint32 opid,
 						 GError *error,
-						 const GSList *contacts);
+						 const GSList *contacts); /* EContact * */
+void		e_data_book_respond_remove_contacts
+						(EDataBook *book,
+						 guint32 opid,
+						 GError *error,
+						 const GSList *ids); /* gchar * */
 void		e_data_book_respond_get_contact	(EDataBook *book,
 						 guint32 opid,
 						 GError *error,
-						 const gchar *vcard);
+						 const EContact *contact);
 void		e_data_book_respond_get_contact_list
 						(EDataBook *book,
 						 guint32 opid,
 						 GError *error,
-						 const GSList *cards);
+						 const GSList *contacts); /* EContact * */
 void		e_data_book_respond_get_contact_list_uids
 						(EDataBook *book,
 						 guint32 opid,
 						 GError *error,
-						 const GSList *uids);
+						 const GSList *uids); /* gchar * */
 
 void		e_data_book_report_error	(EDataBook *book,
 						 const gchar *message);

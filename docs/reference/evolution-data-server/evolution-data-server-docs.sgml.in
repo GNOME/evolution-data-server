@@ -195,6 +195,7 @@
     <chapter>
       <title>Addressbook Backend Classes</title>
       <xi:include href="xml/e-book-backend.xml"/>
+      <xi:include href="xml/e-book-backend-sync.xml"/>
       <xi:include href="xml/e-book-backend-factory.xml"/>
       <xi:include href="xml/e-book-backend-sexp.xml"/>
       <xi:include href="xml/e-book-cache.xml"/>

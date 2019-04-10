@@ -107,7 +107,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_ABSTRACT_TYPE (EBookMetaBackend, e_book_meta_backend, E_TYPE_BOOK_BACKEND)
+G_DEFINE_ABSTRACT_TYPE (EBookMetaBackend, e_book_meta_backend, E_TYPE_BOOK_BACKEND_SYNC)
 
 G_DEFINE_BOXED_TYPE (EBookMetaBackendInfo, e_book_meta_backend_info, e_book_meta_backend_info_copy, e_book_meta_backend_info_free)
 
@@ -1196,7 +1196,7 @@ ebmb_get_backend_property (EBookBackend *book_backend,
 }
 
 static gboolean
-ebmb_open_sync (EBookBackend *book_backend,
+ebmb_open_sync (EBookBackendSync *book_backend,
 		GCancellable *cancellable,
 		GError **error)
 {
@@ -1205,7 +1205,7 @@ ebmb_open_sync (EBookBackend *book_backend,
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (book_backend), FALSE);
 
-	if (e_book_backend_is_opened (book_backend))
+	if (e_book_backend_is_opened (E_BOOK_BACKEND (book_backend)))
 		return TRUE;
 
 	meta_backend = E_BOOK_META_BACKEND (book_backend);
@@ -1248,7 +1248,7 @@ ebmb_open_sync (EBookBackend *book_backend,
 }
 
 static gboolean
-ebmb_refresh_sync (EBookBackend *book_backend,
+ebmb_refresh_sync (EBookBackendSync *book_backend,
 		   GCancellable *cancellable,
 		   GError **error)
 {
@@ -1358,9 +1358,9 @@ ebmb_create_contact_sync (EBookMetaBackend *meta_backend,
 }
 
 static gboolean
-ebmb_create_contacts_sync (EBookBackend *book_backend,
+ebmb_create_contacts_sync (EBookBackendSync *book_backend,
 			   const gchar * const *vcards,
-			   GQueue *out_contacts,
+			   GSList **out_contacts,
 			   GCancellable *cancellable,
 			   GError **error)
 {
@@ -1375,7 +1375,9 @@ ebmb_create_contacts_sync (EBookBackend *book_backend,
 	g_return_val_if_fail (vcards != NULL, FALSE);
 	g_return_val_if_fail (out_contacts != NULL, FALSE);
 
-	if (!e_book_backend_get_writable (book_backend)) {
+	*out_contacts = NULL;
+
+	if (!e_book_backend_get_writable (E_BOOK_BACKEND (book_backend))) {
 		g_propagate_error (error, e_data_book_create_error (E_DATA_BOOK_STATUS_PERMISSION_DENIED, NULL));
 		return FALSE;
 	}
@@ -1405,7 +1407,7 @@ ebmb_create_contacts_sync (EBookBackend *book_backend,
 		if (success) {
 			ebmb_foreach_cursor (meta_backend, new_contact, e_data_book_cursor_contact_added);
 
-			g_queue_push_tail (out_contacts, new_contact);
+			*out_contacts = g_slist_prepend (*out_contacts, new_contact);
 		}
 
 		g_object_unref (contact);
@@ -1413,9 +1415,11 @@ ebmb_create_contacts_sync (EBookBackend *book_backend,
 
 	g_object_unref (book_cache);
 
-	if (!success) {
-		g_queue_foreach (out_contacts, (GFunc) g_object_unref, NULL);
-		g_queue_clear (out_contacts);
+	if (success) {
+		*out_contacts = g_slist_reverse (*out_contacts);
+	} else {
+		g_slist_free_full (*out_contacts, g_object_unref);
+		*out_contacts = NULL;
 	}
 
 	return success;
@@ -1494,9 +1498,9 @@ ebmb_modify_contact_sync (EBookMetaBackend *meta_backend,
 }
 
 static gboolean
-ebmb_modify_contacts_sync (EBookBackend *book_backend,
+ebmb_modify_contacts_sync (EBookBackendSync *book_backend,
 			   const gchar * const *vcards,
-			   GQueue *out_contacts,
+			   GSList **out_contacts,
 			   GCancellable *cancellable,
 			   GError **error)
 {
@@ -1511,7 +1515,9 @@ ebmb_modify_contacts_sync (EBookBackend *book_backend,
 	g_return_val_if_fail (vcards != NULL, FALSE);
 	g_return_val_if_fail (out_contacts != NULL, FALSE);
 
-	if (!e_book_backend_get_writable (book_backend)) {
+	*out_contacts = NULL;
+
+	if (!e_book_backend_get_writable (E_BOOK_BACKEND (book_backend))) {
 		g_propagate_error (error, e_data_book_create_error (E_DATA_BOOK_STATUS_PERMISSION_DENIED, NULL));
 		return FALSE;
 	}
@@ -1542,7 +1548,7 @@ ebmb_modify_contacts_sync (EBookBackend *book_backend,
 			ebmb_foreach_cursor (meta_backend, contact, e_data_book_cursor_contact_removed);
 			ebmb_foreach_cursor (meta_backend, new_contact, e_data_book_cursor_contact_added);
 
-			g_queue_push_tail (out_contacts, g_object_ref (new_contact));
+			*out_contacts = g_slist_prepend (*out_contacts, g_object_ref (new_contact));
 		}
 
 		g_clear_object (&new_contact);
@@ -1551,9 +1557,11 @@ ebmb_modify_contacts_sync (EBookBackend *book_backend,
 
 	g_object_unref (book_cache);
 
-	if (!success) {
-		g_queue_foreach (out_contacts, (GFunc) g_object_unref, NULL);
-		g_queue_clear (out_contacts);
+	if (success) {
+		*out_contacts = g_slist_reverse (*out_contacts);
+	} else {
+		g_slist_free_full (*out_contacts, g_object_unref);
+		*out_contacts = NULL;
 	}
 
 	return success;
@@ -1625,8 +1633,9 @@ ebmb_remove_contact_sync (EBookMetaBackend *meta_backend,
 }
 
 static gboolean
-ebmb_remove_contacts_sync (EBookBackend *book_backend,
+ebmb_remove_contacts_sync (EBookBackendSync *book_backend,
 			   const gchar * const *uids,
+			   GSList **out_removed_uids,
 			   GCancellable *cancellable,
 			   GError **error)
 {
@@ -1639,8 +1648,11 @@ ebmb_remove_contacts_sync (EBookBackend *book_backend,
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (book_backend), FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
+	g_return_val_if_fail (out_removed_uids != NULL, FALSE);
 
-	if (!e_book_backend_get_writable (book_backend)) {
+	*out_removed_uids = NULL;
+
+	if (!e_book_backend_get_writable (E_BOOK_BACKEND (book_backend))) {
 		g_propagate_error (error, e_data_book_create_error (E_DATA_BOOK_STATUS_PERMISSION_DENIED, NULL));
 		return FALSE;
 	}
@@ -1664,15 +1676,19 @@ ebmb_remove_contacts_sync (EBookBackend *book_backend,
 		}
 
 		success = ebmb_remove_contact_sync (meta_backend, book_cache, &offline_flag, conflict_resolution, uid, cancellable, error);
+		if (success)
+			*out_removed_uids = g_slist_prepend (*out_removed_uids, g_strdup (uid));
 	}
 
 	g_object_unref (book_cache);
+
+	*out_removed_uids = g_slist_reverse (*out_removed_uids);
 
 	return success;
 }
 
 static EContact *
-ebmb_get_contact_sync (EBookBackend *book_backend,
+ebmb_get_contact_sync (EBookBackendSync *book_backend,
 		       const gchar *uid,
 		       GCancellable *cancellable,
 		       GError **error)
@@ -1719,58 +1735,33 @@ ebmb_get_contact_sync (EBookBackend *book_backend,
 }
 
 static gboolean
-ebmb_get_contact_list_sync (EBookBackend *book_backend,
+ebmb_get_contact_list_sync (EBookBackendSync *book_backend,
 			    const gchar *query,
-			    GQueue *out_contacts,
+			    GSList **out_contacts,
 			    GCancellable *cancellable,
 			    GError **error)
 {
-	GSList *contacts = NULL, *link;
-	gboolean success;
-
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (book_backend), FALSE);
 	g_return_val_if_fail (out_contacts != NULL, FALSE);
 
-	success = e_book_meta_backend_search_sync (E_BOOK_META_BACKEND (book_backend), query, FALSE, &contacts, cancellable, error);
-	if (success) {
-		for (link = contacts; link; link = g_slist_next (link)) {
-			EContact *contact = link->data;
+	*out_contacts = NULL;
 
-			g_queue_push_tail (out_contacts, g_object_ref (contact));
-		}
-
-		g_slist_free_full (contacts, g_object_unref);
-	}
-
-	return success;
+	return e_book_meta_backend_search_sync (E_BOOK_META_BACKEND (book_backend), query, FALSE, out_contacts, cancellable, error);
 }
 
 static gboolean
-ebmb_get_contact_list_uids_sync (EBookBackend *book_backend,
+ebmb_get_contact_list_uids_sync (EBookBackendSync *book_backend,
 				 const gchar *query,
-				 GQueue *out_uids,
+				 GSList **out_uids,
 				 GCancellable *cancellable,
 				 GError **error)
 {
-	GSList *uids = NULL, *link;
-	gboolean success;
-
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (book_backend), FALSE);
 	g_return_val_if_fail (out_uids != NULL, FALSE);
 
-	success = e_book_meta_backend_search_uids_sync (E_BOOK_META_BACKEND (book_backend), query, &uids, cancellable, error);
-	if (success) {
-		for (link = uids; link; link = g_slist_next (link)) {
-			gchar *uid = link->data;
+	*out_uids = NULL;
 
-			g_queue_push_tail (out_uids, uid);
-			link->data = NULL;
-		}
-
-		g_slist_free_full (uids, g_free);
-	}
-
-	return success;
+	return e_book_meta_backend_search_uids_sync (E_BOOK_META_BACKEND (book_backend), query, out_uids, cancellable, error);
 }
 
 static void
@@ -2438,6 +2429,7 @@ e_book_meta_backend_class_init (EBookMetaBackendClass *klass)
 	GObjectClass *object_class;
 	EBackendClass *backend_class;
 	EBookBackendClass *book_backend_class;
+	EBookBackendSyncClass *book_backend_sync_class;
 
 	g_type_class_add_private (klass, sizeof (EBookMetaBackendPrivate));
 
@@ -2449,16 +2441,18 @@ e_book_meta_backend_class_init (EBookMetaBackendClass *klass)
 	klass->requires_reconnect = ebmb_requires_reconnect;
 	klass->get_ssl_error_details = ebmb_get_ssl_error_details;
 
+	book_backend_sync_class = E_BOOK_BACKEND_SYNC_CLASS (klass);
+	book_backend_sync_class->open_sync = ebmb_open_sync;
+	book_backend_sync_class->refresh_sync = ebmb_refresh_sync;
+	book_backend_sync_class->create_contacts_sync = ebmb_create_contacts_sync;
+	book_backend_sync_class->modify_contacts_sync = ebmb_modify_contacts_sync;
+	book_backend_sync_class->remove_contacts_sync = ebmb_remove_contacts_sync;
+	book_backend_sync_class->get_contact_sync = ebmb_get_contact_sync;
+	book_backend_sync_class->get_contact_list_sync = ebmb_get_contact_list_sync;
+	book_backend_sync_class->get_contact_list_uids_sync = ebmb_get_contact_list_uids_sync;
+
 	book_backend_class = E_BOOK_BACKEND_CLASS (klass);
 	book_backend_class->get_backend_property = ebmb_get_backend_property;
-	book_backend_class->open_sync = ebmb_open_sync;
-	book_backend_class->refresh_sync = ebmb_refresh_sync;
-	book_backend_class->create_contacts_sync = ebmb_create_contacts_sync;
-	book_backend_class->modify_contacts_sync = ebmb_modify_contacts_sync;
-	book_backend_class->remove_contacts_sync = ebmb_remove_contacts_sync;
-	book_backend_class->get_contact_sync = ebmb_get_contact_sync;
-	book_backend_class->get_contact_list_sync = ebmb_get_contact_list_sync;
-	book_backend_class->get_contact_list_uids_sync = ebmb_get_contact_list_uids_sync;
 	book_backend_class->start_view = ebmb_start_view;
 	book_backend_class->stop_view = ebmb_stop_view;
 	book_backend_class->get_direct_book = ebmb_get_direct_book;
