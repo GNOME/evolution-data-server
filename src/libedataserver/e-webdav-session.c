@@ -4336,6 +4336,8 @@ e_webdav_session_extract_acl_principal (xmlXPathContextPtr xpath_ctx,
 					if (href)
 						*out_principal_hrefs = g_slist_prepend (*out_principal_hrefs, href);
 				}
+
+				xmlXPathFreeObject (xpath_obj);
 			}
 
 			*out_principal_hrefs = g_slist_reverse (*out_principal_hrefs);

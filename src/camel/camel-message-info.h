@@ -89,7 +89,7 @@ typedef enum _CamelMessageFlags {
 	CAMEL_MESSAGE_JUNK_LEARN = 1 << 30, /* used when setting CAMEL_MESSAGE_JUNK flag
 					     * to say that we request junk plugin
 					     * to learn that message as junk/non junk */
-	CAMEL_MESSAGE_USER = 1 << 31 /* supports user flags */
+	CAMEL_MESSAGE_USER = 1u << 31 /* supports user flags */
 } CamelMessageFlags;
 
 /* Changes to system flags will NOT trigger a folder changed event */
