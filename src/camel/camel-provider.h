@@ -99,7 +99,7 @@ typedef enum {
 	CAMEL_URL_HIDDEN_PATH = CAMEL_URL_PART_PATH << CAMEL_URL_PART_HIDDEN,
 
 	CAMEL_URL_FRAGMENT_IS_PATH = 1 << 30, /* url uses fragment for folder name path, not path */
-	CAMEL_URL_PATH_IS_ABSOLUTE = 1 << 31,
+	CAMEL_URL_PATH_IS_ABSOLUTE = 1u << 31,
 } CamelProviderURLFlags;
 
 #define CAMEL_PROVIDER_IS_STORE_AND_TRANSPORT(provider) \

@@ -1028,7 +1028,7 @@ reminders_widget_add_snooze_add_button_clicked_cb (GtkButton *button,
 
 	if (!found) {
 		GVariant *variant;
-		gint32 array[MAX_CUSTOM_SNOOZE_VALUES] = { 0 }, narray = 0, ii;
+		gint32 array[MAX_CUSTOM_SNOOZE_VALUES + 1] = { 0 }, narray = 0, ii;
 
 		variant = g_settings_get_value (reminders->priv->settings, "notify-custom-snooze-minutes");
 		if (variant) {

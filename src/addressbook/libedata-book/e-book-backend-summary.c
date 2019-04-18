@@ -230,7 +230,7 @@ e_book_backend_summary_check_magic (EBookBackendSummary *summary,
 	rv = fread (buf, PAS_SUMMARY_MAGIC_LEN, 1, fp);
 	if (rv != 1)
 		return FALSE;
-	if (strcmp (buf, PAS_SUMMARY_MAGIC))
+	if (strncmp (buf, PAS_SUMMARY_MAGIC, PAS_SUMMARY_MAGIC_LEN))
 		return FALSE;
 
 	return TRUE;

@@ -290,7 +290,9 @@ client_set_last_notification_time (ECalClient *client,
 	iso8601 = e_source_alarms_dup_last_notified (alarms_extension);
 
 	if (iso8601) {
-		g_time_val_from_iso8601 (iso8601, &tv);
+		if (!g_time_val_from_iso8601 (iso8601, &tv))
+			tv.tv_sec = 0;
+
 		g_free (iso8601);
 	}
 

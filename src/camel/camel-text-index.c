@@ -1273,7 +1273,7 @@ camel_text_index_dump (CamelTextIndex *idx)
 	CamelTextIndexPrivate *p = CAMEL_TEXT_INDEX_GET_PRIVATE (idx);
 #ifndef DUMP_RAW
 	camel_key_t keyid;
-	gchar *word;
+	gchar *word = NULL;
 	const gchar *name;
 	guint flags;
 	camel_block_t data;
@@ -1289,7 +1289,10 @@ camel_text_index_dump (CamelTextIndex *idx)
 		else
 			printf (" %s (deleted)\n", word);
 		g_free (word);
+		word = NULL;
 	}
+
+	g_clear_pointer (&word, g_free);
 
 	printf ("Word's in index\n");
 
@@ -1306,7 +1309,10 @@ camel_text_index_dump (CamelTextIndex *idx)
 		printf ("\n");
 		g_object_unref (idc);
 		g_free (word);
+		word = NULL;
 	}
+
+	g_clear_pointer (&word, g_free);
 #else
 	/* a more low-level dump routine */
 	GHashTable *block_type = g_hash_table_new (NULL, NULL);
@@ -1331,7 +1337,7 @@ camel_text_index_validate (CamelTextIndex *idx)
 {
 	CamelTextIndexPrivate *p = CAMEL_TEXT_INDEX_GET_PRIVATE (idx);
 	camel_key_t keyid;
-	gchar *word;
+	gchar *word = NULL;
 	const gchar *name;
 	guint flags;
 	camel_block_t data;
@@ -1369,7 +1375,11 @@ camel_text_index_validate (CamelTextIndex *idx)
 				g_hash_table_insert (deleted, GINT_TO_POINTER (keyid), word);
 			}
 		}
+
+		word = NULL;
 	}
+
+	g_clear_pointer (&word, g_free);
 
 	printf ("Checking WORD member consistency\n");
 
@@ -1435,12 +1445,18 @@ camel_text_index_validate (CamelTextIndex *idx)
 				g_free (records);
 			}
 		}
+
+		word = NULL;
 	}
+
+	g_clear_pointer (&word, g_free);
 
 	g_hash_table_destroy (names);
 	g_hash_table_destroy (deleted);
-	g_hash_table_destroy (words);
 	g_hash_table_destroy (keys);
+
+	g_hash_table_foreach (words, (GHFunc) g_free, NULL);
+	g_hash_table_destroy (words);
 
 	g_hash_table_foreach (name_word, (GHFunc) g_free, NULL);
 	g_hash_table_destroy (name_word);
