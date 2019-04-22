@@ -1,3 +1,36 @@
+Evolution-Data-Server 3.33.1 2019-04-22
+---------------------------------------
+
+Bug Fixes:
+	I#91 - Verify database presence in test-migration test (Milan Crha)
+	I#92 - [IMAPx] Permanently delete single items in real Trash folder (Milan Crha)
+	I#94 - Remove -Wabi from the default C++ warning flags (Milan Crha)
+	I#95 - [WebDAV Session] Ignore empty current-user-privilege-set response (Milan Crha)
+	I#96 - Limit properties receive based on expected collection type in WebDAV discover (Milan Crha)
+	I#98 - [CardDAV] Use CARDDAV_DEBUG instead of WEBDAV_DEBUG (Milan Crha)
+	I#99 - Fails to build against git master of OpenLDAP (vendor version check) (Дилян Палаузов)
+	I#102 - Change order of gtkdoc-scangobj libraries (Milan Crha)
+	M!12 - libedataserver: Fix annoations syntax (Marco Trevisan (Treviño))
+	M!13 - [EBackend] Add GObject introspection (Corentin Noël)
+	evo-I#326 - Reword "Display reminders in notification area only" option (Milan Crha)
+	ews-I#39 - Let handle recurring task completion by the server (Milan Crha)
+
+Miscellaneous:
+	Make sure libdb addressbooks are available before book-migration test (Milan Crha)
+	Fix typo: reach-ability 🡒 reachability (Andre Klapper)
+	[Flatpak] Use a persistent location for an NSS certificate database (Milan Crha)
+	Rename AddressBookView/CalendarView D-Bus members for backward compatibility (Milan Crha)
+	Address several issues reported by Coverity Scan (Milan Crha)
+
+Translations:
+	Марко Костић (sr)
+	Matej Urbančič (sl)
+	Balázs Úr (hu)
+	Alan Mortensen (da)
+	Asier Sarasua Garmendia (eu)
+	Carmen Bianca BAKKER (eo)
+	Gianvito Cavasoli (it)
+
 Evolution-Data-Server 3.32.0 2019-03-11
 ---------------------------------------
 
