@@ -22,7 +22,7 @@ set(API_VERSION 1.2)
 set(GETTEXT_PACKAGE ${PROJECT_NAME})
 set(GETTEXT_PO_DIR ${CMAKE_SOURCE_DIR}/po)
 
-# Required for 'disttest' and 'ditcheck' of DistTarget module
+# Required for 'disttest' and 'distcheck' of DistTarget module
 set(PROJECT_DISTCONFIGURE_PARAMS
 	-DENABLE_GOA=ON
 	-DENABLE_EXAMPLES=ON
