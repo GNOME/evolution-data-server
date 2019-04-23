@@ -403,16 +403,65 @@ camel_ucs2_utf8 (const gchar *ptr)
 gchar *
 camel_utf8_make_valid (const gchar *text)
 {
-	gchar *res = g_strdup (text), *p;
+	return camel_utf8_make_valid_len (text, -1);
+}
 
-	if (!res)
-		return res;
+/**
+ * camel_utf8_make_valid_len:
+ * @text: a text to make valid
+ * @text_len: length of the @text, or -1 if NUL-terminated
+ *
+ * Ensures the returned text will be valid UTF-8 string, with incorrect letters
+ * changed to question marks.
+ *
+ * Returns: (transfer full): Valid UTF-8 string, with replaced incorrect letters.
+ *    Free it with g_free(), when no longer needed.
+ *
+ * Since: 3.32.2
+ **/
+gchar *
+camel_utf8_make_valid_len (const gchar *text,
+			   gssize text_len)
+{
+	/* almost identical copy of glib's _g_utf8_make_valid() */
+	GString *string;
+	const gchar *remainder, *invalid;
+	gint remaining_bytes, valid_bytes;
 
-	p = res;
-	while (!g_utf8_validate (p, -1, (const gchar **) &p)) {
-		/* make all invalid characters appear as question marks */
-		*p = '?';
+	if (text && text_len < 0)
+		text_len = strlen (text);
+
+	if (!text || text_len <= 0 || !*text)
+		return g_strdup (text);
+
+	string = NULL;
+	remainder = (gchar *) text,
+	remaining_bytes = text_len;
+
+	while (remaining_bytes != 0) {
+		if (g_utf8_validate (remainder, remaining_bytes, &invalid))
+			break;
+
+		valid_bytes = invalid - remainder;
+
+		if (!string)
+			string = g_string_sized_new (remaining_bytes);
+
+		g_string_append_len (string, remainder, valid_bytes);
+		/* append U+FFFD REPLACEMENT CHARACTER */
+		g_string_append (string, "\357\277\275");
+
+		remaining_bytes -= valid_bytes + 1;
+		remainder = invalid + 1;
 	}
 
-	return res;
+	if (!string)
+		return g_strndup (text, text_len);
+
+	if (remaining_bytes > 0)
+		g_string_append_len (string, remainder, remaining_bytes);
+
+	g_warn_if_fail (g_utf8_validate (string->str, -1, NULL));
+
+	return g_string_free (string, FALSE);
 }

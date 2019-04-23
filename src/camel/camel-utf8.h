@@ -42,6 +42,8 @@ gchar *camel_ucs2_utf8 (const gchar *ptr);
 
 /* make valid utf8 string */
 gchar *camel_utf8_make_valid (const gchar *text);
+gchar *camel_utf8_make_valid_len (const gchar *text,
+				  gssize text_len);
 
 G_END_DECLS
 
