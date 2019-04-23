@@ -164,16 +164,31 @@ exit:
 
 static gchar *
 writeln (CamelMimeFilter *mime_filter,
-         const guchar *in,
-         const guchar *inend,
+         const gchar *in_anycharset,
+         const gchar *inend_char,
          gchar *outptr,
          gchar **outend)
 {
 	CamelMimeFilterToHTMLPrivate *priv;
-	const guchar *inptr = in;
+	const guchar *inptr, *inend, *inbegin;
+	gchar *in_utf8 = NULL;
 
 	priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (mime_filter);
 
+	if (!g_utf8_validate (in_anycharset, inend_char - in_anycharset, NULL)) {
+		in_utf8 = camel_utf8_make_valid_len (in_anycharset, inend_char - in_anycharset);
+
+		if (!in_utf8)
+			return outptr;
+
+		inptr = (const guchar *) in_utf8;
+		inend = inptr + strlen (in_utf8);
+	} else {
+		inptr = (const guchar *) in_anycharset;
+		inend = (const guchar *) inend_char;
+	}
+
+	inbegin = inptr;
 	while (inptr < inend) {
 		guint32 u;
 
@@ -216,7 +231,7 @@ writeln (CamelMimeFilter *mime_filter,
 			/* falls through */
 		case ' ':
 			if (priv->flags & CAMEL_MIME_FILTER_TOHTML_CONVERT_SPACES
-			    && ((inptr == (in + 1) || (inptr < inend && (*inptr == ' ' || *inptr == '\t'))))) {
+			    && ((inptr == (inbegin + 1) || (inptr < inend && (*inptr == ' ' || *inptr == '\t'))))) {
 				outptr = g_stpcpy (outptr, "&nbsp;");
 				priv->column++;
 				break;
@@ -228,7 +243,7 @@ writeln (CamelMimeFilter *mime_filter,
 				   only if not converting the new-line breaks */
 				if (!(priv->flags & CAMEL_MIME_FILTER_TOHTML_CONVERT_NL))
 					*outptr++ = u;
-			} else if (u >= 20 && u <0x80) {
+			} else if (u >= 0x20 && u < 0x80) {
 				*outptr++ = u;
 			} else {
 				if (priv->flags & CAMEL_MIME_FILTER_TOHTML_ESCAPE_8BIT)
@@ -240,6 +255,8 @@ writeln (CamelMimeFilter *mime_filter,
 			break;
 		}
 	}
+
+	g_free (in_utf8);
 
 	return outptr;
 }
@@ -375,9 +392,8 @@ html_convert (CamelMimeFilter *mime_filter,
 					/* write out anything before the first regex match */
 					outptr = writeln (
 						mime_filter,
-						(const guchar *) start,
-						(const guchar *) start +
-						match.um_so,
+						start,
+						start + match.um_so,
 						outptr, &outend);
 
 					start += match.um_so;
@@ -390,15 +406,13 @@ html_convert (CamelMimeFilter *mime_filter,
 					/* prefix shouldn't need escaping, but let's be safe */
 					outptr = writeln (
 						mime_filter,
-						(const guchar *) match.prefix,
-						(const guchar *) match.prefix +
-						strlen (match.prefix),
+						match.prefix,
+						match.prefix + strlen (match.prefix),
 						outptr, &outend);
 					outptr = writeln (
 						mime_filter,
-						(const guchar *) start,
-						(const guchar *) start +
-						matchlen,
+						start,
+						start + matchlen,
 						outptr, &outend);
 					outptr = append_string_verbatim (
 						mime_filter, "\">",
@@ -407,9 +421,8 @@ html_convert (CamelMimeFilter *mime_filter,
 					/* now write the matched string */
 					outptr = writeln (
 						mime_filter,
-						(const guchar *) start,
-						(const guchar *) start +
-						matchlen,
+						start,
+						start + matchlen,
 						outptr, &outend);
 					priv->column += matchlen;
 					start += matchlen;
@@ -423,8 +436,8 @@ html_convert (CamelMimeFilter *mime_filter,
 					/* nothing matched so write out the remainder of this line buffer */
 					outptr = writeln (
 						mime_filter,
-						(const guchar *) start,
-						(const guchar *) start + len,
+						start,
+						start + len,
 						outptr, &outend);
 					break;
 				}
@@ -432,8 +445,8 @@ html_convert (CamelMimeFilter *mime_filter,
 		} else {
 			outptr = writeln (
 				mime_filter,
-				(const guchar *) start,
-				(const guchar *) inptr,
+				start,
+				inptr,
 				outptr, &outend);
 		}
 
@@ -459,8 +472,8 @@ html_convert (CamelMimeFilter *mime_filter,
 		if (start < inend)
 			outptr = writeln (
 				mime_filter,
-				(const guchar *) start,
-				(const guchar *) inend,
+				start,
+				inend,
 				outptr, &outend);
 
 		while (priv->blockquote_depth > 0) {

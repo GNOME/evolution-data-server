@@ -650,7 +650,8 @@ e_util_utf8_data_make_valid (const gchar *data,
 	if (string == NULL)
 		return g_strndup ((gchar *) data, data_bytes);
 
-	g_string_append (string, remainder);
+	if (remaining_bytes > 0)
+		g_string_append_len (string, remainder, remaining_bytes);
 
 	g_warn_if_fail (g_utf8_validate (string->str, -1, NULL));
 
