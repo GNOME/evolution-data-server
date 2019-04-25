@@ -112,17 +112,18 @@ test_remove_object_empty_uid (ETestServerFixture *fixture,
                               gconstpointer user_data)
 {
 	ECalClient *cal_client;
+	gboolean success;
 	GError *error = NULL;
 
 	g_test_bug ("697705");
 
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
-	e_cal_client_remove_object_sync (
-		cal_client, "", NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, &error);
+	success = e_cal_client_remove_object_sync (cal_client, "", NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, &error);
 	g_assert_error (
 		error, E_CAL_CLIENT_ERROR,
 		E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND);
+	g_assert (!success);
 	g_clear_error (&error);
 }
 

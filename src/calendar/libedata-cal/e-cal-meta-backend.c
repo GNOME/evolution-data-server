@@ -2817,11 +2817,14 @@ ecmb_add_timezone_sync (ECalBackendSync *sync_backend,
 		ICalTimezone *zone;
 
 		zone = i_cal_timezone_new ();
-		i_cal_timezone_set_component (zone, tz_comp);
+		if (!i_cal_timezone_set_component (zone, tz_comp))
+			g_clear_object (&zone);
 
-		/* Add it only to memory, do not store it persistently into the ECalCache */
-		e_timezone_cache_add_timezone (E_TIMEZONE_CACHE (sync_backend), zone);
-		g_object_unref (zone);
+		if (zone) {
+			/* Add it only to memory, do not store it persistently into the ECalCache */
+			e_timezone_cache_add_timezone (E_TIMEZONE_CACHE (sync_backend), zone);
+			g_object_unref (zone);
+		}
 	}
 
 	g_clear_object (&tz_comp);

@@ -6841,21 +6841,12 @@ e_cal_client_add_timezone (ECalClient *client,
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
-	ICalComponent *icalcomp, *clone;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (zone != NULL);
 
-	icalcomp = i_cal_timezone_get_component (zone);
-	g_return_if_fail (icalcomp != NULL);
-
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->zone = i_cal_timezone_new ();
-
-	clone = i_cal_component_new_clone (icalcomp);
-	i_cal_timezone_set_component (async_context->zone, clone);
-	g_object_unref (icalcomp);
-	g_object_unref (clone);
+	async_context->zone = e_cal_util_copy_timezone (zone);
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -6866,7 +6857,7 @@ e_cal_client_add_timezone (ECalClient *client,
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
-	if (zone == i_cal_timezone_get_utc_timezone ())
+	if (!async_context->zone || zone == i_cal_timezone_get_utc_timezone ())
 		g_simple_async_result_complete_in_idle (simple);
 	else
 		g_simple_async_result_run_in_thread (

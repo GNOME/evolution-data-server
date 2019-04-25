@@ -1341,6 +1341,7 @@ test_get_contact_list (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->get_contact_list_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		"(is \"uid\" \"custom-3\")", &contacts, NULL, &error);
 	g_assert_no_error (error);
+	g_assert (success);
 	g_assert_cmpint (g_slist_length (contacts), ==, 1);
 	contact = contacts->data;
 	g_assert_nonnull (contact);
@@ -1371,6 +1372,7 @@ test_get_contact_list_uids (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->get_contact_list_uids_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		"(is \"uid\" \"custom-3\")", &uids, NULL, &error);
 	g_assert_no_error (error);
+	g_assert (success);
 	g_assert_cmpint (g_slist_length (uids), ==, 1);
 	g_assert_nonnull (uids->data);
 	g_assert_cmpstr (uids->data, ==, "custom-3");

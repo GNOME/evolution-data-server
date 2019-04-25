@@ -2251,7 +2251,7 @@ cal_object_get_rdate_end (CalObjTime *occ,
 	}
 
 	/* This should never happen. */
-	if (cmp == 0) {
+	if (cmp == 0 || !rdate) {
 		#ifdef CAL_OBJ_DEBUG
 		g_debug ("%s: Recurrence date %s not found", G_STRFUNC, cal_obj_time_to_string (cc));
 		#endif

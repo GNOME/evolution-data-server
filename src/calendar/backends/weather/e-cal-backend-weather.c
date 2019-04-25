@@ -134,7 +134,7 @@ static void
 put_component_to_store (ECalBackendWeather *cb,
                         ECalComponent *comp)
 {
-	e_cal_cache_put_component (cb->priv->cache, comp, NULL, 0, E_CACHE_IS_ONLINE, NULL, NULL);
+	g_warn_if_fail (e_cal_cache_put_component (cb->priv->cache, comp, NULL, 0, E_CACHE_IS_ONLINE, NULL, NULL));
 }
 
 static gint

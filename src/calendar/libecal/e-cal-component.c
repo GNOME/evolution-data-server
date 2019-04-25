@@ -2017,7 +2017,6 @@ get_period_list (ICalComponent *icalcomp,
 			if (value_type == I_CAL_VALUE_DATE || value_type == I_CAL_VALUE_DATETIME) {
 				period_kind = E_CAL_COMPONENT_PERIOD_DATETIME;
 			} else if (value_type == I_CAL_VALUE_PERIOD) {
-				period_kind = E_CAL_COMPONENT_PERIOD_DURATION;
 				duration = i_cal_period_get_duration (icalperiod);
 
 				if (!duration ||
@@ -3157,9 +3156,10 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
 				if (n_by_set_pos != 1)
 					goto cleanup;
 				pos = i_cal_recurrence_get_by_set_pos (rt, 0);
-			} else if (pos < 0) {
-				goto cleanup;
 			}
+
+			if (pos < 0)
+				goto cleanup;
 
 			switch (weekday) {
 			case I_CAL_MONDAY_WEEKDAY:

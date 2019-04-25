@@ -125,7 +125,8 @@ e_cal_util_copy_timezone (const ICalTimezone *zone)
 		ICalComponent *comp_copy;
 
 		comp_copy = i_cal_component_new_clone (comp);
-		i_cal_timezone_set_component (zone_copy, comp_copy);
+		if (!i_cal_timezone_set_component (zone_copy, comp_copy))
+			g_clear_object (&zone_copy);
 		g_object_unref (comp_copy);
 		g_object_unref (comp);
 	}
