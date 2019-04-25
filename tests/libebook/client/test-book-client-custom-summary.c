@@ -114,7 +114,7 @@ setup_book (ClientTestFixture *fixture)
 		g_free (case_name);
 	}
 
-	if (!e_book_client_add_contacts_sync (book_client, contacts, NULL, NULL, &error)) {
+	if (!e_book_client_add_contacts_sync (book_client, contacts, E_BOOK_OPERATION_FLAG_NONE, NULL, NULL, &error)) {
 
 		/* Dont complain here, we may re-use the same addressbook for multiple tests
 		 * and we can't add the same contacts twice

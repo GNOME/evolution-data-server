@@ -54,12 +54,12 @@ typedef struct _EBookBackendFileClass EBookBackendFileClass;
 typedef struct _EBookBackendFilePrivate EBookBackendFilePrivate;
 
 struct _EBookBackendFile {
-	EBookBackend parent;
+	EBookBackendSync parent;
 	EBookBackendFilePrivate *priv;
 };
 
 struct _EBookBackendFileClass {
-	EBookBackendClass parent_class;
+	EBookBackendSyncClass parent_class;
 };
 
 GType		e_book_backend_file_get_type	(void);

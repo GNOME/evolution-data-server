@@ -90,7 +90,6 @@ struct _ECalBackendSyncClass {
 	void		(*open_sync)		(ECalBackendSync *backend,
 						 EDataCal *cal,
 						 GCancellable *cancellable,
-						 gboolean only_if_exists,
 						 GError **error);
 	void		(*refresh_sync)		(ECalBackendSync *backend,
 						 EDataCal *cal,
@@ -194,7 +193,6 @@ GType		e_cal_backend_sync_get_type	(void) G_GNUC_CONST;
 void		e_cal_backend_sync_open		(ECalBackendSync *backend,
 						 EDataCal *cal,
 						 GCancellable *cancellable,
-						 gboolean only_if_exists,
 						 GError **error);
 void		e_cal_backend_sync_refresh	(ECalBackendSync *backend,
 						 EDataCal *cal,

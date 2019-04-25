@@ -82,7 +82,7 @@ test_remove_contacts_sync (ETestServerFixture *fixture,
 	if (!fill_book_client (book_client, &uids))
 		g_error ("Failed to add contacts");
 
-	if (!e_book_client_remove_contacts_sync (book_client, uids, NULL, &error))
+	if (!e_book_client_remove_contacts_sync (book_client, uids, E_BOOK_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("remove contact sync: %s", error->message);
 
 	/* This will assert they are actually removed */
@@ -126,7 +126,7 @@ test_remove_contacts_async (ETestServerFixture *fixture,
 
 	data.uids = uids;
 	data.loop = fixture->loop;
-	e_book_client_remove_contacts (book_client, uids, NULL, remove_contacts_cb, &data);
+	e_book_client_remove_contacts (book_client, uids, E_BOOK_OPERATION_FLAG_NONE, NULL, remove_contacts_cb, &data);
 
 	g_main_loop_run (fixture->loop);
 

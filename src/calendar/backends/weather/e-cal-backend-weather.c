@@ -661,7 +661,6 @@ static void
 e_cal_backend_weather_open (ECalBackendSync *backend,
                             EDataCal *cal,
                             GCancellable *cancellable,
-                            gboolean only_if_exists,
                             GError **perror)
 {
 	ECalBackendWeather *cbw;

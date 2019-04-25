@@ -1442,7 +1442,6 @@ static void
 e_cal_backend_file_open (ECalBackendSync *backend,
                          EDataCal *cal,
                          GCancellable *cancellable,
-                         gboolean only_if_exists,
                          GError **perror)
 {
 	ECalBackendFile *cbfile;
@@ -1477,10 +1476,7 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 		if (g_access (str_uri, W_OK) != 0)
 			writable = FALSE;
 	} else {
-		if (only_if_exists)
-			err = ECC_ERROR (E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR);
-		else
-			create_cal (cbfile, str_uri, &err);
+		create_cal (cbfile, str_uri, &err);
 	}
 
 	if (!err) {

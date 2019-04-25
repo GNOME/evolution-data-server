@@ -238,7 +238,7 @@ add_contacts (Book *book,
 {
 	GError *error = NULL;
 
-	if (!e_book_client_add_contacts_sync (book, contacts, NULL, NULL, &error))
+	if (!e_book_client_add_contacts_sync (book, contacts, E_BOOK_OPERATION_FLAG_NONE, NULL, NULL, &error))
 		g_error ("Failed to add contacts: %s", error->message);
 }
 

@@ -137,7 +137,7 @@ give_james_brown_micheal_jacksons_face (EBookClient *book)
 	e_contact_photo_free (micheal_face);
 	e_contact_photo_free (james_face);
 
-	if (!e_book_client_modify_contact_sync (book, james, NULL, &error))
+	if (!e_book_client_modify_contact_sync (book, james, E_BOOK_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("Failed to modify contact with cross referenced photo: %s", error->message);
 }
 
@@ -169,7 +169,7 @@ update_contact_inline (EBookClient *book,
 
 	e_contact_photo_free (photo);
 
-	if (!e_book_client_modify_contact_sync (book, contact, NULL, &error))
+	if (!e_book_client_modify_contact_sync (book, contact, E_BOOK_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("Failed to modify contact with inline photo data: %s", error->message);
 }
 
@@ -218,7 +218,7 @@ complete (EBookClientView *view,
 	case ITERATION_DELETE_JAMES:
 		assert_uri_exists (book, james_brown_uid);
 
-		if (!e_book_client_remove_contact_by_uid_sync (book, james_brown_uid, NULL, &local_error))
+		if (!e_book_client_remove_contact_by_uid_sync (book, james_brown_uid, E_BOOK_OPERATION_FLAG_NONE, NULL, &local_error))
 			g_error ("Error removing contact: %s", local_error->message);
 
 		g_free (james_brown_uid);
@@ -232,7 +232,7 @@ complete (EBookClientView *view,
 	case ITERATION_DELETE_MICHEAL:
 		assert_uri_exists (book, micheal_jackson_uid);
 
-		if (!e_book_client_remove_contact_by_uid_sync (book, micheal_jackson_uid, NULL, &local_error))
+		if (!e_book_client_remove_contact_by_uid_sync (book, micheal_jackson_uid, E_BOOK_OPERATION_FLAG_NONE, NULL, &local_error))
 			g_error ("Error removing contact: %s", local_error->message);
 
 		g_free (micheal_jackson_uid);

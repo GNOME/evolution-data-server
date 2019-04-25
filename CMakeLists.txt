@@ -40,7 +40,7 @@ set(PROJECT_DISTCONFIGURE_PARAMS
 # D-Bus versioning
 # ******************************
 # Actual name can be modified with DBUS_SERVICES_PREFIX option
-set(ADDRESS_BOOK_DBUS_SERVICE_NAME	"org.gnome.evolution.dataserver.AddressBook9")
+set(ADDRESS_BOOK_DBUS_SERVICE_NAME	"org.gnome.evolution.dataserver.AddressBook10")
 set(CALENDAR_DBUS_SERVICE_NAME		"org.gnome.evolution.dataserver.Calendar8")
 set(SOURCES_DBUS_SERVICE_NAME		"org.gnome.evolution.dataserver.Sources5")
 set(USER_PROMPTER_DBUS_SERVICE_NAME	"org.gnome.evolution.dataserver.UserPrompter0")
@@ -64,15 +64,15 @@ set(LIBEDATASERVERUI_CURRENT 2)
 set(LIBEDATASERVERUI_REVISION 0)
 set(LIBEDATASERVERUI_AGE 0)
 
-set(LIBEBOOK_CURRENT 19)
+set(LIBEBOOK_CURRENT 20)
 set(LIBEBOOK_REVISION 1)
 set(LIBEBOOK_AGE 3)
 
-set(LIBEBOOK_CONTACTS_CURRENT 2)
+set(LIBEBOOK_CONTACTS_CURRENT 3)
 set(LIBEBOOK_CONTACTS_REVISION 0)
 set(LIBEBOOK_CONTACTS_AGE 0)
 
-set(LIBEDATABOOK_CURRENT 25)
+set(LIBEDATABOOK_CURRENT 26)
 set(LIBEDATABOOK_REVISION 0)
 set(LIBEDATABOOK_AGE 0)
 

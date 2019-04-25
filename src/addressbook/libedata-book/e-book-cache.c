@@ -96,6 +96,7 @@
 #define INDEX_FLAG(type)  (1 << E_BOOK_INDEX_##type)
 
 #define EBC_COLUMN_EXTRA	"bdata"
+#define EBC_COLUMN_CUSTOM_FLAGS	"custom_flags"
 
 typedef struct {
 	EContactField field_id;		/* The EContact field */
@@ -3063,11 +3064,15 @@ ebc_generate_select (EBookCache *book_cache,
 		g_string_append (string, "summary." E_CACHE_COLUMN_REVISION ",");
 		g_string_append (string, "summary." E_CACHE_COLUMN_OBJECT ",");
 		g_string_append (string, "summary." E_CACHE_COLUMN_STATE ",");
-		g_string_append (string, "summary." EBC_COLUMN_EXTRA " ");
+		g_string_append (string, "summary." EBC_COLUMN_EXTRA ",");
+		g_string_append (string, "summary." EBC_COLUMN_CUSTOM_FLAGS " ");
 		break;
 	case SEARCH_UID_AND_REV:
 		callback = ebc_search_meta_contacts_cb;
-		g_string_append (string, "summary." E_CACHE_COLUMN_UID ", summary." E_CACHE_COLUMN_REVISION ", summary." EBC_COLUMN_EXTRA " ");
+		g_string_append (string, "summary." E_CACHE_COLUMN_UID ",");
+		g_string_append (string, "summary." E_CACHE_COLUMN_REVISION ",");
+		g_string_append (string, "summary." EBC_COLUMN_EXTRA ",");
+		g_string_append (string, "summary." EBC_COLUMN_CUSTOM_FLAGS " ");
 		break;
 	case SEARCH_UID:
 		callback = ebc_search_uids_cb;
@@ -3252,6 +3257,7 @@ struct EBCSearchData {
 	gint revision_index;
 	gint object_index;
 	gint extra_index;
+	gint custom_flags_index;
 	gint state_index;
 
 	EBookCacheInternalSearchFunc func;
@@ -3270,6 +3276,7 @@ ebc_search_select_cb (ECache *cache,
 {
 	struct EBCSearchData *sd = user_data;
 	const gchar *object = NULL, *extra = NULL;
+	guint32 custom_flags = 0;
 	EOfflineState offline_state = E_OFFLINE_STATE_UNKNOWN;
 
 	g_return_val_if_fail (sd != NULL, FALSE);
@@ -3280,6 +3287,7 @@ ebc_search_select_cb (ECache *cache,
 	    sd->revision_index == -1 ||
 	    sd->object_index == -1 ||
 	    sd->extra_index == -1 ||
+	    sd->custom_flags_index == -1 ||
 	    sd->state_index == -1) {
 		gint ii;
 
@@ -3287,6 +3295,7 @@ ebc_search_select_cb (ECache *cache,
 		     sd->revision_index == -1 ||
 		     sd->object_index == -1 ||
 		     sd->extra_index == -1 ||
+		     sd->custom_flags_index == -1 ||
 		     sd->state_index == -1); ii++) {
 			const gchar *cname = column_names[ii];
 
@@ -3304,6 +3313,8 @@ ebc_search_select_cb (ECache *cache,
 				sd->object_index = ii;
 			} else if (sd->extra_index == -1 && g_ascii_strcasecmp (cname, EBC_COLUMN_EXTRA) == 0) {
 				sd->extra_index = ii;
+			} else if (sd->custom_flags_index == -1 && g_ascii_strcasecmp (cname, EBC_COLUMN_CUSTOM_FLAGS) == 0) {
+				sd->custom_flags_index = ii;
 			} else if (sd->state_index == -1 && g_ascii_strcasecmp (cname, E_CACHE_COLUMN_STATE) == 0) {
 				sd->state_index = ii;
 			}
@@ -3323,6 +3334,12 @@ ebc_search_select_cb (ECache *cache,
 		extra = column_values[sd->extra_index];
 	}
 
+	if (sd->custom_flags_index != -2) {
+		g_return_val_if_fail (sd->custom_flags_index >= 0 && sd->custom_flags_index < ncols, FALSE);
+		if (column_values[sd->custom_flags_index])
+			custom_flags = g_ascii_strtoull (column_values[sd->custom_flags_index], NULL, 10);
+	}
+
 	if (sd->state_index != -2) {
 		g_return_val_if_fail (sd->extra_index >= 0 && sd->extra_index < ncols, FALSE);
 
@@ -3334,7 +3351,7 @@ ebc_search_select_cb (ECache *cache,
 
 	if (sd->user_func) {
 		return sd->user_func (E_BOOK_CACHE (cache), column_values[sd->uid_index], column_values[sd->revision_index],
-			object, extra, offline_state, sd->user_func_user_data);
+			object, extra, custom_flags, offline_state, sd->user_func_user_data);
 	}
 
 	sd->func (cache, column_values[sd->uid_index], column_values[sd->revision_index], object, extra, sd->out_value);
@@ -3394,6 +3411,7 @@ ebc_do_search_query (EBookCache *book_cache,
 		sd.revision_index = -1;
 		sd.object_index = search_type == SEARCH_FULL ? -1 : -2;
 		sd.extra_index = search_type == SEARCH_UID ? -2 : -1;
+		sd.custom_flags_index = search_type == SEARCH_UID ? -2 : -1;
 		sd.state_index = search_type == SEARCH_FULL ? -1 : -2;
 		sd.out_value = out_value;
 		sd.user_func = func;
@@ -4197,6 +4215,26 @@ e_book_cache_get_strings (ECache *cache,
 }
 
 static gboolean
+e_book_cache_get_uint64_cb (ECache *cache,
+			    gint ncols,
+			    const gchar **column_names,
+			    const gchar **column_values,
+			    gpointer user_data)
+{
+	guint64 *pui64 = user_data;
+
+	g_return_val_if_fail (pui64 != NULL, FALSE);
+
+	if (ncols == 1) {
+		*pui64 = column_values[0] ? g_ascii_strtoull (column_values[0], NULL, 10) : 0;
+	} else {
+		*pui64 = 0;
+	}
+
+	return TRUE;
+}
+
+static gboolean
 e_book_cache_get_old_contacts_cb (ECache *cache,
 				  gint ncols,
 				  const gchar *column_names[],
@@ -4298,7 +4336,7 @@ e_book_cache_migrate (ECache *cache,
 				if (!contact)
 					continue;
 
-				success = e_book_cache_put_contact (book_cache, contact, data->extra, E_CACHE_IS_ONLINE, cancellable, error);
+				success = e_book_cache_put_contact (book_cache, contact, data->extra, 0, E_CACHE_IS_ONLINE, cancellable, error);
 			}
 		}
 
@@ -4366,6 +4404,7 @@ e_book_cache_populate_other_columns (EBookCache *book_cache,
 		} G_STMT_END
 
 	add_column (EBC_COLUMN_EXTRA, "TEXT", NULL);
+	add_column (EBC_COLUMN_CUSTOM_FLAGS, "INTEGER", NULL);
 
 	use_default = !setup;
 
@@ -4796,7 +4835,8 @@ e_book_cache_ref_collator (EBookCache *book_cache)
  * e_book_cache_put_contact:
  * @book_cache: An #EBookCache
  * @contact: an #EContact to be added
- * @extra: extra data to store in association with this contact
+ * @extra: (nullable): extra data to store in association with this @contact
+ * @custom_flags: custom flags for the @contact, not interpreted by the @book_cache
  * @offline_flag: one of #ECacheOfflineFlag, whether putting this contact in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -4812,11 +4852,12 @@ gboolean
 e_book_cache_put_contact (EBookCache *book_cache,
 			  EContact *contact,
 			  const gchar *extra,
+			  guint32 custom_flags,
 			  ECacheOfflineFlag offline_flag,
 			  GCancellable *cancellable,
 			  GError **error)
 {
-	GSList *contacts, *extras;
+	GSList *contacts, *extras, *custom_flags_lst;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
@@ -4824,9 +4865,11 @@ e_book_cache_put_contact (EBookCache *book_cache,
 
 	contacts = g_slist_append (NULL, contact);
 	extras = g_slist_append (NULL, (gpointer) extra);
+	custom_flags_lst = g_slist_append (NULL, GUINT_TO_POINTER (custom_flags));
 
-	success = e_book_cache_put_contacts (book_cache, contacts, extras, offline_flag, cancellable, error);
+	success = e_book_cache_put_contacts (book_cache, contacts, extras, custom_flags_lst, offline_flag, cancellable, error);
 
+	g_slist_free (custom_flags_lst);
 	g_slist_free (contacts);
 	g_slist_free (extras);
 
@@ -4838,15 +4881,17 @@ e_book_cache_put_contact (EBookCache *book_cache,
  * @book_cache: An #EBookCache
  * @contacts: (element-type EContact): A list of contacts to add to @book_cache
  * @extras: (nullable) (element-type utf8): A list of extra data to store in association with the @contacts
+ * @custom_flags: (nullable) (element-type guint32): optional custom flags to use for the @contacts
  * @offline_flag: one of #ECacheOfflineFlag, whether putting these contacts in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Adds or replaces contacts in @book_cache.
  *
- * If @extras is specified, it must have an equal length as the @contacts list. Each element
- * from the @extras list will be stored in association with its corresponding contact
- * in the @contacts list.
+ * If @extras is specified, it must have an equal length as the @contacts list.
+ * Similarly the non-NULL @custom_flags length should be the same as the length of the @contacts.
+ * Each element from the @extras list and @custom_flags list will be stored in association
+ * with its corresponding contact in the @contacts list.
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set appropriately.
  *
@@ -4856,11 +4901,12 @@ gboolean
 e_book_cache_put_contacts (EBookCache *book_cache,
 			   const GSList *contacts,
 			   const GSList *extras,
+			   const GSList *custom_flags,
 			   ECacheOfflineFlag offline_flag,
 			   GCancellable *cancellable,
 			   GError **error)
 {
-	const GSList *clink, *elink;
+	const GSList *clink, *elink, *flink;
 	ECache *cache;
 	ECacheColumnValues *other_columns;
 	gboolean success;
@@ -4868,6 +4914,7 @@ e_book_cache_put_contacts (EBookCache *book_cache,
 	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
 	g_return_val_if_fail (contacts != NULL, FALSE);
 	g_return_val_if_fail (extras == NULL || g_slist_length ((GSList *) extras) == g_slist_length ((GSList *) contacts), FALSE);
+	g_return_val_if_fail (custom_flags == NULL || g_slist_length ((GSList *) contacts) == g_slist_length ((GSList *) custom_flags), FALSE);
 
 	cache = E_CACHE (book_cache);
 	other_columns = e_cache_column_values_new ();
@@ -4875,9 +4922,12 @@ e_book_cache_put_contacts (EBookCache *book_cache,
 	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
 	e_cache_freeze_revision_change (cache);
 
-	for (clink = contacts, elink = extras; clink; clink = g_slist_next (clink), elink = g_slist_next (elink)) {
+	for (clink = contacts, elink = extras, flink = custom_flags;
+	     clink;
+	     (clink = g_slist_next (clink)), (elink = g_slist_next (elink)), (flink = g_slist_next (flink))) {
 		EContact *contact = clink->data;
 		const gchar *extra = elink ? elink->data : NULL;
+		guint32 custom_flags_val = flink ? GPOINTER_TO_UINT (flink->data) : 0;
 		gchar *uid, *rev, *vcard;
 
 		g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
@@ -4889,6 +4939,7 @@ e_book_cache_put_contacts (EBookCache *book_cache,
 
 		if (extra)
 			e_cache_column_values_take_value (other_columns, EBC_COLUMN_EXTRA, g_strdup (extra));
+		e_cache_column_values_take_value (other_columns, EBC_COLUMN_CUSTOM_FLAGS, g_strdup_printf ("%u", custom_flags_val));
 
 		uid = e_contact_get (contact, E_CONTACT_UID);
 		rev = e_book_cache_dup_contact_revision (book_cache, contact);
@@ -4917,6 +4968,7 @@ e_book_cache_put_contacts (EBookCache *book_cache,
  * e_book_cache_remove_contact:
  * @book_cache: An #EBookCache
  * @uid: the uid of the contact to remove
+ * @custom_flags: custom flags for the contact with the given @uid, not interpreted by the @book_cache
  * @offline_flag: one of #ECacheOfflineFlag, whether removing this contact in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -4930,20 +4982,23 @@ e_book_cache_put_contacts (EBookCache *book_cache,
 gboolean
 e_book_cache_remove_contact (EBookCache *book_cache,
 			     const gchar *uid,
+			     guint32 custom_flags,
 			     ECacheOfflineFlag offline_flag,
 			     GCancellable *cancellable,
 			     GError **error)
 {
-	GSList *uids;
+	GSList *uids, *custom_flags_lst;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
 	uids = g_slist_append (NULL, (gpointer) uid);
+	custom_flags_lst = g_slist_append (NULL, GUINT_TO_POINTER (custom_flags));
 
-	success = e_book_cache_remove_contacts (book_cache, uids, offline_flag, cancellable, error);
+	success = e_book_cache_remove_contacts (book_cache, uids, custom_flags_lst, offline_flag, cancellable, error);
 
+	g_slist_free (custom_flags_lst);
 	g_slist_free (uids);
 
 	return success;
@@ -4953,11 +5008,15 @@ e_book_cache_remove_contact (EBookCache *book_cache,
  * e_book_cache_remove_contacts:
  * @book_cache: An #EBookCache
  * @uids: (element-type utf8): a #GSList of uids indicating which contacts to remove
+ * @custom_flags: (element-type guint32) (nullable): an optional #GSList of custom flags for the @ids
  * @offline_flag: one of #ECacheOfflineFlag, whether removing these contacts in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Removes the contacts indicated by @uids from @book_cache.
+ * The @custom_flags is used, if not %NULL, only if the @offline_flag
+ * is %E_CACHE_IS_OFFLINE. Otherwise it's ignored. The length of
+ * the @custom_flags should match the length of @uids, when not %NULL.
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set appropriately.
  *
@@ -4966,24 +5025,34 @@ e_book_cache_remove_contact (EBookCache *book_cache,
 gboolean
 e_book_cache_remove_contacts (EBookCache *book_cache,
 			      const GSList *uids,
+			      const GSList *custom_flags,
 			      ECacheOfflineFlag offline_flag,
 			      GCancellable *cancellable,
 			      GError **error)
 {
 	ECache *cache;
-	const GSList *link;
+	const GSList *link, *flink;
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
+	g_return_val_if_fail (custom_flags == NULL || g_slist_length ((GSList *) uids) == g_slist_length ((GSList *) custom_flags), FALSE);
 
 	cache = E_CACHE (book_cache);
 
 	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
 	e_cache_freeze_revision_change (cache);
 
-	for (link = uids; success && link; link = g_slist_next (link)) {
+	for (link = uids, flink = custom_flags; success && link; (link = g_slist_next (link)), (flink = g_slist_next (flink))) {
 		const gchar *uid = link->data;
+		guint32 custom_flags_val = flink ? GPOINTER_TO_UINT (flink->data) : 0;
+
+		if (offline_flag == E_CACHE_IS_OFFLINE && flink) {
+			success = e_book_cache_set_contact_custom_flags (book_cache, uid, custom_flags_val, cancellable, error);
+
+			if (!success)
+				break;
+		}
 
 		success = e_cache_remove (cache, uid, offline_flag, cancellable, error);
 	}
@@ -5101,6 +5170,101 @@ e_book_cache_get_vcard (EBookCache *book_cache,
 	g_free (revision);
 
 	return TRUE;
+}
+
+/**
+ * e_book_cache_set_contact_custom_flags:
+ * @book_cache: an #EBookCache
+ * @uid: The uid of the contact to set the extra data for
+ * @custom_flags: the custom flags to set for the contact
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Sets or replaces the custom flags associated with a contact
+ * identified by the @uid.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.36
+ **/
+gboolean
+e_book_cache_set_contact_custom_flags (EBookCache *book_cache,
+				       const gchar *uid,
+				       guint32 custom_flags,
+				       GCancellable *cancellable,
+				       GError **error)
+{
+	gchar *stmt;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	if (!e_cache_contains (E_CACHE (book_cache), uid, E_CACHE_INCLUDE_DELETED)) {
+		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s” not found"), uid);
+		return FALSE;
+	}
+
+	stmt = e_cache_sqlite_stmt_printf (
+		"UPDATE " E_CACHE_TABLE_OBJECTS " SET " EBC_COLUMN_CUSTOM_FLAGS "=%u"
+		" WHERE " E_CACHE_COLUMN_UID "=%Q",
+		custom_flags, uid);
+
+	success = e_cache_sqlite_exec (E_CACHE (book_cache), stmt, cancellable, error);
+
+	e_cache_sqlite_stmt_free (stmt);
+
+	return success;
+}
+
+/**
+ * e_book_cache_get_contact_custom_flags:
+ * @book_cache: an #EBookCache
+ * @uid: The uid of the contact to set the extra data for
+ * @out_custom_flags: (out): return location to store the custom flags
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Gets the custom flags previously set for the @uid, either with
+ * e_book_cache_set_contact_custom_flags(), when adding contacts or
+ * when removing contacts in offline.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.36
+ **/
+gboolean
+e_book_cache_get_contact_custom_flags (EBookCache *book_cache,
+				       const gchar *uid,
+				       guint32 *out_custom_flags,
+				       GCancellable *cancellable,
+				       GError **error)
+{
+	gchar *stmt;
+	guint64 value = 0;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	if (!e_cache_contains (E_CACHE (book_cache), uid, E_CACHE_INCLUDE_DELETED)) {
+		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s” not found"), uid);
+		return FALSE;
+	}
+
+	stmt = e_cache_sqlite_stmt_printf (
+		"SELECT " EBC_COLUMN_CUSTOM_FLAGS " FROM " E_CACHE_TABLE_OBJECTS
+		" WHERE " E_CACHE_COLUMN_UID "=%Q",
+		uid);
+
+	success = e_cache_sqlite_select (E_CACHE (book_cache), stmt, e_book_cache_get_uint64_cb, &value, cancellable, error);
+
+	e_cache_sqlite_stmt_free (stmt);
+
+	if (out_custom_flags)
+		*out_custom_flags = (guint32) value;
+
+	return success;
 }
 
 /**

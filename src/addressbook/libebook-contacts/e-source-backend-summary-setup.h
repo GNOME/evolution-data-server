@@ -28,7 +28,7 @@
 
 #include <libedataserver/libedataserver.h>
 #include <libebook-contacts/e-contact.h>
-#include <libebook-contacts/e-book-contacts-types.h>
+#include <libebook-contacts/e-book-contacts-enums.h>
 
 /* Standard GObject macros */
 #define E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP \

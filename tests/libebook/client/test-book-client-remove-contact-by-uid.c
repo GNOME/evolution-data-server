@@ -38,7 +38,7 @@ test_remove_contact_by_uid_sync (ETestServerFixture *fixture,
 
 	uid = e_contact_get (contact, E_CONTACT_UID);
 
-	if (!e_book_client_remove_contact_by_uid_sync (book_client, uid, NULL, &error))
+	if (!e_book_client_remove_contact_by_uid_sync (book_client, uid, E_BOOK_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("remove contact sync: %s", error->message);
 
 	if (!e_book_client_get_contact_sync (book_client, uid, &contact, NULL, &error) &&
@@ -94,7 +94,7 @@ test_remove_contact_by_uid_async (ETestServerFixture *fixture,
 
 	data.uid = uid;
 	data.loop = fixture->loop;
-	e_book_client_remove_contact_by_uid (book_client, uid, NULL, remove_contact_by_uid_cb, &data);
+	e_book_client_remove_contact_by_uid (book_client, uid, E_BOOK_OPERATION_FLAG_NONE, NULL, remove_contact_by_uid_cb, &data);
 
 	g_object_unref (contact);
 

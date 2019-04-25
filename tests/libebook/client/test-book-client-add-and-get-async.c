@@ -186,7 +186,7 @@ add_contacts (EBookClient *book_client,
 	g_free (vcard);
 	contacts = g_slist_prepend (contacts, contact);
 
-	e_book_client_add_contacts (book_client, contacts, NULL, contacts_added_cb, loop);
+	e_book_client_add_contacts (book_client, contacts, E_BOOK_OPERATION_FLAG_NONE, NULL, contacts_added_cb, loop);
 
 	e_util_free_object_slist (contacts);
 }

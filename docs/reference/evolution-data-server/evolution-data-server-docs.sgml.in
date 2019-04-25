@@ -195,6 +195,7 @@
     <chapter>
       <title>Addressbook Backend Classes</title>
       <xi:include href="xml/e-book-backend.xml"/>
+      <xi:include href="xml/e-book-backend-sync.xml"/>
       <xi:include href="xml/e-book-backend-factory.xml"/>
       <xi:include href="xml/e-book-backend-sexp.xml"/>
       <xi:include href="xml/e-book-cache.xml"/>
@@ -282,7 +283,8 @@
 
     <chapter>
       <title>Addressbook related utilities</title>
-      <xi:include href="xml/e-book-contacts-types.xml"/>
+      <xi:include href="xml/e-book-contacts-enums.xml"/>
+      <xi:include href="xml/e-book-contacts-utils.xml"/>
       <xi:include href="xml/e-destination.xml"/>
       <xi:include href="xml/e-address-western.xml"/>
       <xi:include href="xml/e-name-western.xml"/>

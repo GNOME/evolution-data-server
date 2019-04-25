@@ -67,7 +67,6 @@ struct _AsyncContext {
 	gchar *capabilities;
 	gchar *prop_name;
 	gchar *prop_value;
-	gboolean only_if_exists;
 };
 
 enum {
@@ -626,15 +625,9 @@ client_open_thread (GSimpleAsyncResult *simple,
                     GObject *source_object,
                     GCancellable *cancellable)
 {
-	AsyncContext *async_context;
 	GError *error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	e_client_open_sync (
-		E_CLIENT (source_object),
-		async_context->only_if_exists,
-		cancellable, &error);
+	e_client_open_sync (E_CLIENT (source_object), FALSE, cancellable, &error);
 
 	if (error != NULL)
 		g_simple_async_result_take_error (simple, error);
@@ -651,7 +644,6 @@ client_open (EClient *client,
 	AsyncContext *async_context;
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->only_if_exists = only_if_exists;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data, client_open);
@@ -1602,8 +1594,7 @@ e_client_set_backend_property_sync (EClient *client,
 /**
  * e_client_open:
  * @client: an #EClient
- * @only_if_exists: if %TRUE, fail if this book doesn't already exist,
- *                  otherwise create it first
+ * @only_if_exists: this parameter is not used anymore
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -1673,8 +1664,7 @@ e_client_open_finish (EClient *client,
 /**
  * e_client_open_sync:
  * @client: an #EClient
- * @only_if_exists: if %TRUE, fail if this book doesn't already exist,
- *                  otherwise create it first
+ * @only_if_exists: this parameter is not used anymore
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *

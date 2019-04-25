@@ -118,6 +118,7 @@ gboolean	e_book_client_set_self		(EBookClient *client,
 gboolean	e_book_client_is_self		(EContact *contact);
 void		e_book_client_add_contact	(EBookClient *client,
 						 EContact *contact,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -128,11 +129,13 @@ gboolean	e_book_client_add_contact_finish
 						 GError **error);
 gboolean	e_book_client_add_contact_sync	(EBookClient *client,
 						 EContact *contact,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 gchar **out_added_uid,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_book_client_add_contacts	(EBookClient *client,
 						 GSList *contacts,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -143,11 +146,13 @@ gboolean	e_book_client_add_contacts_finish
 						 GError **error);
 gboolean	e_book_client_add_contacts_sync	(EBookClient *client,
 						 GSList *contacts,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GSList **out_added_uids,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_book_client_modify_contact	(EBookClient *client,
 						 EContact *contact,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -158,10 +163,12 @@ gboolean	e_book_client_modify_contact_finish
 gboolean	e_book_client_modify_contact_sync
 						(EBookClient *client,
 						 EContact *contact,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_book_client_modify_contacts	(EBookClient *client,
 						 GSList *contacts,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -172,10 +179,12 @@ gboolean	e_book_client_modify_contacts_finish
 gboolean	e_book_client_modify_contacts_sync
 						(EBookClient *client,
 						 GSList *contacts,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_book_client_remove_contact	(EBookClient *client,
 						 EContact *contact,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -186,11 +195,13 @@ gboolean	e_book_client_remove_contact_finish
 gboolean	e_book_client_remove_contact_sync
 						(EBookClient *client,
 						 EContact *contact,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_book_client_remove_contact_by_uid
 						(EBookClient *client,
 						 const gchar *uid,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -201,10 +212,12 @@ gboolean	e_book_client_remove_contact_by_uid_finish
 gboolean	e_book_client_remove_contact_by_uid_sync
 						(EBookClient *client,
 						 const gchar *uid,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_book_client_remove_contacts	(EBookClient *client,
 						 const GSList *uids,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -215,6 +228,7 @@ gboolean	e_book_client_remove_contacts_finish
 gboolean	e_book_client_remove_contacts_sync
 						(EBookClient *client,
 						 const GSList *uids,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_book_client_get_contact	(EBookClient *client,
@@ -300,14 +314,6 @@ gboolean	e_book_client_get_cursor_sync	(EBookClient *client,
 const gchar *	e_book_client_get_locale	(EBookClient *client);
 
 #ifndef EDS_DISABLE_DEPRECATED
-/**
- * BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS: (value "supported-auth-methods")
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: The property is no longer supported.
- **/
-#define BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS	"supported-auth-methods"
 
 EBookClient *	e_book_client_new		(ESource *source,
 						 GError **error);

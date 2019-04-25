@@ -45,7 +45,7 @@ test_preserve_uid (ETestServerFixture *fixture,
 
 	e_contact_set (contact, E_CONTACT_UID, TEST_CONTACT_UID);
 
-	if (!e_book_client_add_contact_sync (book_client, contact, &uid, NULL, &error))
+	if (!e_book_client_add_contact_sync (book_client, contact, E_BOOK_OPERATION_FLAG_NONE, &uid, NULL, &error))
 		g_error ("Failed to add contact: %s", error->message);
 
 	g_assert_cmpstr (uid, ==, TEST_CONTACT_UID);
@@ -73,7 +73,7 @@ test_uid_conflict (ETestServerFixture *fixture,
 
 	e_contact_set (contact, E_CONTACT_UID, TEST_CONTACT_UID);
 
-	if (!e_book_client_add_contact_sync (book_client, contact, NULL, NULL, &error)) {
+	if (!e_book_client_add_contact_sync (book_client, contact, E_BOOK_OPERATION_FLAG_NONE, NULL, NULL, &error)) {
 		g_assert (g_error_matches (error, E_BOOK_CLIENT_ERROR, E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS));
 		g_error_free (error);
 	} else

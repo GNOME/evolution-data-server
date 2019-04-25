@@ -123,25 +123,26 @@ book_view_complete_cb (EBookClientView *client_view,
 
 	if (error == NULL) {
 		status = E_BOOK_VIEW_STATUS_OK;
-	} else switch (error->code) {
-		case E_DATA_BOOK_STATUS_SUCCESS:
-			status = E_BOOK_VIEW_STATUS_OK;
-			break;
-		case E_DATA_BOOK_STATUS_SEARCH_TIME_LIMIT_EXCEEDED:
+	} else if (error->domain == E_CLIENT_ERROR) {
+		switch (error->code) {
+		case E_CLIENT_ERROR_SEARCH_TIME_LIMIT_EXCEEDED:
 			status = E_BOOK_VIEW_STATUS_TIME_LIMIT_EXCEEDED;
 			break;
-		case E_DATA_BOOK_STATUS_SEARCH_SIZE_LIMIT_EXCEEDED:
+		case E_CLIENT_ERROR_SEARCH_SIZE_LIMIT_EXCEEDED:
 			status = E_BOOK_VIEW_STATUS_SIZE_LIMIT_EXCEEDED;
 			break;
-		case E_DATA_BOOK_STATUS_INVALID_QUERY:
+		case E_CLIENT_ERROR_INVALID_QUERY:
 			status = E_BOOK_VIEW_ERROR_INVALID_QUERY;
 			break;
-		case E_DATA_BOOK_STATUS_QUERY_REFUSED:
+		case E_CLIENT_ERROR_QUERY_REFUSED:
 			status = E_BOOK_VIEW_ERROR_QUERY_REFUSED;
 			break;
 		default:
 			status = E_BOOK_VIEW_ERROR_OTHER_ERROR;
 			break;
+		}
+	} else {
+		status = E_BOOK_VIEW_ERROR_OTHER_ERROR;
 	}
 
 	message = (error != NULL) ? error->message : "";
