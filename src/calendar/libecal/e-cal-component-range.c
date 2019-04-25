@@ -46,7 +46,7 @@ struct _ECalComponentRange {
  *
  * Returns: (transfer full): a newly allocated #ECalComponentRange
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentRange *
 e_cal_component_range_new (ECalComponentRangeKind kind,
@@ -74,7 +74,7 @@ e_cal_component_range_new (ECalComponentRangeKind kind,
  *
  * Returns: (transfer full): a newly allocated #ECalComponentRange
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentRange *
 e_cal_component_range_new_take (ECalComponentRangeKind kind,
@@ -99,7 +99,7 @@ e_cal_component_range_new_take (ECalComponentRangeKind kind,
  *    The returned structure should be freed with e_cal_component_range_free(),
  *    when no longer needed.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentRange *
 e_cal_component_range_copy (const ECalComponentRange *range)
@@ -118,7 +118,7 @@ e_cal_component_range_copy (const ECalComponentRange *range)
  * Free the @range, previously allocated by e_cal_component_range_new(),
  * e_cal_component_range_new_take() or e_cal_component_range_copy().
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_range_free (gpointer range)
@@ -137,7 +137,7 @@ e_cal_component_range_free (gpointer range)
  *
  * Returns: the #ECalComponentRangeKind of the @range
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentRangeKind
 e_cal_component_range_get_kind (const ECalComponentRange *range)
@@ -154,7 +154,7 @@ e_cal_component_range_get_kind (const ECalComponentRange *range)
  *
  * Set the @kind of the @range.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_range_set_kind (ECalComponentRange *range,
@@ -175,7 +175,7 @@ e_cal_component_range_set_kind (ECalComponentRange *range,
  *
  * Returns: (transfer none): the date/time of the @range, as an #ECalComponentDateTime
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentDateTime *
 e_cal_component_range_get_datetime (const ECalComponentRange *range)
@@ -192,7 +192,7 @@ e_cal_component_range_get_datetime (const ECalComponentRange *range)
  *
  * Set the date/time part of the @range.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_range_set_datetime (ECalComponentRange *range,
@@ -219,7 +219,7 @@ e_cal_component_range_set_datetime (ECalComponentRange *range,
  * Set the date/time part of the @range, similar to e_cal_component_range_set_datetime(),
  * except it assumes ownership of the @datetime.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_range_take_datetime (ECalComponentRange *range,

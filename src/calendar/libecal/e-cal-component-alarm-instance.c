@@ -54,7 +54,7 @@ struct _ECalComponentAlarmInstance {
  *
  * Returns: (transfer full): a newly allocated #ECalComponentAlarmInstance
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarmInstance *
 e_cal_component_alarm_instance_new (const gchar *uid,
@@ -84,7 +84,7 @@ e_cal_component_alarm_instance_new (const gchar *uid,
  *
  * Returns: (transfer full): a newly allocated copy of @instance
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarmInstance *
 e_cal_component_alarm_instance_copy (const ECalComponentAlarmInstance *instance)
@@ -105,7 +105,7 @@ e_cal_component_alarm_instance_copy (const ECalComponentAlarmInstance *instance)
  * or e_cal_component_alarm_instance_copy(). The function does nothing, if @instance
  * is %NULL.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_instance_free (gpointer instance)
@@ -124,7 +124,7 @@ e_cal_component_alarm_instance_free (gpointer instance)
  *
  * Returns: alarm UID, to which this @instance corresponds
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_alarm_instance_get_uid (const ECalComponentAlarmInstance *instance)
@@ -141,7 +141,7 @@ e_cal_component_alarm_instance_get_uid (const ECalComponentAlarmInstance *instan
  *
  * Set the alarm UID.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_instance_set_uid (ECalComponentAlarmInstance *instance,
@@ -162,7 +162,7 @@ e_cal_component_alarm_instance_set_uid (ECalComponentAlarmInstance *instance,
  *
  * Returns: alarm instance time, i.e. "5 minutes before the appointment"
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 time_t
 e_cal_component_alarm_instance_get_time (const ECalComponentAlarmInstance *instance)
@@ -179,7 +179,7 @@ e_cal_component_alarm_instance_get_time (const ECalComponentAlarmInstance *insta
  *
  * Set the instance time, i.e. "5 minutes before the appointment".
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_instance_set_time (ECalComponentAlarmInstance *instance,
@@ -198,7 +198,7 @@ e_cal_component_alarm_instance_set_time (ECalComponentAlarmInstance *instance,
  *
  * Returns: actual event occurrence start to which this @instance corresponds
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 time_t
 e_cal_component_alarm_instance_get_occur_start (const ECalComponentAlarmInstance *instance)
@@ -215,7 +215,7 @@ e_cal_component_alarm_instance_get_occur_start (const ECalComponentAlarmInstance
  *
  * Set the actual event occurrence start to which this @instance corresponds.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_instance_set_occur_start (ECalComponentAlarmInstance *instance,
@@ -234,7 +234,7 @@ e_cal_component_alarm_instance_set_occur_start (ECalComponentAlarmInstance *inst
  *
  * Returns: actual event occurrence end to which this @instance corresponds
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 time_t
 e_cal_component_alarm_instance_get_occur_end (const ECalComponentAlarmInstance *instance)
@@ -251,7 +251,7 @@ e_cal_component_alarm_instance_get_occur_end (const ECalComponentAlarmInstance *
  *
  * Set the actual event occurrence end to which this @instance corresponds.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_instance_set_occur_end (ECalComponentAlarmInstance *instance,

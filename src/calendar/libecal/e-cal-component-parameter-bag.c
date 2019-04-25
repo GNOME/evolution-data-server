@@ -41,7 +41,7 @@ struct _ECalComponentParameterBag {
  *
  * Returns: (transfer full): a newly allocated #ECalComponentParameterBag
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentParameterBag *
 e_cal_component_parameter_bag_new (void)
@@ -68,7 +68,7 @@ e_cal_component_parameter_bag_new (void)
  *
  * Returns: (transfer full): a newly allocated #ECalComponentParameterBag
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentParameterBag *
 e_cal_component_parameter_bag_new_from_property (const ICalProperty *property,
@@ -93,7 +93,7 @@ e_cal_component_parameter_bag_new_from_property (const ICalProperty *property,
  *
  * Returns: (transfer full): a newly allocated copy of @bag
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentParameterBag *
 e_cal_component_parameter_bag_copy (const ECalComponentParameterBag *bag)
@@ -118,7 +118,7 @@ e_cal_component_parameter_bag_copy (const ECalComponentParameterBag *bag)
  * e_cal_component_parameter_bag_copy(). The function does nothing, if @bag
  * is %NULL.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_parameter_bag_free (gpointer bag)
@@ -142,7 +142,7 @@ e_cal_component_parameter_bag_free (gpointer bag)
  * returned %TRUE. When the @func is %NULL, all the parameters are included.
  * The @bag content is cleared before any parameter is added.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_parameter_bag_set_from_property (ECalComponentParameterBag *bag,
@@ -176,7 +176,7 @@ e_cal_component_parameter_bag_set_from_property (ECalComponentParameterBag *bag,
  * The function replaces any existing parameter with the new value,
  * if any such exists. Otherwise the parameter is added.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_parameter_bag_fill_property (const ECalComponentParameterBag *bag,
@@ -202,7 +202,7 @@ e_cal_component_parameter_bag_fill_property (const ECalComponentParameterBag *ba
  *
  * Assigns content of the @src_bag into the @bag.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_parameter_bag_assign (ECalComponentParameterBag *bag,
@@ -234,7 +234,7 @@ e_cal_component_parameter_bag_assign (ECalComponentParameterBag *bag,
  *
  * Adds a copy of the @param into the @bag.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_parameter_bag_add (ECalComponentParameterBag *bag,
@@ -254,7 +254,7 @@ e_cal_component_parameter_bag_add (ECalComponentParameterBag *bag,
  *
  * Adds the @param into the @bag and assumes ownership of the @param.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_parameter_bag_take (ECalComponentParameterBag *bag,
@@ -272,7 +272,7 @@ e_cal_component_parameter_bag_take (ECalComponentParameterBag *bag,
  *
  * Returns: how many parameters are stored in the @bag
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 guint
 e_cal_component_parameter_bag_get_count (const ECalComponentParameterBag *bag)
@@ -298,7 +298,7 @@ e_cal_component_parameter_bag_get_count (const ECalComponentParameterBag *bag)
  * Returns: (transfer none) (nullable): the #ICalParameter at the given @index,
  *    or %NULL on error
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalParameter *
 e_cal_component_parameter_bag_get (const ECalComponentParameterBag *bag,
@@ -321,7 +321,7 @@ e_cal_component_parameter_bag_get (const ECalComponentParameterBag *bag,
  * Returns: the index of the first parameter of the given @kind, or value
  *    out of bounds, if such parameter cannot be found
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 guint
 e_cal_component_parameter_bag_get_first_by_kind (const ECalComponentParameterBag *bag,
@@ -352,7 +352,7 @@ e_cal_component_parameter_bag_get_first_by_kind (const ECalComponentParameterBag
  * out of bounds (not lower than e_cal_component_parameter_bag_get_count()),
  * then the function does nothing.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_parameter_bag_remove (ECalComponentParameterBag *bag,
@@ -375,7 +375,7 @@ e_cal_component_parameter_bag_remove (ECalComponentParameterBag *bag,
  *
  * Returns: how many parameters had been removed
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 guint
 e_cal_component_parameter_bag_remove_by_kind (ECalComponentParameterBag *bag,
@@ -413,7 +413,7 @@ e_cal_component_parameter_bag_remove_by_kind (ECalComponentParameterBag *bag,
  * Removes all parameters from the @bag, thus it doesn't contain any
  * parameter after this function returns.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_parameter_bag_clear (ECalComponentParameterBag *bag)

@@ -51,7 +51,7 @@ struct _ECalComponentPeriod {
  *
  * Returns: (transfer full): a newly allocated #ECalComponentPeriod
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentPeriod *
 e_cal_component_period_new_datetime (const ICalTime *start,
@@ -80,7 +80,7 @@ e_cal_component_period_new_datetime (const ICalTime *start,
  *
  * Returns: (transfer full): a newly allocated #ECalComponentPeriod
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentPeriod *
 e_cal_component_period_new_duration (const ICalTime *start,
@@ -107,7 +107,7 @@ e_cal_component_period_new_duration (const ICalTime *start,
  *    The returned structure should be freed with e_cal_component_period_free(),
  *    when no longer needed.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentPeriod *
 e_cal_component_period_copy (const ECalComponentPeriod *period)
@@ -139,7 +139,7 @@ e_cal_component_period_copy (const ECalComponentPeriod *period)
  * Free the @period, previously allocated by e_cal_component_period_new_datetime(),
  * e_cal_component_period_new_duration() or e_cal_component_period_copy().
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_period_free (gpointer period)
@@ -166,7 +166,7 @@ e_cal_component_period_free (gpointer period)
  *
  * Returns: kind of the period, one of #ECalComponentPeriodKind
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentPeriodKind
 e_cal_component_period_get_kind	(const ECalComponentPeriod *period)
@@ -185,7 +185,7 @@ e_cal_component_period_get_kind	(const ECalComponentPeriod *period)
  * Set the kind of @period to be %E_CAL_COMPONENT_PERIOD_DATETIME
  * and fills the content with @start and @end.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_period_set_datetime_full (ECalComponentPeriod *period,
@@ -212,7 +212,7 @@ e_cal_component_period_set_datetime_full (ECalComponentPeriod *period,
  * Set the kind of @period to be %E_CAL_COMPONENT_PERIOD_DURATION
  * and fills the content with @start and @duration.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_period_set_duration_full (ECalComponentPeriod *period,
@@ -241,7 +241,7 @@ e_cal_component_period_set_duration_full (ECalComponentPeriod *period,
  *
  * Returns: (transfer none): the start of the @period, as an #ICalTime
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalTime *
 e_cal_component_period_get_start (const ECalComponentPeriod *period)
@@ -258,7 +258,7 @@ e_cal_component_period_get_start (const ECalComponentPeriod *period)
  *
  * Set the @start of the @period. This can be called on any kind of the @period.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_period_set_start (ECalComponentPeriod *period,
@@ -287,7 +287,7 @@ e_cal_component_period_set_start (ECalComponentPeriod *period,
  *
  * Returns: (transfer none) (nullable): the end of the period, as an #ICalTime
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalTime *
 e_cal_component_period_get_end (const ECalComponentPeriod *period)
@@ -306,7 +306,7 @@ e_cal_component_period_get_end (const ECalComponentPeriod *period)
  * Set the end of the @period. This can be called only on @period
  * objects of kind %E_CAL_COMPONENT_PERIOD_DATETIME.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_period_set_end (ECalComponentPeriod *period,
@@ -333,7 +333,7 @@ e_cal_component_period_set_end (ECalComponentPeriod *period,
  *
  * Returns: (transfer none): the duration of the period, as an #ICalDuration
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalDuration *
 e_cal_component_period_get_duration (const ECalComponentPeriod *period)
@@ -352,7 +352,7 @@ e_cal_component_period_get_duration (const ECalComponentPeriod *period)
  * Set the duration of the @period. This can be called only on @period
  * objects of kind %E_CAL_COMPONENT_PERIOD_DURATION.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_period_set_duration (ECalComponentPeriod *period,

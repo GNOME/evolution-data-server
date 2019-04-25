@@ -46,7 +46,7 @@ typedef struct _ECalComponentParameterBag ECalComponentParameterBag;
  *
  * Returns: %TRUE, to add the parameter to the bag; %FALSE, to not add it to the bag
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 typedef gboolean (* ECalComponentParameterBagFilterFunc)
 						(ICalParameter *parameter,

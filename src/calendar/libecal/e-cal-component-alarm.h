@@ -38,7 +38,7 @@
  *
  * Extension property for alarm components so that we can reference them by UID.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 #define E_CAL_EVOLUTION_ALARM_UID_PROPERTY "X-EVOLUTION-ALARM-UID"
 

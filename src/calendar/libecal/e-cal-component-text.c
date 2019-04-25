@@ -46,7 +46,7 @@ struct _ECalComponentText {
  *
  * Returns: (transfer full): a newly allocated #ECalComponentText
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentText *
 e_cal_component_text_new (const gchar *value,
@@ -69,7 +69,7 @@ e_cal_component_text_new (const gchar *value,
  *    The returned structure should be freed with e_cal_component_text_free(),
  *    when no longer needed.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentText *
 e_cal_component_text_copy (const ECalComponentText *text)
@@ -86,7 +86,7 @@ e_cal_component_text_copy (const ECalComponentText *text)
  * Free the @text, previously allocated by e_cal_component_text_new() or
  * e_cal_component_text_copy().
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_text_free (gpointer text)
@@ -106,7 +106,7 @@ e_cal_component_text_free (gpointer text)
  *
  * Returns: the description string of the @text
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_text_get_value (const ECalComponentText *text)
@@ -123,7 +123,7 @@ e_cal_component_text_get_value (const ECalComponentText *text)
  *
  * Set the @value as the description string of the @text.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_text_set_value (ECalComponentText *text,
@@ -143,7 +143,7 @@ e_cal_component_text_set_value (ECalComponentText *text,
  *
  * Returns: the alternate representation URI of the @text
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_text_get_altrep (const ECalComponentText *text)
@@ -160,7 +160,7 @@ e_cal_component_text_get_altrep (const ECalComponentText *text)
  *
  * Set the @altrep as the alternate representation URI of the @text.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_text_set_altrep (ECalComponentText *text,

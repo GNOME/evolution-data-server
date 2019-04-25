@@ -54,7 +54,7 @@ struct _ECalComponentAlarmTrigger {
  *
  * Returns: (transfer full): a newly allocated #ECalComponentAlarmTrigger
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarmTrigger *
 e_cal_component_alarm_trigger_new_relative (ECalComponentAlarmTriggerKind kind,
@@ -86,7 +86,7 @@ e_cal_component_alarm_trigger_new_relative (ECalComponentAlarmTriggerKind kind,
  *
  * Returns: (transfer full): a newly allocated #ECalComponentAlarmTrigger
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarmTrigger *
 e_cal_component_alarm_trigger_new_absolute (const ICalTime *absolute_time)
@@ -114,7 +114,7 @@ e_cal_component_alarm_trigger_new_absolute (const ICalTime *absolute_time)
  *
  * Returns: (transfer full) (nullable): a newly allocated #ECalComponentAlarmTrigger
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarmTrigger *
 e_cal_component_alarm_trigger_new_from_property (const ICalProperty *property)
@@ -143,7 +143,7 @@ e_cal_component_alarm_trigger_new_from_property (const ICalProperty *property)
  *
  * Returns: (transfer full): a newly allocated copy of @trigger
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarmTrigger *
 e_cal_component_alarm_trigger_copy (const ECalComponentAlarmTrigger *trigger)
@@ -171,7 +171,7 @@ e_cal_component_alarm_trigger_copy (const ECalComponentAlarmTrigger *trigger)
  * or e_cal_component_alarm_trigger_copy(). The function does nothing, if @trigger
  * is %NULL.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_trigger_free (gpointer trigger)
@@ -206,7 +206,7 @@ e_cal_component_alarm_trigger_bag_filter_params_cb (ICalParameter *param,
  * Fill the @trigger structure with the information from
  * the @property, which should be of %I_CAL_TRIGGER_PROPERTY kind.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_trigger_set_from_property (ECalComponentAlarmTrigger *trigger,
@@ -301,7 +301,7 @@ e_cal_component_alarm_trigger_set_from_property (ECalComponentAlarmTrigger *trig
  * Returns: (transfer full): a newly created #ICalProperty, containing
  *    information from the @trigger.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalProperty *
 e_cal_component_alarm_trigger_get_as_property (const ECalComponentAlarmTrigger *trigger)
@@ -326,7 +326,7 @@ e_cal_component_alarm_trigger_get_as_property (const ECalComponentAlarmTrigger *
  * Fill @property with information from @trigger. The @property
  * should be of kind %I_CAL_TRIGGER_PROPERTY.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_trigger_fill_property (const ECalComponentAlarmTrigger *trigger,
@@ -406,7 +406,7 @@ e_cal_component_alarm_trigger_fill_property (const ECalComponentAlarmTrigger *tr
  * the %E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE.
  * To set an absolute trigger use e_cal_component_alarm_trigger_set_absolute().
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_trigger_set_relative (ECalComponentAlarmTrigger *trigger,
@@ -436,7 +436,7 @@ e_cal_component_alarm_trigger_set_relative (ECalComponentAlarmTrigger *trigger,
  *
  * To set a relative trigger use e_cal_component_alarm_trigger_set_relative().
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_trigger_set_absolute (ECalComponentAlarmTrigger *trigger,
@@ -458,7 +458,7 @@ e_cal_component_alarm_trigger_set_absolute (ECalComponentAlarmTrigger *trigger,
  *
  * Returns: the @trigger kind, one of #ECalComponentAlarmTriggerKind
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarmTriggerKind
 e_cal_component_alarm_trigger_get_kind (const ECalComponentAlarmTrigger *trigger)
@@ -479,7 +479,7 @@ e_cal_component_alarm_trigger_get_kind (const ECalComponentAlarmTrigger *trigger
  * e_cal_component_alarm_trigger_set_relative() or
  * e_cal_component_alarm_trigger_set_absolute().
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_trigger_set_kind (ECalComponentAlarmTrigger *trigger,
@@ -503,7 +503,7 @@ e_cal_component_alarm_trigger_set_kind (ECalComponentAlarmTrigger *trigger,
  *
  * Returns: (transfer none) (nullable): the @trigger duration, as an #ICalDuration, or %NULL
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalDuration *
 e_cal_component_alarm_trigger_get_duration (const ECalComponentAlarmTrigger *trigger)
@@ -525,7 +525,7 @@ e_cal_component_alarm_trigger_get_duration (const ECalComponentAlarmTrigger *tri
  * the @trigger is an absolute trigger. The object is owned by @trigger and it's
  * valid until the @trigger is freed or its relative duration changed.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_trigger_set_duration (ECalComponentAlarmTrigger *trigger,
@@ -555,7 +555,7 @@ e_cal_component_alarm_trigger_set_duration (ECalComponentAlarmTrigger *trigger,
  *
  * Returns: (transfer none) (nullable): the @trigger absolute time, as an #ICalTime, or %NULL
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalTime *
 e_cal_component_alarm_trigger_get_absolute_time (const ECalComponentAlarmTrigger *trigger)
@@ -578,7 +578,7 @@ e_cal_component_alarm_trigger_get_absolute_time (const ECalComponentAlarmTrigger
  *
  * The function does nothing, when the @trigger is a relative trigger.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_trigger_set_absolute_time (ECalComponentAlarmTrigger *trigger,
@@ -604,7 +604,7 @@ e_cal_component_alarm_trigger_set_absolute_time (ECalComponentAlarmTrigger *trig
  *    parameters stored with the trigger property, other than those accessible
  *    with the other functions of the @trigger.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentParameterBag *
 e_cal_component_alarm_trigger_get_parameter_bag (const ECalComponentAlarmTrigger *trigger)

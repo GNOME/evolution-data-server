@@ -106,7 +106,7 @@ e_cal_util_new_component (ICalComponentKind kind)
  *
  * Returns: (transfer full): a copy of the @zone
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalTimezone *
 e_cal_util_copy_timezone (const ICalTimezone *zone)
@@ -981,7 +981,7 @@ e_cal_util_add_timezones_from_component (ICalComponent *vcal_comp,
  *
  * Returns: whether the @prop has a parameter of @prop_kind
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_cal_util_property_has_parameter (ICalProperty *prop,
@@ -1011,7 +1011,7 @@ e_cal_util_property_has_parameter (ICalProperty *prop,
  *
  * Returns: whether the @icalcomp has a property of @prop_kind
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_cal_util_component_has_property (ICalComponent *icalcomp,
@@ -1112,7 +1112,7 @@ e_cal_util_component_has_attendee (ICalComponent *icalcomp)
  *    or %NULL, when the @icalcomp is not an instance. Free the returned
  *    string with g_free(), when no longer needed.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gchar *
 e_cal_util_component_get_recurid_as_string (ICalComponent *icalcomp)
@@ -2004,7 +2004,7 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
  *
  * Returns: whether the @icalcomp contains X property named @x_name
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_cal_util_component_has_x_property (ICalComponent *icalcomp,
@@ -2038,7 +2038,7 @@ e_cal_util_component_has_x_property (ICalComponent *icalcomp,
  * Returns: (transfer full) (nullable): the first X ICalProperty named
  *    @x_name, or %NULL, when none found.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalProperty *
 e_cal_util_component_find_x_property (ICalComponent *icalcomp,
@@ -2073,7 +2073,7 @@ e_cal_util_component_find_x_property (ICalComponent *icalcomp,
  * Returns: (nullable) (transfer full): Newly allocated value of the first @x_name
  *    X property in @icalcomp, or %NULL, if not found.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gchar *
 e_cal_util_component_dup_x_property (ICalComponent *icalcomp,
@@ -2108,7 +2108,7 @@ e_cal_util_component_dup_x_property (ICalComponent *icalcomp,
  * and value. As a special case, if @value is %NULL, then removes
  * the first X property named @x_name from @icalcomp instead.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_util_component_set_x_property (ICalComponent *icalcomp,
@@ -2145,7 +2145,7 @@ e_cal_util_component_set_x_property (ICalComponent *icalcomp,
  *
  * Returns: %TRUE, when any such had been found and removed, %FALSE otherwise.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_cal_util_component_remove_x_property (ICalComponent *icalcomp,
@@ -2607,7 +2607,7 @@ e_cal_util_mark_task_complete_sync (ICalComponent *vtodo,
  *
  * Returns: an #EConflictResolution as stored in the @flags
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 EConflictResolution
 e_cal_util_operation_flags_to_conflict_resolution (guint32 flags)
@@ -2634,7 +2634,7 @@ e_cal_util_operation_flags_to_conflict_resolution (guint32 flags)
  *
  * Returns: a bit-or of #ECalOperationFlags, corresponding to the @conflict_resolution
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 guint32
 e_cal_util_conflict_resolution_to_operation_flags (EConflictResolution conflict_resolution)

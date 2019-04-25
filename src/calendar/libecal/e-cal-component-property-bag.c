@@ -41,7 +41,7 @@ struct _ECalComponentPropertyBag {
  *
  * Returns: (transfer full): a newly allocated #ECalComponentPropertyBag
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentPropertyBag *
 e_cal_component_property_bag_new (void)
@@ -68,7 +68,7 @@ e_cal_component_property_bag_new (void)
  *
  * Returns: (transfer full): a newly allocated #ECalComponentPropertyBag
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentPropertyBag *
 e_cal_component_property_bag_new_from_component (const ICalComponent *component,
@@ -93,7 +93,7 @@ e_cal_component_property_bag_new_from_component (const ICalComponent *component,
  *
  * Returns: (transfer full): a newly allocated copy of @bag
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentPropertyBag *
 e_cal_component_property_bag_copy (const ECalComponentPropertyBag *bag)
@@ -118,7 +118,7 @@ e_cal_component_property_bag_copy (const ECalComponentPropertyBag *bag)
  * e_cal_component_property_bag_copy(). The function does nothing, if @bag
  * is %NULL.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_property_bag_free (gpointer bag)
@@ -142,7 +142,7 @@ e_cal_component_property_bag_free (gpointer bag)
  * returned %TRUE. When the @func is %NULL, all the properties are included.
  * The @bag content is cleared before any property is added.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_property_bag_set_from_component (ECalComponentPropertyBag *bag,
@@ -176,7 +176,7 @@ e_cal_component_property_bag_set_from_component (ECalComponentPropertyBag *bag,
  * The function doesn't verify whether the @component contains
  * the same property already.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_property_bag_fill_component (const ECalComponentPropertyBag *bag,
@@ -202,7 +202,7 @@ e_cal_component_property_bag_fill_component (const ECalComponentPropertyBag *bag
  *
  * Assigns content of the @src_bag into the @bag.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_property_bag_assign (ECalComponentPropertyBag *bag,
@@ -234,7 +234,7 @@ e_cal_component_property_bag_assign (ECalComponentPropertyBag *bag,
  *
  * Adds a copy of the @prop into the @bag.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_property_bag_add (ECalComponentPropertyBag *bag,
@@ -254,7 +254,7 @@ e_cal_component_property_bag_add (ECalComponentPropertyBag *bag,
  *
  * Adds the @prop into the @bag and assumes ownership of the @prop.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_property_bag_take (ECalComponentPropertyBag *bag,
@@ -272,7 +272,7 @@ e_cal_component_property_bag_take (ECalComponentPropertyBag *bag,
  *
  * Returns: how many properties are stored in the @bag
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 guint
 e_cal_component_property_bag_get_count (const ECalComponentPropertyBag *bag)
@@ -298,7 +298,7 @@ e_cal_component_property_bag_get_count (const ECalComponentPropertyBag *bag)
  * Returns: (transfer none) (nullable): the #ICalProperty at the given @index,
  *    or %NULL on error
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalProperty *
 e_cal_component_property_bag_get (const ECalComponentPropertyBag *bag,
@@ -321,7 +321,7 @@ e_cal_component_property_bag_get (const ECalComponentPropertyBag *bag,
  * Returns: the index of the first property of the given @kind, or value
  *    out of bounds, if such property cannot be found
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 guint
 e_cal_component_property_bag_get_first_by_kind (const ECalComponentPropertyBag *bag,
@@ -352,7 +352,7 @@ e_cal_component_property_bag_get_first_by_kind (const ECalComponentPropertyBag *
  * out of bounds (not lower than e_cal_component_property_bag_get_count()),
  * then the function does nothing.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_property_bag_remove (ECalComponentPropertyBag *bag,
@@ -375,7 +375,7 @@ e_cal_component_property_bag_remove (ECalComponentPropertyBag *bag,
  *
  * Returns: how many properties had been removed
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 guint
 e_cal_component_property_bag_remove_by_kind (ECalComponentPropertyBag *bag,
@@ -413,7 +413,7 @@ e_cal_component_property_bag_remove_by_kind (ECalComponentPropertyBag *bag,
  * Removes all properties from the @bag, thus it doesn't contain any
  * property after this function returns.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_property_bag_clear (ECalComponentPropertyBag *bag)

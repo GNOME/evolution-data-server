@@ -58,7 +58,7 @@ struct _ECalComponentAttendee {
  *
  * Returns: (transfer full): a newly allocated #ECalComponentAttendee
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAttendee *
 e_cal_component_attendee_new (void)
@@ -95,7 +95,7 @@ e_cal_component_attendee_new (void)
  *
  * Returns: (transfer full): a newly allocated #ECalComponentAttendee
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAttendee *
 e_cal_component_attendee_new_full (const gchar *value,
@@ -139,7 +139,7 @@ e_cal_component_attendee_new_full (const gchar *value,
  *
  * Returns: (transfer full) (nullable): a newly allocated #ECalComponentAttendee
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAttendee *
 e_cal_component_attendee_new_from_property (const ICalProperty *property)
@@ -167,7 +167,7 @@ e_cal_component_attendee_new_from_property (const ICalProperty *property)
  *
  * Returns: (transfer full): a newly allocated copy of @attendee
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAttendee *
 e_cal_component_attendee_copy (const ECalComponentAttendee *attendee)
@@ -202,7 +202,7 @@ e_cal_component_attendee_copy (const ECalComponentAttendee *attendee)
  * or e_cal_component_attendee_copy(). The function does nothing, if @attendee
  * is %NULL.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_attendee_free (gpointer attendee)
@@ -250,7 +250,7 @@ e_cal_component_attendee_filter_params_cb (ICalParameter *param,
  * Fill the @attendee structure with the information from
  * the @property, which should be of %I_CAL_ATTENDEE_PROPERTY kind.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_attendee_set_from_property (ECalComponentAttendee *attendee,
@@ -319,7 +319,7 @@ e_cal_component_attendee_set_from_property (ECalComponentAttendee *attendee,
  * Returns: (transfer full): a newly created #ICalProperty, containing
  *    information from the @attendee.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalProperty *
 e_cal_component_attendee_get_as_property (const ECalComponentAttendee *attendee)
@@ -344,7 +344,7 @@ e_cal_component_attendee_get_as_property (const ECalComponentAttendee *attendee)
  * Fill @property with information from @attendee. The @property
  * should be of kind %I_CAL_ATTENDEE_PROPERTY.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_attendee_fill_property (const ECalComponentAttendee *attendee,
@@ -404,7 +404,7 @@ e_cal_component_attendee_fill_property (const ECalComponentAttendee *attendee,
  *
  * Returns: (nullable): the @attendee URI, usually of "mailto:email" form
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_attendee_get_value (const ECalComponentAttendee *attendee)
@@ -422,7 +422,7 @@ e_cal_component_attendee_get_value (const ECalComponentAttendee *attendee)
  * Set the @attendee URI, usually of "mailto:email" form. The %NULL
  * and empty strings are treated as unset the value.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_attendee_set_value (ECalComponentAttendee *attendee,
@@ -445,7 +445,7 @@ e_cal_component_attendee_set_value (ECalComponentAttendee *attendee,
  *
  * Returns: (nullable): the @attendee member property
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_attendee_get_member (const ECalComponentAttendee *attendee)
@@ -463,7 +463,7 @@ e_cal_component_attendee_get_member (const ECalComponentAttendee *attendee)
  * Set the @attendee member parameter. The %NULL
  * and empty strings are treated as unset the value.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_attendee_set_member (ECalComponentAttendee *attendee,
@@ -486,7 +486,7 @@ e_cal_component_attendee_set_member (ECalComponentAttendee *attendee,
  *
  * Returns: the @attendee type, as an #ICalParameterCutype
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalParameterCutype
 e_cal_component_attendee_get_cutype (const ECalComponentAttendee *attendee)
@@ -503,7 +503,7 @@ e_cal_component_attendee_get_cutype (const ECalComponentAttendee *attendee)
  *
  * Set the @attendee type, as an #ICalParameterCutype.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_attendee_set_cutype (ECalComponentAttendee *attendee,
@@ -522,7 +522,7 @@ e_cal_component_attendee_set_cutype (ECalComponentAttendee *attendee,
  *
  * Returns: the @attendee role, as an #ICalParameterRole
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalParameterRole
 e_cal_component_attendee_get_role (const ECalComponentAttendee *attendee)
@@ -539,7 +539,7 @@ e_cal_component_attendee_get_role (const ECalComponentAttendee *attendee)
  *
  * Set the @attendee role, as an #ICalParameterRole.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_attendee_set_role (ECalComponentAttendee *attendee,
@@ -558,7 +558,7 @@ e_cal_component_attendee_set_role (ECalComponentAttendee *attendee,
  *
  * Returns: the @attendee status, as an #ICalParameterPartstat
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalParameterPartstat
 e_cal_component_attendee_get_partstat (const ECalComponentAttendee *attendee)
@@ -575,7 +575,7 @@ e_cal_component_attendee_get_partstat (const ECalComponentAttendee *attendee)
  *
  * Set the @attendee status, as an #ICalParameterPartstat.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_attendee_set_partstat (ECalComponentAttendee *attendee,
@@ -594,7 +594,7 @@ e_cal_component_attendee_set_partstat (ECalComponentAttendee *attendee,
  *
  * Returns: whether the @attendee requires RSVP
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_cal_component_attendee_get_rsvp (const ECalComponentAttendee *attendee)
@@ -611,7 +611,7 @@ e_cal_component_attendee_get_rsvp (const ECalComponentAttendee *attendee)
  *
  * Set the @attendee RSVP.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_attendee_set_rsvp (ECalComponentAttendee *attendee,
@@ -630,7 +630,7 @@ e_cal_component_attendee_set_rsvp (ECalComponentAttendee *attendee,
  *
  * Returns: (nullable): the @attendee delegatedfrom parameter
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_attendee_get_delegatedfrom (const ECalComponentAttendee *attendee)
@@ -648,7 +648,7 @@ e_cal_component_attendee_get_delegatedfrom (const ECalComponentAttendee *attende
  * Set the @attendee delegatedfrom parameter. The %NULL
  * and empty strings are treated as unset the value.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_attendee_set_delegatedfrom (ECalComponentAttendee *attendee,
@@ -671,7 +671,7 @@ e_cal_component_attendee_set_delegatedfrom (ECalComponentAttendee *attendee,
  *
  * Returns: (nullable): the @attendee delegatedto parameter
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_attendee_get_delegatedto (const ECalComponentAttendee *attendee)
@@ -689,7 +689,7 @@ e_cal_component_attendee_get_delegatedto (const ECalComponentAttendee *attendee)
  * Set the @attendee delegatedto parameter. The %NULL
  * and empty strings are treated as unset the value.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_attendee_set_delegatedto (ECalComponentAttendee *attendee,
@@ -712,7 +712,7 @@ e_cal_component_attendee_set_delegatedto (ECalComponentAttendee *attendee,
  *
  * Returns: (nullable): the @attendee sentby parameter
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_attendee_get_sentby (const ECalComponentAttendee *attendee)
@@ -730,7 +730,7 @@ e_cal_component_attendee_get_sentby (const ECalComponentAttendee *attendee)
  * Set the @attendee sentby parameter. The %NULL
  * and empty strings are treated as unset the value.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_attendee_set_sentby (ECalComponentAttendee *attendee,
@@ -753,7 +753,7 @@ e_cal_component_attendee_set_sentby (ECalComponentAttendee *attendee,
  *
  * Returns: (nullable): the @attendee common name (cn) parameter
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_attendee_get_cn (const ECalComponentAttendee *attendee)
@@ -771,7 +771,7 @@ e_cal_component_attendee_get_cn (const ECalComponentAttendee *attendee)
  * Set the @attendee common name (cn) parameter. The %NULL
  * and empty strings are treated as unset the value.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_attendee_set_cn (ECalComponentAttendee *attendee,
@@ -794,7 +794,7 @@ e_cal_component_attendee_set_cn (ECalComponentAttendee *attendee,
  *
  * Returns: (nullable): the @attendee language parameter
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_attendee_get_language (const ECalComponentAttendee *attendee)
@@ -812,7 +812,7 @@ e_cal_component_attendee_get_language (const ECalComponentAttendee *attendee)
  * Set the @attendee language parameter. The %NULL
  * and empty strings are treated as unset the value.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_attendee_set_language (ECalComponentAttendee *attendee,
@@ -837,7 +837,7 @@ e_cal_component_attendee_set_language (ECalComponentAttendee *attendee,
  *    parameters stored with the attendee property, other than those accessible
  *    with the other functions of the @attendee.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentParameterBag *
 e_cal_component_attendee_get_parameter_bag (const ECalComponentAttendee *attendee)

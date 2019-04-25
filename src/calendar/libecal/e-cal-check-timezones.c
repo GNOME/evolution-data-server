@@ -256,7 +256,7 @@ addsystemtz (gpointer key,
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_cal_client_check_timezones_sync (ICalComponent *vcalendar,
@@ -475,7 +475,7 @@ e_cal_client_check_timezones_sync (ICalComponent *vcalendar,
  * Returns: (transfer full) (nullable): A timezone object, or %NULL on failure
  *    or when not found.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalTimezone *
 e_cal_client_tzlookup_cb (const gchar *tzid,
@@ -523,7 +523,7 @@ e_cal_client_tzlookup_cb (const gchar *tzid,
  * Returns: (transfer full) (nullable): A timezone object, or %NULL, if
  *    not found inside @icalcomp.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalTimezone *
 e_cal_client_tzlookup_icalcomp_cb (const gchar *tzid,

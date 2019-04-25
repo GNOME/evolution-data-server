@@ -2772,7 +2772,7 @@ e_cal_cache_get_component_as_string (ECalCache *cal_cache,
  *
  * Returns: Whether succeeded.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_cal_cache_set_component_custom_flags (ECalCache *cal_cache,
@@ -2829,7 +2829,7 @@ e_cal_cache_set_component_custom_flags (ECalCache *cal_cache,
  *
  * Returns: Whether succeeded.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_cal_cache_get_component_custom_flags (ECalCache *cal_cache,

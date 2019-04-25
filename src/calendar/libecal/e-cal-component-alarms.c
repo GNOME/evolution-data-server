@@ -49,7 +49,7 @@ struct _ECalComponentAlarms {
  *
  * Returns: (transfer full): a newly allocated #ECalComponentAlarms
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarms *
 e_cal_component_alarms_new (ECalComponent *comp)
@@ -73,7 +73,7 @@ e_cal_component_alarms_new (ECalComponent *comp)
  *
  * Returns: (transfer full): a newly allocated copy of @alarms
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarms *
 e_cal_component_alarms_copy (const ECalComponentAlarms *alarms)
@@ -96,7 +96,7 @@ e_cal_component_alarms_copy (const ECalComponentAlarms *alarms)
  * or e_cal_component_alarms_copy(). The function does nothing, if @alarms
  * is %NULL.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarms_free (gpointer alarms)
@@ -118,7 +118,7 @@ e_cal_component_alarms_free (gpointer alarms)
  *
  * Returns: (transfer none): an #ECalComponent associated with the @alarms structure
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponent *
 e_cal_component_alarms_get_component (const ECalComponentAlarms *alarms)
@@ -139,7 +139,7 @@ e_cal_component_alarms_get_component (const ECalComponentAlarms *alarms)
  * Returns: (transfer none) (element-type ECalComponentAlarmInstance) (nullable): instances
  *    of the @alarms structure; can be %NULL, when none had been added yet
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 GSList *
 e_cal_component_alarms_get_instances (const ECalComponentAlarms *alarms)
@@ -156,7 +156,7 @@ e_cal_component_alarms_get_instances (const ECalComponentAlarms *alarms)
  *
  * Modifies the list of instances to copy of the given @instances.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarms_set_instances (ECalComponentAlarms *alarms,
@@ -180,7 +180,7 @@ e_cal_component_alarms_set_instances (ECalComponentAlarms *alarms,
  * assumes ownership of it. Neither the #GSList, nor its items, should
  * contain the same structures.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarms_take_instances (ECalComponentAlarms *alarms,
@@ -200,7 +200,7 @@ e_cal_component_alarms_take_instances (ECalComponentAlarms *alarms,
  * Add a copy of @instance into the list of instances. It is added
  * in no particular order.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarms_add_instance (ECalComponentAlarms *alarms,
@@ -221,7 +221,7 @@ e_cal_component_alarms_add_instance (ECalComponentAlarms *alarms,
  * Add the @instance into the list of instances and assume ownership of it.
  * It is added in no particular order.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarms_take_instance (ECalComponentAlarms *alarms,
@@ -243,7 +243,7 @@ e_cal_component_alarms_take_instance (ECalComponentAlarms *alarms,
  *
  * Returns: whether the @instance had been found and freed
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_cal_component_alarms_remove_instance (ECalComponentAlarms *alarms,

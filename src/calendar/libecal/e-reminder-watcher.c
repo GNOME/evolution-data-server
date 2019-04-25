@@ -500,7 +500,7 @@ e_reminder_data_free (gpointer rd)
  *
  * Returns: an #ESource UID for @rd
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_reminder_data_get_source_uid (const EReminderData *rd)
@@ -517,7 +517,7 @@ e_reminder_data_get_source_uid (const EReminderData *rd)
  *
  * Set an #ESource UID for @rd.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_reminder_data_set_source_uid (EReminderData *rd,
@@ -538,7 +538,7 @@ e_reminder_data_set_source_uid (EReminderData *rd,
  * Returns: (transfer none): an #ECalComponent for @rd. It is owned by @rd,
  *    thus do not free it.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponent *
 e_reminder_data_get_component (const EReminderData *rd)
@@ -556,7 +556,7 @@ e_reminder_data_get_component (const EReminderData *rd)
  * Set an #ECalComponent @component as associated with this @rd.
  * The @rd creates a copy of the @component.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_reminder_data_set_component (EReminderData *rd,
@@ -578,7 +578,7 @@ e_reminder_data_set_component (EReminderData *rd,
  * Returns: (transfer none): an #ECalComponentAlarmInstance for @rd.
  *    It is owned by @rd, thus do not free it.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarmInstance *
 e_reminder_data_get_instance (const EReminderData *rd)
@@ -596,7 +596,7 @@ e_reminder_data_get_instance (const EReminderData *rd)
  * Set an #ECalComponentAlarmInstance @instance as associated with this @rd.
  * The @rd creates a copy of the @instance.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_reminder_data_set_instance (EReminderData *rd,

@@ -41,7 +41,7 @@ G_BEGIN_DECLS
  *
  * The X parameter name being used to store the enddate in RRULE and EXRULE properties.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 #define E_CAL_EVOLUTION_ENDDATE_PARAMETER	"X-EVOLUTION-ENDDATE"
 
@@ -58,7 +58,7 @@ G_BEGIN_DECLS
  * Returns: (transfer full) (nullable): a new #ICalTimezone object for @tzid,
  *    or %NULL, on error or if not found.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 typedef ICalTimezone * (* ECalRecurResolveTimezoneCb)	(const gchar *tzid,
 							 gpointer user_data,
@@ -79,7 +79,7 @@ typedef ICalTimezone * (* ECalRecurResolveTimezoneCb)	(const gchar *tzid,
  *
  * Returns: %TRUE, to continue recurrence generation, %FALSE to stop
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 typedef gboolean (* ECalRecurInstanceCb)		(ICalComponent *icomp,
 							 ICalTime *instance_start,

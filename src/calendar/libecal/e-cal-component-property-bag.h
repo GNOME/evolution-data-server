@@ -46,7 +46,7 @@ typedef struct _ECalComponentPropertyBag ECalComponentPropertyBag;
  *
  * Returns: %TRUE, to add the property to the bag; %FALSE, to not add it to the bag
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 typedef gboolean (* ECalComponentPropertyBagFilterFunc)
 						(ICalProperty *property,

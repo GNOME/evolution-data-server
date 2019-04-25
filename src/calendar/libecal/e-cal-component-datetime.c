@@ -49,7 +49,7 @@ struct _ECalComponentDateTime {
  *
  * Returns: (transfer full): a new #ECalComponentDateTime
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentDateTime *
 e_cal_component_datetime_new (const ICalTime *value,
@@ -78,7 +78,7 @@ e_cal_component_datetime_new (const ICalTime *value,
  *
  * Returns: (transfer full): a new #ECalComponentDateTime
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentDateTime *
 e_cal_component_datetime_new_take (ICalTime *value,
@@ -104,7 +104,7 @@ e_cal_component_datetime_new_take (ICalTime *value,
  *
  * Returns: (transfer full): a new #ECalComponentDateTime, copy of @dt
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentDateTime *
 e_cal_component_datetime_copy (const ECalComponentDateTime *dt)
@@ -124,7 +124,7 @@ e_cal_component_datetime_copy (const ECalComponentDateTime *dt)
  * e_cal_component_datetime_new_take() or e_cal_component_datetime_copy().
  * The function does nothing, if @dt is %NULL.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_datetime_free (gpointer dt)
@@ -147,7 +147,7 @@ e_cal_component_datetime_free (gpointer dt)
  * Sets both @value and @tzid in one call. Use e_cal_component_datetime_set_value()
  * and e_cal_component_datetime_set_tzid() to set them separately.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_datetime_set (ECalComponentDateTime *dt,
@@ -170,7 +170,7 @@ e_cal_component_datetime_set (ECalComponentDateTime *dt,
  *
  * Returns: (transfer none): a value of @dt, as an #ICalTime
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalTime *
 e_cal_component_datetime_get_value (const ECalComponentDateTime *dt)
@@ -187,7 +187,7 @@ e_cal_component_datetime_get_value (const ECalComponentDateTime *dt)
  *
  * Sets the @value of the @dt. Any previously set value is freed.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_datetime_set_value (ECalComponentDateTime *dt,
@@ -210,7 +210,7 @@ e_cal_component_datetime_set_value (ECalComponentDateTime *dt,
  * Sets the @value of the @dt and assumes ownership of the @value.
  * Any previously set value is freed.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_datetime_take_value (ECalComponentDateTime *dt,
@@ -236,7 +236,7 @@ e_cal_component_datetime_take_value (ECalComponentDateTime *dt,
  *
  * Returns: (transfer none) (nullable): a TZID of @dt, or %NULL
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_datetime_get_tzid (const ECalComponentDateTime *dt)
@@ -254,7 +254,7 @@ e_cal_component_datetime_get_tzid (const ECalComponentDateTime *dt)
  * Sets the @tzid of the @dt. Any previously set TZID is freed.
  * An empty string or a %NULL as @tzid is treated as none TZID.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_datetime_set_tzid (ECalComponentDateTime *dt,
@@ -279,7 +279,7 @@ e_cal_component_datetime_set_tzid (ECalComponentDateTime *dt,
  * Sets the @tzid of the @dt and assumes ownership of @tzid. Any previously
  * set TZID is freed. An empty string or a %NULL as @tzid is treated as none TZID.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_datetime_take_tzid (ECalComponentDateTime *dt,

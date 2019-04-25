@@ -59,7 +59,7 @@ struct _ECalComponentAlarm {
  *
  * Returns: (transfer full): a newly allocated #ECalComponentAlarm
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarm *
 e_cal_component_alarm_new (void)
@@ -85,7 +85,7 @@ e_cal_component_alarm_new (void)
  *
  * Returns: (transfer full) (nullable): a newly allocated #ECalComponentAlarm
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarm *
 e_cal_component_alarm_new_from_component (const ICalComponent *component)
@@ -113,7 +113,7 @@ e_cal_component_alarm_new_from_component (const ICalComponent *component)
  *
  * Returns: (transfer full): a newly allocated copy of @alarm
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarm *
 e_cal_component_alarm_copy (const ECalComponentAlarm *alarm)
@@ -199,7 +199,7 @@ e_cal_component_alarm_copy (const ECalComponentAlarm *alarm)
  * or e_cal_component_alarm_copy(). The function does nothing, if @alarm
  * is %NULL.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_free (gpointer alarm)
@@ -227,7 +227,7 @@ e_cal_component_alarm_free (gpointer alarm)
  * Fill the @alarm structure with the information from
  * the @component, which should be of %I_CAL_VALARM_COMPONENT kind.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_set_from_component (ECalComponentAlarm *alarm,
@@ -391,7 +391,7 @@ e_cal_component_alarm_set_from_component (ECalComponentAlarm *alarm,
  * Returns: (transfer full): a newly created #ICalComponent
  *    of %I_CAL_VALARM_COMPONENT kind
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalComponent *
 e_cal_component_alarm_get_as_component (ECalComponentAlarm *alarm)
@@ -417,7 +417,7 @@ e_cal_component_alarm_get_as_component (ECalComponentAlarm *alarm)
  * if it's not. In case the @alarm doesn't have set 'uid', a new
  * is assigned.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_fill_component (ECalComponentAlarm *alarm,
@@ -597,7 +597,7 @@ e_cal_component_alarm_fill_component (ECalComponentAlarm *alarm,
  *
  * Returns: (nullable): the @alarm UID, or %NULL, when none is set
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_alarm_get_uid (const ECalComponentAlarm *alarm)
@@ -614,7 +614,7 @@ e_cal_component_alarm_get_uid (const ECalComponentAlarm *alarm)
  *
  * Set the @alarm UID, or generates a new UID, if @uid is %NULL or an empty string.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_set_uid (ECalComponentAlarm *alarm,
@@ -639,7 +639,7 @@ e_cal_component_alarm_set_uid (ECalComponentAlarm *alarm,
  *
  * Returns: the @alarm action, or %E_CAL_COMPONENT_ALARM_NONE, when none is set
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarmAction
 e_cal_component_alarm_get_action (const ECalComponentAlarm *alarm)
@@ -656,7 +656,7 @@ e_cal_component_alarm_get_action (const ECalComponentAlarm *alarm)
  *
  * Set the @alarm action, as an #ECalComponentAlarmAction.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_set_action (ECalComponentAlarm *alarm,
@@ -675,7 +675,7 @@ e_cal_component_alarm_set_action (ECalComponentAlarm *alarm,
  *
  * Returns: (transfer none) (nullable): the @alarm summary, or %NULL, when none is set
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentText *
 e_cal_component_alarm_get_summary (const ECalComponentAlarm *alarm)
@@ -692,7 +692,7 @@ e_cal_component_alarm_get_summary (const ECalComponentAlarm *alarm)
  *
  * Set the @alarm summary, as an #ECalComponentText.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_set_summary (ECalComponentAlarm *alarm,
@@ -715,7 +715,7 @@ e_cal_component_alarm_set_summary (ECalComponentAlarm *alarm,
  * Set the @alarm summary, as an #ECalComponentText, and assumes
  * ownership of the @summary.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_take_summary (ECalComponentAlarm *alarm,
@@ -737,7 +737,7 @@ e_cal_component_alarm_take_summary (ECalComponentAlarm *alarm,
  *
  * Returns: (transfer none) (nullable): the @alarm description, or %NULL, when none is set
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentText *
 e_cal_component_alarm_get_description (const ECalComponentAlarm *alarm)
@@ -754,7 +754,7 @@ e_cal_component_alarm_get_description (const ECalComponentAlarm *alarm)
  *
  * Set the @alarm description, as an #ECalComponentText.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_set_description (ECalComponentAlarm *alarm,
@@ -777,7 +777,7 @@ e_cal_component_alarm_set_description (ECalComponentAlarm *alarm,
  * Set the @alarm description, as an #ECalComponentText, and assumes
  * ownership of the @description.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_take_description (ECalComponentAlarm *alarm,
@@ -800,7 +800,7 @@ e_cal_component_alarm_take_description (ECalComponentAlarm *alarm,
  * Returns: (transfer none) (nullable): the @alarm repeat information,
  *    or %NULL, when none is set
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarmRepeat *
 e_cal_component_alarm_get_repeat (const ECalComponentAlarm *alarm)
@@ -817,7 +817,7 @@ e_cal_component_alarm_get_repeat (const ECalComponentAlarm *alarm)
  *
  * Set the @alarm repeat information, as an #ECalComponentAlarmRepeat.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_set_repeat (ECalComponentAlarm *alarm,
@@ -840,7 +840,7 @@ e_cal_component_alarm_set_repeat (ECalComponentAlarm *alarm,
  * Set the @alarm repeat information, as an #ECalComponentAlarmRepeat and assumes
  * ownership of the @trigger.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_take_repeat (ECalComponentAlarm *alarm,
@@ -862,7 +862,7 @@ e_cal_component_alarm_take_repeat (ECalComponentAlarm *alarm,
  *
  * Returns: (transfer none) (nullable): the @alarm trigger, or %NULL when, none is set
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarmTrigger *
 e_cal_component_alarm_get_trigger (const ECalComponentAlarm *alarm)
@@ -879,7 +879,7 @@ e_cal_component_alarm_get_trigger (const ECalComponentAlarm *alarm)
  *
  * Set the @alarm trigger, as an #ECalComponentAlarmTrigger.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_set_trigger (ECalComponentAlarm *alarm,
@@ -902,7 +902,7 @@ e_cal_component_alarm_set_trigger (ECalComponentAlarm *alarm,
  * Set the @alarm trigger, as an #ECalComponentAlarmTrigger and assumes
  * ownership of the @trigger.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_take_trigger (ECalComponentAlarm *alarm,
@@ -922,7 +922,7 @@ e_cal_component_alarm_take_trigger (ECalComponentAlarm *alarm,
  *
  * Returns: whether the @alarm has any attendees
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_cal_component_alarm_has_attendees (const ECalComponentAlarm *alarm)
@@ -943,7 +943,7 @@ e_cal_component_alarm_has_attendees (const ECalComponentAlarm *alarm)
  * Returns: (transfer none) (nullable) (element-type ECalComponentAttendee): the @alarm attendees,
  *    as a #GSList of an #ECalComponentAttendee, or %NULL when, none are set
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 GSList *
 e_cal_component_alarm_get_attendees (const ECalComponentAlarm *alarm)
@@ -961,7 +961,7 @@ e_cal_component_alarm_get_attendees (const ECalComponentAlarm *alarm)
  *
  * Set the list of attendees, as a #GSList of an #ECalComponentAttendee.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_set_attendees (ECalComponentAlarm *alarm,
@@ -995,7 +995,7 @@ e_cal_component_alarm_set_attendees (ECalComponentAlarm *alarm,
  * Sets the list of attendees, as a #GSList of an #ECalComponentAttendee and assumes
  * ownership of the @attendees and its content.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_take_attendees (ECalComponentAlarm *alarm,
@@ -1015,7 +1015,7 @@ e_cal_component_alarm_take_attendees (ECalComponentAlarm *alarm,
  *
  * Returns: whether the @alarm has any attachments
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_cal_component_alarm_has_attachments (const ECalComponentAlarm *alarm)
@@ -1036,7 +1036,7 @@ e_cal_component_alarm_has_attachments (const ECalComponentAlarm *alarm)
  * Returns: (transfer none) (nullable) (element-type ICalAttach): the @alarm attachments,
  *    as a #GSList of an #ICalAttach, or %NULL, when none is set
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 GSList *
 e_cal_component_alarm_get_attachments (const ECalComponentAlarm *alarm)
@@ -1054,7 +1054,7 @@ e_cal_component_alarm_get_attachments (const ECalComponentAlarm *alarm)
  *
  * Set the list of attachments, as a #GSList of an #ICalAttach.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_set_attachments (ECalComponentAlarm *alarm,
@@ -1088,7 +1088,7 @@ e_cal_component_alarm_set_attachments (ECalComponentAlarm *alarm,
  * Sets the list of attachments, as a #GSList of an #ICalAttach and assumes
  * ownership of the @attachments and its content.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_take_attachments (ECalComponentAlarm *alarm,
@@ -1110,7 +1110,7 @@ e_cal_component_alarm_take_attachments (ECalComponentAlarm *alarm,
  *    properties stored with an alarm component, other than those accessible
  *    with the other functions of the @alarm.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentPropertyBag *
 e_cal_component_alarm_get_property_bag (const ECalComponentAlarm *alarm)

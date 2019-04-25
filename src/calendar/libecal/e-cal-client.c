@@ -296,7 +296,7 @@ e_cal_client_error_create (ECalClientError code,
  *   The #GError has set the custom message, or the default message for
  *   @code, when @format is %NULL.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 GError *
 e_cal_client_error_create_fmt (ECalClientError code,

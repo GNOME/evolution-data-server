@@ -71,7 +71,7 @@ e_cal_component_id_new (const gchar *uid,
  *
  * Returns: (transfer full): an #ECalComponentId
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentId *
 e_cal_component_id_new_take (gchar *uid,
@@ -197,7 +197,7 @@ e_cal_component_id_equal (gconstpointer id1,
  *    string is owned by @id and it's valid until it's changed
  *    with e_cal_component_id_set_uid() or until the @id is freed.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_id_get_uid (const ECalComponentId *id)
@@ -214,7 +214,7 @@ e_cal_component_id_get_uid (const ECalComponentId *id)
  *
  * Sets the UID part of the @id.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_id_set_uid (ECalComponentId *id,
@@ -237,7 +237,7 @@ e_cal_component_id_set_uid (ECalComponentId *id,
  *    The returned string is owned by @id and it's valid until it's
  *    changed with e_cal_component_id_set_rid() or until the @id is freed.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_id_get_rid (const ECalComponentId *id)
@@ -256,7 +256,7 @@ e_cal_component_id_get_rid (const ECalComponentId *id)
  * or an empty string, where both are treated as %NULL, which
  * means the @id has not RECURRENCE-ID.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_id_set_rid (ECalComponentId *id,

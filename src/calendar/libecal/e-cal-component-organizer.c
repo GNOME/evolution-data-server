@@ -49,7 +49,7 @@ struct _ECalComponentOrganizer {
  *
  * Returns: (transfer full): a newly allocated #ECalComponentOrganizer
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentOrganizer *
 e_cal_component_organizer_new (void)
@@ -76,7 +76,7 @@ e_cal_component_organizer_new (void)
  *
  * Returns: (transfer full): a newly allocated #ECalComponentOrganizer
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentOrganizer *
 e_cal_component_organizer_new_full (const gchar *value,
@@ -106,7 +106,7 @@ e_cal_component_organizer_new_full (const gchar *value,
  *
  * Returns: (transfer full) (nullable): a newly allocated #ECalComponentOrganizer
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentOrganizer *
 e_cal_component_organizer_new_from_property (const ICalProperty *property)
@@ -134,7 +134,7 @@ e_cal_component_organizer_new_from_property (const ICalProperty *property)
  *
  * Returns: (transfer full): a newly allocated copy of @organizer
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentOrganizer *
 e_cal_component_organizer_copy (const ECalComponentOrganizer *organizer)
@@ -162,7 +162,7 @@ e_cal_component_organizer_copy (const ECalComponentOrganizer *organizer)
  * or e_cal_component_organizer_copy(). The function does nothing, if @organizer
  * is %NULL.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_organizer_free (gpointer organizer)
@@ -200,7 +200,7 @@ e_cal_component_organizer_filter_params_cb (ICalParameter *param,
  * Fill the @organizer structure with the information from
  * the @property, which should be of %I_CAL_ORGANIZER_PROPERTY kind.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_organizer_set_from_property (ECalComponentOrganizer *organizer,
@@ -241,7 +241,7 @@ e_cal_component_organizer_set_from_property (ECalComponentOrganizer *organizer,
  * Returns: (transfer full): a newly created #ICalProperty, containing
  *    information from the @organizer.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalProperty *
 e_cal_component_organizer_get_as_property (const ECalComponentOrganizer *organizer)
@@ -266,7 +266,7 @@ e_cal_component_organizer_get_as_property (const ECalComponentOrganizer *organiz
  * Fill @property with information from @organizer. The @property
  * should be of kind %I_CAL_ORGANIZER_PROPERTY.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_organizer_fill_property (const ECalComponentOrganizer *organizer,
@@ -309,7 +309,7 @@ e_cal_component_organizer_fill_property (const ECalComponentOrganizer *organizer
  *
  * Returns: (nullable): the @organizer URI, usually of "mailto:email" form
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_organizer_get_value (const ECalComponentOrganizer *organizer)
@@ -327,7 +327,7 @@ e_cal_component_organizer_get_value (const ECalComponentOrganizer *organizer)
  * Set the @organizer URI, usually of "mailto:email" form. The %NULL
  * and empty strings are treated as unset the value.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_organizer_set_value (ECalComponentOrganizer *organizer,
@@ -350,7 +350,7 @@ e_cal_component_organizer_set_value (ECalComponentOrganizer *organizer,
  *
  * Returns: (nullable): the @organizer sentby parameter
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_organizer_get_sentby (const ECalComponentOrganizer *organizer)
@@ -368,7 +368,7 @@ e_cal_component_organizer_get_sentby (const ECalComponentOrganizer *organizer)
  * Set the @organizer sentby parameter. The %NULL
  * and empty strings are treated as unset the value.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_organizer_set_sentby (ECalComponentOrganizer *organizer,
@@ -391,7 +391,7 @@ e_cal_component_organizer_set_sentby (ECalComponentOrganizer *organizer,
  *
  * Returns: (nullable): the @organizer common name (cn) parameter
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_organizer_get_cn (const ECalComponentOrganizer *organizer)
@@ -409,7 +409,7 @@ e_cal_component_organizer_get_cn (const ECalComponentOrganizer *organizer)
  * Set the @organizer common name (cn) parameter. The %NULL
  * and empty strings are treated as unset the value.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_organizer_set_cn (ECalComponentOrganizer *organizer,
@@ -432,7 +432,7 @@ e_cal_component_organizer_set_cn (ECalComponentOrganizer *organizer,
  *
  * Returns: (nullable): the @organizer language parameter
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 const gchar *
 e_cal_component_organizer_get_language (const ECalComponentOrganizer *organizer)
@@ -450,7 +450,7 @@ e_cal_component_organizer_get_language (const ECalComponentOrganizer *organizer)
  * Set the @organizer language parameter. The %NULL
  * and empty strings are treated as unset the value.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_organizer_set_language (ECalComponentOrganizer *organizer,
@@ -475,7 +475,7 @@ e_cal_component_organizer_set_language (ECalComponentOrganizer *organizer,
  *    parameters stored with the organizer property, other than those accessible
  *    with the other functions of the @organizer.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentParameterBag *
 e_cal_component_organizer_get_parameter_bag (const ECalComponentOrganizer *organizer)

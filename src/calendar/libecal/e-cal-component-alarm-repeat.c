@@ -46,7 +46,7 @@ struct _ECalComponentAlarmRepeat {
  *
  * Returns: (transfer full): a newly allocated #ECalComponentAlarmRepeat
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarmRepeat *
 e_cal_component_alarm_repeat_new (gint repetitions,
@@ -69,7 +69,7 @@ e_cal_component_alarm_repeat_new (gint repetitions,
  *
  * Returns: (transfer full): a newly allocated #ECalComponentAlarmRepeat
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarmRepeat *
 e_cal_component_alarm_repeat_new_seconds (gint repetitions,
@@ -92,7 +92,7 @@ e_cal_component_alarm_repeat_new_seconds (gint repetitions,
  *    The returned structure should be freed with e_cal_component_alarm_repeat_free(),
  *    when no longer needed.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ECalComponentAlarmRepeat *
 e_cal_component_alarm_repeat_copy (const ECalComponentAlarmRepeat *repeat)
@@ -110,7 +110,7 @@ e_cal_component_alarm_repeat_copy (const ECalComponentAlarmRepeat *repeat)
  * Free the @repeat, previously allocated by e_cal_component_alarm_repeat_new(),
  * e_cal_component_alarm_repeat_new_seconds() or e_cal_component_alarm_repeat_copy().
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_repeat_free (gpointer repeat)
@@ -129,7 +129,7 @@ e_cal_component_alarm_repeat_free (gpointer repeat)
  *
  * Returns: the repetitions count of the @repeat
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gint
 e_cal_component_alarm_repeat_get_repetitions (const ECalComponentAlarmRepeat *repeat)
@@ -146,7 +146,7 @@ e_cal_component_alarm_repeat_get_repetitions (const ECalComponentAlarmRepeat *re
  *
  * Set the @repetitions count of the @repeat.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_repeat_set_repetitions (ECalComponentAlarmRepeat *repeat,
@@ -170,7 +170,7 @@ e_cal_component_alarm_repeat_set_repetitions (ECalComponentAlarmRepeat *repeat,
  *
  * Returns: (transfer none): the interval between repetitions of the @repeat
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 ICalDuration *
 e_cal_component_alarm_repeat_get_interval (const ECalComponentAlarmRepeat *repeat)
@@ -187,7 +187,7 @@ e_cal_component_alarm_repeat_get_interval (const ECalComponentAlarmRepeat *repea
  *
  * Set the @interval between repetitions of the @repeat.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_repeat_set_interval (ECalComponentAlarmRepeat *repeat,
@@ -210,7 +210,7 @@ e_cal_component_alarm_repeat_set_interval (ECalComponentAlarmRepeat *repeat,
  *
  * Returns: the interval between repetitions of the @repeat
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gint
 e_cal_component_alarm_repeat_get_interval_seconds (const ECalComponentAlarmRepeat *repeat)
@@ -227,7 +227,7 @@ e_cal_component_alarm_repeat_get_interval_seconds (const ECalComponentAlarmRepea
  *
  * Set the @interval_seconds between repetitions of the @repeat.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 void
 e_cal_component_alarm_repeat_set_interval_seconds (ECalComponentAlarmRepeat *repeat,
