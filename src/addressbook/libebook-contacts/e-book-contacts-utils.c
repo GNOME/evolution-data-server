@@ -86,7 +86,7 @@ e_book_client_error_create (EBookClientError code,
  *   The #GError has set the custom message, or the default message for
  *   @code, when @format is %NULL.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 GError *
 e_book_client_error_create_fmt (EBookClientError code,
@@ -119,7 +119,7 @@ e_book_client_error_create_fmt (EBookClientError code,
  *
  * Returns: an #EConflictResolution as stored in the @flags
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 EConflictResolution
 e_book_util_operation_flags_to_conflict_resolution (guint32 flags)
@@ -146,7 +146,7 @@ e_book_util_operation_flags_to_conflict_resolution (guint32 flags)
  *
  * Returns: a bit-or of #EBookOperationFlags, corresponding to the @conflict_resolution
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 guint32
 e_book_util_conflict_resolution_to_operation_flags (EConflictResolution conflict_resolution)

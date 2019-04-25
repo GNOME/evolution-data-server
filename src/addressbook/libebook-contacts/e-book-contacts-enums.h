@@ -132,7 +132,7 @@ typedef enum { /*< flags >*/
  * is the default behavior (and it is used when no other conflict resolution flag is set).
  * The flags can be ignored when the operation or the backend don't support it.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 typedef enum { /*< flags >*/
 	E_BOOK_OPERATION_FLAG_NONE			= 0,

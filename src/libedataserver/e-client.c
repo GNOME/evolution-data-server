@@ -223,7 +223,7 @@ e_client_error_create (EClientError code,
  *   The #GError has set the custom message, or the default message for
  *   @code, when @format is %NULL.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 GError *
 e_client_error_create_fmt (EClientError code,

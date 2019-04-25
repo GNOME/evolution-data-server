@@ -26,7 +26,7 @@
  * This is a descendant of the #EBookBackend, providing synchronous variants
  * of the main methods.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 
 #include "evolution-data-server-config.h"
@@ -274,7 +274,7 @@ e_book_backend_sync_init (EBookBackendSync *backend)
  *
  * Returns: %TRUE on success, %FALSE on failure
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_book_backend_sync_open (EBookBackendSync *backend,
@@ -313,7 +313,7 @@ e_book_backend_sync_open (EBookBackendSync *backend,
  *
  * Returns: %TRUE on success, %FALSE on failure
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_book_backend_sync_refresh (EBookBackendSync *backend,
@@ -354,7 +354,7 @@ e_book_backend_sync_refresh (EBookBackendSync *backend,
  *
  * Returns: %TRUE on success, %FALSE on failure
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_book_backend_sync_create_contacts (EBookBackendSync *backend,
@@ -394,7 +394,7 @@ e_book_backend_sync_create_contacts (EBookBackendSync *backend,
  *
  * Returns: %TRUE on success, %FALSE on failure
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_book_backend_sync_modify_contacts (EBookBackendSync *backend,
@@ -434,7 +434,7 @@ e_book_backend_sync_modify_contacts (EBookBackendSync *backend,
  *
  * Returns: %TRUE on success, %FALSE on failure
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_book_backend_sync_remove_contacts (EBookBackendSync *backend,
@@ -475,7 +475,7 @@ e_book_backend_sync_remove_contacts (EBookBackendSync *backend,
  *
  * Returns: (transfer full): an #EContact, or %NULL
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 EContact *
 e_book_backend_sync_get_contact (EBookBackendSync *backend,
@@ -517,7 +517,7 @@ e_book_backend_sync_get_contact (EBookBackendSync *backend,
  *
  * Returns: %TRUE on success, %FALSE on failure
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_book_backend_sync_get_contact_list (EBookBackendSync *backend,
@@ -560,7 +560,7 @@ e_book_backend_sync_get_contact_list (EBookBackendSync *backend,
  *
  * Returns: %TRUE on success, %FALSE on failure
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_book_backend_sync_get_contact_list_uids (EBookBackendSync *backend,

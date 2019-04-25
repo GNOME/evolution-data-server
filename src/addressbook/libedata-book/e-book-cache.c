@@ -5185,7 +5185,7 @@ e_book_cache_get_vcard (EBookCache *book_cache,
  *
  * Returns: Whether succeeded.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_book_cache_set_contact_custom_flags (EBookCache *book_cache,
@@ -5231,7 +5231,7 @@ e_book_cache_set_contact_custom_flags (EBookCache *book_cache,
  *
  * Returns: Whether succeeded.
  *
- * Since: 3.36
+ * Since: 3.34
  **/
 gboolean
 e_book_cache_get_contact_custom_flags (EBookCache *book_cache,
