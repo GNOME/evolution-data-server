@@ -292,7 +292,7 @@ e_cal_meta_backend_test_get_backend_property (ECalBackend *cal_backend,
 	}
 
 	/* Chain up to parent's method. */
-	return E_CAL_BACKEND_CLASS (e_cal_meta_backend_test_parent_class)->get_backend_property (cal_backend, prop_name);
+	return E_CAL_BACKEND_CLASS (e_cal_meta_backend_test_parent_class)->impl_get_backend_property (cal_backend, prop_name);
 }
 
 static gboolean
@@ -668,7 +668,7 @@ e_cal_meta_backend_test_class_init (ECalMetaBackendTestClass *klass)
 	cal_meta_backend_class->remove_component_sync = e_cal_meta_backend_test_remove_component_sync;
 
 	cal_backend_class = E_CAL_BACKEND_CLASS (klass);
-	cal_backend_class->get_backend_property = e_cal_meta_backend_test_get_backend_property;
+	cal_backend_class->impl_get_backend_property = e_cal_meta_backend_test_get_backend_property;
 
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->constructed = e_cal_meta_backend_test_constructed;

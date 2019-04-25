@@ -1356,7 +1356,7 @@ e_cal_backend_sexp_match_object (ECalBackendSExp *sexp,
 }
 
 /**
- * e_cal_backend_sexp_func_time_now:
+ * e_cal_backend_sexp_func_time_now: (skip)
  * @esexp: An #ESExp object.
  * @argc: Number of arguments.
  * @argv: The arguments.
@@ -1390,7 +1390,7 @@ e_cal_backend_sexp_func_time_now (ESExp *esexp,
 }
 
 /**
- * e_cal_backend_sexp_func_make_time:
+ * e_cal_backend_sexp_func_make_time: (skip)
  * @esexp: An #ESExp object.
  * @argc: Number of arguments.
  * @argv: The arguments.
@@ -1455,7 +1455,7 @@ e_cal_backend_sexp_func_make_time (ESExp *esexp,
 }
 
 /**
- * e_cal_backend_sexp_func_time_add_day:
+ * e_cal_backend_sexp_func_time_add_day: (skip)
  * @esexp: An #ESExp object.
  * @argc: Number of arguments.
  * @argv: The arguments.
@@ -1516,7 +1516,7 @@ e_cal_backend_sexp_func_time_add_day (ESExp *esexp,
 }
 
 /**
- * e_cal_backend_sexp_func_time_day_begin:
+ * e_cal_backend_sexp_func_time_day_begin: (skip)
  * @esexp: An #ESExp object.
  * @argc: Number of arguments.
  * @argv: The arguments.
@@ -1565,7 +1565,7 @@ e_cal_backend_sexp_func_time_day_begin (ESExp *esexp,
 }
 
 /**
- * e_cal_backend_sexp_func_time_day_end:
+ * e_cal_backend_sexp_func_time_day_end: (skip)
  * @esexp: An #ESExp object.
  * @argc: Number of arguments.
  * @argv: The arguments.

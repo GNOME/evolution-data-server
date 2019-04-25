@@ -2076,7 +2076,7 @@ ecb_caldav_get_backend_property (ECalBackend *backend,
 	}
 
 	/* Chain up to parent's method. */
-	return E_CAL_BACKEND_CLASS (e_cal_backend_caldav_parent_class)->get_backend_property (backend, prop_name);
+	return E_CAL_BACKEND_CLASS (e_cal_backend_caldav_parent_class)->impl_get_backend_property (backend, prop_name);
 }
 
 static void
@@ -2207,7 +2207,7 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *klass)
 	cal_backend_sync_class->get_free_busy_sync = ecb_caldav_get_free_busy_sync;
 
 	cal_backend_class = E_CAL_BACKEND_CLASS (klass);
-	cal_backend_class->get_backend_property = ecb_caldav_get_backend_property;
+	cal_backend_class->impl_get_backend_property = ecb_caldav_get_backend_property;
 
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->constructed = e_cal_backend_caldav_constructed;

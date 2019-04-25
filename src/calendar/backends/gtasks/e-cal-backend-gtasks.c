@@ -486,7 +486,7 @@ ecb_gtasks_get_backend_property (ECalBackend *cal_backend,
 	}
 
 	/* Chain up to parent's method. */
-	return E_CAL_BACKEND_CLASS (e_cal_backend_gtasks_parent_class)->get_backend_property (cal_backend, prop_name);
+	return E_CAL_BACKEND_CLASS (e_cal_backend_gtasks_parent_class)->impl_get_backend_property (cal_backend, prop_name);
 }
 
 static gboolean
@@ -1150,7 +1150,7 @@ e_cal_backend_gtasks_class_init (ECalBackendGTasksClass *klass)
 	cal_meta_backend_class->requires_reconnect = ecb_gtasks_requires_reconnect;
 
 	cal_backend_class = E_CAL_BACKEND_CLASS (klass);
-	cal_backend_class->get_backend_property = ecb_gtasks_get_backend_property;
+	cal_backend_class->impl_get_backend_property = ecb_gtasks_get_backend_property;
 
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->constructed = ecb_gtasks_constructed;

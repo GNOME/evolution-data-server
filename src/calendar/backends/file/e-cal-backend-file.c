@@ -517,9 +517,8 @@ e_cal_backend_file_get_backend_property (ECalBackend *backend,
 		return revision;
 	}
 
-	/* Chain up to parent's get_backend_property() method. */
-	return E_CAL_BACKEND_CLASS (e_cal_backend_file_parent_class)->
-		get_backend_property (backend, prop_name);
+	/* Chain up to parent's method. */
+	return E_CAL_BACKEND_CLASS (e_cal_backend_file_parent_class)->impl_get_backend_property (backend, prop_name);
 }
 
 typedef struct _ResolveTzidData {
@@ -3820,7 +3819,8 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 	object_class->finalize = e_cal_backend_file_finalize;
 	object_class->constructed = cal_backend_file_constructed;
 
-	backend_class->get_backend_property = e_cal_backend_file_get_backend_property;
+	backend_class->impl_get_backend_property = e_cal_backend_file_get_backend_property;
+	backend_class->impl_start_view = e_cal_backend_file_start_view;
 
 	sync_class->open_sync = e_cal_backend_file_open;
 	sync_class->create_objects_sync = e_cal_backend_file_create_objects;
@@ -3833,8 +3833,6 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 	sync_class->get_attachment_uris_sync = e_cal_backend_file_get_attachment_uris;
 	sync_class->add_timezone_sync = e_cal_backend_file_add_timezone;
 	sync_class->get_free_busy_sync = e_cal_backend_file_get_free_busy;
-
-	backend_class->start_view = e_cal_backend_file_start_view;
 
 	/* Register our ESource extension. */
 	E_TYPE_SOURCE_LOCAL;

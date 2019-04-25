@@ -2881,7 +2881,7 @@ ecmb_get_backend_property (ECalBackend *cal_backend,
 	}
 
 	/* Chain up to parent's method. */
-	return E_CAL_BACKEND_CLASS (e_cal_meta_backend_parent_class)->get_backend_property (cal_backend, prop_name);
+	return E_CAL_BACKEND_CLASS (e_cal_meta_backend_parent_class)->impl_get_backend_property (cal_backend, prop_name);
 }
 
 static void
@@ -3410,9 +3410,9 @@ e_cal_meta_backend_class_init (ECalMetaBackendClass *klass)
 	cal_backend_sync_class->add_timezone_sync = ecmb_add_timezone_sync;
 
 	cal_backend_class = E_CAL_BACKEND_CLASS (klass);
-	cal_backend_class->get_backend_property = ecmb_get_backend_property;
-	cal_backend_class->start_view = ecmb_start_view;
-	cal_backend_class->stop_view = ecmb_stop_view;
+	cal_backend_class->impl_get_backend_property = ecmb_get_backend_property;
+	cal_backend_class->impl_start_view = ecmb_start_view;
+	cal_backend_class->impl_stop_view = ecmb_stop_view;
 
 	backend_class = E_BACKEND_CLASS (klass);
 	backend_class->authenticate_sync = ecmb_authenticate_sync;
