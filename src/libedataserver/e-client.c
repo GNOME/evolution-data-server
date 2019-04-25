@@ -191,27 +191,62 @@ e_client_error_to_string (EClientError code)
 /**
  * e_client_error_create:
  * @code: an #EClientError code to create
- * @custom_msg: custom message to use for the error; can be %NULL
+ * @custom_msg: (nullable): custom message to use for the error; can be %NULL
  *
- * Returns: a new #GError containing an E_CLIENT_ERROR of the given
- * @code. If the @custom_msg is NULL, then the error message is
- * the one returned from e_client_error_to_string() for the @code,
- * otherwise the given message is used.
- *
- * Returned pointer should be freed with g_error_free().
+ * Returns: (transfer full): a new #GError containing an #E_CLIENT_ERROR of the given
+ *    @code. If the @custom_msg is NULL, then the error message is the one returned
+ *    from e_client_error_to_string() for the @code, otherwise the given message is used.
+ *    Returned pointer should be freed with g_error_free().
  *
  * Since: 3.2
- *
- * Deprecated: 3.8: Just use the #GError API directly.
  **/
 GError *
 e_client_error_create (EClientError code,
                        const gchar *custom_msg)
 {
-	if (custom_msg == NULL)
+	if (!custom_msg)
 		custom_msg = e_client_error_to_string (code);
 
 	return g_error_new_literal (E_CLIENT_ERROR, code, custom_msg);
+}
+
+/**
+ * e_client_error_create_fmt:
+ * @code: an #EClientError
+ * @format: (nullable): message format, or %NULL to use the default message for the @code
+ * @...: arguments for the format
+ *
+ * Similar as e_client_error_create(), only here, instead of custom_msg,
+ * is used a printf() format to create a custom message for the error.
+ *
+ * Returns: (transfer full): a newly allocated #GError, which should be
+ *   freed with g_error_free(), when no longer needed.
+ *   The #GError has set the custom message, or the default message for
+ *   @code, when @format is %NULL.
+ *
+ * Since: 3.36
+ **/
+GError *
+e_client_error_create_fmt (EClientError code,
+			   const gchar *format,
+			   ...)
+{
+	GError *error;
+	gchar *custom_msg;
+	va_list ap;
+
+	if (!format)
+		return e_client_error_create (code, NULL);
+
+	va_start (ap, format);
+	custom_msg = g_strdup_vprintf (format, ap);
+	va_end (ap);
+
+	error = e_client_error_create (code, custom_msg);
+
+	g_free (custom_msg);
+
+	return error;
 }
 
 static void

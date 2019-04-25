@@ -27,8 +27,8 @@
 
 #define d(x)
 
-#define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
-#define EDC_ERROR_EX(_code, _msg) e_data_cal_create_error (_code, _msg)
+#define ECC_ERROR(_code) e_cal_client_error_create (_code, NULL)
+#define ECC_ERROR_EX(_code, _msg) e_cal_client_error_create (_code, _msg)
 
 #define GTASKS_DEFAULT_TASKLIST_NAME "@default"
 #define X_EVO_GTASKS_SELF_LINK	"X-EVOLUTION-GTASKS-SELF-LINK"
@@ -77,20 +77,21 @@ ecb_gtasks_store_data_version (ECalCache *cal_cache)
 }
 
 static void
-ecb_gtasks_update_ical_time_property (icalcomponent *icomp,
-				      icalproperty_kind kind,
-				      icalproperty * (* prop_new_func) (struct icaltimetype v),
-				      void (* prop_set_func) (icalproperty *prop, struct icaltimetype v),
-				      struct icaltimetype t)
+ecb_gtasks_update_ical_time_property (ICalComponent *icomp,
+				      ICalPropertyKind kind,
+				      ICalProperty * (* prop_new_func) (ICalTime *v),
+				      void (* prop_set_func) (ICalProperty *prop, ICalTime *v),
+				      ICalTime *tt)
 {
-	icalproperty *prop;
+	ICalProperty *prop;
 
-	prop = icalcomponent_get_first_property (icomp, kind);
+	prop = i_cal_component_get_first_property (icomp, kind);
 	if (prop) {
-		prop_set_func (prop, t);
+		prop_set_func (prop, tt);
+		g_object_unref (prop);
 	} else {
-		prop = prop_new_func (t);
-		icalcomponent_add_property (icomp, prop);
+		prop = prop_new_func (tt);
+		i_cal_component_take_property (icomp, prop);
 	}
 }
 
@@ -100,81 +101,97 @@ ecb_gtasks_gdata_to_comp (GDataTasksTask *task)
 	GDataEntry *entry;
 	GDataLink *data_link;
 	ECalComponent *comp;
-	icalcomponent *icomp;
+	ICalComponent *icomp;
+	ICalTime *tt;
+	ICalTimezone *utc_zone;
 	const gchar *position;
 	const gchar *parent;
 	const gchar *text;
-	struct icaltimetype tt;
 
 	g_return_val_if_fail (GDATA_IS_TASKS_TASK (task), NULL);
 
 	entry = GDATA_ENTRY (task);
-	icomp = icalcomponent_new (ICAL_VTODO_COMPONENT);
+	icomp = i_cal_component_new (I_CAL_VTODO_COMPONENT);
 
-	icalcomponent_set_uid (icomp, gdata_entry_get_id (entry));
+	i_cal_component_set_uid (icomp, gdata_entry_get_id (entry));
 
-	tt = icaltime_from_timet_with_zone (gdata_entry_get_published (entry), 0, icaltimezone_get_utc_timezone ());
-	if (!icaltime_is_valid_time (tt) || icaltime_is_null_time (tt))
-		tt = icaltime_from_timet_with_zone (gdata_entry_get_updated (entry), 0, icaltimezone_get_utc_timezone ());
-	if (!icaltime_is_valid_time (tt) || icaltime_is_null_time (tt))
-		tt = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
+	utc_zone = i_cal_timezone_get_utc_timezone ();
 
-	ecb_gtasks_update_ical_time_property (icomp, ICAL_CREATED_PROPERTY,
-		icalproperty_new_created,
-		icalproperty_set_created,
+	tt = i_cal_time_from_timet_with_zone (gdata_entry_get_published (entry), 0, utc_zone);
+	if (!tt || !i_cal_time_is_valid_time (tt) || i_cal_time_is_null_time (tt)) {
+		g_clear_object (&tt);
+		tt = i_cal_time_from_timet_with_zone (gdata_entry_get_updated (entry), 0, utc_zone);
+	}
+	if (!tt || !i_cal_time_is_valid_time (tt) || i_cal_time_is_null_time (tt)) {
+		g_clear_object (&tt);
+		tt = i_cal_time_current_time_with_zone (utc_zone);
+	}
+
+	ecb_gtasks_update_ical_time_property (icomp, I_CAL_CREATED_PROPERTY,
+		i_cal_property_new_created,
+		i_cal_property_set_created,
 		tt);
 
-	tt = icaltime_from_timet_with_zone (gdata_entry_get_updated (entry), 0, icaltimezone_get_utc_timezone ());
-	if (!icaltime_is_valid_time (tt) || icaltime_is_null_time (tt))
-		tt = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-	icalcomponent_set_dtstamp (icomp, tt);
+	g_clear_object (&tt);
 
-	ecb_gtasks_update_ical_time_property (icomp, ICAL_LASTMODIFIED_PROPERTY,
-		icalproperty_new_lastmodified,
-		icalproperty_set_lastmodified,
+	tt = i_cal_time_from_timet_with_zone (gdata_entry_get_updated (entry), 0, utc_zone);
+	if (!tt || !i_cal_time_is_valid_time (tt) || i_cal_time_is_null_time (tt)) {
+		g_clear_object (&tt);
+		tt = i_cal_time_current_time_with_zone (utc_zone);
+	}
+	i_cal_component_set_dtstamp (icomp, tt);
+
+	ecb_gtasks_update_ical_time_property (icomp, I_CAL_LASTMODIFIED_PROPERTY,
+		i_cal_property_new_lastmodified,
+		i_cal_property_set_lastmodified,
 		tt);
+
+	g_clear_object (&tt);
 
 	if (gdata_tasks_task_get_due (task) > 0) {
-		tt = icaltime_from_timet_with_zone (gdata_tasks_task_get_due (task), 1, NULL);
-		if (icaltime_is_valid_time (tt) && !icaltime_is_null_time (tt))
-			icalcomponent_set_due (icomp, tt);
+		tt = i_cal_time_from_timet_with_zone (gdata_tasks_task_get_due (task), 1, NULL);
+		if (tt && i_cal_time_is_valid_time (tt) && !i_cal_time_is_null_time (tt))
+			i_cal_component_set_due (icomp, tt);
+		g_clear_object (&tt);
 	}
 
 	if (gdata_tasks_task_get_completed (task) > 0) {
-		tt = icaltime_from_timet_with_zone (gdata_tasks_task_get_completed (task), 0, icaltimezone_get_utc_timezone ());
-		if (icaltime_is_valid_time (tt) && !icaltime_is_null_time (tt))
-			ecb_gtasks_update_ical_time_property (icomp, ICAL_COMPLETED_PROPERTY,
-				icalproperty_new_completed,
-				icalproperty_set_completed,
+		tt = i_cal_time_from_timet_with_zone (gdata_tasks_task_get_completed (task), 0, utc_zone);
+		if (tt && i_cal_time_is_valid_time (tt) && !i_cal_time_is_null_time (tt)) {
+			ecb_gtasks_update_ical_time_property (icomp, I_CAL_COMPLETED_PROPERTY,
+				i_cal_property_new_completed,
+				i_cal_property_set_completed,
 				tt);
+		}
+		g_clear_object (&tt);
 	}
 
 	text = gdata_entry_get_title (entry);
 	if (text && *text)
-		icalcomponent_set_summary (icomp, text);
+		i_cal_component_set_summary (icomp, text);
 
 	text = gdata_tasks_task_get_notes (task);
 	if (text && *text)
-		icalcomponent_set_description (icomp, text);
+		i_cal_component_set_description (icomp, text);
 
 	/* "needsAction" or "completed" */
 	text = gdata_tasks_task_get_status (task);
 	if (g_strcmp0 (text, "completed") == 0)
-		icalcomponent_set_status (icomp, ICAL_STATUS_COMPLETED);
+		i_cal_component_set_status (icomp, I_CAL_STATUS_COMPLETED);
 	else if (g_strcmp0 (text, "needsAction") == 0)
-		icalcomponent_set_status (icomp, ICAL_STATUS_NEEDSACTION);
+		i_cal_component_set_status (icomp, I_CAL_STATUS_NEEDSACTION);
 
 	data_link = gdata_entry_look_up_link (entry, GDATA_LINK_SELF);
 	if (data_link)
-		e_cal_util_set_x_property (icomp, X_EVO_GTASKS_SELF_LINK, gdata_link_get_uri (data_link));
+		e_cal_util_component_set_x_property (icomp, X_EVO_GTASKS_SELF_LINK, gdata_link_get_uri (data_link));
 
 	position = gdata_tasks_task_get_position (task);
 	if (position)
-		e_cal_util_set_x_property (icomp, X_EVO_GTASKS_POSITION, position);
+		e_cal_util_component_set_x_property (icomp, X_EVO_GTASKS_POSITION, position);
 
 	parent = gdata_tasks_task_get_parent (task);
 	if (parent)
-		icalcomponent_add_property (icomp, icalproperty_new_relatedto (parent));
+		i_cal_component_take_property (icomp, i_cal_property_new_relatedto (parent));
 
 	comp = e_cal_component_new_from_icalcomponent (icomp);
 	g_warn_if_fail (comp != NULL);
@@ -189,60 +206,66 @@ ecb_gtasks_comp_to_gdata (ECalComponent *comp,
 {
 	GDataEntry *entry;
 	GDataTasksTask *task;
-	icalcomponent *icomp;
-	icalproperty *prop;
+	ICalComponent *icomp;
+	ICalProperty *prop;
+	ICalTime *tt;
+	ICalTimezone *utc_zone;
 	const gchar *text;
+	gchar *tmp;
 #if GDATA_CHECK_VERSION(0, 17, 10)
 	gchar *position;
 #endif
-	gchar *tmp;
-	struct icaltimetype tt;
 
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 
 	icomp = e_cal_component_get_icalcomponent (comp);
 	g_return_val_if_fail (icomp != NULL, NULL);
 
-	text = icalcomponent_get_uid (icomp);
+	text = i_cal_component_get_uid (icomp);
 	task = gdata_tasks_task_new ((!ignore_uid && text && *text) ? text : NULL);
 	entry = GDATA_ENTRY (task);
 
-	tt = icalcomponent_get_due (icomp);
-	if (icaltime_is_valid_time (tt) && !icaltime_is_null_time (tt)) {
+	utc_zone = i_cal_timezone_get_utc_timezone ();
+
+	tt = i_cal_component_get_due (icomp);
+	if (tt && i_cal_time_is_valid_time (tt) && !i_cal_time_is_null_time (tt)) {
 		gint64 due;
 
-		due = (gint64) icaltime_as_timet_with_zone (tt, icaltimezone_get_utc_timezone ());
+		due = (gint64) i_cal_time_as_timet_with_zone (tt, utc_zone);
 		gdata_tasks_task_set_due (task, due);
 	}
+	g_clear_object (&tt);
 
-	prop = icalcomponent_get_first_property (icomp, ICAL_COMPLETED_PROPERTY);
+	prop = i_cal_component_get_first_property (icomp, I_CAL_COMPLETED_PROPERTY);
 	if (prop) {
-		tt = icalproperty_get_completed (prop);
+		tt = i_cal_property_get_completed (prop);
 
-		if (icaltime_is_valid_time (tt) && !icaltime_is_null_time (tt)) {
+		if (tt && i_cal_time_is_valid_time (tt) && !i_cal_time_is_null_time (tt)) {
 			gint64 completed;
 
-			completed = (gint64) icaltime_as_timet_with_zone (tt, icaltimezone_get_utc_timezone ());
+			completed = (gint64) i_cal_time_as_timet_with_zone (tt, utc_zone);
 			gdata_tasks_task_set_completed (task, completed);
 			gdata_tasks_task_set_status (task, "completed");
 		}
+		g_clear_object (&tt);
+		g_object_unref (prop);
 	}
 
-	text = icalcomponent_get_summary (icomp);
+	text = i_cal_component_get_summary (icomp);
 	if (text && *text)
 		gdata_entry_set_title (entry, text);
 
-	text = icalcomponent_get_description (icomp);
+	text = i_cal_component_get_description (icomp);
 	if (text && *text)
 		gdata_tasks_task_set_notes (task, text);
 
 	/* "needsAction" or "completed" */
-	if (icalcomponent_get_status (icomp) == ICAL_STATUS_COMPLETED)
+	if (i_cal_component_get_status (icomp) == I_CAL_STATUS_COMPLETED)
 		gdata_tasks_task_set_status (task, "completed");
-	else if (icalcomponent_get_status (icomp) == ICAL_STATUS_NEEDSACTION)
+	else if (i_cal_component_get_status (icomp) == I_CAL_STATUS_NEEDSACTION)
 		gdata_tasks_task_set_status (task, "needsAction");
 
-	tmp = e_cal_util_dup_x_property (icomp, X_EVO_GTASKS_SELF_LINK);
+	tmp = e_cal_util_component_dup_x_property (icomp, X_EVO_GTASKS_SELF_LINK);
 	if (!tmp || !*tmp) {
 		g_free (tmp);
 		tmp = NULL;
@@ -250,7 +273,7 @@ ecb_gtasks_comp_to_gdata (ECalComponent *comp,
 		/* If the passed-in component doesn't contain the libgdata self link,
 		   then get it from the cached comp */
 		if (cached_comp) {
-			tmp = e_cal_util_dup_x_property (
+			tmp = e_cal_util_component_dup_x_property (
 				e_cal_component_get_icalcomponent (cached_comp),
 				X_EVO_GTASKS_SELF_LINK);
 		}
@@ -268,7 +291,7 @@ ecb_gtasks_comp_to_gdata (ECalComponent *comp,
 
 #if GDATA_CHECK_VERSION(0, 17, 10)
 	/* Position */
-	position = e_cal_util_dup_x_property (icomp, X_EVO_GTASKS_POSITION);
+	position = e_cal_util_component_dup_x_property (icomp, X_EVO_GTASKS_POSITION);
 	if (!position || !*position) {
 		g_free (position);
 		position = NULL;
@@ -276,7 +299,7 @@ ecb_gtasks_comp_to_gdata (ECalComponent *comp,
 		/* If the passed-in component doesn't contain the libgdata position,
 		   then get it from the cached comp */
 		if (cached_comp) {
-			position = e_cal_util_dup_x_property (
+			position = e_cal_util_component_dup_x_property (
 				e_cal_component_get_icalcomponent (cached_comp),
 				X_EVO_GTASKS_POSITION);
 		}
@@ -288,15 +311,17 @@ ecb_gtasks_comp_to_gdata (ECalComponent *comp,
 	g_free (position);
 
 	/* Parent */
-	prop = icalcomponent_get_first_property (icomp, ICAL_RELATEDTO_PROPERTY);
+	prop = i_cal_component_get_first_property (icomp, I_CAL_RELATEDTO_PROPERTY);
 	if (!prop && cached_comp) {
-		prop = icalcomponent_get_first_property (
+		prop = i_cal_component_get_first_property (
 			e_cal_component_get_icalcomponent (cached_comp),
-			ICAL_RELATEDTO_PROPERTY);
+			I_CAL_RELATEDTO_PROPERTY);
 	}
 
-	if (prop)
-		gdata_tasks_task_set_parent (task, icalproperty_get_relatedto (prop));
+	if (prop) {
+		gdata_tasks_task_set_parent (task, i_cal_property_get_relatedto (prop));
+		g_object_unref (prop);
+	}
 #endif
 
 	return task;
@@ -438,14 +463,14 @@ ecb_gtasks_get_backend_property (ECalBackend *cal_backend,
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
 		return g_strjoin (",",
-			CAL_STATIC_CAPABILITY_NO_THISANDFUTURE,
-			CAL_STATIC_CAPABILITY_NO_THISANDPRIOR,
-			CAL_STATIC_CAPABILITY_TASK_DATE_ONLY,
-			CAL_STATIC_CAPABILITY_TASK_NO_ALARM,
+			E_CAL_STATIC_CAPABILITY_NO_THISANDFUTURE,
+			E_CAL_STATIC_CAPABILITY_NO_THISANDPRIOR,
+			E_CAL_STATIC_CAPABILITY_TASK_DATE_ONLY,
+			E_CAL_STATIC_CAPABILITY_TASK_NO_ALARM,
 			e_cal_meta_backend_get_capabilities (E_CAL_META_BACKEND (cal_backend)),
 			NULL);
-	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
-		   g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
+	} else if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
+		   g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
 		ESourceAuthentication *authentication;
 		ESource *source;
 		const gchar *user;
@@ -723,13 +748,13 @@ ecb_gtasks_get_changes_sync (ECalMetaBackend *meta_backend,
 					object = e_cal_component_get_as_string (new_comp);
 
 					if (cached_comp) {
-						struct icaltimetype *cached_tt = NULL, *new_tt = NULL;
+						ICalTime *cached_tt, *new_tt;
 
-						e_cal_component_get_last_modified (cached_comp, &cached_tt);
-						e_cal_component_get_last_modified (new_comp, &new_tt);
+						cached_tt = e_cal_component_get_last_modified (cached_comp);
+						new_tt = e_cal_component_get_last_modified (new_comp);
 
 						if (!cached_tt || !new_tt ||
-						    icaltime_compare (*cached_tt, *new_tt) != 0) {
+						    i_cal_time_compare (cached_tt, new_tt) != 0) {
 							/* Google doesn't store/provide 'created', thus use 'created,
 							   as first seen by the backend' */
 							if (cached_tt)
@@ -739,10 +764,8 @@ ecb_gtasks_get_changes_sync (ECalMetaBackend *meta_backend,
 								e_cal_meta_backend_info_new (uid, revision, object, NULL));
 						}
 
-						if (cached_tt)
-							e_cal_component_free_icaltimetype (cached_tt);
-						if (new_tt)
-							e_cal_component_free_icaltimetype (new_tt);
+						g_clear_object (&cached_tt);
+						g_clear_object (&new_tt);
 					} else {
 						*out_created_objects = g_slist_prepend (*out_created_objects,
 							e_cal_meta_backend_info_new (uid, revision, object, NULL));
@@ -799,7 +822,7 @@ static gboolean
 ecb_gtasks_load_component_sync (ECalMetaBackend *meta_backend,
 				const gchar *uid,
 				const gchar *extra,
-				icalcomponent **out_instances,
+				ICalComponent **out_instances,
 				gchar **out_extra,
 				GCancellable *cancellable,
 				GError **error)
@@ -820,20 +843,20 @@ ecb_gtasks_load_component_sync (ECalMetaBackend *meta_backend,
 
 		comp = g_hash_table_lookup (cbgtasks->priv->preloaded, uid);
 		if (comp) {
-			icalcomponent *icalcomp;
+			ICalComponent *icomp;
 
-			icalcomp = e_cal_component_get_icalcomponent (comp);
-			if (icalcomp)
-				*out_instances = icalcomponent_new_clone (icalcomp);
+			icomp = e_cal_component_get_icalcomponent (comp);
+			if (icomp)
+				*out_instances = i_cal_component_new_clone (icomp);
 
 			g_hash_table_remove (cbgtasks->priv->preloaded, uid);
 
-			if (icalcomp)
+			if (icomp)
 				return TRUE;
 		}
 	}
 
-	g_propagate_error (error, EDC_ERROR (ObjectNotFound));
+	g_propagate_error (error, ECC_ERROR (E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND));
 
 	return FALSE;
 }
@@ -844,6 +867,7 @@ ecb_gtasks_save_component_sync (ECalMetaBackend *meta_backend,
 				EConflictResolution conflict_resolution,
 				const GSList *instances, /* ECalComponent * */
 				const gchar *extra,
+				guint32 opflags,
 				gchar **out_new_uid,
 				gchar **out_new_extra,
 				GCancellable *cancellable,
@@ -853,7 +877,6 @@ ecb_gtasks_save_component_sync (ECalMetaBackend *meta_backend,
 	ECalCache *cal_cache;
 	GDataTasksTask *new_task, *comp_task;
 	ECalComponent *comp, *cached_comp = NULL;
-	icalcomponent *icalcomp;
 	const gchar *uid;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (meta_backend), FALSE);
@@ -865,7 +888,7 @@ ecb_gtasks_save_component_sync (ECalMetaBackend *meta_backend,
 	cbgtasks = E_CAL_BACKEND_GTASKS (meta_backend);
 
 	if (g_slist_length ((GSList *) instances) != 1) {
-		g_propagate_error (error, EDC_ERROR (InvalidArg));
+		g_propagate_error (error, e_client_error_create (E_CLIENT_ERROR_INVALID_ARG, NULL));
 		g_clear_object (&cal_cache);
 		return FALSE;
 	}
@@ -873,14 +896,13 @@ ecb_gtasks_save_component_sync (ECalMetaBackend *meta_backend,
 	comp = instances->data;
 
 	if (!comp) {
-		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		g_propagate_error (error, ECC_ERROR (E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 		g_clear_object (&cal_cache);
 		return FALSE;
 	}
 
-	if (!overwrite_existing || !e_cal_cache_get_component (cal_cache,
-		icalcomponent_get_uid (e_cal_component_get_icalcomponent (comp)),
-		NULL, &cached_comp, cancellable, NULL)) {
+	if (!overwrite_existing ||
+	    !e_cal_cache_get_component (cal_cache, e_cal_component_get_uid (comp), NULL, &cached_comp, cancellable, NULL)) {
 		cached_comp = NULL;
 	}
 
@@ -890,7 +912,7 @@ ecb_gtasks_save_component_sync (ECalMetaBackend *meta_backend,
 	g_clear_object (&cal_cache);
 
 	if (!comp_task) {
-		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		g_propagate_error (error, ECC_ERROR (E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 		return FALSE;
 	}
 
@@ -912,16 +934,15 @@ ecb_gtasks_save_component_sync (ECalMetaBackend *meta_backend,
 	g_object_unref (new_task);
 
 	if (!comp) {
-		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		g_propagate_error (error, ECC_ERROR (E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 		return FALSE;
 	}
 
-	icalcomp = e_cal_component_get_icalcomponent (comp);
-	uid = icalcomp ? icalcomponent_get_uid (icalcomp) : NULL;
+	uid = e_cal_component_get_uid (comp);
 
-	if (!icalcomp || !uid) {
+	if (!uid) {
 		g_object_unref (comp);
-		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		g_propagate_error (error, ECC_ERROR (E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 		return FALSE;
 	}
 
@@ -941,6 +962,7 @@ ecb_gtasks_remove_component_sync (ECalMetaBackend *meta_backend,
 				  const gchar *uid,
 				  const gchar *extra,
 				  const gchar *object,
+				  guint32 opflags,
 				  GCancellable *cancellable,
 				  GError **error)
 {
@@ -955,7 +977,7 @@ ecb_gtasks_remove_component_sync (ECalMetaBackend *meta_backend,
 
 	cached_comp = e_cal_component_new_from_string (object);
 	if (!cached_comp) {
-		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		g_propagate_error (error, ECC_ERROR (E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 		return FALSE;
 	}
 
@@ -964,7 +986,7 @@ ecb_gtasks_remove_component_sync (ECalMetaBackend *meta_backend,
 	task = ecb_gtasks_comp_to_gdata (cached_comp, NULL, FALSE);
 	if (!task) {
 		g_object_unref (cached_comp);
-		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		g_propagate_error (error, ECC_ERROR (E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 
 		return FALSE;
 	}
@@ -1027,20 +1049,22 @@ ecb_gtasks_requires_reconnect (ECalMetaBackend *meta_backend)
 
 static gchar *
 ecb_gtasks_dup_component_revision (ECalCache *cal_cache,
-				   icalcomponent *icalcomp,
+				   ICalComponent *icomp,
 				   gpointer user_data)
 {
-	icalproperty *prop;
+	ICalProperty *prop;
 	gchar *revision = NULL;
 
-	g_return_val_if_fail (icalcomp != NULL, NULL);
+	g_return_val_if_fail (icomp != NULL, NULL);
 
-	prop = icalcomponent_get_first_property (icalcomp, ICAL_LASTMODIFIED_PROPERTY);
+	prop = i_cal_component_get_first_property (icomp, I_CAL_LASTMODIFIED_PROPERTY);
 	if (prop) {
-		struct icaltimetype itt;
+		ICalTime *itt;
 
-		itt = icalproperty_get_lastmodified (prop);
-		revision = icaltime_as_ical_string_r (itt);
+		itt = i_cal_property_get_lastmodified (prop);
+		revision = i_cal_time_as_ical_string_r (itt);
+		g_clear_object (&itt);
+		g_object_unref (prop);
 	}
 
 	return revision;

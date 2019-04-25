@@ -44,13 +44,6 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), E_TYPE_DATA_CAL, EDataCalClass))
 
-/**
- * E_DATA_CAL_ERROR:
- *
- * Since: 2.30
- **/
-#define E_DATA_CAL_ERROR e_data_cal_error_quark ()
-
 G_BEGIN_DECLS
 
 struct _ECalBackend;
@@ -67,84 +60,6 @@ struct _EDataCal {
 struct _EDataCalClass {
 	GObjectClass parent_class;
 };
-
-/**
- * EDataCalCallStatus:
- * @Success: call finished successfully
- * @Busy: the backend is busy
- * @RepositoryOffline: the backend is offline
- * @PermissionDenied: the call failed due to permission restrictions
- * @InvalidRange: the provided range for the call is invalid
- * @ObjectNotFound: the requested object could not be found
- * @InvalidObject: the provided object is invalid
- * @ObjectIdAlreadyExists: the provided object has an ID which already exists
- * @AuthenticationFailed: failed to authenticate with given credentials
- * @AuthenticationRequired: authentication credentials are required to connect to the calendar
- * @UnsupportedField: requested field is not supported
- * @UnsupportedMethod: requested method is not supported
- * @UnsupportedAuthenticationMethod: requested authentication method is not supported
- * @TLSNotAvailable: TLS for connection is not available for the calendar
- * @NoSuchCal: requested calendar does not exist
- * @UnknownUser: provided user is unknown
- * @OfflineUnavailable: requested data are not available in offline
- * @SearchSizeLimitExceeded: a successful search doesn't contain all responses due to size limit
- * @SearchTimeLimitExceeded: a successful search doesn't contain all responses due to time limit
- * @InvalidQuery: a requested search query is invalid
- * @QueryRefused: a requested search query had been refused, possibly by the server
- * @CouldNotCancel: an ongoing operation cannot be cancelled
- * @OtherError: a generic error happened
- * @InvalidServerVersion: server version is invalid
- * @InvalidArg: one of the arguments of the call was invalid
- * @NotSupported: the operation is not supported
- * @NotOpened: the calendar is not opened
- *
- * Response statuses of the calls.
- *
- * Since: 3.6
- **/
-typedef enum {
-	Success,
-	Busy,
-	RepositoryOffline,
-	PermissionDenied,
-	InvalidRange,
-	ObjectNotFound,
-	InvalidObject,
-	ObjectIdAlreadyExists,
-	AuthenticationFailed,
-	AuthenticationRequired,
-	UnsupportedField,
-	UnsupportedMethod,
-	UnsupportedAuthenticationMethod,
-	TLSNotAvailable,
-	NoSuchCal,
-	UnknownUser,
-	OfflineUnavailable,
-
-	/* These can be returned for successful searches, but
-		indicate the result set was truncated */
-	SearchSizeLimitExceeded,
-	SearchTimeLimitExceeded,
-
-	InvalidQuery,
-	QueryRefused,
-
-	CouldNotCancel,
-
-	OtherError,
-	InvalidServerVersion,
-	InvalidArg,
-	NotSupported,
-	NotOpened
-} EDataCalCallStatus;
-
-GQuark		e_data_cal_error_quark		(void);
-GError *	e_data_cal_create_error		(EDataCalCallStatus status,
-						 const gchar *custom_msg);
-GError *	e_data_cal_create_error_fmt	(EDataCalCallStatus status,
-						 const gchar *custom_msg_fmt,
-						 ...) G_GNUC_PRINTF (2, 3);
-const gchar *	e_data_cal_status_to_string	(EDataCalCallStatus status);
 
 GType		e_data_cal_get_type		(void) G_GNUC_CONST;
 EDataCal *	e_data_cal_new			(struct _ECalBackend *backend,

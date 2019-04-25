@@ -39,7 +39,12 @@ endmacro(_gir_list_prefix)
 macro(_gir_list_prefix_libs _outvar _listvar _prefix)
 	set(${_outvar})
 	foreach(_item IN LISTS ${_listvar})
-		list(APPEND ${_outvar} ${_prefix}${_item}-${API_VERSION})
+		if(TARGET ${_item})
+			get_target_property(_output_name ${_item} OUTPUT_NAME)
+			list(APPEND ${_outvar} ${_prefix}${_output_name})
+		else(TARGET ${_item})
+			message(FATAL_ERROR "'${_item}' not found as a target, possibly typo or reorder target definitions")
+		endif(TARGET ${_item})
 	endforeach()
 endmacro(_gir_list_prefix_libs)
 
@@ -150,6 +155,7 @@ macro(gir_add_introspection gir)
 				COMMAND ${G_IR_COMPILER}
 					${INTROSPECTION_COMPILER_ARGS}
 					--includedir=${CMAKE_CURRENT_SOURCE_DIR}
+					--includedir=${SHARE_INSTALL_PREFIX}/gir-1.0
 					${CMAKE_CURRENT_BINARY_DIR}/${gir}
 					-o ${CMAKE_CURRENT_BINARY_DIR}/${_typelib}
 				DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${gir}

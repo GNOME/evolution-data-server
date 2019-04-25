@@ -114,8 +114,6 @@
 
 G_BEGIN_DECLS
 
-GQuark e_client_error_quark (void) G_GNUC_CONST;
-
 /**
  * EClientError:
  * @E_CLIENT_ERROR_INVALID_ARG: Invalid argument was used
@@ -139,7 +137,7 @@ GQuark e_client_error_quark (void) G_GNUC_CONST;
  * @E_CLIENT_ERROR_DBUS_ERROR: A D-Bus error occurred
  * @E_CLIENT_ERROR_OTHER_ERROR: Other error
  * @E_CLIENT_ERROR_NOT_OPENED: The client is not opened
- * @E_CLIENT_ERROR_OUT_OF_SYNC: The clien tis out of sync
+ * @E_CLIENT_ERROR_OUT_OF_SYNC: The client is out of sync with the server
  *
  * Error codes for #EClient operations.
  *
@@ -170,7 +168,13 @@ typedef enum {
 	E_CLIENT_ERROR_OUT_OF_SYNC
 } EClientError;
 
+GQuark		e_client_error_quark		(void) G_GNUC_CONST;
 const gchar *	e_client_error_to_string	(EClientError code);
+GError *	e_client_error_create		(EClientError code,
+						 const gchar *custom_msg);
+GError *	e_client_error_create_fmt	(EClientError code,
+						 const gchar *format,
+						 ...) G_GNUC_PRINTF (2, 3);
 
 /**
  * EClient:
@@ -388,8 +392,6 @@ GSList *	e_client_util_parse_comma_strings
  **/
 #define CLIENT_BACKEND_PROPERTY_OPENING			"opening"
 
-GError *	e_client_error_create		(EClientError code,
-						 const gchar *custom_msg);
 gboolean	e_client_is_opened		(EClient *client);
 void		e_client_cancel_all		(EClient *client);
 void		e_client_unwrap_dbus_error	(EClient *client,

@@ -47,27 +47,7 @@
 #include "e-data-cal.h"
 #include "e-data-cal-factory.h"
 
-#include <libical/ical.h>
-
-/*
- * FIXME: Remove this when there's a build time dependency on libical
- * 3.0.4 (where this is fixed). See
- * https://github.com/libical/libical/pull/335 and the implementation in
- * https://github.com/libical/libical/blob/master/src/libical/icalversion.h.cmake.
- */
-#if defined(ICAL_CHECK_VERSION) && defined(ICAL_MAJOR_VERSION) && defined(ICAL_MINOR_VERSION) && defined(ICAL_MICRO_VERSION)
-#undef ICAL_CHECK_VERSION
-#define ICAL_CHECK_VERSION(major,minor,micro)                          \
-    (ICAL_MAJOR_VERSION > (major) ||                                   \
-    (ICAL_MAJOR_VERSION == (major) && ICAL_MINOR_VERSION > (minor)) || \
-    (ICAL_MAJOR_VERSION == (major) && ICAL_MINOR_VERSION == (minor) && \
-    ICAL_MICRO_VERSION >= (micro)))
-#else
-#if defined(ICAL_CHECK_VERSION)
-#undef ICAL_CHECK_VERSION
-#endif
-#define ICAL_CHECK_VERSION(major,minor,micro) (0)
-#endif
+#include <libical-glib/libical-glib.h>
 
 #define d(x)
 
@@ -384,48 +364,7 @@ e_data_cal_factory_new (gint backend_per_process,
 			GCancellable *cancellable,
                         GError **error)
 {
-#if !ICAL_CHECK_VERSION(3, 0, 2)
-	icalarray *builtin_timezones;
-	gint ii;
-#endif
-
-#ifdef HAVE_ICAL_UNKNOWN_TOKEN_HANDLING
-	ical_set_unknown_token_handling_setting (ICAL_DISCARD_TOKEN);
-#endif
-
-#ifdef HAVE_ICALTZUTIL_SET_EXACT_VTIMEZONES_SUPPORT
-	icaltzutil_set_exact_vtimezones_support (0);
-#endif
-
-#if !ICAL_CHECK_VERSION(3, 0, 2)
-	/* XXX Pre-load all built-in timezones in libical.
-	 *
-	 *     Built-in time zones in libical 0.43 are loaded on demand,
-	 *     but not in a thread-safe manner, resulting in a race when
-	 *     multiple threads call icaltimezone_load_builtin_timezone()
-	 *     on the same time zone.  Until built-in time zone loading
-	 *     in libical is made thread-safe, work around the issue by
-	 *     loading all built-in time zones now, so libical's internal
-	 *     time zone array will be fully populated before any threads
-	 *     are spawned.
-	 *
-	 *     This is apparently fixed with additional locking in
-	 *     libical 3.0.1 and 3.0.2:
-	 *     https://github.com/libical/libical/releases/tag/v3.0.1
-	 *     https://github.com/libical/libical/releases/tag/v3.0.2
-	 */
-	builtin_timezones = icaltimezone_get_builtin_timezones ();
-	for (ii = 0; ii < builtin_timezones->num_elements; ii++) {
-		icaltimezone *zone;
-
-		zone = icalarray_element_at (builtin_timezones, ii);
-
-		/* We don't care about the component right now,
-		 * we just need some function that will trigger
-		 * icaltimezone_load_builtin_timezone(). */
-		icaltimezone_get_component (zone);
-	}
-#endif
+	i_cal_set_unknown_token_handling_setting (I_CAL_DISCARD_TOKEN);
 
 	return g_initable_new (E_TYPE_DATA_CAL_FACTORY, cancellable, error,
 		"reload-supported", TRUE,

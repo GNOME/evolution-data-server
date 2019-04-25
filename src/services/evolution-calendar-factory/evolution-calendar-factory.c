@@ -25,7 +25,7 @@
 #include <gtk/gtk.h>
 #endif
 
-#include <libical/ical.h>
+#include <libical-glib/libical-glib.h>
 
 #include <libedataserver/libedataserver.h>
 #include <libedata-cal/libedata-cal.h>
@@ -84,13 +84,7 @@ main (gint argc,
 		exit (EXIT_FAILURE);
 	}
 
-#ifdef HAVE_ICAL_UNKNOWN_TOKEN_HANDLING
 	ical_set_unknown_token_handling_setting (ICAL_DISCARD_TOKEN);
-#endif
-
-#ifdef HAVE_ICALTZUTIL_SET_EXACT_VTIMEZONES_SUPPORT
-	icaltzutil_set_exact_vtimezones_support (0);
-#endif
 
 	e_xml_initialize_in_main ();
 

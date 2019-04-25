@@ -59,11 +59,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.30
  **/
-typedef struct _EReminderData {
-	gchar *source_uid;
-	ECalComponent *component;
-	ECalComponentAlarmInstance instance;
-} EReminderData;
+typedef struct _EReminderData EReminderData;
 
 GType		e_reminder_data_get_type	(void) G_GNUC_CONST;
 EReminderData *	e_reminder_data_new		(const gchar *source_uid,
@@ -71,21 +67,16 @@ EReminderData *	e_reminder_data_new		(const gchar *source_uid,
 						 const ECalComponentAlarmInstance *instance);
 EReminderData *	e_reminder_data_copy		(const EReminderData *rd);
 void		e_reminder_data_free		(gpointer rd); /* EReminderData * */
-
-/**
- * EReminderWatcherZone:
- *
- * A libical's icaltimezone encapsulated as a GBoxed type.
- * It can be retyped into icaltimezone directly.
- *
- * Since: 3.30
- **/
-typedef icaltimezone EReminderWatcherZone;
-
-GType		e_reminder_watcher_zone_get_type(void) G_GNUC_CONST;
-EReminderWatcherZone *
-		e_reminder_watcher_zone_copy	(const EReminderWatcherZone *watcher_zone);
-void		e_reminder_watcher_zone_free	(EReminderWatcherZone *watcher_zone);
+const gchar *	e_reminder_data_get_source_uid	(const EReminderData *rd);
+void		e_reminder_data_set_source_uid	(EReminderData *rd,
+						 const gchar *source_uid);
+ECalComponent *	e_reminder_data_get_component	(const EReminderData *rd);
+void		e_reminder_data_set_component	(EReminderData *rd,
+						 const ECalComponent *component);
+ECalComponentAlarmInstance *
+		e_reminder_data_get_instance	(const EReminderData *rd);
+void		e_reminder_data_set_instance	(EReminderData *rd,
+						 const ECalComponentAlarmInstance *instance);
 
 typedef struct _EReminderWatcher EReminderWatcher;
 typedef struct _EReminderWatcherClass EReminderWatcherClass;
@@ -128,7 +119,7 @@ struct _EReminderWatcherClass {
 						 gint64 at_time);
 	void		(* format_time)		(EReminderWatcher *watcher,
 						 const EReminderData *rd,
-						 struct icaltimetype *itt,
+						 ICalTime *itt,
 						 gchar **inout_buffer,
 						 gint buffer_size);
 	void		(* triggered)		(EReminderWatcher *watcher,
@@ -166,8 +157,8 @@ ESourceRegistry *
 ECalClient *	e_reminder_watcher_ref_opened_client	(EReminderWatcher *watcher,
 							 const gchar *source_uid);
 void		e_reminder_watcher_set_default_zone	(EReminderWatcher *watcher,
-							 const icaltimezone *zone);
-icaltimezone *	e_reminder_watcher_dup_default_zone	(EReminderWatcher *watcher);
+							 const ICalTimezone *zone);
+ICalTimezone *	e_reminder_watcher_dup_default_zone	(EReminderWatcher *watcher);
 gboolean	e_reminder_watcher_get_timers_enabled	(EReminderWatcher *watcher);
 void		e_reminder_watcher_set_timers_enabled	(EReminderWatcher *watcher,
 							 gboolean enabled);

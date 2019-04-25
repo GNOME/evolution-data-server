@@ -18,6 +18,9 @@ set(BASE_VERSION 3.34)
 # library names for backward compatibility.
 set(API_VERSION 1.2)
 
+# API version of the calendar part
+set(CAL_API_VERSION 2.0)
+
 # Required for FindIntltool module
 set(GETTEXT_PACKAGE ${PROJECT_NAME})
 set(GETTEXT_PO_DIR ${CMAKE_SOURCE_DIR}/po)
@@ -38,7 +41,7 @@ set(PROJECT_DISTCONFIGURE_PARAMS
 # ******************************
 # Actual name can be modified with DBUS_SERVICES_PREFIX option
 set(ADDRESS_BOOK_DBUS_SERVICE_NAME	"org.gnome.evolution.dataserver.AddressBook9")
-set(CALENDAR_DBUS_SERVICE_NAME		"org.gnome.evolution.dataserver.Calendar7")
+set(CALENDAR_DBUS_SERVICE_NAME		"org.gnome.evolution.dataserver.Calendar8")
 set(SOURCES_DBUS_SERVICE_NAME		"org.gnome.evolution.dataserver.Sources5")
 set(USER_PROMPTER_DBUS_SERVICE_NAME	"org.gnome.evolution.dataserver.UserPrompter0")
 
@@ -73,11 +76,11 @@ set(LIBEDATABOOK_CURRENT 25)
 set(LIBEDATABOOK_REVISION 0)
 set(LIBEDATABOOK_AGE 0)
 
-set(LIBECAL_CURRENT 19)
+set(LIBECAL_CURRENT 1)
 set(LIBECAL_REVISION 0)
 set(LIBECAL_AGE 0)
 
-set(LIBEDATACAL_CURRENT 29)
+set(LIBEDATACAL_CURRENT 1)
 set(LIBEDATACAL_REVISION 0)
 set(LIBEDATACAL_AGE 0)
 
@@ -108,7 +111,7 @@ add_definitions(-DSOUP_VERSION_MIN_REQUIRED=${soup_encoded_version})
 
 set(gcr_minimum_version 3.4)
 set(libgdata_minimum_version 0.15.1)
-set(libical_minimum_version 2.0)
+set(libical_glib_minimum_version 3.0.5)
 set(libsecret_minimum_version 0.5)
 set(libxml_minimum_version 2.0.0)
 set(sqlite_minimum_version 3.7.17)
@@ -892,24 +895,6 @@ else(ENABLE_LARGEFILE)
 endif(ENABLE_LARGEFILE)
 
 # ******************************
-# libical tweaks, part I
-# ******************************
-
-pkg_check_at_least_version(HAVE_LIBICAL_2_0 libical 2.0)
-
-# *****
-# libical.pc from libical-0.43 has a bug in its CFlags.
-# It wants apps to include <libical/ical*.h> but it's CFlags make it difficult
-# to differentiate between <libical/ical.h> and <ical.h>
-# We have fixed all our instances to use <libical/ical.h>.
-# Work-around the buggy CFlags for the 0.43 version.
-# *****
-pkg_check_exact_version(libical_is_0_43 libical 0.43)
-if(libical_is_0_43)
-	pkg_check_variable(LIBICAL_EXTRA_CFLAGS libical includedir)
-endif(libical_is_0_43)
-
-# ******************************
 # subparts flags
 # ******************************
 
@@ -920,11 +905,11 @@ set(E_DATA_SERVER_LDFLAGS ${E_DATA_SERVER_LDFLAGS} ${MANUAL_NSPR_LIBS} ${MANUAL_
 
 pkg_check_modules(BACKEND REQUIRED gio-2.0 gmodule-2.0 libsecret-1 libsoup-2.4 libxml-2.0)
 pkg_check_modules(ADDRESSBOOK REQUIRED gio-2.0 libxml-2.0 libsoup-2.4 libsecret-1)
-pkg_check_modules(CALENDAR REQUIRED gio-2.0 libical>=${libical_minimum_version} libsoup-2.4 libxml-2.0 libsecret-1)
+pkg_check_modules(CALENDAR REQUIRED gio-2.0 libical-glib>=${libical_glib_minimum_version} libsoup-2.4 libxml-2.0 libsecret-1)
 set(ADDRESSBOOK_CFLAGS ${ADDRESSBOOK_CFLAGS} ${PHONENUMBER_DEFINITIONS})
 set(ADDRESSBOOK_INCLUDE_DIRS ${ADDRESSBOOK_INCLUDE_DIRS} ${PHONENUMBER_INCLUDE_DIRS})
 set(ADDRESSBOOK_LDFLAGS ${ADDRESSBOOK_LDFLAGS} ${PHONENUMBER_LDFLAGS})
-set(CALENDAR_CFLAGS ${CALENDAR_CFLAGS} ${LIBICAL_EXTRA_CFLAGS})
+set(CALENDAR_CFLAGS ${CALENDAR_CFLAGS} -DLIBICAL_GLIB_UNSTABLE_API=1)
 
 pkg_check_modules(CAMEL REQUIRED gio-2.0 gmodule-2.0 ${mozilla_nss} ${mozilla_nspr} sqlite3>=${sqlite_minimum_version})
 set(CAMEL_CFLAGS ${CAMEL_CFLAGS} ${KRB5_CFLAGS} ${MANUAL_NSS_CFLAGS} ${MANUAL_NSPR_CFLAGS} ${ICU_CFLAGS})
@@ -937,36 +922,6 @@ endif(NOT (MANUAL_NSPR_INCLUDES STREQUAL ""))
 if(NOT (MANUAL_NSS_INCLUDES STREQUAL ""))
 	list(APPEND CAMEL_INCLUDE_DIRS ${MANUAL_NSS_INCLUDES})
 endif(NOT (MANUAL_NSS_INCLUDES STREQUAL ""))
-
-# ******************************
-# libical tweaks, part II (re-using CALENDAR modules)
-# ******************************
-
-set(CMAKE_REQUIRED_DEFINITIONS ${CALENDAR_CFLAGS_OTHER})
-set(CMAKE_REQUIRED_INCLUDES ${CALENDAR_INCLUDE_DIRS})
-set(CMAKE_REQUIRED_LIBRARIES ${CALENDAR_LDFLAGS})
-
-CHECK_C_SOURCE_COMPILES("#include <libical/ical.h>
-			int main(void) {
-				ical_set_unknown_token_handling_setting (ICAL_DISCARD_TOKEN);
-				return 0;
-			}" HAVE_ICAL_UNKNOWN_TOKEN_HANDLING)
-
-CHECK_C_SOURCE_COMPILES("#include <libical/ical.h>
-			int main(void) {
-				icaltzutil_set_exact_vtimezones_support (0);
-				return 0;
-			}" HAVE_ICALTZUTIL_SET_EXACT_VTIMEZONES_SUPPORT)
-
-CHECK_C_SOURCE_COMPILES("#include <libical/ical.h>
-			int main(void) {
-				icalproperty_status_to_string (ICAL_STATUS_DELETED);
-				return 0;
-			}" HAVE_ICAL_STATUS_DELETED)
-
-unset(CMAKE_REQUIRED_DEFINITIONS)
-unset(CMAKE_REQUIRED_INCLUDES)
-unset(CMAKE_REQUIRED_LIBRARIES)
 
 # ******************************
 # Vala binding

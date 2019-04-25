@@ -55,7 +55,7 @@ typedef struct _ECalCachePrivate ECalCachePrivate;
  * @uid: UID of the component
  * @rid: Recurrence-ID of the component
  * @revision: stored revision of the component
- * @object: the component itself, as iCalalendar string
+ * @object: the component itself, as an iCalendar string
  * @state: an #EOfflineState of the component
  *
  * Holds the information about offline change for one component.
@@ -131,7 +131,8 @@ void		e_cal_cache_search_data_free	(/* ECalCacheSearchData * */ gpointer ptr);
  * @revision: the object revision
  * @object: the object itself
  * @extra: extra data stored with the object
- * @offline_state: objects offline state, one of #EOfflineState
+ * @custom_flags: object's custom flags
+ * @offline_state: object's offline state, one of #EOfflineState
  * @user_data: user data, as used in e_cal_cache_search_with_callback()
  *
  * A callback called for each object row when using
@@ -147,6 +148,7 @@ typedef gboolean (* ECalCacheSearchFunc)	(ECalCache *cal_cache,
 						 const gchar *revision,
 						 const gchar *object,
 						 const gchar *extra,
+						 guint32 custom_flags,
 						 EOfflineState offline_state,
 						 gpointer user_data);
 
@@ -178,8 +180,8 @@ struct _ECalCacheClass {
 	/* Signals */
 	gchar *		(* dup_component_revision)
 						(ECalCache *cal_cache,
-						 icalcomponent *icalcomp);
-	icaltimezone *	(* get_timezone)	(ECalCache *cal_cache,
+						 ICalComponent *icomp);
+	ICalTimezone *	(* get_timezone)	(ECalCache *cal_cache,
 						 const gchar *tzid);
 
 	/* Padding for future expansion */
@@ -193,7 +195,7 @@ ECalCache *	e_cal_cache_new			(const gchar *filename,
 						 GError **error);
 gchar *		e_cal_cache_dup_component_revision
 						(ECalCache *cal_cache,
-						 icalcomponent *icalcomp);
+						 ICalComponent *icomp);
 gboolean	e_cal_cache_contains		(ECalCache *cal_cache,
 						 const gchar *uid,
 						 const gchar *rid,
@@ -201,23 +203,27 @@ gboolean	e_cal_cache_contains		(ECalCache *cal_cache,
 gboolean	e_cal_cache_put_component	(ECalCache *cal_cache,
 						 ECalComponent *component,
 						 const gchar *extra,
+						 guint32 custom_flags,
 						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_cache_put_components	(ECalCache *cal_cache,
 						 const GSList *components, /* ECalComponent * */
 						 const GSList *extras, /* gchar * */
+						 const GSList *custom_flags, /* guint32, through GUINT_TO_POINTER() */
 						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_cache_remove_component	(ECalCache *cal_cache,
 						 const gchar *uid,
 						 const gchar *rid,
+						 guint32 custom_flags,
 						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_cache_remove_components	(ECalCache *cal_cache,
 						 const GSList *ids, /* ECalComponentId * */
+						 const GSList *custom_flags, /* guint32, through GUINT_TO_POINTER() */
 						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
@@ -232,6 +238,20 @@ gboolean	e_cal_cache_get_component_as_string
 						 const gchar *uid,
 						 const gchar *rid,
 						 gchar **out_icalstring,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_cal_cache_set_component_custom_flags
+						(ECalCache *cal_cache,
+						 const gchar *uid,
+						 const gchar *rid,
+						 guint32 custom_flags,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_cal_cache_get_component_custom_flags
+						(ECalCache *cal_cache,
+						 const gchar *uid,
+						 const gchar *rid,
+						 guint32 *out_custom_flags,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_cache_set_component_extra	(ECalCache *cal_cache,
@@ -303,18 +323,18 @@ GSList *	e_cal_cache_get_offline_changes	(ECalCache *cal_cache,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_cache_delete_attachments	(ECalCache *cal_cache,
-						 icalcomponent *component,
+						 ICalComponent *component,
 						 GCancellable *cancellable,
 						 GError **error);
 
 gboolean	e_cal_cache_put_timezone	(ECalCache *cal_cache,
-						 const icaltimezone *zone,
+						 const ICalTimezone *zone,
 						 guint inc_ref_counts,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_cache_get_timezone	(ECalCache *cal_cache,
 						 const gchar *tzid,
-						 icaltimezone **out_zone,
+						 ICalTimezone **out_zone,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_cache_dup_timezone_as_string
@@ -335,13 +355,10 @@ gboolean	e_cal_cache_remove_timezone	(ECalCache *cal_cache,
 gboolean	e_cal_cache_remove_timezones	(ECalCache *cal_cache,
 						 GCancellable *cancellable,
 						 GError **error);
-icaltimezone *	e_cal_cache_resolve_timezone_cb	(const gchar *tzid,
+ICalTimezone *	e_cal_cache_resolve_timezone_cb	(const gchar *tzid,
 						 gpointer cal_cache,
 						 GCancellable *cancellable,
 						 GError **error);
-icaltimezone *	e_cal_cache_resolve_timezone_simple_cb
-						(const gchar *tzid,
-						 gpointer cal_cache);
 
 G_END_DECLS
 

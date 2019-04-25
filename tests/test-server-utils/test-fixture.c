@@ -27,7 +27,6 @@ static ETestServerClosure registry_closure = { E_TEST_SERVER_NONE, NULL, 0 };
 static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
 static ETestServerClosure calendar_closure = { E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS };
 static ETestServerClosure deprecated_book_closure = { E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK, NULL, 0 };
-static ETestServerClosure deprecated_calendar_closure = { E_TEST_SERVER_DEPRECATED_CALENDAR, NULL, E_CAL_SOURCE_TYPE_EVENT };
 
 static void
 empty_test (ETestServerFixture *fixture,
@@ -44,7 +43,6 @@ main (gint argc,
 	gchar **book_keys;
 	gchar **calendar_keys;
 	gchar **deprecated_book_keys;
-	gchar **deprecated_calendar_keys;
 	gint i;
 	gint ret;
 
@@ -55,7 +53,6 @@ main (gint argc,
 	book_keys = g_new0 (gchar *, N_CYCLES);
 	calendar_keys = g_new0 (gchar *, N_CYCLES);
 	deprecated_book_keys = g_new0 (gchar *, N_CYCLES);
-	deprecated_calendar_keys = g_new0 (gchar *, N_CYCLES);
 
 	for (i = 0; i < N_CYCLES; i++) {
 		registry_keys[i] = g_strdup_printf ("/Fixture/Registry%d", i);
@@ -101,17 +98,6 @@ main (gint argc,
 			e_test_server_utils_teardown);
 	}
 
-	for (i = 0; i < N_CYCLES; i++) {
-		deprecated_calendar_keys[i] = g_strdup_printf ("/Fixture/Deprecated/Calendar%d", i);
-		g_test_add (
-			deprecated_calendar_keys[i],
-			ETestServerFixture,
-			&deprecated_calendar_closure,
-			e_test_server_utils_setup,
-			empty_test,
-			e_test_server_utils_teardown);
-	}
-
 	ret = e_test_server_utils_run ();
 
 	for (i = 0; i < N_CYCLES; i++) {
@@ -119,14 +105,12 @@ main (gint argc,
 		g_free (book_keys[i]);
 		g_free (calendar_keys[i]);
 		g_free (deprecated_book_keys[i]);
-		g_free (deprecated_calendar_keys[i]);
 	}
 
 	g_free (registry_keys);
 	g_free (book_keys);
 	g_free (calendar_keys);
 	g_free (deprecated_book_keys);
-	g_free (deprecated_calendar_keys);
 
 	return ret;
 }

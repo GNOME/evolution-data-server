@@ -127,7 +127,7 @@ struct _ECalMetaBackendClass {
 	gboolean	(* load_component_sync)	(ECalMetaBackend *meta_backend,
 						 const gchar *uid,
 						 const gchar *extra,
-						 icalcomponent **out_component,
+						 ICalComponent **out_component,
 						 gchar **out_extra,
 						 GCancellable *cancellable,
 						 GError **error);
@@ -136,6 +136,7 @@ struct _ECalMetaBackendClass {
 						 EConflictResolution conflict_resolution,
 						 const GSList *instances, /* ECalComponent * */
 						 const gchar *extra,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 gchar **out_new_uid,
 						 gchar **out_new_extra,
 						 GCancellable *cancellable,
@@ -146,6 +147,7 @@ struct _ECalMetaBackendClass {
 						 const gchar *uid,
 						 const gchar *extra,
 						 const gchar *object,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(* search_sync)		(ECalMetaBackend *meta_backend,
@@ -190,23 +192,23 @@ gchar *		e_cal_meta_backend_dup_sync_tag	(ECalMetaBackend *meta_backend);
 void		e_cal_meta_backend_set_cache	(ECalMetaBackend *meta_backend,
 						 ECalCache *cache);
 ECalCache *	e_cal_meta_backend_ref_cache	(ECalMetaBackend *meta_backend);
-icalcomponent *	e_cal_meta_backend_merge_instances
+ICalComponent *	e_cal_meta_backend_merge_instances
 						(ECalMetaBackend *meta_backend,
 						 const GSList *instances, /* ECalComponent * */
 						 gboolean replace_tzid_with_location);
 gboolean	e_cal_meta_backend_inline_local_attachments_sync
 						(ECalMetaBackend *meta_backend,
-						 icalcomponent *component,
+						 ICalComponent *component,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_meta_backend_store_inline_attachments_sync
 						(ECalMetaBackend *meta_backend,
-						 icalcomponent *component,
+						 ICalComponent *component,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_meta_backend_gather_timezones_sync
 						(ECalMetaBackend *meta_backend,
-						 icalcomponent *vcalendar,
+						 ICalComponent *vcalendar,
 						 gboolean remove_existing,
 						 GCancellable *cancellable,
 						 GError **error);
@@ -270,7 +272,7 @@ gboolean	e_cal_meta_backend_load_component_sync
 						(ECalMetaBackend *meta_backend,
 						 const gchar *uid,
 						 const gchar *extra,
-						 icalcomponent **out_component,
+						 ICalComponent **out_component,
 						 gchar **out_extra,
 						 GCancellable *cancellable,
 						 GError **error);
@@ -280,6 +282,7 @@ gboolean	e_cal_meta_backend_save_component_sync
 						 EConflictResolution conflict_resolution,
 						 const GSList *instances, /* ECalComponent * */
 						 const gchar *extra,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 gchar **out_new_uid,
 						 gchar **out_new_extra,
 						 GCancellable *cancellable,
@@ -290,6 +293,7 @@ gboolean	e_cal_meta_backend_remove_component_sync
 						 const gchar *uid,
 						 const gchar *extra,
 						 const gchar *object,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_meta_backend_search_sync	(ECalMetaBackend *meta_backend,

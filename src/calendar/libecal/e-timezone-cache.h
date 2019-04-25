@@ -23,7 +23,7 @@
 #define E_TIMEZONE_CACHE_H
 
 #include <glib-object.h>
-#include <libical/ical.h>
+#include <libical-glib/libical-glib.h>
 
 /* Standard GObject macros */
 #define E_TYPE_TIMEZONE_CACHE \
@@ -64,22 +64,25 @@ struct _ETimezoneCacheInterface {
 	/*< public >*/
 	/* Methods */
 	void		(*add_timezone)		(ETimezoneCache *cache,
-						 icaltimezone *zone);
-	icaltimezone *	(*get_timezone)		(ETimezoneCache *cache,
+						 ICalTimezone *zone);
+	ICalTimezone *	(*get_timezone)		(ETimezoneCache *cache,
 						 const gchar *tzid);
-	GList *		(*list_timezones)	(ETimezoneCache *cache);
+	GList *		(*list_timezones)	(ETimezoneCache *cache); /* ICalTimezone * */
 
 	/* Signals */
 	void		(*timezone_added)	(ETimezoneCache *cache,
-						 icaltimezone *zone);
+						 ICalTimezone *zone);
+
+	/* Padding for future expansion */
+	gpointer reserved_signals[4];
 };
 
 GType		e_timezone_cache_get_type	(void) G_GNUC_CONST;
 void		e_timezone_cache_add_timezone	(ETimezoneCache *cache,
-						 icaltimezone *zone);
-icaltimezone *	e_timezone_cache_get_timezone	(ETimezoneCache *cache,
+						 ICalTimezone *zone);
+ICalTimezone *	e_timezone_cache_get_timezone	(ETimezoneCache *cache,
 						 const gchar *tzid);
-GList *		e_timezone_cache_list_timezones	(ETimezoneCache *cache);
+GList *		e_timezone_cache_list_timezones	(ETimezoneCache *cache); /* ICalTimezone * */
 
 G_END_DECLS
 
