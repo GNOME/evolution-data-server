@@ -62,8 +62,6 @@ struct _EDataBookClass {
 	GObjectClass parent_class;
 };
 
-GQuark e_data_book_error_quark (void);
-
 GType		e_data_book_get_type		(void) G_GNUC_CONST;
 EDataBook *	e_data_book_new			(struct _EBookBackend *backend,
 						 GDBusConnection *connection,
