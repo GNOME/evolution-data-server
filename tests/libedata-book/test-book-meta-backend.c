@@ -223,7 +223,7 @@ e_book_meta_backend_test_get_backend_property (EBookBackend *book_backend,
 	}
 
 	/* Chain up to parent's method. */
-	return E_BOOK_BACKEND_CLASS (e_book_meta_backend_test_parent_class)->get_backend_property (book_backend, prop_name);
+	return E_BOOK_BACKEND_CLASS (e_book_meta_backend_test_parent_class)->impl_get_backend_property (book_backend, prop_name);
 }
 
 static gboolean
@@ -527,7 +527,7 @@ e_book_meta_backend_test_class_init (EBookMetaBackendTestClass *klass)
 	book_meta_backend_class->remove_contact_sync = e_book_meta_backend_test_remove_contact_sync;
 
 	book_backend_class = E_BOOK_BACKEND_CLASS (klass);
-	book_backend_class->get_backend_property = e_book_meta_backend_test_get_backend_property;
+	book_backend_class->impl_get_backend_property = e_book_meta_backend_test_get_backend_property;
 
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->constructed = e_book_meta_backend_test_constructed;
@@ -1565,8 +1565,8 @@ test_cursor (EBookMetaBackend *meta_backend)
 
 	backend_class = E_BOOK_BACKEND_GET_CLASS (meta_backend);
 	g_return_if_fail (backend_class != NULL);
-	g_return_if_fail (backend_class->create_cursor != NULL);
-	g_return_if_fail (backend_class->delete_cursor != NULL);
+	g_return_if_fail (backend_class->impl_create_cursor != NULL);
+	g_return_if_fail (backend_class->impl_delete_cursor != NULL);
 
 	backend_sync_class = E_BOOK_BACKEND_SYNC_GET_CLASS (meta_backend);
 	g_return_if_fail (backend_sync_class != NULL);
@@ -1575,7 +1575,7 @@ test_cursor (EBookMetaBackend *meta_backend)
 	g_return_if_fail (backend_sync_class->remove_contacts_sync != NULL);
 
 	/* Create the cursor */
-	cursor = backend_class->create_cursor (E_BOOK_BACKEND (meta_backend),
+	cursor = backend_class->impl_create_cursor (E_BOOK_BACKEND (meta_backend),
 		sort_fields, sort_types, 1, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (cursor);
@@ -1631,7 +1631,7 @@ test_cursor (EBookMetaBackend *meta_backend)
 	g_assert_cmpint (e_data_book_cursor_get_position (cursor), ==, 2);
 
 	/* Free the cursor */
-	success = backend_class->delete_cursor (E_BOOK_BACKEND (meta_backend), cursor, &error);
+	success = backend_class->impl_delete_cursor (E_BOOK_BACKEND (meta_backend), cursor, &error);
 	g_assert_no_error (error);
 	g_assert (success);
 }

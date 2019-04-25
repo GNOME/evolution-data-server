@@ -76,27 +76,27 @@ struct _EBookBackend {
  * EBookBackendClass:
  * @use_serial_dispatch_queue: Whether a serial dispatch queue should
  *                             be used for this backend or not. The default is %TRUE.
- * @get_backend_property: Fetch a property value by name from the backend
- * @open: Open the backend
- * @refresh: Refresh the backend
- * @create_contacts: Add and store the passed vcards
- * @modify_contacts: Modify the existing contacts using the passed vcards
- * @remove_contacts: Remove the contacts specified by the passed UIDs
- * @get_contact: Fetch a contact by UID
- * @get_contact_list: Fetch a list of contacts based on a search expression
- * @get_contact_list_uids: Fetch a list of contact UIDs based on a search expression
- * @start_view: Start up the specified view
- * @stop_view: Stop the specified view
- * @notify_update: Notify changes which might have occured for a given contact
- * @get_direct_book: For addressbook backends which support Direct Read Access,
+ * @impl_get_backend_property: Fetch a property value by name from the backend
+ * @impl_open: Open the backend
+ * @impl_refresh: Refresh the backend
+ * @impl_create_contacts: Add and store the passed vcards
+ * @impl_modify_contacts: Modify the existing contacts using the passed vcards
+ * @impl_remove_contacts: Remove the contacts specified by the passed UIDs
+ * @impl_get_contact: Fetch a contact by UID
+ * @impl_get_contact_list: Fetch a list of contacts based on a search expression
+ * @impl_get_contact_list_uids: Fetch a list of contact UIDs based on a search expression
+ * @impl_start_view: Start up the specified view
+ * @impl_stop_view: Stop the specified view
+ * @impl_notify_update: Notify changes which might have occured for a given contact
+ * @impl_get_direct_book: For addressbook backends which support Direct Read Access,
  *                   report some information on how to access the addressbook persistance directly
- * @configure_direct: For addressbook backends which support Direct Read Access, configure a
+ * @impl_configure_direct: For addressbook backends which support Direct Read Access, configure a
  *                    backend instantiated on the client side for Direct Read Access, using data
  *                    reported from the server via the @get_direct_book method.
- * @set_locale: Store & remember the passed locale setting
- * @dup_locale: Return the currently set locale setting (must be a string duplicate, for thread safety).
- * @create_cursor: Create an #EDataBookCursor
- * @delete_cursor: Delete an #EDataBookCursor previously created by this backend
+ * @impl_set_locale: Store & remember the passed locale setting
+ * @impl_dup_locale: Return the currently set locale setting (must be a string duplicate, for thread safety).
+ * @impl_create_cursor: Create an #EDataBookCursor
+ * @impl_delete_cursor: Delete an #EDataBookCursor previously created by this backend
  * @closed: A signal notifying that the backend was closed
  * @shutdown: A signal notifying that the backend is being shut down
  *
@@ -118,77 +118,78 @@ struct _EBookBackendClass {
 	 * dispatch queue, but helps avoid thread-safety issues. */
 	gboolean use_serial_dispatch_queue;
 
-	gchar *		(*get_backend_property)	(EBookBackend *backend,
+	gchar *		(*impl_get_backend_property)
+						 (EBookBackend *backend,
 						 const gchar *prop_name);
 
-	void		(*open)			(EBookBackend *backend,
+	void		(*impl_open)		(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
 						 GCancellable *cancellable);
-	void		(*refresh)		(EBookBackend *backend,
+	void		(*impl_refresh)		(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
 						 GCancellable *cancellable);
-	void		(*create_contacts)	(EBookBackend *backend,
+	void		(*impl_create_contacts)	(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar * const *vcards,
 						 guint32 opflags); /* bit-or of EBookOperationFlags */
-	void		(*modify_contacts)	(EBookBackend *backend,
+	void		(*impl_modify_contacts)	(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar * const *vcards,
 						 guint32 opflags); /* bit-or of EBookOperationFlags */
-	void		(*remove_contacts)	(EBookBackend *backend,
+	void		(*impl_remove_contacts)	(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar * const *uids,
 						 guint32 opflags); /* bit-or of EBookOperationFlags */
-	void		(*get_contact)		(EBookBackend *backend,
+	void		(*impl_get_contact)	(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *id);
-	void		(*get_contact_list)	(EBookBackend *backend,
+	void		(*impl_get_contact_list)(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *query);
-	void		(*get_contact_list_uids)
+	void		(*impl_get_contact_list_uids)
 						(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *query);
 
-	void		(*start_view)		(EBookBackend *backend,
+	void		(*impl_start_view)	(EBookBackend *backend,
 						 EDataBookView *view);
-	void		(*stop_view)		(EBookBackend *backend,
+	void		(*impl_stop_view)	(EBookBackend *backend,
 						 EDataBookView *view);
 
-	void		(*notify_update)	(EBookBackend *backend,
+	void		(*impl_notify_update)	(EBookBackend *backend,
 						 const EContact *contact);
 
 	EDataBookDirect *
-			(*get_direct_book)	(EBookBackend *backend);
-	void		(*configure_direct)	(EBookBackend *backend,
+			(*impl_get_direct_book)	(EBookBackend *backend);
+	void		(*impl_configure_direct)(EBookBackend *backend,
 						 const gchar *config);
 
-	gboolean	(*set_locale)		(EBookBackend *backend,
+	gboolean	(*impl_set_locale)	(EBookBackend *backend,
 						 const gchar *locale,
 						 GCancellable *cancellable,
 						 GError **error);
-	gchar *		(*dup_locale)		(EBookBackend *backend);
+	gchar *		(*impl_dup_locale)	(EBookBackend *backend);
 	EDataBookCursor *
-			(*create_cursor)	(EBookBackend *backend,
+			(*impl_create_cursor)	(EBookBackend *backend,
 						 EContactField *sort_fields,
 						 EBookCursorSortType *sort_types,
 						 guint n_fields,
 						 GError **error);
-	gboolean	(*delete_cursor)	(EBookBackend *backend,
+	gboolean	(*impl_delete_cursor)	(EBookBackend *backend,
 						 EDataBookCursor *cursor,
 						 GError **error);
 

@@ -138,10 +138,14 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
+static EBookCacheCursor *e_book_cache_cursor_fake_ref (EBookCacheCursor *cursor);
+static void e_book_cache_cursor_fake_unref (EBookCacheCursor *cursor);
+
 G_DEFINE_TYPE_WITH_CODE (EBookCache, e_book_cache, E_TYPE_CACHE,
 			 G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
 
 G_DEFINE_BOXED_TYPE (EBookCacheSearchData, e_book_cache_search_data, e_book_cache_search_data_copy, e_book_cache_search_data_free)
+G_DEFINE_BOXED_TYPE (EBookCacheCursor, e_book_cache_cursor, e_book_cache_cursor_fake_ref, e_book_cache_cursor_fake_unref)
 
 /**
  * e_book_cache_search_data_new:
@@ -3470,8 +3474,23 @@ ebc_search_internal (EBookCache *book_cache,
 }
 
 /******************************************************************
- *                    EBookCacheCursor Implementation                  *
+ *                    EBookCacheCursor Implementation             *
  ******************************************************************/
+
+static EBookCacheCursor *
+e_book_cache_cursor_fake_ref (EBookCacheCursor *cursor)
+{
+	/* Only for the introspection and the boxed type */
+	return cursor;
+}
+
+static void
+e_book_cache_cursor_fake_unref (EBookCacheCursor *cursor)
+{
+	/* Only for the introspection and the boxed type;
+	   free with e_book_cache_cursor_free() instead */
+}
+
 typedef struct _CursorState CursorState;
 
 struct _CursorState {

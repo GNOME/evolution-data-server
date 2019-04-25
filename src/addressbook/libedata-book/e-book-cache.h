@@ -305,6 +305,8 @@ gboolean	e_book_cache_search_with_callback
 						 GCancellable *cancellable,
 						 GError **error);
 /* Cursor API */
+GType		e_book_cache_cursor_get_type	(void) G_GNUC_CONST;
+
 EBookCacheCursor *
 		e_book_cache_cursor_new		(EBookCache *book_cache,
 						 const gchar *sexp,

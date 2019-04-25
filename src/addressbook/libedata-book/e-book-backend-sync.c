@@ -243,14 +243,14 @@ e_book_backend_sync_class_init (EBookBackendSyncClass *klass)
 	klass->get_contact_list_uids_sync = book_backend_sync_get_contact_list_uids_sync;
 
 	book_backend_class = E_BOOK_BACKEND_CLASS (klass);
-	book_backend_class->open = book_backend_sync_open;
-	book_backend_class->refresh = book_backend_sync_refresh;
-	book_backend_class->create_contacts = book_backend_sync_create_contacts;
-	book_backend_class->modify_contacts = book_backend_sync_modify_contacts;
-	book_backend_class->remove_contacts = book_backend_sync_remove_contacts;
-	book_backend_class->get_contact = book_backend_sync_get_contact;
-	book_backend_class->get_contact_list = book_backend_sync_get_contact_list;
-	book_backend_class->get_contact_list_uids = book_backend_sync_get_contact_list_uids;
+	book_backend_class->impl_open = book_backend_sync_open;
+	book_backend_class->impl_refresh = book_backend_sync_refresh;
+	book_backend_class->impl_create_contacts = book_backend_sync_create_contacts;
+	book_backend_class->impl_modify_contacts = book_backend_sync_modify_contacts;
+	book_backend_class->impl_remove_contacts = book_backend_sync_remove_contacts;
+	book_backend_class->impl_get_contact = book_backend_sync_get_contact;
+	book_backend_class->impl_get_contact_list = book_backend_sync_get_contact_list;
+	book_backend_class->impl_get_contact_list_uids = book_backend_sync_get_contact_list_uids;
 }
 
 static void

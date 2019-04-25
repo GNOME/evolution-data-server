@@ -713,8 +713,8 @@ e_book_backend_class_init (EBookBackendClass *class)
 	backend_class->prepare_shutdown = book_backend_prepare_shutdown;
 
 	class->use_serial_dispatch_queue = TRUE;
-	class->get_backend_property = book_backend_get_backend_property;
-	class->notify_update = book_backend_notify_update;
+	class->impl_get_backend_property = book_backend_get_backend_property;
+	class->impl_notify_update = book_backend_notify_update;
 	class->shutdown = book_backend_shutdown;
 
 	g_object_class_install_property (
@@ -1105,7 +1105,7 @@ book_backend_open_thread (GSimpleAsyncResult *simple,
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
-	g_return_if_fail (class->open != NULL);
+	g_return_if_fail (class->impl_open != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
 	g_return_if_fail (data_book != NULL);
@@ -1120,7 +1120,7 @@ book_backend_open_thread (GSimpleAsyncResult *simple,
 
 		e_backend_ensure_online_state_updated (E_BACKEND (backend), cancellable);
 
-		class->open (backend, data_book, opid, cancellable);
+		class->impl_open (backend, data_book, opid, cancellable);
 	}
 
 	g_object_unref (data_book);
@@ -1163,7 +1163,7 @@ e_book_backend_open (EBookBackend *backend,
 
 	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
-	if (class->open != NULL) {
+	if (class->impl_open != NULL) {
 		book_backend_push_operation (
 			backend, simple, cancellable, TRUE,
 			book_backend_open_thread);
@@ -1274,7 +1274,7 @@ book_backend_refresh_thread (GSimpleAsyncResult *simple,
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
-	g_return_if_fail (class->refresh != NULL);
+	g_return_if_fail (class->impl_refresh != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
 	g_return_if_fail (data_book != NULL);
@@ -1288,7 +1288,7 @@ book_backend_refresh_thread (GSimpleAsyncResult *simple,
 
 		opid = book_backend_stash_operation (backend, simple);
 
-		class->refresh (backend, data_book, opid, cancellable);
+		class->impl_refresh (backend, data_book, opid, cancellable);
 	}
 
 	g_object_unref (data_book);
@@ -1331,7 +1331,7 @@ e_book_backend_refresh (EBookBackend *backend,
 
 	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
-	if (class->refresh != NULL) {
+	if (class->impl_refresh != NULL) {
 		book_backend_push_operation (
 			backend, simple, cancellable, FALSE,
 			book_backend_refresh_thread);
@@ -1450,7 +1450,7 @@ book_backend_create_contacts_thread (GSimpleAsyncResult *simple,
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
-	g_return_if_fail (class->create_contacts != NULL);
+	g_return_if_fail (class->impl_create_contacts != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
 	g_return_if_fail (data_book != NULL);
@@ -1466,7 +1466,7 @@ book_backend_create_contacts_thread (GSimpleAsyncResult *simple,
 
 		opid = book_backend_stash_operation (backend, simple);
 
-		class->create_contacts (
+		class->impl_create_contacts (
 			backend, data_book, opid, cancellable, (const gchar * const *) async_context->strv, async_context->opflags);
 	}
 
@@ -1522,7 +1522,7 @@ e_book_backend_create_contacts (EBookBackend *backend,
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
-	if (class->create_contacts != NULL) {
+	if (class->impl_create_contacts != NULL) {
 		book_backend_push_operation (
 			backend, simple, cancellable, FALSE,
 			book_backend_create_contacts_thread);
@@ -1651,7 +1651,7 @@ book_backend_modify_contacts_thread (GSimpleAsyncResult *simple,
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
-	g_return_if_fail (class->modify_contacts != NULL);
+	g_return_if_fail (class->impl_modify_contacts != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
 	g_return_if_fail (data_book != NULL);
@@ -1667,7 +1667,7 @@ book_backend_modify_contacts_thread (GSimpleAsyncResult *simple,
 
 		opid = book_backend_stash_operation (backend, simple);
 
-		class->modify_contacts (
+		class->impl_modify_contacts (
 			backend, data_book, opid, cancellable, (const gchar * const *) async_context->strv, async_context->opflags);
 	}
 
@@ -1723,7 +1723,7 @@ e_book_backend_modify_contacts (EBookBackend *backend,
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
-	if (class->modify_contacts != NULL) {
+	if (class->impl_modify_contacts != NULL) {
 		book_backend_push_operation (
 			backend, simple, cancellable, FALSE,
 			book_backend_modify_contacts_thread);
@@ -1846,7 +1846,7 @@ book_backend_remove_contacts_thread (GSimpleAsyncResult *simple,
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
-	g_return_if_fail (class->remove_contacts != NULL);
+	g_return_if_fail (class->impl_remove_contacts != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
 	g_return_if_fail (data_book != NULL);
@@ -1862,7 +1862,7 @@ book_backend_remove_contacts_thread (GSimpleAsyncResult *simple,
 
 		opid = book_backend_stash_operation (backend, simple);
 
-		class->remove_contacts (
+		class->impl_remove_contacts (
 			backend, data_book, opid, cancellable, (const gchar * const *) async_context->strv, async_context->opflags);
 	}
 
@@ -1918,7 +1918,7 @@ e_book_backend_remove_contacts (EBookBackend *backend,
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
-	if (class->remove_contacts != NULL) {
+	if (class->impl_remove_contacts != NULL) {
 		book_backend_push_operation (
 			backend, simple, cancellable, FALSE,
 			book_backend_remove_contacts_thread);
@@ -2040,7 +2040,7 @@ book_backend_get_contact_thread (GSimpleAsyncResult *simple,
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
-	g_return_if_fail (class->get_contact != NULL);
+	g_return_if_fail (class->impl_get_contact != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
 	g_return_if_fail (data_book != NULL);
@@ -2056,7 +2056,7 @@ book_backend_get_contact_thread (GSimpleAsyncResult *simple,
 
 		opid = book_backend_stash_operation (backend, simple);
 
-		class->get_contact (
+		class->impl_get_contact (
 			backend, data_book, opid, cancellable,
 			async_context->uid);
 	}
@@ -2110,7 +2110,7 @@ e_book_backend_get_contact (EBookBackend *backend,
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
-	if (class->get_contact != NULL) {
+	if (class->impl_get_contact != NULL) {
 		book_backend_push_operation (
 			backend, simple, cancellable, FALSE,
 			book_backend_get_contact_thread);
@@ -2242,7 +2242,7 @@ book_backend_get_contact_list_thread (GSimpleAsyncResult *simple,
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
-	g_return_if_fail (class->get_contact_list != NULL);
+	g_return_if_fail (class->impl_get_contact_list != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
 	g_return_if_fail (data_book != NULL);
@@ -2258,7 +2258,7 @@ book_backend_get_contact_list_thread (GSimpleAsyncResult *simple,
 
 		opid = book_backend_stash_operation (backend, simple);
 
-		class->get_contact_list (
+		class->impl_get_contact_list (
 			backend, data_book, opid, cancellable,
 			async_context->query);
 	}
@@ -2313,7 +2313,7 @@ e_book_backend_get_contact_list (EBookBackend *backend,
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
-	if (class->get_contact_list != NULL) {
+	if (class->impl_get_contact_list != NULL) {
 		book_backend_push_operation (
 			backend, simple, cancellable, FALSE,
 			book_backend_get_contact_list_thread);
@@ -2442,7 +2442,7 @@ book_backend_get_contact_list_uids_thread (GSimpleAsyncResult *simple,
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
-	g_return_if_fail (class->get_contact_list_uids != NULL);
+	g_return_if_fail (class->impl_get_contact_list_uids != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
 	g_return_if_fail (data_book != NULL);
@@ -2458,7 +2458,7 @@ book_backend_get_contact_list_uids_thread (GSimpleAsyncResult *simple,
 
 		opid = book_backend_stash_operation (backend, simple);
 
-		class->get_contact_list_uids (
+		class->impl_get_contact_list_uids (
 			backend, data_book, opid, cancellable,
 			async_context->query);
 	}
@@ -2513,7 +2513,7 @@ e_book_backend_get_contact_list_uids (EBookBackend *backend,
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
-	if (class->get_contact_list_uids != NULL) {
+	if (class->impl_get_contact_list_uids != NULL) {
 		book_backend_push_operation (
 			backend, simple, cancellable, FALSE,
 			book_backend_get_contact_list_uids_thread);
@@ -2594,9 +2594,9 @@ e_book_backend_start_view (EBookBackend *backend,
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
-	g_return_if_fail (class->start_view);
+	g_return_if_fail (class->impl_start_view);
 
-	class->start_view (backend, view);
+	class->impl_start_view (backend, view);
 }
 
 /**
@@ -2617,9 +2617,9 @@ e_book_backend_stop_view (EBookBackend *backend,
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
-	g_return_if_fail (class->stop_view != NULL);
+	g_return_if_fail (class->impl_stop_view != NULL);
 
-	class->stop_view (backend, view);
+	class->impl_stop_view (backend, view);
 }
 
 /**
@@ -2740,9 +2740,9 @@ e_book_backend_get_backend_property (EBookBackend *backend,
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
 	g_return_val_if_fail (class != NULL, NULL);
-	g_return_val_if_fail (class->get_backend_property != NULL, NULL);
+	g_return_val_if_fail (class->impl_get_backend_property != NULL, NULL);
 
-	return class->get_backend_property (backend, prop_name);
+	return class->impl_get_backend_property (backend, prop_name);
 }
 
 /**
@@ -2807,8 +2807,8 @@ e_book_backend_get_direct_book (EBookBackend *backend)
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
 	g_return_val_if_fail (class != NULL, NULL);
 
-	if (class->get_direct_book != NULL)
-		direct_book = class->get_direct_book (backend);
+	if (class->impl_get_direct_book != NULL)
+		direct_book = class->impl_get_direct_book (backend);
 
 	return direct_book;
 }
@@ -2840,8 +2840,8 @@ e_book_backend_configure_direct (EBookBackend *backend,
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
 
-	if (class->configure_direct)
-		class->configure_direct (backend, config);
+	if (class->impl_configure_direct)
+		class->impl_configure_direct (backend, config);
 }
 
 /**
@@ -2874,10 +2874,10 @@ e_book_backend_set_locale (EBookBackend *backend,
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
 	g_return_val_if_fail (class != NULL, FALSE);
 
-	if (class->set_locale) {
+	if (class->impl_set_locale) {
 		g_object_ref (backend);
 
-		success = class->set_locale (backend, locale, cancellable, error);
+		success = class->impl_set_locale (backend, locale, cancellable, error);
 
 		if (success)
 			e_book_backend_notify_complete (backend);
@@ -2910,10 +2910,10 @@ e_book_backend_dup_locale (EBookBackend *backend)
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
 	g_return_val_if_fail (class != NULL, NULL);
 
-	if (class->dup_locale) {
+	if (class->impl_dup_locale) {
 		g_object_ref (backend);
 
-		locale = class->dup_locale (backend);
+		locale = class->impl_dup_locale (backend);
 
 		g_object_unref (backend);
 	}
@@ -2944,9 +2944,9 @@ e_book_backend_notify_update (EBookBackend *backend,
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
-	g_return_if_fail (class->notify_update != NULL);
+	g_return_if_fail (class->impl_notify_update != NULL);
 
-	class->notify_update (backend, contact);
+	class->impl_notify_update (backend, contact);
 }
 
 /**
@@ -3146,10 +3146,10 @@ e_book_backend_create_cursor (EBookBackend *backend,
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
 	g_return_val_if_fail (class != NULL, NULL);
 
-	if (class->create_cursor) {
+	if (class->impl_create_cursor) {
 		g_object_ref (backend);
 
-		cursor = class->create_cursor (backend, sort_fields, sort_types, n_fields, error);
+		cursor = class->impl_create_cursor (backend, sort_fields, sort_types, n_fields, error);
 
 		g_object_unref (backend);
 	} else {
@@ -3192,8 +3192,8 @@ e_book_backend_delete_cursor (EBookBackend *backend,
 
 	g_object_ref (backend);
 
-	if (class->delete_cursor)
-		success = class->delete_cursor (backend, cursor, error);
+	if (class->impl_delete_cursor)
+		success = class->impl_delete_cursor (backend, cursor, error);
 	else
 		g_warning ("Backend asked to delete a cursor, but does not support cursors");
 

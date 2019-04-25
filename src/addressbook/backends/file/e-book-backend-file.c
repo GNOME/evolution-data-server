@@ -1125,9 +1125,8 @@ book_backend_file_get_backend_property (EBookBackend *backend,
 		return prop_value;
 	}
 
-	/* Chain up to parent's get_backend_property() method. */
-	return E_BOOK_BACKEND_CLASS (e_book_backend_file_parent_class)->
-		get_backend_property (backend, prop_name);
+	/* Chain up to parent's method. */
+	return E_BOOK_BACKEND_CLASS (e_book_backend_file_parent_class)->impl_get_backend_property (backend, prop_name);
 }
 
 static gboolean
@@ -2139,15 +2138,15 @@ e_book_backend_file_class_init (EBookBackendFileClass *class)
 	backend_sync_class->get_contact_list_uids_sync = book_backend_file_get_contact_list_uids_sync;
 
 	backend_class = E_BOOK_BACKEND_CLASS (class);
-	backend_class->get_backend_property = book_backend_file_get_backend_property;
-	backend_class->start_view = book_backend_file_start_view;
-	backend_class->stop_view = book_backend_file_stop_view;
-	backend_class->get_direct_book = book_backend_file_get_direct_book;
-	backend_class->configure_direct = book_backend_file_configure_direct;
-	backend_class->set_locale = book_backend_file_set_locale;
-	backend_class->dup_locale = book_backend_file_dup_locale;
-	backend_class->create_cursor = book_backend_file_create_cursor;
-	backend_class->delete_cursor = book_backend_file_delete_cursor;
+	backend_class->impl_get_backend_property = book_backend_file_get_backend_property;
+	backend_class->impl_start_view = book_backend_file_start_view;
+	backend_class->impl_stop_view = book_backend_file_stop_view;
+	backend_class->impl_get_direct_book = book_backend_file_get_direct_book;
+	backend_class->impl_configure_direct = book_backend_file_configure_direct;
+	backend_class->impl_set_locale = book_backend_file_set_locale;
+	backend_class->impl_dup_locale = book_backend_file_dup_locale;
+	backend_class->impl_create_cursor = book_backend_file_create_cursor;
+	backend_class->impl_delete_cursor = book_backend_file_delete_cursor;
 }
 
 static void

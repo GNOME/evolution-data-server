@@ -4919,9 +4919,8 @@ book_backend_ldap_get_backend_property (EBookBackend *backend,
 
 	}
 
-	/* Chain up to parent's get_backend_property() method. */
-	return E_BOOK_BACKEND_CLASS (e_book_backend_ldap_parent_class)->
-		get_backend_property (backend, prop_name);
+	/* Chain up to parent's method. */
+	return E_BOOK_BACKEND_CLASS (e_book_backend_ldap_parent_class)->impl_get_backend_property (backend, prop_name);
 }
 
 static void
@@ -5916,20 +5915,20 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *class)
 	backend_class->authenticate_sync = book_backend_ldap_authenticate_sync;
 
 	book_backend_class = E_BOOK_BACKEND_CLASS (class);
-	book_backend_class->get_backend_property = book_backend_ldap_get_backend_property;
-	book_backend_class->open = book_backend_ldap_open;
-	book_backend_class->create_contacts = book_backend_ldap_create_contacts;
-	book_backend_class->modify_contacts = book_backend_ldap_modify_contacts;
-	book_backend_class->remove_contacts = book_backend_ldap_remove_contacts;
-	book_backend_class->get_contact = book_backend_ldap_get_contact;
-	book_backend_class->get_contact_list = book_backend_ldap_get_contact_list;
-	book_backend_class->get_contact_list_uids = book_backend_ldap_get_contact_list_uids;
-	book_backend_class->start_view = book_backend_ldap_start_view;
-	book_backend_class->stop_view = book_backend_ldap_stop_view;
-	book_backend_class->refresh = book_backend_ldap_refresh;
+	book_backend_class->impl_get_backend_property = book_backend_ldap_get_backend_property;
+	book_backend_class->impl_open = book_backend_ldap_open;
+	book_backend_class->impl_create_contacts = book_backend_ldap_create_contacts;
+	book_backend_class->impl_modify_contacts = book_backend_ldap_modify_contacts;
+	book_backend_class->impl_remove_contacts = book_backend_ldap_remove_contacts;
+	book_backend_class->impl_get_contact = book_backend_ldap_get_contact;
+	book_backend_class->impl_get_contact_list = book_backend_ldap_get_contact_list;
+	book_backend_class->impl_get_contact_list_uids = book_backend_ldap_get_contact_list_uids;
+	book_backend_class->impl_start_view = book_backend_ldap_start_view;
+	book_backend_class->impl_stop_view = book_backend_ldap_stop_view;
+	book_backend_class->impl_refresh = book_backend_ldap_refresh;
 
 	/* Register our ESource extension. */
-	E_TYPE_SOURCE_LDAP;
+	g_type_ensure (E_TYPE_SOURCE_LDAP);
 }
 
 static void

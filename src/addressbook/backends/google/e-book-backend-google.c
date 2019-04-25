@@ -1274,7 +1274,7 @@ ebb_google_get_backend_property (EBookBackend *book_backend,
 	}
 
 	/* Chain up to parent's method. */
-	return E_BOOK_BACKEND_CLASS (e_book_backend_google_parent_class)->get_backend_property (book_backend, prop_name);
+	return E_BOOK_BACKEND_CLASS (e_book_backend_google_parent_class)->impl_get_backend_property (book_backend, prop_name);
 }
 
 static void
@@ -1362,7 +1362,7 @@ e_book_backend_google_class_init (EBookBackendGoogleClass *klass)
 	book_meta_backend_class->remove_contact_sync = ebb_google_remove_contact_sync;
 
 	book_backend_class = E_BOOK_BACKEND_CLASS (klass);
-	book_backend_class->get_backend_property = ebb_google_get_backend_property;
+	book_backend_class->impl_get_backend_property = ebb_google_get_backend_property;
 
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->constructed = ebb_google_constructed;

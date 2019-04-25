@@ -1298,7 +1298,7 @@ ebb_carddav_get_backend_property (EBookBackend *book_backend,
 	}
 
 	/* Chain up to parent's method. */
-	return E_BOOK_BACKEND_CLASS (e_book_backend_carddav_parent_class)->get_backend_property (book_backend, prop_name);
+	return E_BOOK_BACKEND_CLASS (e_book_backend_carddav_parent_class)->impl_get_backend_property (book_backend, prop_name);
 }
 
 static gchar *
@@ -1381,7 +1381,7 @@ e_book_backend_carddav_class_init (EBookBackendCardDAVClass *klass)
 	book_meta_backend_class->get_ssl_error_details = ebb_carddav_get_ssl_error_details;
 
 	book_backend_class = E_BOOK_BACKEND_CLASS (klass);
-	book_backend_class->get_backend_property = ebb_carddav_get_backend_property;
+	book_backend_class->impl_get_backend_property = ebb_carddav_get_backend_property;
 
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->constructed = e_book_backend_carddav_constructed;
