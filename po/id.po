@@ -7,13 +7,14 @@
 # Ahmad Riza H Nst  <rizahnst@eriagempita.co.id>, 2006.
 # Dirgita <dirgitadevina@yahoo.co.id>, 2010.
 # Andika Triwidada <andika@gmail.com>, 2010, 2011, 2012, 2013, 2015.
+# Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2017, 2018, 2019.
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2019-03-01 15:00+0000\n"
-"PO-Revision-Date: 2019-03-01 22:27+0700\n"
+"POT-Creation-Date: 2019-04-09 08:56+0000\n"
+"PO-Revision-Date: 2019-04-26 17:08+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome@i15n.org>\n"
 "Language: id\n"
@@ -955,8 +956,8 @@ msgstr "Tidak dapat membuat mengubah nilai dari properti buku \"%s\""
 msgid "Unable to connect to “%s”: "
 msgstr "Tak bisa menyambung ke \"%s\": "
 
-#: ../src/addressbook/libebook/e-book-client-view.c:872
-#: ../src/calendar/libecal/e-cal-client-view.c:685
+#: ../src/addressbook/libebook/e-book-client-view.c:871
+#: ../src/calendar/libecal/e-cal-client-view.c:684
 #, c-format
 msgid "Client disappeared"
 msgstr "Klien menghilang"
@@ -3371,7 +3372,7 @@ msgstr "Pencarian host \"%s\" gagal: %s"
 
 #: ../src/camel/camel-network-service.c:1127
 #, c-format
-msgid "Checking reach-ability of account “%s”"
+msgid "Checking reachability of account “%s”"
 msgstr "Memeriksa kemampuan mencapai akun \"%s\""
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
@@ -4457,58 +4458,61 @@ msgstr "Galat saat mengambil info pesan"
 msgid "Error running STATUS"
 msgstr "Galat saat menjalankan STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6052
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6082
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6117
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6078
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6133
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6197
 msgid "Error syncing changes"
 msgstr "Galat saat menyelaraskan perubahan"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6255
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6091
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6143
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6216
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6360
 msgid "Error expunging message"
 msgstr "Galat saat menghapus pesan-pesan lama"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6333
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6438
 msgid "Error fetching folders"
 msgstr "Galat saat mengambil folder"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6341
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6446
 msgid "Error fetching subscribed folders"
 msgstr "Galat saat mengambil folder yang dilanggani"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6396
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6501
 msgid "Error creating folder"
 msgstr "Galat saat membuat folder"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6452
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6557
 msgid "Error deleting folder"
 msgstr "Galat saat menghapus folder"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6498
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6603
 msgid "Error renaming folder"
 msgstr "Galat saat mengubah nama folder"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6530
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6635
 msgid "Error subscribing to folder"
 msgstr "Galat saat berlangganan ke folder"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6566
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6671
 msgid "Error unsubscribing from folder"
 msgstr "Galat saat berhenti langganan dari folder"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6606
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6711
 msgid "IMAP server does not support quotas"
 msgstr "Server IMAP tidak mendukung kuota"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6618
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6723
 msgid "Error retrieving quota information"
 msgstr "Galat saat mengambil informasi kuota"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6683
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6788
 msgid "Search failed"
 msgstr "Pencarian gagal"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6801
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6906
 msgid "Error running IDLE"
 msgstr "Galat saat menjalankan IDLE"
 
@@ -6851,7 +6855,7 @@ msgstr "Gagal mengirim data"
 #: ../src/libedataserver/e-webdav-session.c:1469
 #: ../src/libedataserver/e-webdav-session.c:1573
 #: ../src/libedataserver/e-webdav-session.c:2822
-#: ../src/libedataserver/e-webdav-session.c:4074
+#: ../src/libedataserver/e-webdav-session.c:4089
 msgid "Failed to get input XML content"
 msgstr "Gagal mendapatkan masukan konten XML"
 
@@ -6949,37 +6953,37 @@ msgstr "Gagal membuka kunci"
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Respons multistatus yang diharapkan, namun %d kembali (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:4084
+#: ../src/libedataserver/e-webdav-session.c:4099
 msgid "Failed to get access control list"
 msgstr "Gagal mendapatkan daftar kontrol akses"
 
-#: ../src/libedataserver/e-webdav-session.c:4825
+#: ../src/libedataserver/e-webdav-session.c:4858
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 "Tidak dapat menyimpan Entri Kontrol Akses yang dilindungi atau tidak "
 "diwarisi."
 
-#: ../src/libedataserver/e-webdav-session.c:4832
+#: ../src/libedataserver/e-webdav-session.c:4865
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Menyediakan jenis prinsipal tidak valid untuk Entri Kontrol Akses."
 
-#: ../src/libedataserver/e-webdav-session.c:4839
+#: ../src/libedataserver/e-webdav-session.c:4872
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Tidak dapat menyimpan Entri Kontrol Akses berbasis properti."
 
-#: ../src/libedataserver/e-webdav-session.c:4846
+#: ../src/libedataserver/e-webdav-session.c:4879
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Entri Kontrol Akses hanya bisa untuk Izin (Grant) atau Tolak (Deny), tapi "
 "bukan tak satupun (None)."
 
-#: ../src/libedataserver/e-webdav-session.c:4854
+#: ../src/libedataserver/e-webdav-session.c:4887
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Entri Kontrol Akses hanya bisa untuk Izin (Grant) atau Tolak (Deny), tapi "
 "tidak keduanya."
 
-#: ../src/libedataserver/e-webdav-session.c:4913
+#: ../src/libedataserver/e-webdav-session.c:4946
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Hak khusus Entri Kontrol Akses tidak bisa NULL."
 
@@ -7133,7 +7137,7 @@ msgstr ""
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:605
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1070
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1072
 msgid "_Cancel"
 msgstr "_Batal"
 
@@ -7194,7 +7198,7 @@ msgid "Please enter the password for account “%s”."
 msgstr "Masukkan sandi untuk akun \"%s\"."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1071
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1073
 msgid "_OK"
 msgstr "_OK"
 
@@ -7390,15 +7394,15 @@ msgctxt "WebDAVDiscover"
 msgid "Tasks"
 msgstr "Tugas"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:838
+#: ../src/libedataserverui/e-webdav-discover-widget.c:839
 msgid "Invalid URL"
 msgstr "URL Tak Valid"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:883
+#: ../src/libedataserverui/e-webdav-discover-widget.c:885
 msgid "Cancel"
 msgstr "Batal"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:886
+#: ../src/libedataserverui/e-webdav-discover-widget.c:888
 msgid "Searching server sources..."
 msgstr "Mencari sumber server..."
 
@@ -7492,8 +7496,8 @@ msgstr ""
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:227
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:255
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:760
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:969
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:761
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:970
 msgid "Reminders"
 msgstr "Pengingat"
 
@@ -7530,27 +7534,27 @@ msgstr ""
 msgid "Do not ask me about this program again"
 msgstr "Jangan tanya saya tentang program ini lagi"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:665
-msgid "Display reminders in notification area _only"
-msgstr "Tampilkan pengingat di area n_otifikasi saja"
-
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:666
+msgid "Display Reminders window with _notifications"
+msgstr "Tampilkan jendela Pengingat dengan _notifikasi"
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:667
 msgid "Keep reminder notification window always on _top"
 msgstr "Jaga jendela pemberitahuan pengingat selalu di a_tas"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:667
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:668
 msgid "Display reminders for _completed tasks"
 msgstr "Tampil_kan pengingat untuk menyelesaikan tugas"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:668
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:669
 msgid "Display reminders for _past events"
 msgstr "Tampilkan _pengingat untuk acara masa lalu"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:682
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:683
 msgid "Reminders Options:"
 msgstr "Opsi Pengingat:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:776
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:777
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
