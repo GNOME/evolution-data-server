@@ -3132,10 +3132,10 @@ e_cache_class_init (ECacheClass *klass)
 		G_TYPE_STRING,
 		G_TYPE_STRING,
 		G_TYPE_STRING,
-		G_TYPE_HASH_TABLE,
+		E_TYPE_CACHE_COLUMN_VALUES,
 		G_TYPE_BOOLEAN,
 		G_TYPE_CANCELLABLE,
-		G_TYPE_POINTER);
+		G_TYPE_ERROR);
 
 	signals[BEFORE_REMOVE] = g_signal_new (
 		"before-remove",
@@ -3148,7 +3148,7 @@ e_cache_class_init (ECacheClass *klass)
 		G_TYPE_BOOLEAN, 3,
 		G_TYPE_STRING,
 		G_TYPE_CANCELLABLE,
-		G_TYPE_POINTER);
+		G_TYPE_ERROR);
 
 	signals[REVISION_CHANGED] = g_signal_new (
 		"revision-changed",
