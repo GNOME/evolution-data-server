@@ -118,18 +118,24 @@ e_webdav_discover_traverse_propfind_response_cb (EWebDAVSession *webdav,
 				home_set_href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/A:addressbook-home-set/D:href[%d]", xpath_prop_prefix, ii + 1);
 				if (home_set_href && *home_set_href) {
 					GSList *resources = NULL;
+					GError *local_error = NULL;
 
 					full_href = e_webdav_session_ensure_full_uri (webdav, request_uri, home_set_href);
 					if (full_href && *full_href && !g_hash_table_contains (wdd->covered_hrefs, full_href) &&
 					    e_webdav_session_list_sync (webdav, full_href, E_WEBDAV_DEPTH_THIS_AND_CHILDREN,
 						E_WEBDAV_LIST_SUPPORTS | E_WEBDAV_LIST_DISPLAY_NAME | E_WEBDAV_LIST_DESCRIPTION | E_WEBDAV_LIST_COLOR,
-						&resources, wdd->cancellable, wdd->error)) {
+						&resources, wdd->cancellable, &local_error)) {
 						e_webdav_discover_split_resources (wdd, resources);
 						g_slist_free_full (resources, e_webdav_resource_free);
 					}
 
 					if (full_href && *full_href)
 						g_hash_table_insert (wdd->covered_hrefs, g_strdup (full_href), GINT_TO_POINTER (1));
+
+					if (local_error && wdd->error && !*wdd->error)
+						g_propagate_error (wdd->error, local_error);
+					else
+						g_clear_error (&local_error);
 				}
 
 				g_free (home_set_href);
@@ -151,18 +157,24 @@ e_webdav_discover_traverse_propfind_response_cb (EWebDAVSession *webdav,
 				home_set_href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/C:calendar-home-set/D:href[%d]", xpath_prop_prefix, ii + 1);
 				if (home_set_href && *home_set_href) {
 					GSList *resources = NULL;
+					GError *local_error = NULL;
 
 					full_href = e_webdav_session_ensure_full_uri (webdav, request_uri, home_set_href);
 					if (full_href && *full_href && !g_hash_table_contains (wdd->covered_hrefs, full_href) &&
 					    e_webdav_session_list_sync (webdav, full_href, E_WEBDAV_DEPTH_THIS_AND_CHILDREN,
 						E_WEBDAV_LIST_SUPPORTS | E_WEBDAV_LIST_DISPLAY_NAME | E_WEBDAV_LIST_DESCRIPTION | E_WEBDAV_LIST_COLOR,
-						&resources, wdd->cancellable, wdd->error)) {
+						&resources, wdd->cancellable, &local_error)) {
 						e_webdav_discover_split_resources (wdd, resources);
 						g_slist_free_full (resources, e_webdav_resource_free);
 					}
 
 					if (full_href && *full_href)
 						g_hash_table_insert (wdd->covered_hrefs, g_strdup (full_href), GINT_TO_POINTER (1));
+
+					if (local_error && wdd->error && !*wdd->error)
+						g_propagate_error (wdd->error, local_error);
+					else
+						g_clear_error (&local_error);
 				}
 
 				g_free (home_set_href);
@@ -236,17 +248,23 @@ e_webdav_discover_traverse_propfind_response_cb (EWebDAVSession *webdav,
 		if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:resourcetype/C:calendar", xpath_prop_prefix) ||
 		    e_xml_xpath_eval_exists (xpath_ctx, "%s/D:resourcetype/A:addressbook", xpath_prop_prefix)) {
 			GSList *resources = NULL;
+			GError *local_error = NULL;
 
 			if (!g_hash_table_contains (wdd->covered_hrefs, href) &&
 			    !g_cancellable_is_cancelled (wdd->cancellable) &&
 			    e_webdav_session_list_sync (webdav, href, E_WEBDAV_DEPTH_THIS,
 				E_WEBDAV_LIST_SUPPORTS | E_WEBDAV_LIST_DISPLAY_NAME | E_WEBDAV_LIST_DESCRIPTION | E_WEBDAV_LIST_COLOR,
-				&resources, wdd->cancellable, wdd->error)) {
+				&resources, wdd->cancellable, &local_error)) {
 				e_webdav_discover_split_resources (wdd, resources);
 				g_slist_free_full (resources, e_webdav_resource_free);
 			}
 
 			g_hash_table_insert (wdd->covered_hrefs, g_strdup (href), GINT_TO_POINTER (1));
+
+			if (local_error && wdd->error && !*wdd->error)
+				g_propagate_error (wdd->error, local_error);
+			else
+				g_clear_error (&local_error);
 		}
 	}
 
@@ -261,6 +279,7 @@ e_webdav_discover_propfind_uri_sync (EWebDAVSession *webdav,
 {
 	EXmlDocument *xml;
 	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
 	g_return_val_if_fail (wdd != NULL, FALSE);
@@ -296,9 +315,14 @@ e_webdav_discover_propfind_uri_sync (EWebDAVSession *webdav,
 	e_xml_document_end_element (xml); /* prop */
 
 	success = e_webdav_session_propfind_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
-		e_webdav_discover_traverse_propfind_response_cb, wdd, wdd->cancellable, wdd->error);
+		e_webdav_discover_traverse_propfind_response_cb, wdd, wdd->cancellable, &local_error);
 
 	g_clear_object (&xml);
+
+	if (local_error && wdd->error && !*wdd->error)
+		g_propagate_error (wdd->error, local_error);
+	else
+		g_clear_error (&local_error);
 
 	return success;
 }
