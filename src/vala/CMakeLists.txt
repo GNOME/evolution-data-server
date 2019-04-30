@@ -1,9 +1,3 @@
-# disabled until some issues are fixed;
-# when fixed, then remove the conditions below and build the vala bindings unconditionally
-set(ENABLE_EBACKEND 0)
-set(ENABLE_DATACAL 0)
-set(ENABLE_DATABOOK 0)
-
 # Filled by the _build_vala_files macro below
 set(valafiles)
 
@@ -128,7 +122,6 @@ _build_vala_files(libedataserver-${API_VERSION}
 # libebackend
 # ***********************************
 
-if(ENABLE_EBACKEND)
 set(gir_fullname ${CMAKE_BINARY_DIR}/src/libebackend/EBackend-${API_VERSION}.gir)
 gir_girfilename_to_target(gir_deps EBackend-${API_VERSION}.gir)
 
@@ -155,7 +148,6 @@ _build_vala_files(libebackend-${API_VERSION}
 	vala_deps
 	extra_vapigen_files
 )
-endif(ENABLE_EBACKEND)
 
 # ***********************************
 # libebook-contacts
@@ -227,7 +219,6 @@ _build_vala_files(libebook-${API_VERSION}
 # libedata-book
 # ***********************************
 
-if(ENABLE_DATABOOK)
 set(gir_fullname ${CMAKE_BINARY_DIR}/src/addressbook/libedata-book/EDataBook-${API_VERSION}.gir)
 gir_girfilename_to_target(gir_deps EDataBook-${API_VERSION}.gir)
 
@@ -258,8 +249,6 @@ _build_vala_files(libedata-book-${API_VERSION}
 	vala_deps
 	extra_vapigen_files
 )
-
-endif(ENABLE_DATABOOK)
 
 # ***********************************
 # libecal
@@ -298,7 +287,6 @@ _build_vala_files(libecal-${CAL_API_VERSION}
 # libedata-cal
 # ***********************************
 
-if(ENABLE_DATACAL)
 set(gir_fullname ${CMAKE_BINARY_DIR}/src/calendar/libedata-cal/EDataCal-${CAL_API_VERSION}.gir)
 gir_girfilename_to_target(gir_deps EDataCal-${CAL_API_VERSION}.gir)
 
@@ -331,7 +319,6 @@ _build_vala_files(libedata-cal-${CAL_API_VERSION}
 	vala_deps
 	extra_vapigen_files
 )
-endif(ENABLE_DATACAL)
 
 # ***********************************
 # libedataserverui
