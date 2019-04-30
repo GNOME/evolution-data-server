@@ -62,7 +62,8 @@ e_offline_listener_class_init (EOfflineListenerClass *class)
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EOfflineListenerClass, changed),
 		NULL, NULL, NULL,
-		G_TYPE_NONE, 0);
+		G_TYPE_NONE, 1,
+		G_TYPE_INT);
 }
 
 static void

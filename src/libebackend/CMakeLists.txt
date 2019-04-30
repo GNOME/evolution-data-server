@@ -144,6 +144,7 @@ set(gir_identifies_prefixes E)
 set(gir_includes GObject-2.0 Gio-2.0 Soup-2.4 libxml2-2.0)
 set(gir_cflags
 	-DLIBEBACKEND_COMPILATION
+	-DEDS_DISABLE_DEPRECATED=1
 )
 set(gir_libdirs
 	${CMAKE_BINARY_DIR}/src/private
