@@ -50,10 +50,10 @@ typedef struct _ETimezoneCacheInterface ETimezoneCacheInterface;
 
 /**
  * ETimezoneCacheInterface:
- * @add_timezone: a method to add timezone to the cache
- * @get_timezone: a method to get timezone from the cache, identified by its timezone id
- * @list_timezones: a method to get list of all stored timezones
- * @timezone_added: a signal emitted when a timezone is added to the cache
+ * @impl_add_timezone: a method to add timezone to the cache
+ * @impl_get_timezone: a method to get timezone from the cache, identified by its timezone id
+ * @impl_list_timezones: a method to get list of all stored timezones
+ * @impl_timezone_added: a signal emitted when a timezone is added to the cache
  *
  * Since: 3.8
  **/
@@ -63,11 +63,12 @@ struct _ETimezoneCacheInterface {
 
 	/*< public >*/
 	/* Methods */
-	void		(*add_timezone)		(ETimezoneCache *cache,
+	void		(*tzcache_add_timezone)	(ETimezoneCache *cache,
 						 ICalTimezone *zone);
-	ICalTimezone *	(*get_timezone)		(ETimezoneCache *cache,
+	ICalTimezone *	(*tzcache_get_timezone)	(ETimezoneCache *cache,
 						 const gchar *tzid);
-	GList *		(*list_timezones)	(ETimezoneCache *cache); /* ICalTimezone * */
+	GList *		(*tzcache_list_timezones)
+						(ETimezoneCache *cache); /* ICalTimezone * */
 
 	/* Signals */
 	void		(*timezone_added)	(ETimezoneCache *cache,

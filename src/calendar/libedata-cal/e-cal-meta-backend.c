@@ -3489,12 +3489,12 @@ e_cal_meta_backend_init (ECalMetaBackend *meta_backend)
 static void
 e_cal_meta_backend_timezone_cache_init (ETimezoneCacheInterface *iface)
 {
-	ecmb_timezone_cache_parent_get_timezone = iface->get_timezone;
-	ecmb_timezone_cache_parent_list_timezones = iface->list_timezones;
+	ecmb_timezone_cache_parent_get_timezone = iface->tzcache_get_timezone;
+	ecmb_timezone_cache_parent_list_timezones = iface->tzcache_list_timezones;
 
-	/* leave the iface->add_timezone as it was, to have them in memory only */
-	iface->get_timezone = ecmb_get_cached_timezone;
-	iface->list_timezones = ecmb_list_cached_timezones;
+	/* leave the iface->tzcache_add_timezone as it was, to have them in memory only */
+	iface->tzcache_get_timezone = ecmb_get_cached_timezone;
+	iface->tzcache_list_timezones = ecmb_list_cached_timezones;
 }
 
 /**

@@ -1057,9 +1057,9 @@ e_cal_backend_class_init (ECalBackendClass *class)
 static void
 e_cal_backend_timezone_cache_init (ETimezoneCacheInterface *iface)
 {
-	iface->add_timezone = cal_backend_add_cached_timezone;
-	iface->get_timezone = cal_backend_get_cached_timezone;
-	iface->list_timezones = cal_backend_list_cached_timezones;
+	iface->tzcache_add_timezone = cal_backend_add_cached_timezone;
+	iface->tzcache_get_timezone = cal_backend_get_cached_timezone;
+	iface->tzcache_list_timezones = cal_backend_list_cached_timezones;
 }
 
 static void

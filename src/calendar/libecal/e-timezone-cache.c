@@ -80,9 +80,9 @@ e_timezone_cache_add_timezone (ETimezoneCache *cache,
 	g_return_if_fail (zone != NULL);
 
 	iface = E_TIMEZONE_CACHE_GET_INTERFACE (cache);
-	g_return_if_fail (iface->add_timezone != NULL);
+	g_return_if_fail (iface->tzcache_add_timezone != NULL);
 
-	iface->add_timezone (cache, zone);
+	iface->tzcache_add_timezone (cache, zone);
 }
 
 /**
@@ -108,9 +108,9 @@ e_timezone_cache_get_timezone (ETimezoneCache *cache,
 	g_return_val_if_fail (tzid != NULL, NULL);
 
 	iface = E_TIMEZONE_CACHE_GET_INTERFACE (cache);
-	g_return_val_if_fail (iface->get_timezone != NULL, NULL);
+	g_return_val_if_fail (iface->tzcache_get_timezone != NULL, NULL);
 
-	return iface->get_timezone (cache, tzid);
+	return iface->tzcache_get_timezone (cache, tzid);
 }
 
 /**
@@ -138,7 +138,7 @@ e_timezone_cache_list_timezones (ETimezoneCache *cache)
 	g_return_val_if_fail (E_IS_TIMEZONE_CACHE (cache), NULL);
 
 	iface = E_TIMEZONE_CACHE_GET_INTERFACE (cache);
-	g_return_val_if_fail (iface->list_timezones != NULL, NULL);
+	g_return_val_if_fail (iface->tzcache_list_timezones != NULL, NULL);
 
-	return iface->list_timezones (cache);
+	return iface->tzcache_list_timezones (cache);
 }

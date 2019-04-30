@@ -1618,9 +1618,9 @@ e_cal_client_async_initable_init (GAsyncInitableIface *iface)
 static void
 e_cal_client_timezone_cache_init (ETimezoneCacheInterface *iface)
 {
-	iface->add_timezone = cal_client_add_cached_timezone;
-	iface->get_timezone = cal_client_get_cached_timezone;
-	iface->list_timezones = cal_client_list_cached_timezones;
+	iface->tzcache_add_timezone = cal_client_add_cached_timezone;
+	iface->tzcache_get_timezone = cal_client_get_cached_timezone;
+	iface->tzcache_list_timezones = cal_client_list_cached_timezones;
 }
 
 static void

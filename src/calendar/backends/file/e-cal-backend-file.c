@@ -3788,7 +3788,7 @@ cal_backend_file_get_cached_timezone (ETimezoneCache *cache,
 
 	/* Chain up and let ECalBackend try to match
 	 * the TZID against a built-in ICalTimezone. */
-	return parent_timezone_cache_interface->get_timezone (cache, tzid);
+	return parent_timezone_cache_interface->tzcache_get_timezone (cache, tzid);
 }
 
 static GList *
@@ -3843,9 +3843,9 @@ e_cal_backend_file_timezone_cache_init (ETimezoneCacheInterface *iface)
 {
 	parent_timezone_cache_interface = g_type_interface_peek_parent (iface);
 
-	iface->add_timezone = cal_backend_file_add_cached_timezone;
-	iface->get_timezone = cal_backend_file_get_cached_timezone;
-	iface->list_timezones = cal_backend_file_list_cached_timezones;
+	iface->tzcache_add_timezone = cal_backend_file_add_cached_timezone;
+	iface->tzcache_get_timezone = cal_backend_file_get_cached_timezone;
+	iface->tzcache_list_timezones = cal_backend_file_list_cached_timezones;
 }
 
 static void

@@ -4520,9 +4520,9 @@ e_cal_cache_class_init (ECalCacheClass *klass)
 static void
 ecc_timezone_cache_init (ETimezoneCacheInterface *iface)
 {
-	iface->add_timezone = ecc_add_cached_timezone;
-	iface->get_timezone = ecc_get_cached_timezone;
-	iface->list_timezones = ecc_list_cached_timezones;
+	iface->tzcache_add_timezone = ecc_add_cached_timezone;
+	iface->tzcache_get_timezone = ecc_get_cached_timezone;
+	iface->tzcache_list_timezones = ecc_list_cached_timezones;
 }
 
 static void
