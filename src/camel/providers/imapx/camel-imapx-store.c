@@ -2860,15 +2860,23 @@ imapx_store_dup_downsync_folders (CamelOfflineStore *offline_store)
 {
 	CamelStore *store;
 	CamelFolderInfo *fi;
+	CamelSettings *settings;
 	GPtrArray *folders = NULL;
+	guint32 flags;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (offline_store), NULL);
 
 	store = CAMEL_STORE (offline_store);
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
 
-	fi = get_folder_info_offline (store, NULL,
-		CAMEL_STORE_FOLDER_INFO_RECURSIVE | CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL,
-		NULL, NULL);
+	flags = CAMEL_STORE_FOLDER_INFO_RECURSIVE | CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL;
+
+	if (camel_imapx_settings_get_use_subscriptions (CAMEL_IMAPX_SETTINGS (settings)))
+		flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
+
+	g_clear_object (&settings);
+
+	fi = get_folder_info_offline (store, NULL, flags, NULL, NULL);
 
 	imapx_store_dup_downsync_folders_recurse (store, fi, &folders);
 
