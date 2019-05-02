@@ -108,7 +108,7 @@ e_instance_time_new (const ICalTime *tt,
 
 	it = g_new0 (EInstanceTime, 1);
 
-	it->tt = i_cal_time_new_clone (tt);
+	it->tt = i_cal_time_clone (tt);
 	it->duration_set = duration && !i_cal_duration_is_null_duration (duration);
 
 	if (it->duration_set) {
@@ -324,8 +324,8 @@ intersects_interval (const ICalTime *tt,
 	if (!tt || !interval_start || !interval_end)
 		return FALSE;
 
-	ttstart = i_cal_time_new_clone (tt);
-	ttend = i_cal_time_new_clone (ttstart);
+	ttstart = i_cal_time_clone (tt);
+	ttend = i_cal_time_clone (ttstart);
 
 	if (duration && !i_cal_duration_is_null_duration ((ICalDuration *) duration)) {
 		apply_duration (ttend, (ICalDuration *) duration);
@@ -427,7 +427,7 @@ e_cal_recur_generate_instances_sync (ICalComponent *icalcomp,
 			comp_duration = i_cal_component_get_duration (icalcomp);
 
 			if (comp_duration && !i_cal_duration_is_null_duration (comp_duration)) {
-				dtend = i_cal_time_new_clone (dtstart);
+				dtend = i_cal_time_clone (dtstart);
 
 				apply_duration (dtend, comp_duration);
 			}
@@ -440,7 +440,7 @@ e_cal_recur_generate_instances_sync (ICalComponent *icalcomp,
 		 * If DTSTART is a DATE value we add 1 day. */
 		if (!dtend || i_cal_time_is_null_time (dtend)) {
 			g_clear_object (&dtend);
-			dtend = i_cal_time_new_clone (dtstart);
+			dtend = i_cal_time_clone (dtstart);
 
 			if (i_cal_time_is_date (dtend))
 				i_cal_time_adjust (dtend, 1, 0, 0, 0);
@@ -530,7 +530,7 @@ e_cal_recur_generate_instances_sync (ICalComponent *icalcomp,
 						break;
 
 					g_clear_object (&prev);
-					prev = i_cal_time_new_clone (next);
+					prev = i_cal_time_clone (next);
 
 					if (intersects_interval (next, NULL, duration_days, duration_seconds, interval_start, interval_end)) {
 						g_hash_table_insert (times, e_instance_time_new (next, NULL), NULL);
@@ -552,7 +552,7 @@ e_cal_recur_generate_instances_sync (ICalComponent *icalcomp,
 		     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, I_CAL_RDATE_PROPERTY)) {
 			ICalDatetimeperiod *rdate = i_cal_property_get_rdate (prop);
 			ICalTime *tt = NULL;
-			ICalDuration *duration = i_cal_duration_null_duration ();
+			ICalDuration *duration = i_cal_duration_new_null_duration ();
 
 			tt = i_cal_datetimeperiod_get_time (rdate);
 			if (!tt || i_cal_time_is_null_time (tt)) {
@@ -676,7 +676,7 @@ e_cal_recur_generate_instances_sync (ICalComponent *icalcomp,
 					    i_cal_time_compare (next, prev) == 0)
 						break;
 					g_clear_object (&prev);
-					prev = i_cal_time_new_clone (next);
+					prev = i_cal_time_clone (next);
 
 					if (intersects_interval (next, NULL, duration_days, duration_seconds, interval_start, interval_end)) {
 						EInstanceTime it;
@@ -762,7 +762,7 @@ e_cal_recur_generate_instances_sync (ICalComponent *icalcomp,
 			if (!it)
 				continue;
 
-			endtt = i_cal_time_new_clone (it->tt);
+			endtt = i_cal_time_clone (it->tt);
 
 			if (it->duration_set) {
 				dur_days = it->duration_days;
@@ -1381,8 +1381,8 @@ call_instance_callback (ECalRecurInstanceCb cb,
 	g_return_val_if_fail (cb != NULL, FALSE);
 
 	utc_zone = i_cal_timezone_get_utc_timezone ();
-	start = i_cal_time_from_timet_with_zone (dtstart_time, FALSE, utc_zone);
-	end = i_cal_time_from_timet_with_zone (dtend_time, FALSE, utc_zone);
+	start = i_cal_time_new_from_timet_with_zone (dtstart_time, FALSE, utc_zone);
+	end = i_cal_time_new_from_timet_with_zone (dtend_time, FALSE, utc_zone);
 
 	res = cb (e_cal_component_get_icalcomponent (comp), start, end, cb_data, NULL, NULL);
 
@@ -1530,8 +1530,8 @@ e_cal_recur_generate_instances_of_rule (ECalComponent *comp,
 	if (!(e_cal_component_has_recurrences (comp)
 	      || e_cal_component_has_exceptions (comp))) {
 		if (e_cal_component_get_vtype (comp) == E_CAL_COMPONENT_JOURNAL) {
-			ICalTime *start_t = i_cal_time_from_timet_with_zone (start, FALSE, default_timezone);
-			ICalTime *end_t = i_cal_time_from_timet_with_zone (end, FALSE, default_timezone);
+			ICalTime *start_t = i_cal_time_new_from_timet_with_zone (start, FALSE, default_timezone);
+			ICalTime *end_t = i_cal_time_new_from_timet_with_zone (end, FALSE, default_timezone);
 
 			if ((i_cal_time_compare_date_only (dtstarttt, start_t) >= 0) && ((i_cal_time_compare_date_only (dtstarttt, end_t) < 0)))
 				call_instance_callback (cb, comp, dtstart_time, dtend_time, cb_data);
@@ -1783,7 +1783,7 @@ e_cal_recur_from_icalproperty (ICalProperty *prop,
 	if (G_UNLIKELY (i_cal_recurrence_get_interval (ir) < 1)) {
 		gchar *str;
 
-		str = i_cal_recurrence_as_string_r (ir);
+		str = i_cal_recurrence_to_string (ir);
 		g_warning (
 			"Invalid interval in rule %s - using 1\n",
 			str);
@@ -2018,7 +2018,7 @@ generate_instances_for_chunk (ECalComponent *comp,
 		if (!tt)
 			continue;
 
-		tt = i_cal_time_new_clone (tt);
+		tt = i_cal_time_clone (tt);
 		i_cal_time_convert_to_zone_inplace (tt, zone);
 		cotime.year = i_cal_time_get_year (tt);
 		cotime.month = i_cal_time_get_month (tt) - 1;
@@ -2089,7 +2089,7 @@ generate_instances_for_chunk (ECalComponent *comp,
 		if (!tt)
 			continue;
 
-		tt = i_cal_time_new_clone (tt);
+		tt = i_cal_time_clone (tt);
 		i_cal_time_convert_to_zone_inplace (tt, zone);
 
 		cotime.year = i_cal_time_get_year (tt);
@@ -2142,7 +2142,7 @@ generate_instances_for_chunk (ECalComponent *comp,
 			"Checking occurrence: %s\n",
 			cal_obj_time_to_string (occ));
 #endif
-		start_tt = i_cal_time_null_time ();
+		start_tt = i_cal_time_new_null_time ();
 		i_cal_time_set_date (start_tt, occ->year, occ->month + 1, occ->day);
 		i_cal_time_set_time (start_tt, occ->hour, occ->minute, occ->second);
 		start_time = i_cal_time_as_timet_with_zone (start_tt, zone);
@@ -2183,7 +2183,7 @@ generate_instances_for_chunk (ECalComponent *comp,
 			cal_obj_time_add_seconds (occ, duration_seconds);
 		}
 
-		end_tt = i_cal_time_null_time ();
+		end_tt = i_cal_time_new_null_time ();
 		i_cal_time_set_date (end_tt, occ->year, occ->month + 1, occ->day);
 		i_cal_time_set_time (end_tt, occ->hour, occ->minute, occ->second);
 		end_time = i_cal_time_as_timet_with_zone (end_tt, zone);
@@ -4604,7 +4604,7 @@ cal_object_time_from_time (CalObjTime *cotime,
 {
 	ICalTime *tt;
 
-	tt = i_cal_time_from_timet_with_zone (t, FALSE, zone);
+	tt = i_cal_time_new_from_timet_with_zone (t, FALSE, zone);
 
 	cotime->year = i_cal_time_get_year (tt);
 	cotime->month = i_cal_time_get_month (tt) - 1;
@@ -4839,9 +4839,9 @@ e_cal_recur_set_rule_end_date (ICalProperty *prop,
 
 	/* We save the value as a UTC DATE-TIME. */
 	utc_zone = i_cal_timezone_get_utc_timezone ();
-	icaltime = i_cal_time_from_timet_with_zone (end_date, FALSE, utc_zone);
+	icaltime = i_cal_time_new_from_timet_with_zone (end_date, FALSE, utc_zone);
 	value = i_cal_value_new_datetime (icaltime);
-	end_date_string = i_cal_value_as_ical_string_r (value);
+	end_date_string = i_cal_value_as_ical_string (value);
 	g_object_unref (value);
 	g_object_unref (icaltime);
 
@@ -5765,7 +5765,7 @@ e_cal_recur_describe_recurrence (ICalComponent *icalcomp,
 				to_zone = i_cal_time_get_timezone (dtstart);
 
 				if (to_zone)
-					i_cal_timezone_convert_time (until, from_zone, to_zone);
+					i_cal_time_convert_timezone (until, from_zone, to_zone);
 
 				i_cal_time_set_time (until, 0, 0, 0);
 				i_cal_time_set_is_date (until, TRUE);

@@ -1068,7 +1068,7 @@ filter_component (ICalComponent *icomponent,
 		gchar *name;
 		gboolean is_field_of_interest;
 
-		name = i_cal_property_get_property_name_r (prop);
+		name = i_cal_property_get_property_name (prop);
 
 		if (!name) {
 			g_warning ("NULL iCal property name encountered while serializing component");
@@ -1080,7 +1080,7 @@ filter_component (ICalComponent *icomponent,
 
 		/* Append any name that is mentioned in the fields-of-interest */
 		if (is_field_of_interest) {
-			str = i_cal_property_as_ical_string_r (prop);
+			str = i_cal_property_as_ical_string (prop);
 			g_string_append (string, str);
 			g_free (str);
 		}

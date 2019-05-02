@@ -116,9 +116,9 @@ instance_new (ICalTime *start,
 	Instance *ins;
 
 	ins = g_new0 (Instance, 1);
-	ins->start = i_cal_time_new_clone (start);
-	ins->end = i_cal_time_new_clone (end);
-	ins->icomp = i_cal_component_new_clone (icomp);
+	ins->start = i_cal_time_clone (start);
+	ins->end = i_cal_time_clone (end);
+	ins->icomp = i_cal_component_clone (icomp);
 
 	return ins;
 }
@@ -175,7 +175,7 @@ verify_received_instances (GHashTable *instances,
 		ICalTime *expected_start;
 		Instance ins = { 0, };
 
-		expected_start = i_cal_time_from_string (expected_times[ii]);
+		expected_start = i_cal_time_new_from_string (expected_times[ii]);
 		g_assert_nonnull (expected_start);
 
 		ins.start = expected_start;
@@ -236,8 +236,8 @@ test_recur_plain_run (ECalClient *client,
 		g_assert_nonnull (comp_zone);
 
 	icomp = create_component (comp_tz);
-	start = i_cal_time_from_string ("20190103T080000Z");
-	end = i_cal_time_from_string ("20190115T080000Z");
+	start = i_cal_time_new_from_string ("20190103T080000Z");
+	end = i_cal_time_new_from_string ("20190115T080000Z");
 
 	rd.instances = g_hash_table_new_full (instance_hash, instance_equal, instance_free, NULL);
 
@@ -279,8 +279,8 @@ test_recur_client_run (ECalClient *client,
 	e_cal_client_set_default_timezone (client, default_zone);
 	setup_cal (client, comp_tz);
 
-	start = i_cal_time_from_string ("20190103T080000Z");
-	end = i_cal_time_from_string ("20190115T080000Z");
+	start = i_cal_time_new_from_string ("20190103T080000Z");
+	end = i_cal_time_new_from_string ("20190115T080000Z");
 
 	rd.instances = g_hash_table_new_full (instance_hash, instance_equal, instance_free, NULL);
 

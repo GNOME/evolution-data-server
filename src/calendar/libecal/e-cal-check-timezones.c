@@ -198,7 +198,7 @@ addsystemtz (gpointer key,
 
 		zone_comp = i_cal_timezone_get_component (zone);
 		if (zone_comp) {
-			i_cal_component_take_component (vcalendar, i_cal_component_new_clone (zone_comp));
+			i_cal_component_take_component (vcalendar, i_cal_component_clone (zone_comp));
 			g_object_unref (zone_comp);
 		}
 	}
@@ -316,7 +316,7 @@ e_cal_client_check_timezones_sync (ICalComponent *vcalendar,
 				} else {
 					gint counter;
 
-					zonestr = i_cal_component_as_ical_string_r (subcomp);
+					zonestr = i_cal_component_as_ical_string (subcomp);
 
 					/* check for collisions with existing timezones */
 					for (counter = 0;
@@ -342,7 +342,7 @@ e_cal_client_check_timezones_sync (ICalComponent *vcalendar,
 						}
 						g_free (buffer);
 						zone_comp = i_cal_timezone_get_component (existing_zone);
-						buffer = zone_comp ? i_cal_component_as_ical_string_r (zone_comp) : NULL;
+						buffer = zone_comp ? i_cal_component_as_ical_string (zone_comp) : NULL;
 						g_clear_object (&zone_comp);
 						g_clear_object (&existing_zone);
 

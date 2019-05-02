@@ -1498,7 +1498,7 @@ cal_client_get_cached_timezone (ETimezoneCache *cache,
 	 * lead to broken VCALENDARs in the caller. */
 
 	icalcomp = i_cal_timezone_get_component (builtin_zone);
-	clone = i_cal_component_new_clone (icalcomp);
+	clone = i_cal_component_clone (icalcomp);
 	g_object_unref (icalcomp);
 	icalcomp = clone;
 
@@ -2199,7 +2199,7 @@ add_instance_cb (ICalComponent *icomp,
 	ci = g_new0 (struct comp_instance, 1);
 
 	/* add the instance to the list */
-	ci->comp = e_cal_component_new_from_icalcomponent (i_cal_component_new_clone (icomp));
+	ci->comp = e_cal_component_new_from_icalcomponent (i_cal_component_clone (icomp));
 	if (!ci->comp) {
 		comp_instance_free (ci);
 		return FALSE;
@@ -2229,8 +2229,8 @@ add_instance_cb (ICalComponent *icomp,
 		e_cal_component_datetime_free (dtend);
 	}
 
-	ci->start = i_cal_time_new_clone (start);
-	ci->end = i_cal_time_new_clone (end);
+	ci->start = i_cal_time_clone (start);
+	ci->end = i_cal_time_clone (end);
 
 	*list = g_slist_prepend (*list, ci);
 
@@ -2345,8 +2345,8 @@ process_detached_instances (GSList *instances,
 					g_clear_object (&ci->start);
 					g_clear_object (&ci->end);
 					ci->comp = g_object_ref (cid->comp);
-					ci->start = i_cal_time_new_clone (cid->start);
-					ci->end = i_cal_time_new_clone (cid->end);
+					ci->start = i_cal_time_clone (cid->start);
+					ci->end = i_cal_time_clone (cid->end);
 
 					processed = TRUE;
 				} else {
@@ -2380,8 +2380,8 @@ process_detached_instances (GSList *instances,
 		cid = unprocessed_instances->data;
 		ci = g_new0 (struct comp_instance, 1);
 		ci->comp = g_object_ref (cid->comp);
-		ci->start = i_cal_time_new_clone (cid->start);
-		ci->end = i_cal_time_new_clone (cid->end);
+		ci->start = i_cal_time_clone (cid->start);
+		ci->end = i_cal_time_clone (cid->end);
 		instances = g_slist_append (instances, ci);
 
 		unprocessed_instances = g_slist_remove (unprocessed_instances, cid);
@@ -2414,8 +2414,8 @@ generate_instances (ECalClient *client,
 	else
 		default_zone = i_cal_timezone_get_utc_timezone ();
 
-	starttt = i_cal_time_from_timet_with_zone (start, FALSE, NULL);
-	endtt = i_cal_time_from_timet_with_zone (end, FALSE, NULL);
+	starttt = i_cal_time_new_from_timet_with_zone (start, FALSE, NULL);
+	endtt = i_cal_time_new_from_timet_with_zone (end, FALSE, NULL);
 
 	for (l = objects; l && !g_cancellable_is_cancelled (cancellable); l = l->next) {
 		ECalComponent *comp;
@@ -2442,12 +2442,12 @@ generate_instances (ECalClient *client,
 				continue;
 			}
 
-			ci->start = i_cal_time_new_clone (e_cal_component_datetime_get_value (dtstart));
+			ci->start = i_cal_time_clone (e_cal_component_datetime_get_value (dtstart));
 
 			if (dtend && e_cal_component_datetime_get_value (dtend))
-				ci->end = i_cal_time_new_clone (e_cal_component_datetime_get_value (dtend));
+				ci->end = i_cal_time_clone (e_cal_component_datetime_get_value (dtend));
 			else {
-				ci->end = i_cal_time_new_clone (ci->start);
+				ci->end = i_cal_time_clone (ci->start);
 
 				if (i_cal_time_is_date (e_cal_component_datetime_get_value (dtstart)))
 					i_cal_time_adjust (ci->end, 1, 0, 0, 0);
@@ -2968,7 +2968,7 @@ e_cal_client_generate_instances_for_object (ECalClient *client,
 		return;
 	}
 
-	comp = e_cal_component_new_from_icalcomponent (i_cal_component_new_clone (icalcomp));
+	comp = e_cal_component_new_from_icalcomponent (i_cal_component_clone (icalcomp));
 	g_return_if_fail (comp != NULL);
 
 	uid = e_cal_component_get_uid (comp);
@@ -3051,7 +3051,7 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
 		return;
 	}
 
-	comp = e_cal_component_new_from_icalcomponent (i_cal_component_new_clone (icalcomp));
+	comp = e_cal_component_new_from_icalcomponent (i_cal_component_clone (icalcomp));
 	g_return_if_fail (comp != NULL);
 
 	uid = e_cal_component_get_uid (comp);
@@ -3111,7 +3111,7 @@ foreach_tzid_callback (ICalParameter *param,
 	if (!vtimezone_comp)
 		return;
 
-	vtimezone_as_string = i_cal_component_as_ical_string_r (vtimezone_comp);
+	vtimezone_as_string = i_cal_component_as_ical_string (vtimezone_comp);
 
 	g_hash_table_insert (data->timezone_hash, (gchar *) tzid, vtimezone_as_string);
 }
@@ -3190,7 +3190,7 @@ e_cal_client_get_component_as_string (ECalClient *client,
 	g_hash_table_foreach (timezone_hash, append_timezone_string, vcal_string);
 
 	/* Get the string for the VEVENT/VTODO. */
-	obj_string = i_cal_component_as_ical_string_r (icalcomp);
+	obj_string = i_cal_component_as_ical_string (icalcomp);
 
 	/* If there were any timezones to send, create a complete VCALENDAR,
 	 * else just send the VEVENT/VTODO string. */
@@ -3636,7 +3636,7 @@ e_cal_client_get_object_sync (ECalClient *client,
 		if (subcomponent != NULL) {
 			ICalComponent *clone;
 
-			clone = i_cal_component_new_clone (subcomponent);
+			clone = i_cal_component_clone (subcomponent);
 			g_object_unref (subcomponent);
 			subcomponent = clone;
 		}
@@ -3875,7 +3875,7 @@ e_cal_client_get_objects_for_uid_sync (ECalClient *client,
 		     g_object_unref (subcomponent), subcomponent = i_cal_component_get_next_component (icalcomp, kind)) {
 			ECalComponent *comp;
 
-			comp = e_cal_component_new_from_icalcomponent (i_cal_component_new_clone (subcomponent));
+			comp = e_cal_component_new_from_icalcomponent (i_cal_component_clone (subcomponent));
 			if (comp)
 				tmp = g_slist_prepend (tmp, comp);
 		}
@@ -4531,7 +4531,7 @@ e_cal_client_create_object (ECalClient *client,
 	g_return_if_fail (icalcomp != NULL);
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->in_comp = i_cal_component_new_clone (icalcomp);
+	async_context->in_comp = i_cal_component_clone (icalcomp);
 	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
@@ -4709,7 +4709,7 @@ e_cal_client_create_objects (ECalClient *client,
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->comp_list = g_slist_copy_deep (
-		icalcomps, (GCopyFunc) i_cal_component_new_clone, NULL);
+		icalcomps, (GCopyFunc) i_cal_component_clone, NULL);
 	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
@@ -4814,7 +4814,7 @@ e_cal_client_create_objects_sync (ECalClient *client,
 	while (icalcomps != NULL) {
 		gchar *ical_string;
 
-		ical_string = i_cal_component_as_ical_string_r (icalcomps->data);
+		ical_string = i_cal_component_as_ical_string (icalcomps->data);
 		strv[ii++] = e_util_utf8_make_valid (ical_string);
 		g_free (ical_string);
 
@@ -4926,7 +4926,7 @@ e_cal_client_modify_object (ECalClient *client,
 	g_return_if_fail (icalcomp != NULL);
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->in_comp = i_cal_component_new_clone (icalcomp);
+	async_context->in_comp = i_cal_component_clone (icalcomp);
 	async_context->mod = mod;
 	async_context->opflags = opflags;
 
@@ -5083,7 +5083,7 @@ e_cal_client_modify_objects (ECalClient *client,
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->comp_list = g_slist_copy_deep (
-		icalcomps, (GCopyFunc) i_cal_component_new_clone, NULL);
+		icalcomps, (GCopyFunc) i_cal_component_clone, NULL);
 	async_context->mod = mod;
 	async_context->opflags = opflags;
 
@@ -5187,7 +5187,7 @@ e_cal_client_modify_objects_sync (ECalClient *client,
 	while (icalcomps != NULL) {
 		gchar *ical_string;
 
-		ical_string = i_cal_component_as_ical_string_r (icalcomps->data);
+		ical_string = i_cal_component_as_ical_string (icalcomps->data);
 		strv[ii++] = e_util_utf8_make_valid (ical_string);
 		g_free (ical_string);
 
@@ -5669,7 +5669,7 @@ e_cal_client_receive_objects (ECalClient *client,
 	g_return_if_fail (icalcomp != NULL);
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->in_comp = i_cal_component_new_clone (icalcomp);
+	async_context->in_comp = i_cal_component_clone (icalcomp);
 	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
@@ -5747,7 +5747,7 @@ e_cal_client_receive_objects_sync (ECalClient *client,
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
-	ical_string = i_cal_component_as_ical_string_r (icalcomp);
+	ical_string = i_cal_component_as_ical_string (icalcomp);
 	utf8_ical_string = e_util_utf8_make_valid (ical_string);
 
 	e_dbus_calendar_call_receive_objects_sync (
@@ -5827,7 +5827,7 @@ e_cal_client_send_objects (ECalClient *client,
 	g_return_if_fail (icalcomp != NULL);
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->in_comp = i_cal_component_new_clone (icalcomp);
+	async_context->in_comp = i_cal_component_clone (icalcomp);
 	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
@@ -5943,7 +5943,7 @@ e_cal_client_send_objects_sync (ECalClient *client,
 	g_return_val_if_fail (out_users != NULL, FALSE);
 	g_return_val_if_fail (out_modified_icalcomp != NULL, FALSE);
 
-	ical_string = i_cal_component_as_ical_string_r (icalcomp);
+	ical_string = i_cal_component_as_ical_string (icalcomp);
 	utf8_ical_string = e_util_utf8_make_valid (ical_string);
 
 	e_dbus_calendar_call_send_objects_sync (
@@ -6935,7 +6935,7 @@ e_cal_client_add_timezone_sync (ECalClient *client,
 		return FALSE;
 	}
 
-	zone_str = i_cal_component_as_ical_string_r (icalcomp);
+	zone_str = i_cal_component_as_ical_string (icalcomp);
 	utf8_zone_str = e_util_utf8_make_valid (zone_str);
 
 	e_dbus_calendar_call_add_timezone_sync (

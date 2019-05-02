@@ -161,7 +161,7 @@ e_reminder_watcher_timet_as_string (gint64 tt)
 			break;
 	}
 
-	itt = i_cal_time_from_timet_with_zone ((time_t) tt, 0, i_cal_timezone_get_utc_timezone ());
+	itt = i_cal_time_new_from_timet_with_zone ((time_t) tt, 0, i_cal_timezone_get_utc_timezone ());
 
 	g_snprintf (buffers[index], 32, "%04d%02d%02dT%02d%02d%02d",
 		i_cal_time_get_year (itt), i_cal_time_get_month (itt), i_cal_time_get_day (itt),
@@ -959,7 +959,7 @@ e_reminder_watcher_objects_changed (EReminderWatcher *watcher,
 
 			itt = i_cal_component_get_recurrenceid (icalcomp);
 			if (i_cal_time_is_valid_time (itt) && !i_cal_time_is_null_time (itt))
-				rid = i_cal_time_as_ical_string_r (itt);
+				rid = i_cal_time_as_ical_string (itt);
 			else
 				rid = g_strdup ("0");
 
@@ -2644,7 +2644,7 @@ e_reminder_watcher_describe_data (EReminderWatcher *watcher,
 				is_date = i_cal_time_is_date (itt);
 			g_clear_object (&itt);
 
-			itt = i_cal_time_from_timet_with_zone (e_cal_component_alarm_instance_get_occur_start (rd->instance), is_date, zone);
+			itt = i_cal_time_new_from_timet_with_zone (e_cal_component_alarm_instance_get_occur_start (rd->instance), is_date, zone);
 
 			g_signal_emit (watcher, signals[FORMAT_TIME], 0, rd, itt, &timestrptr, 254, NULL);
 

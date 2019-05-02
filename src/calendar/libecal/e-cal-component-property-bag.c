@@ -191,7 +191,7 @@ e_cal_component_property_bag_fill_component (const ECalComponentPropertyBag *bag
 		ICalProperty *prop = g_ptr_array_index (bag->properties, ii);
 
 		if (prop)
-			i_cal_component_take_property (component, i_cal_property_new_clone (prop));
+			i_cal_component_take_property (component, i_cal_property_clone (prop));
 	}
 }
 
@@ -244,7 +244,7 @@ e_cal_component_property_bag_add (ECalComponentPropertyBag *bag,
 	g_return_if_fail (I_CAL_IS_PROPERTY (prop));
 
 	e_cal_component_property_bag_take (bag,
-		i_cal_property_new_clone ((ICalProperty *) prop));
+		i_cal_property_clone ((ICalProperty *) prop));
 }
 
 /**

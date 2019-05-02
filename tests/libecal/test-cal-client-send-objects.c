@@ -49,7 +49,7 @@ print_icomp (ICalComponent *icomp)
 
 	g_assert_nonnull (icomp);
 
-	ecomp = e_cal_component_new_from_icalcomponent (i_cal_component_new_clone (icomp));
+	ecomp = e_cal_component_new_from_icalcomponent (i_cal_component_clone (icomp));
 	g_assert_nonnull (ecomp);
 
 	print_ecomp (ecomp);
@@ -63,8 +63,8 @@ create_object (void)
 	ICalComponent *icomp;
 	ICalTime *dtstart, *dtend;
 
-	dtstart = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
-	dtend = i_cal_time_new_clone (dtstart);
+	dtstart = i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());
+	dtend = i_cal_time_clone (dtstart);
 	i_cal_time_adjust (dtend, 0, 1, 0, 0);
 
 	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);

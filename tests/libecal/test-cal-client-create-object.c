@@ -42,8 +42,8 @@ test_icomps (ICalComponent *icomp1,
 	if (i_cal_time_compare (t1, t2) != 0) {
 		gchar *str1, *str2;
 
-		str1 = i_cal_time_as_ical_string_r (t1);
-		str2 = i_cal_time_as_ical_string_r (t2);
+		str1 = i_cal_time_as_ical_string (t1);
+		str2 = i_cal_time_as_ical_string (t2);
 
 		g_error ("Failure: dtend doesn't match, expected '%s', got '%s'\n", str1, str2);
 
@@ -60,8 +60,8 @@ test_icomps (ICalComponent *icomp1,
 	if (i_cal_time_compare (t1, t2) != 0) {
 		gchar *str1, *str2;
 
-		str1 = i_cal_time_as_ical_string_r (t1);
-		str2 = i_cal_time_as_ical_string_r (t2);
+		str1 = i_cal_time_as_ical_string (t1);
+		str2 = i_cal_time_as_ical_string (t2);
 
 		g_error ("Failure: dtend doesn't match, expected '%s', got '%s'\n", str1, str2);
 
@@ -88,8 +88,8 @@ test_create_object_sync (ETestServerFixture *fixture,
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
 	/* Build up new component */
-	dtstart = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
-	dtend = i_cal_time_new_clone (dtstart);
+	dtstart = i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());
+	dtend = i_cal_time_clone (dtstart);
 	i_cal_time_adjust (dtend, 0, 1, 0, 0);
 
 	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
@@ -106,7 +106,7 @@ test_create_object_sync (ETestServerFixture *fixture,
 	if (!e_cal_client_get_object_sync (cal_client, uid, NULL, &icomp2, NULL, &error))
 		g_error ("get object sync: %s", error->message);
 
-	clone = i_cal_component_new_clone (icomp);
+	clone = i_cal_component_clone (icomp);
 	i_cal_component_set_uid (clone, uid);
 
 	test_icomps (clone, icomp2);
@@ -209,7 +209,7 @@ async_write_result_ready (GObject *source_object,
 	if (!e_cal_client_create_object_finish (cal_client, result, &uid, &error))
 		g_error ("create object finish: %s", error->message);
 
-	clone = i_cal_component_new_clone (icomp);
+	clone = i_cal_component_clone (icomp);
 	i_cal_component_set_uid (clone, uid);
 
 	data->clone = clone;
@@ -229,8 +229,8 @@ test_create_object_async (ETestServerFixture *fixture,
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
 	/* Build up new component */
-	dtstart = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
-	dtend = i_cal_time_new_clone (dtstart);
+	dtstart = i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());
+	dtend = i_cal_time_clone (dtstart);
 	i_cal_time_adjust (dtend, 0, 1, 0, 0);
 
 	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);

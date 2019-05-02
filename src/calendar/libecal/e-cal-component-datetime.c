@@ -198,7 +198,7 @@ e_cal_component_datetime_set_value (ECalComponentDateTime *dt,
 
 	if (dt->value != value) {
 		g_clear_object (&dt->value);
-		dt->value = i_cal_time_new_clone (value);
+		dt->value = i_cal_time_clone (value);
 	}
 }
 

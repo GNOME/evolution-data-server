@@ -210,7 +210,7 @@ e_cal_backend_user_declined (ESourceRegistry *registry,
 			gchar *attendee;
 			gchar *address;
 
-			attendee = i_cal_property_get_value_as_string_r (prop);
+			attendee = i_cal_property_get_value_as_string (prop);
 			if (attendee) {
 				if (!g_ascii_strncasecmp (attendee, "mailto:", 7))
 					address = g_strdup (attendee + 7);

@@ -42,8 +42,8 @@ test_icomps (ICalComponent *icomp1,
 	if (i_cal_time_compare (t1, t2) != 0) {
 		gchar *str1, *str2;
 
-		str1 = i_cal_time_as_ical_string_r (t1);
-		str2 = i_cal_time_as_ical_string_r (t2);
+		str1 = i_cal_time_as_ical_string (t1);
+		str2 = i_cal_time_as_ical_string (t2);
 
 		g_error ("Failure: dtend doesn't match, expected '%s', got '%s'\n", str1, str2);
 
@@ -60,8 +60,8 @@ test_icomps (ICalComponent *icomp1,
 	if (i_cal_time_compare (t1, t2) != 0) {
 		gchar *str1, *str2;
 
-		str1 = i_cal_time_as_ical_string_r (t1);
-		str2 = i_cal_time_as_ical_string_r (t2);
+		str1 = i_cal_time_as_ical_string (t1);
+		str2 = i_cal_time_as_ical_string (t2);
 
 		g_error ("Failure: dtend doesn't match, expected '%s', got '%s'\n", str1, str2);
 
@@ -339,8 +339,8 @@ run_test_bulk_methods_wrapper (ETestServerFixture *fixture,
 
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
-	dtstart = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
-	dtend = i_cal_time_new_clone (dtstart);
+	dtstart = i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());
+	dtend = i_cal_time_clone (dtstart);
 	i_cal_time_adjust (dtend, 0, 1, 0, 0);
 
 	/* Build up new components */

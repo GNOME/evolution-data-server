@@ -89,7 +89,7 @@ e_cal_util_new_component (ICalComponentKind kind)
 	uid = e_util_generate_uid ();
 	i_cal_component_set_uid (icalcomp, uid);
 	g_free (uid);
-	dtstamp = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+	dtstamp = i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());
 	i_cal_component_set_dtstamp (icalcomp, dtstamp);
 	g_object_unref (dtstamp);
 
@@ -124,7 +124,7 @@ e_cal_util_copy_timezone (const ICalTimezone *zone)
 	if (comp) {
 		ICalComponent *comp_copy;
 
-		comp_copy = i_cal_component_new_clone (comp);
+		comp_copy = i_cal_component_clone (comp);
 		if (!i_cal_timezone_set_component (zone_copy, comp_copy))
 			g_clear_object (&zone_copy);
 		g_object_unref (comp_copy);
@@ -287,9 +287,8 @@ e_cal_util_parse_ics_file (const gchar *filename)
 	fl.bof = TRUE;
 
 	parser = i_cal_parser_new ();
-	i_cal_parser_set_gen_data (parser, &fl);
 
-	icalcomp = i_cal_parser_parse (parser, get_line_fn);
+	icalcomp = i_cal_parser_parse (parser, get_line_fn, &fl);
 	g_object_unref (parser);
 	fclose (fl.file);
 
@@ -696,8 +695,8 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
 	aod.triggers = NULL;
 	aod.n_triggers = 0;
 
-	alarm_start_tt = i_cal_time_from_timet_with_zone (alarm_start, FALSE, i_cal_timezone_get_utc_timezone ());
-	alarm_end_tt = i_cal_time_from_timet_with_zone (alarm_end, FALSE, i_cal_timezone_get_utc_timezone ());
+	alarm_start_tt = i_cal_time_new_from_timet_with_zone (alarm_start, FALSE, i_cal_timezone_get_utc_timezone ());
+	alarm_end_tt = i_cal_time_new_from_timet_with_zone (alarm_end, FALSE, i_cal_timezone_get_utc_timezone ());
 
 	e_cal_recur_generate_instances_sync (e_cal_component_get_icalcomponent (comp),
 		alarm_start_tt, alarm_end_tt,
@@ -943,7 +942,7 @@ add_timezone_cb (ICalParameter *param,
 
 	vtz_comp = i_cal_timezone_get_component (tz);
 	if (vtz_comp) {
-		i_cal_component_take_component (f_data->vcal_comp, i_cal_component_new_clone (vtz_comp));
+		i_cal_component_take_component (f_data->vcal_comp, i_cal_component_clone (vtz_comp));
 		g_object_unref (vtz_comp);
 	}
 
@@ -1133,7 +1132,7 @@ e_cal_util_component_get_recurid_as_string (ICalComponent *icalcomp)
 	    i_cal_time_is_null_time (recurid)) {
 		rid = g_strdup ("0");
 	} else {
-		rid = i_cal_time_as_ical_string_r (recurid);
+		rid = i_cal_time_as_ical_string (recurid);
 	}
 
 	g_clear_object (&recurid);
@@ -1237,7 +1236,7 @@ e_cal_util_construct_instance (ICalComponent *icalcomp,
 
 	/* Make sure the specified instance really exists */
 	start = i_cal_time_convert_to_zone ((ICalTime *) rid, i_cal_timezone_get_utc_timezone ());
-	end = i_cal_time_new_clone (start);
+	end = i_cal_time_clone (start);
 	i_cal_time_adjust (end, 0, 0, 0, 1);
 
 	instance.start = i_cal_time_as_timet (start);
@@ -1251,7 +1250,7 @@ e_cal_util_construct_instance (ICalComponent *icalcomp,
 		return NULL;
 
 	/* Make the instance */
-	icalcomp = i_cal_component_new_clone (icalcomp);
+	icalcomp = i_cal_component_clone (icalcomp);
 	i_cal_component_set_recurrenceid (icalcomp, (ICalTime *) rid);
 
 	return icalcomp;
@@ -1408,7 +1407,7 @@ e_cal_util_remove_instances_ex (ICalComponent *icalcomp,
 						ttuntil = i_cal_time_add ((ICalTime *) rid, dur);
 						g_clear_object (&dur);
 					} else {
-						ttuntil = i_cal_time_new_clone (rid);
+						ttuntil = i_cal_time_clone (rid);
 					}
 					i_cal_time_adjust (ttuntil, 0, 0, 0, -1);
 					i_cal_recurrence_set_until (rule, ttuntil);
@@ -1537,7 +1536,7 @@ e_cal_util_split_at_instance (ICalComponent *icalcomp,
 
 	/* Make sure the specified instance really exists */
 	start = i_cal_time_convert_to_zone ((ICalTime *) rid, i_cal_timezone_get_utc_timezone ());
-	end = i_cal_time_new_clone (start);
+	end = i_cal_time_clone (start);
 	i_cal_time_adjust (end, 0, 0, 0, 1);
 
 	instance.start = i_cal_time_as_timet (start);
@@ -1547,11 +1546,11 @@ e_cal_util_split_at_instance (ICalComponent *icalcomp,
 	g_clear_object (&end);
 
 	/* Make the copy */
-	icalcomp = i_cal_component_new_clone (icalcomp);
+	icalcomp = i_cal_component_clone (icalcomp);
 
 	e_cal_util_remove_instances_ex (icalcomp, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR, TRUE, FALSE);
 
-	start = i_cal_time_new_clone ((ICalTime *) rid);
+	start = i_cal_time_clone ((ICalTime *) rid);
 
 	if (!master_dtstart || i_cal_time_is_null_time ((ICalTime *) master_dtstart)) {
 		dtstart = i_cal_component_get_dtstart (icalcomp);
@@ -1572,7 +1571,7 @@ e_cal_util_split_at_instance (ICalComponent *icalcomp,
 		if (i_cal_time_is_null_time (dtend)) {
 			i_cal_component_set_duration (icalcomp, duration);
 		} else {
-			end = i_cal_time_new_clone (start);
+			end = i_cal_time_clone (start);
 			if (i_cal_duration_is_neg (duration))
 				i_cal_time_adjust (end, -i_cal_duration_get_days (duration)
 							- 7 * i_cal_duration_get_weeks (duration),
@@ -1681,7 +1680,7 @@ check_first_instance_cb (ICalComponent *icalcomp,
 		dtstart = i_cal_component_get_dtstart (icalcomp);
 		zone = i_cal_time_get_timezone (dtstart);
 
-		rid = i_cal_time_from_timet_with_zone (i_cal_time_as_timet (instance_start), i_cal_time_is_date (dtstart), zone);
+		rid = i_cal_time_new_from_timet_with_zone (i_cal_time_as_timet (instance_start), i_cal_time_is_date (dtstart), zone);
 
 		g_clear_object (&dtstart);
 	}
@@ -2090,7 +2089,7 @@ e_cal_util_component_dup_x_property (ICalComponent *icalcomp,
 	if (!prop)
 		return NULL;
 
-	x_value = i_cal_property_get_value_as_string_r (prop);
+	x_value = i_cal_property_get_value_as_string (prop);
 
 	g_object_unref (prop);
 
@@ -2264,7 +2263,7 @@ e_cal_util_find_next_occurrence (ICalComponent *vtodo,
 	interval_start = i_cal_component_get_dtstart (vtodo);
 	if (!interval_start || i_cal_time_is_null_time (interval_start) || !i_cal_time_is_valid_time (interval_start)) {
 		g_clear_object (&interval_start);
-		interval_start = i_cal_time_current_time_with_zone (e_cal_client_get_default_timezone (cal_client));
+		interval_start = i_cal_time_new_current_with_zone (e_cal_client_get_default_timezone (cal_client));
 	}
 
 	prop = i_cal_component_get_first_property (vtodo, I_CAL_RRULE_PROPERTY);
@@ -2289,13 +2288,13 @@ e_cal_util_find_next_occurrence (ICalComponent *vtodo,
 	nod.next = NULL;
 
 	do {
-		interval_end = i_cal_time_new_clone (interval_start);
+		interval_end = i_cal_time_clone (interval_start);
 		i_cal_time_adjust (interval_end, advance_days, 0, 0, 0);
 
 		g_clear_object (&(nod.next));
 
 		nod.interval_start = interval_start;
-		nod.next = i_cal_time_null_time ();
+		nod.next = i_cal_time_new_null_time ();
 		nod.found_next = FALSE;
 		nod.any_hit = FALSE;
 
@@ -2382,7 +2381,7 @@ e_cal_util_init_recur_task_sync (ICalComponent *vtodo,
 	if (!dtstart || i_cal_time_is_null_time (dtstart) || !i_cal_time_is_valid_time (dtstart)) {
 		g_clear_object (&dtstart);
 
-		dtstart = i_cal_time_current_time_with_zone (e_cal_client_get_default_timezone (cal_client));
+		dtstart = i_cal_time_new_current_with_zone (e_cal_client_get_default_timezone (cal_client));
 		i_cal_component_set_dtstart (vtodo, dtstart);
 	}
 
@@ -2508,7 +2507,7 @@ e_cal_util_mark_task_complete_sync (ICalComponent *vtodo,
 				/* ... eventually fallback to the new DTSTART for the new DUE */
 				if (!new_due || i_cal_time_is_null_time (new_due) || !i_cal_time_is_valid_time (new_due)) {
 					g_clear_object (&new_due);
-					new_due = i_cal_time_new_clone (new_dtstart);
+					new_due = i_cal_time_clone (new_dtstart);
 				}
 
 				g_clear_object (&old_due);
@@ -2571,8 +2570,8 @@ e_cal_util_mark_task_complete_sync (ICalComponent *vtodo,
 		ICalTime *tt;
 
 		tt = completed_time != (time_t) -1 ?
-			i_cal_time_from_timet_with_zone (completed_time, FALSE, i_cal_timezone_get_utc_timezone ()) :
-			i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+			i_cal_time_new_from_timet_with_zone (completed_time, FALSE, i_cal_timezone_get_utc_timezone ()) :
+			i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());
 		prop = i_cal_property_new_completed (tt);
 		i_cal_component_take_property (vtodo, prop);
 		g_object_unref (tt);

@@ -382,7 +382,7 @@ e_cal_component_clone (ECalComponent *comp)
 	new_comp = e_cal_component_new ();
 
 	if (comp->priv->icalcomp) {
-		new_icalcomp = i_cal_component_new_clone (comp->priv->icalcomp);
+		new_icalcomp = i_cal_component_clone (comp->priv->icalcomp);
 		if (!new_icalcomp || !e_cal_component_set_icalcomponent (new_comp, new_icalcomp)) {
 			g_clear_object (&new_icalcomp);
 			g_clear_object (&new_comp);
@@ -419,7 +419,7 @@ ensure_mandatory_properties (ECalComponent *comp)
 	} else {
 		ICalTime *tt;
 
-		tt = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+		tt = i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());
 
 		prop = i_cal_property_new_dtstamp (tt);
 		i_cal_component_take_property (comp->priv->icalcomp, prop);
@@ -663,7 +663,7 @@ e_cal_component_get_as_string (ECalComponent *comp)
 	/* Ensure that the user has committed the new SEQUENCE */
 	g_return_val_if_fail (comp->priv->need_sequence_inc == FALSE, NULL);
 
-	return i_cal_component_as_ical_string_r (comp->priv->icalcomp);
+	return i_cal_component_as_ical_string (comp->priv->icalcomp);
 }
 
 /* Ensures that an alarm subcomponent has the mandatory properties it needs. */
@@ -1476,7 +1476,7 @@ e_cal_component_set_completed (ECalComponent *comp,
 	g_return_if_fail (comp->priv->icalcomp != NULL);
 
 	if (tt && i_cal_time_is_date ((ICalTime *) tt)) {
-		tmp_tt = i_cal_time_new_clone (tt);
+		tmp_tt = i_cal_time_clone (tt);
 		tt = tmp_tt;
 
 		i_cal_time_set_is_date (tmp_tt, FALSE);
@@ -2098,7 +2098,7 @@ set_period_list (ICalComponent *icalcomp,
 		if (!period)
 			continue;
 
-		ic_period = i_cal_period_null_period ();
+		ic_period = i_cal_period_new_null_period ();
 		ic_datetimeperiod = i_cal_datetimeperiod_new ();
 
 		i_cal_period_set_start (ic_period, e_cal_component_period_get_start (period));

@@ -210,8 +210,8 @@ func_occur_in_time_range (ESExp *esexp,
 	/* See if the object occurs in the specified time range */
 	ctx->occurs = FALSE;
 
-	starttt = i_cal_time_from_timet_with_zone (start, FALSE, utc_zone);
-	endtt = i_cal_time_from_timet_with_zone (end, FALSE, utc_zone);
+	starttt = i_cal_time_new_from_timet_with_zone (start, FALSE, utc_zone);
+	endtt = i_cal_time_new_from_timet_with_zone (end, FALSE, utc_zone);
 
 	e_cal_recur_generate_instances_sync (
 		e_cal_component_get_icalcomponent (ctx->comp), starttt, endtt,
@@ -300,8 +300,8 @@ func_occurrences_count (ESExp *esexp,
 
 	default_zone = i_cal_timezone_get_utc_timezone ();
 
-	starttt = i_cal_time_from_timet_with_zone (start, FALSE, default_zone);
-	endtt = i_cal_time_from_timet_with_zone (end, FALSE, default_zone);
+	starttt = i_cal_time_new_from_timet_with_zone (start, FALSE, default_zone);
+	endtt = i_cal_time_new_from_timet_with_zone (end, FALSE, default_zone);
 
 	ctx->occurrences_count = 0;
 	e_cal_recur_generate_instances_sync (

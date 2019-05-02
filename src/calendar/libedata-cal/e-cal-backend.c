@@ -887,7 +887,7 @@ cal_backend_get_cached_timezone (ETimezoneCache *cache,
 	 * lead to broken VCALENDARs in the caller. */
 
 	icomp = i_cal_timezone_get_component (builtin_zone);
-	clone = i_cal_component_new_clone (icomp);
+	clone = i_cal_component_clone (icomp);
 	g_object_unref (icomp);
 	icomp = clone;
 

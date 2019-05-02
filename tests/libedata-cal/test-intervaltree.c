@@ -147,11 +147,11 @@ create_test_component (time_t start,
 	e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
 
 	/*
-	dt = e_cal_component_datetime_new_take (i_cal_time_from_timet_with_zone (start, 0, NULL), NULL);
+	dt = e_cal_component_datetime_new_take (i_cal_time_new_from_timet_with_zone (start, 0, NULL), NULL);
 	e_cal_component_set_dtstart (comp, dt);
 	e_cal_component_datetime_free (dt);
 
-	dt = e_cal_component_datetime_new_take (i_cal_time_from_timet_with_zone (end, 0, NULL), NULL);
+	dt = e_cal_component_datetime_new_take (i_cal_time_new_from_timet_with_zone (end, 0, NULL), NULL);
 	e_cal_component_set_dtend (comp, dt);
 	e_cal_component_datetime_free (dt);
 	*/
@@ -164,7 +164,7 @@ create_test_component (time_t start,
 
 	g_free (txt);
 
-	current = i_cal_time_from_timet_with_zone (time (NULL), 0, NULL);
+	current = i_cal_time_new_from_timet_with_zone (time (NULL), 0, NULL);
 	e_cal_component_set_created (comp, current);
 	e_cal_component_set_last_modified (comp, current);
 	g_clear_object (&current);

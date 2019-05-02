@@ -381,7 +381,7 @@ ecb_caldav_update_nfo_with_vcalendar (ECalMetaBackendInfo *nfo,
 	}
 
 	g_warn_if_fail (nfo->object == NULL);
-	nfo->object = i_cal_component_as_ical_string_r (vcalendar);
+	nfo->object = i_cal_component_as_ical_string (vcalendar);
 
 	if (!nfo->uid || !*(nfo->uid)) {
 		g_free (nfo->uid);
@@ -1263,7 +1263,7 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 		}
 	}
 
-	ical_string = i_cal_component_as_ical_string_r (vcalendar);
+	ical_string = i_cal_component_as_ical_string (vcalendar);
 
 	webdav = ecb_caldav_ref_session (cbdav);
 
@@ -1300,7 +1300,7 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 				ecb_caldav_store_component_etag (vcalendar, new_etag);
 
 				g_free (ical_string);
-				ical_string = i_cal_component_as_ical_string_r (vcalendar);
+				ical_string = i_cal_component_as_ical_string (vcalendar);
 
 				/* Encodes the href and the component into one string, which
 				   will be decoded in the load function */
@@ -1595,7 +1595,7 @@ ecb_caldav_extract_objects (ICalComponent *icomp,
 	kind = i_cal_component_isa (icomp);
 
 	if (kind == ekind) {
-		*out_objects = g_slist_prepend (NULL, i_cal_component_new_clone (icomp));
+		*out_objects = g_slist_prepend (NULL, i_cal_component_clone (icomp));
 		return;
 	}
 
@@ -1718,14 +1718,14 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 	g_free (str);
 
 	utc = i_cal_timezone_get_utc_timezone ();
-	dt = e_cal_component_datetime_new_take (i_cal_time_current_time_with_zone (utc), g_strdup (i_cal_timezone_get_tzid (utc)));
+	dt = e_cal_component_datetime_new_take (i_cal_time_new_current_with_zone (utc), g_strdup (i_cal_timezone_get_tzid (utc)));
 
 	e_cal_component_set_dtstamp (comp, e_cal_component_datetime_get_value (dt));
 
-	e_cal_component_datetime_take_value (dt, i_cal_time_from_timet_with_zone (start, FALSE, utc));
+	e_cal_component_datetime_take_value (dt, i_cal_time_new_from_timet_with_zone (start, FALSE, utc));
 	e_cal_component_set_dtstart (comp, dt);
 
-	e_cal_component_datetime_take_value (dt, i_cal_time_from_timet_with_zone (end, FALSE, utc));
+	e_cal_component_datetime_take_value (dt, i_cal_time_new_from_timet_with_zone (end, FALSE, utc));
 	e_cal_component_set_dtend (comp, dt);
 
 	e_cal_component_datetime_free (dt);
@@ -1778,9 +1778,9 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 	/* put the free/busy request to a VCALENDAR */
 	icomp = e_cal_util_new_top_level ();
 	i_cal_component_set_method (icomp, ICAL_METHOD_REQUEST);
-	i_cal_component_take_component (icomp, i_cal_component_new_clone (e_cal_component_get_icalcomponent (comp)));
+	i_cal_component_take_component (icomp, i_cal_component_clone (e_cal_component_get_icalcomponent (comp)));
 
-	str = i_cal_component_as_ical_string_r (icomp);
+	str = i_cal_component_as_ical_string (icomp);
 
 	g_object_unref (icomp);
 	g_object_unref (comp);
@@ -1828,7 +1828,7 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 							ecb_caldav_extract_objects (icomp, I_CAL_VFREEBUSY_COMPONENT, &objects, &local_error);
 						if (icomp && !local_error) {
 							for (link = objects; link; link = g_slist_next (link)) {
-								gchar *obj_str = i_cal_component_as_ical_string_r (link->data);
+								gchar *obj_str = i_cal_component_as_ical_string (link->data);
 
 								if (obj_str && *obj_str)
 									*out_freebusy = g_slist_prepend (*out_freebusy, obj_str);
@@ -1951,7 +1951,7 @@ ecb_caldav_get_free_busy_from_principal_sync (ECalBackendCalDAV *cbdav,
 					i_cal_component_take_property (subcomp, prop);
 				}
 
-				obj_str = i_cal_component_as_ical_string_r (subcomp);
+				obj_str = i_cal_component_as_ical_string (subcomp);
 
 				if (obj_str && *obj_str)
 					*out_freebusy = g_slist_prepend (*out_freebusy, obj_str);

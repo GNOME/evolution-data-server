@@ -191,7 +191,7 @@ e_cal_component_parameter_bag_fill_property (const ECalComponentParameterBag *ba
 		ICalParameter *param = g_ptr_array_index (bag->parameters, ii);
 
 		if (param)
-			i_cal_property_take_parameter (property, i_cal_parameter_new_clone (param));
+			i_cal_property_take_parameter (property, i_cal_parameter_clone (param));
 	}
 }
 
@@ -244,7 +244,7 @@ e_cal_component_parameter_bag_add (ECalComponentParameterBag *bag,
 	g_return_if_fail (I_CAL_IS_PARAMETER (param));
 
 	e_cal_component_parameter_bag_take (bag,
-		i_cal_parameter_new_clone ((ICalParameter *) param));
+		i_cal_parameter_clone ((ICalParameter *) param));
 }
 
 /**

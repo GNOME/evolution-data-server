@@ -703,7 +703,7 @@ contacts_removed_cb (EBookClientView *book_view,
 static ICalTime *
 cdate_to_icaltime (EContactDate *cdate)
 {
-	ICalTime *ret = i_cal_time_null_time ();
+	ICalTime *ret = i_cal_time_new_null_time ();
 
 	i_cal_time_set_year (ret, cdate->year);
 	i_cal_time_set_month (ret, cdate->month);
@@ -854,7 +854,7 @@ setup_alarm (ECalBackendContacts *cbc,
 	e_cal_component_alarm_take_description (alarm, summary);
 	e_cal_component_alarm_set_action (alarm, E_CAL_COMPONENT_ALARM_DISPLAY);
 
-	duration = i_cal_duration_null_duration ();
+	duration = i_cal_duration_new_null_duration ();
 	i_cal_duration_set_is_neg (duration, TRUE);
 
 	switch (cbc->priv->alarm_units) {
@@ -1143,15 +1143,15 @@ e_cal_backend_contacts_get_free_busy (ECalBackendSync *backend,
 	ICalTime *itt;
 	gchar *calobj;
 
-	itt = i_cal_time_from_timet_with_zone (start, FALSE, utc_zone);
+	itt = i_cal_time_new_from_timet_with_zone (start, FALSE, utc_zone);
 	i_cal_component_set_dtstart (vfb, itt);
 	g_object_unref (itt);
 
-	itt = i_cal_time_from_timet_with_zone (end, FALSE, utc_zone);
+	itt = i_cal_time_new_from_timet_with_zone (end, FALSE, utc_zone);
 	i_cal_component_set_dtend (vfb, itt);
 	g_object_unref (itt);
 
-	calobj = i_cal_component_as_ical_string_r (vfb);
+	calobj = i_cal_component_as_ical_string (vfb);
 	*freebusy = g_slist_append (NULL, calobj);
 	g_object_unref (vfb);
 }

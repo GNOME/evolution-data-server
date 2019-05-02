@@ -78,8 +78,8 @@ search_in_intervals (ETimezoneCache *zone_cache,
 	GSList *link;
 	GHashTable *res;
 
-	itt_start = i_cal_time_from_timet_with_zone (start, FALSE, NULL);
-	itt_end = i_cal_time_from_timet_with_zone (end, FALSE, NULL);
+	itt_start = i_cal_time_new_from_timet_with_zone (start, FALSE, NULL);
+	itt_end = i_cal_time_new_from_timet_with_zone (end, FALSE, NULL);
 
 	expr = g_strdup_printf ("(occur-in-time-range? (make-time \"%04d%02d%02dT%02d%02d%02dZ\") (make-time \"%04d%02d%02dT%02d%02d%02dZ\"))",
 		i_cal_time_get_year (itt_start), i_cal_time_get_month (itt_start), i_cal_time_get_day (itt_start),
@@ -151,14 +151,14 @@ create_test_component (time_t start,
 
 	e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
 
-	ittstart = i_cal_time_from_timet_with_zone (start, 0, NULL);
-	ittend = i_cal_time_from_timet_with_zone (end, 0, NULL);
+	ittstart = i_cal_time_new_from_timet_with_zone (start, 0, NULL);
+	ittend = i_cal_time_new_from_timet_with_zone (end, 0, NULL);
 
 	i_cal_component_set_dtstart (e_cal_component_get_icalcomponent (comp), ittstart);
 	i_cal_component_set_dtend (e_cal_component_get_icalcomponent (comp), ittend);
 
-	startstr = i_cal_time_as_ical_string_r (ittstart);
-	endstr = i_cal_time_as_ical_string_r (ittend);
+	startstr = i_cal_time_as_ical_string (ittstart);
+	endstr = i_cal_time_as_ical_string (ittend);
 
 	tmp = g_strdup_printf ("%s - %s", startstr, endstr);
 	summary = e_cal_component_text_new (tmp, NULL);
@@ -173,7 +173,7 @@ create_test_component (time_t start,
 
 	e_cal_component_text_free (summary);
 
-	current = i_cal_time_from_timet_with_zone (time (NULL), 0, NULL);
+	current = i_cal_time_new_from_timet_with_zone (time (NULL), 0, NULL);
 	e_cal_component_set_created (comp, current);
 	e_cal_component_set_last_modified (comp, current);
 	g_object_unref (current);

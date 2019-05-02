@@ -584,7 +584,7 @@ ecc_encode_time_to_sql (ECalCache *cal_cache,
 	    e_cal_component_datetime_get_tzid (dt))
 		zone = ecc_resolve_tzid_cb (e_cal_component_datetime_get_tzid (dt), cal_cache, NULL, NULL);
 
-	i_cal_timezone_convert_time (itt, zone, i_cal_timezone_get_utc_timezone ());
+	i_cal_time_convert_timezone (itt, zone, i_cal_timezone_get_utc_timezone ());
 
 	return ecc_encode_itt_to_sql (itt);
 }
@@ -599,7 +599,7 @@ ecc_encode_timet_to_sql (ECalCache *cal_cache,
 	if (tt <= 0)
 		return NULL;
 
-	itt = i_cal_time_from_timet_with_zone (tt, FALSE, i_cal_timezone_get_utc_timezone ());
+	itt = i_cal_time_new_from_timet_with_zone (tt, FALSE, i_cal_timezone_get_utc_timezone ());
 
 	res = ecc_encode_itt_to_sql (itt);
 
@@ -1149,8 +1149,8 @@ ecc_sexp_func_occur_in_time_range (ESExp *esexp,
 		gchar *start_str, *end_str;
 
 		/* The default zone argument, if any, is ignored here */
-		itt_start = i_cal_time_from_timet_with_zone (argv[0]->value.time, 0, NULL);
-		itt_end = i_cal_time_from_timet_with_zone (argv[1]->value.time, 0, NULL);
+		itt_start = i_cal_time_new_from_timet_with_zone (argv[0]->value.time, 0, NULL);
+		itt_end = i_cal_time_new_from_timet_with_zone (argv[1]->value.time, 0, NULL);
 
 		start_str = ecc_encode_itt_to_sql (itt_start);
 		end_str = ecc_encode_itt_to_sql (itt_end);
@@ -3245,8 +3245,8 @@ e_cal_cache_get_components_in_range_as_strings (ECalCache *cal_cache,
 
 	*out_icalstrings = NULL;
 
-	itt_start = i_cal_time_from_timet_with_zone (range_start, FALSE, NULL);
-	itt_end = i_cal_time_from_timet_with_zone (range_end, FALSE, NULL);
+	itt_start = i_cal_time_new_from_timet_with_zone (range_start, FALSE, NULL);
+	itt_end = i_cal_time_new_from_timet_with_zone (range_end, FALSE, NULL);
 
 	sexp = g_strdup_printf ("(occur-in-time-range? (make-time \"%04d%02d%02dT%02d%02d%02dZ\") (make-time \"%04d%02d%02dT%02d%02d%02dZ\"))",
 		i_cal_time_get_year (itt_start),
@@ -3722,7 +3722,7 @@ e_cal_cache_put_timezone (ECalCache *cal_cache,
 		return FALSE;
 	}
 
-	component_str = i_cal_component_as_ical_string_r (component);
+	component_str = i_cal_component_as_ical_string (component);
 	g_clear_object (&component);
 
 	if (!component_str) {
@@ -4402,7 +4402,7 @@ ecc_get_cached_timezone (ETimezoneCache *cache,
 	 * lead to broken VCALENDARs in the caller. */
 
 	icomp = i_cal_timezone_get_component (builtin_zone);
-	clone = i_cal_component_new_clone (icomp);
+	clone = i_cal_component_clone (icomp);
 	g_object_unref (icomp);
 	icomp = clone;
 

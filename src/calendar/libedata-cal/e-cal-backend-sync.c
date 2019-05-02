@@ -601,7 +601,7 @@ e_cal_backend_sync_get_timezone (ECalBackendSync *backend,
 				if (error && !*error)
 					g_propagate_error (error, e_cal_client_error_create (E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
 			} else {
-				*tzobject = i_cal_component_as_ical_string_r (icomp);
+				*tzobject = i_cal_component_as_ical_string (icomp);
 
 				g_object_unref (icomp);
 			}
@@ -912,7 +912,7 @@ cal_backend_get_timezone (ECalBackend *backend,
 				icomp = i_cal_timezone_get_component (zone);
 
 			if (icomp) {
-				ICalComponent *clone = i_cal_component_new_clone (icomp);
+				ICalComponent *clone = i_cal_component_clone (icomp);
 				ICalProperty *prop;
 
 				prop = i_cal_component_get_first_property (clone, I_CAL_TZID_PROPERTY);
@@ -920,7 +920,7 @@ cal_backend_get_timezone (ECalBackend *backend,
 					/* change tzid to our, because the component has the buildin tzid */
 					i_cal_property_set_tzid (prop, tzid);
 
-					object = i_cal_component_as_ical_string_r (clone);
+					object = i_cal_component_as_ical_string (clone);
 
 					g_clear_error (&error);
 					g_object_unref (prop);

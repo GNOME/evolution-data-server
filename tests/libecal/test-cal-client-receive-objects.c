@@ -30,8 +30,8 @@ create_object (void)
 	ICalTime *dtstart, *dtend;
 	ICalComponent *icomp;
 
-	dtstart = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
-	dtend = i_cal_time_new_clone (dtstart);
+	dtstart = i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());
+	dtend = i_cal_time_clone (dtstart);
 	i_cal_time_adjust (dtend, 0, 1, 0, 0);
 
 	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);

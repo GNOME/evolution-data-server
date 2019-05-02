@@ -538,7 +538,7 @@ ecb_http_list_existing_sync (ECalMetaBackend *meta_backend,
 
 		uid = i_cal_component_get_uid (icomp);
 		revision = e_cal_cache_dup_component_revision (cal_cache, icomp);
-		object = i_cal_component_as_ical_string_r (value);
+		object = i_cal_component_as_ical_string (value);
 
 		nfo = e_cal_meta_backend_info_new (uid, revision, object, NULL);
 

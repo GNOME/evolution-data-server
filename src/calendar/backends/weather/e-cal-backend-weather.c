@@ -486,7 +486,7 @@ create_weather (ECalBackendWeather *cbw,
 
 	/* Set all-day event's date from forecast data - cannot set is_date,
 	 * because in that case no timezone conversion is done */
-	itt = i_cal_time_from_timet_with_zone (update_time, 0, update_zone);
+	itt = i_cal_time_new_from_timet_with_zone (update_time, 0, update_zone);
 	i_cal_time_set_hour (itt, 0);
 	i_cal_time_set_minute (itt, 0);
 	i_cal_time_set_second (itt, 0);
@@ -859,15 +859,15 @@ e_cal_backend_weather_get_free_busy (ECalBackendSync *backend,
 	ICalTime *itt;
 	gchar *calobj;
 
-	itt = i_cal_time_from_timet_with_zone (start, FALSE, utc_zone);
+	itt = i_cal_time_new_from_timet_with_zone (start, FALSE, utc_zone);
 	i_cal_component_set_dtstart (vfb, itt);
 	g_object_unref (itt);
 
-	itt = i_cal_time_from_timet_with_zone (end, FALSE, utc_zone);
+	itt = i_cal_time_new_from_timet_with_zone (end, FALSE, utc_zone);
 	i_cal_component_set_dtend (vfb, itt);
 	g_object_unref (itt);
 
-	calobj = i_cal_component_as_ical_string_r (vfb);
+	calobj = i_cal_component_as_ical_string (vfb);
 	*freebusy = g_slist_append (NULL, calobj);
 	g_object_unref (vfb);
 }

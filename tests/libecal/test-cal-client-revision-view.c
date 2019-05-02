@@ -58,7 +58,7 @@ get_last_modified (ICalComponent *component)
 	ICalTime *res;
 
 	if (!inner)
-		return i_cal_time_null_time ();
+		return i_cal_time_new_null_time ();
 
 	prop = i_cal_component_get_first_property (inner, I_CAL_LASTMODIFIED_PROPERTY);
 
@@ -66,7 +66,7 @@ get_last_modified (ICalComponent *component)
 		res = i_cal_property_get_lastmodified (prop);
 		g_object_unref (prop);
 	} else {
-		res = i_cal_time_null_time ();
+		res = i_cal_time_new_null_time ();
 	}
 
 	g_clear_object (&inner);
@@ -88,8 +88,8 @@ objects_added_cb (GObject *object,
 		ICalTime *last_modified = get_last_modified (component);
 		gchar *str_recurrence, *str_last_modified;
 
-		str_recurrence = i_cal_time_as_ical_string_r (recurrence);
-		str_last_modified = i_cal_time_as_ical_string_r (last_modified);
+		str_recurrence = i_cal_time_as_ical_string (recurrence);
+		str_last_modified = i_cal_time_as_ical_string (last_modified);
 
 		g_print (
 			"Object added %s (recurrence id:%s, last-modified:%s)\n",
@@ -122,8 +122,8 @@ objects_modified_cb (GObject *object,
 		ICalTime *last_modified = get_last_modified (component);
 		gchar *str_recurrence, *str_last_modified;
 
-		str_recurrence = i_cal_time_as_ical_string_r (recurrence);
-		str_last_modified = i_cal_time_as_ical_string_r (last_modified);
+		str_recurrence = i_cal_time_as_ical_string (recurrence);
+		str_last_modified = i_cal_time_as_ical_string (last_modified);
 
 		g_print (
 			"Object modified %s (recurrence id:%s, last-modified:%s)\n",
@@ -182,8 +182,8 @@ alter_cal_client (gpointer user_data)
 
 	g_return_val_if_fail (cal_client != NULL, NULL);
 
-	now = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
-	itt = i_cal_time_from_timet_with_zone (i_cal_time_as_timet (now) + 60 * 60 * 60, 0, NULL);
+	now = i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());
+	itt = i_cal_time_new_from_timet_with_zone (i_cal_time_as_timet (now) + 60 * 60 * 60, 0, NULL);
 
 	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
 	i_cal_component_set_summary (icomp, "Initial event summary");

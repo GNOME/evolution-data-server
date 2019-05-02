@@ -141,8 +141,8 @@ verify_struct_parameter_bag_equal (const ECalComponentParameterBag *expected,
 		g_assert_nonnull (param_received);
 		g_assert_cmpint (i_cal_parameter_isa (param_expected), ==, i_cal_parameter_isa (param_received));
 
-		value_expected = i_cal_parameter_as_ical_string_r (param_expected);
-		value_received = i_cal_parameter_as_ical_string_r (param_received);
+		value_expected = i_cal_parameter_as_ical_string (param_expected);
+		value_received = i_cal_parameter_as_ical_string (param_received);
 
 		g_assert_cmpstr (value_expected, ==, value_received);
 
@@ -178,8 +178,8 @@ verify_struct_property_bag_equal (const ECalComponentPropertyBag *expected,
 		g_assert_nonnull (prop_received);
 		g_assert_cmpint (i_cal_property_isa (prop_expected), ==, i_cal_property_isa (prop_received));
 
-		value_expected = i_cal_property_as_ical_string_r (prop_expected);
-		value_received = i_cal_property_as_ical_string_r (prop_received);
+		value_expected = i_cal_property_as_ical_string (prop_expected);
+		value_received = i_cal_property_as_ical_string (prop_received);
 
 		g_assert_cmpstr (value_expected, ==, value_received);
 
@@ -580,7 +580,7 @@ test_component_struct_alarm (void)
 				ECalComponentAlarmTrigger *trg;
 				ICalTime *tt;
 
-				tt = i_cal_time_from_string ("20201030T102030");
+				tt = i_cal_time_new_from_string ("20201030T102030");
 				g_assert_nonnull (tt);
 
 				trg = e_cal_component_alarm_trigger_new_absolute (tt);
@@ -590,7 +590,7 @@ test_component_struct_alarm (void)
 			} else {
 				ICalTime *tt;
 
-				tt = i_cal_time_from_string ("21211129T122233");
+				tt = i_cal_time_new_from_string ("21211129T122233");
 				g_assert_nonnull (tt);
 
 				e_cal_component_alarm_take_trigger (expected, e_cal_component_alarm_trigger_new_absolute (tt));
@@ -908,7 +908,7 @@ test_component_struct_alarm_repeat (void)
 		ICalDuration *dur;
 
 		if ((ii % 4) == 0) {
-			dur = i_cal_duration_from_int (values[ii].interval);
+			dur = i_cal_duration_new_from_int (values[ii].interval);
 			expected = e_cal_component_alarm_repeat_new (values[ii].repetitions, dur);
 			g_object_unref (dur);
 		} else if ((ii % 4) == 1) {
@@ -918,7 +918,7 @@ test_component_struct_alarm_repeat (void)
 			e_cal_component_alarm_repeat_set_repetitions (expected, values[ii].repetitions);
 			e_cal_component_alarm_repeat_set_interval_seconds (expected, values[ii].interval);
 		} else {
-			dur = i_cal_duration_from_int (values[ii].interval);
+			dur = i_cal_duration_new_from_int (values[ii].interval);
 
 			expected = e_cal_component_alarm_repeat_new_seconds (1000, 2000);
 			e_cal_component_alarm_repeat_set_repetitions (expected, values[ii].repetitions);
@@ -929,7 +929,7 @@ test_component_struct_alarm_repeat (void)
 
 		g_assert_nonnull (expected);
 
-		dur = i_cal_duration_from_int (values[ii].interval);
+		dur = i_cal_duration_new_from_int (values[ii].interval);
 		g_assert_nonnull (dur);
 		g_assert_cmpint (e_cal_component_alarm_repeat_get_repetitions (expected), ==, values[ii].repetitions);
 		g_assert_cmpint (e_cal_component_alarm_repeat_get_interval_seconds (expected), ==, values[ii].interval);
@@ -971,13 +971,13 @@ test_component_struct_alarm_trigger (void)
 			if (set_kind == 0) {
 				/* nothing, create it as it should be */
 			} else if (set_kind == 1) {
-				dur = i_cal_duration_from_int (33);
+				dur = i_cal_duration_new_from_int (33);
 				expected = e_cal_component_alarm_trigger_new_relative (E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_END, dur);
 				g_object_unref (dur);
 
 				g_assert_nonnull (expected);
 			} else if (set_kind == 2) {
-				tt = i_cal_time_today ();
+				tt = i_cal_time_new_today ();
 				expected = e_cal_component_alarm_trigger_new_absolute (tt);
 				g_object_unref (tt);
 
@@ -989,34 +989,34 @@ test_component_struct_alarm_trigger (void)
 			if (expected) {
 				if (values[ii].kind == e_cal_component_alarm_trigger_get_kind (expected)) {
 					if (values[ii].kind == E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE) {
-						tt = i_cal_time_from_string (values[ii].abs_time);
+						tt = i_cal_time_new_from_string (values[ii].abs_time);
 						e_cal_component_alarm_trigger_set_absolute_time (expected, tt);
 						g_object_unref (tt);
 					} else {
-						dur = i_cal_duration_from_int (values[ii].duration);
+						dur = i_cal_duration_new_from_int (values[ii].duration);
 						e_cal_component_alarm_trigger_set_kind (expected, values[ii].kind);
 						e_cal_component_alarm_trigger_set_duration (expected, dur);
 						g_object_unref (dur);
 					}
 				} else if (values[ii].kind == E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE) {
-					tt = i_cal_time_from_string (values[ii].abs_time);
+					tt = i_cal_time_new_from_string (values[ii].abs_time);
 					e_cal_component_alarm_trigger_set_absolute (expected, tt);
 					g_object_unref (tt);
 				} else {
-					dur = i_cal_duration_from_int (values[ii].duration);
+					dur = i_cal_duration_new_from_int (values[ii].duration);
 					e_cal_component_alarm_trigger_set_relative (expected, values[ii].kind, dur);
 					g_object_unref (dur);
 				}
 			} else {
 				if (values[ii].kind == E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE) {
-					tt = i_cal_time_from_string (values[ii].abs_time);
+					tt = i_cal_time_new_from_string (values[ii].abs_time);
 					expected = e_cal_component_alarm_trigger_new_absolute (tt);
 					g_assert_nonnull (expected);
 					g_assert_nonnull (e_cal_component_alarm_trigger_get_absolute_time (expected));
 					verify_ical_timetype_equal (tt, e_cal_component_alarm_trigger_get_absolute_time (expected));
 					g_object_unref (tt);
 				} else {
-					dur = i_cal_duration_from_int (values[ii].duration);
+					dur = i_cal_duration_new_from_int (values[ii].duration);
 					expected = e_cal_component_alarm_trigger_new_relative (values[ii].kind, dur);
 					g_assert_nonnull (expected);
 					g_object_unref (dur);
@@ -1030,12 +1030,12 @@ test_component_struct_alarm_trigger (void)
 
 			g_assert_cmpint (values[ii].kind, ==, e_cal_component_alarm_trigger_get_kind (expected));
 			if (values[ii].kind == E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE) {
-				tt = i_cal_time_from_string (values[ii].abs_time);
+				tt = i_cal_time_new_from_string (values[ii].abs_time);
 				g_assert_nonnull (tt);
 				verify_ical_timetype_equal (tt, e_cal_component_alarm_trigger_get_absolute_time (expected));
 				g_object_unref (tt);
 			} else {
-				dur = i_cal_duration_from_int (values[ii].duration);
+				dur = i_cal_duration_new_from_int (values[ii].duration);
 				g_assert_nonnull (dur);
 				verify_ical_durationtype_equal (dur, e_cal_component_alarm_trigger_get_duration (expected));
 				g_object_unref (dur);
@@ -1052,14 +1052,14 @@ test_component_struct_alarm_trigger (void)
 			verify_struct_alarm_trigger_equal (expected, received);
 			e_cal_component_alarm_trigger_free (received);
 
-			dur = i_cal_duration_from_int (33);
+			dur = i_cal_duration_new_from_int (33);
 			received = e_cal_component_alarm_trigger_new_relative (E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_END, dur);
 			g_object_unref (dur);
 			e_cal_component_alarm_trigger_set_from_property (received, prop);
 			verify_struct_alarm_trigger_equal (expected, received);
 			e_cal_component_alarm_trigger_free (received);
 
-			tt = i_cal_time_today ();
+			tt = i_cal_time_new_today ();
 			received = e_cal_component_alarm_trigger_new_absolute (tt);
 			g_object_unref (tt);
 			e_cal_component_alarm_trigger_set_from_property (received, prop);
@@ -1250,15 +1250,15 @@ test_component_struct_datetime (void)
 			ICalTime *tt;
 
 			if (set_kind == 2) {
-				tt = i_cal_time_from_string ("19981019");
+				tt = i_cal_time_new_from_string ("19981019");
 				expected = e_cal_component_datetime_new (tt, NULL);
 				g_object_unref (tt);
 			} else if (set_kind == 3) {
-				tt = i_cal_time_from_string ("19981019");
+				tt = i_cal_time_new_from_string ("19981019");
 				expected = e_cal_component_datetime_new_take (tt, g_strdup ("Unknown"));
 			}
 
-			tt = i_cal_time_from_string (values[ii].time);
+			tt = i_cal_time_new_from_string (values[ii].time);
 			g_assert_nonnull (tt);
 
 			if (expected) {
@@ -1267,7 +1267,7 @@ test_component_struct_datetime (void)
 				} else if (((set_kind + ii) % 3) == 1) {
 					ICalTime *ttcopy;
 
-					ttcopy = i_cal_time_new_clone (tt);
+					ttcopy = i_cal_time_clone (tt);
 					g_assert_nonnull (ttcopy);
 
 					e_cal_component_datetime_take_value (expected, ttcopy);
@@ -1282,7 +1282,7 @@ test_component_struct_datetime (void)
 				} else {
 					ICalTime *ttcopy;
 
-					ttcopy = i_cal_time_new_clone (tt);
+					ttcopy = i_cal_time_clone (tt);
 					g_assert_nonnull (ttcopy);
 
 					expected = e_cal_component_datetime_new_take (ttcopy, g_strdup (values[ii].tzid));
@@ -1666,23 +1666,23 @@ test_component_struct_period (void)
 			ICalTime *start, *end = NULL;
 			ICalDuration *duration = NULL;
 
-			start = i_cal_time_from_string (values[ii].start);
+			start = i_cal_time_new_from_string (values[ii].start);
 			g_assert_nonnull (start);
 			if (values[ii].duration == -1) {
 				if (values[ii].end) {
-					end = i_cal_time_from_string (values[ii].end);
+					end = i_cal_time_new_from_string (values[ii].end);
 					g_assert_nonnull (end);
 				}
 			} else {
-				duration = i_cal_duration_from_int (values[ii].duration);
+				duration = i_cal_duration_new_from_int (values[ii].duration);
 				g_assert_nonnull (duration);
 			}
 
 			if ((set_kind % 3) == 1) {
 				ICalTime *ttstart, *ttend;
 
-				ttstart = i_cal_time_from_string ("19981019");
-				ttend = i_cal_time_from_string ("19981019");
+				ttstart = i_cal_time_new_from_string ("19981019");
+				ttend = i_cal_time_new_from_string ("19981019");
 
 				g_assert_nonnull (ttstart);
 
@@ -1694,8 +1694,8 @@ test_component_struct_period (void)
 				ICalTime *ttstart;
 				ICalDuration *ttduration;
 
-				ttstart = i_cal_time_from_string ("19981019");
-				ttduration = i_cal_duration_from_int (123456);
+				ttstart = i_cal_time_new_from_string ("19981019");
+				ttduration = i_cal_duration_new_from_int (123456);
 				g_assert_nonnull (ttstart);
 				g_assert_nonnull (ttduration);
 
@@ -1989,15 +1989,15 @@ test_component_struct_range (void)
 				ECalComponentDateTime *dt;
 
 				if (set_kind == 2) {
-					dt = e_cal_component_datetime_new_take (i_cal_time_from_string ("19981019"), NULL);
+					dt = e_cal_component_datetime_new_take (i_cal_time_new_from_string ("19981019"), NULL);
 					expected = e_cal_component_range_new (E_CAL_COMPONENT_RANGE_SINGLE, dt);
 					e_cal_component_datetime_free (dt);
 				} else if (set_kind == 3) {
-					dt = e_cal_component_datetime_new_take (i_cal_time_from_string ("19981019"), NULL);
+					dt = e_cal_component_datetime_new_take (i_cal_time_new_from_string ("19981019"), NULL);
 					expected = e_cal_component_range_new_take (E_CAL_COMPONENT_RANGE_SINGLE, dt);
 				}
 
-				dt = e_cal_component_datetime_new_take (i_cal_time_from_string (values[ii].time), g_strdup (values[ii].tzid));
+				dt = e_cal_component_datetime_new_take (i_cal_time_new_from_string (values[ii].time), g_strdup (values[ii].tzid));
 				g_assert_nonnull (dt);
 
 				if (expected) {
@@ -2114,14 +2114,14 @@ verify_changes (ECalComponent *comp,
 
 	icalcomp = e_cal_component_get_icalcomponent (comp);
 	g_assert_nonnull (icalcomp);
-	clone = e_cal_component_new_from_icalcomponent (i_cal_component_new_clone (icalcomp));
+	clone = e_cal_component_new_from_icalcomponent (i_cal_component_clone (icalcomp));
 	g_assert_nonnull (clone);
 	verify_func (clone, user_data);
 	g_object_unref (clone);
 
 	icalcomp = e_cal_component_get_icalcomponent (comp);
 	g_assert_nonnull (icalcomp);
-	icalcomp = i_cal_component_new_clone (icalcomp);
+	icalcomp = i_cal_component_clone (icalcomp);
 	g_assert_nonnull (icalcomp);
 	clone = e_cal_component_new ();
 	g_assert_nonnull (clone);
@@ -2461,7 +2461,7 @@ test_component_icaltime (void (* set_func) (ECalComponent *comp,
 		ICalTime *tt;
 
 		if (values[ii]) {
-			tt = i_cal_time_from_string (values[ii]);
+			tt = i_cal_time_new_from_string (values[ii]);
 			g_assert_nonnull (tt);
 		} else if (!can_null_value) {
 			continue;
@@ -2526,7 +2526,7 @@ test_component_datetime (void (* set_func) (ECalComponent *comp,
 		ECalComponentDateTime *dt;
 
 		if (values[ii].time) {
-			dt = e_cal_component_datetime_new_take (i_cal_time_from_string (values[ii].time), g_strdup (values[ii].tzid));
+			dt = e_cal_component_datetime_new_take (i_cal_time_new_from_string (values[ii].time), g_strdup (values[ii].tzid));
 			g_assert_nonnull (dt);
 
 			if (values[ii].tzid) {
@@ -2615,9 +2615,9 @@ verify_component_rules (GSList * (* get_func) (ECalComponent *comp),
 				rt_received_prop = i_cal_property_get_rrule (prop_received);
 			}
 
-			str_expected = i_cal_recurrence_as_string_r (rt_expected);
-			str_received = i_cal_recurrence_as_string_r (rt_received);
-			str_received_prop = i_cal_recurrence_as_string_r (rt_received_prop);
+			str_expected = i_cal_recurrence_to_string (rt_expected);
+			str_received = i_cal_recurrence_to_string (rt_received);
+			str_received_prop = i_cal_recurrence_to_string (rt_received_prop);
 
 			g_assert_cmpstr (str_expected, ==, str_received);
 			g_assert_cmpstr (str_expected, ==, str_received_prop);
@@ -2664,7 +2664,7 @@ test_component_rules (void (* set_func) (ECalComponent *comp,
 		if (values[ii]) {
 			ICalRecurrence *rt;
 
-			rt = i_cal_recurrence_from_string (values[ii]);
+			rt = i_cal_recurrence_new_from_string (values[ii]);
 			g_assert_nonnull (rt);
 
 			rules = g_slist_prepend (rules, rt);
@@ -2861,7 +2861,7 @@ test_component_exdates (void)
 		if (values[ii].time) {
 			ECalComponentDateTime *dt;
 
-			dt = e_cal_component_datetime_new_take (i_cal_time_from_string (values[ii].time), g_strdup (values[ii].tzid));
+			dt = e_cal_component_datetime_new_take (i_cal_time_new_from_string (values[ii].time), g_strdup (values[ii].tzid));
 			g_assert_nonnull (dt);
 
 			if (values[ii].tzid) {
@@ -3150,7 +3150,7 @@ test_component_recurid (void)
 		if (values[ii].time) {
 			ECalComponentDateTime *dt;
 
-			dt = e_cal_component_datetime_new_take (i_cal_time_from_string (values[ii].time), g_strdup (values[ii].tzid));
+			dt = e_cal_component_datetime_new_take (i_cal_time_new_from_string (values[ii].time), g_strdup (values[ii].tzid));
 			g_assert_nonnull (dt);
 
 			if (values[ii].tzid) {
@@ -3242,16 +3242,16 @@ test_component_rdates (void)
 			ICalDuration *duration = NULL;
 			ECalComponentPeriod *period;
 
-			start = i_cal_time_from_string (values[ii].start);
+			start = i_cal_time_new_from_string (values[ii].start);
 			g_assert_nonnull (start);
 			if (values[ii].duration == -1) {
 				if (values[ii].end) {
-					end = i_cal_time_from_string (values[ii].end);
+					end = i_cal_time_new_from_string (values[ii].end);
 					g_assert_nonnull (end);
 				}
 				period = e_cal_component_period_new_datetime (start, end);
 			} else {
-				duration = i_cal_duration_from_int (values[ii].duration);
+				duration = i_cal_duration_new_from_int (values[ii].duration);
 				g_assert_nonnull (duration);
 				period = e_cal_component_period_new_duration (start, duration);
 			}
@@ -3874,7 +3874,7 @@ test_component_alarms (void)
 			ECalComponentAlarmTriggerKind kind;
 			ICalDuration *duration;
 
-			duration = i_cal_duration_from_int (values[ii].trigger * 60);
+			duration = i_cal_duration_new_from_int (values[ii].trigger * 60);
 			if (values[ii].trigger < 0)
 				kind = E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START;
 			else

@@ -96,7 +96,7 @@ ecmb_test_get_rid_as_string (ICalComponent *icomp)
 		ICalTime *itt;
 
 		itt = i_cal_component_get_recurrenceid (icomp);
-		rid = i_cal_time_as_ical_string_r (itt);
+		rid = i_cal_time_as_ical_string (itt);
 		g_clear_object (&itt);
 	}
 
@@ -495,7 +495,7 @@ e_cal_meta_backend_test_save_component_sync (ECalMetaBackend *meta_backend,
 		comp_uid = i_cal_component_get_uid (icomp);
 		g_assert_cmpstr (uid, ==, comp_uid);
 
-		i_cal_component_take_component (test_backend->vcalendar, i_cal_component_new_clone (icomp));
+		i_cal_component_take_component (test_backend->vcalendar, i_cal_component_clone (icomp));
 	}
 
 	*out_new_uid = g_strdup (uid);
@@ -539,7 +539,7 @@ e_cal_meta_backend_test_load_component_sync (ECalMetaBackend *meta_backend,
 			if (!*out_instances)
 				*out_instances = e_cal_util_new_top_level ();
 
-			i_cal_component_take_component (*out_instances, i_cal_component_new_clone (icomp));
+			i_cal_component_take_component (*out_instances, i_cal_component_clone (icomp));
 		}
 	}
 
@@ -1078,7 +1078,7 @@ test_attachments (TCUFixture *fixture,
 	g_assert (success);
 	g_assert_nonnull (comp);
 
-	icomp = i_cal_component_new_clone (e_cal_component_get_icalcomponent (comp));
+	icomp = i_cal_component_clone (e_cal_component_get_icalcomponent (comp));
 	g_assert_nonnull (icomp);
 	g_assert_cmpint (i_cal_component_count_properties (icomp, I_CAL_ATTACH_PROPERTY), ==, 1);
 
@@ -1857,11 +1857,11 @@ test_get_free_busy (ECalMetaBackend *meta_backend)
 	users = g_slist_prepend (NULL, (gpointer) "user@no.where");
 	users = g_slist_prepend (users, (gpointer) "unknown@no.where");
 
-	itt = i_cal_time_from_string ("20170102T080000Z");
+	itt = i_cal_time_new_from_string ("20170102T080000Z");
 	start = i_cal_time_as_timet (itt);
 	g_object_unref (itt);
 
-	itt = i_cal_time_from_string ("20170102T200000Z");
+	itt = i_cal_time_new_from_string ("20170102T200000Z");
 	end = i_cal_time_as_timet (itt);
 	g_object_unref (itt);
 
@@ -2058,12 +2058,12 @@ ecmb_test_modify_case (const gchar *case_name,
 	if (ridstr) {
 		ICalTime *itt;
 
-		itt = i_cal_time_from_string (ridstr);
+		itt = i_cal_time_new_from_string (ridstr);
 		i_cal_component_set_recurrenceid (icomp, itt);
 		g_object_unref (itt);
 	}
 
-	calobj = i_cal_component_as_ical_string_r (icomp);
+	calobj = i_cal_component_as_ical_string (icomp);
 	g_object_unref (icomp);
 
 	return calobj;
@@ -2466,7 +2466,7 @@ test_receive_objects (ECalMetaBackend *meta_backend)
 
 	g_free (calobj);
 
-	i_cal_component_take_component (test_backend->vcalendar, i_cal_component_new_clone (firsticomp));
+	i_cal_component_take_component (test_backend->vcalendar, i_cal_component_clone (firsticomp));
 
 	g_object_unref (firsticomp);
 	g_object_unref (icomp);

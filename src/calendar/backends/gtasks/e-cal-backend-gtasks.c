@@ -117,14 +117,14 @@ ecb_gtasks_gdata_to_comp (GDataTasksTask *task)
 
 	utc_zone = i_cal_timezone_get_utc_timezone ();
 
-	tt = i_cal_time_from_timet_with_zone (gdata_entry_get_published (entry), 0, utc_zone);
+	tt = i_cal_time_new_from_timet_with_zone (gdata_entry_get_published (entry), 0, utc_zone);
 	if (!tt || !i_cal_time_is_valid_time (tt) || i_cal_time_is_null_time (tt)) {
 		g_clear_object (&tt);
-		tt = i_cal_time_from_timet_with_zone (gdata_entry_get_updated (entry), 0, utc_zone);
+		tt = i_cal_time_new_from_timet_with_zone (gdata_entry_get_updated (entry), 0, utc_zone);
 	}
 	if (!tt || !i_cal_time_is_valid_time (tt) || i_cal_time_is_null_time (tt)) {
 		g_clear_object (&tt);
-		tt = i_cal_time_current_time_with_zone (utc_zone);
+		tt = i_cal_time_new_current_with_zone (utc_zone);
 	}
 
 	ecb_gtasks_update_ical_time_property (icomp, I_CAL_CREATED_PROPERTY,
@@ -134,10 +134,10 @@ ecb_gtasks_gdata_to_comp (GDataTasksTask *task)
 
 	g_clear_object (&tt);
 
-	tt = i_cal_time_from_timet_with_zone (gdata_entry_get_updated (entry), 0, utc_zone);
+	tt = i_cal_time_new_from_timet_with_zone (gdata_entry_get_updated (entry), 0, utc_zone);
 	if (!tt || !i_cal_time_is_valid_time (tt) || i_cal_time_is_null_time (tt)) {
 		g_clear_object (&tt);
-		tt = i_cal_time_current_time_with_zone (utc_zone);
+		tt = i_cal_time_new_current_with_zone (utc_zone);
 	}
 	i_cal_component_set_dtstamp (icomp, tt);
 
@@ -149,14 +149,14 @@ ecb_gtasks_gdata_to_comp (GDataTasksTask *task)
 	g_clear_object (&tt);
 
 	if (gdata_tasks_task_get_due (task) > 0) {
-		tt = i_cal_time_from_timet_with_zone (gdata_tasks_task_get_due (task), 1, NULL);
+		tt = i_cal_time_new_from_timet_with_zone (gdata_tasks_task_get_due (task), 1, NULL);
 		if (tt && i_cal_time_is_valid_time (tt) && !i_cal_time_is_null_time (tt))
 			i_cal_component_set_due (icomp, tt);
 		g_clear_object (&tt);
 	}
 
 	if (gdata_tasks_task_get_completed (task) > 0) {
-		tt = i_cal_time_from_timet_with_zone (gdata_tasks_task_get_completed (task), 0, utc_zone);
+		tt = i_cal_time_new_from_timet_with_zone (gdata_tasks_task_get_completed (task), 0, utc_zone);
 		if (tt && i_cal_time_is_valid_time (tt) && !i_cal_time_is_null_time (tt)) {
 			ecb_gtasks_update_ical_time_property (icomp, I_CAL_COMPLETED_PROPERTY,
 				i_cal_property_new_completed,
@@ -847,7 +847,7 @@ ecb_gtasks_load_component_sync (ECalMetaBackend *meta_backend,
 
 			icomp = e_cal_component_get_icalcomponent (comp);
 			if (icomp)
-				*out_instances = i_cal_component_new_clone (icomp);
+				*out_instances = i_cal_component_clone (icomp);
 
 			g_hash_table_remove (cbgtasks->priv->preloaded, uid);
 
@@ -1062,7 +1062,7 @@ ecb_gtasks_dup_component_revision (ECalCache *cal_cache,
 		ICalTime *itt;
 
 		itt = i_cal_property_get_lastmodified (prop);
-		revision = i_cal_time_as_ical_string_r (itt);
+		revision = i_cal_time_as_ical_string (itt);
 		g_clear_object (&itt);
 		g_object_unref (prop);
 	}

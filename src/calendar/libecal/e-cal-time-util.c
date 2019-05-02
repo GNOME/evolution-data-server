@@ -167,8 +167,8 @@ time_add_day_with_zone (time_t time,
 	ICalTime *tt;
 	time_t res;
 
-	/* Convert to an icaltimetype. */
-	tt = i_cal_time_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
+	/* Convert to an ICalTime. */
+	tt = i_cal_time_new_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
 
 	/* Add/subtract the number of days. */
 	i_cal_time_adjust (tt, days, 0, 0, 0);
@@ -231,8 +231,8 @@ time_add_month_with_zone (time_t time,
 	gint day, days_in_month;
 	time_t res;
 
-	/* Convert to an icaltimetype. */
-	tt = i_cal_time_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
+	/* Convert to an ICalTime. */
+	tt = i_cal_time_new_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
 
 	/* Add on the number of months. */
 	i_cal_time_set_month (tt, i_cal_time_get_month (tt) + months);
@@ -280,8 +280,8 @@ time_year_begin_with_zone (time_t time,
 	ICalTime *tt;
 	time_t res;
 
-	/* Convert to an icaltimetype. */
-	tt = i_cal_time_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
+	/* Convert to an ICalTime. */
+	tt = i_cal_time_new_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
 
 	/* Set it to the start of the year. */
 	i_cal_time_set_month (tt, 1);
@@ -318,8 +318,8 @@ time_month_begin_with_zone (time_t time,
 	ICalTime *tt;
 	time_t res;
 
-	/* Convert to an icaltimetype. */
-	tt = i_cal_time_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
+	/* Convert to an ICalTime. */
+	tt = i_cal_time_new_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
 
 	/* Set it to the start of the month. */
 	i_cal_time_set_day (tt, 1);
@@ -359,8 +359,8 @@ time_week_begin_with_zone (time_t time,
 	gint weekday, offset;
 	time_t res;
 
-	/* Convert to an icaltimetype. */
-	tt = i_cal_time_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
+	/* Convert to an ICalTime. */
+	tt = i_cal_time_new_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
 
 	/* Get the weekday. */
 	weekday = time_day_of_week (i_cal_time_get_day (tt), i_cal_time_get_month (tt) - 1, i_cal_time_get_year (tt));
@@ -405,8 +405,8 @@ time_day_begin_with_zone (time_t time,
 	ICalTime *tt;
 	time_t new_time;
 
-	/* Convert to an icaltimetype. */
-	tt = i_cal_time_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
+	/* Convert to an ICalTime. */
+	tt = i_cal_time_new_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
 
 	/* Set it to the start of the day. */
 	i_cal_time_set_hour (tt, 0);
@@ -443,8 +443,8 @@ time_day_end_with_zone (time_t time,
 	ICalTime *tt;
 	time_t new_time;
 
-	/* Convert to an icaltimetype. */
-	tt = i_cal_time_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
+	/* Convert to an ICalTime. */
+	tt = i_cal_time_new_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
 
 	/* Set it to the start of the next day. */
 	i_cal_time_set_hour (tt, 0);
@@ -483,7 +483,7 @@ time_to_gdate_with_zone (GDate *date,
 	g_return_if_fail (date != NULL);
 	g_return_if_fail (time != -1);
 
-	tt = i_cal_time_from_timet_with_zone (
+	tt = i_cal_time_new_from_timet_with_zone (
 		time, FALSE,
 		zone ? (ICalTimezone *) zone : i_cal_timezone_get_utc_timezone ());
 
@@ -682,7 +682,7 @@ time_from_isodate (const gchar *str)
 
 #define digit_at(x,y) (x[y] - '0')
 
-	tt = i_cal_time_null_time ();
+	tt = i_cal_time_new_null_time ();
 
 	i_cal_time_set_year (tt, digit_at (str, 0) * 1000 +
 				     digit_at (str, 1) * 100 +
@@ -776,9 +776,9 @@ e_cal_util_icaltime_to_tm_with_zone (const ICalTime *itt,
 
 	g_return_val_if_fail (itt != NULL, tm);
 
-	itt_copy = i_cal_time_new_clone (itt);
+	itt_copy = i_cal_time_clone (itt);
 
-	i_cal_timezone_convert_time (itt_copy, (ICalTimezone *) from_zone, (ICalTimezone *) to_zone);
+	i_cal_time_convert_timezone (itt_copy, (ICalTimezone *) from_zone, (ICalTimezone *) to_zone);
 	tm = e_cal_util_icaltime_to_tm (itt_copy);
 	g_object_unref (itt_copy);
 
@@ -805,7 +805,7 @@ e_cal_util_tm_to_icaltime (struct tm *tm,
 
 	g_return_val_if_fail (tm != NULL, NULL);
 
-	itt = i_cal_time_null_time ();
+	itt = i_cal_time_new_null_time ();
 
 	if (!is_date)
 		i_cal_time_set_time (itt, tm->tm_hour, tm->tm_min, tm->tm_sec);

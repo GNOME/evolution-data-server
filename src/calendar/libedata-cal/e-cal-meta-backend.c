@@ -1034,7 +1034,7 @@ ecmb_gather_timezones (ECalMetaBackend *meta_backend,
 	     g_object_unref (subcomp), subcomp = i_cal_component_get_next_component (icomp, I_CAL_VTIMEZONE_COMPONENT)) {
 		ICalComponent *clone;
 
-		clone = i_cal_component_new_clone (subcomp);
+		clone = i_cal_component_clone (subcomp);
 
 		if (i_cal_timezone_set_component (zone, clone)) {
 			if (i_cal_timezone_get_tzid (zone))
@@ -1092,7 +1092,7 @@ ecmb_load_component_wrapper_sync (ECalMetaBackend *meta_backend,
 		for (subcomp = i_cal_component_get_first_component (icomp, kind);
 		     subcomp;
 		     g_object_unref (subcomp), subcomp = i_cal_component_get_next_component (icomp, kind)) {
-			ECalComponent *comp = e_cal_component_new_from_icalcomponent (i_cal_component_new_clone (subcomp));
+			ECalComponent *comp = e_cal_component_new_from_icalcomponent (i_cal_component_clone (subcomp));
 
 			if (comp) {
 				new_instances = g_slist_prepend (new_instances, comp);
@@ -1341,7 +1341,7 @@ ecmb_get_object_sync (ECalBackendSync *sync_backend,
 
 			icomp = e_cal_meta_backend_merge_instances (meta_backend, components, FALSE);
 			if (icomp) {
-				*calobj = i_cal_component_as_ical_string_r (icomp);
+				*calobj = i_cal_component_as_ical_string (icomp);
 
 				g_object_unref (icomp);
 			} else {
@@ -1408,7 +1408,7 @@ ecmb_add_free_busy_instance_cb (ICalComponent *icomp,
 	ICalParameter *param;
 	ICalPeriod *ipt;
 
-	ipt = i_cal_period_null_period ();
+	ipt = i_cal_period_new_null_period ();
 	i_cal_period_set_start (ipt, instance_start);
 	i_cal_period_set_end (ipt, instance_end);
 
@@ -1515,11 +1515,11 @@ ecmb_get_free_busy_sync (ECalBackendSync *sync_backend,
 
 	utc_zone = i_cal_timezone_get_utc_timezone ();
 
-	itt = i_cal_time_from_timet_with_zone (start, FALSE, utc_zone);
+	itt = i_cal_time_new_from_timet_with_zone (start, FALSE, utc_zone);
 	i_cal_component_set_dtstart (vfreebusy, itt);
 	g_object_unref (itt);
 
-	itt = i_cal_time_from_timet_with_zone (end, FALSE, utc_zone);
+	itt = i_cal_time_new_from_timet_with_zone (end, FALSE, utc_zone);
 	i_cal_component_set_dtend (vfreebusy, itt);
 	g_object_unref (itt);
 
@@ -1549,8 +1549,8 @@ ecmb_get_free_busy_sync (ECalBackendSync *sync_backend,
 				continue;
 		}
 
-		starttt = i_cal_time_from_timet_with_zone (start, FALSE, NULL);
-		endtt = i_cal_time_from_timet_with_zone (end, FALSE, NULL);
+		starttt = i_cal_time_new_from_timet_with_zone (start, FALSE, NULL);
+		endtt = i_cal_time_new_from_timet_with_zone (end, FALSE, NULL);
 
 		success = e_cal_recur_generate_instances_sync (icomp, starttt, endtt,
 			ecmb_add_free_busy_instance_cb, vfreebusy,
@@ -1564,7 +1564,7 @@ ecmb_get_free_busy_sync (ECalBackendSync *sync_backend,
 			break;
 	}
 
-	*out_freebusy = g_slist_prepend (*out_freebusy, i_cal_component_as_ical_string_r (vfreebusy));
+	*out_freebusy = g_slist_prepend (*out_freebusy, i_cal_component_as_ical_string (vfreebusy));
 
 	g_slist_free_full (components, g_object_unref);
 	g_object_unref (vfreebusy);
@@ -1620,7 +1620,7 @@ ecmb_create_object_sync (ECalMetaBackend *meta_backend,
 	}
 
 	/* Set the created and last modified times on the component, if not there already */
-	itt = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+	itt = i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());
 
 	if (!e_cal_util_component_has_property (icomp, I_CAL_CREATED_PROPERTY)) {
 		/* Update both when CREATED is missing, to make sure the LAST-MODIFIED
@@ -1818,7 +1818,7 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 	}
 
 	/* Set the last modified time on the component */
-	itt = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+	itt = i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());
 	e_cal_component_set_last_modified (comp, itt);
 	g_clear_object (&itt);
 
@@ -2145,7 +2145,7 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 				success = FALSE;
 				g_propagate_error (error, e_cal_client_error_create (E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND, NULL));
 			} else {
-				itt = i_cal_time_from_string (rid);
+				itt = i_cal_time_new_from_string (rid);
 				if (itt && !i_cal_time_get_timezone (itt)) {
 					ECalComponentDateTime *dt;
 
@@ -2179,7 +2179,7 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 			time_t fromtt, instancett;
 			GSList *link, *previous = instances;
 
-			itt = i_cal_time_from_string (rid);
+			itt = i_cal_time_new_from_string (rid);
 			if (itt && !i_cal_time_get_timezone (itt)) {
 				ECalComponentDateTime *dt;
 
@@ -2325,7 +2325,7 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 				e_cal_component_set_sequence (master_comp, sequence + 1);
 
 				/* Set the last modified time on the component */
-				itt = i_cal_time_current_time_with_zone (i_cal_timezone_get_utc_timezone ());
+				itt = i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());
 				e_cal_component_set_last_modified (master_comp, itt);
 				g_clear_object (&itt);
 			}
@@ -2565,13 +2565,13 @@ ecmb_receive_objects_sync (ECalBackendSync *sync_backend,
 		for (subcomp = i_cal_component_get_first_component (icomp, kind);
 		     subcomp;
 		     g_object_unref (subcomp), subcomp = i_cal_component_get_next_component (icomp, kind)) {
-			comp = e_cal_component_new_from_icalcomponent (i_cal_component_new_clone (subcomp));
+			comp = e_cal_component_new_from_icalcomponent (i_cal_component_clone (subcomp));
 
 			if (comp)
 				comps = g_slist_prepend (comps, comp);
 		}
 	} else if (i_cal_component_isa (icomp) == kind) {
-		comp = e_cal_component_new_from_icalcomponent (i_cal_component_new_clone (icomp));
+		comp = e_cal_component_new_from_icalcomponent (i_cal_component_clone (icomp));
 
 		if (comp)
 			comps = g_slist_prepend (comps, comp);
@@ -2776,7 +2776,7 @@ ecmb_get_timezone_sync (ECalBackendSync *sync_backend,
 		if (!icomp) {
 			local_error = e_cal_client_error_create (E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL);
 		} else {
-			timezone_str = i_cal_component_as_ical_string_r (icomp);
+			timezone_str = i_cal_component_as_ical_string (icomp);
 			g_object_unref (icomp);
 		}
 	}
@@ -3895,7 +3895,7 @@ add_timezone_cb (ICalParameter *param,
 	vtz_comp = i_cal_timezone_get_component (tz);
 
 	if (vtz_comp) {
-		ICalComponent *clone = i_cal_component_new_clone (vtz_comp);
+		ICalComponent *clone = i_cal_component_clone (vtz_comp);
 
 		if (f_data->replace_tzid_with_location) {
 			ICalProperty *prop;
@@ -3965,7 +3965,7 @@ e_cal_meta_backend_merge_instances (ECalMetaBackend *meta_backend,
 			continue;
 		}
 
-		f_data.icomp = i_cal_component_new_clone (e_cal_component_get_icalcomponent (comp));
+		f_data.icomp = i_cal_component_clone (e_cal_component_get_icalcomponent (comp));
 
 		i_cal_component_foreach_tzid (f_data.icomp, add_timezone_cb, &f_data);
 		i_cal_component_take_component (vcalendar, f_data.icomp);

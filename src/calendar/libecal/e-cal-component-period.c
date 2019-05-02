@@ -269,7 +269,7 @@ e_cal_component_period_set_start (ECalComponentPeriod *period,
 
 	if (period->start != start) {
 		g_clear_object (&period->start);
-		period->start = i_cal_time_new_clone (start);
+		period->start = i_cal_time_clone (start);
 	}
 }
 
@@ -318,7 +318,7 @@ e_cal_component_period_set_end (ECalComponentPeriod *period,
 	if (period->end != end) {
 		g_clear_object (&period->end);
 		if (end)
-			period->end = i_cal_time_new_clone (end);
+			period->end = i_cal_time_clone (end);
 	}
 }
 
@@ -364,6 +364,6 @@ e_cal_component_period_set_duration (ECalComponentPeriod *period,
 
 	if (period->duration != duration) {
 		g_clear_object (&period->duration);
-		period->duration = i_cal_duration_from_int (i_cal_duration_as_int ((ICalDuration *) duration));
+		period->duration = i_cal_duration_new_from_int (i_cal_duration_as_int ((ICalDuration *) duration));
 	}
 }
