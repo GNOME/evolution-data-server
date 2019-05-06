@@ -1790,6 +1790,43 @@ e_reminder_watcher_source_disappeared_cb (EReminderWatcher *watcher,
 }
 
 static gboolean
+e_reminder_watcher_check_wall_clock_time_changed_cb (gpointer user_data)
+{
+	EReminderWatcher *watcher = user_data;
+	gint64 wall_clock_time;
+
+	if (g_source_is_destroyed (g_main_current_source ()))
+		return FALSE;
+
+	g_return_val_if_fail (E_IS_REMINDER_WATCHER (watcher), FALSE);
+
+	#define ADD_SECONDS(to, secs) ((to) + ((secs) * G_USEC_PER_SEC))
+
+	wall_clock_time = g_get_real_time ();
+
+	/* Use one second margin */
+	if (wall_clock_time > ADD_SECONDS (watcher->priv->expected_wall_clock_time, 1) ||
+	    wall_clock_time < ADD_SECONDS (watcher->priv->expected_wall_clock_time, -1)) {
+		gint64 diff = (wall_clock_time - watcher->priv->expected_wall_clock_time) / 1000;
+
+		e_reminder_watcher_debug_print ("Current wall-clock time differs from expected by %" G_GINT64_FORMAT " ms, rescheduling reminders\n", diff);
+
+		/* To make sure the timer is re-scheduled */
+		watcher->priv->next_trigger = 0;
+
+		e_reminder_watcher_maybe_schedule_next_trigger (watcher, 0);
+
+		wall_clock_time = g_get_real_time ();
+	}
+
+	watcher->priv->expected_wall_clock_time = ADD_SECONDS (wall_clock_time, 60);
+
+	#undef ADD_SECONDS
+
+	return TRUE;
+}
+
+static gboolean
 e_reminder_watcher_construct_idle_cb (gpointer user_data)
 {
 	EReminderWatcher *watcher = user_data;
@@ -1814,6 +1851,15 @@ e_reminder_watcher_construct_idle_cb (gpointer user_data)
 		G_CALLBACK (e_reminder_watcher_source_disappeared_cb), watcher);
 
 	e_source_registry_watcher_reclaim (watcher->priv->registry_watcher);
+
+	if (!watcher->priv->wall_clock_handler_id) {
+		/* Monotonic time doesn't change during hibernation, while the
+		 * wall clock time does, thus check for wall clock time changes
+		 * and reschedule alarms when it changes. */
+		watcher->priv->expected_wall_clock_time = g_get_real_time () + (60 * G_USEC_PER_SEC);
+		watcher->priv->wall_clock_handler_id = e_named_timeout_add_seconds (60,
+			e_reminder_watcher_check_wall_clock_time_changed_cb, watcher);
+	}
 
 	if (!watcher->priv->snoozed)
 		watcher->priv->snoozed = e_reminder_watcher_reminders_from_key (watcher, "reminders-snoozed");
