@@ -1725,6 +1725,40 @@ smtp_data (CamelSmtpTransport *transport,
 		CAMEL_DATA_WRAPPER (message),
 		filtered_stream, cancellable, error);
 
+	if (camel_debug ("smtp")) {
+		CamelStream *mem_stream, *sec_filtered_stream;
+		GError *local_error = NULL;
+
+		mem_stream = camel_stream_mem_new ();
+		sec_filtered_stream = camel_stream_filter_new (mem_stream);
+
+		filter = camel_mime_filter_crlf_new (
+			CAMEL_MIME_FILTER_CRLF_ENCODE,
+			CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS);
+		camel_stream_filter_add (CAMEL_STREAM_FILTER (sec_filtered_stream), filter);
+		g_object_unref (filter);
+
+		if (camel_data_wrapper_write_to_stream_sync (CAMEL_DATA_WRAPPER (message), sec_filtered_stream, cancellable, &local_error) == -1) {
+			printf ("[SMTP] Failed to write message to memory stream: %s\n", local_error ? local_error->message : "Unknown error");
+		} else {
+			GByteArray *bytes;
+
+			camel_stream_flush (sec_filtered_stream, cancellable, NULL);
+
+			bytes = camel_stream_mem_get_byte_array (CAMEL_STREAM_MEM (mem_stream));
+
+			if (!bytes) {
+				printf ("[SMTP] Failed to get filtered stream bytes\n");
+			} else {
+				printf ("[SMTP] sent data (re-encoded):\n%.*s\n", (gint) bytes->len, (const gchar *) bytes->data);
+			}
+		}
+
+		g_clear_object (&sec_filtered_stream);
+		g_clear_object (&mem_stream);
+		g_clear_error (&local_error);
+	}
+
 	/* restore the bcc headers */
 	for (ii = 0; camel_name_value_array_get (previous_headers, ii, &header_name, &header_value); ii++) {
 		if (!g_ascii_strcasecmp (header_name, "Bcc")) {
