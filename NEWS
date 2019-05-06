@@ -1,3 +1,19 @@
+Evolution-Data-Server 3.32.2 2019-05-06
+---------------------------------------
+
+Bug Fixes:
+	I#89 - [IMAPx] Downloads content for offline in unsubscribed folders (Milan Crha)
+	I#99 - Fails to build against git master of OpenLDAP (vendor version check) (Дилян Палаузов)
+	I#102 - Change order of gtkdoc-scangobj libraries (Milan Crha)
+	I#105 - Invalid UTF-8 letters in a mail body get lost (Milan Crha)
+
+Miscellaneous:
+	Address several issues reported by Coverity Scan (Milan Crha)
+	[EWebDAVDiscover] Prevent crash on GError use in gio functions (Milan Crha)
+
+Translations:
+	Gianvito Cavasoli (it)
+
 Evolution-Data-Server 3.32.1 2019-04-08
 ---------------------------------------
 
