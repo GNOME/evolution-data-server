@@ -1879,9 +1879,10 @@ exit:
 static void
 imapx_refresh_finfo (CamelSession *session,
                      GCancellable *cancellable,
-                     CamelIMAPXStore *store,
+                     gpointer user_data,
                      GError **error)
 {
+	CamelIMAPXStore *store = user_data;
 	CamelService *service;
 	const gchar *display_name;
 
@@ -2069,6 +2070,30 @@ imapx_store_get_folder_sync (CamelStore *store,
 	return folder;
 }
 
+static void
+imapx_store_schedule_folder_list_update (CamelStore *store)
+{
+	CamelSession *session;
+	CamelService *service;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_STORE (store));
+
+	service = CAMEL_SERVICE (store);
+	session = camel_service_ref_session (service);
+
+	if (session) {
+		gchar *description;
+
+		description = g_strdup_printf (_("Retrieving folder list for “%s”"), camel_service_get_display_name (service));
+
+		camel_session_submit_job (session, description, imapx_refresh_finfo,
+			g_object_ref (store), g_object_unref);
+
+		g_object_unref (session);
+		g_free (description);
+	}
+}
+
 static CamelFolderInfo *
 imapx_store_get_folder_info_sync (CamelStore *store,
                                   const gchar *top,
@@ -2116,29 +2141,16 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 			time (NULL) - imapx_store->priv->last_refresh_time;
 
 		if (time_since_last_refresh > FINFO_REFRESH_INTERVAL) {
-			CamelSession *session;
-			gchar *description;
-
 			imapx_store->priv->last_refresh_time = time (NULL);
-
-			session = camel_service_ref_session (service);
-			if (session) {
-				description = g_strdup_printf (_("Retrieving folder list for “%s”"), camel_service_get_display_name (service));
-
-				camel_session_submit_job (
-					session, description, (CamelSessionCallback)
-					imapx_refresh_finfo,
-					g_object_ref (store),
-					(GDestroyNotify) g_object_unref);
-
-				g_object_unref (session);
-				g_free (description);
-			}
+			imapx_store_schedule_folder_list_update (store);
 		}
 	}
 
 	/* Avoid server interaction if the FAST flag is set. */
-	if (!initial_setup && flags & CAMEL_STORE_FOLDER_INFO_FAST) {
+	if ((flags & CAMEL_STORE_FOLDER_INFO_FAST)) {
+		if (initial_setup)
+			imapx_store_schedule_folder_list_update (store);
+
 		fi = get_folder_info_offline (store, top, flags, cancellable, error);
 		goto exit;
 	}
