@@ -171,6 +171,11 @@ gboolean	camel_imapx_settings_get_use_subscriptions
 void		camel_imapx_settings_set_use_subscriptions
 						(CamelIMAPXSettings *settings,
 						 gboolean use_subscriptions);
+gboolean	camel_imapx_settings_get_full_update_on_metered_network
+						(CamelIMAPXSettings *settings);
+void		camel_imapx_settings_set_full_update_on_metered_network
+						(CamelIMAPXSettings *settings,
+						 gboolean full_update_on_metered_network);
 
 G_END_DECLS
 
