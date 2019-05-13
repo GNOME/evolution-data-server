@@ -2963,7 +2963,10 @@ camel_imapx_parse_mailbox (CamelIMAPXInputStream *stream,
 	if (!success)
 		return NULL;
 
-	mailbox_name = camel_utf7_utf8 ((gchar *) token);
+	if (camel_imapx_input_stream_get_utf8_accept (stream))
+		mailbox_name = g_strdup ((const gchar *) token);
+	else
+		mailbox_name = camel_utf7_utf8 ((const gchar *) token);
 
 	camel_imapx_normalize_mailbox (mailbox_name, separator);
 
@@ -3251,7 +3254,10 @@ camel_imapx_parse_quotaroot (CamelIMAPXInputStream *stream,
 	if (!success)
 		goto fail;
 
-	mailbox_name = camel_utf7_utf8 ((gchar *) token);
+	if (camel_imapx_input_stream_get_utf8_accept (stream))
+		mailbox_name = g_strdup ((const gchar *) token);
+	else
+		mailbox_name = camel_utf7_utf8 ((const gchar *) token);
 
 	while (TRUE) {
 		/* Peek at the next token, and break

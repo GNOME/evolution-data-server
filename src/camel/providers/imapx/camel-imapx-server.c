@@ -3408,6 +3408,9 @@ preauthed:
 		g_mutex_lock (&is->priv->stream_lock);
 
 		is->priv->utf8_accept = TRUE;
+
+		if (CAMEL_IS_IMAPX_INPUT_STREAM (is->priv->input_stream))
+			camel_imapx_input_stream_set_utf8_accept (CAMEL_IMAPX_INPUT_STREAM (is->priv->input_stream), TRUE);
 	}
 
 	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, NAMESPACE)) {
@@ -6423,29 +6426,33 @@ camel_imapx_server_expunge_sync (CamelIMAPXServer *is,
 
 gboolean
 camel_imapx_server_list_sync (CamelIMAPXServer *is,
-			      const gchar *pattern,
+			      const gchar *in_pattern,
 			      CamelStoreGetFolderInfoFlags flags,
 			      GCancellable *cancellable,
 			      GError **error)
 {
 	CamelIMAPXCommand *ic;
+	gchar *utf7_pattern = NULL;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	g_return_val_if_fail (pattern != NULL, FALSE);
+	g_return_val_if_fail (in_pattern != NULL, FALSE);
 
 	g_warn_if_fail (is->priv->list_responses_hash == NULL);
 	g_warn_if_fail (is->priv->list_responses == NULL);
 	g_warn_if_fail (is->priv->lsub_responses == NULL);
 
+	if (!camel_imapx_server_get_utf8_accept (is))
+		utf7_pattern = camel_utf8_utf7 (in_pattern);
+
 	if (is->priv->list_return_opts != NULL) {
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_LIST, "LIST \"\" %s RETURN (%t)",
-			pattern, is->priv->list_return_opts);
+			utf7_pattern ? utf7_pattern : in_pattern, is->priv->list_return_opts);
 	} else {
 		is->priv->list_responses_hash = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
 
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_LIST, "LIST \"\" %s",
-			pattern);
+			utf7_pattern ? utf7_pattern : in_pattern);
 	}
 
 	success = camel_imapx_server_process_command_sync (is, ic, _("Error fetching folders"), cancellable, error);
@@ -6454,12 +6461,14 @@ camel_imapx_server_list_sync (CamelIMAPXServer *is,
 
 	if (success && !is->priv->list_return_opts) {
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_LSUB, "LSUB \"\" %s",
-			pattern);
+			utf7_pattern ? utf7_pattern : in_pattern);
 
 		success = camel_imapx_server_process_command_sync (is, ic, _("Error fetching subscribed folders"), cancellable, error);
 
 		camel_imapx_command_unref (ic);
 	}
+
+	g_free (utf7_pattern);
 
 	if (is->priv->list_responses_hash) {
 		CamelIMAPXStore *imapx_store;
@@ -6516,17 +6525,11 @@ camel_imapx_server_create_mailbox_sync (CamelIMAPXServer *is,
 	camel_imapx_command_unref (ic);
 
 	if (success) {
-		gchar *utf7_pattern;
-
-		utf7_pattern = camel_utf8_utf7 (mailbox_name);
-
 		/* List the new mailbox so we trigger our untagged
 		 * LIST handler.  This simulates being notified of
 		 * a newly-created mailbox, so we can just let the
 		 * callback functions handle the bookkeeping. */
-		success = camel_imapx_server_list_sync (is, utf7_pattern, 0, cancellable, error);
-
-		g_free (utf7_pattern);
+		success = camel_imapx_server_list_sync (is, mailbox_name, 0, cancellable, error);
 	}
 
 	return success;
