@@ -46,6 +46,8 @@ struct _CamelIMAPXInputStreamPrivate {
 
 	guchar *tokenbuf;
 	guint bufsize;
+
+	gboolean utf8_accept;
 };
 
 /* Forward Declarations */
@@ -263,6 +265,7 @@ camel_imapx_input_stream_init (CamelIMAPXInputStream *is)
 	is->priv->buf = g_malloc (is->priv->bufsize + 1);
 	is->priv->ptr = is->priv->end = is->priv->buf;
 	is->priv->tokenbuf = g_malloc (is->priv->bufsize + 1);
+	is->priv->utf8_accept = FALSE;
 }
 
 static void
@@ -327,6 +330,32 @@ camel_imapx_input_stream_buffered (CamelIMAPXInputStream *is)
 	g_return_val_if_fail (CAMEL_IS_IMAPX_INPUT_STREAM (is), 0);
 
 	return is->priv->end - is->priv->ptr;
+}
+
+/*
+ * Returns whether the stream has enabled RFC 6855 extension,
+ * where strings like mailbox names are not encoded in UTF-7,
+ * but they are provided in UTF-8 directly.
+ */
+gboolean
+camel_imapx_input_stream_get_utf8_accept (CamelIMAPXInputStream *is)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_INPUT_STREAM (is), FALSE);
+
+	return is->priv->utf8_accept;
+}
+
+/*
+ * Sets whether the stream has enabled RFC 6855 extension. The default
+ * is FALSE.
+ */
+void
+camel_imapx_input_stream_set_utf8_accept (CamelIMAPXInputStream *is,
+					  gboolean utf8_accept)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_INPUT_STREAM (is));
+
+	is->priv->utf8_accept = utf8_accept;
 }
 
 /* FIXME: these should probably handle it themselves,

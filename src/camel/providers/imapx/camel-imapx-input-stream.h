@@ -79,6 +79,11 @@ GType		camel_imapx_input_stream_get_type
 GInputStream *	camel_imapx_input_stream_new	(GInputStream *base_stream);
 gint		camel_imapx_input_stream_buffered
 						(CamelIMAPXInputStream *is);
+gboolean	camel_imapx_input_stream_get_utf8_accept
+						(CamelIMAPXInputStream *is);
+void		camel_imapx_input_stream_set_utf8_accept
+						(CamelIMAPXInputStream *is,
+						 gboolean utf8_accept);
 
 camel_imapx_token_t
 		camel_imapx_input_stream_token	(CamelIMAPXInputStream *is,

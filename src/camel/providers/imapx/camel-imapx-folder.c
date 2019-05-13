@@ -1408,7 +1408,6 @@ camel_imapx_folder_list_mailbox (CamelIMAPXFolder *folder,
 	CamelIMAPXStoreInfo *imapx_store_info;
 	gchar *folder_path = NULL;
 	gchar *mailbox_name = NULL;
-	gchar *pattern;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (folder), FALSE);
@@ -1449,13 +1448,9 @@ camel_imapx_folder_list_mailbox (CamelIMAPXFolder *folder,
 	/* Last resort is to issue a LIST command.  Maintainer should
 	 * monitor IMAP logs to make sure this is rarely if ever used. */
 
-	pattern = camel_utf8_utf7 (mailbox_name);
-
 	/* This creates a mailbox instance from the LIST response. */
 	conn_man = camel_imapx_store_get_conn_manager (imapx_store);
-	success = camel_imapx_conn_manager_list_sync (conn_man, pattern, 0, cancellable, error);
-
-	g_free (pattern);
+	success = camel_imapx_conn_manager_list_sync (conn_man, mailbox_name, 0, cancellable, error);
 
 	if (!success)
 		goto exit;

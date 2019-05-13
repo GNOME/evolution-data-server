@@ -1605,7 +1605,6 @@ fetch_folder_info_from_folder_path (CamelIMAPXStore *imapx_store,
 	CamelIMAPXNamespaceResponse *namespace_response;
 	CamelIMAPXNamespace *namespace;
 	gchar *mailbox_name;
-	gchar *utf7_mailbox_name;
 	gchar *pattern;
 	gchar separator;
 	gboolean success = FALSE;
@@ -1630,15 +1629,13 @@ fetch_folder_info_from_folder_path (CamelIMAPXStore *imapx_store,
 	separator = camel_imapx_namespace_get_separator (namespace);
 	mailbox_name = g_strdelimit (g_strdup (folder_path), "/", separator);
 
-	utf7_mailbox_name = camel_utf8_utf7 (mailbox_name);
-	pattern = g_strdup_printf ("%s*", utf7_mailbox_name);
+	pattern = g_strdup_printf ("%s*", mailbox_name);
 
 	success = fetch_folder_info_for_pattern (
 		conn_man, namespace, pattern, flags,
 		folder_info_results, cancellable, error);
 
 	g_free (pattern);
-	g_free (utf7_mailbox_name);
 	g_free (mailbox_name);
 
 exit:
