@@ -4355,6 +4355,7 @@ camel_imapx_server_get_message_sync (CamelIMAPXServer *is,
 	data_size = camel_message_info_get_size (mi);
 	use_multi_fetch = data_size > MULTI_SIZE && camel_imapx_settings_get_use_multi_fetch (settings);
 	g_object_unref (settings);
+	g_clear_object (&mi);
 
 	g_warn_if_fail (is->priv->get_message_stream == NULL);
 
