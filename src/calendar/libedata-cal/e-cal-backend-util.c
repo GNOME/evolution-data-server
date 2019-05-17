@@ -189,28 +189,28 @@ is_attendee_declined (GSList *declined_attendees,
  **/
 gboolean
 e_cal_backend_user_declined (ESourceRegistry *registry,
-                             icalcomponent *icalcomp)
+			     ICalComponent *icalcomp)
 {
 	GList *list, *iter;
 	GSList *declined_attendees = NULL;
 	gboolean declined = FALSE;
-	icalproperty *prop;
-	icalparameter *param;
+	ICalProperty *prop;
+	ICalParameter *param;
 
 	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
 	/* First test whether there is any declined attendee at all and remember his/her address */
-	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_ATTENDEE_PROPERTY);
+	for (prop = i_cal_component_get_first_property (icalcomp, I_CAL_ATTENDEE_PROPERTY);
 	     prop != NULL;
-	     prop = icalcomponent_get_next_property (icalcomp, ICAL_ATTENDEE_PROPERTY)) {
-		param = icalproperty_get_first_parameter (prop, ICAL_PARTSTAT_PARAMETER);
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, I_CAL_ATTENDEE_PROPERTY)) {
+		param = i_cal_property_get_first_parameter (prop, I_CAL_PARTSTAT_PARAMETER);
 
-		if (param && icalparameter_get_partstat (param) == ICAL_PARTSTAT_DECLINED) {
+		if (param && i_cal_parameter_get_partstat (param) == I_CAL_PARTSTAT_DECLINED) {
 			gchar *attendee;
 			gchar *address;
 
-			attendee = icalproperty_get_value_as_string_r (prop);
+			attendee = i_cal_property_get_value_as_string (prop);
 			if (attendee) {
 				if (!g_ascii_strncasecmp (attendee, "mailto:", 7))
 					address = g_strdup (attendee + 7);
@@ -227,6 +227,8 @@ e_cal_backend_user_declined (ESourceRegistry *registry,
 				g_free (attendee);
 			}
 		}
+
+		g_clear_object (&param);
 	}
 
 	if (!declined_attendees)

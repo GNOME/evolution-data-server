@@ -30,8 +30,8 @@
 
 #define E_CALDAV_X_ETAG "X-EVOLUTION-CALDAV-ETAG"
 
-#define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
-#define EDC_ERROR_EX(_code, _msg) e_data_cal_create_error (_code, _msg)
+#define ECC_ERROR(_code) e_cal_client_error_create (_code, NULL)
+#define ECC_ERROR_EX(_code, _msg) e_cal_client_error_create (_code, _msg)
 
 struct _ECalBackendCalDAVPrivate {
 	/* The main WebDAV session  */
@@ -325,37 +325,39 @@ ecb_caldav_disconnect_sync (ECalMetaBackend *meta_backend,
 }
 
 static const gchar *
-ecb_caldav_get_vcalendar_uid (icalcomponent *vcalendar)
+ecb_caldav_get_vcalendar_uid (ICalComponent *vcalendar)
 {
 	const gchar *uid = NULL;
-	icalcomponent *subcomp;
+	ICalComponent *subcomp;
 
 	g_return_val_if_fail (vcalendar != NULL, NULL);
-	g_return_val_if_fail (icalcomponent_isa (vcalendar) == ICAL_VCALENDAR_COMPONENT, NULL);
+	g_return_val_if_fail (i_cal_component_isa (vcalendar) == I_CAL_VCALENDAR_COMPONENT, NULL);
 
-	for (subcomp = icalcomponent_get_first_component (vcalendar, ICAL_ANY_COMPONENT);
+	for (subcomp = i_cal_component_get_first_component (vcalendar, I_CAL_ANY_COMPONENT);
 	     subcomp && !uid;
-	     subcomp = icalcomponent_get_next_component (vcalendar, ICAL_ANY_COMPONENT)) {
-		icalcomponent_kind kind = icalcomponent_isa (subcomp);
+	     g_object_unref (subcomp), subcomp = i_cal_component_get_next_component (vcalendar, I_CAL_ANY_COMPONENT)) {
+		ICalComponentKind kind = i_cal_component_isa (subcomp);
 
-		if (kind == ICAL_VEVENT_COMPONENT ||
-		    kind == ICAL_VJOURNAL_COMPONENT ||
-		    kind == ICAL_VTODO_COMPONENT) {
-			uid = icalcomponent_get_uid (subcomp);
+		if (kind == I_CAL_VEVENT_COMPONENT ||
+		    kind == I_CAL_VJOURNAL_COMPONENT ||
+		    kind == I_CAL_VTODO_COMPONENT) {
+			uid = i_cal_component_get_uid (subcomp);
 			if (uid && !*uid)
 				uid = NULL;
 		}
 	}
+
+	g_clear_object (&subcomp);
 
 	return uid;
 }
 
 static void
 ecb_caldav_update_nfo_with_vcalendar (ECalMetaBackendInfo *nfo,
-				      icalcomponent *vcalendar,
+				      ICalComponent *vcalendar,
 				      const gchar *etag)
 {
-	icalcomponent *subcomp;
+	ICalComponent *subcomp;
 	const gchar *uid;
 
 	g_return_if_fail (nfo != NULL);
@@ -366,20 +368,20 @@ ecb_caldav_update_nfo_with_vcalendar (ECalMetaBackendInfo *nfo,
 	if (!etag || !*etag)
 		etag = nfo->revision;
 
-	for (subcomp = icalcomponent_get_first_component (vcalendar, ICAL_ANY_COMPONENT);
+	for (subcomp = i_cal_component_get_first_component (vcalendar, I_CAL_ANY_COMPONENT);
 	     subcomp;
-	     subcomp = icalcomponent_get_next_component (vcalendar, ICAL_ANY_COMPONENT)) {
-		icalcomponent_kind kind = icalcomponent_isa (subcomp);
+	     g_object_unref (subcomp), subcomp = i_cal_component_get_next_component (vcalendar, I_CAL_ANY_COMPONENT)) {
+		ICalComponentKind kind = i_cal_component_isa (subcomp);
 
-		if (kind == ICAL_VEVENT_COMPONENT ||
-		    kind == ICAL_VJOURNAL_COMPONENT ||
-		    kind == ICAL_VTODO_COMPONENT) {
-			e_cal_util_set_x_property (subcomp, E_CALDAV_X_ETAG, etag);
+		if (kind == I_CAL_VEVENT_COMPONENT ||
+		    kind == I_CAL_VJOURNAL_COMPONENT ||
+		    kind == I_CAL_VTODO_COMPONENT) {
+			e_cal_util_component_set_x_property (subcomp, E_CALDAV_X_ETAG, etag);
 		}
 	}
 
 	g_warn_if_fail (nfo->object == NULL);
-	nfo->object = icalcomponent_as_ical_string_r (vcalendar);
+	nfo->object = i_cal_component_as_ical_string (vcalendar);
 
 	if (!nfo->uid || !*(nfo->uid)) {
 		g_free (nfo->uid);
@@ -418,9 +420,9 @@ ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
 		etag = e_webdav_session_util_maybe_dequote (e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:getetag", xpath_prop_prefix));
 
 		if (calendar_data) {
-			icalcomponent *vcalendar;
+			ICalComponent *vcalendar;
 
-			vcalendar = icalcomponent_new_from_string (calendar_data);
+			vcalendar = i_cal_component_new_from_string (calendar_data);
 			if (vcalendar) {
 				const gchar *uid;
 
@@ -447,7 +449,7 @@ ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
 					}
 				}
 
-				icalcomponent_free (vcalendar);
+				g_object_unref (vcalendar);
 			}
 		}
 
@@ -511,12 +513,12 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 				nfo->extra, NULL, &etag, &calendar_data, NULL, cancellable, error);
 
 			if (success && calendar_data) {
-				icalcomponent *vcalendar;
+				ICalComponent *vcalendar;
 
-				vcalendar = icalcomponent_new_from_string (calendar_data);
+				vcalendar = i_cal_component_new_from_string (calendar_data);
 				if (vcalendar) {
 					ecb_caldav_update_nfo_with_vcalendar (nfo, vcalendar, etag);
-					icalcomponent_free (vcalendar);
+					g_object_unref (vcalendar);
 				}
 			}
 
@@ -615,6 +617,7 @@ ecb_caldav_search_changes_cb (ECalCache *cal_cache,
 			      const gchar *revision,
 			      const gchar *object,
 			      const gchar *extra,
+			      guint32 custom_flags,
 			      EOfflineState offline_state,
 			      gpointer user_data)
 {
@@ -659,19 +662,19 @@ ecb_caldav_check_credentials_error (ECalBackendCalDAV *cbdav,
 	g_return_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav));
 
 	if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED) && webdav) {
-		op_error->domain = E_DATA_CAL_ERROR;
-		op_error->code = TLSNotAvailable;
+		op_error->domain = E_CLIENT_ERROR;
+		op_error->code = E_CLIENT_ERROR_TLS_NOT_AVAILABLE;
 	} else if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
 		   g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
-		op_error->domain = E_DATA_CAL_ERROR;
-		op_error->code = AuthenticationRequired;
+		op_error->domain = E_CLIENT_ERROR;
+		op_error->code = E_CLIENT_ERROR_AUTHENTICATION_REQUIRED;
 
 		if (webdav) {
 			ENamedParameters *credentials;
 
 			credentials = e_soup_session_dup_credentials (E_SOUP_SESSION (webdav));
 			if (credentials && e_named_parameters_count (credentials) > 0)
-				op_error->code = AuthenticationFailed;
+				op_error->code = E_CLIENT_ERROR_AUTHENTICATION_FAILED;
 
 			e_named_parameters_free (credentials);
 		}
@@ -766,7 +769,7 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 	}
 
 	if (!is_repeat) {
-		icaltimezone *utc = icaltimezone_get_utc_timezone ();
+		ICalTimezone *utc = i_cal_timezone_get_utc_timezone ();
 		time_t now;
 		gchar *tmp;
 
@@ -875,9 +878,9 @@ ecb_caldav_extract_existing_cb (EWebDAVSession *webdav,
 		calendar_data = e_xml_xpath_eval_as_string (xpath_ctx, "%s/C:calendar-data", xpath_prop_prefix);
 
 		if (calendar_data) {
-			icalcomponent *vcalendar;
+			ICalComponent *vcalendar;
 
-			vcalendar = icalcomponent_new_from_string (calendar_data);
+			vcalendar = i_cal_component_new_from_string (calendar_data);
 			if (vcalendar) {
 				const gchar *uid;
 
@@ -889,7 +892,7 @@ ecb_caldav_extract_existing_cb (EWebDAVSession *webdav,
 						e_cal_meta_backend_info_new (uid, etag, NULL, href));
 				}
 
-				icalcomponent_free (vcalendar);
+				g_object_unref (vcalendar);
 			}
 		}
 
@@ -909,7 +912,7 @@ ecb_caldav_list_existing_sync (ECalMetaBackend *meta_backend,
 {
 	ECalBackendCalDAV *cbdav;
 	EWebDAVSession *webdav;
-	icalcomponent_kind kind;
+	ICalComponentKind kind;
 	EXmlDocument *xml;
 	GError *local_error = NULL;
 	gboolean success;
@@ -920,7 +923,6 @@ ecb_caldav_list_existing_sync (ECalMetaBackend *meta_backend,
 	*out_existing_objects = NULL;
 
 	cbdav = E_CAL_BACKEND_CALDAV (meta_backend);
-
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbdav));
 
 	xml = e_xml_document_new (E_WEBDAV_NS_CALDAV, "calendar-query");
@@ -934,11 +936,11 @@ ecb_caldav_list_existing_sync (ECalMetaBackend *meta_backend,
 	e_xml_document_start_element (xml, E_WEBDAV_NS_CALDAV, "comp");
 	e_xml_document_add_attribute (xml, NULL, "name", "VCALENDAR");
 	e_xml_document_start_element (xml, E_WEBDAV_NS_CALDAV, "comp");
-	if (kind == ICAL_VEVENT_COMPONENT)
+	if (kind == I_CAL_VEVENT_COMPONENT)
 		e_xml_document_add_attribute (xml, NULL, "name", "VEVENT");
-	else if (kind == ICAL_VJOURNAL_COMPONENT)
+	else if (kind == I_CAL_VJOURNAL_COMPONENT)
 		e_xml_document_add_attribute (xml, NULL, "name", "VJOURNAL");
-	else if (kind == ICAL_VTODO_COMPONENT)
+	else if (kind == I_CAL_VTODO_COMPONENT)
 		e_xml_document_add_attribute (xml, NULL, "name", "VTODO");
 	else
 		g_warn_if_reached ();
@@ -954,11 +956,11 @@ ecb_caldav_list_existing_sync (ECalMetaBackend *meta_backend,
 	e_xml_document_start_element (xml, E_WEBDAV_NS_CALDAV, "comp-filter");
 	e_xml_document_add_attribute (xml, NULL, "name", "VCALENDAR");
 	e_xml_document_start_element (xml, E_WEBDAV_NS_CALDAV, "comp-filter");
-	if (kind == ICAL_VEVENT_COMPONENT)
+	if (kind == I_CAL_VEVENT_COMPONENT)
 		e_xml_document_add_attribute (xml, NULL, "name", "VEVENT");
-	else if (kind == ICAL_VJOURNAL_COMPONENT)
+	else if (kind == I_CAL_VJOURNAL_COMPONENT)
 		e_xml_document_add_attribute (xml, NULL, "name", "VJOURNAL");
-	else if (kind == ICAL_VTODO_COMPONENT)
+	else if (kind == I_CAL_VTODO_COMPONENT)
 		e_xml_document_add_attribute (xml, NULL, "name", "VTODO");
 	e_xml_document_end_element (xml); /* comp-filter / VEVENT|VJOURNAL|VTODO */
 	e_xml_document_end_element (xml); /* comp-filter / VCALENDAR */
@@ -1042,25 +1044,25 @@ ecb_caldav_uid_to_uri (ECalBackendCalDAV *cbdav,
 }
 
 static void
-ecb_caldav_store_component_etag (icalcomponent *icalcomp,
+ecb_caldav_store_component_etag (ICalComponent *icomp,
 				 const gchar *etag)
 {
-	icalcomponent *subcomp;
+	ICalComponent *subcomp;
 
-	g_return_if_fail (icalcomp != NULL);
+	g_return_if_fail (icomp != NULL);
 	g_return_if_fail (etag != NULL);
 
-	e_cal_util_set_x_property (icalcomp, E_CALDAV_X_ETAG, etag);
+	e_cal_util_component_set_x_property (icomp, E_CALDAV_X_ETAG, etag);
 
-	for (subcomp = icalcomponent_get_first_component (icalcomp, ICAL_ANY_COMPONENT);
+	for (subcomp = i_cal_component_get_first_component (icomp, I_CAL_ANY_COMPONENT);
 	     subcomp;
-	     subcomp = icalcomponent_get_next_component (icalcomp, ICAL_ANY_COMPONENT)) {
-		icalcomponent_kind kind = icalcomponent_isa (subcomp);
+	     g_object_unref (subcomp), subcomp = i_cal_component_get_next_component (icomp, I_CAL_ANY_COMPONENT)) {
+		ICalComponentKind kind = i_cal_component_isa (subcomp);
 
-		if (kind == ICAL_VEVENT_COMPONENT ||
-		    kind == ICAL_VJOURNAL_COMPONENT ||
-		    kind == ICAL_VTODO_COMPONENT) {
-			e_cal_util_set_x_property (subcomp, E_CALDAV_X_ETAG, etag);
+		if (kind == I_CAL_VEVENT_COMPONENT ||
+		    kind == I_CAL_VJOURNAL_COMPONENT ||
+		    kind == I_CAL_VTODO_COMPONENT) {
+			e_cal_util_component_set_x_property (subcomp, E_CALDAV_X_ETAG, etag);
 		}
 	}
 }
@@ -1069,7 +1071,7 @@ static gboolean
 ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 				const gchar *uid,
 				const gchar *extra,
-				icalcomponent **out_component,
+				ICalComponent **out_component,
 				gchar **out_extra,
 				GCancellable *cancellable,
 				GError **error)
@@ -1096,9 +1098,9 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 
 		newline = strchr (extra, '\n');
 		if (newline && newline[1] && newline != extra) {
-			icalcomponent *vcalendar;
+			ICalComponent *vcalendar;
 
-			vcalendar = icalcomponent_new_from_string (newline + 1);
+			vcalendar = i_cal_component_new_from_string (newline + 1);
 			if (vcalendar) {
 				*out_extra = g_strndup (extra, newline - extra);
 				*out_component = vcalendar;
@@ -1136,7 +1138,7 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 				g_free (last_sync_tag);
 				g_free (new_sync_tag);
 
-				g_propagate_error (error, EDC_ERROR (ObjectNotFound));
+				g_propagate_error (error, ECC_ERROR (E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND));
 
 				return FALSE;
 			}
@@ -1174,14 +1176,14 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 		*out_component = NULL;
 
 		if (href && etag && bytes && length != ((gsize) -1)) {
-			icalcomponent *icalcomp;
+			ICalComponent *icomp;
 
-			icalcomp = icalcomponent_new_from_string (bytes);
+			icomp = i_cal_component_new_from_string (bytes);
 
-			if (icalcomp) {
-				ecb_caldav_store_component_etag (icalcomp, etag);
+			if (icomp) {
+				ecb_caldav_store_component_etag (icomp, etag);
 
-				*out_component = icalcomp;
+				*out_component = icomp;
 			}
 		}
 
@@ -1189,11 +1191,11 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 			success = FALSE;
 
 			if (!href)
-				g_propagate_error (&local_error, EDC_ERROR_EX (InvalidObject, _("Server didn’t return object’s href")));
+				g_propagate_error (&local_error, ECC_ERROR_EX (E_CAL_CLIENT_ERROR_INVALID_OBJECT, _("Server didn’t return object’s href")));
 			else if (!etag)
-				g_propagate_error (&local_error, EDC_ERROR_EX (InvalidObject, _("Server didn’t return object’s ETag")));
+				g_propagate_error (&local_error, ECC_ERROR_EX (E_CAL_CLIENT_ERROR_INVALID_OBJECT, _("Server didn’t return object’s ETag")));
 			else
-				g_propagate_error (&local_error, EDC_ERROR (InvalidObject));
+				g_propagate_error (&local_error, ECC_ERROR (E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 		} else if (out_extra) {
 			*out_extra = g_strdup (href);
 		}
@@ -1220,6 +1222,7 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 				EConflictResolution conflict_resolution,
 				const GSList *instances,
 				const gchar *extra,
+				guint32 opflags,
 				gchar **out_new_uid,
 				gchar **out_new_extra,
 				GCancellable *cancellable,
@@ -1227,7 +1230,7 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 {
 	ECalBackendCalDAV *cbdav;
 	EWebDAVSession *webdav;
-	icalcomponent *vcalendar, *subcomp;
+	ICalComponent *vcalendar, *subcomp;
 	gchar *href = NULL, *etag = NULL, *uid = NULL;
 	gchar *ical_string = NULL;
 	gboolean success;
@@ -1243,24 +1246,24 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 	vcalendar = e_cal_meta_backend_merge_instances (meta_backend, instances, TRUE);
 	g_return_val_if_fail (vcalendar != NULL, FALSE);
 
-	for (subcomp = icalcomponent_get_first_component (vcalendar, ICAL_ANY_COMPONENT);
+	for (subcomp = i_cal_component_get_first_component (vcalendar, I_CAL_ANY_COMPONENT);
 	     subcomp;
-	     subcomp = icalcomponent_get_next_component (vcalendar, ICAL_ANY_COMPONENT)) {
-		icalcomponent_kind kind = icalcomponent_isa (subcomp);
+	     g_object_unref (subcomp), subcomp = i_cal_component_get_next_component (vcalendar, I_CAL_ANY_COMPONENT)) {
+		ICalComponentKind kind = i_cal_component_isa (subcomp);
 
-		if (kind == ICAL_VEVENT_COMPONENT ||
-		    kind == ICAL_VJOURNAL_COMPONENT ||
-		    kind == ICAL_VTODO_COMPONENT) {
+		if (kind == I_CAL_VEVENT_COMPONENT ||
+		    kind == I_CAL_VJOURNAL_COMPONENT ||
+		    kind == I_CAL_VTODO_COMPONENT) {
 			if (!etag)
-				etag = e_cal_util_dup_x_property (subcomp, E_CALDAV_X_ETAG);
+				etag = e_cal_util_component_dup_x_property (subcomp, E_CALDAV_X_ETAG);
 			if (!uid)
-				uid = g_strdup (icalcomponent_get_uid (subcomp));
+				uid = g_strdup (i_cal_component_get_uid (subcomp));
 
-			e_cal_util_remove_x_property (subcomp, E_CALDAV_X_ETAG);
+			e_cal_util_component_remove_x_property (subcomp, E_CALDAV_X_ETAG);
 		}
 	}
 
-	ical_string = icalcomponent_as_ical_string_r (vcalendar);
+	ical_string = i_cal_component_as_ical_string (vcalendar);
 
 	webdav = ecb_caldav_ref_session (cbdav);
 
@@ -1297,7 +1300,7 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 				ecb_caldav_store_component_etag (vcalendar, new_etag);
 
 				g_free (ical_string);
-				ical_string = icalcomponent_as_ical_string_r (vcalendar);
+				ical_string = i_cal_component_as_ical_string (vcalendar);
 
 				/* Encodes the href and the component into one string, which
 				   will be decoded in the load function */
@@ -1319,13 +1322,13 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 		g_free (new_etag);
 	} else if (uid && ical_string) {
 		success = FALSE;
-		g_propagate_error (error, EDC_ERROR_EX (InvalidObject, _("Missing information about component URL, local cache is possibly incomplete or broken. Remove it, please.")));
+		g_propagate_error (error, ECC_ERROR_EX (E_CAL_CLIENT_ERROR_INVALID_OBJECT, _("Missing information about component URL, local cache is possibly incomplete or broken. Remove it, please.")));
 	} else {
 		success = FALSE;
-		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		g_propagate_error (error, ECC_ERROR (E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 	}
 
-	icalcomponent_free (vcalendar);
+	g_object_unref (vcalendar);
 	g_free (ical_string);
 	g_free (href);
 	g_free (etag);
@@ -1347,12 +1350,13 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 				  const gchar *uid,
 				  const gchar *extra,
 				  const gchar *object,
+				  guint32 opflags,
 				  GCancellable *cancellable,
 				  GError **error)
 {
 	ECalBackendCalDAV *cbdav;
 	EWebDAVSession *webdav;
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 	gchar *etag = NULL;
 	gboolean success;
 	GError *local_error = NULL;
@@ -1364,18 +1368,18 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 	cbdav = E_CAL_BACKEND_CALDAV (meta_backend);
 
 	if (!extra || !*extra) {
-		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		g_propagate_error (error, ECC_ERROR (E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 		return FALSE;
 	}
 
-	icalcomp = icalcomponent_new_from_string (object);
-	if (!icalcomp) {
-		g_propagate_error (error, EDC_ERROR (InvalidObject));
+	icomp = i_cal_component_new_from_string (object);
+	if (!icomp) {
+		g_propagate_error (error, ECC_ERROR (E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 		return FALSE;
 	}
 
 	if (conflict_resolution == E_CONFLICT_RESOLUTION_FAIL)
-		etag = e_cal_util_dup_x_property (icalcomp, E_CALDAV_X_ETAG);
+		etag = e_cal_util_component_dup_x_property (icomp, E_CALDAV_X_ETAG);
 
 	webdav = ecb_caldav_ref_session (cbdav);
 
@@ -1406,7 +1410,7 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 		}
 	}
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (icomp);
 	g_free (etag);
 
 	/* Ignore not found errors, this was a delete and the resource is gone.
@@ -1576,42 +1580,40 @@ ecb_caldav_receive_schedule_outbox_url_sync (ECalBackendCalDAV *cbdav,
 }
 
 static void
-ecb_caldav_extract_objects (icalcomponent *icomp,
-			    icalcomponent_kind ekind,
+ecb_caldav_extract_objects (ICalComponent *icomp,
+			    ICalComponentKind ekind,
 			    GSList **out_objects,
 			    GError **error)
 {
-	icalcomponent *scomp;
-	icalcomponent_kind kind;
+	ICalComponent *scomp;
+	ICalComponentKind kind;
 	GSList *link;
 
 	g_return_if_fail (icomp != NULL);
 	g_return_if_fail (out_objects != NULL);
 
-	kind = icalcomponent_isa (icomp);
+	kind = i_cal_component_isa (icomp);
 
 	if (kind == ekind) {
-		*out_objects = g_slist_prepend (NULL, icalcomponent_new_clone (icomp));
+		*out_objects = g_slist_prepend (NULL, i_cal_component_clone (icomp));
 		return;
 	}
 
-	if (kind != ICAL_VCALENDAR_COMPONENT) {
-		g_propagate_error (error, EDC_ERROR (InvalidObject));
+	if (kind != I_CAL_VCALENDAR_COMPONENT) {
+		g_propagate_error (error, ECC_ERROR (E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 		return;
 	}
 
 	*out_objects = NULL;
-	scomp = icalcomponent_get_first_component (icomp, ekind);
-
-	while (scomp) {
-		*out_objects = g_slist_prepend (*out_objects, scomp);
-
-		scomp = icalcomponent_get_next_component (icomp, ekind);
+	for (scomp = i_cal_component_get_first_component (icomp, ekind);
+	     scomp;
+	     g_object_unref (scomp), scomp = i_cal_component_get_next_component (icomp, ekind)) {
+		*out_objects = g_slist_prepend (*out_objects, g_object_ref (scomp));
 	}
 
 	for (link = *out_objects; link; link = g_slist_next (link)) {
 		/* Remove components from toplevel here */
-		icalcomponent_remove_component (icomp, link->data);
+		i_cal_component_remove_component (icomp, link->data);
 	}
 
 	*out_objects = g_slist_reverse (*out_objects);
@@ -1679,20 +1681,19 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 						    GCancellable *cancellable,
 						    GError **error)
 {
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 	ECalComponent *comp;
-	ECalComponentDateTime dt;
-	ECalComponentOrganizer organizer = { NULL };
+	ECalComponentDateTime *dt;
+	ECalComponentOrganizer *organizer;
 	ESourceAuthentication *auth_extension;
 	ESource *source;
 	EWebDAVSession *webdav;
-	struct icaltimetype dtvalue;
-	icaltimezone *utc;
+	ICalTimezone *utc;
 	gchar *str;
 	GSList *link;
-	GSList *attendees = NULL, *to_free = NULL;
+	GSList *attendees = NULL;
 	const gchar *extension_name;
-	gchar *usermail;
+	gchar *usermail, *organizer_value;
 	GByteArray *response = NULL;
 	GError *local_error = NULL;
 
@@ -1716,18 +1717,18 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 	e_cal_component_set_uid (comp, str);
 	g_free (str);
 
-	utc = icaltimezone_get_utc_timezone ();
-	dt.value = &dtvalue;
-	dt.tzid = icaltimezone_get_tzid (utc);
+	utc = i_cal_timezone_get_utc_timezone ();
+	dt = e_cal_component_datetime_new_take (i_cal_time_new_current_with_zone (utc), g_strdup (i_cal_timezone_get_tzid (utc)));
 
-	dtvalue = icaltime_current_time_with_zone (utc);
-	e_cal_component_set_dtstamp (comp, &dtvalue);
+	e_cal_component_set_dtstamp (comp, e_cal_component_datetime_get_value (dt));
 
-	dtvalue = icaltime_from_timet_with_zone (start, FALSE, utc);
-	e_cal_component_set_dtstart (comp, &dt);
+	e_cal_component_datetime_take_value (dt, i_cal_time_new_from_timet_with_zone (start, FALSE, utc));
+	e_cal_component_set_dtstart (comp, dt);
 
-	dtvalue = icaltime_from_timet_with_zone (end, FALSE, utc);
-	e_cal_component_set_dtend (comp, &dt);
+	e_cal_component_datetime_take_value (dt, i_cal_time_new_from_timet_with_zone (end, FALSE, utc));
+	e_cal_component_set_dtend (comp, dt);
+
+	e_cal_component_datetime_free (dt);
 
 	usermail = ecb_caldav_get_usermail (cbdav);
 	if (usermail != NULL && *usermail == '\0') {
@@ -1742,9 +1743,13 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 	if (!usermail)
 		usermail = e_source_authentication_dup_user (auth_extension);
 
-	organizer.value = g_strconcat ("mailto:", usermail, NULL);
-	e_cal_component_set_organizer (comp, &organizer);
-	g_free ((gchar *) organizer.value);
+	organizer_value = g_strconcat ("mailto:", usermail, NULL);
+	organizer = e_cal_component_organizer_new ();
+	e_cal_component_organizer_set_value (organizer, organizer_value);
+	g_free (organizer_value);
+
+	e_cal_component_set_organizer (comp, organizer);
+	e_cal_component_organizer_free (organizer);
 
 	g_free (usermail);
 
@@ -1752,32 +1757,32 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 		ECalComponentAttendee *ca;
 		gchar *temp = g_strconcat ("mailto:", (const gchar *) link->data, NULL);
 
-		ca = g_new0 (ECalComponentAttendee, 1);
+		ca = e_cal_component_attendee_new ();
 
-		ca->value = temp;
-		ca->cutype = ICAL_CUTYPE_INDIVIDUAL;
-		ca->status = ICAL_PARTSTAT_NEEDSACTION;
-		ca->role = ICAL_ROLE_CHAIR;
+		e_cal_component_attendee_set_value (ca, temp);
+		e_cal_component_attendee_set_cutype (ca, I_CAL_CUTYPE_INDIVIDUAL);
+		e_cal_component_attendee_set_partstat (ca, I_CAL_PARTSTAT_NEEDSACTION);
+		e_cal_component_attendee_set_role (ca, I_CAL_ROLE_CHAIR);
 
-		to_free = g_slist_prepend (to_free, temp);
+		g_free (temp);
+
 		attendees = g_slist_append (attendees, ca);
 	}
 
-	e_cal_component_set_attendee_list (comp, attendees);
+	e_cal_component_set_attendees (comp, attendees);
 
-	g_slist_free_full (attendees, g_free);
-	g_slist_free_full (to_free, g_free);
+	g_slist_free_full (attendees, e_cal_component_attendee_free);
 
 	e_cal_component_abort_sequence (comp);
 
 	/* put the free/busy request to a VCALENDAR */
-	icalcomp = e_cal_util_new_top_level ();
-	icalcomponent_set_method (icalcomp, ICAL_METHOD_REQUEST);
-	icalcomponent_add_component (icalcomp, icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp)));
+	icomp = e_cal_util_new_top_level ();
+	i_cal_component_set_method (icomp, ICAL_METHOD_REQUEST);
+	i_cal_component_take_component (icomp, i_cal_component_clone (e_cal_component_get_icalcomponent (comp)));
 
-	str = icalcomponent_as_ical_string_r (icalcomp);
+	str = i_cal_component_as_ical_string (icomp);
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (icomp);
 	g_object_unref (comp);
 
 	webdav = ecb_caldav_ref_session (cbdav);
@@ -1818,12 +1823,12 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 					if (tmp && *tmp) {
 						GSList *objects = NULL;
 
-						icalcomp = icalparser_parse_string (tmp);
-						if (icalcomp)
-							ecb_caldav_extract_objects (icalcomp, ICAL_VFREEBUSY_COMPONENT, &objects, &local_error);
-						if (icalcomp && !local_error) {
+						icomp = i_cal_parser_parse_string (tmp);
+						if (icomp)
+							ecb_caldav_extract_objects (icomp, I_CAL_VFREEBUSY_COMPONENT, &objects, &local_error);
+						if (icomp && !local_error) {
 							for (link = objects; link; link = g_slist_next (link)) {
-								gchar *obj_str = icalcomponent_as_ical_string_r (link->data);
+								gchar *obj_str = i_cal_component_as_ical_string (link->data);
 
 								if (obj_str && *obj_str)
 									*out_freebusy = g_slist_prepend (*out_freebusy, obj_str);
@@ -1832,10 +1837,9 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 							}
 						}
 
-						g_slist_free_full (objects, (GDestroyNotify) icalcomponent_free);
+						g_slist_free_full (objects, g_object_unref);
 
-						if (icalcomp)
-							icalcomponent_free (icalcomp);
+						g_clear_object (&icomp);
 						g_clear_error (&local_error);
 					}
 
@@ -1924,30 +1928,30 @@ ecb_caldav_get_free_busy_from_principal_sync (ECalBackendCalDAV *cbdav,
 
 	if (success && content_type && content && content->data && content->len &&
 	    g_ascii_strcasecmp (content_type, "text/calendar") == 0) {
-		icalcomponent *vcalendar;
+		ICalComponent *vcalendar;
 
-		vcalendar = icalcomponent_new_from_string ((const gchar *) content->data);
+		vcalendar = i_cal_component_new_from_string ((const gchar *) content->data);
 		if (vcalendar) {
 			GSList *comps = NULL, *link;
 
-			ecb_caldav_extract_objects (vcalendar, ICAL_VFREEBUSY_COMPONENT, &comps, NULL);
+			ecb_caldav_extract_objects (vcalendar, I_CAL_VFREEBUSY_COMPONENT, &comps, NULL);
 
 			for (link = comps; link; link = g_slist_next (link)) {
-				icalcomponent *subcomp = link->data;
+				ICalComponent *subcomp = link->data;
 				gchar *obj_str;
 
-				if (!icalcomponent_get_first_property (subcomp, ICAL_ATTENDEE_PROPERTY)) {
-					icalproperty *prop;
+				if (!e_cal_util_component_has_property (subcomp, I_CAL_ATTENDEE_PROPERTY)) {
+					ICalProperty *prop;
 					gchar *mailto;
 
 					mailto = g_strconcat ("mailto:", usermail, NULL);
-					prop = icalproperty_new_attendee (mailto);
+					prop = i_cal_property_new_attendee (mailto);
 					g_free (mailto);
 
-					icalcomponent_add_property (subcomp, prop);
+					i_cal_component_take_property (subcomp, prop);
 				}
 
-				obj_str = icalcomponent_as_ical_string_r (subcomp);
+				obj_str = i_cal_component_as_ical_string (subcomp);
 
 				if (obj_str && *obj_str)
 					*out_freebusy = g_slist_prepend (*out_freebusy, obj_str);
@@ -1957,7 +1961,8 @@ ecb_caldav_get_free_busy_from_principal_sync (ECalBackendCalDAV *cbdav,
 
 			success = comps != NULL;
 
-			g_slist_free_full (comps, (GDestroyNotify) icalcomponent_free);
+			g_slist_free_full (comps, g_object_unref);
+			g_object_unref (vcalendar);
 		} else {
 			success = FALSE;
 		}
@@ -2042,16 +2047,16 @@ ecb_caldav_get_backend_property (ECalBackend *backend,
 		gchar *usermail;
 
 		caps = g_string_new (
-			CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
-			CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED ","
-			CAL_STATIC_CAPABILITY_TASK_CAN_RECUR ","
-			CAL_STATIC_CAPABILITY_COMPONENT_COLOR);
+			E_CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
+			E_CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED ","
+			E_CAL_STATIC_CAPABILITY_TASK_CAN_RECUR ","
+			E_CAL_STATIC_CAPABILITY_COMPONENT_COLOR);
 		g_string_append (caps, ",");
 		g_string_append (caps, e_cal_meta_backend_get_capabilities (E_CAL_META_BACKEND (backend)));
 
 		usermail = ecb_caldav_get_usermail (cbdav);
 		if (!usermail || !*usermail)
-			g_string_append (caps, "," CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS);
+			g_string_append (caps, "," E_CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS);
 		g_free (usermail);
 
 		source = e_backend_get_source (E_BACKEND (backend));
@@ -2060,13 +2065,13 @@ ecb_caldav_get_backend_property (ECalBackend *backend,
 		if (e_source_webdav_get_calendar_auto_schedule (extension)) {
 			g_string_append (
 				caps,
-				"," CAL_STATIC_CAPABILITY_CREATE_MESSAGES
-				"," CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
+				"," E_CAL_STATIC_CAPABILITY_CREATE_MESSAGES
+				"," E_CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
 		}
 
 		return g_string_free (caps, FALSE);
-	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
-		   g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
+	} else if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
+		   g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
 		return ecb_caldav_get_usermail (E_CAL_BACKEND_CALDAV (backend));
 	}
 
@@ -2099,20 +2104,20 @@ ecb_caldav_notify_property_changed_cb (GObject *object,
 	}
 
 	if (email_address_changed) {
-		value = ecb_caldav_get_backend_property (cal_backend, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS);
-		e_cal_backend_notify_property_changed (cal_backend, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS, value);
-		e_cal_backend_notify_property_changed (cal_backend, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS, value);
+		value = ecb_caldav_get_backend_property (cal_backend, E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS);
+		e_cal_backend_notify_property_changed (cal_backend, E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS, value);
+		e_cal_backend_notify_property_changed (cal_backend, E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS, value);
 		g_free (value);
 	}
 }
 
 static gchar *
 ecb_caldav_dup_component_revision_cb (ECalCache *cal_cache,
-				      icalcomponent *icalcomp)
+				      ICalComponent *icomp)
 {
-	g_return_val_if_fail (icalcomp != NULL, NULL);
+	g_return_val_if_fail (icomp != NULL, NULL);
 
-	return e_cal_util_dup_x_property (icalcomp, E_CALDAV_X_ETAG);
+	return e_cal_util_component_dup_x_property (icomp, E_CALDAV_X_ETAG);
 }
 
 static void

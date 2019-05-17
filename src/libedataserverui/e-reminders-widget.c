@@ -262,7 +262,7 @@ reminders_get_reminder_markups (ERemindersWidget *reminders,
 		gboolean in_future;
 		gchar *time_str;
 
-		diff = (g_get_real_time () / G_USEC_PER_SEC) - ((gint64) rd->instance.occur_start);
+		diff = (g_get_real_time () / G_USEC_PER_SEC) - ((gint64) e_cal_component_alarm_instance_get_occur_start (e_reminder_data_get_instance (rd)));
 		in_future = diff < 0;
 		if (in_future)
 			diff = (-1) * diff;
@@ -479,20 +479,27 @@ reminders_sort_by_occur (gconstpointer ptr1,
 			 gconstpointer ptr2)
 {
 	const EReminderData *rd1 = ptr1, *rd2 = ptr2;
+	const ECalComponentAlarmInstance *inst1, *inst2;
 	gint cmp;
 
 	if (!rd1 || !rd2)
 		return rd1 == rd2 ? 0 : rd1 ? 1 : -1;
 
-	if (rd1->instance.occur_start != rd2->instance.occur_start)
-		return rd1->instance.occur_start < rd2->instance.occur_start ? -1 : 1;
+	inst1 = e_reminder_data_get_instance (rd1);
+	inst2 = e_reminder_data_get_instance (rd2);
 
-	if (rd1->instance.trigger != rd2->instance.trigger)
-		return rd1->instance.trigger < rd2->instance.trigger ? -1 : 1;
+	if (!inst1 || !inst2)
+		return inst1 == inst2 ? 0 : inst1 ? 1 : -1;
 
-	cmp = g_strcmp0 (rd1->source_uid, rd2->source_uid);
+	if (e_cal_component_alarm_instance_get_occur_start (inst1) != e_cal_component_alarm_instance_get_occur_start (inst2))
+		return e_cal_component_alarm_instance_get_occur_start (inst1) < e_cal_component_alarm_instance_get_occur_start (inst2) ? -1 : 1;
+
+	if (e_cal_component_alarm_instance_get_time (inst1) != e_cal_component_alarm_instance_get_time (inst2))
+		return e_cal_component_alarm_instance_get_time (inst1) < e_cal_component_alarm_instance_get_time (inst2) ? -1 : 1;
+
+	cmp = g_strcmp0 (e_reminder_data_get_source_uid (rd1), e_reminder_data_get_source_uid (rd2));
 	if (!cmp)
-		cmp = g_strcmp0 (rd1->instance.auid, rd2->instance.auid);
+		cmp = g_strcmp0 (e_cal_component_alarm_instance_get_uid (inst1), e_cal_component_alarm_instance_get_uid (inst2));
 
 	return cmp;
 }
@@ -612,7 +619,7 @@ reminders_widget_refresh_content_cb (gpointer user_data)
 			const EReminderData *rd = link->data;
 			gchar *overdue = NULL, *description = NULL;
 
-			if (!rd || !rd->component)
+			if (!rd || !e_reminder_data_get_component (rd))
 				continue;
 
 			reminders_get_reminder_markups (reminders, rd, &overdue, &description);
@@ -870,9 +877,9 @@ reminders_widget_row_activated_cb (GtkTreeView *tree_view,
 				const gchar *scheme = NULL;
 				const gchar *comp_uid = NULL;
 
-				e_cal_component_get_uid (rd->component, &comp_uid);
+				comp_uid = e_cal_component_get_uid (e_reminder_data_get_component (rd));
 
-				switch (e_cal_component_get_vtype (rd->component)) {
+				switch (e_cal_component_get_vtype (e_reminder_data_get_component (rd))) {
 					case E_CAL_COMPONENT_EVENT:
 						scheme = "calendar:";
 						break;
@@ -886,7 +893,7 @@ reminders_widget_row_activated_cb (GtkTreeView *tree_view,
 						break;
 				}
 
-				if (scheme && comp_uid && rd->source_uid) {
+				if (scheme && comp_uid && e_reminder_data_get_source_uid (rd)) {
 					GString *uri;
 					gchar *tmp;
 					GError *error = NULL;
@@ -895,7 +902,7 @@ reminders_widget_row_activated_cb (GtkTreeView *tree_view,
 					g_string_append (uri, scheme);
 					g_string_append (uri, "///?");
 
-					tmp = g_uri_escape_string (rd->source_uid, NULL, TRUE);
+					tmp = g_uri_escape_string (e_reminder_data_get_source_uid (rd), NULL, TRUE);
 					g_string_append (uri, "source-uid=");
 					g_string_append (uri, tmp);
 					g_free (tmp);

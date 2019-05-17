@@ -99,19 +99,22 @@ e_alarm_notify_audio (EAlarmNotify *an,
 		      const EReminderData *rd,
 		      ECalComponentAlarm *alarm)
 {
-	icalattach *attach = NULL;
+	ICalAttach *attach = NULL;
+	GSList *attachments;
 	gboolean did_play = FALSE;
 
 	g_return_val_if_fail (an != NULL, FALSE);
 	g_return_val_if_fail (rd != NULL, FALSE);
 	g_return_val_if_fail (alarm != NULL, FALSE);
 
-	e_cal_component_alarm_get_attach (alarm, &attach);
+	attachments = e_cal_component_alarm_get_attachments (alarm);
+	if (attachments && !attachments->next)
+		attach = attachments->data;
 
-	if (attach && icalattach_get_is_url (attach)) {
+	if (attach && i_cal_attach_get_is_url (attach)) {
 		const gchar *url;
 
-		url = icalattach_get_url (attach);
+		url = i_cal_attach_get_url (attach);
 		if (url && *url) {
 			gchar *filename;
 			GError *error = NULL;
@@ -136,8 +139,7 @@ e_alarm_notify_audio (EAlarmNotify *an,
 	if (!did_play)
 		gdk_beep ();
 
-	if (attach)
-		icalattach_unref (attach);
+	g_slist_free_full (attachments, g_object_unref);
 
 	return FALSE;
 }
@@ -174,32 +176,35 @@ e_alarm_notify_build_notif_id (const EReminderData *rd)
 {
 	GString *string;
 	ECalComponentId *id;
+	ECalComponentAlarmInstance *instance;
 
 	g_return_val_if_fail (rd != NULL, NULL);
 
 	string = g_string_sized_new (32);
 
-	if (rd->source_uid) {
-		g_string_append (string, rd->source_uid);
+	if (e_reminder_data_get_source_uid (rd)) {
+		g_string_append (string, e_reminder_data_get_source_uid (rd));
 		g_string_append (string, "\n");
 	}
 
-	id = e_cal_component_get_id (rd->component);
+	id = e_cal_component_get_id (e_reminder_data_get_component (rd));
 	if (id) {
-		if (id->uid) {
-			g_string_append (string, id->uid);
+		if (e_cal_component_id_get_uid (id)) {
+			g_string_append (string, e_cal_component_id_get_uid (id));
 			g_string_append (string, "\n");
 		}
 
-		if (id->rid) {
-			g_string_append (string, id->rid);
+		if (e_cal_component_id_get_rid (id)) {
+			g_string_append (string, e_cal_component_id_get_rid (id));
 			g_string_append (string, "\n");
 		}
 
-		e_cal_component_free_id (id);
+		e_cal_component_id_free (id);
 	}
 
-	g_string_append_printf (string, "%" G_GINT64_FORMAT, (gint64) rd->instance.trigger);
+	instance = e_reminder_data_get_instance (rd);
+
+	g_string_append_printf (string, "%" G_GINT64_FORMAT, (gint64) (instance ? e_cal_component_alarm_instance_get_time (instance) : -1));
 
 	return g_string_free (string, FALSE);
 }
@@ -282,8 +287,8 @@ e_alarm_notify_email (EAlarmNotify *an,
 	g_return_val_if_fail (rd != NULL, FALSE);
 	g_return_val_if_fail (alarm != NULL, FALSE);
 
-	client = e_reminder_watcher_ref_opened_client (an->priv->watcher, rd->source_uid);
-	if (client && !e_client_check_capability (E_CLIENT (client), CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS)) {
+	client = e_reminder_watcher_ref_opened_client (an->priv->watcher, e_reminder_data_get_source_uid (rd));
+	if (client && !e_client_check_capability (E_CLIENT (client), E_CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS)) {
 		g_object_unref (client);
 		return FALSE;
 	}
@@ -405,8 +410,9 @@ e_alarm_notify_procedure (EAlarmNotify *an,
 			  const EReminderData *rd,
 			  ECalComponentAlarm *alarm)
 {
-	ECalComponentText description;
-	icalattach *attach;
+	ECalComponentText *description;
+	ICalAttach *attach = NULL;
+	GSList *attachments;
 	const gchar *url;
 	gchar *cmd;
 	gboolean result = FALSE;
@@ -415,24 +421,27 @@ e_alarm_notify_procedure (EAlarmNotify *an,
 	g_return_val_if_fail (rd != NULL, FALSE);
 	g_return_val_if_fail (alarm != NULL, FALSE);
 
-	e_cal_component_alarm_get_attach (alarm, &attach);
-	e_cal_component_alarm_get_description (alarm, &description);
+	attachments = e_cal_component_alarm_get_attachments (alarm);
+
+	if (attachments && !attachments->next)
+		attach = attachments->data;
+
+	description = e_cal_component_alarm_get_description (alarm);
 
 	/* If the alarm has no attachment, simply display a notification dialog. */
 	if (!attach)
 		goto fallback;
 
-	if (!icalattach_get_is_url (attach)) {
-		icalattach_unref (attach);
+	if (!i_cal_attach_get_is_url (attach)) {
 		goto fallback;
 	}
 
-	url = icalattach_get_url (attach);
+	url = i_cal_attach_get_url (attach);
 	g_return_val_if_fail (url != NULL, FALSE);
 
 	/* Ask for confirmation before executing the stuff */
-	if (description.value)
-		cmd = g_strconcat (url, " ", description.value, NULL);
+	if (description && e_cal_component_text_get_value (description))
+		cmd = g_strconcat (url, " ", e_cal_component_text_get_value (description), NULL);
 	else
 		cmd = (gchar *) url;
 
@@ -442,15 +451,17 @@ e_alarm_notify_procedure (EAlarmNotify *an,
 	if (cmd != (gchar *) url)
 		g_free (cmd);
 
-	icalattach_unref (attach);
-
 	/* Fall back to display notification if we got an error */
 	if (!result)
 		goto fallback;
 
+	g_slist_free_full (attachments, g_object_unref);
+
 	return FALSE;
 
  fallback:
+	g_slist_free_full (attachments, g_object_unref);
+
 	return e_alarm_notify_display (an, rd, alarm);
 }
 
@@ -461,43 +472,44 @@ e_alarm_notify_process (EAlarmNotify *an,
 			gboolean snoozed)
 {
 	ECalComponentAlarm *alarm;
+	ECalComponentAlarmInstance *instance;
 	ECalComponentAlarmAction action;
 	gboolean keep_in_reminders = FALSE;
 
 	g_return_val_if_fail (an != NULL, FALSE);
 	g_return_val_if_fail (rd != NULL, FALSE);
 
-	if (e_cal_component_get_vtype (rd->component) == E_CAL_COMPONENT_TODO) {
-		icalproperty_status status = ICAL_STATUS_NONE;
+	if (e_cal_component_get_vtype (e_reminder_data_get_component (rd)) == E_CAL_COMPONENT_TODO) {
+		ICalPropertyStatus status;
 
-		e_cal_component_get_status (rd->component, &status);
+		status = e_cal_component_get_status (e_reminder_data_get_component (rd));
 
-		if (status == ICAL_STATUS_COMPLETED &&
+		if (status == I_CAL_STATUS_COMPLETED &&
 		    !g_settings_get_boolean (an->priv->settings, "notify-completed-tasks")) {
 			return FALSE;
 		}
 	}
 
-	alarm = e_cal_component_get_alarm (rd->component, rd->instance.auid);
+	instance = e_reminder_data_get_instance (rd);
+
+	alarm = instance ? e_cal_component_get_alarm (e_reminder_data_get_component (rd), e_cal_component_alarm_instance_get_uid (instance)) : NULL;
 	if (!alarm)
 		return FALSE;
 
 	if (!snoozed && !g_settings_get_boolean (an->priv->settings, "notify-past-events")) {
-		ECalComponentAlarmTrigger trigger;
-		ECalComponentAlarmRepeat repeat;
+		ECalComponentAlarmTrigger *trigger;
 		time_t offset = 0, event_relative, orig_trigger_day, today;
 
-		e_cal_component_alarm_get_trigger (alarm, &trigger);
-		e_cal_component_alarm_get_repeat (alarm, &repeat);
+		trigger = e_cal_component_alarm_get_trigger (alarm);
 
-		switch (trigger.type) {
+		switch (trigger ? e_cal_component_alarm_trigger_get_kind (trigger) : E_CAL_COMPONENT_ALARM_TRIGGER_NONE) {
 		case E_CAL_COMPONENT_ALARM_TRIGGER_NONE:
 		case E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE:
 			break;
 
 		case E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START:
 		case E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_END:
-			offset = icaldurationtype_as_int (trigger.u.rel_duration);
+			offset = i_cal_duration_as_int (e_cal_component_alarm_trigger_get_duration (trigger));
 			break;
 
 		default:
@@ -505,12 +517,12 @@ e_alarm_notify_process (EAlarmNotify *an,
 		}
 
 		today = time (NULL);
-		event_relative = rd->instance.occur_start - offset;
+		event_relative = e_cal_component_alarm_instance_get_occur_start (instance) - offset;
 
 		#define CLAMP_TO_DAY(x) ((x) - ((x) % (60 * 60 * 24)))
 
 		event_relative = CLAMP_TO_DAY (event_relative);
-		orig_trigger_day = CLAMP_TO_DAY (rd->instance.trigger);
+		orig_trigger_day = CLAMP_TO_DAY (e_cal_component_alarm_instance_get_time (instance));
 		today = CLAMP_TO_DAY (today);
 
 		#undef CLAMP_TO_DAY
@@ -521,7 +533,7 @@ e_alarm_notify_process (EAlarmNotify *an,
 		}
 	}
 
-	e_cal_component_alarm_get_action (alarm, &action);
+	action = e_cal_component_alarm_get_action (alarm);
 
 	switch (action) {
 	case E_CAL_COMPONENT_ALARM_AUDIO:

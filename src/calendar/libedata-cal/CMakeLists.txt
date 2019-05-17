@@ -1,4 +1,4 @@
-add_pkgconfig_file(libedata-cal.pc.in libedata-cal-${API_VERSION}.pc)
+add_pkgconfig_file(libedata-cal.pc.in libedata-cal-${CAL_API_VERSION}.pc)
 
 set(DEPENDENCIES
 	ebackend
@@ -9,13 +9,11 @@ set(DEPENDENCIES
 
 set(SOURCES
 	e-cal-backend.c
-	e-cal-backend-cache.c
 	e-cal-backend-factory.c
 	e-cal-backend-intervaltree.c
 	e-cal-backend-sexp.c
 	e-cal-backend-sync.c
 	e-cal-backend-util.c
-	e-cal-backend-store.c
 	e-cal-cache.c
 	e-cal-meta-backend.c
 	e-data-cal.c
@@ -27,13 +25,11 @@ set(SOURCES
 set(HEADERS
 	libedata-cal.h
 	e-cal-backend.h
-	e-cal-backend-cache.h
 	e-cal-backend-factory.h
 	e-cal-backend-intervaltree.h
 	e-cal-backend-sync.h
 	e-cal-backend-util.h
 	e-cal-backend-sexp.h
-	e-cal-backend-store.h
 	e-cal-cache.h
 	e-cal-meta-backend.h
 	e-data-cal.h
@@ -54,7 +50,7 @@ add_dependencies(edata-cal
 set_target_properties(edata-cal PROPERTIES
 	VERSION "${LIBEDATACAL_CURRENT}.${LIBEDATACAL_REVISION}.${LIBEDATACAL_AGE}"
 	SOVERSION ${LIBEDATACAL_CURRENT}
-	OUTPUT_NAME edata-cal-${API_VERSION}
+	OUTPUT_NAME edata-cal-${CAL_API_VERSION}
 )
 
 target_compile_definitions(edata-cal PRIVATE
@@ -93,6 +89,49 @@ install(FILES ${HEADERS}
 	DESTINATION ${privincludedir}/libedata-cal
 )
 
+set(gir_sources ${SOURCES} ${HEADERS})
+set(gir_identifies_prefixes EDataCal E)
+set(gir_includes GObject-2.0 Gio-2.0 Soup-2.4 libxml2-2.0 ICalGLib-3.0)
+set(gir_cflags
+	-DLIBEDATA_CAL_COMPILATION
+	-DEDS_DISABLE_DEPRECATED=1
+	-I${CMAKE_BINARY_DIR}/src/calendar
+	-I${CMAKE_SOURCE_DIR}/src/calendar
+)
+set(gir_libdirs
+	${CMAKE_BINARY_DIR}/src/camel
+	${CMAKE_BINARY_DIR}/src/libebackend
+	${CMAKE_BINARY_DIR}/src/libedataserver
+	${CMAKE_BINARY_DIR}/src/calendar/libecal
+	${CMAKE_BINARY_DIR}/src/calendar/libedata-cal
+)
+set(gir_libs
+	ebackend
+	ecal
+	edata-cal
+	edataserver
+)
+set(gir_deps
+	${CMAKE_BINARY_DIR}/src/camel/Camel-${API_VERSION}.gir
+	${CMAKE_BINARY_DIR}/src/libedataserver/EDataServer-${API_VERSION}.gir
+	${CMAKE_BINARY_DIR}/src/libebackend/EBackend-${API_VERSION}.gir
+	${CMAKE_BINARY_DIR}/src/calendar/libecal/ECal-${CAL_API_VERSION}.gir
+)
+
+gir_add_introspection_simple(
+	EDataCal
+	libedata-cal
+	${CAL_API_VERSION}
+	"libedata-cal/libedata-cal.h"
+	gir_identifies_prefixes
+	gir_includes
+	gir_cflags
+	gir_libdirs
+	gir_libs
+	gir_deps
+	gir_sources
+)
+
 set(DEPENDENCIES
 	ebackend
 	edataserver
@@ -101,7 +140,8 @@ set(DEPENDENCIES
 )
 
 add_executable(evolution-calendar-factory-subprocess
-	evolution-calendar-factory-subprocess.c)
+	evolution-calendar-factory-subprocess.c
+)
 
 target_compile_definitions(evolution-calendar-factory-subprocess PRIVATE
 	-DG_LOG_DOMAIN=\"evolution-calendar-factory-subprocess\"

@@ -66,12 +66,13 @@
 #define ECC_COLUMN_HAS_START		"has_start"
 #define ECC_COLUMN_HAS_RECURRENCES	"has_recurrences"
 #define ECC_COLUMN_EXTRA		"bdata"
+#define ECC_COLUMN_CUSTOM_FLAGS		"custom_flags"
 
 struct _ECalCachePrivate {
 	gboolean initializing;
 
-	GHashTable *loaded_timezones; /* gchar *tzid ~> icaltimezone * */
-	GHashTable *modified_timezones; /* gchar *tzid ~> icaltimezone * */
+	GHashTable *loaded_timezones; /* gchar *tzid ~> ICalTimezone * */
+	GHashTable *modified_timezones; /* gchar *tzid ~> ICalTimezone * */
 	GRecMutex timezones_lock;
 
 	GHashTable *sexps; /* gint ~> ECalBackendSExp * */
@@ -397,6 +398,26 @@ e_cal_cache_get_strings (ECache *cache,
 	return TRUE;
 }
 
+static gboolean
+e_cal_cache_get_uint64_cb (ECache *cache,
+			   gint ncols,
+			   const gchar **column_names,
+			   const gchar **column_values,
+			   gpointer user_data)
+{
+	guint64 *pui64 = user_data;
+
+	g_return_val_if_fail (pui64 != NULL, FALSE);
+
+	if (ncols == 1) {
+		*pui64 = column_values[0] ? g_ascii_strtoull (column_values[0], NULL, 10) : 0;
+	} else {
+		*pui64 = 0;
+	}
+
+	return TRUE;
+}
+
 static void
 e_cal_cache_populate_other_columns (ECalCache *cal_cache,
 				    GSList **out_other_columns)
@@ -429,6 +450,7 @@ e_cal_cache_populate_other_columns (ECalCache *cal_cache,
 	add_column (ECC_COLUMN_HAS_START, "INTEGER", NULL);
 	add_column (ECC_COLUMN_HAS_RECURRENCES, "INTEGER", NULL);
 	add_column (ECC_COLUMN_EXTRA, "TEXT", NULL);
+	add_column (ECC_COLUMN_CUSTOM_FLAGS, "INTEGER", NULL);
 
 	#undef add_column
 
@@ -507,56 +529,62 @@ e_cal_cache_get_ids (ECache *cache,
 	return TRUE;
 }
 
-static icaltimezone *
+static ICalTimezone *
 ecc_resolve_tzid_cb (const gchar *tzid,
-		     gpointer user_data)
+		     gpointer user_data,
+		     GCancellable *cancellable,
+		     GError **error)
 {
 	ECalCache *cal_cache = user_data;
-	icaltimezone *zone = NULL;
+	ICalTimezone *zone = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), NULL);
 
-	if (e_cal_cache_get_timezone (cal_cache, tzid, &zone, NULL, NULL) && zone)
+	if (e_cal_cache_get_timezone (cal_cache, tzid, &zone, cancellable, NULL) && zone)
 		return zone;
 
-	zone = icaltimezone_get_builtin_timezone (tzid);
+	zone = i_cal_timezone_get_builtin_timezone (tzid);
 	if (!zone)
-		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+		zone = i_cal_timezone_get_builtin_timezone_from_tzid (tzid);
 	if (!zone) {
 		tzid = e_cal_match_tzid (tzid);
-		zone = icaltimezone_get_builtin_timezone (tzid);
+		zone = i_cal_timezone_get_builtin_timezone (tzid);
 	}
 
 	if (!zone)
-		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+		zone = i_cal_timezone_get_builtin_timezone_from_tzid (tzid);
 
 	return zone;
 }
 
 static gchar *
-ecc_encode_itt_to_sql (struct icaltimetype itt)
+ecc_encode_itt_to_sql (ICalTime *itt)
 {
+	if (!itt)
+		return g_strdup ("00000000000000");
+
 	return g_strdup_printf ("%04d%02d%02d%02d%02d%02d",
-		itt.year, itt.month, itt.day,
-		itt.hour, itt.minute, itt.second);
+		i_cal_time_get_year (itt), i_cal_time_get_month (itt), i_cal_time_get_day (itt),
+		i_cal_time_get_hour (itt), i_cal_time_get_minute (itt), i_cal_time_get_second (itt));
 }
 
 static gchar *
 ecc_encode_time_to_sql (ECalCache *cal_cache,
 			const ECalComponentDateTime *dt)
 {
-	struct icaltimetype itt;
-	icaltimezone *zone = NULL;
+	ICalTime *itt;
+	ICalTimezone *zone = NULL;
 
-	if (!dt || !dt->value)
+	if (!dt || !e_cal_component_datetime_get_value (dt))
 		return NULL;
 
-	itt = *dt->value;
+	itt = e_cal_component_datetime_get_value (dt);
 
-	if (!itt.is_date && !icaltime_is_utc (itt) && dt->tzid && *dt->tzid)
-		zone = ecc_resolve_tzid_cb (dt->tzid, cal_cache);
+	if (i_cal_time_is_date (itt) && !i_cal_time_is_utc (itt) &&
+	    e_cal_component_datetime_get_tzid (dt))
+		zone = ecc_resolve_tzid_cb (e_cal_component_datetime_get_tzid (dt), cal_cache, NULL, NULL);
 
-	icaltimezone_convert_time (&itt, zone, icaltimezone_get_utc_timezone ());
+	i_cal_time_convert_timezone (itt, zone, i_cal_timezone_get_utc_timezone ());
 
 	return ecc_encode_itt_to_sql (itt);
 }
@@ -565,14 +593,19 @@ static gchar *
 ecc_encode_timet_to_sql (ECalCache *cal_cache,
 			 time_t tt)
 {
-	struct icaltimetype itt;
+	ICalTime *itt;
+	gchar *res;
 
 	if (tt <= 0)
 		return NULL;
 
-	itt = icaltime_from_timet_with_zone (tt, FALSE, icaltimezone_get_utc_timezone ());
+	itt = i_cal_time_new_from_timet_with_zone (tt, FALSE, i_cal_timezone_get_utc_timezone ());
 
-	return ecc_encode_itt_to_sql (itt);
+	res = ecc_encode_itt_to_sql (itt);
+
+	g_clear_object (&itt);
+
+	return res;
 }
 
 static gchar *
@@ -589,10 +622,10 @@ ecc_extract_text_list (const GSList *list)
 	for (link = list; link; link = g_slist_next (link)) {
 		ECalComponentText *text = link->data;
 
-		if (text && text->value) {
+		if (text && e_cal_component_text_get_value (text)) {
 			gchar *str;
 
-			str = e_util_utf8_decompose (text->value);
+			str = e_util_utf8_decompose (e_cal_component_text_get_value (text));
 			if (str)
 				g_string_append (value, str);
 			g_free (str);
@@ -605,14 +638,14 @@ ecc_extract_text_list (const GSList *list)
 static gchar *
 ecc_extract_comment (ECalComponent *comp)
 {
-	GSList *list = NULL;
+	GSList *list;
 	gchar *value;
 
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 
-	e_cal_component_get_comment_list (comp, &list);
+	list = e_cal_component_get_comments (comp);
 	value = ecc_extract_text_list (list);
-	e_cal_component_free_text_list (list);
+	g_slist_free_full (list, e_cal_component_text_free);
 
 	return value;
 }
@@ -620,14 +653,14 @@ ecc_extract_comment (ECalComponent *comp)
 static gchar *
 ecc_extract_description (ECalComponent *comp)
 {
-	GSList *list = NULL;
+	GSList *list;
 	gchar *value;
 
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 
-	e_cal_component_get_description_list (comp, &list);
+	list = e_cal_component_get_descriptions (comp);
 	value = ecc_extract_text_list (list);
-	e_cal_component_free_text_list (list);
+	g_slist_free_full (list, e_cal_component_text_free);
 
 	return value;
 }
@@ -674,12 +707,12 @@ ecc_encode_mail (GString *out_value,
 static gchar *
 ecc_extract_attendees (ECalComponent *comp)
 {
-	GSList *attendees = NULL, *link;
+	GSList *attendees, *link;
 	GString *value;
 
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 
-	e_cal_component_get_attendee_list (comp, &attendees);
+	attendees = e_cal_component_get_attendees (comp);
 	if (!attendees)
 		return NULL;
 
@@ -691,10 +724,10 @@ ecc_extract_attendees (ECalComponent *comp)
 		if (!att)
 			continue;
 
-		ecc_encode_mail (value, att->cn, att->value);
+		ecc_encode_mail (value, e_cal_component_attendee_get_cn (att), e_cal_component_attendee_get_value (att));
 	}
 
-	e_cal_component_free_attendee_list (attendees);
+	g_slist_free_full (attendees, e_cal_component_attendee_free);
 
 	if (value->len) {
 		/* This way it is encoded as:
@@ -709,19 +742,23 @@ ecc_extract_attendees (ECalComponent *comp)
 static gchar *
 ecc_extract_organizer (ECalComponent *comp)
 {
-	ECalComponentOrganizer org;
+	ECalComponentOrganizer *org;
 	GString *value;
 
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 
-	e_cal_component_get_organizer (comp, &org);
+	org = e_cal_component_get_organizer (comp);
 
-	if (!org.value)
+	if (!org || !e_cal_component_organizer_get_value (org)) {
+		e_cal_component_organizer_free (org);
 		return NULL;
+	}
 
 	value = g_string_new ("");
 
-	ecc_encode_mail (value, org.cn, org.value);
+	ecc_encode_mail (value, e_cal_component_organizer_get_cn (org), e_cal_component_organizer_get_value (org));
+
+	e_cal_component_organizer_free (org);
 
 	return g_string_free (value, !value->len);
 }
@@ -734,7 +771,7 @@ ecc_extract_categories (ECalComponent *comp)
 
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 
-	e_cal_component_get_categories_list (comp, &categories);
+	categories = e_cal_component_get_categories_list (comp);
 
 	if (!categories)
 		return NULL;
@@ -751,7 +788,7 @@ ecc_extract_categories (ECalComponent *comp)
 		}
 	}
 
-	e_cal_component_free_categories_list (categories);
+	g_slist_free_full (categories, g_free);
 
 	if (value->len) {
 		/* This way it is encoded as:
@@ -789,38 +826,36 @@ ecc_get_classification_as_string (ECalComponentClassification classification)
 }
 
 static const gchar *
-ecc_get_status_as_string (icalproperty_status status)
+ecc_get_status_as_string (ICalPropertyStatus status)
 {
 	switch (status) {
-	case ICAL_STATUS_NONE:
+	case I_CAL_STATUS_NONE:
 		return "not started";
-	case ICAL_STATUS_COMPLETED:
+	case I_CAL_STATUS_COMPLETED:
 		return "completed";
-	case ICAL_STATUS_CANCELLED:
+	case I_CAL_STATUS_CANCELLED:
 		return "cancelled";
-	case ICAL_STATUS_INPROCESS:
+	case I_CAL_STATUS_INPROCESS:
 		return "in progress";
-	case ICAL_STATUS_NEEDSACTION:
+	case I_CAL_STATUS_NEEDSACTION:
 		return "needs action";
-	case ICAL_STATUS_TENTATIVE:
+	case I_CAL_STATUS_TENTATIVE:
 		return "tentative";
-	case ICAL_STATUS_CONFIRMED:
+	case I_CAL_STATUS_CONFIRMED:
 		return "confirmed";
-	case ICAL_STATUS_DRAFT:
+	case I_CAL_STATUS_DRAFT:
 		return "draft";
-	case ICAL_STATUS_FINAL:
+	case I_CAL_STATUS_FINAL:
 		return "final";
-	case ICAL_STATUS_SUBMITTED:
+	case I_CAL_STATUS_SUBMITTED:
 		return "submitted";
-	case ICAL_STATUS_PENDING:
+	case I_CAL_STATUS_PENDING:
 		return "pending";
-	case ICAL_STATUS_FAILED:
+	case I_CAL_STATUS_FAILED:
 		return "failed";
-#ifdef HAVE_ICAL_STATUS_DELETED
-	case ICAL_STATUS_DELETED:
+	case I_CAL_STATUS_DELETED:
 		return "deleted";
-#endif
-	case ICAL_STATUS_X:
+	case I_CAL_STATUS_X:
 		break;
 	}
 
@@ -832,15 +867,15 @@ ecc_fill_other_columns (ECalCache *cal_cache,
 			ECacheColumnValues *other_columns,
 			ECalComponent *comp)
 {
-	time_t occur_start = -1, occur_end = -1;
-	ECalComponentDateTime dt;
-	ECalComponentText text;
+	ECalComponentDateTime *dt;
+	ECalComponentText *text;
 	ECalComponentClassification classification = E_CAL_COMPONENT_CLASS_PUBLIC;
-	icalcomponent *icalcomp;
-	icalproperty_status status = ICAL_STATUS_NONE;
-	struct icaltimetype *itt;
-	const gchar *str = NULL;
-	gint *pint = NULL;
+	ICalComponent *icomp;
+	ICalPropertyStatus status = I_CAL_STATUS_NONE;
+	ICalTime *itt;
+	time_t occur_start = -1, occur_end = -1;
+	gchar *str = NULL;
+	gint nint;
 	gboolean has;
 
 	g_return_if_fail (E_IS_CAL_CACHE (cal_cache));
@@ -849,60 +884,55 @@ ecc_fill_other_columns (ECalCache *cal_cache,
 
 	#define add_value(_col, _val) e_cache_column_values_take_value (other_columns, _col, _val)
 
-	icalcomp = e_cal_component_get_icalcomponent (comp);
+	icomp = e_cal_component_get_icalcomponent (comp);
 
 	e_cal_util_get_component_occur_times (
 		comp, &occur_start, &occur_end,
-		ecc_resolve_tzid_cb, cal_cache, icaltimezone_get_utc_timezone (),
-		icalcomponent_isa (icalcomp));
+		ecc_resolve_tzid_cb, cal_cache, i_cal_timezone_get_utc_timezone (),
+		i_cal_component_isa (icomp));
 
-	e_cal_component_get_dtstart (comp, &dt);
-	add_value (ECC_COLUMN_OCCUR_START, dt.value && ((dt.tzid && *dt.tzid) || icaltime_is_utc (*dt.value)) ? ecc_encode_timet_to_sql (cal_cache, occur_start) : NULL);
+	dt = e_cal_component_get_dtstart (comp);
+	add_value (ECC_COLUMN_OCCUR_START, dt && e_cal_component_datetime_get_value (dt) &&
+		(e_cal_component_datetime_get_tzid (dt) || i_cal_time_is_utc (e_cal_component_datetime_get_value (dt)))
+		? ecc_encode_timet_to_sql (cal_cache, occur_start) : NULL);
 
-	has = dt.value != NULL;
+	has = dt && e_cal_component_datetime_get_value (dt);
 	add_value (ECC_COLUMN_HAS_START, g_strdup (has ? "1" : "0"));
-	e_cal_component_free_datetime (&dt);
+	e_cal_component_datetime_free (dt);
 
-	e_cal_component_get_dtend (comp, &dt);
-	add_value (ECC_COLUMN_OCCUR_END, dt.value && ((dt.tzid && *dt.tzid) || icaltime_is_utc (*dt.value)) ? ecc_encode_timet_to_sql (cal_cache, occur_end) : NULL);
-	e_cal_component_free_datetime (&dt);
+	dt = e_cal_component_get_dtend (comp);
+	add_value (ECC_COLUMN_OCCUR_END, dt && e_cal_component_datetime_get_value (dt) &&
+		(e_cal_component_datetime_get_tzid (dt) || i_cal_time_is_utc (e_cal_component_datetime_get_value (dt)))
+		? ecc_encode_timet_to_sql (cal_cache, occur_end) : NULL);
+	e_cal_component_datetime_free (dt);
 
-	e_cal_component_get_due (comp, &dt);
-	add_value (ECC_COLUMN_DUE, ecc_encode_time_to_sql (cal_cache, &dt));
-	e_cal_component_free_datetime (&dt);
+	dt = e_cal_component_get_due (comp);
+	add_value (ECC_COLUMN_DUE, ecc_encode_time_to_sql (cal_cache, dt));
+	e_cal_component_datetime_free (dt);
 
-	itt = NULL;
-	e_cal_component_get_completed (comp, &itt);
-	add_value (ECC_COLUMN_COMPLETED, itt ? ecc_encode_itt_to_sql (*itt) : NULL);
-	if (itt)
-		e_cal_component_free_icaltimetype (itt);
+	itt = e_cal_component_get_completed (comp);
+	add_value (ECC_COLUMN_COMPLETED, itt ? ecc_encode_itt_to_sql (itt) : NULL);
+	g_clear_object (&itt);
 
-	text.value = NULL;
-	e_cal_component_get_summary (comp, &text);
-	add_value (ECC_COLUMN_SUMMARY, text.value ? e_util_utf8_decompose (text.value) : NULL);
+	text = e_cal_component_get_summary (comp);
+	add_value (ECC_COLUMN_SUMMARY, text && e_cal_component_text_get_value (text) ? e_util_utf8_decompose (e_cal_component_text_get_value (text)) : NULL);
+	e_cal_component_text_free (text);
 
-	e_cal_component_get_location (comp, &str);
+	str = e_cal_component_get_location (comp);
 	add_value (ECC_COLUMN_LOCATION, str ? e_util_utf8_decompose (str) : NULL);
+	g_free (str);
 
-	e_cal_component_get_classification (comp, &classification);
+	classification = e_cal_component_get_classification (comp);
 	add_value (ECC_COLUMN_CLASSIFICATION, g_strdup (ecc_get_classification_as_string (classification)));
 
-	e_cal_component_get_status (comp, &status);
+	status = e_cal_component_get_status (comp);
 	add_value (ECC_COLUMN_STATUS, g_strdup (ecc_get_status_as_string (status)));
 
-	e_cal_component_get_priority (comp, &pint);
-	add_value (ECC_COLUMN_PRIORITY, pint && *pint ? g_strdup_printf ("%d", *pint) : NULL);
-	if (pint) {
-		e_cal_component_free_priority (pint);
-		pint = NULL;
-	}
+	nint = e_cal_component_get_priority (comp);
+	add_value (ECC_COLUMN_PRIORITY, nint != -1 ? g_strdup_printf ("%d", nint) : NULL);
 
-	e_cal_component_get_percent (comp, &pint);
-	add_value (ECC_COLUMN_PERCENT_COMPLETE, pint && *pint ? g_strdup_printf ("%d", *pint) : NULL);
-	if (pint) {
-		e_cal_component_free_percent (pint);
-		pint = NULL;
-	}
+	nint = e_cal_component_get_percent_complete (comp);
+	add_value (ECC_COLUMN_PERCENT_COMPLETE, nint != -1 ? g_strdup_printf ("%d", nint) : NULL);
 
 	has = e_cal_component_has_alarms (comp);
 	add_value (ECC_COLUMN_HAS_ALARM, g_strdup (has ? "1" : "0"));
@@ -1115,12 +1145,12 @@ ecc_sexp_func_occur_in_time_range (ESExp *esexp,
 	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
 
 	if (!ctx->not_level) {
-		struct icaltimetype itt_start, itt_end;
+		ICalTime *itt_start, *itt_end;
 		gchar *start_str, *end_str;
 
 		/* The default zone argument, if any, is ignored here */
-		itt_start = icaltime_from_timet_with_zone (argv[0]->value.time, 0, NULL);
-		itt_end = icaltime_from_timet_with_zone (argv[1]->value.time, 0, NULL);
+		itt_start = i_cal_time_new_from_timet_with_zone (argv[0]->value.time, 0, NULL);
+		itt_end = i_cal_time_new_from_timet_with_zone (argv[1]->value.time, 0, NULL);
 
 		start_str = ecc_encode_itt_to_sql (itt_start);
 		end_str = ecc_encode_itt_to_sql (itt_end);
@@ -1130,6 +1160,8 @@ ecc_sexp_func_occur_in_time_range (ESExp *esexp,
 		if (!result->value.string)
 			result->value.string = g_strdup ("1=1");
 
+		g_clear_object (&itt_start);
+		g_clear_object (&itt_end);
 		g_free (start_str);
 		g_free (end_str);
 	} else {
@@ -1626,6 +1658,7 @@ ecc_convert_sexp_to_sql (ECalCache *cal_cache,
 
 typedef struct {
 	gint extra_idx;
+	gint custom_flags_idx;
 	ECalCacheSearchFunc func;
 	gpointer func_user_data;
 } SearchContext;
@@ -1643,29 +1676,36 @@ ecc_search_foreach_cb (ECache *cache,
 {
 	SearchContext *ctx = user_data;
 	gchar *comp_uid = NULL, *comp_rid = NULL;
+	guint32 custom_flags = 0;
 	gboolean can_continue;
 
 	g_return_val_if_fail (ctx != NULL, FALSE);
 	g_return_val_if_fail (ctx->func != NULL, FALSE);
 
-	if (ctx->extra_idx == -1) {
+	if (ctx->extra_idx == -1 || ctx->custom_flags_idx == -1) {
 		gint ii;
 
-		for (ii = 0; ii < ncols; ii++) {
-			if (column_names[ii] && g_ascii_strcasecmp (column_names[ii], ECC_COLUMN_EXTRA) == 0) {
-				ctx->extra_idx = ii;
-				break;
+		for (ii = 0; ii < ncols && (ctx->extra_idx == -1 || ctx->custom_flags_idx == -1); ii++) {
+			if (column_names[ii]) {
+				if (g_ascii_strcasecmp (column_names[ii], ECC_COLUMN_EXTRA) == 0)
+					ctx->extra_idx = ii;
+				else if (g_ascii_strcasecmp (column_names[ii], ECC_COLUMN_CUSTOM_FLAGS) == 0)
+					ctx->custom_flags_idx = ii;
 			}
 		}
 	}
 
 	g_return_val_if_fail (ctx->extra_idx != -1, FALSE);
+	g_return_val_if_fail (ctx->custom_flags_idx != -1, FALSE);
 
 	g_warn_if_fail (ecc_decode_id_sql (uid, &comp_uid, &comp_rid));
 
+	if (ctx->custom_flags_idx >= 0 && column_values[ctx->custom_flags_idx])
+		custom_flags = g_ascii_strtoull (column_values[ctx->custom_flags_idx], NULL, 10);
+
 	/* This type-cast for performance reason */
 	can_continue = ctx->func ((ECalCache *) cache, comp_uid, comp_rid, revision, object,
-		column_values[ctx->extra_idx], offline_state, ctx->func_user_data);
+		column_values[ctx->extra_idx], custom_flags, offline_state, ctx->func_user_data);
 
 	g_free (comp_uid);
 	g_free (comp_rid);
@@ -1691,6 +1731,7 @@ ecc_search_internal (ECalCache *cal_cache,
 	}
 
 	ctx.extra_idx = -1;
+	ctx.custom_flags_idx = -1;
 	ctx.func = func;
 	ctx.func_user_data = user_data;
 
@@ -1765,8 +1806,10 @@ ecc_init_sqlite_functions (ECalCache *cal_cache,
 typedef struct _ComponentInfo {
 	GSList *online_comps; /* ECalComponent * */
 	GSList *online_extras; /* gchar * */
+	GSList *online_custom_flags; /* guint32 */
 	GSList *offline_comps; /* ECalComponent * */
 	GSList *offline_extras; /* gchar * */
+	GSList *offline_custom_flags; /* guint32 */
 } ComponentInfo;
 
 static void
@@ -1775,8 +1818,10 @@ component_info_clear (ComponentInfo *ci)
 	if (ci) {
 		g_slist_free_full (ci->online_comps, g_object_unref);
 		g_slist_free_full (ci->online_extras, g_free);
+		g_slist_free (ci->online_custom_flags);
 		g_slist_free_full (ci->offline_comps, g_object_unref);
 		g_slist_free_full (ci->offline_extras, g_free);
+		g_slist_free (ci->offline_custom_flags);
 	}
 }
 
@@ -1787,12 +1832,13 @@ cal_cache_gather_v1_affected_cb (ECalCache *cal_cache,
 				 const gchar *revision,
 				 const gchar *object,
 				 const gchar *extra,
+				 guint32 custom_flags,
 				 EOfflineState offline_state,
 				 gpointer user_data)
 {
 	ComponentInfo *ci = user_data;
 	ECalComponent *comp;
-	ECalComponentDateTime dt;
+	ECalComponentDateTime *dt;
 
 	g_return_val_if_fail (object != NULL, FALSE);
 	g_return_val_if_fail (ci != NULL, FALSE);
@@ -1804,45 +1850,51 @@ cal_cache_gather_v1_affected_cb (ECalCache *cal_cache,
 	if (!comp)
 		return TRUE;
 
-	e_cal_component_get_due (comp, &dt);
+	dt = e_cal_component_get_due (comp);
 
-	if (dt.value && !icaltime_is_utc (*dt.value) && (!dt.tzid || !*dt.tzid)) {
-		GSList **pcomps, **pextras;
+	if (dt && e_cal_component_datetime_get_value (dt) &&
+	    !i_cal_time_is_utc (e_cal_component_datetime_get_value (dt)) &&
+	    !e_cal_component_datetime_get_tzid (dt)) {
+		GSList **pcomps, **pextras, **pcustom_flags;
 
 		if (offline_state == E_OFFLINE_STATE_SYNCED) {
 			pcomps = &ci->online_comps;
 			pextras = &ci->online_extras;
+			pcustom_flags = &ci->online_custom_flags;
 		} else {
 			pcomps = &ci->offline_comps;
 			pextras = &ci->offline_extras;
+			pcustom_flags = &ci->offline_custom_flags;
 		}
 
 		*pcomps = g_slist_prepend (*pcomps, g_object_ref (comp));
 		*pextras = g_slist_prepend (*pextras, g_strdup (extra));
+		*pcustom_flags = g_slist_prepend (*pcustom_flags, GUINT_TO_POINTER (custom_flags));
 	}
 
-	e_cal_component_free_datetime (&dt);
+	e_cal_component_datetime_free (dt);
 	g_object_unref (comp);
 
 	return TRUE;
 }
 
-static icaltimezone *
+static ICalTimezone *
 ecc_timezone_from_string (const gchar *icalstring)
 {
-	icalcomponent *component;
+	ICalComponent *component;
 
 	g_return_val_if_fail (icalstring != NULL, NULL);
 
-	component = icalcomponent_new_from_string (icalstring);
+	component = i_cal_component_new_from_string (icalstring);
 	if (component) {
-		icaltimezone *zone;
+		ICalTimezone *zone;
 
-		zone = icaltimezone_new ();
-		if (!icaltimezone_set_component (zone, component)) {
-			icalcomponent_free (component);
-			icaltimezone_free (zone, 1);
+		zone = i_cal_timezone_new ();
+		if (!i_cal_timezone_set_component (zone, component)) {
+			g_object_unref (component);
+			g_object_unref (zone);
 		} else {
+			g_object_unref (component);
 			return zone;
 		}
 	}
@@ -1855,15 +1907,15 @@ ecc_tzid_is_libical_builtin (const gchar *tzid)
 {
 	const gchar *matched_tzid;
 
-	if (!tzid || !*tzid || icaltimezone_get_builtin_timezone (tzid))
+	if (!tzid || !*tzid || i_cal_timezone_get_builtin_timezone (tzid))
 		return TRUE;
 
 	matched_tzid = e_cal_match_tzid (tzid);
-	return matched_tzid && icaltimezone_get_builtin_timezone_from_tzid (matched_tzid);
+	return matched_tzid && i_cal_timezone_get_builtin_timezone_from_tzid (matched_tzid);
 }
 
 typedef struct _TimezoneMigrationData {
-	icaltimezone *zone;
+	ICalTimezone *zone;
 	guint refs;
 	gboolean is_deref; /* TRUE when should dereference, instead of reference, the timezone with refs references */
 } TimezoneMigrationData;
@@ -1874,8 +1926,7 @@ timezone_migration_data_free (gpointer ptr)
 	TimezoneMigrationData *tmd = ptr;
 
 	if (tmd) {
-		if (tmd->zone)
-			icaltimezone_free (tmd->zone, 1);
+		g_clear_object (&tmd->zone);
 		g_free (tmd);
 	}
 }
@@ -1888,7 +1939,7 @@ typedef struct _CountTimezonesData {
 } CountTimezonesData;
 
 static void
-ecc_count_timezones_in_icalcomp_cb (icalparameter *param,
+ecc_count_timezones_in_icalcomp_cb (ICalParameter *param,
 				    gpointer user_data)
 {
 	CountTimezonesData *ctd = user_data;
@@ -1897,7 +1948,7 @@ ecc_count_timezones_in_icalcomp_cb (icalparameter *param,
 
 	g_return_if_fail (ctd != NULL);
 
-	tzid = icalparameter_get_tzid (param);
+	tzid = i_cal_parameter_get_tzid (param);
 	if (!tzid)
 		return;
 
@@ -1927,7 +1978,7 @@ ecc_count_timezones_in_icalcomp_cb (icalparameter *param,
 			}
 		}
 	} else if (!ecc_tzid_is_libical_builtin (tzid)) {
-		icaltimezone *zone = NULL;
+		ICalTimezone *zone = NULL;
 
 		g_signal_emit (ctd->cal_cache, signals[GET_TIMEZONE], 0, tzid, &zone);
 
@@ -1935,25 +1986,8 @@ ecc_count_timezones_in_icalcomp_cb (icalparameter *param,
 			zone = NULL;
 
 		/* Make a copy of it, it's not owned by the caller, but by the originator */
-		if (zone) {
-			icalcomponent *zonecomp;
-
-			zonecomp = icaltimezone_get_component (zone);
-			if (zonecomp) {
-				icalcomponent *clone;
-
-				clone = icalcomponent_new_clone (zonecomp);
-				/* icaltimezone_copy() doesn't carry over the component, thus do it this way */
-				zone = icaltimezone_new ();
-				if (!icaltimezone_set_component (zone, clone)) {
-					icalcomponent_free (clone);
-					icaltimezone_free (zone, 1);
-					zone = NULL;
-				}
-			} else {
-				zone = NULL;
-			}
-		}
+		if (zone)
+			zone = e_cal_util_copy_timezone (zone);
 
 		if (zone) {
 			tmd = g_new0 (TimezoneMigrationData, 1);
@@ -1969,14 +2003,14 @@ ecc_count_timezones_in_icalcomp_cb (icalparameter *param,
 static void
 ecc_count_timezones_for_component (ECalCache *cal_cache,
 				   GHashTable *timezones,
-				   icalcomponent *icalcomp,
+				   ICalComponent *icomp,
 				   gboolean is_inc,
 				   GCancellable *cancellable)
 {
 	g_return_if_fail (E_IS_CAL_CACHE (cal_cache));
 	g_return_if_fail (timezones != NULL);
 
-	if (icalcomp) {
+	if (icomp) {
 		CountTimezonesData ctd;
 
 		ctd.cal_cache = cal_cache;
@@ -1984,7 +2018,7 @@ ecc_count_timezones_for_component (ECalCache *cal_cache,
 		ctd.is_inc = is_inc;
 		ctd.cancellable = cancellable;
 
-		icalcomponent_foreach_tzid (icalcomp, ecc_count_timezones_in_icalcomp_cb, &ctd);
+		i_cal_component_foreach_tzid (icomp, ecc_count_timezones_in_icalcomp_cb, &ctd);
 	}
 }
 
@@ -2002,12 +2036,12 @@ ecc_count_timezones_for_old_component (ECalCache *cal_cache,
 
 	objstr = e_cache_get_object_include_deleted (E_CACHE (cal_cache), uid_in_table, NULL, NULL, cancellable, NULL);
 	if (objstr) {
-		icalcomponent *icalcomp;
+		ICalComponent *icomp;
 
-		icalcomp = icalcomponent_new_from_string (objstr);
-		if (icalcomp) {
-			ecc_count_timezones_for_component (cal_cache, timezones, icalcomp, FALSE, cancellable);
-			icalcomponent_free (icalcomp);
+		icomp = i_cal_component_new_from_string (objstr);
+		if (icomp) {
+			ecc_count_timezones_for_component (cal_cache, timezones, icomp, FALSE, cancellable);
+			g_object_unref (icomp);
 		}
 
 		g_free (objstr);
@@ -2060,7 +2094,7 @@ e_cal_cache_fill_tmd_cb (ECache *cache,
 
 	/* Verify the timezone is not provided twice */
 	if (!g_hash_table_lookup (timezones, column_values[0])) {
-		icaltimezone *zone;
+		ICalTimezone *zone;
 
 		zone = ecc_timezone_from_string (column_values[1]);
 		if (zone) {
@@ -2078,14 +2112,14 @@ e_cal_cache_fill_tmd_cb (ECache *cache,
 }
 
 static void
-ecc_count_tmd_refs_cb (icalparameter *param,
+ecc_count_tmd_refs_cb (ICalParameter *param,
 		       gpointer user_data)
 {
 	GHashTable *timezones = user_data;
 	const gchar *tzid;
 	TimezoneMigrationData *tmd;
 
-	tzid = icalparameter_get_tzid (param);
+	tzid = i_cal_parameter_get_tzid (param);
 	if (!tzid || !timezones)
 		return;
 
@@ -2101,19 +2135,20 @@ cal_cache_count_tmd_refs (ECalCache *cal_cache,
 			  const gchar *revision,
 			  const gchar *object,
 			  const gchar *extra,
+			  guint32 custom_flags,
 			  EOfflineState offline_state,
 			  gpointer user_data)
 {
 	GHashTable *timezones = user_data;
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 
 	g_return_val_if_fail (timezones != NULL, FALSE);
 	g_return_val_if_fail (object != NULL, FALSE);
 
-	icalcomp = icalcomponent_new_from_string (object);
-	if (icalcomp) {
-		icalcomponent_foreach_tzid (icalcomp, ecc_count_tmd_refs_cb, timezones);
-		icalcomponent_free (icalcomp);
+	icomp = i_cal_component_new_from_string (object);
+	if (icomp) {
+		i_cal_component_foreach_tzid (icomp, ecc_count_tmd_refs_cb, timezones);
+		g_object_unref (icomp);
 	}
 
 	return TRUE;
@@ -2195,10 +2230,10 @@ e_cal_cache_migrate (ECache *cache,
 			gboolean success = TRUE;
 
 			if (ci.online_comps)
-				success = e_cal_cache_put_components (cal_cache, ci.online_comps, ci.online_extras, E_CACHE_IS_ONLINE, cancellable, NULL);
+				success = e_cal_cache_put_components (cal_cache, ci.online_comps, ci.online_extras, ci.online_custom_flags, E_CACHE_IS_ONLINE, cancellable, NULL);
 
 			if (success && ci.offline_comps)
-				e_cal_cache_put_components (cal_cache, ci.offline_comps, ci.offline_extras, E_CACHE_IS_OFFLINE, cancellable, NULL);
+				e_cal_cache_put_components (cal_cache, ci.offline_comps, ci.offline_extras, ci.offline_custom_flags, E_CACHE_IS_OFFLINE, cancellable, NULL);
 		}
 
 		component_info_clear (&ci);
@@ -2319,27 +2354,27 @@ e_cal_cache_new (const gchar *filename,
 /**
  * e_cal_cache_dup_component_revision:
  * @cal_cache: an #ECalCache
- * @icalcomp: an icalcomponent
+ * @icomp: an #ICalComponent
  *
- * Returns the @icalcomp revision, used to detect changes.
+ * Returns the @icomp revision, used to detect changes.
  * The returned string should be freed with g_free(), when
  * no longer needed.
  *
  * Returns: (transfer full): A newly allocated string containing
- *    revision of the @icalcomp.
+ *    revision of the @icomp.
  *
  * Since: 3.26
  **/
 gchar *
 e_cal_cache_dup_component_revision (ECalCache *cal_cache,
-				    icalcomponent *icalcomp)
+				    ICalComponent *icomp)
 {
 	gchar *revision = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), NULL);
-	g_return_val_if_fail (icalcomp != NULL, NULL);
+	g_return_val_if_fail (icomp != NULL, NULL);
 
-	g_signal_emit (cal_cache, signals[DUP_COMPONENT_REVISION], 0, icalcomp, &revision);
+	g_signal_emit (cal_cache, signals[DUP_COMPONENT_REVISION], 0, icomp, &revision);
 
 	return revision;
 }
@@ -2386,6 +2421,7 @@ e_cal_cache_contains (ECalCache *cal_cache,
  * @cal_cache: an #ECalCache
  * @component: an #ECalComponent to put into the @cal_cache
  * @extra: (nullable): an extra data to store in association with the @component
+ * @custom_flags: custom flags for the @component, not interpreted by the @cal_cache
  * @offline_flag: one of #ECacheOfflineFlag, whether putting this component in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -2401,12 +2437,14 @@ gboolean
 e_cal_cache_put_component (ECalCache *cal_cache,
 			   ECalComponent *component,
 			   const gchar *extra,
+			   guint32 custom_flags,
 			   ECacheOfflineFlag offline_flag,
 			   GCancellable *cancellable,
 			   GError **error)
 {
 	GSList *components = NULL;
 	GSList *extras = NULL;
+	GSList *custom_flags_lst = NULL;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
@@ -2414,9 +2452,11 @@ e_cal_cache_put_component (ECalCache *cal_cache,
 	components = g_slist_prepend (components, component);
 	if (extra)
 		extras = g_slist_prepend (extras, (gpointer) extra);
+	custom_flags_lst = g_slist_prepend (custom_flags_lst, GUINT_TO_POINTER (custom_flags));
 
-	success = e_cal_cache_put_components (cal_cache, components, extras, offline_flag, cancellable, error);
+	success = e_cal_cache_put_components (cal_cache, components, extras, custom_flags_lst, offline_flag, cancellable, error);
 
+	g_slist_free (custom_flags_lst);
 	g_slist_free (components);
 	g_slist_free (extras);
 
@@ -2427,7 +2467,8 @@ e_cal_cache_put_component (ECalCache *cal_cache,
  * e_cal_cache_put_components:
  * @cal_cache: an #ECalCache
  * @components: (element-type ECalComponent): a #GSList of #ECalComponent to put into the @cal_cache
- * @extras: (nullable) (element-type utf8): an extra data to store in association with the @components
+ * @extras: (nullable) (element-type utf8): optional extra data to store in association with the @components
+ * @custom_flags: (nullable) (element-type guint32): optional custom flags to use for the @components
  * @offline_flag: one of #ECacheOfflineFlag, whether putting these components in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -2435,8 +2476,9 @@ e_cal_cache_put_component (ECalCache *cal_cache,
  * Adds a list of @components into the @cal_cache. Any existing with the same UID
  * and RID are replaced.
  *
- * If @extras is not %NULL, it's length should be the same as the length
- * of the @components.
+ * If @extras is not %NULL, its length should be the same as the length
+ * of the @components. Similarly the non-NULL @custom_flags length
+ * should be the same as the length of the @components.
  *
  * Returns: Whether succeeded.
  *
@@ -2446,17 +2488,19 @@ gboolean
 e_cal_cache_put_components (ECalCache *cal_cache,
 			    const GSList *components,
 			    const GSList *extras,
+			    const GSList *custom_flags,
 			    ECacheOfflineFlag offline_flag,
 			    GCancellable *cancellable,
 			    GError **error)
 {
-	const GSList *clink, *elink;
+	const GSList *clink, *elink, *flink;
 	ECache *cache;
 	ECacheColumnValues *other_columns;
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
 	g_return_val_if_fail (extras == NULL || g_slist_length ((GSList *) components) == g_slist_length ((GSList *) extras), FALSE);
+	g_return_val_if_fail (custom_flags == NULL || g_slist_length ((GSList *) components) == g_slist_length ((GSList *) custom_flags), FALSE);
 
 	cache = E_CACHE (cal_cache);
 	other_columns = e_cache_column_values_new ();
@@ -2464,9 +2508,12 @@ e_cal_cache_put_components (ECalCache *cal_cache,
 	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
 	e_cache_freeze_revision_change (cache);
 
-	for (clink = components, elink = extras; clink; clink = g_slist_next (clink), elink = g_slist_next (elink)) {
+	for (clink = components, elink = extras, flink = custom_flags;
+	     clink;
+	     (clink = g_slist_next (clink)), (elink = g_slist_next (elink)), (flink = g_slist_next (flink))) {
 		ECalComponent *component = clink->data;
 		const gchar *extra = elink ? elink->data : NULL;
+		guint32 custom_flags_val = flink ? GPOINTER_TO_UINT (flink->data) : 0;
 		ECalComponentId *id;
 		gchar *uid, *rev, *icalstring;
 
@@ -2479,15 +2526,16 @@ e_cal_cache_put_components (ECalCache *cal_cache,
 
 		if (extra)
 			e_cache_column_values_take_value (other_columns, ECC_COLUMN_EXTRA, g_strdup (extra));
+		e_cache_column_values_take_value (other_columns, ECC_COLUMN_CUSTOM_FLAGS, g_strdup_printf ("%u", custom_flags_val));
 
 		id = e_cal_component_get_id (component);
 		if (id) {
-			uid = ecc_encode_id_sql (id->uid, id->rid);
+			uid = ecc_encode_id_sql (e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id));
 		} else {
 			g_warn_if_reached ();
 			uid = g_strdup ("");
 		}
-		e_cal_component_free_id (id);
+		e_cal_component_id_free (id);
 
 		rev = e_cal_cache_dup_component_revision (cal_cache, e_cal_component_get_icalcomponent (component));
 
@@ -2514,6 +2562,7 @@ e_cal_cache_put_components (ECalCache *cal_cache,
  * @cal_cache: an #ECalCache
  * @uid: a UID of the component to remove
  * @rid: (nullable): an optional Recurrence-ID to remove
+ * @custom_flags: custom flags for the component, not interpreted by the @cal_cache
  * @offline_flag: one of #ECacheOfflineFlag, whether removing this component in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -2530,24 +2579,27 @@ gboolean
 e_cal_cache_remove_component (ECalCache *cal_cache,
 			      const gchar *uid,
 			      const gchar *rid,
+			      guint32 custom_flags,
 			      ECacheOfflineFlag offline_flag,
 			      GCancellable *cancellable,
 			      GError **error)
 {
-	ECalComponentId id;
+	ECalComponentId *id;
 	GSList *ids = NULL;
+	GSList *custom_flags_lst = NULL;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
 
-	id.uid = (gchar *) uid;
-	id.rid = (gchar *) rid;
+	id = e_cal_component_id_new (uid, rid);
 
-	ids = g_slist_prepend (ids, &id);
+	ids = g_slist_prepend (ids, id);
+	custom_flags_lst = g_slist_prepend (custom_flags_lst, GUINT_TO_POINTER (custom_flags));
 
-	success = e_cal_cache_remove_components (cal_cache, ids, offline_flag, cancellable, error);
+	success = e_cal_cache_remove_components (cal_cache, ids, custom_flags_lst, offline_flag, cancellable, error);
 
-	g_slist_free (ids);
+	g_slist_free_full (ids, e_cal_component_id_free);
+	g_slist_free (custom_flags_lst);
 
 	return success;
 }
@@ -2556,6 +2608,7 @@ e_cal_cache_remove_component (ECalCache *cal_cache,
  * e_cal_cache_remove_components:
  * @cal_cache: an #ECalCache
  * @ids: (element-type ECalComponentId): a #GSList of components to remove
+ * @custom_flags: (element-type guint32) (nullable): an optional #GSList of custom flags for the @ids
  * @offline_flag: one of #ECacheOfflineFlag, whether removing these comonents in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -2563,6 +2616,9 @@ e_cal_cache_remove_component (ECalCache *cal_cache,
  * Removes components identified by @uid and @rid from the @cal_cache
  * in the @ids list. When the @rid is %NULL, or an empty string, then
  * removes the master object only, without any detached instance.
+ * The @custom_flags is used, if not %NULL, only if the @offline_flag
+ * is %E_CACHE_IS_OFFLINE. Otherwise it's ignored. The length of
+ * the @custom_flags should match the length of @ids, when not %NULL.
  *
  * Returns: Whether succeeded.
  *
@@ -2571,23 +2627,26 @@ e_cal_cache_remove_component (ECalCache *cal_cache,
 gboolean
 e_cal_cache_remove_components (ECalCache *cal_cache,
 			       const GSList *ids,
+			       const GSList *custom_flags,
 			       ECacheOfflineFlag offline_flag,
 			       GCancellable *cancellable,
 			       GError **error)
 {
 	ECache *cache;
-	const GSList *link;
+	const GSList *link, *flink;
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
+	g_return_val_if_fail (custom_flags == NULL || g_slist_length ((GSList *) ids) == g_slist_length ((GSList *) custom_flags), FALSE);
 
 	cache = E_CACHE (cal_cache);
 
 	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
 	e_cache_freeze_revision_change (cache);
 
-	for (link = ids; success && link; link = g_slist_next (link)) {
+	for (link = ids, flink = custom_flags; success && link; (link = g_slist_next (link)), (flink = g_slist_next (flink))) {
 		const ECalComponentId *id = link->data;
+		guint32 custom_flags_val = flink ? GPOINTER_TO_UINT (flink->data) : 0;
 		gchar *uid;
 
 		g_warn_if_fail (id != NULL);
@@ -2595,7 +2654,17 @@ e_cal_cache_remove_components (ECalCache *cal_cache,
 		if (!id)
 			continue;
 
-		uid = ecc_encode_id_sql (id->uid, id->rid);
+		if (offline_flag == E_CACHE_IS_OFFLINE && flink) {
+			success = e_cal_cache_set_component_custom_flags (cal_cache,
+				e_cal_component_id_get_uid (id),
+				e_cal_component_id_get_rid (id),
+				custom_flags_val, cancellable, error);
+
+			if (!success)
+				break;
+		}
+
+		uid = ecc_encode_id_sql (e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id));
 
 		success = e_cache_remove (cache, uid, offline_flag, cancellable, error);
 
@@ -2687,6 +2756,123 @@ e_cal_cache_get_component_as_string (ECalCache *cal_cache,
 	g_free (id);
 
 	return *out_icalstring != NULL;
+}
+
+/**
+ * e_cal_cache_set_component_custom_flags:
+ * @cal_cache: an #ECalCache
+ * @uid: a UID of the component
+ * @rid: (nullable): an optional Recurrence-ID
+ * @custom_flags: the custom flags to set for the component
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Sets or replaces the custom flags associated with a component
+ * identified by @uid and optionally @rid.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.34
+ **/
+gboolean
+e_cal_cache_set_component_custom_flags (ECalCache *cal_cache,
+					const gchar *uid,
+					const gchar *rid,
+					guint32 custom_flags,
+					GCancellable *cancellable,
+					GError **error)
+{
+	gchar *id, *stmt;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	id = ecc_encode_id_sql (uid, rid);
+
+	if (!e_cache_contains (E_CACHE (cal_cache), id, E_CACHE_INCLUDE_DELETED)) {
+		g_free (id);
+
+		if (rid && *rid)
+			g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s”, “%s” not found"), uid, rid);
+		else
+			g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s” not found"), uid);
+
+		return FALSE;
+	}
+
+	stmt = e_cache_sqlite_stmt_printf (
+		"UPDATE " E_CACHE_TABLE_OBJECTS " SET " ECC_COLUMN_CUSTOM_FLAGS "=%u"
+		" WHERE " E_CACHE_COLUMN_UID "=%Q",
+		custom_flags, id);
+
+	success = e_cache_sqlite_exec (E_CACHE (cal_cache), stmt, cancellable, error);
+
+	e_cache_sqlite_stmt_free (stmt);
+	g_free (id);
+
+	return success;
+}
+
+/**
+ * e_cal_cache_get_component_custom_flags:
+ * @cal_cache: an #ECalCache
+ * @uid: a UID of the component
+ * @rid: (nullable): an optional Recurrence-ID
+ * @out_custom_flags: (out): return location to store the custom flags
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Gets the custom flags previously set for @uid and @rid, either with
+ * e_cal_cache_set_component_custom_flags(), when adding components or
+ * when removing components in offline.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.34
+ **/
+gboolean
+e_cal_cache_get_component_custom_flags (ECalCache *cal_cache,
+					const gchar *uid,
+					const gchar *rid,
+					guint32 *out_custom_flags,
+					GCancellable *cancellable,
+					GError **error)
+{
+	gchar *id, *stmt;
+	guint64 value = 0;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	id = ecc_encode_id_sql (uid, rid);
+
+	if (!e_cache_contains (E_CACHE (cal_cache), id, E_CACHE_INCLUDE_DELETED)) {
+		g_free (id);
+
+		if (rid && *rid)
+			g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s”, “%s” not found"), uid, rid);
+		else
+			g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s” not found"), uid);
+
+		return FALSE;
+	}
+
+	stmt = e_cache_sqlite_stmt_printf (
+		"SELECT " ECC_COLUMN_CUSTOM_FLAGS " FROM " E_CACHE_TABLE_OBJECTS
+		" WHERE " E_CACHE_COLUMN_UID "=%Q",
+		id);
+
+	success = e_cache_sqlite_select (E_CACHE (cal_cache), stmt, e_cal_cache_get_uint64_cb, &value, cancellable, error);
+
+	e_cache_sqlite_stmt_free (stmt);
+	g_free (id);
+
+	if (out_custom_flags)
+		*out_custom_flags = (guint32) value;
+
+	return success;
 }
 
 /**
@@ -2819,7 +3005,7 @@ e_cal_cache_get_component_extra (ECalCache *cal_cache,
  * Gets all the ID-s the @extra data is set for.
  *
  * The @out_ids should be freed with
- * g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+ * g_slist_free_full (ids, (GDestroyNotify) e_cal_component_id_free);
  * when no longer needed.
  *
  * Returns: Whether succeeded.
@@ -3013,6 +3199,7 @@ ecc_search_icalstrings_cb (ECalCache *cal_cache,
 			   const gchar *revision,
 			   const gchar *object,
 			   const gchar *extra,
+			   guint32 custom_flags,
 			   EOfflineState offline_state,
 			   gpointer user_data)
 {
@@ -3050,7 +3237,7 @@ e_cal_cache_get_components_in_range_as_strings (ECalCache *cal_cache,
 						GError **error)
 {
 	gchar *sexp;
-	struct icaltimetype itt_start, itt_end;
+	ICalTime *itt_start, *itt_end;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
@@ -3058,12 +3245,25 @@ e_cal_cache_get_components_in_range_as_strings (ECalCache *cal_cache,
 
 	*out_icalstrings = NULL;
 
-	itt_start = icaltime_from_timet_with_zone (range_start, FALSE, NULL);
-	itt_end = icaltime_from_timet_with_zone (range_end, FALSE, NULL);
+	itt_start = i_cal_time_new_from_timet_with_zone (range_start, FALSE, NULL);
+	itt_end = i_cal_time_new_from_timet_with_zone (range_end, FALSE, NULL);
 
 	sexp = g_strdup_printf ("(occur-in-time-range? (make-time \"%04d%02d%02dT%02d%02d%02dZ\") (make-time \"%04d%02d%02dT%02d%02d%02dZ\"))",
-		itt_start.year, itt_start.month, itt_start.day, itt_start.hour, itt_start.minute, itt_start.second,
-		itt_end.year, itt_end.month, itt_end.day, itt_end.hour, itt_end.minute, itt_end.second);
+		i_cal_time_get_year (itt_start),
+		i_cal_time_get_month (itt_start),
+		i_cal_time_get_day (itt_start),
+		i_cal_time_get_hour (itt_start),
+		i_cal_time_get_minute (itt_start),
+		i_cal_time_get_second (itt_start),
+		i_cal_time_get_year (itt_end),
+		i_cal_time_get_month (itt_end),
+		i_cal_time_get_day (itt_end),
+		i_cal_time_get_hour (itt_end),
+		i_cal_time_get_minute (itt_end),
+		i_cal_time_get_second (itt_end));
+
+	g_clear_object (&itt_start);
+	g_clear_object (&itt_end);
 
 	success = e_cal_cache_search_with_callback (cal_cache, sexp, ecc_search_icalstrings_cb,
 		out_icalstrings, cancellable, error);
@@ -3087,6 +3287,7 @@ ecc_search_data_cb (ECalCache *cal_cache,
 		    const gchar *revision,
 		    const gchar *object,
 		    const gchar *extra,
+		    guint32 custom_flags,
 		    EOfflineState offline_state,
 		    gpointer user_data)
 {
@@ -3108,6 +3309,7 @@ ecc_search_components_cb (ECalCache *cal_cache,
 			  const gchar *revision,
 			  const gchar *object,
 			  const gchar *extra,
+			  guint32 custom_flags,
 			  EOfflineState offline_state,
 			  gpointer user_data)
 {
@@ -3129,6 +3331,7 @@ ecc_search_ids_cb (ECalCache *cal_cache,
 		   const gchar *revision,
 		   const gchar *object,
 		   const gchar *extra,
+		   guint32 custom_flags,
 		   EOfflineState offline_state,
 		   gpointer user_data)
 {
@@ -3242,7 +3445,7 @@ e_cal_cache_search_components (ECalCache *cal_cache,
  * Searches the @cal_cache with the given @sexp and returns ECalComponentId
  * for those components which satisfy the search expression.
  * The @out_ids should be freed with
- * g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+ * g_slist_free_full (ids, (GDestroyNotify) e_cal_component_id_free);
  * when no longer needed.
  *
  * Returns: Whether succeeded.
@@ -3269,7 +3472,7 @@ e_cal_cache_search_ids (ECalCache *cal_cache,
 	if (success) {
 		*out_ids = g_slist_reverse (*out_ids);
 	} else {
-		g_slist_free_full (*out_ids, (GDestroyNotify) e_cal_component_free_id);
+		g_slist_free_full (*out_ids, (GDestroyNotify) e_cal_component_id_free);
 		*out_ids = NULL;
 	}
 
@@ -3280,8 +3483,8 @@ e_cal_cache_search_ids (ECalCache *cal_cache,
  * e_cal_cache_search_with_callback:
  * @cal_cache: an #ECalCache
  * @sexp: (nullable): search expression; use %NULL or an empty string to list all stored components
- * @func: an #ECalCacheSearchFunc callback to call for each row which satisfies @sexp
- * @user_data: user data for @func
+ * @func: (scope call): an #ECalCacheSearchFunc callback to call for each row which satisfies @sexp
+ * @user_data: (closure func): user data for @func
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -3382,7 +3585,7 @@ e_cal_cache_get_offline_changes	(ECalCache *cal_cache,
 /**
  * e_cal_cache_delete_attachments:
  * @cal_cache: an #ECalCache
- * @component: an icalcomponent
+ * @component: an #ICalComponent
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -3396,33 +3599,29 @@ e_cal_cache_get_offline_changes	(ECalCache *cal_cache,
  **/
 gboolean
 e_cal_cache_delete_attachments (ECalCache *cal_cache,
-				icalcomponent *component,
+				ICalComponent *component,
 				GCancellable *cancellable,
 				GError **error)
 {
-	icalproperty *prop;
+	ICalProperty *prop;
 	gchar *cache_dirname = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
 	g_return_val_if_fail (component != NULL, FALSE);
 
-	for (prop = icalcomponent_get_first_property (component, ICAL_ATTACH_PROPERTY);
+	for (prop = i_cal_component_get_first_property (component, I_CAL_ATTACH_PROPERTY);
 	     prop;
-	     prop = icalcomponent_get_next_property (component, ICAL_ATTACH_PROPERTY)) {
-		icalattach *attach = icalproperty_get_attach (prop);
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (component, I_CAL_ATTACH_PROPERTY)) {
+		ICalAttach *attach = i_cal_property_get_attach (prop);
 
-		if (attach && icalattach_get_is_url (attach)) {
+		if (attach && i_cal_attach_get_is_url (attach)) {
 			const gchar *url;
 
-			url = icalattach_get_url (attach);
+			url = i_cal_attach_get_url (attach);
 			if (url) {
-				gsize buf_size;
 				gchar *buf;
 
-				buf_size = strlen (url);
-				buf = g_malloc0 (buf_size + 1);
-
-				icalvalue_decode_ical_string (url, buf, buf_size);
+				buf = i_cal_value_decode_ical_string (url);
 
 				if (g_str_has_prefix (buf, "file://")) {
 					gchar *filename;
@@ -3444,29 +3643,11 @@ e_cal_cache_delete_attachments (ECalCache *cal_cache,
 				g_free (buf);
 			}
 		}
+
+		g_clear_object (&attach);
 	}
 
 	g_free (cache_dirname);
-
-	return TRUE;
-}
-
-static gboolean
-e_cal_cache_get_uint64_cb (ECache *cache,
-			   gint ncols,
-			   const gchar **column_names,
-			   const gchar **column_values,
-			   gpointer user_data)
-{
-	guint64 *pui64 = user_data;
-
-	g_return_val_if_fail (pui64 != NULL, FALSE);
-
-	if (ncols == 1) {
-		*pui64 = column_values[0] ? g_ascii_strtoull (column_values[0], NULL, 10) : 0;
-	} else {
-		*pui64 = 0;
-	}
 
 	return TRUE;
 }
@@ -3495,7 +3676,7 @@ e_cal_cache_get_current_timezone_refs (ECalCache *cal_cache,
 /**
  * e_cal_cache_put_timezone:
  * @cal_cache: an #ECalCache
- * @zone: an icaltimezone to put
+ * @zone: an #ICalTimezone to put
  * @inc_ref_counts: how many refs to add, or 0 to have it stored forever
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -3512,7 +3693,7 @@ e_cal_cache_get_current_timezone_refs (ECalCache *cal_cache,
  **/
 gboolean
 e_cal_cache_put_timezone (ECalCache *cal_cache,
-			  const icaltimezone *zone,
+			  const ICalTimezone *zone,
 			  guint inc_ref_counts,
 			  GCancellable *cancellable,
 			  GError **error)
@@ -3521,27 +3702,29 @@ e_cal_cache_put_timezone (ECalCache *cal_cache,
 	gchar *stmt;
 	const gchar *tzid;
 	gchar *component_str;
-	icalcomponent *component;
+	ICalComponent *component;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
 
-	tzid = icaltimezone_get_tzid ((icaltimezone *) zone);
+	tzid = i_cal_timezone_get_tzid ((ICalTimezone *) zone);
 	if (!tzid) {
 		g_set_error_literal (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Cannot add timezone without tzid"));
 		return FALSE;
 	}
 
-	if (ecc_tzid_is_libical_builtin (icaltimezone_get_tzid ((icaltimezone *) zone)))
+	if (ecc_tzid_is_libical_builtin (tzid))
 		return TRUE;
 
-	component = icaltimezone_get_component ((icaltimezone *) zone);
+	component = i_cal_timezone_get_component ((ICalTimezone *) zone);
 	if (!component) {
 		g_set_error_literal (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Cannot add timezone without component"));
 		return FALSE;
 	}
 
-	component_str = icalcomponent_as_ical_string_r (component);
+	component_str = i_cal_component_as_ical_string (component);
+	g_clear_object (&component);
+
 	if (!component_str) {
 		g_set_error_literal (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Cannot add timezone with invalid component"));
 		return FALSE;
@@ -3580,13 +3763,13 @@ e_cal_cache_put_timezone (ECalCache *cal_cache,
  * e_cal_cache_get_timezone:
  * @cal_cache: an #ECalCache
  * @tzid: a timezone ID to get
- * @out_zone: (out) (transfer none): return location for the icaltimezone
+ * @out_zone: (out) (transfer none): return location for the #ICalTimezone
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Gets a timezone with given @tzid, which had been previously put
  * into the @cal_cache with e_cal_cache_put_timezone().
- * The returned icaltimezone is owned by the @cal_cache and should
+ * The returned ICalTimezone is owned by the @cal_cache and should
  * not be freed.
  *
  * Returns: Whether succeeded.
@@ -3596,7 +3779,7 @@ e_cal_cache_put_timezone (ECalCache *cal_cache,
 gboolean
 e_cal_cache_get_timezone (ECalCache *cal_cache,
 			  const gchar *tzid,
-			  icaltimezone **out_zone,
+			  ICalTimezone **out_zone,
 			  GCancellable *cancellable,
 			  GError **error)
 
@@ -3625,7 +3808,7 @@ e_cal_cache_get_timezone (ECalCache *cal_cache,
 	success = e_cal_cache_dup_timezone_as_string (cal_cache, tzid, &zone_str, cancellable, error);
 
 	if (success && zone_str) {
-		icaltimezone *zone;
+		ICalTimezone *zone;
 
 		zone = ecc_timezone_from_string (zone_str);
 		if (zone) {
@@ -3647,13 +3830,13 @@ e_cal_cache_get_timezone (ECalCache *cal_cache,
  * e_cal_cache_dup_timezone_as_string:
  * @cal_cache: an #ECalCache
  * @tzid: a timezone ID to get
- * @out_zone_string: (out) (transfer full): return location for the icaltimezone as iCal string
+ * @out_zone_string: (out) (transfer full): return location for the #ICalTimezone as iCal string
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Gets a timezone with given @tzid, which had been previously put
  * into the @cal_cache with e_cal_cache_put_timezone().
- * The returned string is an iCal string for that icaltimezone and
+ * The returned string is an iCal string for that ICalTimezone and
  * should be freed with g_free() when no longer needed.
  *
  * Returns: Whether succeeded.
@@ -3706,7 +3889,7 @@ e_cal_cache_load_zones_cb (ECache *cache,
 
 	/* Do not overwrite already loaded timezones, they can be used anywhere around */
 	if (!g_hash_table_lookup (loaded_zones, column_values[0])) {
-		icaltimezone *zone;
+		ICalTimezone *zone;
 
 		zone = ecc_timezone_from_string (column_values[1]);
 		if (zone) {
@@ -3720,13 +3903,13 @@ e_cal_cache_load_zones_cb (ECache *cache,
 /**
  * e_cal_cache_list_timezones:
  * @cal_cache: an #ECalCache
- * @out_timezones: (out) (transfer container) (element-type icaltimezone): return location for the list of stored timezones
+ * @out_timezones: (out) (transfer container) (element-type ICalTimezone): return location for the list of stored timezones
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Gets a list of all stored timezones by the @cal_cache.
  * Only the returned list should be freed with g_list_free()
- * when no longer needed; the icaltimezone-s are owned
+ * when no longer needed; the #ICalTimezone-s are owned
  * by the @cal_cache.
  *
  * Note: The list can contain timezones previously stored
@@ -3914,41 +4097,17 @@ _e_cal_cache_remove_loaded_timezones (ECalCache *cal_cache)
  *
  * An #ECalRecurResolveTimezoneCb callback, which can be used
  * with e_cal_recur_generate_instances_sync(). The @cal_cache
- * is supposed to be an #ECalCache instance. See also
- * e_cal_cache_resolve_timezone_simple_cb().
+ * is supposed to be an #ECalCache instance.
  *
- * Returns: (transfer none) (nullable): the resolved icaltimezone, or %NULL, if not found
+ * Returns: (transfer none) (nullable): the resolved #ICalTimezone, or %NULL, if not found
  *
  * Since: 3.26
  **/
-icaltimezone *
+ICalTimezone *
 e_cal_cache_resolve_timezone_cb (const gchar *tzid,
 				 gpointer cal_cache,
 				 GCancellable *cancellable,
 				 GError **error)
-{
-	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), NULL);
-
-	return e_cal_cache_resolve_timezone_simple_cb (tzid, cal_cache);
-}
-
-/**
- * e_cal_cache_resolve_timezone_simple_cb:
- * @tzid: a timezone ID
- * @cal_cache: an #ECalCache
- *
- * An #ECalRecurResolveTimezoneFn callback, which can be used
- * with e_cal_recur_ensure_end_dates() and simialr functions.
- * The @cal_cache is supposed to be an #ECalCache instance. See
- * also e_cal_cache_resolve_timezone_cb().
- *
- * Returns: (transfer none) (nullable): the resolved icaltimezone, or %NULL, if not found
- *
- * Since: 3.26
- **/
-icaltimezone *
-e_cal_cache_resolve_timezone_simple_cb (const gchar *tzid,
-					gpointer cal_cache)
 {
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), NULL);
 
@@ -3962,21 +4121,22 @@ ecc_search_delete_attachment_cb (ECalCache *cal_cache,
 				 const gchar *revision,
 				 const gchar *object,
 				 const gchar *extra,
+				 guint32 custom_flags,
 				 EOfflineState offline_state,
 				 gpointer user_data)
 {
-	icalcomponent *icalcomp;
+	ICalComponent *icomp;
 	GCancellable *cancellable = user_data;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
 	g_return_val_if_fail (object != NULL, FALSE);
 
-	icalcomp = icalcomponent_new_from_string (object);
-	if (!icalcomp)
+	icomp = i_cal_component_new_from_string (object);
+	if (!icomp)
 		return TRUE;
 
-	if (!e_cal_cache_delete_attachments (cal_cache, icalcomp, cancellable, &local_error)) {
+	if (!e_cal_cache_delete_attachments (cal_cache, icomp, cancellable, &local_error)) {
 		if (rid && !*rid)
 			rid = NULL;
 
@@ -3985,7 +4145,7 @@ ecc_search_delete_attachment_cb (ECalCache *cal_cache,
 		g_clear_error (&local_error);
 	}
 
-	icalcomponent_free (icalcomp);
+	g_object_unref (icomp);
 
 	return !g_cancellable_is_cancelled (cancellable);
 }
@@ -4011,47 +4171,53 @@ ecc_empty_aux_tables (ECache *cache,
    <DTSTAMP> "-" <LAST-MODIFIED> "-" <SEQUENCE> */
 static gchar *
 ecc_dup_component_revision (ECalCache *cal_cache,
-			    icalcomponent *icalcomp)
+			    ICalComponent *icomp)
 {
-	struct icaltimetype itt;
-	icalproperty *prop;
+	ICalTime *itt;
+	ICalProperty *prop;
 	GString *revision;
 
-	g_return_val_if_fail (icalcomp != NULL, NULL);
+	g_return_val_if_fail (icomp != NULL, NULL);
 
 	revision = g_string_sized_new (48);
 
-	itt = icalcomponent_get_dtstamp (icalcomp);
-	if (icaltime_is_null_time (itt) || !icaltime_is_valid_time (itt)) {
+	itt = i_cal_component_get_dtstamp (icomp);
+	if (!itt || i_cal_time_is_null_time (itt) || !i_cal_time_is_valid_time (itt)) {
 		g_string_append_c (revision, 'x');
 	} else {
 		g_string_append_printf (revision, "%04d%02d%02d%02d%02d%02d",
-			itt.year, itt.month, itt.day,
-			itt.hour, itt.minute, itt.second);
+			i_cal_time_get_year (itt), i_cal_time_get_month (itt), i_cal_time_get_day (itt),
+			i_cal_time_get_hour (itt), i_cal_time_get_minute (itt), i_cal_time_get_second (itt));
 	}
+
+	g_clear_object (&itt);
 
 	g_string_append_c (revision, '-');
 
-	prop = icalcomponent_get_first_property (icalcomp, ICAL_LASTMODIFIED_PROPERTY);
+	prop = i_cal_component_get_first_property (icomp, I_CAL_LASTMODIFIED_PROPERTY);
 	if (prop)
-		itt = icalproperty_get_lastmodified (prop);
+		itt = i_cal_property_get_lastmodified (prop);
 
-	if (!prop || icaltime_is_null_time (itt) || !icaltime_is_valid_time (itt)) {
+	if (!prop || !itt || i_cal_time_is_null_time (itt) || !i_cal_time_is_valid_time (itt)) {
 		g_string_append_c (revision, 'x');
 	} else {
 		g_string_append_printf (revision, "%04d%02d%02d%02d%02d%02d",
-			itt.year, itt.month, itt.day,
-			itt.hour, itt.minute, itt.second);
+			i_cal_time_get_year (itt), i_cal_time_get_month (itt), i_cal_time_get_day (itt),
+			i_cal_time_get_hour (itt), i_cal_time_get_minute (itt), i_cal_time_get_second (itt));
 	}
+
+	g_clear_object (&prop);
+	g_clear_object (&itt);
 
 	g_string_append_c (revision, '-');
 
-	prop = icalcomponent_get_first_property (icalcomp, ICAL_SEQUENCE_PROPERTY);
+	prop = i_cal_component_get_first_property (icomp, I_CAL_SEQUENCE_PROPERTY);
 	if (!prop) {
 		g_string_append_c (revision, 'x');
 	} else {
-		g_string_append_printf (revision, "%d", icalproperty_get_sequence (prop));
+		g_string_append_printf (revision, "%d", i_cal_property_get_sequence (prop));
 	}
+	g_clear_object (&prop);
 
 	return g_string_free (revision, FALSE);
 }
@@ -4163,41 +4329,41 @@ e_cal_cache_remove_all_locked (ECache *cache,
 static void
 cal_cache_free_zone (gpointer ptr)
 {
-	icaltimezone *zone = ptr;
+	ICalTimezone *zone = ptr;
 
 	if (zone)
-		icaltimezone_free (zone, 1);
+		g_object_unref (zone);
 }
 
 static void
 ecc_add_cached_timezone (ETimezoneCache *cache,
-			 icaltimezone *zone)
+			 ICalTimezone *zone)
 {
 	ECalCache *cal_cache;
 
 	cal_cache = E_CAL_CACHE (cache);
 
-	if (!zone || ecc_tzid_is_libical_builtin (icaltimezone_get_tzid (zone)))
+	if (!zone || ecc_tzid_is_libical_builtin (i_cal_timezone_get_tzid (zone)))
 		return;
 
 	e_cal_cache_put_timezone (cal_cache, zone, 0, NULL, NULL);
 }
 
-static icaltimezone *
+static ICalTimezone *
 ecc_get_cached_timezone (ETimezoneCache *cache,
 			 const gchar *tzid)
 {
 	ECalCache *cal_cache;
-	icaltimezone *zone = NULL;
-	icaltimezone *builtin_zone = NULL;
-	icalcomponent *icalcomp;
-	icalproperty *prop;
+	ICalTimezone *zone = NULL;
+	ICalTimezone *builtin_zone = NULL;
+	ICalComponent *icomp, *clone;
+	ICalProperty *prop;
 	const gchar *builtin_tzid;
 
 	cal_cache = E_CAL_CACHE (cache);
 
 	if (g_str_equal (tzid, "UTC"))
-		return icaltimezone_get_utc_timezone ();
+		return i_cal_timezone_get_utc_timezone ();
 
 	g_rec_mutex_lock (&cal_cache->priv->timezones_lock);
 
@@ -4211,19 +4377,19 @@ ecc_get_cached_timezone (ETimezoneCache *cache,
 		goto exit;
 
 	/* Try the location first */
-	/*zone = icaltimezone_get_builtin_timezone (tzid);
+	/*zone = i_cal_timezone_get_builtin_timezone (tzid);
 	if (zone)
 		goto exit;*/
 
 	/* Try to replace the original time zone with a more complete
 	 * and/or potentially updated built-in time zone.  Note this also
 	 * applies to TZIDs which match built-in time zones exactly: they
-	 * are extracted via icaltimezone_get_builtin_timezone_from_tzid(). */
+	 * are extracted via i_cal_timezone_get_builtin_timezone_from_tzid(). */
 
 	builtin_tzid = e_cal_match_tzid (tzid);
 
 	if (builtin_tzid)
-		builtin_zone = icaltimezone_get_builtin_timezone_from_tzid (builtin_tzid);
+		builtin_zone = i_cal_timezone_get_builtin_timezone_from_tzid (builtin_tzid);
 
 	if (!builtin_zone) {
 		e_cal_cache_get_timezone (cal_cache, tzid, &zone, NULL, NULL);
@@ -4232,34 +4398,32 @@ ecc_get_cached_timezone (ETimezoneCache *cache,
 
 	/* Use the built-in time zone *and* rename it.  Likely the caller
 	 * is asking for a specific TZID because it has an event with such
-	 * a TZID.  Returning an icaltimezone with a different TZID would
+	 * a TZID.  Returning an i_cal_timezone with a different TZID would
 	 * lead to broken VCALENDARs in the caller. */
 
-	icalcomp = icaltimezone_get_component (builtin_zone);
-	icalcomp = icalcomponent_new_clone (icalcomp);
+	icomp = i_cal_timezone_get_component (builtin_zone);
+	clone = i_cal_component_clone (icomp);
+	g_object_unref (icomp);
+	icomp = clone;
 
-	prop = icalcomponent_get_first_property (icalcomp, ICAL_ANY_PROPERTY);
-
-	while (prop != NULL) {
-		if (icalproperty_isa (prop) == ICAL_TZID_PROPERTY) {
-			icalproperty_set_value_from_string (prop, tzid, "NO");
+	for (prop = i_cal_component_get_first_property (icomp, I_CAL_ANY_PROPERTY);
+	     prop;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icomp, ICAL_ANY_PROPERTY)) {
+		if (i_cal_property_isa (prop) == I_CAL_TZID_PROPERTY) {
+			i_cal_property_set_value_from_string (prop, tzid, "NO");
+			g_object_unref (prop);
 			break;
 		}
-
-		prop = icalcomponent_get_next_property (icalcomp, ICAL_ANY_PROPERTY);
 	}
 
-	if (icalcomp != NULL) {
-		zone = icaltimezone_new ();
-		if (icaltimezone_set_component (zone, icalcomp)) {
-			tzid = icaltimezone_get_tzid (zone);
-			g_hash_table_insert (cal_cache->priv->modified_timezones, g_strdup (tzid), zone);
-		} else {
-			icalcomponent_free (icalcomp);
-			icaltimezone_free (zone, 1);
-			zone = NULL;
-		}
+	zone = i_cal_timezone_new ();
+	if (i_cal_timezone_set_component (zone, icomp)) {
+		tzid = i_cal_timezone_get_tzid (zone);
+		g_hash_table_insert (cal_cache->priv->modified_timezones, g_strdup (tzid), zone);
+	} else {
+		g_clear_object (&zone);
 	}
+	g_clear_object (&icomp);
 
  exit:
 	g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
@@ -4314,7 +4478,7 @@ e_cal_cache_class_init (ECalCacheClass *klass)
 
 	/**
 	 * ECalCache:dup-component-revision:
-	 * A signal being called to get revision of an icalcomponent.
+	 * A signal being called to get revision of an ICalComponent.
 	 * The default implementation uses a concatenation of
 	 * DTSTAMP '-' LASTMODIFIED '-' SEQUENCE.
 	 **/
@@ -4337,7 +4501,7 @@ e_cal_cache_class_init (ECalCacheClass *klass)
 	 * A signal being called to get timezone when putting component
 	 * into the cache. It's used to make sure the cache contains
 	 * all timezones which are needed by the component. The returned
-	 * icaltimezone will not be freed.
+	 * ICalTimezone will not be freed.
 	 *
 	 * Since: 3.30
 	 **/
@@ -4356,9 +4520,9 @@ e_cal_cache_class_init (ECalCacheClass *klass)
 static void
 ecc_timezone_cache_init (ETimezoneCacheInterface *iface)
 {
-	iface->add_timezone = ecc_add_cached_timezone;
-	iface->get_timezone = ecc_get_cached_timezone;
-	iface->list_timezones = ecc_list_cached_timezones;
+	iface->tzcache_add_timezone = ecc_add_cached_timezone;
+	iface->tzcache_get_timezone = ecc_get_cached_timezone;
+	iface->tzcache_list_timezones = ecc_list_cached_timezones;
 }
 
 static void

@@ -36,7 +36,7 @@ test_search_manual (ECalCache *cal_cache,
 	GError *error = NULL;
 
 	res = g_hash_table_new_full ((GHashFunc) e_cal_component_id_hash, (GEqualFunc) e_cal_component_id_equal,
-		(GDestroyNotify) e_cal_component_free_id, g_object_unref);
+		e_cal_component_id_free, g_object_unref);
 
 	zone_cache = E_TIMEZONE_CACHE (cal_cache);
 
@@ -92,8 +92,9 @@ test_search_dump_results (GSList *search_data,
 	g_hash_table_iter_init (&iter, should_be);
 	while (g_hash_table_iter_next (&iter, &key, NULL)) {
 		ECalComponentId *id = key;
+		const gchar *rid = e_cal_component_id_get_rid (id);
 
-		printf ("      [%d]: %s%s%s\n", ii, id->uid, id->rid ? ", " : "", id->rid ? id->rid : "");
+		printf ("      [%d]: %s%s%s\n", ii, e_cal_component_id_get_uid (id), rid ? ", " : "", rid ? rid : "");
 		ii++;
 	}
 
@@ -120,15 +121,19 @@ search_data_check_cb (GHashTable *should_be,
 		      gpointer item_data)
 {
 	ECalCacheSearchData *sd = item_data;
-	ECalComponentId id;
+	ECalComponentId *id;
+	gboolean contains;
 
 	g_assert (sd != NULL);
 	g_assert (sd->uid != NULL);
 
-	id.uid = sd->uid;
-	id.rid = sd->rid;
+	id = e_cal_component_id_new (sd->uid, sd->rid);
 
-	return g_hash_table_contains (should_be, &id);
+	contains = g_hash_table_contains (should_be, id);
+
+	e_cal_component_id_free (id);
+
+	return contains;
 }
 
 static gboolean
@@ -139,16 +144,16 @@ component_check_cb (GHashTable *should_be,
 	ECalComponentId *id;
 	gboolean contains;
 
-	g_assert (comp != NULL);
+	g_assert_nonnull (comp);
 
 	id = e_cal_component_get_id (comp);
 
-	g_assert (id != NULL);
-	g_assert (id->uid != NULL);
+	g_assert_nonnull (id);
+	g_assert_nonnull (e_cal_component_id_get_uid (id));
 
 	contains = g_hash_table_contains (should_be, id);
 
-	e_cal_component_free_id (id);
+	e_cal_component_id_free (id);
 
 	return contains;
 }
@@ -159,8 +164,8 @@ id_check_cb (GHashTable *should_be,
 {
 	ECalComponentId *id = item_data;
 
-	g_assert (id != NULL);
-	g_assert (id->uid != NULL);
+	g_assert_nonnull (id);
+	g_assert_nonnull (e_cal_component_id_get_uid (id));
 
 	return g_hash_table_contains (should_be, id);
 }
@@ -212,7 +217,7 @@ test_search_expr (TCUFixture *fixture,
 		for (link = items; link; link = g_slist_next (link)) {
 			ECalComponentId *id = link->data;
 
-			if (g_strcmp0 (id->uid, expects) == 0)
+			if (g_strcmp0 (e_cal_component_id_get_uid (id), expects) == 0)
 				break;
 		}
 
@@ -224,7 +229,7 @@ test_search_expr (TCUFixture *fixture,
 
 	test_search_result_equal (items, should_be, id_check_cb);
 
-	g_slist_free_full (items, (GDestroyNotify) e_cal_component_free_id);
+	g_slist_free_full (items, e_cal_component_id_free);
 
 	g_hash_table_destroy (should_be);
 }

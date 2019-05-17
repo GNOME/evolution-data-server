@@ -103,26 +103,4 @@ typedef enum {
 	E_OFFLINE_STATE_LOCALLY_DELETED
 } EOfflineState;
 
-/**
- * EConflictResolution:
- * @E_CONFLICT_RESOLUTION_FAIL: Fail when a write-conflict occurs.
- * @E_CONFLICT_RESOLUTION_USE_NEWER: Use newer version of the object,
- *    which can be either the server version or the local version of it.
- * @E_CONFLICT_RESOLUTION_KEEP_SERVER: Keep server object on conflict.
- * @E_CONFLICT_RESOLUTION_KEEP_LOCAL: Write local version of the object on conflict.
- * @E_CONFLICT_RESOLUTION_WRITE_COPY: Create a new copy of the object on conflict.
- *
- * Defines what to do when a conflict between the locally stored and
- * remotely stored object versions happen during object modify or remove.
- *
- * Since: 3.26
- **/
-typedef enum {
-	E_CONFLICT_RESOLUTION_FAIL = 0,
-	E_CONFLICT_RESOLUTION_USE_NEWER,
-	E_CONFLICT_RESOLUTION_KEEP_SERVER,
-	E_CONFLICT_RESOLUTION_KEEP_LOCAL,
-	E_CONFLICT_RESOLUTION_WRITE_COPY
-} EConflictResolution;
-
 #endif /* E_BACKEND_ENUMS_H */

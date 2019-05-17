@@ -148,6 +148,20 @@
       <xi:include href="xml/e-cal-client.xml"/>
       <xi:include href="xml/e-cal-client-view.xml"/>
       <xi:include href="xml/e-cal-component.xml"/>
+      <xi:include href="xml/e-cal-component-alarm.xml"/>
+      <xi:include href="xml/e-cal-component-alarm-instance.xml"/>
+      <xi:include href="xml/e-cal-component-alarm-repeat.xml"/>
+      <xi:include href="xml/e-cal-component-alarms.xml"/>
+      <xi:include href="xml/e-cal-component-alarm-trigger.xml"/>
+      <xi:include href="xml/e-cal-component-attendee.xml"/>
+      <xi:include href="xml/e-cal-component-datetime.xml"/>
+      <xi:include href="xml/e-cal-component-id.xml"/>
+      <xi:include href="xml/e-cal-component-organizer.xml"/>
+      <xi:include href="xml/e-cal-component-parameter-bag.xml"/>
+      <xi:include href="xml/e-cal-component-period.xml"/>
+      <xi:include href="xml/e-cal-component-property-bag.xml"/>
+      <xi:include href="xml/e-cal-component-range.xml"/>
+      <xi:include href="xml/e-cal-component-text.xml"/>
     </chapter>
   </part>
 
@@ -200,10 +214,8 @@
     <chapter>
       <title>Calendar Backend Classes</title>
       <xi:include href="xml/e-cal-backend.xml"/>
-      <xi:include href="xml/e-cal-backend-cache.xml"/>
       <xi:include href="xml/e-cal-backend-factory.xml"/>
       <xi:include href="xml/e-cal-backend-sexp.xml"/>
-      <xi:include href="xml/e-cal-backend-store.xml"/>
       <xi:include href="xml/e-cal-backend-sync.xml"/>
       <xi:include href="xml/e-cal-backend-intervaltree.xml"/>
       <xi:include href="xml/e-cal-cache.xml"/>
@@ -286,7 +298,7 @@
       <xi:include href="xml/e-cal-check-timezones.xml"/>
       <xi:include href="xml/e-timezone-cache.xml"/>
       <xi:include href="xml/e-cal-backend-util.xml"/>
-      <xi:include href="xml/e-cal-types.xml"/>
+      <xi:include href="xml/e-cal-enums.xml"/>
       <xi:include href="xml/e-reminder-watcher.xml"/>
     </chapter>
 
@@ -324,8 +336,6 @@
       <title>Client Deprecated Classes</title>
       <xi:include href="xml/e-book.xml"/>
       <xi:include href="xml/e-book-view.xml"/>
-      <xi:include href="xml/e-cal.xml"/>
-      <xi:include href="xml/e-cal-view.xml"/>
       <xi:include href="xml/e-book-types.xml"/>
     </chapter>
     <chapter>
@@ -346,6 +356,10 @@
   <index id="api-index-deprecated" role="deprecated">
     <title>Index of deprecated symbols</title>
     <xi:include href="xml/api-index-deprecated.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-3-34" role="3.34">
+    <title>Index of new symbols in 3.34</title>
+    <xi:include href="xml/api-index-3.34.xml"><xi:fallback /></xi:include>
   </index>
   <index id="api-index-3-32" role="3.32">
     <title>Index of new symbols in 3.32</title>

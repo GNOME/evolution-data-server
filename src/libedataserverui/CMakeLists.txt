@@ -128,6 +128,7 @@ set(gir_libs
 set(gir_deps
 	${CMAKE_BINARY_DIR}/src/camel/Camel-${API_VERSION}.gir
 	${CMAKE_BINARY_DIR}/src/libedataserver/EDataServer-${API_VERSION}.gir
+	${CMAKE_BINARY_DIR}/src/calendar/libecal/ECal-${CAL_API_VERSION}.gir
 )
 
 gir_add_introspection_simple(

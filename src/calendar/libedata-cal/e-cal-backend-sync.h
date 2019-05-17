@@ -64,7 +64,6 @@ struct _ECalBackendSync {
  * ECalBackendSyncClass:
  * @open_sync: Open the calendar
  * @refresh_sync: Refresh the calendar
- * @set_backend_property_sync: Deprecated: Set backend property
  * @get_object_sync: Get single object
  * @get_object_list_sync: Get multiple objects at once
  * @get_free_busy_sync: Get Free/Busy objects
@@ -98,15 +97,6 @@ struct _ECalBackendSyncClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
-	/* This method is deprecated. */
-	gboolean	(*set_backend_property_sync)
-						(ECalBackendSync *backend,
-						 EDataCal *cal,
-						 GCancellable *cancellable,
-						 const gchar *prop_name,
-						 const gchar *prop_value,
-						 GError **error);
-
 	void		(*get_object_sync)	(ECalBackendSync *backend,
 						 EDataCal *cal,
 						 GCancellable *cancellable,
@@ -132,6 +122,7 @@ struct _ECalBackendSyncClass {
 						 EDataCal *cal,
 						 GCancellable *cancellable,
 						 const GSList *calobjs,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GSList **uids,
 						 GSList **new_components,
 						 GError **error);
@@ -140,6 +131,7 @@ struct _ECalBackendSyncClass {
 						 GCancellable *cancellable,
 						 const GSList *calobjs,
 						 ECalObjModType mod,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GSList **old_components,
 						 GSList **new_components,
 						 GError **error);
@@ -148,6 +140,7 @@ struct _ECalBackendSyncClass {
 						 GCancellable *cancellable,
 						 const GSList *ids,
 						 ECalObjModType mod,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GSList **old_components,
 						 GSList **new_components,
 						 GError **error);
@@ -155,11 +148,13 @@ struct _ECalBackendSyncClass {
 						 EDataCal *cal,
 						 GCancellable *cancellable,
 						 const gchar *calobj,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GError **error);
 	void		(*send_objects_sync)	(ECalBackendSync *backend,
 						 EDataCal *cal,
 						 GCancellable *cancellable,
 						 const gchar *calobj,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GSList **users,
 						 gchar **modified_calobj,
 						 GError **error);
@@ -177,6 +172,7 @@ struct _ECalBackendSyncClass {
 						 const gchar *uid,
 						 const gchar *rid,
 						 const gchar *auid,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GError **error);
 	void		(*get_timezone_sync)	(ECalBackendSync *backend,
 						 EDataCal *cal,
@@ -189,6 +185,9 @@ struct _ECalBackendSyncClass {
 						 GCancellable *cancellable,
 						 const gchar *tzobject,
 						 GError **error);
+
+	/* Padding for future expansion */
+	gpointer reserved_padding[20];
 };
 
 GType		e_cal_backend_sync_get_type	(void) G_GNUC_CONST;
@@ -229,6 +228,7 @@ void		e_cal_backend_sync_create_objects
 						 EDataCal *cal,
 						 GCancellable *cancellable,
 						 const GSList *calobjs,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GSList **uids,
 						 GSList **new_components,
 						 GError **error);
@@ -238,6 +238,7 @@ void		e_cal_backend_sync_modify_objects
 						 GCancellable *cancellable,
 						 const GSList *calobjs,
 						 ECalObjModType mod,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GSList **old_components,
 						 GSList **new_components,
 						 GError **error);
@@ -247,6 +248,7 @@ void		e_cal_backend_sync_remove_objects
 						 GCancellable *cancellable,
 						 const GSList *ids,
 						 ECalObjModType mod,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GSList **old_components,
 						 GSList **new_components,
 						 GError **error);
@@ -255,11 +257,13 @@ void		e_cal_backend_sync_receive_objects
 						 EDataCal *cal,
 						 GCancellable *cancellable,
 						 const gchar *calobj,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GError **error);
 void		e_cal_backend_sync_send_objects	(ECalBackendSync *backend,
 						 EDataCal *cal,
 						 GCancellable *cancellable,
 						 const gchar *calobj,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GSList **users,
 						 gchar **modified_calobj,
 						 GError **error);
@@ -278,6 +282,7 @@ void		e_cal_backend_sync_discard_alarm
 						 const gchar *uid,
 						 const gchar *rid,
 						 const gchar *auid,
+						 guint32 opflags, /* bit-or of ECalOperationFlags */
 						 GError **error);
 void		e_cal_backend_sync_get_timezone	(ECalBackendSync *backend,
 						 EDataCal *cal,

@@ -29,8 +29,9 @@
 
 #include "e-cal-backend-http.h"
 
-#define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
-#define EDC_ERROR_EX(_code, _msg) e_data_cal_create_error (_code, _msg)
+#define EC_ERROR(_code) e_client_error_create (_code, NULL)
+#define EC_ERROR_EX(_code, _msg) e_client_error_create (_code, _msg)
+#define ECC_ERROR(_code) e_cal_client_error_create (_code, NULL)
 
 G_DEFINE_TYPE (ECalBackendHttp, e_cal_backend_http, E_TYPE_CAL_META_BACKEND)
 
@@ -40,7 +41,7 @@ struct _ECalBackendHttpPrivate {
 	SoupRequestHTTP *request;
 	GInputStream *input_stream;
 	GRecMutex conn_lock;
-	GHashTable *components; /* gchar *uid ~> icalcomponent * */
+	GHashTable *components; /* gchar *uid ~> ICalComponent * */
 };
 
 static gchar *
@@ -165,7 +166,7 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 		g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
 		g_free (uri);
 
-		g_propagate_error (error, EDC_ERROR_EX (OtherError, _("URI not set")));
+		g_propagate_error (error, EC_ERROR_EX (E_CLIENT_ERROR_OTHER_ERROR, _("URI not set")));
 		return FALSE;
 	}
 
@@ -244,7 +245,7 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 	} else {
 		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 
-		g_set_error (error, E_DATA_CAL_ERROR, OtherError, _("Malformed URI “%s”: %s"),
+		g_set_error (error, E_CLIENT_ERROR, E_CLIENT_ERROR_OTHER_ERROR, _("Malformed URI “%s”: %s"),
 			uri, local_error ? local_error->message : _("Unknown error"));
 	}
 
@@ -313,9 +314,9 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 	ECalBackendHttp *cbhttp;
 	SoupMessage *message;
 	gchar *icalstring;
-	icalcompiter iter;
-	icalcomponent *maincomp, *subcomp;
-	icalcomponent_kind backend_kind = e_cal_backend_get_kind (E_CAL_BACKEND (meta_backend));
+	ICalCompIter *iter = NULL;
+	ICalComponent *maincomp, *subcomp;
+	ICalComponentKind backend_kind;
 	GHashTable *components = NULL;
 	gboolean success = TRUE;
 
@@ -326,12 +327,13 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 	g_return_val_if_fail (out_removed_objects != NULL, FALSE);
 
 	cbhttp = E_CAL_BACKEND_HTTP (meta_backend);
+	backend_kind = e_cal_backend_get_kind (E_CAL_BACKEND (meta_backend));
 
 	g_rec_mutex_lock (&cbhttp->priv->conn_lock);
 
 	if (!cbhttp->priv->request || !cbhttp->priv->input_stream) {
 		g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
-		g_propagate_error (error, EDC_ERROR (RepositoryOffline));
+		g_propagate_error (error, EC_ERROR (E_CLIENT_ERROR_REPOSITORY_OFFLINE));
 		return FALSE;
 	}
 
@@ -378,9 +380,9 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 	if (((guchar) icalstring[0]) == 0xEF &&
 	    ((guchar) icalstring[1]) == 0xBB &&
 	    ((guchar) icalstring[2]) == 0xBF)
-		maincomp = icalparser_parse_string (icalstring + 3);
+		maincomp = i_cal_parser_parse_string (icalstring + 3);
 	else
-		maincomp = icalparser_parse_string (icalstring);
+		maincomp = i_cal_parser_parse_string (icalstring);
 
 	g_free (icalstring);
 
@@ -391,96 +393,99 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 		return FALSE;
 	}
 
-	if (icalcomponent_isa (maincomp) != ICAL_VCALENDAR_COMPONENT &&
-	    icalcomponent_isa (maincomp) != ICAL_XROOT_COMPONENT) {
-		icalcomponent_free (maincomp);
+	if (i_cal_component_isa (maincomp) != I_CAL_VCALENDAR_COMPONENT &&
+	    i_cal_component_isa (maincomp) != I_CAL_XROOT_COMPONENT) {
+		g_object_unref (maincomp);
 		g_set_error (error, SOUP_HTTP_ERROR, SOUP_STATUS_MALFORMED, _("Not a calendar."));
 		e_cal_meta_backend_empty_cache_sync (meta_backend, cancellable, NULL);
 		ecb_http_disconnect_sync (meta_backend, cancellable, NULL);
 		return FALSE;
 	}
 
-	if (icalcomponent_isa (maincomp) == ICAL_VCALENDAR_COMPONENT) {
-		subcomp = maincomp;
+	if (i_cal_component_isa (maincomp) == I_CAL_VCALENDAR_COMPONENT) {
+		subcomp = g_object_ref (maincomp);
 	} else {
-		iter = icalcomponent_begin_component (maincomp, ICAL_VCALENDAR_COMPONENT);
-		subcomp = icalcompiter_deref (&iter);
+		iter = i_cal_component_begin_component (maincomp, I_CAL_VCALENDAR_COMPONENT);
+		subcomp = i_cal_comp_iter_deref (iter);
 	}
 
 	while (subcomp && success) {
-		if (subcomp != maincomp)
-			icalcompiter_next (&iter);
+		ICalComponent *next_subcomp = NULL;
 
-		if (icalcomponent_isa (subcomp) == ICAL_VCALENDAR_COMPONENT) {
+		if (iter)
+			next_subcomp = i_cal_comp_iter_next (iter);
+
+		if (i_cal_component_isa (subcomp) == I_CAL_VCALENDAR_COMPONENT) {
 			success = e_cal_meta_backend_gather_timezones_sync (meta_backend, subcomp, TRUE, cancellable, error);
 			if (success) {
-				icalcomponent *icalcomp;
+				ICalComponent *icomp;
 
-				while (icalcomp = icalcomponent_get_first_component (subcomp, backend_kind), icalcomp) {
-					icalcomponent *existing_icalcomp;
+				while (icomp = i_cal_component_get_first_component (subcomp, backend_kind), icomp) {
+					ICalComponent *existing_icomp;
 					gpointer orig_key, orig_value;
 					const gchar *uid;
 
-					icalcomponent_remove_component (subcomp, icalcomp);
+					i_cal_component_remove_component (subcomp, icomp);
 
 					if (!components)
-						components = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) icalcomponent_free);
+						components = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 
-					if (!icalcomponent_get_first_property (icalcomp, ICAL_UID_PROPERTY)) {
+					if (!e_cal_util_component_has_property (icomp, I_CAL_UID_PROPERTY)) {
 						gchar *new_uid = e_util_generate_uid ();
-						icalcomponent_set_uid (icalcomp, new_uid);
+						i_cal_component_set_uid (icomp, new_uid);
 						g_free (new_uid);
 					}
 
-					uid = icalcomponent_get_uid (icalcomp);
+					uid = i_cal_component_get_uid (icomp);
 
 					if (!g_hash_table_lookup_extended (components, uid, &orig_key, &orig_value)) {
 						orig_key = NULL;
 						orig_value = NULL;
 					}
 
-					existing_icalcomp = orig_value;
-					if (existing_icalcomp) {
-						if (icalcomponent_isa (existing_icalcomp) != ICAL_VCALENDAR_COMPONENT) {
-							icalcomponent *vcal;
+					existing_icomp = orig_value;
+					if (existing_icomp) {
+						if (i_cal_component_isa (existing_icomp) != I_CAL_VCALENDAR_COMPONENT) {
+							ICalComponent *vcal;
 
 							vcal = e_cal_util_new_top_level ();
 
 							g_warn_if_fail (g_hash_table_steal (components, uid));
 
-							icalcomponent_add_component (vcal, existing_icalcomp);
+							i_cal_component_take_component (vcal, existing_icomp);
 							g_hash_table_insert (components, g_strdup (uid), vcal);
 
 							g_free (orig_key);
 
-							existing_icalcomp = vcal;
+							existing_icomp = vcal;
 						}
 
-						icalcomponent_add_component (existing_icalcomp, icalcomp);
+						i_cal_component_take_component (existing_icomp, icomp);
 					} else {
-						g_hash_table_insert (components, g_strdup (uid), icalcomp);
+						g_hash_table_insert (components, g_strdup (uid), icomp);
 					}
 				}
 			}
 		}
 
-		if (subcomp == maincomp)
-			subcomp = NULL;
-		else
-			subcomp = icalcompiter_deref (&iter);
+		g_object_unref (subcomp);
+		subcomp = next_subcomp;
 	}
+
+	g_clear_object (&subcomp);
+	g_clear_object (&iter);
 
 	if (components) {
 		g_warn_if_fail (cbhttp->priv->components == NULL);
 		cbhttp->priv->components = components;
 
-		icalcomponent_free (maincomp);
+		g_object_unref (maincomp);
 
 		success = E_CAL_META_BACKEND_CLASS (e_cal_backend_http_parent_class)->get_changes_sync (meta_backend,
 			last_sync_tag, is_repeat, out_new_sync_tag, out_repeat, out_created_objects,
 			out_modified_objects, out_removed_objects, cancellable, error);
 	} else {
-		icalcomponent_free (maincomp);
+		g_object_unref (maincomp);
 	}
 
 	if (!success)
@@ -498,7 +503,7 @@ ecb_http_list_existing_sync (ECalMetaBackend *meta_backend,
 {
 	ECalBackendHttp *cbhttp;
 	ECalCache *cal_cache;
-	icalcomponent_kind kind;
+	ICalComponentKind kind;
 	GHashTableIter iter;
 	gpointer key, value;
 
@@ -518,25 +523,28 @@ ecb_http_list_existing_sync (ECalMetaBackend *meta_backend,
 
 	g_hash_table_iter_init (&iter, cbhttp->priv->components);
 	while (g_hash_table_iter_next (&iter, &key, &value)) {
-		icalcomponent *icalcomp = value;
+		ICalComponent *icomp = value;
 		ECalMetaBackendInfo *nfo;
 		const gchar *uid;
 		gchar *revision, *object;
 
-		if (icalcomp && icalcomponent_isa (icalcomp) == ICAL_VCALENDAR_COMPONENT)
-			icalcomp = icalcomponent_get_first_component (icalcomp, kind);
+		if (icomp && i_cal_component_isa (icomp) == I_CAL_VCALENDAR_COMPONENT)
+			icomp = i_cal_component_get_first_component (icomp, kind);
+		else if (icomp)
+			icomp = g_object_ref (icomp);
 
-		if (!icalcomp)
+		if (!icomp)
 			continue;
 
-		uid = icalcomponent_get_uid (icalcomp);
-		revision = e_cal_cache_dup_component_revision (cal_cache, icalcomp);
-		object = icalcomponent_as_ical_string_r (value);
+		uid = i_cal_component_get_uid (icomp);
+		revision = e_cal_cache_dup_component_revision (cal_cache, icomp);
+		object = i_cal_component_as_ical_string (value);
 
 		nfo = e_cal_meta_backend_info_new (uid, revision, object, NULL);
 
 		*out_existing_objects = g_slist_prepend (*out_existing_objects, nfo);
 
+		g_object_unref (icomp);
 		g_free (revision);
 		g_free (object);
 	}
@@ -552,7 +560,7 @@ static gboolean
 ecb_http_load_component_sync (ECalMetaBackend *meta_backend,
 			      const gchar *uid,
 			      const gchar *extra,
-			      icalcomponent **out_component,
+			      ICalComponent **out_component,
 			      gchar **out_extra,
 			      GCancellable *cancellable,
 			      GError **error)
@@ -569,7 +577,7 @@ ecb_http_load_component_sync (ECalMetaBackend *meta_backend,
 
 	if (!cbhttp->priv->components ||
 	    !g_hash_table_contains (cbhttp->priv->components, uid)) {
-		g_propagate_error (error, EDC_ERROR (ObjectNotFound));
+		g_propagate_error (error, ECC_ERROR (E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND));
 		return FALSE;
 	}
 

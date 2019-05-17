@@ -30,11 +30,11 @@
 #include "e-cal-client.h"
 
 static gint
-e_timetype_compare (gconstpointer a,
-		    gconstpointer b)
+e_timetype_compare (gconstpointer aa,
+		    gconstpointer bb)
 {
-	const struct icaltimetype *tta = a;
-	const struct icaltimetype *ttb = b;
+	ICalTime *tta = (ICalTime *) aa;
+	ICalTime *ttb = (ICalTime *) bb;
 
 	if (!tta || !ttb) {
 		if (tta == ttb)
@@ -44,18 +44,18 @@ e_timetype_compare (gconstpointer a,
 		return 1;
 	}
 
-	if (tta->is_date || ttb->is_date)
-		return icaltime_compare_date_only (*tta, *ttb);
+	if (i_cal_time_is_date (tta) || i_cal_time_is_date (ttb))
+		return i_cal_time_compare_date_only (tta, ttb);
 
-	return icaltime_compare (*tta, *ttb);
+	return i_cal_time_compare (tta, ttb);
 }
 
 static gint
 e_timetype_compare_without_date (gconstpointer a,
 				 gconstpointer b)
 {
-	const struct icaltimetype *tta = a;
-	const struct icaltimetype *ttb = b;
+	ICalTime *tta = (ICalTime *) a;
+	ICalTime *ttb = (ICalTime *) b;
 
 	if (!tta || !ttb) {
 		if (tta == ttb)
@@ -65,62 +65,78 @@ e_timetype_compare_without_date (gconstpointer a,
 		return 1;
 	}
 
-	return icaltime_compare (*tta, *ttb);
+	return i_cal_time_compare (tta, ttb);
 }
 
 static guint
 e_timetype_hash (gconstpointer v)
 {
-	const struct icaltimetype *ttv = v;
-	struct icaltimetype tt;
+	const ICalTime *ttv = v;
+	ICalTime *tt;
+	guint value;
 
 	if (!ttv)
 		return 0;
 
-	tt = icaltime_convert_to_zone (*ttv, icaltimezone_get_utc_timezone ());
+	tt = i_cal_time_convert_to_zone (ttv, i_cal_timezone_get_utc_timezone ());
 
-	return g_int_hash (&(tt.year)) ^
-		g_int_hash (&(tt.month)) ^
-		g_int_hash (&(tt.day));
+	value = (i_cal_time_get_year (tt) * 10000) +
+		(i_cal_time_get_month (tt) * 100) +
+		i_cal_time_get_day (tt);
+
+	g_clear_object (&tt);
+
+	return value;
 }
 
-typedef struct _EInstanceTime
-{
-	struct icaltimetype tt;
+typedef struct _EInstanceTime {
+	ICalTime *tt;
 	gboolean duration_set;
 	gint duration_days;
 	gint duration_seconds;
 } EInstanceTime;
 
 static EInstanceTime *
-e_instance_time_new (const struct icaltimetype *tt,
-		     const struct icaldurationtype *duration)
+e_instance_time_new (const ICalTime *tt,
+		     const ICalDuration *pduration)
 {
 	EInstanceTime *it;
+	ICalDuration *duration = (ICalDuration *) pduration;
 
 	if (!tt)
 		return NULL;
 
 	it = g_new0 (EInstanceTime, 1);
 
-	it->tt = *tt;
-	it->duration_set = duration && !icaldurationtype_is_null_duration (*duration);
+	it->tt = i_cal_time_clone (tt);
+	it->duration_set = duration && !i_cal_duration_is_null_duration (duration);
 
 	if (it->duration_set) {
 		gint64 dur;
 
-		g_warn_if_fail (!duration->is_neg);
+		g_warn_if_fail (!i_cal_duration_is_neg (duration));
 
-		dur = (gint64) (duration->weeks * 7 + duration->days) * (24 * 60 * 60) +
-			(duration->hours * 60 * 60) +
-			(duration->minutes * 60) +
-			duration->seconds;
+		dur = (gint64) (i_cal_duration_get_weeks (duration) * 7 + i_cal_duration_get_days (duration)) * (24 * 60 * 60) +
+			(i_cal_duration_get_hours (duration) * 60 * 60) +
+			(i_cal_duration_get_minutes (duration) * 60) +
+			i_cal_duration_get_seconds (duration);
 
 		it->duration_days = dur / (24 * 60 * 60);
 		it->duration_seconds = dur % (24 * 60 * 60);
 	}
 
 	return it;
+}
+
+static void
+e_instance_time_free (gpointer ptr)
+{
+	EInstanceTime *it = ptr;
+
+	if (it) {
+		g_clear_object (&it->tt);
+		g_free (it);
+	}
 }
 
 static gint
@@ -140,7 +156,7 @@ e_instance_time_compare (gconstpointer a,
 		return 1;
 	}
 
-	return e_timetype_compare (&(ait->tt), &(bit->tt));
+	return e_timetype_compare (ait->tt, bit->tt);
 }
 
 static guint
@@ -151,7 +167,7 @@ e_instance_time_hash (gconstpointer v)
 	if (!it)
 		return 0;
 
-	return e_timetype_hash (&it->tt);
+	return e_timetype_hash (it->tt);
 }
 
 static gboolean
@@ -171,17 +187,19 @@ e_instance_time_compare_ptr_array (gconstpointer a,
 }
 
 static gboolean
-ensure_timezone (icalcomponent *comp,
-		 struct icaltimetype *tt,
-		 icalproperty_kind prop_kind,
-		 icalproperty *prop,
+ensure_timezone (ICalComponent *comp,
+		 ICalTime *tt,
+		 ICalPropertyKind prop_kind,
+		 ICalProperty *prop,
 		 ECalRecurResolveTimezoneCb get_tz_callback,
 		 gpointer get_tz_callback_user_data,
-		 icaltimezone *default_timezone,
+		 ICalTimezone *default_timezone,
+		 GHashTable **pcached_zones,
 		 GCancellable *cancellable,
 		 GError **error)
 {
-	icalparameter *param;
+	ICalParameter *param;
+	ICalTimezone *zone;
 	const gchar *tzid;
 	GError *local_error = NULL;
 
@@ -193,37 +211,64 @@ ensure_timezone (icalcomponent *comp,
 
 	/* Do not trust the 'zone' set on the structure, as it can come from
 	   a different icalcomponent and cause use-after-free. */
-	if (tt->zone != icaltimezone_get_utc_timezone ())
-		tt->zone = NULL;
+	zone = i_cal_time_get_timezone (tt);
+	if (zone != i_cal_timezone_get_utc_timezone ())
+		i_cal_time_set_timezone (tt, NULL);
 
-	if (icaltime_is_utc (*tt))
+	if (i_cal_time_is_utc (tt))
 		return TRUE;
 
-	tt->zone = default_timezone;
+	i_cal_time_set_timezone (tt, default_timezone);
 
-	if (tt->is_date)
+	if (i_cal_time_is_date (tt))
 		return TRUE;
 
 	if (!prop)
-		prop = icalcomponent_get_first_property (comp, prop_kind);
-	if (!prop)
-		return TRUE;
-
-	param = icalproperty_get_first_parameter (prop, ICAL_TZID_PARAMETER);
-	if (!param)
-		return TRUE;
-
-	tzid = icalparameter_get_tzid (param);
-	if (!tzid || !*tzid)
-		return TRUE;
-
-	if (get_tz_callback)
-		tt->zone = get_tz_callback (tzid, get_tz_callback_user_data, cancellable, &local_error);
+		prop = i_cal_component_get_first_property (comp, prop_kind);
 	else
-		tt->zone = NULL;
+		g_object_ref (prop);
+	if (!prop)
+		return TRUE;
 
-	if (!tt->zone)
-		tt->zone = default_timezone;
+	param = i_cal_property_get_first_parameter (prop, I_CAL_TZID_PARAMETER);
+	if (!param) {
+		g_object_unref (prop);
+		return TRUE;
+	}
+
+	tzid = i_cal_parameter_get_tzid (param);
+	if (!tzid || !*tzid) {
+		g_object_unref (param);
+		g_object_unref (prop);
+		return TRUE;
+	}
+
+	if (get_tz_callback) {
+		ICalTimezone *zone = NULL;
+
+		if (*pcached_zones)
+			zone = g_hash_table_lookup (*pcached_zones, tzid);
+
+		if (!zone) {
+			zone = get_tz_callback (tzid, get_tz_callback_user_data, cancellable, &local_error);
+			if (zone) {
+				if (!*pcached_zones)
+					*pcached_zones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
+
+				g_hash_table_insert (*pcached_zones, g_strdup (tzid), g_object_ref (zone));
+			}
+		}
+
+		i_cal_time_set_timezone (tt, zone);
+	} else
+		i_cal_time_set_timezone (tt, NULL);
+
+	zone = i_cal_time_get_timezone (tt);
+	if (!zone)
+		i_cal_time_set_timezone (tt, default_timezone);
+
+	g_object_unref (param);
+	g_object_unref (prop);
 
 	/* Timezone not found is not a fatal error */
 	if (g_error_matches (local_error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND))
@@ -238,72 +283,79 @@ ensure_timezone (icalcomponent *comp,
 }
 
 static void
-apply_duration (struct icaltimetype *tt,
-		const struct icaldurationtype *duration)
+apply_duration (ICalTime *tt,
+		ICalDuration *duration)
 {
 	gint64 days, seconds;
 
 	g_return_if_fail (tt != NULL);
 	g_return_if_fail (duration != NULL);
 
-	if (icaldurationtype_is_null_duration (*duration))
+	if (i_cal_duration_is_null_duration (duration))
 		return;
 
-	days = (gint64) duration->days + 7 * ((gint64) duration->weeks);
-	seconds = ((gint64) duration->hours * 60 * 60) + ((gint64) duration->minutes * 60) + duration->seconds;
+	days = (gint64) i_cal_duration_get_days (duration) + 7 * ((gint64) i_cal_duration_get_weeks (duration));
+	seconds = ((gint64) i_cal_duration_get_hours (duration) * 60 * 60) +
+		  ((gint64) i_cal_duration_get_minutes (duration) * 60) +
+		  i_cal_duration_get_seconds (duration);
 	days += seconds / (24 * 60 * 60);
 	seconds = seconds % (24 * 60 * 60);
 
-	if (seconds != 0) {
-		tt->is_date = 0;
-	}
+	if (seconds != 0)
+		i_cal_time_set_is_date (tt, FALSE);
 
-	icaltime_adjust (tt,
-		(duration->is_neg ? -1 : 1) * ((gint) days),
+	i_cal_time_adjust (tt,
+		(i_cal_duration_is_neg (duration) ? -1 : 1) * ((gint) days),
 		0, 0,
-		(duration->is_neg ? -1 : 1) * ((gint) seconds));
+		(i_cal_duration_is_neg (duration) ? -1 : 1) * ((gint) seconds));
 }
 
 static gboolean
-intersects_interval (const struct icaltimetype *tt,
-		     const struct icaldurationtype *duration,
+intersects_interval (const ICalTime *tt,
+		     const ICalDuration *duration,
 		     gint default_duration_days,
 		     gint default_duration_seconds,
-		     const struct icaltimetype *interval_start,
-		     const struct icaltimetype *interval_end)
+		     const ICalTime *interval_start,
+		     const ICalTime *interval_end)
 {
-	struct icaltimetype ttstart, ttend;
+	ICalTime *ttstart, *ttend;
+	gboolean res;
 
 	if (!tt || !interval_start || !interval_end)
 		return FALSE;
 
-	ttstart = *tt;
-	ttend = ttstart;
+	ttstart = i_cal_time_clone (tt);
+	ttend = i_cal_time_clone (ttstart);
 
-	if (duration && !icaldurationtype_is_null_duration (*duration)) {
-		apply_duration (&ttend, duration);
+	if (duration && !i_cal_duration_is_null_duration ((ICalDuration *) duration)) {
+		apply_duration (ttend, (ICalDuration *) duration);
 	} else if (default_duration_days || default_duration_seconds) {
 		if (default_duration_seconds != 0) {
-			ttend.is_date = 0;
+			i_cal_time_set_is_date (ttend, FALSE);
 		}
 
-		icaltime_adjust (&ttend, default_duration_days, 0, 0, default_duration_seconds);
+		i_cal_time_adjust (ttend, default_duration_days, 0, 0, default_duration_seconds);
 	}
 
-	return e_timetype_compare_without_date (&ttstart, interval_end) < 0 &&
-	       e_timetype_compare_without_date (interval_start, &ttend) < 0;
+	res = e_timetype_compare_without_date (ttstart, interval_end) < 0 &&
+	      e_timetype_compare_without_date (interval_start, ttend) < 0;
+
+	g_clear_object (&ttstart);
+	g_clear_object (&ttend);
+
+	return res;
 }
 
 /**
  * e_cal_recur_generate_instances_sync:
- * @comp: an icalcomponent
+ * @icalcomp: an #ICalComponent
  * @interval_start: an interval start, for which generate instances
  * @interval_end: an interval end, for which generate instances
  * @callback: (scope call): a callback to be called for each instance
  * @callback_user_data: (closure callback): user data for @callback
  * @get_tz_callback: (scope call): a callback to call when resolving timezone
  * @get_tz_callback_user_data: (closure get_tz_callback): user data for @get_tz_callback
- * @default_timezone: a default icaltimezone
+ * @default_timezone: a default #ICalTimezone
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
@@ -317,7 +369,7 @@ intersects_interval (const struct icaltimetype *tt,
  * The start and end times are required valid times, start before end time.
  *
  * The @get_tz_callback is used to resolve references to timezones. It is passed
- * a TZID and should return the icaltimezone * corresponding to that TZID. We need to
+ * a TZID and should return the ICalTimezone * corresponding to that TZID. We need to
  * do this as we access timezones in different ways on the client & server.
  *
  * The default_timezone argument is used for DTSTART or DTEND properties that
@@ -328,79 +380,95 @@ intersects_interval (const struct icaltimetype *tt,
  * Since: 3.20
  **/
 gboolean
-e_cal_recur_generate_instances_sync (icalcomponent *comp,
-				     struct icaltimetype interval_start,
-				     struct icaltimetype interval_end,
+e_cal_recur_generate_instances_sync (ICalComponent *icalcomp,
+				     ICalTime *interval_start,
+				     ICalTime *interval_end,
 				     ECalRecurInstanceCb callback,
 				     gpointer callback_user_data,
 				     ECalRecurResolveTimezoneCb get_tz_callback,
 				     gpointer get_tz_callback_user_data,
-				     icaltimezone *default_timezone,
+				     ICalTimezone *default_timezone,
 				     GCancellable *cancellable,
 				     GError **error)
 {
-	struct icaltimetype dtstart, dtend, next;
+	ICalTime *dtstart, *dtend, *next;
+	ICalProperty *prop;
 	gint64 duration_days, duration_seconds;
-	icalproperty *prop;
-	GHashTable *times;
+	GHashTable *times, *cached_zones = NULL;
 	gboolean success = TRUE;
 
-	g_return_val_if_fail (comp != NULL, FALSE);
+	g_return_val_if_fail (icalcomp != NULL, FALSE);
 	g_return_val_if_fail (callback != NULL, FALSE);
-	g_return_val_if_fail (icaltime_compare (interval_start, interval_end) < 0, FALSE);
+	g_return_val_if_fail (interval_start != NULL, FALSE);
+	g_return_val_if_fail (interval_end != NULL, FALSE);
+	g_return_val_if_fail (i_cal_time_compare (interval_start, interval_end) < 0, FALSE);
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return FALSE;
 
-	times = g_hash_table_new_full (e_instance_time_hash, e_instance_time_equal, g_free, NULL);
+	times = g_hash_table_new_full (e_instance_time_hash, e_instance_time_equal, e_instance_time_free, NULL);
 
-	dtstart = icalcomponent_get_dtstart (comp);
-	success = ensure_timezone (comp, &dtstart, ICAL_DTSTART_PROPERTY, NULL,
-		get_tz_callback, get_tz_callback_user_data, default_timezone, cancellable, error);
+	dtstart = i_cal_component_get_dtstart (icalcomp);
+	success = ensure_timezone (icalcomp, dtstart, I_CAL_DTSTART_PROPERTY, NULL,
+		get_tz_callback, get_tz_callback_user_data, default_timezone, &cached_zones, cancellable, error);
 
 	duration_seconds = 0;
-	dtend = icalcomponent_get_dtend (comp);
+	dtend = i_cal_component_get_dtend (icalcomp);
 
-	if (icaltime_is_null_time (dtend)) {
-		dtend = icalcomponent_get_due (comp);
-		if (icaltime_is_null_time (dtend)) {
-			struct icaldurationtype comp_duration;
+	if (!dtend || i_cal_time_is_null_time (dtend)) {
+		g_clear_object (&dtend);
 
-			comp_duration = icalcomponent_get_duration (comp);
+		dtend = i_cal_component_get_due (icalcomp);
+		if (!dtend || i_cal_time_is_null_time (dtend)) {
+			ICalDuration *comp_duration;
 
-			if (!icaldurationtype_is_null_duration (comp_duration)) {
-				dtend = dtstart;
+			g_clear_object (&dtend);
 
-				apply_duration (&dtend, &comp_duration);
+			comp_duration = i_cal_component_get_duration (icalcomp);
+
+			if (comp_duration && !i_cal_duration_is_null_duration (comp_duration)) {
+				dtend = i_cal_time_clone (dtstart);
+
+				apply_duration (dtend, comp_duration);
 			}
+
+			g_clear_object (&comp_duration);
 		}
 
 		/* If there is no DTEND, then if DTSTART is a DATE-TIME value
 		 * we use the same time (so we have a single point in time).
 		 * If DTSTART is a DATE value we add 1 day. */
-		if (icaltime_is_null_time (dtend)) {
-			dtend = dtstart;
+		if (!dtend || i_cal_time_is_null_time (dtend)) {
+			g_clear_object (&dtend);
+			dtend = i_cal_time_clone (dtstart);
 
-			if (dtend.is_date)
-				icaltime_adjust (&dtend, 1, 0, 0, 0);
+			if (i_cal_time_is_date (dtend))
+				i_cal_time_adjust (dtend, 1, 0, 0, 0);
 		}
 	} else {
 		/* If both DTSTART and DTEND are DATE values, and they are the
 		 * same day, we add 1 day to DTEND. This means that most
 		 * events created with the old Evolution behavior will still
 		 * work OK. I'm not sure what Outlook does in this case. */
-		if (dtstart.is_date && dtend.is_date) {
-			if (icaltime_compare_date_only (dtstart, dtend) == 0) {
-				icaltime_adjust (&dtend, 1, 0, 0, 0);
+		if (i_cal_time_is_date (dtstart) && i_cal_time_is_date (dtend)) {
+			if (i_cal_time_compare_date_only (dtstart, dtend) == 0) {
+				i_cal_time_adjust (dtend, 1, 0, 0, 0);
 			}
 		}
 	}
 
-	if (success && !icaltime_is_null_time (dtend)) {
-		success = ensure_timezone (comp, &dtend, ICAL_DTEND_PROPERTY, NULL,
-			get_tz_callback, get_tz_callback_user_data, default_timezone, cancellable, error);
-		duration_seconds = (gint64) icaltime_as_timet_with_zone (dtend, dtend.zone) -
-			(gint64) icaltime_as_timet_with_zone (dtstart, dtstart.zone);
+	if (success && dtend && !i_cal_time_is_null_time (dtend)) {
+		ICalTimezone *dtstart_zone, *dtend_zone;
+
+		success = ensure_timezone (icalcomp, dtend, I_CAL_DTEND_PROPERTY, NULL,
+			get_tz_callback, get_tz_callback_user_data, default_timezone, &cached_zones, cancellable, error);
+
+		dtstart_zone = i_cal_time_get_timezone (dtstart);
+		dtend_zone = i_cal_time_get_timezone (dtend);
+
+		duration_seconds = (gint64) i_cal_time_as_timet_with_zone (dtend, dtend_zone) -
+			(gint64) i_cal_time_as_timet_with_zone (dtstart, dtstart_zone);
+
 		if (duration_seconds < 0)
 			duration_seconds = 0;
 	}
@@ -408,158 +476,209 @@ e_cal_recur_generate_instances_sync (icalcomponent *comp,
 	duration_days = duration_seconds / (24 * 60 * 60);
 	duration_seconds = duration_seconds % (24 * 60 * 60);
 
-	if (success && intersects_interval (&dtstart, NULL, duration_days, duration_seconds, &interval_start, &interval_end)) {
-		g_hash_table_insert (times, e_instance_time_new (&dtstart, NULL), NULL);
+	if (success && intersects_interval (dtstart, NULL, duration_days, duration_seconds, interval_start, interval_end)) {
+		g_hash_table_insert (times, e_instance_time_new (dtstart, NULL), NULL);
 	}
 
 	/* If this is a detached instance, then use only the DTSTART value */
-	if (success && icaltime_is_null_time (icalcomponent_get_recurrenceid (comp))) {
-		for (prop = icalcomponent_get_first_property (comp, ICAL_RRULE_PROPERTY);
+	if (success && !e_cal_util_component_has_property (icalcomp, I_CAL_RECURRENCEID_PROPERTY)) {
+		ICalTimezone *dtstart_zone = i_cal_time_get_timezone (dtstart);
+
+		for (prop = i_cal_component_get_first_property (icalcomp, I_CAL_RRULE_PROPERTY);
 		     prop && success;
-		     prop = icalcomponent_get_next_property (comp, ICAL_RRULE_PROPERTY)) {
-			struct icalrecurrencetype rrule = icalproperty_get_rrule (prop);
-			icalrecur_iterator *riter;
+		     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, I_CAL_RRULE_PROPERTY)) {
+			ICalRecurrence *rrule = i_cal_property_get_rrule (prop);
+			ICalRecurIterator *riter;
+			ICalTime *rrule_until;
 
-			if (!icaltime_is_null_time (rrule.until)) {
-				success = ensure_timezone (comp, &rrule.until, 0, prop,
-					get_tz_callback, get_tz_callback_user_data, (icaltimezone *) dtstart.zone,
-					cancellable, error);
-				if (!success)
+			rrule_until = i_cal_recurrence_get_until (rrule);
+
+			if (rrule_until && !i_cal_time_is_null_time (rrule_until)) {
+				success = ensure_timezone (icalcomp, rrule_until, 0, prop,
+					get_tz_callback, get_tz_callback_user_data, dtstart_zone,
+					&cached_zones, cancellable, error);
+				if (!success) {
+					g_clear_object (&rrule_until);
+					g_clear_object (&rrule);
 					break;
+				}
 			}
 
-			if (!icaltime_is_null_time (rrule.until) &&
-			    rrule.until.is_date && !dtstart.is_date) {
-				icaltime_adjust (&rrule.until, 1, 0, 0, 0);
-				rrule.until.is_date = 0;
-				rrule.until.hour = 0;
-				rrule.until.minute = 0;
-				rrule.until.second = 0;
+			if (rrule_until && !i_cal_time_is_null_time (rrule_until) &&
+			    i_cal_time_is_date (rrule_until) && !i_cal_time_is_date (dtstart)) {
+				i_cal_time_adjust (rrule_until, 1, 0, 0, 0);
+				i_cal_time_set_is_date (rrule_until, FALSE);
+				i_cal_time_set_time (rrule_until, 0, 0, 0);
 
-				if (!rrule.until.zone && !icaltime_is_utc (rrule.until))
-					rrule.until.zone = dtstart.zone;
+				if (!i_cal_time_get_timezone (rrule_until) && !i_cal_time_is_utc (rrule_until))
+					i_cal_time_set_timezone (rrule_until, dtstart_zone);
 			}
 
-			riter = icalrecur_iterator_new (rrule, dtstart);
+			if (rrule_until && !i_cal_time_is_null_time (rrule_until))
+				i_cal_recurrence_set_until (rrule, rrule_until);
+			g_clear_object (&rrule_until);
+
+			riter = i_cal_recur_iterator_new (rrule, dtstart);
 			if (riter) {
-				struct icaltimetype prev = icaltime_null_time ();
+				ICalTime *prev = NULL;
 
-				for (next = icalrecur_iterator_next (riter);
-				     !icaltime_is_null_time (next) && icaltime_compare (next, interval_end) <= 0;
-				     next = icalrecur_iterator_next (riter)) {
-					if (!icaltime_is_null_time (prev) &&
-					    icaltime_compare (next, prev) == 0)
+				for (next = i_cal_recur_iterator_next (riter);
+				     next && !i_cal_time_is_null_time (next) && i_cal_time_compare (next, interval_end) <= 0;
+				     g_object_unref (next), next = i_cal_recur_iterator_next (riter)) {
+					if (prev && !i_cal_time_is_null_time (prev) &&
+					    i_cal_time_compare (next, prev) == 0)
 						break;
-					prev = next;
 
-					if (intersects_interval (&next, NULL, duration_days, duration_seconds, &interval_start, &interval_end)) {
-						g_hash_table_insert (times, e_instance_time_new (&next, NULL), NULL);
+					g_clear_object (&prev);
+					prev = i_cal_time_clone (next);
+
+					if (intersects_interval (next, NULL, duration_days, duration_seconds, interval_start, interval_end)) {
+						g_hash_table_insert (times, e_instance_time_new (next, NULL), NULL);
 					}
 				}
 
-				icalrecur_iterator_free (riter);
+				g_clear_object (&riter);
+				g_clear_object (&prev);
+				g_clear_object (&next);
 			}
+
+			g_clear_object (&rrule);
 		}
 
-		for (prop = icalcomponent_get_first_property (comp, ICAL_RDATE_PROPERTY);
+		g_clear_object (&prop);
+
+		for (prop = i_cal_component_get_first_property (icalcomp, I_CAL_RDATE_PROPERTY);
 		     prop && success;
-		     prop = icalcomponent_get_next_property (comp, ICAL_RDATE_PROPERTY)) {
-			struct icaldatetimeperiodtype rdate = icalproperty_get_rdate (prop);
-			struct icaltimetype tt = icaltime_null_time ();
-			struct icaldurationtype duration = icaldurationtype_null_duration ();
+		     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, I_CAL_RDATE_PROPERTY)) {
+			ICalDatetimeperiod *rdate = i_cal_property_get_rdate (prop);
+			ICalTime *tt = NULL;
+			ICalDuration *duration = i_cal_duration_new_null_duration ();
 
-			if (!icaltime_is_null_time (rdate.time)) {
-				tt = rdate.time;
-			} else if (!icalperiodtype_is_null_period (rdate.period)) {
-				tt = rdate.period.start;
+			tt = i_cal_datetimeperiod_get_time (rdate);
+			if (!tt || i_cal_time_is_null_time (tt)) {
+				ICalPeriod *period;
 
-				if (!icaltime_is_null_time (rdate.period.end)) {
-					time_t diff;
+				g_clear_object (&tt);
+				period = i_cal_datetimeperiod_get_period (rdate);
 
-					diff = icaltime_as_timet (rdate.period.end) - icaltime_as_timet (rdate.period.start);
-					if (diff < 0) {
-						duration.is_neg = 1;
-						diff = diff * (-1);
+				if (period && !i_cal_period_is_null_period (period)) {
+					ICalTime *pend;
+
+					tt = i_cal_period_get_start (period);
+					pend = i_cal_period_get_end (period);
+
+					if (pend && !i_cal_time_is_null_time (pend)) {
+						time_t diff;
+
+						diff = i_cal_time_as_timet (pend) - i_cal_time_as_timet (tt);
+						if (diff < 0) {
+							i_cal_duration_set_is_neg (duration, TRUE);
+							diff = diff * (-1);
+						}
+
+						#define set_and_dec(member, num) G_STMT_START { \
+							i_cal_duration_set_ ## member (duration, diff / (num)); \
+							diff = diff % (num); \
+							} G_STMT_END
+						set_and_dec (weeks, 7 * 24 * 60 * 60);
+						set_and_dec (days, 24 * 60 * 60);
+						set_and_dec (hours, 60 * 60);
+						set_and_dec (minutes, 60);
+						set_and_dec (seconds, 1);
+						#undef set_and_dec
+
+						g_warn_if_fail (diff == 0);
+					} else {
+						g_clear_object (&duration);
+						duration = i_cal_period_get_duration (period);
 					}
 
-					#define set_and_dec(member, num) G_STMT_START { \
-						member = diff / (num); \
-						diff = diff % (num); \
-						} G_STMT_END
-					set_and_dec (duration.weeks, 7 * 24 * 60 * 60);
-					set_and_dec (duration.days, 24 * 60 * 60);
-					set_and_dec (duration.hours, 60 * 60);
-					set_and_dec (duration.minutes, 60);
-					set_and_dec (duration.seconds, 1);
-					#undef set_and_dec
+					if (duration && !i_cal_duration_is_null_duration (duration) &&
+					    tt && !i_cal_time_is_null_time (tt)) {
+						if (i_cal_duration_is_neg (duration)) {
+							apply_duration (tt, duration);
 
-					g_warn_if_fail (diff == 0);
-				} else if (!icaldurationtype_is_null_duration (rdate.period.duration)) {
-					duration = rdate.period.duration;
-				}
-
-				if (!icaldurationtype_is_null_duration (duration) &&
-				    !icaltime_is_null_time (tt)) {
-					if (duration.is_neg) {
-						apply_duration (&tt, &duration);
-
-						duration.is_neg = 0;
+							i_cal_duration_set_is_neg (duration, FALSE);
+						}
 					}
+
+					g_clear_object (&pend);
 				}
+
+				g_clear_object (&period);
 			}
 
-			if (!icaltime_is_null_time (tt)) {
-				success = ensure_timezone (comp, &tt, 0, prop,
-					get_tz_callback, get_tz_callback_user_data, (icaltimezone *) dtstart.zone,
-					cancellable, error);
-				if (!success)
+			if (tt && !i_cal_time_is_null_time (tt)) {
+				success = ensure_timezone (icalcomp, tt, 0, prop,
+					get_tz_callback, get_tz_callback_user_data, dtstart_zone,
+					&cached_zones, cancellable, error);
+				if (!success) {
+					g_clear_object (&duration);
+					g_clear_object (&rdate);
+					g_clear_object (&tt);
 					break;
+				}
 
-				if (intersects_interval (&tt, &duration, duration_days, duration_seconds, &interval_start, &interval_end)) {
-					g_hash_table_insert (times, e_instance_time_new (&tt, &duration), NULL);
+				if (intersects_interval (tt, duration, duration_days, duration_seconds, interval_start, interval_end)) {
+					g_hash_table_insert (times, e_instance_time_new (tt, duration), NULL);
 				}
 			}
+
+			g_clear_object (&duration);
+			g_clear_object (&rdate);
+			g_clear_object (&tt);
 		}
 
-		for (prop = icalcomponent_get_first_property (comp, ICAL_EXRULE_PROPERTY);
+		g_clear_object (&prop);
+
+		for (prop = i_cal_component_get_first_property (icalcomp, I_CAL_EXRULE_PROPERTY);
 		     prop && success;
-		     prop = icalcomponent_get_next_property (comp, ICAL_EXRULE_PROPERTY)) {
-			struct icalrecurrencetype exrule = icalproperty_get_exrule (prop);
-			icalrecur_iterator *riter;
+		     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, I_CAL_EXRULE_PROPERTY)) {
+			ICalRecurrence *exrule = i_cal_property_get_exrule (prop);
+			ICalRecurIterator *riter;
+			ICalTime *exrule_until;
 
-			if (!icaltime_is_null_time (exrule.until)) {
-				success = ensure_timezone (comp, &exrule.until, 0, prop,
-					get_tz_callback, get_tz_callback_user_data, (icaltimezone *) dtstart.zone,
-					cancellable, error);
-				if (!success)
+			exrule_until = i_cal_recurrence_get_until (exrule);
+
+			if (exrule_until && !i_cal_time_is_null_time (exrule_until)) {
+				success = ensure_timezone (icalcomp, exrule_until, 0, prop,
+					get_tz_callback, get_tz_callback_user_data, dtstart_zone,
+					&cached_zones, cancellable, error);
+				if (!success) {
+					g_clear_object (&exrule_until);
+					g_clear_object (&exrule);
 					break;
+				}
 			}
 
-			if (!icaltime_is_null_time (exrule.until) &&
-			    exrule.until.is_date && !dtstart.is_date) {
-				icaltime_adjust (&exrule.until, 1, 0, 0, 0);
-				exrule.until.is_date = 0;
-				exrule.until.hour = 0;
-				exrule.until.minute = 0;
-				exrule.until.second = 0;
+			if (exrule_until && !i_cal_time_is_null_time (exrule_until) &&
+			    i_cal_time_is_date (exrule_until) && !i_cal_time_is_date (dtstart)) {
+				i_cal_time_adjust (exrule_until, 1, 0, 0, 0);
+				i_cal_time_set_is_date (exrule_until, FALSE);
+				i_cal_time_set_time (exrule_until, 0, 0, 0);
 
-				if (!exrule.until.zone && !icaltime_is_utc (exrule.until))
-					exrule.until.zone = dtstart.zone;
+				if (!i_cal_time_get_timezone (exrule_until) && !i_cal_time_is_utc (exrule_until))
+					i_cal_time_set_timezone (exrule_until, dtstart_zone);
 			}
 
-			riter = icalrecur_iterator_new (exrule, dtstart);
+			if (exrule_until && !i_cal_time_is_null_time (exrule_until))
+				i_cal_recurrence_set_until (exrule, exrule_until);
+			g_clear_object (&exrule_until);
+
+			riter = i_cal_recur_iterator_new (exrule, dtstart);
 			if (riter) {
-				struct icaltimetype prev = icaltime_null_time ();
+				ICalTime *prev = NULL;
 
-				for (next = icalrecur_iterator_next (riter);
-				     !icaltime_is_null_time (next) && icaltime_compare (next, interval_end) <= 0;
-				     next = icalrecur_iterator_next (riter)) {
-					if (!icaltime_is_null_time (prev) &&
-					    icaltime_compare (next, prev) == 0)
+				for (next = i_cal_recur_iterator_next (riter);
+				     next && !i_cal_time_is_null_time (next) && i_cal_time_compare (next, interval_end) <= 0;
+				     g_object_unref (next), next = i_cal_recur_iterator_next (riter)) {
+					if (prev && !i_cal_time_is_null_time (prev) &&
+					    i_cal_time_compare (next, prev) == 0)
 						break;
-					prev = next;
+					g_clear_object (&prev);
+					prev = i_cal_time_clone (next);
 
-					if (intersects_interval (&next, NULL, duration_days, duration_seconds, &interval_start, &interval_end)) {
+					if (intersects_interval (next, NULL, duration_days, duration_seconds, interval_start, interval_end)) {
 						EInstanceTime it;
 
 						it.tt = next;
@@ -569,28 +688,38 @@ e_cal_recur_generate_instances_sync (icalcomponent *comp,
 					}
 				}
 
-				icalrecur_iterator_free (riter);
+				g_clear_object (&riter);
+				g_clear_object (&prev);
+				g_clear_object (&next);
 			}
+
+			g_clear_object (&exrule);
 		}
 
-		for (prop = icalcomponent_get_first_property (comp, ICAL_EXDATE_PROPERTY);
+		g_clear_object (&prop);
+
+		for (prop = i_cal_component_get_first_property (icalcomp, I_CAL_EXDATE_PROPERTY);
 		     prop && success;
-		     prop = icalcomponent_get_next_property (comp, ICAL_EXDATE_PROPERTY)) {
-			struct icaltimetype exdate = icalproperty_get_exdate (prop);
+		     prop = i_cal_component_get_next_property (icalcomp, I_CAL_EXDATE_PROPERTY)) {
+			ICalTime *exdate = i_cal_property_get_exdate (prop);
 
-			if (icaltime_is_null_time (exdate))
+			if (exdate || i_cal_time_is_null_time (exdate)) {
+				g_clear_object (&exdate);
 				continue;
+			}
 
-			success = ensure_timezone (comp, &exdate, 0, prop,
-				get_tz_callback, get_tz_callback_user_data, (icaltimezone *) dtstart.zone,
-				cancellable, error);
-			if (!success)
+			success = ensure_timezone (icalcomp, exdate, 0, prop,
+				get_tz_callback, get_tz_callback_user_data, dtstart_zone,
+				&cached_zones, cancellable, error);
+			if (!success) {
+				g_clear_object (&exdate);
 				break;
+			}
 
-			if (!exdate.zone && !icaltime_is_utc (exdate))
-				exdate.zone = dtstart.zone;
+			if (!i_cal_time_get_timezone (exdate) && !i_cal_time_is_utc (exdate))
+				i_cal_time_set_timezone (exdate, dtstart_zone);
 
-			if (intersects_interval (&exdate, NULL, duration_days, duration_seconds, &interval_start, &interval_end)) {
+			if (intersects_interval (exdate, NULL, duration_days, duration_seconds, interval_start, interval_end)) {
 				EInstanceTime it;
 
 				it.tt = exdate;
@@ -598,7 +727,11 @@ e_cal_recur_generate_instances_sync (icalcomponent *comp,
 
 				g_hash_table_remove (times, &it);
 			}
+
+			g_clear_object (&exdate);
 		}
+
+		g_clear_object (&prop);
 	}
 
 	if (success && g_hash_table_size (times) > 0) {
@@ -623,13 +756,13 @@ e_cal_recur_generate_instances_sync (icalcomponent *comp,
 
 		for (ii = 0; ii < times_array->len; ii++) {
 			EInstanceTime *it = g_ptr_array_index (times_array, ii);
-			struct icaltimetype ttend;
+			ICalTime *endtt;
 			gint dur_days = duration_days, dur_seconds = duration_seconds;
 
 			if (!it)
 				continue;
 
-			ttend = it->tt;
+			endtt = i_cal_time_clone (it->tt);
 
 			if (it->duration_set) {
 				dur_days = it->duration_days;
@@ -637,16 +770,20 @@ e_cal_recur_generate_instances_sync (icalcomponent *comp,
 			}
 
 			if (dur_seconds != 0)
-				ttend.is_date = 0;
+				i_cal_time_set_is_date (endtt, FALSE);
 
-			icaltime_adjust (&ttend, dur_days, 0, 0, dur_seconds);
+			i_cal_time_adjust (endtt, dur_days, 0, 0, dur_seconds);
 
 			if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
 				success = FALSE;
+				g_clear_object (&endtt);
 				break;
 			}
 
-			success = callback (comp, it->tt, ttend, callback_user_data, cancellable, error);
+			success = callback (icalcomp, it->tt, endtt, callback_user_data, cancellable, error);
+
+			g_clear_object (&endtt);
+
 			if (!success)
 				break;
 		}
@@ -655,6 +792,12 @@ e_cal_recur_generate_instances_sync (icalcomponent *comp,
 	}
 
 	g_hash_table_destroy (times);
+
+	if (cached_zones)
+		g_hash_table_destroy (cached_zones);
+
+	g_clear_object (&dtstart);
+	g_clear_object (&dtend);
 
 	return success;
 }
@@ -745,9 +888,9 @@ e_cal_recur_generate_instances_sync (icalcomponent *comp,
 #define CAL_OBJ_DEBUG	1
 #endif
 
-/* We will use icalrecurrencetype instead of this eventually. */
+/* We will use ICalRecurrence instead of this eventually. */
 typedef struct {
-	icalrecurrencetype_frequency freq;
+	ICalRecurrenceFrequency freq;
 
 	gint            interval;
 
@@ -849,9 +992,6 @@ struct _CalObjRecurrenceDate {
 	ECalComponentPeriod *period;
 };
 
-/* The paramter we use to store the enddate in RRULE and EXRULE properties. */
-#define EVOLUTION_END_DATE_PARAMETER	"X-EVOLUTION-ENDDATE"
-
 typedef gboolean (*CalObjFindStartFn) (CalObjTime *event_start,
 				       CalObjTime *event_end,
 				       RecurData  *recur_data,
@@ -892,25 +1032,25 @@ typedef enum {
 } CalObjTimeComparison;
 
 static void e_cal_recur_generate_instances_of_rule (ECalComponent	*comp,
-						  icalproperty	*prop,
+						  ICalProperty	*prop,
 						  time_t	 start,
 						  time_t	 end,
-						  ECalRecurInstanceFn cb,
+						  ECalRecurInstanceCb cb,
 						  gpointer       cb_data,
-						  ECalRecurResolveTimezoneFn  tz_cb,
+						  ECalRecurResolveTimezoneCb  tz_cb,
 						  gpointer	 tz_cb_data,
-						  icaltimezone	*default_timezone);
+						  ICalTimezone	*default_timezone);
 
-static ECalRecurrence * e_cal_recur_from_icalproperty (icalproperty *prop,
+static ECalRecurrence * e_cal_recur_from_icalproperty (ICalProperty *prop,
 						    gboolean exception,
-						    icaltimezone *zone,
+						    ICalTimezone *zone,
 						    gboolean convert_end_date);
-static gint e_cal_recur_ical_weekday_to_weekday	(enum icalrecurrencetype_weekday day);
+static gint e_cal_recur_ical_weekday_to_weekday	(ICalRecurrenceWeekday day);
 static void	e_cal_recur_free			(ECalRecurrence	*r);
 
 static gboolean cal_object_get_rdate_end	(CalObjTime	*occ,
 						 GArray		*rdate_periods,
-						 icaltimezone	*zone);
+						 ICalTimezone	*zone);
 static void	cal_object_compute_duration	(CalObjTime	*start,
 						 CalObjTime	*end,
 						 gint		*days,
@@ -918,7 +1058,7 @@ static void	cal_object_compute_duration	(CalObjTime	*start,
 
 static gboolean generate_instances_for_chunk	(ECalComponent		*comp,
 						 time_t			 comp_dtstart,
-						 icaltimezone		*zone,
+						 ICalTimezone		*zone,
 						 GSList			*rrules,
 						 GSList			*rdates,
 						 GSList			*exrules,
@@ -931,11 +1071,11 @@ static gboolean generate_instances_for_chunk	(ECalComponent		*comp,
 						 gint			 duration_days,
 						 gint			 duration_seconds,
 						 gboolean		 convert_end_date,
-						 ECalRecurInstanceFn	 cb,
+						 ECalRecurInstanceCb	 cb,
 						 gpointer		 cb_data);
 
 static GArray * cal_obj_expand_recurrence	(CalObjTime	  *event_start,
-						 icaltimezone	  *zone,
+						 ICalTimezone	  *zone,
 						 ECalRecurrence	  *recur,
 						 CalObjTime	  *interval_start,
 						 CalObjTime	  *interval_end,
@@ -1103,22 +1243,26 @@ static void cal_obj_time_find_first_week	(CalObjTime *cotime,
 						 RecurData  *recur_data);
 static void cal_object_time_from_time		(CalObjTime *cotime,
 						 time_t      t,
-						 icaltimezone *zone);
+						 ICalTimezone *zone);
 static gint cal_obj_date_only_compare_func	(gconstpointer arg1,
 						 gconstpointer arg2);
 static gboolean e_cal_recur_ensure_rule_end_date	(ECalComponent	*comp,
-						 icalproperty	*prop,
+						 ICalProperty	*prop,
 						 gboolean	 exception,
 						 gboolean	 refresh,
-						 ECalRecurResolveTimezoneFn tz_cb,
-						 gpointer	 tz_cb_data);
-static gboolean e_cal_recur_ensure_rule_end_date_cb	(ECalComponent	*comp,
-							 time_t		 instance_start,
-							 time_t		 instance_end,
-							 gpointer	 data);
-static time_t e_cal_recur_get_rule_end_date	(icalproperty	*prop,
-						 icaltimezone	*default_timezone);
-static void e_cal_recur_set_rule_end_date		(icalproperty	*prop,
+						 ECalRecurResolveTimezoneCb tz_cb,
+						 gpointer	 tz_cb_data,
+						 GCancellable *cancellable,
+						 GError **error);
+static gboolean e_cal_recur_ensure_rule_end_date_cb	(ICalComponent	*comp,
+							 ICalTime *instance_start,
+							 ICalTime *instance_end,
+							 gpointer user_data,
+							 GCancellable *cancellable,
+							 GError **error);
+static time_t e_cal_recur_get_rule_end_date	(ICalProperty	*prop,
+						 ICalTimezone	*default_timezone);
+static void e_cal_recur_set_rule_end_date	(ICalProperty	*prop,
 						 time_t		 end_date);
 
 #ifdef CAL_OBJ_DEBUG
@@ -1223,125 +1367,29 @@ static ECalRecurVTable cal_obj_secondly_vtable = {
 	cal_obj_bysecond_filter
 };
 
-#ifdef HAVE_LIBICAL_2_0
-struct BackwardCompatibilityData
-{
-	ECalComponent *comp;
-	ECalRecurInstanceFn cb;
-	gpointer cb_data;
-	ECalRecurResolveTimezoneFn tz_cb;
-	gpointer tz_cb_data;
-};
-
-static icaltimezone *
-backward_compatibility_resolve_timezone_cb (const gchar *tzid,
-					    gpointer user_data,
-					    GCancellable *cancellable,
-					    GError **error)
-{
-	struct BackwardCompatibilityData *bcd = user_data;
-
-	if (bcd && bcd->tz_cb)
-		return bcd->tz_cb (tzid, bcd->tz_cb_data);
-
-	return NULL;
-}
-
 static gboolean
-backward_compatibility_instance_cb (icalcomponent *comp,
-				    struct icaltimetype instance_start,
-				    struct icaltimetype instance_end,
-				    gpointer user_data,
-				    GCancellable *cancellable,
-				    GError **error)
+call_instance_callback (ECalRecurInstanceCb cb,
+			ECalComponent *comp,
+			time_t dtstart_time,
+			time_t dtend_time,
+			gpointer cb_data)
 {
-	struct BackwardCompatibilityData *bcd = user_data;
+	ICalTime *start, *end;
+	ICalTimezone *utc_zone;
+	gboolean res;
 
-	if (bcd && bcd->cb) {
-		time_t istart, iend;
+	g_return_val_if_fail (cb != NULL, FALSE);
 
-		if (instance_start.zone)
-			istart = icaltime_as_timet_with_zone (instance_start, instance_start.zone);
-		else
-			istart = icaltime_as_timet (instance_start);
+	utc_zone = i_cal_timezone_get_utc_timezone ();
+	start = i_cal_time_new_from_timet_with_zone (dtstart_time, FALSE, utc_zone);
+	end = i_cal_time_new_from_timet_with_zone (dtend_time, FALSE, utc_zone);
 
-		if (instance_end.zone)
-			iend = icaltime_as_timet_with_zone (instance_end, instance_end.zone);
-		else
-			iend = icaltime_as_timet (instance_end);
+	res = cb (e_cal_component_get_icalcomponent (comp), start, end, cb_data, NULL, NULL);
 
-		return bcd->cb (bcd->comp, istart, iend, bcd->cb_data);
-	}
+	g_clear_object (&start);
+	g_clear_object (&end);
 
-	return FALSE;
-}
-
-#endif
-
-/**
- * e_cal_recur_generate_instances:
- * @comp: A calendar component object
- * @start: Range start time
- * @end: Range end time
- * @cb: (closure cb_data) (scope call): Callback function
- * @cb_data: (closure): Closure data for the callback function
- * @tz_cb: (closure tz_cb_data) (scope call): Callback for retrieving timezones
- * @tz_cb_data: (closure): Closure data for the timezone callback
- * @default_timezone: Default timezone to use when a timezone cannot be
- * found
- *
- * Calls the given callback function for each occurrence of the event that
- * intersects the range between the given @start and @end times (the end time is
- * not included). Note that the occurrences may start before the given start
- * time.
- *
- * If the callback routine returns FALSE the occurrence generation stops.
- *
- * Both start and end can be -1, in which case we start at the events first
- * instance and continue until it ends, or forever if it has no enddate.
- *
- * The tz_cb is used to resolve references to timezones. It is passed a TZID
- * and should return the icaltimezone* corresponding to that TZID. We need to
- * do this as we access timezones in different ways on the client & server.
- *
- * The default_timezone argument is used for DTSTART or DTEND properties that
- * are DATE values or do not have a TZID (i.e. floating times).
- *
- * Note: This will be replaced by e_cal_recur_generate_instances_sync().
- */
-void
-e_cal_recur_generate_instances (ECalComponent *comp,
-                                time_t start,
-                                time_t end,
-                                ECalRecurInstanceFn cb,
-                                gpointer cb_data,
-                                ECalRecurResolveTimezoneFn tz_cb,
-                                gpointer tz_cb_data,
-                                icaltimezone *default_timezone)
-{
-#ifdef HAVE_LIBICAL_2_0
-	struct icaltimetype istart, iend;
-	struct BackwardCompatibilityData bcd;
-
-	bcd.comp = comp;
-	bcd.cb = cb;
-	bcd.cb_data = cb_data;
-	bcd.tz_cb = tz_cb;
-	bcd.tz_cb_data = tz_cb_data;
-
-	istart = icaltime_from_timet_with_zone (start, FALSE, icaltimezone_get_utc_timezone ());
-	iend = icaltime_from_timet_with_zone (end, FALSE, icaltimezone_get_utc_timezone ());
-
-	e_cal_recur_generate_instances_sync (e_cal_component_get_icalcomponent (comp), istart, iend,
-		backward_compatibility_instance_cb, &bcd,
-		backward_compatibility_resolve_timezone_cb, &bcd,
-		default_timezone, NULL, NULL);
-#else
-	e_cal_recur_generate_instances_of_rule (
-		comp, NULL, start, end,
-		cb, cb_data, tz_cb, tz_cb_data,
-		default_timezone);
-#endif
+	return res;
 }
 
 /*
@@ -1360,24 +1408,25 @@ e_cal_recur_generate_instances (ECalComponent *comp,
  */
 static void
 e_cal_recur_generate_instances_of_rule (ECalComponent *comp,
-                                        icalproperty *prop,
+                                        ICalProperty *prop,
                                         time_t start,
                                         time_t end,
-                                        ECalRecurInstanceFn cb,
+                                        ECalRecurInstanceCb cb,
                                         gpointer cb_data,
-                                        ECalRecurResolveTimezoneFn tz_cb,
+                                        ECalRecurResolveTimezoneCb tz_cb,
                                         gpointer tz_cb_data,
-                                        icaltimezone *default_timezone)
+                                        ICalTimezone *default_timezone)
 {
-	ECalComponentDateTime dtstart, dtend;
+	ECalComponentDateTime *dtstart, *dtend;
 	time_t dtstart_time, dtend_time;
-	GSList *rrules = NULL, *rdates = NULL, elem;
+	GSList *rrules = NULL, *rdates = NULL;
 	GSList *exrules = NULL, *exdates = NULL;
 	CalObjTime interval_start, interval_end, event_start, event_end;
 	CalObjTime chunk_start, chunk_end;
 	gint days, seconds, year;
 	gboolean single_rule, convert_end_date = FALSE;
-	icaltimezone *start_zone = NULL, *end_zone = NULL;
+	ICalTimezone *start_zone = NULL, *end_zone = NULL;
+	ICalTime *dtstarttt, *dtendtt;
 
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (cb != NULL);
@@ -1389,10 +1438,15 @@ e_cal_recur_generate_instances_of_rule (ECalComponent *comp,
 	 * cal_component_get_dtend () will convert a DURATION property to a
 	 * DTEND so we don't need to worry about that. */
 
-	e_cal_component_get_dtstart (comp, &dtstart);
-	e_cal_component_get_dtend (comp, &dtend);
+	dtstart = e_cal_component_get_dtstart (comp);
+	dtend = e_cal_component_get_dtend (comp);
 
-	if (!dtstart.value) {
+	dtstarttt = (dtstart && e_cal_component_datetime_get_value (dtstart)) ?
+		e_cal_component_datetime_get_value (dtstart) : NULL;
+	dtendtt = (dtend && e_cal_component_datetime_get_value (dtend)) ?
+		e_cal_component_datetime_get_value (dtend) : NULL;
+
+	if (!dtstart || !dtstarttt) {
 		g_message (
 			"e_cal_recur_generate_instances_of_rule(): bogus "
 			"component, does not have DTSTART.  Skipping...");
@@ -1402,8 +1456,8 @@ e_cal_recur_generate_instances_of_rule (ECalComponent *comp,
 	/* For DATE-TIME values with a TZID, we use the supplied callback to
 	 * resolve the TZID. For DATE values and DATE-TIME values without a
 	 * TZID (i.e. floating times) we use the default timezone. */
-	if (dtstart.tzid && !dtstart.value->is_date) {
-		start_zone = (*tz_cb) (dtstart.tzid, tz_cb_data);
+	if (e_cal_component_datetime_get_tzid (dtstart) && !i_cal_time_is_date (dtstarttt)) {
+		start_zone = (*tz_cb) (e_cal_component_datetime_get_tzid (dtstart), tz_cb_data, NULL, NULL);
 		if (!start_zone)
 			start_zone = default_timezone;
 	} else {
@@ -1414,69 +1468,78 @@ e_cal_recur_generate_instances_of_rule (ECalComponent *comp,
 		convert_end_date = TRUE;
 	}
 
-	dtstart_time = icaltime_as_timet_with_zone (
-		*dtstart.value,
-		start_zone);
+	if (start_zone)
+		g_object_ref (start_zone);
+
+	dtstart_time = i_cal_time_as_timet_with_zone (dtstarttt, start_zone);
 	if (start == -1)
 		start = dtstart_time;
 
-	if (dtend.value) {
+	if (dtendtt) {
 		/* If both DTSTART and DTEND are DATE values, and they are the
 		 * same day, we add 1 day to DTEND. This means that most
 		 * events created with the old Evolution behavior will still
 		 * work OK. I'm not sure what Outlook does in this case. */
-		if (dtstart.value->is_date && dtend.value->is_date) {
-			if (icaltime_compare_date_only (*dtstart.value,
-							*dtend.value) == 0) {
-				icaltime_adjust (dtend.value, 1, 0, 0, 0);
+		if (i_cal_time_is_date (dtstarttt) && i_cal_time_is_date (dtendtt)) {
+			if (i_cal_time_compare_date_only (dtstarttt, dtendtt) == 0) {
+				i_cal_time_adjust (dtendtt, 1, 0, 0, 0);
 			}
 		}
 	} else {
 		/* If there is no DTEND, then if DTSTART is a DATE-TIME value
 		 * we use the same time (so we have a single point in time).
 		 * If DTSTART is a DATE value we add 1 day. */
-		dtend.value = g_new (struct icaltimetype, 1);
-		*dtend.value = *dtstart.value;
+		e_cal_component_datetime_free (dtend);
 
-		if (dtstart.value->is_date) {
-			icaltime_adjust (dtend.value, 1, 0, 0, 0);
+		dtend = e_cal_component_datetime_copy (dtstart);
+		dtendtt = (dtend && e_cal_component_datetime_get_value (dtend)) ?
+			e_cal_component_datetime_get_value (dtend) : NULL;
+
+		g_warn_if_fail (dtendtt != NULL);
+
+		if (i_cal_time_is_date (dtstarttt)) {
+			i_cal_time_adjust (dtendtt, 1, 0, 0, 0);
 		}
 	}
 
-	if (dtend.tzid && !dtend.value->is_date) {
-		end_zone = (*tz_cb) (dtend.tzid, tz_cb_data);
+	if (e_cal_component_datetime_get_tzid (dtend) && dtendtt && !i_cal_time_is_date (dtendtt)) {
+		end_zone = (*tz_cb) (e_cal_component_datetime_get_tzid (dtend), tz_cb_data, NULL, NULL);
 		if (!end_zone)
 			end_zone = default_timezone;
 	} else {
 		end_zone = default_timezone;
 	}
 
+	if (end_zone)
+		g_object_ref (end_zone);
+
 	/* We don't do this any more, since Outlook assumes that the DTEND
 	 * date is not included. */
 #if 0
 	/* If DTEND is a DATE value, we add 1 day to it so that it includes
 	 * the entire day. */
-	if (dtend.value->is_date) {
-		dtend.value->hour = 0;
-		dtend.value->minute = 0;
-		dtend.value->second = 0;
-		icaltime_adjust (dtend.value, 1, 0, 0, 0);
+	if (i_cal_time_is_date (dtendtt)) {
+		i_cal_time_set_time (dtendtt, 0, 0, 0);
+		i_cal_time_adjust (dtendtt, 1, 0, 0, 0);
 	}
 #endif
-	dtend_time = icaltime_as_timet_with_zone (*dtend.value, end_zone);
+	dtend_time = i_cal_time_as_timet_with_zone (dtendtt, end_zone);
 
 	/* If there is no recurrence, just call the callback if the event
 	 * intersects the given interval. */
 	if (!(e_cal_component_has_recurrences (comp)
 	      || e_cal_component_has_exceptions (comp))) {
 		if (e_cal_component_get_vtype (comp) == E_CAL_COMPONENT_JOURNAL) {
-			icaltimetype start_t = icaltime_from_timet_with_zone (start, FALSE, default_timezone);
-			icaltimetype end_t = icaltime_from_timet_with_zone (end, FALSE, default_timezone);
+			ICalTime *start_t = i_cal_time_new_from_timet_with_zone (start, FALSE, default_timezone);
+			ICalTime *end_t = i_cal_time_new_from_timet_with_zone (end, FALSE, default_timezone);
 
-			if ((icaltime_compare_date_only (*dtstart.value, start_t) >= 0) && ((icaltime_compare_date_only (*dtstart.value, end_t) < 0)))
-				(* cb) (comp, dtstart_time, dtend_time, cb_data);
+			if ((i_cal_time_compare_date_only (dtstarttt, start_t) >= 0) && ((i_cal_time_compare_date_only (dtstarttt, end_t) < 0)))
+				call_instance_callback (cb, comp, dtstart_time, dtend_time, cb_data);
+
+			g_clear_object (&start_t);
+			g_clear_object (&end_t);
 		} else if  ((end == -1 || dtstart_time < end) && dtend_time > start) {
-			(* cb) (comp, dtstart_time, dtend_time, cb_data);
+			call_instance_callback (cb, comp, dtstart_time, dtend_time, cb_data);
 		}
 
 		goto out;
@@ -1487,21 +1550,19 @@ e_cal_recur_generate_instances_of_rule (ECalComponent *comp,
 	if (prop) {
 		single_rule = TRUE;
 
-		elem.data = prop;
-		elem.next = NULL;
-		rrules = &elem;
+		rrules = g_slist_prepend (NULL, g_object_ref (prop));
 	} else if (e_cal_component_is_instance (comp)) {
 		single_rule = FALSE;
 	} else {
 		single_rule = FALSE;
 
 		/* Make sure all the enddates for the rules are set. */
-		e_cal_recur_ensure_end_dates (comp, FALSE, tz_cb, tz_cb_data);
+		e_cal_recur_ensure_end_dates (comp, FALSE, tz_cb, tz_cb_data, NULL, NULL);
 
-		e_cal_component_get_rrule_property_list (comp, &rrules);
-		e_cal_component_get_rdate_list (comp, &rdates);
-		e_cal_component_get_exrule_property_list (comp, &exrules);
-		e_cal_component_get_exdate_list (comp, &exdates);
+		rrules = e_cal_component_get_rrule_properties (comp);
+		rdates = e_cal_component_get_rdates (comp);
+		exrules = e_cal_component_get_exrule_properties (comp);
+		exdates = e_cal_component_get_exdates (comp);
 	}
 
 	/* Convert the interval start & end to CalObjTime. Note that if end
@@ -1580,42 +1641,55 @@ e_cal_recur_generate_instances_of_rule (ECalComponent *comp,
 			break;
 	}
 
-	if (!prop) {
-		e_cal_component_free_period_list (rdates);
-		e_cal_component_free_exdate_list (exdates);
-	}
+	g_slist_free_full (rdates, e_cal_component_period_free);
+	g_slist_free_full (exdates, e_cal_component_datetime_free);
+	g_slist_free_full (rrules, g_object_unref);
+	g_slist_free_full (exrules, g_object_unref);
 
  out:
-	e_cal_component_free_datetime (&dtstart);
-	e_cal_component_free_datetime (&dtend);
+	e_cal_component_datetime_free (dtstart);
+	e_cal_component_datetime_free (dtend);
+	g_clear_object (&start_zone);
+	g_clear_object (&end_zone);
 }
 
-/* Builds a list of GINT_TO_POINTER() elements out of a short array from a
- * struct icalrecurrencetype.
+/* Builds a list of GINT_TO_POINTER() elements out of a short array from an
+ * ICalRecurrence array of gshort.
  */
 static GList *
-array_to_list (gshort *array,
-               gint max_elements)
+array_to_list_and_free (GArray *array)
 {
-	GList *l;
-	gint i;
+	GList *lst;
+	gint ii;
 
-	l = NULL;
+	if (!array)
+		return NULL;
 
-	for (i = 0; i < max_elements && array[i] != ICAL_RECURRENCE_ARRAY_MAX; i++)
-		l = g_list_prepend (l, GINT_TO_POINTER ((gint) (array[i])));
-	return g_list_reverse (l);
+	lst = NULL;
+
+	for (ii = 0; ii < array->len; ii++) {
+		gshort value = g_array_index (array, gshort, ii);
+
+		if (value == I_CAL_RECURRENCE_ARRAY_MAX)
+			break;
+
+		lst = g_list_prepend (lst, GINT_TO_POINTER ((gint) value));
+	}
+
+	g_array_unref (array);
+
+	return g_list_reverse (lst);
 }
 
 /**
  * e_cal_recur_get_enddate:
  * @ir: RRULE or EXRULE recurrence 
- * @prop: An RRULE or EXRULE #icalproperty. 
+ * @prop: An RRULE or EXRULE #ICalProperty.
  * @zone: The DTSTART timezone, used for converting the UNTIL property if it
- * is given as a DATE value.
+ *    is given as a DATE value.
  * @convert_end_date: TRUE if the saved end date needs to be converted to the
- * given @zone timezone. This is needed if the DTSTART is a DATE or floating
- * time.
+ *    given @zone timezone. This is needed if the DTSTART is a DATE or floating
+ *    time.
  * 
  * Finds out end time of (reccurent) event.
  *
@@ -1624,54 +1698,52 @@ array_to_list (gshort *array,
  * Since: 2.32
  */
 time_t
-e_cal_recur_obtain_enddate (struct icalrecurrencetype *ir,
-                            icalproperty *prop,
-          icaltimezone *zone,
-                            gboolean convert_end_date)
+e_cal_recur_obtain_enddate (ICalRecurrence *ir,
+			    ICalProperty *prop,
+			    ICalTimezone *zone,
+			    gboolean convert_end_date)
 {
 	time_t enddate = -1;
 
 	g_return_val_if_fail (prop != NULL, 0);
 	g_return_val_if_fail (ir != NULL, 0);
 
-	if (ir->count != 0) {
+	if (i_cal_recurrence_get_count (ir) != 0) {
 		/* If COUNT is set, we use the pre-calculated enddate.
 		Note that this can be 0 if the RULE doesn't actually
 		generate COUNT instances. */
 		enddate = e_cal_recur_get_rule_end_date (prop, convert_end_date ? zone : NULL);
 	} else {
-		if (icaltime_is_null_time (ir->until)) {
+		ICalTime *until;
+
+		until = i_cal_recurrence_get_until (ir);
+
+		if (!until || i_cal_time_is_null_time (until)) {
 			/* If neither COUNT or UNTIL is set, the event
 			recurs forever. */
-		} else if (ir->until.is_date) {
+		} else if (i_cal_time_is_date (until)) {
 			/* If UNTIL is a DATE, we stop at the end of
 			the day, in local time (with the DTSTART timezone).
 			Note that UNTIL is inclusive so we stop before
 			midnight. */
-			ir->until.hour = 23;
-			ir->until.minute = 59;
-			ir->until.second = 59;
-			ir->until.is_date = FALSE;
+			i_cal_time_set_time (until, 23, 59, 59);
+			i_cal_time_set_is_date (until, FALSE);
 
-			enddate = icaltime_as_timet_with_zone (ir->until, zone);
-#if 0
-	g_print ("  until: %li - %s", r->enddate, ctime (&r->enddate));
-#endif
-
+			enddate = i_cal_time_as_timet_with_zone (until, zone);
 		} else {
-		/* If UNTIL is a DATE-TIME, it must be in UTC. */
-		icaltimezone *utc_zone;
-		utc_zone = icaltimezone_get_utc_timezone ();
-		enddate = icaltime_as_timet_with_zone (ir->until, utc_zone);
+			/* If UNTIL is a DATE-TIME, it must be in UTC. */
+			enddate = i_cal_time_as_timet_with_zone (until, i_cal_timezone_get_utc_timezone ());
 		}
+
+		g_clear_object (&until);
 	}
 
 	return enddate;
 }
 
-/**
+/*
  * e_cal_recur_from_icalproperty:
- * @prop: An RRULE or EXRULE #icalproperty.
+ * @prop: An RRULE or EXRULE #ICalProperty.
  * @exception: TRUE if this is an EXRULE rather than an RRULE.
  * @zone: The DTSTART timezone, used for converting the UNTIL property if it
  * is given as a DATE value.
@@ -1679,69 +1751,77 @@ e_cal_recur_obtain_enddate (struct icalrecurrencetype *ir,
  * given @zone timezone. This is needed if the DTSTART is a DATE or floating
  * time.
  *
- * Converts an #icalproperty to a #ECalRecurrence.  This should be
+ * Converts an #ICalProperty to a #ECalRecurrence.  This should be
  * freed using the e_cal_recur_free() function.
  *
  * Returns: #ECalRecurrence structure.
- **/
+ */
 static ECalRecurrence *
-e_cal_recur_from_icalproperty (icalproperty *prop,
-                               gboolean exception,
-                               icaltimezone *zone,
-                               gboolean convert_end_date)
+e_cal_recur_from_icalproperty (ICalProperty *prop,
+			       gboolean exception,
+			       ICalTimezone *zone,
+			       gboolean convert_end_date)
 {
-	struct icalrecurrencetype ir;
+	ICalRecurrence *ir;
 	ECalRecurrence *r;
-	gint max_elements, i;
+	GArray *array;
+	gint ii;
 	GList *elem;
 
 	g_return_val_if_fail (prop != NULL, NULL);
 
 	r = g_new (ECalRecurrence, 1);
 
-	if (exception)
-		ir = icalproperty_get_exrule (prop);
-	else
-		ir = icalproperty_get_rrule (prop);
-
-	r->freq = ir.freq;
-
-	if (G_UNLIKELY (ir.interval < 1)) {
-		g_warning (
-			"Invalid interval in rule %s - using 1\n",
-			icalrecurrencetype_as_string (&ir));
-		r->interval = 1;
+	if (exception) {
+		ir = i_cal_property_get_exrule (prop);
 	} else {
-		r->interval = ir.interval;
+		ir = i_cal_property_get_rrule (prop);
 	}
 
-  r->enddate = e_cal_recur_obtain_enddate (&ir, prop, zone, convert_end_date);
+	r->freq = i_cal_recurrence_get_freq (ir);
 
-	r->week_start_day = e_cal_recur_ical_weekday_to_weekday (ir.week_start);
+	if (G_UNLIKELY (i_cal_recurrence_get_interval (ir) < 1)) {
+		gchar *str;
 
-	r->bymonth = array_to_list (ir.by_month, G_N_ELEMENTS (ir.by_month));
+		str = i_cal_recurrence_to_string (ir);
+		g_warning (
+			"Invalid interval in rule %s - using 1\n",
+			str);
+		g_free (str);
+		r->interval = 1;
+	} else {
+		r->interval = i_cal_recurrence_get_interval (ir);
+	}
+
+	r->enddate = e_cal_recur_obtain_enddate (ir, prop, zone, convert_end_date);
+	r->week_start_day = e_cal_recur_ical_weekday_to_weekday (i_cal_recurrence_get_week_start (ir));
+
+	r->bymonth = array_to_list_and_free (i_cal_recurrence_get_by_month_array (ir));
 	for (elem = r->bymonth; elem; elem = elem->next) {
 		/* We need to convert from 1-12 to 0-11, i.e. subtract 1. */
 		gint month = GPOINTER_TO_INT (elem->data) - 1;
 		elem->data = GINT_TO_POINTER (month);
 	}
 
-	r->byweekno = array_to_list (ir.by_week_no, G_N_ELEMENTS (ir.by_week_no));
+	r->byweekno = array_to_list_and_free (i_cal_recurrence_get_by_week_no_array (ir));
 
-	r->byyearday = array_to_list (ir.by_year_day, G_N_ELEMENTS (ir.by_year_day));
+	r->byyearday = array_to_list_and_free (i_cal_recurrence_get_by_year_day_array (ir));
 
-	r->bymonthday = array_to_list (ir.by_month_day, G_N_ELEMENTS (ir.by_month_day));
+	r->bymonthday = array_to_list_and_free (i_cal_recurrence_get_by_month_day_array (ir));
 
 	/* FIXME: libical only supports 8 values, out of possible 107 * 7. */
 	r->byday = NULL;
-	max_elements = G_N_ELEMENTS (ir.by_day);
-	for (i = 0; i < max_elements && ir.by_day[i] != ICAL_RECURRENCE_ARRAY_MAX; i++) {
-		enum icalrecurrencetype_weekday day;
+	array = i_cal_recurrence_get_by_day_array (ir);
+	for (ii = 0; array && ii < array->len; ii++) {
+		gshort value = g_array_index (array, gshort, ii);
+		ICalRecurrenceWeekday day;
 		gint weeknum, weekday;
 
-		day = icalrecurrencetype_day_day_of_week (ir.by_day[i]);
-		weeknum = icalrecurrencetype_day_position (ir.by_day[i]);
+		if (value == I_CAL_RECURRENCE_ARRAY_MAX)
+			break;
 
+		day = i_cal_recurrence_day_day_of_week (value);
+		weeknum = i_cal_recurrence_day_position (value);
 		weekday = e_cal_recur_ical_weekday_to_weekday (day);
 
 		r->byday = g_list_prepend (
@@ -1751,44 +1831,48 @@ e_cal_recur_from_icalproperty (icalproperty *prop,
 			r->byday,
 			GINT_TO_POINTER (weekday));
 	}
+	if (array)
+		g_array_unref (array);
 
-	r->byhour = array_to_list (ir.by_hour, G_N_ELEMENTS (ir.by_hour));
+	r->byhour = array_to_list_and_free (i_cal_recurrence_get_by_hour_array (ir));
 
-	r->byminute = array_to_list (ir.by_minute, G_N_ELEMENTS (ir.by_minute));
+	r->byminute = array_to_list_and_free (i_cal_recurrence_get_by_minute_array (ir));
 
-	r->bysecond = array_to_list (ir.by_second, G_N_ELEMENTS (ir.by_second));
+	r->bysecond = array_to_list_and_free (i_cal_recurrence_get_by_second_array (ir));
 
-	r->bysetpos = array_to_list (ir.by_set_pos, G_N_ELEMENTS (ir.by_set_pos));
+	r->bysetpos = array_to_list_and_free (i_cal_recurrence_get_by_set_pos_array (ir));
+
+	g_clear_object (&ir);
 
 	return r;
 }
 
 static gint
-e_cal_recur_ical_weekday_to_weekday (enum icalrecurrencetype_weekday day)
+e_cal_recur_ical_weekday_to_weekday (ICalRecurrenceWeekday day)
 {
 	gint weekday;
 
 	switch (day) {
-	case ICAL_NO_WEEKDAY:		/* Monday is the default in RFC2445. */
-	case ICAL_MONDAY_WEEKDAY:
+	case I_CAL_NO_WEEKDAY:		/* Monday is the default in RFC2445. */
+	case I_CAL_MONDAY_WEEKDAY:
 		weekday = 0;
 		break;
-	case ICAL_TUESDAY_WEEKDAY:
+	case I_CAL_TUESDAY_WEEKDAY:
 		weekday = 1;
 		break;
-	case ICAL_WEDNESDAY_WEEKDAY:
+	case I_CAL_WEDNESDAY_WEEKDAY:
 		weekday = 2;
 		break;
-	case ICAL_THURSDAY_WEEKDAY:
+	case I_CAL_THURSDAY_WEEKDAY:
 		weekday = 3;
 		break;
-	case ICAL_FRIDAY_WEEKDAY:
+	case I_CAL_FRIDAY_WEEKDAY:
 		weekday = 4;
 		break;
-	case ICAL_SATURDAY_WEEKDAY:
+	case I_CAL_SATURDAY_WEEKDAY:
 		weekday = 5;
 		break;
-	case ICAL_SUNDAY_WEEKDAY:
+	case I_CAL_SUNDAY_WEEKDAY:
 		weekday = 6;
 		break;
 	default:
@@ -1841,8 +1925,8 @@ e_cal_recur_free (ECalRecurrence *r)
 static gboolean
 generate_instances_for_chunk (ECalComponent *comp,
                               time_t comp_dtstart,
-                              icaltimezone *zone,
-                              GSList *rrules,
+                              ICalTimezone *zone,
+                              GSList *rrules, /* ICalProperty * */
                               GSList *rdates,
                               GSList *exrules,
                               GSList *exdates,
@@ -1854,7 +1938,7 @@ generate_instances_for_chunk (ECalComponent *comp,
                               gint duration_days,
                               gint duration_seconds,
                               gboolean convert_end_date,
-                              ECalRecurInstanceFn cb,
+                              ECalRecurInstanceCb cb,
                               gpointer cb_data)
 {
 	GArray *occs, *ex_occs, *tmp_occs, *rdate_periods;
@@ -1862,7 +1946,6 @@ generate_instances_for_chunk (ECalComponent *comp,
 	GSList *elem;
 	gint i;
 	time_t start_time, end_time;
-	struct icaltimetype start_tt, end_tt;
 	gboolean cb_status = TRUE, rule_finished, finished = TRUE;
 
 #if 0
@@ -1898,7 +1981,7 @@ generate_instances_for_chunk (ECalComponent *comp,
 
 	/* Expand each of the recurrence rules. */
 	for (elem = rrules; elem; elem = elem->next) {
-		icalproperty *prop;
+		ICalProperty *prop;
 		ECalRecurrence *r;
 
 		prop = elem->data;
@@ -1927,20 +2010,25 @@ generate_instances_for_chunk (ECalComponent *comp,
 	 * period in the rdate_periods array. Otherwise we can just treat them
 	 * as normal occurrences. */
 	for (elem = rdates; elem; elem = elem->next) {
-		ECalComponentPeriod *p;
+		ECalComponentPeriod *period = elem->data;
 		CalObjRecurrenceDate rdate;
-		struct icaltimetype tt;
+		ICalTime *tt;
 
-		p = elem->data;
+		tt = e_cal_component_period_get_start (period);
+		if (!tt)
+			continue;
 
-		tt = icaltime_convert_to_zone (p->start, zone);
-		cotime.year = tt.year;
-		cotime.month = tt.month - 1;
-		cotime.day = tt.day;
-		cotime.hour = tt.hour;
-		cotime.minute = tt.minute;
-		cotime.second = tt.second;
+		tt = i_cal_time_clone (tt);
+		i_cal_time_convert_to_zone_inplace (tt, zone);
+		cotime.year = i_cal_time_get_year (tt);
+		cotime.month = i_cal_time_get_month (tt) - 1;
+		cotime.day = i_cal_time_get_day (tt);
+		cotime.hour = i_cal_time_get_hour (tt);
+		cotime.minute = i_cal_time_get_minute (tt);
+		cotime.second = i_cal_time_get_second (tt);
 		cotime.flags = FALSE;
+
+		g_clear_object (&tt);
 
 		/* If the rdate is after the current chunk we set finished
 		 * to FALSE, and we skip it. */
@@ -1953,12 +2041,13 @@ generate_instances_for_chunk (ECalComponent *comp,
 		 * to store it so we can get it later. (libical seems to set
 		 * second to -1 to denote an unset time. See icalvalue.c)
 		 * FIXME. */
-		if (p->type != E_CAL_COMPONENT_PERIOD_DATETIME
-		    || p->u.end.second != -1) {
+		if (e_cal_component_period_get_kind (period) != E_CAL_COMPONENT_PERIOD_DATETIME ||
+		    !e_cal_component_period_get_end (period) ||
+		    i_cal_time_get_second (e_cal_component_period_get_end (period)) != -1) {
 			cotime.flags = TRUE;
 
 			rdate.start = cotime;
-			rdate.period = p;
+			rdate.period = period;
 			g_array_append_val (rdate_periods, rdate);
 		}
 
@@ -1967,7 +2056,7 @@ generate_instances_for_chunk (ECalComponent *comp,
 
 	/* Expand each of the exception rules. */
 	for (elem = exrules; elem; elem = elem->next) {
-		icalproperty *prop;
+		ICalProperty *prop;
 		ECalRecurrence *r;
 
 		prop = elem->data;
@@ -1989,31 +2078,42 @@ generate_instances_for_chunk (ECalComponent *comp,
 	/* Add on specific exception dates. */
 	for (elem = exdates; elem; elem = elem->next) {
 		ECalComponentDateTime *cdt;
-		struct icaltimetype tt;
+		ICalTime *tt;
 
 		cdt = elem->data;
-		tt = icaltime_convert_to_zone (*cdt->value, zone);
 
-		cotime.year = tt.year;
-		cotime.month = tt.month - 1;
-		cotime.day = tt.day;
+		if (!e_cal_component_datetime_get_value (cdt))
+			continue;
+
+		tt = e_cal_component_datetime_get_value (cdt);
+		if (!tt)
+			continue;
+
+		tt = i_cal_time_clone (tt);
+		i_cal_time_convert_to_zone_inplace (tt, zone);
+
+		cotime.year = i_cal_time_get_year (tt);
+		cotime.month = i_cal_time_get_month (tt) - 1;
+		cotime.day = i_cal_time_get_day (tt);
 
 		/* If the EXDATE has a DATE value, set the time to the start
 		 * of the day and set flags to TRUE so we know to skip all
 		 * occurrences on that date. */
-		if (cdt->value->is_date) {
+		if (i_cal_time_is_date (tt)) {
 			cotime.hour = 0;
 			cotime.minute = 0;
 			cotime.second = 0;
 			cotime.flags = TRUE;
 		} else {
-			cotime.hour = tt.hour;
-			cotime.minute = tt.minute;
-			cotime.second = tt.second;
+			cotime.hour = i_cal_time_get_hour (tt);
+			cotime.minute = i_cal_time_get_minute (tt);
+			cotime.second = i_cal_time_get_second (tt);
 			cotime.flags = FALSE;
 		}
 
 		g_array_append_val (ex_occs, cotime);
+
+		g_clear_object (&tt);
 	}
 
 	/* Sort all the arrays. */
@@ -2032,6 +2132,8 @@ generate_instances_for_chunk (ECalComponent *comp,
 	/* Call the callback for each occurrence. If it returns 0 we break
 	 * out of the loop. */
 	for (i = 0; i < occs->len; i++) {
+		ICalTime *start_tt, *end_tt;
+
 		/* Convert each CalObjTime into a start & end time_t, and
 		 * check it is within the bounds of the event & interval. */
 		occ = &g_array_index (occs, CalObjTime, i);
@@ -2040,14 +2142,11 @@ generate_instances_for_chunk (ECalComponent *comp,
 			"Checking occurrence: %s\n",
 			cal_obj_time_to_string (occ));
 #endif
-		start_tt = icaltime_null_time ();
-		start_tt.year = occ->year;
-		start_tt.month = occ->month + 1;
-		start_tt.day = occ->day;
-		start_tt.hour = occ->hour;
-		start_tt.minute = occ->minute;
-		start_tt.second = occ->second;
-		start_time = icaltime_as_timet_with_zone (start_tt, zone);
+		start_tt = i_cal_time_new_null_time ();
+		i_cal_time_set_date (start_tt, occ->year, occ->month + 1, occ->day);
+		i_cal_time_set_time (start_tt, occ->hour, occ->minute, occ->second);
+		start_time = i_cal_time_as_timet_with_zone (start_tt, zone);
+		g_clear_object (&start_tt);
 
 		if (start_time == -1) {
 			g_warning ("time_t out of range");
@@ -2084,14 +2183,11 @@ generate_instances_for_chunk (ECalComponent *comp,
 			cal_obj_time_add_seconds (occ, duration_seconds);
 		}
 
-		end_tt = icaltime_null_time ();
-		end_tt.year = occ->year;
-		end_tt.month = occ->month + 1;
-		end_tt.day = occ->day;
-		end_tt.hour = occ->hour;
-		end_tt.minute = occ->minute;
-		end_tt.second = occ->second;
-		end_time = icaltime_as_timet_with_zone (end_tt, zone);
+		end_tt = i_cal_time_new_null_time ();
+		i_cal_time_set_date (end_tt, occ->year, occ->month + 1, occ->day);
+		i_cal_time_set_time (end_tt, occ->hour, occ->minute, occ->second);
+		end_time = i_cal_time_as_timet_with_zone (end_tt, zone);
+		g_clear_object (&end_tt);
 
 		if (end_time == -1) {
 			g_warning ("time_t out of range");
@@ -2108,7 +2204,7 @@ generate_instances_for_chunk (ECalComponent *comp,
 			continue;
 		}
 
-		cb_status = (*cb) (comp, start_time, end_time, cb_data);
+		cb_status = call_instance_callback (cb, comp, start_time, end_time, cb_data);
 		if (!cb_status)
 			break;
 	}
@@ -2128,11 +2224,11 @@ generate_instances_for_chunk (ECalComponent *comp,
  * is set it returns FALSE and the default duration will be used. */
 static gboolean
 cal_object_get_rdate_end (CalObjTime *occ,
-                          GArray *rdate_periods,
-                          icaltimezone *zone)
+			  GArray *rdate_periods,
+			  ICalTimezone *zone)
 {
 	CalObjRecurrenceDate *rdate = NULL;
-	ECalComponentPeriod *p;
+	ECalComponentPeriod *period;
 	gint lower, upper, middle, cmp = 0;
 
 	lower = 0;
@@ -2155,32 +2251,46 @@ cal_object_get_rdate_end (CalObjTime *occ,
 	}
 
 	/* This should never happen. */
-	if (cmp == 0) {
+	if (cmp == 0 || !rdate) {
 		#ifdef CAL_OBJ_DEBUG
 		g_debug ("%s: Recurrence date %s not found", G_STRFUNC, cal_obj_time_to_string (cc));
 		#endif
 		return FALSE;
 	}
 
-	p = rdate->period;
-	if (p->type == E_CAL_COMPONENT_PERIOD_DATETIME) {
-		struct icaltimetype tt =
-			icaltime_convert_to_zone (p->u.end, zone);
-		occ->year = tt.year;
-		occ->month = tt.month - 1;
-		occ->day = tt.day;
-		occ->hour = tt.hour;
-		occ->minute = tt.minute;
-		occ->second = tt.second;
-		occ->flags = FALSE;
+	period = rdate->period;
+	if (e_cal_component_period_get_kind (period) == E_CAL_COMPONENT_PERIOD_DATETIME) {
+		ICalTime *end;
+
+		end = e_cal_component_period_get_end (period);
+		g_warn_if_fail (end != NULL);
+		if (end) {
+			ICalTime *tt;
+
+			tt = i_cal_time_convert_to_zone (end, zone);
+
+			occ->year = i_cal_time_get_year (tt);
+			occ->month = i_cal_time_get_month (tt) - 1;
+			occ->day = i_cal_time_get_day (tt);
+			occ->hour = i_cal_time_get_hour (tt);
+			occ->minute = i_cal_time_get_minute (tt);
+			occ->second = i_cal_time_get_second (tt);
+			occ->flags = FALSE;
+
+			g_clear_object (&tt);
+		}
 	} else {
+		ICalDuration *duration;
+
+		duration = e_cal_component_period_get_duration (period);
+
 		cal_obj_time_add_days (
 			occ,
-			p->u.duration.weeks * 7 +
-			p->u.duration.days);
-		cal_obj_time_add_hours (occ, p->u.duration.hours);
-		cal_obj_time_add_minutes (occ, p->u.duration.minutes);
-		cal_obj_time_add_seconds (occ, p->u.duration.seconds);
+			i_cal_duration_get_weeks (duration) * 7 +
+			i_cal_duration_get_days (duration));
+		cal_obj_time_add_hours (occ, i_cal_duration_get_hours (duration));
+		cal_obj_time_add_minutes (occ, i_cal_duration_get_minutes (duration));
+		cal_obj_time_add_seconds (occ, i_cal_duration_get_seconds (duration));
 	}
 
 	return TRUE;
@@ -2223,7 +2333,7 @@ cal_object_compute_duration (CalObjTime *start,
  * after the given interval.*/
 static GArray *
 cal_obj_expand_recurrence (CalObjTime *event_start,
-                           icaltimezone *zone,
+                           ICalTimezone *zone,
                            ECalRecurrence *recur,
                            CalObjTime *interval_start,
                            CalObjTime *interval_end,
@@ -4490,19 +4600,21 @@ cal_obj_time_find_first_week (CalObjTime *cotime,
 static void
 cal_object_time_from_time (CalObjTime *cotime,
                            time_t t,
-                           icaltimezone *zone)
+                           ICalTimezone *zone)
 {
-	struct icaltimetype tt;
+	ICalTime *tt;
 
-	tt = icaltime_from_timet_with_zone (t, FALSE, zone);
+	tt = i_cal_time_new_from_timet_with_zone (t, FALSE, zone);
 
-	cotime->year = tt.year;
-	cotime->month = tt.month - 1;
-	cotime->day = tt.day;
-	cotime->hour = tt.hour;
-	cotime->minute = tt.minute;
-	cotime->second = tt.second;
+	cotime->year = i_cal_time_get_year (tt);
+	cotime->month = i_cal_time_get_month (tt) - 1;
+	cotime->day = i_cal_time_get_day (tt);
+	cotime->hour = i_cal_time_get_hour (tt);
+	cotime->minute = i_cal_time_get_minute (tt);
+	cotime->second = i_cal_time_get_second (tt);
 	cotime->flags = FALSE;
+
+	g_clear_object (&tt);
 }
 
 /* Debugging function to convert a CalObjTime to a string. It uses a static
@@ -4533,16 +4645,17 @@ cal_obj_time_to_string (CalObjTime *cotime)
  * e_cal_recur_ensure_end_dates:
  * @comp: an #ECalComponent
  * @refresh: %TRUE to recalculate all end dates
- * @tz_cb: (closure tz_cb_data) (scope call): function to call to resolve
- * timezones
- * @tz_cb_data: (closure): data to pass to @tz_cb
+ * @tz_cb: (scope call): function to call to resolve timezones
+ * @tz_cb_data: (closure tz_cb_data): user data to pass to @tz_cb
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * This recalculates the end dates for recurrence & exception rules which use
  * the COUNT property. If @refresh is %TRUE it will recalculate all enddates
  * for rules which use COUNT. If @refresh is %FALSE, it will only calculate
  * the enddate if it hasn't already been set. It returns %TRUE if the component
  * was changed, i.e. if the component should be saved at some point.
- * We store the enddate in the "X-EVOLUTION-ENDDATE" parameter of the RRULE
+ * We store the enddate in the %E_CAL_EVOLUTION_ENDDATE_PARAMETER parameter of the RRULE
  * or EXRULE.
  *
  * Returns: %TRUE if the component was changed, %FALSE otherwise
@@ -4551,28 +4664,31 @@ cal_obj_time_to_string (CalObjTime *cotime)
  **/
 gboolean
 e_cal_recur_ensure_end_dates (ECalComponent *comp,
-                              gboolean refresh,
-                              ECalRecurResolveTimezoneFn tz_cb,
-                              gpointer tz_cb_data)
+			      gboolean refresh,
+			      ECalRecurResolveTimezoneCb tz_cb,
+			      gpointer tz_cb_data,
+			      GCancellable *cancellable,
+			      GError **error)
 {
 	GSList *rrules, *exrules, *elem;
 	gboolean changed = FALSE;
 
 	/* Do the RRULEs. */
-	e_cal_component_get_rrule_property_list (comp, &rrules);
-	for (elem = rrules; elem; elem = elem->next) {
+	rrules = e_cal_component_get_rrule_properties (comp);
+	for (elem = rrules; elem && !g_cancellable_is_cancelled (cancellable); elem = elem->next) {
 		changed |= e_cal_recur_ensure_rule_end_date (comp, elem->data,
-							   FALSE, refresh,
-							   tz_cb, tz_cb_data);
+			FALSE, refresh, tz_cb, tz_cb_data, cancellable, error);
 	}
 
 	/* Do the EXRULEs. */
-	e_cal_component_get_exrule_property_list (comp, &exrules);
-	for (elem = exrules; elem; elem = elem->next) {
+	exrules = e_cal_component_get_exrule_properties (comp);
+	for (elem = exrules; elem && !g_cancellable_is_cancelled (cancellable); elem = elem->next) {
 		changed |= e_cal_recur_ensure_rule_end_date (comp, elem->data,
-							   TRUE, refresh,
-							   tz_cb, tz_cb_data);
+			TRUE, refresh, tz_cb, tz_cb_data, cancellable, error);
 	}
+
+	g_slist_free_full (rrules, g_object_unref);
+	g_slist_free_full (exrules, g_object_unref);
 
 	return changed;
 }
@@ -4586,32 +4702,41 @@ struct _ECalRecurEnsureEndDateData {
 
 static gboolean
 e_cal_recur_ensure_rule_end_date (ECalComponent *comp,
-                                  icalproperty *prop,
+                                  ICalProperty *prop,
                                   gboolean exception,
                                   gboolean refresh,
-                                  ECalRecurResolveTimezoneFn tz_cb,
-                                  gpointer tz_cb_data)
+                                  ECalRecurResolveTimezoneCb tz_cb,
+                                  gpointer tz_cb_data,
+				  GCancellable *cancellable,
+				  GError **error)
 {
-	struct icalrecurrencetype rule;
+	ICalRecurrence *rule;
 	ECalRecurEnsureEndDateData cb_data;
 
+	if (!prop)
+		return FALSE;
+
 	if (exception)
-		rule = icalproperty_get_exrule (prop);
+		rule = i_cal_property_get_exrule (prop);
 	else
-		rule = icalproperty_get_rrule (prop);
+		rule = i_cal_property_get_rrule (prop);
 
 	/* If the rule doesn't use COUNT just return. */
-	if (rule.count == 0)
+	if (!rule || !i_cal_recurrence_get_count (rule)) {
+		g_clear_object (&rule);
 		return FALSE;
+	}
 
 	/* If refresh is FALSE, we check if the enddate is already set, and
 	 * if it is we just return. */
 	if (!refresh) {
-		if (e_cal_recur_get_rule_end_date (prop, NULL) != -1)
+		if (e_cal_recur_get_rule_end_date (prop, NULL) != -1) {
+			g_clear_object (&rule);
 			return FALSE;
+		}
 	} else {
 		/* Remove the property parameter, thus it'll not influence the regeneration */
-		icalproperty_remove_parameter_by_name (prop, EVOLUTION_END_DATE_PARAMETER);
+		i_cal_property_remove_parameter_by_name (prop, E_CAL_EVOLUTION_ENDDATE_PARAMETER);
 	}
 
 	/* Calculate the end date. Note that we initialize end_date to 0, so
@@ -4619,36 +4744,37 @@ e_cal_recur_ensure_rule_end_date (ECalComponent *comp,
 	 * Also note that we use the UTC timezone as the default timezone.
 	 * In get_end_date () if the DTSTART is a DATE or floating time, we will
 	 * convert the ENDDATE to the current timezone. */
-	cb_data.count = rule.count;
+	cb_data.count = i_cal_recurrence_get_count (rule);
 	cb_data.instances = 0;
 	cb_data.end_date = 0;
 	e_cal_recur_generate_instances_of_rule (
 		comp, prop, -1, -1,
 		e_cal_recur_ensure_rule_end_date_cb,
 		&cb_data, tz_cb, tz_cb_data,
-		icaltimezone_get_utc_timezone ());
+		i_cal_timezone_get_utc_timezone ());
 
-	/* Store the end date in the "X-EVOLUTION-ENDDATE" parameter of the
-	 * rule. */
+	/* Store the end date in the E_CAL_EVOLUTION_ENDDATE_PARAMETER parameter of the rule. */
 	e_cal_recur_set_rule_end_date (prop, cb_data.end_date);
+
+	g_clear_object (&rule);
 
 	return TRUE;
 }
 
 static gboolean
-e_cal_recur_ensure_rule_end_date_cb (ECalComponent *comp,
-                                     time_t instance_start,
-                                     time_t instance_end,
-                                     gpointer data)
+e_cal_recur_ensure_rule_end_date_cb (ICalComponent *comp,
+				     ICalTime *instance_start,
+				     ICalTime *instance_end,
+				     gpointer user_data,
+				     GCancellable *cancellable,
+				     GError **error)
 {
-	ECalRecurEnsureEndDateData *cb_data;
-
-	cb_data = (ECalRecurEnsureEndDateData *) data;
+	ECalRecurEnsureEndDateData *cb_data = user_data;
 
 	cb_data->instances++;
 
 	if (cb_data->instances == cb_data->count) {
-		cb_data->end_date = instance_start;
+		cb_data->end_date = i_cal_time_as_timet (instance_start);
 		return FALSE;
 	}
 
@@ -4660,94 +4786,88 @@ e_cal_recur_ensure_rule_end_date_cb (ECalComponent *comp,
  * value, since the RRULE end date will change depending on the timezone that
  * it is evaluated in. */
 static time_t
-e_cal_recur_get_rule_end_date (icalproperty *prop,
-                               icaltimezone *default_timezone)
+e_cal_recur_get_rule_end_date (ICalProperty *prop,
+                               ICalTimezone *default_timezone)
 {
-	icalparameter *param;
+	ICalParameter *param;
 	const gchar *xname, *xvalue;
-	icalvalue *value;
-	struct icaltimetype icaltime;
-	icaltimezone *zone;
 
-	param = icalproperty_get_first_parameter (prop, ICAL_X_PARAMETER);
-	while (param) {
-		xname = icalparameter_get_xname (param);
-		if (xname && !strcmp (xname, EVOLUTION_END_DATE_PARAMETER)) {
-			xvalue = icalparameter_get_x (param);
-			value = icalvalue_new_from_string (
-				ICAL_DATETIME_VALUE,
-				xvalue);
+	for (param = i_cal_property_get_first_parameter (prop, I_CAL_X_PARAMETER);
+	     param;
+	     g_object_unref (param), param = i_cal_property_get_next_parameter (prop, I_CAL_X_PARAMETER)) {
+		xname = i_cal_parameter_get_xname (param);
+		if (xname && !strcmp (xname, E_CAL_EVOLUTION_ENDDATE_PARAMETER)) {
+			ICalValue *value;
+
+			xvalue = i_cal_parameter_get_x (param);
+			value = i_cal_value_new_from_string (I_CAL_DATETIME_VALUE, xvalue);
 			if (value) {
-				icaltime = icalvalue_get_datetime (value);
-				icalvalue_free (value);
+				ICalTime *tt;
+				ICalTimezone *zone;
+				time_t res;
 
-				zone = default_timezone ? default_timezone :
-					icaltimezone_get_utc_timezone ();
-				return icaltime_as_timet_with_zone (
-					icaltime,
-					zone);
+				tt = i_cal_value_get_datetime (value);
+				g_object_unref (value);
+
+				zone = default_timezone;
+				if (!zone)
+					zone = i_cal_timezone_get_utc_timezone ();
+
+				res = i_cal_time_as_timet_with_zone (tt, zone);
+
+				g_object_unref (param);
+				g_clear_object (&tt);
+
+				return res;
 			}
 		}
-
-		param = icalproperty_get_next_parameter (
-			prop,
-			ICAL_X_PARAMETER);
 	}
 
 	return -1;
 }
 
 static void
-e_cal_recur_set_rule_end_date (icalproperty *prop,
+e_cal_recur_set_rule_end_date (ICalProperty *prop,
                                time_t end_date)
 {
-	icalparameter *param;
-	icalvalue *value;
-	icaltimezone *utc_zone;
-	struct icaltimetype icaltime;
+	ICalParameter *param;
+	ICalValue *value;
+	ICalTimezone *utc_zone;
+	ICalTime *icaltime;
 	const gchar *xname;
 	gchar *end_date_string;
 
 	/* We save the value as a UTC DATE-TIME. */
-	utc_zone = icaltimezone_get_utc_timezone ();
-	icaltime = icaltime_from_timet_with_zone (end_date, FALSE, utc_zone);
-	value = icalvalue_new_datetime (icaltime);
-	end_date_string = icalvalue_as_ical_string_r (value);
-	icalvalue_free (value);
+	utc_zone = i_cal_timezone_get_utc_timezone ();
+	icaltime = i_cal_time_new_from_timet_with_zone (end_date, FALSE, utc_zone);
+	value = i_cal_value_new_datetime (icaltime);
+	end_date_string = i_cal_value_as_ical_string (value);
+	g_object_unref (value);
+	g_object_unref (icaltime);
 
 	/* If we already have an X-EVOLUTION-ENDDATE parameter, set the value
 	 * to the new date-time. */
-	param = icalproperty_get_first_parameter (prop, ICAL_X_PARAMETER);
-	while (param) {
-		xname = icalparameter_get_xname (param);
-		if (xname && !strcmp (xname, EVOLUTION_END_DATE_PARAMETER)) {
-			icalparameter_set_x (param, end_date_string);
+	for (param = i_cal_property_get_first_parameter (prop, I_CAL_X_PARAMETER);
+	     param;
+	     g_object_unref (param), param = i_cal_property_get_next_parameter (prop, I_CAL_X_PARAMETER)) {
+		xname = i_cal_parameter_get_xname (param);
+		if (xname && !strcmp (xname, E_CAL_EVOLUTION_ENDDATE_PARAMETER)) {
+			i_cal_parameter_set_x (param, end_date_string);
+			g_free (end_date_string);
+			g_object_unref (param);
 			return;
 		}
-		param = icalproperty_get_next_parameter (prop, ICAL_X_PARAMETER);
 	}
 
 	/* Create a new X-EVOLUTION-ENDDATE and add it to the property. */
-	param = icalparameter_new_x (end_date_string);
-	icalparameter_set_xname (param, EVOLUTION_END_DATE_PARAMETER);
-	icalproperty_add_parameter (prop, param);
+	param = i_cal_parameter_new_x (end_date_string);
+	i_cal_parameter_set_xname (param, E_CAL_EVOLUTION_ENDDATE_PARAMETER);
+	i_cal_property_take_parameter (prop, param);
 
 	g_free (end_date_string);
 }
 
-#ifdef G_OS_WIN32
-#undef e_cal_recur_nth
-static
-#endif
-/**
- * e_cal_recur_nth:
- *
- * An array of 31 translated strings for each day of the month (i.e. "1st",
- * "2nd", and so on).
- *
- * Deprecated: 3.28: Use e_cal_recur_get_localized_nth() instead
- */
-const gchar *e_cal_recur_nth[31] = {
+static const gchar *e_cal_recur_nth[31] = {
 	N_("1st"),
 	N_("2nd"),
 	N_("3rd"),
@@ -4781,26 +4901,6 @@ const gchar *e_cal_recur_nth[31] = {
 	N_("31st")
 };
 
-#ifdef G_OS_WIN32
-
-/**
- * e_cal_get_recur_nth:
- *
- * Returns an array of 31 translated strings for each day of the month
- * (i.e. "1st", "2nd", and so on).
- *
- * Returns: a pointer to an array of strings.  This array is static, do not free it.
- *
- * Deprecated: 3.28: Use e_cal_recur_get_localized_nth() instead
- */
-const gchar **
-e_cal_get_recur_nth (void)
-{
-	return e_cal_recur_nth;
-}
-
-#endif
-
 /**
  * e_cal_recur_get_localized_nth:
  * @nth: the nth index, counting from zero
@@ -4820,27 +4920,32 @@ e_cal_recur_get_localized_nth (gint nth)
 }
 
 static gint
-cal_comp_util_recurrence_count_by_xxx (gshort *field,
-				       gint max_elements)
+cal_comp_util_recurrence_count_by_xxx_and_free (GArray *array) /* gshort */
 {
 	gint ii;
 
-	for (ii = 0; ii < max_elements; ii++)
-		if (field[ii] == ICAL_RECURRENCE_ARRAY_MAX)
+	if (!array)
+		return 0;
+
+	for (ii = 0; ii < array->len; ii++) {
+		if (g_array_index (array, gshort, ii) == I_CAL_RECURRENCE_ARRAY_MAX)
 			break;
+	}
+
+	g_array_unref (array);
 
 	return ii;
 }
 
 /**
  * e_cal_recur_describe_recurrence:
- * @icalcomp: an icalcomponent
+ * @icalcomp: an #ICalComponent
  * @week_start_day: a day when the week starts
  * @flags: bit-or of #ECalRecurDescribeRecurrenceFlags
  *
  * Describes some simple types of recurrences in a human-readable and localized way.
- * The @flags influence the output output format and what to do when the @icalcomp
- * contain more complicated recurrence, some which the function cannot describe.
+ * The @flags influence the output format and what to do when the @icalcomp
+ * contains more complicated recurrence, some which the function cannot describe.
  *
  * The @week_start_day is used for weekly recurrences, to start the list of selected
  * days at that day.
@@ -4855,75 +4960,76 @@ cal_comp_util_recurrence_count_by_xxx (gshort *field,
  * Since: 3.30
  **/
 gchar *
-e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
+e_cal_recur_describe_recurrence (ICalComponent *icalcomp,
 				 GDateWeekday week_start_day,
 				 guint32 flags)
 {
 	gchar *prefix = NULL, *mid = NULL, *suffix = NULL, *result = NULL;
-	icalproperty *prop;
-	struct icalrecurrencetype rrule;
+	ICalProperty *prop;
+	ICalRecurrence *rrule = NULL;
+	ICalTime *until = NULL, *dtstart = NULL;
 	gint n_by_second, n_by_minute, n_by_hour;
 	gint n_by_day, n_by_month_day, n_by_year_day;
 	gint n_by_week_no, n_by_month, n_by_set_pos;
 	gboolean prefixed, fallback;
 
-	g_return_val_if_fail (icalcomp != NULL, NULL);
+	g_return_val_if_fail (I_CAL_IS_COMPONENT (icalcomp), NULL);
 
 	prefixed = (flags & E_CAL_RECUR_DESCRIBE_RECURRENCE_FLAG_PREFIXED) != 0;
 	fallback = (flags & E_CAL_RECUR_DESCRIBE_RECURRENCE_FLAG_FALLBACK) != 0;
 
-	prop = icalcomponent_get_first_property (icalcomp, ICAL_RRULE_PROPERTY);
+	prop = i_cal_component_get_first_property (icalcomp, I_CAL_RRULE_PROPERTY);
 	if (!prop)
 		return NULL;
 
-	switch (icalcomponent_isa (icalcomp)) {
-	case ICAL_VEVENT_COMPONENT:
-	case ICAL_VTODO_COMPONENT:
-	case ICAL_VJOURNAL_COMPONENT:
+	switch (i_cal_component_isa (icalcomp)) {
+	case I_CAL_VEVENT_COMPONENT:
+	case I_CAL_VTODO_COMPONENT:
+	case I_CAL_VJOURNAL_COMPONENT:
 		break;
 	default:
+		g_object_unref (prop);
 		return NULL;
 	}
 
-	if (icalcomponent_count_properties (icalcomp, ICAL_RRULE_PROPERTY) != 1 ||
-	    icalcomponent_count_properties (icalcomp, ICAL_RDATE_PROPERTY) != 0 ||
-	    icalcomponent_count_properties (icalcomp, ICAL_EXRULE_PROPERTY) != 0)
+	if (i_cal_component_count_properties (icalcomp, I_CAL_RRULE_PROPERTY) != 1 ||
+	    i_cal_component_count_properties (icalcomp, I_CAL_RDATE_PROPERTY) != 0 ||
+	    i_cal_component_count_properties (icalcomp, I_CAL_EXRULE_PROPERTY) != 0)
 		goto custom;
 
-	rrule = icalproperty_get_rrule (prop);
+	rrule = i_cal_property_get_rrule (prop);
 
-	switch (rrule.freq) {
-	case ICAL_DAILY_RECURRENCE:
-	case ICAL_WEEKLY_RECURRENCE:
-	case ICAL_MONTHLY_RECURRENCE:
-	case ICAL_YEARLY_RECURRENCE:
+	switch (i_cal_recurrence_get_freq (rrule)) {
+	case I_CAL_DAILY_RECURRENCE:
+	case I_CAL_WEEKLY_RECURRENCE:
+	case I_CAL_MONTHLY_RECURRENCE:
+	case I_CAL_YEARLY_RECURRENCE:
 		break;
 	default:
 		goto custom;
 
 	}
 
-#define N_HAS_BY(field) (cal_comp_util_recurrence_count_by_xxx (field, G_N_ELEMENTS (field)))
+	until = i_cal_recurrence_get_until (rrule);
+	dtstart = i_cal_component_get_dtstart (icalcomp);
 
-	n_by_second = N_HAS_BY (rrule.by_second);
-	n_by_minute = N_HAS_BY (rrule.by_minute);
-	n_by_hour = N_HAS_BY (rrule.by_hour);
-	n_by_day = N_HAS_BY (rrule.by_day);
-	n_by_month_day = N_HAS_BY (rrule.by_month_day);
-	n_by_year_day = N_HAS_BY (rrule.by_year_day);
-	n_by_week_no = N_HAS_BY (rrule.by_week_no);
-	n_by_month = N_HAS_BY (rrule.by_month);
-	n_by_set_pos = N_HAS_BY (rrule.by_set_pos);
-
-#undef N_HAS_BY
+	n_by_second = cal_comp_util_recurrence_count_by_xxx_and_free (i_cal_recurrence_get_by_second_array (rrule));
+	n_by_minute = cal_comp_util_recurrence_count_by_xxx_and_free (i_cal_recurrence_get_by_minute_array (rrule));
+	n_by_hour = cal_comp_util_recurrence_count_by_xxx_and_free (i_cal_recurrence_get_by_hour_array (rrule));
+	n_by_day = cal_comp_util_recurrence_count_by_xxx_and_free (i_cal_recurrence_get_by_day_array (rrule));
+	n_by_month_day = cal_comp_util_recurrence_count_by_xxx_and_free (i_cal_recurrence_get_by_month_day_array (rrule));
+	n_by_year_day = cal_comp_util_recurrence_count_by_xxx_and_free (i_cal_recurrence_get_by_year_day_array (rrule));
+	n_by_week_no = cal_comp_util_recurrence_count_by_xxx_and_free (i_cal_recurrence_get_by_week_no_array (rrule));
+	n_by_month = cal_comp_util_recurrence_count_by_xxx_and_free (i_cal_recurrence_get_by_month_array (rrule));
+	n_by_set_pos = cal_comp_util_recurrence_count_by_xxx_and_free (i_cal_recurrence_get_by_set_pos_array (rrule));
 
 	if (n_by_second != 0 ||
 	    n_by_minute != 0 ||
 	    n_by_hour != 0)
 		goto custom;
 
-	switch (rrule.freq) {
-	case ICAL_DAILY_RECURRENCE:
+	switch (i_cal_recurrence_get_freq (rrule)) {
+	case I_CAL_DAILY_RECURRENCE:
 		if (n_by_day != 0 ||
 		    n_by_month_day != 0 ||
 		    n_by_year_day != 0 ||
@@ -4932,20 +5038,20 @@ e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
 		    n_by_set_pos != 0)
 			goto custom;
 
-		if (rrule.interval > 0) {
-			if (!rrule.count && !rrule.until.year) {
+		if (i_cal_recurrence_get_interval (rrule) > 0) {
+			if (!i_cal_recurrence_get_count (rrule) && (!until || !i_cal_time_get_year (until))) {
 				if (prefixed) {
 					result = g_strdup_printf (
 						g_dngettext (GETTEXT_PACKAGE,
 							"every day forever",
 							"every %d days forever",
-							rrule.interval), rrule.interval);
+							i_cal_recurrence_get_interval (rrule)), i_cal_recurrence_get_interval (rrule));
 				} else {
 					result = g_strdup_printf (
 						g_dngettext (GETTEXT_PACKAGE,
 							"Every day forever",
 							"Every %d days forever",
-							rrule.interval), rrule.interval);
+							i_cal_recurrence_get_interval (rrule)), i_cal_recurrence_get_interval (rrule));
 				}
 			} else {
 				if (prefixed) {
@@ -4953,19 +5059,19 @@ e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
 						g_dngettext (GETTEXT_PACKAGE,
 							"every day",
 							"every %d days",
-							rrule.interval), rrule.interval);
+							i_cal_recurrence_get_interval (rrule)), i_cal_recurrence_get_interval (rrule));
 				} else {
 					prefix = g_strdup_printf (
 						g_dngettext (GETTEXT_PACKAGE,
 							"Every day",
 							"Every %d days",
-							rrule.interval), rrule.interval);
+							i_cal_recurrence_get_interval (rrule)), i_cal_recurrence_get_interval (rrule));
 				}
 			}
 		}
 		break;
 
-	case ICAL_WEEKLY_RECURRENCE: {
+	case I_CAL_WEEKLY_RECURRENCE: {
 		gint ii, ndays;
 		guint8 day_mask;
 		gint day_shift = week_start_day;
@@ -4983,42 +5089,42 @@ e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
 
 		day_mask = 0;
 
-		for (ii = 0; ii < 8 && rrule.by_day[ii] != ICAL_RECURRENCE_ARRAY_MAX; ii++) {
-			enum icalrecurrencetype_weekday weekday;
+		for (ii = 0; ii < 8 && i_cal_recurrence_get_by_day (rrule, ii) != I_CAL_RECURRENCE_ARRAY_MAX; ii++) {
+			ICalRecurrenceWeekday weekday;
 			gint pos;
 
-			weekday = icalrecurrencetype_day_day_of_week (rrule.by_day[ii]);
-			pos = icalrecurrencetype_day_position (rrule.by_day[ii]);
+			weekday = i_cal_recurrence_day_day_of_week (i_cal_recurrence_get_by_day (rrule, ii));
+			pos = i_cal_recurrence_day_position (i_cal_recurrence_get_by_day (rrule, ii));
 
 			if (pos != 0)
 				goto custom;
 
 			switch (weekday) {
-			case ICAL_SUNDAY_WEEKDAY:
+			case I_CAL_SUNDAY_WEEKDAY:
 				day_mask |= 1 << 0;
 				break;
 
-			case ICAL_MONDAY_WEEKDAY:
+			case I_CAL_MONDAY_WEEKDAY:
 				day_mask |= 1 << 1;
 				break;
 
-			case ICAL_TUESDAY_WEEKDAY:
+			case I_CAL_TUESDAY_WEEKDAY:
 				day_mask |= 1 << 2;
 				break;
 
-			case ICAL_WEDNESDAY_WEEKDAY:
+			case I_CAL_WEDNESDAY_WEEKDAY:
 				day_mask |= 1 << 3;
 				break;
 
-			case ICAL_THURSDAY_WEEKDAY:
+			case I_CAL_THURSDAY_WEEKDAY:
 				day_mask |= 1 << 4;
 				break;
 
-			case ICAL_FRIDAY_WEEKDAY:
+			case I_CAL_FRIDAY_WEEKDAY:
 				day_mask |= 1 << 5;
 				break;
 
-			case ICAL_SATURDAY_WEEKDAY:
+			case I_CAL_SATURDAY_WEEKDAY:
 				day_mask |= 1 << 6;
 				break;
 
@@ -5028,11 +5134,7 @@ e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
 		}
 
 		if (ii == 0) {
-			struct icaltimetype dtstart;
-
-			dtstart = icalcomponent_get_dtstart (icalcomp);
-
-			ii = icaltime_day_of_week (dtstart);
+			ii = i_cal_time_day_of_week (dtstart);
 			if (ii >= 1)
 				day_mask |= 1 << (ii - 1);
 		}
@@ -5049,13 +5151,13 @@ e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
 				g_dngettext (GETTEXT_PACKAGE,
 					"every week",
 					"every %d weeks",
-					rrule.interval), rrule.interval);
+					i_cal_recurrence_get_interval (rrule)), i_cal_recurrence_get_interval (rrule));
 		} else {
 			prefix = g_strdup_printf (
 				g_dngettext (GETTEXT_PACKAGE,
 					"Every week",
 					"Every %d weeks",
-					rrule.interval), rrule.interval);
+					i_cal_recurrence_get_interval (rrule)), i_cal_recurrence_get_interval (rrule));
 		}
 
 		for (ii = 0; ii < 7 && ndays; ii++) {
@@ -5169,16 +5271,12 @@ e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
 			if (n_by_set_pos != 0)
 				goto custom;
 
-			nth = rrule.by_month_day[0];
+			nth = i_cal_recurrence_get_by_month_day (rrule, 0);
 			if (nth < 1 && nth != -1)
 				goto custom;
 
 			if (nth == -1) {
-				struct icaltimetype dtstart;
-
-				dtstart = icalcomponent_get_dtstart (icalcomp);
-
-				month_index = dtstart.day;
+				month_index = i_cal_time_get_day (dtstart);
 				month_num = MONTH_NUM_LAST;
 			} else {
 				month_index = nth;
@@ -5187,50 +5285,50 @@ e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
 			month_day = MONTH_DAY_NTH;
 
 		} else if (n_by_day == 1) {
-			enum icalrecurrencetype_weekday weekday;
+			ICalRecurrenceWeekday weekday;
 			gint pos;
 
 			/* Outlook 2000 uses BYDAY=TU;BYSETPOS=2, and will not
 			 * accept BYDAY=2TU. So we now use the same as Outlook
 			 * by default. */
 
-			weekday = icalrecurrencetype_day_day_of_week (rrule.by_day[0]);
-			pos = icalrecurrencetype_day_position (rrule.by_day[0]);
+			weekday = i_cal_recurrence_day_day_of_week (i_cal_recurrence_get_by_day (rrule, 0));
+			pos = i_cal_recurrence_day_position (i_cal_recurrence_get_by_day (rrule, 0));
 
 			if (pos == 0) {
 				if (n_by_set_pos != 1)
 					goto custom;
-				pos = rrule.by_set_pos[0];
+				pos = i_cal_recurrence_get_by_set_pos (rrule, 0);
 			} else if (pos < 0) {
 				goto custom;
 			}
 
 			switch (weekday) {
-			case ICAL_MONDAY_WEEKDAY:
+			case I_CAL_MONDAY_WEEKDAY:
 				month_day = MONTH_DAY_MON;
 				break;
 
-			case ICAL_TUESDAY_WEEKDAY:
+			case I_CAL_TUESDAY_WEEKDAY:
 				month_day = MONTH_DAY_TUE;
 				break;
 
-			case ICAL_WEDNESDAY_WEEKDAY:
+			case I_CAL_WEDNESDAY_WEEKDAY:
 				month_day = MONTH_DAY_WED;
 				break;
 
-			case ICAL_THURSDAY_WEEKDAY:
+			case I_CAL_THURSDAY_WEEKDAY:
 				month_day = MONTH_DAY_THU;
 				break;
 
-			case ICAL_FRIDAY_WEEKDAY:
+			case I_CAL_FRIDAY_WEEKDAY:
 				month_day = MONTH_DAY_FRI;
 				break;
 
-			case ICAL_SATURDAY_WEEKDAY:
+			case I_CAL_SATURDAY_WEEKDAY:
 				month_day = MONTH_DAY_SAT;
 				break;
 
-			case ICAL_SUNDAY_WEEKDAY:
+			case I_CAL_SUNDAY_WEEKDAY:
 				month_day = MONTH_DAY_SUN;
 				break;
 
@@ -5251,13 +5349,13 @@ e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
 				g_dngettext (GETTEXT_PACKAGE,
 					"every month",
 					"every %d months",
-					rrule.interval), rrule.interval);
+					i_cal_recurrence_get_interval (rrule)), i_cal_recurrence_get_interval (rrule));
 		} else {
 			prefix = g_strdup_printf (
 				g_dngettext (GETTEXT_PACKAGE,
 					"Every month",
 					"Every %d months",
-					rrule.interval), rrule.interval);
+					i_cal_recurrence_get_interval (rrule)), i_cal_recurrence_get_interval (rrule));
 		}
 
 		switch (month_day) {
@@ -5598,7 +5696,7 @@ e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
 		break;
 	}
 
-	case ICAL_YEARLY_RECURRENCE:
+	case I_CAL_YEARLY_RECURRENCE:
 		if (n_by_day != 0 ||
 		    n_by_month_day != 0 ||
 		    n_by_year_day != 0 ||
@@ -5607,20 +5705,20 @@ e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
 		    n_by_set_pos != 0)
 			goto custom;
 
-		if (rrule.interval > 0) {
-			if (!rrule.count && !rrule.until.year) {
+		if (i_cal_recurrence_get_interval (rrule) > 0) {
+			if (!i_cal_recurrence_get_count (rrule) && (!until || !i_cal_time_get_year (until))) {
 				if (prefixed) {
 					result = g_strdup_printf (
 						g_dngettext (GETTEXT_PACKAGE,
 							"every year forever",
 							"every %d years forever",
-							rrule.interval), rrule.interval);
+							i_cal_recurrence_get_interval (rrule)), i_cal_recurrence_get_interval (rrule));
 				} else {
 					result = g_strdup_printf (
 						g_dngettext (GETTEXT_PACKAGE,
 							"Every year forever",
 							"Every %d years forever",
-							rrule.interval), rrule.interval);
+							i_cal_recurrence_get_interval (rrule)), i_cal_recurrence_get_interval (rrule));
 				}
 			} else {
 				if (prefixed) {
@@ -5628,13 +5726,13 @@ e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
 						g_dngettext (GETTEXT_PACKAGE,
 							"every year",
 							"every %d years",
-							rrule.interval), rrule.interval);
+							i_cal_recurrence_get_interval (rrule)), i_cal_recurrence_get_interval (rrule));
 				} else {
 					prefix = g_strdup_printf (
 						g_dngettext (GETTEXT_PACKAGE,
 							"Every year",
 							"Every %d years",
-							rrule.interval), rrule.interval);
+							i_cal_recurrence_get_interval (rrule)), i_cal_recurrence_get_interval (rrule));
 				}
 			}
 		}
@@ -5645,7 +5743,7 @@ e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
 	}
 
 	if (prefix) {
-		if (rrule.count) {
+		if (i_cal_recurrence_get_count (rrule)) {
 			suffix = g_strdup_printf (
 				g_dngettext (GETTEXT_PACKAGE,
 					/* Translators: This is one of the last possible parts of a recurrence description.
@@ -5653,32 +5751,28 @@ e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
 					   for example: "Every 3 days for 10 occurrences" */
 					"for one occurrence",
 					"for %d occurrences",
-					rrule.count), rrule.count);
-		} else if (rrule.until.year) {
+					i_cal_recurrence_get_count (rrule)), i_cal_recurrence_get_count (rrule));
+		} else if (until && i_cal_time_get_year (until)) {
 			struct tm tm;
 			gchar dt_str[256];
 
 			dt_str[0] = 0;
 
-			if (!rrule.until.is_date) {
-				icaltimezone *from_zone, *to_zone;
-				struct icaltimetype dtstart;
+			if (!i_cal_time_is_date (until)) {
+				ICalTimezone *from_zone, *to_zone;
 
-				dtstart = icalcomponent_get_dtstart (icalcomp);
-
-				from_zone = icaltimezone_get_utc_timezone ();
-				to_zone = (icaltimezone *) dtstart.zone;
+				from_zone = i_cal_timezone_get_utc_timezone ();
+				to_zone = i_cal_time_get_timezone (dtstart);
 
 				if (to_zone)
-					icaltimezone_convert_time (&rrule.until, from_zone, to_zone);
+					i_cal_time_convert_timezone (until, from_zone, to_zone);
 
-				rrule.until.hour = 0;
-				rrule.until.minute = 0;
-				rrule.until.second = 0;
-				rrule.until.is_date = TRUE;
+				i_cal_time_set_time (until, 0, 0, 0);
+				i_cal_time_set_is_date (until, TRUE);
 			}
 
-			tm = icaltimetype_to_tm (&rrule.until);
+			tm = e_cal_util_icaltime_to_tm (until);
+
 			e_time_format_date_and_time (&tm, FALSE, FALSE, FALSE, dt_str, 255);
 
 			if (*dt_str) {
@@ -5715,7 +5809,7 @@ e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
 		gint n_exdates;
 		gchar *tmp;
 
-		n_exdates = icalcomponent_count_properties (icalcomp, ICAL_EXDATE_PROPERTY);
+		n_exdates = i_cal_component_count_properties (icalcomp, I_CAL_EXDATE_PROPERTY);
 		if (n_exdates > 0) {
 			gchar *exdates_str;
 
@@ -5740,16 +5834,16 @@ e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
 		if (prefixed) {
 			const gchar *comp_prefix;
 
-			if (icalcomponent_isa (icalcomp) == ICAL_VEVENT_COMPONENT) {
-				if (icalcomponent_count_properties (icalcomp, ICAL_ORGANIZER_PROPERTY) > 0 &&
-				    icalcomponent_count_properties (icalcomp, ICAL_ATTENDEE_PROPERTY) > 0) {
+			if (i_cal_component_isa (icalcomp) == I_CAL_VEVENT_COMPONENT) {
+				if (i_cal_component_count_properties (icalcomp, I_CAL_ORGANIZER_PROPERTY) > 0 &&
+				    i_cal_component_count_properties (icalcomp, I_CAL_ATTENDEE_PROPERTY) > 0) {
 					comp_prefix = C_("recur-description", "The meeting recurs");
 				} else {
 					comp_prefix = C_("recur-description", "The appointment recurs");
 				}
-			} else if (icalcomponent_isa (icalcomp) == ICAL_VTODO_COMPONENT) {
+			} else if (i_cal_component_isa (icalcomp) == I_CAL_VTODO_COMPONENT) {
 				comp_prefix = C_("recur-description", "The task recurs");
-			} else /* if (icalcomponent_isa (icalcomp) == ICAL_VJOURNAL_COMPONENT) */ {
+			} else /* if (i_cal_component_isa (comp) == I_CAL_VJOURNAL_COMPONENT) */ {
 				comp_prefix = C_("recur-description", "The memo recurs");
 			}
 
@@ -5763,20 +5857,24 @@ e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
 			result = tmp;
 		}
 	} else if (fallback) {
-		if (icalcomponent_isa (icalcomp) == ICAL_VEVENT_COMPONENT) {
-			if (icalcomponent_count_properties (icalcomp, ICAL_ORGANIZER_PROPERTY) > 0 &&
-			    icalcomponent_count_properties (icalcomp, ICAL_ATTENDEE_PROPERTY) > 0) {
+		if (i_cal_component_isa (icalcomp) == I_CAL_VEVENT_COMPONENT) {
+			if (i_cal_component_count_properties (icalcomp, I_CAL_ORGANIZER_PROPERTY) > 0 &&
+			    i_cal_component_count_properties (icalcomp, I_CAL_ATTENDEE_PROPERTY) > 0) {
 				result = g_strdup (C_("recur-description", "The meeting recurs"));
 			} else {
 				result = g_strdup (C_("recur-description", "The appointment recurs"));
 			}
-		} else if (icalcomponent_isa (icalcomp) == ICAL_VTODO_COMPONENT) {
+		} else if (i_cal_component_isa (icalcomp) == I_CAL_VTODO_COMPONENT) {
 			result = g_strdup (C_("recur-description", "The task recurs"));
-		} else if (icalcomponent_isa (icalcomp) == ICAL_VJOURNAL_COMPONENT) {
+		} else if (i_cal_component_isa (icalcomp) == I_CAL_VJOURNAL_COMPONENT) {
 			result = g_strdup (C_("recur-description", "The memo recurs"));
 		}
 	}
 
+	g_clear_object (&dtstart);
+	g_clear_object (&until);
+	g_clear_object (&rrule);
+	g_clear_object (&prop);
 	g_free (prefix);
 	g_free (mid);
 	g_free (suffix);

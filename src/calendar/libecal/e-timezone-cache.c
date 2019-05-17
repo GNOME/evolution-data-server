@@ -20,7 +20,7 @@
  * @include: libecal/libecal.h
  * @short_description: An interface for caching time zone data
  *
- * Several classes (both client-side and server-side) cache #icaltimezone
+ * Several classes (both client-side and server-side) cache #ICalTimezone
  * instances internally, indexed by their TZID strings.  Classes which do
  * this should implement #ETimezoneCacheInterface to provide a consistent
  * API for accessing time zone data.
@@ -39,7 +39,7 @@ e_timezone_cache_default_init (ETimezoneCacheInterface *iface)
 	/**
 	 * ETimezoneCache::timezone-added:
 	 * @cache: the #ETimezoneCache which emitted the signal
-	 * @zone: the newly-added #icaltimezone
+	 * @zone: the newly-added #ICalTimezone
 	 *
 	 * Emitted when a new #icaltimezone is added to @cache.
 	 **/
@@ -50,29 +50,29 @@ e_timezone_cache_default_init (ETimezoneCacheInterface *iface)
 		G_STRUCT_OFFSET (ETimezoneCacheInterface, timezone_added),
 		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
-		G_TYPE_POINTER);
+		I_CAL_TYPE_TIMEZONE);
 }
 
 /**
  * e_timezone_cache_add_timezone:
  * @cache: an #ETimezoneCache
- * @zone: an #icaltimezone
+ * @zone: an #ICalTimezone
  *
  * Adds a copy of @zone to @cache and emits a
  * #ETimezoneCache::timezone-added signal.  The @cache will use the TZID
- * string returned by icaltimezone_get_tzid() as the lookup key, which can
+ * string returned by i_cal_timezone_get_tzid() as the lookup key, which can
  * be passed to e_timezone_cache_get_timezone() to obtain @zone again.
  *
- * If the @cache already has an #icaltimezone with the same TZID string
+ * If the @cache already has an #ICalTimezone with the same TZID string
  * as @zone, the @cache will remain unchanged to avoid invalidating any
- * #icaltimezone pointers which may have already been returned through
+ * #ICalTimezone pointers which may have already been returned through
  * e_timezone_cache_get_timezone().
  *
  * Since: 3.8
  **/
 void
 e_timezone_cache_add_timezone (ETimezoneCache *cache,
-                               icaltimezone *zone)
+			       ICalTimezone *zone)
 {
 	ETimezoneCacheInterface *iface;
 
@@ -80,9 +80,9 @@ e_timezone_cache_add_timezone (ETimezoneCache *cache,
 	g_return_if_fail (zone != NULL);
 
 	iface = E_TIMEZONE_CACHE_GET_INTERFACE (cache);
-	g_return_if_fail (iface->add_timezone != NULL);
+	g_return_if_fail (iface->tzcache_add_timezone != NULL);
 
-	iface->add_timezone (cache, zone);
+	iface->tzcache_add_timezone (cache, zone);
 }
 
 /**
@@ -90,15 +90,15 @@ e_timezone_cache_add_timezone (ETimezoneCache *cache,
  * @cache: an #ETimezoneCache
  * @tzid: the TZID of a timezone
  *
- * Obtains an #icaltimezone by its TZID string.  If no match is found,
- * the function returns %NULL.  The returned #icaltimezone is owned by
+ * Obtains an #ICalTimezone by its TZID string.  If no match is found,
+ * the function returns %NULL.  The returned #ICalTimezone is owned by
  * the @cache and should not be modified or freed.
  *
- * Returns: an #icaltimezone, or %NULL
+ * Returns: (transfer none) (nullable): an #ICalTimezone, or %NULL
  *
  * Since: 3.8
  **/
-icaltimezone *
+ICalTimezone *
 e_timezone_cache_get_timezone (ETimezoneCache *cache,
                                const gchar *tzid)
 {
@@ -108,16 +108,16 @@ e_timezone_cache_get_timezone (ETimezoneCache *cache,
 	g_return_val_if_fail (tzid != NULL, NULL);
 
 	iface = E_TIMEZONE_CACHE_GET_INTERFACE (cache);
-	g_return_val_if_fail (iface->get_timezone != NULL, NULL);
+	g_return_val_if_fail (iface->tzcache_get_timezone != NULL, NULL);
 
-	return iface->get_timezone (cache, tzid);
+	return iface->tzcache_get_timezone (cache, tzid);
 }
 
 /**
  * e_timezone_cache_list_timezones:
  * @cache: an #ETimezoneCache
  *
- * Returns a list of #icaltimezone instances that were explicitly added to
+ * Returns a list of #ICalTimezone instances that were explicitly added to
  * the @cache through e_timezone_cache_add_timezone().  In particular, any
  * built-in time zone data that e_timezone_cache_get_timezone() may use to
  * match a TZID string is excluded from the returned list.
@@ -125,8 +125,8 @@ e_timezone_cache_get_timezone (ETimezoneCache *cache,
  * Free the returned list with g_list_free().  The list elements are owned
  * by the @cache and should not be modified or freed.
  *
- * Returns: (transfer container) (element-type icaltimezone): a #GList of
- *          #icaltimezone instances
+ * Returns: (transfer container) (element-type ICalTimezone): a #GList of
+ *    #ICalTimezone instances
  *
  * Since: 3.8
  **/
@@ -138,8 +138,7 @@ e_timezone_cache_list_timezones (ETimezoneCache *cache)
 	g_return_val_if_fail (E_IS_TIMEZONE_CACHE (cache), NULL);
 
 	iface = E_TIMEZONE_CACHE_GET_INTERFACE (cache);
-	g_return_val_if_fail (iface->list_timezones != NULL, NULL);
+	g_return_val_if_fail (iface->tzcache_list_timezones != NULL, NULL);
 
-	return iface->list_timezones (cache);
+	return iface->tzcache_list_timezones (cache);
 }
-

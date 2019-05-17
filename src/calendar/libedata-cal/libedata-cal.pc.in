@@ -13,6 +13,6 @@ backenddir=@ecal_backenddir@
 Name: libedata-cal
 Description: Backend library for evolution calendars
 Version: @PROJECT_VERSION@
-Requires: libical libebackend-@API_VERSION@ libecal-@API_VERSION@
-Libs: -L${libdir} -ledata-cal-@API_VERSION@
+Requires: libical-glib libebackend-@API_VERSION@ libecal-@CAL_API_VERSION@
+Libs: -L${libdir} -ledata-cal-@CAL_API_VERSION@
 Cflags: -I${privincludedir}

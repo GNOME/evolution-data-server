@@ -32,7 +32,6 @@
 #include <libedataserver/libedataserver.h>
 
 #include "e-cal-backend-sync.h"
-#include <libical/icaltz-util.h>
 
 #define E_CAL_BACKEND_SYNC_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -120,7 +119,7 @@ e_cal_backend_sync_refresh (ECalBackendSync *backend,
  * @uid: UID of the object to get.
  * @rid: Recurrence ID of the specific instance to get, or NULL if getting the
  * master object.
- * @calobj: Placeholder for returned object.
+ * @calobj: (out) (transfer full): Placeholder for returned object.
  * @error: Out parameter for a #GError.
  *
  * Calls the get_object_sync method on the given backend.
@@ -160,7 +159,7 @@ e_cal_backend_sync_get_object (ECalBackendSync *backend,
  * @cal: An EDataCal object.
  * @cancellable: a #GCancellable for the operation
  * @sexp: Search query.
- * @calobjs: Placeholder for list of returned objects.
+ * @calobjs: (out) (transfer full) (element-type utf8): Placeholder for list of returned objects.
  * @error: Out parameter for a #GError.
  *
  * Calls the get_object_list_sync method on the given backend.
@@ -198,10 +197,10 @@ e_cal_backend_sync_get_object_list (ECalBackendSync *backend,
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.
  * @cancellable: a #GCancellable for the operation
- * @users: List of users to get F/B info from.
+ * @users: (element-type utf8): List of users to get F/B info from.
  * @start: Time range start.
  * @end: Time range end.
- * @freebusyobjects: Placeholder for F/B information.
+ * @freebusyobjects: (out) (transfer full) (element-type utf8): Placeholder for F/B information.
  * @error: Out parameter for a #GError.
  *
  * Calls the get_free_busy_sync method on the given backend.
@@ -241,9 +240,10 @@ e_cal_backend_sync_get_free_busy (ECalBackendSync *backend,
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.
  * @cancellable: a #GCancellable for the operation
- * @calobjs: The objects to be added.
- * @uids: Placeholder for server-generated UIDs.
- * @new_components: (out) (transfer full): Placeholder for returned #ECalComponent objects.
+ * @calobjs: (element-type utf8): The objects to be added.
+ * @opflags: bit-or of #ECalOperationFlags
+ * @uids: (out) (transfer full) (element-type utf8): Placeholder for server-generated UIDs.
+ * @new_components: (out) (transfer full) (element-type ECalComponent): Placeholder for returned #ECalComponent objects.
  * @error: Out parameter for a #GError.
  *
  * Calls the create_objects_sync method on the given backend.
@@ -255,6 +255,7 @@ e_cal_backend_sync_create_objects (ECalBackendSync *backend,
                                    EDataCal *cal,
                                    GCancellable *cancellable,
                                    const GSList *calobjs,
+				   guint32 opflags,
                                    GSList **uids,
                                    GSList **new_components,
                                    GError **error)
@@ -269,7 +270,7 @@ e_cal_backend_sync_create_objects (ECalBackendSync *backend,
 	if (class->create_objects_sync != NULL) {
 		class->create_objects_sync (
 			backend, cal, cancellable,
-			calobjs, uids, new_components, error);
+			calobjs, opflags, uids, new_components, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -284,12 +285,13 @@ e_cal_backend_sync_create_objects (ECalBackendSync *backend,
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.
  * @cancellable: a #GCancellable for the operation
- * @calobjs: Objects to be modified.
+ * @calobjs: (element-type utf8): Objects to be modified.
  * @mod: Type of modification to be done.
- * @old_components: (out) (transfer full): Placeholder for returning the old components as they were stored on the
- * backend.
- * @new_components: (out) (transfer full): Placeholder for returning the new components as they have been stored
- * on the backend.
+ * @opflags: bit-or of #ECalOperationFlags
+ * @old_components: (out) (transfer full) (element-type ECalComponent): Placeholder for
+ *    returning the old components as they were stored on the backend.
+ * @new_components: (out) (transfer full) (element-type ECalComponent): Placeholder for
+ *    returning the new components as they have been stored on the backend.
  * @error: Out parameter for a #GError.
  *
  * Calls the modify_objects_sync method on the given backend.
@@ -302,6 +304,7 @@ e_cal_backend_sync_modify_objects (ECalBackendSync *backend,
                                    GCancellable *cancellable,
                                    const GSList *calobjs,
                                    ECalObjModType mod,
+				   guint32 opflags,
                                    GSList **old_components,
                                    GSList **new_components,
                                    GError **error)
@@ -316,7 +319,7 @@ e_cal_backend_sync_modify_objects (ECalBackendSync *backend,
 	if (class->modify_objects_sync != NULL) {
 		class->modify_objects_sync (
 			backend, cal, cancellable,
-			calobjs, mod, old_components, new_components, error);
+			calobjs, mod, opflags, old_components, new_components, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -331,13 +334,14 @@ e_cal_backend_sync_modify_objects (ECalBackendSync *backend,
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.
  * @cancellable: a #GCancellable for the operation
- * @ids: List of #ECalComponentId objects identifying the objects to remove.
+ * @ids: (element-type ECalComponentId): List of #ECalComponentId objects identifying the objects to remove.
  * @mod: Type of removal.
- * @old_components: (out) (transfer full): Placeholder for returning the old components as they were stored on the
- * backend.
- * @new_components: (out) (transfer full): Placeholder for returning the new components as they have been stored
- * on the backend (when removing individual instances). If removing whole objects,
- * they will be set to %NULL.
+ * @opflags: bit-or of #ECalOperationFlags
+ * @old_components: (out) (transfer full) (element-type ECalComponent): Placeholder for returning the old
+ *    components as they were stored on the backend.
+ * @new_components: (out) (transfer full) (element-type ECalComponent): Placeholder for returning the new
+ *    components as they have been stored on the backend (when removing individual instances). If removing
+ *    whole objects, they will be set to %NULL.
  * @error: Out parameter for a #GError.
  *
  * Calls the remove_objects_sync method on the given backend.
@@ -350,6 +354,7 @@ e_cal_backend_sync_remove_objects (ECalBackendSync *backend,
                                    GCancellable *cancellable,
                                    const GSList *ids,
                                    ECalObjModType mod,
+				   guint32 opflags,
                                    GSList **old_components,
                                    GSList **new_components,
                                    GError **error)
@@ -364,7 +369,7 @@ e_cal_backend_sync_remove_objects (ECalBackendSync *backend,
 	if (class->remove_objects_sync != NULL) {
 		class->remove_objects_sync (
 			backend, cal, cancellable,
-			ids, mod, old_components, new_components, error);
+			ids, mod, opflags, old_components, new_components, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -378,6 +383,7 @@ e_cal_backend_sync_remove_objects (ECalBackendSync *backend,
  * e_cal_backend_sync_receive_objects:
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.
+ * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable for the operation
  * @calobj: iCalendar object to receive.
  * @error: Out parameter for a #GError.
@@ -389,6 +395,7 @@ e_cal_backend_sync_receive_objects (ECalBackendSync *backend,
                                     EDataCal *cal,
                                     GCancellable *cancellable,
                                     const gchar *calobj,
+				    guint32 opflags,
                                     GError **error)
 {
 	ECalBackendSyncClass *class;
@@ -400,7 +407,7 @@ e_cal_backend_sync_receive_objects (ECalBackendSync *backend,
 
 	if (class->receive_objects_sync != NULL) {
 		class->receive_objects_sync (
-			backend, cal, cancellable, calobj, error);
+			backend, cal, cancellable, calobj, opflags, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -416,8 +423,9 @@ e_cal_backend_sync_receive_objects (ECalBackendSync *backend,
  * @cal: An EDataCal object.
  * @cancellable: a #GCancellable for the operation
  * @calobj: The iCalendar object to send.
- * @users: List of users to send notifications to.
- * @modified_calobj: Placeholder for the iCalendar object after being modified.
+ * @opflags: bit-or of #ECalOperationFlags
+ * @users: (element-type utf8): List of users to send notifications to.
+ * @modified_calobj: (out) (transfer full): Placeholder for the iCalendar object after being modified.
  * @error: Out parameter for a #GError.
  *
  * Calls the send_objects_sync method on the given backend.
@@ -427,6 +435,7 @@ e_cal_backend_sync_send_objects (ECalBackendSync *backend,
                                  EDataCal *cal,
                                  GCancellable *cancellable,
                                  const gchar *calobj,
+				 guint32 opflags,
                                  GSList **users,
                                  gchar **modified_calobj,
                                  GError **error)
@@ -441,7 +450,7 @@ e_cal_backend_sync_send_objects (ECalBackendSync *backend,
 	if (class->send_objects_sync != NULL) {
 		class->send_objects_sync (
 			backend, cal, cancellable,
-			calobj, users, modified_calobj, error);
+			calobj, opflags, users, modified_calobj, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -458,7 +467,7 @@ e_cal_backend_sync_send_objects (ECalBackendSync *backend,
  * @cancellable: a #GCancellable for the operation
  * @uid: Unique id of the calendar object.
  * @rid: Recurrence id of the calendar object.
- * @attachments: Placeholder for list of returned attachment uris.
+ * @attachments: (element-type utf8): Placeholder for list of returned attachment uris.
  * @error: Out parameter for a #GError.
  *
  * Calls the get_attachment_uris_sync method on the given backend.
@@ -503,6 +512,7 @@ e_cal_backend_sync_get_attachment_uris (ECalBackendSync *backend,
  * @uid: Unique id of the calendar object.
  * @rid: Recurrence id of the calendar object.
  * @auid: Alarm ID to remove.
+ * @opflags: bit-or of #ECalOperationFlags
  * @error: Out parameter for a #GError.
  *
  * Calls the discard_alarm_sync method on the given backend.
@@ -514,6 +524,7 @@ e_cal_backend_sync_discard_alarm (ECalBackendSync *backend,
                                   const gchar *uid,
                                   const gchar *rid,
                                   const gchar *auid,
+				  guint32 opflags,
                                   GError **error)
 {
 	ECalBackendSyncClass *class;
@@ -528,7 +539,7 @@ e_cal_backend_sync_discard_alarm (ECalBackendSync *backend,
 	if (class->discard_alarm_sync != NULL) {
 		class->discard_alarm_sync (
 			backend, cal, cancellable,
-			uid, rid, auid, error);
+			uid, rid, auid, opflags, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -577,24 +588,25 @@ e_cal_backend_sync_get_timezone (ECalBackendSync *backend,
 	}
 
 	if (tzobject && !*tzobject) {
-		icaltimezone *zone = NULL;
+		ICalTimezone *zone;
 
-		zone = e_timezone_cache_get_timezone (
-			E_TIMEZONE_CACHE (backend), tzid);
+		zone = e_timezone_cache_get_timezone (E_TIMEZONE_CACHE (backend), tzid);
 
 		if (!zone) {
 			if (error && !*error)
-				g_propagate_error (error, e_data_cal_create_error (ObjectNotFound, NULL));
+				g_propagate_error (error, e_cal_client_error_create (E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND, NULL));
 		} else {
-			icalcomponent *icalcomp;
+			ICalComponent *icomp;
 
-			icalcomp = icaltimezone_get_component (zone);
+			icomp = i_cal_timezone_get_component (zone);
 
-			if (!icalcomp) {
+			if (!icomp) {
 				if (error && !*error)
-					g_propagate_error (error, e_data_cal_create_error (InvalidObject, NULL));
+					g_propagate_error (error, e_cal_client_error_create (E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
 			} else {
-				*tzobject = icalcomponent_as_ical_string_r (icalcomp);
+				*tzobject = i_cal_component_as_ical_string (icomp);
+
+				g_object_unref (icomp);
 			}
 		}
 	}
@@ -740,13 +752,14 @@ cal_backend_create_objects (ECalBackend *backend,
                             EDataCal *cal,
                             guint32 opid,
                             GCancellable *cancellable,
-                            const GSList *calobjs)
+                            const GSList *calobjs,
+			    guint32 opflags)
 {
 	GError *error = NULL;
 	GSList *uids = NULL;
 	GSList *new_components = NULL;
 
-	e_cal_backend_sync_create_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobjs, &uids, &new_components, &error);
+	e_cal_backend_sync_create_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobjs, opflags, &uids, &new_components, &error);
 
 	if (!new_components)
 		new_components = ecalcomponent_slist_from_strings (calobjs);
@@ -763,12 +776,13 @@ cal_backend_modify_objects (ECalBackend *backend,
                             guint32 opid,
                             GCancellable *cancellable,
                             const GSList *calobjs,
-                            ECalObjModType mod)
+                            ECalObjModType mod,
+			    guint32 opflags)
 {
 	GError *error = NULL;
 	GSList *old_components = NULL, *new_components = NULL;
 
-	e_cal_backend_sync_modify_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobjs, mod, &old_components, &new_components, &error);
+	e_cal_backend_sync_modify_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobjs, mod, opflags, &old_components, &new_components, &error);
 
 	if (!old_components)
 		old_components = ecalcomponent_slist_from_strings (calobjs);
@@ -785,12 +799,13 @@ cal_backend_remove_objects (ECalBackend *backend,
                             guint32 opid,
                             GCancellable *cancellable,
                             const GSList *ids,
-                            ECalObjModType mod)
+                            ECalObjModType mod,
+			    guint32 opflags)
 {
 	GError *error = NULL;
 	GSList *old_components = NULL, *new_components = NULL;
 
-	e_cal_backend_sync_remove_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, ids, mod, &old_components, &new_components, &error);
+	e_cal_backend_sync_remove_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, ids, mod, opflags, &old_components, &new_components, &error);
 
 	e_data_cal_respond_remove_objects (cal, opid, error, ids, old_components, new_components);
 
@@ -803,11 +818,12 @@ cal_backend_receive_objects (ECalBackend *backend,
                              EDataCal *cal,
                              guint32 opid,
                              GCancellable *cancellable,
-                             const gchar *calobj)
+                             const gchar *calobj,
+			     guint32 opflags)
 {
 	GError *error = NULL;
 
-	e_cal_backend_sync_receive_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobj, &error);
+	e_cal_backend_sync_receive_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobj, opflags, &error);
 
 	e_data_cal_respond_receive_objects (cal, opid, error);
 }
@@ -817,13 +833,14 @@ cal_backend_send_objects (ECalBackend *backend,
                           EDataCal *cal,
                           guint32 opid,
                           GCancellable *cancellable,
-                          const gchar *calobj)
+                          const gchar *calobj,
+			  guint32 opflags)
 {
 	GError *error = NULL;
 	GSList *users = NULL;
 	gchar *modified_calobj = NULL;
 
-	e_cal_backend_sync_send_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobj, &users, &modified_calobj, &error);
+	e_cal_backend_sync_send_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobj, opflags, &users, &modified_calobj, &error);
 
 	e_data_cal_respond_send_objects (cal, opid, error, users, modified_calobj ? modified_calobj : calobj);
 
@@ -858,11 +875,12 @@ cal_backend_discard_alarm (ECalBackend *backend,
                            GCancellable *cancellable,
                            const gchar *uid,
                            const gchar *rid,
-                           const gchar *auid)
+                           const gchar *auid,
+			   guint32 opflags)
 {
 	GError *error = NULL;
 
-	e_cal_backend_sync_discard_alarm (E_CAL_BACKEND_SYNC (backend), cal, cancellable, uid, rid, auid, &error);
+	e_cal_backend_sync_discard_alarm (E_CAL_BACKEND_SYNC (backend), cal, cancellable, uid, rid, auid, opflags, &error);
 
 	e_data_cal_respond_discard_alarm (cal, opid, error);
 }
@@ -889,38 +907,33 @@ cal_backend_get_timezone (ECalBackend *backend,
 		}
 
 		if (slashes == 1) {
-			icalcomponent *icalcomp = NULL, *free_comp = NULL;
+			ICalComponent *icomp = NULL;
+			ICalTimezone *zone;
 
-			icaltimezone *zone = icaltimezone_get_builtin_timezone (tzid);
-			if (!zone) {
-				/* Try fetching the timezone from zone
-				 * directory. There are some timezones like
-				 * MST, US/Pacific etc. which do not appear
-				 * in zone.tab, so they will not be available
-				 * in the libical builtin timezone */
-				icalcomp = free_comp = icaltzutil_fetch_timezone (tzid);
-			}
+			zone = i_cal_timezone_get_builtin_timezone (tzid);
 
 			if (zone)
-				icalcomp = icaltimezone_get_component (zone);
+				icomp = i_cal_timezone_get_component (zone);
 
-			if (icalcomp) {
-				icalcomponent *clone = icalcomponent_new_clone (icalcomp);
-				icalproperty *prop;
+			if (icomp) {
+				ICalComponent *clone = i_cal_component_clone (icomp);
+				ICalProperty *prop;
 
-				prop = icalcomponent_get_first_property (clone, ICAL_TZID_PROPERTY);
+				prop = i_cal_component_get_first_property (clone, I_CAL_TZID_PROPERTY);
 				if (prop) {
 					/* change tzid to our, because the component has the buildin tzid */
-					icalproperty_set_tzid (prop, tzid);
+					i_cal_property_set_tzid (prop, tzid);
 
-					object = icalcomponent_as_ical_string_r (clone);
+					object = i_cal_component_as_ical_string (clone);
+
 					g_clear_error (&error);
+					g_object_unref (prop);
 				}
-				icalcomponent_free (clone);
+
+				g_clear_object (&clone);
 			}
 
-			if (free_comp)
-				icalcomponent_free (free_comp);
+			g_clear_object (&icomp);
 		}
 
 		/* also cache this timezone to backend */

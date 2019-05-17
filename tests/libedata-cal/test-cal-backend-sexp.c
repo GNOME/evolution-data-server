@@ -28,6 +28,8 @@ test_query (const gchar *query)
 	} else {
 		printf ("%s: no time prunning possible\n", query);
 	}
+
+	g_object_unref (sexp);
 }
 
 gint

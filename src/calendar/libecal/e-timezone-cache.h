@@ -23,7 +23,7 @@
 #define E_TIMEZONE_CACHE_H
 
 #include <glib-object.h>
-#include <libical/ical.h>
+#include <libical-glib/libical-glib.h>
 
 /* Standard GObject macros */
 #define E_TYPE_TIMEZONE_CACHE \
@@ -50,10 +50,10 @@ typedef struct _ETimezoneCacheInterface ETimezoneCacheInterface;
 
 /**
  * ETimezoneCacheInterface:
- * @add_timezone: a method to add timezone to the cache
- * @get_timezone: a method to get timezone from the cache, identified by its timezone id
- * @list_timezones: a method to get list of all stored timezones
- * @timezone_added: a signal emitted when a timezone is added to the cache
+ * @impl_add_timezone: a method to add timezone to the cache
+ * @impl_get_timezone: a method to get timezone from the cache, identified by its timezone id
+ * @impl_list_timezones: a method to get list of all stored timezones
+ * @impl_timezone_added: a signal emitted when a timezone is added to the cache
  *
  * Since: 3.8
  **/
@@ -63,23 +63,27 @@ struct _ETimezoneCacheInterface {
 
 	/*< public >*/
 	/* Methods */
-	void		(*add_timezone)		(ETimezoneCache *cache,
-						 icaltimezone *zone);
-	icaltimezone *	(*get_timezone)		(ETimezoneCache *cache,
+	void		(*tzcache_add_timezone)	(ETimezoneCache *cache,
+						 ICalTimezone *zone);
+	ICalTimezone *	(*tzcache_get_timezone)	(ETimezoneCache *cache,
 						 const gchar *tzid);
-	GList *		(*list_timezones)	(ETimezoneCache *cache);
+	GList *		(*tzcache_list_timezones)
+						(ETimezoneCache *cache); /* ICalTimezone * */
 
 	/* Signals */
 	void		(*timezone_added)	(ETimezoneCache *cache,
-						 icaltimezone *zone);
+						 ICalTimezone *zone);
+
+	/* Padding for future expansion */
+	gpointer reserved_signals[4];
 };
 
 GType		e_timezone_cache_get_type	(void) G_GNUC_CONST;
 void		e_timezone_cache_add_timezone	(ETimezoneCache *cache,
-						 icaltimezone *zone);
-icaltimezone *	e_timezone_cache_get_timezone	(ETimezoneCache *cache,
+						 ICalTimezone *zone);
+ICalTimezone *	e_timezone_cache_get_timezone	(ETimezoneCache *cache,
 						 const gchar *tzid);
-GList *		e_timezone_cache_list_timezones	(ETimezoneCache *cache);
+GList *		e_timezone_cache_list_timezones	(ETimezoneCache *cache); /* ICalTimezone * */
 
 G_END_DECLS
 

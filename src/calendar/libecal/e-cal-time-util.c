@@ -23,7 +23,6 @@
 #include <ctype.h>
 #include "e-cal-time-util.h"
 
-
 #ifdef G_OS_WIN32
 #ifdef gmtime_r
 #undef gmtime_r
@@ -50,7 +49,7 @@ static const gint days_in_month[12] = {
  *
  * NOTE: these use the Unix timezone functions like mktime() and localtime()
  * and so should not be used in Evolution. New Evolution code should use
- * icaltimetype values rather than time_t values wherever possible.
+ * ICalTime values rather than time_t values wherever possible.
  **************************************************************************/
 
 /**
@@ -142,7 +141,7 @@ time_day_end (time_t t)
  * time_t manipulation functions, using timezones in libical.
  *
  * NOTE: these are only here to make the transition to the timezone
- * functions easier. New code should use icaltimetype values rather than
+ * functions easier. New code should use ICalTime values rather than
  * time_t values wherever possible.
  **************************************************************************/
 
@@ -155,26 +154,31 @@ time_day_end (time_t t)
  * Adds or subtracts a number of days to/from the given time_t value, using
  * the given timezone.
  * NOTE: this function is only here to make the transition to the timezone
- * functions easier. New code should use icaltimetype values and
- * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
+ * functions easier. New code should use ICalTime values and
+ * i_cal_time_adjust() to add or subtract days, hours, minutes & seconds.
  *
  * Returns: a time_t value containing @time plus the days added.
  */
 time_t
 time_add_day_with_zone (time_t time,
-                        gint days,
-                        icaltimezone *zone)
+			gint days,
+			const ICalTimezone *zone)
 {
-	struct icaltimetype tt;
+	ICalTime *tt;
+	time_t res;
 
-	/* Convert to an icaltimetype. */
-	tt = icaltime_from_timet_with_zone (time, FALSE, zone);
+	/* Convert to an ICalTime. */
+	tt = i_cal_time_new_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
 
 	/* Add/subtract the number of days. */
-	icaltime_adjust (&tt, days, 0, 0, 0);
+	i_cal_time_adjust (tt, days, 0, 0, 0);
 
 	/* Convert back to a time_t. */
-	return icaltime_as_timet_with_zone (tt, zone);
+	res = i_cal_time_as_timet_with_zone (tt, (ICalTimezone *) zone);
+
+	g_object_unref (tt);
+
+	return res;
 }
 
 /**
@@ -186,15 +190,15 @@ time_add_day_with_zone (time_t time,
  * Adds or subtracts a number of weeks to/from the given time_t value, using
  * the given timezone.
  * NOTE: this function is only here to make the transition to the timezone
- * functions easier. New code should use icaltimetype values and
- * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
+ * functions easier. New code should use ICalTime values and
+ * i_cal_time_adjust() to add or subtract days, hours, minutes & seconds.
  *
  * Returns: a time_t value containing @time plus the weeks added.
  */
 time_t
 time_add_week_with_zone (time_t time,
-                         gint weeks,
-                         icaltimezone *zone)
+			 gint weeks,
+			 const ICalTimezone *zone)
 {
 	return time_add_day_with_zone (time, weeks * 7, zone);
 }
@@ -213,42 +217,47 @@ time_add_week_with_zone (time_t time,
  * down to the last day in the month, e.g. 28th Feb (or 29th in a leap year.)
  *
  * NOTE: this function is only here to make the transition to the timezone
- * functions easier. New code should use icaltimetype values and
- * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
+ * functions easier. New code should use ICalTime values and
+ * i_cal_time_adjust() to add or subtract days, hours, minutes & seconds.
  *
  * Returns: a time_t value containing @time plus the months added.
  */
 time_t
 time_add_month_with_zone (time_t time,
-                          gint months,
-                          icaltimezone *zone)
+			  gint months,
+			  const ICalTimezone *zone)
 {
-	struct icaltimetype tt;
+	ICalTime *tt;
 	gint day, days_in_month;
+	time_t res;
 
-	/* Convert to an icaltimetype. */
-	tt = icaltime_from_timet_with_zone (time, FALSE, zone);
+	/* Convert to an ICalTime. */
+	tt = i_cal_time_new_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
 
 	/* Add on the number of months. */
-	tt.month += months;
+	i_cal_time_set_month (tt, i_cal_time_get_month (tt) + months);
 
 	/* Save the day, and set it to 1, so we don't overflow into the next
 	 * month. */
-	day = tt.day;
-	tt.day = 1;
+	day = i_cal_time_get_day (tt);
+	i_cal_time_set_day (tt, 1);
 
 	/* Normalize it, fixing any month overflow. */
-	tt = icaltime_normalize (tt);
+	i_cal_time_normalize_inplace (tt);
 
 	/* If we go past the end of a month, set it to the last day. */
-	days_in_month = time_days_in_month (tt.year, tt.month - 1);
+	days_in_month = time_days_in_month (i_cal_time_get_year (tt), i_cal_time_get_month (tt) - 1);
 	if (day > days_in_month)
 		day = days_in_month;
 
-	tt.day = day;
+	i_cal_time_set_day (tt, day);
 
 	/* Convert back to a time_t. */
-	return icaltime_as_timet_with_zone (tt, zone);
+	res = i_cal_time_as_timet_with_zone (tt, (ICalTimezone *) zone);
+
+	g_object_unref (tt);
+
+	return res;
 }
 
 /**
@@ -259,29 +268,34 @@ time_add_month_with_zone (time_t time,
  * Returns the start of the year containing the given time_t, using the given
  * timezone.
  * NOTE: this function is only here to make the transition to the timezone
- * functions easier. New code should use icaltimetype values and
- * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
+ * functions easier. New code should use ICalTime values and
+ * i_cal_time_adjust() to add or subtract days, hours, minutes & seconds.
  *
  * Returns: the beginning of the year.
  */
 time_t
 time_year_begin_with_zone (time_t time,
-                           icaltimezone *zone)
+			   const ICalTimezone *zone)
 {
-	struct icaltimetype tt;
+	ICalTime *tt;
+	time_t res;
 
-	/* Convert to an icaltimetype. */
-	tt = icaltime_from_timet_with_zone (time, FALSE, zone);
+	/* Convert to an ICalTime. */
+	tt = i_cal_time_new_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
 
 	/* Set it to the start of the year. */
-	tt.month = 1;
-	tt.day = 1;
-	tt.hour = 0;
-	tt.minute = 0;
-	tt.second = 0;
+	i_cal_time_set_month (tt, 1);
+	i_cal_time_set_day (tt, 1);
+	i_cal_time_set_hour (tt, 0);
+	i_cal_time_set_minute (tt, 0);
+	i_cal_time_set_second (tt, 0);
 
 	/* Convert back to a time_t. */
-	return icaltime_as_timet_with_zone (tt, zone);
+	res = i_cal_time_as_timet_with_zone (tt, (ICalTimezone *) zone);
+
+	g_object_unref (tt);
+
+	return res;
 }
 
 /**
@@ -292,28 +306,33 @@ time_year_begin_with_zone (time_t time,
  * Returns the start of the month containing the given time_t, using the given
  * timezone.
  * NOTE: this function is only here to make the transition to the timezone
- * functions easier. New code should use icaltimetype values and
- * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
+ * functions easier. New code should use ICalTime values and
+ * i_cal_time_adjust() to add or subtract days, hours, minutes & seconds.
  *
  * Returns: the beginning of the month.
  */
 time_t
 time_month_begin_with_zone (time_t time,
-                            icaltimezone *zone)
+			    const ICalTimezone *zone)
 {
-	struct icaltimetype tt;
+	ICalTime *tt;
+	time_t res;
 
-	/* Convert to an icaltimetype. */
-	tt = icaltime_from_timet_with_zone (time, FALSE, zone);
+	/* Convert to an ICalTime. */
+	tt = i_cal_time_new_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
 
 	/* Set it to the start of the month. */
-	tt.day = 1;
-	tt.hour = 0;
-	tt.minute = 0;
-	tt.second = 0;
+	i_cal_time_set_day (tt, 1);
+	i_cal_time_set_hour (tt, 0);
+	i_cal_time_set_minute (tt, 0);
+	i_cal_time_set_second (tt, 0);
 
 	/* Convert back to a time_t. */
-	return icaltime_as_timet_with_zone (tt, zone);
+	res = i_cal_time_as_timet_with_zone (tt, (ICalTimezone *) zone);
+
+	g_object_unref (tt);
+
+	return res;
 }
 
 /**
@@ -326,39 +345,44 @@ time_month_begin_with_zone (time_t time,
  * timezone. week_start_day should use the same values as mktime(),
  * i.e. 0 (Sun) to 6 (Sat).
  * NOTE: this function is only here to make the transition to the timezone
- * functions easier. New code should use icaltimetype values and
- * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
+ * functions easier. New code should use ICalTime values and
+ * i_cal_time_adjust() to add or subtract days, hours, minutes & seconds.
  *
  * Returns: the beginning of the week.
  */
 time_t
 time_week_begin_with_zone (time_t time,
-                           gint week_start_day,
-                           icaltimezone *zone)
+			   gint week_start_day,
+			   const ICalTimezone *zone)
 {
-	struct icaltimetype tt;
+	ICalTime *tt;
 	gint weekday, offset;
+	time_t res;
 
-	/* Convert to an icaltimetype. */
-	tt = icaltime_from_timet_with_zone (time, FALSE, zone);
+	/* Convert to an ICalTime. */
+	tt = i_cal_time_new_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
 
 	/* Get the weekday. */
-	weekday = time_day_of_week (tt.day, tt.month - 1, tt.year);
+	weekday = time_day_of_week (i_cal_time_get_day (tt), i_cal_time_get_month (tt) - 1, i_cal_time_get_year (tt));
 
 	/* Calculate the current offset from the week start day. */
 	offset = (weekday + 7 - week_start_day) % 7;
 
 	/* Set it to the start of the month. */
-	tt.day -= offset;
-	tt.hour = 0;
-	tt.minute = 0;
-	tt.second = 0;
+	i_cal_time_set_day (tt, i_cal_time_get_day (tt) - offset);
+	i_cal_time_set_hour (tt, 0);
+	i_cal_time_set_minute (tt, 0);
+	i_cal_time_set_second (tt, 0);
 
 	/* Normalize it, to fix any overflow. */
-	tt = icaltime_normalize (tt);
+	i_cal_time_normalize_inplace (tt);
 
 	/* Convert back to a time_t. */
-	return icaltime_as_timet_with_zone (tt, zone);
+	res = i_cal_time_as_timet_with_zone (tt, (ICalTimezone *) zone);
+
+	g_object_unref (tt);
+
+	return res;
 }
 
 /**
@@ -369,30 +393,32 @@ time_week_begin_with_zone (time_t time,
  * Returns the start of the day containing the given time_t, using the given
  * timezone.
  * NOTE: this function is only here to make the transition to the timezone
- * functions easier. New code should use icaltimetype values and
- * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
+ * functions easier. New code should use ICalTime values and
+ * i_cal_time_adjust() to add or subtract days, hours, minutes & seconds.
  *
  * Returns: the beginning of the day.
  */
 time_t
 time_day_begin_with_zone (time_t time,
-                          icaltimezone *zone)
+			  const ICalTimezone *zone)
 {
-	struct icaltimetype tt;
+	ICalTime *tt;
 	time_t new_time;
 
-	/* Convert to an icaltimetype. */
-	tt = icaltime_from_timet_with_zone (time, FALSE, zone);
+	/* Convert to an ICalTime. */
+	tt = i_cal_time_new_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
 
 	/* Set it to the start of the day. */
-	tt.hour = 0;
-	tt.minute = 0;
-	tt.second = 0;
+	i_cal_time_set_hour (tt, 0);
+	i_cal_time_set_minute (tt, 0);
+	i_cal_time_set_second (tt, 0);
 
 	/* Convert back to a time_t and make sure the time is in the past. */
-	while (new_time = icaltime_as_timet_with_zone (tt, zone), new_time > time) {
-		icaltime_adjust (&tt, 0, -1, 0, 0);
+	while (new_time = i_cal_time_as_timet_with_zone (tt, (ICalTimezone *) zone), new_time > time) {
+		i_cal_time_adjust (tt, 0, -1, 0, 0);
 	}
+
+	g_object_unref (tt);
 
 	return new_time;
 }
@@ -405,32 +431,34 @@ time_day_begin_with_zone (time_t time,
  * Returns the end of the day containing the given time_t, using the given
  * timezone. (The end of the day is the start of the next day.)
  * NOTE: this function is only here to make the transition to the timezone
- * functions easier. New code should use icaltimetype values and
- * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
+ * functions easier. New code should use ICalTime values and
+ * i_cal_time_adjust() to add or subtract days, hours, minutes & seconds.
  *
  * Returns: the end of the day.
  */
 time_t
 time_day_end_with_zone (time_t time,
-                        icaltimezone *zone)
+			const ICalTimezone *zone)
 {
-	struct icaltimetype tt;
+	ICalTime *tt;
 	time_t new_time;
 
-	/* Convert to an icaltimetype. */
-	tt = icaltime_from_timet_with_zone (time, FALSE, zone);
+	/* Convert to an ICalTime. */
+	tt = i_cal_time_new_from_timet_with_zone (time, FALSE, (ICalTimezone *) zone);
 
 	/* Set it to the start of the next day. */
-	tt.hour = 0;
-	tt.minute = 0;
-	tt.second = 0;
+	i_cal_time_set_hour (tt, 0);
+	i_cal_time_set_minute (tt, 0);
+	i_cal_time_set_second (tt, 0);
 
-	icaltime_adjust (&tt, 1, 0, 0, 0);
+	i_cal_time_adjust (tt, 1, 0, 0, 0);
 
 	/* Convert back to a time_t and make sure the time is in the future. */
-	while (new_time = icaltime_as_timet_with_zone (tt, zone), new_time <= time) {
-		icaltime_adjust (&tt, 0, 1, 0, 0);
+	while (new_time = i_cal_time_as_timet_with_zone (tt, (ICalTimezone *) zone), new_time <= time) {
+		i_cal_time_adjust (tt, 0, 1, 0, 0);
 	}
+
+	g_object_unref (tt);
 
 	return new_time;
 }
@@ -439,27 +467,29 @@ time_day_end_with_zone (time_t time,
  * time_to_gdate_with_zone:
  * @date: Destination #GDate value.
  * @time: A time value.
- * @zone: Desired timezone for destination @date, or NULL if the UTC timezone
- * is desired.
+ * @zone: (nullable): Desired timezone for destination @date, or %NULL if
+ *    the UTC timezone is desired.
  *
  * Converts a time_t value to a #GDate structure using the specified timezone.
  * This is analogous to g_date_set_time() but takes the timezone into account.
  **/
 void
 time_to_gdate_with_zone (GDate *date,
-                         time_t time,
-                         icaltimezone *zone)
+			 time_t time,
+			 const ICalTimezone *zone)
 {
-	struct icaltimetype tt;
+	ICalTime *tt;
 
 	g_return_if_fail (date != NULL);
 	g_return_if_fail (time != -1);
 
-	tt = icaltime_from_timet_with_zone (
+	tt = i_cal_time_new_from_timet_with_zone (
 		time, FALSE,
-		zone ? zone : icaltimezone_get_utc_timezone ());
+		zone ? (ICalTimezone *) zone : i_cal_timezone_get_utc_timezone ());
 
-	g_date_set_dmy (date, tt.day, tt.month, tt.year);
+	g_date_set_dmy (date, i_cal_time_get_day (tt), i_cal_time_get_month (tt), i_cal_time_get_year (tt));
+
+	g_object_unref (tt);
 }
 
 /**************************************************************************
@@ -630,9 +660,10 @@ isodate_from_time_t (time_t t)
 time_t
 time_from_isodate (const gchar *str)
 {
-	struct icaltimetype tt = icaltime_null_time ();
-	icaltimezone *utc_zone;
+	ICalTime *tt;
+	ICalTimezone *utc_zone;
 	gint len, i;
+	time_t res;
 
 	g_return_val_if_fail (str != NULL, -1);
 
@@ -651,66 +682,75 @@ time_from_isodate (const gchar *str)
 
 #define digit_at(x,y) (x[y] - '0')
 
-	tt.year = digit_at (str, 0) * 1000
-		+ digit_at (str, 1) * 100
-		+ digit_at (str, 2) * 10
-		+ digit_at (str, 3);
+	tt = i_cal_time_new_null_time ();
 
-	tt.month = digit_at (str, 4) * 10
-		 + digit_at (str, 5);
+	i_cal_time_set_year (tt, digit_at (str, 0) * 1000 +
+				     digit_at (str, 1) * 100 +
+				     digit_at (str, 2) * 10 +
+				     digit_at (str, 3));
 
-	tt.day = digit_at (str, 6) * 10
-	       + digit_at (str, 7);
+	i_cal_time_set_month (tt, digit_at (str, 4) * 10 +
+				      digit_at (str, 5));
+
+	i_cal_time_set_day (tt, digit_at (str, 6) * 10 +
+				    digit_at (str, 7));
 
 	if (len > 8) {
-		tt.hour = digit_at (str, 9) * 10
-			+ digit_at (str, 10);
-		tt.minute = digit_at (str, 11) * 10
-			   + digit_at (str, 12);
-		tt.second = digit_at (str, 13) * 10
-			   + digit_at (str, 14);
+		i_cal_time_set_hour (tt, digit_at (str, 9) * 10 +
+					     digit_at (str, 10));
+		i_cal_time_set_minute (tt, digit_at (str, 11) * 10 +
+					       digit_at (str, 12));
+		i_cal_time_set_second (tt, digit_at (str, 13) * 10 +
+					       digit_at (str, 14));
 	}
 
-	utc_zone = icaltimezone_get_utc_timezone ();
+	utc_zone = i_cal_timezone_get_utc_timezone ();
 
-	return icaltime_as_timet_with_zone (tt, utc_zone);
+	res = i_cal_time_as_timet_with_zone (tt, utc_zone);
+
+	g_object_unref (tt);
+
+	return res;
 }
 
 /**
- * icaltimetype_to_tm:
- * @itt: An icaltimetype structure.
+ * e_cal_util_icaltime_to_tm:
+ * @itt: An #ICalTime
  *
- * Convers an icaltimetype structure into a GLibc's struct tm.
+ * Converts an #ICalTime into a GLibc's struct tm.
  *
- * Returns: (transfer full): The converted time as a struct tm. All fields will be
- * set properly except for tm.tm_yday.
+ * Returns: The converted time as a struct tm. All fields will be
+ *    set properly except for tm.tm_yday.
  *
  * Since: 2.22
  */
 struct tm
-icaltimetype_to_tm (struct icaltimetype *itt)
+e_cal_util_icaltime_to_tm (const ICalTime *itt)
 {
 	struct tm tm;
+	ICalTime *tt = (ICalTime *) itt;
 
 	memset (&tm, 0, sizeof (struct tm));
 
-	if (!itt->is_date) {
-		tm.tm_sec = itt->second;
-		tm.tm_min = itt->minute;
-		tm.tm_hour = itt->hour;
+	g_return_val_if_fail (itt != NULL, tm);
+
+	if (!i_cal_time_is_date (tt)) {
+		tm.tm_sec = i_cal_time_get_second (tt);
+		tm.tm_min = i_cal_time_get_minute (tt);
+		tm.tm_hour = i_cal_time_get_hour (tt);
 	}
 
-	tm.tm_mday = itt->day;
-	tm.tm_mon = itt->month - 1;
-	tm.tm_year = itt->year - 1900;
-	tm.tm_wday = time_day_of_week (itt->day, itt->month - 1, itt->year);
+	tm.tm_mday = i_cal_time_get_day (tt);
+	tm.tm_mon = i_cal_time_get_month (tt) - 1;
+	tm.tm_year = i_cal_time_get_year (tt) - 1900;
+	tm.tm_wday = time_day_of_week (i_cal_time_get_day (tt), i_cal_time_get_month (tt) - 1, i_cal_time_get_year (tt));
 	tm.tm_isdst = -1;
 
 	return tm;
 }
 
 /**
- * icaltimetype_to_tm_with_zone:
+ * e_cal_util_icaltime_to_tm_with_zone:
  * @itt: A time value.
  * @from_zone: Source timezone.
  * @to_zone: Destination timezone.
@@ -718,63 +758,60 @@ icaltimetype_to_tm (struct icaltimetype *itt)
  * Converts a time value from one timezone to another, and returns a struct tm
  * representation of the time.
  *
- * Returns: (transfer full): The converted time as a struct tm. All fields will be
- * set properly except for tm.tm_yday.
+ * Returns: The converted time as a struct tm. All fields will be
+ *    set properly except for tm.tm_yday.
  *
  * Since: 2.22
  **/
 struct tm
-icaltimetype_to_tm_with_zone (struct icaltimetype *itt,
-                              icaltimezone *from_zone,
-                              icaltimezone *to_zone)
+e_cal_util_icaltime_to_tm_with_zone (const ICalTime *itt,
+				     const ICalTimezone *from_zone,
+				     const ICalTimezone *to_zone)
 {
 	struct tm tm;
-	struct icaltimetype itt_copy;
+	ICalTime *itt_copy;
 
 	memset (&tm, 0, sizeof (tm));
 	tm.tm_isdst = -1;
 
 	g_return_val_if_fail (itt != NULL, tm);
 
-	itt_copy = *itt;
+	itt_copy = i_cal_time_clone (itt);
 
-	icaltimezone_convert_time (&itt_copy, from_zone, to_zone);
-	tm = icaltimetype_to_tm (&itt_copy);
+	i_cal_time_convert_timezone (itt_copy, (ICalTimezone *) from_zone, (ICalTimezone *) to_zone);
+	tm = e_cal_util_icaltime_to_tm (itt_copy);
+	g_object_unref (itt_copy);
 
 	return tm;
 }
 
 /**
- * tm_to_icaltimetype:
+ * e_cal_util_tm_to_icaltime:
  * @tm: A struct tm.
  * @is_date: Whether the given time is a date only or not.
  *
- * Converts a struct tm into an icaltimetype.
+ * Converts a struct tm into an #ICalTime. Free the returned object
+ * with g_object_unref(), when no longe needed.
  *
- * Returns: (transfer full): The converted time as an icaltimetype.
+ * Returns: (transfer full): The converted time as an #ICalTime.
  *
  * Since: 2.22
  */
-struct icaltimetype
-tm_to_icaltimetype (struct tm *tm,
-                    gboolean is_date)
+ICalTime *
+e_cal_util_tm_to_icaltime (struct tm *tm,
+			   gboolean is_date)
 {
-	struct icaltimetype itt;
+	ICalTime *itt;
 
-	memset (&itt, 0, sizeof (struct icaltimetype));
+	g_return_val_if_fail (tm != NULL, NULL);
 
-	if (!is_date) {
-		itt.second = tm->tm_sec;
-		itt.minute = tm->tm_min;
-		itt.hour = tm->tm_hour;
-	}
+	itt = i_cal_time_new_null_time ();
 
-	itt.day = tm->tm_mday;
-	itt.month = tm->tm_mon + 1;
-	itt.year = tm->tm_year + 1900;
+	if (!is_date)
+		i_cal_time_set_time (itt, tm->tm_hour, tm->tm_min, tm->tm_sec);
 
-	itt.is_date = is_date;
+	i_cal_time_set_date (itt, tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday);
+	i_cal_time_set_is_date (itt, is_date);
 
 	return itt;
 }
-

@@ -1,6 +1,6 @@
-glib_mkenums(e-cal-enumtypes e-cal-types.h E_CAL_ENUMTYPES_H)
+glib_mkenums(e-cal-enumtypes e-cal-enums.h E_CAL_ENUMTYPES_H)
 
-add_pkgconfig_file(libecal.pc.in libecal-${API_VERSION}.pc)
+add_pkgconfig_file(libecal.pc.in libecal-${CAL_API_VERSION}.pc)
 
 set(DEPENDENCIES
 	edbus-private
@@ -8,17 +8,28 @@ set(DEPENDENCIES
 )
 
 set(SOURCES
-	e-cal.c
 	e-cal-client.c
 	e-cal-client-view.c
 	e-cal-component.c
+	e-cal-component-alarm.c
+	e-cal-component-alarm-instance.c
+	e-cal-component-alarm-repeat.c
+	e-cal-component-alarm-trigger.c
+	e-cal-component-alarms.c
+	e-cal-component-attendee.c
+	e-cal-component-datetime.c
+	e-cal-component-id.c
+	e-cal-component-organizer.c
+	e-cal-component-parameter-bag.c
+	e-cal-component-period.c
+	e-cal-component-property-bag.c
+	e-cal-component-range.c
+	e-cal-component-text.c
 	e-cal-recur.c
 	e-cal-time-util.c
 	e-cal-check-timezones.c
 	e-cal-system-timezone.c
 	e-cal-util.c
-	e-cal-view.c
-	e-cal-view-private.h
 	e-reminder-watcher.c
 	e-timezone-cache.c
 	${CMAKE_CURRENT_BINARY_DIR}/e-cal-enumtypes.c
@@ -26,17 +37,29 @@ set(SOURCES
 
 set(HEADERS
 	libecal.h
-	e-cal.h
 	e-cal-client.h
 	e-cal-client-view.h
 	e-cal-component.h
+	e-cal-component-alarm.h
+	e-cal-component-alarm-instance.h
+	e-cal-component-alarm-repeat.h
+	e-cal-component-alarm-trigger.h
+	e-cal-component-alarms.h
+	e-cal-component-attendee.h
+	e-cal-component-datetime.h
+	e-cal-component-id.h
+	e-cal-component-parameter-bag.h
+	e-cal-component-organizer.h
+	e-cal-component-period.h
+	e-cal-component-property-bag.h
+	e-cal-component-range.h
+	e-cal-component-text.h
+	e-cal-enums.h
 	e-cal-recur.h
 	e-cal-time-util.h
-        e-cal-check-timezones.h
+	e-cal-check-timezones.h
 	e-cal-system-timezone.h
-	e-cal-types.h
 	e-cal-util.h
-	e-cal-view.h
 	e-reminder-watcher.h
 	e-timezone-cache.h
 	${CMAKE_CURRENT_BINARY_DIR}/e-cal-enumtypes.h
@@ -54,7 +77,7 @@ add_dependencies(ecal
 set_target_properties(ecal PROPERTIES
 	VERSION "${LIBECAL_CURRENT}.${LIBECAL_REVISION}.${LIBECAL_AGE}"
 	SOVERSION ${LIBECAL_CURRENT}
-	OUTPUT_NAME ecal-${API_VERSION}
+	OUTPUT_NAME ecal-${CAL_API_VERSION}
 )
 
 target_compile_definitions(ecal PRIVATE
@@ -90,4 +113,34 @@ install(TARGETS ecal
 
 install(FILES ${HEADERS}
 	DESTINATION ${privincludedir}/libecal
+)
+
+set(gir_sources ${SOURCES} ${HEADERS})
+set(gir_identifies_prefixes ECal E)
+set(gir_includes GObject-2.0 Gio-2.0 Soup-2.4 libxml2-2.0 ICalGLib-3.0)
+set(gir_cflags
+	-DLIBECAL_COMPILATION
+	-DEDS_DISABLE_DEPRECATED=1
+	-I${CMAKE_BINARY_DIR}/src/calendar
+	-I${CMAKE_SOURCE_DIR}/src/calendar
+)
+set(gir_libdirs)
+set(gir_libs ecal)
+set(gir_deps
+	${CMAKE_BINARY_DIR}/src/camel/Camel-${API_VERSION}.gir
+	${CMAKE_BINARY_DIR}/src/libedataserver/EDataServer-${API_VERSION}.gir
+)
+
+gir_add_introspection_simple(
+	ECal
+	libecal
+	${CAL_API_VERSION}
+	"libecal/libecal.h"
+	gir_identifies_prefixes
+	gir_includes
+	gir_cflags
+	gir_libdirs
+	gir_libs
+	gir_deps
+	gir_sources
 )
