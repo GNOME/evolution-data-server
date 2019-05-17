@@ -335,6 +335,7 @@ struct _ECache {
 };
 
 struct _ECacheClass {
+	/*< private >*/
 	GObjectClass parent_class;
 
 	/* Virtual methods */

@@ -85,6 +85,7 @@ struct _EOfflineListener {
 };
 
 struct _EOfflineListenerClass {
+	/*< private >*/
 	GObjectClass parent_class;
 
 	void (*changed) (EOfflineListener *eol, EOfflineListenerState state);
