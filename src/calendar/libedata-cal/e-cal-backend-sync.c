@@ -962,20 +962,20 @@ e_cal_backend_sync_class_init (ECalBackendSyncClass *class)
 	ECalBackendClass *backend_class;
 
 	backend_class = E_CAL_BACKEND_CLASS (class);
-	backend_class->open = cal_backend_open;
-	backend_class->refresh = cal_backend_refresh;
-	backend_class->get_object = cal_backend_get_object;
-	backend_class->get_object_list = cal_backend_get_object_list;
-	backend_class->get_free_busy = cal_backend_get_free_busy;
-	backend_class->create_objects = cal_backend_create_objects;
-	backend_class->modify_objects = cal_backend_modify_objects;
-	backend_class->remove_objects = cal_backend_remove_objects;
-	backend_class->receive_objects = cal_backend_receive_objects;
-	backend_class->send_objects = cal_backend_send_objects;
-	backend_class->get_attachment_uris = cal_backend_get_attachment_uris;
-	backend_class->discard_alarm = cal_backend_discard_alarm;
-	backend_class->get_timezone = cal_backend_get_timezone;
-	backend_class->add_timezone = cal_backend_add_timezone;
+	backend_class->impl_open = cal_backend_open;
+	backend_class->impl_refresh = cal_backend_refresh;
+	backend_class->impl_get_object = cal_backend_get_object;
+	backend_class->impl_get_object_list = cal_backend_get_object_list;
+	backend_class->impl_get_free_busy = cal_backend_get_free_busy;
+	backend_class->impl_create_objects = cal_backend_create_objects;
+	backend_class->impl_modify_objects = cal_backend_modify_objects;
+	backend_class->impl_remove_objects = cal_backend_remove_objects;
+	backend_class->impl_receive_objects = cal_backend_receive_objects;
+	backend_class->impl_send_objects = cal_backend_send_objects;
+	backend_class->impl_get_attachment_uris = cal_backend_get_attachment_uris;
+	backend_class->impl_discard_alarm = cal_backend_discard_alarm;
+	backend_class->impl_get_timezone = cal_backend_get_timezone;
+	backend_class->impl_add_timezone = cal_backend_add_timezone;
 }
 
 static void

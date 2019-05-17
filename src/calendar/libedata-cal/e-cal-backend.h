@@ -68,23 +68,23 @@ struct _ECalBackend {
  * ECalBackendClass:
  * @use_serial_dispatch_queue: Whether a serial dispatch queue should
  *                             be used for this backend or not. The default is %TRUE.
- * @get_backend_property: Fetch a property value by name from the backend
- * @open: Open the backend
- * @refresh: Refresh the backend
- * @get_object: Fetch a calendar object
- * @get_object_list: FIXME: Document me
- * @get_free_busy: FIXME: Document me
- * @create_objects: FIXME: Document me
- * @modify_objects: FIXME: Document me
- * @remove_objects: FIXME: Document me
- * @receive_objects: FIXME: Document me
- * @send_objects: FIXME: Document me
- * @get_attachment_uris: FIXME: Document me
- * @discard_alarm: FIXME: Document me
- * @get_timezone: FIXME: Document me
- * @add_timezone: FIXME: Document me
- * @start_view: Start up the specified view
- * @stop_view: Stop the specified view
+ * @impl_get_backend_property: Fetch a property value by name from the backend
+ * @impl_open: Open the backend
+ * @impl_refresh: Refresh the backend
+ * @impl_get_object: Fetch a calendar object
+ * @impl_get_object_list: FIXME: Document me
+ * @impl_get_free_busy: FIXME: Document me
+ * @impl_create_objects: FIXME: Document me
+ * @impl_modify_objects: FIXME: Document me
+ * @impl_remove_objects: FIXME: Document me
+ * @impl_receive_objects: FIXME: Document me
+ * @impl_send_objects: FIXME: Document me
+ * @impl_get_attachment_uris: FIXME: Document me
+ * @impl_discard_alarm: FIXME: Document me
+ * @impl_get_timezone: FIXME: Document me
+ * @impl_add_timezone: FIXME: Document me
+ * @impl_start_view: Start up the specified view
+ * @impl_stop_view: Stop the specified view
  * @closed: A signal notifying that the backend was closed
  * @shutdown: A signal notifying that the backend is being shut down
  *
@@ -107,75 +107,77 @@ struct _ECalBackendClass {
 	gboolean use_serial_dispatch_queue;
 
 	/* Virtual methods */
-	gchar *		(*get_backend_property)	(ECalBackend *backend,
+	gchar *		(*impl_get_backend_property)
+						(ECalBackend *backend,
 						 const gchar *prop_name);
 
-	void		(*open)			(ECalBackend *backend,
+	void		(*impl_open)		(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable);
 
-	void		(*refresh)		(ECalBackend *backend,
+	void		(*impl_refresh)		(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable);
-	void		(*get_object)		(ECalBackend *backend,
+	void		(*impl_get_object)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *uid,
 						 const gchar *rid);
-	void		(*get_object_list)	(ECalBackend *backend,
+	void		(*impl_get_object_list)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *sexp);
-	void		(*get_free_busy)	(ECalBackend *backend,
+	void		(*impl_get_free_busy)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const GSList *users, /* gchar * */
 						 time_t start,
 						 time_t end);
-	void		(*create_objects)	(ECalBackend *backend,
+	void		(*impl_create_objects)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const GSList *calobjs, /* gchar * */
 						 guint32 opflags); /* bit-or of ECalOperationFlags */
-	void		(*modify_objects)	(ECalBackend *backend,
+	void		(*impl_modify_objects)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const GSList *calobjs, /* gchar * */
 						 ECalObjModType mod,
 						 guint32 opflags); /* bit-or of ECalOperationFlags */
-	void		(*remove_objects)	(ECalBackend *backend,
+	void		(*impl_remove_objects)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const GSList *ids, /* ECalComponentId * */
 						 ECalObjModType mod,
 						 guint32 opflags); /* bit-or of ECalOperationFlags */
-	void		(*receive_objects)	(ECalBackend *backend,
+	void		(*impl_receive_objects)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *calobj,
 						 guint32 opflags); /* bit-or of ECalOperationFlags */
-	void		(*send_objects)		(ECalBackend *backend,
+	void		(*impl_send_objects)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *calobj,
 						 guint32 opflags); /* bit-or of ECalOperationFlags */
-	void		(*get_attachment_uris)	(ECalBackend *backend,
+	void		(*impl_get_attachment_uris)
+						(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *uid,
 						 const gchar *rid);
-	void		(*discard_alarm)	(ECalBackend *backend,
+	void		(*impl_discard_alarm)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
@@ -183,20 +185,20 @@ struct _ECalBackendClass {
 						 const gchar *rid,
 						 const gchar *auid,
 						 guint32 opflags); /* bit-or of ECalOperationFlags */
-	void		(*get_timezone)		(ECalBackend *backend,
+	void		(*impl_get_timezone)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *tzid);
-	void		(*add_timezone)		(ECalBackend *backend,
+	void		(*impl_add_timezone)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *tzobject);
 
-	void		(*start_view)		(ECalBackend *backend,
+	void		(*impl_start_view)	(ECalBackend *backend,
 						 EDataCalView *view);
-	void		(*stop_view)		(ECalBackend *backend,
+	void		(*impl_stop_view)	(ECalBackend *backend,
 						 EDataCalView *view);
 
 	/* Signals */

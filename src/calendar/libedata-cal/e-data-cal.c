@@ -2541,7 +2541,7 @@ e_data_cal_init (EDataCal *data_cal)
  * method invocations and forwards them to the @backend.  If the Calendar
  * interface fails to export, the function sets @error and returns %NULL.
  *
- * Returns: an #EDataCal, or %NULL on error
+ * Returns: (transfer full) (nullable): an #EDataCal, or %NULL on error
  **/
 EDataCal *
 e_data_cal_new (ECalBackend *backend,
