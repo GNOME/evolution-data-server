@@ -12,39 +12,40 @@
 -->
 <interface name="org.gnome.evolution.dataserver.CalendarView">
 
-  <signal name="objects_added">
+  <signal name="ObjectsAdded">
     <arg name="objects" type="as"/>
   </signal>
 
-  <signal name="objects_modified">
+  <signal name="ObjectsModified">
     <arg name="objects" type="as"/>
   </signal>
 
-  <signal name="objects_removed">
+  <signal name="ObjectsRemoved">
     <arg name="uids" type="as"/>
   </signal>
 
-  <signal name="progress">
+  <signal name="Progress">
     <arg name="percent" type="u"/>
     <arg name="message" type="s"/>
   </signal>
 
-  <signal name="complete">
-    <arg name="error" type="as"/>
+  <signal name="Complete">
+    <arg name="error_name" type="s"/>
+    <arg name="error_message" type="s"/>
   </signal>
 
-  <method name="start"/>
+  <method name="Start"/>
 
-  <method name="stop"/>
+  <method name="Stop"/>
 
-  <method name="set_flags">
+  <method name="SetFlags">
     <arg name="flags" type="u"/>
   </method>
 
-  <method name="set_fields_of_interest">
+  <method name="SetFieldsOfInterest">
     <arg name="only_fields" direction="in" type="as"/>
   </method>
 
-  <method name="dispose"/>
+  <method name="Dispose"/>
 
 </interface>

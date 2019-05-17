@@ -1364,7 +1364,6 @@ e_data_cal_view_notify_complete (EDataCalView *view,
                                  const GError *error)
 {
 	gchar *error_name, *error_message;
-	const gchar *arg_error[3];
 
 	g_return_if_fail (E_IS_DATA_CAL_VIEW (view));
 
@@ -1391,13 +1390,10 @@ e_data_cal_view_notify_complete (EDataCalView *view,
 		error_message = g_strdup ("");
 	}
 
-	arg_error[0] = error_name;
-	arg_error[1] = error_message;
-	arg_error[2] = NULL;
-
 	e_dbus_calendar_view_emit_complete (
 		view->priv->dbus_object,
-		arg_error);
+		error_name,
+		error_message);
 
 	g_free (error_name);
 	g_free (error_message);
