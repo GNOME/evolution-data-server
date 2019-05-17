@@ -113,8 +113,7 @@ struct _ECalBackendClass {
 	void		(*open)			(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
-						 GCancellable *cancellable,
-						 gboolean only_if_exists);
+						 GCancellable *cancellable);
 
 	void		(*refresh)		(ECalBackend *backend,
 						 EDataCal *cal,

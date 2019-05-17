@@ -133,7 +133,7 @@ test_write_thread_contact_fetched (GObject *source_object,
 	e_contact_set (contact, data->field, data->value);
 
 	e_book_client_modify_contact (
-		data->client, contact, NULL,
+		data->client, contact, E_BOOK_OPERATION_FLAG_NONE, NULL,
 		(GAsyncReadyCallback) test_write_thread_contact_modified, data);
 
 	g_object_unref (contact);

@@ -70,7 +70,7 @@ test_add_contact_async (ETestServerFixture *fixture,
 	contact = e_contact_new_from_vcard (vcard);
 	g_free (vcard);
 
-	e_book_client_add_contact (book_client, contact, NULL, add_contact_cb, fixture->loop);
+	e_book_client_add_contact (book_client, contact, E_BOOK_OPERATION_FLAG_NONE, NULL, add_contact_cb, fixture->loop);
 	g_object_unref (contact);
 
 	g_main_loop_run (fixture->loop);

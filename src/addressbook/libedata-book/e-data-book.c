@@ -237,283 +237,7 @@ data_book_convert_to_client_error (GError *error)
 	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
 		error->domain = E_BOOK_CLIENT_ERROR;
 		error->code = E_BOOK_CLIENT_ERROR_NO_SUCH_BOOK;
-
-		return;
 	}
-
-	if (error->domain != E_DATA_BOOK_ERROR)
-		return;
-
-	switch (error->code) {
-		case E_DATA_BOOK_STATUS_REPOSITORY_OFFLINE:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_REPOSITORY_OFFLINE;
-			break;
-
-		case E_DATA_BOOK_STATUS_PERMISSION_DENIED:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_PERMISSION_DENIED;
-			break;
-
-		case E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND:
-			error->domain = E_BOOK_CLIENT_ERROR;
-			error->code = E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND;
-			break;
-
-		case E_DATA_BOOK_STATUS_CONTACTID_ALREADY_EXISTS:
-			error->domain = E_BOOK_CLIENT_ERROR;
-			error->code = E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS;
-			break;
-
-		case E_DATA_BOOK_STATUS_AUTHENTICATION_FAILED:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_AUTHENTICATION_FAILED;
-			break;
-
-		case E_DATA_BOOK_STATUS_UNSUPPORTED_AUTHENTICATION_METHOD:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD;
-			break;
-
-		case E_DATA_BOOK_STATUS_TLS_NOT_AVAILABLE:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_TLS_NOT_AVAILABLE;
-			break;
-
-		case E_DATA_BOOK_STATUS_NO_SUCH_BOOK:
-			error->domain = E_BOOK_CLIENT_ERROR;
-			error->code = E_BOOK_CLIENT_ERROR_NO_SUCH_BOOK;
-			break;
-
-		case E_DATA_BOOK_STATUS_BOOK_REMOVED:
-			error->domain = E_BOOK_CLIENT_ERROR;
-			error->code = E_BOOK_CLIENT_ERROR_NO_SUCH_SOURCE;
-			break;
-
-		case E_DATA_BOOK_STATUS_OFFLINE_UNAVAILABLE:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_OFFLINE_UNAVAILABLE;
-			break;
-
-		case E_DATA_BOOK_STATUS_SEARCH_SIZE_LIMIT_EXCEEDED:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_SEARCH_SIZE_LIMIT_EXCEEDED;
-			break;
-
-		case E_DATA_BOOK_STATUS_SEARCH_TIME_LIMIT_EXCEEDED:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_SEARCH_TIME_LIMIT_EXCEEDED;
-			break;
-
-		case E_DATA_BOOK_STATUS_INVALID_QUERY:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_INVALID_QUERY;
-			break;
-
-		case E_DATA_BOOK_STATUS_QUERY_REFUSED:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_QUERY_REFUSED;
-			break;
-
-		case E_DATA_BOOK_STATUS_COULD_NOT_CANCEL:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_COULD_NOT_CANCEL;
-			break;
-
-		case E_DATA_BOOK_STATUS_NO_SPACE:
-			error->domain = E_BOOK_CLIENT_ERROR;
-			error->code = E_BOOK_CLIENT_ERROR_NO_SPACE;
-			break;
-
-		case E_DATA_BOOK_STATUS_INVALID_ARG:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_INVALID_ARG;
-			break;
-
-		case E_DATA_BOOK_STATUS_NOT_SUPPORTED:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_NOT_SUPPORTED;
-			break;
-
-		case E_DATA_BOOK_STATUS_NOT_OPENED:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_NOT_OPENED;
-			break;
-
-		case E_DATA_BOOK_STATUS_OUT_OF_SYNC:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_OUT_OF_SYNC;
-			break;
-
-		case E_DATA_BOOK_STATUS_UNSUPPORTED_FIELD:
-		case E_DATA_BOOK_STATUS_OTHER_ERROR:
-		case E_DATA_BOOK_STATUS_INVALID_SERVER_VERSION:
-			error->domain = E_CLIENT_ERROR;
-			error->code = E_CLIENT_ERROR_OTHER_ERROR;
-			break;
-
-		default:
-			g_warn_if_reached ();
-	}
-}
-
-/**
- * e_data_book_status_to_string:
- * @status: an #EDataBookStatus
- *
- * Get localized human readable description of the given status code.
- *
- * Returns: Localized human readable description of the given status code
- *
- * Since: 2.32
- **/
-const gchar *
-e_data_book_status_to_string (EDataBookStatus status)
-{
-	gint i;
-	static struct _statuses {
-		EDataBookStatus status;
-		const gchar *msg;
-	} statuses[] = {
-		{ E_DATA_BOOK_STATUS_SUCCESS,				N_("Success") },
-		{ E_DATA_BOOK_STATUS_BUSY,				N_("Backend is busy") },
-		{ E_DATA_BOOK_STATUS_REPOSITORY_OFFLINE,		N_("Repository offline") },
-		{ E_DATA_BOOK_STATUS_PERMISSION_DENIED,			N_("Permission denied") },
-		{ E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND,			N_("Contact not found") },
-		{ E_DATA_BOOK_STATUS_CONTACTID_ALREADY_EXISTS,		N_("Contact ID already exists") },
-		{ E_DATA_BOOK_STATUS_AUTHENTICATION_FAILED,		N_("Authentication Failed") },
-		{ E_DATA_BOOK_STATUS_AUTHENTICATION_REQUIRED,		N_("Authentication Required") },
-		{ E_DATA_BOOK_STATUS_UNSUPPORTED_FIELD,			N_("Unsupported field") },
-		{ E_DATA_BOOK_STATUS_UNSUPPORTED_AUTHENTICATION_METHOD,	N_("Unsupported authentication method") },
-		{ E_DATA_BOOK_STATUS_TLS_NOT_AVAILABLE,			N_("TLS not available") },
-		{ E_DATA_BOOK_STATUS_NO_SUCH_BOOK,			N_("Address book does not exist") },
-		{ E_DATA_BOOK_STATUS_BOOK_REMOVED,			N_("Book removed") },
-		{ E_DATA_BOOK_STATUS_OFFLINE_UNAVAILABLE,		N_("Not available in offline mode") },
-		{ E_DATA_BOOK_STATUS_SEARCH_SIZE_LIMIT_EXCEEDED,	N_("Search size limit exceeded") },
-		{ E_DATA_BOOK_STATUS_SEARCH_TIME_LIMIT_EXCEEDED,	N_("Search time limit exceeded") },
-		{ E_DATA_BOOK_STATUS_INVALID_QUERY,			N_("Invalid query") },
-		{ E_DATA_BOOK_STATUS_QUERY_REFUSED,			N_("Query refused") },
-		{ E_DATA_BOOK_STATUS_COULD_NOT_CANCEL,			N_("Could not cancel") },
-		/* { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") }, */
-		{ E_DATA_BOOK_STATUS_INVALID_SERVER_VERSION,		N_("Invalid server version") },
-		{ E_DATA_BOOK_STATUS_NO_SPACE,				N_("No space") },
-		{ E_DATA_BOOK_STATUS_INVALID_ARG,			N_("Invalid argument") },
-		/* Translators: The string for NOT_SUPPORTED error */
-		{ E_DATA_BOOK_STATUS_NOT_SUPPORTED,			N_("Not supported") },
-		{ E_DATA_BOOK_STATUS_NOT_OPENED,			N_("Backend is not opened yet") },
-		{ E_DATA_BOOK_STATUS_OUT_OF_SYNC,                       N_("Object is out of sync") }
-	};
-
-	for (i = 0; i < G_N_ELEMENTS (statuses); i++) {
-		if (statuses[i].status == status)
-			return _(statuses[i].msg);
-	}
-
-	return _("Other error");
-}
-
-/* Create the EDataBook error quark */
-GQuark
-e_data_book_error_quark (void)
-{
-	#define ERR_PREFIX "org.gnome.evolution.dataserver.AddressBook."
-
-	static const GDBusErrorEntry entries[] = {
-		{ E_DATA_BOOK_STATUS_SUCCESS,				ERR_PREFIX "Success" },
-		{ E_DATA_BOOK_STATUS_BUSY,				ERR_PREFIX "Busy" },
-		{ E_DATA_BOOK_STATUS_REPOSITORY_OFFLINE,		ERR_PREFIX "RepositoryOffline" },
-		{ E_DATA_BOOK_STATUS_PERMISSION_DENIED,			ERR_PREFIX "PermissionDenied" },
-		{ E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND,			ERR_PREFIX "ContactNotFound" },
-		{ E_DATA_BOOK_STATUS_CONTACTID_ALREADY_EXISTS,		ERR_PREFIX "ContactIDAlreadyExists" },
-		{ E_DATA_BOOK_STATUS_AUTHENTICATION_FAILED,		ERR_PREFIX "AuthenticationFailed" },
-		{ E_DATA_BOOK_STATUS_AUTHENTICATION_REQUIRED,		ERR_PREFIX "AuthenticationRequired" },
-		{ E_DATA_BOOK_STATUS_UNSUPPORTED_FIELD,			ERR_PREFIX "UnsupportedField" },
-		{ E_DATA_BOOK_STATUS_UNSUPPORTED_AUTHENTICATION_METHOD,	ERR_PREFIX "UnsupportedAuthenticationMethod" },
-		{ E_DATA_BOOK_STATUS_TLS_NOT_AVAILABLE,			ERR_PREFIX "TLSNotAvailable" },
-		{ E_DATA_BOOK_STATUS_NO_SUCH_BOOK,			ERR_PREFIX "NoSuchBook" },
-		{ E_DATA_BOOK_STATUS_BOOK_REMOVED,			ERR_PREFIX "BookRemoved" },
-		{ E_DATA_BOOK_STATUS_OFFLINE_UNAVAILABLE,		ERR_PREFIX "OfflineUnavailable" },
-		{ E_DATA_BOOK_STATUS_SEARCH_SIZE_LIMIT_EXCEEDED,	ERR_PREFIX "SearchSizeLimitExceeded" },
-		{ E_DATA_BOOK_STATUS_SEARCH_TIME_LIMIT_EXCEEDED,	ERR_PREFIX "SearchTimeLimitExceeded" },
-		{ E_DATA_BOOK_STATUS_INVALID_QUERY,			ERR_PREFIX "InvalidQuery" },
-		{ E_DATA_BOOK_STATUS_QUERY_REFUSED,			ERR_PREFIX "QueryRefused" },
-		{ E_DATA_BOOK_STATUS_COULD_NOT_CANCEL,			ERR_PREFIX "CouldNotCancel" },
-		{ E_DATA_BOOK_STATUS_OTHER_ERROR,			ERR_PREFIX "OtherError" },
-		{ E_DATA_BOOK_STATUS_INVALID_SERVER_VERSION,		ERR_PREFIX "InvalidServerVersion" },
-		{ E_DATA_BOOK_STATUS_NO_SPACE,				ERR_PREFIX "NoSpace" },
-		{ E_DATA_BOOK_STATUS_INVALID_ARG,			ERR_PREFIX "InvalidArg" },
-		{ E_DATA_BOOK_STATUS_NOT_SUPPORTED,			ERR_PREFIX "NotSupported" },
-		{ E_DATA_BOOK_STATUS_NOT_OPENED,			ERR_PREFIX "NotOpened" },
-		{ E_DATA_BOOK_STATUS_OUT_OF_SYNC,                       ERR_PREFIX "OutOfSync" }
-	};
-
-	#undef ERR_PREFIX
-
-	static volatile gsize quark_volatile = 0;
-
-	g_dbus_error_register_error_domain ("e-data-book-error", &quark_volatile, entries, G_N_ELEMENTS (entries));
-
-	return (GQuark) quark_volatile;
-}
-
-/**
- * e_data_book_create_error:
- * @status: #EDataBookStatus code
- * @custom_msg: Custom message to use for the error. When NULL,
- *              then uses a default message based on the @status code.
- *
- * Returns: NULL, when the @status is E_DATA_BOOK_STATUS_SUCCESS,
- *          or a newly allocated GError, which should be freed
- *          with g_error_free() call.
- *
- * Since: 2.32
- **/
-GError *
-e_data_book_create_error (EDataBookStatus status,
-                          const gchar *custom_msg)
-{
-	if (status == E_DATA_BOOK_STATUS_SUCCESS)
-		return NULL;
-
-	return g_error_new_literal (E_DATA_BOOK_ERROR, status, custom_msg ? custom_msg : e_data_book_status_to_string (status));
-}
-
-/**
- * e_data_book_create_error_fmt:
- * @status: an #EDataBookStatus
- * @custom_msg_fmt: Custom message to use for the error. When NULL,
- *   then uses a default message based on the @status code.
- * @...: arguments for the @custom_msg_fmt
- *
- * Similar as e_data_book_create_error(), only here, instead of custom_msg,
- * is used a printf() format to create a custom_msg for the error.
- *
- * Returns: (transfer full): a new #GError populated with the values
- *   from the parameters.
- *
- * Since: 2.32
- **/
-GError *
-e_data_book_create_error_fmt (EDataBookStatus status,
-                              const gchar *custom_msg_fmt,
-                              ...)
-{
-	GError *error;
-	gchar *custom_msg;
-	va_list ap;
-
-	if (!custom_msg_fmt)
-		return e_data_book_create_error (status, NULL);
-
-	va_start (ap, custom_msg_fmt);
-	custom_msg = g_strdup_vprintf (custom_msg_fmt, ap);
-	va_end (ap);
-
-	error = e_data_book_create_error (status, custom_msg);
-
-	g_free (custom_msg);
-
-	return error;
 }
 
 /**
@@ -998,9 +722,10 @@ data_book_complete_create_contacts_cb (GObject *source_object,
 
 static gboolean
 data_book_handle_create_contacts_cb (EDBusAddressBook *dbus_interface,
-                                     GDBusMethodInvocation *invocation,
-                                     const gchar * const *in_vcards,
-                                     EDataBook *data_book)
+				     GDBusMethodInvocation *invocation,
+				     const gchar * const *in_vcards,
+				     guint32 in_opflags,
+				     EDataBook *data_book)
 {
 	EBookBackend *backend;
 	AsyncContext *async_context;
@@ -1011,7 +736,7 @@ data_book_handle_create_contacts_cb (EDBusAddressBook *dbus_interface,
 	async_context = async_context_new (data_book, invocation);
 
 	e_book_backend_create_contacts (
-		backend, in_vcards,
+		backend, in_vcards, in_opflags,
 		async_context->cancellable,
 		data_book_complete_create_contacts_cb,
 		async_context);
@@ -1047,9 +772,10 @@ data_book_complete_modify_contacts_cb (GObject *source_object,
 
 static gboolean
 data_book_handle_modify_contacts_cb (EDBusAddressBook *dbus_interface,
-                                     GDBusMethodInvocation *invocation,
-                                     const gchar * const *in_vcards,
-                                     EDataBook *data_book)
+				     GDBusMethodInvocation *invocation,
+				     const gchar * const *in_vcards,
+				     guint32 in_opflags,
+				     EDataBook *data_book)
 {
 	EBookBackend *backend;
 	AsyncContext *async_context;
@@ -1060,7 +786,7 @@ data_book_handle_modify_contacts_cb (EDBusAddressBook *dbus_interface,
 	async_context = async_context_new (data_book, invocation);
 
 	e_book_backend_modify_contacts (
-		backend, in_vcards,
+		backend, in_vcards, in_opflags,
 		async_context->cancellable,
 		data_book_complete_modify_contacts_cb,
 		async_context);
@@ -1096,9 +822,10 @@ data_book_complete_remove_contacts_cb (GObject *source_object,
 
 static gboolean
 data_book_handle_remove_contacts_cb (EDBusAddressBook *dbus_interface,
-                                     GDBusMethodInvocation *invocation,
-                                     const gchar * const *in_uids,
-                                     EDataBook *data_book)
+				     GDBusMethodInvocation *invocation,
+				     const gchar * const *in_uids,
+				     guint32 in_opflags,
+				     EDataBook *data_book)
 {
 	EBookBackend *backend;
 	AsyncContext *async_context;
@@ -1109,7 +836,7 @@ data_book_handle_remove_contacts_cb (EDBusAddressBook *dbus_interface,
 	async_context = async_context_new (data_book, invocation);
 
 	e_book_backend_remove_contacts (
-		backend, in_uids,
+		backend, in_uids, in_opflags,
 		async_context->cancellable,
 		data_book_complete_remove_contacts_cb,
 		async_context);
@@ -1469,16 +1196,16 @@ e_data_book_respond_refresh (EDataBook *book,
  * @book: An #EDataBook
  * @opid: An operation ID
  * @error: (nullable) (transfer full): Operation error, if any, automatically freed if passed it
- * @vcard: (nullable): the found vCard, as string, or %NULL, if it could not be found
+ * @contact: (nullable): the found #EContact, or %NULL, if it could not be found
  *
  * Notifies listeners of the completion of the get_contact method call.
- * Only one of @error and @vcard can be set.
+ * Only one of @error and @contact can be set.
  */
 void
 e_data_book_respond_get_contact (EDataBook *book,
                                  guint32 opid,
                                  GError *error,
-                                 const gchar *vcard)
+                                 const EContact *contact)
 {
 	EBookBackend *backend;
 	GSimpleAsyncResult *simple;
@@ -1497,11 +1224,7 @@ e_data_book_respond_get_contact (EDataBook *book,
 	g_prefix_error (&error, "%s", _("Cannot get contact: "));
 
 	if (error == NULL) {
-		EContact *contact;
-
-		contact = e_contact_new_from_vcard (vcard);
-		g_queue_push_tail (queue, g_object_ref (contact));
-		g_object_unref (contact);
+		g_queue_push_tail (queue, g_object_ref ((EContact *) contact));
 	} else {
 		g_simple_async_result_take_error (simple, error);
 	}
@@ -1517,9 +1240,9 @@ e_data_book_respond_get_contact (EDataBook *book,
  * @book: An #EDataBook
  * @opid: An operation ID
  * @error: Operation error, if any, automatically freed if passed it
- * @cards: (allow-none) (element-type utf8): A list of vCard strings, or %NULL on error
+ * @contacts: (allow-none) (element-type EContact): A list of #EContact, or %NULL on error
  *
- * Finishes a call to get list of vCards which satisfy certain criteria.
+ * Finishes a call to get list of #EContact, which satisfy certain criteria.
  *
  * Since: 3.2
  **/
@@ -1527,7 +1250,7 @@ void
 e_data_book_respond_get_contact_list (EDataBook *book,
                                       guint32 opid,
                                       GError *error,
-                                      const GSList *cards)
+                                      const GSList *contacts)
 {
 	EBookBackend *backend;
 	GSimpleAsyncResult *simple;
@@ -1546,16 +1269,12 @@ e_data_book_respond_get_contact_list (EDataBook *book,
 	g_prefix_error (&error, "%s", _("Cannot get contact list: "));
 
 	if (error == NULL) {
-		GSList *list, *link;
+		GSList *link;
 
-		list = (GSList *) cards;
+		for (link = (GSList *) contacts; link; link = g_slist_next (link)) {
+			EContact *contact = link->data;
 
-		for (link = list; link != NULL; link = g_slist_next (link)) {
-			EContact *contact;
-
-			contact = e_contact_new_from_vcard (link->data);
 			g_queue_push_tail (queue, g_object_ref (contact));
-			g_object_unref (contact);
 		}
 
 	} else {
@@ -1653,12 +1372,10 @@ e_data_book_respond_create_contacts (EDataBook *book,
 	g_prefix_error (&error, "%s", _("Cannot add contact: "));
 
 	if (error == NULL) {
-		GSList *list, *link;
+		GSList *link;
 
-		list = (GSList *) contacts;
-
-		for (link = list; link != NULL; link = g_slist_next (link)) {
-			EContact *contact = E_CONTACT (link->data);
+		for (link = (GSList *) contacts; link; link = g_slist_next (link)) {
+			EContact *contact = link->data;
 			g_queue_push_tail (queue, g_object_ref (contact));
 		}
 
@@ -1706,12 +1423,11 @@ e_data_book_respond_modify_contacts (EDataBook *book,
 	g_prefix_error (&error, "%s", _("Cannot modify contacts: "));
 
 	if (error == NULL) {
-		GSList *list, *link;
+		GSList *link;
 
-		list = (GSList *) contacts;
+		for (link = (GSList *) contacts; link; link = g_slist_next (link)) {
+			EContact *contact = contacts->data;
 
-		for (link = list; link != NULL; link = g_slist_next (link)) {
-			EContact *contact = E_CONTACT (contacts->data);
 			g_queue_push_tail (queue, g_object_ref (contact));
 		}
 
@@ -1759,11 +1475,9 @@ e_data_book_respond_remove_contacts (EDataBook *book,
 	g_prefix_error (&error, "%s", _("Cannot remove contacts: "));
 
 	if (error == NULL) {
-		GSList *list, *link;
+		GSList *link;
 
-		list = (GSList *) ids;
-
-		for (link = list; link != NULL; link = g_slist_next (link))
+		for (link = (GSList *) ids; link; link = g_slist_next (link))
 			g_queue_push_tail (queue, g_strdup (link->data));
 
 	} else {
@@ -1842,14 +1556,14 @@ e_data_book_report_backend_property_changed (EDataBook *book,
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_REVISION))
 		e_dbus_address_book_set_revision (dbus_interface, prop_value);
 
-	if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
+	if (g_str_equal (prop_name, E_BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
 		strv = g_strsplit (prop_value, ",", -1);
 		e_dbus_address_book_set_required_fields (
 			dbus_interface, (const gchar * const *) strv);
 		g_strfreev (strv);
 	}
 
-	if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
+	if (g_str_equal (prop_name, E_BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
 		strv = g_strsplit (prop_value, ",", -1);
 		e_dbus_address_book_set_supported_fields (
 			dbus_interface, (const gchar * const *) strv);
@@ -2048,13 +1762,13 @@ data_book_constructed (GObject *object)
 		book, prop_name, prop_value);
 	g_free (prop_value);
 
-	prop_name = BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS;
+	prop_name = E_BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS;
 	prop_value = e_book_backend_get_backend_property (backend, prop_name);
 	e_data_book_report_backend_property_changed (
 		book, prop_name, prop_value);
 	g_free (prop_value);
 
-	prop_name = BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS;
+	prop_name = E_BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS;
 	prop_value = e_book_backend_get_backend_property (backend, prop_name);
 	e_data_book_report_backend_property_changed (
 		book, prop_name, prop_value);

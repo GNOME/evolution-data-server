@@ -1197,7 +1197,6 @@ static void
 e_cal_backend_contacts_open (ECalBackendSync *backend,
                              EDataCal *cal,
                              GCancellable *cancellable,
-                             gboolean only_if_exists,
                              GError **perror)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);

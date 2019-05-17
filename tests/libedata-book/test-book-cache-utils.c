@@ -91,7 +91,7 @@ tcu_add_contact_from_test_case (TCUFixture *fixture,
 
 	contact = tcu_new_contact_from_test_case (case_name);
 
-	if (!e_book_cache_put_contact (fixture->book_cache, contact, case_name, E_CACHE_IS_ONLINE, NULL, &error))
+	if (!e_book_cache_put_contact (fixture->book_cache, contact, case_name, 0, E_CACHE_IS_ONLINE, NULL, &error))
 		g_error ("Failed to add contact: %s", error->message);
 
 	if (ret_contact)
@@ -249,7 +249,7 @@ tcu_cursor_fixture_setup (TCUCursorFixture *fixture,
 		fixture->contacts[ii] = g_object_ref (contact);
 	}
 
-	if (!e_book_cache_put_contacts (base_fixture->book_cache, contacts, extra_list, E_CACHE_IS_ONLINE, NULL, &error)) {
+	if (!e_book_cache_put_contacts (base_fixture->book_cache, contacts, extra_list, NULL, E_CACHE_IS_ONLINE, NULL, &error)) {
 		/* Dont complain here, we re-use the same addressbook for multiple tests
 		 * and we can't add the same contacts twice
 		 */

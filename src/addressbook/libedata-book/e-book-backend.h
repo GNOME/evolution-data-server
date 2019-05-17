@@ -76,38 +76,29 @@ struct _EBookBackend {
  * EBookBackendClass:
  * @use_serial_dispatch_queue: Whether a serial dispatch queue should
  *                             be used for this backend or not. The default is %TRUE.
- * @get_backend_property: Fetch a property value by name from the backend
- * @open_sync: Open the backend
- * @refresh_sync: Refresh the backend
- * @create_contacts_sync: Add and store the passed vcards
- * @modify_contacts_sync: Modify the existing contacts using the passed vcards
- * @remove_contacts_sync: Remove the contacts specified by the passed UIDs
- * @get_contact_sync: Fetch a contact by UID
- * @get_contact_list_sync: Fetch a list of contacts based on a search expression
- * @get_contact_list_uids_sync: Fetch a list of contact UIDs based on a search expression (optional)
- * @start_view: Start up the specified view
- * @stop_view: Stop the specified view
- * @notify_update: Notify changes which might have occured for a given contact
- * @get_direct_book: For addressbook backends which support Direct Read Access,
+ * @impl_get_backend_property: Fetch a property value by name from the backend
+ * @impl_open: Open the backend
+ * @impl_refresh: Refresh the backend
+ * @impl_create_contacts: Add and store the passed vcards
+ * @impl_modify_contacts: Modify the existing contacts using the passed vcards
+ * @impl_remove_contacts: Remove the contacts specified by the passed UIDs
+ * @impl_get_contact: Fetch a contact by UID
+ * @impl_get_contact_list: Fetch a list of contacts based on a search expression
+ * @impl_get_contact_list_uids: Fetch a list of contact UIDs based on a search expression
+ * @impl_start_view: Start up the specified view
+ * @impl_stop_view: Stop the specified view
+ * @impl_notify_update: Notify changes which might have occured for a given contact
+ * @impl_get_direct_book: For addressbook backends which support Direct Read Access,
  *                   report some information on how to access the addressbook persistance directly
- * @configure_direct: For addressbook backends which support Direct Read Access, configure a
+ * @impl_configure_direct: For addressbook backends which support Direct Read Access, configure a
  *                    backend instantiated on the client side for Direct Read Access, using data
  *                    reported from the server via the @get_direct_book method.
- * @sync: Sync the backend's persistance
- * @set_locale: Store & remember the passed locale setting
- * @dup_locale: Return the currently set locale setting (must be a string duplicate, for thread safety).
- * @create_cursor: Create an #EDataBookCursor
- * @delete_cursor: Delete an #EDataBookCursor previously created by this backend
+ * @impl_set_locale: Store & remember the passed locale setting
+ * @impl_dup_locale: Return the currently set locale setting (must be a string duplicate, for thread safety).
+ * @impl_create_cursor: Create an #EDataBookCursor
+ * @impl_delete_cursor: Delete an #EDataBookCursor previously created by this backend
  * @closed: A signal notifying that the backend was closed
  * @shutdown: A signal notifying that the backend is being shut down
- * @open: Deprecated method
- * @refresh: Deprecated method
- * @create_contacts: Deprecated method
- * @remove_contacts: Deprecated method
- * @modify_contacts: Deprecated method
- * @get_contact: Deprecated method
- * @get_contact_list: Deprecated method
- * @get_contact_list_uids: Deprecated method
  *
  * Class structure for the #EBookBackend class.
  *
@@ -127,121 +118,78 @@ struct _EBookBackendClass {
 	 * dispatch queue, but helps avoid thread-safety issues. */
 	gboolean use_serial_dispatch_queue;
 
-	gchar *		(*get_backend_property)	(EBookBackend *backend,
+	gchar *		(*impl_get_backend_property)
+						 (EBookBackend *backend,
 						 const gchar *prop_name);
 
-	gboolean	(*open_sync)		(EBookBackend *backend,
-						 GCancellable *cancellable,
-						 GError **error);
-	gboolean	(*refresh_sync)		(EBookBackend *backend,
-						 GCancellable *cancellable,
-						 GError **error);
-	gboolean	(*create_contacts_sync)	(EBookBackend *backend,
-						 const gchar * const *vcards,
-						 GQueue *out_contacts,
-						 GCancellable *cancellable,
-						 GError **error);
-	gboolean	(*modify_contacts_sync)	(EBookBackend *backend,
-						 const gchar * const *vcards,
-						 GQueue *out_contacts,
-						 GCancellable *cancellable,
-						 GError **error);
-	gboolean	(*remove_contacts_sync)	(EBookBackend *backend,
-						 const gchar * const *uids,
-						 GCancellable *cancellable,
-						 GError **error);
-	EContact *	(*get_contact_sync)	(EBookBackend *backend,
-						 const gchar *uid,
-						 GCancellable *cancellable,
-						 GError **error);
-	gboolean	(*get_contact_list_sync)
-						(EBookBackend *backend,
-						 const gchar *query,
-						 GQueue *out_contacts,
-						 GCancellable *cancellable,
-						 GError **error);
-
-	/* This method is optional.  By default, it simply calls
-	 * get_contact_list_sync() and extracts UID strings from
-	 * the matched EContacts.  Backends may override this if
-	 * they can implement it more efficiently. */
-	gboolean	(*get_contact_list_uids_sync)
-						(EBookBackend *backend,
-						 const gchar *query,
-						 GQueue *out_uids,
-						 GCancellable *cancellable,
-						 GError **error);
-
-	/* These methods are deprecated and will be removed once all
-	 * known subclasses are converted to the new methods above. */
-	void		(*open)			(EBookBackend *backend,
-						 EDataBook *book,
-						 guint32 opid,
-						 GCancellable *cancellable,
-						 gboolean only_if_exists);
-	void		(*refresh)		(EBookBackend *backend,
+	void		(*impl_open)		(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
 						 GCancellable *cancellable);
-	void		(*create_contacts)	(EBookBackend *backend,
+	void		(*impl_refresh)		(EBookBackend *backend,
+						 EDataBook *book,
+						 guint32 opid,
+						 GCancellable *cancellable);
+	void		(*impl_create_contacts)	(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
 						 GCancellable *cancellable,
-						 const GSList *vcards);
-	void		(*remove_contacts)	(EBookBackend *backend,
+						 const gchar * const *vcards,
+						 guint32 opflags); /* bit-or of EBookOperationFlags */
+	void		(*impl_modify_contacts)	(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
 						 GCancellable *cancellable,
-						 const GSList *id_list);
-	void		(*modify_contacts)	(EBookBackend *backend,
+						 const gchar * const *vcards,
+						 guint32 opflags); /* bit-or of EBookOperationFlags */
+	void		(*impl_remove_contacts)	(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
 						 GCancellable *cancellable,
-						 const GSList *vcards);
-	void		(*get_contact)		(EBookBackend *backend,
+						 const gchar * const *uids,
+						 guint32 opflags); /* bit-or of EBookOperationFlags */
+	void		(*impl_get_contact)	(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *id);
-	void		(*get_contact_list)	(EBookBackend *backend,
+	void		(*impl_get_contact_list)(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *query);
-	void		(*get_contact_list_uids)
+	void		(*impl_get_contact_list_uids)
 						(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *query);
 
-	void		(*start_view)		(EBookBackend *backend,
+	void		(*impl_start_view)	(EBookBackend *backend,
 						 EDataBookView *view);
-	void		(*stop_view)		(EBookBackend *backend,
+	void		(*impl_stop_view)	(EBookBackend *backend,
 						 EDataBookView *view);
 
-	void		(*notify_update)	(EBookBackend *backend,
+	void		(*impl_notify_update)	(EBookBackend *backend,
 						 const EContact *contact);
 
 	EDataBookDirect *
-			(*get_direct_book)	(EBookBackend *backend);
-	void		(*configure_direct)	(EBookBackend *backend,
+			(*impl_get_direct_book)	(EBookBackend *backend);
+	void		(*impl_configure_direct)(EBookBackend *backend,
 						 const gchar *config);
 
-	void		(*sync)			(EBookBackend *backend);
-
-	gboolean	(*set_locale)		(EBookBackend *backend,
+	gboolean	(*impl_set_locale)	(EBookBackend *backend,
 						 const gchar *locale,
 						 GCancellable *cancellable,
 						 GError **error);
-	gchar *		(*dup_locale)		(EBookBackend *backend);
+	gchar *		(*impl_dup_locale)	(EBookBackend *backend);
 	EDataBookCursor *
-			(*create_cursor)	(EBookBackend *backend,
+			(*impl_create_cursor)	(EBookBackend *backend,
 						 EContactField *sort_fields,
 						 EBookCursorSortType *sort_types,
 						 guint n_fields,
 						 GError **error);
-	gboolean	(*delete_cursor)	(EBookBackend *backend,
+	gboolean	(*impl_delete_cursor)	(EBookBackend *backend,
 						 EDataBookCursor *cursor,
 						 GError **error);
 
@@ -249,6 +197,9 @@ struct _EBookBackendClass {
 	void		(*closed)		(EBookBackend *backend,
 						 const gchar *sender);
 	void		(*shutdown)		(EBookBackend *backend);
+
+	/* Padding for future expansion */
+	gpointer reserved_padding[20];
 };
 
 GType		e_book_backend_get_type		(void) G_GNUC_CONST;
@@ -298,11 +249,13 @@ gboolean	e_book_backend_refresh_finish	(EBookBackend *backend,
 gboolean	e_book_backend_create_contacts_sync
 						(EBookBackend *backend,
 						 const gchar * const *vcards,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GQueue *out_contacts,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_book_backend_create_contacts	(EBookBackend *backend,
 						 const gchar * const *vcards,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -314,10 +267,12 @@ gboolean	e_book_backend_create_contacts_finish
 gboolean	e_book_backend_modify_contacts_sync
 						(EBookBackend *backend,
 						 const gchar * const *vcards,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_book_backend_modify_contacts	(EBookBackend *backend,
 						 const gchar * const *vcards,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -328,10 +283,12 @@ gboolean	e_book_backend_modify_contacts_finish
 gboolean	e_book_backend_remove_contacts_sync
 						(EBookBackend *backend,
 						 const gchar * const *uids,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_book_backend_remove_contacts	(EBookBackend *backend,
 						 const gchar * const *uids,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);

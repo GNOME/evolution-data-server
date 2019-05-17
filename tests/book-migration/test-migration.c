@@ -174,10 +174,10 @@ test_add_remove_contact (MigrationFixture *fixture,
 
 	contact = e_contact_new_from_vcard (arbitrary_vcard);
 
-	if (!e_book_client_add_contact_sync (book_client, contact, NULL, NULL, &error))
+	if (!e_book_client_add_contact_sync (book_client, contact, E_BOOK_OPERATION_FLAG_NONE, NULL, NULL, &error))
 		g_error ("Failed to add contact: %s", error->message);
 
-	if (!e_book_client_remove_contact_sync (book_client, contact, NULL, &error))
+	if (!e_book_client_remove_contact_sync (book_client, contact, E_BOOK_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("Failed to remove contact: %s", error->message);
 
 	g_object_unref (contact);

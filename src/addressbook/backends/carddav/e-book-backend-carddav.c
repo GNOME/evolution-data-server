@@ -32,8 +32,9 @@
 
 #define E_WEBDAV_X_ETAG "X-EVOLUTION-WEBDAV-ETAG"
 
-#define EDB_ERROR(_code) e_data_book_create_error (_code, NULL)
-#define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (_code, _msg)
+#define EC_ERROR(_code) e_client_error_create (_code, NULL)
+#define EC_ERROR_EX(_code, _msg) e_client_error_create (_code, _msg)
+#define EBC_ERROR(_code) e_book_client_error_create (_code, NULL)
 
 struct _EBookBackendCardDAVPrivate {
 	/* The main WebDAV session  */
@@ -566,6 +567,7 @@ ebb_carddav_search_changes_cb (EBookCache *book_cache,
 			       const gchar *revision,
 			       const gchar *object,
 			       const gchar *extra,
+			       guint32 custom_flags,
 			       EOfflineState offline_state,
 			       gpointer user_data)
 {
@@ -610,19 +612,19 @@ ebb_carddav_check_credentials_error (EBookBackendCardDAV *bbdav,
 	g_return_if_fail (E_IS_BOOK_BACKEND_CARDDAV (bbdav));
 
 	if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED) && webdav) {
-		op_error->domain = E_DATA_BOOK_ERROR;
-		op_error->code = E_DATA_BOOK_STATUS_TLS_NOT_AVAILABLE;
+		op_error->domain = E_CLIENT_ERROR;
+		op_error->code = E_CLIENT_ERROR_TLS_NOT_AVAILABLE;
 	} else if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
 		   g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
-		op_error->domain = E_DATA_BOOK_ERROR;
-		op_error->code = E_DATA_BOOK_STATUS_AUTHENTICATION_REQUIRED;
+		op_error->domain = E_CLIENT_ERROR;
+		op_error->code = E_CLIENT_ERROR_AUTHENTICATION_REQUIRED;
 
 		if (webdav) {
 			ENamedParameters *credentials;
 
 			credentials = e_soup_session_dup_credentials (E_SOUP_SESSION (webdav));
 			if (credentials && e_named_parameters_count (credentials) > 0)
-				op_error->code = E_DATA_BOOK_STATUS_AUTHENTICATION_FAILED;
+				op_error->code = E_CLIENT_ERROR_AUTHENTICATION_FAILED;
 
 			e_named_parameters_free (credentials);
 		}
@@ -982,7 +984,7 @@ ebb_carddav_load_contact_sync (EBookMetaBackend *meta_backend,
 				g_free (last_sync_tag);
 				g_free (new_sync_tag);
 
-				g_propagate_error (error, EDB_ERROR (E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND));
+				g_propagate_error (error, EBC_ERROR (E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND));
 
 				return FALSE;
 			}
@@ -1033,11 +1035,11 @@ ebb_carddav_load_contact_sync (EBookMetaBackend *meta_backend,
 			success = FALSE;
 
 			if (!href)
-				g_propagate_error (&local_error, EDB_ERROR_EX (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Server didn’t return object’s href")));
+				g_propagate_error (&local_error, EC_ERROR_EX (E_CLIENT_ERROR_OTHER_ERROR, _("Server didn’t return object’s href")));
 			else if (!etag)
-				g_propagate_error (&local_error, EDB_ERROR_EX (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Server didn’t return object’s ETag")));
+				g_propagate_error (&local_error, EC_ERROR_EX (E_CLIENT_ERROR_OTHER_ERROR, _("Server didn’t return object’s ETag")));
 			else
-				g_propagate_error (&local_error, EDB_ERROR_EX (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Received object is not a valid vCard")));
+				g_propagate_error (&local_error, EC_ERROR_EX (E_CLIENT_ERROR_OTHER_ERROR, _("Received object is not a valid vCard")));
 		} else if (out_extra) {
 			*out_extra = g_strdup (href);
 		}
@@ -1064,6 +1066,7 @@ ebb_carddav_save_contact_sync (EBookMetaBackend *meta_backend,
 			       EConflictResolution conflict_resolution,
 			       /* const */ EContact *contact,
 			       const gchar *extra,
+			       guint32 opflags,
 			       gchar **out_new_uid,
 			       gchar **out_new_extra,
 			       GCancellable *cancellable,
@@ -1146,10 +1149,11 @@ ebb_carddav_save_contact_sync (EBookMetaBackend *meta_backend,
 		g_free (new_etag);
 	} else if (uid && vcard_string) {
 		success = FALSE;
-		g_propagate_error (error, EDB_ERROR_EX (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Missing information about vCard URL, local cache is possibly incomplete or broken. Remove it, please.")));
+		g_propagate_error (error, EC_ERROR_EX (E_CLIENT_ERROR_OTHER_ERROR,
+			_("Missing information about vCard URL, local cache is possibly incomplete or broken. Remove it, please.")));
 	} else {
 		success = FALSE;
-		g_propagate_error (error, EDB_ERROR_EX (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Object to save is not a valid vCard")));
+		g_propagate_error (error, EC_ERROR_EX (E_CLIENT_ERROR_OTHER_ERROR, _("Object to save is not a valid vCard")));
 	}
 
 	g_free (vcard_string);
@@ -1173,6 +1177,7 @@ ebb_carddav_remove_contact_sync (EBookMetaBackend *meta_backend,
 				 const gchar *uid,
 				 const gchar *extra,
 				 const gchar *object,
+				 guint32 opflags,
 				 GCancellable *cancellable,
 				 GError **error)
 {
@@ -1190,13 +1195,13 @@ ebb_carddav_remove_contact_sync (EBookMetaBackend *meta_backend,
 	bbdav = E_BOOK_BACKEND_CARDDAV (meta_backend);
 
 	if (!extra || !*extra) {
-		g_propagate_error (error, EDB_ERROR (E_DATA_BOOK_STATUS_INVALID_ARG));
+		g_propagate_error (error, EC_ERROR (E_CLIENT_ERROR_INVALID_ARG));
 		return FALSE;
 	}
 
 	contact = e_contact_new_from_vcard (object);
 	if (!contact) {
-		g_propagate_error (error, EDB_ERROR (E_DATA_BOOK_STATUS_INVALID_ARG));
+		g_propagate_error (error, EC_ERROR (E_CLIENT_ERROR_INVALID_ARG));
 		return FALSE;
 	}
 
@@ -1293,7 +1298,7 @@ ebb_carddav_get_backend_property (EBookBackend *book_backend,
 	}
 
 	/* Chain up to parent's method. */
-	return E_BOOK_BACKEND_CLASS (e_book_backend_carddav_parent_class)->get_backend_property (book_backend, prop_name);
+	return E_BOOK_BACKEND_CLASS (e_book_backend_carddav_parent_class)->impl_get_backend_property (book_backend, prop_name);
 }
 
 static gchar *
@@ -1376,7 +1381,7 @@ e_book_backend_carddav_class_init (EBookBackendCardDAVClass *klass)
 	book_meta_backend_class->get_ssl_error_details = ebb_carddav_get_ssl_error_details;
 
 	book_backend_class = E_BOOK_BACKEND_CLASS (klass);
-	book_backend_class->get_backend_property = ebb_carddav_get_backend_property;
+	book_backend_class->impl_get_backend_property = ebb_carddav_get_backend_property;
 
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->constructed = e_book_backend_carddav_constructed;

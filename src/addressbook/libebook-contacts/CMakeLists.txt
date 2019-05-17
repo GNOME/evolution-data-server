@@ -1,4 +1,4 @@
-glib_mkenums(e-book-contacts-enumtypes e-book-contacts-types.h E_BOOK_CONTACTS_ENUMTYPES_H)
+glib_mkenums(e-book-contacts-enumtypes e-book-contacts-enums.h E_BOOK_CONTACTS_ENUMTYPES_H)
 
 add_pkgconfig_file(libebook-contacts.pc.in libebook-contacts-${API_VERSION}.pc)
 
@@ -36,7 +36,7 @@ set(DEPENDENCIES
 
 set(SOURCES
 	e-address-western.c
-	e-book-contacts-types.c
+	e-book-contacts-utils.c
 	e-book-query.c
 	e-contact.c
 	e-name-western.c
@@ -51,7 +51,8 @@ set(SOURCES
 set(HEADERS
 	libebook-contacts.h
 	e-address-western.h
-	e-book-contacts-types.h
+	e-book-contacts-enums.h
+	e-book-contacts-utils.h
 	e-book-query.h
 	e-contact.h
 	e-name-western.h

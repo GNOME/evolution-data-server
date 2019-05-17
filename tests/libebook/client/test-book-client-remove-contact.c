@@ -41,7 +41,7 @@ check_removed_contact (EBookClient *book_client,
 	else
 		g_clear_error (&error);
 
-	if (e_book_client_remove_contact_by_uid_sync (book_client, uid, NULL, &error))
+	if (e_book_client_remove_contact_by_uid_sync (book_client, uid, E_BOOK_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("succeeded to remove the already removed contact");
 	else if (!g_error_matches (error, E_BOOK_CLIENT_ERROR, E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND))
 		g_error (
@@ -67,7 +67,7 @@ test_remove_contact_sync (ETestServerFixture *fixture,
 
 	uid = e_contact_get (contact, E_CONTACT_UID);
 
-	if (!e_book_client_remove_contact_sync (book_client, contact, NULL, &error))
+	if (!e_book_client_remove_contact_sync (book_client, contact, E_BOOK_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("remove contact sync: %s", error->message);
 
 	g_object_unref (contact);
@@ -116,7 +116,7 @@ test_remove_contact_async (ETestServerFixture *fixture,
 
 	data.uid = uid;
 	data.loop = fixture->loop;
-	e_book_client_remove_contact (book_client, contact, NULL, remove_contact_cb, &data);
+	e_book_client_remove_contact (book_client, contact, E_BOOK_OPERATION_FLAG_NONE, NULL, remove_contact_cb, &data);
 
 	g_object_unref (contact);
 

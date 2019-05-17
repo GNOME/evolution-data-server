@@ -98,7 +98,7 @@ test_add_e164_param (ETestServerFixture *fixture,
 	values = e_vcard_attribute_get_param (tel, EVC_X_E164);
 	g_assert (values == NULL);
 
-	if (!e_book_client_add_contact_sync (book_client, contact, &uid, NULL, &error))
+	if (!e_book_client_add_contact_sync (book_client, contact, E_BOOK_OPERATION_FLAG_NONE, &uid, NULL, &error))
 		g_error ("Failed to add contact: %s", error->message);
 
 	g_object_unref (contact);

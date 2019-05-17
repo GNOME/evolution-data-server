@@ -309,7 +309,7 @@ cursor_fixture_add_contacts (CursorFixture *fixture,
 		fixture->contacts[i] = contact;
 	}
 
-	if (!e_book_client_add_contacts_sync (book_client, contacts, NULL, NULL, &error)) {
+	if (!e_book_client_add_contacts_sync (book_client, contacts, E_BOOK_OPERATION_FLAG_NONE, NULL, NULL, &error)) {
 
 		/* Dont complain here, we re-use the same addressbook for multiple tests
 		 * and we can't add the same contacts twice
@@ -1312,11 +1312,11 @@ cursor_test_add_remove (CursorFixture *fixture,
 
 		if (modify->add)
 			e_book_client_add_contact (
-				book_client, contact,
+				book_client, contact, E_BOOK_OPERATION_FLAG_NONE,
 				NULL, cursor_test_add_remove_ready_cb, &data);
 		else
 			e_book_client_remove_contact (
-				book_client, contact,
+				book_client, contact, E_BOOK_OPERATION_FLAG_NONE,
 				NULL, cursor_test_add_remove_ready_cb, &data);
 
 		/* Wait for result with an error timeout */
@@ -1331,14 +1331,11 @@ cursor_test_add_remove (CursorFixture *fixture,
 
 		if (modify->add)
 			success = e_book_client_add_contact_sync (
-				book_client,
-				contact,
-				&new_uid,
-				NULL, &error);
+				book_client, contact, E_BOOK_OPERATION_FLAG_NONE,
+				&new_uid, NULL, &error);
 		else
 			success = e_book_client_remove_contact_sync (
-				book_client,
-				contact,
+				book_client, contact, E_BOOK_OPERATION_FLAG_NONE,
 				NULL, &error);
 
 		if (!success)

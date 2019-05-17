@@ -46,8 +46,9 @@
 #define E_BOOK_BACKEND_FILE_VERSION_NAME          "PAS-DB-VERSION"
 #define E_BOOK_BACKEND_FILE_LAST_BDB_VERSION      "0.2"
 
-#define EDB_ERROR(_code)          e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL)
-#define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
+#define EC_ERROR(_code)          e_client_error_create (_code, NULL)
+#define EC_ERROR_EX(_code, _msg) e_client_error_create (_code, _msg)
+#define EBC_ERROR(_code)         e_book_client_error_create (_code, NULL)
 
 G_LOCK_DEFINE_STATIC (db_env);
 static DB_ENV *db_env = NULL;
@@ -132,16 +133,16 @@ db_error_to_gerror (const gint db_error,
 	case 0:
 		return;
 	case DB_NOTFOUND:
-		g_propagate_error (perror, EDB_ERROR (CONTACT_NOT_FOUND));
+		g_propagate_error (perror, EBC_ERROR (E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND));
 		return;
 	case EACCES:
-		g_propagate_error (perror, EDB_ERROR (PERMISSION_DENIED));
+		g_propagate_error (perror, EC_ERROR (E_CLIENT_ERROR_PERMISSION_DENIED));
 		return;
 	default:
 		g_propagate_error (
 			perror,
-			e_data_book_create_error_fmt (
-				E_DATA_BOOK_STATUS_OTHER_ERROR,
+			e_client_error_create_fmt (
+				E_CLIENT_ERROR_OTHER_ERROR,
 				"db error 0x%x (%s)", db_error,
 				db_strerror (db_error) ?
 					db_strerror (db_error) :
@@ -510,7 +511,7 @@ e_book_backend_file_migrate_bdb (EBookSqlite *sqlitedb,
 
 	/* Try another upgrade */
 	if (!e_book_backend_file_maybe_upgrade_db (db)) {
-		g_propagate_error (error, EDB_ERROR_EX (OTHER_ERROR, "e_book_backend_file_maybe_upgrade_db failed"));
+		g_propagate_error (error, EC_ERROR_EX (E_CLIENT_ERROR_OTHER_ERROR, "e_book_backend_file_maybe_upgrade_db failed"));
 		goto close_db;
 	}
 

@@ -95,7 +95,8 @@ void		e_book_cache_search_data_free	(/* EBookCacheSearchData * */ gpointer data)
  * @revision: the object revision
  * @object: the object itself
  * @extra: extra data stored with the object
- * @offline_state: objects offline state, one of #EOfflineState
+ * @custom_flags: object's custom flags
+ * @offline_state: object's offline state, one of #EOfflineState
  * @user_data: user data, as used in e_book_cache_search_with_callback()
  *
  * A callback called for each object row when using
@@ -110,6 +111,7 @@ typedef gboolean (* EBookCacheSearchFunc)	(EBookCache *book_cache,
 						 const gchar *revision,
 						 const gchar *object,
 						 const gchar *extra,
+						 guint32 custom_flags,
 						 EOfflineState offline_state,
 						 gpointer user_data);
 
@@ -221,22 +223,26 @@ ECollator *	e_book_cache_ref_collator	(EBookCache *book_cache);
 gboolean	e_book_cache_put_contact	(EBookCache *book_cache,
 						 EContact *contact,
 						 const gchar *extra,
+						 guint32 custom_flags,
 						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_book_cache_put_contacts	(EBookCache *book_cache,
-						 const GSList *contacts,
-						 const GSList *extras,
+						 const GSList *contacts, /* EContact * */
+						 const GSList *extras, /* gchar * */
+						 const GSList *custom_flags, /* guint32, through GUINT_TO_POINTER() */
 						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_book_cache_remove_contact	(EBookCache *book_cache,
 						 const gchar *uid,
+						 guint32 custom_flags,
 						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_book_cache_remove_contacts	(EBookCache *book_cache,
-						 const GSList *uids,
+						 const GSList *uids, /* gchar * */
+						 const GSList *custom_flags, /* guint32, through GUINT_TO_POINTER() */
 						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
@@ -250,6 +256,18 @@ gboolean	e_book_cache_get_vcard		(EBookCache *book_cache,
 						 const gchar *uid,
 						 gboolean meta_contact,
 						 gchar **out_vcard,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_book_cache_set_contact_custom_flags
+						(EBookCache *book_cache,
+						 const gchar *uid,
+						 guint32 custom_flags,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_book_cache_get_contact_custom_flags
+						(EBookCache *book_cache,
+						 const gchar *uid,
+						 guint32 *out_custom_flags,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_book_cache_set_contact_extra	(EBookCache *book_cache,
@@ -287,6 +305,8 @@ gboolean	e_book_cache_search_with_callback
 						 GCancellable *cancellable,
 						 GError **error);
 /* Cursor API */
+GType		e_book_cache_cursor_get_type	(void) G_GNUC_CONST;
+
 EBookCacheCursor *
 		e_book_cache_cursor_new		(EBookCache *book_cache,
 						 const gchar *sexp,

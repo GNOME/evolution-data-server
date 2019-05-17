@@ -1235,7 +1235,6 @@ static void
 ecmb_open_sync (ECalBackendSync *sync_backend,
 		EDataCal *cal,
 		GCancellable *cancellable,
-		gboolean only_if_exists,
 		GError **error)
 {
 	ECalMetaBackend *meta_backend;

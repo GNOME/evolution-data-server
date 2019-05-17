@@ -23,7 +23,7 @@
 #define E_BOOK_META_BACKEND_H
 
 #include <libebackend/libebackend.h>
-#include <libedata-book/e-book-backend.h>
+#include <libedata-book/e-book-backend-sync.h>
 #include <libedata-book/e-book-cache.h>
 #include <libebook-contacts/libebook-contacts.h>
 
@@ -82,7 +82,7 @@ typedef struct _EBookMetaBackendPrivate EBookMetaBackendPrivate;
  **/
 struct _EBookMetaBackend {
 	/*< private >*/
-	EBookBackend parent;
+	EBookBackendSync parent;
 	EBookMetaBackendPrivate *priv;
 };
 
@@ -95,7 +95,7 @@ struct _EBookMetaBackend {
  */
 struct _EBookMetaBackendClass {
 	/*< private >*/
-	EBookBackendClass parent_class;
+	EBookBackendSyncClass parent_class;
 
 	/* For Direct Read Access */
 	const gchar *backend_module_filename;
@@ -140,6 +140,7 @@ struct _EBookMetaBackendClass {
 						 EConflictResolution conflict_resolution,
 						 /* const */ EContact *contact,
 						 const gchar *extra,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 gchar **out_new_uid,
 						 gchar **out_new_extra,
 						 GCancellable *cancellable,
@@ -149,6 +150,7 @@ struct _EBookMetaBackendClass {
 						 const gchar *uid,
 						 const gchar *extra,
 						 const gchar *object,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(* search_sync)		(EBookMetaBackend *meta_backend,
@@ -275,6 +277,7 @@ gboolean	e_book_meta_backend_save_contact_sync
 						 EConflictResolution conflict_resolution,
 						 /* const */ EContact *contact,
 						 const gchar *extra,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 gchar **out_new_uid,
 						 gchar **out_new_extra,
 						 GCancellable *cancellable,
@@ -285,6 +288,7 @@ gboolean	e_book_meta_backend_remove_contact_sync
 						 const gchar *uid,
 						 const gchar *extra,
 						 const gchar *object,
+						 guint32 opflags, /* bit-or of EBookOperationFlags */
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_book_meta_backend_search_sync	(EBookMetaBackend *meta_backend,

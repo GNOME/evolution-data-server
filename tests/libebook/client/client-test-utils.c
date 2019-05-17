@@ -115,7 +115,7 @@ add_contact_from_test_case_verify (EBookClient *book_client,
 	vcard = new_vcard_from_test_case (case_name);
 	contact_orig = e_contact_new_from_vcard (vcard);
 	g_free (vcard);
-	if (!e_book_client_add_contact_sync (book_client, contact_orig, &uid, NULL, &error))
+	if (!e_book_client_add_contact_sync (book_client, contact_orig, E_BOOK_OPERATION_FLAG_NONE, &uid, NULL, &error))
 		g_error ("add contact sync: %s", error->message);
 
 	e_contact_set (contact_orig, E_CONTACT_UID, uid);
@@ -144,7 +144,7 @@ add_contact_verify (EBookClient *book_client,
 	gchar *uid;
 	GError *error = NULL;
 
-	if (!e_book_client_add_contact_sync (book_client, contact, &uid, NULL, &error))
+	if (!e_book_client_add_contact_sync (book_client, contact, E_BOOK_OPERATION_FLAG_NONE, &uid, NULL, &error))
 		g_error ("add contact sync: %s", error->message);
 
 	e_contact_set (contact, E_CONTACT_UID, uid);

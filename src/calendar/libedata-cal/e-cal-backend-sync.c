@@ -44,7 +44,6 @@ G_DEFINE_TYPE (ECalBackendSync, e_cal_backend_sync, E_TYPE_CAL_BACKEND)
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.
  * @cancellable: a #GCancellable for the operation
- * @only_if_exists: Whether to open the calendar if and only if it already exists
  * or just create it when it does not exist.
  * @error: Out parameter for a #GError.
  *
@@ -54,7 +53,6 @@ void
 e_cal_backend_sync_open (ECalBackendSync *backend,
                          EDataCal *cal,
                          GCancellable *cancellable,
-                         gboolean only_if_exists,
                          GError **error)
 {
 	ECalBackendSyncClass *class;
@@ -65,8 +63,7 @@ e_cal_backend_sync_open (ECalBackendSync *backend,
 	g_return_if_fail (class != NULL);
 
 	if (class->open_sync != NULL) {
-		class->open_sync (
-			backend, cal, cancellable, only_if_exists, error);
+		class->open_sync (backend, cal, cancellable, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -652,12 +649,11 @@ static void
 cal_backend_open (ECalBackend *backend,
                   EDataCal *cal,
                   guint32 opid,
-                  GCancellable *cancellable,
-                  gboolean only_if_exists)
+                  GCancellable *cancellable)
 {
 	GError *error = NULL;
 
-	e_cal_backend_sync_open (E_CAL_BACKEND_SYNC (backend), cal, cancellable, only_if_exists, &error);
+	e_cal_backend_sync_open (E_CAL_BACKEND_SYNC (backend), cal, cancellable, &error);
 
 	e_data_cal_respond_open (cal, opid, error);
 }

@@ -113,7 +113,7 @@ load_contacts (EBookClient *client,
 
 	if (contacts != NULL) {
 
-		if (!e_book_client_add_contacts_sync (client, contacts, NULL, NULL, &error)) {
+		if (!e_book_client_add_contacts_sync (client, contacts, E_BOOK_OPERATION_FLAG_NONE, NULL, NULL, &error)) {
 
 			/* If they were already added, ignore the error */
 			if (g_error_matches (error, E_BOOK_CLIENT_ERROR,

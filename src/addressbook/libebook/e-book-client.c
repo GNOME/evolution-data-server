@@ -82,6 +82,7 @@ struct _AsyncContext {
 	gchar *sexp;
 	gchar *uid;
 	GMainContext *context;
+	guint32 opflags;
 };
 
 struct _SignalClosure {
@@ -197,11 +198,11 @@ run_in_thread_closure_free (RunInThreadClosure *run_in_thread_closure)
 
 /*
  * Well-known book backend properties:
- * @BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS: Retrieves comma-separated list
+ * @E_BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS: Retrieves comma-separated list
  *   of required fields by the backend. Use e_client_util_parse_comma_strings()
  *   to parse returned string value into a #GSList. These fields are required
  *   to be filled in for all contacts.
- * @BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS: Retrieves comma-separated list
+ * @E_BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS: Retrieves comma-separated list
  *   of supported fields by the backend. Use e_client_util_parse_comma_strings()
  *   to parse returned string value into a #GSList. These fields can be
  *   stored for contacts.
@@ -561,7 +562,7 @@ book_client_dbus_proxy_property_changed (EClient *client,
 	}
 
 	if (g_str_equal (property_name, "required-fields")) {
-		backend_prop_name = BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS;
+		backend_prop_name = E_BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS;
 	}
 
 	if (g_str_equal (property_name, "revision")) {
@@ -569,7 +570,7 @@ book_client_dbus_proxy_property_changed (EClient *client,
 	}
 
 	if (g_str_equal (property_name, "supported-fields")) {
-		backend_prop_name = BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS;
+		backend_prop_name = E_BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS;
 	}
 
 	if (g_str_equal (property_name, "writable")) {
@@ -904,7 +905,7 @@ book_client_get_backend_property_sync (EClient *client,
 		return TRUE;
 	}
 
-	if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
+	if (g_str_equal (prop_name, E_BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
 		strv = e_dbus_address_book_dup_required_fields (dbus_proxy);
 		if (strv != NULL)
 			*prop_value = g_strjoinv (",", strv);
@@ -914,7 +915,7 @@ book_client_get_backend_property_sync (EClient *client,
 		return TRUE;
 	}
 
-	if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
+	if (g_str_equal (prop_name, E_BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
 		strv = e_dbus_address_book_dup_supported_fields (dbus_proxy);
 		if (strv != NULL)
 			*prop_value = g_strjoinv (",", strv);
@@ -2012,7 +2013,7 @@ e_book_client_get_self (ESourceRegistry *registry,
 	uid = NULL;
 	contact = make_me_card ();
 	success = e_book_client_add_contact_sync (
-		book_client, contact, &uid, NULL, error);
+		book_client, contact, E_BOOK_OPERATION_FLAG_NONE, &uid, NULL, error);
 	if (!success) {
 		g_object_unref (book_client);
 		g_object_unref (contact);
@@ -2120,6 +2121,7 @@ book_client_add_contact_thread (GSimpleAsyncResult *simple,
 	if (!e_book_client_add_contact_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->contact,
+		async_context->opflags,
 		&async_context->uid,
 		cancellable, &local_error)) {
 
@@ -2138,6 +2140,7 @@ book_client_add_contact_thread (GSimpleAsyncResult *simple,
  * e_book_client_add_contact:
  * @client: an #EBookClient
  * @contact: an #EContact
+ * @opflags: bit-or of #EBookOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -2150,10 +2153,11 @@ book_client_add_contact_thread (GSimpleAsyncResult *simple,
  **/
 void
 e_book_client_add_contact (EBookClient *client,
-                           EContact *contact,
-                           GCancellable *cancellable,
-                           GAsyncReadyCallback callback,
-                           gpointer user_data)
+			   EContact *contact,
+			   guint32 opflags,
+			   GCancellable *cancellable,
+			   GAsyncReadyCallback callback,
+			   gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
@@ -2163,6 +2167,7 @@ e_book_client_add_contact (EBookClient *client,
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->contact = g_object_ref (contact);
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -2231,6 +2236,7 @@ e_book_client_add_contact_finish (EBookClient *client,
  * e_book_client_add_contact_sync:
  * @client: an #EBookClient
  * @contact: an #EContact
+ * @opflags: bit-or of #EBookOperationFlags
  * @out_added_uid: (out): UID of a newly added contact; can be %NULL
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
@@ -2248,10 +2254,11 @@ e_book_client_add_contact_finish (EBookClient *client,
  **/
 gboolean
 e_book_client_add_contact_sync (EBookClient *client,
-                                EContact *contact,
-                                gchar **out_added_uid,
-                                GCancellable *cancellable,
-                                GError **error)
+				EContact *contact,
+				guint32 opflags,
+				gchar **out_added_uid,
+				GCancellable *cancellable,
+				GError **error)
 {
 	GSList link = { contact, NULL };
 	GSList *uids = NULL;
@@ -2261,7 +2268,7 @@ e_book_client_add_contact_sync (EBookClient *client,
 	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
 
 	success = e_book_client_add_contacts_sync (
-		client, &link, &uids, cancellable, error);
+		client, &link, opflags, &uids, cancellable, error);
 
 	/* Sanity check. */
 	g_return_val_if_fail (
@@ -2292,6 +2299,7 @@ book_client_add_contacts_thread (GSimpleAsyncResult *simple,
 	if (!e_book_client_add_contacts_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->object_list,
+		async_context->opflags,
 		&async_context->string_list,
 		cancellable, &local_error)) {
 
@@ -2310,6 +2318,7 @@ book_client_add_contacts_thread (GSimpleAsyncResult *simple,
  * e_book_client_add_contacts:
  * @client: an #EBookClient
  * @contacts: (element-type EContact): a #GSList of #EContact objects to add
+ * @opflags: bit-or of #EBookOperationFlags
  * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -2322,10 +2331,11 @@ book_client_add_contacts_thread (GSimpleAsyncResult *simple,
  **/
 void
 e_book_client_add_contacts (EBookClient *client,
-                            GSList *contacts,
-                            GCancellable *cancellable,
-                            GAsyncReadyCallback callback,
-                            gpointer user_data)
+			    GSList *contacts,
+			    guint32 opflags,
+			    GCancellable *cancellable,
+			    GAsyncReadyCallback callback,
+			    gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
@@ -2336,6 +2346,7 @@ e_book_client_add_contacts (EBookClient *client,
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->object_list = g_slist_copy_deep (
 		contacts, (GCopyFunc) g_object_ref, NULL);
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -2406,6 +2417,7 @@ e_book_client_add_contacts_finish (EBookClient *client,
  * e_book_client_add_contacts_sync:
  * @client: an #EBookClient
  * @contacts: (element-type EContact): a #GSList of #EContact objects to add
+ * @opflags: bit-or of #EBookOperationFlags
  * @out_added_uids: (out) (element-type utf8) (allow-none): UIDs of newly
  *                  added contacts; can be %NULL
  * @cancellable: a #GCancellable; can be %NULL
@@ -2427,10 +2439,11 @@ e_book_client_add_contacts_finish (EBookClient *client,
  **/
 gboolean
 e_book_client_add_contacts_sync (EBookClient *client,
-                                 GSList *contacts,
-                                 GSList **out_added_uids,
-                                 GCancellable *cancellable,
-                                 GError **error)
+				 GSList *contacts,
+				 guint32 opflags,
+				 GSList **out_added_uids,
+				 GCancellable *cancellable,
+				 GError **error)
 {
 	GSList *link;
 	gchar **strv;
@@ -2455,7 +2468,7 @@ e_book_client_add_contacts_sync (EBookClient *client,
 
 	e_dbus_address_book_call_create_contacts_sync (
 		client->priv->dbus_proxy,
-		(const gchar * const *) strv,
+		(const gchar * const *) strv, opflags,
 		&uids, cancellable, &local_error);
 
 	g_strfreev (strv);
@@ -2506,6 +2519,7 @@ book_client_modify_contact_thread (GSimpleAsyncResult *simple,
 	if (!e_book_client_modify_contact_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->contact,
+		async_context->opflags,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -2523,6 +2537,7 @@ book_client_modify_contact_thread (GSimpleAsyncResult *simple,
  * e_book_client_modify_contact:
  * @client: an #EBookClient
  * @contact: an #EContact
+ * @opflags: bit-or of #EBookOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -2535,10 +2550,11 @@ book_client_modify_contact_thread (GSimpleAsyncResult *simple,
  **/
 void
 e_book_client_modify_contact (EBookClient *client,
-                              EContact *contact,
-                              GCancellable *cancellable,
-                              GAsyncReadyCallback callback,
-                              gpointer user_data)
+			      EContact *contact,
+			      guint32 opflags,
+			      GCancellable *cancellable,
+			      GAsyncReadyCallback callback,
+			      gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
@@ -2548,6 +2564,7 @@ e_book_client_modify_contact (EBookClient *client,
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->contact = g_object_ref (contact);
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -2599,6 +2616,7 @@ e_book_client_modify_contact_finish (EBookClient *client,
  * e_book_client_modify_contact_sync:
  * @client: an #EBookClient
  * @contact: an #EContact
+ * @opflags: bit-or of #EBookOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
@@ -2610,9 +2628,10 @@ e_book_client_modify_contact_finish (EBookClient *client,
  **/
 gboolean
 e_book_client_modify_contact_sync (EBookClient *client,
-                                   EContact *contact,
-                                   GCancellable *cancellable,
-                                   GError **error)
+				   EContact *contact,
+				   guint32 opflags,
+				   GCancellable *cancellable,
+				   GError **error)
 {
 	GSList link = { contact, NULL };
 
@@ -2620,7 +2639,7 @@ e_book_client_modify_contact_sync (EBookClient *client,
 	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
 
 	return e_book_client_modify_contacts_sync (
-		client, &link, cancellable, error);
+		client, &link, opflags, cancellable, error);
 }
 
 /* Helper for e_book_client_modify_contacts() */
@@ -2637,6 +2656,7 @@ book_client_modify_contacts_thread (GSimpleAsyncResult *simple,
 	if (!e_book_client_modify_contacts_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->object_list,
+		async_context->opflags,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -2654,6 +2674,7 @@ book_client_modify_contacts_thread (GSimpleAsyncResult *simple,
  * e_book_client_modify_contacts:
  * @client: an #EBookClient
  * @contacts: (element-type EContact): a #GSList of #EContact objects
+ * @opflags: bit-or of #EBookOperationFlags
  * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -2666,10 +2687,11 @@ book_client_modify_contacts_thread (GSimpleAsyncResult *simple,
  **/
 void
 e_book_client_modify_contacts (EBookClient *client,
-                               GSList *contacts,
-                               GCancellable *cancellable,
-                               GAsyncReadyCallback callback,
-                               gpointer user_data)
+			       GSList *contacts,
+			       guint32 opflags,
+			       GCancellable *cancellable,
+			       GAsyncReadyCallback callback,
+			       gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
@@ -2680,6 +2702,7 @@ e_book_client_modify_contacts (EBookClient *client,
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->object_list = g_slist_copy_deep (
 		contacts, (GCopyFunc) g_object_ref, NULL);
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -2731,6 +2754,7 @@ e_book_client_modify_contacts_finish (EBookClient *client,
  * e_book_client_modify_contacts_sync:
  * @client: an #EBookClient
  * @contacts: (element-type EContact): a #GSList of #EContact objects
+ * @opflags: bit-or of #EBookOperationFlags
  * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
@@ -2742,9 +2766,10 @@ e_book_client_modify_contacts_finish (EBookClient *client,
  **/
 gboolean
 e_book_client_modify_contacts_sync (EBookClient *client,
-                                    GSList *contacts,
-                                    GCancellable *cancellable,
-                                    GError **error)
+				    GSList *contacts,
+				    guint32 opflags,
+				    GCancellable *cancellable,
+				    GError **error)
 {
 	GSList *link;
 	gchar **strv;
@@ -2768,7 +2793,7 @@ e_book_client_modify_contacts_sync (EBookClient *client,
 
 	e_dbus_address_book_call_modify_contacts_sync (
 		client->priv->dbus_proxy,
-		(const gchar * const *) strv,
+		(const gchar * const *) strv, opflags,
 		cancellable, &local_error);
 
 	g_strfreev (strv);
@@ -2796,6 +2821,7 @@ book_client_remove_contact_thread (GSimpleAsyncResult *simple,
 	if (!e_book_client_remove_contact_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->contact,
+		async_context->opflags,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -2813,6 +2839,7 @@ book_client_remove_contact_thread (GSimpleAsyncResult *simple,
  * e_book_client_remove_contact:
  * @client: an #EBookClient
  * @contact: an #EContact
+ * @opflags: bit-or of #EBookOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -2825,10 +2852,11 @@ book_client_remove_contact_thread (GSimpleAsyncResult *simple,
  **/
 void
 e_book_client_remove_contact (EBookClient *client,
-                              /* const */ EContact *contact,
-                              GCancellable *cancellable,
-                              GAsyncReadyCallback callback,
-                              gpointer user_data)
+			      /* const */ EContact *contact,
+			      guint32 opflags,
+			      GCancellable *cancellable,
+			      GAsyncReadyCallback callback,
+			      gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
@@ -2838,6 +2866,7 @@ e_book_client_remove_contact (EBookClient *client,
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->contact = g_object_ref (contact);
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -2889,6 +2918,7 @@ e_book_client_remove_contact_finish (EBookClient *client,
  * e_book_client_remove_contact_sync:
  * @client: an #EBookClient
  * @contact: an #EContact
+ * @opflags: bit-or of #EBookOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
@@ -2900,9 +2930,10 @@ e_book_client_remove_contact_finish (EBookClient *client,
  **/
 gboolean
 e_book_client_remove_contact_sync (EBookClient *client,
-                                   EContact *contact,
-                                   GCancellable *cancellable,
-                                   GError **error)
+				   EContact *contact,
+				   guint32 opflags,
+				   GCancellable *cancellable,
+				   GError **error)
 {
 	const gchar *uid;
 
@@ -2913,7 +2944,7 @@ e_book_client_remove_contact_sync (EBookClient *client,
 	g_return_val_if_fail (uid != NULL, FALSE);
 
 	return e_book_client_remove_contact_by_uid_sync (
-		client, uid, cancellable, error);
+		client, uid, opflags, cancellable, error);
 }
 
 /* Helper for e_book_client_remove_contact_by_uid() */
@@ -2930,6 +2961,7 @@ book_client_remove_contact_by_uid_thread (GSimpleAsyncResult *simple,
 	if (!e_book_client_remove_contact_by_uid_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->uid,
+		async_context->opflags,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -2947,6 +2979,7 @@ book_client_remove_contact_by_uid_thread (GSimpleAsyncResult *simple,
  * e_book_client_remove_contact_by_uid:
  * @client: an #EBookClient
  * @uid: a UID of a contact to remove
+ * @opflags: bit-or of #EBookOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -2959,10 +2992,11 @@ book_client_remove_contact_by_uid_thread (GSimpleAsyncResult *simple,
  **/
 void
 e_book_client_remove_contact_by_uid (EBookClient *client,
-                                     const gchar *uid,
-                                     GCancellable *cancellable,
-                                     GAsyncReadyCallback callback,
-                                     gpointer user_data)
+				     const gchar *uid,
+				     guint32 opflags,
+				     GCancellable *cancellable,
+				     GAsyncReadyCallback callback,
+				     gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
@@ -2972,6 +3006,7 @@ e_book_client_remove_contact_by_uid (EBookClient *client,
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->uid = g_strdup (uid);
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -3023,6 +3058,7 @@ e_book_client_remove_contact_by_uid_finish (EBookClient *client,
  * e_book_client_remove_contact_by_uid_sync:
  * @client: an #EBookClient
  * @uid: a UID of a contact to remove
+ * @opflags: bit-or of #EBookOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
@@ -3034,9 +3070,10 @@ e_book_client_remove_contact_by_uid_finish (EBookClient *client,
  **/
 gboolean
 e_book_client_remove_contact_by_uid_sync (EBookClient *client,
-                                          const gchar *uid,
-                                          GCancellable *cancellable,
-                                          GError **error)
+					  const gchar *uid,
+					  guint32 opflags,
+					  GCancellable *cancellable,
+					  GError **error)
 {
 	GSList link = { (gpointer) uid, NULL };
 
@@ -3044,7 +3081,7 @@ e_book_client_remove_contact_by_uid_sync (EBookClient *client,
 	g_return_val_if_fail (uid != NULL, FALSE);
 
 	return e_book_client_remove_contacts_sync (
-		client, &link, cancellable, error);
+		client, &link, opflags, cancellable, error);
 }
 
 /* Helper for e_book_client_remove_contacts() */
@@ -3061,6 +3098,7 @@ book_client_remove_contacts_thread (GSimpleAsyncResult *simple,
 	if (!e_book_client_remove_contacts_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->string_list,
+		async_context->opflags,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -3078,6 +3116,7 @@ book_client_remove_contacts_thread (GSimpleAsyncResult *simple,
  * e_book_client_remove_contacts:
  * @client: an #EBookClient
  * @uids: (element-type utf8): a #GSList of UIDs to remove
+ * @opflags: bit-or of #EBookOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -3093,10 +3132,11 @@ book_client_remove_contacts_thread (GSimpleAsyncResult *simple,
  **/
 void
 e_book_client_remove_contacts (EBookClient *client,
-                               const GSList *uids,
-                               GCancellable *cancellable,
-                               GAsyncReadyCallback callback,
-                               gpointer user_data)
+			       const GSList *uids,
+			       guint32 opflags,
+			       GCancellable *cancellable,
+			       GAsyncReadyCallback callback,
+			       gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
@@ -3107,6 +3147,7 @@ e_book_client_remove_contacts (EBookClient *client,
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->string_list = g_slist_copy_deep (
 		(GSList *) uids, (GCopyFunc) g_strdup, NULL);
+	async_context->opflags = opflags;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -3158,6 +3199,7 @@ e_book_client_remove_contacts_finish (EBookClient *client,
  * e_book_client_remove_contacts_sync:
  * @client: an #EBookClient
  * @uids: (element-type utf8): a #GSList of UIDs to remove
+ * @opflags: bit-or of #EBookOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
@@ -3172,9 +3214,10 @@ e_book_client_remove_contacts_finish (EBookClient *client,
  **/
 gboolean
 e_book_client_remove_contacts_sync (EBookClient *client,
-                                    const GSList *uids,
-                                    GCancellable *cancellable,
-                                    GError **error)
+				    const GSList *uids,
+				    guint32 opflags,
+				    GCancellable *cancellable,
+				    GError **error)
 {
 	gchar **strv;
 	gint ii = 0;
@@ -3191,7 +3234,7 @@ e_book_client_remove_contacts_sync (EBookClient *client,
 
 	e_dbus_address_book_call_remove_contacts_sync (
 		client->priv->dbus_proxy,
-		(const gchar * const *) strv,
+		(const gchar * const *) strv, opflags,
 		cancellable, &local_error);
 
 	g_strfreev (strv);

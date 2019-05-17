@@ -23,12 +23,13 @@
 #include <libebook-contacts/libebook-contacts.h>
 #include <libebackend/libebackend.h>
 
+#include <libedata-book/e-book-backend.h>
 #include <libedata-book/e-book-backend-cache.h>
 #include <libedata-book/e-book-backend-factory.h>
 #include <libedata-book/e-book-backend-sexp.h>
 #include <libedata-book/e-book-backend-sqlitedb.h>
 #include <libedata-book/e-book-backend-summary.h>
-#include <libedata-book/e-book-backend.h>
+#include <libedata-book/e-book-backend-sync.h>
 #include <libedata-book/e-book-cache.h>
 #include <libedata-book/e-book-meta-backend.h>
 #include <libedata-book/e-book-sqlite.h>

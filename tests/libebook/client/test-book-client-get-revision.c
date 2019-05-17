@@ -40,7 +40,7 @@ get_revision_compare_cycle (EBookClient *client)
 		exit (1);
 	}
 
-	if (!e_book_client_remove_contact_sync (client, contact, NULL, &error))
+	if (!e_book_client_remove_contact_sync (client, contact, E_BOOK_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("Unable to remove contact: %s", error->message);
 
 	g_object_unref (contact);

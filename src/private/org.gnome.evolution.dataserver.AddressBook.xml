@@ -42,15 +42,18 @@
 
   <method name="CreateContacts">
     <arg name="vcards" direction="in" type="as"/>
+    <arg name="opflags" direction="in" type="u"/>
     <arg name="uids" direction="out" type="as"/>
   </method>
 
   <method name="ModifyContacts">
     <arg name="vcards" direction="in" type="as"/>
+    <arg name="opflags" direction="in" type="u"/>
   </method>
 
   <method name="RemoveContacts">
     <arg name="uids" direction="in" type="as"/>
+    <arg name="opflags" direction="in" type="u"/>
   </method>
 
   <method name="GetContact">

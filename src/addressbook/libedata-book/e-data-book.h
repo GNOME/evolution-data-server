@@ -62,24 +62,6 @@ struct _EDataBookClass {
 	GObjectClass parent_class;
 };
 
-GQuark e_data_book_error_quark (void);
-
-/**
- * E_DATA_BOOK_ERROR:
- *
- * Since: 2.30
- **/
-#define E_DATA_BOOK_ERROR e_data_book_error_quark ()
-
-GError *	e_data_book_create_error	(EDataBookStatus status,
-						 const gchar *custom_msg);
-
-GError *	e_data_book_create_error_fmt	(EDataBookStatus status,
-						 const gchar *custom_msg_fmt,
-						 ...) G_GNUC_PRINTF (2, 3);
-
-const gchar *	e_data_book_status_to_string	(EDataBookStatus status);
-
 GType		e_data_book_get_type		(void) G_GNUC_CONST;
 EDataBook *	e_data_book_new			(struct _EBookBackend *backend,
 						 GDBusConnection *connection,
@@ -105,31 +87,31 @@ void		e_data_book_respond_create_contacts
 						(EDataBook *book,
 						 guint32 opid,
 						 GError *error,
-						 const GSList *contacts);
-void		e_data_book_respond_remove_contacts
-						(EDataBook *book,
-						 guint32 opid,
-						 GError *error,
-						 const GSList *ids);
+						 const GSList *contacts); /* EContact * */
 void		e_data_book_respond_modify_contacts
 						(EDataBook *book,
 						 guint32 opid,
 						 GError *error,
-						 const GSList *contacts);
+						 const GSList *contacts); /* EContact * */
+void		e_data_book_respond_remove_contacts
+						(EDataBook *book,
+						 guint32 opid,
+						 GError *error,
+						 const GSList *ids); /* gchar * */
 void		e_data_book_respond_get_contact	(EDataBook *book,
 						 guint32 opid,
 						 GError *error,
-						 const gchar *vcard);
+						 const EContact *contact);
 void		e_data_book_respond_get_contact_list
 						(EDataBook *book,
 						 guint32 opid,
 						 GError *error,
-						 const GSList *cards);
+						 const GSList *contacts); /* EContact * */
 void		e_data_book_respond_get_contact_list_uids
 						(EDataBook *book,
 						 guint32 opid,
 						 GError *error,
-						 const GSList *uids);
+						 const GSList *uids); /* gchar * */
 
 void		e_data_book_report_error	(EDataBook *book,
 						 const gchar *message);

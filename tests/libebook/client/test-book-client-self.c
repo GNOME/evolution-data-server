@@ -65,7 +65,7 @@ test_set_self (ETestServerFixture *fixture,
 	if (e_book_client_get_contact_sync (client, "simple-1", &loaded_contact, NULL, NULL)) {
 		g_clear_object (&loaded_contact);
 
-		e_book_client_remove_contact_by_uid_sync (client, "simple-1", NULL, &error);
+		e_book_client_remove_contact_by_uid_sync (client, "simple-1", E_BOOK_OPERATION_FLAG_NONE, NULL, &error);
 		g_assert_no_error (error);
 	}
 

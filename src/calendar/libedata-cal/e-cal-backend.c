@@ -1606,7 +1606,7 @@ cal_backend_open_thread (GSimpleAsyncResult *simple,
 
 		e_backend_ensure_online_state_updated (E_BACKEND (backend), cancellable);
 
-		class->open (backend, data_cal, opid, cancellable, FALSE);
+		class->open (backend, data_cal, opid, cancellable);
 	}
 
 	g_object_unref (data_cal);

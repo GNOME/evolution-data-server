@@ -86,58 +86,36 @@ ebb_google_data_book_error_from_gdata_error (GError **error,
 	if (gdata_error->domain == GDATA_SERVICE_ERROR) {
 		switch (gdata_error->code) {
 		case GDATA_SERVICE_ERROR_UNAVAILABLE:
-			g_set_error_literal (
-				error, E_CLIENT_ERROR,
-				E_CLIENT_ERROR_REPOSITORY_OFFLINE,
-				e_client_error_to_string (
-				E_CLIENT_ERROR_REPOSITORY_OFFLINE));
+			g_propagate_error (error,
+				e_client_error_create (E_CLIENT_ERROR_REPOSITORY_OFFLINE, NULL));
 			break;
 		case GDATA_SERVICE_ERROR_PROTOCOL_ERROR:
-			g_set_error_literal (
-				error, E_CLIENT_ERROR,
-				E_CLIENT_ERROR_INVALID_QUERY,
-				gdata_error->message);
+			g_propagate_error (error,
+				e_client_error_create (E_CLIENT_ERROR_INVALID_QUERY, gdata_error->message));
 			break;
 		case GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED:
-			g_set_error_literal (
-				error, E_BOOK_CLIENT_ERROR,
-				E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS,
-				e_book_client_error_to_string (
-				E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS));
+			g_propagate_error (error,
+				e_book_client_error_create (E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS, NULL));
 			break;
 		case GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED:
-			g_set_error_literal (
-				error, E_CLIENT_ERROR,
-				E_CLIENT_ERROR_AUTHENTICATION_REQUIRED,
-				e_client_error_to_string (
-				E_CLIENT_ERROR_AUTHENTICATION_REQUIRED));
+			g_propagate_error (error,
+				e_client_error_create (E_CLIENT_ERROR_AUTHENTICATION_REQUIRED, NULL));
 			break;
 		case GDATA_SERVICE_ERROR_NOT_FOUND:
-			g_set_error_literal (
-				error, E_BOOK_CLIENT_ERROR,
-				E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND,
-				e_book_client_error_to_string (
-				E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND));
+			g_propagate_error (error,
+				e_book_client_error_create (E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND, NULL));
 			break;
 		case GDATA_SERVICE_ERROR_CONFLICT:
-			g_set_error_literal (
-				error, E_BOOK_CLIENT_ERROR,
-				E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS,
-				e_book_client_error_to_string (
-				E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS));
+			g_propagate_error (error,
+				e_book_client_error_create (E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS, NULL));
 			break;
 		case GDATA_SERVICE_ERROR_FORBIDDEN:
-			g_set_error_literal (
-				error, E_CLIENT_ERROR,
-				E_CLIENT_ERROR_QUERY_REFUSED,
-				e_client_error_to_string (
-				E_CLIENT_ERROR_QUERY_REFUSED));
+			g_propagate_error (error,
+				e_client_error_create (E_CLIENT_ERROR_QUERY_REFUSED, NULL));
 			break;
 		case GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER:
-			g_set_error_literal (
-				error, E_CLIENT_ERROR,
-				E_CLIENT_ERROR_INVALID_QUERY,
-				gdata_error->message);
+			g_propagate_error (error,
+				e_client_error_create (E_CLIENT_ERROR_INVALID_QUERY, gdata_error->message));
 			break;
 		default:
 			use_fallback = TRUE;
@@ -149,11 +127,10 @@ ebb_google_data_book_error_from_gdata_error (GError **error,
 	}
 
 	/* Generic fallback */
-	if (use_fallback)
-		g_set_error_literal (
-			error, E_CLIENT_ERROR,
-			E_CLIENT_ERROR_OTHER_ERROR,
-			gdata_error->message);
+	if (use_fallback) {
+		g_propagate_error (error,
+			e_client_error_create (E_CLIENT_ERROR_OTHER_ERROR, gdata_error->message));
+	}
 }
 
 static gboolean
@@ -935,6 +912,7 @@ ebb_google_save_contact_sync (EBookMetaBackend *meta_backend,
 			      EConflictResolution conflict_resolution,
 			      /* const */ EContact *contact,
 			      const gchar *extra,
+			      guint32 opflags,
 			      gchar **out_new_uid,
 			      gchar **out_new_extra,
 			      GCancellable *cancellable,
@@ -1007,7 +985,7 @@ ebb_google_save_contact_sync (EBookMetaBackend *meta_backend,
 
 	if (!entry) {
 		g_rec_mutex_unlock (&bbgoogle->priv->conn_lock);
-		g_propagate_error (error, e_data_book_create_error (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Object to save is not a valid vCard")));
+		g_propagate_error (error, e_client_error_create (E_CLIENT_ERROR_OTHER_ERROR, _("Object to save is not a valid vCard")));
 		return FALSE;
 	}
 
@@ -1063,7 +1041,7 @@ ebb_google_save_contact_sync (EBookMetaBackend *meta_backend,
 	if (!new_contact) {
 		g_object_unref (gdata_contact);
 		e_contact_photo_free (photo);
-		g_propagate_error (error, e_data_book_create_error (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Failed to create contact from returned server data")));
+		g_propagate_error (error, e_client_error_create (E_CLIENT_ERROR_OTHER_ERROR, _("Failed to create contact from returned server data")));
 		return FALSE;
 	}
 
@@ -1079,7 +1057,7 @@ ebb_google_save_contact_sync (EBookMetaBackend *meta_backend,
 	uid = e_contact_get_const (new_contact, E_CONTACT_UID);
 
 	if (!uid) {
-		g_propagate_error (error, e_data_book_create_error (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Server returned contact without UID")));
+		g_propagate_error (error, e_client_error_create (E_CLIENT_ERROR_OTHER_ERROR, _("Server returned contact without UID")));
 
 		g_object_unref (new_contact);
 		g_free (*out_new_extra);
@@ -1104,6 +1082,7 @@ ebb_google_remove_contact_sync (EBookMetaBackend *meta_backend,
 				const gchar *uid,
 				const gchar *extra,
 				const gchar *object,
+				guint32 opflags,
 				GCancellable *cancellable,
 				GError **error)
 {
@@ -1117,7 +1096,7 @@ ebb_google_remove_contact_sync (EBookMetaBackend *meta_backend,
 
 	entry = GDATA_ENTRY (gdata_parsable_new_from_xml (GDATA_TYPE_CONTACTS_CONTACT, extra, -1, NULL));
 	if (!entry) {
-		g_propagate_error (error, e_data_book_create_error (E_DATA_BOOK_STATUS_INVALID_ARG, NULL));
+		g_propagate_error (error, e_client_error_create (E_CLIENT_ERROR_INVALID_ARG, NULL));
 		return FALSE;
 	}
 
@@ -1156,10 +1135,10 @@ ebb_google_get_backend_property (EBookBackend *book_backend,
 			e_book_meta_backend_get_capabilities (E_BOOK_META_BACKEND (book_backend)),
 			NULL);
 
-	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
+	} else if (g_str_equal (prop_name, E_BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
 		return g_strdup ("");
 
-	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
+	} else if (g_str_equal (prop_name, E_BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
 		return g_strjoin (",",
 			e_contact_field_name (E_CONTACT_UID),
 			e_contact_field_name (E_CONTACT_REV),
@@ -1295,7 +1274,7 @@ ebb_google_get_backend_property (EBookBackend *book_backend,
 	}
 
 	/* Chain up to parent's method. */
-	return E_BOOK_BACKEND_CLASS (e_book_backend_google_parent_class)->get_backend_property (book_backend, prop_name);
+	return E_BOOK_BACKEND_CLASS (e_book_backend_google_parent_class)->impl_get_backend_property (book_backend, prop_name);
 }
 
 static void
@@ -1383,7 +1362,7 @@ e_book_backend_google_class_init (EBookBackendGoogleClass *klass)
 	book_meta_backend_class->remove_contact_sync = ebb_google_remove_contact_sync;
 
 	book_backend_class = E_BOOK_BACKEND_CLASS (klass);
-	book_backend_class->get_backend_property = ebb_google_get_backend_property;
+	book_backend_class->impl_get_backend_property = ebb_google_get_backend_property;
 
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->constructed = ebb_google_constructed;

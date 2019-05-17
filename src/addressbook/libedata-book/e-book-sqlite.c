@@ -7923,7 +7923,7 @@ e_book_sqlite_get_locale (EBookSqlite *ebsql,
 }
 
 /**
- * e_book_sqlite_cursor_new:
+ * e_book_sqlite_cursor_new: (skip)
  * @ebsql: An #EBookSqlite
  * @sexp: search expression; use NULL or an empty string to get all stored contacts.
  * @sort_fields: (array length=n_sort_fields): An array of #EContactFields as sort keys in order of priority
@@ -8010,7 +8010,7 @@ e_book_sqlite_cursor_new (EBookSqlite *ebsql,
 }
 
 /**
- * e_book_sqlite_cursor_free:
+ * e_book_sqlite_cursor_free: (skip)
  * @ebsql: An #EBookSqlite
  * @cursor: The #EbSqlCursor to free
  *
@@ -8065,7 +8065,7 @@ collect_results_for_cursor_cb (gpointer ref,
 }
 
 /**
- * e_book_sqlite_cursor_step:
+ * e_book_sqlite_cursor_step: (skip)
  * @ebsql: An #EBookSqlite
  * @cursor: The #EbSqlCursor to use
  * @flags: The #EbSqlCursorStepFlags for this step
@@ -8299,7 +8299,7 @@ e_book_sqlite_cursor_step (EBookSqlite *ebsql,
 }
 
 /**
- * e_book_sqlite_cursor_set_target_alphabetic_index:
+ * e_book_sqlite_cursor_set_target_alphabetic_index: (skip)
  * @ebsql: An #EBookSqlite
  * @cursor: The #EbSqlCursor to modify
  * @idx: The alphabetic index
@@ -8356,7 +8356,7 @@ e_book_sqlite_cursor_set_target_alphabetic_index (EBookSqlite *ebsql,
 }
 
 /**
- * e_book_sqlite_cursor_set_sexp:
+ * e_book_sqlite_cursor_set_sexp: (skip)
  * @ebsql: An #EBookSqlite
  * @cursor: The #EbSqlCursor
  * @sexp: The new query expression for @cursor
@@ -8394,7 +8394,7 @@ e_book_sqlite_cursor_set_sexp (EBookSqlite *ebsql,
 }
 
 /**
- * e_book_sqlite_cursor_calculate:
+ * e_book_sqlite_cursor_calculate: (skip)
  * @ebsql: An #EBookSqlite
  * @cursor: The #EbSqlCursor
  * @total: (out) (allow-none): A return location to store the total result set for this cursor
@@ -8480,7 +8480,7 @@ e_book_sqlite_cursor_calculate (EBookSqlite *ebsql,
 }
 
 /**
- * e_book_sqlite_cursor_compare_contact:
+ * e_book_sqlite_cursor_compare_contact: (skip)
  * @ebsql: An #EBookSqlite
  * @cursor: The #EbSqlCursor
  * @contact: The #EContact to compare

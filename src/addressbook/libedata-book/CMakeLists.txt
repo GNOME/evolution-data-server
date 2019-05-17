@@ -9,12 +9,13 @@ set(DEPENDENCIES
 )
 
 set(SOURCES
+	e-book-backend.c
+	e-book-backend-cache.c
 	e-book-backend-factory.c
 	e-book-backend-sexp.c
-	e-book-backend-summary.c
-	e-book-backend-cache.c
 	e-book-backend-sqlitedb.c
-	e-book-backend.c
+	e-book-backend-summary.c
+	e-book-backend-sync.c
 	e-book-cache.c
 	e-book-meta-backend.c
 	e-book-sqlite.c
@@ -32,10 +33,13 @@ set(SOURCES
 
 set(HEADERS
 	libedata-book.h
+	e-book-backend.h
+	e-book-backend-cache.h
 	e-book-backend-factory.h
 	e-book-backend-sexp.h
+	e-book-backend-sqlitedb.h
 	e-book-backend-summary.h
-	e-book-backend.h
+	e-book-backend-sync.h
 	e-book-cache.h
 	e-book-meta-backend.h
 	e-book-sqlite.h
@@ -46,8 +50,6 @@ set(HEADERS
 	e-data-book-cursor-cache.h
 	e-data-book-cursor-sqlite.h
 	e-data-book-direct.h
-	e-book-backend-cache.h
-	e-book-backend-sqlitedb.h
 	e-subprocess-book-factory.h
 	e-system-locale-watcher.h
 )
@@ -197,4 +199,51 @@ target_link_libraries(evolution-addressbook-factory-subprocess
 
 install(TARGETS evolution-addressbook-factory-subprocess
 	DESTINATION ${LIBEXEC_INSTALL_DIR}
+)
+
+set(gir_sources ${SOURCES} ${HEADERS})
+set(gir_identifies_prefixes E)
+set(gir_includes GObject-2.0 GLib-2.0 Gio-2.0 libxml2-2.0)
+set(gir_cflags
+	-DLIBEDATA_BOOK_COMPILATION
+	-DEDS_DISABLE_DEPRECATED=1
+	-I${CMAKE_BINARY_DIR}/src/addressbook
+	-I${CMAKE_BINARY_DIR}/src/addressbook/libedata-book
+	-I${CMAKE_SOURCE_DIR}/src/addressbook
+	-I${CMAKE_SOURCE_DIR}/src/addressbook/libedata-book
+)
+set(gir_libdirs
+	${CMAKE_BINARY_DIR}/src/private
+	${CMAKE_BINARY_DIR}/src/camel
+	${CMAKE_BINARY_DIR}/src/libebackend
+	${CMAKE_BINARY_DIR}/src/libedataserver
+	${CMAKE_BINARY_DIR}/src/addressbook/libebook-contacts
+	${CMAKE_BINARY_DIR}/src/addressbook/libedata-book
+	${PHONENUMBER_LIB_DIRS}
+)
+set(gir_libs
+	camel
+	ebook-contacts
+	edata-book
+	edataserver
+)
+set(gir_deps
+	${CMAKE_BINARY_DIR}/src/camel/Camel-${API_VERSION}.gir
+	${CMAKE_BINARY_DIR}/src/libedataserver/EDataServer-${API_VERSION}.gir
+	${CMAKE_BINARY_DIR}/src/libebackend/EBackend-${API_VERSION}.gir
+	${CMAKE_BINARY_DIR}/src/addressbook/libebook-contacts/EBookContacts-${API_VERSION}.gir
+)
+
+gir_add_introspection_simple(
+	EDataBook
+	libedata-book
+	${API_VERSION}
+	"libedata-book/libedata-book.h"
+	gir_identifies_prefixes
+	gir_includes
+	gir_cflags
+	gir_libdirs
+	gir_libs
+	gir_deps
+	gir_sources
 )

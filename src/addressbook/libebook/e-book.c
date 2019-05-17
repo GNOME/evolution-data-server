@@ -46,10 +46,6 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_BOOK, EBookPrivate))
 
-#define CLIENT_BACKEND_PROPERTY_CAPABILITIES		"capabilities"
-#define BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS		"required-fields"
-#define BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS		"supported-fields"
-
 struct _EBookPrivate {
 	EBookClient *client;
 	gulong backend_died_handler_id;
@@ -324,7 +320,7 @@ e_book_add_contact (EBook *book,
 	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
 
 	success = e_book_client_add_contact_sync (
-		book->priv->client, contact, &added_uid, NULL, error);
+		book->priv->client, contact, E_BOOK_OPERATION_FLAG_NONE, &added_uid, NULL, error);
 
 	if (added_uid != NULL) {
 		e_contact_set (contact, E_CONTACT_UID, added_uid);
@@ -394,7 +390,7 @@ e_book_async_add_contact (EBook *book,
 	data->closure = closure;
 
 	e_book_client_add_contact (
-		book->priv->client, contact, NULL,
+		book->priv->client, contact, E_BOOK_OPERATION_FLAG_NONE, NULL,
 		add_contact_reply, data);
 
 	return TRUE;
@@ -433,7 +429,7 @@ e_book_add_contact_async (EBook *book,
 	data->closure = closure;
 
 	e_book_client_add_contact (
-		book->priv->client, contact, NULL,
+		book->priv->client, contact, E_BOOK_OPERATION_FLAG_NONE, NULL,
 		add_contact_reply, data);
 
 	return TRUE;
@@ -461,7 +457,7 @@ e_book_commit_contact (EBook *book,
 	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
 
 	return e_book_client_modify_contact_sync (
-		book->priv->client, contact, NULL, error);
+		book->priv->client, contact, E_BOOK_OPERATION_FLAG_NONE, NULL, error);
 }
 
 static void
@@ -522,7 +518,7 @@ e_book_async_commit_contact (EBook *book,
 	data->closure = closure;
 
 	e_book_client_modify_contact (
-		book->priv->client, contact, NULL,
+		book->priv->client, contact, E_BOOK_OPERATION_FLAG_NONE, NULL,
 		modify_contacts_reply, data);
 
 	return TRUE;
@@ -562,7 +558,7 @@ e_book_commit_contact_async (EBook *book,
 	data->closure = closure;
 
 	e_book_client_modify_contact (
-		book->priv->client, contact, NULL,
+		book->priv->client, contact, E_BOOK_OPERATION_FLAG_NONE, NULL,
 		modify_contacts_reply, data);
 
 	return TRUE;
@@ -583,7 +579,7 @@ e_book_commit_contact_async (EBook *book,
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
  * Deprecated: 3.2: Use e_client_get_backend_property_sync() on
- * an #EBookClient object with #BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS instead.
+ * an #EBookClient object with #E_BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS instead.
  **/
 gboolean
 e_book_get_required_fields (EBook *book,
@@ -600,7 +596,7 @@ e_book_get_required_fields (EBook *book,
 
 	success = e_client_get_backend_property_sync (
 		E_CLIENT (book->priv->client),
-		BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS,
+		E_BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS,
 		&prop_value, NULL, error);
 
 	if (success && fields != NULL) {
@@ -707,7 +703,7 @@ e_book_async_get_required_fields (EBook *book,
 
 	e_client_get_backend_property (
 		E_CLIENT (book->priv->client),
-		BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS,
+		E_BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS,
 		NULL, get_required_fields_reply, data);
 
 	return TRUE;
@@ -729,7 +725,7 @@ e_book_async_get_required_fields (EBook *book,
  * Deprecated: 3.2: Use e_client_get_backend_property() and
  *                  e_client_get_backend_property_finish() on an
  *                  #EBookClient object with
- *                  #BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS instead.
+ *                  #E_BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS instead.
  **/
 gboolean
 e_book_get_required_fields_async (EBook *book,
@@ -747,7 +743,7 @@ e_book_get_required_fields_async (EBook *book,
 
 	e_client_get_backend_property (
 		E_CLIENT (book->priv->client),
-		BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS,
+		E_BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS,
 		NULL, get_required_fields_reply, data);
 
 	return TRUE;
@@ -768,7 +764,7 @@ e_book_get_required_fields_async (EBook *book,
  * Returns: %TRUE if successful, %FALSE otherwise
  *
  * Deprecated: 3.2: Use e_client_get_backend_property_sync() on
- * an #EBookClient object with #BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS instead.
+ * an #EBookClient object with #E_BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS instead.
  **/
 gboolean
 e_book_get_supported_fields (EBook *book,
@@ -785,7 +781,7 @@ e_book_get_supported_fields (EBook *book,
 
 	success = e_client_get_backend_property_sync (
 		E_CLIENT (book->priv->client),
-		BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS,
+		E_BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS,
 		&prop_value, NULL, error);
 
 	if (success && fields != NULL) {
@@ -893,7 +889,7 @@ e_book_async_get_supported_fields (EBook *book,
 
 	e_client_get_backend_property (
 		E_CLIENT (book->priv->client),
-		BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS,
+		E_BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS,
 		NULL, get_supported_fields_reply, data);
 
 	return TRUE;
@@ -916,7 +912,7 @@ e_book_async_get_supported_fields (EBook *book,
  * Deprecated: 3.2: Use e_client_get_backend_property() and
  *                  e_client_get_backend_property_finish() on an
  *                  #EBookClient object with
- *                  #BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS instead.
+ *                  #E_BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS instead.
  **/
 gboolean
 e_book_get_supported_fields_async (EBook *book,
@@ -934,7 +930,7 @@ e_book_get_supported_fields_async (EBook *book,
 
 	e_client_get_backend_property (
 		E_CLIENT (book->priv->client),
-		BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS,
+		E_BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS,
 		NULL, get_supported_fields_reply, data);
 
 	return TRUE;
@@ -1193,7 +1189,7 @@ e_book_remove_contact (EBook *book,
 	g_return_val_if_fail (id != NULL, FALSE);
 
 	return e_book_client_remove_contact_by_uid_sync (
-		book->priv->client, id, NULL, error);
+		book->priv->client, id, E_BOOK_OPERATION_FLAG_NONE, NULL, error);
 }
 
 static void
@@ -1257,7 +1253,7 @@ e_book_remove_contacts (EBook *book,
 	slist = g_slist_reverse (slist);
 
 	success = e_book_client_remove_contacts_sync (
-		book->priv->client, slist, NULL, error);
+		book->priv->client, slist, E_BOOK_OPERATION_FLAG_NONE, NULL, error);
 
 	g_slist_free (slist);
 
@@ -1295,7 +1291,8 @@ e_book_async_remove_contact (EBook *book,
 
 	e_book_client_remove_contact (
 		E_BOOK_CLIENT (book->priv->client),
-		contact, NULL, remove_contact_reply, data);
+		contact, E_BOOK_OPERATION_FLAG_NONE,
+		NULL, remove_contact_reply, data);
 
 	return TRUE;
 }
@@ -1334,7 +1331,8 @@ e_book_remove_contact_async (EBook *book,
 
 	e_book_client_remove_contact (
 		E_BOOK_CLIENT (book->priv->client),
-		contact, NULL, remove_contact_reply, data);
+		contact, E_BOOK_OPERATION_FLAG_NONE,
+		NULL, remove_contact_reply, data);
 
 	return TRUE;
 }
@@ -1397,7 +1395,8 @@ e_book_async_remove_contact_by_id (EBook *book,
 
 	e_book_client_remove_contact_by_uid (
 		E_BOOK_CLIENT (book->priv->client),
-		id, NULL, remove_contact_by_id_reply, data);
+		id, E_BOOK_OPERATION_FLAG_NONE,
+		NULL, remove_contact_by_id_reply, data);
 
 	return TRUE;
 }
@@ -1436,7 +1435,8 @@ e_book_remove_contact_by_id_async (EBook *book,
 
 	e_book_client_remove_contact_by_uid (
 		E_BOOK_CLIENT (book->priv->client),
-		id, NULL, remove_contact_by_id_reply, data);
+		id, E_BOOK_OPERATION_FLAG_NONE,
+		NULL, remove_contact_by_id_reply, data);
 
 	return TRUE;
 }
@@ -1509,7 +1509,8 @@ e_book_async_remove_contacts (EBook *book,
 
 	e_book_client_remove_contacts (
 		E_BOOK_CLIENT (book->priv->client),
-		slist, NULL, remove_contacts_reply, data);
+		slist, E_BOOK_OPERATION_FLAG_NONE,
+		NULL, remove_contacts_reply, data);
 
 	g_slist_free (slist);
 
@@ -1560,7 +1561,8 @@ e_book_remove_contacts_async (EBook *book,
 
 	e_book_client_remove_contacts (
 		E_BOOK_CLIENT (book->priv->client),
-		slist, NULL, remove_contacts_reply, data);
+		slist, E_BOOK_OPERATION_FLAG_NONE,
+		NULL, remove_contacts_reply, data);
 
 	g_slist_free (slist);
 

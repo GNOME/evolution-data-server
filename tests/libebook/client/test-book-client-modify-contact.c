@@ -65,7 +65,7 @@ test_modify_contact_sync (ETestServerFixture *fixture,
 
 	verify_premodify_and_prepare_contact (contact);
 
-	if (!e_book_client_modify_contact_sync (book_client, contact, NULL, &error))
+	if (!e_book_client_modify_contact_sync (book_client, contact, E_BOOK_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("modify contact sync: %s", error->message);
 
 	if (!e_book_client_get_contact_sync (book_client, e_contact_get_const (contact, E_CONTACT_UID),
@@ -134,7 +134,7 @@ test_modify_contact_async (ETestServerFixture *fixture,
 
 	data.contact = contact;
 	data.loop = fixture->loop;
-	e_book_client_modify_contact (book_client, contact, NULL, contact_modified_cb, &data);
+	e_book_client_modify_contact (book_client, contact, E_BOOK_OPERATION_FLAG_NONE, NULL, contact_modified_cb, &data);
 
 	g_main_loop_run (fixture->loop);
 
