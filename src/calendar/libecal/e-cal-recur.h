@@ -52,10 +52,11 @@ G_BEGIN_DECLS
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Resolve timezone by its ID provided as @tzid. Free the returned object,
- * if not %NULL, with g_object_unref(), when no longer needed.
+ * Resolve timezone by its ID provided as @tzid. The returned object,
+ * if not %NULL, is owned by the callback implementation and should
+ * not be freed.
  *
- * Returns: (transfer full) (nullable): a new #ICalTimezone object for @tzid,
+ * Returns: (transfer none) (nullable): an #ICalTimezone object for @tzid,
  *    or %NULL, on error or if not found.
  *
  * Since: 3.34

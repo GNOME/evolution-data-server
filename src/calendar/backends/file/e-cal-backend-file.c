@@ -3358,6 +3358,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 	ESourceRegistry *registry;
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
+	ECalClientTzlookupICalCompData *lookup_data = NULL;
 	ICalComponent *toplevel_comp, *icomp = NULL;
 	ICalComponentKind kind;
 	ICalPropertyMethod toplevel_method, method;
@@ -3473,11 +3474,13 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 	g_slist_free_full (del_comps, g_object_unref);
 	del_comps = NULL;
 
+	lookup_data = e_cal_client_tzlookup_icalcomp_data_new (priv->vcalendar);
+
         /* check and patch timezones */
 	if (!e_cal_client_check_timezones_sync (toplevel_comp,
 			       NULL,
 			       e_cal_client_tzlookup_icalcomp_cb,
-			       priv->vcalendar,
+			       lookup_data,
 			       NULL,
 			       &err)) {
 		/*
@@ -3649,6 +3652,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 
 	g_hash_table_destroy (tzdata.zones);
 	g_rec_mutex_unlock (&priv->idle_save_rmutex);
+	e_cal_client_tzlookup_icalcomp_data_free (lookup_data);
 
 	if (err)
 		g_propagate_error (error, err);

@@ -44,9 +44,31 @@ ICalTimezone *	e_cal_client_tzlookup_cb	(const gchar *tzid,
 						 GCancellable *cancellable,
 						 GError **error);
 
+/**
+ * ECalClientTzlookupICalCompData:
+ *
+ * Contains data used as lookup_data of e_cal_client_tzlookup_icalcomp_cb().
+ *
+ * Since: 3.34
+ **/
+typedef struct _ECalClientTzlookupICalCompData ECalClientTzlookupICalCompData;
+
+GType		e_cal_client_tzlookup_icalcomp_data_get_type
+						(void) G_GNUC_CONST;
+ECalClientTzlookupICalCompData *
+		e_cal_client_tzlookup_icalcomp_data_new
+						(ICalComponent *icomp);
+ECalClientTzlookupICalCompData *
+		e_cal_client_tzlookup_icalcomp_data_copy
+						(const ECalClientTzlookupICalCompData *lookup_data);
+void		e_cal_client_tzlookup_icalcomp_data_free
+						(ECalClientTzlookupICalCompData *lookup_data);
+ICalComponent *	e_cal_client_tzlookup_icalcomp_data_get_icalcomponent
+						(const ECalClientTzlookupICalCompData *lookup_data);
+
 ICalTimezone *	e_cal_client_tzlookup_icalcomp_cb
 						(const gchar *tzid,
-						 gpointer icalcomp, /* ICalComponent * */
+						 gpointer lookup_data, /* ECalClientTzlookupICalCompData * */
 						 GCancellable *cancellable,
 						 GError **error);
 

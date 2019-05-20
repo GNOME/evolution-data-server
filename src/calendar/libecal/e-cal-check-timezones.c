@@ -344,7 +344,6 @@ e_cal_client_check_timezones_sync (ICalComponent *vcalendar,
 						zone_comp = i_cal_timezone_get_component (existing_zone);
 						buffer = zone_comp ? i_cal_component_as_ical_string (zone_comp) : NULL;
 						g_clear_object (&zone_comp);
-						g_clear_object (&existing_zone);
 
 						if (!buffer)
 							continue;
@@ -469,10 +468,9 @@ e_cal_client_check_timezones_sync (ICalComponent *vcalendar,
  * An implementation of the #ECalRecurResolveTimezoneCb callback which clients
  * can use. Calls e_cal_client_get_timezone_sync().
  *
- * Free a non-NULL returned timezone object with g_object_unref(), when
- * no longer needed.
+ * The returned timezone object, if not %NULL, is owned by the @ecalclient.
  *
- * Returns: (transfer full) (nullable): A timezone object, or %NULL on failure
+ * Returns: (transfer none) (nullable): A timezone object, or %NULL on failure
  *    or when not found.
  *
  * Since: 3.34
@@ -506,34 +504,134 @@ e_cal_client_tzlookup_cb (const gchar *tzid,
 	return NULL;
 }
 
+G_DEFINE_BOXED_TYPE (ECalClientTzlookupICalCompData, e_cal_client_tzlookup_icalcomp_data, e_cal_client_tzlookup_icalcomp_data_copy, e_cal_client_tzlookup_icalcomp_data_free)
+
+struct _ECalClientTzlookupICalCompData {
+	ICalComponent *icomp;
+	GHashTable *tzcache; /* gchar *tzid ~> ICalTimezone * */
+};
+
+/**
+ * e_cal_client_tzlookup_icalcomp_data_new:
+ * @icomp: an #ICalComponent
+ *
+ * Constructs a new #ECalClientTzlookupICalCompData, which can
+ * be used as a lookup_data argument of e_cal_client_tzlookup_icalcomp_cb().
+ * Free it with e_cal_client_tzlookup_icalcomp_data_free(), when no longer needed.
+ *
+ * Returns: (transfer full): a new #ECalClientTzlookupICalCompData
+ *
+ * Since: 3.34
+ **/
+ECalClientTzlookupICalCompData *
+e_cal_client_tzlookup_icalcomp_data_new (ICalComponent *icomp)
+{
+	ECalClientTzlookupICalCompData *lookup_data;
+
+	g_return_val_if_fail (I_CAL_IS_COMPONENT (icomp), NULL);
+
+	lookup_data = g_new0 (ECalClientTzlookupICalCompData, 1);
+	lookup_data->icomp = g_object_ref (icomp);
+	lookup_data->tzcache = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
+
+	return lookup_data;
+}
+
+/**
+ * e_cal_client_tzlookup_icalcomp_data_copy:
+ * @lookup_data: (nullable): source #ECalClientTzlookupICalCompData, or %NULL
+ *
+ * Copies given #ECalClientTzlookupICalCompData structure.
+ * When the @lookup_data is %NULL, simply returns %NULL as well.
+ *
+ * Returns: (transfer full) (nullable): copy of the @lookup_data. Free the returned structure
+ *    with e_cal_client_tzlookup_icalcomp_data_free(), when no longer needed.
+ *
+ * Since: 3.34
+ **/
+ECalClientTzlookupICalCompData *
+e_cal_client_tzlookup_icalcomp_data_copy (const ECalClientTzlookupICalCompData *lookup_data)
+{
+	if (!lookup_data)
+		return NULL;
+
+	return e_cal_client_tzlookup_icalcomp_data_new (
+		e_cal_client_tzlookup_icalcomp_data_get_icalcomponent (lookup_data));
+}
+
+/**
+ * e_cal_client_tzlookup_icalcomp_data_free:
+ * @lookup_data: (nullable): an #ECalClientTzlookupICalCompData, or %NULL
+ *
+ * Frees previously allocated #ECalClientTzlookupICalCompData structure
+ * with e_cal_client_tzlookup_icalcomp_data_new() or e_cal_client_tzlookup_icalcomp_data_copy().
+ * The function does nothing when @lookup_data is %NULL.
+ *
+ * Since: 3.34
+ **/
+void
+e_cal_client_tzlookup_icalcomp_data_free (ECalClientTzlookupICalCompData *lookup_data)
+{
+	if (lookup_data) {
+		g_clear_object (&lookup_data->icomp);
+		g_hash_table_destroy (lookup_data->tzcache);
+		g_free (lookup_data);
+	}
+}
+
+/**
+ * e_cal_client_tzlookup_icalcomp_data_get_icalcomponent:
+ * @lookup_data: an #ECalClientTzlookupICalCompData
+ *
+ * Returns: (transfer none): The #ICalComponent associated with the @lookup_data
+ *
+ * Since: 3.34
+ **/
+ICalComponent *
+e_cal_client_tzlookup_icalcomp_data_get_icalcomponent (const ECalClientTzlookupICalCompData *lookup_data)
+{
+	g_return_val_if_fail (lookup_data != NULL, NULL);
+
+	return lookup_data->icomp;
+}
+
 /**
  * e_cal_client_tzlookup_icalcomp_cb:
  * @tzid: ID of the timezone to lookup
- * @icalcomp: (type ICalComponent): an #ICalComponent pointer, which contains
- *    either a VCALENDAR with VTIMEZONEs or VTIMEZONES directly
+ * @lookup_data: (type ECalClientTzlookupICalCompData): an #ECalClientTzlookupICalCompData
+ *    strcture, created with e_cal_client_tzlookup_icalcomp_data_new()
  * @cancellable: an optional #GCancellable to use, or %NULL
  * @error: an error description in case of a failure
  *
  * An implementation of the #ECalRecurResolveTimezoneCb callback which
- * backends can use. Searches for the timezone in the @icalcomp.
+ * backends can use. Searches for the timezone in an %ICalComponent
+ * associated with the @lookup_data %ECalClientTzlookupICalCompData.
  *
- * Free a non-NULL returned timezone object with g_object_unref(), when
- * no longer needed.
+ * The returned timezone object is owned by the @lookup_data.
  *
- * Returns: (transfer full) (nullable): A timezone object, or %NULL, if
- *    not found inside @icalcomp.
+ * Returns: (transfer none) (nullable): A timezone object, or %NULL, if
+ *    not found inside @lookup_data 's #ICalComponent.
  *
  * Since: 3.34
  **/
 ICalTimezone *
 e_cal_client_tzlookup_icalcomp_cb (const gchar *tzid,
-				   gpointer icalcomp,
+				   gpointer lookup_data,
 				   GCancellable *cancellable,
 				   GError **error)
 {
-	ICalComponent *icomp = icalcomp;
+	ECalClientTzlookupICalCompData *ld = lookup_data;
+	ICalTimezone *zone;
 
-	g_return_val_if_fail (I_CAL_IS_COMPONENT (icalcomp), NULL);
+	g_return_val_if_fail (tzid != NULL, NULL);
+	g_return_val_if_fail (lookup_data != NULL, NULL);
 
-	return i_cal_component_get_timezone (icomp, tzid);
+	zone = g_hash_table_lookup (ld->tzcache, tzid);
+	if (!zone) {
+		zone = i_cal_component_get_timezone (e_cal_client_tzlookup_icalcomp_data_get_icalcomponent (ld), tzid);
+		if (zone)
+			g_hash_table_insert (ld->tzcache, g_strdup (tzid), zone);
+	}
+
+	return zone;
 }

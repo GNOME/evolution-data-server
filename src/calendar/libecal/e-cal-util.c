@@ -417,8 +417,8 @@ add_alarm_occurrences_cb (ICalComponent *icalcomp,
 	GSList *link;
 
 	aod = user_data;
-	start = i_cal_time_as_timet (instance_start);
-	end = i_cal_time_as_timet (instance_end);
+	start = i_cal_time_as_timet_with_zone (instance_start, i_cal_time_get_timezone (instance_start));
+	end = i_cal_time_as_timet_with_zone (instance_end, i_cal_time_get_timezone (instance_end));
 
 	for (link = aod->alarm_uids; link; link = g_slist_next (link)) {
 		const gchar *auid;
@@ -531,11 +531,9 @@ generate_absolute_triggers (ECalComponent *comp,
 		if (tzid && !i_cal_time_is_date (e_cal_component_datetime_get_value (dtstart)))
 			zone = (* resolve_tzid) (tzid, user_data, NULL, NULL);
 		else
-			zone = default_timezone ? g_object_ref (default_timezone) : NULL;
+			zone = default_timezone;
 
 		occur_start = i_cal_time_as_timet_with_zone (e_cal_component_datetime_get_value (dtstart), zone);
-
-		g_clear_object (&zone);
 	} else
 		occur_start = -1;
 
@@ -546,11 +544,9 @@ generate_absolute_triggers (ECalComponent *comp,
 		if (tzid && !i_cal_time_is_date (e_cal_component_datetime_get_value (dtend)))
 			zone = (* resolve_tzid) (tzid, user_data, NULL, NULL);
 		else
-			zone = default_timezone ? g_object_ref (default_timezone) : NULL;
+			zone = default_timezone;
 
 		occur_end = i_cal_time_as_timet_with_zone (e_cal_component_datetime_get_value (dtend), zone);
-
-		g_clear_object (&zone);
 	} else
 		occur_end = -1;
 

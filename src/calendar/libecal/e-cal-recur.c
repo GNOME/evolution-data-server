@@ -244,7 +244,7 @@ ensure_timezone (ICalComponent *comp,
 	}
 
 	if (get_tz_callback) {
-		ICalTimezone *zone = NULL;
+		zone = NULL;
 
 		if (*pcached_zones)
 			zone = g_hash_table_lookup (*pcached_zones, tzid);
