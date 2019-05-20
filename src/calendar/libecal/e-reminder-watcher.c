@@ -2059,7 +2059,7 @@ e_reminder_watcher_set_property (GObject *object,
 		case PROP_DEFAULT_ZONE:
 			e_reminder_watcher_set_default_zone (
 				E_REMINDER_WATCHER (object),
-				g_value_get_boxed (value));
+				g_value_get_object (value));
 			return;
 
 		case PROP_TIMERS_ENABLED:
@@ -2087,7 +2087,7 @@ e_reminder_watcher_get_property (GObject *object,
 			return;
 
 		case PROP_DEFAULT_ZONE:
-			g_value_take_boxed (
+			g_value_take_object (
 				value,
 				e_reminder_watcher_dup_default_zone (
 				E_REMINDER_WATCHER (object)));
