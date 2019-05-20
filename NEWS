@@ -1,3 +1,44 @@
+Evolution-Data-Server 3.33.2 2019-05-20
+---------------------------------------
+
+ * The calendar part begun to use libical-glib, instead of libical, which
+   includes change from API version 1.2 to 2.0.
+
+ * The addressbook part and the calendar part changed client APIs, which
+   modified also D-Bus API, thus D-Bus services' versions had been bumped
+   as well.
+
+ * All the C libraries generate GObject introspection and Vala bindings.
+
+Bug Fixes:
+	I#33 - Port to libical-glib (Milan Crha)
+	I#89 - [IMAPx] Downloads content for offline in unsubscribed folders (Milan Crha)
+	I#105 - Invalid UTF-8 letters in a mail body get lost (Milan Crha)
+	I#106 - [IMAPx] Return cached folder list even when being online (Milan Crha)
+	I#112 - Credentials prompter re-asks for credentials of disabled accounts (Milan Crha)
+	I#114 - [IMAPx] Option to enable full folder update on metered networks (Milan Crha)
+	I#116 - [IMAPx] Correct handling of mailbox names (with RFC 6855 extension) (Milan Crha)
+	I#190 - Does not show reminders after resume from suspend (Milan Crha)
+	M!14 - Correct typo in a comment in the main CMakeLists.txt (Дилян Палаузов)
+
+Miscellaneous:
+	[EWebDAVDiscover] Prevent crash on GError use in gio functions (Milan Crha)
+	[SMTP] Log also DATA itself when SMTP logging is enabled (Milan Crha)
+	[IMAPx] Fix a leak of CamelMessageInfo when downloading message from a server (Milan Crha)
+	Change libebook and libedata-book APIs (Milan Crha)
+	Revert "Rename AddressBookView/CalendarView D-Bus members for backward compatibility" (Milan Crha)
+	Rename ECalBackendClass methods to address some gir warnings (Milan Crha)
+	Enable vala bindings for libebackend, libedata-book and libedata-cal (Milan Crha)
+	Correct get_/set_property() for EReminderWatcher::default-zone (Milan Crha)
+	Miscellaneous changes for issues overlooked during port to libical-glib (Milan Crha)
+
+Translations:
+	Daniel Mustieles (es)
+	Kukuh Syafaat (id)
+	Fabio Tomat (fur)
+	Carmen Bianca BAKKER (eo)
+	Guillaume Bernard (fr)
+
 Evolution-Data-Server 3.33.1 2019-04-22
 ---------------------------------------
 
