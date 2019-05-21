@@ -2388,12 +2388,12 @@ cal_obj_expand_recurrence (CalObjTime *event_start,
 	for (;;) {
 		/* Generate the set of occurrences for this period. */
 		switch (recur->freq) {
-		case ICAL_YEARLY_RECURRENCE:
+		case I_CAL_YEARLY_RECURRENCE:
 			occs = cal_obj_generate_set_yearly (
 				&recur_data,
 				&vtable, &occ);
 			break;
-		case ICAL_MONTHLY_RECURRENCE:
+		case I_CAL_MONTHLY_RECURRENCE:
 			occs = cal_obj_generate_set_monthly (
 				&recur_data,
 				&vtable, &occ);
@@ -2661,29 +2661,29 @@ cal_obj_get_vtable (ECalRecurrence *recur,
 	gboolean valid = TRUE;
 
 	switch (recur->freq) {
-	case ICAL_YEARLY_RECURRENCE:
+	case I_CAL_YEARLY_RECURRENCE:
 		*out_vtable = cal_obj_yearly_vtable;
 		break;
-	case ICAL_MONTHLY_RECURRENCE:
+	case I_CAL_MONTHLY_RECURRENCE:
 		*out_vtable = cal_obj_monthly_vtable;
 		if (recur->bymonthday && recur->byday)
 			out_vtable->bymonthday_filter = cal_obj_bymonthday_filter;
 		else
 			out_vtable->bymonthday_filter = cal_obj_bymonthday_expand;
 		break;
-	case ICAL_WEEKLY_RECURRENCE:
+	case I_CAL_WEEKLY_RECURRENCE:
 		*out_vtable = cal_obj_weekly_vtable;
 		break;
-	case ICAL_DAILY_RECURRENCE:
+	case I_CAL_DAILY_RECURRENCE:
 		*out_vtable = cal_obj_daily_vtable;
 		break;
-	case ICAL_HOURLY_RECURRENCE:
+	case I_CAL_HOURLY_RECURRENCE:
 		*out_vtable = cal_obj_hourly_vtable;
 		break;
-	case ICAL_MINUTELY_RECURRENCE:
+	case I_CAL_MINUTELY_RECURRENCE:
 		*out_vtable = cal_obj_minutely_vtable;
 		break;
-	case ICAL_SECONDLY_RECURRENCE:
+	case I_CAL_SECONDLY_RECURRENCE:
 		*out_vtable = cal_obj_secondly_vtable;
 		break;
 	default:
@@ -5231,7 +5231,7 @@ e_cal_recur_describe_recurrence (ICalComponent *icalcomp,
 		break;
 	}
 
-	case ICAL_MONTHLY_RECURRENCE: {
+	case I_CAL_MONTHLY_RECURRENCE: {
 		enum month_num_options {
 			MONTH_NUM_INVALID = -1,
 			MONTH_NUM_FIRST,

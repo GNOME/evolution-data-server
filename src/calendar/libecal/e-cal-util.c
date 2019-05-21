@@ -1592,9 +1592,9 @@ e_cal_util_split_at_instance (ICalComponent *icalcomp,
 	g_clear_object (&duration);
 
 	/* any RRULE with 'count' should be shortened */
-	for (prop = i_cal_component_get_first_property (icalcomp, ICAL_RRULE_PROPERTY);
+	for (prop = i_cal_component_get_first_property (icalcomp, I_CAL_RRULE_PROPERTY);
 	     prop;
-	     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, ICAL_RRULE_PROPERTY)) {
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, I_CAL_RRULE_PROPERTY)) {
 		ICalTime *recur;
 		ICalRecurrence *rule;
 		gint rule_count;

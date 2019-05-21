@@ -1284,7 +1284,7 @@ e_cal_backend_contacts_start_view (ECalBackend *backend,
 
 	sexp = e_data_cal_view_get_sexp (query);
 	if (!sexp) {
-		GError *error = ECC_ERROR (E_CLIENT_ERROR_INVALID_QUERY);
+		GError *error = EC_ERROR (E_CLIENT_ERROR_INVALID_QUERY);
 		e_data_cal_view_notify_complete (query, error);
 		g_error_free (error);
 		return;

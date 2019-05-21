@@ -259,7 +259,7 @@ e_cal_component_alarm_trigger_set_from_property (ECalComponentAlarmTrigger *trig
 				kind = E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START;
 				break;
 
-			case ICAL_RELATED_END:
+			case I_CAL_RELATED_END:
 				kind = E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_END;
 				break;
 

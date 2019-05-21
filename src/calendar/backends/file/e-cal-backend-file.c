@@ -483,13 +483,13 @@ e_cal_backend_file_get_backend_property (ECalBackend *backend,
 		comp = e_cal_component_new ();
 
 		switch (e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
-		case ICAL_VEVENT_COMPONENT:
+		case I_CAL_VEVENT_COMPONENT:
 			e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
 			break;
-		case ICAL_VTODO_COMPONENT:
+		case I_CAL_VTODO_COMPONENT:
 			e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
 			break;
-		case ICAL_VJOURNAL_COMPONENT:
+		case I_CAL_VJOURNAL_COMPONENT:
 			e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
 			break;
 		default:
@@ -3520,12 +3520,12 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 		/* Set the created and last modified times on the component, if not there already */
 		current = i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());
 
-		if (!e_cal_util_component_has_property (subcomp, ICAL_CREATED_PROPERTY)) {
+		if (!e_cal_util_component_has_property (subcomp, I_CAL_CREATED_PROPERTY)) {
 			/* Update both when CREATED is missing, to make sure the LAST-MODIFIED
 			   is not before CREATED */
 			e_cal_component_set_created (comp, current);
 			e_cal_component_set_last_modified (comp, current);
-		} else if (!e_cal_util_component_has_property (subcomp, ICAL_LASTMODIFIED_PROPERTY)) {
+		} else if (!e_cal_util_component_has_property (subcomp, I_CAL_LASTMODIFIED_PROPERTY)) {
 			e_cal_component_set_last_modified (comp, current);
 		}
 
@@ -3540,9 +3540,9 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 			method = toplevel_method;
 
 		switch (method) {
-		case ICAL_METHOD_PUBLISH:
-		case ICAL_METHOD_REQUEST:
-		case ICAL_METHOD_REPLY:
+		case I_CAL_METHOD_PUBLISH:
+		case I_CAL_METHOD_REQUEST:
+		case I_CAL_METHOD_REPLY:
 			is_declined = e_cal_backend_user_declined (registry, subcomp);
 
 			/* handle attachments */
@@ -3596,26 +3596,26 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 			}
 			g_free (rid);
 			break;
-		case ICAL_METHOD_ADD:
+		case I_CAL_METHOD_ADD:
 			/* FIXME This should be doable once all the recurid stuff is done */
 			err = EC_ERROR_EX (E_CLIENT_ERROR_OTHER_ERROR, _("Unsupported method"));
 			g_object_unref (comp);
 			g_free (rid);
 			goto error;
 			break;
-		case ICAL_METHOD_COUNTER:
+		case I_CAL_METHOD_COUNTER:
 			err = EC_ERROR_EX (E_CLIENT_ERROR_OTHER_ERROR, _("Unsupported method"));
 			g_object_unref (comp);
 			g_free (rid);
 			goto error;
 			break;
-		case ICAL_METHOD_DECLINECOUNTER:
+		case I_CAL_METHOD_DECLINECOUNTER:
 			err = EC_ERROR_EX (E_CLIENT_ERROR_OTHER_ERROR, _("Unsupported method"));
 			g_object_unref (comp);
 			g_free (rid);
 			goto error;
 			break;
-		case ICAL_METHOD_CANCEL:
+		case I_CAL_METHOD_CANCEL:
 			if (cancel_received_object (cbfile, comp, &old_component, &new_component)) {
 				ECalComponentId *id;
 

@@ -2857,13 +2857,13 @@ ecmb_get_backend_property (ECalBackend *cal_backend,
 		comp = e_cal_component_new ();
 
 		switch (e_cal_backend_get_kind (cal_backend)) {
-		case ICAL_VEVENT_COMPONENT:
+		case I_CAL_VEVENT_COMPONENT:
 			e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
 			break;
-		case ICAL_VTODO_COMPONENT:
+		case I_CAL_VTODO_COMPONENT:
 			e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
 			break;
-		case ICAL_VJOURNAL_COMPONENT:
+		case I_CAL_VJOURNAL_COMPONENT:
 			e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
 			break;
 		default:

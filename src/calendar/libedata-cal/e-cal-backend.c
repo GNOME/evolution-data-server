@@ -975,9 +975,9 @@ e_cal_backend_class_init (ECalBackendClass *class)
 			"Kind",
 			"The kind of iCalendar components "
 			"this backend manages",
-			ICAL_NO_COMPONENT,
-			ICAL_XLICMIMEPART_COMPONENT,
-			ICAL_NO_COMPONENT,
+			I_CAL_NO_COMPONENT,
+			I_CAL_XLICMIMEPART_COMPONENT,
+			I_CAL_NO_COMPONENT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
@@ -1101,7 +1101,7 @@ e_cal_backend_init (ECalBackend *backend)
 ICalComponentKind
 e_cal_backend_get_kind (ECalBackend *backend)
 {
-	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), ICAL_NO_COMPONENT);
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), I_CAL_NO_COMPONENT);
 
 	return backend->priv->kind;
 }

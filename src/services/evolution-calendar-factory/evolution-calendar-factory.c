@@ -84,7 +84,7 @@ main (gint argc,
 		exit (EXIT_FAILURE);
 	}
 
-	ical_set_unknown_token_handling_setting (ICAL_DISCARD_TOKEN);
+	i_cal_set_unknown_token_handling_setting (I_CAL_DISCARD_TOKEN);
 
 	e_xml_initialize_in_main ();
 

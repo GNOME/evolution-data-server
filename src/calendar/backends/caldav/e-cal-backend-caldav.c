@@ -757,13 +757,13 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 
 	switch (e_cal_backend_get_kind (E_CAL_BACKEND (cbdav))) {
 	default:
-	case ICAL_VEVENT_COMPONENT:
+	case I_CAL_VEVENT_COMPONENT:
 		e_xml_document_add_attribute (xml, NULL, "name", "VEVENT");
 		break;
-	case ICAL_VJOURNAL_COMPONENT:
+	case I_CAL_VJOURNAL_COMPONENT:
 		e_xml_document_add_attribute (xml, NULL, "name", "VJOURNAL");
 		break;
-	case ICAL_VTODO_COMPONENT:
+	case I_CAL_VTODO_COMPONENT:
 		e_xml_document_add_attribute (xml, NULL, "name", "VTODO");
 		break;
 	}
@@ -1777,7 +1777,7 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 
 	/* put the free/busy request to a VCALENDAR */
 	icomp = e_cal_util_new_top_level ();
-	i_cal_component_set_method (icomp, ICAL_METHOD_REQUEST);
+	i_cal_component_set_method (icomp, I_CAL_METHOD_REQUEST);
 	i_cal_component_take_component (icomp, i_cal_component_clone (e_cal_component_get_icalcomponent (comp)));
 
 	str = i_cal_component_as_ical_string (icomp);

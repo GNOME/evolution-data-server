@@ -724,7 +724,7 @@ e_cal_meta_backend_test_new (ECalCache *cache)
 	meta_backend = g_object_new (E_TYPE_CAL_META_BACKEND_TEST,
 		"source", scratch,
 		"registry", glob_registry,
-		"kind", ICAL_VEVENT_COMPONENT,
+		"kind", I_CAL_VEVENT_COMPONENT,
 		NULL);
 	g_assert_nonnull (meta_backend);
 
@@ -2461,7 +2461,7 @@ test_receive_objects (ECalMetaBackend *meta_backend)
 	icomp = i_cal_component_new_from_string (calobj);
 	g_assert_nonnull (icomp);
 
-	firsticomp = i_cal_component_get_first_component (icomp, ICAL_VEVENT_COMPONENT);
+	firsticomp = i_cal_component_get_first_component (icomp, I_CAL_VEVENT_COMPONENT);
 	g_assert_nonnull (firsticomp);
 
 	g_free (calobj);

@@ -1431,7 +1431,7 @@ ecc_sexp_func_is_completed (ESExp *esexp,
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
 	result->value.string = g_strdup_printf ("%s NOT NULL OR (%s NOT NULL AND %s='%s')",
-		ECC_COLUMN_COMPLETED, ECC_COLUMN_STATUS, ECC_COLUMN_STATUS, ecc_get_status_as_string (ICAL_STATUS_COMPLETED));
+		ECC_COLUMN_COMPLETED, ECC_COLUMN_STATUS, ECC_COLUMN_STATUS, ecc_get_status_as_string (I_CAL_STATUS_COMPLETED));
 
 	return result;
 }
@@ -4408,7 +4408,7 @@ ecc_get_cached_timezone (ETimezoneCache *cache,
 
 	for (prop = i_cal_component_get_first_property (icomp, I_CAL_ANY_PROPERTY);
 	     prop;
-	     g_object_unref (prop), prop = i_cal_component_get_next_property (icomp, ICAL_ANY_PROPERTY)) {
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icomp, I_CAL_ANY_PROPERTY)) {
 		if (i_cal_property_isa (prop) == I_CAL_TZID_PROPERTY) {
 			i_cal_property_set_value_from_string (prop, tzid, "NO");
 			g_object_unref (prop);

@@ -1668,7 +1668,7 @@ ebmb_remove_contacts_sync (EBookBackendSync *book_backend,
 	*out_removed_uids = NULL;
 
 	if (!e_book_backend_get_writable (E_BOOK_BACKEND (book_backend))) {
-		g_propagate_error (error, e_book_client_error_create (E_CLIENT_ERROR_PERMISSION_DENIED, NULL));
+		g_propagate_error (error, e_client_error_create (E_CLIENT_ERROR_PERMISSION_DENIED, NULL));
 		return FALSE;
 	}
 

@@ -405,9 +405,9 @@ e_cal_client_check_timezones_sync (ICalComponent *vcalendar,
 	/*
 	 * now replace all TZID parameters in place
 	 */
-	for (subcomp = i_cal_component_get_first_component (vcalendar, ICAL_ANY_COMPONENT);
+	for (subcomp = i_cal_component_get_first_component (vcalendar, I_CAL_ANY_COMPONENT);
 	     subcomp;
-	     g_object_unref (subcomp), subcomp = i_cal_component_get_next_component (vcalendar, ICAL_ANY_COMPONENT)) {
+	     g_object_unref (subcomp), subcomp = i_cal_component_get_next_component (vcalendar, I_CAL_ANY_COMPONENT)) {
 		/*
 		 * Leave VTIMEZONE unchanged, iterate over properties of
 		 * everything else.
