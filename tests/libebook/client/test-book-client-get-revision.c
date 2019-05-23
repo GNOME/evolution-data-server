@@ -48,6 +48,19 @@ get_revision_compare_cycle (EBookClient *client)
 	if (!e_client_get_backend_property_sync (E_CLIENT (client), CLIENT_BACKEND_PROPERTY_REVISION, &revision_after, NULL, &error))
 		g_error ("Error getting book revision: %s", error->message);
 
+	/* Sometimes, kind of rarely, the D-Bus property change is not delivered on time,
+	   thus give it some time to be received and processed. */
+	if (g_strcmp0 (revision_before, revision_after) == 0) {
+		g_message ("   D-Bus property 'revision' change not received yet, trying to wait a bit");
+
+		g_usleep (G_USEC_PER_SEC / 2);
+
+		g_clear_pointer (&revision_after, g_free);
+
+		if (!e_client_get_backend_property_sync (E_CLIENT (client), CLIENT_BACKEND_PROPERTY_REVISION, &revision_after, NULL, &error))
+			g_error ("Error getting book revision: %s", error->message);
+	}
+
 	g_assert (revision_before);
 	g_assert (revision_after);
 	g_assert_cmpstr (revision_before, !=, revision_after);
