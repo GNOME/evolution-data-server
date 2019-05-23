@@ -179,8 +179,16 @@ calview_start_thread (gpointer data)
 {
 	EDataCalView *view = data;
 
-	if (view->priv->started && !view->priv->stopped)
+	if (view->priv->started && !view->priv->stopped) {
+		/* To avoid race condition when one thread is starting the view, while
+		   another thread wants to notify about created/modified/removed objects. */
+		e_cal_backend_sexp_lock (view->priv->sexp);
+
 		e_cal_backend_start_view (view->priv->backend, view);
+
+		e_cal_backend_sexp_unlock (view->priv->sexp);
+	}
+
 	g_object_unref (view);
 
 	return NULL;

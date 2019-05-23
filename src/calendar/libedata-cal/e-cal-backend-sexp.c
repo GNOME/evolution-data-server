@@ -43,7 +43,7 @@ struct _ECalBackendSExpPrivate {
 	ESExp *search_sexp;
 	gchar *text;
 	SearchContext *search_context;
-	GMutex search_context_lock;
+	GRecMutex search_context_lock;
 };
 
 struct _SearchContext {
@@ -1128,7 +1128,7 @@ cal_backend_sexp_finalize (GObject *object)
 	g_object_unref (priv->search_sexp);
 	g_free (priv->text);
 	g_free (priv->search_context);
-	g_mutex_clear (&priv->search_context_lock);
+	g_rec_mutex_clear (&priv->search_context_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_sexp_parent_class)->finalize (object);
@@ -1151,7 +1151,7 @@ e_cal_backend_sexp_init (ECalBackendSExp *sexp)
 	sexp->priv = E_CAL_BACKEND_SEXP_GET_PRIVATE (sexp);
 	sexp->priv->search_context = g_new (SearchContext, 1);
 
-	g_mutex_init (&sexp->priv->search_context_lock);
+	g_rec_mutex_init (&sexp->priv->search_context_lock);
 }
 
 /* 'builtin' functions */
@@ -1278,7 +1278,7 @@ e_cal_backend_sexp_match_comp (ECalBackendSExp *sexp,
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 	g_return_val_if_fail (E_IS_TIMEZONE_CACHE (cache), FALSE);
 
-	g_mutex_lock (&sexp->priv->search_context_lock);
+	e_cal_backend_sexp_lock (sexp);
 
 	sexp->priv->search_context->comp = g_object_ref (comp);
 	sexp->priv->search_context->cache = g_object_ref (cache);
@@ -1292,7 +1292,7 @@ e_cal_backend_sexp_match_comp (ECalBackendSExp *sexp,
 
 	e_sexp_result_free (sexp->priv->search_sexp, r);
 
-	g_mutex_unlock (&sexp->priv->search_context_lock);
+	e_cal_backend_sexp_unlock (sexp);
 
 	return retval;
 }
@@ -1332,6 +1332,39 @@ e_cal_backend_sexp_match_object (ECalBackendSExp *sexp,
 	g_object_unref (comp);
 
 	return retval;
+}
+
+/**
+ * e_cal_backend_sexp_lock:
+ * @sexp: an #ECalBackendSExp
+ *
+ * Locks the @sexp. Other threads cannot use it until
+ * it's unlocked with e_cal_backend_sexp_unlock().
+ *
+ * Since: 3.32.3
+ **/
+void
+e_cal_backend_sexp_lock (ECalBackendSExp *sexp)
+{
+	g_return_if_fail (E_IS_CAL_BACKEND_SEXP (sexp));
+
+	g_rec_mutex_lock (&sexp->priv->search_context_lock);
+}
+
+/**
+ * e_cal_backend_sexp_unlock:
+ * @sexp: an #ECalBackendSExp
+ *
+ * Unlocks the @sexp, previously locked by e_cal_backend_sexp_lock().
+ *
+ * Since: 3.32.3
+ **/
+void
+e_cal_backend_sexp_unlock (ECalBackendSExp *sexp)
+{
+	g_return_if_fail (E_IS_CAL_BACKEND_SEXP (sexp));
+
+	g_rec_mutex_unlock (&sexp->priv->search_context_lock);
 }
 
 /**

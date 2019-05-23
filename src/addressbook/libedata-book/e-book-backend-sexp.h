@@ -84,6 +84,8 @@ gboolean	e_book_backend_sexp_match_vcard	(EBookBackendSExp *sexp,
 gboolean	e_book_backend_sexp_match_contact
 						(EBookBackendSExp *sexp,
 						 EContact *contact);
+void		e_book_backend_sexp_lock	(EBookBackendSExp *sexp);
+void		e_book_backend_sexp_unlock	(EBookBackendSExp *sexp);
 
 G_END_DECLS
 
