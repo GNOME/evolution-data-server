@@ -3419,7 +3419,7 @@ e_cal_cache_delete_attachments (ECalCache *cal_cache,
 				gsize buf_size;
 				gchar *buf;
 
-				buf_size = strlen (url);
+				buf_size = strlen (url) + 1;
 				buf = g_malloc0 (buf_size + 1);
 
 				icalvalue_decode_ical_string (url, buf, buf_size);

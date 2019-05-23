@@ -1558,7 +1558,7 @@ get_attachment_list (ECalComponent *comp,
 			 */
 			icalattach_ref (attachment->attach);
 			data = icalattach_get_url (attachment->attach);
-			buf_size = strlen (data);
+			buf_size = strlen (data) + 1;
 			buf = g_malloc0 (buf_size + 1);
 			icalvalue_decode_ical_string (data, buf, buf_size);
 		} else if (attachment->prop) {
