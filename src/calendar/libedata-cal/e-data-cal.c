@@ -2180,6 +2180,12 @@ e_data_cal_report_backend_property_changed (EDataCal *cal,
 	if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_DEFAULT_OBJECT))
 		e_dbus_calendar_set_default_object (dbus_interface, prop_value);
 
+	/* Ensure the property change signal on the D-Bus is invoked immediately, not on idle */
+	g_dbus_interface_skeleton_flush (G_DBUS_INTERFACE_SKELETON (dbus_interface));
+
+	if (cal->priv->connection && !g_dbus_connection_is_closed (cal->priv->connection))
+		g_dbus_connection_flush_sync (cal->priv->connection, NULL, NULL);
+
 	/* Disregard anything else. */
 }
 
