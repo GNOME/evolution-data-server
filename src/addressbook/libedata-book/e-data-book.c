@@ -1856,6 +1856,12 @@ e_data_book_report_backend_property_changed (EDataBook *book,
 		g_strfreev (strv);
 	}
 
+	/* Ensure the property change signal on the D-Bus is invoked immediately, not on idle */
+	g_dbus_interface_skeleton_flush (G_DBUS_INTERFACE_SKELETON (dbus_interface));
+
+	if (book->priv->connection && !g_dbus_connection_is_closed (book->priv->connection))
+		g_dbus_connection_flush_sync (book->priv->connection, NULL, NULL);
+
 	/* Disregard anything else. */
 }
 
