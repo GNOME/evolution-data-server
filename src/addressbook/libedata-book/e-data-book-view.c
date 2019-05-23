@@ -223,8 +223,16 @@ bookview_start_thread (gpointer data)
 {
 	EDataBookView *view = data;
 
-	if (view->priv->running)
+	if (view->priv->running) {
+		/* To avoid race condition when one thread is starting the view, while
+		   another thread wants to notify about created/modified/removed objects. */
+		e_book_backend_sexp_lock (view->priv->sexp);
+
 		e_book_backend_start_view (view->priv->backend, view);
+
+		e_book_backend_sexp_unlock (view->priv->sexp);
+	}
+
 	g_object_unref (view);
 
 	return NULL;

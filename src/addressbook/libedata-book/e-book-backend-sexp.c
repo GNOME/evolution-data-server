@@ -45,6 +45,7 @@ struct _EBookBackendSExpPrivate {
 	ESExp *search_sexp;
 	gchar *text;
 	SearchContext *search_context;
+	GRecMutex search_context_lock;
 };
 
 struct _SearchContext {
@@ -1090,6 +1091,8 @@ book_backend_sexp_finalize (GObject *object)
 	g_free (priv->text);
 	g_free (priv->search_context);
 
+	g_rec_mutex_clear (&priv->search_context_lock);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_backend_sexp_parent_class)->finalize (object);
 }
@@ -1110,6 +1113,8 @@ e_book_backend_sexp_init (EBookBackendSExp *sexp)
 {
 	sexp->priv = E_BOOK_BACKEND_SEXP_GET_PRIVATE (sexp);
 	sexp->priv->search_context = g_new (SearchContext, 1);
+
+	g_rec_mutex_init (&sexp->priv->search_context_lock);
 }
 
 /* 'builtin' functions */
@@ -1218,6 +1223,8 @@ e_book_backend_sexp_match_contact (EBookBackendSExp *sexp,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SEXP (sexp), FALSE);
 	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
 
+	e_book_backend_sexp_lock (sexp);
+
 	sexp->priv->search_context->contact = g_object_ref (contact);
 
 	r = e_sexp_eval (sexp->priv->search_sexp);
@@ -1227,6 +1234,8 @@ e_book_backend_sexp_match_contact (EBookBackendSExp *sexp,
 	g_object_unref (sexp->priv->search_context->contact);
 
 	e_sexp_result_free (sexp->priv->search_sexp, r);
+
+	e_book_backend_sexp_unlock (sexp);
 
 	return retval;
 }
@@ -1259,3 +1268,35 @@ e_book_backend_sexp_match_vcard (EBookBackendSExp *sexp,
 	return retval;
 }
 
+/**
+ * e_book_backend_sexp_lock:
+ * @sexp: an #EBookBackendSExp
+ *
+ * Locks the @sexp. Other threads cannot use it until
+ * it's unlocked with e_book_backend_sexp_unlock().
+ *
+ * Since: 3.34
+ **/
+void
+e_book_backend_sexp_lock (EBookBackendSExp *sexp)
+{
+	g_return_if_fail (E_IS_BOOK_BACKEND_SEXP (sexp));
+
+	g_rec_mutex_lock (&sexp->priv->search_context_lock);
+}
+
+/**
+ * e_book_backend_sexp_unlock:
+ * @sexp: an #EBookBackendSExp
+ *
+ * Unlocks the @sexp, previously locked by e_book_backend_sexp_lock().
+ *
+ * Since: 3.34
+ **/
+void
+e_book_backend_sexp_unlock (EBookBackendSExp *sexp)
+{
+	g_return_if_fail (E_IS_BOOK_BACKEND_SEXP (sexp));
+
+	g_rec_mutex_unlock (&sexp->priv->search_context_lock);
+}

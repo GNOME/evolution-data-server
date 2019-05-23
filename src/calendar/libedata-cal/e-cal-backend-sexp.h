@@ -84,6 +84,8 @@ gboolean	e_cal_backend_sexp_match_object	(ECalBackendSExp *sexp,
 gboolean	e_cal_backend_sexp_match_comp	(ECalBackendSExp *sexp,
 						 ECalComponent *comp,
 						 ETimezoneCache *cache);
+void		e_cal_backend_sexp_lock		(ECalBackendSExp *sexp);
+void		e_cal_backend_sexp_unlock	(ECalBackendSExp *sexp);
 
 /* Default implementations of time functions for use by subclasses */
 
