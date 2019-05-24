@@ -438,6 +438,8 @@ reminders_widget_maybe_schedule_overdue_update (ERemindersWidget *reminders)
 
 		reminders->priv->overdue_update_id = g_timeout_add_seconds (until_minute,
 			reminders_widget_overdue_update_cb, reminders);
+
+		reminders_widget_overdue_update (reminders);
 	}
 }
 
