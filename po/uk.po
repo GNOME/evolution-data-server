@@ -262,7 +262,7 @@ msgstr "Помилка виконання пошуку"
 #, c-format
 #| msgid "Downloading contacts (%d)... "
 msgid "Downloading contacts (%d)..."
-msgstr "Звантаження контактів (%d)…"
+msgstr "Завантаження контактів (%d)…"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:5078
 msgid "Adding contact to LDAP server..."
@@ -299,7 +299,7 @@ msgstr "Тіло відповіді відсутнє в результатах �
 #, c-format
 #| msgid "Downloading contacts (%d)... "
 msgid "Loading Contacts (%d%%)"
-msgstr "Звантаження контактів (%d%%)"
+msgstr "Завантаження контактів (%d%%)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1328
 msgid "Cannot transform SoupURI to string"
