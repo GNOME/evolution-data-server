@@ -4852,6 +4852,7 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 					if (camel_folder_change_info_changed (dest_changes)) {
 						camel_folder_summary_touch (destination_summary);
 						camel_folder_summary_save (destination_summary, NULL);
+						imapx_update_store_summary (destination_folder);
 						camel_folder_changed (destination_folder, dest_changes);
 					}
 
@@ -5107,6 +5108,7 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 		if (ic->status && ic->status->condition == IMAPX_APPENDUID) {
 			c (is->priv->tagprefix, "Got appenduid %u %u\n", (guint32) ic->status->u.appenduid.uidvalidity, ic->status->u.appenduid.uid);
 			if (ic->status->u.appenduid.uidvalidity == uidvalidity) {
+				CamelFolderChangeInfo *dest_changes;
 				gchar *uid;
 
 				uid = g_strdup_printf ("%u", ic->status->u.appenduid.uid);
@@ -5127,11 +5129,13 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 
 				camel_folder_summary_add (camel_folder_get_folder_summary (folder), clone, TRUE);
 
-				g_mutex_lock (&is->priv->changes_lock);
-				camel_folder_change_info_add_uid (is->priv->changes, camel_message_info_get_uid (clone));
-				g_mutex_unlock (&is->priv->changes_lock);
+				dest_changes = camel_folder_change_info_new ();
+				camel_folder_change_info_add_uid (dest_changes, camel_message_info_get_uid (clone));
 
 				camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
+				imapx_update_store_summary (folder);
+				camel_folder_changed (folder, dest_changes);
+				camel_folder_change_info_free (dest_changes);
 
 				if (appended_uid)
 					*appended_uid = uid;
@@ -6403,7 +6407,7 @@ camel_imapx_server_expunge_sync (CamelIMAPXServer *is,
 
 				camel_folder_summary_remove_uids (folder_summary, removed);
 				camel_folder_summary_save (folder_summary, NULL);
-
+				imapx_update_store_summary (folder);
 				camel_folder_changed (folder, changes);
 				camel_folder_change_info_free (changes);
 
