@@ -119,6 +119,29 @@ void		camel_mime_message_set_source	(CamelMimeMessage *message,
 const gchar *	camel_mime_message_get_source	(CamelMimeMessage *message);
 
 /* utility functions */
+
+/**
+ * CamelForeachPartFunc:
+ * @message: a #CamelMimeMessage
+ * @part: a #CamelMimePart, for which the function is called
+ * @parent_part: (nullable): a #CamelMimePart, parent of the @part; can be %NULL
+ * @user_data: user data, as passed to camel_mime_message_foreach_part()
+ *
+ * Callback used to traverse parts of the @message using camel_mime_message_foreach_part().
+ *
+ * Returns: %TRUE, when the traverse should continue, %FALSE to stop
+ *    traversing parts of the @message
+ *
+ * Since: 3.34
+ **/
+typedef gboolean (* CamelForeachPartFunc)	(CamelMimeMessage *message,
+						 CamelMimePart *part,
+						 CamelMimePart *parent_part,
+						 gpointer user_data);
+
+void		camel_mime_message_foreach_part	(CamelMimeMessage *message,
+						 CamelForeachPartFunc callback,
+						 gpointer user_data);
 gboolean	camel_mime_message_has_8bit_parts
 						(CamelMimeMessage *message);
 void		camel_mime_message_set_best_encoding
