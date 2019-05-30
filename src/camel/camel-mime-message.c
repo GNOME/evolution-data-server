@@ -860,13 +860,11 @@ camel_mime_message_get_source (CamelMimeMessage *message)
 	return src;
 }
 
-typedef gboolean (*CamelPartFunc)(CamelMimeMessage *message, CamelMimePart *part, CamelMimePart *parent_part, gpointer data);
-
 static gboolean
 message_foreach_part_rec (CamelMimeMessage *msg,
                           CamelMimePart *part,
 			  CamelMimePart *parent_part,
-                          CamelPartFunc callback,
+                          CamelForeachPartFunc callback,
                           gpointer data)
 {
 	CamelDataWrapper *containee;
@@ -896,14 +894,27 @@ message_foreach_part_rec (CamelMimeMessage *msg,
 	return go;
 }
 
-/* dont make this public yet, it might need some more thinking ... */
-/* MPZ */
-static void
-camel_mime_message_foreach_part (CamelMimeMessage *msg,
-                                 CamelPartFunc callback,
-                                 gpointer data)
+/**
+ * camel_mime_message_foreach_part:
+ * @message: a #CamelMimeMessage
+ * @callback: (scope call): a #CamelForeachPartFunc callback to call for each part
+ * @user_data: (closure callback): user data passed to the @callback
+ *
+ * Calls @callback for each part of the @message, including the message itself.
+ * The traverse of the @message parts can be stopped when the @callback
+ * returns %FALSE.
+ *
+ * Since: 3.32.3
+ **/
+void
+camel_mime_message_foreach_part (CamelMimeMessage *message,
+				 CamelForeachPartFunc callback,
+				 gpointer user_data)
 {
-	message_foreach_part_rec (msg, (CamelMimePart *) msg, NULL, callback, data);
+	g_return_if_fail (CAMEL_IS_MIME_MESSAGE (message));
+	g_return_if_fail (callback != NULL);
+
+	message_foreach_part_rec (message, CAMEL_MIME_PART (message), NULL, callback, user_data);
 }
 
 static gboolean
