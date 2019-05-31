@@ -1399,6 +1399,26 @@ get_uri_string (ECalBackend *backend)
 	return full_uri;
 }
 
+static gboolean
+get_source_writable (EBackend *backend)
+{
+	ESource *source;
+	ESourceLocal *extension;
+
+	source = e_backend_get_source (backend);
+
+	if (!e_source_get_writable (source))
+		return FALSE;
+
+	if (!e_source_has_extension (source, E_SOURCE_EXTENSION_LOCAL_BACKEND))
+		return TRUE;
+
+	extension = e_source_get_extension (source, E_SOURCE_EXTENSION_LOCAL_BACKEND);
+
+	return !e_source_local_get_custom_file (extension) ||
+		e_source_local_get_writable (extension);
+}
+
 static void
 source_changed_cb (ESource *source,
                    ECalBackend *backend)
@@ -1417,17 +1437,18 @@ source_changed_cb (ESource *source,
 	if (e_source_local_get_custom_file (extension) == NULL)
 		return;
 
-	source_writable = e_source_get_writable (source);
+	source_writable = get_source_writable (E_BACKEND (backend));
 	backend_writable = e_cal_backend_get_writable (backend);
 
 	if (source_writable != backend_writable) {
 		backend_writable = source_writable;
-		if (e_source_get_writable (source)) {
+
+		if (source_writable) {
 			gchar *str_uri = get_uri_string (backend);
 
 			g_return_if_fail (str_uri != NULL);
 
-			backend_writable = (g_access (str_uri, W_OK) != 0);
+			backend_writable = (g_access (str_uri, W_OK) == 0);
 
 			g_free (str_uri);
 		}
@@ -1488,7 +1509,7 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 				source, "changed",
 				G_CALLBACK (source_changed_cb), backend);
 
-			if (!e_source_get_writable (source))
+			if (!get_source_writable (E_BACKEND (backend)))
 				writable = FALSE;
 		}
 	}
@@ -3931,11 +3952,7 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile,
 	g_free (str_uri);
 
 	if (!err && writable) {
-		ESource *source;
-
-		source = e_backend_get_source (E_BACKEND (cbfile));
-
-		if (!e_source_get_writable (source))
+		if (!get_source_writable (E_BACKEND (cbfile)))
 			writable = FALSE;
 	}
   done:

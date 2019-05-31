@@ -25,11 +25,13 @@
 
 struct _ESourceLocalPrivate {
 	GFile *custom_file;
+	gboolean writable;
 };
 
 enum {
 	PROP_0,
-	PROP_CUSTOM_FILE
+	PROP_CUSTOM_FILE,
+	PROP_WRITABLE
 };
 
 G_DEFINE_TYPE (
@@ -49,6 +51,12 @@ source_local_set_property (GObject *object,
 				E_SOURCE_LOCAL (object),
 				g_value_get_object (value));
 			return;
+
+		case PROP_WRITABLE:
+			e_source_local_set_writable (
+				E_SOURCE_LOCAL (object),
+				g_value_get_boolean (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -65,6 +73,13 @@ source_local_get_property (GObject *object,
 			g_value_take_object (
 				value,
 				e_source_local_dup_custom_file (
+				E_SOURCE_LOCAL (object)));
+			return;
+
+		case PROP_WRITABLE:
+			g_value_set_boolean (
+				value,
+				e_source_local_get_writable (
 				E_SOURCE_LOCAL (object)));
 			return;
 	}
@@ -116,6 +131,19 @@ e_source_local_class_init (ESourceLocalClass *class)
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_WRITABLE,
+		g_param_spec_boolean (
+			"writable",
+			"Writable",
+			"Whether the file can be opened in writable mode",
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			E_SOURCE_PARAM_SETTING));
 }
 
 static void
@@ -128,7 +156,12 @@ e_source_local_init (ESourceLocal *extension)
  * e_source_local_get_custom_file:
  * @extension: an #ESourceLocal
  *
- * Returns: (transfer none): the #GFile instance
+ * Get the custom file being set on the @extension.
+ * The returned #GFile is owned by the @extension.
+ *
+ * For thread safety use e_source_local_dup_custom_file().
+ *
+ * Returns: (transfer none) (nullable): the #GFile instance, or %NULL
  **/
 GFile *
 e_source_local_get_custom_file (ESourceLocal *extension)
@@ -142,7 +175,11 @@ e_source_local_get_custom_file (ESourceLocal *extension)
  * e_source_local_dup_custom_file:
  * @extension: an #ESourceLocal
  *
- * Returns: (transfer full): the #GFile instance
+ * A thread safe variant to get a custom file being set on the @extension.
+ * Free the returned #GFile, if not %NULL, with g_object_unref(),
+ * when no longer needed.
+ *
+ * Returns: (transfer full) (nullable): the #GFile instance, or %NULL
  **/
 GFile *
 e_source_local_dup_custom_file (ESourceLocal *extension)
@@ -162,6 +199,13 @@ e_source_local_dup_custom_file (ESourceLocal *extension)
 	return duplicate;
 }
 
+/**
+ * e_source_local_set_custom_file:
+ * @extension: an #ESourceLocal
+ * @custom_file: (nullable): a #GFile, or %NULL
+ *
+ * Set, or unset, when using %NULL, the custom file for the @extension.
+ **/
 void
 e_source_local_set_custom_file (ESourceLocal *extension,
                                 GFile *custom_file)
@@ -183,4 +227,57 @@ e_source_local_set_custom_file (ESourceLocal *extension,
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "custom-file");
+}
+
+/**
+ * e_source_local_get_writable:
+ * @extension: an #ESourceLocal
+ *
+ * Returns whether the backend should prefer to open the file
+ * in writable mode. The default is %TRUE. The file can be still
+ * opened for read-only, for example when the access to the file
+ * is read-only.
+ *
+ * Returns: whether prefer to pen the file in writable mode
+ *
+ * Since: 3.34
+ **/
+gboolean
+e_source_local_get_writable (ESourceLocal *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_LOCAL (extension), FALSE);
+
+	return extension->priv->writable;
+}
+
+/**
+ * e_source_local_set_writable:
+ * @extension: an #ESourceLocal
+ * @writable: value to set
+ *
+ * Set whether the custom file should be opened in writable mode.
+ * The default is %TRUE. The file can be still opened for read-only,
+ * for example when the access to the file is read-only.
+ *
+ * Since: 3.34
+ **/
+void
+e_source_local_set_writable (ESourceLocal *extension,
+			     gboolean writable)
+{
+	gboolean changed = FALSE;
+
+	g_return_if_fail (E_IS_SOURCE_LOCAL (extension));
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	changed = (extension->priv->writable ? 1 : 0) != (writable ? 1 : 0);
+
+	if (changed)
+		extension->priv->writable = writable;
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	if (changed)
+		g_object_notify (G_OBJECT (extension), "writable");
 }

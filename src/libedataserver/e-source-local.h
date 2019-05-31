@@ -74,7 +74,9 @@ GFile *		e_source_local_get_custom_file	(ESourceLocal *extension);
 GFile *		e_source_local_dup_custom_file	(ESourceLocal *extension);
 void		e_source_local_set_custom_file	(ESourceLocal *extension,
 						 GFile *custom_file);
-
+gboolean	e_source_local_get_writable	(ESourceLocal *extension);
+void		e_source_local_set_writable	(ESourceLocal *extension,
+						 gboolean writable);
 G_END_DECLS
 
 #endif /* E_SOURCE_LOCAL_H */
