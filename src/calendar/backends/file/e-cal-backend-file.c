@@ -1380,7 +1380,7 @@ source_changed_cb (ESource *source,
 
 			g_return_if_fail (str_uri != NULL);
 
-			backend_writable = (g_access (str_uri, W_OK) != 0);
+			backend_writable = (g_access (str_uri, W_OK) == 0);
 
 			g_free (str_uri);
 		}
