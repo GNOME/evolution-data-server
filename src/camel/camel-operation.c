@@ -148,7 +148,7 @@ proxying_cancellable_cancelled_cb (GCancellable *cancellable,
 }
 
 static void
-operation_finalize (GObject *object)
+operation_dispose (GObject *object)
 {
 	CamelOperationPrivate *priv;
 
@@ -168,14 +168,14 @@ operation_finalize (GObject *object)
 	g_queue_remove (&operation_list, object);
 
 	/* Because each StatusNode holds a reference to its
-	 * CamelOperation, the fact that we're being finalized
+	 * CamelOperation, the fact that we're being disposed
 	 * implies the stack should be empty now. */
 	g_warn_if_fail (g_queue_is_empty (&priv->status_stack));
 
 	UNLOCK ();
 
-	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (camel_operation_parent_class)->finalize (object);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_operation_parent_class)->dispose (object);
 }
 
 static void
@@ -186,7 +186,7 @@ camel_operation_class_init (CamelOperationClass *class)
 	g_type_class_add_private (class, sizeof (CamelOperationPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
-	object_class->finalize = operation_finalize;
+	object_class->dispose = operation_dispose;
 
 	signals[STATUS] = g_signal_new (
 		"status",
