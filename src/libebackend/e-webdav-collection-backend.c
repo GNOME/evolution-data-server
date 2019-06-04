@@ -89,6 +89,7 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 				    const gchar *display_name,
 				    const gchar *color,
 				    gboolean calendar_auto_schedule,
+				    gboolean is_subscribed_icalendar,
 				    GHashTable *known_sources)
 {
 	ESourceRegistryServer *server;
@@ -135,6 +136,9 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 
 	g_return_if_fail (backend_name != NULL);
 
+	if (is_subscribed_icalendar && source_type != E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS)
+		provider = "webcal";
+
 	server = e_collection_backend_ref_server (collection);
 	if (!server)
 		return;
@@ -166,7 +170,9 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 		child_webdav = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 		resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
 
-		e_source_authentication_set_user (child_auth, e_source_collection_get_identity (collection_extension));
+		if (!is_subscribed_icalendar)
+			e_source_authentication_set_user (child_auth, e_source_collection_get_identity (collection_extension));
+
 		e_source_webdav_set_soup_uri (child_webdav, uri);
 		e_source_resource_set_identity (resource, identity);
 
@@ -251,6 +257,7 @@ webdav_collection_process_discovered_sources (ECollectionBackend *collection,
 				webdav_collection_add_found_source (collection, source_types[ii], soup_uri,
 					discovered_source->display_name, discovered_source->color,
 					(discovered_source->supports & E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE) != 0,
+					(discovered_source->supports & E_WEBDAV_DISCOVER_SUPPORTS_SUBSCRIBED_ICALENDAR) != 0,
 					known_sources);
 		}
 

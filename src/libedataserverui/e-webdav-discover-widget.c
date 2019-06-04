@@ -473,7 +473,8 @@ e_webdav_discover_content_fill_discovered_sources (GtkTreeView *tree_view,
 		gboolean show_color = FALSE;
 		GdkRGBA rgba;
 
-		if (!source || (supports_filter && (source->supports & supports_filter) == 0) || !source->display_name)
+		if (!source || (supports_filter && (source->supports & supports_filter) == 0) || !source->display_name ||
+		    (source->supports & E_WEBDAV_DISCOVER_SUPPORTS_SUBSCRIBED_ICALENDAR) != 0)
 			continue;
 
 		if (source->color && *source->color) {
