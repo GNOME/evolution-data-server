@@ -996,7 +996,8 @@ smime_context_verify_sync (CamelCipherContext *context,
 		if (!CAMEL_IS_MULTIPART_SIGNED (mps)
 		    || tmp == NULL
 		    || (g_ascii_strcasecmp (tmp, class->sign_protocol) != 0
-			&& g_ascii_strcasecmp (tmp, "application/pkcs7-signature") != 0)) {
+			&& g_ascii_strcasecmp (tmp, "application/xpkcs7-signature") != 0
+			&& g_ascii_strcasecmp (tmp, "application/x-pkcs7-signature") != 0)) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Cannot verify message signature: "
@@ -1017,7 +1018,9 @@ smime_context_verify_sync (CamelCipherContext *context,
 				"Incorrect message format"));
 			goto fail;
 		}
-	} else if (camel_content_type_is (ct, "application", "pkcs7-mime")) {
+	} else if (camel_content_type_is (ct, "application", "pkcs7-mime")
+	           || camel_content_type_is (ct, "application", "xpkcs7-mime")
+	           || camel_content_type_is (ct, "application", "x-pkcs7-mime")) {
 		sigpart = ipart;
 	} else {
 		g_set_error (
@@ -1653,9 +1656,12 @@ camel_smime_context_describe_part (CamelSMIMEContext *context,
 		tmp = camel_content_type_param (ct, "protocol");
 		if (tmp &&
 		    (g_ascii_strcasecmp (tmp, class->sign_protocol) == 0
-		     || g_ascii_strcasecmp (tmp, "application/pkcs7-signature") == 0))
+		     || g_ascii_strcasecmp (tmp, "application/xpkcs7-signature") == 0
+		     || g_ascii_strcasecmp (tmp, "application/x-pkcs7-signature") == 0))
 			flags = CAMEL_SMIME_SIGNED;
-	} else if (camel_content_type_is (ct, "application", "pkcs7-mime")) {
+	} else if (camel_content_type_is (ct, "application", "pkcs7-mime")
+	           || camel_content_type_is (ct, "application", "xpkcs7-mime")
+	           || camel_content_type_is (ct, "application", "x-pkcs7-mime")) {
 		CamelStream *istream;
 		NSSCMSMessage *cmsg;
 		NSSCMSDecoderContext *dec;
