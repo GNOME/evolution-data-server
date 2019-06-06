@@ -3122,8 +3122,10 @@ summary_traverse_content_with_parser (CamelFolderSummary *summary,
 		/* update attachments flag as we go */
 		if (camel_content_type_is (ct, "application", "pgp-signature")
 #ifdef ENABLE_SMIME
-		    || camel_content_type_is (ct, "application", "x-pkcs7-signature")
 		    || camel_content_type_is (ct, "application", "pkcs7-signature")
+		    || camel_content_type_is (ct, "application", "xpkcs7signature")
+		    || camel_content_type_is (ct, "application", "xpkcs7-signature")
+		    || camel_content_type_is (ct, "application", "x-pkcs7-signature")
 #endif
 			)
 			camel_message_info_set_flags (msginfo, CAMEL_MESSAGE_SECURE, CAMEL_MESSAGE_SECURE);
@@ -3282,8 +3284,10 @@ summary_traverse_content_with_part (CamelFolderSummary *summary,
 			camel_message_info_set_flags (msginfo, CAMEL_MESSAGE_SECURE, CAMEL_MESSAGE_SECURE);
 	} else if (camel_content_type_is (ct, "application", "pgp-signature")
 #ifdef ENABLE_SMIME
-		    || camel_content_type_is (ct, "application", "x-pkcs7-signature")
 		    || camel_content_type_is (ct, "application", "pkcs7-signature")
+		    || camel_content_type_is (ct, "application", "xpkcs7signature")
+		    || camel_content_type_is (ct, "application", "xpkcs7-signature")
+		    || camel_content_type_is (ct, "application", "x-pkcs7-signature")
 #endif
 		) {
 		camel_message_info_set_flags (msginfo, CAMEL_MESSAGE_SECURE, CAMEL_MESSAGE_SECURE);

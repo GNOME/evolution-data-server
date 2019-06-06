@@ -3910,9 +3910,10 @@ camel_content_disposition_is_attachment_ex (const CamelContentDisposition *dispo
 					    const CamelContentType *parent_content_type)
 {
 	if (content_type && (
+	    camel_content_type_is (content_type, "application", "pkcs7-mime") ||
 	    camel_content_type_is (content_type, "application", "xpkcs7mime") ||
-	    camel_content_type_is (content_type, "application", "x-pkcs7-mime") ||
-	    camel_content_type_is (content_type, "application", "pkcs7-mime")))
+	    camel_content_type_is (content_type, "application", "xpkcs7-mime") ||
+	    camel_content_type_is (content_type, "application", "x-pkcs7-mime")))
 		return FALSE;
 
 	if (content_type && (
@@ -3925,9 +3926,9 @@ camel_content_disposition_is_attachment_ex (const CamelContentDisposition *dispo
 
 	if (content_type && (
 	    camel_content_type_is (content_type, "application", "pkcs7-signature") ||
+	    camel_content_type_is (content_type, "application", "xpkcs7signature") ||
 	    camel_content_type_is (content_type, "application", "xpkcs7-signature") ||
 	    camel_content_type_is (content_type, "application", "x-pkcs7-signature") ||
-	    camel_content_type_is (content_type, "application", "pkcs7-signature") ||
 	    camel_content_type_is (content_type, "application", "pgp-signature")))
 		return !parent_content_type || !camel_content_type_is (parent_content_type, "multipart", "signed");
 
