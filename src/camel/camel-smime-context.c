@@ -910,7 +910,7 @@ smime_context_sign_sync (CamelCipherContext *context,
 		CamelMimePart *sigpart;
 
 		sigpart = camel_mime_part_new ();
-		ct = camel_content_type_new ("application", "x-pkcs7-signature");
+		ct = camel_content_type_new ("application", "pkcs7-signature");
 		camel_content_type_set_param (ct, "name", "smime.p7s");
 		camel_data_wrapper_set_mime_type_field (dw, ct);
 		camel_content_type_unref (ct);
@@ -940,7 +940,7 @@ smime_context_sign_sync (CamelCipherContext *context,
 
 		camel_medium_set_content ((CamelMedium *) opart, (CamelDataWrapper *) mps);
 	} else {
-		ct = camel_content_type_new ("application", "x-pkcs7-mime");
+		ct = camel_content_type_new ("application", "pkcs7-mime");
 		camel_content_type_set_param (ct, "name", "smime.p7m");
 		camel_content_type_set_param (ct, "smime-type", "signed-data");
 		camel_data_wrapper_set_mime_type_field (dw, ct);
@@ -1017,7 +1017,7 @@ smime_context_verify_sync (CamelCipherContext *context,
 				"Incorrect message format"));
 			goto fail;
 		}
-	} else if (camel_content_type_is (ct, "application", "x-pkcs7-mime")) {
+	} else if (camel_content_type_is (ct, "application", "pkcs7-mime")) {
 		sigpart = ipart;
 	} else {
 		g_set_error (
@@ -1434,7 +1434,7 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 	g_object_unref (ostream);
 	camel_data_wrapper_set_encoding (dw, CAMEL_TRANSFER_ENCODING_BINARY);
 
-	ct = camel_content_type_new ("application", "x-pkcs7-mime");
+	ct = camel_content_type_new ("application", "pkcs7-mime");
 	camel_content_type_set_param (ct, "name", "smime.p7m");
 	camel_content_type_set_param (ct, "smime-type", "enveloped-data");
 	camel_data_wrapper_set_mime_type_field (dw, ct);
@@ -1573,9 +1573,9 @@ camel_smime_context_class_init (CamelSMIMEContextClass *class)
 	g_type_class_add_private (class, sizeof (CamelSMIMEContextPrivate));
 
 	cipher_context_class = CAMEL_CIPHER_CONTEXT_CLASS (class);
-	cipher_context_class->sign_protocol = "application/x-pkcs7-signature";
-	cipher_context_class->encrypt_protocol = "application/x-pkcs7-mime";
-	cipher_context_class->key_protocol = "application/x-pkcs7-signature";
+	cipher_context_class->sign_protocol = "application/pkcs7-signature";
+	cipher_context_class->encrypt_protocol = "application/pkcs7-mime";
+	cipher_context_class->key_protocol = "application/pkcs7-signature";
 	cipher_context_class->hash_to_id = smime_context_hash_to_id;
 	cipher_context_class->id_to_hash = smime_context_id_to_hash;
 	cipher_context_class->sign_sync = smime_context_sign_sync;
@@ -1655,7 +1655,7 @@ camel_smime_context_describe_part (CamelSMIMEContext *context,
 		    (g_ascii_strcasecmp (tmp, class->sign_protocol) == 0
 		     || g_ascii_strcasecmp (tmp, "application/pkcs7-signature") == 0))
 			flags = CAMEL_SMIME_SIGNED;
-	} else if (camel_content_type_is (ct, "application", "x-pkcs7-mime")) {
+	} else if (camel_content_type_is (ct, "application", "pkcs7-mime")) {
 		CamelStream *istream;
 		NSSCMSMessage *cmsg;
 		NSSCMSDecoderContext *dec;
