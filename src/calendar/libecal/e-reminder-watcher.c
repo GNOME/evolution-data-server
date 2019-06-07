@@ -1529,8 +1529,6 @@ e_reminder_watcher_ref_client (EReminderWatcher *watcher,
 
 			if (e_source_has_extension (source, E_SOURCE_EXTENSION_CALENDAR))
 				source_type = E_CAL_CLIENT_SOURCE_TYPE_EVENTS;
-			else if (e_source_has_extension (source, E_SOURCE_EXTENSION_MEMO_LIST))
-				source_type = E_CAL_CLIENT_SOURCE_TYPE_MEMOS;
 			else if (e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST))
 				source_type = E_CAL_CLIENT_SOURCE_TYPE_TASKS;
 
@@ -1789,7 +1787,6 @@ e_reminder_watcher_filter_source_cb (ESourceRegistryWatcher *watcher,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	if (!e_source_has_extension (source, E_SOURCE_EXTENSION_CALENDAR) &&
-	    !e_source_has_extension (source, E_SOURCE_EXTENSION_MEMO_LIST) &&
 	    !e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST))
 		return FALSE;
 
@@ -1859,8 +1856,6 @@ e_reminder_watcher_source_appeared_cb (EReminderWatcher *watcher,
 
 	if (e_source_has_extension (source, E_SOURCE_EXTENSION_CALENDAR))
 		source_type = E_CAL_CLIENT_SOURCE_TYPE_EVENTS;
-	else if (e_source_has_extension (source, E_SOURCE_EXTENSION_MEMO_LIST))
-		source_type = E_CAL_CLIENT_SOURCE_TYPE_MEMOS;
 	else if (e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST))
 		source_type = E_CAL_CLIENT_SOURCE_TYPE_TASKS;
 	else {
