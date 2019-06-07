@@ -187,7 +187,8 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 		soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
 		cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
 
-		cbdav->priv->calendar_schedule = capabilities && g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_SCHEDULE);
+		cbdav->priv->calendar_schedule = e_cal_backend_get_kind (E_CAL_BACKEND (cbdav)) != I_CAL_VJOURNAL_COMPONENT &&
+			capabilities && g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_SCHEDULE);
 		calendar_access = capabilities && g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_ACCESS);
 
 		if (calendar_access) {
@@ -2062,7 +2063,8 @@ ecb_caldav_get_backend_property (ECalBackend *backend,
 		source = e_backend_get_source (E_BACKEND (backend));
 		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 
-		if (e_source_webdav_get_calendar_auto_schedule (extension)) {
+		if (e_cal_backend_get_kind (backend) != I_CAL_VJOURNAL_COMPONENT &&
+		    e_source_webdav_get_calendar_auto_schedule (extension)) {
 			g_string_append (
 				caps,
 				"," E_CAL_STATIC_CAPABILITY_CREATE_MESSAGES
