@@ -275,7 +275,8 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 		if (camel_service_get_connection_status (service) == CAMEL_SERVICE_CONNECTING)
 			return TRUE;
 
-		return camel_service_connect_sync (service, cancellable, error);
+		if (!camel_service_connect_sync (service, cancellable, error))
+			return FALSE;
 	}
 
 	if (host_reachable) {
@@ -339,9 +340,11 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 			service, host_reachable, cancellable, error);
 	}
 
-	store->priv->online = online;
+	if (store->priv->online != online) {
+		store->priv->online = online;
 
-	g_object_notify (G_OBJECT (store), "online");
+		g_object_notify (G_OBJECT (store), "online");
+	}
 
 	return success;
 }
