@@ -701,7 +701,8 @@ camel_imapx_search_new (CamelIMAPXStore *imapx_store)
  * @search: a #CamelIMAPXSearch
  *
  * Returns a #CamelIMAPXStore to use for server-side searches,
- * or %NULL when the store is offline.
+ * or %NULL when the store is offline or when the current folder
+ * is synchronized for offline use.
  *
  * The returned #CamelIMAPXStore is referenced for thread-safety and
  * must be unreferenced with g_object_unref() when finished with it.
@@ -719,8 +720,27 @@ camel_imapx_search_ref_store (CamelIMAPXSearch *search)
 
 	imapx_store = g_weak_ref_get (&search->priv->imapx_store);
 
-	if (imapx_store && !camel_offline_store_get_online (CAMEL_OFFLINE_STORE (imapx_store)))
-		g_clear_object (&imapx_store);
+	if (imapx_store) {
+		if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (imapx_store))) {
+			g_clear_object (&imapx_store);
+		} else {
+			CamelFolder *folder;
+
+			folder = camel_folder_search_get_folder (CAMEL_FOLDER_SEARCH (search));
+
+			if (CAMEL_IS_OFFLINE_FOLDER (folder) && camel_offline_folder_can_downsync (CAMEL_OFFLINE_FOLDER (folder))) {
+				CamelSettings *settings;
+
+				settings = camel_service_ref_settings (CAMEL_SERVICE (imapx_store));
+
+				/* Downloads everything for the offline usage, thus search in the local cache only */
+				if (settings && !camel_offline_settings_get_limit_by_age (CAMEL_OFFLINE_SETTINGS (settings)))
+					g_clear_object (&imapx_store);
+
+				g_clear_object (&settings);
+			}
+		}
+	}
 
 	return imapx_store;
 }
