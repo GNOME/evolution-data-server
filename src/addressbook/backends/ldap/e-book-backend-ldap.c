@@ -2280,8 +2280,6 @@ contact_list_handler (LDAPOp *op,
 		if (ldap_error_msg)
 			ldap_memfree (ldap_error_msg);
 
-		g_warning ("search returned %d\n", ldap_error);
-
 		if (ldap_error == LDAP_TIMELIMIT_EXCEEDED)
 			e_data_book_respond_get_contact_list (
 				op->book,
