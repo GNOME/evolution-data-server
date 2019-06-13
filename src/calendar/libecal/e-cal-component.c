@@ -1700,8 +1700,10 @@ e_cal_component_get_start_plus_duration (ECalComponent *comp)
 	guint dur_days, dur_hours, dur_minutes, dur_seconds;
 
 	duration = i_cal_component_get_duration (comp->priv->icalcomp);
-	if (!duration)
+	if (!duration || i_cal_duration_is_null_duration (duration) || i_cal_duration_is_bad_duration (duration)) {
+		g_clear_object (&duration);
 		return NULL;
+	}
 
 	/* Get the DTSTART time. */
 	dt = get_datetime (comp->priv->icalcomp, I_CAL_DTSTART_PROPERTY, i_cal_property_get_dtstart);
