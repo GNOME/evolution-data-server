@@ -153,6 +153,15 @@ offline_store_notify (GObject *object,
 {
 	if (g_strcmp0 (pspec->name, "host-reachable") == 0)
 		g_object_notify (object, "online");
+	else if (g_strcmp0 (pspec->name, "connection-status") == 0 &&
+		 camel_service_get_connection_status (CAMEL_SERVICE (object)) == CAMEL_SERVICE_DISCONNECTED) {
+		CamelOfflineStore *store = CAMEL_OFFLINE_STORE (object);
+
+		if (store->priv->online) {
+			store->priv->online = FALSE;
+			g_object_notify (object, "online");
+		}
+	}
 
 	/* Chain up to parent's notify() method. */
 	G_OBJECT_CLASS (camel_offline_store_parent_class)->
