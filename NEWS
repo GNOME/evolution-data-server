@@ -1,3 +1,35 @@
+Evolution-Data-Server 3.33.3 2019-06-17
+---------------------------------------
+
+Bug Fixes:
+	I#108 - [IMAPx] Folder changes could be claimed in a wrong folder after APPEND (Milan Crha)
+	I#117 - Fix clang warnings (mostly [-Wenum-conversion]) (Milan Crha)
+	I#120 - Fails to build with libasan using Clang (undefined symbols) (Milan Crha)
+	I#121 - CalDAV-advertised subscribed WebCal is not imported (Milan Crha)
+	I#123 - [SMTP] Ignore 8BITMIME extension for Yahoo! servers (Milan Crha)
+	M!15 - Fix typos in CMake modules (Дилян Палаузов)
+	M!17 - Use Media Type from RFC 8551 for S/MIME creation (Tom Kranz)
+	evo-I#476 - Hide "Server handles meeting invitations" for VJOURNAL/CalDAV (Milan Crha)
+	evo-I#479 - Call mail account refresh also after going online (Milan Crha)
+
+Miscellaneous:
+	EDataBook/EDataCal: Flush GDBus connection on backend property change (Milan Crha)
+	Add workaround for D-Bus property change into get-revision tests (Milan Crha)
+	Expose E-Book/Cal-BackendSExp lock (Milan Crha)
+	Update overdue time immediately after the reminders' window is mapped (Milan Crha)
+	Add ESourceLocal::writable extension property (Milan Crha)
+	CamelOperation can be used by other thread while in its finalize() (Milan Crha)
+	Memos cannot have set reminders according to RFC 5545 (Milan Crha)
+	Change how CamelOfflineStore goes online (Milan Crha)
+	[IMAPx] Prefer local search in folders fully synchronized for offline (Milan Crha)
+	Correct e_cal_component_get_start_plus_duration() (Milan Crha)
+
+Translations:
+	Ih0rko (uk)
+	Balázs Meskó (hu)
+	Fabio Tomat (fur)
+	Daniel Mustieles (es)
+
 Evolution-Data-Server 3.33.2 2019-05-20
 ---------------------------------------
 
