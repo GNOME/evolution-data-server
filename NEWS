@@ -1,3 +1,27 @@
+Evolution-Data-Server 3.32.3 2019-06-17
+---------------------------------------
+
+Bug Fixes:
+	I#108 - [IMAPx] Folder changes could be claimed in a wrong folder after APPEND (Milan Crha)
+	I#112 - Credentials prompter re-asks for credentials of disabled accounts (Milan Crha)
+	I#114 - [IMAPx] Option to enable full folder update on metered networks (Milan Crha)
+	I#116 - [IMAPx] Correct handling of mailbox names (with RFC 6855 extension) (Milan Crha)
+	I#123 - [SMTP] Ignore 8BITMIME extension for Yahoo! servers (Milan Crha)
+	I#190 - Does not show reminders after resume from suspend (Milan Crha)
+	evo-I#479 - Call mail account refresh also after going online (Milan Crha)
+
+Miscellaneous:
+	[IMAPx] Fix a leak of CamelMessageInfo when downloading message from a server (Milan Crha)
+	EDataBook/EDataCal: Flush GDBus connection on backend property change (Milan Crha)
+	Add workaround for D-Bus property change into get-revision tests (Milan Crha)
+	Expose E-Book/Cal-BackendSExp lock (Milan Crha)
+	Change buffer size argument value in call of icalvalue_decode_ical_string() (Milan Crha)
+	Update overdue time immediately after the reminders' window is mapped (Milan Crha)
+	Correct test for file writable test in On This Computer backend (Milan Crha)
+	CamelOperation can be used by other thread while in its finalize() (Milan Crha)
+	Change how CamelOfflineStore goes online (Milan Crha)
+	[IMAPx] Prefer local search in folders fully synchronized for offline (Milan Crha)
+
 Evolution-Data-Server 3.32.2 2019-05-06
 ---------------------------------------
 
