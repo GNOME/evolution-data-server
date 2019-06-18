@@ -41,8 +41,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2019-03-01 15:00+0000\n"
-"PO-Revision-Date: 2019-03-03 11:00+0100\n"
+"POT-Creation-Date: 2019-05-17 20:13+0000\n"
+"PO-Revision-Date: 2019-06-18 11:03+0200\n"
 "Last-Translator: Nathan Follens <nthn@unseen.is>\n"
 "Language-Team: Dutch <gnome-nl-list@gnome.org>\n"
 "Language: nl\n"
@@ -50,55 +50,54 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.3\n"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:220
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:221
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "De opgegeven URL ‘%s’ verwijst niet naar het CardDAV-adresboek"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:279
-#: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:148
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1159
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4326
-#: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:49
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:280
+#: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1154
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4312
+#: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
-#: ../src/addressbook/libebook/e-book.c:1079
-#: ../src/addressbook/libebook/e-book-client.c:2130
-#: ../src/addressbook/libebook/e-book-client.c:2302
-#: ../src/addressbook/libebook/e-book-client.c:2515
-#: ../src/addressbook/libebook/e-book-client.c:2646
-#: ../src/addressbook/libebook/e-book-client.c:2805
-#: ../src/addressbook/libebook/e-book-client.c:2939
-#: ../src/addressbook/libebook/e-book-client.c:3070
-#: ../src/addressbook/libebook/e-book-client.c:3228
-#: ../src/addressbook/libebook/e-book-client.c:3423
-#: ../src/addressbook/libebook/e-book-client.c:3641
+#: ../src/addressbook/libebook/e-book.c:1075
+#: ../src/addressbook/libebook/e-book-client.c:2132
+#: ../src/addressbook/libebook/e-book-client.c:2310
+#: ../src/addressbook/libebook/e-book-client.c:2529
+#: ../src/addressbook/libebook/e-book-client.c:2666
+#: ../src/addressbook/libebook/e-book-client.c:2831
+#: ../src/addressbook/libebook/e-book-client.c:2971
+#: ../src/addressbook/libebook/e-book-client.c:3108
+#: ../src/addressbook/libebook/e-book-client.c:3271
+#: ../src/addressbook/libebook/e-book-client.c:3466
+#: ../src/addressbook/libebook/e-book-client.c:3684
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:877
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:263
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:291
-#: ../src/calendar/backends/http/e-cal-backend-http.c:248
-#: ../src/calendar/libecal/e-cal.c:2334
-#: ../src/calendar/libecal/e-cal-client.c:277
-#: ../src/calendar/libecal/e-cal-client.c:3545
-#: ../src/calendar/libecal/e-cal-client.c:3718
-#: ../src/calendar/libecal/e-cal-client.c:3982
-#: ../src/calendar/libecal/e-cal-client.c:4223
-#: ../src/calendar/libecal/e-cal-client.c:4413
-#: ../src/calendar/libecal/e-cal-client.c:4606
-#: ../src/calendar/libecal/e-cal-client.c:4815
-#: ../src/calendar/libecal/e-cal-client.c:4984
-#: ../src/calendar/libecal/e-cal-client.c:5187
-#: ../src/calendar/libecal/e-cal-client.c:5337
-#: ../src/calendar/libecal/e-cal-client.c:5531
-#: ../src/calendar/libecal/e-cal-client.c:5684
-#: ../src/calendar/libecal/e-cal-client.c:5901
-#: ../src/calendar/libecal/e-cal-client.c:6055
-#: ../src/calendar/libecal/e-cal-client.c:6281
-#: ../src/calendar/libecal/e-cal-client.c:6477
-#: ../src/calendar/libecal/e-cal-client.c:6840
-#: ../src/calendar/libecal/e-cal-client.c:7062
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1757
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:292
+#: ../src/calendar/backends/http/e-cal-backend-http.c:249
+#: ../src/calendar/libecal/e-cal-client.c:260
+#: ../src/calendar/libecal/e-cal-client.c:3228
+#: ../src/calendar/libecal/e-cal-client.c:3401
+#: ../src/calendar/libecal/e-cal-client.c:3674
+#: ../src/calendar/libecal/e-cal-client.c:3912
+#: ../src/calendar/libecal/e-cal-client.c:4104
+#: ../src/calendar/libecal/e-cal-client.c:4287
+#: ../src/calendar/libecal/e-cal-client.c:4495
+#: ../src/calendar/libecal/e-cal-client.c:4672
+#: ../src/calendar/libecal/e-cal-client.c:4883
+#: ../src/calendar/libecal/e-cal-client.c:5039
+#: ../src/calendar/libecal/e-cal-client.c:5239
+#: ../src/calendar/libecal/e-cal-client.c:5405
+#: ../src/calendar/libecal/e-cal-client.c:5632
+#: ../src/calendar/libecal/e-cal-client.c:5792
+#: ../src/calendar/libecal/e-cal-client.c:6023
+#: ../src/calendar/libecal/e-cal-client.c:6222
+#: ../src/calendar/libecal/e-cal-client.c:6590
+#: ../src/calendar/libecal/e-cal-client.c:6814
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1798
 #: ../src/camel/camel-filter-driver.c:1712
 #: ../src/camel/camel-filter-driver.c:1844
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3252
@@ -107,29 +106,29 @@ msgstr "De opgegeven URL ‘%s’ verwijst niet naar het CardDAV-adresboek"
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3280
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:501
-#: ../src/libedataserver/e-client.c:188
+#: ../src/libedataserver/e-client.c:187
 #: ../src/libedataserver/e-soup-session.c:1217
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
-#: ../src/libedataserverui/e-reminders-widget.c:1780
+#: ../src/libedataserverui/e-reminders-widget.c:1787
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Onbekende fout"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1036
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1192
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1038
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1194
 msgid "Server didn’t return object’s href"
 msgstr "Server gaf geen href van object terug"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1038
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1194
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1040
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1196
 msgid "Server didn’t return object’s ETag"
 msgstr "Server gaf geen ETag van object weer"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1040
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1042
 msgid "Received object is not a valid vCard"
 msgstr "Ontvangen object is geen geldige vCard"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1149
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1153
 msgid ""
 "Missing information about vCard URL, local cache is possibly incomplete or "
 "broken. Remove it, please."
@@ -137,8 +136,8 @@ msgstr ""
 "Informatie over vCard-URL ontbreekt, lokaal cachegeheugen is mogelijk "
 "onvolledig of beschadigd. Gelieve het te verwijderen."
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1152
-#: ../src/addressbook/backends/google/e-book-backend-google.c:1010
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1156
+#: ../src/addressbook/backends/google/e-book-backend-google.c:988
 msgid "Object to save is not a valid vCard"
 msgstr "Het object dat moet worden opgeslagen is geen geldige vCard"
 
@@ -158,33 +157,33 @@ msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "Kon harde koppeling voor bron ‘%s’ niet aanmaken: %s"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:524
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1272
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1268
 msgid "No UID in the contact"
 msgstr "Contact heeft geen UID"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:868
+#: ../src/addressbook/backends/file/e-book-backend-file.c:861
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "Conflicterende UID’s aangetroffen in toegevoegde contacten"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1006
+#: ../src/addressbook/backends/file/e-book-backend-file.c:991
 msgid "Loading..."
 msgstr "Laden…"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1008
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4436
+#: ../src/addressbook/backends/file/e-book-backend-file.c:993
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4421
 msgid "Searching..."
 msgstr "Zoeken…"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1300
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1296
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr ""
 "Er is geprobeerd contact ‘%s’ te wijzigen met niet gesynchroniseerde "
 "herziening"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1491
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1576
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1477
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1563
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3087
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7369
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7438
@@ -192,33 +191,33 @@ msgstr ""
 msgid "Contact “%s” not found"
 msgstr "Contact ‘%s’ niet gevonden"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1636
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1717
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1627
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1710
 #, c-format
 msgid "Query “%s” not supported"
 msgstr "Zoekopdracht ‘%s’ wordt niet ondersteund"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1645
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1726
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1636
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1719
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr "Ongeldige zoekopdracht ‘%s’"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1991
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2017
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1968
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2023
 msgid "Requested to delete an unrelated cursor"
 msgstr "Verzocht een ongerelateerde cursor te verwijderen"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:2062
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2039
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Kon de naam van oude database niet wijzigen van ‘%s’ naar ‘%s’: %s"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:1066
+#: ../src/addressbook/backends/google/e-book-backend-google.c:1044
 msgid "Failed to create contact from returned server data"
 msgstr "Kon harde koppeling voor ‘%s’ niet aanmaken: %s"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:1082
+#: ../src/addressbook/backends/google/e-book-backend-google.c:1060
 msgid "Server returned contact without UID"
 msgstr "Server retourneerde het contact zonder UID"
 
@@ -248,105 +247,102 @@ msgstr "Collega’s"
 
 #. Translators: An error message shown to a user when trying to do an
 #. * operation on the LDAP address book which is not connected to the server
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:112
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:113
 msgid "Not connected"
 msgstr "Niet verbonden"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:881
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:876
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr "Binden met v3- of v2-bindingen is mislukt"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1005
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1000
 msgid "Reconnecting to LDAP server..."
 msgstr "Opnieuw verbinden met LDAP-server…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1140
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1135
 msgid "Invalid DN syntax"
 msgstr "Ongeldige DN-syntaxis"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1156
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4325
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1151
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4311
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP-fout 0x%x (%s)"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1772
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2116
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2129
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1766
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2108
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2121
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: NULL teruggekregen van ldap_first_entry"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2043
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2190
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2036
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2180
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: Onverwerkt resultaattype %d teruggekregen"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2335
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2474
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2325
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2463
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: Onverwerkt zoekresultaattype %d teruggekregen"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4261
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4250
 msgid "Receiving LDAP search results..."
 msgstr "LDAP-zoekresultaten worden ingelezen…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4462
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4447
 msgid "Error performing search"
 msgstr "Fout bij het zoeken"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4602
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4587
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Downloaden van contacten (%d)…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5093
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5077
 msgid "The backend does not support bulk additions"
 msgstr "De back-end ondersteunt het toevoegen van bulk niet"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5176
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5161
 msgid "Adding contact to LDAP server..."
 msgstr "Contact wordt toegevoegd aan LDAP-server…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5233
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5223
 msgid "The backend does not support bulk modifications"
 msgstr "De back-end ondersteunt het wijzigen van bulk niet"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5255
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5245
 msgid "Modifying contact from LDAP server..."
 msgstr "Contact van LDAP-server wordt aangepast…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5325
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5317
 msgid "Removing contact from LDAP server..."
 msgstr "Contact wordt van LDAP-server verwijderd…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5743
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5727
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "Kon de DN voor gebruiker ‘%s’ niet opvragen"
 
-#: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:38
+#: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:40
 msgid "No such book"
 msgstr "Boek bestaat niet"
 
-#: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:40
-#: ../src/addressbook/libedata-book/e-data-book.c:382
+#: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:42
 msgid "Contact not found"
 msgstr "Contact niet gevonden"
 
-#: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:42
-#: ../src/addressbook/libedata-book/e-data-book.c:383
+#: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:44
 msgid "Contact ID already exists"
 msgstr "Contact-ID bestaat al"
 
-#: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:44
+#: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:46
 msgid "No such source"
 msgstr "Bron bestaat niet"
 
-#: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:46
-#: ../src/addressbook/libedata-book/e-data-book.c:399
+#: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:48
 msgid "No space"
 msgstr "Geen ruimte"
 
@@ -821,7 +817,7 @@ msgid "Birth Date"
 msgstr "Geboortedatum"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:291
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:960
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:961
 msgid "Anniversary"
 msgstr "Verjaardag"
 
@@ -971,30 +967,35 @@ msgstr "De tekst is te kort voor een telefoonnummer"
 msgid "Text is too long for a phone number"
 msgstr "De tekst is te lang voor een telefoonnummer"
 
-#: ../src/addressbook/libebook/e-book-client.c:929
+#: ../src/addressbook/libebook/e-book-client.c:930
 #, c-format
 msgid "Unknown book property “%s”"
 msgstr "Onbekende boekeigenschap ‘%s’"
 
-#: ../src/addressbook/libebook/e-book-client.c:944
+#: ../src/addressbook/libebook/e-book-client.c:945
 #, c-format
 msgid "Cannot change value of book property “%s”"
 msgstr "Kan waarde van boekeigenschap ‘%s’ niet wijzigen"
 
-#: ../src/addressbook/libebook/e-book-client.c:1388
-#: ../src/addressbook/libebook/e-book-client.c:1619
-#: ../src/addressbook/libebook/e-book-client.c:1896
-#: ../src/calendar/libecal/e-cal-client.c:1716
-#: ../src/calendar/libecal/e-cal-client.c:1954
+#: ../src/addressbook/libebook/e-book-client.c:1389
+#: ../src/addressbook/libebook/e-book-client.c:1620
+#: ../src/addressbook/libebook/e-book-client.c:1897
+#: ../src/calendar/libecal/e-cal-client.c:1714
+#: ../src/calendar/libecal/e-cal-client.c:1952
 #, c-format
 msgid "Unable to connect to “%s”: "
 msgstr "Kon niet verbinden met ‘%s’: "
 
 #: ../src/addressbook/libebook/e-book-client-view.c:872
-#: ../src/calendar/libecal/e-cal-client-view.c:685
+#: ../src/calendar/libecal/e-cal-client-view.c:678
 #, c-format
 msgid "Client disappeared"
 msgstr "Client verdwenen"
+
+#: ../src/addressbook/libedata-book/e-book-backend.c:3160
+#, c-format
+msgid "Addressbook backend does not support cursors"
+msgstr "De adresboekback-end ondersteunt het verwijderen van cursors niet"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:905
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:2255
@@ -1003,14 +1004,14 @@ msgid "Error introspecting unknown summary field “%s”"
 msgstr "Fout bij introspectie onbekend samenvattingsveld ‘%s’"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1515
-#: ../src/addressbook/libedata-book/e-book-cache.c:543
+#: ../src/addressbook/libedata-book/e-book-cache.c:548
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1394
 msgid "Error parsing regular expression"
 msgstr "Fout bij ontleden van reguliere expressie"
 
 # 'vrij' toegevoegd
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1560
-#: ../src/addressbook/libedata-book/e-book-cache.c:4527
+#: ../src/addressbook/libedata-book/e-book-cache.c:4585
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1878
 #: ../src/camel/camel-db.c:820
 #, c-format
@@ -1023,7 +1024,7 @@ msgid "Invalid contact field “%d” specified in summary"
 msgstr "Ongeldig contactenveld ‘%d’ opgegeven in samenvatting"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1731
-#: ../src/addressbook/libedata-book/e-book-cache.c:366
+#: ../src/addressbook/libedata-book/e-book-cache.c:371
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:605
 #, c-format
 msgid ""
@@ -1044,7 +1045,7 @@ msgstr ""
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4308
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4401
-#: ../src/addressbook/libedata-book/e-book-cache.c:3445
+#: ../src/addressbook/libedata-book/e-book-cache.c:3467
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5844
 #, c-format
 msgid "Query contained unsupported elements"
@@ -1065,11 +1066,9 @@ msgstr ""
 "Vandaar dat alleen een beknopte zoekopdracht ondersteund wordt."
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4405
-#: ../src/addressbook/libedata-book/e-data-book.c:394
-#: ../src/addressbook/libedata-book/e-data-book.c:1144
-#: ../src/calendar/libedata-cal/e-data-cal.c:429
-#: ../src/calendar/libedata-cal/e-data-cal.c:1436
-#: ../src/libedataserver/e-client.c:175
+#: ../src/addressbook/libedata-book/e-data-book.c:871
+#: ../src/calendar/libedata-cal/e-data-cal.c:1146
+#: ../src/libedataserver/e-client.c:174
 #, c-format
 msgid "Invalid query"
 msgstr "Ongeldige zoekopdracht"
@@ -1112,7 +1111,7 @@ msgstr ""
 "Sorteren op een veld dat mogelijk meerdere waardes heeft is niet mogelijk"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6219
-#: ../src/addressbook/libedata-book/e-book-cache.c:5613
+#: ../src/addressbook/libedata-book/e-book-cache.c:5796
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8143
 #, c-format
 msgid ""
@@ -1123,7 +1122,7 @@ msgstr ""
 "zich al aan het begin van de contactenlijst"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6227
-#: ../src/addressbook/libedata-book/e-book-cache.c:5620
+#: ../src/addressbook/libedata-book/e-book-cache.c:5803
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8151
 #, c-format
 msgid ""
@@ -1133,74 +1132,78 @@ msgstr ""
 "Er is geprobeerd de cursor een stap vooruit te plaatsen, maar de cursor "
 "bevindt zich al aan het einde van de contactenlijst"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:331
+#: ../src/addressbook/libedata-book/e-book-cache.c:336
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:571
 #, c-format
 msgid "Unsupported contact field “%d” specified in summary"
 msgstr "Niet-ondersteund contactenveld ‘%d’ opgegeven in samenvatting"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:3440
+#: ../src/addressbook/libedata-book/e-book-cache.c:3462
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5837
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1621
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3314
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1653
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3517
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Ongeldige zoekopdracht: %s"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:3610
+#: ../src/addressbook/libedata-book/e-book-cache.c:3647
 msgid "Invalid query for a book cursor"
 msgstr "Ongeldige zoekopdracht voor een boekcursor"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:4531
+#: ../src/addressbook/libedata-book/e-book-cache.c:4589
 #: ../src/libebackend/e-cache.c:759
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Kan database %s niet openen: %s"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5134
-#: ../src/addressbook/libedata-book/e-book-cache.c:5186
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2730
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2793
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2964
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1342
+#: ../src/addressbook/libedata-book/e-book-cache.c:5223
+#: ../src/addressbook/libedata-book/e-book-cache.c:5270
+#: ../src/addressbook/libedata-book/e-book-cache.c:5317
+#: ../src/addressbook/libedata-book/e-book-cache.c:5369
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2799
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2857
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2916
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2979
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3150
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1348
 #: ../src/libebackend/e-cache.c:1374 ../src/libebackend/e-cache.c:2352
 #: ../src/libebackend/e-cache.c:2392
 #, c-format
 msgid "Object “%s” not found"
 msgstr "Object ‘%s’ niet gevonden"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5246
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2855
+#: ../src/addressbook/libedata-book/e-book-cache.c:5429
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3041
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Object met extra ‘%s’ niet gevonden"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5400
+#: ../src/addressbook/libedata-book/e-book-cache.c:5583
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 "Er moet ten minste één sorteerveld zijn opgegeven om een cursor te gebruiken"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5409
+#: ../src/addressbook/libedata-book/e-book-cache.c:5592
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7983
 msgid "Cannot sort by a field that is not a string type"
 msgstr ""
 "Sorteren op een veld dat niet van het tekenreekstype is, is niet mogelijk"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1052
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1063
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1060
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1071
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Voorgeladen object voor UID ‘%s’ is ongeldig"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1060
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1071
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1068
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1079
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Ontvangen object voor UID ‘%s’ is ongeldig"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1887
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2335
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3220
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1893
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2340
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3279
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Aanmaken cache ‘%s’ is mislukt:"
@@ -1223,179 +1226,48 @@ msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 "Er moet ten minste één sorteerveld zijn opgegeven om EbSdbCursor te gebruiken"
 
-#: ../src/addressbook/libedata-book/e-data-book.c:378
-#: ../src/calendar/libedata-cal/e-data-cal.c:410
-msgid "Success"
-msgstr "Succes"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:379
-#: ../src/calendar/libecal/e-cal.c:2302
-#: ../src/calendar/libedata-cal/e-data-cal.c:411
-#: ../src/libedataserver/e-client.c:142
-msgid "Backend is busy"
-msgstr "Back-end is bezig"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:380
-#: ../src/calendar/libedata-cal/e-data-cal.c:412
-#: ../src/libedataserver/e-client.c:152
-msgid "Repository offline"
-msgstr "Opslagplaats offline"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:381
-#: ../src/calendar/libecal/e-cal.c:2316
-#: ../src/calendar/libedata-cal/e-data-cal.c:413
-#: ../src/libedataserver/e-client.c:159
-msgid "Permission denied"
-msgstr "Operatie niet toegestaan"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:384
-#: ../src/calendar/libedata-cal/e-data-cal.c:418
-msgid "Authentication Failed"
-msgstr "Aanmelding mislukt"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:385
-#: ../src/calendar/libedata-cal/e-data-cal.c:419
-msgid "Authentication Required"
-msgstr "Aanmelden vereist"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:386
-#: ../src/calendar/libedata-cal/e-data-cal.c:420
-msgid "Unsupported field"
-msgstr "Veld niet ondersteund"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:387
-#: ../src/calendar/libedata-cal/e-data-cal.c:422
-#: ../src/libedataserver/e-client.c:167
-msgid "Unsupported authentication method"
-msgstr "Methode voor aanmeldingscontrole niet ondersteund"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:388
-#: ../src/calendar/libedata-cal/e-data-cal.c:423
-#: ../src/libedataserver/e-client.c:169
-msgid "TLS not available"
-msgstr "TLS niet beschikbaar"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:389
-msgid "Address book does not exist"
-msgstr "Adresboek bestaat niet"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:390
-msgid "Book removed"
-msgstr "Boek verwijderd"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:391
-#: ../src/calendar/libedata-cal/e-data-cal.c:426
-msgid "Not available in offline mode"
-msgstr "Niet offline beschikbaar"
-
-# lengte/grootte
-#: ../src/addressbook/libedata-book/e-data-book.c:392
-#: ../src/calendar/libedata-cal/e-data-cal.c:427
-#: ../src/libedataserver/e-client.c:171
-msgid "Search size limit exceeded"
-msgstr "Maximale zoekgrootte overschreden"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:393
-#: ../src/calendar/libedata-cal/e-data-cal.c:428
-#: ../src/libedataserver/e-client.c:173
-msgid "Search time limit exceeded"
-msgstr "Maximale zoektijd verstreken"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:395
-#: ../src/calendar/libedata-cal/e-data-cal.c:430
-#: ../src/libedataserver/e-client.c:177
-msgid "Query refused"
-msgstr "Zoekopdracht geweigerd"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:396
-#: ../src/calendar/libedata-cal/e-data-cal.c:431
-#: ../src/libedataserver/e-client.c:163
-msgid "Could not cancel"
-msgstr "Kon niet annuleren"
-
-#. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
-#. { OtherError,			N_("Other error") },
-#: ../src/addressbook/libedata-book/e-data-book.c:398
-#: ../src/calendar/libedata-cal/e-data-cal.c:433
-msgid "Invalid server version"
-msgstr "Ongeldige serverversie"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:400
-#: ../src/calendar/libecal/e-cal.c:2300
-#: ../src/calendar/libedata-cal/e-data-cal.c:434
-#: ../src/camel/camel-sasl-anonymous.c:115 ../src/libedataserver/e-client.c:140
-msgid "Invalid argument"
-msgstr "Ongeldige argument"
-
-#. Translators: The string for NOT_SUPPORTED error
-#: ../src/addressbook/libedata-book/e-data-book.c:402
-#: ../src/calendar/libecal/e-cal.c:1057 ../src/calendar/libecal/e-cal.c:1425
-#: ../src/calendar/libecal/e-cal.c:1907 ../src/calendar/libecal/e-cal.c:2339
-#: ../src/calendar/libedata-cal/e-data-cal.c:436
-#: ../src/libedataserver/e-client.c:165
-#, c-format
-msgid "Not supported"
-msgstr "Niet ondersteund"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:403
-#: ../src/calendar/libedata-cal/e-data-cal.c:437
-#: ../src/libedataserver/e-client.c:183
-msgid "Backend is not opened yet"
-msgstr "Back-end is nog niet geopend"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:404
-#: ../src/libedataserver/e-client.c:185
-msgid "Object is out of sync"
-msgstr "Object niet gesynchroniseerd"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:412
-#: ../src/calendar/libedata-cal/e-data-cal.c:445
-#: ../src/libedataserver/e-client.c:181
-msgid "Other error"
-msgstr "Andere fout"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:1169
-#: ../src/calendar/libedata-cal/e-data-cal.c:1461
+#: ../src/addressbook/libedata-book/e-data-book.c:896
+#: ../src/calendar/libedata-cal/e-data-cal.c:1171
 msgid "Invalid query: "
 msgstr "Ongeldige zoekopdracht: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1418
+#: ../src/addressbook/libedata-book/e-data-book.c:1145
 msgid "Cannot open book: "
 msgstr "Kan boek niet openen: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1456
+#: ../src/addressbook/libedata-book/e-data-book.c:1183
 msgid "Cannot refresh address book: "
 msgstr "Kan adresboek niet verversen: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1497
+#: ../src/addressbook/libedata-book/e-data-book.c:1224
 msgid "Cannot get contact: "
 msgstr "Kan geen contact krijgen: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1546
+#: ../src/addressbook/libedata-book/e-data-book.c:1269
 msgid "Cannot get contact list: "
 msgstr "Kan contactenlijst niet opvragen: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1602
+#: ../src/addressbook/libedata-book/e-data-book.c:1321
 msgid "Cannot get contact list uids: "
 msgstr "Kan contactenlijst niet opvragen: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1653
+#: ../src/addressbook/libedata-book/e-data-book.c:1372
 msgid "Cannot add contact: "
 msgstr "Kan contact niet toevoegen: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1706
+#: ../src/addressbook/libedata-book/e-data-book.c:1423
 msgid "Cannot modify contacts: "
 msgstr "Kan contacten niet wijzigen: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1759
+#: ../src/addressbook/libedata-book/e-data-book.c:1475
 msgid "Cannot remove contacts: "
 msgstr "Kan contacten niet verwijderen: "
 
@@ -1431,7 +1303,7 @@ msgstr "Alfabetische index werd ingesteld voor verkeerde taal"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "De opgegeven URL ‘%s’ verwijst niet naar CalDAV-agenda"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1322
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1325
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. Remove it, please."
@@ -1439,23 +1311,27 @@ msgstr ""
 "Informatie over component-URL ontbreekt, lokaal cachegeheugen is mogelijk "
 "onvolledig of beschadigd. Gelieve het te verwijderen."
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1796
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1801
 msgid "Failed to parse response data"
 msgstr "Ontleden van responsgegevens mislukt"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:962
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:963
 msgid "Birthday"
 msgstr "Geboortedatum"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:998
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:999
 #, c-format
 msgid "Birthday: %s"
 msgstr "Geboortedatum: %s"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1029
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1030
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Verjaardag: %s"
+
+#: ../src/calendar/backends/file/e-cal-backend-file.c:47
+msgid "Cannot get URI"
+msgstr "Kan URI niet verkrijgen"
 
 #: ../src/calendar/backends/file/e-cal-backend-file.c:243
 msgid "Cannot save calendar data: Malformed URI."
@@ -1466,350 +1342,320 @@ msgstr "Kan agendagegevens niet opslaan: ongeldige URI."
 msgid "Cannot save calendar data"
 msgstr "Kan agendagegevens niet opslaan"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:168
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1171
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1300
+#, c-format
+msgid "Cannot parse ISC file “%s”"
+msgstr "Kan ISC-bestand ‘%s’ niet ontleden"
+
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1182
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1311
+#, c-format
+msgid "File “%s” is not a VCALENDAR component"
+msgstr "Bestand ‘%s’ is geen VCALENDAR-component"
+
+#. FIXME This should be doable once all the recurid stuff is done
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3598
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3604
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3610
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3637
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2515
+msgid "Unsupported method"
+msgstr "Methode niet ondersteund"
+
+#: ../src/calendar/backends/http/e-cal-backend-http.c:169
 msgid "URI not set"
 msgstr "URI niet ingesteld"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:247
+#: ../src/calendar/backends/http/e-cal-backend-http.c:248
 #, c-format
 msgid "Malformed URI “%s”: %s"
 msgstr "Misvormde URI ‘%s’: %s"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:388
+#: ../src/calendar/backends/http/e-cal-backend-http.c:390
 #, c-format
 msgid "Bad file format."
 msgstr "Foutief bestandsformaat."
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:397
+#: ../src/calendar/backends/http/e-cal-backend-http.c:399
 #, c-format
 msgid "Not a calendar."
 msgstr "Geen agenda."
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:196
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:175
 msgid "Could not retrieve weather data"
 msgstr "Kon weergegevens niet ophalen"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:379
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:353
 msgid "Weather: Fog"
 msgstr "Weer: mist"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:380
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:354
 msgid "Weather: Cloudy Night"
 msgstr "Weer: bewolkte nacht"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:381
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:355
 msgid "Weather: Cloudy"
 msgstr "Weer: bewolkt"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:382
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:356
 msgid "Weather: Overcast"
 msgstr "Weer: zwaar bewolkt"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:383
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:357
 msgid "Weather: Showers"
 msgstr "Weer: buien"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:384
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:358
 msgid "Weather: Snow"
 msgstr "Weer: sneeuw"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:385
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:359
 msgid "Weather: Clear Night"
 msgstr "Weer: heldere nacht"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:386
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:360
 msgid "Weather: Sunny"
 msgstr "Weer: zonnig"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:387
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:361
 msgid "Weather: Thunderstorms"
 msgstr "Weer: onweer"
 
 #. TRANSLATOR: This is the temperature in degrees Fahrenheit (\302\260 is U+00B0 DEGREE SIGN)
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:413
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:387
 #, c-format
 msgid "%.1f °F"
 msgstr "%.1f °F"
 
 #. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN)
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:416
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:390
 #, c-format
 msgid "%.1f °C"
 msgstr "%.1f °C"
 
 #. TRANSLATOR: This is the temperature in kelvin
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:419
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:393
 #, c-format
 msgid "%.1f K"
 msgstr "%.1f K"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:425
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:399
 #, c-format
 msgid "%.1f"
 msgstr "%.1f"
 
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:562
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:590
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:618
 msgid "Forecast"
 msgstr "Vooruitzicht"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:713
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:686
 msgid "Could not create cache file"
 msgstr "Kan cache-bestand niet aanmaken"
 
-#: ../src/calendar/libecal/e-cal.c:2304
-msgid "Repository is offline"
-msgstr "Repository is offline"
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:688
+msgid "Could not create cache file: "
+msgstr "Kon geen cachebestand aanmaken: "
 
-#: ../src/calendar/libecal/e-cal.c:2306
-#: ../src/calendar/libecal/e-cal-client.c:264
+#: ../src/calendar/libecal/e-cal-client.c:247
 msgid "No such calendar"
 msgstr "Agenda bestaat niet"
 
-#: ../src/calendar/libecal/e-cal.c:2308
-#: ../src/calendar/libecal/e-cal-client.c:266
-#: ../src/calendar/libedata-cal/e-data-cal.c:415
+#: ../src/calendar/libecal/e-cal-client.c:249
 msgid "Object not found"
 msgstr "Object niet gevonden"
 
-#: ../src/calendar/libecal/e-cal.c:2310
-#: ../src/calendar/libecal/e-cal-client.c:268
-#: ../src/calendar/libedata-cal/e-data-cal.c:416
+#: ../src/calendar/libecal/e-cal-client.c:251
 msgid "Invalid object"
 msgstr "Ongeldig object"
 
-#: ../src/calendar/libecal/e-cal.c:2312
-msgid "URI not loaded"
-msgstr "URI niet geladen"
-
-#: ../src/calendar/libecal/e-cal.c:2314
-msgid "URI already loaded"
-msgstr "URI is reeds geladen"
-
-#: ../src/calendar/libecal/e-cal.c:2318
-msgid "Unknown User"
-msgstr "Onbekende gebruiker"
-
-#: ../src/calendar/libecal/e-cal.c:2320
-#: ../src/calendar/libecal/e-cal-client.c:272
-#: ../src/calendar/libedata-cal/e-data-cal.c:417
-msgid "Object ID already exists"
-msgstr "Object-ID bestaat reeds"
-
-#: ../src/calendar/libecal/e-cal.c:2322
-msgid "Protocol not supported"
-msgstr "Protocol niet ondersteund"
-
-#: ../src/calendar/libecal/e-cal.c:2324
-msgid "Operation has been cancelled"
-msgstr "Bewerking is geannuleerd"
-
-#: ../src/calendar/libecal/e-cal.c:2326
-msgid "Could not cancel operation"
-msgstr "Kon de opdracht niet annuleren"
-
-#: ../src/calendar/libecal/e-cal.c:2328 ../src/libedataserver/e-client.c:148
-msgid "Authentication failed"
-msgstr "Aanmelding mislukt"
-
-#: ../src/calendar/libecal/e-cal.c:2330
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1124
-#: ../src/libedataserver/e-client.c:150
-msgid "Authentication required"
-msgstr "Aanmelding is vereist"
-
-#: ../src/calendar/libecal/e-cal.c:2332
-msgid "A D-Bus exception has occurred"
-msgstr "Er is een D-Bus-fout opgetreden"
-
-#: ../src/calendar/libecal/e-cal.c:2336
-msgid "No error"
-msgstr "Geen fout"
-
-#: ../src/calendar/libecal/e-cal-client.c:270
-#: ../src/calendar/libedata-cal/e-data-cal.c:425
+#: ../src/calendar/libecal/e-cal-client.c:253
 msgid "Unknown user"
 msgstr "Onbekende gebruiker"
 
-#: ../src/calendar/libecal/e-cal-client.c:274
-#: ../src/calendar/libedata-cal/e-data-cal.c:414
+#: ../src/calendar/libecal/e-cal-client.c:255
+msgid "Object ID already exists"
+msgstr "Object-ID bestaat reeds"
+
+#: ../src/calendar/libecal/e-cal-client.c:257
 msgid "Invalid range"
 msgstr "Ongeldig bereik"
 
-#: ../src/calendar/libecal/e-cal-client.c:1063
+#: ../src/calendar/libecal/e-cal-client.c:1076
 #, c-format
 msgid "Unknown calendar property “%s”"
 msgstr "Onbekende agenda-eigenschap ‘%s’"
 
-#: ../src/calendar/libecal/e-cal-client.c:1078
+#: ../src/calendar/libecal/e-cal-client.c:1091
 #, c-format
 msgid "Cannot change value of calendar property “%s”"
 msgstr "Kan waarde van agenda-eigenschap ‘%s’ niet wijzigen"
 
-#: ../src/calendar/libecal/e-cal-component.c:1330
+#: ../src/calendar/libecal/e-cal-component.c:718
 msgid "Untitled appointment"
 msgstr "Afspraak zonder titel"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4751
+#: ../src/calendar/libecal/e-cal-recur.c:4871
 msgid "1st"
 msgstr "1e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4752
+#: ../src/calendar/libecal/e-cal-recur.c:4872
 msgid "2nd"
 msgstr "2e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4753
+#: ../src/calendar/libecal/e-cal-recur.c:4873
 msgid "3rd"
 msgstr "3e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4754
+#: ../src/calendar/libecal/e-cal-recur.c:4874
 msgid "4th"
 msgstr "4e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4755
+#: ../src/calendar/libecal/e-cal-recur.c:4875
 msgid "5th"
 msgstr "5e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4756
+#: ../src/calendar/libecal/e-cal-recur.c:4876
 msgid "6th"
 msgstr "6e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4757
+#: ../src/calendar/libecal/e-cal-recur.c:4877
 msgid "7th"
 msgstr "7e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4758
+#: ../src/calendar/libecal/e-cal-recur.c:4878
 msgid "8th"
 msgstr "8e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4759
+#: ../src/calendar/libecal/e-cal-recur.c:4879
 msgid "9th"
 msgstr "9e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4760
+#: ../src/calendar/libecal/e-cal-recur.c:4880
 msgid "10th"
 msgstr "10e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4761
+#: ../src/calendar/libecal/e-cal-recur.c:4881
 msgid "11th"
 msgstr "11e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4762
+#: ../src/calendar/libecal/e-cal-recur.c:4882
 msgid "12th"
 msgstr "12e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4763
+#: ../src/calendar/libecal/e-cal-recur.c:4883
 msgid "13th"
 msgstr "13e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4764
+#: ../src/calendar/libecal/e-cal-recur.c:4884
 msgid "14th"
 msgstr "14e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4765
+#: ../src/calendar/libecal/e-cal-recur.c:4885
 msgid "15th"
 msgstr "15e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4766
+#: ../src/calendar/libecal/e-cal-recur.c:4886
 msgid "16th"
 msgstr "16e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4767
+#: ../src/calendar/libecal/e-cal-recur.c:4887
 msgid "17th"
 msgstr "17e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4768
+#: ../src/calendar/libecal/e-cal-recur.c:4888
 msgid "18th"
 msgstr "18e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4769
+#: ../src/calendar/libecal/e-cal-recur.c:4889
 msgid "19th"
 msgstr "19e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4770
+#: ../src/calendar/libecal/e-cal-recur.c:4890
 msgid "20th"
 msgstr "20e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4771
+#: ../src/calendar/libecal/e-cal-recur.c:4891
 msgid "21st"
 msgstr "21e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4772
+#: ../src/calendar/libecal/e-cal-recur.c:4892
 msgid "22nd"
 msgstr "22e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4773
+#: ../src/calendar/libecal/e-cal-recur.c:4893
 msgid "23rd"
 msgstr "23e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4774
+#: ../src/calendar/libecal/e-cal-recur.c:4894
 msgid "24th"
 msgstr "24ste"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4775
+#: ../src/calendar/libecal/e-cal-recur.c:4895
 msgid "25th"
 msgstr "25e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4776
+#: ../src/calendar/libecal/e-cal-recur.c:4896
 msgid "26th"
 msgstr "26e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4777
+#: ../src/calendar/libecal/e-cal-recur.c:4897
 msgid "27th"
 msgstr "27e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4778
+#: ../src/calendar/libecal/e-cal-recur.c:4898
 msgid "28th"
 msgstr "28e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4779
+#: ../src/calendar/libecal/e-cal-recur.c:4899
 msgid "29th"
 msgstr "29e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4780
+#: ../src/calendar/libecal/e-cal-recur.c:4900
 msgid "30th"
 msgstr "30e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4781
+#: ../src/calendar/libecal/e-cal-recur.c:4901
 msgid "31st"
 msgstr "31e"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4940
+#: ../src/calendar/libecal/e-cal-recur.c:5046
 #, c-format
 msgid "every day forever"
 msgid_plural "every %d days forever"
 msgstr[0] "dagelijks, voor altijd"
 msgstr[1] "elke %d dagen, voor altijd"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4946
+#: ../src/calendar/libecal/e-cal-recur.c:5052
 #, c-format
 msgid "Every day forever"
 msgid_plural "Every %d days forever"
 msgstr[0] "Dagelijks, voor altijd"
 msgstr[1] "Elke %d dagen, voor altijd"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4954
+#: ../src/calendar/libecal/e-cal-recur.c:5060
 #, c-format
 msgid "every day"
 msgid_plural "every %d days"
 msgstr[0] "dagelijks"
 msgstr[1] "elke %d dagen"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4960
+#: ../src/calendar/libecal/e-cal-recur.c:5066
 #, c-format
 msgid "Every day"
 msgid_plural "Every %d days"
 msgstr[0] "Dagelijks"
 msgstr[1] "Elke %d dagen"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5050
+#: ../src/calendar/libecal/e-cal-recur.c:5152
 #, c-format
 msgid "every week"
 msgid_plural "every %d weeks"
 msgstr[0] "wekelijks"
 msgstr[1] "elke %d weken"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5056
+#: ../src/calendar/libecal/e-cal-recur.c:5158
 #, c-format
 msgid "Every week"
 msgid_plural "Every %d weeks"
@@ -1821,556 +1667,556 @@ msgstr[1] "Elke %d weken"
 #. with ", DAYNAME" or " and DAYNAME", thus it can be something like "on Monday and Tuesday"
 #. or "on Monday, Wednesday and Friday" or simply "on Saturday". The '%1$s' is replaced with
 #. the previously gathered text, while the '%2$s' is replaced with the text to append.
-#: ../src/calendar/libecal/e-cal-recur.c:5070
+#: ../src/calendar/libecal/e-cal-recur.c:5172
 #, c-format
 msgctxt "recur-description-dayname"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5087
+#: ../src/calendar/libecal/e-cal-recur.c:5189
 msgctxt "recur-description"
 msgid "on Sunday"
 msgstr "’s zondags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5088
+#: ../src/calendar/libecal/e-cal-recur.c:5190
 msgctxt "recur-description"
 msgid ", Sunday"
 msgstr ", ’s zondags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5089
+#: ../src/calendar/libecal/e-cal-recur.c:5191
 msgctxt "recur-description"
 msgid " and Sunday"
 msgstr " en ’s zondags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5092
+#: ../src/calendar/libecal/e-cal-recur.c:5194
 msgctxt "recur-description"
 msgid "on Monday"
 msgstr "’s maandags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5093
+#: ../src/calendar/libecal/e-cal-recur.c:5195
 msgctxt "recur-description"
 msgid ", Monday"
 msgstr ", ’s maandags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5094
+#: ../src/calendar/libecal/e-cal-recur.c:5196
 msgctxt "recur-description"
 msgid " and Monday"
 msgstr " en ’s maandags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5097
+#: ../src/calendar/libecal/e-cal-recur.c:5199
 msgctxt "recur-description"
 msgid "on Tuesday"
 msgstr "’s dinsdags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5098
+#: ../src/calendar/libecal/e-cal-recur.c:5200
 msgctxt "recur-description"
 msgid ", Tuesday"
 msgstr ", ’s dinsdags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5099
+#: ../src/calendar/libecal/e-cal-recur.c:5201
 msgctxt "recur-description"
 msgid " and Tuesday"
 msgstr " en ’s dinsdags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5102
+#: ../src/calendar/libecal/e-cal-recur.c:5204
 msgctxt "recur-description"
 msgid "on Wednesday"
 msgstr "’s woensdags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5103
+#: ../src/calendar/libecal/e-cal-recur.c:5205
 msgctxt "recur-description"
 msgid ", Wednesday"
 msgstr ", ’s woensdags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5104
+#: ../src/calendar/libecal/e-cal-recur.c:5206
 msgctxt "recur-description"
 msgid " and Wednesday"
 msgstr " en ’s woensdags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5107
+#: ../src/calendar/libecal/e-cal-recur.c:5209
 msgctxt "recur-description"
 msgid "on Thursday"
 msgstr "’s donderdags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5108
+#: ../src/calendar/libecal/e-cal-recur.c:5210
 msgctxt "recur-description"
 msgid ", Thursday"
 msgstr ", ’s donderdags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5109
+#: ../src/calendar/libecal/e-cal-recur.c:5211
 msgctxt "recur-description"
 msgid " and Thursday"
 msgstr " en ’s donderdags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5112
+#: ../src/calendar/libecal/e-cal-recur.c:5214
 msgctxt "recur-description"
 msgid "on Friday"
 msgstr "’s vrijdags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5113
+#: ../src/calendar/libecal/e-cal-recur.c:5215
 msgctxt "recur-description"
 msgid ", Friday"
 msgstr ", ’s vrijdags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5114
+#: ../src/calendar/libecal/e-cal-recur.c:5216
 msgctxt "recur-description"
 msgid " and Friday"
 msgstr " en ’s vrijdags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5117
+#: ../src/calendar/libecal/e-cal-recur.c:5219
 msgctxt "recur-description"
 msgid "on Saturday"
 msgstr "’s zaterdags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5118
+#: ../src/calendar/libecal/e-cal-recur.c:5220
 msgctxt "recur-description"
 msgid ", Saturday"
 msgstr ", ’s zaterdags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5119
+#: ../src/calendar/libecal/e-cal-recur.c:5221
 msgctxt "recur-description"
 msgid " and Saturday"
 msgstr " en ’s zaterdags"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5252
+#: ../src/calendar/libecal/e-cal-recur.c:5350
 #, c-format
 msgid "every month"
 msgid_plural "every %d months"
 msgstr[0] "maandelijks"
 msgstr[1] "elke %d maanden"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5258
+#: ../src/calendar/libecal/e-cal-recur.c:5356
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
 msgstr[0] "Maandelijks"
 msgstr[1] "Elke %d maanden"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5268
-#: ../src/calendar/libecal/e-cal-recur.c:5589
+#: ../src/calendar/libecal/e-cal-recur.c:5366
+#: ../src/calendar/libecal/e-cal-recur.c:5687
 msgctxt "recur-description"
 msgid "on the last Sunday"
 msgstr "op de laatste zondag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5271
-#: ../src/calendar/libecal/e-cal-recur.c:5439
+#: ../src/calendar/libecal/e-cal-recur.c:5369
+#: ../src/calendar/libecal/e-cal-recur.c:5537
 msgctxt "recur-description"
 msgid "on the last Monday"
 msgstr "op de laatste maandag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5274
-#: ../src/calendar/libecal/e-cal-recur.c:5464
+#: ../src/calendar/libecal/e-cal-recur.c:5372
+#: ../src/calendar/libecal/e-cal-recur.c:5562
 msgctxt "recur-description"
 msgid "on the last Tuesday"
 msgstr "op de laatste dinsdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5277
-#: ../src/calendar/libecal/e-cal-recur.c:5489
+#: ../src/calendar/libecal/e-cal-recur.c:5375
+#: ../src/calendar/libecal/e-cal-recur.c:5587
 msgctxt "recur-description"
 msgid "on the last Wednesday"
 msgstr "op de laatste woensdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5280
-#: ../src/calendar/libecal/e-cal-recur.c:5514
+#: ../src/calendar/libecal/e-cal-recur.c:5378
+#: ../src/calendar/libecal/e-cal-recur.c:5612
 msgctxt "recur-description"
 msgid "on the last Thursday"
 msgstr "op de laatste donderdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5283
-#: ../src/calendar/libecal/e-cal-recur.c:5539
+#: ../src/calendar/libecal/e-cal-recur.c:5381
+#: ../src/calendar/libecal/e-cal-recur.c:5637
 msgctxt "recur-description"
 msgid "on the last Friday"
 msgstr "op de laatste vrijdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5286
-#: ../src/calendar/libecal/e-cal-recur.c:5564
+#: ../src/calendar/libecal/e-cal-recur.c:5384
+#: ../src/calendar/libecal/e-cal-recur.c:5662
 msgctxt "recur-description"
 msgid "on the last Saturday"
 msgstr "op de laatste zaterdag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5296
+#: ../src/calendar/libecal/e-cal-recur.c:5394
 msgctxt "recur-description"
 msgid "on the 1st day"
 msgstr "op de 1e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5300
+#: ../src/calendar/libecal/e-cal-recur.c:5398
 msgctxt "recur-description"
 msgid "on the 2nd day"
 msgstr "op de 2e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5304
+#: ../src/calendar/libecal/e-cal-recur.c:5402
 msgctxt "recur-description"
 msgid "on the 3rd day"
 msgstr "op de 3e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5308
+#: ../src/calendar/libecal/e-cal-recur.c:5406
 msgctxt "recur-description"
 msgid "on the 4th day"
 msgstr "op de 4e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5312
+#: ../src/calendar/libecal/e-cal-recur.c:5410
 msgctxt "recur-description"
 msgid "on the 5th day"
 msgstr "op de 5e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5316
+#: ../src/calendar/libecal/e-cal-recur.c:5414
 msgctxt "recur-description"
 msgid "on the 6th day"
 msgstr "op de 6e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5320
+#: ../src/calendar/libecal/e-cal-recur.c:5418
 msgctxt "recur-description"
 msgid "on the 7th day"
 msgstr "op de 7e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5324
+#: ../src/calendar/libecal/e-cal-recur.c:5422
 msgctxt "recur-description"
 msgid "on the 8th day"
 msgstr "op de 8e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5328
+#: ../src/calendar/libecal/e-cal-recur.c:5426
 msgctxt "recur-description"
 msgid "on the 9th day"
 msgstr "op de 9e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5332
+#: ../src/calendar/libecal/e-cal-recur.c:5430
 msgctxt "recur-description"
 msgid "on the 10th day"
 msgstr "op de 10e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5336
+#: ../src/calendar/libecal/e-cal-recur.c:5434
 msgctxt "recur-description"
 msgid "on the 11th day"
 msgstr "op de 11e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5340
+#: ../src/calendar/libecal/e-cal-recur.c:5438
 msgctxt "recur-description"
 msgid "on the 12th day"
 msgstr "op de 12e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5344
+#: ../src/calendar/libecal/e-cal-recur.c:5442
 msgctxt "recur-description"
 msgid "on the 13th day"
 msgstr "op de 13e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5348
+#: ../src/calendar/libecal/e-cal-recur.c:5446
 msgctxt "recur-description"
 msgid "on the 14th day"
 msgstr "op de 14e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5352
+#: ../src/calendar/libecal/e-cal-recur.c:5450
 msgctxt "recur-description"
 msgid "on the 15th day"
 msgstr "op de 15e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5356
+#: ../src/calendar/libecal/e-cal-recur.c:5454
 msgctxt "recur-description"
 msgid "on the 16th day"
 msgstr "op de 16e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5360
+#: ../src/calendar/libecal/e-cal-recur.c:5458
 msgctxt "recur-description"
 msgid "on the 17th day"
 msgstr "op de 17e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5364
+#: ../src/calendar/libecal/e-cal-recur.c:5462
 msgctxt "recur-description"
 msgid "on the 18th day"
 msgstr "op de 18e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5368
+#: ../src/calendar/libecal/e-cal-recur.c:5466
 msgctxt "recur-description"
 msgid "on the 19th day"
 msgstr "op de 19e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5372
+#: ../src/calendar/libecal/e-cal-recur.c:5470
 msgctxt "recur-description"
 msgid "on the 20th day"
 msgstr "op de 20e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5376
+#: ../src/calendar/libecal/e-cal-recur.c:5474
 msgctxt "recur-description"
 msgid "on the 21st day"
 msgstr "op de 21e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5380
+#: ../src/calendar/libecal/e-cal-recur.c:5478
 msgctxt "recur-description"
 msgid "on the 22nd day"
 msgstr "op de 22e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5384
+#: ../src/calendar/libecal/e-cal-recur.c:5482
 msgctxt "recur-description"
 msgid "on the 23rd day"
 msgstr "op de 23e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5388
+#: ../src/calendar/libecal/e-cal-recur.c:5486
 msgctxt "recur-description"
 msgid "on the 24th day"
 msgstr "op de 24e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5392
+#: ../src/calendar/libecal/e-cal-recur.c:5490
 msgctxt "recur-description"
 msgid "on the 25th day"
 msgstr "op de 25e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5396
+#: ../src/calendar/libecal/e-cal-recur.c:5494
 msgctxt "recur-description"
 msgid "on the 26th day"
 msgstr "op de 26e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5400
+#: ../src/calendar/libecal/e-cal-recur.c:5498
 msgctxt "recur-description"
 msgid "on the 27th day"
 msgstr "op de 27e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5404
+#: ../src/calendar/libecal/e-cal-recur.c:5502
 msgctxt "recur-description"
 msgid "on the 28th day"
 msgstr "op de 28e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5408
+#: ../src/calendar/libecal/e-cal-recur.c:5506
 msgctxt "recur-description"
 msgid "on the 29th day"
 msgstr "op de 29e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5412
+#: ../src/calendar/libecal/e-cal-recur.c:5510
 msgctxt "recur-description"
 msgid "on the 30th day"
 msgstr "op de 30e dag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5416
+#: ../src/calendar/libecal/e-cal-recur.c:5514
 msgctxt "recur-description"
 msgid "on the 31st day"
 msgstr "op de 31e dag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5424
+#: ../src/calendar/libecal/e-cal-recur.c:5522
 msgctxt "recur-description"
 msgid "on the first Monday"
 msgstr "op de eerste maandag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5427
+#: ../src/calendar/libecal/e-cal-recur.c:5525
 msgctxt "recur-description"
 msgid "on the second Monday"
 msgstr "op de tweede maandag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5430
+#: ../src/calendar/libecal/e-cal-recur.c:5528
 msgctxt "recur-description"
 msgid "on the third Monday"
 msgstr "op de derde maandag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5433
+#: ../src/calendar/libecal/e-cal-recur.c:5531
 msgctxt "recur-description"
 msgid "on the fourth Monday"
 msgstr "op de vierde maandag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5436
+#: ../src/calendar/libecal/e-cal-recur.c:5534
 msgctxt "recur-description"
 msgid "on the fifth Monday"
 msgstr "op de vijfde maandag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5449
+#: ../src/calendar/libecal/e-cal-recur.c:5547
 msgctxt "recur-description"
 msgid "on the first Tuesday"
 msgstr "op de eerste dinsdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5452
+#: ../src/calendar/libecal/e-cal-recur.c:5550
 msgctxt "recur-description"
 msgid "on the second Tuesday"
 msgstr "op de tweede dinsdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5455
+#: ../src/calendar/libecal/e-cal-recur.c:5553
 msgctxt "recur-description"
 msgid "on the third Tuesday"
 msgstr "op de derde dinsdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5458
+#: ../src/calendar/libecal/e-cal-recur.c:5556
 msgctxt "recur-description"
 msgid "on the fourth Tuesday"
 msgstr "op de vierde dinsdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5461
+#: ../src/calendar/libecal/e-cal-recur.c:5559
 msgctxt "recur-description"
 msgid "on the fifth Tuesday"
 msgstr "op de vijfde dinsdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5474
+#: ../src/calendar/libecal/e-cal-recur.c:5572
 msgctxt "recur-description"
 msgid "on the first Wednesday"
 msgstr "op de eerste woensdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5477
+#: ../src/calendar/libecal/e-cal-recur.c:5575
 msgctxt "recur-description"
 msgid "on the second Wednesday"
 msgstr "op de tweede woensdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5480
+#: ../src/calendar/libecal/e-cal-recur.c:5578
 msgctxt "recur-description"
 msgid "on the third Wednesday"
 msgstr "op de derde woensdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5483
+#: ../src/calendar/libecal/e-cal-recur.c:5581
 msgctxt "recur-description"
 msgid "on the fourth Wednesday"
 msgstr "op de vierde woensdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5486
+#: ../src/calendar/libecal/e-cal-recur.c:5584
 msgctxt "recur-description"
 msgid "on the fifth Wednesday"
 msgstr "op de vijfde woensdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5499
+#: ../src/calendar/libecal/e-cal-recur.c:5597
 msgctxt "recur-description"
 msgid "on the first Thursday"
 msgstr "op de eerste donderdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5502
+#: ../src/calendar/libecal/e-cal-recur.c:5600
 msgctxt "recur-description"
 msgid "on the second Thursday"
 msgstr "op de tweede donderdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5505
+#: ../src/calendar/libecal/e-cal-recur.c:5603
 msgctxt "recur-description"
 msgid "on the third Thursday"
 msgstr "op de derde donderdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5508
+#: ../src/calendar/libecal/e-cal-recur.c:5606
 msgctxt "recur-description"
 msgid "on the fourth Thursday"
 msgstr "op de vierde donderdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5511
+#: ../src/calendar/libecal/e-cal-recur.c:5609
 msgctxt "recur-description"
 msgid "on the fifth Thursday"
 msgstr "op de vijfde donderdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5524
+#: ../src/calendar/libecal/e-cal-recur.c:5622
 msgctxt "recur-description"
 msgid "on the first Friday"
 msgstr "op de eerste vrijdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5527
+#: ../src/calendar/libecal/e-cal-recur.c:5625
 msgctxt "recur-description"
 msgid "on the second Friday"
 msgstr "op de tweede vrijdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5530
+#: ../src/calendar/libecal/e-cal-recur.c:5628
 msgctxt "recur-description"
 msgid "on the third Friday"
 msgstr "op de derde vrijdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5533
+#: ../src/calendar/libecal/e-cal-recur.c:5631
 msgctxt "recur-description"
 msgid "on the fourth Friday"
 msgstr "op de vierde vrijdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5536
+#: ../src/calendar/libecal/e-cal-recur.c:5634
 msgctxt "recur-description"
 msgid "on the fifth Friday"
 msgstr "op de vijfde vrijdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5549
+#: ../src/calendar/libecal/e-cal-recur.c:5647
 msgctxt "recur-description"
 msgid "on the first Saturday"
 msgstr "op de eerste zaterdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5552
+#: ../src/calendar/libecal/e-cal-recur.c:5650
 msgctxt "recur-description"
 msgid "on the second Saturday"
 msgstr "op de tweede zaterdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5555
+#: ../src/calendar/libecal/e-cal-recur.c:5653
 msgctxt "recur-description"
 msgid "on the third Saturday"
 msgstr "op de derde zaterdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5558
+#: ../src/calendar/libecal/e-cal-recur.c:5656
 msgctxt "recur-description"
 msgid "on the fourth Saturday"
 msgstr "op de vierde zaterdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5561
+#: ../src/calendar/libecal/e-cal-recur.c:5659
 msgctxt "recur-description"
 msgid "on the fifth Saturday"
 msgstr "op de vijfde zaterdag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5574
+#: ../src/calendar/libecal/e-cal-recur.c:5672
 msgctxt "recur-description"
 msgid "on the first Sunday"
 msgstr "op de eerste zondag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5577
+#: ../src/calendar/libecal/e-cal-recur.c:5675
 msgctxt "recur-description"
 msgid "on the second Sunday"
 msgstr "op de tweede zondag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5580
+#: ../src/calendar/libecal/e-cal-recur.c:5678
 msgctxt "recur-description"
 msgid "on the third Sunday"
 msgstr "op de derde zondag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5583
+#: ../src/calendar/libecal/e-cal-recur.c:5681
 msgctxt "recur-description"
 msgid "on the fourth Sunday"
 msgstr "op de vierde zondag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5586
+#: ../src/calendar/libecal/e-cal-recur.c:5684
 msgctxt "recur-description"
 msgid "on the fifth Sunday"
 msgstr "op de vijfde zondag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5615
+#: ../src/calendar/libecal/e-cal-recur.c:5713
 #, c-format
 msgid "every year forever"
 msgid_plural "every %d years forever"
 msgstr[0] "jaarlijks, voor altijd"
 msgstr[1] "elke %d jaren, voor altijd"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5621
+#: ../src/calendar/libecal/e-cal-recur.c:5719
 #, c-format
 msgid "Every year forever"
 msgid_plural "Every %d years forever"
 msgstr[0] "Jaarlijks, voor altijd"
 msgstr[1] "Elke %d jaren, voor altijd"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5629
+#: ../src/calendar/libecal/e-cal-recur.c:5727
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
 msgstr[0] "jaarlijks"
 msgstr[1] "elke %d jaren"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5635
+#: ../src/calendar/libecal/e-cal-recur.c:5733
 #, c-format
 msgid "Every year"
 msgid_plural "Every %d years"
@@ -2380,7 +2226,7 @@ msgstr[1] "Elke %d jaren"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 3 days for 10 occurrences"
-#: ../src/calendar/libecal/e-cal-recur.c:5654
+#: ../src/calendar/libecal/e-cal-recur.c:5752
 #, c-format
 msgid "for one occurrence"
 msgid_plural "for %d occurrences"
@@ -2391,7 +2237,7 @@ msgstr[1] "voor een totaal van %d keer"
 #. The '%s' is replaced with actual date, thus it can create something like
 #. "until Mon 15.1.2018". The text is appended at the end of the complete
 #. recurrence description, making it for example: "Every 3 days until Mon 15.1.2018"
-#: ../src/calendar/libecal/e-cal-recur.c:5689
+#: ../src/calendar/libecal/e-cal-recur.c:5783
 #, c-format
 msgctxt "recur-description"
 msgid "until %s"
@@ -2400,7 +2246,7 @@ msgstr "tot %s"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 2 months on Tuesday, Thursday and Friday forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5695
+#: ../src/calendar/libecal/e-cal-recur.c:5789
 msgctxt "recur-description"
 msgid "forever"
 msgstr "voor altijd"
@@ -2408,7 +2254,7 @@ msgstr "voor altijd"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
 #. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
 #. together one sentence: "Every 2 weeks on Tuesday and Friday for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5705
+#: ../src/calendar/libecal/e-cal-recur.c:5799
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s %3$s"
@@ -2417,7 +2263,7 @@ msgstr "%1$s %2$s %3$s"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
 #. the '%2$s' is like "for 10 occurrences", constructing together one sentence:
 #. "Every 2 days for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5710
+#: ../src/calendar/libecal/e-cal-recur.c:5804
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s"
@@ -2425,7 +2271,7 @@ msgstr "%1$s %2$s"
 
 #. Translators: This text is appended at the end of complete recur description using "%s%s" in
 #. context "recur-description"
-#: ../src/calendar/libecal/e-cal-recur.c:5726
+#: ../src/calendar/libecal/e-cal-recur.c:5820
 #, c-format
 msgid ", with one exception"
 msgid_plural ", with %d exceptions"
@@ -2435,33 +2281,33 @@ msgstr[1] ", met %d uitzonderingen"
 #. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
 #. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
 #. It will form something like: "Every 2 weeks on Tuesday and Friday for 10 occurrences, with 3 exceptions"
-#: ../src/calendar/libecal/e-cal-recur.c:5733
+#: ../src/calendar/libecal/e-cal-recur.c:5827
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5746
-#: ../src/calendar/libecal/e-cal-recur.c:5769
+#: ../src/calendar/libecal/e-cal-recur.c:5840
+#: ../src/calendar/libecal/e-cal-recur.c:5863
 msgctxt "recur-description"
 msgid "The meeting recurs"
 msgstr "De afspraak herhaalt zich"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5748
-#: ../src/calendar/libecal/e-cal-recur.c:5771
+#: ../src/calendar/libecal/e-cal-recur.c:5842
+#: ../src/calendar/libecal/e-cal-recur.c:5865
 msgctxt "recur-description"
 msgid "The appointment recurs"
 msgstr "De afspraak keert terug"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5751
-#: ../src/calendar/libecal/e-cal-recur.c:5774
+#: ../src/calendar/libecal/e-cal-recur.c:5845
+#: ../src/calendar/libecal/e-cal-recur.c:5868
 msgctxt "recur-description"
 msgid "The task recurs"
 msgstr "De taak herhaalt zich"
 
-#. if (icalcomponent_isa (icalcomp) == ICAL_VJOURNAL_COMPONENT)
-#: ../src/calendar/libecal/e-cal-recur.c:5753
-#: ../src/calendar/libecal/e-cal-recur.c:5776
+#. if (i_cal_component_isa (comp) == I_CAL_VJOURNAL_COMPONENT)
+#: ../src/calendar/libecal/e-cal-recur.c:5847
+#: ../src/calendar/libecal/e-cal-recur.c:5870
 msgctxt "recur-description"
 msgid "The memo recurs"
 msgstr "De memo herhaalt zich"
@@ -2470,37 +2316,37 @@ msgstr "De memo herhaalt zich"
 #. The '%1$s' is replaced with something like "The meeting recurs" and
 #. the '%2$s' with something like "every 2 days forever", thus forming
 #. sentence like "This meeting recurs every 2 days forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5760
+#: ../src/calendar/libecal/e-cal-recur.c:5854
 #, c-format
 msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#: ../src/calendar/libecal/e-cal-util.c:746
-#: ../src/calendar/libecal/e-cal-util.c:773
+#: ../src/calendar/libecal/e-cal-util.c:798
+#: ../src/calendar/libecal/e-cal-util.c:825
 msgctxt "Priority"
 msgid "High"
 msgstr "Hoog"
 
-#: ../src/calendar/libecal/e-cal-util.c:748
-#: ../src/calendar/libecal/e-cal-util.c:775
+#: ../src/calendar/libecal/e-cal-util.c:800
+#: ../src/calendar/libecal/e-cal-util.c:827
 msgctxt "Priority"
 msgid "Normal"
 msgstr "Normaal"
 
-#: ../src/calendar/libecal/e-cal-util.c:750
-#: ../src/calendar/libecal/e-cal-util.c:777
+#: ../src/calendar/libecal/e-cal-util.c:802
+#: ../src/calendar/libecal/e-cal-util.c:829
 msgctxt "Priority"
 msgid "Low"
 msgstr "Laag"
 
 #. An empty string is the same as 'None'.
-#: ../src/calendar/libecal/e-cal-util.c:771
+#: ../src/calendar/libecal/e-cal-util.c:823
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Niet opgegeven"
 
-#: ../src/calendar/libecal/e-cal-util.c:813
+#: ../src/calendar/libecal/e-cal-util.c:865
 #: ../src/libedataserverui/e-reminders-widget.c:291
 #, c-format
 msgid "%d week"
@@ -2508,7 +2354,7 @@ msgid_plural "%d weeks"
 msgstr[0] "%d week"
 msgstr[1] "%d weken"
 
-#: ../src/calendar/libecal/e-cal-util.c:822
+#: ../src/calendar/libecal/e-cal-util.c:874
 #: ../src/libedataserverui/e-reminders-widget.c:287
 #, c-format
 msgid "%d day"
@@ -2516,7 +2362,7 @@ msgid_plural "%d days"
 msgstr[0] "%d dag"
 msgstr[1] "%d dagen"
 
-#: ../src/calendar/libecal/e-cal-util.c:831
+#: ../src/calendar/libecal/e-cal-util.c:883
 #: ../src/libedataserverui/e-reminders-widget.c:283
 #, c-format
 msgid "%d hour"
@@ -2524,7 +2370,7 @@ msgid_plural "%d hours"
 msgstr[0] "%d uur"
 msgstr[1] "%d uur"
 
-#: ../src/calendar/libecal/e-cal-util.c:840
+#: ../src/calendar/libecal/e-cal-util.c:892
 #: ../src/libedataserverui/e-reminders-widget.c:279
 #, c-format
 msgid "%d minute"
@@ -2533,21 +2379,21 @@ msgstr[0] "%d minuut"
 msgstr[1] "%d minuten"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: ../src/calendar/libecal/e-cal-util.c:845
+#: ../src/calendar/libecal/e-cal-util.c:897
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d seconde"
 msgstr[1] "%d seconden"
 
-#: ../src/calendar/libecal/e-reminder-watcher.c:2524
+#: ../src/calendar/libecal/e-reminder-watcher.c:2706
 msgid "No Summary"
 msgstr "Geen samenvatting"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2540
+#: ../src/calendar/libecal/e-reminder-watcher.c:2722
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
@@ -2556,7 +2402,7 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2545
+#: ../src/calendar/libecal/e-reminder-watcher.c:2727
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
@@ -2565,7 +2411,7 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2550
+#: ../src/calendar/libecal/e-reminder-watcher.c:2732
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
@@ -2573,82 +2419,82 @@ msgstr "%s %s"
 
 # 'wil ipv verwacht?
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:83
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1086
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1399
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1526
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1575
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1110
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1420
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1547
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1596
 #, c-format
 msgid "“%s” expects one argument"
 msgstr "‘%s’ verwacht één argument"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:90
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:689
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1406
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1414
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:713
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1427
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1435
 #, c-format
 msgid "“%s” expects the first argument to be a string"
 msgstr "‘%s’ verwacht dat het eerste argument een tekenreeks is"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:165
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:170
 #, c-format
 msgid "“%s” expects two or three arguments"
 msgstr "‘%s’ verwacht twee of drie argumenten"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:172
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:261
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:323
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:839
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1093
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1475
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1533
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1582
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:177
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:278
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:346
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:863
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1117
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1496
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1554
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1603
 #, c-format
 msgid "“%s” expects the first argument to be a time_t"
 msgstr "‘%s’ verwacht dat het eerste argument een time_t is"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:181
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:269
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:333
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:848
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:186
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:286
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:356
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:872
 #, c-format
 msgid "“%s” expects the second argument to be a time_t"
 msgstr "‘%s’ verwacht dat het tweede argument een time_t is"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:191
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:196
 #, c-format
 msgid "“%s” expects the third argument to be a string"
 msgstr "‘%s’ verwacht dat het derde argument een tekenreeks is"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:253
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:270
 #, c-format
 msgid "“%s” expects none or two arguments"
 msgstr "‘%s’ verwacht geen of twee argumenten"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:316
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:682
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:832
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1468
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:339
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:706
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:856
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1489
 #, c-format
 msgid "“%s” expects two arguments"
 msgstr "‘%s’ verwacht twee argumenten"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:615
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:638
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:764
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:796
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1005
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1038
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1360
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:645
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:668
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:788
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:820
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1029
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1062
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1381
 #, c-format
 msgid "“%s” expects no arguments"
 msgstr "‘%s’ verwacht geen argumenten"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:698
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:722
 #, c-format
 msgid "“%s” expects the second argument to be a string"
 msgstr "‘%s’ verwacht dat het tweede argument een tekenreeks is"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:729
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:753
 #, c-format
 msgid ""
 "“%s” expects the first argument to be either “any”, “summary”, or "
@@ -2658,12 +2504,12 @@ msgstr ""
 "‘%s’ verwacht dat het eerste argument een keuze is uit: ‘any’, ‘summary’, "
 "‘description’ of ‘location’, ‘attendee’, ‘organizer’ of ‘classification’"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:900
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:924
 #, c-format
 msgid "“%s” expects at least one argument"
 msgstr "‘%s’ verwacht op zijn minst één argument"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:915
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:939
 #, c-format
 msgid ""
 "“%s” expects all arguments to be strings or one and only one argument to be "
@@ -2672,125 +2518,119 @@ msgstr ""
 "‘%s’ verwacht dat alle argumenten tekenreeksen zijn, of dat slechts één "
 "argument een booleaanse ‘onwaar’ is (#f)"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1423
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1444
 #, c-format
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 "‘%s’ verwacht dat het eerste argument een datum/tijd-tekenreeks is in ISO "
 "8601-vorm"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1484
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1505
 #, c-format
 msgid "“%s” expects the second argument to be an integer"
 msgstr "‘%s’ verwacht dat het tweede argument een geheel getal is"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1756
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1797
 #, c-format
 msgid "Failed to create SQLite function, error code “%d”: %s"
 msgstr "Kon SQLite-functie niet aanmaken, foutcode ‘%d’: %s"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2728
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2791
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2797
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2855
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2914
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2977
 #, c-format
 msgid "Object “%s”, “%s” not found"
 msgstr "Object ‘%s’, ‘%s’ niet gevonden"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3531
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3712
 msgid "Cannot add timezone without tzid"
 msgstr "Kon tijdzone niet toevoegen zonder tzid"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3540
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3721
 msgid "Cannot add timezone without component"
 msgstr "Kon tijdzone niet toevoegen zonder component"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3546
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3729
 msgid "Cannot add timezone with invalid component"
 msgstr "Toevoegen van tijdzone met ongeldig component niet mogelijk"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1118
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1126
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Ontvangen object voor UID ‘%s’ bevat geen enkel verwacht component"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4048
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4149
 msgid "attachment.dat"
 msgstr "attachment.dat"
 
-#: ../src/calendar/libedata-cal/e-data-cal.c:421
-msgid "Unsupported method"
-msgstr "Methode niet ondersteund"
-
-#: ../src/calendar/libedata-cal/e-data-cal.c:424
-msgid "Calendar does not exist"
-msgstr "Agenda bestaat niet"
-
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:1655
+#: ../src/calendar/libedata-cal/e-data-cal.c:1365
 msgid "Cannot open calendar: "
 msgstr "Kan agenda niet openen: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:1693
+#: ../src/calendar/libedata-cal/e-data-cal.c:1403
 msgid "Cannot refresh calendar: "
 msgstr "Kan agenda niet verversen: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:1735
+#: ../src/calendar/libedata-cal/e-data-cal.c:1445
 msgid "Cannot retrieve calendar object path: "
 msgstr "Kan pad agenda-object niet ophalen: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:1788
+#: ../src/calendar/libedata-cal/e-data-cal.c:1498
 msgid "Cannot retrieve calendar object list: "
 msgstr "Kan agenda-objectlijst niet ophalen : "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:1846
+#: ../src/calendar/libedata-cal/e-data-cal.c:1556
 msgid "Cannot retrieve calendar free/busy list: "
 msgstr "Kan vrij/bezet-lijst van agenda niet ophalen: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:1897
+#: ../src/calendar/libedata-cal/e-data-cal.c:1607
 msgid "Cannot create calendar object: "
 msgstr "Kan agenda-object niet aanmaken: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:1966
+#: ../src/calendar/libedata-cal/e-data-cal.c:1676
 msgid "Cannot modify calendar object: "
 msgstr "Kan agenda-object niet wijzigen: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:2045
+#: ../src/calendar/libedata-cal/e-data-cal.c:1755
 msgid "Cannot remove calendar object: "
 msgstr "Kan agenda-object niet verwijderen: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:2132
+#: ../src/calendar/libedata-cal/e-data-cal.c:1842
 msgid "Cannot receive calendar objects: "
 msgstr "Kan agenda-objecten niet ontvangen: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:2176
+#: ../src/calendar/libedata-cal/e-data-cal.c:1886
 msgid "Cannot send calendar objects: "
 msgstr "Kan agenda-objecten niet versturen: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:2229
+#: ../src/calendar/libedata-cal/e-data-cal.c:1939
 msgid "Could not retrieve attachment uris: "
 msgstr "Kon bijlage-uri’s niet ophalen: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:2275
+#: ../src/calendar/libedata-cal/e-data-cal.c:1985
 msgid "Could not discard reminder: "
 msgstr "Kon herinnering niet uitzetten: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:2317
+#: ../src/calendar/libedata-cal/e-data-cal.c:2027
 msgid "Could not retrieve calendar time zone: "
 msgstr "Kon tijdzone voor agenda niet ophalen: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:2358
+#: ../src/calendar/libedata-cal/e-data-cal.c:2068
 msgid "Could not add calendar time zone: "
 msgstr "Kon tijdzone voor agenda niet toevoegen: "
 
@@ -3188,7 +3028,7 @@ msgstr ""
 
 #: ../src/camel/camel-gpg-context.c:1183 ../src/camel/camel-net-utils.c:522
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:405
-#: ../src/libedataserver/e-client.c:161
+#: ../src/libedataserver/e-client.c:160
 #, c-format
 msgid "Cancelled"
 msgstr "Geannuleerd"
@@ -3418,7 +3258,7 @@ msgstr "Host ‘%s’ opzoeken is mislukt: %s"
 
 #: ../src/camel/camel-network-service.c:1127
 #, c-format
-msgid "Checking reach-ability of account “%s”"
+msgid "Checking reachability of account “%s”"
 msgstr "Bezig met controleren van bereikbaarheid van account ‘%s’"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
@@ -3540,6 +3380,10 @@ msgid ""
 msgstr ""
 "Ongeldige opaque trace-informatie:\n"
 "%s"
+
+#: ../src/camel/camel-sasl-anonymous.c:115 ../src/libedataserver/e-client.c:139
+msgid "Invalid argument"
+msgstr "Ongeldige argument"
 
 #: ../src/camel/camel-sasl-cram-md5.c:41
 msgid "CRAM-MD5"
@@ -4259,12 +4103,12 @@ msgstr "Kan cache voor %s niet aanmaken: "
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1475
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1470
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "IMAP-postbus niet beschikbaar voor map ‘%s : %s’"
 
-#: ../src/camel/providers/imapx/camel-imapx-input-stream.c:102
+#: ../src/camel/providers/imapx/camel-imapx-input-stream.c:104
 #, c-format
 msgid "Source stream returned no data"
 msgstr "Bron-stream stuurde geen gegevens terug"
@@ -4298,24 +4142,28 @@ msgstr "Verbinding met server"
 msgid "Numbe_r of concurrent connections to use"
 msgstr "_Aantal te gebruiken gelijktijdige verbindingen"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:52
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:51
+msgid "Enable full folder update on _metered network"
+msgstr "Bijwerken van alle mappen inschakelen op _betaalde netwerken"
+
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:54
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:43
 msgid "Folders"
 msgstr "Mappen"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:54
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:56
 msgid "_Show only subscribed folders"
 msgstr "Alleen geabonneerde mappen _tonen"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:57
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:59
 msgid "O_verride server-supplied folder namespace"
 msgstr "Door server verstrekte mappen-namespace overschrijven"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:59
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:61
 msgid "Namespace:"
 msgstr "Namespace:"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:62
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:64
 #: ../src/camel/providers/local/camel-local-provider.c:37
 #: ../src/camel/providers/local/camel-local-provider.c:63
 #: ../src/camel/providers/local/camel-local-provider.c:84
@@ -4324,18 +4172,18 @@ msgstr "Namespace:"
 msgid "Options"
 msgstr "Opties"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:64
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:66
 #: ../src/camel/providers/local/camel-local-provider.c:39
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:38
 msgid "Apply _filters to new messages in all folders"
 msgstr "_Filters toepassen op nieuwe berichten in alle mappen"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:66
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:68
 msgid "_Apply filters to new messages in Inbox on this server"
 msgstr ""
 "_Filters toepassen op alle nieuwe berichten in het Postvak IN op deze server"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:68
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:70
 #: ../src/camel/providers/local/camel-local-provider.c:41
 #: ../src/camel/providers/local/camel-local-provider.c:67
 #: ../src/camel/providers/local/camel-local-provider.c:88
@@ -4344,27 +4192,27 @@ msgstr ""
 msgid "Check new messages for _Junk contents"
 msgstr "Nieuwe berichten op _spam controleren"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:70
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:72
 msgid "Only check for Junk messages in the In_box folder"
 msgstr "Alleen postvak _IN op spam controleren"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:72
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:74
 msgid "Synchroni_ze remote mail locally in all folders"
 msgstr "Lokaal synchroni_seren met e-mail op afstand in alle mappen"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:79
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:81
 msgid "Default IMAP port"
 msgstr "Standaard IMAP-poort"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:80
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:82
 msgid "IMAP over TLS"
 msgstr "IMAP over TLS"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:87
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:89
 msgid "IMAP"
 msgstr "IMAP"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:89
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:91
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Voor het lezen en opslaan van e-mail op IMAP servers."
 
@@ -4423,151 +4271,154 @@ msgstr "Aanmeldingscontrole mislukt"
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr "Uitvoeren van ENABLE UTF8=ACCEPT mislukt"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3419
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3422
 msgid "Failed to issue NAMESPACE"
 msgstr "Verzenden van NAMESPACE mislukt"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3437
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3440
 msgid "Failed to enable QResync"
 msgstr "Inschakelen van QResync mislukt"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3474
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3477
 msgid "Failed to issue NOTIFY"
 msgstr "Verzenden van NOTIFY mislukt"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3955
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3958
 msgid "Failed to select mailbox"
 msgstr "Selecteren van mailbox mislukt"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4058
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4061
 msgid "Cannot issue command, no stream available"
 msgstr "Kan opdracht niet verzenden, geen stream beschikbaar"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4324
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4327
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Kan bericht met bericht-ID ‘%s’ niet opvragen: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4325
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4328
 msgid "No such message available."
 msgstr "Bericht niet beschikbaar."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4373
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4398
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4437
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4377
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4402
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4441
 msgid "Error fetching message"
 msgstr "Fout bij ophalen bericht"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4415
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5178
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4419
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5182
 msgid "Error performing NOOP"
 msgstr "Fout bij het uitvoeren van NOOP"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4430
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4434
 msgid "Failed to close the tmp stream"
 msgstr "Sluiten van tmp-stream is mislukt"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4461
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4465
 msgid "Failed to copy the tmp file"
 msgstr "Kopiëren van tmp-bestand is mislukt"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4699
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4703
 msgid "Error moving messages"
 msgstr "Fout bij het verplaatsen van berichten"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4699
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4703
 msgid "Error copying messages"
 msgstr "Fout bij het kopiëren van berichten"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4971
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4992
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4975
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4996
 msgid "Cannot create spool file: "
 msgstr "Aanmaken van spoolbestand mislukt: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5078
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5082
 msgid "Error appending message"
 msgstr "Fout bij het toevoegen van bericht"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5331
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5335
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Zoeken naar gewijzigde berichten in ‘%s : %s’"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5335
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5339
 msgid "Error scanning changes"
 msgstr "Fout bij het synchroniseren van wijzigingen"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5356
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5360
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "Overzichtsinformatie ophalen van nieuwe berichten in ‘%s : %s’"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5384
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5388
 msgid "Error fetching message info"
 msgstr "Fout bij ophalen berichtinfo"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5504
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5521
 msgid "Error running STATUS"
 msgstr "Fout bij het uitvoeren van STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6052
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6082
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6117
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6095
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6150
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6214
 msgid "Error syncing changes"
 msgstr "Fout bij het synchroniseren van wijzigingen"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6255
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6108
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6160
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6233
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6377
 msgid "Error expunging message"
 msgstr "Fout bij het vernietigen van bericht"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6333
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6459
 msgid "Error fetching folders"
 msgstr "Fout bij het ophalen van mappen"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6341
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6467
 msgid "Error fetching subscribed folders"
 msgstr "Fout bij het ophalen van geabonneerde mappen"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6396
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6524
 msgid "Error creating folder"
 msgstr "Fout bij het aanmaken van map"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6452
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6574
 msgid "Error deleting folder"
 msgstr "Fout bij het verwijderen van map"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6498
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6620
 msgid "Error renaming folder"
 msgstr "Fout bij het hernoemen van map"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6530
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6652
 msgid "Error subscribing to folder"
 msgstr "Fout bij het abonneren op map"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6566
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6688
 msgid "Error unsubscribing from folder"
 msgstr "Fout bij opzeggen mapabonnement"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6606
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6728
 msgid "IMAP server does not support quotas"
 msgstr "IMAP-server ondersteunt geen quota"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6618
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6740
 msgid "Error retrieving quota information"
 msgstr "Fout bij ophalen van quota-informatie"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6683
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6805
 msgid "Search failed"
 msgstr "Zoeken mislukt"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6801
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6923
 msgid "Error running IDLE"
 msgstr "Fout bij het uitvoeren van IDLE"
 
@@ -4614,18 +4465,18 @@ msgstr ""
 msgid "No such folder %s"
 msgstr "Map ‘%s’ bestaat niet"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1624
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1623
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
 msgstr "Geen IMAP-naamruimte voor mappad ‘%s’"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1892
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2126
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1890
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2084
 #, c-format
 msgid "Retrieving folder list for “%s”"
 msgstr "Mappenlijst voor ‘%s’ wordt opgehaald"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2343
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2352
 #, c-format
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "De mapnaam ‘%s’ is ongeldig omdat deze het teken ‘%c’ bevat"
@@ -4635,98 +4486,98 @@ msgstr "De mapnaam ‘%s’ is ongeldig omdat deze het teken ‘%c’ bevat"
 #. version as well. It's always the folder name (eventually path) as provided by the server,
 #. when returned in given localization. it can be checked semi-easily in the case of
 #. the GMail variants, by changing the GMail interface language in the GMail Preferences.
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2738
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2747
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
 msgstr "[Gmail]/Concepten"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2739
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2748
 msgctxt "IMAPDefaults"
 msgid "Drafts"
 msgstr "Concepten"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2740
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2749
 msgctxt "IMAPDefaults"
 msgid "Draft"
 msgstr "Concept"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2743
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2752
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "Sjablonen"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2746
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2755
 msgctxt "IMAPDefaults"
 msgid "Archive"
 msgstr "Archief"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2749
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2758
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[Gmail]/Verzonden"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2750
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2759
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "Verzonden"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2751
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2760
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "Verzonden items"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2752
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2761
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Verstuurde berichten"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2755
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2764
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "[Gmail]/Spam"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2756
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2765
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "Spam"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2757
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2766
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "Ongewenste e-mail"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2758
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2767
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "Ongewenste e-mail"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2759
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2768
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "Spam"
 
 # Mailprogramma?
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2760
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2769
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "Massa-mail"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2763
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2772
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr "[Gmail]/Prullenbak"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2764
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2773
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "Prullenbak"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2765
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2774
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "Verwijderde items"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2766
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2775
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Verwijderde berichten"
@@ -5958,6 +5809,11 @@ msgstr "Versleuteling vereist voor gewenst aanmeldingsmechanisme"
 msgid "Temporary authentication failure"
 msgstr "Tijdelijke fout bij aanmelden"
 
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1124
+#: ../src/libedataserver/e-client.c:149
+msgid "Authentication required"
+msgstr "Aanmelding is vereist"
+
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1412
 msgid "SMTP Greeting"
 msgstr "SMTP-begroeting"
@@ -5987,22 +5843,22 @@ msgstr "RCPT TO <%s> mislukt: "
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1667
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1678
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1689
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1738
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1756
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1769
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1777
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1772
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1790
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1803
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1811
 msgid "DATA command failed: "
 msgstr "DATA-opdracht mislukt: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1803
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1817
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1825
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1837
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1851
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1859
 msgid "RSET command failed: "
 msgstr "RSET-opdracht mislukt: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1851
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1863
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1869
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1885
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1897
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1903
 msgid "QUIT command failed: "
 msgstr "QUIT-opdracht mislukt: "
 
@@ -6602,26 +6458,83 @@ msgctxt "CategoryName"
 msgid "Waiting"
 msgstr "Wachtend"
 
-#: ../src/libedataserver/e-client.c:144
+#: ../src/libedataserver/e-client.c:141
+msgid "Backend is busy"
+msgstr "Back-end is bezig"
+
+#: ../src/libedataserver/e-client.c:143
 msgid "Source not loaded"
 msgstr "Bron niet geladen"
 
-#: ../src/libedataserver/e-client.c:146
+#: ../src/libedataserver/e-client.c:145
 msgid "Source already loaded"
 msgstr "Bron is reeds geladen"
+
+#: ../src/libedataserver/e-client.c:147
+msgid "Authentication failed"
+msgstr "Aanmelding mislukt"
+
+#: ../src/libedataserver/e-client.c:151
+msgid "Repository offline"
+msgstr "Opslagplaats offline"
 
 #. Translators: This means that the EClient does not
 #. * support offline mode, or it's not set to by a user,
 #. * thus it is unavailable while user is not connected.
-#: ../src/libedataserver/e-client.c:157
+#: ../src/libedataserver/e-client.c:156
 msgid "Offline unavailable"
 msgstr "Offline niet beschikbaar"
 
-#: ../src/libedataserver/e-client.c:179
+#: ../src/libedataserver/e-client.c:158
+msgid "Permission denied"
+msgstr "Operatie niet toegestaan"
+
+#: ../src/libedataserver/e-client.c:162
+msgid "Could not cancel"
+msgstr "Kon niet annuleren"
+
+#: ../src/libedataserver/e-client.c:164
+msgid "Not supported"
+msgstr "Niet ondersteund"
+
+#: ../src/libedataserver/e-client.c:166
+msgid "Unsupported authentication method"
+msgstr "Methode voor aanmeldingscontrole niet ondersteund"
+
+#: ../src/libedataserver/e-client.c:168
+msgid "TLS not available"
+msgstr "TLS niet beschikbaar"
+
+# lengte/grootte
+#: ../src/libedataserver/e-client.c:170
+msgid "Search size limit exceeded"
+msgstr "Maximale zoekgrootte overschreden"
+
+#: ../src/libedataserver/e-client.c:172
+msgid "Search time limit exceeded"
+msgstr "Maximale zoektijd verstreken"
+
+#: ../src/libedataserver/e-client.c:176
+msgid "Query refused"
+msgstr "Zoekopdracht geweigerd"
+
+#: ../src/libedataserver/e-client.c:178
 msgid "D-Bus error"
 msgstr "D-busfout"
 
-#: ../src/libedataserver/e-client.c:2023
+#: ../src/libedataserver/e-client.c:180
+msgid "Other error"
+msgstr "Andere fout"
+
+#: ../src/libedataserver/e-client.c:182
+msgid "Backend is not opened yet"
+msgstr "Back-end is nog niet geopend"
+
+#: ../src/libedataserver/e-client.c:184
+msgid "Object is out of sync"
+msgstr "Object niet gesynchroniseerd"
+
+#: ../src/libedataserver/e-client.c:2048
 msgid "Timeout was reached"
 msgstr "Timeout bereikt"
 
@@ -6935,7 +6848,7 @@ msgstr "Posten van data mislukt"
 #: ../src/libedataserver/e-webdav-session.c:1469
 #: ../src/libedataserver/e-webdav-session.c:1573
 #: ../src/libedataserver/e-webdav-session.c:2822
-#: ../src/libedataserver/e-webdav-session.c:4074
+#: ../src/libedataserver/e-webdav-session.c:4089
 msgid "Failed to get input XML content"
 msgstr "Invoer XML-inhoud verkrijgen is mislukt"
 
@@ -7034,41 +6947,41 @@ msgstr "Ontgrendelen is mislukt"
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Multistatus-respons verwacht, maar ontving %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:4084
+#: ../src/libedataserver/e-webdav-session.c:4099
 msgid "Failed to get access control list"
 msgstr "Verkrijgen van toegangscontrolelijst is mislukt"
 
-#: ../src/libedataserver/e-webdav-session.c:4825
+#: ../src/libedataserver/e-webdav-session.c:4860
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr "Beschermde of geërfde Access Control Entry kan niet worden opgeslagen."
 
-#: ../src/libedataserver/e-webdav-session.c:4832
+#: ../src/libedataserver/e-webdav-session.c:4867
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Voorzien van een ongeldig hoofdtype voor Access Control Entry."
 
-#: ../src/libedataserver/e-webdav-session.c:4839
+#: ../src/libedataserver/e-webdav-session.c:4874
 msgid "Cannot store property-based Access Control Entry."
 msgstr ""
 "Op eigenschap gebaseerde Access Control Entry kan niet worden opgeslagen."
 
-#: ../src/libedataserver/e-webdav-session.c:4846
+#: ../src/libedataserver/e-webdav-session.c:4881
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Access Control Entry mag alleen voor Toestaan of Weigeren, maar niet geen "
 "van beide."
 
-#: ../src/libedataserver/e-webdav-session.c:4854
+#: ../src/libedataserver/e-webdav-session.c:4889
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Access Control Entry mag alleen voor Toestaan of Weigeren, maar niet allebei."
 
-#: ../src/libedataserver/e-webdav-session.c:4913
+#: ../src/libedataserver/e-webdav-session.c:4948
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Access Control Entry privilege mag niet NULL zijn."
 
 #: ../src/libedataserverui/e-credentials-prompter.c:258
-#: ../src/libedataserverui/e-credentials-prompter.c:1690
-#: ../src/libedataserverui/e-credentials-prompter.c:1734
+#: ../src/libedataserverui/e-credentials-prompter.c:1691
+#: ../src/libedataserverui/e-credentials-prompter.c:1735
 msgid "Credentials prompt was cancelled"
 msgstr "Referentieprompt werd geannuleerd"
 
@@ -7216,7 +7129,7 @@ msgstr ""
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:605
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1070
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1072
 msgid "_Cancel"
 msgstr "_Annuleren"
 
@@ -7284,7 +7197,7 @@ msgid "Please enter the password for account “%s”."
 msgstr "Geef het wachtwoord voor account ‘%s’ op."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1071
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1073
 msgid "_OK"
 msgstr "_Oké"
 
@@ -7326,55 +7239,55 @@ msgctxt "overdue"
 msgid "overdue"
 msgstr "verlopen"
 
-#: ../src/libedataserverui/e-reminders-widget.c:912
+#: ../src/libedataserverui/e-reminders-widget.c:919
 #, c-format
 msgid "Failed to launch URI “%s”:"
 msgstr "Openen van URI ‘%s’ mislukt:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:953
+#: ../src/libedataserverui/e-reminders-widget.c:960
 msgid "Failed to dismiss reminder:"
 msgstr "Kon herinnering niet sluiten:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:974
+#: ../src/libedataserverui/e-reminders-widget.c:981
 msgid "Failed to dismiss all:"
 msgstr "Kon alles niet sluiten:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1110
+#: ../src/libedataserverui/e-reminders-widget.c:1117
 msgid "Set a custom snooze time for"
 msgstr "Aangepaste sluimertijd instellen voor"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1123
+#: ../src/libedataserverui/e-reminders-widget.c:1130
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "da_gen"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1139
+#: ../src/libedataserverui/e-reminders-widget.c:1146
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "_uur"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1155
+#: ../src/libedataserverui/e-reminders-widget.c:1162
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "_minuten"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1161
+#: ../src/libedataserverui/e-reminders-widget.c:1168
 msgid "_Add Snooze time"
 msgstr "Sluimertijd _toevoegen"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1428
+#: ../src/libedataserverui/e-reminders-widget.c:1435
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "Afwijzen"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1429
+#: ../src/libedataserverui/e-reminders-widget.c:1436
 msgid "Dismiss _All"
 msgstr "_Alles sluiten"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1431
+#: ../src/libedataserverui/e-reminders-widget.c:1438
 msgid "_Snooze"
 msgstr "_Sluimeren"
 
@@ -7480,15 +7393,15 @@ msgctxt "WebDAVDiscover"
 msgid "Tasks"
 msgstr "Taken"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:838
+#: ../src/libedataserverui/e-webdav-discover-widget.c:839
 msgid "Invalid URL"
 msgstr "Ongeldige URL"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:883
+#: ../src/libedataserverui/e-webdav-discover-widget.c:885
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:886
+#: ../src/libedataserverui/e-webdav-discover-widget.c:888
 msgid "Searching server sources..."
 msgstr "Serverbronnen zoeken..."
 
@@ -7581,26 +7494,26 @@ msgstr ""
 "schakelen, 0 om uit te schakelen, en gelijk welke andere waarde om de "
 "compilatietijdoptie te gebruiken"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:227
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:255
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:760
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:969
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:232
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:260
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:773
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:982
 msgid "Reminders"
 msgstr "Herinneringen"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:367
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:372
 msgid "Warning"
 msgstr "Waarschuwing"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:368
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:373
 msgid "_No"
 msgstr "_Nee"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:369
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:374
 msgid "_Yes"
 msgstr "_Ja"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:373
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:378
 #, c-format
 msgid ""
 "A calendar reminder is about to trigger. This reminder is configured to run "
@@ -7617,31 +7530,31 @@ msgstr ""
 "\n"
 "Weet u zeker dat dit programma gestart moet worden?"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:387
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:392
 msgid "Do not ask me about this program again"
 msgstr "Dit bericht niet meer weergeven voor dit programma"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:665
-msgid "Display reminders in notification area _only"
-msgstr "Herinneringen alleen in het mededelingengebied t_onen"
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:678
+msgid "Display Reminders window with _notifications"
+msgstr "Herinneringen alleen in het mededelingengebied to_nen"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:666
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:679
 msgid "Keep reminder notification window always on _top"
 msgstr "Herinneringenvenster al_tijd bovenop houden"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:667
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:680
 msgid "Display reminders for _completed tasks"
 msgstr "Herinneringen weergeven voor _voltooide taken"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:668
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:681
 msgid "Display reminders for _past events"
 msgstr "Herinneringen weergeven voor afgelo_pen afspraken"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:682
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:695
 msgid "Reminders Options:"
 msgstr "Opties voor herinneringen:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:776
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
@@ -7899,6 +7812,60 @@ msgstr "Verbinden met bronregister is mislukt: %s\n"
 msgid "No sources had been found\n"
 msgstr "Er zijn geen bronnen gevonden\n"
 
+#~ msgid "Success"
+#~ msgstr "Succes"
+
+#~ msgid "Authentication Failed"
+#~ msgstr "Aanmelding mislukt"
+
+#~ msgid "Authentication Required"
+#~ msgstr "Aanmelden vereist"
+
+#~ msgid "Unsupported field"
+#~ msgstr "Veld niet ondersteund"
+
+#~ msgid "Address book does not exist"
+#~ msgstr "Adresboek bestaat niet"
+
+#~ msgid "Book removed"
+#~ msgstr "Boek verwijderd"
+
+#~ msgid "Not available in offline mode"
+#~ msgstr "Niet offline beschikbaar"
+
+#~ msgid "Invalid server version"
+#~ msgstr "Ongeldige serverversie"
+
+#~ msgid "Repository is offline"
+#~ msgstr "Repository is offline"
+
+#~ msgid "URI not loaded"
+#~ msgstr "URI niet geladen"
+
+#~ msgid "URI already loaded"
+#~ msgstr "URI is reeds geladen"
+
+#~ msgid "Unknown User"
+#~ msgstr "Onbekende gebruiker"
+
+#~ msgid "Protocol not supported"
+#~ msgstr "Protocol niet ondersteund"
+
+#~ msgid "Operation has been cancelled"
+#~ msgstr "Bewerking is geannuleerd"
+
+#~ msgid "Could not cancel operation"
+#~ msgstr "Kon de opdracht niet annuleren"
+
+#~ msgid "A D-Bus exception has occurred"
+#~ msgstr "Er is een D-Bus-fout opgetreden"
+
+#~ msgid "No error"
+#~ msgstr "Geen fout"
+
+#~ msgid "Calendar does not exist"
+#~ msgstr "Agenda bestaat niet"
+
 #~ msgid ""
 #~ "Invalid trace information:\n"
 #~ "%s"
@@ -8015,9 +7982,6 @@ msgstr "Er zijn geen bronnen gevonden\n"
 
 #~ msgid "Querying for updated groups…"
 #~ msgstr "Bijgewerkte groepen opvragen…"
-
-#~ msgid "The backend does not support bulk removals"
-#~ msgstr "De backend ondersteunt het verwijderen van bulk niet"
 
 #~ msgid "Loading…"
 #~ msgstr "Laden…"
