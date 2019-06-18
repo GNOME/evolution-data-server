@@ -192,43 +192,43 @@ static gboolean poll_ldap (gpointer user_data);
 static EContact *build_contact_from_entry (EBookBackendLDAP *bl, LDAPMessage *e, GList **existing_objectclasses, gchar **ldap_uid);
 
 static void email_populate (EContact *contact, gchar **values);
-static struct berval ** email_ber (EContact *contact);
+static struct berval ** email_ber (EContact *contact, GError **error);
 static gboolean email_compare (EContact *contact1, EContact *contact2);
 
 static void member_populate (EContact *contact, gchar **values);
-static struct berval ** member_ber (EContact *contact);
+static struct berval ** member_ber (EContact *contact, GError **error);
 static gboolean member_compare (EContact *contact1, EContact *contact2);
 
 static void homephone_populate (EContact *contact, gchar **values);
-static struct berval ** homephone_ber (EContact *contact);
+static struct berval ** homephone_ber (EContact *contact, GError **error);
 static gboolean homephone_compare (EContact *contact1, EContact *contact2);
 
 static void business_populate (EContact *contact, gchar **values);
-static struct berval ** business_ber (EContact *contact);
+static struct berval ** business_ber (EContact *contact, GError **error);
 static gboolean business_compare (EContact *contact1, EContact *contact2);
 
 static void anniversary_populate (EContact *contact, gchar **values);
-static struct berval ** anniversary_ber (EContact *contact);
+static struct berval ** anniversary_ber (EContact *contact, GError **error);
 static gboolean anniversary_compare (EContact *contact1, EContact *contact2);
 
 static void birthday_populate (EContact *contact, gchar **values);
-static struct berval ** birthday_ber (EContact *contact);
+static struct berval ** birthday_ber (EContact *contact, GError **error);
 static gboolean birthday_compare (EContact *contact1, EContact *contact2);
 
 static void category_populate (EContact *contact, gchar **values);
-static struct berval ** category_ber (EContact *contact);
+static struct berval ** category_ber (EContact *contact, GError **error);
 static gboolean category_compare (EContact *contact1, EContact *contact2);
 
 static void home_address_populate (EContact * card, gchar **values);
-static struct berval **home_address_ber (EContact * card);
+static struct berval **home_address_ber (EContact * card, GError **error);
 static gboolean home_address_compare (EContact * ecard1, EContact * ecard2);
 
 static void work_address_populate (EContact * card, gchar **values);
-static struct berval **work_address_ber (EContact * card);
+static struct berval **work_address_ber (EContact * card, GError **error);
 static gboolean work_address_compare (EContact * ecard1, EContact * ecard2);
 
 static void other_address_populate (EContact * card, gchar **values);
-static struct berval **other_address_ber (EContact * card);
+static struct berval **other_address_ber (EContact * card, GError **error);
 static gboolean other_address_compare (EContact * ecard1, EContact * ecard2);
 
 static void work_city_populate (EContact * card, gchar **values);
@@ -242,7 +242,7 @@ static void home_zip_populate (EContact * card, gchar **values);
 static void home_country_populate (EContact * card, gchar **values);
 
 static void photo_populate (EContact *contact, struct berval **ber_values);
-static struct berval **photo_ber (EContact * contact);
+static struct berval **photo_ber (EContact * contact, GError **error);
 static gboolean photo_compare (EContact * ecard1, EContact * ecard2);
 
 static void cert_populate (EContact *contact, struct berval **ber_values);
@@ -265,7 +265,7 @@ static struct prop_info {
 	/* used when reading from the ldap server populates EContact with the values in **values. */
 	void (*populate_contact_func)(EContact *contact, gchar **values);
 	/* used when writing to an ldap server.  returns a NULL terminated array of berval*'s */
-	struct berval ** (*ber_func)(EContact *contact);
+	struct berval ** (*ber_func)(EContact *contact, GError **error);
 	/* used to compare list attributes */
 	gboolean (*compare_func)(EContact *contact1, EContact *contact2);
 
@@ -1253,10 +1253,11 @@ free_mods (GPtrArray *mods)
 
 static GPtrArray *
 build_mods_from_contacts (EBookBackendLDAP *bl,
-                          EContact *current,
-                          EContact *new,
-                          gboolean *new_dn_needed,
-                          gchar *ldap_uid)
+			  EContact *current,
+			  EContact *new,
+			  gboolean *new_dn_needed,
+			  gchar *ldap_uid,
+			  GError **error)
 {
 	gboolean adding = (current == NULL), is_list = FALSE;
 	GPtrArray *result = g_ptr_array_new ();
@@ -1291,6 +1292,7 @@ build_mods_from_contacts (EBookBackendLDAP *bl,
 		struct berval ** new_prop_bers = NULL;
 		gchar *new_prop = NULL;
 		gchar *current_prop = NULL;
+		GError *local_error = NULL;
 
 		/* XXX if it's an evolutionPerson prop and the ldap
 		 * server doesn't support that objectclass, skip it. */
@@ -1321,7 +1323,7 @@ build_mods_from_contacts (EBookBackendLDAP *bl,
 			new_prop_present = (new_prop != NULL);
 		}
 		else {
-			new_prop_bers = prop_info[i].ber_func ? prop_info[i].ber_func (new) : NULL;
+			new_prop_bers = prop_info[i].ber_func ? prop_info[i].ber_func (new, &local_error) : NULL;
 			new_prop_present = (new_prop_bers != NULL);
 		}
 
@@ -1352,7 +1354,7 @@ build_mods_from_contacts (EBookBackendLDAP *bl,
 			}
 			else {
 				gint j;
-				struct berval **current_prop_bers = prop_info[i].ber_func ? prop_info[i].ber_func (current) : NULL;
+				struct berval **current_prop_bers = prop_info[i].ber_func ? prop_info[i].ber_func (current, &local_error) : NULL;
 
 				current_prop_present = (current_prop_bers != NULL);
 
@@ -1416,6 +1418,26 @@ build_mods_from_contacts (EBookBackendLDAP *bl,
 			}
 
 			g_ptr_array_add (result, mod);
+		} else {
+			g_free (new_prop);
+
+			if (new_prop_bers) {
+				gint jj;
+
+				for (jj = 0; new_prop_bers[jj]; jj++) {
+					g_free (new_prop_bers[jj]->bv_val);
+					g_free (new_prop_bers[jj]);
+				}
+
+				g_free (new_prop_bers);
+			}
+		}
+
+		g_free (current_prop);
+
+		if (local_error) {
+			g_propagate_error (error, local_error);
+			break;
 		}
 	}
 
@@ -1778,6 +1800,7 @@ modify_contact_search_handler (LDAPOp *op,
 		gchar *ldap_error_msg = NULL;
 		gint ldap_error;
 		gint new_dn_needed;
+		GError *local_error = NULL;
 
 		/* grab the result code, and set up the actual modify (or rename)
 		 * if it was successful */
@@ -1810,7 +1833,13 @@ modify_contact_search_handler (LDAPOp *op,
 		}
 
 		/* build our mods */
-		modify_op->mod_array = build_mods_from_contacts (bl, modify_op->current_contact, modify_op->contact, &new_dn_needed, NULL);
+		modify_op->mod_array = build_mods_from_contacts (bl, modify_op->current_contact, modify_op->contact, &new_dn_needed, NULL, &local_error);
+
+		if (local_error) {
+			e_data_book_respond_modify_contacts (op->book, op->opid, local_error, NULL);
+			ldap_op_finished (op);
+			return;
+		}
 
 		/* UID rename necessary? */
 		if (new_dn_needed) {
@@ -2493,7 +2522,8 @@ email_populate (EContact *contact,
 }
 
 static struct berval **
-email_ber (EContact *contact)
+email_ber (EContact *contact,
+	   GError **error)
 {
 	struct berval ** result;
 	const gchar *emails[4];
@@ -2593,11 +2623,12 @@ member_populate (EContact *contact,
 }
 
 static struct berval **
-member_ber (EContact *contact)
+member_ber (EContact *contact,
+	    GError **error)
 {
 	struct berval ** result;
 	GList *members, *l, *p;
-	gint i = 0, num = 0;
+	gint i = 0, num = 0, missing = 0;
 	gchar *dn;
 
 	if (!(e_contact_get (contact, E_CONTACT_IS_LIST)))
@@ -2605,13 +2636,17 @@ member_ber (EContact *contact)
 
 	members = e_contact_get_attributes (contact, E_CONTACT_EMAIL);
 	num = g_list_length (members);
-	if (num == 0)
+	if (num == 0) {
+		g_propagate_error (error, EC_ERROR_EX (E_CLIENT_ERROR_OTHER_ERROR, _("LDAP contact lists cannot be empty.")));
 		return NULL;
+	}
 
 	result = g_new (struct berval *, num + 1);
 
 	for (l = members; l != NULL; l = g_list_next (l)) {
 		EVCardAttribute *attr = l->data;
+
+		missing++;
 		dn = NULL;
 
 		for (p = e_vcard_attribute_get_params (attr); p; p = p->next) {
@@ -2626,6 +2661,8 @@ member_ber (EContact *contact)
 					result[i]->bv_val = g_strdup (dn);
 					result[i]->bv_len = strlen (dn);
 					i++;
+					missing--;
+					break;
 				}
 			}
 		}
@@ -2633,6 +2670,21 @@ member_ber (EContact *contact)
 	result[i] = NULL;
 
 	g_list_free_full (members, (GDestroyNotify) e_vcard_attribute_free);
+
+	if (missing) {
+		gchar *msg;
+
+		msg = g_strdup_printf (g_dngettext (GETTEXT_PACKAGE,
+			"Contact lists in LDAP address books require each member to be from the same LDAP address book,"
+			" but one member could not be recognized.",
+			"Contact lists in LDAP address books require each member to be from the same LDAP address book,"
+			" but %d members could not be recognized.",
+			missing), missing);
+
+		g_propagate_error (error, EC_ERROR_EX (E_CLIENT_ERROR_OTHER_ERROR, msg));
+
+		g_free (msg);
+	}
 
 	return result;
 }
@@ -2740,7 +2792,8 @@ homephone_populate (EContact *contact,
 }
 
 static struct berval **
-homephone_ber (EContact *contact)
+homephone_ber (EContact *contact,
+	       GError **error)
 {
 	struct berval ** result;
 	const gchar *homephones[3];
@@ -2810,7 +2863,8 @@ business_populate (EContact *contact,
 }
 
 static struct berval **
-business_ber (EContact *contact)
+business_ber (EContact *contact,
+	      GError **error)
 {
 	struct berval ** result;
 	const gchar *business_phones[3];
@@ -2880,7 +2934,8 @@ anniversary_populate (EContact *contact,
 }
 
 static struct berval **
-anniversary_ber (EContact *contact)
+anniversary_ber (EContact *contact,
+		 GError **error)
 {
 	EContactDate *dt;
 	struct berval ** result = NULL;
@@ -2935,7 +2990,8 @@ birthday_populate (EContact *contact,
 }
 
 static struct berval **
-birthday_ber (EContact *contact)
+birthday_ber (EContact *contact,
+	      GError **error)
 {
 	EContactDate *dt;
 	struct berval ** result = NULL;
@@ -2994,7 +3050,8 @@ category_populate (EContact *contact,
 }
 
 static struct berval **
-category_ber (EContact *contact)
+category_ber (EContact *contact,
+	      GError **error)
 {
 	struct berval ** result = NULL;
 	GList *categories;
@@ -3193,7 +3250,8 @@ other_address_populate (EContact *card,
 
 static struct berval **
 address_ber (EContact *card,
-             EContactField field)
+	     EContactField field,
+	     GError **error)
 {
 	struct berval **result = NULL;
 	gchar *address, *i;
@@ -3217,21 +3275,24 @@ address_ber (EContact *card,
 }
 
 static struct berval **
-home_address_ber (EContact *card)
+home_address_ber (EContact *card,
+		  GError **error)
 {
-	return address_ber (card, E_CONTACT_ADDRESS_LABEL_HOME);
+	return address_ber (card, E_CONTACT_ADDRESS_LABEL_HOME, error);
 }
 
 static struct berval **
-work_address_ber (EContact *card)
+work_address_ber (EContact *card,
+		  GError **error)
 {
-	return address_ber (card, E_CONTACT_ADDRESS_LABEL_WORK);
+	return address_ber (card, E_CONTACT_ADDRESS_LABEL_WORK, error);
 }
 
 static struct berval **
-other_address_ber (EContact *card)
+other_address_ber (EContact *card,
+		   GError **error)
 {
-	return address_ber (card, E_CONTACT_ADDRESS_LABEL_OTHER);
+	return address_ber (card, E_CONTACT_ADDRESS_LABEL_OTHER, error);
 }
 
 static gboolean
@@ -3290,7 +3351,8 @@ photo_populate (EContact *contact,
 }
 
 static struct berval **
-photo_ber (EContact *contact)
+photo_ber (EContact *contact,
+	   GError **error)
 {
 	struct berval **result = NULL;
 	EContactPhoto *photo;
@@ -5061,6 +5123,7 @@ book_backend_ldap_create_contacts (EBookBackend *backend,
 	gchar *new_uid;
 	const gchar *vcard;
 	gboolean is_list;
+	GError *local_error = NULL;
 
 	g_return_if_fail (vcards != NULL);
 
@@ -5106,8 +5169,15 @@ book_backend_ldap_create_contacts (EBookBackend *backend,
 	is_list = e_contact_get (create_op->new_contact, E_CONTACT_IS_LIST) != NULL;
 
 	/* build our mods */
-	mod_array = build_mods_from_contacts (bl, NULL, create_op->new_contact, NULL, is_list ? NULL : new_uid);
+	mod_array = build_mods_from_contacts (bl, NULL, create_op->new_contact, NULL, is_list ? NULL : new_uid, &local_error);
 	g_free (new_uid);
+
+	if (local_error) {
+		free_mods (mod_array);
+		e_data_book_respond_create_contacts (book, opid, local_error, NULL);
+		create_contact_dtor ((LDAPOp *) create_op);
+		return;
+	}
 
 	/* remove the NULL at the end */
 	g_ptr_array_remove (mod_array, NULL);
