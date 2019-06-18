@@ -1240,10 +1240,13 @@ free_mods (GPtrArray *mods)
 				g_free (mod->mod_bvalues[j]->bv_val);
 				g_free (mod->mod_bvalues[j]);
 			}
+			g_free (mod->mod_bvalues);
 		}
 		else if (mod->mod_values) {
-			for (j = 0; mod->mod_values[j]; j++)
+			for (j = 0; mod->mod_values[j]; j++) {
 				g_free (mod->mod_values[j]);
+			}
+			g_free (mod->mod_values);
 		}
 		g_free (mod);
 	}
@@ -2756,6 +2759,7 @@ member_compare (EContact *contact_new,
 									if (!g_ascii_strcasecmp (dn_new, dn_cur)) {
 										found = TRUE;
 										members_cur = g_list_remove (members_cur, attr_cur);
+										e_vcard_attribute_free (attr_cur);
 										goto next_member;
 									}
 								}
@@ -3931,6 +3935,7 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 	if (e_sexp_parse (sexp) == -1) {
 		g_warning ("%s: Error in parsing '%s': %s", G_STRFUNC, query, e_sexp_get_error (sexp));
 		g_object_unref (sexp);
+		g_list_free_full (data.list, g_free);
 		return NULL;
 	}
 
@@ -3968,7 +3973,7 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 		retval = NULL;
 	}
 
-	g_list_free (data.list);
+	g_list_free_full (data.list, g_free);
 	return retval;
 }
 
@@ -4107,7 +4112,6 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 							const gchar *grpattrs[3];
 							gint j, view_limit = -1, ldap_error, count;
 							EDataBookView *book_view;
-							LDAPMessage *result;
 							gchar **email_values, **cn_values, **member_info;
 
 							grpattrs[0] = "cn";
@@ -4128,6 +4132,8 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 								if (enable_debug)
 									printf ("value (dn) = %s \n", values[j]);
 								do {
+									LDAPMessage *result = NULL;
+
 									if (bl->priv->ldap) {
 										ldap_error = ldap_search_ext_s (bl->priv->ldap,
 											values[j],
@@ -4158,14 +4164,18 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 											ldap_value_free (email_values);
 										}
 										if (cn_values) {
+											gchar *old = *(member_info + j);
 											if (enable_debug)
 												printf ("cn = %s \n", cn_values[0]);
 											*(member_info + j) =
 												g_strconcat (
-													*(member_info + j),
+													old,
 													cn_values[0], NULL);
 											ldap_value_free (cn_values);
+											g_free (old);
 										}
+
+										ldap_msgfree (result);
 									}
 								}
 								while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
