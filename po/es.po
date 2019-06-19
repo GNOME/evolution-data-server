@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2019-06-04 20:01+0000\n"
-"PO-Revision-Date: 2019-06-11 12:48+0200\n"
+"POT-Creation-Date: 2019-06-18 14:26+0000\n"
+"PO-Revision-Date: 2019-06-19 09:30+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: es <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -37,7 +37,7 @@ msgstr ""
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:280
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1154
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4312
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4372
 #: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
 #: ../src/addressbook/libebook/e-book.c:1075
@@ -52,7 +52,7 @@ msgstr ""
 #: ../src/addressbook/libebook/e-book-client.c:3466
 #: ../src/addressbook/libebook/e-book-client.c:3684
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:878
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:263
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:264
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:292
 #: ../src/calendar/backends/http/e-cal-backend-http.c:249
 #: ../src/calendar/libecal/e-cal-client.c:260
@@ -92,12 +92,12 @@ msgid "Unknown error"
 msgstr "Error desconocido"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1038
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1194
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1195
 msgid "Server didn’t return object’s href"
 msgstr "El servidor no ha devuelto el href del objeto"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1040
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1196
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1197
 msgid "Server didn’t return object’s ETag"
 msgstr "El servidor no ha devuelto el ETag del objeto"
 
@@ -148,7 +148,7 @@ msgid "Loading..."
 msgstr "Cargando…"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:993
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4421
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4481
 msgid "Searching..."
 msgstr "Buscando…"
 
@@ -240,64 +240,85 @@ msgid "Invalid DN syntax"
 msgstr "Sintáxis de ND no válida"
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1151
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4311
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4371
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "Error de LDAP 0x%x (%s)"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1766
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2108
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2121
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1788
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2137
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2150
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: ldap_first_entry devolvió NULL"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2036
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2180
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2065
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2209
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: devuelto tipo de resultado %d no manejado"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2325
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2463
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2352
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2490
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: devuelto tipo de resultado de búsqueda %d no manejado"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4250
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2640
+msgid "LDAP contact lists cannot be empty."
+msgstr "La lista de contactos de LDAP no puede estar vacía."
+
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2678
+#, c-format
+msgid ""
+"Contact lists in LDAP address books require each member to be from the same "
+"LDAP address book, but one member could not be recognized."
+msgid_plural ""
+"Contact lists in LDAP address books require each member to be from the same "
+"LDAP address book, but %d members could not be recognized."
+msgstr[0] ""
+"La lista de contactos en la libreta de direcciones de LDAP requiere que cada "
+"miembro provenga de la misma libreta de direcciones LDAP, pero hay un "
+"miembro que no se ha podido reconocer."
+msgstr[1] ""
+"La lista de contactos en la libreta de direcciones de LDAP requiere que cada "
+"miembro provenga de la misma libreta de direcciones LDAP, pero hay %d "
+"miembros que no se han podido reconocer."
+
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4310
 msgid "Receiving LDAP search results..."
 msgstr "Recibiendo los resultados de la búsqueda LDAP…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4447
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4507
 msgid "Error performing search"
 msgstr "Error efectuando búsqueda"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4587
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4647
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Descargando contactos (%d)…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5077
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5138
 msgid "The backend does not support bulk additions"
 msgstr "El «backend» no soporta adiciones"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5161
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5229
 msgid "Adding contact to LDAP server..."
 msgstr "Añadiendo contacto al servidor LDAP…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5223
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5291
 msgid "The backend does not support bulk modifications"
 msgstr "El «backend» no soporta modificaciones"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5245
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5313
 msgid "Modifying contact from LDAP server..."
 msgstr "Modificando contacto del servidor LDAP…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5317
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5385
 msgid "Removing contact from LDAP server..."
 msgstr "Eliminando contacto del servidor LDAP…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5727
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5795
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "Falló al obtener el DN para el usuario «%s»"
@@ -968,7 +989,6 @@ msgstr "Cliente desaparecido"
 
 #: ../src/addressbook/libedata-book/e-book-backend.c:3160
 #, c-format
-#| msgid "The backend does not support bulk removals"
 msgid "Addressbook backend does not support cursors"
 msgstr "El «backend» de la libreta de direcciones no soporta cursores"
 
@@ -1271,12 +1291,12 @@ msgstr ""
 "Se ha establecido el índice alfabético para la configuración regional "
 "incorrecta"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:206
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:207
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "El URL «%s» dado no hace referencia a un calendario CalDAV"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1325
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1326
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. Remove it, please."
@@ -1284,7 +1304,7 @@ msgstr ""
 "Falta información sobre el componente URL, es probable que la caché local "
 "esté rota o incompleta. Elimínela."
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1801
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1802
 msgid "Failed to parse response data"
 msgstr "Falló al analizar los datos de la respuesta"
 
@@ -1303,7 +1323,6 @@ msgid "Anniversary: %s"
 msgstr "Aniversario: %s"
 
 #: ../src/calendar/backends/file/e-cal-backend-file.c:47
-#| msgid "Cannot get contact: "
 msgid "Cannot get URI"
 msgstr "No se puede obtener el URI"
 
@@ -1319,7 +1338,6 @@ msgstr "No se pueden guardar los datos del calendario"
 #: ../src/calendar/backends/file/e-cal-backend-file.c:1171
 #: ../src/calendar/backends/file/e-cal-backend-file.c:1300
 #, c-format
-#| msgid "Cannot get folder “%s”: %s"
 msgid "Cannot parse ISC file “%s”"
 msgstr "No se puede analizar el archivo ISC «%s»"
 
@@ -1430,7 +1448,6 @@ msgid "Could not create cache file"
 msgstr "No se pudo crear el archivo de caché"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:688
-#| msgid "Could not create cache file"
 msgid "Could not create cache file: "
 msgstr "No se pudo crear el archivo de caché: "
 
@@ -2362,14 +2379,14 @@ msgid_plural "%d seconds"
 msgstr[0] "%d segundo"
 msgstr[1] "%d segundos"
 
-#: ../src/calendar/libecal/e-reminder-watcher.c:2706
+#: ../src/calendar/libecal/e-reminder-watcher.c:2701
 msgid "No Summary"
 msgstr "Sin resumen"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2722
+#: ../src/calendar/libecal/e-reminder-watcher.c:2717
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
@@ -2378,7 +2395,7 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2727
+#: ../src/calendar/libecal/e-reminder-watcher.c:2722
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
@@ -2387,7 +2404,7 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2732
+#: ../src/calendar/libecal/e-reminder-watcher.c:2727
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
@@ -3042,9 +3059,9 @@ msgstr "Falló al ejecutar gpg."
 
 #: ../src/camel/camel-gpg-context.c:2331 ../src/camel/camel-gpg-context.c:2339
 #: ../src/camel/camel-gpg-context.c:2347 ../src/camel/camel-gpg-context.c:2367
-#: ../src/camel/camel-smime-context.c:1002
-#: ../src/camel/camel-smime-context.c:1016
-#: ../src/camel/camel-smime-context.c:1025
+#: ../src/camel/camel-smime-context.c:1004
+#: ../src/camel/camel-smime-context.c:1018
+#: ../src/camel/camel-smime-context.c:1030
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr ""
@@ -3084,7 +3101,7 @@ msgid "GPG blob contains unencrypted text: %s"
 msgstr "Blob GPG contiene texto sin cifrar: %s"
 
 #: ../src/camel/camel-gpg-context.c:2833
-#: ../src/camel/camel-smime-context.c:1545
+#: ../src/camel/camel-smime-context.c:1550
 msgid "Encrypted content"
 msgstr "Contenido cifrado"
 
@@ -3280,7 +3297,7 @@ msgid "Copy folder content locally for _offline operation"
 msgstr ""
 "Copiar el contenido de la carpeta localmente para _operación desconectada"
 
-#: ../src/camel/camel-offline-store.c:302
+#: ../src/camel/camel-offline-store.c:312
 #, c-format
 msgid "Syncing messages in account “%s” to disk"
 msgstr "Sincronizando mensajes de la cuenta «%s» al disco"
@@ -3777,7 +3794,7 @@ msgid "Signer: %s <%s>: %s\n"
 msgstr "Firmante: %s <%s>: %s\n"
 
 #: ../src/camel/camel-smime-context.c:885
-#: ../src/camel/camel-smime-context.c:1402
+#: ../src/camel/camel-smime-context.c:1407
 msgid "Cannot create encoder context"
 msgstr "No se pudo crear un contexto de codificación"
 
@@ -3786,57 +3803,57 @@ msgid "Failed to add data to CMS encoder"
 msgstr "Falló al añadir datos al codificador CMS"
 
 #: ../src/camel/camel-smime-context.c:896
-#: ../src/camel/camel-smime-context.c:1419
+#: ../src/camel/camel-smime-context.c:1424
 msgid "Failed to encode data"
 msgstr "Falló al codificar datos"
 
-#: ../src/camel/camel-smime-context.c:1044
-#: ../src/camel/camel-smime-context.c:1520
+#: ../src/camel/camel-smime-context.c:1049
+#: ../src/camel/camel-smime-context.c:1525
 msgid "Decoder failed"
 msgstr "La decodificación ha fallado"
 
-#: ../src/camel/camel-smime-context.c:1296
+#: ../src/camel/camel-smime-context.c:1301
 #, c-format
 msgid "No valid or appropriate certificate for “%s” was found"
 msgstr "No se ha encontrado un certificado válido o apropiado para «%s»"
 
-#: ../src/camel/camel-smime-context.c:1336
+#: ../src/camel/camel-smime-context.c:1341
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "No se puede encontrar un algoritmo de cifrado común"
 
-#: ../src/camel/camel-smime-context.c:1344
+#: ../src/camel/camel-smime-context.c:1349
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "No se puede reservar una ranura para la clave de cifrado"
 
-#: ../src/camel/camel-smime-context.c:1355
+#: ../src/camel/camel-smime-context.c:1360
 msgid "Cannot create CMS Message"
 msgstr "No se pudo crear el mensaje CMS"
 
-#: ../src/camel/camel-smime-context.c:1361
+#: ../src/camel/camel-smime-context.c:1366
 msgid "Cannot create CMS Enveloped data"
 msgstr "No se puede crear la envoltura de datos CMS"
 
-#: ../src/camel/camel-smime-context.c:1367
+#: ../src/camel/camel-smime-context.c:1372
 msgid "Cannot attach CMS Enveloped data"
 msgstr "No se puede adjuntar los datos envueltos CMS"
 
-#: ../src/camel/camel-smime-context.c:1373
+#: ../src/camel/camel-smime-context.c:1378
 msgid "Cannot attach CMS data object"
 msgstr "No se puede adjuntar el objeto de datos CMS"
 
-#: ../src/camel/camel-smime-context.c:1382
+#: ../src/camel/camel-smime-context.c:1387
 msgid "Cannot create CMS Recipient information"
 msgstr "No se puede crear información del destinatario CMS"
 
-#: ../src/camel/camel-smime-context.c:1387
+#: ../src/camel/camel-smime-context.c:1392
 msgid "Cannot add CMS Recipient information"
 msgstr "No se puede añadir la información del destinatario CMS"
 
-#: ../src/camel/camel-smime-context.c:1413
+#: ../src/camel/camel-smime-context.c:1418
 msgid "Failed to add data to encoder"
 msgstr "Falló al añadir datos al codificador"
 
-#: ../src/camel/camel-smime-context.c:1527
+#: ../src/camel/camel-smime-context.c:1532
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "Descifrado S/MIME: No se ha encontrado contenido cifrado"
 
