@@ -28,6 +28,7 @@
 #include "camel-offline-store.h"
 #include "camel-operation.h"
 #include "camel-session.h"
+#include "camel-string-utils.h"
 #include "camel-utils.h"
 
 #define CAMEL_OFFLINE_FOLDER_GET_PRIVATE(obj) \
@@ -43,6 +44,9 @@ struct _CamelOfflineFolderPrivate {
 	GMutex store_changes_lock;
 	guint store_changes_id;
 	gboolean store_changes_after_frozen;
+
+	GMutex ongoing_downloads_lock;
+	GHashTable *ongoing_downloads; /* gchar * UID ~> g_thread_self() */
 };
 
 struct _AsyncContext {
@@ -69,6 +73,60 @@ async_context_free (AsyncContext *async_context)
 	g_free (async_context->expression);
 
 	g_slice_free (AsyncContext, async_context);
+}
+
+static gboolean
+offline_folder_synchronize_message_wrapper_sync (CamelFolder *folder,
+						 const gchar *uid,
+						 GCancellable *cancellable,
+						 GError **error)
+{
+	CamelOfflineFolder *offline_folder;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_OFFLINE_FOLDER (folder), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	offline_folder = CAMEL_OFFLINE_FOLDER (folder);
+
+	g_mutex_lock (&offline_folder->priv->ongoing_downloads_lock);
+	/* Another thread is downloading this message already, do not wait for it,
+	   just move on to the next one. In case the previous/ongoing download
+	   fails the message won't be downloaded. */
+	if (g_hash_table_contains (offline_folder->priv->ongoing_downloads, uid)) {
+		if (camel_debug ("downsync")) {
+			printf ("[downsync]          %p: (%s : %s): skipping uid '%s', because it is already downloading by thread %p (this thread is %p)\n", camel_folder_get_parent_store (folder),
+				camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))), camel_folder_get_full_name (folder),
+				uid, g_hash_table_lookup (offline_folder->priv->ongoing_downloads, uid), g_thread_self ());
+		}
+		g_mutex_unlock (&offline_folder->priv->ongoing_downloads_lock);
+		return TRUE;
+	} else {
+		g_hash_table_insert (offline_folder->priv->ongoing_downloads, (gpointer) camel_pstring_strdup (uid), g_thread_self ());
+	}
+
+	if (camel_debug ("downsync")) {
+		printf ("[downsync]          %p: (%s : %s): going to download uid '%s' in thread %p\n", camel_folder_get_parent_store (folder),
+			camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))), camel_folder_get_full_name (folder),
+			uid, g_thread_self ());
+	}
+
+	g_mutex_unlock (&offline_folder->priv->ongoing_downloads_lock);
+
+	success = camel_folder_synchronize_message_sync (folder, uid, cancellable, error);
+
+	g_mutex_lock (&offline_folder->priv->ongoing_downloads_lock);
+	g_warn_if_fail (g_hash_table_remove (offline_folder->priv->ongoing_downloads, uid));
+
+	if (camel_debug ("downsync")) {
+		printf ("[downsync]          %p: (%s : %s): finished download of uid '%s' in thread %p, %s\n", camel_folder_get_parent_store (folder),
+			camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))), camel_folder_get_full_name (folder),
+			uid, g_thread_self (), success ? "success" : "failure");
+	}
+
+	g_mutex_unlock (&offline_folder->priv->ongoing_downloads_lock);
+
+	return success;
 }
 
 static void
@@ -160,7 +218,7 @@ offline_folder_downsync_background (CamelSession *session,
 					continue;
 			}
 
-			success = camel_folder_synchronize_message_sync (
+			success = offline_folder_synchronize_message_wrapper_sync (
 				data->folder, uid, cancellable, error);
 		}
 	} else {
@@ -386,6 +444,9 @@ offline_folder_finalize (GObject *object)
 	CamelOfflineFolder *offline_folder = CAMEL_OFFLINE_FOLDER (object);
 
 	g_mutex_clear (&offline_folder->priv->store_changes_lock);
+	g_mutex_clear (&offline_folder->priv->ongoing_downloads_lock);
+
+	g_hash_table_destroy (offline_folder->priv->ongoing_downloads);
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (camel_offline_folder_parent_class)->finalize (object);
@@ -530,7 +591,7 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 				camel_folder_get_full_name (folder));
 
 			/* Stop on failure */
-			if (!camel_folder_synchronize_message_sync (folder, uid, cancellable, &local_error)) {
+			if (!offline_folder_synchronize_message_wrapper_sync (folder, uid, cancellable, &local_error)) {
 				if (camel_debug ("downsync")) {
 					printf ("[downsync]          %p: (%s : %s): aborting, failed to download uid:%s error:%s\n", camel_folder_get_parent_store (folder),
 						camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))), camel_folder_get_full_name (folder),
@@ -539,10 +600,6 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 				g_clear_error (&local_error);
 				camel_operation_pop_message (cancellable);
 				break;
-			} else if (camel_debug ("downsync")) {
-				printf ("[downsync]          %p: (%s : %s): uid '%s' downloaded\n", camel_folder_get_parent_store (folder),
-					camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))), camel_folder_get_full_name (folder),
-					uid);
 			}
 
 			camel_operation_pop_message (cancellable);
@@ -603,8 +660,10 @@ camel_offline_folder_init (CamelOfflineFolder *folder)
 	folder->priv = CAMEL_OFFLINE_FOLDER_GET_PRIVATE (folder);
 
 	g_mutex_init (&folder->priv->store_changes_lock);
+	g_mutex_init (&folder->priv->ongoing_downloads_lock);
 	folder->priv->store_changes_after_frozen = FALSE;
 	folder->priv->offline_sync = CAMEL_THREE_STATE_INCONSISTENT;
+	folder->priv->ongoing_downloads = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
 
 	g_signal_connect (
 		folder, "changed",
