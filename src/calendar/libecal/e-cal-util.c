@@ -120,6 +120,15 @@ e_cal_util_copy_timezone (const ICalTimezone *zone)
 	if (!zone_copy)
 		return NULL;
 
+	/* If the original component is one of the built-in, then libcal
+	   loads it during the i_cal_timezone_get_component() call and
+	   assigns a component to it. */
+	comp = i_cal_timezone_get_component (zone_copy);
+	if (comp) {
+		g_object_unref (comp);
+		return zone_copy;
+	}
+
 	comp = i_cal_timezone_get_component (zone);
 	if (comp) {
 		ICalComponent *comp_copy;
