@@ -155,12 +155,7 @@ offline_store_notify (GObject *object,
 		g_object_notify (object, "online");
 	else if (g_strcmp0 (pspec->name, "connection-status") == 0 &&
 		 camel_service_get_connection_status (CAMEL_SERVICE (object)) == CAMEL_SERVICE_DISCONNECTED) {
-		CamelOfflineStore *store = CAMEL_OFFLINE_STORE (object);
-
-		if (store->priv->online) {
-			store->priv->online = FALSE;
-			g_object_notify (object, "online");
-		}
+		g_object_notify (object, "online");
 	}
 
 	/* Chain up to parent's notify() method. */
@@ -253,8 +248,10 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 
 	g_return_val_if_fail (CAMEL_IS_OFFLINE_STORE (store), FALSE);
 
-	if (camel_offline_store_get_online (store) == online)
+	if (camel_offline_store_get_online (store) == online && (!online ||
+	    camel_service_get_connection_status (CAMEL_SERVICE (store)) == CAMEL_SERVICE_CONNECTED)) {
 		return TRUE;
+	}
 
 	service = CAMEL_SERVICE (store);
 
@@ -273,7 +270,8 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 				CAMEL_NETWORK_SERVICE (store));
 	}
 
-	store_is_online = camel_offline_store_get_online (store);
+	store_is_online = camel_offline_store_get_online (store) &&
+		camel_service_get_connection_status (service) == CAMEL_SERVICE_CONNECTED;
 
 	/* Returning to online mode is the simpler case. */
 	if (!store_is_online) {
