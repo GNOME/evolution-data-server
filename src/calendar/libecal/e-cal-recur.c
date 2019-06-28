@@ -700,7 +700,7 @@ e_cal_recur_generate_instances_sync (ICalComponent *icalcomp,
 
 		for (prop = i_cal_component_get_first_property (icalcomp, I_CAL_EXDATE_PROPERTY);
 		     prop && success;
-		     prop = i_cal_component_get_next_property (icalcomp, I_CAL_EXDATE_PROPERTY)) {
+		     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, I_CAL_EXDATE_PROPERTY)) {
 			ICalTime *exdate = i_cal_property_get_exdate (prop);
 
 			if (exdate || i_cal_time_is_null_time (exdate)) {
