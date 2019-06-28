@@ -1917,11 +1917,11 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 			}
 
 			if (split_icomp) {
-				gchar *new_uid;
+				gchar *split_uid;
 
-				new_uid = e_util_generate_uid ();
-				i_cal_component_set_uid (split_icomp, new_uid);
-				g_free (new_uid);
+				split_uid = e_util_generate_uid ();
+				i_cal_component_set_uid (split_icomp, split_uid);
+				g_free (split_uid);
 
 				g_warn_if_fail (e_cal_component_set_icalcomponent (comp, split_icomp));
 
@@ -1971,8 +1971,9 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 		*out_old_comp = old_comp;
 	if (out_new_comp) {
 		if (new_uid) {
-			if (!e_cal_cache_get_component (cal_cache, new_uid, e_cal_component_id_get_rid (id), out_new_comp, cancellable, NULL))
-				*out_new_comp = NULL;
+			if (!e_cal_cache_get_component (cal_cache, new_uid, e_cal_component_id_get_rid (id), out_new_comp, cancellable, NULL) &&
+			    !e_cal_cache_get_component (cal_cache, new_uid, NULL, out_new_comp, cancellable, NULL))
+				*out_new_comp = new_comp ? g_object_ref (new_comp) : NULL;
 		} else {
 			*out_new_comp = new_comp ? g_object_ref (new_comp) : NULL;
 		}
