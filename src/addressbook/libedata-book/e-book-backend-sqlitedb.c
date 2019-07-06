@@ -3846,8 +3846,7 @@ convert_match_exp (struct _ESExp *f,
 					g_free (query_term);
 				}
 
-				str = names->str;
-				g_string_free (names, FALSE);
+				str = g_string_free (names, FALSE);
 
 			} else {
 				const gchar *const region =

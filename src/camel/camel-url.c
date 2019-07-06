@@ -342,7 +342,6 @@ camel_url_to_string (CamelURL *url,
                      CamelURLFlags flags)
 {
 	GString *str;
-	gchar *return_result;
 
 	g_return_val_if_fail (url != NULL, NULL);
 
@@ -390,10 +389,7 @@ camel_url_to_string (CamelURL *url,
 		append_url_encoded (str, url->fragment, NULL);
 	}
 
-	return_result = str->str;
-	g_string_free (str, FALSE);
-
-	return return_result;
+	return g_string_free (str, FALSE);
 }
 
 static void
@@ -664,16 +660,13 @@ camel_url_encode (const gchar *part,
                   const gchar *escape_extra)
 {
 	GString *str;
-	gchar *encoded;
 
 	g_return_val_if_fail (part != NULL, NULL);
 
 	str = g_string_new (NULL);
 	append_url_encoded (str, part, escape_extra);
-	encoded = str->str;
-	g_string_free (str, FALSE);
 
-	return encoded;
+	return g_string_free (str, FALSE);
 }
 
 /**

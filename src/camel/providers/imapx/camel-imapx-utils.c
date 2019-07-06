@@ -3524,7 +3524,7 @@ imapx_path_to_physical (const gchar *prefix,
 {
 	GString *out = g_string_new (prefix);
 	const gchar *p = vpath;
-	gchar c, *res;
+	gchar c;
 
 	g_string_append_c (out, '/');
 	p = vpath;
@@ -3537,10 +3537,7 @@ imapx_path_to_physical (const gchar *prefix,
 			g_string_append_c (out, c);
 	}
 
-	res = out->str;
-	g_string_free (out, FALSE);
-
-	return res;
+	return g_string_free (out, FALSE);
 }
 
 gchar *
