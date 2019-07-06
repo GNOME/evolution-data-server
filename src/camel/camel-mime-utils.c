@@ -2981,7 +2981,7 @@ header_decode_address (const gchar **in,
 	header_decode_lwsp (&inptr);
 	while ((pre = header_decode_word (&inptr))) {
 		group = g_string_append (group, pre);
-		group = g_string_append (group, " ");
+		group = g_string_append_c (group, ' ');
 		g_free (pre);
 	}
 	header_decode_lwsp (&inptr);

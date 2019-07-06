@@ -289,7 +289,7 @@ e_trust_prompt_describe_certificate_errors (GTlsCertificateFlags flags)
 	for (ii = 0; ii < G_N_ELEMENTS (convert_table); ii++) {
 		if ((flags & convert_table[ii].flag) != 0) {
 			if (reason->len > 0)
-				g_string_append (reason, "\n");
+				g_string_append_c (reason, '\n');
 
 			g_string_append (reason, _(convert_table[ii].description));
 		}

@@ -909,7 +909,7 @@ reminders_widget_row_activated_cb (GtkTreeView *tree_view,
 					g_string_append (uri, tmp);
 					g_free (tmp);
 
-					g_string_append (uri, "&");
+					g_string_append_c (uri, '&');
 
 					tmp = g_uri_escape_string (comp_uid, NULL, TRUE);
 					g_string_append (uri, "comp-uid=");

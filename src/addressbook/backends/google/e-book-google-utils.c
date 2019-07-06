@@ -318,7 +318,7 @@ gdata_entry_update_from_e_contact (GDataEntry *entry,
 				gchar *escaped = e_vcard_escape_string (l->data);
 				g_string_append (value, escaped);
 				if (l->next != NULL)
-					g_string_append (value, ",");
+					g_string_append_c (value, ',');
 				g_free (escaped);
 			}
 			multi_name = g_strconcat (name, MULTIVALUE_ATTRIBUTE_SUFFIX, NULL);

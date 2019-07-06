@@ -326,7 +326,7 @@ message_info_save (const CamelMessageInfo *mi,
 			g_string_append_printf (tmp, " %lu %lu", (gulong) message_id.id.part.hi, (gulong) message_id.id.part.lo);
 		}
 	} else {
-		g_string_append (tmp, "0");
+		g_string_append_c (tmp, '0');
 	}
 	record->part = g_string_free (tmp, FALSE);
 
@@ -341,7 +341,7 @@ message_info_save (const CamelMessageInfo *mi,
 
 			if (name && *name) {
 				if (tmp->len)
-					g_string_append (tmp, " ");
+					g_string_append_c (tmp, ' ');
 				g_string_append (tmp, name);
 			}
 		}
@@ -369,7 +369,7 @@ message_info_save (const CamelMessageInfo *mi,
 			}
 		}
 	} else {
-		g_string_append (tmp, "0");
+		g_string_append_c (tmp, '0');
 	}
 	record->usertags = g_string_free (tmp, FALSE);
 

@@ -2052,7 +2052,7 @@ ecb_caldav_get_backend_property (ECalBackend *backend,
 			E_CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED ","
 			E_CAL_STATIC_CAPABILITY_TASK_CAN_RECUR ","
 			E_CAL_STATIC_CAPABILITY_COMPONENT_COLOR);
-		g_string_append (caps, ",");
+		g_string_append_c (caps, ',');
 		g_string_append (caps, e_cal_meta_backend_get_capabilities (E_CAL_META_BACKEND (backend)));
 
 		usermail = ecb_caldav_get_usermail (cbdav);

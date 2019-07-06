@@ -707,7 +707,7 @@ e_credentials_util_prompt_flags_to_string (guint prompt_flags)
 			continue;
 
 		if (str->len)
-			g_string_append (str, ",");
+			g_string_append_c (str, ',');
 
 		g_string_append (str, add);
 	}

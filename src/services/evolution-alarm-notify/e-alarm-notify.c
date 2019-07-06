@@ -184,19 +184,19 @@ e_alarm_notify_build_notif_id (const EReminderData *rd)
 
 	if (e_reminder_data_get_source_uid (rd)) {
 		g_string_append (string, e_reminder_data_get_source_uid (rd));
-		g_string_append (string, "\n");
+		g_string_append_c (string, '\n');
 	}
 
 	id = e_cal_component_get_id (e_reminder_data_get_component (rd));
 	if (id) {
 		if (e_cal_component_id_get_uid (id)) {
 			g_string_append (string, e_cal_component_id_get_uid (id));
-			g_string_append (string, "\n");
+			g_string_append_c (string, '\n');
 		}
 
 		if (e_cal_component_id_get_rid (id)) {
 			g_string_append (string, e_cal_component_id_get_rid (id));
-			g_string_append (string, "\n");
+			g_string_append_c (string, '\n');
 		}
 
 		e_cal_component_id_free (id);

@@ -246,16 +246,16 @@ ffe_finish_and_or_not (GString *sexp)
 		} else if (g_str_has_suffix (sexp->str + sexp->len - 4, "(or ")) {
 			g_string_truncate (sexp, sexp->len - 4);
 		} else {
-			g_string_append (sexp, ")");
+			g_string_append_c (sexp, ')');
 		}
 	} else if (sexp->len == 4) {
 		if (g_str_has_suffix (sexp->str + sexp->len - 4, "(or ")) {
 			g_string_truncate (sexp, sexp->len - 4);
 		} else {
-			g_string_append (sexp, ")");
+			g_string_append_c (sexp, ')');
 		}
 	} else {
-		g_string_append (sexp, ")");
+		g_string_append_c (sexp, ')');
 	}
 }
 
@@ -336,7 +336,7 @@ e_free_form_exp_to_sexp (const gchar *free_form_exp,
 
 	if (sexp) {
 		g_string_prepend (sexp, "(and ");
-		g_string_append (sexp, ")");
+		g_string_append_c (sexp, ')');
 	}
 
 	return sexp ? g_string_free (sexp, FALSE) : NULL;

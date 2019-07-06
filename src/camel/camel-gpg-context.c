@@ -985,9 +985,9 @@ gpg_ctx_extract_signer_from_status (struct _GpgCtx *gpg,
 		}
 
 		if (eml) {
-			g_string_append (gpg->signers, "\"");
+			g_string_append_c (gpg->signers, '\"');
 			g_string_append_len (gpg->signers, str, eml - str);
-			g_string_append (gpg->signers, "\"");
+			g_string_append_c (gpg->signers, '\"');
 			g_string_append (gpg->signers, eml);
 		} else {
 			g_string_append (gpg->signers, str);

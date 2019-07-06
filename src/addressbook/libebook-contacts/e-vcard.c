@@ -911,7 +911,7 @@ e_vcard_escape_semicolons (const gchar *s)
 
 	for (p = s; p && *p; p++) {
 		if (*p == ';')
-			g_string_append (str, "\\");
+			g_string_append_c (str, '\\');
 
 		g_string_append_c (str, *p);
 	}

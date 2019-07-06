@@ -2959,7 +2959,7 @@ e_source_registry_dup_unique_display_name (ESourceRegistry *registry,
 		}
 
 		if (list != NULL)
-			g_string_append (buffer, ")");
+			g_string_append_c (buffer, ')');
 
 		g_list_free_full (list, (GDestroyNotify) g_object_unref);
 	}

@@ -904,7 +904,7 @@ camel_search_get_headers_decoded (const CamelNameValueArray *headers,
 
 		g_string_append (str, header_name);
 		if (isspace (content[0]))
-			g_string_append (str, ":");
+			g_string_append_c (str, ':');
 		else
 			g_string_append (str, ": ");
 		g_string_append (str, content);
