@@ -564,8 +564,7 @@ term_eval_plus (ESExp *sexp,
 				e_sexp_fatal_error (sexp, "Invalid types in (+ strings)");
 			}
 			r = e_sexp_result_new (sexp, ESEXP_RES_STRING);
-			r->value.string = s->str;
-			g_string_free (s, FALSE);
+			r->value.string = g_string_free (s, FALSE);
 			break; }
 		case ESEXP_RES_TIME: {
 			time_t total;

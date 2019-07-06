@@ -65,7 +65,6 @@ nntp_address_encode (CamelAddress *address)
 	CamelNNTPAddress *nntp_addr = CAMEL_NNTP_ADDRESS (address);
 	gint i;
 	GString *out;
-	gchar *ret;
 
 	if (nntp_addr->priv->addresses->len == 0)
 		return NULL;
@@ -79,10 +78,7 @@ nntp_address_encode (CamelAddress *address)
 		g_string_append (out, g_ptr_array_index (nntp_addr->priv->addresses, i));
 	}
 
-	ret = out->str;
-	g_string_free (out, FALSE);
-
-	return ret;
+	return g_string_free (out, FALSE);
 }
 
 static gint
