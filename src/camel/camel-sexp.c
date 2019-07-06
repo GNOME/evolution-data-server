@@ -604,8 +604,7 @@ term_eval_plus (CamelSExp *sexp,
 				camel_sexp_fatal_error (sexp, "Invalid types in (+ strings)");
 			}
 			result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_STRING);
-			result->value.string = string->str;
-			g_string_free (string, FALSE);
+			result->value.string = g_string_free (string, FALSE);
 			break; }
 		case CAMEL_SEXP_RES_TIME: {
 			time_t total;

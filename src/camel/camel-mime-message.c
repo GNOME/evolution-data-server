@@ -1267,7 +1267,6 @@ camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 {
 	const CamelNameValueArray *headers;
 	GString *out = g_string_new ("From ");
-	gchar *ret;
 	const gchar *tmp;
 	time_t thetime;
 	gint offset;
@@ -1318,10 +1317,7 @@ camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 		tm.tm_sec,
 		tm.tm_year + 1900);
 
-	ret = out->str;
-	g_string_free (out, FALSE);
-
-	return ret;
+	return g_string_free (out, FALSE);
 }
 
 static gboolean

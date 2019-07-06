@@ -83,7 +83,6 @@ internet_address_encode (CamelAddress *paddr)
 	CamelInternetAddress *inet_addr = CAMEL_INTERNET_ADDRESS (paddr);
 	gint i;
 	GString *out;
-	gchar *ret;
 	gint len = 6;		/* "From: ", assume longer of the address headers */
 
 	if (inet_addr->priv->addresses->len == 0)
@@ -103,10 +102,7 @@ internet_address_encode (CamelAddress *paddr)
 		g_free (enc);
 	}
 
-	ret = out->str;
-	g_string_free (out, FALSE);
-
-	return ret;
+	return g_string_free (out, FALSE);
 }
 
 static gint
@@ -183,7 +179,6 @@ internet_address_format (CamelAddress *paddr)
 	CamelInternetAddress *inet_addr = CAMEL_INTERNET_ADDRESS (paddr);
 	gint i;
 	GString *out;
-	gchar *ret;
 
 	if (inet_addr->priv->addresses->len == 0)
 		return NULL;
@@ -202,10 +197,7 @@ internet_address_format (CamelAddress *paddr)
 		g_free (enc);
 	}
 
-	ret = out->str;
-	g_string_free (out, FALSE);
-
-	return ret;
+	return g_string_free (out, FALSE);
 }
 
 static void
@@ -566,7 +558,6 @@ camel_internet_address_encode_address (gint *inlen,
                                        const gchar *addr)
 {
 	gchar *name;
-	gchar *ret = NULL;
 	gint len = 0;
 	GString *out;
 
@@ -620,10 +611,7 @@ camel_internet_address_encode_address (gint *inlen,
 
 	g_free (name);
 
-	ret = out->str;
-	g_string_free (out, FALSE);
-
-	return ret;
+	return g_string_free (out, FALSE);
 }
 
 /**

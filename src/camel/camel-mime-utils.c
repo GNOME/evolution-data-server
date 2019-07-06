@@ -1448,9 +1448,7 @@ header_decode_text (const gchar *in,
 		}
 	}
 
-	decoded = g_string_free (out, FALSE);
-
-	return decoded;
+	return g_string_free (out, FALSE);
 }
 
 /**
@@ -1627,7 +1625,6 @@ header_encode_string_rfc2047 (const guchar *in,
 	const gchar *charset;
 	gint encoding;
 	GString *out;
-	gchar *outstr;
 
 	g_return_val_if_fail (g_utf8_validate ((const gchar *) in, -1, NULL), NULL);
 
@@ -1744,10 +1741,7 @@ header_encode_string_rfc2047 (const guchar *in,
 		}
 	}
 
-	outstr = out->str;
-	g_string_free (out, FALSE);
-
-	return outstr;
+	return g_string_free (out, FALSE);
 }
 
 /* TODO: Should this worry about quotes?? */
@@ -1958,7 +1952,6 @@ camel_header_encode_phrase (const guchar *in)
 	GList *words, *wordl;
 	const gchar *charset;
 	GString *out;
-	gchar *outstr;
 
 	if (in == NULL)
 		return NULL;
@@ -2028,10 +2021,7 @@ camel_header_encode_phrase (const guchar *in)
 	g_free (word);
 	g_list_free (words);
 
-	outstr = out->str;
-	g_string_free (out, FALSE);
-
-	return outstr;
+	return g_string_free (out, FALSE);
 }
 
 /* these are all internal parser functions */
@@ -2558,7 +2548,6 @@ header_decode_domain (const gchar **in)
 {
 	const gchar *inptr = *in;
 	gint go = TRUE;
-	gchar *ret;
 	GString *domain = g_string_new ("");
 
 	/* domain ref | domain literal */
@@ -2599,9 +2588,7 @@ header_decode_domain (const gchar **in)
 
 	*in = inptr;
 
-	ret = domain->str;
-	g_string_free (domain, FALSE);
-	return ret;
+	return g_string_free (domain, FALSE);
 }
 
 static gchar *
@@ -2654,9 +2641,7 @@ header_decode_addrspec (const gchar **in)
 	/* FIXME: return null on error? */
 
 	*in = inptr;
-	word = addr->str;
-	g_string_free (addr, FALSE);
-	return word;
+	return g_string_free (addr, FALSE);
 }
 
 /*
@@ -3139,10 +3124,7 @@ camel_header_contentid_decode (const gchar *in)
 		header_decode_lwsp (&inptr);
 	}
 
-	buf = addr->str;
-	g_string_free (addr, FALSE);
-
-	return buf;
+	return g_string_free (addr, FALSE);
 }
 
 static void
@@ -3519,13 +3501,13 @@ header_encode_param (const guchar *in,
 	const gchar *charset;
 	GString *out;
 	guint32 c;
-	gchar *str;
 
 	*encoded = FALSE;
 
 	g_return_val_if_fail (in != NULL, NULL);
 
 	if (is_filename) {
+		gchar *str;
 		if (!g_utf8_validate ((gchar *) inptr, -1, NULL)) {
 			GString *buff = g_string_new ("");
 
@@ -3572,12 +3554,9 @@ header_encode_param (const guchar *in,
 			g_string_append_printf (out, "%%%c%c", tohex[(c >> 4) & 0xf], tohex[c & 0xf]);
 	}
 	g_free (outbuf);
-
-	str = out->str;
-	g_string_free (out, FALSE);
 	*encoded = TRUE;
 
-	return str;
+	return g_string_free (out, FALSE);
 }
 
 /* HACK: Set to non-zero when you want the 'filename' and 'name' headers encoded in RFC 2047 way,
@@ -3699,12 +3678,9 @@ gchar *
 camel_header_param_list_format (struct _camel_header_param *p)
 {
 	GString *out = g_string_new ("");
-	gchar *ret;
 
 	camel_header_param_list_format_append (out, p);
-	ret = out->str;
-	g_string_free (out, FALSE);
-	return ret;
+	return g_string_free (out, FALSE);
 }
 
 CamelContentType *
@@ -3768,7 +3744,6 @@ gchar *
 camel_content_type_format (CamelContentType *ct)
 {
 	GString *out;
-	gchar *ret;
 
 	if (ct == NULL)
 		return NULL;
@@ -3788,10 +3763,7 @@ camel_content_type_format (CamelContentType *ct)
 	}
 	camel_header_param_list_format_append (out, ct->params);
 
-	ret = out->str;
-	g_string_free (out, FALSE);
-
-	return ret;
+	return g_string_free (out, FALSE);
 }
 
 gchar *
@@ -3880,7 +3852,6 @@ gchar *
 camel_content_disposition_format (CamelContentDisposition *d)
 {
 	GString *out;
-	gchar *ret;
 
 	if (d == NULL)
 		return NULL;
@@ -3892,9 +3863,7 @@ camel_content_disposition_format (CamelContentDisposition *d)
 		out = g_string_append (out, "attachment");
 	camel_header_param_list_format_append (out, d->params);
 
-	ret = out->str;
-	g_string_free (out, FALSE);
-	return ret;
+	return g_string_free (out, FALSE);
 }
 
 gboolean
@@ -4581,7 +4550,7 @@ camel_header_location_decode (const gchar *in)
 {
 	gint quote = 0;
 	GString *out = g_string_new ("");
-	gchar c, *res;
+	gchar c;
 
 	/* Sigh. RFC2557 says:
 	 *   content-location =   "Content-Location:" [CFWS] URI [CFWS]
@@ -4613,10 +4582,7 @@ camel_header_location_decode (const gchar *in)
 			g_string_append_c (out, c);
 	}
 
-	res = g_strdup (out->str);
-	g_string_free (out, TRUE);
-
-	return res;
+	return g_string_free (out, FALSE);
 }
 
 /**
@@ -5104,17 +5070,13 @@ gchar *
 camel_header_address_list_encode (CamelHeaderAddress *addrlist)
 {
 	GString *out;
-	gchar *ret;
 
 	if (!addrlist)
 		return NULL;
 
 	out = g_string_new ("");
 	header_address_list_encode_append (out, TRUE, addrlist);
-	ret = out->str;
-	g_string_free (out, FALSE);
-
-	return ret;
+	return g_string_free (out, FALSE);
 }
 
 /**
@@ -5128,7 +5090,6 @@ gchar *
 camel_header_address_list_format (CamelHeaderAddress *addrlist)
 {
 	GString *out;
-	gchar *ret;
 
 	if (!addrlist)
 		return NULL;
@@ -5136,10 +5097,8 @@ camel_header_address_list_format (CamelHeaderAddress *addrlist)
 	out = g_string_new ("");
 
 	header_address_list_encode_append (out, FALSE, addrlist);
-	ret = out->str;
-	g_string_free (out, FALSE);
 
-	return ret;
+	return g_string_free (out, FALSE);
 }
 
 gchar *
@@ -5149,7 +5108,6 @@ camel_header_address_fold (const gchar *in,
 	gsize len, outlen;
 	const gchar *inptr = in, *space, *p, *n;
 	GString *out;
-	gchar *ret;
 	gint i, needunfold = FALSE;
 
 	if (in == NULL)
@@ -5208,13 +5166,10 @@ camel_header_address_fold (const gchar *in,
 
 		inptr += len;
 	}
-	ret = out->str;
-	g_string_free (out, FALSE);
-
 	if (needunfold)
 		g_free ((gchar *) in);
 
-	return ret;
+	return g_string_free (out, FALSE);
 }
 
 /* simple header folding */
@@ -5226,7 +5181,6 @@ camel_header_fold (const gchar *in,
 	gsize len, outlen, tmplen;
 	const gchar *inptr = in, *space, *p, *n;
 	GString *out;
-	gchar *ret;
 	gint needunfold = FALSE;
 	gchar spc;
 
@@ -5297,13 +5251,10 @@ camel_header_fold (const gchar *in,
 		outlen += len;
 		inptr += len;
 	}
-	ret = out->str;
-	g_string_free (out, FALSE);
-
 	if (needunfold)
 		g_free ((gchar *) in);
 
-	return ret;
+	return g_string_free (out, FALSE);
 }
 
 gchar *
