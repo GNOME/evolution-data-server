@@ -2642,7 +2642,6 @@ e_reminder_watcher_describe_data (EReminderWatcher *watcher,
 				  guint32 flags)
 {
 	ICalComponent *icalcomp;
-	gchar *description = NULL;
 	gboolean use_markup;
 
 	g_return_val_if_fail (E_IS_REMINDER_WATCHER (watcher), NULL);
@@ -2771,13 +2770,12 @@ e_reminder_watcher_describe_data (EReminderWatcher *watcher,
 			}
 		}
 
-		description = g_string_free (markup, FALSE);
-
 		g_free (timediff);
 		g_free (summary);
+		return g_string_free (markup, FALSE);
 	}
 
-	return description;
+	return NULL;
 }
 
 typedef struct _ForeachTriggerData {

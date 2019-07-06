@@ -206,7 +206,6 @@ camel_utf7_utf8 (const gchar *ptr)
 	GString *out;
 	gint i = 0;
 	gint state = 0;
-	gchar *ret;
 
 	out = g_string_new ("");
 	do {
@@ -251,10 +250,7 @@ camel_utf7_utf8 (const gchar *ptr)
 		}
 	} while (c);
 
-	ret = g_strdup (out->str);
-	g_string_free (out, TRUE);
-
-	return ret;
+	return g_string_free (out, FALSE);
 }
 
 static void utf7_closeb64 (GString *out, guint32 v, guint32 i)
@@ -288,7 +284,6 @@ camel_utf8_utf7 (const gchar *ptr)
 	gint state = 0;
 	GString *out;
 	gint i = 0;
-	gchar *ret;
 
 	out = g_string_new ("");
 
@@ -321,10 +316,7 @@ camel_utf8_utf7 (const gchar *ptr)
 	if (state == 1)
 		utf7_closeb64 (out, v, i);
 
-	ret = g_strdup (out->str);
-	g_string_free (out, TRUE);
-
-	return ret;
+	return g_string_free (out, FALSE);
 }
 
 /**
@@ -377,15 +369,11 @@ camel_ucs2_utf8 (const gchar *ptr)
 	guint16 *ucs = (guint16 *) ptr;
 	guint32 c;
 	GString *work = g_string_new ("");
-	gchar *out;
 
 	while ((c = *ucs++))
 		g_string_append_unichar (work, g_ntohs (c));
 
-	out = g_strdup (work->str);
-	g_string_free (work, TRUE);
-
-	return out;
+	return g_string_free (work, FALSE);
 }
 
 /**

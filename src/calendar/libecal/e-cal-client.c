@@ -3198,11 +3198,9 @@ e_cal_client_get_component_as_string (ECalClient *client,
 	g_string_append (vcal_string, "END:VCALENDAR\r\n");
 	g_free (obj_string);
 
-	obj_string = g_string_free (vcal_string, FALSE);
-
 	g_hash_table_destroy (timezone_hash);
 
-	return obj_string;
+	return g_string_free (vcal_string, FALSE);
 }
 
 /* Helper for e_cal_client_get_default_object() */
