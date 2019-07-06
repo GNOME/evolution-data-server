@@ -732,8 +732,8 @@ ecc_extract_attendees (ECalComponent *comp)
 	if (value->len) {
 		/* This way it is encoded as:
 		   <\n> <common-name> <\t> <mail> <\n> <common-name> <\t> <mail> <\n> ... </n> */
-		g_string_prepend (value, "\n");
-		g_string_append (value, "\n");
+		g_string_prepend_c (value, '\n');
+		g_string_append_c (value, '\n');
 	}
 
 	return g_string_free (value, !value->len);
@@ -795,8 +795,8 @@ ecc_extract_categories (ECalComponent *comp)
 		   <\n> <category> <\n> <category> <\n> ... </n>
 		   which allows to search for exact category with: LIKE "%\ncategory\n%"
 		*/
-		g_string_prepend (value, "\n");
-		g_string_append (value, "\n");
+		g_string_prepend_c (value, '\n');
+		g_string_append_c (value, '\n');
 	}
 
 	return g_string_free (value, !value->len);
@@ -970,7 +970,7 @@ ecc_range_as_where_clause (const gchar *start_str,
 
 	if (end_str) {
 		if (start_str) {
-			g_string_prepend (stmt, "(");
+			g_string_prepend_c (stmt, '(');
 			g_string_append (stmt, " AND ");
 		}
 
@@ -979,7 +979,7 @@ ecc_range_as_where_clause (const gchar *start_str,
 			end_str);
 
 		if (start_str)
-			g_string_append (stmt, ")");
+			g_string_append_c (stmt, ')');
 	}
 
 	return g_string_free (stmt, FALSE);

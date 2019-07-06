@@ -1929,7 +1929,7 @@ camel_sexp_encode_string (GString *string,
 			g_string_append_c (string, '\\');
 		g_string_append_c (string, c);
 	}
-	g_string_append (string, "\"");
+	g_string_append_c (string, '\"');
 }
 
 #ifdef TESTER

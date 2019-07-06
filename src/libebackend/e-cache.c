@@ -837,13 +837,13 @@ e_cache_init_tables (ECache *cache,
 		if (!info)
 			continue;
 
-		g_string_append (objects_stmt, ",");
+		g_string_append_c (objects_stmt, ',');
 		g_string_append (objects_stmt, info->name);
-		g_string_append (objects_stmt, " ");
+		g_string_append_c (objects_stmt, ' ');
 		g_string_append (objects_stmt, info->type);
 	}
 
-	g_string_append (objects_stmt, ")");
+	g_string_append_c (objects_stmt, ')');
 
 	if (!e_cache_sqlite_exec_internal (cache, objects_stmt->str, NULL, NULL, cancellable, error)) {
 		g_string_free (objects_stmt, TRUE);
@@ -2928,14 +2928,14 @@ e_cache_put_locked_default (ECache *cache,
 		while (g_hash_table_iter_next (&iter, &key, &value)) {
 			if (!other_names)
 				other_names = g_string_new ("");
-			g_string_append (other_names, ",");
+			g_string_append_c (other_names, ',');
 
 			e_cache_sqlite_stmt_append_printf (other_names, "%Q", key);
 
 			if (!other_values)
 				other_values = g_string_new ("");
 
-			g_string_append (other_values, ",");
+			g_string_append_c (other_values, ',');
 			if (value) {
 				e_cache_sqlite_stmt_append_printf (other_values, "%Q", value);
 			} else {
@@ -2954,7 +2954,7 @@ e_cache_put_locked_default (ECache *cache,
 	if (other_values)
 		g_string_append (statement, other_values->str);
 
-	g_string_append (statement, ")");
+	g_string_append_c (statement, ')');
 
 	success = e_cache_sqlite_exec_internal (cache, statement->str, NULL, NULL, cancellable, error);
 

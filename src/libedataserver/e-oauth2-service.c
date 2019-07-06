@@ -931,7 +931,7 @@ eos_send_message (SoupSession *session,
 		if (message->response_body && message->response_body->length) {
 			g_string_append (error_msg, " (");
 			g_string_append_len (error_msg, message->response_body->data, message->response_body->length);
-			g_string_append (error_msg, ")");
+			g_string_append_c (error_msg, ')');
 		}
 
 		g_set_error_literal (error, SOUP_HTTP_ERROR, message->status_code, error_msg->str);

@@ -611,7 +611,7 @@ camel_internet_address_encode_address (gint *inlen,
 		g_string_append (out, " <");
 	cia_encode_addrspec (out, addr);
 	if (name && name[0])
-		g_string_append (out, ">");
+		g_string_append_c (out, '>');
 
 	len += out->len;
 

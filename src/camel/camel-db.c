@@ -2390,7 +2390,7 @@ cdb_delete_ids (CamelDB *cdb,
 		sqlite3_free (tmp);
 	}
 
-	g_string_append (str, ")");
+	g_string_append_c (str, ')');
 
 	ret = camel_db_add_to_transaction (cdb, str->str, error);
 

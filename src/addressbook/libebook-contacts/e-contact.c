@@ -543,7 +543,6 @@ photo_setter (EContact *contact,
 	}
 }
 
-
 static gpointer
 fn_getter (EContact *contact,
            EVCardAttribute *attr)

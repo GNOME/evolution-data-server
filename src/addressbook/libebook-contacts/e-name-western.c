@@ -434,7 +434,7 @@ e_name_western_extract_nickname (ENameWestern *name,
 		g_string_free (str, TRUE);
 		return;
 	}
-	str = g_string_append (str, "\"");
+	str = g_string_append_c (str, '\"');
 
 	name->nick = g_string_free (str, FALSE);
 

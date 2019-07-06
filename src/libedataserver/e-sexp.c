@@ -1794,7 +1794,7 @@ e_sexp_encode_string (GString *s,
 			g_string_append_c (s, '\\');
 		g_string_append_c (s, c);
 	}
-	g_string_append (s, "\"");
+	g_string_append_c (s, '\"');
 }
 
 #ifdef TESTER

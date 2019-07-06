@@ -624,7 +624,7 @@ get_current_backtrace (void)
 	bt_str = g_string_new ("");
 	for (ii = 2; ii < nptrs; ii++) {
 		if (bt_str->len)
-			g_string_append (bt_str, "\n");
+			g_string_append_c (bt_str, '\n');
 		g_string_append_printf (bt_str, "%p\t%s", bt[ii], bt_syms[ii]);
 	}
 

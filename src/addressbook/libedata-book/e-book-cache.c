@@ -2697,7 +2697,7 @@ field_test_query_ends_with (EBookCache *book_cache,
 		ebc_string_append_column (string, field, NULL);
 		g_string_append (string, " LIKE \'%");
 		g_string_append (string, escaped);
-		g_string_append (string, "\'");
+		g_string_append_c (string, '\'');
 	}
 
 	if (need_escape)
@@ -3251,7 +3251,7 @@ ebc_generate_autocomplete_query (EBookCache *book_cache,
 		generate_test_func (book_cache, string, test);
 	}
 
-	g_string_append (string, ")");
+	g_string_append_c (string, ')');
 
 	return callback;
 }

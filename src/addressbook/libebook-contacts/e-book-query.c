@@ -926,7 +926,7 @@ e_book_query_to_string (EBookQuery *q)
 		break;
 	}
 
-	g_string_append (str, ")");
+	g_string_append_c (str, ')');
 
 	g_string_free (encoded, TRUE);
 
