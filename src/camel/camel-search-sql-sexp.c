@@ -100,11 +100,9 @@ func_and (CamelSExp *f,
 	g_string_append (string, " )");
 	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_STRING);
 
-	if (strlen (string->str) == 4)
-		r->value.string = g_strdup ("");
-	else
-		r->value.string = string->str;
-	g_string_free (string, FALSE);
+	if (string->len == 4)
+		g_string_set_size (string, 0);
+	r->value.string = g_string_free (string, FALSE);
 
 	return r;
 }
