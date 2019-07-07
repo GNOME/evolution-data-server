@@ -40,7 +40,7 @@ main (gint argc,
 	while (!feof (fp)) {
 		gchar buf[1024];
 		if (fgets (buf, sizeof (buf), fp))
-			str = g_string_append (str, buf);
+			g_string_append (str, buf);
 	}
 	fclose (fp);
 
