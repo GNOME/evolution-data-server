@@ -3133,11 +3133,9 @@ address_populate (EContact *card,
 		e_contact_set (card, field, temp);
 
 		contact_addr = getormakeEContactAddress (card, other_field);
-		contact_addr->street = g_strdup (temp);
+		contact_addr->street = temp;
 		e_contact_set (card, other_field, contact_addr);
 		e_contact_address_free (contact_addr);
-
-		g_free (temp);
 	}
 }
 
