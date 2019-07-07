@@ -118,18 +118,13 @@ system_timezone_read_etc_timezone (GHashTable *ical_zones)
 	c = fgetc (etc_timezone);
         /* only get the first line, we'll validate the value later */
 	while (c != EOF && !g_ascii_isspace (c)) {
-		reading = g_string_append_c (reading, c);
+		g_string_append_c (reading, c);
 		c = fgetc (etc_timezone);
 	}
 
 	fclose (etc_timezone);
 
-	if (reading->str && reading->str[0] != '\0')
-		return g_string_free (reading, FALSE);
-	else
-		g_string_free (reading, TRUE);
-
-	return NULL;
+	return g_string_free (reading, !reading->len);
 }
 
 /* Read a file that looks like a key-file (but there's no need for groups)
