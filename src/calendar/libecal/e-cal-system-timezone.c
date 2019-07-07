@@ -118,7 +118,7 @@ system_timezone_read_etc_timezone (GHashTable *ical_zones)
 	c = fgetc (etc_timezone);
         /* only get the first line, we'll validate the value later */
 	while (c != EOF && !g_ascii_isspace (c)) {
-		reading = g_string_append_c (reading, c);
+		g_string_append_c (reading, c);
 		c = fgetc (etc_timezone);
 	}
 

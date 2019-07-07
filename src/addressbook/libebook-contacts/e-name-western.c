@@ -109,7 +109,7 @@ e_name_western_get_words_at_idx (gchar *str,
 	p = str + idx;
 	while (word_count < num_words && *p != '\0') {
 		while (!g_unichar_isspace (g_utf8_get_char (p)) && *p != '\0') {
-			words = g_string_append_unichar (words, g_utf8_get_char (p));
+			g_string_append_unichar (words, g_utf8_get_char (p));
 			p = g_utf8_next_char (p);
 		}
 
@@ -426,7 +426,7 @@ e_name_western_extract_nickname (ENameWestern *name,
 	nick = g_utf8_next_char (nick);
 
 	while (*nick != '\"' && *nick != '\0') {
-		str = g_string_append_unichar (str, g_utf8_get_char (nick));
+		g_string_append_unichar (str, g_utf8_get_char (nick));
 		nick = g_utf8_next_char (nick);
 	}
 
@@ -434,7 +434,7 @@ e_name_western_extract_nickname (ENameWestern *name,
 		g_string_free (str, TRUE);
 		return;
 	}
-	str = g_string_append_c (str, '\"');
+	g_string_append_c (str, '\"');
 
 	name->nick = g_string_free (str, FALSE);
 

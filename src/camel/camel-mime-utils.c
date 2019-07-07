@@ -1273,10 +1273,10 @@ append_latin1 (GString *out,
 		c = (guint) * in++;
 		len--;
 		if (c & 0x80) {
-			out = g_string_append_c (out, 0xc0 | ((c >> 6) & 0x3));  /* 110000xx */
-			out = g_string_append_c (out, 0x80 | (c & 0x3f));        /* 10xxxxxx */
+			g_string_append_c (out, 0xc0 | ((c >> 6) & 0x3));  /* 110000xx */
+			g_string_append_c (out, 0x80 | (c & 0x3f));        /* 10xxxxxx */
 		} else {
-			out = g_string_append_c (out, c);
+			g_string_append_c (out, c);
 		}
 	}
 	return out;
@@ -1977,12 +1977,12 @@ camel_header_encode_phrase (const guchar *in)
 		if (last_word && !(last_word->type == WORD_2047 && word->type == WORD_2047)) {
 			/* one or both of the words are not encoded so we write the spaces out untouched */
 			len = word->start - last_word->end;
-			out = g_string_append_len (out, (gchar *) last_word->end, len);
+			g_string_append_len (out, (gchar *) last_word->end, len);
 		}
 
 		switch (word->type) {
 		case WORD_ATOM:
-			out = g_string_append_len (out, (gchar *) word->start, word->end - word->start);
+			g_string_append_len (out, (gchar *) word->start, word->end - word->start);
 			break;
 		case WORD_QSTRING:
 			quote_word (out, TRUE, (gchar *) word->start, word->end - word->start);
@@ -2554,15 +2554,15 @@ header_decode_domain (const gchar **in)
 	header_decode_lwsp (&inptr);
 	while (go) {
 		if (*inptr == '[') { /* domain literal */
-			domain = g_string_append_c (domain, '[');
+			g_string_append_c (domain, '[');
 			inptr++;
 			header_decode_lwsp (&inptr);
 			while (*inptr && camel_mime_is_dtext (*inptr)) {
-				domain = g_string_append_c (domain, *inptr);
+				g_string_append_c (domain, *inptr);
 				inptr++;
 			}
 			if (*inptr == ']') {
-				domain = g_string_append_c (domain, ']');
+				g_string_append_c (domain, ']');
 				inptr++;
 			} else {
 				w (g_warning ("closing ']' not found in domain: %s", *in));
@@ -2570,7 +2570,7 @@ header_decode_domain (const gchar **in)
 		} else {
 			gchar *a = header_decode_atom (&inptr);
 			if (a) {
-				domain = g_string_append (domain, a);
+				g_string_append (domain, a);
 				g_free (a);
 			} else {
 				w (g_warning ("missing atom from domain-ref"));
@@ -2579,7 +2579,7 @@ header_decode_domain (const gchar **in)
 		}
 		header_decode_lwsp (&inptr);
 		if (*inptr == '.') { /* next sub-domain? */
-			domain = g_string_append_c (domain, '.');
+			g_string_append_c (domain, '.');
 			inptr++;
 			header_decode_lwsp (&inptr);
 		} else
@@ -2603,15 +2603,15 @@ header_decode_addrspec (const gchar **in)
 	/* addr-spec */
 	word = header_decode_word (&inptr);
 	if (word) {
-		addr = g_string_append (addr, word);
+		g_string_append (addr, word);
 		header_decode_lwsp (&inptr);
 		g_free (word);
 		while (*inptr == '.' && word) {
 			inptr++;
-			addr = g_string_append_c (addr, '.');
+			g_string_append_c (addr, '.');
 			word = header_decode_word (&inptr);
 			if (word) {
-				addr = g_string_append (addr, word);
+				g_string_append (addr, word);
 				header_decode_lwsp (&inptr);
 				g_free (word);
 			} else {
@@ -2620,10 +2620,10 @@ header_decode_addrspec (const gchar **in)
 		}
 		if (*inptr == '@') {
 			inptr++;
-			addr = g_string_append_c (addr, '@');
+			g_string_append_c (addr, '@');
 			word = header_decode_domain (&inptr);
 			if (word) {
-				addr = g_string_append (addr, word);
+				g_string_append (addr, word);
 				g_free (word);
 			} else {
 				w (g_warning ("Invalid address, missing domain: %s", *in));
@@ -2698,14 +2698,14 @@ header_decode_mailbox (const gchar **in,
 				    && (p > 6 && pre[0] == '=' && pre[1] == '?')) {
 					/* dont append ' ' */
 				} else {
-					name = g_string_append_c (name, ' ');
+					g_string_append_c (name, ' ');
 				}
 			} else {
 				/* Fix for stupidly-broken-mailers that like to put '.''s in names unquoted */
 				/* see bug #8147 */
 				while (!pre && *inptr && *inptr != '<') {
 					w (g_warning ("Working around stupid mailer bug #5: unescaped characters in names"));
-					name = g_string_append_c (name, *inptr++);
+					g_string_append_c (name, *inptr++);
 					pre = header_decode_word (&inptr);
 				}
 			}
@@ -2741,7 +2741,7 @@ header_decode_mailbox (const gchar **in,
 	}
 
 	if (pre) {
-		addr = g_string_append (addr, pre);
+		g_string_append (addr, pre);
 	} else {
 		w (g_warning ("No local-part for email address: %s", *in));
 	}
@@ -2751,9 +2751,9 @@ header_decode_mailbox (const gchar **in,
 		inptr++;
 		g_free (pre);
 		pre = header_decode_word (&inptr);
-		addr = g_string_append_c (addr, '.');
+		g_string_append_c (addr, '.');
 		if (pre)
-			addr = g_string_append (addr, pre);
+			g_string_append (addr, pre);
 		comment = inptr;
 		header_decode_lwsp (&inptr);
 	}
@@ -2764,10 +2764,10 @@ header_decode_mailbox (const gchar **in,
 		gchar *dom;
 
 		inptr++;
-		addr = g_string_append_c (addr, '@');
+		g_string_append_c (addr, '@');
 		comment = inptr;
 		dom = header_decode_domain (&inptr);
-		addr = g_string_append (addr, dom);
+		g_string_append (addr, dom);
 		g_free (dom);
 	} else if (*inptr != '>' || !closeme) {
 		/* If we get a <, the address was probably a name part, lets try again shall we? */
@@ -2965,8 +2965,8 @@ header_decode_address (const gchar **in,
 	/* pre-scan, trying to work out format, discard results */
 	header_decode_lwsp (&inptr);
 	while ((pre = header_decode_word (&inptr))) {
-		group = g_string_append (group, pre);
-		group = g_string_append_c (group, ' ');
+		g_string_append (group, pre);
+		g_string_append_c (group, ' ');
 		g_free (pre);
 	}
 	header_decode_lwsp (&inptr);
@@ -3608,11 +3608,11 @@ camel_header_param_list_format_append (GString *out,
 
 		/* do not fold file names */
 		if (!is_filename && used + nlen + vlen > CAMEL_FOLD_SIZE - 8) {
-			out = g_string_append (out, ";\n\t");
+			g_string_append (out, ";\n\t");
 			here = out->len;
 			used = 0;
 		} else
-			out = g_string_append (out, "; ");
+			g_string_append (out, "; ");
 
 		if (!is_filename && nlen + vlen > CAMEL_FOLD_SIZE - 8) {
 			/* we need to do special rfc2184 parameter wrapping */
@@ -3856,11 +3856,7 @@ camel_content_disposition_format (CamelContentDisposition *d)
 	if (d == NULL)
 		return NULL;
 
-	out = g_string_new ("");
-	if (d->disposition)
-		out = g_string_append (out, d->disposition);
-	else
-		out = g_string_append (out, "attachment");
+	out = g_string_new (d->disposition ? d->disposition : "attachment");
 	camel_header_param_list_format_append (out, d->params);
 
 	return g_string_free (out, FALSE);
