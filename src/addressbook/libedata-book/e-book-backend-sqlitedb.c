@@ -1339,8 +1339,7 @@ ixphone_str (gint country_code,
 {
 	GString *const str = g_string_sized_new (6 + national_len);
 	g_string_append_printf (str, "+%d|", country_code);
-	g_string_append_len (str, national_str, national_len);
-	return str;
+	return g_string_append_len (str, national_str, national_len);
 }
 
 static gint

@@ -81,7 +81,6 @@ ntlm_get_string (GByteArray *ba,
                  gint offset)
 {
 	SecurityBuffer *secbuf;
-	GString *string;
 	gchar *buf_string;
 	guint16 buf_length;
 	guint32 buf_offset;
@@ -93,11 +92,8 @@ ntlm_get_string (GByteArray *ba,
 	if (ba->len < buf_offset + buf_length)
 		return NULL;
 
-	string = g_string_sized_new (buf_length);
 	buf_string = (gchar *) &ba->data[buf_offset];
-	g_string_append_len (string, buf_string, buf_length);
-
-	return string;
+	return g_string_new_len (buf_string, buf_length);
 }
 
 static void

@@ -152,7 +152,7 @@ read_line (const gchar *string)
 		if (!line_str)
 			line_str = g_string_new ("");
 
-		line_str = g_string_append_c (line_str, *string);
+		g_string_append_c (line_str, *string);
 		if (*string == '\n')
 			break;
 	}
@@ -195,7 +195,7 @@ e_cal_util_parse_ics_string (const gchar *string)
 		if (!comp_str)
 			comp_str = g_string_new (line);
 		else
-			comp_str = g_string_append (comp_str, line);
+			g_string_append (comp_str, line);
 
 		if (strncmp (line, "END:VCALENDAR", 13) == 0) {
 			ICalComponent *tmp;
