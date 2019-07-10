@@ -2720,15 +2720,13 @@ imapx_check_initial_setup_group (CamelIMAPXStore *imapx_store,
 	if (folder_fullname) {
 		g_hash_table_insert (save_setup,
 			g_strdup (main_key),
-			g_strdup (folder_fullname));
+			folder_fullname);
 
 		if (additional_key) {
 			g_hash_table_insert (save_setup,
 				g_strdup (additional_key),
 				g_strdup (additional_key_value));
 		}
-
-		g_free (folder_fullname);
 	}
 }
 
