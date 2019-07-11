@@ -3172,6 +3172,7 @@ e_cal_client_get_component_as_string (ECalClient *client,
 	i_cal_component_foreach_tzid (icalcomp, foreach_tzid_callback, &cbdata);
 	if (!cbdata.success) {
 		g_hash_table_foreach (timezone_hash, free_timezone_string, NULL);
+		g_hash_table_destroy (timezone_hash);
 		return NULL;
 	}
 
