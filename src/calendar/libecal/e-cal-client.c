@@ -3125,16 +3125,6 @@ append_timezone_string (gpointer key,
 	GString *vcal_string = data;
 
 	g_string_append (vcal_string, value);
-	g_free (value);
-}
-
-/* This simply frees the hash values. */
-static void
-free_timezone_string (gpointer key,
-                      gpointer value,
-                      gpointer data)
-{
-	g_free (value);
 }
 
 /**
@@ -3162,7 +3152,7 @@ e_cal_client_get_component_as_string (ECalClient *client,
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), NULL);
 	g_return_val_if_fail (icalcomp != NULL, NULL);
 
-	timezone_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	timezone_hash = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, g_free);
 
 	/* Add any timezones needed to the hash. We use a hash since we only
 	 * want to add each timezone once at most. */
@@ -3171,7 +3161,7 @@ e_cal_client_get_component_as_string (ECalClient *client,
 	cbdata.success = TRUE;
 	i_cal_component_foreach_tzid (icalcomp, foreach_tzid_callback, &cbdata);
 	if (!cbdata.success) {
-		g_hash_table_foreach (timezone_hash, free_timezone_string, NULL);
+		g_hash_table_destroy (timezone_hash);
 		return NULL;
 	}
 
