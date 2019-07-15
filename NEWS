@@ -1,3 +1,13 @@
+Evolution-Data-Server 3.32.4 2019-07-15
+---------------------------------------
+
+Bug Fixes:
+	evo-I#479 - Call mail account refresh also after going online ][ (Milan Crha)
+	I#130 - [CamelOfflineFolder] Multiple downsync operations can run simultaneously (Milan Crha)
+
+Miscellaneous:
+	Miscellaneous changes in ecmb_modify_object_sync() (Milan Crha)
+
 Evolution-Data-Server 3.32.3 2019-06-17
 ---------------------------------------
 
