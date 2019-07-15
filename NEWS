@@ -1,3 +1,30 @@
+Evolution-Data-Server 3.33.4 2019-07-15
+---------------------------------------
+
+Bug Fixes:
+	I#128 - [LDAP] Claim an error when a Contact List might be saved incomplete (Milan Crha)
+	I#130 - [CamelOfflineFolder] Multiple downsync operations can run simultaneously (Milan Crha)
+	M!18 - Prefer g_string_append_c() over g_string_append() (Дилян Палаузов)
+	M!19 - e-book-backend-ldap.c:address_populate(): avoid g_strdup+g_free call (Дилян Палаузов)
+	M!20 - camel-search-sql-sexp.c:func_and() memory leak (Дилян Палаузов)
+	M!22 - Ignore the return value of g_string_append() (Дилян Палаузов)
+	M!23 - Use the return value of g_string_free(*, FALSE) (Дилян Палаузов)
+	M!24 - e-vcard.c:read_attribute_params(): Remove unneeded if() (Дилян Палаузов)
+	M!26 - Fix a possible memory leak in e_cal_client_get_component_as_string() (Дилян Палаузов)
+	evo-I#479 - Call mail account refresh also after going online ][ (Milan Crha)
+
+Miscellaneous:
+	[LDAP] Fix several memory leaks (Milan Crha)
+	Prefer built-in timezone component in e_cal_util_copy_timezone() (Milan Crha)
+	Fix a memory leak in e_cal_recur_generate_instances_sync() (Milan Crha)
+	Miscellaneous changes in ecmb_modify_object_sync() (Milan Crha)
+
+Translations:
+	Nathan Follens (nl)
+	Daniel Mustieles (es)
+	Fabio Tomat (fur)
+	Kukuh Syafaat (id)
+
 Evolution-Data-Server 3.33.3 2019-06-17
 ---------------------------------------
 
