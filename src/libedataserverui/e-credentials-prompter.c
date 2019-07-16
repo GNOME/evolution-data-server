@@ -883,6 +883,9 @@ credentials_prompter_credentials_required_cb (ESourceRegistry *registry,
 		return;
 	}
 
+	if (!e_source_registry_check_enabled (prompter->priv->registry, source))
+		return;
+
 	cred_source = e_source_credentials_provider_ref_credentials_source (e_credentials_prompter_get_provider (prompter), source);
 
 	/* Global auto-prompt or the source's auto-prompt is disabled. */
