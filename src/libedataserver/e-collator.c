@@ -132,6 +132,11 @@ canonicalize_locale (const gchar *posix_locale,
 	gint   len;
 	const gchar *collation_type = NULL;
 
+	if (posix_locale && (
+	    g_ascii_strcasecmp (posix_locale, "C") == 0 ||
+	    g_ascii_strcasecmp (posix_locale, "POSIX") == 0))
+		posix_locale = "en_US_POSIX";
+
 	len = uloc_canonicalize (posix_locale, locale_buffer, LOCALE_BUFFER_LEN, &status);
 
 	if (U_FAILURE (status)) {
