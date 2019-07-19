@@ -3845,9 +3845,6 @@ func_exists (struct _ESExp *f,
 		if (!strcmp (propname, "x-evolution-any-field")) {
 			gint i;
 			GString *big_query;
-			gchar *match_str;
-
-			match_str = g_strdup ("=*)");
 
 			big_query = g_string_sized_new (G_N_ELEMENTS (prop_info) * 7);
 			g_string_append (big_query, "(|");
@@ -3859,14 +3856,12 @@ func_exists (struct _ESExp *f,
 				     !(prop_info[i].prop_type & PROP_CALENTRY))) {
 					g_string_append_c (big_query, '(');
 					g_string_append (big_query, prop_info[i].ldap_attr);
-					g_string_append (big_query, match_str);
+					g_string_append_len (big_query, "=*)", 3);
 				}
 			}
 			g_string_append_c (big_query, ')');
 
 			ldap_data->list = g_list_prepend (ldap_data->list, g_string_free (big_query, FALSE));
-
-			g_free (match_str);
 		}
 		else {
 			const gchar *ldap_attr = query_prop_to_ldap (propname, ldap_data->bl->priv->evolutionPersonSupported, ldap_data->bl->priv->calEntrySupported);
