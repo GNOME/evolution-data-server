@@ -1849,7 +1849,11 @@ e_webdav_session_mkcalendar_sync (EWebDAVSession *webdav,
 			e_xml_document_end_element (xml);
 		}
 
-		if (supports != 0) {
+		if (supports != 0 && supports != (E_WEBDAV_RESOURCE_SUPPORTS_EVENTS |
+		    E_WEBDAV_RESOURCE_SUPPORTS_TASKS | E_WEBDAV_RESOURCE_SUPPORTS_MEMOS)) {
+			/* If the user has selected Events, Tasks and Memos, all of them offered by
+			 * Evolution, then user actually wants the new collection to contain whatever
+			 * components the server supports, including VAVAILABILITY. */
 			struct SupportValues {
 				guint32 mask;
 				const gchar *value;
