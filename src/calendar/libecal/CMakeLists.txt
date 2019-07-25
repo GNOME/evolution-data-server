@@ -124,7 +124,10 @@ set(gir_cflags
 	-I${CMAKE_BINARY_DIR}/src/calendar
 	-I${CMAKE_SOURCE_DIR}/src/calendar
 )
-set(gir_libdirs)
+set(gir_libdirs
+	${CMAKE_BINARY_DIR}/src/camel
+	${CMAKE_BINARY_DIR}/src/libedataserver
+)
 set(gir_libs ecal)
 set(gir_deps
 	${CMAKE_BINARY_DIR}/src/camel/Camel-${API_VERSION}.gir
