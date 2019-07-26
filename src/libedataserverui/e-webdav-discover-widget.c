@@ -1043,6 +1043,9 @@ e_webdav_discover_content_selection_changed_cb (GtkTreeSelection *selection,
 
 	gtk_dialog_set_response_sensitive (dialog, GTK_RESPONSE_ACCEPT,
 		gtk_tree_selection_count_selected_rows (selection) > 0);
+
+	if (gtk_tree_selection_count_selected_rows (selection))
+		gtk_dialog_set_default_response (dialog, GTK_RESPONSE_ACCEPT);
 }
 
 /**
