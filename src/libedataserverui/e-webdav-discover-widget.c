@@ -1099,6 +1099,7 @@ e_webdav_discover_dialog_new (GtkWindow *parent,
 	g_object_set_data (G_OBJECT (dialog), WEBDAV_DISCOVER_CONTENT_KEY, widget);
 
 	gtk_window_set_default_size (GTK_WINDOW (dialog), 400, 400);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_ACCEPT);
 
 	selection = e_webdav_discover_content_get_tree_selection (widget);
 	g_signal_connect (selection, "changed", G_CALLBACK (e_webdav_discover_content_selection_changed_cb), dialog);
