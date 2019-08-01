@@ -454,6 +454,7 @@ e_webdav_discover_content_fill_discovered_sources (GtkTreeView *tree_view,
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	GSList *link;
+	guint num_displayed_items = 0;
 
 	/* It's okay to pass NULL here */
 	if (!tree_view)
@@ -477,6 +478,7 @@ e_webdav_discover_content_fill_discovered_sources (GtkTreeView *tree_view,
 		    (source->supports & E_WEBDAV_DISCOVER_SUPPORTS_SUBSCRIBED_ICALENDAR) != 0)
 			continue;
 
+		++num_displayed_items;
 		if (source->color && *source->color) {
 			gint rr, gg, bb;
 
@@ -541,6 +543,12 @@ e_webdav_discover_content_fill_discovered_sources (GtkTreeView *tree_view,
 		g_free (description_markup);
 		g_free (colorstr);
 		g_string_free (supports, TRUE);
+	}
+
+	if (num_displayed_items == 1) { /* If there is only one item, select it */
+		GtkTreeSelection *tree_selection = gtk_tree_view_get_selection (tree_view);
+
+		gtk_tree_selection_select_iter (tree_selection, &iter);
 	}
 }
 
@@ -1035,6 +1043,9 @@ e_webdav_discover_content_selection_changed_cb (GtkTreeSelection *selection,
 
 	gtk_dialog_set_response_sensitive (dialog, GTK_RESPONSE_ACCEPT,
 		gtk_tree_selection_count_selected_rows (selection) > 0);
+
+	if (gtk_tree_selection_count_selected_rows (selection))
+		gtk_dialog_set_default_response (dialog, GTK_RESPONSE_ACCEPT);
 }
 
 /**
