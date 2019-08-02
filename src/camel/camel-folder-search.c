@@ -1697,6 +1697,24 @@ folder_search_message_location (CamelSExp *sexp,
 			same = g_str_equal (uri, argv[0]->value.string);
 
 			g_free (uri);
+
+			if (!same && search->priv->current &&
+			    CAMEL_IS_VEE_FOLDER (search->priv->folder)) {
+				CamelFolder *folder;
+
+				folder = camel_vee_folder_get_location (CAMEL_VEE_FOLDER (search->priv->folder),
+					(CamelVeeMessageInfo *) search->priv->current, NULL);
+
+				if (folder) {
+					store = camel_folder_get_parent_store (folder);
+					name = camel_folder_get_full_name (folder);
+					uri = mail_folder_uri_build (store, name);
+
+					same = g_str_equal (uri, argv[0]->value.string);
+
+					g_free (uri);
+				}
+			}
 		}
 	}
 
