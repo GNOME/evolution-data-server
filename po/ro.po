@@ -18,8 +18,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.ro\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2019-07-21 16:47+0000\n"
-"PO-Revision-Date: 2019-08-03 23:33+0200\n"
+"POT-Creation-Date: 2019-08-03 21:36+0000\n"
+"PO-Revision-Date: 2019-08-04 14:40+0200\n"
 "Last-Translator: Daniel Șerbănescu <daniel [at] serbanescu [dot] dk>\n"
 "Language-Team: Gnome Romanian Translation Team <gnomero-list@lists."
 "sourceforge.net>\n"
@@ -941,14 +941,12 @@ msgid "Text is too long for a phone number"
 msgstr "Textul este prea lung pentru a fi număr de telefon"
 
 #: ../src/addressbook/libebook/e-book-client.c:929
-#, fuzzy, c-format
-#| msgid "Unknown book property '%s'"
+#, c-format
 msgid "Unknown book property “%s”"
 msgstr "Proprietate de carte necunoscută „%s”"
 
 #: ../src/addressbook/libebook/e-book-client.c:944
-#, fuzzy, c-format
-#| msgid "Cannot change value of book property '%s'"
+#, c-format
 msgid "Cannot change value of book property “%s”"
 msgstr "Nu s-a putut schimba valoarea proprietății de carte „%s”"
 
@@ -1021,8 +1019,7 @@ msgid "Query contained unsupported elements"
 msgstr "Interogarea a conținut elemente nesuportate"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4312
-#, fuzzy, c-format
-#| msgid "Invalid query"
+#, c-format
 msgid "Invalid Query"
 msgstr "Interogare nevalidă"
 
@@ -1136,17 +1133,15 @@ msgstr "Nu s-a putut deschide baza de date %s: %s"
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1342
 #: ../src/libebackend/e-cache.c:1374 ../src/libebackend/e-cache.c:2352
 #: ../src/libebackend/e-cache.c:2392
-#, fuzzy, c-format
-#| msgid "Object not found"
+#, c-format
 msgid "Object “%s” not found"
-msgstr "Obiectul nu a fost găsit"
+msgstr "Obiectul „%s” nu a fost găsit"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5242
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2855
-#, fuzzy, c-format
-#| msgid "Object not found"
+#, c-format
 msgid "Object with extra “%s” not found"
-msgstr "Obiectul nu a fost găsit"
+msgstr "Obiectul cu „%s” extra nu a fost găsit"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5396
 msgid "At least one sort field must be specified to use a cursor"
@@ -1317,10 +1312,8 @@ msgstr "Serverul din spate este ocupat"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:404
 #: ../src/libedataserver/e-client.c:185
-#, fuzzy
-#| msgid "Object not found"
 msgid "Object is out of sync"
-msgstr "Obiectul nu a fost găsit"
+msgstr "Obiectul nu este sincronizat"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:412
 #: ../src/calendar/libedata-cal/e-data-cal.c:445
@@ -1378,16 +1371,12 @@ msgid "Cursor does not support setting the search expression"
 msgstr "Cursorul nu suportă configurarea expresiei de căutare"
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor.c:864
-#, fuzzy
-#| msgid "Store does not support an INBOX"
 msgid "Cursor does not support step"
-msgstr "Stocarea nu suportă un INBOX"
+msgstr "Cursorul nu suportă avansarea"
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor.c:940
-#, fuzzy
-#| msgid "Store does not support an INBOX"
 msgid "Cursor does not support alphabetic indexes"
-msgstr "Stocarea nu suportă un INBOX"
+msgstr "Cursorul nu suportă indecși alfabetici"
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor-cache.c:92
 #: ../src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:266
@@ -1410,10 +1399,8 @@ msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "URL-ul furnizat „%s” nu are o referință la calendarul CalDAV"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1792
-#, fuzzy
-#| msgid "Failed to encode data"
 msgid "Failed to parse response data"
-msgstr "Eroare la codarea datelor"
+msgstr "Eșec la parsarea datelor răspunsului"
 
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:956
 msgid "Birthday"
@@ -1439,16 +1426,13 @@ msgid "Cannot save calendar data"
 msgstr "Nu s-au putut salva datele din calendar"
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:168
-#, fuzzy
-#| msgid "URI not loaded"
 msgid "URI not set"
-msgstr "Adresă (URI) neîncărcată"
+msgstr "URI nestabilit"
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:247
-#, fuzzy, c-format
-#| msgid "Malformed signature"
+#, c-format
 msgid "Malformed URI “%s”: %s"
-msgstr "Semnătură malformată"
+msgstr "URI malformat „%s”: %s"
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:388
 #, c-format
@@ -1576,10 +1560,8 @@ msgid "Protocol not supported"
 msgstr "Protocol nesuportat"
 
 #: ../src/calendar/libecal/e-cal.c:2324
-#, fuzzy
-#| msgid "Operation has been canceled"
 msgid "Operation has been cancelled"
-msgstr "Operația a fost anulată"
+msgstr "Operațiunea a fost anulată"
 
 #: ../src/calendar/libecal/e-cal.c:2326
 msgid "Could not cancel operation"
@@ -1614,14 +1596,12 @@ msgid "Invalid range"
 msgstr "Domeniu nevalid"
 
 #: ../src/calendar/libecal/e-cal-client.c:1063
-#, fuzzy, c-format
-#| msgid "Unknown calendar property '%s'"
+#, c-format
 msgid "Unknown calendar property “%s”"
 msgstr "Proprietate de calendar necunoscută „%s”"
 
 #: ../src/calendar/libecal/e-cal-client.c:1078
-#, fuzzy, c-format
-#| msgid "Cannot change value of calendar property '%s'"
+#, c-format
 msgid "Cannot change value of calendar property “%s”"
 msgstr "Nu s-a putut schimba valoarea proprietății calendar „%s”"
 
@@ -2442,11 +2422,9 @@ msgstr "Întâlnirea se repetă"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5748
 #: ../src/calendar/libecal/e-cal-recur.c:5771
-#, fuzzy
-#| msgid "Untitled appointment"
 msgctxt "recur-description"
 msgid "The appointment recurs"
-msgstr "Întâlnire fără nume"
+msgstr "Recursul întâlnirii"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5751
 #: ../src/calendar/libecal/e-cal-recur.c:5774
@@ -2473,32 +2451,24 @@ msgstr "%1$s %2$s"
 
 #: ../src/calendar/libecal/e-cal-util.c:746
 #: ../src/calendar/libecal/e-cal-util.c:773
-#, fuzzy
-#| msgid "High"
 msgctxt "Priority"
 msgid "High"
 msgstr "Ridicat"
 
 #: ../src/calendar/libecal/e-cal-util.c:748
 #: ../src/calendar/libecal/e-cal-util.c:775
-#, fuzzy
-#| msgid "Normal"
 msgctxt "Priority"
 msgid "Normal"
 msgstr "Normal"
 
 #: ../src/calendar/libecal/e-cal-util.c:750
 #: ../src/calendar/libecal/e-cal-util.c:777
-#, fuzzy
-#| msgid "Low"
 msgctxt "Priority"
 msgid "Low"
 msgstr "Scăzut"
 
 #. An empty string is the same as 'None'.
 #: ../src/calendar/libecal/e-cal-util.c:771
-#, fuzzy
-#| msgid "Undefined"
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Nedefinit"
@@ -2556,11 +2526,10 @@ msgstr "Fără rezumat"
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
 #: ../src/calendar/libecal/e-reminder-watcher.c:2538
-#, fuzzy, c-format
-#| msgid "%s (%s)"
+#, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
-msgstr "%s (%s)"
+msgstr "%s (%s) %s"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
@@ -6423,10 +6392,13 @@ msgid ""
 "variables are checked before environment variables, but after the predefined "
 "USER, REALNAME and HOST variables."
 msgstr ""
+"Fiecare element al unei matrice este așteptat să fie în forma: nume=valoare. "
+"Aceste variabile sunt verificate înaintea variabilelor de mediu, dar după "
+"variabilelor predefinite USER, REALNAME și HOST."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
 msgid "A list of hints for OAuth2 services"
-msgstr ""
+msgstr "O listă de sugestii pentru serviciile OAuth2"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
 msgid ""
@@ -6527,7 +6499,7 @@ msgstr "(Învechit) URL pentru configurarea automată pentru proxy"
 
 #: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:1
 msgid "Evolution Alarm Notify"
-msgstr ""
+msgstr "Notificare pentru alarmă Evolution"
 
 #: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:2
 #, fuzzy
@@ -6537,7 +6509,7 @@ msgstr "Necesită autentificare"
 
 #: ../src/libebackend/e-cache.c:754
 msgid "Out of memory"
-msgstr ""
+msgstr "Memorie insuficientă"
 
 #: ../src/libebackend/e-cache.c:946
 #, fuzzy, c-format
@@ -6548,12 +6520,12 @@ msgstr "Nu s-a putut crea dosarul „%s”: %s"
 #: ../src/libebackend/e-collection-backend.c:1075
 #, c-format
 msgid "%s does not support creating remote resources"
-msgstr ""
+msgstr "%s nu suportă creare resurselor la distanță"
 
 #: ../src/libebackend/e-collection-backend.c:1134
 #, c-format
 msgid "%s does not support deleting remote resources"
-msgstr ""
+msgstr "%s nu suportă ștergerea resurselor la distanță"
 
 #: ../src/libebackend/e-data-factory.c:1349
 #: ../src/libebackend/e-subprocess-factory.c:293
@@ -6565,12 +6537,12 @@ msgstr "Nicio astfel de sursă pentru UID-ul „%s”"
 #: ../src/libebackend/e-data-factory.c:1499
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
-msgstr ""
+msgstr "Fabrica backend pentru sursa „%s” și extensia „%s” nu fost găsite."
 
 #: ../src/libebackend/e-server-side-source.c:142
 #, c-format
 msgid "Data source is missing a [%s] group"
-msgstr ""
+msgstr "Sursei de date îi lipsește un grup [%s]"
 
 #: ../src/libebackend/e-server-side-source.c:470
 msgid "Failed to lookup credentials: "
@@ -6588,6 +6560,8 @@ msgstr "Serverul IMAP %s nu suportă tipul cerut de autentificare %s"
 msgid ""
 "Data source “%s” has no collection backend to create the remote resource"
 msgstr ""
+"Sursa de date „%s” nu are nicio colecție backend pentru a crea resursa la "
+"distanță"
 
 #: ../src/libebackend/e-server-side-source.c:1437
 #: ../src/libedataserver/e-source.c:1696
@@ -6601,6 +6575,8 @@ msgstr "Serverul IMAP %s nu suportă tipul cerut de autentificare %s"
 msgid ""
 "Data source “%s” has no collection backend to delete the remote resource"
 msgstr ""
+"Sursa de date „%s” nu are nicio colecție backend pentru a șterge resursa la "
+"distanță"
 
 #: ../src/libebackend/e-server-side-source.c:1482
 #: ../src/libedataserver/e-source.c:1792
@@ -6613,22 +6589,22 @@ msgstr "Serverul IMAP %s nu suportă tipul cerut de autentificare %s"
 #: ../src/libebackend/e-server-side-source.c:1860
 #, c-format
 msgid "File must have a “.source” extension"
-msgstr ""
+msgstr "Fișierul trebuie să aibă extensia „.source”"
 
 #: ../src/libebackend/e-source-registry-server.c:322
 #, c-format
 msgid "UID “%s” is already in use"
-msgstr ""
+msgstr "UID-ul „%s” este deja în uz"
 
 #: ../src/libebackend/e-source-registry-server.c:447
 #, c-format
 msgid "Cannot find corresponding collection backend for source “%s”"
-msgstr ""
+msgstr "Nu s-a putut găsi colecția backend corespunzătoare pentru sursa „%s”"
 
 #: ../src/libebackend/e-source-registry-server.c:451
 #, c-format
 msgid "Source “%s” is not a collection source"
-msgstr ""
+msgstr "Sursa „%s” nu este o sursă colecție"
 
 #: ../src/libebackend/e-source-registry-server.c:457
 #, fuzzy, c-format
@@ -6639,7 +6615,7 @@ msgstr "Nu s-au putut găsi sumele de control ale semnăturii"
 #: ../src/libebackend/e-subprocess-factory.c:281
 #, c-format
 msgid "Module “%s” for source UID “%s” cannot be loaded"
-msgstr ""
+msgstr "Modulul „%s” pentru UID-ul sursei „%s” nu poate fi încărcat"
 
 #: ../src/libebackend/e-subprocess-factory.c:302
 #, fuzzy, c-format
@@ -6650,7 +6626,7 @@ msgstr "Eroare la crearea procesului copil „%s”: %s"
 #: ../src/libebackend/e-user-prompter-server.c:304
 #, c-format
 msgid "Extension dialog “%s” not found."
-msgstr ""
+msgstr "Dialogul extensie „%s” nu a fost găsit."
 
 #: ../src/libedataserver/e-categories.c:47
 msgctxt "CategoryName"
@@ -6798,14 +6774,14 @@ msgstr "Eroare D-Bus"
 
 #: ../src/libedataserver/e-client.c:2021
 msgid "Timeout was reached"
-msgstr ""
+msgstr "Limita de timp a fost atinsă"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
 #: ../src/libedataserver/e-oauth2-service.c:1208
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
-msgstr ""
+msgstr "Sursa „%s” (%s) nu este validă pentru serviciul OAuth2 „%s”"
 
 #: ../src/libedataserver/e-oauth2-service.c:1223
 #, fuzzy
@@ -6821,30 +6797,33 @@ msgstr "S-a primit un răspuns incorect de la server „%s”."
 #: ../src/libedataserver/e-oauth2-service.c:1420
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
+"Eșec la reîmprospătarea jetonului de acces. Conectați-vă la server din nou."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
 #: ../src/libedataserver/e-oauth2-service.c:1462
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
-msgstr ""
+msgstr "Sursa „%s” (%s) nu este o sursă validă OAuth2"
 
 #: ../src/libedataserver/e-oauth2-service.c:1535
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
 msgstr ""
+"Jetonul de acces este expirat și reîmprospătarea lui a eșuat. Conectați-vă "
+"la server din nou."
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: ../src/libedataserver/e-oauth2-service-google.c:56
 msgctxt "OAuth2Service"
 msgid "Google"
-msgstr ""
+msgstr "Google"
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: ../src/libedataserver/e-oauth2-service-outlook.c:57
 msgctxt "OAuth2Service"
 msgid "Outlook"
-msgstr ""
+msgstr "Outlook"
 
 #: ../src/libedataserver/e-soup-session.c:861
 #, fuzzy
@@ -6861,17 +6840,17 @@ msgstr "Nu s-a putut creea dosarul %s: %s"
 #: ../src/libedataserver/e-source.c:772
 #, c-format
 msgid "Source file is missing a [%s] group"
-msgstr ""
+msgstr "Fișierului sursă îi lipsește un grup [%s]"
 
 #: ../src/libedataserver/e-source.c:1363
 #, c-format
 msgid "Data source “%s” is not removable"
-msgstr ""
+msgstr "Sursa de date „%s” nu este detașabilă"
 
 #: ../src/libedataserver/e-source.c:1486
 #, c-format
 msgid "Data source “%s” is not writable"
-msgstr ""
+msgstr "Sursa de date „%s” nu este inscripționabilă"
 
 #: ../src/libedataserver/e-source.c:2173
 #, fuzzy
@@ -6906,7 +6885,7 @@ msgstr "Contactul nu a fost găsit"
 #: ../src/libedataserver/e-source-mail-signature.c:483
 #, c-format
 msgid "Signature script must be a local file"
-msgstr ""
+msgstr "Scriptul semnătură trebuie să fie un fișier local"
 
 #: ../src/libedataserver/e-source-proxy.c:1642
 #, fuzzy, c-format
@@ -7063,6 +7042,8 @@ msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request. The used URI was: %s"
 msgstr ""
+"Serverul a răspuns cu o pagină HTML, ceea ce poate însemna că există o "
+"eroare la server sau la cererea clientului. URI-ul folosit a fost: %s"
 
 #: ../src/libedataserver/e-webdav-session.c:957
 #, c-format
@@ -7070,6 +7051,8 @@ msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request."
 msgstr ""
+"Serverul a răspuns cu o pagină HTML, ceea ce poate însemna că există o "
+"eroare la server sau la cererea clientului."
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
@@ -7079,7 +7062,7 @@ msgstr ""
 #: ../src/libedataserver/e-webdav-session.c:978
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
-msgstr ""
+msgstr "%s: cod de eroare HTTP %d (%s): %s"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
@@ -7087,7 +7070,7 @@ msgstr ""
 #: ../src/libedataserver/e-webdav-session.c:986
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
-msgstr ""
+msgstr "Eșec cu codul de eroare HTTP %d (%s): %s"
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
@@ -7096,14 +7079,14 @@ msgstr ""
 #: ../src/libedataserver/e-webdav-session.c:1001
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
-msgstr ""
+msgstr "%s: cod de eroare HTTP %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #: ../src/libedataserver/e-webdav-session.c:1007
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
-msgstr ""
+msgstr "Eșec cu codul de eroare HTTP %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:1257
 #, fuzzy
@@ -7169,7 +7152,7 @@ msgstr "Eroare la descărcarea mesajului"
 
 #: ../src/libedataserver/e-webdav-session.c:2148
 msgid "Cannot rewind input stream: Not supported"
-msgstr ""
+msgstr "Nu se poate derula fluxul înapoi: Nesuportat"
 
 #: ../src/libedataserver/e-webdav-session.c:2311
 #: ../src/libedataserver/e-webdav-session.c:2455
@@ -7210,13 +7193,13 @@ msgstr "Eroare la codarea datelor"
 #: ../src/libedataserver/e-webdav-session.c:2803
 #: ../src/libedataserver/e-webdav-session.c:3005
 msgid "Expected application/xml response, but none returned"
-msgstr ""
+msgstr "Se aștepta un răspuns application/xml, dar niciunul nu a fost returnat"
 
 #: ../src/libedataserver/e-webdav-session.c:2806
 #: ../src/libedataserver/e-webdav-session.c:3008
 #, c-format
 msgid "Expected application/xml response, but %s returned"
-msgstr ""
+msgstr "Se aștepta un răspuns application/xml, dar %s a fost returnat"
 
 #: ../src/libedataserver/e-webdav-session.c:2818
 #: ../src/libedataserver/e-webdav-session.c:3021
@@ -7252,32 +7235,38 @@ msgstr "Eșuare la blocare prin folosirea fcntl(2): %s"
 #: ../src/libedataserver/e-webdav-session.c:4781
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
+"Nu se poate stoca Intrarea de Control de Acces protejată sau moștenită."
 
 #: ../src/libedataserver/e-webdav-session.c:4788
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr ""
+"Tipul principal pentru Intrarea de Control de Acces oferit a fost nevalid."
 
 #: ../src/libedataserver/e-webdav-session.c:4795
 msgid "Cannot store property-based Access Control Entry."
-msgstr ""
+msgstr "Nu se poate stoca Intrarea de Acces de Control bazată pe proprietăți."
 
 #: ../src/libedataserver/e-webdav-session.c:4802
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
+"Intrarea de Acces de Control poate fi numai pentru Permite sau Refuză, dar "
+"nu Nespecificat."
 
 #: ../src/libedataserver/e-webdav-session.c:4810
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
+"Intrarea de Acces de Control poate fi numai pentru Permite sau Refuză, dar "
+"nu ambele."
 
 #: ../src/libedataserver/e-webdav-session.c:4869
 msgid "Access Control Entry privilege cannot be NULL."
-msgstr ""
+msgstr "Privilegiul Intrării de Control de Acces nu poate fi NULL."
 
 #: ../src/libedataserverui/e-credentials-prompter.c:258
 #: ../src/libedataserverui/e-credentials-prompter.c:1689
 #: ../src/libedataserverui/e-credentials-prompter.c:1733
 msgid "Credentials prompt was cancelled"
-msgstr ""
+msgstr "Solicitarea certificărilor a fost anulată"
 
 #: ../src/libedataserverui/e-credentials-prompter.c:775
 #, fuzzy, c-format
@@ -7293,7 +7282,7 @@ msgstr "Eșuare la stocarea mesajului în fișierul temporar %s: %s"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:246
 msgid "Requesting access token, please wait..."
-msgstr ""
+msgstr "Se cere jetonul de acces, așteptați..."
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
@@ -7364,6 +7353,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "calendar “%s”."
 msgstr ""
+"Autentificați-vă la contul %s și acceptați condițiile pentru a accesa "
+"calendarul „%s”."
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7374,6 +7365,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "account “%s”."
 msgstr ""
+"Autentificați-vă la contul %s și acceptați condițiile pentru a accesa contul "
+"de email „%s”."
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7384,6 +7377,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "transport “%s”."
 msgstr ""
+"Autentificați-vă la contul %s și acceptați condițiile pentru a accesa "
+"transportul de email „%s”."
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7394,6 +7389,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
 "list “%s”."
 msgstr ""
+"Autentificați-vă la contul %s și acceptați condițiile pentru a accesa lista "
+"de memo-uri „%s”."
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7404,6 +7401,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your task "
 "list “%s”."
 msgstr ""
+"Autentificați-vă la contul %s și acceptați condițiile pentru a accesa lista "
+"de sarcini „%s”."
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7414,6 +7413,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "account “%s”."
 msgstr ""
+"Autentificați-vă la contul %s și acceptați condițiile pentru a accesa contul "
+"„%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:602
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
@@ -7491,11 +7492,11 @@ msgstr "Introduceți parola %s pentru %s la gazda %s."
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1071
 msgid "_OK"
-msgstr ""
+msgstr "_OK"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:348
 msgid "_User Name:"
-msgstr ""
+msgstr "_Utilizator:"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:360
 msgid "_Password:"
@@ -7504,15 +7505,15 @@ msgstr "_Parolă:"
 #. Remember password check
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:376
 msgid "_Add this password to your keyring"
-msgstr ""
+msgstr "_Adaugă această parolă în inelul de chei personal"
 
 #: ../src/libedataserverui/e-reminders-widget.c:225
 msgid "Add custom time…"
-msgstr ""
+msgstr "Adaugă timp personalizat..."
 
 #: ../src/libedataserverui/e-reminders-widget.c:229
 msgid "Clear custom times"
-msgstr ""
+msgstr "Curăță timpii personalizați"
 
 #: ../src/libedataserverui/e-reminders-widget.c:277
 msgctxt "overdue"
@@ -7523,14 +7524,14 @@ msgstr "acum"
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d an"
+msgstr[1] "%d ani"
+msgstr[2] "%d de ani"
 
 #: ../src/libedataserverui/e-reminders-widget.c:301
 msgctxt "overdue"
 msgid "overdue"
-msgstr ""
+msgstr "întârziat"
 
 #: ../src/libedataserverui/e-reminders-widget.c:912
 #, c-format
@@ -7547,42 +7548,42 @@ msgstr "Eșec la eliberarea tuturor:"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1110
 msgid "Set a custom snooze time for"
-msgstr ""
+msgstr "Stabilește un timp de amânare personalizat pentru"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1123
 msgctxt "reminders-snooze"
 msgid "da_ys"
-msgstr ""
+msgstr "_zile"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1139
 msgctxt "reminders-snooze"
 msgid "_hours"
-msgstr ""
+msgstr "_ore"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1155
 msgctxt "reminders-snooze"
 msgid "_minutes"
-msgstr ""
+msgstr "_minute"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1161
 msgid "_Add Snooze time"
-msgstr ""
+msgstr "_Adaugă timp de amânare"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1428
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
-msgstr ""
+msgstr "_Renunță"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1429
 msgid "Dismiss _All"
-msgstr ""
+msgstr "Renunță la to_ate"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1431
 msgid "_Snooze"
-msgstr ""
+msgstr "_Amână"
 
 #: ../src/libedataserverui/e-trust-prompt.c:111
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:117
@@ -7592,17 +7593,17 @@ msgstr "Certificat de încredere..."
 #: ../src/libedataserverui/e-trust-prompt.c:113
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:118
 msgid "_Reject"
-msgstr ""
+msgstr "_Respinge"
 
 #: ../src/libedataserverui/e-trust-prompt.c:114
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:119
 msgid "Accept _Temporarily"
-msgstr ""
+msgstr "Acceptă _temporar"
 
 #: ../src/libedataserverui/e-trust-prompt.c:115
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:120
 msgid "_Accept Permanently"
-msgstr ""
+msgstr "_Acceptă permanent"
 
 #: ../src/libedataserverui/e-trust-prompt.c:186
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:157
@@ -7624,7 +7625,7 @@ msgstr ""
 #: ../src/libedataserverui/e-trust-prompt.c:208
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:172
 msgid "Reason:"
-msgstr ""
+msgstr "Motiv:"
 
 #: ../src/libedataserverui/e-trust-prompt.c:211
 msgid "Detailed error:"
@@ -7641,11 +7642,13 @@ msgid ""
 "The certificate does not match the expected identity of the site that it was "
 "retrieved from."
 msgstr ""
+"Certificatul nu se potrivește cu identitatea așteptată a sitului de unde a "
+"fost obținut."
 
 #: ../src/libedataserverui/e-trust-prompt.c:277
 #: ../src/modules/trust-prompt/module-trust-prompt.c:84
 msgid "The certificate’s activation time is still in the future."
-msgstr ""
+msgstr "Timpul activării certificatului este încă în viitor"
 
 #: ../src/libedataserverui/e-trust-prompt.c:279
 #: ../src/modules/trust-prompt/module-trust-prompt.c:86
@@ -7660,11 +7663,13 @@ msgid ""
 "The certificate has been revoked according to the connection’s certificate "
 "revocation list."
 msgstr ""
+"Certificatul a fost revocat conform listei de revocări a certificatelor "
+"conexiunii."
 
 #: ../src/libedataserverui/e-trust-prompt.c:283
 #: ../src/modules/trust-prompt/module-trust-prompt.c:90
 msgid "The certificate’s algorithm is considered insecure."
-msgstr ""
+msgstr "Algoritmul certificatului este considerat nesigur."
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:164
 #, fuzzy
@@ -7687,17 +7692,17 @@ msgstr "Contacte"
 #: ../src/libedataserverui/e-webdav-discover-widget.c:522
 msgctxt "WebDAVDiscover"
 msgid "Events"
-msgstr ""
+msgstr "Evenimente"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:523
 msgctxt "WebDAVDiscover"
 msgid "Memos"
-msgstr ""
+msgstr "Memo-uri"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:524
 msgctxt "WebDAVDiscover"
 msgid "Tasks"
-msgstr ""
+msgstr "Sarcini"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:838
 #, fuzzy
@@ -7723,6 +7728,8 @@ msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain a password for “%s”"
 msgstr ""
+"Nu s-a găsit un cont corespunzător în serviciul org.gnome.OnlineAccounts de "
+"unde se obține parola pentru „%s”"
 
 #: ../src/modules/gnome-online-accounts/e-goa-password-based.c:315
 msgid "Failed to get password from GOA: "
@@ -7775,6 +7782,8 @@ msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain an access token for “%s”"
 msgstr ""
+"Nu s-a găsit un cont corespunzător în serviciul org.gnome.OnlineAccounts de "
+"unde se obține jetonul de acces pentru „%s”"
 
 #: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1455
 #, c-format
@@ -7814,7 +7823,7 @@ msgstr "Conexiune la server"
 
 #: ../src/modules/ubuntu-online-accounts/evolution-data-server-uoa.desktop.in.in.h:2
 msgid "Required to have EDS appear in UOA"
-msgstr ""
+msgstr "Este necesar ca EDS să apară în UOA"
 
 #: ../src/modules/ubuntu-online-accounts/google-calendar.service.in.in.h:1
 #, fuzzy
@@ -7853,6 +7862,8 @@ msgid ""
 "Cannot find a corresponding account service in the accounts database from "
 "which to obtain an access token for “%s”"
 msgstr ""
+"Nu s-a găsit un serviciu de conturi corespunzător în baza de date cu conturi "
+"din care să se obțină jetonul de acces pentru „%s”"
 
 #: ../src/modules/ubuntu-online-accounts/uoa-utils.c:85
 #: ../src/modules/ubuntu-online-accounts/uoa-utils.c:282
@@ -7860,6 +7871,8 @@ msgstr ""
 msgid ""
 "Expected status 200 when requesting your identity, instead got status %d (%s)"
 msgstr ""
+"S-a așteptat codul de stare 200 la solicitarea identității dumneavoastră, în "
+"schimb s-a primit codul de stare %d (%s)"
 
 #: ../src/modules/ubuntu-online-accounts/uoa-utils.c:102
 #: ../src/modules/ubuntu-online-accounts/uoa-utils.c:299
@@ -7868,15 +7881,15 @@ msgstr "Eroare la parsarea răspunsului ca JSON: "
 
 #: ../src/modules/ubuntu-online-accounts/uoa-utils.c:120
 msgid "Didn’t find “email” in JSON data"
-msgstr ""
+msgstr "Nu s-a găsit „email” în datele JSON"
 
 #: ../src/modules/ubuntu-online-accounts/uoa-utils.c:317
 msgid "Didn’t find “id” in JSON data"
-msgstr ""
+msgstr "Nu s-a găsit „id” în datele JSON"
 
 #: ../src/modules/ubuntu-online-accounts/uoa-utils.c:322
 msgid "Didn’t find “emails.account” in JSON data"
-msgstr ""
+msgstr "Nu s-a găsit „emails.account” în datele JSON"
 
 #: ../src/modules/ubuntu-online-accounts/windows-live-mail.service.in.in.h:1
 #, fuzzy
@@ -7896,12 +7909,12 @@ msgstr "Email Yahoo!"
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:40
 #: ../src/services/evolution-user-prompter/evolution-user-prompter.c:33
 msgid "Keep running after the last client is closed"
-msgstr ""
+msgstr "Continuă rularea după ce ultimul client este închis"
 
 #: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:40
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:42
 msgid "Wait running until at least one client is connected"
-msgstr ""
+msgstr "Așteaptă rulând până cel puțin un client este conectat"
 
 #: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:42
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:44
@@ -7909,25 +7922,28 @@ msgid ""
 "Overrides compile-time backend per process option; use 1 to enable, 0 to "
 "disable, any other value is to use compile-time option"
 msgstr ""
+"Suprascrie opțiunea de la compilare per-proces din backend; utilizați 1 "
+"pentru activare, 0 pentru dezactivare, orice valoare este pentru a folosi "
+"opțiunea de la compilare"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:227
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:255
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:760
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:969
 msgid "Reminders"
-msgstr ""
+msgstr "Mementouri"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:367
 msgid "Warning"
-msgstr ""
+msgstr "Avertisment"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:368
 msgid "_No"
-msgstr ""
+msgstr "_Nu"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:369
 msgid "_Yes"
-msgstr ""
+msgstr "_Da"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:373
 #, c-format
@@ -7939,54 +7955,60 @@ msgid ""
 "\n"
 "Are you sure you want to run this program?"
 msgstr ""
+"Un memento pentru calendar este pe cale de declanșare. Acest memento este "
+"configurat să ruleze următorul program:\n"
+"\n"
+"        %s\n"
+"\n"
+"Sigur doriți să rulați acest program?"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:387
 msgid "Do not ask me about this program again"
-msgstr ""
+msgstr "Nu întreba despre acest program din nou"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:665
 msgid "Display reminders in notification area _only"
-msgstr ""
+msgstr "Afișează mementouri numai în zona de n_otificare"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:666
 msgid "Keep reminder notification window always on _top"
-msgstr ""
+msgstr "Menține fereastra de notificare a mementoului în_totdeauna deasupra"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:667
 msgid "Display reminders for _completed tasks"
-msgstr ""
+msgstr "Afișează mementouri pentru sarcini _completate"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:668
 msgid "Display reminders for _past events"
-msgstr ""
+msgstr "Afișează mementouri pentru evenimente _trecute"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:682
 msgid "Reminders Options:"
-msgstr ""
+msgstr "Opțiuni memento:"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:776
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Aveți %d memento"
+msgstr[1] "Aveți %d memento-uri"
+msgstr[2] "Aveți %d de memento-uri"
 
 #: ../src/services/evolution-source-registry/builtin/birthdays.source.in.h:1
 msgid "Birthdays & Anniversaries"
-msgstr ""
+msgstr "Zile de naștere și aniversări"
 
 #: ../src/services/evolution-source-registry/builtin/caldav-stub.source.in.h:1
 msgid "CalDAV"
-msgstr ""
+msgstr "CalDAV"
 
 #: ../src/services/evolution-source-registry/builtin/carddav-stub.source.in.h:1
 msgid "CardDAV"
-msgstr ""
+msgstr "CardDAV"
 
 #: ../src/services/evolution-source-registry/builtin/google-stub.source.in.h:1
 msgid "Google"
-msgstr ""
+msgstr "Google"
 
 #: ../src/services/evolution-source-registry/builtin/ldap-stub.source.in.h:1
 #, fuzzy
@@ -8015,11 +8037,11 @@ msgstr "Vreme: Ceață"
 
 #: ../src/services/evolution-source-registry/builtin/webcal-stub.source.in.h:1
 msgid "On The Web"
-msgstr ""
+msgstr "Pe Web"
 
 #: ../src/services/evolution-source-registry/evolution-source-registry.c:41
 msgid "Don’t migrate user data from previous versions of Evolution"
-msgstr ""
+msgstr "Nu migra datele utilizatorilor din versiuni anterioare ale Evolution"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:69
 #: ../src/tools/addressbook-export/addressbook-export.c:781
@@ -8040,11 +8062,11 @@ msgstr "Eroare necunoscută"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:922
 msgid "Specify the output file instead of standard output"
-msgstr ""
+msgstr "Specifică un fișier de ieșire în loc de ieșirea standard"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:923
 msgid "OUTPUTFILE"
-msgstr ""
+msgstr "OUTPUTFILE"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:926
 msgid "List local address book folders"
@@ -8052,20 +8074,22 @@ msgstr "Afișează dosarele locale pentru agendă"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:929
 msgid "Show cards as vcard or csv file"
-msgstr ""
+msgstr "Arată carduri ca vcard sau fișier csv"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:930
 msgid "[vcard|csv]"
-msgstr ""
+msgstr "[vcard|csv]"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:978
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
+"Eroare la argumentele liniei de comandă, utilizați opțiunea --help pentru a "
+"consulta cum se utilizează."
 
 #: ../src/tools/addressbook-export/addressbook-export.c:992
 msgid "Only support csv or vcard format."
-msgstr ""
+msgstr "Suportă numai formatul csv sau vcard."
 
 #: ../src/tools/list-sources/list-sources.c:83
 #, fuzzy
@@ -8090,18 +8114,20 @@ msgid ""
 "Write in machine readable format (one source per line, without localized "
 "property names and tab as separator)"
 msgstr ""
+"Scrie în format citibil de mașină (o sursă pe linie, fără nume de "
+"proprietăți localizate și tab ca separator)"
 
 #: ../src/tools/list-sources/list-sources.c:95
 msgid "Limit only to sources with given extension name"
-msgstr ""
+msgstr "Limitează numai la surse cu numele de extensie dat"
 
 #: ../src/tools/list-sources/list-sources.c:106
 msgid "yes"
-msgstr ""
+msgstr "da"
 
 #: ../src/tools/list-sources/list-sources.c:106
 msgid "no"
-msgstr ""
+msgstr "nu"
 
 #: ../src/tools/list-sources/list-sources.c:126
 #, fuzzy
@@ -8112,11 +8138,11 @@ msgstr "Concurență"
 
 #: ../src/tools/list-sources/list-sources.c:132
 msgid "Collection/GNOME Online Accounts"
-msgstr ""
+msgstr "Colecție/Conturi Online GNOME"
 
 #: ../src/tools/list-sources/list-sources.c:137
 msgid "Collection/Ubuntu Online Accounts"
-msgstr ""
+msgstr "Colecție/Conturi Online Ubuntu"
 
 #: ../src/tools/list-sources/list-sources.c:147
 msgid "Address Book"
@@ -8136,15 +8162,15 @@ msgstr "Listă adrese email"
 
 #: ../src/tools/list-sources/list-sources.c:151
 msgid "Mail Account"
-msgstr ""
+msgstr "Cont email"
 
 #: ../src/tools/list-sources/list-sources.c:152
 msgid "Mail Transport"
-msgstr ""
+msgstr "Transport email"
 
 #: ../src/tools/list-sources/list-sources.c:153
 msgid "Mail Identity"
-msgstr ""
+msgstr "Identitate email"
 
 #: ../src/tools/list-sources/list-sources.c:154
 #, fuzzy
@@ -8160,12 +8186,12 @@ msgstr "Semnătură eronată"
 
 #: ../src/tools/list-sources/list-sources.c:156
 msgid "Proxy"
-msgstr ""
+msgstr "Proxy"
 
 #: ../src/tools/list-sources/list-sources.c:224
 #, c-format
 msgid "UID: %s"
-msgstr ""
+msgstr "UID: %s"
 
 #: ../src/tools/list-sources/list-sources.c:228
 #, fuzzy, c-format
@@ -8206,32 +8232,32 @@ msgstr "Operația a eșuat: %s"
 #: ../src/tools/list-sources/list-sources.c:247
 #, c-format
 msgid "MIME Type: %s"
-msgstr ""
+msgstr "Tip MIME: %s"
 
 #: ../src/tools/list-sources/list-sources.c:269
 #, c-format
 msgid "Auth Host: %s:%d"
-msgstr ""
+msgstr "Gazdă autentificare: %s:%d"
 
 #: ../src/tools/list-sources/list-sources.c:275
 #, c-format
 msgid "Auth Host: %s"
-msgstr ""
+msgstr "Gazdă autentificare: %s"
 
 #: ../src/tools/list-sources/list-sources.c:283
 #, c-format
 msgid "Auth User: %s"
-msgstr ""
+msgstr "Utilizator autentificare: %s"
 
 #: ../src/tools/list-sources/list-sources.c:291
 #, c-format
 msgid "Auth Method: %s"
-msgstr ""
+msgstr "Metodă de autentificare: %s"
 
 #: ../src/tools/list-sources/list-sources.c:299
 #, c-format
 msgid "Auth Proxy UID: %s"
-msgstr ""
+msgstr "UID Proxy autentificare: %s"
 
 #: ../src/tools/list-sources/list-sources.c:420
 #, fuzzy
