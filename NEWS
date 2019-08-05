@@ -1,3 +1,26 @@
+Evolution-Data-Server 3.33.90 2019-08-05
+----------------------------------------
+
+Bug Fixes:
+	I#112 - Credentials prompter re-asks for credentials of disabled accounts ][ (Milan Crha)
+	I#137 - POSIX locale tests fail with ICU 64.x (Milan Crha)
+	M!27 - e-book-backend-ldap.c:func_exists() avoid strdup+free (Дилян Палаузов)
+	M!28 - Include LDFLAGS in gtkdoc-scangobj command line (Ting-Wei Lan)
+	M!29 - WebDAV: Add a way to allow any component with MKCALENDAR (Дилян Палаузов)
+	M!30 - ecal: Add camel and libedataserver to the library search path for the gir (Iain Lane)
+	M!31 - EWebDAVDiscoverContent: Select implicitly the single item (Дилян Палаузов)
+
+Miscellaneous:
+	EWebDAVDiscover can report failure on success and hide collections (Milan Crha)
+	e_webdav_discover_dialog_new: Set default response button for the dialog (Milan Crha)
+	Let the message-location check also real message location in the search folders (Milan Crha)
+
+Translations:
+	Daniel Șerbănescu (ro)
+	Rafael Fontenelle (pt_BR)
+	Asier Sarasua Garmendia (eu)
+	Jordi Mas (ca)
+
 Evolution-Data-Server 3.33.4 2019-07-15
 ---------------------------------------
 
