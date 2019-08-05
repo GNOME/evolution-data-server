@@ -3753,8 +3753,8 @@ msgid ""
 "Kerberos account there. Reported error was: %s"
 msgstr ""
 "No es pot sol·licitar l'entrada de Kerberos. Obteniu l'entrada manualment, "
-"com a la línia d'ordres amb \"kinit\" o obriu \"Comptes en línia\" a "
-"\"Configuració\" i afegiu-hi el compte de Kerberos. S'ha informat de "
+"com a la línia d'ordres amb «kinit» o obriu «Comptes en línia» a "
+"«Paràmetres» i afegiu-hi el compte de Kerberos. S'ha informat de "
 "l'error: %s"
 
 #: ../src/camel/camel-sasl-gssapi.c:518
@@ -4043,7 +4043,7 @@ msgstr "Ha fallat el descodificador"
 #: ../src/camel/camel-smime-context.c:1265
 #, c-format
 msgid "No valid or appropriate certificate for “%s” was found"
-msgstr "No s'ha trobat cap certificat vàlid o adequat per a“%s”"
+msgstr "No s'ha trobat cap certificat vàlid o adequat per a «%s»"
 
 #: ../src/camel/camel-smime-context.c:1305
 msgid "Cannot find common bulk encryption algorithm"
@@ -7335,7 +7335,7 @@ msgstr "endarrerit"
 #: ../src/libedataserverui/e-reminders-widget.c:912
 #, c-format
 msgid "Failed to launch URI “%s”:"
-msgstr "No s'ha pogut iniciar l'URI “%s”:"
+msgstr "No s'ha pogut iniciar l'URI «%s»:"
 
 #: ../src/libedataserverui/e-reminders-widget.c:953
 msgid "Failed to dismiss reminder:"
