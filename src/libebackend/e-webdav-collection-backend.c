@@ -562,8 +562,7 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 		e_webdav_discover_free_discovered_sources (discovered_sources);
 		discovered_sources = NULL;
 		any_success = TRUE;
-	} else if (local_error && local_error->domain == SOUP_HTTP_ERROR && (
-		   SOUP_STATUS_IS_TRANSPORT_ERROR (local_error->code) || SOUP_STATUS_IS_SERVER_ERROR (local_error->code))) {
+	} else if (local_error) {
 		RemoveSourceTypesData rstd;
 
 		rstd.server = server;
@@ -586,8 +585,7 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 		e_webdav_discover_free_discovered_sources (discovered_sources);
 		discovered_sources = NULL;
 		any_success = TRUE;
-	} else if (any_success && local_error && local_error->domain == SOUP_HTTP_ERROR && (
-		   SOUP_STATUS_IS_TRANSPORT_ERROR (local_error->code) || SOUP_STATUS_IS_SERVER_ERROR (local_error->code))) {
+	} else if (any_success && local_error) {
 		RemoveSourceTypesData rstd;
 
 		rstd.server = server;
