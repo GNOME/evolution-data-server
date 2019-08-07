@@ -649,6 +649,11 @@ cal_backend_dispose (GObject *object)
 	g_clear_object (&priv->proxy_resolver);
 	g_clear_object (&priv->authentication_source);
 
+	g_mutex_lock (&priv->views_mutex);
+	g_list_free_full (priv->views, g_object_unref);
+	priv->views = NULL;
+	g_mutex_unlock (&priv->views_mutex);
+
 	g_hash_table_remove_all (priv->operation_ids);
 
 	while (!g_queue_is_empty (&priv->pending_operations))
@@ -667,7 +672,6 @@ cal_backend_finalize (GObject *object)
 
 	priv = E_CAL_BACKEND_GET_PRIVATE (object);
 
-	g_list_free (priv->views);
 	g_mutex_clear (&priv->views_mutex);
 	g_mutex_clear (&priv->property_lock);
 

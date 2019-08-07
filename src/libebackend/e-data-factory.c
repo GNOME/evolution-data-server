@@ -69,6 +69,11 @@ struct _EDataFactoryPrivate {
 	GHashTable *connections;
 	GRecMutex connections_lock;
 
+	/* Holds array of opened backends for each client.
+	   Used only when not using backend-per-process.
+	   Reuses the 'connections_lock'. */
+	GHashTable *backend_clients; /* gchar *sender ~> GPtrArray { GWeakRef { EBackend }} */
+
 	/* This is a hash table of client bus names being watched.
 	 * The value is the watcher ID for g_bus_unwatch_name(). */
 	GHashTable *watched_names;
@@ -340,6 +345,78 @@ data_factory_dup_subprocess_helper_hash_key (const gchar *factory_name,
 	return helper_hash_key;
 }
 
+static void
+data_factory_add_backend_client (EDataFactory *data_factory,
+				 EBackend *backend,
+				 const gchar *sender)
+{
+	GPtrArray *array;
+
+	g_return_if_fail (E_IS_DATA_FACTORY (data_factory));
+	g_return_if_fail (E_IS_BACKEND (backend));
+	g_return_if_fail (sender != NULL);
+
+	g_rec_mutex_lock (&data_factory->priv->connections_lock);
+
+	array = g_hash_table_lookup (data_factory->priv->backend_clients, sender);
+	if (!array) {
+		array = g_ptr_array_new_with_free_func ((GDestroyNotify) e_weak_ref_free);
+		g_hash_table_insert (data_factory->priv->backend_clients, g_strdup (sender), array);
+	}
+
+	g_ptr_array_add (array, e_weak_ref_new (backend));
+
+	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
+}
+
+static void
+data_factory_remove_backend_client (EDataFactory *data_factory,
+				    EBackend *backend,
+				    const gchar *sender)
+{
+	GPtrArray *array;
+	guint ii;
+
+	g_return_if_fail (E_IS_DATA_FACTORY (data_factory));
+	if (backend)
+		g_return_if_fail (E_IS_BACKEND (backend));
+	g_return_if_fail (sender != NULL);
+
+	g_rec_mutex_lock (&data_factory->priv->connections_lock);
+
+	array = g_hash_table_lookup (data_factory->priv->backend_clients, sender);
+	if (array) {
+		for (ii = 0; ii < array->len; ii++) {
+			GWeakRef *weakref;
+			EBackend *stored_backend;
+
+			weakref = g_ptr_array_index (array, ii);
+			stored_backend = g_weak_ref_get (weakref);
+
+			if (backend) {
+				if (stored_backend == backend) {
+					g_ptr_array_remove_index (array, ii);
+					/* One client can connect to one backend multiple times, thus
+					   remove only one item from the array. */
+					g_clear_object (&stored_backend);
+					break;
+				}
+			} else if (stored_backend) {
+				/* Do not provide 'sender', because it would call this function again,
+				   causing unnecessary recursion. */
+				e_data_factory_backend_closed_by_sender (data_factory, stored_backend, NULL);
+			}
+
+			g_clear_object (&stored_backend);
+		}
+
+		if (!array->len)
+			g_hash_table_remove (data_factory->priv->backend_clients, sender);
+	}
+
+	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
+}
+
 static gboolean
 data_factory_verify_subprocess_backend_proxy_is_used (EDataFactory *data_factory,
 						      const gchar *except_bus_name,
@@ -469,6 +546,8 @@ data_factory_name_vanished_cb (GDBusConnection *connection,
 
 	if (data_factory != NULL) {
 		data_factory_connections_remove (data_factory, name, NULL);
+
+		data_factory_remove_backend_client (data_factory, NULL, name);
 
 		/* Unwatching the bus name from here will corrupt the
 		 * 'name' argument, and possibly also the 'user_data'.
@@ -955,6 +1034,7 @@ data_factory_dispose (GObject *object)
 	g_clear_object (&priv->registry);
 
 	g_hash_table_remove_all (priv->connections);
+	g_hash_table_remove_all (priv->backend_clients);
 	g_hash_table_remove_all (priv->watched_names);
 
 	/* Chain up to parent's dispose() method. */
@@ -980,6 +1060,8 @@ data_factory_finalize (GObject *object)
 
 	g_hash_table_destroy (priv->connections);
 	g_rec_mutex_clear (&priv->connections_lock);
+
+	g_hash_table_destroy (priv->backend_clients);
 
 	g_hash_table_destroy (priv->watched_names);
 	g_mutex_clear (&priv->watched_names_lock);
@@ -1146,6 +1228,8 @@ e_data_factory_init (EDataFactory *data_factory)
 		(GEqualFunc) g_str_equal,
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) g_ptr_array_unref);
+
+	data_factory->priv->backend_clients = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_ptr_array_unref);
 
 	data_factory->priv->watched_names = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
@@ -1366,6 +1450,7 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 	if (!backend_per_process && backend_factory) {
 		gchar *object_path = NULL, *backend_key;
 		OpenedBackendData *obd;
+		EBackend *backend = NULL;
 
 		backend_key = g_strconcat (backend_name, "\n", uid, "\n", extension_name, NULL);
 
@@ -1374,6 +1459,7 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 		if (obd) {
 			object_path = g_strdup (obd->object_path);
 			g_object_ref (obd->backend);
+			backend = obd->backend;
 
 			/* Also drop the "reference" on the data_factory, it's held by the obj->backend already */
 			e_dbus_server_release (E_DBUS_SERVER (data_factory));
@@ -1381,8 +1467,6 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 		g_mutex_unlock (&data_factory->priv->mutex);
 
 		if (!object_path) {
-			EBackend *backend;
-
 			backend = e_data_factory_create_backend (data_factory, backend_factory, source);
 			object_path = e_data_factory_open_backend (data_factory, backend, g_dbus_method_invocation_get_connection (invocation), NULL, &error);
 			if (object_path) {
@@ -1407,7 +1491,17 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 		}
 
 		if (object_path) {
+			GDBusConnection *connection;
+			const gchar *sender;
+
 			class->complete_open (data_factory, invocation, object_path, server_class->bus_name, extension_name);
+
+			connection = g_dbus_method_invocation_get_connection (invocation);
+			sender = g_dbus_method_invocation_get_sender (invocation);
+
+			data_factory_watched_names_add (data_factory, connection, sender);
+
+			data_factory_add_backend_client (data_factory, backend, sender);
 
 			g_mutex_lock (&priv->spawn_subprocess_lock);
 			priv->spawn_subprocess_state = DATA_FACTORY_SPAWN_SUBPROCESS_NONE;
@@ -1691,6 +1785,22 @@ e_data_factory_backend_closed (EDataFactory *data_factory,
 {
 	g_return_if_fail (E_IS_DATA_FACTORY (data_factory));
 	g_return_if_fail (E_IS_BACKEND (backend));
+
+	e_data_factory_backend_closed_by_sender (data_factory, backend, NULL);
+}
+
+void
+e_data_factory_backend_closed_by_sender (EDataFactory *data_factory,
+					 EBackend *backend,
+					 const gchar *sender)
+{
+	g_return_if_fail (E_IS_DATA_FACTORY (data_factory));
+	g_return_if_fail (E_IS_BACKEND (backend));
+
+	/* Call only when 'sender' is not NULL, to avoid recursion when
+	   data_factory_remove_backend_client() calls this function on its own. */
+	if (sender)
+		data_factory_remove_backend_client (data_factory, backend, sender);
 
 	g_object_unref (backend);
 }

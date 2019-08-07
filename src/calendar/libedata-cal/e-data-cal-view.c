@@ -57,7 +57,7 @@ struct _EDataCalViewPrivate {
 	gchar *object_path;
 
 	/* The backend we are monitoring */
-	ECalBackend *backend;
+	GWeakRef backend_weakref; /* ECalBackend * */
 
 	gboolean started;
 	gboolean stopped;
@@ -161,13 +161,19 @@ calview_start_thread (gpointer data)
 	EDataCalView *view = data;
 
 	if (view->priv->started && !view->priv->stopped) {
-		/* To avoid race condition when one thread is starting the view, while
-		   another thread wants to notify about created/modified/removed objects. */
-		e_cal_backend_sexp_lock (view->priv->sexp);
+		ECalBackend *backend = e_data_cal_view_ref_backend (view);
 
-		e_cal_backend_start_view (view->priv->backend, view);
+		if (backend) {
+			/* To avoid race condition when one thread is starting the view, while
+			   another thread wants to notify about created/modified/removed objects. */
+			e_cal_backend_sexp_lock (view->priv->sexp);
 
-		e_cal_backend_sexp_unlock (view->priv->sexp);
+			e_cal_backend_start_view (backend, view);
+
+			e_cal_backend_sexp_unlock (view->priv->sexp);
+
+			g_object_unref (backend);
+		}
 	}
 
 	g_object_unref (view);
@@ -181,6 +187,7 @@ impl_DataCalView_start (EDBusCalendarView *object,
                         EDataCalView *view)
 {
 	if (!view->priv->started) {
+		ECalBackend *backend = e_data_cal_view_ref_backend (view);
 		GThread *thread;
 
 		view->priv->started = TRUE;
@@ -188,7 +195,9 @@ impl_DataCalView_start (EDBusCalendarView *object,
 			FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES,
 			"---;%p;VIEW-START;%s;%s", view,
 			e_cal_backend_sexp_text (view->priv->sexp),
-			G_OBJECT_TYPE_NAME (view->priv->backend));
+			backend ? G_OBJECT_TYPE_NAME (backend) : "null backend");
+
+		g_clear_object (&backend);
 
 		thread = g_thread_new (
 			NULL, calview_start_thread, g_object_ref (view));
@@ -205,8 +214,14 @@ calview_stop_thread (gpointer data)
 {
 	EDataCalView *view = data;
 
-	if (view->priv->stopped)
-		e_cal_backend_stop_view (view->priv->backend, view);
+	if (view->priv->stopped) {
+		ECalBackend *backend = e_data_cal_view_ref_backend (view);
+
+		if (backend) {
+			e_cal_backend_stop_view (backend, view);
+			g_object_unref (backend);
+		}
+	}
 	g_object_unref (view);
 
 	return NULL;
@@ -247,11 +262,21 @@ impl_DataCalView_dispose (EDBusCalendarView *object,
                           GDBusMethodInvocation *invocation,
                           EDataCalView *view)
 {
+	ECalBackend *backend;
+
 	e_dbus_calendar_view_complete_dispose (object, invocation);
 
-	e_cal_backend_stop_view (view->priv->backend, view);
-	view->priv->stopped = TRUE;
-	e_cal_backend_remove_view (view->priv->backend, view);
+	backend = e_data_cal_view_ref_backend (view);
+
+	if (backend) {
+		e_cal_backend_stop_view (backend, view);
+		view->priv->stopped = TRUE;
+		e_cal_backend_remove_view (backend, view);
+
+		g_object_unref (backend);
+	} else {
+		view->priv->stopped = TRUE;
+	}
 
 	return TRUE;
 }
@@ -300,9 +325,8 @@ data_cal_view_set_backend (EDataCalView *view,
                            ECalBackend *backend)
 {
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (view->priv->backend == NULL);
 
-	view->priv->backend = g_object_ref (backend);
+	g_weak_ref_set (&view->priv->backend_weakref, backend);
 }
 
 static void
@@ -378,9 +402,9 @@ data_cal_view_get_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_BACKEND:
-			g_value_set_object (
+			g_value_take_object (
 				value,
-				e_data_cal_view_get_backend (
+				e_data_cal_view_ref_backend (
 				E_DATA_CAL_VIEW (object)));
 			return;
 
@@ -427,8 +451,9 @@ data_cal_view_dispose (GObject *object)
 
 	g_clear_object (&priv->connection);
 	g_clear_object (&priv->dbus_object);
-	g_clear_object (&priv->backend);
 	g_clear_object (&priv->sexp);
+
+	g_weak_ref_set (&priv->backend_weakref, NULL);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_data_cal_view_parent_class)->dispose (object);
@@ -457,6 +482,7 @@ data_cal_view_finalize (GObject *object)
 		g_hash_table_destroy (priv->fields_of_interest);
 
 	g_mutex_clear (&priv->pending_mutex);
+	g_weak_ref_clear (&priv->backend_weakref);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_cal_view_parent_class)->finalize (object);
@@ -572,7 +598,7 @@ e_data_cal_view_init (EDataCalView *view)
 		view->priv->dbus_object, "handle-set-fields-of-interest",
 		G_CALLBACK (impl_DataCalView_set_fields_of_interest), view);
 
-	view->priv->backend = NULL;
+	g_weak_ref_init (&view->priv->backend_weakref, NULL);
 	view->priv->started = FALSE;
 	view->priv->stopped = FALSE;
 	view->priv->complete = FALSE;
@@ -812,6 +838,25 @@ notify_remove (EDataCalView *view,
 }
 
 /**
+ * e_data_cal_view_ref_backend:
+ * @view: an #EDataCalView
+ *
+ * Refs the backend that @view is querying. Unref the returned backend,
+ * if not %NULL, with g_object_unref(), when no longer needed.
+ *
+ * Returns: (type ECalBackend) (transfer full) (nullable): The associated #ECalBackend.
+ *
+ * Since: 3.34
+ **/
+ECalBackend *
+e_data_cal_view_ref_backend (EDataCalView *view)
+{
+	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), NULL);
+
+	return g_weak_ref_get (&view->priv->backend_weakref);
+}
+
+/**
  * e_data_cal_view_get_backend:
  * @view: an #EDataCalView
  *
@@ -820,13 +865,21 @@ notify_remove (EDataCalView *view,
  * Returns: (transfer none): The associated #ECalBackend.
  *
  * Since: 3.8
+ *
+ * Deprecated: 3.34: Use e_data_cal_view_ref_backend() instead.
  **/
 ECalBackend *
 e_data_cal_view_get_backend (EDataCalView *view)
 {
+	ECalBackend *backend;
+
 	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), NULL);
 
-	return view->priv->backend;
+	backend = e_data_cal_view_ref_backend (view);
+	if (backend)
+		g_object_unref (backend);
+
+	return backend;
 }
 
 /**
@@ -901,15 +954,19 @@ e_data_cal_view_object_matches (EDataCalView *view,
 {
 	ECalBackend *backend;
 	ECalBackendSExp *sexp;
+	gboolean res;
 
 	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), FALSE);
 	g_return_val_if_fail (object != NULL, FALSE);
 
 	sexp = e_data_cal_view_get_sexp (view);
-	backend = e_data_cal_view_get_backend (view);
+	backend = e_data_cal_view_ref_backend (view);
 
-	return e_cal_backend_sexp_match_object (
-		sexp, object, E_TIMEZONE_CACHE (backend));
+	res = e_cal_backend_sexp_match_object (sexp, object, backend ? E_TIMEZONE_CACHE (backend) : NULL);
+
+	g_clear_object (&backend);
+
+	return res;
 }
 
 /**
@@ -930,15 +987,19 @@ e_data_cal_view_component_matches (EDataCalView *view,
 {
 	ECalBackend *backend;
 	ECalBackendSExp *sexp;
+	gboolean res;
 
 	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), FALSE);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (component), FALSE);
 
 	sexp = e_data_cal_view_get_sexp (view);
-	backend = e_data_cal_view_get_backend (view);
+	backend = e_data_cal_view_ref_backend (view);
 
-	return e_cal_backend_sexp_match_comp (
-		sexp, component, E_TIMEZONE_CACHE (backend));
+	res = e_cal_backend_sexp_match_comp (sexp, component, backend ? E_TIMEZONE_CACHE (backend) : NULL);
+
+	g_clear_object (&backend);
+
+	return res;
 }
 
 /**

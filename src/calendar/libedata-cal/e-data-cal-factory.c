@@ -149,7 +149,7 @@ data_cal_factory_backend_closed_cb (EBackend *backend,
 				    const gchar *sender,
 				    EDataFactory *data_factory)
 {
-	e_data_factory_backend_closed (data_factory, backend);
+	e_data_factory_backend_closed_by_sender (data_factory, backend, sender);
 }
 
 static EBackend *

@@ -4398,22 +4398,28 @@ ldap_search_handler (LDAPOp *op,
 static void
 ldap_search_dtor (LDAPOp *op)
 {
+	EBookBackend *backend;
 	EBookBackendLDAP *bl;
 	LDAPSearchOp *search_op = (LDAPSearchOp *) op;
 
 	d (printf ("ldap_search_dtor (%p)\n", search_op->view));
 
-	bl = E_BOOK_BACKEND_LDAP (e_data_book_view_get_backend (op->view));
+	backend = e_data_book_view_ref_backend (op->view);
+	bl = backend ? E_BOOK_BACKEND_LDAP (backend) : NULL;
 
 	/* unhook us from our EDataBookView */
-	g_mutex_lock (&bl->priv->view_mutex);
+	if (bl)
+		g_mutex_lock (&bl->priv->view_mutex);
 	g_object_set_data (G_OBJECT (search_op->view), LDAP_SEARCH_OP_IDENT, NULL);
-	g_mutex_unlock (&bl->priv->view_mutex);
+	if (bl)
+		g_mutex_unlock (&bl->priv->view_mutex);
 
 	g_object_unref (search_op->view);
 
 	if (!search_op->aborted)
 		g_free (search_op);
+
+	g_clear_object (&backend);
 }
 
 static void

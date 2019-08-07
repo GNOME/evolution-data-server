@@ -70,7 +70,11 @@ EDataCalView *	e_data_cal_view_new		(struct _ECalBackend *backend,
 						 const gchar *object_path,
 						 GError **error);
 struct _ECalBackend *
+		e_data_cal_view_ref_backend	(EDataCalView *view);
+#ifndef EDS_DISABLE_DEPRECATED
+struct _ECalBackend *
 		e_data_cal_view_get_backend	(EDataCalView *view);
+#endif /* EDS_DISABLE_DEPRECATED */
 GDBusConnection *
 		e_data_cal_view_get_connection	(EDataCalView *view);
 const gchar *	e_data_cal_view_get_object_path	(EDataCalView *view);

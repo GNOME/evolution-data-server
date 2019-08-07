@@ -74,7 +74,11 @@ EDataBookView *	e_data_book_view_new		(struct _EBookBackend *backend,
 						 const gchar *object_path,
 						 GError **error);
 struct _EBookBackend *
+		e_data_book_view_ref_backend	(EDataBookView *view);
+#ifndef EDS_DISABLE_DEPRECATED
+struct _EBookBackend *
 		e_data_book_view_get_backend	(EDataBookView *view);
+#endif /* EDS_DISABLE_DEPRECATED */
 GDBusConnection *
 		e_data_book_view_get_connection	(EDataBookView *view);
 const gchar *	e_data_book_view_get_object_path

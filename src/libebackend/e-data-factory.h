@@ -128,6 +128,10 @@ gchar *		e_data_factory_open_backend	(EDataFactory *data_factory,
 						 GError **error);
 void		e_data_factory_backend_closed	(EDataFactory *data_factory,
 						 EBackend *backend);
+void		e_data_factory_backend_closed_by_sender
+						(EDataFactory *data_factory,
+						 EBackend *backend,
+						 const gchar *sender);
 GSList *	e_data_factory_list_opened_backends /* EBackend * */
 						(EDataFactory *data_factory);
 
