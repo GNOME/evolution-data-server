@@ -382,6 +382,7 @@ e_alarm_notify_can_procedure (EAlarmNotify *an,
 		cmd);
 	label = gtk_label_new (str);
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_label_set_width_chars (GTK_LABEL (label), 20);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 	gtk_widget_show (label);
 

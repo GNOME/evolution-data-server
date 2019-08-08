@@ -1807,6 +1807,7 @@ e_reminders_widget_report_error (ERemindersWidget *reminders,
 	gtk_info_bar_set_show_close_button (reminders->priv->info_bar, TRUE);
 
 	label = GTK_LABEL (gtk_label_new (message));
+	gtk_label_set_width_chars (label, 20);
 	gtk_label_set_max_width_chars (label, 120);
 	gtk_label_set_line_wrap (label, TRUE);
 	gtk_label_set_selectable (label, TRUE);
