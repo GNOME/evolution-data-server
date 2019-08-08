@@ -791,7 +791,7 @@ e_cal_util_icaltime_to_tm_with_zone (const ICalTime *itt,
  * @is_date: Whether the given time is a date only or not.
  *
  * Converts a struct tm into an #ICalTime. Free the returned object
- * with g_object_unref(), when no longe needed.
+ * with g_object_unref(), when no longer needed.
  *
  * Returns: (transfer full): The converted time as an #ICalTime.
  *
