@@ -510,8 +510,68 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 		if (cbdav->priv->is_icloud) {
 			gchar *calendar_data = NULL, *etag = NULL;
 
-			success = e_webdav_session_get_data_sync (webdav,
-				nfo->extra, NULL, &etag, &calendar_data, NULL, cancellable, error);
+			success = FALSE;
+
+			/* iCloud returns '@' escaped as "%40", but it doesn't accept it in GET,
+			   thus try to unescape it, together with some other characters */
+			if (nfo->extra && strchr (nfo->extra, '%')) {
+				SoupURI *suri;
+				gchar *new_uri = NULL;
+
+				suri = soup_uri_new (nfo->extra);
+
+				if (suri) {
+					const gchar *path;
+
+					path = soup_uri_get_path (suri);
+
+					if (path && *path) {
+						gchar **parts, *new_path;
+						gint jj;
+
+						parts = g_strsplit (path, "/", -1);
+
+						for (jj = 0; parts && parts[jj]; jj++) {
+							if (parts[jj][0]) {
+								gchar *part;
+
+								part = soup_uri_normalize (parts[jj], "@");
+
+								if (part) {
+									g_free (parts[jj]);
+									parts[jj] = part;
+								}
+							}
+						}
+
+						new_path = g_strjoinv ("/", parts);
+						soup_uri_set_path (suri, new_path);
+
+						new_uri = soup_uri_to_string (suri, FALSE);
+
+						g_strfreev (parts);
+						g_free (new_path);
+					}
+
+					soup_uri_free (suri);
+				}
+
+				if (new_uri) {
+					success = e_webdav_session_get_data_sync (webdav, new_uri, NULL, &etag, &calendar_data, NULL, cancellable, NULL);
+
+					if (success) {
+						/* Remember the corrected URI */
+						g_free (nfo->extra);
+						nfo->extra = new_uri;
+						new_uri = NULL;
+					}
+				}
+
+				g_free (new_uri);
+			}
+
+			if (!success)
+				success = e_webdav_session_get_data_sync (webdav, nfo->extra, NULL, &etag, &calendar_data, NULL, cancellable, error);
 
 			if (success && calendar_data) {
 				ICalComponent *vcalendar;
