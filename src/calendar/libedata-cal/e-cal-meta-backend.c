@@ -678,6 +678,8 @@ ecmb_refresh_internal_sync (ECalMetaBackend *meta_backend,
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		goto done;
 
+	e_cal_backend_foreach_view_notify_progress (E_CAL_BACKEND (meta_backend), TRUE, 0, _("Refreshing…"));
+
 	if (!e_backend_get_online (E_BACKEND (meta_backend)) ||
 	    !e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, with_connection_error ? error : NULL) ||
 	    !e_backend_get_online (E_BACKEND (meta_backend))) { /* Failed connecting moves backend to offline */
@@ -765,6 +767,8 @@ ecmb_refresh_internal_sync (ECalMetaBackend *meta_backend,
 		g_clear_object (&meta_backend->priv->refresh_cancellable);
 
 	g_mutex_unlock (&meta_backend->priv->property_lock);
+
+	e_cal_backend_foreach_view_notify_progress (E_CAL_BACKEND (meta_backend), TRUE, 0, NULL);
 
 	g_signal_emit (meta_backend, signals[REFRESH_COMPLETED], 0, NULL);
 

@@ -2718,6 +2718,105 @@ e_book_backend_list_views (EBookBackend *backend)
 }
 
 /**
+ * EBookBackendForeachViewFunc:
+ * @backend: an #EBookBackend
+ * @view: an #EDataBookView
+ * @user_data: user data for the function
+ *
+ * Callback function used by e_book_backend_foreach_view().
+ *
+ * Returns: %TRUE, to continue, %FALSE to stop further processing.
+ *
+ * Since: 3.34
+ **/
+
+/**
+ * e_book_backend_foreach_view:
+ * @backend: an #EBookBackend
+ * @func: (scope call): an #EBookBackendForeachViewFunc function to call
+ * @user_data: (closure func): user data to pass to @func
+ *
+ * Calls @func for each existing view (as returned by e_book_backend_list_views()).
+ * The @func can return %FALSE to stop early.
+ *
+ * Returns: whether the call had been stopped by @func
+ *
+ * Since: 3.34
+ **/
+gboolean
+e_book_backend_foreach_view (EBookBackend *backend,
+			     EBookBackendForeachViewFunc func,
+			     gpointer user_data)
+{
+	GList *views, *link;
+	gboolean stopped = FALSE;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
+	g_return_val_if_fail (func != NULL, FALSE);
+
+	views = e_book_backend_list_views (backend);
+
+	for (link = views; link && !stopped; link = g_list_next (link)) {
+		stopped = !func (backend, link->data, user_data);
+	}
+
+	g_list_free_full (views, g_object_unref);
+
+	return stopped;
+}
+
+struct NotifyProgressData {
+	gboolean only_completed_views;
+	gint percent;
+	const gchar *message;
+};
+
+static gboolean
+ebb_notify_progress_cb (EBookBackend *backend,
+			EDataBookView *view,
+			gpointer user_data)
+{
+	struct NotifyProgressData *npd = user_data;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (view), FALSE);
+	g_return_val_if_fail (npd != NULL, FALSE);
+
+	if (!npd->only_completed_views || e_data_book_view_is_completed (view))
+		e_data_book_view_notify_progress (view, npd->percent, npd->message);
+
+	return TRUE;
+}
+
+/**
+ * e_book_backend_foreach_view_notify_progress:
+ * @backend: an #EBookBackend
+ * @only_completed_views: whether notify in completed views only
+ * @percent: percent complete
+ * @message: (nullable): message describing the operation in progress, or %NULL
+ *
+ * Notifies each view of the @backend about progress. When @only_completed_views
+ * is %TRUE, notifies only completed views.
+ *
+ * Since: 3.34
+ **/
+void
+e_book_backend_foreach_view_notify_progress (EBookBackend *backend,
+					     gboolean only_completed_views,
+					     gint percent,
+					     const gchar *message)
+{
+	struct NotifyProgressData npd;
+
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+
+	npd.only_completed_views = only_completed_views;
+	npd.percent = percent;
+	npd.message = message;
+
+	e_book_backend_foreach_view (backend, ebb_notify_progress_cb, &npd);
+}
+
+/**
  * e_book_backend_get_backend_property:
  * @backend: an #EBookBackend
  * @prop_name: a backend property name

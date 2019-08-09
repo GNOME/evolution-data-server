@@ -1539,6 +1539,105 @@ e_cal_backend_list_views (ECalBackend *backend)
 }
 
 /**
+ * ECalBackendForeachViewFunc:
+ * @backend: an #ECalBackend
+ * @view: an #EDataCalView
+ * @user_data: user data for the function
+ *
+ * Callback function used by e_cal_backend_foreach_view().
+ *
+ * Returns: %TRUE, to continue, %FALSE to stop further processing.
+ *
+ * Since: 3.34
+ **/
+
+/**
+ * e_cal_backend_foreach_view:
+ * @backend: an #ECalBackend
+ * @func: (scope call): an #ECalBackendForeachViewFunc function to call
+ * @user_data: (closure func): user data to pass to @func
+ *
+ * Calls @func for each existing view (as returned by e_cal_backend_list_views()).
+ * The @func can return %FALSE to stop early.
+ *
+ * Returns: whether the call had been stopped by @func
+ *
+ * Since: 3.34
+ **/
+gboolean
+e_cal_backend_foreach_view (ECalBackend *backend,
+			    ECalBackendForeachViewFunc func,
+			    gpointer user_data)
+{
+	GList *views, *link;
+	gboolean stopped = FALSE;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
+	g_return_val_if_fail (func != NULL, FALSE);
+
+	views = e_cal_backend_list_views (backend);
+
+	for (link = views; link && !stopped; link = g_list_next (link)) {
+		stopped = !func (backend, link->data, user_data);
+	}
+
+	g_list_free_full (views, g_object_unref);
+
+	return stopped;
+}
+
+struct NotifyProgressData {
+	gboolean only_completed_views;
+	gint percent;
+	const gchar *message;
+};
+
+static gboolean
+ecb_notify_progress_cb (ECalBackend *backend,
+			EDataCalView *view,
+			gpointer user_data)
+{
+	struct NotifyProgressData *npd = user_data;
+
+	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), FALSE);
+	g_return_val_if_fail (npd != NULL, FALSE);
+
+	if (!npd->only_completed_views || e_data_cal_view_is_completed (view))
+		e_data_cal_view_notify_progress (view, npd->percent, npd->message);
+
+	return TRUE;
+}
+
+/**
+ * e_cal_backend_foreach_view_notify_progress:
+ * @backend: an #ECalBackend
+ * @only_completed_views: whether notify in completed views only
+ * @percent: percent complete
+ * @message: (nullable): message describing the operation in progress, or %NULL
+ *
+ * Notifies each view of the @backend about progress. When @only_completed_views
+ * is %TRUE, notifies only completed views.
+ *
+ * Since: 3.34
+ **/
+void
+e_cal_backend_foreach_view_notify_progress (ECalBackend *backend,
+					    gboolean only_completed_views,
+					    gint percent,
+					    const gchar *message)
+{
+	struct NotifyProgressData npd;
+
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+
+	npd.only_completed_views = only_completed_views;
+	npd.percent = percent;
+	npd.message = message;
+
+	e_cal_backend_foreach_view (backend, ecb_notify_progress_cb, &npd);
+}
+
+/**
  * e_cal_backend_open_sync:
  * @backend: an #ECalBackend
  * @cancellable: optional #GCancellable object, or %NULL

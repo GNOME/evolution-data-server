@@ -87,6 +87,7 @@ EBookBackendSExp *
 		e_data_book_view_get_sexp	(EDataBookView *view);
 EBookClientViewFlags
 		e_data_book_view_get_flags	(EDataBookView *view);
+gboolean	e_data_book_view_is_completed	(EDataBookView *view);
 void		e_data_book_view_notify_update	(EDataBookView *view,
 						 const EContact *contact);
 

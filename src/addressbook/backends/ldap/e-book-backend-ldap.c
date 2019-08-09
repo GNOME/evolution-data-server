@@ -4690,8 +4690,10 @@ generate_cache_dtor (LDAPOp *op)
 	g_free (contact_list_op);
 
 	g_rec_mutex_lock (&eds_ldap_handler_lock);
-	if (ldap_backend && ldap_backend->priv)
+	if (ldap_backend && ldap_backend->priv) {
+		e_book_backend_foreach_view_notify_progress (E_BOOK_BACKEND (ldap_backend), TRUE, 0, NULL);
 		ldap_backend->priv->generate_cache_in_progress = FALSE;
+	}
 	g_rec_mutex_unlock (&eds_ldap_handler_lock);
 }
 
@@ -4752,6 +4754,7 @@ generate_cache (EBookBackendLDAP *book_backend_ldap)
 	}
 
 	priv->generate_cache_in_progress = TRUE;
+	e_book_backend_foreach_view_notify_progress (E_BOOK_BACKEND (book_backend_ldap), TRUE, 0, _("Refreshing…"));
 
 	g_rec_mutex_unlock (&eds_ldap_handler_lock);
 

@@ -243,6 +243,19 @@ void		e_cal_backend_remove_view	(ECalBackend *backend,
 						 EDataCalView *view);
 GList *		e_cal_backend_list_views	(ECalBackend *backend);
 
+typedef gboolean (*ECalBackendForeachViewFunc)	(ECalBackend *backend,
+						 EDataCalView *view,
+						 gpointer user_data);
+
+gboolean	e_cal_backend_foreach_view	(ECalBackend *backend,
+						 ECalBackendForeachViewFunc func,
+						 gpointer user_data);
+void		e_cal_backend_foreach_view_notify_progress
+						(ECalBackend *backend,
+						 gboolean only_completed_views,
+						 gint percent,
+						 const gchar *message);
+
 gchar *		e_cal_backend_get_backend_property
 						(ECalBackend *backend,
 						 const gchar *prop_name);

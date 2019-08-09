@@ -353,6 +353,19 @@ void		e_book_backend_remove_view	(EBookBackend *backend,
 						 EDataBookView *view);
 GList *		e_book_backend_list_views	(EBookBackend *backend);
 
+typedef gboolean (*EBookBackendForeachViewFunc)	(EBookBackend *backend,
+						 EDataBookView *view,
+						 gpointer user_data);
+
+gboolean	e_book_backend_foreach_view	(EBookBackend *backend,
+						 EBookBackendForeachViewFunc func,
+						 gpointer user_data);
+void		e_book_backend_foreach_view_notify_progress
+						(EBookBackend *backend,
+						 gboolean only_completed_views,
+						 gint percent,
+						 const gchar *message);
+
 void		e_book_backend_notify_update	(EBookBackend *backend,
 						 const EContact *contact);
 void		e_book_backend_notify_remove	(EBookBackend *backend,

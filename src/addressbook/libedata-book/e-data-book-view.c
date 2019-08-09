@@ -835,6 +835,24 @@ e_data_book_view_get_flags (EDataBookView *view)
 	return view->priv->flags;
 }
 
+/**
+ * e_data_book_view_is_completed:
+ * @view: an #EDataBookView
+ *
+ * Returns: whether the @view had been completed; that is,
+ *    whether e_data_book_view_notify_complete() had been called
+ *    since the @view had been started.
+ *
+ * Since: 3.34
+ **/
+gboolean
+e_data_book_view_is_completed (EDataBookView *view)
+{
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (view), FALSE);
+
+	return view->priv->complete;
+}
+
 /*
  * Queue @vcard to be sent as a change notification.
  */
