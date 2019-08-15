@@ -246,58 +246,29 @@ gnome_online_accounts_new_source (EGnomeOnlineAccounts *extension)
 }
 
 static void
-gnome_online_accounts_config_exchange (EGnomeOnlineAccounts *extension,
-                                       ESource *source,
-                                       GoaObject *goa_object)
+goa_ews_autodiscover_done_cb (GObject *source_object,
+			      GAsyncResult *result,
+			      gpointer user_data)
 {
-	GoaExchange *goa_exchange;
+	GoaObject *goa_object;
+	ESource *source = user_data;
 	ESourceExtension *source_extension;
 	const gchar *extension_name;
 	gchar *as_url = NULL;
 	gchar *oab_url = NULL;
-	gpointer class;
 	GError *error = NULL;
 
-	goa_exchange = goa_object_peek_exchange (goa_object);
-	if (goa_exchange == NULL)
-		return;
+	g_return_if_fail (GOA_IS_OBJECT (source_object));
+	g_return_if_fail (E_IS_SOURCE (source));
 
-	/* This should force the ESourceCamelEws type to be registered.
-	 * It will also tell us if Evolution-EWS is even installed. */
-	class = g_type_class_ref (g_type_from_name ("EEwsBackend"));
-	if (class != NULL) {
-		g_type_class_unref (class);
-	} else {
-		g_critical (
-			"%s: Could not locate EEwsBackendClass. "
-			"Is Evolution-EWS installed?", G_STRFUNC);
+	goa_object = GOA_OBJECT (source_object);
+
+	if (!goa_ews_autodiscover_finish (goa_object, result, &as_url, &oab_url, &error) || !as_url) {
+		g_message ("Failed to autodiscover EWS data: %s", error ? error->message : "Unknown error");
+		g_clear_error (&error);
+		g_object_unref (source);
 		return;
 	}
-
-	/* XXX GNOME Online Accounts already runs autodiscover to test
-	 *     the user-entered values but doesn't share the discovered
-	 *     URLs.  It only provides us a host name and expects us to
-	 *     re-run autodiscover for ourselves.
-	 *
-	 *     So I've copied a slab of code from GOA which was in turn
-	 *     copied from Evolution-EWS which does the autodiscovery.
-	 *
-	 *     I've already complained to Debarshi Ray about the lack
-	 *     of useful info in GOA's Exchange interface so hopefully
-	 *     it will someday publish discovered URLs and then we can
-	 *     remove this hack. */
-
-	goa_ews_autodiscover_sync (
-		goa_object, &as_url, &oab_url, NULL, &error);
-
-	if (error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, error->message);
-		g_error_free (error);
-		return;
-	}
-
-	g_return_if_fail (as_url != NULL);
-	g_return_if_fail (oab_url != NULL);
 
 	/* XXX We don't have direct access to CamelEwsSettings from here
 	 *     since it's defined in Evolution-EWS.  But we can find out
@@ -345,8 +316,51 @@ gnome_online_accounts_config_exchange (EGnomeOnlineAccounts *extension,
 			G_STRFUNC, extension_name);
 	}
 
+	g_object_unref (source);
 	g_free (as_url);
 	g_free (oab_url);
+}
+
+static void
+gnome_online_accounts_config_exchange (EGnomeOnlineAccounts *extension,
+                                       ESource *source,
+                                       GoaObject *goa_object)
+{
+	GoaExchange *goa_exchange;
+	gpointer class;
+
+	goa_exchange = goa_object_peek_exchange (goa_object);
+	if (goa_exchange == NULL)
+		return;
+
+	/* This should force the ESourceCamelEws type to be registered.
+	 * It will also tell us if Evolution-EWS is even installed. */
+	class = g_type_class_ref (g_type_from_name ("EEwsBackend"));
+	if (class != NULL) {
+		g_type_class_unref (class);
+	} else {
+		g_critical (
+			"%s: Could not locate EEwsBackendClass. "
+			"Is Evolution-EWS installed?", G_STRFUNC);
+		return;
+	}
+
+	/* XXX GNOME Online Accounts already runs autodiscover to test
+	 *     the user-entered values but doesn't share the discovered
+	 *     URLs.  It only provides us a host name and expects us to
+	 *     re-run autodiscover for ourselves.
+	 *
+	 *     So I've copied a slab of code from GOA which was in turn
+	 *     copied from Evolution-EWS which does the autodiscovery.
+	 *
+	 *     I've already complained to Debarshi Ray about the lack
+	 *     of useful info in GOA's Exchange interface so hopefully
+	 *     it will someday publish discovered URLs and then we can
+	 *     remove this hack. */
+
+	/* This function is called in the main thread and the autodiscovery
+	   can block it, thus use the asynchronous/non-blocking version. */
+	goa_ews_autodiscover (goa_object, NULL, goa_ews_autodiscover_done_cb, g_object_ref (source));
 }
 
 static void
