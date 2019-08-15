@@ -77,6 +77,7 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 G_DEFINE_TYPE_WITH_CODE (ECredentialsPrompter, e_credentials_prompter, G_TYPE_OBJECT,
+	G_ADD_PRIVATE (ECredentialsPrompter)
 	G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
 
 static void
@@ -1071,8 +1072,6 @@ e_credentials_prompter_class_init (ECredentialsPrompterClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (ECredentialsPrompterPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = credentials_prompter_set_property;
 	object_class->get_property = credentials_prompter_get_property;
@@ -1167,7 +1166,7 @@ e_credentials_prompter_class_init (ECredentialsPrompterClass *class)
 static void
 e_credentials_prompter_init (ECredentialsPrompter *prompter)
 {
-	prompter->priv = G_TYPE_INSTANCE_GET_PRIVATE (prompter, E_TYPE_CREDENTIALS_PROMPTER, ECredentialsPrompterPrivate);
+	prompter->priv = e_credentials_prompter_get_instance_private (prompter);
 
 	prompter->priv->auto_prompt = TRUE;
 	prompter->priv->provider = NULL;

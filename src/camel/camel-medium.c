@@ -28,10 +28,6 @@
 
 #define d(x)
 
-#define CAMEL_MEDIUM_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MEDIUM, CamelMediumPrivate))
-
 struct _CamelMediumPrivate {
 	/* The content of the medium, as opposed to our parent
 	 * CamelDataWrapper, which wraps both the headers and
@@ -44,7 +40,7 @@ enum {
 	PROP_CONTENT
 };
 
-G_DEFINE_ABSTRACT_TYPE (CamelMedium, camel_medium, CAMEL_TYPE_DATA_WRAPPER)
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (CamelMedium, camel_medium, CAMEL_TYPE_DATA_WRAPPER)
 
 static void
 medium_set_property (GObject *object,
@@ -85,7 +81,7 @@ medium_dispose (GObject *object)
 {
 	CamelMediumPrivate *priv;
 
-	priv = CAMEL_MEDIUM_GET_PRIVATE (object);
+	priv = CAMEL_MEDIUM (object)->priv;
 
 	if (priv->content != NULL) {
 		g_object_unref (priv->content);
@@ -137,8 +133,6 @@ camel_medium_class_init (CamelMediumClass *class)
 	GObjectClass *object_class;
 	CamelDataWrapperClass *data_wrapper_class;
 
-	g_type_class_add_private (class, sizeof (CamelMediumPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = medium_set_property;
 	object_class->get_property = medium_get_property;
@@ -165,7 +159,7 @@ camel_medium_class_init (CamelMediumClass *class)
 static void
 camel_medium_init (CamelMedium *medium)
 {
-	medium->priv = CAMEL_MEDIUM_GET_PRIVATE (medium);
+	medium->priv = camel_medium_get_instance_private (medium);
 }
 
 /**

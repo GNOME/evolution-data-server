@@ -70,10 +70,6 @@ extern gss_OID gss_nt_service_name;
 #endif /* HAVE_SUN_KRB5 */
 #endif /* HAVE_HEIMDAL_KRB5 */
 
-#define CAMEL_SASL_GSSAPI_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SASL_GSSAPI, CamelSaslGssapiPrivate))
-
 static const char spnego_OID[] = "\x2b\x06\x01\x05\x05\x02";
 static const gss_OID_desc gss_mech_spnego = {
 	6,
@@ -122,7 +118,7 @@ struct _CamelSaslGssapiPrivate {
 
 #endif /* HAVE_KRB5 */
 
-G_DEFINE_TYPE (CamelSaslGssapi, camel_sasl_gssapi, CAMEL_TYPE_SASL)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelSaslGssapi, camel_sasl_gssapi, CAMEL_TYPE_SASL)
 
 #ifdef HAVE_KRB5
 
@@ -368,7 +364,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 	gchar *user = NULL;
 	GError *krb_error = NULL;
 
-	priv = CAMEL_SASL_GSSAPI_GET_PRIVATE (sasl);
+	priv = CAMEL_SASL_GSSAPI (sasl)->priv;
 
 	service_name = camel_sasl_get_service_name (sasl);
 
@@ -571,8 +567,6 @@ camel_sasl_gssapi_class_init (CamelSaslGssapiClass *class)
 	GObjectClass *object_class;
 	CamelSaslClass *sasl_class;
 
-	g_type_class_add_private (class, sizeof (CamelSaslGssapiPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = sasl_gssapi_finalize;
 
@@ -586,7 +580,7 @@ static void
 camel_sasl_gssapi_init (CamelSaslGssapi *sasl)
 {
 #ifdef HAVE_KRB5
-	sasl->priv = CAMEL_SASL_GSSAPI_GET_PRIVATE (sasl);
+	sasl->priv = camel_sasl_gssapi_get_instance_private (sasl);
 	sasl->priv->state = GSSAPI_STATE_INIT;
 	sasl->priv->ctx = GSS_C_NO_CONTEXT;
 	sasl->priv->target = GSS_C_NO_NAME;

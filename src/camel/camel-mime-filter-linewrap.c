@@ -23,10 +23,6 @@
 
 #include "camel-mime-filter-linewrap.h"
 
-#define CAMEL_MIME_FILTER_LINEWRAP_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MIME_FILTER_LINEWRAP, CamelMimeFilterLinewrapPrivate))
-
 struct _CamelMimeFilterLinewrapPrivate {
 	guint wrap_len;
 	guint max_len;
@@ -35,7 +31,7 @@ struct _CamelMimeFilterLinewrapPrivate {
 	guint32 flags;
 };
 
-G_DEFINE_TYPE (CamelMimeFilterLinewrap, camel_mime_filter_linewrap, CAMEL_TYPE_MIME_FILTER)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelMimeFilterLinewrap, camel_mime_filter_linewrap, CAMEL_TYPE_MIME_FILTER)
 
 static void
 mime_filter_linewrap_filter (CamelMimeFilter *mime_filter,
@@ -51,7 +47,7 @@ mime_filter_linewrap_filter (CamelMimeFilter *mime_filter,
 	const gchar *inend, *p;
 	gint nchars;
 
-	priv = CAMEL_MIME_FILTER_LINEWRAP_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_LINEWRAP (mime_filter)->priv;
 
 	nchars = priv->nchars;
 
@@ -154,7 +150,7 @@ mime_filter_linewrap_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterLinewrapPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_LINEWRAP_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_LINEWRAP (mime_filter)->priv;
 
 	priv->nchars = 0;
 }
@@ -163,8 +159,6 @@ static void
 camel_mime_filter_linewrap_class_init (CamelMimeFilterLinewrapClass *class)
 {
 	CamelMimeFilterClass *mime_filter_class;
-
-	g_type_class_add_private (class, sizeof (CamelMimeFilterLinewrapPrivate));
 
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_linewrap_filter;
@@ -175,7 +169,7 @@ camel_mime_filter_linewrap_class_init (CamelMimeFilterLinewrapClass *class)
 static void
 camel_mime_filter_linewrap_init (CamelMimeFilterLinewrap *filter)
 {
-	filter->priv = CAMEL_MIME_FILTER_LINEWRAP_GET_PRIVATE (filter);
+	filter->priv = camel_mime_filter_linewrap_get_instance_private (filter);
 }
 
 CamelMimeFilter *
@@ -188,7 +182,7 @@ camel_mime_filter_linewrap_new (guint preferred_len,
 	CamelMimeFilterLinewrapPrivate *priv;
 
 	filter = g_object_new (CAMEL_TYPE_MIME_FILTER_LINEWRAP, NULL);
-	priv = CAMEL_MIME_FILTER_LINEWRAP_GET_PRIVATE (filter);
+	priv = CAMEL_MIME_FILTER_LINEWRAP (filter)->priv;
 
 	priv->indent = indent_char;
 	priv->wrap_len = preferred_len;

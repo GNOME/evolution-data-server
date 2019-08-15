@@ -35,10 +35,6 @@
 
 #define CAMEL_INDEX_VERSION (0x01)
 
-#define CAMEL_INDEX_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_INDEX, CamelIndexPrivate))
-
 struct _CamelIndexPrivate {
 	gpointer dummy;
 };
@@ -47,7 +43,7 @@ struct _CamelIndexPrivate {
 /* CamelIndex */
 /* ********************************************************************** */
 
-G_DEFINE_TYPE (CamelIndex, camel_index, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelIndex, camel_index, G_TYPE_OBJECT)
 
 static void
 index_finalize (GObject *object)
@@ -65,8 +61,6 @@ camel_index_class_init (CamelIndexClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelIndexPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = index_finalize;
 }
@@ -74,7 +68,7 @@ camel_index_class_init (CamelIndexClass *class)
 static void
 camel_index_init (CamelIndex *index)
 {
-	index->priv = CAMEL_INDEX_GET_PRIVATE (index);
+	index->priv = camel_index_get_instance_private (index);
 	index->version = CAMEL_INDEX_VERSION;
 }
 

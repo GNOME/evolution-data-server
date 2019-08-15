@@ -40,7 +40,7 @@ static CamelServiceAuthType sasl_anonymous_auth_type = {
 	FALSE
 };
 
-G_DEFINE_TYPE (CamelSaslAnonymous, camel_sasl_anonymous, CAMEL_TYPE_SASL)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelSaslAnonymous, camel_sasl_anonymous, CAMEL_TYPE_SASL)
 
 static void
 sasl_anonymous_finalize (GObject *object)
@@ -126,8 +126,6 @@ camel_sasl_anonymous_class_init (CamelSaslAnonymousClass *class)
 	GObjectClass *object_class;
 	CamelSaslClass *sasl_class;
 
-	g_type_class_add_private (class, sizeof (CamelSaslAnonymousPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = sasl_anonymous_finalize;
 
@@ -139,7 +137,7 @@ camel_sasl_anonymous_class_init (CamelSaslAnonymousClass *class)
 static void
 camel_sasl_anonymous_init (CamelSaslAnonymous *sasl_anonymous)
 {
-	sasl_anonymous->priv = G_TYPE_INSTANCE_GET_PRIVATE (sasl_anonymous, CAMEL_TYPE_SASL_ANONYMOUS, CamelSaslAnonymousPrivate);
+	sasl_anonymous->priv = camel_sasl_anonymous_get_instance_private (sasl_anonymous);
 }
 
 /**

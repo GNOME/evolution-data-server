@@ -39,16 +39,12 @@
 
 #define d(x)
 
-#define CAMEL_VEE_SUMMARY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_VEE_SUMMARY, CamelVeeSummaryPrivate))
-
 struct _CamelVeeSummaryPrivate {
 	/* CamelFolder * => GHashTable * of gchar *vuid */
 	GHashTable *vuids_by_subfolder;
 };
 
-G_DEFINE_TYPE (CamelVeeSummary, camel_vee_summary, CAMEL_TYPE_FOLDER_SUMMARY)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelVeeSummary, camel_vee_summary, CAMEL_TYPE_FOLDER_SUMMARY)
 
 static CamelMessageInfo *
 message_info_from_uid (CamelFolderSummary *s,
@@ -122,7 +118,7 @@ vee_summary_finalize (GObject *object)
 {
 	CamelVeeSummaryPrivate *priv;
 
-	priv = CAMEL_VEE_SUMMARY_GET_PRIVATE (object);
+	priv = CAMEL_VEE_SUMMARY (object)->priv;
 
 	g_hash_table_destroy (priv->vuids_by_subfolder);
 
@@ -136,8 +132,6 @@ camel_vee_summary_class_init (CamelVeeSummaryClass *class)
 	GObjectClass *object_class;
 	CamelFolderSummaryClass *folder_summary_class;
 
-	g_type_class_add_private (class, sizeof (CamelVeeSummaryPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = vee_summary_finalize;
 
@@ -150,7 +144,7 @@ camel_vee_summary_class_init (CamelVeeSummaryClass *class)
 static void
 camel_vee_summary_init (CamelVeeSummary *vee_summary)
 {
-	vee_summary->priv = CAMEL_VEE_SUMMARY_GET_PRIVATE (vee_summary);
+	vee_summary->priv = camel_vee_summary_get_instance_private (vee_summary);
 
 	vee_summary->priv->vuids_by_subfolder = g_hash_table_new_full (
 		(GHashFunc) g_direct_hash,

@@ -31,15 +31,11 @@
 
 #define d(x)
 
-#define CAMEL_MIME_FILTER_HTML_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MIME_FILTER_HTML, CamelMimeFilterHTMLPrivate))
-
 struct _CamelMimeFilterHTMLPrivate {
 	CamelHTMLParser *ctxt;
 };
 
-G_DEFINE_TYPE (CamelMimeFilterHTML, camel_mime_filter_html, CAMEL_TYPE_MIME_FILTER)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelMimeFilterHTML, camel_mime_filter_html, CAMEL_TYPE_MIME_FILTER)
 
 /* ********************************************************************** */
 
@@ -80,7 +76,7 @@ mime_filter_html_run (CamelMimeFilter *mime_filter,
 	CamelHTMLParserState state;
 	gchar *outp;
 
-	priv = CAMEL_MIME_FILTER_HTML_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_HTML (mime_filter)->priv;
 
 	d (printf ("converting html:\n%.*s\n", (gint) inlen, in));
 
@@ -122,7 +118,7 @@ mime_filter_html_dispose (GObject *object)
 {
 	CamelMimeFilterHTMLPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_HTML_GET_PRIVATE (object);
+	priv = CAMEL_MIME_FILTER_HTML (object)->priv;
 
 	if (priv->ctxt != NULL) {
 		g_object_unref (priv->ctxt);
@@ -166,7 +162,7 @@ mime_filter_html_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterHTMLPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_HTML_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_HTML (mime_filter)->priv;
 
 	g_object_unref (priv->ctxt);
 	priv->ctxt = camel_html_parser_new ();
@@ -177,8 +173,6 @@ camel_mime_filter_html_class_init (CamelMimeFilterHTMLClass *class)
 {
 	GObjectClass *object_class;
 	CamelMimeFilterClass *mime_filter_class;
-
-	g_type_class_add_private (class, sizeof (CamelMimeFilterHTMLPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = mime_filter_html_dispose;
@@ -192,7 +186,7 @@ camel_mime_filter_html_class_init (CamelMimeFilterHTMLClass *class)
 static void
 camel_mime_filter_html_init (CamelMimeFilterHTML *mime_filter)
 {
-	mime_filter->priv = CAMEL_MIME_FILTER_HTML_GET_PRIVATE (mime_filter);
+	mime_filter->priv = camel_mime_filter_html_get_instance_private (mime_filter);
 	mime_filter->priv->ctxt = camel_html_parser_new ();
 }
 

@@ -38,7 +38,7 @@ struct _ECredentialsPrompterImplPasswordPrivate {
 	gulong show_dialog_idle_id;
 };
 
-G_DEFINE_TYPE (ECredentialsPrompterImplPassword, e_credentials_prompter_impl_password, E_TYPE_CREDENTIALS_PROMPTER_IMPL)
+G_DEFINE_TYPE_WITH_PRIVATE (ECredentialsPrompterImplPassword, e_credentials_prompter_impl_password, E_TYPE_CREDENTIALS_PROMPTER_IMPL)
 
 static gboolean
 password_dialog_map_event_cb (GtkWidget *dialog,
@@ -531,8 +531,6 @@ e_credentials_prompter_impl_password_class_init (ECredentialsPrompterImplPasswor
 	GObjectClass *object_class;
 	ECredentialsPrompterImplClass *prompter_impl_class;
 
-	g_type_class_add_private (class, sizeof (ECredentialsPrompterImplPasswordPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = e_credentials_prompter_impl_password_dispose;
 
@@ -545,8 +543,7 @@ e_credentials_prompter_impl_password_class_init (ECredentialsPrompterImplPasswor
 static void
 e_credentials_prompter_impl_password_init (ECredentialsPrompterImplPassword *prompter_password)
 {
-	prompter_password->priv = G_TYPE_INSTANCE_GET_PRIVATE (prompter_password,
-		E_TYPE_CREDENTIALS_PROMPTER_IMPL_PASSWORD, ECredentialsPrompterImplPasswordPrivate);
+	prompter_password->priv = e_credentials_prompter_impl_password_get_instance_private (prompter_password);
 }
 
 /**

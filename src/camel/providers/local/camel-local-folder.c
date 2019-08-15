@@ -46,10 +46,6 @@
 #define PATH_MAX _POSIX_PATH_MAX
 #endif
 
-#define CAMEL_LOCAL_FOLDER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_LOCAL_FOLDER, CamelLocalFolderPrivate))
-
 /* The custom property ID is a CamelArg artifact.
  * It still identifies the property in state files. */
 enum {
@@ -57,7 +53,7 @@ enum {
 	PROP_INDEX_BODY = 0x2400
 };
 
-G_DEFINE_TYPE (CamelLocalFolder, camel_local_folder, CAMEL_TYPE_FOLDER)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelLocalFolder, camel_local_folder, CAMEL_TYPE_FOLDER)
 
 static void
 local_folder_set_property (GObject *object,
@@ -477,8 +473,6 @@ camel_local_folder_class_init (CamelLocalFolderClass *class)
 	GObjectClass *object_class;
 	CamelFolderClass *folder_class;
 
-	g_type_class_add_private (class, sizeof (CamelLocalFolderPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = local_folder_set_property;
 	object_class->get_property = local_folder_get_property;
@@ -520,7 +514,7 @@ camel_local_folder_init (CamelLocalFolder *local_folder)
 {
 	CamelFolder *folder = CAMEL_FOLDER (local_folder);
 
-	local_folder->priv = CAMEL_LOCAL_FOLDER_GET_PRIVATE (local_folder);
+	local_folder->priv = camel_local_folder_get_instance_private (local_folder);
 	g_mutex_init (&local_folder->priv->search_lock);
 	g_rec_mutex_init (&local_folder->priv->changes_lock);
 

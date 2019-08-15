@@ -37,10 +37,6 @@
 
 #define CAMEL_MH_SUMMARY_VERSION (0x2000)
 
-#define CAMEL_MH_SUMMARY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MH_SUMMARY, CamelMhSummaryPrivate))
-
 static gint mh_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
 static gint mh_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
 static gint mh_summary_decode_x_evolution (CamelLocalSummary *cls, const gchar *xev, CamelMessageInfo *info);
@@ -52,15 +48,13 @@ struct _CamelMhSummaryPrivate {
 	gchar *current_uid;
 };
 
-G_DEFINE_TYPE (CamelMhSummary, camel_mh_summary, CAMEL_TYPE_LOCAL_SUMMARY)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelMhSummary, camel_mh_summary, CAMEL_TYPE_LOCAL_SUMMARY)
 
 static void
 camel_mh_summary_class_init (CamelMhSummaryClass *class)
 {
 	CamelFolderSummaryClass *folder_summary_class;
 	CamelLocalSummaryClass *local_summary_class;
-
-	g_type_class_add_private (class, sizeof (CamelMhSummaryPrivate));
 
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
 	folder_summary_class->sort_by = "uid";
@@ -78,7 +72,7 @@ camel_mh_summary_init (CamelMhSummary *mh_summary)
 {
 	CamelFolderSummary *folder_summary;
 
-	mh_summary->priv = CAMEL_MH_SUMMARY_GET_PRIVATE (mh_summary);
+	mh_summary->priv = camel_mh_summary_get_instance_private (mh_summary);
 
 	folder_summary = CAMEL_FOLDER_SUMMARY (mh_summary);
 
