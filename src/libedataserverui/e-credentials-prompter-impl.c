@@ -31,7 +31,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_ABSTRACT_TYPE (ECredentialsPrompterImpl, e_credentials_prompter_impl, E_TYPE_EXTENSION)
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (ECredentialsPrompterImpl, e_credentials_prompter_impl, E_TYPE_EXTENSION)
 
 static void
 e_credentials_prompter_impl_constructed (GObject *object)
@@ -75,8 +75,6 @@ e_credentials_prompter_impl_class_init (ECredentialsPrompterImplClass *klass)
 	GObjectClass *object_class;
 	EExtensionClass *extension_class;
 
-	g_type_class_add_private (klass, sizeof (ECredentialsPrompterImplPrivate));
-
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->dispose = e_credentials_prompter_impl_dispose;
 	object_class->constructed = e_credentials_prompter_impl_constructed;
@@ -106,8 +104,7 @@ e_credentials_prompter_impl_class_init (ECredentialsPrompterImplClass *klass)
 static void
 e_credentials_prompter_impl_init (ECredentialsPrompterImpl *prompter_impl)
 {
-	prompter_impl->priv = G_TYPE_INSTANCE_GET_PRIVATE (prompter_impl,
-		E_TYPE_CREDENTIALS_PROMPTER_IMPL, ECredentialsPrompterImplPrivate);
+	prompter_impl->priv = e_credentials_prompter_impl_get_instance_private (prompter_impl);
 
 	prompter_impl->priv->cancellable = g_cancellable_new ();
 }

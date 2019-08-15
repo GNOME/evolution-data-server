@@ -26,10 +26,6 @@
 
 #include "camel-stream.h"
 
-#define CAMEL_STREAM_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_STREAM, CamelStreamPrivate))
-
 struct _CamelStreamPrivate {
 	GIOStream *base_stream;
 	GMutex base_stream_lock;
@@ -48,6 +44,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	CamelStream,
 	camel_stream,
 	G_TYPE_OBJECT,
+	G_ADD_PRIVATE (CamelStream)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_SEEKABLE,
 		camel_stream_seekable_init))
@@ -92,7 +89,7 @@ stream_dispose (GObject *object)
 {
 	CamelStreamPrivate *priv;
 
-	priv = CAMEL_STREAM_GET_PRIVATE (object);
+	priv = CAMEL_STREAM (object)->priv;
 
 	g_clear_object (&priv->base_stream);
 
@@ -105,7 +102,7 @@ stream_finalize (GObject *object)
 {
 	CamelStreamPrivate *priv;
 
-	priv = CAMEL_STREAM_GET_PRIVATE (object);
+	priv = CAMEL_STREAM (object)->priv;
 
 	g_mutex_clear (&priv->base_stream_lock);
 
@@ -354,8 +351,6 @@ camel_stream_class_init (CamelStreamClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelStreamPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = stream_set_property;
 	object_class->get_property = stream_get_property;
@@ -394,7 +389,7 @@ camel_stream_seekable_init (GSeekableIface *iface)
 static void
 camel_stream_init (CamelStream *stream)
 {
-	stream->priv = CAMEL_STREAM_GET_PRIVATE (stream);
+	stream->priv = camel_stream_get_instance_private (stream);
 
 	g_mutex_init (&stream->priv->base_stream_lock);
 }

@@ -23,10 +23,6 @@
 #include <string.h>
 #include <glib/gi18n-lib.h>
 
-#define E_CELL_RENDERER_COLOR_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CELL_RENDERER_COLOR, ECellRendererColorPrivate))
-
 enum {
 	PROP_0,
 	PROP_RGBA
@@ -36,7 +32,7 @@ struct _ECellRendererColorPrivate {
 	GdkRGBA rgba;
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ECellRendererColor,
 	e_cell_renderer_color,
 	GTK_TYPE_CELL_RENDERER)
@@ -105,7 +101,7 @@ cell_renderer_color_render (GtkCellRenderer *cell,
 	guint xpad;
 	guint ypad;
 
-	priv = E_CELL_RENDERER_COLOR_GET_PRIVATE (cell);
+	priv = E_CELL_RENDERER_COLOR (cell)->priv;
 
 	cell_renderer_color_get_size (
 		cell, widget, cell_area,
@@ -137,7 +133,7 @@ cell_renderer_color_set_property (GObject *object,
 	ECellRendererColorPrivate *priv;
 	GdkRGBA *rgba;
 
-	priv = E_CELL_RENDERER_COLOR_GET_PRIVATE (object);
+	priv = E_CELL_RENDERER_COLOR (object)->priv;
 
 	switch (property_id) {
 		case PROP_RGBA:
@@ -165,7 +161,7 @@ cell_renderer_color_get_property (GObject *object,
 {
 	ECellRendererColorPrivate *priv;
 
-	priv = E_CELL_RENDERER_COLOR_GET_PRIVATE (object);
+	priv = E_CELL_RENDERER_COLOR (object)->priv;
 
 	switch (property_id) {
 		case PROP_RGBA:
@@ -181,8 +177,6 @@ e_cell_renderer_color_class_init (ECellRendererColorClass *class)
 {
 	GObjectClass *object_class;
 	GtkCellRendererClass *cell_class;
-
-	g_type_class_add_private (class, sizeof (ECellRendererColorPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = cell_renderer_color_set_property;
@@ -206,7 +200,7 @@ e_cell_renderer_color_class_init (ECellRendererColorClass *class)
 static void
 e_cell_renderer_color_init (ECellRendererColor *cellcolor)
 {
-	cellcolor->priv = E_CELL_RENDERER_COLOR_GET_PRIVATE (cellcolor);
+	cellcolor->priv = e_cell_renderer_color_get_instance_private (cellcolor);
 
 	g_object_set (cellcolor, "xpad", 4, NULL);
 }

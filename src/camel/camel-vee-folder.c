@@ -43,10 +43,6 @@ extern gint camel_application_is_exiting;
 
 typedef struct _FolderChangedData FolderChangedData;
 
-#define CAMEL_VEE_FOLDER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_VEE_FOLDER, CamelVeeFolderPrivate))
-
 struct _CamelVeeFolderPrivate {
 	guint32 flags;		/* folder open flags */
 	gboolean destroyed;
@@ -80,7 +76,7 @@ enum {
 	PROP_AUTO_UPDATE = 0x2401
 };
 
-G_DEFINE_TYPE (CamelVeeFolder, camel_vee_folder, CAMEL_TYPE_FOLDER)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelVeeFolder, camel_vee_folder, CAMEL_TYPE_FOLDER)
 
 struct _FolderChangedData {
 	CamelFolderChangeInfo *changes;
@@ -1292,8 +1288,6 @@ camel_vee_folder_class_init (CamelVeeFolderClass *class)
 	GObjectClass *object_class;
 	CamelFolderClass *folder_class;
 
-	g_type_class_add_private (class, sizeof (CamelVeeFolderPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = vee_folder_dispose;
 	object_class->finalize = vee_folder_finalize;
@@ -1341,7 +1335,7 @@ camel_vee_folder_init (CamelVeeFolder *vee_folder)
 {
 	CamelFolder *folder = CAMEL_FOLDER (vee_folder);
 
-	vee_folder->priv = CAMEL_VEE_FOLDER_GET_PRIVATE (vee_folder);
+	vee_folder->priv = camel_vee_folder_get_instance_private (vee_folder);
 
 	camel_folder_set_flags (folder, camel_folder_get_flags (folder) | CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY);
 

@@ -43,12 +43,6 @@
 #define DIRECTION_GO_LEFT 0
 #define DIRECTION_GO_RIGHT 1
 
-G_DEFINE_TYPE (EIntervalTree, e_intervaltree, G_TYPE_OBJECT)
-
-#define E_INTERVALTREE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_INTERVALTREE, EIntervalTreePrivate))
-
 typedef struct _EIntervalNode EIntervalNode;
 
 static EIntervalNode *
@@ -81,6 +75,8 @@ struct _EIntervalTreePrivate {
 	GHashTable *id_node_hash;
 	GRecMutex mutex;
 };
+
+G_DEFINE_TYPE_WITH_PRIVATE (EIntervalTree, e_intervaltree, G_TYPE_OBJECT)
 
 static inline gint
 get_direction (EIntervalNode *x,
@@ -412,7 +408,7 @@ intervaltree_finalize (GObject *object)
 {
 	EIntervalTreePrivate *priv;
 
-	priv = E_INTERVALTREE_GET_PRIVATE (object);
+	priv = E_INTERVALTREE (object)->priv;
 
 	g_free (priv->root);
 	g_free (priv->nil);
@@ -431,8 +427,6 @@ e_intervaltree_class_init (EIntervalTreeClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (EIntervalTreePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = intervaltree_finalize;
 }
@@ -442,7 +436,7 @@ e_intervaltree_init (EIntervalTree *tree)
 {
 	EIntervalNode *root, *nil;
 
-	tree->priv = E_INTERVALTREE_GET_PRIVATE (tree);
+	tree->priv = e_intervaltree_get_instance_private (tree);
 
 	tree->priv->nil = nil = g_new (EIntervalNode, 1);
 	nil->parent = nil->left = nil->right = nil;
