@@ -38,10 +38,6 @@
 
 #include <libedataserver/e-data-server-util.h>
 
-#define E_SOURCE_AUTHENTICATION_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_AUTHENTICATION, ESourceAuthenticationPrivate))
-
 struct _ESourceAuthenticationPrivate {
 	gchar *host;
 	gchar *method;
@@ -69,7 +65,7 @@ enum {
 	PROP_CREDENTIAL_NAME
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceAuthentication,
 	e_source_authentication,
 	E_TYPE_SOURCE_EXTENSION)
@@ -219,7 +215,7 @@ source_authentication_dispose (GObject *object)
 {
 	ESourceAuthenticationPrivate *priv;
 
-	priv = E_SOURCE_AUTHENTICATION_GET_PRIVATE (object);
+	priv = E_SOURCE_AUTHENTICATION (object)->priv;
 
 	g_clear_object (&priv->connectable);
 
@@ -232,7 +228,7 @@ source_authentication_finalize (GObject *object)
 {
 	ESourceAuthenticationPrivate *priv;
 
-	priv = E_SOURCE_AUTHENTICATION_GET_PRIVATE (object);
+	priv = E_SOURCE_AUTHENTICATION (object)->priv;
 
 	g_free (priv->host);
 	g_free (priv->method);
@@ -248,8 +244,6 @@ e_source_authentication_class_init (ESourceAuthenticationClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (class, sizeof (ESourceAuthenticationPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_authentication_set_property;
@@ -377,7 +371,7 @@ e_source_authentication_class_init (ESourceAuthenticationClass *class)
 static void
 e_source_authentication_init (ESourceAuthentication *extension)
 {
-	extension->priv = E_SOURCE_AUTHENTICATION_GET_PRIVATE (extension);
+	extension->priv = e_source_authentication_get_instance_private (extension);
 }
 
 /**

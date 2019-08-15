@@ -37,7 +37,7 @@ struct _EXmlDocumentPrivate {
 	GHashTable *namespaces_by_href; /* gchar *ns_href ~> xmlNsPtr */
 };
 
-G_DEFINE_TYPE (EXmlDocument, e_xml_document, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (EXmlDocument, e_xml_document, G_TYPE_OBJECT)
 
 static void
 e_xml_document_finalize (GObject *object)
@@ -66,8 +66,6 @@ e_xml_document_class_init (EXmlDocumentClass *klass)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (klass, sizeof (EXmlDocumentPrivate));
-
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = e_xml_document_finalize;
 }
@@ -75,7 +73,7 @@ e_xml_document_class_init (EXmlDocumentClass *klass)
 static void
 e_xml_document_init (EXmlDocument *xml)
 {
-	xml->priv = G_TYPE_INSTANCE_GET_PRIVATE (xml, E_TYPE_XML_DOCUMENT, EXmlDocumentPrivate);
+	xml->priv = e_xml_document_get_instance_private (xml);
 
 	xml->priv->doc = xmlNewDoc ((const xmlChar *) "1.0");
 	g_return_if_fail (xml->priv->doc != NULL);

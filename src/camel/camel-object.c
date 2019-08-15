@@ -32,10 +32,6 @@
 
 #define d(x)
 
-#define CAMEL_OBJECT_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_OBJECT, CamelObjectPrivate))
-
 struct _CamelObjectPrivate {
 	gchar *state_filename;
 };
@@ -45,7 +41,7 @@ enum {
 	PROP_STATE_FILENAME
 };
 
-G_DEFINE_ABSTRACT_TYPE (CamelObject, camel_object, G_TYPE_OBJECT)
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (CamelObject, camel_object, G_TYPE_OBJECT)
 
 /* State file for CamelObject data.
  * Any later versions should only append data.
@@ -129,7 +125,7 @@ object_finalize (GObject *object)
 {
 	CamelObjectPrivate *priv;
 
-	priv = CAMEL_OBJECT_GET_PRIVATE (object);
+	priv = CAMEL_OBJECT (object)->priv;
 
 	g_free (priv->state_filename);
 
@@ -387,8 +383,6 @@ camel_object_class_init (CamelObjectClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelObjectPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = object_set_property;
 	object_class->get_property = object_get_property;
@@ -420,7 +414,7 @@ camel_object_class_init (CamelObjectClass *class)
 static void
 camel_object_init (CamelObject *object)
 {
-	object->priv = CAMEL_OBJECT_GET_PRIVATE (object);
+	object->priv = camel_object_get_instance_private (object);
 }
 
 G_DEFINE_QUARK (camel-error-quark, camel_error)

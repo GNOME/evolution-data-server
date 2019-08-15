@@ -30,10 +30,6 @@
 
 #include "e-cal-backend.h"
 
-#define E_CAL_BACKEND_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CAL_BACKEND, ECalBackendPrivate))
-
 typedef struct _AsyncContext AsyncContext;
 typedef struct _DispatchNode DispatchNode;
 typedef struct _SignalClosure SignalClosure;
@@ -140,6 +136,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	ECalBackend,
 	e_cal_backend,
 	E_TYPE_BACKEND,
+	G_ADD_PRIVATE (ECalBackend)
 	G_IMPLEMENT_INTERFACE (
 		E_TYPE_TIMEZONE_CACHE,
 		e_cal_backend_timezone_cache_init))
@@ -635,7 +632,7 @@ cal_backend_dispose (GObject *object)
 {
 	ECalBackendPrivate *priv;
 
-	priv = E_CAL_BACKEND_GET_PRIVATE (object);
+	priv = E_CAL_BACKEND (object)->priv;
 
 	if (priv->auth_source_changed_handler_id > 0) {
 		g_signal_handler_disconnect (
@@ -670,7 +667,7 @@ cal_backend_finalize (GObject *object)
 {
 	ECalBackendPrivate *priv;
 
-	priv = E_CAL_BACKEND_GET_PRIVATE (object);
+	priv = E_CAL_BACKEND (object)->priv;
 
 	g_mutex_clear (&priv->views_mutex);
 	g_mutex_clear (&priv->property_lock);
@@ -798,7 +795,7 @@ cal_backend_add_cached_timezone (ETimezoneCache *cache,
 	ECalBackendPrivate *priv;
 	const gchar *tzid;
 
-	priv = E_CAL_BACKEND_GET_PRIVATE (cache);
+	priv = E_CAL_BACKEND (cache)->priv;
 
 	/* XXX Apparently this function can sometimes return NULL.
 	 *     I'm not sure when or why that happens, but we can't
@@ -859,7 +856,7 @@ cal_backend_get_cached_timezone (ETimezoneCache *cache,
 	ICalProperty *prop;
 	const gchar *builtin_tzid;
 
-	priv = E_CAL_BACKEND_GET_PRIVATE (cache);
+	priv = E_CAL_BACKEND (cache)->priv;
 
 	if (g_str_equal (tzid, "UTC"))
 		return i_cal_timezone_get_utc_timezone ();
@@ -926,7 +923,7 @@ cal_backend_list_cached_timezones (ETimezoneCache *cache)
 	ECalBackendPrivate *priv;
 	GList *list;
 
-	priv = E_CAL_BACKEND_GET_PRIVATE (cache);
+	priv = E_CAL_BACKEND (cache)->priv;
 
 	g_mutex_lock (&priv->zone_cache_lock);
 
@@ -942,8 +939,6 @@ e_cal_backend_class_init (ECalBackendClass *class)
 {
 	GObjectClass *object_class;
 	EBackendClass *backend_class;
-
-	g_type_class_add_private (class, sizeof (ECalBackendPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = cal_backend_set_property;
@@ -1077,7 +1072,7 @@ e_cal_backend_init (ECalBackend *backend)
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) g_object_unref);
 
-	backend->priv = E_CAL_BACKEND_GET_PRIVATE (backend);
+	backend->priv = e_cal_backend_get_instance_private (backend);
 
 	g_mutex_init (&backend->priv->views_mutex);
 	g_mutex_init (&backend->priv->property_lock);

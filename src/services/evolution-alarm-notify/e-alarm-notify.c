@@ -69,6 +69,7 @@ struct _EAlarmNotifyPrivate {
 static void	e_alarm_notify_initable_init	(GInitableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (EAlarmNotify, e_alarm_notify, GTK_TYPE_APPLICATION,
+	G_ADD_PRIVATE (EAlarmNotify)
 	G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, e_alarm_notify_initable_init))
 
 static void
@@ -1079,8 +1080,6 @@ e_alarm_notify_class_init (EAlarmNotifyClass *klass)
 	GObjectClass *object_class;
 	GApplicationClass *application_class;
 
-	g_type_class_add_private (klass, sizeof (EAlarmNotifyPrivate));
-
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->dispose = e_alarm_notify_dispose;
 	object_class->finalize = e_alarm_notify_finalize;
@@ -1099,7 +1098,7 @@ e_alarm_notify_initable_init (GInitableIface *iface)
 static void
 e_alarm_notify_init (EAlarmNotify *an)
 {
-	an->priv = G_TYPE_INSTANCE_GET_PRIVATE (an, E_TYPE_ALARM_NOTIFY, EAlarmNotifyPrivate);
+	an->priv = e_alarm_notify_get_instance_private (an);
 	an->priv->notification_ids = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	an->priv->last_n_reminders = G_MAXINT32;
 

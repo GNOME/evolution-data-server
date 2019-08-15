@@ -33,7 +33,7 @@ struct _CamelVeeMessageInfoPrivate {
 	CamelFolderSummary *orig_summary;
 };
 
-G_DEFINE_TYPE (CamelVeeMessageInfo, camel_vee_message_info, CAMEL_TYPE_MESSAGE_INFO)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelVeeMessageInfo, camel_vee_message_info, CAMEL_TYPE_MESSAGE_INFO)
 
 static CamelMessageInfo *
 vee_message_info_clone (const CamelMessageInfo *mi,
@@ -449,8 +449,6 @@ camel_vee_message_info_class_init (CamelVeeMessageInfoClass *class)
 	CamelMessageInfoClass *mi_class;
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelVeeMessageInfoPrivate));
-
 	mi_class = CAMEL_MESSAGE_INFO_CLASS (class);
 	mi_class->clone = vee_message_info_clone;
 	mi_class->get_flags = vee_message_info_get_flags;
@@ -495,7 +493,7 @@ camel_vee_message_info_class_init (CamelVeeMessageInfoClass *class)
 static void
 camel_vee_message_info_init (CamelVeeMessageInfo *vmi)
 {
-	vmi->priv = G_TYPE_INSTANCE_GET_PRIVATE (vmi, CAMEL_TYPE_VEE_MESSAGE_INFO, CamelVeeMessageInfoPrivate);
+	vmi->priv = camel_vee_message_info_get_instance_private (vmi);
 }
 
 /**

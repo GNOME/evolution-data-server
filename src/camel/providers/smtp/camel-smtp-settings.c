@@ -17,10 +17,6 @@
 
 #include "camel-smtp-settings.h"
 
-#define CAMEL_SMTP_SETTINGS_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SMTP_SETTINGS, CamelSmtpSettingsPrivate))
-
 enum {
 	PROP_0,
 	PROP_AUTH_MECHANISM,

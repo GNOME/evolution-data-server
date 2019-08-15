@@ -29,17 +29,13 @@
 
 #include "camel-imapx-namespace.h"
 
-#define CAMEL_IMAPX_NAMESPACE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_IMAPX_NAMESPACE, CamelIMAPXNamespacePrivate))
-
 struct _CamelIMAPXNamespacePrivate {
 	CamelIMAPXNamespaceCategory category;
 	gchar *prefix;
 	gchar separator;
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelIMAPXNamespace,
 	camel_imapx_namespace,
 	G_TYPE_OBJECT)
@@ -49,7 +45,7 @@ imapx_namespace_finalize (GObject *object)
 {
 	CamelIMAPXNamespacePrivate *priv;
 
-	priv = CAMEL_IMAPX_NAMESPACE_GET_PRIVATE (object);
+	priv = CAMEL_IMAPX_NAMESPACE (object)->priv;
 
 	g_free (priv->prefix);
 
@@ -62,8 +58,6 @@ camel_imapx_namespace_class_init (CamelIMAPXNamespaceClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelIMAPXNamespacePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = imapx_namespace_finalize;
 }
@@ -71,7 +65,7 @@ camel_imapx_namespace_class_init (CamelIMAPXNamespaceClass *class)
 static void
 camel_imapx_namespace_init (CamelIMAPXNamespace *namespace)
 {
-	namespace->priv = CAMEL_IMAPX_NAMESPACE_GET_PRIVATE (namespace);
+	namespace->priv = camel_imapx_namespace_get_instance_private (namespace);
 }
 
 /**

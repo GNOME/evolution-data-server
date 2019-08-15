@@ -43,10 +43,6 @@
 #define d(x)
 #define w(x)
 
-#define CAMEL_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_STORE, CamelStorePrivate))
-
 typedef struct _AsyncContext AsyncContext;
 typedef struct _SignalClosure SignalClosure;
 
@@ -93,6 +89,7 @@ static void camel_store_initable_init (GInitableIface *iface);
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
 	CamelStore, camel_store, CAMEL_TYPE_SERVICE,
+	G_ADD_PRIVATE (CamelStore)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE, camel_store_initable_init))
 
@@ -572,8 +569,6 @@ camel_store_class_init (CamelStoreClass *class)
 	GObjectClass *object_class;
 	CamelServiceClass *service_class;
 
-	g_type_class_add_private (class, sizeof (CamelStorePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = store_finalize;
 	object_class->dispose = store_dispose;
@@ -667,7 +662,7 @@ camel_store_initable_init (GInitableIface *iface)
 static void
 camel_store_init (CamelStore *store)
 {
-	store->priv = CAMEL_STORE_GET_PRIVATE (store);
+	store->priv = camel_store_get_instance_private (store);
 
 	/* Default CamelStore capabilities:
 	 *

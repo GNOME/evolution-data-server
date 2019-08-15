@@ -27,10 +27,6 @@
 #include <mcheck.h>
 #endif
 
-#define CAMEL_MIME_FILTER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MIME_FILTER, CamelMimeFilterPrivate))
-
 struct _CamelMimeFilterPrivate {
 	gchar *inbuf;
 	gsize inlen;
@@ -48,7 +44,7 @@ typedef void	(*FilterMethod)			(CamelMimeFilter *filter,
 #define PRE_HEAD (64)
 #define BACK_HEAD (64)
 
-G_DEFINE_ABSTRACT_TYPE (CamelMimeFilter, camel_mime_filter, G_TYPE_OBJECT)
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (CamelMimeFilter, camel_mime_filter, G_TYPE_OBJECT)
 
 static void
 mime_filter_finalize (GObject *object)
@@ -82,8 +78,6 @@ camel_mime_filter_class_init (CamelMimeFilterClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelMimeFilterPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = mime_filter_finalize;
 
@@ -93,7 +87,7 @@ camel_mime_filter_class_init (CamelMimeFilterClass *class)
 static void
 camel_mime_filter_init (CamelMimeFilter *mime_filter)
 {
-	mime_filter->priv = CAMEL_MIME_FILTER_GET_PRIVATE (mime_filter);
+	mime_filter->priv = camel_mime_filter_get_instance_private (mime_filter);
 
 	mime_filter->outreal = NULL;
 	mime_filter->outbuf = NULL;
@@ -161,7 +155,7 @@ filter_run (CamelMimeFilter *f,
 		struct _CamelMimeFilterPrivate *p;
 		gint newlen;
 
-		p = CAMEL_MIME_FILTER_GET_PRIVATE (f);
+		p = CAMEL_MIME_FILTER (f)->priv;
 
 		newlen = len + prespace + f->backlen;
 		if (p->inlen < newlen) {

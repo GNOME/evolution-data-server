@@ -21,10 +21,6 @@
 
 #include "e-source-contacts.h"
 
-#define E_SOURCE_CONTACTS_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_CONTACTS, ESourceContactsPrivate))
-
 struct _ESourceContactsPrivate {
 	gboolean include_me;
 };
@@ -34,7 +30,7 @@ enum {
 	PROP_INCLUDE_ME
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceContacts,
 	e_source_contacts,
 	E_TYPE_SOURCE_EXTENSION)
@@ -110,8 +106,6 @@ e_source_contacts_class_init (ESourceContactsClass *class)
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
 
-	g_type_class_add_private (class, sizeof (ESourceContactsPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_contacts_set_property;
 	object_class->get_property = source_contacts_get_property;
@@ -136,7 +130,7 @@ e_source_contacts_class_init (ESourceContactsClass *class)
 static void
 e_source_contacts_init (ESourceContacts *extension)
 {
-	extension->priv = E_SOURCE_CONTACTS_GET_PRIVATE (extension);
+	extension->priv = e_source_contacts_get_instance_private (extension);
 }
 
 gboolean

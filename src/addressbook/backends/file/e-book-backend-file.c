@@ -44,10 +44,6 @@
 #include "e-book-backend-file-migrate-bdb.h"
 #endif
 
-#define E_BOOK_BACKEND_FILE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_BOOK_BACKEND_FILE, EBookBackendFilePrivate))
-
 #define d(x)
 
 #define E_BOOK_BACKEND_FILE_VERSION_NAME "PAS-DB-VERSION"
@@ -67,14 +63,6 @@
 static void	e_book_backend_file_initable_init
 						(GInitableIface *iface);
 
-G_DEFINE_TYPE_WITH_CODE (
-	EBookBackendFile,
-	e_book_backend_file,
-	E_TYPE_BOOK_BACKEND_SYNC,
-	G_IMPLEMENT_INTERFACE (
-		G_TYPE_INITABLE,
-		e_book_backend_file_initable_init))
-
 struct _EBookBackendFilePrivate {
 	gchar     *base_directory;
 	gchar     *photo_dirname;
@@ -87,6 +75,15 @@ struct _EBookBackendFilePrivate {
 
 	EBookSqlite *sqlitedb;
 };
+
+G_DEFINE_TYPE_WITH_CODE (
+	EBookBackendFile,
+	e_book_backend_file,
+	E_TYPE_BOOK_BACKEND_SYNC,
+	G_ADD_PRIVATE (EBookBackendFile)
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_INITABLE,
+		e_book_backend_file_initable_init))
 
 /****************************************************************
  *                   File Management helper APIs                *
@@ -1073,7 +1070,7 @@ book_backend_file_finalize (GObject *object)
 {
 	EBookBackendFilePrivate *priv;
 
-	priv = E_BOOK_BACKEND_FILE_GET_PRIVATE (object);
+	priv = E_BOOK_BACKEND_FILE (object)->priv;
 
 	g_free (priv->photo_dirname);
 	g_free (priv->revision);
@@ -1808,7 +1805,7 @@ book_backend_file_configure_direct (EBookBackend *backend,
 {
 	EBookBackendFilePrivate *priv;
 
-	priv = E_BOOK_BACKEND_FILE_GET_PRIVATE (backend);
+	priv = E_BOOK_BACKEND_FILE (backend)->priv;
 	priv->base_directory = g_strdup (config);
 }
 
@@ -1989,7 +1986,7 @@ book_backend_file_initable_init (GInitable *initable,
 	gchar *dirname, *fullpath;
 	gboolean success = TRUE;
 
-	priv = E_BOOK_BACKEND_FILE_GET_PRIVATE (initable);
+	priv = E_BOOK_BACKEND_FILE (initable)->priv;
 
 	source = e_backend_get_source (E_BACKEND (initable));
 	registry = e_book_backend_get_registry (E_BOOK_BACKEND (initable));
@@ -2122,8 +2119,6 @@ e_book_backend_file_class_init (EBookBackendFileClass *class)
 	EBookBackendClass *backend_class;
 	EBookBackendSyncClass *backend_sync_class;
 
-	g_type_class_add_private (class, sizeof (EBookBackendFilePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = book_backend_file_dispose;
 	object_class->finalize = book_backend_file_finalize;
@@ -2158,7 +2153,7 @@ e_book_backend_file_initable_init (GInitableIface *iface)
 static void
 e_book_backend_file_init (EBookBackendFile *backend)
 {
-	backend->priv = E_BOOK_BACKEND_FILE_GET_PRIVATE (backend);
+	backend->priv = e_book_backend_file_get_instance_private (backend);
 
 	g_rw_lock_init (&(backend->priv->lock));
 }

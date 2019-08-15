@@ -47,10 +47,6 @@
 #include <libedataserver/e-source-offline.h>
 #include <libedataserver/e-source-security.h>
 
-#define E_SOURCE_CAMEL_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_CAMEL, ESourceCamelPrivate))
-
 struct _ESourceCamelPrivate {
 	CamelSettings *settings;
 	GArray *value_array;
@@ -121,7 +117,7 @@ static BindingData bindings[] = {
 	  e_binding_transform_enum_value_to_nick }
 };
 
-G_DEFINE_ABSTRACT_TYPE (
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (
 	ESourceCamel,
 	e_source_camel,
 	E_TYPE_SOURCE_EXTENSION)
@@ -431,7 +427,7 @@ source_camel_dispose (GObject *object)
 {
 	ESourceCamelPrivate *priv;
 
-	priv = E_SOURCE_CAMEL_GET_PRIVATE (object);
+	priv = E_SOURCE_CAMEL (object)->priv;
 
 	if (priv->settings != NULL) {
 		g_object_unref (priv->settings);
@@ -448,7 +444,7 @@ source_camel_finalize (GObject *object)
 	ESourceCamelPrivate *priv;
 	guint ii;
 
-	priv = E_SOURCE_CAMEL_GET_PRIVATE (object);
+	priv = E_SOURCE_CAMEL (object)->priv;
 
 	for (ii = 0; ii < priv->value_array->len; ii++)
 		g_value_unset (&g_array_index (priv->value_array, GValue, ii));
@@ -474,7 +470,7 @@ source_camel_constructed (GObject *object)
 	G_OBJECT_CLASS (e_source_camel_parent_class)->constructed (object);
 
 	class = E_SOURCE_CAMEL_GET_CLASS (object);
-	priv = E_SOURCE_CAMEL_GET_PRIVATE (object);
+	priv = E_SOURCE_CAMEL (object)->priv;
 
 	source = e_source_extension_ref_source (E_SOURCE_EXTENSION (object));
 
@@ -566,8 +562,6 @@ e_source_camel_class_init (ESourceCamelClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (ESourceCamelPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->get_property = source_camel_get_property;
 	object_class->dispose = source_camel_dispose;
@@ -600,7 +594,7 @@ e_source_camel_init (ESourceCamel *extension)
 	/* Zero-fill array elements when they are allocated. */
 	value_array = g_array_new (FALSE, TRUE, sizeof (GValue));
 
-	extension->priv = E_SOURCE_CAMEL_GET_PRIVATE (extension);
+	extension->priv = e_source_camel_get_instance_private (extension);
 	extension->priv->value_array = value_array;
 }
 

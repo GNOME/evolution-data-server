@@ -22,18 +22,17 @@ struct _CamelAddressPrivate {
 	guint dummy;
 };
 
-G_DEFINE_TYPE (CamelAddress, camel_address, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelAddress, camel_address, G_TYPE_OBJECT)
 
 static void
 camel_address_class_init (CamelAddressClass *class)
 {
-	g_type_class_add_private (class, sizeof (CamelAddressPrivate));
 }
 
 static void
 camel_address_init (CamelAddress *address)
 {
-	address->priv = G_TYPE_INSTANCE_GET_PRIVATE (address, CAMEL_TYPE_ADDRESS, CamelAddressPrivate);
+	address->priv = camel_address_get_instance_private (address);
 }
 
 /**

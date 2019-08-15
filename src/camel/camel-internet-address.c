@@ -34,7 +34,7 @@ struct _address {
 	gchar *address;
 };
 
-G_DEFINE_TYPE (CamelInternetAddress, camel_internet_address, CAMEL_TYPE_ADDRESS)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelInternetAddress, camel_internet_address, CAMEL_TYPE_ADDRESS)
 
 static gint
 internet_address_length (CamelAddress *paddr)
@@ -257,8 +257,6 @@ camel_internet_address_class_init (CamelInternetAddressClass *class)
 	CamelAddressClass *address_class;
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelInternetAddressPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = internet_address_finalize;
 
@@ -275,7 +273,7 @@ camel_internet_address_class_init (CamelInternetAddressClass *class)
 static void
 camel_internet_address_init (CamelInternetAddress *internet_address)
 {
-	internet_address->priv = G_TYPE_INSTANCE_GET_PRIVATE (internet_address, CAMEL_TYPE_INTERNET_ADDRESS, CamelInternetAddressPrivate);
+	internet_address->priv = camel_internet_address_get_instance_private (internet_address);
 	internet_address->priv->addresses = g_ptr_array_new ();
 }
 

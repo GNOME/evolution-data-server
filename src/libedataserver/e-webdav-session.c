@@ -45,7 +45,7 @@ struct _EWebDAVSessionPrivate {
 	gboolean dummy;
 };
 
-G_DEFINE_TYPE (EWebDAVSession, e_webdav_session, E_TYPE_SOUP_SESSION)
+G_DEFINE_TYPE_WITH_PRIVATE (EWebDAVSession, e_webdav_session, E_TYPE_SOUP_SESSION)
 
 G_DEFINE_BOXED_TYPE (EWebDAVResource, e_webdav_resource, e_webdav_resource_copy, e_webdav_resource_free)
 G_DEFINE_BOXED_TYPE (EWebDAVPropertyChange, e_webdav_property_change, e_webdav_property_change_copy, e_webdav_property_change_free)
@@ -598,13 +598,12 @@ e_webdav_access_control_entry_get_privileges (EWebDAVAccessControlEntry *ace)
 static void
 e_webdav_session_class_init (EWebDAVSessionClass *klass)
 {
-	g_type_class_add_private (klass, sizeof (EWebDAVSessionPrivate));
 }
 
 static void
 e_webdav_session_init (EWebDAVSession *webdav)
 {
-	webdav->priv = G_TYPE_INSTANCE_GET_PRIVATE (webdav, E_TYPE_WEBDAV_SESSION, EWebDAVSessionPrivate);
+	webdav->priv = e_webdav_session_get_instance_private (webdav);
 }
 
 /**

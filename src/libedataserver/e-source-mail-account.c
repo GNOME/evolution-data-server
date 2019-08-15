@@ -40,10 +40,6 @@
 #include <libedataserver/e-source-enumtypes.h>
 #include <libedataserver/e-source-mail-identity.h>
 
-#define E_SOURCE_MAIL_ACCOUNT_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_MAIL_ACCOUNT, ESourceMailAccountPrivate))
-
 struct _ESourceMailAccountPrivate {
 	gchar *identity_uid;
 	gchar *archive_folder;
@@ -61,7 +57,7 @@ enum {
 	PROP_MARK_SEEN_TIMEOUT
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceMailAccount,
 	e_source_mail_account,
 	E_TYPE_SOURCE_BACKEND)
@@ -158,7 +154,7 @@ source_mail_account_finalize (GObject *object)
 {
 	ESourceMailAccountPrivate *priv;
 
-	priv = E_SOURCE_MAIL_ACCOUNT_GET_PRIVATE (object);
+	priv = E_SOURCE_MAIL_ACCOUNT (object)->priv;
 
 	g_free (priv->identity_uid);
 	g_free (priv->archive_folder);
@@ -172,8 +168,6 @@ e_source_mail_account_class_init (ESourceMailAccountClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (class, sizeof (ESourceMailAccountPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_mail_account_set_property;
@@ -259,7 +253,7 @@ e_source_mail_account_class_init (ESourceMailAccountClass *class)
 static void
 e_source_mail_account_init (ESourceMailAccount *extension)
 {
-	extension->priv = E_SOURCE_MAIL_ACCOUNT_GET_PRIVATE (extension);
+	extension->priv = e_source_mail_account_get_instance_private (extension);
 }
 
 /**

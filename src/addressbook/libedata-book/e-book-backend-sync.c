@@ -42,7 +42,7 @@ struct _EBookBackendSyncPrivate {
 	guint dummy;
 };
 
-G_DEFINE_TYPE (EBookBackendSync, e_book_backend_sync, E_TYPE_BOOK_BACKEND)
+G_DEFINE_TYPE_WITH_PRIVATE (EBookBackendSync, e_book_backend_sync, E_TYPE_BOOK_BACKEND)
 
 static void
 book_backend_sync_open (EBookBackend *backend,
@@ -238,8 +238,6 @@ e_book_backend_sync_class_init (EBookBackendSyncClass *klass)
 {
 	EBookBackendClass *book_backend_class;
 
-	g_type_class_add_private (klass, sizeof (EBookBackendSyncPrivate));
-
 	klass->get_contact_list_uids_sync = book_backend_sync_get_contact_list_uids_sync;
 
 	book_backend_class = E_BOOK_BACKEND_CLASS (klass);
@@ -256,7 +254,7 @@ e_book_backend_sync_class_init (EBookBackendSyncClass *klass)
 static void
 e_book_backend_sync_init (EBookBackendSync *backend)
 {
-	backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (backend, E_TYPE_BOOK_BACKEND_SYNC, EBookBackendSyncPrivate);
+	backend->priv = e_book_backend_sync_get_instance_private (backend);
 }
 
 /**

@@ -17,10 +17,6 @@
 
 #include "camel-sendmail-settings.h"
 
-#define CAMEL_SENDMAIL_SETTINGS_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SENDMAIL_SETTINGS, CamelSendmailSettingsPrivate))
-
 struct _CamelSendmailSettingsPrivate {
 	GMutex property_lock;
 	gchar *custom_binary;
@@ -40,7 +36,7 @@ enum {
 	PROP_SEND_IN_OFFLINE
 };
 
-G_DEFINE_TYPE (CamelSendmailSettings, camel_sendmail_settings, CAMEL_TYPE_SETTINGS)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelSendmailSettings, camel_sendmail_settings, CAMEL_TYPE_SETTINGS)
 
 static void
 sendmail_settings_set_property (GObject *object,
@@ -134,7 +130,7 @@ sendmail_settings_finalize (GObject *object)
 {
 	CamelSendmailSettingsPrivate *priv;
 
-	priv = CAMEL_SENDMAIL_SETTINGS_GET_PRIVATE (object);
+	priv = CAMEL_SENDMAIL_SETTINGS (object)->priv;
 
 	g_mutex_clear (&priv->property_lock);
 
@@ -149,8 +145,6 @@ static void
 camel_sendmail_settings_class_init (CamelSendmailSettingsClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (CamelSendmailSettingsPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = sendmail_settings_set_property;
@@ -226,7 +220,7 @@ camel_sendmail_settings_class_init (CamelSendmailSettingsClass *class)
 static void
 camel_sendmail_settings_init (CamelSendmailSettings *settings)
 {
-	settings->priv = CAMEL_SENDMAIL_SETTINGS_GET_PRIVATE (settings);
+	settings->priv = camel_sendmail_settings_get_instance_private (settings);
 	g_mutex_init (&settings->priv->property_lock);
 }
 

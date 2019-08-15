@@ -48,6 +48,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (ESourceCredentialsProvider, e_source_credentials_provider, G_TYPE_OBJECT,
+	G_ADD_PRIVATE (ESourceCredentialsProvider)
 	G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
 
 static ESource *
@@ -170,8 +171,6 @@ e_source_credentials_provider_class_init (ESourceCredentialsProviderClass *class
 	GObjectClass *object_class;
 	ESourceCredentialsProviderClass *provider_class;
 
-	g_type_class_add_private (class, sizeof (ESourceCredentialsProviderPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_credentials_provider_set_property;
 	object_class->get_property = source_credentials_provider_get_property;
@@ -206,7 +205,7 @@ e_source_credentials_provider_class_init (ESourceCredentialsProviderClass *class
 static void
 e_source_credentials_provider_init (ESourceCredentialsProvider *provider)
 {
-	provider->priv = G_TYPE_INSTANCE_GET_PRIVATE (provider, E_TYPE_SOURCE_CREDENTIALS_PROVIDER, ESourceCredentialsProviderPrivate);
+	provider->priv = e_source_credentials_provider_get_instance_private (provider);
 
 	g_weak_ref_init (&provider->priv->registry, NULL);
 	provider->priv->providers = NULL;

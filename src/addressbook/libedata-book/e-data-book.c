@@ -44,10 +44,6 @@
 #include "e-book-backend-sexp.h"
 #include "e-book-backend-factory.h"
 
-#define E_DATA_BOOK_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_DATA_BOOK, EDataBookPrivate))
-
 typedef struct _AsyncContext AsyncContext;
 
 struct _EDataBookPrivate {
@@ -85,6 +81,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	EDataBook,
 	e_data_book,
 	G_TYPE_OBJECT,
+	G_ADD_PRIVATE (EDataBook)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_data_book_initable_init))
@@ -1675,7 +1672,7 @@ data_book_dispose (GObject *object)
 {
 	EDataBookPrivate *priv;
 
-	priv = E_DATA_BOOK_GET_PRIVATE (object);
+	priv = E_DATA_BOOK (object)->priv;
 
 	g_weak_ref_set (&priv->backend, NULL);
 
@@ -1705,7 +1702,7 @@ data_book_finalize (GObject *object)
 {
 	EDataBookPrivate *priv;
 
-	priv = E_DATA_BOOK_GET_PRIVATE (object);
+	priv = E_DATA_BOOK (object)->priv;
 
 	g_free (priv->object_path);
 
@@ -1846,8 +1843,6 @@ e_data_book_class_init (EDataBookClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (EDataBookPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = data_book_set_property;
 	object_class->get_property = data_book_get_property;
@@ -1905,7 +1900,7 @@ e_data_book_init (EDataBook *data_book)
 {
 	EDBusAddressBook *dbus_interface;
 
-	data_book->priv = E_DATA_BOOK_GET_PRIVATE (data_book);
+	data_book->priv = e_data_book_get_instance_private (data_book);
 
 	dbus_interface = e_dbus_address_book_skeleton_new ();
 	data_book->priv->dbus_interface = dbus_interface;

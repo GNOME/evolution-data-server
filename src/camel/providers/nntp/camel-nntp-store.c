@@ -43,10 +43,6 @@
 #include <ws2tcpip.h>
 #endif
 
-#define CAMEL_NNTP_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_NNTP_STORE, CamelNNTPStorePrivate))
-
 #define w(x)
 #define dd(x) (camel_debug("nntp")?(x):0)
 
@@ -81,6 +77,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	CamelNNTPStore,
 	camel_nntp_store,
 	CAMEL_TYPE_OFFLINE_STORE,
+	G_ADD_PRIVATE (CamelNNTPStore)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		camel_nntp_store_initable_init)
@@ -158,7 +155,7 @@ nntp_store_dispose (GObject *object)
 {
 	CamelNNTPStorePrivate *priv;
 
-	priv = CAMEL_NNTP_STORE_GET_PRIVATE (object);
+	priv = CAMEL_NNTP_STORE (object)->priv;
 
 	/* Only run this the first time. */
 	if (priv->summary != NULL) {
@@ -1716,8 +1713,6 @@ camel_nntp_store_class_init (CamelNNTPStoreClass *class)
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 
-	g_type_class_add_private (class, sizeof (CamelNNTPStorePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = nntp_store_set_property;
 	object_class->get_property = nntp_store_get_property;
@@ -1779,7 +1774,7 @@ camel_subscribable_init (CamelSubscribableInterface *iface)
 static void
 camel_nntp_store_init (CamelNNTPStore *nntp_store)
 {
-	nntp_store->priv = CAMEL_NNTP_STORE_GET_PRIVATE (nntp_store);
+	nntp_store->priv = camel_nntp_store_get_instance_private (nntp_store);
 
 	g_mutex_init (&nntp_store->priv->property_lock);
 

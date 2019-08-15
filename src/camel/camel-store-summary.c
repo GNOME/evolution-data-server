@@ -46,10 +46,6 @@
 /* current version */
 #define CAMEL_STORE_SUMMARY_VERSION (2)
 
-#define CAMEL_STORE_SUMMARY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_STORE_SUMMARY, CamelStoreSummaryPrivate))
-
 struct _CamelStoreSummaryPrivate {
 	GRecMutex summary_lock;	/* for the summary hashtable/array */
 	GRecMutex io_lock;	/* load/save lock, for access to saved_count, etc */
@@ -71,7 +67,7 @@ struct _CamelStoreSummaryPrivate {
 	GHashTable *folders_path; /* CamelStoreInfo's by path name */
 };
 
-G_DEFINE_TYPE (CamelStoreSummary, camel_store_summary, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelStoreSummary, camel_store_summary, G_TYPE_OBJECT)
 
 static void
 store_summary_finalize (GObject *object)
@@ -258,8 +254,6 @@ camel_store_summary_class_init (CamelStoreSummaryClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelStoreSummaryPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = store_summary_dispose;
 	object_class->finalize = store_summary_finalize;
@@ -277,7 +271,7 @@ camel_store_summary_class_init (CamelStoreSummaryClass *class)
 static void
 camel_store_summary_init (CamelStoreSummary *summary)
 {
-	summary->priv = CAMEL_STORE_SUMMARY_GET_PRIVATE (summary);
+	summary->priv = camel_store_summary_get_instance_private (summary);
 
 	summary->priv->version = CAMEL_STORE_SUMMARY_VERSION;
 

@@ -43,10 +43,6 @@
 #include "camel-transport.h"
 #include "camel-url.h"
 
-#define CAMEL_SESSION_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SESSION, CamelSessionPrivate))
-
 /* Prioritize ahead of GTK+ redraws. */
 #define JOB_PRIORITY G_PRIORITY_HIGH_IDLE
 
@@ -118,7 +114,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE (CamelSession, camel_session, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelSession, camel_session, G_TYPE_OBJECT)
 
 static void
 async_context_free (AsyncContext *async_context)
@@ -366,7 +362,7 @@ session_dispose (GObject *object)
 {
 	CamelSessionPrivate *priv;
 
-	priv = CAMEL_SESSION_GET_PRIVATE (object);
+	priv = CAMEL_SESSION (object)->priv;
 
 	g_hash_table_remove_all (priv->services);
 
@@ -382,7 +378,7 @@ session_finalize (GObject *object)
 {
 	CamelSessionPrivate *priv;
 
-	priv = CAMEL_SESSION_GET_PRIVATE (object);
+	priv = CAMEL_SESSION (object)->priv;
 
 	g_free (priv->user_data_dir);
 	g_free (priv->user_cache_dir);
@@ -603,8 +599,6 @@ camel_session_class_init (CamelSessionClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelSessionPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = session_set_property;
 	object_class->get_property = session_get_property;
@@ -745,7 +739,7 @@ camel_session_init (CamelSession *session)
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) g_object_unref);
 
-	session->priv = CAMEL_SESSION_GET_PRIVATE (session);
+	session->priv = camel_session_get_instance_private (session);
 
 	session->priv->services = services;
 	g_mutex_init (&session->priv->services_lock);

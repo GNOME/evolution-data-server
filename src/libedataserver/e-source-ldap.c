@@ -23,10 +23,6 @@
 
 #include "e-source-ldap.h"
 
-#define E_SOURCE_LDAP_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_LDAP, ESourceLDAPPrivate))
-
 struct _ESourceLDAPPrivate {
 	gboolean can_browse;
 	gchar *filter;
@@ -50,7 +46,7 @@ enum {
 	PROP_SECURITY
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceLDAP,
 	e_source_ldap,
 	E_TYPE_SOURCE_EXTENSION)
@@ -284,7 +280,7 @@ source_ldap_finalize (GObject *object)
 {
 	ESourceLDAPPrivate *priv;
 
-	priv = E_SOURCE_LDAP_GET_PRIVATE (object);
+	priv = E_SOURCE_LDAP (object)->priv;
 
 	g_free (priv->filter);
 	g_free (priv->root_dn);
@@ -339,8 +335,6 @@ e_source_ldap_class_init (ESourceLDAPClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (class, sizeof (ESourceLDAPPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_ldap_set_property;
@@ -449,7 +443,7 @@ e_source_ldap_class_init (ESourceLDAPClass *class)
 static void
 e_source_ldap_init (ESourceLDAP *extension)
 {
-	extension->priv = E_SOURCE_LDAP_GET_PRIVATE (extension);
+	extension->priv = e_source_ldap_get_instance_private (extension);
 }
 
 ESourceLDAPAuthentication

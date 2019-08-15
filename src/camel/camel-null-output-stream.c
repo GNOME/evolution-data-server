@@ -29,17 +29,13 @@
 
 #include "camel-null-output-stream.h"
 
-#define CAMEL_NULL_OUTPUT_STREAM_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_NULL_OUTPUT_STREAM, CamelNullOutputStreamPrivate))
-
 struct _CamelNullOutputStreamPrivate {
 	gsize bytes_written;
 	gboolean ends_with_crlf;
 	gboolean ends_with_cr; /* Just for cases when the CRLF is split into two writes, CR and LF */
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelNullOutputStream,
 	camel_null_output_stream,
 	G_TYPE_OUTPUT_STREAM)
@@ -54,7 +50,7 @@ null_output_stream_write (GOutputStream *stream,
 	CamelNullOutputStreamPrivate *priv;
 	const guchar *data = buffer;
 
-	priv = CAMEL_NULL_OUTPUT_STREAM_GET_PRIVATE (stream);
+	priv = CAMEL_NULL_OUTPUT_STREAM (stream)->priv;
 
 	priv->bytes_written += count;
 
@@ -74,9 +70,6 @@ camel_null_output_stream_class_init (CamelNullOutputStreamClass *class)
 {
 	GOutputStreamClass *stream_class;
 
-	g_type_class_add_private (
-		class, sizeof (CamelNullOutputStreamPrivate));
-
 	stream_class = G_OUTPUT_STREAM_CLASS (class);
 	stream_class->write_fn = null_output_stream_write;
 }
@@ -84,7 +77,7 @@ camel_null_output_stream_class_init (CamelNullOutputStreamClass *class)
 static void
 camel_null_output_stream_init (CamelNullOutputStream *null_stream)
 {
-	null_stream->priv = CAMEL_NULL_OUTPUT_STREAM_GET_PRIVATE (null_stream);
+	null_stream->priv = camel_null_output_stream_get_instance_private (null_stream);
 	null_stream->priv->ends_with_crlf = FALSE;
 	null_stream->priv->ends_with_cr = FALSE;
 }

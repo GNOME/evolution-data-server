@@ -35,10 +35,6 @@
 
 #include <e-dbus-subprocess-backend.h>
 
-#define E_SUBPROCESS_BOOK_FACTORY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SUBPROCESS_BOOK_FACTORY, ESubprocessBookFactoryPrivate))
-
 struct _ESubprocessBookFactoryPrivate {
 	ESystemLocaleWatcher *locale_watcher;
 	gulong notify_locale_id;
@@ -52,6 +48,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	ESubprocessBookFactory,
 	e_subprocess_book_factory,
 	E_TYPE_SUBPROCESS_FACTORY,
+	G_ADD_PRIVATE (ESubprocessBookFactory)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_subprocess_book_factory_initable_init))
@@ -204,8 +201,6 @@ e_subprocess_book_factory_class_init (ESubprocessBookFactoryClass *class)
 	GObjectClass *object_class;
 	ESubprocessFactoryClass *subprocess_factory_class;
 
-	g_type_class_add_private (class, sizeof (ESubprocessBookFactoryPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->constructed = subprocess_book_factory_constructed;
 	object_class->dispose = subprocess_book_factory_dispose;
@@ -223,7 +218,7 @@ e_subprocess_book_factory_initable_init (GInitableIface *iface)
 static void
 e_subprocess_book_factory_init (ESubprocessBookFactory *subprocess_factory)
 {
-	subprocess_factory->priv = E_SUBPROCESS_BOOK_FACTORY_GET_PRIVATE (subprocess_factory);
+	subprocess_factory->priv = e_subprocess_book_factory_get_instance_private (subprocess_factory);
 }
 
 ESubprocessBookFactory *

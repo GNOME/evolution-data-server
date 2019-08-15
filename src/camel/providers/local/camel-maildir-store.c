@@ -35,10 +35,6 @@
 
 #define d(x)
 
-#define CAMEL_MAILDIR_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MAILDIR_STORE, CamelMaildirStorePrivate))
-
 /* after the space is a version of the folder structure */
 #define MAILDIR_CONTENT_VERSION_STR  "maildir++ 1"
 #define MAILDIR_CONTENT_VERSION			1
@@ -71,7 +67,7 @@ static gchar *maildir_get_meta_path (CamelLocalStore *ls, const gchar *full_name
 static void maildir_migrate_hierarchy (CamelMaildirStore *mstore, gint maildir_version, GCancellable *cancellable, GError **error);
 static gboolean maildir_version_requires_migrate (const gchar *meta_filename, gboolean *file_exists, gint *maildir_version);
 
-G_DEFINE_TYPE (CamelMaildirStore, camel_maildir_store, CAMEL_TYPE_LOCAL_STORE)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelMaildirStore, camel_maildir_store, CAMEL_TYPE_LOCAL_STORE)
 
 /* This fixes up some historical cruft of names starting with "./" */
 static const gchar *
@@ -967,8 +963,6 @@ camel_maildir_store_class_init (CamelMaildirStoreClass *class)
 	CamelStoreClass *store_class;
 	CamelLocalStoreClass *local_class;
 
-	g_type_class_add_private (class, sizeof (CamelMaildirStorePrivate));
-
 	store_class = CAMEL_STORE_CLASS (class);
 	store_class->hash_folder_name = maildir_store_hash_folder_name;
 	store_class->equal_folder_name = maildir_store_equal_folder_name;
@@ -987,7 +981,7 @@ camel_maildir_store_class_init (CamelMaildirStoreClass *class)
 static void
 camel_maildir_store_init (CamelMaildirStore *maildir_store)
 {
-	maildir_store->priv = CAMEL_MAILDIR_STORE_GET_PRIVATE (maildir_store);
+	maildir_store->priv = camel_maildir_store_get_instance_private (maildir_store);
 	maildir_store->priv->already_migrated = FALSE;
 	maildir_store->priv->can_escape_dots = TRUE;
 }

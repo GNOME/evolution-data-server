@@ -29,10 +29,6 @@
 #include "camel-vee-folder.h"
 #include "camel-vee-store.h"
 
-#define CAMEL_VEE_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_VEE_STORE, CamelVeeStorePrivate))
-
 /* Translators: 'Unmatched' is a folder name under Search folders where are shown
  * all messages not belonging into any other configured search folder */
 #define PRETTY_UNMATCHED_FOLDER_NAME _("Unmatched")
@@ -56,8 +52,6 @@ enum {
 	PROP_UNMATCHED_ENABLED = 0x2400
 };
 
-G_DEFINE_TYPE (CamelVeeStore, camel_vee_store, CAMEL_TYPE_STORE)
-
 struct _CamelVeeStorePrivate {
 	CamelVeeDataCache *vee_data_cache;
 	CamelVeeFolder *unmatched_folder;
@@ -69,6 +63,8 @@ struct _CamelVeeStorePrivate {
 	GMutex vu_counts_mutex;
 	GHashTable *vuid_usage_counts; /* gchar * (vuid) => gint of usages, those with 0 comes to unmatched_folder */
 };
+
+G_DEFINE_TYPE_WITH_PRIVATE (CamelVeeStore, camel_vee_store, CAMEL_TYPE_STORE)
 
 static gint
 vee_folder_cmp (gconstpointer ap,
@@ -153,7 +149,7 @@ vee_store_dispose (GObject *object)
 {
 	CamelVeeStorePrivate *priv;
 
-	priv = CAMEL_VEE_STORE_GET_PRIVATE (object);
+	priv = CAMEL_VEE_STORE (object)->priv;
 
 	g_clear_object (&priv->vee_data_cache);
 	g_clear_object (&priv->unmatched_folder);
@@ -167,7 +163,7 @@ vee_store_finalize (GObject *object)
 {
 	CamelVeeStorePrivate *priv;
 
-	priv = CAMEL_VEE_STORE_GET_PRIVATE (object);
+	priv = CAMEL_VEE_STORE (object)->priv;
 
 	g_hash_table_destroy (priv->subfolder_usage_counts);
 	g_hash_table_destroy (priv->vuid_usage_counts);
@@ -525,8 +521,6 @@ camel_vee_store_class_init (CamelVeeStoreClass *class)
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 
-	g_type_class_add_private (class, sizeof (CamelVeeStorePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = vee_store_set_property;
 	object_class->get_property = vee_store_get_property;
@@ -562,7 +556,7 @@ camel_vee_store_init (CamelVeeStore *vee_store)
 {
 	CamelStore *store = CAMEL_STORE (vee_store);
 
-	vee_store->priv = CAMEL_VEE_STORE_GET_PRIVATE (vee_store);
+	vee_store->priv = camel_vee_store_get_instance_private (vee_store);
 	vee_store->priv->vee_data_cache = camel_vee_data_cache_new ();
 	vee_store->priv->unmatched_enabled = TRUE;
 

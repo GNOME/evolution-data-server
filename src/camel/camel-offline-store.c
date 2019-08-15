@@ -29,10 +29,6 @@
 #include "camel-offline-store.h"
 #include "camel-session.h"
 
-#define CAMEL_OFFLINE_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_OFFLINE_STORE, CamelOfflineStorePrivate))
-
 struct _CamelOfflineStorePrivate {
 	/* XXX The online flag stores whether the user has selected online or
 	 *     offline mode, but fetching the flag through the "get" function
@@ -48,7 +44,7 @@ enum {
 	PROP_ONLINE
 };
 
-G_DEFINE_TYPE (CamelOfflineStore, camel_offline_store, CAMEL_TYPE_STORE)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelOfflineStore, camel_offline_store, CAMEL_TYPE_STORE)
 
 static void
 offline_store_downsync_folders_sync (CamelStore *store,
@@ -120,7 +116,7 @@ offline_store_constructed (GObject *object)
 	CamelOfflineStorePrivate *priv;
 	CamelSession *session;
 
-	priv = CAMEL_OFFLINE_STORE_GET_PRIVATE (object);
+	priv = CAMEL_OFFLINE_STORE (object)->priv;
 
 	/* Chain up to parent's constructed() method. */
 	G_OBJECT_CLASS (camel_offline_store_parent_class)->constructed (object);
@@ -169,8 +165,6 @@ camel_offline_store_class_init (CamelOfflineStoreClass *class)
 	GObjectClass *object_class;
 	CamelServiceClass *service_class;
 
-	g_type_class_add_private (class, sizeof (CamelOfflineStorePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->constructed = offline_store_constructed;
 	object_class->get_property = offline_store_get_property;
@@ -193,7 +187,7 @@ camel_offline_store_class_init (CamelOfflineStoreClass *class)
 static void
 camel_offline_store_init (CamelOfflineStore *store)
 {
-	store->priv = CAMEL_OFFLINE_STORE_GET_PRIVATE (store);
+	store->priv = camel_offline_store_get_instance_private (store);
 }
 
 /**

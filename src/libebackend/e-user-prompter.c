@@ -30,26 +30,21 @@
 #include "e-dbus-user-prompter.h"
 #include "e-user-prompter.h"
 
-#define E_USER_PROMPTER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_USER_PROMPTER, EUserPrompterPrivate))
-
 struct _EUserPrompterPrivate {
 	gint dummy; /* not used */
 };
 
-G_DEFINE_TYPE (EUserPrompter, e_user_prompter, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (EUserPrompter, e_user_prompter, G_TYPE_OBJECT)
 
 static void
 e_user_prompter_class_init (EUserPrompterClass *class)
 {
-	g_type_class_add_private (class, sizeof (EUserPrompterPrivate));
 }
 
 static void
 e_user_prompter_init (EUserPrompter *prompter)
 {
-	prompter->priv = E_USER_PROMPTER_GET_PRIVATE (prompter);
+	prompter->priv = e_user_prompter_get_instance_private (prompter);
 }
 
 /**

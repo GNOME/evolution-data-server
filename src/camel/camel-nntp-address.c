@@ -28,7 +28,7 @@ struct _CamelNNTPAddressPrivate {
 	GPtrArray *addresses;
 };
 
-G_DEFINE_TYPE (CamelNNTPAddress, camel_nntp_address, CAMEL_TYPE_ADDRESS)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelNNTPAddress, camel_nntp_address, CAMEL_TYPE_ADDRESS)
 
 static gint
 nntp_address_length (CamelAddress *paddr)
@@ -134,8 +134,6 @@ camel_nntp_address_class_init (CamelNNTPAddressClass *class)
 	CamelAddressClass *address_class;
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelNNTPAddressPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = nntp_address_finalize;
 
@@ -152,7 +150,7 @@ camel_nntp_address_class_init (CamelNNTPAddressClass *class)
 static void
 camel_nntp_address_init (CamelNNTPAddress *nntp_address)
 {
-	nntp_address->priv = G_TYPE_INSTANCE_GET_PRIVATE (nntp_address, CAMEL_TYPE_NNTP_ADDRESS, CamelNNTPAddressPrivate);
+	nntp_address->priv = camel_nntp_address_get_instance_private (nntp_address);
 	nntp_address->priv->addresses = g_ptr_array_new ();
 }
 

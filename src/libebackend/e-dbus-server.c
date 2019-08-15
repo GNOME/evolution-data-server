@@ -35,10 +35,6 @@
 
 #include "e-dbus-server.h"
 
-#define E_DBUS_SERVER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_DBUS_SERVER, EDBusServerPrivate))
-
 #define INACTIVITY_TIMEOUT 10  /* seconds */
 
 struct _EDBusServerPrivate {
@@ -73,6 +69,7 @@ G_LOCK_DEFINE_STATIC (loaded_modules);
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
 	EDBusServer, e_dbus_server, G_TYPE_OBJECT,
+	G_ADD_PRIVATE (EDBusServer)
 	G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
 
 static void
@@ -138,7 +135,7 @@ dbus_server_finalize (GObject *object)
 {
 	EDBusServerPrivate *priv;
 
-	priv = E_DBUS_SERVER_GET_PRIVATE (object);
+	priv = E_DBUS_SERVER (object)->priv;
 
 	g_main_loop_unref (priv->main_loop);
 
@@ -287,8 +284,6 @@ e_dbus_server_class_init (EDBusServerClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (EDBusServerPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = dbus_server_finalize;
 	object_class->dispose = dbus_server_dispose;
@@ -397,7 +392,7 @@ e_dbus_server_init (EDBusServer *server)
 	g_network_monitor_get_default ();
 #endif
 
-	server->priv = E_DBUS_SERVER_GET_PRIVATE (server);
+	server->priv = e_dbus_server_get_instance_private (server);
 	server->priv->main_loop = g_main_loop_new (NULL, FALSE);
 	server->priv->wait_for_client = FALSE;
 

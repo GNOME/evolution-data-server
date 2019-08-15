@@ -26,10 +26,6 @@
 #include "camel-msgport.h"
 #include "camel-operation.h"
 
-#define CAMEL_OPERATION_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_OPERATION, CamelOperationPrivate))
-
 #define PROGRESS_DELAY		250  /* milliseconds */
 #define TRANSIENT_DELAY		250  /* milliseconds */
 #define POP_MESSAGE_DELAY	1    /* seconds */
@@ -66,7 +62,7 @@ static GQueue operation_list = G_QUEUE_INIT;
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE (CamelOperation, camel_operation, G_TYPE_CANCELLABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelOperation, camel_operation, G_TYPE_CANCELLABLE)
 
 static StatusNode *
 status_node_new (void)
@@ -152,7 +148,7 @@ operation_dispose (GObject *object)
 {
 	CamelOperationPrivate *priv;
 
-	priv = CAMEL_OPERATION_GET_PRIVATE (object);
+	priv = CAMEL_OPERATION (object)->priv;
 
 	LOCK ();
 
@@ -182,8 +178,6 @@ static void
 camel_operation_class_init (CamelOperationClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (CamelOperationPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = operation_dispose;
@@ -228,7 +222,7 @@ camel_operation_class_init (CamelOperationClass *class)
 static void
 camel_operation_init (CamelOperation *operation)
 {
-	operation->priv = CAMEL_OPERATION_GET_PRIVATE (operation);
+	operation->priv = camel_operation_get_instance_private (operation);
 
 	g_queue_init (&operation->priv->status_stack);
 	operation->priv->proxying = NULL;
@@ -290,7 +284,7 @@ camel_operation_new_proxy (GCancellable *cancellable)
 	if (!G_IS_CANCELLABLE (cancellable))
 		return operation;
 
-	priv = CAMEL_OPERATION_GET_PRIVATE (operation);
+	priv = CAMEL_OPERATION (operation)->priv;
 	g_return_val_if_fail (priv != NULL, operation);
 
 	priv->proxying = g_object_ref (cancellable);

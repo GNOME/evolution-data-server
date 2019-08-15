@@ -53,7 +53,7 @@ struct _ECredentialsPrompterImplOAuth2Private {
 	GCancellable *cancellable;
 };
 
-G_DEFINE_TYPE (ECredentialsPrompterImplOAuth2, e_credentials_prompter_impl_oauth2, E_TYPE_CREDENTIALS_PROMPTER_IMPL)
+G_DEFINE_TYPE_WITH_PRIVATE (ECredentialsPrompterImplOAuth2, e_credentials_prompter_impl_oauth2, E_TYPE_CREDENTIALS_PROMPTER_IMPL)
 
 #ifdef ENABLE_OAUTH2
 
@@ -1019,8 +1019,6 @@ e_credentials_prompter_impl_oauth2_class_init (ECredentialsPrompterImplOAuth2Cla
 	GObjectClass *object_class;
 	ECredentialsPrompterImplClass *prompter_impl_class;
 
-	g_type_class_add_private (class, sizeof (ECredentialsPrompterImplOAuth2Private));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->constructed = e_credentials_prompter_impl_oauth2_constructed;
 	object_class->dispose = e_credentials_prompter_impl_oauth2_dispose;
@@ -1035,8 +1033,7 @@ e_credentials_prompter_impl_oauth2_class_init (ECredentialsPrompterImplOAuth2Cla
 static void
 e_credentials_prompter_impl_oauth2_init (ECredentialsPrompterImplOAuth2 *prompter_oauth2)
 {
-	prompter_oauth2->priv = G_TYPE_INSTANCE_GET_PRIVATE (prompter_oauth2,
-		E_TYPE_CREDENTIALS_PROMPTER_IMPL_OAUTH2, ECredentialsPrompterImplOAuth2Private);
+	prompter_oauth2->priv = e_credentials_prompter_impl_oauth2_get_instance_private (prompter_oauth2);
 
 	g_mutex_init (&prompter_oauth2->priv->property_lock);
 

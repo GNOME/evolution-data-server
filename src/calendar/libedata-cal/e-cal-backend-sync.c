@@ -33,10 +33,6 @@
 
 #include "e-cal-backend-sync.h"
 
-#define E_CAL_BACKEND_SYNC_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CAL_BACKEND_SYNC, ECalBackendSyncPrivate))
-
 G_DEFINE_TYPE (ECalBackendSync, e_cal_backend_sync, E_TYPE_CAL_BACKEND)
 
 /**

@@ -44,10 +44,6 @@
 
 #define PARANOID(x) x
 
-#define CAMEL_SASL_DIGEST_MD5_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SASL_DIGEST_MD5, CamelSaslDigestMd5Private))
-
 /* Implements rfc2831 */
 
 static CamelServiceAuthType sasl_digest_md5_auth_type = {
@@ -167,7 +163,7 @@ struct _CamelSaslDigestMd5Private {
 	gint state;
 };
 
-G_DEFINE_TYPE (CamelSaslDigestMd5, camel_sasl_digest_md5, CAMEL_TYPE_SASL)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelSaslDigestMd5, camel_sasl_digest_md5, CAMEL_TYPE_SASL)
 
 static void
 decode_lwsp (const gchar **in)
@@ -966,8 +962,6 @@ camel_sasl_digest_md5_class_init (CamelSaslDigestMd5Class *class)
 	GObjectClass *object_class;
 	CamelSaslClass *sasl_class;
 
-	g_type_class_add_private (class, sizeof (CamelSaslDigestMd5Private));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = sasl_digest_md5_finalize;
 
@@ -979,5 +973,5 @@ camel_sasl_digest_md5_class_init (CamelSaslDigestMd5Class *class)
 static void
 camel_sasl_digest_md5_init (CamelSaslDigestMd5 *sasl)
 {
-	sasl->priv = CAMEL_SASL_DIGEST_MD5_GET_PRIVATE (sasl);
+	sasl->priv = camel_sasl_digest_md5_get_instance_private (sasl);
 }

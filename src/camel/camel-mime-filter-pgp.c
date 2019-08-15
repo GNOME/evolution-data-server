@@ -29,10 +29,6 @@
 #include "camel-mime-filter-pgp.h"
 #include "camel-mime-utils.h"
 
-#define CAMEL_MIME_FILTER_PGP_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MIME_FILTER_PGP, CamelMimeFilterPgpPrivate))
-
 #define BEGIN_PGP_SIGNED_MESSAGE "-----BEGIN PGP SIGNED MESSAGE-----"
 #define BEGIN_PGP_SIGNATURE      "-----BEGIN PGP SIGNATURE-----"
 #define END_PGP_SIGNATURE        "-----END PGP SIGNATURE-----"
@@ -52,7 +48,7 @@ enum {
 	PGP_FOOTER
 };
 
-G_DEFINE_TYPE (CamelMimeFilterPgp, camel_mime_filter_pgp, CAMEL_TYPE_MIME_FILTER)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelMimeFilterPgp, camel_mime_filter_pgp, CAMEL_TYPE_MIME_FILTER)
 
 static void
 mime_filter_pgp_run (CamelMimeFilter *mime_filter,
@@ -71,7 +67,7 @@ mime_filter_pgp_run (CamelMimeFilter *mime_filter,
 	gboolean blank;
 	gsize len;
 
-	priv = CAMEL_MIME_FILTER_PGP_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_PGP (mime_filter)->priv;
 
 	/* only need as much space as the input, we're stripping chars */
 	camel_mime_filter_set_size (mime_filter, inlen, FALSE);
@@ -183,7 +179,7 @@ mime_filter_pgp_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterPgpPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_PGP_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_PGP (mime_filter)->priv;
 
 	priv->state = PGP_PREFACE;
 }
@@ -192,8 +188,6 @@ static void
 camel_mime_filter_pgp_class_init (CamelMimeFilterPgpClass *class)
 {
 	CamelMimeFilterClass *mime_filter_class;
-
-	g_type_class_add_private (class, sizeof (CamelMimeFilterPgpPrivate));
 
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_pgp_filter;
@@ -204,7 +198,7 @@ camel_mime_filter_pgp_class_init (CamelMimeFilterPgpClass *class)
 static void
 camel_mime_filter_pgp_init (CamelMimeFilterPgp *filter)
 {
-	filter->priv = CAMEL_MIME_FILTER_PGP_GET_PRIVATE (filter);
+	filter->priv = camel_mime_filter_pgp_get_instance_private (filter);
 }
 
 CamelMimeFilter *

@@ -36,10 +36,6 @@
 
 #include "e-source-autocomplete.h"
 
-#define E_SOURCE_AUTOCOMPLETE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_AUTOCOMPLETE, ESourceAutocompletePrivate))
-
 struct _ESourceAutocompletePrivate {
 	gboolean include_me;
 };
@@ -49,7 +45,7 @@ enum {
 	PROP_INCLUDE_ME
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceAutocomplete,
 	e_source_autocomplete,
 	E_TYPE_SOURCE_EXTENSION)
@@ -95,8 +91,6 @@ e_source_autocomplete_class_init (ESourceAutocompleteClass *class)
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
 
-	g_type_class_add_private (class, sizeof (ESourceAutocompletePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_autocomplete_set_property;
 	object_class->get_property = source_autocomplete_get_property;
@@ -122,7 +116,7 @@ e_source_autocomplete_class_init (ESourceAutocompleteClass *class)
 static void
 e_source_autocomplete_init (ESourceAutocomplete *extension)
 {
-	extension->priv = E_SOURCE_AUTOCOMPLETE_GET_PRIVATE (extension);
+	extension->priv = e_source_autocomplete_get_instance_private (extension);
 }
 
 /**

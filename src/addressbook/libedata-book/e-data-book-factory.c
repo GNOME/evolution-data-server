@@ -43,10 +43,6 @@
 
 #define d(x)
 
-#define E_DATA_BOOK_FACTORY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_DATA_BOOK_FACTORY, EDataBookFactoryPrivate))
-
 struct _EDataBookFactoryPrivate {
 	EDBusAddressBookFactory *dbus_factory;
 
@@ -62,6 +58,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	EDataBookFactory,
 	e_data_book_factory,
 	E_TYPE_DATA_FACTORY,
+	G_ADD_PRIVATE (EDataBookFactory)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_data_book_factory_initable_init))
@@ -313,8 +310,6 @@ e_data_book_factory_class_init (EDataBookFactoryClass *class)
 	    g_file_test (subprocess_book_path_env, G_FILE_TEST_IS_EXECUTABLE))
 		overwrite_subprocess_book_path = g_strdup (subprocess_book_path_env);
 
-	g_type_class_add_private (class, sizeof (EDataBookFactoryPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->constructed = data_book_factory_constructed;
 	object_class->dispose = data_book_factory_dispose;
@@ -343,7 +338,7 @@ e_data_book_factory_initable_init (GInitableIface *iface)
 static void
 e_data_book_factory_init (EDataBookFactory *factory)
 {
-	factory->priv = E_DATA_BOOK_FACTORY_GET_PRIVATE (factory);
+	factory->priv = e_data_book_factory_get_instance_private (factory);
 
 	factory->priv->dbus_factory =
 		e_dbus_address_book_factory_skeleton_new ();

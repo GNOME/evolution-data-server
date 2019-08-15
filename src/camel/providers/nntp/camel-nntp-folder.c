@@ -33,10 +33,6 @@
 #include "camel-nntp-store.h"
 #include "camel-nntp-summary.h"
 
-#define CAMEL_NNTP_FOLDER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_NNTP_FOLDER, CamelNNTPFolderPrivate))
-
 /* The custom property ID is a CamelArg artifact.
  * It still identifies the property in state files. */
 enum {
@@ -44,7 +40,7 @@ enum {
 	PROP_APPLY_FILTERS = 0x2501
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelNNTPFolder,
 	camel_nntp_folder,
 	CAMEL_TYPE_OFFLINE_FOLDER)
@@ -809,8 +805,6 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 	GObjectClass *object_class;
 	CamelFolderClass *folder_class;
 
-	g_type_class_add_private (class, sizeof (CamelNNTPFolderPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = nntp_folder_set_property;
 	object_class->get_property = nntp_folder_get_property;
@@ -848,7 +842,7 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 static void
 camel_nntp_folder_init (CamelNNTPFolder *nntp_folder)
 {
-	nntp_folder->priv = CAMEL_NNTP_FOLDER_GET_PRIVATE (nntp_folder);
+	nntp_folder->priv = camel_nntp_folder_get_instance_private (nntp_folder);
 
 	nntp_folder->changes = camel_folder_change_info_new ();
 	g_mutex_init (&nntp_folder->priv->search_lock);

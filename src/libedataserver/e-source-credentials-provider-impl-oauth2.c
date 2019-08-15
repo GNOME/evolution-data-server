@@ -29,7 +29,7 @@ struct _ESourceCredentialsProviderImplOAuth2Private {
 	EOAuth2Services *services;
 };
 
-G_DEFINE_TYPE (ESourceCredentialsProviderImplOAuth2, e_source_credentials_provider_impl_oauth2, E_TYPE_SOURCE_CREDENTIALS_PROVIDER_IMPL)
+G_DEFINE_TYPE_WITH_PRIVATE (ESourceCredentialsProviderImplOAuth2, e_source_credentials_provider_impl_oauth2, E_TYPE_SOURCE_CREDENTIALS_PROVIDER_IMPL)
 
 static gboolean
 e_source_credentials_provider_impl_oauth2_can_process (ESourceCredentialsProviderImpl *provider_impl,
@@ -87,8 +87,6 @@ e_source_credentials_provider_impl_oauth2_class_init (ESourceCredentialsProvider
 	ESourceCredentialsProviderImplClass *impl_class;
 	GObjectClass *object_class;
 
-	g_type_class_add_private (klass, sizeof (ESourceCredentialsProviderImplOAuth2Private));
-
 	impl_class = E_SOURCE_CREDENTIALS_PROVIDER_IMPL_CLASS (klass);
 	impl_class->can_process = e_source_credentials_provider_impl_oauth2_can_process;
 	impl_class->can_store = e_source_credentials_provider_impl_oauth2_can_store;
@@ -101,8 +99,7 @@ e_source_credentials_provider_impl_oauth2_class_init (ESourceCredentialsProvider
 static void
 e_source_credentials_provider_impl_oauth2_init (ESourceCredentialsProviderImplOAuth2 *provider_impl)
 {
-	provider_impl->priv = G_TYPE_INSTANCE_GET_PRIVATE (provider_impl,
-		E_TYPE_SOURCE_CREDENTIALS_PROVIDER_IMPL_OAUTH2, ESourceCredentialsProviderImplOAuth2Private);
+	provider_impl->priv = e_source_credentials_provider_impl_oauth2_get_instance_private (provider_impl);
 
 	if (e_oauth2_services_is_supported ())
 		provider_impl->priv->services = e_oauth2_services_new ();
