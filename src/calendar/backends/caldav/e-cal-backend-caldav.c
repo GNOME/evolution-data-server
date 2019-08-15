@@ -57,7 +57,7 @@ struct _ECalBackendCalDAVPrivate {
 	gboolean is_icloud;
 };
 
-G_DEFINE_TYPE (ECalBackendCalDAV, e_cal_backend_caldav, E_TYPE_CAL_META_BACKEND)
+G_DEFINE_TYPE_WITH_PRIVATE (ECalBackendCalDAV, e_cal_backend_caldav, E_TYPE_CAL_META_BACKEND)
 
 static EWebDAVSession *
 ecb_caldav_ref_session (ECalBackendCalDAV *cbdav)
@@ -2240,7 +2240,7 @@ e_cal_backend_caldav_finalize (GObject *object)
 static void
 e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 {
-	cbdav->priv = G_TYPE_INSTANCE_GET_PRIVATE (cbdav, E_TYPE_CAL_BACKEND_CALDAV, ECalBackendCalDAVPrivate);
+	cbdav->priv = e_cal_backend_caldav_get_instance_private (cbdav);
 
 	g_mutex_init (&cbdav->priv->webdav_lock);
 }
@@ -2252,8 +2252,6 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *klass)
 	ECalBackendClass *cal_backend_class;
 	ECalBackendSyncClass *cal_backend_sync_class;
 	ECalMetaBackendClass *cal_meta_backend_class;
-
-	g_type_class_add_private (klass, sizeof (ECalBackendCalDAVPrivate));
 
 	cal_meta_backend_class = E_CAL_META_BACKEND_CLASS (klass);
 	cal_meta_backend_class->connect_sync = ecb_caldav_connect_sync;

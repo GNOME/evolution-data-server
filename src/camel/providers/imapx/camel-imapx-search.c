@@ -25,10 +25,6 @@
 
 #include "camel-imapx-folder.h"
 
-#define CAMEL_IMAPX_SEARCH_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_IMAPX_SEARCH, CamelIMAPXSearchPrivate))
-
 struct _CamelIMAPXSearchPrivate {
 	GWeakRef imapx_store;
 	gint *local_data_search; /* not NULL, if testing whether all used headers are all locally available */
@@ -42,7 +38,7 @@ enum {
 	PROP_STORE
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelIMAPXSearch,
 	camel_imapx_search,
 	CAMEL_TYPE_FOLDER_SEARCH)
@@ -87,7 +83,7 @@ imapx_search_dispose (GObject *object)
 {
 	CamelIMAPXSearchPrivate *priv;
 
-	priv = CAMEL_IMAPX_SEARCH_GET_PRIVATE (object);
+	priv = CAMEL_IMAPX_SEARCH (object)->priv;
 
 	g_weak_ref_set (&priv->imapx_store, NULL);
 
@@ -100,7 +96,7 @@ imapx_search_finalize (GObject *object)
 {
 	CamelIMAPXSearchPrivate *priv;
 
-	priv = CAMEL_IMAPX_SEARCH_GET_PRIVATE (object);
+	priv = CAMEL_IMAPX_SEARCH (object)->priv;
 
 	g_weak_ref_clear (&priv->imapx_store);
 
@@ -639,8 +635,6 @@ camel_imapx_search_class_init (CamelIMAPXSearchClass *class)
 	GObjectClass *object_class;
 	CamelFolderSearchClass *search_class;
 
-	g_type_class_add_private (class, sizeof (CamelIMAPXSearchPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = imapx_search_set_property;
 	object_class->get_property = imapx_search_get_property;
@@ -669,7 +663,7 @@ camel_imapx_search_class_init (CamelIMAPXSearchClass *class)
 static void
 camel_imapx_search_init (CamelIMAPXSearch *search)
 {
-	search->priv = CAMEL_IMAPX_SEARCH_GET_PRIVATE (search);
+	search->priv = camel_imapx_search_get_instance_private (search);
 	search->priv->local_data_search = NULL;
 
 	g_weak_ref_init (&search->priv->imapx_store, NULL);

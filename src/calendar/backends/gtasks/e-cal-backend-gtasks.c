@@ -48,7 +48,7 @@ struct _ECalBackendGTasksPrivate {
 	gboolean bad_request_for_timed_query;
 };
 
-G_DEFINE_TYPE (ECalBackendGTasks, e_cal_backend_gtasks, E_TYPE_CAL_META_BACKEND)
+G_DEFINE_TYPE_WITH_PRIVATE (ECalBackendGTasks, e_cal_backend_gtasks, E_TYPE_CAL_META_BACKEND)
 
 static gboolean
 ecb_gtasks_check_data_version (ECalCache *cal_cache)
@@ -1073,7 +1073,7 @@ ecb_gtasks_dup_component_revision (ECalCache *cal_cache,
 static void
 e_cal_backend_gtasks_init (ECalBackendGTasks *cbgtasks)
 {
-	cbgtasks->priv = G_TYPE_INSTANCE_GET_PRIVATE (cbgtasks, E_TYPE_CAL_BACKEND_GTASKS, ECalBackendGTasksPrivate);
+	cbgtasks->priv = e_cal_backend_gtasks_get_instance_private (cbgtasks);
 	cbgtasks->priv->preloaded = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 	cbgtasks->priv->bad_request_for_timed_query = FALSE;
 
@@ -1137,8 +1137,6 @@ e_cal_backend_gtasks_class_init (ECalBackendGTasksClass *klass)
 	GObjectClass *object_class;
 	ECalBackendClass *cal_backend_class;
 	ECalMetaBackendClass *cal_meta_backend_class;
-
-	g_type_class_add_private (klass, sizeof (ECalBackendGTasksPrivate));
 
 	cal_meta_backend_class = E_CAL_META_BACKEND_CLASS (klass);
 	cal_meta_backend_class->connect_sync = ecb_gtasks_connect_sync;
