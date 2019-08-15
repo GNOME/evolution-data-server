@@ -33,10 +33,6 @@
 #include "camel-imapx-mailbox.h"
 #include "camel-imapx-utils.h"
 
-#define CAMEL_IMAPX_MAILBOX_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_IMAPX_MAILBOX, CamelIMAPXMailboxPrivate))
-
 struct _CamelIMAPXMailboxPrivate {
 	gchar *name;
 	gchar separator;
@@ -64,7 +60,7 @@ struct _CamelIMAPXMailboxPrivate {
 	gchar **quota_roots;
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelIMAPXMailbox,
 	camel_imapx_mailbox,
 	G_TYPE_OBJECT)
@@ -85,7 +81,7 @@ imapx_mailbox_dispose (GObject *object)
 {
 	CamelIMAPXMailboxPrivate *priv;
 
-	priv = CAMEL_IMAPX_MAILBOX_GET_PRIVATE (object);
+	priv = CAMEL_IMAPX_MAILBOX (object)->priv;
 
 	g_clear_object (&priv->namespace);
 
@@ -98,7 +94,7 @@ imapx_mailbox_finalize (GObject *object)
 {
 	CamelIMAPXMailboxPrivate *priv;
 
-	priv = CAMEL_IMAPX_MAILBOX_GET_PRIVATE (object);
+	priv = CAMEL_IMAPX_MAILBOX (object)->priv;
 
 	g_free (priv->name);
 
@@ -117,8 +113,6 @@ camel_imapx_mailbox_class_init (CamelIMAPXMailboxClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelIMAPXMailboxPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = imapx_mailbox_dispose;
 	object_class->finalize = imapx_mailbox_finalize;
@@ -127,7 +121,7 @@ camel_imapx_mailbox_class_init (CamelIMAPXMailboxClass *class)
 static void
 camel_imapx_mailbox_init (CamelIMAPXMailbox *mailbox)
 {
-	mailbox->priv = CAMEL_IMAPX_MAILBOX_GET_PRIVATE (mailbox);
+	mailbox->priv = camel_imapx_mailbox_get_instance_private (mailbox);
 
 	g_mutex_init (&mailbox->priv->property_lock);
 	g_mutex_init (&mailbox->priv->update_lock);

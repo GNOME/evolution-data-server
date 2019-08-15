@@ -37,10 +37,6 @@
 
 #include "camel-imapx-utils.h"
 
-#define CAMEL_IMAPX_LIST_RESPONSE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_IMAPX_LIST_RESPONSE, CamelIMAPXListResponsePrivate))
-
 struct _CamelIMAPXListResponsePrivate {
 	gchar *mailbox_name;
 	gchar separator;
@@ -48,7 +44,7 @@ struct _CamelIMAPXListResponsePrivate {
 	GHashTable *extended_items;
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelIMAPXListResponse,
 	camel_imapx_list_response,
 	G_TYPE_OBJECT)
@@ -78,7 +74,7 @@ imapx_list_response_finalize (GObject *object)
 {
 	CamelIMAPXListResponsePrivate *priv;
 
-	priv = CAMEL_IMAPX_LIST_RESPONSE_GET_PRIVATE (object);
+	priv = CAMEL_IMAPX_LIST_RESPONSE (object)->priv;
 
 	g_free (priv->mailbox_name);
 
@@ -95,9 +91,6 @@ camel_imapx_list_response_class_init (CamelIMAPXListResponseClass *class)
 {
 	GObjectClass *object_class;
 	gint ii;
-
-	g_type_class_add_private (
-		class, sizeof (CamelIMAPXListResponsePrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = imapx_list_response_finalize;
@@ -122,7 +115,7 @@ camel_imapx_list_response_init (CamelIMAPXListResponse *response)
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) g_variant_unref);
 
-	response->priv = CAMEL_IMAPX_LIST_RESPONSE_GET_PRIVATE (response);
+	response->priv = camel_imapx_list_response_get_instance_private (response);
 	response->priv->attributes = attributes;
 	response->priv->extended_items = extended_items;
 }

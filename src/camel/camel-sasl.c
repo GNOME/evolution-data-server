@@ -37,10 +37,6 @@
 #include "camel-sasl.h"
 #include "camel-service.h"
 
-#define CAMEL_SASL_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SASL, CamelSaslPrivate))
-
 #define w(x)
 
 typedef struct _AsyncContext AsyncContext;
@@ -65,7 +61,7 @@ enum {
 	PROP_SERVICE_NAME
 };
 
-G_DEFINE_ABSTRACT_TYPE (CamelSasl, camel_sasl, G_TYPE_OBJECT)
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (CamelSasl, camel_sasl, G_TYPE_OBJECT)
 
 static void
 async_context_free (AsyncContext *async_context)
@@ -253,7 +249,7 @@ sasl_dispose (GObject *object)
 {
 	CamelSaslPrivate *priv;
 
-	priv = CAMEL_SASL_GET_PRIVATE (object);
+	priv = CAMEL_SASL (object)->priv;
 
 	if (priv->service != NULL) {
 		g_object_unref (priv->service);
@@ -269,7 +265,7 @@ sasl_finalize (GObject *object)
 {
 	CamelSaslPrivate *priv;
 
-	priv = CAMEL_SASL_GET_PRIVATE (object);
+	priv = CAMEL_SASL (object)->priv;
 
 	g_free (priv->mechanism);
 	g_free (priv->service_name);
@@ -282,8 +278,6 @@ static void
 camel_sasl_class_init (CamelSaslClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (CamelSaslPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = sasl_set_property;
@@ -339,7 +333,7 @@ camel_sasl_class_init (CamelSaslClass *class)
 static void
 camel_sasl_init (CamelSasl *sasl)
 {
-	sasl->priv = CAMEL_SASL_GET_PRIVATE (sasl);
+	sasl->priv = camel_sasl_get_instance_private (sasl);
 }
 
 /**

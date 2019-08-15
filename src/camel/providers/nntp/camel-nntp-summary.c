@@ -41,10 +41,6 @@
 
 #define CAMEL_NNTP_SUMMARY_VERSION (1)
 
-#define CAMEL_NNTP_SUMMARY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_NNTP_SUMMARY, CamelNNTPSummaryPrivate))
-
 struct _CamelNNTPSummaryPrivate {
 	gchar *uid;
 	guint last_full_resync;
@@ -58,14 +54,12 @@ static CamelMessageInfo * message_info_new_from_headers (CamelFolderSummary *, c
 static gboolean summary_header_load (CamelFolderSummary *s, CamelFIRecord *mir);
 static CamelFIRecord * summary_header_save (CamelFolderSummary *s, GError **error);
 
-G_DEFINE_TYPE (CamelNNTPSummary, camel_nntp_summary, CAMEL_TYPE_FOLDER_SUMMARY)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelNNTPSummary, camel_nntp_summary, CAMEL_TYPE_FOLDER_SUMMARY)
 
 static void
 camel_nntp_summary_class_init (CamelNNTPSummaryClass *class)
 {
 	CamelFolderSummaryClass *folder_summary_class;
-
-	g_type_class_add_private (class, sizeof (CamelNNTPSummaryPrivate));
 
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
 	folder_summary_class->message_info_new_from_headers = message_info_new_from_headers;
@@ -78,7 +72,7 @@ camel_nntp_summary_init (CamelNNTPSummary *nntp_summary)
 {
 	CamelFolderSummary *summary = CAMEL_FOLDER_SUMMARY (nntp_summary);
 
-	nntp_summary->priv = CAMEL_NNTP_SUMMARY_GET_PRIVATE (nntp_summary);
+	nntp_summary->priv = camel_nntp_summary_get_instance_private (nntp_summary);
 
 	/* and a unique file version */
 	camel_folder_summary_set_version (summary, camel_folder_summary_get_version (summary) + CAMEL_NNTP_SUMMARY_VERSION);

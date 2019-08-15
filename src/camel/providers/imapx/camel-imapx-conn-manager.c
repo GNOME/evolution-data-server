@@ -44,10 +44,6 @@
 #define JOB_QUEUE_LOCK(x) g_rec_mutex_lock (&(x)->priv->job_queue_lock)
 #define JOB_QUEUE_UNLOCK(x) g_rec_mutex_unlock (&(x)->priv->job_queue_lock)
 
-#define CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_IMAPX_CONN_MANAGER, CamelIMAPXConnManagerPrivate))
-
 typedef struct _ConnectionInfo ConnectionInfo;
 
 struct _CamelIMAPXConnManagerPrivate {
@@ -95,7 +91,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelIMAPXConnManager,
 	camel_imapx_conn_manager,
 	G_TYPE_OBJECT)
@@ -627,7 +623,7 @@ imapx_conn_manager_finalize (GObject *object)
 {
 	CamelIMAPXConnManagerPrivate *priv;
 
-	priv = CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE (object);
+	priv = CAMEL_IMAPX_CONN_MANAGER (object)->priv;
 
 	g_warn_if_fail (priv->pending_connections == NULL);
 	g_warn_if_fail (priv->job_queue == NULL);
@@ -652,8 +648,6 @@ static void
 camel_imapx_conn_manager_class_init (CamelIMAPXConnManagerClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (CamelIMAPXConnManagerPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = imapx_conn_manager_set_property;
@@ -686,7 +680,7 @@ camel_imapx_conn_manager_class_init (CamelIMAPXConnManagerClass *class)
 static void
 camel_imapx_conn_manager_init (CamelIMAPXConnManager *conn_man)
 {
-	conn_man->priv = CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE (conn_man);
+	conn_man->priv = camel_imapx_conn_manager_get_instance_private (conn_man);
 
 	g_rw_lock_init (&conn_man->priv->rw_lock);
 	g_rec_mutex_init (&conn_man->priv->job_queue_lock);
