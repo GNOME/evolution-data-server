@@ -41,10 +41,6 @@
 #include "e-backend.h"
 #include "e-user-prompter.h"
 
-#define E_BACKEND_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_BACKEND, EBackendPrivate))
-
 #define G_IS_IO_ERROR(error, code) \
 	(g_error_matches ((error), G_IO_ERROR, (code)))
 
@@ -83,7 +79,7 @@ enum {
 	PROP_USER_PROMPTER
 };
 
-G_DEFINE_ABSTRACT_TYPE (EBackend, e_backend, G_TYPE_OBJECT)
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (EBackend, e_backend, G_TYPE_OBJECT)
 
 typedef struct _CanReachData {
 	EBackend *backend;
@@ -585,7 +581,7 @@ backend_dispose (GObject *object)
 {
 	EBackendPrivate *priv;
 
-	priv = E_BACKEND_GET_PRIVATE (object);
+	priv = E_BACKEND (object)->priv;
 
 	if (priv->network_changed_handler_id > 0) {
 		g_signal_handler_disconnect (
@@ -634,7 +630,7 @@ backend_finalize (GObject *object)
 {
 	EBackendPrivate *priv;
 
-	priv = E_BACKEND_GET_PRIVATE (object);
+	priv = E_BACKEND (object)->priv;
 
 	g_mutex_clear (&priv->property_lock);
 	g_mutex_clear (&priv->update_online_state_lock);
@@ -730,8 +726,6 @@ e_backend_class_init (EBackendClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (EBackendPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = backend_set_property;
 	object_class->get_property = backend_get_property;
@@ -809,7 +803,7 @@ e_backend_init (EBackend *backend)
 	GNetworkMonitor *network_monitor;
 	gulong handler_id;
 
-	backend->priv = E_BACKEND_GET_PRIVATE (backend);
+	backend->priv = e_backend_get_instance_private (backend);
 	backend->priv->prompter = e_user_prompter_new ();
 	backend->priv->main_context = g_main_context_ref_thread_default ();
 	backend->priv->tried_with_empty_credentials = FALSE;

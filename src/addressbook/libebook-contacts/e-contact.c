@@ -48,15 +48,11 @@
 
 #define d(x)
 
-#define E_CONTACT_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CONTACT, EContactPrivate))
-
-G_DEFINE_TYPE (EContact, e_contact, E_TYPE_VCARD)
-
 struct _EContactPrivate {
 	gchar *cached_strings[E_CONTACT_FIELD_LAST];
 };
+
+G_DEFINE_TYPE_WITH_PRIVATE (EContact, e_contact, E_TYPE_VCARD)
 
 typedef struct _AttrTypeValue {
 	const gchar *attr_name;
@@ -493,7 +489,7 @@ e_contact_finalize (GObject *object)
 	EContactPrivate *priv;
 	gint ii;
 
-	priv = E_CONTACT_GET_PRIVATE (object);
+	priv = E_CONTACT (object)->priv;
 
 	for (ii = E_CONTACT_FIELD_FIRST; ii < E_CONTACT_FIELD_LAST; ii++)
 		g_free (priv->cached_strings[ii]);
@@ -512,8 +508,6 @@ e_contact_class_init (EContactClass *class)
 	gpointer key, value;
 	#endif
 	gint ii;
-
-	g_type_class_add_private (class, sizeof (EContactPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = e_contact_set_property;
@@ -637,7 +631,7 @@ e_contact_class_init (EContactClass *class)
 static void
 e_contact_init (EContact *ec)
 {
-	ec->priv = E_CONTACT_GET_PRIVATE (ec);
+	ec->priv = e_contact_get_instance_private (ec);
 }
 
 static gpointer

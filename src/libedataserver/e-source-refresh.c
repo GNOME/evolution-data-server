@@ -36,10 +36,6 @@
 
 #include "e-source-refresh.h"
 
-#define E_SOURCE_REFRESH_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_REFRESH, ESourceRefreshPrivate))
-
 typedef struct _TimeoutNode TimeoutNode;
 
 struct _ESourceRefreshPrivate {
@@ -67,7 +63,7 @@ enum {
 	PROP_INTERVAL_MINUTES
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceRefresh,
 	e_source_refresh,
 	E_TYPE_SOURCE_EXTENSION)
@@ -279,7 +275,7 @@ source_refresh_dispose (GObject *object)
 {
 	ESourceRefreshPrivate *priv;
 
-	priv = E_SOURCE_REFRESH_GET_PRIVATE (object);
+	priv = E_SOURCE_REFRESH (object)->priv;
 
 	g_hash_table_remove_all (priv->timeout_table);
 
@@ -292,7 +288,7 @@ source_refresh_finalize (GObject *object)
 {
 	ESourceRefreshPrivate *priv;
 
-	priv = E_SOURCE_REFRESH_GET_PRIVATE (object);
+	priv = E_SOURCE_REFRESH (object)->priv;
 
 	g_mutex_clear (&priv->timeout_lock);
 	g_hash_table_destroy (priv->timeout_table);
@@ -328,8 +324,6 @@ e_source_refresh_class_init (ESourceRefreshClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (class, sizeof (ESourceRefreshPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_refresh_set_property;
@@ -381,7 +375,7 @@ e_source_refresh_init (ESourceRefresh *extension)
 		(GDestroyNotify) NULL,
 		(GDestroyNotify) timeout_node_free);
 
-	extension->priv = E_SOURCE_REFRESH_GET_PRIVATE (extension);
+	extension->priv = e_source_refresh_get_instance_private (extension);
 	g_mutex_init (&extension->priv->timeout_lock);
 	extension->priv->timeout_table = timeout_table;
 	extension->priv->next_timeout_id = 1;

@@ -62,7 +62,7 @@ enum {
 	PROP_CREDENTIALS
 };
 
-G_DEFINE_TYPE (ESoupSession, e_soup_session, SOUP_TYPE_SESSION)
+G_DEFINE_TYPE_WITH_PRIVATE (ESoupSession, e_soup_session, SOUP_TYPE_SESSION)
 
 static void
 e_soup_session_ensure_auth_usage (ESoupSession *session,
@@ -453,8 +453,6 @@ e_soup_session_class_init (ESoupSessionClass *klass)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (klass, sizeof (ESoupSessionPrivate));
-
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->set_property = e_soup_session_set_property;
 	object_class->get_property = e_soup_session_get_property;
@@ -502,7 +500,7 @@ e_soup_session_class_init (ESoupSessionClass *klass)
 static void
 e_soup_session_init (ESoupSession *session)
 {
-	session->priv = G_TYPE_INSTANCE_GET_PRIVATE (session, E_TYPE_SOUP_SESSION, ESoupSessionPrivate);
+	session->priv = e_soup_session_get_instance_private (session);
 	session->priv->ssl_info_set = FALSE;
 	session->priv->log_level = SOUP_LOGGER_LOG_NONE;
 	session->priv->auth_prefilled = FALSE;

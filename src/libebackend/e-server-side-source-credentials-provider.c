@@ -27,7 +27,7 @@ struct _EServerSideSourceCredentialsProviderPrivate {
 	gboolean dummy;
 };
 
-G_DEFINE_TYPE (EServerSideSourceCredentialsProvider, e_server_side_source_credentials_provider, E_TYPE_SOURCE_CREDENTIALS_PROVIDER)
+G_DEFINE_TYPE_WITH_PRIVATE (EServerSideSourceCredentialsProvider, e_server_side_source_credentials_provider, E_TYPE_SOURCE_CREDENTIALS_PROVIDER)
 
 static ESource *
 server_side_source_credentials_provider_ref_source (ESourceCredentialsProvider *provider,
@@ -56,8 +56,6 @@ e_server_side_source_credentials_provider_class_init (EServerSideSourceCredentia
 {
 	ESourceCredentialsProviderClass *provider_class;
 
-	g_type_class_add_private (class, sizeof (EServerSideSourceCredentialsProviderPrivate));
-
 	provider_class = E_SOURCE_CREDENTIALS_PROVIDER_CLASS (class);
 	provider_class->ref_source = server_side_source_credentials_provider_ref_source;
 }
@@ -65,7 +63,7 @@ e_server_side_source_credentials_provider_class_init (EServerSideSourceCredentia
 static void
 e_server_side_source_credentials_provider_init (EServerSideSourceCredentialsProvider *provider)
 {
-	provider->priv = G_TYPE_INSTANCE_GET_PRIVATE (provider, E_TYPE_SERVER_SIDE_SOURCE_CREDENTIALS_PROVIDER, EServerSideSourceCredentialsProviderPrivate);
+	provider->priv = e_server_side_source_credentials_provider_get_instance_private (provider);
 }
 
 /**

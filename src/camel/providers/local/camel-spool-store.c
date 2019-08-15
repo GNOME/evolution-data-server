@@ -35,10 +35,6 @@
 #include "camel-spool-settings.h"
 #include "camel-spool-store.h"
 
-#define CAMEL_SPOOL_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SPOOL_STORE, CamelSpoolStorePrivate))
-
 #define d(x)
 
 typedef enum _camel_spool_store_t {
@@ -51,7 +47,7 @@ struct _CamelSpoolStorePrivate {
 	gint placeholder;  /* for future expansion */
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelSpoolStore,
 	camel_spool_store,
 	CAMEL_TYPE_MBOX_STORE)
@@ -685,8 +681,6 @@ camel_spool_store_class_init (CamelSpoolStoreClass *class)
 	CamelStoreClass *store_class;
 	CamelLocalStoreClass *local_store_class;
 
-	g_type_class_add_private (class, sizeof (CamelSpoolStorePrivate));
-
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->settings_type = CAMEL_TYPE_SPOOL_SETTINGS;
 	service_class->get_name = spool_store_get_name;
@@ -706,5 +700,5 @@ camel_spool_store_class_init (CamelSpoolStoreClass *class)
 static void
 camel_spool_store_init (CamelSpoolStore *spool_store)
 {
-	spool_store->priv = CAMEL_SPOOL_STORE_GET_PRIVATE (spool_store);
+	spool_store->priv = camel_spool_store_get_instance_private (spool_store);
 }

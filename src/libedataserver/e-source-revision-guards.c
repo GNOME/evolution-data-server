@@ -44,10 +44,6 @@
 
 #include <libedataserver/e-data-server-util.h>
 
-#define E_SOURCE_REVISION_GUARDS_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_REVISION_GUARDS, ESourceRevisionGuardsPrivate))
-
 struct _ESourceRevisionGuardsPrivate {
 	gboolean enabled;
 };
@@ -57,7 +53,7 @@ enum {
 	PROP_ENABLED
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceRevisionGuards,
 	e_source_revision_guards,
 	E_TYPE_SOURCE_EXTENSION)
@@ -103,9 +99,6 @@ e_source_revision_guards_class_init (ESourceRevisionGuardsClass *class)
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
 
-	g_type_class_add_private (
-		class, sizeof (ESourceRevisionGuardsPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_revision_guards_set_property;
 	object_class->get_property = source_revision_guards_get_property;
@@ -130,7 +123,7 @@ e_source_revision_guards_class_init (ESourceRevisionGuardsClass *class)
 static void
 e_source_revision_guards_init (ESourceRevisionGuards *extension)
 {
-	extension->priv = E_SOURCE_REVISION_GUARDS_GET_PRIVATE (extension);
+	extension->priv = e_source_revision_guards_get_instance_private (extension);
 }
 
 /**

@@ -37,12 +37,6 @@
 
 #include "e-book-backend-summary.h"
 
-#define E_BOOK_BACKEND_SUMMARY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_BOOK_BACKEND_SUMMARY, EBookBackendSummaryPrivate))
-
-G_DEFINE_TYPE (EBookBackendSummary, e_book_backend_summary, G_TYPE_OBJECT)
-
 struct _EBookBackendSummaryPrivate {
 	gchar *summary_path;
 	FILE *fp;
@@ -101,6 +95,8 @@ typedef struct {
 	guint32 num_items;
 	guint32 summary_mtime; /* version 2.0 field */
 } EBookBackendSummaryHeader;
+
+G_DEFINE_TYPE_WITH_PRIVATE (EBookBackendSummary, e_book_backend_summary, G_TYPE_OBJECT)
 
 #define PAS_SUMMARY_MAGIC "PAS-SUMMARY"
 #define PAS_SUMMARY_MAGIC_LEN 11
@@ -175,7 +171,7 @@ e_book_backend_summary_finalize (GObject *object)
 {
 	EBookBackendSummaryPrivate *priv;
 
-	priv = E_BOOK_BACKEND_SUMMARY_GET_PRIVATE (object);
+	priv = E_BOOK_BACKEND_SUMMARY (object)->priv;
 
 	if (priv->fp)
 		fclose (priv->fp);
@@ -202,8 +198,6 @@ e_book_backend_summary_class_init (EBookBackendSummaryClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (EBookBackendSummaryPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = e_book_backend_summary_finalize;
 }
@@ -211,7 +205,7 @@ e_book_backend_summary_class_init (EBookBackendSummaryClass *class)
 static void
 e_book_backend_summary_init (EBookBackendSummary *summary)
 {
-	summary->priv = E_BOOK_BACKEND_SUMMARY_GET_PRIVATE (summary);
+	summary->priv = e_book_backend_summary_get_instance_private (summary);
 
 	summary->priv->items = g_ptr_array_new ();
 	summary->priv->id_to_item = g_hash_table_new (g_str_hash, g_str_equal);

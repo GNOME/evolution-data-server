@@ -37,10 +37,6 @@
 
 #define d(x)
 
-#define CAMEL_DATA_CACHE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_DATA_CACHE, CamelDataCachePrivate))
-
 /* how many 'bits' of hash are used to key the toplevel directory */
 #define CAMEL_DATA_CACHE_BITS (6)
 #define CAMEL_DATA_CACHE_MASK ((1 << CAMEL_DATA_CACHE_BITS)-1)
@@ -67,7 +63,7 @@ enum {
 	PROP_EXPIRE_ENABLED
 };
 
-G_DEFINE_TYPE (CamelDataCache, camel_data_cache, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelDataCache, camel_data_cache, G_TYPE_OBJECT)
 
 static void
 data_cache_set_property (GObject *object,
@@ -120,7 +116,7 @@ data_cache_finalize (GObject *object)
 {
 	CamelDataCachePrivate *priv;
 
-	priv = CAMEL_DATA_CACHE_GET_PRIVATE (object);
+	priv = CAMEL_DATA_CACHE (object)->priv;
 
 	camel_object_bag_destroy (priv->busy_bag);
 	g_free (priv->path);
@@ -133,8 +129,6 @@ static void
 camel_data_cache_class_init (CamelDataCacheClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (CamelDataCachePrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = data_cache_set_property;
@@ -176,7 +170,7 @@ camel_data_cache_init (CamelDataCache *data_cache)
 		(CamelCopyFunc) g_strdup,
 		(GFreeFunc) g_free);
 
-	data_cache->priv = CAMEL_DATA_CACHE_GET_PRIVATE (data_cache);
+	data_cache->priv = camel_data_cache_get_instance_private (data_cache);
 	data_cache->priv->busy_bag = busy_bag;
 	data_cache->priv->expire_enabled = TRUE;
 	data_cache->priv->expire_age = -1;

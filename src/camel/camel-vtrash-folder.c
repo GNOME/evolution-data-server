@@ -63,7 +63,7 @@ struct _transfer_data {
 	guint32 sbit;
 };
 
-G_DEFINE_TYPE (CamelVTrashFolder, camel_vtrash_folder, CAMEL_TYPE_VEE_FOLDER)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelVTrashFolder, camel_vtrash_folder, CAMEL_TYPE_VEE_FOLDER)
 
 static void
 transfer_messages (CamelFolder *folder,
@@ -223,8 +223,6 @@ camel_vtrash_folder_class_init (CamelVTrashFolderClass *class)
 {
 	CamelFolderClass *folder_class;
 
-	g_type_class_add_private (class, sizeof (CamelVTrashFolderPrivate));
-
 	folder_class = CAMEL_FOLDER_CLASS (class);
 	folder_class->append_message_sync = vtrash_folder_append_message_sync;
 	folder_class->transfer_messages_to_sync = vtrash_folder_transfer_messages_to_sync;
@@ -233,7 +231,7 @@ camel_vtrash_folder_class_init (CamelVTrashFolderClass *class)
 static void
 camel_vtrash_folder_init (CamelVTrashFolder *vtrash_folder)
 {
-	vtrash_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (vtrash_folder, CAMEL_TYPE_VTRASH_FOLDER, CamelVTrashFolderPrivate);
+	vtrash_folder->priv = camel_vtrash_folder_get_instance_private (vtrash_folder);
 }
 
 /**

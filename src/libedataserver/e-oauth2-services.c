@@ -46,6 +46,7 @@ struct _EOAuth2ServicesPrivate {
 };
 
 G_DEFINE_TYPE_WITH_CODE (EOAuth2Services, e_oauth2_services, G_TYPE_OBJECT,
+	G_ADD_PRIVATE (EOAuth2Services)
 	G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
 
 static GObject *services_singleton = NULL;
@@ -126,8 +127,6 @@ e_oauth2_services_class_init (EOAuth2ServicesClass *klass)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (klass, sizeof (EOAuth2ServicesPrivate));
-
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->dispose = oauth2_services_dispose;
 	object_class->finalize = oauth2_services_finalize;
@@ -142,7 +141,7 @@ e_oauth2_services_class_init (EOAuth2ServicesClass *klass)
 static void
 e_oauth2_services_init (EOAuth2Services *oauth2_services)
 {
-	oauth2_services->priv = G_TYPE_INSTANCE_GET_PRIVATE (oauth2_services, E_TYPE_OAUTH2_SERVICES, EOAuth2ServicesPrivate);
+	oauth2_services->priv = e_oauth2_services_get_instance_private (oauth2_services);
 
 	g_mutex_init (&oauth2_services->priv->property_lock);
 }

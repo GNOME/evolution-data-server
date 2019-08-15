@@ -39,10 +39,6 @@
 
 #include <libedataserver/e-data-server-util.h>
 
-#define E_SOURCE_GOA_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_GOA, ESourceGoaPrivate))
-
 struct _ESourceGoaPrivate {
 	gchar *account_id;
 	gchar *calendar_url;
@@ -60,7 +56,7 @@ enum {
 	PROP_ADDRESS
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceGoa,
 	e_source_goa,
 	E_TYPE_SOURCE_EXTENSION)
@@ -157,7 +153,7 @@ source_goa_finalize (GObject *object)
 {
 	ESourceGoaPrivate *priv;
 
-	priv = E_SOURCE_GOA_GET_PRIVATE (object);
+	priv = E_SOURCE_GOA (object)->priv;
 
 	g_free (priv->account_id);
 	g_free (priv->calendar_url);
@@ -174,8 +170,6 @@ e_source_goa_class_init (ESourceGoaClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (class, sizeof (ESourceGoaPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_goa_set_property;
@@ -259,7 +253,7 @@ e_source_goa_class_init (ESourceGoaClass *class)
 static void
 e_source_goa_init (ESourceGoa *extension)
 {
-	extension->priv = E_SOURCE_GOA_GET_PRIVATE (extension);
+	extension->priv = e_source_goa_get_instance_private (extension);
 }
 
 /**

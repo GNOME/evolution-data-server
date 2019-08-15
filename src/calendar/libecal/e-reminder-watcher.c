@@ -95,7 +95,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE (EReminderWatcher, e_reminder_watcher, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (EReminderWatcher, e_reminder_watcher, G_TYPE_OBJECT)
 
 G_DEFINE_BOXED_TYPE (EReminderData, e_reminder_data, e_reminder_data_copy, e_reminder_data_free)
 
@@ -2188,8 +2188,6 @@ e_reminder_watcher_class_init (EReminderWatcherClass *klass)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (klass, sizeof (EReminderWatcherPrivate));
-
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->set_property = e_reminder_watcher_set_property;
 	object_class->get_property = e_reminder_watcher_get_property;
@@ -2351,7 +2349,7 @@ e_reminder_watcher_init (EReminderWatcher *watcher)
 	if (!zone)
 		zone = i_cal_timezone_get_utc_timezone ();
 
-	watcher->priv = G_TYPE_INSTANCE_GET_PRIVATE (watcher, E_TYPE_REMINDER_WATCHER, EReminderWatcherPrivate);
+	watcher->priv = e_reminder_watcher_get_instance_private (watcher);
 	watcher->priv->cancellable = g_cancellable_new ();
 	watcher->priv->settings = g_settings_new ("org.gnome.evolution-data-server.calendar");
 	watcher->priv->scheduled = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, e_reminder_watcher_free_rd_slist);

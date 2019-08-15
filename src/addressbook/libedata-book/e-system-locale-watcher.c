@@ -42,7 +42,7 @@ struct _ESystemLocaleWatcherPrivate {
 	gchar *locale;
 };
 
-G_DEFINE_TYPE (ESystemLocaleWatcher, e_system_locale_watcher, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (ESystemLocaleWatcher, e_system_locale_watcher, G_TYPE_OBJECT)
 
 enum {
 	PROP_0,
@@ -280,8 +280,6 @@ e_system_locale_watcher_class_init (ESystemLocaleWatcherClass *klass)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (klass, sizeof (ESystemLocaleWatcherPrivate));
-
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->get_property = system_locale_watcher_get_property;
 	object_class->constructed = system_locale_watcher_constructed;
@@ -311,7 +309,7 @@ e_system_locale_watcher_class_init (ESystemLocaleWatcherClass *klass)
 static void
 e_system_locale_watcher_init (ESystemLocaleWatcher *watcher)
 {
-	watcher->priv = G_TYPE_INSTANCE_GET_PRIVATE (watcher, E_TYPE_SYSTEM_LOCALE_WATCHER, ESystemLocaleWatcherPrivate);
+	watcher->priv = e_system_locale_watcher_get_instance_private (watcher);
 
 	g_mutex_init (&watcher->priv->lock);
 

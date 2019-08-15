@@ -27,7 +27,7 @@ struct _ESourceCredentialsProviderImplPrivate {
 	gboolean dummy;
 };
 
-G_DEFINE_ABSTRACT_TYPE (ESourceCredentialsProviderImpl, e_source_credentials_provider_impl, E_TYPE_EXTENSION)
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (ESourceCredentialsProviderImpl, e_source_credentials_provider_impl, E_TYPE_EXTENSION)
 
 static gboolean
 source_credentials_provider_impl_lookup_sync (ESourceCredentialsProviderImpl *provider_impl,
@@ -86,8 +86,6 @@ e_source_credentials_provider_impl_class_init (ESourceCredentialsProviderImplCla
 	EExtensionClass *extension_class;
 	ESourceCredentialsProviderImplClass *provider_impl_class;
 
-	g_type_class_add_private (klass, sizeof (ESourceCredentialsProviderImplPrivate));
-
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->constructed = e_source_credentials_provider_impl_constructed;
 
@@ -103,8 +101,7 @@ e_source_credentials_provider_impl_class_init (ESourceCredentialsProviderImplCla
 static void
 e_source_credentials_provider_impl_init (ESourceCredentialsProviderImpl *provider_impl)
 {
-	provider_impl->priv = G_TYPE_INSTANCE_GET_PRIVATE (provider_impl,
-		E_TYPE_SOURCE_CREDENTIALS_PROVIDER_IMPL, ESourceCredentialsProviderImplPrivate);
+	provider_impl->priv = e_source_credentials_provider_impl_get_instance_private (provider_impl);
 }
 
 /**

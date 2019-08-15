@@ -40,10 +40,6 @@
 #include "e-book-client-view.h"
 #include "e-dbus-address-book-view.h"
 
-#define E_BOOK_CLIENT_VIEW_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_BOOK_CLIENT_VIEW, EBookClientViewPrivate))
-
 typedef struct _SignalClosure SignalClosure;
 
 struct _EBookClientViewPrivate {
@@ -102,6 +98,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	EBookClientView,
 	e_book_client_view,
 	G_TYPE_OBJECT,
+	G_ADD_PRIVATE (EBookClientView)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_book_client_view_initable_init))
@@ -786,7 +783,7 @@ book_client_view_dispose (GObject *object)
 {
 	EBookClientViewPrivate *priv;
 
-	priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (object);
+	priv = E_BOOK_CLIENT_VIEW (object)->priv;
 
 	g_clear_object (&priv->client);
 
@@ -840,7 +837,7 @@ book_client_view_finalize (GObject *object)
 {
 	EBookClientViewPrivate *priv;
 
-	priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (object);
+	priv = E_BOOK_CLIENT_VIEW (object)->priv;
 
 	g_free (priv->object_path);
 
@@ -862,7 +859,7 @@ book_client_view_initable_init (GInitable *initable,
 	gulong handler_id;
 	gchar *bus_name;
 
-	priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (initable);
+	priv = E_BOOK_CLIENT_VIEW (initable)->priv;
 
 	book_client = priv->client ? g_object_ref (priv->client) : NULL;
 	if (book_client == NULL) {
@@ -939,8 +936,6 @@ static void
 e_book_client_view_class_init (EBookClientViewClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (EBookClientViewPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = book_client_view_set_property;
@@ -1056,7 +1051,7 @@ e_book_client_view_initable_init (GInitableIface *iface)
 static void
 e_book_client_view_init (EBookClientView *client_view)
 {
-	client_view->priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (client_view);
+	client_view->priv = e_book_client_view_get_instance_private (client_view);
 
 	g_mutex_init (&client_view->priv->main_context_lock);
 	client_view->priv->client = NULL;

@@ -36,10 +36,6 @@
 #include "e-user-prompter-server-extension.h"
 #include "e-user-prompter-server.h"
 
-#define E_USER_PROMPTER_SERVER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_USER_PROMPTER_SERVER, EUserPrompterServerPrivate))
-
 struct _EUserPrompterServerPrivate {
 	EDBusUserPrompter *dbus_prompter;
 
@@ -62,6 +58,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	EUserPrompterServer,
 	e_user_prompter_server,
 	E_TYPE_DBUS_SERVER,
+	G_ADD_PRIVATE (EUserPrompterServer)
 	G_IMPLEMENT_INTERFACE (
 		E_TYPE_EXTENSIBLE, NULL))
 
@@ -335,7 +332,7 @@ user_prompter_server_dispose (GObject *object)
 {
 	EUserPrompterServerPrivate *priv;
 
-	priv = E_USER_PROMPTER_SERVER_GET_PRIVATE (object);
+	priv = E_USER_PROMPTER_SERVER (object)->priv;
 
 	if (priv->dbus_prompter != NULL) {
 		g_object_unref (priv->dbus_prompter);
@@ -354,7 +351,7 @@ user_prompter_server_finalize (GObject *object)
 {
 	EUserPrompterServerPrivate *priv;
 
-	priv = E_USER_PROMPTER_SERVER_GET_PRIVATE (object);
+	priv = E_USER_PROMPTER_SERVER (object)->priv;
 
 	g_rec_mutex_clear (&priv->lock);
 	g_hash_table_destroy (priv->extensions);
@@ -370,7 +367,7 @@ user_prompter_server_bus_acquired (EDBusServer *server,
 	EUserPrompterServerPrivate *priv;
 	GError *error = NULL;
 
-	priv = E_USER_PROMPTER_SERVER_GET_PRIVATE (server);
+	priv = E_USER_PROMPTER_SERVER (server)->priv;
 
 	g_dbus_interface_skeleton_export (
 		G_DBUS_INTERFACE_SKELETON (priv->dbus_prompter),
@@ -394,7 +391,7 @@ user_prompter_server_quit_server (EDBusServer *server,
 {
 	EUserPrompterServerPrivate *priv;
 
-	priv = E_USER_PROMPTER_SERVER_GET_PRIVATE (server);
+	priv = E_USER_PROMPTER_SERVER (server)->priv;
 
 	g_dbus_interface_skeleton_unexport (
 		G_DBUS_INTERFACE_SKELETON (priv->dbus_prompter));
@@ -409,8 +406,6 @@ e_user_prompter_server_class_init (EUserPrompterServerClass *class)
 {
 	GObjectClass *object_class;
 	EDBusServerClass *dbus_server_class;
-
-	g_type_class_add_private (class, sizeof (EUserPrompterServerPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->constructed = user_prompter_server_constructed;
@@ -454,7 +449,7 @@ e_user_prompter_server_class_init (EUserPrompterServerClass *class)
 static void
 e_user_prompter_server_init (EUserPrompterServer *server)
 {
-	server->priv = E_USER_PROMPTER_SERVER_GET_PRIVATE (server);
+	server->priv = e_user_prompter_server_get_instance_private (server);
 	server->priv->dbus_prompter = e_dbus_user_prompter_skeleton_new ();
 	server->priv->prompts = NULL;
 	server->priv->extensions = g_hash_table_new_full (

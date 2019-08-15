@@ -38,10 +38,6 @@
 
 #include <libedataserver/e-data-server-util.h>
 
-#define E_SOURCE_SECURITY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_SECURITY, ESourceSecurityPrivate))
-
 #define SECURE_METHOD "tls"
 
 struct _ESourceSecurityPrivate {
@@ -54,7 +50,7 @@ enum {
 	PROP_SECURE
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceSecurity,
 	e_source_security,
 	E_TYPE_SOURCE_EXTENSION)
@@ -112,7 +108,7 @@ source_security_finalize (GObject *object)
 {
 	ESourceSecurityPrivate *priv;
 
-	priv = E_SOURCE_SECURITY_GET_PRIVATE (object);
+	priv = E_SOURCE_SECURITY (object)->priv;
 
 	g_free (priv->method);
 
@@ -125,8 +121,6 @@ e_source_security_class_init (ESourceSecurityClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (class, sizeof (ESourceSecurityPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_security_set_property;
@@ -166,7 +160,7 @@ e_source_security_class_init (ESourceSecurityClass *class)
 static void
 e_source_security_init (ESourceSecurity *extension)
 {
-	extension->priv = E_SOURCE_SECURITY_GET_PRIVATE (extension);
+	extension->priv = e_source_security_get_instance_private (extension);
 }
 
 /**

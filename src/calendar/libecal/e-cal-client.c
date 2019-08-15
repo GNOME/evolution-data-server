@@ -45,10 +45,6 @@
 #include "e-cal-enums.h"
 #include "e-timezone-cache.h"
 
-#define E_CAL_CLIENT_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CAL_CLIENT, ECalClientPrivate))
-
 /* Set this to a sufficiently large value
  * to cover most long-running operations. */
 #define DBUS_PROXY_TIMEOUT_MS (3 * 60 * 1000)  /* 3 minutes */
@@ -138,6 +134,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	ECalClient,
 	e_cal_client,
 	E_TYPE_CLIENT,
+	G_ADD_PRIVATE (ECalClient)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_cal_client_initable_init)
@@ -866,7 +863,7 @@ cal_client_dispose (GObject *object)
 {
 	ECalClientPrivate *priv;
 
-	priv = E_CAL_CLIENT_GET_PRIVATE (object);
+	priv = E_CAL_CLIENT (object)->priv;
 
 	if (priv->dbus_proxy_error_handler_id > 0) {
 		g_signal_handler_disconnect (
@@ -908,7 +905,7 @@ cal_client_finalize (GObject *object)
 {
 	ECalClientPrivate *priv;
 
-	priv = E_CAL_CLIENT_GET_PRIVATE (object);
+	priv = E_CAL_CLIENT (object)->priv;
 
 	if (priv->name_watcher_id > 0)
 		g_bus_unwatch_name (priv->name_watcher_id);
@@ -991,7 +988,7 @@ cal_client_get_dbus_proxy (EClient *client)
 {
 	ECalClientPrivate *priv;
 
-	priv = E_CAL_CLIENT_GET_PRIVATE (client);
+	priv = E_CAL_CLIENT (client)->priv;
 
 	return G_DBUS_PROXY (priv->dbus_proxy);
 }
@@ -1191,7 +1188,7 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	gulong handler_id;
 	GError *local_error = NULL;
 
-	priv = E_CAL_CLIENT_GET_PRIVATE (source_object);
+	priv = E_CAL_CLIENT (source_object)->priv;
 
 	client = E_CLIENT (source_object);
 	source = e_client_get_source (client);
@@ -1404,7 +1401,7 @@ cal_client_add_cached_timezone (ETimezoneCache *cache,
 	ECalClientPrivate *priv;
 	const gchar *tzid;
 
-	priv = E_CAL_CLIENT_GET_PRIVATE (cache);
+	priv = E_CAL_CLIENT (cache)->priv;
 
 	/* XXX Apparently this function can sometimes return NULL.
 	 *     I'm not sure when or why that happens, but we can't
@@ -1465,7 +1462,7 @@ cal_client_get_cached_timezone (ETimezoneCache *cache,
 	ICalProperty *prop;
 	const gchar *builtin_tzid;
 
-	priv = E_CAL_CLIENT_GET_PRIVATE (cache);
+	priv = E_CAL_CLIENT (cache)->priv;
 
 	if (g_str_equal (tzid, "UTC"))
 		return i_cal_timezone_get_utc_timezone ();
@@ -1534,7 +1531,7 @@ cal_client_list_cached_timezones (ETimezoneCache *cache)
 	ECalClientPrivate *priv;
 	GList *list;
 
-	priv = E_CAL_CLIENT_GET_PRIVATE (cache);
+	priv = E_CAL_CLIENT (cache)->priv;
 
 	g_mutex_lock (&priv->zone_cache_lock);
 
@@ -1550,8 +1547,6 @@ e_cal_client_class_init (ECalClientClass *class)
 {
 	GObjectClass *object_class;
 	EClientClass *client_class;
-
-	g_type_class_add_private (class, sizeof (ECalClientPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = cal_client_set_property;
@@ -1630,7 +1625,7 @@ e_cal_client_init (ECalClient *client)
 
 	zone_cache = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 
-	client->priv = E_CAL_CLIENT_GET_PRIVATE (client);
+	client->priv = e_cal_client_get_instance_private (client);
 	client->priv->source_type = E_CAL_CLIENT_SOURCE_TYPE_LAST;
 	client->priv->default_zone = i_cal_timezone_get_utc_timezone ();
 	g_mutex_init (&client->priv->zone_cache_lock);
@@ -1816,7 +1811,7 @@ cal_client_connect_init_cb (GObject *source_object,
 	source_object = g_async_result_get_source_object (result);
 	closure = g_simple_async_result_get_op_res_gpointer (simple);
 
-	priv = E_CAL_CLIENT_GET_PRIVATE (source_object);
+	priv = E_CAL_CLIENT (source_object)->priv;
 
 	e_dbus_calendar_call_open (
 		priv->dbus_proxy,

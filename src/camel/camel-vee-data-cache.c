@@ -23,16 +23,12 @@
 
 #include "camel-vee-data-cache.h"
 
-#define CAMEL_VEE_SUBFOLDER_DATA_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_VEE_SUBFOLDER_DATA, CamelVeeSubfolderDataPrivate))
-
 struct _CamelVeeSubfolderDataPrivate {
 	CamelFolder *folder;
 	const gchar *folder_id; /* stored in string pool */
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelVeeSubfolderData,
 	camel_vee_subfolder_data,
 	G_TYPE_OBJECT)
@@ -42,7 +38,7 @@ vee_subfolder_data_dispose (GObject *object)
 {
 	CamelVeeSubfolderDataPrivate *priv;
 
-	priv = CAMEL_VEE_SUBFOLDER_DATA_GET_PRIVATE (object);
+	priv = CAMEL_VEE_SUBFOLDER_DATA (object)->priv;
 
 	g_clear_object (&priv->folder);
 
@@ -56,7 +52,7 @@ vee_subfolder_data_finalize (GObject *object)
 {
 	CamelVeeSubfolderDataPrivate *priv;
 
-	priv = CAMEL_VEE_SUBFOLDER_DATA_GET_PRIVATE (object);
+	priv = CAMEL_VEE_SUBFOLDER_DATA (object)->priv;
 
 	if (priv->folder_id != NULL)
 		camel_pstring_free (priv->folder_id);
@@ -71,8 +67,6 @@ camel_vee_subfolder_data_class_init (CamelVeeSubfolderDataClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelVeeSubfolderDataPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = vee_subfolder_data_dispose;
 	object_class->finalize = vee_subfolder_data_finalize;
@@ -81,7 +75,7 @@ camel_vee_subfolder_data_class_init (CamelVeeSubfolderDataClass *class)
 static void
 camel_vee_subfolder_data_init (CamelVeeSubfolderData *data)
 {
-	data->priv = CAMEL_VEE_SUBFOLDER_DATA_GET_PRIVATE (data);
+	data->priv = camel_vee_subfolder_data_get_instance_private (data);
 }
 
 static void
@@ -188,17 +182,13 @@ camel_vee_subfolder_data_get_folder_id (CamelVeeSubfolderData *data)
 
 /* ----------------------------------------------------------------------- */
 
-#define CAMEL_VEE_MESSAGE_INFO_DATA_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_VEE_MESSAGE_INFO_DATA, CamelVeeMessageInfoDataPrivate))
-
 struct _CamelVeeMessageInfoDataPrivate {
 	CamelVeeSubfolderData *subfolder_data;
 	const gchar *orig_message_uid; /* stored in string pool */
 	const gchar *vee_message_uid; /* stored in string pool */
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelVeeMessageInfoData,
 	camel_vee_message_info_data,
 	G_TYPE_OBJECT)
@@ -208,7 +198,7 @@ vee_message_info_data_dispose (GObject *object)
 {
 	CamelVeeMessageInfoDataPrivate *priv;
 
-	priv = CAMEL_VEE_MESSAGE_INFO_DATA_GET_PRIVATE (object);
+	priv = CAMEL_VEE_MESSAGE_INFO_DATA (object)->priv;
 
 	g_clear_object (&priv->subfolder_data);
 
@@ -222,7 +212,7 @@ vee_message_info_data_finalize (GObject *object)
 {
 	CamelVeeMessageInfoDataPrivate *priv;
 
-	priv = CAMEL_VEE_MESSAGE_INFO_DATA_GET_PRIVATE (object);
+	priv = CAMEL_VEE_MESSAGE_INFO_DATA (object)->priv;
 
 	if (priv->orig_message_uid != NULL)
 		camel_pstring_free (priv->orig_message_uid);
@@ -240,9 +230,6 @@ camel_vee_message_info_data_class_init (CamelVeeMessageInfoDataClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (
-		class, sizeof (CamelVeeMessageInfoDataPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = vee_message_info_data_dispose;
 	object_class->finalize = vee_message_info_data_finalize;
@@ -251,7 +238,7 @@ camel_vee_message_info_data_class_init (CamelVeeMessageInfoDataClass *class)
 static void
 camel_vee_message_info_data_init (CamelVeeMessageInfoData *data)
 {
-	data->priv = CAMEL_VEE_MESSAGE_INFO_DATA_GET_PRIVATE (data);
+	data->priv = camel_vee_message_info_data_get_instance_private (data);
 }
 
 /**
@@ -339,10 +326,6 @@ camel_vee_message_info_data_get_vee_message_uid (CamelVeeMessageInfoData *data)
 
 /* ----------------------------------------------------------------------- */
 
-#define CAMEL_VEE_DATA_CACHE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_VEE_DATA_CACHE, CamelVeeDataCachePrivate))
-
 struct _CamelVeeDataCachePrivate {
 	GMutex sf_mutex; /* guards subfolder_hash */
 	GHashTable *subfolder_hash; /* CamelFolder * => CamelVeeSubfolderData * */
@@ -352,7 +335,7 @@ struct _CamelVeeDataCachePrivate {
 	GHashTable *vee_message_uid_hash; /* const gchar *vee_uid => CamelVeeMessageInfoData * */
 };
 
-G_DEFINE_TYPE (CamelVeeDataCache, camel_vee_data_cache, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelVeeDataCache, camel_vee_data_cache, G_TYPE_OBJECT)
 
 typedef struct _VeeData {
 	CamelFolder *folder;
@@ -391,7 +374,7 @@ vee_data_cache_dispose (GObject *object)
 {
 	CamelVeeDataCachePrivate *priv;
 
-	priv = CAMEL_VEE_DATA_CACHE_GET_PRIVATE (object);
+	priv = CAMEL_VEE_DATA_CACHE (object)->priv;
 
 	if (priv->subfolder_hash != NULL) {
 		g_hash_table_destroy (priv->subfolder_hash);
@@ -417,7 +400,7 @@ vee_data_cache_finalize (GObject *object)
 {
 	CamelVeeDataCachePrivate *priv;
 
-	priv = CAMEL_VEE_DATA_CACHE_GET_PRIVATE (object);
+	priv = CAMEL_VEE_DATA_CACHE (object)->priv;
 
 	g_mutex_clear (&priv->sf_mutex);
 	g_mutex_clear (&priv->mi_mutex);
@@ -431,8 +414,6 @@ camel_vee_data_cache_class_init (CamelVeeDataCacheClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelVeeDataCachePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = vee_data_cache_dispose;
 	object_class->finalize = vee_data_cache_finalize;
@@ -441,7 +422,7 @@ camel_vee_data_cache_class_init (CamelVeeDataCacheClass *class)
 static void
 camel_vee_data_cache_init (CamelVeeDataCache *data_cache)
 {
-	data_cache->priv = CAMEL_VEE_DATA_CACHE_GET_PRIVATE (data_cache);
+	data_cache->priv = camel_vee_data_cache_get_instance_private (data_cache);
 
 	g_mutex_init (&data_cache->priv->sf_mutex);
 	data_cache->priv->subfolder_hash = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);

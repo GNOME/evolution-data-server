@@ -47,10 +47,6 @@
 #include "camel-imapx-summary.h"
 #include "camel-imapx-utils.h"
 
-#define CAMEL_IMAPX_SERVER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_IMAPX_SERVER, CamelIMAPXServerPrivate))
-
 #define c(...) camel_imapx_debug(command, __VA_ARGS__)
 #define e(...) camel_imapx_debug(extra, __VA_ARGS__)
 
@@ -366,7 +362,7 @@ static gint	imapx_uids_array_cmp		(gconstpointer ap,
 						 gconstpointer bp);
 static void	imapx_sync_free_user		(GArray *user_set);
 
-G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelIMAPXServer, camel_imapx_server, G_TYPE_OBJECT)
 
 typedef struct _FetchChangesInfo {
 	guint32 server_flags;
@@ -3657,8 +3653,6 @@ camel_imapx_server_class_init (CamelIMAPXServerClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelIMAPXServerPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = imapx_server_set_property;
 	object_class->get_property = imapx_server_get_property;
@@ -3691,7 +3685,7 @@ camel_imapx_server_class_init (CamelIMAPXServerClass *class)
 static void
 camel_imapx_server_init (CamelIMAPXServer *is)
 {
-	is->priv = CAMEL_IMAPX_SERVER_GET_PRIVATE (is);
+	is->priv = camel_imapx_server_get_instance_private (is);
 
 	is->priv->untagged_handlers = create_initial_untagged_handler_table ();
 

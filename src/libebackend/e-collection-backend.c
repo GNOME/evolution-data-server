@@ -48,10 +48,6 @@
 
 #include "e-collection-backend.h"
 
-#define E_COLLECTION_BACKEND_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_COLLECTION_BACKEND, ECollectionBackendPrivate))
-
 struct _ECollectionBackendPrivate {
 	GWeakRef server;
 
@@ -94,7 +90,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ECollectionBackend,
 	e_collection_backend,
 	E_TYPE_BACKEND)
@@ -785,7 +781,7 @@ collection_backend_dispose (GObject *object)
 	ECollectionBackendPrivate *priv;
 	ESourceRegistryServer *server;
 
-	priv = E_COLLECTION_BACKEND_GET_PRIVATE (object);
+	priv = E_COLLECTION_BACKEND (object)->priv;
 
 	server = g_weak_ref_get (&priv->server);
 	if (server != NULL) {
@@ -847,7 +843,7 @@ collection_backend_finalize (GObject *object)
 {
 	ECollectionBackendPrivate *priv;
 
-	priv = E_COLLECTION_BACKEND_GET_PRIVATE (object);
+	priv = E_COLLECTION_BACKEND (object)->priv;
 
 	g_hash_table_destroy (priv->children);
 	g_mutex_clear (&priv->children_lock);
@@ -1155,8 +1151,6 @@ e_collection_backend_class_init (ECollectionBackendClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (ECollectionBackendPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = collection_backend_set_property;
 	object_class->get_property = collection_backend_get_property;
@@ -1261,7 +1255,7 @@ e_collection_backend_init (ECollectionBackend *backend)
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) g_object_unref);
 
-	backend->priv = E_COLLECTION_BACKEND_GET_PRIVATE (backend);
+	backend->priv = e_collection_backend_get_instance_private (backend);
 	backend->priv->children = children;
 	g_mutex_init (&backend->priv->children_lock);
 	g_mutex_init (&backend->priv->property_lock);

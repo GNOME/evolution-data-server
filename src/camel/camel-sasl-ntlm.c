@@ -27,10 +27,6 @@
 #include "camel-sasl-ntlm.h"
 #include "camel-stream-process.h"
 
-#define CAMEL_SASL_NTLM_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SASL_NTLM, CamelSaslNTLMPrivate))
-
 struct _CamelSaslNTLMPrivate {
 	gint placeholder;  /* allow for future expansion */
 #ifndef G_OS_WIN32
@@ -50,7 +46,7 @@ static CamelServiceAuthType sasl_ntlm_auth_type = {
 	TRUE
 };
 
-G_DEFINE_TYPE (CamelSaslNTLM, camel_sasl_ntlm, CAMEL_TYPE_SASL)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelSaslNTLM, camel_sasl_ntlm, CAMEL_TYPE_SASL)
 
 #define NTLM_REQUEST "NTLMSSP\x00\x01\x00\x00\x00\x06\x82\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x30\x00\x00\x00\x00\x00\x00\x00\x30\x00\x00\x00"
 
@@ -990,8 +986,6 @@ camel_sasl_ntlm_class_init (CamelSaslNTLMClass *class)
 	GObjectClass *object_class;
 	CamelSaslClass *sasl_class;
 
-	g_type_class_add_private (class, sizeof (CamelSaslNTLMPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = sasl_ntlm_finalize;
 
@@ -1004,5 +998,5 @@ camel_sasl_ntlm_class_init (CamelSaslNTLMClass *class)
 static void
 camel_sasl_ntlm_init (CamelSaslNTLM *sasl)
 {
-	sasl->priv = CAMEL_SASL_NTLM_GET_PRIVATE (sasl);
+	sasl->priv = camel_sasl_ntlm_get_instance_private (sasl);
 }

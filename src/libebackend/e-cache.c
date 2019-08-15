@@ -83,7 +83,7 @@ static guint signals[LAST_SIGNAL];
 
 G_DEFINE_QUARK (e-cache-error-quark, e_cache_error)
 
-G_DEFINE_ABSTRACT_TYPE (ECache, e_cache, G_TYPE_OBJECT)
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (ECache, e_cache, G_TYPE_OBJECT)
 
 G_DEFINE_BOXED_TYPE (ECacheColumnValues, e_cache_column_values, e_cache_column_values_copy, e_cache_column_values_free)
 G_DEFINE_BOXED_TYPE (ECacheOfflineChange, e_cache_offline_change, e_cache_offline_change_copy, e_cache_offline_change_free)
@@ -3108,8 +3108,6 @@ e_cache_class_init (ECacheClass *klass)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (klass, sizeof (ECachePrivate));
-
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = e_cache_finalize;
 
@@ -3167,7 +3165,7 @@ e_cache_class_init (ECacheClass *klass)
 static void
 e_cache_init (ECache *cache)
 {
-	cache->priv = G_TYPE_INSTANCE_GET_PRIVATE (cache, E_TYPE_CACHE, ECachePrivate);
+	cache->priv = e_cache_get_instance_private (cache);
 
 	cache->priv->filename = NULL;
 	cache->priv->db = NULL;

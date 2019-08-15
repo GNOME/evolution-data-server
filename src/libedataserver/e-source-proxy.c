@@ -44,10 +44,6 @@
 
 #include "e-source-proxy.h"
 
-#define E_SOURCE_PROXY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_PROXY, ESourceProxyPrivate))
-
 typedef struct _AsyncContext AsyncContext;
 
 struct _ESourceProxyPrivate {
@@ -94,7 +90,7 @@ enum {
 	PROP_SOCKS_PORT
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceProxy,
 	e_source_proxy,
 	E_TYPE_SOURCE_EXTENSION)
@@ -419,7 +415,7 @@ source_proxy_finalize (GObject *object)
 {
 	ESourceProxyPrivate *priv;
 
-	priv = E_SOURCE_PROXY_GET_PRIVATE (object);
+	priv = E_SOURCE_PROXY (object)->priv;
 
 	g_free (priv->autoconfig_url);
 	g_strfreev (priv->ignore_hosts);
@@ -439,8 +435,6 @@ e_source_proxy_class_init (ESourceProxyClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (class, sizeof (ESourceProxyPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_proxy_set_property;
@@ -652,7 +646,7 @@ e_source_proxy_class_init (ESourceProxyClass *class)
 static void
 e_source_proxy_init (ESourceProxy *extension)
 {
-	extension->priv = E_SOURCE_PROXY_GET_PRIVATE (extension);
+	extension->priv = e_source_proxy_get_instance_private (extension);
 }
 
 /**

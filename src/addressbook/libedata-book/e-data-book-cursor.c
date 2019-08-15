@@ -222,10 +222,6 @@
 /* Private D-Bus class. */
 #include <e-dbus-address-book-cursor.h>
 
-#define E_DATA_BOOK_CURSOR_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_DATA_BOOK_CURSOR, EDataBookCursorPrivate))
-
 /* GObjectClass */
 static void e_data_book_cursor_constructed (GObject *object);
 static void e_data_book_cursor_dispose (GObject *object);
@@ -288,7 +284,7 @@ enum {
 	PROP_POSITION,
 };
 
-G_DEFINE_ABSTRACT_TYPE (
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (
 	EDataBookCursor,
 	e_data_book_cursor,
 	G_TYPE_OBJECT);
@@ -335,14 +331,12 @@ e_data_book_cursor_class_init (EDataBookCursorClass *class)
 			"The current position of this cursor",
 			0, G_MAXINT, 0,
 			G_PARAM_READABLE));
-
-	g_type_class_add_private (class, sizeof (EDataBookCursorPrivate));
 }
 
 static void
 e_data_book_cursor_init (EDataBookCursor *cursor)
 {
-	cursor->priv = E_DATA_BOOK_CURSOR_GET_PRIVATE (cursor);
+	cursor->priv = e_data_book_cursor_get_instance_private (cursor);
 }
 
 static void

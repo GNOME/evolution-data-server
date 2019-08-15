@@ -50,10 +50,6 @@
 
 #define FINFO_REFRESH_INTERVAL 60
 
-#define CAMEL_IMAPX_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_IMAPX_STORE, CamelIMAPXStorePrivate))
-
 #define e(...) camel_imapx_debug(extra, __VA_ARGS__)
 
 struct _CamelIMAPXStorePrivate {
@@ -112,6 +108,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	CamelIMAPXStore,
 	camel_imapx_store,
 	CAMEL_TYPE_OFFLINE_STORE,
+	G_ADD_PRIVATE (CamelIMAPXStore)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		camel_imapx_store_initable_init)
@@ -792,7 +789,7 @@ imapx_store_connect_to_settings (CamelStore *store)
 	 *     in a CamelService is reponsible for deciding whether
 	 *     camel_store_folder_info_stale() should be called. */
 
-	priv = CAMEL_IMAPX_STORE_GET_PRIVATE (store);
+	priv = CAMEL_IMAPX_STORE (store)->priv;
 
 	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
 
@@ -903,7 +900,7 @@ imapx_store_finalize (GObject *object)
 {
 	CamelIMAPXStorePrivate *priv;
 
-	priv = CAMEL_IMAPX_STORE_GET_PRIVATE (object);
+	priv = CAMEL_IMAPX_STORE (object)->priv;
 
 	g_mutex_clear (&priv->get_finfo_lock);
 	g_mutex_clear (&priv->server_lock);
@@ -1014,7 +1011,7 @@ imapx_disconnect_sync (CamelService *service,
 {
 	CamelIMAPXStorePrivate *priv;
 
-	priv = CAMEL_IMAPX_STORE_GET_PRIVATE (service);
+	priv = CAMEL_IMAPX_STORE (service)->priv;
 
 	if (priv->conn_man != NULL)
 		camel_imapx_conn_manager_disconnect_sync (priv->conn_man, cancellable, error);
@@ -1039,7 +1036,7 @@ imapx_authenticate_sync (CamelService *service,
 	CamelIMAPXServer *imapx_server;
 	CamelAuthenticationResult result;
 
-	priv = CAMEL_IMAPX_STORE_GET_PRIVATE (service);
+	priv = CAMEL_IMAPX_STORE (service)->priv;
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return CAMEL_AUTHENTICATION_ERROR;
@@ -3220,8 +3217,6 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	CamelStoreClass *store_class;
 	CamelOfflineStoreClass *offline_store_class;
 
-	g_type_class_add_private (class, sizeof (CamelIMAPXStorePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = imapx_store_set_property;
 	object_class->get_property = imapx_store_get_property;
@@ -3335,7 +3330,7 @@ camel_subscribable_init (CamelSubscribableInterface *iface)
 static void
 camel_imapx_store_init (CamelIMAPXStore *store)
 {
-	store->priv = CAMEL_IMAPX_STORE_GET_PRIVATE (store);
+	store->priv = camel_imapx_store_get_instance_private (store);
 
 	store->priv->conn_man = camel_imapx_conn_manager_new (CAMEL_STORE (store));
 

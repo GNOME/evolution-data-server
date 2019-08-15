@@ -59,10 +59,6 @@
 #define r(x)
 #define dd(x) if (camel_debug("search")) x
 
-#define CAMEL_FOLDER_SEARCH_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_FOLDER_SEARCH, CamelFolderSearchPrivate))
-
 struct _CamelFolderSearchPrivate {
 	CamelSExp *sexp;		/* s-exp evaluator */
 	gchar *last_search;	/* last searched expression */
@@ -235,7 +231,7 @@ static struct {
 	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
 };
 
-G_DEFINE_TYPE (CamelFolderSearch, camel_folder_search, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelFolderSearch, camel_folder_search, G_TYPE_OBJECT)
 
 /* this is just to OR results together */
 struct IterData {
@@ -1798,8 +1794,6 @@ camel_folder_search_class_init (CamelFolderSearchClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelFolderSearchPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = folder_search_dispose;
 	object_class->finalize = folder_search_finalize;
@@ -1835,7 +1829,7 @@ camel_folder_search_class_init (CamelFolderSearchClass *class)
 static void
 camel_folder_search_init (CamelFolderSearch *search)
 {
-	search->priv = CAMEL_FOLDER_SEARCH_GET_PRIVATE (search);
+	search->priv = camel_folder_search_get_instance_private (search);
 	search->priv->sexp = camel_sexp_new ();
 	search->priv->only_cached_messages = FALSE;
 }

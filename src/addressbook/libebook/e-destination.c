@@ -44,12 +44,6 @@
 
 #define d(x)
 
-#define E_DESTINATION_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_DESTINATION, EDestinationPrivate))
-
-G_DEFINE_TYPE (EDestination, e_destination, G_TYPE_OBJECT)
-
 struct _EDestinationPrivate {
 	gchar *raw;
 
@@ -76,6 +70,8 @@ struct _EDestinationPrivate {
 
 	guint auto_recipient : 1;
 };
+
+G_DEFINE_TYPE_WITH_PRIVATE (EDestination, e_destination, G_TYPE_OBJECT)
 
 static gboolean       e_destination_from_contact       (const EDestination *);
 static xmlNodePtr     e_destination_xml_encode         (const EDestination *dest);
@@ -128,7 +124,7 @@ destination_finalize (GObject *object)
 {
 	EDestinationPrivate *priv;
 
-	priv = E_DESTINATION_GET_PRIVATE (object);
+	priv = E_DESTINATION (object)->priv;
 
 	e_destination_clear (E_DESTINATION (object));
 
@@ -142,8 +138,6 @@ static void
 e_destination_class_init (EDestinationClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (EDestinationPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = destination_finalize;
@@ -160,7 +154,7 @@ e_destination_class_init (EDestinationClass *class)
 static void
 e_destination_init (EDestination *dest)
 {
-	dest->priv = E_DESTINATION_GET_PRIVATE (dest);
+	dest->priv = e_destination_get_instance_private (dest);
 }
 
 /**
