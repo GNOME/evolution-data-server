@@ -32,17 +32,8 @@
 #include <libebook/libebook.h>
 #include <libedataserver/libedataserver.h>
 
-#define E_CAL_BACKEND_CONTACTS_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CAL_BACKEND_CONTACTS, ECalBackendContactsPrivate))
-
 #define EC_ERROR(_code) e_client_error_create (_code, NULL)
 #define ECC_ERROR(_code) e_cal_client_error_create (_code, NULL)
-
-G_DEFINE_TYPE (
-	ECalBackendContacts,
-	e_cal_backend_contacts,
-	E_TYPE_CAL_BACKEND_SYNC)
 
 typedef enum
 {
@@ -91,6 +82,11 @@ typedef struct _ContactRecord {
 	EContact	    *contact;
 	ECalComponent       *comp_birthday, *comp_anniversary;
 } ContactRecord;
+
+G_DEFINE_TYPE_WITH_PRIVATE (
+	ECalBackendContacts,
+	e_cal_backend_contacts,
+	E_TYPE_CAL_BACKEND_SYNC)
 
 #define d(x)
 
@@ -1311,7 +1307,7 @@ e_cal_backend_contacts_finalize (GObject *object)
 {
 	ECalBackendContactsPrivate *priv;
 
-	priv = E_CAL_BACKEND_CONTACTS_GET_PRIVATE (object);
+	priv = E_CAL_BACKEND_CONTACTS (object)->priv;
 
 	if (priv->update_alarms_id) {
 		g_source_remove (priv->update_alarms_id);
@@ -1374,7 +1370,7 @@ e_cal_backend_contacts_constructed (GObject *object)
 static void
 e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 {
-	cbc->priv = E_CAL_BACKEND_CONTACTS_GET_PRIVATE (cbc);
+	cbc->priv = e_cal_backend_contacts_get_instance_private (cbc);
 
 	g_rec_mutex_init (&cbc->priv->rec_mutex);
 	g_rec_mutex_init (&cbc->priv->tracked_contacts_lock);
@@ -1423,8 +1419,6 @@ e_cal_backend_contacts_class_init (ECalBackendContactsClass *class)
 	GObjectClass *object_class;
 	ECalBackendClass *backend_class;
 	ECalBackendSyncClass *sync_class;
-
-	g_type_class_add_private (class, sizeof (ECalBackendContactsPrivate));
 
 	object_class = (GObjectClass *) class;
 	backend_class = (ECalBackendClass *) class;

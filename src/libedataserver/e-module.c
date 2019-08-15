@@ -27,10 +27,6 @@
 
 #include "e-module.h"
 
-#define E_MODULE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_MODULE, EModulePrivate))
-
 /* This is the symbol we call when loading a module. */
 #define LOAD_SYMBOL	"e_module_load"
 
@@ -50,7 +46,7 @@ enum {
 	PROP_FILENAME
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	EModule,
 	e_module,
 	G_TYPE_TYPE_MODULE)
@@ -103,7 +99,7 @@ module_finalize (GObject *object)
 {
 	EModulePrivate *priv;
 
-	priv = E_MODULE_GET_PRIVATE (object);
+	priv = E_MODULE (object)->priv;
 
 	g_free (priv->filename);
 
@@ -117,7 +113,7 @@ module_load (GTypeModule *type_module)
 	EModulePrivate *priv;
 	gpointer symbol;
 
-	priv = E_MODULE_GET_PRIVATE (type_module);
+	priv = E_MODULE (type_module)->priv;
 
 	g_return_val_if_fail (priv->filename != NULL, FALSE);
 	priv->module = g_module_open (priv->filename, 0);
@@ -172,7 +168,7 @@ module_unload (GTypeModule *type_module)
 {
 	EModulePrivate *priv;
 
-	priv = E_MODULE_GET_PRIVATE (type_module);
+	priv = E_MODULE (type_module)->priv;
 
 	priv->unload (type_module);
 
@@ -188,8 +184,6 @@ e_module_class_init (EModuleClass *class)
 {
 	GObjectClass *object_class;
 	GTypeModuleClass *type_module_class;
-
-	g_type_class_add_private (class, sizeof (EModulePrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = module_set_property;
@@ -220,7 +214,7 @@ e_module_class_init (EModuleClass *class)
 static void
 e_module_init (EModule *module)
 {
-	module->priv = E_MODULE_GET_PRIVATE (module);
+	module->priv = e_module_get_instance_private (module);
 }
 
 /**

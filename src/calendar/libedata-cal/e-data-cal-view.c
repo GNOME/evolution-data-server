@@ -41,10 +41,6 @@
 #include "e-data-cal-view.h"
 #include "e-dbus-calendar-view.h"
 
-#define E_DATA_CAL_VIEW_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_DATA_CAL_VIEW, EDataCalViewPrivate))
-
 /* how many items can be hold in a cache, before propagated to UI */
 #define THRESHOLD_ITEMS 32
 
@@ -97,6 +93,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	EDataCalView,
 	e_data_cal_view,
 	G_TYPE_OBJECT,
+	G_ADD_PRIVATE (EDataCalView)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_data_cal_view_initable_init))
@@ -438,7 +435,7 @@ data_cal_view_dispose (GObject *object)
 {
 	EDataCalViewPrivate *priv;
 
-	priv = E_DATA_CAL_VIEW_GET_PRIVATE (object);
+	priv = E_DATA_CAL_VIEW (object)->priv;
 
 	g_mutex_lock (&priv->pending_mutex);
 
@@ -464,7 +461,7 @@ data_cal_view_finalize (GObject *object)
 {
 	EDataCalViewPrivate *priv;
 
-	priv = E_DATA_CAL_VIEW_GET_PRIVATE (object);
+	priv = E_DATA_CAL_VIEW (object)->priv;
 
 	g_free (priv->object_path);
 
@@ -508,8 +505,6 @@ static void
 e_data_cal_view_class_init (EDataCalViewClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (EDataCalViewPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = data_cal_view_set_property;
@@ -577,7 +572,7 @@ e_data_cal_view_initable_init (GInitableIface *iface)
 static void
 e_data_cal_view_init (EDataCalView *view)
 {
-	view->priv = E_DATA_CAL_VIEW_GET_PRIVATE (view);
+	view->priv = e_data_cal_view_get_instance_private (view);
 
 	view->priv->flags = E_CAL_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL;
 

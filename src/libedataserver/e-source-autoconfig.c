@@ -36,10 +36,6 @@
 
 #include "e-source-autoconfig.h"
 
-#define E_SOURCE_AUTOCONFIG_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_AUTOCONFIG, ESourceAutoconfigPrivate))
-
 struct _ESourceAutoconfigPrivate {
 	gchar *revision;
 };
@@ -49,7 +45,7 @@ enum {
 	PROP_REVISION
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceAutoconfig,
 	e_source_autoconfig,
 	E_TYPE_SOURCE_EXTENSION)
@@ -94,7 +90,7 @@ source_autoconfig_finalize (GObject *object)
 {
 	ESourceAutoconfigPrivate *priv;
 
-	priv = E_SOURCE_AUTOCONFIG_GET_PRIVATE (object);
+	priv = E_SOURCE_AUTOCONFIG (object)->priv;
 
 	g_free (priv->revision);
 
@@ -107,8 +103,6 @@ e_source_autoconfig_class_init (ESourceAutoconfigClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (class, sizeof (ESourceAutoconfigPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_autoconfig_set_property;
@@ -136,7 +130,7 @@ e_source_autoconfig_class_init (ESourceAutoconfigClass *class)
 static void
 e_source_autoconfig_init (ESourceAutoconfig *extension)
 {
-	extension->priv = E_SOURCE_AUTOCONFIG_GET_PRIVATE (extension);
+	extension->priv = e_source_autoconfig_get_instance_private (extension);
 }
 
 /**

@@ -28,7 +28,7 @@ struct _ESourceCredentialsProviderImplPasswordPrivate {
 	gboolean dummy;
 };
 
-G_DEFINE_TYPE (ESourceCredentialsProviderImplPassword, e_source_credentials_provider_impl_password, E_TYPE_SOURCE_CREDENTIALS_PROVIDER_IMPL)
+G_DEFINE_TYPE_WITH_PRIVATE (ESourceCredentialsProviderImplPassword, e_source_credentials_provider_impl_password, E_TYPE_SOURCE_CREDENTIALS_PROVIDER_IMPL)
 
 static gboolean
 e_source_credentials_provider_impl_password_can_process (ESourceCredentialsProviderImpl *provider_impl,
@@ -123,8 +123,6 @@ e_source_credentials_provider_impl_password_class_init (ESourceCredentialsProvid
 {
 	ESourceCredentialsProviderImplClass *impl_class;
 
-	g_type_class_add_private (klass, sizeof (ESourceCredentialsProviderImplPasswordPrivate));
-
 	impl_class = E_SOURCE_CREDENTIALS_PROVIDER_IMPL_CLASS (klass);
 	impl_class->can_process = e_source_credentials_provider_impl_password_can_process;
 	impl_class->can_store = e_source_credentials_provider_impl_password_can_store;
@@ -137,6 +135,5 @@ e_source_credentials_provider_impl_password_class_init (ESourceCredentialsProvid
 static void
 e_source_credentials_provider_impl_password_init (ESourceCredentialsProviderImplPassword *provider_impl)
 {
-	provider_impl->priv = G_TYPE_INSTANCE_GET_PRIVATE (provider_impl,
-		E_TYPE_SOURCE_CREDENTIALS_PROVIDER_IMPL_PASSWORD, ESourceCredentialsProviderImplPasswordPrivate);
+	provider_impl->priv = e_source_credentials_provider_impl_password_get_instance_private (provider_impl);
 }

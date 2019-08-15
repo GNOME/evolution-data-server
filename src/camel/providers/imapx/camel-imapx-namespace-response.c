@@ -33,15 +33,11 @@
 
 #include "camel-imapx-utils.h"
 
-#define CAMEL_IMAPX_NAMESPACE_RESPONSE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_IMAPX_NAMESPACE_RESPONSE, CamelIMAPXNamespaceResponsePrivate))
-
 struct _CamelIMAPXNamespaceResponsePrivate {
 	GQueue namespaces;
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelIMAPXNamespaceResponse,
 	camel_imapx_namespace_response,
 	G_TYPE_OBJECT)
@@ -63,7 +59,7 @@ imapx_namespace_response_dispose (GObject *object)
 {
 	CamelIMAPXNamespaceResponsePrivate *priv;
 
-	priv = CAMEL_IMAPX_NAMESPACE_RESPONSE_GET_PRIVATE (object);
+	priv = CAMEL_IMAPX_NAMESPACE_RESPONSE (object)->priv;
 
 	while (!g_queue_is_empty (&priv->namespaces))
 		g_object_unref (g_queue_pop_head (&priv->namespaces));
@@ -78,9 +74,6 @@ camel_imapx_namespace_response_class_init (CamelIMAPXNamespaceResponseClass *cla
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (
-		class, sizeof (CamelIMAPXNamespaceResponsePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = imapx_namespace_response_dispose;
 }
@@ -88,8 +81,7 @@ camel_imapx_namespace_response_class_init (CamelIMAPXNamespaceResponseClass *cla
 static void
 camel_imapx_namespace_response_init (CamelIMAPXNamespaceResponse *response)
 {
-	response->priv =
-		CAMEL_IMAPX_NAMESPACE_RESPONSE_GET_PRIVATE (response);
+	response->priv = camel_imapx_namespace_response_get_instance_private (response);
 }
 
 static gboolean

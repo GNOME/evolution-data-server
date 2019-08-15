@@ -69,10 +69,6 @@
 
 #include "e-source-registry.h"
 
-#define E_SOURCE_REGISTRY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_REGISTRY, ESourceRegistryPrivate))
-
 #define DBUS_OBJECT_PATH "/org/gnome/evolution/dataserver/SourceManager"
 #define GSETTINGS_SCHEMA "org.gnome.Evolution.DefaultSources"
 
@@ -198,6 +194,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	ESourceRegistry,
 	e_source_registry,
 	G_TYPE_OBJECT,
+	G_ADD_PRIVATE (ESourceRegistry)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE, e_source_registry_initable_init)
 	G_IMPLEMENT_INTERFACE (
@@ -1299,7 +1296,7 @@ source_registry_dispose (GObject *object)
 {
 	ESourceRegistryPrivate *priv;
 
-	priv = E_SOURCE_REGISTRY_GET_PRIVATE (object);
+	priv = E_SOURCE_REGISTRY (object)->priv;
 
 	if (priv->dbus_object_manager != NULL) {
 		g_object_unref (priv->dbus_object_manager);
@@ -1351,7 +1348,7 @@ source_registry_finalize (GObject *object)
 {
 	ESourceRegistryPrivate *priv;
 
-	priv = E_SOURCE_REGISTRY_GET_PRIVATE (object);
+	priv = E_SOURCE_REGISTRY (object)->priv;
 
 	g_hash_table_destroy (priv->object_path_table);
 	g_mutex_clear (&priv->object_path_table_lock);
@@ -1479,8 +1476,6 @@ static void
 e_source_registry_class_init (ESourceRegistryClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (ESourceRegistryPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_registry_set_property;
@@ -1714,7 +1709,7 @@ e_source_registry_initable_init (GInitableIface *iface)
 static void
 e_source_registry_init (ESourceRegistry *registry)
 {
-	registry->priv = E_SOURCE_REGISTRY_GET_PRIVATE (registry);
+	registry->priv = e_source_registry_get_instance_private (registry);
 
 	/* This is so the object manager thread can schedule signal
 	 * emissions on the thread-default context for this thread. */

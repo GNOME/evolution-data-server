@@ -77,10 +77,6 @@ static gint logid;
 	} \
 	} G_STMT_END
 
-#define CAMEL_GPG_CONTEXT_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_GPG_CONTEXT, CamelGpgContextPrivate))
-
 struct _CamelGpgContextPrivate {
 	gboolean always_trust;
 	gboolean prefer_inline;
@@ -92,7 +88,7 @@ enum {
 	PROP_PREFER_INLINE
 };
 
-G_DEFINE_TYPE (CamelGpgContext, camel_gpg_context, CAMEL_TYPE_CIPHER_CONTEXT)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelGpgContext, camel_gpg_context, CAMEL_TYPE_CIPHER_CONTEXT)
 
 static const gchar *gpg_ctx_get_executable_name (void);
 
@@ -2865,8 +2861,6 @@ camel_gpg_context_class_init (CamelGpgContextClass *class)
 	GObjectClass *object_class;
 	CamelCipherContextClass *cipher_context_class;
 
-	g_type_class_add_private (class, sizeof (CamelGpgContextPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = gpg_context_set_property;
 	object_class->get_property = gpg_context_get_property;
@@ -2910,7 +2904,7 @@ camel_gpg_context_class_init (CamelGpgContextClass *class)
 static void
 camel_gpg_context_init (CamelGpgContext *context)
 {
-	context->priv = CAMEL_GPG_CONTEXT_GET_PRIVATE (context);
+	context->priv = camel_gpg_context_get_instance_private (context);
 }
 
 /**

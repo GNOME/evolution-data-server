@@ -26,10 +26,6 @@
 #include "camel-mime-message.h"
 #include "camel-transport.h"
 
-#define CAMEL_TRANSPORT_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_TRANSPORT, CamelTransportPrivate))
-
 typedef struct _AsyncContext AsyncContext;
 
 struct _CamelTransportPrivate {
@@ -43,7 +39,7 @@ struct _AsyncContext {
 	gboolean sent_message_saved;
 };
 
-G_DEFINE_ABSTRACT_TYPE (CamelTransport, camel_transport, CAMEL_TYPE_SERVICE)
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (CamelTransport, camel_transport, CAMEL_TYPE_SERVICE)
 
 static void
 async_context_free (AsyncContext *async_context)
@@ -63,13 +59,12 @@ async_context_free (AsyncContext *async_context)
 static void
 camel_transport_class_init (CamelTransportClass *class)
 {
-	g_type_class_add_private (class, sizeof (CamelTransportPrivate));
 }
 
 static void
 camel_transport_init (CamelTransport *transport)
 {
-	transport->priv = CAMEL_TRANSPORT_GET_PRIVATE (transport);
+	transport->priv = camel_transport_get_instance_private (transport);
 }
 
 /**

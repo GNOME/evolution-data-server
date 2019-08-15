@@ -26,10 +26,6 @@
 #include "camel-mime-filter-enriched.h"
 #include "camel-string-utils.h"
 
-#define CAMEL_MIME_FILTER_ENRICHED_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MIME_FILTER_ENRICHED, CamelMimeFilterEnrichedPrivate))
-
 struct _CamelMimeFilterEnrichedPrivate {
 	guint32 flags;
 	gint nofill;
@@ -95,7 +91,7 @@ static struct {
 
 static GHashTable *enriched_hash = NULL;
 
-G_DEFINE_TYPE (CamelMimeFilterEnriched, camel_mime_filter_enriched, CAMEL_TYPE_MIME_FILTER)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelMimeFilterEnriched, camel_mime_filter_enriched, CAMEL_TYPE_MIME_FILTER)
 
 #if 0
 static gboolean
@@ -229,7 +225,7 @@ enriched_to_html (CamelMimeFilter *mime_filter,
 	register const gchar *inptr;
 	register gchar *outptr;
 
-	priv = CAMEL_MIME_FILTER_ENRICHED_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_ENRICHED (mime_filter)->priv;
 
 	camel_mime_filter_set_size (mime_filter, inlen * 2 + 6, FALSE);
 
@@ -524,7 +520,7 @@ mime_filter_enriched_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterEnrichedPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_ENRICHED_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_ENRICHED (mime_filter)->priv;
 
 	priv->nofill = 0;
 }
@@ -534,8 +530,6 @@ camel_mime_filter_enriched_class_init (CamelMimeFilterEnrichedClass *class)
 {
 	CamelMimeFilterClass *mime_filter_class;
 	gint i;
-
-	g_type_class_add_private (class, sizeof (CamelMimeFilterEnrichedPrivate));
 
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_enriched_filter;
@@ -554,7 +548,7 @@ camel_mime_filter_enriched_class_init (CamelMimeFilterEnrichedClass *class)
 static void
 camel_mime_filter_enriched_init (CamelMimeFilterEnriched *filter)
 {
-	filter->priv = CAMEL_MIME_FILTER_ENRICHED_GET_PRIVATE (filter);
+	filter->priv = camel_mime_filter_enriched_get_instance_private (filter);
 }
 
 /**
@@ -573,7 +567,7 @@ camel_mime_filter_enriched_new (guint32 flags)
 	CamelMimeFilterEnrichedPrivate *priv;
 
 	new = g_object_new (CAMEL_TYPE_MIME_FILTER_ENRICHED, NULL);
-	priv = CAMEL_MIME_FILTER_ENRICHED_GET_PRIVATE (new);
+	priv = CAMEL_MIME_FILTER_ENRICHED (new)->priv;
 
 	priv->flags = flags;
 

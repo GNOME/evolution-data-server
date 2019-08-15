@@ -33,10 +33,6 @@
 
 #include "camel-imapx-utils.h"
 
-#define CAMEL_IMAPX_LOGGER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_IMAPX_LOGGER, CamelIMAPXLoggerPrivate))
-
 struct _CamelIMAPXLoggerPrivate {
 	gchar prefix;
 };
@@ -54,6 +50,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	CamelIMAPXLogger,
 	camel_imapx_logger,
 	G_TYPE_OBJECT,
+	G_ADD_PRIVATE (CamelIMAPXLogger)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_CONVERTER,
 		camel_imapx_logger_interface_init))
@@ -116,7 +113,7 @@ imapx_logger_convert (GConverter *converter,
 	gsize min_size;
 	const gchar *login_start;
 
-	priv = CAMEL_IMAPX_LOGGER_GET_PRIVATE (converter);
+	priv = CAMEL_IMAPX_LOGGER (converter)->priv;
 
 	min_size = MIN (inbuf_size, outbuf_size);
 
@@ -171,8 +168,6 @@ camel_imapx_logger_class_init (CamelIMAPXLoggerClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelIMAPXLoggerPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = imapx_logger_set_property;
 	object_class->get_property = imapx_logger_get_property;
@@ -200,7 +195,7 @@ camel_imapx_logger_interface_init (GConverterIface *iface)
 static void
 camel_imapx_logger_init (CamelIMAPXLogger *logger)
 {
-	logger->priv = CAMEL_IMAPX_LOGGER_GET_PRIVATE (logger);
+	logger->priv = camel_imapx_logger_get_instance_private (logger);
 }
 
 /**

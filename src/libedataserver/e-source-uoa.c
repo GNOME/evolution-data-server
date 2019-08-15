@@ -39,10 +39,6 @@
 
 #include <libedataserver/e-data-server-util.h>
 
-#define E_SOURCE_UOA_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_UOA, ESourceUoaPrivate))
-
 struct _ESourceUoaPrivate {
 	guint account_id;
 };
@@ -52,7 +48,7 @@ enum {
 	PROP_ACCOUNT_ID
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceUoa,
 	e_source_uoa,
 	E_TYPE_SOURCE_EXTENSION)
@@ -98,8 +94,6 @@ e_source_uoa_class_init (ESourceUoaClass *class)
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
 
-	g_type_class_add_private (class, sizeof (ESourceUoaPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_uoa_set_property;
 	object_class->get_property = source_uoa_get_property;
@@ -125,7 +119,7 @@ e_source_uoa_class_init (ESourceUoaClass *class)
 static void
 e_source_uoa_init (ESourceUoa *extension)
 {
-	extension->priv = E_SOURCE_UOA_GET_PRIVATE (extension);
+	extension->priv = e_source_uoa_get_instance_private (extension);
 }
 
 /**

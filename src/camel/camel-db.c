@@ -497,7 +497,7 @@ struct _CamelDBPrivate {
 	gboolean is_foldersdb;
 };
 
-G_DEFINE_TYPE (CamelDB, camel_db, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelDB, camel_db, G_TYPE_OBJECT)
 
 static void
 camel_db_finalize (GObject *object)
@@ -520,8 +520,6 @@ camel_db_class_init (CamelDBClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelDBPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = camel_db_finalize;
 }
@@ -529,7 +527,7 @@ camel_db_class_init (CamelDBClass *class)
 static void
 camel_db_init (CamelDB *cdb)
 {
-	cdb->priv = G_TYPE_INSTANCE_GET_PRIVATE (cdb, CAMEL_TYPE_DB, CamelDBPrivate);
+	cdb->priv = camel_db_get_instance_private (cdb);
 
 	g_rw_lock_init (&cdb->priv->rwlock);
 	g_mutex_init (&cdb->priv->transaction_lock);

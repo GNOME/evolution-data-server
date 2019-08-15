@@ -35,10 +35,6 @@
 
 #define CAMEL_CERTDB_VERSION  0x100
 
-#define CAMEL_CERTDB_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_CERTDB, CamelCertDBPrivate))
-
 struct _CamelCertDBPrivate {
 	gchar *filename;
 	guint32 version;
@@ -52,7 +48,8 @@ struct _CamelCertDBPrivate {
 	GMutex io_lock;		/* load/save lock, for access to saved_count, etc */
 };
 
-G_DEFINE_TYPE (CamelCertDB, camel_certdb, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelCertDB, camel_certdb, G_TYPE_OBJECT)
+
 G_DEFINE_BOXED_TYPE (CamelCert,
 		camel_cert,
 		camel_cert_ref,
@@ -131,7 +128,7 @@ certdb_finalize (GObject *object)
 {
 	CamelCertDBPrivate *priv;
 
-	priv = CAMEL_CERTDB_GET_PRIVATE (object);
+	priv = CAMEL_CERTDB (object)->priv;
 
 	if (priv->dirty)
 		camel_certdb_save (CAMEL_CERTDB (object));
@@ -232,8 +229,6 @@ camel_certdb_class_init (CamelCertDBClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelCertDBPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = certdb_finalize;
 
@@ -246,7 +241,7 @@ camel_certdb_class_init (CamelCertDBClass *class)
 static void
 camel_certdb_init (CamelCertDB *certdb)
 {
-	certdb->priv = CAMEL_CERTDB_GET_PRIVATE (certdb);
+	certdb->priv = camel_certdb_get_instance_private (certdb);
 
 	certdb->priv->version = CAMEL_CERTDB_VERSION;
 

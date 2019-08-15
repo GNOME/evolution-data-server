@@ -38,10 +38,6 @@
 #include "e-cal-backend.h"
 #include "e-cal-backend-sexp.h"
 
-#define E_DATA_CAL_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_DATA_CAL, EDataCalPrivate))
-
 typedef struct _AsyncContext AsyncContext;
 
 struct _EDataCalPrivate {
@@ -76,6 +72,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	EDataCal,
 	e_data_cal,
 	G_TYPE_OBJECT,
+	G_ADD_PRIVATE (EDataCal)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_data_cal_initable_init))
@@ -2284,7 +2281,7 @@ data_cal_dispose (GObject *object)
 {
 	EDataCalPrivate *priv;
 
-	priv = E_DATA_CAL_GET_PRIVATE (object);
+	priv = E_DATA_CAL (object)->priv;
 
 	g_weak_ref_set (&priv->backend, NULL);
 
@@ -2304,7 +2301,7 @@ data_cal_finalize (GObject *object)
 {
 	EDataCalPrivate *priv;
 
-	priv = E_DATA_CAL_GET_PRIVATE (object);
+	priv = E_DATA_CAL (object)->priv;
 
 	g_free (priv->object_path);
 
@@ -2409,8 +2406,6 @@ e_data_cal_class_init (EDataCalClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (EDataCalPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = data_cal_set_property;
 	object_class->get_property = data_cal_get_property;
@@ -2468,7 +2463,7 @@ e_data_cal_init (EDataCal *data_cal)
 {
 	EDBusCalendar *dbus_interface;
 
-	data_cal->priv = E_DATA_CAL_GET_PRIVATE (data_cal);
+	data_cal->priv = e_data_cal_get_instance_private (data_cal);
 
 	dbus_interface = e_dbus_calendar_skeleton_new ();
 	data_cal->priv->dbus_interface = dbus_interface;

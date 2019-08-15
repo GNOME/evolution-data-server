@@ -42,10 +42,6 @@
 
 #include "e-book-backend-sexp.h"
 
-#define E_BOOK_BACKEND_SQLITEDB_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_BOOK_BACKEND_SQLITEDB, EBookBackendSqliteDBPrivate))
-
 #define d(x)
 
 #if d(1)+0
@@ -112,7 +108,7 @@ struct _EBookBackendSqliteDBPrivate {
 	gchar          *locale;   /* The current locale */
 };
 
-G_DEFINE_TYPE (EBookBackendSqliteDB, e_book_backend_sqlitedb, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (EBookBackendSqliteDB, e_book_backend_sqlitedb, G_TYPE_OBJECT)
 
 static GHashTable *db_connections = NULL;
 static GMutex dbcon_lock;
@@ -217,7 +213,7 @@ e_book_backend_sqlitedb_dispose (GObject *object)
 {
 	EBookBackendSqliteDBPrivate *priv;
 
-	priv = E_BOOK_BACKEND_SQLITEDB_GET_PRIVATE (object);
+	priv = E_BOOK_BACKEND_SQLITEDB (object)->priv;
 
 	g_mutex_lock (&dbcon_lock);
 	if (db_connections != NULL) {
@@ -244,7 +240,7 @@ e_book_backend_sqlitedb_finalize (GObject *object)
 {
 	EBookBackendSqliteDBPrivate *priv;
 
-	priv = E_BOOK_BACKEND_SQLITEDB_GET_PRIVATE (object);
+	priv = E_BOOK_BACKEND_SQLITEDB (object)->priv;
 
 	sqlite3_close (priv->db);
 
@@ -267,8 +263,6 @@ e_book_backend_sqlitedb_class_init (EBookBackendSqliteDBClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (EBookBackendSqliteDBPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = e_book_backend_sqlitedb_dispose;
 	object_class->finalize = e_book_backend_sqlitedb_finalize;
@@ -277,7 +271,7 @@ e_book_backend_sqlitedb_class_init (EBookBackendSqliteDBClass *class)
 static void
 e_book_backend_sqlitedb_init (EBookBackendSqliteDB *ebsdb)
 {
-	ebsdb->priv = E_BOOK_BACKEND_SQLITEDB_GET_PRIVATE (ebsdb);
+	ebsdb->priv = e_book_backend_sqlitedb_get_instance_private (ebsdb);
 
 	ebsdb->priv->store_vcard = TRUE;
 

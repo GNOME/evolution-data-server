@@ -57,10 +57,6 @@
 
 #define d(x)
 
-#define CAMEL_SMIME_CONTEXT_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SMIME_CONTEXT, CamelSMIMEContextPrivate))
-
 struct _CamelSMIMEContextPrivate {
 	CERTCertDBHandle *certdb;
 
@@ -71,7 +67,7 @@ struct _CamelSMIMEContextPrivate {
 	guint send_encrypt_key_prefs : 1;
 };
 
-G_DEFINE_TYPE (CamelSMIMEContext, camel_smime_context, CAMEL_TYPE_CIPHER_CONTEXT)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelSMIMEContext, camel_smime_context, CAMEL_TYPE_CIPHER_CONTEXT)
 
 static void
 smime_cert_data_free (gpointer cert_data)
@@ -1575,8 +1571,6 @@ camel_smime_context_class_init (CamelSMIMEContextClass *class)
 	CamelCipherContextClass *cipher_context_class;
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelSMIMEContextPrivate));
-
 	cipher_context_class = CAMEL_CIPHER_CONTEXT_CLASS (class);
 	cipher_context_class->sign_protocol = "application/pkcs7-signature";
 	cipher_context_class->encrypt_protocol = "application/pkcs7-mime";
@@ -1595,7 +1589,7 @@ camel_smime_context_class_init (CamelSMIMEContextClass *class)
 static void
 camel_smime_context_init (CamelSMIMEContext *smime_context)
 {
-	smime_context->priv = CAMEL_SMIME_CONTEXT_GET_PRIVATE (smime_context);
+	smime_context->priv = camel_smime_context_get_instance_private (smime_context);
 	smime_context->priv->certdb = CERT_GetDefaultCertDB ();
 	smime_context->priv->sign_mode = CAMEL_SMIME_SIGN_CLEARSIGN;
 	smime_context->priv->password_tries = 0;

@@ -31,10 +31,6 @@
 
 #include "camel-imapx-utils.h"
 
-#define CAMEL_IMAPX_STATUS_RESPONSE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_IMAPX_STATUS_RESPONSE, CamelIMAPXStatusResponsePrivate))
-
 struct _CamelIMAPXStatusResponsePrivate {
 	gchar *mailbox_name;
 
@@ -53,7 +49,7 @@ struct _CamelIMAPXStatusResponsePrivate {
 	gboolean have_highestmodseq;
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelIMAPXStatusResponse,
 	camel_imapx_status_response,
 	G_TYPE_OBJECT)
@@ -63,7 +59,7 @@ imapx_status_response_finalize (GObject *object)
 {
 	CamelIMAPXStatusResponsePrivate *priv;
 
-	priv = CAMEL_IMAPX_STATUS_RESPONSE_GET_PRIVATE (object);
+	priv = CAMEL_IMAPX_STATUS_RESPONSE (object)->priv;
 
 	g_free (priv->mailbox_name);
 
@@ -77,9 +73,6 @@ camel_imapx_status_response_class_init (CamelIMAPXStatusResponseClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (
-		class, sizeof (CamelIMAPXStatusResponsePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = imapx_status_response_finalize;
 }
@@ -87,7 +80,7 @@ camel_imapx_status_response_class_init (CamelIMAPXStatusResponseClass *class)
 static void
 camel_imapx_status_response_init (CamelIMAPXStatusResponse *response)
 {
-	response->priv = CAMEL_IMAPX_STATUS_RESPONSE_GET_PRIVATE (response);
+	response->priv = camel_imapx_status_response_get_instance_private (response);
 }
 
 /**

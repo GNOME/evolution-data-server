@@ -42,10 +42,6 @@
 
 #include "e-extension.h"
 
-#define E_EXTENSION_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_EXTENSION, EExtensionPrivate))
-
 struct _EExtensionPrivate {
 	gpointer extensible;  /* weak pointer */
 };
@@ -55,7 +51,7 @@ enum {
 	PROP_EXTENSIBLE
 };
 
-G_DEFINE_ABSTRACT_TYPE (
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (
 	EExtension,
 	e_extension,
 	G_TYPE_OBJECT)
@@ -130,7 +126,7 @@ extension_dispose (GObject *object)
 {
 	EExtensionPrivate *priv;
 
-	priv = E_EXTENSION_GET_PRIVATE (object);
+	priv = E_EXTENSION (object)->priv;
 
 	if (priv->extensible != NULL) {
 		g_object_remove_weak_pointer (
@@ -146,8 +142,6 @@ static void
 e_extension_class_init (EExtensionClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (EExtensionPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = extension_set_property;
@@ -169,7 +163,7 @@ e_extension_class_init (EExtensionClass *class)
 static void
 e_extension_init (EExtension *extension)
 {
-	extension->priv = E_EXTENSION_GET_PRIVATE (extension);
+	extension->priv = e_extension_get_instance_private (extension);
 }
 
 /**

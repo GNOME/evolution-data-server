@@ -29,10 +29,6 @@
 #include "camel-session.h"
 #include "camel-store.h"
 
-#define CAMEL_SASL_POPB4SMTP_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SASL_POPB4SMTP, CamelSaslPOPB4SMTPPrivate))
-
 struct _CamelSaslPOPB4SMTPPrivate {
 	gint placeholder;  /* allow for future expansion */
 };
@@ -56,7 +52,7 @@ static GMutex lock;
 #define POPB4SMTP_LOCK(l) g_mutex_lock(&l)
 #define POPB4SMTP_UNLOCK(l) g_mutex_unlock(&l)
 
-G_DEFINE_TYPE (CamelSaslPOPB4SMTP, camel_sasl_popb4smtp, CAMEL_TYPE_SASL)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelSaslPOPB4SMTP, camel_sasl_popb4smtp, CAMEL_TYPE_SASL)
 
 static GByteArray *
 sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
@@ -160,8 +156,6 @@ camel_sasl_popb4smtp_class_init (CamelSaslPOPB4SMTPClass *class)
 {
 	CamelSaslClass *sasl_class;
 
-	g_type_class_add_private (class, sizeof (CamelSaslPOPB4SMTPPrivate));
-
 	sasl_class = CAMEL_SASL_CLASS (class);
 	sasl_class->auth_type = &sasl_popb4smtp_auth_type;
 	sasl_class->challenge_sync = sasl_popb4smtp_challenge_sync;
@@ -172,5 +166,5 @@ camel_sasl_popb4smtp_class_init (CamelSaslPOPB4SMTPClass *class)
 static void
 camel_sasl_popb4smtp_init (CamelSaslPOPB4SMTP *sasl)
 {
-	sasl->priv = CAMEL_SASL_POPB4SMTP_GET_PRIVATE (sasl);
+	sasl->priv = camel_sasl_popb4smtp_get_instance_private (sasl);
 }

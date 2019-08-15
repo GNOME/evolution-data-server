@@ -43,10 +43,6 @@
 
 #include "e-source-mail-signature.h"
 
-#define E_SOURCE_MAIL_SIGNATURE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_MAIL_SIGNATURE, ESourceMailSignaturePrivate))
-
 typedef struct _AsyncContext AsyncContext;
 
 struct _ESourceMailSignaturePrivate {
@@ -66,7 +62,7 @@ enum {
 	PROP_MIME_TYPE
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceMailSignature,
 	e_source_mail_signature,
 	E_TYPE_SOURCE_EXTENSION)
@@ -127,7 +123,7 @@ source_mail_signature_dispose (GObject *object)
 {
 	ESourceMailSignaturePrivate *priv;
 
-	priv = E_SOURCE_MAIL_SIGNATURE_GET_PRIVATE (object);
+	priv = E_SOURCE_MAIL_SIGNATURE (object)->priv;
 
 	if (priv->file != NULL) {
 		g_object_unref (priv->file);
@@ -144,7 +140,7 @@ source_mail_signature_finalize (GObject *object)
 {
 	ESourceMailSignaturePrivate *priv;
 
-	priv = E_SOURCE_MAIL_SIGNATURE_GET_PRIVATE (object);
+	priv = E_SOURCE_MAIL_SIGNATURE (object)->priv;
 
 	g_free (priv->mime_type);
 
@@ -164,7 +160,7 @@ source_mail_signature_constructed (GObject *object)
 	gchar *base_dir;
 	gchar *path;
 
-	priv = E_SOURCE_MAIL_SIGNATURE_GET_PRIVATE (object);
+	priv = E_SOURCE_MAIL_SIGNATURE (object)->priv;
 
 	/* Chain up to parent's constructed() method. */
 	G_OBJECT_CLASS (e_source_mail_signature_parent_class)->constructed (object);
@@ -189,9 +185,6 @@ e_source_mail_signature_class_init (ESourceMailSignatureClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (
-		class, sizeof (ESourceMailSignaturePrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_mail_signature_set_property;
@@ -232,7 +225,7 @@ e_source_mail_signature_class_init (ESourceMailSignatureClass *class)
 static void
 e_source_mail_signature_init (ESourceMailSignature *extension)
 {
-	extension->priv = E_SOURCE_MAIL_SIGNATURE_GET_PRIVATE (extension);
+	extension->priv = e_source_mail_signature_get_instance_private (extension);
 }
 
 /**

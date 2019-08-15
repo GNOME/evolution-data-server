@@ -22,10 +22,6 @@
 #define MIN_CONCURRENT_CONNECTIONS 1
 #define MAX_CONCURRENT_CONNECTIONS 7
 
-#define CAMEL_IMAPX_SETTINGS_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_IMAPX_SETTINGS, CamelIMAPXSettingsPrivate))
-
 struct _CamelIMAPXSettingsPrivate {
 	GMutex property_lock;
 	gchar *namespace;
@@ -90,6 +86,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	CamelIMAPXSettings,
 	camel_imapx_settings,
 	CAMEL_TYPE_OFFLINE_SETTINGS,
+	G_ADD_PRIVATE (CamelIMAPXSettings)
 	G_IMPLEMENT_INTERFACE (
 		CAMEL_TYPE_NETWORK_SETTINGS, NULL))
 
@@ -471,7 +468,7 @@ imapx_settings_finalize (GObject *object)
 {
 	CamelIMAPXSettingsPrivate *priv;
 
-	priv = CAMEL_IMAPX_SETTINGS_GET_PRIVATE (object);
+	priv = CAMEL_IMAPX_SETTINGS (object)->priv;
 
 	g_mutex_clear (&priv->property_lock);
 
@@ -488,8 +485,6 @@ static void
 camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (CamelIMAPXSettingsPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = imapx_settings_set_property;
@@ -820,7 +815,7 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 static void
 camel_imapx_settings_init (CamelIMAPXSettings *settings)
 {
-	settings->priv = CAMEL_IMAPX_SETTINGS_GET_PRIVATE (settings);
+	settings->priv = camel_imapx_settings_get_instance_private (settings);
 	g_mutex_init (&settings->priv->property_lock);
 }
 

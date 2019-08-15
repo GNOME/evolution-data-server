@@ -19,23 +19,19 @@
 #include "camel-mime-filter-index.h"
 #include "camel-text-index.h"
 
-#define CAMEL_MIME_FILTER_INDEX_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MIME_FILTER_INDEX, CamelMimeFilterIndexPrivate))
-
 struct _CamelMimeFilterIndexPrivate {
 	CamelIndex *index;
 	CamelIndexName *name;
 };
 
-G_DEFINE_TYPE (CamelMimeFilterIndex, camel_mime_filter_index, CAMEL_TYPE_MIME_FILTER)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelMimeFilterIndex, camel_mime_filter_index, CAMEL_TYPE_MIME_FILTER)
 
 static void
 mime_filter_index_dispose (GObject *object)
 {
 	CamelMimeFilterIndexPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_INDEX_GET_PRIVATE (object);
+	priv = CAMEL_MIME_FILTER_INDEX (object)->priv;
 
 	if (priv->name != NULL) {
 		g_object_unref (priv->name);
@@ -62,7 +58,7 @@ mime_filter_index_filter (CamelMimeFilter *mime_filter,
 {
 	CamelMimeFilterIndexPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_INDEX_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_INDEX (mime_filter)->priv;
 
 	if (priv->index == NULL || priv->name == NULL) {
 		goto donothing;
@@ -87,7 +83,7 @@ mime_filter_index_complete (CamelMimeFilter *mime_filter,
 {
 	CamelMimeFilterIndexPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_INDEX_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_INDEX (mime_filter)->priv;
 
 	if (priv->index == NULL || priv->name == NULL) {
 		goto donothing;
@@ -108,8 +104,6 @@ camel_mime_filter_index_class_init (CamelMimeFilterIndexClass *class)
 	GObjectClass *object_class;
 	CamelMimeFilterClass *mime_filter_class;
 
-	g_type_class_add_private (class, sizeof (CamelMimeFilterIndexPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = mime_filter_index_dispose;
 
@@ -121,7 +115,7 @@ camel_mime_filter_index_class_init (CamelMimeFilterIndexClass *class)
 static void
 camel_mime_filter_index_init (CamelMimeFilterIndex *filter)
 {
-	filter->priv = CAMEL_MIME_FILTER_INDEX_GET_PRIVATE (filter);
+	filter->priv = camel_mime_filter_index_get_instance_private (filter);
 }
 
 /**
@@ -140,7 +134,7 @@ camel_mime_filter_index_new (CamelIndex *index)
 
 	new = g_object_new (CAMEL_TYPE_MIME_FILTER_INDEX, NULL);
 
-	priv = CAMEL_MIME_FILTER_INDEX_GET_PRIVATE (new);
+	priv = CAMEL_MIME_FILTER_INDEX (new)->priv;
 
 	if (index != NULL)
 		priv->index = g_object_ref (index);

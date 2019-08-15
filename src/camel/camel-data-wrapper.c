@@ -33,10 +33,6 @@
 
 #define d(x)
 
-#define CAMEL_DATA_WRAPPER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_DATA_WRAPPER, CamelDataWrapperPrivate))
-
 typedef struct _AsyncContext AsyncContext;
 
 struct _CamelDataWrapperPrivate {
@@ -56,7 +52,7 @@ struct _AsyncContext {
 	GOutputStream *output_stream;
 };
 
-G_DEFINE_TYPE (CamelDataWrapper, camel_data_wrapper, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelDataWrapper, camel_data_wrapper, G_TYPE_OBJECT)
 
 static void
 async_context_free (AsyncContext *async_context)
@@ -87,7 +83,7 @@ data_wrapper_finalize (GObject *object)
 {
 	CamelDataWrapperPrivate *priv;
 
-	priv = CAMEL_DATA_WRAPPER_GET_PRIVATE (object);
+	priv = CAMEL_DATA_WRAPPER (object)->priv;
 
 	g_mutex_clear (&priv->stream_lock);
 	g_byte_array_free (priv->byte_array, TRUE);
@@ -421,8 +417,6 @@ camel_data_wrapper_class_init (CamelDataWrapperClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelDataWrapperPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = data_wrapper_dispose;
 	object_class->finalize = data_wrapper_finalize;
@@ -444,7 +438,7 @@ camel_data_wrapper_class_init (CamelDataWrapperClass *class)
 static void
 camel_data_wrapper_init (CamelDataWrapper *data_wrapper)
 {
-	data_wrapper->priv = CAMEL_DATA_WRAPPER_GET_PRIVATE (data_wrapper);
+	data_wrapper->priv = camel_data_wrapper_get_instance_private (data_wrapper);
 
 	g_mutex_init (&data_wrapper->priv->stream_lock);
 	data_wrapper->priv->byte_array = g_byte_array_new ();

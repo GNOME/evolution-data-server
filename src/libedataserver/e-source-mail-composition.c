@@ -41,10 +41,6 @@
 #include "e-source-enumtypes.h"
 #include "e-source-mail-composition.h"
 
-#define E_SOURCE_MAIL_COMPOSITION_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_MAIL_COMPOSITION, ESourceMailCompositionPrivate))
-
 struct _ESourceMailCompositionPrivate {
 	gchar **bcc;
 	gchar **cc;
@@ -70,7 +66,7 @@ enum {
 	PROP_LANGUAGE
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceMailComposition,
 	e_source_mail_composition,
 	E_TYPE_SOURCE_EXTENSION)
@@ -219,7 +215,7 @@ source_mail_composition_finalize (GObject *object)
 {
 	ESourceMailCompositionPrivate *priv;
 
-	priv = E_SOURCE_MAIL_COMPOSITION_GET_PRIVATE (object);
+	priv = E_SOURCE_MAIL_COMPOSITION (object)->priv;
 
 	g_strfreev (priv->bcc);
 	g_strfreev (priv->cc);
@@ -237,9 +233,6 @@ e_source_mail_composition_class_init (ESourceMailCompositionClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (
-		class, sizeof (ESourceMailCompositionPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_mail_composition_set_property;
@@ -382,7 +375,7 @@ e_source_mail_composition_class_init (ESourceMailCompositionClass *class)
 static void
 e_source_mail_composition_init (ESourceMailComposition *extension)
 {
-	extension->priv = E_SOURCE_MAIL_COMPOSITION_GET_PRIVATE (extension);
+	extension->priv = e_source_mail_composition_get_instance_private (extension);
 }
 
 /**

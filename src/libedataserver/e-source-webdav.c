@@ -58,10 +58,6 @@
 
 #include "e-source-webdav.h"
 
-#define E_SOURCE_WEBDAV_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_WEBDAV, ESourceWebdavPrivate))
-
 struct _ESourceWebdavPrivate {
 	gchar *display_name;
 	gchar *color;
@@ -87,7 +83,7 @@ enum {
 	PROP_SSL_TRUST
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceWebdav,
 	e_source_webdav,
 	E_TYPE_SOURCE_EXTENSION)
@@ -410,7 +406,7 @@ source_webdav_finalize (GObject *object)
 {
 	ESourceWebdavPrivate *priv;
 
-	priv = E_SOURCE_WEBDAV_GET_PRIVATE (object);
+	priv = E_SOURCE_WEBDAV (object)->priv;
 
 	g_free (priv->color);
 	g_free (priv->display_name);
@@ -491,8 +487,6 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (class, sizeof (ESourceWebdavPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_webdav_set_property;
@@ -623,7 +617,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 static void
 e_source_webdav_init (ESourceWebdav *extension)
 {
-	extension->priv = E_SOURCE_WEBDAV_GET_PRIVATE (extension);
+	extension->priv = e_source_webdav_get_instance_private (extension);
 
 	/* Initialize this enough for SOUP_URI_IS_VALID() to pass. */
 	extension->priv->soup_uri = soup_uri_new (NULL);

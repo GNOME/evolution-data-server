@@ -23,10 +23,6 @@
 
 #include "camel-mime-filter-from.h"
 
-#define CAMEL_MIME_FILTER_FROM_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MIME_FILTER_FROM, CamelMimeFilterFromPrivate))
-
 #define d(x)
 
 struct _CamelMimeFilterFromPrivate {
@@ -38,7 +34,7 @@ struct fromnode {
 	const gchar *pointer;
 };
 
-G_DEFINE_TYPE (CamelMimeFilterFrom, camel_mime_filter_from, CAMEL_TYPE_MIME_FILTER)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelMimeFilterFrom, camel_mime_filter_from, CAMEL_TYPE_MIME_FILTER)
 
 /* Yes, it is complicated ... */
 static void
@@ -57,7 +53,7 @@ mime_filter_from_filter (CamelMimeFilter *mime_filter,
 	struct fromnode *head = NULL, *tail = (struct fromnode *) &head, *node;
 	gchar *outptr;
 
-	priv = CAMEL_MIME_FILTER_FROM_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_FROM (mime_filter)->priv;
 
 	inptr = in;
 	inend = inptr + len;
@@ -150,8 +146,6 @@ camel_mime_filter_from_class_init (CamelMimeFilterFromClass *class)
 {
 	CamelMimeFilterClass *mime_filter_class;
 
-	g_type_class_add_private (class, sizeof (CamelMimeFilterFromPrivate));
-
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_from_filter;
 	mime_filter_class->complete = mime_filter_from_complete;
@@ -160,7 +154,7 @@ camel_mime_filter_from_class_init (CamelMimeFilterFromClass *class)
 static void
 camel_mime_filter_from_init (CamelMimeFilterFrom *filter)
 {
-	filter->priv = CAMEL_MIME_FILTER_FROM_GET_PRIVATE (filter);
+	filter->priv = camel_mime_filter_from_get_instance_private (filter);
 }
 
 /**

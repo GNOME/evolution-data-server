@@ -116,10 +116,6 @@
 
 #include "e-source.h"
 
-#define E_SOURCE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE, ESourcePrivate))
-
 #define PRIMARY_GROUP_NAME	"Data Source"
 
 typedef struct _AsyncContext AsyncContext;
@@ -206,6 +202,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	ESource,
 	e_source,
 	G_TYPE_OBJECT,
+	G_ADD_PRIVATE (ESource)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_source_initable_init)
@@ -1209,7 +1206,7 @@ source_dispose (GObject *object)
 {
 	ESourcePrivate *priv;
 
-	priv = E_SOURCE_GET_PRIVATE (object);
+	priv = E_SOURCE (object)->priv;
 
 	/* Lock & unlock to make sure any pending operations in other threads
 	   which use this lock are already done */
@@ -1271,7 +1268,7 @@ source_finalize (GObject *object)
 {
 	ESourcePrivate *priv;
 
-	priv = E_SOURCE_GET_PRIVATE (object);
+	priv = E_SOURCE (object)->priv;
 
 	g_mutex_clear (&priv->changed_lock);
 	g_mutex_clear (&priv->connection_status_change_lock);
@@ -2123,8 +2120,6 @@ e_source_class_init (ESourceClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (ESourcePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_set_property;
 	object_class->get_property = source_get_property;
@@ -2411,7 +2406,7 @@ e_source_init (ESource *source)
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) g_object_unref);
 
-	source->priv = E_SOURCE_GET_PRIVATE (source);
+	source->priv = e_source_get_instance_private (source);
 	g_mutex_init (&source->priv->changed_lock);
 	g_mutex_init (&source->priv->connection_status_change_lock);
 	g_mutex_init (&source->priv->property_lock);

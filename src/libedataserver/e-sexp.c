@@ -107,7 +107,7 @@ struct _ESExpPrivate {
 	struct _EMemChunk *result_chunks;
 };
 
-G_DEFINE_TYPE (ESExp, e_sexp, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (ESExp, e_sexp, G_TYPE_OBJECT)
 
 static ESExpTerm *	parse_list		(ESExp *sexp,
 						 gint gotbrace);
@@ -1465,8 +1465,6 @@ e_sexp_class_init (ESExpClass *class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (class);
 
-	g_type_class_add_private (class, sizeof (ESExpPrivate));
-
 	object_class->finalize = e_sexp_finalise;
 }
 
@@ -1528,7 +1526,7 @@ e_sexp_init (ESExp *sexp)
 {
 	gint i;
 
-	sexp->priv = G_TYPE_INSTANCE_GET_PRIVATE (sexp, E_TYPE_SEXP, ESExpPrivate);
+	sexp->priv = e_sexp_get_instance_private (sexp);
 
 	sexp->priv->scanner = g_scanner_new (&scanner_config);
 	sexp->priv->term_chunks = e_memchunk_new (16, sizeof (ESExpTerm));

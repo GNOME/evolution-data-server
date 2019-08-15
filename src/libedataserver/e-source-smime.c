@@ -38,10 +38,6 @@
 
 #include <libedataserver/e-data-server-util.h>
 
-#define E_SOURCE_SMIME_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_SMIME, ESourceSMIMEPrivate))
-
 struct _ESourceSMIMEPrivate {
 	gchar *encryption_certificate;
 	gchar *signing_algorithm;
@@ -62,7 +58,7 @@ enum {
 	PROP_SIGN_BY_DEFAULT
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceSMIME,
 	e_source_smime,
 	E_TYPE_SOURCE_EXTENSION)
@@ -172,7 +168,7 @@ source_smime_finalize (GObject *object)
 {
 	ESourceSMIMEPrivate *priv;
 
-	priv = E_SOURCE_SMIME_GET_PRIVATE (object);
+	priv = E_SOURCE_SMIME (object)->priv;
 
 	g_free (priv->encryption_certificate);
 	g_free (priv->signing_algorithm);
@@ -187,8 +183,6 @@ e_source_smime_class_init (ESourceSMIMEClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (class, sizeof (ESourceSMIMEPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_smime_set_property;
@@ -286,7 +280,7 @@ e_source_smime_class_init (ESourceSMIMEClass *class)
 static void
 e_source_smime_init (ESourceSMIME *extension)
 {
-	extension->priv = E_SOURCE_SMIME_GET_PRIVATE (extension);
+	extension->priv = e_source_smime_get_instance_private (extension);
 }
 
 /**

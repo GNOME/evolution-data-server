@@ -36,10 +36,6 @@
 
 #include <time.h>
 
-#define E_SOUP_AUTH_BEARER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOUP_AUTH_BEARER, ESoupAuthBearerPrivate))
-
 #define AUTH_STRENGTH 1
 
 #define EXPIRY_INVALID ((time_t) -1)
@@ -49,7 +45,7 @@ struct _ESoupAuthBearerPrivate {
 	time_t expiry;
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESoupAuthBearer,
 	e_soup_auth_bearer,
 	SOUP_TYPE_AUTH)
@@ -59,7 +55,7 @@ e_soup_auth_bearer_finalize (GObject *object)
 {
 	ESoupAuthBearerPrivate *priv;
 
-	priv = E_SOUP_AUTH_BEARER_GET_PRIVATE (object);
+	priv = E_SOUP_AUTH_BEARER (object)->priv;
 
 	g_free (priv->access_token);
 
@@ -128,8 +124,6 @@ e_soup_auth_bearer_class_init (ESoupAuthBearerClass *class)
 	GObjectClass *object_class;
 	SoupAuthClass *auth_class;
 
-	g_type_class_add_private (class, sizeof (ESoupAuthBearerPrivate));
-
 	/* Keep the "e" prefix on private methods
 	 * so we don't step on libsoup's namespace. */
 
@@ -148,7 +142,7 @@ e_soup_auth_bearer_class_init (ESoupAuthBearerClass *class)
 static void
 e_soup_auth_bearer_init (ESoupAuthBearer *bearer)
 {
-	bearer->priv = E_SOUP_AUTH_BEARER_GET_PRIVATE (bearer);
+	bearer->priv = e_soup_auth_bearer_get_instance_private (bearer);
 	bearer->priv->expiry = EXPIRY_INVALID;
 }
 

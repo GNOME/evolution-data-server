@@ -44,10 +44,6 @@
 
 #include <libedataserver/e-data-server-util.h>
 
-#define E_SOURCE_RESOURCE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_RESOURCE, ESourceResourcePrivate))
-
 struct _ESourceResourcePrivate {
 	gchar *identity;
 };
@@ -57,7 +53,7 @@ enum {
 	PROP_IDENTITY
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceResource,
 	e_source_resource,
 	E_TYPE_SOURCE_EXTENSION)
@@ -102,7 +98,7 @@ source_resource_finalize (GObject *object)
 {
 	ESourceResourcePrivate *priv;
 
-	priv = E_SOURCE_RESOURCE_GET_PRIVATE (object);
+	priv = E_SOURCE_RESOURCE (object)->priv;
 
 	g_free (priv->identity);
 
@@ -115,8 +111,6 @@ e_source_resource_class_init (ESourceResourceClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (class, sizeof (ESourceResourcePrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_resource_set_property;
@@ -144,7 +138,7 @@ e_source_resource_class_init (ESourceResourceClass *class)
 static void
 e_source_resource_init (ESourceResource *extension)
 {
-	extension->priv = E_SOURCE_RESOURCE_GET_PRIVATE (extension);
+	extension->priv = e_source_resource_get_instance_private (extension);
 }
 
 /**

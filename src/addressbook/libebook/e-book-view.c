@@ -24,12 +24,6 @@
 #include "e-book-view-private.h"
 #include "e-book-enumtypes.h"
 
-G_DEFINE_TYPE (EBookView, e_book_view, G_TYPE_OBJECT);
-
-#define E_BOOK_VIEW_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_BOOK_VIEW, EBookViewPrivate))
-
 struct _EBookViewPrivate {
 	EBook *book;
 	EBookClientView *client_view;
@@ -50,6 +44,8 @@ enum {
 	STATUS_MESSAGE,
 	LAST_SIGNAL
 };
+
+G_DEFINE_TYPE_WITH_PRIVATE (EBookView, e_book_view, G_TYPE_OBJECT);
 
 static guint signals[LAST_SIGNAL];
 
@@ -156,7 +152,7 @@ book_view_dispose (GObject *object)
 {
 	EBookViewPrivate *priv;
 
-	priv = E_BOOK_VIEW_GET_PRIVATE (object);
+	priv = E_BOOK_VIEW (object)->priv;
 
 	if (priv->book != NULL) {
 		g_object_unref (priv->book);
@@ -191,8 +187,6 @@ static void
 e_book_view_class_init (EBookViewClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (EBookViewPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = book_view_dispose;
@@ -250,7 +244,7 @@ e_book_view_class_init (EBookViewClass *class)
 static void
 e_book_view_init (EBookView *book_view)
 {
-	book_view->priv = E_BOOK_VIEW_GET_PRIVATE (book_view);
+	book_view->priv = e_book_view_get_instance_private (book_view);
 }
 
 EBookView *

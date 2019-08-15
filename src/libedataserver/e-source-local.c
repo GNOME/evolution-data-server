@@ -19,10 +19,6 @@
 
 #include "e-source-local.h"
 
-#define E_SOURCE_LOCAL_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_LOCAL, ESourceLocalPrivate))
-
 struct _ESourceLocalPrivate {
 	GFile *custom_file;
 	gboolean writable;
@@ -34,7 +30,7 @@ enum {
 	PROP_WRITABLE
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceLocal,
 	e_source_local,
 	E_TYPE_SOURCE_EXTENSION)
@@ -92,7 +88,7 @@ source_local_finalize (GObject *object)
 {
 	ESourceLocalPrivate *priv;
 
-	priv = E_SOURCE_LOCAL_GET_PRIVATE (object);
+	priv = E_SOURCE_LOCAL (object)->priv;
 
 	if (priv->custom_file != NULL) {
 		g_object_unref (priv->custom_file);
@@ -108,8 +104,6 @@ e_source_local_class_init (ESourceLocalClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (class, sizeof (ESourceLocalPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_local_set_property;
@@ -149,7 +143,7 @@ e_source_local_class_init (ESourceLocalClass *class)
 static void
 e_source_local_init (ESourceLocal *extension)
 {
-	extension->priv = E_SOURCE_LOCAL_GET_PRIVATE (extension);
+	extension->priv = e_source_local_get_instance_private (extension);
 }
 
 /**

@@ -112,6 +112,7 @@ static GList *		(* ecmb_timezone_cache_parent_list_timezones) (ETimezoneCache *c
 static void e_cal_meta_backend_timezone_cache_init (ETimezoneCacheInterface *iface);
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (ECalMetaBackend, e_cal_meta_backend, E_TYPE_CAL_BACKEND_SYNC,
+	G_ADD_PRIVATE (ECalMetaBackend)
 	G_IMPLEMENT_INTERFACE (E_TYPE_TIMEZONE_CACHE, e_cal_meta_backend_timezone_cache_init))
 
 G_DEFINE_BOXED_TYPE (ECalMetaBackendInfo, e_cal_meta_backend_info, e_cal_meta_backend_info_copy, e_cal_meta_backend_info_free)
@@ -3391,8 +3392,6 @@ e_cal_meta_backend_class_init (ECalMetaBackendClass *klass)
 	ECalBackendClass *cal_backend_class;
 	ECalBackendSyncClass *cal_backend_sync_class;
 
-	g_type_class_add_private (klass, sizeof (ECalMetaBackendPrivate));
-
 	klass->get_changes_sync = ecmb_get_changes_sync;
 	klass->search_sync = ecmb_search_sync;
 	klass->search_components_sync = ecmb_search_components_sync;
@@ -3478,7 +3477,7 @@ e_cal_meta_backend_class_init (ECalMetaBackendClass *klass)
 static void
 e_cal_meta_backend_init (ECalMetaBackend *meta_backend)
 {
-	meta_backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (meta_backend, E_TYPE_CAL_META_BACKEND, ECalMetaBackendPrivate);
+	meta_backend->priv = e_cal_meta_backend_get_instance_private (meta_backend);
 
 	g_mutex_init (&meta_backend->priv->connect_lock);
 	g_mutex_init (&meta_backend->priv->property_lock);

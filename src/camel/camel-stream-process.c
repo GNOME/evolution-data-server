@@ -45,7 +45,7 @@ struct _CamelStreamProcessPrivate {
 	pid_t childpid;
 };
 
-G_DEFINE_TYPE (CamelStreamProcess, camel_stream_process, CAMEL_TYPE_STREAM)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelStreamProcess, camel_stream_process, CAMEL_TYPE_STREAM)
 
 static void
 stream_process_finalize (GObject *object)
@@ -157,8 +157,6 @@ camel_stream_process_class_init (CamelStreamProcessClass *class)
 	GObjectClass *object_class;
 	CamelStreamClass *stream_class;
 
-	g_type_class_add_private (class, sizeof (CamelStreamProcessPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = stream_process_finalize;
 
@@ -172,7 +170,7 @@ camel_stream_process_class_init (CamelStreamProcessClass *class)
 static void
 camel_stream_process_init (CamelStreamProcess *stream)
 {
-	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (stream, CAMEL_TYPE_STREAM_PROCESS, CamelStreamProcessPrivate);
+	stream->priv = camel_stream_process_get_instance_private (stream);
 	stream->priv->sockfd = -1;
 	stream->priv->childpid = 0;
 }

@@ -42,10 +42,6 @@
 
 #include "e-dbus-address-book-view.h"
 
-#define E_DATA_BOOK_VIEW_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_DATA_BOOK_VIEW, EDataBookViewPrivate))
-
 /* how many items can be hold in a cache, before propagated to UI */
 #define THRESHOLD_ITEMS 32
 
@@ -94,6 +90,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	EDataBookView,
 	e_data_book_view,
 	G_TYPE_OBJECT,
+	G_ADD_PRIVATE (EDataBookView)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_data_book_view_initable_init))
@@ -501,7 +498,7 @@ data_book_view_dispose (GObject *object)
 {
 	EDataBookViewPrivate *priv;
 
-	priv = E_DATA_BOOK_VIEW_GET_PRIVATE (object);
+	priv = E_DATA_BOOK_VIEW (object)->priv;
 
 	g_mutex_lock (&priv->pending_mutex);
 
@@ -527,7 +524,7 @@ data_book_view_finalize (GObject *object)
 {
 	EDataBookViewPrivate *priv;
 
-	priv = E_DATA_BOOK_VIEW_GET_PRIVATE (object);
+	priv = E_DATA_BOOK_VIEW (object)->priv;
 
 	g_free (priv->object_path);
 
@@ -570,8 +567,6 @@ static void
 e_data_book_view_class_init (EDataBookViewClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (EDataBookViewPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = data_book_view_set_property;
@@ -639,7 +634,7 @@ e_data_book_view_initable_init (GInitableIface *iface)
 static void
 e_data_book_view_init (EDataBookView *view)
 {
-	view->priv = E_DATA_BOOK_VIEW_GET_PRIVATE (view);
+	view->priv = e_data_book_view_get_instance_private (view);
 
 	g_weak_ref_init (&view->priv->backend_weakref, NULL);
 

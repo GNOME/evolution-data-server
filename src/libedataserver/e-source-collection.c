@@ -45,10 +45,6 @@
 
 #include "e-source-collection.h"
 
-#define E_SOURCE_COLLECTION_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_COLLECTION, ESourceCollectionPrivate))
-
 struct _ESourceCollectionPrivate {
 	gchar *identity;
 	gboolean calendar_enabled;
@@ -68,7 +64,7 @@ enum {
 	PROP_CONTACTS_URL
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceCollection,
 	e_source_collection,
 	E_TYPE_SOURCE_BACKEND)
@@ -178,7 +174,7 @@ source_collection_finalize (GObject *object)
 {
 	ESourceCollectionPrivate *priv;
 
-	priv = E_SOURCE_COLLECTION_GET_PRIVATE (object);
+	priv = E_SOURCE_COLLECTION (object)->priv;
 
 	g_free (priv->identity);
 	g_free (priv->calendar_url);
@@ -193,8 +189,6 @@ e_source_collection_class_init (ESourceCollectionClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (class, sizeof (ESourceCollectionPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_collection_set_property;
@@ -293,7 +287,7 @@ e_source_collection_class_init (ESourceCollectionClass *class)
 static void
 e_source_collection_init (ESourceCollection *extension)
 {
-	extension->priv = E_SOURCE_COLLECTION_GET_PRIVATE (extension);
+	extension->priv = e_source_collection_get_instance_private (extension);
 }
 
 /**
