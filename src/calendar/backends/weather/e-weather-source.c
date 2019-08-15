@@ -23,10 +23,6 @@
 
 #include "e-weather-source.h"
 
-#define E_WEATHER_SOURCE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_WEATHER_SOURCE, EWeatherSourcePrivate))
-
 struct _EWeatherSourcePrivate {
 	GWeatherLocation *location;
 	GWeatherInfo *info;
@@ -35,14 +31,14 @@ struct _EWeatherSourcePrivate {
 	gpointer finished_data;
 };
 
-G_DEFINE_TYPE (EWeatherSource, e_weather_source, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (EWeatherSource, e_weather_source, G_TYPE_OBJECT)
 
 static void
 weather_source_dispose (GObject *object)
 {
 	EWeatherSourcePrivate *priv;
 
-	priv = E_WEATHER_SOURCE_GET_PRIVATE (object);
+	priv = E_WEATHER_SOURCE (object)->priv;
 
 	if (priv->location != NULL) {
 		gweather_location_unref (priv->location);
@@ -60,8 +56,6 @@ e_weather_source_class_init (EWeatherSourceClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (EWeatherSourcePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = weather_source_dispose;
 }
@@ -69,7 +63,7 @@ e_weather_source_class_init (EWeatherSourceClass *class)
 static void
 e_weather_source_init (EWeatherSource *source)
 {
-	source->priv = E_WEATHER_SOURCE_GET_PRIVATE (source);
+	source->priv = e_weather_source_get_instance_private (source);
 }
 
 static GWeatherLocation *

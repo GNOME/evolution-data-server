@@ -90,6 +90,7 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 G_DEFINE_TYPE_WITH_CODE (ERemindersWidget, e_reminders_widget, GTK_TYPE_GRID,
+			 G_ADD_PRIVATE (ERemindersWidget)
 			 G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
 
 static gboolean
@@ -1554,8 +1555,6 @@ e_reminders_widget_class_init (ERemindersWidgetClass *klass)
 	GObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 
-	g_type_class_add_private (klass, sizeof (ERemindersWidgetPrivate));
-
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->set_property = reminders_widget_set_property;
 	object_class->get_property = reminders_widget_get_property;
@@ -1650,7 +1649,7 @@ e_reminders_widget_class_init (ERemindersWidgetClass *klass)
 static void
 e_reminders_widget_init (ERemindersWidget *reminders)
 {
-	reminders->priv = G_TYPE_INSTANCE_GET_PRIVATE (reminders, E_TYPE_REMINDERS_WIDGET, ERemindersWidgetPrivate);
+	reminders->priv = e_reminders_widget_get_instance_private (reminders, E_TYPE_REMINDERS_WIDGET, ERemindersWidgetPrivate);
 	reminders->priv->settings = g_settings_new ("org.gnome.evolution-data-server.calendar");
 	reminders->priv->cancellable = g_cancellable_new ();
 	reminders->priv->is_empty = TRUE;

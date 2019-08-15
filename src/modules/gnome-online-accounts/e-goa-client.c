@@ -21,10 +21,6 @@
 
 #include "e-goa-client.h"
 
-#define E_GOA_CLIENT_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_GOA_CLIENT, EGoaClientPrivate))
-
 struct _EGoaClientPrivate {
 	GDBusObjectManager *object_manager;
 	gulong object_added_handler_id;
@@ -60,6 +56,7 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED (
 	e_goa_client,
 	G_TYPE_OBJECT,
 	0,
+	G_ADD_PRIVATE_DYNAMIC (EGoaClient)
 	G_IMPLEMENT_INTERFACE_DYNAMIC (
 		G_TYPE_INITABLE,
 		e_goa_client_interface_init)
@@ -269,7 +266,7 @@ e_goa_client_dispose (GObject *object)
 {
 	EGoaClientPrivate *priv;
 
-	priv = E_GOA_CLIENT_GET_PRIVATE (object);
+	priv = E_GOA_CLIENT (object)->priv;
 
 	if (priv->object_added_handler_id > 0) {
 		g_signal_handler_disconnect (
@@ -305,7 +302,7 @@ e_goa_client_finalize (GObject *object)
 {
 	EGoaClientPrivate *priv;
 
-	priv = E_GOA_CLIENT_GET_PRIVATE (object);
+	priv = E_GOA_CLIENT (object)->priv;
 
 	g_hash_table_destroy (priv->orphans);
 	g_mutex_clear (&priv->orphans_lock);
@@ -322,7 +319,7 @@ e_goa_client_initable_init (GInitable *initable,
 	EGoaClientPrivate *priv;
 	gulong handler_id;
 
-	priv = E_GOA_CLIENT_GET_PRIVATE (initable);
+	priv = E_GOA_CLIENT (initable)->priv;
 
 	priv->object_manager = goa_object_manager_client_new_for_bus_sync (
 		G_BUS_TYPE_SESSION,
@@ -359,8 +356,6 @@ static void
 e_goa_client_class_init (EGoaClientClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (EGoaClientPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->get_property = e_goa_client_get_property;
@@ -420,7 +415,7 @@ e_goa_client_interface_init (GInitableIface *iface)
 static void
 e_goa_client_init (EGoaClient *client)
 {
-	client->priv = E_GOA_CLIENT_GET_PRIVATE (client);
+	client->priv = e_goa_client_get_instance_private (client);
 
 	client->priv->orphans = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,

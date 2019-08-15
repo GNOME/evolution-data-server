@@ -33,7 +33,7 @@
 #define EC_ERROR_EX(_code, _msg) e_client_error_create (_code, _msg)
 #define ECC_ERROR(_code) e_cal_client_error_create (_code, NULL)
 
-G_DEFINE_TYPE (ECalBackendHttp, e_cal_backend_http, E_TYPE_CAL_META_BACKEND)
+G_DEFINE_TYPE_WITH_PRIVATE (ECalBackendHttp, e_cal_backend_http, E_TYPE_CAL_META_BACKEND)
 
 struct _ECalBackendHttpPrivate {
 	ESoupSession *session;
@@ -657,7 +657,7 @@ e_cal_backend_http_finalize (GObject *object)
 static void
 e_cal_backend_http_init (ECalBackendHttp *cbhttp)
 {
-	cbhttp->priv = G_TYPE_INSTANCE_GET_PRIVATE (cbhttp, E_TYPE_CAL_BACKEND_HTTP, ECalBackendHttpPrivate);
+	cbhttp->priv = e_cal_backend_http_get_instance_private (cbhttp);
 
 	g_rec_mutex_init (&cbhttp->priv->conn_lock);
 
@@ -670,8 +670,6 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *klass)
 	GObjectClass *object_class;
 	ECalBackendSyncClass *cal_backend_sync_class;
 	ECalMetaBackendClass *cal_meta_backend_class;
-
-	g_type_class_add_private (klass, sizeof (ECalBackendHttpPrivate));
 
 	cal_meta_backend_class = E_CAL_META_BACKEND_CLASS (klass);
 	cal_meta_backend_class->connect_sync = ecb_http_connect_sync;

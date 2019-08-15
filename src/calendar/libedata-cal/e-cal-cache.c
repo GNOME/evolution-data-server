@@ -93,6 +93,7 @@ void _e_cal_cache_remove_loaded_timezones (ECalCache *cal_cache);
 static void ecc_timezone_cache_init (ETimezoneCacheInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (ECalCache, e_cal_cache, E_TYPE_CACHE,
+			 G_ADD_PRIVATE (ECalCache)
 			 G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL)
 			 G_IMPLEMENT_INTERFACE (E_TYPE_TIMEZONE_CACHE, ecc_timezone_cache_init))
 
@@ -4464,8 +4465,6 @@ e_cal_cache_class_init (ECalCacheClass *klass)
 	GObjectClass *object_class;
 	ECacheClass *cache_class;
 
-	g_type_class_add_private (klass, sizeof (ECalCachePrivate));
-
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = e_cal_cache_finalize;
 
@@ -4528,7 +4527,7 @@ ecc_timezone_cache_init (ETimezoneCacheInterface *iface)
 static void
 e_cal_cache_init (ECalCache *cal_cache)
 {
-	cal_cache->priv = G_TYPE_INSTANCE_GET_PRIVATE (cal_cache, E_TYPE_CAL_CACHE, ECalCachePrivate);
+	cal_cache->priv = e_cal_cache_get_instance_private (cal_cache);
 	cal_cache->priv->loaded_timezones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, cal_cache_free_zone);
 	cal_cache->priv->modified_timezones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, cal_cache_free_zone);
 

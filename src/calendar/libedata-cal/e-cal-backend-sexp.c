@@ -31,11 +31,7 @@
 
 #include "e-cal-backend-sexp.h"
 
-#define E_CAL_BACKEND_SEXP_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CAL_BACKEND_SEXP, ECalBackendSExpPrivate))
-
-G_DEFINE_TYPE (ECalBackendSExp, e_cal_backend_sexp, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (ECalBackendSExp, e_cal_backend_sexp, G_TYPE_OBJECT)
 
 typedef struct _SearchContext SearchContext;
 
@@ -1148,7 +1144,7 @@ cal_backend_sexp_finalize (GObject *object)
 {
 	ECalBackendSExpPrivate *priv;
 
-	priv = E_CAL_BACKEND_SEXP_GET_PRIVATE (object);
+	priv = E_CAL_BACKEND_SEXP (object)->priv;
 
 	g_object_unref (priv->search_sexp);
 	g_free (priv->text);
@@ -1164,8 +1160,6 @@ e_cal_backend_sexp_class_init (ECalBackendSExpClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (ECalBackendSExpPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = cal_backend_sexp_finalize;
 }
@@ -1173,7 +1167,7 @@ e_cal_backend_sexp_class_init (ECalBackendSExpClass *class)
 static void
 e_cal_backend_sexp_init (ECalBackendSExp *sexp)
 {
-	sexp->priv = E_CAL_BACKEND_SEXP_GET_PRIVATE (sexp);
+	sexp->priv = e_cal_backend_sexp_get_instance_private (sexp);
 	sexp->priv->search_context = g_new (SearchContext, 1);
 
 	g_rec_mutex_init (&sexp->priv->search_context_lock);
