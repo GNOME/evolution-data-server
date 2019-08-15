@@ -19,10 +19,6 @@
 
 #include <string.h>
 
-#define CAMEL_LOCAL_SETTINGS_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_LOCAL_SETTINGS, CamelLocalSettingsPrivate))
-
 struct _CamelLocalSettingsPrivate {
 	GMutex property_lock;
 	gchar *path;
@@ -37,7 +33,7 @@ enum {
 	PROP_PATH
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelLocalSettings,
 	camel_local_settings,
 	CAMEL_TYPE_STORE_SETTINGS)
@@ -108,7 +104,7 @@ local_settings_finalize (GObject *object)
 {
 	CamelLocalSettingsPrivate *priv;
 
-	priv = CAMEL_LOCAL_SETTINGS_GET_PRIVATE (object);
+	priv = CAMEL_LOCAL_SETTINGS (object)->priv;
 
 	g_mutex_clear (&priv->property_lock);
 
@@ -122,8 +118,6 @@ static void
 camel_local_settings_class_init (CamelLocalSettingsClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (CamelLocalSettingsPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = local_settings_set_property;
@@ -173,7 +167,7 @@ camel_local_settings_class_init (CamelLocalSettingsClass *class)
 static void
 camel_local_settings_init (CamelLocalSettings *settings)
 {
-	settings->priv = CAMEL_LOCAL_SETTINGS_GET_PRIVATE (settings);
+	settings->priv = camel_local_settings_get_instance_private (settings);
 	g_mutex_init (&settings->priv->property_lock);
 }
 

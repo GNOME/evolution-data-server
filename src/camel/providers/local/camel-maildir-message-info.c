@@ -33,7 +33,7 @@ enum {
 	PROP_FILENAME
 };
 
-G_DEFINE_TYPE (CamelMaildirMessageInfo, camel_maildir_message_info, CAMEL_TYPE_MESSAGE_INFO_BASE)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelMaildirMessageInfo, camel_maildir_message_info, CAMEL_TYPE_MESSAGE_INFO_BASE)
 
 static CamelMessageInfo *
 maildir_message_info_clone (const CamelMessageInfo *mi,
@@ -138,8 +138,6 @@ camel_maildir_message_info_class_init (CamelMaildirMessageInfoClass *class)
 	CamelMessageInfoClass *mi_class;
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelMaildirMessageInfoPrivate));
-
 	mi_class = CAMEL_MESSAGE_INFO_CLASS (class);
 	mi_class->clone = maildir_message_info_clone;
 	mi_class->load = maildir_message_info_load;
@@ -171,7 +169,7 @@ camel_maildir_message_info_class_init (CamelMaildirMessageInfoClass *class)
 static void
 camel_maildir_message_info_init (CamelMaildirMessageInfo *mmi)
 {
-	mmi->priv = G_TYPE_INSTANCE_GET_PRIVATE (mmi, CAMEL_TYPE_MAILDIR_MESSAGE_INFO, CamelMaildirMessageInfoPrivate);
+	mmi->priv = camel_maildir_message_info_get_instance_private (mmi);
 }
 
 const gchar *

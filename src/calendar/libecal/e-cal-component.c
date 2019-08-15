@@ -45,8 +45,6 @@
 #define getppid() 0
 #endif
 
-G_DEFINE_TYPE (ECalComponent, e_cal_component, G_TYPE_OBJECT)
-
 struct _ECalComponentPrivate {
 	/* The icalcomponent we wrap */
 	ICalComponent *icalcomp;
@@ -56,6 +54,8 @@ struct _ECalComponentPrivate {
 	 */
 	guint need_sequence_inc : 1;
 };
+
+G_DEFINE_TYPE_WITH_PRIVATE (ECalComponent, e_cal_component, G_TYPE_OBJECT)
 
 /* Frees the internal icalcomponent only if it does not have a parent.  If it
  * does, it means we don't own it and we shouldn't free it.
@@ -248,8 +248,6 @@ e_cal_component_class_init (ECalComponentClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (ECalComponentPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = cal_component_finalize;
 }
@@ -258,7 +256,7 @@ e_cal_component_class_init (ECalComponentClass *class)
 static void
 e_cal_component_init (ECalComponent *comp)
 {
-	comp->priv = G_TYPE_INSTANCE_GET_PRIVATE (comp, E_TYPE_CAL_COMPONENT, ECalComponentPrivate);
+	comp->priv = e_cal_component_get_instance_private (comp);
 	comp->priv->icalcomp = NULL;
 }
 

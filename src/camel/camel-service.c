@@ -41,10 +41,6 @@
 #define d(x)
 #define w(x)
 
-#define CAMEL_SERVICE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SERVICE, CamelServicePrivate))
-
 #define DISPATCH_DATA_KEY "camel-service-dispatch-data"
 
 typedef struct _AsyncContext AsyncContext;
@@ -119,6 +115,7 @@ static void	service_task_dispatch		(CamelService *service,
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
 	CamelService, camel_service, CAMEL_TYPE_OBJECT,
+	G_ADD_PRIVATE (CamelService)
 	G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, camel_service_initable_init))
 G_DEFINE_BOXED_TYPE (CamelServiceAuthType, camel_service_auth_type, camel_service_auth_type_copy, camel_service_auth_type_free);
 
@@ -807,7 +804,7 @@ service_dispose (GObject *object)
 {
 	CamelServicePrivate *priv;
 
-	priv = CAMEL_SERVICE_GET_PRIVATE (object);
+	priv = CAMEL_SERVICE (object)->priv;
 
 	if (priv->status == CAMEL_SERVICE_CONNECTED)
 		CAMEL_SERVICE_GET_CLASS (object)->disconnect_sync (
@@ -829,7 +826,7 @@ service_finalize (GObject *object)
 {
 	CamelServicePrivate *priv;
 
-	priv = CAMEL_SERVICE_GET_PRIVATE (object);
+	priv = CAMEL_SERVICE (object)->priv;
 
 	g_mutex_clear (&priv->property_lock);
 
@@ -938,8 +935,6 @@ static void
 camel_service_class_init (CamelServiceClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (CamelServicePrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = service_set_property;
@@ -1071,7 +1066,7 @@ camel_service_init (CamelService *service)
 		(GDestroyNotify) NULL,
 		(GDestroyNotify) task_queue_free);
 
-	service->priv = CAMEL_SERVICE_GET_PRIVATE (service);
+	service->priv = camel_service_get_instance_private (service);
 
 	g_mutex_init (&service->priv->property_lock);
 	g_mutex_init (&service->priv->connection_lock);

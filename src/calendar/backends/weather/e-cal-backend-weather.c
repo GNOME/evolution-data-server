@@ -29,15 +29,9 @@
 
 #define WEATHER_UID_EXT "-weather"
 
-#define E_CAL_BACKEND_WEATHER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CAL_BACKEND_WEATHER, ECalBackendWeatherPrivate))
-
 #define EC_ERROR(_code) e_client_error_create (_code, NULL)
 #define EC_ERROR_EX(_code, _msg) e_client_error_create (_code, _msg)
 #define ECC_ERROR(_code) e_cal_client_error_create (_code, NULL)
-
-G_DEFINE_TYPE (ECalBackendWeather, e_cal_backend_weather, E_TYPE_CAL_BACKEND_SYNC)
 
 static gboolean	reload_cb			(gpointer user_data);
 static gboolean	begin_retrieval_cb		(ECalBackendWeather *cbw);
@@ -77,6 +71,8 @@ struct _ECalBackendWeatherPrivate {
 	ESourceWeatherUnits last_used_units;
 	gchar *last_used_location;
 };
+
+G_DEFINE_TYPE_WITH_PRIVATE (ECalBackendWeather, e_cal_backend_weather, E_TYPE_CAL_BACKEND_SYNC)
 
 static gboolean
 reload_cb (gpointer user_data)
@@ -1005,7 +1001,7 @@ e_cal_backend_weather_dispose (GObject *object)
 {
 	ECalBackendWeatherPrivate *priv;
 
-	priv = E_CAL_BACKEND_WEATHER_GET_PRIVATE (object);
+	priv = E_CAL_BACKEND_WEATHER (object)->priv;
 
 	if (priv->reload_timeout_id) {
 		g_source_remove (priv->reload_timeout_id);
@@ -1039,7 +1035,7 @@ e_cal_backend_weather_finalize (GObject *object)
 {
 	ECalBackendWeatherPrivate *priv;
 
-	priv = E_CAL_BACKEND_WEATHER_GET_PRIVATE (object);
+	priv = E_CAL_BACKEND_WEATHER (object)->priv;
 
 	g_clear_object (&priv->cache);
 	g_mutex_clear (&priv->last_used_mutex);
@@ -1052,7 +1048,7 @@ e_cal_backend_weather_finalize (GObject *object)
 static void
 e_cal_backend_weather_init (ECalBackendWeather *cbw)
 {
-	cbw->priv = E_CAL_BACKEND_WEATHER_GET_PRIVATE (cbw);
+	cbw->priv = e_cal_backend_weather_get_instance_private (cbw);
 
 	g_mutex_init (&cbw->priv->last_used_mutex);
 
@@ -1068,8 +1064,6 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 	GObjectClass *object_class;
 	ECalBackendClass *backend_class;
 	ECalBackendSyncClass *sync_class;
-
-	g_type_class_add_private (class, sizeof (ECalBackendWeatherPrivate));
 
 	object_class = (GObjectClass *) class;
 	backend_class = (ECalBackendClass *) class;

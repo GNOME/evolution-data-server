@@ -40,10 +40,6 @@
 
 #include "e-dbus-calendar-view.h"
 
-#define E_CAL_CLIENT_VIEW_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CAL_CLIENT_VIEW, ECalClientViewPrivate))
-
 typedef struct _SignalClosure SignalClosure;
 
 struct _ECalClientViewPrivate {
@@ -97,6 +93,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	ECalClientView,
 	e_cal_client_view,
 	G_TYPE_OBJECT,
+	G_ADD_PRIVATE (ECalClientView)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_cal_client_view_initable_init))
@@ -597,7 +594,7 @@ cal_client_view_dispose (GObject *object)
 {
 	ECalClientViewPrivate *priv;
 
-	priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (object);
+	priv = E_CAL_CLIENT_VIEW (object)->priv;
 
 	g_clear_object (&priv->client);
 
@@ -646,7 +643,7 @@ cal_client_view_finalize (GObject *object)
 {
 	ECalClientViewPrivate *priv;
 
-	priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (object);
+	priv = E_CAL_CLIENT_VIEW (object)->priv;
 
 	g_free (priv->object_path);
 
@@ -668,7 +665,7 @@ cal_client_view_initable_init (GInitable *initable,
 	gulong handler_id;
 	gchar *bus_name;
 
-	priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (initable);
+	priv = E_CAL_CLIENT_VIEW (initable)->priv;
 
 	cal_client = priv->client ? g_object_ref (priv->client) : NULL;
 	if (cal_client == NULL) {
@@ -739,8 +736,6 @@ static void
 e_cal_client_view_class_init (ECalClientViewClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (ECalClientViewPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = cal_client_view_set_property;
@@ -875,7 +870,7 @@ e_cal_client_view_initable_init (GInitableIface *iface)
 static void
 e_cal_client_view_init (ECalClientView *client_view)
 {
-	client_view->priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (client_view);
+	client_view->priv = e_cal_client_view_get_instance_private (client_view);
 
 	g_mutex_init (&client_view->priv->main_context_lock);
 	client_view->priv->client = NULL;

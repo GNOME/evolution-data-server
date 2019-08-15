@@ -17,10 +17,6 @@
 
 #include "camel-store-settings.h"
 
-#define CAMEL_STORE_SETTINGS_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_STORE_SETTINGS, CamelStoreSettingsPrivate))
-
 struct _CamelStoreSettingsPrivate {
 	gboolean filter_inbox;
 };
@@ -30,7 +26,7 @@ enum {
 	PROP_FILTER_INBOX
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelStoreSettings,
 	camel_store_settings,
 	CAMEL_TYPE_SETTINGS)
@@ -75,8 +71,6 @@ camel_store_settings_class_init (CamelStoreSettingsClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelStoreSettingsPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = store_settings_set_property;
 	object_class->get_property = store_settings_get_property;
@@ -98,7 +92,7 @@ camel_store_settings_class_init (CamelStoreSettingsClass *class)
 static void
 camel_store_settings_init (CamelStoreSettings *settings)
 {
-	settings->priv = CAMEL_STORE_SETTINGS_GET_PRIVATE (settings);
+	settings->priv = camel_store_settings_get_instance_private (settings);
 }
 
 /**

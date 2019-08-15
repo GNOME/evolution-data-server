@@ -34,10 +34,6 @@
 
 #include "e-subprocess-factory.h"
 
-#define E_SUBPROCESS_FACTORY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SUBPROCESS_FACTORY, ESubprocessFactoryPrivate))
-
 struct _ESubprocessFactoryPrivate {
 	ESourceRegistry *registry;
 
@@ -66,6 +62,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	ESubprocessFactory,
 	e_subprocess_factory,
 	G_TYPE_OBJECT,
+	G_ADD_PRIVATE (ESubprocessFactory)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_subprocess_factory_initable_init))
@@ -174,8 +171,6 @@ e_subprocess_factory_class_init (ESubprocessFactoryClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (ESubprocessFactoryPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->get_property = e_subprocess_factory_get_property;
 	object_class->dispose = subprocess_factory_dispose;
@@ -196,7 +191,7 @@ e_subprocess_factory_class_init (ESubprocessFactoryClass *class)
 static void
 e_subprocess_factory_init (ESubprocessFactory *subprocess_factory)
 {
-	subprocess_factory->priv = E_SUBPROCESS_FACTORY_GET_PRIVATE (subprocess_factory);
+	subprocess_factory->priv = e_subprocess_factory_get_instance_private (subprocess_factory);
 
 	g_mutex_init (&subprocess_factory->priv->mutex);
 

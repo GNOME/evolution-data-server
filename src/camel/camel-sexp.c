@@ -106,7 +106,7 @@ struct _CamelSExpPrivate {
 	CamelMemChunk *result_chunks;
 };
 
-G_DEFINE_TYPE (CamelSExp, camel_sexp, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelSExp, camel_sexp, G_TYPE_OBJECT)
 
 static CamelSExpTerm * parse_list (CamelSExp *sexp, gint gotbrace);
 static CamelSExpTerm * parse_value (CamelSExp *sexp);
@@ -1532,8 +1532,6 @@ camel_sexp_class_init (CamelSExpClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelSExpPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = camel_sexp_finalize;
 }
@@ -1565,7 +1563,7 @@ camel_sexp_init (CamelSExp *sexp)
 {
 	gint i;
 
-	sexp->priv = G_TYPE_INSTANCE_GET_PRIVATE (sexp, CAMEL_TYPE_SEXP, CamelSExpPrivate);
+	sexp->priv = camel_sexp_get_instance_private (sexp);
 
 	sexp->priv->scanner = g_scanner_new (&scanner_config);
 	sexp->priv->term_chunks = camel_memchunk_new (16, sizeof (CamelSExpTerm));

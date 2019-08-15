@@ -46,10 +46,6 @@
 
 #include "e-book-client.h"
 
-#define E_BOOK_CLIENT_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_BOOK_CLIENT, EBookClientPrivate))
-
 /* Set this to a sufficiently large value
  * to cover most long-running operations. */
 #define DBUS_PROXY_TIMEOUT_MS (3 * 60 * 1000)  /* 3 minutes */
@@ -121,6 +117,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	EBookClient,
 	e_book_client,
 	E_TYPE_CLIENT,
+	G_ADD_PRIVATE (EBookClient)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_book_client_initable_init)
@@ -724,7 +721,7 @@ book_client_dispose (GObject *object)
 {
 	EBookClientPrivate *priv;
 
-	priv = E_BOOK_CLIENT_GET_PRIVATE (object);
+	priv = E_BOOK_CLIENT (object)->priv;
 
 	if (priv->dbus_proxy_error_handler_id > 0) {
 		g_signal_handler_disconnect (
@@ -764,7 +761,7 @@ book_client_finalize (GObject *object)
 {
 	EBookClientPrivate *priv;
 
-	priv = E_BOOK_CLIENT_GET_PRIVATE (object);
+	priv = E_BOOK_CLIENT (object)->priv;
 
 	if (priv->name_watcher_id > 0)
 		g_bus_unwatch_name (priv->name_watcher_id);
@@ -840,7 +837,7 @@ book_client_get_dbus_proxy (EClient *client)
 {
 	EBookClientPrivate *priv;
 
-	priv = E_BOOK_CLIENT_GET_PRIVATE (client);
+	priv = E_BOOK_CLIENT (client)->priv;
 
 	return G_DBUS_PROXY (priv->dbus_proxy);
 }
@@ -1046,7 +1043,7 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	gulong handler_id;
 	GError *local_error = NULL;
 
-	priv = E_BOOK_CLIENT_GET_PRIVATE (source_object);
+	priv = E_BOOK_CLIENT (source_object)->priv;
 
 	client = E_CLIENT (source_object);
 	source = e_client_get_source (client);
@@ -1261,8 +1258,6 @@ e_book_client_class_init (EBookClientClass *class)
 	GObjectClass *object_class;
 	EClientClass *client_class;
 
-	g_type_class_add_private (class, sizeof (EBookClientPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = book_client_dispose;
 	object_class->finalize = book_client_finalize;
@@ -1313,7 +1308,7 @@ e_book_client_init (EBookClient *client)
 {
 	const gchar *default_locale;
 
-	client->priv = E_BOOK_CLIENT_GET_PRIVATE (client);
+	client->priv = e_book_client_get_instance_private (client);
 
 	default_locale = setlocale (LC_COLLATE, NULL);
 	client->priv->locale = g_strdup (default_locale);
@@ -1491,7 +1486,7 @@ book_client_connect_init_cb (GObject *source_object,
 	source_object = g_async_result_get_source_object (result);
 	closure = g_simple_async_result_get_op_res_gpointer (simple);
 
-	priv = E_BOOK_CLIENT_GET_PRIVATE (source_object);
+	priv = E_BOOK_CLIENT (source_object)->priv;
 
 	e_dbus_address_book_call_open (
 		priv->dbus_proxy,
@@ -1665,7 +1660,7 @@ connect_direct (EBookClient *client,
 	const gchar *backend_name, *backend_path, *config;
 	gchar *bus_name;
 
-	priv = E_BOOK_CLIENT_GET_PRIVATE (client);
+	priv = E_BOOK_CLIENT (client)->priv;
 
 	if (registry)
 		g_object_ref (registry);
@@ -1777,7 +1772,7 @@ book_client_connect_direct_init_cb (GObject *source_object,
 	source_object = g_async_result_get_source_object (result);
 	closure = g_simple_async_result_get_op_res_gpointer (simple);
 
-	priv = E_BOOK_CLIENT_GET_PRIVATE (source_object);
+	priv = E_BOOK_CLIENT (source_object)->priv;
 
 	e_dbus_address_book_call_open (
 		priv->dbus_proxy,

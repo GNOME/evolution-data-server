@@ -17,10 +17,6 @@
 
 #include "camel-pop3-settings.h"
 
-#define CAMEL_POP3_SETTINGS_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_POP3_SETTINGS, CamelPOP3SettingsPrivate))
-
 struct _CamelPOP3SettingsPrivate {
 	gint delete_after_days;
 	gboolean delete_expunged;
@@ -49,6 +45,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	CamelPOP3Settings,
 	camel_pop3_settings,
 	CAMEL_TYPE_STORE_SETTINGS,
+	G_ADD_PRIVATE (CamelPOP3Settings)
 	G_IMPLEMENT_INTERFACE (
 		CAMEL_TYPE_NETWORK_SETTINGS, NULL))
 
@@ -222,8 +219,6 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelPOP3SettingsPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = pop3_settings_set_property;
 	object_class->get_property = pop3_settings_get_property;
@@ -346,7 +341,7 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 static void
 camel_pop3_settings_init (CamelPOP3Settings *settings)
 {
-	settings->priv = CAMEL_POP3_SETTINGS_GET_PRIVATE (settings);
+	settings->priv = camel_pop3_settings_get_instance_private (settings);
 }
 
 /**

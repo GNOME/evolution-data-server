@@ -33,6 +33,7 @@ struct _CamelStreamNullPrivate {
 static void camel_stream_null_seekable_init (GSeekableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (CamelStreamNull, camel_stream_null, CAMEL_TYPE_STREAM,
+	G_ADD_PRIVATE (CamelStreamNull)
 	G_IMPLEMENT_INTERFACE (G_TYPE_SEEKABLE, camel_stream_null_seekable_init))
 
 static gssize
@@ -119,8 +120,6 @@ camel_stream_null_class_init (CamelStreamNullClass *class)
 {
 	CamelStreamClass *stream_class;
 
-	g_type_class_add_private (class, sizeof (CamelStreamNullPrivate));
-
 	stream_class = CAMEL_STREAM_CLASS (class);
 	stream_class->write = stream_null_write;
 	stream_class->eos = stream_null_eos;
@@ -139,7 +138,7 @@ camel_stream_null_seekable_init (GSeekableIface *iface)
 static void
 camel_stream_null_init (CamelStreamNull *stream_null)
 {
-	stream_null->priv = G_TYPE_INSTANCE_GET_PRIVATE (stream_null, CAMEL_TYPE_STREAM_NULL, CamelStreamNullPrivate);
+	stream_null->priv = camel_stream_null_get_instance_private (stream_null);
 	stream_null->priv->ends_with_crlf = FALSE;
 	stream_null->priv->ends_with_cr = FALSE;
 }

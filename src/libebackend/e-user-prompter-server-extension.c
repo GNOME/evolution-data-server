@@ -42,15 +42,11 @@
 #include "e-user-prompter-server.h"
 #include "e-user-prompter-server-extension.h"
 
-#define E_USER_PROMPTER_SERVER_EXTENSION_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_USER_PROMPTER_SERVER_EXTENSION, EUserPrompterServerExtensionPrivate))
-
 struct _EUserPrompterServerExtensionPrivate {
 	gint dummy; /* not used */
 };
 
-G_DEFINE_ABSTRACT_TYPE (EUserPrompterServerExtension, e_user_prompter_server_extension, E_TYPE_EXTENSION)
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (EUserPrompterServerExtension, e_user_prompter_server_extension, E_TYPE_EXTENSION)
 
 static void
 user_prompter_server_extension_constructed (GObject *object)
@@ -86,8 +82,6 @@ e_user_prompter_server_extension_class_init (EUserPrompterServerExtensionClass *
 	GObjectClass *object_class;
 	EExtensionClass *extension_class;
 
-	g_type_class_add_private (class, sizeof (EUserPrompterServerExtensionPrivate));
-
 	class->register_dialogs = NULL;
 	class->prompt = NULL;
 
@@ -101,7 +95,7 @@ e_user_prompter_server_extension_class_init (EUserPrompterServerExtensionClass *
 static void
 e_user_prompter_server_extension_init (EUserPrompterServerExtension *extension)
 {
-	extension->priv = E_USER_PROMPTER_SERVER_EXTENSION_GET_PRIVATE (extension);
+	extension->priv = e_user_prompter_server_extension_get_instance_private (extension);
 }
 
 /**

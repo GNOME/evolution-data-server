@@ -45,10 +45,6 @@
 
 #include "e-source-registry-server.h"
 
-#define E_SOURCE_REGISTRY_SERVER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_REGISTRY_SERVER, ESourceRegistryServerPrivate))
-
 /* Collection backends get tacked on to
  * sources with a [Collection] extension. */
 #define BACKEND_DATA_KEY "__e_collection_backend__"
@@ -86,7 +82,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceRegistryServer,
 	e_source_registry_server,
 	E_TYPE_DATA_FACTORY)
@@ -778,7 +774,7 @@ source_registry_server_dispose (GObject *object)
 {
 	ESourceRegistryServerPrivate *priv;
 
-	priv = E_SOURCE_REGISTRY_SERVER_GET_PRIVATE (object);
+	priv = E_SOURCE_REGISTRY_SERVER (object)->priv;
 
 	g_mutex_lock (&priv->file_monitor_lock);
 	if (priv->file_monitor_source) {
@@ -812,7 +808,7 @@ source_registry_server_finalize (GObject *object)
 {
 	ESourceRegistryServerPrivate *priv;
 
-	priv = E_SOURCE_REGISTRY_SERVER_GET_PRIVATE (object);
+	priv = E_SOURCE_REGISTRY_SERVER (object)->priv;
 
 	g_hash_table_destroy (priv->sources);
 	g_hash_table_destroy (priv->orphans);
@@ -836,7 +832,7 @@ source_registry_server_bus_acquired (EDBusServer *server,
 {
 	ESourceRegistryServerPrivate *priv;
 
-	priv = E_SOURCE_REGISTRY_SERVER_GET_PRIVATE (server);
+	priv = E_SOURCE_REGISTRY_SERVER (server)->priv;
 
 	g_dbus_object_manager_server_set_connection (
 		priv->object_manager, connection);
@@ -852,7 +848,7 @@ source_registry_server_quit_server (EDBusServer *server,
 {
 	ESourceRegistryServerPrivate *priv;
 
-	priv = E_SOURCE_REGISTRY_SERVER_GET_PRIVATE (server);
+	priv = E_SOURCE_REGISTRY_SERVER (server)->priv;
 
 	/* This makes the object manager unexport all objects. */
 	g_dbus_object_manager_server_set_connection (
@@ -985,7 +981,7 @@ source_registry_server_get_dbus_interface_skeleton (EDBusServer *server)
 {
 	ESourceRegistryServerPrivate *priv;
 
-	priv = E_SOURCE_REGISTRY_SERVER_GET_PRIVATE (server);
+	priv = E_SOURCE_REGISTRY_SERVER (server)->priv;
 
 	return G_DBUS_INTERFACE_SKELETON (priv->source_manager);
 }
@@ -1004,8 +1000,6 @@ e_source_registry_server_class_init (ESourceRegistryServerClass *class)
 	if (modules_directory_env &&
 	    g_file_test (modules_directory_env, G_FILE_TEST_IS_DIR))
 		modules_directory = g_strdup (modules_directory_env);
-
-	g_type_class_add_private (class, sizeof (ESourceRegistryServerPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->constructed = source_registry_server_constructed;
@@ -1163,7 +1157,7 @@ e_source_registry_server_init (ESourceRegistryServer *server)
 		(GDestroyNotify) g_object_unref,
 		(GDestroyNotify) g_object_unref);
 
-	server->priv = E_SOURCE_REGISTRY_SERVER_GET_PRIVATE (server);
+	server->priv = e_source_registry_server_get_instance_private (server);
 	server->priv->main_context = g_main_context_ref_thread_default ();
 	server->priv->object_manager = object_manager;
 	server->priv->source_manager = source_manager;

@@ -39,10 +39,6 @@
 #include <ws2tcpip.h>
 #endif
 
-#define CAMEL_POP3_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_POP3_STORE, CamelPOP3StorePrivate))
-
 /* Specified in RFC 1939 */
 #define POP3_PORT  110
 #define POP3S_PORT 995
@@ -72,6 +68,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	CamelPOP3Store,
 	camel_pop3_store,
 	CAMEL_TYPE_STORE,
+	G_ADD_PRIVATE (CamelPOP3Store)
 	G_IMPLEMENT_INTERFACE (
 		CAMEL_TYPE_NETWORK_SERVICE,
 		camel_network_service_init))
@@ -437,7 +434,7 @@ pop3_store_dispose (GObject *object)
 {
 	CamelPOP3StorePrivate *priv;
 
-	priv = CAMEL_POP3_STORE_GET_PRIVATE (object);
+	priv = CAMEL_POP3_STORE (object)->priv;
 
 	/* Force disconnect so we dont have it run
 	 * later, after we've cleaned up some stuff. */
@@ -456,7 +453,7 @@ pop3_store_finalize (GObject *object)
 {
 	CamelPOP3StorePrivate *priv;
 
-	priv = CAMEL_POP3_STORE_GET_PRIVATE (object);
+	priv = CAMEL_POP3_STORE (object)->priv;
 
 	g_mutex_clear (&priv->property_lock);
 
@@ -973,8 +970,6 @@ camel_pop3_store_class_init (CamelPOP3StoreClass *class)
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 
-	g_type_class_add_private (class, sizeof (CamelPOP3StorePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = pop3_store_set_property;
 	object_class->get_property = pop3_store_get_property;
@@ -1018,7 +1013,7 @@ camel_network_service_init (CamelNetworkServiceInterface *iface)
 static void
 camel_pop3_store_init (CamelPOP3Store *pop3_store)
 {
-	pop3_store->priv = CAMEL_POP3_STORE_GET_PRIVATE (pop3_store);
+	pop3_store->priv = camel_pop3_store_get_instance_private (pop3_store);
 
 	g_mutex_init (&pop3_store->priv->property_lock);
 }

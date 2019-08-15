@@ -49,7 +49,7 @@ enum {
 	PROP_INDEX,
 };
 
-G_DEFINE_TYPE (CursorNavigator, cursor_navigator, GTK_TYPE_SCALE);
+G_DEFINE_TYPE_WITH_PRIVATE (CursorNavigator, cursor_navigator, GTK_TYPE_SCALE);
 
 /************************************************************************
  *                          GObjectClass                                *
@@ -73,8 +73,6 @@ cursor_navigator_class_init (CursorNavigatorClass *klass)
 		G_SIGNAL_RUN_LAST,
 		0, NULL, NULL, NULL,
 		G_TYPE_NONE, 0);
-
-	g_type_class_add_private (object_class, sizeof (CursorNavigatorPrivate));
 }
 
 static void
@@ -82,11 +80,7 @@ cursor_navigator_init (CursorNavigator *navigator)
 {
 	CursorNavigatorPrivate *priv;
 
-	navigator->priv = priv =
-		G_TYPE_INSTANCE_GET_PRIVATE (
-			navigator,
-			CURSOR_TYPE_NAVIGATOR,
-			CursorNavigatorPrivate);
+	navigator->priv = priv = cursor_navigator_get_instance_private (navigator);
 
 	priv->letters = -1;
 }

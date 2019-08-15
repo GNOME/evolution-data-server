@@ -25,16 +25,16 @@
 
 #include "e-goa-password-based.h"
 
-#define E_GOA_PASSWORD_BASED_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_GOA_PASSWORD_BASED, EGoaPasswordBasedPrivate))
-
 struct _EGoaPasswordBasedPrivate {
 	GoaClient *goa_client;
 	GMutex lock;
 };
 
-G_DEFINE_DYNAMIC_TYPE (EGoaPasswordBased, e_goa_password_based, E_TYPE_SOURCE_CREDENTIALS_PROVIDER_IMPL)
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (EGoaPasswordBased,
+				e_goa_password_based,
+				E_TYPE_SOURCE_CREDENTIALS_PROVIDER_IMPL,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (EGoaPasswordBased))
 
 static GoaClient *
 e_goa_password_based_ref_goa_client_sync (EGoaPasswordBased *goa_password_based,
@@ -350,8 +350,6 @@ e_goa_password_based_class_init (EGoaPasswordBasedClass *class)
 	ESourceCredentialsProviderImplClass *provider_impl_class;
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (EGoaPasswordBasedPrivate));
-
 	provider_impl_class = E_SOURCE_CREDENTIALS_PROVIDER_IMPL_CLASS (class);
 	provider_impl_class->can_process = e_goa_password_based_can_process;
 	provider_impl_class->can_store = e_goa_password_based_can_store;
@@ -371,7 +369,7 @@ e_goa_password_based_class_finalize (EGoaPasswordBasedClass *class)
 static void
 e_goa_password_based_init (EGoaPasswordBased *session)
 {
-	session->priv = E_GOA_PASSWORD_BASED_GET_PRIVATE (session);
+	session->priv = e_goa_password_based_get_instance_private (session);
 
 	g_mutex_init (&session->priv->lock);
 }
@@ -379,7 +377,7 @@ e_goa_password_based_init (EGoaPasswordBased *session)
 void
 e_goa_password_based_type_register (GTypeModule *type_module)
 {
-	/* XXX G_DEFINE_DYNAMIC_TYPE declares a static type registration
+	/* XXX G_DEFINE_DYNAMIC_TYPE_EXTENDED declares a static type registration
 	 *     function, so we have to wrap it with a public function in
 	 *     order to register types from a separate compilation unit. */
 	e_goa_password_based_register_type (type_module);

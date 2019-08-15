@@ -33,7 +33,7 @@ enum {
 	PROP_OFFSET
 };
 
-G_DEFINE_TYPE (CamelMboxMessageInfo, camel_mbox_message_info, CAMEL_TYPE_MESSAGE_INFO_BASE)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelMboxMessageInfo, camel_mbox_message_info, CAMEL_TYPE_MESSAGE_INFO_BASE)
 
 static CamelMessageInfo *
 mbox_message_info_clone (const CamelMessageInfo *mi,
@@ -171,8 +171,6 @@ camel_mbox_message_info_class_init (CamelMboxMessageInfoClass *class)
 	CamelMessageInfoClass *mi_class;
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelMboxMessageInfoPrivate));
-
 	mi_class = CAMEL_MESSAGE_INFO_CLASS (class);
 	mi_class->clone = mbox_message_info_clone;
 	mi_class->load = mbox_message_info_load;
@@ -205,7 +203,7 @@ camel_mbox_message_info_class_init (CamelMboxMessageInfoClass *class)
 static void
 camel_mbox_message_info_init (CamelMboxMessageInfo *mmi)
 {
-	mmi->priv = G_TYPE_INSTANCE_GET_PRIVATE (mmi, CAMEL_TYPE_MBOX_MESSAGE_INFO, CamelMboxMessageInfoPrivate);
+	mmi->priv = camel_mbox_message_info_get_instance_private (mmi);
 }
 
 goffset

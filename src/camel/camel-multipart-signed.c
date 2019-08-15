@@ -38,10 +38,6 @@
 #include "camel-stream-filter.h"
 #include "camel-stream-mem.h"
 
-#define CAMEL_MULTIPART_SIGNED_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MULTIPART_SIGNED, CamelMultipartSignedPrivate))
-
 struct _CamelMultipartSignedPrivate {
 	/* These are the client visible parts,
 	 * decoded forms of our data wrapper content. */
@@ -61,7 +57,7 @@ struct _CamelMultipartSignedPrivate {
 	goffset start2, end2;
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelMultipartSigned,
 	camel_multipart_signed,
 	CAMEL_TYPE_MULTIPART)
@@ -226,7 +222,7 @@ multipart_signed_dispose (GObject *object)
 {
 	CamelMultipartSignedPrivate *priv;
 
-	priv = CAMEL_MULTIPART_SIGNED_GET_PRIVATE (object);
+	priv = CAMEL_MULTIPART_SIGNED (object)->priv;
 
 	g_clear_object (&priv->content);
 	g_clear_object (&priv->signature);
@@ -252,7 +248,7 @@ multipart_signed_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	gssize count;
 	gchar *content;
 
-	priv = CAMEL_MULTIPART_SIGNED_GET_PRIVATE (data_wrapper);
+	priv = CAMEL_MULTIPART_SIGNED (data_wrapper)->priv;
 
 	byte_array = camel_data_wrapper_get_byte_array (data_wrapper);
 
@@ -367,7 +363,7 @@ multipart_signed_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
 	CamelDataWrapperClass *parent_class;
 	gboolean success;
 
-	priv = CAMEL_MULTIPART_SIGNED_GET_PRIVATE (data_wrapper);
+	priv = CAMEL_MULTIPART_SIGNED (data_wrapper)->priv;
 
 	/* Chain up to parent's construct_from_stream_sync() method. */
 	parent_class = CAMEL_DATA_WRAPPER_CLASS (
@@ -403,7 +399,7 @@ multipart_signed_write_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 	gchar *content;
 	gboolean success;
 
-	priv = CAMEL_MULTIPART_SIGNED_GET_PRIVATE (data_wrapper);
+	priv = CAMEL_MULTIPART_SIGNED (data_wrapper)->priv;
 
 	byte_array = camel_data_wrapper_get_byte_array (data_wrapper);
 
@@ -534,7 +530,7 @@ multipart_signed_construct_from_input_stream_sync (CamelDataWrapper *data_wrappe
 {	CamelMultipartSignedPrivate *priv;
 	gboolean success;
 
-	priv = CAMEL_MULTIPART_SIGNED_GET_PRIVATE (data_wrapper);
+	priv = CAMEL_MULTIPART_SIGNED (data_wrapper)->priv;
 
 	/* Chain up to parent's construct_from_input_stream_sync() method. */
 	success = CAMEL_DATA_WRAPPER_CLASS (
@@ -668,7 +664,7 @@ multipart_signed_construct_from_parser (CamelMultipart *multipart,
 	gchar *buf;
 	gsize len;
 
-	priv = CAMEL_MULTIPART_SIGNED_GET_PRIVATE (multipart);
+	priv = CAMEL_MULTIPART_SIGNED (multipart)->priv;
 
 	/* we *must not* be in multipart state, otherwise the mime parser will
 	 * parse the headers which is a no no @#$@# stupid multipart/signed spec */
@@ -707,8 +703,6 @@ camel_multipart_signed_class_init (CamelMultipartSignedClass *class)
 	CamelDataWrapperClass *data_wrapper_class;
 	CamelMultipartClass *multipart_class;
 
-	g_type_class_add_private (class, sizeof (CamelMultipartSignedPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = multipart_signed_dispose;
 
@@ -730,7 +724,7 @@ camel_multipart_signed_class_init (CamelMultipartSignedClass *class)
 static void
 camel_multipart_signed_init (CamelMultipartSigned *multipart)
 {
-	multipart->priv = CAMEL_MULTIPART_SIGNED_GET_PRIVATE (multipart);
+	multipart->priv = camel_multipart_signed_get_instance_private (multipart);
 
 	camel_data_wrapper_set_mime_type (
 		CAMEL_DATA_WRAPPER (multipart), "multipart/signed");

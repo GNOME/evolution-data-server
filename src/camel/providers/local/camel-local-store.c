@@ -33,10 +33,6 @@
 
 #define d(x)
 
-#define CAMEL_LOCAL_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_LOCAL_STORE, CamelLocalStorePrivate))
-
 struct _CamelLocalStorePrivate {
 	gboolean need_summary_check;
 };
@@ -46,7 +42,7 @@ enum {
 	PROP_NEED_SUMMARY_CHECK
 };
 
-G_DEFINE_TYPE (CamelLocalStore, camel_local_store, CAMEL_TYPE_STORE)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelLocalStore, camel_local_store, CAMEL_TYPE_STORE)
 
 static gint
 xrename (const gchar *oldp,
@@ -662,8 +658,6 @@ camel_local_store_class_init (CamelLocalStoreClass *class)
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 
-	g_type_class_add_private (class, sizeof (CamelLocalStorePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = local_store_set_property;
 	object_class->get_property = local_store_get_property;
@@ -704,7 +698,7 @@ camel_local_store_class_init (CamelLocalStoreClass *class)
 static void
 camel_local_store_init (CamelLocalStore *local_store)
 {
-	local_store->priv = CAMEL_LOCAL_STORE_GET_PRIVATE (local_store);
+	local_store->priv = camel_local_store_get_instance_private (local_store);
 }
 
 /* Returns whether is this store used as 'On This Computer' main store */

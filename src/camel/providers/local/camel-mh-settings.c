@@ -17,10 +17,6 @@
 
 #include "camel-mh-settings.h"
 
-#define CAMEL_MH_SETTINGS_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MH_SETTINGS, CamelMhSettingsPrivate))
-
 struct _CamelMhSettingsPrivate {
 	gboolean use_dot_folders;
 };
@@ -30,7 +26,7 @@ enum {
 	PROP_USE_DOT_FOLDERS
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelMhSettings,
 	camel_mh_settings,
 	CAMEL_TYPE_LOCAL_SETTINGS)
@@ -75,8 +71,6 @@ camel_mh_settings_class_init (CamelMhSettingsClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelMhSettingsPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = mh_settings_set_property;
 	object_class->get_property = mh_settings_get_property;
@@ -98,7 +92,7 @@ camel_mh_settings_class_init (CamelMhSettingsClass *class)
 static void
 camel_mh_settings_init (CamelMhSettings *settings)
 {
-	settings->priv = CAMEL_MH_SETTINGS_GET_PRIVATE (settings);
+	settings->priv = camel_mh_settings_get_instance_private (settings);
 }
 
 /**

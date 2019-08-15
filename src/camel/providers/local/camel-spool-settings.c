@@ -17,10 +17,6 @@
 
 #include "camel-spool-settings.h"
 
-#define CAMEL_SPOOL_SETTINGS_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SPOOL_SETTINGS, CamelSpoolSettingsPrivate))
-
 struct _CamelSpoolSettingsPrivate {
 	gboolean use_xstatus_headers;
 };
@@ -30,7 +26,7 @@ enum {
 	PROP_USE_XSTATUS_HEADERS
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelSpoolSettings,
 	camel_spool_settings,
 	CAMEL_TYPE_LOCAL_SETTINGS)
@@ -75,8 +71,6 @@ camel_spool_settings_class_init (CamelSpoolSettingsClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelSpoolSettingsPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = spool_settings_set_property;
 	object_class->get_property = spool_settings_get_property;
@@ -98,7 +92,7 @@ camel_spool_settings_class_init (CamelSpoolSettingsClass *class)
 static void
 camel_spool_settings_init (CamelSpoolSettings *settings)
 {
-	settings->priv = CAMEL_SPOOL_SETTINGS_GET_PRIVATE (settings);
+	settings->priv = camel_spool_settings_get_instance_private (settings);
 }
 
 /**

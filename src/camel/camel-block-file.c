@@ -81,7 +81,7 @@ static gint block_file_threshhold = 10;
 static gint sync_nolock (CamelBlockFile *bs);
 static gint sync_block_nolock (CamelBlockFile *bs, CamelBlock *bl);
 
-G_DEFINE_TYPE (CamelBlockFile, camel_block_file, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelBlockFile, camel_block_file, G_TYPE_OBJECT)
 
 static gint
 block_file_validate_root (CamelBlockFile *bs)
@@ -198,8 +198,6 @@ camel_block_file_class_init (CamelBlockFileClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelBlockFilePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = block_file_finalize;
 
@@ -216,7 +214,7 @@ block_hash_func (gconstpointer v)
 static void
 camel_block_file_init (CamelBlockFile *bs)
 {
-	bs->priv = G_TYPE_INSTANCE_GET_PRIVATE (bs, CAMEL_TYPE_BLOCK_FILE, CamelBlockFilePrivate);
+	bs->priv = camel_block_file_get_instance_private (bs);
 
 	bs->priv->fd = -1;
 	bs->priv->block_size = CAMEL_BLOCK_SIZE;
@@ -958,7 +956,7 @@ static GQueue key_file_active_list = G_QUEUE_INIT;
 static gint key_file_count = 0;
 static const gint key_file_threshhold = 10;
 
-G_DEFINE_TYPE (CamelKeyFile, camel_key_file, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelKeyFile, camel_key_file, G_TYPE_OBJECT)
 
 static void
 key_file_finalize (GObject *object)
@@ -993,8 +991,6 @@ camel_key_file_class_init (CamelKeyFileClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelKeyFilePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = key_file_finalize;
 }
@@ -1002,7 +998,7 @@ camel_key_file_class_init (CamelKeyFileClass *class)
 static void
 camel_key_file_init (CamelKeyFile *kf)
 {
-	kf->priv = G_TYPE_INSTANCE_GET_PRIVATE (kf, CAMEL_TYPE_KEY_FILE, CamelKeyFilePrivate);
+	kf->priv = camel_key_file_get_instance_private (kf);
 	kf->priv->base = kf;
 
 	g_mutex_init (&kf->priv->lock);

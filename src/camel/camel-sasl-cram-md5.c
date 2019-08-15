@@ -29,10 +29,6 @@
 #include "camel-sasl-cram-md5.h"
 #include "camel-service.h"
 
-#define CAMEL_SASL_CRAM_MD5_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SASL_CRAM_MD5, CamelSaslCramMd5Private))
-
 struct _CamelSaslCramMd5Private {
 	gint placeholder;  /* allow for future expansion */
 };
@@ -47,7 +43,7 @@ static CamelServiceAuthType sasl_cram_md5_auth_type = {
 	TRUE
 };
 
-G_DEFINE_TYPE (CamelSaslCramMd5, camel_sasl_cram_md5, CAMEL_TYPE_SASL)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelSaslCramMd5, camel_sasl_cram_md5, CAMEL_TYPE_SASL)
 
 /* CRAM-MD5 algorithm:
  * MD5 ((passwd XOR opad), MD5 ((passwd XOR ipad), timestamp))
@@ -149,8 +145,6 @@ camel_sasl_cram_md5_class_init (CamelSaslCramMd5Class *class)
 {
 	CamelSaslClass *sasl_class;
 
-	g_type_class_add_private (class, sizeof (CamelSaslCramMd5Private));
-
 	sasl_class = CAMEL_SASL_CLASS (class);
 	sasl_class->auth_type = &sasl_cram_md5_auth_type;
 	sasl_class->challenge_sync = sasl_cram_md5_challenge_sync;
@@ -159,5 +153,5 @@ camel_sasl_cram_md5_class_init (CamelSaslCramMd5Class *class)
 static void
 camel_sasl_cram_md5_init (CamelSaslCramMd5 *sasl)
 {
-	sasl->priv = CAMEL_SASL_CRAM_MD5_GET_PRIVATE (sasl);
+	sasl->priv = camel_sasl_cram_md5_get_instance_private (sasl);
 }

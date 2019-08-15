@@ -29,24 +29,20 @@
 #include "camel-multipart.h"
 #include "camel-stream-mem.h"
 
-#define CAMEL_MULTIPART_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MULTIPART, CamelMultipartPrivate))
-
 struct _CamelMultipartPrivate {
 	GPtrArray *parts;
 	gchar *preface;
 	gchar *postface;
 };
 
-G_DEFINE_TYPE (CamelMultipart, camel_multipart, CAMEL_TYPE_DATA_WRAPPER)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelMultipart, camel_multipart, CAMEL_TYPE_DATA_WRAPPER)
 
 static void
 multipart_dispose (GObject *object)
 {
 	CamelMultipartPrivate *priv;
 
-	priv = CAMEL_MULTIPART_GET_PRIVATE (object);
+	priv = CAMEL_MULTIPART (object)->priv;
 
 	g_ptr_array_set_size (priv->parts, 0);
 
@@ -59,7 +55,7 @@ multipart_finalize (GObject *object)
 {
 	CamelMultipartPrivate *priv;
 
-	priv = CAMEL_MULTIPART_GET_PRIVATE (object);
+	priv = CAMEL_MULTIPART (object)->priv;
 
 	g_ptr_array_unref (priv->parts);
 
@@ -77,7 +73,7 @@ multipart_is_offline (CamelDataWrapper *data_wrapper)
 	CamelDataWrapper *part;
 	guint ii;
 
-	priv = CAMEL_MULTIPART_GET_PRIVATE (data_wrapper);
+	priv = CAMEL_MULTIPART (data_wrapper)->priv;
 
 	/* Chain up to parent's is_offline() method. */
 	if (CAMEL_DATA_WRAPPER_CLASS (camel_multipart_parent_class)->is_offline (data_wrapper))
@@ -106,7 +102,7 @@ multipart_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	gssize count;
 	guint ii;
 
-	priv = CAMEL_MULTIPART_GET_PRIVATE (data_wrapper);
+	priv = CAMEL_MULTIPART (data_wrapper)->priv;
 
 	/* get the bundary text */
 	boundary = camel_multipart_get_boundary (
@@ -188,7 +184,7 @@ multipart_write_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 	gboolean success;
 	guint ii;
 
-	priv = CAMEL_MULTIPART_GET_PRIVATE (data_wrapper);
+	priv = CAMEL_MULTIPART (data_wrapper)->priv;
 
 	/* get the bundary text */
 	boundary = camel_multipart_get_boundary (
@@ -384,8 +380,6 @@ camel_multipart_class_init (CamelMultipartClass *class)
 	GObjectClass *object_class;
 	CamelDataWrapperClass *data_wrapper_class;
 
-	g_type_class_add_private (class, sizeof (CamelMultipartPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = multipart_dispose;
 	object_class->finalize = multipart_finalize;
@@ -408,7 +402,7 @@ camel_multipart_class_init (CamelMultipartClass *class)
 static void
 camel_multipart_init (CamelMultipart *multipart)
 {
-	multipart->priv = CAMEL_MULTIPART_GET_PRIVATE (multipart);
+	multipart->priv = camel_multipart_get_instance_private (multipart);
 
 	multipart->priv->parts =
 		g_ptr_array_new_with_free_func (g_object_unref);

@@ -42,10 +42,6 @@
 #include "e-error.h"
 #include "e-book-view-private.h"
 
-#define E_BOOK_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_BOOK, EBookPrivate))
-
 struct _EBookPrivate {
 	EBookClient *client;
 	gulong backend_died_handler_id;
@@ -83,6 +79,7 @@ static void	e_book_initable_init		(GInitableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	EBook, e_book, G_TYPE_OBJECT,
+	G_ADD_PRIVATE (EBook)
 	G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, e_book_initable_init))
 
 G_DEFINE_QUARK (e-book-error-quark, e_book_error)
@@ -164,7 +161,7 @@ book_dispose (GObject *object)
 {
 	EBookPrivate *priv;
 
-	priv = E_BOOK_GET_PRIVATE (object);
+	priv = E_BOOK (object)->priv;
 
 	if (priv->client != NULL) {
 		g_signal_handler_disconnect (
@@ -194,7 +191,7 @@ book_finalize (GObject *object)
 {
 	EBookPrivate *priv;
 
-	priv = E_BOOK_GET_PRIVATE (object);
+	priv = E_BOOK (object)->priv;
 
 	g_free (priv->cap);
 
@@ -236,8 +233,6 @@ static void
 e_book_class_init (EBookClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (EBookPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = book_set_property;
@@ -293,7 +288,7 @@ e_book_initable_init (GInitableIface *iface)
 static void
 e_book_init (EBook *book)
 {
-	book->priv = E_BOOK_GET_PRIVATE (book);
+	book->priv = e_book_get_instance_private (book);
 }
 
 /**

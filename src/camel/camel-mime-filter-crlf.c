@@ -20,10 +20,6 @@
 
 #include "camel-mime-filter-crlf.h"
 
-#define CAMEL_MIME_FILTER_CRLF_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MIME_FILTER_CRLF, CamelMimeFilterCRLFPrivate))
-
 struct _CamelMimeFilterCRLFPrivate {
 	CamelMimeFilterCRLFDirection direction;
 	CamelMimeFilterCRLFMode mode;
@@ -32,7 +28,7 @@ struct _CamelMimeFilterCRLFPrivate {
 	gboolean saw_dot;
 };
 
-G_DEFINE_TYPE (CamelMimeFilterCRLF, camel_mime_filter_crlf, CAMEL_TYPE_MIME_FILTER)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelMimeFilterCRLF, camel_mime_filter_crlf, CAMEL_TYPE_MIME_FILTER)
 
 static void
 mime_filter_crlf_filter (CamelMimeFilter *mime_filter,
@@ -49,7 +45,7 @@ mime_filter_crlf_filter (CamelMimeFilter *mime_filter,
 	gboolean do_dots;
 	gchar *outptr;
 
-	priv = CAMEL_MIME_FILTER_CRLF_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_CRLF (mime_filter)->priv;
 
 	do_dots = priv->mode == CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS;
 
@@ -145,7 +141,7 @@ mime_filter_crlf_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterCRLFPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_CRLF_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_CRLF (mime_filter)->priv;
 
 	priv->saw_cr = FALSE;
 	priv->saw_lf = TRUE;
@@ -157,8 +153,6 @@ camel_mime_filter_crlf_class_init (CamelMimeFilterCRLFClass *class)
 {
 	CamelMimeFilterClass *mime_filter_class;
 
-	g_type_class_add_private (class, sizeof (CamelMimeFilterCRLFPrivate));
-
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_crlf_filter;
 	mime_filter_class->complete = mime_filter_crlf_complete;
@@ -168,7 +162,7 @@ camel_mime_filter_crlf_class_init (CamelMimeFilterCRLFClass *class)
 static void
 camel_mime_filter_crlf_init (CamelMimeFilterCRLF *filter)
 {
-	filter->priv = CAMEL_MIME_FILTER_CRLF_GET_PRIVATE (filter);
+	filter->priv = camel_mime_filter_crlf_get_instance_private (filter);
 
 	filter->priv->saw_cr = FALSE;
 	filter->priv->saw_lf = TRUE;
@@ -192,7 +186,7 @@ camel_mime_filter_crlf_new (CamelMimeFilterCRLFDirection direction,
 	CamelMimeFilterCRLFPrivate *priv;
 
 	filter = g_object_new (CAMEL_TYPE_MIME_FILTER_CRLF, NULL);
-	priv = CAMEL_MIME_FILTER_CRLF_GET_PRIVATE (filter);
+	priv = CAMEL_MIME_FILTER_CRLF (filter)->priv;
 
 	priv->direction = direction;
 	priv->mode = mode;
