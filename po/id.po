@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2019-06-28 07:25+0000\n"
-"PO-Revision-Date: 2019-07-08 17:17+0700\n"
+"POT-Creation-Date: 2019-08-13 21:11+0000\n"
+"PO-Revision-Date: 2019-08-16 16:12+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome@i15n.org>\n"
 "Language: id\n"
@@ -32,7 +32,7 @@ msgstr "URL yang diberikan \"%s\" tidak mereferensikan buku alamat CardDAV"
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:280
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1154
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4382
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4375
 #: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
 #: ../src/addressbook/libebook/e-book.c:1075
@@ -51,24 +51,24 @@ msgstr "URL yang diberikan \"%s\" tidak mereferensikan buku alamat CardDAV"
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:292
 #: ../src/calendar/backends/http/e-cal-backend-http.c:249
 #: ../src/calendar/libecal/e-cal-client.c:260
-#: ../src/calendar/libecal/e-cal-client.c:3228
-#: ../src/calendar/libecal/e-cal-client.c:3401
-#: ../src/calendar/libecal/e-cal-client.c:3674
-#: ../src/calendar/libecal/e-cal-client.c:3912
-#: ../src/calendar/libecal/e-cal-client.c:4104
-#: ../src/calendar/libecal/e-cal-client.c:4287
-#: ../src/calendar/libecal/e-cal-client.c:4495
-#: ../src/calendar/libecal/e-cal-client.c:4672
-#: ../src/calendar/libecal/e-cal-client.c:4883
-#: ../src/calendar/libecal/e-cal-client.c:5039
-#: ../src/calendar/libecal/e-cal-client.c:5239
-#: ../src/calendar/libecal/e-cal-client.c:5405
-#: ../src/calendar/libecal/e-cal-client.c:5632
-#: ../src/calendar/libecal/e-cal-client.c:5792
-#: ../src/calendar/libecal/e-cal-client.c:6023
-#: ../src/calendar/libecal/e-cal-client.c:6222
-#: ../src/calendar/libecal/e-cal-client.c:6590
-#: ../src/calendar/libecal/e-cal-client.c:6814
+#: ../src/calendar/libecal/e-cal-client.c:3216
+#: ../src/calendar/libecal/e-cal-client.c:3389
+#: ../src/calendar/libecal/e-cal-client.c:3662
+#: ../src/calendar/libecal/e-cal-client.c:3900
+#: ../src/calendar/libecal/e-cal-client.c:4092
+#: ../src/calendar/libecal/e-cal-client.c:4275
+#: ../src/calendar/libecal/e-cal-client.c:4483
+#: ../src/calendar/libecal/e-cal-client.c:4660
+#: ../src/calendar/libecal/e-cal-client.c:4871
+#: ../src/calendar/libecal/e-cal-client.c:5027
+#: ../src/calendar/libecal/e-cal-client.c:5227
+#: ../src/calendar/libecal/e-cal-client.c:5393
+#: ../src/calendar/libecal/e-cal-client.c:5620
+#: ../src/calendar/libecal/e-cal-client.c:5780
+#: ../src/calendar/libecal/e-cal-client.c:6011
+#: ../src/calendar/libecal/e-cal-client.c:6210
+#: ../src/calendar/libecal/e-cal-client.c:6578
+#: ../src/calendar/libecal/e-cal-client.c:6802
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1798
 #: ../src/camel/camel-filter-driver.c:1712
 #: ../src/camel/camel-filter-driver.c:1844
@@ -87,12 +87,12 @@ msgid "Unknown error"
 msgstr "Kesalahan tidak dikenal"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1038
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1195
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1255
 msgid "Server didn’t return object’s href"
 msgstr "Peladen tidak mengembalikan berkas objek"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1040
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1197
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1257
 msgid "Server didn’t return object’s ETag"
 msgstr "Peladen tidak mengembalikan ETag objek"
 
@@ -143,7 +143,7 @@ msgid "Loading..."
 msgstr "Memuat..."
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:993
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4491
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4490
 msgid "Searching..."
 msgstr "Mencari..."
 
@@ -154,7 +154,7 @@ msgstr "Mencoba mengubah kontak \"%s\" dengan revisi yang tak selaras"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1477
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1563
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3087
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3086
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7369
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7438
 #, c-format
@@ -174,7 +174,7 @@ msgid "Invalid Query “%s”"
 msgstr "Kueri \"%s\" Tidak Valid"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1968
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2023
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2027
 msgid "Requested to delete an unrelated cursor"
 msgstr "Diminta untuk menghapus kursor yang tak berhubungan"
 
@@ -234,7 +234,7 @@ msgid "Invalid DN syntax"
 msgstr "Sintaks DN tidak sah"
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1151
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4381
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4374
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "Galat LDAP 0x%x (%s)"
@@ -277,40 +277,46 @@ msgstr[1] ""
 "Daftar kontak dalam buku alamat LDAP mengharuskan setiap anggota berasal "
 "dari buku alamat LDAP yang sama, tetapi %d anggota tidak dapat dikenali."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4320
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4313
 msgid "Receiving LDAP search results..."
 msgstr "Menerima hasil pencarian LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4517
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4516
 msgid "Error performing search"
 msgstr "Kesalahan saat melakukan pencarian"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4657
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4656
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Mengunduh kontak (%d)..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5148
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4757
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:779
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:681
+msgid "Refreshing…"
+msgstr "Menyegarkan…"
+
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5150
 msgid "The backend does not support bulk additions"
 msgstr "Backend tak mendukung penambahan masal"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5239
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5241
 msgid "Adding contact to LDAP server..."
 msgstr "Menambahkan kontak ke peladen LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5301
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5303
 msgid "The backend does not support bulk modifications"
 msgstr "Backend tak mendukung pengubahan masal"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5323
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5325
 msgid "Modifying contact from LDAP server..."
 msgstr "Mengubah kontak dari peladen LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5395
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5397
 msgid "Removing contact from LDAP server..."
 msgstr "Menghapus kontak dari peladen LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5805
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5807
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "Gagal mendapat DN bagi pengguna \"%s\""
@@ -916,7 +922,7 @@ msgstr "Google Talk Daftar Nama"
 msgid "Twitter Name List"
 msgstr "Daftar Nama Twitter"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:1658
+#: ../src/addressbook/libebook-contacts/e-contact.c:1657
 #: ../src/addressbook/libebook/e-destination.c:920
 msgid "Unnamed List"
 msgstr "Daftar Belum Berjudul"
@@ -977,7 +983,7 @@ msgstr "Tak bisa menyambung ke \"%s\": "
 msgid "Client disappeared"
 msgstr "Klien menghilang"
 
-#: ../src/addressbook/libedata-book/e-book-backend.c:3160
+#: ../src/addressbook/libedata-book/e-book-backend.c:3259
 #, c-format
 msgid "Addressbook backend does not support cursors"
 msgstr "Backend buku alamat tidak mendukung kursor"
@@ -988,13 +994,13 @@ msgstr "Backend buku alamat tidak mendukung kursor"
 msgid "Error introspecting unknown summary field “%s”"
 msgstr "Galat saat introspeksi ruas ringkasan \"%s\" yang tak dikenal"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1515
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1514
 #: ../src/addressbook/libedata-book/e-book-cache.c:548
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1394
 msgid "Error parsing regular expression"
 msgstr "Galat saat mengurai ekspresi reguler"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1560
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1559
 #: ../src/addressbook/libedata-book/e-book-cache.c:4585
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1878
 #: ../src/camel/camel-db.c:820
@@ -1002,12 +1008,12 @@ msgstr "Galat saat mengurai ekspresi reguler"
 msgid "Insufficient memory"
 msgstr "Memori tidak cukup"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1697
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1696
 #, c-format
 msgid "Invalid contact field “%d” specified in summary"
 msgstr "Ruas kontak \"%d\" yang tak valid dinyatakan dalam ringkasan"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1731
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1730
 #: ../src/addressbook/libedata-book/e-book-cache.c:371
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:605
 #, c-format
@@ -1018,8 +1024,8 @@ msgstr ""
 "Ruas kontak \"%s\" bertipe \"%s\" dinyatakan dalam ringkasan, tapi hanya "
 "tipe boolean, string, dan daftar string yang didukung"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3075
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4177
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3074
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4175
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
@@ -1027,20 +1033,20 @@ msgstr ""
 "search_contacts lengkap tak disimpan dalam singgahan. vcard tak bisa "
 "dikembalikan."
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4308
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4401
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4306
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4399
 #: ../src/addressbook/libedata-book/e-book-cache.c:3467
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5844
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Kuiri memuat elemen yang tak didukung"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4312
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4310
 #, c-format
 msgid "Invalid Query"
 msgstr "Kuiri Tidak Valid"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4336
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4334
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
@@ -1049,7 +1055,7 @@ msgstr ""
 "search_contacts lengkap tak disimpan dalam singgahan. Maka hanya kueri "
 "ringkasan yang didukung."
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4405
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4403
 #: ../src/addressbook/libedata-book/e-data-book.c:871
 #: ../src/calendar/libedata-cal/e-data-cal.c:1146
 #: ../src/libedataserver/e-client.c:174
@@ -1057,7 +1063,7 @@ msgstr ""
 msgid "Invalid query"
 msgstr "Kuiri tidak sah"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4448
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4446
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
@@ -1065,35 +1071,35 @@ msgstr ""
 "vcard lengkap tak disimpan dalam singgahan. Maka hanya kueri ringkasan yang "
 "didukung."
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:5271
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:5269
 #, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr "Tak bisa menghapus berkas db: errno %d"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6058
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6458
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6056
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6456
 #, c-format
 msgid "Only summary queries are supported by EbSdbCursor"
 msgstr "Hanya kueri ringkasan yang didukung oleh EbSdbCursor"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6065
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6063
 #, c-format
 msgid "At least one sort field must be specified to use an EbSdbCursor"
 msgstr ""
 "Paling tidak satu ruas pengurutan mesti dinyatakan untuk memakai EbSdbCursor"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6079
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6077
 #, c-format
 msgid "Cannot sort by a field that is not in the summary"
 msgstr "Tak bisa mengurut berdasarkan ruas yang tak ada dalam ringkasan"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6086
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6084
 #, c-format
 msgid "Cannot sort by a field which may have multiple values"
 msgstr ""
 "Tak bisa mengurut berdasarkan ruas yang mungkin bisa memiliki nilai berganda"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6219
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6217
 #: ../src/addressbook/libedata-book/e-book-cache.c:5796
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8143
 #, c-format
@@ -1104,7 +1110,7 @@ msgstr ""
 "Mencoba melangkahkan kursor mundur, tapi kursor sudah berada di awal daftar "
 "kontak"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6227
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6225
 #: ../src/addressbook/libedata-book/e-book-cache.c:5803
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8151
 #, c-format
@@ -1148,7 +1154,7 @@ msgstr "Tidak dapat membuka basis data %s: %s"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2916
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2979
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3150
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1348
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1352
 #: ../src/libebackend/e-cache.c:1374 ../src/libebackend/e-cache.c:2352
 #: ../src/libebackend/e-cache.c:2392
 #, c-format
@@ -1171,21 +1177,21 @@ msgstr ""
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Tak bisa mengurut berdasarkan ruas yang bukan bertipe string"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1060
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1071
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1064
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1075
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Objek pramuat untuk UID \"%s\" tidak valid"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1068
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1079
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1072
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1083
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Objek yang diterima untuk UID \"%s\" tidak valid"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1893
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2340
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3280
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1897
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2344
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3284
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Gagal membuat singgahan \"%s\":"
@@ -1285,7 +1291,7 @@ msgstr "Indeks alfabetik ditata bagi locale yang salah"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "URL yang diberikan \"%s\" tidak mengacu pada kalender CalDAV"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1326
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1386
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. Remove it, please."
@@ -1293,7 +1299,7 @@ msgstr ""
 "Informasi yang hilang tentang URL komponen, singgahan lokal mungkin tidak "
 "lengkap atau rusak. Tolong, hapus."
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1802
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1862
 msgid "Failed to parse response data"
 msgstr "Gagal mengurai data tanggapan"
 
@@ -1341,7 +1347,7 @@ msgstr "Berkas “%s” bukan komponen VCALENDAR"
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3628
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3634
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3661
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2516
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2520
 msgid "Unsupported method"
 msgstr "Metode tidak didukung"
 
@@ -2368,14 +2374,14 @@ msgid_plural "%d seconds"
 msgstr[0] "%d detik"
 msgstr[1] "%d detik"
 
-#: ../src/calendar/libecal/e-reminder-watcher.c:2701
+#: ../src/calendar/libecal/e-reminder-watcher.c:2700
 msgid "No Summary"
 msgstr "Tidak Ada Ringkasan"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2717
+#: ../src/calendar/libecal/e-reminder-watcher.c:2716
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
@@ -2384,7 +2390,7 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2722
+#: ../src/calendar/libecal/e-reminder-watcher.c:2721
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
@@ -2393,7 +2399,7 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2727
+#: ../src/calendar/libecal/e-reminder-watcher.c:2726
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
@@ -2536,14 +2542,14 @@ msgstr "Tidak dapat menambah zona waktu tanpa komponen"
 msgid "Cannot add timezone with invalid component"
 msgstr "Tidak dapat menambah zona waktu dengan komponen yang tidak valid"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1126
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1130
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr ""
 "Objek yang diterima untuk UID \"%s\" tidak mengandung komponen yang "
 "diharapkan"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4150
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4154
 msgid "attachment.dat"
 msgstr "attachment.dat"
 
@@ -2907,8 +2913,8 @@ msgstr "(%s) mengharapkan hasil berupa larik"
 msgid "(%s) requires the folder set"
 msgstr "(%s) membutuhkan set folder"
 
-#: ../src/camel/camel-folder-search.c:2196
-#: ../src/camel/camel-folder-search.c:2370
+#: ../src/camel/camel-folder-search.c:2214
+#: ../src/camel/camel-folder-search.c:2388
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2917,8 +2923,8 @@ msgstr ""
 "Tidak bisa mengurai ekspresi pencarian: %s:\n"
 "%s"
 
-#: ../src/camel/camel-folder-search.c:2208
-#: ../src/camel/camel-folder-search.c:2382
+#: ../src/camel/camel-folder-search.c:2226
+#: ../src/camel/camel-folder-search.c:2400
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -6193,13 +6199,13 @@ msgstr "%s tak mendukung pembuatan sumber daya remote"
 msgid "%s does not support deleting remote resources"
 msgstr "%s tak mendukung penghapusan sumber daya remote"
 
-#: ../src/libebackend/e-data-factory.c:1349
+#: ../src/libebackend/e-data-factory.c:1433
 #: ../src/libebackend/e-subprocess-factory.c:293
 #, c-format
 msgid "No such source for UID “%s”"
 msgstr "Tak ada sumber sedemikian bagi UID \"%s\""
 
-#: ../src/libebackend/e-data-factory.c:1499
+#: ../src/libebackend/e-data-factory.c:1593
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr ""
@@ -6785,8 +6791,8 @@ msgstr "Gagal mengirim data"
 #: ../src/libedataserver/e-webdav-session.c:1394
 #: ../src/libedataserver/e-webdav-session.c:1469
 #: ../src/libedataserver/e-webdav-session.c:1573
-#: ../src/libedataserver/e-webdav-session.c:2822
-#: ../src/libedataserver/e-webdav-session.c:4108
+#: ../src/libedataserver/e-webdav-session.c:2827
+#: ../src/libedataserver/e-webdav-session.c:4113
 msgid "Failed to get input XML content"
 msgstr "Gagal mendapatkan masukan konten XML"
 
@@ -6807,7 +6813,7 @@ msgid "Failed to create collection"
 msgstr "Gagal membuat koleksi"
 
 #: ../src/libedataserver/e-webdav-session.c:1733
-#: ../src/libedataserver/e-webdav-session.c:1887
+#: ../src/libedataserver/e-webdav-session.c:1892
 msgid "Failed to get XML request content"
 msgstr "Gagal mendapatkan konten permintaan XML"
 
@@ -6815,112 +6821,112 @@ msgstr "Gagal mendapatkan konten permintaan XML"
 msgid "Failed to create address book"
 msgstr "Gagal membuat buku alamat"
 
-#: ../src/libedataserver/e-webdav-session.c:1900
+#: ../src/libedataserver/e-webdav-session.c:1905
 msgid "Failed to create calendar"
 msgstr "Gagal membuat kalender"
 
-#: ../src/libedataserver/e-webdav-session.c:2032
-#: ../src/libedataserver/e-webdav-session.c:2043
+#: ../src/libedataserver/e-webdav-session.c:2037
+#: ../src/libedataserver/e-webdav-session.c:2048
 msgid "Failed to read resource"
 msgstr "Gagal membaca sumber"
 
-#: ../src/libedataserver/e-webdav-session.c:2192
+#: ../src/libedataserver/e-webdav-session.c:2197
 msgid "Cannot rewind input stream: Not supported"
 msgstr "Tidak dapat memutar ulang arus masukan: Tidak didukung"
 
-#: ../src/libedataserver/e-webdav-session.c:2355
-#: ../src/libedataserver/e-webdav-session.c:2499
+#: ../src/libedataserver/e-webdav-session.c:2360
+#: ../src/libedataserver/e-webdav-session.c:2504
 msgid "Failed to put data"
 msgstr "Gagal memasukkan data"
 
-#: ../src/libedataserver/e-webdav-session.c:2374
-#: ../src/libedataserver/e-webdav-session.c:2507
+#: ../src/libedataserver/e-webdav-session.c:2379
+#: ../src/libedataserver/e-webdav-session.c:2512
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Gagal memasukkan data ke peladen, kode kesalahan %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:2599
+#: ../src/libedataserver/e-webdav-session.c:2604
 msgid "Failed to delete resource"
 msgstr "Gagal menghapus sumber"
 
-#: ../src/libedataserver/e-webdav-session.c:2666
+#: ../src/libedataserver/e-webdav-session.c:2671
 msgid "Failed to copy resource"
 msgstr "Gagal menyalin sumber daya"
 
-#: ../src/libedataserver/e-webdav-session.c:2728
+#: ../src/libedataserver/e-webdav-session.c:2733
 msgid "Failed to move resource"
 msgstr "Gagal memindahkan sumber daya"
 
-#: ../src/libedataserver/e-webdav-session.c:2833
+#: ../src/libedataserver/e-webdav-session.c:2838
 msgid "Failed to lock resource"
 msgstr "Gagal mengunci sumber daya"
 
-#: ../src/libedataserver/e-webdav-session.c:2847
-#: ../src/libedataserver/e-webdav-session.c:3049
+#: ../src/libedataserver/e-webdav-session.c:2852
+#: ../src/libedataserver/e-webdav-session.c:3054
 msgid "Expected application/xml response, but none returned"
 msgstr "Respon aplikasi/xml yang diharapkan, namun tidak ada yang kembali"
 
-#: ../src/libedataserver/e-webdav-session.c:2850
-#: ../src/libedataserver/e-webdav-session.c:3052
+#: ../src/libedataserver/e-webdav-session.c:2855
+#: ../src/libedataserver/e-webdav-session.c:3057
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "Respon aplikasi/xml yang diharapkan, namun %s dikembalikan"
 
-#: ../src/libedataserver/e-webdav-session.c:2862
-#: ../src/libedataserver/e-webdav-session.c:3065
+#: ../src/libedataserver/e-webdav-session.c:2867
+#: ../src/libedataserver/e-webdav-session.c:3070
 msgid "Failed to parse XML data"
 msgstr "Gagal mengurai data XML"
 
-#: ../src/libedataserver/e-webdav-session.c:2941
+#: ../src/libedataserver/e-webdav-session.c:2946
 msgid "Failed to refresh lock"
 msgstr "Gagal menyegarkan kunci"
 
-#: ../src/libedataserver/e-webdav-session.c:3000
+#: ../src/libedataserver/e-webdav-session.c:3005
 msgid "Failed to unlock"
 msgstr "Gagal membuka kunci"
 
-#: ../src/libedataserver/e-webdav-session.c:3037
+#: ../src/libedataserver/e-webdav-session.c:3042
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Respons multistatus yang diharapkan, namun %d kembali (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:4118
+#: ../src/libedataserver/e-webdav-session.c:4123
 msgid "Failed to get access control list"
 msgstr "Gagal mendapatkan daftar kontrol akses"
 
-#: ../src/libedataserver/e-webdav-session.c:4879
+#: ../src/libedataserver/e-webdav-session.c:4884
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 "Tidak dapat menyimpan Entri Kontrol Akses yang dilindungi atau tidak "
 "diwarisi."
 
-#: ../src/libedataserver/e-webdav-session.c:4886
+#: ../src/libedataserver/e-webdav-session.c:4891
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Menyediakan jenis prinsipal tidak valid untuk Entri Kontrol Akses."
 
-#: ../src/libedataserver/e-webdav-session.c:4893
+#: ../src/libedataserver/e-webdav-session.c:4898
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Tidak dapat menyimpan Entri Kontrol Akses berbasis properti."
 
-#: ../src/libedataserver/e-webdav-session.c:4900
+#: ../src/libedataserver/e-webdav-session.c:4905
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Entri Kontrol Akses hanya bisa untuk Izin (Grant) atau Tolak (Deny), tapi "
 "bukan tak satupun (None)."
 
-#: ../src/libedataserver/e-webdav-session.c:4908
+#: ../src/libedataserver/e-webdav-session.c:4913
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Entri Kontrol Akses hanya bisa untuk Izin (Grant) atau Tolak (Deny), tapi "
 "tidak keduanya."
 
-#: ../src/libedataserver/e-webdav-session.c:4967
+#: ../src/libedataserver/e-webdav-session.c:4972
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Hak khusus Entri Kontrol Akses tidak bisa NULL."
 
 #: ../src/libedataserverui/e-credentials-prompter.c:258
-#: ../src/libedataserverui/e-credentials-prompter.c:1691
-#: ../src/libedataserverui/e-credentials-prompter.c:1735
+#: ../src/libedataserverui/e-credentials-prompter.c:1694
+#: ../src/libedataserverui/e-credentials-prompter.c:1738
 msgid "Credentials prompt was cancelled"
 msgstr "Permintaan kredensial dibatalkan"
 
@@ -7068,7 +7074,7 @@ msgstr ""
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:605
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1073
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1083
 msgid "_Cancel"
 msgstr "_Batal"
 
@@ -7129,7 +7135,7 @@ msgid "Please enter the password for account “%s”."
 msgstr "Masukkan kata sandi untuk akun \"%s\"."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1074
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1084
 msgid "_OK"
 msgstr "_OK"
 
@@ -7305,35 +7311,35 @@ msgstr "Dukungan"
 msgid "_User mail:"
 msgstr "Surel pengg_una:"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:522
+#: ../src/libedataserverui/e-webdav-discover-widget.c:524
 msgctxt "WebDAVDiscover"
 msgid "Contacts"
 msgstr "Kontak"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:523
+#: ../src/libedataserverui/e-webdav-discover-widget.c:525
 msgctxt "WebDAVDiscover"
 msgid "Events"
 msgstr "Acara"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:524
+#: ../src/libedataserverui/e-webdav-discover-widget.c:526
 msgctxt "WebDAVDiscover"
 msgid "Memos"
 msgstr "Memo"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:525
+#: ../src/libedataserverui/e-webdav-discover-widget.c:527
 msgctxt "WebDAVDiscover"
 msgid "Tasks"
 msgstr "Tugas"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:840
+#: ../src/libedataserverui/e-webdav-discover-widget.c:849
 msgid "Invalid URL"
 msgstr "URL Tak Valid"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:886
+#: ../src/libedataserverui/e-webdav-discover-widget.c:895
 msgid "Cancel"
 msgstr "Batal"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:889
+#: ../src/libedataserverui/e-webdav-discover-widget.c:898
 msgid "Searching server sources..."
 msgstr "Mencari sumber peladen..."
 
@@ -7427,8 +7433,8 @@ msgstr ""
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:232
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:260
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:773
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:982
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:774
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:983
 msgid "Reminders"
 msgstr "Pengingat"
 
@@ -7461,31 +7467,31 @@ msgstr ""
 "\n"
 "Apakah Anda yakin ingin menjalankan program ini?"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:392
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:393
 msgid "Do not ask me about this program again"
 msgstr "Jangan tanya saya tentang program ini lagi"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:678
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:679
 msgid "Display Reminders window with _notifications"
 msgstr "Tampilkan jendela Pengingat dengan _notifikasi"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:679
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:680
 msgid "Keep reminder notification window always on _top"
 msgstr "Jaga jendela pemberitahuan pengingat selalu di a_tas"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:680
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:681
 msgid "Display reminders for _completed tasks"
 msgstr "Tampil_kan pengingat untuk menyelesaikan tugas"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:681
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:682
 msgid "Display reminders for _past events"
 msgstr "Tampilkan _pengingat untuk acara masa lalu"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:695
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:696
 msgid "Reminders Options:"
 msgstr "Opsi Pengingat:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
