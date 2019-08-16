@@ -58,6 +58,27 @@ struct _EContactPrivate {
 	gchar *cached_strings[E_CONTACT_FIELD_LAST];
 };
 
+typedef struct _AttrTypeValue {
+	const gchar *attr_name;
+	const gchar *type_values; /* semicolon-delimited upper-case list of used TYPE values */
+} AttrTypeValue;
+
+static AttrTypeValue glob_attr_type_values[] = {
+	{ EVC_ADR, "WORK;HOME;OTHER" },
+	{ EVC_KEY, "PGP;X509" },
+	{ EVC_LABEL, "WORK;HOME;OTHER" },
+	{ EVC_TEL, "WORK;HOME;CAR;CELL;FAX;ISDN;PAGER;PREF;VOICE;" EVC_X_ASSISTANT ";" EVC_X_CALLBACK ";" EVC_X_COMPANY ";" EVC_X_RADIO ";" EVC_X_TELEX ";" EVC_X_TTYTDD },
+	{ EVC_X_AIM, "WORK;HOME" },
+	{ EVC_X_GADUGADU, "WORK;HOME" },
+	{ EVC_X_GOOGLE_TALK, "WORK;HOME" },
+	{ EVC_X_GROUPWISE, "WORK;HOME" },
+	{ EVC_X_ICQ, "WORK;HOME" },
+	{ EVC_X_JABBER, "WORK;HOME" },
+	{ EVC_X_MSN, "WORK;HOME" },
+	{ EVC_X_SKYPE, "WORK;HOME" },
+	{ EVC_X_YAHOO, "WORK;HOME" }
+};
+
 #define E_CONTACT_FIELD_TYPE_STRING       0x00000001   /* used for simple single valued attributes */
 /*E_CONTACT_FIELD_TYPE_FLOAT*/
 #define E_CONTACT_FIELD_TYPE_LIST         0x00000002   /* used for multivalued single attributes - the elements are of type gchar * */
@@ -153,7 +174,7 @@ static const EContactFieldInfo field_info[] = {
 
 	/* Address Labels */
 	ATTR_TYPE_STR_FIELD (E_CONTACT_ADDRESS_LABEL_HOME,  EVC_LABEL, "address_label_home",  N_("Home Address Label"),  FALSE, "HOME", 0),
-	ATTR_TYPE_STR_FIELD (E_CONTACT_ADDRESS_LABEL_WORK,  EVC_LABEL, "address_label_work",  N_("Work Address Label"),  FALSE, "WORK", 0),
+	ATTR_TYPE_STR_FIELD (E_CONTACT_ADDRESS_LABEL_WORK,  EVC_LABEL, "address_label_work",  N_("Work Address Label"),  FALSE, "*WORK", 0),
 	ATTR_TYPE_STR_FIELD (E_CONTACT_ADDRESS_LABEL_OTHER, EVC_LABEL, "address_label_other", N_("Other Address Label"), FALSE, "OTHER", 0),
 
 	/* Phone fields */
@@ -169,7 +190,7 @@ static const EContactFieldInfo field_info[] = {
 	ATTR2_TYPE_STR_FIELD (E_CONTACT_PHONE_HOME_FAX,     EVC_TEL, "home_fax",          N_("Home Fax"),         FALSE, "HOME", "FAX",           0),
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_ISDN,         EVC_TEL, "isdn_phone",        N_("ISDN"),             FALSE, "ISDN",                  0),
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_MOBILE,       EVC_TEL, "mobile_phone",      N_("Mobile Phone"),     FALSE, "CELL",                  0),
-	ATTR2_TYPE_STR_FIELD (E_CONTACT_PHONE_OTHER,        EVC_TEL, "other_phone",       N_("Other Phone"),      FALSE, "VOICE", "",             0),
+	ATTR2_TYPE_STR_FIELD (E_CONTACT_PHONE_OTHER,        EVC_TEL, "other_phone",       N_("Other Phone"),      FALSE, "*VOICE", "",            0),
 	ATTR2_TYPE_STR_FIELD (E_CONTACT_PHONE_OTHER_FAX,    EVC_TEL, "other_fax",         N_("Other Fax"),        FALSE, "FAX", "",               0),
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_PAGER,        EVC_TEL, "pager",             N_("Pager"),            FALSE, "PAGER",                 0),
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_PRIMARY,      EVC_TEL, "primary_phone",     N_("Primary Phone"),    FALSE, "PREF",                  0),
@@ -252,7 +273,7 @@ static const EContactFieldInfo field_info[] = {
 	/* Address fields */
 	MULTI_LIST_FIELD       (E_CONTACT_ADDRESS,       EVC_ADR, "address",       N_("Address List"),  FALSE),
 	ATTR_TYPE_STRUCT_FIELD (E_CONTACT_ADDRESS_HOME,  EVC_ADR, "address_home",  N_("Home Address"),  FALSE, "HOME",  adr_getter, adr_setter, e_contact_address_get_type),
-	ATTR_TYPE_STRUCT_FIELD (E_CONTACT_ADDRESS_WORK,  EVC_ADR, "address_work",  N_("Work Address"),  FALSE, "WORK",  adr_getter, adr_setter, e_contact_address_get_type),
+	ATTR_TYPE_STRUCT_FIELD (E_CONTACT_ADDRESS_WORK,  EVC_ADR, "address_work",  N_("Work Address"),  FALSE, "*WORK",  adr_getter, adr_setter, e_contact_address_get_type),
 	ATTR_TYPE_STRUCT_FIELD (E_CONTACT_ADDRESS_OTHER, EVC_ADR, "address_other", N_("Other Address"), FALSE, "OTHER", adr_getter, adr_setter, e_contact_address_get_type),
 
 	/* Contact categories */
@@ -334,6 +355,135 @@ static const EContactFieldInfo field_info[] = {
 #undef LIST_FIELD
 #undef GETSET_FIELD
 
+static const AttrTypeValue *
+e_contact_find_attr_type_values (const gchar *attr_name)
+{
+	gint ii;
+
+	g_return_val_if_fail (attr_name != NULL, NULL);
+
+	for (ii = 0; ii < G_N_ELEMENTS (glob_attr_type_values); ii++) {
+		if (g_ascii_strcasecmp (glob_attr_type_values[ii].attr_name, attr_name) == 0) {
+			return &(glob_attr_type_values[ii]);
+		}
+	}
+
+	g_warn_if_reached ();
+
+	return NULL;
+}
+
+static gboolean
+e_contact_check_attr_type_value_used (const AttrTypeValue *attr_type_values,
+				      const gchar *type_value)
+{
+	gint ii, pos;
+
+	if (!attr_type_values)
+		return TRUE;
+
+	if (!type_value || !*type_value)
+		return FALSE;
+
+	pos = 0;
+
+	for (ii = 0; attr_type_values->type_values[ii]; ii++) {
+		gboolean skip = FALSE;
+
+		if (attr_type_values->type_values[ii] == g_ascii_toupper (type_value[pos])) {
+			pos++;
+
+			if (!type_value[pos]) {
+				if (attr_type_values->type_values[ii + 1] == 0 || attr_type_values->type_values[ii + 1] == ';')
+					return TRUE;
+
+				skip = TRUE;
+			}
+		} else {
+			skip = TRUE;
+		}
+
+		if (skip) {
+			pos = 0;
+
+			while (attr_type_values->type_values[ii] && attr_type_values->type_values[ii] != ';')
+				ii++;
+		}
+	}
+
+	return FALSE;
+}
+
+#ifdef ENABLE_MAINTAINER_MODE
+
+static void
+e_contact_maybe_insert_attr_type (GHashTable *used_attr_types,
+				  const gchar *vcard_field_name,
+				  const gchar *type_value)
+{
+	g_return_if_fail (used_attr_types != NULL);
+	g_return_if_fail (vcard_field_name != NULL);
+
+	/* Skip leading '*', it denotes default value */
+	if (type_value && *type_value == '*')
+		type_value++;
+
+	if (type_value && *type_value) {
+		GHashTable *types_hash;
+
+		types_hash = g_hash_table_lookup (used_attr_types, vcard_field_name);
+
+		if (!types_hash) {
+			types_hash = g_hash_table_new (g_str_hash, g_str_equal);
+
+			g_hash_table_insert (used_attr_types, (gpointer) vcard_field_name, types_hash);
+		}
+
+		g_hash_table_insert (types_hash, (gpointer) type_value, NULL);
+	}
+}
+
+static gint
+e_contact_cmp_type_values (gconstpointer v1,
+			   gconstpointer v2)
+{
+	const gchar *type1 = v1, *type2 = v2;
+	gint who1, who2;
+
+	/* Work/Home/Other has precedence over others, in this order */
+	if (g_str_equal (type1, "WORK"))
+		who1 = 3;
+	else if (g_str_equal (type1, "HOME"))
+		who1 = 2;
+	else if (g_str_equal (type1, "OTHER"))
+		who1 = 1;
+	else
+		who1 = -1;
+
+	if (g_str_equal (type2, "WORK"))
+		who2 = 3;
+	else if (g_str_equal (type2, "HOME"))
+		who2 = 2;
+	else if (g_str_equal (type2, "OTHER"))
+		who2 = 1;
+	else
+		who2 = -1;
+
+	if (who1 == -1) {
+		if (who2 == -1)
+			return g_strcmp0 (type1, type2);
+
+		return 1;
+	}
+
+	if (who2 == -1)
+		return -1;
+
+	return who2 - who1;
+}
+
+#endif /* ENABLE_MAINTAINER_MODE */
+
 static void e_contact_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
 static void e_contact_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
 
@@ -356,6 +506,11 @@ static void
 e_contact_class_init (EContactClass *class)
 {
 	GObjectClass *object_class;
+	#ifdef ENABLE_MAINTAINER_MODE
+	GHashTable *used_attr_types; /* gchar *attr_name ~> GHashTable { gchar *type_value ~> NULL } */
+	GHashTableIter iter;
+	gpointer key, value;
+	#endif
 	gint ii;
 
 	g_type_class_add_private (class, sizeof (EContactPrivate));
@@ -364,6 +519,10 @@ e_contact_class_init (EContactClass *class)
 	object_class->set_property = e_contact_set_property;
 	object_class->get_property = e_contact_get_property;
 	object_class->finalize = e_contact_finalize;
+
+	#ifdef ENABLE_MAINTAINER_MODE
+	used_attr_types = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, (GDestroyNotify) g_hash_table_destroy);
+	#endif
 
 	for (ii = E_CONTACT_FIELD_FIRST; ii < E_CONTACT_FIELD_LAST; ii++) {
 		GParamSpec *pspec = NULL;
@@ -416,7 +575,63 @@ e_contact_class_init (EContactClass *class)
 
 		g_object_class_install_property (
 			object_class, field_info[ii].field_id, pspec);
+
+		#ifdef ENABLE_MAINTAINER_MODE
+		if (field_info[ii].t & E_CONTACT_FIELD_TYPE_ATTR_TYPE) {
+			e_contact_maybe_insert_attr_type (used_attr_types, field_info[ii].vcard_field_name, field_info[ii].attr_type1);
+			e_contact_maybe_insert_attr_type (used_attr_types, field_info[ii].vcard_field_name, field_info[ii].attr_type2);
+		}
+		#endif
 	}
+
+	/* To verify whether the static glob_attr_type_values array is filled properly */
+	#ifdef ENABLE_MAINTAINER_MODE
+
+	g_assert_cmpint (g_hash_table_size (used_attr_types), ==, G_N_ELEMENTS (glob_attr_type_values));
+
+	g_hash_table_iter_init (&iter, used_attr_types);
+
+	while (g_hash_table_iter_next (&iter, &key, &value)) {
+		GHashTableIter iter2;
+		gpointer key2;
+		GSList *values = NULL, *link;
+		GString *expected;
+		const AttrTypeValue *attr_data;
+
+		g_hash_table_iter_init (&iter2, value);
+		while (g_hash_table_iter_next (&iter2, &key2, NULL)) {
+			const gchar *type_value = key2;
+
+			for (ii = 0; type_value && type_value[ii]; ii++) {
+				/* Verify strings are in upper-case */
+				g_assert_cmpint (g_ascii_toupper (type_value[ii]), ==, type_value[ii]);
+			}
+
+			values = g_slist_prepend (values, (gpointer) type_value);
+		}
+
+		values = g_slist_sort (values, e_contact_cmp_type_values);
+
+		expected = g_string_new ("");
+
+		for (link = values; link; link = g_slist_next (link)) {
+			g_string_append (expected, link->data);
+
+			if (link->next)
+				g_string_append_c (expected, ';');
+		}
+
+		attr_data = e_contact_find_attr_type_values (key);
+		g_assert_nonnull (attr_data);
+		g_assert_cmpstr (attr_data->type_values, ==, expected->str);
+
+		g_slist_free (values);
+		g_string_free (expected, TRUE);
+	}
+
+	g_hash_table_destroy (used_attr_types);
+
+	#endif /* ENABLE_MAINTAINER_MODE */
 }
 
 static void
@@ -859,11 +1074,27 @@ e_contact_find_attribute_with_types (EContact *contact,
                                      gint nth)
 {
 	GList *l, *attrs;
+	const AttrTypeValue *attr_type_values;
 	gboolean found_needed1, found_needed2;
 	gboolean can_empty_needed2;
+	gboolean use_for_no_type;
 
 	can_empty_needed2 = g_ascii_strcasecmp (attr_name, "TEL") == 0 && type_needed2 &&
 			    g_ascii_strcasecmp (type_needed2, "VOICE") == 0;
+
+	attr_type_values = e_contact_find_attr_type_values (attr_name);
+
+	/* The first type can start with a '*', which means that the found attribute
+	   can be also the one with no type specified. It's used for default types
+	   per RFC2426.*/
+	use_for_no_type = type_needed1 && (*type_needed1) == '*';
+
+	if (use_for_no_type) {
+		type_needed1++;
+
+		if (!*type_needed1)
+			type_needed1 = NULL;
+	}
 
 	attrs = e_vcard_get_attributes (E_VCARD (contact));
 
@@ -877,56 +1108,82 @@ e_contact_find_attribute_with_types (EContact *contact,
 		name = e_vcard_attribute_get_name (attr);
 
 		if (!g_ascii_strcasecmp (name, attr_name)) {
+			GSList *found_types = NULL;
 			GList *params;
+			guint n_types = 0, n_found_types = 0;
 
 			for (params = e_vcard_attribute_get_params (attr); params; params = params->next) {
 				EVCardAttributeParam *param = params->data;
 				const gchar *param_name = e_vcard_attribute_param_get_name (param);
-				gint n_types = 0;
 
 				if (!g_ascii_strcasecmp (param_name, EVC_TYPE)) {
-					gboolean matches = FALSE;
-					GList *values = e_vcard_attribute_param_get_values (param);
+					GList *value;
 
-					/* empty string on type_needed2 is to get only those attributes,
-					 * which has exactly one TYPE, to not rewrite those with multiple */
-					if (type_needed2 && !*type_needed2)
-						found_needed2 = values && !values->next;
+					for (value = e_vcard_attribute_param_get_values (param);
+					     value;
+					     value = g_list_next (value)) {
+						const gchar *type_value = value->data;
 
-					while (values && values->data) {
 						n_types++;
 
-						if (!found_needed1 && !g_ascii_strcasecmp ((gchar *) values->data, type_needed1)) {
-							found_needed1 = TRUE;
-							matches = TRUE;
-						} else if (!found_needed2 && !g_ascii_strcasecmp ((gchar *) values->data, type_needed2)) {
-							found_needed2 = TRUE;
-							matches = TRUE;
-						} else if (found_needed1) {
-							if (!matches || !found_needed2)
-								matches = FALSE;
-							break;
+						/* Skip any type values which are not used, thus they do not confuse the search */
+						if (type_value && *type_value &&
+						    e_contact_check_attr_type_value_used (attr_type_values, type_value)) {
+							found_types = g_slist_prepend (found_types, (gpointer) type_value);
+							n_found_types++;
 						}
-						values = values->next;
 					}
-
-					if (!matches && (!can_empty_needed2 || n_types != 1)) {
-						/* this is to enforce that we find an attribute
-						 * with *only* the TYPE='s we need.  This may seem like
-						 * an odd restriction but it's the only way at present to
-						 * implement the Other Fax and Other Phone attributes. */
-						found_needed1 = FALSE;
-						break;
-					}
-				}
-
-				if (found_needed1 && (found_needed2 || (n_types == 1 && can_empty_needed2))) {
-					if (nth-- == 0)
-						return attr;
-					else
-						break;
 				}
 			}
+
+			if (!n_types) {
+				if (use_for_no_type && (nth-- == 0))
+					return attr;
+			} else {
+				GSList *link;
+				gboolean matches = FALSE;
+
+				/* empty string on type_needed2 is to get only those attributes,
+				 * which has exactly one TYPE, to not rewrite those with multiple */
+				if (type_needed2 && !*type_needed2)
+					found_needed2 = n_found_types == 1;
+
+				for (link = found_types; link; link = g_slist_next (link)) {
+					const gchar *type_value = link->data;
+
+					if (!type_value)
+						continue;
+
+					if (!found_needed1 && !g_ascii_strcasecmp (type_value, type_needed1)) {
+						found_needed1 = TRUE;
+						matches = TRUE;
+					} else if (!found_needed2 && !g_ascii_strcasecmp (type_value, type_needed2)) {
+						found_needed2 = TRUE;
+						matches = TRUE;
+					} else if (found_needed1) {
+						if (!found_needed2)
+							matches = FALSE;
+						break;
+					}
+				}
+
+				if (!matches && (!can_empty_needed2 || n_found_types != 1)) {
+					/* this is to enforce that we find an attribute
+					 * with *only* the TYPE='s we need.  This may seem like
+					 * an odd restriction but it's the only way at present to
+					 * implement the Other Fax and Other Phone attributes. */
+					found_needed1 = FALSE;
+				}
+
+				if (found_needed1 && (found_needed2 || (n_found_types == 1 && can_empty_needed2))) {
+					if (nth-- == 0) {
+						g_slist_free (found_types);
+						return attr;
+					}
+				}
+			}
+
+			g_slist_free (found_types);
 		}
 	}
 
@@ -1004,7 +1261,7 @@ e_contact_set_property (GObject *object,
 					/* we didn't find it - add a new attribute */
 					attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
 					if (!g_ascii_strcasecmp (info->vcard_field_name, "EMAIL") &&
-					    !info->attr_type1 &&
+					    (!info->attr_type1 || (info->attr_type1[0] == '*' && !info->attr_type1[1])) &&
 					    (!info->attr_type2 || !*info->attr_type2)) {
 						/* Add default type */
 						e_vcard_attribute_add_param_with_value (
@@ -1039,10 +1296,10 @@ e_contact_set_property (GObject *object,
 				/* we didn't find it - add a new attribute */
 				attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
 				e_vcard_append_attribute (E_VCARD (contact), attr);
-				if (info->attr_type1)
+				if (info->attr_type1 && (info->attr_type1[0] != '*' || info->attr_type1[1]))
 					e_vcard_attribute_add_param_with_value (
 						attr, e_vcard_attribute_param_new (EVC_TYPE),
-						info->attr_type1);
+						info->attr_type1[0] == '*' ? info->attr_type1 + 1 : info->attr_type1);
 				if (info->attr_type2 && *info->attr_type2)
 					e_vcard_attribute_add_param_with_value (
 						attr, e_vcard_attribute_param_new (EVC_TYPE),

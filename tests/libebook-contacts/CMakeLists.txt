@@ -21,6 +21,7 @@ set(TESTS
 	test-contact-types
 	test-vcard-parsing
 	test-untyped-phones
+	test-type-param
 	test-query
 	test-phone-number
 )
