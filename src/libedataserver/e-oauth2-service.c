@@ -1241,10 +1241,17 @@ eos_lookup_token_sync (EOAuth2Service *service,
 			*out_expires_in = num_expires_after - num_now - 1;
 	}
 
+	success = success && *out_refresh_token != NULL;
+
+	if (!success) {
+		g_clear_pointer (out_refresh_token, e_util_safe_free_string);
+		g_clear_pointer (out_access_token, e_util_safe_free_string);
+	}
+
 	e_util_safe_free_string (secret);
 	g_free (expires_after);
 
-	return success && *out_refresh_token != NULL;
+	return success;
 }
 
 /**
@@ -1521,6 +1528,7 @@ e_oauth2_service_get_access_token_sync (EOAuth2Service *service,
 			ref_source, ref_source_user_data, cancellable, error);
 
 		g_clear_pointer (&refresh_token, e_util_safe_free_string);
+		g_clear_pointer (out_access_token, e_util_safe_free_string);
 
 		success = success && eos_lookup_token_sync (service, source, &refresh_token, out_access_token, out_expires_in, cancellable, error);
 	}
@@ -1528,8 +1536,8 @@ e_oauth2_service_get_access_token_sync (EOAuth2Service *service,
 	e_util_safe_free_string (refresh_token);
 
 	if (success && *out_expires_in <= 0) {
-		e_util_safe_free_string (*out_access_token);
-		*out_access_token = NULL;
+		g_clear_pointer (out_access_token, e_util_safe_free_string);
+
 		success = FALSE;
 
 		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED,

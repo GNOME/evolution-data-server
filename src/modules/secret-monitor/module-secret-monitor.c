@@ -135,12 +135,16 @@ secret_monitor_scan_secrets_thread (gpointer user_data)
 		uid = g_hash_table_lookup (attributes, KEYRING_ITEM_ATTRIBUTE_UID);
 
 		/* No UID attribute?  Best leave it alone. */
-		if (uid == NULL)
+		if (uid == NULL) {
+			g_hash_table_unref (attributes);
 			continue;
+		}
 
 		/* These are special keys, not referencing any real ESource */
-		if (g_str_has_prefix (uid, "OAuth2::"))
+		if (g_str_has_prefix (uid, "OAuth2::")) {
+			g_hash_table_unref (attributes);
 			continue;
+		}
 
 		source = e_source_registry_server_ref_source (server, uid);
 
@@ -165,6 +169,8 @@ secret_monitor_scan_secrets_thread (gpointer user_data)
 		} else {
 			secret_item_delete_sync (item, NULL, &local_error);
 		}
+
+		g_hash_table_unref (attributes);
 
 		if (local_error != NULL)
 			break;
