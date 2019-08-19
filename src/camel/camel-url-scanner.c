@@ -235,8 +235,37 @@ camel_url_pattern_end (const gchar *in,
 				 * punctuation, so strip any trailing
 				 * punctuation off. Also strip off any closing
 				 * double-quotes. */
-				while (inptr > pos && strchr (",.:;?!-|}])\">", inptr[-1]))
+				while (inptr > pos && strchr (",.:;?!-|}])\">", inptr[-1])) {
+					gchar open_bracket = 0, close_bracket = inptr[-1];
+
+					if (close_bracket == ')')
+						open_bracket = '(';
+					else if (close_bracket == '}')
+						open_bracket = '{';
+					else if (close_bracket == ']')
+						open_bracket = '[';
+					else if (close_bracket == '>')
+						open_bracket = '<';
+
+					if (open_bracket != 0) {
+						gint n_opened = 0, n_closed = 0;
+						const gchar *ptr;
+
+						for (ptr = pos; ptr < inptr; ptr++) {
+							if (*ptr == open_bracket)
+								n_opened++;
+							else if (*ptr == close_bracket)
+								n_closed++;
+						}
+
+						/* The closing bracket can match one inside the URL,
+						   thus keep it there. */
+						if (n_opened > 0 && n_opened - n_closed >= 0)
+							break;
+					}
+
 					inptr--;
+				}
 			}
 
 			match->um_eo = (inptr - in);
