@@ -1,3 +1,30 @@
+Evolution-Data-Server 3.33.91 2019-08-19
+----------------------------------------
+
+Bug Fixes:
+	I#68 - WebDAV registry backend Refresh can remove existing sources ]I[ (Milan Crha)
+	I#138 - Notify clients when backend is refreshing its content (Milan Crha)
+	I#142 - EContact: Define defaults for attributes without TYPE (Milan Crha)
+	evo-I#559 - CalDAV: Unescape URI path parts during refresh in iCloud (Milan Crha)
+	evo-I#568 - Set GtkLabel's width-chars when using line-wrap (Milan Crha)
+
+Miscellaneous:
+	Include also CFLAGS in gtkdoc-scangobj command line (Milan Crha)
+	EDataFactory: Free backend when no client connects to it (Milan Crha)
+	Correct typo in a developer comment (Milan Crha)
+	GOA module: Run EWS autodiscovery asynchronously (Milan Crha)
+	Fix two memory leaks (Milan Crha)
+
+Translations:
+	Aurimas Černius (lt)
+	Daniel Șerbănescu (ro)
+	Bruce Cowan (en_GB)
+	Jordi Mas (ca)
+	Kukuh Syafaat (id)
+	Asier Sarasua Garmendia (eu)
+	Anders Jonsson (sv)
+	Florentina Mușat (ro)
+
 Evolution-Data-Server 3.33.90 2019-08-05
 ----------------------------------------
 
