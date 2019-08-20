@@ -539,6 +539,9 @@ gnome_online_accounts_config_oauth (EGnomeOnlineAccounts *extension,
 	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
 	source_extension = e_source_get_extension (source, extension_name);
 
+	e_source_authentication_set_is_external (
+		E_SOURCE_AUTHENTICATION (source_extension),
+		TRUE);
 	e_source_authentication_set_method (
 		E_SOURCE_AUTHENTICATION (source_extension),
 		CAMEL_OAUTH_MECHANISM_NAME);
@@ -558,6 +561,9 @@ gnome_online_accounts_config_oauth2 (EGnomeOnlineAccounts *extension,
 	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
 	source_extension = e_source_get_extension (source, extension_name);
 
+	e_source_authentication_set_is_external (
+		E_SOURCE_AUTHENTICATION (source_extension),
+		TRUE);
 	e_source_authentication_set_method (
 		E_SOURCE_AUTHENTICATION (source_extension),
 		CAMEL_OAUTH2_MECHANISM_NAME);
