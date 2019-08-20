@@ -124,13 +124,14 @@ oauth2_source_monitor_update_source (EOAuth2SourceMonitor *extension,
 	g_return_if_fail (E_IS_SERVER_SIDE_SOURCE (source));
 
 	if (!extension->oauth2_services ||
-	    !e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION) ||
-	    e_source_has_extension (source, E_SOURCE_EXTENSION_GOA) ||
-	    e_source_has_extension (source, E_SOURCE_EXTENSION_UOA))
+	    !e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION))
 		return;
 
 	server_source = E_SERVER_SIDE_SOURCE (source);
 	authentication_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+
+	if (e_source_authentication_get_is_external (authentication_extension))
+		return;
 
 	auth_method = e_source_authentication_dup_method (authentication_extension);
 

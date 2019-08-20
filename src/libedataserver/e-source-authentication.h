@@ -129,6 +129,11 @@ gchar *		e_source_authentication_dup_credential_name
 void		e_source_authentication_set_credential_name
 					(ESourceAuthentication *extension,
 					 const gchar *credential_name);
+gboolean	e_source_authentication_get_is_external
+					(ESourceAuthentication *extension);
+void		e_source_authentication_set_is_external
+					(ESourceAuthentication *extension,
+					 gboolean is_external);
 
 G_END_DECLS
 

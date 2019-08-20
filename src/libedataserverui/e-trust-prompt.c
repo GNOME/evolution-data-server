@@ -558,15 +558,13 @@ e_trust_prompt_run_for_source (GtkWindow *parent,
 	g_return_if_fail (E_IS_SOURCE (source));
 	g_return_if_fail (certificate_pem != NULL);
 
-	if (e_source_has_extension (source, E_SOURCE_EXTENSION_GOA) ||
-	    e_source_has_extension (source, E_SOURCE_EXTENSION_UOA)) {
-		/* Make sure that GOA/UOA collection sources contain these extensions too */
-		g_warn_if_fail (e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION));
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION))
+		extension_authentication = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+
+	if (extension_authentication && e_source_authentication_get_is_external (extension_authentication)) {
 		g_warn_if_fail (e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND));
 	}
 
-	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION))
-		extension_authentication = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
 	if (e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND))
 		extension_webdav = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 
