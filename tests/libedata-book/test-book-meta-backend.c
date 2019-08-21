@@ -1143,6 +1143,7 @@ test_remove_contacts (EBookMetaBackend *meta_backend)
 	EBookMetaBackendTest *test_backend;
 	EBookBackendSyncClass *backend_sync_class;
 	EBookCache *book_cache;
+	EOfflineState state;
 	const gchar *uids[2] = { NULL, NULL };
 	GSList *offline_changes;
 	GSList *removed_uids = NULL;
@@ -1234,6 +1235,92 @@ test_remove_contacts (EBookMetaBackend *meta_backend)
 	offline_changes = e_cache_get_offline_changes (E_CACHE (book_cache), NULL, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (0, ==, g_slist_length (offline_changes));
+
+	/* Set a contact as being created in offline */
+	uids[0] = "custom-2";
+
+	success = e_cache_set_offline_state (E_CACHE (book_cache), uids[0], E_OFFLINE_STATE_LOCALLY_CREATED, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	state = e_cache_get_offline_state (E_CACHE (book_cache), uids[0], NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (state, ==, E_OFFLINE_STATE_LOCALLY_CREATED);
+
+	success = backend_sync_class->remove_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
+		(const gchar * const *) uids, E_BOOK_OPERATION_FLAG_NONE, &removed_uids, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_cmpint (test_backend->load_count, ==, 0);
+	g_assert_cmpint (test_backend->save_count, ==, 0);
+	g_assert_cmpint (test_backend->remove_count, ==, 1);
+	g_assert_cmpint (g_slist_length (removed_uids), ==, 1);
+	g_assert_cmpstr (removed_uids->data, ==, uids[0]);
+	g_slist_free_full (removed_uids, g_free);
+	removed_uids = NULL;
+
+	ebmb_test_hash_contains (test_backend->contacts, FALSE, FALSE,
+		uids[0], NULL,
+		NULL);
+	ebmb_test_cache_contains (book_cache, TRUE, FALSE,
+		uids[0], NULL,
+		NULL);
+
+	/* Set a contact as being modified in offline */
+	uids[0] = "custom-5";
+
+	success = e_cache_set_offline_state (E_CACHE (book_cache), uids[0], E_OFFLINE_STATE_LOCALLY_MODIFIED, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	state = e_cache_get_offline_state (E_CACHE (book_cache), uids[0], NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (state, ==, E_OFFLINE_STATE_LOCALLY_MODIFIED);
+
+	success = backend_sync_class->remove_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
+		(const gchar * const *) uids, E_BOOK_OPERATION_FLAG_NONE, &removed_uids, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_cmpint (test_backend->load_count, ==, 0);
+	g_assert_cmpint (test_backend->save_count, ==, 0);
+	g_assert_cmpint (test_backend->remove_count, ==, 2);
+	g_assert_cmpint (g_slist_length (removed_uids), ==, 1);
+	g_assert_cmpstr (removed_uids->data, ==, uids[0]);
+	g_slist_free_full (removed_uids, g_free);
+	removed_uids = NULL;
+
+	ebmb_test_hash_contains (test_backend->contacts, TRUE, FALSE,
+		uids[0], NULL,
+		NULL);
+	ebmb_test_cache_contains (book_cache, TRUE, FALSE,
+		uids[0], NULL,
+		NULL);
+
+	/* Set a contact as being deleted in offline */
+	uids[0] = "custom-6";
+
+	success = e_cache_set_offline_state (E_CACHE (book_cache), uids[0], E_OFFLINE_STATE_LOCALLY_DELETED, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	state = e_cache_get_offline_state (E_CACHE (book_cache), uids[0], NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (state, ==, E_OFFLINE_STATE_LOCALLY_DELETED);
+
+	success = backend_sync_class->remove_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
+		(const gchar * const *) uids, E_BOOK_OPERATION_FLAG_NONE, &removed_uids, NULL, &error);
+	g_assert_error (error, E_BOOK_CLIENT_ERROR, E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND);
+	g_assert (!success);
+	g_assert_null (removed_uids);
+	g_clear_error (&error);
+
+	g_assert_cmpint (test_backend->load_count, ==, 0);
+	g_assert_cmpint (test_backend->save_count, ==, 0);
+	g_assert_cmpint (test_backend->remove_count, ==, 2);
+
+	ebmb_test_hash_contains (test_backend->contacts, FALSE, FALSE,
+		uids[0], NULL,
+		NULL);
+	ebmb_test_cache_contains (book_cache, TRUE, FALSE,
+		uids[0], NULL,
+		NULL);
 
 	g_object_unref (book_cache);
 }

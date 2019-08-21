@@ -3583,6 +3583,50 @@ e_cal_cache_get_offline_changes	(ECalCache *cal_cache,
 }
 
 /**
+ * e_cal_cache_get_offline_state:
+ * @cal_cache: an #ECalCache
+ * @uid: a UID of the component
+ * @rid: (nullable): an optional Recurrence-ID
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * This is a wrapper of e_cache_get_offline_state(), ensuring that
+ * a correct #ECache UID will be used.
+ *
+ * Returns: Current offline state #EOfflineState for the given component.
+ *    It returns %E_OFFLINE_STATE_UNKNOWN when the component could not be
+ *    found or other error happened.
+ *
+ * Since: 3.34
+ **/
+EOfflineState
+e_cal_cache_get_offline_state (ECalCache *cal_cache,
+			       const gchar *uid,
+			       const gchar *rid,
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	EOfflineState res;
+
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), E_OFFLINE_STATE_UNKNOWN);
+	g_return_val_if_fail (uid != NULL, E_OFFLINE_STATE_UNKNOWN);
+
+	if (rid && *rid) {
+		gchar *id;
+
+		id = ecc_encode_id_sql (uid, rid);
+
+		res = e_cache_get_offline_state (E_CACHE (cal_cache), id, cancellable, error);
+
+		g_free (id);
+	} else {
+		res = e_cache_get_offline_state (E_CACHE (cal_cache), uid, cancellable, error);
+	}
+
+	return res;
+}
+
+/**
  * e_cal_cache_delete_attachments:
  * @cal_cache: an #ECalCache
  * @component: an #ICalComponent

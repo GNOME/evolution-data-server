@@ -319,6 +319,11 @@ gboolean	e_cal_cache_search_with_callback
 						 gpointer user_data,
 						 GCancellable *cancellable,
 						 GError **error);
+EOfflineState	e_cal_cache_get_offline_state	(ECalCache *cal_cache,
+						 const gchar *uid,
+						 const gchar *rid,
+						 GCancellable *cancellable,
+						 GError **error);
 GSList *	e_cal_cache_get_offline_changes	(ECalCache *cal_cache,
 						 GCancellable *cancellable,
 						 GError **error);

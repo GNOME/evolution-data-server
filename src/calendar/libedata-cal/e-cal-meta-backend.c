@@ -2257,7 +2257,8 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 			extra = NULL;
 
 		if (mod == E_CAL_OBJ_MOD_ALL) {
-			if (*offline_flag == E_CACHE_IS_ONLINE) {
+			if (*offline_flag == E_CACHE_IS_ONLINE &&
+			    e_cal_cache_get_offline_state (cal_cache, uid, NULL, cancellable, NULL) != E_OFFLINE_STATE_LOCALLY_CREATED) {
 				gchar *ical_string = NULL;
 
 				/* Use the master object, if exists */

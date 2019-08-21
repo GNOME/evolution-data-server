@@ -1624,7 +1624,8 @@ ebmb_remove_contact_sync (EBookMetaBackend *meta_backend,
 	if (!e_book_cache_get_contact_extra (book_cache, uid, &extra, cancellable, NULL))
 		extra = NULL;
 
-	if (*offline_flag == E_CACHE_IS_ONLINE) {
+	if (*offline_flag == E_CACHE_IS_ONLINE &&
+	     e_cache_get_offline_state (E_CACHE (book_cache), uid, cancellable, NULL) != E_OFFLINE_STATE_LOCALLY_CREATED) {
 		gchar *vcard_string = NULL;
 
 		g_warn_if_fail (e_book_cache_get_vcard (book_cache, uid, FALSE, &vcard_string, cancellable, NULL));

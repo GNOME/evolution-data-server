@@ -2257,7 +2257,10 @@ test_remove_objects (ECalMetaBackend *meta_backend)
 	ECalMetaBackendTest *test_backend;
 	ECalBackendSyncClass *backend_class;
 	ECalCache *cal_cache;
+	EOfflineState state;
 	GSList *ids, *old_components = NULL, *new_components = NULL, *offline_changes;
+	const gchar *uid;
+	gboolean success;
 	GError *error = NULL;
 
 	g_assert_nonnull (meta_backend);
@@ -2427,6 +2430,108 @@ test_remove_objects (ECalMetaBackend *meta_backend)
 	offline_changes = e_cal_cache_get_offline_changes (cal_cache, NULL, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (0, ==, g_slist_length (offline_changes));
+
+	/* Set an event as being created in offline */
+	uid = "event-7";
+	ids = g_slist_prepend (NULL, e_cal_component_id_new (uid, NULL));
+
+	success = e_cache_set_offline_state (E_CACHE (cal_cache), uid, E_OFFLINE_STATE_LOCALLY_CREATED, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	state = e_cal_cache_get_offline_state (cal_cache, uid, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (state, ==, E_OFFLINE_STATE_LOCALLY_CREATED);
+
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, 0, &old_components, &new_components, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (old_components), ==, 1);
+	g_assert_cmpint (g_slist_length (new_components), ==, 1);
+	g_assert_null (new_components->data);
+	g_assert_cmpint (test_backend->load_count, ==, 0);
+	g_assert_cmpint (test_backend->save_count, ==, 0);
+	g_assert_cmpint (test_backend->remove_count, ==, 1);
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, FALSE, FALSE,
+		uid, NULL,
+		NULL);
+	ecmb_test_cache_contains (cal_cache, TRUE, FALSE,
+		uid, NULL,
+		NULL);
+
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free (new_components);
+	g_slist_free_full (ids, e_cal_component_id_free);
+	old_components = NULL;
+	new_components = NULL;
+
+	/* Set an event as being modified in offline */
+	uid = "event-8";
+	ids = g_slist_prepend (NULL, e_cal_component_id_new (uid, NULL));
+
+	success = e_cache_set_offline_state (E_CACHE (cal_cache), uid, E_OFFLINE_STATE_LOCALLY_MODIFIED, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	state = e_cal_cache_get_offline_state (cal_cache, uid, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (state, ==, E_OFFLINE_STATE_LOCALLY_MODIFIED);
+
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, 0, &old_components, &new_components, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (old_components), ==, 1);
+	g_assert_cmpint (g_slist_length (new_components), ==, 1);
+	g_assert_null (new_components->data);
+	g_assert_cmpint (test_backend->load_count, ==, 0);
+	g_assert_cmpint (test_backend->save_count, ==, 0);
+	g_assert_cmpint (test_backend->remove_count, ==, 2);
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, TRUE, FALSE,
+		uid, NULL,
+		NULL);
+	ecmb_test_cache_contains (cal_cache, TRUE, FALSE,
+		uid, NULL,
+		NULL);
+
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free (new_components);
+	g_slist_free_full (ids, e_cal_component_id_free);
+	old_components = NULL;
+	new_components = NULL;
+
+	/* Set an event as being deleted in offline */
+	uid = "event-9";
+	ids = g_slist_prepend (NULL, e_cal_component_id_new (uid, NULL));
+
+	success = e_cache_set_offline_state (E_CACHE (cal_cache), uid, E_OFFLINE_STATE_LOCALLY_DELETED, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	state = e_cal_cache_get_offline_state (cal_cache, uid, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (state, ==, E_OFFLINE_STATE_LOCALLY_DELETED);
+
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, 0, &old_components, &new_components, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (old_components), ==, 1);
+	g_assert_cmpint (g_slist_length (new_components), ==, 1);
+	g_assert_null (new_components->data);
+	g_assert_cmpint (test_backend->load_count, ==, 0);
+	g_assert_cmpint (test_backend->save_count, ==, 0);
+	g_assert_cmpint (test_backend->remove_count, ==, 3);
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, TRUE, FALSE,
+		uid, NULL,
+		NULL);
+	ecmb_test_cache_contains (cal_cache, TRUE, FALSE,
+		uid, NULL,
+		NULL);
+
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free (new_components);
+	g_slist_free_full (ids, e_cal_component_id_free);
+	old_components = NULL;
+	new_components = NULL;
 
 	g_object_unref (cal_cache);
 }
