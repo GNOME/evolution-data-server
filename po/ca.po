@@ -2826,7 +2826,7 @@ msgstr[1] "S'estan aprenent els nous missatges brossa a «%s : %s»"
 #, c-format
 msgid "Learning new ham message in “%s : %s”"
 msgid_plural "Learning new ham messages in “%s : %s”"
-msgstr[0] "S'està aprenent el missatge amb correu legitim nou a «%s : %s»"
+msgstr[0] "S'està aprenent el missatge amb correu legítim nou a «%s : %s»"
 msgstr[1] ""
 "S'estan aprenent els missatges amb correus legítims nous a «%s : %s»"
 
