@@ -814,21 +814,124 @@ vee_folder_get_permanent_flags (CamelFolder *folder)
 		CAMEL_MESSAGE_SEEN;
 }
 
+static void
+vee_folder_add_subfolder_uids_to_search_matches (CamelVeeDataCache *data_cache,
+						 GPtrArray *into,
+						 CamelFolder *subfolder,
+						 GPtrArray *submatches)
+{
+	CamelVeeSubfolderData *sf_data;
+	const gchar *folder_id;
+	guint ii;
+
+	g_return_if_fail (data_cache != NULL);
+	g_return_if_fail (into != NULL);
+
+	if (!submatches || !submatches->len)
+		return;
+
+	sf_data = camel_vee_data_cache_get_subfolder_data (data_cache, subfolder);
+	if (!sf_data)
+		return;
+
+	folder_id = camel_vee_subfolder_data_get_folder_id (sf_data);
+
+	for (ii = 0; ii < submatches->len; ii++) {
+		gchar *vuid;
+
+		vuid = g_strconcat (folder_id, submatches->pdata[ii], NULL);
+
+		g_ptr_array_add (into, (gpointer) camel_pstring_add (vuid, TRUE));
+	}
+}
+
 static GPtrArray *
 vee_folder_search_by_expression (CamelFolder *folder,
                                  const gchar *expression,
                                  GCancellable *cancellable,
                                  GError **error)
 {
-	CamelFolderSearch *search;
-	GPtrArray *matches;
+	CamelVeeFolder *vfolder;
+	CamelVeeDataCache *data_cache;
+	GPtrArray *matches = NULL;
+	GList *link;
 
-	search = camel_folder_search_new ();
-	camel_folder_search_set_folder (search, folder);
-	matches = camel_folder_search_search (search, expression, NULL, cancellable, error);
-	g_object_unref (search);
+	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (folder), NULL);
+
+	vfolder = CAMEL_VEE_FOLDER (folder);
+	data_cache = vee_folder_get_data_cache (vfolder);
+
+	g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
+
+	for (link = vfolder->priv->subfolders; link && !g_cancellable_is_cancelled (cancellable); link = g_list_next (link)) {
+		CamelFolder *subfolder = link->data;
+		GPtrArray *submatches;
+
+		submatches = camel_folder_search_by_expression (subfolder, expression, cancellable, NULL);
+
+		if (submatches) {
+			if (submatches->len) {
+				if (!matches)
+					matches = g_ptr_array_new ();
+
+				vee_folder_add_subfolder_uids_to_search_matches (data_cache, matches, subfolder, submatches);
+			}
+
+			camel_folder_search_free (subfolder, submatches);
+		}
+	}
+
+	g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		if (matches) {
+			camel_folder_search_free (folder, matches);
+			matches = NULL;
+		}
+	} else if (!matches) {
+		matches = g_ptr_array_new ();
+	}
 
 	return matches;
+}
+
+static guint
+vee_hash_only_folder_id (gconstpointer key)
+{
+	const guchar *str;
+
+	if (!key)
+		return 0;
+
+	str = key;
+
+	return str[0] +
+		((str[0] ? str[1] : 0) << 8) +
+		(((str[0] && str[1]) ? str[2] : 0) << 16);
+}
+
+static gboolean
+vee_equal_only_folder_id (gconstpointer key1,
+			  gconstpointer key2)
+{
+	const gchar *str1, *str2;
+	gint ii;
+
+	if (key1 == key2)
+		return TRUE;
+
+	str1 = key1;
+	str2 = key2;
+
+	if (!str1 || !str2)
+		return FALSE;
+
+	for (ii = 0; ii < 8 && str1[ii]; ii++) {
+		if (str1[ii] != str2[ii])
+			return FALSE;
+	}
+
+	return ii == 8;
 }
 
 static GPtrArray *
@@ -838,16 +941,86 @@ vee_folder_search_by_uids (CamelFolder *folder,
                            GCancellable *cancellable,
                            GError **error)
 {
-	CamelFolderSearch *search;
-	GPtrArray *matches;
+	CamelVeeFolder *vfolder;
+	CamelVeeDataCache *data_cache;
+	GHashTable *uids_by_folder; /* gchar *folder_id as message UID ~> GPtrArray * */
+	GPtrArray *matches = NULL;
+	GList *link;
+	guint ii;
+
+	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (folder), NULL);
 
 	if (!uids || uids->len == 0)
 		return g_ptr_array_new ();
 
-	search = camel_folder_search_new ();
-	camel_folder_search_set_folder (search, folder);
-	matches = camel_folder_search_search (search, expression, uids, cancellable, error);
-	g_object_unref (search);
+	uids_by_folder = g_hash_table_new_full (vee_hash_only_folder_id, vee_equal_only_folder_id, NULL, (GDestroyNotify) g_ptr_array_unref);
+
+	for (ii = 0; ii < uids->len && !g_cancellable_is_cancelled (cancellable); ii++) {
+		GPtrArray *array;
+		const gchar *uid = uids->pdata[ii];
+
+		/* Skip UIDs not long enough */
+		if (!uid || !uid[0] || !uid[1] || !uid[2] || !uid[3] || !uid[4] || !uid[5] || !uid[6] || !uid[7] || !uid[8])
+			continue;
+
+		array = g_hash_table_lookup (uids_by_folder, uid);
+		if (!array) {
+			array = g_ptr_array_new ();
+			g_hash_table_insert (uids_by_folder, (gpointer) uid, array);
+		}
+
+		g_ptr_array_add (array, (gpointer) (uid + 8));
+	}
+
+	vfolder = CAMEL_VEE_FOLDER (folder);
+	data_cache = vee_folder_get_data_cache (vfolder);
+
+	g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
+
+	for (link = vfolder->priv->subfolders; link && !g_cancellable_is_cancelled (cancellable); link = g_list_next (link)) {
+		CamelFolder *subfolder = link->data;
+		GPtrArray *submatches, *subuids;
+		CamelVeeSubfolderData *sf_data;
+		const gchar *folder_id;
+
+		sf_data = camel_vee_data_cache_get_subfolder_data (data_cache, subfolder);
+		if (!sf_data)
+			continue;
+
+		folder_id = camel_vee_subfolder_data_get_folder_id (sf_data);
+		if (!folder_id)
+			continue;
+
+		subuids = g_hash_table_lookup (uids_by_folder, folder_id);
+		if (!subuids)
+			continue;
+
+		submatches = camel_folder_search_by_uids (subfolder, expression, subuids, cancellable, NULL);
+
+		if (submatches) {
+			if (submatches->len) {
+				if (!matches)
+					matches = g_ptr_array_new ();
+
+				vee_folder_add_subfolder_uids_to_search_matches (data_cache, matches, subfolder, submatches);
+			}
+
+			camel_folder_search_free (subfolder, submatches);
+		}
+	}
+
+	g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		if (matches) {
+			camel_folder_search_free (folder, matches);
+			matches = NULL;
+		}
+	} else if (!matches) {
+		matches = g_ptr_array_new ();
+	}
+
+	g_hash_table_destroy (uids_by_folder);
 
 	return matches;
 }
@@ -858,13 +1031,26 @@ vee_folder_count_by_expression (CamelFolder *folder,
                                 GCancellable *cancellable,
                                 GError **error)
 {
-	CamelFolderSearch *search;
-	guint32 count;
+	CamelVeeFolder *vfolder;
+	GList *link;
+	guint32 count = 0;
 
-	search = camel_folder_search_new ();
-	camel_folder_search_set_folder (search, folder);
-	count = camel_folder_search_count (search, expression, cancellable, error);
-	g_object_unref (search);
+	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (folder), 0);
+
+	vfolder = CAMEL_VEE_FOLDER (folder);
+
+	g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
+
+	for (link = vfolder->priv->subfolders; link && !g_cancellable_is_cancelled (cancellable); link = g_list_next (link)) {
+		CamelFolder *subfolder = link->data;
+
+		count += camel_folder_count_by_expression (subfolder, expression, cancellable, NULL);
+	}
+
+	g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, error))
+		count = 0;
 
 	return count;
 }
