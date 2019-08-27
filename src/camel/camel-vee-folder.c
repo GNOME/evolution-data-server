@@ -1121,8 +1121,7 @@ vee_folder_set_expression (CamelVeeFolder *vee_folder,
 	}
 
 	g_free (vee_folder->priv->expression);
-	if (query)
-		vee_folder->priv->expression = g_strdup (query);
+	vee_folder->priv->expression = g_strdup (query);
 
 	vee_folder_rebuild_all (vee_folder, NULL);
 
