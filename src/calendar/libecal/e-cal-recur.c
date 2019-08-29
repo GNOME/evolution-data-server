@@ -321,7 +321,7 @@ intersects_interval (const ICalTime *tt,
 	ICalTime *ttstart, *ttend;
 	gboolean res;
 
-	if (!tt || !interval_start || !interval_end)
+	if (!tt || i_cal_time_is_null_time (tt) || !interval_start || !interval_end)
 		return FALSE;
 
 	ttstart = i_cal_time_clone (tt);
@@ -435,6 +435,12 @@ e_cal_recur_generate_instances_sync (ICalComponent *icalcomp,
 			g_clear_object (&comp_duration);
 		}
 
+		/* This can happen for tasks without start date */
+		if (dtend && i_cal_time_is_null_time (dtstart) && !i_cal_time_is_null_time (dtend)) {
+			g_clear_object (&dtstart);
+			dtstart = i_cal_time_clone (dtend);
+		}
+
 		/* If there is no DTEND, then if DTSTART is a DATE-TIME value
 		 * we use the same time (so we have a single point in time).
 		 * If DTSTART is a DATE value we add 1 day. */
@@ -446,6 +452,12 @@ e_cal_recur_generate_instances_sync (ICalComponent *icalcomp,
 				i_cal_time_adjust (dtend, 1, 0, 0, 0);
 		}
 	} else {
+		/* This can happen for tasks without start date */
+		if (dtend && i_cal_time_is_null_time (dtstart) && !i_cal_time_is_null_time (dtend)) {
+			g_clear_object (&dtstart);
+			dtstart = i_cal_time_clone (dtend);
+		}
+
 		/* If both DTSTART and DTEND are DATE values, and they are the
 		 * same day, we add 1 day to DTEND. This means that most
 		 * events created with the old Evolution behavior will still

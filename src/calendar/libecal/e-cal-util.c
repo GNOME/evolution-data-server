@@ -556,8 +556,23 @@ generate_absolute_triggers (ECalComponent *comp,
 			zone = default_timezone;
 
 		occur_end = i_cal_time_as_timet_with_zone (e_cal_component_datetime_get_value (dtend), zone);
-	} else
-		occur_end = -1;
+	} else {
+		e_cal_component_datetime_free (dtend);
+		dtend = e_cal_component_get_due (comp);
+
+		if (dtend && e_cal_component_datetime_get_value (dtend)) {
+			ICalTimezone *zone;
+			const gchar *tzid = e_cal_component_datetime_get_tzid (dtend);
+
+			if (tzid && !i_cal_time_is_date (e_cal_component_datetime_get_value (dtend)))
+				zone = (* resolve_tzid) (tzid, user_data, NULL, NULL);
+			else
+				zone = default_timezone;
+
+			occur_end = i_cal_time_as_timet_with_zone (e_cal_component_datetime_get_value (dtend), zone);
+		} else
+			occur_end = -1;
+	}
 
 	for (link = aod->alarm_uids; link; link = g_slist_next (link)) {
 		const gchar *auid;

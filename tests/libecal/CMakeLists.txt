@@ -34,6 +34,7 @@ set(TESTS
 	test-cal-client-get-free-busy
 	test-cal-component
 	test-cal-recur
+	test-cal-reminders
 )
 
 foreach(_test ${TESTS})
