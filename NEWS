@@ -1,3 +1,26 @@
+Evolution-Data-Server 3.33.92 2019-09-02
+----------------------------------------
+
+Bug Fixes:
+	I#136 - Meta backends: Fails to remove locally created object in online mode (Milan Crha)
+	I#141 - e_xml_parse_data: Recover from XML errors if possible (Milan Crha)
+	I#147 - CamelVeeFolder: Propagate searches into subfolders (Milan Crha)
+	I#148 - Alarm for the end of a task not working (Milan Crha)
+	evo-I#551 - Enhance URL end recognition regarding closing bracket (Milan Crha)
+
+Miscellaneous:
+	Avoid possible use after free caused in vee_folder_set_expression() (Milan Crha)
+
+Translations:
+	Daniel Mustieles (es)
+	Piotr Drąg (pl)
+	Fran Dieguez (gl)
+	Jordi Mas (ca)
+	Changwoo Ryu (ko)
+	Charles Monzat (fr)
+	Balázs Úr (hu)
+	Petr Kovář (cs)
+
 Evolution-Data-Server 3.33.91 2019-08-19
 ----------------------------------------
 
