@@ -1,5 +1,6 @@
-# translation of evolution-data-server.HEAD.tr.po to Turkish
 # Turkish translation of Evolution-data-server
+# Copyright (C) 2002-2019 Evolution-data-server'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Evolution-data-server package.
 #
 # Görkem Çetin <gorkem@gelecek.com.tr>, 2002, 2003.
 # Baris Cicek <baris@teamforce.name.tr>, 2004, 2005, 2008, 2009.
@@ -9,71 +10,71 @@
 # Muhammet Kara <muhammetk@gmail.com>, 2011, 2014, 2015, 2017, 2018.
 # Çağatay Yiğit Şahin <cyigitsahin@outlook.com>, 2018.
 # Emin Tufan Çetin <etcetin@gmail.com>, 2017-2019.
+# Sabri Ünal <libreajans@gmail.com>, 2019.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.tr\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2019-03-01 17:43+0000\n"
-"PO-Revision-Date: 2019-03-02 09:40+0300\n"
+"POT-Creation-Date: 2019-09-05 11:59+0000\n"
+"PO-Revision-Date: 2019-09-07 16:52+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: Gtranslator 3.30.1\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 2.2.3\n"
 "X-POOTLE-MTIME: 1433363404.000000\n"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:220
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:221
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Verilen URL “%s”, CardDAV adres defterine ait değil"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:279
-#: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:148
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1159
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4326
-#: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:49
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:280
+#: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1154
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4375
+#: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
-#: ../src/addressbook/libebook/e-book.c:1079
-#: ../src/addressbook/libebook/e-book-client.c:2130
-#: ../src/addressbook/libebook/e-book-client.c:2302
-#: ../src/addressbook/libebook/e-book-client.c:2515
-#: ../src/addressbook/libebook/e-book-client.c:2646
-#: ../src/addressbook/libebook/e-book-client.c:2805
-#: ../src/addressbook/libebook/e-book-client.c:2939
-#: ../src/addressbook/libebook/e-book-client.c:3070
-#: ../src/addressbook/libebook/e-book-client.c:3228
-#: ../src/addressbook/libebook/e-book-client.c:3423
-#: ../src/addressbook/libebook/e-book-client.c:3641
-#: ../src/addressbook/libedata-book/e-book-backend-sexp.c:877
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:263
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:291
-#: ../src/calendar/backends/http/e-cal-backend-http.c:248
-#: ../src/calendar/libecal/e-cal.c:2334
-#: ../src/calendar/libecal/e-cal-client.c:277
-#: ../src/calendar/libecal/e-cal-client.c:3545
-#: ../src/calendar/libecal/e-cal-client.c:3718
-#: ../src/calendar/libecal/e-cal-client.c:3982
-#: ../src/calendar/libecal/e-cal-client.c:4223
-#: ../src/calendar/libecal/e-cal-client.c:4413
-#: ../src/calendar/libecal/e-cal-client.c:4606
-#: ../src/calendar/libecal/e-cal-client.c:4815
-#: ../src/calendar/libecal/e-cal-client.c:4984
-#: ../src/calendar/libecal/e-cal-client.c:5187
-#: ../src/calendar/libecal/e-cal-client.c:5337
-#: ../src/calendar/libecal/e-cal-client.c:5531
-#: ../src/calendar/libecal/e-cal-client.c:5684
-#: ../src/calendar/libecal/e-cal-client.c:5901
-#: ../src/calendar/libecal/e-cal-client.c:6055
-#: ../src/calendar/libecal/e-cal-client.c:6281
-#: ../src/calendar/libecal/e-cal-client.c:6477
-#: ../src/calendar/libecal/e-cal-client.c:6840
-#: ../src/calendar/libecal/e-cal-client.c:7062
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1757
+#: ../src/addressbook/libebook/e-book.c:1075
+#: ../src/addressbook/libebook/e-book-client.c:2132
+#: ../src/addressbook/libebook/e-book-client.c:2310
+#: ../src/addressbook/libebook/e-book-client.c:2529
+#: ../src/addressbook/libebook/e-book-client.c:2666
+#: ../src/addressbook/libebook/e-book-client.c:2831
+#: ../src/addressbook/libebook/e-book-client.c:2971
+#: ../src/addressbook/libebook/e-book-client.c:3108
+#: ../src/addressbook/libebook/e-book-client.c:3271
+#: ../src/addressbook/libebook/e-book-client.c:3466
+#: ../src/addressbook/libebook/e-book-client.c:3684
+#: ../src/addressbook/libedata-book/e-book-backend-sexp.c:878
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:264
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:292
+#: ../src/calendar/backends/http/e-cal-backend-http.c:249
+#: ../src/calendar/libecal/e-cal-client.c:260
+#: ../src/calendar/libecal/e-cal-client.c:3216
+#: ../src/calendar/libecal/e-cal-client.c:3389
+#: ../src/calendar/libecal/e-cal-client.c:3662
+#: ../src/calendar/libecal/e-cal-client.c:3900
+#: ../src/calendar/libecal/e-cal-client.c:4092
+#: ../src/calendar/libecal/e-cal-client.c:4275
+#: ../src/calendar/libecal/e-cal-client.c:4483
+#: ../src/calendar/libecal/e-cal-client.c:4660
+#: ../src/calendar/libecal/e-cal-client.c:4871
+#: ../src/calendar/libecal/e-cal-client.c:5027
+#: ../src/calendar/libecal/e-cal-client.c:5227
+#: ../src/calendar/libecal/e-cal-client.c:5393
+#: ../src/calendar/libecal/e-cal-client.c:5620
+#: ../src/calendar/libecal/e-cal-client.c:5780
+#: ../src/calendar/libecal/e-cal-client.c:6011
+#: ../src/calendar/libecal/e-cal-client.c:6210
+#: ../src/calendar/libecal/e-cal-client.c:6578
+#: ../src/calendar/libecal/e-cal-client.c:6802
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1798
 #: ../src/camel/camel-filter-driver.c:1712
 #: ../src/camel/camel-filter-driver.c:1844
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3252
@@ -82,29 +83,29 @@ msgstr "Verilen URL “%s”, CardDAV adres defterine ait değil"
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3280
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:501
-#: ../src/libedataserver/e-client.c:188
+#: ../src/libedataserver/e-client.c:187
 #: ../src/libedataserver/e-soup-session.c:1217
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
-#: ../src/libedataserverui/e-reminders-widget.c:1780
+#: ../src/libedataserverui/e-reminders-widget.c:1789
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Bilinmeyen hata"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1036
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1192
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1038
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1255
 msgid "Server didn’t return object’s href"
 msgstr "Sunucu nesnenin hrefʼini döndürmedi"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1038
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1194
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1040
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1257
 msgid "Server didn’t return object’s ETag"
 msgstr "Sunucu nesnenin ETagʼini döndürmedi"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1040
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1042
 msgid "Received object is not a valid vCard"
 msgstr "Alınan nesne geçerli bir vCard değil"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1149
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1153
 msgid ""
 "Missing information about vCard URL, local cache is possibly incomplete or "
 "broken. Remove it, please."
@@ -112,8 +113,8 @@ msgstr ""
 "VCard URL hakkında eksik bilgi, yerel önbellek eksik veya hatalı, düzeltin "
 "veya kaldırın."
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1152
-#: ../src/addressbook/backends/google/e-book-backend-google.c:1010
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1156
+#: ../src/addressbook/backends/google/e-book-backend-google.c:988
 msgid "Object to save is not a valid vCard"
 msgstr "Kaydedilecek nesne geçerli bir vCard değil"
 
@@ -133,65 +134,65 @@ msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "“%s” kaynağı için hardlink oluşturulamadı: %s"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:524
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1272
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1268
 msgid "No UID in the contact"
 msgstr "Bağlantıda UID yok"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:868
+#: ../src/addressbook/backends/file/e-book-backend-file.c:861
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "Eklenen bağlantılarda çakışan UIDʼler bulundu"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1006
+#: ../src/addressbook/backends/file/e-book-backend-file.c:991
 msgid "Loading..."
 msgstr "Yükleniyor..."
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1008
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4436
+#: ../src/addressbook/backends/file/e-book-backend-file.c:993
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4490
 msgid "Searching..."
 msgstr "Aranıyor..."
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1300
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1296
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr "“%s” kişisi eşlenmemiş bir sürümle düzenlenmeye çalışıldı"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1491
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1576
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3087
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1477
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1563
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3086
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7369
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7438
 #, c-format
 msgid "Contact “%s” not found"
 msgstr "“%s” kişisi bulunamadı"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1636
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1717
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1627
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1710
 #, c-format
 msgid "Query “%s” not supported"
 msgstr "“%s” sorgusu desteklenmiyor"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1645
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1726
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1636
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1719
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr "Geçersiz Sorgu “%s”"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1991
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2017
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1968
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2028
 msgid "Requested to delete an unrelated cursor"
 msgstr "İlgisiz bir imlecin silinmesi istendi"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:2062
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2039
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Eski veri tabanının “%s”den “%s”e adlandırılması başarısız: %s"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:1066
+#: ../src/addressbook/backends/google/e-book-backend-google.c:1044
 msgid "Failed to create contact from returned server data"
 msgstr "Dönen sunucu verisinden kişi oluşturma başarısız"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:1082
+#: ../src/addressbook/backends/google/e-book-backend-google.c:1060
 msgid "Server returned contact without UID"
 msgstr "Sunucu, kişiyi UID olmadan döndürdü"
 
@@ -221,110 +222,129 @@ msgstr "İş Arkadaşları"
 
 #. Translators: An error message shown to a user when trying to do an
 #. * operation on the LDAP address book which is not connected to the server
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:112
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:113
 msgid "Not connected"
 msgstr "Bağlı değil"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:881
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:876
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr "v3 ve v2 bağları kullanarak bağlama başarısız"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1005
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1000
 msgid "Reconnecting to LDAP server..."
 msgstr "LDAP sunucuya yeniden bağlantı kuruluyor..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1140
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1135
 msgid "Invalid DN syntax"
 msgstr "Geçersiz DN söz dizimi"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1156
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4325
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1151
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4374
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP hatası 0x%x (%s)"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1772
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2116
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2129
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1791
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2140
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2153
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "ldap_first_entryʼden %s: NULL döndü"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2043
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2190
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2068
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2212
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: Beklenmeyen sonuç tipi %d döndü"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2335
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2474
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2355
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2493
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: Bilinmeyen arama sonucu tipi %d döndü"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4261
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2643
+msgid "LDAP contact lists cannot be empty."
+msgstr "LDAP bağlantı listesi boş olamaz."
+
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2681
+#, c-format
+msgid ""
+"Contact lists in LDAP address books require each member to be from the same "
+"LDAP address book, but one member could not be recognized."
+msgid_plural ""
+"Contact lists in LDAP address books require each member to be from the same "
+"LDAP address book, but %d members could not be recognized."
+msgstr[0] ""
+"LDAP adres defterlerindeki bağlantı listeleri her üyenin aynı LDAP adres "
+"defterinden olmasını gerektiriyor, ancak %d üye tanınamadı."
+
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4313
 msgid "Receiving LDAP search results..."
 msgstr "LDAP arama sonuçları alınıyor..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4462
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4516
 msgid "Error performing search"
 msgstr "Arama yaparken bir hata oluştu"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4602
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4656
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Bağlantılar indiriliyor (%d)..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5093
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4757
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:779
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:681
+msgid "Refreshing…"
+msgstr "Tazeleniyor…"
+
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5150
 msgid "The backend does not support bulk additions"
 msgstr "Art alan toptan eklemeleri desteklemiyor"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5176
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5241
 msgid "Adding contact to LDAP server..."
 msgstr "LDAP sunucuya bağlantı ekleniyor..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5233
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5303
 msgid "The backend does not support bulk modifications"
 msgstr "Art alan toptan düzenlemeleri desteklemiyor"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5255
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5325
 msgid "Modifying contact from LDAP server..."
 msgstr "LDAP sunucudaki bağlantı düzenleniyor..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5325
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5397
 msgid "Removing contact from LDAP server..."
 msgstr "LDAP sunucudan bağlantı siliniyor..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5743
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5807
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "“%s” kullanıcısı için DN alınamadı"
 
-#: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:38
+#: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:40
 msgid "No such book"
 msgstr "Böyle bir kitap yok"
 
-#: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:40
-#: ../src/addressbook/libedata-book/e-data-book.c:382
+#: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:42
 msgid "Contact not found"
 msgstr "Kişi bulunamadı"
 
-#: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:42
-#: ../src/addressbook/libedata-book/e-data-book.c:383
+#: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:44
 msgid "Contact ID already exists"
 msgstr "Bu bağlantı kimliği zaten var"
 
-#: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:44
+#: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:46
 msgid "No such source"
 msgstr "Böyle bir kaynak yok"
 
-#: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:46
-#: ../src/addressbook/libedata-book/e-data-book.c:399
+#: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:48
 msgid "No space"
 msgstr "Yer yok"
 
 #. Dummy row as EContactField starts from 1
-#: ../src/addressbook/libebook-contacts/e-contact.c:128
+#: ../src/addressbook/libebook-contacts/e-contact.c:149
 msgid "Unique ID"
 msgstr "Tekil ID"
 
@@ -332,12 +352,12 @@ msgstr "Tekil ID"
 #. * so we can generate its value if necessary in the getter
 #. Translators: This is an EContact field description, in this case it's a
 #. * preferred user's description (or display name) of the contact. Note 'File' is a verb here.
-#: ../src/addressbook/libebook-contacts/e-contact.c:133
+#: ../src/addressbook/libebook-contacts/e-contact.c:154
 msgid "File Under"
 msgstr "Aldında Dosyala"
 
 #. URI of the book to which the contact belongs to
-#: ../src/addressbook/libebook-contacts/e-contact.c:135
+#: ../src/addressbook/libebook-contacts/e-contact.c:156
 msgid "Book UID"
 msgstr "Defter UIDʼi"
 
@@ -345,435 +365,435 @@ msgstr "Defter UIDʼi"
 #. FN isn't really a structured field - we use a getter/setter
 #. * so we can set the N property (since evo 1.4 works fine with
 #. * vcards that don't even have a N attribute.  *sigh*)
-#: ../src/addressbook/libebook-contacts/e-contact.c:141
+#: ../src/addressbook/libebook-contacts/e-contact.c:162
 msgid "Full Name"
 msgstr "Tam Ad"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:142
+#: ../src/addressbook/libebook-contacts/e-contact.c:163
 msgid "Given Name"
 msgstr "Verilen Ad"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:143
+#: ../src/addressbook/libebook-contacts/e-contact.c:164
 msgid "Family Name"
 msgstr "Aile Adı"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:144
+#: ../src/addressbook/libebook-contacts/e-contact.c:165
 msgid "Nickname"
 msgstr "Lakap"
 
 #. Email fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:147
+#: ../src/addressbook/libebook-contacts/e-contact.c:168
 msgid "Email 1"
 msgstr "E-posta 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:148
+#: ../src/addressbook/libebook-contacts/e-contact.c:169
 msgid "Email 2"
 msgstr "E-posta 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:149
+#: ../src/addressbook/libebook-contacts/e-contact.c:170
 msgid "Email 3"
 msgstr "E-posta 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:150
+#: ../src/addressbook/libebook-contacts/e-contact.c:171
 msgid "Email 4"
 msgstr "E-posta 4"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:152
+#: ../src/addressbook/libebook-contacts/e-contact.c:173
 msgid "Mailer"
 msgstr "E-Postacı"
 
 #. Address Labels
-#: ../src/addressbook/libebook-contacts/e-contact.c:155
+#: ../src/addressbook/libebook-contacts/e-contact.c:176
 msgid "Home Address Label"
 msgstr "Ev Adresi Etiketi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:156
+#: ../src/addressbook/libebook-contacts/e-contact.c:177
 msgid "Work Address Label"
 msgstr "İş Adresi Etiketi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:157
+#: ../src/addressbook/libebook-contacts/e-contact.c:178
 msgid "Other Address Label"
 msgstr "Diğer Adres Etiketi"
 
 #. Phone fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:160
+#: ../src/addressbook/libebook-contacts/e-contact.c:181
 msgid "Assistant Phone"
 msgstr "Yardımcı Telefonu"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:161
+#: ../src/addressbook/libebook-contacts/e-contact.c:182
 msgid "Business Phone"
 msgstr "İş Telefonu"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:162
+#: ../src/addressbook/libebook-contacts/e-contact.c:183
 msgid "Business Phone 2"
 msgstr "İş Telefonu 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:163
+#: ../src/addressbook/libebook-contacts/e-contact.c:184
 msgid "Business Fax"
 msgstr "İşyeri Faksı"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:164
+#: ../src/addressbook/libebook-contacts/e-contact.c:185
 msgid "Callback Phone"
 msgstr "Geri Arama Telefonu"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:165
+#: ../src/addressbook/libebook-contacts/e-contact.c:186
 msgid "Car Phone"
 msgstr "Araç Telefonu"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:166
+#: ../src/addressbook/libebook-contacts/e-contact.c:187
 msgid "Company Phone"
 msgstr "Şirket Telefonu"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:167
+#: ../src/addressbook/libebook-contacts/e-contact.c:188
 msgid "Home Phone"
 msgstr "Ev Telefonu"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:168
+#: ../src/addressbook/libebook-contacts/e-contact.c:189
 msgid "Home Phone 2"
 msgstr "Ev Telefonu 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:169
+#: ../src/addressbook/libebook-contacts/e-contact.c:190
 msgid "Home Fax"
 msgstr "Ev Faksı"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:170
+#: ../src/addressbook/libebook-contacts/e-contact.c:191
 msgid "ISDN"
 msgstr "ISDN"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:171
+#: ../src/addressbook/libebook-contacts/e-contact.c:192
 msgid "Mobile Phone"
 msgstr "Cep Telefonu"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:172
+#: ../src/addressbook/libebook-contacts/e-contact.c:193
 msgid "Other Phone"
 msgstr "Diğer Telefon"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:173
+#: ../src/addressbook/libebook-contacts/e-contact.c:194
 msgid "Other Fax"
 msgstr "Diğer Faks"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:174
+#: ../src/addressbook/libebook-contacts/e-contact.c:195
 msgid "Pager"
 msgstr "Çağrı Aygıtı"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:175
+#: ../src/addressbook/libebook-contacts/e-contact.c:196
 msgid "Primary Phone"
 msgstr "İlk Telefon"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:176
+#: ../src/addressbook/libebook-contacts/e-contact.c:197
 msgid "Radio"
 msgstr "Radyo"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:177
+#: ../src/addressbook/libebook-contacts/e-contact.c:198
 msgid "Telex"
 msgstr "Teleks"
 
 #. To translators: TTY is Teletypewriter
-#: ../src/addressbook/libebook-contacts/e-contact.c:179
+#: ../src/addressbook/libebook-contacts/e-contact.c:200
 msgid "TTY"
 msgstr "TTY"
 
 #. Organizational fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:182
+#: ../src/addressbook/libebook-contacts/e-contact.c:203
 msgid "Organization"
 msgstr "Kurum"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:183
+#: ../src/addressbook/libebook-contacts/e-contact.c:204
 msgid "Organizational Unit"
 msgstr "Kurumsal Birim"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:184
+#: ../src/addressbook/libebook-contacts/e-contact.c:205
 msgid "Office"
 msgstr "Ofis"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:185
+#: ../src/addressbook/libebook-contacts/e-contact.c:206
 msgid "Title"
 msgstr "Sıfat"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:186
+#: ../src/addressbook/libebook-contacts/e-contact.c:207
 msgid "Role"
 msgstr "Görev"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:187
+#: ../src/addressbook/libebook-contacts/e-contact.c:208
 msgid "Manager"
 msgstr "Yönetici"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:188
+#: ../src/addressbook/libebook-contacts/e-contact.c:209
 msgid "Assistant"
 msgstr "Yardımcı"
 
 #. Web fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:191
+#: ../src/addressbook/libebook-contacts/e-contact.c:212
 msgid "Homepage URL"
 msgstr "Evsayfası URLʼsi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:192
+#: ../src/addressbook/libebook-contacts/e-contact.c:213
 msgid "Weblog URL"
 msgstr "Web günlüğü URLʼsi"
 
 #. Contact categories
-#: ../src/addressbook/libebook-contacts/e-contact.c:195
+#: ../src/addressbook/libebook-contacts/e-contact.c:216
 msgid "Categories"
 msgstr "Kategoriler"
 
 #. Collaboration fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:198
+#: ../src/addressbook/libebook-contacts/e-contact.c:219
 msgid "Calendar URI"
 msgstr "Takvim URIʼsi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:199
+#: ../src/addressbook/libebook-contacts/e-contact.c:220
 msgid "Free/Busy URL"
 msgstr "Müsait/Meşgul URLʼsi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:200
+#: ../src/addressbook/libebook-contacts/e-contact.c:221
 msgid "ICS Calendar"
 msgstr "ICS Takvimi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:201
+#: ../src/addressbook/libebook-contacts/e-contact.c:222
 msgid "Video Conferencing URL"
 msgstr "Video Konferansı URLʼsi"
 
 #. Misc fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:204
+#: ../src/addressbook/libebook-contacts/e-contact.c:225
 msgid "Spouse’s Name"
 msgstr "Eşinin Adı"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:205
+#: ../src/addressbook/libebook-contacts/e-contact.c:226
 msgid "Note"
 msgstr "Not"
 
 #. Instant messaging fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:208
+#: ../src/addressbook/libebook-contacts/e-contact.c:229
 msgid "AIM Home Screen Name 1"
 msgstr "AIM Ev Hesap Adı 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:209
+#: ../src/addressbook/libebook-contacts/e-contact.c:230
 msgid "AIM Home Screen Name 2"
 msgstr "AIM Ev Hesap Adı 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:210
+#: ../src/addressbook/libebook-contacts/e-contact.c:231
 msgid "AIM Home Screen Name 3"
 msgstr "AIM Ev Hesap Adı 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:211
+#: ../src/addressbook/libebook-contacts/e-contact.c:232
 msgid "AIM Work Screen Name 1"
 msgstr "AIM İş Hesap Adı 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:212
+#: ../src/addressbook/libebook-contacts/e-contact.c:233
 msgid "AIM Work Screen Name 2"
 msgstr "AIM İş Hesap Adı 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:213
+#: ../src/addressbook/libebook-contacts/e-contact.c:234
 msgid "AIM Work Screen Name 3"
 msgstr "AIM İş Hesap Adı 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:214
+#: ../src/addressbook/libebook-contacts/e-contact.c:235
 msgid "GroupWise Home Screen Name 1"
 msgstr "GroupWise Ev Hesap Adı 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:215
+#: ../src/addressbook/libebook-contacts/e-contact.c:236
 msgid "GroupWise Home Screen Name 2"
 msgstr "GroupWise Ev Hesap Adı 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:216
+#: ../src/addressbook/libebook-contacts/e-contact.c:237
 msgid "GroupWise Home Screen Name 3"
 msgstr "GroupWise Ev Hesap Adı 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:217
+#: ../src/addressbook/libebook-contacts/e-contact.c:238
 msgid "GroupWise Work Screen Name 1"
 msgstr "GroupWise İş Hesap Adı 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:218
+#: ../src/addressbook/libebook-contacts/e-contact.c:239
 msgid "GroupWise Work Screen Name 2"
 msgstr "GroupWise İş Hesap Adı 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:219
+#: ../src/addressbook/libebook-contacts/e-contact.c:240
 msgid "GroupWise Work Screen Name 3"
 msgstr "GroupWise İş Hesap Adı 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:220
+#: ../src/addressbook/libebook-contacts/e-contact.c:241
 msgid "Jabber Home ID 1"
 msgstr "Jabber Ev Kimliği 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:221
+#: ../src/addressbook/libebook-contacts/e-contact.c:242
 msgid "Jabber Home ID 2"
 msgstr "Jabber Ev Kimliği 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:222
+#: ../src/addressbook/libebook-contacts/e-contact.c:243
 msgid "Jabber Home ID 3"
 msgstr "Jabber Ev Kimliği 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:223
+#: ../src/addressbook/libebook-contacts/e-contact.c:244
 msgid "Jabber Work ID 1"
 msgstr "Jabber İş Kimliği 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:224
+#: ../src/addressbook/libebook-contacts/e-contact.c:245
 msgid "Jabber Work ID 2"
 msgstr "Jabber İş Kimliği 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:225
+#: ../src/addressbook/libebook-contacts/e-contact.c:246
 msgid "Jabber Work ID 3"
 msgstr "Jabber İş Kimliği 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:226
+#: ../src/addressbook/libebook-contacts/e-contact.c:247
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Yahoo! Ev Hesap Adı 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:227
+#: ../src/addressbook/libebook-contacts/e-contact.c:248
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Yahoo! Ev Hesap Adı 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:228
+#: ../src/addressbook/libebook-contacts/e-contact.c:249
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Yahoo! Ev Hesap Adı 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:229
+#: ../src/addressbook/libebook-contacts/e-contact.c:250
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Yahoo! İş Hesap Adı 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:230
+#: ../src/addressbook/libebook-contacts/e-contact.c:251
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Yahoo! İş Hesap Adı 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:231
+#: ../src/addressbook/libebook-contacts/e-contact.c:252
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Yahoo! İş Hesap Adı 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:232
+#: ../src/addressbook/libebook-contacts/e-contact.c:253
 msgid "MSN Home Screen Name 1"
 msgstr "MSN Ev Hesap Adı 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:233
+#: ../src/addressbook/libebook-contacts/e-contact.c:254
 msgid "MSN Home Screen Name 2"
 msgstr "MSN Ev Hesap Adı 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:234
+#: ../src/addressbook/libebook-contacts/e-contact.c:255
 msgid "MSN Home Screen Name 3"
 msgstr "MSN Ev Hesap Adı 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:235
+#: ../src/addressbook/libebook-contacts/e-contact.c:256
 msgid "MSN Work Screen Name 1"
 msgstr "MSN İş Hesap Adı 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:236
+#: ../src/addressbook/libebook-contacts/e-contact.c:257
 msgid "MSN Work Screen Name 2"
 msgstr "MSN İş Hesap Adı 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:237
+#: ../src/addressbook/libebook-contacts/e-contact.c:258
 msgid "MSN Work Screen Name 3"
 msgstr "MSN İş Hesap Adı 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:238
+#: ../src/addressbook/libebook-contacts/e-contact.c:259
 msgid "ICQ Home ID 1"
 msgstr "ICQ Ev Kimliği 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:239
+#: ../src/addressbook/libebook-contacts/e-contact.c:260
 msgid "ICQ Home ID 2"
 msgstr "ICQ Ev Kimliği 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:240
+#: ../src/addressbook/libebook-contacts/e-contact.c:261
 msgid "ICQ Home ID 3"
 msgstr "ICQ Ev Kimliği 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:241
+#: ../src/addressbook/libebook-contacts/e-contact.c:262
 msgid "ICQ Work ID 1"
 msgstr "ICQ İş Kimliği 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:242
+#: ../src/addressbook/libebook-contacts/e-contact.c:263
 msgid "ICQ Work ID 2"
 msgstr "ICQ İş Kimliği 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:243
+#: ../src/addressbook/libebook-contacts/e-contact.c:264
 msgid "ICQ Work ID 3"
 msgstr "ICQ İş Kimliği 3"
 
 #. Last modified time
-#: ../src/addressbook/libebook-contacts/e-contact.c:246
+#: ../src/addressbook/libebook-contacts/e-contact.c:267
 msgid "Last Revision"
 msgstr "Son Gözden Geçirme"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * virtual field, which returns either name of the contact or the organization
 #. * name, recognized by multiple other fields, where the first filled is used.
-#: ../src/addressbook/libebook-contacts/e-contact.c:250
+#: ../src/addressbook/libebook-contacts/e-contact.c:271
 msgid "Name or Org"
 msgstr "Ad ya da Kurum"
 
 #. Address fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:253
+#: ../src/addressbook/libebook-contacts/e-contact.c:274
 msgid "Address List"
 msgstr "Adres Listesi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:254
+#: ../src/addressbook/libebook-contacts/e-contact.c:275
 msgid "Home Address"
 msgstr "Ev Adresi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:255
+#: ../src/addressbook/libebook-contacts/e-contact.c:276
 msgid "Work Address"
 msgstr "İş Adresi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:256
+#: ../src/addressbook/libebook-contacts/e-contact.c:277
 msgid "Other Address"
 msgstr "Diğer Adres"
 
 #. Contact categories
-#: ../src/addressbook/libebook-contacts/e-contact.c:259
+#: ../src/addressbook/libebook-contacts/e-contact.c:280
 msgid "Category List"
 msgstr "Kategori Listesi"
 
 #. Photo/Logo
-#: ../src/addressbook/libebook-contacts/e-contact.c:262
+#: ../src/addressbook/libebook-contacts/e-contact.c:283
 msgid "Photo"
 msgstr "Fotoğraf"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:263
+#: ../src/addressbook/libebook-contacts/e-contact.c:284
 msgid "Logo"
 msgstr "Logo"
 
 #. Translators: This is an EContact field description, in this case it's a name
 #. * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
-#: ../src/addressbook/libebook-contacts/e-contact.c:267
+#: ../src/addressbook/libebook-contacts/e-contact.c:288
 #: ../src/libedataserverui/e-webdav-discover-widget.c:151
 msgid "Name"
 msgstr "Ad"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:268
+#: ../src/addressbook/libebook-contacts/e-contact.c:289
 msgid "Email List"
 msgstr "E-posta Listesi"
 
 #. Instant messaging fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:271
+#: ../src/addressbook/libebook-contacts/e-contact.c:292
 msgid "AIM Screen Name List"
 msgstr "AIM Hesap Adı Listesi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:272
+#: ../src/addressbook/libebook-contacts/e-contact.c:293
 msgid "GroupWise ID List"
 msgstr "GroupWise Kimlik Listesi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:273
+#: ../src/addressbook/libebook-contacts/e-contact.c:294
 msgid "Jabber ID List"
 msgstr "Jabber Kimlik Listesi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:274
+#: ../src/addressbook/libebook-contacts/e-contact.c:295
 msgid "Yahoo! Screen Name List"
 msgstr "Yahoo! Hesap Adı Listesi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:275
+#: ../src/addressbook/libebook-contacts/e-contact.c:296
 msgid "MSN Screen Name List"
 msgstr "MSN Hesap Adı Listesi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:276
+#: ../src/addressbook/libebook-contacts/e-contact.c:297
 msgid "ICQ ID List"
 msgstr "ICQ Kimlik Listesi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:278
+#: ../src/addressbook/libebook-contacts/e-contact.c:299
 msgid "Wants HTML Mail"
 msgstr "HTML Mektup İstiyor"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * field describing whether it's a Contact list (list of email addresses) or a
 #. * regular contact for one person/organization/...
-#: ../src/addressbook/libebook-contacts/e-contact.c:283
+#: ../src/addressbook/libebook-contacts/e-contact.c:304
 msgid "List"
 msgstr "Liste"
 
@@ -781,130 +801,130 @@ msgstr "Liste"
 #. * used to determine whether when sending to Contact lists the addresses should be
 #. * shown or not to other recipients - basically whether to use BCC field or CC
 #. * message header when sending messages to this Contact list.
-#: ../src/addressbook/libebook-contacts/e-contact.c:288
+#: ../src/addressbook/libebook-contacts/e-contact.c:309
 msgid "List Shows Addresses"
 msgstr "Liste Adresleri Göstersin"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:290
+#: ../src/addressbook/libebook-contacts/e-contact.c:311
 msgid "Birth Date"
 msgstr "Doğum Günü"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:291
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:960
+#: ../src/addressbook/libebook-contacts/e-contact.c:312
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:961
 msgid "Anniversary"
 msgstr "Yıldönümü"
 
 #. Security fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:294
+#: ../src/addressbook/libebook-contacts/e-contact.c:315
 msgid "X.509 Certificate"
 msgstr "X.509 Sertifikası"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:295
+#: ../src/addressbook/libebook-contacts/e-contact.c:316
 msgid "PGP Certificate"
 msgstr "PGP Sertifikası"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:297
+#: ../src/addressbook/libebook-contacts/e-contact.c:318
 msgid "Gadu-Gadu Home ID 1"
 msgstr "Gadu-Gadu Ev Kimliği 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:298
+#: ../src/addressbook/libebook-contacts/e-contact.c:319
 msgid "Gadu-Gadu Home ID 2"
 msgstr "Gadu-Gadu Ev Kimliği 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:299
+#: ../src/addressbook/libebook-contacts/e-contact.c:320
 msgid "Gadu-Gadu Home ID 3"
 msgstr "Gadu-Gadu Ev Kimliği 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:300
+#: ../src/addressbook/libebook-contacts/e-contact.c:321
 msgid "Gadu-Gadu Work ID 1"
 msgstr "Gadu-Gadu İş Kimliği 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:301
+#: ../src/addressbook/libebook-contacts/e-contact.c:322
 msgid "Gadu-Gadu Work ID 2"
 msgstr "Gadu-Gadu İş Kimliği 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:302
+#: ../src/addressbook/libebook-contacts/e-contact.c:323
 msgid "Gadu-Gadu Work ID 3"
 msgstr "Gadu-Gadu İş Kimliği 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:303
+#: ../src/addressbook/libebook-contacts/e-contact.c:324
 msgid "Gadu-Gadu ID List"
 msgstr "Gadu-Gadu Kimlik Listesi"
 
 #. Geo information
-#: ../src/addressbook/libebook-contacts/e-contact.c:306
+#: ../src/addressbook/libebook-contacts/e-contact.c:327
 msgid "Geographic Information"
 msgstr "Coğrafik Bilgi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:308
+#: ../src/addressbook/libebook-contacts/e-contact.c:329
 msgid "Telephone"
 msgstr "Telefon"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:310
+#: ../src/addressbook/libebook-contacts/e-contact.c:331
 msgid "Skype Home Name 1"
 msgstr "Skype Ev Hesap Adı 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:311
+#: ../src/addressbook/libebook-contacts/e-contact.c:332
 msgid "Skype Home Name 2"
 msgstr "Skype Ev Hesap Adı 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:312
+#: ../src/addressbook/libebook-contacts/e-contact.c:333
 msgid "Skype Home Name 3"
 msgstr "Skype Ev Hesap Adı 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:313
+#: ../src/addressbook/libebook-contacts/e-contact.c:334
 msgid "Skype Work Name 1"
 msgstr "Skype İş Hesap Adı 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:314
+#: ../src/addressbook/libebook-contacts/e-contact.c:335
 msgid "Skype Work Name 2"
 msgstr "Skype İş Hesap Adı 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:315
+#: ../src/addressbook/libebook-contacts/e-contact.c:336
 msgid "Skype Work Name 3"
 msgstr "Skype İş Hesap Adı 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:316
+#: ../src/addressbook/libebook-contacts/e-contact.c:337
 msgid "Skype Name List"
 msgstr "Skype Ad Listesi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:318
+#: ../src/addressbook/libebook-contacts/e-contact.c:339
 msgid "SIP address"
 msgstr "SIP adresi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:320
+#: ../src/addressbook/libebook-contacts/e-contact.c:341
 msgid "Google Talk Home Name 1"
 msgstr "Google Talk Ev Hesap Adı 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:321
+#: ../src/addressbook/libebook-contacts/e-contact.c:342
 msgid "Google Talk Home Name 2"
 msgstr "Google Talk Ev Hesap Adı 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:322
+#: ../src/addressbook/libebook-contacts/e-contact.c:343
 msgid "Google Talk Home Name 3"
 msgstr "Google Talk Ev Hesap Adı 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:323
+#: ../src/addressbook/libebook-contacts/e-contact.c:344
 msgid "Google Talk Work Name 1"
 msgstr "Google Talk İş Hesap Adı 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:324
+#: ../src/addressbook/libebook-contacts/e-contact.c:345
 msgid "Google Talk Work Name 2"
 msgstr "Google Talk İş Hesap Adı 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:325
+#: ../src/addressbook/libebook-contacts/e-contact.c:346
 msgid "Google Talk Work Name 3"
 msgstr "Google Talk İş Hesap Adı 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:326
+#: ../src/addressbook/libebook-contacts/e-contact.c:347
 msgid "Google Talk Name List"
 msgstr "Google Talk Ad Listesi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:328
+#: ../src/addressbook/libebook-contacts/e-contact.c:349
 msgid "Twitter Name List"
 msgstr "Twitter Ad Listesi"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:1658
+#: ../src/addressbook/libebook-contacts/e-contact.c:1914
 #: ../src/addressbook/libebook/e-destination.c:920
 msgid "Unnamed List"
 msgstr "Adsız Liste"
@@ -940,30 +960,35 @@ msgstr "Metin telefon numarası oluşturmayacak kadar kısa"
 msgid "Text is too long for a phone number"
 msgstr "Metin telefon numarası olamayacak kadar uzun"
 
-#: ../src/addressbook/libebook/e-book-client.c:929
+#: ../src/addressbook/libebook/e-book-client.c:930
 #, c-format
 msgid "Unknown book property “%s”"
 msgstr "Bilinmeyen kitap özelliği “%s”"
 
-#: ../src/addressbook/libebook/e-book-client.c:944
+#: ../src/addressbook/libebook/e-book-client.c:945
 #, c-format
 msgid "Cannot change value of book property “%s”"
 msgstr "“%s” defter özelliğinin değeri değiştirilemiyor"
 
-#: ../src/addressbook/libebook/e-book-client.c:1388
-#: ../src/addressbook/libebook/e-book-client.c:1619
-#: ../src/addressbook/libebook/e-book-client.c:1896
-#: ../src/calendar/libecal/e-cal-client.c:1716
-#: ../src/calendar/libecal/e-cal-client.c:1954
+#: ../src/addressbook/libebook/e-book-client.c:1389
+#: ../src/addressbook/libebook/e-book-client.c:1620
+#: ../src/addressbook/libebook/e-book-client.c:1897
+#: ../src/calendar/libecal/e-cal-client.c:1714
+#: ../src/calendar/libecal/e-cal-client.c:1952
 #, c-format
 msgid "Unable to connect to “%s”: "
 msgstr "“%s”e bağlanılamadı: "
 
 #: ../src/addressbook/libebook/e-book-client-view.c:872
-#: ../src/calendar/libecal/e-cal-client-view.c:685
+#: ../src/calendar/libecal/e-cal-client-view.c:678
 #, c-format
 msgid "Client disappeared"
 msgstr "İstemci kayboldu"
+
+#: ../src/addressbook/libedata-book/e-book-backend.c:3259
+#, c-format
+msgid "Addressbook backend does not support cursors"
+msgstr "Adres defteri art alanı imleçleri desteklemiyor"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:905
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:2255
@@ -971,27 +996,27 @@ msgstr "İstemci kayboldu"
 msgid "Error introspecting unknown summary field “%s”"
 msgstr "“%s” bilinmeyen özet alanının incelenmesinde hata"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1515
-#: ../src/addressbook/libedata-book/e-book-cache.c:543
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1514
+#: ../src/addressbook/libedata-book/e-book-cache.c:548
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1394
 msgid "Error parsing regular expression"
 msgstr "Düzenli ifade ayrıştırmada hata"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1560
-#: ../src/addressbook/libedata-book/e-book-cache.c:4527
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1559
+#: ../src/addressbook/libedata-book/e-book-cache.c:4585
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1878
 #: ../src/camel/camel-db.c:820
 #, c-format
 msgid "Insufficient memory"
 msgstr "Yetersiz bellek"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1697
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1696
 #, c-format
 msgid "Invalid contact field “%d” specified in summary"
 msgstr "Özette belirtilen kişi alanı “%d” geçersiz"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1731
-#: ../src/addressbook/libedata-book/e-book-cache.c:366
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1730
+#: ../src/addressbook/libedata-book/e-book-cache.c:371
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:605
 #, c-format
 msgid ""
@@ -1001,28 +1026,28 @@ msgstr ""
 "Özette belirtilen “%2$s” türünün kişi alanı “%1$s”; yalnızca bool, dizgi ve "
 "dizgi listesi tipleri destekleniyor"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3075
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4177
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3074
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4175
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
 msgstr ""
 "search_contactsʼın tümü önbelleğe kaydedilmemiş. vcardʼlar getirilemedi."
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4308
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4401
-#: ../src/addressbook/libedata-book/e-book-cache.c:3445
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4306
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4399
+#: ../src/addressbook/libedata-book/e-book-cache.c:3467
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5844
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Sorgu desteklenmeyen elemanlar içeriyordu"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4312
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4310
 #, c-format
 msgid "Invalid Query"
 msgstr "Geçersiz Sorgu"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4336
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4334
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
@@ -1031,17 +1056,15 @@ msgstr ""
 "search_contactsʼın tümü önbelleğe kaydedilmemiş. Yalnızca özet sorgular "
 "destekleniyor."
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4405
-#: ../src/addressbook/libedata-book/e-data-book.c:394
-#: ../src/addressbook/libedata-book/e-data-book.c:1144
-#: ../src/calendar/libedata-cal/e-data-cal.c:429
-#: ../src/calendar/libedata-cal/e-data-cal.c:1436
-#: ../src/libedataserver/e-client.c:175
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4403
+#: ../src/addressbook/libedata-book/e-data-book.c:871
+#: ../src/calendar/libedata-cal/e-data-cal.c:1146
+#: ../src/libedataserver/e-client.c:174
 #, c-format
 msgid "Invalid query"
 msgstr "Geçersiz sorgu"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4448
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4446
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
@@ -1049,35 +1072,35 @@ msgstr ""
 "vcardʼların tümü önbelleğe kaydedilmemiş. Yalnızca özet sorgular "
 "destekleniyor."
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:5271
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:5269
 #, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr "Veri tabanı dosyası silinemedi: hata no %d"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6058
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6458
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6056
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6456
 #, c-format
 msgid "Only summary queries are supported by EbSdbCursor"
 msgstr "EbSdbCursor yalnızca özet sorguları destekler"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6065
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6063
 #, c-format
 msgid "At least one sort field must be specified to use an EbSdbCursor"
 msgstr "EbSdbCursor kullanabilmek için en az bir sıralama alanı belirtilmeli"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6079
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6077
 #, c-format
 msgid "Cannot sort by a field that is not in the summary"
 msgstr ""
 "EbSdbCursorʼun kullanılabilmesi için en az bir arama alanı belirtilmelidir"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6086
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6084
 #, c-format
 msgid "Cannot sort by a field which may have multiple values"
 msgstr "Birden çok değeri olabilecek bir alan sıralanamıyor"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6219
-#: ../src/addressbook/libedata-book/e-book-cache.c:5613
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6217
+#: ../src/addressbook/libedata-book/e-book-cache.c:5796
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8143
 #, c-format
 msgid ""
@@ -1087,8 +1110,8 @@ msgstr ""
 "İmleç bir adım geri götürülmeye çalışıldı, ama zaten bağlantı listesinin "
 "başında"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6227
-#: ../src/addressbook/libedata-book/e-book-cache.c:5620
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6225
+#: ../src/addressbook/libedata-book/e-book-cache.c:5803
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8151
 #, c-format
 msgid ""
@@ -1098,72 +1121,76 @@ msgstr ""
 "İmleç bir adım ileri götürülmeye çalışıldı, ama zaten bağlantı listesinin "
 "sonunda"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:331
+#: ../src/addressbook/libedata-book/e-book-cache.c:336
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:571
 #, c-format
 msgid "Unsupported contact field “%d” specified in summary"
 msgstr "Özette desteklenmeyen kişi alanı “%d” belirtilmiş"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:3440
+#: ../src/addressbook/libedata-book/e-book-cache.c:3462
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5837
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1621
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3314
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1653
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3517
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Geçersiz sorgu: %s"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:3610
+#: ../src/addressbook/libedata-book/e-book-cache.c:3647
 msgid "Invalid query for a book cursor"
 msgstr "Defter imleci için geçersiz sorgu"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:4531
+#: ../src/addressbook/libedata-book/e-book-cache.c:4589
 #: ../src/libebackend/e-cache.c:759
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "%s veri tabanı açılamadı: %s"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5134
-#: ../src/addressbook/libedata-book/e-book-cache.c:5186
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2730
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2793
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2964
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1342
+#: ../src/addressbook/libedata-book/e-book-cache.c:5223
+#: ../src/addressbook/libedata-book/e-book-cache.c:5270
+#: ../src/addressbook/libedata-book/e-book-cache.c:5317
+#: ../src/addressbook/libedata-book/e-book-cache.c:5369
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2799
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2857
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2916
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2979
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3150
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1352
 #: ../src/libebackend/e-cache.c:1374 ../src/libebackend/e-cache.c:2352
 #: ../src/libebackend/e-cache.c:2392
 #, c-format
 msgid "Object “%s” not found"
 msgstr "“%s” nesnesi bulunamadı"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5246
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2855
+#: ../src/addressbook/libedata-book/e-book-cache.c:5429
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3041
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "“%s” ekli nesne bulunamadı"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5400
+#: ../src/addressbook/libedata-book/e-book-cache.c:5583
 msgid "At least one sort field must be specified to use a cursor"
 msgstr "İmleç kullanabilmek için en az bir sıralama alanı belirtilmeli"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5409
+#: ../src/addressbook/libedata-book/e-book-cache.c:5592
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7983
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Metin biçiminde olmayan alan sıralanamaz"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1052
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1063
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1064
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1075
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "UID “%s” için önceden yüklenmiş nesne geçersiz"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1060
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1071
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1072
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1083
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "UID “%s” için alınan nesne geçersiz"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1887
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2335
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3220
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1898
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2345
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3285
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "“%s” önbelleği oluşturulamadı:"
@@ -1184,178 +1211,48 @@ msgstr "EbSqlCursor için geçersiz sorgu"
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr "EbSqlCursor kullanmak için en az bir arama alanı belirtilmeli"
 
-#: ../src/addressbook/libedata-book/e-data-book.c:378
-#: ../src/calendar/libedata-cal/e-data-cal.c:410
-msgid "Success"
-msgstr "Başarılı"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:379
-#: ../src/calendar/libecal/e-cal.c:2302
-#: ../src/calendar/libedata-cal/e-data-cal.c:411
-#: ../src/libedataserver/e-client.c:142
-msgid "Backend is busy"
-msgstr "Araç meşgul"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:380
-#: ../src/calendar/libedata-cal/e-data-cal.c:412
-#: ../src/libedataserver/e-client.c:152
-msgid "Repository offline"
-msgstr "Depo çevrim dışı"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:381
-#: ../src/calendar/libecal/e-cal.c:2316
-#: ../src/calendar/libedata-cal/e-data-cal.c:413
-#: ../src/libedataserver/e-client.c:159
-msgid "Permission denied"
-msgstr "İzin verilmedi"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:384
-#: ../src/calendar/libedata-cal/e-data-cal.c:418
-msgid "Authentication Failed"
-msgstr "Kimlik Doğrulama Başarısız"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:385
-#: ../src/calendar/libedata-cal/e-data-cal.c:419
-msgid "Authentication Required"
-msgstr "Kimlik Doğrulaması Gerekli"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:386
-#: ../src/calendar/libedata-cal/e-data-cal.c:420
-msgid "Unsupported field"
-msgstr "Desteklenmeyen alan"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:387
-#: ../src/calendar/libedata-cal/e-data-cal.c:422
-#: ../src/libedataserver/e-client.c:167
-msgid "Unsupported authentication method"
-msgstr "Desteklenmeyen yetkilendirme yöntemi"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:388
-#: ../src/calendar/libedata-cal/e-data-cal.c:423
-#: ../src/libedataserver/e-client.c:169
-msgid "TLS not available"
-msgstr "TLS kullanılabilir değil"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:389
-msgid "Address book does not exist"
-msgstr "Adres defteri yok"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:390
-msgid "Book removed"
-msgstr "Kitap silindi"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:391
-#: ../src/calendar/libedata-cal/e-data-cal.c:426
-msgid "Not available in offline mode"
-msgstr "Çevrim dışı kipte kullanılabilir değil"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:392
-#: ../src/calendar/libedata-cal/e-data-cal.c:427
-#: ../src/libedataserver/e-client.c:171
-msgid "Search size limit exceeded"
-msgstr "Arama boyutu sınırı geçildi"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:393
-#: ../src/calendar/libedata-cal/e-data-cal.c:428
-#: ../src/libedataserver/e-client.c:173
-msgid "Search time limit exceeded"
-msgstr "Arama zamanı sınırı geçildi"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:395
-#: ../src/calendar/libedata-cal/e-data-cal.c:430
-#: ../src/libedataserver/e-client.c:177
-msgid "Query refused"
-msgstr "Sorgu reddedildi"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:396
-#: ../src/calendar/libedata-cal/e-data-cal.c:431
-#: ../src/libedataserver/e-client.c:163
-msgid "Could not cancel"
-msgstr "İptal edilemedi"
-
-#. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
-#. { OtherError,			N_("Other error") },
-#: ../src/addressbook/libedata-book/e-data-book.c:398
-#: ../src/calendar/libedata-cal/e-data-cal.c:433
-msgid "Invalid server version"
-msgstr "Geçersiz sunucu sürümü"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:400
-#: ../src/calendar/libecal/e-cal.c:2300
-#: ../src/calendar/libedata-cal/e-data-cal.c:434
-#: ../src/camel/camel-sasl-anonymous.c:115 ../src/libedataserver/e-client.c:140
-msgid "Invalid argument"
-msgstr "Geçersiz argüman"
-
-#. Translators: The string for NOT_SUPPORTED error
-#: ../src/addressbook/libedata-book/e-data-book.c:402
-#: ../src/calendar/libecal/e-cal.c:1057 ../src/calendar/libecal/e-cal.c:1425
-#: ../src/calendar/libecal/e-cal.c:1907 ../src/calendar/libecal/e-cal.c:2339
-#: ../src/calendar/libedata-cal/e-data-cal.c:436
-#: ../src/libedataserver/e-client.c:165
-#, c-format
-msgid "Not supported"
-msgstr "Desteklenmiyor"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:403
-#: ../src/calendar/libedata-cal/e-data-cal.c:437
-#: ../src/libedataserver/e-client.c:183
-msgid "Backend is not opened yet"
-msgstr "Art alan henüz açık değil"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:404
-#: ../src/libedataserver/e-client.c:185
-msgid "Object is out of sync"
-msgstr "Nesne eşleşmiş değil"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:412
-#: ../src/calendar/libedata-cal/e-data-cal.c:445
-#: ../src/libedataserver/e-client.c:181
-msgid "Other error"
-msgstr "Diğer hata"
-
-#: ../src/addressbook/libedata-book/e-data-book.c:1169
-#: ../src/calendar/libedata-cal/e-data-cal.c:1461
+#: ../src/addressbook/libedata-book/e-data-book.c:896
+#: ../src/calendar/libedata-cal/e-data-cal.c:1171
 msgid "Invalid query: "
 msgstr "Geçersiz sorgu: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1418
+#: ../src/addressbook/libedata-book/e-data-book.c:1145
 msgid "Cannot open book: "
 msgstr "Kitap açılamıyor: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1456
+#: ../src/addressbook/libedata-book/e-data-book.c:1183
 msgid "Cannot refresh address book: "
 msgstr "Adres defteri tazelenemedi: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1497
+#: ../src/addressbook/libedata-book/e-data-book.c:1224
 msgid "Cannot get contact: "
 msgstr "Bağlantı alınamadı: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1546
+#: ../src/addressbook/libedata-book/e-data-book.c:1269
 msgid "Cannot get contact list: "
-msgstr "Kişi listesi alınamıyor: "
+msgstr "Bağlantı listesi alınamıyor: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1602
+#: ../src/addressbook/libedata-book/e-data-book.c:1321
 msgid "Cannot get contact list uids: "
 msgstr "Bağlantı listesi uidʼleri alınamadı: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1653
+#: ../src/addressbook/libedata-book/e-data-book.c:1372
 msgid "Cannot add contact: "
 msgstr "Kişi eklenemiyor: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1706
+#: ../src/addressbook/libedata-book/e-data-book.c:1423
 msgid "Cannot modify contacts: "
 msgstr "Bağlantılar düzenlenemiyor: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1759
+#: ../src/addressbook/libedata-book/e-data-book.c:1475
 msgid "Cannot remove contacts: "
 msgstr "Kişiler kaldırılamıyor: "
 
@@ -1386,12 +1283,12 @@ msgstr "İmleç hareket ettirilirken eşleşmemiş sürüm"
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Alfabetik indeks geçersiz bir yerele ayarlanmış"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:206
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:207
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Verilen URL “%s”, CalDAV takvimine ait değil"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1322
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1386
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. Remove it, please."
@@ -1399,23 +1296,27 @@ msgstr ""
 "Bileşen URLʼsi hakkında eksik bilgi, yerel önbellek eksik veya hatalı, "
 "düzeltin veya kaldırın."
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1796
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1862
 msgid "Failed to parse response data"
 msgstr "Yanıt verisi ayrıştırılamadı"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:962
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:963
 msgid "Birthday"
 msgstr "Doğum günü"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:998
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:999
 #, c-format
 msgid "Birthday: %s"
 msgstr "Doğum günü: %s"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1029
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1030
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Yıldönümü: %s"
+
+#: ../src/calendar/backends/file/e-cal-backend-file.c:47
+msgid "Cannot get URI"
+msgstr "URI alınamadı"
 
 #: ../src/calendar/backends/file/e-cal-backend-file.c:243
 msgid "Cannot save calendar data: Malformed URI."
@@ -1426,345 +1327,315 @@ msgstr "Takvim verisi kaydedilemedi: Hatalı URI."
 msgid "Cannot save calendar data"
 msgstr "Takvim verisi kaydedilemedi"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:168
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1171
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1300
+#, c-format
+msgid "Cannot parse ISC file “%s”"
+msgstr "“%s” ISC dosyası ayrıştırılamıyor"
+
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1182
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1311
+#, c-format
+msgid "File “%s” is not a VCALENDAR component"
+msgstr "“%s” dosyası bir VCALENDAR bileşeni değil"
+
+#. FIXME This should be doable once all the recurid stuff is done
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3622
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3628
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3634
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3661
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2521
+msgid "Unsupported method"
+msgstr "Desteklenmeyen yöntem"
+
+#: ../src/calendar/backends/http/e-cal-backend-http.c:169
 msgid "URI not set"
 msgstr "URI belirlenmemiş"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:247
+#: ../src/calendar/backends/http/e-cal-backend-http.c:248
 #, c-format
 msgid "Malformed URI “%s”: %s"
 msgstr "Bozuk URI “%s”: %s"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:388
+#: ../src/calendar/backends/http/e-cal-backend-http.c:390
 #, c-format
 msgid "Bad file format."
 msgstr "Geçersiz dosya biçimi."
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:397
+#: ../src/calendar/backends/http/e-cal-backend-http.c:399
 #, c-format
 msgid "Not a calendar."
 msgstr "Takvim değil."
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:196
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:175
 msgid "Could not retrieve weather data"
 msgstr "Hava durumu verisi alınamadı"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:379
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:353
 msgid "Weather: Fog"
 msgstr "Hava durumu: Sisli"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:380
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:354
 msgid "Weather: Cloudy Night"
 msgstr "Hava durumu: Bulutlu Gece"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:381
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:355
 msgid "Weather: Cloudy"
 msgstr "Hava durumu: Bulutlu"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:382
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:356
 msgid "Weather: Overcast"
 msgstr "Hava durumu: Kapalı"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:383
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:357
 msgid "Weather: Showers"
 msgstr "Hava durumu: Hafif Yağışlı"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:384
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:358
 msgid "Weather: Snow"
 msgstr "Hava durumu: Yağmulu"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:385
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:359
 msgid "Weather: Clear Night"
 msgstr "Hava durumu: Açık Gece"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:386
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:360
 msgid "Weather: Sunny"
 msgstr "Hava durumu: Güneşli"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:387
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:361
 msgid "Weather: Thunderstorms"
 msgstr "Hava durumu: Gök Gürültülü"
 
 #. TRANSLATOR: This is the temperature in degrees Fahrenheit (\302\260 is U+00B0 DEGREE SIGN)
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:413
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:387
 #, c-format
 msgid "%.1f °F"
 msgstr "%.1f °F"
 
 #. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN)
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:416
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:390
 #, c-format
 msgid "%.1f °C"
 msgstr "%.1f °C"
 
 #. TRANSLATOR: This is the temperature in kelvin
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:419
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:393
 #, c-format
 msgid "%.1f K"
 msgstr "%.1f K"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:425
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:399
 #, c-format
 msgid "%.1f"
 msgstr "%.1f"
 
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:562
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:590
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:618
 msgid "Forecast"
 msgstr "Tahmin"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:713
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:686
 msgid "Could not create cache file"
 msgstr "Önbellek dosyası oluşturulamadı"
 
-#: ../src/calendar/libecal/e-cal.c:2304
-msgid "Repository is offline"
-msgstr "Depo çevrim dışı"
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:688
+msgid "Could not create cache file: "
+msgstr "Önbellek dosyası oluşturulamadı: "
 
-#: ../src/calendar/libecal/e-cal.c:2306
-#: ../src/calendar/libecal/e-cal-client.c:264
+#: ../src/calendar/libecal/e-cal-client.c:247
 msgid "No such calendar"
 msgstr "Bu adda bir takvim yok"
 
-#: ../src/calendar/libecal/e-cal.c:2308
-#: ../src/calendar/libecal/e-cal-client.c:266
-#: ../src/calendar/libedata-cal/e-data-cal.c:415
+#: ../src/calendar/libecal/e-cal-client.c:249
 msgid "Object not found"
 msgstr "Nesne bulunamadı"
 
-#: ../src/calendar/libecal/e-cal.c:2310
-#: ../src/calendar/libecal/e-cal-client.c:268
-#: ../src/calendar/libedata-cal/e-data-cal.c:416
+#: ../src/calendar/libecal/e-cal-client.c:251
 msgid "Invalid object"
 msgstr "Geçersiz nesne"
 
-#: ../src/calendar/libecal/e-cal.c:2312
-msgid "URI not loaded"
-msgstr "URI yüklü değil"
-
-#: ../src/calendar/libecal/e-cal.c:2314
-msgid "URI already loaded"
-msgstr "URI zaten yüklü"
-
-#: ../src/calendar/libecal/e-cal.c:2318
-msgid "Unknown User"
-msgstr "Bilinmeyen Kullanıcı"
-
-#: ../src/calendar/libecal/e-cal.c:2320
-#: ../src/calendar/libecal/e-cal-client.c:272
-#: ../src/calendar/libedata-cal/e-data-cal.c:417
-msgid "Object ID already exists"
-msgstr "Nesne IDʼsi zaten var"
-
-#: ../src/calendar/libecal/e-cal.c:2322
-msgid "Protocol not supported"
-msgstr "İletişim kuralı desteklenmiyor"
-
-#: ../src/calendar/libecal/e-cal.c:2324
-msgid "Operation has been cancelled"
-msgstr "İşlem iptal edildi"
-
-#: ../src/calendar/libecal/e-cal.c:2326
-msgid "Could not cancel operation"
-msgstr "İşlem iptal edilemedi"
-
-#: ../src/calendar/libecal/e-cal.c:2328 ../src/libedataserver/e-client.c:148
-msgid "Authentication failed"
-msgstr "Kimlik doğrulaması başarısız"
-
-#: ../src/calendar/libecal/e-cal.c:2330
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1124
-#: ../src/libedataserver/e-client.c:150
-msgid "Authentication required"
-msgstr "Kimlik doğrulaması gerekli"
-
-#: ../src/calendar/libecal/e-cal.c:2332
-msgid "A D-Bus exception has occurred"
-msgstr "Bir D-Bus istisnası oluştu"
-
-#: ../src/calendar/libecal/e-cal.c:2336
-msgid "No error"
-msgstr "Hata yok"
-
-#: ../src/calendar/libecal/e-cal-client.c:270
-#: ../src/calendar/libedata-cal/e-data-cal.c:425
+#: ../src/calendar/libecal/e-cal-client.c:253
 msgid "Unknown user"
 msgstr "Bilinmeyen kullanıcı"
 
-#: ../src/calendar/libecal/e-cal-client.c:274
-#: ../src/calendar/libedata-cal/e-data-cal.c:414
+#: ../src/calendar/libecal/e-cal-client.c:255
+msgid "Object ID already exists"
+msgstr "Nesne IDʼsi zaten var"
+
+#: ../src/calendar/libecal/e-cal-client.c:257
 msgid "Invalid range"
 msgstr "Geçersiz aralık"
 
-#: ../src/calendar/libecal/e-cal-client.c:1063
+#: ../src/calendar/libecal/e-cal-client.c:1076
 #, c-format
 msgid "Unknown calendar property “%s”"
 msgstr "Bilinmeyen takvim özelliği “%s”"
 
-#: ../src/calendar/libecal/e-cal-client.c:1078
+#: ../src/calendar/libecal/e-cal-client.c:1091
 #, c-format
 msgid "Cannot change value of calendar property “%s”"
 msgstr "“%s” takvim özelliğinin değeri değiştirilemiyor"
 
-#: ../src/calendar/libecal/e-cal-component.c:1330
+#: ../src/calendar/libecal/e-cal-component.c:718
 msgid "Untitled appointment"
 msgstr "Başlıksız randevu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4751
+#: ../src/calendar/libecal/e-cal-recur.c:4883
 msgid "1st"
 msgstr "1."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4752
+#: ../src/calendar/libecal/e-cal-recur.c:4884
 msgid "2nd"
 msgstr "2."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4753
+#: ../src/calendar/libecal/e-cal-recur.c:4885
 msgid "3rd"
 msgstr "3."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4754
+#: ../src/calendar/libecal/e-cal-recur.c:4886
 msgid "4th"
 msgstr "4."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4755
+#: ../src/calendar/libecal/e-cal-recur.c:4887
 msgid "5th"
 msgstr "5."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4756
+#: ../src/calendar/libecal/e-cal-recur.c:4888
 msgid "6th"
 msgstr "6."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4757
+#: ../src/calendar/libecal/e-cal-recur.c:4889
 msgid "7th"
 msgstr "7."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4758
+#: ../src/calendar/libecal/e-cal-recur.c:4890
 msgid "8th"
 msgstr "8."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4759
+#: ../src/calendar/libecal/e-cal-recur.c:4891
 msgid "9th"
 msgstr "9."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4760
+#: ../src/calendar/libecal/e-cal-recur.c:4892
 msgid "10th"
 msgstr "10."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4761
+#: ../src/calendar/libecal/e-cal-recur.c:4893
 msgid "11th"
 msgstr "11."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4762
+#: ../src/calendar/libecal/e-cal-recur.c:4894
 msgid "12th"
 msgstr "12."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4763
+#: ../src/calendar/libecal/e-cal-recur.c:4895
 msgid "13th"
 msgstr "13."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4764
+#: ../src/calendar/libecal/e-cal-recur.c:4896
 msgid "14th"
 msgstr "14."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4765
+#: ../src/calendar/libecal/e-cal-recur.c:4897
 msgid "15th"
 msgstr "15."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4766
+#: ../src/calendar/libecal/e-cal-recur.c:4898
 msgid "16th"
 msgstr "16."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4767
+#: ../src/calendar/libecal/e-cal-recur.c:4899
 msgid "17th"
 msgstr "17."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4768
+#: ../src/calendar/libecal/e-cal-recur.c:4900
 msgid "18th"
 msgstr "18."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4769
+#: ../src/calendar/libecal/e-cal-recur.c:4901
 msgid "19th"
 msgstr "19."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4770
+#: ../src/calendar/libecal/e-cal-recur.c:4902
 msgid "20th"
 msgstr "20."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4771
+#: ../src/calendar/libecal/e-cal-recur.c:4903
 msgid "21st"
 msgstr "21."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4772
+#: ../src/calendar/libecal/e-cal-recur.c:4904
 msgid "22nd"
 msgstr "22."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4773
+#: ../src/calendar/libecal/e-cal-recur.c:4905
 msgid "23rd"
 msgstr "23."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4774
+#: ../src/calendar/libecal/e-cal-recur.c:4906
 msgid "24th"
 msgstr "24."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4775
+#: ../src/calendar/libecal/e-cal-recur.c:4907
 msgid "25th"
 msgstr "25."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4776
+#: ../src/calendar/libecal/e-cal-recur.c:4908
 msgid "26th"
 msgstr "26."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4777
+#: ../src/calendar/libecal/e-cal-recur.c:4909
 msgid "27th"
 msgstr "27."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4778
+#: ../src/calendar/libecal/e-cal-recur.c:4910
 msgid "28th"
 msgstr "28."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4779
+#: ../src/calendar/libecal/e-cal-recur.c:4911
 msgid "29th"
 msgstr "29."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4780
+#: ../src/calendar/libecal/e-cal-recur.c:4912
 msgid "30th"
 msgstr "30."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4781
+#: ../src/calendar/libecal/e-cal-recur.c:4913
 msgid "31st"
 msgstr "31."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4940
+#: ../src/calendar/libecal/e-cal-recur.c:5058
 #, c-format
 msgid "every day forever"
 msgid_plural "every %d days forever"
 msgstr[0] "her %d günde bir sürekli"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4946
+#: ../src/calendar/libecal/e-cal-recur.c:5064
 #, c-format
 msgid "Every day forever"
 msgid_plural "Every %d days forever"
 msgstr[0] "Her %d günde bir sürekli"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4954
+#: ../src/calendar/libecal/e-cal-recur.c:5072
 #, c-format
 msgid "every day"
 msgid_plural "every %d days"
 msgstr[0] "her %d günde bir"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4960
+#: ../src/calendar/libecal/e-cal-recur.c:5078
 #, c-format
 msgid "Every day"
 msgid_plural "Every %d days"
 msgstr[0] "Her %d günde bir"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5050
+#: ../src/calendar/libecal/e-cal-recur.c:5164
 #, c-format
 msgid "every week"
 msgid_plural "every %d weeks"
 msgstr[0] "her %d haftada bir"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5056
+#: ../src/calendar/libecal/e-cal-recur.c:5170
 #, c-format
 msgid "Every week"
 msgid_plural "Every %d weeks"
@@ -1775,551 +1646,551 @@ msgstr[0] "Her %d haftada bir"
 #. with ", DAYNAME" or " and DAYNAME", thus it can be something like "on Monday and Tuesday"
 #. or "on Monday, Wednesday and Friday" or simply "on Saturday". The '%1$s' is replaced with
 #. the previously gathered text, while the '%2$s' is replaced with the text to append.
-#: ../src/calendar/libecal/e-cal-recur.c:5070
+#: ../src/calendar/libecal/e-cal-recur.c:5184
 #, c-format
 msgctxt "recur-description-dayname"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5087
+#: ../src/calendar/libecal/e-cal-recur.c:5201
 msgctxt "recur-description"
 msgid "on Sunday"
 msgstr "pazar"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5088
+#: ../src/calendar/libecal/e-cal-recur.c:5202
 msgctxt "recur-description"
 msgid ", Sunday"
 msgstr ", pazar"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5089
+#: ../src/calendar/libecal/e-cal-recur.c:5203
 msgctxt "recur-description"
 msgid " and Sunday"
 msgstr " ve pazar"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5092
+#: ../src/calendar/libecal/e-cal-recur.c:5206
 msgctxt "recur-description"
 msgid "on Monday"
 msgstr "pazartesi"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5093
+#: ../src/calendar/libecal/e-cal-recur.c:5207
 msgctxt "recur-description"
 msgid ", Monday"
 msgstr ", pazartesi"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5094
+#: ../src/calendar/libecal/e-cal-recur.c:5208
 msgctxt "recur-description"
 msgid " and Monday"
 msgstr " ve pazartesi"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5097
+#: ../src/calendar/libecal/e-cal-recur.c:5211
 msgctxt "recur-description"
 msgid "on Tuesday"
 msgstr "salı"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5098
+#: ../src/calendar/libecal/e-cal-recur.c:5212
 msgctxt "recur-description"
 msgid ", Tuesday"
 msgstr ", salı"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5099
+#: ../src/calendar/libecal/e-cal-recur.c:5213
 msgctxt "recur-description"
 msgid " and Tuesday"
 msgstr " ve salı"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5102
+#: ../src/calendar/libecal/e-cal-recur.c:5216
 msgctxt "recur-description"
 msgid "on Wednesday"
 msgstr "çarşamba"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5103
+#: ../src/calendar/libecal/e-cal-recur.c:5217
 msgctxt "recur-description"
 msgid ", Wednesday"
 msgstr ", çarşamba"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5104
+#: ../src/calendar/libecal/e-cal-recur.c:5218
 msgctxt "recur-description"
 msgid " and Wednesday"
 msgstr " ve çarşamba"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5107
+#: ../src/calendar/libecal/e-cal-recur.c:5221
 msgctxt "recur-description"
 msgid "on Thursday"
 msgstr "perşembe"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5108
+#: ../src/calendar/libecal/e-cal-recur.c:5222
 msgctxt "recur-description"
 msgid ", Thursday"
 msgstr ", perşembe"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5109
+#: ../src/calendar/libecal/e-cal-recur.c:5223
 msgctxt "recur-description"
 msgid " and Thursday"
 msgstr " ve perşembe"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5112
+#: ../src/calendar/libecal/e-cal-recur.c:5226
 msgctxt "recur-description"
 msgid "on Friday"
 msgstr "cuma"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5113
+#: ../src/calendar/libecal/e-cal-recur.c:5227
 msgctxt "recur-description"
 msgid ", Friday"
 msgstr ", cuma"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5114
+#: ../src/calendar/libecal/e-cal-recur.c:5228
 msgctxt "recur-description"
 msgid " and Friday"
 msgstr " ve cuma"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5117
+#: ../src/calendar/libecal/e-cal-recur.c:5231
 msgctxt "recur-description"
 msgid "on Saturday"
 msgstr "cumartesi"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5118
+#: ../src/calendar/libecal/e-cal-recur.c:5232
 msgctxt "recur-description"
 msgid ", Saturday"
 msgstr ", cumartesi"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5119
+#: ../src/calendar/libecal/e-cal-recur.c:5233
 msgctxt "recur-description"
 msgid " and Saturday"
 msgstr " ve cumartesi"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5252
+#: ../src/calendar/libecal/e-cal-recur.c:5362
 #, c-format
 msgid "every month"
 msgid_plural "every %d months"
 msgstr[0] "her %d ayda bir"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5258
+#: ../src/calendar/libecal/e-cal-recur.c:5368
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
 msgstr[0] "Her %d ayda bir"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5268
-#: ../src/calendar/libecal/e-cal-recur.c:5589
+#: ../src/calendar/libecal/e-cal-recur.c:5378
+#: ../src/calendar/libecal/e-cal-recur.c:5699
 msgctxt "recur-description"
 msgid "on the last Sunday"
 msgstr "son pazar"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5271
-#: ../src/calendar/libecal/e-cal-recur.c:5439
+#: ../src/calendar/libecal/e-cal-recur.c:5381
+#: ../src/calendar/libecal/e-cal-recur.c:5549
 msgctxt "recur-description"
 msgid "on the last Monday"
 msgstr "son pazartesi"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5274
-#: ../src/calendar/libecal/e-cal-recur.c:5464
+#: ../src/calendar/libecal/e-cal-recur.c:5384
+#: ../src/calendar/libecal/e-cal-recur.c:5574
 msgctxt "recur-description"
 msgid "on the last Tuesday"
 msgstr "son salı"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5277
-#: ../src/calendar/libecal/e-cal-recur.c:5489
+#: ../src/calendar/libecal/e-cal-recur.c:5387
+#: ../src/calendar/libecal/e-cal-recur.c:5599
 msgctxt "recur-description"
 msgid "on the last Wednesday"
 msgstr "son çarşamba"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5280
-#: ../src/calendar/libecal/e-cal-recur.c:5514
+#: ../src/calendar/libecal/e-cal-recur.c:5390
+#: ../src/calendar/libecal/e-cal-recur.c:5624
 msgctxt "recur-description"
 msgid "on the last Thursday"
 msgstr "son perşembe"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5283
-#: ../src/calendar/libecal/e-cal-recur.c:5539
+#: ../src/calendar/libecal/e-cal-recur.c:5393
+#: ../src/calendar/libecal/e-cal-recur.c:5649
 msgctxt "recur-description"
 msgid "on the last Friday"
 msgstr "son cuma"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5286
-#: ../src/calendar/libecal/e-cal-recur.c:5564
+#: ../src/calendar/libecal/e-cal-recur.c:5396
+#: ../src/calendar/libecal/e-cal-recur.c:5674
 msgctxt "recur-description"
 msgid "on the last Saturday"
 msgstr "son cumartesi"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5296
+#: ../src/calendar/libecal/e-cal-recur.c:5406
 msgctxt "recur-description"
 msgid "on the 1st day"
 msgstr "1. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5300
+#: ../src/calendar/libecal/e-cal-recur.c:5410
 msgctxt "recur-description"
 msgid "on the 2nd day"
 msgstr "2. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5304
+#: ../src/calendar/libecal/e-cal-recur.c:5414
 msgctxt "recur-description"
 msgid "on the 3rd day"
 msgstr "3. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5308
+#: ../src/calendar/libecal/e-cal-recur.c:5418
 msgctxt "recur-description"
 msgid "on the 4th day"
 msgstr "4. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5312
+#: ../src/calendar/libecal/e-cal-recur.c:5422
 msgctxt "recur-description"
 msgid "on the 5th day"
 msgstr "5. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5316
+#: ../src/calendar/libecal/e-cal-recur.c:5426
 msgctxt "recur-description"
 msgid "on the 6th day"
 msgstr "6. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5320
+#: ../src/calendar/libecal/e-cal-recur.c:5430
 msgctxt "recur-description"
 msgid "on the 7th day"
 msgstr "7. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5324
+#: ../src/calendar/libecal/e-cal-recur.c:5434
 msgctxt "recur-description"
 msgid "on the 8th day"
 msgstr "8. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5328
+#: ../src/calendar/libecal/e-cal-recur.c:5438
 msgctxt "recur-description"
 msgid "on the 9th day"
 msgstr "9. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5332
+#: ../src/calendar/libecal/e-cal-recur.c:5442
 msgctxt "recur-description"
 msgid "on the 10th day"
 msgstr "10. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5336
+#: ../src/calendar/libecal/e-cal-recur.c:5446
 msgctxt "recur-description"
 msgid "on the 11th day"
 msgstr "11. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5340
+#: ../src/calendar/libecal/e-cal-recur.c:5450
 msgctxt "recur-description"
 msgid "on the 12th day"
 msgstr "12. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5344
+#: ../src/calendar/libecal/e-cal-recur.c:5454
 msgctxt "recur-description"
 msgid "on the 13th day"
 msgstr "13. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5348
+#: ../src/calendar/libecal/e-cal-recur.c:5458
 msgctxt "recur-description"
 msgid "on the 14th day"
 msgstr "14. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5352
+#: ../src/calendar/libecal/e-cal-recur.c:5462
 msgctxt "recur-description"
 msgid "on the 15th day"
 msgstr "15. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5356
+#: ../src/calendar/libecal/e-cal-recur.c:5466
 msgctxt "recur-description"
 msgid "on the 16th day"
 msgstr "16. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5360
+#: ../src/calendar/libecal/e-cal-recur.c:5470
 msgctxt "recur-description"
 msgid "on the 17th day"
 msgstr "17. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5364
+#: ../src/calendar/libecal/e-cal-recur.c:5474
 msgctxt "recur-description"
 msgid "on the 18th day"
 msgstr "18. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5368
+#: ../src/calendar/libecal/e-cal-recur.c:5478
 msgctxt "recur-description"
 msgid "on the 19th day"
 msgstr "19. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5372
+#: ../src/calendar/libecal/e-cal-recur.c:5482
 msgctxt "recur-description"
 msgid "on the 20th day"
 msgstr "20. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5376
+#: ../src/calendar/libecal/e-cal-recur.c:5486
 msgctxt "recur-description"
 msgid "on the 21st day"
 msgstr "21. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5380
+#: ../src/calendar/libecal/e-cal-recur.c:5490
 msgctxt "recur-description"
 msgid "on the 22nd day"
 msgstr "22. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5384
+#: ../src/calendar/libecal/e-cal-recur.c:5494
 msgctxt "recur-description"
 msgid "on the 23rd day"
 msgstr "23. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5388
+#: ../src/calendar/libecal/e-cal-recur.c:5498
 msgctxt "recur-description"
 msgid "on the 24th day"
 msgstr "24. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5392
+#: ../src/calendar/libecal/e-cal-recur.c:5502
 msgctxt "recur-description"
 msgid "on the 25th day"
 msgstr "25. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5396
+#: ../src/calendar/libecal/e-cal-recur.c:5506
 msgctxt "recur-description"
 msgid "on the 26th day"
 msgstr "26. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5400
+#: ../src/calendar/libecal/e-cal-recur.c:5510
 msgctxt "recur-description"
 msgid "on the 27th day"
 msgstr "27. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5404
+#: ../src/calendar/libecal/e-cal-recur.c:5514
 msgctxt "recur-description"
 msgid "on the 28th day"
 msgstr "28. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5408
+#: ../src/calendar/libecal/e-cal-recur.c:5518
 msgctxt "recur-description"
 msgid "on the 29th day"
 msgstr "29. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5412
+#: ../src/calendar/libecal/e-cal-recur.c:5522
 msgctxt "recur-description"
 msgid "on the 30th day"
 msgstr "30. gün"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5416
+#: ../src/calendar/libecal/e-cal-recur.c:5526
 msgctxt "recur-description"
 msgid "on the 31st day"
 msgstr "31. gün"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5424
+#: ../src/calendar/libecal/e-cal-recur.c:5534
 msgctxt "recur-description"
 msgid "on the first Monday"
 msgstr "birinci pazartesi"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5427
+#: ../src/calendar/libecal/e-cal-recur.c:5537
 msgctxt "recur-description"
 msgid "on the second Monday"
 msgstr "ikinci pazartesi"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5430
+#: ../src/calendar/libecal/e-cal-recur.c:5540
 msgctxt "recur-description"
 msgid "on the third Monday"
 msgstr "üçüncü pazartesi"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5433
+#: ../src/calendar/libecal/e-cal-recur.c:5543
 msgctxt "recur-description"
 msgid "on the fourth Monday"
 msgstr "dördüncü pazartesi"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5436
+#: ../src/calendar/libecal/e-cal-recur.c:5546
 msgctxt "recur-description"
 msgid "on the fifth Monday"
 msgstr "beşinci pazartesi"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5449
+#: ../src/calendar/libecal/e-cal-recur.c:5559
 msgctxt "recur-description"
 msgid "on the first Tuesday"
 msgstr "birinci salı"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5452
+#: ../src/calendar/libecal/e-cal-recur.c:5562
 msgctxt "recur-description"
 msgid "on the second Tuesday"
 msgstr "ikinci salı"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5455
+#: ../src/calendar/libecal/e-cal-recur.c:5565
 msgctxt "recur-description"
 msgid "on the third Tuesday"
 msgstr "üçüncü salı"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5458
+#: ../src/calendar/libecal/e-cal-recur.c:5568
 msgctxt "recur-description"
 msgid "on the fourth Tuesday"
 msgstr "dördüncü salı"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5461
+#: ../src/calendar/libecal/e-cal-recur.c:5571
 msgctxt "recur-description"
 msgid "on the fifth Tuesday"
 msgstr "beşinci salı"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5474
+#: ../src/calendar/libecal/e-cal-recur.c:5584
 msgctxt "recur-description"
 msgid "on the first Wednesday"
 msgstr "birinci çarşamba"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5477
+#: ../src/calendar/libecal/e-cal-recur.c:5587
 msgctxt "recur-description"
 msgid "on the second Wednesday"
 msgstr "ikinci  çarşamba"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5480
+#: ../src/calendar/libecal/e-cal-recur.c:5590
 msgctxt "recur-description"
 msgid "on the third Wednesday"
 msgstr "üçüncü çarşamba"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5483
+#: ../src/calendar/libecal/e-cal-recur.c:5593
 msgctxt "recur-description"
 msgid "on the fourth Wednesday"
 msgstr "dördüncü çarşamba"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5486
+#: ../src/calendar/libecal/e-cal-recur.c:5596
 msgctxt "recur-description"
 msgid "on the fifth Wednesday"
 msgstr "beşinci çarşamba"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5499
+#: ../src/calendar/libecal/e-cal-recur.c:5609
 msgctxt "recur-description"
 msgid "on the first Thursday"
 msgstr "birinci perşembe"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5502
+#: ../src/calendar/libecal/e-cal-recur.c:5612
 msgctxt "recur-description"
 msgid "on the second Thursday"
 msgstr "ikinci perşembe"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5505
+#: ../src/calendar/libecal/e-cal-recur.c:5615
 msgctxt "recur-description"
 msgid "on the third Thursday"
 msgstr "üçüncü perşembe"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5508
+#: ../src/calendar/libecal/e-cal-recur.c:5618
 msgctxt "recur-description"
 msgid "on the fourth Thursday"
 msgstr "dördüncü perşembe"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5511
+#: ../src/calendar/libecal/e-cal-recur.c:5621
 msgctxt "recur-description"
 msgid "on the fifth Thursday"
 msgstr "beşinci perşembe"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5524
+#: ../src/calendar/libecal/e-cal-recur.c:5634
 msgctxt "recur-description"
 msgid "on the first Friday"
 msgstr "birinci cuma"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5527
+#: ../src/calendar/libecal/e-cal-recur.c:5637
 msgctxt "recur-description"
 msgid "on the second Friday"
 msgstr "ikinci cuma"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5530
+#: ../src/calendar/libecal/e-cal-recur.c:5640
 msgctxt "recur-description"
 msgid "on the third Friday"
 msgstr "üçüncü cuma"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5533
+#: ../src/calendar/libecal/e-cal-recur.c:5643
 msgctxt "recur-description"
 msgid "on the fourth Friday"
 msgstr "dördüncü cuma"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5536
+#: ../src/calendar/libecal/e-cal-recur.c:5646
 msgctxt "recur-description"
 msgid "on the fifth Friday"
 msgstr "beşinci cuma"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5549
+#: ../src/calendar/libecal/e-cal-recur.c:5659
 msgctxt "recur-description"
 msgid "on the first Saturday"
 msgstr "birinci cumartesi"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5552
+#: ../src/calendar/libecal/e-cal-recur.c:5662
 msgctxt "recur-description"
 msgid "on the second Saturday"
 msgstr "ikinci cumartesi"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5555
+#: ../src/calendar/libecal/e-cal-recur.c:5665
 msgctxt "recur-description"
 msgid "on the third Saturday"
 msgstr "üçüncü cumartesi"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5558
+#: ../src/calendar/libecal/e-cal-recur.c:5668
 msgctxt "recur-description"
 msgid "on the fourth Saturday"
 msgstr "dördüncü cumartesi"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5561
+#: ../src/calendar/libecal/e-cal-recur.c:5671
 msgctxt "recur-description"
 msgid "on the fifth Saturday"
 msgstr "beşinci cumartesi"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5574
+#: ../src/calendar/libecal/e-cal-recur.c:5684
 msgctxt "recur-description"
 msgid "on the first Sunday"
 msgstr "birinci pazar"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5577
+#: ../src/calendar/libecal/e-cal-recur.c:5687
 msgctxt "recur-description"
 msgid "on the second Sunday"
 msgstr "ikinci pazar"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5580
+#: ../src/calendar/libecal/e-cal-recur.c:5690
 msgctxt "recur-description"
 msgid "on the third Sunday"
 msgstr "üçüncü pazar"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5583
+#: ../src/calendar/libecal/e-cal-recur.c:5693
 msgctxt "recur-description"
 msgid "on the fourth Sunday"
 msgstr "dördüncü pazar"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5586
+#: ../src/calendar/libecal/e-cal-recur.c:5696
 msgctxt "recur-description"
 msgid "on the fifth Sunday"
 msgstr "beşinci pazar"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5615
+#: ../src/calendar/libecal/e-cal-recur.c:5725
 #, c-format
 msgid "every year forever"
 msgid_plural "every %d years forever"
 msgstr[0] "sonsuza dek her %d yılda bir"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5621
+#: ../src/calendar/libecal/e-cal-recur.c:5731
 #, c-format
 msgid "Every year forever"
 msgid_plural "Every %d years forever"
 msgstr[0] "Sonsuza dek her %d yılda bir"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5629
+#: ../src/calendar/libecal/e-cal-recur.c:5739
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
 msgstr[0] "her %d yılda bir"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5635
+#: ../src/calendar/libecal/e-cal-recur.c:5745
 #, c-format
 msgid "Every year"
 msgid_plural "Every %d years"
@@ -2328,7 +2199,7 @@ msgstr[0] "Her %d yılda bir"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 3 days for 10 occurrences"
-#: ../src/calendar/libecal/e-cal-recur.c:5654
+#: ../src/calendar/libecal/e-cal-recur.c:5764
 #, c-format
 msgid "for one occurrence"
 msgid_plural "for %d occurrences"
@@ -2338,7 +2209,7 @@ msgstr[0] "%d kez"
 #. The '%s' is replaced with actual date, thus it can create something like
 #. "until Mon 15.1.2018". The text is appended at the end of the complete
 #. recurrence description, making it for example: "Every 3 days until Mon 15.1.2018"
-#: ../src/calendar/libecal/e-cal-recur.c:5689
+#: ../src/calendar/libecal/e-cal-recur.c:5795
 #, c-format
 msgctxt "recur-description"
 msgid "until %s"
@@ -2347,7 +2218,7 @@ msgstr "%s tarihine dek"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 2 months on Tuesday, Thursday and Friday forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5695
+#: ../src/calendar/libecal/e-cal-recur.c:5801
 msgctxt "recur-description"
 msgid "forever"
 msgstr "sonsuza dek"
@@ -2355,7 +2226,7 @@ msgstr "sonsuza dek"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
 #. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
 #. together one sentence: "Every 2 weeks on Tuesday and Friday for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5705
+#: ../src/calendar/libecal/e-cal-recur.c:5811
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s %3$s"
@@ -2364,7 +2235,7 @@ msgstr "%1$s %2$s %3$s"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
 #. the '%2$s' is like "for 10 occurrences", constructing together one sentence:
 #. "Every 2 days for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5710
+#: ../src/calendar/libecal/e-cal-recur.c:5816
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s"
@@ -2372,7 +2243,7 @@ msgstr "%1$s %2$s"
 
 #. Translators: This text is appended at the end of complete recur description using "%s%s" in
 #. context "recur-description"
-#: ../src/calendar/libecal/e-cal-recur.c:5726
+#: ../src/calendar/libecal/e-cal-recur.c:5832
 #, c-format
 msgid ", with one exception"
 msgid_plural ", with %d exceptions"
@@ -2381,33 +2252,33 @@ msgstr[0] ", %d istisnayla"
 #. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
 #. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
 #. It will form something like: "Every 2 weeks on Tuesday and Friday for 10 occurrences, with 3 exceptions"
-#: ../src/calendar/libecal/e-cal-recur.c:5733
+#: ../src/calendar/libecal/e-cal-recur.c:5839
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5746
-#: ../src/calendar/libecal/e-cal-recur.c:5769
+#: ../src/calendar/libecal/e-cal-recur.c:5852
+#: ../src/calendar/libecal/e-cal-recur.c:5875
 msgctxt "recur-description"
 msgid "The meeting recurs"
 msgstr "toplantı yinelenir"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5748
-#: ../src/calendar/libecal/e-cal-recur.c:5771
+#: ../src/calendar/libecal/e-cal-recur.c:5854
+#: ../src/calendar/libecal/e-cal-recur.c:5877
 msgctxt "recur-description"
 msgid "The appointment recurs"
 msgstr "randevu yinelenir"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5751
-#: ../src/calendar/libecal/e-cal-recur.c:5774
+#: ../src/calendar/libecal/e-cal-recur.c:5857
+#: ../src/calendar/libecal/e-cal-recur.c:5880
 msgctxt "recur-description"
 msgid "The task recurs"
 msgstr "görev yinelenir"
 
-#. if (icalcomponent_isa (icalcomp) == ICAL_VJOURNAL_COMPONENT)
-#: ../src/calendar/libecal/e-cal-recur.c:5753
-#: ../src/calendar/libecal/e-cal-recur.c:5776
+#. if (i_cal_component_isa (comp) == I_CAL_VJOURNAL_COMPONENT)
+#: ../src/calendar/libecal/e-cal-recur.c:5859
+#: ../src/calendar/libecal/e-cal-recur.c:5882
 msgctxt "recur-description"
 msgid "The memo recurs"
 msgstr "not yinelenir"
@@ -2416,58 +2287,58 @@ msgstr "not yinelenir"
 #. The '%1$s' is replaced with something like "The meeting recurs" and
 #. the '%2$s' with something like "every 2 days forever", thus forming
 #. sentence like "This meeting recurs every 2 days forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5760
+#: ../src/calendar/libecal/e-cal-recur.c:5866
 #, c-format
 msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%2$s %1$s"
 
-#: ../src/calendar/libecal/e-cal-util.c:746
-#: ../src/calendar/libecal/e-cal-util.c:773
+#: ../src/calendar/libecal/e-cal-util.c:818
+#: ../src/calendar/libecal/e-cal-util.c:845
 msgctxt "Priority"
 msgid "High"
 msgstr "Yüksek"
 
-#: ../src/calendar/libecal/e-cal-util.c:748
-#: ../src/calendar/libecal/e-cal-util.c:775
+#: ../src/calendar/libecal/e-cal-util.c:820
+#: ../src/calendar/libecal/e-cal-util.c:847
 msgctxt "Priority"
 msgid "Normal"
 msgstr "Olağan"
 
-#: ../src/calendar/libecal/e-cal-util.c:750
-#: ../src/calendar/libecal/e-cal-util.c:777
+#: ../src/calendar/libecal/e-cal-util.c:822
+#: ../src/calendar/libecal/e-cal-util.c:849
 msgctxt "Priority"
 msgid "Low"
 msgstr "Düşük"
 
 #. An empty string is the same as 'None'.
-#: ../src/calendar/libecal/e-cal-util.c:771
+#: ../src/calendar/libecal/e-cal-util.c:843
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Tanımlanmamış"
 
-#: ../src/calendar/libecal/e-cal-util.c:813
+#: ../src/calendar/libecal/e-cal-util.c:885
 #: ../src/libedataserverui/e-reminders-widget.c:291
 #, c-format
 msgid "%d week"
 msgid_plural "%d weeks"
 msgstr[0] "%d hafta"
 
-#: ../src/calendar/libecal/e-cal-util.c:822
+#: ../src/calendar/libecal/e-cal-util.c:894
 #: ../src/libedataserverui/e-reminders-widget.c:287
 #, c-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d gün"
 
-#: ../src/calendar/libecal/e-cal-util.c:831
+#: ../src/calendar/libecal/e-cal-util.c:903
 #: ../src/libedataserverui/e-reminders-widget.c:283
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d saat"
 
-#: ../src/calendar/libecal/e-cal-util.c:840
+#: ../src/calendar/libecal/e-cal-util.c:912
 #: ../src/libedataserverui/e-reminders-widget.c:279
 #, c-format
 msgid "%d minute"
@@ -2475,20 +2346,20 @@ msgid_plural "%d minutes"
 msgstr[0] "%d dakika"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: ../src/calendar/libecal/e-cal-util.c:845
+#: ../src/calendar/libecal/e-cal-util.c:917
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d saniye"
 
-#: ../src/calendar/libecal/e-reminder-watcher.c:2524
+#: ../src/calendar/libecal/e-reminder-watcher.c:2700
 msgid "No Summary"
 msgstr "Özet Yok"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2540
+#: ../src/calendar/libecal/e-reminder-watcher.c:2716
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
@@ -2497,7 +2368,7 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2545
+#: ../src/calendar/libecal/e-reminder-watcher.c:2721
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
@@ -2506,89 +2377,89 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2550
+#: ../src/calendar/libecal/e-reminder-watcher.c:2726
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
 msgstr "%s %s"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:83
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1086
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1399
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1526
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1575
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1110
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1453
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1580
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1629
 #, c-format
 msgid "“%s” expects one argument"
 msgstr "“%s” bir parametre istiyor"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:90
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:689
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1406
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1414
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:713
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1460
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1468
 #, c-format
 msgid "“%s” expects the first argument to be a string"
 msgstr "“%s” birinci parametrenin dizgi olmasını istiyor"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:165
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:170
 #, c-format
 msgid "“%s” expects two or three arguments"
 msgstr "“%s” iki ya da üç değişken bekliyor"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:172
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:261
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:323
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:839
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1093
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1475
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1533
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1582
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:177
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:278
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:346
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:863
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1117
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1529
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1587
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1636
 #, c-format
 msgid "“%s” expects the first argument to be a time_t"
 msgstr "“%s” birinci parametrenin time_t olmasını istiyor"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:181
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:269
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:333
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:848
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:186
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:286
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:356
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:872
 #, c-format
 msgid "“%s” expects the second argument to be a time_t"
 msgstr "“%s” ikinci parametrenin bir time_t olmasını bekliyor"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:191
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:196
 #, c-format
 msgid "“%s” expects the third argument to be a string"
 msgstr "“%s” üçüncü parametrenin dizgi olmasını bekliyor"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:253
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:270
 #, c-format
 msgid "“%s” expects none or two arguments"
 msgstr "“%s” hiç ya da iki parametre bekliyor"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:316
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:682
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:832
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1468
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:339
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:706
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:856
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1522
 #, c-format
 msgid "“%s” expects two arguments"
 msgstr "“%s” iki parametre bekliyor"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:615
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:638
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:764
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:796
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1005
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1038
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1360
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:645
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:668
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:788
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:820
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1029
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1062
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1414
 #, c-format
 msgid "“%s” expects no arguments"
 msgstr "“%s” hiçbir parametre istemiyor"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:698
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:722
 #, c-format
 msgid "“%s” expects the second argument to be a string"
 msgstr "“%s” ikinci parametrenin bir dizgi olmasını bekliyor"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:729
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:753
 #, c-format
 msgid ""
 "“%s” expects the first argument to be either “any”, “summary”, or "
@@ -2599,12 +2470,12 @@ msgstr ""
 "“attendee”, “organizer” ya da “classification” değerlerinden birisinin "
 "olmasını istiyor"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:900
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:924
 #, c-format
 msgid "“%s” expects at least one argument"
 msgstr "“%s” en az bir parametre istiyor"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:915
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:939
 #, c-format
 msgid ""
 "“%s” expects all arguments to be strings or one and only one argument to be "
@@ -2613,124 +2484,118 @@ msgstr ""
 "“%s” tüm parametrelerin dizgi olmasını ve yalnızca bir tane parametrenin "
 "bool değeri false (#f) olmasını istiyor"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1423
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1477
 #, c-format
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 "“%s” birinci parametrenin ISO 8601 tarih/zaman dizgisi olmasını istiyor"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1484
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1538
 #, c-format
 msgid "“%s” expects the second argument to be an integer"
 msgstr "“%s” ikinci parametrenin bir tamsayı olmasını istiyor"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1756
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1797
 #, c-format
 msgid "Failed to create SQLite function, error code “%d”: %s"
 msgstr "SQLite işlevi oluşturulamadı, hata kodu “%d”: %s"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2728
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2791
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2797
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2855
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2914
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2977
 #, c-format
 msgid "Object “%s”, “%s” not found"
 msgstr "“%s” nesnesi, “%s” bulunamadı"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3531
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3756
 msgid "Cannot add timezone without tzid"
 msgstr "tzid olmadan saat dilimi eklenemez"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3540
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3765
 msgid "Cannot add timezone without component"
 msgstr "Bileşen olmadan saat dilimi eklenemez"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3546
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3773
 msgid "Cannot add timezone with invalid component"
 msgstr "Geçersiz bileşenle saat dilimi eklenemez"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1118
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1130
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "UID “%s” için alınan nesne herhangi bir beklenen bileşeni içermiyor"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4048
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4155
 msgid "attachment.dat"
 msgstr "ek.dat"
 
-#: ../src/calendar/libedata-cal/e-data-cal.c:421
-msgid "Unsupported method"
-msgstr "Desteklenmeyen yöntem"
-
-#: ../src/calendar/libedata-cal/e-data-cal.c:424
-msgid "Calendar does not exist"
-msgstr "Takvim yok"
-
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:1655
+#: ../src/calendar/libedata-cal/e-data-cal.c:1365
 msgid "Cannot open calendar: "
 msgstr "Takvim açılamıyor: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:1693
+#: ../src/calendar/libedata-cal/e-data-cal.c:1403
 msgid "Cannot refresh calendar: "
 msgstr "Takvim tazelenemiyor: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:1735
+#: ../src/calendar/libedata-cal/e-data-cal.c:1445
 msgid "Cannot retrieve calendar object path: "
 msgstr "Takvim nesnesi yolu alınamıyor: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:1788
+#: ../src/calendar/libedata-cal/e-data-cal.c:1498
 msgid "Cannot retrieve calendar object list: "
 msgstr "Takvim nesne listesi alınamıyor: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:1846
+#: ../src/calendar/libedata-cal/e-data-cal.c:1556
 msgid "Cannot retrieve calendar free/busy list: "
 msgstr "Takvim serbest/meşgul listesi alınamıyor: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:1897
+#: ../src/calendar/libedata-cal/e-data-cal.c:1607
 msgid "Cannot create calendar object: "
 msgstr "Takvim nesnesi oluşturulamıyor: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:1966
+#: ../src/calendar/libedata-cal/e-data-cal.c:1676
 msgid "Cannot modify calendar object: "
 msgstr "Takvim nesnesi değiştirilemiyor: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:2045
+#: ../src/calendar/libedata-cal/e-data-cal.c:1755
 msgid "Cannot remove calendar object: "
 msgstr "Takvim nesnesi silinemiyor: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:2132
+#: ../src/calendar/libedata-cal/e-data-cal.c:1842
 msgid "Cannot receive calendar objects: "
 msgstr "Takvim nesneleri alınamıyor: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:2176
+#: ../src/calendar/libedata-cal/e-data-cal.c:1886
 msgid "Cannot send calendar objects: "
 msgstr "Takvim nesneleri gönderilemiyor: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:2229
+#: ../src/calendar/libedata-cal/e-data-cal.c:1939
 msgid "Could not retrieve attachment uris: "
 msgstr "Ek uri adresleri alınamadı: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:2275
+#: ../src/calendar/libedata-cal/e-data-cal.c:1985
 msgid "Could not discard reminder: "
 msgstr "Hatırlatma silinemedi: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:2317
+#: ../src/calendar/libedata-cal/e-data-cal.c:2027
 msgid "Could not retrieve calendar time zone: "
 msgstr "Takvim saat dilimi alınamadı: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/calendar/libedata-cal/e-data-cal.c:2358
+#: ../src/calendar/libedata-cal/e-data-cal.c:2068
 msgid "Could not add calendar time zone: "
 msgstr "Takvim saat dilimi eklenemedi: "
 
@@ -3021,8 +2886,8 @@ msgstr "(%s) dizi sonuç bekliyor"
 msgid "(%s) requires the folder set"
 msgstr "(%s) klasör ayarı gerektiriyor"
 
-#: ../src/camel/camel-folder-search.c:2196
-#: ../src/camel/camel-folder-search.c:2370
+#: ../src/camel/camel-folder-search.c:2214
+#: ../src/camel/camel-folder-search.c:2388
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -3031,8 +2896,8 @@ msgstr ""
 "Arama ifadesi ayrıştırılamadı: %s:\n"
 "%s"
 
-#: ../src/camel/camel-folder-search.c:2208
-#: ../src/camel/camel-folder-search.c:2382
+#: ../src/camel/camel-folder-search.c:2226
+#: ../src/camel/camel-folder-search.c:2400
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -3062,7 +2927,7 @@ msgid "Failed to execute gpg: %s"
 msgstr "gpg çalıştırılamadı: %s"
 
 #: ../src/camel/camel-gpg-context.c:921
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1127
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1150
 msgid "Unknown"
 msgstr "Bilinmiyor"
 
@@ -3120,7 +2985,7 @@ msgstr ""
 
 #: ../src/camel/camel-gpg-context.c:1183 ../src/camel/camel-net-utils.c:522
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:405
-#: ../src/libedataserver/e-client.c:161
+#: ../src/libedataserver/e-client.c:160
 #, c-format
 msgid "Cancelled"
 msgstr "İptal Edildi"
@@ -3163,9 +3028,9 @@ msgstr "gpg çalıştırılamadı."
 
 #: ../src/camel/camel-gpg-context.c:2331 ../src/camel/camel-gpg-context.c:2339
 #: ../src/camel/camel-gpg-context.c:2347 ../src/camel/camel-gpg-context.c:2367
-#: ../src/camel/camel-smime-context.c:1002
-#: ../src/camel/camel-smime-context.c:1016
-#: ../src/camel/camel-smime-context.c:1025
+#: ../src/camel/camel-smime-context.c:1004
+#: ../src/camel/camel-smime-context.c:1018
+#: ../src/camel/camel-smime-context.c:1030
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "İleti imzası doğrulanamadı: Geçersiz ileti biçimi"
@@ -3204,7 +3069,7 @@ msgid "GPG blob contains unencrypted text: %s"
 msgstr "GPG veri nesnesi şifrelenmemiş metin içeriyor: %s"
 
 #: ../src/camel/camel-gpg-context.c:2833
-#: ../src/camel/camel-smime-context.c:1545
+#: ../src/camel/camel-smime-context.c:1550
 msgid "Encrypted content"
 msgstr "Şifrelenmiş içerik"
 
@@ -3347,13 +3212,13 @@ msgstr "Makine adı çözümlemesi “%s” başarısız: %s"
 
 #: ../src/camel/camel-network-service.c:1127
 #, c-format
-msgid "Checking reach-ability of account “%s”"
+msgid "Checking reachability of account “%s”"
 msgstr "“%s” hesabının ulaşılabilirliği denetleniyor"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:125
+#: ../src/camel/camel-offline-folder.c:183
 #, c-format
 msgid "Downloading new messages for offline mode in “%s : %s”"
 msgstr "Çevirim dışı kip için yeni iletiler “%s : %s” içine indiriliyor"
@@ -3361,7 +3226,7 @@ msgstr "Çevirim dışı kip için yeni iletiler “%s : %s” içine indiriliyo
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:223
+#: ../src/camel/camel-offline-folder.c:281
 #, c-format
 msgid "Storing changes in folder “%s : %s”"
 msgstr "Değişiklikler “%s : %s” klasörüne kaydediliyor"
@@ -3369,7 +3234,7 @@ msgstr "Değişiklikler “%s : %s” klasörüne kaydediliyor"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:316
+#: ../src/camel/camel-offline-folder.c:374
 #, c-format
 msgid "Checking download of new messages for offline in “%s : %s”"
 msgstr ""
@@ -3379,7 +3244,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:433
+#: ../src/camel/camel-offline-folder.c:494
 #, c-format
 msgid "Syncing messages in folder “%s : %s” to disk"
 msgstr "“%s : %s” klasöründeki iletiler diske eşzamanlandırılıyor"
@@ -3389,18 +3254,18 @@ msgstr "“%s : %s” klasöründeki iletiler diske eşzamanlandırılıyor"
 #. The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:527
+#: ../src/camel/camel-offline-folder.c:588
 #, c-format
 msgid "Syncing message %d of %d in folder “%s : %s” to disk"
 msgstr ""
 "“%3$s : %4$s” klasöründeki %2$d iletiden %1$d. ileti diske "
 "eşzamanlandırılıyor"
 
-#: ../src/camel/camel-offline-folder.c:592
+#: ../src/camel/camel-offline-folder.c:649
 msgid "Copy folder content locally for _offline operation"
 msgstr "Klasör içeriğini _çevrim dışı işlem için yerele kopyala"
 
-#: ../src/camel/camel-offline-store.c:302
+#: ../src/camel/camel-offline-store.c:310
 #, c-format
 msgid "Syncing messages in account “%s” to disk"
 msgstr "“%s” hesabındaki iletiler diske eşzamanlandırılıyor"
@@ -3470,6 +3335,10 @@ msgid ""
 msgstr ""
 "Hatalı opaque izleme bilgisi:\n"
 "%s"
+
+#: ../src/camel/camel-sasl-anonymous.c:115 ../src/libedataserver/e-client.c:139
+msgid "Invalid argument"
+msgstr "Geçersiz argüman"
 
 #: ../src/camel/camel-sasl-cram-md5.c:41
 msgid "CRAM-MD5"
@@ -3608,7 +3477,7 @@ msgstr "Yönlendirilen koşulların zamanı doldu."
 
 #: ../src/camel/camel-sasl-gssapi.c:235 ../src/camel/camel-sasl-gssapi.c:439
 #: ../src/camel/camel-sasl-gssapi.c:489 ../src/camel/camel-sasl-gssapi.c:506
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:802
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:806
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Sunucudan hatalı kimlik doğrulama yanıtı."
@@ -3731,7 +3600,7 @@ msgstr "“%s” iletişim kuralı için geçersiz GType kaydedilmiş"
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3201
 #: ../src/camel/providers/pop3/camel-pop3-store.c:306
 #: ../src/camel/providers/pop3/camel-pop3-store.c:790
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:670
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:674
 #, c-format
 msgid "No support for %s authentication"
 msgstr "%s yetkilendirmesi desteklenmiyor"
@@ -3885,7 +3754,7 @@ msgid "Signer: %s <%s>: %s\n"
 msgstr "İmzalayan: %s <%s>: %s\n"
 
 #: ../src/camel/camel-smime-context.c:885
-#: ../src/camel/camel-smime-context.c:1402
+#: ../src/camel/camel-smime-context.c:1407
 msgid "Cannot create encoder context"
 msgstr "Kodlayıcı içeriği yaratılamadı"
 
@@ -3894,57 +3763,57 @@ msgid "Failed to add data to CMS encoder"
 msgstr "CMS kodlayıcısına veri eklenemedi"
 
 #: ../src/camel/camel-smime-context.c:896
-#: ../src/camel/camel-smime-context.c:1419
+#: ../src/camel/camel-smime-context.c:1424
 msgid "Failed to encode data"
 msgstr "Veri kodlanırken başarısız olundu"
 
-#: ../src/camel/camel-smime-context.c:1044
-#: ../src/camel/camel-smime-context.c:1520
+#: ../src/camel/camel-smime-context.c:1049
+#: ../src/camel/camel-smime-context.c:1525
 msgid "Decoder failed"
 msgstr "Kod çözme başarısız"
 
-#: ../src/camel/camel-smime-context.c:1296
+#: ../src/camel/camel-smime-context.c:1301
 #, c-format
 msgid "No valid or appropriate certificate for “%s” was found"
 msgstr "“%s” için geçerli veya uygun sertifika bulunamadı"
 
-#: ../src/camel/camel-smime-context.c:1336
+#: ../src/camel/camel-smime-context.c:1341
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "Ortak çoklu eme algoritması bulunamadı"
 
-#: ../src/camel/camel-smime-context.c:1344
+#: ../src/camel/camel-smime-context.c:1349
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "Çoklu şifreleme anahtarı için slot ayrılamadı"
 
-#: ../src/camel/camel-smime-context.c:1355
+#: ../src/camel/camel-smime-context.c:1360
 msgid "Cannot create CMS Message"
 msgstr "CMS Message oluşturulamadı"
 
-#: ../src/camel/camel-smime-context.c:1361
+#: ../src/camel/camel-smime-context.c:1366
 msgid "Cannot create CMS Enveloped data"
 msgstr "CMS Mektup verisi oluşturulamıyor"
 
-#: ../src/camel/camel-smime-context.c:1367
+#: ../src/camel/camel-smime-context.c:1372
 msgid "Cannot attach CMS Enveloped data"
 msgstr "CMS Mektup verisi eklenemiyor"
 
-#: ../src/camel/camel-smime-context.c:1373
+#: ../src/camel/camel-smime-context.c:1378
 msgid "Cannot attach CMS data object"
 msgstr "CMS veri nesnesi eklenemedi"
 
-#: ../src/camel/camel-smime-context.c:1382
+#: ../src/camel/camel-smime-context.c:1387
 msgid "Cannot create CMS Recipient information"
 msgstr "CMS Alıcı bilgisi oluşturulamıyor"
 
-#: ../src/camel/camel-smime-context.c:1387
+#: ../src/camel/camel-smime-context.c:1392
 msgid "Cannot add CMS Recipient information"
 msgstr "CMS Alıcı bilgisi eklenemiyor"
 
-#: ../src/camel/camel-smime-context.c:1413
+#: ../src/camel/camel-smime-context.c:1418
 msgid "Failed to add data to encoder"
 msgstr "Kodlayıcıya veri eklenemedi"
 
-#: ../src/camel/camel-smime-context.c:1527
+#: ../src/camel/camel-smime-context.c:1532
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME Şifre çözümü: Şifrelenemiş içerik bulunamadı"
 
@@ -4008,7 +3877,7 @@ msgid "Only reset to beginning is supported with CamelHttpStream"
 msgstr "CamelHttpStream ile yalnızca başa dönme desteklenir"
 
 #: ../src/camel/camel-stream-process.c:284
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:717
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:721
 #, c-format
 msgid "Connection cancelled"
 msgstr "Bağlantı iptal edildi"
@@ -4038,7 +3907,7 @@ msgstr "URL “%s” ayrıştırılamadı"
 msgid "Updating folder “%s”"
 msgstr "“%s” klasörü güncelleniyor"
 
-#: ../src/camel/camel-vee-folder.c:969 ../src/camel/camel-vee-folder.c:1105
+#: ../src/camel/camel-vee-folder.c:1155 ../src/camel/camel-vee-folder.c:1291
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "İletiler Sanal Klasöre kopyalanamıyor ya da taşınamıyor"
@@ -4047,22 +3916,22 @@ msgstr "İletiler Sanal Klasöre kopyalanamıyor ya da taşınamıyor"
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: ../src/camel/camel-vee-folder.c:1006
+#: ../src/camel/camel-vee-folder.c:1192
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "“%2$s : %3$s” içerisinde %1$s iletisi yok"
 
-#: ../src/camel/camel-vee-folder.c:1081
+#: ../src/camel/camel-vee-folder.c:1267
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "“%s” depolanırken hata oluştu: "
 
-#: ../src/camel/camel-vee-folder.c:1272
+#: ../src/camel/camel-vee-folder.c:1457
 #, c-format
 msgid "Updating search folder “%s”"
 msgstr "“%s” arama klasörü güncelleniyor"
 
-#: ../src/camel/camel-vee-folder.c:1332
+#: ../src/camel/camel-vee-folder.c:1517
 msgid "Automatically _update on change in source folders"
 msgstr "Kaynak klasörlerde değişikliklerde kendiliğinden _güncelle"
 
@@ -4119,7 +3988,7 @@ msgstr ""
 #: ../src/camel/providers/pop3/camel-pop3-store.c:577
 #: ../src/camel/providers/pop3/camel-pop3-store.c:672
 #: ../src/camel/providers/pop3/camel-pop3-store.c:1107
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:541
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:545
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "Bu işlemi tamamlayabilmek için çevirim içi çalışmanız gerekiyor"
@@ -4181,12 +4050,12 @@ msgstr "%s için önbellek oluşturulamadı: "
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1475
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1470
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "“%s : %s” klasörü için geçerli IMAP posta kutusu yok"
 
-#: ../src/camel/providers/imapx/camel-imapx-input-stream.c:102
+#: ../src/camel/providers/imapx/camel-imapx-input-stream.c:104
 #, c-format
 msgid "Source stream returned no data"
 msgstr "Kaynak akışı veri döndürmedi"
@@ -4219,24 +4088,28 @@ msgstr "Sunucu Bağlantısı"
 msgid "Numbe_r of concurrent connections to use"
 msgstr "Aynı anda kurulacak bağlantı _sayısı"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:52
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:51
+msgid "Enable full folder update on _metered network"
+msgstr "_Kotalı ağda tam klasör güncellemesini etkinleştir"
+
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:54
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:43
 msgid "Folders"
 msgstr "Klasörler"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:54
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:56
 msgid "_Show only subscribed folders"
 msgstr "_Yalnızca abone olunan klasörleri göster"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:57
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:59
 msgid "O_verride server-supplied folder namespace"
 msgstr "S_unucu tarafından sağlanan klasör ad alanını geçersiz kıl"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:59
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:61
 msgid "Namespace:"
 msgstr "Ad alanı:"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:62
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:64
 #: ../src/camel/providers/local/camel-local-provider.c:37
 #: ../src/camel/providers/local/camel-local-provider.c:63
 #: ../src/camel/providers/local/camel-local-provider.c:84
@@ -4245,18 +4118,18 @@ msgstr "Ad alanı:"
 msgid "Options"
 msgstr "Seçenekler"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:64
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:66
 #: ../src/camel/providers/local/camel-local-provider.c:39
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:38
 msgid "Apply _filters to new messages in all folders"
 msgstr "Tüm klasörler içindeki yeni iletilere _süzgeçleri uygula"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:66
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:68
 msgid "_Apply filters to new messages in Inbox on this server"
 msgstr ""
 "Bu sunucudaki _Gelen kutusunda bulunan yeni iletilere süzgeçleri uygula"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:68
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:70
 #: ../src/camel/providers/local/camel-local-provider.c:41
 #: ../src/camel/providers/local/camel-local-provider.c:67
 #: ../src/camel/providers/local/camel-local-provider.c:88
@@ -4265,27 +4138,27 @@ msgstr ""
 msgid "Check new messages for _Junk contents"
 msgstr "Yeni iletiler için _Gereksiz içerikleri kontrol et"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:70
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:72
 msgid "Only check for Junk messages in the In_box folder"
 msgstr "Gereksiz iletileri yalnızca In_box klasöründe denetle"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:72
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:74
 msgid "Synchroni_ze remote mail locally in all folders"
 msgstr "Uzaktaki _mektupları yerel ile tüm klasörlerde eşzamanlandır"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:79
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:81
 msgid "Default IMAP port"
 msgstr "Öntanımlı IMAP bağlantı noktası"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:80
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:82
 msgid "IMAP over TLS"
 msgstr "TLS üstünden IMAP"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:87
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:89
 msgid "IMAP"
 msgstr "IMAP"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:89
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:91
 msgid "For reading and storing mail on IMAP servers."
 msgstr "IMAP sunucularından ileti alma ve göndermede kullanmak için."
 
@@ -4305,7 +4178,7 @@ msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "%s IMAP sunucusuna güvenli kipte bağlantı başarısız oldu: %s"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3036
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:279
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:283
 msgid "STARTTLS not supported"
 msgstr "STARTTLS desteklenmiyor"
 
@@ -4344,151 +4217,154 @@ msgstr "Kimlik doğrulama başarısız oldu"
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr "ENABLE UTF8=ACCEPT verilmesi başarısız oldu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3419
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3422
 msgid "Failed to issue NAMESPACE"
 msgstr "NAMESPACE verilmesi başarısız oldu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3437
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3440
 msgid "Failed to enable QResync"
 msgstr "QResync etkinleştirme başarısız oldu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3474
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3477
 msgid "Failed to issue NOTIFY"
 msgstr "NOTIFY verilmesi başarısız oldu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3955
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3958
 msgid "Failed to select mailbox"
 msgstr "Posta kutusu seçme başarısız oldu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4058
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4061
 msgid "Cannot issue command, no stream available"
 msgstr "Komut verilemiyor, kullanılabilir akış yok"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4324
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4327
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "%s ileti IDʼsine sahip ileti alınamıyor: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4325
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4328
 msgid "No such message available."
 msgstr "Böyle bir ileti yok."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4373
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4398
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4437
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4377
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4402
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4441
 msgid "Error fetching message"
 msgstr "İleti alınırken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4415
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5178
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4419
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5186
 msgid "Error performing NOOP"
 msgstr "NOOP İşlemi başarısız"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4430
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4434
 msgid "Failed to close the tmp stream"
 msgstr "Tmp akışı kapatılamadı"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4461
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4465
 msgid "Failed to copy the tmp file"
 msgstr "Tmp dosyası kopyalanamadı"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4699
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4703
 msgid "Error moving messages"
 msgstr "İletiler taşınırken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4699
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4703
 msgid "Error copying messages"
 msgstr "İletiler kopyalanırken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4971
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4992
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4976
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4997
 msgid "Cannot create spool file: "
 msgstr "Kuyruk dosyası oluşturulamadı: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5078
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5083
 msgid "Error appending message"
 msgstr "İleti eklenirken hata"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5331
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5339
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "“%s : %s” içerisindeki değiştirilen iletiler taranıyor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5335
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5343
 msgid "Error scanning changes"
 msgstr "Değişiklikler taranırken hata"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5356
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5364
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "“%s : %s” içindeki yeni iletilerin özet bilgisi getiriliyor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5384
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5392
 msgid "Error fetching message info"
 msgstr "İleti bilgisi getirilirken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5504
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5525
 msgid "Error running STATUS"
 msgstr "STATUS çalıştırılırken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6052
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6082
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6117
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6099
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6154
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6218
 msgid "Error syncing changes"
 msgstr "Değişiklikler eşlenirken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6255
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6112
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6164
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6237
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6381
 msgid "Error expunging message"
 msgstr "İleti silinirken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6333
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6463
 msgid "Error fetching folders"
 msgstr "Klasörler alınırken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6341
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6471
 msgid "Error fetching subscribed folders"
 msgstr "Abone olunan klasörler getirilirken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6396
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6528
 msgid "Error creating folder"
 msgstr "Klasör oluştururken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6452
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6578
 msgid "Error deleting folder"
 msgstr "Klasör silinirken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6498
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6624
 msgid "Error renaming folder"
 msgstr "Klasör yeniden adlandırılırken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6530
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6656
 msgid "Error subscribing to folder"
 msgstr "Klasöre abone olunurken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6566
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6692
 msgid "Error unsubscribing from folder"
 msgstr "Klasör aboneliği iptal edilirken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6606
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6732
 msgid "IMAP server does not support quotas"
 msgstr "IMAP sunucusu kotaları desteklemiyor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6618
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6744
 msgid "Error retrieving quota information"
 msgstr "Kota bilgisi getirilirken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6683
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6809
 msgid "Search failed"
 msgstr "Arama başarısız"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6801
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6927
 msgid "Error running IDLE"
 msgstr "IDLE çalıştırılırken hata"
 
@@ -4534,18 +4410,18 @@ msgstr ""
 msgid "No such folder %s"
 msgstr "%s klasörü yok"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1624
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1623
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
 msgstr "Klasör yolu “%s” için IMAP ad uzayı yok"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1892
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2126
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1890
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2084
 #, c-format
 msgid "Retrieving folder list for “%s”"
 msgstr "“%s” için klasör listesi getiriliyor"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2343
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2352
 #, c-format
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "“%s” klasör adı geçersiz, çünkü “%c” karakteri içeriyor"
@@ -4555,97 +4431,97 @@ msgstr "“%s” klasör adı geçersiz, çünkü “%c” karakteri içeriyor"
 #. version as well. It's always the folder name (eventually path) as provided by the server,
 #. when returned in given localization. it can be checked semi-easily in the case of
 #. the GMail variants, by changing the GMail interface language in the GMail Preferences.
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2738
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2747
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
 msgstr "[Gmail]/Taslaklar"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2739
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2748
 msgctxt "IMAPDefaults"
 msgid "Drafts"
 msgstr "Taslaklar"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2740
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2749
 msgctxt "IMAPDefaults"
 msgid "Draft"
 msgstr "Taslak"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2743
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2752
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "Şablonlar"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2746
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2755
 msgctxt "IMAPDefaults"
 msgid "Archive"
 msgstr "Arşiv"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2749
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2758
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[Gmail]/Gönderilen Posta"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2750
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2759
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "Gönderilenler"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2751
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2760
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "Gönderilmiş Ögeler"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2752
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2761
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Gönderilmiş İletiler"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2755
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2764
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "[Gmail]/Spam"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2756
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2765
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "Gereksiz"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2757
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2766
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "Gereksiz E-Posta"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2758
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2767
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "Gereksiz E-posta"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2759
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2768
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "Spam"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2760
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2769
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "Önemsiz Posta"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2763
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2772
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr "[Gmail]/Çöp"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2764
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2773
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "Çöp"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2765
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2774
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "Silinen Ögeler"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2766
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2775
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Silinen İletiler"
@@ -5693,222 +5569,227 @@ msgstr "SMTP"
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr "Uzaktaki mailhubʼa SMTP kullanıp bağlanarak mektup göndermek için."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:235
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:242
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:237
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:244
 msgid "Welcome response error: "
 msgstr "Karşılama yanıtı hatası: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:278
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:282
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr "%s SMTP sunucusuna güvenli kipte bağlantı kurulamadı: %s"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:287
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:300
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:307
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:291
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:304
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:311
 msgid "STARTTLS command failed: "
 msgstr "STARTTLS komutu başarısız oldu: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:326
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:330
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
 msgstr "%s SMTP sunucusuna güvenli kipte bağlantı kurulamadı: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:437
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:441
 #, c-format
 msgid "SMTP server %s"
 msgstr "SMTP sunucu %s"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:440
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:444
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "%s üzerinden STMP mektup gönderimi"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:580
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:584
 #, c-format
 msgid "SMTP server %s does not support %s authentication"
 msgstr "%s SMTP sunucusu %s yetkilendirmesini desteklemiyor"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:661
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:665
 #, c-format
 msgid "No SASL mechanism was specified"
 msgstr "Herhangi bir SASL mekanizması belirtilmemiş"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:697
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:701
 msgid "AUTH command failed: Not connected."
 msgstr "AUTH komutu başarısız oldu: Bağlanılmadı."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:704
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:718
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:734
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:708
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:722
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:738
 msgid "AUTH command failed: "
 msgstr "AUTH komutu başarısız: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:885
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:908
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "İleti gönderilemiyor: servis bağlı değil."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:894
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:917
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "İleti gönderilemiyor: gönderen adresi geçerli değil."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:898
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:921
 msgid "Sending message"
 msgstr "İletiler gönderiliyor"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:927
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:950
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "İleti gönderilemiyor: hiçbir alıcı belirtilmemiş."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:942
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:965
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "İleti gönderilemiyor: bir ya da daha fazla hatalı alıcı"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1074
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1097
 msgid "Syntax error, command unrecognized"
 msgstr "Söz dizimi hatası, bilinmeyen komut"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1076
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1099
 msgid "Syntax error in parameters or arguments"
 msgstr "Parametre ya da argümanlarda söz dizimi hatası"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1078
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1101
 msgid "Command not implemented"
 msgstr "Komut henüz tanınmıyor"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1080
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1103
 msgid "Command parameter not implemented"
 msgstr "Komut parametresi henüz tanınmıyor"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1082
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1105
 msgid "System status, or system help reply"
 msgstr "Sistem durumu, ya da sistem yardım yanıtı"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1084
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1107
 msgid "Help message"
 msgstr "Yardım iletisi"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1086
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1109
 msgid "Service ready"
 msgstr "Servis hazır"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1088
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1111
 msgid "Service closing transmission channel"
 msgstr "Servis iletişim kanalını kapatıyor"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1090
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1113
 msgid "Service not available, closing transmission channel"
 msgstr "Servis uygun değil, iletişim kanalı kapatılıyor"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1092
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1115
 msgid "Requested mail action okay, completed"
 msgstr "İstenen mektup işlemi tamamlandı"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1094
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1117
 msgid "User not local; will forward to <forward-path>"
 msgstr "Kullanıcı yerel değil, <forward-path> üzerine yönlendirilecek"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1096
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1119
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr "İstenen mektup eylemi yapılmadı: posta kutusu kullanılabilir değil"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1098
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1121
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "İstenen eylem yapılmadı: posta kutusu kullanılabilir değil"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1100
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1123
 msgid "Requested action aborted: error in processing"
 msgstr "İstenen eylem iptal edildi: işlem sırasında hata"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1102
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1125
 msgid "User not local; please try <forward-path>"
 msgstr "Kullanıcı yerel değil; lütfen <forward-path> deneyin"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1104
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1127
 msgid "Requested action not taken: insufficient system storage"
 msgstr "İstenen eylem yapılmadı: disk alanı yetersiz"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1106
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1129
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "İstenen mektup eylemi iptal edildi: ayrılan saklama miktarı aşıldı"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1108
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1131
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "İstenen eylem yapılmadı: posta kutusu adına izin verilmedi"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1110
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1133
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "Mektup başlangıcını girin, <CRLF>.<CRLF> ile bitirin"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1112
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1135
 msgid "Transaction failed"
 msgstr "İletim başarısız oldu"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1116
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1139
 msgid "A password transition is needed"
 msgstr "Parola iletimi gerekiyor"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1118
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1141
 msgid "Authentication mechanism is too weak"
 msgstr "Kimlik doğrulama yöntemi çok zayıf"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1120
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1143
 msgid "Encryption required for requested authentication mechanism"
 msgstr "İstenen kimlik doğrulama yöntemi için şifreleme gerekiyor"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1122
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1145
 msgid "Temporary authentication failure"
 msgstr "Geçici kimlik doğrulama hatası"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1412
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1147
+#: ../src/libedataserver/e-client.c:149
+msgid "Authentication required"
+msgstr "Kimlik doğrulaması gerekli"
+
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1437
 msgid "SMTP Greeting"
 msgstr "SMTP Karşılaması"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1421
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1434
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1441
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1446
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1459
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1466
 msgid "HELO command failed: "
 msgstr "HELO komutu başarısız: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1517
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1531
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1540
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1550
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1564
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1573
 msgid "MAIL FROM command failed: "
 msgstr "MAIL FROM komutu başarısız: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1568
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1601
 msgid "RCPT TO command failed: "
 msgstr "RCPT TO komutu başarısız: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1584
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1593
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1617
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1626
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> başarısız: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1667
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1678
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1689
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1738
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1756
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1769
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1777
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1700
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1711
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1722
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1805
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1823
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1836
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1844
 msgid "DATA command failed: "
 msgstr "DATA komutu başarısız: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1803
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1817
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1825
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1870
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1884
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1892
 msgid "RSET command failed: "
 msgstr "RSET komutu başarısız oldu: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1851
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1863
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1869
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1918
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1930
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1936
 msgid "QUIT command failed: "
 msgstr "QUIT komutu başarısız oldu: "
 
@@ -6286,13 +6167,13 @@ msgstr "%s uzak kaynakların oluşturulmasını desteklemiyor"
 msgid "%s does not support deleting remote resources"
 msgstr "%s uzak kaynakların silinmesini desteklemiyor"
 
-#: ../src/libebackend/e-data-factory.c:1349
+#: ../src/libebackend/e-data-factory.c:1433
 #: ../src/libebackend/e-subprocess-factory.c:293
 #, c-format
 msgid "No such source for UID “%s”"
 msgstr "UID “%s” için böyle bir kaynak yok"
 
-#: ../src/libebackend/e-data-factory.c:1499
+#: ../src/libebackend/e-data-factory.c:1593
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr "“%s” kaynağı ve “%s” uzantısı için arka uç üreteci bulunamıyor."
@@ -6489,26 +6370,82 @@ msgctxt "CategoryName"
 msgid "Waiting"
 msgstr "Bekliyor"
 
-#: ../src/libedataserver/e-client.c:144
+#: ../src/libedataserver/e-client.c:141
+msgid "Backend is busy"
+msgstr "Araç meşgul"
+
+#: ../src/libedataserver/e-client.c:143
 msgid "Source not loaded"
 msgstr "Kaynak yüklü değli"
 
-#: ../src/libedataserver/e-client.c:146
+#: ../src/libedataserver/e-client.c:145
 msgid "Source already loaded"
 msgstr "Kaynak zaten yüklü"
+
+#: ../src/libedataserver/e-client.c:147
+msgid "Authentication failed"
+msgstr "Kimlik doğrulaması başarısız"
+
+#: ../src/libedataserver/e-client.c:151
+msgid "Repository offline"
+msgstr "Depo çevrim dışı"
 
 #. Translators: This means that the EClient does not
 #. * support offline mode, or it's not set to by a user,
 #. * thus it is unavailable while user is not connected.
-#: ../src/libedataserver/e-client.c:157
+#: ../src/libedataserver/e-client.c:156
 msgid "Offline unavailable"
 msgstr "Çevirim dışı kullanılamaz"
 
-#: ../src/libedataserver/e-client.c:179
+#: ../src/libedataserver/e-client.c:158
+msgid "Permission denied"
+msgstr "İzin verilmedi"
+
+#: ../src/libedataserver/e-client.c:162
+msgid "Could not cancel"
+msgstr "İptal edilemedi"
+
+#: ../src/libedataserver/e-client.c:164
+msgid "Not supported"
+msgstr "Desteklenmiyor"
+
+#: ../src/libedataserver/e-client.c:166
+msgid "Unsupported authentication method"
+msgstr "Desteklenmeyen yetkilendirme yöntemi"
+
+#: ../src/libedataserver/e-client.c:168
+msgid "TLS not available"
+msgstr "TLS kullanılabilir değil"
+
+#: ../src/libedataserver/e-client.c:170
+msgid "Search size limit exceeded"
+msgstr "Arama boyutu sınırı geçildi"
+
+#: ../src/libedataserver/e-client.c:172
+msgid "Search time limit exceeded"
+msgstr "Arama zamanı sınırı geçildi"
+
+#: ../src/libedataserver/e-client.c:176
+msgid "Query refused"
+msgstr "Sorgu reddedildi"
+
+#: ../src/libedataserver/e-client.c:178
 msgid "D-Bus error"
 msgstr "D-Bus hatası"
 
-#: ../src/libedataserver/e-client.c:2023
+#: ../src/libedataserver/e-client.c:180
+msgid "Other error"
+msgstr "Diğer hata"
+
+#: ../src/libedataserver/e-client.c:182
+msgid "Backend is not opened yet"
+msgstr "Art alan henüz açık değil"
+
+#: ../src/libedataserver/e-client.c:184
+msgid "Object is out of sync"
+msgstr "Nesne eşleşmiş değil"
+
+#: ../src/libedataserver/e-client.c:2048
 msgid "Timeout was reached"
 msgstr "Zaman aşımı gerçekleşti"
 
@@ -6527,22 +6464,22 @@ msgstr "“%s” (%s) kaynağı, “%s” OAuth2 hizmeti için geçerli değil"
 msgid "OAuth2 secret not found"
 msgstr "OAuth2 gizi bulunamadı"
 
-#: ../src/libedataserver/e-oauth2-service.c:1412
+#: ../src/libedataserver/e-oauth2-service.c:1419
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "“%s” sunucusundan geçersiz yanıt alındı."
 
-#: ../src/libedataserver/e-oauth2-service.c:1421
+#: ../src/libedataserver/e-oauth2-service.c:1428
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr "Erişim jetonu yenilenemedi. Lütfen sunucuya yeniden giriş yapın."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: ../src/libedataserver/e-oauth2-service.c:1463
+#: ../src/libedataserver/e-oauth2-service.c:1470
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "“%s” (%s) kaynağı geçerli bir OAuth2 kaynağı değil"
 
-#: ../src/libedataserver/e-oauth2-service.c:1536
+#: ../src/libedataserver/e-oauth2-service.c:1544
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -6817,8 +6754,8 @@ msgstr "Veri gönderilemedi"
 #: ../src/libedataserver/e-webdav-session.c:1394
 #: ../src/libedataserver/e-webdav-session.c:1469
 #: ../src/libedataserver/e-webdav-session.c:1573
-#: ../src/libedataserver/e-webdav-session.c:2822
-#: ../src/libedataserver/e-webdav-session.c:4074
+#: ../src/libedataserver/e-webdav-session.c:2827
+#: ../src/libedataserver/e-webdav-session.c:4113
 msgid "Failed to get input XML content"
 msgstr "Girdi XML içeriği alınamadı"
 
@@ -6839,7 +6776,7 @@ msgid "Failed to create collection"
 msgstr "Koleksiyon oluşturulamadı"
 
 #: ../src/libedataserver/e-webdav-session.c:1733
-#: ../src/libedataserver/e-webdav-session.c:1887
+#: ../src/libedataserver/e-webdav-session.c:1892
 msgid "Failed to get XML request content"
 msgstr "XML istek içeriği alınamadı"
 
@@ -6847,110 +6784,110 @@ msgstr "XML istek içeriği alınamadı"
 msgid "Failed to create address book"
 msgstr "Adres defteri oluşturulamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:1900
+#: ../src/libedataserver/e-webdav-session.c:1905
 msgid "Failed to create calendar"
 msgstr "Takvim oluşturulamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:2032
-#: ../src/libedataserver/e-webdav-session.c:2043
+#: ../src/libedataserver/e-webdav-session.c:2037
+#: ../src/libedataserver/e-webdav-session.c:2048
 msgid "Failed to read resource"
 msgstr "Kaynak okunamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:2192
+#: ../src/libedataserver/e-webdav-session.c:2197
 msgid "Cannot rewind input stream: Not supported"
 msgstr "Girdi akışı geri sarılamadı: Desteklenmiyor"
 
-#: ../src/libedataserver/e-webdav-session.c:2355
-#: ../src/libedataserver/e-webdav-session.c:2499
+#: ../src/libedataserver/e-webdav-session.c:2360
+#: ../src/libedataserver/e-webdav-session.c:2504
 msgid "Failed to put data"
 msgstr "Veri konulamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:2374
-#: ../src/libedataserver/e-webdav-session.c:2507
+#: ../src/libedataserver/e-webdav-session.c:2379
+#: ../src/libedataserver/e-webdav-session.c:2512
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Veri sunucuya konulamadı, hata kodu %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:2599
+#: ../src/libedataserver/e-webdav-session.c:2604
 msgid "Failed to delete resource"
 msgstr "Kaynak silinemedi"
 
-#: ../src/libedataserver/e-webdav-session.c:2666
+#: ../src/libedataserver/e-webdav-session.c:2671
 msgid "Failed to copy resource"
 msgstr "Kaynak kopyalanamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:2728
+#: ../src/libedataserver/e-webdav-session.c:2733
 msgid "Failed to move resource"
 msgstr "Kaynak taşınamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:2833
+#: ../src/libedataserver/e-webdav-session.c:2838
 msgid "Failed to lock resource"
 msgstr "Kaynak kilitlenemedi"
 
-#: ../src/libedataserver/e-webdav-session.c:2847
-#: ../src/libedataserver/e-webdav-session.c:3049
+#: ../src/libedataserver/e-webdav-session.c:2852
+#: ../src/libedataserver/e-webdav-session.c:3054
 msgid "Expected application/xml response, but none returned"
 msgstr "Uygulama/xml yanıtı beklendi ama hiçbiri dönmedi"
 
-#: ../src/libedataserver/e-webdav-session.c:2850
-#: ../src/libedataserver/e-webdav-session.c:3052
+#: ../src/libedataserver/e-webdav-session.c:2855
+#: ../src/libedataserver/e-webdav-session.c:3057
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "Uygulama/xml yanıtı beklendi ama %s döndü"
 
-#: ../src/libedataserver/e-webdav-session.c:2862
-#: ../src/libedataserver/e-webdav-session.c:3065
+#: ../src/libedataserver/e-webdav-session.c:2867
+#: ../src/libedataserver/e-webdav-session.c:3070
 msgid "Failed to parse XML data"
 msgstr "XML verisi ayrıştırılamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:2941
+#: ../src/libedataserver/e-webdav-session.c:2946
 msgid "Failed to refresh lock"
 msgstr "Kilit yenilenemedi"
 
-#: ../src/libedataserver/e-webdav-session.c:3000
+#: ../src/libedataserver/e-webdav-session.c:3005
 msgid "Failed to unlock"
 msgstr "Kilit kaldırılamadı"
 
-#: ../src/libedataserver/e-webdav-session.c:3037
+#: ../src/libedataserver/e-webdav-session.c:3042
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Çoklu durum yanıtı beklendi, ama %d döndü (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:4084
+#: ../src/libedataserver/e-webdav-session.c:4123
 msgid "Failed to get access control list"
 msgstr "Denetim listesine erişilemiyor"
 
-#: ../src/libedataserver/e-webdav-session.c:4825
+#: ../src/libedataserver/e-webdav-session.c:4884
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr "Ne korunmuş ne de devralınan Erişim Denetimi Girdisi depolanabilir."
 
-#: ../src/libedataserver/e-webdav-session.c:4832
+#: ../src/libedataserver/e-webdav-session.c:4891
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Erişim Denetimi Girdisi için geçersiz temel tür girildi."
 
-#: ../src/libedataserver/e-webdav-session.c:4839
+#: ../src/libedataserver/e-webdav-session.c:4898
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Özellik tabanlı Erişim Denetimi Girdisi depolanamaz."
 
-#: ../src/libedataserver/e-webdav-session.c:4846
+#: ../src/libedataserver/e-webdav-session.c:4905
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Erişim Denetimi Girdisi yalnızca Grant (Ver) veya Deny (Reddet) olabilir, "
 "None (Hiçbiri) olamaz."
 
-#: ../src/libedataserver/e-webdav-session.c:4854
+#: ../src/libedataserver/e-webdav-session.c:4913
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Erişim Denetimi Girdisi yalnızca Grant (Ver) veya Deny (Reddet) olabilir, "
 "her ikisi birden olamaz."
 
-#: ../src/libedataserver/e-webdav-session.c:4913
+#: ../src/libedataserver/e-webdav-session.c:4972
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Erişim Denetimi Girdisi ayrıcalığı NULL olamaz."
 
 #: ../src/libedataserverui/e-credentials-prompter.c:258
-#: ../src/libedataserverui/e-credentials-prompter.c:1690
-#: ../src/libedataserverui/e-credentials-prompter.c:1734
+#: ../src/libedataserverui/e-credentials-prompter.c:1694
+#: ../src/libedataserverui/e-credentials-prompter.c:1738
 msgid "Credentials prompt was cancelled"
 msgstr "Kimlik bilgileri istemi iptal edildi"
 
@@ -7098,7 +7035,7 @@ msgstr ""
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:605
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1070
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1083
 msgid "_Cancel"
 msgstr "_İptal"
 
@@ -7159,7 +7096,7 @@ msgid "Please enter the password for account “%s”."
 msgstr "Lütfen “%s” hesabı için parola girin."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1071
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1084
 msgid "_OK"
 msgstr "_Tamam"
 
@@ -7200,55 +7137,55 @@ msgctxt "overdue"
 msgid "overdue"
 msgstr "zamanı geçmiş"
 
-#: ../src/libedataserverui/e-reminders-widget.c:912
+#: ../src/libedataserverui/e-reminders-widget.c:921
 #, c-format
 msgid "Failed to launch URI “%s”:"
 msgstr "“%s” URIʼsi başlatılamadı:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:953
+#: ../src/libedataserverui/e-reminders-widget.c:962
 msgid "Failed to dismiss reminder:"
 msgstr "Anımsatıcıdan vazgeçilemedi:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:974
+#: ../src/libedataserverui/e-reminders-widget.c:983
 msgid "Failed to dismiss all:"
 msgstr "Tümünden vazgeçilemedi:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1110
+#: ../src/libedataserverui/e-reminders-widget.c:1119
 msgid "Set a custom snooze time for"
 msgstr "Özel erteleme zamanı ayarla"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1123
+#: ../src/libedataserverui/e-reminders-widget.c:1132
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "_gün"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1139
+#: ../src/libedataserverui/e-reminders-widget.c:1148
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "_saat"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1155
+#: ../src/libedataserverui/e-reminders-widget.c:1164
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "_dakika"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1161
+#: ../src/libedataserverui/e-reminders-widget.c:1170
 msgid "_Add Snooze time"
 msgstr "_Erteleme zamanı ekle"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1428
+#: ../src/libedataserverui/e-reminders-widget.c:1437
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "İ_ptal Et"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1429
+#: ../src/libedataserverui/e-reminders-widget.c:1438
 msgid "Dismiss _All"
 msgstr "_Tümünden Vazgeç"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1431
+#: ../src/libedataserverui/e-reminders-widget.c:1440
 msgid "_Snooze"
 msgstr "_Ertele"
 
@@ -7330,35 +7267,35 @@ msgstr "Destek"
 msgid "_User mail:"
 msgstr "Kullanıcı _e-postası:"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:521
+#: ../src/libedataserverui/e-webdav-discover-widget.c:524
 msgctxt "WebDAVDiscover"
 msgid "Contacts"
 msgstr "Bağlantılar"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:522
+#: ../src/libedataserverui/e-webdav-discover-widget.c:525
 msgctxt "WebDAVDiscover"
 msgid "Events"
 msgstr "Olaylar"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:523
+#: ../src/libedataserverui/e-webdav-discover-widget.c:526
 msgctxt "WebDAVDiscover"
 msgid "Memos"
 msgstr "Notlar"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:524
+#: ../src/libedataserverui/e-webdav-discover-widget.c:527
 msgctxt "WebDAVDiscover"
 msgid "Tasks"
 msgstr "Görevler"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:838
+#: ../src/libedataserverui/e-webdav-discover-widget.c:849
 msgid "Invalid URL"
 msgstr "Geçersiz Adres"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:883
+#: ../src/libedataserverui/e-webdav-discover-widget.c:895
 msgid "Cancel"
 msgstr "İptal"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:886
+#: ../src/libedataserverui/e-webdav-discover-widget.c:898
 msgid "Searching server sources..."
 msgstr "Sunucu kaynakları aranıyor..."
 
@@ -7411,7 +7348,7 @@ msgstr "Hesap ögesi bulunamadı"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Autodiscover yanıtında ASUrl ve OABUrl bulunamadı"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1406
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1420
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -7420,7 +7357,7 @@ msgstr ""
 "org.gnome.OnlineAccounts servisinde “%s” için erişim jetonu almaya uygun bir "
 "hesap bulunamadı"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1456
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1470
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "“%s” için erişim jetonu alınamadı: "
@@ -7451,26 +7388,26 @@ msgstr ""
 "için 1, devre dışı bırakmak için 0 kullanın, diğer her değer derleme zamanı "
 "seçeneğini kullandırır"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:227
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:255
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:760
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:969
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:232
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:260
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:774
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:983
 msgid "Reminders"
 msgstr "Anımsatıcılar"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:367
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:372
 msgid "Warning"
 msgstr "Uyarı"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:368
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:373
 msgid "_No"
 msgstr "_Hayır"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:369
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:374
 msgid "_Yes"
 msgstr "_Evet"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:373
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:378
 #, c-format
 msgid ""
 "A calendar reminder is about to trigger. This reminder is configured to run "
@@ -7487,31 +7424,31 @@ msgstr ""
 "\n"
 "Bu programı çalıştırmak istediğinize emin misiniz?"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:387
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:393
 msgid "Do not ask me about this program again"
 msgstr "Bu program hakkında bir daha bana soru sorma"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:665
-msgid "Display reminders in notification area _only"
-msgstr "Anımsatıcıları _yalnızca bildirim alanında göster"
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:679
+msgid "Display Reminders window with _notifications"
+msgstr "Anımsatıcı penceresini _bildirimlerle birlikte göster"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:666
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:680
 msgid "Keep reminder notification window always on _top"
 msgstr "Anımsatıcı bildirim penceresini daima _yukarda tut"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:667
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:681
 msgid "Display reminders for _completed tasks"
 msgstr "Tamamlanan _görevlerin anımsatıcılarını göster"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:668
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:682
 msgid "Display reminders for _past events"
 msgstr "_Geçmiş olaylar için anımsatıcıları göster"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:682
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:696
 msgid "Reminders Options:"
 msgstr "Anımsatıcı Seçenekleri:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:776
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
@@ -7770,6 +7707,60 @@ msgstr "Kaynak kayda bağlanılamadı: %s\n"
 msgid "No sources had been found\n"
 msgstr "Kaynak bulunamadı\n"
 
+#~ msgid "Success"
+#~ msgstr "Başarılı"
+
+#~ msgid "Authentication Failed"
+#~ msgstr "Kimlik Doğrulama Başarısız"
+
+#~ msgid "Authentication Required"
+#~ msgstr "Kimlik Doğrulaması Gerekli"
+
+#~ msgid "Unsupported field"
+#~ msgstr "Desteklenmeyen alan"
+
+#~ msgid "Address book does not exist"
+#~ msgstr "Adres defteri yok"
+
+#~ msgid "Book removed"
+#~ msgstr "Kitap silindi"
+
+#~ msgid "Not available in offline mode"
+#~ msgstr "Çevrim dışı kipte kullanılabilir değil"
+
+#~ msgid "Invalid server version"
+#~ msgstr "Geçersiz sunucu sürümü"
+
+#~ msgid "Repository is offline"
+#~ msgstr "Depo çevrim dışı"
+
+#~ msgid "URI not loaded"
+#~ msgstr "URI yüklü değil"
+
+#~ msgid "URI already loaded"
+#~ msgstr "URI zaten yüklü"
+
+#~ msgid "Unknown User"
+#~ msgstr "Bilinmeyen Kullanıcı"
+
+#~ msgid "Protocol not supported"
+#~ msgstr "İletişim kuralı desteklenmiyor"
+
+#~ msgid "Operation has been cancelled"
+#~ msgstr "İşlem iptal edildi"
+
+#~ msgid "Could not cancel operation"
+#~ msgstr "İşlem iptal edilemedi"
+
+#~ msgid "A D-Bus exception has occurred"
+#~ msgstr "Bir D-Bus istisnası oluştu"
+
+#~ msgid "No error"
+#~ msgstr "Hata yok"
+
+#~ msgid "Calendar does not exist"
+#~ msgstr "Takvim yok"
+
 #~ msgid ""
 #~ "Invalid trace information:\n"
 #~ "%s"
@@ -7883,9 +7874,6 @@ msgstr "Kaynak bulunamadı\n"
 
 #~ msgid "Querying for updated groups…"
 #~ msgstr "Güncellenen gruplar sorgulanıyor..."
-
-#~ msgid "The backend does not support bulk removals"
-#~ msgstr "Art alan toptan silmeleri desteklemiyor"
 
 #~ msgid "Loading…"
 #~ msgstr "Yükleniyor..."
