@@ -727,17 +727,33 @@ ecb_caldav_check_credentials_error (ECalBackendCalDAV *cbdav,
 		op_error->code = E_CLIENT_ERROR_TLS_NOT_AVAILABLE;
 	} else if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
 		   g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
+		gboolean was_forbidden = g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN);
+
 		op_error->domain = E_CLIENT_ERROR;
 		op_error->code = E_CLIENT_ERROR_AUTHENTICATION_REQUIRED;
 
 		if (webdav) {
 			ENamedParameters *credentials;
+			gboolean empty_credentials;
 
 			credentials = e_soup_session_dup_credentials (E_SOUP_SESSION (webdav));
-			if (credentials && e_named_parameters_count (credentials) > 0)
-				op_error->code = E_CLIENT_ERROR_AUTHENTICATION_FAILED;
-
+			empty_credentials = !credentials || !e_named_parameters_count (credentials);
 			e_named_parameters_free (credentials);
+
+			if (!empty_credentials) {
+				if (was_forbidden) {
+					if (e_webdav_session_get_last_dav_error_is_permission (webdav)) {
+						op_error->code = E_CLIENT_ERROR_PERMISSION_DENIED;
+						g_free (op_error->message);
+						op_error->message = g_strdup (e_client_error_to_string (op_error->code));
+					} else {
+						/* To avoid credentials prompt */
+						op_error->code = E_CLIENT_ERROR_OTHER_ERROR;
+					}
+				} else {
+					op_error->code = E_CLIENT_ERROR_AUTHENTICATION_FAILED;
+				}
+			}
 		}
 	}
 }

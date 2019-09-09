@@ -42,7 +42,7 @@
 #define BUFFER_SIZE 16384
 
 struct _EWebDAVSessionPrivate {
-	gboolean dummy;
+	gchar *last_dav_error_code;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (EWebDAVSession, e_webdav_session, E_TYPE_SOUP_SESSION)
@@ -596,8 +596,23 @@ e_webdav_access_control_entry_get_privileges (EWebDAVAccessControlEntry *ace)
 }
 
 static void
+e_webdav_session_finalize (GObject *object)
+{
+	EWebDAVSession *webdav = E_WEBDAV_SESSION (object);
+
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
+	/* Chain up to parent's method. */
+	G_OBJECT_CLASS (e_webdav_session_parent_class)->finalize (object);
+}
+
+static void
 e_webdav_session_class_init (EWebDAVSessionClass *klass)
 {
+	GObjectClass *object_class;
+
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->finalize = e_webdav_session_finalize;
 }
 
 static void
@@ -627,6 +642,48 @@ e_webdav_session_new (ESource *source)
 	return g_object_new (E_TYPE_WEBDAV_SESSION,
 		"source", source,
 		NULL);
+}
+
+/**
+ * e_webdav_session_get_last_dav_error_code:
+ * @webdav: an #EWebDAVSession
+ *
+ * Returns last DAV error code as returned by the server. Each recognized code
+ * is enclosed in "[]" in the returned string, to be able to distinguish between
+ * them, in case the server returned multiple codes.
+ *
+ * The string is valid until the next request is executed.
+ *
+ * Returns: (transfer none): a DAV error from the last request, or %NULL, when
+ *    no error had been recognized.
+ *
+ * Since: 3.36
+ **/
+const gchar *
+e_webdav_session_get_last_dav_error_code (EWebDAVSession *webdav)
+{
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), NULL);
+
+	return webdav->priv->last_dav_error_code;
+}
+
+/**
+ * e_webdav_session_get_last_dav_error_is_permission:
+ * @webdav: an #EWebDAVSession
+ *
+ * Returns: whether the last recognized DAV error code contains an error
+ *    which means that user doesn't have permission for the operation. If there
+ *    is no DAV error stored, then returns %FALSE.
+ *
+ * Since: 3.36
+ **/
+gboolean
+e_webdav_session_get_last_dav_error_is_permission (EWebDAVSession *webdav)
+{
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+
+	return webdav->priv->last_dav_error_code &&
+		strstr (webdav->priv->last_dav_error_code, "[need-privileges]");
 }
 
 /**
@@ -735,7 +792,8 @@ static gboolean
 e_webdav_session_extract_dav_error (EWebDAVSession *webdav,
 				    xmlXPathContextPtr xpath_ctx,
 				    const gchar *xpath_prefix,
-				    gchar **out_detail_text)
+				    gchar **out_detail_text,
+				    gboolean can_change_last_dav_error_code)
 {
 	xmlXPathObjectPtr xpath_obj;
 	gchar *detail_text;
@@ -763,11 +821,17 @@ e_webdav_session_extract_dav_error (EWebDAVSession *webdav,
 
 			for (node = xpath_obj->nodesetval->nodeTab[0]->children; node; node = node->next) {
 				if (node->type == XML_ELEMENT_NODE &&
-				    node->name && *(node->name))
+				    node->name && *(node->name)) {
 					g_string_append_printf (text, "[%s]", (const gchar *) node->name);
+				}
 			}
 
 			if (text->len > 0) {
+				if (can_change_last_dav_error_code) {
+					g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+					webdav->priv->last_dav_error_code = g_strdup (text->str);
+				}
+
 				if (detail_text) {
 					g_strstrip (detail_text);
 					if (*detail_text)
@@ -789,41 +853,14 @@ e_webdav_session_extract_dav_error (EWebDAVSession *webdav,
 	return detail_text != NULL;
 }
 
-/**
- * e_webdav_session_replace_with_detailed_error:
- * @webdav: an #EWebDAVSession
- * @request: a #SoupRequestHTTP
- * @response_data: (nullable): received response data, or %NULL
- * @ignore_multistatus: whether to ignore multistatus responses
- * @prefix: (nullable): error message prefix, used when replacing, or %NULL
- * @inout_error: (inout) (nullable) (transfer full): a #GError variable to replace content to, or %NULL
- *
- * Tries to read detailed error information from @response_data,
- * if not provided, then from @request's response_body. If the detailed
- * error cannot be found, then does nothing, otherwise frees the content
- * of @inout_error, if any, and then populates it with an error message
- * prefixed with @prefix.
- *
- * The @prefix might be of form "Failed to something", because the resulting
- * error message will be:
- * "Failed to something: HTTP error code XXX (reason_phrase): detailed_error".
- * When @prefix is %NULL, the error message will be:
- * "Failed with HTTP error code XXX (reason phrase): detailed_error".
- *
- * As the caller might not be interested in errors, also the @inout_error
- * can be %NULL, in which case the function does nothing.
- *
- * Returns: Whether any detailed error had been recognized.
- *
- * Since: 3.26
- **/
-gboolean
-e_webdav_session_replace_with_detailed_error (EWebDAVSession *webdav,
-					      SoupRequestHTTP *request,
-					      const GByteArray *response_data,
-					      gboolean ignore_multistatus,
-					      const gchar *prefix,
-					      GError **inout_error)
+static gboolean
+e_webdav_session_replace_with_detailed_error_internal (EWebDAVSession *webdav,
+						       SoupRequestHTTP *request,
+						       const GByteArray *response_data,
+						       gboolean ignore_multistatus,
+						       const gchar *prefix,
+						       GError **inout_error,
+						       gboolean can_change_last_dav_error_code)
 {
 	SoupMessage *message;
 	GByteArray byte_array = { 0 };
@@ -895,7 +932,7 @@ e_webdav_session_replace_with_detailed_error (EWebDAVSession *webdav,
 				NULL);
 
 			if (xpath_ctx &&
-			    e_webdav_session_extract_dav_error (webdav, xpath_ctx, "", &detail_text)) {
+			    e_webdav_session_extract_dav_error (webdav, xpath_ctx, "", &detail_text, can_change_last_dav_error_code)) {
 				/* do nothing, detail_text is set */
 			} else if (xpath_ctx) {
 				const gchar *path_prefix = NULL;
@@ -919,9 +956,9 @@ e_webdav_session_replace_with_detailed_error (EWebDAVSession *webdav,
 						detail_text = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:responsedescription", path_prefix);
 
 						if (!detail_text)
-							e_webdav_session_extract_dav_error (webdav, xpath_ctx, path_prefix, &detail_text);
+							e_webdav_session_extract_dav_error (webdav, xpath_ctx, path_prefix, &detail_text, can_change_last_dav_error_code);
 					} else {
-						e_webdav_session_extract_dav_error (webdav, xpath_ctx, path_prefix, &detail_text);
+						e_webdav_session_extract_dav_error (webdav, xpath_ctx, path_prefix, &detail_text, can_change_last_dav_error_code);
 					}
 
 					g_free (status);
@@ -1013,6 +1050,45 @@ e_webdav_session_replace_with_detailed_error (EWebDAVSession *webdav,
 	g_free (detail_text);
 
 	return error_set;
+}
+
+/**
+ * e_webdav_session_replace_with_detailed_error:
+ * @webdav: an #EWebDAVSession
+ * @request: a #SoupRequestHTTP
+ * @response_data: (nullable): received response data, or %NULL
+ * @ignore_multistatus: whether to ignore multistatus responses
+ * @prefix: (nullable): error message prefix, used when replacing, or %NULL
+ * @inout_error: (inout) (nullable) (transfer full): a #GError variable to replace content to, or %NULL
+ *
+ * Tries to read detailed error information from @response_data,
+ * if not provided, then from @request's response_body. If the detailed
+ * error cannot be found, then does nothing, otherwise frees the content
+ * of @inout_error, if any, and then populates it with an error message
+ * prefixed with @prefix.
+ *
+ * The @prefix might be of form "Failed to something", because the resulting
+ * error message will be:
+ * "Failed to something: HTTP error code XXX (reason_phrase): detailed_error".
+ * When @prefix is %NULL, the error message will be:
+ * "Failed with HTTP error code XXX (reason phrase): detailed_error".
+ *
+ * As the caller might not be interested in errors, also the @inout_error
+ * can be %NULL, in which case the function does nothing.
+ *
+ * Returns: Whether any detailed error had been recognized.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_replace_with_detailed_error (EWebDAVSession *webdav,
+					      SoupRequestHTTP *request,
+					      const GByteArray *response_data,
+					      gboolean ignore_multistatus,
+					      const gchar *prefix,
+					      GError **inout_error)
+{
+	return e_webdav_session_replace_with_detailed_error_internal (webdav, request, response_data, ignore_multistatus, prefix, inout_error, FALSE);
 }
 
 /**
@@ -1159,6 +1235,8 @@ e_webdav_session_options_sync (EWebDAVSession *webdav,
 	*out_capabilities = NULL;
 	*out_allows = NULL;
 
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
 	request = e_webdav_session_new_request (webdav, SOUP_METHOD_OPTIONS, uri, error);
 	if (!request)
 		return FALSE;
@@ -1238,6 +1316,8 @@ e_webdav_session_post_with_content_type_sync (EWebDAVSession *webdav,
 	if (data_length == (gsize) -1)
 		data_length = strlen (data);
 
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
 	request = e_webdav_session_new_request (webdav, SOUP_METHOD_POST, uri, error);
 	if (!request)
 		return FALSE;
@@ -1255,7 +1335,7 @@ e_webdav_session_post_with_content_type_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to post data"), error) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, TRUE, _("Failed to post data"), error, TRUE) &&
 		bytes != NULL;
 
 	if (success) {
@@ -1367,6 +1447,8 @@ e_webdav_session_propfind_sync (EWebDAVSession *webdav,
 		g_return_val_if_fail (E_IS_XML_DOCUMENT (xml), FALSE);
 	g_return_val_if_fail (func != NULL, FALSE);
 
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
 	request = e_webdav_session_new_request (webdav, SOUP_METHOD_PROPFIND, uri, error);
 	if (!request)
 		return FALSE;
@@ -1401,7 +1483,7 @@ e_webdav_session_propfind_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to get properties"), error) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, TRUE, _("Failed to get properties"), error, TRUE) &&
 		bytes != NULL;
 
 	if (success)
@@ -1448,6 +1530,8 @@ e_webdav_session_proppatch_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
 	g_return_val_if_fail (E_IS_XML_DOCUMENT (xml), FALSE);
 
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
 	request = e_webdav_session_new_request (webdav, SOUP_METHOD_PROPPATCH, uri, error);
 	if (!request)
 		return FALSE;
@@ -1475,7 +1559,7 @@ e_webdav_session_proppatch_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, FALSE, _("Failed to update properties"), error) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to update properties"), error, TRUE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -1549,6 +1633,8 @@ e_webdav_session_report_sync (EWebDAVSession *webdav,
 	if (out_content)
 		*out_content = NULL;
 
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
 	request = e_webdav_session_new_request (webdav, "REPORT", uri, error);
 	if (!request)
 		return FALSE;
@@ -1579,7 +1665,7 @@ e_webdav_session_report_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to issue REPORT"), error) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, TRUE, _("Failed to issue REPORT"), error, TRUE) &&
 		bytes != NULL;
 
 	if (success && func && message->status_code == SOUP_STATUS_MULTI_STATUS)
@@ -1632,13 +1718,15 @@ e_webdav_session_mkcol_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
 	g_return_val_if_fail (uri != NULL, FALSE);
 
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
 	request = e_webdav_session_new_request (webdav, SOUP_METHOD_MKCOL, uri, error);
 	if (!request)
 		return FALSE;
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, FALSE, _("Failed to create collection"), error) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to create collection"), error, TRUE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -1685,6 +1773,8 @@ e_webdav_session_mkcol_addressbook_sync (EWebDAVSession *webdav,
 
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
 	g_return_val_if_fail (uri != NULL, FALSE);
+
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
 	request = e_webdav_session_new_request (webdav, SOUP_METHOD_MKCOL, uri, error);
 	if (!request)
@@ -1741,7 +1831,7 @@ e_webdav_session_mkcol_addressbook_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, FALSE, _("Failed to create address book"), error) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to create address book"), error, TRUE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -1794,6 +1884,8 @@ e_webdav_session_mkcalendar_sync (EWebDAVSession *webdav,
 
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
 	g_return_val_if_fail (uri != NULL, FALSE);
+
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
 	request = e_webdav_session_new_request (webdav, "MKCALENDAR", uri, error);
 	if (!request)
@@ -1901,7 +1993,7 @@ e_webdav_session_mkcalendar_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, FALSE, _("Failed to create calendar"), error) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to create calendar"), error, TRUE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -1994,6 +2086,8 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (uri != NULL, FALSE);
 	g_return_val_if_fail (G_IS_OUTPUT_STREAM (out_stream), FALSE);
 
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
 	request = e_webdav_session_new_request (webdav, SOUP_METHOD_GET, uri, error);
 	if (!request)
 		return FALSE;
@@ -2033,7 +2127,7 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
 				tmp_bytes.data = buffer;
 				tmp_bytes.len = nread;
 
-				success = !e_webdav_session_replace_with_detailed_error (webdav, request, &tmp_bytes, FALSE, _("Failed to read resource"), error);
+				success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, &tmp_bytes, FALSE, _("Failed to read resource"), error, TRUE);
 				if (!success)
 					break;
 			}
@@ -2044,7 +2138,7 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
 		}
 
 		if (success && first_chunk) {
-			success = !e_webdav_session_replace_with_detailed_error (webdav, request, NULL, FALSE, _("Failed to read resource"), error);
+			success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, NULL, FALSE, _("Failed to read resource"), error, TRUE);
 		} else if (success && !first_chunk && log_level == SOUP_LOGGER_LOG_BODY) {
 			fprintf (stdout, "\n");
 			fflush (stdout);
@@ -2293,6 +2387,8 @@ e_webdav_session_put_sync (EWebDAVSession *webdav,
 	if (out_etag)
 		*out_etag = NULL;
 
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
 	request = e_webdav_session_new_request (webdav, SOUP_METHOD_PUT, uri, error);
 	if (!request)
 		return FALSE;
@@ -2356,7 +2452,7 @@ e_webdav_session_put_sync (EWebDAVSession *webdav,
 	g_signal_handler_disconnect (message, wrote_headers_id);
 	g_signal_handler_disconnect (message, wrote_chunk_id);
 
-	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, FALSE, _("Failed to put data"), error) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to put data"), error, TRUE) &&
 		bytes != NULL;
 
 	if (cwd.wrote_any && cwd.log_level == SOUP_LOGGER_LOG_BODY) {
@@ -2458,6 +2554,8 @@ e_webdav_session_put_data_sync (EWebDAVSession *webdav,
 	if (out_etag)
 		*out_etag = NULL;
 
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
 	request = e_webdav_session_new_request (webdav, SOUP_METHOD_PUT, uri, error);
 	if (!request)
 		return FALSE;
@@ -2500,7 +2598,7 @@ e_webdav_session_put_data_sync (EWebDAVSession *webdav,
 
 	ret_bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error (webdav, request, ret_bytes, FALSE, _("Failed to put data"), error) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, ret_bytes, FALSE, _("Failed to put data"), error, TRUE) &&
 		ret_bytes != NULL;
 
 	if (success) {
@@ -2566,6 +2664,8 @@ e_webdav_session_delete_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
 	g_return_val_if_fail (uri != NULL, FALSE);
 
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
 	request = e_webdav_session_new_request (webdav, SOUP_METHOD_DELETE, uri, error);
 	if (!request)
 		return FALSE;
@@ -2600,7 +2700,7 @@ e_webdav_session_delete_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, FALSE, _("Failed to delete resource"), error) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to delete resource"), error, TRUE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -2649,6 +2749,8 @@ e_webdav_session_copy_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (destination_uri != NULL, FALSE);
 	g_return_val_if_fail (depth != NULL, FALSE);
 
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
 	request = e_webdav_session_new_request (webdav, SOUP_METHOD_COPY, source_uri, error);
 	if (!request)
 		return FALSE;
@@ -2667,7 +2769,7 @@ e_webdav_session_copy_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, FALSE, _("Failed to copy resource"), error) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to copy resource"), error, TRUE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -2711,6 +2813,8 @@ e_webdav_session_move_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (source_uri != NULL, FALSE);
 	g_return_val_if_fail (destination_uri != NULL, FALSE);
 
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
 	request = e_webdav_session_new_request (webdav, SOUP_METHOD_MOVE, source_uri, error);
 	if (!request)
 		return FALSE;
@@ -2729,7 +2833,7 @@ e_webdav_session_move_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, FALSE, _("Failed to move resource"), error) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to move resource"), error, TRUE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -2789,6 +2893,8 @@ e_webdav_session_lock_sync (EWebDAVSession *webdav,
 
 	*out_lock_token = NULL;
 
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
 	request = e_webdav_session_new_request (webdav, SOUP_METHOD_LOCK, uri, error);
 	if (!request)
 		return FALSE;
@@ -2834,7 +2940,7 @@ e_webdav_session_lock_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, FALSE, _("Failed to lock resource"), error) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to lock resource"), error, TRUE) &&
 		bytes != NULL;
 
 	if (success && out_xml_response) {
@@ -2918,6 +3024,8 @@ e_webdav_session_refresh_lock_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
 	g_return_val_if_fail (lock_token != NULL, FALSE);
 
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
 	request = e_webdav_session_new_request (webdav, SOUP_METHOD_LOCK, uri, error);
 	if (!request)
 		return FALSE;
@@ -2942,7 +3050,7 @@ e_webdav_session_refresh_lock_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, FALSE, _("Failed to refresh lock"), error) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to refresh lock"), error, TRUE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -2985,6 +3093,8 @@ e_webdav_session_unlock_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
 	g_return_val_if_fail (lock_token != NULL, FALSE);
 
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
 	request = e_webdav_session_new_request (webdav, SOUP_METHOD_UNLOCK, uri, error);
 	if (!request)
 		return FALSE;
@@ -3001,7 +3111,7 @@ e_webdav_session_unlock_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, FALSE, _("Failed to unlock"), error) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to unlock"), error, TRUE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -4092,6 +4202,8 @@ e_webdav_session_acl_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
 	g_return_val_if_fail (E_IS_XML_DOCUMENT (xml), FALSE);
 
+	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
 	request = e_webdav_session_new_request (webdav, "ACL", uri, error);
 	if (!request)
 		return FALSE;
@@ -4119,7 +4231,7 @@ e_webdav_session_acl_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to get access control list"), error) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, TRUE, _("Failed to get access control list"), error, TRUE) &&
 		bytes != NULL;
 
 	if (bytes)

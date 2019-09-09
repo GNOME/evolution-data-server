@@ -338,6 +338,9 @@ struct _EWebDAVSessionClass {
 GType		e_webdav_session_get_type		(void) G_GNUC_CONST;
 
 EWebDAVSession *e_webdav_session_new			(ESource *source);
+const gchar *	e_webdav_session_get_last_dav_error_code(EWebDAVSession *webdav);
+gboolean	e_webdav_session_get_last_dav_error_is_permission
+							(EWebDAVSession *webdav);
 SoupRequestHTTP *
 		e_webdav_session_new_request		(EWebDAVSession *webdav,
 							 const gchar *method,
