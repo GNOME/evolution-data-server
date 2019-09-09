@@ -26,7 +26,7 @@
  * @short_description: locks, which can listen for a #GCancellable during lock call
  *
  * An #ECancellableMutex and an #ECancellableRecMutex are similar to
- * GLib's #GMutex and #GRecMutex, with one exception, their <i>lock</i>
+ * GLib's #GMutex and #GRecMutex, with one exception, their <emphasis>lock</emphasis>
  * function takes also a @GCancellable instance, thus the waiting for a lock
  * can be cancelled any time.
  **/
