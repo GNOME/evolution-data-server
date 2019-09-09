@@ -38,8 +38,6 @@
 #include "e-secret-store.h"
 #include "e-soup-ssl-trust.h"
 #include "e-source-authentication.h"
-#include "e-source-goa.h"
-#include "e-source-uoa.h"
 
 #include "e-oauth2-service.h"
 
@@ -49,20 +47,16 @@ static gboolean
 eos_default_can_process (EOAuth2Service *service,
 			 ESource *source)
 {
-	gboolean can = FALSE;
-
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
-
-	if (e_source_has_extension (source, E_SOURCE_EXTENSION_GOA) ||
-	    e_source_has_extension (source, E_SOURCE_EXTENSION_UOA)) {
-		return FALSE;
-	}
 
 	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
 		ESourceAuthentication *auth_extension;
 		gchar *method;
 
 		auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		if (e_source_authentication_get_is_external (auth_extension))
+			return FALSE;
+
 		method = e_source_authentication_dup_method (auth_extension);
 
 		if (g_strcmp0 (method, e_oauth2_service_get_name (service)) == 0) {
@@ -73,7 +67,7 @@ eos_default_can_process (EOAuth2Service *service,
 		g_free (method);
 	}
 
-	return can;
+	return FALSE;
 }
 
 static gboolean
