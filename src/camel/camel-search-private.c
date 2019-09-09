@@ -495,10 +495,15 @@ camel_search_header_match (const gchar *value,
 		else
 			camel_address_unformat ((CamelAddress *) cia, value);
 
-		for (i = 0; !truth && camel_internet_address_get (cia, i, &name, &addr); i++)
+		for (i = 0; !truth && camel_internet_address_get (cia, i, &name, &addr) && (!i || how != CAMEL_SEARCH_MATCH_EXACT); i++) {
 			truth =
 				(name && header_match (name, match, how)) ||
 				(addr && header_match (addr, match, how));
+		}
+
+		if (truth && how == CAMEL_SEARCH_MATCH_EXACT &&
+		    camel_address_length (CAMEL_ADDRESS (cia)) > 1)
+			truth = FALSE;
 
 		g_object_unref (cia);
 		break;
