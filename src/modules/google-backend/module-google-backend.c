@@ -102,6 +102,7 @@ static gboolean
 google_backend_can_use_google_auth (ESource *source)
 {
 	ESourceRegistryServer *registry;
+	ESourceAuthentication *auth_extension;
 	gboolean res;
 
 	g_return_val_if_fail (E_IS_SERVER_SIDE_SOURCE (source), FALSE);
@@ -124,8 +125,8 @@ google_backend_can_use_google_auth (ESource *source)
 		}
 	}
 
-	res = !e_source_has_extension (source, E_SOURCE_EXTENSION_GOA) &&
-	      !e_source_has_extension (source, E_SOURCE_EXTENSION_UOA);
+	auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+	res = !e_source_authentication_get_is_external (auth_extension);
 
 	g_object_unref (source);
 
@@ -705,10 +706,9 @@ google_backend_populate (ECollectionBackend *backend)
 	   it's there before setting correct authentication method on the master source. */
 	(void) e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 
-	/* Force OAuth2 for GOA/UOA Google accounts and do it before calling parent method,
-	   thus it knows what authentication method it's supposed to use */
-	if (e_source_has_extension (source, E_SOURCE_EXTENSION_GOA) ||
-	    e_source_has_extension (source, E_SOURCE_EXTENSION_UOA))
+	/* Force OAuth2 for Google accounts using external auth method and do it before calling
+	   parent method, thus it knows what authentication method it's supposed to use */
+	if (e_source_authentication_get_is_external (authentication_extension))
 		e_source_authentication_set_method (authentication_extension, "OAuth2");
 
 	/* Chain up to parent's method. */
@@ -747,6 +747,7 @@ google_backend_child_added (ECollectionBackend *backend,
 	ESource *collection_source;
 	const gchar *extension_name;
 	gboolean is_mail = FALSE;
+	gboolean has_external_auth = FALSE;
 
 	/* Chain up to parent's child_added() method. */
 	E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->
@@ -781,6 +782,8 @@ google_backend_child_added (ECollectionBackend *backend,
 		auth_child_extension = e_source_get_extension (
 			child_source, extension_name);
 		auth_child_user = e_source_authentication_get_user (
+			auth_child_extension);
+		has_external_auth = e_source_authentication_get_is_external (
 			auth_child_extension);
 
 		/* XXX Do not override an existing user name setting.
@@ -842,8 +845,7 @@ google_backend_child_added (ECollectionBackend *backend,
 			G_CALLBACK (google_backend_contacts_update_auth_method_cb),
 			backend);
 
-		if (!e_source_has_extension (collection_source, E_SOURCE_EXTENSION_GOA) &&
-		    !e_source_has_extension (collection_source, E_SOURCE_EXTENSION_UOA)) {
+		if (!has_external_auth) {
 			/* Even the book is part of the collection it can be removed
 			   separately, if not configured through GOA or UOA. */
 			e_server_side_source_set_removable (E_SERVER_SIDE_SOURCE (child_source), TRUE);
@@ -856,16 +858,23 @@ google_backend_child_removed (ECollectionBackend *backend,
 			      ESource *child_source)
 {
 	ESource *collection_source;
+	gboolean has_external_auth = FALSE;
 
 	/* Chain up to parent's method. */
 	E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->child_removed (backend, child_source);
 
 	collection_source = e_backend_get_source (E_BACKEND (backend));
 
+	if (e_source_has_extension (child_source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+		ESourceAuthentication *auth_child_extension;
+
+		auth_child_extension = e_source_get_extension (child_source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		has_external_auth = e_source_authentication_get_is_external (auth_child_extension);
+	}
+
 	if (e_source_has_extension (child_source, E_SOURCE_EXTENSION_ADDRESS_BOOK) &&
 	    e_source_has_extension (collection_source, E_SOURCE_EXTENSION_COLLECTION) &&
-	    !e_source_has_extension (collection_source, E_SOURCE_EXTENSION_GOA) &&
-	    !e_source_has_extension (collection_source, E_SOURCE_EXTENSION_UOA)) {
+	    !has_external_auth) {
 		ESourceCollection *collection_extension;
 
 		collection_extension = e_source_get_extension (collection_source, E_SOURCE_EXTENSION_COLLECTION);

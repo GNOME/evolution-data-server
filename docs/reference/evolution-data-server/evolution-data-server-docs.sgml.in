@@ -359,6 +359,10 @@
     <title>Index of deprecated symbols</title>
     <xi:include href="xml/api-index-deprecated.xml"><xi:fallback /></xi:include>
   </index>
+  <index id="api-index-3-36" role="3.36">
+    <title>Index of new symbols in 3.36</title>
+    <xi:include href="xml/api-index-3.36.xml"><xi:fallback /></xi:include>
+  </index>
   <index id="api-index-3-34" role="3.34">
     <title>Index of new symbols in 3.34</title>
     <xi:include href="xml/api-index-3.34.xml"><xi:fallback /></xi:include>
