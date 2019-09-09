@@ -51,6 +51,7 @@ static GMutex mutex;
 static void e_gdata_oauth2_authorizer_interface_init (GDataAuthorizerInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (EGDataOAuth2Authorizer, e_gdata_oauth2_authorizer, G_TYPE_OBJECT,
+	G_ADD_PRIVATE (EGDataOAuth2Authorizer)
 	G_IMPLEMENT_INTERFACE (GDATA_TYPE_AUTHORIZER, e_gdata_oauth2_authorizer_interface_init))
 
 static gboolean
@@ -288,8 +289,6 @@ e_gdata_oauth2_authorizer_class_init (EGDataOAuth2AuthorizerClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (EGDataOAuth2AuthorizerPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = e_gdata_oauth2_authorizer_set_property;
 	object_class->get_property = e_gdata_oauth2_authorizer_get_property;
@@ -333,7 +332,7 @@ e_gdata_oauth2_authorizer_interface_init (GDataAuthorizerInterface *iface)
 static void
 e_gdata_oauth2_authorizer_init (EGDataOAuth2Authorizer *oauth2_authorizer)
 {
-	oauth2_authorizer->priv = G_TYPE_INSTANCE_GET_PRIVATE (oauth2_authorizer, E_TYPE_GDATA_OAUTH2_AUTHORIZER, EGDataOAuth2AuthorizerPrivate);
+	oauth2_authorizer->priv = e_gdata_oauth2_authorizer_get_instance_private (oauth2_authorizer);
 	oauth2_authorizer->priv->authorization_domains = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, NULL);
 	oauth2_authorizer->priv->expiry = EXPIRY_INVALID;
 	g_weak_ref_init (&oauth2_authorizer->priv->source, NULL);

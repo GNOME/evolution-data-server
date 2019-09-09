@@ -56,7 +56,7 @@ struct _ESourceRegistryWatcherPrivate {
 	gulong changed_id;
 };
 
-G_DEFINE_TYPE (ESourceRegistryWatcher, e_source_registry_watcher, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (ESourceRegistryWatcher, e_source_registry_watcher, G_TYPE_OBJECT)
 
 enum {
 	PROP_0,
@@ -370,8 +370,6 @@ e_source_registry_watcher_class_init (ESourceRegistryWatcherClass *klass)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (klass, sizeof (ESourceRegistryWatcherPrivate));
-
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->set_property = source_registry_watcher_set_property;
 	object_class->get_property = source_registry_watcher_get_property;
@@ -485,7 +483,7 @@ e_source_registry_watcher_class_init (ESourceRegistryWatcherClass *klass)
 static void
 e_source_registry_watcher_init (ESourceRegistryWatcher *watcher)
 {
-	watcher->priv = G_TYPE_INSTANCE_GET_PRIVATE (watcher, E_TYPE_SOURCE_REGISTRY_WATCHER, ESourceRegistryWatcherPrivate);
+	watcher->priv = e_source_registry_watcher_get_instance_private (watcher);
 
 	g_rec_mutex_init (&watcher->priv->lock);
 

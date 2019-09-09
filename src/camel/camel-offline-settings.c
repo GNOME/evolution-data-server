@@ -22,10 +22,6 @@
 
 #include "camel-offline-settings.h"
 
-#define CAMEL_OFFLINE_SETTINGS_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_OFFLINE_SETTINGS, CamelOfflineSettingsPrivate))
-
 struct _CamelOfflineSettingsPrivate {
 	gboolean stay_synchronized;
 	gint store_changes_interval;
@@ -43,7 +39,7 @@ enum {
 	PROP_LIMIT_VALUE
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelOfflineSettings,
 	camel_offline_settings,
 	CAMEL_TYPE_STORE_SETTINGS)
@@ -140,8 +136,6 @@ camel_offline_settings_class_init (CamelOfflineSettingsClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelOfflineSettingsPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = offline_settings_set_property;
 	object_class->get_property = offline_settings_get_property;
@@ -220,7 +214,7 @@ camel_offline_settings_class_init (CamelOfflineSettingsClass *class)
 static void
 camel_offline_settings_init (CamelOfflineSettings *settings)
 {
-	settings->priv = CAMEL_OFFLINE_SETTINGS_GET_PRIVATE (settings);
+	settings->priv = camel_offline_settings_get_instance_private (settings);
 }
 
 /**

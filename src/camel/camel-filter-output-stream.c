@@ -32,10 +32,6 @@
 
 #include <string.h>
 
-#define CAMEL_FILTER_OUTPUT_STREAM_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_FILTER_OUTPUT_STREAM, CamelFilterOutputStreamPrivate))
-
 #define READ_PAD (128)		/* bytes padded before buffer */
 #define READ_SIZE (4096)
 
@@ -48,7 +44,7 @@ enum {
 	PROP_FILTER
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelFilterOutputStream,
 	camel_filter_output_stream,
 	G_TYPE_FILTER_OUTPUT_STREAM)
@@ -103,7 +99,7 @@ filter_output_stream_dispose (GObject *object)
 {
 	CamelFilterOutputStreamPrivate *priv;
 
-	priv = CAMEL_FILTER_OUTPUT_STREAM_GET_PRIVATE (object);
+	priv = CAMEL_FILTER_OUTPUT_STREAM (object)->priv;
 
 	/* XXX GOutputStream calls flush() one last time during
 	 *     dispose(), so chain up before clearing our filter. */
@@ -204,9 +200,6 @@ camel_filter_output_stream_class_init (CamelFilterOutputStreamClass *class)
 	GObjectClass *object_class;
 	GOutputStreamClass *stream_class;
 
-	g_type_class_add_private (
-		class, sizeof (CamelFilterOutputStreamPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = filter_output_stream_set_property;
 	object_class->get_property = filter_output_stream_get_property;
@@ -232,8 +225,7 @@ camel_filter_output_stream_class_init (CamelFilterOutputStreamClass *class)
 static void
 camel_filter_output_stream_init (CamelFilterOutputStream *filter_stream)
 {
-	filter_stream->priv =
-		CAMEL_FILTER_OUTPUT_STREAM_GET_PRIVATE (filter_stream);
+	filter_stream->priv = camel_filter_output_stream_get_instance_private (filter_stream);
 }
 
 /**

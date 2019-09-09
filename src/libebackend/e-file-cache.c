@@ -37,10 +37,6 @@
 
 #include "e-file-cache.h"
 
-#define E_FILE_CACHE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_FILE_CACHE, EFileCachePrivate))
-
 struct _EFileCachePrivate {
 	gchar *filename;
 	EXmlHash *xml_hash;
@@ -53,7 +49,7 @@ enum {
 	PROP_FILENAME
 };
 
-G_DEFINE_TYPE (EFileCache, e_file_cache, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (EFileCache, e_file_cache, G_TYPE_OBJECT)
 
 static void
 file_cache_set_filename (EFileCache *cache,
@@ -105,7 +101,7 @@ file_cache_finalize (GObject *object)
 {
 	EFileCachePrivate *priv;
 
-	priv = E_FILE_CACHE_GET_PRIVATE (object);
+	priv = E_FILE_CACHE (object)->priv;
 
 	g_free (priv->filename);
 
@@ -153,8 +149,6 @@ e_file_cache_class_init (EFileCacheClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (EFileCachePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = file_cache_set_property;
 	object_class->get_property = file_cache_get_property;
@@ -182,7 +176,7 @@ e_file_cache_class_init (EFileCacheClass *class)
 static void
 e_file_cache_init (EFileCache *cache)
 {
-	cache->priv = E_FILE_CACHE_GET_PRIVATE (cache);
+	cache->priv = e_file_cache_get_instance_private (cache);
 }
 
 /**

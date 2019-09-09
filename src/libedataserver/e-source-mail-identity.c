@@ -43,10 +43,6 @@
 
 #include "e-source-mail-identity.h"
 
-#define E_SOURCE_MAIL_IDENTITY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_MAIL_IDENTITY, ESourceMailIdentityPrivate))
-
 struct _ESourceMailIdentityPrivate {
 	gchar *address;
 	gchar *name;
@@ -66,7 +62,7 @@ enum {
 	PROP_SIGNATURE_UID
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceMailIdentity,
 	e_source_mail_identity,
 	E_TYPE_SOURCE_EXTENSION)
@@ -176,7 +172,7 @@ source_mail_identity_finalize (GObject *object)
 {
 	ESourceMailIdentityPrivate *priv;
 
-	priv = E_SOURCE_MAIL_IDENTITY_GET_PRIVATE (object);
+	priv = E_SOURCE_MAIL_IDENTITY (object)->priv;
 
 	g_free (priv->address);
 	g_free (priv->name);
@@ -194,8 +190,6 @@ e_source_mail_identity_class_init (ESourceMailIdentityClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (class, sizeof (ESourceMailIdentityPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_mail_identity_set_property;
@@ -293,7 +287,7 @@ e_source_mail_identity_class_init (ESourceMailIdentityClass *class)
 static void
 e_source_mail_identity_init (ESourceMailIdentity *extension)
 {
-	extension->priv = E_SOURCE_MAIL_IDENTITY_GET_PRIVATE (extension);
+	extension->priv = e_source_mail_identity_get_instance_private (extension);
 }
 
 /**

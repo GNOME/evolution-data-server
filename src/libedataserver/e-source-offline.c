@@ -36,10 +36,6 @@
 
 #include "e-source-offline.h"
 
-#define E_SOURCE_OFFLINE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_OFFLINE, ESourceOfflinePrivate))
-
 struct _ESourceOfflinePrivate {
 	gboolean stay_synchronized;
 };
@@ -49,7 +45,7 @@ enum {
 	PROP_STAY_SYNCHRONIZED
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceOffline,
 	e_source_offline,
 	E_TYPE_SOURCE_EXTENSION)
@@ -95,8 +91,6 @@ e_source_offline_class_init (ESourceOfflineClass *class)
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
 
-	g_type_class_add_private (class, sizeof (ESourceOfflinePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_offline_set_property;
 	object_class->get_property = source_offline_get_property;
@@ -122,7 +116,7 @@ e_source_offline_class_init (ESourceOfflineClass *class)
 static void
 e_source_offline_init (ESourceOffline *extension)
 {
-	extension->priv = E_SOURCE_OFFLINE_GET_PRIVATE (extension);
+	extension->priv = e_source_offline_get_instance_private (extension);
 }
 
 /**

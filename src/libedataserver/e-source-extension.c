@@ -30,10 +30,6 @@
 
 #include "e-source-extension.h"
 
-#define E_SOURCE_EXTENSION_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_EXTENSION, ESourceExtensionPrivate))
-
 struct _ESourceExtensionPrivate {
 	GWeakRef source;
 	GRecMutex property_lock;
@@ -44,7 +40,7 @@ enum {
 	PROP_SOURCE
 };
 
-G_DEFINE_ABSTRACT_TYPE (
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (
 	ESourceExtension,
 	e_source_extension,
 	G_TYPE_OBJECT)
@@ -97,7 +93,7 @@ source_extension_dispose (GObject *object)
 {
 	ESourceExtensionPrivate *priv;
 
-	priv = E_SOURCE_EXTENSION_GET_PRIVATE (object);
+	priv = E_SOURCE_EXTENSION (object)->priv;
 
 	g_weak_ref_set (&priv->source, NULL);
 
@@ -110,7 +106,7 @@ source_extension_finalize (GObject *object)
 {
 	ESourceExtensionPrivate *priv;
 
-	priv = E_SOURCE_EXTENSION_GET_PRIVATE (object);
+	priv = E_SOURCE_EXTENSION (object)->priv;
 
 	g_weak_ref_clear (&priv->source);
 	g_rec_mutex_clear (&priv->property_lock);
@@ -141,8 +137,6 @@ e_source_extension_class_init (ESourceExtensionClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (ESourceExtensionPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_extension_set_property;
 	object_class->get_property = source_extension_get_property;
@@ -166,7 +160,7 @@ e_source_extension_class_init (ESourceExtensionClass *class)
 static void
 e_source_extension_init (ESourceExtension *extension)
 {
-	extension->priv = E_SOURCE_EXTENSION_GET_PRIVATE (extension);
+	extension->priv = e_source_extension_get_instance_private (extension);
 	g_weak_ref_init (&extension->priv->source, NULL);
 	g_rec_mutex_init (&extension->priv->property_lock);
 }

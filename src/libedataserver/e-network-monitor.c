@@ -45,6 +45,7 @@ static void e_network_monitor_initable_iface_init (GInitableIface *iface);
 static void e_network_monitor_gio_iface_init (GNetworkMonitorInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (ENetworkMonitor, e_network_monitor, G_TYPE_OBJECT,
+	G_ADD_PRIVATE (ENetworkMonitor)
 	G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, e_network_monitor_initable_iface_init)
 	G_IMPLEMENT_INTERFACE (G_TYPE_NETWORK_MONITOR, e_network_monitor_gio_iface_init))
 
@@ -291,8 +292,6 @@ e_network_monitor_class_init (ENetworkMonitorClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (ENetworkMonitorPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = e_network_monitor_set_property;
 	object_class->get_property = e_network_monitor_get_property;
@@ -324,7 +323,7 @@ e_network_monitor_class_init (ENetworkMonitorClass *class)
 static void
 e_network_monitor_init (ENetworkMonitor *network_monitor)
 {
-	network_monitor->priv = G_TYPE_INSTANCE_GET_PRIVATE (network_monitor, E_TYPE_NETWORK_MONITOR, ENetworkMonitorPrivate);
+	network_monitor->priv = e_network_monitor_get_instance_private (network_monitor);
 
 	g_mutex_init (&network_monitor->priv->property_lock);
 }

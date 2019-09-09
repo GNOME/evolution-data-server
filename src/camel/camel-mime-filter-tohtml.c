@@ -26,10 +26,6 @@
 #include "camel-url-scanner.h"
 #include "camel-utf8.h"
 
-#define CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MIME_FILTER_TOHTML, CamelMimeFilterToHTMLPrivate))
-
 struct _CamelMimeFilterToHTMLPrivate {
 
 	CamelUrlScanner *scanner;
@@ -80,7 +76,7 @@ static struct {
 	{ CONVERT_ADDRSPEC, { "@",         "mailto:", camel_url_addrspec_start, camel_url_addrspec_end } },
 };
 
-G_DEFINE_TYPE (CamelMimeFilterToHTML, camel_mime_filter_tohtml, CAMEL_TYPE_MIME_FILTER)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelMimeFilterToHTML, camel_mime_filter_tohtml, CAMEL_TYPE_MIME_FILTER)
 
 static gchar *
 check_size (CamelMimeFilter *mime_filter,
@@ -173,7 +169,7 @@ writeln (CamelMimeFilter *mime_filter,
 	const guchar *inptr, *inend, *inbegin;
 	gchar *in_utf8 = NULL;
 
-	priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_TOHTML (mime_filter)->priv;
 
 	if (!g_utf8_validate (in_anycharset, inend_char - in_anycharset, NULL)) {
 		in_utf8 = camel_utf8_make_valid_len (in_anycharset, inend_char - in_anycharset);
@@ -278,7 +274,7 @@ html_convert (CamelMimeFilter *mime_filter,
 	const gchar *inend;
 	gint depth;
 
-	priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_TOHTML (mime_filter)->priv;
 
 	if (inlen == 0) {
 		if (!priv->pre_open && priv->blockquote_depth == 0) {
@@ -504,7 +500,7 @@ mime_filter_tohtml_finalize (GObject *object)
 {
 	CamelMimeFilterToHTMLPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (object);
+	priv = CAMEL_MIME_FILTER_TOHTML (object)->priv;
 
 	camel_url_scanner_free (priv->scanner);
 
@@ -545,7 +541,7 @@ mime_filter_tohtml_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterToHTMLPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_TOHTML (mime_filter)->priv;
 
 	priv->column = 0;
 	priv->pre_open = FALSE;
@@ -556,8 +552,6 @@ camel_mime_filter_tohtml_class_init (CamelMimeFilterToHTMLClass *class)
 {
 	GObjectClass *object_class;
 	CamelMimeFilterClass *filter_class;
-
-	g_type_class_add_private (class, sizeof (CamelMimeFilterToHTMLPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = mime_filter_tohtml_finalize;
@@ -571,7 +565,7 @@ camel_mime_filter_tohtml_class_init (CamelMimeFilterToHTMLClass *class)
 static void
 camel_mime_filter_tohtml_init (CamelMimeFilterToHTML *filter)
 {
-	filter->priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (filter);
+	filter->priv = camel_mime_filter_tohtml_get_instance_private (filter);
 	filter->priv->scanner = camel_url_scanner_new ();
 }
 
@@ -594,7 +588,7 @@ camel_mime_filter_tohtml_new (CamelMimeFilterToHTMLFlags flags,
 	gint i;
 
 	filter = g_object_new (CAMEL_TYPE_MIME_FILTER_TOHTML, NULL);
-	priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (filter);
+	priv = CAMEL_MIME_FILTER_TOHTML (filter)->priv;
 
 	priv->flags = flags;
 	priv->color = color;

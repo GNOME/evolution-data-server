@@ -48,7 +48,7 @@ struct _EBookBackendCardDAVPrivate {
 	gboolean is_google;
 };
 
-G_DEFINE_TYPE (EBookBackendCardDAV, e_book_backend_carddav, E_TYPE_BOOK_META_BACKEND)
+G_DEFINE_TYPE_WITH_PRIVATE (EBookBackendCardDAV, e_book_backend_carddav, E_TYPE_BOOK_META_BACKEND)
 
 static EWebDAVSession *
 ebb_carddav_ref_session (EBookBackendCardDAV *bbdav)
@@ -1354,7 +1354,7 @@ e_book_backend_carddav_finalize (GObject *object)
 static void
 e_book_backend_carddav_init (EBookBackendCardDAV *bbdav)
 {
-	bbdav->priv = G_TYPE_INSTANCE_GET_PRIVATE (bbdav, E_TYPE_BOOK_BACKEND_CARDDAV, EBookBackendCardDAVPrivate);
+	bbdav->priv = e_book_backend_carddav_get_instance_private (bbdav);
 
 	g_mutex_init (&bbdav->priv->webdav_lock);
 }
@@ -1365,8 +1365,6 @@ e_book_backend_carddav_class_init (EBookBackendCardDAVClass *klass)
 	GObjectClass *object_class;
 	EBookBackendClass *book_backend_class;
 	EBookMetaBackendClass *book_meta_backend_class;
-
-	g_type_class_add_private (klass, sizeof (EBookBackendCardDAVPrivate));
 
 	book_meta_backend_class = E_BOOK_META_BACKEND_CLASS (klass);
 	book_meta_backend_class->backend_module_filename = "libebookbackendcarddav.so";

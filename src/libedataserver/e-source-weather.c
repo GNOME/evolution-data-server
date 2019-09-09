@@ -20,10 +20,6 @@
 #include "e-source-enumtypes.h"
 #include "e-source-weather.h"
 
-#define E_SOURCE_WEATHER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_WEATHER, ESourceWeatherPrivate))
-
 struct _ESourceWeatherPrivate {
 	ESourceWeatherUnits units;
 	gchar *location;
@@ -35,7 +31,7 @@ enum {
 	PROP_UNITS
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceWeather,
 	e_source_weather,
 	E_TYPE_SOURCE_EXTENSION)
@@ -93,7 +89,7 @@ source_weather_finalize (GObject *object)
 {
 	ESourceWeatherPrivate *priv;
 
-	priv = E_SOURCE_WEATHER_GET_PRIVATE (object);
+	priv = E_SOURCE_WEATHER (object)->priv;
 
 	g_free (priv->location);
 
@@ -106,8 +102,6 @@ e_source_weather_class_init (ESourceWeatherClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (class, sizeof (ESourceWeatherPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_weather_set_property;
@@ -148,7 +142,7 @@ e_source_weather_class_init (ESourceWeatherClass *class)
 static void
 e_source_weather_init (ESourceWeather *extension)
 {
-	extension->priv = E_SOURCE_WEATHER_GET_PRIVATE (extension);
+	extension->priv = e_source_weather_get_instance_private (extension);
 }
 
 const gchar *

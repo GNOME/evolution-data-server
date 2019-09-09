@@ -70,10 +70,6 @@
 /* this is broken currently, don't enable it */
 /*#define ENABLE_SASL_BINDS*/
 
-#define E_BOOK_BACKEND_LDAP_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_BOOK_BACKEND_LDAP, EBookBackendLDAPPrivate))
-
 /* interval for our poll_ldap timeout */
 #define LDAP_POLL_INTERVAL 20
 
@@ -112,8 +108,6 @@ typedef struct LDAPOp LDAPOp;
  * operation on the LDAP address book which is not connected to the server */
 #define EC_ERROR_NOT_CONNECTED() e_client_error_create (E_CLIENT_ERROR_OTHER_ERROR, _("Not connected"))
 #define EC_ERROR_MSG_TYPE(_msg_type) e_client_error_create_fmt (E_CLIENT_ERROR_INVALID_ARG, "Incorrect msg type %d passed to %s", _msg_type, G_STRFUNC)
-
-G_DEFINE_TYPE (EBookBackendLDAP, e_book_backend_ldap, E_TYPE_BOOK_BACKEND)
 
 struct _EBookBackendLDAPPrivate {
 	gboolean connected;
@@ -166,6 +160,8 @@ struct _EBookBackendLDAPPrivate {
 
 	GMutex view_mutex;
 };
+
+G_DEFINE_TYPE_WITH_PRIVATE (EBookBackendLDAP, e_book_backend_ldap, E_TYPE_BOOK_BACKEND)
 
 typedef void (*LDAPOpHandler)(LDAPOp *op, LDAPMessage *res);
 typedef void (*LDAPOpDtor)(LDAPOp *op);
@@ -4904,7 +4900,7 @@ book_backend_ldap_finalize (GObject *object)
 {
 	EBookBackendLDAPPrivate *priv;
 
-	priv = E_BOOK_BACKEND_LDAP_GET_PRIVATE (object);
+	priv = E_BOOK_BACKEND_LDAP (object)->priv;
 
 	g_rec_mutex_lock (&eds_ldap_handler_lock);
 	g_rec_mutex_lock (&priv->op_hash_mutex);
@@ -5981,8 +5977,6 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *class)
 	EBackendClass *backend_class;
 	EBookBackendClass *book_backend_class;
 
-	g_type_class_add_private (class, sizeof (EBookBackendLDAPPrivate));
-
 #ifndef SUNLDAP
 	/* get client side information (extensions present in the library) */
 	get_ldap_library_info ();
@@ -6014,7 +6008,7 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *class)
 static void
 e_book_backend_ldap_init (EBookBackendLDAP *backend)
 {
-	backend->priv = E_BOOK_BACKEND_LDAP_GET_PRIVATE (backend);
+	backend->priv = e_book_backend_ldap_get_instance_private (backend);
 
 	backend->priv->ldap_limit = 100;
 	backend->priv->id_to_op = g_hash_table_new (g_int_hash, g_int_equal);

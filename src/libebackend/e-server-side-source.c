@@ -34,10 +34,6 @@
 
 #include "e-server-side-source.h"
 
-#define E_SERVER_SIDE_SOURCE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SERVER_SIDE_SOURCE, EServerSideSourcePrivate))
-
 #define DBUS_OBJECT_PATH	E_SOURCE_REGISTRY_SERVER_OBJECT_PATH "/Source"
 
 #define PRIMARY_GROUP_NAME	"Data Source"
@@ -98,6 +94,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	EServerSideSource,
 	e_server_side_source,
 	E_TYPE_SOURCE,
+	G_ADD_PRIVATE (EServerSideSource)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_server_side_source_initable_init))
@@ -1020,7 +1017,7 @@ server_side_source_dispose (GObject *object)
 {
 	EServerSideSourcePrivate *priv;
 
-	priv = E_SERVER_SIDE_SOURCE_GET_PRIVATE (object);
+	priv = E_SERVER_SIDE_SOURCE (object)->priv;
 
 	g_mutex_lock (&priv->last_values_lock);
 
@@ -1069,7 +1066,7 @@ server_side_source_finalize (GObject *object)
 {
 	EServerSideSourcePrivate *priv;
 
-	priv = E_SERVER_SIDE_SOURCE_GET_PRIVATE (object);
+	priv = E_SERVER_SIDE_SOURCE (object)->priv;
 
 	g_node_unlink (&priv->node);
 
@@ -1163,7 +1160,7 @@ server_side_source_remove (ESource *source,
 	/* XXX Yes we block here.  We do this operation
 	 *     synchronously to keep the server code simple. */
 
-	priv = E_SERVER_SIDE_SOURCE_GET_PRIVATE (source);
+	priv = E_SERVER_SIDE_SOURCE (source)->priv;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (source), callback, user_data,
@@ -1281,7 +1278,7 @@ server_side_source_write (ESource *source,
 	/* XXX Yes we block here.  We do this operation
 	 *     synchronously to keep the server code simple. */
 
-	priv = E_SERVER_SIDE_SOURCE_GET_PRIVATE (source);
+	priv = E_SERVER_SIDE_SOURCE (source)->priv;
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (source), callback, user_data,
@@ -1594,8 +1591,6 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 	GObjectClass *object_class;
 	ESourceClass *source_class;
 
-	g_type_class_add_private (class, sizeof (EServerSideSourcePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = server_side_source_set_property;
 	object_class->get_property = server_side_source_get_property;
@@ -1750,7 +1745,7 @@ e_server_side_source_init (EServerSideSource *source)
 {
 	const gchar *user_dir;
 
-	source->priv = E_SERVER_SIDE_SOURCE_GET_PRIVATE (source);
+	source->priv = e_server_side_source_get_instance_private (source);
 
 	source->priv->node.data = source;
 

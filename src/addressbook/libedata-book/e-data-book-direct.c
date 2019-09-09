@@ -38,17 +38,14 @@
 #include <e-dbus-direct-book.h>
 #include "e-data-book-direct.h"
 
-#define E_DATA_BOOK_DIRECT_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_DATA_BOOK_DIRECT, EDataBookDirectPrivate))
-
-G_DEFINE_TYPE (EDataBookDirect, e_data_book_direct, G_TYPE_OBJECT);
 #define THRESHOLD_ITEMS   32	/* how many items can be hold in a cache, before propagated to UI */
 #define THRESHOLD_SECONDS  2	/* how long to wait until notifications are propagated to UI; in seconds */
 
 struct _EDataBookDirectPrivate {
 	EDBusDirectBook *gdbus_object;
 };
+
+G_DEFINE_TYPE_WITH_PRIVATE (EDataBookDirect, e_data_book_direct, G_TYPE_OBJECT);
 
 /* GObjectClass */
 static void
@@ -68,7 +65,7 @@ e_data_book_direct_dispose (GObject *object)
 static void
 e_data_book_direct_init (EDataBookDirect *direct)
 {
-	direct->priv = E_DATA_BOOK_DIRECT_GET_PRIVATE (direct);
+	direct->priv = e_data_book_direct_get_instance_private (direct);
 	direct->priv->gdbus_object = e_dbus_direct_book_skeleton_new ();
 }
 
@@ -76,8 +73,6 @@ static void
 e_data_book_direct_class_init (EDataBookDirectClass *class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (class);
-
-	g_type_class_add_private (class, sizeof (EDataBookDirectPrivate));
 
 	object_class->dispose = e_data_book_direct_dispose;
 }

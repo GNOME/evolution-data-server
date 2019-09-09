@@ -32,26 +32,21 @@
 #include "e-book-backend-cache.h"
 #include "e-book-backend-sexp.h"
 
-#define E_BOOK_BACKEND_CACHE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_BOOK_BACKEND_CACHE, EBookBackendCachePrivate))
-
 struct _EBookBackendCachePrivate {
 	gint placeholder;
 };
 
-G_DEFINE_TYPE (EBookBackendCache, e_book_backend_cache, E_TYPE_FILE_CACHE)
+G_DEFINE_TYPE_WITH_PRIVATE (EBookBackendCache, e_book_backend_cache, E_TYPE_FILE_CACHE)
 
 static void
 e_book_backend_cache_class_init (EBookBackendCacheClass *class)
 {
-	g_type_class_add_private (class, sizeof (EBookBackendCachePrivate));
 }
 
 static void
 e_book_backend_cache_init (EBookBackendCache *cache)
 {
-	cache->priv = E_BOOK_BACKEND_CACHE_GET_PRIVATE (cache);
+	cache->priv = e_book_backend_cache_get_instance_private (cache);
 }
 
 /**

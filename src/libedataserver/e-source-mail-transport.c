@@ -36,10 +36,6 @@
 
 #include "e-source-mail-transport.h"
 
-#define E_SOURCE_MAIL_TRANSPORT_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_MAIL_TRANSPORT, ESourceMailTransportPrivate))
-
 G_DEFINE_TYPE (
 	ESourceMailTransport,
 	e_source_mail_transport,

@@ -34,10 +34,6 @@
 
 #include "e-data-factory.h"
 
-#define E_DATA_FACTORY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_DATA_FACTORY, EDataFactoryPrivate))
-
 typedef enum {
 	DATA_FACTORY_SPAWN_SUBPROCESS_NONE = 0,
 	DATA_FACTORY_SPAWN_SUBPROCESS_BLOCKED,
@@ -109,6 +105,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	EDataFactory,
 	e_data_factory,
 	E_TYPE_DBUS_SERVER,
+	G_ADD_PRIVATE (EDataFactory)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_data_factory_initable_init))
@@ -1141,8 +1138,6 @@ e_data_factory_class_init (EDataFactoryClass *class)
 	GObjectClass *object_class;
 	EDBusServerClass *dbus_server_class;
 
-	g_type_class_add_private (class, sizeof (EDataFactoryPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->get_property = e_data_factory_get_property;
 	object_class->set_property = e_data_factory_set_property;
@@ -1197,7 +1192,7 @@ e_data_factory_class_init (EDataFactoryClass *class)
 static void
 e_data_factory_init (EDataFactory *data_factory)
 {
-	data_factory->priv = E_DATA_FACTORY_GET_PRIVATE (data_factory);
+	data_factory->priv = e_data_factory_get_instance_private (data_factory);
 
 	g_mutex_init (&data_factory->priv->mutex);
 	g_mutex_init (&data_factory->priv->subprocess_watched_ids_lock);

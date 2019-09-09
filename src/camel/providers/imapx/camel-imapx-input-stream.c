@@ -31,10 +31,6 @@
 
 #include "camel-imapx-input-stream.h"
 
-#define CAMEL_IMAPX_INPUT_STREAM_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_IMAPX_INPUT_STREAM, CamelIMAPXInputStreamPrivate))
-
 struct _CamelIMAPXInputStreamPrivate {
 	guchar *buf, *ptr, *end;
 	guint literal;
@@ -58,6 +54,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	CamelIMAPXInputStream,
 	camel_imapx_input_stream,
 	G_TYPE_FILTER_INPUT_STREAM,
+	G_ADD_PRIVATE (CamelIMAPXInputStream)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_POLLABLE_INPUT_STREAM,
 		camel_imapx_input_stream_pollable_init))
@@ -111,7 +108,7 @@ imapx_input_stream_finalize (GObject *object)
 {
 	CamelIMAPXInputStreamPrivate *priv;
 
-	priv = CAMEL_IMAPX_INPUT_STREAM_GET_PRIVATE (object);
+	priv = CAMEL_IMAPX_INPUT_STREAM (object)->priv;
 
 	g_free (priv->buf);
 	g_free (priv->tokenbuf);
@@ -132,7 +129,7 @@ imapx_input_stream_read (GInputStream *stream,
 	GInputStream *base_stream;
 	gssize max;
 
-	priv = CAMEL_IMAPX_INPUT_STREAM_GET_PRIVATE (stream);
+	priv = CAMEL_IMAPX_INPUT_STREAM (stream)->priv;
 
 	base_stream = g_filter_input_stream_get_base_stream (
 		G_FILTER_INPUT_STREAM (stream));
@@ -236,9 +233,6 @@ camel_imapx_input_stream_class_init (CamelIMAPXInputStreamClass *class)
 	GObjectClass *object_class;
 	GInputStreamClass *input_stream_class;
 
-	g_type_class_add_private (
-		class, sizeof (CamelIMAPXInputStreamPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = imapx_input_stream_finalize;
 
@@ -258,7 +252,7 @@ camel_imapx_input_stream_pollable_init (GPollableInputStreamInterface *iface)
 static void
 camel_imapx_input_stream_init (CamelIMAPXInputStream *is)
 {
-	is->priv = CAMEL_IMAPX_INPUT_STREAM_GET_PRIVATE (is);
+	is->priv = camel_imapx_input_stream_get_instance_private (is);
 
 	/* +1 is room for appending a 0 if we need to for a token */
 	is->priv->bufsize = 4096;

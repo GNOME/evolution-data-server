@@ -31,10 +31,6 @@
 #include "camel-string-utils.h"
 #include "camel-utils.h"
 
-#define CAMEL_OFFLINE_FOLDER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_OFFLINE_FOLDER, CamelOfflineFolderPrivate))
-
 typedef struct _AsyncContext AsyncContext;
 typedef struct _OfflineDownsyncData OfflineDownsyncData;
 
@@ -65,7 +61,7 @@ enum {
 	PROP_OFFLINE_SYNC = 0x2400
 };
 
-G_DEFINE_TYPE (CamelOfflineFolder, camel_offline_folder, CAMEL_TYPE_FOLDER)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelOfflineFolder, camel_offline_folder, CAMEL_TYPE_FOLDER)
 
 static void
 async_context_free (AsyncContext *async_context)
@@ -627,8 +623,6 @@ camel_offline_folder_class_init (CamelOfflineFolderClass *class)
 	GObjectClass *object_class;
 	CamelFolderClass *folder_class;
 
-	g_type_class_add_private (class, sizeof (CamelOfflineFolderPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = offline_folder_set_property;
 	object_class->get_property = offline_folder_get_property;
@@ -657,7 +651,7 @@ camel_offline_folder_class_init (CamelOfflineFolderClass *class)
 static void
 camel_offline_folder_init (CamelOfflineFolder *folder)
 {
-	folder->priv = CAMEL_OFFLINE_FOLDER_GET_PRIVATE (folder);
+	folder->priv = camel_offline_folder_get_instance_private (folder);
 
 	g_mutex_init (&folder->priv->store_changes_lock);
 	g_mutex_init (&folder->priv->ongoing_downloads_lock);

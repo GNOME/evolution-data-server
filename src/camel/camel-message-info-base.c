@@ -41,7 +41,7 @@ struct _CamelMessageInfoBasePrivate {
 	CamelNameValueArray *headers;
 };
 
-G_DEFINE_TYPE (CamelMessageInfoBase, camel_message_info_base, CAMEL_TYPE_MESSAGE_INFO)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelMessageInfoBase, camel_message_info_base, CAMEL_TYPE_MESSAGE_INFO)
 
 static guint32
 message_info_base_get_flags (const CamelMessageInfo *mi)
@@ -826,8 +826,6 @@ camel_message_info_base_class_init (CamelMessageInfoBaseClass *class)
 	CamelMessageInfoClass *mi_class;
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelMessageInfoBasePrivate));
-
 	mi_class = CAMEL_MESSAGE_INFO_CLASS (class);
 	mi_class->get_flags = message_info_base_get_flags;
 	mi_class->set_flags = message_info_base_set_flags;
@@ -871,5 +869,5 @@ camel_message_info_base_class_init (CamelMessageInfoBaseClass *class)
 static void
 camel_message_info_base_init (CamelMessageInfoBase *bmi)
 {
-	bmi->priv = G_TYPE_INSTANCE_GET_PRIVATE (bmi, CAMEL_TYPE_MESSAGE_INFO_BASE, CamelMessageInfoBasePrivate);
+	bmi->priv = camel_message_info_base_get_instance_private (bmi);
 }

@@ -46,10 +46,6 @@
 #include "e-client.h"
 #include "e-client-private.h"
 
-#define E_CLIENT_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CLIENT, EClientPrivate))
-
 typedef struct _AsyncContext AsyncContext;
 
 struct _EClientPrivate {
@@ -89,7 +85,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_ABSTRACT_TYPE (EClient, e_client, G_TYPE_OBJECT)
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (EClient, e_client, G_TYPE_OBJECT)
 
 static void
 async_context_free (AsyncContext *async_context)
@@ -339,7 +335,7 @@ client_dispose (GObject *object)
 {
 	EClientPrivate *priv;
 
-	priv = E_CLIENT_GET_PRIVATE (object);
+	priv = E_CLIENT (object)->priv;
 
 	if (priv->main_context != NULL) {
 		g_main_context_unref (priv->main_context);
@@ -360,7 +356,7 @@ client_finalize (GObject *object)
 {
 	EClientPrivate *priv;
 
-	priv = E_CLIENT_GET_PRIVATE (object);
+	priv = E_CLIENT (object)->priv;
 
 	g_slist_free_full (priv->capabilities, (GDestroyNotify) g_free);
 
@@ -798,8 +794,6 @@ e_client_class_init (EClientClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (EClientPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = client_set_property;
 	object_class->get_property = client_get_property;
@@ -972,7 +966,7 @@ e_client_class_init (EClientClass *class)
 static void
 e_client_init (EClient *client)
 {
-	client->priv = E_CLIENT_GET_PRIVATE (client);
+	client->priv = e_client_get_instance_private (client);
 
 	client->priv->readonly = FALSE;
 	client->priv->main_context = g_main_context_ref_thread_default ();

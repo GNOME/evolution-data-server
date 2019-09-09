@@ -37,10 +37,6 @@
 #include "e-data-book.h"
 #include "e-book-backend.h"
 
-#define E_BOOK_BACKEND_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_BOOK_BACKEND, EBookBackendPrivate))
-
 typedef struct _AsyncContext AsyncContext;
 typedef struct _DispatchNode DispatchNode;
 
@@ -119,7 +115,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE (EBookBackend, e_book_backend, E_TYPE_BACKEND)
+G_DEFINE_TYPE_WITH_PRIVATE (EBookBackend, e_book_backend, E_TYPE_BACKEND)
 
 static void
 async_context_free (AsyncContext *async_context)
@@ -501,7 +497,7 @@ book_backend_dispose (GObject *object)
 {
 	EBookBackendPrivate *priv;
 
-	priv = E_BOOK_BACKEND_GET_PRIVATE (object);
+	priv = E_BOOK_BACKEND (object)->priv;
 
 	if (priv->auth_source_changed_handler_id > 0) {
 		g_signal_handler_disconnect (
@@ -536,7 +532,7 @@ book_backend_finalize (GObject *object)
 {
 	EBookBackendPrivate *priv;
 
-	priv = E_BOOK_BACKEND_GET_PRIVATE (object);
+	priv = E_BOOK_BACKEND (object)->priv;
 
 	g_mutex_clear (&priv->views_mutex);
 	g_mutex_clear (&priv->property_lock);
@@ -700,8 +696,6 @@ e_book_backend_class_init (EBookBackendClass *class)
 	GObjectClass *object_class;
 	EBackendClass *backend_class;
 
-	g_type_class_add_private (class, sizeof (EBookBackendPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = book_backend_set_property;
 	object_class->get_property = book_backend_get_property;
@@ -804,7 +798,7 @@ e_book_backend_class_init (EBookBackendClass *class)
 static void
 e_book_backend_init (EBookBackend *backend)
 {
-	backend->priv = E_BOOK_BACKEND_GET_PRIVATE (backend);
+	backend->priv = e_book_backend_get_instance_private (backend);
 
 	backend->priv->views = NULL;
 	g_mutex_init (&backend->priv->views_mutex);

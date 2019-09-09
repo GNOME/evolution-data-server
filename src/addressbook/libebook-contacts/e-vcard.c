@@ -114,19 +114,10 @@
 
 #define CRLF "\r\n"
 
-#define E_VCARD_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_VCARD, EVCardPrivate))
-
-G_DEFINE_TYPE (EVCard, e_vcard, G_TYPE_OBJECT)
-
 static EVCardAttribute *e_vcard_attribute_ref (EVCardAttribute *attr);
 static void e_vcard_attribute_unref (EVCardAttribute *attr);
 static EVCardAttributeParam *e_vcard_attribute_param_ref (EVCardAttributeParam *param);
 static void e_vcard_attribute_param_unref (EVCardAttributeParam *param);
-
-G_DEFINE_BOXED_TYPE (EVCardAttribute, e_vcard_attribute, e_vcard_attribute_ref, e_vcard_attribute_unref)
-G_DEFINE_BOXED_TYPE (EVCardAttributeParam, e_vcard_attribute_param, e_vcard_attribute_param_ref, e_vcard_attribute_param_unref)
 
 /* Encoding used in v-card
  * Note: v-card spec defines additional 7BIT 8BIT and X- encoding
@@ -159,12 +150,18 @@ struct _EVCardAttributeParam {
 	GList    *values;  /* GList of gchar *'s */
 };
 
+G_DEFINE_TYPE_WITH_PRIVATE (EVCard, e_vcard, G_TYPE_OBJECT)
+
+G_DEFINE_BOXED_TYPE (EVCardAttribute, e_vcard_attribute, e_vcard_attribute_ref, e_vcard_attribute_unref)
+
+G_DEFINE_BOXED_TYPE (EVCardAttributeParam, e_vcard_attribute_param, e_vcard_attribute_param_ref, e_vcard_attribute_param_unref)
+
 static void
 vcard_finalize (GObject *object)
 {
 	EVCardPrivate *priv;
 
-	priv = E_VCARD_GET_PRIVATE (object);
+	priv = E_VCARD (object)->priv;
 
 	/* Directly access priv->attributes and don't call
 	 * e_vcard_ensure_attributes(), since it is pointless
@@ -183,8 +180,6 @@ e_vcard_class_init (EVCardClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (EVCardPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = vcard_finalize;
 }
@@ -192,7 +187,7 @@ e_vcard_class_init (EVCardClass *class)
 static void
 e_vcard_init (EVCard *evc)
 {
-	evc->priv = E_VCARD_GET_PRIVATE (evc);
+	evc->priv = e_vcard_get_instance_private (evc);
 }
 
 static EVCardAttribute *

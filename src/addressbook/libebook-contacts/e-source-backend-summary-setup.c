@@ -47,11 +47,6 @@
 #include "e-source-backend-summary-setup.h"
 #include "e-book-contacts-enumtypes.h"
 
-#define E_SOURCE_BACKEND_SUMMARY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	 ((obj), E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP, \
-	  ESourceBackendSummarySetupPrivate))
-
 struct _ESourceBackendSummarySetupPrivate {
 	GMutex  property_lock;
 	gchar  *summary_fields;
@@ -64,7 +59,7 @@ enum {
 	PROP_INDEXED_FIELDS
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceBackendSummarySetup,
 	e_source_backend_summary_setup,
 	E_TYPE_SOURCE_EXTENSION)
@@ -174,7 +169,7 @@ source_backend_summary_setup_finalize (GObject *object)
 {
 	ESourceBackendSummarySetupPrivate *priv;
 
-	priv = E_SOURCE_BACKEND_SUMMARY_GET_PRIVATE (object);
+	priv = E_SOURCE_BACKEND_SUMMARY_SETUP (object)->priv;
 
 	g_mutex_clear (&priv->property_lock);
 	g_free (priv->summary_fields);
@@ -190,9 +185,6 @@ e_source_backend_summary_setup_class_init (ESourceBackendSummarySetupClass *clas
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (
-		class, sizeof (ESourceBackendSummarySetupPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->get_property = source_backend_summary_setup_get_property;
@@ -235,7 +227,7 @@ e_source_backend_summary_setup_class_init (ESourceBackendSummarySetupClass *clas
 static void
 e_source_backend_summary_setup_init (ESourceBackendSummarySetup *extension)
 {
-	extension->priv = E_SOURCE_BACKEND_SUMMARY_GET_PRIVATE (extension);
+	extension->priv = e_source_backend_summary_setup_get_instance_private (extension);
 	g_mutex_init (&extension->priv->property_lock);
 }
 

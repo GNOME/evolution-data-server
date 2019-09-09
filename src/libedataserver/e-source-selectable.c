@@ -29,10 +29,6 @@
 
 #include <libedataserver/e-data-server-util.h>
 
-#define E_SOURCE_SELECTABLE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_SELECTABLE, ESourceSelectablePrivate))
-
 struct _ESourceSelectablePrivate {
 	gchar *color;
 	gboolean selected;
@@ -44,7 +40,7 @@ enum {
 	PROP_SELECTED
 };
 
-G_DEFINE_ABSTRACT_TYPE (
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (
 	ESourceSelectable,
 	e_source_selectable,
 	E_TYPE_SOURCE_BACKEND)
@@ -102,7 +98,7 @@ source_selectable_finalize (GObject *object)
 {
 	ESourceSelectablePrivate *priv;
 
-	priv = E_SOURCE_SELECTABLE_GET_PRIVATE (object);
+	priv = E_SOURCE_SELECTABLE (object)->priv;
 
 	g_free (priv->color);
 
@@ -114,8 +110,6 @@ static void
 e_source_selectable_class_init (ESourceSelectableClass *class)
 {
 	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (ESourceSelectablePrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_selectable_set_property;
@@ -157,7 +151,7 @@ e_source_selectable_class_init (ESourceSelectableClass *class)
 static void
 e_source_selectable_init (ESourceSelectable *extension)
 {
-	extension->priv = E_SOURCE_SELECTABLE_GET_PRIVATE (extension);
+	extension->priv = e_source_selectable_get_instance_private (extension);
 }
 
 /**

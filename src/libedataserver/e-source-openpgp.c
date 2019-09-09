@@ -38,10 +38,6 @@
 
 #include <libedataserver/e-data-server-util.h>
 
-#define E_SOURCE_OPENPGP_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_OPENPGP, ESourceOpenPGPPrivate))
-
 struct _ESourceOpenPGPPrivate {
 	gchar *key_id;
 	gchar *signing_algorithm;
@@ -64,7 +60,7 @@ enum {
 	PROP_PREFER_INLINE
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceOpenPGP,
 	e_source_openpgp,
 	E_TYPE_SOURCE_EXTENSION)
@@ -187,7 +183,7 @@ source_openpgp_finalize (GObject *object)
 {
 	ESourceOpenPGPPrivate *priv;
 
-	priv = E_SOURCE_OPENPGP_GET_PRIVATE (object);
+	priv = E_SOURCE_OPENPGP (object)->priv;
 
 	g_free (priv->key_id);
 	g_free (priv->signing_algorithm);
@@ -201,8 +197,6 @@ e_source_openpgp_class_init (ESourceOpenPGPClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (class, sizeof (ESourceOpenPGPPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_openpgp_set_property;
@@ -314,7 +308,7 @@ e_source_openpgp_class_init (ESourceOpenPGPClass *class)
 static void
 e_source_openpgp_init (ESourceOpenPGP *extension)
 {
-	extension->priv = E_SOURCE_OPENPGP_GET_PRIVATE (extension);
+	extension->priv = e_source_openpgp_get_instance_private (extension);
 }
 
 /**

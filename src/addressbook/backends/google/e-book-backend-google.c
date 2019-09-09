@@ -47,8 +47,6 @@
 /* Local cache data version. Change it to re-download whole book content */
 #define EBB_GOOGLE_DATA_VERSION 2
 
-G_DEFINE_TYPE (EBookBackendGoogle, e_book_backend_google, E_TYPE_BOOK_META_BACKEND)
-
 struct _EBookBackendGooglePrivate {
 	/* For all the group-related members */
 	GRecMutex groups_lock;
@@ -70,6 +68,8 @@ struct _EBookBackendGooglePrivate {
 	GDataService *service;
 	GHashTable *preloaded; /* gchar *uid ~> EContact * */
 };
+
+G_DEFINE_TYPE_WITH_PRIVATE (EBookBackendGoogle, e_book_backend_google, E_TYPE_BOOK_META_BACKEND)
 
 static void
 ebb_google_data_book_error_from_gdata_error (GError **error,
@@ -1329,7 +1329,7 @@ ebb_google_finalize (GObject *object)
 static void
 e_book_backend_google_init (EBookBackendGoogle *bbgoogle)
 {
-	bbgoogle->priv = G_TYPE_INSTANCE_GET_PRIVATE (bbgoogle, E_TYPE_BOOK_BACKEND_GOOGLE, EBookBackendGooglePrivate);
+	bbgoogle->priv = e_book_backend_google_get_instance_private (bbgoogle);
 	bbgoogle->priv->preloaded = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 
 	g_rec_mutex_init (&bbgoogle->priv->groups_lock);
@@ -1348,8 +1348,6 @@ e_book_backend_google_class_init (EBookBackendGoogleClass *klass)
 	GObjectClass *object_class;
 	EBookBackendClass *book_backend_class;
 	EBookMetaBackendClass *book_meta_backend_class;
-
-	g_type_class_add_private (klass, sizeof (EBookBackendGooglePrivate));
 
 	book_meta_backend_class = E_BOOK_META_BACKEND_CLASS (klass);
 	book_meta_backend_class->backend_module_filename = "libebookbackendgoogle.so";

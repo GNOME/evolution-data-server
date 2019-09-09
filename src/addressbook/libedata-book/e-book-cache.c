@@ -142,6 +142,7 @@ static EBookCacheCursor *e_book_cache_cursor_fake_ref (EBookCacheCursor *cursor)
 static void e_book_cache_cursor_fake_unref (EBookCacheCursor *cursor);
 
 G_DEFINE_TYPE_WITH_CODE (EBookCache, e_book_cache, E_TYPE_CACHE,
+			 G_ADD_PRIVATE (EBookCache)
 			 G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
 
 G_DEFINE_BOXED_TYPE (EBookCacheSearchData, e_book_cache_search_data, e_book_cache_search_data_copy, e_book_cache_search_data_free)
@@ -6359,8 +6360,6 @@ e_book_cache_class_init (EBookCacheClass *klass)
 	GObjectClass *object_class;
 	ECacheClass *cache_class;
 
-	g_type_class_add_private (klass, sizeof (EBookCachePrivate));
-
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->get_property = e_book_cache_get_property;
 	object_class->finalize = e_book_cache_finalize;
@@ -6416,5 +6415,5 @@ e_book_cache_class_init (EBookCacheClass *klass)
 static void
 e_book_cache_init (EBookCache *book_cache)
 {
-	book_cache->priv = G_TYPE_INSTANCE_GET_PRIVATE (book_cache, E_TYPE_BOOK_CACHE, EBookCachePrivate);
+	book_cache->priv = e_book_cache_get_instance_private (book_cache);
 }

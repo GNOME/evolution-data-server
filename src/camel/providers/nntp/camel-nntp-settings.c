@@ -17,10 +17,6 @@
 
 #include "camel-nntp-settings.h"
 
-#define CAMEL_NNTP_SETTINGS_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_NNTP_SETTINGS, CamelNNTPSettingsPrivate))
-
 struct _CamelNNTPSettingsPrivate {
 	gboolean filter_all;
 	gboolean filter_junk;
@@ -49,6 +45,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	CamelNNTPSettings,
 	camel_nntp_settings,
 	CAMEL_TYPE_OFFLINE_SETTINGS,
+	G_ADD_PRIVATE (CamelNNTPSettings)
 	G_IMPLEMENT_INTERFACE (
 		CAMEL_TYPE_NETWORK_SETTINGS, NULL))
 
@@ -222,8 +219,6 @@ camel_nntp_settings_class_init (CamelNNTPSettingsClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelNNTPSettingsPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = nntp_settings_set_property;
 	object_class->get_property = nntp_settings_get_property;
@@ -340,7 +335,7 @@ camel_nntp_settings_class_init (CamelNNTPSettingsClass *class)
 static void
 camel_nntp_settings_init (CamelNNTPSettings *settings)
 {
-	settings->priv = CAMEL_NNTP_SETTINGS_GET_PRIVATE (settings);
+	settings->priv = camel_nntp_settings_get_instance_private (settings);
 }
 
 /**

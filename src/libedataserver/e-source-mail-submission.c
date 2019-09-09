@@ -38,10 +38,6 @@
 
 #include <libedataserver/e-data-server-util.h>
 
-#define E_SOURCE_MAIL_SUBMISSION_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_MAIL_SUBMISSION, ESourceMailSubmissionPrivate))
-
 struct _ESourceMailSubmissionPrivate {
 	gchar *sent_folder;
 	gchar *transport_uid;
@@ -57,7 +53,7 @@ enum {
 	PROP_USE_SENT_FOLDER
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceMailSubmission,
 	e_source_mail_submission,
 	E_TYPE_SOURCE_EXTENSION)
@@ -141,7 +137,7 @@ source_mail_submission_finalize (GObject *object)
 {
 	ESourceMailSubmissionPrivate *priv;
 
-	priv = E_SOURCE_MAIL_SUBMISSION_GET_PRIVATE (object);
+	priv = E_SOURCE_MAIL_SUBMISSION (object)->priv;
 
 	g_free (priv->sent_folder);
 	g_free (priv->transport_uid);
@@ -156,9 +152,6 @@ e_source_mail_submission_class_init (ESourceMailSubmissionClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (
-		class, sizeof (ESourceMailSubmissionPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_mail_submission_set_property;
@@ -229,7 +222,7 @@ e_source_mail_submission_class_init (ESourceMailSubmissionClass *class)
 static void
 e_source_mail_submission_init (ESourceMailSubmission *extension)
 {
-	extension->priv = E_SOURCE_MAIL_SUBMISSION_GET_PRIVATE (extension);
+	extension->priv = e_source_mail_submission_get_instance_private (extension);
 }
 
 /**

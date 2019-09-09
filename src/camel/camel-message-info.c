@@ -66,7 +66,7 @@ enum {
 	PROP_HEADERS
 };
 
-G_DEFINE_ABSTRACT_TYPE (CamelMessageInfo, camel_message_info, G_TYPE_OBJECT)
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (CamelMessageInfo, camel_message_info, G_TYPE_OBJECT)
 
 static CamelMessageInfo *
 message_info_clone (const CamelMessageInfo *mi,
@@ -588,8 +588,6 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelMessageInfoPrivate));
-
 	class->clone = message_info_clone;
 	class->load = message_info_load;
 	class->save = message_info_save;
@@ -980,7 +978,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 static void
 camel_message_info_init (CamelMessageInfo *mi)
 {
-	mi->priv = G_TYPE_INSTANCE_GET_PRIVATE (mi, CAMEL_TYPE_MESSAGE_INFO, CamelMessageInfoPrivate);
+	mi->priv = camel_message_info_get_instance_private (mi);
 	mi->priv->summary_wrg = camel_weak_ref_group_new ();
 
 	g_rec_mutex_init (&mi->priv->property_lock);

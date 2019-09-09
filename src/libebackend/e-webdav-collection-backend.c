@@ -27,7 +27,7 @@ struct _EWebDAVCollectionBackendPrivate {
 	gboolean dummy;
 };
 
-G_DEFINE_TYPE (EWebDAVCollectionBackend, e_webdav_collection_backend, E_TYPE_COLLECTION_BACKEND)
+G_DEFINE_TYPE_WITH_PRIVATE (EWebDAVCollectionBackend, e_webdav_collection_backend, E_TYPE_COLLECTION_BACKEND)
 
 static void
 webdav_collection_add_uid_to_hashtable (gpointer source,
@@ -360,8 +360,6 @@ e_webdav_collection_backend_class_init (EWebDAVCollectionBackendClass *klass)
 {
 	ECollectionBackendClass *collection_backend_class;
 
-	g_type_class_add_private (klass, sizeof (EWebDAVCollectionBackendPrivate));
-
 	klass->get_resource_id = webdav_collection_backend_get_resource_id;
 	klass->is_custom_source = webdav_collection_backend_is_custom_source;
 
@@ -372,7 +370,7 @@ e_webdav_collection_backend_class_init (EWebDAVCollectionBackendClass *klass)
 static void
 e_webdav_collection_backend_init (EWebDAVCollectionBackend *webdav_backend)
 {
-	webdav_backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (webdav_backend, E_TYPE_WEBDAV_COLLECTION_BACKEND, EWebDAVCollectionBackendPrivate);
+	webdav_backend->priv = e_webdav_collection_backend_get_instance_private (webdav_backend);
 }
 
 /**

@@ -51,10 +51,6 @@
 
 #define d(x)
 
-#define E_DATA_CAL_FACTORY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_DATA_CAL_FACTORY, EDataCalFactoryPrivate))
-
 struct _EDataCalFactoryPrivate {
 	EDBusCalendarFactory *dbus_factory;
 };
@@ -69,6 +65,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	EDataCalFactory,
 	e_data_cal_factory,
 	E_TYPE_DATA_FACTORY,
+	G_ADD_PRIVATE (EDataCalFactory)
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_data_cal_factory_initable_init))
@@ -272,8 +269,6 @@ e_data_cal_factory_class_init (EDataCalFactoryClass *class)
 	    g_file_test (subprocess_cal_path_env, G_FILE_TEST_IS_EXECUTABLE))
 		overwrite_subprocess_cal_path = g_strdup (subprocess_cal_path_env);
 
-	g_type_class_add_private (class, sizeof (EDataCalFactoryPrivate));
-
 	dbus_server_class = E_DBUS_SERVER_CLASS (class);
 	dbus_server_class->bus_name = CALENDAR_DBUS_SERVICE_NAME;
 	dbus_server_class->module_directory = modules_directory;
@@ -338,7 +333,7 @@ data_cal_factory_handle_open_memo_list_cb (EDBusCalendarFactory *dbus_interface,
 static void
 e_data_cal_factory_init (EDataCalFactory *factory)
 {
-	factory->priv = E_DATA_CAL_FACTORY_GET_PRIVATE (factory);
+	factory->priv = e_data_cal_factory_get_instance_private (factory);
 
 	factory->priv->dbus_factory =
 		e_dbus_calendar_factory_skeleton_new ();

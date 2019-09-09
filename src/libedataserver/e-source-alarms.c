@@ -35,10 +35,6 @@
 
 #include "e-source-alarms.h"
 
-#define E_SOURCE_ALARMS_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_ALARMS, ESourceAlarmsPrivate))
-
 struct _ESourceAlarmsPrivate {
 	gboolean include_me;
 	gchar *last_notified;
@@ -50,7 +46,7 @@ enum {
 	PROP_LAST_NOTIFIED
 };
 
-G_DEFINE_TYPE (
+G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceAlarms,
 	e_source_alarms,
 	E_TYPE_SOURCE_EXTENSION)
@@ -108,7 +104,7 @@ source_alarms_finalize (GObject *object)
 {
 	ESourceAlarmsPrivate *priv;
 
-	priv = E_SOURCE_ALARMS_GET_PRIVATE (object);
+	priv = E_SOURCE_ALARMS (object)->priv;
 
 	g_free (priv->last_notified);
 
@@ -121,8 +117,6 @@ e_source_alarms_class_init (ESourceAlarmsClass *class)
 {
 	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
-
-	g_type_class_add_private (class, sizeof (ESourceAlarmsPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_alarms_set_property;
@@ -164,7 +158,7 @@ e_source_alarms_class_init (ESourceAlarmsClass *class)
 static void
 e_source_alarms_init (ESourceAlarms *extension)
 {
-	extension->priv = E_SOURCE_ALARMS_GET_PRIVATE (extension);
+	extension->priv = e_source_alarms_get_instance_private (extension);
 }
 
 /**

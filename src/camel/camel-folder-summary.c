@@ -146,7 +146,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE (CamelFolderSummary, camel_folder_summary, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelFolderSummary, camel_folder_summary, G_TYPE_OBJECT)
 
 /* Private function */
 void _camel_message_info_unset_summary (CamelMessageInfo *mi);
@@ -628,8 +628,6 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (CamelFolderSummaryPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = folder_summary_set_property;
 	object_class->get_property = folder_summary_get_property;
@@ -775,7 +773,7 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *class)
 static void
 camel_folder_summary_init (CamelFolderSummary *summary)
 {
-	summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (summary, CAMEL_TYPE_FOLDER_SUMMARY, CamelFolderSummaryPrivate);
+	summary->priv = camel_folder_summary_get_instance_private (summary);
 
 	summary->priv->version = CAMEL_FOLDER_SUMMARY_VERSION;
 	summary->priv->flags = 0;

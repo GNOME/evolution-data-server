@@ -95,7 +95,7 @@ static const gchar *recipient_names[] = {
 
 static GHashTable *header_name_table;
 
-G_DEFINE_TYPE (CamelMimeMessage, camel_mime_message, CAMEL_TYPE_MIME_PART)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelMimeMessage, camel_mime_message, CAMEL_TYPE_MIME_PART)
 
 /* FIXME: check format of fields. */
 static gboolean
@@ -374,8 +374,6 @@ camel_mime_message_class_init (CamelMimeMessageClass *class)
 	CamelMediumClass *medium_class;
 	gint ii;
 
-	g_type_class_add_private (class, sizeof (CamelMimeMessagePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = mime_message_dispose;
 	object_class->finalize = mime_message_finalize;
@@ -408,7 +406,7 @@ camel_mime_message_init (CamelMimeMessage *mime_message)
 {
 	gint ii;
 
-	mime_message->priv = G_TYPE_INSTANCE_GET_PRIVATE (mime_message, CAMEL_TYPE_MIME_MESSAGE, CamelMimeMessagePrivate);
+	mime_message->priv = camel_mime_message_get_instance_private (mime_message);
 
 	mime_message->priv->recipients = g_hash_table_new (
 		camel_strcase_hash, camel_strcase_equal);
