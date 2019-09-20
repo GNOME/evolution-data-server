@@ -762,6 +762,8 @@ ebmb_maybe_remove_from_cache (EBookMetaBackend *meta_backend,
 	return TRUE;
 }
 
+static void ebmb_ensure_refresh_timeout_set_locked (EBookMetaBackend *meta_backend);
+
 static gboolean
 ebmb_refresh_internal_sync (EBookMetaBackend *meta_backend,
 			    gboolean with_connection_error,
@@ -865,6 +867,8 @@ ebmb_refresh_internal_sync (EBookMetaBackend *meta_backend,
 	if (meta_backend->priv->refresh_cancellable == cancellable)
 		g_clear_object (&meta_backend->priv->refresh_cancellable);
 
+	ebmb_ensure_refresh_timeout_set_locked (meta_backend);
+
 	g_mutex_unlock (&meta_backend->priv->property_lock);
 
 	e_book_backend_foreach_view_notify_progress (E_BOOK_BACKEND (meta_backend), TRUE, 0, NULL);
@@ -905,6 +909,20 @@ ebmb_source_refresh_timeout_cb (ESource *source,
 	}
 }
 
+/* Should hold the property_lock when calling this */
+static void
+ebmb_ensure_refresh_timeout_set_locked (EBookMetaBackend *meta_backend)
+{
+	if (!meta_backend->priv->refresh_timeout_id) {
+		ESource *source = e_backend_get_source (E_BACKEND (meta_backend));
+
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_REFRESH)) {
+			meta_backend->priv->refresh_timeout_id = e_source_refresh_add_timeout (source, NULL,
+				ebmb_source_refresh_timeout_cb, e_weak_ref_new (meta_backend), (GDestroyNotify) e_weak_ref_free);
+		}
+	}
+}
+
 static void
 ebmb_source_changed_thread_func (EBookBackend *book_backend,
 				 gpointer user_data,
@@ -921,14 +939,7 @@ ebmb_source_changed_thread_func (EBookBackend *book_backend,
 	meta_backend = E_BOOK_META_BACKEND (book_backend);
 
 	g_mutex_lock (&meta_backend->priv->property_lock);
-	if (!meta_backend->priv->refresh_timeout_id) {
-		ESource *source = e_backend_get_source (E_BACKEND (meta_backend));
-
-		if (e_source_has_extension (source, E_SOURCE_EXTENSION_REFRESH)) {
-			meta_backend->priv->refresh_timeout_id = e_source_refresh_add_timeout (source, NULL,
-				ebmb_source_refresh_timeout_cb, e_weak_ref_new (meta_backend), (GDestroyNotify) e_weak_ref_free);
-		}
-	}
+	ebmb_ensure_refresh_timeout_set_locked (meta_backend);
 	g_mutex_unlock (&meta_backend->priv->property_lock);
 
 	g_signal_emit (meta_backend, signals[SOURCE_CHANGED], 0, NULL);
