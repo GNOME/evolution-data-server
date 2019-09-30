@@ -3941,7 +3941,6 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 		if (data.list->next) {
 			g_warning ("LDAP: conversion of '%s' to ldap query string failed", query);
 			retval = NULL;
-			g_list_foreach (data.list, (GFunc) g_free, NULL);
 		}
 		else {
 			if (bl->priv->ldap_search_filter && *bl->priv->ldap_search_filter
