@@ -1,3 +1,22 @@
+Evolution-Data-Server 3.35.1 2019-10-11
+---------------------------------------
+
+Bug Fixes:
+	I#145 - WebDAV: Not every 403/Forbidden means wrong credentials (Milan Crha)
+	I#151 - Camel: Correct result of the "is" filter condition on address headers (Milan Crha)
+	I#156 - EBook/CalMetaBackend: Automatic refresh not always setup (Milan Crha)
+	M!32 - Replace deprecated 'g_type_class_add_private' (Pablo Barciela)
+	M!33 - ESourceAuthentication: Add is-external property (Corentin Noël)
+	evo-I#635 - LDAP: Double free when query conversion fails (Milan Crha)
+
+Miscellaneous:
+	Correct a developer comment for SECTION:e-cancellable-locks (Milan Crha)
+
+Translations:
+	Nathan Follens (nl)
+	Matej Urbančič (sl)
+	Alan Mortensen (da)
+
 Evolution-Data-Server 3.34.0 2019-09-09
 ---------------------------------------
 
