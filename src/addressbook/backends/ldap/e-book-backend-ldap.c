@@ -4124,6 +4124,7 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 					if (semicolon && g_ascii_strcasecmp (semicolon, ";binary") == 0 &&
 					    g_ascii_strncasecmp (attr, prop_info[i].ldap_attr, semicolon - attr) == 0) {
 						info = &prop_info[i];
+						break;
 					}
 				}
 			}
