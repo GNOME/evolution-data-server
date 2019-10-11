@@ -242,18 +242,21 @@ static struct berval **photo_ber (EContact * contact, GError **error);
 static gboolean photo_compare (EContact * ecard1, EContact * ecard2);
 
 static void cert_populate (EContact *contact, struct berval **ber_values);
+static struct berval **cert_ber (EContact *contact, GError **error);
+static gboolean cert_compare (EContact *ecard1, EContact *ecard2);
 
 static struct prop_info {
 	EContactField field_id;
 	const gchar *ldap_attr;
-#define PROP_TYPE_STRING    0x01
-#define PROP_TYPE_COMPLEX   0x02
-#define PROP_TYPE_BINARY    0x04
-#define PROP_CALENTRY       0x08
-#define PROP_EVOLVE         0x10
-#define PROP_WRITE_ONLY     0x20
-#define PROP_TYPE_GROUP     0x40
-#define PROP_TYPE_CONTACT   0x80 /* is ignored for contact lists */
+#define PROP_TYPE_STRING	(1 << 0)
+#define PROP_TYPE_COMPLEX	(1 << 1)
+#define PROP_TYPE_BINARY	(1 << 2)
+#define PROP_CALENTRY		(1 << 3)
+#define PROP_EVOLVE		(1 << 4)
+#define PROP_WRITE_ONLY		(1 << 5)
+#define PROP_TYPE_GROUP		(1 << 6)
+#define PROP_TYPE_CONTACT	(1 << 7) /* is ignored for contact lists */
+#define PROP_TYPE_FORCE_BINARY	(1 << 8) /* to force ";binary" in attribute name */
 	gint prop_type;
 
 	/* the remaining items are only used for the TYPE_COMPLEX props */
@@ -270,6 +273,7 @@ static struct prop_info {
 } prop_info[] = {
 
 #define BINARY_PROP(fid,a,ctor,ber,cmp) {fid, a, PROP_TYPE_BINARY, NULL, ber, cmp, ctor}
+#define BINARY_PROP_FORCED(fid,a,ctor,ber,cmp) {fid, a, PROP_TYPE_BINARY | PROP_TYPE_FORCE_BINARY, NULL, ber, cmp, ctor}
 #define COMPLEX_PROP(fid,a,ctor,ber,cmp) {fid, a, PROP_TYPE_COMPLEX, ctor, ber, cmp}
 #define E_COMPLEX_PROP(fid,a,ctor,ber,cmp) {fid, a, PROP_TYPE_COMPLEX | PROP_EVOLVE, ctor, ber, cmp}
 #define STRING_PROP(fid,a) {fid, a, PROP_TYPE_STRING}
@@ -338,12 +342,12 @@ static struct prop_info {
 	BINARY_PROP  (E_CONTACT_PHOTO,       "jpegPhoto", photo_populate, photo_ber, photo_compare),
 
 	/* certificate foo. */
-	BINARY_PROP  (E_CONTACT_X509_CERT,   "userCertificate", cert_populate, NULL/*XXX */, NULL/*XXX */),
+	BINARY_PROP_FORCED (E_CONTACT_X509_CERT,   "userCertificate", cert_populate, cert_ber, cert_compare),
 #if 0
 	/* hm, which do we use?  the inetOrgPerson schema says that
 	 * userSMIMECertificate should be used in favor of
 	 * userCertificate for S/MIME applications. */
-	BINARY_PROP  (E_CONTACT_X509_CERT,   "userSMIMECertificate", cert_populate, NULL/*XXX */, NULL/*XXX */),
+	BINARY_PROP  (E_CONTACT_X509_CERT,   "userSMIMECertificate", cert_populate, cert_ber, cert_compare),
 #endif
 
 	/* misc fields */
@@ -1404,7 +1408,10 @@ build_mods_from_contacts (EBookBackendLDAP *bl,
 					mod->mod_op = LDAP_MOD_REPLACE;
 			}
 
-			mod->mod_type = g_strdup (prop_info[i].ldap_attr);
+			if ((prop_info[i].prop_type & PROP_TYPE_FORCE_BINARY) != 0)
+				mod->mod_type = g_strconcat (prop_info[i].ldap_attr, ";binary", NULL);
+			else
+				mod->mod_type = g_strdup (prop_info[i].ldap_attr);
 
 			if (prop_info[i].prop_type & PROP_TYPE_STRING) {
 				mod->mod_values = g_new (gchar *, 2);
@@ -3363,10 +3370,11 @@ photo_ber (EContact *contact,
 		result[0]->bv_len = photo->data.inlined.length;
 		result[0]->bv_val = g_malloc (photo->data.inlined.length);
 		memcpy (result[0]->bv_val, photo->data.inlined.data, photo->data.inlined.length);
-		e_contact_photo_free (photo);
 
 		result[1] = NULL;
 	}
+
+	e_contact_photo_free (photo);
 
 	return result;
 }
@@ -3416,6 +3424,54 @@ cert_populate (EContact *contact,
 
 		e_contact_set (contact, E_CONTACT_X509_CERT, &cert);
 	}
+}
+
+static struct berval **
+cert_ber (EContact *contact,
+	  GError **error)
+{
+	struct berval **result = NULL;
+	EContactCert *cert;
+
+	cert = e_contact_get (contact, E_CONTACT_X509_CERT);
+
+	if (cert && cert->length && cert->data) {
+
+		result = g_new (struct berval *, 2);
+		result[0] = g_new (struct berval, 1);
+		result[0]->bv_val = g_malloc (cert->length);
+		result[0]->bv_len = cert->length;
+		memcpy (result[0]->bv_val, cert->data, cert->length);
+
+		result[1] = NULL;
+	}
+
+	e_contact_cert_free (cert);
+
+	return result;
+}
+
+static gboolean
+cert_compare (EContact *ecard1,
+	      EContact *ecard2)
+{
+	EContactCert *cert1, *cert2;
+	gboolean equal;
+
+	cert1 = e_contact_get (ecard1, E_CONTACT_X509_CERT);
+	cert2 = e_contact_get (ecard2, E_CONTACT_X509_CERT);
+
+	if (cert1 && cert2) {
+		equal = cert1->length == cert2->length && cert1->data && cert2->data &&
+			!memcmp (cert1->data, cert2->data, cert1->length);
+	} else {
+		equal = cert1 == cert2;
+	}
+
+	e_contact_cert_free (cert1);
+	e_contact_cert_free (cert2);
+
+	return equal;
 }
 
 typedef struct {
@@ -4054,11 +4110,23 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 			ldap_value_free (values);
 		}
 		else {
-			for (i = 0; i < G_N_ELEMENTS (prop_info); i++)
+			for (i = 0; i < G_N_ELEMENTS (prop_info); i++) {
 				if (!g_ascii_strcasecmp (attr, prop_info[i].ldap_attr)) {
 					info = &prop_info[i];
 					break;
 				}
+
+				if ((prop_info[i].prop_type & PROP_TYPE_FORCE_BINARY) != 0) {
+					const gchar *semicolon;
+
+					semicolon = strchr (attr, ';');
+
+					if (semicolon && g_ascii_strcasecmp (semicolon, ";binary") == 0 &&
+					    g_ascii_strncasecmp (attr, prop_info[i].ldap_attr, semicolon - attr) == 0) {
+						info = &prop_info[i];
+					}
+				}
+			}
 
 			if (enable_debug)
 				printf ("info = %p\n", (gpointer) info);
