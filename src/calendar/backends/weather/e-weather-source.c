@@ -193,9 +193,9 @@ e_weather_source_parse (EWeatherSource *source,
 		#endif
 		);
 		gweather_info_set_enabled_providers (source->priv->info, GWEATHER_PROVIDER_ALL);
-		g_signal_connect (
+		g_signal_connect_object (
 			source->priv->info, "updated",
-			G_CALLBACK (weather_source_updated_cb), source);
+			G_CALLBACK (weather_source_updated_cb), source, 0);
 	}
 
 	gweather_info_update (source->priv->info);
