@@ -1113,23 +1113,28 @@ camel_network_service_can_reach (CamelNetworkService *service,
                                  gpointer user_data)
 {
 	CamelSession *session;
-	gchar *description;
 	GTask *task;
 
 	g_return_if_fail (CAMEL_IS_NETWORK_SERVICE (service));
 
 	session = camel_service_ref_session (CAMEL_SERVICE (service));
-	g_return_if_fail (session != NULL);
 
 	task = g_task_new (service, cancellable, callback, user_data);
 	g_task_set_source_tag (task, camel_network_service_can_reach);
 
-	description = g_strdup_printf (_("Checking reachability of account “%s”"), camel_service_get_display_name (CAMEL_SERVICE (service)));
+	if (session) {
+		gchar *description;
 
-	camel_session_submit_job (session, description, network_service_can_reach_thread, task, g_object_unref);
+		description = g_strdup_printf (_("Checking reachability of account “%s”"), camel_service_get_display_name (CAMEL_SERVICE (service)));
 
-	g_object_unref (session);
-	g_free (description);
+		camel_session_submit_job (session, description, network_service_can_reach_thread, task, g_object_unref);
+
+		g_object_unref (session);
+		g_free (description);
+	} else {
+		g_task_return_boolean (task, FALSE);
+		g_object_unref (task);
+	}
 }
 
 /**
