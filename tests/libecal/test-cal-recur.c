@@ -381,6 +381,105 @@ test_recur_client (ETestServerFixture *fixture,
 	}
 }
 
+static gboolean
+got_instance_cb (ICalComponent *icomp,
+		 ICalTime *instance_start,
+		 ICalTime *instance_end,
+		 gpointer user_data,
+		 GCancellable *cancellable,
+		 GError **error)
+{
+	gint *pfound = user_data;
+
+	(*pfound)++;
+
+	return TRUE;
+}
+
+static ICalTimezone *
+lookup_tzid_cb (const gchar *tzid,
+		gpointer lookup_data,
+		GCancellable *cancellable,
+		GError **error)
+{
+	return i_cal_timezone_get_builtin_timezone (tzid);
+}
+
+static void
+test_recur_exdate_component (const gchar *comp_str)
+{
+	ICalComponent *comp;
+	ICalTime *start, *end;
+	gint found = 0;
+	gboolean success;
+	GError *error = NULL;
+
+	comp = i_cal_component_new_from_string (comp_str);
+
+	g_assert_nonnull (comp);
+
+	start = i_cal_time_new_from_string ("20191001T000000Z");
+	end = i_cal_time_new_from_string ("20191031T235959Z");
+
+	g_assert_nonnull (start);
+	g_assert_nonnull (end);
+
+	success = e_cal_recur_generate_instances_sync (comp, start, end,
+		got_instance_cb, &found,
+		lookup_tzid_cb, NULL,
+		i_cal_timezone_get_builtin_timezone ("Europe/Berlin"),
+		NULL, &error);
+
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_cmpint (found, ==, 2);
+
+	found = 0;
+
+	success = e_cal_recur_generate_instances_sync (comp, start, end,
+		got_instance_cb, &found,
+		lookup_tzid_cb, NULL,
+		i_cal_timezone_get_builtin_timezone ("America/New_York"),
+		NULL, &error);
+
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_cmpint (found, ==, 2);
+
+	g_object_unref (start);
+	g_object_unref (end);
+	g_object_unref (comp);
+}
+
+static void
+test_recur_exdate (ETestServerFixture *fixture,
+		   gconstpointer user_data)
+{
+	test_recur_exdate_component (
+		"BEGIN:VEVENT\r\n"
+		"UID:007\r\n"
+		"DTSTART;TZID=Europe/Amsterdam:20191010T120000\r\n"
+		"DTEND;TZID=Europe/Amsterdam:20191010T170000\r\n"
+		"SUMMARY:Test\r\n"
+		"RRULE:FREQ=DAILY;COUNT=4\r\n"
+		"EXDATE;VALUE=DATE:20191011\r\n"
+		"EXDATE:20191012T100000Z\r\n"
+		"END:VEVENT\r\n"
+	);
+
+	test_recur_exdate_component (
+		"BEGIN:VEVENT\r\n"
+		"UID:007\r\n"
+		"DTSTART:20191010T120000\r\n"
+		"DTEND:20191010T170000\r\n"
+		"SUMMARY:Test\r\n"
+		"RRULE:FREQ=DAILY;COUNT=4\r\n"
+		"EXDATE;VALUE=DATE:20191011\r\n"
+		"EXDATE:20191012T120000\r\n"
+		"END:VEVENT\r\n"
+	);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -401,6 +500,13 @@ main (gint argc,
 		&test_closure,
 		e_test_server_utils_setup,
 		test_recur_client,
+		e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalRecur/Exdate",
+		ETestServerFixture,
+		&test_closure,
+		e_test_server_utils_setup,
+		test_recur_exdate,
 		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
