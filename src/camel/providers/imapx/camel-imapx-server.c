@@ -3203,6 +3203,14 @@ camel_imapx_server_authenticate_sync (CamelIMAPXServer *is,
 
 	if (sasl != NULL) {
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_AUTHENTICATE, "AUTHENTICATE %A", sasl);
+	} else if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, LOGINDISABLED)) {
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+				_("Plaintext authentication disallowed on insecure connections. Change encryption to STARTTLS or TLS for account “%s”."),
+				camel_service_get_display_name (service));
+			result = CAMEL_AUTHENTICATION_ERROR;
+			goto exit;
 	} else {
 		const gchar *password;
 
