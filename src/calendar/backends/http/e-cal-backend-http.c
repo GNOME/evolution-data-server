@@ -42,16 +42,19 @@ struct _ECalBackendHttpPrivate {
 	GInputStream *input_stream;
 	GRecMutex conn_lock;
 	GHashTable *components; /* gchar *uid ~> ICalComponent * */
+	gint64 hsts_until_time;
 };
 
 static gchar *
 ecb_http_webcal_to_http_method (const gchar *webcal_str,
 				gboolean secure)
 {
-	if (secure && (strncmp ("http://", webcal_str, sizeof ("http://") - 1) == 0))
+	if (secure && (
+	    g_str_has_prefix (webcal_str, "http://") ||
+	    g_str_has_prefix (webcal_str, "webcal://")))
 		return g_strconcat ("https://", webcal_str + sizeof ("http://") - 1, NULL);
 
-	if (strncmp ("webcal://", webcal_str, sizeof ("webcal://") - 1))
+	if (!g_str_has_prefix (webcal_str, "webcal://"))
 		return g_strdup (webcal_str);
 
 	if (secure)
@@ -92,11 +95,66 @@ ecb_http_dup_uri (ECalBackendHttp *cbhttp)
 		return NULL;
 	}
 
+	secure_connection = secure_connection || (cbhttp->priv->hsts_until_time && g_get_real_time () <= cbhttp->priv->hsts_until_time);
+
 	uri = ecb_http_webcal_to_http_method (uri_string, secure_connection);
 
 	g_free (uri_string);
 
 	return uri;
+}
+
+/* https://tools.ietf.org/html/rfc6797 */
+static gint64
+ecb_http_extract_hsts_until_time (ECalBackendHttp *cbhttp)
+{
+	SoupMessage *message;
+	GTlsCertificate *cert = NULL;
+	GTlsCertificateFlags cert_errors = 0;
+	gint64 hsts_until_time = 0;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_HTTP (cbhttp), hsts_until_time);
+	g_return_val_if_fail (cbhttp->priv->request, hsts_until_time);
+
+	message = soup_request_http_get_message (cbhttp->priv->request);
+	if (!message)
+		return hsts_until_time;
+
+	if (message->response_headers &&
+	    soup_message_get_https_status (message, &cert, &cert_errors) &&
+	    !cert_errors) {
+		const gchar *hsts_header;
+
+		hsts_header = soup_message_headers_get_one (message->response_headers, "Strict-Transport-Security");
+		if (hsts_header && *hsts_header) {
+			GHashTable *params;
+
+			params = soup_header_parse_semi_param_list (hsts_header);
+			if (params) {
+				const gchar *max_age;
+
+				max_age = g_hash_table_lookup (params, "max-age");
+
+				if (max_age && *max_age) {
+					gint64 value;
+
+					if (*max_age == '\"')
+						max_age++;
+
+					value = g_ascii_strtoll (max_age, NULL, 10);
+
+					if (value > 0)
+						hsts_until_time = g_get_real_time () + (value * G_USEC_PER_SEC);
+				}
+
+				soup_header_free_param_list (params);
+			}
+		}
+	}
+
+	g_object_unref (message);
+
+	return hsts_until_time;
 }
 
 static gchar *
@@ -205,8 +263,13 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 		if (success) {
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTED);
 		} else {
-			guint status_code = message ? message->status_code : SOUP_STATUS_MALFORMED;
+			guint status_code;
 			gboolean credentials_empty;
+
+			if (local_error && local_error->domain == SOUP_HTTP_ERROR)
+				status_code = local_error->code;
+			else
+				status_code = message ? message->status_code : SOUP_STATUS_MALFORMED;
 
 			credentials_empty = !credentials || !e_named_parameters_count (credentials);
 
@@ -215,7 +278,8 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 			/* because evolution knows only G_IO_ERROR_CANCELLED */
 			if (status_code == SOUP_STATUS_CANCELLED) {
 				g_set_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED,
-					"%s", message->reason_phrase);
+					"%s", (local_error && local_error->domain == SOUP_HTTP_ERROR) ? local_error->message :
+					(message && message->reason_phrase) ? message->reason_phrase : soup_status_get_phrase (status_code));
 			} else if (status_code == SOUP_STATUS_FORBIDDEN && credentials_empty) {
 				*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
 			} else if (status_code == SOUP_STATUS_UNAUTHORIZED) {
@@ -252,11 +316,16 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 	if (success) {
 		cbhttp->priv->request = request;
 		cbhttp->priv->input_stream = input_stream;
+		cbhttp->priv->hsts_until_time = ecb_http_extract_hsts_until_time (cbhttp);
 
 		*out_auth_result = E_SOURCE_AUTHENTICATION_ACCEPTED;
 	} else {
 		g_clear_object (&request);
 		g_clear_object (&input_stream);
+
+		if (*out_auth_result != E_SOURCE_AUTHENTICATION_REQUIRED &&
+		    *out_auth_result != E_SOURCE_AUTHENTICATION_REJECTED)
+			cbhttp->priv->hsts_until_time = 0;
 	}
 
 	g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
