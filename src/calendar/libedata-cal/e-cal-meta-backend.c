@@ -817,10 +817,8 @@ ecmb_ensure_refresh_timeout_set_locked (ECalMetaBackend *meta_backend)
 	if (!meta_backend->priv->refresh_timeout_id) {
 		ESource *source = e_backend_get_source (E_BACKEND (meta_backend));
 
-		if (e_source_has_extension (source, E_SOURCE_EXTENSION_REFRESH)) {
-			meta_backend->priv->refresh_timeout_id = e_source_refresh_add_timeout (source, NULL,
-				ecmb_source_refresh_timeout_cb, e_weak_ref_new (meta_backend), (GDestroyNotify) e_weak_ref_free);
-		}
+		meta_backend->priv->refresh_timeout_id = e_source_refresh_add_timeout (source, NULL,
+			ecmb_source_refresh_timeout_cb, e_weak_ref_new (meta_backend), (GDestroyNotify) e_weak_ref_free);
 	}
 }
 
