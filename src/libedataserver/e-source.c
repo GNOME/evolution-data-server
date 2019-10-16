@@ -854,16 +854,14 @@ source_update_connection_status_internal (ESource *source,
 	return changed;
 }
 
-static gboolean
-source_idle_connection_status_change_cb (gpointer user_data)
+static void
+source_update_connection_status (ESource *source)
 {
-	ESource *source = E_SOURCE (user_data);
 	EDBusObject *dbus_object;
 	EDBusSource *dbus_source;
 	gboolean changed = FALSE;
 
-	if (g_source_is_destroyed (g_main_current_source ()))
-		return FALSE;
+	g_return_if_fail (E_IS_SOURCE (source));
 
 	g_mutex_lock (&source->priv->connection_status_change_lock);
 	if (source->priv->connection_status_change != NULL) {
@@ -888,6 +886,19 @@ source_idle_connection_status_change_cb (gpointer user_data)
 
 	g_mutex_unlock (&source->priv->property_lock);
 	g_object_thaw_notify (G_OBJECT (source));
+}
+
+static gboolean
+source_idle_connection_status_change_cb (gpointer user_data)
+{
+	ESource *source;
+
+	if (g_source_is_destroyed (g_main_current_source ()))
+		return FALSE;
+
+	source = E_SOURCE (user_data);
+
+	source_update_connection_status (source);
 
 	return FALSE;
 }
@@ -1961,6 +1972,40 @@ source_unset_last_credentials_required_arguments_impl (ESource *source,
 	return success;
 }
 
+static void
+source_connect_dbus_source (ESource *source)
+{
+	EDBusObject *dbus_object;
+	EDBusSource *dbus_source;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	if (!source->priv->dbus_object)
+		return;
+
+	dbus_object = E_DBUS_OBJECT (source->priv->dbus_object);
+
+	/* An EDBusObject lacking an EDBusSource
+	 * interface indicates a programmer error. */
+	dbus_source = e_dbus_object_get_source (dbus_object);
+	g_return_if_fail (E_DBUS_IS_SOURCE (dbus_source));
+
+	g_signal_connect_object (
+		dbus_source, "notify::data",
+		G_CALLBACK (source_notify_dbus_data_cb), source, 0);
+	g_signal_connect_object (
+		dbus_source, "notify::connection-status",
+		G_CALLBACK (source_notify_dbus_connection_status_cb), source, 0);
+	g_signal_connect_object (
+		dbus_source, "credentials-required",
+		G_CALLBACK (source_dbus_credentials_required_cb), source, 0);
+	g_signal_connect_object (
+		dbus_source, "authenticate",
+		G_CALLBACK (source_dbus_authenticate_cb), source, 0);
+
+	g_clear_object (&dbus_source);
+}
+
 static gboolean
 source_initable_init (GInitable *initable,
                       GCancellable *cancellable,
@@ -1993,19 +2038,7 @@ source_initable_init (GInitable *initable,
 		source->priv->uid = e_dbus_source_dup_uid (dbus_source);
 
 		source_update_connection_status_internal (source, dbus_source);
-
-		g_signal_connect (
-			dbus_source, "notify::data",
-			G_CALLBACK (source_notify_dbus_data_cb), source);
-		g_signal_connect (
-			dbus_source, "notify::connection-status",
-			G_CALLBACK (source_notify_dbus_connection_status_cb), source);
-		g_signal_connect (
-			dbus_source, "credentials-required",
-			G_CALLBACK (source_dbus_credentials_required_cb), source);
-		g_signal_connect (
-			dbus_source, "authenticate",
-			G_CALLBACK (source_dbus_authenticate_cb), source);
+		source_connect_dbus_source (source);
 
 		success = source_parse_dbus_data (source, error);
 
@@ -2442,10 +2475,24 @@ __e_source_private_replace_dbus_object (ESource *source,
 
 	g_mutex_lock (&source->priv->property_lock);
 
+	if (source->priv->dbus_object) {
+		EDBusSource *dbus_source;
+
+		dbus_source = e_dbus_object_get_source (E_DBUS_OBJECT (source->priv->dbus_object));
+
+		if (dbus_source) {
+			g_signal_handlers_disconnect_by_data (dbus_source, source),
+			g_object_unref (dbus_source);
+		}
+	}
+
 	g_clear_object (&source->priv->dbus_object);
 	source->priv->dbus_object = dbus_object;
 
 	g_mutex_unlock (&source->priv->property_lock);
+
+	source_connect_dbus_source (source);
+	source_update_connection_status (source);
 
 	g_object_notify (G_OBJECT (source), "dbus-object");
 }
