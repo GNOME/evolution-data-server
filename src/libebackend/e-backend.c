@@ -438,7 +438,10 @@ backend_source_authenticate_thread (gpointer user_data)
 				GError *local_error2 = NULL;
 
 				if (!e_source_write_sync (source, thread_data->cancellable, &local_error2)) {
-					g_warning ("%s: Failed to store changed user name: %s", G_STRFUNC, local_error2 ? local_error2->message : "Unknown error");
+					g_warning ("%s: Failed to store changed user name on '%s' (%s): %s", G_STRFUNC,
+						e_source_get_display_name (source),
+						e_source_get_uid (source),
+						local_error2 ? local_error2->message : "Unknown error");
 				}
 
 				g_clear_error (&local_error2);
@@ -453,7 +456,10 @@ backend_source_authenticate_thread (gpointer user_data)
 
 			if (!e_source_invoke_credentials_required_sync (source, reason, certificate_pem, certificate_errors,
 				local_error, thread_data->cancellable, &local_error2)) {
-				g_warning ("%s: Failed to invoke credentials required: %s", G_STRFUNC, local_error2 ? local_error2->message : "Unknown error");
+				g_warning ("%s: Failed to invoke credentials required for '%s' (%s): %s", G_STRFUNC,
+					e_source_get_display_name (source),
+					e_source_get_uid (source),
+					local_error2 ? local_error2->message : "Unknown error");
 			}
 
 			g_clear_error (&local_error2);
@@ -1229,7 +1235,11 @@ backend_scheduled_credentials_required_done_cb (GObject *source_object,
 
 	if (!e_backend_credentials_required_finish (E_BACKEND (source_object), result, &error) &&
 	    !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
-		g_warning ("%s: Failed to invoke credentials required: %s", who_calls ? who_calls : G_STRFUNC,
+		ESource *source = e_backend_get_source (E_BACKEND (source_object));
+
+		g_warning ("%s: Failed to invoke credentials required on '%s' (%s): %s", who_calls ? who_calls : G_STRFUNC,
+			e_source_get_display_name (source),
+			e_source_get_uid (source),
 			error ? error->message : "Unknown error");
 	}
 
