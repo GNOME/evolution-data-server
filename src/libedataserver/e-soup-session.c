@@ -210,6 +210,10 @@ e_soup_session_maybe_prepare_basic_auth (ESoupSession *session,
 	if (!credentials || !e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_PASSWORD)) {
 		/* This error message won't get into the UI */
 		g_set_error_literal (error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED, soup_status_get_phrase (SOUP_STATUS_UNAUTHORIZED));
+
+		if (message)
+			soup_message_set_status (message, SOUP_STATUS_UNAUTHORIZED);
+
 		return FALSE;
 	}
 
@@ -279,12 +283,15 @@ e_soup_session_maybe_prepare_auth (ESoupSession *session,
 	session->priv->auth_prefilled = FALSE;
 	g_mutex_unlock (&session->priv->property_lock);
 
-	if (g_strcmp0 (auth_method, "OAuth2") == 0 ||
-	    e_oauth2_services_is_oauth2_alias_static (auth_method)) {
-		success = e_soup_session_maybe_prepare_bearer_auth (session, soup_uri, message, cancellable, error);
-	} else if (user && *user) {
-		/* Default to Basic authentication when user is filled */
-		success = e_soup_session_maybe_prepare_basic_auth (session, soup_uri, message, user, credentials, cancellable, error);
+	/* Provide credentials beforehand only on secure connections */
+	if (soup_uri_get_scheme (soup_uri) == SOUP_URI_SCHEME_HTTPS) {
+		if (g_strcmp0 (auth_method, "OAuth2") == 0 ||
+		    e_oauth2_services_is_oauth2_alias_static (auth_method)) {
+			success = e_soup_session_maybe_prepare_bearer_auth (session, soup_uri, message, cancellable, error);
+		} else if (user && *user) {
+			/* Default to Basic authentication when user is filled */
+			success = e_soup_session_maybe_prepare_basic_auth (session, soup_uri, message, user, credentials, cancellable, error);
+		}
 	}
 
 	e_named_parameters_free (credentials);
