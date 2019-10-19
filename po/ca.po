@@ -1619,7 +1619,7 @@ msgstr ", diumenge"
 #: ../src/calendar/libecal/e-cal-recur.c:5191
 msgctxt "recur-description"
 msgid " and Sunday"
-msgstr "i diumenge"
+msgstr " i diumenge"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5194
 msgctxt "recur-description"
@@ -1634,7 +1634,7 @@ msgstr ", dilluns"
 #: ../src/calendar/libecal/e-cal-recur.c:5196
 msgctxt "recur-description"
 msgid " and Monday"
-msgstr "i dilluns"
+msgstr " i dilluns"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5199
 msgctxt "recur-description"
@@ -1649,7 +1649,7 @@ msgstr ", dimarts"
 #: ../src/calendar/libecal/e-cal-recur.c:5201
 msgctxt "recur-description"
 msgid " and Tuesday"
-msgstr "i dimarts"
+msgstr " i dimarts"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5204
 msgctxt "recur-description"
@@ -1664,7 +1664,7 @@ msgstr ", dimecres"
 #: ../src/calendar/libecal/e-cal-recur.c:5206
 msgctxt "recur-description"
 msgid " and Wednesday"
-msgstr "i dimecres"
+msgstr " i dimecres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5209
 msgctxt "recur-description"
@@ -1679,7 +1679,7 @@ msgstr ", dijous"
 #: ../src/calendar/libecal/e-cal-recur.c:5211
 msgctxt "recur-description"
 msgid " and Thursday"
-msgstr "i dijous"
+msgstr " i dijous"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5214
 msgctxt "recur-description"
@@ -1694,7 +1694,7 @@ msgstr ", divendres"
 #: ../src/calendar/libecal/e-cal-recur.c:5216
 msgctxt "recur-description"
 msgid " and Friday"
-msgstr "i divendres"
+msgstr " i divendres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5219
 msgctxt "recur-description"
@@ -1709,7 +1709,7 @@ msgstr ", dissabte"
 #: ../src/calendar/libecal/e-cal-recur.c:5221
 msgctxt "recur-description"
 msgid " and Saturday"
-msgstr "i dissabte"
+msgstr " i dissabte"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5350
 #, c-format
@@ -5855,7 +5855,7 @@ msgid ""
 "An OAuth2 client ID to use to connect to Google servers, instead of the one provided during build time"
 msgstr ""
 "Un ID de client OAuth2 que s'utilitza per connectar als servidors Google, en comptes del que "
-"proveeix el programa."
+"proveeix el programa"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
 msgid ""
@@ -5886,7 +5886,7 @@ msgid ""
 "An OAuth2 client ID to use to connect to Outlook servers, instead of the one provided during build time"
 msgstr ""
 "Un ID de client OAuth2 que s'utilitza per connectar als servidors Outlook, en comptes del que proveeix "
-"el programa."
+"el programa"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
 msgid ""
@@ -5902,7 +5902,7 @@ msgid ""
 "time"
 msgstr ""
 "Un secret de client OAuth2 que s'utilitza per connectar als servidors Outlook, en comptes del que "
-"proveeix el programa."
+"proveeix el programa"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
 msgid ""
