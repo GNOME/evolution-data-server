@@ -2448,14 +2448,16 @@ generate_instances (ECalClient *client,
 			}
 
 			if (dtend && e_cal_component_datetime_get_value (dtend)) {
-				ICalTimezone *zone;
-
 				ci->end = i_cal_time_clone (e_cal_component_datetime_get_value (dtend));
 
-				zone = e_cal_client_tzlookup_cb (e_cal_component_datetime_get_tzid (dtend), client, NULL, NULL);
+				if (e_cal_component_datetime_get_tzid (dtend)) {
+					ICalTimezone *zone;
 
-				if (zone)
-					i_cal_time_set_timezone (ci->end, zone);
+					zone = e_cal_client_tzlookup_cb (e_cal_component_datetime_get_tzid (dtend), client, NULL, NULL);
+
+					if (zone)
+						i_cal_time_set_timezone (ci->end, zone);
+				}
 			} else {
 				ci->end = i_cal_time_clone (ci->start);
 
