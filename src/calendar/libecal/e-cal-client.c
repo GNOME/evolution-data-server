@@ -2443,10 +2443,27 @@ generate_instances (ECalClient *client,
 			}
 
 			ci->start = i_cal_time_clone (e_cal_component_datetime_get_value (dtstart));
+			if (e_cal_component_datetime_get_tzid (dtstart)) {
+				ICalTimezone *zone;
 
-			if (dtend && e_cal_component_datetime_get_value (dtend))
+				zone = e_cal_client_tzlookup_cb (e_cal_component_datetime_get_tzid (dtstart), client, NULL, NULL);
+
+				if (zone)
+					i_cal_time_set_timezone (ci->start, zone);
+			}
+
+			if (dtend && e_cal_component_datetime_get_value (dtend)) {
 				ci->end = i_cal_time_clone (e_cal_component_datetime_get_value (dtend));
-			else {
+
+				if (e_cal_component_datetime_get_tzid (dtend)) {
+					ICalTimezone *zone;
+
+					zone = e_cal_client_tzlookup_cb (e_cal_component_datetime_get_tzid (dtend), client, NULL, NULL);
+
+					if (zone)
+						i_cal_time_set_timezone (ci->end, zone);
+				}
+			} else {
 				ci->end = i_cal_time_clone (ci->start);
 
 				if (i_cal_time_is_date (e_cal_component_datetime_get_value (dtstart)))
