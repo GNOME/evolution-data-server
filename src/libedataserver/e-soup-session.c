@@ -522,6 +522,8 @@ e_soup_session_init (ESoupSession *session)
 		SOUP_SESSION_ACCEPT_LANGUAGE_AUTO, TRUE,
 		NULL);
 
+	soup_session_add_feature_by_type (SOUP_SESSION (session), SOUP_TYPE_CONTENT_DECODER);
+
 	g_signal_connect (session, "authenticate",
 		G_CALLBACK (e_soup_session_authenticate_cb), NULL);
 }
