@@ -1,3 +1,12 @@
+Evolution-Data-Server 3.32.5 2019-11-11
+---------------------------------------
+
+Miscellaneous:
+	EWeatherSource: Use g_signal_connect_object() in e_weather_source_parse() (Milan Crha)
+
+Translations:
+	Daniel Șerbănescu (ro)
+
 Evolution-Data-Server 3.32.4 2019-07-15
 ---------------------------------------
 
