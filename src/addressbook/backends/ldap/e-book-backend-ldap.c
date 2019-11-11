@@ -3962,7 +3962,6 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 	gchar *retval;
 	EBookBackendLDAPSExpData data;
 	gint i;
-	gchar **strings;
 
 	data.list = NULL;
 	data.bl = bl;
@@ -3997,21 +3996,11 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 		if (data.list->next) {
 			g_warning ("LDAP: conversion of '%s' to ldap query string failed", query);
 			retval = NULL;
-		}
-		else {
-			if (bl->priv->ldap_search_filter && *bl->priv->ldap_search_filter
-				&& g_ascii_strcasecmp (bl->priv->ldap_search_filter, "(objectClass=*)") != 0) {
-				strings = g_new0 (gchar *, 5);
-				strings[0] = g_strdup ("(&");
-				strings[1] = g_strdup_printf ("%s", bl->priv->ldap_search_filter);
-				strings[2] = data.list->data;
-				strings[3] = g_strdup (")");
-				retval = g_strjoinv (" ", strings);
-				for (i = 0; i < 4; i++)
-					g_free (strings[i]);
-				g_free (strings);
-			}
-			else {
+		} else {
+			if (bl->priv->ldap_search_filter && *bl->priv->ldap_search_filter &&
+			    g_ascii_strcasecmp (bl->priv->ldap_search_filter, "(objectClass=*)") != 0) {
+				retval = g_strdup_printf ("(& %s %s)", bl->priv->ldap_search_filter, (const gchar *) data.list->data);
+			} else {
 				retval = g_strdup (data.list->data);
 			}
 		}
