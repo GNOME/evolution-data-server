@@ -1,3 +1,22 @@
+Evolution-Data-Server 3.34.2 2019-11-22
+---------------------------------------
+
+Bug Fixes:
+	I#156 - EBook/CalMetaBackend: Automatic refresh not always setup ][ (Milan Crha)
+	I#159 - LDAP: Fails to read userCertificate from the server (Milan Crha)
+	I#162 - e-cal-recur: Ignores recurrence exceptions (Milan Crha)
+	I#164 - HSTS (RFC 6797) support for "On The Web" calendars (Milan Crha)
+	I#169 - Detached instances shown as with floating time (Milan Crha)
+	I#173 - ESoupSession: Accept also compressed responses (Milan Crha)
+
+Miscellaneous:
+	EWeatherSource: Use g_signal_connect_object() in e_weather_source_parse() (Milan Crha)
+	Correct runtime warning from camel_network_service_can_reach() (Milan Crha)
+	ESoupSession: Do not presend credentials on insecure connections (Milan Crha)
+	EBackend: Slightly enhance g_warning() messages with an ESource identification (Milan Crha)
+	ESource: Required signals not connected after EDBusObject is replaced (Milan Crha)
+	LDAP: Change how LDAP query is constructed (Milan Crha)
+
 Evolution-Data-Server 3.34.1 2019-10-07
 ---------------------------------------
 
