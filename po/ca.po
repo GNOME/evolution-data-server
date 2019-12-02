@@ -2711,8 +2711,8 @@ msgstr "S'ha produït un error en executar la cerca de filtres: %s. %s"
 #, c-format
 msgid "Learning new spam message in “%s : %s”"
 msgid_plural "Learning new spam messages in “%s : %s”"
-msgstr[0] "S'està aprenent un nou missatge brossa a «%s : %s»"
-msgstr[1] "S'estan aprenent els nous missatges brossa a «%s : %s»"
+msgstr[0] "S'està aprenent del nou missatge brossa a «%s : %s»"
+msgstr[1] "S'està aprenent dels nous missatges brossa a «%s : %s»"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2721,8 +2721,8 @@ msgstr[1] "S'estan aprenent els nous missatges brossa a «%s : %s»"
 #, c-format
 msgid "Learning new ham message in “%s : %s”"
 msgid_plural "Learning new ham messages in “%s : %s”"
-msgstr[0] "S'està aprenent el missatge amb correu legítim nou a «%s : %s»"
-msgstr[1] "S'estan aprenent els missatges amb correus legítims nous a «%s : %s»"
+msgstr[0] "S'està aprenent del missatge de correu legítim nou a «%s : %s»"
+msgstr[1] "S'està aprenent dels missatges de correus legítims nous a «%s : %s»"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -5792,7 +5792,7 @@ msgid ""
 "value “always-online” is used for no network monitoring."
 msgstr ""
 "Quan s'estableix un valor desconegut, llavors el GNetworkMonitor  per defecte s'utilitza en segon pla. "
-"El valor especial «always-online» s'utilitza per no monitoritzar xarxes."
+"El valor especial «always-online» s'utilitza per no monitorar xarxes."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
 msgid "A full path to a directory where .source files with preconfigured options can be stored"
@@ -5871,7 +5871,7 @@ msgid ""
 "time"
 msgstr ""
 "Un secret de client OAuth2 que s'utilitza per connectar als servidors Google, en comptes del que "
-"proveeix el programa."
+"proveeix el programa"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
 msgid ""
@@ -6516,7 +6516,7 @@ msgid ""
 "client request. The used URI was: %s"
 msgstr ""
 "El servidor respon amb una pàgina HTML, el que pot significar és que hi hagi un error al servidor o "
-"amb la sol·licitud del client. L'URI utilitzat va ser :%s"
+"amb la sol·licitud del client. L'URI utilitzat va ser: %s"
 
 #: ../src/libedataserver/e-webdav-session.c:957
 #, c-format
@@ -7282,7 +7282,7 @@ msgstr "Fitxer de sortida"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:926
 msgid "List local address book folders"
-msgstr "Llista de carpetes de llibres d'adreces locals"
+msgstr "Llista de carpetes de llibretes d'adreces locals"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:929
 msgid "Show cards as vcard or csv file"
@@ -7346,7 +7346,7 @@ msgstr "Col·lecció/ Comptes d'Ubuntu en línia"
 
 #: ../src/tools/list-sources/list-sources.c:147
 msgid "Address Book"
-msgstr "Llibre d'adreces"
+msgstr "Llibreta d'adreces"
 
 #: ../src/tools/list-sources/list-sources.c:148
 msgid "Calendar"
