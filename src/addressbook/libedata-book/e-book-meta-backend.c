@@ -3542,12 +3542,7 @@ e_book_meta_backend_process_changes_sync (EBookMetaBackend *meta_backend,
 		EBookMetaBackendInfo *nfo = link->data;
 		GError *local_error = NULL;
 
-		if (!nfo || !nfo->uid) {
-			g_warn_if_reached ();
-			continue;
-		}
-
-		if (!*nfo->uid ||
+		if (!nfo || !nfo->uid || !*nfo->uid ||
 		    g_hash_table_contains (covered_uids, nfo->uid))
 			continue;
 
@@ -3577,12 +3572,7 @@ e_book_meta_backend_process_changes_sync (EBookMetaBackend *meta_backend,
 		EBookMetaBackendInfo *nfo = link->data;
 		GError *local_error = NULL;
 
-		if (!nfo || !nfo->uid) {
-			g_warn_if_reached ();
-			continue;
-		}
-
-		if (!*nfo->uid)
+		if (!nfo || !nfo->uid || !*nfo->uid)
 			continue;
 
 		success = ebmb_load_contact_wrapper_sync (meta_backend, book_cache, nfo->uid, nfo->object, nfo->extra, NULL, cancellable, &local_error);

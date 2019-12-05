@@ -4678,12 +4678,7 @@ e_cal_meta_backend_process_changes_sync (ECalMetaBackend *meta_backend,
 		ECalMetaBackendInfo *nfo = link->data;
 		GError *local_error = NULL;
 
-		if (!nfo || !nfo->uid) {
-			g_warn_if_reached ();
-			continue;
-		}
-
-		if (!*nfo->uid ||
+		if (!nfo || !nfo->uid || !*nfo->uid ||
 		    g_hash_table_contains (covered_uids, nfo->uid))
 			continue;
 
@@ -4713,12 +4708,7 @@ e_cal_meta_backend_process_changes_sync (ECalMetaBackend *meta_backend,
 		ECalMetaBackendInfo *nfo = link->data;
 		GError *local_error = NULL;
 
-		if (!nfo || !nfo->uid) {
-			g_warn_if_reached ();
-			continue;
-		}
-
-		if (!*nfo->uid)
+		if (!nfo || !nfo->uid || !*nfo->uid)
 			continue;
 
 		success = ecmb_load_component_wrapper_sync (meta_backend, cal_cache, nfo->uid, nfo->object, nfo->extra, NULL, cancellable, &local_error);
