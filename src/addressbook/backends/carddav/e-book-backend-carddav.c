@@ -435,6 +435,29 @@ ebb_carddav_multiget_response_cb (EWebDAVSession *webdav,
 
 		g_free (address_data);
 		g_free (etag);
+	} else if (status_code == SOUP_STATUS_NOT_FOUND) {
+		GSList *link;
+
+		g_return_val_if_fail (href != NULL, FALSE);
+
+		for (link = *from_link; link; link = g_slist_next (link)) {
+			EBookMetaBackendInfo *nfo = link->data;
+
+			if (!nfo)
+				continue;
+
+			if (g_strcmp0 (nfo->extra, href) == 0) {
+				/* If the server returns data in the same order as it had been requested,
+				   then this speeds up lookup for the matching object. */
+				if (link == *from_link)
+					*from_link = g_slist_next (*from_link);
+
+				e_book_meta_backend_info_free (nfo);
+				link->data = NULL;
+
+				break;
+			}
+		}
 	}
 
 	return TRUE;
@@ -1068,6 +1091,12 @@ ebb_carddav_load_contact_sync (EBookMetaBackend *meta_backend,
 
 	if (local_error) {
 		ebb_carddav_check_credentials_error (bbdav, webdav, local_error);
+
+		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+			local_error->domain = E_BOOK_CLIENT_ERROR;
+			local_error->code = E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND;
+		}
+
 		g_propagate_error (error, local_error);
 	}
 
