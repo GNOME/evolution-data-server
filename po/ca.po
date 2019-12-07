@@ -5984,7 +5984,7 @@ msgstr "Notificació d'esdeveniments del calendari"
 
 #: ../src/libebackend/e-cache.c:754
 msgid "Out of memory"
-msgstr "Fora de memòria"
+msgstr "No hi ha prou memòria"
 
 #: ../src/libebackend/e-cache.c:946
 #, c-format
