@@ -7362,7 +7362,7 @@ msgstr "Llista de tasques"
 
 #: ../src/tools/list-sources/list-sources.c:151
 msgid "Mail Account"
-msgstr "Comptes de correu"
+msgstr "Compte de correu"
 
 #: ../src/tools/list-sources/list-sources.c:152
 msgid "Mail Transport"
