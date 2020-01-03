@@ -1,3 +1,12 @@
+Evolution-Data-Server 3.34.3 2020-01-03
+---------------------------------------
+
+Bug Fixes:
+	I#177 - DAV: Ignore 404 responses on content refresh (Milan Crha)
+
+Translations:
+	Yi-Jyun Pan (zh_TW)
+
 Evolution-Data-Server 3.34.2 2019-11-22
 ---------------------------------------
 
