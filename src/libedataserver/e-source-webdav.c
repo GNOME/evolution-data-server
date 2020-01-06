@@ -507,7 +507,8 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
+	  		G_PARAM_EXPLICIT_NOTIFY |
+	  		G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -522,6 +523,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -535,6 +537,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -548,6 +551,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -561,6 +565,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -574,6 +579,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -587,6 +593,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
 	g_object_class_install_property (
@@ -598,7 +605,8 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			"WebDAV service as a SoupURI",
 			SOUP_TYPE_URI,
 			G_PARAM_READWRITE |
-			G_PARAM_EXPLICIT_NOTIFY));
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
 		object_class,
@@ -611,6 +619,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 }
 
