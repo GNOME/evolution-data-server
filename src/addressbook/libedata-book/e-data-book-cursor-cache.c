@@ -356,7 +356,7 @@ e_data_book_cursor_cache_class_init (EDataBookCursorCacheClass *class)
 			"Book Cache",
 			"The EBookCache to use for queries",
 			E_TYPE_BOOK_CACHE,
-			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
 		object_class,
@@ -365,7 +365,7 @@ e_data_book_cursor_cache_class_init (EDataBookCursorCacheClass *class)
 			"cursor",
 			"Cursor",
 			"The EBookCacheCursor pointer",
-			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 }
 
 static void

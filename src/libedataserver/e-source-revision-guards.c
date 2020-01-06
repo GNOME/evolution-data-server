@@ -117,6 +117,7 @@ e_source_revision_guards_class_init (ESourceRevisionGuardsClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 }
 
