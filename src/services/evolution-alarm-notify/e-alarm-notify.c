@@ -139,8 +139,6 @@ e_alarm_notify_audio (EAlarmNotify *an,
 	if (!did_play)
 		gdk_beep ();
 
-	g_slist_free_full (attachments, g_object_unref);
-
 	return FALSE;
 }
 
@@ -456,12 +454,9 @@ e_alarm_notify_procedure (EAlarmNotify *an,
 	if (!result)
 		goto fallback;
 
-	g_slist_free_full (attachments, g_object_unref);
-
 	return FALSE;
 
  fallback:
-	g_slist_free_full (attachments, g_object_unref);
 
 	return e_alarm_notify_display (an, rd, alarm);
 }
