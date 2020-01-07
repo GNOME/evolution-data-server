@@ -112,7 +112,7 @@ e_data_book_cursor_sqlite_class_init (EDataBookCursorSqliteClass *class)
 			"ebsql", "EBookSqlite",
 			"The EBookSqlite to use for queries",
 			E_TYPE_BOOK_SQLITE,
-			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
 		object_class,
@@ -121,7 +121,7 @@ e_data_book_cursor_sqlite_class_init (EDataBookCursorSqliteClass *class)
 			"revision-key", "Revision Key",
 			"The key name to fetch the revision from the sqlite backend",
 			NULL,
-			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
 		object_class,
@@ -129,7 +129,7 @@ e_data_book_cursor_sqlite_class_init (EDataBookCursorSqliteClass *class)
 		g_param_spec_pointer (
 			"cursor", "Cursor",
 			"The EbSqlCursor pointer",
-			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 }
 
 static void

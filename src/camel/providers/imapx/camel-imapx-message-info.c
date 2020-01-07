@@ -288,7 +288,8 @@ camel_imapx_message_info_class_init (CamelIMAPXMessageInfoClass *class)
 			NULL,
 			0, G_MAXUINT32, 0,
 			G_PARAM_READWRITE |
-			G_PARAM_EXPLICIT_NOTIFY));
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * CamelIMAPXMessageInfo:server-user-flags
@@ -307,7 +308,8 @@ camel_imapx_message_info_class_init (CamelIMAPXMessageInfoClass *class)
 			NULL,
 			CAMEL_TYPE_NAMED_FLAGS,
 			G_PARAM_READWRITE |
-			G_PARAM_EXPLICIT_NOTIFY));
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * CamelIMAPXMessageInfo:server-user-tags
@@ -326,7 +328,8 @@ camel_imapx_message_info_class_init (CamelIMAPXMessageInfoClass *class)
 			NULL,
 			CAMEL_TYPE_NAME_VALUE_ARRAY,
 			G_PARAM_READWRITE |
-			G_PARAM_EXPLICIT_NOTIFY));
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void

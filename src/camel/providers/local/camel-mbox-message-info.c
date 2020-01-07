@@ -197,7 +197,8 @@ camel_mbox_message_info_class_init (CamelMboxMessageInfoClass *class)
 			NULL,
 			0, G_MAXINT64, 0,
 			G_PARAM_READWRITE |
-			G_PARAM_EXPLICIT_NOTIFY));
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void

@@ -208,7 +208,8 @@ e_module_class_init (EModuleClass *class)
 			"The filename of the module",
 			NULL,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
