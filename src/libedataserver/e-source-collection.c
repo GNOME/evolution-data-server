@@ -50,6 +50,7 @@ struct _ESourceCollectionPrivate {
 	gboolean calendar_enabled;
 	gboolean contacts_enabled;
 	gboolean mail_enabled;
+	gboolean allow_sources_rename;
 	gchar *calendar_url;
 	gchar *contacts_url;
 };
@@ -60,6 +61,7 @@ enum {
 	PROP_CONTACTS_ENABLED,
 	PROP_IDENTITY,
 	PROP_MAIL_ENABLED,
+	PROP_ALLOW_SOURCES_RENAME,
 	PROP_CALENDAR_URL,
 	PROP_CONTACTS_URL
 };
@@ -96,6 +98,12 @@ source_collection_set_property (GObject *object,
 
 		case PROP_MAIL_ENABLED:
 			e_source_collection_set_mail_enabled (
+				E_SOURCE_COLLECTION (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_ALLOW_SOURCES_RENAME:
+			e_source_collection_set_allow_sources_rename (
 				E_SOURCE_COLLECTION (object),
 				g_value_get_boolean (value));
 			return;
@@ -148,6 +156,13 @@ source_collection_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				e_source_collection_get_mail_enabled (
+				E_SOURCE_COLLECTION (object)));
+			return;
+
+		case PROP_ALLOW_SOURCES_RENAME:
+			g_value_set_boolean (
+				value,
+				e_source_collection_get_allow_sources_rename (
 				E_SOURCE_COLLECTION (object)));
 			return;
 
@@ -249,6 +264,20 @@ e_source_collection_class_init (ESourceCollectionClass *class)
 			"Mail Enabled",
 			"Whether mail resources are enabled",
 			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_ALLOW_SOURCES_RENAME,
+		g_param_spec_boolean (
+			"allow-sources-rename",
+			"Allow Sources Rename",
+			"Set to TRUE when the collection source allows user rename the child sources",
+			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -700,4 +729,47 @@ e_source_collection_set_contacts_url (ESourceCollection *extension,
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "contacts-url");
+}
+
+/**
+ * e_source_collection_get_allow_sources_rename:
+ * @extension: an #ESourceCollection
+ *
+ * Returns whether the collection backend allows a user to rename child
+ * sources. It is meant mainly for GUI. The default is %FALSE.
+ *
+ * Returns: whether the collection backend allows a user to rename child sources
+ *
+ * Since: 3.36
+ **/
+gboolean
+e_source_collection_get_allow_sources_rename (ESourceCollection *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_COLLECTION (extension), FALSE);
+
+	return extension->priv->allow_sources_rename;
+}
+
+/**
+ * e_source_collection_set_allow_sources_rename:
+ * @extension: an #ESourceCollection
+ * @allow_sources_rename: whether mail sources should be enabled
+ *
+ * Sets whether the collection backend allows a user to rename child
+ * sources. It is meant mainly for GUI. The default is %FALSE.
+ *
+ * Since: 3.36
+ **/
+void
+e_source_collection_set_allow_sources_rename (ESourceCollection *extension,
+					      gboolean allow_sources_rename)
+{
+	g_return_if_fail (E_IS_SOURCE_COLLECTION (extension));
+
+	if (extension->priv->allow_sources_rename == allow_sources_rename)
+		return;
+
+	extension->priv->allow_sources_rename = allow_sources_rename;
+
+	g_object_notify (G_OBJECT (extension), "allow-sources-rename");
 }

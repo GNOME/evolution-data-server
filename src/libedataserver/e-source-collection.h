@@ -114,6 +114,11 @@ gchar *		e_source_collection_dup_contacts_url
 void		e_source_collection_set_contacts_url
 						(ESourceCollection *extension,
 						 const gchar *contacts_url);
+gboolean	e_source_collection_get_allow_sources_rename
+						(ESourceCollection *extension);
+void		e_source_collection_set_allow_sources_rename
+						(ESourceCollection *extension,
+						 gboolean allow_sources_rename);
 
 G_END_DECLS
 
