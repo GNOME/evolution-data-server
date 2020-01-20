@@ -1404,7 +1404,7 @@ message_info_from_uid (CamelFolderSummary *summary,
 }
 
 /**
- * camel_folder_summary_get:
+ * camel_folder_summary_get: (virtual message_info_from_uid)
  * @summary: a #CamelFolderSummary object
  * @uid: a uid
  *
@@ -2449,7 +2449,7 @@ camel_folder_summary_add (CamelFolderSummary *summary,
 }
 
 /**
- * camel_folder_summary_info_new_from_headers:
+ * camel_folder_summary_info_new_from_headers: (virtual message_info_new_from_headers)
  * @summary: a #CamelFolderSummary object
  * @headers: rfc822 headers as #CamelNameValueArray
  *
@@ -2476,7 +2476,7 @@ camel_folder_summary_info_new_from_headers (CamelFolderSummary *summary,
 }
 
 /**
- * camel_folder_summary_info_new_from_parser:
+ * camel_folder_summary_info_new_from_parser: (virtual message_info_new_from_parser)
  * @summary: a #CamelFolderSummary object
  * @parser: a #CamelMimeParser object
  *
@@ -2555,7 +2555,7 @@ camel_folder_summary_info_new_from_parser (CamelFolderSummary *summary,
 }
 
 /**
- * camel_folder_summary_info_new_from_message:
+ * camel_folder_summary_info_new_from_message: (virtual message_info_new_from_message)
  * @summary: a #CamelFolderSummary object
  * @message: a #CamelMimeMessage object
  *
