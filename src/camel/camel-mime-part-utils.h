@@ -38,6 +38,22 @@ gboolean	camel_mime_part_construct_content_from_parser
 
 typedef struct _CamelMessageContentInfo CamelMessageContentInfo;
 
+/**
+ * CamelMessageContentInfoTraverseCallback:
+ * @ci: a #CamelMessageContentInfo
+ * @depth: the current depth
+ * @user_data: data passed to camel_message_content_info_traverse()
+ *
+ * This is the callback signature for camel_message_content_info_traverse().
+ *
+ * Returns: %TRUE to continue processing or %FALSE to stop it.
+ *
+ * Since: 3.36
+ **/
+typedef gboolean	(*CamelMessageContentInfoTraverseCallback)	(CamelMessageContentInfo *ci,
+									 gint depth,
+									 gpointer user_data);
+
 /* A tree of message content info structures
  * describe the content structure of the message (if it has any) */
 struct _CamelMessageContentInfo {
@@ -72,9 +88,7 @@ CamelMessageContentInfo *
 						(CamelMimePart *mime_part);
 gboolean	camel_message_content_info_traverse
 						(CamelMessageContentInfo *ci,
-						 gboolean (* func) (CamelMessageContentInfo *ci,
-								    gint depth,
-								    gpointer user_data),
+						 CamelMessageContentInfoTraverseCallback func,
 						 gpointer user_data);
 /* debugging functions */
 void		camel_message_content_info_dump	(CamelMessageContentInfo *ci,

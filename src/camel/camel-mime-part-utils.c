@@ -319,15 +319,20 @@ camel_message_content_info_new_from_headers (const CamelNameValueArray *headers)
 	return ci;
 }
 
-/* Calls the @func for each ci, including the top one. The @func can return TRUE to
-   continue processing or FALSE to stop it.
-   The function returns FALSE on error or when the @func returned FALSE, otherwise
-   it returns TRUE. */
+/**
+ * camel_message_content_info_traverse:
+ * @ci: a #CamelMessageContentInfo
+ * @func: (scope call): a #CamelMessageContentInfoTraverseCallback
+ * @user_data: user data passed to @func
+ *
+ * Calls the @func for each #CamelMessageContentInfo, including the top one.
+ * The @func can return %TRUE to continue processing or %FALSE to stop it.
+ *
+ * Returns: %FALSE on error or when the @func returned %FALSE, otherwise %TRUE
+ **/
 gboolean
 camel_message_content_info_traverse (CamelMessageContentInfo *ci,
-				     gboolean (* func) (CamelMessageContentInfo *ci,
-							gint depth,
-							gpointer user_data),
+				     CamelMessageContentInfoTraverseCallback func,
 				     gpointer user_data)
 {
 	CamelMessageContentInfo *next, *cur;
