@@ -129,6 +129,17 @@ typedef struct {
 	gboolean is_ssl;
 } CamelProviderPortEntry;
 
+/**
+ * CamelProviderAutoDetectFunc:
+ * @url: a #CamelURL
+ * @auto_detected: (out) (element-type utf8 utf8) (nullable): output
+ * #GHashTable of auto-detected values
+ * @error: return location for a #GError, or %NULL
+ *
+ * Function used in camel_provider_auto_detect().
+ *
+ * Returns: 0 on success or -1 on fail.
+ **/
 typedef gint (*CamelProviderAutoDetectFunc) (CamelURL *url, GHashTable **auto_detected, GError **error);
 
 typedef struct {
