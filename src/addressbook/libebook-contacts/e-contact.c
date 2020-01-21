@@ -37,6 +37,9 @@
 #include <string.h>
 #include <gio/gio.h>
 #include <glib/gi18n-lib.h>
+
+#include "camel/camel.h"
+
 #include "e-contact.h"
 #include "e-name-western.h"
 
@@ -2079,16 +2082,18 @@ e_contact_get_attributes_set (EContact *contact,
 	GList *l = NULL;
 	GList *attrs, *a;
 	gint ii;
-	EContactFieldInfo **infos;
+	GHashTable *field_names;
 
 	g_return_val_if_fail (contact && E_IS_CONTACT (contact), NULL);
 	g_return_val_if_fail (size > 0, NULL);
 	g_return_val_if_fail (size < E_CONTACT_FIELD_LAST, NULL);
 
-	infos = g_new0 (EContactFieldInfo *, size);
+	field_names = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
+
 	for (ii = 0; ii < size; ii++) {
 		g_return_val_if_fail (field_ids[ii] >= 1 && field_ids[ii] < E_CONTACT_FIELD_LAST, NULL);
-		infos[ii] = (EContactFieldInfo *) &field_info[field_ids[ii]];
+
+		g_hash_table_insert (field_names, (gpointer) field_info[field_ids[ii]].vcard_field_name, NULL);
 	}
 
 	attrs = e_vcard_get_attributes (E_VCARD (contact));
@@ -2099,15 +2104,11 @@ e_contact_get_attributes_set (EContact *contact,
 
 		name = e_vcard_attribute_get_name (attr);
 
-		for (ii = 0; ii < size; ii++) {
-			if (!g_ascii_strcasecmp (name, infos[ii]->vcard_field_name)) {
-				l = g_list_prepend (l, e_vcard_attribute_copy (attr));
-				break;
-			}
-		}
+		if (name && g_hash_table_contains (field_names, name))
+			l = g_list_prepend (l, e_vcard_attribute_copy (attr));
 	}
 
-	g_free (infos);
+	g_hash_table_destroy (field_names);
 
 	return g_list_reverse (l);
 }
