@@ -6497,7 +6497,7 @@ e_book_sqlite_class_init (EBookSqliteClass *class)
 		g_cclosure_marshal_generic,
 		G_TYPE_BOOLEAN, 6,
 		G_TYPE_POINTER,
-		G_TYPE_OBJECT,
+		E_TYPE_CONTACT,
 		G_TYPE_STRING,
 		G_TYPE_BOOLEAN,
 		G_TYPE_OBJECT,
@@ -6514,7 +6514,7 @@ e_book_sqlite_class_init (EBookSqliteClass *class)
 		G_TYPE_BOOLEAN, 4,
 		G_TYPE_POINTER,
 		G_TYPE_STRING,
-		G_TYPE_OBJECT,
+		G_TYPE_CANCELLABLE,
 		G_TYPE_POINTER);
 }
 
