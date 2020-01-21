@@ -3175,10 +3175,15 @@ remove_leading_zeros (gchar *number)
 	gchar *trimmed = NULL;
 	gchar *tmp = number;
 
-	g_return_val_if_fail (NULL != number, NULL);
+	if (!number)
+		return NULL;
 
 	while ('0' == *tmp)
 		tmp++;
+
+	if (tmp == number)
+		return number;
+
 	trimmed = g_strdup (tmp);
 	g_free (number);
 
