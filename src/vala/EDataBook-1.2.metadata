@@ -1,0 +1,6 @@
+BookSqlite.before_insert_contact#signal.p4 skip
+BookSqlite.before_remove_contact#signal.p2 skip
+DataBookCursor.get_position#virtual_method name="impl_get_position"
+DataBookCursor.load_locale#virtual_method name="impl_load_locale"
+DataBookCursor.set_alphabetic_index#virtual_method name="impl_set_alphabetic_index"
+DataBookCursor.set_sexp#virtual_method name="impl_set_sexp"

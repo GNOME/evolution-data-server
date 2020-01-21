@@ -4564,7 +4564,7 @@ e_cal_cache_class_init (ECalCacheClass *klass)
 		g_signal_accumulator_first_wins,
 		NULL,
 		g_cclosure_marshal_generic,
-		I_CAL_TYPE_COMPONENT, 1,
+		I_CAL_TYPE_TIMEZONE, 1,
 		G_TYPE_STRING);
 }
 

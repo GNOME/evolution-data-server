@@ -21,3 +21,5 @@ VCard.get_attribute nullable=true
 VCard.get_attribute_if_parsed nullable=true
 VCardAttribute.get_group nullable=true
 VCardAttribute.get_value nullable=true
+book_client_error_create skip
+book_client_error_to_string skip

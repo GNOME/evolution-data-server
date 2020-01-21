@@ -1,3 +1,5 @@
+*.*.cancellable default=null
+
 CipherValidity.sign skip
 CipherValidity.encrypt skip
 
@@ -9,24 +11,123 @@ Object.state_read#method skip
 Object.state_read.fp type="GLib.FileStream"
 Object.state_write#method skip
 Object.state_write.fp type="GLib.FileStream"
-Operation.pop_message skip
-Operation.progress skip
+Operation.push_message#signal name="pushed_message"
+Operation.push_message#function skip=false symbol_type="method" instance_idx=0 printf_format=true
+Operation.pop_message#function symbol_type="method" instance_idx=0
+Operation.progress#function symbol_type="method" instance_idx=0
+
+ContentDisposition.disposition unowned=false
+ContentDisposition.params type="Camel.HeaderParam"
+
+ContentType.type unowned=false
+ContentType.subtype unowned=false
+ContentType.params type="Camel.HeaderParam"
+
+CipherCertInfo.properties type_arguments="Camel.CipherCertInfoProperty"
+cipher_certinfo_get_property parent="Camel.CipherCertInfo" symbol_type="method" instance_idx=0 name="get_property"
+cipher_certinfo_set_property parent="Camel.CipherCertInfo" symbol_type="method" instance_idx=0 name="set_property"
+
+Cert.fingerprint unowned=false
+Cert.hostname unowned=false
+Cert.issuer unowned=false
+Cert.rawcert unowned=false
+Cert.subject unowned=false
 
 Session* skip=false
 SExp* skip=false
+SExp.* skip=false
+
+MimeFilter.new symbol_type="function"
+
+Folder.get_parent_store type="unowned Camel.Store"
+
+FolderInfo.display_name unowned=false
+FolderInfo.full_name unowned=false
+FolderInfo.child type="Camel.FolderInfo?"
+FolderInfo.next type="Camel.FolderInfo?"
+FolderInfo.parent type="unowned Camel.FolderInfo?"
+
+FolderQuotaInfo.name unowned=false
+FolderQuotaInfo.next type="Camel.FolderQuotaInfo?"
+
+FolderSummary.free_array skip
+FolderSummary.get_folder type="unowned Camel.Folder"
+FolderSummary.header_load.store type="Camel.Store"
 
 // Recursive structs are not allowed
-MessageContentInfo.next type="void*"
-MessageContentInfo.childs type="void*"
-MessageContentInfo.parent type="void*"
-SExpTerm.value.func.terms type="void*[]"
+MessageContentInfo.next type="Camel.MessageContentInfo?"
+MessageContentInfo.childs type="Camel.MessageContentInfo?"
+MessageContentInfo.parent type="unowned Camel.MessageContentInfo?"
+MessageContentInfo.type unowned=false
+MessageContentInfo.disposition unowned=false
+MessageContentInfo.id unowned=false
+MessageContentInfo.description unowned=false
+MessageContentInfo.encoding unowned=false
+
+SExpTerm.value.func.terms type="Camel.SExpTerm[]"
+HeaderParam.next type="Camel.HeaderParam?"
+header_param_list_decode type="Camel.HeaderParam?" parent="Camel.HeaderParam" name="decode"
 
 localtime_with_offset.tm type="Posix.tm"
 mktime_utc.tm type="Posix.tm"
 
+HeaderParam struct=false
+HeaderParam.name unowned=false
+HeaderParam.value unowned=false
+header_param parent="Camel.HeaderParam" symbol_type="method" instance_idx=0 name="get_value"
+header_param_list_format parent="Camel.HeaderParam" symbol_type="method" instance_idx=0 name="format"
+header_param_list_format_append parent="Camel.HeaderParam" symbol_type="method" instance_idx=1 name="format_append"
+header_param_list_free parent="Camel.HeaderParam" symbol_type="method" instance_idx=0 name="free" destroys_instance=true
+
 HeaderAddress.new_name#constructor name="with_name"
+HeaderAddress.name unowned=false
+HeaderAddress.next type="Camel.HeaderAddress?"
+HeaderAddress.v.addr unowned=false
+HeaderAddress.v.members type="Camel.HeaderAddress?"
+
+// They are already covered by FolderSummary.new_message_info_ or FolderSummary.get
+MessageInfo.new skip
+MessageInfo.new_from_headers skip
+MessageInfo.ref_summary type="Camel.FolderSummary?"
+MessageInfo.references type_arguments="uint64"
+
+MimeFilter.outreal unowned=false
+MimeFilter.backbuf unowned=false
+
+Provider.priv skip
+Provider.authtypes type_arguments="unowned Camel.ServiceAuthType"
+
+VeeFolder.add_vuid.mi_data type="Camel.VeeMessageInfoData"
+VeeFolder.remove_vuid.mi_data type="Camel.VeeMessageInfoData"
+
+SMIMEContext.describe_part.part type="Camel.MimePart"
+
+Trie.add skip=false
+Trie.search skip=false
+
+UrlScanner.add skip=false
+UrlScanner.scan skip=false
+
+NetworkService.new_connectable skip=false
+
+Folder.threaded_messages_dump parent="Camel.FolderThreadNode" symbol_type="method" instance_idx=0 name="dump"
+
+FolderSummary.summary_header_load name="header_load_impl"
+FolderSummary.summary_header_load.fir type="Camel.FIRecord"
+FolderSummary.summary_header_save name="header_save_impl" type="Camel.FIRecord"
+
+FolderThread.folder unowned=false
+FolderThread.node_chunks unowned=false
+FolderThread.summary type="GLib.GenericArray<Camel.MessageInfo>"
+FolderThread.tree type="Camel.FolderThreadNode"
+
+FolderThreadNode.next type="unowned Camel.FolderThreadNode?"
+FolderThreadNode.parent type="unowned Camel.FolderThreadNode?"
+FolderThreadNode.child type="unowned Camel.FolderThreadNode?"
 
 // FILE* are supported by Vala
+StoreSummary.* skip=false
+StoreSummary.store_info_load.file type="GLib.FileStream"
 StoreSummary.store_info_save.file type="GLib.FileStream"
 StoreSummary.summary_header_load.file type="GLib.FileStream"
 StoreSummary.summary_header_save.file type="GLib.FileStream"
@@ -37,6 +138,15 @@ CertDB.header_save.ostream type="GLib.FileStream"
 FilterDriver.set_logfile.logfile type="GLib.FileStream"
 
 FolderSummary.prepare_fetch_all#virtual_method name="prepare_fetch_all_v"
+
+VeeStore.get_unmatched_folder type="unowned Camel.VeeFolder"
+
+WeakRefGroup.get type="GLib.Object"
+WeakRefGroup.set.object type="owned GLib.Object"
+
+ServiceAuthType.authproto unowned=false
+ServiceAuthType.description unowned=false
+ServiceAuthType.name unowned=false
 
 // Abstract classes can't have creation methods
 Sasl.new symbol_type="function" name="for_service"

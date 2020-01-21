@@ -1,0 +1,2 @@
+Cache.before_put#virtual_method name="before_put_impl"
+Cache.before_remove#virtual_method name="before_remove_impl"

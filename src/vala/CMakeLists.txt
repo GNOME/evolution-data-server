@@ -78,7 +78,9 @@ set(vala_deps
 	posix
 )
 
-set(extra_vapigen_files)
+set(extra_vapigen_files
+	${CMAKE_CURRENT_SOURCE_DIR}/camel-${API_VERSION}-custom.vala
+)
 
 _build_vala_files(camel-${API_VERSION}
 	gir_fullname
