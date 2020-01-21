@@ -87,6 +87,9 @@ struct _ECalBackendFilePrivate {
 	GMutex refresh_lock;
 	/* set to TRUE to indicate thread should stop */
 	gboolean refresh_thread_stop;
+	/* set to TRUE when the refresh thread is running;
+	   it can happen that the refresh_cond is set, but the thread is gone */
+	gboolean refresh_thread_running;
 	/* condition for refreshing, not NULL when thread exists */
 	GCond *refresh_cond;
 	/* cond to know the refresh thread gone */
@@ -977,15 +980,24 @@ refresh_thread_func (gpointer data)
 
 	/* This returns a newly-created GFile. */
 	file = e_source_local_dup_custom_file (extension);
-	g_return_val_if_fail (G_IS_FILE (file), NULL);
+	if (!file) {
+		g_mutex_lock (&priv->refresh_lock);
+		priv->refresh_thread_running = FALSE;
+		g_cond_signal (priv->refresh_gone_cond);
+		g_mutex_unlock (&priv->refresh_lock);
+
+		return NULL;
+	}
 
 	info = g_file_query_info (
 		file, G_FILE_ATTRIBUTE_TIME_MODIFIED,
 		G_FILE_QUERY_INFO_NONE, NULL, NULL);
-	g_return_val_if_fail (info != NULL, NULL);
-
-	last_modified = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
-	g_object_unref (info);
+	if (info) {
+		last_modified = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+		g_object_unref (info);
+	} else {
+		last_modified = 0;
+	}
 
 	g_mutex_lock (&priv->refresh_lock);
 	while (!priv->refresh_thread_stop) {
@@ -1025,6 +1037,7 @@ refresh_thread_func (gpointer data)
 	}
 
 	g_object_unref (file);
+	priv->refresh_thread_running = FALSE;
 	g_cond_signal (priv->refresh_gone_cond);
 	g_mutex_unlock (&priv->refresh_lock);
 
@@ -1090,6 +1103,7 @@ prepare_refresh_data (ECalBackendFile *cbfile)
 
 		priv->refresh_cond = g_new0 (GCond, 1);
 		priv->refresh_gone_cond = g_new0 (GCond, 1);
+		priv->refresh_thread_running = TRUE;
 
 		thread = g_thread_new (NULL, refresh_thread_func, cbfile);
 		g_thread_unref (thread);
@@ -1116,7 +1130,10 @@ free_refresh_data (ECalBackendFile *cbfile)
 	if (priv->refresh_cond) {
 		priv->refresh_thread_stop = TRUE;
 		g_cond_signal (priv->refresh_cond);
-		g_cond_wait (priv->refresh_gone_cond, &priv->refresh_lock);
+
+		while (priv->refresh_thread_running) {
+			g_cond_wait (priv->refresh_gone_cond, &priv->refresh_lock);
+		}
 
 		g_cond_clear (priv->refresh_cond);
 		g_free (priv->refresh_cond);
