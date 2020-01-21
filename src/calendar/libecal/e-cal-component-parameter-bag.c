@@ -48,7 +48,7 @@ e_cal_component_parameter_bag_new (void)
 {
 	ECalComponentParameterBag *bag;
 
-	bag = g_new0 (ECalComponentParameterBag, 1);
+	bag = g_slice_new0 (ECalComponentParameterBag);
 	bag->parameters = g_ptr_array_new_with_free_func (g_object_unref);
 
 	return bag;
@@ -127,7 +127,7 @@ e_cal_component_parameter_bag_free (gpointer bag)
 
 	if (bg) {
 		g_ptr_array_unref (bg->parameters);
-		g_free (bg);
+		g_slice_free (ECalComponentParameterBag, bg);
 	}
 }
 

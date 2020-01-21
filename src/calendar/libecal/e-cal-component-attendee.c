@@ -65,7 +65,7 @@ e_cal_component_attendee_new (void)
 {
 	ECalComponentAttendee *attendee;
 
-	attendee = g_new0 (ECalComponentAttendee, 1);
+	attendee = g_slice_new0 (ECalComponentAttendee);
 	attendee->cutype = I_CAL_CUTYPE_NONE;
 	attendee->role = I_CAL_ROLE_REQPARTICIPANT;
 	attendee->partstat = I_CAL_PARTSTAT_NEEDSACTION;
@@ -218,7 +218,7 @@ e_cal_component_attendee_free (gpointer attendee)
 		g_free (att->sentby);
 		g_free (att->cn);
 		g_free (att->language);
-		g_free (att);
+		g_slice_free (ECalComponentAttendee, att);
 	}
 }
 

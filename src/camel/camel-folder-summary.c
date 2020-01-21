@@ -1599,7 +1599,7 @@ cfs_free_weakref (gpointer ptr)
 	if (weakref) {
 		g_weak_ref_set (weakref, NULL);
 		g_weak_ref_clear (weakref);
-		g_free (weakref);
+		g_slice_free (GWeakRef, weakref);
 	}
 }
 
@@ -1694,7 +1694,7 @@ cfs_schedule_info_release_timer (CamelFolderSummary *summary)
 		if (can_do) {
 			GWeakRef *weakref;
 
-			weakref = g_new0 (GWeakRef, 1);
+			weakref = g_slice_new0 (GWeakRef);
 			g_weak_ref_init (weakref, summary);
 
 			summary->priv->timeout_handle = g_timeout_add_seconds_full (

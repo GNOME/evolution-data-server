@@ -530,7 +530,7 @@ e_cal_client_tzlookup_icalcomp_data_new (ICalComponent *icomp)
 
 	g_return_val_if_fail (I_CAL_IS_COMPONENT (icomp), NULL);
 
-	lookup_data = g_new0 (ECalClientTzlookupICalCompData, 1);
+	lookup_data = g_slice_new0 (ECalClientTzlookupICalCompData);
 	lookup_data->icomp = g_object_ref (icomp);
 	lookup_data->tzcache = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 
@@ -575,7 +575,7 @@ e_cal_client_tzlookup_icalcomp_data_free (ECalClientTzlookupICalCompData *lookup
 	if (lookup_data) {
 		g_clear_object (&lookup_data->icomp);
 		g_hash_table_destroy (lookup_data->tzcache);
-		g_free (lookup_data);
+		g_slice_free (ECalClientTzlookupICalCompData, lookup_data);
 	}
 }
 

@@ -71,12 +71,24 @@ inode_equal (gconstpointer a,
 	return v1->inode == v2->inode && v1->dnode == v2->dnode;
 }
 
-static void
-inode_free (gpointer k,
-            gpointer v,
-            gpointer d)
+static struct _inode *
+inode_new (const struct _inode *src)
 {
-	g_free (k);
+	struct _inode *inode;
+
+	inode = g_slice_new0 (struct _inode);
+	if (src) {
+		inode->dnode = src->dnode;
+		inode->inode = src->inode;
+	}
+
+	return inode;
+}
+
+static void
+inode_free (gpointer ptr)
+{
+	g_slice_free (struct _inode, ptr);
 }
 
 static gboolean
@@ -252,9 +264,8 @@ scan_dir (CamelStore *store,
 
 			if (g_hash_table_lookup (visited, &in) == NULL) {
 #ifndef G_OS_WIN32
-				struct _inode *inew = g_new (struct _inode, 1);
+				struct _inode *inew = inode_new (&in);
 
-				*inew = in;
 				g_hash_table_insert (visited, inew, inew);
 #endif
 				if ((fi->child = scan_dir (store, visited, fi, path, fi->full_name, flags, error)))
@@ -468,16 +479,15 @@ mbox_store_get_folder_info_sync (CamelStore *store,
 			return NULL;
 		}
 
-		visited = g_hash_table_new (inode_hash, inode_equal);
+		visited = g_hash_table_new_full (inode_hash, inode_equal, inode_free, NULL);
 #ifndef G_OS_WIN32
-		inode = g_malloc0 (sizeof (*inode));
+		inode = inode_new (NULL);
 		inode->dnode = st.st_dev;
 		inode->inode = st.st_ino;
 
 		g_hash_table_insert (visited, inode, inode);
 #endif
 		fi = scan_dir (store, visited, NULL, path, NULL, flags, error);
-		g_hash_table_foreach (visited, inode_free, NULL);
 		g_hash_table_destroy (visited);
 		g_free (path);
 
@@ -496,7 +506,7 @@ mbox_store_get_folder_info_sync (CamelStore *store,
 		g_free (test_if_subdir);
 	}
 
-	visited = g_hash_table_new (inode_hash, inode_equal);
+	visited = g_hash_table_new_full (inode_hash, inode_equal, inode_free, NULL);
 
 	basename = g_path_get_basename (top);
 
@@ -522,7 +532,6 @@ mbox_store_get_folder_info_sync (CamelStore *store,
 
 	g_free (subdir);
 
-	g_hash_table_foreach (visited, inode_free, NULL);
 	g_hash_table_destroy (visited);
 	g_free (path);
 

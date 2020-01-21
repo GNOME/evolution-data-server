@@ -522,7 +522,7 @@ async_context_new (ESource *source,
 {
 	AsyncContext *async_context;
 
-	async_context = g_new0 (AsyncContext, 1);
+	async_context = g_slice_new0 (AsyncContext);
 	async_context->source = g_object_ref (source);
 	async_context->permanently = permanently;
 	if (credentials)
@@ -539,7 +539,7 @@ async_context_free (gpointer ptr)
 	if (async_context) {
 		g_clear_object (&async_context->source);
 		e_named_parameters_free (async_context->credentials);
-		g_free (async_context);
+		g_slice_free (AsyncContext, async_context);
 	}
 }
 

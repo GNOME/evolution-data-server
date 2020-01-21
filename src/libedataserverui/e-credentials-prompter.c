@@ -105,7 +105,7 @@ process_prompt_data_free (gpointer ptr)
 		g_clear_object (&ppd->cred_source);
 		g_free (ppd->error_text);
 		e_named_parameters_free (ppd->credentials);
-		g_free (ppd);
+		g_slice_free (ProcessPromptData, ppd);
 	}
 }
 
@@ -124,7 +124,7 @@ lookup_source_details_data_free (gpointer ptr)
 		g_clear_object (&data->auth_source);
 		g_clear_object (&data->cred_source);
 		e_named_parameters_free (data->credentials);
-		g_free (data);
+		g_slice_free (LookupSourceDetailsData, data);
 	}
 }
 
@@ -160,7 +160,7 @@ credentials_prompter_lookup_source_details_thread (GTask *task,
 	} else {
 		LookupSourceDetailsData *data;
 
-		data = g_new0 (LookupSourceDetailsData, 1);
+		data = g_slice_new0 (LookupSourceDetailsData);
 		data->auth_source = g_object_ref (source);
 		data->cred_source = g_object_ref (cred_source ? cred_source : source); /* always set both, for simplicity */
 		data->credentials = credentials; /* NULL for no credentials available */
@@ -263,7 +263,7 @@ credentials_prompt_data_free (gpointer ptr)
 
 		g_clear_object (&data->source);
 		g_free (data->error_text);
-		g_free (data);
+		g_slice_free (CredentialsPromptData, data);
 	}
 }
 
@@ -280,10 +280,9 @@ credentials_result_data_free (gpointer ptr)
 	if (data) {
 		g_clear_object (&data->source);
 		e_named_parameters_free (data->credentials);
-		g_free (data);
+		g_slice_free (CredentialsResultData, data);
 	}
 }
-
 
 static void
 credentials_prompter_maybe_process_next_prompt (ECredentialsPrompter *prompter)
@@ -445,7 +444,7 @@ e_credentials_prompter_manage_impl_prompt (ECredentialsPrompter *prompter,
 	} else {
 		ProcessPromptData *ppd;
 
-		ppd = g_new0 (ProcessPromptData, 1);
+		ppd = g_slice_new0 (ProcessPromptData);
 		ppd->prompter = e_weak_ref_new (prompter);
 		ppd->prompter_impl = g_object_ref (prompter_impl);
 		ppd->auth_source = g_object_ref (auth_source);
@@ -1630,7 +1629,7 @@ e_credentials_prompter_prompt (ECredentialsPrompter *prompter,
 	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER (prompter));
 	g_return_if_fail (E_IS_SOURCE (source));
 
-	prompt_data = g_new0 (CredentialsPromptData, 1);
+	prompt_data = g_slice_new0 (CredentialsPromptData);
 	prompt_data->source = g_object_ref (source);
 	prompt_data->error_text = g_strdup (error_text);
 	prompt_data->flags = flags;
@@ -1738,7 +1737,7 @@ e_credentials_prompter_complete_prompt_call (ECredentialsPrompter *prompter,
 	} else {
 		CredentialsResultData *result;
 
-		result = g_new0 (CredentialsResultData, 1);
+		result = g_slice_new0 (CredentialsResultData);
 		result->source = g_object_ref (source);
 		result->credentials = e_named_parameters_new_clone (credentials);
 

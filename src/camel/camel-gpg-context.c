@@ -105,7 +105,7 @@ gpg_recipients_data_free (gpointer ptr)
 	if (rd) {
 		g_free (rd->keyid);
 		g_free (rd->known_key_data);
-		g_free (rd);
+		g_slice_free (GpgRecipientsData, rd);
 	}
 }
 
@@ -212,7 +212,7 @@ gpg_ctx_new (CamelCipherContext *context,
 
 	session = camel_cipher_context_get_session (context);
 
-	gpg = g_new (struct _GpgCtx, 1);
+	gpg = g_slice_new0 (struct _GpgCtx);
 	gpg->mode = GPG_CTX_MODE_SIGN;
 	gpg->session = g_object_ref (session);
 	gpg->cancellable = cancellable;
@@ -382,7 +382,7 @@ gpg_ctx_add_recipient (struct _GpgCtx *gpg,
 		safe_keyid = g_strdup (keyid);
 	}
 
-	rd = g_new0 (GpgRecipientsData, 1);
+	rd = g_slice_new0 (GpgRecipientsData);
 	rd->keyid = safe_keyid;
 	rd->known_key_data = g_strdup (known_key_data);
 
@@ -548,7 +548,7 @@ gpg_ctx_free (struct _GpgCtx *gpg)
 	if (gpg->decrypt_extra_text)
 		g_string_free (gpg->decrypt_extra_text, TRUE);
 
-	g_free (gpg);
+	g_slice_free (struct _GpgCtx, gpg);
 }
 
 static const gchar *

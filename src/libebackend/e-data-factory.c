@@ -129,7 +129,7 @@ data_factory_spawn_subprocess_backend_thread_data_new (EDataFactory *data_factor
 {
 	DataFactorySpawnSubprocessBackendThreadData *data;
 
-	data = g_new0 (DataFactorySpawnSubprocessBackendThreadData, 1);
+	data = g_slice_new0 (DataFactorySpawnSubprocessBackendThreadData);
 	data->data_factory = g_object_ref (data_factory);
 	data->invocation = g_object_ref (invocation);
 	data->uid = g_strdup (uid);
@@ -149,7 +149,7 @@ data_factory_spawn_subprocess_backend_thread_data_free (DataFactorySpawnSubproce
 		g_free (data->extension_name);
 		g_free (data->subprocess_path);
 
-		g_free (data);
+		g_slice_free (DataFactorySpawnSubprocessBackendThreadData, data);
 	}
 }
 
@@ -168,7 +168,7 @@ data_factory_subprocess_helper_new (EDBusSubprocessBackend *proxy,
 {
 	DataFactorySubprocessHelper *helper;
 
-	helper = g_new0 (DataFactorySubprocessHelper, 1);
+	helper = g_slice_new0 (DataFactorySubprocessHelper);
 	helper->proxy = g_object_ref (proxy);
 	helper->factory_name = g_strdup (factory_name);
 	helper->bus_name = g_strdup (bus_name);
@@ -184,7 +184,7 @@ data_factory_subprocess_helper_free (DataFactorySubprocessHelper *helper)
 		g_free (helper->factory_name);
 		g_free (helper->bus_name);
 
-		g_free (helper);
+		g_slice_free (DataFactorySubprocessHelper, helper);
 	}
 }
 
@@ -199,7 +199,7 @@ opened_backend_data_new (EBackend *backend, /* assumes ownership of 'backend' */
 {
 	OpenedBackendData *obd;
 
-	obd = g_new0 (OpenedBackendData, 1);
+	obd = g_slice_new0 (OpenedBackendData);
 	obd->backend = backend;
 	obd->object_path = g_strdup (object_path);
 
@@ -214,7 +214,7 @@ opened_backend_data_free (gpointer ptr)
 	if (obd) {
 		g_clear_object (&obd->backend);
 		g_free (obd->object_path);
-		g_free (obd);
+		g_slice_free (OpenedBackendData, obd);
 	}
 }
 
@@ -289,7 +289,7 @@ data_factory_subprocess_data_new (EDataFactory *data_factory,
 {
 	DataFactorySubprocessData *sd;
 
-	sd = g_new0 (DataFactorySubprocessData, 1);
+	sd = g_slice_new0 (DataFactorySubprocessData);
 	sd->data_factory = g_object_ref (data_factory);
 	sd->invocation = g_object_ref (invocation);
 	sd->uid = g_strdup (uid);
@@ -319,7 +319,7 @@ data_factory_subprocess_data_free (DataFactorySubprocessData *sd)
 		g_free (sd->module_filename);
 		g_free (sd->subprocess_helpers_hash_key);
 
-		g_free (sd);
+		g_slice_free (DataFactorySubprocessData, sd);
 	}
 }
 

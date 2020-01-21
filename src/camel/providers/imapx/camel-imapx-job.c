@@ -183,7 +183,7 @@ camel_imapx_job_new (guint32 job_kind,
 
 	g_return_val_if_fail (run_sync != NULL, NULL);
 
-	job = g_new0 (CamelIMAPXJob, 1);
+	job = g_slice_new0 (CamelIMAPXJob);
 	job->ref_count = 1;
 	job->job_kind = job_kind;
 	job->mailbox = mailbox ? g_object_ref (mailbox) : NULL;
@@ -230,7 +230,7 @@ camel_imapx_job_unref (CamelIMAPXJob *job)
 
 		job->ref_count = 0xdeadbeef;
 
-		g_free (job);
+		g_slice_free (CamelIMAPXJob, job);
 	}
 }
 

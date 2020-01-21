@@ -186,6 +186,12 @@ typedef struct _MessageTransferData {
 	GPtrArray *move_uids;
 } MessageTransferData;
 
+static MessageTransferData *
+message_transfer_data_new (void)
+{
+	return g_slice_new0 (MessageTransferData);
+}
+
 static void
 message_transfer_data_free (gpointer ptr)
 {
@@ -196,7 +202,7 @@ message_transfer_data_free (gpointer ptr)
 			g_ptr_array_free (mtd->copy_uids, TRUE);
 		if (mtd->move_uids)
 			g_ptr_array_free (mtd->move_uids, TRUE);
-		g_free (mtd);
+		g_slice_free (MessageTransferData, mtd);
 	}
 }
 
@@ -219,7 +225,7 @@ filter_driver_add_to_transfers (CamelFilterDriver *driver,
 	mtd = g_hash_table_lookup (driver->priv->transfers, destination);
 
 	if (!mtd) {
-		mtd = g_new0 (MessageTransferData, 1);
+		mtd = message_transfer_data_new ();
 		g_hash_table_insert (driver->priv->transfers, g_object_ref (destination), mtd);
 	}
 

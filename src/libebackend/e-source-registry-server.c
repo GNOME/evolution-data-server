@@ -472,7 +472,7 @@ file_event_data_new (GFile *file,
 {
 	FileEventData *fed;
 
-	fed = g_new0 (FileEventData, 1);
+	fed = g_slice_new0 (FileEventData);
 	fed->file = g_object_ref (file);
 	fed->event_type = event_type;
 
@@ -486,7 +486,7 @@ file_event_data_free (gpointer ptr)
 
 	if (fed) {
 		g_clear_object (&fed->file);
-		g_free (fed);
+		g_slice_free (FileEventData, fed);
 	}
 }
 

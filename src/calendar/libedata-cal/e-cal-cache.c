@@ -127,7 +127,7 @@ e_cal_cache_offline_change_new (const gchar *uid,
 
 	g_return_val_if_fail (uid != NULL, NULL);
 
-	change = g_new0 (ECalCacheOfflineChange, 1);
+	change = g_slice_new0 (ECalCacheOfflineChange);
 	change->uid = g_strdup (uid);
 	change->rid = g_strdup (rid);
 	change->revision = g_strdup (revision);
@@ -175,7 +175,7 @@ e_cal_cache_offline_change_free (gpointer change)
 		g_free (chng->rid);
 		g_free (chng->revision);
 		g_free (chng->object);
-		g_free (chng);
+		g_slice_free (ECalCacheOfflineChange, chng);
 	}
 }
 
@@ -204,7 +204,7 @@ e_cal_cache_search_data_new (const gchar *uid,
 	g_return_val_if_fail (uid != NULL, NULL);
 	g_return_val_if_fail (object != NULL, NULL);
 
-	data = g_new0 (ECalCacheSearchData, 1);
+	data = g_slice_new0 (ECalCacheSearchData);
 	data->uid = g_strdup (uid);
 	data->rid = (rid && *rid) ? g_strdup (rid) : NULL;
 	data->object = g_strdup (object);
@@ -251,7 +251,7 @@ e_cal_cache_search_data_free (gpointer ptr)
 		g_free (data->rid);
 		g_free (data->object);
 		g_free (data->extra);
-		g_free (data);
+		g_slice_free (ECalCacheSearchData, data);
 	}
 }
 
@@ -1928,7 +1928,7 @@ timezone_migration_data_free (gpointer ptr)
 
 	if (tmd) {
 		g_clear_object (&tmd->zone);
-		g_free (tmd);
+		g_slice_free (TimezoneMigrationData, tmd);
 	}
 }
 
@@ -1991,7 +1991,7 @@ ecc_count_timezones_in_icalcomp_cb (ICalParameter *param,
 			zone = e_cal_util_copy_timezone (zone);
 
 		if (zone) {
-			tmd = g_new0 (TimezoneMigrationData, 1);
+			tmd = g_slice_new0 (TimezoneMigrationData);
 			tmd->is_deref = !ctd->is_inc;
 			tmd->refs = 1;
 			tmd->zone = zone;
@@ -2101,7 +2101,7 @@ e_cal_cache_fill_tmd_cb (ECache *cache,
 		if (zone) {
 			TimezoneMigrationData *tmd;
 
-			tmd = g_new0 (TimezoneMigrationData, 1);
+			tmd = g_slice_new0 (TimezoneMigrationData);
 			tmd->zone = zone;
 			tmd->refs = 0;
 

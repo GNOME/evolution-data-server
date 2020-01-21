@@ -63,7 +63,7 @@ e_webdav_discover_split_resources (WebDAVDiscoverData *wdd,
 			    (resource->supports & wdd->only_supports) == 0)
 				continue;
 
-			discovered = g_new0 (EWebDAVDiscoveredSource, 1);
+			discovered = g_slice_new0 (EWebDAVDiscoveredSource);
 			discovered->href = g_strdup (resource->href);
 			discovered->supports = resource->supports;
 			discovered->display_name = g_strdup (resource->display_name);
@@ -362,7 +362,7 @@ e_webdav_discover_context_new (ESource *source,
 {
 	EWebDAVDiscoverContext *context;
 
-	context = g_new0 (EWebDAVDiscoverContext, 1);
+	context = g_slice_new0 (EWebDAVDiscoverContext);
 	context->source = g_object_ref (source);
 	context->url_use_path = g_strdup (url_use_path);
 	context->only_supports = only_supports;
@@ -391,7 +391,7 @@ e_webdav_discover_context_free (gpointer ptr)
 	g_free (context->out_certificate_pem);
 	e_webdav_discover_free_discovered_sources (context->out_discovered_sources);
 	g_slist_free_full (context->out_calendar_user_addresses, g_free);
-	g_free (context);
+	g_slice_free (EWebDAVDiscoverContext, context);
 }
 
 static void
@@ -404,7 +404,7 @@ e_webdav_discover_source_free (gpointer ptr)
 		g_free (discovered_source->display_name);
 		g_free (discovered_source->description);
 		g_free (discovered_source->color);
-		g_free (discovered_source);
+		g_slice_free (EWebDAVDiscoveredSource, discovered_source);
 	}
 }
 

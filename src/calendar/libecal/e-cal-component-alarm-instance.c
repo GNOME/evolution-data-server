@@ -66,7 +66,7 @@ e_cal_component_alarm_instance_new (const gchar *uid,
 
 	g_return_val_if_fail (uid != NULL, NULL);
 
-	instance = g_new0 (ECalComponentAlarmInstance, 1);
+	instance = g_slice_new0 (ECalComponentAlarmInstance);
 	instance->uid = g_strdup (uid);
 	instance->instance_time = instance_time;
 	instance->occur_start = occur_start;
@@ -114,7 +114,7 @@ e_cal_component_alarm_instance_free (gpointer instance)
 
 	if (instnc) {
 		g_free (instnc->uid);
-		g_free (instnc);
+		g_slice_free (ECalComponentAlarmInstance, instnc);
 	}
 }
 

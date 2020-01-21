@@ -116,7 +116,7 @@ camel_trie_new (gboolean icase)
 {
 	CamelTrie *trie;
 
-	trie = g_new (CamelTrie, 1);
+	trie = g_slice_new (CamelTrie);
 	trie->root.next = NULL;
 	trie->root.fail = NULL;
 	trie->root.match = NULL;
@@ -145,7 +145,7 @@ camel_trie_free (CamelTrie *trie)
 	g_ptr_array_free (trie->fail_states, TRUE);
 	camel_memchunk_destroy (trie->match_chunks);
 	camel_memchunk_destroy (trie->state_chunks);
-	g_free (trie);
+	g_slice_free (CamelTrie, trie);
 }
 
 static struct _trie_match *

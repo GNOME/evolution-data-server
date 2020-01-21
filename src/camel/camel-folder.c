@@ -4263,7 +4263,7 @@ uid_index_pair_free (gpointer ptr)
 		g_ptr_array_unref (uip->uids);
 		if (uip->indexes)
 			g_ptr_array_unref (uip->indexes);
-		g_free (uip);
+		g_slice_free (UidIndexPair, uip);
 	}
 }
 
@@ -4358,7 +4358,7 @@ camel_folder_transfer_messages_to_sync (CamelFolder *source,
 
 				uip = g_hash_table_lookup (todo, folder);
 				if (!uip) {
-					uip = g_new0 (UidIndexPair, 1);
+					uip = g_slice_new0 (UidIndexPair);
 					uip->uids = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
 					if (transferred_uids)
 						uip->indexes = g_ptr_array_new ();

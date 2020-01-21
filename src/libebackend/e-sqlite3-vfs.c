@@ -87,7 +87,7 @@ sync_request_thread_cb (gpointer task_data,
 	g_mutex_unlock (&sync_data->cFile->pending_syncs_lock);
 
 	sync_op = sync_data->sync_op;
-	g_free (sync_data);
+	g_slice_free (struct SyncRequestData, sync_data);
 
 	if (sync_op)
 		e_flag_set (sync_op);
@@ -116,7 +116,7 @@ sync_push_request (ESqlite3File *cFile,
 	if (wait_for_finish)
 		sync_op = e_flag_new ();
 
-	data = g_new0 (struct SyncRequestData, 1);
+	data = g_slice_new0 (struct SyncRequestData);
 	data->cFile = cFile;
 	data->flags = cFile->flags;
 	data->sync_op = sync_op;

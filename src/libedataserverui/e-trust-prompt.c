@@ -455,7 +455,7 @@ save_source_data_free (gpointer ptr)
 
 	if (data) {
 		g_clear_error (&data->error);
-		g_free (data);
+		g_slice_free (SaveSourceData, data);
 	}
 }
 
@@ -568,7 +568,7 @@ e_trust_prompt_run_for_source (GtkWindow *parent,
 	if (e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND))
 		extension_webdav = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 
-	save_data = g_new0 (SaveSourceData, 1);
+	save_data = g_slice_new0 (SaveSourceData);
 	save_data->response = E_TRUST_PROMPT_RESPONSE_UNKNOWN;
 	save_data->call_save = FALSE;
 

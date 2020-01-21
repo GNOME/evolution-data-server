@@ -32,18 +32,17 @@
 #include <locale.h>
 #include <string.h>
 
-typedef struct _SearchContext SearchContext;
 typedef gboolean (*CompareFunc) (const gchar *, const gchar *, const gchar *);
+
+typedef struct _SearchContext {
+	EContact *contact;
+} SearchContext;
 
 struct _EBookBackendSExpPrivate {
 	ESExp *search_sexp;
 	gchar *text;
-	SearchContext *search_context;
+	SearchContext search_context;
 	GRecMutex search_context_lock;
-};
-
-struct _SearchContext {
-	EContact *contact;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (EBookBackendSExp, e_book_backend_sexp, G_TYPE_OBJECT)
@@ -1085,7 +1084,6 @@ book_backend_sexp_finalize (GObject *object)
 
 	g_object_unref (priv->search_sexp);
 	g_free (priv->text);
-	g_free (priv->search_context);
 
 	g_rec_mutex_clear (&priv->search_context_lock);
 
@@ -1106,7 +1104,6 @@ static void
 e_book_backend_sexp_init (EBookBackendSExp *sexp)
 {
 	sexp->priv = e_book_backend_sexp_get_instance_private (sexp);
-	sexp->priv->search_context = g_new (SearchContext, 1);
 
 	g_rec_mutex_init (&sexp->priv->search_context_lock);
 }
@@ -1157,13 +1154,13 @@ e_book_backend_sexp_new (const gchar *text)
 				sexp->priv->search_sexp, 0,
 				symbols[ii].name,
 				(ESExpIFunc *) symbols[ii].func,
-				sexp->priv->search_context);
+				&(sexp->priv->search_context));
 		} else {
 			e_sexp_add_function (
 				sexp->priv->search_sexp, 0,
 				symbols[ii].name,
 				symbols[ii].func,
-				sexp->priv->search_context);
+				&(sexp->priv->search_context));
 		}
 	}
 
@@ -1219,13 +1216,13 @@ e_book_backend_sexp_match_contact (EBookBackendSExp *sexp,
 
 	e_book_backend_sexp_lock (sexp);
 
-	sexp->priv->search_context->contact = g_object_ref (contact);
+	sexp->priv->search_context.contact = g_object_ref (contact);
 
 	r = e_sexp_eval (sexp->priv->search_sexp);
 
 	retval = (r && r->type == ESEXP_RES_BOOL && r->value.boolean);
 
-	g_object_unref (sexp->priv->search_context->contact);
+	g_object_unref (sexp->priv->search_context.contact);
 
 	e_sexp_result_free (sexp->priv->search_sexp, r);
 

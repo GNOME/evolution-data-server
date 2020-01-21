@@ -77,7 +77,7 @@ e_cal_component_alarm_repeat_new_seconds (gint repetitions,
 {
 	ECalComponentAlarmRepeat *repeat;
 
-	repeat = g_new0 (ECalComponentAlarmRepeat, 1);
+	repeat = g_slice_new0 (ECalComponentAlarmRepeat);
 	repeat->repetitions = repetitions;
 	repeat->interval = i_cal_duration_new_from_int (interval_seconds);
 
@@ -119,7 +119,7 @@ e_cal_component_alarm_repeat_free (gpointer repeat)
 
 	if (rpt) {
 		g_clear_object (&rpt->interval);
-		g_free (rpt);
+		g_slice_free (ECalComponentAlarmRepeat, rpt);
 	}
 }
 

@@ -243,7 +243,7 @@ reinvoke_credentials_required_data_free (gpointer ptr)
 		g_free (data->arg_certificate_errors);
 		g_free (data->arg_dbus_error_name);
 		g_free (data->arg_dbus_error_message);
-		g_free (data);
+		g_slice_free (ReinvokeCredentialsRequiredData, data);
 	}
 }
 
@@ -307,7 +307,7 @@ server_side_source_invoke_credentials_required_cb (EDBusSource *dbus_interface,
 			source->priv->pending_credentials_lookup = g_object_ref (cancellable);
 			g_mutex_unlock (&source->priv->pending_credentials_lookup_lock);
 
-			data = g_new0 (ReinvokeCredentialsRequiredData, 1);
+			data = g_slice_new0 (ReinvokeCredentialsRequiredData);
 			data->source = g_object_ref (source);
 			data->arg_reason = g_strdup (arg_reason);
 			data->arg_certificate_pem = g_strdup (arg_certificate_pem);

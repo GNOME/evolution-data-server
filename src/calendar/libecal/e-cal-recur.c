@@ -106,7 +106,7 @@ e_instance_time_new (const ICalTime *tt,
 	if (!tt)
 		return NULL;
 
-	it = g_new0 (EInstanceTime, 1);
+	it = g_slice_new0 (EInstanceTime);
 
 	it->tt = i_cal_time_clone (tt);
 	it->duration_set = duration && !i_cal_duration_is_null_duration (duration);
@@ -135,7 +135,7 @@ e_instance_time_free (gpointer ptr)
 
 	if (it) {
 		g_clear_object (&it->tt);
-		g_free (it);
+		g_slice_free (EInstanceTime, it);
 	}
 }
 
@@ -1782,7 +1782,7 @@ e_cal_recur_from_icalproperty (ICalProperty *prop,
 
 	g_return_val_if_fail (prop != NULL, NULL);
 
-	r = g_new (ECalRecurrence, 1);
+	r = g_slice_new0 (ECalRecurrence);
 
 	if (exception) {
 		ir = i_cal_property_get_exrule (prop);
@@ -1918,7 +1918,7 @@ e_cal_recur_free (ECalRecurrence *r)
 	g_list_free (r->bysecond);
 	g_list_free (r->bysetpos);
 
-	g_free (r);
+	g_slice_free (ECalRecurrence, r);
 }
 
 /* Generates one year's worth of recurrence instances.  Returns TRUE if all the

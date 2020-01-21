@@ -56,7 +56,7 @@ e_operation_pool_new (guint max_threads,
 		return NULL;
 	}
 
-	pool = g_new0 (EOperationPool, 1);
+	pool = g_slice_new0 (EOperationPool);
 	pool->pool = thread_pool;
 	g_mutex_init (&pool->ops_lock);
 	pool->ops = g_hash_table_new (g_direct_hash, g_direct_equal);
@@ -84,7 +84,7 @@ e_operation_pool_free (EOperationPool *pool)
 	g_thread_pool_free (pool->pool, FALSE, FALSE);
 	g_mutex_clear (&pool->ops_lock);
 	g_hash_table_destroy (pool->ops);
-	g_free (pool);
+	g_slice_free (EOperationPool, pool);
 }
 
 /**

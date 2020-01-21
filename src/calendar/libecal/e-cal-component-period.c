@@ -61,7 +61,7 @@ e_cal_component_period_new_datetime (const ICalTime *start,
 
 	g_return_val_if_fail (I_CAL_IS_TIME (start), NULL);
 
-	period = g_new0 (ECalComponentPeriod, 1);
+	period = g_slice_new0 (ECalComponentPeriod);
 	period->kind = E_CAL_COMPONENT_PERIOD_DATETIME;
 
 	e_cal_component_period_set_datetime_full (period, start, end);
@@ -91,7 +91,7 @@ e_cal_component_period_new_duration (const ICalTime *start,
 	g_return_val_if_fail (I_CAL_IS_TIME (start), NULL);
 	g_return_val_if_fail (I_CAL_IS_DURATION (duration), NULL);
 
-	period = g_new0 (ECalComponentPeriod, 1);
+	period = g_slice_new0 (ECalComponentPeriod);
 	period->kind = E_CAL_COMPONENT_PERIOD_DURATION;
 
 	e_cal_component_period_set_duration_full (period, start, duration);
@@ -150,7 +150,7 @@ e_cal_component_period_free (gpointer period)
 		g_clear_object (&pd->start);
 		g_clear_object (&pd->end);
 		g_clear_object (&pd->duration);
-		g_free (pd);
+		g_slice_free (ECalComponentPeriod, pd);
 	}
 }
 

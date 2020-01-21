@@ -170,7 +170,7 @@ access_token_thread_data_free (gpointer user_data)
 		g_clear_object (&td->registry);
 		g_clear_object (&td->service);
 		g_free (td->authorization_code);
-		g_free (td);
+		g_slice_free (AccessTokenThreadData, td);
 	}
 }
 
@@ -252,7 +252,7 @@ cpi_oauth2_extract_authentication_code (ECredentialsPrompterImplOAuth2 *prompter
 		prompter_impl = E_CREDENTIALS_PROMPTER_IMPL (prompter_oauth2);
 		prompter = e_credentials_prompter_impl_get_credentials_prompter (prompter_impl);
 
-		td = g_new0 (AccessTokenThreadData, 1);
+		td = g_slice_new0 (AccessTokenThreadData);
 		td->prompter_oauth2 = e_weak_ref_new (prompter_oauth2);
 		td->service = g_object_ref (prompter_oauth2->priv->service);
 		td->cancellable = g_object_ref (prompter_oauth2->priv->cancellable);

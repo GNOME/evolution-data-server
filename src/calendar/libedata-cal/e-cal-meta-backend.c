@@ -165,7 +165,7 @@ e_cal_meta_backend_info_new (const gchar *uid,
 
 	g_return_val_if_fail (uid != NULL, NULL);
 
-	info = g_new0 (ECalMetaBackendInfo, 1);
+	info = g_slice_new0 (ECalMetaBackendInfo);
 	info->uid = g_strdup (uid);
 	info->revision = g_strdup (revision);
 	info->object = g_strdup (object);
@@ -212,7 +212,7 @@ e_cal_meta_backend_info_free (gpointer ptr)
 		g_free (info->revision);
 		g_free (info->object);
 		g_free (info->extra);
-		g_free (info);
+		g_slice_free (ECalMetaBackendInfo, info);
 	}
 }
 

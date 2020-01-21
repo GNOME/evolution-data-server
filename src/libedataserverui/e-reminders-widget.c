@@ -750,7 +750,7 @@ foreach_selected_data_free (gpointer ptr)
 		if (fsd->user_data_destroy)
 			fsd->user_data_destroy (fsd->user_data);
 		g_free (fsd->error_prefix);
-		g_free (fsd);
+		g_slice_free (ForeachSelectedData, fsd);
 	}
 }
 
@@ -833,7 +833,7 @@ reminders_widget_foreach_selected (ERemindersWidget *reminders,
 	if (selected) {
 		ForeachSelectedData *fsd;
 
-		fsd = g_new0 (ForeachSelectedData, 1);
+		fsd = g_slice_new0 (ForeachSelectedData);
 		fsd->selected = selected; /* Takes ownership */
 		fsd->sync_func = sync_func;
 		fsd->user_data = user_data;

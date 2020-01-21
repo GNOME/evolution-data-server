@@ -87,6 +87,17 @@ typedef struct _CanReachData {
 } CanReachData;
 
 static void
+can_reach_data_free (gpointer ptr)
+{
+	CanReachData *crd = ptr;
+
+	if (crd) {
+		g_clear_object (&crd->backend);
+		g_slice_free (CanReachData, crd);
+	}
+}
+
+static void
 backend_network_monitor_can_reach_cb (GObject *source_object,
                                       GAsyncResult *result,
                                       gpointer user_data)
@@ -113,8 +124,7 @@ backend_network_monitor_can_reach_cb (GObject *source_object,
 	if (G_IS_IO_ERROR (error, G_IO_ERROR_CANCELLED) ||
 	    host_is_reachable == e_backend_get_online (crd->backend)) {
 		g_clear_error (&error);
-		g_object_unref (crd->backend);
-		g_free (crd);
+		can_reach_data_free (crd);
 		return;
 	}
 
@@ -129,8 +139,7 @@ backend_network_monitor_can_reach_cb (GObject *source_object,
 		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 	}
 
-	g_object_unref (crd->backend);
-	g_free (crd);
+	can_reach_data_free (crd);
 }
 
 static GSocketConnectable *
@@ -199,7 +208,7 @@ backend_update_online_state_timeout_cb (gpointer user_data)
 
 		cancellable = g_cancellable_new ();
 
-		crd = g_new0 (CanReachData, 1);
+		crd = g_slice_new0 (CanReachData);
 		crd->backend = g_object_ref (backend);
 		crd->cancellable = cancellable;
 
@@ -316,7 +325,7 @@ authenticate_thread_data_new (EBackend *backend,
 {
 	AuthenticateThreadData *data;
 
-	data = g_new0 (AuthenticateThreadData, 1);
+	data = g_slice_new0 (AuthenticateThreadData);
 	data->backend = g_object_ref (backend);
 	data->cancellable = g_object_ref (cancellable);
 	data->credentials = credentials ? e_named_parameters_new_clone (credentials) : e_named_parameters_new ();
@@ -340,7 +349,7 @@ authenticate_thread_data_free (AuthenticateThreadData *data)
 		g_clear_object (&data->backend);
 		g_clear_object (&data->cancellable);
 		e_named_parameters_free (data->credentials);
-		g_free (data);
+		g_slice_free (AuthenticateThreadData, data);
 	}
 }
 
@@ -1113,7 +1122,7 @@ credentials_required_data_free (gpointer ptr)
 	if (data) {
 		g_free (data->certificate_pem);
 		g_clear_error (&data->op_error);
-		g_free (data);
+		g_slice_free (CredentialsRequiredData, data);
 	}
 }
 
@@ -1173,7 +1182,7 @@ e_backend_credentials_required (EBackend *backend,
 
 	g_return_if_fail (E_IS_BACKEND (backend));
 
-	data = g_new0 (CredentialsRequiredData, 1);
+	data = g_slice_new0 (CredentialsRequiredData);
 	data->reason = reason;
 	data->certificate_pem = g_strdup (certificate_pem);
 	data->certificate_errors = certificate_errors;

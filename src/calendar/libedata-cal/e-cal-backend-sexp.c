@@ -31,16 +31,7 @@
 
 #include "e-cal-backend-sexp.h"
 
-typedef struct _SearchContext SearchContext;
-
-struct _ECalBackendSExpPrivate {
-	ESExp *search_sexp;
-	gchar *text;
-	SearchContext *search_context;
-	GRecMutex search_context_lock;
-};
-
-struct _SearchContext {
+typedef struct _SearchContext {
 	ECalComponent *comp;
 	ETimezoneCache *cache;
 	gboolean occurs;
@@ -49,6 +40,13 @@ struct _SearchContext {
 	gboolean expr_range_set;
 	time_t expr_range_start;
 	time_t expr_range_end;
+} SearchContext;
+
+struct _ECalBackendSExpPrivate {
+	ESExp *search_sexp;
+	gchar *text;
+	SearchContext search_context;
+	GRecMutex search_context_lock;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (ECalBackendSExp, e_cal_backend_sexp, G_TYPE_OBJECT)
@@ -1148,7 +1146,6 @@ cal_backend_sexp_finalize (GObject *object)
 
 	g_object_unref (priv->search_sexp);
 	g_free (priv->text);
-	g_free (priv->search_context);
 	g_rec_mutex_clear (&priv->search_context_lock);
 
 	/* Chain up to parent's finalize() method. */
@@ -1168,7 +1165,6 @@ static void
 e_cal_backend_sexp_init (ECalBackendSExp *sexp)
 {
 	sexp->priv = e_cal_backend_sexp_get_instance_private (sexp);
-	sexp->priv->search_context = g_new (SearchContext, 1);
 
 	g_rec_mutex_init (&sexp->priv->search_context_lock);
 }
@@ -1230,13 +1226,13 @@ e_cal_backend_sexp_new (const gchar *text)
 				sexp->priv->search_sexp, 0,
 				symbols[ii].name,
 				(ESExpIFunc *) symbols[ii].func,
-				sexp->priv->search_context);
+				&(sexp->priv->search_context));
 		} else {
 			e_sexp_add_function (
 				sexp->priv->search_sexp, 0,
 				symbols[ii].name,
 				symbols[ii].func,
-				sexp->priv->search_context);
+				&(sexp->priv->search_context));
 		}
 	}
 
@@ -1248,7 +1244,7 @@ e_cal_backend_sexp_new (const gchar *text)
 	}
 
 	if (sexp != NULL) {
-		SearchContext *ctx = sexp->priv->search_context;
+		SearchContext *ctx = &(sexp->priv->search_context);
 
 		ctx->expr_range_set = e_sexp_evaluate_occur_times (
 			sexp->priv->search_sexp,
@@ -1299,15 +1295,15 @@ e_cal_backend_sexp_match_comp (ECalBackendSExp *sexp,
 
 	e_cal_backend_sexp_lock (sexp);
 
-	sexp->priv->search_context->comp = g_object_ref (comp);
-	sexp->priv->search_context->cache = g_object_ref (cache);
+	sexp->priv->search_context.comp = g_object_ref (comp);
+	sexp->priv->search_context.cache = g_object_ref (cache);
 
 	r = e_sexp_eval (sexp->priv->search_sexp);
 
 	retval = (r && r->type == ESEXP_RES_BOOL && r->value.boolean);
 
-	g_object_unref (sexp->priv->search_context->comp);
-	g_object_unref (sexp->priv->search_context->cache);
+	g_object_unref (sexp->priv->search_context.comp);
+	g_object_unref (sexp->priv->search_context.cache);
 
 	e_sexp_result_free (sexp->priv->search_sexp, r);
 
@@ -1661,11 +1657,11 @@ e_cal_backend_sexp_evaluate_occur_times (ECalBackendSExp *sexp,
 	g_return_val_if_fail (start != NULL, FALSE);
 	g_return_val_if_fail (end != NULL, FALSE);
 
-	if (!sexp->priv->search_context->expr_range_set)
+	if (!sexp->priv->search_context.expr_range_set)
 		return FALSE;
 
-	*start = sexp->priv->search_context->expr_range_start;
-	*end = sexp->priv->search_context->expr_range_end;
+	*start = sexp->priv->search_context.expr_range_start;
+	*end = sexp->priv->search_context.expr_range_end;
 
 	return TRUE;
 }

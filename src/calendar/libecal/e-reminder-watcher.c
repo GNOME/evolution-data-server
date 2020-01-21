@@ -181,7 +181,7 @@ client_data_new (EReminderWatcher *watcher,
 	g_return_val_if_fail (E_IS_REMINDER_WATCHER (watcher), NULL);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), NULL);
 
-	cd = g_new0 (ClientData, 1);
+	cd = g_slice_new0 (ClientData);
 	cd->watcher = watcher;
 	cd->client = client;
 	cd->view = NULL;
@@ -225,7 +225,7 @@ client_data_free (gpointer ptr)
 	if (cd) {
 		client_data_free_view (cd);
 		g_clear_object (&cd->client);
-		g_free (cd);
+		g_slice_free (ClientData, cd);
 	}
 }
 
@@ -421,7 +421,7 @@ e_reminder_data_new_take_component (const gchar *source_uid,
 	g_return_val_if_fail (component != NULL, NULL);
 	g_return_val_if_fail (instance != NULL, NULL);
 
-	rd = g_new0 (EReminderData, 1);
+	rd = g_slice_new0 (EReminderData);
 	rd->source_uid = g_strdup (source_uid);
 	rd->component = component;
 	rd->instance = e_cal_component_alarm_instance_copy (instance);
@@ -490,7 +490,7 @@ e_reminder_data_free (gpointer rd)
 		g_clear_object (&ptr->component);
 		e_cal_component_alarm_instance_free (ptr->instance);
 		g_free (ptr->source_uid);
-		g_free (ptr);
+		g_slice_free (EReminderData, ptr);
 	}
 }
 
@@ -775,7 +775,7 @@ objects_changed_data_free (gpointer ptr)
 		g_clear_object (&ocd->client);
 		g_slist_free_full (ocd->ids, (GDestroyNotify) e_cal_component_id_free);
 		g_clear_object (&ocd->zone);
-		g_free (ocd);
+		g_slice_free (ObjectsChangedData, ocd);
 	}
 }
 
@@ -978,7 +978,7 @@ e_reminder_watcher_objects_changed (EReminderWatcher *watcher,
 		ObjectsChangedData *ocd;
 		GTask *task;
 
-		ocd = g_new0 (ObjectsChangedData, 1);
+		ocd = g_slice_new (ObjectsChangedData);
 		ocd->client = g_object_ref (client);
 		ocd->ids = ids;
 		ocd->interval_start = client_get_last_notification_time (client) + 1;
@@ -1332,6 +1332,12 @@ typedef struct _EmitSignalData {
 	gboolean is_snoozed; /* only for the triggered signal */
 } EmitSignalData;
 
+static EmitSignalData *
+emit_signal_data_new (void)
+{
+	return g_slice_new0 (EmitSignalData);
+}
+
 static void
 emit_signal_data_free (gpointer ptr)
 {
@@ -1340,7 +1346,7 @@ emit_signal_data_free (gpointer ptr)
 	if (esd) {
 		g_clear_object (&esd->watcher);
 		g_slist_free_full (esd->reminders, e_reminder_data_free);
-		g_free (esd);
+		g_slice_free (EmitSignalData, esd);
 	}
 }
 
@@ -1368,7 +1374,7 @@ e_reminder_watcher_emit_signal_idle_multiple (EReminderWatcher *watcher,
 {
 	EmitSignalData *esd;
 
-	esd = g_new0 (EmitSignalData, 1);
+	esd = emit_signal_data_new ();
 	esd->watcher = g_object_ref (watcher);
 	esd->signal_id = signal_id;
 	esd->reminders = g_slist_copy_deep ((GSList *) reminders, (GCopyFunc) e_reminder_data_copy, NULL);

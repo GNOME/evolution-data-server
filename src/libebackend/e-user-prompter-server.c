@@ -94,7 +94,7 @@ prompt_request_free (gpointer data)
 		g_free (pr->dialog_name);
 		e_named_parameters_free (pr->parameters);
 
-		g_free (pr);
+		g_slice_free (PromptRequest, pr);
 	}
 }
 
@@ -119,7 +119,7 @@ add_prompt (EUserPrompterServer *server,
 
 	server->priv->last_prompt_id++;
 
-	pr = g_new0 (PromptRequest, 1);
+	pr = g_slice_new0 (PromptRequest);
 	pr->is_extension_prompt = is_extension_prompt;
 	pr->id = server->priv->last_prompt_id;
 	pr->type = g_strdup (type);

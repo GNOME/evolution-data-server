@@ -118,7 +118,7 @@ mailbox_refresh_data_free (MailboxRefreshData *data)
 	if (data) {
 		g_clear_object (&data->conn_man);
 		g_clear_object (&data->mailbox);
-		g_free (data);
+		g_slice_free (MailboxRefreshData, data);
 	}
 }
 
@@ -167,7 +167,7 @@ imapx_conn_manager_refresh_mailbox_cb (CamelIMAPXServer *is,
 	}
 	g_mutex_unlock (&conn_man->priv->idle_refresh_lock);
 
-	data = g_new0 (MailboxRefreshData, 1);
+	data = g_slice_new0 (MailboxRefreshData);
 	data->conn_man = g_object_ref (conn_man);
 	data->mailbox = g_object_ref (mailbox);
 
@@ -1435,7 +1435,7 @@ list_job_data_free (gpointer ptr)
 
 	if (job_data) {
 		g_free (job_data->pattern);
-		g_free (job_data);
+		g_slice_free (struct ListJobData, job_data);
 	}
 }
 
@@ -1497,7 +1497,7 @@ camel_imapx_conn_manager_list_sync (CamelIMAPXConnManager *conn_man,
 		imapx_conn_manager_list_matches,
 		NULL);
 
-	job_data = g_new0 (struct ListJobData, 1);
+	job_data = g_slice_new0 (struct ListJobData);
 	job_data->pattern = g_strdup (pattern);
 	job_data->flags = flags;
 
@@ -2026,8 +2026,8 @@ get_message_job_data_free (gpointer ptr)
 	if (job_data) {
 		g_clear_object (&job_data->summary);
 		g_clear_object (&job_data->message_cache);
-		g_free (job_data->message_uid);
-		g_free (job_data);
+		camel_pstring_free (job_data->message_uid);
+		g_slice_free (struct GetMessageJobData, job_data);
 	}
 }
 
@@ -2123,10 +2123,10 @@ camel_imapx_conn_manager_get_message_sync (CamelIMAPXConnManager *conn_man,
 		imapx_conn_manager_get_message_matches,
 		imapx_conn_manager_get_message_copy_result);
 
-	job_data = g_new0 (struct GetMessageJobData, 1);
+	job_data = g_slice_new0 (struct GetMessageJobData);
 	job_data->summary = g_object_ref (summary);
 	job_data->message_cache = g_object_ref (message_cache);
-	job_data->message_uid = g_strdup (message_uid);
+	job_data->message_uid = (gchar *) camel_pstring_strdup (message_uid);
 
 	camel_imapx_job_set_user_data (job, job_data, get_message_job_data_free);
 
@@ -2157,7 +2157,7 @@ copy_message_job_data_free (gpointer ptr)
 	if (job_data) {
 		g_clear_object (&job_data->destination);
 		g_ptr_array_free (job_data->uids, TRUE);
-		g_free (job_data);
+		g_slice_free (struct CopyMessageJobData, job_data);
 	}
 }
 
@@ -2221,7 +2221,7 @@ imapx_conn_manager_copy_message_sync (CamelIMAPXConnManager *conn_man,
 		imapx_conn_manager_nothing_matches,
 		NULL);
 
-	job_data = g_new0 (struct CopyMessageJobData, 1);
+	job_data = g_slice_new0 (struct CopyMessageJobData);
 	job_data->destination = g_object_ref (destination);
 	job_data->uids = g_ptr_array_new_full (uids->len, (GDestroyNotify) camel_pstring_free);
 	job_data->delete_originals = delete_originals;
@@ -2286,7 +2286,7 @@ append_message_job_data_free (gpointer ptr)
 		g_clear_object (&job_data->summary);
 		g_clear_object (&job_data->message_cache);
 		g_clear_object (&job_data->message);
-		g_free (job_data);
+		g_slice_free (struct AppendMessageJobData, job_data);
 	}
 }
 
@@ -2347,7 +2347,7 @@ camel_imapx_conn_manager_append_message_sync (CamelIMAPXConnManager *conn_man,
 		imapx_conn_manager_nothing_matches,
 		NULL);
 
-	job_data = g_new0 (struct AppendMessageJobData, 1);
+	job_data = g_slice_new0 (struct AppendMessageJobData);
 	job_data->summary = g_object_ref (summary);
 	job_data->message_cache = g_object_ref (message_cache);
 	job_data->message = g_object_ref (message);
@@ -2426,10 +2426,10 @@ camel_imapx_conn_manager_sync_message_sync (CamelIMAPXConnManager *conn_man,
 		imapx_conn_manager_get_message_matches,
 		NULL);
 
-	job_data = g_new0 (struct GetMessageJobData, 1);
+	job_data = g_slice_new0 (struct GetMessageJobData);
 	job_data->summary = g_object_ref (summary);
 	job_data->message_cache = g_object_ref (message_cache);
-	job_data->message_uid = g_strdup (message_uid);
+	job_data->message_uid = (gchar *) camel_pstring_strdup (message_uid);
 
 	camel_imapx_job_set_user_data (job, job_data, get_message_job_data_free);
 
@@ -2792,7 +2792,7 @@ uid_search_job_data_free (gpointer ptr)
 		g_free (job_data->criteria_prefix);
 		g_free (job_data->search_key);
 		g_strfreev (job_data->words);
-		g_free (job_data);
+		g_slice_free (struct UidSearchJobData, job_data);
 	}
 }
 
@@ -2867,7 +2867,7 @@ camel_imapx_conn_manager_uid_search_sync (CamelIMAPXConnManager *conn_man,
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), NULL);
 
-	job_data = g_new0 (struct UidSearchJobData, 1);
+	job_data = g_slice_new0 (struct UidSearchJobData);
 	job_data->criteria_prefix = g_strdup (criteria_prefix);
 	job_data->search_key = g_strdup (search_key);
 	job_data->words = imapx_copy_strv (words);

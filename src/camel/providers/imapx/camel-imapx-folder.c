@@ -945,7 +945,7 @@ remove_cache_files_free (gpointer ptr)
 	if (rcf) {
 		g_clear_object (&rcf->imapx_folder);
 		g_slist_free_full (rcf->uids, (GDestroyNotify) camel_pstring_free);
-		g_free (rcf);
+		g_slice_free (RemoveCacheFiles, rcf);
 	}
 }
 
@@ -1021,7 +1021,7 @@ imapx_folder_changed (CamelFolder *folder,
 				RemoveCacheFiles *rcf;
 				gchar *description;
 
-				rcf = g_new0 (RemoveCacheFiles, 1);
+				rcf = g_slice_new0 (RemoveCacheFiles);
 				rcf->imapx_folder = g_object_ref (imapx_folder);
 				rcf->uids = removed_uids;
 

@@ -48,7 +48,7 @@ e_cal_component_property_bag_new (void)
 {
 	ECalComponentPropertyBag *bag;
 
-	bag = g_new0 (ECalComponentPropertyBag, 1);
+	bag = g_slice_new0 (ECalComponentPropertyBag);
 	bag->properties = g_ptr_array_new_with_free_func (g_object_unref);
 
 	return bag;
@@ -127,7 +127,7 @@ e_cal_component_property_bag_free (gpointer bag)
 
 	if (bg) {
 		g_ptr_array_unref (bg->properties);
-		g_free (bg);
+		g_slice_free (ECalComponentPropertyBag, bg);
 	}
 }
 

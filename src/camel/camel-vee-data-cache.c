@@ -342,6 +342,19 @@ typedef struct _VeeData {
 	const gchar *orig_message_uid;
 } VeeData;
 
+static VeeData *
+vee_data_new (void)
+{
+	return g_slice_new0 (VeeData);
+}
+
+static void
+vee_data_free (gpointer ptr)
+{
+	if (ptr)
+		g_slice_free (VeeData, ptr);
+}
+
 static guint
 vee_data_hash (gconstpointer ptr)
 {
@@ -428,7 +441,7 @@ camel_vee_data_cache_init (CamelVeeDataCache *data_cache)
 	data_cache->priv->subfolder_hash = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
 
 	g_mutex_init (&data_cache->priv->mi_mutex);
-	data_cache->priv->orig_message_uid_hash = g_hash_table_new_full (vee_data_hash, vee_data_equal, g_free, g_object_unref);
+	data_cache->priv->orig_message_uid_hash = g_hash_table_new_full (vee_data_hash, vee_data_equal, vee_data_free, g_object_unref);
 	data_cache->priv->vee_message_uid_hash = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, NULL);
 }
 
@@ -498,7 +511,7 @@ camel_vee_data_cache_add_subfolder (CamelVeeDataCache *data_cache,
 
 					mi_data = camel_vee_message_info_data_new (sf_data, vdata.orig_message_uid);
 
-					hash_data = g_new0 (VeeData, 1);
+					hash_data = vee_data_new ();
 					hash_data->folder = subfolder;
 					hash_data->orig_message_uid = camel_vee_message_info_data_get_orig_message_uid (mi_data);
 
@@ -705,7 +718,7 @@ camel_vee_data_cache_get_message_info_data (CamelVeeDataCache *data_cache,
 		/* res holds the reference now */
 		g_object_unref (sf_data);
 
-		hash_data = g_new0 (VeeData, 1);
+		hash_data = vee_data_new ();
 		hash_data->folder = folder;
 		hash_data->orig_message_uid = camel_vee_message_info_data_get_orig_message_uid (res);
 

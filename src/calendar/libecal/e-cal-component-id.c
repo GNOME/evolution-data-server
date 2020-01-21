@@ -87,7 +87,7 @@ e_cal_component_id_new_take (gchar *uid,
 		rid = NULL;
 	}
 
-	id = g_new0 (ECalComponentId, 1);
+	id = g_slice_new0 (ECalComponentId);
 	id->uid = uid;
 	id->rid = rid;
 
@@ -128,7 +128,7 @@ e_cal_component_id_free (gpointer id)
 	if (eid) {
 		g_free (eid->uid);
 		g_free (eid->rid);
-		g_free (eid);
+		g_slice_free (ECalComponentId, eid);
 	}
 }
 

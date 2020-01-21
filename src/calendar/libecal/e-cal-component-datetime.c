@@ -59,7 +59,7 @@ e_cal_component_datetime_new (const ICalTime *value,
 
 	g_return_val_if_fail (I_CAL_IS_TIME (value), NULL);
 
-	dt = g_new0 (ECalComponentDateTime, 1);
+	dt = g_slice_new0 (ECalComponentDateTime);
 	e_cal_component_datetime_set (dt, value, tzid);
 
 	return dt;
@@ -88,7 +88,7 @@ e_cal_component_datetime_new_take (ICalTime *value,
 
 	g_return_val_if_fail (I_CAL_IS_TIME (value), NULL);
 
-	dt = g_new0 (ECalComponentDateTime, 1);
+	dt = g_slice_new0 (ECalComponentDateTime);
 	dt->value = value;
 	dt->tzid = tzid;
 
@@ -134,7 +134,7 @@ e_cal_component_datetime_free (gpointer dt)
 	if (pdt) {
 		g_clear_object (&pdt->value);
 		g_free (pdt->tzid);
-		g_free (pdt);
+		g_slice_free (ECalComponentDateTime, pdt);
 	}
 }
 

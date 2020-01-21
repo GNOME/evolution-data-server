@@ -65,7 +65,7 @@ e_cal_component_alarm_trigger_new_relative (ECalComponentAlarmTriggerKind kind,
 	g_return_val_if_fail (kind != E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE, NULL);
 	g_return_val_if_fail (I_CAL_IS_DURATION (duration), NULL);
 
-	trigger = g_new0 (ECalComponentAlarmTrigger, 1);
+	trigger = g_slice_new0 (ECalComponentAlarmTrigger);
 	trigger->parameter_bag = e_cal_component_parameter_bag_new ();
 
 	e_cal_component_alarm_trigger_set_relative (trigger, kind, duration);
@@ -95,7 +95,7 @@ e_cal_component_alarm_trigger_new_absolute (const ICalTime *absolute_time)
 
 	g_return_val_if_fail (I_CAL_IS_TIME (absolute_time), NULL);
 
-	trigger = g_new0 (ECalComponentAlarmTrigger, 1);
+	trigger = g_slice_new0 (ECalComponentAlarmTrigger);
 	trigger->parameter_bag = e_cal_component_parameter_bag_new ();
 
 	e_cal_component_alarm_trigger_set_absolute (trigger, absolute_time);
@@ -126,7 +126,7 @@ e_cal_component_alarm_trigger_new_from_property (const ICalProperty *property)
 	if (i_cal_property_isa ((ICalProperty *) property) != I_CAL_TRIGGER_PROPERTY)
 		return NULL;
 
-	trigger = g_new0 (ECalComponentAlarmTrigger, 1);
+	trigger = g_slice_new0 (ECalComponentAlarmTrigger);
 	trigger->parameter_bag = e_cal_component_parameter_bag_new ();
 
 	e_cal_component_alarm_trigger_set_from_property (trigger, property);
@@ -182,7 +182,7 @@ e_cal_component_alarm_trigger_free (gpointer trigger)
 		e_cal_component_parameter_bag_free (trg->parameter_bag);
 		g_clear_object (&trg->rel_duration);
 		g_clear_object (&trg->abs_time);
-		g_free (trg);
+		g_slice_free (ECalComponentAlarmTrigger, trg);
 	}
 }
 

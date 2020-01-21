@@ -64,7 +64,7 @@ e_webdav_discover_content_data_free (gpointer ptr)
 		g_clear_object (&data->credentials_prompter);
 		g_clear_object (&data->source);
 		g_free (data->base_url);
-		g_free (data);
+		g_slice_free (EWebDAVDiscoverContentData, data);
 	}
 }
 
@@ -102,7 +102,7 @@ e_webdav_discover_content_new (ECredentialsPrompter *credentials_prompter,
 	g_return_val_if_fail (E_IS_CREDENTIALS_PROMPTER (credentials_prompter), NULL);
 	g_return_val_if_fail (base_url != NULL, NULL);
 
-	data = g_new0 (EWebDAVDiscoverContentData, 1);
+	data = g_slice_new0 (EWebDAVDiscoverContentData);
 	data->credentials_prompter = g_object_ref (credentials_prompter);
 	data->source = source ? g_object_ref (source) : NULL;
 	data->base_url = g_strdup (base_url);
@@ -623,7 +623,7 @@ refresh_data_free (gpointer ptr)
 		g_clear_object (&rd->registry);
 		g_free (rd->base_url);
 		e_named_parameters_free (rd->credentials);
-		g_free (rd);
+		g_slice_free (RefreshData, rd);
 	}
 }
 
@@ -853,7 +853,7 @@ e_webdav_discover_content_refresh (GtkWidget *content,
 		return;
 	}
 
-	rd = g_new0 (RefreshData, 1);
+	rd = g_slice_new0 (RefreshData);
 	rd->content = g_object_ref (content);
 	rd->cancellable = cancellable ? g_object_ref (cancellable) : g_cancellable_new ();
 	rd->simple = g_simple_async_result_new (G_OBJECT (content), callback, user_data, e_webdav_discover_content_refresh);

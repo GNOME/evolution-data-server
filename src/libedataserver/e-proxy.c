@@ -109,15 +109,9 @@ static void
 ep_free_proxy_host_addr (ProxyHostAddr *host)
 {
 	if (host) {
-		if (host->addr) {
-			g_free (host->addr);
-			host->addr = NULL;
-		}
-		if (host->mask) {
-			g_free (host->mask);
-			host->mask = NULL;
-		}
-		g_free (host);
+		g_clear_pointer (&host->addr, g_free);
+		g_clear_pointer (&host->mask, g_free);
+		g_slice_free (ProxyHostAddr, host);
 	}
 }
 
@@ -551,7 +545,7 @@ ep_parse_ignore_host (gpointer data,
 		gint addr_len;
 		struct sockaddr * so_addr = NULL;
 
-		host_addr = g_new0 (ProxyHostAddr, 1);
+		host_addr = g_slice_new0 (ProxyHostAddr);
 
 		so_addr = soup_address_get_sockaddr (addr, &addr_len);
 

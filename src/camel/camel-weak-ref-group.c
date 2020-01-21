@@ -52,7 +52,7 @@ object_data_new (gpointer object)
 {
 	ObjectData *od;
 
-	od = g_new (ObjectData, 1);
+	od = g_slice_new (ObjectData);
 	od->use_count = 1;
 
 	g_weak_ref_init (&od->weakref, object);
@@ -69,7 +69,7 @@ object_data_free (gpointer ptr)
 		g_warn_if_fail (od->use_count == 0);
 		g_weak_ref_set (&od->weakref, NULL);
 		g_weak_ref_clear (&od->weakref);
-		g_free (od);
+		g_slice_free (ObjectData, od);
 	}
 }
 
@@ -86,7 +86,7 @@ camel_weak_ref_group_new (void)
 {
 	CamelWeakRefGroup *wrg;
 
-	wrg = g_new (CamelWeakRefGroup, 1);
+	wrg = g_slice_new (CamelWeakRefGroup);
 	wrg->ref_count = 1;
 	wrg->object = NULL;
 
@@ -140,7 +140,7 @@ camel_weak_ref_group_unref (CamelWeakRefGroup *group)
 
 	if (!group->ref_count) {
 		camel_weak_ref_group_set (group, NULL);
-		g_free (group);
+		g_slice_free (CamelWeakRefGroup, group);
 	}
 }
 

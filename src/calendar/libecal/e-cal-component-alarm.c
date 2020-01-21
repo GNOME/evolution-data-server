@@ -66,7 +66,7 @@ e_cal_component_alarm_new (void)
 {
 	ECalComponentAlarm *alarm;
 
-	alarm = g_new0 (ECalComponentAlarm, 1);
+	alarm = g_slice_new0 (ECalComponentAlarm);
 	alarm->uid = e_util_generate_uid ();
 	alarm->action = E_CAL_COMPONENT_ALARM_UNKNOWN;
 	alarm->property_bag = e_cal_component_property_bag_new ();
@@ -215,7 +215,7 @@ e_cal_component_alarm_free (gpointer alarm)
 		e_cal_component_property_bag_free (alrm->property_bag);
 		g_slist_free_full (alrm->attendees, e_cal_component_attendee_free);
 		g_slist_free_full (alrm->attachments, g_object_unref);
-		g_free (alrm);
+		g_slice_free (ECalComponentAlarm, alrm);
 	}
 }
 

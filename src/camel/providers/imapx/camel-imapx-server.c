@@ -376,7 +376,7 @@ fetch_changes_info_free (gpointer ptr)
 
 	if (nfo) {
 		camel_named_flags_free (nfo->server_user_flags);
-		g_free (nfo);
+		g_slice_free (FetchChangesInfo, nfo);
 	}
 }
 
@@ -1200,7 +1200,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 			nfo = g_hash_table_lookup (is->priv->fetch_changes_infos, finfo->uid);
 			if (!nfo) {
-				nfo = g_new0 (FetchChangesInfo, 1);
+				nfo = g_slice_new0 (FetchChangesInfo);
 
 				g_hash_table_insert (is->priv->fetch_changes_infos, (gpointer) camel_pstring_strdup (finfo->uid), nfo);
 			}
@@ -2159,7 +2159,7 @@ imapx_untagged (CamelIMAPXServer *is,
 	 * we will need to protect this data structure with locks
 	 */
 	g_return_val_if_fail (is->priv->context == NULL, FALSE);
-	is->priv->context = g_new0 (CamelIMAPXServerUntaggedContext, 1);
+	is->priv->context = g_slice_new0 (CamelIMAPXServerUntaggedContext);
 
 	settings = camel_imapx_server_ref_settings (is);
 	fetch_order = camel_imapx_settings_get_fetch_order (settings);
@@ -2248,7 +2248,7 @@ imapx_untagged (CamelIMAPXServer *is,
 		CAMEL_IMAPX_INPUT_STREAM (input_stream), cancellable, error);
 
 exit:
-	g_free (is->priv->context);
+	g_slice_free (CamelIMAPXServerUntaggedContext, is->priv->context);
 	is->priv->context = NULL;
 
 	return success;
@@ -3613,7 +3613,7 @@ imapx_server_finalize (GObject *object)
 	camel_folder_change_info_free (is->priv->changes);
 	imapx_free_status (is->priv->copyuid_status);
 
-	g_free (is->priv->context);
+	g_slice_free (CamelIMAPXServerUntaggedContext, is->priv->context);
 	g_hash_table_destroy (is->priv->untagged_handlers);
 
 	if (is->priv->inactivity_timeout != NULL)
@@ -6850,6 +6850,18 @@ typedef struct _IdleThreadData {
 	gint idle_stamp;
 } IdleThreadData;
 
+static void
+idle_thread_data_free (gpointer ptr)
+{
+	IdleThreadData *itd = ptr;
+
+	if (itd) {
+		g_clear_object (&itd->is);
+		g_clear_object (&itd->idle_cancellable);
+		g_slice_free (IdleThreadData, itd);
+	}
+}
+
 static gpointer
 imapx_server_idle_thread (gpointer user_data)
 {
@@ -6880,9 +6892,7 @@ imapx_server_idle_thread (gpointer user_data)
 		g_cond_broadcast (&is->priv->idle_cond);
 		g_mutex_unlock (&is->priv->idle_lock);
 
-		g_clear_object (&itd->is);
-		g_clear_object (&itd->idle_cancellable);
-		g_free (itd);
+		idle_thread_data_free (itd);
 
 		return NULL;
 	}
@@ -6963,9 +6973,7 @@ imapx_server_idle_thread (gpointer user_data)
 	g_clear_object (&mailbox);
 	g_clear_error (&local_error);
 
-	g_clear_object (&itd->is);
-	g_clear_object (&itd->idle_cancellable);
-	g_free (itd);
+	idle_thread_data_free (itd);
 
 	return NULL;
 }
@@ -6991,7 +6999,7 @@ imapx_server_run_idle_thread_cb (gpointer user_data)
 			GThread *thread;
 			GError *local_error = NULL;
 
-			itd = g_new0 (IdleThreadData, 1);
+			itd = g_slice_new0 (IdleThreadData);
 			itd->is = g_object_ref (is);
 			itd->idle_cancellable = g_object_ref (is->priv->idle_cancellable);
 			itd->idle_stamp = is->priv->idle_stamp;
@@ -7002,9 +7010,7 @@ imapx_server_run_idle_thread_cb (gpointer user_data)
 			} else {
 				g_warning ("%s: Failed to create IDLE thread: %s", G_STRFUNC, local_error ? local_error->message : "Unknown error");
 
-				g_clear_object (&itd->is);
-				g_clear_object (&itd->idle_cancellable);
-				g_free (itd);
+				idle_thread_data_free (itd);
 			}
 
 			g_clear_error (&local_error);

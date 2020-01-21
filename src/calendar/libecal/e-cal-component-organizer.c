@@ -56,7 +56,7 @@ e_cal_component_organizer_new (void)
 {
 	ECalComponentOrganizer *organizer;
 
-	organizer = g_new0 (ECalComponentOrganizer, 1);
+	organizer = g_slice_new0 (ECalComponentOrganizer);
 	organizer->parameter_bag = e_cal_component_parameter_bag_new ();
 
 	return organizer;
@@ -175,7 +175,7 @@ e_cal_component_organizer_free (gpointer organizer)
 		g_free (org->sentby);
 		g_free (org->cn);
 		g_free (org->language);
-		g_free (org);
+		g_slice_free (ECalComponentOrganizer, org);
 	}
 }
 

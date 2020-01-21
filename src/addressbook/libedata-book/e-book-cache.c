@@ -171,7 +171,7 @@ e_book_cache_search_data_new (const gchar *uid,
 	g_return_val_if_fail (uid != NULL, NULL);
 	g_return_val_if_fail (vcard != NULL, NULL);
 
-	data = g_new0 (EBookCacheSearchData, 1);
+	data = g_slice_new0 (EBookCacheSearchData);
 	data->uid = g_strdup (uid);
 	data->vcard = g_strdup (vcard);
 	data->extra = g_strdup (extra);
@@ -216,7 +216,7 @@ e_book_cache_search_data_free (gpointer ptr)
 		g_free (data->uid);
 		g_free (data->vcard);
 		g_free (data->extra);
-		g_free (data);
+		g_slice_free (EBookCacheSearchData, data);
 	}
 }
 

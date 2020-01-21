@@ -58,7 +58,7 @@ e_cal_component_alarms_new (ECalComponent *comp)
 
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 
-	alarms = g_new0 (ECalComponentAlarms, 1);
+	alarms = g_slice_new0 (ECalComponentAlarms);
 	alarms->comp = g_object_ref (comp);
 
 	return alarms;
@@ -106,7 +106,7 @@ e_cal_component_alarms_free (gpointer alarms)
 	if (alrms) {
 		g_clear_object (&alrms->comp);
 		g_slist_free_full (alrms->instances, e_cal_component_alarm_instance_free);
-		g_free (alrms);
+		g_slice_free (ECalComponentAlarms, alrms);
 	}
 }
 

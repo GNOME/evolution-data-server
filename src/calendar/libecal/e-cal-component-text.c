@@ -54,7 +54,7 @@ e_cal_component_text_new (const gchar *value,
 {
 	ECalComponentText *text;
 
-	text = g_new0 (ECalComponentText, 1);
+	text = g_slice_new0 (ECalComponentText);
 	text->value = g_strdup (value);
 	text->altrep = g_strdup (altrep);
 
@@ -96,7 +96,7 @@ e_cal_component_text_free (gpointer text)
 	if (te) {
 		g_free (te->value);
 		g_free (te->altrep);
-		g_free (te);
+		g_slice_free (ECalComponentText, te);
 	}
 }
 

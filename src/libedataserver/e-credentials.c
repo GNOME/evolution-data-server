@@ -57,8 +57,8 @@ e_credentials_new (void)
 {
 	ECredentials *credentials;
 
-	credentials = g_new0 (ECredentials, 1);
-	credentials->priv = g_new0 (ECredentialsPrivate, 1);
+	credentials = g_slice_new0 (ECredentials);
+	credentials->priv = g_slice_new0 (ECredentialsPrivate);
 	credentials->priv->keys = g_hash_table_new_full (g_str_hash, key_equal, g_free, (GDestroyNotify) e_credentials_util_safe_free_string);
 	credentials->priv->peek_keys = g_hash_table_new_full (g_str_hash, key_equal, g_free, (GDestroyNotify) e_credentials_util_safe_free_string);
 
@@ -194,8 +194,8 @@ e_credentials_free (ECredentials *credentials)
 
 	g_hash_table_destroy (credentials->priv->keys);
 	g_hash_table_destroy (credentials->priv->peek_keys);
-	g_free (credentials->priv);
-	g_free (credentials);
+	g_slice_free (ECredentialsPrivate, credentials->priv);
+	g_slice_free (ECredentials, credentials);
 }
 
 static void

@@ -102,7 +102,7 @@ sync_request_thread_cb (gpointer task_data,
 	g_mutex_unlock (&sync_data->cFile->pending_syncs_lock);
 
 	done = sync_data->done;
-	g_free (sync_data);
+	g_slice_free (struct SyncRequestData, sync_data);
 
 	if (done != NULL) {
 		g_mutex_lock (&done->mutex);
@@ -139,7 +139,7 @@ sync_push_request (CamelSqlite3File *cFile,
 		done->is_set = FALSE;
 	}
 
-	data = g_new0 (struct SyncRequestData, 1);
+	data = g_slice_new0 (struct SyncRequestData);
 	data->cFile = cFile;
 	data->flags = cFile->flags;
 	data->done = done;

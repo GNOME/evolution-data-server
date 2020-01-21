@@ -42,7 +42,7 @@ camel_url_scanner_new (void)
 {
 	CamelUrlScanner *scanner;
 
-	scanner = g_new (CamelUrlScanner, 1);
+	scanner = g_slice_new0 (CamelUrlScanner);
 	scanner->patterns = g_ptr_array_new ();
 	scanner->trie = camel_trie_new (TRUE);
 
@@ -62,7 +62,7 @@ camel_url_scanner_free (CamelUrlScanner *scanner)
 
 	g_ptr_array_free (scanner->patterns, TRUE);
 	camel_trie_free (scanner->trie);
-	g_free (scanner);
+	g_slice_free (CamelUrlScanner, scanner);
 }
 
 /**

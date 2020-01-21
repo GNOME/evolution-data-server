@@ -92,7 +92,7 @@ e_webdav_resource_new (EWebDAVResourceKind kind,
 {
 	EWebDAVResource *resource;
 
-	resource = g_new0 (EWebDAVResource, 1);
+	resource = g_slice_new0 (EWebDAVResource);
 	resource->kind = kind;
 	resource->supports = supports;
 	resource->href = g_strdup (href);
@@ -158,7 +158,7 @@ e_webdav_resource_free (gpointer ptr)
 		g_free (resource->content_type);
 		g_free (resource->description);
 		g_free (resource->color);
-		g_free (resource);
+		g_slice_free (EWebDAVResource, resource);
 	}
 }
 
@@ -170,7 +170,7 @@ e_webdav_property_change_new (EWebDAVPropertyChangeKind kind,
 {
 	EWebDAVPropertyChange *change;
 
-	change = g_new0 (EWebDAVPropertyChange, 1);
+	change = g_slice_new0 (EWebDAVPropertyChange);
 	change->kind = kind;
 	change->ns_uri = g_strdup (ns_uri);
 	change->name = g_strdup (name);
@@ -273,7 +273,7 @@ e_webdav_property_change_free (gpointer ptr)
 		g_free (change->ns_uri);
 		g_free (change->name);
 		g_free (change->value);
-		g_free (change);
+		g_slice_free (EWebDAVPropertyChange, change);
 	}
 }
 
@@ -391,7 +391,7 @@ e_webdav_privilege_new (const gchar *ns_uri,
 		}
 	}
 
-	privilege = g_new (EWebDAVPrivilege, 1);
+	privilege = g_slice_new (EWebDAVPrivilege);
 	privilege->ns_uri = g_strdup (ns_uri);
 	privilege->name = g_strdup (name);
 	privilege->description = g_strdup (description);
@@ -443,7 +443,7 @@ e_webdav_privilege_free (gpointer ptr)
 		g_free (privilege->ns_uri);
 		g_free (privilege->name);
 		g_free (privilege->description);
-		g_free (privilege);
+		g_slice_free (EWebDAVPrivilege, privilege);
 	}
 }
 
@@ -485,7 +485,7 @@ e_webdav_access_control_entry_new (EWebDAVACEPrincipalKind principal_kind,
 	else
 		g_return_val_if_fail (inherited_href == NULL, NULL);
 
-	ace = g_new0 (EWebDAVAccessControlEntry, 1);
+	ace = g_slice_new0 (EWebDAVAccessControlEntry);
 	ace->principal_kind = principal_kind;
 	ace->principal_href = g_strdup (principal_href);
 	ace->flags = flags;
@@ -552,7 +552,7 @@ e_webdav_access_control_entry_free (gpointer ptr)
 		g_free (ace->principal_href);
 		g_free (ace->inherited_href);
 		g_slist_free_full (ace->privileges, e_webdav_privilege_free);
-		g_free (ace);
+		g_slice_free (EWebDAVAccessControlEntry, ace);
 	}
 }
 

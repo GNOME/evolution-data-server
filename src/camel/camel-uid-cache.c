@@ -83,7 +83,7 @@ camel_uid_cache_new (const gchar *filename)
 
 	close (fd);
 
-	cache = g_new (CamelUIDCache, 1);
+	cache = g_slice_new0 (CamelUIDCache);
 	cache->uids = g_hash_table_new (g_str_hash, g_str_equal);
 	cache->filename = g_strdup (filename);
 	cache->level = 1;
@@ -244,7 +244,7 @@ camel_uid_cache_destroy (CamelUIDCache *cache)
 	g_hash_table_foreach (cache->uids, free_uid, NULL);
 	g_hash_table_destroy (cache->uids);
 	g_free (cache->filename);
-	g_free (cache);
+	g_slice_free (CamelUIDCache, cache);
 }
 
 /**

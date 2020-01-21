@@ -84,7 +84,7 @@ e_cal_component_range_new_take (ECalComponentRangeKind kind,
 
 	g_return_val_if_fail (datetime != NULL, NULL);
 
-	range = g_new0 (ECalComponentRange, 1);
+	range = g_slice_new0 (ECalComponentRange);
 	range->kind = kind;
 	range->datetime = datetime;
 
@@ -127,7 +127,7 @@ e_cal_component_range_free (gpointer range)
 
 	if (rng) {
 		e_cal_component_datetime_free (rng->datetime);
-		g_free (rng);
+		g_slice_free (ECalComponentRange, rng);
 	}
 }
 
