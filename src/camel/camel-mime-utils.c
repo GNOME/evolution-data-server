@@ -2329,7 +2329,7 @@ rfc2184_decode (const gchar *in,
  *
  * Searches @params for a param named @name and gets the value.
  *
- * Returns: the value of the @name param
+ * Returns: (transfer none): the value of the @name param
  **/
 gchar *
 camel_header_param (struct _camel_header_param *params,
