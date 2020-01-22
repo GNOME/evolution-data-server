@@ -166,7 +166,7 @@ typedef gint (* CamelDBCollate)(gpointer enc, gint length1, gconstpointer data1,
  * Since: 2.24
  **/
 typedef struct _CamelMIRecord {
-	gchar *uid;
+	const gchar *uid; /* stored in the string pool */
 	guint32 flags;
 	guint32 msg_type;
 	guint32 dirty;
@@ -179,11 +179,11 @@ typedef struct _CamelMIRecord {
 	guint32 size;
 	gint64 dsent; /* time_t */
 	gint64 dreceived; /* time_t */
-	gchar *subject;
-	gchar *from;
-	gchar *to;
-	gchar *cc;
-	gchar *mlist;
+	const gchar *subject;	/* stored in the string pool */
+	const gchar *from;	/* stored in the string pool */
+	const gchar *to;	/* stored in the string pool */
+	const gchar *cc;	/* stored in the string pool */
+	const gchar *mlist;	/* stored in the string pool */
 	gchar *followup_flag;
 	gchar *followup_completed_on;
 	gchar *followup_due_by;

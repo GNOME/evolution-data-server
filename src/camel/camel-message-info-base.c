@@ -21,6 +21,7 @@
 
 #include "camel-folder-summary.h"
 #include "camel-message-info.h"
+#include "camel-string-utils.h"
 
 #include "camel-message-info-base.h"
 
@@ -28,11 +29,11 @@ struct _CamelMessageInfoBasePrivate {
 	guint32 flags;		/* bit-or of CamelMessageFlags */
 	CamelNamedFlags *user_flags;
 	CamelNameValueArray *user_tags;
-	gchar *subject;
-	gchar *from;
-	gchar *to;
-	gchar *cc;
-	gchar *mlist;
+	const gchar *subject;	/* stored in the string pool */
+	const gchar *from;	/* stored in the string pool */
+	const gchar *to;	/* stored in the string pool */
+	const gchar *cc;	/* stored in the string pool */
+	const gchar *mlist;	/* stored in the string pool */
 	guint32 size;
 	gint64 date_sent;	/* aka time_t */
 	gint64 date_received;	/* aka time_t */
@@ -335,8 +336,8 @@ message_info_base_set_subject (CamelMessageInfo *mi,
 	changed = g_strcmp0 (bmi->priv->subject, subject) != 0;
 
 	if (changed) {
-		g_free (bmi->priv->subject);
-		bmi->priv->subject = g_strdup (subject);
+		camel_pstring_free (bmi->priv->subject);
+		bmi->priv->subject = camel_pstring_strdup (subject);
 	}
 
 	camel_message_info_property_unlock (mi);
@@ -377,8 +378,8 @@ message_info_base_set_from (CamelMessageInfo *mi,
 	changed = g_strcmp0 (bmi->priv->from, from) != 0;
 
 	if (changed) {
-		g_free (bmi->priv->from);
-		bmi->priv->from = g_strdup (from);
+		camel_pstring_free (bmi->priv->from);
+		bmi->priv->from = camel_pstring_strdup (from);
 	}
 
 	camel_message_info_property_unlock (mi);
@@ -419,8 +420,8 @@ message_info_base_set_to (CamelMessageInfo *mi,
 	changed = g_strcmp0 (bmi->priv->to, to) != 0;
 
 	if (changed) {
-		g_free (bmi->priv->to);
-		bmi->priv->to = g_strdup (to);
+		camel_pstring_free (bmi->priv->to);
+		bmi->priv->to = camel_pstring_strdup (to);
 	}
 
 	camel_message_info_property_unlock (mi);
@@ -461,8 +462,8 @@ message_info_base_set_cc (CamelMessageInfo *mi,
 	changed = g_strcmp0 (bmi->priv->cc, cc) != 0;
 
 	if (changed) {
-		g_free (bmi->priv->cc);
-		bmi->priv->cc = g_strdup (cc);
+		camel_pstring_free (bmi->priv->cc);
+		bmi->priv->cc = camel_pstring_strdup (cc);
 	}
 
 	camel_message_info_property_unlock (mi);
@@ -503,8 +504,8 @@ message_info_base_set_mlist (CamelMessageInfo *mi,
 	changed = g_strcmp0 (bmi->priv->mlist, mlist) != 0;
 
 	if (changed) {
-		g_free (bmi->priv->mlist);
-		bmi->priv->mlist = g_strdup (mlist);
+		camel_pstring_free (bmi->priv->mlist);
+		bmi->priv->mlist = camel_pstring_strdup (mlist);
 	}
 
 	camel_message_info_property_unlock (mi);
@@ -798,15 +799,11 @@ message_info_base_dispose (GObject *object)
 	camel_name_value_array_free (bmi->priv->user_tags);
 	bmi->priv->user_tags = NULL;
 
-	#define free_ptr(x) G_STMT_START { g_free (x); x = NULL; } G_STMT_END
-
-	free_ptr (bmi->priv->subject);
-	free_ptr (bmi->priv->from);
-	free_ptr (bmi->priv->to);
-	free_ptr (bmi->priv->cc);
-	free_ptr (bmi->priv->mlist);
-
-	#undef free_ptr
+	g_clear_pointer (&bmi->priv->subject, (GDestroyNotify) camel_pstring_free);
+	g_clear_pointer (&bmi->priv->from, (GDestroyNotify) camel_pstring_free);
+	g_clear_pointer (&bmi->priv->to, (GDestroyNotify) camel_pstring_free);
+	g_clear_pointer (&bmi->priv->cc, (GDestroyNotify) camel_pstring_free);
+	g_clear_pointer (&bmi->priv->mlist, (GDestroyNotify) camel_pstring_free);
 
 	if (bmi->priv->references) {
 		g_array_unref (bmi->priv->references);

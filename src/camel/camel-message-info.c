@@ -267,7 +267,7 @@ message_info_save (const CamelMessageInfo *mi,
 	g_return_val_if_fail (record != NULL, FALSE);
 	g_return_val_if_fail (bdata_str != NULL, FALSE);
 
-	record->uid = (gchar *) camel_pstring_strdup (camel_message_info_get_uid (mi));
+	record->uid = camel_pstring_strdup (camel_message_info_get_uid (mi));
 	record->flags = camel_message_info_get_flags (mi);
 
 	if ((record->flags & CAMEL_MESSAGE_JUNK) != 0) {
@@ -302,11 +302,11 @@ message_info_save (const CamelMessageInfo *mi,
 	record->dsent = camel_message_info_get_date_sent (mi);
 	record->dreceived = camel_message_info_get_date_received (mi);
 
-	record->subject = g_strdup (camel_message_info_get_subject (mi));
-	record->from = g_strdup (camel_message_info_get_from (mi));
-	record->to = g_strdup (camel_message_info_get_to (mi));
-	record->cc = g_strdup (camel_message_info_get_cc (mi));
-	record->mlist = g_strdup (camel_message_info_get_mlist (mi));
+	record->subject = camel_pstring_strdup (camel_message_info_get_subject (mi));
+	record->from = camel_pstring_strdup (camel_message_info_get_from (mi));
+	record->to = camel_pstring_strdup (camel_message_info_get_to (mi));
+	record->cc = camel_pstring_strdup (camel_message_info_get_cc (mi));
+	record->mlist = camel_pstring_strdup (camel_message_info_get_mlist (mi));
 
 	record->followup_flag = g_strdup (camel_message_info_get_user_tag (mi, "follow-up"));
 	record->followup_completed_on = g_strdup (camel_message_info_get_user_tag (mi, "completed-on"));

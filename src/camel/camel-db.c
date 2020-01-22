@@ -2563,11 +2563,11 @@ camel_db_camel_mir_free (CamelMIRecord *record)
 {
 	if (record) {
 		camel_pstring_free (record->uid);
-		g_free (record->subject);
-		g_free (record->from);
-		g_free (record->to);
-		g_free (record->cc);
-		g_free (record->mlist);
+		camel_pstring_free (record->subject);
+		camel_pstring_free (record->from);
+		camel_pstring_free (record->to);
+		camel_pstring_free (record->cc);
+		camel_pstring_free (record->mlist);
 		g_free (record->followup_flag);
 		g_free (record->followup_completed_on);
 		g_free (record->followup_due_by);
