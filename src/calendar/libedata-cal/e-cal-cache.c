@@ -4521,9 +4521,15 @@ e_cal_cache_class_init (ECalCacheClass *klass)
 
 	/**
 	 * ECalCache:dup-component-revision:
+	 * ECalCache::dup-component-revision:
+	 * @cal_cache: an #ECalCache
+	 * @icomp: an #ICalComponent
+	 *
 	 * A signal being called to get revision of an ICalComponent.
 	 * The default implementation uses a concatenation of
 	 * DTSTAMP '-' LASTMODIFIED '-' SEQUENCE.
+	 *
+	 * Returns: the revision string
 	 **/
 	signals[DUP_COMPONENT_REVISION] = g_signal_new (
 		"dup-component-revision",
@@ -4534,10 +4540,10 @@ e_cal_cache_class_init (ECalCacheClass *klass)
 		NULL,
 		g_cclosure_marshal_generic,
 		G_TYPE_STRING, 1,
-		G_TYPE_POINTER);
+		I_CAL_TYPE_COMPONENT);
 
 	/**
-	 * ECalCache:get-timezone:
+	 * ECalCache::get-timezone:
 	 * @cal_cache: an #ECalCache
 	 * @tzid: timezone ID
 	 *
@@ -4545,6 +4551,8 @@ e_cal_cache_class_init (ECalCacheClass *klass)
 	 * into the cache. It's used to make sure the cache contains
 	 * all timezones which are needed by the component. The returned
 	 * ICalTimezone will not be freed.
+	 *
+	 * Returns: (transfer none): an #ICalTimezone
 	 *
 	 * Since: 3.30
 	 **/
@@ -4556,7 +4564,7 @@ e_cal_cache_class_init (ECalCacheClass *klass)
 		g_signal_accumulator_first_wins,
 		NULL,
 		g_cclosure_marshal_generic,
-		G_TYPE_POINTER, 1,
+		I_CAL_TYPE_COMPONENT, 1,
 		G_TYPE_STRING);
 }
 
