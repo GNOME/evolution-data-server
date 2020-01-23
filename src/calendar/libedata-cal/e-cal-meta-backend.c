@@ -4067,9 +4067,8 @@ e_cal_meta_backend_inline_local_attachments_sync (ECalMetaBackend *meta_backend,
 					gchar *base64;
 
 					base64 = g_base64_encode ((const guchar *) content, len);
-					new_attach = i_cal_attach_new_from_data (base64, NULL, NULL);
+					new_attach = i_cal_attach_new_from_data (base64, (GFunc) g_free, NULL);
 					g_free (content);
-					g_free (base64);
 
 					ecmb_remove_all_but_filename_parameter (prop);
 

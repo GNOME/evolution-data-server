@@ -111,7 +111,7 @@ add_definitions(-DSOUP_VERSION_MIN_REQUIRED=${soup_encoded_version})
 
 set(gcr_minimum_version 3.4)
 set(libgdata_minimum_version 0.15.1)
-set(libical_glib_minimum_version 3.0.5)
+set(libical_glib_minimum_version 3.0.7)
 set(libsecret_minimum_version 0.5)
 set(libxml_minimum_version 2.0.0)
 set(sqlite_minimum_version 3.7.17)
