@@ -845,6 +845,25 @@ vee_folder_add_subfolder_uids_to_search_matches (CamelVeeDataCache *data_cache,
 	}
 }
 
+static const gchar *
+vee_folder_combine_expressions (CamelVeeFolder *vfolder,
+				const gchar *expression,
+				gchar **tmp)
+{
+	const gchar *my_expression;
+
+	my_expression = camel_vee_folder_get_expression (vfolder);
+
+	if (!expression || !*expression) {
+		expression = my_expression;
+	} else if (my_expression && *my_expression) {
+		*tmp = g_strconcat ("(and ", expression, " ", my_expression, ")", NULL);
+		expression = *tmp;
+	}
+
+	return expression;
+}
+
 static GPtrArray *
 vee_folder_search_by_expression (CamelFolder *folder,
                                  const gchar *expression,
@@ -855,6 +874,7 @@ vee_folder_search_by_expression (CamelFolder *folder,
 	CamelVeeDataCache *data_cache;
 	GPtrArray *matches = NULL;
 	GList *link;
+	gchar *tmp = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (folder), NULL);
 
@@ -862,6 +882,8 @@ vee_folder_search_by_expression (CamelFolder *folder,
 	data_cache = vee_folder_get_data_cache (vfolder);
 
 	g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
+
+	expression = vee_folder_combine_expressions (vfolder, expression, &tmp);
 
 	for (link = vfolder->priv->subfolders; link && !g_cancellable_is_cancelled (cancellable); link = g_list_next (link)) {
 		CamelFolder *subfolder = link->data;
@@ -880,6 +902,8 @@ vee_folder_search_by_expression (CamelFolder *folder,
 			camel_folder_search_free (subfolder, submatches);
 		}
 	}
+
+	g_free (tmp);
 
 	g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
 
@@ -947,6 +971,7 @@ vee_folder_search_by_uids (CamelFolder *folder,
 	GPtrArray *matches = NULL;
 	GList *link;
 	guint ii;
+	gchar *tmp = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (folder), NULL);
 
@@ -976,6 +1001,8 @@ vee_folder_search_by_uids (CamelFolder *folder,
 	data_cache = vee_folder_get_data_cache (vfolder);
 
 	g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
+
+	expression = vee_folder_combine_expressions (vfolder, expression, &tmp);
 
 	for (link = vfolder->priv->subfolders; link && !g_cancellable_is_cancelled (cancellable); link = g_list_next (link)) {
 		CamelFolder *subfolder = link->data;
@@ -1009,6 +1036,8 @@ vee_folder_search_by_uids (CamelFolder *folder,
 		}
 	}
 
+	g_free (tmp);
+
 	g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
@@ -1033,6 +1062,7 @@ vee_folder_count_by_expression (CamelFolder *folder,
 {
 	CamelVeeFolder *vfolder;
 	GList *link;
+	gchar *tmp = NULL;
 	guint32 count = 0;
 
 	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (folder), 0);
@@ -1041,11 +1071,15 @@ vee_folder_count_by_expression (CamelFolder *folder,
 
 	g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
 
+	expression = vee_folder_combine_expressions (vfolder, expression, &tmp);
+
 	for (link = vfolder->priv->subfolders; link && !g_cancellable_is_cancelled (cancellable); link = g_list_next (link)) {
 		CamelFolder *subfolder = link->data;
 
 		count += camel_folder_count_by_expression (subfolder, expression, cancellable, NULL);
 	}
+
+	g_free (tmp);
 
 	g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
 
