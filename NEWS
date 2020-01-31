@@ -1,3 +1,38 @@
+Evolution-Data-Server 3.35.90 2020-01-31
+----------------------------------------
+
+Bug Fixes:
+	I#154 - Replace deprecated gdk_beep() usage in the code (Milan Crha)
+	I#179 - Calendar: Handle errors in file backend's refresh thread gracefully (Milan Crha)
+	I#184 - WebDAV: Privilege with multiple child elements not handled properly (Milan Crha)
+	I#186 - Allow override of PHONENUMBER_DEFINITIONS (Milan Crha)
+	M!34 - Use G_PARAM_STATIC_STRINGS (Niels De Graef)
+	M!35 - CamelMessageContentInfo: Define CamelProviderAutoDetectFunc (Corentin Noël)
+	M!36 - EBookSqlite: Make the signal definition for before-*-contact more specific (Corentin Noël)
+	M!37 - CamelFolderSummary: Explicitely map the virtual methods to their callers (Corentin Noël)
+	evo-I#686 - Broken search folder that includes all mails from other search folders (Milan Crha)
+
+Miscellaneous:
+	EDBusServer: Delay new module load (Milan Crha)
+	alarm-notify: Double-free with certain types of the reminder (Milan Crha)
+	ESourceCollection: Add 'allow-sources-rename' property (Milan Crha)
+	camel: Document the GHashTable type in CamelProviderAutoDetectFunc and camel_provider_auto_detect (Corentin Noël)
+	Speed-up e_contact_get_attributes_set() (Milan Crha)
+	Prefer GSlice over heap allocation for short-lived structures (Milan Crha)
+	EBookSqlite: Address runtime warnings from remove_leading_zeros() in unit tests (Milan Crha)
+	CamelMessageInfo: Cache common strings in the string pool (Milan Crha)
+	ECalCache: Be more specific regarding the signal definition and fix documentation (Corentin Noël)
+	CamelHeaderParam: Specify the transfer annotation for camel_header_param (Corentin Noël)
+	Vala: Add more .metadata fixes (Corentin Noël)
+	Bump libical-glib dependency to 3.0.7 and benefit from its behavior (Milan Crha)
+
+Translations:
+	Rafael Fontenelle (pt_BR)
+	Sucipto (id)
+	Dušan Kazik (sk)
+	Anders Jonsson (sv)
+	Umarzuki Bin Mochlis Moktar (ms)
+
 Evolution-Data-Server 3.35.3 2020-01-03
 ---------------------------------------
 
