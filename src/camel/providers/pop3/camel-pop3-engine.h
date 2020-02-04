@@ -81,7 +81,9 @@ enum {
 	CAMEL_POP3_CAP_SASL = 1 << 2,
 	CAMEL_POP3_CAP_TOP = 1 << 3,
 	CAMEL_POP3_CAP_PIPE = 1 << 4,
-	CAMEL_POP3_CAP_STLS = 1 << 5
+	CAMEL_POP3_CAP_STLS = 1 << 5,
+	CAMEL_POP3_CAP_UTF8 = 1 << 6,
+	CAMEL_POP3_CAP_UTF8_USER = 1 << 7
 };
 
 /* enable/disable flags for the engine itself */

@@ -647,6 +647,7 @@ pop3_store_authenticate_sync (CamelService *service,
 	CamelPOP3Command *pcp = NULL;
 	CamelPOP3Engine *pop3_engine;
 	const gchar *password;
+	gboolean enable_utf8;
 	gchar *host;
 	gchar *user;
 	gint status;
@@ -654,6 +655,7 @@ pop3_store_authenticate_sync (CamelService *service,
 	password = camel_service_get_password (service);
 
 	settings = camel_service_ref_settings (service);
+	enable_utf8 = camel_pop3_settings_get_enable_utf8 (CAMEL_POP3_SETTINGS (settings));
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
@@ -677,6 +679,24 @@ pop3_store_authenticate_sync (CamelService *service,
 		g_clear_object (&pop3_engine);
 
 		return CAMEL_AUTHENTICATION_ERROR;
+	}
+
+	if ((pop3_engine->capa & CAMEL_POP3_CAP_UTF8) != 0 && enable_utf8) {
+		pcu = camel_pop3_engine_command_new (
+			pop3_engine, 0, NULL, NULL, cancellable, error,
+			"UTF8");
+		if (error && *error) {
+			g_prefix_error (
+				error,
+				_("Unable to connect to POP server %s.\n"
+				"Error enabling UTF-8 mode: "), host);
+			result = CAMEL_AUTHENTICATION_ERROR;
+			goto exit;
+		}
+		while (camel_pop3_engine_iterate (pop3_engine, NULL, cancellable, NULL) > 0)
+			;
+		camel_pop3_engine_command_free (pop3_engine, pcu);
+		pcu = NULL;
 	}
 
 	if (mechanism == NULL) {

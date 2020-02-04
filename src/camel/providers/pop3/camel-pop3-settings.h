@@ -88,6 +88,11 @@ guint32		camel_pop3_settings_get_last_cache_expunge
 void		camel_pop3_settings_set_last_cache_expunge
 						(CamelPOP3Settings *settings,
 						 guint32 last_cache_expunge);
+gboolean	camel_pop3_settings_get_enable_utf8
+						(CamelPOP3Settings *settings);
+void		camel_pop3_settings_set_enable_utf8
+						(CamelPOP3Settings *settings,
+						 gboolean enable);
 
 G_END_DECLS
 

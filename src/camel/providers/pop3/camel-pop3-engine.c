@@ -183,6 +183,7 @@ static struct {
 	{ "APOP" , CAMEL_POP3_CAP_APOP },
 	{ "TOP" , CAMEL_POP3_CAP_TOP },
 	{ "UIDL", CAMEL_POP3_CAP_UIDL },
+	{ "UTF8", CAMEL_POP3_CAP_UTF8 },
 	{ "PIPELINING", CAMEL_POP3_CAP_PIPE },
 	{ "STLS", CAMEL_POP3_CAP_STLS },  /* STARTTLS */
 };
@@ -220,6 +221,21 @@ cmd_capa (CamelPOP3Engine *pe,
 						pe->auth = g_list_prepend (pe->auth, auth);
 					} else {
 						dd (printf ("unsupported auth type '%s'\n", tok));
+					}
+					tok = next;
+				}
+			} else if (strncmp ((const gchar *) line, "UTF8", 4) == 0 && (!line[4] || line[4] == ' ')) {
+				pe->capa |= CAMEL_POP3_CAP_UTF8;
+				tok = line + 4 + (line[4] ? 1 : 0);
+				dd (printf ("scanning tokens '%s'\n", tok));
+				while (tok) {
+					next = (guchar *) strchr ((gchar *) tok, ' ');
+					if (next)
+						*next++ = 0;
+					if (!strcmp ((const gchar *) tok, "USER")) {
+						pe->capa |= CAMEL_POP3_CAP_UTF8_USER;
+					} else {
+						dd (printf ("unsupported UTF8 capability argument type '%s'\n", tok));
 					}
 					tok = next;
 				}

@@ -23,6 +23,7 @@ struct _CamelPOP3SettingsPrivate {
 	gboolean disable_extensions;
 	gboolean keep_on_server;
 	gboolean auto_fetch;
+	gboolean enable_utf8;
 	guint32 last_cache_expunge;
 };
 
@@ -38,6 +39,7 @@ enum {
 	PROP_SECURITY_METHOD,
 	PROP_USER,
 	PROP_AUTO_FETCH,
+	PROP_ENABLE_UTF8,
 	PROP_LAST_CACHE_EXPUNGE
 };
 
@@ -118,6 +120,12 @@ pop3_settings_set_property (GObject *object,
 
 		case PROP_AUTO_FETCH:
 			camel_pop3_settings_set_auto_fetch  (
+				CAMEL_POP3_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_ENABLE_UTF8:
+			camel_pop3_settings_set_enable_utf8  (
 				CAMEL_POP3_SETTINGS (object),
 				g_value_get_boolean (value));
 			return;
@@ -207,6 +215,13 @@ pop3_settings_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				camel_pop3_settings_get_auto_fetch (
+				CAMEL_POP3_SETTINGS (object)));
+			return;
+
+		case PROP_ENABLE_UTF8:
+			g_value_set_boolean (
+				value,
+				camel_pop3_settings_get_enable_utf8 (
 				CAMEL_POP3_SETTINGS (object)));
 			return;
 	}
@@ -313,6 +328,19 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 			"auto-fetch",
 			"Auto Fetch mails",
 			"Automatically fetch additional mails that may be downloaded later.",
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_ENABLE_UTF8,
+		g_param_spec_boolean (
+			"enable-utf8",
+			"Enable UTF8",
+			"Whether can use UTF-8 extension, when the server supports it",
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
@@ -591,4 +619,43 @@ camel_pop3_settings_set_last_cache_expunge (CamelPOP3Settings *settings,
 	settings->priv->last_cache_expunge = last_cache_expunge;
 
 	g_object_notify (G_OBJECT (settings), "last-cache-expunge");
+}
+
+/**
+ * camel_pop3_settings_get_enable_utf8:
+ * @settings: a #CamelPOP3Settings
+ *
+ * Returns: Whether can use UTF-8 extension, when the server supports it
+ *
+ * Since: 3.36
+ **/
+gboolean
+camel_pop3_settings_get_enable_utf8 (CamelPOP3Settings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_POP3_SETTINGS (settings), FALSE);
+
+	return settings->priv->enable_utf8;
+}
+
+/**
+ * camel_pop3_settings_set_enable_utf8:
+ * @settings: a #CamelPOP3Settings
+ * @enable: the value to set
+ *
+ * Sets whether can use UTF-8 extension, when the server supports it
+ *
+ * Since: 3.36
+ **/
+void
+camel_pop3_settings_set_enable_utf8 (CamelPOP3Settings *settings,
+				     gboolean enable)
+{
+	g_return_if_fail (CAMEL_IS_POP3_SETTINGS (settings));
+
+	if ((settings->priv->enable_utf8 ? 1 : 0) == (enable ? 1 : 0))
+		return;
+
+	settings->priv->enable_utf8 = enable;
+
+	g_object_notify (G_OBJECT (settings), "enable-utf8");
 }

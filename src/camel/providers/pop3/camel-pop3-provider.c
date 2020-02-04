@@ -44,6 +44,8 @@ static CamelProviderConfEntry pop3_conf_entries[] = {
 	  N_("Delete _expunged from local Inbox"), "0" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "disable-extensions", NULL,
 	  N_("Disable _support for all POP3 extensions"), "0" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "enable-utf8", "!disable-extensions",
+	  N_("Enable _UTF-8 extension, when the server supports it"), "1" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };
