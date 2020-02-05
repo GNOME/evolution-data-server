@@ -116,6 +116,12 @@ struct _CamelSaslGssapiPrivate {
 	gss_OID mech, used_mech;
 };
 
+#else /* HAVE_KRB5 */
+
+struct _CamelSaslGssapiPrivate {
+	gint dummy;
+};
+
 #endif /* HAVE_KRB5 */
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelSaslGssapi, camel_sasl_gssapi, CAMEL_TYPE_SASL)
