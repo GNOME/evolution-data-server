@@ -3140,6 +3140,25 @@ camel_imapx_server_is_connected (CamelIMAPXServer *imapx_server)
 	return imapx_server->priv->state >= IMAPX_CONNECTED;
 }
 
+static gboolean
+imapx_password_contains_nonascii (CamelService *service)
+{
+	const gchar *password;
+
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), FALSE);
+
+	password = camel_service_get_password (service);
+
+	while (password && *password) {
+		if (*password < 0)
+			return TRUE;
+
+		password++;
+	}
+
+	return FALSE;
+}
+
 CamelAuthenticationResult
 camel_imapx_server_authenticate_sync (CamelIMAPXServer *is,
 				      const gchar *mechanism,
@@ -3155,6 +3174,8 @@ camel_imapx_server_authenticate_sync (CamelIMAPXServer *is,
 	CamelSasl *sasl = NULL;
 	gchar *host;
 	gchar *user;
+	gboolean can_retry_login = FALSE;
+	gboolean success;
 
 	g_return_val_if_fail (
 		CAMEL_IS_IMAPX_SERVER (is),
@@ -3235,10 +3256,32 @@ camel_imapx_server_authenticate_sync (CamelIMAPXServer *is,
 		}
 
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_LOGIN, "LOGIN %s %s", user, password);
+
+		can_retry_login = TRUE;
 	}
 
-	if (!camel_imapx_server_process_command_sync (is, ic, _("Failed to authenticate"), cancellable, error) && (
-	    !ic->status || ic->status->result != IMAPX_NO))
+	success = camel_imapx_server_process_command_sync (is, ic, _("Failed to authenticate"), cancellable, error);
+	if (!success && can_retry_login && imapx_password_contains_nonascii (service)) {
+		const gchar *password;
+		gchar *password_latin1;
+
+		can_retry_login = -1;
+
+		password = camel_service_get_password (service);
+		password_latin1 = g_convert_with_fallback (password, -1, "ISO-8859-1", "UTF-8", "", NULL, NULL, NULL);
+
+		if (password_latin1 && g_strcmp0 (password, password_latin1) != 0) {
+			camel_imapx_command_unref (ic);
+			ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_LOGIN, "LOGIN %S %S", user, password_latin1);
+			g_free (password_latin1);
+
+			success = camel_imapx_server_process_command_sync (is, ic, _("Failed to authenticate"), cancellable, NULL);
+		} else {
+			g_free (password_latin1);
+		}
+	}
+
+	if (!success && (!ic->status || ic->status->result != IMAPX_NO))
 		result = CAMEL_AUTHENTICATION_ERROR;
 	else if (ic->status->result == IMAPX_OK)
 		result = CAMEL_AUTHENTICATION_ACCEPTED;

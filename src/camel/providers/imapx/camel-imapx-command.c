@@ -199,6 +199,7 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 	gchar *utf7_name = NULL;
 	const gchar *name;
 	gboolean use_utf8_string = FALSE;
+	guchar force_str_mask = 0;
 
 	g_return_if_fail (CAMEL_IS_IMAPX_COMMAND (ic));
 
@@ -264,13 +265,19 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 				s = va_arg (ap, gchar *);
 				g_string_append (buffer, s);
 				break;
+			case 'S': /* escaped and quoted string */
+				s = va_arg (ap, gchar *);
+				use_utf8_string = FALSE;
+				force_str_mask = IMAPX_TYPE_TEXT_CHAR;
+				c (camel_imapx_server_get_tagprefix (ic->is), "got string '%s'\n", g_str_has_prefix (format, "LOGIN") ? "***" : s);
+				goto output_string;
 			case 's': /* simple string */
 				s = va_arg (ap, gchar *);
 				use_utf8_string = FALSE;
 				c (camel_imapx_server_get_tagprefix (ic->is), "got string '%s'\n", g_str_has_prefix (format, "LOGIN") ? "***" : s);
 			output_string:
 				if (s && *s) {
-					guchar mask = imapx_is_mask (s);
+					guchar mask = force_str_mask ? force_str_mask : imapx_is_mask (s);
 
 					if (use_utf8_string && !(mask & IMAPX_TYPE_ATOM_CHAR)) {
 						g_string_append_c (buffer, '"');

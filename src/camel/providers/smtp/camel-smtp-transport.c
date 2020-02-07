@@ -643,6 +643,25 @@ smtp_transport_disconnect_sync (CamelService *service,
 	return TRUE;
 }
 
+static gboolean
+smtp_password_contains_nonascii (CamelService *service)
+{
+	const gchar *password;
+
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), FALSE);
+
+	password = camel_service_get_password (service);
+
+	while (password && *password) {
+		if (*password < 0)
+			return TRUE;
+
+		password++;
+	}
+
+	return FALSE;
+}
+
 static CamelAuthenticationResult
 smtp_transport_authenticate_sync (CamelService *service,
                                   const gchar *mechanism,
@@ -654,8 +673,8 @@ smtp_transport_authenticate_sync (CamelService *service,
 	CamelSasl *sasl;
 	CamelStreamBuffer *istream;
 	CamelStream *ostream;
-	gchar *cmdbuf, *respbuf = NULL, *challenge;
-	gboolean auth_challenge = FALSE;
+	gchar *cmdbuf, *respbuf = NULL, *challenge, *restore_password = NULL;
+	gboolean auth_challenge = FALSE, can_try_again = TRUE;
 	GError *local_error = NULL;
 
 	if (mechanism == NULL) {
@@ -666,6 +685,7 @@ smtp_transport_authenticate_sync (CamelService *service,
 		return CAMEL_AUTHENTICATION_ERROR;
 	}
 
+ try_again:
 	sasl = camel_sasl_new ("smtp", mechanism, service);
 	if (sasl == NULL) {
 		g_set_error (
@@ -796,6 +816,34 @@ smtp_transport_authenticate_sync (CamelService *service,
 			respbuf = camel_stream_buffer_read_line (istream, cancellable, error);
 			d (fprintf (stderr, "[SMTP] received: %s\n", respbuf ? respbuf : "(null)"));
 		}
+
+		if (can_try_again) {
+			can_try_again = FALSE;
+
+			if (smtp_password_contains_nonascii (service)) {
+				const gchar *password;
+				gchar *password_latin1;
+
+				password = camel_service_get_password (service);
+				password_latin1 = g_convert_with_fallback (password, -1, "ISO-8859-1", "UTF-8", "", NULL, NULL, NULL);
+
+				if (password_latin1 && g_strcmp0 (password, password_latin1) != 0) {
+					restore_password = g_strdup (password);
+
+					camel_service_set_password (service, password_latin1);
+
+					g_clear_object (&istream);
+					g_clear_object (&ostream);
+					g_object_unref (sasl);
+					g_free (password_latin1);
+					g_free (respbuf);
+
+					goto try_again;
+				} else {
+					g_free (password_latin1);
+				}
+			}
+		}
 	} else if (strncmp (respbuf, "235", 3) == 0)
 		result = CAMEL_AUTHENTICATION_ACCEPTED;
 	/* Catch any other errors. */
@@ -820,6 +868,11 @@ lose:
 	result = CAMEL_AUTHENTICATION_ERROR;
 
 exit:
+	if (restore_password) {
+		camel_service_set_password (service, restore_password);
+		g_free (restore_password);
+	}
+
 	g_clear_object (&istream);
 	g_clear_object (&ostream);
 	g_object_unref (sasl);
