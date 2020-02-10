@@ -3045,7 +3045,8 @@ connected:
 
 			/* See if we got new capabilities
 			 * in the STARTTLS response. */
-			imapx_free_capability (is->priv->cinfo);
+			if (is->priv->cinfo)
+				imapx_free_capability (is->priv->cinfo);
 			is->priv->cinfo = NULL;
 			if (ic->status->condition == IMAPX_CAPABILITY) {
 				is->priv->cinfo = ic->status->u.cinfo;
