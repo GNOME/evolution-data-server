@@ -41,6 +41,22 @@ typedef struct _WebDAVDiscoverData {
 
 #define CUSTOM_SUPPORTS_FLAGS (E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE | E_WEBDAV_DISCOVER_SUPPORTS_SUBSCRIBED_ICALENDAR)
 
+static gboolean
+e_webdav_discovery_already_discovered (const gchar *href,
+				       const GSList *discovered_sources)
+{
+	GSList *link;
+
+	for (link = (GSList *) discovered_sources; link; link = g_slist_next (link)) {
+		EWebDAVDiscoveredSource *discovered = link->data;
+
+		if (discovered && g_strcmp0 (href, discovered->href) == 0)
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
 static void
 e_webdav_discover_split_resources (WebDAVDiscoverData *wdd,
 				   const GSList *resources)
@@ -58,9 +74,12 @@ e_webdav_discover_split_resources (WebDAVDiscoverData *wdd,
 		    resource->kind == E_WEBDAV_RESOURCE_KIND_SUBSCRIBED_ICALENDAR)) {
 			EWebDAVDiscoveredSource *discovered;
 
-			if ((resource->kind == E_WEBDAV_RESOURCE_KIND_CALENDAR || resource->kind == E_WEBDAV_RESOURCE_KIND_SUBSCRIBED_ICALENDAR) &&
-			    (wdd->only_supports & (~CUSTOM_SUPPORTS_FLAGS)) != E_WEBDAV_DISCOVER_SUPPORTS_NONE &&
+			if ((wdd->only_supports & (~CUSTOM_SUPPORTS_FLAGS)) != E_WEBDAV_DISCOVER_SUPPORTS_NONE &&
 			    (resource->supports & wdd->only_supports) == 0)
+				continue;
+
+			if (e_webdav_discovery_already_discovered (resource->href,
+				resource->kind == E_WEBDAV_RESOURCE_KIND_ADDRESSBOOK ? wdd->addressbooks : wdd->calendars))
 				continue;
 
 			discovered = g_slice_new0 (EWebDAVDiscoveredSource);
