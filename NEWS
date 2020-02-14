@@ -1,3 +1,25 @@
+Evolution-Data-Server 3.35.91 2020-02-14
+----------------------------------------
+
+Bug Fixes:
+	I#168 - Camel: Can fail to connect when password contains non-ASCII letters (Milan Crha)
+	I#178 - Implement RFC 6856 - POP3 support for UTF-8 (Milan Crha)
+	I#187 - camel-sasl-gssapi: Fails to build without KRB5 (Milan Crha)
+	I#189 - Crash on malformed server response with minimal capabilities (Milan Crha)
+
+Miscellaneous:
+	Remove outdated and unused devel-docs files from camel (Milan Crha)
+	EWebDAVDiscover: Returns address books when asked for calendars only (Milan Crha)
+
+Translations:
+	Aurimas Černius (lt)
+	Daniel Mustieles (es)
+	Anders Jonsson (sv)
+	Rafael Fontenelle (pt_BR)
+	Sabri Ünal (tr)
+	Kukuh Syafaat (id)
+	Balázs Úr (hu)
+
 Evolution-Data-Server 3.35.90 2020-01-31
 ----------------------------------------
 
