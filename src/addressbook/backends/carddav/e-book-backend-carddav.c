@@ -217,7 +217,7 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 			uri = soup_uri_to_string (soup_uri, FALSE);
 
 			success = FALSE;
-			g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
+			g_set_error (&local_error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
 				_("Given URL “%s” doesn’t reference CardDAV address book"), uri);
 
 			g_free (uri);
