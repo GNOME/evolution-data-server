@@ -1789,7 +1789,7 @@ sync_folders (CamelIMAPXStore *imapx_store,
 	 * in imapx_store_process_mailbox_attributes(). */
 	g_atomic_int_inc (&imapx_store->priv->syncing_folders);
 
-	update_folder_list = !initial_setup && (!root_folder_path || !*root_folder_path);
+	update_folder_list = !initial_setup && (!root_folder_path || !*root_folder_path) && g_atomic_int_get (&imapx_store->priv->syncing_folders) == 1;
 
 	if (update_folder_list) {
 		g_mutex_lock (&imapx_store->priv->mailboxes_lock);
