@@ -81,6 +81,38 @@ enum {
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (EBackend, e_backend, G_TYPE_OBJECT)
 
+static void
+backend_source_unset_last_credentials_required_arguments_cb (GObject *source_object,
+							     GAsyncResult *result,
+							     gpointer user_data)
+{
+	GError *local_error = NULL;
+
+	g_return_if_fail (E_IS_SOURCE (source_object));
+
+	e_source_unset_last_credentials_required_arguments_finish (E_SOURCE (source_object), result, &local_error);
+
+	if (local_error)
+		g_debug ("%s: Call failed: %s", G_STRFUNC, local_error->message);
+
+	g_clear_error (&local_error);
+}
+
+static void
+backend_set_source_disconnected (ESource *source)
+{
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	/* This is to force notification about status change on the client side */
+	if (e_source_get_connection_status (source) == E_SOURCE_CONNECTION_STATUS_DISCONNECTED)
+		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTING);
+
+	e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+
+	e_source_unset_last_credentials_required_arguments (source, NULL,
+		backend_source_unset_last_credentials_required_arguments_cb, NULL);
+}
+
 typedef struct _CanReachData {
 	EBackend *backend;
 	GCancellable *cancellable;
@@ -103,6 +135,7 @@ backend_network_monitor_can_reach_cb (GObject *source_object,
                                       gpointer user_data)
 {
 	CanReachData *crd = user_data;
+	ESource *source;
 	gboolean host_is_reachable;
 	GError *error = NULL;
 
@@ -121,8 +154,18 @@ backend_network_monitor_can_reach_cb (GObject *source_object,
 		g_clear_object (&crd->backend->priv->network_monitor_cancellable);
 	g_mutex_unlock (&crd->backend->priv->network_monitor_cancellable_lock);
 
+	source = e_backend_get_source (crd->backend);
+
 	if (G_IS_IO_ERROR (error, G_IO_ERROR_CANCELLED) ||
 	    host_is_reachable == e_backend_get_online (crd->backend)) {
+		if (!G_IS_IO_ERROR (error, G_IO_ERROR_CANCELLED)) {
+			if (e_source_get_connection_status (source) == E_SOURCE_CONNECTION_STATUS_SSL_FAILED)
+				e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+
+			e_source_unset_last_credentials_required_arguments (source, NULL,
+				backend_source_unset_last_credentials_required_arguments_cb, NULL);
+		}
+
 		g_clear_error (&error);
 		can_reach_data_free (crd);
 		return;
@@ -130,14 +173,14 @@ backend_network_monitor_can_reach_cb (GObject *source_object,
 
 	g_clear_error (&error);
 
-	e_backend_set_online (crd->backend, host_is_reachable);
-
-	if (!host_is_reachable) {
-		ESource *source;
-
-		source = e_backend_get_source (crd->backend);
-		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+	if (!host_is_reachable || e_source_get_connection_status (source) == E_SOURCE_CONNECTION_STATUS_SSL_FAILED) {
+		backend_set_source_disconnected (source);
+	} else {
+		e_source_unset_last_credentials_required_arguments (source, NULL,
+			backend_source_unset_last_credentials_required_arguments_cb, NULL);
 	}
+
+	e_backend_set_online (crd->backend, host_is_reachable);
 
 	can_reach_data_free (crd);
 }
@@ -201,6 +244,9 @@ backend_update_online_state_timeout_cb (gpointer user_data)
 	if (connectable == NULL) {
 		backend->priv->network_monitor_cancellable = cancellable;
 		g_mutex_unlock (&backend->priv->network_monitor_cancellable_lock);
+
+		e_source_unset_last_credentials_required_arguments (e_backend_get_source (backend), NULL,
+			backend_source_unset_last_credentials_required_arguments_cb, NULL);
 
 		e_backend_set_online (backend, TRUE);
 	} else {
@@ -275,6 +321,9 @@ backend_network_changed_cb (GNetworkMonitor *network_monitor,
 		backend_update_online_state (backend);
 	} else {
 		GSocketConnectable *connectable;
+
+		e_source_unset_last_credentials_required_arguments (e_backend_get_source (backend), NULL,
+			backend_source_unset_last_credentials_required_arguments_cb, NULL);
 
 		connectable = backend_ref_connectable_internal (backend);
 		e_backend_set_online (backend, !connectable);
@@ -493,23 +542,6 @@ backend_source_authenticate_cb (ESource *source,
 }
 
 static void
-backend_source_unset_last_credentials_required_arguments_cb (GObject *source_object,
-							     GAsyncResult *result,
-							     gpointer user_data)
-{
-	GError *local_error = NULL;
-
-	g_return_if_fail (E_IS_SOURCE (source_object));
-
-	e_source_unset_last_credentials_required_arguments_finish (E_SOURCE (source_object), result, &local_error);
-
-	if (local_error)
-		g_debug ("%s: Call failed: %s", G_STRFUNC, local_error->message);
-
-	g_clear_error (&local_error);
-}
-
-static void
 backend_set_source (EBackend *backend,
                     ESource *source)
 {
@@ -618,9 +650,7 @@ backend_dispose (GObject *object)
 
 	if (priv->source) {
 		g_signal_handlers_disconnect_by_func (priv->source, backend_source_authenticate_cb, object);
-		e_source_set_connection_status (priv->source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
-		e_source_unset_last_credentials_required_arguments (priv->source, NULL,
-			backend_source_unset_last_credentials_required_arguments_cb, NULL);
+		backend_set_source_disconnected (priv->source);
 	}
 
 	g_mutex_lock (&priv->authenticate_cancellable_lock);
