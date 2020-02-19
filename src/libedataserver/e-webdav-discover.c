@@ -902,6 +902,7 @@ e_webdav_discover_sources_full_sync (ESource *source,
 
 			wdd.error = &local_error_2nd;
 			wdd.only_supports = E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS;
+			g_hash_table_remove_all (wdd.covered_hrefs);
 
 			success = (uri && *uri && e_webdav_discover_propfind_uri_sync (webdav, &wdd, uri, FALSE)) || success;
 
@@ -933,6 +934,7 @@ e_webdav_discover_sources_full_sync (ESource *source,
 
 			wdd.error = &local_error_2nd;
 			wdd.only_supports = E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS;
+			g_hash_table_remove_all (wdd.covered_hrefs);
 
 			success = (uri && *uri && e_webdav_discover_propfind_uri_sync (webdav, &wdd, uri, FALSE)) || success;
 
