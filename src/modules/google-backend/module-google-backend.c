@@ -431,7 +431,6 @@ google_add_task_list (ECollectionBackend *collection,
 	e_source_resource_set_identity (resource, identity);
 
 	e_source_set_display_name (source, display_name);
-	e_source_set_enabled (source, TRUE);
 
 	collection_extension = e_source_get_extension (
 		collection_source, E_SOURCE_EXTENSION_COLLECTION);

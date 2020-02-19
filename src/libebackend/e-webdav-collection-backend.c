@@ -199,7 +199,6 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 			e_source_set_display_name (source, display_name);
 
 		e_source_webdav_set_display_name (webdav_extension, display_name);
-		e_source_set_enabled (source, TRUE);
 
 		if (source_type != E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS) {
 			/* Also check whether the color format is as expected; cannot
