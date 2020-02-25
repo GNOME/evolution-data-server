@@ -480,6 +480,114 @@ test_recur_exdate (ETestServerFixture *fixture,
 	);
 }
 
+typedef struct _DurationData {
+	gint n_found;
+	gint expected_duration;
+} DurationData;
+
+static gboolean
+duration_got_instance_cb (ICalComponent *icomp,
+			  ICalTime *instance_start,
+			  ICalTime *instance_end,
+			  gpointer user_data,
+			  GCancellable *cancellable,
+			  GError **error)
+{
+	DurationData *dd = user_data;
+	ICalDuration *dur;
+
+	dd->n_found++;
+
+	dur = i_cal_component_get_duration (icomp);
+	g_assert_nonnull (dur);
+	g_assert_cmpint (i_cal_duration_as_int (dur), ==, dd->expected_duration);
+	g_assert_cmpint (i_cal_time_as_timet (instance_end) - i_cal_time_as_timet (instance_start), ==, dd->expected_duration);
+
+	g_object_unref (dur);
+
+	return TRUE;
+}
+
+static void
+test_recur_duration (ETestServerFixture *fixture,
+		     gconstpointer user_data)
+{
+	ICalComponent *comp;
+	ICalDuration *dur;
+	ICalTime *start, *end;
+	DurationData dd;
+	gboolean success;
+	GError *error = NULL;
+
+	comp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\n"
+		"UID:1\n"
+		"DTSTART;TZID=Australia/Melbourne:20200212T100000\n"
+		"DURATION:PT30M\n"
+		"CREATED:20200212T111400Z\n"
+		"DTSTAMP:20200212T111400Z\n"
+		"SUMMARY:With duration\n"
+		"RRULE:FREQ=WEEKLY\n"
+		"END:VEVENT\n"
+	);
+
+	g_assert_nonnull (comp);
+
+	start = i_cal_time_new_from_string ("20200201T000000Z");
+	end = i_cal_time_new_from_string ("20200331T235959Z");
+
+	g_assert_nonnull (start);
+	g_assert_nonnull (end);
+
+	dur = i_cal_component_get_duration (comp);
+	g_assert_nonnull (dur);
+
+	dd.expected_duration = i_cal_duration_as_int (dur);
+	g_object_unref (dur);
+
+	g_assert_cmpint (dd.expected_duration, ==, 30 * 60);
+
+	dd.n_found = 0;
+
+	success = e_cal_recur_generate_instances_sync (comp, start, end,
+		duration_got_instance_cb, &dd,
+		lookup_tzid_cb, NULL,
+		i_cal_timezone_get_builtin_timezone ("Australia/Melbourne"),
+		NULL, &error);
+
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_cmpint (dd.n_found, ==, 8);
+
+	dd.n_found = 0;
+
+	success = e_cal_recur_generate_instances_sync (comp, start, end,
+		duration_got_instance_cb, &dd,
+		lookup_tzid_cb, NULL,
+		i_cal_timezone_get_builtin_timezone ("Europe/Berlin"),
+		NULL, &error);
+
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_cmpint (dd.n_found, ==, 8);
+
+	dd.n_found = 0;
+
+	success = e_cal_recur_generate_instances_sync (comp, start, end,
+		duration_got_instance_cb, &dd,
+		lookup_tzid_cb, NULL,
+		i_cal_timezone_get_builtin_timezone ("America/New_York"),
+		NULL, &error);
+
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_cmpint (dd.n_found, ==, 8);
+
+	g_object_unref (start);
+	g_object_unref (end);
+	g_object_unref (comp);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -507,6 +615,13 @@ main (gint argc,
 		&test_closure,
 		e_test_server_utils_setup,
 		test_recur_exdate,
+		e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalRecur/Duration",
+		ETestServerFixture,
+		&test_closure,
+		e_test_server_utils_setup,
+		test_recur_duration,
 		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();

@@ -227,6 +227,12 @@ ensure_timezone (ICalComponent *comp,
 		prop = i_cal_component_get_first_property (comp, prop_kind);
 	else
 		g_object_ref (prop);
+
+	/* DTEND can be computed from DTSTART and DURATION, thus use TZID from DTSTART,
+	   in case DTEND is not present. */
+	if (!prop && prop_kind == I_CAL_DTEND_PROPERTY)
+		prop = i_cal_component_get_first_property (comp, I_CAL_DTSTART_PROPERTY);
+
 	if (!prop)
 		return TRUE;
 
