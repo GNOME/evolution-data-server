@@ -179,13 +179,11 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 
 	if (success) {
 		ESourceWebdav *webdav_extension;
-		ECalCache *cal_cache;
 		SoupURI *soup_uri;
 		gboolean calendar_access;
 
 		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 		soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
-		cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
 
 		cbdav->priv->calendar_schedule = e_cal_backend_get_kind (E_CAL_BACKEND (cbdav)) != I_CAL_VJOURNAL_COMPONENT &&
 			capabilities && g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_SCHEDULE);
@@ -211,7 +209,6 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 		}
 
-		g_clear_object (&cal_cache);
 		soup_uri_free (soup_uri);
 	}
 

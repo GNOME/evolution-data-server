@@ -193,13 +193,11 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 
 	if (success) {
 		ESourceWebdav *webdav_extension;
-		EBookCache *book_cache;
 		SoupURI *soup_uri;
 		gboolean addressbook;
 
 		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 		soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
-		book_cache = e_book_meta_backend_ref_cache (meta_backend);
 
 		addressbook = capabilities && g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_ADDRESSBOOK);
 
@@ -225,7 +223,6 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 		}
 
-		g_clear_object (&book_cache);
 		soup_uri_free (soup_uri);
 	}
 
