@@ -394,6 +394,11 @@ ecb_caldav_update_nfo_with_vcalendar (ECalMetaBackendInfo *nfo,
 	}
 }
 
+typedef struct _MultigetData {
+	GSList *from_link;
+	GSList **out_removed_objects;
+} MultigetData;
+
 static gboolean
 ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
 				 xmlXPathContextPtr xpath_ctx,
@@ -403,9 +408,10 @@ ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
 				 guint status_code,
 				 gpointer user_data)
 {
-	GSList **from_link = user_data;
+	MultigetData *md = user_data;
 
-	g_return_val_if_fail (from_link != NULL, FALSE);
+	g_return_val_if_fail (md != NULL, FALSE);
+	g_return_val_if_fail (md->from_link != NULL, FALSE);
 
 	if (!xpath_prop_prefix) {
 		e_xml_xpath_context_register_namespaces (xpath_ctx, "C", E_WEBDAV_NS_CALDAV, NULL);
@@ -428,7 +434,7 @@ ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
 				if (uid) {
 					GSList *link;
 
-					for (link = *from_link; link; link = g_slist_next (link)) {
+					for (link = md->from_link; link; link = g_slist_next (link)) {
 						ECalMetaBackendInfo *nfo = link->data;
 
 						if (!nfo)
@@ -437,8 +443,8 @@ ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
 						if (g_strcmp0 (nfo->extra, href) == 0) {
 							/* If the server returns data in the same order as it had been requested,
 							   then this speeds up lookup for the matching object. */
-							if (link == *from_link)
-								*from_link = g_slist_next (*from_link);
+							if (link == md->from_link)
+								md->from_link = g_slist_next (md->from_link);
 
 							ecb_caldav_update_nfo_with_vcalendar (nfo, vcalendar, etag);
 
@@ -458,7 +464,7 @@ ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
 
 		g_return_val_if_fail (href != NULL, FALSE);
 
-		for (link = *from_link; link; link = g_slist_next (link)) {
+		for (link = md->from_link; link; link = g_slist_next (link)) {
 			ECalMetaBackendInfo *nfo = link->data;
 
 			if (!nfo)
@@ -467,10 +473,14 @@ ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
 			if (g_strcmp0 (nfo->extra, href) == 0) {
 				/* If the server returns data in the same order as it had been requested,
 				   then this speeds up lookup for the matching object. */
-				if (link == *from_link)
-					*from_link = g_slist_next (*from_link);
+				if (link == md->from_link)
+					md->from_link = g_slist_next (md->from_link);
 
-				e_cal_meta_backend_info_free (nfo);
+				if (md->out_removed_objects)
+					*md->out_removed_objects = g_slist_prepend (*md->out_removed_objects, nfo);
+				else
+					e_cal_meta_backend_info_free (nfo);
+
 				link->data = NULL;
 
 				break;
@@ -486,6 +496,7 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 				    EWebDAVSession *webdav,
 				    GSList **in_link,
 				    GSList **set2,
+				    GSList **out_removed_objects,
 				    GCancellable *cancellable,
 				    GError **error)
 {
@@ -590,8 +601,24 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 				g_free (new_uri);
 			}
 
-			if (!success)
-				success = e_webdav_session_get_data_sync (webdav, nfo->extra, NULL, &etag, &calendar_data, NULL, cancellable, error);
+			if (!success) {
+				GError *local_error = NULL;
+
+				success = e_webdav_session_get_data_sync (webdav, nfo->extra, NULL, &etag, &calendar_data, NULL, cancellable, &local_error);
+
+				if (!success && g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+					if (out_removed_objects)
+						*out_removed_objects = g_slist_prepend (*out_removed_objects, nfo);
+					else
+						e_cal_meta_backend_info_free (nfo);
+
+					link->data = NULL;
+					g_clear_error (&local_error);
+					continue;
+				} else if (local_error) {
+					g_propagate_error (error, local_error);
+				}
+			}
 
 			if (success && calendar_data) {
 				ICalComponent *vcalendar;
@@ -628,10 +655,13 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 
 	if (left_to_go != E_CALDAV_MAX_MULTIGET_AMOUNT &&
 	    !cbdav->priv->is_icloud && success) {
-		GSList *from_link = *in_link;
+		MultigetData md;
+
+		md.from_link = *in_link;
+		md.out_removed_objects = out_removed_objects;
 
 		success = e_webdav_session_report_sync (webdav, NULL, NULL, xml,
-			ecb_caldav_multiget_response_cb, &from_link, NULL, NULL, cancellable, error);
+			ecb_caldav_multiget_response_cb, &md, NULL, NULL, cancellable, error);
 	}
 
 	g_object_unref (xml);
@@ -926,6 +956,7 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 	g_hash_table_destroy (known_items);
 
 	if (success && (*out_created_objects || *out_modified_objects)) {
+		ECalCache *cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
 		GSList *link, *set2 = *out_modified_objects;
 
 		if (*out_created_objects) {
@@ -936,8 +967,38 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 		}
 
 		do {
-			success = ecb_caldav_multiget_from_sets_sync (cbdav, webdav, &link, &set2, cancellable, &local_error);
+			success = ecb_caldav_multiget_from_sets_sync (cbdav, webdav, &link, &set2, out_removed_objects, cancellable, &local_error);
 		} while (success && link);
+
+		for (link = *out_created_objects; link; link = g_slist_next (link)) {
+			ECalMetaBackendInfo *nfo = link->data;
+
+			if (!nfo)
+				continue;
+
+			if (!nfo->uid || !*nfo->uid) {
+				GSList *ids = NULL, *ilink = NULL;
+
+				link->data = NULL;
+
+				if (e_cal_cache_get_ids_with_extra (cal_cache, nfo->extra, &ids, cancellable, NULL)) {
+					for (ilink = ids; ilink; ilink = g_slist_next (ilink)) {
+						ECalComponentId *id = ilink->data;
+
+						if (id) {
+							*out_removed_objects = g_slist_prepend (*out_removed_objects,
+								e_cal_meta_backend_info_new (e_cal_component_id_get_uid (id), nfo->revision, NULL, nfo->extra));
+						}
+					}
+
+					g_slist_free_full (ids, e_cal_component_id_free);
+				}
+
+				e_cal_meta_backend_info_free (nfo);
+			}
+		}
+
+		g_clear_object (&cal_cache);
 	}
 
 	if (local_error) {
