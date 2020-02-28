@@ -1,3 +1,27 @@
+Evolution-Data-Server 3.35.92 2020-02-28
+----------------------------------------
+
+Bug Fixes:
+	I#166 - Remembers last connection error for too long (Milan Crha)
+	I#167 - IMAPx: Can claim existing folders as gone (Milan Crha)
+	I#192 - Collection accounts: Do not suddenly enable disabled sub-sources (Milan Crha)
+	I#193 - EWebDAVDiscover: Can skip lookup for books with /.well-known/carddav address (Milan Crha)
+	I#194 - e-cal-recur: Incorrect timezone used for DTEND from DURATION (Milan Crha)
+
+Miscellaneous:
+	EWebDAVCollectionBackend: Require credentials only if user name is set (Milan Crha)
+	CalDAV/CardDAV: Fix 'local_error' variable usage in connect_sync() (Milan Crha)
+	CalDAV/CardDAV: Remove unused variable declaration (Milan Crha)
+	CalDAV: Claim not found objects during refresh as removed (Milan Crha)
+
+Translations:
+	Fran Dieguez (gl)
+	Piotr Drąg (pl)
+	Asier Sarasua Garmendia (eu)
+	Charles Monzat (fr)
+	Marek Černocký (cs)
+	Changwoo Ryu (ko)
+
 Evolution-Data-Server 3.35.91 2020-02-14
 ----------------------------------------
 
