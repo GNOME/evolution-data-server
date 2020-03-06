@@ -129,6 +129,11 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 		provider = "caldav";
 		identity_prefix = "tasks";
 		break;
+	case E_WEBDAV_DISCOVER_SUPPORTS_WEBDAV_NOTES:
+		backend_name = E_SOURCE_EXTENSION_MEMO_LIST;
+		provider = "webdav-notes";
+		identity_prefix = "notes";
+		break;
 	default:
 		g_warn_if_reached ();
 		return;
@@ -547,13 +552,15 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 	if (e_source_collection_get_calendar_enabled (collection_extension) && calendar_url &&
 	    !g_cancellable_is_cancelled (cancellable) &&
 	    e_webdav_discover_sources_full_sync (source, calendar_url,
-		E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS | E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE,
+		E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS |
+		E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE | E_WEBDAV_DISCOVER_SUPPORTS_WEBDAV_NOTES,
 		credentials, (EWebDAVDiscoverRefSourceFunc) e_source_registry_server_ref_source, server,
 		out_certificate_pem, out_certificate_errors, &discovered_sources, NULL, cancellable, &local_error)) {
 		EWebDAVDiscoverSupports source_types[] = {
 			E_WEBDAV_DISCOVER_SUPPORTS_EVENTS,
 			E_WEBDAV_DISCOVER_SUPPORTS_MEMOS,
-			E_WEBDAV_DISCOVER_SUPPORTS_TASKS
+			E_WEBDAV_DISCOVER_SUPPORTS_TASKS,
+			E_WEBDAV_DISCOVER_SUPPORTS_WEBDAV_NOTES
 		};
 
 		webdav_collection_process_discovered_sources (collection, discovered_sources, known_sources, source_types, G_N_ELEMENTS (source_types));

@@ -30,6 +30,7 @@ set(builtin_sources_files
 	local-stub.source
 	weather-stub.source
 	webcal-stub.source
+	webdav-notes-stub.source
 	birthdays.source
 	local.source
 	sendmail.source

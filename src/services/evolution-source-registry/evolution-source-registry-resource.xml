@@ -9,6 +9,7 @@
     <file>local-stub.source</file>
     <file>weather-stub.source</file>
     <file>webcal-stub.source</file>
+    <file>webdav-notes-stub.source</file>
   </gresource>
   <gresource prefix="/org/gnome/evolution-data-server/rw-sources">
     <file>birthdays.source</file>

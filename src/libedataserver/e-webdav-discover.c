@@ -71,7 +71,8 @@ e_webdav_discover_split_resources (WebDAVDiscoverData *wdd,
 		if (resource && (
 		    resource->kind == E_WEBDAV_RESOURCE_KIND_ADDRESSBOOK ||
 		    resource->kind == E_WEBDAV_RESOURCE_KIND_CALENDAR ||
-		    resource->kind == E_WEBDAV_RESOURCE_KIND_SUBSCRIBED_ICALENDAR)) {
+		    resource->kind == E_WEBDAV_RESOURCE_KIND_SUBSCRIBED_ICALENDAR ||
+		    resource->kind == E_WEBDAV_RESOURCE_KIND_WEBDAV_NOTES)) {
 			EWebDAVDiscoveredSource *discovered;
 
 			if ((wdd->only_supports & (~CUSTOM_SUPPORTS_FLAGS)) != E_WEBDAV_DISCOVER_SUPPORTS_NONE &&
@@ -296,6 +297,27 @@ e_webdav_discover_traverse_propfind_response_cb (EWebDAVSession *webdav,
 				g_propagate_error (wdd->error, local_error);
 			else
 				g_clear_error (&local_error);
+		}
+
+		if (((wdd->only_supports & (~CUSTOM_SUPPORTS_FLAGS)) == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
+		    (wdd->only_supports & E_WEBDAV_DISCOVER_SUPPORTS_WEBDAV_NOTES) != 0) &&
+		    (g_str_has_suffix (href, "/Notes") ||
+		    g_str_has_suffix (href, "/Notes/")) &&
+		    !e_webdav_discovery_already_discovered (href, wdd->calendars) &&
+		    e_xml_xpath_eval_exists (xpath_ctx, "%s/D:resourcetype/D:collection", xpath_prop_prefix)) {
+			GSList *resources = NULL;
+
+			resources = g_slist_prepend (NULL,
+				e_webdav_resource_new (E_WEBDAV_RESOURCE_KIND_WEBDAV_NOTES,
+					E_WEBDAV_RESOURCE_SUPPORTS_WEBDAV_NOTES, href, NULL,
+					_("Notes"),
+					NULL, 0, 0, 0, NULL, NULL));
+
+			e_webdav_discover_split_resources (wdd, resources);
+
+			g_slist_free_full (resources, e_webdav_resource_free);
+
+			g_hash_table_insert (wdd->covered_hrefs, g_strdup (href), GINT_TO_POINTER (2));
 		}
 	}
 
@@ -902,6 +924,38 @@ e_webdav_discover_sources_full_sync (ESource *source,
 
 			wdd.error = &local_error_2nd;
 			wdd.only_supports = E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS;
+			g_hash_table_remove_all (wdd.covered_hrefs);
+
+			success = (uri && *uri && e_webdav_discover_propfind_uri_sync (webdav, &wdd, uri, FALSE)) || success;
+
+			g_free (uri);
+
+			soup_uri_set_path (soup_uri, saved_path);
+			g_free (saved_path);
+
+			if (e_webdav_discover_maybe_replace_auth_error (&local_error, &local_error_2nd))
+				success = FALSE;
+
+			g_clear_error (&local_error_2nd);
+
+			wdd.error = NULL;
+		}
+
+		if (!g_cancellable_is_cancelled (cancellable) &&
+		    ((only_supports & (~CUSTOM_SUPPORTS_FLAGS)) == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
+		    (only_supports & (E_WEBDAV_DISCOVER_SUPPORTS_WEBDAV_NOTES)) != 0) &&
+		    (!soup_uri_get_path (soup_uri) || !strstr (soup_uri_get_path (soup_uri), "/.well-known/"))) {
+			gchar *saved_path;
+			GError *local_error_2nd = NULL;
+
+			saved_path = g_strdup (soup_uri_get_path (soup_uri));
+
+			soup_uri_set_path (soup_uri, "/.well-known/webdav/Notes/");
+
+			uri = soup_uri_to_string (soup_uri, FALSE);
+
+			wdd.error = &local_error_2nd;
+			wdd.only_supports = E_WEBDAV_DISCOVER_SUPPORTS_WEBDAV_NOTES;
 			g_hash_table_remove_all (wdd.covered_hrefs);
 
 			success = (uri && *uri && e_webdav_discover_propfind_uri_sync (webdav, &wdd, uri, FALSE)) || success;

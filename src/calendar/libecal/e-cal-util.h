@@ -199,6 +199,17 @@ G_BEGIN_DECLS
  **/
 #define E_CAL_STATIC_CAPABILITY_TASK_HANDLE_RECUR	"task-handle-recur"
 
+/**
+ * E_CAL_STATIC_CAPABILITY_SIMPLE_MEMO:
+ *
+ * When the capability is set, the backend handles only simple memos,
+ * which means it stores only memo description. The summary can be changed
+ * by the backend, if needed.
+ *
+ * Since: 3.38
+ **/
+#define E_CAL_STATIC_CAPABILITY_SIMPLE_MEMO		"simple-memo"
+
 struct _ECalClient;
 
 ICalComponent *	e_cal_util_new_top_level	(void);

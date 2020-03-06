@@ -523,7 +523,7 @@ e_webdav_discover_content_fill_discovered_sources (GtkTreeView *tree_view,
 
 		addbit (E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS, C_("WebDAVDiscover", "Contacts"));
 		addbit (E_WEBDAV_DISCOVER_SUPPORTS_EVENTS, C_("WebDAVDiscover", "Events"));
-		addbit (E_WEBDAV_DISCOVER_SUPPORTS_MEMOS, C_("WebDAVDiscover", "Memos"));
+		addbit (E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_WEBDAV_NOTES, C_("WebDAVDiscover", "Memos"));
 		addbit (E_WEBDAV_DISCOVER_SUPPORTS_TASKS, C_("WebDAVDiscover", "Tasks"));
 
 		#undef addbit
