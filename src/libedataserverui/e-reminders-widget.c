@@ -40,6 +40,7 @@
 
 #include "libedataserverui-private.h"
 
+#include "e-buffer-tagger.h"
 #include "e-reminders-widget.h"
 
 #define MAX_CUSTOM_SNOOZE_VALUES 7
@@ -49,7 +50,10 @@ struct _ERemindersWidgetPrivate {
 	GSettings *settings;
 	gboolean is_empty;
 
+	GtkPaned *paned;
+
 	GtkTreeView *tree_view;
+	GtkTextView *details_text_view;
 	GtkWidget *dismiss_button;
 	GtkWidget *dismiss_all_button;
 	GtkWidget *snooze_combo;
@@ -935,10 +939,29 @@ reminders_widget_row_activated_cb (GtkTreeView *tree_view,
 }
 
 static void
+reminders_widget_set_text_buffer_markup (GtkTextBuffer *buffer,
+					 const gchar *markup)
+{
+	GtkTextIter start, end;
+
+	g_return_if_fail (GTK_IS_TEXT_BUFFER (buffer));
+	g_return_if_fail (markup != NULL);
+
+	gtk_text_buffer_get_start_iter (buffer, &start);
+	gtk_text_buffer_get_end_iter (buffer, &end);
+	gtk_text_buffer_delete (buffer, &start, &end);
+
+	gtk_text_buffer_get_start_iter (buffer, &start);
+
+	gtk_text_buffer_insert_markup (buffer, &start, markup, -1);
+}
+
+static void
 reminders_widget_selection_changed_cb (GtkTreeSelection *selection,
 				       gpointer user_data)
 {
 	ERemindersWidget *reminders = user_data;
+	gchar *markup = NULL;
 	gint nselected;
 
 	g_return_if_fail (GTK_IS_TREE_SELECTION (selection));
@@ -948,6 +971,77 @@ reminders_widget_selection_changed_cb (GtkTreeSelection *selection,
 	gtk_widget_set_sensitive (reminders->priv->snooze_combo, nselected > 0);
 	gtk_widget_set_sensitive (reminders->priv->snooze_button, nselected > 0);
 	gtk_widget_set_sensitive (reminders->priv->dismiss_button, nselected > 0);
+
+	if (nselected == 0) {
+		markup = g_markup_printf_escaped ("<i>%s</i>", _("No reminder is selected."));
+	} else if (nselected == 1) {
+		GList *rows;
+		GtkTreeIter iter;
+		GtkTreeModel *model = NULL;
+
+		rows = gtk_tree_selection_get_selected_rows (selection, &model);
+		g_return_if_fail (rows != NULL);
+		g_return_if_fail (model != NULL);
+
+		if (gtk_tree_model_get_iter (model, &iter, rows->data)) {
+			EReminderData *rd = NULL;
+			gchar *description = NULL;
+
+			gtk_tree_model_get (model, &iter,
+				E_REMINDERS_WIDGET_COLUMN_DESCRIPTION, &description,
+				E_REMINDERS_WIDGET_COLUMN_REMINDER_DATA, &rd,
+				-1);
+
+			if (rd) {
+				ECalComponent *comp;
+
+				comp = e_reminder_data_get_component (rd);
+
+				if (comp) {
+					ICalComponent *icomp;
+
+					icomp = e_cal_component_get_icalcomponent (comp);
+
+					if (icomp) {
+						const gchar *icomp_description;
+
+						icomp_description = i_cal_component_get_description (icomp);
+
+						if (icomp_description && *icomp_description) {
+							gchar *tmp;
+
+							tmp = g_markup_escape_text (icomp_description, -1);
+
+							markup = g_strconcat (description, "\n\n<tt>", tmp, "</tt>", NULL);
+
+							g_free (tmp);
+						}
+					}
+				}
+
+				if (!markup) {
+					markup = description;
+					description = NULL;
+				}
+			}
+
+			e_reminder_data_free (rd);
+			g_free (description);
+		}
+
+		if (!markup)
+			markup = g_markup_printf_escaped ("<i>%s</i>", _("No details are available."));
+
+		g_list_free_full (rows, (GDestroyNotify) gtk_tree_path_free);
+	} else {
+		markup = g_markup_printf_escaped ("<i>%s</i>", _("Multiple reminders are selected."));
+	}
+
+	reminders_widget_set_text_buffer_markup (gtk_text_view_get_buffer (reminders->priv->details_text_view), markup);
+
+	e_buffer_tagger_update_tags (reminders->priv->details_text_view);
+
+	g_free (markup);
 }
 
 static void
@@ -1379,6 +1473,10 @@ reminders_widget_constructed (GObject *object)
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (e_reminders_widget_parent_class)->constructed (object);
 
+	reminders->priv->paned = GTK_PANED (gtk_paned_new (GTK_ORIENTATION_VERTICAL));
+
+	gtk_grid_attach (GTK_GRID (reminders), GTK_WIDGET (reminders->priv->paned), 0, 0, 1, 1);
+
 	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
 	g_object_set (G_OBJECT (scrolled_window),
 		"halign", GTK_ALIGN_FILL,
@@ -1390,7 +1488,7 @@ reminders_widget_constructed (GObject *object)
 		"shadow-type", GTK_SHADOW_IN,
 		NULL);
 
-	gtk_grid_attach (GTK_GRID (reminders), scrolled_window, 0, 0, 1, 1);
+	gtk_paned_pack1 (reminders->priv->paned, scrolled_window, FALSE, FALSE);
 
 	list_store = gtk_list_store_new (E_REMINDERS_WIDGET_N_COLUMNS,
 		G_TYPE_STRING, /* E_REMINDERS_WIDGET_COLUMN_OVERDUE */
@@ -1415,6 +1513,10 @@ reminders_widget_constructed (GObject *object)
 
 	gtk_container_add (GTK_CONTAINER (scrolled_window), GTK_WIDGET (reminders->priv->tree_view));
 
+	e_binding_bind_property (reminders, "empty",
+		scrolled_window, "sensitive",
+		G_BINDING_SYNC_CREATE | G_BINDING_INVERT_BOOLEAN);
+
 	gtk_tree_view_set_tooltip_column (reminders->priv->tree_view, E_REMINDERS_WIDGET_COLUMN_DESCRIPTION);
 
 	/* Headers not visible, thus column's caption is not localized */
@@ -1434,6 +1536,34 @@ reminders_widget_constructed (GObject *object)
 
 	column = gtk_tree_view_get_column (reminders->priv->tree_view, 1);
 	gtk_tree_view_column_set_expand (column, TRUE);
+
+	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	g_object_set (G_OBJECT (scrolled_window),
+		"halign", GTK_ALIGN_FILL,
+		"hexpand", TRUE,
+		"valign", GTK_ALIGN_FILL,
+		"vexpand", TRUE,
+		"hscrollbar-policy", GTK_POLICY_NEVER,
+		"vscrollbar-policy", GTK_POLICY_AUTOMATIC,
+		"shadow-type", GTK_SHADOW_IN,
+		NULL);
+
+	gtk_paned_pack2 (reminders->priv->paned, scrolled_window, TRUE, FALSE);
+
+	reminders->priv->details_text_view = GTK_TEXT_VIEW (gtk_text_view_new ());
+
+	g_object_set (G_OBJECT (reminders->priv->details_text_view),
+		"halign", GTK_ALIGN_FILL,
+		"hexpand", TRUE,
+		"valign", GTK_ALIGN_FILL,
+		"vexpand", TRUE,
+		"editable", FALSE,
+		"wrap-mode", GTK_WRAP_WORD_CHAR,
+		NULL);
+
+	gtk_container_add (GTK_CONTAINER (scrolled_window), GTK_WIDGET (reminders->priv->details_text_view));
+
+	e_buffer_tagger_connect (reminders->priv->details_text_view);
 
 	reminders->priv->dismiss_button = gtk_button_new_with_mnemonic (_("_Dismiss"));
 	reminders->priv->dismiss_all_button = gtk_button_new_with_mnemonic (_("Dismiss _All"));
@@ -1496,10 +1626,6 @@ reminders_widget_constructed (GObject *object)
 
 	e_binding_bind_property (reminders, "empty",
 		reminders->priv->dismiss_all_button, "sensitive",
-		G_BINDING_SYNC_CREATE | G_BINDING_INVERT_BOOLEAN);
-
-	e_binding_bind_property (reminders, "empty",
-		scrolled_window, "sensitive",
 		G_BINDING_SYNC_CREATE | G_BINDING_INVERT_BOOLEAN);
 
 	_libedataserverui_load_modules ();
@@ -1742,6 +1868,23 @@ e_reminders_widget_get_tree_view (ERemindersWidget *reminders)
 	g_return_val_if_fail (E_IS_REMINDERS_WIDGET (reminders), NULL);
 
 	return reminders->priv->tree_view;
+}
+
+/**
+ * e_reminders_widget_get_paned:
+ * @reminders: an #ERemindersWidget
+ *
+ * Returns: (transfer none): a #GtkPaned used to split list of events and
+ *    the description of the reminders. It's owned by the @reminders widget.
+ *
+ * Since: 3.38
+ **/
+GtkPaned *
+e_reminders_widget_get_paned (ERemindersWidget *reminders)
+{
+	g_return_val_if_fail (E_IS_REMINDERS_WIDGET (reminders), NULL);
+
+	return reminders->priv->paned;
 }
 
 static void

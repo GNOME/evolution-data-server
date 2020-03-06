@@ -1,6 +1,7 @@
 add_pkgconfig_file(libedataserverui.pc.in libedataserverui-${API_VERSION}.pc)
 
 set(SOURCES
+	e-buffer-tagger.c
 	e-cell-renderer-color.c
 	e-credentials-prompter.c
 	e-credentials-prompter-impl.c
@@ -15,6 +16,7 @@ set(SOURCES
 
 set(HEADERS
 	libedataserverui.h
+	e-buffer-tagger.h
 	e-cell-renderer-color.h
 	e-credentials-prompter.h
 	e-credentials-prompter-impl.h

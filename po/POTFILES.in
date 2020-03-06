@@ -209,6 +209,7 @@ src/libedataserver/e-source-webdav.c
 src/libedataserver/e-time-utils.c
 src/libedataserver/e-webdav-discover.c
 src/libedataserver/e-webdav-session.c
+src/libedataserverui/e-buffer-tagger.c
 src/libedataserverui/e-credentials-prompter.c
 src/libedataserverui/e-credentials-prompter-impl-oauth2.c
 src/libedataserverui/e-credentials-prompter-impl-password.c

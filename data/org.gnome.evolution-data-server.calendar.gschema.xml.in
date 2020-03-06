@@ -64,6 +64,10 @@
       <default>-1</default>
       <_summary>Height of the reminder notification dialog</_summary>
     </key>
+    <key name="notify-window-paned-position" type="i">
+      <default>-1</default>
+      <_summary>Paned position in the reminder notification dialog, the split size between list of the events and the description</_summary>
+    </key>
     <key name="notify-completed-tasks" type="b">
       <default>true</default>
       <_summary>Show reminder notification for completed tasks</_summary>

@@ -51,6 +51,7 @@ struct _EAlarmNotifyPrivate {
 	gint window_y;
 	gint window_width;
 	gint window_height;
+	gint window_paned_position;
 	gint window_geometry_save_id;
 
 	GMutex dismiss_lock;
@@ -113,8 +114,21 @@ e_alarm_notify_show_window (EAlarmNotify *an,
 
 	gtk_window_present (window);
 
-	if (!was_visible)
+	if (!was_visible) {
+		GtkTreeSelection *selection;
+
 		gtk_window_move (window, an->priv->window_x, an->priv->window_y);
+
+		selection = gtk_tree_view_get_selection (e_reminders_widget_get_tree_view (an->priv->reminders));
+
+		if (!gtk_tree_selection_count_selected_rows (selection)) {
+			GtkTreePath *path;
+
+			path = gtk_tree_path_new_first ();
+			gtk_tree_selection_select_path (selection, path);
+			gtk_tree_path_free (path);
+		}
+	}
 }
 
 static gboolean
@@ -935,11 +949,38 @@ e_alarm_notify_window_geometry_save_cb (gpointer user_data)
 		set_if_changed ("notify-window-y", an->priv->window_y);
 		set_if_changed ("notify-window-width", an->priv->window_width);
 		set_if_changed ("notify-window-height", an->priv->window_height);
+		set_if_changed ("notify-window-paned-position", an->priv->window_paned_position);
 
 		#undef set_if_changed
 	}
 
 	return FALSE;
+}
+
+static void
+e_alarm_notify_paned_position_changed_cb (GObject *paned,
+					  GParamSpec *param,
+					  gpointer user_data)
+{
+	EAlarmNotify *an = user_data;
+
+	g_return_if_fail (E_IS_ALARM_NOTIFY (an));
+
+	if (an->priv->reminders && an->priv->settings) {
+		gint paned_position;
+
+		paned_position = gtk_paned_get_position (e_reminders_widget_get_paned (an->priv->reminders));
+
+		if (paned_position != an->priv->window_paned_position) {
+			an->priv->window_paned_position = paned_position;
+
+			if (an->priv->window_geometry_save_id > 0)
+				g_source_remove (an->priv->window_geometry_save_id);
+
+			an->priv->window_geometry_save_id = e_named_timeout_add_seconds (1,
+				e_alarm_notify_window_geometry_save_cb, an);
+		}
+	}
 }
 
 static gboolean
@@ -951,19 +992,24 @@ e_alarm_notify_window_configure_event_cb (GtkWidget *widget,
 
 	g_return_val_if_fail (E_IS_ALARM_NOTIFY (an), FALSE);
 
-	if (an->priv->window && an->priv->settings && gtk_widget_get_visible (an->priv->window)) {
+	if (an->priv->window && an->priv->settings && an->priv->reminders && gtk_widget_get_visible (an->priv->window)) {
 		gint pos_x = an->priv->window_x, pos_y = an->priv->window_y;
 		gint width = an->priv->window_width, height = an->priv->window_height;
+		gint paned_position;
 
 		gtk_window_get_position (GTK_WINDOW (an->priv->window), &pos_x, &pos_y);
 		gtk_window_get_size (GTK_WINDOW (an->priv->window), &width, &height);
 
+		paned_position = gtk_paned_get_position (e_reminders_widget_get_paned (an->priv->reminders));
+
 		if (pos_x != an->priv->window_x || pos_y != an->priv->window_y ||
-		    width != an->priv->window_width || height != an->priv->window_height) {
+		    width != an->priv->window_width || height != an->priv->window_height ||
+		    paned_position != an->priv->window_paned_position) {
 			an->priv->window_x = pos_x;
 			an->priv->window_y = pos_y;
 			an->priv->window_width = width;
 			an->priv->window_height = height;
+			an->priv->window_paned_position = paned_position;
 
 			if (an->priv->window_geometry_save_id > 0)
 				g_source_remove (an->priv->window_geometry_save_id);
@@ -1017,6 +1063,7 @@ static void
 e_alarm_notify_activate (GApplication *application)
 {
 	EAlarmNotify *an = E_ALARM_NOTIFY (application);
+	gint paned_position;
 
 	if (g_application_get_is_remote (application)) {
 		g_application_quit (application);
@@ -1045,6 +1092,14 @@ e_alarm_notify_activate (GApplication *application)
 	an->priv->window_x = g_settings_get_int (an->priv->settings, "notify-window-x");
 	an->priv->window_y = g_settings_get_int (an->priv->settings, "notify-window-y");
 
+	paned_position = g_settings_get_int (an->priv->settings, "notify-window-paned-position");
+
+	if (paned_position <= 0 && g_settings_get_int (an->priv->settings, "notify-window-height") > 0)
+		paned_position = g_settings_get_int (an->priv->settings, "notify-window-height") / 2;
+
+	if (paned_position > 0)
+		gtk_paned_set_position (e_reminders_widget_get_paned (an->priv->reminders), paned_position);
+
 	gtk_container_add (GTK_CONTAINER (an->priv->window), GTK_WIDGET (an->priv->reminders));
 
 	gtk_window_set_keep_above (GTK_WINDOW (an->priv->window), g_settings_get_boolean (an->priv->settings, "notify-window-on-top"));
@@ -1054,6 +1109,9 @@ e_alarm_notify_activate (GApplication *application)
 
 	g_signal_connect (an->priv->reminders, "changed",
 		G_CALLBACK (e_alarm_notify_reminders_changed_cb), an);
+
+	g_signal_connect (e_reminders_widget_get_paned (an->priv->reminders), "notify::position",
+		G_CALLBACK (e_alarm_notify_paned_position_changed_cb), an);
 
 	g_signal_connect (an->priv->window, "configure-event",
 		G_CALLBACK (e_alarm_notify_window_configure_event_cb), an);

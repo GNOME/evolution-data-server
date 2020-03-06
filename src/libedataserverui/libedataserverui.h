@@ -20,6 +20,7 @@
 
 #define __LIBEDATASERVERUI_H_INSIDE__
 
+#include <libedataserverui/e-buffer-tagger.h>
 #include <libedataserverui/e-cell-renderer-color.h>
 #include <libedataserverui/e-credentials-prompter.h>
 #include <libedataserverui/e-credentials-prompter-impl.h>

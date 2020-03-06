@@ -100,6 +100,7 @@ EReminderWatcher *
 GSettings *	e_reminders_widget_get_settings	(ERemindersWidget *reminders);
 gboolean	e_reminders_widget_is_empty	(ERemindersWidget *reminders);
 GtkTreeView *	e_reminders_widget_get_tree_view(ERemindersWidget *reminders);
+GtkPaned *	e_reminders_widget_get_paned	(ERemindersWidget *reminders);
 void		e_reminders_widget_report_error	(ERemindersWidget *reminders,
 						 const gchar *prefix,
 						 const GError *error);
