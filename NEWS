@@ -1,3 +1,17 @@
+Evolution-Data-Server 3.36.0 2020-03-06
+---------------------------------------
+
+Bug Fixes:
+	I#198 - goa: Doesn't set ESourceAuthentication::is-external properly (Milan Crha)
+
+Translations:
+	Alan Mortensen (da)
+	Nathan Follens (nl)
+	Matej Urbančič (sl)
+	Jiri Grönroos (fi)
+	Gianvito Cavasoli (it)
+	Tim Sabsch (de)
+
 Evolution-Data-Server 3.35.92 2020-02-28
 ----------------------------------------
 
