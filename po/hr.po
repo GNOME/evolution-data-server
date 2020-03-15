@@ -7,7 +7,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
 "POT-Creation-Date: 2020-03-06 12:47+0000\n"
-"PO-Revision-Date: 2020-03-15 15:40+0100\n"
+"PO-Revision-Date: 2020-03-16 00:40+0100\n"
 "Last-Translator: gogo <linux.hr@protonmail.com>\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
 "Language: hr\n"
@@ -2901,32 +2901,32 @@ msgstr "Osvježavanje mape “%s : %s”"
 #: ../src/camel/camel-folder-search.c:959
 #, c-format
 msgid "(%s) requires a single bool result"
-msgstr ""
+msgstr "(%s) zahtijeva jedan booleov rezultat"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
 #: ../src/camel/camel-folder-search.c:997
-#, fuzzy, c-format
+#, c-format
 msgid "(%s) not allowed inside %s"
-msgstr "%s (%s)"
+msgstr "(%s) nije dopušteno unutar %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
 #: ../src/camel/camel-folder-search.c:1004
 #: ../src/camel/camel-folder-search.c:1012
 #, c-format
 msgid "(%s) requires a match type string"
-msgstr ""
+msgstr "(%s) zahtijeva izraz podudarajuće vrste"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
 #: ../src/camel/camel-folder-search.c:1040
 #, c-format
 msgid "(%s) expects an array result"
-msgstr ""
+msgstr "(%s) očekuje rezultat niza"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
 #: ../src/camel/camel-folder-search.c:1050
-#, fuzzy, c-format
+#, c-format
 msgid "(%s) requires the folder set"
-msgstr "Potrebna je lozinka za nastavak. %s."
+msgstr "(%s) zahtijeva skup mapa"
 
 #: ../src/camel/camel-folder-search.c:2208
 #: ../src/camel/camel-folder-search.c:2382
@@ -2935,7 +2935,7 @@ msgid ""
 "Cannot parse search expression: %s:\n"
 "%s"
 msgstr ""
-"Ne mogu parsirati trženi izraz: %s:\n"
+"Nemoguća obrada izraza pretrage: %s:\n"
 "%s"
 
 #: ../src/camel/camel-folder-search.c:2220
@@ -2945,7 +2945,7 @@ msgid ""
 "Error executing search expression: %s:\n"
 "%s"
 msgstr ""
-"Greška kod izvršavanja izraza za pretragu: %s:\n"
+"Greška izvršavanja izraza pretrage: %s:\n"
 "%s"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
@@ -2954,19 +2954,19 @@ msgstr ""
 #: ../src/camel/camel-folder-summary.c:1661
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
-msgstr ""
+msgstr "Oslobodi neiskorištenu memoriju za mapu “%s : %s”"
 
 #. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
 #: ../src/camel/camel-gpg-context.c:447
-#, fuzzy, c-format
+#, c-format
 msgid "Output from %s:"
-msgstr "Neuspjelo čitanje izlaza iz SpamAssassina: "
+msgstr "Izlaz iz %s:"
 
 #: ../src/camel/camel-gpg-context.c:912 ../src/camel/camel-gpg-context.c:917
 #: ../src/camel/camel-gpg-context.c:1658
 #, c-format
 msgid "Failed to execute gpg: %s"
-msgstr "Nisam mogao izvršiti gpg: %s"
+msgstr "Neuspjelo gpg izvršavanje: %s"
 
 #: ../src/camel/camel-gpg-context.c:917
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1203
@@ -2980,76 +2980,72 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"Susreo sam neočekivan GnuPG status poruke:\n"
+"Neočekivana GnuPG poruka stanja je nastala:\n"
 "\n"
 "%s"
 
 #: ../src/camel/camel-gpg-context.c:1065
 #, c-format
 msgid "Failed to parse gpg userid hint."
-msgstr "Nisam mogao pročitati gpg userid podsetnik."
+msgstr "Neuspjela obrada gpg savjeta id-a korisnika."
 
 #: ../src/camel/camel-gpg-context.c:1090 ../src/camel/camel-gpg-context.c:1105
 #, c-format
 msgid "Failed to parse gpg passphrase request."
-msgstr "Nisam mogao pročitati zahtjev za gpg lozinkom"
+msgstr "Neuspjela obrada zahtjeva gpg lozinke."
 
 #: ../src/camel/camel-gpg-context.c:1126
-#, fuzzy, c-format
-#| msgid ""
-#| "You need a passphrase to unlock the key for\n"
-#| "user: \"%s\""
+#, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
 "SmartCard: “%s”"
 msgstr ""
-"Potrebna vam je lozinka za otključavanje ključa\n"
-"korisnika: \"%s\"3+"
+"Potrebna vam je PIN za otključavanje ključa vaše\n"
+"pametne kartice: \"%s\""
 
 #: ../src/camel/camel-gpg-context.c:1130
-#, fuzzy, c-format
-#| msgid ""
-#| "You need a passphrase to unlock the key for\n"
-#| "user: \"%s\""
+#, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
 "user: “%s”"
 msgstr ""
 "Potrebna vam je lozinka za otključavanje ključa\n"
-"korisnika: \"%s\"3+"
+"korisnika: \"%s\""
 
 #: ../src/camel/camel-gpg-context.c:1136
-#, fuzzy, c-format
+#, c-format
 msgid "Unexpected request from GnuPG for “%s”"
-msgstr "Neočekivan odgovor od GnuPG: %s"
+msgstr "Neočekivan GnuPG zahtjev za: %s"
 
 #: ../src/camel/camel-gpg-context.c:1148
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
 msgstr ""
+"Imajte na umu da šifrirani sadržaj ne sadrži informacije o primatelju, stoga "
+"će postojati upit za lozinku za svaki spremljeni privatni ključ."
 
 #: ../src/camel/camel-gpg-context.c:1179 ../src/camel/camel-net-utils.c:522
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:399
 #: ../src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
-msgstr "Otkazano"
+msgstr "Prekinuto"
 
 #: ../src/camel/camel-gpg-context.c:1200
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
-msgstr "Nisam mogao otključati tajni ključ: date su 3 pogrešne lozinke."
+msgstr "Nemoguće otključavanje tajnog ključa: 3 pogrešne lozinke su dane."
 
 #: ../src/camel/camel-gpg-context.c:1213
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
-msgstr "Neočekivan odgovor od GnuPG: %s"
+msgstr "Neočekivan GnuPG odgovor od: %s"
 
 #: ../src/camel/camel-gpg-context.c:1330
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
-msgstr "Nisam mogao dekriptirati: nisu označeni ispravni primatelji."
+msgstr "Neuspjelo dešifriranje: Nema označenih valjanih primatelja."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
@@ -3059,17 +3055,17 @@ msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
 "the %s doesn’t have imported public key for this recipient."
 msgstr ""
+"Neuspjelo šifriranje: Nevaljani primatelj %s je naveden. Uobičajeni problem "
+"je da %s nema uvezeni javni ključ navedenog primatelja."
 
 #: ../src/camel/camel-gpg-context.c:2169 ../src/camel/camel-smime-context.c:869
-#, fuzzy
-#| msgid "Could not generate signing data: %s"
 msgid "Could not generate signing data: "
-msgstr "Ne mogu stvoriti podatke za potpis: %s"
+msgstr "Nemoguće stvaranje podataka potpisa: "
 
 #: ../src/camel/camel-gpg-context.c:2220 ../src/camel/camel-gpg-context.c:2459
 #: ../src/camel/camel-gpg-context.c:2598 ../src/camel/camel-gpg-context.c:2775
 msgid "Failed to execute gpg."
-msgstr "Nisam mogao izvršiti gpg."
+msgstr "Neuspjelo gpg izvršavanje."
 
 #: ../src/camel/camel-gpg-context.c:2327 ../src/camel/camel-gpg-context.c:2335
 #: ../src/camel/camel-gpg-context.c:2343 ../src/camel/camel-gpg-context.c:2363
@@ -3078,135 +3074,127 @@ msgstr "Nisam mogao izvršiti gpg."
 #: ../src/camel/camel-smime-context.c:1026
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
-msgstr "Ne mogu provjeriti potpis poruke: Neispravan format poruke"
+msgstr "Nemoguća provjera potpisa poruke: Neispravan format poruke"
 
 #: ../src/camel/camel-gpg-context.c:2409
-#, fuzzy
-#| msgid "Cannot verify message signature: Incorrect message format"
 msgid "Cannot verify message signature: "
-msgstr "Valjan potpis, ali se ne može provjeriti pošiljatelj"
+msgstr "Nemoguća provjera potpisa poruke: "
 
 #: ../src/camel/camel-gpg-context.c:2557
-#, fuzzy
-#| msgid "Could not generate encrypting data: %s"
 msgid "Could not generate encrypting data: "
-msgstr "Ne mogu stvoriti podatke za kriptiranje: %s"
+msgstr "Nemoguće stvaranje podataka šifriranja: "
 
 #: ../src/camel/camel-gpg-context.c:2638
 msgid "This is a digitally encrypted message part"
-msgstr "Ovo je digitalno kriptirani dio poruke"
+msgstr "Ovo je digitalno šifrirani dio poruke"
 
 #: ../src/camel/camel-gpg-context.c:2698 ../src/camel/camel-gpg-context.c:2707
 #: ../src/camel/camel-gpg-context.c:2730
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
-msgstr "Ne moguće dešifrirati poruku: neispravan oblik poruke"
+msgstr "Nemoguće dešifriranje poruke: Neispravan format poruke"
 
 #: ../src/camel/camel-gpg-context.c:2718
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
-msgstr "Nisam mogao dekriptirati MIME deo: greška u protokolu"
+msgstr "Neuspjelo dešifriranje MIME dijela: greška protokola"
 
 #: ../src/camel/camel-gpg-context.c:2790
-#, fuzzy, c-format
-#| msgid "Failed to decrypt MIME part: protocol error"
+#, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
-msgstr "Nisam mogao dekriptirati MIME deo: greška u protokolu"
+msgstr "Neuspjelo dešifriranje MIME dijela: Tajni ključ nije pronađen"
 
 #: ../src/camel/camel-gpg-context.c:2827
 #, c-format
 msgid "GPG blob contains unencrypted text: %s"
-msgstr ""
+msgstr "GPG blob sadrži neočekivani tekst: %s"
 
 #: ../src/camel/camel-gpg-context.c:2829
 #: ../src/camel/camel-smime-context.c:1546
 msgid "Encrypted content"
-msgstr "Kriptirani sadržaj"
+msgstr "Šifrirani sadržaj"
 
 #: ../src/camel/camel-junk-filter.c:167
-#, fuzzy
 msgid "Synchronizing junk database"
-msgstr "_Neželjena pošta"
+msgstr "Usklađivanje baze podataka neželjene pošte"
 
 #: ../src/camel/camel-lock.c:111
 #, c-format
 msgid "Could not create lock file for %s: %s"
-msgstr "Nisam mogao zaključati datoteku za %s: %s"
+msgstr "Nemoguće stvaranje datoteke zaključavanja za %s: %s"
 
 #: ../src/camel/camel-lock.c:154
-#, fuzzy, c-format
-#| msgid "Timed out trying to get lock file on %s. Try again later."
+#, c-format
 msgid "Timed out trying to get lock file on %s.  Try again later."
 msgstr ""
-"Isteklo je vrijeme kod pokušaja pribavljanja zaključane datoteke na %s. "
-"Pokušajte kasnije."
+"Istek vremena pokušaja zaključavanja datoteke na %s.  Pokušajte ponovno "
+"kasnije."
 
 #: ../src/camel/camel-lock.c:221
 #, c-format
 msgid "Failed to get lock using fcntl(2): %s"
-msgstr "Nisam mogao zaključiti koristeći fcntl(2): %s"
+msgstr "Neuspjelo zaključavanje koristeći fcntl(2): %s"
 
 #: ../src/camel/camel-lock.c:293
 #, c-format
 msgid "Failed to get lock using flock(2): %s"
-msgstr "Nisam mogao zaključiti koristeći flock(2): %s"
+msgstr "Neuspjelo zaključavanje koristeći flock(2): %s"
 
 #: ../src/camel/camel-lock-client.c:105
 #, c-format
 msgid "Cannot build locking helper pipe: %s"
-msgstr "Ne mogu kreirati pomoćni cjevovod za zaključavanje (baze podataka): %s"
+msgstr "Nemoguća izgradanja zaključavanja povezivanja pomoćnika: %s"
 
 #: ../src/camel/camel-lock-client.c:129
 #, c-format
 msgid "Cannot fork locking helper: %s"
-msgstr "Ne mogu podijeliti pomoćnika zaključavanja: %s"
+msgstr "Nemoguće grananje pomoćnika zaključavanja: %s"
 
 #: ../src/camel/camel-lock-client.c:216 ../src/camel/camel-lock-client.c:244
-#, fuzzy, c-format
-#| msgid "Could not lock '%s': protocol error with lock-helper"
+#, c-format
 msgid "Could not lock “%s”: protocol error with lock-helper"
-msgstr "Ne mogu zaključati '%s': greška u protokolu s pomoćnikom zaključavanja"
+msgstr ""
+"Nemoguće je zaključati '%s': greška u protokolu s pomoćnikom zaključavanja"
 
 #: ../src/camel/camel-lock-client.c:232
-#, fuzzy, c-format
-#| msgid "Could not lock '%s'"
+#, c-format
 msgid "Could not lock “%s”"
-msgstr "Nemoguće učitavanje “%s”"
+msgstr "Nemoguće je zaključati “%s”"
 
 #: ../src/camel/camel-movemail.c:99
 #, c-format
 msgid "Could not open mail file %s: %s"
-msgstr "Nisam mogao otvoriti datoteku pošte  %s: %s"
+msgstr "Nemoguće otvaranje datoteke pošte %s: %s"
 
 #: ../src/camel/camel-movemail.c:119
 #, c-format
 msgid "Could not check mail file %s: %s"
-msgstr "Nisam mogao provjeriti datoteku pošte %s: %s"
+msgstr "Nemoguća provjera datoteke pošte %s: %s"
 
 #: ../src/camel/camel-movemail.c:134
 #, c-format
 msgid "Could not open temporary mail file %s: %s"
-msgstr "Nisam mogao otvoriti privremenu datoteku pošte %s: %s"
+msgstr "Nemoguće otvaranje privremene datoteke pošte %s: %s"
 
 #: ../src/camel/camel-movemail.c:164
 #, c-format
 msgid "Failed to store mail in temp file %s: %s"
-msgstr "Nisam mogao smijestiti poštu u temp datoteku %s: %s"
+msgstr "Neuspjelo spremanje pošte u privremenu datoteku %s: %s"
 
 #: ../src/camel/camel-movemail.c:198
 #, c-format
 msgid "Could not create pipe: %s"
-msgstr "Nisam mogao napraviti cjevovod: %s"
+msgstr "Neuspjelo stvaranje povezivanja: %s"
 
 #: ../src/camel/camel-movemail.c:212
 #, c-format
 msgid "Could not fork: %s"
-msgstr "Ne mogu forkati: %s"
+msgstr "Nemoguće grananje: %s"
 
 #: ../src/camel/camel-movemail.c:250
 #, c-format
 msgid "Movemail program failed: %s"
-msgstr "Program za premeštanje pošte nije uspio: %s"
+msgstr "Program premiještanja pošte nije uspio: %s"
 
 #: ../src/camel/camel-movemail.c:251
 msgid "(Unknown error)"
@@ -3215,61 +3203,60 @@ msgstr "(Nepoznata greška)"
 #: ../src/camel/camel-movemail.c:278
 #, c-format
 msgid "Error reading mail file: %s"
-msgstr "Greška kod čitanja datoteke pošte: %s"
+msgstr "Greška čitanja datoteke pošte: %s"
 
 #: ../src/camel/camel-movemail.c:291
 #, c-format
 msgid "Error writing mail temp file: %s"
-msgstr "Greška kod pisanja privremene datoteke: %s"
+msgstr "Greška zapisivanja privremene datoteke pošte: %s"
 
 #: ../src/camel/camel-movemail.c:499 ../src/camel/camel-movemail.c:573
 #, c-format
 msgid "Error copying mail temp file: %s"
-msgstr "Greška kod kopiranja privremene datoteke: %s"
+msgstr "Greška kopiranja privremene datoteke pošte: %s"
 
 #: ../src/camel/camel-multipart-signed.c:273
 #: ../src/camel/camel-multipart-signed.c:426
-#, fuzzy, c-format
-#| msgid "No description available"
+#, c-format
 msgid "No content available"
-msgstr "Dostupno"
+msgstr "Nema dostupnog sadržaja"
 
 #: ../src/camel/camel-multipart-signed.c:281
 #: ../src/camel/camel-multipart-signed.c:434
-#, fuzzy, c-format
-#| msgid "No description available"
+#, c-format
 msgid "No signature available"
-msgstr "Dostupno"
+msgstr "Nema dostupnog potpisa"
 
 #: ../src/camel/camel-multipart-signed.c:798
 #, c-format
 msgid "parse error"
-msgstr "greška pri parsiranju"
+msgstr "greška obrade"
 
 #: ../src/camel/camel-net-utils.c:714
 #, c-format
 msgid "Resolving: %s"
-msgstr "Razlučujem: %s"
+msgstr "Razrješavam: %s"
 
 #: ../src/camel/camel-net-utils.c:739
 msgid "Host lookup failed"
-msgstr "Računalo nije pronađeno"
+msgstr "Pretraga računala neuspjela"
 
 #: ../src/camel/camel-net-utils.c:745
 #, c-format
 msgid "Host lookup “%s” failed. Check your host name for spelling errors."
 msgstr ""
+"Pretraga računala “%s” neuspjela. Provjerite pravopis u nazivu vašeg "
+"računala."
 
 #: ../src/camel/camel-net-utils.c:749
-#, fuzzy, c-format
-#| msgid "Host lookup failed: %s: %s"
+#, c-format
 msgid "Host lookup “%s” failed: %s"
-msgstr "Neuspjelo učitavanje vjerodajnice: %s"
+msgstr "Pretraga računala “%s” neuspjela: %s"
 
 #: ../src/camel/camel-network-service.c:1128
-#, fuzzy, c-format
+#, c-format
 msgid "Checking reachability of account “%s”"
-msgstr "Provjera novom e-poštom za “%s”"
+msgstr "Provjera dostupnosti računa “%s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -3284,10 +3271,9 @@ msgstr "Skidanje novih poruka za neumreženi način rada"
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-offline-folder.c:277
-#, fuzzy, c-format
-#| msgid "Syncing messages in folder '%s' to disk"
+#, c-format
 msgid "Storing changes in folder “%s : %s”"
-msgstr "Obrada promjena mape u “%s”"
+msgstr "Spremanje promjena u mapu “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -3302,10 +3288,9 @@ msgstr "Skidanje novih poruka za neumreženi način rada"
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-offline-folder.c:490
-#, fuzzy, c-format
-#| msgid "Syncing messages in folder '%s' to disk"
+#, c-format
 msgid "Syncing messages in folder “%s : %s” to disk"
-msgstr "Kopiranje poruka u mapu %s"
+msgstr "Usklađivanje poruka u mapi “%s : %s” na disk"
 
 #. Translators: The first “%d” is the sequence number of the message, the second “%d”
 #. is the total number of messages to synchronize.
@@ -3313,45 +3298,42 @@ msgstr "Kopiranje poruka u mapu %s"
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-offline-folder.c:584
-#, fuzzy, c-format
-#| msgid "Syncing messages in folder '%s' to disk"
+#, c-format
 msgid "Syncing message %d of %d in folder “%s : %s” to disk"
-msgstr "Usklađivanje poruka u mapi ’%s‘ sa diskom"
+msgstr "Usklađivanje poruka %d od %d u mapi “%s : %s” na disk"
 
 #: ../src/camel/camel-offline-folder.c:643
-#, fuzzy
-#| msgid "Copy folder content locally for offline operation"
 msgid "Copy folder content locally for _offline operation"
-msgstr "Kopiraj sadržaj adresara lokalno za izvanmrežno korištenje"
+msgstr "Kopiraj sadržaj lokalno za _izvanmrežno korištenje"
 
 #: ../src/camel/camel-offline-store.c:304
-#, fuzzy, c-format
-#| msgid "Syncing messages in folder '%s' to disk"
+#, c-format
 msgid "Syncing messages in account “%s” to disk"
-msgstr "Usklađivanje poruka u mapi ’%s‘ sa diskom"
+msgstr "Usklađivanje poruka u računu “%s” na disk"
 
 #: ../src/camel/camel-provider.c:89
 msgid "Virtual folder email provider"
-msgstr "Ponuđač elktronske pošte sa virtualnim direktorijom"
+msgstr "Pružatelj usluge virtualne mape e-pošte"
 
 #: ../src/camel/camel-provider.c:91
 msgid "For reading mail as a query of another set of folders"
-msgstr "Za čitanje pošte kao upita drugog niza mapa"
+msgstr "Za čitanje pošte kao upita drugog skupa mapa"
 
 #: ../src/camel/camel-provider.c:299
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
-msgstr "Ne mogu učitati %s: ovaj sustav ne podržava učitavanje modula."
+msgstr ""
+"Nemoguće je učitati %s: Učitavanje modula nije podržano na ovom sustavu."
 
 #: ../src/camel/camel-provider.c:308
 #, c-format
 msgid "Could not load %s: %s"
-msgstr "Ne mogu učitati %s: %s"
+msgstr "Nemoguće je učitati %s: %s"
 
 #: ../src/camel/camel-provider.c:317
 #, c-format
 msgid "Could not load %s: No initialization code in module."
-msgstr "Ne mogu učitati %s: nema koda za pokretanje u modulu."
+msgstr "Nemoguće je učitati %s: Nema kôda pokretanja u modulu."
 
 #: ../src/camel/camel-provider.c:463 ../src/camel/camel-session.c:430
 #, fuzzy, c-format
@@ -3365,12 +3347,13 @@ msgstr "Anonimno"
 
 #: ../src/camel/camel-sasl-anonymous.c:37
 msgid "This option will connect to the server using an anonymous login."
-msgstr "Spajanje na poslužitelj korištenjem anonimne prijave."
+msgstr ""
+"Ova mogućnost će se povezati s poslužiteljem koristeći anonimnu prijavu."
 
 #: ../src/camel/camel-sasl-anonymous.c:70
 #, c-format
 msgid "Authentication failed."
-msgstr "Neuspjelo spajanje."
+msgstr "Neuspjelo ovjera."
 
 #. Translators: the 'trace information' term comes from https://tools.ietf.org/html/rfc4505
 #. In this case the user set to use an email address as the trace information,
@@ -3381,7 +3364,7 @@ msgid ""
 "Invalid email address trace information:\n"
 "%s"
 msgstr ""
-"Neispravna informacija o porijeklu elektronske adrese:\n"
+"Nevaljana informacija o porijeklu adrese e-pošte:\n"
 "%s"
 
 #. Translators: the 'trace information' term comes from https://tools.ietf.org/html/rfc4505
@@ -3393,12 +3376,12 @@ msgid ""
 "Invalid opaque trace information:\n"
 "%s"
 msgstr ""
-"Neispravna informacija o prozirnom tragu:\n"
+"Nevaljana informacija o složenom porijeklu:\n"
 "%s"
 
 #: ../src/camel/camel-sasl-anonymous.c:115 ../src/libedataserver/e-client.c:135
 msgid "Invalid argument"
-msgstr "Nedozvoljeni argument"
+msgstr "Nevaljani argument"
 
 #: ../src/camel/camel-sasl-cram-md5.c:37
 msgid "CRAM-MD5"
@@ -3409,8 +3392,8 @@ msgid ""
 "This option will connect to the server using a secure CRAM-MD5 password, if "
 "the server supports it."
 msgstr ""
-"Spajanje na poslužitelj korištenjem lozinke kodirane CRAM-MD5 algoritmom, "
-"ako ga poslužitelj podržava."
+"Ova mogućnost će se povezati s poslužitelj korištenjem sigurne CRAM-MD5 "
+"lozinke, ako ga poslužitelj podržava."
 
 #: ../src/camel/camel-sasl-digest-md5.c:50
 msgid "DIGEST-MD5"
@@ -3421,39 +3404,38 @@ msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
 msgstr ""
-"Spajanje na poslužitelj korištenjem lozinke kodirane DIGEST-MD5 algoritmom, "
-"ako ga poslužitelj podržava."
+"Ova mogućnost će se povezati s poslužitelj korištenjem sigurne DIGEST-MD5 "
+"lozinke, ako ga poslužitelj podržava."
 
 #: ../src/camel/camel-sasl-digest-md5.c:848
 #, c-format
 msgid "Server challenge too long (>2048 octets)"
-msgstr "Upit na poslužitelj predug (>2048 octets)"
+msgstr "Upit poslužitelja je predug (>2048 okteta)"
 
 #: ../src/camel/camel-sasl-digest-md5.c:859
 #, c-format
 msgid "Server challenge invalid\n"
-msgstr "Upit na poslužitelj je neispravan\n"
+msgstr "Upit poslužitelja je nevaljan\n"
 
 #: ../src/camel/camel-sasl-digest-md5.c:867
-#, fuzzy, c-format
-#| msgid "Server challenge contained invalid \"Quality of Protection\" token"
+#, c-format
 msgid "Server challenge contained invalid “Quality of Protection” token"
-msgstr "Upit na poslužitelj ima neispravni „Kvaliteta zaštite“ signal"
+msgstr "Upit poslužitelj sadrži nevaljani unos „Kvaliteta zaštite“"
 
 #: ../src/camel/camel-sasl-digest-md5.c:900
 #, c-format
 msgid "Server response did not contain authorization data"
-msgstr "Odgovor poslužitelja nije imao podatke o autorizaciji"
+msgstr "Odgovor poslužitelja nije sadržavao podatke ovjere"
 
 #: ../src/camel/camel-sasl-digest-md5.c:921
 #, c-format
 msgid "Server response contained incomplete authorization data"
-msgstr "Odgovor poslužitelja nije imao kompletne podatke o autorizaciji"
+msgstr "Odgovor poslužitelja je sadržavao nepotpune podatke ovjere"
 
 #: ../src/camel/camel-sasl-digest-md5.c:934
 #, c-format
 msgid "Server response does not match"
-msgstr "Odgovor poslužitelja nije usklađen"
+msgstr "Odgovor poslužitelja se ne podudara"
 
 #: ../src/camel/camel-sasl-gssapi.c:88
 msgid "GSSAPI"
@@ -3461,12 +3443,13 @@ msgstr "GSSAPI"
 
 #: ../src/camel/camel-sasl-gssapi.c:90
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr "Spajanje na poslužitelj korištenjem Kerberos 4 autentifikacije."
+msgstr ""
+"Ova mogućnost će se povezati s poslužiteljem koristeći Kerberos 4 ovjeru."
 
 #: ../src/camel/camel-sasl-gssapi.c:151
 #, c-format
 msgid "(Unknown GSSAPI mechanism code: %x)"
-msgstr ""
+msgstr "(Nepoznat kôd GSSAPI mehanizma: %x)"
 
 #. Translators: the first '%s' is replaced with a generic error message,
 #. the second '%s' is replaced with additional error information.
@@ -3481,19 +3464,19 @@ msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
 msgstr ""
-"Odabrani mehanizam metoda prijave ne podržava, ili primjenjena metoda ga "
-"nije prepoznala."
+"Određni mehanizam nije podržan od strane pruženih vjerodajnica ili ga "
+"implementacija ne prepoznaje."
 
 #: ../src/camel/camel-sasl-gssapi.c:201
 msgid "The provided target_name parameter was ill-formed."
-msgstr "Ponuđeni parametar ime_cilja nije pravilno formiran."
+msgstr "Ponuđeni parametar target_name nije pravilno oblikovan."
 
 #: ../src/camel/camel-sasl-gssapi.c:204
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
 msgstr ""
-"Ponuđeni parametar ime_cilja je sadržao neispravan ili nepodržan tip imena."
+"Ponuđeni parametar target_name sadrži nevaljanu ili nepodržanu vrstu naziva."
 
 #: ../src/camel/camel-sasl-gssapi.c:208
 msgid ""
@@ -3516,31 +3499,31 @@ msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
 msgstr ""
-"Pružena uvjeravanja nisu bila ispravna za započimanje procesa, ili je nosač "
-"uvjerenja došao bez njih."
+"Dostavljene vjerodajnice nisu bile valjane za pokretanje sadržaja, ili "
+"rukovatelj vjerodajnice nije naveo bilo kakve vjerodajnice."
 
 #: ../src/camel/camel-sasl-gssapi.c:222
 msgid "The supplied context handle did not refer to a valid context."
-msgstr "Pruženi nosač sadržaja nije upućivao na ispravan sadržaj."
+msgstr "Pruženi rukovatelj sadržaja nije upućivao na valjani sadržaj."
 
 #: ../src/camel/camel-sasl-gssapi.c:225
 msgid "The consistency checks performed on the input_token failed."
-msgstr "Neuspjele provjere cijelovitosti na input_token."
+msgstr "Provjera cjelovitosti izvedena na input_token nije uspjela."
 
 #: ../src/camel/camel-sasl-gssapi.c:228
 msgid "The consistency checks performed on the credential failed."
-msgstr "Neuspjele provjere cijelovitosti na uvijerenjima."
+msgstr "Provjera cjelovitosti izvedena na vjerodajnici nije uspjela."
 
 #: ../src/camel/camel-sasl-gssapi.c:231
 msgid "The referenced credentials have expired."
-msgstr "Važenje traženih uverenja je isteklo."
+msgstr "Navedene vjerodajnice su istekle."
 
 #: ../src/camel/camel-sasl-gssapi.c:237 ../src/camel/camel-sasl-gssapi.c:441
 #: ../src/camel/camel-sasl-gssapi.c:491 ../src/camel/camel-sasl-gssapi.c:508
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:854
 #, c-format
 msgid "Bad authentication response from server."
-msgstr "Neispravan odgovor autentifikacije od servera."
+msgstr "Loš odgovor ovjere od poslužitelja."
 
 #: ../src/camel/camel-sasl-gssapi.c:288
 #, fuzzy
@@ -3555,24 +3538,27 @@ msgid ""
 "line with “kinit” or open “Online Accounts” in “Settings” and add the "
 "Kerberos account there. Reported error was: %s"
 msgstr ""
+"Nemoguće je zatražiti Kerberos karticu. Nabavite karticu ručno, u naredbenom "
+"retku s “kinit” ili otvorite “Mrežni računi” u “Postavkama” i dodajte "
+"Kerberos račun tamo. Prijavljena greška je: %s"
 
 #: ../src/camel/camel-sasl-gssapi.c:520
 #, c-format
 msgid "Unsupported security layer."
-msgstr "Nepodržan sigurnosni sloj."
+msgstr "Nepodržani sigurnosni sloj."
 
 #: ../src/camel/camel-sasl-login.c:31
 msgid "Login"
-msgstr "Korisnička oznaka"
+msgstr "Prijava"
 
 #: ../src/camel/camel-sasl-login.c:33 ../src/camel/camel-sasl-plain.c:37
 msgid "This option will connect to the server using a simple password."
-msgstr "Spajanje na poslužitelj korištenjem obične lozinke."
+msgstr "Ova mogućnost će se povezati s poslužiteljem koristeći obične lozinke."
 
 #: ../src/camel/camel-sasl-login.c:101
 #, c-format
 msgid "Unknown authentication state."
-msgstr "Nepoznat status prijave."
+msgstr "Nepoznati stanje ovjere."
 
 #: ../src/camel/camel-sasl-ntlm.c:40
 msgid "NTLM / SPA"
@@ -3583,12 +3569,12 @@ msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
 msgstr ""
-"Spajanje na Windows poslužitelj korištenjem NTLM / Secure Password "
-"Authentication."
+"Ova mogućnost će se povezati sa Windows poslužitelj koriteći NTLM / SPA "
+"(Ovjerom sigurne lozinke)."
 
 #: ../src/camel/camel-sasl-plain.c:35
 msgid "PLAIN"
-msgstr "JASAN"
+msgstr "OBIČAN"
 
 #: ../src/camel/camel-sasl-popb4smtp.c:37
 msgid "POP before SMTP"
@@ -3596,7 +3582,8 @@ msgstr "POP prije SMTP identifikacija..."
 
 #: ../src/camel/camel-sasl-popb4smtp.c:39
 msgid "This option will authorise a POP connection before attempting SMTP"
-msgstr "Prvo se prijavi na POP, a zatim pokušaj SMTP"
+msgstr ""
+"Ova mogućnost će odobriti POP povezivanje prije pokušaja SMTP povezivanja"
 
 #: ../src/camel/camel-sasl-popb4smtp.c:77
 #, fuzzy
@@ -3605,68 +3592,68 @@ msgid "POP Source UID"
 msgstr "Nema pronađenih izvora podataka za UID “%s”"
 
 #: ../src/camel/camel-sasl-popb4smtp.c:91
-#, fuzzy, c-format
-#| msgid "POP Before SMTP auth using an unknown transport"
+#, c-format
 msgid "POP Before SMTP authentication using an unknown transport"
-msgstr "POP prije SMTP autorizacije korištenjem nepoznatog transporta"
+msgstr "POP prije SMTP ovjere koristeći nepoznat prijenos"
 
 #: ../src/camel/camel-sasl-popb4smtp.c:103
 #: ../src/camel/camel-sasl-popb4smtp.c:112
 #, c-format
 msgid "POP Before SMTP authentication attempted with a %s service"
-msgstr ""
+msgstr "POP prije SMTP ovjere je pokušao sa %s uslugom"
 
 #: ../src/camel/camel-sasl-xoauth2.c:26
-#, fuzzy
-#| msgid "Author"
 msgid "OAuth2"
-msgstr "Autor"
+msgstr "OAuth2"
 
 #: ../src/camel/camel-sasl-xoauth2.c:27
 msgid "This option will use an OAuth 2.0 access token to connect to the server"
 msgstr ""
+"Ova mogućnost će koristiti token OAuth 2.0 pristupa za povezivanje s "
+"poslužiteljem"
 
 #: ../src/camel/camel-sasl-xoauth2-google.c:23
-#, fuzzy
 msgid "OAuth2 (Google)"
-msgstr "Google"
+msgstr "OAuth2 (Google)"
 
 #: ../src/camel/camel-sasl-xoauth2-google.c:24
 msgid ""
 "This option will use an OAuth 2.0 access token to connect to the Google "
 "server"
 msgstr ""
+"Ova mogućnost će koristiti token OAuth 2.0 pristupa za povezivanje s Google "
+"poslužiteljem"
 
 #: ../src/camel/camel-sasl-xoauth2-outlook.c:23
-#, fuzzy
 msgid "OAuth2 (Outlook)"
-msgstr "Uvoz Outlook DBX"
+msgstr "OAuth2 (Outlook)"
 
 #: ../src/camel/camel-sasl-xoauth2-outlook.c:24
 msgid ""
 "This option will use an OAuth 2.0 access token to connect to the Outlook.com "
 "server"
 msgstr ""
+"Ova mogućnost će koristiti token OAuth 2.0 pristupa za povezivanje s Outlook."
+"com poslužiteljem"
 
 #: ../src/camel/camel-search-private.c:114
 #, c-format
 msgid "Regular expression compilation failed: %s: %s"
-msgstr "Neuspjela kompilacija regularnog izraza: %s: %s"
+msgstr "Neuspjela kompilacija običnog izraza: %s: %s"
 
 #: ../src/camel/camel-session.c:439
 #, c-format
 msgid "Invalid GType registered for protocol “%s”"
-msgstr ""
+msgstr "Nevaljani GType je registriran za protokol “%s”"
 
 #: ../src/camel/camel-session.c:508
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3219
 #: ../src/camel/providers/pop3/camel-pop3-store.c:303
 #: ../src/camel/providers/pop3/camel-pop3-store.c:807
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:694
-#, fuzzy, c-format
-#| msgid "No support for authentication type %s"
+#, c-format
 msgid "No support for %s authentication"
-msgstr "Mehanizam ovjere: %s"
+msgstr "Nem podrške za %s ovjeru"
 
 #: ../src/camel/camel-session.c:523
 #, c-format
@@ -3674,10 +3661,8 @@ msgid "%s authentication failed"
 msgstr "%s ovjera neuspjela"
 
 #: ../src/camel/camel-session.c:592
-#, fuzzy
-#| msgid "Operation not supported"
 msgid "Forwarding messages is not supported"
-msgstr "Nije podržano"
+msgstr "Prosljeđivanje poruka nije podržano"
 
 #: ../src/camel/camel-smime-context.c:343
 #, fuzzy, c-format
@@ -3687,31 +3672,31 @@ msgstr "Nemoguć pronalazak sudionika “%s” u popisu sudionika"
 
 #: ../src/camel/camel-smime-context.c:371
 msgid "Cannot create CMS message"
-msgstr "Ne mogu kreirati CMS poruku"
+msgstr "Nemoguće stvaranje CMS poruke"
 
 #: ../src/camel/camel-smime-context.c:376
 msgid "Cannot create CMS signed data"
-msgstr "Ne mogu kreirati CMS potpisane podatke"
+msgstr "Nemoguće stvaranje CMS potpisanog podatka"
 
 #: ../src/camel/camel-smime-context.c:382
 msgid "Cannot attach CMS signed data"
-msgstr "Ne mogu dodati CMS potpisane podatke"
+msgstr "Nemoguće dodavanje CMS potpisanog podatka"
 
 #: ../src/camel/camel-smime-context.c:389
 msgid "Cannot attach CMS data"
-msgstr "Ne mogu dodati CMS podatke"
+msgstr "Nemoguće dodavanje CMS podatka"
 
 #: ../src/camel/camel-smime-context.c:395
 msgid "Cannot create CMS Signer information"
-msgstr "Ne mogu izraditi CMS Potpisnik informaciju"
+msgstr "Nemoguće stvaranje informacija CMS potpisnika"
 
 #: ../src/camel/camel-smime-context.c:401
 msgid "Cannot find certificate chain"
-msgstr "Ne mogu naći lanac certifikata"
+msgstr "Nemoguće pronalazak lanaca vjerodajnice"
 
 #: ../src/camel/camel-smime-context.c:407
 msgid "Cannot add CMS Signing time"
-msgstr "Ne mogu dodati CMS vrijeme potpisa"
+msgstr "Nemoguće dodavanje vremena CMS potpisa"
 
 #: ../src/camel/camel-smime-context.c:431
 #: ../src/camel/camel-smime-context.c:446
@@ -3722,19 +3707,19 @@ msgstr "Lokacija \"%s\" ne postoji."
 
 #: ../src/camel/camel-smime-context.c:453
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
-msgstr "Ne mogu dodati SMIMEEncKeyPrefs atribut"
+msgstr "Nemoguće dodavanje SMIMEEncKeyPrefs svojstva"
 
 #: ../src/camel/camel-smime-context.c:458
 msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
-msgstr "Ne mogu dodati MS SMIMEEncKeyPrefs atribut"
+msgstr "Nemoguće dodavanje MS SMIMEEncKeyPrefs svojstva"
 
 #: ../src/camel/camel-smime-context.c:463
 msgid "Cannot add encryption certificate"
-msgstr "Ne mogu dodati certifikat kriptiranja"
+msgstr "Nemoguće dodavanje vjerodajnice šifriranja"
 
 #: ../src/camel/camel-smime-context.c:469
 msgid "Cannot add CMS Signer information"
-msgstr "Ne mogu dodati CMS potpisanu obavijest"
+msgstr "Nemoguće dodavanje informacija CMS potpisnika"
 
 #. Translators: A fallback message when couldn't verify an SMIME signature
 #: ../src/camel/camel-smime-context.c:502
@@ -3747,32 +3732,31 @@ msgstr "Datoteka s potpisom:"
 
 #: ../src/camel/camel-smime-context.c:506
 msgid "Bad signature"
-msgstr "Neispravan potpis"
+msgstr "Loš potpis"
 
 #: ../src/camel/camel-smime-context.c:508
 msgid "Content tampered with or altered in transit"
-msgstr "Sadržaj je mijenjan prilikom prijenosa"
+msgstr "Sadržaj je ugrožen ili promijenjen tijekom prijenosa"
 
 #: ../src/camel/camel-smime-context.c:510
 msgid "Signing certificate not found"
-msgstr "Potpisni certifikat nije pronađen"
+msgstr "Vjerodajnica potpisa nije pronađena"
 
 #: ../src/camel/camel-smime-context.c:512
 msgid "Signing certificate not trusted"
-msgstr "Potpisni certifikat nije povjerljiv"
+msgstr "Vjerodajnica potpisa nije pouzdana"
 
 #: ../src/camel/camel-smime-context.c:514
 msgid "Signature algorithm unknown"
-msgstr "Algoritam za potpis nije poznat"
+msgstr "Algoritam potpisa nije poznat"
 
 #: ../src/camel/camel-smime-context.c:516
-#, fuzzy
 msgid "Signature algorithm unsupported"
-msgstr "Nepodržani oblik potpisa"
+msgstr "Algoritam potpisa nije podržan"
 
 #: ../src/camel/camel-smime-context.c:518
 msgid "Malformed signature"
-msgstr "Neispravni potpis"
+msgstr "Oštećeni potpis"
 
 #: ../src/camel/camel-smime-context.c:520
 msgid "Processing error"
@@ -3784,36 +3768,36 @@ msgstr "Nema potpisanih podataka u potpisu"
 
 #: ../src/camel/camel-smime-context.c:570
 msgid "Digests missing from enveloped data"
-msgstr "Obuhvaćeni podatak ne sadrži sažetak poruke"
+msgstr "Nedostaju sažeci iz obuhvaćenih podataka"
 
 #: ../src/camel/camel-smime-context.c:583
 #: ../src/camel/camel-smime-context.c:594
 msgid "Cannot calculate digests"
-msgstr "Ne mogu izračunati sažetak"
+msgstr "Nemoguć izračun sažetaka"
 
 #: ../src/camel/camel-smime-context.c:601
 #: ../src/camel/camel-smime-context.c:605
 msgid "Cannot set message digests"
-msgstr "Ne mogu postaviti sažetak poruke"
+msgstr "Nemoguće postavljanje sažetaka poruke"
 
 #: ../src/camel/camel-smime-context.c:615
 #: ../src/camel/camel-smime-context.c:620
 msgid "Certificate import failed"
-msgstr "Unos certifikata nije uspio"
+msgstr "Neuspjeli uvoz vjerodajnice"
 
 #: ../src/camel/camel-smime-context.c:630
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
-msgstr "Poruka ima samo certifikat, nije moguća provera certifikata"
+msgstr "Vjerodajnica je jedina poruka, nemoguća provjera vjerodajnica"
 
 #: ../src/camel/camel-smime-context.c:633
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr "Poruka ima samo certifikat, certifikati unešeni i provjereni"
+msgstr "Vjerodajnica je jedina poruka, vjerodajnice su uvezene i provjerene"
 
 #: ../src/camel/camel-smime-context.c:637
 msgid "Cannot find signature digests"
-msgstr "Ne mogu naći potpis sažetka"
+msgstr "Nemoguć pronalazak sadržaja potpisa"
 
 #: ../src/camel/camel-smime-context.c:656
 #, c-format
@@ -3823,72 +3807,71 @@ msgstr "Potpisao: %s <%s>: %s\n"
 #: ../src/camel/camel-smime-context.c:881
 #: ../src/camel/camel-smime-context.c:1403
 msgid "Cannot create encoder context"
-msgstr "Ne mogu izraditi kontekst enkodera"
+msgstr "Nemoguće stvaranje sadržaja enkôdera"
 
 #: ../src/camel/camel-smime-context.c:887
 msgid "Failed to add data to CMS encoder"
-msgstr "Ne mogu dodati podatke u CMS enkoder"
+msgstr "Nemoguće dodavanje podataka u CMS enkôder"
 
 #: ../src/camel/camel-smime-context.c:892
 #: ../src/camel/camel-smime-context.c:1420
 msgid "Failed to encode data"
-msgstr "Neuspjeh pri enkodiranju podataka"
+msgstr "Neuspjelo enkôdiranje podataka"
 
 #: ../src/camel/camel-smime-context.c:1045
 #: ../src/camel/camel-smime-context.c:1521
 msgid "Decoder failed"
-msgstr "Pogreška dekodera"
+msgstr "Neuspjeh dekôdera"
 
 #: ../src/camel/camel-smime-context.c:1297
 #, c-format
 msgid "No valid or appropriate certificate for “%s” was found"
-msgstr ""
+msgstr "Nema pronađenih valjanih ili prikladnih vjerodajnica za “%s”"
 
 #: ../src/camel/camel-smime-context.c:1337
 msgid "Cannot find common bulk encryption algorithm"
-msgstr "Ne mogu naći zajednički algoritam za enkripciju"
+msgstr "Nemoguće pronalazak zajedničkog algoritma za grupno šifriranje"
 
 #: ../src/camel/camel-smime-context.c:1345
 msgid "Cannot allocate slot for encryption bulk key"
-msgstr "Ne mogu dodijeliti prostor za ključ enkripcije"
+msgstr "Nemoguća dodjela prostora za ključ grupnog šifriranja"
 
 #: ../src/camel/camel-smime-context.c:1356
 msgid "Cannot create CMS Message"
-msgstr "Ne mogu izraditi CMS poruku"
+msgstr "Nemoguće stvaranje CMS poruke"
 
 #: ../src/camel/camel-smime-context.c:1362
 msgid "Cannot create CMS Enveloped data"
-msgstr "Ne mogu izraditi CMS Enveloped podatak"
+msgstr "Nemoguće stvaranje CMS obuhvaćenih podataka"
 
 #: ../src/camel/camel-smime-context.c:1368
 msgid "Cannot attach CMS Enveloped data"
-msgstr "Ne mogu priložiti CMS Enveloped podatak"
+msgstr "Nemoguće je priložiti CMS obuhvaćene podatke"
 
 #: ../src/camel/camel-smime-context.c:1374
 msgid "Cannot attach CMS data object"
-msgstr "Ne mogu priložiti CMS objekt podataka"
+msgstr "Nemoguće je priložiti objekte CMS podatka"
 
 #: ../src/camel/camel-smime-context.c:1383
 msgid "Cannot create CMS Recipient information"
-msgstr "Ne mogu izraditi CMS informaciju primatelja"
+msgstr "Nemoguće stvaranje informacija CMS primatelja"
 
 #: ../src/camel/camel-smime-context.c:1388
 msgid "Cannot add CMS Recipient information"
-msgstr "Ne mogu dodati CMS informaciju primatelja"
+msgstr "Nemoguće dodavanje informacija CMS primatelja"
 
 #: ../src/camel/camel-smime-context.c:1414
 msgid "Failed to add data to encoder"
-msgstr "Nisam uspio dodati podatke u enkoder"
+msgstr "Nemoguće dodavanje podataka u enkôder"
 
 #: ../src/camel/camel-smime-context.c:1528
 msgid "S/MIME Decrypt: No encrypted content found"
-msgstr "S/MIME dekripcija: Nema kriptiranog sadržaja"
+msgstr "S/MIME dešifriranje: Nema pronađenog šifriranog sadržaja"
 
 #: ../src/camel/camel-store.c:1412
-#, fuzzy, c-format
-#| msgid "Syncing folders"
+#, c-format
 msgid "Opening folder “%s”"
-msgstr "Otvaranje \"%s\""
+msgstr "Otvaranje mape \"%s\""
 
 #: ../src/camel/camel-store.c:1709
 #, fuzzy, c-format
@@ -3904,12 +3887,12 @@ msgstr "Smeće"
 #: ../src/camel/camel-store.c:1751 ../src/camel/camel-store.c:1799
 #: ../src/camel/camel-vtrash-folder.c:50
 msgid "Junk"
-msgstr "Smeće"
+msgstr "Neželjena pošta"
 
 #: ../src/camel/camel-store.c:2404
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
-msgstr "Ne mogu stvoriti mapu: %s: mapa postoji"
+msgstr "Nemoguće stvaranje mape: %s: mapa postoji"
 
 #: ../src/camel/camel-store.c:2411
 #, fuzzy, c-format
@@ -3920,36 +3903,36 @@ msgstr "Pojavila se greška pri stvaranju mape \"%B\"."
 #: ../src/camel/providers/local/camel-maildir-store.c:340
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
-msgstr "Ne mogu obrisati mapu: %s: neispravna operacija"
+msgstr "Nemoguće brisanje mape: %s: Nevaljana radnja"
 
 #: ../src/camel/camel-store.c:2780 ../src/camel/camel-vee-store.c:477
 #: ../src/camel/providers/local/camel-maildir-store.c:908
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
-msgstr "Ne mogu preimenovati mapu: %s: neispravna operacija"
+msgstr "Nemoguće preimenovanje mape: %s: Nevaljana radnja"
 
 #: ../src/camel/camel-stream.c:167
 msgid "Cannot write with no base stream"
-msgstr ""
+msgstr "Nemoguće zapisivanje bez osnovnog strujanja"
 
 #: ../src/camel/camel-stream.c:287 ../src/camel/camel-stream.c:338
-#, fuzzy, c-format
+#, c-format
 msgid "Stream type “%s” is not seekable"
-msgstr "Otvori sve vrste datoteka \"%s\" s"
+msgstr "Vrsta strujanja \"%s\" nije pretraživa"
 
 #: ../src/camel/camel-stream-filter.c:339
 msgid "Only reset to beginning is supported with CamelStreamFilter"
-msgstr ""
+msgstr "Samo vraćanje na početak je podržano s CamelStreamFilterom"
 
 #: ../src/camel/camel-stream-null.c:89
 msgid "Only reset to beginning is supported with CamelHttpStream"
-msgstr ""
+msgstr "Samo vraćanje na početak je podržano s CamelHttpStreamom"
 
 #: ../src/camel/camel-stream-process.c:282
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:741
 #, c-format
 msgid "Connection cancelled"
-msgstr "Povezivanje poništeno"
+msgstr "Povezivanje prekinuto"
 
 #: ../src/camel/camel-stream-process.c:287
 #, fuzzy, c-format
@@ -3958,9 +3941,9 @@ msgid "Could not connect with command “%s”: %s"
 msgstr "Neuspjelo pokretanje naredbe “%s”:"
 
 #: ../src/camel/camel-subscribable.c:234
-#, fuzzy, c-format
+#, c-format
 msgid "Subscribing to folder “%s”"
-msgstr "Obrada promjena mape u “%s”"
+msgstr "Pretplaćivanje na mapu “%s”"
 
 #: ../src/camel/camel-subscribable.c:403
 #, fuzzy, c-format
@@ -3980,7 +3963,7 @@ msgstr "Prije nadopunjavanja: %s"
 #: ../src/camel/camel-vee-folder.c:1185 ../src/camel/camel-vee-folder.c:1321
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
-msgstr "Ne mogu kopirati ili premjestiti poruke u Virtualnu Mapu"
+msgstr "Nemoguće kopiranje ili premještanje poruka u virtualnu mapu"
 
 #. Translators: The first “%s” is replaced with a message UID, the second “%s”
 #. is replaced with an account name and the third “%s” is replaced with a full
@@ -4003,35 +3986,32 @@ msgid "Updating search folder “%s”"
 msgstr "Postavljanje mape za pretraživanje: %s"
 
 #: ../src/camel/camel-vee-folder.c:1545
-#, fuzzy
 msgid "Automatically _update on change in source folders"
-msgstr "Automatski nadopuni na svaku promjenu u mapi izvora"
+msgstr "Automatski _nadopuni pri promjeni u izvorišnoj mapi"
 
 #. Translators: 'Unmatched' is a folder name under Search folders where are shown
 #. * all messages not belonging into any other configured search folder
 #: ../src/camel/camel-vee-store.c:34
 msgid "Unmatched"
-msgstr "Neupariv"
+msgstr "Nepodudarivo"
 
 #: ../src/camel/camel-vee-store.c:452
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
-msgstr "Ne mogu obrisati mapu: %s: nema takve mape"
+msgstr "Nemoguće brisanje mape: %s: Nema takve mape"
 
 #: ../src/camel/camel-vee-store.c:487
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
-msgstr "Ne mogu preimenovati mapu: %s: nema takve mape"
+msgstr "Nemoguće preimenovanje mape: %s: Nema takve mape"
 
 #: ../src/camel/camel-vee-store.c:548
-#, fuzzy
 msgid "Enable _Unmatched folder"
-msgstr "_Omogući nepodudarajuću mapu"
+msgstr "Omogući _nepodudarajuću mapu"
 
 #: ../src/camel/camel-vee-store.c:1104
-#, fuzzy
 msgid "Updating Unmatched search folder"
-msgstr "Uklj/Isklj omogućvanje nepodudarajuće mape pretrage"
+msgstr "Nadopnavanje nepodudarajuće mape pretrage"
 
 #: ../src/camel/camel-vtrash-folder.c:49
 msgid "Cannot copy messages to the Trash folder"
@@ -4042,10 +4022,9 @@ msgid "Cannot copy messages to the Junk folder"
 msgstr "Ne možete kopirati poruke u mapu \"Smeće\""
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:979
-#, fuzzy, c-format
-#| msgid "You must be working online to complete this operation"
+#, c-format
 msgid "You must be working online to complete this operation (%s)"
-msgstr "Morate biti u mrežnom načinu rada za završetak ove radnje."
+msgstr "Morate biti u mrežnom načinu rada za završetak ove radnje (%s)"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:987
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3388
@@ -4065,7 +4044,7 @@ msgstr "Morate biti u mrežnom načinu rada za završetak ove radnje."
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:545
 #, c-format
 msgid "You must be working online to complete this operation"
-msgstr "Morate biti na mreži da biste završili ovu operaciju"
+msgstr "Morate biti u mrežnom načinu rada za završetak ove radnje"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1614
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1710
@@ -4074,20 +4053,16 @@ msgid "No destination folder specified"
 msgstr "Odredište nije mapa."
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1641
-#, fuzzy
-#| msgid "Unable to retrieve message: %s"
 msgid "Unable to move junk messages"
-msgstr "Poruke koje nisu neželjena pošta"
+msgstr "Nemoguće premještanje poruka neželjene pošte"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1744
-#, fuzzy
-#| msgid "Unable to retrieve message: %s"
 msgid "Unable to move deleted messages"
-msgstr "Prikaži _obrisane poruke"
+msgstr "Nemoguće premještanje obrisanih poruka"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1812
 msgid "Unable to move messages to Inbox"
-msgstr "Nemoguće premještanje pošte u pristiglu poštu"
+msgstr "Nemoguće premještanje poruka u pristiglu poštu"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -4095,7 +4070,7 @@ msgstr "Nemoguće premještanje pošte u pristiglu poštu"
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:766
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
-msgstr ""
+msgstr "Nema dostupnih informacija ograničenja za mapu “%s : %s”"
 
 #. transfer ownership to 'rcf'
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
@@ -4104,20 +4079,16 @@ msgstr ""
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1033
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
-msgstr ""
+msgstr "Uklanjanje starih datoteka predmemorije u mapi “%s : %s”"
 
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1125
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:835
-#, fuzzy
-#| msgid "Cannot copy messages to the Trash folder"
 msgid "Apply message _filters to this folder"
-msgstr "Neuspjelo primjenjivanje odlaznih filtara: %s"
+msgstr "Primijeni filtre _poruke na ovu mapu"
 
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1137
-#, fuzzy
-#| msgid "Only check for Junk messa_ges in the INBOX folder"
 msgid "Always check for _new mail in this folder"
-msgstr "Napravi novu mapu za spremanje pošte"
+msgstr "Uvijek provjeri _novu poštu u ovoj mapi"
 
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1252
 #, fuzzy, c-format
@@ -4137,7 +4108,7 @@ msgstr "Nemo nije mogao napraviti potrebnu mapu \"%s\"."
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1464
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
-msgstr ""
+msgstr "Nema IMAP pretinca dostupnog za mapu “%s : %s”"
 
 #: ../src/camel/providers/imapx/camel-imapx-input-stream.c:101
 #, fuzzy, c-format
@@ -4146,36 +4117,35 @@ msgstr "Nema pronađenih izvora podataka za UID “%s”"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:36
 msgid "Checking for New Mail"
-msgstr "Gledam ima li nove pošte"
+msgstr "Provjera nove pošte"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:38
 msgid "C_heck for new messages in all folders"
-msgstr "_Provjeri za nove poruke u svim mapama"
+msgstr "P_rovjeri nove poruke u svim mapama"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:40
-#, fuzzy
 msgid "Ch_eck for new messages in subscribed folders"
-msgstr "_Provjeri za nove poruke u svim mapama"
+msgstr "Pr_ovjeri nove poruke u pretplaćenim mapama"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:42
 msgid "Use _Quick Resync if the server supports it"
-msgstr ""
+msgstr "Koristi _brzo usklađivanje ako ga poslužitelj podržava"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:44
 msgid "_Listen for server change notifications"
-msgstr ""
+msgstr "_Osluškuj obavijesti promjene poslužitelja"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:47
 msgid "Connection to Server"
-msgstr "Veza na poslužitelj"
+msgstr "Povezivanje s poslužiteljem"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:49
 msgid "Numbe_r of concurrent connections to use"
-msgstr ""
+msgstr "Bro_j istodobno korištenih povezivanja"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:51
 msgid "Enable full folder update on _metered network"
-msgstr ""
+msgstr "Omogući potpunu nadopunu mape na _mreži ograničenoj podacima"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:54
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:43
@@ -4184,11 +4154,11 @@ msgstr "Mape"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:56
 msgid "_Show only subscribed folders"
-msgstr "_Pokaži samo pretplaćene mape"
+msgstr "_Prikaži samo pretplaćene mape"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:59
 msgid "O_verride server-supplied folder namespace"
-msgstr "Zaobiđi imena mapa koje daje poslužitelj"
+msgstr "Z_aobiđi oblik naziva mape pružan od poslužitelja"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:61
 msgid "Namespace:"
@@ -4237,7 +4207,7 @@ msgstr "Zadani IMAP ulaz"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:82
 msgid "IMAP over TLS"
-msgstr "IMAP popreko TLS"
+msgstr "IMAP preko TLS"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:89
 msgid "IMAP"
@@ -4255,13 +4225,13 @@ msgstr "Greška pri zapisivanju strujanja predmemorije"
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3101
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3421
 msgid "Failed to get capabilities"
-msgstr "Nemoguće dobivanje mogućnosti"
+msgstr "Neuspjelo dobivanje mogućnosti"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3031
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr ""
-"Nemoguće povezivanje sa IMAP poslužiteljem %s u sigurnosnom načinu rada: %s"
+"Neuspjelo povezivanje sa IMAP poslužiteljem %s u sigurnom načinu rada: %s"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3032
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:283
@@ -4270,13 +4240,13 @@ msgstr "STARTTLS nije podržan"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3041
 msgid "Failed to issue STARTTLS"
-msgstr "Greška u izdavanju poruke STARTTLS"
+msgstr "Neuspjelo STARTTLS izdavanje"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3090
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr ""
-"Nemoguće povezivanje sa IMAP poslužiteljem %s u sigurnosnom načinu rada: "
+"Neuspjelo povezivanje sa IMAP poslužiteljem %s u sigurnosnom načinu rada: "
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3206
 #, c-format
@@ -4296,7 +4266,7 @@ msgstr ""
 #: ../src/camel/providers/nntp/camel-nntp-store.c:454
 #: ../src/camel/providers/nntp/camel-nntp-store.c:596
 msgid "Cannot authenticate without a username"
-msgstr "Nemoguća ovjera bez koriničkog imena"
+msgstr "Nemoguća ovjera bez korisničkog imena"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3254
 #: ../src/camel/providers/nntp/camel-nntp-store.c:605
@@ -4312,11 +4282,11 @@ msgstr "Neuspjela ovjera"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3448
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
-msgstr "Neuspjelo izdavanje poruke ENABLE UTF8=ACCEPT"
+msgstr "Neuspjelo izdavanje ENABLE UTF8=ACCEPT"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3470
 msgid "Failed to issue NAMESPACE"
-msgstr "Neuspjelo izdavanje poruke NAMESPACE"
+msgstr "Neuspjelo izdavanje NAMESPACE"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3488
 msgid "Failed to enable QResync"
@@ -4324,7 +4294,7 @@ msgstr "Neuspjelo QResync omogućavanje"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3525
 msgid "Failed to issue NOTIFY"
-msgstr "Neuspjelo izdavanje poruke NOTIFY"
+msgstr "Neuspjelo izdavanje NOTIFY"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4004
 msgid "Failed to select mailbox"
@@ -4332,7 +4302,7 @@ msgstr "Neuspjeli odabir pretinca pošte"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4107
 msgid "Cannot issue command, no stream available"
-msgstr "Nemoguća naredba izdavanja poruke, strujanje nije dostupno"
+msgstr "Nemoguća naredba izdavanja, strujanje nije dostupno"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4373
 #, c-format
@@ -4352,7 +4322,7 @@ msgstr "Greška preuzimanja poruke"
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4465
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5232
 msgid "Error performing NOOP"
-msgstr "Greška izvršavanje poruke NOOP"
+msgstr "Greška izvršavanja NOOP"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4480
 msgid "Failed to close the tmp stream"
@@ -4405,7 +4375,7 @@ msgstr "Greška preuzimanja informacija poruka"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5571
 msgid "Error running STATUS"
-msgstr "Greška pokretanja poruke STATUS"
+msgstr "Greška pokretanja STATUS"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:6145
 #: ../src/camel/providers/imapx/camel-imapx-server.c:6200
@@ -4463,7 +4433,7 @@ msgstr "Neuspjela pretraga"
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
 #: ../src/camel/providers/imapx/camel-imapx-server.c:6983
 msgid "Error running IDLE"
-msgstr "Greška pokretanja poruke IDLE"
+msgstr "Greška pokretanja IDLE"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../src/camel/providers/imapx/camel-imapx-store.c:353
@@ -4510,7 +4480,7 @@ msgstr "Nema takve mape %s"
 #: ../src/camel/providers/imapx/camel-imapx-store.c:1620
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
-msgstr "Nema IMAP naziva prostora za putanju mape “%s”"
+msgstr "Nema IMAP oblika naziva za putanju mape “%s”"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:1887
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2081
@@ -4719,7 +4689,7 @@ msgstr "_Spremi stanje zaglavlja u Elm/Pine/Mutt format"
 
 #: ../src/camel/providers/local/camel-local-provider.c:120
 msgid "Standard Unix mbox spool file"
-msgstr "Standardna Uniks mboks datoteka pripreme"
+msgstr "Standardna Unix mboks datoteka pripreme"
 
 #: ../src/camel/providers/local/camel-local-provider.c:121
 #: ../src/camel/providers/local/camel-local-provider.c:135
@@ -4733,12 +4703,12 @@ msgstr ""
 
 #: ../src/camel/providers/local/camel-local-provider.c:134
 msgid "Standard Unix mbox spool directory"
-msgstr "Standardni Uniks mboks direktorij pripreme"
+msgstr "Standardni Unix mboks direktorij pripreme"
 
 #: ../src/camel/providers/local/camel-local-store.c:82
 #, c-format
 msgid "Could not rename folder %s to %s: %s"
-msgstr "Nemoguće preimenovanje direktorija %s u %s: %s"
+msgstr "Nemoguće preimenovanje mape %s u %s: %s"
 
 #: ../src/camel/providers/local/camel-local-store.c:164
 #, c-format
@@ -4757,7 +4727,7 @@ msgstr "Korijenski spremnik %s nije apsolutna putanja"
 #: ../src/camel/providers/local/camel-local-store.c:216
 #, c-format
 msgid "Store root %s is not a regular directory"
-msgstr "Korijenski spremnik %s nije normalan direktorij"
+msgstr "Korijenski spremnik %s nije običan direktorij"
 
 #: ../src/camel/providers/local/camel-local-store.c:228
 #: ../src/camel/providers/local/camel-local-store.c:238
@@ -4873,7 +4843,7 @@ msgstr "nije mapa pošte"
 #: ../src/camel/providers/local/camel-spool-store.c:225
 #, c-format
 msgid "Could not scan folder “%s”: %s"
-msgstr "Nemoguće pretraživanje mape “%s”: %s"
+msgstr "Nemoguće pretraga mape “%s”: %s"
 
 #: ../src/camel/providers/local/camel-maildir-summary.c:450
 #: ../src/camel/providers/local/camel-maildir-summary.c:589
@@ -4887,7 +4857,7 @@ msgstr "Provjeravanje dosljednost mape"
 
 #: ../src/camel/providers/local/camel-maildir-summary.c:702
 msgid "Checking for new messages"
-msgstr "Provjeravam nove poruke"
+msgstr "Provjeravanje novih poruka"
 
 #: ../src/camel/providers/local/camel-maildir-summary.c:806
 #: ../src/camel/providers/local/camel-mbox-summary.c:367
@@ -4931,7 +4901,7 @@ msgstr "Nemoguće dohvaćanje mape “%s”: nije obična datoteka"
 #: ../src/camel/providers/local/camel-mbox-store.c:603
 #, c-format
 msgid "Cannot create directory “%s”: %s."
-msgstr "Neuspjelo stvaranje direktorija “%s”: %s."
+msgstr "Nemoguće stvaranje direktorija “%s”: %s."
 
 #: ../src/camel/providers/local/camel-mbox-store.c:615
 #, c-format
@@ -5000,7 +4970,7 @@ msgstr "Nemoguće otvaranje datoteke: %s: %s"
 #: ../src/camel/providers/local/camel-spool-summary.c:163
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
-msgstr "Nemoguće otvaranje pretinca: %s"
+msgstr "Nemoguće otvaranje privremenog pretinca: %s"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:630
 #: ../src/camel/providers/local/camel-mbox-summary.c:870
@@ -5090,7 +5060,7 @@ msgstr "Priprema “%s” nije obična datoteka ili direktorij"
 #: ../src/camel/providers/local/camel-spool-store.c:418
 #, c-format
 msgid "Spool mail file %s"
-msgstr "Priprema datoteka pošte %s"
+msgstr "Priprema datoteke pošte %s"
 
 #: ../src/camel/providers/local/camel-spool-store.c:422
 #, c-format
@@ -5239,7 +5209,7 @@ msgstr "Zadani NNTP ulaz"
 
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:58
 msgid "NNTP over TLS"
-msgstr "IMAP popreko TLS"
+msgstr "IMAP preko TLS"
 
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:64
 msgid "USENET news"
@@ -5290,7 +5260,7 @@ msgstr "NNTP poslužitelj %s ne podržava STARTTLS: %s"
 #, c-format
 msgid "Failed to connect to NNTP server %s in secure mode: "
 msgstr ""
-"Nemoguće povezivanje sa SMTP poslužiteljem %s u sigurnosnom načinu rada: "
+"Nemoguće povezivanje s NNTP poslužiteljem %s u sigurnosnom načinu rada: "
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:509
 #, c-format
@@ -5370,7 +5340,7 @@ msgstr "%s: Pretraživanje novih poruka"
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:211
 #, c-format
 msgid "Unexpected server response from xover: %s"
-msgstr "Neočekivani odgovor poslužitelja sa xovera: %s"
+msgstr "Neočekivani odgovor poslužitelja s xovera: %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:355
 #, c-format
@@ -5390,7 +5360,7 @@ msgstr "%s: Pretraživanje postpjećih poruka"
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:464
 #, c-format
 msgid "Unexpected server response from listgroup: %s"
-msgstr "Neočekivani odgovor poslužitelja sa popisa grupe: %s"
+msgstr "Neočekivani odgovor poslužitelja s popisa grupe: %s"
 
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:358
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:442
@@ -5480,8 +5450,9 @@ msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
 msgstr ""
-"Spajanje na POP poslužitelj korištenjem lozinke u čistim tekstom. Ovo je "
-"jedini način prijenosa kojeg podržavaju mnogi POP poslužitelji."
+"Ova mogućnost će vas povezati s POP poslužiteljem koristeći lozinke u "
+"običnom tekstu. Ovo je jedina mogućnost koju podržavaju mnogi POP "
+"poslužitelji."
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:94
 msgid ""
@@ -5489,14 +5460,14 @@ msgid ""
 "the APOP protocol. This may not work for all users even on servers that "
 "claim to support it."
 msgstr ""
-"Spajanje na POP poslužitelj korištenjem enkriptirane lozinke preko APOP "
-"protokola.Možda neće raditi svim korisnicima, čak i sa poslužiteljma koji "
-"tvrde da to podržavaju."
+"Ova mogućnost će vas povezati s POP poslužiteljem koristeći šifrirane "
+"lozinke putem APOP protokola. Ovo možda neće raditi svim korisnicima, čak i "
+"s poslužiteljima koji tvrde da to podržavaju."
 
 #. Translators: This is the separator between an error and an explanation
 #: ../src/camel/providers/pop3/camel-pop3-store.c:90
 msgid ": "
-msgstr ""
+msgstr ": "
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:157
 #, c-format
