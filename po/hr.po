@@ -7,7 +7,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
 "POT-Creation-Date: 2020-03-06 12:47+0000\n"
-"PO-Revision-Date: 2020-03-16 00:40+0100\n"
+"PO-Revision-Date: 2020-03-16 21:06+0100\n"
 "Last-Translator: gogo <linux.hr@protonmail.com>\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
 "Language: hr\n"
@@ -5472,80 +5472,69 @@ msgstr ": "
 #: ../src/camel/providers/pop3/camel-pop3-store.c:157
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
-msgstr "Neuspješno čitanje ispravnog pozdrava POP poslužitelja %s"
+msgstr "Neuspjelo čitanje ispravnog pozdrava POP poslužitelja %s"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:172
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
-msgstr "Nisam se mogao povezati na POP server %s u sigurnosnom načinu rada: %s"
+msgstr ""
+"Neuspjelo povezivanje s POP poslužiteljem %s u sigurnom načinu rada: %s"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:173
-#, fuzzy
 msgid "STLS not supported by server"
-msgstr "Nije podržano"
+msgstr "STLS nije podržan od strane poslužitelja"
 
 #. Translators: Last %s is an optional
 #. * explanation beginning with ": " separator.
 #: ../src/camel/providers/pop3/camel-pop3-store.c:194
-#, fuzzy, c-format
-#| msgid "Failed to connect to POP server %s in secure mode: %s"
+#, c-format
 msgid "Failed to connect to POP server %s in secure mode%s"
-msgstr "Nisam se mogao povezati na POP server %s u sigurnosnom načinu rada: %s"
+msgstr "Neuspjelo povezivanje s POP poslužiteljem %s u sigurnom načinu rada%s"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:212
-#, fuzzy, c-format
-#| msgid "Failed to connect to POP server %s in secure mode: %s"
+#, c-format
 msgid "Failed to connect to POP server %s in secure mode: "
-msgstr "Nisam se mogao povezati na POP server %s u sigurnosnom načinu rada: %s"
+msgstr "Neuspjelo povezivanje s POP poslužiteljem %s u sigurnom načinu rada: "
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:354
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
-msgstr "Ne mogu se prijaviti na POP server %s: greška kod SASL protokola"
+msgstr "Neuspjela prijava na POP poslužitelja %s: greška SASL protokola"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:376
-#, fuzzy, c-format
-#| msgid "Failed to authenticate on POP server %s: %s"
+#, c-format
 msgid "Failed to authenticate on POP server %s: "
-msgstr "Nisam se mogao prijaviti na POP server %s: %s"
+msgstr "Neuspjelo ovjere na POP poslužitelju %s: "
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:484
-#, fuzzy, c-format
-#| msgid "IMAP server %s"
+#, c-format
 msgid "POP3 server %s"
-msgstr "POP3 poslužitelj"
+msgstr "POP3 poslužitelj %s"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:487
-#, fuzzy, c-format
-#| msgid "IMAP service for %s on %s"
+#, c-format
 msgid "POP3 server for %s on %s"
-msgstr "Pretraživanje POP3 poslužitelja…"
+msgstr "POP3 poslužitelj za %s na %s"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:691
-#, fuzzy, c-format
-#| msgid ""
-#| "Unable to connect to POP server %s.\n"
-#| "Error sending password: %s"
+#, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
 "Error enabling UTF-8 mode: "
 msgstr ""
-"Nisam mogao da se povežem na POP poslužitelj %s.\n"
-"Greška kod slanja zaporke: %s"
+"Nemoguće povezivanje s POP poslužiteljem %s.\n"
+"Greška omogućavanja UTF-8 načina: "
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:719
 #: ../src/camel/providers/pop3/camel-pop3-store.c:732
 #: ../src/camel/providers/pop3/camel-pop3-store.c:818
-#, fuzzy, c-format
-#| msgid ""
-#| "Unable to connect to POP server %s.\n"
-#| "Error sending password: %s"
+#, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending password: "
 msgstr ""
-"Nisam mogao da se povežem na POP poslužitelj %s.\n"
-"Greška kod slanja zaporke: %s"
+"Nemoguće povezivanje s POP poslužiteljem %s.\n"
+"Greška slanja lozinke: "
 
 #. Translators: Do not translate APOP.
 #: ../src/camel/providers/pop3/camel-pop3-store.c:759
@@ -5554,31 +5543,29 @@ msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
 "attack suspected. Please contact your admin."
 msgstr ""
+"Nemoguće povezivanje s POP poslužiteljem %s:\tNevaljani APOP ID primljen. "
+"Sumnja se na napad lažnim identitetom. Kontaktirajte svojeg administratora."
 
 #. Translators: Last %s is an optional explanation
 #. * beginning with ": " separator.
 #: ../src/camel/providers/pop3/camel-pop3-store.c:833
-#, fuzzy, c-format
-#| msgid ""
-#| "Unable to connect to POP server %s.\n"
-#| "Error sending username: %s"
+#, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending username%s"
 msgstr ""
-"Ne mogu se povezati na POP poslužitelj %s.\n"
-"Greška pri slanju korisničkog imena: %s"
+"Nemoguće povezivanje s POP poslužiteljem %s.\n"
+"Greška slanja korisničkog imena: %s"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:917
-#, fuzzy, c-format
-#| msgid "No such folder %s"
+#, c-format
 msgid "No such folder “%s”."
-msgstr "Zamijeni mapu \"%s\"?"
+msgstr "Nema takve mape: “%s”."
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:934
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
-msgstr ""
+msgstr "POP3 pohrana nema hijerarhiju mape"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-provider.c:31
 #: ../src/services/evolution-source-registry/builtin/sendmail.source.in.h:1
@@ -5586,10 +5573,6 @@ msgid "Sendmail"
 msgstr "Sendmail"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-provider.c:33
-#, fuzzy
-#| msgid ""
-#| "For delivering mail by passing it to the \"sendmail\" program on the "
-#| "local system."
 msgid ""
 "For delivering mail by passing it to the “sendmail” program on the local "
 "system."
@@ -5602,82 +5585,68 @@ msgstr "sendmail"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:46
 msgid "Mail delivery via the sendmail program"
-msgstr "Dostava pošte preko programa sendmail"
+msgstr "Dostava pošte putem sendmail programa"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:137
-#, fuzzy, c-format
-#| msgid "Failed to retrieve message"
+#, c-format
 msgid "Failed to read From address"
-msgstr "Neuspjelo čitanje izlaza iz SpamAssassina: "
+msgstr "Neuspjelo čitanje adrese pošiljatelja"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:154
-#, fuzzy, c-format
-#| msgid "Cannot append message in offline mode: cache unavailable"
+#, c-format
 msgid "Message send in offline mode is disabled"
-msgstr "Poruka nije dostupna u izvanmeržnom načinu radu."
+msgstr "Slanje poruka u izvanmeržnom načinu radu je onemogućeno."
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:182
 #, c-format
 msgid "Could not parse recipient list"
-msgstr "Nisam mogao obraditi popis primatelja"
+msgstr "Nemoguća obrada popisa primatelja"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:199
-#, fuzzy, c-format
-#| msgid "Could not parse recipient list"
+#, c-format
 msgid "Could not parse arguments"
-msgstr "_Argumenti:"
+msgstr "Nemoguća obrada argumenata"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:215
-#, fuzzy, c-format
-#| msgid "Could not create pipe to sendmail: %s: mail not sent"
+#, c-format
 msgid "Could not create pipe to “%s”: %s: mail not sent"
-msgstr "Nisam mogao napraviti cjevovod na sendmail: %s: poruka nije poslana"
+msgstr "Nemoguće stvaranje povezivanja prema “%s”: %s: poruka nije poslana"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:246
-#, fuzzy, c-format
-#| msgid "Could not fork sendmail: %s: mail not sent"
+#, c-format
 msgid "Could not fork “%s”: %s: mail not sent"
-msgstr "Ne mogu forkati sendmail: %s: poruka nije poslana"
+msgstr "Nemoguće grananje “%s”: %s: poruka nije poslana"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:301
-#, fuzzy
-#| msgid "Could not send message: %s"
 msgid "Could not send message: "
-msgstr "Pošalji ovu poruku"
+msgstr "Nemoguće slanje poruke: "
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:343
-#, fuzzy, c-format
-#| msgid "sendmail exited with signal %s: mail not sent."
+#, c-format
 msgid "“%s” exited with signal %s: mail not sent."
-msgstr "sendmail je završio signalom %s: poruka nije poslana"
+msgstr "“%s” je izašao sa signalom %s: poruka nije poslana."
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:353
-#, fuzzy, c-format
-#| msgid "Could not execute %s: mail not sent."
+#, c-format
 msgid "Could not execute “%s”: mail not sent."
-msgstr "Nisam mogao izvršiti %s: poruka nije poslana"
+msgstr "Nemoguće je izvršiti “%s”: poruka nije poslana."
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:358
-#, fuzzy, c-format
-#| msgid "sendmail exited with status %d: mail not sent."
+#, c-format
 msgid "“%s” exited with status %d: mail not sent."
-msgstr "sendmail je završio sa statusom %d: poruka nije poslana"
+msgstr "“%s” je izašao sa signalom %d: poruka nije poslana."
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:37
-#, fuzzy
 msgid "Default SMTP port"
-msgstr "SMTP poslužitelj"
+msgstr "Zadani SMTP ulaz"
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:38
-#, fuzzy
-#| msgid "SMTP server %s"
 msgid "SMTP over TLS"
-msgstr "LDAP preko SSL/TLS (zastarjelo)"
+msgstr "SMTP preko TLS"
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:39
-#, fuzzy
 msgid "Message submission port"
-msgstr "_Ulaz:"
+msgstr "Port slanja poruka"
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:45
 msgid "SMTP"
@@ -5685,35 +5654,30 @@ msgstr "SMTP"
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:47
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
-msgstr "Za dostavu pošte povezivanjem na udaljeni mailhub, korištenjem SMTP-a."
+msgstr "Za dostavu pošte povezivanjem na udaljeni mailhub, koristeći SMTP."
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:237
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:244
-#, fuzzy
-#| msgid "Welcome response error"
 msgid "Welcome response error: "
-msgstr "Dobrodošlica"
+msgstr "Greška odgovora dobrodošlice: "
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:282
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr ""
-"Nisam se mogao povezati na SMTP server %s u sigurnosnom načinu rada: %s"
+"Neuspjelo povezivanje sa SMTP poslužiteljem %s u sigurnom načinu rada: %s"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:291
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:304
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:311
-#, fuzzy
-#| msgid "STARTTLS command failed: %s"
 msgid "STARTTLS command failed: "
-msgstr "Neuspjelo pokretanje naredbe “%s”:"
+msgstr "STARTTLS neuspjela naredba: "
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:330
-#, fuzzy, c-format
-#| msgid "Failed to connect to SMTP server %s in secure mode: %s"
+#, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
 msgstr ""
-"Nisam se mogao povezati na SMTP server %s u sigurnosnom načinu rada: %s"
+"Neuspjelo povezivanje sa SMTP poslužiteljem %s u sigurnom načinu rada: "
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:441
 #, c-format
@@ -5723,42 +5687,37 @@ msgstr "SMTP poslužitelj %s"
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:444
 #, c-format
 msgid "SMTP mail delivery via %s"
-msgstr "SMTP dostava pošte preko %s"
+msgstr "SMTP dostava pošte putem %s"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:584
-#, fuzzy, c-format
-#| msgid "SMTP server %s does not support requested authentication type %s."
+#, c-format
 msgid "SMTP server %s does not support %s authentication"
-msgstr "SMTP poslužitelj %s ne podržava traženi tip autorizacije (%s)."
+msgstr "SMTP poslužitelj %s ne podržava %s ovjeru"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:684
-#, fuzzy, c-format
+#, c-format
 msgid "No SASL mechanism was specified"
-msgstr "Mehanizam ovjere: %s"
+msgstr "Nema određenog SASL mehanizma"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:721
-#, fuzzy
-#| msgid "AUTH command failed: %s"
 msgid "AUTH command failed: Not connected."
-msgstr "Neuspjelo pokretanje naredbe “%s”:"
+msgstr "AUTH neuspjela naredba."
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:728
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:742
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:758
-#, fuzzy
-#| msgid "AUTH command failed: %s"
 msgid "AUTH command failed: "
-msgstr "Neuspjelo pokretanje naredbe “%s”:"
+msgstr "AUTH neuspjela naredba: "
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:961
 #, c-format
 msgid "Cannot send message: service not connected."
-msgstr "Ne mogu poslati poruku: nema veze sa servisom.."
+msgstr "Nemoguće slanje poruke: usluga nije povezana."
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:970
 #, c-format
 msgid "Cannot send message: sender address not valid."
-msgstr "Ne mogu poslati poruku: adresa pošiljatelja nije ispravna."
+msgstr "Nemoguće slanje poruke: adresa pošiljatelja nije vanjana."
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:974
 msgid "Sending message"
@@ -5767,32 +5726,32 @@ msgstr "Slanje poruke"
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1003
 #, c-format
 msgid "Cannot send message: no recipients defined."
-msgstr "Ne mogu poslati poruku: nisu određeni primatelji."
+msgstr "Nemoguće slanje poruke: nema navedenih primatelja."
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1018
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
-msgstr "Ne mogu poslati poruku: jedan ili više neispravnih primatelja"
+msgstr "Nemoguće slanje poruke: jedan ili više nevaljanih primatelja"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1150
 msgid "Syntax error, command unrecognized"
-msgstr "Greška u sintaksi, naredbs neprepoznata"
+msgstr "Greška sintakse, neprepoznata naredba"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1152
 msgid "Syntax error in parameters or arguments"
-msgstr "Greška u sintaksi u parametrima ili argumentima"
+msgstr "Greška sintakse u parametrima ili argumentima"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1154
 msgid "Command not implemented"
-msgstr "Naredba nije ostvarena"
+msgstr "Naredba nije implementirana"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1156
 msgid "Command parameter not implemented"
-msgstr "Parametar naredbe nije ostvaren"
+msgstr "Parametar naredbe nije implementiran"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1158
 msgid "System status, or system help reply"
-msgstr "Status sustava, ili odgovor na pomoć"
+msgstr "Stanje sustava, ili odgovor sustava na pomoć"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1160
 msgid "Help message"
@@ -5800,80 +5759,80 @@ msgstr "Poruka o pomoći"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1162
 msgid "Service ready"
-msgstr "Servis spreman"
+msgstr "Usluga je spremna"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1164
 msgid "Service closing transmission channel"
-msgstr "Servis zatvara prijenosni kanal"
+msgstr "Usluga zatvara prijenosni kanal"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1166
 msgid "Service not available, closing transmission channel"
-msgstr "Servis nije dostupan, zatvaram prijenosni kanal"
+msgstr "Usluga nije dostupna, zatvaram prijenosni kanal"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1168
 msgid "Requested mail action okay, completed"
-msgstr "Tražena akcija za poštu u redu, gotovo"
+msgstr "Zatražena radnja za poštu je u redu, završeno"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1170
 msgid "User not local; will forward to <forward-path>"
-msgstr "Korisnik nije lokalan; proslijediću na <putanja-proslijeđivanja>"
+msgstr "Korisnik nije lokalan; proslijedit ću na <putanja-prosljeđivanja>"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1172
 msgid "Requested mail action not taken: mailbox unavailable"
-msgstr "Tražena akcija za poštu nije napravljena: nedostupan sandučić"
+msgstr "Zatražena radnja za poštu nije obavljena: nedostupan pretinac"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1174
 msgid "Requested action not taken: mailbox unavailable"
-msgstr "Tražena akcija nije napravljena: nedostupan sandučić"
+msgstr "Zatražena radnja nije obavljena: nedostupan pretinac"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1176
 msgid "Requested action aborted: error in processing"
-msgstr "Tražena akcija nije napravljena: greška u obradi"
+msgstr "Zatražena radnja nije obavljena: greška obrade"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1178
 msgid "User not local; please try <forward-path>"
-msgstr "Korisnik nije lokalan; molim pokušajte <putanja-proslijeđivanja>"
+msgstr "Korisnik nije lokalan; pokušajte <putanja-prosljeđivanja>"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1180
 msgid "Requested action not taken: insufficient system storage"
-msgstr "Tražena akcija nije napravljena: nedovoljno prostora na računalu"
+msgstr "Zatražena radnja nije obavljena: nedovoljno prostora na sustavu"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1182
 msgid "Requested mail action aborted: exceeded storage allocation"
-msgstr "Odustato od tražene akcije za poštu: premašen dodeljen prostor"
+msgstr "Zatražena radnja za poštu prekinuta: premašen dodijeljeni prostor"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1184
 msgid "Requested action not taken: mailbox name not allowed"
-msgstr "Tražena akcija nije napravljena: ime sandučića nije dozvoljeno"
+msgstr "Zatražena radnja nije obavljena: naziv pretinca nije dopušten"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1186
 msgid "Start mail input; end with <CRLF>.<CRLF>"
-msgstr "Počni unos pošte; završava sa <CRLF>.<CRLF>"
+msgstr "Započni unos pošte; završava sa <CRLF>.<CRLF>"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1188
 msgid "Transaction failed"
-msgstr "Prijenos neuspješan"
+msgstr "Prijenos neuspio"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1192
 msgid "A password transition is needed"
-msgstr "Potrebna je izmjena lozinke"
+msgstr "Potrebno je slanje lozinke"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1194
 msgid "Authentication mechanism is too weak"
-msgstr "Mehanizam autentifikacije je preslab"
+msgstr "Mehanizam ovjere je preslab"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1196
 msgid "Encryption required for requested authentication mechanism"
-msgstr "Obavezno šifriranje za traženi mehanizam prijave"
+msgstr "Šifriranje je potrebno za traženi mehanizam ovjere"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1198
 msgid "Temporary authentication failure"
-msgstr "Neuspjela privremena prijava"
+msgstr "Privremena ovjera je neuspjela"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1200
 #: ../src/libedataserver/e-client.c:145
 msgid "Authentication required"
-msgstr "Zahtijev za autentifikaciju obavezan"
+msgstr "Potrebna je ovjera"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1490
 msgid "SMTP Greeting"
@@ -5882,31 +5841,24 @@ msgstr "SMTP pozdrav"
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1499
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1512
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1519
-#, fuzzy
-#| msgid "HELO command failed: %s"
 msgid "HELO command failed: "
-msgstr "Neuspjelo pokretanje naredbe “%s”:"
+msgstr "HELO naredba je neuspjela: "
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1603
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1617
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1626
-#, fuzzy
-#| msgid "MAIL FROM command failed"
 msgid "MAIL FROM command failed: "
-msgstr "Nadopuna iz naredbenog redka"
+msgstr "MAIL FROM naredba je neuspjela: "
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1654
-#, fuzzy
-#| msgid "RSET command failed: %s"
 msgid "RCPT TO command failed: "
-msgstr "Neuspjelo pokretanje naredbe “%s”:"
+msgstr "RCPT TO naredba je neuspjela: "
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1670
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1679
-#, fuzzy, c-format
-#| msgid "RCPT TO <%s> failed"
+#, c-format
 msgid "RCPT TO <%s> failed: "
-msgstr "Montiranje %s neuspješno:"
+msgstr "RCPT TO <%s> je neuspjelo: "
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1753
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1764
@@ -5915,31 +5867,24 @@ msgstr "Montiranje %s neuspješno:"
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1876
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1889
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1897
-#, fuzzy
-#| msgid "DATA command failed"
 msgid "DATA command failed: "
-msgstr "Neuspjelo pokretanje naredbe “%s”:"
+msgstr "DATA naredba je neuspjela: "
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1923
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1937
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1945
-#, fuzzy
-#| msgid "RSET command failed: %s"
 msgid "RSET command failed: "
-msgstr "Neuspjelo pokretanje naredbe “%s”:"
+msgstr "RSET naredba je neuspjela: "
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1971
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1983
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1989
-#, fuzzy
-#| msgid "QUIT command failed: %s"
 msgid "QUIT command failed: "
-msgstr "Neuspjelo pokretanje naredbe “%s”:"
+msgstr "QUIT naredba je neuspjela: "
 
 #: ../data/org.gnome.evolution-data-server.addressbook.gschema.xml.in.h:1
-#, fuzzy
 msgid "Contact UID of a user"
-msgstr "UID"
+msgstr "UID kontakta korisnika"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:1
 msgid "Birthday and anniversary reminder"
@@ -5947,107 +5892,105 @@ msgstr "Podsjetnik na rođendan i obljetnicu"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:2
 msgid "Whether to set a reminder for birthdays and anniversaries"
-msgstr ""
+msgstr "Treba li postaviti podsjetnik za rođendane i obljetnice"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:3
 msgid "Birthday and anniversary reminder value"
-msgstr "Vrijednost za podsjetnik na rođendan i obljetnicu"
+msgstr "Vrijednost podsjetnika na rođendan i obljetnicu"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:4
 msgid "Number of units for determining a birthday or anniversary reminder"
-msgstr "Broj jedinica mjere za otkrivanje podsjetnika rođendana i obljetnice"
+msgstr "Broj jedinica za otkrivanje podsjetnika rođendana i obljetnice"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:5
 msgid "Birthday and anniversary reminder units"
-msgstr "Jedinice mjere za podsjetnik na rođendan i obljetnicu"
+msgstr "Jedinice za podsjetnik na rođendan i obljetnicu"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:6
 msgid ""
 "Units for a birthday or anniversary reminder, “minutes”, “hours” or “days”"
-msgstr ""
-"Jedinice mjere za rođendan ili obljetnicu, \"minute\", \"sati\" ili \"dani\""
+msgstr "Jedinice za rođendan ili obljetnicu, \"minute\", \"sati\" ili \"dani\""
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:7
-#, fuzzy
 msgid "Past reminders for EReminderWatcher"
-msgstr "Prikaži podsjetnike za _protekle događaje"
+msgstr "Protekli događaji za EReminderWatcher"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:8
-#, fuzzy
 msgid "Snoozed reminders for EReminderWatcher"
-msgstr "_Podsjetnici"
+msgstr "Odgođeni podsjetnici za EReminderWatcher"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:9
-#, fuzzy
 msgid "Reminder programs"
-msgstr "_Podsjetnik"
+msgstr "Programi podsjetnika"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:10
 msgid "Programs that are allowed to be run by reminders"
-msgstr ""
+msgstr "Programi kojima je dopušteno pokretanje od strane podsjetnika"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:11
 msgid "Show reminders in notification tray only"
-msgstr ""
+msgstr "Prikaži podsjetnike samo u obavijesnom području sustava"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:12
 msgid ""
 "When set to true, the reminders are shown only in the notification tray, "
 "otherwise the reminders dialog is shown immediately"
 msgstr ""
+"Ako je postavljeno na true, podsjetnici se prikazuju samo u obavijesnom "
+"području sustava, u suprotnome dijalog podsjetnika je odmah prikazan."
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:13
-#, fuzzy
 msgid "Show reminder notification dialog always on top"
-msgstr "Zadrži prozor obavijesti _podsjetnika uvijek na vrhu"
+msgstr "Prikaži dijalog obavijesti podsjetnika uvijek na vrhu"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:14
 msgid ""
 "Whether or not to show reminder notification dialog always on top. Note this "
 "works only as a hint for the window manager, which may or may not obey it."
 msgstr ""
+"Treba li prikazati dijalog obavijesti uvijek na vrhu. Zapamtite da to radi "
+"samo kao kao napomena u upravitelja prozora, koja se može i ne mora "
+"prikazati."
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:15
 msgid "X position of the reminder notification dialog"
-msgstr ""
+msgstr "X položaj dijaloga obavijesti podsjetnika"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:16
 msgid "Y position of the reminder notification dialog"
-msgstr ""
+msgstr "Y položaj dijaloga obavijesti podsjetnika"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:17
-#, fuzzy
 msgid "Width of the reminder notification dialog"
-msgstr "Odaberi izvore za obavijesti podsjetnika"
+msgstr "Širina dijaloga obavijesti podsjetnika"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:18
-#, fuzzy
 msgid "Height of the reminder notification dialog"
-msgstr "Odaberi izvore za obavijesti podsjetnika"
+msgstr "Visina dijaloga obavijesti podsjetnika"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
 msgid "Show reminder notification for completed tasks"
-msgstr ""
+msgstr "Prikaži obavijesti podsjetnika za završene zadatke"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
 msgid "Show reminder notification for past events"
-msgstr ""
+msgstr "Prikaži obavijesti podsjetnika za protekle događaje"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
 msgid "The last used snooze time, in minutes"
-msgstr ""
+msgstr "Posljednje korišteno vrijeme odgode, u minutama"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
 msgid "User-defined snooze times, in minutes"
-msgstr ""
+msgstr "Korisnički određeno vrijeme odgode, u minutama"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:1
 msgid "Whether the migration of old setting was already done"
-msgstr ""
+msgstr "Je li migracija starih postavki već završila"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:2
 msgid "An absolute path where the gpg (or gpg2) binary is"
-msgstr ""
+msgstr "Apsolutna putanja do lokacije gpg (ili gpg2) binarne datoteke"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:3
 msgid ""
@@ -6055,20 +5998,26 @@ msgid ""
 "is set, then it will be searched for. Change requires restart of the "
 "application."
 msgstr ""
+"Primjer je “/usr/bin/gpg”; ako je ostalo prazno, ili je postavljena "
+"neispravna vrijednost, tada će se pretražiti. Promjena zahtijeva ponovno "
+"pokretanje aplikacije."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:4
 msgid "Whether to load photos of signers/encrypters"
-msgstr ""
+msgstr "Treba li učitati fotografije potpisatelja/šifriratelja"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:5
 msgid ""
 "When set to “true”, tries to load also photo of the signers/encrypters, if "
 "available in the key/certificate."
 msgstr ""
+"Kada je postavljeno na “true”, pokušavaju se učitati fotografija "
+"potpisatelja/šifriratelja, ako je dostupna u ključu/vjerodajnici."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:6
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
 msgstr ""
+"GIO naziv GNetworkMonitora koji se koristi za ENetworkMonitor primjerak"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:7
 msgid ""
@@ -6076,22 +6025,29 @@ msgid ""
 "the background. A special value “always-online” is used for no network "
 "monitoring."
 msgstr ""
+"Kada je postavljeno na nepoznatu vrijednost, tada se zadani GNetworkMonitor "
+"koristi u pozadini. Posebna vrijednost “always-online” se koristi za "
+"nadgledanje mreže."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
 msgid ""
 "A full path to a directory where .source files with preconfigured options "
 "can be stored"
 msgstr ""
+"Potpuna putanja do direktorija gdje se .source datoteka s predpodešenim "
+"mogućnostima može spremiti"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
 msgid ""
 "This directory, if filled with an existing path, is checked additionally to "
 "XDG configure directories."
 msgstr ""
+"Ovaj direktorij, ako je navedena postojeća putanja, se dodatno provjerava za "
+"podešavanje XDG direktorija."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
 msgid "A list of variables which can be part of the autoconfig .source files"
-msgstr ""
+msgstr "Popis varijabli koje mogu biti dio .source datoteke autopodešavanja"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
 msgid ""
@@ -6099,10 +6055,13 @@ msgid ""
 "variables are checked before environment variables, but after the predefined "
 "USER, REALNAME and HOST variables."
 msgstr ""
+"Očekuje se da svaka stavka niza bude u obliku: naziv=vrijednost. Te se "
+"varijable provjeravaju prije varijabli okruženja, ali nakon predefiniranih "
+"USER, REALNAME i HOST varijabli."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
 msgid "A list of hints for OAuth2 services"
-msgstr ""
+msgstr "Popis napomena za OAuth2 usluge"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
 msgid ""
@@ -6121,6 +6080,21 @@ msgid ""
 "“Company” OAuth2 authentication for any “CalDAV” source, which reads data "
 "from “caldav.company.com” host"
 msgstr ""
+"Korisnici mogu proširit popis podržanih protokola i naziva poslužitelja za "
+"određene OAuth2 usluge, kao dodatak uz one ugrađene u kôd. Svaki redak može "
+"biti u obliku: nazivusluge[-protokol]:poslužitelj1,poslužitelj2,... gdje je "
+"“nazivusluge” stvarni naziv usluge; “-protokol” nije obavezan, a ako je "
+"upisan, tada se usluga može koristiti samo ako se oboje “protokol” i "
+"“nazivposlužiteljaX” podudaraju; “nazivposlužiteljaX” je ustvari naziv "
+"poslužitelja s kojim se uspoređuje, i nije osjetljiv na velika i mala slova. "
+"Svaki redak može sadržavati više vrijednosti, odvojenih zarezom. Tamo se "
+"može navesti više redaka za jednu OAuth2 uslugu. Zapamtite da se stvarni URL "
+"gdje je token zahtjevan i osvježen ne može promijeniti ovdje, naziv "
+"poslužitelja dopušta korištenje ostalih poslužitelja koji koriste OAuth2 "
+"uslugu. Primjeri: Tvrtka:pošta.tvrtka.hr — omogućuje “Tvrtka” OAuth2 ovjeru "
+"za “pošta.tvrtka.hr” poslužitelja Tvrtka-CalDAV:caldav.tvrtka.hr — omogućuje "
+"“Tvrtka” OAuth2 ovjeru za svaki “CalDAV” izvor, koji čita podatke sa “caldav."
+"tvrtka.hr” poslužitelja"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
 msgid ""
