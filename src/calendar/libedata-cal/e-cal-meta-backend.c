@@ -341,6 +341,7 @@ ecmb_get_changes_sync (ECalMetaBackend *meta_backend,
 		       GCancellable *cancellable,
 		       GError **error)
 {
+	EBackend *backend;
 	GSList *existing_objects = NULL;
 	gboolean success;
 
@@ -353,8 +354,13 @@ ecmb_get_changes_sync (ECalMetaBackend *meta_backend,
 	*out_modified_objects = NULL;
 	*out_removed_objects = NULL;
 
-	if (!e_backend_get_online (E_BACKEND (meta_backend)))
+	backend = E_BACKEND (meta_backend);
+
+	if (!e_backend_get_online (backend) &&
+	    !e_backend_is_destination_reachable (backend, cancellable, NULL))
 		return TRUE;
+	else
+		e_backend_set_online (backend, TRUE);
 
 	if (!e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, error) ||
 	    !e_cal_meta_backend_list_existing_sync (meta_backend, out_new_sync_tag, &existing_objects, cancellable, error)) {
@@ -683,8 +689,7 @@ ecmb_refresh_internal_sync (ECalMetaBackend *meta_backend,
 
 	e_cal_backend_foreach_view_notify_progress (E_CAL_BACKEND (meta_backend), TRUE, 0, _("Refreshing…"));
 
-	if (!e_backend_get_online (E_BACKEND (meta_backend)) ||
-	    !e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, with_connection_error ? error : NULL) ||
+	if (!e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, with_connection_error ? error : NULL) ||
 	    !e_backend_get_online (E_BACKEND (meta_backend))) { /* Failed connecting moves backend to offline */
 		g_mutex_lock (&meta_backend->priv->property_lock);
 		meta_backend->priv->refresh_after_authenticate = TRUE;
@@ -844,8 +849,8 @@ ecmb_source_changed_thread_func (ECalBackend *cal_backend,
 
 	g_signal_emit (meta_backend, signals[SOURCE_CHANGED], 0, NULL);
 
-	if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-	    e_cal_meta_backend_requires_reconnect (meta_backend)) {
+	if (e_cal_meta_backend_requires_reconnect (meta_backend) &&
+	    (e_backend_get_online (E_BACKEND (meta_backend)) || e_backend_is_destination_reachable (E_BACKEND (meta_backend), cancellable, NULL))) {
 		gboolean can_refresh;
 
 		g_mutex_lock (&meta_backend->priv->connect_lock);
@@ -1375,8 +1380,7 @@ ecmb_get_object_sync (ECalBackendSync *sync_backend,
 		g_clear_error (&local_error);
 
 		/* Ignore errors here, just try whether it's on the remote side, but not in the local cache */
-		if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-		    e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL) &&
+		if (e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL) &&
 		    ecmb_load_component_wrapper_sync (meta_backend, cal_cache, uid, NULL, NULL, &loaded_uid, cancellable, NULL)) {
 			found = e_cal_cache_get_component_as_string (cal_cache, loaded_uid, rid, calobj, cancellable, NULL);
 		}
@@ -1654,8 +1658,7 @@ ecmb_create_object_sync (ECalMetaBackend *meta_backend,
 	g_clear_object (&itt);
 
 	if (*offline_flag == E_CACHE_OFFLINE_UNKNOWN) {
-		if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-		    e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL)) {
+		if (e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL)) {
 			*offline_flag = E_CACHE_IS_ONLINE;
 		} else {
 			*offline_flag = E_CACHE_IS_OFFLINE;
@@ -1965,8 +1968,7 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 	}
 
 	if (success && *offline_flag == E_CACHE_OFFLINE_UNKNOWN) {
-		if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-		    e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL)) {
+		if (e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL)) {
 			*offline_flag = E_CACHE_IS_ONLINE;
 		} else {
 			*offline_flag = E_CACHE_IS_OFFLINE;
@@ -2136,8 +2138,7 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 		old_comp = e_cal_component_clone (existing_comp);
 
 	if (*offline_flag == E_CACHE_OFFLINE_UNKNOWN) {
-		if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-		    e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL)) {
+		if (e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL)) {
 			*offline_flag = E_CACHE_IS_ONLINE;
 		} else {
 			*offline_flag = E_CACHE_IS_OFFLINE;
@@ -2953,7 +2954,8 @@ ecmb_authenticate_sync (EBackend *backend,
 
 	meta_backend = E_CAL_META_BACKEND (backend);
 
-	if (!e_backend_get_online (E_BACKEND (meta_backend))) {
+	if (!e_backend_get_online (backend) &&
+	    !e_backend_is_destination_reachable (backend, cancellable, NULL)) {
 		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_REPOSITORY_OFFLINE,
 			e_client_error_to_string (E_CLIENT_ERROR_REPOSITORY_OFFLINE));
 
@@ -2967,10 +2969,10 @@ ecmb_authenticate_sync (EBackend *backend,
 
 	g_mutex_lock (&meta_backend->priv->connect_lock);
 
-	e_source_set_connection_status (e_backend_get_source (backend), E_SOURCE_CONNECTION_STATUS_CONNECTING);
-
 	/* Always disconnect first, then provide new credentials. */
 	e_cal_meta_backend_disconnect_sync (meta_backend, cancellable, NULL);
+
+	e_source_set_connection_status (e_backend_get_source (backend), E_SOURCE_CONNECTION_STATUS_CONNECTING);
 
 	success = e_cal_meta_backend_connect_sync (meta_backend, credentials, &auth_result,
 		out_certificate_pem, out_certificate_errors, cancellable, error);
@@ -4397,6 +4399,7 @@ e_cal_meta_backend_ensure_connected_sync (ECalMetaBackend *meta_backend,
 					  GCancellable *cancellable,
 					  GError **error)
 {
+	EBackend *backend;
 	ENamedParameters *credentials;
 	ESource *source;
 	ESourceAuthenticationResult auth_result = E_SOURCE_AUTHENTICATION_UNKNOWN;
@@ -4407,7 +4410,13 @@ e_cal_meta_backend_ensure_connected_sync (ECalMetaBackend *meta_backend,
 
 	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
 
-	if (!e_backend_get_online (E_BACKEND (meta_backend))) {
+	backend = E_BACKEND (meta_backend);
+
+	if (!e_backend_get_online (backend) &&
+	    e_backend_is_destination_reachable (backend, cancellable, NULL))
+		e_backend_set_online (backend, TRUE);
+
+	if (!e_backend_get_online (backend)) {
 		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_REPOSITORY_OFFLINE,
 			e_client_error_to_string (E_CLIENT_ERROR_REPOSITORY_OFFLINE));
 
@@ -4420,7 +4429,7 @@ e_cal_meta_backend_ensure_connected_sync (ECalMetaBackend *meta_backend,
 
 	g_mutex_lock (&meta_backend->priv->connect_lock);
 
-	source = e_backend_get_source (E_BACKEND (meta_backend));
+	source = e_backend_get_source (backend);
 
 	if (e_source_get_connection_status (source) != E_SOURCE_CONNECTION_STATUS_CONNECTED)
 		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTING);
@@ -4444,7 +4453,7 @@ e_cal_meta_backend_ensure_connected_sync (ECalMetaBackend *meta_backend,
 	g_warn_if_fail (auth_result != E_SOURCE_AUTHENTICATION_ACCEPTED);
 
 	if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_HOST_NOT_FOUND)) {
-		e_backend_set_online (E_BACKEND (meta_backend), FALSE);
+		e_backend_set_online (backend, FALSE);
 		g_propagate_error (error, local_error);
 		g_free (certificate_pem);
 
@@ -4474,7 +4483,7 @@ e_cal_meta_backend_ensure_connected_sync (ECalMetaBackend *meta_backend,
 		break;
 	}
 
-	e_backend_schedule_credentials_required (E_BACKEND (meta_backend), creds_reason, certificate_pem, certificate_errors,
+	e_backend_schedule_credentials_required (backend, creds_reason, certificate_pem, certificate_errors,
 		local_error, cancellable, G_STRFUNC);
 
 	g_clear_error (&local_error);

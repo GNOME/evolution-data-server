@@ -296,6 +296,23 @@ e_cal_meta_backend_test_get_backend_property (ECalBackend *cal_backend,
 }
 
 static gboolean
+e_cal_meta_backend_test_get_destination_address (EBackend *backend,
+						 gchar **host,
+						 guint16 *port)
+{
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND_TEST (backend), FALSE);
+
+	if (e_backend_get_online (backend))
+		return FALSE;
+
+	/* Provide something unreachable, to not have the meta backend switch the backend to online */
+	*host = g_strdup ("server.no.where");
+	*port = 65535;
+
+	return TRUE;
+}
+
+static gboolean
 e_cal_meta_backend_test_connect_sync (ECalMetaBackend *meta_backend,
 				      const ENamedParameters *credentials,
 				      ESourceAuthenticationResult *out_auth_result,
@@ -656,6 +673,7 @@ e_cal_meta_backend_test_class_init (ECalMetaBackendTestClass *klass)
 {
 	ECalMetaBackendClass *cal_meta_backend_class;
 	ECalBackendClass *cal_backend_class;
+	EBackendClass *backend_class;
 	GObjectClass *object_class;
 
 	cal_meta_backend_class = E_CAL_META_BACKEND_CLASS (klass);
@@ -669,6 +687,9 @@ e_cal_meta_backend_test_class_init (ECalMetaBackendTestClass *klass)
 
 	cal_backend_class = E_CAL_BACKEND_CLASS (klass);
 	cal_backend_class->impl_get_backend_property = e_cal_meta_backend_test_get_backend_property;
+
+	backend_class = E_BACKEND_CLASS (klass);
+	backend_class->get_destination_address = e_cal_meta_backend_test_get_destination_address;
 
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->constructed = e_cal_meta_backend_test_constructed;
