@@ -7,8 +7,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
 "POT-Creation-Date: 2020-03-06 12:47+0000\n"
-"PO-Revision-Date: 2020-03-17 00:59+0100\n"
-"Last-Translator: gogo <linux.hr@protonmail.com>\n"
+"PO-Revision-Date: 2020-03-17 17:49+0100\n"
+"Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
@@ -171,7 +171,7 @@ msgstr "Neispravan upit “%s”"
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1965
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:2037
 msgid "Requested to delete an unrelated cursor"
-msgstr ""
+msgstr "Zatraženo je brisanje nepovezanog pokazivača"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:2036
 #, c-format
@@ -983,7 +983,7 @@ msgstr "Klijent je nestao"
 #: ../src/addressbook/libedata-book/e-book-backend.c:3253
 #, c-format
 msgid "Addressbook backend does not support cursors"
-msgstr ""
+msgstr "Pozadinski program adresara ne podržava pokazivača"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:899
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:2253
@@ -1102,6 +1102,8 @@ msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
 "the contact list"
 msgstr ""
+"Pokušaj pomicanja pokazivača obrnuto, ali pokazivač je već na početku popisa "
+"kontakta"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6219
 #: ../src/addressbook/libedata-book/e-book-cache.c:5804
@@ -1111,6 +1113,8 @@ msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
 "contact list"
 msgstr ""
+"Pokušaj pomicanja pokazivača prema naprijed, ali pokazivač je već na kraju "
+"popisa kontakta"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:337
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:569
@@ -1128,7 +1132,7 @@ msgstr "Neispravan upit: %s"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:3648
 msgid "Invalid query for a book cursor"
-msgstr ""
+msgstr "Neispravan upit za pokazivač adresara"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:4590
 #: ../src/libebackend/e-cache.c:759
@@ -1161,6 +1165,8 @@ msgstr "Objekt s dodatkom “%s” nije pronađen"
 #: ../src/addressbook/libedata-book/e-book-cache.c:5584
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
+"Najmanje jedno polje poretka mora biti određeno da bi se mogao koristiti "
+"pokazivač"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5593
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7984
@@ -1250,29 +1256,23 @@ msgstr "Nemoguće uklanjanje kontakata: "
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor.c:771
 msgid "Cursor does not support setting the search expression"
-msgstr ""
+msgstr "Pokazivač ne podržava postavljanje izraza pretrage"
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor.c:858
-#, fuzzy
-#| msgid "Store does not support an INBOX"
 msgid "Cursor does not support step"
-msgstr "Ovaj poslužitelj ne podržava LDAPv3 informacije sheme."
+msgstr "Pokazivač ne podržava korak"
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor.c:934
-#, fuzzy
-#| msgid "Key usage does not support certificate signing"
 msgid "Cursor does not support alphabetic indexes"
-msgstr "Upotreba ključa ne podržava potpis certifikatom"
+msgstr "Pokazivač ne podržava abecedni sadržaj"
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor-cache.c:92
 #: ../src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:260
-#, fuzzy
 msgid "Unrecognized cursor origin"
-msgstr "Izvor"
+msgstr "Neprepoznat izvor pokazivača"
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor-cache.c:151
 #: ../src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:328
-#, fuzzy
 msgid "Out of sync revision while moving cursor"
 msgstr "Neusklađena revizija pri pomicanju pokazivača"
 
@@ -2586,7 +2586,7 @@ msgstr "Nemoguće primanje putanje objekta popisa kalendara: "
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:1553
 msgid "Cannot retrieve calendar free/busy list: "
-msgstr "Nemoguće primanje popisa slobodnog/zauzetog kalendara: "
+msgstr "Nemoguće primanje slobodan/zauzet popisa kalendara: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:1604
@@ -6396,7 +6396,7 @@ msgstr "Međunarodno"
 #: ../src/libedataserver/e-categories.c:60
 msgctxt "CategoryName"
 msgid "Key Customer"
-msgstr "Bitna mušterija"
+msgstr "Ključni klijent"
 
 #: ../src/libedataserver/e-categories.c:61
 msgctxt "CategoryName"
