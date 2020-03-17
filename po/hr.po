@@ -7,7 +7,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
 "POT-Creation-Date: 2020-03-06 12:47+0000\n"
-"PO-Revision-Date: 2020-03-16 21:06+0100\n"
+"PO-Revision-Date: 2020-03-17 00:59+0100\n"
 "Last-Translator: gogo <linux.hr@protonmail.com>\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
 "Language: hr\n"
@@ -222,7 +222,7 @@ msgstr "Neuspjelo povezivanje ni sa v3 ni sa v2 povezivanjem"
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1000
 msgid "Reconnecting to LDAP server..."
-msgstr "Ponovo povezivanje s LDAP poslužiteljem"
+msgstr "Ponovno povezivanje s LDAP poslužiteljem..."
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1135
 msgid "Invalid DN syntax"
@@ -885,8 +885,6 @@ msgid "Skype Name List"
 msgstr "Skype popis imena"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:338
-#, fuzzy
-#| msgid "Home Address"
 msgid "SIP address"
 msgstr "SIP adresa"
 
@@ -3015,7 +3013,7 @@ msgstr ""
 #: ../src/camel/camel-gpg-context.c:1136
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
-msgstr "Neočekivan GnuPG zahtjev za: %s"
+msgstr "Neočekivan GnuPG zahtjev za “%s”"
 
 #: ../src/camel/camel-gpg-context.c:1148
 msgid ""
@@ -3262,10 +3260,9 @@ msgstr "Provjera dostupnosti računa “%s”"
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-offline-folder.c:179
-#, fuzzy, c-format
-#| msgid "Downloading new messages for offline mode"
+#, c-format
 msgid "Downloading new messages for offline mode in “%s : %s”"
-msgstr "Skidanje novih poruka za neumreženi način rada"
+msgstr "Preuzimanje novih poruka za izvanmreženi način rada sa “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -3279,10 +3276,10 @@ msgstr "Spremanje promjena u mapu “%s : %s”"
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-offline-folder.c:370
-#, fuzzy, c-format
-#| msgid "Downloading new messages for offline mode"
+#, c-format
 msgid "Checking download of new messages for offline in “%s : %s”"
-msgstr "Skidanje novih poruka za neumreženi način rada"
+msgstr ""
+"Provjera preuzimanja novih poruka za izvanmreženi način rada na “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -3336,9 +3333,9 @@ msgid "Could not load %s: No initialization code in module."
 msgstr "Nemoguće je učitati %s: Nema kôda pokretanja u modulu."
 
 #: ../src/camel/camel-provider.c:463 ../src/camel/camel-session.c:430
-#, fuzzy, c-format
+#, c-format
 msgid "No provider available for protocol “%s”"
-msgstr "Nadogradnja je dostupna ali još nije dostupna za %s izdanje."
+msgstr "Nema dostupnog pružatelja usluge za protokol “%s”"
 
 #: ../src/camel/camel-sasl-anonymous.c:35
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:85
@@ -3353,7 +3350,7 @@ msgstr ""
 #: ../src/camel/camel-sasl-anonymous.c:70
 #, c-format
 msgid "Authentication failed."
-msgstr "Neuspjelo ovjera."
+msgstr "Neuspjela ovjera."
 
 #. Translators: the 'trace information' term comes from https://tools.ietf.org/html/rfc4505
 #. In this case the user set to use an email address as the trace information,
@@ -3420,7 +3417,7 @@ msgstr "Upit poslužitelja je nevaljan\n"
 #: ../src/camel/camel-sasl-digest-md5.c:867
 #, c-format
 msgid "Server challenge contained invalid “Quality of Protection” token"
-msgstr "Upit poslužitelj sadrži nevaljani unos „Kvaliteta zaštite“"
+msgstr "Upit poslužitelj sadrži nevaljani token „Kvalitete zaštite“"
 
 #: ../src/camel/camel-sasl-digest-md5.c:900
 #, c-format
@@ -3483,15 +3480,15 @@ msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
 msgstr ""
-"input_token sadrži različita vezivanja za kanale od onih određenih preko "
-"parametra input_chan_bindings."
+"input_token sadrži različita povezivanja kanala do onih određenih putem "
+"input_chan_bindings parametra."
 
 #: ../src/camel/camel-sasl-gssapi.c:213
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
 msgstr ""
-"input_token sadrži neispravnu strukturu, ili potpis nije mogao biti "
+"input_token sadrži nevaljani potpis, ili potpis koji nije mogao biti "
 "provjeren."
 
 #: ../src/camel/camel-sasl-gssapi.c:217
@@ -3526,10 +3523,8 @@ msgid "Bad authentication response from server."
 msgstr "Loš odgovor ovjere od poslužitelja."
 
 #: ../src/camel/camel-sasl-gssapi.c:288
-#, fuzzy
-#| msgid "Could not get message"
 msgid "Could not get session bus:"
-msgstr "Nemoguće preuzimanje shema informacije za LDAP poslužitelj."
+msgstr "Nemoguće dobivanje bus-a sesije:"
 
 #: ../src/camel/camel-sasl-gssapi.c:322
 #, c-format
@@ -3578,7 +3573,7 @@ msgstr "OBIČAN"
 
 #: ../src/camel/camel-sasl-popb4smtp.c:37
 msgid "POP before SMTP"
-msgstr "POP prije SMTP identifikacija..."
+msgstr "POP prije SMTP"
 
 #: ../src/camel/camel-sasl-popb4smtp.c:39
 msgid "This option will authorise a POP connection before attempting SMTP"
@@ -3586,10 +3581,8 @@ msgstr ""
 "Ova mogućnost će odobriti POP povezivanje prije pokušaja SMTP povezivanja"
 
 #: ../src/camel/camel-sasl-popb4smtp.c:77
-#, fuzzy
-#| msgid "POP Source URI"
 msgid "POP Source UID"
-msgstr "Nema pronađenih izvora podataka za UID “%s”"
+msgstr "UID POP izvora"
 
 #: ../src/camel/camel-sasl-popb4smtp.c:91
 #, c-format
@@ -3665,10 +3658,9 @@ msgid "Forwarding messages is not supported"
 msgstr "Prosljeđivanje poruka nije podržano"
 
 #: ../src/camel/camel-smime-context.c:343
-#, fuzzy, c-format
-#| msgid "Cannot find certificate for '%s'"
+#, c-format
 msgid "Cannot find certificate for “%s”"
-msgstr "Nemoguć pronalazak sudionika “%s” u popisu sudionika"
+msgstr "Nemoguć pronalazak vjerodajnice za “%s”"
 
 #: ../src/camel/camel-smime-context.c:371
 msgid "Cannot create CMS message"
@@ -3700,10 +3692,9 @@ msgstr "Nemoguće dodavanje vremena CMS potpisa"
 
 #: ../src/camel/camel-smime-context.c:431
 #: ../src/camel/camel-smime-context.c:446
-#, fuzzy, c-format
-#| msgid "Encryption certificate for '%s' does not exist"
+#, c-format
 msgid "Encryption certificate for “%s” does not exist"
-msgstr "Lokacija \"%s\" ne postoji."
+msgstr "Vjerodajnica šifriranja za \"%s\" ne postoji"
 
 #: ../src/camel/camel-smime-context.c:453
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
@@ -3728,7 +3719,7 @@ msgstr "Neprovjereno"
 
 #: ../src/camel/camel-smime-context.c:504
 msgid "Good signature"
-msgstr "Datoteka s potpisom:"
+msgstr "Ispravan potpis"
 
 #: ../src/camel/camel-smime-context.c:506
 msgid "Bad signature"
@@ -3874,10 +3865,9 @@ msgid "Opening folder “%s”"
 msgstr "Otvaranje mape \"%s\""
 
 #: ../src/camel/camel-store.c:1709
-#, fuzzy, c-format
-#| msgid "Scanning for changed messages in %s"
+#, c-format
 msgid "Scanning folders in “%s”"
-msgstr "Pretraživanje %s"
+msgstr "Pretraživanje mapa u “%s”"
 
 #: ../src/camel/camel-store.c:1737 ../src/camel/camel-store.c:1782
 #: ../src/camel/camel-vtrash-folder.c:48
@@ -3895,9 +3885,9 @@ msgid "Cannot create folder: %s: folder exists"
 msgstr "Nemoguće stvaranje mape: %s: mapa postoji"
 
 #: ../src/camel/camel-store.c:2411
-#, fuzzy, c-format
+#, c-format
 msgid "Creating folder “%s”"
-msgstr "Pojavila se greška pri stvaranju mape \"%B\"."
+msgstr "Stvaranje mape “%s”"
 
 #: ../src/camel/camel-store.c:2589 ../src/camel/camel-vee-store.c:426
 #: ../src/camel/providers/local/camel-maildir-store.c:340
@@ -3935,10 +3925,9 @@ msgid "Connection cancelled"
 msgstr "Povezivanje prekinuto"
 
 #: ../src/camel/camel-stream-process.c:287
-#, fuzzy, c-format
-#| msgid "Could not connect with command \"%s\": %s"
+#, c-format
 msgid "Could not connect with command “%s”: %s"
-msgstr "Neuspjelo pokretanje naredbe “%s”:"
+msgstr "Nemoguće povezivanje pomoću naredbe “%s”: %s"
 
 #: ../src/camel/camel-subscribable.c:234
 #, c-format
@@ -3946,19 +3935,19 @@ msgid "Subscribing to folder “%s”"
 msgstr "Pretplaćivanje na mapu “%s”"
 
 #: ../src/camel/camel-subscribable.c:403
-#, fuzzy, c-format
+#, c-format
 msgid "Unsubscribing from folder “%s”"
-msgstr "Stvori mapu pretrage za iz p_redmeta…"
+msgstr "Prekidanje pretplate na mapu “%s”"
 
 #: ../src/camel/camel-url.c:325
-#, fuzzy, c-format
+#, c-format
 msgid "Could not parse URL “%s”"
-msgstr "URL: %s"
+msgstr "Nemoguća obrada URL-a: “%s”"
 
 #: ../src/camel/camel-vee-folder.c:558
-#, fuzzy, c-format
+#, c-format
 msgid "Updating folder “%s”"
-msgstr "Prije nadopunjavanja: %s"
+msgstr "Nadopuna mape: “%s”"
 
 #: ../src/camel/camel-vee-folder.c:1185 ../src/camel/camel-vee-folder.c:1321
 #, c-format
@@ -3970,20 +3959,19 @@ msgstr "Nemoguće kopiranje ili premještanje poruka u virtualnu mapu"
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
 #: ../src/camel/camel-vee-folder.c:1222
-#, fuzzy, c-format
-#| msgid "No such message %s in %s"
+#, c-format
 msgid "No such message %s in “%s : %s”"
-msgstr "%s%s, %s, %s"
+msgstr "Nema takve poruke %s u “%s : %s”"
 
 #: ../src/camel/camel-vee-folder.c:1297
-#, fuzzy, c-format
+#, c-format
 msgid "Error storing “%s”: "
-msgstr "Dogodila se greška pri objavljivanju %s:"
+msgstr "Greška spremanja “%s”: "
 
 #: ../src/camel/camel-vee-folder.c:1487
-#, fuzzy, c-format
+#, c-format
 msgid "Updating search folder “%s”"
-msgstr "Postavljanje mape za pretraživanje: %s"
+msgstr "Nadopuna mape pretrage “%s”"
 
 #: ../src/camel/camel-vee-folder.c:1545
 msgid "Automatically _update on change in source folders"
@@ -4015,11 +4003,11 @@ msgstr "Nadopnavanje nepodudarajuće mape pretrage"
 
 #: ../src/camel/camel-vtrash-folder.c:49
 msgid "Cannot copy messages to the Trash folder"
-msgstr "Ne možete kopirati poruke u mapu \"Smeće\""
+msgstr "Nemoguće kopiranje poruke u mapu smeća"
 
 #: ../src/camel/camel-vtrash-folder.c:51
 msgid "Cannot copy messages to the Junk folder"
-msgstr "Ne možete kopirati poruke u mapu \"Smeće\""
+msgstr "Nemoguće kopiranje poruke u mapu neželjene pošte"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:979
 #, c-format
@@ -4048,9 +4036,9 @@ msgstr "Morate biti u mrežnom načinu rada za završetak ove radnje"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1614
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1710
-#, fuzzy, c-format
+#, c-format
 msgid "No destination folder specified"
-msgstr "Odredište nije mapa."
+msgstr "Nema određene odredišne mape"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1641
 msgid "Unable to move junk messages"
@@ -4091,16 +4079,14 @@ msgid "Always check for _new mail in this folder"
 msgstr "Uvijek provjeri _novu poštu u ovoj mapi"
 
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1252
-#, fuzzy, c-format
-#| msgid "Could not load summary for %s"
+#, c-format
 msgid "Could not create folder summary for %s"
-msgstr "Nemo nije mogao napraviti potrebnu mapu \"%s\"."
+msgstr "Nemoguće stvaranje mape sažetka za %s"
 
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1264
-#, fuzzy, c-format
-#| msgid "Could not create cache file"
+#, c-format
 msgid "Could not create cache for %s: "
-msgstr "Nemo nije mogao napraviti potrebnu mapu \"%s\"."
+msgstr "Nemoguće stvaranje predmemorije za %s: "
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -4111,9 +4097,9 @@ msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "Nema IMAP pretinca dostupnog za mapu “%s : %s”"
 
 #: ../src/camel/providers/imapx/camel-imapx-input-stream.c:101
-#, fuzzy, c-format
+#, c-format
 msgid "Source stream returned no data"
-msgstr "Nema pronađenih izvora podataka za UID “%s”"
+msgstr "Strujanje izvora ne sadrži podatke"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:36
 msgid "Checking for New Mail"
@@ -4343,7 +4329,7 @@ msgstr "Greška kopiranja poruke"
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5022
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5043
 msgid "Cannot create spool file: "
-msgstr "Nemoguće stvaranje datoteke pripreme"
+msgstr "Nemoguće stvaranje datoteke pripreme: "
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5129
 msgid "Error appending message"
@@ -4896,7 +4882,7 @@ msgstr "Nemoguće stvaranje mape sa ovim nazivom."
 #: ../src/camel/providers/local/camel-mbox-store.c:442
 #, c-format
 msgid "Cannot get folder “%s”: not a regular file."
-msgstr "Nemoguće dohvaćanje mape “%s”: nije obična datoteka"
+msgstr "Nemoguće dohvaćanje mape “%s”: nije obična datoteka."
 
 #: ../src/camel/providers/local/camel-mbox-store.c:603
 #, c-format
@@ -5318,7 +5304,7 @@ msgstr ""
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2104
 msgid "NNTP Command failed: "
-msgstr "NNTP naredba neuspjela: %s"
+msgstr "NNTP naredba neuspjela: "
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2210
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2245
@@ -5504,7 +5490,7 @@ msgstr "Neuspjela prijava na POP poslužitelja %s: greška SASL protokola"
 #: ../src/camel/providers/pop3/camel-pop3-store.c:376
 #, c-format
 msgid "Failed to authenticate on POP server %s: "
-msgstr "Neuspjelo ovjere na POP poslužitelju %s: "
+msgstr "Neuspjela ovjere na POP poslužitelju %s: "
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:484
 #, c-format
@@ -5595,7 +5581,7 @@ msgstr "Neuspjelo čitanje adrese pošiljatelja"
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:154
 #, c-format
 msgid "Message send in offline mode is disabled"
-msgstr "Slanje poruka u izvanmeržnom načinu radu je onemogućeno."
+msgstr "Slanje poruka u izvanmeržnom načinu radu je onemogućeno"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:182
 #, c-format
@@ -5646,7 +5632,7 @@ msgstr "SMTP preko TLS"
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:39
 msgid "Message submission port"
-msgstr "Port slanja poruka"
+msgstr "Ulaz slanja poruka"
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:45
 msgid "SMTP"
@@ -5937,7 +5923,7 @@ msgid ""
 "otherwise the reminders dialog is shown immediately"
 msgstr ""
 "Ako je postavljeno na true, podsjetnici se prikazuju samo u obavijesnom "
-"području sustava, u suprotnome dijalog podsjetnika je odmah prikazan."
+"području sustava, u suprotnome dijalog podsjetnika je odmah prikazan"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:13
 msgid "Show reminder notification dialog always on top"
@@ -6101,52 +6087,72 @@ msgid ""
 "An OAuth2 client ID to use to connect to Google servers, instead of the one "
 "provided during build time"
 msgstr ""
+"ID OAuth2 klijenta koji se koristi za povezivanje s Google poslužiteljima, "
+"umjesto onog omogućenog tijekom vremena izgradnje"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
 msgid ""
 "User-specified OAuth2 client ID for Google servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
 msgstr ""
+"Korisnički određen ID OAuth2 klijenta za Google poslužitelje, Prazni izraz "
+"znači da se koristi onaj omogućen tijekom vremena izgradnje. Promjena ovog "
+"izraza zahtijeva ponovno pokretanje."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
 msgid ""
 "An OAuth2 client secret to use to connect to Google servers, instead of the "
 "one provided during build time"
 msgstr ""
+"Tajna OAuth2 klijenta koja se koristi za povezivanje s Google "
+"poslužiteljima, umjesto one omogućene tijekom vremena izgradnje"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
 msgid ""
 "User-specified OAuth2 client secret for Google servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
 msgstr ""
+"Korisnički određena tajna OAuth2 klijenta za Google poslužitelje. Prazni "
+"izraz znači da se koristi ona omogućena tijekom vremena izgradnje. Promjena "
+"ovog izraza zahtijeva ponovno pokretanje."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
 msgid ""
 "An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
 "provided during build time"
 msgstr ""
+"ID OAuth2 klijenta koji se koristi za povezivanje sa Outlook poslužiteljima, "
+"umjesto onog omogućenog tijekom vremena izgradnje"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
 msgid ""
 "User-specified OAuth2 client ID for Outlook servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
 msgstr ""
+"Korisnički određen ID OAuth2 klijenta za Outlook poslužitelje. Prazni izraz "
+"znači da se koristi onaj omogućen tijekom vremena izgradnje. Promjena ovog "
+"izraza zahtijeva ponovno pokretanje."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
 msgid ""
 "An OAuth2 client secret to use to connect to Outlook servers, instead of the "
 "one provided during build time"
 msgstr ""
+"Tajna OAuth2 klijenta koja se koristi za povezivanje s Outlook "
+"poslužiteljima, umjesto one omogućene tijekom vremena izgradnje"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
 msgid ""
 "User-specified OAuth2 client secret for Outlook servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
 msgstr ""
+"Korisnički određena tajna OAuth2 klijenta za Outlook poslužitelje. Prazni "
+"izraz znači da se koristi ona omogućena tijekom vremena izgradnje. Promjena "
+"ovog izraza zahtijeva ponovno pokretanje."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
-msgstr ""
+msgstr "(Zastarjelo) Proxy vrsta za korištenje"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:2
 msgid ""
@@ -6154,181 +6160,177 @@ msgid ""
 "settings are now integrated into Evolution-Data-Server’s account system. See "
 "the ESourceProxy API documentation for details."
 msgstr ""
+"Ovaj ključ je zastario u inačici 3.12 i ne bi se trebao više koristiti. "
+"Proxy postavke su sada objedinjene u sustav računa Evolutionovog podatkovnog "
+"poslužitelja. Pogledajte ESourceProxy API dokumentaciju za više pojedinosti."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
 msgid "(Deprecated) Whether to use http-proxy"
-msgstr ""
+msgstr "(Zastarjelo) Gdje koristiti http-proxy"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:4
 msgid "(Deprecated) Whether proxy server requires authentication"
-msgstr ""
+msgstr "(Zastarjelo) Zahtijeva li proxy poslužitelj ovjeru"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:5
 msgid "(Deprecated) Host name for HTTP requests"
-msgstr ""
+msgstr "(Zastarjelo) Naziv poslužitelja za HTTP zahtjeve"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:6
 msgid "(Deprecated) Port number for HTTP requests"
-msgstr ""
+msgstr "(Zastarjelo) Broj ulaza za HTTP zahtjeve"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:7
-#, fuzzy
-#| msgid "Temporary authentication failure"
 msgid "(Deprecated) Proxy authentication user name"
-msgstr "Neuspjela privremena prijava"
+msgstr "(Zastarjelo) Korisničko ime proxy ovjere"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:8
-#, fuzzy
-#| msgid "Temporary authentication failure"
 msgid "(Deprecated) Proxy authentication password"
-msgstr "Neuspjela privremena prijava"
+msgstr "(Zastarjelo) Lozinka proxy ovjere"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:9
 msgid "(Deprecated) List of hosts to connect to without proxy"
-msgstr ""
+msgstr "(Zastarjelo) Popis poslužitelja za povezivanje bez proxya"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:10
 msgid "(Deprecated) Host name for HTTPS requests"
-msgstr ""
+msgstr "(Zastarjelo) Naziv poslužitelja za HTTPS zahtjeve"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:11
 msgid "(Deprecated) Port number for HTTPS requests"
-msgstr ""
+msgstr "(Zastarjelo) Broj ulaza za HTTPS zahtjeve"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:12
 msgid "(Deprecated) Host name for SOCKS requests"
-msgstr ""
+msgstr "(Zastarjelo) Naziv poslužitelja za SOCKS zahtjeve"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:13
 msgid "(Deprecated) Port number for SOCKS requests"
-msgstr ""
+msgstr "(Zastarjelo) Broj ulaza za SOCKS zahtjeve"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:14
 msgid "(Deprecated) Automatic proxy configuration URL"
-msgstr ""
+msgstr "(Zastarjelo) URL automatskog podešavanja proxya"
 
 #: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:1
-#, fuzzy
 msgid "Evolution Alarm Notify"
-msgstr "Obavijesti _samo nove sudionike"
+msgstr "Evolution alarm obavijesti"
 
 #: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:2
-#, fuzzy
 msgid "Calendar event notifications"
-msgstr "Kalendarski događaj: sažetak je %s."
+msgstr "Obavijest kalendarskog događaja"
 
 #: ../src/libebackend/e-cache.c:754
 msgid "Out of memory"
-msgstr "Nemam više memorije"
+msgstr "Ponestalo memorije"
 
 #: ../src/libebackend/e-cache.c:946
-#, fuzzy, c-format
+#, c-format
 msgid "Can not make parent directory: %s"
-msgstr "Ne mogu otvoriti direktorij  `%s': %s."
+msgstr "Nemoguće stvaranje sadržajnog direktorija: %s"
 
 #: ../src/libebackend/e-collection-backend.c:1069
 #, c-format
 msgid "%s does not support creating remote resources"
-msgstr ""
+msgstr "%s ne podržava stvaranje udaljenih resursa"
 
 #: ../src/libebackend/e-collection-backend.c:1128
 #, c-format
 msgid "%s does not support deleting remote resources"
-msgstr ""
+msgstr "%s ne podržava brisanje udaljenih resursa"
 
 #: ../src/libebackend/e-data-factory.c:1428
 #: ../src/libebackend/e-subprocess-factory.c:288
-#, fuzzy, c-format
+#, c-format
 msgid "No such source for UID “%s”"
-msgstr "Nema pronađenih izvora podataka za UID “%s”"
+msgstr "Nema takvog izvora za UID “%s”"
 
 #: ../src/libebackend/e-data-factory.c:1588
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr ""
+"Pozadinska proizvodnja za izvor “%s” i proširenje “%s” se ne može pronaći."
 
 #: ../src/libebackend/e-server-side-source.c:139
-#, fuzzy, c-format
+#, c-format
 msgid "Data source is missing a [%s] group"
-msgstr "Nema pronađenih izvora podataka za UID “%s”"
+msgstr "Izvoru podataka nedostaje [%s] grupa"
 
 #: ../src/libebackend/e-server-side-source.c:467
-#, fuzzy
-#| msgid "Failed to get lock using fcntl(2): %s"
 msgid "Failed to lookup credentials: "
-msgstr "_Mapa pretrage:"
+msgstr "Neuspjelo pretraživanje vjerodajnica: "
 
 #: ../src/libebackend/e-server-side-source.c:1392
 #: ../src/libedataserver/e-source.c:1591
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
-msgstr ""
+msgstr "Izvor podataka “%s” ne podržava stvaranje udaljenih resursa"
 
 #: ../src/libebackend/e-server-side-source.c:1406
 #, c-format
 msgid ""
 "Data source “%s” has no collection backend to create the remote resource"
 msgstr ""
+"Izvor podataka “%s” nema pozadinske kolekcije za stvaranje udaljenog resursa"
 
 #: ../src/libebackend/e-server-side-source.c:1434
 #: ../src/libedataserver/e-source.c:1704
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
-msgstr ""
+msgstr "Izvor podataka “%s” ne podržava brisanje udaljenih resursa"
 
 #: ../src/libebackend/e-server-side-source.c:1448
 #, c-format
 msgid ""
 "Data source “%s” has no collection backend to delete the remote resource"
 msgstr ""
+"Izvor podataka “%s” nema pozadinske kolekcije za brisanje udaljenog resursa"
 
 #: ../src/libebackend/e-server-side-source.c:1479
 #: ../src/libedataserver/e-source.c:1800
-#, fuzzy, c-format
-#| msgid "IMAP server %s does not support requested authentication type %s"
+#, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
-msgstr "IMAP poslužitelj %s ne podržava traženi tip prijave  %s"
+msgstr "Izvor podataka “%s” ne podržava OAuth 2.0 ovjeru"
 
 #: ../src/libebackend/e-server-side-source.c:1861
 #, c-format
 msgid "File must have a “.source” extension"
-msgstr ""
+msgstr "Datoteka mora sadržavati “.source” datotečni nastavak"
 
 #: ../src/libebackend/e-source-registry-server.c:318
-#, fuzzy, c-format
+#, c-format
 msgid "UID “%s” is already in use"
-msgstr "Nema pronađenih izvora podataka za UID “%s”"
+msgstr "UID “%s” se već koristi"
 
 #: ../src/libebackend/e-source-registry-server.c:443
 #, c-format
 msgid "Cannot find corresponding collection backend for source “%s”"
-msgstr ""
+msgstr "Nemoguć pronalazak odgovarajuće pozadinske kolekcije za izvor “%s”"
 
 #: ../src/libebackend/e-source-registry-server.c:447
-#, fuzzy, c-format
+#, c-format
 msgid "Source “%s” is not a collection source"
-msgstr "Nema pronađenih izvora podataka za UID “%s”"
+msgstr "Izvor “%s” nije izvor kolekcije"
 
 #: ../src/libebackend/e-source-registry-server.c:453
-#, fuzzy, c-format
-#| msgid "Cannot find signature digests"
+#, c-format
 msgid "Cannot find source “%s”"
-msgstr "Nemoguć pronalazak prikladnih uređaja"
+msgstr "Nemoguć pronalazak izvora “%s”"
 
 #: ../src/libebackend/e-subprocess-factory.c:276
 #, c-format
 msgid "Module “%s” for source UID “%s” cannot be loaded"
-msgstr ""
+msgstr "Modul “%s” za UID izvora “%s” se ne može učitati"
 
 #: ../src/libebackend/e-subprocess-factory.c:297
 #, c-format
 msgid "Failed to create backend of type “%s” for source UID “%s”"
-msgstr ""
+msgstr "Neuspjelo stvaranje pozadinskog programa vrste “%s” za UID izvora “%s”"
 
 #: ../src/libebackend/e-user-prompter-server.c:301
-#, fuzzy, c-format
+#, c-format
 msgid "Extension dialog “%s” not found."
-msgstr "Nije moguće pronaći poslužitelj na \"%s\"."
+msgstr "Dijalog proširenja “%s” nije pronađen."
 
 #: ../src/libedataserver/e-categories.c:47
 msgctxt "CategoryName"
@@ -6341,84 +6343,60 @@ msgid "Birthday"
 msgstr "Rođendan"
 
 #: ../src/libedataserver/e-categories.c:49
-#, fuzzy
-#| msgid "Business"
 msgctxt "CategoryName"
 msgid "Business"
-msgstr "Poslovni faks"
+msgstr "Posao"
 
 #: ../src/libedataserver/e-categories.c:50
-#, fuzzy
-#| msgid "Competition"
 msgctxt "CategoryName"
 msgid "Competition"
 msgstr "Konkurencija"
 
 #: ../src/libedataserver/e-categories.c:51
-#, fuzzy
-#| msgid "Favorites"
 msgctxt "CategoryName"
 msgid "Favorites"
-msgstr ""
-"Kliknite za spremanje ili zaboravljanje omiljene pretrage. Desno kliknite za "
-"prikaz omiljenih."
+msgstr "Omiljeno"
 
 #: ../src/libedataserver/e-categories.c:52
-#, fuzzy
-#| msgid "Gifts"
 msgctxt "CategoryName"
 msgid "Gifts"
 msgstr "Pokloni"
 
 #: ../src/libedataserver/e-categories.c:53
-#, fuzzy
-#| msgid "Goals/Objectives"
 msgctxt "CategoryName"
 msgid "Goals/Objectives"
 msgstr "Planovi/Ciljevi"
 
 #: ../src/libedataserver/e-categories.c:54
-#, fuzzy
-#| msgid "Holiday"
 msgctxt "CategoryName"
 msgid "Holiday"
 msgstr "Praznik"
 
 #: ../src/libedataserver/e-categories.c:55
-#, fuzzy
-#| msgid "Holiday Cards"
 msgctxt "CategoryName"
 msgid "Holiday Cards"
-msgstr "_Kartice adresara"
+msgstr "Čestitke"
 
 #. important people (e.g. new business partners)
 #: ../src/libedataserver/e-categories.c:57
-#, fuzzy
-#| msgid "Hot Contacts"
 msgctxt "CategoryName"
 msgid "Hot Contacts"
-msgstr "Nema kontakata"
+msgstr "Bitni kontakati"
 
 #: ../src/libedataserver/e-categories.c:58
-#, fuzzy
-#| msgid "Ideas"
 msgctxt "CategoryName"
 msgid "Ideas"
 msgstr "Ideje"
 
 #: ../src/libedataserver/e-categories.c:59
-#, fuzzy
-#| msgid "International"
 msgctxt "CategoryName"
 msgid "International"
 msgstr "Međunarodno"
 
 #: ../src/libedataserver/e-categories.c:60
-#, fuzzy
-#| msgid "Key Customer"
 msgctxt "CategoryName"
 msgid "Key Customer"
-msgstr "Ključ"
+msgstr "Bitna mušterija"
 
 #: ../src/libedataserver/e-categories.c:61
 msgctxt "CategoryName"
@@ -6431,11 +6409,9 @@ msgid "Personal"
 msgstr "Osobno"
 
 #: ../src/libedataserver/e-categories.c:63
-#, fuzzy
-#| msgid "Phone Calls"
 msgctxt "CategoryName"
 msgid "Phone Calls"
-msgstr "Telefon"
+msgstr "Telefonski pozivi"
 
 #. Translators: "Status" is a category name; it can mean anything user wants to
 #: ../src/libedataserver/e-categories.c:65
@@ -6444,183 +6420,147 @@ msgid "Status"
 msgstr "Stanje"
 
 #: ../src/libedataserver/e-categories.c:66
-#, fuzzy
-#| msgid "Strategies"
 msgctxt "CategoryName"
 msgid "Strategies"
 msgstr "Strategije"
 
 #: ../src/libedataserver/e-categories.c:67
-#, fuzzy
-#| msgid "Suppliers"
 msgctxt "CategoryName"
 msgid "Suppliers"
 msgstr "Dobavljači"
 
 #: ../src/libedataserver/e-categories.c:68
-#, fuzzy
-#| msgid "Time & Expenses"
 msgctxt "CategoryName"
 msgid "Time & Expenses"
-msgstr "vrijeme u odnosu na trenutno vrijeme"
+msgstr "Vrijeme i izdaci"
 
 #: ../src/libedataserver/e-categories.c:69
-#, fuzzy
-#| msgid "VIP"
 msgctxt "CategoryName"
 msgid "VIP"
-msgstr "Važne osobe"
+msgstr "VIP"
 
 #: ../src/libedataserver/e-categories.c:70
-#, fuzzy
-#| msgid "Waiting"
 msgctxt "CategoryName"
 msgid "Waiting"
-msgstr "Čekanje…"
+msgstr "Čekanje"
 
 #: ../src/libedataserver/e-client.c:137
 msgid "Backend is busy"
-msgstr "Pozadinska aplikacija je zauzeta"
+msgstr "Pozadinska program je zauzet"
 
 #: ../src/libedataserver/e-client.c:139
-#, fuzzy
-#| msgid "URI not loaded"
 msgid "Source not loaded"
-msgstr "Uređivač ne može biti učitan."
+msgstr "Izvor nije učitan"
 
 #: ../src/libedataserver/e-client.c:141
-#, fuzzy
-#| msgid "URI already loaded"
 msgid "Source already loaded"
-msgstr "Uređivač ne može biti učitan."
+msgstr "Izvor je već učitan"
 
 #: ../src/libedataserver/e-client.c:143
 msgid "Authentication failed"
-msgstr "Neuspješna identifikacija"
+msgstr "Neuspjela ovjera"
 
 #: ../src/libedataserver/e-client.c:147
-#, fuzzy
-#| msgid "Repository is offline"
 msgid "Repository offline"
-msgstr "Repozitorij"
+msgstr "Repozitorij nije dostupan"
 
 #. Translators: This means that the EClient does not
 #. * support offline mode, or it's not set to by a user,
 #. * thus it is unavailable while user is not connected.
 #: ../src/libedataserver/e-client.c:152
-#, fuzzy
 msgid "Offline unavailable"
-msgstr "SSL nedostupan"
+msgstr "Izvanmrežni način rada je nedostupan"
 
 #: ../src/libedataserver/e-client.c:154
 msgid "Permission denied"
 msgstr "Pristup odbijen"
 
 #: ../src/libedataserver/e-client.c:158
-#, fuzzy
-#| msgid "Could not cancel operation"
 msgid "Could not cancel"
-msgstr "_Odustani"
+msgstr "Nemoguće prekidanje"
 
 #: ../src/libedataserver/e-client.c:160
-#, fuzzy
-#| msgid "Protocol not supported"
 msgid "Not supported"
 msgstr "Nije podržano"
 
 #: ../src/libedataserver/e-client.c:162
-#, fuzzy
 msgid "Unsupported authentication method"
-msgstr "_Način:"
+msgstr "Nepodržani način ovjere"
 
 #: ../src/libedataserver/e-client.c:164
-#, fuzzy
 msgid "TLS not available"
-msgstr "Dostupno"
+msgstr "TLS je nedostupan"
 
 #: ../src/libedataserver/e-client.c:166
-#, fuzzy
 msgid "Search size limit exceeded"
-msgstr "Premašena dužina putanje"
+msgstr "Ograničenje veličine pretrage je prekoračeno"
 
 #: ../src/libedataserver/e-client.c:168
-#, fuzzy
 msgid "Search time limit exceeded"
-msgstr "Premašena dužina putanje"
+msgstr "Ograničenje vremena pretrage je prekoračeno"
 
 #: ../src/libedataserver/e-client.c:172
 msgid "Query refused"
-msgstr ""
+msgstr "Upit odbijen"
 
 #: ../src/libedataserver/e-client.c:174
-#, fuzzy
-#| msgid "parse error"
 msgid "D-Bus error"
-msgstr "Omogući D-Bus poruke."
+msgstr "D-Bus greška"
 
 #: ../src/libedataserver/e-client.c:176
-#, fuzzy
-#| msgid "I/O error"
 msgid "Other error"
-msgstr "Greška"
+msgstr "Druga greška"
 
 #: ../src/libedataserver/e-client.c:178
-#, fuzzy
-#| msgid "Backend is busy"
 msgid "Backend is not opened yet"
-msgstr "Pozadinski program"
+msgstr "Pozadinski program još nije otvoren"
 
 #: ../src/libedataserver/e-client.c:180
-#, fuzzy
-#| msgid "Object not found"
 msgid "Object is out of sync"
-msgstr "_Umanji"
+msgstr "Objekt nije usklađen"
 
 #: ../src/libedataserver/e-client.c:2042
-#, fuzzy
 msgid "Timeout was reached"
-msgstr "redoslijed isteka vremena"
+msgstr "Vrijeme isteka dostignuto"
 
 #: ../src/libedataserver/e-oauth2-service.c:919
-#, fuzzy
-#| msgid "Failed on message %d"
 msgid "Malformed, no message body set"
-msgstr "Tijelo poruke"
+msgstr "Oštećeno, tijelo poruke nije postavljeno"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
 #: ../src/libedataserver/e-oauth2-service.c:1203
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
-msgstr ""
+msgstr "Izvor “%s” (%s) nije valjan za “%s” OAuth2 uslugu"
 
 #: ../src/libedataserver/e-oauth2-service.c:1218
-#, fuzzy
-#| msgid "Object not found"
 msgid "OAuth2 secret not found"
-msgstr "Nije pronađeno"
+msgstr "OAuth2 tajna nije pronađena"
 
 #: ../src/libedataserver/e-oauth2-service.c:1413
-#, fuzzy, c-format
-#| msgid "Unexpected OK response from IMAP server: %s"
+#, c-format
 msgid "Received incorrect response from server “%s”."
-msgstr "Neočekivan OK odgovor od IMAP poslužitelja: %s"
+msgstr "Primljen je neispravan odgovor s poslužitelja “%s”."
 
 #: ../src/libedataserver/e-oauth2-service.c:1422
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
+"Neuspjelo osvježavanje tokena pristupa. Prijavite se ponovno na poslužitelj."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
 #: ../src/libedataserver/e-oauth2-service.c:1464
-#, fuzzy, c-format
+#, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
-msgstr "Nema pronađenih izvora podataka za UID “%s”"
+msgstr "Izvor “%s” (%s) nije valjana OAuth2 usluga"
 
 #: ../src/libedataserver/e-oauth2-service.c:1538
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
 msgstr ""
+"Token pristupa je istekao i nije se uspio osvježiti. Prijavite se ponovno na "
+"poslužitelj."
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: ../src/libedataserver/e-oauth2-service-google.c:56
@@ -6630,73 +6570,63 @@ msgstr "Google"
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: ../src/libedataserver/e-oauth2-service-outlook.c:57
-#, fuzzy
 msgctxt "OAuth2Service"
 msgid "Outlook"
-msgstr "Kôdiraj nazive datoteka na _Outlook/GMail način"
+msgstr "Outlook"
 
 #: ../src/libedataserver/e-soup-session.c:949
 msgid "Operation was cancelled"
 msgstr "Radnja je prekinuta"
 
 #: ../src/libedataserver/e-soup-session.c:955
-#, fuzzy, c-format
-#| msgid "Failed to cache %s: %s"
+#, c-format
 msgid "Failed with HTTP error %d: %s"
-msgstr "Nisam uspio privremeno sačuvati %s: %s"
+msgstr "Neuspjelo s HTTP greškom %d: %s"
 
 #: ../src/libedataserver/e-source.c:769
 #, c-format
 msgid "Source file is missing a [%s] group"
-msgstr ""
+msgstr "Izvorišnoj datoteci nedostaje [%s] grupa"
 
 #: ../src/libedataserver/e-source.c:1371
-#, fuzzy, c-format
+#, c-format
 msgid "Data source “%s” is not removable"
-msgstr "Nema pronađenih izvora podataka za UID “%s”"
+msgstr "Izvor podataka “%s” nije uklonjiv"
 
 #: ../src/libedataserver/e-source.c:1494
-#, fuzzy, c-format
+#, c-format
 msgid "Data source “%s” is not writable"
-msgstr "Nema pronađenih izvora podataka za UID “%s”"
+msgstr "Izvor podataka “%s” nije zapisiv"
 
 #: ../src/libedataserver/e-source.c:2201
 msgid "Unnamed"
-msgstr "Neimenovano"
+msgstr "Bezimeno"
 
 #: ../src/libedataserver/e-source-credentials-provider-impl.c:39
-#, fuzzy
-#| msgid "Protocol not supported"
 msgid "Credentials lookup is not supported"
-msgstr "Nije podržano"
+msgstr "Pretraživanje vjerodajnica nije podržano"
 
 #: ../src/libedataserver/e-source-credentials-provider-impl.c:52
-#, fuzzy
-#| msgid "Operation not supported"
 msgid "Credentials store is not supported"
-msgstr "Nije podržano"
+msgstr "Spremanje vjerodajnica nije podržano"
 
 #: ../src/libedataserver/e-source-credentials-provider-impl.c:63
-#, fuzzy
-#| msgid "Operation not supported"
 msgid "Credentials delete is not supported"
-msgstr "Nije podržano"
+msgstr "Brisanje vjerodajnica nije podržano"
 
 #: ../src/libedataserver/e-source-credentials-provider-impl-password.c:79
-#, fuzzy
-#| msgid "Password"
 msgid "Password not found"
-msgstr "_Lozinka:"
+msgstr "Lozinka nije pronađena"
 
 #: ../src/libedataserver/e-source-mail-signature.c:477
-#, fuzzy, c-format
+#, c-format
 msgid "Signature script must be a local file"
-msgstr "Datoteka skripte mora biti izvršna."
+msgstr "Skripta potpisa mora biti lokalna datoteka"
 
 #: ../src/libedataserver/e-source-proxy.c:1650
 #, c-format
 msgid "Source “%s” does not support proxy lookups"
-msgstr ""
+msgstr "Izvor “%s” ne podržava pretragu proxya"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
@@ -6829,9 +6759,8 @@ msgstr "%H:%M"
 #. strptime format for time of day, without seconds 24-hour format,
 #. * and no colon.
 #: ../src/libedataserver/e-time-utils.c:1930
-#, fuzzy
 msgid "%H%M"
-msgstr "%H:%M"
+msgstr "%H%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
 #: ../src/libedataserver/e-time-utils.c:1934
@@ -6840,7 +6769,7 @@ msgstr "%I %p"
 
 #: ../src/libedataserver/e-webdav-session.c:726
 msgid "Cannot determine destination URL without WebDAV extension"
-msgstr ""
+msgstr "Nemoguće određivanje odredišnog URL-a bez WebDAV proširenja"
 
 #: ../src/libedataserver/e-webdav-session.c:991
 #, c-format
@@ -6848,6 +6777,8 @@ msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request. The used URI was: %s"
 msgstr ""
+"Poslužitelj je odgovorio s HTML stranicom, što znači da je došlo do greške "
+"na poslužitelju ili zahtjevu klijenta. Korišteni URI je: %s"
 
 #: ../src/libedataserver/e-webdav-session.c:993
 #, c-format
@@ -6855,6 +6786,8 @@ msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request."
 msgstr ""
+"Poslužitelj je odgovorio s HTML stranicom, što znači da je došlo do greške "
+"na poslužitelju ili zahtjevu klijenta."
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
@@ -6864,16 +6797,15 @@ msgstr ""
 #: ../src/libedataserver/e-webdav-session.c:1014
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
-msgstr ""
+msgstr "%s: HTTP kôd greške %d (%s): %s"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
 #: ../src/libedataserver/e-webdav-session.c:1022
-#, fuzzy, c-format
-#| msgid "Failed to cache %s: %s"
+#, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
-msgstr "Nisam uspio privremeno sačuvati %s: %s"
+msgstr "Neuspjelo s HTTP kôdom greške %d (%s): %s"
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
@@ -6882,256 +6814,216 @@ msgstr "Nisam uspio privremeno sačuvati %s: %s"
 #: ../src/libedataserver/e-webdav-session.c:1037
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
-msgstr ""
+msgstr "%s: HTTP kôd greške %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #: ../src/libedataserver/e-webdav-session.c:1043
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
-msgstr ""
+msgstr "Neuspjelo s HTTP kôdom greške %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:1338
-#, fuzzy
-#| msgid "Failed to encode data"
 msgid "Failed to post data"
-msgstr "_Pošalji na:"
+msgstr "Neuspjela objava podataka"
 
 #: ../src/libedataserver/e-webdav-session.c:1475
 #: ../src/libedataserver/e-webdav-session.c:1552
 #: ../src/libedataserver/e-webdav-session.c:1658
 #: ../src/libedataserver/e-webdav-session.c:2932
 #: ../src/libedataserver/e-webdav-session.c:4220
-#, fuzzy
-#| msgid "Failed to encode data"
 msgid "Failed to get input XML content"
-msgstr "Neuspjelo dobivanje ulaza od korisnika u 3 pokušaja"
+msgstr "Neuspjelo dobivanje ulaznog XML sadržaja"
 
 #: ../src/libedataserver/e-webdav-session.c:1486
-#, fuzzy
-#| msgid "Failed to retrieve message"
 msgid "Failed to get properties"
-msgstr "Neuspjelo dobivanje popisa particija"
+msgstr "Neuspjelo dobivanje svojstva"
 
 #: ../src/libedataserver/e-webdav-session.c:1562
-#, fuzzy
-#| msgid "Failed to authenticate.\n"
 msgid "Failed to update properties"
-msgstr "_Svojstva"
+msgstr "Neuspjelo nadopuna svojstva"
 
 #: ../src/libedataserver/e-webdav-session.c:1668
-#, fuzzy
-#| msgid "Failed on message %d"
 msgid "Failed to issue REPORT"
-msgstr "\"Prijavi kao željenu poštu\" neuspjelo"
+msgstr "Neuspjelo REPORT izdavanje"
 
 #: ../src/libedataserver/e-webdav-session.c:1729
-#, fuzzy
-#| msgid "Unable to create cache path"
 msgid "Failed to create collection"
-msgstr "stvoriti kolekciju računa"
+msgstr "Neuspjelo stvaranje kolekcije"
 
 #: ../src/libedataserver/e-webdav-session.c:1822
 #: ../src/libedataserver/e-webdav-session.c:1983
-#, fuzzy
-#| msgid "Failed to get lock using fcntl(2): %s"
 msgid "Failed to get XML request content"
-msgstr "Nisam mogao zaključiti koristeći fcntl(2): %s"
+msgstr "Neuspjelo dobivanje sadržaja XML zahtjeva"
 
 #: ../src/libedataserver/e-webdav-session.c:1834
-#, fuzzy
-#| msgid "Failed to create child process '%s': %s"
 msgid "Failed to create address book"
-msgstr "Neuspjelo osvježavanje adresara “{0}”"
+msgstr "Neuspjelo stvaranje adresara"
 
 #: ../src/libedataserver/e-webdav-session.c:1996
-#, fuzzy
-#| msgid "Unable to create cache path"
 msgid "Failed to create calendar"
-msgstr "Neuspjelo stvaranje snimke sustava"
+msgstr "Neuspjelo stvaranje kalendara"
 
 #: ../src/libedataserver/e-webdav-session.c:2130
 #: ../src/libedataserver/e-webdav-session.c:2141
-#, fuzzy
-#| msgid "Failed to retrieve message"
 msgid "Failed to read resource"
-msgstr "Neuspjelo označavanje poruke kao pročitane."
+msgstr "Neuspjelo čitanje izvora"
 
 #: ../src/libedataserver/e-webdav-session.c:2290
 msgid "Cannot rewind input stream: Not supported"
-msgstr ""
+msgstr "Nemoguće premotavanje ulaznog strujanja: Nije podržano"
 
 #: ../src/libedataserver/e-webdav-session.c:2455
 #: ../src/libedataserver/e-webdav-session.c:2601
-#, fuzzy
-#| msgid "Failed to encode data"
 msgid "Failed to put data"
-msgstr "Stavi pokazivač na dno odgovora"
+msgstr "Neuspjelo stavljanje podataka"
 
 #: ../src/libedataserver/e-webdav-session.c:2474
 #: ../src/libedataserver/e-webdav-session.c:2609
-#, fuzzy, c-format
-#| msgid "Failed to add data to encoder"
+#, c-format
 msgid "Failed to put data to server, error code %d (%s)"
-msgstr "Nisam uspio dodati podatke u enkoder"
+msgstr "Neuspjelo stavljanje podataka u poslužitelja, kôd greške %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:2703
-#, fuzzy
-#| msgid "Failed to retrieve message"
 msgid "Failed to delete resource"
-msgstr "Neuspjelo brisanja kontakta"
+msgstr "Neuspjelo brisanja resursa"
 
 #: ../src/libedataserver/e-webdav-session.c:2772
-#, fuzzy
 msgid "Failed to copy resource"
-msgstr "Neuspjelo kopiranje datoteke"
+msgstr "Neuspjelo kopiranje izvora"
 
 #: ../src/libedataserver/e-webdav-session.c:2836
-#, fuzzy
-#| msgid "Failed to retrieve message"
 msgid "Failed to move resource"
-msgstr "Resurs"
+msgstr "Neuspjelo premještanje izvora"
 
 #: ../src/libedataserver/e-webdav-session.c:2943
-#, fuzzy
-#| msgid "Failed to get lock using flock(2): %s"
 msgid "Failed to lock resource"
-msgstr "_Zaključaj uređaj"
+msgstr "Neuspjelo zaključavanje izvora"
 
 #: ../src/libedataserver/e-webdav-session.c:2957
 #: ../src/libedataserver/e-webdav-session.c:3163
 msgid "Expected application/xml response, but none returned"
-msgstr ""
+msgstr "Očekivan je odgovor aplikacije/xml-a, ali odgovora nema"
 
 #: ../src/libedataserver/e-webdav-session.c:2960
 #: ../src/libedataserver/e-webdav-session.c:3166
 #, c-format
 msgid "Expected application/xml response, but %s returned"
-msgstr ""
+msgstr "Očekivan je odgovor aplikacije/xml-a, ali %s je vraćeno"
 
 #: ../src/libedataserver/e-webdav-session.c:2972
 #: ../src/libedataserver/e-webdav-session.c:3179
-#, fuzzy
-#| msgid "Failed to encode data"
 msgid "Failed to parse XML data"
-msgstr "Neuspjela obrada podatataka kernela {version} glavnog ogranka"
+msgstr "Neuspjela obrada XML podataka"
 
 #: ../src/libedataserver/e-webdav-session.c:3053
-#, fuzzy
-#| msgid "Failed to retrieve message"
 msgid "Failed to refresh lock"
-msgstr "Neuspjelo osvježavanje adresara “{0}”"
+msgstr "Neuspjelo osvježavanje zaključavanja"
 
 #: ../src/libedataserver/e-webdav-session.c:3114
-#, fuzzy
-#| msgid "Failed to authenticate.\n"
 msgid "Failed to unlock"
-msgstr "Neuspjelo otključavanje uređaja"
+msgstr "Neuspjelo otključavanje"
 
 #: ../src/libedataserver/e-webdav-session.c:3151
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
-msgstr ""
+msgstr "Očekivan je odgovor više stanja, ali %d je vratio (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:4230
-#, fuzzy
-#| msgid "Failed to get lock using fcntl(2): %s"
 msgid "Failed to get access control list"
-msgstr "Neuspjelo dobivanje popisa particija."
+msgstr "Neuspjelo dobivanje popisa upravljanja pristupom"
 
 #: ../src/libedataserver/e-webdav-session.c:4981
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
+"Nemoguće spremanje zaštićenog niti naslijeđenog unosa upravljanja pristupom."
 
 #: ../src/libedataserver/e-webdav-session.c:4988
 msgid "Provided invalid principal kind for Access Control Entry."
-msgstr ""
+msgstr "Pružena je nevaljana glavna vrsta za unos upravljanja pristupom."
 
 #: ../src/libedataserver/e-webdav-session.c:4995
 msgid "Cannot store property-based Access Control Entry."
-msgstr ""
+msgstr "Nemoguće spremanje na svojstvu temeljenog unosa upravljanja pristupom."
 
 #: ../src/libedataserver/e-webdav-session.c:5002
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
+"Unos upravljanja pristupa se može samo Dopustiti ili Odbaciti, ne može biti "
+"ništa."
 
 #: ../src/libedataserver/e-webdav-session.c:5010
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
+"Unos upravljanja pristupa se može samo Dopustiti ili Odbaciti, ne može biti "
+"oboje."
 
 #: ../src/libedataserver/e-webdav-session.c:5069
 msgid "Access Control Entry privilege cannot be NULL."
-msgstr ""
+msgstr "Ovlasti unosa kontrole pristupa ne mogu biti NULL."
 
 #: ../src/libedataserverui/e-credentials-prompter.c:259
 #: ../src/libedataserverui/e-credentials-prompter.c:1692
 #: ../src/libedataserverui/e-credentials-prompter.c:1736
-#, fuzzy
 msgid "Credentials prompt was cancelled"
-msgstr "Korisnik je prekinuo upit lozinke"
+msgstr "Upit vjerodajnice je otkazan"
 
 #: ../src/libedataserverui/e-credentials-prompter.c:775
 #, c-format
 msgid "Source “%s” doesn’t support prompt for credentials"
-msgstr ""
+msgstr "Izvor “%s” ne podržava upit vjerodajnica"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:202
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
-msgstr ""
+msgstr "Neuspjelo dobivanje pristupnog tokena iz adrese “%s”: %s"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:246
 msgid "Requesting access token, please wait..."
-msgstr ""
+msgstr "Zahtijevanje pristupnog tokena, pričekajte..."
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:472
-#, fuzzy, c-format
-#| msgid "Authentication required"
+#, c-format
 msgid "%s Address Book authentication request"
-msgstr "S_premi adresar kao vCard"
+msgstr "%s adresar zahtijeva ovjeru"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:477
-#, fuzzy, c-format
-#| msgid "Authentication required"
+#, c-format
 msgid "%s Calendar authentication request"
-msgstr "Mehanizam ovjere: %s"
+msgstr "%s kalendar zahtijeva ovjeru"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:482
-#, fuzzy, c-format
-#| msgid "Authentication required"
+#, c-format
 msgid "%s Memo List authentication request"
-msgstr "Kopiranje dopisa u popis dopisa “%s”"
+msgstr "%s popis dopisa zahtijeva ovjeru"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:487
-#, fuzzy, c-format
-#| msgid "Authentication required"
+#, c-format
 msgid "%s Task List authentication request"
-msgstr "Kopiranje zadatka u popis zadatka “%s”"
+msgstr "%s popis zadataka zahtijeva ovjeru"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:493
-#, fuzzy, c-format
-#| msgid "Authentication required"
+#, c-format
 msgid "%s Mail authentication request"
-msgstr "Mehanizam ovjere: %s"
+msgstr "%s pošta zahtijeva ovjeru"
 
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:498
-#, fuzzy, c-format
-#| msgid "Authentication required"
+#, c-format
 msgid "%s account authentication request"
-msgstr "Mehanizam ovjere: %s"
+msgstr "%s račun zahtijeva ovjeru"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7142,6 +7034,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "address book “%s”."
 msgstr ""
+"Prijavite se u svoj %s račun i prihvatite uvjete kako bi mogli pristupiti "
+"svojem adresaru “%s”."
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7152,6 +7046,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "calendar “%s”."
 msgstr ""
+"Prijavite se u svoj %s račun i prihvatite uvjete kako bi mogli pristupiti "
+"svojem kalendaru “%s”."
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7162,6 +7058,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "account “%s”."
 msgstr ""
+"Prijavite se u svoj %s račun i prihvatite uvjete kako bi mogli pristupiti "
+"svojem računu pošte “%s”."
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7172,6 +7070,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "transport “%s”."
 msgstr ""
+"Prijavite se u svoj %s račun i prihvatite uvjete kako bi mogli pristupiti "
+"svojem prijenosu pošte “%s”."
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7182,6 +7082,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
 "list “%s”."
 msgstr ""
+"Prijavite se u svoj %s račun i prihvatite uvjete kako bi mogli pristupiti "
+"svojem popisu dopisa “%s”."
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7192,6 +7094,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your task "
 "list “%s”."
 msgstr ""
+"Prijavite se u svoj %s račun i prihvatite uvjete kako bi mogli pristupiti "
+"svojem popisu zadatka “%s”."
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7202,6 +7106,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "account “%s”."
 msgstr ""
+"Prijavite se u svoj %s račun i prihvatite uvjete kako bi mogli pristupiti "
+"svojem računu “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:605
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
@@ -7215,65 +7121,56 @@ msgid "URL:"
 msgstr "URL:"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:132
-#, fuzzy
-#| msgid "Authentication required"
 msgid "Address book authentication request"
-msgstr "Glavni adresar"
+msgstr "Adresar zahtijeva ovjeru"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:137
-#, fuzzy
-#| msgid "Authentication required"
 msgid "Calendar authentication request"
-msgstr "Ovjera"
+msgstr "Kalendar zahtijeva ovjeru"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:141
-#, fuzzy
-#| msgid "Authentication required"
 msgid "Mail authentication request"
-msgstr "Ovjera"
+msgstr "Pošta zahtijeva ovjeru"
 
 #. generic account prompt
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:144
-#, fuzzy
-#| msgid "Authentication required"
 msgid "Authentication request"
-msgstr "Ovjera"
+msgstr "Potrebna je ovjera"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:155
 #, c-format
 msgid "Please enter the password for address book “%s”."
-msgstr ""
+msgstr "Upišite lozinku za adresar “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:159
-#, fuzzy, c-format
+#, c-format
 msgid "Please enter the password for calendar “%s”."
-msgstr "Upišite lozinku za “%s”, token “%s”"
+msgstr "Upišite lozinku za kalendar “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:163
 #, c-format
 msgid "Please enter the password for mail account “%s”."
-msgstr ""
+msgstr "Upišite lozinku za račun pošte “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:167
 #, c-format
 msgid "Please enter the password for mail transport “%s”."
-msgstr ""
+msgstr "Upišite lozinku za prijenos pošte “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:171
 #, c-format
 msgid "Please enter the password for memo list “%s”."
-msgstr ""
+msgstr "Upišite lozinku za popis dopisa “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:175
-#, fuzzy, c-format
-#| msgid "Enter password for %s (user %s)"
+#, c-format
 msgid "Please enter the password for task list “%s”."
-msgstr "Unesite lozinku za %s (korisnik %s)"
+msgstr "Upišite lozinku za popis zadatka “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:179
-#, fuzzy, c-format
+#, c-format
 msgid "Please enter the password for account “%s”."
-msgstr "Upišite lozinku za “%s”, token “%s”"
+msgstr "Upišite lozinku za račun “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1084
@@ -7281,7 +7178,6 @@ msgid "_OK"
 msgstr "_U redu"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:348
-#, fuzzy
 msgid "_User Name:"
 msgstr "_Korisničko ime:"
 
@@ -7291,88 +7187,73 @@ msgstr "_Lozinka:"
 
 #. Remember password check
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:376
-#, fuzzy
 msgid "_Add this password to your keyring"
-msgstr ""
-"Nemoguće dodavanje ključa skupu ključeva:\n"
-"%s"
+msgstr "_Dodaj ovu lozinku svojem skupu ključeva"
 
 #: ../src/libedataserverui/e-reminders-widget.c:226
-#, fuzzy
 msgid "Add custom time…"
-msgstr "Dodaj prilagođeni uzorak"
+msgstr "Dodaj prilagođeno vrijeme…"
 
 #: ../src/libedataserverui/e-reminders-widget.c:230
-#, fuzzy
 msgid "Clear custom times"
-msgstr "Prilagođeno"
+msgstr "Ukloni prilagođena vremena"
 
 #: ../src/libedataserverui/e-reminders-widget.c:278
 msgctxt "overdue"
 msgid "now"
-msgstr "sada"
+msgstr "odmah"
 
 #: ../src/libedataserverui/e-reminders-widget.c:296
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d godina"
+msgstr[1] "%d godine"
+msgstr[2] "%d godina"
 
 #: ../src/libedataserverui/e-reminders-widget.c:302
-#, fuzzy
 msgctxt "overdue"
 msgid "overdue"
-msgstr "Boja zakašnjelih zadataka"
+msgstr "zakašnjelo"
 
 #: ../src/libedataserverui/e-reminders-widget.c:922
-#, fuzzy, c-format
-#| msgid "Failed to cache %s: %s"
+#, c-format
 msgid "Failed to launch URI “%s”:"
-msgstr "Neuspjelo pokretanje naredbe “%s”:"
+msgstr "Neuspjelo pokretanje URI-a “%s”:"
 
 #: ../src/libedataserverui/e-reminders-widget.c:963
-#, fuzzy
-#| msgid "Failed to add data to encoder"
 msgid "Failed to dismiss reminder:"
-msgstr "_Odbaci"
+msgstr "Neuspjelo odbacivanje podsjetnika:"
 
 #: ../src/libedataserverui/e-reminders-widget.c:984
-#, fuzzy
-#| msgid "Failed to retrieve message"
 msgid "Failed to dismiss all:"
-msgstr "_Odbaci"
+msgstr "Neuspjelo odbacivanje svega:"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1120
-#, fuzzy
 msgid "Set a custom snooze time for"
-msgstr "Postavi prilagođeno zaglavlje neželjene pošte"
+msgstr "Postavi prilagođeno vrijeme odgode za"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1133
 msgctxt "reminders-snooze"
 msgid "da_ys"
-msgstr ""
+msgstr "da_na"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1149
-#, fuzzy
 msgctxt "reminders-snooze"
 msgid "_hours"
-msgstr "sati"
+msgstr "_sata"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1165
-#, fuzzy
 msgctxt "reminders-snooze"
 msgid "_minutes"
-msgstr "minuta"
+msgstr "_minuta"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1171
-#, fuzzy
 msgid "_Add Snooze time"
-msgstr "_Dodaj"
+msgstr "_Dodaj vrijeme odgode"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1438
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
@@ -7380,77 +7261,55 @@ msgid "_Dismiss"
 msgstr "_Odbaci"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1439
-#, fuzzy
 msgid "Dismiss _All"
-msgstr "_Odbaci"
+msgstr "Odbaci _sve"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1441
 msgid "_Snooze"
-msgstr ""
+msgstr "_Odgodi"
 
 #: ../src/libedataserverui/e-trust-prompt.c:111
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:117
-#, fuzzy
-#| msgid "Certificate untrusted"
 msgid "Certificate trust..."
-msgstr "Postavke povjerenja vjerodajnice e-pošte"
+msgstr "Pouzdane vjerodajnice..."
 
 #: ../src/libedataserverui/e-trust-prompt.c:113
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:118
 msgid "_Reject"
-msgstr ""
+msgstr "_Odbaci"
 
 #: ../src/libedataserverui/e-trust-prompt.c:114
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:119
-#, fuzzy
 msgid "Accept _Temporarily"
-msgstr "_Prihvati licencu"
+msgstr "Prihvati _privremeno"
 
 #: ../src/libedataserverui/e-trust-prompt.c:115
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:120
-#, fuzzy
 msgid "_Accept Permanently"
-msgstr "_Prihvati licencu"
+msgstr "_Prihvati trajno"
 
 #: ../src/libedataserverui/e-trust-prompt.c:186
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:157
-#, fuzzy, c-format
-#| msgid ""
-#| "SSL Certificate check for %s:\n"
-#| "\n"
-#| "%s\n"
-#| "\n"
-#| "Do you wish to accept?"
+#, c-format
 msgid "SSL/TLS certificate for “%s” is not trusted. Do you wish to accept it?"
-msgstr ""
-"Provjera SSL certifikata za %s:\n"
-"\n"
-"%s\n"
-"\n"
-"Želite li prihvatiti?"
+msgstr "SSL/TLS vjerodajnica za “%s” nije pouzdana. Želite li ju prihvatiti?"
 
 #: ../src/libedataserverui/e-trust-prompt.c:208
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:172
-#, fuzzy
 msgid "Reason:"
-msgstr "Razlog neuspjeha: %s"
+msgstr "Razlog:"
 
 #: ../src/libedataserverui/e-trust-prompt.c:211
-#, fuzzy
-#| msgid "Decoder failed, error %d"
 msgid "Detailed error:"
-msgstr "Detaljna poruka o grešci:"
+msgstr "Pojedinosti greške:"
 
 #: ../src/libedataserverui/e-trust-prompt.c:273
 #: ../src/modules/trust-prompt/module-trust-prompt.c:80
-#, fuzzy
-#| msgid "Signing certificate not found"
 msgid "The signing certificate authority is not known."
-msgstr "Vjerodajnice izdavatelja kojima se vjeruje"
+msgstr "Izdavatelj vjerodajnice potpisa nije poznat."
 
 #: ../src/libedataserverui/e-trust-prompt.c:275
 #: ../src/modules/trust-prompt/module-trust-prompt.c:82
-#, fuzzy
 msgid ""
 "The certificate does not match the expected identity of the site that it was "
 "retrieved from."
@@ -7460,16 +7319,13 @@ msgstr ""
 
 #: ../src/libedataserverui/e-trust-prompt.c:277
 #: ../src/modules/trust-prompt/module-trust-prompt.c:84
-#, fuzzy
 msgid "The certificate’s activation time is still in the future."
 msgstr "Vrijeme aktivacije vjerodajnice još nije počelo."
 
 #: ../src/libedataserverui/e-trust-prompt.c:279
 #: ../src/modules/trust-prompt/module-trust-prompt.c:86
-#, fuzzy
-#| msgid "Certificate has expired"
 msgid "The certificate has expired."
-msgstr "[ISTEKAO]"
+msgstr "[ISTEKLA]"
 
 #: ../src/libedataserverui/e-trust-prompt.c:281
 #: ../src/modules/trust-prompt/module-trust-prompt.c:88
@@ -7477,26 +7333,20 @@ msgid ""
 "The certificate has been revoked according to the connection’s certificate "
 "revocation list."
 msgstr ""
+"Vjerodajnica je opozvana prema popisu opoziva vjerodajnice povezivanja."
 
 #: ../src/libedataserverui/e-trust-prompt.c:283
 #: ../src/modules/trust-prompt/module-trust-prompt.c:90
-#, fuzzy
 msgid "The certificate’s algorithm is considered insecure."
 msgstr "Algoritam vjerodajnice se smatra nesigurnim."
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:164
-#, fuzzy
-#| msgid "Suppliers"
 msgid "Supports"
-msgstr ""
-"Koristi AppIndicator u obavijesnoj ikoni sustava (ima više ograničenja ali "
-"je podržano u više radnih okruženja)"
+msgstr "Podrška"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:175
-#, fuzzy
-#| msgid "sendmail"
 msgid "_User mail:"
-msgstr "Adresa organizatora nije valjana adresa e-pošte korisnika"
+msgstr "_E-pošta korisnika:"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:524
 msgctxt "WebDAVDiscover"
@@ -7519,20 +7369,16 @@ msgid "Tasks"
 msgstr "Zadaci"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:849
-#, fuzzy
-#| msgid "Invalid server URI"
 msgid "Invalid URL"
-msgstr "Neispravno"
+msgstr "Neispravan URL"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:895
 msgid "Cancel"
-msgstr "Otkaži"
+msgstr "Odustani"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:898
-#, fuzzy
-#| msgid "Searching..."
 msgid "Searching server sources..."
-msgstr "Pretraživanje"
+msgstr "Pretraživanje izvora poslužitelja..."
 
 #: ../src/modules/gnome-online-accounts/e-goa-password-based.c:248
 #, c-format
@@ -7540,47 +7386,46 @@ msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain a password for “%s”"
 msgstr ""
+"Nemoguć pronalazak odgovarajućeg računa u org.gnome.OnlineAccounts usluzi iz "
+"koje se dobiva lozinka za “%s”"
 
 #: ../src/modules/gnome-online-accounts/e-goa-password-based.c:315
-#, fuzzy
 msgid "Failed to get password from GOA: "
-msgstr "Neuspjelo dobivanje ulaza od korisnika u 3 pokušaja"
+msgstr "Neuspjelo dobivanje lozinke iz GMR: "
 
 #. TODO: more specific
 #: ../src/modules/gnome-online-accounts/goaewsclient.c:220
-#, fuzzy, c-format
-#| msgid "Unexpected response from IMAP server: %s"
+#, c-format
 msgid "Code: %u — Unexpected response from server"
 msgstr "Kôd: %u — Neočekivan odgovor s poslužitelja"
 
 #. TODO: more specific
 #: ../src/modules/gnome-online-accounts/goaewsclient.c:241
-#, fuzzy, c-format
-#| msgid "Failed to retrieve message"
+#, c-format
 msgid "Failed to parse autodiscover response XML"
 msgstr "Nemoguća obrada automatskog otkrivanja odgovora XML-a"
 
 #. TODO: more specific
 #: ../src/modules/gnome-online-accounts/goaewsclient.c:250
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to find Autodiscover element"
-msgstr "Nisu pronađene duplicirane poruke."
+msgstr "Nemoguće je pronaći element automatskog otkrivanja"
 
 #. TODO: more specific
 #: ../src/modules/gnome-online-accounts/goaewsclient.c:262
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to find Response element"
-msgstr "Nisu pronađene duplicirane poruke."
+msgstr "Nemoguće je pronaći element odgovora"
 
 #. TODO: more specific
 #: ../src/modules/gnome-online-accounts/goaewsclient.c:274
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to find Account element"
-msgstr "Nisu pronađene duplicirane poruke."
+msgstr "Nemoguće je pronaći element računa"
 
 #. TODO: more specific
 #: ../src/modules/gnome-online-accounts/goaewsclient.c:288
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Nemoguć pronalazak ASUrl i OABUrl u odgovoru automatskog otkrivanja"
 
@@ -7590,11 +7435,13 @@ msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain an access token for “%s”"
 msgstr ""
+"Nemoguć pronalazak odgovarajućeg računa u org.gnome.OnlineAccounts usluzi iz "
+"koje se dobiva pristupni token za “%s”"
 
 #: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1473
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
-msgstr ""
+msgstr "Neuspjelo dobivanje pristupnog tokena za “%s”: "
 
 #: ../src/modules/google-backend/module-google-backend.c:631
 #: ../src/services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
@@ -7605,12 +7452,12 @@ msgstr "Kontakti"
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:40
 #: ../src/services/evolution-user-prompter/evolution-user-prompter.c:33
 msgid "Keep running after the last client is closed"
-msgstr ""
+msgstr "Nastavi pokretanje nakon što je posljednji klijent zatvoren"
 
 #: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:40
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:42
 msgid "Wait running until at least one client is connected"
-msgstr ""
+msgstr "Čekaj s pokretanjem sve dok se bar jedan klijent ne poveže"
 
 #: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:42
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:44
@@ -7618,6 +7465,9 @@ msgid ""
 "Overrides compile-time backend per process option; use 1 to enable, 0 to "
 "disable, any other value is to use compile-time option"
 msgstr ""
+"Zaobilazi mogućnost vremena sastavljanja pozadinskog programa po procesu; "
+"koristi 1 za omogućavanje, 0 za onemogućavanje, bilo koja druga vrijednost "
+"će se koristit kao mogućnost vremena sastavljanja"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:292
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:320
@@ -7632,12 +7482,11 @@ msgstr "Upozorenje"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:433
 msgid "_No"
-msgstr ""
+msgstr "_Ne"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:434
-#, fuzzy
 msgid "_Yes"
-msgstr "Da"
+msgstr "_Da"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:438
 #, c-format
@@ -7649,67 +7498,64 @@ msgid ""
 "\n"
 "Are you sure you want to run this program?"
 msgstr ""
+"Kalendarski podsjetnik će se pokrenuti. Ovaj podsjetnik podešen je za "
+"pokretanje sljedećeg programa:\n"
+"\n"
+"        %s\n"
+"\n"
+"Sigurno želite pokrenuti ovaj program?"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:453
-#, fuzzy
 msgid "Do not ask me about this program again"
-msgstr "_Ne pitaj me ponovno."
+msgstr "Ne pitaj me ponovno o ovome programu"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:736
 msgid "Display Reminders window with _notifications"
 msgstr "Prikaži prozor podsjetnika sa _obavijestima"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:737
-#, fuzzy
 msgid "Keep reminder notification window always on _top"
-msgstr "Zadrži prozor obavijesti _podsjetnika uvijek na vrhu"
+msgstr "Zadrži prozor obavijesti podsjetnika uvijek na _vrhu"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:738
-#, fuzzy
 msgid "Display reminders for _completed tasks"
-msgstr "Prikaži podsjetnike za završene _zadatke"
+msgstr "Prikaži podsjetnike za _završene zadatke"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:739
 msgid "Display reminders for _past events"
 msgstr "Prikaži podsjetnike za _protekle događaje"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:753
-#, fuzzy
 msgid "Reminders Options:"
-msgstr "Mogućnosti"
+msgstr "Mogućnosti podsjetnika:"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:847
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Imate %d podsjetnik"
+msgstr[1] "Imate %d podsjetnika"
+msgstr[2] "Imate %d podsjetnika"
 
 #: ../src/services/evolution-source-registry/builtin/birthdays.source.in.h:1
-#, fuzzy
 msgid "Birthdays & Anniversaries"
-msgstr "Koristi u Rođendani i obljetnice"
+msgstr "Rođendani i Obljetnice"
 
 #: ../src/services/evolution-source-registry/builtin/caldav-stub.source.in.h:1
-#, fuzzy
 msgid "CalDAV"
-msgstr "Pretraživanje CalDAV poslužitelja…"
+msgstr "CalDAV"
 
 #: ../src/services/evolution-source-registry/builtin/carddav-stub.source.in.h:1
-#, fuzzy
 msgid "CardDAV"
-msgstr "CardDAV: %s"
+msgstr "CardDAV"
 
 #: ../src/services/evolution-source-registry/builtin/google-stub.source.in.h:1
 msgid "Google"
 msgstr "Google"
 
 #: ../src/services/evolution-source-registry/builtin/ldap-stub.source.in.h:1
-#, fuzzy
-#| msgid "IMAP server %s"
 msgid "On LDAP Servers"
-msgstr "Povezivanje s LDAP-om"
+msgstr "Na LDAP poslužiteljima"
 
 #: ../src/services/evolution-source-registry/builtin/local.source.in.h:1
 #: ../src/services/evolution-source-registry/builtin/local-stub.source.in.h:1
@@ -7717,128 +7563,113 @@ msgid "On This Computer"
 msgstr "Na ovom računalu"
 
 #: ../src/services/evolution-source-registry/builtin/system-proxy.source.in.h:1
-#, fuzzy
 msgid "Default Proxy Settings"
-msgstr "Vrati zadane postavke"
+msgstr "Izvorne proxy postavke"
 
 #: ../src/services/evolution-source-registry/builtin/vfolder.source.in.h:1
 msgid "Search Folders"
 msgstr "Mape pretrage"
 
 #: ../src/services/evolution-source-registry/builtin/weather-stub.source.in.h:1
-#, fuzzy
-#| msgid "Weather: Fog"
 msgid "Weather"
 msgstr "Vrijeme"
 
 #: ../src/services/evolution-source-registry/builtin/webcal-stub.source.in.h:1
-#, fuzzy
 msgid "On The Web"
-msgstr "_Web stranica:"
+msgstr "Na webu"
 
 #: ../src/services/evolution-source-registry/evolution-source-registry.c:41
 msgid "Don’t migrate user data from previous versions of Evolution"
-msgstr ""
+msgstr "Ne prenosi korisničke podatke iz prijašnje inačice Evolutiona"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:69
 #: ../src/tools/addressbook-export/addressbook-export.c:781
-#, fuzzy
-#| msgid "Cannot open message"
 msgid "Can not open file"
-msgstr "Nemoguće otvaranje .csv datoteke"
+msgstr "Nemoguće otvaranje datoteke"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:99
-#, fuzzy, c-format
-#| msgid "Failed to cache %s: %s"
+#, c-format
 msgid "Failed to open client “%s”: %s"
-msgstr "Montiraj i otvori %s (%s)"
+msgstr "Nemoguće otvaranje klijenta “%s”: %s"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:889
-#, fuzzy
-#| msgid "Unknown error"
 msgid "Unhandled error"
-msgstr "Greška"
+msgstr "Neobrađena greška"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:922
 msgid "Specify the output file instead of standard output"
-msgstr ""
+msgstr "Odredi izlaznu datoteku umjesto standardnog izlaza"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:923
 msgid "OUTPUTFILE"
-msgstr ""
+msgstr "IZLAZNA DATOTEKA"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:926
-#, fuzzy
-#| msgid "List Show Addresses"
 msgid "List local address book folders"
-msgstr "_Pretraži samo u lokalnom adresaru"
+msgstr "Prikaži mapu lokalnog adresara"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:929
 msgid "Show cards as vcard or csv file"
-msgstr ""
+msgstr "Prikaži kartice kao vcard ili csv datoteku"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:930
-#, fuzzy
 msgid "[vcard|csv]"
-msgstr "vCard za %s"
+msgstr "[vcard|csv]"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:978
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
+"Greška argumenata naredbenog retka, koristite --help mogućnost za više "
+"pojedinosti."
 
 #: ../src/tools/addressbook-export/addressbook-export.c:992
 msgid "Only support csv or vcard format."
-msgstr ""
+msgstr "Samo podržava csv ili vcard format."
 
 #: ../src/tools/list-sources/list-sources.c:83
-#, fuzzy
-#| msgid "_Show only subscribed folders"
 msgid "Show only enabled sources"
-msgstr "Prikaži _samo ovaj popis dopisa"
+msgstr "Prikaži samo oomogućene izvore"
 
 #: ../src/tools/list-sources/list-sources.c:86
-#, fuzzy
 msgid "Show source’s UID"
-msgstr "Nema pronađenih izvora podataka za UID “%s”"
+msgstr "Prikaži UID izvora"
 
 #: ../src/tools/list-sources/list-sources.c:89
-#, fuzzy
 msgid "Show source’s authentication information"
-msgstr "Nema podrške za tip autentifikacije  %s"
+msgstr "Prikaži informacije ovjere izvora"
 
 #: ../src/tools/list-sources/list-sources.c:92
 msgid ""
 "Write in machine readable format (one source per line, without localized "
 "property names and tab as separator)"
 msgstr ""
+"Zapiši u strojno čitljivom formatu (jedan izvor po retku, bez lokaliziranih "
+"naziva svojstava i tabulatora kao razdjelnika)"
 
 #: ../src/tools/list-sources/list-sources.c:95
 msgid "Limit only to sources with given extension name"
-msgstr ""
+msgstr "Ograniči samo na izvor zadan nazivom proširenja"
 
 #: ../src/tools/list-sources/list-sources.c:106
-#, fuzzy
 msgid "yes"
-msgstr "Da"
+msgstr "da"
 
 #: ../src/tools/list-sources/list-sources.c:106
-#, fuzzy
-#| msgid "Snow"
 msgid "no"
-msgstr "Snijeg"
+msgstr "ne"
 
 #: ../src/tools/list-sources/list-sources.c:126
 msgid "Collection"
-msgstr "_Kolekcija"
+msgstr "Kolekcija"
 
 #: ../src/tools/list-sources/list-sources.c:132
 msgid "Collection/GNOME Online Accounts"
-msgstr ""
+msgstr "Kolekcija/Gnome mrežni računi"
 
 #: ../src/tools/list-sources/list-sources.c:137
 msgid "Collection/Ubuntu Online Accounts"
-msgstr ""
+msgstr "Kolekcija/Ubuntu mrežni računi"
 
 #: ../src/tools/list-sources/list-sources.c:147
 msgid "Address Book"
@@ -7857,119 +7688,107 @@ msgid "Task List"
 msgstr "Popis zadataka"
 
 #: ../src/tools/list-sources/list-sources.c:151
-#, fuzzy
 msgid "Mail Account"
-msgstr "_Račun e-pošte"
+msgstr "Račun pošte"
 
 #: ../src/tools/list-sources/list-sources.c:152
-#, fuzzy
 msgid "Mail Transport"
-msgstr "_Pošta"
+msgstr "Prijenos pošte"
 
 #: ../src/tools/list-sources/list-sources.c:153
-#, fuzzy
 msgid "Mail Identity"
-msgstr "Identitet"
+msgstr "Identitet pošte"
 
 #: ../src/tools/list-sources/list-sources.c:154
-#, fuzzy
 msgid "Mail Submission"
-msgstr "_Pošta"
+msgstr "Slanje pošte"
 
 #: ../src/tools/list-sources/list-sources.c:155
-#, fuzzy
-#| msgid "Bad signature"
 msgid "Mail Signature"
-msgstr "Ispravni potpis"
+msgstr "Potpis pošte"
 
 #: ../src/tools/list-sources/list-sources.c:156
-#, fuzzy
 msgid "Proxy"
-msgstr "Bez proxa"
+msgstr "Proxy"
 
 #: ../src/tools/list-sources/list-sources.c:224
-#, fuzzy, c-format
+#, c-format
 msgid "UID: %s"
-msgstr "Nema pronađenih izvora podataka za UID “%s”"
+msgstr "UID: %s"
 
 #: ../src/tools/list-sources/list-sources.c:228
-#, fuzzy, c-format
+#, c-format
 msgid "Parent UID: %s"
-msgstr "UID"
+msgstr "Nadređeni UID: %s"
 
 #: ../src/tools/list-sources/list-sources.c:231
-#, fuzzy, c-format
-#| msgid "Posting failed: %s"
+#, c-format
 msgid "Enabled: %s"
-msgstr "Omogućeno"
+msgstr "Omogućeno: %s"
 
 #: ../src/tools/list-sources/list-sources.c:233
-#, fuzzy, c-format
-#| msgid "Backend is busy"
+#, c-format
 msgid "Backend: %s"
-msgstr "Pozadinski program"
+msgstr "Pozadinski program: %s"
 
 #: ../src/tools/list-sources/list-sources.c:238
-#, fuzzy, c-format
-#| msgid "NNTP Command failed: %s"
+#, c-format
 msgid "Calendar enabled: %s"
-msgstr "Kalendar: od %s do %s"
+msgstr "Kalendar je omogućen: %s"
 
 #: ../src/tools/list-sources/list-sources.c:239
-#, fuzzy, c-format
+#, c-format
 msgid "Contacts enabled: %s"
-msgstr "Omogućeno"
+msgstr "Kontakti su omogućeni: %s"
 
 #: ../src/tools/list-sources/list-sources.c:240
-#, fuzzy, c-format
-#| msgid "Operation failed: %s"
+#, c-format
 msgid "Mail enabled: %s"
-msgstr "Pošta za %s"
+msgstr "Pošta je omogućena: %s"
 
 #: ../src/tools/list-sources/list-sources.c:247
-#, fuzzy, c-format
+#, c-format
 msgid "MIME Type: %s"
-msgstr "MIME vrsta:"
+msgstr "MIME vrsta: %s"
 
 #: ../src/tools/list-sources/list-sources.c:269
-#, fuzzy, c-format
+#, c-format
 msgid "Auth Host: %s:%d"
-msgstr "%d%% %s"
+msgstr "Poslužitelj ovjere: %s:%d"
 
 #: ../src/tools/list-sources/list-sources.c:275
-#, fuzzy, c-format
+#, c-format
 msgid "Auth Host: %s"
-msgstr "Naziv poslužitelja"
+msgstr "Poslužitelj ovjere: %s"
 
 #: ../src/tools/list-sources/list-sources.c:283
-#, fuzzy, c-format
+#, c-format
 msgid "Auth User: %s"
-msgstr "Korisnik: %s"
+msgstr "Korisnik ovjere: %s"
 
 #: ../src/tools/list-sources/list-sources.c:291
-#, fuzzy, c-format
+#, c-format
 msgid "Auth Method: %s"
-msgstr "Način sigurnost: %s"
+msgstr "Način ovjere: %s"
 
 #: ../src/tools/list-sources/list-sources.c:299
-#, fuzzy, c-format
+#, c-format
 msgid "Auth Proxy UID: %s"
-msgstr "Nema pronađenih izvora podataka za UID “%s”"
+msgstr "Proxy ovjere: %s"
 
 #: ../src/tools/list-sources/list-sources.c:420
 msgid "Failed to parse arguments: Unknown error"
-msgstr ""
+msgstr "Neuspjela obrada argumenata: Nepoznata greška"
 
 #: ../src/tools/list-sources/list-sources.c:429
-#, fuzzy, c-format
-#| msgid "Failed to connect to POP server %s in secure mode: %s"
+#, c-format
 msgid "Failed to connect to source registry: %s\n"
-msgstr "Nisam se mogao povezati na POP server %s u sigurnosnom načinu rada: %s"
+msgstr "Neuspjelo povezivanje s izvornim registrom: %s\n"
 
 #: ../src/tools/list-sources/list-sources.c:445
-#, fuzzy, c-format
+#, c-format
 msgid "No sources had been found\n"
-msgstr "Ova pozivnica za sastanak je zastarjela. Nadopunjena je."
+msgstr "Nema pronađenih izvora\n"
 
 #~ msgid "Updating contacts cache (%d)... "
 #~ msgstr "Obnavljanje preuzetih kontakata (%d)... "
