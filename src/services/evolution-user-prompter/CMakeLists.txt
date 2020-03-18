@@ -13,11 +13,11 @@ if(WITH_SYSTEMD_USER_UNITS)
 endif(WITH_SYSTEMD_USER_UNITS)
 
 configure_file(org.gnome.evolution.dataserver.UserPrompter.service.in
-	org.gnome.evolution.dataserver.UserPrompter.service
+	${USER_PROMPTER_DBUS_SERVICE_NAME}.service
 	@ONLY
 )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.gnome.evolution.dataserver.UserPrompter.service
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${USER_PROMPTER_DBUS_SERVICE_NAME}.service
 	DESTINATION ${WITH_DBUS_SERVICE_DIR}
 )
 
