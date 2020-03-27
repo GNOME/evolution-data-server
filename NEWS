@@ -1,3 +1,16 @@
+Evolution-Data-Server 3.36.1 2020-03-27
+---------------------------------------
+
+Bug Fixes:
+	I#199 - ESoupAuthBearer: Is not thread safe (Milan Crha)
+	evo-I#831 - Free/Busy times are not in UTC (Milan Crha)
+	ews-I#87 - Meta backends not moved back online after connect failure (Milan Crha)
+
+Translations:
+	Goran Vidović (hr)
+	Daniel Korostil (uk)
+	Daniel Șerbănescu (ro)
+
 Evolution-Data-Server 3.36.0 2020-03-06
 ---------------------------------------
 
