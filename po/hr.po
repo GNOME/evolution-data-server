@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2020-03-17 16:52+0000\n"
-"PO-Revision-Date: 2020-03-27 23:56+0100\n"
+"POT-Creation-Date: 2020-03-27 23:08+0000\n"
+"PO-Revision-Date: 2020-03-28 11:24+0100\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
 "Language: hr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Launchpad-Export-Date: 2008-05-27 23:59+0000\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:219
 #, c-format
@@ -4601,7 +4601,7 @@ msgstr "~%s (%s)"
 #: ../src/camel/providers/local/camel-local-folder.c:205
 #, c-format
 msgid "mailbox: %s (%s)"
-msgstr "pretinac:%s (%s)"
+msgstr "pretinac: %s (%s)"
 
 #. Translators: This is used for a folder description.
 #. * The first %s is replaced with a folder's full path,
