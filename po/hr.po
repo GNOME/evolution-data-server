@@ -6,10 +6,11 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2020-03-11 08:22+0000\n"
-"PO-Revision-Date: 2020-03-29 01:02+0100\n"
+"POT-Creation-Date: 2020-03-29 00:36+0000\n"
+"PO-Revision-Date: 2020-03-29 01:47+0100\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
+"Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,7 +18,6 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Launchpad-Export-Date: 2020-03-28 23:52+0000\n"
 "X-Generator: Poedit 2.3\n"
-"Language: hr\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:219
 #, c-format
@@ -45,6 +45,7 @@ msgstr "Navedeni URL “%s” se ne odnosi CardDAV adresar"
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:261
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:288
 #: ../src/calendar/backends/http/e-cal-backend-http.c:313
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:183
 #: ../src/calendar/libecal/e-cal-client.c:257
 #: ../src/calendar/libecal/e-cal-client.c:3230
 #: ../src/calendar/libecal/e-cal-client.c:3403
@@ -76,18 +77,20 @@ msgstr "Navedeni URL “%s” se ne odnosi CardDAV adresar"
 #: ../src/libedataserver/e-client.c:183
 #: ../src/libedataserver/e-soup-session.c:1224
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
-#: ../src/libedataserverui/e-reminders-widget.c:1788
+#: ../src/libedataserverui/e-reminders-widget.c:1931
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Nepoznata greška"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1074
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1352
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:920
 msgid "Server didn’t return object’s href"
 msgstr "Poslužitelj nije vratio href objekt"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1076
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1354
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:922
 msgid "Server didn’t return object’s ETag"
 msgstr "Poslužitelj nije vratio ETag objekt"
 
@@ -169,7 +172,7 @@ msgid "Invalid Query “%s”"
 msgstr "Neispravan upit “%s”"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1965
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2037
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2038
 msgid "Requested to delete an unrelated cursor"
 msgstr "Zatraženo je brisanje nepovezanog pokazivača"
 
@@ -289,8 +292,8 @@ msgid "Downloading contacts (%d)..."
 msgstr "Preuzimanje kontakata (%d)..."
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4810
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:781
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:684
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:787
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:690
 msgid "Refreshing…"
 msgstr "Osvježavanje…"
 
@@ -1149,7 +1152,7 @@ msgstr "Nemoguće otvaranje baze podataka %s: %s"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2917
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2980
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3151
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1362
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1367
 #: ../src/libebackend/e-cache.c:1374 ../src/libebackend/e-cache.c:2352
 #: ../src/libebackend/e-cache.c:2392
 #, c-format
@@ -1173,21 +1176,21 @@ msgstr ""
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Nemoguće razvrstavanje po polju koje nije izraz"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1073
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1085
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1078
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1090
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Predučitani objekt za UID “%s” je neispravan"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1081
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1093
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1086
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1098
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Primljeni objekt za UID “%s” je neispravan"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1907
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2354
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3295
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1908
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2356
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3303
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Neuspjelo stvaranje predmemorije “%s”:"
@@ -1287,6 +1290,7 @@ msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Navedeni URL “%s” se ne odnosi na CalDAV kalendar"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1489
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1154
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. Remove it, please."
@@ -1338,11 +1342,11 @@ msgid "File “%s” is not a VCALENDAR component"
 msgstr "Datoteka “%s” nije valjana VCALENDAR komponenta"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3636
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3642
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3648
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3675
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2531
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3654
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3681
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2538
 msgid "Unsupported method"
 msgstr "Nepodržan način"
 
@@ -1440,6 +1444,11 @@ msgstr "Nemoguće stvaranje datoteke predmemorije"
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:684
 msgid "Could not create cache file: "
 msgstr "Nemoguće stvaranje datoteke predmemorije: "
+
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:963
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:992
+msgid "New note"
+msgstr "Nova bilješka"
 
 #: ../src/calendar/libecal/e-cal-client.c:244
 msgid "No such calendar"
@@ -2344,7 +2353,7 @@ msgid "Undefined"
 msgstr "Neodređeno"
 
 #: ../src/calendar/libecal/e-cal-util.c:885
-#: ../src/libedataserverui/e-reminders-widget.c:292
+#: ../src/libedataserverui/e-reminders-widget.c:296
 #, c-format
 msgid "%d week"
 msgid_plural "%d weeks"
@@ -2353,7 +2362,7 @@ msgstr[1] "%d tjedna"
 msgstr[2] "%d tjedana"
 
 #: ../src/calendar/libecal/e-cal-util.c:894
-#: ../src/libedataserverui/e-reminders-widget.c:288
+#: ../src/libedataserverui/e-reminders-widget.c:292
 #, c-format
 msgid "%d day"
 msgid_plural "%d days"
@@ -2362,7 +2371,7 @@ msgstr[1] "%d dana"
 msgstr[2] "%d dana"
 
 #: ../src/calendar/libecal/e-cal-util.c:903
-#: ../src/libedataserverui/e-reminders-widget.c:284
+#: ../src/libedataserverui/e-reminders-widget.c:288
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
@@ -2371,7 +2380,7 @@ msgstr[1] "%d sata"
 msgstr[2] "%d sati"
 
 #: ../src/calendar/libecal/e-cal-util.c:912
-#: ../src/libedataserverui/e-reminders-widget.c:280
+#: ../src/libedataserverui/e-reminders-widget.c:284
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -2554,12 +2563,12 @@ msgstr "Nemoguće dodavanje vremenske zone bez komponente"
 msgid "Cannot add timezone with invalid component"
 msgstr "Nemoguće dodavanje vremenske zone s neispravnom komponentom"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1140
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1145
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Primljeni objekt za UID “%s” ne sadrži ni jednu očekivanu komponentu"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4162
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4170
 msgid "attachment.dat"
 msgstr "privitak.dat"
 
@@ -5955,18 +5964,26 @@ msgid "Height of the reminder notification dialog"
 msgstr "Visina dijaloga obavijesti podsjetnika"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
+msgid ""
+"Paned position in the reminder notification dialog, the split size between "
+"list of the events and the description"
+msgstr ""
+"Položaj u dijalogu obavijesti podsjetnika, veličina podjele između popisa "
+"događaja i opisa"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
 msgid "Show reminder notification for completed tasks"
 msgstr "Prikaži obavijesti podsjetnika za završene zadatke"
 
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
 msgid "Show reminder notification for past events"
 msgstr "Prikaži obavijesti podsjetnika za protekle događaje"
 
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
 msgid "The last used snooze time, in minutes"
 msgstr "Posljednje korišteno vrijeme odgode, u minutama"
 
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:23
 msgid "User-defined snooze times, in minutes"
 msgstr "Korisnički određeno vrijeme odgode, u minutama"
 
@@ -6767,11 +6784,15 @@ msgstr "%H%M"
 msgid "%I %p"
 msgstr "%I %p"
 
+#: ../src/libedataserver/e-webdav-discover.c:313
+msgid "Notes"
+msgstr "Bilješke"
+
 #: ../src/libedataserver/e-webdav-session.c:726
 msgid "Cannot determine destination URL without WebDAV extension"
 msgstr "Nemoguće određivanje odredišnog URL-a bez WebDAV proširenja"
 
-#: ../src/libedataserver/e-webdav-session.c:991
+#: ../src/libedataserver/e-webdav-session.c:992
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -6780,7 +6801,7 @@ msgstr ""
 "Poslužitelj je odgovorio s HTML stranicom, što znači da je došlo do greške "
 "na poslužitelju ili zahtjevu klijenta. Korišteni URI je: %s"
 
-#: ../src/libedataserver/e-webdav-session.c:993
+#: ../src/libedataserver/e-webdav-session.c:994
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -6794,7 +6815,7 @@ msgstr ""
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1014
+#: ../src/libedataserver/e-webdav-session.c:1015
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
 msgstr "%s: HTTP kôd greške %d (%s): %s"
@@ -6802,7 +6823,7 @@ msgstr "%s: HTTP kôd greške %d (%s): %s"
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1022
+#: ../src/libedataserver/e-webdav-session.c:1023
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
 msgstr "Neuspjelo s HTTP kôdom greške %d (%s): %s"
@@ -6811,156 +6832,165 @@ msgstr "Neuspjelo s HTTP kôdom greške %d (%s): %s"
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1037
+#: ../src/libedataserver/e-webdav-session.c:1038
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
 msgstr "%s: HTTP kôd greške %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1043
+#: ../src/libedataserver/e-webdav-session.c:1044
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "Neuspjelo s HTTP kôdom greške %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:1338
+#: ../src/libedataserver/e-webdav-session.c:1339
 msgid "Failed to post data"
 msgstr "Neuspjela objava podataka"
 
-#: ../src/libedataserver/e-webdav-session.c:1475
-#: ../src/libedataserver/e-webdav-session.c:1552
-#: ../src/libedataserver/e-webdav-session.c:1658
-#: ../src/libedataserver/e-webdav-session.c:2932
-#: ../src/libedataserver/e-webdav-session.c:4220
+#: ../src/libedataserver/e-webdav-session.c:1476
+#: ../src/libedataserver/e-webdav-session.c:1553
+#: ../src/libedataserver/e-webdav-session.c:1659
+#: ../src/libedataserver/e-webdav-session.c:2933
+#: ../src/libedataserver/e-webdav-session.c:4221
 msgid "Failed to get input XML content"
 msgstr "Neuspjelo dobivanje ulaznog XML sadržaja"
 
-#: ../src/libedataserver/e-webdav-session.c:1486
+#: ../src/libedataserver/e-webdav-session.c:1487
 msgid "Failed to get properties"
 msgstr "Neuspjelo dobivanje svojstva"
 
-#: ../src/libedataserver/e-webdav-session.c:1562
+#: ../src/libedataserver/e-webdav-session.c:1563
 msgid "Failed to update properties"
 msgstr "Neuspjelo nadopuna svojstva"
 
-#: ../src/libedataserver/e-webdav-session.c:1668
+#: ../src/libedataserver/e-webdav-session.c:1669
 msgid "Failed to issue REPORT"
 msgstr "Neuspjelo REPORT izdavanje"
 
-#: ../src/libedataserver/e-webdav-session.c:1729
+#: ../src/libedataserver/e-webdav-session.c:1730
 msgid "Failed to create collection"
 msgstr "Neuspjelo stvaranje kolekcije"
 
-#: ../src/libedataserver/e-webdav-session.c:1822
-#: ../src/libedataserver/e-webdav-session.c:1983
+#: ../src/libedataserver/e-webdav-session.c:1823
+#: ../src/libedataserver/e-webdav-session.c:1984
 msgid "Failed to get XML request content"
 msgstr "Neuspjelo dobivanje sadržaja XML zahtjeva"
 
-#: ../src/libedataserver/e-webdav-session.c:1834
+#: ../src/libedataserver/e-webdav-session.c:1835
 msgid "Failed to create address book"
 msgstr "Neuspjelo stvaranje adresara"
 
-#: ../src/libedataserver/e-webdav-session.c:1996
+#: ../src/libedataserver/e-webdav-session.c:1997
 msgid "Failed to create calendar"
 msgstr "Neuspjelo stvaranje kalendara"
 
-#: ../src/libedataserver/e-webdav-session.c:2130
-#: ../src/libedataserver/e-webdav-session.c:2141
+#: ../src/libedataserver/e-webdav-session.c:2131
+#: ../src/libedataserver/e-webdav-session.c:2142
 msgid "Failed to read resource"
 msgstr "Neuspjelo čitanje izvora"
 
-#: ../src/libedataserver/e-webdav-session.c:2290
+#: ../src/libedataserver/e-webdav-session.c:2291
 msgid "Cannot rewind input stream: Not supported"
 msgstr "Nemoguće premotavanje ulaznog strujanja: Nije podržano"
 
-#: ../src/libedataserver/e-webdav-session.c:2455
-#: ../src/libedataserver/e-webdav-session.c:2601
+#: ../src/libedataserver/e-webdav-session.c:2456
+#: ../src/libedataserver/e-webdav-session.c:2602
 msgid "Failed to put data"
 msgstr "Neuspjelo stavljanje podataka"
 
-#: ../src/libedataserver/e-webdav-session.c:2474
-#: ../src/libedataserver/e-webdav-session.c:2609
+#: ../src/libedataserver/e-webdav-session.c:2475
+#: ../src/libedataserver/e-webdav-session.c:2610
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Neuspjelo stavljanje podataka u poslužitelja, kôd greške %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:2703
+#: ../src/libedataserver/e-webdav-session.c:2704
 msgid "Failed to delete resource"
 msgstr "Neuspjelo brisanja resursa"
 
-#: ../src/libedataserver/e-webdav-session.c:2772
+#: ../src/libedataserver/e-webdav-session.c:2773
 msgid "Failed to copy resource"
 msgstr "Neuspjelo kopiranje izvora"
 
-#: ../src/libedataserver/e-webdav-session.c:2836
+#: ../src/libedataserver/e-webdav-session.c:2837
 msgid "Failed to move resource"
 msgstr "Neuspjelo premještanje izvora"
 
-#: ../src/libedataserver/e-webdav-session.c:2943
+#: ../src/libedataserver/e-webdav-session.c:2944
 msgid "Failed to lock resource"
 msgstr "Neuspjelo zaključavanje izvora"
 
-#: ../src/libedataserver/e-webdav-session.c:2957
-#: ../src/libedataserver/e-webdav-session.c:3163
+#: ../src/libedataserver/e-webdav-session.c:2958
+#: ../src/libedataserver/e-webdav-session.c:3164
 msgid "Expected application/xml response, but none returned"
 msgstr "Očekivan je odgovor aplikacije/xml-a, ali odgovora nema"
 
-#: ../src/libedataserver/e-webdav-session.c:2960
-#: ../src/libedataserver/e-webdav-session.c:3166
+#: ../src/libedataserver/e-webdav-session.c:2961
+#: ../src/libedataserver/e-webdav-session.c:3167
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "Očekivan je odgovor aplikacije/xml-a, ali %s je vraćeno"
 
-#: ../src/libedataserver/e-webdav-session.c:2972
-#: ../src/libedataserver/e-webdav-session.c:3179
+#: ../src/libedataserver/e-webdav-session.c:2973
+#: ../src/libedataserver/e-webdav-session.c:3180
 msgid "Failed to parse XML data"
 msgstr "Neuspjela obrada XML podataka"
 
-#: ../src/libedataserver/e-webdav-session.c:3053
+#: ../src/libedataserver/e-webdav-session.c:3054
 msgid "Failed to refresh lock"
 msgstr "Neuspjelo osvježavanje zaključavanja"
 
-#: ../src/libedataserver/e-webdav-session.c:3114
+#: ../src/libedataserver/e-webdav-session.c:3115
 msgid "Failed to unlock"
 msgstr "Neuspjelo otključavanje"
 
-#: ../src/libedataserver/e-webdav-session.c:3151
+#: ../src/libedataserver/e-webdav-session.c:3152
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Očekivan je odgovor više stanja, ali %d je vratio (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:4230
+#: ../src/libedataserver/e-webdav-session.c:4231
 msgid "Failed to get access control list"
 msgstr "Neuspjelo dobivanje popisa upravljanja pristupom"
 
-#: ../src/libedataserver/e-webdav-session.c:4981
+#: ../src/libedataserver/e-webdav-session.c:4982
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 "Nemoguće spremanje zaštićenog niti naslijeđenog unosa upravljanja pristupom."
 
-#: ../src/libedataserver/e-webdav-session.c:4988
+#: ../src/libedataserver/e-webdav-session.c:4989
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Pružena je nevaljana glavna vrsta za unos upravljanja pristupom."
 
-#: ../src/libedataserver/e-webdav-session.c:4995
+#: ../src/libedataserver/e-webdav-session.c:4996
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Nemoguće spremanje na svojstvu temeljenog unosa upravljanja pristupom."
 
-#: ../src/libedataserver/e-webdav-session.c:5002
+#: ../src/libedataserver/e-webdav-session.c:5003
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Unos upravljanja pristupa se može samo Dopustiti ili Odbaciti, ne može biti "
 "ništa."
 
-#: ../src/libedataserver/e-webdav-session.c:5010
+#: ../src/libedataserver/e-webdav-session.c:5011
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Unos upravljanja pristupa se može samo Dopustiti ili Odbaciti, ne može biti "
 "oboje."
 
-#: ../src/libedataserver/e-webdav-session.c:5069
+#: ../src/libedataserver/e-webdav-session.c:5070
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Ovlasti unosa kontrole pristupa ne mogu biti NULL."
+
+#: ../src/libedataserverui/e-buffer-tagger.c:71
+msgid "Could not open the link."
+msgstr "Nemoguće otvaranje poveznice."
+
+#. To Translators: The text is concatenated to a form: "Ctrl-click to open a link http://www.example.com"
+#: ../src/libedataserverui/e-buffer-tagger.c:458
+msgid "Ctrl-click to open a link"
+msgstr "Ctrl-klik za otvaranje poveznice"
 
 #: ../src/libedataserverui/e-credentials-prompter.c:259
 #: ../src/libedataserverui/e-credentials-prompter.c:1692
@@ -7190,20 +7220,20 @@ msgstr "_Lozinka:"
 msgid "_Add this password to your keyring"
 msgstr "_Dodaj ovu lozinku svojem skupu ključeva"
 
-#: ../src/libedataserverui/e-reminders-widget.c:226
+#: ../src/libedataserverui/e-reminders-widget.c:230
 msgid "Add custom time…"
 msgstr "Dodaj prilagođeno vrijeme…"
 
-#: ../src/libedataserverui/e-reminders-widget.c:230
+#: ../src/libedataserverui/e-reminders-widget.c:234
 msgid "Clear custom times"
 msgstr "Ukloni prilagođena vremena"
 
-#: ../src/libedataserverui/e-reminders-widget.c:278
+#: ../src/libedataserverui/e-reminders-widget.c:282
 msgctxt "overdue"
 msgid "now"
 msgstr "odmah"
 
-#: ../src/libedataserverui/e-reminders-widget.c:296
+#: ../src/libedataserverui/e-reminders-widget.c:300
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -7211,60 +7241,72 @@ msgstr[0] "%d godina"
 msgstr[1] "%d godine"
 msgstr[2] "%d godina"
 
-#: ../src/libedataserverui/e-reminders-widget.c:302
+#: ../src/libedataserverui/e-reminders-widget.c:306
 msgctxt "overdue"
 msgid "overdue"
 msgstr "zakašnjelo"
 
-#: ../src/libedataserverui/e-reminders-widget.c:922
+#: ../src/libedataserverui/e-reminders-widget.c:926
 #, c-format
 msgid "Failed to launch URI “%s”:"
 msgstr "Neuspjelo pokretanje URI-a “%s”:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:963
+#: ../src/libedataserverui/e-reminders-widget.c:976
+msgid "No reminder is selected."
+msgstr "Nema odabranih podsjetnika."
+
+#: ../src/libedataserverui/e-reminders-widget.c:1033
+msgid "No details are available."
+msgstr "Nema dostupnih pojedinosti."
+
+#: ../src/libedataserverui/e-reminders-widget.c:1037
+msgid "Multiple reminders are selected."
+msgstr "Odabrano je više podsjetnika."
+
+#: ../src/libedataserverui/e-reminders-widget.c:1057
 msgid "Failed to dismiss reminder:"
 msgstr "Neuspjelo odbacivanje podsjetnika:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:984
+#: ../src/libedataserverui/e-reminders-widget.c:1078
 msgid "Failed to dismiss all:"
 msgstr "Neuspjelo odbacivanje svega:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1120
+#: ../src/libedataserverui/e-reminders-widget.c:1214
 msgid "Set a custom snooze time for"
 msgstr "Postavi prilagođeno vrijeme odgode za"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1133
+#: ../src/libedataserverui/e-reminders-widget.c:1227
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "da_na"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1149
+#: ../src/libedataserverui/e-reminders-widget.c:1243
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "_sata"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1165
+#: ../src/libedataserverui/e-reminders-widget.c:1259
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "_minuta"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1171
+#: ../src/libedataserverui/e-reminders-widget.c:1265
 msgid "_Add Snooze time"
 msgstr "_Dodaj vrijeme odgode"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1438
+#: ../src/libedataserverui/e-reminders-widget.c:1568
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "_Odbaci"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1439
+#: ../src/libedataserverui/e-reminders-widget.c:1569
 msgid "Dismiss _All"
 msgstr "Odbaci _sve"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1441
+#: ../src/libedataserverui/e-reminders-widget.c:1571
 msgid "_Snooze"
 msgstr "_Odgodi"
 
@@ -7469,26 +7511,26 @@ msgstr ""
 "koristi 1 za omogućavanje, 0 za onemogućavanje, bilo koja druga vrijednost "
 "će se koristit kao mogućnost vremena sastavljanja"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:292
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:320
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:831
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1040
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:306
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:334
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:845
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1087
 msgid "Reminders"
 msgstr "Podsjetnici"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:432
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:446
 msgid "Warning"
 msgstr "Upozorenje"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:433
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:447
 msgid "_No"
 msgstr "_Ne"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:434
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:448
 msgid "_Yes"
 msgstr "_Da"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:438
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:452
 #, c-format
 msgid ""
 "A calendar reminder is about to trigger. This reminder is configured to run "
@@ -7505,31 +7547,31 @@ msgstr ""
 "\n"
 "Sigurno želite pokrenuti ovaj program?"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:453
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:467
 msgid "Do not ask me about this program again"
 msgstr "Ne pitaj me ponovno o ovome programu"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:736
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:750
 msgid "Display Reminders window with _notifications"
 msgstr "Prikaži prozor podsjetnika sa _obavijestima"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:737
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:751
 msgid "Keep reminder notification window always on _top"
 msgstr "Zadrži prozor obavijesti podsjetnika uvijek na _vrhu"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:738
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:752
 msgid "Display reminders for _completed tasks"
 msgstr "Prikaži podsjetnike za _završene zadatke"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:739
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:753
 msgid "Display reminders for _past events"
 msgstr "Prikaži podsjetnike za _protekle događaje"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:753
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:767
 msgid "Reminders Options:"
 msgstr "Mogućnosti podsjetnika:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:847
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:861
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
@@ -7577,6 +7619,10 @@ msgstr "Vrijeme"
 #: ../src/services/evolution-source-registry/builtin/webcal-stub.source.in.h:1
 msgid "On The Web"
 msgstr "Na webu"
+
+#: ../src/services/evolution-source-registry/builtin/webdav-notes-stub.source.in.h:1
+msgid "WebDAV Notes"
+msgstr "WebDAV bilješke"
 
 #: ../src/services/evolution-source-registry/evolution-source-registry.c:41
 msgid "Don’t migrate user data from previous versions of Evolution"
