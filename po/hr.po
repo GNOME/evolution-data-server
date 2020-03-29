@@ -6,18 +6,18 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2020-03-27 23:08+0000\n"
-"PO-Revision-Date: 2020-03-28 11:24+0100\n"
+"POT-Creation-Date: 2020-03-11 08:22+0000\n"
+"PO-Revision-Date: 2020-03-29 01:02+0100\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
-"Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2008-05-27 23:59+0000\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Launchpad-Export-Date: 2020-03-28 23:52+0000\n"
+"X-Generator: Poedit 2.3\n"
+"Language: hr\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:219
 #, c-format
@@ -169,7 +169,7 @@ msgid "Invalid Query “%s”"
 msgstr "Neispravan upit “%s”"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1965
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2038
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2037
 msgid "Requested to delete an unrelated cursor"
 msgstr "Zatraženo je brisanje nepovezanog pokazivača"
 
@@ -289,8 +289,8 @@ msgid "Downloading contacts (%d)..."
 msgstr "Preuzimanje kontakata (%d)..."
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4810
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:787
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:690
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:781
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:684
 msgid "Refreshing…"
 msgstr "Osvježavanje…"
 
@@ -1149,7 +1149,7 @@ msgstr "Nemoguće otvaranje baze podataka %s: %s"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2917
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2980
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3151
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1367
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1362
 #: ../src/libebackend/e-cache.c:1374 ../src/libebackend/e-cache.c:2352
 #: ../src/libebackend/e-cache.c:2392
 #, c-format
@@ -1173,21 +1173,21 @@ msgstr ""
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Nemoguće razvrstavanje po polju koje nije izraz"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1078
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1090
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1073
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1085
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Predučitani objekt za UID “%s” je neispravan"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1086
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1098
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1081
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1093
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Primljeni objekt za UID “%s” je neispravan"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1908
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2356
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3303
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1907
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2354
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3295
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Neuspjelo stvaranje predmemorije “%s”:"
@@ -1338,11 +1338,11 @@ msgid "File “%s” is not a VCALENDAR component"
 msgstr "Datoteka “%s” nije valjana VCALENDAR komponenta"
 
 #. FIXME This should be doable once all the recurid stuff is done
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3636
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3642
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3648
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3654
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3681
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2538
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3675
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2531
 msgid "Unsupported method"
 msgstr "Nepodržan način"
 
@@ -1675,7 +1675,7 @@ msgstr ", Nedjelju"
 #: ../src/calendar/libecal/e-cal-recur.c:5209
 msgctxt "recur-description"
 msgid " and Sunday"
-msgstr "i Nedjelju"
+msgstr " i Nedjelju"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5212
 msgctxt "recur-description"
@@ -1690,7 +1690,7 @@ msgstr ", Ponedjeljak"
 #: ../src/calendar/libecal/e-cal-recur.c:5214
 msgctxt "recur-description"
 msgid " and Monday"
-msgstr "i Ponedjeljak"
+msgstr " i Ponedjeljak"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5217
 msgctxt "recur-description"
@@ -1705,7 +1705,7 @@ msgstr ", Utorak"
 #: ../src/calendar/libecal/e-cal-recur.c:5219
 msgctxt "recur-description"
 msgid " and Tuesday"
-msgstr "i Utorak"
+msgstr " i Utorak"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5222
 msgctxt "recur-description"
@@ -1720,7 +1720,7 @@ msgstr ", Srijedu"
 #: ../src/calendar/libecal/e-cal-recur.c:5224
 msgctxt "recur-description"
 msgid " and Wednesday"
-msgstr "Srijedu"
+msgstr " i Srijedu"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5227
 msgctxt "recur-description"
@@ -1735,7 +1735,7 @@ msgstr ", Četvrtak"
 #: ../src/calendar/libecal/e-cal-recur.c:5229
 msgctxt "recur-description"
 msgid " and Thursday"
-msgstr "i Četvrtak"
+msgstr " i Četvrtak"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5232
 msgctxt "recur-description"
@@ -1750,7 +1750,7 @@ msgstr ", Petak"
 #: ../src/calendar/libecal/e-cal-recur.c:5234
 msgctxt "recur-description"
 msgid " and Friday"
-msgstr "i Petak"
+msgstr " i Petak"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5237
 msgctxt "recur-description"
@@ -1765,7 +1765,7 @@ msgstr ",Subotu"
 #: ../src/calendar/libecal/e-cal-recur.c:5239
 msgctxt "recur-description"
 msgid " and Saturday"
-msgstr "i Subotu"
+msgstr " i Subotu"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5368
 #, c-format
@@ -2390,7 +2390,7 @@ msgstr[2] "%d sekundi"
 
 #: ../src/calendar/libecal/e-reminder-watcher.c:2704
 msgid "No Summary"
-msgstr "Nema sažetka"
+msgstr "Bez sažetka"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
@@ -2517,7 +2517,7 @@ msgid ""
 "a boolean false (#f)"
 msgstr ""
 "\"%s\" očekuje da svi argumenti budu izrazi, ili jedan i to samo jedan bude "
-"booleovo false (#f)"
+"booleovo laž (#f)"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1467
 #, c-format
@@ -2554,12 +2554,12 @@ msgstr "Nemoguće dodavanje vremenske zone bez komponente"
 msgid "Cannot add timezone with invalid component"
 msgstr "Nemoguće dodavanje vremenske zone s neispravnom komponentom"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1145
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1140
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Primljeni objekt za UID “%s” ne sadrži ni jednu očekivanu komponentu"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4170
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4162
 msgid "attachment.dat"
 msgstr "privitak.dat"
 
@@ -2852,7 +2852,7 @@ msgstr "Kopiranje poruka"
 #: ../src/camel/camel-folder.c:1112
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
-msgstr "Informacija ograničenja nije podržana u mapi “%s : %s”"
+msgstr "Informacija kvota nije podržana u mapi “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2868,7 +2868,7 @@ msgstr "Filtriranje mape “%s : %s”"
 #: ../src/camel/camel-folder.c:3176
 #, c-format
 msgid "Expunging folder “%s : %s”"
-msgstr "Brisanje mape “%s : %s”"
+msgstr "Uklanjanje mape “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2884,7 +2884,7 @@ msgstr "Primanje poruke “%s” u “%s : %s”"
 #: ../src/camel/camel-folder.c:3536
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
-msgstr "Primanje informacija ograničenja za “%s : %s”"
+msgstr "Primanje informacija kvota za “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -3769,7 +3769,7 @@ msgstr "Nemoguć izračun sažetaka"
 #: ../src/camel/camel-smime-context.c:601
 #: ../src/camel/camel-smime-context.c:605
 msgid "Cannot set message digests"
-msgstr "Nemoguće postavljanje sažetaka poruke"
+msgstr "Nemoguće postavljanje sažetka poruke"
 
 #: ../src/camel/camel-smime-context.c:615
 #: ../src/camel/camel-smime-context.c:620
@@ -4058,7 +4058,7 @@ msgstr "Nemoguće premještanje poruka u pristiglu poštu"
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:766
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
-msgstr "Nema dostupnih informacija ograničenja za mapu “%s : %s”"
+msgstr "Nema dostupnih informacija kvota za mapu “%s : %s”"
 
 #. transfer ownership to 'rcf'
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
@@ -4406,11 +4406,11 @@ msgstr "Greška prekidanja pretplate na mapu"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:6778
 msgid "IMAP server does not support quotas"
-msgstr "IMAP poslužitelj ne podržava ograničenja"
+msgstr "IMAP poslužitelj ne podržava kvote"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:6790
 msgid "Error retrieving quota information"
-msgstr "Greška preuzimanja informacija o ograničenju"
+msgstr "Greška preuzimanja informacija o kvotama"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:6855
 msgid "Search failed"
@@ -4882,7 +4882,7 @@ msgstr "Nemoguće stvaranje mape sa ovim nazivom."
 #: ../src/camel/providers/local/camel-mbox-store.c:442
 #, c-format
 msgid "Cannot get folder “%s”: not a regular file."
-msgstr "Nemoguće dohvaćanje mape “%s”: nije obična datoteka."
+msgstr "Nemoguće dobivanje mape “%s”: nije obična datoteka."
 
 #: ../src/camel/providers/local/camel-mbox-store.c:603
 #, c-format
@@ -4987,8 +4987,8 @@ msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn’t get "
 "it.)"
 msgstr ""
-"MBOX datoteka je oštećena, popravite ju. (Očekivan je Od redak, ali nije "
-"naveden.)"
+"MBOX datoteka je oštećena, popravite ju. (Očekivana je adresa pošiljatelja, "
+"ali nije navedena.)"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:813
 #: ../src/camel/providers/local/camel-mbox-summary.c:1088
@@ -5093,7 +5093,7 @@ msgstr "“%s” nije datoteka pretinca."
 #: ../src/camel/providers/local/camel-spool-store.c:578
 #, c-format
 msgid "Store does not support an INBOX"
-msgstr "Spremnik ne podržava INBOX"
+msgstr "Spremnik ne podržava PRISTIGLU POŠTU"
 
 #: ../src/camel/providers/local/camel-spool-store.c:597
 #, c-format
@@ -5373,7 +5373,7 @@ msgstr "Preuzimanje POP sažetka"
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:733
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:747
 msgid "Cannot get POP summary: "
-msgstr "Nemoguće preuzimanje POP sažetka: "
+msgstr "Nemoguće dobivanje POP sažetka: "
 
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:895
 msgid "Expunging old messages"
@@ -5922,7 +5922,7 @@ msgid ""
 "When set to true, the reminders are shown only in the notification tray, "
 "otherwise the reminders dialog is shown immediately"
 msgstr ""
-"Ako je postavljeno na true, podsjetnici se prikazuju samo u obavijesnom "
+"Ako je postavljeno na istinu, podsjetnici se prikazuju samo u obavijesnom "
 "području sustava, u suprotnome dijalog podsjetnika je odmah prikazan"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:13
@@ -5997,8 +5997,8 @@ msgid ""
 "When set to “true”, tries to load also photo of the signers/encrypters, if "
 "available in the key/certificate."
 msgstr ""
-"Kada je postavljeno na “true”, pokušavaju se učitati fotografija "
-"potpisatelja/šifriratelja, ako je dostupna u ključu/vjerodajnici."
+"Kada je postavljeno na “istinu”, pokušavaju se učitati fotografija "
+"potpisnika/šifriratelja, ako je dostupna u ključu/vjerodajnici."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:6
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
@@ -6066,7 +6066,7 @@ msgid ""
 "“Company” OAuth2 authentication for any “CalDAV” source, which reads data "
 "from “caldav.company.com” host"
 msgstr ""
-"Korisnici mogu proširit popis podržanih protokola i naziva poslužitelja za "
+"Korisnici mogu proširiti popis podržanih protokola i naziva poslužitelja za "
 "određene OAuth2 usluge, kao dodatak uz one ugrađene u kôd. Svaki redak može "
 "biti u obliku: nazivusluge[-protokol]:poslužitelj1,poslužitelj2,... gdje je "
 "“nazivusluge” stvarni naziv usluge; “-protokol” nije obavezan, a ako je "
@@ -7789,1082 +7789,3 @@ msgstr "Neuspjelo povezivanje s izvornim registrom: %s\n"
 #, c-format
 msgid "No sources had been found\n"
 msgstr "Nema pronađenih izvora\n"
-
-#~ msgid "Updating contacts cache (%d)... "
-#~ msgstr "Obnavljanje preuzetih kontakata (%d)... "
-
-#~ msgid "Using Distinguished Name (DN)"
-#~ msgstr "Koristim poseban naziv (DN)"
-
-#~ msgid "Using Email Address"
-#~ msgstr "Koristim  adresu elektronske pošte"
-
-#~ msgid "\"%s\" on book before \"%s\""
-#~ msgstr "\"%s\" na knjizi prije \"%s\""
-
-#~ msgid "book busy"
-#~ msgstr "knjiga zaposlena"
-
-#~ msgid "CORBA exception making \"%s\" call"
-#~ msgstr "Došlo je do CORBA iznimke pri pozivu \"%s\""
-
-#~ msgid "%s: there is no current operation"
-#~ msgstr "%s: nema trenutne aktivnosti"
-
-#~ msgid "\"%s\" on book after \"%s\""
-#~ msgstr "\"%s\" u knjizi nakon \"%s\""
-
-#~ msgid "%s: Invalid source."
-#~ msgstr "%s: neispravan izvor."
-
-#~ msgid "%s: Could not create EBookListener"
-#~ msgstr "%s: Nisam mogao kreirati EBookListener"
-
-#~ msgid "%s: there was no source for uid `%s' stored in gconf."
-#~ msgstr "%s: u gconfu nije bio spremljen izvor uida `%s'"
-
-#~ msgid "Could not create thread for getting deltas"
-#~ msgstr "Ne mogu stvoriti nit za pribavljanje razlika"
-
-#~ msgid "Could not create thread for populating cache"
-#~ msgstr "Ne mogu stvoriti nit za popunjavanje međuspremnika"
-
-#~ msgid "Reply Requested: by "
-#~ msgstr "Potreban odgovor: za "
-
-#~ msgid "Reply Requested: When convenient"
-#~ msgstr "Potreban odgovor: Ukoliko je moguće"
-
-#~ msgid "Loading %s items"
-#~ msgstr "Učitavanje %s stavki"
-
-#~ msgid "Redirected to Invalid URI"
-#~ msgstr "Preusmjereno na neispravnui URI"
-
-#~ msgid "Fair"
-#~ msgstr "Lijepo"
-
-#~ msgid "Snow showers"
-#~ msgstr "Mećave"
-
-#~ msgid "Partly cloudy"
-#~ msgstr "Djelomično oblačno"
-
-#~ msgid "Smoke"
-#~ msgstr "Dim"
-
-#~ msgid "Thunderstorms"
-#~ msgstr "Grmljavine"
-
-#~ msgid "Cloudy"
-#~ msgstr "Oblačno"
-
-#~ msgid "Drizzle"
-#~ msgstr "Sitna kiša"
-
-#~ msgid "Sunny"
-#~ msgstr "Sunčano"
-
-#~ msgid "Dust"
-#~ msgstr "Prašina"
-
-#~ msgid "Clear"
-#~ msgstr "Vedro"
-
-#~ msgid "Mostly cloudy"
-#~ msgstr "Pretežno oblačno"
-
-#~ msgid "Windy"
-#~ msgstr "Vjetrovito"
-
-#~ msgid "Rain showers"
-#~ msgstr "Pljuskovi"
-
-#~ msgid "Foggy"
-#~ msgstr "Maglovito"
-
-#~ msgid "Rain/snow mixed"
-#~ msgstr "Kiša i snijeg"
-
-#~ msgid "Sleet"
-#~ msgstr "Susnježica"
-
-#~ msgid "Very hot/humid"
-#~ msgstr "Vrlo toplo/vlažno"
-
-#~ msgid "Blizzard"
-#~ msgstr "Snježna oluja"
-
-#~ msgid "Freezing rain"
-#~ msgstr "Ledena kiša"
-
-#~ msgid "Haze"
-#~ msgstr "Izmaglica"
-
-#~ msgid "Blowing snow"
-#~ msgstr "Snježni nanosi"
-
-#~ msgid "Freezing drizzle"
-#~ msgstr "Ledena slaba kiša"
-
-#~ msgid "Very cold/wind chill"
-#~ msgstr "Jako hladno/vjetrovito"
-
-#~ msgid "Rain"
-#~ msgstr "Kiša"
-
-#~ msgid "Weather: Partly Cloudy"
-#~ msgstr "Vrijeme: djelomično oblačno"
-
-#~ msgid "%.1f/%.1f°C - %s"
-#~ msgstr "%.1f/%.1f°C - %s"
-
-#~ msgid "%.1f/%.1f°F - %s"
-#~ msgstr "%.1f/%.1f°F - %s"
-
-#~ msgid "%d%% chance of precipitation\n"
-#~ msgstr "%d%% mogućnost za padaline\n"
-
-#~ msgid "%.1fcm snow\n"
-#~ msgstr "%.1fcm snijeg\n"
-
-#~ msgid "%.1fin snow\n"
-#~ msgstr "%.1fin snijeg\n"
-
-#~ msgid "%.1f-%.1fcm snow\n"
-#~ msgstr "%.1f-%.1fcm snijeg\n"
-
-#~ msgid "%.1f-%.1fin snow\n"
-#~ msgstr "%.1f-%.1fin snijeg\n"
-
-#~ msgid "Enter password for %s to enable proxy for user %s"
-#~ msgstr "Unesite lozinku za %s kako bi omogućili zastupnika za korisnika %s"
-
-#~ msgid "A CORBA exception has occurred"
-#~ msgstr "Dogodila se iznimka za CORBA-a"
-
-#~ msgid "No error"
-#~ msgstr "Nema greške"
-
-#, fuzzy
-#~ msgid "Unsupported field"
-#~ msgstr "Nepodržan sigurnosni sloj."
-
-#, fuzzy
-#~ msgid "Invalid server version"
-#~ msgstr "Neispravni URI poslužitelja"
-
-#~ msgid "Verifying message"
-#~ msgstr "Provjeravanje poruke"
-
-#~ msgid "You may not import keys with this cipher"
-#~ msgstr "Možda nećete moći uvesti ključeve sa ovim algoritnom"
-
-#~ msgid "You may not export keys with this cipher"
-#~ msgstr "Možda nećete moći izvezesti ključeve sa ovim algoritmom"
-
-#~ msgid ""
-#~ "Could not write log entry: %s\n"
-#~ "Further operations on this server will not be replayed when you\n"
-#~ "reconnect to the network."
-#~ msgstr ""
-#~ "Nisam mogao da upišem unos u zapisnik: %s\n"
-#~ "Daljnjee operacije na ovom serveru neće biti izvršene kada\n"
-#~ "se budete ponovo povezali na mrežu."
-
-#, fuzzy
-#~ msgid ""
-#~ "Could not open '%s':\n"
-#~ "%s\n"
-#~ "Changes made to this folder will not be resynchronized."
-#~ msgstr ""
-#~ "Ne mogu otvoriti `%s':\n"
-#~ "%s\n"
-#~ "Promjene na ovom direktoriju neće biti sinhronizirane."
-
-#~ msgid "Resynchronizing with server"
-#~ msgstr "Sinkronizovanje sa poslužiteljem"
-
-#~ msgid "Preparing folder '%s' for offline"
-#~ msgstr "Pripremam mapu '%s' za neumreženi rad"
-
-#~ msgid "Performing query on unknown header: %s"
-#~ msgstr "Izvršavam pretragu na nepoznatom zaglavlju: %s"
-
-#~ msgid "Unsupported operation: append message: for %s"
-#~ msgstr "Nepodržana operacija: priključena poruka: za %s"
-
-#~ msgid "Unsupported operation: search by expression: for %s"
-#~ msgstr "Nepodržana operacija: pretraga po izrazu: za %s"
-
-#~ msgid "Learning non-junk"
-#~ msgstr "Poduči da ovo nije smeće"
-
-#~ msgid "This is a digitally signed message part"
-#~ msgstr "Dio poruke sa digitalnim potpisom"
-
-#~ msgid "Cannot verify message signature: could not create temp file: %s"
-#~ msgstr ""
-#~ "Ne mogu provjeriti potpis poruke: nisam mogao napraviti temp datoteku: %s"
-
-#~ msgid "cannot create thread"
-#~ msgstr "nemoguće kreiranje niti"
-
-#~ msgid "Resolving address"
-#~ msgstr "Razlučujem adresu"
-
-#~ msgid "Name lookup failed"
-#~ msgstr "Ime nije nađeno"
-
-#~ msgid "Name lookup failed: %s"
-#~ msgstr "Traženje imena neuspešno: %s"
-
-#, fuzzy
-#~ msgid "Cannot write offline journal for folder '%s': %s"
-#~ msgstr "Nemoguć upis u dnevnik za mapu `%s': %s"
-
-#~ msgid ""
-#~ "Invalid trace information:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Neispravne informacija o porijeklu:\n"
-#~ "%s"
-
-#~ msgid "Kerberos 4"
-#~ msgstr "Kerberos 4"
-
-#~ msgid ""
-#~ "This option will connect to the server using Kerberos 4 authentication."
-#~ msgstr "Spajanje na poslužitelj korištenjem Kerberos 4 autentifikacije."
-
-#~ msgid ""
-#~ "Could not get Kerberos ticket:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Ne mogu dobiti Kerberos ulaznicu:\n"
-#~ "%s"
-
-#~ msgid "POP Before SMTP auth using a non-pop source"
-#~ msgstr "POP prije SMTP autorizacija korištenjem izvora koji nije pop"
-
-#~ msgid "URL '%s' needs a username component"
-#~ msgstr "URL '%s traži dio sa korisničkim imenom'"
-
-#~ msgid "URL '%s' needs a host component"
-#~ msgstr "URL '%s traži dio sa imenom računala"
-
-#~ msgid "URL '%s' needs a path component"
-#~ msgstr "URL '%s' traži dio sa putanjom"
-
-#~ msgid ""
-#~ "Could not create directory %s:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Ne mogu kreirati mapu %s:\n"
-#~ "%s"
-
-#~ msgid "import keys: unimplemented"
-#~ msgstr "unos ključena: nepodržano"
-
-#~ msgid "export keys: unimplemented"
-#~ msgstr "izvoz ključeva: nepodržano"
-
-#~ msgid "Cannot get folder: Invalid operation on this store"
-#~ msgstr "Ne mogu dobiti mapu: neispravna operacija"
-
-#, fuzzy
-#~ msgid "Cannot create folder '%s': folder exists"
-#~ msgstr "Ne mogu stvoriti mapu: `%s': mapa postoji"
-
-#~ msgid "Cannot create folder: Invalid operation on this store"
-#~ msgstr "Ne mogu napraviti mapu: neispravna operacija"
-
-#~ msgid "Unable to get issuer's certificate"
-#~ msgstr "Ne mogu dobiti certifikat izdavača"
-
-#~ msgid "Unable to get Certificate Revocation List"
-#~ msgstr "Ne mogu da dobijem popis povučenih certifikata"
-
-#~ msgid "Unable to decrypt certificate signature"
-#~ msgstr "Ne mogu da dešifrriram potpis certifikata"
-
-#~ msgid "Unable to decrypt Certificate Revocation List signature"
-#~ msgstr "Ne mogu da dešifriram potpis za popis povučenih certifikata"
-
-#~ msgid "Unable to decode issuer's public key"
-#~ msgstr "Ne mogu dešifrirati javni ključ izdavača"
-
-#~ msgid "Certificate signature failure"
-#~ msgstr "Nevažeći potpis certifikata"
-
-#~ msgid "Certificate Revocation List signature failure"
-#~ msgstr "Greška potpisa popisa povučenih certifikata"
-
-#~ msgid "Certificate not yet valid"
-#~ msgstr "Certifikat još nije važeći"
-
-#~ msgid "CRL not yet valid"
-#~ msgstr "CRL još nije važeći"
-
-#~ msgid "CRL has expired"
-#~ msgstr "CRL je istekao"
-
-#~ msgid "Zero-depth self-signed certificate"
-#~ msgstr "Samopotpisani certifikat je nulte veličine"
-
-#~ msgid "Self-signed certificate in chain"
-#~ msgstr "Samopotpisani certifikat u lancu"
-
-#~ msgid "Unable to get issuer's certificate locally"
-#~ msgstr "Ne mogu da lokalno dobijem izdavačev certifikat"
-
-#~ msgid "Unable to verify leaf signature"
-#~ msgstr "Ne mogu da ovjerim potpis lista"
-
-#~ msgid "Certificate chain too long"
-#~ msgstr "Lanac certifikata je predugačak"
-
-#~ msgid "Certificate Revoked"
-#~ msgstr "Certifikat pročitan"
-
-#~ msgid "Invalid Certificate Authority (CA)"
-#~ msgstr "Neispravan izdavatelj certifikata (CA)"
-
-#~ msgid "Path length exceeded"
-#~ msgstr "Premašena dužina putanje"
-
-#~ msgid "Certificate rejected"
-#~ msgstr "Certifikat odbijen"
-
-#~ msgid "Subject/Issuer mismatch"
-#~ msgstr "Subjekt/Izdavač neslaganje"
-
-#~ msgid "AKID/SKID mismatch"
-#~ msgstr "AKID/SKID neslaganje"
-
-#~ msgid "AKID/Issuer serial mismatch"
-#~ msgstr "AKID/Issuer serijsko neslaganje"
-
-#~ msgid "Error in application verification"
-#~ msgstr "Greška kod provjere programa"
-
-#~ msgid ""
-#~ "Issuer:            %s\n"
-#~ "Subject:           %s\n"
-#~ "Fingerprint:       %s\n"
-#~ "Signature:         %s"
-#~ msgstr ""
-#~ "Izdavač:            %s\n"
-#~ "Naslov:           %s\n"
-#~ "Oznaka:       %s\n"
-#~ "Potpis:         %s"
-
-#~ msgid "GOOD"
-#~ msgstr "DOBAR"
-
-#~ msgid "BAD"
-#~ msgstr "LOŠ"
-
-#~ msgid ""
-#~ "Bad certificate from %s:\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Do you wish to accept anyway?"
-#~ msgstr ""
-#~ "Neispravan certifikat od %s:\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Želite li ipak prihvatiti?"
-
-#~ msgid ""
-#~ "Certificate problem: %s\n"
-#~ "Issuer: %s"
-#~ msgstr ""
-#~ "Problem sa certifikatom: %s\n"
-#~ "Izdavač: %s"
-
-#~ msgid ""
-#~ "Bad certificate domain: %s\n"
-#~ "Issuer: %s"
-#~ msgstr ""
-#~ "Neispravna domena certifikata: %s\n"
-#~ "Izdavač: %s"
-
-#~ msgid ""
-#~ "Certificate expired: %s\n"
-#~ "Issuer: %s"
-#~ msgstr ""
-#~ "Certifikat istekao: %s\n"
-#~ "Izdavač: %s"
-
-#~ msgid ""
-#~ "Certificate revocation list expired: %s\n"
-#~ "Issuer: %s"
-#~ msgstr ""
-#~ "Popis priznatih certifikata istekao: %s\n"
-#~ "Izdavač: %s"
-
-#~ msgid ""
-#~ "Cannot get message: %s\n"
-#~ "  %s"
-#~ msgstr ""
-#~ "Ne mogu dobiti poruku: %s\n"
-#~ "  %s"
-
-#~ msgid "This message is not available in offline mode."
-#~ msgstr "Ova poruka nije dostupna ukloliko nema veze na mrežu."
-
-#, fuzzy
-#~ msgid "Cannot append message to folder '%s': %s"
-#~ msgstr "Ne mogu dodati poruku u mapu `%s': %s"
-
-#~ msgid "Cannot append message in offline mode: %s"
-#~ msgstr "Ne mogu dodati poruku ako nisam spojen na mrežu: %s"
-
-#~ msgid "Checking for new mail"
-#~ msgstr "Provjeravam za novu poštu"
-
-#~ msgid "SOAP Settings"
-#~ msgstr "SOAP postavke"
-
-#~ msgid "Post Office Agent SOAP Port:"
-#~ msgstr "Posrednik za SOAP port za poštu:"
-
-#~ msgid "Novell GroupWise"
-#~ msgstr "Novell GroupWise"
-
-#~ msgid "For accessing Novell GroupWise servers"
-#~ msgstr "Za pristupanje Novell Groupwise serverima"
-
-#~ msgid ""
-#~ "This option will connect to the GroupWise server using a plaintext "
-#~ "password."
-#~ msgstr ""
-#~ "Spajanje na GroupWise poslužitelj korištenjem lozinke u čistom tekstu."
-
-#~ msgid "Host or user not available in url"
-#~ msgstr "Domaćin ili korisnik nisu dostupni u adresi"
-
-#~ msgid ""
-#~ "Some features may not work correctly with your current server version"
-#~ msgstr ""
-#~ "Neke postavke možda neće ispravno raditi na trenutnoj verziji poslužitelja"
-
-#~ msgid "Cannot create GroupWise folders in offline mode."
-#~ msgstr "Ne mogu stvoriti GroupWise mape dok nisam spojen na mrežu."
-
-#~ msgid "The parent folder is not allowed to contain subfolders"
-#~ msgstr "Glavni direktorij ne smije sadržati direktorije"
-
-#, fuzzy
-#~ msgid "Cannot rename Groupwise folder '%s' to '%s'"
-#~ msgstr "Ne mogu preimenovati Groupwise mapu `%s' u %s"
-
-#~ msgid "GroupWise server %s"
-#~ msgstr "GroupWise poslužitelj %s"
-
-#~ msgid "GroupWise service for %s on %s"
-#~ msgstr "GroupWise poslužitelj za %s na %s"
-
-#~ msgid "GroupWise mail delivery via %s"
-#~ msgstr "GroupWise dostava pošte preko %s"
-
-#~ msgid ""
-#~ "You have exceeded this account's storage limit. Your messages are queued "
-#~ "in your Outbox. Resend by pressing Send/Receive after deleting/archiving "
-#~ "some of your mail.\n"
-#~ msgstr ""
-#~ "Prešli ste smeštajno ograničenje za ovaj nalog. Vaše poruke odlagati će "
-#~ "se u Odlaznu poštu. Pošaljite ih ponovno pritiskom na Pošalji/Primi tipku "
-#~ "nako što uklonite/zapakirate dio vaše pošte.\n"
-
-#~ msgid "_Use custom command to connect to server"
-#~ msgstr "_Koristi prilagođenu naredbu za spajanje na poslužitelj"
-
-#~ msgid "Command:"
-#~ msgstr "Naredba:"
-
-#~ msgid "Hula"
-#~ msgstr "Hula"
-
-#~ msgid "For accessing Hula servers"
-#~ msgstr "Za pristupanje Hula poslužiteljima"
-
-#~ msgid ""
-#~ "This option will connect to the Hula server using a plaintext password."
-#~ msgstr ""
-#~ "Ova postavka omogućuje povezivanje na Hula poslužitelj koristeći lozinke "
-#~ "u običnom tekstu."
-
-#~ msgid "Server unexpectedly disconnected: %s"
-#~ msgstr "Veza s poslužiteljom je neočekivano prekinuta: %s"
-
-#~ msgid ""
-#~ "Alert from IMAP server %s@%s:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Upozorenje od IMAP servera %s@%s:\n"
-#~ "%s"
-
-#~ msgid "IMAP command failed: %s"
-#~ msgstr "IMAP naredba nije uspjela: %s"
-
-#~ msgid "Server response ended too soon."
-#~ msgstr "Odgovor poslužitelja je prerano završen."
-
-#~ msgid "IMAP server response did not contain %s information"
-#~ msgstr "Odgovor IMAP poslužitelja ne sadrži %s informaciju"
-
-#~ msgid "Incomplete server response: no information provided for message %d"
-#~ msgstr "Nepotpun odgovor poslužitelja: podaci nisu dati za poruku %d"
-
-#~ msgid "Incomplete server response: no UID provided for message %d"
-#~ msgstr "Nepotpun odgovor poslužitelja: UID nije dat za poruku %d"
-
-#~ msgid "Could not find message body in FETCH response."
-#~ msgstr "Nisam mogao pronaći tekst poruke u FETCH odgovoru."
-
-#~ msgid "Could not open cache directory: %s"
-#~ msgstr "Nisam mogao otvoriti direktorij za pričuvnu memoriju: %s"
-
-#~ msgid "SSL unavailable"
-#~ msgstr "SSL nedostupan"
-
-#~ msgid "SSL negotiations failed"
-#~ msgstr "SSL pregovori nisu uspjeli"
-
-#~ msgid "SSL is not available in this build"
-#~ msgstr "SSL nije dostupan u ovoj verziji"
-
-#~ msgid ""
-#~ "Unable to authenticate to IMAP server.\n"
-#~ "%s\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Ne mogu da se prijavim na IMAP poslužitelj.\n"
-#~ "%s\n"
-#~ "\n"
-
-#, fuzzy
-#~ msgid "Cannot create folder '%s': folder exists."
-#~ msgstr "Ne mogu stvoriti mapu: `%s': mapa postoji."
-
-#~ msgid "Unknown parent folder: %s"
-#~ msgstr "Nepoznata glavna mapa: %s"
-
-#~ msgid "Failed sending command to IMAP server %s: %s"
-#~ msgstr "Neuspjeh pri slanju naredbe na IMAP poslužitelj %s: %s"
-
-#~ msgid "Unexpected response from IMAP4 server %s: %s"
-#~ msgstr "Neočekivan odgovor od IMAP4 poslužitelja %s: %s"
-
-#~ msgid "Unexpected greeting from IMAP server %s."
-#~ msgstr "Neočekivani pozdrav od IMAP poslužitelja: %s"
-
-#, fuzzy
-#~ msgid "Cannot select folder '%s': Invalid mailbox name"
-#~ msgstr "Ne mogu odabrati mapu '%s': neispravno ime sandučića"
-
-#, fuzzy
-#~ msgid "Cannot select folder '%s': Bad command"
-#~ msgstr "Ne mogu izabrati mapu `%s': loša naredba"
-
-#, fuzzy
-#~ msgid "service unavailable"
-#~ msgstr "SSL nedostupan"
-
-#~ msgid "IMAP4 server %s unexpectedly disconnected: %s"
-#~ msgstr "Veza sa IMAP4 poslužiteljem %s je neočekivano prekinuta: %s"
-
-#, fuzzy
-#~ msgid ""
-#~ "Enable extended Mailing-List detection required for some filter and "
-#~ "vFolder rules"
-#~ msgstr ""
-#~ "Omogućivanje otkrivanja dopisne liste potrebno je nekim filterima i "
-#~ "pravilima za vFolder"
-
-#, fuzzy
-#~ msgid "Cannot access folder '%s': %s"
-#~ msgstr "Ne mogu pristupiti mapi `%s': %s"
-
-#, fuzzy
-#~ msgid "Cannot sync flags to folder '%s': Unknown error"
-#~ msgstr "Nije moguće usklađivanje oznaka za mapu ’%s‘: nepoznato"
-
-#, fuzzy
-#~ msgid "Cannot sync flags to folder '%s': Bad command"
-#~ msgstr "Nije moguće usklađivanje oznaka za mapu ’%s‘: loša naredba"
-
-#, fuzzy
-#~ msgid "Cannot expunge folder '%s': Unknown error"
-#~ msgstr "Ne mogu isprazniti mapu `%s': nepoznato"
-
-#, fuzzy
-#~ msgid "Cannot expunge folder '%s': Bad command"
-#~ msgstr "Ne mogu isprazniti mapu `%s': loša naredba"
-
-#, fuzzy
-#~ msgid "Cannot get message %s from folder '%s': No such message"
-#~ msgstr "Ne mogu dobiti poruku %s iz mape `%s': nema takve poruke"
-
-#, fuzzy
-#~ msgid "Cannot get message %s from folder '%s': Bad command"
-#~ msgstr "Ne mogu dobiti poruku %s iz mape `%s': loša naredba"
-
-#, fuzzy
-#~ msgid "Cannot append message to folder '%s': Folder is read-only"
-#~ msgstr "Ne mogu dodati poruku u mapu `%s': mapa je samo za čitanje"
-
-#, fuzzy
-#~ msgid "Cannot append message to folder '%s': Unknown error"
-#~ msgstr "Ne mogu dodati poruku u mapu `%s': nepoznata greška"
-
-#, fuzzy
-#~ msgid "Cannot append message to folder '%s': Bad command"
-#~ msgstr "Nije moguće dodati poruku u mapu ’%s‘: loša naredba"
-
-#, fuzzy
-#~ msgid "Cannot move messages from folder '%s' to folder '%s': Unknown error"
-#~ msgstr "Ne mogu premjestiti poruke iz mape `%s' u mapu `%s': nepoznato"
-
-#, fuzzy
-#~ msgid "Cannot copy messages from folder '%s' to folder '%s': Unknown error"
-#~ msgstr "Nije moguće kopiranje poruke iz mape ’%s‘ u mapu ’%s‘: nepoznato"
-
-#, fuzzy
-#~ msgid "Cannot move messages from folder '%s' to folder '%s': Bad command"
-#~ msgstr ""
-#~ "Nije moguće premještanje poruku iz mape ’%s‘ u mapu ’%s‘: loša naredba"
-
-#, fuzzy
-#~ msgid "Cannot copy messages from folder '%s' to folder '%s': Bad command"
-#~ msgstr "Nije moguće kopiranje poruke iz mape ’%s‘ u mapu ’%s‘: loša naredba"
-
-#~ msgid "IMAP4rev1"
-#~ msgstr "IMAP4rev1"
-
-#~ msgid "For reading and storing mail on IMAPv4rev1 servers."
-#~ msgstr "Za čitanje i spremanje pošte na IMAPv4rev1 poslužiteljima."
-
-#~ msgid ""
-#~ "This option will connect to the IMAPv4rev1 server using a plaintext "
-#~ "password."
-#~ msgstr ""
-#~ "Povezivanje na IMAPv4rev1 poslužitelj koristeći lozinku u čistom tekstu."
-
-#~ msgid ""
-#~ "Cannot authenticate to IMAP server %s using the %s authentication "
-#~ "mechanism"
-#~ msgstr ""
-#~ "Nije moguća prijava na IMAP poslužitelj %s pomoću mehanizma prijave %s"
-
-#~ msgid "Cannot authenticate to IMAP server %s using %s"
-#~ msgstr "Nisam se mogao prijaviti na IMAP poslužitelj %s koristeći %s"
-
-#~ msgid "Cannot create IMAP folders in offline mode."
-#~ msgstr "Ne mogu izraditi IMAP mape ako nisam spojen na mrežu."
-
-#, fuzzy
-#~ msgid "Cannot get folder '%s' on IMAP server %s: Unknown error"
-#~ msgstr "Ne mogu dohvatiti mapu `%s' na IMAP poslužitelju %s: nepoznato"
-
-#, fuzzy
-#~ msgid "Cannot get LIST information for '%s' on IMAP server %s: %s"
-#~ msgstr ""
-#~ "Nije moguće dobiti LIST informaciju za `%s' na IMAP poslužitelju %s: %s"
-
-#~ msgid "Bad command"
-#~ msgstr "Loša naredba"
-
-#, fuzzy
-#~ msgid "Cannot create folder '%s': Invalid mailbox name"
-#~ msgstr "Ne mogu izraditi mapu `%s': neispravno ime sandučića"
-
-#, fuzzy
-#~ msgid "Cannot create folder '%s': Bad command"
-#~ msgstr "Nije moguće napraviti mapu ’%s‘: loša naredba"
-
-#, fuzzy
-#~ msgid "Cannot delete folder '%s': Special folder"
-#~ msgstr "Ne mogu obrisati mapu `%s': posebna mapa"
-
-#~ msgid "Cannot delete IMAP folders in offline mode."
-#~ msgstr "Ne mogu obrisati IMAP mape ako nisam spojen na mrežu."
-
-#, fuzzy
-#~ msgid "Cannot delete folder '%s': Invalid mailbox name"
-#~ msgstr "Ne mogu obrisati mapu `%s': neispravno ime sandučića"
-
-#, fuzzy
-#~ msgid "Cannot delete folder '%s': Bad command"
-#~ msgstr "Ne mogu obrisati mapu `%s': loša naredba"
-
-#, fuzzy
-#~ msgid "Cannot rename folder '%s' to '%s': Special folder"
-#~ msgstr "Nije moguće preimenovati mapu `%s' u `%s': specijalna mapa"
-
-#~ msgid "Cannot rename IMAP folders in offline mode."
-#~ msgstr "Ne mogu preimenovati IMAP mape ako nisam spojen na mrežu."
-
-#, fuzzy
-#~ msgid "Cannot rename folder '%s' to '%s': Invalid mailbox name"
-#~ msgstr ""
-#~ "Nije moguće preimenovati mapu ’%s‘ u ’%s‘: neispravno ime poštanskog "
-#~ "pretinca"
-
-#, fuzzy
-#~ msgid "Cannot rename folder '%s' to '%s': Bad command"
-#~ msgstr "Ne mogu preimenovati mapu `%s' u `%s': loša naredba"
-
-#, fuzzy
-#~ msgid "Cannot get %s information for pattern '%s' on IMAP server %s: %s"
-#~ msgstr ""
-#~ "Nije moguće dobiti podatke %s za obrazac ’%s‘ na IMAP poslužitelju %s: %s"
-
-#~ msgid "Cannot subscribe to IMAP folders in offline mode."
-#~ msgstr "Ne mogu se pretplatiti na IMAP mapu ako nisam spojen na mrežu."
-
-#, fuzzy
-#~ msgid "Cannot subscribe to folder '%s': Invalid mailbox name"
-#~ msgstr "Ne mogu se pretplatiti na mapu `%s': neispravno ime sandučića"
-
-#, fuzzy
-#~ msgid "Cannot subscribe to folder '%s': Bad command"
-#~ msgstr "Ne mogu se pretplatiti na mapu `%s': loša naredba"
-
-#~ msgid "Cannot unsubscribe from IMAP folders in offline mode."
-#~ msgstr "Ne mogu se odjaviti sa IMAP mape ako nisam spojen na mrežu."
-
-#, fuzzy
-#~ msgid "Cannot unsubscribe from folder '%s': Invalid mailbox name"
-#~ msgstr "Ne mogu se odjaviti sa mape `%s': neispravno ime sandučića"
-
-#~ msgid "Scanning for changed messages"
-#~ msgstr "Tragam za promijenjenim porukama"
-
-#~ msgid "Unexpected token in response from IMAP server %s: "
-#~ msgstr "Neočekivan odgovor od IMAP poslužitelja %s: "
-
-#~ msgid "No data"
-#~ msgstr "Nema podataka"
-
-#~ msgid "IMAP server %s unexpectedly disconnected: %s"
-#~ msgstr "Veza s poslužiteljom %s je neočekivano prekinuta: %s"
-
-#~ msgid "IMAP+"
-#~ msgstr "IMAP+"
-
-#~ msgid ""
-#~ "Experimental IMAP 4(.1) client\n"
-#~ "This is untested and unsupported code, you want to use plain imap "
-#~ "instead.\n"
-#~ "\n"
-#~ " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
-#~ msgstr ""
-#~ "Eksperimentalni IMAP 4(.1) klijent\n"
-#~ "Ovo je nesiguran i nepodržan kod, preporučamo običan IMAP.\n"
-#~ "\n"
-#~ " !!! NE KORISTITE OVO ZA VAŽNU POŠTU !!!\n"
-
-#~ msgid "Could not connect to %s (port %s): %s"
-#~ msgstr "Nije moguće povezivanje na %s (port %s): %s"
-
-#~ msgid "Could not connect to POP server on %s"
-#~ msgstr "Nije moguće povezivanje na POP poslužitelj %s"
-
-#~ msgid "Unable to add message to summary: unknown reason"
-#~ msgstr "Ne mogu dodati poruku u sažetak: nepoznat razlog"
-
-#~ msgid "Invalid message contents"
-#~ msgstr "Neispravan sadržaj poruke"
-
-#, fuzzy
-#~ msgid "Cannot create folder '%s': %s"
-#~ msgstr "Ne mogu stvoriti mapu: `%s': %s"
-
-#, fuzzy
-#~ msgid "Cannot get folder '%s': %s"
-#~ msgstr "Ne mogu dohvatiti mapu: `%s': %s"
-
-#~ msgid "Message construction failed."
-#~ msgstr "Sastavljanje poruke neuspjelo."
-
-#~ msgid "Fatal mail parser error near position %ld in folder %s"
-#~ msgstr "Fatalna greška u obradi pošte na poziciji %ld u direktoriju %s"
-
-#~ msgid "You cannot post NNTP messages while working offline!"
-#~ msgstr "Ne možete slati NNTP poruke prilikom neumreženog rada!"
-
-#~ msgid "Authentication requested but no username provided"
-#~ msgstr "Autentifikacija obavezna, ali nije dano korisničko ime"
-
-#~ msgid "Could not connect to POP server %s"
-#~ msgstr "Nisam se mogao povezati na POP server %s"
-
-#~ msgid ""
-#~ "Unable to connect to POP server %s: No support for requested "
-#~ "authentication mechanism."
-#~ msgstr ""
-#~ "Nisam mogao da se povežem na POP poslužitelj %s: Traženi mehanizam "
-#~ "prijave nije podržan."
-
-#, fuzzy
-#~ msgid "SASL '%s' Login failed for POP server %s: %s"
-#~ msgstr "SASL `%s' prijava neuspela na POP poslužitelj %s: %s"
-
-#, fuzzy
-#~ msgid "No such folder '%s'."
-#~ msgstr "Nema takve mape `%s'."
-
-#~ msgid "STARTTLS command failed"
-#~ msgstr "Greška kod izvršavanja naredbe STARTTLS"
-
-#~ msgid ""
-#~ "Unable to authenticate to SMTP server.\n"
-#~ "%s\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Ne mogu da se prijavim na SMTP poslužitelj.\n"
-#~ "%s\n"
-#~ "\n"
-
-#~ msgid "HELO command failed"
-#~ msgstr "Greška kod izvršavanja naredbe HELO"
-
-#~ msgid "SMTP Authentication"
-#~ msgstr "SMTP prijava"
-
-#~ msgid "Error creating SASL authentication object."
-#~ msgstr "Greška kod stvaranja objekta SASL prijave."
-
-#~ msgid "AUTH command failed"
-#~ msgstr "Greška kod izvršavanja naredbe AUTH"
-
-#~ msgid "Bad authentication response from server.\n"
-#~ msgstr "Neispravan odgovor autentifikacije od servera.\n"
-
-#~ msgid "MAIL FROM command failed: %s: mail not sent"
-#~ msgstr "Greška kod izvršavanja naredbe MAIL FROM: %s: poruka nije poslana"
-
-#~ msgid "RCPT TO command failed: %s: mail not sent"
-#~ msgstr "Greška kod izvršavanja naredbe RCPT TO: %s: poruka nije poslana"
-
-#~ msgid "DATA command failed: %s: mail not sent"
-#~ msgstr "Greška kod izvršavanja naredbe DATA: %s: poruka nije poslana"
-
-#~ msgid "RSET command failed"
-#~ msgstr "Greška kod izvršavanja naredbe RSET"
-
-#~ msgid "QUIT command failed"
-#~ msgstr "Greška kod izvršavanja naredbe QUIT"
-
-#~ msgid "Accessing LDAP Server anonymously"
-#~ msgstr "Anonimno pristupanje LDAP poslužitelju"
-
-#~ msgid ""
-#~ "There is already a category '%s' in the configuration. Please use another "
-#~ "name"
-#~ msgstr "Već postoji kategorija ’%s‘. Izaberite drugo ime"
-
-#~ msgid "Category"
-#~ msgstr "Kategorija"
-
-#~ msgid "Category Icon"
-#~ msgstr "Ikona kategorije"
-
-#~ msgid "Category Properties"
-#~ msgstr "Postavke kategorije"
-
-#~ msgid "Category _Icon"
-#~ msgstr "_Ikona kategorije"
-
-#~ msgid "Category _Name"
-#~ msgstr "_Ime kategorije"
-
-#~ msgid "Item(s) belong to these _categories:"
-#~ msgstr "_Stavke koje pripadaju ovim kategorijama:"
-
-#~ msgid "_Available Categories:"
-#~ msgstr "Dostupn_e kategorije"
-
-#~ msgid "_Edit"
-#~ msgstr "_Uredi"
-
-#~ msgid "categories"
-#~ msgstr "kategorije"
-
-#~ msgid "Select Contacts from Address Book"
-#~ msgstr "Odabir kontakata iz adresara"
-
-#~ msgid "_Add"
-#~ msgstr "_Dodaj"
-
-#~ msgid "_Remove"
-#~ msgstr "_Ukloni"
-
-#~ msgid "*"
-#~ msgstr "*"
-
-#~ msgid "<b>Show Contacts</b>"
-#~ msgstr "<b>Pokaži kontakte</b>"
-
-#~ msgid "Search"
-#~ msgstr "Traži"
-
-#~ msgid "_Search:"
-#~ msgstr "_Traži:"
-
-#~ msgid "E_xpand %s Inline"
-#~ msgstr "_Proširi %s u liniji"
-
-#~ msgid "_Edit %s"
-#~ msgstr "_Uredi %s"
-
-#~ msgid "_Delete %s"
-#~ msgstr "_Obriši %s"
-
-#~ msgid "_Remember this password"
-#~ msgstr "_Zapamti ovu lozinku"
-
-#~ msgid "_Remember this password for the remainder of this session"
-#~ msgstr "_Zapamti ovu lozinku za ostatak ove prijave"
-
-#~ msgid "Select destination"
-#~ msgstr "Odaberite odredište"
-
-#~ msgid "_Destination"
-#~ msgstr "_Odredište"
-
-#~ msgid "Enter password for %s"
-#~ msgstr "Unesite lozinku za %s"
-
-#~ msgid "Enter password"
-#~ msgstr "Unesite lozinku"
-
-#~ msgid "Owner"
-#~ msgstr "Vlasnik"
-
-#~ msgid "Publishing Editor"
-#~ msgstr "Uređivač izdanja"
-
-#~ msgid "Editor"
-#~ msgstr "Uređivač"
-
-#~ msgid "Publishing Author"
-#~ msgstr "Autor izdanja"
-
-#~ msgid "Non-editing Author"
-#~ msgstr "Ne-urednički autor"
-
-#~ msgid "Reviewer"
-#~ msgstr "Recenzent"
-
-#~ msgid "Contributor"
-#~ msgstr "Suradnik"
-
-#~ msgid "None"
-#~ msgstr "Niti jedan"
-
-#~ msgid "Custom"
-#~ msgstr "Prilagođeno"
-
-#~ msgid "Generic error"
-#~ msgstr "Općenita greška"
-
-#~ msgid "A folder with the same name already exists"
-#~ msgstr "Mapa sa tim imenom već postoji"
-
-#~ msgid "The specified folder type is not valid"
-#~ msgstr "Navedeni tip mape nije ispravan"
-
-#~ msgid "Not enough space to create the folder"
-#~ msgstr "Nedovoljno mesta za izradu mape"
-
-#~ msgid "The folder is not empty"
-#~ msgstr "Mapa nije prazna"
-
-#~ msgid "The specified folder was not found"
-#~ msgstr "Navedena mapa nije pronađena"
-
-#~ msgid "Function not implemented in this storage"
-#~ msgstr "Funkcija nije podržana za ovo skladište"
-
-#~ msgid "The specified type is not supported in this storage"
-#~ msgstr "Navedena vrsta nije podržana za ovo skladište"
-
-#~ msgid "The specified folder cannot be modified or removed"
-#~ msgstr "Navedena mapa ne može se izmjeniti ili obrisati"
-
-#~ msgid "Cannot make a folder a child of one of its descendants"
-#~ msgstr "Ne mogu učiniti mapu nasljednikom svojeg potomka"
-
-#~ msgid "Cannot create a folder with that name"
-#~ msgstr "Nije moguće napraviti mapu tog imena"
-
-#~ msgid "This operation cannot be performed in off-line mode"
-#~ msgstr "Ovu aktivnost ne možete izvršiti bez mreže"
-
-#~ msgid "%s's Folders"
-#~ msgstr "%s mapa"
-
-#~ msgid "Favorite Public Folders"
-#~ msgstr "Omiljene javne mape"
-
-#~ msgid "All Public Folders"
-#~ msgstr "Sve javne mape"
-
-#~ msgid "Global Address List"
-#~ msgstr "Opća lista adresa"
-
-#~ msgid "Journal"
-#~ msgstr "Dnevnik"
-
-#~ msgid "Notes"
-#~ msgstr "Bilješke"
-
-#~ msgid "Outbox"
-#~ msgstr "Izlazna pošta"
-
-#~ msgid "Invalid connection"
-#~ msgstr "Neispravna veza"
-
-#~ msgid "Invalid response from server"
-#~ msgstr "Neispravan odgovor poslužitelja"
-
-#~ msgid "No response from the server"
-#~ msgstr "Nema odgovora od poslužitelja"
-
-#~ msgid "Bad parameter"
-#~ msgstr "Loš parametar"
-
-#~ msgid "Evolution Addressbook file backend"
-#~ msgstr "Pozadinski program za Evolution datoteku adresara"
-
-#~ msgid "Evolution Calendar file and webcal backend"
-#~ msgstr "Evolution datoteka kalendara i webcal pozadina"
-
-#~ msgid "Evolution Data Server interface check service"
-#~ msgstr "Servis za provjeru sučelja Evolution Data Servera"
-
-#~ msgid "Evolution Data Server logging service"
-#~ msgstr "Servis za prijavu poslužitelja podataka Evolution"
-
-#~ msgid "Cannot find certificate for `%s'"
-#~ msgstr "Ne mogu pronaći certifikat za`%s'"
-
-#~ msgid "Folder was destroyed and recreated on server."
-#~ msgstr "Mapa je uništena i ponovo kreirana na serveru."
-
-#~ msgid ""
-#~ "Unexpected server response: Identical UIDs provided for messages %d and %d"
-#~ msgstr "Neočekivan odgovor poslužitelja: jednak UID za poruke %d i %d"
-
-#~ msgid "Could not save summary: %s: %s"
-#~ msgstr "Nisam mogao sačuvati sažetak: %s: %s"
