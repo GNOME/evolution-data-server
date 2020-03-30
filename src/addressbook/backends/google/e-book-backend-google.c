@@ -238,17 +238,12 @@ ebb_google_cache_update_group (EBookBackendGoogle *bbgoogle,
 }
 
 static void
-ebb_google_process_group (GDataEntry *entry,
-			  guint entry_key,
-			  guint entry_count,
-			  gpointer user_data)
+ebb_google_process_group (EBookBackendGoogle *bbgoogle,
+			  GDataEntry *entry)
 {
-	EBookBackendGoogle *bbgoogle = user_data;
 	const gchar *uid, *system_group_id;
 	gchar *name;
 	gboolean is_deleted;
-
-	g_return_if_fail (E_IS_BOOK_BACKEND_GOOGLE (bbgoogle));
 
 	uid = gdata_entry_get_id (entry);
 	name = e_contact_sanitise_google_group_name (entry);
@@ -328,7 +323,7 @@ ebb_google_get_groups_locked_sync (EBookBackendGoogle *bbgoogle,
 	/* Run the query synchronously */
 	feed = gdata_contacts_service_query_groups (
 		GDATA_CONTACTS_SERVICE (bbgoogle->priv->service),
-		query, cancellable, ebb_google_process_group, bbgoogle, &local_error);
+		query, cancellable, NULL, NULL, &local_error);
 
 	if (with_time_constraint && bbgoogle->priv->groups_last_update.tv_sec != 0 && (
 	    g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER) ||
@@ -339,15 +334,22 @@ ebb_google_get_groups_locked_sync (EBookBackendGoogle *bbgoogle,
 
 		feed = gdata_contacts_service_query_groups (
 			GDATA_CONTACTS_SERVICE (bbgoogle->priv->service),
-			query, cancellable, ebb_google_process_group, bbgoogle, error);
+			query, cancellable, NULL, NULL, error);
 	} else if (local_error) {
 		g_propagate_error (error, local_error);
 	}
 
 	success = feed != NULL;
 
-	if (success)
+	if (success) {
+		GList *link;
+
+		for (link = gdata_feed_get_entries (feed); link; link = g_list_next (link)) {
+			ebb_google_process_group (bbgoogle, link->data);
+		}
+
 		g_get_current_time (&bbgoogle->priv->groups_last_update);
+	}
 
 	g_rec_mutex_unlock (&bbgoogle->priv->groups_lock);
 
