@@ -513,6 +513,7 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 	GList *sources;
 	GSList *discovered_sources = NULL;
 	ENamedParameters *credentials_copy = NULL;
+	gboolean credentials_empty;
 	gboolean any_success = FALSE;
 	GError *local_error = NULL;
 
@@ -525,6 +526,9 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 	if ((!e_source_collection_get_calendar_enabled (collection_extension) || !calendar_url) &&
 	    (!e_source_collection_get_contacts_enabled (collection_extension) || !contacts_url))
 		return E_SOURCE_AUTHENTICATION_ACCEPTED;
+
+	credentials_empty = !credentials || !e_named_parameters_count (credentials) ||
+		(e_named_parameters_count (credentials) == 1 && e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_SSL_TRUST));
 
 	if (credentials && !e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_USERNAME)) {
 		credentials_copy = e_named_parameters_new_clone (credentials);
@@ -611,7 +615,10 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 		e_collection_backend_authenticate_children (collection, credentials);
 	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
 		   g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
-		result = E_SOURCE_AUTHENTICATION_REJECTED;
+		if (credentials_empty)
+			result = E_SOURCE_AUTHENTICATION_REQUIRED;
+		else
+			result = E_SOURCE_AUTHENTICATION_REJECTED;
 		g_clear_error (&local_error);
 	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
 		result = E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED;
