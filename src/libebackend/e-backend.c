@@ -158,7 +158,7 @@ backend_network_monitor_can_reach_cb (GObject *source_object,
 
 	if (G_IS_IO_ERROR (error, G_IO_ERROR_CANCELLED) ||
 	    host_is_reachable == e_backend_get_online (crd->backend)) {
-		if (!G_IS_IO_ERROR (error, G_IO_ERROR_CANCELLED)) {
+		if (!G_IS_IO_ERROR (error, G_IO_ERROR_CANCELLED) && !host_is_reachable) {
 			if (e_source_get_connection_status (source) == E_SOURCE_CONNECTION_STATUS_SSL_FAILED)
 				e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 
@@ -245,8 +245,10 @@ backend_update_online_state_timeout_cb (gpointer user_data)
 		backend->priv->network_monitor_cancellable = cancellable;
 		g_mutex_unlock (&backend->priv->network_monitor_cancellable_lock);
 
-		e_source_unset_last_credentials_required_arguments (e_backend_get_source (backend), NULL,
-			backend_source_unset_last_credentials_required_arguments_cb, NULL);
+		if (!e_backend_get_online (backend)) {
+			e_source_unset_last_credentials_required_arguments (e_backend_get_source (backend), NULL,
+				backend_source_unset_last_credentials_required_arguments_cb, NULL);
+		}
 
 		e_backend_set_online (backend, TRUE);
 	} else {
@@ -932,7 +934,7 @@ e_backend_set_online (EBackend *backend,
 	g_object_notify (G_OBJECT (backend), "online");
 
 	if (!backend->priv->online && backend->priv->source)
-		e_source_set_connection_status (backend->priv->source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+		backend_set_source_disconnected (backend->priv->source);
 }
 
 /**

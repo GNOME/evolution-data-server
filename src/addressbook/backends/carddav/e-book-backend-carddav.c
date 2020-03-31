@@ -251,7 +251,8 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 		gboolean credentials_empty;
 		gboolean is_ssl_error;
 
-		credentials_empty = (!credentials || !e_named_parameters_count (credentials)) &&
+		credentials_empty = (!credentials || !e_named_parameters_count (credentials) ||
+			(e_named_parameters_count (credentials) == 1 && e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_SSL_TRUST))) &&
 			e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (webdav));
 		is_ssl_error = g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED);
 
