@@ -162,7 +162,8 @@ e_source_selectable_init (ESourceSelectable *extension)
  * belongs.  A colored block is often displayed next to the data source's
  * display name in user interfaces.
  *
- * Returns: the color specification for the #ESource
+ * Returns: (nullable): the color specification for the #ESource,
+ *    or %NULL, when none is set
  *
  * Since: 3.6
  **/
@@ -183,7 +184,8 @@ e_source_selectable_get_color (ESourceSelectable *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceSelectable:color
+ * Returns: (nullable): a newly-allocated copy of #ESourceSelectable:color,
+ *    or %NULL, when none is set
  *
  * Since: 3.6
  **/
@@ -208,7 +210,7 @@ e_source_selectable_dup_color (ESourceSelectable *extension)
 /**
  * e_source_selectable_set_color:
  * @extension: an #ESourceSelectable
- * @color: (allow-none): a color specification, or %NULL
+ * @color: (nullable): a color specification, or %NULL
  *
  * Sets the color specification for the #ESource to which @extension
  * belongs.  A colored block is often displayed next to the data source's
