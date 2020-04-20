@@ -109,7 +109,10 @@ source_registry_watcher_try_add (ESourceRegistryWatcher *watcher,
 	if (!uid)
 		return FALSE;
 
-	g_signal_emit (watcher, signals[FILTER], 0, source, &can_include);
+	/* Check whether anything is listening, because glib overrides the result
+	   value with FALSE, when there's nothing listening. */
+	if (g_signal_has_handler_pending (watcher, signals[FILTER], 0, FALSE))
+		g_signal_emit (watcher, signals[FILTER], 0, source, &can_include);
 
 	if (!can_include) {
 		if (with_remove_check)
