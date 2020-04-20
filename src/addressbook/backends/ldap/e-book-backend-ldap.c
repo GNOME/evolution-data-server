@@ -3475,7 +3475,6 @@ cert_compare (EContact *ecard1,
 }
 
 typedef struct {
-	GList *list;
 	EBookBackendLDAP *bl;
 } EBookBackendLDAPSExpData;
 
@@ -3550,97 +3549,81 @@ extend_query_value (gchar *str)
 }
 
 static ESExpResult *
+join_args (const gchar op,
+	   struct _ESExp *ff,
+	   gint argc,
+	   struct _ESExpResult **argv)
+{
+	ESExpResult *rr;
+	GString *str = NULL;
+	gint ii;
+
+	if (op == '&' || op == '|') {
+		const gchar *value = NULL;
+		gint valid = 0;
+
+		for (ii = 0; ii < argc; ii++) {
+			ESExpResult *resval = argv[ii];
+
+			if (resval->type == ESEXP_RES_STRING) {
+				valid++;
+				value = resval->value.string;
+			}
+		}
+
+		/* '&' or '|' with one argument is useless, thus avoid such */
+		if (valid == 1 && value) {
+			rr = e_sexp_result_new (ff, ESEXP_RES_STRING);
+			rr->value.string = g_strdup (value);
+
+			return rr;
+		}
+	}
+
+	for (ii = 0; ii < argc; ii++) {
+		ESExpResult *resval = argv[ii];
+
+		if (resval->type == ESEXP_RES_STRING) {
+			if (!str) {
+				str = g_string_new ("(");
+				g_string_append_c (str, op);
+			} else {
+				g_string_append_c (str, ' ');
+			}
+
+			g_string_append (str, resval->value.string);
+		}
+	}
+
+	if (str) {
+		g_string_append_c (str, ')');
+
+		rr = e_sexp_result_new (ff, ESEXP_RES_STRING);
+		rr->value.string = g_string_free (str, FALSE);
+	} else {
+		rr = e_sexp_result_new (ff, ESEXP_RES_BOOL);
+		rr->value.boolean = FALSE;
+	}
+
+	return rr;
+}
+
+static ESExpResult *
 func_and (struct _ESExp *f,
-          gint unused_argc,
+          gint argc,
           struct _ESExpResult **argv,
           gpointer data)
 {
-	EBookBackendLDAPSExpData *ldap_data = data;
-	ESExpResult *r;
-	gchar ** strings;
-	gint args = g_list_length (ldap_data->list);
-
-	if (args > 1) {
-		gint i, empty;
-
-		strings = g_new0 (gchar *, args + 3);
-		strings[0] = g_strdup ("(&");
-		strings[args + 3 - 2] = g_strdup (")");
-
-		empty = 0;
-		for (i = 0; i < args; i++) {
-			GList *list_head = ldap_data->list;
-			if (!list_head)
-				break;
-			if (strlen (list_head->data) == 0)
-				empty++;
-			strings[args - i] = list_head->data;
-			ldap_data->list = g_list_remove_link (list_head, list_head);
-			g_list_free_1 (list_head);
-		}
-
-		if (empty == args)
-			ldap_data->list = g_list_prepend (ldap_data->list, g_strdup (" "));
-		else
-			ldap_data->list = g_list_prepend (ldap_data->list, g_strjoinv (" ", strings));
-
-		for (i = 0; i < args + 2; i++)
-			g_free (strings[i]);
-
-		g_free (strings);
-	}
-
-	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.boolean = FALSE;
-
-	return r;
+	return join_args ('&', f, argc, argv);
 }
 
 static ESExpResult *
 func_or (struct _ESExp *f,
-         gint unused_argc,
+         gint argc,
          struct _ESExpResult **argv,
          gpointer data)
 {
-	EBookBackendLDAPSExpData *ldap_data = data;
-	ESExpResult *r;
-	gchar ** strings;
-	gint args = g_list_length (ldap_data->list);
-
-	if (args > 1) {
-		gint i, empty;
-
-		strings = g_new0 (gchar *, args + 3);
-		strings[0] = g_strdup ("(|");
-		strings[args + 3 - 2] = g_strdup (")");
-
-		empty = 0;
-		for (i = 0; i < args; i++) {
-			GList *list_head = ldap_data->list;
-			if (!list_head)
-				break;
-			if (strlen (list_head->data) == 0)
-				empty++;
-			strings[args - i] = list_head->data;
-			ldap_data->list = g_list_remove_link (list_head, list_head);
-			g_list_free_1 (list_head);
-		}
-
-		if (empty == args)
-			ldap_data->list = g_list_prepend (ldap_data->list, g_strdup (" "));
-		else
-			ldap_data->list = g_list_prepend (ldap_data->list, g_strjoinv (" ", strings));
-
-		for (i = 0; i < args + 2; i++)
-			g_free (strings[i]);
-
-		g_free (strings);
-	}
-
-	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.boolean = FALSE;
-
-	return r;
+	return join_args ('|', f, argc, argv);
 }
 
 static ESExpResult *
@@ -3649,20 +3632,7 @@ func_not (struct _ESExp *f,
           struct _ESExpResult **argv,
           gpointer data)
 {
-	EBookBackendLDAPSExpData *ldap_data = data;
-	ESExpResult *r;
-
-	/* just replace the head of the list with the NOT of it. */
-	if (argc > 0) {
-		gchar *term = ldap_data->list->data;
-		ldap_data->list->data = g_strdup_printf ("(!%s)", term);
-		g_free (term);
-	}
-
-	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.boolean = FALSE;
-
-	return r;
+	return join_args ('!', f, argc, argv);
 }
 
 static ESExpResult *
@@ -3673,6 +3643,7 @@ func_contains (struct _ESExp *f,
 {
 	EBookBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
+	gchar *value = NULL;
 
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
@@ -3715,28 +3686,30 @@ func_contains (struct _ESExp *f,
 			}
 			g_string_append_c (big_query, ')');
 
-			ldap_data->list = g_list_prepend (ldap_data->list, g_string_free (big_query, FALSE));
+			value = g_string_free (big_query, FALSE);
 
 			g_free (match_str);
-		}
-		else {
+		} else {
 			const gchar *ldap_attr = query_prop_to_ldap (propname, ldap_data->bl->priv->evolutionPersonSupported, ldap_data->bl->priv->calEntrySupported);
 
 			if (ldap_attr)
-				ldap_data->list = g_list_prepend (
-					ldap_data->list,
-					g_strdup_printf (
+				value = g_strdup_printf (
 						"(%s=*%s%s)",
 						ldap_attr,
 						str,
-						one_star ? "" : "*"));
+						one_star ? "" : "*");
 		}
 
 		g_free (str);
 	}
 
-	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.boolean = FALSE;
+	if (value) {
+		r = e_sexp_result_new (f, ESEXP_RES_STRING);
+		r->value.string = value;
+	} else {
+		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
+		r->value.boolean = FALSE;
+	}
 
 	return r;
 }
@@ -3749,6 +3722,7 @@ func_is (struct _ESExp *f,
 {
 	EBookBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
+	gchar *value = NULL;
 
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
@@ -3757,25 +3731,26 @@ func_is (struct _ESExp *f,
 		gchar *str = rfc2254_escape (argv[1]->value.string);
 		const gchar *ldap_attr = query_prop_to_ldap (propname, ldap_data->bl->priv->evolutionPersonSupported, ldap_data->bl->priv->calEntrySupported);
 
-		if (ldap_attr)
-			ldap_data->list = g_list_prepend (
-				ldap_data->list,
-				g_strdup_printf (
+		if (ldap_attr) {
+			value = g_strdup_printf (
 					"(%s=%s)",
-					ldap_attr, str));
-		else {
+					ldap_attr, str);
+		} else {
 			g_warning ("LDAP: unknown query property '%s'\n", propname);
 			/* we want something that'll always be false */
-			ldap_data->list = g_list_prepend (
-				ldap_data->list,
-				g_strdup ("objectClass=MyBarnIsBiggerThanYourBarn"));
+			value = g_strdup ("objectClass=MyBarnIsBiggerThanYourBarn");
 		}
 
 		g_free (str);
 	}
 
-	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.boolean = FALSE;
+	if (value) {
+		r = e_sexp_result_new (f, ESEXP_RES_STRING);
+		r->value.string = value;
+	} else {
+		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
+		r->value.boolean = FALSE;
+	}
 
 	return r;
 }
@@ -3788,6 +3763,7 @@ func_beginswith (struct _ESExp *f,
 {
 	EBookBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
+	gchar *value = NULL;
 
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
@@ -3799,10 +3775,9 @@ func_beginswith (struct _ESExp *f,
 		if (!*str) {
 			g_free (str);
 
-			ldap_data->list = g_list_prepend (ldap_data->list, g_strdup (""));
-
 			r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 			r->value.boolean = FALSE;
+
 			return r;
 		}
 
@@ -3811,41 +3786,33 @@ func_beginswith (struct _ESExp *f,
 		 * and for entries that have no fileAs attribute. */
 		if (ldap_attr) {
 			if (!strcmp (propname, "full_name")) {
-				ldap_data->list = g_list_prepend (
-					ldap_data->list,
-					g_strdup_printf (
+				value = g_strdup_printf (
 						"(|(cn=%s*)(sn=%s*))",
-						str, str));
-			}
-			else if (!strcmp (ldap_attr, "fileAs")) {
+						str, str);
+			} else if (!strcmp (ldap_attr, "fileAs")) {
 				if (ldap_data->bl->priv->evolutionPersonSupported)
-					ldap_data->list = g_list_prepend (
-						ldap_data->list,
-						g_strdup_printf (
+					value = g_strdup_printf (
 							"(|(fileAs=%s*)"
 							"(&(!(fileAs=*))"
 							"(sn=%s*)))",
-							str, str));
+							str, str);
 				else
-					ldap_data->list = g_list_prepend (
-						ldap_data->list,
-						g_strdup_printf (
-							"(sn=%s*)", str));
-			}
-			else {
-				ldap_data->list = g_list_prepend (
-					ldap_data->list,
-					g_strdup_printf (
-						"(%s=%s*)",
-						ldap_attr, str));
+					value = g_strdup_printf ("(sn=%s*)", str);
+			} else {
+				value = g_strdup_printf ("(%s=%s*)", ldap_attr, str);
 			}
 		}
 
 		g_free (str);
 	}
 
-	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.boolean = FALSE;
+	if (value) {
+		r = e_sexp_result_new (f, ESEXP_RES_STRING);
+		r->value.string = value;
+	} else {
+		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
+		r->value.boolean = FALSE;
+	}
 
 	return r;
 }
@@ -3858,6 +3825,7 @@ func_endswith (struct _ESExp *f,
 {
 	EBookBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
+	gchar *value = NULL;
 
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
@@ -3867,16 +3835,19 @@ func_endswith (struct _ESExp *f,
 		const gchar *ldap_attr = query_prop_to_ldap (propname, ldap_data->bl->priv->evolutionPersonSupported, ldap_data->bl->priv->calEntrySupported);
 
 		if (ldap_attr)
-			ldap_data->list = g_list_prepend (
-				ldap_data->list,
-				g_strdup_printf (
+			value = g_strdup_printf (
 					"(%s=*%s)",
-					ldap_attr, str));
+					ldap_attr, str);
 		g_free (str);
 	}
 
-	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.boolean = FALSE;
+	if (value) {
+		r = e_sexp_result_new (f, ESEXP_RES_STRING);
+		r->value.string = value;
+	} else {
+		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
+		r->value.boolean = FALSE;
+	}
 
 	return r;
 }
@@ -3889,6 +3860,7 @@ func_exists (struct _ESExp *f,
 {
 	EBookBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
+	gchar *value = NULL;
 
 	if (argc == 1
 	    && argv[0]->type == ESEXP_RES_STRING) {
@@ -3913,21 +3885,22 @@ func_exists (struct _ESExp *f,
 			}
 			g_string_append_c (big_query, ')');
 
-			ldap_data->list = g_list_prepend (ldap_data->list, g_string_free (big_query, FALSE));
-		}
-		else {
+			value = g_string_free (big_query, FALSE);
+		} else {
 			const gchar *ldap_attr = query_prop_to_ldap (propname, ldap_data->bl->priv->evolutionPersonSupported, ldap_data->bl->priv->calEntrySupported);
 
 			if (ldap_attr)
-				ldap_data->list = g_list_prepend (
-					ldap_data->list,
-					g_strdup_printf (
-						"(%s=*)", ldap_attr));
+				value = g_strdup_printf ("(%s=*)", ldap_attr);
 		}
 	}
 
-	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.boolean = FALSE;
+	if (value) {
+		r = e_sexp_result_new (f, ESEXP_RES_STRING);
+		r->value.string = value;
+	} else {
+		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
+		r->value.boolean = FALSE;
+	}
 
 	return r;
 }
@@ -3959,7 +3932,6 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 	EBookBackendLDAPSExpData data;
 	gint i;
 
-	data.list = NULL;
 	data.bl = bl;
 
 	sexp = e_sexp_new ();
@@ -3979,26 +3951,18 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 	if (e_sexp_parse (sexp) == -1) {
 		g_warning ("%s: Error in parsing '%s': %s", G_STRFUNC, query, e_sexp_get_error (sexp));
 		g_object_unref (sexp);
-		g_list_free_full (data.list, g_free);
 		return NULL;
 	}
 
 	r = e_sexp_eval (sexp);
 
-	e_sexp_result_free (sexp, r);
-	g_object_unref (sexp);
-
-	if (data.list) {
-		if (data.list->next) {
-			g_warning ("LDAP: conversion of '%s' to ldap query string failed", query);
-			retval = NULL;
+	if (r && r->type == ESEXP_RES_STRING) {
+		if (bl->priv->ldap_search_filter && *bl->priv->ldap_search_filter &&
+		    g_ascii_strcasecmp (bl->priv->ldap_search_filter, "(objectClass=*)") != 0) {
+			retval = g_strdup_printf ("(& %s %s)", bl->priv->ldap_search_filter, r->value.string);
 		} else {
-			if (bl->priv->ldap_search_filter && *bl->priv->ldap_search_filter &&
-			    g_ascii_strcasecmp (bl->priv->ldap_search_filter, "(objectClass=*)") != 0) {
-				retval = g_strdup_printf ("(& %s %s)", bl->priv->ldap_search_filter, (const gchar *) data.list->data);
-			} else {
-				retval = g_strdup (data.list->data);
-			}
+			retval = r->value.string;
+			r->value.string = NULL;
 		}
 	} else {
 		if (g_strcmp0 (query, "(contains \"x-evolution-any-field\" \"\")") != 0)
@@ -4006,7 +3970,12 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 		retval = NULL;
 	}
 
-	g_list_free_full (data.list, g_free);
+	e_sexp_result_free (sexp, r);
+	g_object_unref (sexp);
+
+	if (enable_debug)
+		printf ("%s: '%s'~>'%s'\n", G_STRFUNC, query, retval ? retval : "[null]");
+
 	return retval;
 }
 
