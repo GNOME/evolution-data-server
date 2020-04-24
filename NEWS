@@ -1,3 +1,30 @@
+Evolution-Data-Server 3.37.1 2020-04-24
+---------------------------------------
+
+Bug Fixes:
+	I#165 - Add backend to access Nextcloud Notes (Milan Crha)
+	I#195 - alarm-notify: Show more details of the selected event (Milan Crha)
+	I#199 - ESoupAuthBearer: Is not thread safe (Milan Crha)
+	I#203 - Google book: Do not use progress callbacks in libgdata sync API (Milan Crha)
+	I#204 - GOA-configured Nextcloud account not appearing (Milan Crha)
+	I#205 - e-source-selectable: Add annotations to developer comments (Milan Crha)
+	I#206 - LDAP: Incorrectly converts SExp to LDAP query (Milan Crha)
+	evo-I#831 - Free/Busy times are not in UTC (Milan Crha)
+	ews-I#87 - Meta backends not moved back online after connect failure (Milan Crha)
+
+Miscellaneous:
+	Name D-Bus .service files by D-Bus service names they provide (Milan Crha)
+	ESourceRegistryWatcher: The 'filter' signal listener should not be required (Milan Crha)
+
+Translations:
+	Marek Černocký (cs)
+	Rafael Fontenelle (pt_BR)
+	Gianvito Cavasoli (it)
+	Goran Vidović (hr)
+	Daniel Korostil (uk)
+	Daniel Șerbănescu (ro)
+	Fabio Tomat (fur)
+
 Evolution-Data-Server 3.36.0 2020-03-06
 ---------------------------------------
 
