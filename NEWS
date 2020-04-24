@@ -1,3 +1,18 @@
+Evolution-Data-Server 3.36.2 2020-04-24
+---------------------------------------
+
+Bug Fixes:
+	I#203 - Google book: Do not use progress callbacks in libgdata sync API (Milan Crha)
+	I#204 - GOA-configured Nextcloud account not appearing (Milan Crha)
+	I#206 - LDAP: Incorrectly converts SExp to LDAP query (Milan Crha)
+
+Miscellaneous:
+	ESourceRegistryWatcher: The 'filter' signal listener should not be required (Milan Crha)
+
+Translations:
+	Goran Vidović (hr)
+	Fabio Tomat (fur)
+
 Evolution-Data-Server 3.36.1 2020-03-27
 ---------------------------------------
 
