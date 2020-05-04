@@ -405,8 +405,12 @@ e_contact_check_attr_type_value_used (const AttrTypeValue *attr_type_values,
 		if (skip) {
 			pos = 0;
 
-			while (attr_type_values->type_values[ii] && attr_type_values->type_values[ii] != ';')
+			while (attr_type_values->type_values[ii] && attr_type_values->type_values[ii] != ';') {
+				/* To avoid buffer overflow, where the 'for' itself also ii++ */
+				if (!attr_type_values->type_values[ii + 1])
+					break;
 				ii++;
+			}
 		}
 	}
 
