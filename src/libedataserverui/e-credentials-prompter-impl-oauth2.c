@@ -574,6 +574,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	GtkWindow *dialog_parent;
 	ECredentialsPrompter *prompter;
 	WebKitSettings *webkit_settings;
+	WebKitWebContext *web_context;
 	gchar *title, *uri;
 	GString *info_markup;
 	gint row = 0;
@@ -733,7 +734,14 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		"media-playback-allows-inline", FALSE,
 		NULL);
 
-	widget = webkit_web_view_new_with_settings (webkit_settings);
+	web_context = webkit_web_context_new ();
+	webkit_web_context_set_sandbox_enabled (web_context, TRUE);
+
+	widget = g_object_new (WEBKIT_TYPE_WEB_VIEW,
+			"settings", webkit_settings,
+			"web-context", web_context,
+			NULL);
+
 	g_object_set (
 		G_OBJECT (widget),
 		"hexpand", TRUE,
@@ -743,6 +751,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		NULL);
 	gtk_container_add (GTK_CONTAINER (scrolled_window), widget);
 	g_object_unref (webkit_settings);
+	g_object_unref (web_context);
 
 	prompter_oauth2->priv->web_view = WEBKIT_WEB_VIEW (widget);
 

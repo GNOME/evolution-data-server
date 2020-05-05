@@ -122,7 +122,7 @@ set(gweather_minimum_version 3.10)
 set(libaccounts_glib_minimum_version 1.4)
 set(libsignon_glib_minimum_version 1.8)
 set(json_glib_minimum_version 1.0.4)
-set(webkit2gtk_minimum_version 2.11.91)
+set(webkit2gtk_minimum_version 2.28.0)
 set(libcanberra_gtk_minimum_version 0.25)
 
 # Load modules from the source tree
