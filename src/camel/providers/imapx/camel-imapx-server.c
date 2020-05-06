@@ -7122,6 +7122,8 @@ camel_imapx_server_ref_idle_mailbox (CamelIMAPXServer *is)
 			mailbox = g_object_ref (is->priv->idle_mailbox);
 		else
 			mailbox = camel_imapx_server_ref_selected (is);
+	} else if (is->priv->idle_mailbox) {
+		mailbox = g_object_ref (is->priv->idle_mailbox);
 	}
 
 	g_mutex_unlock (&is->priv->idle_lock);
@@ -7208,6 +7210,10 @@ camel_imapx_server_stop_idle_sync (CamelIMAPXServer *is,
 
 	g_mutex_lock (&is->priv->idle_lock);
 
+	/* Always clear it, in case the IDLE thread disconnected due to network error,
+	   in which case the state is OFF, but the idle_mailbox can be still set. */
+	g_clear_object (&is->priv->idle_mailbox);
+
 	if (is->priv->idle_state == IMAPX_IDLE_STATE_OFF) {
 		g_mutex_unlock (&is->priv->idle_lock);
 		return TRUE;
@@ -7225,7 +7231,6 @@ camel_imapx_server_stop_idle_sync (CamelIMAPXServer *is,
 	idle_cancellable = is->priv->idle_cancellable ? g_object_ref (is->priv->idle_cancellable) : NULL;
 
 	g_clear_object (&is->priv->idle_cancellable);
-	g_clear_object (&is->priv->idle_mailbox);
 	is->priv->idle_stamp++;
 
 	if (cancellable) {

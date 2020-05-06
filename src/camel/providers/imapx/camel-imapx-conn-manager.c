@@ -1195,20 +1195,19 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 		cinfo = camel_imapx_conn_manager_ref_connection (conn_man, camel_imapx_job_get_mailbox (job), &is_new_connection, cancellable, error);
 		if (cinfo) {
 			CamelIMAPXMailbox *job_mailbox;
+			CamelIMAPXMailbox *idle_mailbox;
 
 			job_mailbox = camel_imapx_job_get_mailbox (job);
 
 			if (job_mailbox)
 				imapx_conn_manager_inc_mailbox_busy (conn_man, job_mailbox);
 
-			if (camel_imapx_server_is_in_idle (cinfo->is)) {
-				CamelIMAPXMailbox *idle_mailbox;
+			idle_mailbox = camel_imapx_server_ref_idle_mailbox (cinfo->is);
 
-				idle_mailbox = camel_imapx_server_ref_idle_mailbox (cinfo->is);
-				if (idle_mailbox)
-					imapx_conn_manager_dec_mailbox_idle (conn_man, idle_mailbox);
-				g_clear_object (&idle_mailbox);
-			}
+			if (idle_mailbox)
+				imapx_conn_manager_dec_mailbox_idle (conn_man, idle_mailbox);
+
+			g_clear_object (&idle_mailbox);
 
 			success = camel_imapx_server_stop_idle_sync (cinfo->is, cancellable, &local_error);
 
@@ -1267,8 +1266,6 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 				imapx_conn_manager_dec_mailbox_busy (conn_man, job_mailbox);
 
 			if (success) {
-				CamelIMAPXMailbox *idle_mailbox = NULL;
-
 				if (!imapx_conn_manager_has_inbox_idle (conn_man)) {
 					CamelIMAPXStore *imapx_store;
 
