@@ -26,9 +26,8 @@
 #include <gcr/gcr.h>
 #undef GCR_API_SUBJECT_TO_CHANGE
 
-#include <camel/camel.h>
-#include <libebackend/libebackend.h>
-#include <libedataserver/libedataserver.h>
+#include "camel/camel.h"
+#include "libedataserver/libedataserver.h"
 
 #include "e-trust-prompt.h"
 
