@@ -1252,6 +1252,9 @@ do_shell (struct _CamelSExp *f,
 	g_string_truncate (command, command->len - 1);
 
 	if (driver->priv->shellfunc && argc >= 1) {
+		/* NULL-terminate the array, but do not count it into the argc */
+		g_ptr_array_add (args, NULL);
+
 		driver->priv->shellfunc (driver, argc, (gchar **) args->pdata, driver->priv->shelldata);
 		camel_filter_driver_log (
 			driver, FILTER_LOG_ACTION,
