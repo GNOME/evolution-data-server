@@ -61,12 +61,17 @@ trie_utf8_getc (const guchar **in,
                 gsize inlen)
 {
 	register const guchar *inptr = *in;
-	const guchar *inend = inptr + inlen;
+	const guchar *inend;
 	register guchar c, r;
 	register gunichar u, m;
 
+	if (inlen == -1)
+		inlen = strlen ((const gchar *) inptr);
+
 	if (inlen == 0)
 		return 0;
+
+	inend = inptr + inlen;
 
 	r = *inptr++;
 	if (r < 0x80) {
