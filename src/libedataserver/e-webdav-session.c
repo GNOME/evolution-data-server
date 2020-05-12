@@ -2453,7 +2453,7 @@ e_webdav_session_put_sync (EWebDAVSession *webdav,
 	g_signal_handler_disconnect (message, wrote_headers_id);
 	g_signal_handler_disconnect (message, wrote_chunk_id);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to put data"), error, TRUE, FALSE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to put data"), error, TRUE, TRUE) &&
 		bytes != NULL;
 
 	if (cwd.wrote_any && cwd.log_level == SOUP_LOGGER_LOG_BODY) {
@@ -2599,7 +2599,7 @@ e_webdav_session_put_data_sync (EWebDAVSession *webdav,
 
 	ret_bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, ret_bytes, FALSE, _("Failed to put data"), error, TRUE, FALSE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, ret_bytes, FALSE, _("Failed to put data"), error, TRUE, TRUE) &&
 		ret_bytes != NULL;
 
 	if (success) {
