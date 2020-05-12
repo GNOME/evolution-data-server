@@ -860,7 +860,8 @@ e_webdav_session_replace_with_detailed_error_internal (EWebDAVSession *webdav,
 						       gboolean ignore_multistatus,
 						       const gchar *prefix,
 						       GError **inout_error,
-						       gboolean can_change_last_dav_error_code)
+						       gboolean can_change_last_dav_error_code,
+						       gboolean skip_text_on_success)
 {
 	SoupMessage *message;
 	GByteArray byte_array = { 0 };
@@ -912,7 +913,7 @@ e_webdav_session_replace_with_detailed_error_internal (EWebDAVSession *webdav,
 	}
 
 	content_type = soup_message_headers_get_content_type (message->response_headers, NULL);
-	if (content_type && (
+	if (content_type && (!skip_text_on_success || (status_code && !SOUP_STATUS_IS_SUCCESSFUL (status_code))) && (
 	    (g_ascii_strcasecmp (content_type, "application/xml") == 0 ||
 	     g_ascii_strcasecmp (content_type, "text/xml") == 0))) {
 		xmlDocPtr doc;
@@ -969,10 +970,10 @@ e_webdav_session_replace_with_detailed_error_internal (EWebDAVSession *webdav,
 				xmlXPathFreeContext (xpath_ctx);
 			xmlFreeDoc (doc);
 		}
-	} else if (content_type &&
+	} else if (content_type && (!skip_text_on_success || (status_code && !SOUP_STATUS_IS_SUCCESSFUL (status_code))) &&
 	     g_ascii_strcasecmp (content_type, "text/plain") == 0) {
 		detail_text = g_strndup ((const gchar *) byte_array.data, byte_array.len);
-	} else if (content_type &&
+	} else if (content_type && (!skip_text_on_success || (status_code && !SOUP_STATUS_IS_SUCCESSFUL (status_code))) &&
 	     g_ascii_strcasecmp (content_type, "text/html") == 0) {
 		SoupURI *soup_uri;
 		gchar *uri = NULL;
@@ -1088,7 +1089,7 @@ e_webdav_session_replace_with_detailed_error (EWebDAVSession *webdav,
 					      const gchar *prefix,
 					      GError **inout_error)
 {
-	return e_webdav_session_replace_with_detailed_error_internal (webdav, request, response_data, ignore_multistatus, prefix, inout_error, FALSE);
+	return e_webdav_session_replace_with_detailed_error_internal (webdav, request, response_data, ignore_multistatus, prefix, inout_error, FALSE, FALSE);
 }
 
 /**
@@ -1335,7 +1336,7 @@ e_webdav_session_post_with_content_type_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, TRUE, _("Failed to post data"), error, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, TRUE, _("Failed to post data"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (success) {
@@ -1483,7 +1484,7 @@ e_webdav_session_propfind_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, TRUE, _("Failed to get properties"), error, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, TRUE, _("Failed to get properties"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (success)
@@ -1559,7 +1560,7 @@ e_webdav_session_proppatch_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to update properties"), error, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to update properties"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -1665,7 +1666,7 @@ e_webdav_session_report_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, TRUE, _("Failed to issue REPORT"), error, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, TRUE, _("Failed to issue REPORT"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (success && func && message->status_code == SOUP_STATUS_MULTI_STATUS)
@@ -1726,7 +1727,7 @@ e_webdav_session_mkcol_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to create collection"), error, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to create collection"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -1831,7 +1832,7 @@ e_webdav_session_mkcol_addressbook_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to create address book"), error, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to create address book"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -1993,7 +1994,7 @@ e_webdav_session_mkcalendar_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to create calendar"), error, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to create calendar"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -2127,7 +2128,7 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
 				tmp_bytes.data = buffer;
 				tmp_bytes.len = nread;
 
-				success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, &tmp_bytes, FALSE, _("Failed to read resource"), error, TRUE);
+				success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, &tmp_bytes, FALSE, _("Failed to read resource"), error, TRUE, TRUE);
 				if (!success)
 					break;
 			}
@@ -2138,7 +2139,7 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
 		}
 
 		if (success && first_chunk) {
-			success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, NULL, FALSE, _("Failed to read resource"), error, TRUE);
+			success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, NULL, FALSE, _("Failed to read resource"), error, TRUE, TRUE);
 		} else if (success && !first_chunk && log_level == SOUP_LOGGER_LOG_BODY) {
 			fprintf (stdout, "\n");
 			fflush (stdout);
@@ -2452,7 +2453,7 @@ e_webdav_session_put_sync (EWebDAVSession *webdav,
 	g_signal_handler_disconnect (message, wrote_headers_id);
 	g_signal_handler_disconnect (message, wrote_chunk_id);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to put data"), error, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to put data"), error, TRUE, TRUE) &&
 		bytes != NULL;
 
 	if (cwd.wrote_any && cwd.log_level == SOUP_LOGGER_LOG_BODY) {
@@ -2598,7 +2599,7 @@ e_webdav_session_put_data_sync (EWebDAVSession *webdav,
 
 	ret_bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, ret_bytes, FALSE, _("Failed to put data"), error, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, ret_bytes, FALSE, _("Failed to put data"), error, TRUE, TRUE) &&
 		ret_bytes != NULL;
 
 	if (success) {
@@ -2700,7 +2701,7 @@ e_webdav_session_delete_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to delete resource"), error, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to delete resource"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -2769,7 +2770,7 @@ e_webdav_session_copy_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to copy resource"), error, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to copy resource"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -2833,7 +2834,7 @@ e_webdav_session_move_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to move resource"), error, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to move resource"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -2940,7 +2941,7 @@ e_webdav_session_lock_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to lock resource"), error, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to lock resource"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (success && out_xml_response) {
@@ -3050,7 +3051,7 @@ e_webdav_session_refresh_lock_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to refresh lock"), error, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to refresh lock"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -3111,7 +3112,7 @@ e_webdav_session_unlock_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to unlock"), error, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to unlock"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -4227,7 +4228,7 @@ e_webdav_session_acl_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, TRUE, _("Failed to get access control list"), error, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, TRUE, _("Failed to get access control list"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
