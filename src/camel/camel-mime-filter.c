@@ -312,8 +312,11 @@ camel_mime_filter_backup (CamelMimeFilter *filter,
 		filter->backbuf = g_malloc (length + BACK_HEAD);
 		filter->backsize = length + BACK_HEAD;
 	}
+
 	filter->backlen = length;
-	memcpy (filter->backbuf, data, length);
+
+	if (length || filter->backbuf)
+		memcpy (filter->backbuf, data, length);
 }
 
 /**
