@@ -73,6 +73,7 @@ struct _ECollectionBackendPrivate {
 	gulong notify_collection_handler_id;
 	gulong notify_online_handler_id;
 
+	gint64 last_populate_call;
 	guint scheduled_populate_idle_id;
 };
 
@@ -618,15 +619,25 @@ collection_backend_populate_idle_cb (gpointer user_data)
 	   considered new anymore. */
 	collection_backend_forget_new_sources (backend);
 
+	backend->priv->last_populate_call = g_get_real_time ();
+
 	class->populate (backend);
 
 	return FALSE;
 }
 
 static void
-collection_backend_schedule_populate_idle (ECollectionBackend *backend)
+collection_backend_schedule_populate_idle (ECollectionBackend *backend,
+					   gboolean force)
 {
 	g_return_if_fail (E_IS_COLLECTION_BACKEND (backend));
+
+	if (!force) {
+		/* Let automatically check for new child sources only once per day.
+		   Users can still force this manually using e_source_registry_refresh_backend(). */
+		if (g_get_real_time () - backend->priv->last_populate_call < G_USEC_PER_SEC * 60L * 60L * 24L)
+			return;
+	}
 
 	if (!backend->priv->scheduled_populate_idle_id)
 		backend->priv->scheduled_populate_idle_id = g_idle_add_full (
@@ -654,7 +665,7 @@ collection_backend_notify_collection_cb (ESourceCollection *collection_extension
 	    g_strcmp0 (g_param_spec_get_name (param), "mail-enabled") != 0))
 		return;
 
-	collection_backend_schedule_populate_idle (collection_backend);
+	e_collection_backend_schedule_populate (collection_backend);
 }
 
 static void
@@ -722,6 +733,17 @@ collection_backend_auth_source_changed_cb (ESource *authentication_source,
 		collection_backend_update_proxy_resolver (backend);
 		g_object_unref (backend);
 	}
+}
+
+static void
+collection_backend_online_changed_cb (ECollectionBackend *collection_backend,
+				      GParamSpec *param,
+				      gpointer user_data)
+{
+	g_return_if_fail (E_IS_COLLECTION_BACKEND (collection_backend));
+
+	if (e_backend_get_online (E_BACKEND (collection_backend)))
+		collection_backend_schedule_populate_idle (collection_backend, FALSE);
 }
 
 static void
@@ -950,10 +972,10 @@ collection_backend_constructed (GObject *object)
 
 	/* Populate the newly-added collection from an idle callback
 	 * so persistent child sources have a chance to be added first. */
-	collection_backend_schedule_populate_idle (backend);
+	collection_backend_schedule_populate_idle (backend, TRUE);
 
 	backend->priv->notify_online_handler_id = g_signal_connect (backend, "notify::online",
-		G_CALLBACK (e_collection_backend_schedule_populate), NULL);
+		G_CALLBACK (collection_backend_online_changed_cb), NULL);
 }
 
 static void
@@ -1982,5 +2004,5 @@ e_collection_backend_schedule_populate (ECollectionBackend *backend)
 	g_return_if_fail (E_IS_COLLECTION_BACKEND (backend));
 
 	if (e_backend_get_online (E_BACKEND (backend)))
-		collection_backend_schedule_populate_idle (backend);
+		collection_backend_schedule_populate_idle (backend, TRUE);
 }
