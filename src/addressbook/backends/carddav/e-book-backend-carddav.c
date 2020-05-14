@@ -41,6 +41,10 @@ struct _EBookBackendCardDAVPrivate {
 	EWebDAVSession *webdav;
 	GMutex webdav_lock;
 
+	/* If already been connected, then the connect_sync() will relax server checks,
+	   to avoid unnecessary requests towards the server. */
+	gboolean been_connected;
+
 	/* support for 'getctag' extension */
 	gboolean ctag_supported;
 
@@ -106,12 +110,20 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 		webdav, "proxy-resolver",
 		G_BINDING_SYNC_CREATE);
 
-	/* Thinks the 'getctag' extension is available the first time, but unset it when realizes it isn't. */
-	bbdav->priv->ctag_supported = TRUE;
-
 	e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTING);
 
 	e_soup_session_set_credentials (E_SOUP_SESSION (webdav), credentials);
+
+	if (bbdav->priv->been_connected) {
+		g_mutex_lock (&bbdav->priv->webdav_lock);
+		bbdav->priv->webdav = webdav;
+		g_mutex_unlock (&bbdav->priv->webdav_lock);
+
+		return TRUE;
+	}
+
+	/* Thinks the 'getctag' extension is available the first time, but unset it when realizes it isn't. */
+	bbdav->priv->ctag_supported = TRUE;
 
 	success = e_webdav_session_options_sync (webdav, NULL,
 		&capabilities, &allows, cancellable, &local_error);
@@ -233,7 +245,7 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 		   authorized (aka without credentials), thus try something
 		   more aggressive, just in case.
 
-		   The 'getctag' extension is not required, thuch check
+		   The 'getctag' extension is not required, thus check
 		   for unauthorized error only. */
 		if (!e_webdav_session_getctag_sync (webdav, NULL, &ctag, cancellable, &local_error) &&
 		    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
@@ -302,6 +314,7 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 		g_mutex_lock (&bbdav->priv->webdav_lock);
 		bbdav->priv->webdav = webdav;
 		g_mutex_unlock (&bbdav->priv->webdav_lock);
+		bbdav->priv->been_connected = TRUE;
 	} else {
 		if (success) {
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
@@ -641,6 +654,8 @@ ebb_carddav_check_credentials_error (EBookBackendCardDAV *bbdav,
 
 		op_error->domain = E_CLIENT_ERROR;
 		op_error->code = E_CLIENT_ERROR_AUTHENTICATION_REQUIRED;
+
+		bbdav->priv->been_connected = FALSE;
 
 		if (webdav) {
 			ENamedParameters *credentials;
@@ -1344,6 +1359,22 @@ ebb_carddav_get_backend_property (EBookBackend *book_backend,
 	return E_BOOK_BACKEND_CLASS (e_book_backend_carddav_parent_class)->impl_get_backend_property (book_backend, prop_name);
 }
 
+static gboolean
+ebb_carddav_refresh_sync (EBookBackendSync *sync_backend,
+			  GCancellable *cancellable,
+			  GError **error)
+{
+	EBookBackendCardDAV *bbdav;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_CARDDAV (sync_backend), FALSE);
+
+	bbdav = E_BOOK_BACKEND_CARDDAV (sync_backend);
+	bbdav->priv->been_connected = FALSE;
+
+	/* Chain up to parent's method. */
+	return E_BOOK_BACKEND_SYNC_CLASS (e_book_backend_carddav_parent_class)->refresh_sync (sync_backend, cancellable, error);
+}
+
 static gchar *
 ebb_carddav_dup_contact_revision_cb (EBookCache *book_cache,
 				     EContact *contact)
@@ -1407,6 +1438,7 @@ e_book_backend_carddav_class_init (EBookBackendCardDAVClass *klass)
 {
 	GObjectClass *object_class;
 	EBookBackendClass *book_backend_class;
+	EBookBackendSyncClass *book_backend_sync_class;
 	EBookMetaBackendClass *book_meta_backend_class;
 
 	book_meta_backend_class = E_BOOK_META_BACKEND_CLASS (klass);
@@ -1420,6 +1452,9 @@ e_book_backend_carddav_class_init (EBookBackendCardDAVClass *klass)
 	book_meta_backend_class->save_contact_sync = ebb_carddav_save_contact_sync;
 	book_meta_backend_class->remove_contact_sync = ebb_carddav_remove_contact_sync;
 	book_meta_backend_class->get_ssl_error_details = ebb_carddav_get_ssl_error_details;
+
+	book_backend_sync_class = E_BOOK_BACKEND_SYNC_CLASS (klass);
+	book_backend_sync_class->refresh_sync = ebb_carddav_refresh_sync;
 
 	book_backend_class = E_BOOK_BACKEND_CLASS (klass);
 	book_backend_class->impl_get_backend_property = ebb_carddav_get_backend_property;

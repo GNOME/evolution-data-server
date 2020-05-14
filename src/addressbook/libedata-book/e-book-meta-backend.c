@@ -81,6 +81,7 @@ struct _EBookMetaBackendPrivate {
 	gboolean refresh_after_authenticate;
 	gint ever_connected;
 	gint connected_writable;
+	gint64 last_refresh_time;	/* The time when the last refresh was called */
 
 	/* Last successful connect data, for some extensions */
 	guint16 authentication_port;
@@ -873,6 +874,8 @@ ebmb_refresh_internal_sync (EBookMetaBackend *meta_backend,
 		g_clear_object (&meta_backend->priv->refresh_cancellable);
 
 	ebmb_ensure_refresh_timeout_set_locked (meta_backend);
+
+	meta_backend->priv->last_refresh_time = g_get_real_time ();
 
 	g_mutex_unlock (&meta_backend->priv->property_lock);
 
@@ -2198,10 +2201,18 @@ ebmb_notify_online_cb (GObject *object,
 
 	meta_backend->priv->current_online_state = new_value;
 
-	if (new_value)
-		e_book_meta_backend_schedule_refresh (meta_backend);
-	else
+	if (new_value) {
+		gint64 now = g_get_real_time ();
+
+		/* Do not auto-run refresh (due to getting online) more than once per hour */
+		if (now - meta_backend->priv->last_refresh_time >= G_USEC_PER_SEC * 60L * 60L) {
+			meta_backend->priv->last_refresh_time = now;
+
+			e_book_meta_backend_schedule_refresh (meta_backend);
+		}
+	} else {
 		ebmb_schedule_go_offline (meta_backend);
+	}
 }
 
 static void

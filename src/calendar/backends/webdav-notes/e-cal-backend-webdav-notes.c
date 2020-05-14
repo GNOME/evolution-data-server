@@ -33,6 +33,10 @@ struct _ECalBackendWebDAVNotesPrivate {
 	EWebDAVSession *webdav;
 	GMutex webdav_lock;
 
+	/* If already been connected, then the connect_sync() will relax server checks,
+	   to avoid unnecessary requests towards the server. */
+	gboolean been_connected;
+
 	gboolean etag_supported;
 };
 
@@ -94,12 +98,20 @@ ecb_webdav_notes_connect_sync (ECalMetaBackend *meta_backend,
 		webdav, "proxy-resolver",
 		G_BINDING_SYNC_CREATE);
 
-	/* This is just to make it similar to the CalDAV backend. */
-	cbnotes->priv->etag_supported = TRUE;
-
 	e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTING);
 
 	e_soup_session_set_credentials (E_SOUP_SESSION (webdav), credentials);
+
+	if (cbnotes->priv->been_connected) {
+		g_mutex_lock (&cbnotes->priv->webdav_lock);
+		cbnotes->priv->webdav = webdav;
+		g_mutex_unlock (&cbnotes->priv->webdav_lock);
+
+		return TRUE;
+	}
+
+	/* This is just to make it similar to the CalDAV backend. */
+	cbnotes->priv->etag_supported = TRUE;
 
 	success = e_webdav_session_options_sync (webdav, NULL,
 		&capabilities, &allows, cancellable, &local_error);
@@ -141,7 +153,7 @@ ecb_webdav_notes_connect_sync (ECalMetaBackend *meta_backend,
 		   authorized (aka without credentials), thus try something
 		   more aggressive, just in case.
 
-		   The 'getctag' extension is not required, thuch check
+		   The 'getctag' extension is not required, thus check
 		   for unauthorized error only. */
 		if (!e_webdav_session_getctag_sync (webdav, NULL, &ctag, cancellable, &local_error) &&
 		    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
@@ -208,6 +220,7 @@ ecb_webdav_notes_connect_sync (ECalMetaBackend *meta_backend,
 		g_mutex_lock (&cbnotes->priv->webdav_lock);
 		cbnotes->priv->webdav = webdav;
 		g_mutex_unlock (&cbnotes->priv->webdav_lock);
+		cbnotes->priv->been_connected = TRUE;
 	} else {
 		if (success) {
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
@@ -311,6 +324,8 @@ ecb_webdav_notes_check_credentials_error (ECalBackendWebDAVNotes *cbnotes,
 
 		op_error->domain = E_CLIENT_ERROR;
 		op_error->code = E_CLIENT_ERROR_AUTHENTICATION_REQUIRED;
+
+		cbnotes->priv->been_connected = FALSE;
 
 		if (webdav) {
 			ENamedParameters *credentials;
@@ -1340,6 +1355,23 @@ ecb_webdav_notes_notify_property_changed_cb (GObject *object,
 	}
 }
 
+static void
+ecb_webdav_notes_refresh_sync (ECalBackendSync *sync_backend,
+			       EDataCal *cal,
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	ECalBackendWebDAVNotes *cbnotes;
+
+	g_return_if_fail (E_IS_CAL_BACKEND_WEBDAV_NOTES (sync_backend));
+
+	cbnotes = E_CAL_BACKEND_WEBDAV_NOTES (sync_backend);
+	cbnotes->priv->been_connected = FALSE;
+
+	/* Chain up to parent's method. */
+	E_CAL_BACKEND_SYNC_CLASS (e_cal_backend_webdav_notes_parent_class)->refresh_sync (sync_backend, cal, cancellable, error);
+}
+
 static gchar *
 ecb_webdav_notes_dup_component_revision_cb (ECalCache *cal_cache,
 					    ICalComponent *icomp)
@@ -1411,6 +1443,7 @@ e_cal_backend_webdav_notes_class_init (ECalBackendWebDAVNotesClass *klass)
 {
 	GObjectClass *object_class;
 	ECalBackendClass *cal_backend_class;
+	ECalBackendSyncClass *cal_backend_sync_class;
 	ECalMetaBackendClass *cal_meta_backend_class;
 
 	cal_meta_backend_class = E_CAL_META_BACKEND_CLASS (klass);
@@ -1422,6 +1455,9 @@ e_cal_backend_webdav_notes_class_init (ECalBackendWebDAVNotesClass *klass)
 	cal_meta_backend_class->save_component_sync = ecb_webdav_notes_save_component_sync;
 	cal_meta_backend_class->remove_component_sync = ecb_webdav_notes_remove_component_sync;
 	cal_meta_backend_class->get_ssl_error_details = ecb_webdav_notes_get_ssl_error_details;
+
+	cal_backend_sync_class = E_CAL_BACKEND_SYNC_CLASS (klass);
+	cal_backend_sync_class->refresh_sync = ecb_webdav_notes_refresh_sync;
 
 	cal_backend_class = E_CAL_BACKEND_CLASS (klass);
 	cal_backend_class->impl_get_backend_property = ecb_webdav_notes_get_backend_property;
