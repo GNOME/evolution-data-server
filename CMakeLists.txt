@@ -781,7 +781,9 @@ else(WIN32 AND ENABLE_DOT_LOCKING)
 	set(USE_DOT_LOCKING ${ENABLE_DOT_LOCKING})
 endif(WIN32 AND ENABLE_DOT_LOCKING)
 
-add_printable_variable(ENABLE_FILE_LOCKING "Enable support for locking mail files with file locking (one of fcntl/flock/no)" "fcntl")
+add_printable_variable(ENABLE_FILE_LOCKING "Enable support for locking mail files with file locking" "fcntl")
+set(enable_file_locking_values fcntl flock no)
+set_property(CACHE ENABLE_FILE_LOCKING PROPERTY STRINGS ${enable_file_locking_values})
 
 if(NOT WIN32)
 	if (${ENABLE_FILE_LOCKING} STREQUAL "fcntl")
