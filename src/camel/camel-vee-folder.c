@@ -812,7 +812,7 @@ vee_folder_get_permanent_flags (CamelFolder *folder)
 
 static void
 vee_folder_add_subfolder_uids_to_search_matches (CamelVeeDataCache *data_cache,
-						 GPtrArray *into,
+						 GHashTable *matches_hash,
 						 CamelFolder *subfolder,
 						 GPtrArray *submatches)
 {
@@ -821,7 +821,7 @@ vee_folder_add_subfolder_uids_to_search_matches (CamelVeeDataCache *data_cache,
 	guint ii;
 
 	g_return_if_fail (data_cache != NULL);
-	g_return_if_fail (into != NULL);
+	g_return_if_fail (matches_hash != NULL);
 
 	if (!submatches || !submatches->len)
 		return;
@@ -837,8 +837,74 @@ vee_folder_add_subfolder_uids_to_search_matches (CamelVeeDataCache *data_cache,
 
 		vuid = g_strconcat (folder_id, submatches->pdata[ii], NULL);
 
-		g_ptr_array_add (into, (gpointer) camel_pstring_add (vuid, TRUE));
+		g_hash_table_insert (matches_hash, (gpointer) camel_pstring_add (vuid, TRUE), NULL);
 	}
+}
+
+static void
+vee_folder_add_subfolder_skipped_changes (CamelVeeFolder *vfolder,
+					  CamelVeeDataCache *data_cache,
+					  CamelFolder *subfolder,
+					  GHashTable **pmatches_hash) /* gchar *UID ~> NULL */
+{
+	CamelFolderChangeInfo *skipped_changes;
+	const gchar *folder_id = NULL;
+
+	g_return_if_fail (vfolder != NULL);
+	g_return_if_fail (subfolder != NULL);
+	g_return_if_fail (pmatches_hash != NULL);
+
+	g_rec_mutex_lock (&vfolder->priv->changed_lock);
+
+	#define maybe_add_uid(uid) G_STMT_START { 								\
+		gchar *vuid; 											\
+														\
+		if (camel_folder_summary_check_uid (subsummary, uid)) {						\
+			if (!*pmatches_hash) {									\
+				*pmatches_hash = g_hash_table_new_full (g_str_hash, g_str_equal,		\
+					(GDestroyNotify) camel_pstring_free, NULL);				\
+			}											\
+														\
+			if (!folder_id) {									\
+				CamelVeeSubfolderData *sf_data;							\
+														\
+				sf_data = camel_vee_data_cache_get_subfolder_data (data_cache, subfolder);	\
+				if (!sf_data) {									\
+					g_rec_mutex_unlock (&vfolder->priv->changed_lock);			\
+					return;									\
+				}										\
+														\
+				folder_id = camel_vee_subfolder_data_get_folder_id (sf_data);			\
+			}											\
+														\
+			vuid = g_strconcat (folder_id, uid, NULL);						\
+														\
+			g_hash_table_insert (*pmatches_hash, (gpointer) camel_pstring_add (vuid, TRUE), NULL);	\
+		}												\
+	} G_STMT_END
+
+	skipped_changes = g_hash_table_lookup (vfolder->priv->skipped_changes, subfolder);
+
+	if (skipped_changes) {
+		CamelFolderSummary *subsummary = camel_folder_get_folder_summary (subfolder);
+		guint ii;
+
+		for (ii = 0; ii < skipped_changes->uid_added->len; ii++) {
+			const gchar *uid = skipped_changes->uid_added->pdata[ii];
+
+			maybe_add_uid (uid);
+		}
+
+		for (ii = 0; ii < skipped_changes->uid_changed->len; ii++) {
+			const gchar *uid = skipped_changes->uid_changed->pdata[ii];
+
+			maybe_add_uid (uid);
+		}
+	}
+
+	#undef maybe_add_uid
+
+	g_rec_mutex_unlock (&vfolder->priv->changed_lock);
 }
 
 static const gchar *
@@ -868,6 +934,7 @@ vee_folder_search_by_expression (CamelFolder *folder,
 {
 	CamelVeeFolder *vfolder;
 	CamelVeeDataCache *data_cache;
+	GHashTable *matches_hash = NULL; /* gchar *UID ~> NULL */
 	GPtrArray *matches = NULL;
 	GList *link;
 	gchar *tmp = NULL;
@@ -889,28 +956,39 @@ vee_folder_search_by_expression (CamelFolder *folder,
 
 		if (submatches) {
 			if (submatches->len) {
-				if (!matches)
-					matches = g_ptr_array_new ();
+				if (!matches_hash)
+					matches_hash = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
 
-				vee_folder_add_subfolder_uids_to_search_matches (data_cache, matches, subfolder, submatches);
+				vee_folder_add_subfolder_uids_to_search_matches (data_cache, matches_hash, subfolder, submatches);
 			}
 
 			camel_folder_search_free (subfolder, submatches);
 		}
+
+		vee_folder_add_subfolder_skipped_changes (vfolder, data_cache, subfolder, &matches_hash);
 	}
 
 	g_free (tmp);
 
 	g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
 
-	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		if (matches) {
-			camel_folder_search_free (folder, matches);
-			matches = NULL;
-		}
-	} else if (!matches) {
+	if (!g_cancellable_set_error_if_cancelled (cancellable, error)) {
 		matches = g_ptr_array_new ();
+
+		if (matches_hash) {
+			GHashTableIter iter;
+			gpointer key;
+
+			g_hash_table_iter_init (&iter, matches_hash);
+
+			while (g_hash_table_iter_next (&iter, &key, NULL)) {
+				g_ptr_array_add (matches, (gpointer) camel_pstring_strdup (key));
+			}
+		}
 	}
+
+	if (matches_hash)
+		g_hash_table_destroy (matches_hash);
 
 	return matches;
 }
@@ -964,6 +1042,7 @@ vee_folder_search_by_uids (CamelFolder *folder,
 	CamelVeeFolder *vfolder;
 	CamelVeeDataCache *data_cache;
 	GHashTable *uids_by_folder; /* gchar *folder_id as message UID ~> GPtrArray * */
+	GHashTable *matches_hash = NULL; /* gchar *uid ~> NULL */
 	GPtrArray *matches = NULL;
 	GList *link;
 	guint ii;
@@ -1022,28 +1101,39 @@ vee_folder_search_by_uids (CamelFolder *folder,
 
 		if (submatches) {
 			if (submatches->len) {
-				if (!matches)
-					matches = g_ptr_array_new ();
+				if (!matches_hash)
+					matches_hash = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
 
-				vee_folder_add_subfolder_uids_to_search_matches (data_cache, matches, subfolder, submatches);
+				vee_folder_add_subfolder_uids_to_search_matches (data_cache, matches_hash, subfolder, submatches);
 			}
 
 			camel_folder_search_free (subfolder, submatches);
 		}
+
+		vee_folder_add_subfolder_skipped_changes (vfolder, data_cache, subfolder, &matches_hash);
 	}
 
 	g_free (tmp);
 
 	g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
 
-	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		if (matches) {
-			camel_folder_search_free (folder, matches);
-			matches = NULL;
-		}
-	} else if (!matches) {
+	if (!g_cancellable_set_error_if_cancelled (cancellable, error)) {
 		matches = g_ptr_array_new ();
+
+		if (matches_hash) {
+			GHashTableIter iter;
+			gpointer key;
+
+			g_hash_table_iter_init (&iter, matches_hash);
+
+			while (g_hash_table_iter_next (&iter, &key, NULL)) {
+				g_ptr_array_add (matches, (gpointer) camel_pstring_strdup (key));
+			}
+		}
 	}
+
+	if (matches_hash)
+		g_hash_table_destroy (matches_hash);
 
 	g_hash_table_destroy (uids_by_folder);
 
