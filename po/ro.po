@@ -18,9 +18,10 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.ro\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2020-03-06 12:47+0000\n"
-"PO-Revision-Date: 2020-03-18 08:55+0100\n"
-"Last-Translator: Daniel Șerbănescu <daniel [at] serbanescu [dot] dk>\n"
+"POT-Creation-Date: 2020-03-27 23:05+0000\n"
+"PO-Revision-Date: 2020-05-02 17:18+0300\n"
+"Last-Translator: Florentina Mușat <florentina.musat.28 [at] gmail [dot] "
+"com>\n"
 "Language-Team: Gnome Romanian Translation Team <gnomero-list@lists."
 "sourceforge.net>\n"
 "Language: ro\n"
@@ -61,6 +62,7 @@ msgstr "URL-ul furnizat „%s” nu face referință la o agendă CardDAV"
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:261
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:288
 #: ../src/calendar/backends/http/e-cal-backend-http.c:313
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:183
 #: ../src/calendar/libecal/e-cal-client.c:257
 #: ../src/calendar/libecal/e-cal-client.c:3230
 #: ../src/calendar/libecal/e-cal-client.c:3403
@@ -92,18 +94,20 @@ msgstr "URL-ul furnizat „%s” nu face referință la o agendă CardDAV"
 #: ../src/libedataserver/e-client.c:183
 #: ../src/libedataserver/e-soup-session.c:1224
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
-#: ../src/libedataserverui/e-reminders-widget.c:1788
+#: ../src/libedataserverui/e-reminders-widget.c:1931
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Eroare necunoscută"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1074
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1352
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:920
 msgid "Server didn’t return object’s href"
 msgstr "Serverul nu a returnat href-ul obiectului"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1076
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1354
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:922
 msgid "Server didn’t return object’s ETag"
 msgstr "Serverul nu a returnat ETag-ul obiectului"
 
@@ -185,7 +189,7 @@ msgid "Invalid Query “%s”"
 msgstr "Interogare nevalidă „%s”"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1965
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2037
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2038
 msgid "Requested to delete an unrelated cursor"
 msgstr "S-a cerut ștergerea unui cursor fără legătură"
 
@@ -305,8 +309,8 @@ msgid "Downloading contacts (%d)..."
 msgstr "Se descarcă contacte (%d)..."
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4810
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:781
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:684
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:787
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:690
 msgid "Refreshing…"
 msgstr "Se reîmprospătează…"
 
@@ -1169,7 +1173,7 @@ msgstr "Nu s-a putut deschide baza de date %s: %s"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2917
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2980
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3151
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1362
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1367
 #: ../src/libebackend/e-cache.c:1374 ../src/libebackend/e-cache.c:2352
 #: ../src/libebackend/e-cache.c:2392
 #, c-format
@@ -1192,21 +1196,21 @@ msgstr ""
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Nu se poate sorta după un câmp care nu este de tip șir de caractere"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1073
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1085
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1078
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1090
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Obiectul preîncărcat pentru UID-ul „%s” este nevalid"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1081
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1093
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1086
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1098
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Obiectul primit pentru UID-ul „%s” este nevalid"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1907
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2354
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3295
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1908
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2356
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3303
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Nu s-a putut crea cache-ul „%s”:"
@@ -1308,6 +1312,7 @@ msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "URL-ul furnizat „%s” nu are o referință la calendarul CalDAV"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1489
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1154
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. Remove it, please."
@@ -1359,11 +1364,11 @@ msgid "File “%s” is not a VCALENDAR component"
 msgstr "Fișierul „%s” nu este o componentă VCALENDAR"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3636
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3642
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3648
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3675
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2531
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3654
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3681
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2538
 msgid "Unsupported method"
 msgstr "Metodă nesuportată"
 
@@ -1461,6 +1466,11 @@ msgstr "Nu s-a putut crea fișierul cache"
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:684
 msgid "Could not create cache file: "
 msgstr "Nu s-a putut crea fișierul cache: "
+
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:963
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:992
+msgid "New note"
+msgstr "Notă nouă"
 
 #: ../src/calendar/libecal/e-cal-client.c:244
 msgid "No such calendar"
@@ -2365,7 +2375,7 @@ msgid "Undefined"
 msgstr "Nedefinit"
 
 #: ../src/calendar/libecal/e-cal-util.c:885
-#: ../src/libedataserverui/e-reminders-widget.c:292
+#: ../src/libedataserverui/e-reminders-widget.c:296
 #, c-format
 msgid "%d week"
 msgid_plural "%d weeks"
@@ -2374,7 +2384,7 @@ msgstr[1] "%d săptămâni"
 msgstr[2] "%d de săptămâni"
 
 #: ../src/calendar/libecal/e-cal-util.c:894
-#: ../src/libedataserverui/e-reminders-widget.c:288
+#: ../src/libedataserverui/e-reminders-widget.c:292
 #, c-format
 msgid "%d day"
 msgid_plural "%d days"
@@ -2383,7 +2393,7 @@ msgstr[1] "%d zile"
 msgstr[2] "%d de zile"
 
 #: ../src/calendar/libecal/e-cal-util.c:903
-#: ../src/libedataserverui/e-reminders-widget.c:284
+#: ../src/libedataserverui/e-reminders-widget.c:288
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
@@ -2392,7 +2402,7 @@ msgstr[1] "%d ore"
 msgstr[2] "%d de ore"
 
 #: ../src/calendar/libecal/e-cal-util.c:912
-#: ../src/libedataserverui/e-reminders-widget.c:280
+#: ../src/libedataserverui/e-reminders-widget.c:284
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -2578,13 +2588,13 @@ msgstr "Nu s-a putut adăuga fusul orar fără component"
 msgid "Cannot add timezone with invalid component"
 msgstr "Nu s-a putut adăuga fusul orar cu un component nevalid"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1140
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1145
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr ""
 "Obiectul primit pentru UID-ul „%s” nu conține niciun component așteptat"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4162
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4170
 msgid "attachment.dat"
 msgstr "atașament.dat"
 
@@ -6010,18 +6020,26 @@ msgid "Height of the reminder notification dialog"
 msgstr "Înălțimea dialogului de notificare al mementoului"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
+msgid ""
+"Paned position in the reminder notification dialog, the split size between "
+"list of the events and the description"
+msgstr ""
+"Poziție în panou în dialogul înștiințării memento-ului, dimensiunea "
+"împărțită între lista evenimentelor și descrierea"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
 msgid "Show reminder notification for completed tasks"
 msgstr "Arată notificarea mementoului pentru sarcini completate"
 
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
 msgid "Show reminder notification for past events"
 msgstr "Arată notificarea mementoului pentru evenimente trecute"
 
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
 msgid "The last used snooze time, in minutes"
 msgstr "Ultimul timp folosit la amânare, în minute"
 
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:23
 msgid "User-defined snooze times, in minutes"
 msgstr "Timpi de amânare definiți de utilizatori, în minute"
 
@@ -6828,11 +6846,15 @@ msgstr "%H%M"
 msgid "%I %p"
 msgstr "%I %p"
 
+#: ../src/libedataserver/e-webdav-discover.c:313
+msgid "Notes"
+msgstr "Note"
+
 #: ../src/libedataserver/e-webdav-session.c:726
 msgid "Cannot determine destination URL without WebDAV extension"
 msgstr "Nu se poate stabili URL-ul destinație fără extensia WebDAV"
 
-#: ../src/libedataserver/e-webdav-session.c:991
+#: ../src/libedataserver/e-webdav-session.c:992
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -6841,7 +6863,7 @@ msgstr ""
 "Serverul a răspuns cu o pagină HTML, ceea ce poate însemna că există o "
 "eroare la server sau la cererea clientului. URI-ul folosit a fost: %s"
 
-#: ../src/libedataserver/e-webdav-session.c:993
+#: ../src/libedataserver/e-webdav-session.c:994
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -6855,7 +6877,7 @@ msgstr ""
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1014
+#: ../src/libedataserver/e-webdav-session.c:1015
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
 msgstr "%s: cod de eroare HTTP %d (%s): %s"
@@ -6863,7 +6885,7 @@ msgstr "%s: cod de eroare HTTP %d (%s): %s"
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1022
+#: ../src/libedataserver/e-webdav-session.c:1023
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
 msgstr "Eșec cu codul de eroare HTTP %d (%s): %s"
@@ -6872,157 +6894,166 @@ msgstr "Eșec cu codul de eroare HTTP %d (%s): %s"
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1037
+#: ../src/libedataserver/e-webdav-session.c:1038
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
 msgstr "%s: cod de eroare HTTP %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1043
+#: ../src/libedataserver/e-webdav-session.c:1044
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "Eșec cu codul de eroare HTTP %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:1338
+#: ../src/libedataserver/e-webdav-session.c:1339
 msgid "Failed to post data"
 msgstr "Eșec la trimiterea datelor"
 
-#: ../src/libedataserver/e-webdav-session.c:1475
-#: ../src/libedataserver/e-webdav-session.c:1552
-#: ../src/libedataserver/e-webdav-session.c:1658
-#: ../src/libedataserver/e-webdav-session.c:2932
-#: ../src/libedataserver/e-webdav-session.c:4220
+#: ../src/libedataserver/e-webdav-session.c:1476
+#: ../src/libedataserver/e-webdav-session.c:1553
+#: ../src/libedataserver/e-webdav-session.c:1659
+#: ../src/libedataserver/e-webdav-session.c:2933
+#: ../src/libedataserver/e-webdav-session.c:4221
 msgid "Failed to get input XML content"
 msgstr "Eșec la obținerea conținutului de intrare XML"
 
-#: ../src/libedataserver/e-webdav-session.c:1486
+#: ../src/libedataserver/e-webdav-session.c:1487
 msgid "Failed to get properties"
 msgstr "Eroare la obținerea proprietăților"
 
-#: ../src/libedataserver/e-webdav-session.c:1562
+#: ../src/libedataserver/e-webdav-session.c:1563
 msgid "Failed to update properties"
 msgstr "Eșec la actualizarea proprietăților"
 
-#: ../src/libedataserver/e-webdav-session.c:1668
+#: ../src/libedataserver/e-webdav-session.c:1669
 msgid "Failed to issue REPORT"
 msgstr "Eșec la emiterea REPORT"
 
-#: ../src/libedataserver/e-webdav-session.c:1729
+#: ../src/libedataserver/e-webdav-session.c:1730
 msgid "Failed to create collection"
 msgstr "Eroare la crearea colecției"
 
-#: ../src/libedataserver/e-webdav-session.c:1822
-#: ../src/libedataserver/e-webdav-session.c:1983
+#: ../src/libedataserver/e-webdav-session.c:1823
+#: ../src/libedataserver/e-webdav-session.c:1984
 msgid "Failed to get XML request content"
 msgstr "Eșec la obținerea conținutului de cerere XML"
 
-#: ../src/libedataserver/e-webdav-session.c:1834
+#: ../src/libedataserver/e-webdav-session.c:1835
 msgid "Failed to create address book"
 msgstr "Eșec la crearea agendei"
 
-#: ../src/libedataserver/e-webdav-session.c:1996
+#: ../src/libedataserver/e-webdav-session.c:1997
 msgid "Failed to create calendar"
 msgstr "Eșec la crearea calendarului"
 
-#: ../src/libedataserver/e-webdav-session.c:2130
-#: ../src/libedataserver/e-webdav-session.c:2141
+#: ../src/libedataserver/e-webdav-session.c:2131
+#: ../src/libedataserver/e-webdav-session.c:2142
 msgid "Failed to read resource"
 msgstr "Eșec la citirea resursei"
 
-#: ../src/libedataserver/e-webdav-session.c:2290
+#: ../src/libedataserver/e-webdav-session.c:2291
 msgid "Cannot rewind input stream: Not supported"
 msgstr "Nu se poate derula fluxul înapoi: Nesuportat"
 
-#: ../src/libedataserver/e-webdav-session.c:2455
-#: ../src/libedataserver/e-webdav-session.c:2601
+#: ../src/libedataserver/e-webdav-session.c:2456
+#: ../src/libedataserver/e-webdav-session.c:2602
 msgid "Failed to put data"
 msgstr "Eroare la punerea datelor"
 
-#: ../src/libedataserver/e-webdav-session.c:2474
-#: ../src/libedataserver/e-webdav-session.c:2609
+#: ../src/libedataserver/e-webdav-session.c:2475
+#: ../src/libedataserver/e-webdav-session.c:2610
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Eroare la punerea datelor pe server, cod de eroare %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:2703
+#: ../src/libedataserver/e-webdav-session.c:2704
 msgid "Failed to delete resource"
 msgstr "Eroare la ștergerea resursei"
 
-#: ../src/libedataserver/e-webdav-session.c:2772
+#: ../src/libedataserver/e-webdav-session.c:2773
 msgid "Failed to copy resource"
 msgstr "Eșec la copierea resursei"
 
-#: ../src/libedataserver/e-webdav-session.c:2836
+#: ../src/libedataserver/e-webdav-session.c:2837
 msgid "Failed to move resource"
 msgstr "Eroare la mutarea resursei"
 
-#: ../src/libedataserver/e-webdav-session.c:2943
+#: ../src/libedataserver/e-webdav-session.c:2944
 msgid "Failed to lock resource"
 msgstr "Eroare la blocarea resursei"
 
-#: ../src/libedataserver/e-webdav-session.c:2957
-#: ../src/libedataserver/e-webdav-session.c:3163
+#: ../src/libedataserver/e-webdav-session.c:2958
+#: ../src/libedataserver/e-webdav-session.c:3164
 msgid "Expected application/xml response, but none returned"
 msgstr "Se aștepta un răspuns application/xml, dar niciunul nu a fost returnat"
 
-#: ../src/libedataserver/e-webdav-session.c:2960
-#: ../src/libedataserver/e-webdav-session.c:3166
+#: ../src/libedataserver/e-webdav-session.c:2961
+#: ../src/libedataserver/e-webdav-session.c:3167
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "Se aștepta un răspuns application/xml, dar %s a fost returnat"
 
-#: ../src/libedataserver/e-webdav-session.c:2972
-#: ../src/libedataserver/e-webdav-session.c:3179
+#: ../src/libedataserver/e-webdav-session.c:2973
+#: ../src/libedataserver/e-webdav-session.c:3180
 msgid "Failed to parse XML data"
 msgstr "Eroare la parsarea datelor XML"
 
-#: ../src/libedataserver/e-webdav-session.c:3053
+#: ../src/libedataserver/e-webdav-session.c:3054
 msgid "Failed to refresh lock"
 msgstr "Eroare la reîmprospătarea blocării"
 
-#: ../src/libedataserver/e-webdav-session.c:3114
+#: ../src/libedataserver/e-webdav-session.c:3115
 msgid "Failed to unlock"
 msgstr "Eroare la deblocare"
 
-#: ../src/libedataserver/e-webdav-session.c:3151
+#: ../src/libedataserver/e-webdav-session.c:3152
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "S-a așteptat un răspuns multistare, dar %d a fost returnat (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:4230
+#: ../src/libedataserver/e-webdav-session.c:4231
 msgid "Failed to get access control list"
 msgstr "Eșuare la obținerea listei de control al accesului"
 
-#: ../src/libedataserver/e-webdav-session.c:4981
+#: ../src/libedataserver/e-webdav-session.c:4982
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 "Nu se poate stoca Intrarea de Control de Acces protejată sau moștenită."
 
-#: ../src/libedataserver/e-webdav-session.c:4988
+#: ../src/libedataserver/e-webdav-session.c:4989
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr ""
 "Tipul principal pentru Intrarea de Control de Acces oferit a fost nevalid."
 
-#: ../src/libedataserver/e-webdav-session.c:4995
+#: ../src/libedataserver/e-webdav-session.c:4996
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Nu se poate stoca Intrarea de Acces de Control bazată pe proprietăți."
 
-#: ../src/libedataserver/e-webdav-session.c:5002
+#: ../src/libedataserver/e-webdav-session.c:5003
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Intrarea de Acces de Control poate fi numai pentru Permite sau Refuză, dar "
 "nu Nespecificat."
 
-#: ../src/libedataserver/e-webdav-session.c:5010
+#: ../src/libedataserver/e-webdav-session.c:5011
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Intrarea de Acces de Control poate fi numai pentru Permite sau Refuză, dar "
 "nu ambele."
 
-#: ../src/libedataserver/e-webdav-session.c:5069
+#: ../src/libedataserver/e-webdav-session.c:5070
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Privilegiul Intrării de Control de Acces nu poate fi NULL."
+
+#: ../src/libedataserverui/e-buffer-tagger.c:71
+msgid "Could not open the link."
+msgstr "Nu s-a putut deschide legătura."
+
+#. To Translators: The text is concatenated to a form: "Ctrl-click to open a link http://www.example.com"
+#: ../src/libedataserverui/e-buffer-tagger.c:458
+msgid "Ctrl-click to open a link"
+msgstr "Ctrl-clic pentru a deschide un link"
 
 #: ../src/libedataserverui/e-credentials-prompter.c:259
 #: ../src/libedataserverui/e-credentials-prompter.c:1692
@@ -7252,20 +7283,20 @@ msgstr "_Parolă:"
 msgid "_Add this password to your keyring"
 msgstr "_Adaugă această parolă în inelul de chei personal"
 
-#: ../src/libedataserverui/e-reminders-widget.c:226
+#: ../src/libedataserverui/e-reminders-widget.c:230
 msgid "Add custom time…"
 msgstr "Adaugă timp personalizat…"
 
-#: ../src/libedataserverui/e-reminders-widget.c:230
+#: ../src/libedataserverui/e-reminders-widget.c:234
 msgid "Clear custom times"
 msgstr "Curăță timpii personalizați"
 
-#: ../src/libedataserverui/e-reminders-widget.c:278
+#: ../src/libedataserverui/e-reminders-widget.c:282
 msgctxt "overdue"
 msgid "now"
 msgstr "acum"
 
-#: ../src/libedataserverui/e-reminders-widget.c:296
+#: ../src/libedataserverui/e-reminders-widget.c:300
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -7273,60 +7304,72 @@ msgstr[0] "%d an"
 msgstr[1] "%d ani"
 msgstr[2] "%d de ani"
 
-#: ../src/libedataserverui/e-reminders-widget.c:302
+#: ../src/libedataserverui/e-reminders-widget.c:306
 msgctxt "overdue"
 msgid "overdue"
 msgstr "întârziat"
 
-#: ../src/libedataserverui/e-reminders-widget.c:922
+#: ../src/libedataserverui/e-reminders-widget.c:926
 #, c-format
 msgid "Failed to launch URI “%s”:"
 msgstr "Eșec la lansarea URI-ului „%s”:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:963
+#: ../src/libedataserverui/e-reminders-widget.c:976
+msgid "No reminder is selected."
+msgstr "Nu este selectat niciun memento."
+
+#: ../src/libedataserverui/e-reminders-widget.c:1033
+msgid "No details are available."
+msgstr "Nu sunt disponibile detalii."
+
+#: ../src/libedataserverui/e-reminders-widget.c:1037
+msgid "Multiple reminders are selected."
+msgstr "Sunt selectate multiple memento-uri."
+
+#: ../src/libedataserverui/e-reminders-widget.c:1057
 msgid "Failed to dismiss reminder:"
 msgstr "Eșec la eliberarea mementoului:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:984
+#: ../src/libedataserverui/e-reminders-widget.c:1078
 msgid "Failed to dismiss all:"
 msgstr "Eșec la eliberarea tuturor:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1120
+#: ../src/libedataserverui/e-reminders-widget.c:1214
 msgid "Set a custom snooze time for"
 msgstr "Stabilește un timp de amânare personalizat pentru"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1133
+#: ../src/libedataserverui/e-reminders-widget.c:1227
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "_zile"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1149
+#: ../src/libedataserverui/e-reminders-widget.c:1243
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "_ore"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1165
+#: ../src/libedataserverui/e-reminders-widget.c:1259
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "_minute"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1171
+#: ../src/libedataserverui/e-reminders-widget.c:1265
 msgid "_Add Snooze time"
 msgstr "_Adaugă timp de amânare"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1438
+#: ../src/libedataserverui/e-reminders-widget.c:1568
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "_Renunță"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1439
+#: ../src/libedataserverui/e-reminders-widget.c:1569
 msgid "Dismiss _All"
 msgstr "Renunță la to_ate"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1441
+#: ../src/libedataserverui/e-reminders-widget.c:1571
 msgid "_Snooze"
 msgstr "_Amână"
 
@@ -7533,26 +7576,26 @@ msgstr ""
 "pentru activare, 0 pentru dezactivare, orice valoare este pentru a folosi "
 "opțiunea de la compilare"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:292
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:320
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:831
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1040
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:306
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:334
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:845
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1087
 msgid "Reminders"
 msgstr "Mementouri"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:432
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:446
 msgid "Warning"
 msgstr "Avertisment"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:433
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:447
 msgid "_No"
 msgstr "_Nu"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:434
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:448
 msgid "_Yes"
 msgstr "_Da"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:438
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:452
 #, c-format
 msgid ""
 "A calendar reminder is about to trigger. This reminder is configured to run "
@@ -7569,31 +7612,31 @@ msgstr ""
 "\n"
 "Sigur doriți să rulați acest program?"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:453
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:467
 msgid "Do not ask me about this program again"
 msgstr "Nu întreba despre acest program din nou"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:736
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:750
 msgid "Display Reminders window with _notifications"
 msgstr "Afișează fereastra mementourilor cu î_nștiințări"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:737
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:751
 msgid "Keep reminder notification window always on _top"
 msgstr "Menține fereastra de notificare a mementoului în_totdeauna deasupra"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:738
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:752
 msgid "Display reminders for _completed tasks"
 msgstr "Afișează mementouri pentru sarcini _completate"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:739
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:753
 msgid "Display reminders for _past events"
 msgstr "Afișează mementouri pentru evenimente _trecute"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:753
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:767
 msgid "Reminders Options:"
 msgstr "Opțiuni memento:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:847
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:861
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
@@ -7641,6 +7684,10 @@ msgstr "Vreme"
 #: ../src/services/evolution-source-registry/builtin/webcal-stub.source.in.h:1
 msgid "On The Web"
 msgstr "Pe Web"
+
+#: ../src/services/evolution-source-registry/builtin/webdav-notes-stub.source.in.h:1
+msgid "WebDAV Notes"
+msgstr "Note WebDAV"
 
 #: ../src/services/evolution-source-registry/evolution-source-registry.c:41
 msgid "Don’t migrate user data from previous versions of Evolution"
@@ -8278,9 +8325,6 @@ msgstr "Nicio sursă nu a fost găsită\n"
 #~ msgid "You may not export keys with this cipher"
 #~ msgstr "Nu puteți exporta chei cu acest cifru"
 
-#~ msgid "No stream available"
-#~ msgstr "Niciun flux nu este disponibil."
-
 #~ msgid ""
 #~ "Could not write log entry: %s\n"
 #~ "Further operations on this server will not be replayed when you\n"
@@ -8468,9 +8512,6 @@ msgstr "Nicio sursă nu a fost găsită\n"
 
 #~ msgid "Could not find message body in FETCH response."
 #~ msgstr "Nu s-a putut găsi corpul mesajului în răspunsul căutat."
-
-#~ msgid "Could not open cache directory: "
-#~ msgstr "Nu s-a putut deschide dosarul cache: "
 
 #~ msgid "_Use custom command to connect to server"
 #~ msgstr "_Folosește comandă personalizată pentru conectarea la server"
