@@ -1219,6 +1219,11 @@ ebb_carddav_save_contact_sync (EBookMetaBackend *meta_backend,
 	g_free (etag);
 	g_free (uid);
 
+	if (overwrite_existing && g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_PRECONDITION_FAILED)) {
+		g_clear_error (&local_error);
+		local_error = EC_ERROR (E_CLIENT_ERROR_OUT_OF_SYNC);
+	}
+
 	if (local_error) {
 		ebb_carddav_check_credentials_error (bbdav, webdav, local_error);
 		g_propagate_error (error, local_error);
@@ -1303,6 +1308,9 @@ ebb_carddav_remove_contact_sync (EBookMetaBackend *meta_backend,
 	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
 		g_clear_error (&local_error);
 		success = TRUE;
+	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_PRECONDITION_FAILED)) {
+		g_clear_error (&local_error);
+		local_error = EC_ERROR (E_CLIENT_ERROR_OUT_OF_SYNC);
 	}
 
 	if (local_error) {
