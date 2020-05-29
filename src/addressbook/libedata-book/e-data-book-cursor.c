@@ -493,7 +493,7 @@ calculate_step_position (EDataBookCursor *cursor,
                          gint results)
 {
 	EDataBookCursorPrivate *priv = cursor->priv;
-	gint new_position;
+	gint new_position = 0;
 	gint offset = results;
 
 	g_return_if_fail (origin == E_BOOK_CURSOR_ORIGIN_CURRENT ||
