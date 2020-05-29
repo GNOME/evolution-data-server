@@ -1,3 +1,19 @@
+Evolution-Data-Server 3.36.3 2020-05-29
+---------------------------------------
+
+Bug Fixes:
+	I#101 - DAV backends: Limit server requests after getting online (Milan Crha)
+	I#210 - Global buffer overflow in e_contact_check_attr_type_value_used() (Milan Crha)
+	I#211 - IMAPx: No IDLE after extraneous connection reset (Milan Crha)
+	I#212 - EWebDAVSession: Ignore text/plain server responses on success (Milan Crha)
+	I#213 - camel_mime_filter_backup() calls memcpy(null, ...) (Milan Crha)
+	I#219 - Search folder content rebuilt after a change in it (Milan Crha)
+	evo-I#915 - Fix some issues reported by Clang's ubsan sanitizer (Milan Crha)
+
+Miscellaneous:
+	CamelFilterDriver: do_shell: NULL-terminate the arguments array (Milan Crha)
+	ECollectionBackend: Limit how often checks for new child sources (Milan Crha)
+
 Evolution-Data-Server 3.36.2 2020-04-24
 ---------------------------------------
 
