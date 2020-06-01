@@ -72,6 +72,53 @@ get_db_safe_string (const gchar *str)
 }
 
 /* Configuration of your sexp expression */
+static CamelSExpResult *
+func_and_or (CamelSExp *f,
+	     gint argc,
+	     struct _CamelSExpTerm **argv,
+	     const gchar *term)
+{
+	CamelSExpResult *r, *r1;
+	GString *string;
+	gint i;
+
+	string = NULL;
+
+	for (i = 0; i < argc; i++) {
+		r1 = camel_sexp_term_eval (f, argv[i]);
+
+		if (r1->type == CAMEL_SEXP_RES_STRING &&
+		    r1->value.string && *r1->value.string) {
+			if (!string)
+				string = g_string_new ("( ");
+
+			if (string->len > 2) {
+				g_string_append_c (string, ' ');
+				g_string_append (string, term);
+				g_string_append_c (string, ' ');
+			}
+
+			g_string_append (string, r1->value.string);
+		}
+
+		camel_sexp_result_free (f, r1);
+	}
+
+	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_STRING);
+
+	if (string) {
+		if (string->len == 2)
+			g_string_set_size (string, 0);
+		else
+			g_string_append (string, " )");
+
+		r->value.string = g_string_free (string, FALSE);
+	} else {
+		r->value.string = g_strdup ("");
+	}
+
+	return r;
+}
 
 static CamelSExpResult *
 func_and (CamelSExp *f,
@@ -79,32 +126,10 @@ func_and (CamelSExp *f,
           struct _CamelSExpTerm **argv,
           gpointer data)
 {
-	CamelSExpResult *r, *r1;
-	GString *string;
-	gint i;
 
-	d (printf ("executing and: %d", argc));
+	d (printf ("executing and: %d\n", argc));
 
-	string = g_string_new ("( ");
-	for (i = 0; i < argc; i++) {
-		r1 = camel_sexp_term_eval (f, argv[i]);
-
-		if (r1->type != CAMEL_SEXP_RES_STRING) {
-			camel_sexp_result_free (f, r1);
-			continue;
-		}
-		if (r1->value.string && *r1->value.string)
-			g_string_append_printf (string, "%s%s", r1->value.string, ((argc > 1) && (i != argc - 1)) ? " AND ":"");
-		camel_sexp_result_free (f, r1);
-	}
-	g_string_append (string, " )");
-	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_STRING);
-
-	if (string->len == 4)
-		g_string_set_size (string, 0);
-	r->value.string = g_string_free (string, FALSE);
-
-	return r;
+	return func_and_or (f, argc, argv, "AND");
 }
 
 static CamelSExpResult *
@@ -113,28 +138,9 @@ func_or (CamelSExp *f,
          struct _CamelSExpTerm **argv,
          gpointer data)
 {
-	CamelSExpResult *r, *r1;
-	GString *string;
-	gint i;
+	d (printf ("executing or: %d\n", argc));
 
-	d (printf ("executing or: %d", argc));
-
-	string = g_string_new ("( ");
-	for (i = 0; i < argc; i++) {
-		r1 = camel_sexp_term_eval (f, argv[i]);
-
-		if (r1->type != CAMEL_SEXP_RES_STRING) {
-			camel_sexp_result_free (f, r1);
-			continue;
-		}
-		g_string_append_printf (string, "%s%s", r1->value.string, ((argc > 1) && (i != argc - 1)) ? " OR ":"");
-		camel_sexp_result_free (f, r1);
-	}
-	g_string_append (string, " )");
-
-	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_STRING);
-	r->value.string = g_string_free (string, FALSE);
-	return r;
+	return func_and_or (f, argc, argv, "OR");
 }
 
 static CamelSExpResult *
@@ -145,7 +151,7 @@ func_not (CamelSExp *f,
 {
 	CamelSExpResult *r = NULL, *r1;
 
-	d (printf ("executing not: %d", argc));
+	d (printf ("executing not: %d\n", argc));
 	r1 = camel_sexp_term_eval (f, argv[0]);
 
 	if (r1->type == CAMEL_SEXP_RES_STRING) {
@@ -153,9 +159,10 @@ func_not (CamelSExp *f,
 		/* HACK: Fix and handle completed-on better. */
 		if (g_strcmp0 (r1->value.string, "( (usertags LIKE '%completed-on 0%' AND usertags LIKE '%completed-on%') )") == 0)
 			r->value.string = g_strdup ("( (not (usertags LIKE '%completed-on 0%')) AND usertags LIKE '%completed-on%' )");
+		else if (r1->value.string && *r1->value.string)
+			r->value.string = g_strdup_printf ("(NOT (%s))", r1->value.string);
 		else
-			r->value.string = g_strdup_printf (
-				"(NOT (%s))", r1->value.string);
+			r->value.string = g_strdup ("");
 	}
 	camel_sexp_result_free (f, r1);
 
@@ -325,7 +332,7 @@ match_all (struct _CamelSExp *f,
 {
 	CamelSExpResult *r;
 
-	d (printf ("executing match-all: %d", argc));
+	d (printf ("executing match-all: %d\n", argc));
 	if (argc == 0) {
 		r = camel_sexp_result_new (f, CAMEL_SEXP_RES_STRING);
 		r->value.string = g_strdup ("1");
@@ -350,7 +357,7 @@ match_threads (struct _CamelSExp *f,
 	gint i;
 	GString *str = g_string_new ("( ");
 
-	d (printf ("executing match-threads: %d", argc));
+	d (printf ("executing match-threads: %d\n", argc));
 
 	for (i = 1; i < argc; i++) {
 		r = camel_sexp_term_eval (f, argv[i]);
@@ -434,7 +441,7 @@ header_contains (struct _CamelSExp *f,
                  struct _CamelSExpResult **argv,
                  gpointer data)
 {
-	d (printf ("executing header-contains: %d", argc));
+	d (printf ("executing header-contains: %d\n", argc));
 
 	return check_header (f, argc, argv, data, CAMEL_SEARCH_MATCH_CONTAINS);
 }
@@ -445,7 +452,7 @@ header_has_words (struct _CamelSExp *f,
                   struct _CamelSExpResult **argv,
                   gpointer data)
 {
-	d (printf ("executing header-has-word: %d", argc));
+	d (printf ("executing header-has-word: %d\n", argc));
 
 	return check_header (f, argc, argv, data, CAMEL_SEARCH_MATCH_WORD);
 }
@@ -456,7 +463,7 @@ header_matches (struct _CamelSExp *f,
                 struct _CamelSExpResult **argv,
                 gpointer data)
 {
-	d (printf ("executing header-matches: %d", argc));
+	d (printf ("executing header-matches: %d\n", argc));
 
 	return check_header (f, argc, argv, data, CAMEL_SEARCH_MATCH_EXACT);
 }
@@ -467,7 +474,7 @@ header_starts_with (struct _CamelSExp *f,
                     struct _CamelSExpResult **argv,
                     gpointer data)
 {
-	d (printf ("executing header-starts-with: %d", argc));
+	d (printf ("executing header-starts-with: %d\n", argc));
 
 	return check_header (f, argc, argv, data, CAMEL_SEARCH_MATCH_STARTS);
 }
@@ -478,7 +485,7 @@ header_ends_with (struct _CamelSExp *f,
                   struct _CamelSExpResult **argv,
                   gpointer data)
 {
-	d (printf ("executing header-ends-with: %d", argc));
+	d (printf ("executing header-ends-with: %d\n", argc));
 
 	return check_header (f, argc, argv, data, CAMEL_SEARCH_MATCH_ENDS);
 }
@@ -492,7 +499,7 @@ header_exists (struct _CamelSExp *f,
 	CamelSExpResult *r;
 	gchar *headername;
 
-	d (printf ("executing header-exists: %d", argc));
+	d (printf ("executing header-exists: %d\n", argc));
 
 	headername = camel_db_get_column_name (argv[0]->value.string);
 	if (!headername) {
@@ -517,7 +524,7 @@ user_tag (struct _CamelSExp *f,
 {
 	CamelSExpResult *r;
 
-	d (printf ("executing user-tag: %d", argc));
+	d (printf ("executing user-tag: %d\n", argc));
 
 	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_STRING);
 	/* Hacks no otherway to fix these really :( */
@@ -541,7 +548,7 @@ user_flag (struct _CamelSExp *f,
 	CamelSExpResult *r;
 	gchar *tstr, *qstr;
 
-	d (printf ("executing user-flag: %d", argc));
+	d (printf ("executing user-flag: %d\n", argc));
 
 	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_STRING);
 
@@ -567,7 +574,7 @@ system_flag (struct _CamelSExp *f,
 	CamelSExpResult *r;
 	gchar *tstr;
 
-	d (printf ("executing system-flag: %d", argc));
+	d (printf ("executing system-flag: %d\n", argc));
 
 	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_STRING);
 
