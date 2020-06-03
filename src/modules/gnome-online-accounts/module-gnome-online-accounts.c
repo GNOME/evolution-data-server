@@ -127,6 +127,9 @@ gnome_online_accounts_get_backend_name (const gchar *goa_provider_type)
 	if (g_str_equal (goa_provider_type, "owncloud"))
 		eds_backend_name = "webdav";
 
+	if (g_str_equal (goa_provider_type, "fastmail"))
+		eds_backend_name = "webdav";
+
 	if (g_str_equal (goa_provider_type, "windows_live"))
 		eds_backend_name = "outlook";
 
