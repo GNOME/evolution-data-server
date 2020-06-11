@@ -75,6 +75,8 @@ CamelIMAPXStore *
 		camel_imapx_search_ref_store	(CamelIMAPXSearch *search);
 void		camel_imapx_search_set_store	(CamelIMAPXSearch *search,
 						 CamelIMAPXStore *imapx_store);
+void		camel_imapx_search_clear_cached_results
+						(CamelIMAPXSearch *search);
 void		camel_imapx_search_set_cancellable_and_error
 						(CamelIMAPXSearch *search,
 						 GCancellable *cancellable,

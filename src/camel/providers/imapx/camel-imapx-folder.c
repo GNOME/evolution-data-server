@@ -347,12 +347,14 @@ imapx_search_by_uids (CamelFolder *folder,
 	imapx_search = CAMEL_IMAPX_SEARCH (imapx_folder->search);
 
 	camel_folder_search_set_folder (imapx_folder->search, folder);
+	camel_imapx_search_clear_cached_results (imapx_search);
 	camel_imapx_search_set_cancellable_and_error (imapx_search, cancellable, error);
 
 	matches = camel_folder_search_search (
 		imapx_folder->search, expression, uids, cancellable, error);
 
 	camel_imapx_search_set_cancellable_and_error (imapx_search, NULL, NULL);
+	camel_imapx_search_clear_cached_results (imapx_search);
 
 	g_mutex_unlock (&imapx_folder->search_lock);
 
@@ -376,12 +378,14 @@ imapx_count_by_expression (CamelFolder *folder,
 	imapx_search = CAMEL_IMAPX_SEARCH (imapx_folder->search);
 
 	camel_folder_search_set_folder (imapx_folder->search, folder);
+	camel_imapx_search_clear_cached_results (imapx_search);
 	camel_imapx_search_set_cancellable_and_error (imapx_search, cancellable, error);
 
 	matches = camel_folder_search_count (
 		imapx_folder->search, expression, cancellable, error);
 
 	camel_imapx_search_set_cancellable_and_error (imapx_search, NULL, NULL);
+	camel_imapx_search_clear_cached_results (imapx_search);
 
 	g_mutex_unlock (&imapx_folder->search_lock);
 
@@ -405,12 +409,14 @@ imapx_search_by_expression (CamelFolder *folder,
 	imapx_search = CAMEL_IMAPX_SEARCH (imapx_folder->search);
 
 	camel_folder_search_set_folder (imapx_folder->search, folder);
+	camel_imapx_search_clear_cached_results (imapx_search);
 	camel_imapx_search_set_cancellable_and_error (imapx_search, cancellable, error);
 
 	matches = camel_folder_search_search (
 		imapx_folder->search, expression, NULL, cancellable, error);
 
 	camel_imapx_search_set_cancellable_and_error (imapx_search, NULL, NULL);
+	camel_imapx_search_clear_cached_results (imapx_search);
 
 	g_mutex_unlock (&imapx_folder->search_lock);
 
