@@ -617,8 +617,10 @@ match_words_1message (CamelDataWrapper *object,
 			if (camel_ustrstrcase ((const gchar *) byte_array->data, words->words[i]->word) != NULL) {
 				*mask |= (1 << i);
 				/* shortcut a match */
-				if (*mask == (1 << (words->len)) - 1)
-					return TRUE;
+				if (*mask == (1 << (words->len)) - 1) {
+					truth = TRUE;
+					break;
+				}
 			}
 		}
 
