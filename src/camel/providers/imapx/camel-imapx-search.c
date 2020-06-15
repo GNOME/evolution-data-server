@@ -244,31 +244,6 @@ imapx_search_process_criteria (CamelSExp *sexp,
 		}
 	}
 
-	info = camel_folder_search_get_current_message_info (search);
-
-	if (info) {
-		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
-		result->value.boolean = cached_results ? g_hash_table_contains (cached_results, camel_message_info_get_uid (info)) : (uids && uids->len > 0);
-	} else {
-		if (cached_results) {
-			GHashTableIter iter;
-			gpointer key;
-
-			g_warn_if_fail (uids == NULL);
-
-			uids = g_ptr_array_sized_new (g_hash_table_size (cached_results));
-
-			g_hash_table_iter_init (&iter, cached_results);
-
-			while (g_hash_table_iter_next (&iter, &key, NULL)) {
-				g_ptr_array_add (uids, (gpointer) camel_pstring_strdup (key));
-			}
-		}
-
-		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_ARRAY_PTR);
-		result->value.ptrarray = g_ptr_array_ref (uids);
-	}
-
 	if (!cached_results) {
 		cached_results = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
 
@@ -283,6 +258,29 @@ imapx_search_process_criteria (CamelSExp *sexp,
 		g_hash_table_insert (imapx_search->priv->cached_results, criteria_desc, cached_results);
 	} else {
 		g_free (criteria_desc);
+	}
+
+	info = camel_folder_search_get_current_message_info (search);
+
+	if (info) {
+		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
+		result->value.boolean = g_hash_table_contains (cached_results, camel_message_info_get_uid (info));
+	} else {
+		if (!uids) {
+			GHashTableIter iter;
+			gpointer key;
+
+			uids = g_ptr_array_sized_new (g_hash_table_size (cached_results));
+
+			g_hash_table_iter_init (&iter, cached_results);
+
+			while (g_hash_table_iter_next (&iter, &key, NULL)) {
+				g_ptr_array_add (uids, (gpointer) camel_pstring_strdup (key));
+			}
+		}
+
+		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_ARRAY_PTR);
+		result->value.ptrarray = g_ptr_array_ref (uids);
 	}
 
 	if (uids)
