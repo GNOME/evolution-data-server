@@ -110,215 +110,196 @@ e_webdav_discover_propfind_uri_sync (EWebDAVSession *webdav,
 
 static gboolean
 e_webdav_discover_traverse_propfind_response_cb (EWebDAVSession *webdav,
-						 xmlXPathContextPtr xpath_ctx,
-						 const gchar *xpath_prop_prefix,
+						 xmlNodePtr prop_node,
 						 const SoupURI *request_uri,
 						 const gchar *href,
 						 guint status_code,
 						 gpointer user_data)
 {
 	WebDAVDiscoverData *wdd = user_data;
+	xmlNodePtr set_node, node;
+	const xmlChar *href_value;
+	gboolean is_calendar, is_addressbook;
 
 	g_return_val_if_fail (wdd != NULL, FALSE);
 
-	if (!xpath_prop_prefix) {
-		e_xml_xpath_context_register_namespaces (xpath_ctx,
-			"C", E_WEBDAV_NS_CALDAV,
-			"A", E_WEBDAV_NS_CARDDAV,
-			NULL);
-	} else if (status_code == SOUP_STATUS_OK) {
-		xmlXPathObjectPtr xpath_obj;
-		gchar *principal_href, *full_href;
-		gboolean is_calendar, is_addressbook;
+	if (status_code != SOUP_STATUS_OK)
+		return TRUE;
 
-		xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/A:addressbook-home-set/D:href", xpath_prop_prefix);
-		if (xpath_obj) {
-			gint ii, length;
+	set_node = e_xml_find_child (prop_node, E_WEBDAV_NS_CARDDAV, "addressbook-home-set");
 
-			length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
+	for (node = e_xml_find_child (set_node, E_WEBDAV_NS_DAV, "href");
+	     node && !g_cancellable_is_cancelled (wdd->cancellable);
+	     node = e_xml_find_next_sibling (node, E_WEBDAV_NS_DAV, "href")) {
+		const xmlChar *home_set_href;
 
-			for (ii = 0; ii < length && !g_cancellable_is_cancelled (wdd->cancellable); ii++) {
-				gchar *home_set_href;
+		home_set_href = e_xml_get_node_text (node);
 
-				full_href = NULL;
-
-				home_set_href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/A:addressbook-home-set/D:href[%d]", xpath_prop_prefix, ii + 1);
-				if (home_set_href && *home_set_href) {
-					GSList *resources = NULL;
-					GError *local_error = NULL;
-
-					full_href = e_webdav_session_ensure_full_uri (webdav, request_uri, home_set_href);
-					if (full_href && *full_href && GPOINTER_TO_INT (g_hash_table_contains (wdd->covered_hrefs, full_href)) != 2 &&
-					    e_webdav_session_list_sync (webdav, full_href, E_WEBDAV_DEPTH_THIS_AND_CHILDREN,
-						E_WEBDAV_LIST_SUPPORTS | E_WEBDAV_LIST_DISPLAY_NAME | E_WEBDAV_LIST_DESCRIPTION |
-						E_WEBDAV_LIST_COLOR | E_WEBDAV_LIST_ONLY_ADDRESSBOOK | E_WEBDAV_LIST_ALL,
-						&resources, wdd->cancellable, &local_error)) {
-						e_webdav_discover_split_resources (wdd, resources);
-						g_slist_free_full (resources, e_webdav_resource_free);
-					}
-
-					if (full_href && *full_href)
-						g_hash_table_insert (wdd->covered_hrefs, g_strdup (full_href), GINT_TO_POINTER (2));
-
-					if (local_error && wdd->error && !*wdd->error)
-						g_propagate_error (wdd->error, local_error);
-					else
-						g_clear_error (&local_error);
-				}
-
-				g_free (home_set_href);
-				g_free (full_href);
-			}
-
-			xmlXPathFreeObject (xpath_obj);
-		}
-
-		xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/C:calendar-home-set/D:href", xpath_prop_prefix);
-		if (xpath_obj) {
-			gint ii, length;
-
-			length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
-
-			for (ii = 0; ii < length && !g_cancellable_is_cancelled (wdd->cancellable); ii++) {
-				gchar *home_set_href, *full_href = NULL;
-
-				home_set_href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/C:calendar-home-set/D:href[%d]", xpath_prop_prefix, ii + 1);
-				if (home_set_href && *home_set_href) {
-					GSList *resources = NULL;
-					GError *local_error = NULL;
-
-					full_href = e_webdav_session_ensure_full_uri (webdav, request_uri, home_set_href);
-					if (full_href && *full_href && GPOINTER_TO_INT (g_hash_table_contains (wdd->covered_hrefs, full_href)) != 2 &&
-					    e_webdav_session_list_sync (webdav, full_href, E_WEBDAV_DEPTH_THIS_AND_CHILDREN,
-						E_WEBDAV_LIST_SUPPORTS | E_WEBDAV_LIST_DISPLAY_NAME | E_WEBDAV_LIST_DESCRIPTION |
-						E_WEBDAV_LIST_COLOR | E_WEBDAV_LIST_ONLY_CALENDAR | E_WEBDAV_LIST_ALL,
-						&resources, wdd->cancellable, &local_error)) {
-						e_webdav_discover_split_resources (wdd, resources);
-						g_slist_free_full (resources, e_webdav_resource_free);
-					}
-
-					if (full_href && *full_href)
-						g_hash_table_insert (wdd->covered_hrefs, g_strdup (full_href), GINT_TO_POINTER (2));
-
-					if (local_error && wdd->error && !*wdd->error)
-						g_propagate_error (wdd->error, local_error);
-					else
-						g_clear_error (&local_error);
-				}
-
-				g_free (home_set_href);
-				g_free (full_href);
-			}
-
-			xmlXPathFreeObject (xpath_obj);
-		}
-
-		xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/C:calendar-user-address-set/D:href", xpath_prop_prefix);
-		if (xpath_obj) {
-			gint ii, length;
-
-			if (wdd->out_calendar_user_addresses)
-				length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
-			else
-				length = 0;
-
-			for (ii = 0; ii < length; ii++) {
-				gchar *address_href;
-
-				address_href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/C:calendar-user-address-set/D:href[%d]", xpath_prop_prefix, ii + 1);
-				if (address_href && g_ascii_strncasecmp (address_href, "mailto:", 7) == 0) {
-					/* Skip the "mailto:" prefix */
-					const gchar *address = address_href + 7;
-
-					/* Avoid duplicates and empty values */
-					if (*address &&
-					    !g_slist_find_custom (*wdd->out_calendar_user_addresses, address, (GCompareFunc) g_ascii_strcasecmp)) {
-						*wdd->out_calendar_user_addresses = g_slist_prepend (
-							*wdd->out_calendar_user_addresses, g_strdup (address));
-					}
-				}
-
-				g_free (address_href);
-			}
-
-			xmlXPathFreeObject (xpath_obj);
-		}
-
-		principal_href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:current-user-principal/D:href", xpath_prop_prefix);
-		if (principal_href && *principal_href && !g_cancellable_is_cancelled (wdd->cancellable)) {
-			full_href = e_webdav_session_ensure_full_uri (webdav, request_uri, principal_href);
-
-			if (full_href && *full_href)
-				e_webdav_discover_propfind_uri_sync (webdav, wdd, full_href, TRUE);
-
-			g_free (full_href);
-			g_free (principal_href);
-
-			return TRUE;
-		}
-
-		g_free (principal_href);
-
-		principal_href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:principal-URL/D:href", xpath_prop_prefix);
-		if (principal_href && *principal_href && !g_cancellable_is_cancelled (wdd->cancellable)) {
-			full_href = e_webdav_session_ensure_full_uri (webdav, request_uri, principal_href);
-
-			if (full_href && *full_href)
-				e_webdav_discover_propfind_uri_sync (webdav, wdd, full_href, TRUE);
-
-			g_free (full_href);
-			g_free (principal_href);
-
-			return TRUE;
-		}
-
-		g_free (principal_href);
-
-		is_calendar = e_xml_xpath_eval_exists (xpath_ctx, "%s/D:resourcetype/C:calendar", xpath_prop_prefix);
-		is_addressbook = e_xml_xpath_eval_exists (xpath_ctx, "%s/D:resourcetype/A:addressbook", xpath_prop_prefix);
-
-		if (is_calendar || is_addressbook) {
+		if (home_set_href && *home_set_href) {
 			GSList *resources = NULL;
 			GError *local_error = NULL;
+			gchar *full_href;
 
-			if (GPOINTER_TO_INT (g_hash_table_contains (wdd->covered_hrefs, href)) != 2 &&
-			    !g_cancellable_is_cancelled (wdd->cancellable) &&
-			    e_webdav_session_list_sync (webdav, href, E_WEBDAV_DEPTH_THIS,
-				E_WEBDAV_LIST_SUPPORTS | E_WEBDAV_LIST_DISPLAY_NAME | E_WEBDAV_LIST_DESCRIPTION | E_WEBDAV_LIST_COLOR |
-				(is_calendar ? E_WEBDAV_LIST_ONLY_CALENDAR : 0) | (is_addressbook ? E_WEBDAV_LIST_ONLY_ADDRESSBOOK : 0) | E_WEBDAV_LIST_ALL,
+			full_href = e_webdav_session_ensure_full_uri (webdav, request_uri, (const gchar *) home_set_href);
+
+			if (full_href && *full_href && GPOINTER_TO_INT (g_hash_table_contains (wdd->covered_hrefs, full_href)) != 2 &&
+			    e_webdav_session_list_sync (webdav, full_href, E_WEBDAV_DEPTH_THIS_AND_CHILDREN,
+				E_WEBDAV_LIST_SUPPORTS | E_WEBDAV_LIST_DISPLAY_NAME | E_WEBDAV_LIST_DESCRIPTION |
+				E_WEBDAV_LIST_COLOR | E_WEBDAV_LIST_ONLY_ADDRESSBOOK | E_WEBDAV_LIST_ALL,
 				&resources, wdd->cancellable, &local_error)) {
 				e_webdav_discover_split_resources (wdd, resources);
 				g_slist_free_full (resources, e_webdav_resource_free);
 			}
 
-			g_hash_table_insert (wdd->covered_hrefs, g_strdup (href), GINT_TO_POINTER (2));
+			if (full_href && *full_href)
+				g_hash_table_insert (wdd->covered_hrefs, g_strdup (full_href), GINT_TO_POINTER (2));
 
 			if (local_error && wdd->error && !*wdd->error)
 				g_propagate_error (wdd->error, local_error);
 			else
 				g_clear_error (&local_error);
-		}
 
-		if (((wdd->only_supports & (~CUSTOM_SUPPORTS_FLAGS)) == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
-		    (wdd->only_supports & E_WEBDAV_DISCOVER_SUPPORTS_WEBDAV_NOTES) != 0) &&
-		    (g_str_has_suffix (href, "/Notes") ||
-		    g_str_has_suffix (href, "/Notes/")) &&
-		    !e_webdav_discovery_already_discovered (href, wdd->calendars) &&
-		    e_xml_xpath_eval_exists (xpath_ctx, "%s/D:resourcetype/D:collection", xpath_prop_prefix)) {
+			g_free (full_href);
+		}
+	}
+
+	set_node = e_xml_find_child (prop_node, E_WEBDAV_NS_CALDAV, "calendar-home-set");
+
+	for (node = e_xml_find_child (set_node, E_WEBDAV_NS_DAV, "href");
+	     node && !g_cancellable_is_cancelled (wdd->cancellable);
+	     node = e_xml_find_next_sibling (node, E_WEBDAV_NS_DAV, "href")) {
+		const xmlChar *home_set_href;
+
+		home_set_href = e_xml_get_node_text (node);
+
+		if (home_set_href && *home_set_href) {
 			GSList *resources = NULL;
+			GError *local_error = NULL;
+			gchar *full_href;
 
-			resources = g_slist_prepend (NULL,
-				e_webdav_resource_new (E_WEBDAV_RESOURCE_KIND_WEBDAV_NOTES,
-					E_WEBDAV_RESOURCE_SUPPORTS_WEBDAV_NOTES, href, NULL,
-					_("Notes"),
-					NULL, 0, 0, 0, NULL, NULL));
+			full_href = e_webdav_session_ensure_full_uri (webdav, request_uri, (const gchar *) home_set_href);
 
-			e_webdav_discover_split_resources (wdd, resources);
+			if (full_href && *full_href && GPOINTER_TO_INT (g_hash_table_contains (wdd->covered_hrefs, full_href)) != 2 &&
+			    e_webdav_session_list_sync (webdav, full_href, E_WEBDAV_DEPTH_THIS_AND_CHILDREN,
+				E_WEBDAV_LIST_SUPPORTS | E_WEBDAV_LIST_DISPLAY_NAME | E_WEBDAV_LIST_DESCRIPTION |
+				E_WEBDAV_LIST_COLOR | E_WEBDAV_LIST_ONLY_CALENDAR | E_WEBDAV_LIST_ALL,
+				&resources, wdd->cancellable, &local_error)) {
+				e_webdav_discover_split_resources (wdd, resources);
+				g_slist_free_full (resources, e_webdav_resource_free);
+			}
 
-			g_slist_free_full (resources, e_webdav_resource_free);
+			if (full_href && *full_href)
+				g_hash_table_insert (wdd->covered_hrefs, g_strdup (full_href), GINT_TO_POINTER (2));
 
-			g_hash_table_insert (wdd->covered_hrefs, g_strdup (href), GINT_TO_POINTER (2));
+			if (local_error && wdd->error && !*wdd->error)
+				g_propagate_error (wdd->error, local_error);
+			else
+				g_clear_error (&local_error);
+
+			g_free (full_href);
 		}
+	}
+
+	if (wdd->out_calendar_user_addresses) {
+		set_node = e_xml_find_child (prop_node, E_WEBDAV_NS_CALDAV, "calendar-user-address-set");
+
+		for (node = e_xml_find_child (set_node, E_WEBDAV_NS_DAV, "href");
+		     node && !g_cancellable_is_cancelled (wdd->cancellable);
+		     node = e_xml_find_next_sibling (node, E_WEBDAV_NS_DAV, "href")) {
+			const xmlChar *address_href;
+
+			address_href = e_xml_get_node_text (node);
+
+			if (address_href && g_ascii_strncasecmp ((const gchar *) address_href, "mailto:", 7) == 0) {
+				/* Skip the "mailto:" prefix */
+				const gchar *address = (const gchar *) (address_href + 7);
+
+				/* Avoid duplicates and empty values */
+				if (*address &&
+				    !g_slist_find_custom (*wdd->out_calendar_user_addresses, address, (GCompareFunc) g_ascii_strcasecmp)) {
+					*wdd->out_calendar_user_addresses = g_slist_prepend (
+						*wdd->out_calendar_user_addresses, g_strdup (address));
+				}
+			}
+		}
+	}
+
+	node = e_xml_find_in_hierarchy (prop_node, E_WEBDAV_NS_DAV, "current-user-principal", E_WEBDAV_NS_DAV, "href", NULL, NULL);
+	href_value = e_xml_get_node_text (node);
+
+	if (href_value && *href_value && !g_cancellable_is_cancelled (wdd->cancellable)) {
+		gchar *full_href;
+
+		full_href = e_webdav_session_ensure_full_uri (webdav, request_uri, (const gchar *) href_value);
+
+		if (full_href && *full_href)
+			e_webdav_discover_propfind_uri_sync (webdav, wdd, full_href, TRUE);
+
+		g_free (full_href);
+
+		return TRUE;
+	}
+
+	node = e_xml_find_in_hierarchy (prop_node, E_WEBDAV_NS_DAV, "principal-URL", E_WEBDAV_NS_DAV, "href", NULL, NULL);
+	href_value = e_xml_get_node_text (node);
+
+	if (href_value && *href_value && !g_cancellable_is_cancelled (wdd->cancellable)) {
+		gchar *full_href;
+
+		full_href = e_webdav_session_ensure_full_uri (webdav, request_uri, (const gchar *) href_value);
+
+		if (full_href && *full_href)
+			e_webdav_discover_propfind_uri_sync (webdav, wdd, full_href, TRUE);
+
+		g_free (full_href);
+
+		return TRUE;
+	}
+
+	node = e_xml_find_child (prop_node, E_WEBDAV_NS_DAV, "resourcetype");
+	is_calendar = e_xml_find_child (node, E_WEBDAV_NS_CALDAV, "calendar") != NULL;
+	is_addressbook = e_xml_find_child (node, E_WEBDAV_NS_CARDDAV, "addressbook") != NULL;
+
+	if (is_calendar || is_addressbook) {
+		GSList *resources = NULL;
+		GError *local_error = NULL;
+
+		if (GPOINTER_TO_INT (g_hash_table_contains (wdd->covered_hrefs, href)) != 2 &&
+		    !g_cancellable_is_cancelled (wdd->cancellable) &&
+		    e_webdav_session_list_sync (webdav, href, E_WEBDAV_DEPTH_THIS,
+			E_WEBDAV_LIST_SUPPORTS | E_WEBDAV_LIST_DISPLAY_NAME | E_WEBDAV_LIST_DESCRIPTION | E_WEBDAV_LIST_COLOR |
+			(is_calendar ? E_WEBDAV_LIST_ONLY_CALENDAR : 0) | (is_addressbook ? E_WEBDAV_LIST_ONLY_ADDRESSBOOK : 0) | E_WEBDAV_LIST_ALL,
+			&resources, wdd->cancellable, &local_error)) {
+			e_webdav_discover_split_resources (wdd, resources);
+			g_slist_free_full (resources, e_webdav_resource_free);
+		}
+
+		g_hash_table_insert (wdd->covered_hrefs, g_strdup (href), GINT_TO_POINTER (2));
+
+		if (local_error && wdd->error && !*wdd->error)
+			g_propagate_error (wdd->error, local_error);
+		else
+			g_clear_error (&local_error);
+	}
+
+	if (((wdd->only_supports & (~CUSTOM_SUPPORTS_FLAGS)) == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
+	    (wdd->only_supports & E_WEBDAV_DISCOVER_SUPPORTS_WEBDAV_NOTES) != 0) &&
+	    (g_str_has_suffix (href, "/Notes") || g_str_has_suffix (href, "/Notes/")) &&
+	    !e_webdav_discovery_already_discovered (href, wdd->calendars) &&
+	    e_xml_find_in_hierarchy (prop_node, E_WEBDAV_NS_DAV, "resourcetype", E_WEBDAV_NS_DAV, "collection", NULL, NULL)) {
+		GSList *resources = NULL;
+
+		resources = g_slist_prepend (NULL,
+			e_webdav_resource_new (E_WEBDAV_RESOURCE_KIND_WEBDAV_NOTES,
+				E_WEBDAV_RESOURCE_SUPPORTS_WEBDAV_NOTES, href, NULL,
+				_("Notes"),
+				NULL, 0, 0, 0, NULL, NULL));
+
+		e_webdav_discover_split_resources (wdd, resources);
+
+		g_slist_free_full (resources, e_webdav_resource_free);
+
+		g_hash_table_insert (wdd->covered_hrefs, g_strdup (href), GINT_TO_POINTER (2));
 	}
 
 	return TRUE;

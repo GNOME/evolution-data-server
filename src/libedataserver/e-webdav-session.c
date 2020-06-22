@@ -752,8 +752,7 @@ e_webdav_session_new_request (EWebDAVSession *webdav,
 
 static gboolean
 e_webdav_session_extract_propstat_error_cb (EWebDAVSession *webdav,
-					    xmlXPathContextPtr xpath_ctx,
-					    const gchar *xpath_prop_prefix,
+					    xmlNodePtr prop_node,
 					    const SoupURI *request_uri,
 					    const gchar *href,
 					    guint status_code,
@@ -763,26 +762,31 @@ e_webdav_session_extract_propstat_error_cb (EWebDAVSession *webdav,
 
 	g_return_val_if_fail (error != NULL, FALSE);
 
-	if (!xpath_prop_prefix)
-		return TRUE;
-
 	if (status_code != SOUP_STATUS_OK && (
 	    status_code != SOUP_STATUS_FAILED_DEPENDENCY ||
 	    !*error)) {
-		gchar *description;
+		xmlNodePtr parent;
+		const xmlChar *description = NULL;
 
-		description = e_xml_xpath_eval_as_string (xpath_ctx, "%s/../D:responsedescription", xpath_prop_prefix);
-		if (!description || !*description) {
-			g_free (description);
+		parent = prop_node->parent;
+		if (parent) {
+			description = e_xml_find_child_and_get_text (parent, E_WEBDAV_NS_DAV, "responsedescription");
 
-			description = e_xml_xpath_eval_as_string (xpath_ctx, "%s/../../D:responsedescription", xpath_prop_prefix);
+			if (!description || !*description) {
+				description = NULL;
+				parent = parent->parent;
+				if (parent) {
+					description = e_xml_find_child_and_get_text (parent, E_WEBDAV_NS_DAV, "responsedescription");
+
+					if (!description || !*description)
+						description = NULL;
+				}
+			}
 		}
 
 		g_clear_error (error);
 		g_set_error_literal (error, SOUP_HTTP_ERROR, status_code,
-			e_soup_session_util_status_to_string (status_code, description));
-
-		g_free (description);
+			e_soup_session_util_status_to_string (status_code, (const gchar *) description));
 	}
 
 	return TRUE;
@@ -1413,13 +1417,7 @@ e_webdav_session_post_sync (EWebDAVSession *webdav,
  *
  * Issues PROPFIND request on the provided @uri, or, in case it's %NULL, on the URI
  * defined in associated #ESource. On success, calls @func for each returned
- * DAV:propstat. The provided XPath context has registered %E_WEBDAV_NS_DAV namespace
- * with prefix "D". It doesn't have any other namespace registered.
- *
- * The @func is called always at least once, with %NULL xpath_prop_prefix, which
- * is meant to let the caller setup the xpath_ctx, like to register its own namespaces
- * to it with e_xml_xpath_context_register_namespaces(). All other invocations of @func
- * will have xpath_prop_prefix non-%NULL.
+ * DAV:propstat.
  *
  * The @xml can be %NULL, in which case the server should behave like DAV:allprop request.
  *
@@ -1586,15 +1584,11 @@ e_webdav_session_proppatch_sync (EWebDAVSession *webdav,
  *
  * Issues REPORT request on the provided @uri, or, in case it's %NULL, on the URI
  * defined in associated #ESource. On success, calls @func for each returned
- * DAV:propstat. The provided XPath context has registered %E_WEBDAV_NS_DAV namespace
- * with prefix "D". It doesn't have any other namespace registered.
+ * DAV:propstat.
  *
  * The report can result in a multistatus response, but also to raw data. In case
  * the @func is provided and the result is a multistatus response, then it is traversed
- * using this @func. The @func is called always at least once, with %NULL xpath_prop_prefix,
- * which is meant to let the caller setup the xpath_ctx, like to register its own namespaces
- * to it with e_xml_xpath_context_register_namespaces(). All other invocations of @func
- * will have xpath_prop_prefix non-%NULL.
+ * using this @func.
  *
  * The optional @out_content_type can be used to get content type of the response.
  * Free it with g_free(), when no longer needed.
@@ -3128,20 +3122,22 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
 					     const SoupMessage *message,
 					     const GByteArray *xml_data,
 					     gboolean require_multistatus,
-					     const gchar *additional_ns_prefix,
-					     const gchar *additional_ns,
-					     const gchar *propstat_path_prefix,
+					     const gchar *top_path_ns_href1,
+					     const gchar *top_path_name1,
+					     const gchar *top_path_ns_href2,
+					     const gchar *top_path_name2,
 					     EWebDAVPropstatTraverseFunc func,
 					     gpointer func_user_data,
 					     GError **error)
 {
 	SoupURI *request_uri = NULL;
 	xmlDocPtr doc;
-	xmlXPathContextPtr xpath_ctx;
+	xmlNodePtr top_node, node;
+	gboolean do_stop = FALSE;
 
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
 	g_return_val_if_fail (xml_data != NULL, FALSE);
-	g_return_val_if_fail (propstat_path_prefix != NULL, FALSE);
+	g_return_val_if_fail (top_path_name1 != NULL, FALSE);
 	g_return_val_if_fail (func != NULL, FALSE);
 
 	if (message) {
@@ -3182,75 +3178,81 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
 		return FALSE;
 	}
 
-	xpath_ctx = e_xml_new_xpath_context_with_namespaces (doc,
-		"D", E_WEBDAV_NS_DAV,
-		additional_ns_prefix, additional_ns,
-		NULL);
+	top_node = xmlDocGetRootElement (doc);
 
-	if (xpath_ctx &&
-	    func (webdav, xpath_ctx, NULL, request_uri, NULL, SOUP_STATUS_NONE, func_user_data)) {
-		xmlXPathObjectPtr xpath_obj_response;
+	if (!top_node) {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
+			_("XML data does not have root node"));
 
-		xpath_obj_response = e_xml_xpath_eval (xpath_ctx, "%s", propstat_path_prefix);
+		xmlFreeDoc (doc);
 
-		if (xpath_obj_response) {
-			gboolean do_stop = FALSE;
-			gint response_index, response_length;
-
-			response_length = xmlXPathNodeSetGetLength (xpath_obj_response->nodesetval);
-
-			for (response_index = 0; response_index < response_length && !do_stop; response_index++) {
-				xmlXPathObjectPtr xpath_obj_propstat;
-
-				xpath_obj_propstat = e_xml_xpath_eval (xpath_ctx,
-					"%s[%d]/D:propstat",
-					propstat_path_prefix, response_index + 1);
-
-				if (xpath_obj_propstat) {
-					gchar *href;
-					gint propstat_index, propstat_length;
-
-					href = e_xml_xpath_eval_as_string (xpath_ctx, "%s[%d]/D:href", propstat_path_prefix, response_index + 1);
-					if (href) {
-						gchar *full_uri;
-
-						full_uri = e_webdav_session_ensure_full_uri (webdav, request_uri, href);
-						if (full_uri) {
-							g_free (href);
-							href = full_uri;
-						}
-					}
-
-					propstat_length = xmlXPathNodeSetGetLength (xpath_obj_propstat->nodesetval);
-
-					for (propstat_index = 0; propstat_index < propstat_length && !do_stop; propstat_index++) {
-						gchar *status, *propstat_prefix;
-						guint status_code;
-
-						propstat_prefix = g_strdup_printf ("%s[%d]/D:propstat[%d]/D:prop",
-							propstat_path_prefix, response_index + 1, propstat_index + 1);
-
-						status = e_xml_xpath_eval_as_string (xpath_ctx, "%s/../D:status", propstat_prefix);
-						if (!status || !soup_headers_parse_status_line (status, NULL, &status_code, NULL))
-							status_code = 0;
-						g_free (status);
-
-						do_stop = !func (webdav, xpath_ctx, propstat_prefix, request_uri, href, status_code, func_user_data);
-
-						g_free (propstat_prefix);
-					}
-
-					xmlXPathFreeObject (xpath_obj_propstat);
-					g_free (href);
-				}
-			}
-
-			xmlXPathFreeObject (xpath_obj_response);
-		}
+		return FALSE;
 	}
 
-	if (xpath_ctx)
-		xmlXPathFreeContext (xpath_ctx);
+	top_node = e_xml_find_sibling (top_node, top_path_ns_href1, top_path_name1);
+
+	if (top_path_name2)
+		top_node = e_xml_find_child (top_node, top_path_ns_href2, top_path_name2);
+
+	if (!top_node) {
+		gchar *tmp;
+
+		tmp = g_strconcat (
+			top_path_ns_href1 ? top_path_ns_href1 : "",
+			top_path_ns_href1 ? ":" : "",
+			top_path_name1,
+			top_path_name2 ? "/" : "",
+			(top_path_name2 && top_path_ns_href2) ? top_path_ns_href2 : "",
+			(top_path_name2 && top_path_ns_href2) ? ":" : "",
+			top_path_name2 ? top_path_name2 : "",
+			NULL);
+
+		g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
+			_("XML data doesn't have required structure (%s)"), tmp);
+
+		xmlFreeDoc (doc);
+		g_free (tmp);
+
+		return FALSE;
+	}
+
+	for (node = top_node; node && !do_stop; node = xmlNextElementSibling (node)) {
+		xmlNodePtr href_node = NULL, propstat_node = NULL;
+		xmlNodePtr status_node = NULL, prop_node = NULL;
+		const xmlChar *href_content, *status_content;
+		guint status_code;
+		gchar *full_uri;
+
+		e_xml_find_children_nodes (node, 2,
+			E_WEBDAV_NS_DAV, "href", &href_node,
+			E_WEBDAV_NS_DAV, "propstat", &propstat_node);
+
+		if (!href_node || !propstat_node)
+			continue;
+
+		href_content = e_xml_get_node_text (href_node);
+		g_warn_if_fail (href_content != NULL);
+
+		if (!href_content)
+			continue;
+
+		full_uri = e_webdav_session_ensure_full_uri (webdav, request_uri, (const gchar *) href_content);
+
+		e_xml_find_children_nodes (propstat_node, 2,
+			E_WEBDAV_NS_DAV, "status", &status_node,
+			E_WEBDAV_NS_DAV, "prop", &prop_node);
+
+		status_content = e_xml_get_node_text (status_node);
+
+		if (!status_content || !soup_headers_parse_status_line ((const gchar *) status_content, NULL, &status_code, NULL))
+			status_code = 0;
+
+		if (prop_node && prop_node->children)
+			do_stop = !func (webdav, prop_node, request_uri, full_uri ? full_uri : (const gchar *) href_content, status_code, func_user_data);
+
+		g_free (full_uri);
+	}
+
 	xmlFreeDoc (doc);
 
 	return TRUE;
@@ -3266,16 +3268,9 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
  * @error: return location for a #GError, or %NULL
  *
  * Traverses a DAV:multistatus response and calls @func for each returned DAV:propstat.
- * The provided XPath context has registered %E_WEBDAV_NS_DAV namespace with prefix "D".
- * It doesn't have any other namespace registered.
  *
  * The @message, if provided, is used to verify that the response is a multi-status
  * and that the Content-Type is properly set. It's used to get a request URI as well.
- *
- * The @func is called always at least once, with %NULL xpath_prop_prefix, which
- * is meant to let the caller setup the xpath_ctx, like to register its own namespaces
- * to it with e_xml_xpath_context_register_namespaces(). All other invocations of @func
- * will have xpath_prop_prefix non-%NULL.
  *
  * Returns: Whether succeeded.
  *
@@ -3294,7 +3289,8 @@ e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
 	g_return_val_if_fail (func != NULL, FALSE);
 
 	return e_webdav_session_traverse_propstat_response (webdav, message, xml_data, TRUE,
-		NULL, NULL, "/D:multistatus/D:response",
+		E_WEBDAV_NS_DAV, "multistatus",
+		E_WEBDAV_NS_DAV, "response",
 		func, func_user_data, error);
 }
 
@@ -3308,16 +3304,9 @@ e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
  * @error: return location for a #GError, or %NULL
  *
  * Traverses a DAV:mkcol-response response and calls @func for each returned DAV:propstat.
- * The provided XPath context has registered %E_WEBDAV_NS_DAV namespace with prefix "D".
- * It doesn't have any other namespace registered.
  *
  * The @message, if provided, is used to verify that the response is an XML Content-Type.
  * It's used to get the request URI as well.
- *
- * The @func is called always at least once, with %NULL xpath_prop_prefix, which
- * is meant to let the caller setup the xpath_ctx, like to register its own namespaces
- * to it with e_xml_xpath_context_register_namespaces(). All other invocations of @func
- * will have xpath_prop_prefix non-%NULL.
  *
  * Returns: Whether succeeded.
  *
@@ -3336,7 +3325,8 @@ e_webdav_session_traverse_mkcol_response (EWebDAVSession *webdav,
 	g_return_val_if_fail (func != NULL, FALSE);
 
 	return e_webdav_session_traverse_propstat_response (webdav, message, xml_data, FALSE,
-		NULL, NULL, "/D:mkcol-response",
+		E_WEBDAV_NS_DAV, "mkcol-response",
+		NULL, NULL,
 		func, func_user_data, error);
 }
 
@@ -3350,16 +3340,9 @@ e_webdav_session_traverse_mkcol_response (EWebDAVSession *webdav,
  * @error: return location for a #GError, or %NULL
  *
  * Traverses a CALDAV:mkcalendar-response response and calls @func for each returned DAV:propstat.
- * The provided XPath context has registered %E_WEBDAV_NS_DAV namespace with prefix "D" and
- * %E_WEBDAV_NS_CALDAV namespace with prefix "C". It doesn't have any other namespace registered.
  *
  * The @message, if provided, is used to verify that the response is an XML Content-Type.
  * It's used to get the request URI as well.
- *
- * The @func is called always at least once, with %NULL xpath_prop_prefix, which
- * is meant to let the caller setup the xpath_ctx, like to register its own namespaces
- * to it with e_xml_xpath_context_register_namespaces(). All other invocations of @func
- * will have xpath_prop_prefix non-%NULL.
  *
  * Returns: Whether succeeded.
  *
@@ -3378,40 +3361,29 @@ e_webdav_session_traverse_mkcalendar_response (EWebDAVSession *webdav,
 	g_return_val_if_fail (func != NULL, FALSE);
 
 	return e_webdav_session_traverse_propstat_response (webdav, message, xml_data, FALSE,
-		"C", E_WEBDAV_NS_CALDAV, "/C:mkcalendar-response",
+		E_WEBDAV_NS_CALDAV, "mkcalendar-response",
+		NULL, NULL,
 		func, func_user_data, error);
 }
 
 static gboolean
 e_webdav_session_getctag_cb (EWebDAVSession *webdav,
-			     xmlXPathContextPtr xpath_ctx,
-			     const gchar *xpath_prop_prefix,
+			     xmlNodePtr prop_node,
 			     const SoupURI *request_uri,
 			     const gchar *href,
 			     guint status_code,
 			     gpointer user_data)
 {
-	if (!xpath_prop_prefix) {
-		e_xml_xpath_context_register_namespaces (xpath_ctx,
-			"CS", E_WEBDAV_NS_CALENDARSERVER,
-			NULL);
-
-		return TRUE;
-	}
-
 	if (status_code == SOUP_STATUS_OK) {
+		const xmlChar *ctag_content;
 		gchar **out_ctag = user_data;
-		gchar *ctag;
 
 		g_return_val_if_fail (out_ctag != NULL, FALSE);
 
-		ctag = e_xml_xpath_eval_as_string (xpath_ctx, "%s/CS:getctag", xpath_prop_prefix);
+		ctag_content = e_xml_find_child_and_get_text (prop_node, E_WEBDAV_NS_CALENDARSERVER, "getctag");
 
-		if (ctag && *ctag) {
-			*out_ctag = e_webdav_session_util_maybe_dequote (ctag);
-		} else {
-			g_free (ctag);
-		}
+		if (ctag_content && *ctag_content)
+			*out_ctag = e_webdav_session_util_maybe_dequote (g_strdup ((const gchar *) ctag_content));
 	}
 
 	return FALSE;
@@ -3470,79 +3442,79 @@ e_webdav_session_getctag_sync (EWebDAVSession *webdav,
 }
 
 static EWebDAVResourceKind
-e_webdav_session_extract_kind (xmlXPathContextPtr xpath_ctx,
-			       const gchar *xpath_prop_prefix)
+e_webdav_session_extract_kind (xmlNodePtr parent_node)
 {
-	g_return_val_if_fail (xpath_ctx != NULL, E_WEBDAV_RESOURCE_KIND_UNKNOWN);
-	g_return_val_if_fail (xpath_prop_prefix != NULL, E_WEBDAV_RESOURCE_KIND_UNKNOWN);
+	xmlNodePtr resourcetype;
 
-	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:resourcetype/A:addressbook", xpath_prop_prefix))
+	g_return_val_if_fail (parent_node != NULL, E_WEBDAV_RESOURCE_KIND_UNKNOWN);
+
+	resourcetype = e_xml_find_child (parent_node, E_WEBDAV_NS_DAV, "resourcetype");
+
+	if (e_xml_find_child (resourcetype, E_WEBDAV_NS_CARDDAV, "addressbook"))
 		return E_WEBDAV_RESOURCE_KIND_ADDRESSBOOK;
 
-	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:resourcetype/C:calendar", xpath_prop_prefix))
+	if (e_xml_find_child (resourcetype, E_WEBDAV_NS_CALDAV, "calendar"))
 		return E_WEBDAV_RESOURCE_KIND_CALENDAR;
 
 	/* These are subscribed iCalendar files, aka 'On The Web' calendars */
-	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:resourcetype/D:collection", xpath_prop_prefix) &&
-	    e_xml_xpath_eval_exists (xpath_ctx, "%s/D:resourcetype/CS:subscribed", xpath_prop_prefix) &&
-	    e_xml_xpath_eval_exists (xpath_ctx, "%s/CS:source/D:href", xpath_prop_prefix))
+	if (e_xml_find_child (resourcetype, E_WEBDAV_NS_DAV, "collection") &&
+	    e_xml_find_child (resourcetype, E_WEBDAV_NS_CALENDARSERVER, "subscribed") &&
+	    e_xml_find_in_hierarchy (parent_node, E_WEBDAV_NS_CALENDARSERVER, "source", E_WEBDAV_NS_DAV, "href", NULL, NULL))
 		return E_WEBDAV_RESOURCE_KIND_SUBSCRIBED_ICALENDAR;
 
-	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:resourcetype/D:principal", xpath_prop_prefix))
+	if (e_xml_find_child (resourcetype, E_WEBDAV_NS_DAV, "principal"))
 		return E_WEBDAV_RESOURCE_KIND_PRINCIPAL;
 
-	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:resourcetype/D:collection", xpath_prop_prefix))
+	if (e_xml_find_child (resourcetype, E_WEBDAV_NS_DAV, "collection"))
 		return E_WEBDAV_RESOURCE_KIND_COLLECTION;
 
 	return E_WEBDAV_RESOURCE_KIND_RESOURCE;
 }
 
 static guint32
-e_webdav_session_extract_supports (xmlXPathContextPtr xpath_ctx,
-				   const gchar *xpath_prop_prefix)
+e_webdav_session_extract_supports (xmlNodePtr prop_node)
 {
+	xmlNodePtr calendar_components;
 	guint32 supports = E_WEBDAV_RESOURCE_SUPPORTS_NONE;
 
-	g_return_val_if_fail (xpath_ctx != NULL, E_WEBDAV_RESOURCE_SUPPORTS_NONE);
-	g_return_val_if_fail (xpath_prop_prefix != NULL, E_WEBDAV_RESOURCE_SUPPORTS_NONE);
+	g_return_val_if_fail (prop_node != NULL, E_WEBDAV_RESOURCE_SUPPORTS_NONE);
 
-	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:resourcetype/A:addressbook", xpath_prop_prefix))
+	if (e_xml_find_in_hierarchy (prop_node, E_WEBDAV_NS_DAV, "resourcetype", E_WEBDAV_NS_CARDDAV, "addressbook", NULL, NULL))
 		supports = supports | E_WEBDAV_RESOURCE_SUPPORTS_CONTACTS;
 
-	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/C:supported-calendar-component-set", xpath_prop_prefix)) {
-		xmlXPathObjectPtr xpath_obj;
+	calendar_components = e_xml_find_child (prop_node, E_WEBDAV_NS_CALDAV, "supported-calendar-component-set");
 
-		xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/C:supported-calendar-component-set/C:comp", xpath_prop_prefix);
-		if (xpath_obj) {
-			gint ii, length;
+	if (calendar_components) {
+		xmlNodePtr node;
+		gint found_comps = 0;
 
-			length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
+		for (node = calendar_components->children; node; node = xmlNextElementSibling (node)) {
+			if (e_xml_is_element_name (node, E_WEBDAV_NS_CALDAV, "comp")) {
+				xmlChar *name;
 
-			for (ii = 0; ii < length; ii++) {
-				gchar *name;
+				found_comps++;
 
-				name = e_xml_xpath_eval_as_string (xpath_ctx, "%s/C:supported-calendar-component-set/C:comp[%d]/@name",
-					xpath_prop_prefix, ii + 1);
+				name = xmlGetProp (node, (const xmlChar *) "name");
 
 				if (!name)
 					continue;
 
-				if (g_ascii_strcasecmp (name, "VEVENT") == 0)
+				if (g_ascii_strcasecmp ((const gchar *) name, "VEVENT") == 0)
 					supports |= E_WEBDAV_RESOURCE_SUPPORTS_EVENTS;
-				else if (g_ascii_strcasecmp (name, "VJOURNAL") == 0)
+				else if (g_ascii_strcasecmp ((const gchar *) name, "VJOURNAL") == 0)
 					supports |= E_WEBDAV_RESOURCE_SUPPORTS_MEMOS;
-				else if (g_ascii_strcasecmp (name, "VTODO") == 0)
+				else if (g_ascii_strcasecmp ((const gchar *) name, "VTODO") == 0)
 					supports |= E_WEBDAV_RESOURCE_SUPPORTS_TASKS;
-				else if (g_ascii_strcasecmp (name, "VFREEBUSY") == 0)
+				else if (g_ascii_strcasecmp ((const gchar *) name, "VFREEBUSY") == 0)
 					supports |= E_WEBDAV_RESOURCE_SUPPORTS_FREEBUSY;
-				else if (g_ascii_strcasecmp (name, "VTIMEZONE") == 0)
+				else if (g_ascii_strcasecmp ((const gchar *) name, "VTIMEZONE") == 0)
 					supports |= E_WEBDAV_RESOURCE_SUPPORTS_TIMEZONE;
 
-				g_free (name);
+				xmlFree (name);
 			}
+		}
 
-			xmlXPathFreeObject (xpath_obj);
-		} else {
+		if (!found_comps) {
 			/* If the property is not present, assume all component
 			 * types are supported.  (RFC 4791, Section 5.2.3) */
 			supports = supports |
@@ -3558,20 +3530,30 @@ e_webdav_session_extract_supports (xmlXPathContextPtr xpath_ctx,
 }
 
 static gchar *
-e_webdav_session_extract_nonempty (xmlXPathContextPtr xpath_ctx,
-				   const gchar *xpath_prop_prefix,
-				   const gchar *prop,
-				   const gchar *alternative_prop)
+e_webdav_session_extract_nonempty (xmlNodePtr parent,
+				   const gchar *prop_ns_href,
+				   const gchar *prop_name,
+				   const gchar *alternative_prop_ns_href,
+				   const gchar *alternative_prop_name)
 {
-	gchar *value;
+	const xmlChar *x_value;
+	gchar *value = NULL;
 
-	g_return_val_if_fail (xpath_ctx != NULL, NULL);
-	g_return_val_if_fail (xpath_prop_prefix != NULL, NULL);
-	g_return_val_if_fail (prop != NULL, NULL);
+	g_return_val_if_fail (parent != NULL, NULL);
+	g_return_val_if_fail (prop_name != NULL, NULL);
 
-	value = e_xml_xpath_eval_as_string (xpath_ctx, "%s/%s", xpath_prop_prefix, prop);
-	if (!value && alternative_prop)
-		value = e_xml_xpath_eval_as_string (xpath_ctx, "%s/%s", xpath_prop_prefix, alternative_prop);
+	x_value = e_xml_find_child_and_get_text (parent, prop_ns_href, prop_name);
+
+	if (x_value && *x_value)
+		value = g_strdup ((const gchar *) x_value);
+
+	if (!value && alternative_prop_name) {
+		x_value = e_xml_find_child_and_get_text (parent, alternative_prop_ns_href, alternative_prop_name);
+
+		if (x_value && *x_value)
+			value = g_strdup ((const gchar *) x_value);
+	}
+
 	if (!value)
 		return NULL;
 
@@ -3584,16 +3566,14 @@ e_webdav_session_extract_nonempty (xmlXPathContextPtr xpath_ctx,
 }
 
 static gsize
-e_webdav_session_extract_content_length (xmlXPathContextPtr xpath_ctx,
-					 const gchar *xpath_prop_prefix)
+e_webdav_session_extract_content_length (xmlNodePtr parent)
 {
 	gchar *value;
 	gsize length;
 
-	g_return_val_if_fail (xpath_ctx != NULL, 0);
-	g_return_val_if_fail (xpath_prop_prefix != NULL, 0);
+	g_return_val_if_fail (parent != NULL, 0);
 
-	value = e_webdav_session_extract_nonempty (xpath_ctx, xpath_prop_prefix, "D:getcontentlength", NULL);
+	value = e_webdav_session_extract_nonempty (parent, E_WEBDAV_NS_DAV, "getcontentlength", NULL, NULL);
 	if (!value)
 		return 0;
 
@@ -3605,18 +3585,18 @@ e_webdav_session_extract_content_length (xmlXPathContextPtr xpath_ctx,
 }
 
 static glong
-e_webdav_session_extract_datetime (xmlXPathContextPtr xpath_ctx,
-				   const gchar *xpath_prop_prefix,
+e_webdav_session_extract_datetime (xmlNodePtr parent,
+				   const gchar *ns_href,
 				   const gchar *prop,
 				   gboolean is_iso_property)
 {
 	gchar *value;
 	GTimeVal tv;
 
-	g_return_val_if_fail (xpath_ctx != NULL, -1);
-	g_return_val_if_fail (xpath_prop_prefix != NULL, -1);
+	g_return_val_if_fail (parent != NULL, -1);
+	g_return_val_if_fail (prop != NULL, -1);
 
-	value = e_webdav_session_extract_nonempty (xpath_ctx, xpath_prop_prefix, prop, NULL);
+	value = e_webdav_session_extract_nonempty (parent, ns_href, prop, NULL, NULL);
 	if (!value)
 		return -1;
 
@@ -3633,8 +3613,7 @@ e_webdav_session_extract_datetime (xmlXPathContextPtr xpath_ctx,
 
 static gboolean
 e_webdav_session_list_cb (EWebDAVSession *webdav,
-			  xmlXPathContextPtr xpath_ctx,
-			  const gchar *xpath_prop_prefix,
+			  xmlNodePtr prop_node,
 			  const SoupURI *request_uri,
 			  const gchar *href,
 			  guint status_code,
@@ -3644,17 +3623,6 @@ e_webdav_session_list_cb (EWebDAVSession *webdav,
 
 	g_return_val_if_fail (out_resources != NULL, FALSE);
 	g_return_val_if_fail (request_uri != NULL, FALSE);
-
-	if (!xpath_prop_prefix) {
-		e_xml_xpath_context_register_namespaces (xpath_ctx,
-			"CS", E_WEBDAV_NS_CALENDARSERVER,
-			"C", E_WEBDAV_NS_CALDAV,
-			"A", E_WEBDAV_NS_CARDDAV,
-			"IC", E_WEBDAV_NS_ICAL,
-			NULL);
-
-		return TRUE;
-	}
 
 	if (status_code == SOUP_STATUS_OK) {
 		EWebDAVResource *resource;
@@ -3670,26 +3638,38 @@ e_webdav_session_list_cb (EWebDAVSession *webdav,
 		gchar *color;
 		gchar *source_href = NULL;
 
-		kind = e_webdav_session_extract_kind (xpath_ctx, xpath_prop_prefix);
+		kind = e_webdav_session_extract_kind (prop_node);
 		if (kind == E_WEBDAV_RESOURCE_KIND_UNKNOWN)
 			return TRUE;
 
 		if (kind == E_WEBDAV_RESOURCE_KIND_SUBSCRIBED_ICALENDAR) {
-			source_href = e_webdav_session_extract_nonempty (xpath_ctx, xpath_prop_prefix, "CS:source/D:href", NULL);
+			xmlNodePtr source_href_node;
+			const xmlChar *x_source_href = NULL;
 
-			if (!source_href)
+
+			source_href_node = e_xml_find_in_hierarchy (prop_node, E_WEBDAV_NS_CALENDARSERVER, "source", E_WEBDAV_NS_DAV, "href", NULL, NULL);
+
+			if (!source_href_node)
 				return TRUE;
+
+			x_source_href = e_xml_get_node_text (source_href_node);
+
+			if (!x_source_href || !*x_source_href)
+				return TRUE;
+
+			source_href = e_webdav_session_util_maybe_dequote (g_strdup ((const gchar *) x_source_href));
 		}
 
-		supports = e_webdav_session_extract_supports (xpath_ctx, xpath_prop_prefix);
-		etag = e_webdav_session_extract_nonempty (xpath_ctx, xpath_prop_prefix, "D:getetag", "CS:getctag");
-		display_name = e_webdav_session_extract_nonempty (xpath_ctx, xpath_prop_prefix, "D:displayname", NULL);
-		content_type = e_webdav_session_extract_nonempty (xpath_ctx, xpath_prop_prefix, "D:getcontenttype", NULL);
-		content_length = e_webdav_session_extract_content_length (xpath_ctx, xpath_prop_prefix);
-		creation_date = e_webdav_session_extract_datetime (xpath_ctx, xpath_prop_prefix, "D:creationdate", TRUE);
-		last_modified = e_webdav_session_extract_datetime (xpath_ctx, xpath_prop_prefix, "D:getlastmodified", FALSE);
-		description = e_webdav_session_extract_nonempty (xpath_ctx, xpath_prop_prefix, "C:calendar-description", "A:addressbook-description");
-		color = e_webdav_session_extract_nonempty (xpath_ctx, xpath_prop_prefix, "IC:calendar-color", NULL);
+		supports = e_webdav_session_extract_supports (prop_node);
+		etag = e_webdav_session_extract_nonempty (prop_node, E_WEBDAV_NS_DAV, "getetag", E_WEBDAV_NS_CALENDARSERVER, "getctag");
+		display_name = e_webdav_session_extract_nonempty (prop_node, E_WEBDAV_NS_DAV, "displayname", NULL, NULL);
+		content_type = e_webdav_session_extract_nonempty (prop_node, E_WEBDAV_NS_DAV, "getcontenttype", NULL, NULL);
+		content_length = e_webdav_session_extract_content_length (prop_node);
+		creation_date = e_webdav_session_extract_datetime (prop_node, E_WEBDAV_NS_DAV, "creationdate", TRUE);
+		last_modified = e_webdav_session_extract_datetime (prop_node, E_WEBDAV_NS_DAV, "getlastmodified", FALSE);
+		description = e_webdav_session_extract_nonempty (prop_node, E_WEBDAV_NS_CALDAV, "calendar-description",
+			E_WEBDAV_NS_CARDDAV, "addressbook-description");
+		color = e_webdav_session_extract_nonempty (prop_node, E_WEBDAV_NS_ICAL, "calendar-color", NULL, NULL);
 
 		resource = e_webdav_resource_new (kind, supports,
 			source_href ? source_href : href,
@@ -4061,81 +4041,53 @@ e_webdav_session_lock_resource_sync (EWebDAVSession *webdav,
 }
 
 static void
-e_webdav_session_traverse_privilege_level (xmlXPathContextPtr xpath_ctx,
-					   const gchar *xpath_prefix,
+e_webdav_session_traverse_privilege_level (xmlNodePtr parent_node,
 					   GNode *parent)
 {
-	xmlXPathObjectPtr xpath_obj;
+	xmlNodePtr node;
 
-	g_return_if_fail (xpath_ctx != NULL);
-	g_return_if_fail (xpath_prefix != NULL);
+	g_return_if_fail (parent_node != NULL);
 	g_return_if_fail (parent != NULL);
 
-	xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/D:supported-privilege", xpath_prefix);
+	for (node = e_xml_find_child (parent_node, E_WEBDAV_NS_DAV, "supported-privilege");
+	     node;
+	     node = e_xml_find_next_sibling (node, E_WEBDAV_NS_DAV, "supported-privilege")) {
+		xmlNodePtr privilege_node;
 
-	if (xpath_obj) {
-		gint ii, length;
+		privilege_node = e_xml_find_child (node, E_WEBDAV_NS_DAV, "privilege");
 
-		length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
+		if (privilege_node) {
+			GNode *child;
+			const xmlChar *description;
+			EWebDAVPrivilegeKind kind = E_WEBDAV_PRIVILEGE_KIND_COMMON;
+			EWebDAVPrivilegeHint hint = E_WEBDAV_PRIVILEGE_HINT_UNKNOWN;
+			EWebDAVPrivilege *privilege;
 
-		for (ii = 0; ii < length; ii++) {
-			xmlXPathObjectPtr xpath_obj_privilege;
-			gchar *prefix;
+			if (e_xml_find_child (privilege_node, E_WEBDAV_NS_DAV, "abstract"))
+				kind = E_WEBDAV_PRIVILEGE_KIND_ABSTRACT;
+			else if (e_xml_find_child (privilege_node, E_WEBDAV_NS_DAV, "aggregate"))
+				kind = E_WEBDAV_PRIVILEGE_KIND_AGGREGATE;
 
-			prefix = g_strdup_printf ("%s/D:supported-privilege[%d]", xpath_prefix, ii + 1);
-			xpath_obj_privilege = e_xml_xpath_eval (xpath_ctx, "%s/D:privilege", prefix);
+			description = e_xml_find_child_and_get_text (privilege_node, E_WEBDAV_NS_DAV, "description");
+			privilege = e_webdav_privilege_new ((const gchar *) ((privilege_node->ns && privilege_node->ns->href) ? privilege_node->ns->href : NULL),
+				(const gchar *) privilege_node->name,
+				(const gchar *) description,
+				kind,
+				hint);
+			child = g_node_new (privilege);
+			g_node_append (parent, child);
 
-			if (xpath_obj_privilege &&
-			    xpath_obj_privilege->type == XPATH_NODESET &&
-			    xpath_obj_privilege->nodesetval &&
-			    xpath_obj_privilege->nodesetval->nodeNr == 1 &&
-			    xpath_obj_privilege->nodesetval->nodeTab &&
-			    xpath_obj_privilege->nodesetval->nodeTab[0] &&
-			    xpath_obj_privilege->nodesetval->nodeTab[0]->children) {
-				xmlNodePtr node;
+			privilege_node = e_xml_find_child (privilege_node, E_WEBDAV_NS_DAV, "supported-privilege");
 
-				for (node = xpath_obj_privilege->nodesetval->nodeTab[0]->children; node; node = node->next) {
-					if (node->type == XML_ELEMENT_NODE &&
-					    node->name && *(node->name) &&
-					    node->ns && node->ns->href && *(node->ns->href)) {
-						GNode *child;
-						gchar *description;
-						EWebDAVPrivilegeKind kind = E_WEBDAV_PRIVILEGE_KIND_COMMON;
-						EWebDAVPrivilegeHint hint = E_WEBDAV_PRIVILEGE_HINT_UNKNOWN;
-						EWebDAVPrivilege *privilege;
-
-						if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:abstract", prefix))
-							kind = E_WEBDAV_PRIVILEGE_KIND_ABSTRACT;
-						else if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:aggregate", prefix))
-							kind = E_WEBDAV_PRIVILEGE_KIND_AGGREGATE;
-
-						description = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:description", prefix);
-						privilege = e_webdav_privilege_new ((const gchar *) node->ns->href, (const gchar *) node->name, description, kind, hint);
-						child = g_node_new (privilege);
-						g_node_append (parent, child);
-
-						g_free (description);
-
-						if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:supported-privilege", prefix))
-							e_webdav_session_traverse_privilege_level (xpath_ctx, prefix, child);
-					}
-				}
-			}
-
-			if (xpath_obj_privilege)
-				xmlXPathFreeObject (xpath_obj_privilege);
-
-			g_free (prefix);
+			if (privilege_node)
+				e_webdav_session_traverse_privilege_level (privilege_node, child);
 		}
-
-		xmlXPathFreeObject (xpath_obj);
 	}
 }
 
 static gboolean
 e_webdav_session_supported_privilege_set_cb (EWebDAVSession *webdav,
-					     xmlXPathContextPtr xpath_ctx,
-					     const gchar *xpath_prop_prefix,
+					     xmlNodePtr prop_node,
 					     const SoupURI *request_uri,
 					     const gchar *href,
 					     guint status_code,
@@ -4145,23 +4097,15 @@ e_webdav_session_supported_privilege_set_cb (EWebDAVSession *webdav,
 
 	g_return_val_if_fail (out_privileges != NULL, FALSE);
 
-	if (!xpath_prop_prefix) {
-		e_xml_xpath_context_register_namespaces (xpath_ctx,
-			"C", E_WEBDAV_NS_CALDAV,
-			NULL);
-	} else if (status_code == SOUP_STATUS_OK &&
-		   e_xml_xpath_eval_exists (xpath_ctx, "%s/D:supported-privilege-set/D:supported-privilege", xpath_prop_prefix)) {
+	if (status_code == SOUP_STATUS_OK &&
+	    e_xml_find_in_hierarchy (prop_node, E_WEBDAV_NS_DAV, "supported-privilege-set", E_WEBDAV_NS_DAV, "supported-privilege", NULL, NULL)) {
 		GNode *root;
-		gchar *prefix;
 
-		prefix = g_strconcat (xpath_prop_prefix, "/D:supported-privilege-set", NULL);
 		root = g_node_new (NULL);
 
-		e_webdav_session_traverse_privilege_level (xpath_ctx, prefix, root);
+		e_webdav_session_traverse_privilege_level (prop_node, root);
 
 		*out_privileges = root;
-
-		g_free (prefix);
 	}
 
 	return TRUE;
@@ -4290,19 +4234,13 @@ e_webdav_session_get_supported_privilege_set_sync (EWebDAVSession *webdav,
 }
 
 static void
-e_webdav_session_extract_privilege_simple (xmlXPathObjectPtr xpath_obj_privilege,
+e_webdav_session_extract_privilege_simple (xmlNodePtr privilege_node,
 					   GSList **out_privileges)
 {
-	if (xpath_obj_privilege &&
-	    xpath_obj_privilege->type == XPATH_NODESET &&
-	    xpath_obj_privilege->nodesetval &&
-	    xpath_obj_privilege->nodesetval->nodeNr == 1 &&
-	    xpath_obj_privilege->nodesetval->nodeTab &&
-	    xpath_obj_privilege->nodesetval->nodeTab[0] &&
-	    xpath_obj_privilege->nodesetval->nodeTab[0]->children) {
+	if (privilege_node) {
 		xmlNodePtr node;
 
-		for (node = xpath_obj_privilege->nodesetval->nodeTab[0]->children; node; node = node->next) {
+		for (node = privilege_node->children; node; node = node->next) {
 			if (node->type == XML_ELEMENT_NODE &&
 			    node->name && *(node->name) &&
 			    node->ns && node->ns->href && *(node->ns->href)) {
@@ -4325,8 +4263,7 @@ typedef struct _PrivilegeSetData {
 
 static gboolean
 e_webdav_session_current_user_privilege_set_cb (EWebDAVSession *webdav,
-						xmlXPathContextPtr xpath_ctx,
-						const gchar *xpath_prop_prefix,
+						xmlNodePtr prop_node,
 						const SoupURI *request_uri,
 						const gchar *href,
 						guint status_code,
@@ -4334,43 +4271,25 @@ e_webdav_session_current_user_privilege_set_cb (EWebDAVSession *webdav,
 {
 	PrivilegeSetData *psd = user_data;
 
-	g_return_val_if_fail (xpath_ctx != NULL, FALSE);
+	g_return_val_if_fail (prop_node != NULL, FALSE);
 	g_return_val_if_fail (psd != NULL, FALSE);
 
-	if (!xpath_prop_prefix) {
-		e_xml_xpath_context_register_namespaces (xpath_ctx,
-			"C", E_WEBDAV_NS_CALDAV,
-			NULL);
-	} else if (status_code == SOUP_STATUS_OK &&
-		   e_xml_xpath_eval_exists (xpath_ctx, "%s/D:current-user-privilege-set/D:privilege", xpath_prop_prefix)) {
-		xmlXPathObjectPtr xpath_obj;
+	if (status_code == SOUP_STATUS_OK) {
+		xmlNodePtr privilege_set_node;
 
-		psd->any_found = TRUE;
+		privilege_set_node = e_xml_find_child (prop_node, E_WEBDAV_NS_DAV, "current-user-privilege-set");
 
-		xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/D:current-user-privilege-set/D:privilege", xpath_prop_prefix);
+		if (privilege_set_node) {
+			xmlNodePtr privilege_node;
 
-		if (xpath_obj) {
-			gint ii, length;
+			psd->any_found = TRUE;
 
-			length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
-
-			for (ii = 0; ii < length; ii++) {
-				xmlXPathObjectPtr xpath_obj_privilege;
-
-				xpath_obj_privilege = e_xml_xpath_eval (xpath_ctx, "%s/D:current-user-privilege-set/D:privilege[%d]", xpath_prop_prefix, ii + 1);
-
-				if (xpath_obj_privilege) {
-					e_webdav_session_extract_privilege_simple (xpath_obj_privilege, psd->out_privileges);
-
-					xmlXPathFreeObject (xpath_obj_privilege);
-				}
+			for (privilege_node = e_xml_find_child (privilege_set_node, E_WEBDAV_NS_DAV, "privilege");
+			     privilege_node;
+			     privilege_node = e_xml_find_next_sibling (privilege_node, E_WEBDAV_NS_DAV, "privilege")) {
+				e_webdav_session_extract_privilege_simple (privilege_node, psd->out_privileges);
 			}
-
-			xmlXPathFreeObject (xpath_obj);
 		}
-	} else if (status_code == SOUP_STATUS_OK &&
-		   e_xml_xpath_eval_exists (xpath_ctx, "%s/D:current-user-privilege-set", xpath_prop_prefix)) {
-		psd->any_found = TRUE;
 	}
 
 	return TRUE;
@@ -4436,14 +4355,33 @@ e_webdav_session_get_current_user_privilege_set_sync (EWebDAVSession *webdav,
 	return success;
 }
 
+static gboolean
+e_webdav_session_has_one_children (xmlNodePtr parent_node)
+{
+	xmlNodePtr node;
+	gint subelements = 0;
+
+	if (!parent_node)
+		return FALSE;
+
+	for (node = parent_node->children; node && subelements <= 1; node = node->next) {
+		if (node->type == XML_ELEMENT_NODE)
+			subelements++;
+	}
+
+	return subelements == 1;
+}
+
 static EWebDAVACEPrincipalKind
-e_webdav_session_extract_acl_principal (xmlXPathContextPtr xpath_ctx,
-					const gchar *principal_prefix,
+e_webdav_session_extract_acl_principal (xmlNodePtr principal_node,
 					gchar **out_principal_href,
 					GSList **out_principal_hrefs)
 {
-	g_return_val_if_fail (xpath_ctx != NULL, E_WEBDAV_ACE_PRINCIPAL_UNKNOWN);
-	g_return_val_if_fail (principal_prefix != NULL, E_WEBDAV_ACE_PRINCIPAL_UNKNOWN);
+	xmlNodePtr node;
+
+	if (!principal_node)
+		return E_WEBDAV_ACE_PRINCIPAL_UNKNOWN;
+
 	g_return_val_if_fail (out_principal_href != NULL || out_principal_hrefs != NULL, E_WEBDAV_ACE_PRINCIPAL_UNKNOWN);
 
 	if (out_principal_href)
@@ -4452,33 +4390,22 @@ e_webdav_session_extract_acl_principal (xmlXPathContextPtr xpath_ctx,
 	if (out_principal_hrefs)
 		*out_principal_hrefs = NULL;
 
-	if (!e_xml_xpath_eval_exists (xpath_ctx, "%s", principal_prefix))
-		return E_WEBDAV_ACE_PRINCIPAL_UNKNOWN;
+	node = e_xml_find_child (principal_node, E_WEBDAV_NS_DAV, "href");
 
-	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:href", principal_prefix)) {
+	if (node) {
+		const xmlChar *href;
+
+		href = e_xml_get_node_text (node);
+
 		if (out_principal_href) {
-			*out_principal_href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:href", principal_prefix);
+			*out_principal_href = (href && *href) ? g_strdup ((const gchar *) href) : NULL;
 		} else {
-			xmlXPathObjectPtr xpath_obj;
+			for (; node; node = e_xml_find_next_sibling (node, E_WEBDAV_NS_DAV, "href")) {
 
-			*out_principal_hrefs = NULL;
+				href = e_xml_get_node_text (node);
 
-			xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/D:href", principal_prefix);
-
-			if (xpath_obj) {
-				gint ii, length;
-
-				length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
-
-				for (ii = 0; ii < length; ii++) {
-					gchar *href;
-
-					href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:href[%d]", principal_prefix, ii + 1);
-					if (href)
-						*out_principal_hrefs = g_slist_prepend (*out_principal_hrefs, href);
-				}
-
-				xmlXPathFreeObject (xpath_obj);
+				if (href && *href)
+					*out_principal_hrefs = g_slist_prepend (*out_principal_hrefs, g_strdup ((const gchar *) href));
 			}
 
 			*out_principal_hrefs = g_slist_reverse (*out_principal_hrefs);
@@ -4487,51 +4414,31 @@ e_webdav_session_extract_acl_principal (xmlXPathContextPtr xpath_ctx,
 		return E_WEBDAV_ACE_PRINCIPAL_HREF;
 	}
 
-	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:all", principal_prefix))
+	if (e_xml_find_child (principal_node, E_WEBDAV_NS_DAV, "all"))
 		return E_WEBDAV_ACE_PRINCIPAL_ALL;
 
-	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:authenticated", principal_prefix))
+	if (e_xml_find_child (principal_node, E_WEBDAV_NS_DAV, "authenticated"))
 		return E_WEBDAV_ACE_PRINCIPAL_AUTHENTICATED;
 
-	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:unauthenticated", principal_prefix))
+	if (e_xml_find_child (principal_node, E_WEBDAV_NS_DAV, "unauthenticated"))
 		return E_WEBDAV_ACE_PRINCIPAL_UNAUTHENTICATED;
 
-	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:self", principal_prefix))
+	if (e_xml_find_child (principal_node, E_WEBDAV_NS_DAV, "self"))
 		return E_WEBDAV_ACE_PRINCIPAL_SELF;
 
-	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:property", principal_prefix)) {
+	node = e_xml_find_child (principal_node, E_WEBDAV_NS_DAV, "property");
+
+	if (node) {
 		/* No details read about what properties */
 		EWebDAVACEPrincipalKind kind = E_WEBDAV_ACE_PRINCIPAL_PROPERTY;
 
 		/* Special-case owner */
-		if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:property/D:owner", principal_prefix)) {
-			xmlXPathObjectPtr xpath_obj_property;
-
-			xpath_obj_property = e_xml_xpath_eval (xpath_ctx, "%s/D:property", principal_prefix);
-
+		if (e_xml_find_child (node, E_WEBDAV_NS_DAV, "owner")) {
 			/* DAV:owner is the only child and there is only one DAV:property child of the DAV:principal */
-			if (xpath_obj_property &&
-			    xpath_obj_property->type == XPATH_NODESET &&
-			    xmlXPathNodeSetGetLength (xpath_obj_property->nodesetval) == 1 &&
-			    xpath_obj_property->nodesetval &&
-			    xpath_obj_property->nodesetval->nodeNr == 1 &&
-			    xpath_obj_property->nodesetval->nodeTab &&
-			    xpath_obj_property->nodesetval->nodeTab[0] &&
-			    xpath_obj_property->nodesetval->nodeTab[0]->children) {
-				xmlNodePtr node;
-				gint subelements = 0;
-
-				for (node = xpath_obj_property->nodesetval->nodeTab[0]->children; node && subelements <= 1; node = node->next) {
-					if (node->type == XML_ELEMENT_NODE)
-						subelements++;
-				}
-
-				if (subelements == 1)
-					kind = E_WEBDAV_ACE_PRINCIPAL_OWNER;
+			if (e_webdav_session_has_one_children (node) &&
+			    e_webdav_session_has_one_children (principal_node)) {
+				kind = E_WEBDAV_ACE_PRINCIPAL_OWNER;
 			}
-
-			if (xpath_obj_property)
-				xmlXPathFreeObject (xpath_obj_property);
 		}
 
 		return kind;
@@ -4542,116 +4449,88 @@ e_webdav_session_extract_acl_principal (xmlXPathContextPtr xpath_ctx,
 
 static gboolean
 e_webdav_session_acl_cb (EWebDAVSession *webdav,
-			 xmlXPathContextPtr xpath_ctx,
-			 const gchar *xpath_prop_prefix,
+			 xmlNodePtr prop_node,
 			 const SoupURI *request_uri,
 			 const gchar *href,
 			 guint status_code,
 			 gpointer user_data)
 {
 	GSList **out_entries = user_data;
+	xmlNodePtr acl_node, ace_node;
 
-	g_return_val_if_fail (xpath_ctx != NULL, FALSE);
+	g_return_val_if_fail (prop_node != NULL, FALSE);
 	g_return_val_if_fail (out_entries != NULL, FALSE);
 
-	if (!xpath_prop_prefix) {
-	} else if (status_code == SOUP_STATUS_OK &&
-		   e_xml_xpath_eval_exists (xpath_ctx, "%s/D:acl/D:ace", xpath_prop_prefix)) {
-		xmlXPathObjectPtr xpath_obj_ace;
+	if (status_code != SOUP_STATUS_OK)
+		return TRUE;
 
-		xpath_obj_ace = e_xml_xpath_eval (xpath_ctx, "%s/D:acl/D:ace", xpath_prop_prefix);
 
-		if (xpath_obj_ace) {
-			gint ii, length;
+	acl_node = e_xml_find_child (prop_node, E_WEBDAV_NS_DAV, "acl");
 
-			length = xmlXPathNodeSetGetLength (xpath_obj_ace->nodesetval);
+	if (acl_node) {
+		for (ace_node = e_xml_find_child (acl_node, E_WEBDAV_NS_DAV, "ace");
+		     ace_node;
+		     ace_node = e_xml_find_next_sibling (ace_node, E_WEBDAV_NS_DAV, "ace")) {
+			EWebDAVACEPrincipalKind principal_kind = E_WEBDAV_ACE_PRINCIPAL_UNKNOWN;
+			xmlNodePtr node;
+			gchar *principal_href = NULL;
+			guint32 flags = E_WEBDAV_ACE_FLAG_UNKNOWN;
+			gchar *inherited_href = NULL;
 
-			for (ii = 0; ii < length; ii++) {
-				EWebDAVACEPrincipalKind principal_kind = E_WEBDAV_ACE_PRINCIPAL_UNKNOWN;
-				xmlXPathObjectPtr xpath_obj = NULL;
-				gchar *principal_href = NULL;
-				guint32 flags = E_WEBDAV_ACE_FLAG_UNKNOWN;
-				gchar *inherited_href = NULL;
-				gchar *privilege_prefix = NULL;
-				gchar *ace_prefix;
+			node = e_xml_find_child (ace_node, E_WEBDAV_NS_DAV, "invert");
 
-				ace_prefix = g_strdup_printf ("%s/D:acl/D:ace[%d]", xpath_prop_prefix, ii + 1);
+			if (node) {
+				flags |= E_WEBDAV_ACE_FLAG_INVERT;
 
-				if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:invert", ace_prefix)) {
-					gchar *prefix;
-
-					flags |= E_WEBDAV_ACE_FLAG_INVERT;
-
-					prefix = g_strdup_printf ("%s/D:invert/D:principal", ace_prefix);
-					principal_kind = e_webdav_session_extract_acl_principal (xpath_ctx, prefix, &principal_href, NULL);
-					g_free (prefix);
-				} else {
-					gchar *prefix;
-
-					prefix = g_strdup_printf ("%s/D:principal", ace_prefix);
-					principal_kind = e_webdav_session_extract_acl_principal (xpath_ctx, prefix, &principal_href, NULL);
-					g_free (prefix);
-				}
-
-				if (principal_kind == E_WEBDAV_ACE_PRINCIPAL_UNKNOWN) {
-					g_free (ace_prefix);
-					continue;
-				}
-
-				if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:protected", ace_prefix))
-					flags |= E_WEBDAV_ACE_FLAG_PROTECTED;
-
-				if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:inherited/D:href", ace_prefix)) {
-					flags |= E_WEBDAV_ACE_FLAG_INHERITED;
-					inherited_href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:inherited/D:href", ace_prefix);
-				}
-
-				if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:grant", ace_prefix)) {
-					privilege_prefix = g_strdup_printf ("%s/D:grant/D:privilege", ace_prefix);
-					flags |= E_WEBDAV_ACE_FLAG_GRANT;
-				} else if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:deny", ace_prefix)) {
-					privilege_prefix = g_strdup_printf ("%s/D:deny/D:privilege", ace_prefix);
-					flags |= E_WEBDAV_ACE_FLAG_DENY;
-				}
-
-				if (privilege_prefix)
-					xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s", privilege_prefix);
-
-				if (xpath_obj) {
-					EWebDAVAccessControlEntry *ace;
-					gint ii, length;
-
-					ace = e_webdav_access_control_entry_new	(principal_kind, principal_href, flags, inherited_href);
-					if (ace) {
-						length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
-
-						for (ii = 0; ii < length; ii++) {
-							xmlXPathObjectPtr xpath_obj_privilege;
-
-							xpath_obj_privilege = e_xml_xpath_eval (xpath_ctx, "%s[%d]", privilege_prefix, ii + 1);
-
-							if (xpath_obj_privilege) {
-								e_webdav_session_extract_privilege_simple (xpath_obj_privilege, &ace->privileges);
-
-								xmlXPathFreeObject (xpath_obj_privilege);
-							}
-						}
-
-						ace->privileges = g_slist_reverse (ace->privileges);
-
-						*out_entries = g_slist_prepend (*out_entries, ace);
-					}
-
-					xmlXPathFreeObject (xpath_obj);
-				}
-
-				g_free (principal_href);
-				g_free (inherited_href);
-				g_free (privilege_prefix);
-				g_free (ace_prefix);
+				principal_kind = e_webdav_session_extract_acl_principal (e_xml_find_child (node, E_WEBDAV_NS_DAV, "principal"), &principal_href, NULL);
+			} else {
+				principal_kind = e_webdav_session_extract_acl_principal (e_xml_find_child (ace_node, E_WEBDAV_NS_DAV, "principal"), &principal_href, NULL);
 			}
 
-			xmlXPathFreeObject (xpath_obj_ace);
+			if (principal_kind == E_WEBDAV_ACE_PRINCIPAL_UNKNOWN)
+				continue;
+
+			if (e_xml_find_child (ace_node, E_WEBDAV_NS_DAV, "protected"))
+				flags |= E_WEBDAV_ACE_FLAG_PROTECTED;
+
+			node = e_xml_find_in_hierarchy (ace_node, E_WEBDAV_NS_DAV, "inherited", E_WEBDAV_NS_DAV, "href", NULL, NULL);
+
+			if (node) {
+				flags |= E_WEBDAV_ACE_FLAG_INHERITED;
+				inherited_href = g_strdup ((const gchar *) e_xml_get_node_text (node));
+			}
+
+			node = e_xml_find_child (ace_node, E_WEBDAV_NS_DAV, "grant");
+
+			if (node) {
+				flags |= E_WEBDAV_ACE_FLAG_GRANT;
+			} else {
+				node = e_xml_find_child (ace_node, E_WEBDAV_NS_DAV, "deny");
+
+				if (node)
+					flags |= E_WEBDAV_ACE_FLAG_DENY;
+			}
+
+			if (node) {
+				EWebDAVAccessControlEntry *ace;
+
+				ace = e_webdav_access_control_entry_new	(principal_kind, principal_href, flags, inherited_href);
+
+				if (ace) {
+					for (node = e_xml_find_child (node, E_WEBDAV_NS_DAV, "privilege");
+					     node;
+					     node = e_xml_find_next_sibling (node, E_WEBDAV_NS_DAV, "privilege")) {
+						e_webdav_session_extract_privilege_simple (node, &ace->privileges);
+					}
+
+					ace->privileges = g_slist_reverse (ace->privileges);
+
+					*out_entries = g_slist_prepend (*out_entries, ace);
+				}
+			}
+
+			g_free (principal_href);
+			g_free (inherited_href);
 		}
 	}
 
@@ -4720,38 +4599,40 @@ typedef struct _ACLRestrictionsData {
 
 static gboolean
 e_webdav_session_acl_restrictions_cb (EWebDAVSession *webdav,
-				      xmlXPathContextPtr xpath_ctx,
-				      const gchar *xpath_prop_prefix,
+				      xmlNodePtr prop_node,
 				      const SoupURI *request_uri,
 				      const gchar *href,
 				      guint status_code,
 				      gpointer user_data)
 {
 	ACLRestrictionsData *ard = user_data;
+	xmlNodePtr acl_restrictions_node;
 
-	g_return_val_if_fail (xpath_ctx != NULL, FALSE);
+	g_return_val_if_fail (prop_node != NULL, FALSE);
 	g_return_val_if_fail (ard != NULL, FALSE);
 
-	if (!xpath_prop_prefix) {
-	} else if (status_code == SOUP_STATUS_OK &&
-		   e_xml_xpath_eval_exists (xpath_ctx, "%s/D:acl-restrictions", xpath_prop_prefix)) {
-		if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:acl-restrictions/D:grant-only", xpath_prop_prefix))
+	if (status_code != SOUP_STATUS_OK)
+		return TRUE;
+
+	acl_restrictions_node = e_xml_find_child (prop_node, E_WEBDAV_NS_DAV, "acl-restrictions");
+
+	if (acl_restrictions_node) {
+		xmlNodePtr required_principal;
+
+		if (e_xml_find_child (acl_restrictions_node, E_WEBDAV_NS_DAV, "grant-only"))
 			*ard->out_restrictions |= E_WEBDAV_ACL_RESTRICTION_GRANT_ONLY;
 
-		if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:acl-restrictions/D:no-invert", xpath_prop_prefix))
+		if (e_xml_find_child (acl_restrictions_node, E_WEBDAV_NS_DAV, "no-invert"))
 			*ard->out_restrictions |= E_WEBDAV_ACL_RESTRICTION_NO_INVERT;
 
-		if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:acl-restrictions/D:deny-before-grant", xpath_prop_prefix))
+		if (e_xml_find_child (acl_restrictions_node, E_WEBDAV_NS_DAV, "deny-before-grant"))
 			*ard->out_restrictions |= E_WEBDAV_ACL_RESTRICTION_DENY_BEFORE_GRANT;
 
-		if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:acl-restrictions/D:required-principal", xpath_prop_prefix)) {
-			gchar *prefix;
+		required_principal = e_xml_find_child (acl_restrictions_node, E_WEBDAV_NS_DAV, "required-principal");
 
+		if (required_principal) {
 			*ard->out_restrictions |= E_WEBDAV_ACL_RESTRICTION_REQUIRED_PRINCIPAL;
-
-			prefix = g_strdup_printf ("%s/D:acl-restrictions/D:required-principal", xpath_prop_prefix);
-			*ard->out_principal_kind = e_webdav_session_extract_acl_principal (xpath_ctx, prefix, NULL, ard->out_principal_hrefs);
-			g_free (prefix);
+			*ard->out_principal_kind = e_webdav_session_extract_acl_principal (required_principal, NULL, ard->out_principal_hrefs);
 		}
 	}
 
@@ -4825,39 +4706,35 @@ e_webdav_session_get_acl_restrictions_sync (EWebDAVSession *webdav,
 
 static gboolean
 e_webdav_session_principal_collection_set_cb (EWebDAVSession *webdav,
-					      xmlXPathContextPtr xpath_ctx,
-					      const gchar *xpath_prop_prefix,
+					      xmlNodePtr prop_node,
 					      const SoupURI *request_uri,
 					      const gchar *href,
 					      guint status_code,
 					      gpointer user_data)
 {
 	GSList **out_principal_hrefs = user_data;
+	xmlNodePtr principal_collection_set;
 
-	g_return_val_if_fail (xpath_ctx != NULL, FALSE);
+	g_return_val_if_fail (prop_node != NULL, FALSE);
 	g_return_val_if_fail (out_principal_hrefs != NULL, FALSE);
 
-	if (!xpath_prop_prefix) {
-	} else if (status_code == SOUP_STATUS_OK &&
-		   e_xml_xpath_eval_exists (xpath_ctx, "%s/D:principal-collection-set", xpath_prop_prefix)) {
-		xmlXPathObjectPtr xpath_obj;
+	if (status_code != SOUP_STATUS_OK)
+		return TRUE;
 
-		xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/D:principal-collection-set/D:href", xpath_prop_prefix);
+	principal_collection_set = e_xml_find_child (prop_node, E_WEBDAV_NS_DAV, "principal-collection-set");
 
-		if (xpath_obj) {
-			gint ii, length;
+	if (principal_collection_set) {
+		xmlNodePtr node;
 
-			length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
+		for (node = e_xml_find_child (principal_collection_set, E_WEBDAV_NS_DAV, "href");
+		     node;
+		     node = e_xml_find_next_sibling (node, E_WEBDAV_NS_DAV, "href")) {
+			const xmlChar *got_href;
 
-			for (ii = 0; ii < length; ii++) {
-				gchar *got_href;
+			got_href = e_xml_get_node_text (node);
 
-				got_href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:principal-collection-set/D:href[%d]", xpath_prop_prefix, ii + 1);
-				if (got_href)
-					*out_principal_hrefs = g_slist_prepend (*out_principal_hrefs, got_href);
-			}
-
-			xmlXPathFreeObject (xpath_obj);
+			if (got_href && *got_href)
+				*out_principal_hrefs = g_slist_prepend (*out_principal_hrefs, g_strdup ((const gchar *) got_href));
 		}
 	}
 
@@ -5091,40 +4968,38 @@ e_webdav_session_set_acl_sync (EWebDAVSession *webdav,
 
 static gboolean
 e_webdav_session_principal_property_search_cb (EWebDAVSession *webdav,
-					       xmlXPathContextPtr xpath_ctx,
-					       const gchar *xpath_prop_prefix,
+					       xmlNodePtr prop_node,
 					       const SoupURI *request_uri,
 					       const gchar *href,
 					       guint status_code,
 					       gpointer user_data)
 {
 	GSList **out_principals = user_data;
+	EWebDAVResource *resource;
+	gchar *display_name;
 
 	g_return_val_if_fail (out_principals != NULL, FALSE);
 
-	if (!xpath_prop_prefix) {
-	} else if (status_code == SOUP_STATUS_OK) {
-		EWebDAVResource *resource;
-		gchar *display_name;
+	if (status_code != SOUP_STATUS_OK)
+		return TRUE;
 
-		display_name = e_webdav_session_extract_nonempty (xpath_ctx, xpath_prop_prefix, "D:displayname", NULL);
+	display_name = e_webdav_session_extract_nonempty (prop_node, E_WEBDAV_NS_DAV, "displayname", NULL, NULL);
 
-		resource = e_webdav_resource_new (
-			E_WEBDAV_RESOURCE_KIND_PRINCIPAL,
-			0, /* supports */
-			href,
-			NULL, /* etag */
-			NULL, /* display_name */
-			NULL, /* content_type */
-			0, /* content_length */
-			0, /* creation_date */
-			0, /* last_modified */
-			NULL, /* description */
-			NULL); /* color */
-		resource->display_name = display_name;
+	resource = e_webdav_resource_new (
+		E_WEBDAV_RESOURCE_KIND_PRINCIPAL,
+		0, /* supports */
+		href,
+		NULL, /* etag */
+		NULL, /* display_name */
+		NULL, /* content_type */
+		0, /* content_length */
+		0, /* creation_date */
+		0, /* last_modified */
+		NULL, /* description */
+		NULL); /* color */
+	resource->display_name = display_name;
 
-		*out_principals = g_slist_prepend (*out_principals, resource);
-	}
+	*out_principals = g_slist_prepend (*out_principals, resource);
 
 	return TRUE;
 }

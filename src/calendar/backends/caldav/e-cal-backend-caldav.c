@@ -416,8 +416,7 @@ typedef struct _MultigetData {
 
 static gboolean
 ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
-				 xmlXPathContextPtr xpath_ctx,
-				 const gchar *xpath_prop_prefix,
+				 xmlNodePtr prop_node,
 				 const SoupURI *request_uri,
 				 const gchar *href,
 				 guint status_code,
@@ -428,26 +427,32 @@ ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
 	g_return_val_if_fail (md != NULL, FALSE);
 	g_return_val_if_fail (md->from_link != NULL, FALSE);
 
-	if (!xpath_prop_prefix) {
-		e_xml_xpath_context_register_namespaces (xpath_ctx, "C", E_WEBDAV_NS_CALDAV, NULL);
-	} else if (status_code == SOUP_STATUS_OK) {
-		gchar *calendar_data, *etag;
+	if (status_code == SOUP_STATUS_OK) {
+		const xmlChar *calendar_data, *etag;
+		xmlNodePtr calendar_data_node = NULL, etag_node = NULL;
 
 		g_return_val_if_fail (href != NULL, FALSE);
 
-		calendar_data = e_xml_xpath_eval_as_string (xpath_ctx, "%s/C:calendar-data", xpath_prop_prefix);
-		etag = e_webdav_session_util_maybe_dequote (e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:getetag", xpath_prop_prefix));
+		e_xml_find_children_nodes (prop_node, 2,
+			E_WEBDAV_NS_CALDAV, "calendar-data", &calendar_data_node,
+			E_WEBDAV_NS_DAV, "getetag", &etag_node);
+
+		calendar_data = e_xml_get_node_text (calendar_data_node);
+		etag = e_xml_get_node_text (etag_node);
 
 		if (calendar_data) {
 			ICalComponent *vcalendar;
 
-			vcalendar = i_cal_component_new_from_string (calendar_data);
+			vcalendar = i_cal_component_new_from_string ((const gchar *) calendar_data);
 			if (vcalendar) {
 				const gchar *uid;
 
 				uid = ecb_caldav_get_vcalendar_uid (vcalendar);
 				if (uid) {
+					gchar *dequoted_etag;
 					GSList *link;
+
+					dequoted_etag = e_webdav_session_util_maybe_dequote (g_strdup ((const gchar *) etag));
 
 					for (link = md->from_link; link; link = g_slist_next (link)) {
 						ECalMetaBackendInfo *nfo = link->data;
@@ -461,19 +466,18 @@ ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
 							if (link == md->from_link)
 								md->from_link = g_slist_next (md->from_link);
 
-							ecb_caldav_update_nfo_with_vcalendar (nfo, vcalendar, etag);
+							ecb_caldav_update_nfo_with_vcalendar (nfo, vcalendar, dequoted_etag);
 
 							break;
 						}
 					}
+
+					g_free (dequoted_etag);
 				}
 
 				g_object_unref (vcalendar);
 			}
 		}
-
-		g_free (calendar_data);
-		g_free (etag);
 	} else if (status_code == SOUP_STATUS_NOT_FOUND) {
 		GSList *link;
 
@@ -688,43 +692,40 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 
 static gboolean
 ecb_caldav_get_calendar_items_cb (EWebDAVSession *webdav,
-				  xmlXPathContextPtr xpath_ctx,
-				  const gchar *xpath_prop_prefix,
+				  xmlNodePtr prop_node,
 				  const SoupURI *request_uri,
 				  const gchar *href,
 				  guint status_code,
 				  gpointer user_data)
 {
 	GHashTable *known_items = user_data; /* gchar *href ~> ECalMetaBackendInfo * */
+	ECalMetaBackendInfo *nfo;
+	gchar *etag;
 
-	g_return_val_if_fail (xpath_ctx != NULL, FALSE);
+	g_return_val_if_fail (prop_node != NULL, FALSE);
 	g_return_val_if_fail (known_items != NULL, FALSE);
 
-	if (!xpath_prop_prefix) {
-		e_xml_xpath_context_register_namespaces (xpath_ctx, "C", E_WEBDAV_NS_CALDAV, NULL);
-	} else if (status_code == SOUP_STATUS_OK) {
-		ECalMetaBackendInfo *nfo;
-		gchar *etag;
+	if (status_code != SOUP_STATUS_OK)
+		return TRUE;
 
-		g_return_val_if_fail (href != NULL, FALSE);
+	g_return_val_if_fail (href != NULL, FALSE);
 
-		/* Skip collection resource, if returned by the server (like iCloud.com does) */
-		if (g_str_has_suffix (href, "/") ||
-		    (request_uri && request_uri->path && g_str_has_suffix (href, request_uri->path)))
-			return TRUE;
+	/* Skip collection resource, if returned by the server (like iCloud.com does) */
+	if (g_str_has_suffix (href, "/") ||
+	    (request_uri && request_uri->path && g_str_has_suffix (href, request_uri->path)))
+		return TRUE;
 
-		etag = e_webdav_session_util_maybe_dequote (e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:getetag", xpath_prop_prefix));
-		/* Return 'TRUE' to not stop on faulty data from the server */
-		g_return_val_if_fail (etag != NULL, TRUE);
+	etag = e_webdav_session_util_maybe_dequote (g_strdup ((const gchar *) e_xml_find_child_and_get_text (prop_node, E_WEBDAV_NS_DAV, "getetag")));
+	/* Return 'TRUE' to not stop on faulty data from the server */
+	g_return_val_if_fail (etag != NULL, TRUE);
 
-		/* UID is unknown at this moment */
-		nfo = e_cal_meta_backend_info_new ("", etag, NULL, href);
+	/* UID is unknown at this moment */
+	nfo = e_cal_meta_backend_info_new ("", etag, NULL, href);
 
-		g_free (etag);
-		g_return_val_if_fail (nfo != NULL, FALSE);
+	g_free (etag);
+	g_return_val_if_fail (nfo != NULL, FALSE);
 
-		g_hash_table_insert (known_items, g_strdup (href), nfo);
-	}
+	g_hash_table_insert (known_items, g_strdup (href), nfo);
 
 	return TRUE;
 }
@@ -1030,8 +1031,7 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 
 static gboolean
 ecb_caldav_extract_existing_cb (EWebDAVSession *webdav,
-				xmlXPathContextPtr xpath_ctx,
-				const gchar *xpath_prop_prefix,
+				xmlNodePtr prop_node,
 				const SoupURI *request_uri,
 				const gchar *href,
 				guint status_code,
@@ -1041,38 +1041,42 @@ ecb_caldav_extract_existing_cb (EWebDAVSession *webdav,
 
 	g_return_val_if_fail (out_existing_objects != NULL, FALSE);
 
-	if (!xpath_prop_prefix) {
-		e_xml_xpath_context_register_namespaces (xpath_ctx, "C", E_WEBDAV_NS_CALDAV, NULL);
-	} else if (status_code == SOUP_STATUS_OK) {
-		gchar *etag;
-		gchar *calendar_data;
+	if (status_code == SOUP_STATUS_OK) {
+		const xmlChar *calendar_data, *etag;
+		xmlNodePtr calendar_data_node = NULL, etag_node = NULL;
 
 		g_return_val_if_fail (href != NULL, FALSE);
 
-		etag = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:getetag", xpath_prop_prefix);
-		calendar_data = e_xml_xpath_eval_as_string (xpath_ctx, "%s/C:calendar-data", xpath_prop_prefix);
+		e_xml_find_children_nodes (prop_node, 2,
+			E_WEBDAV_NS_CALDAV, "calendar-data", &calendar_data_node,
+			E_WEBDAV_NS_DAV, "getetag", &etag_node);
+
+		calendar_data = e_xml_get_node_text (calendar_data_node);
+		etag = e_xml_get_node_text (etag_node);
 
 		if (calendar_data) {
 			ICalComponent *vcalendar;
 
-			vcalendar = i_cal_component_new_from_string (calendar_data);
+			vcalendar = i_cal_component_new_from_string ((const gchar *) calendar_data);
 			if (vcalendar) {
 				const gchar *uid;
 
 				uid = ecb_caldav_get_vcalendar_uid (vcalendar);
 
 				if (uid) {
-					etag = e_webdav_session_util_maybe_dequote (etag);
+					gchar *dequoted_etag;
+
+					dequoted_etag = e_webdav_session_util_maybe_dequote (g_strdup ((const gchar *) etag));
+
 					*out_existing_objects = g_slist_prepend (*out_existing_objects,
-						e_cal_meta_backend_info_new (uid, etag, NULL, href));
+						e_cal_meta_backend_info_new (uid, dequoted_etag, NULL, href));
+
+					g_free (dequoted_etag);
 				}
 
 				g_object_unref (vcalendar);
 			}
 		}
-
-		g_free (calendar_data);
-		g_free (etag);
 	}
 
 	return TRUE;
@@ -1644,9 +1648,40 @@ ecb_caldav_get_ssl_error_details (ECalMetaBackend *meta_backend,
 }
 
 static gboolean
+ecb_caldav_dup_href_node_value (EWebDAVSession *webdav,
+				const SoupURI *request_uri,
+				xmlNodePtr from_node,
+				const gchar *parent_ns_href,
+				const gchar *parent_name,
+				gchar **out_href)
+{
+	xmlNodePtr node;
+
+	g_return_val_if_fail (out_href != NULL, FALSE);
+
+	if (!from_node)
+		return FALSE;
+
+	node = e_xml_find_in_hierarchy (from_node, parent_ns_href, parent_name, E_WEBDAV_NS_DAV, "href", NULL, NULL);
+
+	if (node) {
+		const xmlChar *href;
+
+		href = e_xml_get_node_text (node);
+
+		if (href && *href) {
+			*out_href = e_webdav_session_ensure_full_uri (webdav, request_uri, (const gchar *) href);
+
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+static gboolean
 ecb_caldav_propfind_get_owner_cb (EWebDAVSession *webdav,
-				  xmlXPathContextPtr xpath_ctx,
-				  const gchar *xpath_prop_prefix,
+				  xmlNodePtr prop_node,
 				  const SoupURI *request_uri,
 				  const gchar *href,
 				  guint status_code,
@@ -1654,17 +1689,11 @@ ecb_caldav_propfind_get_owner_cb (EWebDAVSession *webdav,
 {
 	gchar **out_owner_href = user_data;
 
+	g_return_val_if_fail (prop_node != NULL, FALSE);
 	g_return_val_if_fail (out_owner_href != NULL, FALSE);
 
-	if (xpath_prop_prefix &&
-	    status_code == SOUP_STATUS_OK) {
-		gchar *tmp = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:owner/D:href", xpath_prop_prefix);
-
-		if (tmp && *tmp)
-			*out_owner_href = e_webdav_session_ensure_full_uri (webdav, request_uri, tmp);
-
-		g_free (tmp);
-
+	if (status_code == SOUP_STATUS_OK &&
+	    ecb_caldav_dup_href_node_value (webdav, request_uri, prop_node, E_WEBDAV_NS_DAV, "owner", out_owner_href)) {
 		return FALSE;
 	}
 
@@ -1673,8 +1702,7 @@ ecb_caldav_propfind_get_owner_cb (EWebDAVSession *webdav,
 
 static gboolean
 ecb_caldav_propfind_get_schedule_outbox_url_cb (EWebDAVSession *webdav,
-						xmlXPathContextPtr xpath_ctx,
-						const gchar *xpath_prop_prefix,
+						xmlNodePtr prop_node,
 						const SoupURI *request_uri,
 						const gchar *href,
 						guint status_code,
@@ -1684,16 +1712,8 @@ ecb_caldav_propfind_get_schedule_outbox_url_cb (EWebDAVSession *webdav,
 
 	g_return_val_if_fail (out_schedule_outbox_url != NULL, FALSE);
 
-	if (!xpath_prop_prefix) {
-		e_xml_xpath_context_register_namespaces (xpath_ctx, "C", E_WEBDAV_NS_CALDAV, NULL);
-	} else if (status_code == SOUP_STATUS_OK) {
-		gchar *tmp = e_xml_xpath_eval_as_string (xpath_ctx, "%s/C:schedule-outbox-URL/D:href", xpath_prop_prefix);
-
-		if (tmp && *tmp)
-			*out_schedule_outbox_url = e_webdav_session_ensure_full_uri (webdav, request_uri, tmp);
-
-		g_free (tmp);
-
+	if (status_code == SOUP_STATUS_OK &&
+	    ecb_caldav_dup_href_node_value (webdav, request_uri, prop_node, E_WEBDAV_NS_CALDAV, "schedule-outbox-URL", out_schedule_outbox_url)) {
 		return FALSE;
 	}
 
@@ -1981,7 +2001,7 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 	    response) {
 		/* parse returned xml */
 		xmlDocPtr doc;
-		xmlXPathContextPtr xpath_ctx = NULL;
+		xmlNodePtr schedule_response = NULL;
 
 		doc = e_xml_parse_data (response->data, response->len);
 
@@ -1989,56 +2009,44 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 			g_set_error_literal (&local_error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
 				_("Failed to parse response data"));
 		} else {
-			xpath_ctx = e_xml_new_xpath_context_with_namespaces (doc,
-				"D", E_WEBDAV_NS_DAV,
-				"C", E_WEBDAV_NS_CALDAV,
-				NULL);
+			schedule_response = e_xml_find_sibling (xmlDocGetRootElement (doc), E_WEBDAV_NS_CALDAV, "schedule-response");
 		}
 
-		if (xpath_ctx) {
-			xmlXPathObjectPtr xpath_obj_response;
+		if (schedule_response) {
+			xmlNodePtr response_node;
 
-			xpath_obj_response = e_xml_xpath_eval (xpath_ctx, "/C:schedule-response/C:response");
+			for (response_node = e_xml_find_child (schedule_response, E_WEBDAV_NS_CALDAV, "response");
+			     response_node && !g_cancellable_is_cancelled (cancellable);
+			     response_node = e_xml_find_next_sibling (response_node, E_WEBDAV_NS_CALDAV, "response")) {
+				const xmlChar *calendar_data;
 
-			if (xpath_obj_response) {
-				gint response_index, response_length;
+				calendar_data = e_xml_find_child_and_get_text (response_node, E_WEBDAV_NS_CALDAV, "calendar-data");
 
-				response_length = xmlXPathNodeSetGetLength (xpath_obj_response->nodesetval);
+				if (calendar_data && *calendar_data) {
+					GSList *objects = NULL;
 
-				for (response_index = 0; response_index < response_length; response_index++) {
-					gchar *tmp;
+					icomp = i_cal_parser_parse_string ((const gchar *) calendar_data);
 
-					tmp = e_xml_xpath_eval_as_string (xpath_ctx,"/C:schedule-response/C:response[%d]/C:calendar-data", response_index + 1);
-					if (tmp && *tmp) {
-						GSList *objects = NULL;
+					if (icomp)
+						ecb_caldav_extract_objects (icomp, I_CAL_VFREEBUSY_COMPONENT, &objects, &local_error);
 
-						icomp = i_cal_parser_parse_string (tmp);
-						if (icomp)
-							ecb_caldav_extract_objects (icomp, I_CAL_VFREEBUSY_COMPONENT, &objects, &local_error);
-						if (icomp && !local_error) {
-							for (link = objects; link; link = g_slist_next (link)) {
-								gchar *obj_str = i_cal_component_as_ical_string (link->data);
+					if (icomp && !local_error) {
+						for (link = objects; link; link = g_slist_next (link)) {
+							gchar *obj_str = i_cal_component_as_ical_string (link->data);
 
-								if (obj_str && *obj_str)
-									*out_freebusy = g_slist_prepend (*out_freebusy, obj_str);
-								else
-									g_free (obj_str);
-							}
+							if (obj_str && *obj_str)
+								*out_freebusy = g_slist_prepend (*out_freebusy, obj_str);
+							else
+								g_free (obj_str);
 						}
-
-						g_slist_free_full (objects, g_object_unref);
-
-						g_clear_object (&icomp);
-						g_clear_error (&local_error);
 					}
 
-					g_free (tmp);
+					g_slist_free_full (objects, g_object_unref);
+
+					g_clear_object (&icomp);
+					g_clear_error (&local_error);
 				}
-
-				xmlXPathFreeObject (xpath_obj_response);
 			}
-
-			xmlXPathFreeContext (xpath_ctx);
 		}
 
 		if (doc)

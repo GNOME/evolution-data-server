@@ -59,6 +59,34 @@ gboolean	e_xml_xpath_eval_exists		(xmlXPathContext *xpath_ctx,
 						 const gchar *format,
 						 ...) G_GNUC_PRINTF (2, 3);
 
+gboolean	e_xml_is_element_name		(xmlNodePtr node,
+						 const gchar *ns_href,
+						 const gchar *name);
+xmlNodePtr	e_xml_find_sibling		(xmlNodePtr sibling,
+						 const gchar *ns_href,
+						 const gchar *name);
+xmlNodePtr	e_xml_find_next_sibling		(xmlNodePtr sibling,
+						 const gchar *ns_href,
+						 const gchar *name);
+xmlNodePtr	e_xml_find_child		(xmlNodePtr parent,
+						 const gchar *ns_href,
+						 const gchar *name);
+xmlChar *	e_xml_dup_node_content		(const xmlNodePtr node);
+xmlChar *	e_xml_find_child_and_dup_content(xmlNodePtr parent,
+						 const gchar *ns_href,
+						 const gchar *name);
+const xmlChar *	e_xml_get_node_text		(const xmlNodePtr node);
+const xmlChar *	e_xml_find_child_and_get_text	(xmlNodePtr parent,
+						 const gchar *ns_href,
+						 const gchar *name);
+void		e_xml_find_children_nodes	(xmlNodePtr parent,
+						 guint count,
+						 ...);
+xmlNodePtr	e_xml_find_in_hierarchy		(xmlNodePtr parent,
+						 const gchar *child_ns_href,
+						 const gchar *child_name,
+						 ...) G_GNUC_NULL_TERMINATED; /* requires two NULL-s at the end of the arguments */
+
 G_END_DECLS
 
 #endif /* E_XML_UTILS_H */

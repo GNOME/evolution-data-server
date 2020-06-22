@@ -470,3 +470,369 @@ e_xml_xpath_eval_exists (xmlXPathContext *xpath_ctx,
 
 	return TRUE;
 }
+
+/**
+ * e_xml_is_element_name: (skip)
+ * @node: (nullable): an #xmlNodePtr
+ * @ns_href: (nullable): a namespace href the node should have set, or %NULL for none namespace
+ * @name: an element name to search for
+ *
+ * Returns: Whether the @node is an element node of name @name and with a namespace href set to @ns_href
+ *
+ * Since: 3.38
+ **/
+gboolean
+e_xml_is_element_name (xmlNodePtr node,
+		       const gchar *ns_href,
+		       const gchar *name)
+{
+	if (!node || node->type != XML_ELEMENT_NODE)
+		return FALSE;
+
+	if (g_strcmp0 ((const gchar *) node->name, name) == 0) {
+		if (!ns_href) {
+			if (!node->ns)
+				return TRUE;
+		} else if (node->ns) {
+			xmlNsPtr nsPtr = xmlSearchNsByHref (node->doc, node, (const xmlChar *) ns_href);
+
+			if (nsPtr && node->ns == nsPtr)
+				return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+/**
+ * e_xml_find_sibling: (skip)
+ * @sibling: (nullable): an #xmlNodePtr, where to start searching
+ * @ns_href: (nullable): a namespace href the node should have set, or %NULL for none namespace
+ * @name: an element name to search for
+ *
+ * Searches the sibling nodes of the @sibling for an element named @name in namespace @ns_href.
+ * It checks the @sibling itself too, but it doesn't check the previous siblings of the @sibling.
+ *
+ * Returns: (transfer none) (nullable): an #xmlNodePtr of the given name, or %NULL, if not found
+ *    It also returns %NULL, when the @sibling is %NULL.
+ *
+ * See: e_xml_find_next_sibling(), e_xml_find_child()
+ *
+ * Since: 3.38
+ **/
+xmlNodePtr
+e_xml_find_sibling (xmlNodePtr sibling,
+		    const gchar *ns_href,
+		    const gchar *name)
+{
+	xmlNodePtr node;
+
+	for (node = sibling; node; node = xmlNextElementSibling (node)) {
+		if (e_xml_is_element_name (node, ns_href, name))
+			break;
+	}
+
+	return node;
+}
+
+/**
+ * e_xml_find_next_sibling: (skip)
+ * @sibling: (nullable): an #xmlNodePtr, where to search from
+ * @ns_href: (nullable): a namespace href the node should have set, or %NULL for none namespace
+ * @name: an element name to search for
+ *
+ * Searches for the next sibling node of the @sibling for an element named @name in namespace @ns_href.
+ * Unlike e_xml_find_sibling(), it skips the @sibling itself.
+ *
+ * Returns: (transfer none) (nullable): an #xmlNodePtr of the given name, or %NULL, if not found
+ *    It also returns %NULL, when the @sibling is %NULL.
+ *
+ * See: e_xml_find_sibling(), e_xml_find_child()
+ *
+ * Since: 3.38
+ **/
+xmlNodePtr
+e_xml_find_next_sibling (xmlNodePtr sibling,
+			 const gchar *ns_href,
+			 const gchar *name)
+{
+	if (!sibling)
+		return NULL;
+
+	return e_xml_find_sibling (sibling->next, ns_href, name);
+}
+
+/**
+ * e_xml_find_child: (skip)
+ * @parent: (nullable): an #xmlNodePtr, parent of which immediate children to search
+ * @ns_href: (nullable): a namespace href the node should have set, or %NULL for none namespace
+ * @name: an element name to search for
+ *
+ * Searches the children nodes of the @parent for an element named @name in namespace @ns_href.
+ *
+ * Returns: (transfer none) (nullable): an #xmlNodePtr of the given name, or %NULL, if not found.
+ *    It also returns %NULL, when the @parent is %NULL.
+ *
+ * See: e_xml_find_sibling(), e_xml_find_children_nodes()
+ *
+ * Since: 3.38
+ **/
+xmlNodePtr
+e_xml_find_child (xmlNodePtr parent,
+		  const gchar *ns_href,
+		  const gchar *name)
+{
+	if (!parent)
+		return NULL;
+
+	return e_xml_find_sibling (parent->children, ns_href, name);
+}
+
+/**
+ * e_xml_dup_node_content: (skip)
+ * @node: (nullable): an #xmlNodePtr
+ *
+ * Duplicates content of the @node. If the @node is %NULL, then the
+ * function does nothing and returns also %NULL.
+ *
+ * Unlike e_xml_get_node_text(), this includes also any element sub-structure
+ * of the @node, if any such exists.
+ *
+ * Returns: (transfer full) (nullable): the @node content as #xmlChar string,
+ *    or %NULL, when the content could not be read or was not set. Free
+ *    the non-%NULL value with xmlFree(), when no longer needed.
+ *
+ * See: e_xml_find_child_and_dup_content(), e_xml_get_node_text()
+ *
+ * Since: 3.38
+ **/
+xmlChar *
+e_xml_dup_node_content (const xmlNodePtr node)
+{
+	if (!node)
+		return NULL;
+
+	return xmlNodeGetContent (node);
+}
+
+/**
+ * e_xml_find_child_and_dup_content: (skip)
+ * @parent: (nullable): an #xmlNodePtr, parent of which immediate children to search
+ * @ns_href: (nullable): a namespace href the node should have set, or %NULL for none namespace
+ * @name: an element name to search for
+ *
+ * Searches the children nodes of the @parent for an element named @name in namespace @ns_href
+ * and returns its content. This combines e_xml_find_child() and e_xml_dup_node_content() calls.
+ *
+ * Returns: (transfer full) (nullable): the found node content as #xmlChar string,
+ *    or %NULL, when the node could not be found or the content could not be read
+ *    or was not set. Free the non-%NULL value with xmlFree(), when no longer needed.
+ *
+ * See: e_xml_find_child_and_get_text()
+ *
+ * Since: 3.38
+ **/
+xmlChar *
+e_xml_find_child_and_dup_content (xmlNodePtr parent,
+				  const gchar *ns_href,
+				  const gchar *name)
+{
+	xmlNodePtr tmp;
+
+	tmp = e_xml_find_child (parent, ns_href, name);
+
+	if (!tmp)
+		return NULL;
+
+	return e_xml_dup_node_content (tmp);
+}
+
+/**
+ * e_xml_get_node_text: (skip)
+ * @node: (nullable): an #xmlNodePtr
+ *
+ * Retrieves content of the @node. If the @node is %NULL, then the
+ * function does nothing and returns also %NULL.
+ *
+ * This is similar to e_xml_dup_node_content(), except it does not
+ * allocate new memory for the string. It also doesn't traverse
+ * the element structure, is returns the first text node's value
+ * only. It can be used to avoid unnecessary allocations, when
+ * reading element values with a single text node as a child.
+ *
+ * Returns: (transfer none) (nullable): The @node content, or %NULL.
+ *
+ * See: e_xml_dup_node_content()
+ *
+ * Since: 3.38
+ **/
+const xmlChar *
+e_xml_get_node_text (const xmlNodePtr node)
+{
+	xmlNodePtr child;
+
+	if (!node)
+		return NULL;
+
+	if (node->type == XML_TEXT_NODE)
+		return node->content;
+
+	for (child = node->children; child; child = child->next) {
+		if (child->type == XML_TEXT_NODE)
+			return child->content;
+	}
+
+	return NULL;
+}
+
+/**
+ * e_xml_find_child_and_get_text: (skip)
+ * @parent: (nullable): an #xmlNodePtr, parent of which immediate children to search
+ * @ns_href: (nullable): a namespace href the node should have set, or %NULL for none namespace
+ * @name: an element name to search for
+ *
+ * Searches the children nodes of the @parent for an element named @name in namespace @ns_href
+ * and returns its text content.
+ *
+ * It combines e_xml_find_child() and e_xml_get_node_text() calls.
+ *
+ * Returns: (transfer none) (nullable): the found node text as #xmlChar string,
+ *    or %NULL, when the node could not be found or the content could not be read
+ *    or was not set.
+ *
+ * See: e_xml_find_child_and_dup_content(), e_xml_find_children_nodes()
+ *
+ * Since: 3.38
+ **/
+const xmlChar *
+e_xml_find_child_and_get_text (xmlNodePtr parent,
+			       const gchar *ns_href,
+			       const gchar *name)
+{
+	xmlNodePtr tmp;
+
+	tmp = e_xml_find_child (parent, ns_href, name);
+
+	if (!tmp)
+		return NULL;
+
+	return e_xml_get_node_text (tmp);
+}
+
+/**
+ * e_xml_find_children_nodes: (skip)
+ * @parent: an #xmlNodePtr, whose children to search
+ * @count: how many nodes will be read
+ * @...: triple of arguments describing the nodes and their out variable
+ *
+ * Retrieve multiple nodes in one go, in an efficient way. It can be
+ * quicker than traversing the children of the @parent @count times
+ * in certain circumstances.
+ *
+ * The variable parameters expect triple of:
+ *   const gchar *ns_href;
+ *   const gchar *name;
+ *   xmlNodePtr *out_node;
+ * where the ns_href is a namespace href the node should have set,
+ * or %NULL for none namespace; the name is an element name to search for.
+ * The names should not be included more than once.
+ *
+ * Since: 3.38
+ **/
+void
+e_xml_find_children_nodes (xmlNodePtr parent,
+			   guint count,
+			   ...)
+{
+	struct _data {
+		const gchar *ns_href;
+		const gchar *name;
+		xmlNodePtr *out_node;
+	} *data;
+	va_list args;
+	xmlNodePtr node;
+	guint ii;
+
+	g_return_if_fail (count > 0);
+
+	data = g_alloca (sizeof (struct _data) * count);
+
+	va_start (args, count);
+
+	for (ii = 0; ii < count; ii++) {
+		data[ii].ns_href = va_arg (args, const gchar *);
+		data[ii].name = va_arg (args, const gchar *);
+		data[ii].out_node = va_arg (args, xmlNodePtr *);
+
+		*(data[ii].out_node) = NULL;
+	}
+
+	va_end (args);
+
+	for (node = parent->children; node; node = count ? xmlNextElementSibling (node) : NULL) {
+		for (ii = 0; ii < count; ii++) {
+			if (e_xml_is_element_name (node, data[ii].ns_href, data[ii].name)) {
+				*(data[ii].out_node) = node;
+				count--;
+
+				if (ii < count)
+					data[ii] = data[count];
+
+				break;
+			}
+		}
+	}
+}
+
+/**
+ * e_xml_find_in_hierarchy: (skip)
+ * @parent: (nullable): an #xmlNodePtr, or %NULL, in which case function does nothing and just returns %NULL
+ * @child_ns_href: (nullable): a namespace href the node should have set, or %NULL for none namespace
+ * @child_name: an element name to search for
+ * @...: a two-%NULL-terminated pair of hierarchy children
+ *
+ * Checks whether the @parent has a hierarchy of children described by pair
+ * of 'ns_href' and 'name'.
+ *
+ * Note: It requires two %NULL-s at the end of the arguments, because the `ns_href' can
+ *    be %NULL, thus it could not distinguish between no namespace href and the end of
+ *    the hierarchy children, thus it stops only on the 'name' being %NULL.
+ *
+ * Returns: (transfer none) (nullable): an #xmlNodePtr referencing the node in the hierarchy
+ *    of the children of the @parent, or %NULL, when no such found.
+ *
+ * Since: 3.38
+ **/
+xmlNodePtr
+e_xml_find_in_hierarchy (xmlNodePtr parent,
+			 const gchar *child_ns_href,
+			 const gchar *child_name,
+			 ...)
+{
+	xmlNodePtr node;
+	va_list va;
+
+	if (!parent)
+		return NULL;
+
+	node = e_xml_find_child (parent, child_ns_href, child_name);
+
+	if (!node)
+		return NULL;
+
+	va_start (va, child_name);
+
+	while (node) {
+		child_ns_href = va_arg (va, const gchar *);
+		child_name = va_arg (va, const gchar *);
+
+		if (!child_name)
+			break;
+
+		node = e_xml_find_child (node, child_ns_href, child_name);
+	}
+
+	va_end (va);
+
+	return child_name ? NULL : node;
+}

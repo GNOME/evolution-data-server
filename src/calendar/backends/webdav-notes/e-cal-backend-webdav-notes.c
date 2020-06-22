@@ -356,29 +356,22 @@ ecb_webdav_notes_check_credentials_error (ECalBackendWebDAVNotes *cbnotes,
 
 static gboolean
 ecb_webdav_notes_getetag_cb (EWebDAVSession *webdav,
-			     xmlXPathContextPtr xpath_ctx,
-			     const gchar *xpath_prop_prefix,
+			     xmlNodePtr prop_node,
 			     const SoupURI *request_uri,
 			     const gchar *href,
 			     guint status_code,
 			     gpointer user_data)
 {
-	if (!xpath_prop_prefix)
-		return TRUE;
-
 	if (status_code == SOUP_STATUS_OK) {
 		gchar **out_etag = user_data;
-		gchar *etag;
+		const xmlChar *etag;
 
 		g_return_val_if_fail (out_etag != NULL, FALSE);
 
-		etag = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:getetag", xpath_prop_prefix);
+		etag = e_xml_find_child_and_get_text (prop_node, E_WEBDAV_NS_DAV, "getetag");
 
-		if (etag && *etag) {
-			*out_etag = e_webdav_session_util_maybe_dequote (etag);
-		} else {
-			g_free (etag);
-		}
+		if (etag && *etag)
+			*out_etag = e_webdav_session_util_maybe_dequote (g_strdup ((const gchar *) etag));
 	}
 
 	return FALSE;

@@ -154,8 +154,7 @@ typedef enum {
 /**
  * EWebDAVPropstatTraverseFunc:
  * @webdav: an #EWebDAVSession
- * @xpath_ctx: an #xmlXPathContextPtr
- * @xpath_prop_prefix: (nullable): an XPath prefix for the current prop element, without trailing forward slash
+ * @prop_node: an #xmlNodePtr
  * @request_uri: a #SoupURI, containing the request URI, maybe redirected by the server
  * @href: (nullable): a full URI to which the property belongs, or %NULL, when not found
  * @status_code: an HTTP status code for this property
@@ -165,18 +164,15 @@ typedef enum {
  * e_webdav_session_report_sync() and other XML response with DAV:propstat
  * elements traversal functions.
  *
- * The @xpath_prop_prefix can be %NULL only once, for the first time,
- * which is meant to let the caller setup the @xpath_ctx, like to register
- * its own namespaces to it with e_xml_xpath_context_register_namespaces().
- * All other invocations of the function will have @xpath_prop_prefix non-%NULL.
+ * The @prop_node points to the actual property (prop) node and it can be examined
+ * with e_xml_find_child(), e_xml_find_children_nodes() and other provided XML helper functions.
  *
  * Returns: %TRUE to continue traversal of the returned response, %FALSE otherwise.
  *
  * Since: 3.26
  **/
 typedef gboolean (* EWebDAVPropstatTraverseFunc)	(EWebDAVSession *webdav,
-							 xmlXPathContext *xpath_ctx,
-							 const gchar *xpath_prop_prefix,
+							 xmlNodePtr prop_node,
 							 const SoupURI *request_uri,
 							 const gchar *href,
 							 guint status_code,

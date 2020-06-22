@@ -389,8 +389,7 @@ ebb_carddav_update_nfo_with_contact (EBookMetaBackendInfo *nfo,
 
 static gboolean
 ebb_carddav_multiget_response_cb (EWebDAVSession *webdav,
-				  xmlXPathContextPtr xpath_ctx,
-				  const gchar *xpath_prop_prefix,
+				  xmlNodePtr prop_node,
 				  const SoupURI *request_uri,
 				  const gchar *href,
 				  guint status_code,
@@ -400,26 +399,32 @@ ebb_carddav_multiget_response_cb (EWebDAVSession *webdav,
 
 	g_return_val_if_fail (from_link != NULL, FALSE);
 
-	if (!xpath_prop_prefix) {
-		e_xml_xpath_context_register_namespaces (xpath_ctx, "C", E_WEBDAV_NS_CARDDAV, NULL);
-	} else if (status_code == SOUP_STATUS_OK) {
-		gchar *address_data, *etag;
+	if (status_code == SOUP_STATUS_OK) {
+		const xmlChar *address_data, *etag;
+		xmlNodePtr address_data_node = NULL, etag_node = NULL;
 
 		g_return_val_if_fail (href != NULL, FALSE);
 
-		address_data = e_xml_xpath_eval_as_string (xpath_ctx, "%s/C:address-data", xpath_prop_prefix);
-		etag = e_webdav_session_util_maybe_dequote (e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:getetag", xpath_prop_prefix));
+		e_xml_find_children_nodes (prop_node, 2,
+			E_WEBDAV_NS_CARDDAV, "address-data", &address_data_node,
+			E_WEBDAV_NS_DAV, "getetag", &etag_node);
+
+		address_data = e_xml_get_node_text (address_data_node);
+		etag = e_xml_get_node_text (etag_node);
 
 		if (address_data) {
 			EContact *contact;
 
-			contact = e_contact_new_from_vcard (address_data);
+			contact = e_contact_new_from_vcard ((const gchar *) address_data);
 			if (contact) {
 				const gchar *uid;
 
 				uid = e_contact_get_const (contact, E_CONTACT_UID);
 				if (uid) {
+					gchar *dequoted_etag;
 					GSList *link;
+
+					dequoted_etag = e_webdav_session_util_maybe_dequote (g_strdup ((const gchar *) etag));
 
 					for (link = *from_link; link; link = g_slist_next (link)) {
 						EBookMetaBackendInfo *nfo = link->data;
@@ -433,19 +438,18 @@ ebb_carddav_multiget_response_cb (EWebDAVSession *webdav,
 							if (link == *from_link)
 								*from_link = g_slist_next (*from_link);
 
-							ebb_carddav_update_nfo_with_contact (nfo, contact, etag);
+							ebb_carddav_update_nfo_with_contact (nfo, contact, dequoted_etag);
 
 							break;
 						}
 					}
+
+					g_free (dequoted_etag);
 				}
 
 				g_object_unref (contact);
 			}
 		}
-
-		g_free (address_data);
-		g_free (etag);
 	} else if (status_code == SOUP_STATUS_NOT_FOUND) {
 		GSList *link;
 
@@ -548,8 +552,7 @@ ebb_carddav_multiget_from_sets_sync (EBookBackendCardDAV *bbdav,
 
 static gboolean
 ebb_carddav_get_contact_items_cb (EWebDAVSession *webdav,
-				  xmlXPathContextPtr xpath_ctx,
-				  const gchar *xpath_prop_prefix,
+				  xmlNodePtr prop_node,
 				  const SoupURI *request_uri,
 				  const gchar *href,
 				  guint status_code,
@@ -557,11 +560,10 @@ ebb_carddav_get_contact_items_cb (EWebDAVSession *webdav,
 {
 	GHashTable *known_items = user_data; /* gchar *href ~> EBookMetaBackendInfo * */
 
-	g_return_val_if_fail (xpath_ctx != NULL, FALSE);
+	g_return_val_if_fail (prop_node != NULL, FALSE);
 	g_return_val_if_fail (known_items != NULL, FALSE);
 
-	if (xpath_prop_prefix &&
-	    status_code == SOUP_STATUS_OK) {
+	if (status_code == SOUP_STATUS_OK) {
 		EBookMetaBackendInfo *nfo;
 		gchar *etag;
 
@@ -573,7 +575,7 @@ ebb_carddav_get_contact_items_cb (EWebDAVSession *webdav,
 			return TRUE;
 		}
 
-		etag = e_webdav_session_util_maybe_dequote (e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:getetag", xpath_prop_prefix));
+		etag = e_webdav_session_util_maybe_dequote (g_strdup ((const gchar *) e_xml_find_child_and_get_text (prop_node, E_WEBDAV_NS_DAV, "getetag")));
 		/* Return 'TRUE' to not stop on faulty data from the server */
 		g_return_val_if_fail (etag != NULL, TRUE);
 
@@ -802,8 +804,7 @@ ebb_carddav_get_changes_sync (EBookMetaBackend *meta_backend,
 
 static gboolean
 ebb_carddav_extract_existing_cb (EWebDAVSession *webdav,
-				 xmlXPathContextPtr xpath_ctx,
-				 const gchar *xpath_prop_prefix,
+				 xmlNodePtr prop_node,
 				 const SoupURI *request_uri,
 				 const gchar *href,
 				 guint status_code,
@@ -813,38 +814,42 @@ ebb_carddav_extract_existing_cb (EWebDAVSession *webdav,
 
 	g_return_val_if_fail (out_existing_objects != NULL, FALSE);
 
-	if (!xpath_prop_prefix) {
-		e_xml_xpath_context_register_namespaces (xpath_ctx, "C", E_WEBDAV_NS_CARDDAV, NULL);
-	} else if (status_code == SOUP_STATUS_OK) {
-		gchar *etag;
-		gchar *address_data;
+	if (status_code == SOUP_STATUS_OK) {
+		const xmlChar *address_data, *etag;
+		xmlNodePtr address_data_node = NULL, etag_node = NULL;
 
 		g_return_val_if_fail (href != NULL, FALSE);
 
-		etag = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:getetag", xpath_prop_prefix);
-		address_data = e_xml_xpath_eval_as_string (xpath_ctx, "%s/C:address-data", xpath_prop_prefix);
+		e_xml_find_children_nodes (prop_node, 2,
+			E_WEBDAV_NS_CARDDAV, "address-data", &address_data_node,
+			E_WEBDAV_NS_DAV, "getetag", &etag_node);
+
+		address_data = e_xml_get_node_text (address_data_node);
+		etag = e_xml_get_node_text (etag_node);
 
 		if (address_data) {
 			EContact *contact;
 
-			contact = e_contact_new_from_vcard (address_data);
+			contact = e_contact_new_from_vcard ((const gchar *) address_data);
 			if (contact) {
 				const gchar *uid;
 
 				uid = e_contact_get_const (contact, E_CONTACT_UID);
 
 				if (uid) {
-					etag = e_webdav_session_util_maybe_dequote (etag);
+					gchar *dequoted_etag;
+
+					dequoted_etag = e_webdav_session_util_maybe_dequote (g_strdup ((const gchar *) etag));
+
 					*out_existing_objects = g_slist_prepend (*out_existing_objects,
-						e_book_meta_backend_info_new (uid, etag, NULL, href));
+						e_book_meta_backend_info_new (uid, dequoted_etag, NULL, href));
+
+					g_free (dequoted_etag);
 				}
 
 				g_object_unref (contact);
 			}
 		}
-
-		g_free (address_data);
-		g_free (etag);
 	}
 
 	return TRUE;
