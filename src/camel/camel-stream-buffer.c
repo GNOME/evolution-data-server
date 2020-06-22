@@ -518,3 +518,22 @@ camel_stream_buffer_read_line (CamelStreamBuffer *sbf,
 
 	return g_strdup ((gchar *) sbf->priv->linebuf);
 }
+
+/**
+ * camel_stream_buffer_truncate:
+ * @sbf: a #CamelStreamBuffer
+ *
+ * Truncates any cached data in the @sbf. The next read reads
+ * from the stream.
+ *
+ * Since: 3.38
+ **/
+void
+camel_stream_buffer_truncate (CamelStreamBuffer *sbf)
+{
+	g_return_if_fail (CAMEL_IS_STREAM_BUFFER (sbf));
+
+	sbf->priv->ptr = sbf->priv->buf;
+	sbf->priv->end = sbf->priv->buf;
+	sbf->priv->ptr[0] = '\0';
+}

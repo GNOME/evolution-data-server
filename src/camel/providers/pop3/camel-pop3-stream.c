@@ -457,3 +457,14 @@ camel_pop3_stream_getd (CamelPOP3Stream *is,
 
 	return 1;
 }
+
+void
+camel_pop3_stream_truncate (CamelPOP3Stream *is)
+{
+	if (is) {
+		is->ptr = is->end = is->buf;
+		is->lineptr = is->linebuf;
+		is->lineend = is->linebuf + CAMEL_POP3_STREAM_LINE_SIZE;
+		is->ptr[0] = '\n';
+	}
+}
