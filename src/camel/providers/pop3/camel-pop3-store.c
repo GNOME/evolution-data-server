@@ -205,6 +205,8 @@ connect_to_server (CamelService *service,
 
 	if (tls_stream != NULL) {
 		camel_stream_set_base_stream (stream, tls_stream);
+		/* Truncate any left cached input from the insecure part of the session */
+		camel_pop3_stream_truncate (pop3_engine->stream);
 		g_object_unref (tls_stream);
 	} else {
 		g_prefix_error (

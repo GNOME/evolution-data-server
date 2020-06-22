@@ -323,6 +323,8 @@ connect_to_server (CamelService *service,
 
 	if (tls_stream != NULL) {
 		camel_stream_set_base_stream (stream, tls_stream);
+		/* Truncate any left cached input from the insecure part of the session */
+		camel_stream_buffer_truncate (transport->istream);
 		g_object_unref (tls_stream);
 	} else {
 		g_prefix_error (
