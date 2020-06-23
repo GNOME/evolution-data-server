@@ -93,7 +93,8 @@ gint		camel_stream_buffer_gets	(CamelStreamBuffer *sbf,
 gchar *		camel_stream_buffer_read_line	(CamelStreamBuffer *sbf,
 						 GCancellable *cancellable,
 						 GError **error);
-void		camel_stream_buffer_truncate	(CamelStreamBuffer *sbf);
+void		camel_stream_buffer_discard_cache
+						(CamelStreamBuffer *sbf);
 
 G_END_DECLS
 

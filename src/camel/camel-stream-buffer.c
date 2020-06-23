@@ -520,16 +520,16 @@ camel_stream_buffer_read_line (CamelStreamBuffer *sbf,
 }
 
 /**
- * camel_stream_buffer_truncate:
+ * camel_stream_buffer_discard_cache:
  * @sbf: a #CamelStreamBuffer
  *
- * Truncates any cached data in the @sbf. The next read reads
+ * Discards any cached data in the @sbf. The next read reads
  * from the stream.
  *
  * Since: 3.36.4
  **/
 void
-camel_stream_buffer_truncate (CamelStreamBuffer *sbf)
+camel_stream_buffer_discard_cache (CamelStreamBuffer *sbf)
 {
 	g_return_if_fail (CAMEL_IS_STREAM_BUFFER (sbf));
 

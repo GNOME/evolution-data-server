@@ -87,7 +87,7 @@ gint		camel_pop3_stream_getd		(CamelPOP3Stream *is,
 						 guint *len,
 						 GCancellable *cancellable,
 						 GError **error);
-void		camel_pop3_stream_truncate	(CamelPOP3Stream *is);
+void		camel_pop3_stream_discard_cache	(CamelPOP3Stream *is);
 
 G_END_DECLS
 
