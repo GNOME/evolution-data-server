@@ -59,30 +59,30 @@ gboolean	e_xml_xpath_eval_exists		(xmlXPathContext *xpath_ctx,
 						 const gchar *format,
 						 ...) G_GNUC_PRINTF (2, 3);
 
-gboolean	e_xml_is_element_name		(xmlNodePtr node,
+gboolean	e_xml_is_element_name		(xmlNode *node,
 						 const gchar *ns_href,
 						 const gchar *name);
-xmlNodePtr	e_xml_find_sibling		(xmlNodePtr sibling,
+xmlNode *	e_xml_find_sibling		(xmlNode *sibling,
 						 const gchar *ns_href,
 						 const gchar *name);
-xmlNodePtr	e_xml_find_next_sibling		(xmlNodePtr sibling,
+xmlNode *	e_xml_find_next_sibling		(xmlNode *sibling,
 						 const gchar *ns_href,
 						 const gchar *name);
-xmlNodePtr	e_xml_find_child		(xmlNodePtr parent,
+xmlNode *	e_xml_find_child		(xmlNode *parent,
 						 const gchar *ns_href,
 						 const gchar *name);
-xmlChar *	e_xml_dup_node_content		(const xmlNodePtr node);
-xmlChar *	e_xml_find_child_and_dup_content(xmlNodePtr parent,
+xmlChar *	e_xml_dup_node_content		(const xmlNode *node);
+xmlChar *	e_xml_find_child_and_dup_content(xmlNode *parent,
 						 const gchar *ns_href,
 						 const gchar *name);
-const xmlChar *	e_xml_get_node_text		(const xmlNodePtr node);
-const xmlChar *	e_xml_find_child_and_get_text	(xmlNodePtr parent,
+const xmlChar *	e_xml_get_node_text		(const xmlNode *node);
+const xmlChar *	e_xml_find_child_and_get_text	(xmlNode *parent,
 						 const gchar *ns_href,
 						 const gchar *name);
-void		e_xml_find_children_nodes	(xmlNodePtr parent,
+void		e_xml_find_children_nodes	(xmlNode *parent,
 						 guint count,
 						 ...);
-xmlNodePtr	e_xml_find_in_hierarchy		(xmlNodePtr parent,
+xmlNode *	e_xml_find_in_hierarchy		(xmlNode *parent,
 						 const gchar *child_ns_href,
 						 const gchar *child_name,
 						 ...) G_GNUC_NULL_TERMINATED; /* requires two NULL-s at the end of the arguments */

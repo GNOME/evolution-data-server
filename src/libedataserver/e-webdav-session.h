@@ -154,7 +154,7 @@ typedef enum {
 /**
  * EWebDAVPropstatTraverseFunc:
  * @webdav: an #EWebDAVSession
- * @prop_node: an #xmlNodePtr
+ * @prop_node: an #xmlNode
  * @request_uri: a #SoupURI, containing the request URI, maybe redirected by the server
  * @href: (nullable): a full URI to which the property belongs, or %NULL, when not found
  * @status_code: an HTTP status code for this property
@@ -172,7 +172,7 @@ typedef enum {
  * Since: 3.26
  **/
 typedef gboolean (* EWebDAVPropstatTraverseFunc)	(EWebDAVSession *webdav,
-							 xmlNodePtr prop_node,
+							 xmlNode *prop_node,
 							 const SoupURI *request_uri,
 							 const gchar *href,
 							 guint status_code,
