@@ -459,7 +459,7 @@ camel_pop3_stream_getd (CamelPOP3Stream *is,
 }
 
 void
-camel_pop3_stream_truncate (CamelPOP3Stream *is)
+camel_pop3_stream_discard_cache (CamelPOP3Stream *is)
 {
 	if (is) {
 		is->ptr = is->end = is->buf;
