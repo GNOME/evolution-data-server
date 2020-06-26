@@ -461,6 +461,7 @@ collection_backend_bind_child_enabled (ECollectionBackend *backend,
 	ESource *collection_source;
 	ESourceCollection *extension;
 	const gchar *extension_name;
+	guint binding_flags = G_BINDING_DEFAULT;
 
 	/* See if the child source's "enabled" property can be
 	 * bound to any ESourceCollection "enabled" properties. */
@@ -469,11 +470,18 @@ collection_backend_bind_child_enabled (ECollectionBackend *backend,
 	collection_source = e_backend_get_source (E_BACKEND (backend));
 	extension = e_source_get_extension (collection_source, extension_name);
 
+	if (!e_source_get_enabled (collection_source) ||
+	    e_collection_backend_is_new_source (backend, child_source))
+		binding_flags |= G_BINDING_SYNC_CREATE;
+
 	if (collection_backend_child_is_calendar (child_source)) {
+		if (!e_source_collection_get_calendar_enabled (extension))
+			binding_flags |= G_BINDING_SYNC_CREATE;
+
 		e_binding_bind_property_full (
 			extension, "calendar-enabled",
 			child_source, "enabled",
-			G_BINDING_SYNC_CREATE,
+			binding_flags,
 			include_master_source_enabled_transform,
 			include_master_source_enabled_transform,
 			backend,
@@ -482,10 +490,13 @@ collection_backend_bind_child_enabled (ECollectionBackend *backend,
 	}
 
 	if (collection_backend_child_is_contacts (child_source)) {
+		if (!e_source_collection_get_contacts_enabled (extension))
+			binding_flags |= G_BINDING_SYNC_CREATE;
+
 		e_binding_bind_property_full (
 			extension, "contacts-enabled",
 			child_source, "enabled",
-			G_BINDING_SYNC_CREATE,
+			binding_flags,
 			include_master_source_enabled_transform,
 			include_master_source_enabled_transform,
 			backend,
@@ -494,10 +505,13 @@ collection_backend_bind_child_enabled (ECollectionBackend *backend,
 	}
 
 	if (collection_backend_child_is_mail (child_source)) {
+		if (!e_source_collection_get_mail_enabled (extension))
+			binding_flags |= G_BINDING_SYNC_CREATE;
+
 		e_binding_bind_property_full (
 			extension, "mail-enabled",
 			child_source, "enabled",
-			G_BINDING_SYNC_CREATE,
+			binding_flags,
 			include_master_source_enabled_transform,
 			include_master_source_enabled_transform,
 			backend,
@@ -508,7 +522,7 @@ collection_backend_bind_child_enabled (ECollectionBackend *backend,
 	e_binding_bind_property (
 		collection_source, "enabled",
 		child_source, "enabled",
-		G_BINDING_SYNC_CREATE);
+		binding_flags);
 }
 
 static void
