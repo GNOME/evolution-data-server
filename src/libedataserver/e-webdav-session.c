@@ -3191,9 +3191,6 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
 
 	top_node = e_xml_find_sibling (top_node, top_path_ns_href1, top_path_name1);
 
-	if (top_path_name2)
-		top_node = e_xml_find_child (top_node, top_path_ns_href2, top_path_name2);
-
 	if (!top_node) {
 		gchar *tmp;
 
@@ -3215,6 +3212,10 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
 
 		return FALSE;
 	}
+
+	/* The server can return 'multistatus' with no 'response' children, which is not a problem */
+	if (top_path_name2)
+		top_node = e_xml_find_child (top_node, top_path_ns_href2, top_path_name2);
 
 	for (node = top_node; node && !do_stop; node = xmlNextElementSibling (node)) {
 		xmlNodePtr href_node = NULL, propstat_node = NULL;
