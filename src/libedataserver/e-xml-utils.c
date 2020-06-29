@@ -674,11 +674,11 @@ e_xml_get_node_text (const xmlNode *node)
 	if (!node)
 		return NULL;
 
-	if (node->type == XML_TEXT_NODE)
+	if (node->type == XML_TEXT_NODE || node->type == XML_CDATA_SECTION_NODE)
 		return node->content;
 
 	for (child = node->children; child; child = child->next) {
-		if (child->type == XML_TEXT_NODE)
+		if (child->type == XML_TEXT_NODE || child->type == XML_CDATA_SECTION_NODE)
 			return child->content;
 	}
 
