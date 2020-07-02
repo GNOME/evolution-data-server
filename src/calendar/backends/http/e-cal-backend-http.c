@@ -240,11 +240,22 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 
 		message = soup_request_http_get_message (request);
 
+		if (message) {
+			gchar *last_etag;
+
+			last_etag = e_cal_meta_backend_dup_sync_tag (meta_backend);
+
+			if (last_etag && *last_etag)
+				soup_message_headers_append (message->request_headers, "If-None-Match", last_etag);
+
+			g_free (last_etag);
+		}
+
 		input_stream = e_soup_session_send_request_sync (cbhttp->priv->session, request, cancellable, &local_error);
 
 		success = input_stream != NULL;
 
-		if (success && message && !SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
+		if (success && message && !SOUP_STATUS_IS_SUCCESSFUL (message->status_code) && message->status_code != SOUP_STATUS_NOT_MODIFIED) {
 			if (input_stream && e_soup_session_get_log_level (cbhttp->priv->session) == SOUP_LOGGER_LOG_BODY) {
 				gchar *response = ecb_http_read_stream_sync (input_stream, -1, cancellable, NULL);
 
@@ -409,6 +420,15 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 	message = soup_request_http_get_message (cbhttp->priv->request);
 	if (message) {
 		const gchar *new_etag;
+
+		if (message->status_code == SOUP_STATUS_NOT_MODIFIED) {
+			g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
+			g_object_unref (message);
+
+			ecb_http_disconnect_sync (meta_backend, cancellable, NULL);
+
+			return TRUE;
+		}
 
 		new_etag = soup_message_headers_get_one (message->response_headers, "ETag");
 		if (new_etag && !*new_etag) {
