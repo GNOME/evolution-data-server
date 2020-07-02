@@ -2100,7 +2100,6 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
 	success = input_stream != NULL;
 
 	if (success) {
-		SoupLoggerLogLevel log_level = e_soup_session_get_log_level (E_SOUP_SESSION (webdav));
 		gpointer buffer;
 		gsize nread = 0, nwritten;
 		gboolean first_chunk = TRUE;
@@ -2109,11 +2108,6 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
 
 		while (success = g_input_stream_read_all (input_stream, buffer, BUFFER_SIZE, &nread, cancellable, error),
 		       success && nread > 0) {
-			if (log_level == SOUP_LOGGER_LOG_BODY) {
-				fwrite (buffer, 1, nread, stdout);
-				fflush (stdout);
-			}
-
 			if (first_chunk) {
 				GByteArray tmp_bytes;
 
@@ -2134,9 +2128,6 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
 
 		if (success && first_chunk) {
 			success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, NULL, FALSE, _("Failed to read resource"), error, TRUE, TRUE);
-		} else if (success && !first_chunk && log_level == SOUP_LOGGER_LOG_BODY) {
-			fprintf (stdout, "\n");
-			fflush (stdout);
 		}
 
 		g_free (buffer);
@@ -2222,7 +2213,6 @@ e_webdav_session_get_data_sync (EWebDAVSession *webdav,
 
 typedef struct _ChunkWriteData {
 	SoupSession *session;
-	SoupLoggerLogLevel log_level;
 	GInputStream *stream;
 	goffset read_from;
 	gboolean wrote_any;
@@ -2252,11 +2242,6 @@ e_webdav_session_write_next_chunk (SoupMessage *message,
 	} else {
 		cwd->wrote_any = TRUE;
 		soup_message_body_append (message->request_body, SOUP_MEMORY_TEMPORARY, cwd->buffer, nread);
-
-		if (cwd->log_level == SOUP_LOGGER_LOG_BODY) {
-			fwrite (cwd->buffer, 1, nread, stdout);
-			fflush (stdout);
-		}
 	}
 }
 
@@ -2418,7 +2403,6 @@ e_webdav_session_put_sync (EWebDAVSession *webdav,
 	}
 
 	cwd.session = SOUP_SESSION (webdav);
-	cwd.log_level = e_soup_session_get_log_level (E_SOUP_SESSION (webdav));
 	cwd.stream = stream;
 	cwd.read_from = 0;
 	cwd.wrote_any = FALSE;
@@ -2449,11 +2433,6 @@ e_webdav_session_put_sync (EWebDAVSession *webdav,
 
 	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to put data"), error, TRUE, TRUE) &&
 		bytes != NULL;
-
-	if (cwd.wrote_any && cwd.log_level == SOUP_LOGGER_LOG_BODY) {
-		fprintf (stdout, "\n");
-		fflush (stdout);
-	}
 
 	if (cwd.error) {
 		g_clear_error (error);

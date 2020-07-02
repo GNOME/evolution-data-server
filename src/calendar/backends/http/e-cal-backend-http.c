@@ -256,17 +256,6 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 		success = input_stream != NULL;
 
 		if (success && message && !SOUP_STATUS_IS_SUCCESSFUL (message->status_code) && message->status_code != SOUP_STATUS_NOT_MODIFIED) {
-			if (input_stream && e_soup_session_get_log_level (cbhttp->priv->session) == SOUP_LOGGER_LOG_BODY) {
-				gchar *response = ecb_http_read_stream_sync (input_stream, -1, cancellable, NULL);
-
-				if (response) {
-					printf ("%s\n", response);
-					fflush (stdout);
-
-					g_free (response);
-				}
-			}
-
 			g_clear_object (&input_stream);
 			success = FALSE;
 		}
@@ -458,11 +447,6 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 		e_cal_meta_backend_empty_cache_sync (meta_backend, cancellable, NULL);
 		ecb_http_disconnect_sync (meta_backend, cancellable, NULL);
 		return FALSE;
-	}
-
-	if (e_soup_session_get_log_level (cbhttp->priv->session) == SOUP_LOGGER_LOG_BODY) {
-		printf ("%s\n", icalstring);
-		fflush (stdout);
 	}
 
 	/* Skip the UTF-8 marker at the beginning of the string */

@@ -74,6 +74,7 @@ set(SOURCES
 	e-secret-store.c
 	e-sexp.c
 	e-soup-auth-bearer.c
+	e-soup-logger.c
 	e-soup-session.c
 	e-soup-ssl-trust.c
 	e-source.c
@@ -163,6 +164,7 @@ set(HEADERS
 	e-secret-store.h
 	e-sexp.h
 	e-soup-auth-bearer.h
+	e-soup-logger.h
 	e-soup-session.h
 	e-soup-ssl-trust.h
 	e-source.h

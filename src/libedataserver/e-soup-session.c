@@ -31,6 +31,7 @@
 
 #include "e-oauth2-services.h"
 #include "e-soup-auth-bearer.h"
+#include "e-soup-logger.h"
 #include "e-soup-ssl-trust.h"
 #include "e-source-authentication.h"
 #include "e-source-webdav.h"
@@ -1065,6 +1066,9 @@ e_soup_session_send_request_sync (ESoupSession *session,
 		if (input_stream) {
 			message = soup_request_http_get_message (request);
 
+			if (message && e_soup_session_get_log_level (session) == SOUP_LOGGER_LOG_BODY)
+				input_stream = e_soup_logger_attach (message, input_stream);
+
 			if (message && SOUP_STATUS_IS_REDIRECTION (message->status_code)) {
 				/* libsoup uses 20, but the constant is not in any public header */
 				if (resend_count >= 30) {
@@ -1179,12 +1183,6 @@ e_soup_session_send_request_simple_sync (ESoupSession *session,
 
 	g_free (buffer);
 	g_object_unref (input_stream);
-
-	if (bytes->len > 0 && e_soup_session_get_log_level (session) == SOUP_LOGGER_LOG_BODY) {
-		fwrite (bytes->data, 1, bytes->len, stdout);
-		fprintf (stdout, "\n");
-		fflush (stdout);
-	}
 
 	if (success)
 		success = e_soup_session_check_result (session, request, bytes->data, bytes->len, error);
