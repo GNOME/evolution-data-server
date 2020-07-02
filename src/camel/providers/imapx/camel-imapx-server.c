@@ -2647,11 +2647,9 @@ imapx_server_set_streams (CamelIMAPXServer *is,
 
 		/* The logger produces debugging output. */
 		logger = camel_imapx_logger_new (is->priv->tagprefix);
-		temp_stream = g_converter_input_stream_new (input_stream, logger);
-		g_object_unref (input_stream);
+		input_stream = g_converter_input_stream_new (
+			input_stream, logger);
 		g_clear_object (&logger);
-
-		input_stream = temp_stream;
 
 		/* Buffer the input stream for parsing. */
 		temp_stream = camel_imapx_input_stream_new (input_stream);
@@ -2664,15 +2662,11 @@ imapx_server_set_streams (CamelIMAPXServer *is,
 	}
 
 	if (output_stream != NULL) {
-		GOutputStream *temp_stream;
-
 		/* The logger produces debugging output. */
 		logger = camel_imapx_logger_new (is->priv->tagprefix);
-		temp_stream = g_converter_output_stream_new (output_stream, logger);
-		g_object_unref (output_stream);
+		output_stream = g_converter_output_stream_new (
+			output_stream, logger);
 		g_clear_object (&logger);
-
-		output_stream = temp_stream;
 	}
 
 	g_mutex_lock (&is->priv->stream_lock);
