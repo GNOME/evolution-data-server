@@ -1,3 +1,33 @@
+Evolution-Data-Server 3.37.3 2020-07-03
+---------------------------------------
+
+Bug Fixes:
+	I#215 - Utilize If-None-Match header for WebCal refresh (Milan Crha)
+	I#222 - Camel: Match-All condition doesn't show any messages (Milan Crha)
+	I#223 - WebDAV: Inefficient processing of returned XML data (Milan Crha)
+	I#226 - CVE-2020-14928: Response Injection via STARTTLS in SMTP and POP3 (Milan Crha)
+	I#228 - Restarting evolution-source-registry re-enables user-disabled CalDAV accounts (Milan Crha)
+	evo-I#982 - 'Message contains'-search broken in 3.36.3 (Milan Crha)
+
+Miscellaneous:
+	e-data-book-cursor.c: Mute a compiler warning (Milan Crha)
+	PrintableOptions.cmake: Sync the file with Evolution changes (Milan Crha)
+	camel-folder-search: Fix a memory leak when searching message body (Milan Crha)
+	docs: Add api-index file references for new symbols in 3.36 and 3.38 (Milan Crha)
+	Rename camel_stream_buffer_truncate() to  camel_stream_buffer_discard_cache() (Milan Crha)
+	Use 'xmlNode *' instead of 'xmlNodePtr' in public API (vala related) (Milan Crha)
+	EWebDAVSession: Relax requirement for full path existence in propstat response (Milan Crha)
+	e_xml_get_node_text: Consider also CDATA section nodes, not only TEXT nodes (Milan Crha)
+	Enhance ESoupSession debug logging (Milan Crha)
+
+Translations:
+	Emin Tufan Çetin (tr)
+	Yuri Chornoivan (uk)
+	Florentina Mușat (ro)
+	Baurzhan Muftakhidinov (kk)
+	Aurimas Černius (lt)
+	Daniel Mustieles (es)
+
 Evolution-Data-Server 3.37.2 2020-05-29
 ---------------------------------------
 
