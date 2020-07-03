@@ -24,6 +24,8 @@
 
 #include <libsoup/soup.h>
 
+G_BEGIN_DECLS
+
 GInputStream *	e_soup_logger_attach	(SoupMessage *message,
 					 GInputStream *input_stream);
 
