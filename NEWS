@@ -1,3 +1,20 @@
+Evolution-Data-Server 3.36.4 2020-07-03
+---------------------------------------
+
+Bug Fixes:
+	I#215 - Utilize If-None-Match header for WebCal refresh (Milan Crha)
+	I#222 - Camel: Match-All condition doesn't show any messages (Milan Crha)
+	I#226 - CVE-2020-14928: Response Injection via STARTTLS in SMTP and POP3 (Milan Crha)
+	I#228 - Restarting evolution-source-registry re-enables user-disabled CalDAV accounts (Milan Crha)
+	evo-I#982 - 'Message contains'-search broken in 3.36.3 (Milan Crha)
+
+Miscellaneous:
+	camel-folder-search: Fix a memory leak when searching message body (Milan Crha)
+	Rename camel_stream_buffer_truncate() to camel_stream_buffer_discard_cache() (Milan Crha)
+
+Translations:
+	Baurzhan Muftakhidinov (kk)
+
 Evolution-Data-Server 3.36.3 2020-05-29
 ---------------------------------------
 
