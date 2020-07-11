@@ -23,8 +23,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2020-07-02 12:45+0000\n"
-"PO-Revision-Date: 2020-07-10 23:09-0400\n"
+"POT-Creation-Date: 2020-07-11 03:13+0000\n"
+"PO-Revision-Date: 2020-07-10 23:19-0400\n"
 "Last-Translator: Tong Hui <tonghuix@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -5270,7 +5270,7 @@ msgstr "操作失败：%s"
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:451
 #, c-format
 msgid "%s: Scanning existing messages"
-msgstr "%s：正在扫描已有消息"
+msgstr "%s：正在扫描既存的消息"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:464
 #, fuzzy, c-format
@@ -6465,7 +6465,7 @@ msgstr "操作已取消"
 #: ../src/libedataserver/e-soup-session.c:956
 #, c-format
 msgid "Failed with HTTP error %d: %s"
-msgstr ""
+msgstr "因 HTTP 错误代码 %d 失败：%s"
 
 #: ../src/libedataserver/e-source.c:769
 #, c-format
@@ -6681,10 +6681,9 @@ msgstr ""
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
 #: ../src/libedataserver/e-webdav-session.c:1019
-#, fuzzy, c-format
-#| msgid "NSPR error code %d"
+#, c-format
 msgid "%s: HTTP error code %d (%s): %s"
-msgstr "NSPR 错误代码 %d"
+msgstr "%s：HTTP 错误代码 %d (%s)：%s"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
@@ -6721,16 +6720,12 @@ msgstr "编码数据失败"
 #: ../src/libedataserver/e-webdav-session.c:1653
 #: ../src/libedataserver/e-webdav-session.c:2906
 #: ../src/libedataserver/e-webdav-session.c:4145
-#, fuzzy
-#| msgid "Failed to find Account element"
 msgid "Failed to get input XML content"
-msgstr "无法找到帐号元素"
+msgstr "获取输入 XML 内容失败"
 
 #: ../src/libedataserver/e-webdav-session.c:1485
-#, fuzzy
-#| msgid "Failed to get capabilities"
 msgid "Failed to get properties"
-msgstr "无法获取可用性信息"
+msgstr "获取属性失败"
 
 #: ../src/libedataserver/e-webdav-session.c:1561
 #, fuzzy
@@ -6756,10 +6751,8 @@ msgid "Failed to get XML request content"
 msgstr "获取 XML 请求内容失败"
 
 #: ../src/libedataserver/e-webdav-session.c:1829
-#, fuzzy
-#| msgid "Failed to read From address"
 msgid "Failed to create address book"
-msgstr "读取 From 地址失败"
+msgstr "创建地址簿失败"
 
 #: ../src/libedataserver/e-webdav-session.c:1991
 msgid "Failed to create calendar"
@@ -6791,39 +6784,31 @@ msgid "Failed to put data to server, error code %d (%s)"
 msgstr "将数据添加到编码器失败"
 
 #: ../src/libedataserver/e-webdav-session.c:2677
-#, fuzzy
-#| msgid "Failed to enable QResync"
 msgid "Failed to delete resource"
-msgstr "无法启用 QResync"
+msgstr "删除资源失败"
 
 #: ../src/libedataserver/e-webdav-session.c:2746
-#, fuzzy
-#| msgid "Failed to copy the tmp file"
 msgid "Failed to copy resource"
-msgstr "无法复制临时文件"
+msgstr "复制资源失败"
 
 #: ../src/libedataserver/e-webdav-session.c:2810
-#, fuzzy
-#| msgid "Failed to refresh token"
 msgid "Failed to move resource"
-msgstr "刷新令牌失败"
+msgstr "移动资源失败"
 
 #: ../src/libedataserver/e-webdav-session.c:2917
-#, fuzzy
-#| msgid "Failed to refresh token"
 msgid "Failed to lock resource"
-msgstr "刷新令牌失败"
+msgstr "锁定资源失败"
 
 #: ../src/libedataserver/e-webdav-session.c:2931
 #: ../src/libedataserver/e-webdav-session.c:3139
 msgid "Expected application/xml response, but none returned"
-msgstr ""
+msgstr "期望得到 application/xml 响应，返回了 non"
 
 #: ../src/libedataserver/e-webdav-session.c:2934
 #: ../src/libedataserver/e-webdav-session.c:3142
 #, c-format
 msgid "Expected application/xml response, but %s returned"
-msgstr ""
+msgstr "期望得到 application/xml 响应，返回了 %s"
 
 #: ../src/libedataserver/e-webdav-session.c:2946
 #: ../src/libedataserver/e-webdav-session.c:3155
