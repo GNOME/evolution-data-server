@@ -521,7 +521,7 @@ ebmb_gather_photos_local_filenames (EBookMetaBackend *meta_backend,
 
 		values = e_vcard_attribute_get_param (attr, EVC_VALUE);
 		if (values && g_ascii_strcasecmp (values->data, "uri") == 0) {
-			const gchar *url;
+			gchar *url;
 
 			url = e_vcard_attribute_get_value (attr);
 			if (url && g_str_has_prefix (url, LOCAL_PREFIX)) {
@@ -533,6 +533,8 @@ ebmb_gather_photos_local_filenames (EBookMetaBackend *meta_backend,
 				else
 					g_free (filename);
 			}
+
+			g_free (url);
 		}
 	}
 
