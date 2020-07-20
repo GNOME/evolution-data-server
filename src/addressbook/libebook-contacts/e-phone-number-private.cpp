@@ -118,8 +118,23 @@ _e_phone_number_cxx_make_region_code (const gchar *region_code)
 	/* Extract two-letter country code from current locale id if needed.
 	 * From outside this is a C library, so we better consult the
          * C infrastructure instead of std::locale, which might divert. */
-	if (region_code == NULL || region_code[0] == '\0')
-		return _e_phone_number_cxx_region_code_from_locale (setlocale (LC_ADDRESS, NULL));
+	if (region_code == NULL || region_code[0] == '\0') {
+		const gchar *lcl = NULL;
+
+#if defined (LC_TELEPHONE)
+		lcl = setlocale (LC_TELEPHONE, NULL);
+#endif
+
+#if defined (LC_ADDRESS)
+		if (!lcl || !*lcl || (lcl[0] == 'C' && (!lcl[1] || lcl[1] == '.')))
+			lcl = setlocale (LC_ADDRESS, NULL);
+#endif
+
+		if (!lcl || !*lcl || (lcl[0] == 'C' && (!lcl[1] || lcl[1] == '.')))
+			lcl = setlocale (LC_MESSAGES, NULL);
+
+		return _e_phone_number_cxx_region_code_from_locale (lcl);
+	}
 
 	return region_code;
 }
