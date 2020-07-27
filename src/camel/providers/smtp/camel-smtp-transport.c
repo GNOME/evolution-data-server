@@ -1476,9 +1476,12 @@ smtp_helo (CamelSmtpTransport *transport,
 
 	g_clear_error (&local_error);
 
-	if (name == NULL) {
+	/* Contains a dot, might be (like) an FQDN; if not, then use the IP */
+	if (!name || !strchr (name, '.')) {
 		GSocketFamily family;
 		gchar *string;
+
+		g_free (name);
 
 		string = g_inet_address_to_string (address);
 		family = g_inet_address_get_family (address);
