@@ -333,6 +333,8 @@ if(NOT deflateEnd_exists)
 	message(FATAL_ERROR "zlib doesn't provide deflateEnd")
 endif(NOT deflateEnd_exists)
 
+pkg_check_at_least_version(HAVE_LIBSOUP_2_58 libsoup-2.4 2.58)
+
 pkg_check_modules(GNOME_PLATFORM REQUIRED
 	gio-2.0>=${glib_minimum_version}
 	gmodule-2.0>=${glib_minimum_version}

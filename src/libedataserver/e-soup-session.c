@@ -70,6 +70,7 @@ e_soup_session_ensure_auth_usage (ESoupSession *session,
 				  SoupMessage *message,
 				  SoupAuth *soup_auth)
 {
+	SoupAuthManager *auth_manager;
 	SoupSessionFeature *feature;
 	SoupURI *soup_uri;
 	GType auth_type;
@@ -106,7 +107,15 @@ e_soup_session_ensure_auth_usage (ESoupSession *session,
 		}
 	}
 
-	soup_auth_manager_use_auth (SOUP_AUTH_MANAGER (feature), soup_uri, soup_auth);
+	auth_manager = SOUP_AUTH_MANAGER (feature);
+
+#ifdef HAVE_LIBSOUP_2_58
+	/* This will make sure the 'soup_auth' is used regardless of the current 'auth_manager' state.
+	   See https://gitlab.gnome.org/GNOME/libsoup/-/issues/196 for more information. */
+	soup_auth_manager_clear_cached_credentials (auth_manager);
+#endif /* HAVE_LIBSOUP_2_58 */
+
+	soup_auth_manager_use_auth (auth_manager, soup_uri, soup_auth);
 
 	if (!in_soup_uri)
 		soup_uri_free (soup_uri);

@@ -193,3 +193,6 @@
 
 /* evolution-alarm-notify - Define if using Canberra-GTK for sound */
 #cmakedefine HAVE_CANBERRA 1
+
+/* Define if compiled with libsoup 2.58 and newer */
+#cmakedefine HAVE_LIBSOUP_2_58 1
