@@ -114,6 +114,25 @@ gboolean	e_cal_recur_ensure_end_dates		(ECalComponent *comp,
 
 const gchar *	e_cal_recur_get_localized_nth		(gint nth);
 
+/**
+ * ECalRecurFormatDateTimeFunc:
+ * @itt: an #ICalTime to format to string
+ * @buffer: a buffer to fill with the result
+ * @buffer_size: the @buffer size, in bytes, not counting the NUL-terminator character
+ *
+ * Format the date/time value from @itt into @buffer, whose size cannot
+ * exceed @buffer_size letters.
+ *
+ * Since: 3.38
+ **/
+typedef void (* ECalRecurFormatDateTimeFunc)		(ICalTime *itt,
+							 gchar *buffer,
+							 gint buffer_size);
+
+gchar *		e_cal_recur_describe_recurrence_ex	(ICalComponent *icalcomp,
+							 GDateWeekday week_start_day,
+							 guint32 flags,
+							 ECalRecurFormatDateTimeFunc datetime_fmt_func);
 gchar *		e_cal_recur_describe_recurrence		(ICalComponent *icalcomp,
 							 GDateWeekday week_start_day,
 							 guint32 flags); /* bit-or of ECalRecurDescribeRecurrenceFlags */

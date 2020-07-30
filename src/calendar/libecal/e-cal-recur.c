@@ -4956,10 +4956,11 @@ cal_comp_util_recurrence_count_by_xxx_and_free (GArray *array) /* gshort */
 }
 
 /**
- * e_cal_recur_describe_recurrence:
+ * e_cal_recur_describe_recurrence_ex:
  * @icalcomp: an #ICalComponent
  * @week_start_day: a day when the week starts
  * @flags: bit-or of #ECalRecurDescribeRecurrenceFlags
+ * @datetime_fmt_func: (nullable): formatting function for date/time value
  *
  * Describes some simple types of recurrences in a human-readable and localized way.
  * The @flags influence the output format and what to do when the @icalcomp
@@ -4968,6 +4969,9 @@ cal_comp_util_recurrence_count_by_xxx_and_free (GArray *array) /* gshort */
  * The @week_start_day is used for weekly recurrences, to start the list of selected
  * days at that day.
  *
+ * If @datetime_fmt_func is %NULL, the e_time_format_date_and_time() is used
+ * to format data/time value.
+ *
  * Free the returned string with g_free(), when no longer needed.
  *
  * Returns: (nullable) (transfer full): a newly allocated string, which
@@ -4975,12 +4979,13 @@ cal_comp_util_recurrence_count_by_xxx_and_free (GArray *array) /* gshort */
  *    doesn't recur or the recurrence is too complicated to describe, also
  *    according to given @flags.
  *
- * Since: 3.30
+ * Since: 3.38
  **/
 gchar *
-e_cal_recur_describe_recurrence (ICalComponent *icalcomp,
-				 GDateWeekday week_start_day,
-				 guint32 flags)
+e_cal_recur_describe_recurrence_ex (ICalComponent *icalcomp,
+				    GDateWeekday week_start_day,
+				    guint32 flags,
+				    ECalRecurFormatDateTimeFunc datetime_fmt_func)
 {
 	gchar *prefix = NULL, *mid = NULL, *suffix = NULL, *result = NULL;
 	ICalProperty *prop;
@@ -5771,7 +5776,6 @@ e_cal_recur_describe_recurrence (ICalComponent *icalcomp,
 					"for %d occurrences",
 					i_cal_recurrence_get_count (rrule)), i_cal_recurrence_get_count (rrule));
 		} else if (until && i_cal_time_get_year (until)) {
-			struct tm tm;
 			gchar dt_str[256];
 
 			dt_str[0] = 0;
@@ -5789,9 +5793,15 @@ e_cal_recur_describe_recurrence (ICalComponent *icalcomp,
 				i_cal_time_set_is_date (until, TRUE);
 			}
 
-			tm = e_cal_util_icaltime_to_tm (until);
+			if (datetime_fmt_func) {
+				datetime_fmt_func (until, dt_str, 255);
+			} else {
+				struct tm tm;
 
-			e_time_format_date_and_time (&tm, FALSE, FALSE, FALSE, dt_str, 255);
+				tm = e_cal_util_icaltime_to_tm (until);
+
+				e_time_format_date_and_time (&tm, FALSE, FALSE, FALSE, dt_str, 255);
+			}
 
 			if (*dt_str) {
 				/* Translators: This is one of the last possible parts of a recurrence description.
@@ -5898,4 +5908,37 @@ e_cal_recur_describe_recurrence (ICalComponent *icalcomp,
 	g_free (suffix);
 
 	return result;
+}
+
+/**
+ * e_cal_recur_describe_recurrence:
+ * @icalcomp: an #ICalComponent
+ * @week_start_day: a day when the week starts
+ * @flags: bit-or of #ECalRecurDescribeRecurrenceFlags
+ *
+ * Describes some simple types of recurrences in a human-readable and localized way.
+ * The @flags influence the output format and what to do when the @icalcomp
+ * contains more complicated recurrence, some which the function cannot describe.
+ *
+ * The @week_start_day is used for weekly recurrences, to start the list of selected
+ * days at that day.
+ *
+ * Uses e_time_format_date_and_time() to format the date/time value in the string.
+ * Call e_cal_recur_describe_recurrence_ex() with a custom formatting function.
+ *
+ * Free the returned string with g_free(), when no longer needed.
+ *
+ * Returns: (nullable) (transfer full): a newly allocated string, which
+ *    describes the recurrence of the @icalcomp, or #NULL, when the @icalcomp
+ *    doesn't recur or the recurrence is too complicated to describe, also
+ *    according to given @flags.
+ *
+ * Since: 3.30
+ **/
+gchar *
+e_cal_recur_describe_recurrence (ICalComponent *icalcomp,
+				 GDateWeekday week_start_day,
+				 guint32 flags)
+{
+	return e_cal_recur_describe_recurrence_ex (icalcomp, week_start_day, flags, NULL);
 }
