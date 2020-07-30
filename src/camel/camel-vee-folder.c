@@ -718,15 +718,25 @@ vee_folder_set_property (GObject *object,
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
-static void
-vee_folder_propagate_skipped_changes (CamelVeeFolder *vf)
+/**
+ * camel_vee_folder_propagate_skipped_changes:
+ * @vf: a #CamelVeeFolder
+ *
+ * Propagate any skipped changes into the @vf. The skipped changes are used to not
+ * hide the messages from the search folder unexpectedly. The function does nothing
+ * when there are no changes to be propagated.
+ *
+ * Since: 3.38
+ **/
+void
+camel_vee_folder_propagate_skipped_changes (CamelVeeFolder *vf)
 {
 	CamelVeeFolderClass *class;
 	CamelFolderChangeInfo *changes = NULL;
 	GHashTableIter iter;
 	gpointer psub, pchanges;
 
-	g_return_if_fail (vf != NULL);
+	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vf));
 
 	class = CAMEL_VEE_FOLDER_GET_CLASS (vf);
 	g_return_if_fail (class != NULL);
@@ -1343,7 +1353,7 @@ vee_folder_refresh_info_sync (CamelFolder *folder,
 {
 	CamelVeeFolder *vf = (CamelVeeFolder *) folder;
 
-	vee_folder_propagate_skipped_changes (vf);
+	camel_vee_folder_propagate_skipped_changes (vf);
 	vee_folder_rebuild_all (vf, cancellable);
 
 	return TRUE;
@@ -1361,7 +1371,7 @@ vee_folder_synchronize_sync (CamelFolder *folder,
 
 	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (folder), FALSE);
 
-	vee_folder_propagate_skipped_changes (vfolder);
+	camel_vee_folder_propagate_skipped_changes (vfolder);
 
 	/* propagate skipped changes of vFolder subfolders, or do expunge,
 	 * otherwise it's a no-op */
@@ -1935,7 +1945,7 @@ camel_vee_folder_rebuild_folder (CamelVeeFolder *vfolder,
 	g_return_if_fail (klass != NULL);
 	g_return_if_fail (klass->rebuild_folder != NULL);
 
-	vee_folder_propagate_skipped_changes (vfolder);
+	camel_vee_folder_propagate_skipped_changes (vfolder);
 
 	klass->rebuild_folder (vfolder, subfolder, cancellable);
 }

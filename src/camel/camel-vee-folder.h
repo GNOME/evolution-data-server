@@ -133,6 +133,8 @@ void		camel_vee_folder_ignore_next_changed_event
 void		camel_vee_folder_remove_from_ignore_changed_event
 							(CamelVeeFolder *vfolder,
 							 CamelFolder *subfolder);
+void		camel_vee_folder_propagate_skipped_changes
+							(CamelVeeFolder *vf);
 
 G_END_DECLS
 
