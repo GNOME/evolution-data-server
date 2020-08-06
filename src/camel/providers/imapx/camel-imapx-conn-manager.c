@@ -1882,7 +1882,7 @@ camel_imapx_conn_manager_sync_changes_sync (CamelIMAPXConnManager *conn_man,
 	CamelIMAPXJob *job;
 	CamelFolder *folder = NULL;
 	gboolean need_to_expunge = FALSE, expunge = FALSE;
-	gboolean success;
+	gboolean success, is_virtual_mailbox;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
 
@@ -1905,14 +1905,24 @@ camel_imapx_conn_manager_sync_changes_sync (CamelIMAPXConnManager *conn_man,
 			success = FALSE;
 	}
 
-	if (success) {
+	is_virtual_mailbox = camel_imapx_mailbox_has_attribute (mailbox, CAMEL_IMAPX_LIST_ATTR_ALL) ||
+			     camel_imapx_mailbox_has_attribute (mailbox, CAMEL_IMAPX_LIST_ATTR_FLAGGED);
+
+	if (success && is_virtual_mailbox) {
+		CamelIMAPXFolder *imapx_folder = CAMEL_IMAPX_FOLDER (folder);
+
+		camel_imapx_folder_clear_move_to_real_trash_uids (imapx_folder);
+		camel_imapx_folder_clear_move_to_real_junk_uids (imapx_folder);
+	}
+
+	if (success && !is_virtual_mailbox) {
 		success = imapx_conn_manager_move_to_real_junk_sync (
 			conn_man, folder, cancellable,
 			&need_to_expunge, error);
 		expunge |= need_to_expunge;
 	}
 
-	if (success) {
+	if (success && !is_virtual_mailbox) {
 		success = imapx_conn_manager_move_to_real_trash_sync (
 			conn_man, folder, cancellable,
 			&need_to_expunge, error);
