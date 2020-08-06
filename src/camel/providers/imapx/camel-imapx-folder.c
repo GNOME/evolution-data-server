@@ -1617,6 +1617,30 @@ camel_imapx_folder_add_move_to_inbox (CamelIMAPXFolder *folder,
 	g_mutex_unlock (&folder->priv->move_to_hash_table_lock);
 }
 
+void
+camel_imapx_folder_clear_move_to_real_trash_uids (CamelIMAPXFolder *folder)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
+
+	g_mutex_lock (&folder->priv->move_to_hash_table_lock);
+
+	g_hash_table_remove_all (folder->priv->move_to_real_trash_uids);
+
+	g_mutex_unlock (&folder->priv->move_to_hash_table_lock);
+}
+
+void
+camel_imapx_folder_clear_move_to_real_junk_uids (CamelIMAPXFolder *folder)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
+
+	g_mutex_lock (&folder->priv->move_to_hash_table_lock);
+
+	g_hash_table_remove_all (folder->priv->move_to_real_junk_uids);
+
+	g_mutex_unlock (&folder->priv->move_to_hash_table_lock);
+}
+
 /**
  * camel_imapx_folder_invalidate_local_cache:
  * @folder: a #CamelIMAPXFolder
