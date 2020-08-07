@@ -4960,7 +4960,7 @@ cal_comp_util_recurrence_count_by_xxx_and_free (GArray *array) /* gshort */
  * @icalcomp: an #ICalComponent
  * @week_start_day: a day when the week starts
  * @flags: bit-or of #ECalRecurDescribeRecurrenceFlags
- * @datetime_fmt_func: (nullable): formatting function for date/time value
+ * @datetime_fmt_func: (nullable) (scope call): formatting function for date/time value
  *
  * Describes some simple types of recurrences in a human-readable and localized way.
  * The @flags influence the output format and what to do when the @icalcomp
