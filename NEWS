@@ -1,3 +1,14 @@
+Evolution-Data-Server 3.36.5 2020-08-07
+---------------------------------------
+
+Bug Fixes:
+	I#236 - Uses LC_ADDRESS unconditionally in libphonenumber code (Milan Crha)
+	I#240 - IMAPx: Disable move to real junk/trash in server-side virtual folders (Milan Crha)
+
+Miscellaneous:
+	Fix a memory leak in ebmb_gather_photos_local_filenames() (Milan Crha)
+	ESoupSession: Provided SoupAuth might not be always used by libsoup (Milan Crha)
+
 Evolution-Data-Server 3.36.4 2020-07-03
 ---------------------------------------
 
