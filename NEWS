@@ -1,3 +1,24 @@
+Evolution-Data-Server 3.37.90 2020-08-07
+----------------------------------------
+
+Bug Fixes:
+	I#236 - Uses LC_ADDRESS unconditionally in libphonenumber code (Milan Crha)
+	I#239 - SMTP: Doesn't send fully qualified host name with EHLO (Milan Crha)
+	I#240 - IMAPx: Disable move to real junk/trash in server-side virtual folders (Milan Crha)
+	evo-I#1041 - Search folders can show non-matches after filter change (Milan Crha)
+	evo-I#1042 - Show recurrence information with user-specified date format (Milan Crha)
+
+Miscellaneous:
+	e-soup-logger.h: Add missing G_BEGIN_DECLS (Milan Crha)
+	Fix a memory leak in ebmb_gather_photos_local_filenames() (Milan Crha)
+	ESoupSession: Provided SoupAuth might not be always used by libsoup (Milan Crha)
+
+Translations:
+	Baurzhan Muftakhidinov (kk)
+	Boyuan Yang (zh_CN)
+	Jordi Mas (ca)
+	Fabio Tomat (fur)
+
 Evolution-Data-Server 3.37.3 2020-07-03
 ---------------------------------------
 
