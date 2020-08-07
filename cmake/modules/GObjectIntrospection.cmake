@@ -158,7 +158,7 @@ macro(gir_add_introspection gir)
 					--includedir=${SHARE_INSTALL_PREFIX}/gir-1.0
 					${CMAKE_CURRENT_BINARY_DIR}/${gir}
 					-o ${CMAKE_CURRENT_BINARY_DIR}/${_typelib}
-				DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${gir}
+				DEPENDS gir-girs-${_gir_name}
 				OUTPUT ${_typelib}
 				WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 			)
