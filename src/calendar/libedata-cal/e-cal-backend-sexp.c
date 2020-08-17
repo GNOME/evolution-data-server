@@ -1137,6 +1137,69 @@ func_completed_before (ESExp *esexp,
 	return result;
 }
 
+/* (starts-before? TIME)
+ *
+ * TIME - time_t
+ *
+ * Returns a boolean indicating whether the component has a start on or
+ * before the given time (i.e. it checks the DTSTART property).
+ */
+static ESExpResult*
+func_starts_before (ESExp *esexp,
+                    gint argc,
+                    ESExpResult **argv,
+                    gpointer data)
+{
+	SearchContext *ctx = data;
+	ESExpResult *result;
+	ECalComponentDateTime *dt;
+	ICalTimezone *zone;
+	ICalTime *itt;
+	gboolean retval = FALSE;
+	time_t reference_time, start_time;
+
+	/* Check argument types */
+
+	if (argc != 1) {
+		e_sexp_fatal_error (
+			esexp, _("“%s” expects one argument"),
+			"starts-before");
+		return NULL;
+	}
+
+	if (argv[0]->type != ESEXP_RES_TIME) {
+		e_sexp_fatal_error (
+			esexp, _("“%s” expects the first "
+			"argument to be a time_t"),
+			"starts-before");
+		return NULL;
+	}
+
+	reference_time = argv[0]->value.time;
+
+	dt = e_cal_component_get_dtstart (ctx->comp);
+	if (dt) {
+		itt = e_cal_component_datetime_get_value (dt);
+
+		if (itt) {
+			/* DTSTART must be in UTC. */
+			zone = i_cal_timezone_get_utc_timezone ();
+			start_time = i_cal_time_as_timet_with_zone (itt, zone);
+
+			/* We want to return TRUE if start_time is before reference_time. */
+			if (difftime (start_time, reference_time) <= 0) {
+				retval = TRUE;
+			}
+		}
+		e_cal_component_datetime_free (dt);
+	}
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
+	result->value.boolean = retval;
+
+	return result;
+}
+
 static void
 cal_backend_sexp_finalize (GObject *object)
 {
@@ -1197,7 +1260,8 @@ static struct {
 	{ "completed-before?", func_completed_before, 0 },
 	{ "has-attachments?", func_has_attachment, 0 },
 	{ "percent-complete?", func_percent_complete, 0 },
-	{ "occurrences-count?", func_occurrences_count, 0 }
+	{ "occurrences-count?", func_occurrences_count, 0 },
+	{ "starts-before?", func_starts_before, 0 }
 };
 
 /**

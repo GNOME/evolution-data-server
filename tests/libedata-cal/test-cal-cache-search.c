@@ -420,6 +420,14 @@ test_search_complex (TCUFixture *fixture,
 		")", "event-3");
 }
 
+static void
+test_search_starts_before (TCUFixture *fixture,
+			       gconstpointer user_data)
+{
+	test_search (fixture, "(starts-before? (make-time \"20170211T000000Z\"))", "!task-9");
+	test_search (fixture, "(starts-before? (make-time \"20170214T000000Z\"))", "task-9");
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -474,6 +482,8 @@ main (gint argc,
 		tcu_fixture_setup, test_search_occurrences_count, tcu_fixture_teardown);
 	g_test_add ("/ECalCache/Search/Complex", TCUFixture, &closure_events,
 		tcu_fixture_setup, test_search_complex, tcu_fixture_teardown);
+	g_test_add ("/ECalCache/Search/StartsBefore", TCUFixture, &closure_tasks,
+		tcu_fixture_setup, test_search_starts_before, tcu_fixture_teardown);
 
 	return e_test_server_utils_run_full (0);
 }

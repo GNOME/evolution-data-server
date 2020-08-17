@@ -1522,6 +1522,32 @@ ecc_sexp_func_check_sexp (ESExp *esexp,
 }
 
 static ESExpResult *
+ecc_sexp_func_starts_before (ESExp *esexp,
+                             gint argc,
+                             ESExpResult **argv,
+                             gpointer user_data)
+{
+	SExpToSqlContext *ctx = user_data;
+	ESExpResult *result;
+	gchar *date_str;
+
+	g_return_val_if_fail (ctx != NULL, NULL);
+
+	if (argc != 1 ||
+            argv[0]->type != ESEXP_RES_TIME) {
+		return NULL;
+	}
+
+	date_str = ecc_encode_timet_to_sql (ctx->cal_cache, argv[0]->value.time);
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+	result->value.string = g_strdup_printf ("(%s NOT NULL AND %s<='%s')",
+		ECC_COLUMN_OCCUR_START, ECC_COLUMN_OCCUR_START, date_str);
+
+	return result;
+}
+
+static ESExpResult *
 ecc_sexp_func_icheck_sexp (ESExp *esexp,
 			   gint argc,
 			   ESExpTerm **argv,
@@ -1579,7 +1605,8 @@ static struct {
 	{ "completed-before?",		ecc_sexp_func_completed_before, 0 },
 	{ "has-attachments?",		ecc_sexp_func_has_attachment, 0 },
 	{ "percent-complete?",		ecc_sexp_func_percent_complete, 0 },
-	{ "occurrences-count?",		ecc_sexp_func_check_sexp, 0 }
+	{ "occurrences-count?",		ecc_sexp_func_check_sexp, 0 },
+	{ "starts-before?",		ecc_sexp_func_starts_before, 0 }
 };
 
 static gboolean
