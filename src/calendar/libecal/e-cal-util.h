@@ -268,12 +268,29 @@ gchar *		e_cal_util_component_get_recurid_as_string
 						(ICalComponent *icalcomp);
 ICalComponent *	e_cal_util_construct_instance	(ICalComponent *icalcomp,
 						 const ICalTime *rid);
+/* #ifndef EDS_DISABLE_DEPRECATED */ /* Fully deprecate it for 3.40 */
 void		e_cal_util_remove_instances	(ICalComponent *icalcomp,
 						 const ICalTime *rid,
 						 ECalObjModType mod);
 ICalComponent *	e_cal_util_split_at_instance	(ICalComponent *icalcomp,
 						 const ICalTime *rid,
 						 const ICalTime *master_dtstart);
+/* #endif / * EDS_DISABLE_DEPRECATED */
+void		e_cal_util_normalize_rrule_until_value
+						(ICalComponent *icalcomp,
+						 ICalTime *ttuntil,
+						 ECalRecurResolveTimezoneCb tz_cb,
+						 gpointer tz_cb_data);
+void		e_cal_util_remove_instances_ex	(ICalComponent *icalcomp,
+						 const ICalTime *rid,
+						 ECalObjModType mod,
+						 ECalRecurResolveTimezoneCb tz_cb,
+						 gpointer tz_cb_data);
+ICalComponent *	e_cal_util_split_at_instance_ex	(ICalComponent *icalcomp,
+						 const ICalTime *rid,
+						 const ICalTime *master_dtstart,
+						 ECalRecurResolveTimezoneCb tz_cb,
+						 gpointer tz_cb_data);
 gboolean	e_cal_util_is_first_instance	(ECalComponent *comp,
 						 const ICalTime *rid,
 						 ECalRecurResolveTimezoneCb tz_cb,

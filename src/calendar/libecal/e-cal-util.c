@@ -1294,12 +1294,95 @@ time_matches_rid (const ICalTime *itt,
 	return FALSE;
 }
 
+/**
+ * e_cal_util_normalize_rrule_until_value:
+ * @icalcomp: An #ICalComponent
+ * @ttuntil: An UNTIL value to validate
+ * @tz_cb: (closure tz_cb_data) (scope call): The #ECalRecurResolveTimezoneCb to call
+ * @tz_cb_data: (closure): User data to be passed to the @tz_cb callback
+ *
+ * Makes sure the @ttuntil value matches the value type with
+ * the DTSTART value, as required by RFC 5545 section 3.3.10.
+ * Uses @tz_cb with @tz_cb_data to resolve time zones when needed.
+ *
+ * Since: 3.38
+ **/
+void
+e_cal_util_normalize_rrule_until_value (ICalComponent *icalcomp,
+					ICalTime *ttuntil,
+					ECalRecurResolveTimezoneCb tz_cb,
+					gpointer tz_cb_data)
+{
+	ICalProperty *prop;
+
+	g_return_if_fail (I_CAL_IS_COMPONENT (icalcomp));
+	g_return_if_fail (I_CAL_IS_TIME (ttuntil));
+
+	prop = i_cal_component_get_first_property (icalcomp, I_CAL_DTSTART_PROPERTY);
+
+	if (prop) {
+		ICalTime *dtstart;
+
+		dtstart = i_cal_component_get_dtstart (icalcomp);
+
+		if (dtstart) {
+			if (i_cal_time_is_date (dtstart)) {
+				i_cal_time_set_time (ttuntil, 0, 0, 0);
+				i_cal_time_set_is_date (ttuntil, TRUE);
+			} else {
+				if (i_cal_time_is_date (ttuntil)) {
+					gint hour = 0, minute = 0, second = 0;
+
+					i_cal_time_set_is_date (ttuntil, FALSE);
+
+					i_cal_time_get_time (dtstart, &hour, &minute, &second);
+					i_cal_time_set_time (ttuntil, hour, minute, second);
+				}
+
+				if (!i_cal_time_is_utc (dtstart)) {
+					ICalParameter *param;
+
+					param = i_cal_property_get_first_parameter (prop, I_CAL_TZID_PARAMETER);
+
+					if (param) {
+						const gchar *tzid;
+
+						tzid = i_cal_parameter_get_tzid (param);
+
+						if (tzid && *tzid && g_ascii_strcasecmp (tzid, "UTC") != 0) {
+							ICalTimezone *tz;
+
+							tz = i_cal_time_get_timezone (dtstart);
+
+							if (!tz && tz_cb)
+								tz = tz_cb (tzid, tz_cb_data, NULL, NULL);
+
+							if (tz) {
+								i_cal_time_set_timezone (ttuntil, tz);
+								i_cal_time_convert_to_zone_inplace (ttuntil, i_cal_timezone_get_utc_timezone ());
+							}
+						}
+
+						g_object_unref (param);
+					}
+				}
+			}
+
+			g_object_unref (dtstart);
+		}
+
+		g_object_unref (prop);
+	}
+}
+
 static void
-e_cal_util_remove_instances_ex (ICalComponent *icalcomp,
-				const ICalTime *rid,
-				ECalObjModType mod,
-				gboolean keep_rid,
-				gboolean can_add_exrule)
+e_cal_util_remove_instances_impl (ICalComponent *icalcomp,
+				  const ICalTime *rid,
+				  ECalObjModType mod,
+				  gboolean keep_rid,
+				  gboolean can_add_exrule,
+				  ECalRecurResolveTimezoneCb tz_cb,
+				  gpointer tz_cb_data)
 {
 	ICalProperty *prop;
 	ICalTime *itt, *recur;
@@ -1419,6 +1502,7 @@ e_cal_util_remove_instances_ex (ICalComponent *icalcomp,
 					g_clear_object (&dtstart);
 				} else {
 					ICalTime *ttuntil;
+					gboolean is_date;
 
 					if (keep_rid && i_cal_time_compare (recur, (ICalTime *) rid) == 0) {
 						ICalDuration *dur;
@@ -1429,7 +1513,13 @@ e_cal_util_remove_instances_ex (ICalComponent *icalcomp,
 					} else {
 						ttuntil = i_cal_time_clone (rid);
 					}
-					i_cal_time_adjust (ttuntil, 0, 0, 0, -1);
+
+					e_cal_util_normalize_rrule_until_value (icalcomp, ttuntil, tz_cb, tz_cb_data);
+
+					is_date = i_cal_time_is_date (ttuntil);
+
+					i_cal_time_adjust (ttuntil, is_date ? -1 : 0, 0, 0, is_date ? 0 : -1);
+
 					i_cal_recurrence_set_until (rule, ttuntil);
 					g_object_unref (ttuntil);
 				}
@@ -1466,6 +1556,7 @@ e_cal_util_remove_instances_ex (ICalComponent *icalcomp,
 						ttuntil = i_cal_time_add ((ICalTime *) rid, dur);
 					}
 
+					e_cal_util_normalize_rrule_until_value (icalcomp, ttuntil, tz_cb, tz_cb_data);
 					i_cal_recurrence_set_until (rule, ttuntil);
 
 					g_clear_object (&ttuntil);
@@ -1501,6 +1592,9 @@ e_cal_util_remove_instances_ex (ICalComponent *icalcomp,
  * @mod: How to interpret @rid
  *
  * Removes one or more instances from @icalcomp according to @rid and @mod.
+ *
+ * Deprecated: 3.38: Use e_cal_util_remove_instances_ex() instead, with provided
+ *    timezone resolve function.
  **/
 void
 e_cal_util_remove_instances (ICalComponent *icalcomp,
@@ -1511,7 +1605,34 @@ e_cal_util_remove_instances (ICalComponent *icalcomp,
 	g_return_if_fail (rid != NULL);
 	g_return_if_fail (mod != E_CAL_OBJ_MOD_ALL);
 
-	e_cal_util_remove_instances_ex (icalcomp, rid, mod, FALSE, TRUE);
+	e_cal_util_remove_instances_ex (icalcomp, rid, mod, NULL, NULL);
+}
+
+/**
+ * e_cal_util_remove_instances_ex:
+ * @icalcomp: A (recurring) #ICalComponent
+ * @rid: The base RECURRENCE-ID to remove
+ * @mod: How to interpret @rid
+ * @tz_cb: (closure tz_cb_data) (scope call): The #ECalRecurResolveTimezoneCb to call
+ * @tz_cb_data: (closure): User data to be passed to the @tz_cb callback
+ *
+ * Removes one or more instances from @icalcomp according to @rid and @mod.
+ * Uses @tz_cb with @tz_cb_data to resolve time zones when needed.
+ *
+ * Since: 3.38
+ **/
+void
+e_cal_util_remove_instances_ex (ICalComponent *icalcomp,
+				const ICalTime *rid,
+				ECalObjModType mod,
+				ECalRecurResolveTimezoneCb tz_cb,
+				gpointer tz_cb_data)
+{
+	g_return_if_fail (icalcomp != NULL);
+	g_return_if_fail (rid != NULL);
+	g_return_if_fail (mod != E_CAL_OBJ_MOD_ALL);
+
+	e_cal_util_remove_instances_impl (icalcomp, rid, mod, FALSE, TRUE, tz_cb, tz_cb_data);
 }
 
 /**
@@ -1525,20 +1646,58 @@ e_cal_util_remove_instances (ICalComponent *icalcomp,
  * The instance identified by @rid should exist. The @master_dtstart can be
  * a null time, then it is read from the @icalcomp.
  *
- * Use e_cal_util_remove_instances() with E_CAL_OBJ_MOD_THIS_AND_FUTURE mode
+ * Use e_cal_util_remove_instances_ex() with E_CAL_OBJ_MOD_THIS_AND_FUTURE mode
  * on the @icalcomp to remove the overlapping interval from it, if needed.
  *
  * Free the returned non-NULL component with g_object_unref(), when
  * done with it.
  *
- * Returns: (transfer full) (nullable): the split @icalcom, or %NULL.
+ * Returns: (transfer full) (nullable): the split @icalcomp, or %NULL.
  *
  * Since: 3.16
+ *
+ * Deprecated: 3.38: Use e_cal_util_split_at_instance_ex() instead, with provided
+ *    timezone resolve function.
  **/
 ICalComponent *
 e_cal_util_split_at_instance (ICalComponent *icalcomp,
 			      const ICalTime *rid,
 			      const ICalTime *master_dtstart)
+{
+	return e_cal_util_split_at_instance_ex (icalcomp, rid, master_dtstart, NULL, NULL);
+}
+
+/**
+ * e_cal_util_split_at_instance_ex:
+ * @icalcomp: A (recurring) #ICalComponent
+ * @rid: The base RECURRENCE-ID to remove
+ * @master_dtstart: (nullable): The DTSTART of the master object
+ * @tz_cb: (closure tz_cb_data) (scope call): The #ECalRecurResolveTimezoneCb to call
+ * @tz_cb_data: (closure): User data to be passed to the @tz_cb callback
+ *
+ * Splits a recurring @icalcomp into two at time @rid. The returned #ICalComponent
+ * is modified @icalcomp which contains recurrences beginning at @rid, inclusive.
+ * The instance identified by @rid should exist. The @master_dtstart can be
+ * a null time, then it is read from the @icalcomp.
+ *
+ * Uses @tz_cb with @tz_cb_data to resolve time zones when needed.
+ *
+ * Use e_cal_util_remove_instances_ex() with E_CAL_OBJ_MOD_THIS_AND_FUTURE mode
+ * on the @icalcomp to remove the overlapping interval from it, if needed.
+ *
+ * Free the returned non-NULL component with g_object_unref(), when
+ * done with it.
+ *
+ * Returns: (transfer full) (nullable): the split @icalcomp, or %NULL.
+ *
+ * Since: 3.38
+ **/
+ICalComponent *
+e_cal_util_split_at_instance_ex (ICalComponent *icalcomp,
+				 const ICalTime *rid,
+				 const ICalTime *master_dtstart,
+				 ECalRecurResolveTimezoneCb tz_cb,
+				 gpointer tz_cb_data)
 {
 	ICalProperty *prop;
 	struct instance_data instance;
@@ -1568,7 +1727,7 @@ e_cal_util_split_at_instance (ICalComponent *icalcomp,
 	/* Make the copy */
 	icalcomp = i_cal_component_clone (icalcomp);
 
-	e_cal_util_remove_instances_ex (icalcomp, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR, TRUE, FALSE);
+	e_cal_util_remove_instances_impl (icalcomp, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR, TRUE, FALSE, tz_cb, tz_cb_data);
 
 	start = i_cal_time_clone ((ICalTime *) rid);
 

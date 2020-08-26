@@ -1926,12 +1926,12 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 			}
 
 			master_dtstart = i_cal_component_get_dtstart (e_cal_component_get_icalcomponent (master_comp));
-			split_icomp = e_cal_util_split_at_instance (icomp, rid, master_dtstart);
+			split_icomp = e_cal_util_split_at_instance_ex (icomp, rid, master_dtstart, e_cal_cache_resolve_timezone_cb, cal_cache);
 			if (split_icomp) {
 				ICalTime *rid_utc;
 
 				rid_utc = i_cal_time_convert_to_zone (rid, i_cal_timezone_get_utc_timezone ());
-				e_cal_util_remove_instances (e_cal_component_get_icalcomponent (master_comp), rid_utc, mod);
+				e_cal_util_remove_instances_ex (e_cal_component_get_icalcomponent (master_comp), rid_utc, mod, e_cal_cache_resolve_timezone_cb, cal_cache);
 				e_cal_recur_ensure_end_dates (master_comp, TRUE, e_cal_cache_resolve_timezone_cb, cal_cache, cancellable, NULL);
 
 				if (out_new_comp) {
@@ -2187,7 +2187,7 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 				}
 
 				if (master_comp)
-					e_cal_util_remove_instances (e_cal_component_get_icalcomponent (master_comp), itt, mod);
+					e_cal_util_remove_instances_ex (e_cal_component_get_icalcomponent (master_comp), itt, mod, e_cal_cache_resolve_timezone_cb, cal_cache);
 
 				g_clear_object (&itt);
 			}
@@ -2220,7 +2220,7 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 				i_cal_time_convert_to_zone_inplace (itt, i_cal_timezone_get_utc_timezone ());
 			}
 
-			e_cal_util_remove_instances (e_cal_component_get_icalcomponent (master_comp), itt, mod);
+			e_cal_util_remove_instances_ex (e_cal_component_get_icalcomponent (master_comp), itt, mod, e_cal_cache_resolve_timezone_cb, cal_cache);
 
 			fromtt = i_cal_time_as_timet (itt);
 
