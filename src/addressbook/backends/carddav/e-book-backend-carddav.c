@@ -387,6 +387,56 @@ ebb_carddav_update_nfo_with_contact (EBookMetaBackendInfo *nfo,
 	}
 }
 
+static void
+ebb_carddav_ensure_uid (EContact *contact,
+			const gchar *href)
+{
+	const gchar *uid;
+	gchar *new_uid = NULL;
+
+	g_return_if_fail (E_IS_CONTACT (contact));
+
+	uid = e_contact_get_const (contact, E_CONTACT_UID);
+
+	if (uid && *uid)
+		return;
+
+	if (href) {
+		const gchar *tmp;
+		gint len;
+
+		tmp = strrchr (href, '/');
+
+		if (tmp)
+			tmp++;
+
+		len = tmp ? strlen (tmp) : 0;
+
+		if (len > 4 && *tmp != '.' && g_ascii_strcasecmp (tmp + len - 4, ".vcf") == 0) {
+			gint ii;
+
+			len -= 4;
+
+			for (ii = 0; ii < len; ii++) {
+				if (tmp[ii] != '-' &&
+				    tmp[ii] != '.' &&
+				    !g_ascii_isalnum (tmp[ii]))
+					break;
+			}
+
+			if (ii == len)
+				new_uid = g_strndup (tmp, len);
+		}
+	}
+
+	if (!new_uid)
+		new_uid = e_util_generate_uid ();
+
+	e_contact_set (contact, E_CONTACT_UID, new_uid);
+
+	g_free (new_uid);
+}
+
 static gboolean
 ebb_carddav_multiget_response_cb (EWebDAVSession *webdav,
 				  xmlNodePtr prop_node,
@@ -418,6 +468,8 @@ ebb_carddav_multiget_response_cb (EWebDAVSession *webdav,
 			contact = e_contact_new_from_vcard ((const gchar *) address_data);
 			if (contact) {
 				const gchar *uid;
+
+				ebb_carddav_ensure_uid (contact, href);
 
 				uid = e_contact_get_const (contact, E_CONTACT_UID);
 				if (uid) {
@@ -833,6 +885,8 @@ ebb_carddav_extract_existing_cb (EWebDAVSession *webdav,
 			contact = e_contact_new_from_vcard ((const gchar *) address_data);
 			if (contact) {
 				const gchar *uid;
+
+				ebb_carddav_ensure_uid (contact, href);
 
 				uid = e_contact_get_const (contact, E_CONTACT_UID);
 
