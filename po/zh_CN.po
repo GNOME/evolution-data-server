@@ -23,8 +23,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2020-07-11 03:13+0000\n"
-"PO-Revision-Date: 2020-07-10 23:19-0400\n"
+"POT-Creation-Date: 2020-08-27 07:07+0000\n"
+"PO-Revision-Date: 2020-08-27 10:19-0400\n"
 "Last-Translator: Tong Hui <tonghuix@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -32,7 +32,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.3.1\n"
+"X-Generator: Poedit 2.4.1\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:231
 #, c-format
@@ -80,7 +80,7 @@ msgstr "给定的 URL“%s”未引用 CardDAV 地址簿"
 #: ../src/calendar/libecal/e-cal-client.c:6224
 #: ../src/calendar/libecal/e-cal-client.c:6592
 #: ../src/calendar/libecal/e-cal-client.c:6816
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1799
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1826
 #: ../src/camel/camel-filter-driver.c:1715
 #: ../src/camel/camel-filter-driver.c:1847
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3300
@@ -90,36 +90,36 @@ msgstr "给定的 URL“%s”未引用 CardDAV 地址簿"
 #: ../src/camel/providers/nntp/camel-nntp-store.c:419
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:183
-#: ../src/libedataserver/e-soup-session.c:1222
+#: ../src/libedataserver/e-soup-session.c:1228
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
 #: ../src/libedataserverui/e-reminders-widget.c:1931
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "未知的错误"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1095
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1149
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1373
 #: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:930
 msgid "Server didn’t return object’s href"
 msgstr "服务器未返回对象的超链接（href）"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1097
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1151
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1375
 #: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:932
 msgid "Server didn’t return object’s ETag"
 msgstr "服务器未返回对象的 ETag"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1099
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1153
 msgid "Received object is not a valid vCard"
 msgstr "接收到的目标不是有效的 vCard"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1216
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1270
 msgid ""
 "Missing information about vCard URL, local cache is possibly incomplete or "
 "broken. Remove it, please."
 msgstr "缺少有关 vCard URL 的信息，本地缓存可能不完整或已损坏。请将其移除。"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1219
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1273
 #: ../src/addressbook/backends/google/e-book-backend-google.c:990
 msgid "Object to save is not a valid vCard"
 msgstr "要存储的目标不是有效的 vCard"
@@ -185,9 +185,9 @@ msgid "Invalid Query “%s”"
 msgstr "无效的查询 “%s”"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1965
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2041
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2043
 msgid "Requested to delete an unrelated cursor"
-msgstr "请求删除一个无关的光标"
+msgstr "请求删除一个无关的游标"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:2036
 #, c-format
@@ -282,6 +282,8 @@ msgid_plural ""
 "Contact lists in LDAP address books require each member to be from the same "
 "LDAP address book, but %d members could not be recognized."
 msgstr[0] ""
+"LDAP 通讯簿中的联系人列表要求每个成员都来自同一个 LDAP 通讯簿，但无法识别 %d "
+"个成员。"
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4335
 msgid "Receiving LDAP search results..."
@@ -297,7 +299,7 @@ msgid "Downloading contacts (%d)..."
 msgstr "正在下载联系人（%d 个）..."
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4779
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:788
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:790
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:691
 msgid "Refreshing…"
 msgstr "正在刷新…"
@@ -988,10 +990,9 @@ msgid "Client disappeared"
 msgstr "客户端消失"
 
 #: ../src/addressbook/libedata-book/e-book-backend.c:3253
-#, fuzzy, c-format
-#| msgid "The backend does not support bulk removals"
+#, c-format
 msgid "Addressbook backend does not support cursors"
-msgstr "后端不支持批量删除"
+msgstr "通讯录后端不支持游标"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:899
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:2253
@@ -1103,7 +1104,7 @@ msgstr "无法按可能有多个值的字段排序"
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
 "the contact list"
-msgstr "试图向前移动光标，但光标已经在联系人列表的最前端"
+msgstr "试图向起始方向移动游标，但游标已经在联系人列表的最前端"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6219
 #: ../src/addressbook/libedata-book/e-book-cache.c:5804
@@ -1112,7 +1113,7 @@ msgstr "试图向前移动光标，但光标已经在联系人列表的最前端
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
 "contact list"
-msgstr "试图向前移动光标，但光标已经在联系人列表的末尾"
+msgstr "试图向末尾方向移动游标，但游标已经在联系人列表的末尾"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:337
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:569
@@ -1122,17 +1123,15 @@ msgstr "不支持概要中指定的联系人字段“%d”"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:3463
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5840
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1654
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3518
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1681
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3545
 #, c-format
 msgid "Invalid query: %s"
 msgstr "无效的查询：%s"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:3648
-#, fuzzy
-#| msgid "Invalid query for EbSqlCursor"
 msgid "Invalid query for a book cursor"
-msgstr "无效的 EbSqlCursor 查询"
+msgstr "对地址簿游标的查询无效"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:4590
 #: ../src/libebackend/e-cache.c:759
@@ -1144,11 +1143,11 @@ msgstr "无法打开数据库 %s：%s"
 #: ../src/addressbook/libedata-book/e-book-cache.c:5271
 #: ../src/addressbook/libedata-book/e-book-cache.c:5318
 #: ../src/addressbook/libedata-book/e-book-cache.c:5370
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2800
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2858
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2917
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2980
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3151
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2827
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2885
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2944
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3007
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3178
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1370
 #: ../src/libebackend/e-cache.c:1374 ../src/libebackend/e-cache.c:2352
 #: ../src/libebackend/e-cache.c:2392
@@ -1157,37 +1156,34 @@ msgid "Object “%s” not found"
 msgstr "未找到对象“%s”"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5430
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3042
-#, fuzzy, c-format
-#| msgid "Contact “%s” not found"
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3069
+#, c-format
 msgid "Object with extra “%s” not found"
-msgstr "未找到联系人“%s”"
+msgstr "找不到具有额外“%s”的对象"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5584
-#, fuzzy
-#| msgid "At least one sort field must be specified to use an EbSdbCursor"
 msgid "At least one sort field must be specified to use a cursor"
-msgstr "使用 EbSdbCursor 时必须指定至少一个排序字段"
+msgstr "必须至少指定一个排序字段才能使用游标"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5593
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7984
 msgid "Cannot sort by a field that is not a string type"
 msgstr "无法按非字符串类型的字段排序"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1081
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1083
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1093
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
-msgstr ""
+msgstr "UID“%s”的预加载对象无效"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1089
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1091
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1101
 #, c-format
 msgid "Received object for UID “%s” is invalid"
-msgstr ""
+msgstr "UID“%s”接收到的对象无效"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1911
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2367
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1913
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2369
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3314
 #, c-format
 msgid "Failed to create cache “%s”:"
@@ -1269,12 +1265,12 @@ msgstr "Cursor 不支持字母表索引"
 #: ../src/addressbook/libedata-book/e-data-book-cursor-cache.c:92
 #: ../src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:260
 msgid "Unrecognized cursor origin"
-msgstr "无法识别光标原点"
+msgstr "无法识别的游标原点"
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor-cache.c:151
 #: ../src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:328
 msgid "Out of sync revision while moving cursor"
-msgstr "移动光标时没有同步修改"
+msgstr "移动游标时没有同步修改"
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor-cache.c:222
 #: ../src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:422
@@ -1284,14 +1280,14 @@ msgstr "对错误的区域设置了字母表索引"
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:218
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
-msgstr ""
+msgstr "给定的 URL“%s”未引用 CalDAV 日历"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1510
 #: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1164
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. Remove it, please."
-msgstr ""
+msgstr "缺少有关组件 URL 的信息，本地缓存可能不完整或已损坏。请移除。"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:2010
 msgid "Failed to parse response data"
@@ -1334,13 +1330,13 @@ msgstr "无法解析 ISC 文件“%s”"
 #: ../src/calendar/backends/file/e-cal-backend-file.c:1325
 #, c-format
 msgid "File “%s” is not a VCALENDAR component"
-msgstr ""
+msgstr "文件“%s”不是 VCALENDAR 组件"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3642
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3648
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3654
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3681
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3647
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3653
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3659
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3686
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2541
 msgid "Unsupported method"
 msgstr "不支持的方式"
@@ -1443,7 +1439,7 @@ msgstr "无法创建缓存文件："
 #: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:973
 #: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1002
 msgid "New note"
-msgstr ""
+msgstr "新便笺"
 
 #: ../src/calendar/libecal/e-cal-client.c:244
 msgid "No such calendar"
@@ -1607,698 +1603,693 @@ msgstr "30日"
 msgid "31st"
 msgstr "31日"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5064
+#: ../src/calendar/libecal/e-cal-recur.c:5069
 #, c-format
 msgid "every day forever"
 msgid_plural "every %d days forever"
-msgstr[0] ""
+msgstr[0] "永远每 %d 天"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5070
+#: ../src/calendar/libecal/e-cal-recur.c:5075
 #, c-format
 msgid "Every day forever"
 msgid_plural "Every %d days forever"
-msgstr[0] ""
+msgstr[0] "永远每 %d 天"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5078
+#: ../src/calendar/libecal/e-cal-recur.c:5083
 #, c-format
 msgid "every day"
 msgid_plural "every %d days"
-msgstr[0] ""
+msgstr[0] "每 %d 天"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5084
+#: ../src/calendar/libecal/e-cal-recur.c:5089
 #, c-format
 msgid "Every day"
 msgid_plural "Every %d days"
-msgstr[0] ""
+msgstr[0] "每 %d 天"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5170
+#: ../src/calendar/libecal/e-cal-recur.c:5175
 #, c-format
 msgid "every week"
 msgid_plural "every %d weeks"
-msgstr[0] ""
+msgstr[0] "每 %d 周"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5176
+#: ../src/calendar/libecal/e-cal-recur.c:5181
 #, c-format
 msgid "Every week"
 msgid_plural "Every %d weeks"
-msgstr[0] ""
+msgstr[0] "每 %d 周"
 
 #. Translators: This is used to merge set of week day names in a recurrence, which can contain any
 #. of the week day names. The string always starts with "on DAYNAME", then it can continue either
 #. with ", DAYNAME" or " and DAYNAME", thus it can be something like "on Monday and Tuesday"
 #. or "on Monday, Wednesday and Friday" or simply "on Saturday". The '%1$s' is replaced with
 #. the previously gathered text, while the '%2$s' is replaced with the text to append.
-#: ../src/calendar/libecal/e-cal-recur.c:5190
+#: ../src/calendar/libecal/e-cal-recur.c:5195
 #, c-format
 msgctxt "recur-description-dayname"
 msgid "%1$s%2$s"
-msgstr ""
-
-#: ../src/calendar/libecal/e-cal-recur.c:5207
-msgctxt "recur-description"
-msgid "on Sunday"
-msgstr ""
-
-#: ../src/calendar/libecal/e-cal-recur.c:5208
-msgctxt "recur-description"
-msgid ", Sunday"
-msgstr ""
-
-#: ../src/calendar/libecal/e-cal-recur.c:5209
-msgctxt "recur-description"
-msgid " and Sunday"
-msgstr ""
+msgstr "%1$s%2$s"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5212
 msgctxt "recur-description"
-msgid "on Monday"
-msgstr ""
+msgid "on Sunday"
+msgstr "在星期日"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5213
 msgctxt "recur-description"
-msgid ", Monday"
-msgstr ""
+msgid ", Sunday"
+msgstr "，星期日"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5214
 msgctxt "recur-description"
-msgid " and Monday"
-msgstr ""
+msgid " and Sunday"
+msgstr " 和星期日"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5217
 msgctxt "recur-description"
-msgid "on Tuesday"
-msgstr ""
+msgid "on Monday"
+msgstr "在星期一"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5218
 msgctxt "recur-description"
-msgid ", Tuesday"
-msgstr ""
+msgid ", Monday"
+msgstr "，星期一"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5219
 msgctxt "recur-description"
-msgid " and Tuesday"
-msgstr ""
+msgid " and Monday"
+msgstr " 和星期一"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5222
 msgctxt "recur-description"
-msgid "on Wednesday"
-msgstr ""
+msgid "on Tuesday"
+msgstr "在星期二"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5223
 msgctxt "recur-description"
-msgid ", Wednesday"
-msgstr ""
+msgid ", Tuesday"
+msgstr "，星期二"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5224
 msgctxt "recur-description"
-msgid " and Wednesday"
-msgstr ""
+msgid " and Tuesday"
+msgstr " 和星期二"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5227
 msgctxt "recur-description"
-msgid "on Thursday"
-msgstr ""
+msgid "on Wednesday"
+msgstr "在星期三"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5228
 msgctxt "recur-description"
-msgid ", Thursday"
-msgstr ""
+msgid ", Wednesday"
+msgstr "，星期三"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5229
 msgctxt "recur-description"
-msgid " and Thursday"
-msgstr ""
+msgid " and Wednesday"
+msgstr " 和星期三"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5232
-#, fuzzy
-#| msgctxt "CategoryName"
-#| msgid "Holiday"
 msgctxt "recur-description"
-msgid "on Friday"
-msgstr "假日"
+msgid "on Thursday"
+msgstr "在星期四"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5233
 msgctxt "recur-description"
-msgid ", Friday"
-msgstr ""
+msgid ", Thursday"
+msgstr "，星期四"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5234
 msgctxt "recur-description"
-msgid " and Friday"
-msgstr ""
+msgid " and Thursday"
+msgstr " 和星期四"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5237
 msgctxt "recur-description"
-msgid "on Saturday"
-msgstr ""
+msgid "on Friday"
+msgstr "在星期五"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5238
 msgctxt "recur-description"
-msgid ", Saturday"
-msgstr ""
+msgid ", Friday"
+msgstr "，星期五"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5239
 msgctxt "recur-description"
-msgid " and Saturday"
-msgstr ""
+msgid " and Friday"
+msgstr " 和星期五"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5368
+#: ../src/calendar/libecal/e-cal-recur.c:5242
+msgctxt "recur-description"
+msgid "on Saturday"
+msgstr "在星期六"
+
+#: ../src/calendar/libecal/e-cal-recur.c:5243
+msgctxt "recur-description"
+msgid ", Saturday"
+msgstr "，星期六"
+
+#: ../src/calendar/libecal/e-cal-recur.c:5244
+msgctxt "recur-description"
+msgid " and Saturday"
+msgstr " 和星期六"
+
+#: ../src/calendar/libecal/e-cal-recur.c:5373
 #, c-format
 msgid "every month"
 msgid_plural "every %d months"
-msgstr[0] ""
+msgstr[0] "每 %d 个月"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5374
+#: ../src/calendar/libecal/e-cal-recur.c:5379
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
-msgstr[0] ""
+msgstr[0] "每 %d 个月"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5384
-#: ../src/calendar/libecal/e-cal-recur.c:5705
+#: ../src/calendar/libecal/e-cal-recur.c:5389
+#: ../src/calendar/libecal/e-cal-recur.c:5710
 msgctxt "recur-description"
 msgid "on the last Sunday"
-msgstr ""
+msgstr "在最后一个星期日"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5387
-#: ../src/calendar/libecal/e-cal-recur.c:5555
+#: ../src/calendar/libecal/e-cal-recur.c:5392
+#: ../src/calendar/libecal/e-cal-recur.c:5560
 msgctxt "recur-description"
 msgid "on the last Monday"
-msgstr ""
+msgstr "在最后一个星期一"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5390
-#: ../src/calendar/libecal/e-cal-recur.c:5580
+#: ../src/calendar/libecal/e-cal-recur.c:5395
+#: ../src/calendar/libecal/e-cal-recur.c:5585
 msgctxt "recur-description"
 msgid "on the last Tuesday"
-msgstr ""
+msgstr "在最后一个星期二"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5393
-#: ../src/calendar/libecal/e-cal-recur.c:5605
+#: ../src/calendar/libecal/e-cal-recur.c:5398
+#: ../src/calendar/libecal/e-cal-recur.c:5610
 msgctxt "recur-description"
 msgid "on the last Wednesday"
-msgstr ""
+msgstr "在最后一个星期三"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5396
-#: ../src/calendar/libecal/e-cal-recur.c:5630
+#: ../src/calendar/libecal/e-cal-recur.c:5401
+#: ../src/calendar/libecal/e-cal-recur.c:5635
 msgctxt "recur-description"
 msgid "on the last Thursday"
-msgstr ""
+msgstr "在最后一个星期四"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5399
-#: ../src/calendar/libecal/e-cal-recur.c:5655
+#: ../src/calendar/libecal/e-cal-recur.c:5404
+#: ../src/calendar/libecal/e-cal-recur.c:5660
 msgctxt "recur-description"
 msgid "on the last Friday"
-msgstr ""
+msgstr "在最后一个星期五"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5402
-#: ../src/calendar/libecal/e-cal-recur.c:5680
+#: ../src/calendar/libecal/e-cal-recur.c:5407
+#: ../src/calendar/libecal/e-cal-recur.c:5685
 msgctxt "recur-description"
 msgid "on the last Saturday"
-msgstr ""
+msgstr "在最后一个星期六"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5412
+#: ../src/calendar/libecal/e-cal-recur.c:5417
 msgctxt "recur-description"
 msgid "on the 1st day"
-msgstr ""
+msgstr "在每月的第 1 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5416
+#: ../src/calendar/libecal/e-cal-recur.c:5421
 msgctxt "recur-description"
 msgid "on the 2nd day"
-msgstr ""
+msgstr "在每月的第 2 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5420
+#: ../src/calendar/libecal/e-cal-recur.c:5425
 msgctxt "recur-description"
 msgid "on the 3rd day"
-msgstr ""
+msgstr "在每月的第 3 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5424
+#: ../src/calendar/libecal/e-cal-recur.c:5429
 msgctxt "recur-description"
 msgid "on the 4th day"
-msgstr ""
+msgstr "在每月的第 4 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5428
+#: ../src/calendar/libecal/e-cal-recur.c:5433
 msgctxt "recur-description"
 msgid "on the 5th day"
-msgstr ""
+msgstr "在每月的第 5 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5432
+#: ../src/calendar/libecal/e-cal-recur.c:5437
 msgctxt "recur-description"
 msgid "on the 6th day"
-msgstr ""
+msgstr "在每月的第 6 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5436
+#: ../src/calendar/libecal/e-cal-recur.c:5441
 msgctxt "recur-description"
 msgid "on the 7th day"
-msgstr ""
+msgstr "在每月的第 7 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5440
+#: ../src/calendar/libecal/e-cal-recur.c:5445
 msgctxt "recur-description"
 msgid "on the 8th day"
-msgstr ""
+msgstr "在每月的第 8 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5444
+#: ../src/calendar/libecal/e-cal-recur.c:5449
 msgctxt "recur-description"
 msgid "on the 9th day"
-msgstr ""
+msgstr "在每月的第 9 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5448
+#: ../src/calendar/libecal/e-cal-recur.c:5453
 msgctxt "recur-description"
 msgid "on the 10th day"
-msgstr ""
+msgstr "在每月的第 10 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5452
+#: ../src/calendar/libecal/e-cal-recur.c:5457
 msgctxt "recur-description"
 msgid "on the 11th day"
-msgstr ""
+msgstr "在每月的第 11 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5456
+#: ../src/calendar/libecal/e-cal-recur.c:5461
 msgctxt "recur-description"
 msgid "on the 12th day"
-msgstr ""
+msgstr "在每月的第 12 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5460
+#: ../src/calendar/libecal/e-cal-recur.c:5465
 msgctxt "recur-description"
 msgid "on the 13th day"
-msgstr ""
+msgstr "在每月的第 13 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5464
+#: ../src/calendar/libecal/e-cal-recur.c:5469
 msgctxt "recur-description"
 msgid "on the 14th day"
-msgstr ""
+msgstr "在每月的第 14 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5468
+#: ../src/calendar/libecal/e-cal-recur.c:5473
 msgctxt "recur-description"
 msgid "on the 15th day"
-msgstr ""
+msgstr "在每月的第 15 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5472
+#: ../src/calendar/libecal/e-cal-recur.c:5477
 msgctxt "recur-description"
 msgid "on the 16th day"
-msgstr ""
+msgstr "在每月的第 16 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5476
+#: ../src/calendar/libecal/e-cal-recur.c:5481
 msgctxt "recur-description"
 msgid "on the 17th day"
-msgstr ""
+msgstr "在每月的第 17 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5480
+#: ../src/calendar/libecal/e-cal-recur.c:5485
 msgctxt "recur-description"
 msgid "on the 18th day"
-msgstr ""
+msgstr "在每月的第 18 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5484
+#: ../src/calendar/libecal/e-cal-recur.c:5489
 msgctxt "recur-description"
 msgid "on the 19th day"
-msgstr ""
+msgstr "在每月的第 19 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5488
+#: ../src/calendar/libecal/e-cal-recur.c:5493
 msgctxt "recur-description"
 msgid "on the 20th day"
-msgstr ""
+msgstr "在每月的第 20 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5492
+#: ../src/calendar/libecal/e-cal-recur.c:5497
 msgctxt "recur-description"
 msgid "on the 21st day"
-msgstr ""
+msgstr "在每月的第 21 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5496
+#: ../src/calendar/libecal/e-cal-recur.c:5501
 msgctxt "recur-description"
 msgid "on the 22nd day"
-msgstr ""
+msgstr "在每月的第 22 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5500
+#: ../src/calendar/libecal/e-cal-recur.c:5505
 msgctxt "recur-description"
 msgid "on the 23rd day"
-msgstr ""
+msgstr "在每月的第 23 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5504
+#: ../src/calendar/libecal/e-cal-recur.c:5509
 msgctxt "recur-description"
 msgid "on the 24th day"
-msgstr ""
+msgstr "在每月的第 24 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5508
+#: ../src/calendar/libecal/e-cal-recur.c:5513
 msgctxt "recur-description"
 msgid "on the 25th day"
-msgstr ""
+msgstr "在每月的第 25 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5512
+#: ../src/calendar/libecal/e-cal-recur.c:5517
 msgctxt "recur-description"
 msgid "on the 26th day"
-msgstr ""
+msgstr "在每月的第 26 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5516
+#: ../src/calendar/libecal/e-cal-recur.c:5521
 msgctxt "recur-description"
 msgid "on the 27th day"
-msgstr ""
+msgstr "在每月的第 27 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5520
+#: ../src/calendar/libecal/e-cal-recur.c:5525
 msgctxt "recur-description"
 msgid "on the 28th day"
-msgstr ""
+msgstr "在每月的第 28 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5524
+#: ../src/calendar/libecal/e-cal-recur.c:5529
 msgctxt "recur-description"
 msgid "on the 29th day"
-msgstr ""
+msgstr "在每月的第 29 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5528
+#: ../src/calendar/libecal/e-cal-recur.c:5533
 msgctxt "recur-description"
 msgid "on the 30th day"
-msgstr ""
+msgstr "在每月的第 30 天"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5532
+#: ../src/calendar/libecal/e-cal-recur.c:5537
 msgctxt "recur-description"
 msgid "on the 31st day"
-msgstr ""
+msgstr "在每月的第 31 天"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5540
+#: ../src/calendar/libecal/e-cal-recur.c:5545
 msgctxt "recur-description"
 msgid "on the first Monday"
-msgstr ""
+msgstr "在第一个星期一"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5543
+#: ../src/calendar/libecal/e-cal-recur.c:5548
 msgctxt "recur-description"
 msgid "on the second Monday"
-msgstr ""
+msgstr "在第二个星期一"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5546
+#: ../src/calendar/libecal/e-cal-recur.c:5551
 msgctxt "recur-description"
 msgid "on the third Monday"
-msgstr ""
+msgstr "在第三个星期一"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5549
+#: ../src/calendar/libecal/e-cal-recur.c:5554
 msgctxt "recur-description"
 msgid "on the fourth Monday"
-msgstr ""
+msgstr "在第四个星期一"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5552
+#: ../src/calendar/libecal/e-cal-recur.c:5557
 msgctxt "recur-description"
 msgid "on the fifth Monday"
-msgstr ""
+msgstr "在第五个星期一"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5565
+#: ../src/calendar/libecal/e-cal-recur.c:5570
 msgctxt "recur-description"
 msgid "on the first Tuesday"
-msgstr ""
+msgstr "在第一个星期二"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5568
+#: ../src/calendar/libecal/e-cal-recur.c:5573
 msgctxt "recur-description"
 msgid "on the second Tuesday"
-msgstr ""
+msgstr "在第二个星期二"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5571
+#: ../src/calendar/libecal/e-cal-recur.c:5576
 msgctxt "recur-description"
 msgid "on the third Tuesday"
-msgstr ""
+msgstr "在第三个星期二"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5574
+#: ../src/calendar/libecal/e-cal-recur.c:5579
 msgctxt "recur-description"
 msgid "on the fourth Tuesday"
-msgstr ""
+msgstr "在第四个星期二"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5577
+#: ../src/calendar/libecal/e-cal-recur.c:5582
 msgctxt "recur-description"
 msgid "on the fifth Tuesday"
-msgstr ""
+msgstr "在第五个星期二"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5590
+#: ../src/calendar/libecal/e-cal-recur.c:5595
 msgctxt "recur-description"
 msgid "on the first Wednesday"
-msgstr ""
+msgstr "在第一个星期三"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5593
+#: ../src/calendar/libecal/e-cal-recur.c:5598
 msgctxt "recur-description"
 msgid "on the second Wednesday"
-msgstr ""
+msgstr "在第二个星期三"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5596
+#: ../src/calendar/libecal/e-cal-recur.c:5601
 msgctxt "recur-description"
 msgid "on the third Wednesday"
-msgstr ""
+msgstr "在第三个星期三"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5599
+#: ../src/calendar/libecal/e-cal-recur.c:5604
 msgctxt "recur-description"
 msgid "on the fourth Wednesday"
-msgstr ""
+msgstr "在第四个星期三"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5602
+#: ../src/calendar/libecal/e-cal-recur.c:5607
 msgctxt "recur-description"
 msgid "on the fifth Wednesday"
-msgstr ""
+msgstr "在第五个星期三"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5615
+#: ../src/calendar/libecal/e-cal-recur.c:5620
 msgctxt "recur-description"
 msgid "on the first Thursday"
-msgstr ""
+msgstr "在第一个星期四"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5618
+#: ../src/calendar/libecal/e-cal-recur.c:5623
 msgctxt "recur-description"
 msgid "on the second Thursday"
-msgstr ""
+msgstr "在第二个星期四"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5621
+#: ../src/calendar/libecal/e-cal-recur.c:5626
 msgctxt "recur-description"
 msgid "on the third Thursday"
-msgstr ""
+msgstr "在第三个星期四"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5624
+#: ../src/calendar/libecal/e-cal-recur.c:5629
 msgctxt "recur-description"
 msgid "on the fourth Thursday"
-msgstr ""
+msgstr "在第四个星期四"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5627
+#: ../src/calendar/libecal/e-cal-recur.c:5632
 msgctxt "recur-description"
 msgid "on the fifth Thursday"
-msgstr ""
+msgstr "在第五个星期四"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5640
+#: ../src/calendar/libecal/e-cal-recur.c:5645
 msgctxt "recur-description"
 msgid "on the first Friday"
-msgstr ""
+msgstr "在第一个星期五"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5643
+#: ../src/calendar/libecal/e-cal-recur.c:5648
 msgctxt "recur-description"
 msgid "on the second Friday"
-msgstr ""
+msgstr "在第二个星期五"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5646
+#: ../src/calendar/libecal/e-cal-recur.c:5651
 msgctxt "recur-description"
 msgid "on the third Friday"
-msgstr ""
+msgstr "在第三个星期五"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5649
+#: ../src/calendar/libecal/e-cal-recur.c:5654
 msgctxt "recur-description"
 msgid "on the fourth Friday"
-msgstr ""
+msgstr "在第四个星期五"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5652
+#: ../src/calendar/libecal/e-cal-recur.c:5657
 msgctxt "recur-description"
 msgid "on the fifth Friday"
-msgstr ""
+msgstr "在第五个星期五"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5665
+#: ../src/calendar/libecal/e-cal-recur.c:5670
 msgctxt "recur-description"
 msgid "on the first Saturday"
-msgstr ""
+msgstr "在第一个星期六"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5668
+#: ../src/calendar/libecal/e-cal-recur.c:5673
 msgctxt "recur-description"
 msgid "on the second Saturday"
-msgstr ""
+msgstr "在第二个星期六"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5671
+#: ../src/calendar/libecal/e-cal-recur.c:5676
 msgctxt "recur-description"
 msgid "on the third Saturday"
-msgstr ""
+msgstr "在第三个星期六"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5674
+#: ../src/calendar/libecal/e-cal-recur.c:5679
 msgctxt "recur-description"
 msgid "on the fourth Saturday"
-msgstr ""
+msgstr "在第四个星期六"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5677
+#: ../src/calendar/libecal/e-cal-recur.c:5682
 msgctxt "recur-description"
 msgid "on the fifth Saturday"
-msgstr ""
+msgstr "在第五个星期六"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5690
+#: ../src/calendar/libecal/e-cal-recur.c:5695
 msgctxt "recur-description"
 msgid "on the first Sunday"
-msgstr ""
+msgstr "在第一个星期日"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5693
+#: ../src/calendar/libecal/e-cal-recur.c:5698
 msgctxt "recur-description"
 msgid "on the second Sunday"
-msgstr ""
+msgstr "在第二个星期日"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5696
+#: ../src/calendar/libecal/e-cal-recur.c:5701
 msgctxt "recur-description"
 msgid "on the third Sunday"
-msgstr ""
+msgstr "在第三个星期日"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5699
+#: ../src/calendar/libecal/e-cal-recur.c:5704
 msgctxt "recur-description"
 msgid "on the fourth Sunday"
-msgstr ""
+msgstr "在第四个星期日"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5702
+#: ../src/calendar/libecal/e-cal-recur.c:5707
 msgctxt "recur-description"
 msgid "on the fifth Sunday"
-msgstr ""
+msgstr "在第五个星期日"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5731
+#: ../src/calendar/libecal/e-cal-recur.c:5736
 #, c-format
 msgid "every year forever"
 msgid_plural "every %d years forever"
-msgstr[0] ""
+msgstr[0] "永远每 %d 年"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5737
+#: ../src/calendar/libecal/e-cal-recur.c:5742
 #, c-format
 msgid "Every year forever"
 msgid_plural "Every %d years forever"
-msgstr[0] ""
+msgstr[0] "永远每 %d 年"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5745
+#: ../src/calendar/libecal/e-cal-recur.c:5750
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
-msgstr[0] ""
+msgstr[0] "每 %d 年"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5751
+#: ../src/calendar/libecal/e-cal-recur.c:5756
 #, c-format
 msgid "Every year"
 msgid_plural "Every %d years"
-msgstr[0] ""
+msgstr[0] "每 %d 年"
 
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 3 days for 10 occurrences"
-#: ../src/calendar/libecal/e-cal-recur.c:5770
+#: ../src/calendar/libecal/e-cal-recur.c:5775
 #, c-format
 msgid "for one occurrence"
 msgid_plural "for %d occurrences"
-msgstr[0] ""
+msgstr[0] "出现 %d 次"
 
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The '%s' is replaced with actual date, thus it can create something like
 #. "until Mon 15.1.2018". The text is appended at the end of the complete
 #. recurrence description, making it for example: "Every 3 days until Mon 15.1.2018"
-#: ../src/calendar/libecal/e-cal-recur.c:5801
+#: ../src/calendar/libecal/e-cal-recur.c:5811
 #, c-format
 msgctxt "recur-description"
 msgid "until %s"
-msgstr ""
+msgstr "直到 %s"
 
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 2 months on Tuesday, Thursday and Friday forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5807
+#: ../src/calendar/libecal/e-cal-recur.c:5817
 msgctxt "recur-description"
 msgid "forever"
-msgstr ""
+msgstr "永远"
 
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
 #. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
 #. together one sentence: "Every 2 weeks on Tuesday and Friday for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5817
+#: ../src/calendar/libecal/e-cal-recur.c:5827
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s %3$s"
-msgstr ""
+msgstr "%1$s %2$s %3$s"
 
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
 #. the '%2$s' is like "for 10 occurrences", constructing together one sentence:
 #. "Every 2 days for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5822
+#: ../src/calendar/libecal/e-cal-recur.c:5832
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s"
-msgstr ""
+msgstr "%1$s %2$s"
 
 #. Translators: This text is appended at the end of complete recur description using "%s%s" in
 #. context "recur-description"
-#: ../src/calendar/libecal/e-cal-recur.c:5838
+#: ../src/calendar/libecal/e-cal-recur.c:5848
 #, c-format
 msgid ", with one exception"
 msgid_plural ", with %d exceptions"
-msgstr[0] ""
+msgstr[0] "，但有 %d 个例外"
 
 #. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
 #. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
 #. It will form something like: "Every 2 weeks on Tuesday and Friday for 10 occurrences, with 3 exceptions"
-#: ../src/calendar/libecal/e-cal-recur.c:5845
+#: ../src/calendar/libecal/e-cal-recur.c:5855
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s%2$s"
-msgstr ""
+msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5858
-#: ../src/calendar/libecal/e-cal-recur.c:5881
+#: ../src/calendar/libecal/e-cal-recur.c:5868
+#: ../src/calendar/libecal/e-cal-recur.c:5891
 msgctxt "recur-description"
 msgid "The meeting recurs"
-msgstr ""
+msgstr "会议重复发生"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5860
-#: ../src/calendar/libecal/e-cal-recur.c:5883
-#, fuzzy
-#| msgid "Untitled appointment"
+#: ../src/calendar/libecal/e-cal-recur.c:5870
+#: ../src/calendar/libecal/e-cal-recur.c:5893
 msgctxt "recur-description"
 msgid "The appointment recurs"
-msgstr "无标题约会"
+msgstr "约会重复发生"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5863
-#: ../src/calendar/libecal/e-cal-recur.c:5886
+#: ../src/calendar/libecal/e-cal-recur.c:5873
+#: ../src/calendar/libecal/e-cal-recur.c:5896
 msgctxt "recur-description"
 msgid "The task recurs"
-msgstr ""
+msgstr "任务重复发生"
 
 #. if (i_cal_component_isa (comp) == I_CAL_VJOURNAL_COMPONENT)
-#: ../src/calendar/libecal/e-cal-recur.c:5865
-#: ../src/calendar/libecal/e-cal-recur.c:5888
+#: ../src/calendar/libecal/e-cal-recur.c:5875
+#: ../src/calendar/libecal/e-cal-recur.c:5898
 msgctxt "recur-description"
 msgid "The memo recurs"
-msgstr ""
+msgstr "备忘录重复发生"
 
 #. Translators: This adds a prefix in front of the complete recurrence description.
 #. The '%1$s' is replaced with something like "The meeting recurs" and
 #. the '%2$s' with something like "every 2 days forever", thus forming
 #. sentence like "This meeting recurs every 2 days forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5872
+#: ../src/calendar/libecal/e-cal-recur.c:5882
 #, c-format
 msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
-msgstr ""
+msgstr "%1$s %2$s"
 
 #: ../src/calendar/libecal/e-cal-util.c:818
 #: ../src/calendar/libecal/e-cal-util.c:845
@@ -2367,18 +2358,16 @@ msgstr "无摘要"
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
 #: ../src/calendar/libecal/e-reminder-watcher.c:2720
-#, fuzzy, c-format
-#| msgid "%s (%s)"
+#, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
-msgstr "%s (%s)"
+msgstr "%s (%s) %s"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
 #: ../src/calendar/libecal/e-reminder-watcher.c:2725
-#, fuzzy, c-format
-#| msgid "%s (%s)"
+#, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -2390,21 +2379,22 @@ msgstr "%s (%s)"
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
-msgstr ""
+msgstr "%s %s"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:77
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1104
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1443
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1570
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1619
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1165
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1507
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1634
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1683
 #, c-format
 msgid "“%s” expects one argument"
 msgstr "“%s”需要一个参数"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:84
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:707
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1450
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1458
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1514
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1522
 #, c-format
 msgid "“%s” expects the first argument to be a string"
 msgstr "“%s”需要第一个参数是字符串"
@@ -2419,9 +2409,10 @@ msgstr "“%s”需要两个或三个参数"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:340
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:857
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1111
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1519
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1577
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1626
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1172
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1583
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1641
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1690
 #, c-format
 msgid "“%s” expects the first argument to be a time_t"
 msgstr "“%s”的第一个参数应该是 time_t 类型"
@@ -2447,7 +2438,7 @@ msgstr "“%s”需要零个或两个参数"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:333
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:700
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:850
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1512
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1576
 #, c-format
 msgid "“%s” expects two arguments"
 msgstr "“%s”需要两个参数"
@@ -2458,7 +2449,7 @@ msgstr "“%s”需要两个参数"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:814
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1023
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1056
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1404
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1468
 #, c-format
 msgid "“%s” expects no arguments"
 msgstr "“%s”不需要参数"
@@ -2491,55 +2482,49 @@ msgid ""
 "a boolean false (#f)"
 msgstr "“%s”的所有参数都应该为字符串或者它唯一的参数为布尔假 (#f)"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1467
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1531
 #, c-format
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr "“%s”的第一个参数必须是 ISO 8601 日期/时间字符串"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1528
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1592
 #, c-format
 msgid "“%s” expects the second argument to be an integer"
 msgstr "“%s”的第二个参数应该是整数"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1798
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1825
 #, c-format
 msgid "Failed to create SQLite function, error code “%d”: %s"
 msgstr "创建 SQLite 函数失败，错误代码“%d”：%s"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2798
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2856
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2915
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2978
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2825
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2883
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2942
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3005
 #, c-format
 msgid "Object “%s”, “%s” not found"
 msgstr "对象“%s”，“%s”未找到"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3757
-#, fuzzy
-#| msgid "Cannot add contact: "
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3784
 msgid "Cannot add timezone without tzid"
-msgstr "无法添加联系人："
+msgstr "无法添加没有 tzid 的时区"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3766
-#, fuzzy
-#| msgid "Cannot authenticate without a username"
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3793
 msgid "Cannot add timezone without component"
-msgstr "没有用户名无法进行验证"
+msgstr "无法添加没有组件的时区"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3774
-#, fuzzy
-#| msgid "Cannot send message: one or more invalid recipients"
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3801
 msgid "Cannot add timezone with invalid component"
-msgstr "无法发送消息：一个或多个无效的收件人"
+msgstr "无法添加具有无效组件的时区"
 
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1148
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
-msgstr ""
+msgstr "UID“%s”的接收对象不包含任何预期的组件"
 
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4181
 msgid "attachment.dat"
-msgstr ""
+msgstr "attachment.dat"
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:1362
@@ -2667,10 +2652,9 @@ msgstr "无法将“%s”重命名为 %s：%s"
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-filter-driver.c:264
-#, fuzzy, c-format
-#| msgid "Scanning for changed messages in “%s : %s”"
+#, c-format
 msgid "Transferring filtered messages in “%s : %s”"
-msgstr "正在扫描“%s : %s”中已更改的消息"
+msgstr "正在传输“%s：%s”中的已筛选消息"
 
 #: ../src/camel/camel-filter-driver.c:1120
 #: ../src/camel/camel-filter-search.c:934
@@ -2721,10 +2705,9 @@ msgstr "在第 %d 封信时失败"
 
 #: ../src/camel/camel-filter-driver.c:1715
 #: ../src/camel/camel-filter-driver.c:1847
-#, fuzzy, c-format
-#| msgid "Failed to cache message %s: %s"
+#, c-format
 msgid "Failed to transfer messages: %s"
-msgstr "缓存消息 %s 失败：%s"
+msgstr "无法传输消息：%s"
 
 #: ../src/camel/camel-filter-driver.c:1725
 #: ../src/camel/camel-filter-driver.c:1861
@@ -3027,8 +3010,8 @@ msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
 "the %s doesn’t have imported public key for this recipient."
 msgstr ""
-"、加密失败：指定的收件人 %s 无效。一个常见问题是在 %s 中没有导入这个收件人的"
-"公钥。"
+"加密失败：指定的收件人 %s 无效。一个常见问题是在 %s 中没有导入这个收件人的公"
+"钥。"
 
 #: ../src/camel/camel-gpg-context.c:2169 ../src/camel/camel-smime-context.c:869
 msgid "Could not generate signing data: "
@@ -3079,7 +3062,7 @@ msgstr "解密 MIME 部分失败：未找到密钥"
 #: ../src/camel/camel-gpg-context.c:2827
 #, c-format
 msgid "GPG blob contains unencrypted text: %s"
-msgstr ""
+msgstr "GPG blob 包含未加密的文本：%s"
 
 #: ../src/camel/camel-gpg-context.c:2829
 #: ../src/camel/camel-smime-context.c:1546
@@ -3223,7 +3206,7 @@ msgstr "查找主机“%s”失败：%s"
 #: ../src/camel/camel-network-service.c:1128
 #, c-format
 msgid "Checking reachability of account “%s”"
-msgstr ""
+msgstr "正在检查帐户“%s”的可访问性"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -3263,20 +3246,18 @@ msgstr "正在将文件夹“%s : %s”中的消息同步到磁盘"
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-offline-folder.c:584
-#, fuzzy, c-format
-#| msgid "Syncing messages in folder “%s : %s” to disk"
+#, c-format
 msgid "Syncing message %d of %d in folder “%s : %s” to disk"
-msgstr "正在将文件夹“%s : %s”中的消息同步到磁盘"
+msgstr "正在将文件夹“%3$s：%4$s”中的第 %1$d 条消息（共 %2$d 条）同步到磁盘"
 
 #: ../src/camel/camel-offline-folder.c:643
 msgid "Copy folder content locally for _offline operation"
 msgstr "将文件夹内容复制到本地以进行离线操作(_O)"
 
 #: ../src/camel/camel-offline-store.c:304
-#, fuzzy, c-format
-#| msgid "Syncing messages in folder “%s : %s” to disk"
+#, c-format
 msgid "Syncing messages in account “%s” to disk"
-msgstr "正在将文件夹“%s : %s”中的消息同步到磁盘"
+msgstr "正在将帐户“%s”中的消息同步到磁盘"
 
 #: ../src/camel/camel-provider.c:89
 msgid "Virtual folder email provider"
@@ -3379,9 +3360,9 @@ msgid "Server challenge invalid\n"
 msgstr "服务器质询无效\n"
 
 #: ../src/camel/camel-sasl-digest-md5.c:867
-#, fuzzy, c-format
+#, c-format
 msgid "Server challenge contained invalid “Quality of Protection” token"
-msgstr "服务器质询含有无效的“品质保护”令牌"
+msgstr "服务器质询包含无效的“保护质量”令牌"
 
 #: ../src/camel/camel-sasl-digest-md5.c:900
 #, c-format
@@ -3478,10 +3459,8 @@ msgid "Bad authentication response from server."
 msgstr "来自服务器的无效认证应答。"
 
 #: ../src/camel/camel-sasl-gssapi.c:288
-#, fuzzy
-#| msgid "Could not parse response"
 msgid "Could not get session bus:"
-msgstr "无法解析响应"
+msgstr "无法获取会话总线："
 
 #: ../src/camel/camel-sasl-gssapi.c:322
 #, c-format
@@ -3490,6 +3469,8 @@ msgid ""
 "line with “kinit” or open “Online Accounts” in “Settings” and add the "
 "Kerberos account there. Reported error was: %s"
 msgstr ""
+"无法请求 Kerberos 票证。可以手动获取票证，比如在命令行中使用“kinit”或在“设"
+"置”中打开“在线帐户”并在那里添加 Kerberos 帐户。报错原因是：%s"
 
 #: ../src/camel/camel-sasl-gssapi.c:520
 #, c-format
@@ -3552,7 +3533,7 @@ msgstr "OAuth2"
 
 #: ../src/camel/camel-sasl-xoauth2.c:27
 msgid "This option will use an OAuth 2.0 access token to connect to the server"
-msgstr ""
+msgstr "此选项将使用 OAuth 2.0 访问令牌连接到服务器"
 
 #: ../src/camel/camel-sasl-xoauth2-google.c:23
 msgid "OAuth2 (Google)"
@@ -3562,7 +3543,7 @@ msgstr "OAuth2（谷歌）"
 msgid ""
 "This option will use an OAuth 2.0 access token to connect to the Google "
 "server"
-msgstr ""
+msgstr "此选项将使用 OAuth 2.0 访问令牌连接到 Google 服务器"
 
 #: ../src/camel/camel-sasl-xoauth2-outlook.c:23
 msgid "OAuth2 (Outlook)"
@@ -3572,7 +3553,7 @@ msgstr "OAuth2 (Outlook）"
 msgid ""
 "This option will use an OAuth 2.0 access token to connect to the Outlook.com "
 "server"
-msgstr ""
+msgstr "此选项将使用 OAuth 2.0 访问令牌连接到 Outlook.com 服务器"
 
 #: ../src/camel/camel-search-private.c:114
 #, c-format
@@ -3894,7 +3875,7 @@ msgstr "无法解析 URL“%s”"
 msgid "Updating folder “%s”"
 msgstr "正在更新文件夹“%s”"
 
-#: ../src/camel/camel-vee-folder.c:1275 ../src/camel/camel-vee-folder.c:1411
+#: ../src/camel/camel-vee-folder.c:1285 ../src/camel/camel-vee-folder.c:1421
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "无法将消息移动或复制到虚拟文件夹中"
@@ -3903,22 +3884,22 @@ msgstr "无法将消息移动或复制到虚拟文件夹中"
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: ../src/camel/camel-vee-folder.c:1312
+#: ../src/camel/camel-vee-folder.c:1322
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "在“%2$s : %3$s”中没有消息 %1$s"
 
-#: ../src/camel/camel-vee-folder.c:1387
+#: ../src/camel/camel-vee-folder.c:1397
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "存储“%s”出错："
 
-#: ../src/camel/camel-vee-folder.c:1577
+#: ../src/camel/camel-vee-folder.c:1587
 #, c-format
 msgid "Updating search folder “%s”"
 msgstr "正在更新搜索文件夹“%s”"
 
-#: ../src/camel/camel-vee-folder.c:1635
+#: ../src/camel/camel-vee-folder.c:1645
 msgid "Automatically _update on change in source folders"
 msgstr "自动更新源文件夹中的更改(_U)"
 
@@ -5273,10 +5254,9 @@ msgid "%s: Scanning existing messages"
 msgstr "%s：正在扫描既存的消息"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:464
-#, fuzzy, c-format
-#| msgid "Unexpected server response from xover: %s"
+#, c-format
 msgid "Unexpected server response from listgroup: %s"
-msgstr "来自 xover 的意外服务器应答：%s"
+msgstr "来自列表组的意外服务器响应：%s"
 
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:358
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:442
@@ -5743,51 +5723,51 @@ msgstr "临时认证失败"
 msgid "Authentication required"
 msgstr "必须认证"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1492
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1495
 msgid "SMTP Greeting"
 msgstr "SMTP 问候"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1501
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1514
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1521
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1504
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1517
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1524
 msgid "HELO command failed: "
 msgstr "HELO 命令失败："
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1605
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1619
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1628
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1608
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1622
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1631
 msgid "MAIL FROM command failed: "
 msgstr "MAIL FROM 命令失败："
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1656
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1659
 msgid "RCPT TO command failed: "
 msgstr "RCTP TO 命令失败："
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1672
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1681
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1675
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1684
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> 失败："
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1755
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1766
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1777
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1860
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1878
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1891
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1899
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1758
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1769
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1780
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1863
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1881
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1894
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1902
 msgid "DATA command failed: "
 msgstr "DATP 命令失败："
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1925
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1939
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1947
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1928
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1942
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1950
 msgid "RSET command failed: "
 msgstr "RSET 命令失败："
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1973
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1985
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1991
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1976
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1988
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1994
 msgid "QUIT command failed: "
 msgstr "QUIT 命令失败："
 
@@ -5822,77 +5802,79 @@ msgstr "生日/周年纪念日提醒单位，“分钟”、“小时”或“�
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:7
 msgid "Past reminders for EReminderWatcher"
-msgstr ""
+msgstr "EReminderWatcher 的过去提醒事项"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:8
 msgid "Snoozed reminders for EReminderWatcher"
-msgstr ""
+msgstr "EReminderWatcher 的休眠提醒事项"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:9
 msgid "Reminder programs"
-msgstr ""
+msgstr "提醒程序"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:10
 msgid "Programs that are allowed to be run by reminders"
-msgstr ""
+msgstr "允许由提醒事项运行的程序"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:11
 msgid "Show reminders in notification tray only"
-msgstr ""
+msgstr "仅在通知托盘中显示提醒"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:12
 msgid ""
 "When set to true, the reminders are shown only in the notification tray, "
 "otherwise the reminders dialog is shown immediately"
-msgstr ""
+msgstr "设置为 true 时，提醒仅显示在通知托盘中，否则将立即显示提醒对话框"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:13
 msgid "Show reminder notification dialog always on top"
-msgstr ""
+msgstr "始终在顶部显示提醒通知对话框"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:14
 msgid ""
 "Whether or not to show reminder notification dialog always on top. Note this "
 "works only as a hint for the window manager, which may or may not obey it."
 msgstr ""
+"是否始终在顶部显示提醒通知对话框。注意这只对窗口管理器起到提示作用，窗口管理"
+"器也可能不遵守。"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:15
 msgid "X position of the reminder notification dialog"
-msgstr ""
+msgstr "提醒通知对话框的 X 位置"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:16
 msgid "Y position of the reminder notification dialog"
-msgstr ""
+msgstr "提醒通知对话框的 Y 位置"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:17
 msgid "Width of the reminder notification dialog"
-msgstr ""
+msgstr "提醒通知对话框的宽度"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:18
 msgid "Height of the reminder notification dialog"
-msgstr ""
+msgstr "提醒通知对话框的高度"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
 msgid ""
 "Paned position in the reminder notification dialog, the split size between "
 "list of the events and the description"
-msgstr ""
+msgstr "提醒通知对话框中的窗格位置，事件列表和描述之间的拆分大小"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
 msgid "Show reminder notification for completed tasks"
-msgstr ""
+msgstr "显示已完成任务的提醒通知"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
 msgid "Show reminder notification for past events"
-msgstr ""
+msgstr "显示过去事件的提醒通知"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
 msgid "The last used snooze time, in minutes"
-msgstr ""
+msgstr "上次使用的睡眠时间，以分钟为单位"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:23
 msgid "User-defined snooze times, in minutes"
-msgstr ""
+msgstr "用户定义的休眠时间，以分钟为单位"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:1
 msgid "Whether the migration of old setting was already done"
@@ -5963,7 +5945,7 @@ msgstr ""
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
 msgid "A list of hints for OAuth2 services"
-msgstr ""
+msgstr "OAuth2 服务的提示列表"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
 msgid ""
@@ -5982,54 +5964,74 @@ msgid ""
 "“Company” OAuth2 authentication for any “CalDAV” source, which reads data "
 "from “caldav.company.com” host"
 msgstr ""
+"除了那些硬编码的服务外，用户还可以扩展所定义的 OAuth2 服务的支持协议和主机名"
+"列表。每行的格式可以是：servicename[-protocol]：hostname1，hostname2，…其"
+"中“servicename”是实际的服务名称；“-protocol”是可选的，如果写入，则只"
+"有“protocol”和“hostnameX”都匹配时，才能使用该服务；“hostnameX”是要比较的实际"
+"主机名，大小写不敏感。每行可以包含多个值，用逗号分隔。可以为一个 OAuth2 服务"
+"提供多条线路。注意，请求和刷新令牌的实际 URL 不能在这里更改，主机名是允许使"
+"用 OAuth2 服务的其他服务器。\n"
+"示例：公司：mail.company.com — 为“mail.company.com”主机启用“公司”OAuth2 身份"
+"验证 \n"
+"公司 — CalDAV：caldav.company.com — 为任何“CalDAV”源启用“Company”OAuth2 身份"
+"验证，从”caldav.company.com“主机读取数据 "
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
 msgid ""
 "An OAuth2 client ID to use to connect to Google servers, instead of the one "
 "provided during build time"
-msgstr ""
+msgstr "用于连接到 Google 服务器的 OAuth2 客户端 ID，而不是在构建时提供的 ID"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
 msgid ""
 "User-specified OAuth2 client ID for Google servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
 msgstr ""
+"用户为 Google 服务器指定的 OAuth2 客户端 ID。空字符串表示使用构建时提供的字符"
+"串。更改此项需要重新启动。"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
 msgid ""
 "An OAuth2 client secret to use to connect to Google servers, instead of the "
 "one provided during build time"
-msgstr ""
+msgstr "用于连接到 Google 服务器的 OAuth2 客户端密码，而不是在构建时提供的密码"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
 msgid ""
 "User-specified OAuth2 client secret for Google servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
 msgstr ""
+"用户为 Google 服务器指定的 OAuth2 客户端密钥。空字符串表示使用构建时提供的字"
+"符串。更改此项需要重新启动。"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
 msgid ""
 "An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
 "provided during build time"
-msgstr ""
+msgstr "用于连接到 Outlook 服务器的 OAuth2 客户端 ID，而不是在构建时提供的 ID"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
 msgid ""
 "User-specified OAuth2 client ID for Outlook servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
 msgstr ""
+"用户为 Outlook 服务器指定的 OAuth2 客户端 ID。空字符串表示使用构建时提供的字"
+"符串。更改此项需要重新启动。"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
 msgid ""
 "An OAuth2 client secret to use to connect to Outlook servers, instead of the "
 "one provided during build time"
 msgstr ""
+"用于连接到 Outlook 服务器的 OAuth2 客户端密钥，而不是在构建时提供的密钥"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
 msgid ""
 "User-specified OAuth2 client secret for Outlook servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
 msgstr ""
+"用户为 Outlook 服务器指定的 OAuth2 客户端密钥。空字符串表示使用构建时提供的字"
+"符串。更改此项需要重新启动。"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
@@ -6094,7 +6096,7 @@ msgstr "（已废弃） 自动代理配置 URL"
 
 #: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:1
 msgid "Evolution Alarm Notify"
-msgstr ""
+msgstr "Evolution 闹钟通知"
 
 #: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:2
 msgid "Calendar event notifications"
@@ -6181,22 +6183,19 @@ msgid "UID “%s” is already in use"
 msgstr "UID “%s” 已在使用"
 
 #: ../src/libebackend/e-source-registry-server.c:443
-#, fuzzy, c-format
-#| msgid "Cannot find certificate for “%s”"
+#, c-format
 msgid "Cannot find corresponding collection backend for source “%s”"
-msgstr "无法找到“%s”的证书"
+msgstr "找不到源“%s”的相应集合后端"
 
 #: ../src/libebackend/e-source-registry-server.c:447
-#, fuzzy, c-format
-#| msgid "Source “%s” (%s) is not a valid Google source"
+#, c-format
 msgid "Source “%s” is not a collection source"
-msgstr "“%s” (%s) 不是有效的 Google 源"
+msgstr "源“%s”不是集合源"
 
 #: ../src/libebackend/e-source-registry-server.c:453
-#, fuzzy, c-format
-#| msgid "Cannot find certificate for “%s”"
+#, c-format
 msgid "Cannot find source “%s”"
-msgstr "无法找到“%s”的证书"
+msgstr "无法找到“%s”的来源"
 
 #: ../src/libebackend/e-subprocess-factory.c:276
 #, c-format
@@ -6405,24 +6404,19 @@ msgid "Timeout was reached"
 msgstr "已到超时限制"
 
 #: ../src/libedataserver/e-oauth2-service.c:919
-#, fuzzy
-#| msgid "Failed on message %d"
 msgid "Malformed, no message body set"
-msgstr "在第 %d 封信时失败"
+msgstr "格式错误，未设置消息正文"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
 #: ../src/libedataserver/e-oauth2-service.c:1203
-#, fuzzy, c-format
-#| msgid "Source “%s” (%s) is not a valid Google source"
+#, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
-msgstr "“%s” (%s) 不是有效的 Google 源"
+msgstr "源“%s”(%s)对于“%s”OAuth2 服务无效"
 
 #: ../src/libedataserver/e-oauth2-service.c:1218
-#, fuzzy
-#| msgid "Google secret not found"
 msgid "OAuth2 secret not found"
-msgstr "未找到 Google secret"
+msgstr "未找到 OAuth2 secret"
 
 #: ../src/libedataserver/e-oauth2-service.c:1413
 #, c-format
@@ -6435,16 +6429,15 @@ msgstr "刷新访问令牌失败。请重新登录到服务器。"
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
 #: ../src/libedataserver/e-oauth2-service.c:1464
-#, fuzzy, c-format
-#| msgid "Source “%s” (%s) is not a valid Google source"
+#, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
-msgstr "“%s” (%s) 不是有效的 Google 源"
+msgstr "“%s” (%s) 不是有效的 OAuth2 源"
 
 #: ../src/libedataserver/e-oauth2-service.c:1538
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
-msgstr ""
+msgstr "访问令牌已过期，无法刷新。请重新登录服务器。"
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: ../src/libedataserver/e-oauth2-service-google.c:56
@@ -6458,11 +6451,11 @@ msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
 
-#: ../src/libedataserver/e-soup-session.c:950
+#: ../src/libedataserver/e-soup-session.c:956
 msgid "Operation was cancelled"
 msgstr "操作已取消"
 
-#: ../src/libedataserver/e-soup-session.c:956
+#: ../src/libedataserver/e-soup-session.c:962
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "因 HTTP 错误代码 %d 失败：%s"
@@ -6652,14 +6645,12 @@ msgid "%I %p"
 msgstr "%p%I"
 
 #: ../src/libedataserver/e-webdav-discover.c:295
-#, fuzzy
-#| msgid "Note"
 msgid "Notes"
 msgstr "注释"
 
 #: ../src/libedataserver/e-webdav-session.c:726
 msgid "Cannot determine destination URL without WebDAV extension"
-msgstr ""
+msgstr "无法确定没有 WebDAV 扩展名的目标 URL"
 
 #: ../src/libedataserver/e-webdav-session.c:996
 #, c-format
@@ -6667,13 +6658,15 @@ msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request. The used URI was: %s"
 msgstr ""
+"服务器用一个 HTML 页面响应，这可能意味着服务器或客户端请求出错。使用的 URI "
+"是：%s"
 
 #: ../src/libedataserver/e-webdav-session.c:998
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request."
-msgstr ""
+msgstr "服务器用一个 HTML 页面响应，这可能意味着服务器或客户端请求出错。"
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
@@ -6691,7 +6684,7 @@ msgstr "%s：HTTP 错误代码 %d (%s)：%s"
 #: ../src/libedataserver/e-webdav-session.c:1027
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
-msgstr ""
+msgstr "失败，HTTP 错误代码为 %d (%s): %s"
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
@@ -6707,13 +6700,11 @@ msgstr "%s：HTTP 错误代码 %d (%s)"
 #: ../src/libedataserver/e-webdav-session.c:1048
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
-msgstr ""
+msgstr "失败，HTTP 错误代码为 %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:1343
-#, fuzzy
-#| msgid "Failed to encode data"
 msgid "Failed to post data"
-msgstr "编码数据失败"
+msgstr "发布数据失败"
 
 #: ../src/libedataserver/e-webdav-session.c:1474
 #: ../src/libedataserver/e-webdav-session.c:1551
@@ -6728,22 +6719,16 @@ msgid "Failed to get properties"
 msgstr "获取属性失败"
 
 #: ../src/libedataserver/e-webdav-session.c:1561
-#, fuzzy
-#| msgid "Failed to authenticate"
 msgid "Failed to update properties"
-msgstr "认证失败"
+msgstr "更新属性失败"
 
 #: ../src/libedataserver/e-webdav-session.c:1663
-#, fuzzy
-#| msgid "Failed to issue NOTIFY"
 msgid "Failed to issue REPORT"
-msgstr "无法提出 NOTIFY 请求"
+msgstr "无法提出 REPORT 请求"
 
 #: ../src/libedataserver/e-webdav-session.c:1724
-#, fuzzy
-#| msgid "Failed to refresh token"
 msgid "Failed to create collection"
-msgstr "刷新令牌失败"
+msgstr "创建收藏失败"
 
 #: ../src/libedataserver/e-webdav-session.c:1817
 #: ../src/libedataserver/e-webdav-session.c:1978
@@ -6764,24 +6749,19 @@ msgid "Failed to read resource"
 msgstr "读取资源失败"
 
 #: ../src/libedataserver/e-webdav-session.c:2270
-#, fuzzy
-#| msgid "Credentials store is not supported"
 msgid "Cannot rewind input stream: Not supported"
-msgstr "不支持存储凭据"
+msgstr "无法倒带输入流：不支持"
 
 #: ../src/libedataserver/e-webdav-session.c:2434
 #: ../src/libedataserver/e-webdav-session.c:2575
-#, fuzzy
-#| msgid "Failed to encode data"
 msgid "Failed to put data"
-msgstr "编码数据失败"
+msgstr "无法 put 提交数据"
 
 #: ../src/libedataserver/e-webdav-session.c:2448
 #: ../src/libedataserver/e-webdav-session.c:2583
-#, fuzzy, c-format
-#| msgid "Failed to add data to encoder"
+#, c-format
 msgid "Failed to put data to server, error code %d (%s)"
-msgstr "将数据添加到编码器失败"
+msgstr "无法使用 put 将数据放入服务器，错误代码 %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:2677
 msgid "Failed to delete resource"
@@ -6816,20 +6796,17 @@ msgid "Failed to parse XML data"
 msgstr "解析 XML 数据失败"
 
 #: ../src/libedataserver/e-webdav-session.c:3027
-#, fuzzy
-#| msgid "Failed to refresh token"
 msgid "Failed to refresh lock"
-msgstr "刷新令牌失败"
+msgstr "刷新锁失败"
 
 #: ../src/libedataserver/e-webdav-session.c:3088
 msgid "Failed to unlock"
 msgstr "解锁失败"
 
 #: ../src/libedataserver/e-webdav-session.c:3127
-#, fuzzy, c-format
-#| msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
+#, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
-msgstr "如下 URI 返回了意外的 HTTP 状态代码 %d (%s)：%s"
+msgstr "应为多状态响应，但返回了 %d(%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:3164
 msgid "XML data does not have root node"
@@ -6846,27 +6823,27 @@ msgstr "获取访问控制列表失败"
 
 #: ../src/libedataserver/e-webdav-session.c:4839
 msgid "Cannot store protected nor inherited Access Control Entry."
-msgstr ""
+msgstr "无法存储受保护或继承的访问控制项。"
 
 #: ../src/libedataserver/e-webdav-session.c:4846
 msgid "Provided invalid principal kind for Access Control Entry."
-msgstr ""
+msgstr "为访问控制项提供的主体类型无效。"
 
 #: ../src/libedataserver/e-webdav-session.c:4853
 msgid "Cannot store property-based Access Control Entry."
-msgstr ""
+msgstr "无法存储基于属性的访问控制项。"
 
 #: ../src/libedataserver/e-webdav-session.c:4860
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
-msgstr ""
+msgstr "访问控制条目只能是“授予”或“拒绝”，但不能为无。"
 
 #: ../src/libedataserver/e-webdav-session.c:4868
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
-msgstr ""
+msgstr "访问控制条目只能是“授予”或“拒绝”，但不能为两者兼有。"
 
 #: ../src/libedataserver/e-webdav-session.c:4927
 msgid "Access Control Entry privilege cannot be NULL."
-msgstr ""
+msgstr "访问控制条目特权不能为空。"
 
 #: ../src/libedataserverui/e-buffer-tagger.c:71
 msgid "Could not open the link."
@@ -6889,10 +6866,9 @@ msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "源“%s”不支持提示请求凭据"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:202
-#, fuzzy, c-format
-#| msgid "Failed to obtain an access token for “%s”: "
+#, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
-msgstr "无法获取“%s”的访问令牌："
+msgstr "无法从地址“%s”获取访问令牌：%s"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:246
 msgid "Requesting access token, please wait..."
@@ -6915,10 +6891,9 @@ msgstr "%s 日历认证请求"
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:482
-#, fuzzy, c-format
-#| msgid "Google Memo List authentication request"
+#, c-format
 msgid "%s Memo List authentication request"
-msgstr "Google 留言簿认证请求"
+msgstr "%s 备忘录列表认证请求"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
@@ -6946,92 +6921,71 @@ msgstr "%s 帐号认证请求"
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:512
-#, fuzzy, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your address book “%s”."
+#, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "address book “%s”."
-msgstr "要访问你的地址簿“%s”，请登录到你的 Google 帐号并接受许可。"
+msgstr "登录到您的 %s 帐户并接受条款，以便访问您的通讯簿“%s”。"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:519
-#, fuzzy, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your calendar “%s”."
+#, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "calendar “%s”."
-msgstr "要访问你的日历“%s”，请登录到你的 Google 帐号并接受许可。"
+msgstr "登录您的 %s 帐户并接受条款，以便访问您的日历“%s”。"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:526
-#, fuzzy, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your mail account “%s”."
+#, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "account “%s”."
-msgstr "要访问你的邮件帐号“%s”，请登录到你的 Google 帐号并接受许可。"
+msgstr "登录到您的 %s 帐户并接受条款，以便访问您的邮件帐户“%s”。"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:533
-#, fuzzy, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your mail transport “%s”."
+#, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "transport “%s”."
-msgstr "要访问你的邮件传输“%s”，请登录到你的 Google 帐号并接受许可。"
+msgstr "登录到 %s 帐户并接受条款，以便访问邮件传输“%s”。"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:540
-#, fuzzy, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your memo list “%s”."
+#, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
 "list “%s”."
-msgstr "要访问你的留言簿“%s”，请登录到你的 Google 帐号并接受许可。"
+msgstr "登录您的 %s 帐户并接受条款，以便访问您的备忘录列表“%s”。"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:547
-#, fuzzy, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your task list “%s”."
+#, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
 "list “%s”."
-msgstr "要访问你的任务列表“%s”，请登录到你的 Google 帐号并接受许可。"
+msgstr "登录到 %s 帐户并接受条款，以便访问任务列表“%s”。"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:554
-#, fuzzy, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your account “%s”."
+#, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "account “%s”."
-msgstr "要访问你的帐号“%s”，请登录到你的 Google 帐号并接受许可。"
+msgstr "登录到您的 %s 帐户并接受条款，以便访问您的帐户“%s”。"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:606
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
@@ -7123,33 +7077,29 @@ msgid "Clear custom times"
 msgstr "清除自定义时间"
 
 #: ../src/libedataserverui/e-reminders-widget.c:282
-#, fuzzy
-#| msgctxt "Priority"
-#| msgid "Low"
 msgctxt "overdue"
 msgid "now"
-msgstr "低"
+msgstr "现在"
 
 #: ../src/libedataserverui/e-reminders-widget.c:300
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
-msgstr[0] ""
+msgstr[0] "%d 年"
 
 #: ../src/libedataserverui/e-reminders-widget.c:306
 msgctxt "overdue"
 msgid "overdue"
-msgstr ""
+msgstr "逾期的"
 
 #: ../src/libedataserverui/e-reminders-widget.c:926
-#, fuzzy, c-format
-#| msgid "Failed to open client “%s”: %s"
+#, c-format
 msgid "Failed to launch URI “%s”:"
-msgstr "打开客户端“%s”失败：%s"
+msgstr "启动 URI“%s”失败："
 
 #: ../src/libedataserverui/e-reminders-widget.c:976
 msgid "No reminder is selected."
-msgstr ""
+msgstr "未选择提醒。"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1033
 msgid "No details are available."
@@ -7157,61 +7107,54 @@ msgstr "无详细信息可用。"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1037
 msgid "Multiple reminders are selected."
-msgstr ""
+msgstr "选择了多个提醒。"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1057
-#, fuzzy
-#| msgid "Could not discard reminder: "
 msgid "Failed to dismiss reminder:"
-msgstr "无法取消提醒："
+msgstr "取消提醒失败："
 
 #: ../src/libedataserverui/e-reminders-widget.c:1078
-#, fuzzy
-#| msgid "Failed to issue NOTIFY"
 msgid "Failed to dismiss all:"
-msgstr "无法提出 NOTIFY 请求"
+msgstr "未能全部取消："
 
 #: ../src/libedataserverui/e-reminders-widget.c:1214
 msgid "Set a custom snooze time for"
-msgstr ""
+msgstr "设置自定义睡眠时间为"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1227
 msgctxt "reminders-snooze"
 msgid "da_ys"
-msgstr ""
+msgstr "天(_Y)"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1243
 msgctxt "reminders-snooze"
 msgid "_hours"
-msgstr ""
+msgstr "小时(_H)"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: ../src/libedataserverui/e-reminders-widget.c:1259
 msgctxt "reminders-snooze"
 msgid "_minutes"
-msgstr ""
+msgstr "分钟(_M)"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1265
 msgid "_Add Snooze time"
-msgstr ""
+msgstr "增加睡眠时间(_A)"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1568
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
-#, fuzzy
 msgid "_Dismiss"
-msgstr "废弃(_D)"
+msgstr "消除(_D)"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1569
-#, fuzzy
-#| msgid "_Dismiss"
 msgid "Dismiss _All"
-msgstr "废弃(_D)"
+msgstr "消除所有(_A)"
 
 #: ../src/libedataserverui/e-reminders-widget.c:1571
 msgid "_Snooze"
-msgstr ""
+msgstr "睡眠(_S)"
 
 #: ../src/libedataserverui/e-trust-prompt.c:110
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:117
@@ -7403,6 +7346,8 @@ msgid ""
 "Overrides compile-time backend per process option; use 1 to enable, 0 to "
 "disable, any other value is to use compile-time option"
 msgstr ""
+"重写每个进程的编译时后端选项；使用 1 启用，使用 0 禁用，任何其他值都将使用编"
+"译时选项"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:306
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:334
@@ -7433,36 +7378,41 @@ msgid ""
 "\n"
 "Are you sure you want to run this program?"
 msgstr ""
+"即将触发日历提醒。此提醒配置将运行以下程序：\n"
+"\n"
+"        %s\n"
+"\n"
+"确定要运行此程序吗？"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:467
 msgid "Do not ask me about this program again"
-msgstr ""
+msgstr "不再询问此程序"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:750
 msgid "Display Reminders window with _notifications"
-msgstr ""
+msgstr "显示带有通知的提醒窗口(_N)"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:751
 msgid "Keep reminder notification window always on _top"
-msgstr ""
+msgstr "保持提醒通知窗口始终在顶部(_T)"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:752
 msgid "Display reminders for _completed tasks"
-msgstr ""
+msgstr "显示已完成任务的提醒(_C)"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:753
 msgid "Display reminders for _past events"
-msgstr ""
+msgstr "显示过去事件的提醒(_P)"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:767
 msgid "Reminders Options:"
-msgstr ""
+msgstr "提醒选项："
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:861
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
-msgstr[0] ""
+msgstr[0] "您有 %d 个提醒"
 
 #: ../src/services/evolution-source-registry/builtin/birthdays.source.in.h:1
 msgid "Birthdays & Anniversaries"
@@ -7506,10 +7456,8 @@ msgid "On The Web"
 msgstr "在网上"
 
 #: ../src/services/evolution-source-registry/builtin/webdav-notes-stub.source.in.h:1
-#, fuzzy
-#| msgid "WebDAV"
 msgid "WebDAV Notes"
-msgstr "WebDAV"
+msgstr "WebDAV 注释"
 
 #: ../src/services/evolution-source-registry/evolution-source-registry.c:41
 msgid "Don’t migrate user data from previous versions of Evolution"
@@ -7559,55 +7507,47 @@ msgid "Only support csv or vcard format."
 msgstr "仅支持 csv 或 vcard 格式。"
 
 #: ../src/tools/list-sources/list-sources.c:83
-#, fuzzy
-#| msgid "_Show only subscribed folders"
 msgid "Show only enabled sources"
-msgstr "只显示已订阅的文件夹(_S)"
+msgstr "仅显示启用源"
 
 #: ../src/tools/list-sources/list-sources.c:86
-#, fuzzy
-#| msgid "POP Source UID"
 msgid "Show source’s UID"
-msgstr "POP 源 UID"
+msgstr "显示源 UID"
 
 #: ../src/tools/list-sources/list-sources.c:89
-#, fuzzy
-#| msgid "Unsupported authentication method"
 msgid "Show source’s authentication information"
-msgstr "不支持的身份认证方式"
+msgstr "显示来源的身份验证信息"
 
 #: ../src/tools/list-sources/list-sources.c:92
 msgid ""
 "Write in machine readable format (one source per line, without localized "
 "property names and tab as separator)"
 msgstr ""
+"以机器可读格式写入（每行一个源信息，没有本地化的属性名和制表符作为分隔符）"
 
 #: ../src/tools/list-sources/list-sources.c:95
 msgid "Limit only to sources with given extension name"
-msgstr ""
+msgstr "仅限于具有给定扩展名的源文件"
 
 #: ../src/tools/list-sources/list-sources.c:106
 msgid "yes"
-msgstr ""
+msgstr "是"
 
 #: ../src/tools/list-sources/list-sources.c:106
 msgid "no"
-msgstr ""
+msgstr "否"
 
 #: ../src/tools/list-sources/list-sources.c:126
-#, fuzzy
-#| msgctxt "CategoryName"
-#| msgid "Competition"
 msgid "Collection"
-msgstr "完成"
+msgstr "集合"
 
 #: ../src/tools/list-sources/list-sources.c:132
 msgid "Collection/GNOME Online Accounts"
-msgstr ""
+msgstr "集合/GNOME 在线账号"
 
 #: ../src/tools/list-sources/list-sources.c:137
 msgid "Collection/Ubuntu Online Accounts"
-msgstr ""
+msgstr "集合/Ubuntu 在线账号"
 
 #: ../src/tools/list-sources/list-sources.c:147
 msgid "Address Book"
@@ -7618,11 +7558,8 @@ msgid "Calendar"
 msgstr "日历"
 
 #: ../src/tools/list-sources/list-sources.c:149
-#, fuzzy
-#| msgctxt "WebDAVDiscover"
-#| msgid "Memos"
 msgid "Memo List"
-msgstr "备忘"
+msgstr "备忘列表"
 
 #: ../src/tools/list-sources/list-sources.c:150
 msgid "Task List"
@@ -7634,17 +7571,15 @@ msgstr "邮件帐号"
 
 #: ../src/tools/list-sources/list-sources.c:152
 msgid "Mail Transport"
-msgstr ""
+msgstr "邮件传输"
 
 #: ../src/tools/list-sources/list-sources.c:153
 msgid "Mail Identity"
 msgstr "邮件身份"
 
 #: ../src/tools/list-sources/list-sources.c:154
-#, fuzzy
-#| msgid "Message submission port"
 msgid "Mail Submission"
-msgstr "消息提交端口"
+msgstr "邮件提交"
 
 #: ../src/tools/list-sources/list-sources.c:155
 msgid "Mail Signature"
@@ -7657,19 +7592,17 @@ msgstr "代理"
 #: ../src/tools/list-sources/list-sources.c:224
 #, c-format
 msgid "UID: %s"
-msgstr ""
+msgstr "UID: %s"
 
 #: ../src/tools/list-sources/list-sources.c:228
-#, fuzzy, c-format
-#| msgid "Malformed URI: %s"
+#, c-format
 msgid "Parent UID: %s"
-msgstr "URI 格式错误：%s"
+msgstr "父 UID：%s"
 
 #: ../src/tools/list-sources/list-sources.c:231
-#, fuzzy, c-format
-#| msgid "Posting failed: %s"
+#, c-format
 msgid "Enabled: %s"
-msgstr "发送失败：%s"
+msgstr "启用：%s"
 
 #: ../src/tools/list-sources/list-sources.c:233
 #, c-format
@@ -7677,21 +7610,19 @@ msgid "Backend: %s"
 msgstr "后端：%s"
 
 #: ../src/tools/list-sources/list-sources.c:238
-#, fuzzy, c-format
-#| msgid "Calendar does not exist"
+#, c-format
 msgid "Calendar enabled: %s"
-msgstr "日历不存在"
+msgstr "启用日历：%s"
 
 #: ../src/tools/list-sources/list-sources.c:239
-#, fuzzy, c-format
-#| msgid "Contact ID already exists"
+#, c-format
 msgid "Contacts enabled: %s"
-msgstr "联系人 ID 已经存在"
+msgstr "启用联系人：%s"
 
 #: ../src/tools/list-sources/list-sources.c:240
-#, fuzzy, c-format
+#, c-format
 msgid "Mail enabled: %s"
-msgstr "操作失败：%s"
+msgstr "启用邮件：%s"
 
 #: ../src/tools/list-sources/list-sources.c:247
 #, c-format
@@ -7728,15 +7659,14 @@ msgid "Failed to parse arguments: Unknown error"
 msgstr "解析参数失败：未知错误"
 
 #: ../src/tools/list-sources/list-sources.c:429
-#, fuzzy, c-format
-#| msgid "Failed to connect to a server using SSL/TLS: %s"
+#, c-format
 msgid "Failed to connect to source registry: %s\n"
-msgstr "无法使用 SSL/TLS 连接到服务器：%s"
+msgstr "无法连接到源注册表：%s\n"
 
 #: ../src/tools/list-sources/list-sources.c:445
 #, c-format
 msgid "No sources had been found\n"
-msgstr ""
+msgstr "未找到来源\n"
 
 #~ msgid "Querying for updated contacts…"
 #~ msgstr "查询联系人的更新…"
