@@ -502,6 +502,8 @@ google_backend_authenticate_sync (EBackend *backend,
 	g_return_val_if_fail (e_source_collection_get_calendar_enabled (collection_extension) ||
 		e_source_collection_get_contacts_enabled (collection_extension), E_SOURCE_AUTHENTICATION_ERROR);
 
+	e_collection_backend_freeze_populate (collection);
+
 	if (credentials && !e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_USERNAME)) {
 		credentials_copy = e_named_parameters_new_clone (credentials);
 		e_named_parameters_set (credentials_copy, E_SOURCE_CREDENTIAL_USERNAME, e_source_collection_get_identity (collection_extension));
@@ -608,6 +610,8 @@ google_backend_authenticate_sync (EBackend *backend,
 
 	g_hash_table_destroy (known_sources);
 	e_named_parameters_free (credentials_copy);
+
+	e_collection_backend_thaw_populate (collection);
 
 	return result;
 }
@@ -721,7 +725,6 @@ google_backend_populate (ECollectionBackend *backend)
 			google_backend_add_contacts (backend);
 		g_list_free_full (list, (GDestroyNotify) g_object_unref);
 	}
-
 }
 
 static gchar *

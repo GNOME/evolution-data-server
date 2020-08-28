@@ -75,6 +75,8 @@ struct _ECollectionBackendPrivate {
 
 	gint64 last_populate_call;
 	guint scheduled_populate_idle_id;
+
+	volatile gint populate_freeze_count;
 };
 
 enum {
@@ -625,6 +627,9 @@ collection_backend_populate_idle_cb (gpointer user_data)
 
 	backend->priv->scheduled_populate_idle_id = 0;
 
+	if (e_collection_backend_get_populate_frozen (backend))
+		return FALSE;
+
 	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
 	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->populate != NULL, FALSE);
@@ -645,6 +650,9 @@ collection_backend_schedule_populate_idle (ECollectionBackend *backend,
 					   gboolean force)
 {
 	g_return_if_fail (E_IS_COLLECTION_BACKEND (backend));
+
+	if (e_collection_backend_get_populate_frozen (backend))
+		return;
 
 	if (!force) {
 		/* Let automatically check for new child sources only once per day.
@@ -2019,4 +2027,59 @@ e_collection_backend_schedule_populate (ECollectionBackend *backend)
 
 	if (e_backend_get_online (E_BACKEND (backend)))
 		collection_backend_schedule_populate_idle (backend, TRUE);
+}
+
+/**
+ * e_collection_backend_get_populate_frozen:
+ * @backend: an #ECollectionBackend
+ *
+ * Returns: Whether the backend has currently frozen (disabled) populate of its content.
+ *
+ * Since: 3.38
+ **/
+gboolean
+e_collection_backend_get_populate_frozen (ECollectionBackend *backend)
+{
+	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), FALSE);
+
+	return g_atomic_int_get (&backend->priv->populate_freeze_count) > 0;
+}
+
+/**
+ * e_collection_backend_freeze_populate:
+ * @backend: an #ECollectionBackend
+ *
+ * Freezes populate of the backend's content. This is used to avoid calling
+ * populate multiple times in parallel.
+ * Every call to this function should be followed by the call
+ * of e_collection_backend_thaw_populate() to reverse the effect of this function,
+ * regardless of the return value of this function.
+ *
+ * Returns: %TRUE, when this is the first freeze call
+ *
+ * Since: 3.38
+ **/
+gboolean
+e_collection_backend_freeze_populate (ECollectionBackend *backend)
+{
+	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), FALSE);
+
+	return !g_atomic_int_add (&backend->priv->populate_freeze_count, 1);
+}
+
+/**
+ * e_collection_backend_thaw_populate:
+ * @backend: an #ECollectionBackend
+ *
+ * Thaws populate of the backend's content. This is a pair function
+ * for e_collection_backend_freeze_populate().
+ *
+ * Since: 3.38
+ **/
+void
+e_collection_backend_thaw_populate (ECollectionBackend *backend)
+{
+	g_return_if_fail (E_IS_COLLECTION_BACKEND (backend));
+
+	g_atomic_int_add (&backend->priv->populate_freeze_count, -1);
 }

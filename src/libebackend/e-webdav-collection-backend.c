@@ -303,6 +303,11 @@ webdav_collection_backend_populate (ECollectionBackend *collection)
 	ESource *source;
 	GList *list, *liter;
 
+	if (!e_collection_backend_freeze_populate (collection)) {
+		e_collection_backend_thaw_populate (collection);
+		return;
+	}
+
 	/* Chain up to parent's method. */
 	E_COLLECTION_BACKEND_CLASS (e_webdav_collection_backend_parent_class)->populate (collection);
 
@@ -359,6 +364,8 @@ webdav_collection_backend_populate (ECollectionBackend *collection)
 	}
 
 	g_object_unref (server);
+
+	e_collection_backend_thaw_populate (collection);
 }
 
 static void
@@ -532,6 +539,8 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 	    (!e_source_collection_get_contacts_enabled (collection_extension) || !contacts_url))
 		return E_SOURCE_AUTHENTICATION_ACCEPTED;
 
+	e_collection_backend_freeze_populate (collection);
+
 	credentials_empty = !credentials || !e_named_parameters_count (credentials) ||
 		(e_named_parameters_count (credentials) == 1 && e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_SSL_TRUST));
 
@@ -637,6 +646,8 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 
 	g_hash_table_destroy (known_sources);
 	e_named_parameters_free (credentials_copy);
+
+	e_collection_backend_thaw_populate (collection);
 
 	return result;
 }

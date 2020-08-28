@@ -171,6 +171,12 @@ void		e_collection_backend_authenticate_children
 						 const ENamedParameters *credentials);
 void		e_collection_backend_schedule_populate
 						(ECollectionBackend *backend);
+gboolean	e_collection_backend_get_populate_frozen
+						(ECollectionBackend *backend);
+gboolean	e_collection_backend_freeze_populate
+						(ECollectionBackend *backend);
+void		e_collection_backend_thaw_populate
+						(ECollectionBackend *backend);
 
 G_END_DECLS
 
