@@ -72,11 +72,11 @@ G_DEFINE_DYNAMIC_TYPE (
 
 static ESourceAuthenticationResult
 webdav_backend_authenticate_sync (EBackend *backend,
-				    const ENamedParameters *credentials,
-				    gchar **out_certificate_pem,
-				    GTlsCertificateFlags *out_certificate_errors,
-				    GCancellable *cancellable,
-				    GError **error)
+				  const ENamedParameters *credentials,
+				  gchar **out_certificate_pem,
+				  GTlsCertificateFlags *out_certificate_errors,
+				  GCancellable *cancellable,
+				  GError **error)
 {
 	ESourceCollection *collection_extension;
 	ESource *source;
