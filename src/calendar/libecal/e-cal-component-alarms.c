@@ -42,7 +42,7 @@ struct _ECalComponentAlarms {
 
 /**
  * e_cal_component_alarms_new:
- * @comp: (not nullable): the actual alarm component, as #ECalComponent
+ * @comp: (type ECalComponent) (not nullable): the actual alarm component, as #ECalComponent
  *
  * Creates a new #ECalComponentAlarms structure, associated with @comp.
  * Free the alarms with e_cal_component_alarms_free(), when no longer needed.
@@ -116,7 +116,7 @@ e_cal_component_alarms_free (gpointer alarms)
  *
  * The returned component is valid until the @alarms is freed.
  *
- * Returns: (transfer none): an #ECalComponent associated with the @alarms structure
+ * Returns: (type ECalComponent) (transfer none): an #ECalComponent associated with the @alarms structure
  *
  * Since: 3.34
  **/

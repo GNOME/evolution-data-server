@@ -885,7 +885,7 @@ e_cal_client_view_init (ECalClientView *client_view)
  * The returned #ECalClient is referenced for thread-safety.  Unreference
  * the #ECalClient with g_object_unref() when finished with it.
  *
- * Returns: (transfer full): an #ECalClient
+ * Returns: (type ECalClient) (transfer full): an #ECalClient
  *
  * Since: 3.10
  **/

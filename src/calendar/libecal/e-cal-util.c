@@ -2520,7 +2520,7 @@ e_cal_util_find_next_occurrence (ICalComponent *vtodo,
 /**
  * e_cal_util_init_recur_task_sync:
  * @vtodo: a VTODO component
- * @cal_client: an #ECalClient to which the @vtodo belongs
+ * @cal_client: (type ECalClient): an #ECalClient to which the @vtodo belongs
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -2585,7 +2585,7 @@ e_cal_util_init_recur_task_sync (ICalComponent *vtodo,
  * e_cal_util_mark_task_complete_sync:
  * @vtodo: a VTODO component
  * @completed_time: completed time to set, or (time_t) -1 to use current time
- * @cal_client: an #ECalClient to which the @vtodo belongs
+ * @cal_client: (type ECalClient): an #ECalClient to which the @vtodo belongs
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
