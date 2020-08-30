@@ -21,8 +21,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2020-02-04 09:37+0000\n"
-"PO-Revision-Date: 2020-02-22 19:03+0900\n"
+"POT-Creation-Date: 2020-07-11 14:33+0000\n"
+"PO-Revision-Date: 2020-08-29 13:36+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr@googlegroups.com>\n"
 "Language: ko\n"
@@ -31,15 +31,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:221
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:231
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "주어진 “%s” URL이 CardDAV 주소록을 참조하지 않습니다"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:280
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:290
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1154
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4428
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4397
 #: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
 #: ../src/addressbook/libebook/e-book.c:1070
@@ -54,9 +54,10 @@ msgstr "주어진 “%s” URL이 CardDAV 주소록을 참조하지 않습니다
 #: ../src/addressbook/libebook/e-book-client.c:3461
 #: ../src/addressbook/libebook/e-book-client.c:3679
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:873
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:264
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:275
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:288
 #: ../src/calendar/backends/http/e-cal-backend-http.c:313
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:197
 #: ../src/calendar/libecal/e-cal-client.c:257
 #: ../src/calendar/libecal/e-cal-client.c:3230
 #: ../src/calendar/libecal/e-cal-client.c:3403
@@ -77,37 +78,39 @@ msgstr "주어진 “%s” URL이 CardDAV 주소록을 참조하지 않습니다
 #: ../src/calendar/libecal/e-cal-client.c:6592
 #: ../src/calendar/libecal/e-cal-client.c:6816
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1799
-#: ../src/camel/camel-filter-driver.c:1712
-#: ../src/camel/camel-filter-driver.c:1844
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3256
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3262
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3272
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3284
+#: ../src/camel/camel-filter-driver.c:1715
+#: ../src/camel/camel-filter-driver.c:1847
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3300
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3306
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3316
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3328
 #: ../src/camel/providers/nntp/camel-nntp-store.c:419
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:183
-#: ../src/libedataserver/e-soup-session.c:1224
+#: ../src/libedataserver/e-soup-session.c:1222
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
-#: ../src/libedataserverui/e-reminders-widget.c:1788
+#: ../src/libedataserverui/e-reminders-widget.c:1931
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "알 수 없는 오류가 발생했습니다"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1077
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1294
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1095
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1373
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:930
 msgid "Server didn’t return object’s href"
 msgstr "서버에서 오브젝트의 HREF를 돌려주지 않았습니다"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1079
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1296
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1097
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1375
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:932
 msgid "Server didn’t return object’s ETag"
 msgstr "서버에서 오브젝트의 Etag를 돌려주지 않았습니다"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1081
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1099
 msgid "Received object is not a valid vCard"
 msgstr "받은 오브젝트가 올바른 vCard가 아닙니다"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1198
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1216
 msgid ""
 "Missing information about vCard URL, local cache is possibly incomplete or "
 "broken. Remove it, please."
@@ -115,8 +118,8 @@ msgstr ""
 "vCard URL에 대한 정보가 없습니다. 로컬 캐시가 불완전하거나 망가졌을 수도 있습"
 "니다. 로컬 캐시를 지워 보십시오."
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1201
-#: ../src/addressbook/backends/google/e-book-backend-google.c:988
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1219
+#: ../src/addressbook/backends/google/e-book-backend-google.c:990
 msgid "Object to save is not a valid vCard"
 msgstr "저장할 오브젝트가 올바른 vCard가 아닙니다"
 
@@ -150,7 +153,7 @@ msgid "Loading..."
 msgstr "읽어들이는 중입니다..."
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:990
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4543
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4512
 msgid "Searching..."
 msgstr "찾는 중입니다..."
 
@@ -181,7 +184,7 @@ msgid "Invalid Query “%s”"
 msgstr "잘못된 질의: “%s”"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1965
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2037
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2041
 msgid "Requested to delete an unrelated cursor"
 msgstr "무관한 커서의 삭제를 요청했습니다"
 
@@ -190,11 +193,11 @@ msgstr "무관한 커서의 삭제를 요청했습니다"
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "과거 데이터베이스의 이름을 “%s”에서 “%s”(으)로 바꿀 수 없습니다: %s"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:1044
+#: ../src/addressbook/backends/google/e-book-backend-google.c:1046
 msgid "Failed to create contact from returned server data"
 msgstr "반환된 서버 데이터에서 연락처를 만드는데 실패했습니다"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:1060
+#: ../src/addressbook/backends/google/e-book-backend-google.c:1062
 msgid "Server returned contact without UID"
 msgstr "서버에서 UID 없는 연락처를 반환했습니다"
 
@@ -241,7 +244,7 @@ msgid "Invalid DN syntax"
 msgstr "DN 문법이 잘못되었습니다"
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1151
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4427
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4396
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP 오류 0x%x (%s)"
@@ -281,46 +284,46 @@ msgstr[0] ""
 "LDAP 주소록의 연락처 목록에 같은 LDAP 주소록의 멤버가 들어 있어야 하지만, %d"
 "명의 멤버를 알 수 없습니다."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4366
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4335
 msgid "Receiving LDAP search results..."
 msgstr "LDAP 검색 결과를 받는 중입니다..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4569
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4538
 msgid "Error performing search"
 msgstr "검색을 수행하는 중 오류가 발생했습니다"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4709
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4678
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "연락처(%d)를 다운로드하는 중입니다..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4810
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:781
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:684
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4779
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:788
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:691
 msgid "Refreshing…"
 msgstr "새로 고치는 중…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5203
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5172
 msgid "The backend does not support bulk additions"
 msgstr "백엔드가 대량 추가를 지원하지 않습니다"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5294
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5263
 msgid "Adding contact to LDAP server..."
 msgstr "연락처를 LDAP 서버에 추가하는 중입니다..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5356
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5325
 msgid "The backend does not support bulk modifications"
 msgstr "백엔드가 대량 수정을 지원하지 않습니다"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5378
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5347
 msgid "Modifying contact from LDAP server..."
 msgstr "연락처를 LDAP 서버에서 수정하는 중입니다..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5450
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5419
 msgid "Removing contact from LDAP server..."
 msgstr "연락처를 LDAP 서버에서 제거하는 중입니다..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5860
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5829
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "“%s” 사용자의 DN을 가져오는데 실패했습니다"
@@ -562,7 +565,7 @@ msgstr "배우자 이름"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:225
 msgid "Note"
-msgstr "노트"
+msgstr "메모"
 
 #. Instant messaging fields
 #: ../src/addressbook/libebook-contacts/e-contact.c:228
@@ -926,7 +929,7 @@ msgstr "구글 토크 대화명 목록"
 msgid "Twitter Name List"
 msgstr "트위터 이름 목록"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:1911
+#: ../src/addressbook/libebook-contacts/e-contact.c:1915
 #: ../src/addressbook/libebook/e-destination.c:914
 msgid "Unnamed List"
 msgstr "이름 없는 목록"
@@ -1150,7 +1153,7 @@ msgstr "%s 데이터베이스를 열 수 없습니다: %s"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2917
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2980
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3151
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1362
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1370
 #: ../src/libebackend/e-cache.c:1374 ../src/libebackend/e-cache.c:2352
 #: ../src/libebackend/e-cache.c:2392
 #, c-format
@@ -1172,21 +1175,21 @@ msgstr "커서를 사용하려면 최소한 하나의 정렬 항목을 지정해
 msgid "Cannot sort by a field that is not a string type"
 msgstr "문자열이 아닌 항목으로는 정렬할 수 없습니다"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1073
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1085
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1081
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1093
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "“%s” UID에 대해 미리 읽어들인 오브젝트가 잘못되었습니다"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1081
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1093
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1089
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1101
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "“%s” UID에 대해 받은 오브젝트가 잘못되었습니다"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1907
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2354
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3295
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1911
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2367
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3314
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "“%s” 캐시를 만드는데 실패했습니다:"
@@ -1279,12 +1282,13 @@ msgstr "커서를 움직이는 중 리비전 동기화에서 벗어났습니다"
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "올바르지 않은 로캘에 대해 사전 순서 인덱스를 지정했습니다"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:207
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:218
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "주어진 “%s” URL이 CalDAV 달력을 참조하지 않습니다"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1431
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1510
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1164
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. Remove it, please."
@@ -1292,7 +1296,7 @@ msgstr ""
 "컴포넌트 URL에 대한 정보가 없습니다. 로컬 캐시가 불완전하거나 망가졌을 수도 "
 "있습니다. 로컬 캐시를 지워 보십시오."
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1907
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:2010
 msgid "Failed to parse response data"
 msgstr "응답 데이터를 파싱하는데 실패했습니다"
 
@@ -1336,11 +1340,11 @@ msgid "File “%s” is not a VCALENDAR component"
 msgstr "“%s” 파일이 VCALENDAR 구성 요소가 아닙니다"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3636
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3642
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3648
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3675
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2531
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3654
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3681
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2541
 msgid "Unsupported method"
 msgstr "지원하지 않는 방법"
 
@@ -1353,12 +1357,12 @@ msgstr "URI 설정하지 않았습니다"
 msgid "Malformed URI “%s”: %s"
 msgstr "잘못 구성된 URI “%s”: %s"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:459
+#: ../src/calendar/backends/http/e-cal-backend-http.c:463
 #, c-format
 msgid "Bad file format."
 msgstr "파일 형식이 틀렸습니다."
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:468
+#: ../src/calendar/backends/http/e-cal-backend-http.c:472
 #, c-format
 msgid "Not a calendar."
 msgstr "달력이 아닙니다."
@@ -1439,6 +1443,11 @@ msgstr "캐시 파일을 만들 수 없습니다"
 msgid "Could not create cache file: "
 msgstr "캐시 파일을 만들 수 없습니다:"
 
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:973
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1002
+msgid "New note"
+msgstr "새 메모"
+
 #: ../src/calendar/libecal/e-cal-client.c:244
 msgid "No such calendar"
 msgstr "그런 달력이 없습니다"
@@ -1477,161 +1486,161 @@ msgstr "“%s” 달력 속성의 값을 바꿀 수 없습니다"
 msgid "Untitled appointment"
 msgstr "제목없는 약속"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4883
+#: ../src/calendar/libecal/e-cal-recur.c:4889
 msgid "1st"
 msgstr "1일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4884
+#: ../src/calendar/libecal/e-cal-recur.c:4890
 msgid "2nd"
 msgstr "2일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4885
+#: ../src/calendar/libecal/e-cal-recur.c:4891
 msgid "3rd"
 msgstr "3일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4886
+#: ../src/calendar/libecal/e-cal-recur.c:4892
 msgid "4th"
 msgstr "4일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4887
+#: ../src/calendar/libecal/e-cal-recur.c:4893
 msgid "5th"
 msgstr "5일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4888
+#: ../src/calendar/libecal/e-cal-recur.c:4894
 msgid "6th"
 msgstr "6일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4889
+#: ../src/calendar/libecal/e-cal-recur.c:4895
 msgid "7th"
 msgstr "7일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4890
+#: ../src/calendar/libecal/e-cal-recur.c:4896
 msgid "8th"
 msgstr "8일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4891
+#: ../src/calendar/libecal/e-cal-recur.c:4897
 msgid "9th"
 msgstr "9일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4892
+#: ../src/calendar/libecal/e-cal-recur.c:4898
 msgid "10th"
 msgstr "10일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4893
+#: ../src/calendar/libecal/e-cal-recur.c:4899
 msgid "11th"
 msgstr "11일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4894
+#: ../src/calendar/libecal/e-cal-recur.c:4900
 msgid "12th"
 msgstr "12일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4895
+#: ../src/calendar/libecal/e-cal-recur.c:4901
 msgid "13th"
 msgstr "13일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4896
+#: ../src/calendar/libecal/e-cal-recur.c:4902
 msgid "14th"
 msgstr "14일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4897
+#: ../src/calendar/libecal/e-cal-recur.c:4903
 msgid "15th"
 msgstr "15일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4898
+#: ../src/calendar/libecal/e-cal-recur.c:4904
 msgid "16th"
 msgstr "16일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4899
+#: ../src/calendar/libecal/e-cal-recur.c:4905
 msgid "17th"
 msgstr "17일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4900
+#: ../src/calendar/libecal/e-cal-recur.c:4906
 msgid "18th"
 msgstr "18일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4901
+#: ../src/calendar/libecal/e-cal-recur.c:4907
 msgid "19th"
 msgstr "19일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4902
+#: ../src/calendar/libecal/e-cal-recur.c:4908
 msgid "20th"
 msgstr "20일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4903
+#: ../src/calendar/libecal/e-cal-recur.c:4909
 msgid "21st"
 msgstr "21일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4904
+#: ../src/calendar/libecal/e-cal-recur.c:4910
 msgid "22nd"
 msgstr "22일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4905
+#: ../src/calendar/libecal/e-cal-recur.c:4911
 msgid "23rd"
 msgstr "23일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4906
+#: ../src/calendar/libecal/e-cal-recur.c:4912
 msgid "24th"
 msgstr "24일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4907
+#: ../src/calendar/libecal/e-cal-recur.c:4913
 msgid "25th"
 msgstr "25일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4908
+#: ../src/calendar/libecal/e-cal-recur.c:4914
 msgid "26th"
 msgstr "26일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4909
+#: ../src/calendar/libecal/e-cal-recur.c:4915
 msgid "27th"
 msgstr "27일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4910
+#: ../src/calendar/libecal/e-cal-recur.c:4916
 msgid "28th"
 msgstr "28일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4911
+#: ../src/calendar/libecal/e-cal-recur.c:4917
 msgid "29th"
 msgstr "29일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4912
+#: ../src/calendar/libecal/e-cal-recur.c:4918
 msgid "30th"
 msgstr "30일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4913
+#: ../src/calendar/libecal/e-cal-recur.c:4919
 msgid "31st"
 msgstr "31일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5058
+#: ../src/calendar/libecal/e-cal-recur.c:5064
 #, c-format
 msgid "every day forever"
 msgid_plural "every %d days forever"
 msgstr[0] "매 %d일마다 계속"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5064
+#: ../src/calendar/libecal/e-cal-recur.c:5070
 #, c-format
 msgid "Every day forever"
 msgid_plural "Every %d days forever"
 msgstr[0] "매 %d일마다 계속"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5072
+#: ../src/calendar/libecal/e-cal-recur.c:5078
 #, c-format
 msgid "every day"
 msgid_plural "every %d days"
 msgstr[0] "매 %d일마다"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5078
+#: ../src/calendar/libecal/e-cal-recur.c:5084
 #, c-format
 msgid "Every day"
 msgid_plural "Every %d days"
 msgstr[0] "매 %d일마다"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5164
+#: ../src/calendar/libecal/e-cal-recur.c:5170
 #, c-format
 msgid "every week"
 msgid_plural "every %d weeks"
 msgstr[0] "매 %d주마다"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5170
+#: ../src/calendar/libecal/e-cal-recur.c:5176
 #, c-format
 msgid "Every week"
 msgid_plural "Every %d weeks"
@@ -1642,551 +1651,551 @@ msgstr[0] "매 %d주마다"
 #. with ", DAYNAME" or " and DAYNAME", thus it can be something like "on Monday and Tuesday"
 #. or "on Monday, Wednesday and Friday" or simply "on Saturday". The '%1$s' is replaced with
 #. the previously gathered text, while the '%2$s' is replaced with the text to append.
-#: ../src/calendar/libecal/e-cal-recur.c:5184
+#: ../src/calendar/libecal/e-cal-recur.c:5190
 #, c-format
 msgctxt "recur-description-dayname"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5201
+#: ../src/calendar/libecal/e-cal-recur.c:5207
 msgctxt "recur-description"
 msgid "on Sunday"
 msgstr "일요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5202
+#: ../src/calendar/libecal/e-cal-recur.c:5208
 msgctxt "recur-description"
 msgid ", Sunday"
 msgstr ", 일요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5203
+#: ../src/calendar/libecal/e-cal-recur.c:5209
 msgctxt "recur-description"
 msgid " and Sunday"
 msgstr ", 일요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5206
+#: ../src/calendar/libecal/e-cal-recur.c:5212
 msgctxt "recur-description"
 msgid "on Monday"
 msgstr "월요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5207
+#: ../src/calendar/libecal/e-cal-recur.c:5213
 msgctxt "recur-description"
 msgid ", Monday"
 msgstr ", 월요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5208
+#: ../src/calendar/libecal/e-cal-recur.c:5214
 msgctxt "recur-description"
 msgid " and Monday"
 msgstr ", 월요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5211
+#: ../src/calendar/libecal/e-cal-recur.c:5217
 msgctxt "recur-description"
 msgid "on Tuesday"
 msgstr "화요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5212
+#: ../src/calendar/libecal/e-cal-recur.c:5218
 msgctxt "recur-description"
 msgid ", Tuesday"
 msgstr ", 화요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5213
+#: ../src/calendar/libecal/e-cal-recur.c:5219
 msgctxt "recur-description"
 msgid " and Tuesday"
 msgstr ", 화요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5216
+#: ../src/calendar/libecal/e-cal-recur.c:5222
 msgctxt "recur-description"
 msgid "on Wednesday"
 msgstr "수요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5217
+#: ../src/calendar/libecal/e-cal-recur.c:5223
 msgctxt "recur-description"
 msgid ", Wednesday"
 msgstr ", 수요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5218
+#: ../src/calendar/libecal/e-cal-recur.c:5224
 msgctxt "recur-description"
 msgid " and Wednesday"
 msgstr ", 수요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5221
+#: ../src/calendar/libecal/e-cal-recur.c:5227
 msgctxt "recur-description"
 msgid "on Thursday"
 msgstr "목요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5222
+#: ../src/calendar/libecal/e-cal-recur.c:5228
 msgctxt "recur-description"
 msgid ", Thursday"
 msgstr ", 목요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5223
+#: ../src/calendar/libecal/e-cal-recur.c:5229
 msgctxt "recur-description"
 msgid " and Thursday"
 msgstr ", 목요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5226
+#: ../src/calendar/libecal/e-cal-recur.c:5232
 msgctxt "recur-description"
 msgid "on Friday"
 msgstr "금요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5227
+#: ../src/calendar/libecal/e-cal-recur.c:5233
 msgctxt "recur-description"
 msgid ", Friday"
 msgstr ", 금요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5228
+#: ../src/calendar/libecal/e-cal-recur.c:5234
 msgctxt "recur-description"
 msgid " and Friday"
 msgstr ", 금요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5231
+#: ../src/calendar/libecal/e-cal-recur.c:5237
 msgctxt "recur-description"
 msgid "on Saturday"
 msgstr "토요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5232
+#: ../src/calendar/libecal/e-cal-recur.c:5238
 msgctxt "recur-description"
 msgid ", Saturday"
 msgstr ", 토요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5233
+#: ../src/calendar/libecal/e-cal-recur.c:5239
 msgctxt "recur-description"
 msgid " and Saturday"
 msgstr ", 토요일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5362
+#: ../src/calendar/libecal/e-cal-recur.c:5368
 #, c-format
 msgid "every month"
 msgid_plural "every %d months"
 msgstr[0] "매 %d개월마다"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5368
+#: ../src/calendar/libecal/e-cal-recur.c:5374
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
 msgstr[0] "매 %d개월마다"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5378
-#: ../src/calendar/libecal/e-cal-recur.c:5699
+#: ../src/calendar/libecal/e-cal-recur.c:5384
+#: ../src/calendar/libecal/e-cal-recur.c:5705
 msgctxt "recur-description"
 msgid "on the last Sunday"
 msgstr "마지막 일요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5381
-#: ../src/calendar/libecal/e-cal-recur.c:5549
+#: ../src/calendar/libecal/e-cal-recur.c:5387
+#: ../src/calendar/libecal/e-cal-recur.c:5555
 msgctxt "recur-description"
 msgid "on the last Monday"
 msgstr "마지막 월요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5384
-#: ../src/calendar/libecal/e-cal-recur.c:5574
+#: ../src/calendar/libecal/e-cal-recur.c:5390
+#: ../src/calendar/libecal/e-cal-recur.c:5580
 msgctxt "recur-description"
 msgid "on the last Tuesday"
 msgstr "마지막 화요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5387
-#: ../src/calendar/libecal/e-cal-recur.c:5599
+#: ../src/calendar/libecal/e-cal-recur.c:5393
+#: ../src/calendar/libecal/e-cal-recur.c:5605
 msgctxt "recur-description"
 msgid "on the last Wednesday"
 msgstr "마지막 수요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5390
-#: ../src/calendar/libecal/e-cal-recur.c:5624
+#: ../src/calendar/libecal/e-cal-recur.c:5396
+#: ../src/calendar/libecal/e-cal-recur.c:5630
 msgctxt "recur-description"
 msgid "on the last Thursday"
 msgstr "마지막 목요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5393
-#: ../src/calendar/libecal/e-cal-recur.c:5649
+#: ../src/calendar/libecal/e-cal-recur.c:5399
+#: ../src/calendar/libecal/e-cal-recur.c:5655
 msgctxt "recur-description"
 msgid "on the last Friday"
 msgstr "마지막 금요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5396
-#: ../src/calendar/libecal/e-cal-recur.c:5674
+#: ../src/calendar/libecal/e-cal-recur.c:5402
+#: ../src/calendar/libecal/e-cal-recur.c:5680
 msgctxt "recur-description"
 msgid "on the last Saturday"
 msgstr "마지막 토요일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5406
+#: ../src/calendar/libecal/e-cal-recur.c:5412
 msgctxt "recur-description"
 msgid "on the 1st day"
 msgstr "1일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5410
+#: ../src/calendar/libecal/e-cal-recur.c:5416
 msgctxt "recur-description"
 msgid "on the 2nd day"
 msgstr "2일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5414
+#: ../src/calendar/libecal/e-cal-recur.c:5420
 msgctxt "recur-description"
 msgid "on the 3rd day"
 msgstr "3일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5418
+#: ../src/calendar/libecal/e-cal-recur.c:5424
 msgctxt "recur-description"
 msgid "on the 4th day"
 msgstr "4일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5422
+#: ../src/calendar/libecal/e-cal-recur.c:5428
 msgctxt "recur-description"
 msgid "on the 5th day"
 msgstr "5일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5426
+#: ../src/calendar/libecal/e-cal-recur.c:5432
 msgctxt "recur-description"
 msgid "on the 6th day"
 msgstr "6일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5430
+#: ../src/calendar/libecal/e-cal-recur.c:5436
 msgctxt "recur-description"
 msgid "on the 7th day"
 msgstr "7일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5434
+#: ../src/calendar/libecal/e-cal-recur.c:5440
 msgctxt "recur-description"
 msgid "on the 8th day"
 msgstr "8일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5438
+#: ../src/calendar/libecal/e-cal-recur.c:5444
 msgctxt "recur-description"
 msgid "on the 9th day"
 msgstr "9일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5442
+#: ../src/calendar/libecal/e-cal-recur.c:5448
 msgctxt "recur-description"
 msgid "on the 10th day"
 msgstr "10일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5446
+#: ../src/calendar/libecal/e-cal-recur.c:5452
 msgctxt "recur-description"
 msgid "on the 11th day"
 msgstr "11일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5450
+#: ../src/calendar/libecal/e-cal-recur.c:5456
 msgctxt "recur-description"
 msgid "on the 12th day"
 msgstr "12일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5454
+#: ../src/calendar/libecal/e-cal-recur.c:5460
 msgctxt "recur-description"
 msgid "on the 13th day"
 msgstr "13일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5458
+#: ../src/calendar/libecal/e-cal-recur.c:5464
 msgctxt "recur-description"
 msgid "on the 14th day"
 msgstr "14일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5462
+#: ../src/calendar/libecal/e-cal-recur.c:5468
 msgctxt "recur-description"
 msgid "on the 15th day"
 msgstr "15일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5466
+#: ../src/calendar/libecal/e-cal-recur.c:5472
 msgctxt "recur-description"
 msgid "on the 16th day"
 msgstr "16일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5470
+#: ../src/calendar/libecal/e-cal-recur.c:5476
 msgctxt "recur-description"
 msgid "on the 17th day"
 msgstr "17일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5474
+#: ../src/calendar/libecal/e-cal-recur.c:5480
 msgctxt "recur-description"
 msgid "on the 18th day"
 msgstr "18일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5478
+#: ../src/calendar/libecal/e-cal-recur.c:5484
 msgctxt "recur-description"
 msgid "on the 19th day"
 msgstr "19일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5482
+#: ../src/calendar/libecal/e-cal-recur.c:5488
 msgctxt "recur-description"
 msgid "on the 20th day"
 msgstr "20일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5486
+#: ../src/calendar/libecal/e-cal-recur.c:5492
 msgctxt "recur-description"
 msgid "on the 21st day"
 msgstr "21일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5490
+#: ../src/calendar/libecal/e-cal-recur.c:5496
 msgctxt "recur-description"
 msgid "on the 22nd day"
 msgstr "22일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5494
+#: ../src/calendar/libecal/e-cal-recur.c:5500
 msgctxt "recur-description"
 msgid "on the 23rd day"
 msgstr "23일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5498
+#: ../src/calendar/libecal/e-cal-recur.c:5504
 msgctxt "recur-description"
 msgid "on the 24th day"
 msgstr "24일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5502
+#: ../src/calendar/libecal/e-cal-recur.c:5508
 msgctxt "recur-description"
 msgid "on the 25th day"
 msgstr "25일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5506
+#: ../src/calendar/libecal/e-cal-recur.c:5512
 msgctxt "recur-description"
 msgid "on the 26th day"
 msgstr "26일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5510
+#: ../src/calendar/libecal/e-cal-recur.c:5516
 msgctxt "recur-description"
 msgid "on the 27th day"
 msgstr "27일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5514
+#: ../src/calendar/libecal/e-cal-recur.c:5520
 msgctxt "recur-description"
 msgid "on the 28th day"
 msgstr "28일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5518
+#: ../src/calendar/libecal/e-cal-recur.c:5524
 msgctxt "recur-description"
 msgid "on the 29th day"
 msgstr "29일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5522
+#: ../src/calendar/libecal/e-cal-recur.c:5528
 msgctxt "recur-description"
 msgid "on the 30th day"
 msgstr "30일에"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5526
+#: ../src/calendar/libecal/e-cal-recur.c:5532
 msgctxt "recur-description"
 msgid "on the 31st day"
 msgstr "31일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5534
+#: ../src/calendar/libecal/e-cal-recur.c:5540
 msgctxt "recur-description"
 msgid "on the first Monday"
 msgstr "첫번째 월요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5537
+#: ../src/calendar/libecal/e-cal-recur.c:5543
 msgctxt "recur-description"
 msgid "on the second Monday"
 msgstr "두번째 월요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5540
+#: ../src/calendar/libecal/e-cal-recur.c:5546
 msgctxt "recur-description"
 msgid "on the third Monday"
 msgstr "세번째 월요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5543
+#: ../src/calendar/libecal/e-cal-recur.c:5549
 msgctxt "recur-description"
 msgid "on the fourth Monday"
 msgstr "네번째 월요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5546
+#: ../src/calendar/libecal/e-cal-recur.c:5552
 msgctxt "recur-description"
 msgid "on the fifth Monday"
 msgstr "다섯번째 월요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5559
+#: ../src/calendar/libecal/e-cal-recur.c:5565
 msgctxt "recur-description"
 msgid "on the first Tuesday"
 msgstr "첫번째 화요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5562
+#: ../src/calendar/libecal/e-cal-recur.c:5568
 msgctxt "recur-description"
 msgid "on the second Tuesday"
 msgstr "두번째 화요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5565
+#: ../src/calendar/libecal/e-cal-recur.c:5571
 msgctxt "recur-description"
 msgid "on the third Tuesday"
 msgstr "세번째 화요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5568
+#: ../src/calendar/libecal/e-cal-recur.c:5574
 msgctxt "recur-description"
 msgid "on the fourth Tuesday"
 msgstr "네번째 화요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5571
+#: ../src/calendar/libecal/e-cal-recur.c:5577
 msgctxt "recur-description"
 msgid "on the fifth Tuesday"
 msgstr "다섯번째 화요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5584
+#: ../src/calendar/libecal/e-cal-recur.c:5590
 msgctxt "recur-description"
 msgid "on the first Wednesday"
 msgstr "첫번째 수요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5587
+#: ../src/calendar/libecal/e-cal-recur.c:5593
 msgctxt "recur-description"
 msgid "on the second Wednesday"
 msgstr "두번째 수요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5590
+#: ../src/calendar/libecal/e-cal-recur.c:5596
 msgctxt "recur-description"
 msgid "on the third Wednesday"
 msgstr "세번째 수요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5593
+#: ../src/calendar/libecal/e-cal-recur.c:5599
 msgctxt "recur-description"
 msgid "on the fourth Wednesday"
 msgstr "네번째 수요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5596
+#: ../src/calendar/libecal/e-cal-recur.c:5602
 msgctxt "recur-description"
 msgid "on the fifth Wednesday"
 msgstr "다섯번째 수요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5609
+#: ../src/calendar/libecal/e-cal-recur.c:5615
 msgctxt "recur-description"
 msgid "on the first Thursday"
 msgstr "첫번째 목요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5612
+#: ../src/calendar/libecal/e-cal-recur.c:5618
 msgctxt "recur-description"
 msgid "on the second Thursday"
 msgstr "두번째 목요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5615
+#: ../src/calendar/libecal/e-cal-recur.c:5621
 msgctxt "recur-description"
 msgid "on the third Thursday"
 msgstr "세번째 목요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5618
+#: ../src/calendar/libecal/e-cal-recur.c:5624
 msgctxt "recur-description"
 msgid "on the fourth Thursday"
 msgstr "네번째 목요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5621
+#: ../src/calendar/libecal/e-cal-recur.c:5627
 msgctxt "recur-description"
 msgid "on the fifth Thursday"
 msgstr "다섯번째 목요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5634
+#: ../src/calendar/libecal/e-cal-recur.c:5640
 msgctxt "recur-description"
 msgid "on the first Friday"
 msgstr "첫번째 금요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5637
+#: ../src/calendar/libecal/e-cal-recur.c:5643
 msgctxt "recur-description"
 msgid "on the second Friday"
 msgstr "두번째 금요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5640
+#: ../src/calendar/libecal/e-cal-recur.c:5646
 msgctxt "recur-description"
 msgid "on the third Friday"
 msgstr "세번째 금요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5643
+#: ../src/calendar/libecal/e-cal-recur.c:5649
 msgctxt "recur-description"
 msgid "on the fourth Friday"
 msgstr "네번째 금요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5646
+#: ../src/calendar/libecal/e-cal-recur.c:5652
 msgctxt "recur-description"
 msgid "on the fifth Friday"
 msgstr "다섯번째 금요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5659
+#: ../src/calendar/libecal/e-cal-recur.c:5665
 msgctxt "recur-description"
 msgid "on the first Saturday"
 msgstr "첫번째 토요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5662
+#: ../src/calendar/libecal/e-cal-recur.c:5668
 msgctxt "recur-description"
 msgid "on the second Saturday"
 msgstr "두번째 토요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5665
+#: ../src/calendar/libecal/e-cal-recur.c:5671
 msgctxt "recur-description"
 msgid "on the third Saturday"
 msgstr "세번째 토요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5668
+#: ../src/calendar/libecal/e-cal-recur.c:5674
 msgctxt "recur-description"
 msgid "on the fourth Saturday"
 msgstr "네번째 토요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5671
+#: ../src/calendar/libecal/e-cal-recur.c:5677
 msgctxt "recur-description"
 msgid "on the fifth Saturday"
 msgstr "다섯번째 토요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5684
+#: ../src/calendar/libecal/e-cal-recur.c:5690
 msgctxt "recur-description"
 msgid "on the first Sunday"
 msgstr "첫번째 일요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5687
+#: ../src/calendar/libecal/e-cal-recur.c:5693
 msgctxt "recur-description"
 msgid "on the second Sunday"
 msgstr "두번째 일요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5690
+#: ../src/calendar/libecal/e-cal-recur.c:5696
 msgctxt "recur-description"
 msgid "on the third Sunday"
 msgstr "세번째 일요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5693
+#: ../src/calendar/libecal/e-cal-recur.c:5699
 msgctxt "recur-description"
 msgid "on the fourth Sunday"
 msgstr "네번째 일요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5696
+#: ../src/calendar/libecal/e-cal-recur.c:5702
 msgctxt "recur-description"
 msgid "on the fifth Sunday"
 msgstr "다섯번째 일요일에"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5725
+#: ../src/calendar/libecal/e-cal-recur.c:5731
 #, c-format
 msgid "every year forever"
 msgid_plural "every %d years forever"
 msgstr[0] "매 %d년마다 계속"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5731
+#: ../src/calendar/libecal/e-cal-recur.c:5737
 #, c-format
 msgid "Every year forever"
 msgid_plural "Every %d years forever"
 msgstr[0] "매 %d년마다 계속"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5739
+#: ../src/calendar/libecal/e-cal-recur.c:5745
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
 msgstr[0] "매 %d년마다"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5745
+#: ../src/calendar/libecal/e-cal-recur.c:5751
 #, c-format
 msgid "Every year"
 msgid_plural "Every %d years"
@@ -2195,7 +2204,7 @@ msgstr[0] "매 %d년마다"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 3 days for 10 occurrences"
-#: ../src/calendar/libecal/e-cal-recur.c:5764
+#: ../src/calendar/libecal/e-cal-recur.c:5770
 #, c-format
 msgid "for one occurrence"
 msgid_plural "for %d occurrences"
@@ -2205,7 +2214,7 @@ msgstr[0] "총 %d회"
 #. The '%s' is replaced with actual date, thus it can create something like
 #. "until Mon 15.1.2018". The text is appended at the end of the complete
 #. recurrence description, making it for example: "Every 3 days until Mon 15.1.2018"
-#: ../src/calendar/libecal/e-cal-recur.c:5795
+#: ../src/calendar/libecal/e-cal-recur.c:5801
 #, c-format
 msgctxt "recur-description"
 msgid "until %s"
@@ -2214,7 +2223,7 @@ msgstr "%s까지"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 2 months on Tuesday, Thursday and Friday forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5801
+#: ../src/calendar/libecal/e-cal-recur.c:5807
 msgctxt "recur-description"
 msgid "forever"
 msgstr "계속"
@@ -2223,7 +2232,7 @@ msgstr "계속"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
 #. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
 #. together one sentence: "Every 2 weeks on Tuesday and Friday for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5811
+#: ../src/calendar/libecal/e-cal-recur.c:5817
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s %3$s"
@@ -2233,7 +2242,7 @@ msgstr "%1$s, %2$s, %3$s"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
 #. the '%2$s' is like "for 10 occurrences", constructing together one sentence:
 #. "Every 2 days for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5816
+#: ../src/calendar/libecal/e-cal-recur.c:5822
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s"
@@ -2241,7 +2250,7 @@ msgstr "%1$s, %2$s"
 
 #. Translators: This text is appended at the end of complete recur description using "%s%s" in
 #. context "recur-description"
-#: ../src/calendar/libecal/e-cal-recur.c:5832
+#: ../src/calendar/libecal/e-cal-recur.c:5838
 #, c-format
 msgid ", with one exception"
 msgid_plural ", with %d exceptions"
@@ -2250,33 +2259,33 @@ msgstr[0] ", 예외 %d개"
 #. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
 #. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
 #. It will form something like: "Every 2 weeks on Tuesday and Friday for 10 occurrences, with 3 exceptions"
-#: ../src/calendar/libecal/e-cal-recur.c:5839
+#: ../src/calendar/libecal/e-cal-recur.c:5845
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5852
-#: ../src/calendar/libecal/e-cal-recur.c:5875
+#: ../src/calendar/libecal/e-cal-recur.c:5858
+#: ../src/calendar/libecal/e-cal-recur.c:5881
 msgctxt "recur-description"
 msgid "The meeting recurs"
 msgstr "모임 반복"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5854
-#: ../src/calendar/libecal/e-cal-recur.c:5877
+#: ../src/calendar/libecal/e-cal-recur.c:5860
+#: ../src/calendar/libecal/e-cal-recur.c:5883
 msgctxt "recur-description"
 msgid "The appointment recurs"
 msgstr "약속 반복"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5857
-#: ../src/calendar/libecal/e-cal-recur.c:5880
+#: ../src/calendar/libecal/e-cal-recur.c:5863
+#: ../src/calendar/libecal/e-cal-recur.c:5886
 msgctxt "recur-description"
 msgid "The task recurs"
 msgstr "작업 반복"
 
 #. if (i_cal_component_isa (comp) == I_CAL_VJOURNAL_COMPONENT)
-#: ../src/calendar/libecal/e-cal-recur.c:5859
-#: ../src/calendar/libecal/e-cal-recur.c:5882
+#: ../src/calendar/libecal/e-cal-recur.c:5865
+#: ../src/calendar/libecal/e-cal-recur.c:5888
 msgctxt "recur-description"
 msgid "The memo recurs"
 msgstr "메모 반복"
@@ -2285,7 +2294,7 @@ msgstr "메모 반복"
 #. The '%1$s' is replaced with something like "The meeting recurs" and
 #. the '%2$s' with something like "every 2 days forever", thus forming
 #. sentence like "This meeting recurs every 2 days forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5866
+#: ../src/calendar/libecal/e-cal-recur.c:5872
 #, c-format
 msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
@@ -2316,28 +2325,28 @@ msgid "Undefined"
 msgstr "정의안됨"
 
 #: ../src/calendar/libecal/e-cal-util.c:885
-#: ../src/libedataserverui/e-reminders-widget.c:292
+#: ../src/libedataserverui/e-reminders-widget.c:296
 #, c-format
 msgid "%d week"
 msgid_plural "%d weeks"
 msgstr[0] "%d주"
 
 #: ../src/calendar/libecal/e-cal-util.c:894
-#: ../src/libedataserverui/e-reminders-widget.c:288
+#: ../src/libedataserverui/e-reminders-widget.c:292
 #, c-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d일"
 
 #: ../src/calendar/libecal/e-cal-util.c:903
-#: ../src/libedataserverui/e-reminders-widget.c:284
+#: ../src/libedataserverui/e-reminders-widget.c:288
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d시간"
 
 #: ../src/calendar/libecal/e-cal-util.c:912
-#: ../src/libedataserverui/e-reminders-widget.c:280
+#: ../src/libedataserverui/e-reminders-widget.c:284
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -2516,12 +2525,12 @@ msgstr "구성 요소 없이 시간대를 추가할 수 없습니다"
 msgid "Cannot add timezone with invalid component"
 msgstr "잘못된 구성 요소로 시간대를 추가할 수 없습니다"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1140
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1148
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "UID “%s”인 받은 오브젝트에 예상한 구성 요소가 들어 있지 않습니다"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4162
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4181
 msgid "attachment.dat"
 msgstr "attachment.dat"
 
@@ -2666,80 +2675,80 @@ msgstr "하위 프로세스 “%s” 프로세스를 만드는데 실패했습�
 msgid "Invalid message stream received from %s: %s"
 msgstr "%s에서 잘못된 메시지 스트림을 받았습니다: %s"
 
-#: ../src/camel/camel-filter-driver.c:1389
-#: ../src/camel/camel-filter-driver.c:1402
+#: ../src/camel/camel-filter-driver.c:1392
+#: ../src/camel/camel-filter-driver.c:1405
 msgid "Syncing folders"
 msgstr "폴더 동기 중"
 
-#: ../src/camel/camel-filter-driver.c:1510
+#: ../src/camel/camel-filter-driver.c:1513
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "필터 분석 중 오류: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1521
+#: ../src/camel/camel-filter-driver.c:1524
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "필터 실행 중 오류: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1619
+#: ../src/camel/camel-filter-driver.c:1622
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "메일 모음 폴더를 열 수 없습니다"
 
-#: ../src/camel/camel-filter-driver.c:1631
+#: ../src/camel/camel-filter-driver.c:1634
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "메일 모음 폴더를 진행할 수 없습니다"
 
-#: ../src/camel/camel-filter-driver.c:1662
+#: ../src/camel/camel-filter-driver.c:1665
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "메시지 %d개(%d%%)를 가져오는 중"
 
-#: ../src/camel/camel-filter-driver.c:1671
-#: ../src/camel/camel-filter-driver.c:1694
+#: ../src/camel/camel-filter-driver.c:1674
+#: ../src/camel/camel-filter-driver.c:1697
 #, c-format
 msgid "Failed on message %d"
 msgstr "메시지 %d개에서 실패"
 
-#: ../src/camel/camel-filter-driver.c:1712
-#: ../src/camel/camel-filter-driver.c:1844
+#: ../src/camel/camel-filter-driver.c:1715
+#: ../src/camel/camel-filter-driver.c:1847
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "메시지 전송에 실패했습니다: %s"
 
-#: ../src/camel/camel-filter-driver.c:1722
-#: ../src/camel/camel-filter-driver.c:1858
+#: ../src/camel/camel-filter-driver.c:1725
+#: ../src/camel/camel-filter-driver.c:1861
 msgid "Syncing folder"
 msgstr "폴더 동기화"
 
-#: ../src/camel/camel-filter-driver.c:1727
-#: ../src/camel/camel-filter-driver.c:1866
+#: ../src/camel/camel-filter-driver.c:1730
+#: ../src/camel/camel-filter-driver.c:1869
 msgid "Complete"
 msgstr "완료"
 
-#: ../src/camel/camel-filter-driver.c:1798
+#: ../src/camel/camel-filter-driver.c:1801
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "%2$d개 중에서 메시지 %1$d 가져오는 중"
 
-#: ../src/camel/camel-filter-driver.c:1816
+#: ../src/camel/camel-filter-driver.c:1819
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "%2$d개 중에서 메시지 %1$d에서 실패"
 
-#: ../src/camel/camel-filter-driver.c:2026
-#: ../src/camel/camel-filter-driver.c:2050
+#: ../src/camel/camel-filter-driver.c:2029
+#: ../src/camel/camel-filter-driver.c:2053
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "“%s” 필터 실행 실패: "
 
-#: ../src/camel/camel-filter-driver.c:2040
+#: ../src/camel/camel-filter-driver.c:2043
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "“%s” 필터 파싱 오류: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:2059
+#: ../src/camel/camel-filter-driver.c:2062
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "“%s” 필터 실행 오류: %s: %s"
@@ -2851,39 +2860,39 @@ msgid "Refreshing folder “%s : %s”"
 msgstr "“%s : %s” 폴더를 새로 고치는 중"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:916
-#: ../src/camel/camel-folder-search.c:959
+#: ../src/camel/camel-folder-search.c:918
+#: ../src/camel/camel-folder-search.c:961
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s)은(는) 한 개의 불리언 결과가 필요합니다"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:997
+#: ../src/camel/camel-folder-search.c:999
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s)은(는) %s 안에서 쓸 수 없습니다"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1004
-#: ../src/camel/camel-folder-search.c:1012
+#: ../src/camel/camel-folder-search.c:1006
+#: ../src/camel/camel-folder-search.c:1014
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s)은(는) match 타입의 문자열이 필요합니다."
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1040
+#: ../src/camel/camel-folder-search.c:1042
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s)은(는) 한 개의 배열 결과가 필요합니다"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1050
+#: ../src/camel/camel-folder-search.c:1052
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s)은(는) 폴더 집합이 필요합니다"
 
-#: ../src/camel/camel-folder-search.c:2208
-#: ../src/camel/camel-folder-search.c:2382
+#: ../src/camel/camel-folder-search.c:2210
+#: ../src/camel/camel-folder-search.c:2384
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2892,8 +2901,8 @@ msgstr ""
 "검색 표현식을 해석할 수 없음: %s:\n"
 "%s"
 
-#: ../src/camel/camel-folder-search.c:2220
-#: ../src/camel/camel-folder-search.c:2394
+#: ../src/camel/camel-folder-search.c:2222
+#: ../src/camel/camel-folder-search.c:2396
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2923,7 +2932,7 @@ msgid "Failed to execute gpg: %s"
 msgstr "gpg 실행에 실패했습니다: %s"
 
 #: ../src/camel/camel-gpg-context.c:917
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1150
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1205
 msgid "Unknown"
 msgstr "알 수 없음"
 
@@ -3395,20 +3404,20 @@ msgstr "GSSAPI"
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr "이 옵션을 켜면 Kerberos 5 인증을 사용해 서버에 연결합니다."
 
-#: ../src/camel/camel-sasl-gssapi.c:145
+#: ../src/camel/camel-sasl-gssapi.c:151
 #, c-format
 msgid "(Unknown GSSAPI mechanism code: %x)"
 msgstr "(알 수 없는 GSSAPI 방식 코드 번호: %x)"
 
 #. Translators: the first '%s' is replaced with a generic error message,
 #. the second '%s' is replaced with additional error information.
-#: ../src/camel/camel-sasl-gssapi.c:168 ../src/camel/camel-sasl-gssapi.c:240
+#: ../src/camel/camel-sasl-gssapi.c:174 ../src/camel/camel-sasl-gssapi.c:246
 #, c-format
 msgctxt "gssapi_error"
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/camel/camel-sasl-gssapi.c:190
+#: ../src/camel/camel-sasl-gssapi.c:196
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
@@ -3416,11 +3425,11 @@ msgstr ""
 "지정한 방식은 제공한 증명서가 지원하지 않습니다. 혹은 현재 구현해 놓은 것에"
 "서 인식할 수 없습니다."
 
-#: ../src/camel/camel-sasl-gssapi.c:195
+#: ../src/camel/camel-sasl-gssapi.c:201
 msgid "The provided target_name parameter was ill-formed."
 msgstr "제공된 target_name 매개변수의 형식이 틀렸습니다."
 
-#: ../src/camel/camel-sasl-gssapi.c:198
+#: ../src/camel/camel-sasl-gssapi.c:204
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
@@ -3428,7 +3437,7 @@ msgstr ""
 "제공된 target_name 매개변수에 잘못되었거나 지원하지 않은 종류의 이름이 들어 "
 "있습니다."
 
-#: ../src/camel/camel-sasl-gssapi.c:202
+#: ../src/camel/camel-sasl-gssapi.c:208
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
@@ -3436,13 +3445,13 @@ msgstr ""
 "input_chan_bindings 인수를 통해 지정된 것과 다른 채널 바인딩이 input_token에 "
 "들어 있습니다."
 
-#: ../src/camel/camel-sasl-gssapi.c:207
+#: ../src/camel/camel-sasl-gssapi.c:213
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
 msgstr "input_token에 잘못된 서명 혹은 확인할 수 없는 서명이 들어 있습니다."
 
-#: ../src/camel/camel-sasl-gssapi.c:211
+#: ../src/camel/camel-sasl-gssapi.c:217
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -3450,34 +3459,34 @@ msgstr ""
 "제공된 증명서가 컨텍스트 초기화에 올바르지 않거나, 증명서 핸들이 어떤 증명서"
 "도 참조하지 않습니다."
 
-#: ../src/camel/camel-sasl-gssapi.c:216
+#: ../src/camel/camel-sasl-gssapi.c:222
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "제공된 컨텍스트 핸들이 올바른 컨텍스트를 참조하지 않습니다."
 
-#: ../src/camel/camel-sasl-gssapi.c:219
+#: ../src/camel/camel-sasl-gssapi.c:225
 msgid "The consistency checks performed on the input_token failed."
 msgstr "input_token에 수행한 일관성 검사가 실패했습니다."
 
-#: ../src/camel/camel-sasl-gssapi.c:222
+#: ../src/camel/camel-sasl-gssapi.c:228
 msgid "The consistency checks performed on the credential failed."
 msgstr "credential에 수행한 일관성 검사가 실패했습니다."
 
-#: ../src/camel/camel-sasl-gssapi.c:225
+#: ../src/camel/camel-sasl-gssapi.c:231
 msgid "The referenced credentials have expired."
 msgstr "참조한 증명서가 만료된 증명서입니다."
 
-#: ../src/camel/camel-sasl-gssapi.c:231 ../src/camel/camel-sasl-gssapi.c:435
-#: ../src/camel/camel-sasl-gssapi.c:485 ../src/camel/camel-sasl-gssapi.c:502
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:806
+#: ../src/camel/camel-sasl-gssapi.c:237 ../src/camel/camel-sasl-gssapi.c:441
+#: ../src/camel/camel-sasl-gssapi.c:491 ../src/camel/camel-sasl-gssapi.c:508
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:856
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "서버에서 보낸 인증 응답이 틀렸습니다."
 
-#: ../src/camel/camel-sasl-gssapi.c:282
+#: ../src/camel/camel-sasl-gssapi.c:288
 msgid "Could not get session bus:"
 msgstr "세션 버스를 찾을 수 없습니다:"
 
-#: ../src/camel/camel-sasl-gssapi.c:316
+#: ../src/camel/camel-sasl-gssapi.c:322
 #, c-format
 msgid ""
 "Cannot ask for Kerberos ticket. Obtain the ticket manually, like on command "
@@ -3488,7 +3497,7 @@ msgstr ""
 "을 실행하거나, “설정”의 “온라인 계정”을 열어 커버러스 계정을 추가합니다. 보고"
 "된 오류는: %s"
 
-#: ../src/camel/camel-sasl-gssapi.c:514
+#: ../src/camel/camel-sasl-gssapi.c:520
 #, c-format
 msgid "Unsupported security layer."
 msgstr "보안 레이어를 지원하지 않습니다."
@@ -3586,10 +3595,10 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "“%s” 프로토콜에 대해 잘못된 GType을 등록했습니다"
 
 #: ../src/camel/camel-session.c:508
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3197
-#: ../src/camel/providers/pop3/camel-pop3-store.c:303
-#: ../src/camel/providers/pop3/camel-pop3-store.c:807
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:674
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3219
+#: ../src/camel/providers/pop3/camel-pop3-store.c:305
+#: ../src/camel/providers/pop3/camel-pop3-store.c:809
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:696
 #, c-format
 msgid "No support for %s authentication"
 msgstr "%s 인증을 지원하지 않습니다"
@@ -3865,7 +3874,7 @@ msgid "Only reset to beginning is supported with CamelHttpStream"
 msgstr "CamelHttpStream에서는 시작으로 초기화하는 기능만 지원합니다"
 
 #: ../src/camel/camel-stream-process.c:282
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:721
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:743
 #, c-format
 msgid "Connection cancelled"
 msgstr "연결이 취소됨"
@@ -3895,7 +3904,7 @@ msgstr "“%s” URL을 파싱할 수 없습니다"
 msgid "Updating folder “%s”"
 msgstr "“%s” 폴더 업데이트 중"
 
-#: ../src/camel/camel-vee-folder.c:1185 ../src/camel/camel-vee-folder.c:1321
+#: ../src/camel/camel-vee-folder.c:1275 ../src/camel/camel-vee-folder.c:1411
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "메시지를 가상 폴더에 복사할/옮길 수 없습니다"
@@ -3904,22 +3913,22 @@ msgstr "메시지를 가상 폴더에 복사할/옮길 수 없습니다"
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: ../src/camel/camel-vee-folder.c:1222
+#: ../src/camel/camel-vee-folder.c:1312
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "“%2$s : %3$s”에 %1$s 메시지는 없습니다"
 
-#: ../src/camel/camel-vee-folder.c:1297
+#: ../src/camel/camel-vee-folder.c:1387
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "“%s” 저장하는데 오류: "
 
-#: ../src/camel/camel-vee-folder.c:1487
+#: ../src/camel/camel-vee-folder.c:1577
 #, c-format
 msgid "Updating search folder “%s”"
 msgstr "“%s” 검색 폴더 업데이트 중"
 
-#: ../src/camel/camel-vee-folder.c:1545
+#: ../src/camel/camel-vee-folder.c:1635
 msgid "Automatically _update on change in source folders"
 msgstr "원본 폴더 내용 바뀔 때 자동으로 업데이트(_U)"
 
@@ -3961,7 +3970,7 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "이 작업을(%s) 마치려면 온라인으로 실행해야 합니다"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:987
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3344
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3388
 #: ../src/camel/providers/nntp/camel-nntp-store.c:348
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1343
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2153
@@ -3970,38 +3979,38 @@ msgstr "이 작업을(%s) 마치려면 온라인으로 실행해야 합니다"
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:633
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:922
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:1136
-#: ../src/camel/providers/pop3/camel-pop3-store.c:291
-#: ../src/camel/providers/pop3/camel-pop3-store.c:526
-#: ../src/camel/providers/pop3/camel-pop3-store.c:574
-#: ../src/camel/providers/pop3/camel-pop3-store.c:671
-#: ../src/camel/providers/pop3/camel-pop3-store.c:1122
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:545
+#: ../src/camel/providers/pop3/camel-pop3-store.c:293
+#: ../src/camel/providers/pop3/camel-pop3-store.c:528
+#: ../src/camel/providers/pop3/camel-pop3-store.c:576
+#: ../src/camel/providers/pop3/camel-pop3-store.c:673
+#: ../src/camel/providers/pop3/camel-pop3-store.c:1124
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:547
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "이 작업을 마치려면 온라인으로 실행해야 합니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1614
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1710
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1611
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1707
 #, c-format
 msgid "No destination folder specified"
 msgstr "대상 폴더를 지정하지 않았습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1641
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1638
 msgid "Unable to move junk messages"
 msgstr "정크 메시지를 옮길 수 없습니다:"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1744
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1741
 msgid "Unable to move deleted messages"
 msgstr "삭제한 메시지를 옮길 수 없습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1812
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1809
 msgid "Unable to move messages to Inbox"
 msgstr "메시지를 받은 편지함으로 옮길 수 없습니다"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:766
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:772
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
 msgstr "“%s : %s” 폴더에 대해 용량 제한 정보가 없습니다"
@@ -4010,26 +4019,26 @@ msgstr "“%s : %s” 폴더에 대해 용량 제한 정보가 없습니다"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1033
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1039
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr "“%s : %s” 폴더의 오래된 캐시를 제거"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1125
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1131
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:835
 msgid "Apply message _filters to this folder"
 msgstr "이 폴더에 메시지 필터 적용(_F)"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1137
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1143
 msgid "Always check for _new mail in this folder"
 msgstr "이 폴더의 새 메일 항상 확인(_N)"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1252
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1258
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "%s에 대한 폴더 요약을 만들 수 없습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1264
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1270
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "%s에 대한 캐시를 만들 수 없습니다: "
@@ -4037,7 +4046,7 @@ msgstr "%s에 대한 캐시를 만들 수 없습니다: "
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1464
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1470
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "“%s : %s” 폴더에 대한 IMAP 메일함이 없습니다"
@@ -4156,8 +4165,8 @@ msgstr "캐시 스트림에 쓰는 중 오류 발생"
 
 # IMAP 동작
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3012
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3100
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3377
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3101
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3421
 msgid "Failed to get capabilities"
 msgstr "기능 목록을 가져오는데 실패했습니다"
 
@@ -4175,17 +4184,17 @@ msgstr "STARTLS를 지원하지 않습니다"
 msgid "Failed to issue STARTTLS"
 msgstr "STARTTLS 보내기에 실패했습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3089
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3090
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "보안 모드로 IMAP 서버 %s에 연결하는데 실패했습니다: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3184
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3206
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "%s IMAP 서버는 %s 인증 방법을 지원하지 않습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3210
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3232
 #, c-format
 msgid ""
 "Plaintext authentication disallowed on insecure connections. Change "
@@ -4194,182 +4203,183 @@ msgstr ""
 "안전하지 않은 연결에서는 일반 텍스트 인증을 허용하지 않습니다. “%s” 계정에 대"
 "한 암호화 옵션을 STARTTLS 또는 TLS로 바꾸십시오."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3223
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3245
 #: ../src/camel/providers/nntp/camel-nntp-store.c:454
 #: ../src/camel/providers/nntp/camel-nntp-store.c:596
 msgid "Cannot authenticate without a username"
 msgstr "사용자 이름 없이 인증할 수 없습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3232
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3254
 #: ../src/camel/providers/nntp/camel-nntp-store.c:605
-#: ../src/camel/providers/pop3/camel-pop3-store.c:707
-#: ../src/camel/providers/pop3/camel-pop3-store.c:745
+#: ../src/camel/providers/pop3/camel-pop3-store.c:709
+#: ../src/camel/providers/pop3/camel-pop3-store.c:747
 msgid "Authentication password not available"
 msgstr "인증 암호가 없습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3240
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3264
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3279
 msgid "Failed to authenticate"
 msgstr "인증에 실패했습니다"
 
 # IMAP 동작
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3404
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3448
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr "ENABLE UTF8=ACCEPT 보내기에 실패했습니다"
 
 # IMAP 동작
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3426
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3470
 msgid "Failed to issue NAMESPACE"
 msgstr "NAMESPACE 보내기에 실패했습니다"
 
 # IMAP 동작
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3444
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3488
 msgid "Failed to enable QResync"
 msgstr "QResync 사용에 실패했습니다"
 
 # IMAP 동작
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3481
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3525
 msgid "Failed to issue NOTIFY"
 msgstr "NOTIFY 보내기에 실패했습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3960
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4004
 msgid "Failed to select mailbox"
 msgstr "메일함 선택에 실패했습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4063
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4107
 msgid "Cannot issue command, no stream available"
 msgstr "명령을 보낼 수 없습니다. 스트림이 없습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4329
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4373
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "메시지 ID가 %s인 메시지를 얻을 수 없습니다: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4330
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4374
 msgid "No such message available."
 msgstr "그런 메시지가 없습니다."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4379
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4404
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4443
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4423
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4448
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4487
 msgid "Error fetching message"
 msgstr "메시지 가져오는데 오류 발생"
 
 # IMAP 동작
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4421
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5188
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4465
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5232
 msgid "Error performing NOOP"
 msgstr "NOOP 수행하는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4436
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4480
 msgid "Failed to close the tmp stream"
 msgstr "임시 스트림을 닫는데 실패했습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4467
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4511
 msgid "Failed to copy the tmp file"
 msgstr "임시 파일을 복사하는데 실패했습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4705
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4749
 msgid "Error moving messages"
 msgstr "메시지 옮기는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4705
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4749
 msgid "Error copying messages"
 msgstr "메시지 복사하는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4978
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4999
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5022
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5043
 msgid "Cannot create spool file: "
 msgstr "메일 모음 파일을 만들 수 없습니다: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5085
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5129
 msgid "Error appending message"
 msgstr "메시지 덧붙이는데 오류 발생"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5341
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5385
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "“%s : %s”에서 바뀐 메시지 검색 중"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5345
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5389
 msgid "Error scanning changes"
 msgstr "바뀐 사항을 검사하는데 오류 발생"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5366
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5410
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "“%s : %s”에서 새 메시지 요약 정보를 가져오는 중"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5394
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5438
 msgid "Error fetching message info"
 msgstr "메시지 정보 가져오는데 오류 발생"
 
 # IMAP 동작
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5527
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5571
 msgid "Error running STATUS"
 msgstr "STATUS 실행에 오류"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6101
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6156
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6220
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6145
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6200
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6264
 msgid "Error syncing changes"
 msgstr "바뀐 내용을 동기화하는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6114
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6166
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6239
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6383
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6158
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6210
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6283
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6427
 msgid "Error expunging message"
 msgstr "메시지를 완전히 삭제하는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6465
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6509
 msgid "Error fetching folders"
 msgstr "폴더를 가져오는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6473
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6517
 msgid "Error fetching subscribed folders"
 msgstr "구독한 폴더를 가져오는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6530
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6574
 msgid "Error creating folder"
 msgstr "폴더를 만드는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6580
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6624
 msgid "Error deleting folder"
 msgstr "폴더를 삭제하는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6626
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6670
 msgid "Error renaming folder"
 msgstr "폴더의 이름을 바꾸는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6658
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6702
 msgid "Error subscribing to folder"
 msgstr "폴더에 구독하는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6694
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6738
 msgid "Error unsubscribing from folder"
 msgstr "폴더에 구독 해제하는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6734
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6778
 msgid "IMAP server does not support quotas"
 msgstr "IMAP 서버가 용량 제한을 지원하지 않습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6746
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6790
 msgid "Error retrieving quota information"
 msgstr "용량 제한 정보를 가져오는 중 오류"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6811
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6855
 msgid "Search failed"
 msgstr "검색이 실패했습니다"
 
 # IMAP 동작
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6939
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6983
 msgid "Error running IDLE"
 msgstr "IDLE 실행하는데 오류 발생"
 
@@ -5416,32 +5426,32 @@ msgstr "서버가 STLS를 지원하지 않습니다."
 msgid "Failed to connect to POP server %s in secure mode%s"
 msgstr "POP 서버 %s에 보안 모드로 연결하는데 실패했습니다%s"
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:212
+#: ../src/camel/providers/pop3/camel-pop3-store.c:214
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: "
 msgstr "POP 서버 %s에 보안 모드로 연결하는데 실패했습니다: "
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:354
+#: ../src/camel/providers/pop3/camel-pop3-store.c:356
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "POP 서버 %s에 로그인할 수 없습니다: SASL 프로토콜 오류"
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:376
+#: ../src/camel/providers/pop3/camel-pop3-store.c:378
 #, c-format
 msgid "Failed to authenticate on POP server %s: "
 msgstr "POP 서버 %s에 인증하는데 실패했습니다: "
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:484
+#: ../src/camel/providers/pop3/camel-pop3-store.c:486
 #, c-format
 msgid "POP3 server %s"
 msgstr "POP3 서버 %s"
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:487
+#: ../src/camel/providers/pop3/camel-pop3-store.c:489
 #, c-format
 msgid "POP3 server for %s on %s"
 msgstr "POP3 서버(사용자: %s, 위치: %s)"
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:691
+#: ../src/camel/providers/pop3/camel-pop3-store.c:693
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -5450,9 +5460,9 @@ msgstr ""
 "POP 서버 %s에 연결하는데 실패했습니다.\n"
 "UTF-8 모드를 켜는데 오류가 발생했습니다: "
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:719
-#: ../src/camel/providers/pop3/camel-pop3-store.c:732
-#: ../src/camel/providers/pop3/camel-pop3-store.c:818
+#: ../src/camel/providers/pop3/camel-pop3-store.c:721
+#: ../src/camel/providers/pop3/camel-pop3-store.c:734
+#: ../src/camel/providers/pop3/camel-pop3-store.c:820
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -5462,7 +5472,7 @@ msgstr ""
 "암호를 보내는데 오류가 발생했습니다: "
 
 #. Translators: Do not translate APOP.
-#: ../src/camel/providers/pop3/camel-pop3-store.c:759
+#: ../src/camel/providers/pop3/camel-pop3-store.c:761
 #, c-format
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
@@ -5473,7 +5483,7 @@ msgstr ""
 
 #. Translators: Last %s is an optional explanation
 #. * beginning with ": " separator.
-#: ../src/camel/providers/pop3/camel-pop3-store.c:833
+#: ../src/camel/providers/pop3/camel-pop3-store.c:835
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -5482,12 +5492,12 @@ msgstr ""
 "POP 서버 %s에 연결할 수 없습니다.\n"
 "사용자 이름을 보내는데 오류가 발생했습니다%s"
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:917
+#: ../src/camel/providers/pop3/camel-pop3-store.c:919
 #, c-format
 msgid "No such folder “%s”."
 msgstr "“%s” 폴더가 없습니다."
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:934
+#: ../src/camel/providers/pop3/camel-pop3-store.c:936
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "POP3는 폴더 구조를 저장하지 않습니다"
@@ -5596,211 +5606,211 @@ msgstr "SMTP 서버 %s에 보안 모드로 연결하는데 실패했습니다: %
 msgid "STARTTLS command failed: "
 msgstr "STARTTLS 명령이 실패했습니다: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:330
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:332
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
 msgstr "SMTP 서버 %s에 보안 모드로 연결하는데 실패했습니다: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:441
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:443
 #, c-format
 msgid "SMTP server %s"
 msgstr "SMTP 서버 %s"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:444
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:446
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "%s 서버를 통한 SMTP 메일"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:584
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:586
 #, c-format
 msgid "SMTP server %s does not support %s authentication"
 msgstr "SMTP 서버 %s에서 요청한 %s 인증 방식을 지원하지 않습니다."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:665
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:686
 #, c-format
 msgid "No SASL mechanism was specified"
 msgstr "SASL 방식을 하나도 지정하지 않았습니다."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:701
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:723
 msgid "AUTH command failed: Not connected."
 msgstr "AUTH 명령이 실패했습니다: 연결되지 않음."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:708
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:722
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:738
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:730
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:744
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:760
 msgid "AUTH command failed: "
 msgstr "AUTH 명령이 실패했습니다: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:908
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:963
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "메시지를 보낼 수 없습니다: 서비스에 연결되지 않았습니다."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:917
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:972
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "메시지를 보낼 수 없습니다. 보내는 사람 주소가 올바르지 않습니다."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:921
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:976
 msgid "Sending message"
 msgstr "메시지를 보냄"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:950
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1005
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "메시지를 보낼 수 없습니다: 받는 사람이 정의되지 않았습니다."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:965
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1020
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "메시지를 보낼 수 없습니다: 받는 사람 중에 한 명 이상이 잘못되었습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1097
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1152
 msgid "Syntax error, command unrecognized"
 msgstr "문법 오류로, 무슨 명령인지 파악할 수 없습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1099
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1154
 msgid "Syntax error in parameters or arguments"
 msgstr "인자 혹은 인수에서 문법 오류입니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1101
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1156
 msgid "Command not implemented"
 msgstr "명령이 구현되지 않았습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1103
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1158
 msgid "Command parameter not implemented"
 msgstr "명령어 인자가 구현되지 않았습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1105
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1160
 msgid "System status, or system help reply"
 msgstr "시스템 상태, 혹은 시스템 도움말 응답"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1107
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1162
 msgid "Help message"
 msgstr "도움말"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1109
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1164
 msgid "Service ready"
 msgstr "서비스 준비되었습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1111
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1166
 msgid "Service closing transmission channel"
 msgstr "서비스가 전송 채널을 닫았습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1113
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1168
 msgid "Service not available, closing transmission channel"
 msgstr "서비스를 사용할 수 없습니다. 전송 채널을 닫습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1115
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1170
 msgid "Requested mail action okay, completed"
 msgstr "요청한 메일 동작을 정상적으로 수행했습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1117
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1172
 msgid "User not local; will forward to <forward-path>"
 msgstr "로컬 사용자가 아닙니다. <forward-path>에 전달합니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1119
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1174
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr "요청한 메일 동작을 하지 않습니다: 메일함을 사용할 수 없습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1121
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1176
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "요청한 작업을 하지 않습니다: 메일함을 사용할 수 없습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1123
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1178
 msgid "Requested action aborted: error in processing"
 msgstr "요청한 작업을 취소했습니다: 처리하는데 오류 발생"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1125
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1180
 msgid "User not local; please try <forward-path>"
 msgstr "로컬 사용자가 아닙니다. <forward-path>를 시도해 보십시오"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1127
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1182
 msgid "Requested action not taken: insufficient system storage"
 msgstr "요청한 메일 작업을 하지 않습니다: 시스템 저장 공간이 부족합니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1129
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1184
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "요청한 메일 작업을 취소했습니다: 저장 공간이 할당량을 넘었습니다<b"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1131
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1186
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "요청한 메일 작업을 하지 않습니다: 메일함 이름이 쓸 수 없는 이름입니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1133
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1188
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "메일 입력 시작. <CRLF>.<CRLF>로 끝납니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1135
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1190
 msgid "Transaction failed"
 msgstr "전송이 실패했습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1139
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1194
 msgid "A password transition is needed"
 msgstr "암호를 넘겨야 합니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1141
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1196
 msgid "Authentication mechanism is too weak"
 msgstr "인증 방식이 너무 취약합니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1143
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1198
 msgid "Encryption required for requested authentication mechanism"
 msgstr "요청한 인증 방식에서는 암호화가 필요합니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1145
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1200
 msgid "Temporary authentication failure"
 msgstr "인증이 임시로 실패했습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1147
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1202
 #: ../src/libedataserver/e-client.c:145
 msgid "Authentication required"
 msgstr "인증이 필요합니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1437
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1492
 msgid "SMTP Greeting"
 msgstr "SMTP 초기 메시지"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1446
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1459
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1466
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1501
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1514
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1521
 msgid "HELO command failed: "
 msgstr "HELO 명령이 실패했습니다: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1550
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1564
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1573
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1605
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1619
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1628
 msgid "MAIL FROM command failed: "
 msgstr "MAIL FROM 명령이 실패했습니다: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1601
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1656
 msgid "RCPT TO command failed: "
 msgstr "RCPT TO 명령이 실패했습니다: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1617
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1626
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1672
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1681
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> 실패했습니다: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1700
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1711
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1722
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1805
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1823
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1836
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1844
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1755
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1766
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1777
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1860
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1878
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1891
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1899
 msgid "DATA command failed: "
 msgstr "DATA 명령이 실패했습니다: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1870
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1884
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1892
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1925
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1939
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1947
 msgid "RSET command failed: "
 msgstr "RSET 명령이 실패했습니다: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1918
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1930
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1936
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1973
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1985
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1991
 msgid "QUIT command failed: "
 msgstr "QUIT 명령이 실패했습니다: "
 
@@ -5891,18 +5901,24 @@ msgid "Height of the reminder notification dialog"
 msgstr "알리미 대화 상자의 높이"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
+msgid ""
+"Paned position in the reminder notification dialog, the split size between "
+"list of the events and the description"
+msgstr "알리미 알림 대화 창의 분리 위치, 이벤트 목록과 설명 창 사이의 분리된 크기"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
 msgid "Show reminder notification for completed tasks"
 msgstr "마친 작업에 대해 알리미 표시"
 
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
 msgid "Show reminder notification for past events"
 msgstr "과거 행사에 대해 알리미 표시"
 
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
 msgid "The last used snooze time, in minutes"
 msgstr "최근 사용한 다시 알림 시간, 분 단위"
 
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:23
 msgid "User-defined snooze times, in minutes"
 msgstr "사용자 설정한 다시 알림 시간, 분 단위"
 
@@ -6157,12 +6173,12 @@ msgstr "메모리 부족"
 msgid "Can not make parent directory: %s"
 msgstr "상위 디렉터리를 만들 수 없습니다: %s"
 
-#: ../src/libebackend/e-collection-backend.c:1069
+#: ../src/libebackend/e-collection-backend.c:1105
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s은(는) 원격 자원 생성을 지원하지 않습니다"
 
-#: ../src/libebackend/e-collection-backend.c:1128
+#: ../src/libebackend/e-collection-backend.c:1164
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s은(는) 원격 자원 삭제를 지원하지 않습니다"
@@ -6498,11 +6514,11 @@ msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "아웃룩"
 
-#: ../src/libedataserver/e-soup-session.c:949
+#: ../src/libedataserver/e-soup-session.c:950
 msgid "Operation was cancelled"
 msgstr "작업을 취소했습니다"
 
-#: ../src/libedataserver/e-soup-session.c:955
+#: ../src/libedataserver/e-soup-session.c:956
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "HTTP 오류 %d번으로 실패: %s"
@@ -6691,11 +6707,15 @@ msgstr "%H%M"
 msgid "%I %p"
 msgstr "%p %I"
 
+#: ../src/libedataserver/e-webdav-discover.c:295
+msgid "Notes"
+msgstr "메모"
+
 #: ../src/libedataserver/e-webdav-session.c:726
 msgid "Cannot determine destination URL without WebDAV extension"
 msgstr "WebDAV 확장이 없이 대상 URL을 결정할 수 없습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:991
+#: ../src/libedataserver/e-webdav-session.c:996
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -6704,7 +6724,7 @@ msgstr ""
 "서버가 HTML 페이지로 응답했습니다. 서버나 클라이언트 요청에 오류가 있어 보입"
 "니다. 사용된 URI는: %s"
 
-#: ../src/libedataserver/e-webdav-session.c:993
+#: ../src/libedataserver/e-webdav-session.c:998
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -6718,7 +6738,7 @@ msgstr ""
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1014
+#: ../src/libedataserver/e-webdav-session.c:1019
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
 msgstr "%s: HTTP 오류 코드 %d (%s): %s"
@@ -6726,7 +6746,7 @@ msgstr "%s: HTTP 오류 코드 %d (%s): %s"
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1022
+#: ../src/libedataserver/e-webdav-session.c:1027
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
 msgstr "HTTP 오류 코드 %d번으로 실패 (%s): %s"
@@ -6735,157 +6755,175 @@ msgstr "HTTP 오류 코드 %d번으로 실패 (%s): %s"
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1037
+#: ../src/libedataserver/e-webdav-session.c:1042
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
 msgstr "%s: HTTP 오류 코드 %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1043
+#: ../src/libedataserver/e-webdav-session.c:1048
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "HTTP 오류 코드 %d번으로 실패 (%s)"
 
 # HTTP POST를 가리키므로 포스트로 음역
-#: ../src/libedataserver/e-webdav-session.c:1338
+#: ../src/libedataserver/e-webdav-session.c:1343
 msgid "Failed to post data"
 msgstr "데이터를 포스트하는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:1475
-#: ../src/libedataserver/e-webdav-session.c:1552
-#: ../src/libedataserver/e-webdav-session.c:1658
-#: ../src/libedataserver/e-webdav-session.c:2932
-#: ../src/libedataserver/e-webdav-session.c:4220
+#: ../src/libedataserver/e-webdav-session.c:1474
+#: ../src/libedataserver/e-webdav-session.c:1551
+#: ../src/libedataserver/e-webdav-session.c:1653
+#: ../src/libedataserver/e-webdav-session.c:2906
+#: ../src/libedataserver/e-webdav-session.c:4145
 msgid "Failed to get input XML content"
 msgstr "입력 XML 내용을 가져오는데 실패했습니다"
 
 # IMAP 동작
-#: ../src/libedataserver/e-webdav-session.c:1486
+#: ../src/libedataserver/e-webdav-session.c:1485
 msgid "Failed to get properties"
 msgstr "속성을 가져오는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:1562
+#: ../src/libedataserver/e-webdav-session.c:1561
 msgid "Failed to update properties"
 msgstr "속성을 업데이트하는데 실패했습니다"
 
 # IMAP 동작
-#: ../src/libedataserver/e-webdav-session.c:1668
+#: ../src/libedataserver/e-webdav-session.c:1663
 msgid "Failed to issue REPORT"
 msgstr "REPORT 보내기에 실패했습니다"
 
 # IMAP 동작
-#: ../src/libedataserver/e-webdav-session.c:1729
+#: ../src/libedataserver/e-webdav-session.c:1724
 msgid "Failed to create collection"
 msgstr "컬렉션을 만드는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:1822
-#: ../src/libedataserver/e-webdav-session.c:1983
+#: ../src/libedataserver/e-webdav-session.c:1817
+#: ../src/libedataserver/e-webdav-session.c:1978
 msgid "Failed to get XML request content"
 msgstr "XML 요청 내용을 가져오는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:1834
+#: ../src/libedataserver/e-webdav-session.c:1829
 msgid "Failed to create address book"
 msgstr "주소록을 만드는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:1996
+#: ../src/libedataserver/e-webdav-session.c:1991
 msgid "Failed to create calendar"
 msgstr "달력을 만드는데 실패했습니다"
 
+#: ../src/libedataserver/e-webdav-session.c:2119
 #: ../src/libedataserver/e-webdav-session.c:2130
-#: ../src/libedataserver/e-webdav-session.c:2141
 msgid "Failed to read resource"
 msgstr "소스를 읽는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2290
+#: ../src/libedataserver/e-webdav-session.c:2270
 msgid "Cannot rewind input stream: Not supported"
 msgstr "입력 스트림을 뒤로 돌릴 수 없습니다: 지원하지 않습니다"
 
 # HTTP PUT을 가리키므로 포스트로 음역
-#: ../src/libedataserver/e-webdav-session.c:2455
-#: ../src/libedataserver/e-webdav-session.c:2601
+#: ../src/libedataserver/e-webdav-session.c:2434
+#: ../src/libedataserver/e-webdav-session.c:2575
 msgid "Failed to put data"
 msgstr "데이터 풋에 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2474
-#: ../src/libedataserver/e-webdav-session.c:2609
+#: ../src/libedataserver/e-webdav-session.c:2448
+#: ../src/libedataserver/e-webdav-session.c:2583
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "서버에 데이터 풋에 실패했습니다. 오류 코드 %d (%s)"
 
 # IMAP 동작
-#: ../src/libedataserver/e-webdav-session.c:2703
+#: ../src/libedataserver/e-webdav-session.c:2677
 msgid "Failed to delete resource"
 msgstr "리소스 삭제에 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2772
+#: ../src/libedataserver/e-webdav-session.c:2746
 msgid "Failed to copy resource"
 msgstr "리소스를 복사하는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2836
+#: ../src/libedataserver/e-webdav-session.c:2810
 msgid "Failed to move resource"
 msgstr "리소스를 옮기는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2943
+#: ../src/libedataserver/e-webdav-session.c:2917
 msgid "Failed to lock resource"
 msgstr "리소스를 잠그는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2957
-#: ../src/libedataserver/e-webdav-session.c:3163
+#: ../src/libedataserver/e-webdav-session.c:2931
+#: ../src/libedataserver/e-webdav-session.c:3139
 msgid "Expected application/xml response, but none returned"
 msgstr "application/xml 응답을 예상했지만, 아무 것도 리턴하지 않았습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2960
-#: ../src/libedataserver/e-webdav-session.c:3166
+#: ../src/libedataserver/e-webdav-session.c:2934
+#: ../src/libedataserver/e-webdav-session.c:3142
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "application/xml 응답을 예상했지만, %s 응답을 리턴했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2972
-#: ../src/libedataserver/e-webdav-session.c:3179
+#: ../src/libedataserver/e-webdav-session.c:2946
+#: ../src/libedataserver/e-webdav-session.c:3155
 msgid "Failed to parse XML data"
 msgstr "XML 데이터를 파싱하는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:3053
+#: ../src/libedataserver/e-webdav-session.c:3027
 msgid "Failed to refresh lock"
 msgstr "잠금을 새로 고치는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:3114
+#: ../src/libedataserver/e-webdav-session.c:3088
 msgid "Failed to unlock"
 msgstr "잠금 해제에 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:3151
+#: ../src/libedataserver/e-webdav-session.c:3127
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "다중 상태 응답을 예상했으나, 상태 %d번을 리턴했습니다 (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:4230
+#: ../src/libedataserver/e-webdav-session.c:3164
+msgid "XML data does not have root node"
+msgstr "XML 데이터에 최상위 노드가 없습니다"
+
+#: ../src/libedataserver/e-webdav-session.c:3187
+#, c-format
+msgid "XML data doesn't have required structure (%s)"
+msgstr "XML 데이터에 필요한 구조가 (%s) 없습니다"
+
+#: ../src/libedataserver/e-webdav-session.c:4155
 msgid "Failed to get access control list"
 msgstr "접근 컨트롤 목록을 가져오는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:4981
+#: ../src/libedataserver/e-webdav-session.c:4839
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr "보호되어 있거나 상속한 접근 컨트롤 항목은 저장할 수 없습니다."
 
-#: ../src/libedataserver/e-webdav-session.c:4988
+#: ../src/libedataserver/e-webdav-session.c:4846
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "잘못된 종류의 주요 접근 컨트롤 항목을 제공했습니다."
 
-#: ../src/libedataserver/e-webdav-session.c:4995
+#: ../src/libedataserver/e-webdav-session.c:4853
 msgid "Cannot store property-based Access Control Entry."
 msgstr "속성 기반 접근 컨트롤 항목은 저장할 수 없습니다."
 
-#: ../src/libedataserver/e-webdav-session.c:5002
+#: ../src/libedataserver/e-webdav-session.c:4860
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr "접근 컨트롤 항목은 허용이나 거부 중의 하나여야 하고 없으면 안 됩니다."
 
-#: ../src/libedataserver/e-webdav-session.c:5010
+#: ../src/libedataserver/e-webdav-session.c:4868
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr "접근 컨트롤 항목은 허용이나 거부 중의 하나여야 하고 둘 다는 안 됩니다."
 
-#: ../src/libedataserver/e-webdav-session.c:5069
+#: ../src/libedataserver/e-webdav-session.c:4927
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "접근 컨트롤 항목은 권한은 널이 될 수 없습니다."
+
+#: ../src/libedataserverui/e-buffer-tagger.c:71
+msgid "Could not open the link."
+msgstr "링크를 열 수 없습니다."
+
+#. To Translators: The text is concatenated to a form: "Ctrl-click to open a link http://www.example.com"
+#: ../src/libedataserverui/e-buffer-tagger.c:458
+msgid "Ctrl-click to open a link"
+msgstr "다음 링크를 열려면 Ctrl과 함께 누르십시오:"
 
 #: ../src/libedataserverui/e-credentials-prompter.c:259
 #: ../src/libedataserverui/e-credentials-prompter.c:1692
@@ -7031,14 +7069,14 @@ msgid ""
 msgstr ""
 "“%2$s” 계정에 접근하려면 “%1$s” 계정에 로그인해서 사용 조건에 동의하십시오."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:605
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:606
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
-#: ../src/libedataserverui/e-trust-prompt.c:112
+#: ../src/libedataserverui/e-trust-prompt.c:111
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1083
 msgid "_Cancel"
 msgstr "취소(_C)"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:679
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:680
 msgid "URL:"
 msgstr "URL:"
 
@@ -7112,104 +7150,116 @@ msgstr "암호(_P):"
 msgid "_Add this password to your keyring"
 msgstr "이 암호를 키 모음에 추가(_A)"
 
-#: ../src/libedataserverui/e-reminders-widget.c:226
+#: ../src/libedataserverui/e-reminders-widget.c:230
 msgid "Add custom time…"
 msgstr "사용자 설정 시각 추가…"
 
-#: ../src/libedataserverui/e-reminders-widget.c:230
+#: ../src/libedataserverui/e-reminders-widget.c:234
 msgid "Clear custom times"
 msgstr "사용자 설정 시각 지우기"
 
-#: ../src/libedataserverui/e-reminders-widget.c:278
+#: ../src/libedataserverui/e-reminders-widget.c:282
 msgctxt "overdue"
 msgid "now"
 msgstr "지금"
 
-#: ../src/libedataserverui/e-reminders-widget.c:296
+#: ../src/libedataserverui/e-reminders-widget.c:300
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d년"
 
-#: ../src/libedataserverui/e-reminders-widget.c:302
+#: ../src/libedataserverui/e-reminders-widget.c:306
 msgctxt "overdue"
 msgid "overdue"
 msgstr "마감 넘어감"
 
-#: ../src/libedataserverui/e-reminders-widget.c:922
+#: ../src/libedataserverui/e-reminders-widget.c:926
 #, c-format
 msgid "Failed to launch URI “%s”:"
 msgstr "“%s” URI를 실행하는데 실패했습니다:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:963
+#: ../src/libedataserverui/e-reminders-widget.c:976
+msgid "No reminder is selected."
+msgstr "알리미를 선택하지 않았습니다."
+
+#: ../src/libedataserverui/e-reminders-widget.c:1033
+msgid "No details are available."
+msgstr "자세한 정보가 없습니다."
+
+#: ../src/libedataserverui/e-reminders-widget.c:1037
+msgid "Multiple reminders are selected."
+msgstr "여러 개의 알리미를 선택했습니다."
+
+#: ../src/libedataserverui/e-reminders-widget.c:1057
 msgid "Failed to dismiss reminder:"
 msgstr "알리미를 해제하는데 실패했습니다:"
 
 # IMAP 동작
-#: ../src/libedataserverui/e-reminders-widget.c:984
+#: ../src/libedataserverui/e-reminders-widget.c:1078
 msgid "Failed to dismiss all:"
 msgstr "모두 해제하는데 실패했습니다:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1120
+#: ../src/libedataserverui/e-reminders-widget.c:1214
 msgid "Set a custom snooze time for"
 msgstr "사용자 설정 다시 알림 시간을 설정합니다"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1133
+#: ../src/libedataserverui/e-reminders-widget.c:1227
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "일(_Y)"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1149
+#: ../src/libedataserverui/e-reminders-widget.c:1243
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "시간(_H)"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1165
+#: ../src/libedataserverui/e-reminders-widget.c:1259
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "분(_M)"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1171
+#: ../src/libedataserverui/e-reminders-widget.c:1265
 msgid "_Add Snooze time"
 msgstr "다시 알림 시간 추가(_A)"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1438
+#: ../src/libedataserverui/e-reminders-widget.c:1568
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "닫기(_D)"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1439
+#: ../src/libedataserverui/e-reminders-widget.c:1569
 msgid "Dismiss _All"
 msgstr "모두 닫기(_A)"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1441
+#: ../src/libedataserverui/e-reminders-widget.c:1571
 msgid "_Snooze"
 msgstr "다시 알림(_S)"
 
-#: ../src/libedataserverui/e-trust-prompt.c:111
+#: ../src/libedataserverui/e-trust-prompt.c:110
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:117
 msgid "Certificate trust..."
 msgstr "인증서 신뢰..."
 
-#: ../src/libedataserverui/e-trust-prompt.c:113
+#: ../src/libedataserverui/e-trust-prompt.c:112
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:118
 msgid "_Reject"
 msgstr "거절(_R)"
 
-#: ../src/libedataserverui/e-trust-prompt.c:114
+#: ../src/libedataserverui/e-trust-prompt.c:113
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:119
 msgid "Accept _Temporarily"
 msgstr "임시로 허용(_T)"
 
-#: ../src/libedataserverui/e-trust-prompt.c:115
+#: ../src/libedataserverui/e-trust-prompt.c:114
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:120
 msgid "_Accept Permanently"
 msgstr "계속 허용(_A)"
 
-#: ../src/libedataserverui/e-trust-prompt.c:186
+#: ../src/libedataserverui/e-trust-prompt.c:185
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:157
 #, c-format
 msgid "SSL/TLS certificate for “%s” is not trusted. Do you wish to accept it?"
@@ -7217,45 +7267,45 @@ msgstr ""
 "“%s”에 대한 SSL/TLS 인증서를 신뢰할 수 없습니다. 이 인증서를 허용하시겠습니"
 "까?"
 
-#: ../src/libedataserverui/e-trust-prompt.c:208
+#: ../src/libedataserverui/e-trust-prompt.c:207
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:172
 msgid "Reason:"
 msgstr "이유:"
 
-#: ../src/libedataserverui/e-trust-prompt.c:211
+#: ../src/libedataserverui/e-trust-prompt.c:210
 msgid "Detailed error:"
 msgstr "자세한 오류:"
 
-#: ../src/libedataserverui/e-trust-prompt.c:273
+#: ../src/libedataserverui/e-trust-prompt.c:272
 #: ../src/modules/trust-prompt/module-trust-prompt.c:80
 msgid "The signing certificate authority is not known."
 msgstr "서명한 인증 기관이 모르는 곳입니다."
 
-#: ../src/libedataserverui/e-trust-prompt.c:275
+#: ../src/libedataserverui/e-trust-prompt.c:274
 #: ../src/modules/trust-prompt/module-trust-prompt.c:82
 msgid ""
 "The certificate does not match the expected identity of the site that it was "
 "retrieved from."
 msgstr "인증서가 인증서를 가져온 사이트의 예상 신원과 맞지 않습니다."
 
-#: ../src/libedataserverui/e-trust-prompt.c:277
+#: ../src/libedataserverui/e-trust-prompt.c:276
 #: ../src/modules/trust-prompt/module-trust-prompt.c:84
 msgid "The certificate’s activation time is still in the future."
 msgstr "인증서의 활성화 시각이 아직 미래입니다."
 
-#: ../src/libedataserverui/e-trust-prompt.c:279
+#: ../src/libedataserverui/e-trust-prompt.c:278
 #: ../src/modules/trust-prompt/module-trust-prompt.c:86
 msgid "The certificate has expired."
 msgstr "인증서가 만료되었습니다."
 
-#: ../src/libedataserverui/e-trust-prompt.c:281
+#: ../src/libedataserverui/e-trust-prompt.c:280
 #: ../src/modules/trust-prompt/module-trust-prompt.c:88
 msgid ""
 "The certificate has been revoked according to the connection’s certificate "
 "revocation list."
 msgstr "연결의 인증서 철회 목록에 따라 인증서가 철회되었습니다."
 
-#: ../src/libedataserverui/e-trust-prompt.c:283
+#: ../src/libedataserverui/e-trust-prompt.c:282
 #: ../src/modules/trust-prompt/module-trust-prompt.c:90
 msgid "The certificate’s algorithm is considered insecure."
 msgstr "인증서의 알고리즘이 안전하지 않아 보입니다."
@@ -7349,7 +7399,7 @@ msgstr "계정 요소를 찾는데 실패했습니다"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "자동 발견 응답에서 ASUrl 및 OABUrl을 찾는데 실패했습니다"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1426
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1423
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -7358,12 +7408,12 @@ msgstr ""
 "org.gnome.OnlineAccounts 서비스에서 “%s”에 대한 접근 토큰을 얻을 해당 계정을 "
 "찾을 수 없습니다"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1476
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1473
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "“%s”에 대한 접근 토큰을 얻는데 실패했습니다: "
 
-#: ../src/modules/google-backend/module-google-backend.c:632
+#: ../src/modules/google-backend/module-google-backend.c:631
 #: ../src/services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
 msgstr "연락처"
@@ -7391,26 +7441,26 @@ msgstr ""
 "면 사용하지 않습니다. 다른 값을 사용하면 컴파일할 때 주어진 옵션을 사용합니"
 "다."
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:292
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:320
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:831
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1040
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:306
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:334
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:845
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1087
 msgid "Reminders"
 msgstr "알리미"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:432
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:446
 msgid "Warning"
 msgstr "경고"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:433
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:447
 msgid "_No"
 msgstr "아니요(_N)"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:434
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:448
 msgid "_Yes"
 msgstr "예(_Y)"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:438
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:452
 #, c-format
 msgid ""
 "A calendar reminder is about to trigger. This reminder is configured to run "
@@ -7427,31 +7477,31 @@ msgstr ""
 "\n"
 "정말로 이 프로그램을 실행하시겠습니까?"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:453
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:467
 msgid "Do not ask me about this program again"
 msgstr "이 프로그램에 대해 다시 묻지 않기"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:736
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:750
 msgid "Display Reminders window with _notifications"
 msgstr "알림으로 알리미 창을 표시(_N)"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:737
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:751
 msgid "Keep reminder notification window always on _top"
 msgstr "알리미 창을 항상 위에 유지(_T)"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:738
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:752
 msgid "Display reminders for _completed tasks"
 msgstr "끝마친 작업에 대해 알리미 표시(_C)"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:739
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:753
 msgid "Display reminders for _past events"
 msgstr "과거 행사에 대해 알리미 표시(_P)"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:753
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:767
 msgid "Reminders Options:"
 msgstr "알리미 옵션:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:847
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:861
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
@@ -7497,6 +7547,10 @@ msgstr "날씨"
 #: ../src/services/evolution-source-registry/builtin/webcal-stub.source.in.h:1
 msgid "On The Web"
 msgstr "웹"
+
+#: ../src/services/evolution-source-registry/builtin/webdav-notes-stub.source.in.h:1
+msgid "WebDAV Notes"
+msgstr "WebDAV 메모"
 
 #: ../src/services/evolution-source-registry/evolution-source-registry.c:41
 msgid "Don’t migrate user data from previous versions of Evolution"
