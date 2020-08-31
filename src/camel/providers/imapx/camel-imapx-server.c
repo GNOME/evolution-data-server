@@ -930,6 +930,9 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 	geud.n_uids = 0;
 
 	if (!imapx_parse_uids_with_callback (CAMEL_IMAPX_INPUT_STREAM (input_stream), imapx_gather_existing_uids_cb, &geud, cancellable, error)) {
+		if (error && g_error_matches (*error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_IGNORE))
+			(*error)->code = CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED;
+
 		g_object_unref (folder);
 		g_object_unref (mailbox);
 		return FALSE;
@@ -2626,6 +2629,32 @@ imapx_step (CamelIMAPXServer *is,
 				FALSE, cancellable, error);
 			break;
 		default:
+			if (tok == '[') {
+				CamelIMAPXCommand *cmd;
+				gboolean handled = FALSE;
+
+				cmd = camel_imapx_server_ref_current_command (is);
+
+				if (cmd && (cmd->job_kind == CAMEL_IMAPX_JOB_COPY_MESSAGE || cmd->job_kind == CAMEL_IMAPX_JOB_MOVE_MESSAGE) &&
+				    camel_imapx_input_stream_atom (CAMEL_IMAPX_INPUT_STREAM (input_stream), &token, &len, cancellable, NULL) &&
+				    imapx_tokenise ((const gchar *) token, len) == IMAPX_COPYUID) {
+					/* Ignore malformed COPYUID response (expects "* OK [COPYUID ....]" or "A123 OK [COPYUID ...]", but received "[COPYUID ....]") */
+					camel_imapx_input_stream_skip (CAMEL_IMAPX_INPUT_STREAM (input_stream), cancellable, NULL);
+
+					g_set_error_literal (
+						error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_IGNORE,
+						"malformed COPYUID server response");
+
+					handled = TRUE;
+				}
+
+				if (cmd)
+					camel_imapx_command_unref (cmd);
+
+				if (handled)
+					break;
+			}
+
 			g_set_error (
 				error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 				"unexpected server response:");
@@ -4184,7 +4213,10 @@ camel_imapx_server_process_command_sync (CamelIMAPXServer *is,
 			"%s", ic->status->text);
 	}
 
-	if (local_error) {
+	if (g_error_matches (local_error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_IGNORE)) {
+		g_clear_error (&local_error);
+		success = TRUE;
+	} else if (local_error) {
 		/* Sadly, G_IO_ERROR_FAILED is also used for 'Connection reset by peer' error;
 		   since GLib 2.44 is used G_IO_ERROR_CONNECTION_CLOSED, which is the same as G_IO_ERROR_BROKEN_PIPE */
 		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_FAILED) ||
