@@ -168,6 +168,7 @@ typedef enum { /*< flags >*/
  * CamelMimeFilterToHTMLFlags:
  * @CAMEL_MIME_FILTER_TOHTML_PRE:
  *     Enclose the content in &lt;pre&gt; ... &lt;/pre&gt; tags.
+ *     Cannot be used together with %CAMEL_MIME_FILTER_TOHTML_DIV.
  * @CAMEL_MIME_FILTER_TOHTML_CONVERT_NL:
  *     Convert newline characters to &lt;br&gt; tags.
  * @CAMEL_MIME_FILTER_TOHTML_CONVERT_SPACES:
@@ -190,6 +191,9 @@ typedef enum { /*< flags >*/
  *     Group lines beginning with one or more '&gt;' characters in
  *     &lt;blockquote type="cite"&gt; ... &lt;/blockquote&gt; tags. The tags
  *     are nested according to the number of '&gt;' characters.
+ * @CAMEL_MIME_FILTER_TOHTML_DIV:
+ *     Enclose the paragraphs in &lt;div&gt; ... &lt;/div&gt; tags.
+ *     Cannot be used together with %CAMEL_MIME_FILTER_TOHTML_PRE.
  *
  * Flags for converting text/plain content into text/html.
  **/
@@ -204,7 +208,8 @@ typedef enum { /*< flags >*/
 	CAMEL_MIME_FILTER_TOHTML_CITE = 1 << 7,
 	CAMEL_MIME_FILTER_TOHTML_PRESERVE_8BIT = 1 << 8,
 	CAMEL_MIME_FILTER_TOHTML_FORMAT_FLOWED = 1 << 9,
-	CAMEL_MIME_FILTER_TOHTML_QUOTE_CITATION = 1 << 10
+	CAMEL_MIME_FILTER_TOHTML_QUOTE_CITATION = 1 << 10,
+	CAMEL_MIME_FILTER_TOHTML_DIV = 1 << 11
 } CamelMimeFilterToHTMLFlags;
 
 /**

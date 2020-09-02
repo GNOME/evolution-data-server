@@ -37,6 +37,7 @@ struct _CamelMimeFilterToHTMLPrivate {
 
 	guint32 column : 31;
 	guint32 pre_open : 1;
+	gboolean div_open;
 };
 
 /*
@@ -277,7 +278,7 @@ html_convert (CamelMimeFilter *mime_filter,
 	priv = CAMEL_MIME_FILTER_TOHTML (mime_filter)->priv;
 
 	if (inlen == 0) {
-		if (!priv->pre_open && priv->blockquote_depth == 0) {
+		if (!priv->pre_open && !priv->div_open && !priv->blockquote_depth) {
 			/* No closing tags needed. */
 			*out = (gchar *) in;
 			*outlen = 0;
@@ -287,6 +288,12 @@ html_convert (CamelMimeFilter *mime_filter,
 
 		outptr = mime_filter->outbuf;
 		outend = mime_filter->outbuf + mime_filter->outsize;
+
+		if (priv->div_open) {
+			outptr = check_size (mime_filter, outptr, &outend, 7);
+			outptr = g_stpcpy (outptr, "</div>");
+			priv->div_open = FALSE;
+		}
 
 		while (priv->blockquote_depth > 0) {
 			outptr = check_size (mime_filter, outptr, &outend, 15);
@@ -315,7 +322,7 @@ html_convert (CamelMimeFilter *mime_filter,
 	outptr = mime_filter->outbuf;
 	outend = mime_filter->outbuf + mime_filter->outsize;
 
-	if (priv->flags & CAMEL_MIME_FILTER_TOHTML_PRE && !priv->pre_open) {
+	if ((priv->flags & CAMEL_MIME_FILTER_TOHTML_PRE) != 0 && !priv->pre_open) {
 		outptr = check_size (mime_filter, outptr, &outend, 6);
 		outptr = g_stpcpy (outptr, "<pre>");
 		priv->pre_open = TRUE;
@@ -338,6 +345,12 @@ html_convert (CamelMimeFilter *mime_filter,
 			if (depth > 0) {
 				/* FIXME: we could easily support multiple color depths here */
 
+				if ((priv->flags & CAMEL_MIME_FILTER_TOHTML_DIV) != 0 && !priv->div_open) {
+					outptr = check_size (mime_filter, outptr, &outend, 6);
+					outptr = g_stpcpy (outptr, "<div>");
+					priv->div_open = TRUE;
+				}
+
 				outptr = check_size (mime_filter, outptr, &outend, 25);
 				outptr += sprintf (outptr, "<font color=\"#%06x\">", (priv->color & 0xffffff));
 			}
@@ -352,6 +365,13 @@ html_convert (CamelMimeFilter *mime_filter,
 			goffset skip = 0;
 
 			depth = citation_depth (start, inend, &skip);
+
+			if (priv->div_open && depth != priv->blockquote_depth) {
+				outptr = check_size (mime_filter, outptr, &outend, 7);
+				outptr = g_stpcpy (outptr, "</div>");
+				priv->div_open = FALSE;
+			}
+
 			while (priv->blockquote_depth < depth) {
 				outptr = check_size (mime_filter, outptr, &outend, 25);
 				outptr = g_stpcpy (outptr, "<blockquote type=\"cite\">");
@@ -371,9 +391,21 @@ html_convert (CamelMimeFilter *mime_filter,
 			start += skip;
 
 		} else if (priv->flags & CAMEL_MIME_FILTER_TOHTML_CITE) {
+			if ((priv->flags & CAMEL_MIME_FILTER_TOHTML_DIV) != 0 && !priv->div_open) {
+				outptr = check_size (mime_filter, outptr, &outend, 6);
+				outptr = g_stpcpy (outptr, "<div>");
+				priv->div_open = TRUE;
+			}
+
 			outptr = check_size (mime_filter, outptr, &outend, 6);
 			outptr = g_stpcpy (outptr, "&gt; ");
 			priv->column += 2;
+		}
+
+		if ((priv->flags & CAMEL_MIME_FILTER_TOHTML_DIV) != 0 && !priv->div_open) {
+			outptr = check_size (mime_filter, outptr, &outend, 6);
+			outptr = g_stpcpy (outptr, "<div>");
+			priv->div_open = TRUE;
 		}
 
 #define CONVERT_URLS (CAMEL_MIME_FILTER_TOHTML_CONVERT_URLS | CAMEL_MIME_FILTER_TOHTML_CONVERT_ADDRESSES)
@@ -457,6 +489,17 @@ html_convert (CamelMimeFilter *mime_filter,
 				outptr = g_stpcpy (outptr, "<br>");
 			}
 
+			if (priv->div_open) {
+				if (inptr == start && *start != '\r' && *start != '\n' && !(priv->flags & CAMEL_MIME_FILTER_TOHTML_CONVERT_NL)) {
+					outptr = check_size (mime_filter, outptr, &outend, 5);
+					outptr = g_stpcpy (outptr, "<br>");
+				}
+
+				outptr = check_size (mime_filter, outptr, &outend, 7);
+				outptr = g_stpcpy (outptr, "</div>");
+				priv->div_open = FALSE;
+			}
+
 			outptr = append_string_verbatim (mime_filter, "\n", outptr, &outend);
 		}
 
@@ -471,6 +514,12 @@ html_convert (CamelMimeFilter *mime_filter,
 				start,
 				inend,
 				outptr, &outend);
+
+		if (priv->div_open) {
+			outptr = check_size (mime_filter, outptr, &outend, 7);
+			outptr = g_stpcpy (outptr, "</div>");
+			priv->div_open = FALSE;
+		}
 
 		while (priv->blockquote_depth > 0) {
 			outptr = check_size (mime_filter, outptr, &outend, 14);
@@ -586,6 +635,12 @@ camel_mime_filter_tohtml_new (CamelMimeFilterToHTMLFlags flags,
 	CamelMimeFilter *filter;
 	CamelMimeFilterToHTMLPrivate *priv;
 	gint i;
+
+	/* Prefer PRE over DIV, when used together (which they should not) */
+	if ((flags & (CAMEL_MIME_FILTER_TOHTML_PRE | CAMEL_MIME_FILTER_TOHTML_DIV)) ==
+	    (CAMEL_MIME_FILTER_TOHTML_PRE | CAMEL_MIME_FILTER_TOHTML_DIV)) {
+		flags = flags & ~CAMEL_MIME_FILTER_TOHTML_DIV;
+	}
 
 	filter = g_object_new (CAMEL_TYPE_MIME_FILTER_TOHTML, NULL);
 	priv = CAMEL_MIME_FILTER_TOHTML (filter)->priv;
