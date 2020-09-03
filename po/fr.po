@@ -26,16 +26,16 @@ msgstr ""
 "Project-Id-Version: evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2020-08-10 19:26+0000\n"
-"PO-Revision-Date: 2020-08-17 17:19+0200\n"
-"Last-Translator: Thibault Martin <mail@thibaultmart.in>\n"
+"POT-Creation-Date: 2020-08-17 16:25+0000\n"
+"PO-Revision-Date: 2020-08-26 11:22+0900\n"
+"Last-Translator: Julien Humbert <julroy67@gmail.com>\n"
 "Language-Team: French <gnomefr@traduc.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
-"X-Generator: Gtranslator 3.36.0\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 2.4.1\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:231
 #, c-format
@@ -494,7 +494,7 @@ msgstr "Autre fax"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:194
 msgid "Pager"
-msgstr "Pager"
+msgstr "Téléavertisseur"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:195
 msgid "Primary Phone"
@@ -6035,13 +6035,12 @@ msgid "Height of the reminder notification dialog"
 msgstr "Hauteur de la boîte de dialogue de notification des rappels"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
-#, fuzzy
 msgid ""
 "Paned position in the reminder notification dialog, the split size between "
 "list of the events and the description"
 msgstr ""
-"Position du panneau dans la fenêtre modale de notification de rappel, la "
-"taille de la division entre la liste des événements et la description"
+"Taille en pixels de la liste d’évènements dans la modale de notification de "
+"rappel"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
 msgid "Show reminder notification for completed tasks"
@@ -7050,7 +7049,7 @@ msgstr ""
 
 #: ../src/libedataserver/e-webdav-session.c:3164
 msgid "XML data does not have root node"
-msgstr "Les données XML n‘ont pas de nœud racine"
+msgstr "Les données XML n’ont pas de nœud racine"
 
 #: ../src/libedataserver/e-webdav-session.c:3187
 #, c-format
@@ -7514,7 +7513,7 @@ msgstr "Contacts"
 #: ../src/libedataserverui/e-webdav-discover-widget.c:525
 msgctxt "WebDAVDiscover"
 msgid "Events"
-msgstr "Événements"
+msgstr "Évènements"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:526
 msgctxt "WebDAVDiscover"
