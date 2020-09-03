@@ -767,6 +767,8 @@ e_soup_session_preset_request (SoupRequestHTTP *request)
 
 	message = soup_request_http_get_message (request);
 	if (message) {
+		e_soup_session_util_normalize_uri_path (soup_message_get_uri (message));
+
 		soup_message_headers_append (message->request_headers, "User-Agent", "Evolution/" VERSION);
 		soup_message_headers_append (message->request_headers, "Connection", "close");
 
@@ -1226,4 +1228,88 @@ e_soup_session_util_status_to_string (guint status_code,
 		return reason_phrase;
 
 	return _("Unknown error");
+}
+
+static gboolean
+part_needs_encoding (const gchar *part)
+{
+	const gchar *pp;
+
+	if (!part || !*part)
+		return FALSE;
+
+	for (pp = part; *pp; pp++) {
+		if (!strchr ("/!()+-*~';,.$&_", *pp) &&
+		    !g_ascii_isalnum (*pp) &&
+		    (*pp != '%' || pp[1] != '4' || pp[2] != '0') && /* cover '%40', aka '@', as a common case, to avoid unnecessary allocations */
+		    (*pp != '%' || pp[1] != '2' || pp[2] != '0')) { /* '%20', aka ' ' */
+			break;
+		}
+	}
+
+	return *pp;
+}
+
+/**
+ * e_soup_session_util_normalize_uri_path:
+ * @suri: a #SoupURI to normalize the path for
+ *
+ * Normalizes the path of the @suri, aka encodes characters, which should
+ * be encoded, if needed. Returns, whether any change had been made to the path.
+ * It doesn't touch other parts of the @suri.
+ *
+ * Returns: whether made any changes
+ *
+ * Since: 3.38
+ **/
+gboolean
+e_soup_session_util_normalize_uri_path (SoupURI *suri)
+{
+	const gchar *path;
+	gchar **parts, *tmp;
+	gboolean did_change = FALSE;
+	gint ii;
+
+	if (!suri)
+		return FALSE;
+
+	path = soup_uri_get_path (suri);
+
+	if (!path || !*path || g_strcmp0 (path, "/") == 0)
+		return FALSE;
+
+	if (!part_needs_encoding (path))
+		return FALSE;
+
+	parts = g_strsplit (path, "/", -1);
+
+	if (!parts)
+		return FALSE;
+
+	for (ii = 0; parts[ii]; ii++) {
+		gchar *part = parts[ii];
+
+		if (part_needs_encoding (part)) {
+			if (strchr (part, '%')) {
+				tmp = soup_uri_decode (part);
+				g_free (part);
+				part = tmp;
+			}
+
+			tmp = soup_uri_encode (part, NULL);
+			g_free (part);
+			parts[ii] = tmp;
+		}
+	}
+
+	tmp = g_strjoinv ("/", parts);
+	if (g_strcmp0 (path, tmp) != 0) {
+		soup_uri_set_path (suri, tmp);
+		did_change = TRUE;
+	}
+
+	g_free (tmp);
+	g_strfreev (parts);
+
+	return did_change;
 }

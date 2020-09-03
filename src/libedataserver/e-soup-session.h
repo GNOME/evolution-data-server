@@ -116,6 +116,7 @@ GByteArray *	e_soup_session_send_request_simple_sync	(ESoupSession *session,
 							 GError **error);
 const gchar *	e_soup_session_util_status_to_string	(guint status_code,
 							 const gchar *reason_phrase);
+gboolean	e_soup_session_util_normalize_uri_path	(SoupURI *suri);
 
 G_END_DECLS
 
