@@ -1,3 +1,34 @@
+Evolution-Data-Server 3.37.92 2020-09-04
+----------------------------------------
+
+Bug Fixes:
+	I#172 - [IMAPx] Ignore truncated COPYUID server response (Milan Crha)
+	I#208 - Avoid race condition when refreshing collection backend (Milan Crha)
+	I#232 - ESoupSession: Ensure request URI is properly encoded (Milan Crha)
+	I#245 - CardDAV contacts without UID are not shown (Milan Crha)
+	I#246 - libecal: Specify forward-declared types for gir (Milan Crha)
+	M!43 - Calendar: Add SExp function to filter with DTSTART (Helmut Pozimski)
+	evo-I#461 - Let 'Wrap quoted text in replies' influence paragraph style (Milan Crha)
+	evo-I#1014 - Calendar: Correct RRULE's UNTIL value saving (Milan Crha)
+
+Miscellaneous:
+	GObjectIntrospection.cmake: Depend rather on gir target, than on gir file (Milan Crha)
+
+Translations:
+	Efstathios Iosifidis (el)
+	Fran Dieguez (gl)
+	Piotr Drąg (pl)
+	Thibault Martin (fr)
+	Goran Vidović (hr)
+	Rafael Fontenelle (pt_BR)
+	Nathan Follens (nl)
+	Kukuh Syafaat (id)
+	Boyuan Yang (zh_CN)
+	Changwoo Ryu (ko)
+	Asier Sarasua Garmendia (eu)
+	Zander Brown (en_GB)
+	Matej Urbančič (sl)
+
 Evolution-Data-Server 3.37.90 2020-08-07
 ----------------------------------------
 
