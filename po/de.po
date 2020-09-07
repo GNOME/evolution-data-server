@@ -7,7 +7,7 @@
 # Hendrik Richter <hendrikr@gnome.org>, 2005-2007.
 # Christian Kintner <mail@christian-kintner.de>, 2006.
 # Andre Klapper <ak-47@gmx.net>, 2007-2009.
-# Mario Blättermann <mario.blaettermann@gmail.com>, 2009-2013, 2015-2018.
+# Mario Blättermann <mario.blaettermann@gmail.com>, 2009-2013, 2015-2018, 2020.
 # Wolfgang Stöggl <c72578@yahoo.de> 2011, 2017, 2020.
 # Hendrik Knackstedt <kn.hendrik@gmail.com>, 2012.
 # Christian Kirbach <christian.kirbach@gmail.com>, 2010, 2012, 2013.
@@ -18,27 +18,27 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2020-03-01 08:50+0000\n"
-"PO-Revision-Date: 2020-03-05 10:28+0100\n"
-"Last-Translator: Wolfgang Stoeggl <c72578@yahoo.de>\n"
+"POT-Creation-Date: 2020-09-06 16:36+0000\n"
+"PO-Revision-Date: 2020-09-07 20:04+0200\n"
+"Last-Translator: Tim Sabsch <tim@sabsch.com>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.4.1\n"
 "X-Project-Style: gnome\n"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:219
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:231
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Die angegebene Adresse »%s« referenziert kein CardDAV-Adressbuch"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:277
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:290
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1154
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4428
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4397
 #: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
 #: ../src/addressbook/libebook/e-book.c:1070
@@ -53,9 +53,10 @@ msgstr "Die angegebene Adresse »%s« referenziert kein CardDAV-Adressbuch"
 #: ../src/addressbook/libebook/e-book-client.c:3461
 #: ../src/addressbook/libebook/e-book-client.c:3679
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:873
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:261
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:275
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:288
 #: ../src/calendar/backends/http/e-cal-backend-http.c:313
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:197
 #: ../src/calendar/libecal/e-cal-client.c:257
 #: ../src/calendar/libecal/e-cal-client.c:3230
 #: ../src/calendar/libecal/e-cal-client.c:3403
@@ -75,38 +76,40 @@ msgstr "Die angegebene Adresse »%s« referenziert kein CardDAV-Adressbuch"
 #: ../src/calendar/libecal/e-cal-client.c:6224
 #: ../src/calendar/libecal/e-cal-client.c:6592
 #: ../src/calendar/libecal/e-cal-client.c:6816
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1799
-#: ../src/camel/camel-filter-driver.c:1712
-#: ../src/camel/camel-filter-driver.c:1844
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3300
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3306
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3316
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3328
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1826
+#: ../src/camel/camel-filter-driver.c:1715
+#: ../src/camel/camel-filter-driver.c:1847
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3329
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3335
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3345
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3357
 #: ../src/camel/providers/nntp/camel-nntp-store.c:419
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:183
-#: ../src/libedataserver/e-soup-session.c:1224
+#: ../src/libedataserver/e-soup-session.c:1230
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
-#: ../src/libedataserverui/e-reminders-widget.c:1788
+#: ../src/libedataserverui/e-reminders-widget.c:1931
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1074
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1352
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1149
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1373
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:930
 msgid "Server didn’t return object’s href"
 msgstr "Server gab kein href des Objekts zurück"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1076
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1354
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1151
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1375
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:932
 msgid "Server didn’t return object’s ETag"
 msgstr "Server gab kein ETag des Objekts zurück"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1078
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1153
 msgid "Received object is not a valid vCard"
 msgstr "Empfangenes Objekt ist keine gültige vCard"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1195
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1270
 msgid ""
 "Missing information about vCard URL, local cache is possibly incomplete or "
 "broken. Remove it, please."
@@ -114,8 +117,8 @@ msgstr ""
 "Es fehlen Informationen zur vCard-Adresse, der lokale Zwischenspeicher "
 "könnte unvollständig oder fehlerhaft sein. Bitte löschen Sie ihn."
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1198
-#: ../src/addressbook/backends/google/e-book-backend-google.c:988
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1273
+#: ../src/addressbook/backends/google/e-book-backend-google.c:990
 msgid "Object to save is not a valid vCard"
 msgstr "Zu speicherndes Objekt ist keine gültige vCard"
 
@@ -149,7 +152,7 @@ msgid "Loading..."
 msgstr "Ladevorgang …"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:990
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4543
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4512
 msgid "Searching..."
 msgstr "Suchvorgang …"
 
@@ -180,7 +183,7 @@ msgid "Invalid Query “%s”"
 msgstr "Ungültige Abfrage »%s«"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1965
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2037
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2043
 msgid "Requested to delete an unrelated cursor"
 msgstr "Anfrage, einen nicht verwandten Zeiger zu löschen"
 
@@ -189,12 +192,12 @@ msgstr "Anfrage, einen nicht verwandten Zeiger zu löschen"
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Umbenennen der alten Datenbank von »%s« in »%s« schlug fehl: %s"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:1044
+#: ../src/addressbook/backends/google/e-book-backend-google.c:1046
 msgid "Failed to create contact from returned server data"
 msgstr ""
 "Kontakt konnte aus den vom Server gelieferten Daten nicht erstellt werden"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:1060
+#: ../src/addressbook/backends/google/e-book-backend-google.c:1062
 msgid "Server returned contact without UID"
 msgstr "Server gab Kontakt ohne Benutzerkennung zurück"
 
@@ -241,7 +244,7 @@ msgid "Invalid DN syntax"
 msgstr "Ungültige DN-Syntax"
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1151
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4427
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4396
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP-Fehler 0x%x (%s)"
@@ -284,47 +287,47 @@ msgstr[1] ""
 "Kontaktlisten in LDAP-Adressbüchern erfordern, dass jeder Teilnehmer aus "
 "demselben LDAP-Adressbuch stammt, aber %d Teilnehmer wurden nicht erkannt."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4366
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4335
 msgid "Receiving LDAP search results..."
 msgstr "LDAP-Suchergebnisse werden empfangen …"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4569
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4538
 msgid "Error performing search"
 msgstr "Fehler beim Ausführen der Suche"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4709
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4678
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Kontakte werden heruntergeladen (%d) …"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4810
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:781
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:684
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4779
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:790
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:691
 msgid "Refreshing…"
 msgstr "Aktualisieren …"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5203
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5172
 msgid "The backend does not support bulk additions"
 msgstr "Das Backend unterstützt keine Massenhinzufügungen"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5294
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5263
 msgid "Adding contact to LDAP server..."
 msgstr "Kontakt wird zu LDAP-Server hinzugefügt …"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5356
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5325
 msgid "The backend does not support bulk modifications"
 msgstr "Das Backend unterstützt keine Massenänderungen"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5378
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5347
 msgid "Modifying contact from LDAP server..."
 msgstr "Kontakt auf LDAP-Server wird verändert …"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5450
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5419
 msgid "Removing contact from LDAP server..."
 msgstr "Kontakt wird von LDAP-Server entfernt …"
 
 # DN steht für Distinguished Name (LDAP-Server)
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5860
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5829
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "DN für Benutzer »%s« konnte nicht erhalten werden"
@@ -931,7 +934,7 @@ msgstr "Liste angezeigter Googletalk-Namen"
 msgid "Twitter Name List"
 msgstr "Twitter-Namensliste"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:1911
+#: ../src/addressbook/libebook-contacts/e-contact.c:1915
 #: ../src/addressbook/libebook/e-destination.c:914
 msgid "Unnamed List"
 msgstr "Namenlose Liste"
@@ -1142,8 +1145,8 @@ msgstr "Nicht unterstütztes Kontaktfeld »%d« in der Zusammenfassung angegeben
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:3463
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5840
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1654
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3518
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1681
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3545
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Ungültige Abfrage: %s"
@@ -1162,12 +1165,12 @@ msgstr "Datenbank %s konnte nicht geöffnet werden: %s"
 #: ../src/addressbook/libedata-book/e-book-cache.c:5271
 #: ../src/addressbook/libedata-book/e-book-cache.c:5318
 #: ../src/addressbook/libedata-book/e-book-cache.c:5370
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2800
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2858
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2917
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2980
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3151
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1362
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2827
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2885
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2944
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3007
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3178
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1370
 #: ../src/libebackend/e-cache.c:1374 ../src/libebackend/e-cache.c:2352
 #: ../src/libebackend/e-cache.c:2392
 #, c-format
@@ -1175,7 +1178,7 @@ msgid "Object “%s” not found"
 msgstr "Objekt »%s« wurde nicht gefunden"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5430
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3042
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3069
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Objekt mit zusätzlichem »%s« wurde nicht gefunden"
@@ -1193,21 +1196,21 @@ msgstr ""
 "Es kann nicht nach einem Feld sortiert werden, das nicht vom Typ "
 "Zeichenkette ist"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1073
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1085
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1083
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1093
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Vorgeladenes Objekt für Benutzerkennung »%s« ist ungültig"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1081
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1093
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1091
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1101
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Empfangenes Objekt für Benutzerkennung »%s« ist ungültig"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1907
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2354
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3295
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1913
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2369
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3314
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Zwischenspeicher »%s« konnte nicht erstellt werden:"
@@ -1303,12 +1306,13 @@ msgstr "Nicht abgeglichene Revision beim Bewegen des Zeigers"
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Der alphabetische Index wurde auf eine falsche Sprachumgebung gesetzt"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:205
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:218
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Die angegebene Adresse »%s« referenziert keinen CalDAV-Kalender"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1489
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1510
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1164
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. Remove it, please."
@@ -1316,7 +1320,7 @@ msgstr ""
 "Es fehlen Informationen zur Komponentenadresse, der lokale Zwischenspeicher "
 "könnte unvollständig oder fehlerhaft sein. Bitte löschen Sie ihn."
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1965
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:2010
 msgid "Failed to parse response data"
 msgstr "Antwortdaten konnten nicht ausgewertet werden"
 
@@ -1362,11 +1366,11 @@ msgid "File “%s” is not a VCALENDAR component"
 msgstr "Die Datei »%s« ist keine VCALENDAR-Komponente"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3636
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3642
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3648
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3675
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2531
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3647
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3653
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3659
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3686
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2541
 msgid "Unsupported method"
 msgstr "Nicht unterstützte Methode"
 
@@ -1379,12 +1383,12 @@ msgstr "Adresse nicht geladen"
 msgid "Malformed URI “%s”: %s"
 msgstr "Fehlerhaft formatierte Adresse »%s«: %s"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:459
+#: ../src/calendar/backends/http/e-cal-backend-http.c:463
 #, c-format
 msgid "Bad file format."
 msgstr "Dateiformat fehlerhaft."
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:468
+#: ../src/calendar/backends/http/e-cal-backend-http.c:472
 #, c-format
 msgid "Not a calendar."
 msgstr "Kein Kalender."
@@ -1464,6 +1468,11 @@ msgstr "Datei zum Zwischenspeichern konnte nicht angelegt werden"
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:684
 msgid "Could not create cache file: "
 msgstr "Datei zum Zwischenspeichern konnte nicht angelegt werden: "
+
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:973
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1002
+msgid "New note"
+msgstr "Neue Notiz"
 
 # CHECK
 #: ../src/calendar/libecal/e-cal-client.c:244
@@ -1628,42 +1637,42 @@ msgstr "30."
 msgid "31st"
 msgstr "31."
 
-#: ../src/calendar/libecal/e-cal-recur.c:5064
+#: ../src/calendar/libecal/e-cal-recur.c:5069
 #, c-format
 msgid "every day forever"
 msgid_plural "every %d days forever"
 msgstr[0] "jeden Tag für immer"
 msgstr[1] "alle %d Tage für immer"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5070
+#: ../src/calendar/libecal/e-cal-recur.c:5075
 #, c-format
 msgid "Every day forever"
 msgid_plural "Every %d days forever"
 msgstr[0] "Jeden Tag für immer"
 msgstr[1] "Alle %d Tage für immer"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5078
+#: ../src/calendar/libecal/e-cal-recur.c:5083
 #, c-format
 msgid "every day"
 msgid_plural "every %d days"
 msgstr[0] "täglich"
 msgstr[1] "alle %d Tage"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5084
+#: ../src/calendar/libecal/e-cal-recur.c:5089
 #, c-format
 msgid "Every day"
 msgid_plural "Every %d days"
 msgstr[0] "Jeden Tag"
 msgstr[1] "Alle %d Tage"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5170
+#: ../src/calendar/libecal/e-cal-recur.c:5175
 #, c-format
 msgid "every week"
 msgid_plural "every %d weeks"
 msgstr[0] "Jede Woche"
 msgstr[1] "Alle %d Wochen"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5176
+#: ../src/calendar/libecal/e-cal-recur.c:5181
 #, c-format
 msgid "Every week"
 msgid_plural "Every %d weeks"
@@ -1676,556 +1685,556 @@ msgstr[1] "Alle %d Wochen"
 #. with ", DAYNAME" or " and DAYNAME", thus it can be something like "on Monday and Tuesday"
 #. or "on Monday, Wednesday and Friday" or simply "on Saturday". The '%1$s' is replaced with
 #. the previously gathered text, while the '%2$s' is replaced with the text to append.
-#: ../src/calendar/libecal/e-cal-recur.c:5190
+#: ../src/calendar/libecal/e-cal-recur.c:5195
 #, c-format
 msgctxt "recur-description-dayname"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5207
+#: ../src/calendar/libecal/e-cal-recur.c:5212
 msgctxt "recur-description"
 msgid "on Sunday"
 msgstr "am Sonntag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5208
+#: ../src/calendar/libecal/e-cal-recur.c:5213
 msgctxt "recur-description"
 msgid ", Sunday"
 msgstr ", Sonntag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5209
+#: ../src/calendar/libecal/e-cal-recur.c:5214
 msgctxt "recur-description"
 msgid " and Sunday"
 msgstr " und Sonntag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5212
+#: ../src/calendar/libecal/e-cal-recur.c:5217
 msgctxt "recur-description"
 msgid "on Monday"
 msgstr "am Montag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5213
+#: ../src/calendar/libecal/e-cal-recur.c:5218
 msgctxt "recur-description"
 msgid ", Monday"
 msgstr ", Montag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5214
+#: ../src/calendar/libecal/e-cal-recur.c:5219
 msgctxt "recur-description"
 msgid " and Monday"
 msgstr " und Montag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5217
+#: ../src/calendar/libecal/e-cal-recur.c:5222
 msgctxt "recur-description"
 msgid "on Tuesday"
 msgstr "am Dienstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5218
+#: ../src/calendar/libecal/e-cal-recur.c:5223
 msgctxt "recur-description"
 msgid ", Tuesday"
 msgstr ", Dienstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5219
+#: ../src/calendar/libecal/e-cal-recur.c:5224
 msgctxt "recur-description"
 msgid " and Tuesday"
 msgstr " und Dienstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5222
+#: ../src/calendar/libecal/e-cal-recur.c:5227
 msgctxt "recur-description"
 msgid "on Wednesday"
 msgstr "am Mittwoch"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5223
+#: ../src/calendar/libecal/e-cal-recur.c:5228
 msgctxt "recur-description"
 msgid ", Wednesday"
 msgstr ", Mittwoch"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5224
+#: ../src/calendar/libecal/e-cal-recur.c:5229
 msgctxt "recur-description"
 msgid " and Wednesday"
 msgstr " und Mittwoch"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5227
+#: ../src/calendar/libecal/e-cal-recur.c:5232
 msgctxt "recur-description"
 msgid "on Thursday"
 msgstr "am Donnerstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5228
+#: ../src/calendar/libecal/e-cal-recur.c:5233
 msgctxt "recur-description"
 msgid ", Thursday"
 msgstr ", Donnerstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5229
+#: ../src/calendar/libecal/e-cal-recur.c:5234
 msgctxt "recur-description"
 msgid " and Thursday"
 msgstr " und Donnerstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5232
+#: ../src/calendar/libecal/e-cal-recur.c:5237
 msgctxt "recur-description"
 msgid "on Friday"
 msgstr "am Freitag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5233
+#: ../src/calendar/libecal/e-cal-recur.c:5238
 msgctxt "recur-description"
 msgid ", Friday"
 msgstr ", Freitag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5234
+#: ../src/calendar/libecal/e-cal-recur.c:5239
 msgctxt "recur-description"
 msgid " and Friday"
 msgstr " und Freitag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5237
+#: ../src/calendar/libecal/e-cal-recur.c:5242
 msgctxt "recur-description"
 msgid "on Saturday"
 msgstr "am Samstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5238
+#: ../src/calendar/libecal/e-cal-recur.c:5243
 msgctxt "recur-description"
 msgid ", Saturday"
 msgstr ", Samstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5239
+#: ../src/calendar/libecal/e-cal-recur.c:5244
 msgctxt "recur-description"
 msgid " and Saturday"
 msgstr " und Samstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5368
+#: ../src/calendar/libecal/e-cal-recur.c:5373
 #, c-format
 msgid "every month"
 msgid_plural "every %d months"
 msgstr[0] "jeden Monat"
 msgstr[1] "alle %d Monate"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5374
+#: ../src/calendar/libecal/e-cal-recur.c:5379
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
 msgstr[0] "Jeden Monat"
 msgstr[1] "Alle %d Monate"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5384
-#: ../src/calendar/libecal/e-cal-recur.c:5705
+#: ../src/calendar/libecal/e-cal-recur.c:5389
+#: ../src/calendar/libecal/e-cal-recur.c:5710
 msgctxt "recur-description"
 msgid "on the last Sunday"
 msgstr "am letzten Sonntag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5387
-#: ../src/calendar/libecal/e-cal-recur.c:5555
+#: ../src/calendar/libecal/e-cal-recur.c:5392
+#: ../src/calendar/libecal/e-cal-recur.c:5560
 msgctxt "recur-description"
 msgid "on the last Monday"
 msgstr "am letzten Montag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5390
-#: ../src/calendar/libecal/e-cal-recur.c:5580
+#: ../src/calendar/libecal/e-cal-recur.c:5395
+#: ../src/calendar/libecal/e-cal-recur.c:5585
 msgctxt "recur-description"
 msgid "on the last Tuesday"
 msgstr "am letzten Dienstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5393
-#: ../src/calendar/libecal/e-cal-recur.c:5605
+#: ../src/calendar/libecal/e-cal-recur.c:5398
+#: ../src/calendar/libecal/e-cal-recur.c:5610
 msgctxt "recur-description"
 msgid "on the last Wednesday"
 msgstr "am letzten Mittwoch"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5396
-#: ../src/calendar/libecal/e-cal-recur.c:5630
+#: ../src/calendar/libecal/e-cal-recur.c:5401
+#: ../src/calendar/libecal/e-cal-recur.c:5635
 msgctxt "recur-description"
 msgid "on the last Thursday"
 msgstr "am letzten Donnerstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5399
-#: ../src/calendar/libecal/e-cal-recur.c:5655
+#: ../src/calendar/libecal/e-cal-recur.c:5404
+#: ../src/calendar/libecal/e-cal-recur.c:5660
 msgctxt "recur-description"
 msgid "on the last Friday"
 msgstr "am letzten Freitag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5402
-#: ../src/calendar/libecal/e-cal-recur.c:5680
+#: ../src/calendar/libecal/e-cal-recur.c:5407
+#: ../src/calendar/libecal/e-cal-recur.c:5685
 msgctxt "recur-description"
 msgid "on the last Saturday"
 msgstr "am letzten Samstag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5412
+#: ../src/calendar/libecal/e-cal-recur.c:5417
 msgctxt "recur-description"
 msgid "on the 1st day"
 msgstr "an dessen 1. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5416
+#: ../src/calendar/libecal/e-cal-recur.c:5421
 msgctxt "recur-description"
 msgid "on the 2nd day"
 msgstr "an dessen 2. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5420
+#: ../src/calendar/libecal/e-cal-recur.c:5425
 msgctxt "recur-description"
 msgid "on the 3rd day"
 msgstr "an dessen 3. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5424
+#: ../src/calendar/libecal/e-cal-recur.c:5429
 msgctxt "recur-description"
 msgid "on the 4th day"
 msgstr "an dessen 4. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5428
+#: ../src/calendar/libecal/e-cal-recur.c:5433
 msgctxt "recur-description"
 msgid "on the 5th day"
 msgstr "an dessen 5. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5432
+#: ../src/calendar/libecal/e-cal-recur.c:5437
 msgctxt "recur-description"
 msgid "on the 6th day"
 msgstr "an dessen 6. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5436
+#: ../src/calendar/libecal/e-cal-recur.c:5441
 msgctxt "recur-description"
 msgid "on the 7th day"
 msgstr "an dessen 7. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5440
+#: ../src/calendar/libecal/e-cal-recur.c:5445
 msgctxt "recur-description"
 msgid "on the 8th day"
 msgstr "an dessen 8. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5444
+#: ../src/calendar/libecal/e-cal-recur.c:5449
 msgctxt "recur-description"
 msgid "on the 9th day"
 msgstr "an dessen 9. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5448
+#: ../src/calendar/libecal/e-cal-recur.c:5453
 msgctxt "recur-description"
 msgid "on the 10th day"
 msgstr "an dessen 10. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5452
+#: ../src/calendar/libecal/e-cal-recur.c:5457
 msgctxt "recur-description"
 msgid "on the 11th day"
 msgstr "an dessen 11. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5456
+#: ../src/calendar/libecal/e-cal-recur.c:5461
 msgctxt "recur-description"
 msgid "on the 12th day"
 msgstr "an dessen 12. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5460
+#: ../src/calendar/libecal/e-cal-recur.c:5465
 msgctxt "recur-description"
 msgid "on the 13th day"
 msgstr "an dessen 13. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5464
+#: ../src/calendar/libecal/e-cal-recur.c:5469
 msgctxt "recur-description"
 msgid "on the 14th day"
 msgstr "an dessen 14. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5468
+#: ../src/calendar/libecal/e-cal-recur.c:5473
 msgctxt "recur-description"
 msgid "on the 15th day"
 msgstr "an dessen 15. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5472
+#: ../src/calendar/libecal/e-cal-recur.c:5477
 msgctxt "recur-description"
 msgid "on the 16th day"
 msgstr "an dessen 16. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5476
+#: ../src/calendar/libecal/e-cal-recur.c:5481
 msgctxt "recur-description"
 msgid "on the 17th day"
 msgstr "an dessen 17. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5480
+#: ../src/calendar/libecal/e-cal-recur.c:5485
 msgctxt "recur-description"
 msgid "on the 18th day"
 msgstr "an dessen 18. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5484
+#: ../src/calendar/libecal/e-cal-recur.c:5489
 msgctxt "recur-description"
 msgid "on the 19th day"
 msgstr "an dessen 19. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5488
+#: ../src/calendar/libecal/e-cal-recur.c:5493
 msgctxt "recur-description"
 msgid "on the 20th day"
 msgstr "an dessen 20. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5492
+#: ../src/calendar/libecal/e-cal-recur.c:5497
 msgctxt "recur-description"
 msgid "on the 21st day"
 msgstr "an dessen 21. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5496
+#: ../src/calendar/libecal/e-cal-recur.c:5501
 msgctxt "recur-description"
 msgid "on the 22nd day"
 msgstr "an dessen 22. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5500
+#: ../src/calendar/libecal/e-cal-recur.c:5505
 msgctxt "recur-description"
 msgid "on the 23rd day"
 msgstr "an dessen 23. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5504
+#: ../src/calendar/libecal/e-cal-recur.c:5509
 msgctxt "recur-description"
 msgid "on the 24th day"
 msgstr "an dessen 24. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5508
+#: ../src/calendar/libecal/e-cal-recur.c:5513
 msgctxt "recur-description"
 msgid "on the 25th day"
 msgstr "an dessen 24. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5512
+#: ../src/calendar/libecal/e-cal-recur.c:5517
 msgctxt "recur-description"
 msgid "on the 26th day"
 msgstr "an dessen 26. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5516
+#: ../src/calendar/libecal/e-cal-recur.c:5521
 msgctxt "recur-description"
 msgid "on the 27th day"
 msgstr "an dessen 27. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5520
+#: ../src/calendar/libecal/e-cal-recur.c:5525
 msgctxt "recur-description"
 msgid "on the 28th day"
 msgstr "an dessen 28. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5524
+#: ../src/calendar/libecal/e-cal-recur.c:5529
 msgctxt "recur-description"
 msgid "on the 29th day"
 msgstr "an dessen 29. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5528
+#: ../src/calendar/libecal/e-cal-recur.c:5533
 msgctxt "recur-description"
 msgid "on the 30th day"
 msgstr "an dessen 30. Tag"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5532
+#: ../src/calendar/libecal/e-cal-recur.c:5537
 msgctxt "recur-description"
 msgid "on the 31st day"
 msgstr "an dessen 31. Tag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5540
+#: ../src/calendar/libecal/e-cal-recur.c:5545
 msgctxt "recur-description"
 msgid "on the first Monday"
 msgstr "am ersten Montag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5543
+#: ../src/calendar/libecal/e-cal-recur.c:5548
 msgctxt "recur-description"
 msgid "on the second Monday"
 msgstr "am zweiten Montag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5546
+#: ../src/calendar/libecal/e-cal-recur.c:5551
 msgctxt "recur-description"
 msgid "on the third Monday"
 msgstr "am dritten Montag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5549
+#: ../src/calendar/libecal/e-cal-recur.c:5554
 msgctxt "recur-description"
 msgid "on the fourth Monday"
 msgstr "am vierten Montag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5552
+#: ../src/calendar/libecal/e-cal-recur.c:5557
 msgctxt "recur-description"
 msgid "on the fifth Monday"
 msgstr "am fünften Montag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5565
+#: ../src/calendar/libecal/e-cal-recur.c:5570
 msgctxt "recur-description"
 msgid "on the first Tuesday"
 msgstr "am ersten Dienstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5568
+#: ../src/calendar/libecal/e-cal-recur.c:5573
 msgctxt "recur-description"
 msgid "on the second Tuesday"
 msgstr "am zweiten Dienstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5571
+#: ../src/calendar/libecal/e-cal-recur.c:5576
 msgctxt "recur-description"
 msgid "on the third Tuesday"
 msgstr "am dritten Dienstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5574
+#: ../src/calendar/libecal/e-cal-recur.c:5579
 msgctxt "recur-description"
 msgid "on the fourth Tuesday"
 msgstr "am vierten Dienstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5577
+#: ../src/calendar/libecal/e-cal-recur.c:5582
 msgctxt "recur-description"
 msgid "on the fifth Tuesday"
 msgstr "am fünften Dienstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5590
+#: ../src/calendar/libecal/e-cal-recur.c:5595
 msgctxt "recur-description"
 msgid "on the first Wednesday"
 msgstr "am ersten Mittwoch"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5593
+#: ../src/calendar/libecal/e-cal-recur.c:5598
 msgctxt "recur-description"
 msgid "on the second Wednesday"
 msgstr "am zweiten Mittwoch"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5596
+#: ../src/calendar/libecal/e-cal-recur.c:5601
 msgctxt "recur-description"
 msgid "on the third Wednesday"
 msgstr "am dritten Mittwoch"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5599
+#: ../src/calendar/libecal/e-cal-recur.c:5604
 msgctxt "recur-description"
 msgid "on the fourth Wednesday"
 msgstr "am vierten Mittwoch"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5602
+#: ../src/calendar/libecal/e-cal-recur.c:5607
 msgctxt "recur-description"
 msgid "on the fifth Wednesday"
 msgstr "am fünften Mittwoch"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5615
+#: ../src/calendar/libecal/e-cal-recur.c:5620
 msgctxt "recur-description"
 msgid "on the first Thursday"
 msgstr "am ersten Donnerstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5618
+#: ../src/calendar/libecal/e-cal-recur.c:5623
 msgctxt "recur-description"
 msgid "on the second Thursday"
 msgstr "am zweiten Donnerstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5621
+#: ../src/calendar/libecal/e-cal-recur.c:5626
 msgctxt "recur-description"
 msgid "on the third Thursday"
 msgstr "am dritten Donnerstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5624
+#: ../src/calendar/libecal/e-cal-recur.c:5629
 msgctxt "recur-description"
 msgid "on the fourth Thursday"
 msgstr "am vierten Donnerstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5627
+#: ../src/calendar/libecal/e-cal-recur.c:5632
 msgctxt "recur-description"
 msgid "on the fifth Thursday"
 msgstr "am fünften Donnerstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5640
+#: ../src/calendar/libecal/e-cal-recur.c:5645
 msgctxt "recur-description"
 msgid "on the first Friday"
 msgstr "am ersten Freitag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5643
+#: ../src/calendar/libecal/e-cal-recur.c:5648
 msgctxt "recur-description"
 msgid "on the second Friday"
 msgstr "am zweiten Freitag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5646
+#: ../src/calendar/libecal/e-cal-recur.c:5651
 msgctxt "recur-description"
 msgid "on the third Friday"
 msgstr "am dritten Freitag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5649
+#: ../src/calendar/libecal/e-cal-recur.c:5654
 msgctxt "recur-description"
 msgid "on the fourth Friday"
 msgstr "am vierten Freitag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5652
+#: ../src/calendar/libecal/e-cal-recur.c:5657
 msgctxt "recur-description"
 msgid "on the fifth Friday"
 msgstr "am fünften Freitag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5665
+#: ../src/calendar/libecal/e-cal-recur.c:5670
 msgctxt "recur-description"
 msgid "on the first Saturday"
 msgstr "am ersten Samstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5668
+#: ../src/calendar/libecal/e-cal-recur.c:5673
 msgctxt "recur-description"
 msgid "on the second Saturday"
 msgstr "am zweiten Samstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5671
+#: ../src/calendar/libecal/e-cal-recur.c:5676
 msgctxt "recur-description"
 msgid "on the third Saturday"
 msgstr "am dritten Samstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5674
+#: ../src/calendar/libecal/e-cal-recur.c:5679
 msgctxt "recur-description"
 msgid "on the fourth Saturday"
 msgstr "am vierten Samstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5677
+#: ../src/calendar/libecal/e-cal-recur.c:5682
 msgctxt "recur-description"
 msgid "on the fifth Saturday"
 msgstr "am fünften Samstag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5690
+#: ../src/calendar/libecal/e-cal-recur.c:5695
 msgctxt "recur-description"
 msgid "on the first Sunday"
 msgstr "am ersten Sonntag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5693
+#: ../src/calendar/libecal/e-cal-recur.c:5698
 msgctxt "recur-description"
 msgid "on the second Sunday"
 msgstr "am zweiten Sonntag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5696
+#: ../src/calendar/libecal/e-cal-recur.c:5701
 msgctxt "recur-description"
 msgid "on the third Sunday"
 msgstr "am dritten Sonntag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5699
+#: ../src/calendar/libecal/e-cal-recur.c:5704
 msgctxt "recur-description"
 msgid "on the fourth Sunday"
 msgstr "am vierten Sonntag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5702
+#: ../src/calendar/libecal/e-cal-recur.c:5707
 msgctxt "recur-description"
 msgid "on the fifth Sunday"
 msgstr "am fünften Sonntag"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5731
+#: ../src/calendar/libecal/e-cal-recur.c:5736
 #, c-format
 msgid "every year forever"
 msgid_plural "every %d years forever"
 msgstr[0] "jedes Jahr für immer"
 msgstr[1] "alle %d Jahre für immer"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5737
+#: ../src/calendar/libecal/e-cal-recur.c:5742
 #, c-format
 msgid "Every year forever"
 msgid_plural "Every %d years forever"
 msgstr[0] "Jedes Jahr für immer"
 msgstr[1] "Alle %d Jahre für immer"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5745
+#: ../src/calendar/libecal/e-cal-recur.c:5750
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
 msgstr[0] "jedes Jahr"
 msgstr[1] "alle %d Jahre"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5751
+#: ../src/calendar/libecal/e-cal-recur.c:5756
 #, c-format
 msgid "Every year"
 msgid_plural "Every %d years"
@@ -2235,7 +2244,7 @@ msgstr[1] "Alle %d Jahre"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 3 days for 10 occurrences"
-#: ../src/calendar/libecal/e-cal-recur.c:5770
+#: ../src/calendar/libecal/e-cal-recur.c:5775
 #, c-format
 msgid "for one occurrence"
 msgid_plural "for %d occurrences"
@@ -2246,7 +2255,7 @@ msgstr[1] "%d mal"
 #. The '%s' is replaced with actual date, thus it can create something like
 #. "until Mon 15.1.2018". The text is appended at the end of the complete
 #. recurrence description, making it for example: "Every 3 days until Mon 15.1.2018"
-#: ../src/calendar/libecal/e-cal-recur.c:5801
+#: ../src/calendar/libecal/e-cal-recur.c:5811
 #, c-format
 msgctxt "recur-description"
 msgid "until %s"
@@ -2255,7 +2264,7 @@ msgstr "bis %s"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 2 months on Tuesday, Thursday and Friday forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5807
+#: ../src/calendar/libecal/e-cal-recur.c:5817
 msgctxt "recur-description"
 msgid "forever"
 msgstr "für immer"
@@ -2266,7 +2275,7 @@ msgstr "für immer"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
 #. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
 #. together one sentence: "Every 2 weeks on Tuesday and Friday for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5817
+#: ../src/calendar/libecal/e-cal-recur.c:5827
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s %3$s"
@@ -2276,7 +2285,7 @@ msgstr "%1$s %2$s %3$s"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
 #. the '%2$s' is like "for 10 occurrences", constructing together one sentence:
 #. "Every 2 days for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5822
+#: ../src/calendar/libecal/e-cal-recur.c:5832
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s"
@@ -2284,7 +2293,7 @@ msgstr "%1$s %2$s"
 
 #. Translators: This text is appended at the end of complete recur description using "%s%s" in
 #. context "recur-description"
-#: ../src/calendar/libecal/e-cal-recur.c:5838
+#: ../src/calendar/libecal/e-cal-recur.c:5848
 #, c-format
 msgid ", with one exception"
 msgid_plural ", with %d exceptions"
@@ -2294,33 +2303,33 @@ msgstr[1] ", mit %d Ausnahmen"
 #. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
 #. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
 #. It will form something like: "Every 2 weeks on Tuesday and Friday for 10 occurrences, with 3 exceptions"
-#: ../src/calendar/libecal/e-cal-recur.c:5845
+#: ../src/calendar/libecal/e-cal-recur.c:5855
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5858
-#: ../src/calendar/libecal/e-cal-recur.c:5881
+#: ../src/calendar/libecal/e-cal-recur.c:5868
+#: ../src/calendar/libecal/e-cal-recur.c:5891
 msgctxt "recur-description"
 msgid "The meeting recurs"
 msgstr "Die Besprechung ist wiederkehrend"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5860
-#: ../src/calendar/libecal/e-cal-recur.c:5883
+#: ../src/calendar/libecal/e-cal-recur.c:5870
+#: ../src/calendar/libecal/e-cal-recur.c:5893
 msgctxt "recur-description"
 msgid "The appointment recurs"
 msgstr "Der Termin ist wiederkehrend"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5863
-#: ../src/calendar/libecal/e-cal-recur.c:5886
+#: ../src/calendar/libecal/e-cal-recur.c:5873
+#: ../src/calendar/libecal/e-cal-recur.c:5896
 msgctxt "recur-description"
 msgid "The task recurs"
 msgstr "Die Aufgabe ist wiederkehrend"
 
 #. if (i_cal_component_isa (comp) == I_CAL_VJOURNAL_COMPONENT)
-#: ../src/calendar/libecal/e-cal-recur.c:5865
-#: ../src/calendar/libecal/e-cal-recur.c:5888
+#: ../src/calendar/libecal/e-cal-recur.c:5875
+#: ../src/calendar/libecal/e-cal-recur.c:5898
 msgctxt "recur-description"
 msgid "The memo recurs"
 msgstr "Die Notiz ist wiederkehrend"
@@ -2330,7 +2339,7 @@ msgstr "Die Notiz ist wiederkehrend"
 #. The '%1$s' is replaced with something like "The meeting recurs" and
 #. the '%2$s' with something like "every 2 days forever", thus forming
 #. sentence like "This meeting recurs every 2 days forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5872
+#: ../src/calendar/libecal/e-cal-recur.c:5882
 #, c-format
 msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
@@ -2361,7 +2370,7 @@ msgid "Undefined"
 msgstr "Nicht festgelegt"
 
 #: ../src/calendar/libecal/e-cal-util.c:885
-#: ../src/libedataserverui/e-reminders-widget.c:292
+#: ../src/libedataserverui/e-reminders-widget.c:296
 #, c-format
 msgid "%d week"
 msgid_plural "%d weeks"
@@ -2369,7 +2378,7 @@ msgstr[0] "%d Woche"
 msgstr[1] "%d Wochen"
 
 #: ../src/calendar/libecal/e-cal-util.c:894
-#: ../src/libedataserverui/e-reminders-widget.c:288
+#: ../src/libedataserverui/e-reminders-widget.c:292
 #, c-format
 msgid "%d day"
 msgid_plural "%d days"
@@ -2377,7 +2386,7 @@ msgstr[0] "%d Tag"
 msgstr[1] "%d Tage"
 
 #: ../src/calendar/libecal/e-cal-util.c:903
-#: ../src/libedataserverui/e-reminders-widget.c:284
+#: ../src/libedataserverui/e-reminders-widget.c:288
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
@@ -2385,7 +2394,7 @@ msgstr[0] "%d Stunde"
 msgstr[1] "%d Stunden"
 
 #: ../src/calendar/libecal/e-cal-util.c:912
-#: ../src/libedataserverui/e-reminders-widget.c:280
+#: ../src/libedataserverui/e-reminders-widget.c:284
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -2433,17 +2442,18 @@ msgstr "%s, %s"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:77
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1104
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1443
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1570
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1619
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1165
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1507
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1634
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1683
 #, c-format
 msgid "“%s” expects one argument"
 msgstr "»%s« erwartet ein Argument"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:84
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:707
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1450
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1458
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1514
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1522
 #, c-format
 msgid "“%s” expects the first argument to be a string"
 msgstr "»%s« erwartet als erstes Argument eine Zeichenkette"
@@ -2458,9 +2468,10 @@ msgstr "»%s« erwartet zwei oder drei Argumente"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:340
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:857
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1111
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1519
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1577
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1626
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1172
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1583
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1641
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1690
 #, c-format
 msgid "“%s” expects the first argument to be a time_t"
 msgstr "»%s« erwartet als erstes Argument einen time_t-Wert"
@@ -2486,7 +2497,7 @@ msgstr "»%s« erwartet keines oder zwei Argumente"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:333
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:700
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:850
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1512
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1576
 #, c-format
 msgid "“%s” expects two arguments"
 msgstr "»%s« erwartet zwei Argumente"
@@ -2497,7 +2508,7 @@ msgstr "»%s« erwartet zwei Argumente"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:814
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1023
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1056
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1404
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1468
 #, c-format
 msgid "“%s” expects no arguments"
 msgstr "»%s« erwartet keine Argumente"
@@ -2531,50 +2542,50 @@ msgstr ""
 "»%s« erwartet als Argumente Zeichenketten oder ein einziges Argument mit dem "
 "Wahrheitswert »falsch« (#f)"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1467
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1531
 #, c-format
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 "»%s« erwartet als erstes Argument eine Datum-/Zeit-Zeichenkette nach ISO 8601"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1528
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1592
 #, c-format
 msgid "“%s” expects the second argument to be an integer"
 msgstr "»%s« erwartet als zweites Argument eine Ganzzahl"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1798
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1825
 #, c-format
 msgid "Failed to create SQLite function, error code “%d”: %s"
 msgstr "SQLite-Funktion konnte nicht erstellt werden, Fehlercode »%d«: %s"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2798
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2856
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2915
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2978
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2825
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2883
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2942
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3005
 #, c-format
 msgid "Object “%s”, “%s” not found"
 msgstr "Objekt »%s«, »%s« wurde nicht gefunden"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3757
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3784
 msgid "Cannot add timezone without tzid"
 msgstr "Zeitzone kann nicht ohne Kennung (tzid) hinzugefügt werden"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3766
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3793
 msgid "Cannot add timezone without component"
 msgstr "Zeitzone kann nicht ohne Komponente hinzugefügt werden"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3774
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3801
 msgid "Cannot add timezone with invalid component"
 msgstr "Zeitzone kann nicht mit ungültiger Komponente hinzugefügt werden"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1140
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1148
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr ""
 "Das empfangene Objekt für Benutzerkennung »%s« enthält keinerlei erwartete "
 "Komponenten"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4162
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4181
 msgid "attachment.dat"
 msgstr "Anlage.dat"
 
@@ -2719,80 +2730,80 @@ msgstr "Kindprozess »%s« konnte nicht erstellt werden: %s"
 msgid "Invalid message stream received from %s: %s"
 msgstr "Ungültiger Nachrichten-Datenstrom von %s erhalten: %s"
 
-#: ../src/camel/camel-filter-driver.c:1389
-#: ../src/camel/camel-filter-driver.c:1402
+#: ../src/camel/camel-filter-driver.c:1392
+#: ../src/camel/camel-filter-driver.c:1405
 msgid "Syncing folders"
 msgstr "Ordner werden abgeglichen"
 
-#: ../src/camel/camel-filter-driver.c:1510
+#: ../src/camel/camel-filter-driver.c:1513
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Fehler beim Analysieren der Filtersyntax: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1521
+#: ../src/camel/camel-filter-driver.c:1524
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Fehler beim Ausführen des Filters: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1619
+#: ../src/camel/camel-filter-driver.c:1622
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Der Spool-Ordner konnte nicht geöffnet werden"
 
-#: ../src/camel/camel-filter-driver.c:1631
+#: ../src/camel/camel-filter-driver.c:1634
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Der Spool-Ordner konnte nicht verarbeitet werden"
 
-#: ../src/camel/camel-filter-driver.c:1662
+#: ../src/camel/camel-filter-driver.c:1665
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Nachricht %d wird abgerufen (%d%%)"
 
-#: ../src/camel/camel-filter-driver.c:1671
-#: ../src/camel/camel-filter-driver.c:1694
+#: ../src/camel/camel-filter-driver.c:1674
+#: ../src/camel/camel-filter-driver.c:1697
 #, c-format
 msgid "Failed on message %d"
 msgstr "Fehlgeschlagen bei Nachricht %d"
 
-#: ../src/camel/camel-filter-driver.c:1712
-#: ../src/camel/camel-filter-driver.c:1844
+#: ../src/camel/camel-filter-driver.c:1715
+#: ../src/camel/camel-filter-driver.c:1847
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "Übertragung der Nachrichten ist fehlgeschlagen: %s"
 
-#: ../src/camel/camel-filter-driver.c:1722
-#: ../src/camel/camel-filter-driver.c:1858
+#: ../src/camel/camel-filter-driver.c:1725
+#: ../src/camel/camel-filter-driver.c:1861
 msgid "Syncing folder"
 msgstr "Ordner wird abgeglichen"
 
-#: ../src/camel/camel-filter-driver.c:1727
-#: ../src/camel/camel-filter-driver.c:1866
+#: ../src/camel/camel-filter-driver.c:1730
+#: ../src/camel/camel-filter-driver.c:1869
 msgid "Complete"
 msgstr "Abgeschlossen"
 
-#: ../src/camel/camel-filter-driver.c:1798
+#: ../src/camel/camel-filter-driver.c:1801
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Nachricht %d von %d wird abgerufen"
 
-#: ../src/camel/camel-filter-driver.c:1816
+#: ../src/camel/camel-filter-driver.c:1819
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Fehlgeschlagen bei Nachricht %d von %d"
 
-#: ../src/camel/camel-filter-driver.c:2026
-#: ../src/camel/camel-filter-driver.c:2050
+#: ../src/camel/camel-filter-driver.c:2029
+#: ../src/camel/camel-filter-driver.c:2053
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Ausführen des Filters »%s« ist gescheitert: "
 
-#: ../src/camel/camel-filter-driver.c:2040
+#: ../src/camel/camel-filter-driver.c:2043
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Fehler beim Analysieren des Filters »%s«: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:2059
+#: ../src/camel/camel-filter-driver.c:2062
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Fehler beim Ausführen des Filters »%s«: %s: %s"
@@ -2907,39 +2918,39 @@ msgid "Refreshing folder “%s : %s”"
 msgstr "Ordner »%s : %s« wird aktualisiert"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:916
-#: ../src/camel/camel-folder-search.c:959
+#: ../src/camel/camel-folder-search.c:918
+#: ../src/camel/camel-folder-search.c:961
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) erfordert einen einzelnen Boole'schen Wert als Ergebnis"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:997
+#: ../src/camel/camel-folder-search.c:999
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) nicht erlaubt innerhalb von %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1004
-#: ../src/camel/camel-folder-search.c:1012
+#: ../src/camel/camel-folder-search.c:1006
+#: ../src/camel/camel-folder-search.c:1014
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) erfordert den Treffertyp Zeichenkette"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1040
+#: ../src/camel/camel-folder-search.c:1042
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) erwartet ein Array-Ergebnis"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1050
+#: ../src/camel/camel-folder-search.c:1052
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) erfordert, dass der Ordner festgelegt ist"
 
-#: ../src/camel/camel-folder-search.c:2208
-#: ../src/camel/camel-folder-search.c:2382
+#: ../src/camel/camel-folder-search.c:2210
+#: ../src/camel/camel-folder-search.c:2384
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2948,8 +2959,8 @@ msgstr ""
 "Syntax des Suchausdrucks konnte nicht analysiert werden: %s:\n"
 "%s"
 
-#: ../src/camel/camel-folder-search.c:2220
-#: ../src/camel/camel-folder-search.c:2394
+#: ../src/camel/camel-folder-search.c:2222
+#: ../src/camel/camel-folder-search.c:2396
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2979,7 +2990,7 @@ msgid "Failed to execute gpg: %s"
 msgstr "gpg konnte nicht ausgeführt werden: %s"
 
 #: ../src/camel/camel-gpg-context.c:917
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1203
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1205
 msgid "Unknown"
 msgstr "Unbekannt"
 
@@ -3558,14 +3569,14 @@ msgstr ""
 
 #: ../src/camel/camel-sasl-gssapi.c:237 ../src/camel/camel-sasl-gssapi.c:441
 #: ../src/camel/camel-sasl-gssapi.c:491 ../src/camel/camel-sasl-gssapi.c:508
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:854
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:856
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Fehlerhafte Legitimierungsantwort vom Server."
 
 #: ../src/camel/camel-sasl-gssapi.c:288
 msgid "Could not get session bus:"
-msgstr "Sitzungsbus konnte nicht erreicht werden: "
+msgstr "Sitzungsbus konnte nicht erreicht werden:"
 
 #: ../src/camel/camel-sasl-gssapi.c:322
 #, c-format
@@ -3683,10 +3694,10 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "Ungültiger GType registriert für Protokoll »%s«"
 
 #: ../src/camel/camel-session.c:508
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3219
-#: ../src/camel/providers/pop3/camel-pop3-store.c:303
-#: ../src/camel/providers/pop3/camel-pop3-store.c:807
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:694
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3248
+#: ../src/camel/providers/pop3/camel-pop3-store.c:305
+#: ../src/camel/providers/pop3/camel-pop3-store.c:809
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:696
 #, c-format
 msgid "No support for %s authentication"
 msgstr "Keine Unterstützung für Legitimierungstyp %s"
@@ -3972,7 +3983,7 @@ msgstr ""
 "Mit CamelHttpStream wird nur das Zurücksetzen an den Beginn unterstützt"
 
 #: ../src/camel/camel-stream-process.c:282
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:741
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:743
 #, c-format
 msgid "Connection cancelled"
 msgstr "Verbindung abgebrochen"
@@ -4002,7 +4013,7 @@ msgstr "Syntax der Adresse »%s« konnte nicht analysiert werden"
 msgid "Updating folder “%s”"
 msgstr "Ordner »%s« wird aktualisiert"
 
-#: ../src/camel/camel-vee-folder.c:1185 ../src/camel/camel-vee-folder.c:1321
+#: ../src/camel/camel-vee-folder.c:1285 ../src/camel/camel-vee-folder.c:1421
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr ""
@@ -4012,22 +4023,22 @@ msgstr ""
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: ../src/camel/camel-vee-folder.c:1222
+#: ../src/camel/camel-vee-folder.c:1322
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "Nachricht %s existiert nicht in %s : %s"
 
-#: ../src/camel/camel-vee-folder.c:1297
+#: ../src/camel/camel-vee-folder.c:1397
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "Fehler beim Speichern von »%s«: "
 
-#: ../src/camel/camel-vee-folder.c:1487
+#: ../src/camel/camel-vee-folder.c:1587
 #, c-format
 msgid "Updating search folder “%s”"
 msgstr "Suchordner »%s« wird aktualisiert"
 
-#: ../src/camel/camel-vee-folder.c:1545
+#: ../src/camel/camel-vee-folder.c:1645
 msgid "Automatically _update on change in source folders"
 msgstr "Bei jeder Änderung des _Quellordners automatisch aktualisieren"
 
@@ -4069,7 +4080,7 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "Sie müssen online arbeiten, um diesen Vorgang abzuschließen (%s)"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:987
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3388
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3417
 #: ../src/camel/providers/nntp/camel-nntp-store.c:348
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1343
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2153
@@ -4078,38 +4089,38 @@ msgstr "Sie müssen online arbeiten, um diesen Vorgang abzuschließen (%s)"
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:633
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:922
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:1136
-#: ../src/camel/providers/pop3/camel-pop3-store.c:291
-#: ../src/camel/providers/pop3/camel-pop3-store.c:526
-#: ../src/camel/providers/pop3/camel-pop3-store.c:574
-#: ../src/camel/providers/pop3/camel-pop3-store.c:671
-#: ../src/camel/providers/pop3/camel-pop3-store.c:1122
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:545
+#: ../src/camel/providers/pop3/camel-pop3-store.c:293
+#: ../src/camel/providers/pop3/camel-pop3-store.c:528
+#: ../src/camel/providers/pop3/camel-pop3-store.c:576
+#: ../src/camel/providers/pop3/camel-pop3-store.c:673
+#: ../src/camel/providers/pop3/camel-pop3-store.c:1124
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:547
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "Sie müssen online arbeiten, um diesen Vorgang abzuschließen"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1614
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1710
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1611
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1707
 #, c-format
 msgid "No destination folder specified"
 msgstr "Kein Zielordner angegeben"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1641
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1638
 msgid "Unable to move junk messages"
 msgstr "Unerwünschte Nachrichten konnten nicht verschoben werden"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1744
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1741
 msgid "Unable to move deleted messages"
 msgstr "Gelöschte Nachrichten konnten nicht verschoben werden"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1812
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1809
 msgid "Unable to move messages to Inbox"
 msgstr "Nachrichten konnten nicht in den Posteingang verschoben werden"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:766
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:772
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
 msgstr "Kontingent-Informationen sind für Ordner »%s : %s« nicht verfügbar"
@@ -4118,27 +4129,27 @@ msgstr "Kontingent-Informationen sind für Ordner »%s : %s« nicht verfügbar"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1033
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1039
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr ""
 "Abgelaufene Zwischenspeicherdateien im Ordner »%s : %s« werden entfernt"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1125
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1131
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:835
 msgid "Apply message _filters to this folder"
 msgstr "Nachrichten_filter auf diesen Ordner anwenden"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1137
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1143
 msgid "Always check for _new mail in this folder"
 msgstr "Immer in diesem Ordner nach _neuen E-Mails schauen"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1252
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1258
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Zusammenfassung für %s konnte nicht erstellt werden"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1264
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1270
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Zwischenspeicher konnte nicht für »%s« angelegt werden: "
@@ -4146,7 +4157,7 @@ msgstr "Zwischenspeicher konnte nicht für »%s« angelegt werden: "
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1464
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1470
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "Für Ordner »%s : %s« ist kein IMAP-Postfach verfügbar"
@@ -4257,41 +4268,41 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Zum Lesen und Speichern von E-Mails auf IMAP-Servern."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:1164
+#: ../src/camel/providers/imapx/camel-imapx-server.c:1167
 msgid "Error writing to cache stream"
 msgstr "Fehler beim Schreiben in den Zwischenspeicher-Datenstrom"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3012
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3101
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3421
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3041
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3130
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3450
 msgid "Failed to get capabilities"
 msgstr "Ermitteln der Fähigkeiten gescheitert"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3031
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3060
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Verbindung mit IMAP-Server %s im sicheren Modus ist gescheitert: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3032
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3061
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:283
 msgid "STARTTLS not supported"
 msgstr "STARTTLS nicht unterstützt"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3041
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3070
 msgid "Failed to issue STARTTLS"
 msgstr "Fehler bei der Ausgabe von STARTTLS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3090
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3119
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Verbindung mit IMAP-Server %s im sicheren Modus ist gescheitert: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3206
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3235
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP-Server %s unterstützt den Legitimierungstyp %s nicht"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3232
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3261
 #, c-format
 msgid ""
 "Plaintext authentication disallowed on insecure connections. Change "
@@ -4301,178 +4312,178 @@ msgstr ""
 "erlaubt. Ändern Sie die Verschlüsselung für das Konto »%s« auf STARTTLS oder "
 "TLS."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3245
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3274
 #: ../src/camel/providers/nntp/camel-nntp-store.c:454
 #: ../src/camel/providers/nntp/camel-nntp-store.c:596
 msgid "Cannot authenticate without a username"
 msgstr "Legitimierung ohne Benutzername ist nicht möglich"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3254
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3283
 #: ../src/camel/providers/nntp/camel-nntp-store.c:605
-#: ../src/camel/providers/pop3/camel-pop3-store.c:707
-#: ../src/camel/providers/pop3/camel-pop3-store.c:745
+#: ../src/camel/providers/pop3/camel-pop3-store.c:709
+#: ../src/camel/providers/pop3/camel-pop3-store.c:747
 msgid "Authentication password not available"
 msgstr "Legitimierungspasswort ist nicht verfügbar"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3264
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3279
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3293
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3308
 msgid "Failed to authenticate"
 msgstr "Legitimierung gescheitert"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3448
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3477
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr "Fehler bei der Ausgabe von ENABLE UTF8=ACCEPT"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3470
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3499
 msgid "Failed to issue NAMESPACE"
 msgstr "Fehler bei der Ausgabe von NAMESPACE"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3488
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3517
 msgid "Failed to enable QResync"
 msgstr "Aktivieren von QResync fehlgeschlagen"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3525
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3554
 msgid "Failed to issue NOTIFY"
 msgstr "Fehler bei der Ausgabe von NOTIFY"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4004
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4033
 msgid "Failed to select mailbox"
 msgstr "﻿Fehler beim Auswählen des Postfachs"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4107
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4136
 msgid "Cannot issue command, no stream available"
 msgstr "Befehl kann nicht ausgegeben werden, kein Datenstrom vorhanden"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4373
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4405
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nachricht mit Kennung %s konnte nicht abgerufen werden: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4374
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4406
 msgid "No such message available."
 msgstr "Nachricht nicht verfügbar."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4423
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4448
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4487
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4455
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4480
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4519
 msgid "Error fetching message"
 msgstr "Fehler beim Abrufen der Nachricht"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4465
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5232
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4497
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5264
 msgid "Error performing NOOP"
 msgstr "Fehler beim Ausführen von NOOP"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4480
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4512
 msgid "Failed to close the tmp stream"
 msgstr "Temporärer Datenstrom konnte nicht geschlossen werden"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4511
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4543
 msgid "Failed to copy the tmp file"
 msgstr "Temporäre Datei konnte nicht kopiert werden"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4749
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4781
 msgid "Error moving messages"
 msgstr "Fehler beim Verschieben von Nachrichten"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4749
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4781
 msgid "Error copying messages"
 msgstr "Fehler beim Kopieren von Nachrichten"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5022
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5043
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5054
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5075
 msgid "Cannot create spool file: "
 msgstr "Spool-Datei konnte nicht angelegt werden: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5129
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5161
 msgid "Error appending message"
 msgstr "Fehler beim Anhängen der Nachricht"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5385
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5417
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Geänderte Nachrichten werden in »%s : %s« gesucht"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5389
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5421
 msgid "Error scanning changes"
 msgstr "Fehler beim Durchsuchen der Änderungen"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5410
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5442
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr ""
 "Zusammenfassende Informationen für neue Nachrichten in »%s : %s« werden "
 "abgerufen"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5438
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5470
 msgid "Error fetching message info"
 msgstr "Fehler beim Abrufen der Nachrichtinfo"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5571
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5603
 msgid "Error running STATUS"
 msgstr "Fehler beim Ausführen von STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6145
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6200
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6264
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6177
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6232
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6296
 msgid "Error syncing changes"
 msgstr "Fehler beim Abgleichen der Änderungen"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6158
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6210
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6283
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6427
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6190
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6242
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6315
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6459
 msgid "Error expunging message"
 msgstr "Fehler beim Löschen der Nachricht"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6509
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6541
 msgid "Error fetching folders"
 msgstr "Fehler beim Abrufen der Ordner"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6517
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6549
 msgid "Error fetching subscribed folders"
 msgstr "Fehler beim Abrufen der abonnierten Ordner"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6574
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6606
 msgid "Error creating folder"
 msgstr "Fehler beim Anlegen des Ordners"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6624
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6656
 msgid "Error deleting folder"
 msgstr "Fehler beim Löschen des Ordners"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6670
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6702
 msgid "Error renaming folder"
 msgstr "Fehler beim Umbenennen des Ordners"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6702
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6734
 msgid "Error subscribing to folder"
 msgstr "Fehler beim Abonnieren des Ordners"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6738
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6770
 msgid "Error unsubscribing from folder"
 msgstr "Fehler beim Kündigen des Abonnement des Ordners"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6778
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6810
 msgid "IMAP server does not support quotas"
 msgstr "IMAP-Server unterstützt keine Kontingente"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6790
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6822
 msgid "Error retrieving quota information"
 msgstr "Fehler beim Abrufen der Kontingent-Informationen"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6855
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6887
 msgid "Search failed"
 msgstr "Suche fehlgeschlagen"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6983
+#: ../src/camel/providers/imapx/camel-imapx-server.c:7015
 msgid "Error running IDLE"
 msgstr "Fehler beim Ausführen von IDLE"
 
@@ -4769,7 +4780,7 @@ msgstr "Speicherwurzel %s ist kein absoluter Pfad"
 #: ../src/camel/providers/local/camel-local-store.c:216
 #, c-format
 msgid "Store root %s is not a regular directory"
-msgstr "Speicherwurzel »%s« ist kein regulärer Ordner."
+msgstr "Speicherwurzel »%s« ist kein regulärer Ordner"
 
 #: ../src/camel/providers/local/camel-local-store.c:228
 #: ../src/camel/providers/local/camel-local-store.c:238
@@ -5540,34 +5551,34 @@ msgstr ""
 "Verbindung mit POP-Server %s konnte im sicheren Modus nicht hergestellt "
 "werden %s"
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:212
+#: ../src/camel/providers/pop3/camel-pop3-store.c:214
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: "
 msgstr ""
 "Verbindung mit POP-Server %s konnte im sicheren Modus nicht hergestellt "
 "werden: "
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:354
+#: ../src/camel/providers/pop3/camel-pop3-store.c:356
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "Anmeldung an POP-Server %s gescheitert: SASL-Protokollfehler"
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:376
+#: ../src/camel/providers/pop3/camel-pop3-store.c:378
 #, c-format
 msgid "Failed to authenticate on POP server %s: "
 msgstr "Legitimierung am POP-Server %s gescheitert: "
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:484
+#: ../src/camel/providers/pop3/camel-pop3-store.c:486
 #, c-format
 msgid "POP3 server %s"
 msgstr "POP3-Server %s"
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:487
+#: ../src/camel/providers/pop3/camel-pop3-store.c:489
 #, c-format
 msgid "POP3 server for %s on %s"
 msgstr "POP3-Dienst für %s auf %s"
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:691
+#: ../src/camel/providers/pop3/camel-pop3-store.c:693
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -5576,9 +5587,9 @@ msgstr ""
 "Verbindung mit POP-Server %s konnte nicht hergestellt werden.\n"
 "Fehler bei der Aktivierung des UTF-8-Modus: "
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:719
-#: ../src/camel/providers/pop3/camel-pop3-store.c:732
-#: ../src/camel/providers/pop3/camel-pop3-store.c:818
+#: ../src/camel/providers/pop3/camel-pop3-store.c:721
+#: ../src/camel/providers/pop3/camel-pop3-store.c:734
+#: ../src/camel/providers/pop3/camel-pop3-store.c:820
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -5588,7 +5599,7 @@ msgstr ""
 "Fehler beim Übermitteln des Passworts: "
 
 #. Translators: Do not translate APOP.
-#: ../src/camel/providers/pop3/camel-pop3-store.c:759
+#: ../src/camel/providers/pop3/camel-pop3-store.c:761
 #, c-format
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
@@ -5600,7 +5611,7 @@ msgstr ""
 
 #. Translators: Last %s is an optional explanation
 #. * beginning with ": " separator.
-#: ../src/camel/providers/pop3/camel-pop3-store.c:833
+#: ../src/camel/providers/pop3/camel-pop3-store.c:835
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -5609,12 +5620,12 @@ msgstr ""
 "Verbindung mit POP-Server %s konnte nicht hergestellt werden.\n"
 "Fehler beim Übermitteln des Benutzernamens %s"
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:917
+#: ../src/camel/providers/pop3/camel-pop3-store.c:919
 #, c-format
 msgid "No such folder “%s”."
 msgstr "Ordner »%s« ist nicht vorhanden."
 
-#: ../src/camel/providers/pop3/camel-pop3-store.c:934
+#: ../src/camel/providers/pop3/camel-pop3-store.c:936
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "POP3-Postfächer haben keine Ordnerstruktur"
@@ -5728,215 +5739,215 @@ msgstr "Verbindung mit SMTP-Server %s im sicheren Modus ist gescheitert: %s"
 msgid "STARTTLS command failed: "
 msgstr "STARTTLS-Befehl gescheitert: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:330
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:332
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
 msgstr "Verbindung mit SMTP-Server %s im sicheren Modus ist gescheitert: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:441
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:443
 #, c-format
 msgid "SMTP server %s"
 msgstr "SMTP-Server %s"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:444
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:446
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "SMTP-E-Mail-Auslieferung über %s"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:584
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:586
 #, c-format
 msgid "SMTP server %s does not support %s authentication"
 msgstr "SMTP-Server %s unterstützt den Legitimierungstypen %s nicht"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:684
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:686
 #, c-format
 msgid "No SASL mechanism was specified"
 msgstr "Kein gültiger SASL-Mechanismus wurde angegeben"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:721
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:723
 msgid "AUTH command failed: Not connected."
 msgstr "AUTH-Befehl gescheitert: Nicht verbunden."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:728
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:742
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:758
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:730
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:744
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:760
 msgid "AUTH command failed: "
 msgstr "AUTH-Befehl gescheitert: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:961
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:963
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "Nachricht konnte nicht verschickt werden: Dienst nicht verbunden."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:970
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:972
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr ""
 "Nachricht konnte nicht verschickt werden: Absenderadresse nicht gültig."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:974
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:976
 msgid "Sending message"
 msgstr "Nachricht wird verschickt"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1003
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1005
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "Nachricht konnte nicht verschickt werden: Keine Empfänger angegeben."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1018
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1020
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr ""
 "Nachricht konnte nicht verschickt werden: Mindestens ein Empfänger ungültig"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1150
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1152
 msgid "Syntax error, command unrecognized"
 msgstr "Syntaxfehler, Befehl nicht erkannt"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1152
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1154
 msgid "Syntax error in parameters or arguments"
 msgstr "Syntaxfehler in Parametern oder Argumenten"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1154
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1156
 msgid "Command not implemented"
 msgstr "Befehl nicht implementiert"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1156
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1158
 msgid "Command parameter not implemented"
 msgstr "Befehlsparameter nicht implementiert"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1158
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1160
 msgid "System status, or system help reply"
 msgstr "Systemstatus- oder Systemhilfe-Antwort"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1160
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1162
 msgid "Help message"
 msgstr "Hilfemeldung"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1162
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1164
 msgid "Service ready"
 msgstr "Dienst ist bereit"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1164
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1166
 msgid "Service closing transmission channel"
 msgstr "Dienst schließt Übertragungskanal"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1166
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1168
 msgid "Service not available, closing transmission channel"
 msgstr "Dienst nicht verfügbar, Übertragungskanal wird geschlossen"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1168
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1170
 msgid "Requested mail action okay, completed"
 msgstr "Angeforderte E-Mail-Aktion in Ordnung, abgeschlossen"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1170
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1172
 msgid "User not local; will forward to <forward-path>"
 msgstr "Benutzer nicht lokal; Weiterleitung erfolgt zu <weiterleitungspfad>"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1172
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1174
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr "Angeforderte E-Mail-Aktion nicht ausgeführt: Postfach nicht verfügbar"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1174
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1176
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "Angeforderte Aktion nicht ausgeführt: Postfach nicht verfügbar"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1176
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1178
 msgid "Requested action aborted: error in processing"
 msgstr "Angeforderte Aktion abgebrochen: Fehler bei Verarbeitung"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1178
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1180
 msgid "User not local; please try <forward-path>"
 msgstr "Benutzer nicht lokal; probieren Sie es mit <weiterleitungspfad>"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1180
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1182
 msgid "Requested action not taken: insufficient system storage"
 msgstr "Angeforderte Aktion nicht ausgeführt: unzureichender Systemspeicher"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1182
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1184
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "Angeforderte Aktion abgebrochen: Speicherzuteilung überschritten"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1184
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1186
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "Angeforderte Aktion nicht ausgeführt: Postfachname nicht erlaubt"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1186
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1188
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "E-Mail-Eingabe beginnen; Ende mit <CRLF>.<CRLF>"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1188
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1190
 msgid "Transaction failed"
 msgstr "Transaktion gescheitert"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1192
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1194
 msgid "A password transition is needed"
 msgstr "Ein Passwortübergang ist notwendig"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1194
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1196
 msgid "Authentication mechanism is too weak"
 msgstr "Legitimierungsmechanismus ist zu schwach"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1196
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1198
 msgid "Encryption required for requested authentication mechanism"
 msgstr ""
 "Für den verlangten Legitimierungsmechanismus ist eine Verschlüsselung "
 "erforderlich."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1198
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1200
 msgid "Temporary authentication failure"
 msgstr "Legitimierung vorübergehend gescheitert"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1200
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1202
 #: ../src/libedataserver/e-client.c:145
 msgid "Authentication required"
 msgstr "Legitimierung erforderlich"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1490
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1495
 msgid "SMTP Greeting"
 msgstr "SMTP-Begrüßung"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1499
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1512
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1519
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1504
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1517
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1524
 msgid "HELO command failed: "
 msgstr "HELO-Befehl gescheitert: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1603
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1617
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1626
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1608
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1622
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1631
 msgid "MAIL FROM command failed: "
 msgstr "MAIL FROM-Befehl gescheitert: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1654
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1659
 msgid "RCPT TO command failed: "
 msgstr "RCPT TO-Befehl gescheitert: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1670
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1679
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1675
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1684
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> gescheitert: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1753
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1764
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1775
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1858
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1876
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1889
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1897
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1758
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1769
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1780
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1863
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1881
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1894
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1902
 msgid "DATA command failed: "
 msgstr "DATA-Befehl gescheitert: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1923
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1937
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1945
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1928
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1942
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1950
 msgid "RSET command failed: "
 msgstr "RSET-Befehl gescheitert: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1971
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1983
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1989
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1976
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1988
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1994
 msgid "QUIT command failed: "
 msgstr "QUIT-Befehl gescheitert: "
 
@@ -6031,18 +6042,26 @@ msgid "Height of the reminder notification dialog"
 msgstr "Höhe des Erinnerungsdialogs"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
+msgid ""
+"Paned position in the reminder notification dialog, the split size between "
+"list of the events and the description"
+msgstr ""
+"Teilfensterposition im Benachrichtigungsdialog zu Erinnerungen; die Teilung "
+"zwischen der Terminliste und der Beschreibung"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
 msgid "Show reminder notification for completed tasks"
 msgstr "Erinnerung auch für abgeschlossene Aufgaben anzeigen"
 
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
 msgid "Show reminder notification for past events"
 msgstr "Erinnerung auch für zurückliegende Termine anzeigen"
 
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
 msgid "The last used snooze time, in minutes"
 msgstr "Die zuletzt verwendete Alarmwiederholungszeit in Minuten"
 
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:23
 msgid "User-defined snooze times, in minutes"
 msgstr "Benutzerdefinierte Alarmwiederholungszeit in Minuten"
 
@@ -6313,12 +6332,12 @@ msgstr "Nicht genügend Speicher"
 msgid "Can not make parent directory: %s"
 msgstr "Übergeordneter Ordner konnte nicht angelegt werden: %s"
 
-#: ../src/libebackend/e-collection-backend.c:1069
+#: ../src/libebackend/e-collection-backend.c:1113
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s unterstützt das Erstellen entfernter Ressourcen nicht"
 
-#: ../src/libebackend/e-collection-backend.c:1128
+#: ../src/libebackend/e-collection-backend.c:1172
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s unterstützt das Löschen entfernter Ressourcen nicht"
@@ -6665,11 +6684,11 @@ msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
 
-#: ../src/libedataserver/e-soup-session.c:949
+#: ../src/libedataserver/e-soup-session.c:958
 msgid "Operation was cancelled"
 msgstr "Vorgang wurde abgebrochen"
 
-#: ../src/libedataserver/e-soup-session.c:955
+#: ../src/libedataserver/e-soup-session.c:964
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Fehlgeschlagen mit HTTP-Fehlercode %d: %s"
@@ -6858,11 +6877,15 @@ msgstr "%k%M"
 msgid "%I %p"
 msgstr "%I %p"
 
+#: ../src/libedataserver/e-webdav-discover.c:295
+msgid "Notes"
+msgstr "Notizen"
+
 #: ../src/libedataserver/e-webdav-session.c:726
 msgid "Cannot determine destination URL without WebDAV extension"
 msgstr "Zieladresse kann ohne WebDAV-Erweiterung nicht ermittelt werden"
 
-#: ../src/libedataserver/e-webdav-session.c:991
+#: ../src/libedataserver/e-webdav-session.c:996
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -6872,7 +6895,7 @@ msgstr ""
 "Server oder bei der Anfrage des Clients ein Fehler auftrat. Die verwendete "
 "Adresse war: %s"
 
-#: ../src/libedataserver/e-webdav-session.c:993
+#: ../src/libedataserver/e-webdav-session.c:998
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -6886,7 +6909,7 @@ msgstr ""
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1014
+#: ../src/libedataserver/e-webdav-session.c:1019
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
 msgstr "%s: HTTP-Fehlercode %d (%s): %s"
@@ -6894,7 +6917,7 @@ msgstr "%s: HTTP-Fehlercode %d (%s): %s"
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1022
+#: ../src/libedataserver/e-webdav-session.c:1027
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
 msgstr "Fehlgeschlagen mit HTTP-Fehlercode %d (%s): %s"
@@ -6903,158 +6926,176 @@ msgstr "Fehlgeschlagen mit HTTP-Fehlercode %d (%s): %s"
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1037
+#: ../src/libedataserver/e-webdav-session.c:1042
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
 msgstr "%s: HTTP-Fehlercode %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1043
+#: ../src/libedataserver/e-webdav-session.c:1048
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "Fehlgeschlagen mit HTTP-Fehlercode %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:1338
+#: ../src/libedataserver/e-webdav-session.c:1343
 msgid "Failed to post data"
 msgstr "Daten konnten nicht veröffentlicht werden"
 
-#: ../src/libedataserver/e-webdav-session.c:1475
-#: ../src/libedataserver/e-webdav-session.c:1552
-#: ../src/libedataserver/e-webdav-session.c:1658
-#: ../src/libedataserver/e-webdav-session.c:2932
-#: ../src/libedataserver/e-webdav-session.c:4220
+#: ../src/libedataserver/e-webdav-session.c:1474
+#: ../src/libedataserver/e-webdav-session.c:1551
+#: ../src/libedataserver/e-webdav-session.c:1653
+#: ../src/libedataserver/e-webdav-session.c:2906
+#: ../src/libedataserver/e-webdav-session.c:4145
 msgid "Failed to get input XML content"
 msgstr "Inhalt der XML-Eingabe konnte nicht erhalten werden"
 
-#: ../src/libedataserver/e-webdav-session.c:1486
+#: ../src/libedataserver/e-webdav-session.c:1485
 msgid "Failed to get properties"
 msgstr "Ermitteln der Eigenschaften gescheitert"
 
-#: ../src/libedataserver/e-webdav-session.c:1562
+#: ../src/libedataserver/e-webdav-session.c:1561
 msgid "Failed to update properties"
 msgstr "Aktualisieren der Eigenschaften gescheitert"
 
-#: ../src/libedataserver/e-webdav-session.c:1668
+#: ../src/libedataserver/e-webdav-session.c:1663
 msgid "Failed to issue REPORT"
 msgstr "Fehler bei der Ausgabe von REPORT"
 
-#: ../src/libedataserver/e-webdav-session.c:1729
+#: ../src/libedataserver/e-webdav-session.c:1724
 msgid "Failed to create collection"
 msgstr "Sammlung konnte nicht angelegt werden"
 
-#: ../src/libedataserver/e-webdav-session.c:1822
-#: ../src/libedataserver/e-webdav-session.c:1983
+#: ../src/libedataserver/e-webdav-session.c:1817
+#: ../src/libedataserver/e-webdav-session.c:1978
 msgid "Failed to get XML request content"
 msgstr "Inhalt der XML-Anfrage konnte nicht erhalten werden"
 
-#: ../src/libedataserver/e-webdav-session.c:1834
+#: ../src/libedataserver/e-webdav-session.c:1829
 msgid "Failed to create address book"
 msgstr "Adressbuch konnte nicht angelegt werden"
 
-#: ../src/libedataserver/e-webdav-session.c:1996
+#: ../src/libedataserver/e-webdav-session.c:1991
 msgid "Failed to create calendar"
 msgstr "Kalender konnte nicht angelegt werden"
 
+#: ../src/libedataserver/e-webdav-session.c:2119
 #: ../src/libedataserver/e-webdav-session.c:2130
-#: ../src/libedataserver/e-webdav-session.c:2141
 msgid "Failed to read resource"
 msgstr "Ressource konnte nicht gelesen werden"
 
-#: ../src/libedataserver/e-webdav-session.c:2290
+#: ../src/libedataserver/e-webdav-session.c:2270
 msgid "Cannot rewind input stream: Not supported"
 msgstr "Eingabe-Datenstrom kann nicht zurückgespult werden: Nicht unterstützt"
 
-#: ../src/libedataserver/e-webdav-session.c:2455
-#: ../src/libedataserver/e-webdav-session.c:2601
+#: ../src/libedataserver/e-webdav-session.c:2434
+#: ../src/libedataserver/e-webdav-session.c:2575
 msgid "Failed to put data"
 msgstr "Daten konnten nicht gesendet werden"
 
-#: ../src/libedataserver/e-webdav-session.c:2474
-#: ../src/libedataserver/e-webdav-session.c:2609
+#: ../src/libedataserver/e-webdav-session.c:2448
+#: ../src/libedataserver/e-webdav-session.c:2583
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Senden der Daten zum Server ist fehlgeschlagen, Fehlercode %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:2703
+#: ../src/libedataserver/e-webdav-session.c:2677
 msgid "Failed to delete resource"
 msgstr "Ressource konnte nicht gelöscht werden"
 
-#: ../src/libedataserver/e-webdav-session.c:2772
+#: ../src/libedataserver/e-webdav-session.c:2746
 msgid "Failed to copy resource"
 msgstr "Ressource konnte nicht kopiert werden"
 
-#: ../src/libedataserver/e-webdav-session.c:2836
+#: ../src/libedataserver/e-webdav-session.c:2810
 msgid "Failed to move resource"
 msgstr "Ressource konnte nicht verschoben werden"
 
-#: ../src/libedataserver/e-webdav-session.c:2943
+#: ../src/libedataserver/e-webdav-session.c:2917
 msgid "Failed to lock resource"
 msgstr "Ressource konnte nicht gesperrt werden"
 
-#: ../src/libedataserver/e-webdav-session.c:2957
-#: ../src/libedataserver/e-webdav-session.c:3163
+#: ../src/libedataserver/e-webdav-session.c:2931
+#: ../src/libedataserver/e-webdav-session.c:3139
 msgid "Expected application/xml response, but none returned"
 msgstr ""
 "Antwort im Format application/xml wurde erwartet, aber keine zurückgegeben"
 
-#: ../src/libedataserver/e-webdav-session.c:2960
-#: ../src/libedataserver/e-webdav-session.c:3166
+#: ../src/libedataserver/e-webdav-session.c:2934
+#: ../src/libedataserver/e-webdav-session.c:3142
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr ""
 "Antwort im Format application/xml wurde erwartet, aber %s zurückgegeben"
 
-#: ../src/libedataserver/e-webdav-session.c:2972
-#: ../src/libedataserver/e-webdav-session.c:3179
+#: ../src/libedataserver/e-webdav-session.c:2946
+#: ../src/libedataserver/e-webdav-session.c:3155
 msgid "Failed to parse XML data"
 msgstr "Auswerten der XML-Daten gescheitert"
 
-#: ../src/libedataserver/e-webdav-session.c:3053
+#: ../src/libedataserver/e-webdav-session.c:3027
 msgid "Failed to refresh lock"
 msgstr "Sperre konnte nicht aktualisiert werden"
 
-#: ../src/libedataserver/e-webdav-session.c:3114
+#: ../src/libedataserver/e-webdav-session.c:3088
 msgid "Failed to unlock"
 msgstr "Entsperren gescheitert"
 
-#: ../src/libedataserver/e-webdav-session.c:3151
+#: ../src/libedataserver/e-webdav-session.c:3127
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Multistatus-Antwort wurde erwartet, aber %d zurückgegeben (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:4230
+#: ../src/libedataserver/e-webdav-session.c:3164
+msgid "XML data does not have root node"
+msgstr "XML-Daten haben keinen Wurzelknoten"
+
+#: ../src/libedataserver/e-webdav-session.c:3187
+#, c-format
+msgid "XML data doesn't have required structure (%s)"
+msgstr "XML-Daten haben nicht die erforderliche Struktur (%s)"
+
+#: ../src/libedataserver/e-webdav-session.c:4155
 msgid "Failed to get access control list"
 msgstr "Zugriffskontrollliste konnte nicht erhalten werden"
 
-#: ../src/libedataserver/e-webdav-session.c:4981
+#: ../src/libedataserver/e-webdav-session.c:4839
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 "Weder ein geschützter noch ein vererbter Zugriffskontrolleintrag kann "
 "gespeichert werden."
 
-#: ../src/libedataserver/e-webdav-session.c:4988
+#: ../src/libedataserver/e-webdav-session.c:4846
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Ungültiger Prinzipal für Zugriffskontrolleintrag."
 
-#: ../src/libedataserver/e-webdav-session.c:4995
+#: ../src/libedataserver/e-webdav-session.c:4853
 msgid "Cannot store property-based Access Control Entry."
 msgstr ""
 "Eigenschaftsbasierter Zugriffskontrolleintrag kann nicht gespeichert werden."
 
-#: ../src/libedataserver/e-webdav-session.c:5002
+#: ../src/libedataserver/e-webdav-session.c:4860
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Zugriffskontrolleintrag kann nur »Grant« oder »Deny« sein, nicht »None«."
 
-#: ../src/libedataserver/e-webdav-session.c:5010
+#: ../src/libedataserver/e-webdav-session.c:4868
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Zugriffskontrolleintrag kann nur »Grant« oder »Deny« sein, nicht beides."
 
-#: ../src/libedataserver/e-webdav-session.c:5069
+#: ../src/libedataserver/e-webdav-session.c:4927
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Privilegien für Zugriffskontrolleintrag können nicht NULL sein."
+
+#: ../src/libedataserverui/e-buffer-tagger.c:71
+msgid "Could not open the link."
+msgstr "Der Verweis konnte nicht geöffnet werden."
+
+#. To Translators: The text is concatenated to a form: "Ctrl-click to open a link http://www.example.com"
+#: ../src/libedataserverui/e-buffer-tagger.c:458
+msgid "Ctrl-click to open a link"
+msgstr "Strg-Klick, um einen Verweis zu öffnen"
 
 #: ../src/libedataserverui/e-credentials-prompter.c:259
 #: ../src/libedataserverui/e-credentials-prompter.c:1692
@@ -7203,14 +7244,14 @@ msgstr ""
 "Melden Sie sich an Ihrem %s-Konto an und akzeptieren Sie die Bedingungen, um "
 "auf Ihr Konto »%s« zuzugreifen."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:605
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:606
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
-#: ../src/libedataserverui/e-trust-prompt.c:112
+#: ../src/libedataserverui/e-trust-prompt.c:111
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1083
 msgid "_Cancel"
 msgstr "_Abbrechen"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:679
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:680
 msgid "URL:"
 msgstr "Adresse:"
 
@@ -7285,104 +7326,116 @@ msgstr "_Passwort:"
 msgid "_Add this password to your keyring"
 msgstr "Dieses Passwort zu Ihrem Schlüsselbund _hinzufügen"
 
-#: ../src/libedataserverui/e-reminders-widget.c:226
+#: ../src/libedataserverui/e-reminders-widget.c:230
 msgid "Add custom time…"
 msgstr "Benutzerdefinierte Zeit hinzufügen …"
 
-#: ../src/libedataserverui/e-reminders-widget.c:230
+#: ../src/libedataserverui/e-reminders-widget.c:234
 msgid "Clear custom times"
 msgstr "Benutzerdefinierte Zeiten leeren"
 
-#: ../src/libedataserverui/e-reminders-widget.c:278
+#: ../src/libedataserverui/e-reminders-widget.c:282
 msgctxt "overdue"
 msgid "now"
 msgstr "jetzt"
 
-#: ../src/libedataserverui/e-reminders-widget.c:296
+#: ../src/libedataserverui/e-reminders-widget.c:300
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d Jahr"
 msgstr[1] "%d Jahre"
 
-#: ../src/libedataserverui/e-reminders-widget.c:302
+#: ../src/libedataserverui/e-reminders-widget.c:306
 msgctxt "overdue"
 msgid "overdue"
 msgstr "überfällig"
 
-#: ../src/libedataserverui/e-reminders-widget.c:922
+#: ../src/libedataserverui/e-reminders-widget.c:926
 #, c-format
 msgid "Failed to launch URI “%s”:"
 msgstr "Adresse »%s« konnte nicht geöffnet werden:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:963
+#: ../src/libedataserverui/e-reminders-widget.c:976
+msgid "No reminder is selected."
+msgstr "Es wurde keine Erinnerung ausgewählt."
+
+#: ../src/libedataserverui/e-reminders-widget.c:1033
+msgid "No details are available."
+msgstr "Es sind keine Details verfügbar."
+
+#: ../src/libedataserverui/e-reminders-widget.c:1037
+msgid "Multiple reminders are selected."
+msgstr "Es wurden mehrere Erinnerungen ausgewählt."
+
+#: ../src/libedataserverui/e-reminders-widget.c:1057
 msgid "Failed to dismiss reminder:"
 msgstr "Erinnerung kann nicht verworfen werden:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:984
+#: ../src/libedataserverui/e-reminders-widget.c:1078
 msgid "Failed to dismiss all:"
 msgstr "Alle verwerfen ist fehlgeschlagen:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1120
+#: ../src/libedataserverui/e-reminders-widget.c:1214
 msgid "Set a custom snooze time for"
 msgstr "Eine benutzerdefinierte Alarmwiederholungszeit festlegen für"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1133
+#: ../src/libedataserverui/e-reminders-widget.c:1227
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "_Tage"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1149
+#: ../src/libedataserverui/e-reminders-widget.c:1243
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "_Stunden"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1165
+#: ../src/libedataserverui/e-reminders-widget.c:1259
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "_Minuten"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1171
+#: ../src/libedataserverui/e-reminders-widget.c:1265
 msgid "_Add Snooze time"
 msgstr "Alarmwiederholungszeit _hinzufügen"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1438
+#: ../src/libedataserverui/e-reminders-widget.c:1568
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "_Verwerfen"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1439
+#: ../src/libedataserverui/e-reminders-widget.c:1569
 msgid "Dismiss _All"
 msgstr "_Alle verwerfen"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1441
+#: ../src/libedataserverui/e-reminders-widget.c:1571
 msgid "_Snooze"
 msgstr "Alarm_wiederholung"
 
-#: ../src/libedataserverui/e-trust-prompt.c:111
+#: ../src/libedataserverui/e-trust-prompt.c:110
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:117
 msgid "Certificate trust..."
 msgstr "Vertrauen in Zertifikat …"
 
-#: ../src/libedataserverui/e-trust-prompt.c:113
+#: ../src/libedataserverui/e-trust-prompt.c:112
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:118
 msgid "_Reject"
 msgstr "A_blehnen"
 
-#: ../src/libedataserverui/e-trust-prompt.c:114
+#: ../src/libedataserverui/e-trust-prompt.c:113
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:119
 msgid "Accept _Temporarily"
 msgstr "Vorübergehend _akzeptieren"
 
-#: ../src/libedataserverui/e-trust-prompt.c:115
+#: ../src/libedataserverui/e-trust-prompt.c:114
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:120
 msgid "_Accept Permanently"
 msgstr "_Dauerhaft akzeptieren"
 
-#: ../src/libedataserverui/e-trust-prompt.c:186
+#: ../src/libedataserverui/e-trust-prompt.c:185
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:157
 #, c-format
 msgid "SSL/TLS certificate for “%s” is not trusted. Do you wish to accept it?"
@@ -7390,21 +7443,21 @@ msgstr ""
 "Dem SSL/TLS-Zertifikat für »%s« wird nicht vertraut. Wollen Sie es "
 "akzeptieren?"
 
-#: ../src/libedataserverui/e-trust-prompt.c:208
+#: ../src/libedataserverui/e-trust-prompt.c:207
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:172
 msgid "Reason:"
 msgstr "Grund:"
 
-#: ../src/libedataserverui/e-trust-prompt.c:211
+#: ../src/libedataserverui/e-trust-prompt.c:210
 msgid "Detailed error:"
 msgstr "Detaillierter Fehler:"
 
-#: ../src/libedataserverui/e-trust-prompt.c:273
+#: ../src/libedataserverui/e-trust-prompt.c:272
 #: ../src/modules/trust-prompt/module-trust-prompt.c:80
 msgid "The signing certificate authority is not known."
 msgstr "Die signierende Zertifizierungsstelle ist unbekannt."
 
-#: ../src/libedataserverui/e-trust-prompt.c:275
+#: ../src/libedataserverui/e-trust-prompt.c:274
 #: ../src/modules/trust-prompt/module-trust-prompt.c:82
 msgid ""
 "The certificate does not match the expected identity of the site that it was "
@@ -7413,17 +7466,17 @@ msgstr ""
 "Das Zertifikat entspricht nicht der erwarteten Identität der Seite, von der "
 "es bezogen wurde."
 
-#: ../src/libedataserverui/e-trust-prompt.c:277
+#: ../src/libedataserverui/e-trust-prompt.c:276
 #: ../src/modules/trust-prompt/module-trust-prompt.c:84
 msgid "The certificate’s activation time is still in the future."
 msgstr "Die Aktivierungszeit des Zertifikats liegt noch in der Zukunft."
 
-#: ../src/libedataserverui/e-trust-prompt.c:279
+#: ../src/libedataserverui/e-trust-prompt.c:278
 #: ../src/modules/trust-prompt/module-trust-prompt.c:86
 msgid "The certificate has expired."
 msgstr "Das Zertifikat ist abgelaufen."
 
-#: ../src/libedataserverui/e-trust-prompt.c:281
+#: ../src/libedataserverui/e-trust-prompt.c:280
 #: ../src/modules/trust-prompt/module-trust-prompt.c:88
 msgid ""
 "The certificate has been revoked according to the connection’s certificate "
@@ -7431,7 +7484,7 @@ msgid ""
 msgstr ""
 "Das Zertifikat wurde gemäß der Widerrufsliste der Verbindung zurückgezogen."
 
-#: ../src/libedataserverui/e-trust-prompt.c:283
+#: ../src/libedataserverui/e-trust-prompt.c:282
 #: ../src/modules/trust-prompt/module-trust-prompt.c:90
 msgid "The certificate’s algorithm is considered insecure."
 msgstr "Der Algorithmus des Zertifikats wird als unsicher angenommen."
@@ -7526,7 +7579,7 @@ msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr ""
 "In der Autodiscover-Anwort konnten weder ASUrl noch OABUrl gefunden werden"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1426
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1423
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -7535,12 +7588,12 @@ msgstr ""
 "Ein »%s« zugehöriges Konto, aus welchem ein Zugriffs-Token bezogen werden "
 "könnte, konnte im Dienst org.gnome.OnlineAccounts nicht gefunden werden"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1476
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1473
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Zugriffs-Token für »%s« konnte nicht erlangt werden: "
 
-#: ../src/modules/google-backend/module-google-backend.c:631
+#: ../src/modules/google-backend/module-google-backend.c:635
 #: ../src/services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
 msgstr "Kontakte"
@@ -7566,26 +7619,26 @@ msgstr ""
 "1, um zu aktivieren, 0, um zu deaktivieren, und einen beliebigen anderen "
 "Wert ist, um die Kompilierzeit-Option zu verwenden."
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:292
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:320
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:831
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1040
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:306
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:334
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:845
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1087
 msgid "Reminders"
 msgstr "Erinnerungen"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:432
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:446
 msgid "Warning"
 msgstr "Warnung"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:433
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:447
 msgid "_No"
 msgstr "_Nein"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:434
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:448
 msgid "_Yes"
 msgstr "_Ja"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:438
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:452
 #, c-format
 msgid ""
 "A calendar reminder is about to trigger. This reminder is configured to run "
@@ -7602,31 +7655,31 @@ msgstr ""
 "\n"
 "Sind Sie sicher, dass dieses Programm ausgeführt werden soll?"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:453
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:467
 msgid "Do not ask me about this program again"
 msgstr "Mich nicht wieder nach diesem Programm fragen"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:736
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:750
 msgid "Display Reminders window with _notifications"
 msgstr "Erinnerungen-Fenster mit _Benachrichtigungen anzeigen"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:737
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:751
 msgid "Keep reminder notification window always on _top"
 msgstr "Erinnerungsdialog immer im _Vordergrund anzeigen"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:738
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:752
 msgid "Display reminders for _completed tasks"
 msgstr "Erinnerung auch für abges_chlossene Aufgaben anzeigen"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:739
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:753
 msgid "Display reminders for _past events"
 msgstr "Erinnerung auch für _zurückliegende Termine anzeigen"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:753
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:767
 msgid "Reminders Options:"
 msgstr "Optionen für Erinnerungen:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:847
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:861
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
@@ -7673,6 +7726,10 @@ msgstr "Wetter"
 #: ../src/services/evolution-source-registry/builtin/webcal-stub.source.in.h:1
 msgid "On The Web"
 msgstr "Im Web"
+
+#: ../src/services/evolution-source-registry/builtin/webdav-notes-stub.source.in.h:1
+msgid "WebDAV Notes"
+msgstr "WebDAV-Notizen"
 
 #: ../src/services/evolution-source-registry/evolution-source-registry.c:41
 msgid "Don’t migrate user data from previous versions of Evolution"
