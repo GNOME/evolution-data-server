@@ -578,8 +578,7 @@ e_trust_prompt_run_for_source (GtkWindow *parent,
 		host = NULL;
 
 	if (!host || !*host) {
-		g_free (host);
-		host = NULL;
+		g_clear_pointer (&host, g_free);
 
 		if (e_source_has_extension (source, E_SOURCE_EXTENSION_GOA)) {
 			ESourceGoa *goa_extension;
@@ -598,6 +597,30 @@ e_trust_prompt_run_for_source (GtkWindow *parent,
 			}
 		}
 	}
+
+	if ((!host || !*host) && e_source_has_extension (source, E_SOURCE_EXTENSION_COLLECTION)) {
+		ESourceCollection *collection_extension;
+		gchar *url;
+
+		g_clear_pointer (&host, g_free);
+
+		collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
+
+		url = e_source_collection_dup_calendar_url (collection_extension);
+		host = trust_prompt_get_host_from_url (url);
+		g_free (url);
+
+		if (!host) {
+			url = e_source_collection_dup_contacts_url (collection_extension);
+			host = trust_prompt_get_host_from_url (url);
+			g_free (url);
+		}
+	}
+
+	/* The worst case, failed to extract host from the ESource, but it's a mandatory argument,
+	   thus fallback to the source's display name, instead of the real host name. */
+	if (!host)
+		host = e_source_dup_display_name (source);
 
 	certificate = g_tls_certificate_new_from_pem (certificate_pem, -1, &save_data->error);
 	if (certificate) {
