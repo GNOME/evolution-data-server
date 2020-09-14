@@ -59,7 +59,7 @@ credentials_prompter_impl_password_get_prompt_strings (ESourceRegistry *registry
 	GString *description;
 	const gchar *message;
 	gchar *display_name;
-	gchar *host_name = NULL;
+	gchar *host_name = NULL, *tmp;
 
 	/* Known types */
 	enum {
@@ -147,8 +147,6 @@ credentials_prompter_impl_password_get_prompt_strings (ESourceRegistry *registry
 
 	description = g_string_sized_new (256);
 
-	g_string_append_printf (description, "<big><b>%s</b></big>\n\n", message);
-
 	switch (type) {
 		case TYPE_ADDRESS_BOOK:
 			g_string_append_printf (description,
@@ -183,6 +181,12 @@ credentials_prompter_impl_password_get_prompt_strings (ESourceRegistry *registry
 	if (host_name != NULL)
 		g_string_append_printf (
 			description, "\n(host: %s)", host_name);
+
+	tmp = g_markup_escape_text (description->str, -1);
+
+	g_string_assign (description, "");
+	g_string_append_printf (description, "<big><b>%s</b></big>\n\n%s", message, tmp);
+	g_free (tmp);
 
 	*prompt_title = g_strdup (message);
 	*prompt_description = description;
