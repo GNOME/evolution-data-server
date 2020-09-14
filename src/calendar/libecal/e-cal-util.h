@@ -343,6 +343,10 @@ EConflictResolution
 						(guint32 flags); /* bit-or of ECalOperationFlags */
 guint32		e_cal_util_conflict_resolution_to_operation_flags /* bit-or of ECalOperationFlags */
 						(EConflictResolution conflict_resolution);
+gboolean	e_cal_util_inline_local_attachments_sync
+						(ICalComponent *component,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

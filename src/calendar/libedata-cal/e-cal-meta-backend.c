@@ -4053,81 +4053,9 @@ e_cal_meta_backend_inline_local_attachments_sync (ECalMetaBackend *meta_backend,
 						  GCancellable *cancellable,
 						  GError **error)
 {
-	ICalProperty *prop;
-	const gchar *uid;
-	gboolean success = TRUE;
-
 	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
-	g_return_val_if_fail (component != NULL, FALSE);
 
-	uid = i_cal_component_get_uid (component);
-
-	for (prop = i_cal_component_get_first_property (component, I_CAL_ATTACH_PROPERTY);
-	     prop && success;
-	     g_object_unref (prop), prop = i_cal_component_get_next_property (component, I_CAL_ATTACH_PROPERTY)) {
-		ICalAttach *attach;
-
-		attach = i_cal_property_get_attach (prop);
-		if (attach && i_cal_attach_get_is_url (attach)) {
-			const gchar *url;
-
-			url = i_cal_attach_get_url (attach);
-			if (g_str_has_prefix (url, LOCAL_PREFIX)) {
-				GFile *file;
-				gchar *basename;
-				gchar *content;
-				gsize len;
-
-				file = g_file_new_for_uri (url);
-				basename = g_file_get_basename (file);
-				if (g_file_load_contents (file, cancellable, &content, &len, NULL, error)) {
-					ICalAttach *new_attach;
-					ICalParameter *param;
-					gchar *base64;
-
-					base64 = g_base64_encode ((const guchar *) content, len);
-					new_attach = i_cal_attach_new_from_data (base64, (GFunc) g_free, NULL);
-					g_free (content);
-
-					ecmb_remove_all_but_filename_parameter (prop);
-
-					i_cal_property_set_attach (prop, new_attach);
-					g_object_unref (new_attach);
-
-					param = i_cal_parameter_new_value (I_CAL_VALUE_BINARY);
-					i_cal_property_take_parameter (prop, param);
-
-					param = i_cal_parameter_new_encoding (I_CAL_ENCODING_BASE64);
-					i_cal_property_take_parameter (prop, param);
-
-					/* Preserve existing FILENAME parameter */
-					if (!e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER)) {
-						const gchar *use_filename = basename;
-
-						/* generated filename by Evolution */
-						if (uid && g_str_has_prefix (use_filename, uid) &&
-						    use_filename[strlen (uid)] == '-') {
-							use_filename += strlen (uid) + 1;
-						}
-
-						param = i_cal_parameter_new_filename (use_filename);
-						i_cal_property_take_parameter (prop, param);
-					}
-				} else {
-					success = FALSE;
-				}
-
-				g_object_unref (file);
-				g_free (basename);
-			}
-		}
-
-		g_clear_object (&attach);
-	}
-
-	g_clear_object (&prop);
-
-	return success;
+	return e_cal_util_inline_local_attachments_sync (component, cancellable, error);
 }
 
 /**
