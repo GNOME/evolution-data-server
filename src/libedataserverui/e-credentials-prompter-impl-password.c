@@ -178,9 +178,10 @@ credentials_prompter_impl_password_get_prompt_strings (ESourceRegistry *registry
 			break;
 	}
 
-	if (host_name != NULL)
-		g_string_append_printf (
-			description, "\n(host: %s)", host_name);
+	if (host_name != NULL) {
+		/* Translators: This is part of a credential prompt, constructing for example: "Please enter the password for account “%s”.\n(host: hostname)" */
+		g_string_append_printf (description, _("\n(host: %s)"), host_name);
+	}
 
 	tmp = g_markup_escape_text (description->str, -1);
 
