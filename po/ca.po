@@ -2728,12 +2728,12 @@ msgstr "Aquest xifratge no implementa la verificació"
 #: ../src/camel/camel-cipher-context.c:227
 #, c-format
 msgid "Encryption is not supported by this cipher"
-msgstr "Amb aquest xifratge no es pot encriptar"
+msgstr "Amb aquest xifratge no es pot xifrar"
 
 #: ../src/camel/camel-cipher-context.c:241
 #, c-format
 msgid "Decryption is not supported by this cipher"
-msgstr "Aquest xifratge no es pot desencriptar"
+msgstr "Aquest xifratge no es pot desxifrar"
 
 #: ../src/camel/camel-cipher-context.c:356
 msgid "Signing message"
@@ -2741,11 +2741,11 @@ msgstr "Signatura del missatge"
 
 #: ../src/camel/camel-cipher-context.c:648
 msgid "Encrypting message"
-msgstr "Encriptació del missatge"
+msgstr "Xifratge del missatge"
 
 #: ../src/camel/camel-cipher-context.c:821
 msgid "Decrypting message"
-msgstr "Desencriptació del missatge"
+msgstr "Desxifratge del missatge"
 
 #: ../src/camel/camel-data-cache.c:199
 #, c-format
@@ -3130,7 +3130,7 @@ msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
 msgstr ""
-"Adoneu-vos que el contingut encriptat no conté informació sobre el "
+"Adoneu-vos que el contingut xifrat no conté informació sobre el "
 "destinatari, de manera que se us demanarà la contrasenya per a cada clau "
 "privada emmagatzemada."
 
@@ -3200,7 +3200,7 @@ msgstr "No s'ha pogut verificar la signatura del missatge: "
 
 #: ../src/camel/camel-gpg-context.c:2557
 msgid "Could not generate encrypting data: "
-msgstr "No s'han pogut generar les dades per encriptar: "
+msgstr "No s'han pogut generar les dades per xifrar: "
 
 #: ../src/camel/camel-gpg-context.c:2638
 msgid "This is a digitally encrypted message part"
@@ -4010,7 +4010,7 @@ msgstr "No s'han pogut afegir dades al codificador"
 
 #: ../src/camel/camel-smime-context.c:1528
 msgid "S/MIME Decrypt: No encrypted content found"
-msgstr "Desencriptació S/MIME: no s'ha trobat cap contingut encriptat"
+msgstr "Desencriptació S/MIME: no s'ha trobat cap contingut xifrat"
 
 #: ../src/camel/camel-store.c:1412
 #, c-format
@@ -6293,7 +6293,7 @@ msgstr ""
 " que l'URL real on es demana i actualitza el testimoni no es pot canviar "
 "aquí, el nom d'amfitrió és per permetre a altres servidors, on es pugui "
 "utilitzar el servei OAuth2. Exemples: «Company:mail.company.com»: permet "
-"l'autenticació «Company» OAuth2 per al host «mail.company.com», «Company-"
+"l'autenticació «Company» OAuth2 per a l'amfitrió. «mail.company.com», «Company-"
 "CalDAV:caldav.company.com» - permet l'autenticació «Company» OAuth2 per "
 "qualsevol font «CalDAV», que llegeix dades de l'amfitrió de "
 "«caldav.company.com»"
@@ -6311,8 +6311,8 @@ msgid ""
 "User-specified OAuth2 client ID for Google servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
 msgstr ""
-"Un ID de client OAuth2 que s'utilitza per connectar als servidors Google, en"
-" comptes del que proveeix el programa."
+"Un ID de client OAuth2 pels servidors Google. Una cadena buida vol dir "
+"que s'utilitza el que proveeix el programa. Canviar això requereix reiniciar."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
 msgid ""
