@@ -155,7 +155,56 @@ markup_text (GtkTextBuffer *buffer)
 		any = FALSE;
 		for (i = 0; i < G_N_ELEMENTS (mim); i++) {
 			if (mim[i].preg && !regexec (mim[i].preg, str, 2, pmatch, 0)) {
-				gint char_so, char_eo;
+				gint char_so, char_eo, rm_eo;
+
+				/* Stop on the angle brackets, which cannot be part of the URL (see RFC 3986 Appendix C) */
+				for (rm_eo = pmatch[0].rm_eo - 1; rm_eo > pmatch[0].rm_so; rm_eo--) {
+					if (str[rm_eo] == '<' || str[rm_eo] == '>') {
+						pmatch[0].rm_eo = rm_eo;
+						break;
+					}
+				}
+
+				rm_eo = pmatch[0].rm_eo;
+
+				/* URLs are extremely unlikely to end with any
+				 * punctuation, so strip any trailing
+				 * punctuation off. Also strip off any closing
+				 * double-quotes. */
+				while (rm_eo > pmatch[0].rm_so && strchr (",.:;?!-|}])\">", str[rm_eo - 1])) {
+					gchar open_bracket = 0, close_bracket = str[rm_eo - 1];
+
+					if (close_bracket == ')')
+						open_bracket = '(';
+					else if (close_bracket == '}')
+						open_bracket = '{';
+					else if (close_bracket == ']')
+						open_bracket = '[';
+					else if (close_bracket == '>')
+						open_bracket = '<';
+
+					if (open_bracket != 0) {
+						const gchar *ptr, *endptr;
+						gint n_opened = 0, n_closed = 0;
+
+						endptr = str + rm_eo;
+
+						for (ptr = str + pmatch[0].rm_so; ptr < endptr; ptr++) {
+							if (*ptr == open_bracket)
+								n_opened++;
+							else if (*ptr == close_bracket)
+								n_closed++;
+						}
+
+						/* The closing bracket can match one inside the URL,
+						   thus keep it there. */
+						if (n_opened > 0 && n_opened - n_closed >= 0)
+							break;
+					}
+
+					rm_eo--;
+					pmatch[0].rm_eo--;
+				}
 
 				char_so = g_utf8_pointer_to_offset (str, str + pmatch[0].rm_so);
 				char_eo = g_utf8_pointer_to_offset (str, str + pmatch[0].rm_eo);
