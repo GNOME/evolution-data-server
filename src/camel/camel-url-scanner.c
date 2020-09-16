@@ -226,11 +226,19 @@ camel_url_pattern_end (const gchar *in,
 		gint start_pos, end_pos;
 
 		if (g_match_info_fetch_pos (match_info, 0, &start_pos, &end_pos) && start_pos == 0 && end_pos > 0 && end_pos <= inend - pos) {
-			const gchar *inptr = pos + end_pos;
+			const gchar *inptr = pos + end_pos, *ptr;
 
-			success = TRUE;
+			/* Stop on the angle brackets, which cannot be part of the URL (see RFC 3986 Appendix C) */
+			for (ptr = pos; ptr < inptr; ptr++) {
+				if (*ptr == '<' || *ptr == '>') {
+					inptr = ptr;
+					break;
+				}
+			}
 
-			if (remove_trailing_bad_chars) {
+			success = inptr > pos;
+
+			if (remove_trailing_bad_chars && success) {
 				/* urls are extremely unlikely to end with any
 				 * punctuation, so strip any trailing
 				 * punctuation off. Also strip off any closing
@@ -249,7 +257,6 @@ camel_url_pattern_end (const gchar *in,
 
 					if (open_bracket != 0) {
 						gint n_opened = 0, n_closed = 0;
-						const gchar *ptr;
 
 						for (ptr = pos; ptr < inptr; ptr++) {
 							if (*ptr == open_bracket)
