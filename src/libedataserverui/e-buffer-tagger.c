@@ -696,8 +696,13 @@ textview_copy_uri_cb (GtkWidget *widget,
 
 	g_return_if_fail (uri != NULL);
 
-	clipboard = gtk_clipboard_get_default (gtk_widget_get_display (widget));
+	clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
 	gtk_clipboard_set_text (clipboard, uri, -1);
+	gtk_clipboard_store (clipboard);
+
+	clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
+	gtk_clipboard_set_text (clipboard, uri, -1);
+	gtk_clipboard_store (clipboard);
 }
 
 static void
