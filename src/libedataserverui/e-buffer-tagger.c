@@ -22,7 +22,7 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
-#include <glib/gi18n.h>
+#include <glib/gi18n-lib.h>
 #include <regex.h>
 #include <string.h>
 #include <ctype.h>
@@ -676,6 +676,109 @@ textview_visibility_notify_event (GtkTextView *textview,
 	return FALSE;
 }
 
+static void
+textview_open_uri_cb (GtkWidget *widget,
+		      gpointer user_data)
+{
+	const gchar *uri = user_data;
+
+	g_return_if_fail (uri != NULL);
+
+	e_show_uri (NULL, uri);
+}
+
+static void
+textview_copy_uri_cb (GtkWidget *widget,
+		      gpointer user_data)
+{
+	GtkClipboard *clipboard;
+	const gchar *uri = user_data;
+
+	g_return_if_fail (uri != NULL);
+
+	clipboard = gtk_clipboard_get_default (gtk_widget_get_display (widget));
+	gtk_clipboard_set_text (clipboard, uri, -1);
+}
+
+static void
+textview_populate_popup_cb (GtkTextView *textview,
+			    GtkWidget *widget,
+			    gpointer user_data)
+{
+	GtkTextIter iter;
+	GtkTextBuffer *buffer;
+	GdkDisplay *display;
+	gboolean iter_set = FALSE;
+	gchar *uri;
+
+	if (!GTK_IS_MENU (widget))
+		return;
+
+	buffer = gtk_text_view_get_buffer (textview);
+
+	display = gtk_widget_get_display (GTK_WIDGET (textview));
+
+	if (display && gtk_widget_get_window (GTK_WIDGET (textview))) {
+		GdkDeviceManager *device_manager;
+		GdkDevice *pointer;
+		gint px = 0, py = 0, xx = 0, yy = 0;
+
+		device_manager = gdk_display_get_device_manager (display);
+		pointer = gdk_device_manager_get_client_pointer (device_manager);
+
+		gdk_device_get_position (pointer, NULL, &px, &py);
+		gdk_window_get_origin (gtk_widget_get_window (GTK_WIDGET (textview)), &xx, &yy);
+
+		px -= xx;
+		py -= yy;
+
+		gtk_text_view_window_to_buffer_coords (
+			textview,
+			GTK_TEXT_WINDOW_WIDGET,
+			px, py, &xx, &yy);
+
+		iter_set = gtk_text_view_get_iter_at_location (textview, &iter, xx, yy);
+	}
+
+	if (!iter_set) {
+		GtkTextMark *mark;
+
+		mark = gtk_text_buffer_get_selection_bound (buffer);
+
+		if (!mark)
+			return;
+
+		gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark);
+	}
+
+	uri = get_url_at_iter (buffer, &iter);
+
+	if (uri && *uri) {
+		GtkMenuShell *menu = GTK_MENU_SHELL (widget);
+		GtkWidget *item;
+
+		item = gtk_separator_menu_item_new ();
+		gtk_widget_show (item);
+		gtk_menu_shell_prepend (menu, item);
+
+		item = gtk_menu_item_new_with_mnemonic (_("Copy _Link Location"));
+		gtk_widget_show (item);
+		gtk_menu_shell_prepend (menu, item);
+
+		g_signal_connect_data (item, "activate",
+			G_CALLBACK (textview_copy_uri_cb), g_strdup (uri), (GClosureNotify) g_free, 0);
+
+		item = gtk_menu_item_new_with_mnemonic (_("O_pen Link in Browser"));
+		gtk_widget_show (item);
+		gtk_menu_shell_prepend (menu, item);
+
+		g_signal_connect_data (item, "activate",
+			G_CALLBACK (textview_open_uri_cb), uri, (GClosureNotify) g_free, 0);
+	} else {
+		g_free (uri);
+	}
+}
+
 void
 e_buffer_tagger_connect (GtkTextView *textview)
 {
@@ -730,6 +833,9 @@ e_buffer_tagger_connect (GtkTextView *textview)
 	g_signal_connect (
 		textview, "visibility-notify-event",
 		G_CALLBACK (textview_visibility_notify_event), NULL);
+	g_signal_connect (
+		textview, "populate-popup",
+		G_CALLBACK (textview_populate_popup_cb), NULL);
 }
 
 void
@@ -764,6 +870,7 @@ e_buffer_tagger_disconnect (GtkTextView *textview)
 	g_signal_handlers_disconnect_by_func (textview, G_CALLBACK (textview_event_after), NULL);
 	g_signal_handlers_disconnect_by_func (textview, G_CALLBACK (textview_motion_notify_event), NULL);
 	g_signal_handlers_disconnect_by_func (textview, G_CALLBACK (textview_visibility_notify_event), NULL);
+	g_signal_handlers_disconnect_by_func (textview, G_CALLBACK (textview_populate_popup_cb), NULL);
 }
 
 void
