@@ -42,7 +42,7 @@
 	</para>
       </listitem>
       <listitem>
-	<para>Display the the user's alphabet</para>
+	<para>Display the user's alphabet</para>
 	<para>
 	  Using interesting features from ICU libraries allow us to display
 	  the user's alphabet, and implement features such as jumping to

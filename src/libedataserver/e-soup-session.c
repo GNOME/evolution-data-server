@@ -725,7 +725,7 @@ e_soup_session_get_authentication_requires_credentials (ESoupSession *session)
  * @out_certificate_pem: (out): return location for a server TLS/SSL certificate
  *   in PEM format, when the last operation failed with a TLS/SSL error
  * @out_certificate_errors: (out): return location for a #GTlsCertificateFlags,
- *   with certificate error flags when the the operation failed with a TLS/SSL error
+ *   with certificate error flags when the operation failed with a TLS/SSL error
  *
  * Populates @out_certificate_pem and @out_certificate_errors with the last values
  * returned on #SOUP_STATUS_SSL_FAILED error.

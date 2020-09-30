@@ -2419,7 +2419,7 @@ e_cal_cache_dup_component_revision (ECalCache *cal_cache,
  * or %NULL to search for the master object, otherwise the check
  * is done for a detached instance, not for a recurrence instance.
  *
- * Returns: Whether the the object had been found.
+ * Returns: Whether the object had been found.
  *
  * Since: 3.26
  **/

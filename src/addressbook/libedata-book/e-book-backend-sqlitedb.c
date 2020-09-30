@@ -2701,7 +2701,7 @@ contact_found_cb (gpointer ref,
  * Checks if a contact bearing the UID indicated by @uid is stored
  * in @folderid of @ebsdb.
  *
- * Returns: %TRUE if the the contact exists and there was no error, otherwise %FALSE.
+ * Returns: %TRUE if the contact exists and there was no error, otherwise %FALSE.
  *
  * <note><para>In order to differentiate an error from a contact which simply
  * is not stored in @ebsdb, you must pass the @error parameter and check whether

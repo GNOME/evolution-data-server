@@ -53,7 +53,7 @@ typedef struct _ENetworkMonitorPrivate ENetworkMonitorPrivate;
  *
  * A special name, which can be used as a GIO name in the call
  * to e_network_monitor_set_gio_name(), which is used to report
- * the the network as always reachable.
+ * the network as always reachable.
  *
  * Since: 3.22
  **/

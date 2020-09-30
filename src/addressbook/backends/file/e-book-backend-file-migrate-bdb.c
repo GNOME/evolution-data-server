@@ -228,7 +228,7 @@ e_book_backend_file_upgrade_db (DB *db,
 				 * with the id field in the vcard set
 				 * to something that doesn't match.
 				 * so, we need to modify the card to
-				 * have the same id as the the dbt. */
+				 * have the same id as the dbt. */
 				if (strcmp (id_dbt.data, e_contact_get_const (contact, E_CONTACT_UID))) {
 					gchar *vcard;
 

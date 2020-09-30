@@ -412,7 +412,7 @@ camel_imapx_status_response_get_uidvalidity (CamelIMAPXStatusResponse *response,
  * @out_highestmodseq and return %TRUE.  Otherwise leave @out_highestmodseq
  * unset and return %FALSE.
  *
- * The "HIGHESTMODSEQ" value refers to the the highest mod-sequence value of
+ * The "HIGHESTMODSEQ" value refers to the highest mod-sequence value of
  * all messages in the mailbox, assuming the server supports the persistent
  * storage of mod-sequences.
  *

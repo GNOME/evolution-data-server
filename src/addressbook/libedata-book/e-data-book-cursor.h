@@ -255,7 +255,7 @@ struct _EDataBookCursor {
  * @step: The #EDataBookCursorStepFunc delegate to navigate the cursor
  * @set_alphabetic_index: The #EDataBookCursorSetAlphabetIndexFunc delegate to set the alphabetic position
  * @get_position: The #EDataBookCursorGetPositionFunc delegate to calculate the current total and position values
- * @compare_contact: The #EDataBookCursorCompareContactFunc delegate to compare an #EContact with the the cursor position
+ * @compare_contact: The #EDataBookCursorCompareContactFunc delegate to compare an #EContact with the cursor position
  * @load_locale: The #EDataBookCursorLoadLocaleFunc delegate used to reload the locale setting
  *
  * Methods to implement on an #EDataBookCursor concrete class.

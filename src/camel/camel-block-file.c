@@ -341,7 +341,7 @@ block_file_unuse (CamelBlockFile *bs)
 
 /**
  * camel_block_file_new:
- * @path: a path with file name of the the new #CamelBlockFile
+ * @path: a path with file name of the new #CamelBlockFile
  * @flags: file open flags to use
  * @version: a version string
  * @block_size: block size, currently ignored

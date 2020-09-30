@@ -358,7 +358,7 @@
  * As shown below, each index in the active alphabet array is a potential cursor state
  * which refers to a position before, after or in between contacts in the sorted contact list.
  * Most of the positions in the active alphabet array refer to alphabetic glyhps or positions,
- * however the the 'underflow', 'inflow' and 'overflow' positions represent positions for
+ * however the 'underflow', 'inflow' and 'overflow' positions represent positions for
  * contacts which sort outside the bounderies of the active alphabet.
  * </para>
  * <inlinegraphic fileref="cursor-alphabetic-indexes.png" format="PNG" align="center"></inlinegraphic>

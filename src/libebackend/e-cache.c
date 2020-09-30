@@ -1252,7 +1252,7 @@ e_cache_count_rows_cb (ECache *cache,
  * Checkes whether the @cache contains an object with
  * the given @uid.
  *
- * Returns: Whether the the object had been found.
+ * Returns: Whether the object had been found.
  *
  * Since: 3.26
  **/

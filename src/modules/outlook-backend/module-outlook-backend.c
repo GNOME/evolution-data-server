@@ -16,7 +16,7 @@
  */
 
 /* XXX E-D-S currently only supports email access to Outlook.com accounts.
- *     This is not unlike the the built-in collection backend written for
+ *     This is not unlike the built-in collection backend written for
  *     GOA's "IMAP/SMTP" accounts, but I wrote an "outlook" module anyway
  *     as a placeholder with hopes that Microsoft will eventually provide
  *     access to calendar+contacts via CalDAV/CardDAV or even EWS. */
