@@ -223,6 +223,9 @@ e_cal_util_parse_ics_string (const gchar *string)
 		g_free (line);
 	}
 
+	if (comp_str)
+		g_string_free (comp_str, TRUE);
+
 	return icalcomp;
 }
 
