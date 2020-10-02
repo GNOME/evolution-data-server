@@ -1,3 +1,17 @@
+Evolution-Data-Server 3.38.1 2020-10-02
+---------------------------------------
+
+Bug Fixes:
+	I#247 - Trust Prompt: Can fail to extract host from a collection account (Milan Crha)
+	evo-I#1070 - Improve URL scanner (detect angle brackets) (Milan Crha)
+	evo-I#1090 - Forward as iCalendar: Embed event's local attachments (Milan Crha)
+	evo-I#1095 - Password Credentials Prompt: Escape text for use in markup (Milan Crha)
+
+Translations:
+	Jordi Mas (ca)
+	Rūdolfs Mazurs (lv)
+	Yosef Or Boczko (he)
+
 Evolution-Data-Server 3.38.0 2020-09-11
 ---------------------------------------
 
