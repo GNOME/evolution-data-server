@@ -759,6 +759,19 @@ func_contains (ESExp *esexp,
 	return result;
 }
 
+static ESExpResult *
+check_has_property (ESExp *esexp,
+		    ECalComponent *comp,
+		    ICalPropertyKind kind)
+{
+	ESExpResult *result;
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
+	result->value.boolean = e_cal_util_component_has_property (e_cal_component_get_icalcomponent (comp), kind);
+
+	return result;
+}
+
 /* (has-start?)
  *
  * A boolean value for components that have/don't have filled start date/time.
@@ -772,24 +785,80 @@ func_has_start (ESExp *esexp,
                 gpointer data)
 {
 	SearchContext *ctx = data;
-	ESExpResult *result;
-	ECalComponentDateTime *dt;
-
-	/* Check argument types */
 
 	if (argc != 0) {
-		e_sexp_fatal_error (
-			esexp, _("“%s” expects no arguments"),
-			"has-start");
+		e_sexp_fatal_error (esexp, _("“%s” expects no arguments"), "has-start");
 		return NULL;
 	}
 
-	dt = e_cal_component_get_dtstart (ctx->comp);
-	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-	result->value.boolean = dt && e_cal_component_datetime_get_value (dt);
-	e_cal_component_datetime_free (dt);
+	return check_has_property (esexp, ctx->comp, I_CAL_DTSTART_PROPERTY);
+}
 
-	return result;
+/* (has-end?)
+ *
+ * A boolean value for components that have/don't have filled DTEND property.
+ *
+ * Returns: whether the component has DTEND filled
+ */
+static ESExpResult *
+func_has_end (ESExp *esexp,
+	      gint argc,
+	      ESExpResult **argv,
+	      gpointer data)
+{
+	SearchContext *ctx = data;
+
+	if (argc != 0) {
+		e_sexp_fatal_error (esexp, _("“%s” expects no arguments"), "has-end");
+		return NULL;
+	}
+
+	return check_has_property (esexp, ctx->comp, I_CAL_DTEND_PROPERTY);
+}
+
+/* (has-due?)
+ *
+ * A boolean value for components that have/don't have filled DUE property.
+ *
+ * Returns: whether the component has DUE filled
+ */
+static ESExpResult *
+func_has_due (ESExp *esexp,
+	      gint argc,
+	      ESExpResult **argv,
+	      gpointer data)
+{
+	SearchContext *ctx = data;
+
+	if (argc != 0) {
+		e_sexp_fatal_error (esexp, _("“%s” expects no arguments"), "has-due");
+		return NULL;
+	}
+
+	return check_has_property (esexp, ctx->comp, I_CAL_DUE_PROPERTY);
+}
+
+
+/* (has-duration?)
+ *
+ * A boolean value for components that have/don't have filled DURATION property.
+ *
+ * Returns: whether the component has DURATION filled
+ */
+static ESExpResult *
+func_has_duration (ESExp *esexp,
+		   gint argc,
+		   ESExpResult **argv,
+		   gpointer data)
+{
+	SearchContext *ctx = data;
+
+	if (argc != 0) {
+		e_sexp_fatal_error (esexp, _("“%s” expects no arguments"), "has-duration");
+		return NULL;
+	}
+
+	return check_has_property (esexp, ctx->comp, I_CAL_DURATION_PROPERTY);
 }
 
 /* (has-alarms?)
@@ -1252,6 +1321,9 @@ static struct {
 	{ "due-in-time-range?", func_due_in_time_range, 0 },
 	{ "contains?", func_contains, 0 },
 	{ "has-start?", func_has_start, 0 },
+	{ "has-end?", func_has_end, 0 },
+	{ "has-due?", func_has_due, 0 },
+	{ "has-duration?", func_has_duration, 0 },
 	{ "has-alarms?", func_has_alarms, 0 },
 	{ "has-alarms-in-range?", func_has_alarms_in_range, 0 },
 	{ "has-recurrences?", func_has_recurrences, 0 },

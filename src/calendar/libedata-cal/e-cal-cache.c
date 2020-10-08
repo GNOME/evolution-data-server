@@ -42,7 +42,7 @@
 
 #include "e-cal-cache.h"
 
-#define E_CAL_CACHE_VERSION		3
+#define E_CAL_CACHE_VERSION		4
 
 #define ECC_TABLE_TIMEZONES		"timezones"
 
@@ -64,6 +64,9 @@
 #define ECC_COLUMN_HAS_ALARM		"has_alarm"
 #define ECC_COLUMN_HAS_ATTACHMENT	"has_attachment"
 #define ECC_COLUMN_HAS_START		"has_start"
+#define ECC_COLUMN_HAS_END		"has_end"
+#define ECC_COLUMN_HAS_DUE		"has_due"
+#define ECC_COLUMN_HAS_DURATION		"has_duration"
 #define ECC_COLUMN_HAS_RECURRENCES	"has_recurrences"
 #define ECC_COLUMN_EXTRA		"bdata"
 #define ECC_COLUMN_CUSTOM_FLAGS		"custom_flags"
@@ -449,6 +452,9 @@ e_cal_cache_populate_other_columns (ECalCache *cal_cache,
 	add_column (ECC_COLUMN_HAS_ALARM, "INTEGER", NULL);
 	add_column (ECC_COLUMN_HAS_ATTACHMENT, "INTEGER", NULL);
 	add_column (ECC_COLUMN_HAS_START, "INTEGER", NULL);
+	add_column (ECC_COLUMN_HAS_END, "INTEGER", NULL);
+	add_column (ECC_COLUMN_HAS_DUE, "INTEGER", NULL);
+	add_column (ECC_COLUMN_HAS_DURATION, "INTEGER", NULL);
 	add_column (ECC_COLUMN_HAS_RECURRENCES, "INTEGER", NULL);
 	add_column (ECC_COLUMN_EXTRA, "TEXT", NULL);
 	add_column (ECC_COLUMN_CUSTOM_FLAGS, "INTEGER", NULL);
@@ -896,10 +902,19 @@ ecc_fill_other_columns (ECalCache *cal_cache,
 	add_value (ECC_COLUMN_OCCUR_START, dt && e_cal_component_datetime_get_value (dt) &&
 		(e_cal_component_datetime_get_tzid (dt) || i_cal_time_is_utc (e_cal_component_datetime_get_value (dt)))
 		? ecc_encode_timet_to_sql (cal_cache, occur_start) : NULL);
-
-	has = dt && e_cal_component_datetime_get_value (dt);
-	add_value (ECC_COLUMN_HAS_START, g_strdup (has ? "1" : "0"));
 	e_cal_component_datetime_free (dt);
+
+	has = e_cal_util_component_has_property (icomp, I_CAL_DTSTART_PROPERTY);
+	add_value (ECC_COLUMN_HAS_START, g_strdup (has ? "1" : "0"));
+
+	has = e_cal_util_component_has_property (icomp, I_CAL_DTEND_PROPERTY);
+	add_value (ECC_COLUMN_HAS_END, g_strdup (has ? "1" : "0"));
+
+	has = e_cal_util_component_has_property (icomp, I_CAL_DUE_PROPERTY);
+	add_value (ECC_COLUMN_HAS_DUE, g_strdup (has ? "1" : "0"));
+
+	has = e_cal_util_component_has_property (icomp, I_CAL_DURATION_PROPERTY);
+	add_value (ECC_COLUMN_HAS_DURATION, g_strdup (has ? "1" : "0"));
 
 	dt = e_cal_component_get_dtend (comp);
 	add_value (ECC_COLUMN_OCCUR_END, dt && e_cal_component_datetime_get_value (dt) &&
@@ -1295,21 +1310,52 @@ ecc_sexp_func_contains (ESExp *esexp,
 }
 
 static ESExpResult *
+ecc_sexp_has_column_result (ESExp *esexp,
+			    const gchar *column_name)
+{
+	ESExpResult *result;
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+	result->value.string = g_strdup_printf ("(%s NOT NULL AND %s=1)",
+		column_name, column_name);
+
+	return result;
+}
+
+static ESExpResult *
 ecc_sexp_func_has_start (ESExp *esexp,
 			 gint argc,
 			 ESExpResult **argv,
 			 gpointer user_data)
 {
-	SExpToSqlContext *ctx = user_data;
-	ESExpResult *result;
+	return ecc_sexp_has_column_result (esexp, ECC_COLUMN_HAS_START);
+}
 
-	g_return_val_if_fail (ctx != NULL, NULL);
+static ESExpResult *
+ecc_sexp_func_has_end (ESExp *esexp,
+		       gint argc,
+		       ESExpResult **argv,
+		       gpointer user_data)
+{
+	return ecc_sexp_has_column_result (esexp, ECC_COLUMN_HAS_END);
+}
 
-	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
-	result->value.string = g_strdup_printf ("(%s NOT NULL AND %s=1)",
-		ECC_COLUMN_HAS_START, ECC_COLUMN_HAS_START);
+static ESExpResult *
+ecc_sexp_func_has_due (ESExp *esexp,
+		       gint argc,
+		       ESExpResult **argv,
+		       gpointer user_data)
+{
+	return ecc_sexp_has_column_result (esexp, ECC_COLUMN_HAS_DUE);
+}
 
-	return result;
+static ESExpResult *
+ecc_sexp_func_has_duration (ESExp *esexp,
+			    gint argc,
+			    ESExpResult **argv,
+			    gpointer user_data)
+{
+	return ecc_sexp_has_column_result (esexp, ECC_COLUMN_HAS_DURATION);
 }
 
 static ESExpResult *
@@ -1318,16 +1364,7 @@ ecc_sexp_func_has_alarms (ESExp *esexp,
 			  ESExpResult **argv,
 			  gpointer user_data)
 {
-	SExpToSqlContext *ctx = user_data;
-	ESExpResult *result;
-
-	g_return_val_if_fail (ctx != NULL, NULL);
-
-	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
-	result->value.string = g_strdup_printf ("(%s NOT NULL AND %s=1)",
-		ECC_COLUMN_HAS_ALARM, ECC_COLUMN_HAS_ALARM);
-
-	return result;
+	return ecc_sexp_has_column_result (esexp, ECC_COLUMN_HAS_ALARM);
 }
 
 static ESExpResult *
@@ -1358,16 +1395,7 @@ ecc_sexp_func_has_recurrences (ESExp *esexp,
 			       ESExpResult **argv,
 			       gpointer user_data)
 {
-	SExpToSqlContext *ctx = user_data;
-	ESExpResult *result;
-
-	g_return_val_if_fail (ctx != NULL, NULL);
-
-	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
-	result->value.string = g_strdup_printf ("(%s NOT NULL AND %s=1)",
-		ECC_COLUMN_HAS_RECURRENCES, ECC_COLUMN_HAS_RECURRENCES);
-
-	return result;
+	return ecc_sexp_has_column_result (esexp, ECC_COLUMN_HAS_RECURRENCES);
 }
 
 /* (has-categories? STR+)
@@ -1471,16 +1499,7 @@ ecc_sexp_func_has_attachment (ESExp *esexp,
 			      ESExpResult **argv,
 			      gpointer user_data)
 {
-	SExpToSqlContext *ctx = user_data;
-	ESExpResult *result;
-
-	g_return_val_if_fail (ctx != NULL, NULL);
-
-	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
-	result->value.string = g_strdup_printf ("(%s NOT NULL AND %s=1)",
-		ECC_COLUMN_HAS_ATTACHMENT, ECC_COLUMN_HAS_ATTACHMENT);
-
-	return result;
+	return ecc_sexp_has_column_result (esexp, ECC_COLUMN_HAS_ATTACHMENT);
 }
 
 static ESExpResult *
@@ -1597,6 +1616,9 @@ static struct {
 	{ "due-in-time-range?",		ecc_sexp_func_due_in_time_range, 0 },
 	{ "contains?",			ecc_sexp_func_contains, 0 },
 	{ "has-start?",			ecc_sexp_func_has_start, 0 },
+	{ "has-end?",			ecc_sexp_func_has_end, 0 },
+	{ "has-due?",			ecc_sexp_func_has_due, 0 },
+	{ "has-duration?",		ecc_sexp_func_has_duration, 0 },
 	{ "has-alarms?",		ecc_sexp_func_has_alarms, 0 },
 	{ "has-alarms-in-range?",	ecc_sexp_func_has_alarms_in_range, 0 },
 	{ "has-recurrences?",		ecc_sexp_func_has_recurrences, 0 },
@@ -1854,19 +1876,19 @@ component_info_clear (ComponentInfo *ci)
 }
 
 static gboolean
-cal_cache_gather_v1_affected_cb (ECalCache *cal_cache,
-				 const gchar *uid,
-				 const gchar *rid,
-				 const gchar *revision,
-				 const gchar *object,
-				 const gchar *extra,
-				 guint32 custom_flags,
-				 EOfflineState offline_state,
-				 gpointer user_data)
+cal_cache_gather_all_cb (ECalCache *cal_cache,
+			 const gchar *uid,
+			 const gchar *rid,
+			 const gchar *revision,
+			 const gchar *object,
+			 const gchar *extra,
+			 guint32 custom_flags,
+			 EOfflineState offline_state,
+			 gpointer user_data)
 {
 	ComponentInfo *ci = user_data;
 	ECalComponent *comp;
-	ECalComponentDateTime *dt;
+	GSList **pcomps, **pextras, **pcustom_flags;
 
 	g_return_val_if_fail (object != NULL, FALSE);
 	g_return_val_if_fail (ci != NULL, FALSE);
@@ -1878,29 +1900,20 @@ cal_cache_gather_v1_affected_cb (ECalCache *cal_cache,
 	if (!comp)
 		return TRUE;
 
-	dt = e_cal_component_get_due (comp);
-
-	if (dt && e_cal_component_datetime_get_value (dt) &&
-	    !i_cal_time_is_utc (e_cal_component_datetime_get_value (dt)) &&
-	    !e_cal_component_datetime_get_tzid (dt)) {
-		GSList **pcomps, **pextras, **pcustom_flags;
-
-		if (offline_state == E_OFFLINE_STATE_SYNCED) {
-			pcomps = &ci->online_comps;
-			pextras = &ci->online_extras;
-			pcustom_flags = &ci->online_custom_flags;
-		} else {
-			pcomps = &ci->offline_comps;
-			pextras = &ci->offline_extras;
-			pcustom_flags = &ci->offline_custom_flags;
-		}
-
-		*pcomps = g_slist_prepend (*pcomps, g_object_ref (comp));
-		*pextras = g_slist_prepend (*pextras, g_strdup (extra));
-		*pcustom_flags = g_slist_prepend (*pcustom_flags, GUINT_TO_POINTER (custom_flags));
+	if (offline_state == E_OFFLINE_STATE_SYNCED) {
+		pcomps = &ci->online_comps;
+		pextras = &ci->online_extras;
+		pcustom_flags = &ci->online_custom_flags;
+	} else {
+		pcomps = &ci->offline_comps;
+		pextras = &ci->offline_extras;
+		pcustom_flags = &ci->offline_custom_flags;
 	}
 
-	e_cal_component_datetime_free (dt);
+	*pcomps = g_slist_prepend (*pcomps, g_object_ref (comp));
+	*pextras = g_slist_prepend (*pextras, g_strdup (extra));
+	*pcustom_flags = g_slist_prepend (*pcustom_flags, GUINT_TO_POINTER (custom_flags));
+
 	g_object_unref (comp);
 
 	return TRUE;
@@ -2248,13 +2261,16 @@ e_cal_cache_migrate (ECache *cache,
 		g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
 	}
 
-	if (success && from_version == 1) {
-		/* Version 1 incorrectly stored DATE-only DUE values */
+	/* Re-add all components, to have properly filled values in the columns.
+	   Version 1 incorrectly stored DATE-only DUE values.
+	   Version 4 adds ECC_COLUMN_HAS_END, ECC_COLUMN_HAS_DUE and ECC_COLUMN_HAS_DURATION columns.
+	 */
+	if (success && from_version > 0 && from_version < 4) {
 		ComponentInfo ci;
 
 		memset (&ci, 0, sizeof (ComponentInfo));
 
-		if (e_cal_cache_search_with_callback (cal_cache, NULL, cal_cache_gather_v1_affected_cb, &ci, cancellable, NULL)) {
+		if (e_cal_cache_search_with_callback (cal_cache, NULL, cal_cache_gather_all_cb, &ci, cancellable, NULL)) {
 			gboolean success = TRUE;
 
 			if (ci.online_comps)
@@ -4333,7 +4349,7 @@ e_cal_cache_put_locked (ECache *cache,
 	success = E_CACHE_CLASS (e_cal_cache_parent_class)->put_locked (cache, uid, revision, object, other_columns, offline_state,
 		is_replace, cancellable, error);
 
-	if (success)
+	if (success && timezones)
 		success = ecc_update_timezones_table (cal_cache, timezones, cancellable, error);
 
 	if (timezones)
@@ -4367,7 +4383,7 @@ e_cal_cache_remove_locked (ECache *cache,
 
 	success = E_CACHE_CLASS (e_cal_cache_parent_class)->remove_locked (cache, uid, cancellable, error);
 
-	if (success)
+	if (success && timezones)
 		success = ecc_update_timezones_table (cal_cache, timezones, cancellable, error);
 
 	if (timezones)
