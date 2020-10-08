@@ -4333,7 +4333,7 @@ e_cal_cache_put_locked (ECache *cache,
 	success = E_CACHE_CLASS (e_cal_cache_parent_class)->put_locked (cache, uid, revision, object, other_columns, offline_state,
 		is_replace, cancellable, error);
 
-	if (success)
+	if (success && timezones)
 		success = ecc_update_timezones_table (cal_cache, timezones, cancellable, error);
 
 	if (timezones)
@@ -4367,7 +4367,7 @@ e_cal_cache_remove_locked (ECache *cache,
 
 	success = E_CACHE_CLASS (e_cal_cache_parent_class)->remove_locked (cache, uid, cancellable, error);
 
-	if (success)
+	if (success && timezones)
 		success = ecc_update_timezones_table (cal_cache, timezones, cancellable, error);
 
 	if (timezones)
