@@ -1030,7 +1030,7 @@ e_reminder_watcher_objects_removed (EReminderWatcher *watcher,
 		ECalComponentId *id = link->data;
 		GSList *new_scheduled;
 
-		if (!id || e_cal_component_id_get_uid (id))
+		if (!id || !e_cal_component_id_get_uid (id))
 			continue;
 
 		new_scheduled = e_reminder_watcher_move_matched (scheduled, match_not_component_id_cb, id);
