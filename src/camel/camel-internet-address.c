@@ -323,8 +323,8 @@ camel_internet_address_add (CamelInternetAddress *addr,
  * camel_internet_address_get:
  * @addr: a #CamelInternetAddress object
  * @index: address's array index
- * @namep: (out) (nullable): holder for the returned name, or %NULL, if not required.
- * @addressp: (out) (nullable): holder for the returned address, or %NULL, if not required.
+ * @namep: (out) (optional) (nullable) (transfer none): holder for the returned name, or %NULL, if not required.
+ * @addressp: (out) (optional) (nullable) (transfer none): holder for the returned address, or %NULL, if not required.
  *
  * Get the address at @index.
  *
@@ -355,7 +355,7 @@ camel_internet_address_get (CamelInternetAddress *addr,
  * camel_internet_address_find_name:
  * @addr: a #CamelInternetAddress object
  * @name: name to lookup
- * @addressp: (out) (nullable): holder for address part, or %NULL, if not required.
+ * @addressp: (out) (optional) (nullable) (transfer none): holder for address part, or %NULL, if not required.
  *
  * Find address by real name.
  *
@@ -470,7 +470,7 @@ camel_internet_address_ensure_ascii_domains (CamelInternetAddress *addr)
  * camel_internet_address_find_address:
  * @addr: a #CamelInternetAddress object
  * @address: address to lookup
- * @namep: (out) (nullable): holder for the matching name, or %NULL, if not required.
+ * @namep: (out) (optional) (nullable) (transfer none): holder for the matching name, or %NULL, if not required.
  *
  * Find an address by address.
  *
