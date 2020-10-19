@@ -824,6 +824,8 @@ ebmb_refresh_internal_sync (EBookMetaBackend *meta_backend,
 		}
 	}
 
+	e_cache_lock (E_CACHE (book_cache), E_CACHE_LOCK_WRITE);
+
 	while (repeat && success &&
 	       !g_cancellable_set_error_if_cancelled (cancellable, error)) {
 		GSList *created_objects = NULL, *modified_objects = NULL, *removed_objects = NULL;
@@ -866,6 +868,9 @@ ebmb_refresh_internal_sync (EBookMetaBackend *meta_backend,
 
 		is_repeat = TRUE;
 	}
+
+	/* Always commit, to store at least what could be processed */
+	e_cache_unlock (E_CACHE (book_cache), E_CACHE_UNLOCK_COMMIT);
 
 	g_object_unref (book_cache);
 

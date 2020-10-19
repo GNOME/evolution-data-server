@@ -2655,7 +2655,7 @@ e_cache_lock (ECache *cache,
 			break;
 		}
 	} else {
-		/* Warn about cases where where a read transaction might be upgraded */
+		/* Warn about cases where a read transaction might be upgraded */
 		if (lock_type == E_CACHE_LOCK_WRITE && cache->priv->lock_type == E_CACHE_LOCK_READ)
 			g_warning (
 				"A nested transaction wants to write, "
