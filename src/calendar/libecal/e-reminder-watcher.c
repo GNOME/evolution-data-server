@@ -384,7 +384,7 @@ client_data_start_view (ClientData *cd,
 
 	start_tt = client_get_last_notification_time (cd->client) + 1;
 	if (start_tt <= 0)
-		start_tt = time (NULL);
+		start_tt = time_day_begin (time (NULL));
 
 	iso_start = isodate_from_time_t (start_tt);
 	iso_end = isodate_from_time_t ((time_t) next_midnight);
@@ -983,7 +983,7 @@ e_reminder_watcher_objects_changed (EReminderWatcher *watcher,
 		ocd->ids = ids;
 		ocd->interval_start = client_get_last_notification_time (client) + 1;
 		if (ocd->interval_start <= 0)
-			ocd->interval_start = time (NULL);
+			ocd->interval_start = time_day_begin (time (NULL));
 		ocd->interval_end = watcher->priv->next_midnight;
 		ocd->zone = e_reminder_watcher_dup_default_zone (watcher);
 
