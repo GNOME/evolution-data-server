@@ -3841,7 +3841,7 @@ e_webdav_session_list_sync (EWebDAVSession *webdav,
  * e_webdav_session_update_properties_sync:
  * @webdav: an #EWebDAVSession
  * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
- * @changes: (element-type EWebDAVResource): a #GSList with request changes
+ * @changes: (element-type EWebDAVPropertyChange): a #GSList with request changes
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
