@@ -342,6 +342,7 @@ check_header (CamelSExp *sexp,
 		const gchar *header = NULL, *charset = NULL;
 		gchar strbuf[32];
 		gint i, j;
+		gboolean is_message_id = FALSE;
 		camel_search_t type = CAMEL_SEARCH_TYPE_ASIS;
 		struct _camel_search_words *words;
 		CamelMimeMessage *message = NULL;
@@ -368,6 +369,8 @@ check_header (CamelSExp *sexp,
 		} else if (!g_ascii_strcasecmp (headername, "x-camel-mlist")) {
 			header = camel_message_info_get_mlist (search->priv->current);
 			type = CAMEL_SEARCH_TYPE_MLIST;
+		} else if (how == CAMEL_SEARCH_MATCH_EXACT && !g_ascii_strcasecmp (headername, "MESSAGE-ID")) {
+			is_message_id = TRUE;
 		} else {
 			message = ref_current_message (search);
 			if (message) {
@@ -417,6 +420,11 @@ check_header (CamelSExp *sexp,
 								how, type, charset);
 					}
 					camel_search_words_free (words);
+				} else if (is_message_id) {
+					guint64 message_id;
+
+					message_id = camel_folder_search_util_hash_message_id (argv[i]->value.string, TRUE);
+					truth = camel_message_info_get_message_id (search->priv->current) == message_id;
 				} else {
 					if (message) {
 						const CamelNameValueArray *headers = NULL;
@@ -2628,4 +2636,45 @@ camel_folder_search_util_compare_date (gint64 datetime1,
 	dt2 = ((tm.tm_year + 1900) * 10000) + ((tm.tm_mon + 1) * 100) + tm.tm_mday;
 
 	return dt1 - dt2;
+}
+
+/**
+ * camel_folder_search_util_hash_message_id:
+ * @message_id: a raw Message-ID header value
+ * @needs_decode: whether the @message_id requires camel_header_msgid_decode() first
+ *
+ * Calculates a hash of the Message-ID header value @message_id.
+ *
+ * Returns: hash of the @message_id, or 0 on any error.
+ *
+ * Since: 3.40
+ **/
+guint64
+camel_folder_search_util_hash_message_id (const gchar *message_id,
+					  gboolean needs_decode)
+{
+	GChecksum *checksum;
+	CamelSummaryMessageID message_id_struct;
+	gchar *msgid = NULL;
+	guint8 *digest;
+	gsize length;
+
+	if (!message_id)
+		return 0;
+
+	if (needs_decode)
+		msgid = camel_header_msgid_decode (message_id);
+
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	digest = g_alloca (length);
+
+	checksum = g_checksum_new (G_CHECKSUM_MD5);
+	g_checksum_update (checksum, (guchar *) (msgid ? msgid : message_id), -1);
+	g_checksum_get_digest (checksum, digest, &length);
+	g_checksum_free (checksum);
+
+	memcpy (message_id_struct.id.hash, digest, sizeof (message_id_struct.id.hash));
+	g_free (msgid);
+
+	return message_id_struct.id.id;
 }

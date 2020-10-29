@@ -2944,18 +2944,12 @@ static CamelMessageInfo *
 message_info_new_from_headers (CamelFolderSummary *summary,
 			       const CamelNameValueArray *headers)
 {
-	const gchar *received, *date, *content, *charset = NULL;
+	const gchar *received, *date, *content, *charset = NULL, *msgid;
 	GSList *refs, *irt, *scan;
 	gchar *subject, *from, *to, *cc, *mlist;
 	CamelContentType *ct = NULL;
 	CamelMessageInfo *mi;
-	guint8 *digest;
-	gsize length;
-	gchar *msgid;
 	guint count;
-
-	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
-	digest = g_alloca (length);
 
 	mi = camel_message_info_new (summary);
 
@@ -3008,28 +3002,15 @@ message_info_new_from_headers (CamelFolderSummary *summary,
 	if (!camel_message_info_get_date_sent (mi))
 		camel_message_info_set_date_sent (mi, (gint64) time (NULL));
 
-	msgid = camel_header_msgid_decode (camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "Message-ID"));
-	if (msgid) {
-		GChecksum *checksum;
-		CamelSummaryMessageID message_id;
-
-		checksum = g_checksum_new (G_CHECKSUM_MD5);
-		g_checksum_update (checksum, (guchar *) msgid, -1);
-		g_checksum_get_digest (checksum, digest, &length);
-		g_checksum_free (checksum);
-
-		memcpy (message_id.id.hash, digest, sizeof (message_id.id.hash));
-		g_free (msgid);
-
-		camel_message_info_set_message_id (mi, message_id.id.id);
-	}
+	msgid = camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "Message-ID");
+	if (msgid)
+		camel_message_info_set_message_id (mi, camel_folder_search_util_hash_message_id (msgid, TRUE));
 
 	/* decode our references and in-reply-to headers */
 	refs = camel_header_references_decode (camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "References"));
 	irt = camel_header_references_decode (camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "In-Reply-To"));
 	if (refs || irt) {
 		GArray *references;
-		CamelSummaryMessageID message_id;
 
 		if (irt) {
 			/* The References field is populated from the "References" and/or "In-Reply-To"
@@ -3046,16 +3027,11 @@ message_info_new_from_headers (CamelFolderSummary *summary,
 		references = g_array_sized_new (FALSE, FALSE, sizeof (guint64), count);
 
 		for (scan = refs; scan != NULL; scan = g_slist_next (scan)) {
-			GChecksum *checksum;
+			guint64 msgid_hash;
 
-			checksum = g_checksum_new (G_CHECKSUM_MD5);
-			g_checksum_update (checksum, (guchar *) scan->data, -1);
-			g_checksum_get_digest (checksum, digest, &length);
-			g_checksum_free (checksum);
+			msgid_hash = camel_folder_search_util_hash_message_id (scan->data, FALSE);
 
-			memcpy (message_id.id.hash, digest, sizeof (message_id.id.hash));
-
-			g_array_append_val (references, message_id.id.id);
+			g_array_append_val (references, msgid_hash);
 		}
 		g_slist_free_full (refs, g_free);
 

@@ -331,6 +331,9 @@ time_t		camel_folder_search_util_make_time
 gint		camel_folder_search_util_compare_date
 						(gint64 datetime1,
 						 gint64 datetime2);
+guint64		camel_folder_search_util_hash_message_id
+						(const gchar *message_id,
+						 gboolean needs_decode);
 G_END_DECLS
 
 #endif /* CAMEL_FOLDER_SEARCH_H */

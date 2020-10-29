@@ -391,6 +391,10 @@ check_header (struct _CamelSExp *f,
 
 		/* only a subset of headers are supported .. */
 		headername = camel_db_get_column_name (argv[0]->value.string);
+		if (!headername && how == CAMEL_SEARCH_MATCH_EXACT &&
+		    g_ascii_strcasecmp (argv[0]->value.string ? argv[0]->value.string : "", "MESSAGE-ID") == 0) {
+			headername = g_strdup ("part");
+		}
 		if (!headername) {
 			gboolean *pcontains_unknown_column = (gboolean *) data;
 			*pcontains_unknown_column = TRUE;
@@ -417,7 +421,16 @@ check_header (struct _CamelSExp *f,
 					value = get_db_safe_string (tstr);
 					g_free (tstr);
 				} else if (how == CAMEL_SEARCH_MATCH_EXACT) {
-					tstr = g_strdup_printf ("%c%s%c", '%', argv[i]->value.string, '%');
+					if (g_ascii_strcasecmp (headername, "part") == 0) {
+						CamelSummaryMessageID message_id;
+
+						message_id.id.id = camel_folder_search_util_hash_message_id (argv[i]->value.string, TRUE);
+
+						tstr = g_strdup_printf ("%lu %lu %%", (gulong) message_id.id.part.hi, (gulong) message_id.id.part.lo);
+					} else {
+						tstr = g_strdup_printf ("%c%s%c", '%', argv[i]->value.string, '%');
+					}
+
 					value = get_db_safe_string (tstr);
 					g_free (tstr);
 				}
