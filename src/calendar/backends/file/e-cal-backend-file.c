@@ -3720,12 +3720,30 @@ e_cal_backend_file_send_objects (ECalBackendSync *backend,
 }
 
 static void
+cal_backend_file_email_address_changed_cb (GObject *object,
+					   GParamSpec *param,
+					   gpointer user_data)
+{
+	ECalBackend *cal_backend = user_data;
+	gchar *email_address;
+
+	g_return_if_fail (E_IS_SOURCE_LOCAL (object));
+	g_return_if_fail (E_IS_CAL_BACKEND (cal_backend));
+
+	email_address = e_source_local_dup_email_address (E_SOURCE_LOCAL (object));
+
+	e_cal_backend_notify_property_changed (cal_backend, E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS, email_address);
+	e_cal_backend_notify_property_changed (cal_backend, E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS, email_address);
+}
+
+static void
 cal_backend_file_constructed (GObject *object)
 {
 	ECalBackend *backend;
 	ESourceRegistry *registry;
 	ESource *builtin_source;
 	ESource *source;
+	ESourceLocal *local_extension;
 	ICalComponentKind kind;
 	const gchar *user_data_dir;
 	const gchar *component_type;
@@ -3781,6 +3799,11 @@ cal_backend_file_constructed (GObject *object)
 	g_free (filename);
 
 	g_object_unref (builtin_source);
+
+	local_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_LOCAL_BACKEND);
+
+	g_signal_connect_object (local_extension, "notify::email-address",
+		G_CALLBACK (cal_backend_file_email_address_changed_cb), backend, 0);
 }
 
 static void
