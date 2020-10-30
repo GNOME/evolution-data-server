@@ -77,6 +77,10 @@ void		e_source_local_set_custom_file	(ESourceLocal *extension,
 gboolean	e_source_local_get_writable	(ESourceLocal *extension);
 void		e_source_local_set_writable	(ESourceLocal *extension,
 						 gboolean writable);
+const gchar *	e_source_local_get_email_address(ESourceLocal *extension);
+gchar *		e_source_local_dup_email_address(ESourceLocal *extension);
+void		e_source_local_set_email_address(ESourceLocal *extension,
+						 const gchar *email_address);
 G_END_DECLS
 
 #endif /* E_SOURCE_LOCAL_H */

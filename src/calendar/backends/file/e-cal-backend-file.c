@@ -471,10 +471,11 @@ e_cal_backend_file_get_backend_property (ECalBackend *backend,
 
 	} else if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
 		   g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
-		/* A file backend has no particular email address associated
-		 * with it (although that would be a useful feature some day).
-		 */
-		return NULL;
+		ESourceLocal *local_extension;
+
+		local_extension = e_source_get_extension (e_backend_get_source (E_BACKEND (backend)), E_SOURCE_EXTENSION_LOCAL_BACKEND);
+
+		return e_source_local_dup_email_address (local_extension);
 
 	} else if (g_str_equal (prop_name, E_CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
 		ECalComponent *comp;

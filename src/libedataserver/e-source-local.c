@@ -22,11 +22,13 @@
 struct _ESourceLocalPrivate {
 	GFile *custom_file;
 	gboolean writable;
+	gchar *email_address;
 };
 
 enum {
 	PROP_0,
 	PROP_CUSTOM_FILE,
+	PROP_EMAIL_ADDRESS,
 	PROP_WRITABLE
 };
 
@@ -46,6 +48,12 @@ source_local_set_property (GObject *object,
 			e_source_local_set_custom_file (
 				E_SOURCE_LOCAL (object),
 				g_value_get_object (value));
+			return;
+
+		case PROP_EMAIL_ADDRESS:
+			e_source_local_set_email_address (
+				E_SOURCE_LOCAL (object),
+				g_value_get_string (value));
 			return;
 
 		case PROP_WRITABLE:
@@ -69,6 +77,13 @@ source_local_get_property (GObject *object,
 			g_value_take_object (
 				value,
 				e_source_local_dup_custom_file (
+				E_SOURCE_LOCAL (object)));
+			return;
+
+		case PROP_EMAIL_ADDRESS:
+			g_value_take_string (
+				value,
+				e_source_local_dup_email_address (
 				E_SOURCE_LOCAL (object)));
 			return;
 
@@ -121,6 +136,19 @@ e_source_local_class_init (ESourceLocalClass *class)
 			"Custom File",
 			"Custom iCalendar file",
 			G_TYPE_FILE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_EMAIL_ADDRESS,
+		g_param_spec_string (
+			"email-address",
+			"Email Address",
+			"Email address associated with the calendar",
+			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -274,4 +302,85 @@ e_source_local_set_writable (ESourceLocal *extension,
 
 	if (changed)
 		g_object_notify (G_OBJECT (extension), "writable");
+}
+
+/**
+ * e_source_local_get_email_address:
+ * @extension: an #ESourceLocal
+ *
+ * Returns: (nullable): the email address for @extension
+ *
+ * Since: 3.40
+ **/
+const gchar *
+e_source_local_get_email_address (ESourceLocal *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_LOCAL (extension), NULL);
+
+	return extension->priv->email_address;
+}
+
+/**
+ * e_source_local_dup_email_address:
+ * @extension: an #ESourceLocal
+ *
+ * Thread-safe variation of e_source_lcoal_get_email_address().
+ * Use this function when accessing @extension from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: (transfer full): a newly-allocated copy of #ESourceLocal:email-address
+ *
+ * Since: 3.40
+ **/
+gchar *
+e_source_local_dup_email_address (ESourceLocal *extension)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (E_IS_SOURCE_LOCAL (extension), NULL);
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	protected = e_source_local_get_email_address (extension);
+	duplicate = g_strdup (protected);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	return duplicate;
+}
+
+/**
+ * e_source_local_set_email_address:
+ * @extension: an #ESourceLocal
+ * @email_address: (nullable): an email address, or %NULL
+ *
+ * Sets the email address for @extension.
+ *
+ * The internal copy of @email_address is automatically stripped of leading
+ * and trailing whitespace. If the resulting string is empty, %NULL is set
+ * instead.
+ *
+ * Since: 3.40
+ **/
+void
+e_source_local_set_email_address (ESourceLocal *extension,
+				  const gchar *email_address)
+{
+	g_return_if_fail (E_IS_SOURCE_LOCAL (extension));
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	if (e_util_strcmp0 (extension->priv->email_address, email_address) == 0) {
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+		return;
+	}
+
+	g_free (extension->priv->email_address);
+	extension->priv->email_address = e_util_strdup_strip (email_address);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	g_object_notify (G_OBJECT (extension), "email-address");
 }
