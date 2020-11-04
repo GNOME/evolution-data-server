@@ -194,6 +194,9 @@ typedef enum { /*< flags >*/
  * @CAMEL_MIME_FILTER_TOHTML_DIV:
  *     Enclose the paragraphs in &lt;div&gt; ... &lt;/div&gt; tags.
  *     Cannot be used together with %CAMEL_MIME_FILTER_TOHTML_PRE.
+ * @CAMEL_MIME_FILTER_TOHTML_PRESERVE_TABS:
+ *     Set in combination with %CAMEL_MIME_FILTER_TOHTML_CONVERT_SPACES,
+ *     to keep tab characters. If not set, converts them into the spaces.
  *
  * Flags for converting text/plain content into text/html.
  **/
@@ -209,7 +212,8 @@ typedef enum { /*< flags >*/
 	CAMEL_MIME_FILTER_TOHTML_PRESERVE_8BIT = 1 << 8,
 	CAMEL_MIME_FILTER_TOHTML_FORMAT_FLOWED = 1 << 9,
 	CAMEL_MIME_FILTER_TOHTML_QUOTE_CITATION = 1 << 10,
-	CAMEL_MIME_FILTER_TOHTML_DIV = 1 << 11
+	CAMEL_MIME_FILTER_TOHTML_DIV = 1 << 11,
+	CAMEL_MIME_FILTER_TOHTML_PRESERVE_TABS = 1 << 12
 } CamelMimeFilterToHTMLFlags;
 
 /**

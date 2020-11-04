@@ -218,11 +218,25 @@ writeln (CamelMimeFilter *mime_filter,
 			break;
 		case '\t':
 			if (priv->flags & (CAMEL_MIME_FILTER_TOHTML_CONVERT_SPACES)) {
-				do {
-					outptr = check_size (mime_filter, outptr, outend, 7);
-					outptr = g_stpcpy (outptr, "&nbsp;");
-					priv->column++;
-				} while (priv->column % 8);
+				if ((priv->flags & CAMEL_MIME_FILTER_TOHTML_PRESERVE_TABS) != 0) {
+					const gchar *tmp = "<span class=\"Apple-tab-span\" style=\"white-space:pre\">\t</span>";
+					gint tmp_len = 61 /* strlen (tmp) */;
+					#ifdef ENABLE_MAINTAINER_MODE
+					static gboolean tested = FALSE;
+					if (!tested) {
+						tested = TRUE;
+						g_warn_if_fail (strlen (tmp) == tmp_len);
+					}
+					#endif
+					outptr = check_size (mime_filter, outptr, outend, tmp_len + 1);
+					outptr = g_stpcpy (outptr, tmp);
+				} else {
+					do {
+						outptr = check_size (mime_filter, outptr, outend, 7);
+						outptr = g_stpcpy (outptr, "&nbsp;");
+						priv->column++;
+					} while (priv->column % 8);
+				}
 				break;
 			}
 			/* falls through */
