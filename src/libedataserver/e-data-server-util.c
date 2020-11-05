@@ -1727,6 +1727,7 @@ struct _EAsyncClosure {
 	GMainContext *context;
 	GAsyncResult *result;
 	gboolean finished;
+	gboolean pop_thread_default;
 	GMutex lock;
 };
 
@@ -1743,14 +1744,45 @@ EAsyncClosure *
 e_async_closure_new (void)
 {
 	EAsyncClosure *closure;
+	GMainContext *context;
+
+	context = g_main_context_new ();
+	closure = e_async_closure_new_with_context (context);
+	g_main_context_unref (context);
+
+	return closure;
+}
+
+/**
+ * e_async_closure_new_with_context: (skip)
+ * @context: (nullable): a #GMainContext to use, or %NULL to use the default context
+ *
+ * Creates a new #EAsyncClosure for use with asynchronous functions
+ * using the @context as the main context.
+ *
+ * Returns: a new #EAsyncClosure
+ *
+ * Since: 3.40
+ **/
+EAsyncClosure *
+e_async_closure_new_with_context (GMainContext *context)
+{
+	EAsyncClosure *closure;
+
+	if (!context)
+		context = g_main_context_get_thread_default ();
+	if (!context)
+		context = g_main_context_default ();
 
 	closure = g_slice_new0 (EAsyncClosure);
-	closure->context = g_main_context_new ();
+	closure->context = g_main_context_ref (context);
 	closure->loop = g_main_loop_new (closure->context, FALSE);
 	closure->finished = FALSE;
+	closure->pop_thread_default = context != g_main_context_get_thread_default () && context != g_main_context_default ();
 	g_mutex_init (&closure->lock);
 
-	g_main_context_push_thread_default (closure->context);
+	if (closure->pop_thread_default)
+		g_main_context_push_thread_default (closure->context);
 
 	return closure;
 }
@@ -1820,7 +1852,8 @@ e_async_closure_free (EAsyncClosure *closure)
 {
 	g_return_if_fail (closure != NULL);
 
-	g_main_context_pop_thread_default (closure->context);
+	if (closure->pop_thread_default)
+		g_main_context_pop_thread_default (closure->context);
 
 	g_main_loop_unref (closure->loop);
 	g_main_context_unref (closure->context);

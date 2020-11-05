@@ -146,6 +146,7 @@ const gchar *	e_enum_to_string		(GType enum_type,
 typedef struct _EAsyncClosure EAsyncClosure;
 
 EAsyncClosure *	e_async_closure_new		(void);
+EAsyncClosure *	e_async_closure_new_with_context(GMainContext *context);
 GAsyncResult *	e_async_closure_wait		(EAsyncClosure *closure);
 void		e_async_closure_free		(EAsyncClosure *closure);
 void		e_async_closure_callback	(GObject *object,
