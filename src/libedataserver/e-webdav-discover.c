@@ -41,6 +41,8 @@ typedef struct _WebDAVDiscoverData {
 
 #define CUSTOM_SUPPORTS_FLAGS (E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE | E_WEBDAV_DISCOVER_SUPPORTS_SUBSCRIBED_ICALENDAR)
 
+G_DEFINE_BOXED_TYPE (EWebDAVDiscoveredSource, e_webdav_discovered_source, e_webdav_discovered_source_copy, e_webdav_discovered_source_free)
+
 static gboolean
 e_webdav_discovery_already_discovered (const gchar *href,
 				       const GSList *discovered_sources)
@@ -416,20 +418,6 @@ e_webdav_discover_context_free (gpointer ptr)
 	g_slice_free (EWebDAVDiscoverContext, context);
 }
 
-static void
-e_webdav_discover_source_free (gpointer ptr)
-{
-	EWebDAVDiscoveredSource *discovered_source = ptr;
-
-	if (discovered_source) {
-		g_free (discovered_source->href);
-		g_free (discovered_source->display_name);
-		g_free (discovered_source->description);
-		g_free (discovered_source->color);
-		g_slice_free (EWebDAVDiscoveredSource, discovered_source);
-	}
-}
-
 /**
  * e_webdav_discover_free_discovered_sources:
  * @discovered_sources: (element-type EWebDAVDiscoveredSource): A #GSList of discovered sources
@@ -442,7 +430,7 @@ e_webdav_discover_source_free (gpointer ptr)
 void
 e_webdav_discover_free_discovered_sources (GSList *discovered_sources)
 {
-	g_slist_free_full (discovered_sources, e_webdav_discover_source_free);
+	g_slist_free_full (discovered_sources, (GDestroyNotify) e_webdav_discovered_source_free);
 }
 
 static void
@@ -1043,4 +1031,53 @@ e_webdav_discover_sources_full_sync (ESource *source,
 	g_object_unref (webdav);
 
 	return success;
+}
+
+/**
+ * e_webdav_discovered_source_copy:
+ * @discovered_source: an #EWebDAVDiscoveredSource to copy
+ *
+ * Copies the given EWebDAVDiscoveredSource.
+ *
+ * Returns: (transfer full): a copy of @discovered_source
+ *
+ * Since: 3.40
+ **/
+EWebDAVDiscoveredSource *
+e_webdav_discovered_source_copy (EWebDAVDiscoveredSource *discovered_source)
+{
+	EWebDAVDiscoveredSource *copy;
+
+	g_return_val_if_fail (discovered_source != NULL, NULL);
+
+	copy = g_slice_new0 (EWebDAVDiscoveredSource);
+	copy->href = g_strdup (discovered_source->href);
+	copy->supports = discovered_source->supports;
+	copy->display_name = g_strdup (discovered_source->display_name);
+	copy->description = g_strdup (discovered_source->description);
+	copy->color = g_strdup (discovered_source->color);
+
+	return copy;
+}
+
+
+/**
+ * e_webdav_discovered_source_free:
+ * @discovered_source: an #EWebDAVDiscoveredSource to free
+ *
+ * Frees the @discovered_source. Function does nothing, when it's %NULL.
+ *
+ * Since: 3.40
+ **/
+void
+e_webdav_discovered_source_free (EWebDAVDiscoveredSource *discovered_source)
+{
+	if (!discovered_source)
+		return;
+
+	g_clear_pointer (&discovered_source->href, g_free);
+	g_clear_pointer (&discovered_source->display_name, g_free);
+	g_clear_pointer (&discovered_source->description, g_free);
+	g_clear_pointer (&discovered_source->color, g_free);
+	g_slice_free (EWebDAVDiscoveredSource, discovered_source);
 }
