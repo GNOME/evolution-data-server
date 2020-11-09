@@ -1064,6 +1064,7 @@ e_alarm_notify_activate (GApplication *application)
 {
 	EAlarmNotify *an = E_ALARM_NOTIFY (application);
 	gint paned_position;
+	GtkStyleContext *context;
 
 	if (g_application_get_is_remote (application)) {
 		g_application_quit (application);
@@ -1084,6 +1085,8 @@ e_alarm_notify_activate (GApplication *application)
 		NULL);
 
 	an->priv->window = gtk_application_window_new (GTK_APPLICATION (an));
+	context = gtk_widget_get_style_context (GTK_WIDGET (an->priv->window));
+	gtk_style_context_add_class (context, "evolution-alarm-notify-window");
 	gtk_window_set_title (GTK_WINDOW (an->priv->window), _("Reminders"));
 	gtk_window_set_icon_name (GTK_WINDOW (an->priv->window), "appointment-soon");
 	gtk_window_set_default_size (GTK_WINDOW (an->priv->window),
