@@ -89,8 +89,8 @@ set(glib_minimum_version 2.46)
 set(glib_encoded_version GLIB_VERSION_2_46)
 
 # Keep these two definitions in agreement.
-set(gdk_minimum_version 3.10)
-set(gdk_encoded_version GDK_VERSION_3_10)
+set(gdk_minimum_version 3.16)
+set(gdk_encoded_version GDK_VERSION_3_16)
 
 # Keep these two definitions in agreement.
 set(soup_minimum_version 2.58)
