@@ -591,6 +591,8 @@ gboolean	e_webdav_session_principal_property_search_sync
 							 GError **error);
 gchar *		e_webdav_session_util_maybe_dequote	(gchar *text);
 void		e_webdav_session_util_free_privileges	(GNode *privileges); /* EWebDAVPrivilege * */
+gboolean	e_webdav_session_util_item_href_equal	(const gchar *href1,
+							 const gchar *href2);
 
 G_END_DECLS
 
