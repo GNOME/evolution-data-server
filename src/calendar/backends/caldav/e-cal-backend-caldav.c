@@ -460,7 +460,7 @@ ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
 						if (!nfo)
 							continue;
 
-						if (g_strcmp0 (nfo->extra, href) == 0) {
+						if (e_webdav_session_util_item_href_equal (nfo->extra, href)) {
 							/* If the server returns data in the same order as it had been requested,
 							   then this speeds up lookup for the matching object. */
 							if (link == md->from_link)
@@ -471,6 +471,9 @@ ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
 							break;
 						}
 					}
+
+					if (!link && e_soup_session_get_log_level (E_SOUP_SESSION (webdav)) != SOUP_LOGGER_LOG_NONE)
+						e_util_debug_print ("CalDAV", "Failed to find item with href '%s' in known server items\n", href);
 
 					g_free (dequoted_etag);
 				}
@@ -489,7 +492,7 @@ ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
 			if (!nfo)
 				continue;
 
-			if (g_strcmp0 (nfo->extra, href) == 0) {
+			if (e_webdav_session_util_item_href_equal (nfo->extra, href)) {
 				/* If the server returns data in the same order as it had been requested,
 				   then this speeds up lookup for the matching object. */
 				if (link == md->from_link)

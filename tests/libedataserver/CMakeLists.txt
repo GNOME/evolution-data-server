@@ -19,6 +19,7 @@ set(extra_ldflags
 # Should be kept ordered approximately from least to most difficult/complex
 set(TESTS
 	e-source-registry-test
+	libedataserver-test
 )
 
 foreach(_test ${TESTS})

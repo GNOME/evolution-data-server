@@ -29,6 +29,7 @@
 #include "evolution-data-server-config.h"
 
 #include <stdio.h>
+#include <string.h>
 #include <glib/gi18n-lib.h>
 
 #include "camel/camel.h"
@@ -5136,4 +5137,84 @@ e_webdav_session_util_free_privileges (GNode *privileges)
 
 	g_node_traverse (privileges, G_PRE_ORDER, G_TRAVERSE_ALL, -1, e_webdav_session_free_in_traverse_cb, NULL);
 	g_node_destroy (privileges);
+}
+
+/**
+ * e_webdav_session_util_item_href_equal:
+ * @href1: the first href
+ * @href2: the second href
+ *
+ * Compares two hrefs and return whether they reference
+ * the same item on the server. The comparison is done in
+ * a relaxed way, not considering scheme part and comparing
+ * the host name case insensitively, while the path
+ * case sensitively. It also ignores the username/password
+ * information in the hostname part, if it's included.
+ * The function doesn't decode any URI-encoded characters.
+ *
+ * Returns: whether the two href-s reference the same item
+ *
+ * Since: 3.40
+ **/
+gboolean
+e_webdav_session_util_item_href_equal (const gchar *href1,
+				       const gchar *href2)
+{
+	const gchar *ptr, *from1, *from2, *next1, *next2;
+
+	if (!href1 || !href2)
+		return href1 == href2;
+
+	if (g_strcmp0 (href1, href2) == 0)
+		return TRUE;
+
+	/* skip the scheme part */
+	ptr = strstr (href1, "://");
+	if (ptr)
+		href1 = ptr + 3;
+
+	ptr = strstr (href2, "://");
+	if (ptr)
+		href2 = ptr + 3;
+
+	for (from1 = href1, from2 = href2; from1 && from2; from1 = next1, from2 = next2) {
+		gint len;
+
+		ptr = strchr (from1, '/');
+		if (ptr)
+			ptr++;
+		next1 = ptr;
+
+		ptr = strchr (from2, '/');
+		if (ptr)
+			ptr++;
+		next2 = ptr;
+
+		if ((!next1 && next2) || (next1 && !next2))
+			break;
+
+		len = next1 ? next1 - from1 : strlen (from1);
+
+		if (!len)
+			len = next2 ? next2 - from2 : strlen (from2);
+
+		/* it's the hostname part */
+		if (from1 == href1) {
+			/* ignore the username/password part */
+			ptr = strchr (from1, '@');
+			if (ptr)
+				from1 = ptr + 1;
+
+			ptr = strchr (from2, '@');
+			if (ptr)
+				from2 = ptr + 1;
+
+			if (g_ascii_strncasecmp (from1, from2, len) != 0)
+				return FALSE;
+		} else if (strncmp (from1, from2, len) != 0) {
+			return FALSE;
+		}
+	}
+
+	return !from1 && !from2;
 }
