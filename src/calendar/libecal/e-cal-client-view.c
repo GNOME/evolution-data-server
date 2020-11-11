@@ -597,16 +597,8 @@ cal_client_view_dispose (GObject *object)
 	priv = E_CAL_CLIENT_VIEW (object)->priv;
 
 	g_clear_object (&priv->client);
-
-	if (priv->connection != NULL) {
-		g_object_unref (priv->connection);
-		priv->connection = NULL;
-	}
-
-	if (priv->main_context != NULL) {
-		g_main_context_unref (priv->main_context);
-		priv->main_context = NULL;
-	}
+	g_clear_object (&priv->connection);
+	g_clear_pointer (&priv->main_context, g_main_context_unref);
 
 	if (priv->dbus_proxy != NULL) {
 		g_signal_handler_disconnect (

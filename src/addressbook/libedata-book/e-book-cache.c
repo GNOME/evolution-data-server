@@ -6337,10 +6337,7 @@ e_book_cache_finalize (GObject *object)
 
 	g_clear_object (&book_cache->priv->source);
 
-	if (book_cache->priv->collator) {
-		e_collator_unref (book_cache->priv->collator);
-		book_cache->priv->collator = NULL;
-	}
+	g_clear_pointer (&book_cache->priv->collator, e_collator_unref);
 
 	g_free (book_cache->priv->locale);
 	g_free (book_cache->priv->region_code);

@@ -153,11 +153,7 @@ book_view_dispose (GObject *object)
 	EBookViewPrivate *priv;
 
 	priv = E_BOOK_VIEW (object)->priv;
-
-	if (priv->book != NULL) {
-		g_object_unref (priv->book);
-		priv->book = NULL;
-	}
+	g_clear_object (&priv->book);
 
 	if (priv->client_view != NULL) {
 		g_signal_handler_disconnect (

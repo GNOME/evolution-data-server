@@ -564,10 +564,7 @@ cdb_sql_exec (sqlite3 *db,
 			break;
 		retries++;
 
-		if (errmsg) {
-			sqlite3_free (errmsg);
-			errmsg = NULL;
-		}
+		g_clear_pointer (&errmsg, sqlite3_free);
 		g_thread_yield ();
 		g_usleep (100 * 1000); /* Sleep for 100 ms */
 
@@ -587,10 +584,7 @@ cdb_sql_exec (sqlite3 *db,
 		return -1;
 	}
 
-	if (errmsg) {
-		sqlite3_free (errmsg);
-		errmsg = NULL;
-	}
+	g_clear_pointer (&errmsg, sqlite3_free);
 
 	return 0;
 }

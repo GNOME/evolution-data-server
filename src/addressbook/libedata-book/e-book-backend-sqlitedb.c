@@ -323,10 +323,7 @@ book_backend_sql_exec_real (sqlite3 *db,
 			break;
 		retries++;
 
-		if (errmsg) {
-			sqlite3_free (errmsg);
-			errmsg = NULL;
-		}
+		g_clear_pointer (&errmsg, sqlite3_free);
 		g_thread_yield ();
 		g_usleep (100 * 1000); /* Sleep for 100 ms */
 
@@ -345,10 +342,7 @@ book_backend_sql_exec_real (sqlite3 *db,
 		return FALSE;
 	}
 
-	if (errmsg) {
-		sqlite3_free (errmsg);
-		errmsg = NULL;
-	}
+	g_clear_pointer (&errmsg, sqlite3_free);
 
 	return TRUE;
 }

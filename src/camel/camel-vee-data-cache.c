@@ -388,21 +388,9 @@ vee_data_cache_dispose (GObject *object)
 	CamelVeeDataCachePrivate *priv;
 
 	priv = CAMEL_VEE_DATA_CACHE (object)->priv;
-
-	if (priv->subfolder_hash != NULL) {
-		g_hash_table_destroy (priv->subfolder_hash);
-		priv->subfolder_hash = NULL;
-	}
-
-	if (priv->orig_message_uid_hash != NULL) {
-		g_hash_table_destroy (priv->orig_message_uid_hash);
-		priv->orig_message_uid_hash = NULL;
-	}
-
-	if (priv->vee_message_uid_hash != NULL) {
-		g_hash_table_destroy (priv->vee_message_uid_hash);
-		priv->vee_message_uid_hash = NULL;
-	}
+	g_clear_pointer (&priv->subfolder_hash, g_hash_table_destroy);
+	g_clear_pointer (&priv->orig_message_uid_hash, g_hash_table_destroy);
+	g_clear_pointer (&priv->vee_message_uid_hash, g_hash_table_destroy);
 
 	/* Chain up to parent's dispose () method. */
 	G_OBJECT_CLASS (camel_vee_data_cache_parent_class)->dispose (object);

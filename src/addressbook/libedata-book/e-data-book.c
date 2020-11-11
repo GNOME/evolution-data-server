@@ -1676,15 +1676,8 @@ data_book_dispose (GObject *object)
 
 	g_weak_ref_set (&priv->backend, NULL);
 
-	if (priv->connection != NULL) {
-		g_object_unref (priv->connection);
-		priv->connection = NULL;
-	}
-
-	if (priv->direct_book) {
-		g_object_unref (priv->direct_book);
-		priv->direct_book = NULL;
-	}
+	g_clear_object (&priv->connection);
+	g_clear_object (&priv->direct_book);
 
 	if (priv->direct_module) {
 		g_type_module_unuse (G_TYPE_MODULE (priv->direct_module));
@@ -1710,10 +1703,7 @@ data_book_finalize (GObject *object)
 	g_weak_ref_clear (&priv->backend);
 	g_hash_table_destroy (priv->sender_table);
 
-	if (priv->dbus_interface) {
-		g_object_unref (priv->dbus_interface);
-		priv->dbus_interface = NULL;
-	}
+	g_clear_object (&priv->dbus_interface);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_book_parent_class)->finalize (object);

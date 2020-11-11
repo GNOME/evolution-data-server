@@ -939,9 +939,7 @@ imapx_parse_ext_optional (CamelIMAPXInputStream *stream,
  done:
 	if (local_error != NULL) {
 		g_propagate_error (error, local_error);
-		if (dinfo)
-			camel_content_disposition_unref (dinfo);
-		dinfo = NULL;
+		g_clear_pointer (&dinfo, camel_content_disposition_unref);
 	}
 
 	return dinfo;

@@ -649,10 +649,7 @@ dump_left_at_exit_cb (void)
 	dump_tracked_ptrs (TRUE);
 
 	G_LOCK (ptr_tracker);
-	if (ptr_tracker) {
-		g_hash_table_destroy (ptr_tracker);
-		ptr_tracker = NULL;
-	}
+	g_clear_pointer (&ptr_tracker, g_hash_table_destroy);
 	G_UNLOCK (ptr_tracker);
 }
 

@@ -42,11 +42,7 @@ mime_filter_progress_dispose (GObject *object)
 	CamelMimeFilterProgressPrivate *priv;
 
 	priv = CAMEL_MIME_FILTER_PROGRESS (object)->priv;
-
-	if (priv->cancellable != NULL) {
-		g_object_unref (priv->cancellable);
-		priv->cancellable = NULL;
-	}
+	g_clear_object (&priv->cancellable);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_mime_filter_progress_parent_class)->dispose (object);

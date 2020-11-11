@@ -2285,10 +2285,7 @@ data_cal_dispose (GObject *object)
 
 	g_weak_ref_set (&priv->backend, NULL);
 
-	if (priv->connection != NULL) {
-		g_object_unref (priv->connection);
-		priv->connection = NULL;
-	}
+	g_clear_object (&priv->connection);
 
 	g_hash_table_remove_all (priv->sender_table);
 
@@ -2309,10 +2306,7 @@ data_cal_finalize (GObject *object)
 	g_weak_ref_clear (&priv->backend);
 	g_hash_table_destroy (priv->sender_table);
 
-	if (priv->dbus_interface) {
-		g_object_unref (priv->dbus_interface);
-		priv->dbus_interface = NULL;
-	}
+	g_clear_object (&priv->dbus_interface);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_cal_parent_class)->finalize (object);

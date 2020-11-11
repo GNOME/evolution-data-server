@@ -805,10 +805,7 @@ message_info_base_dispose (GObject *object)
 	g_clear_pointer (&bmi->priv->cc, (GDestroyNotify) camel_pstring_free);
 	g_clear_pointer (&bmi->priv->mlist, (GDestroyNotify) camel_pstring_free);
 
-	if (bmi->priv->references) {
-		g_array_unref (bmi->priv->references);
-		bmi->priv->references = NULL;
-	}
+	g_clear_pointer (&bmi->priv->references, g_array_unref);
 
 	camel_name_value_array_free (bmi->priv->headers);
 	bmi->priv->headers = NULL;

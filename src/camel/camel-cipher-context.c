@@ -147,11 +147,7 @@ cipher_context_dispose (GObject *object)
 	CamelCipherContextPrivate *priv;
 
 	priv = CAMEL_CIPHER_CONTEXT (object)->priv;
-
-	if (priv->session != NULL) {
-		g_object_unref (priv->session);
-		priv->session = NULL;
-	}
+	g_clear_object (&priv->session);
 
 	/* Chain up to parent's dispose () method. */
 	G_OBJECT_CLASS (camel_cipher_context_parent_class)->dispose (object);

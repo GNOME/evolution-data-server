@@ -755,10 +755,7 @@ imapx_untagged_capability (CamelIMAPXServer *is,
 
 	g_mutex_lock (&is->priv->stream_lock);
 
-	if (is->priv->cinfo != NULL) {
-		imapx_free_capability (is->priv->cinfo);
-		is->priv->cinfo = NULL;
-	}
+	g_clear_pointer (&is->priv->cinfo, imapx_free_capability);
 
 	g_mutex_unlock (&is->priv->stream_lock);
 
@@ -3074,9 +3071,7 @@ connected:
 
 			/* See if we got new capabilities
 			 * in the STARTTLS response. */
-			if (is->priv->cinfo)
-				imapx_free_capability (is->priv->cinfo);
-			is->priv->cinfo = NULL;
+			g_clear_pointer (&is->priv->cinfo, imapx_free_capability);
 			if (ic->status->condition == IMAPX_CAPABILITY) {
 				is->priv->cinfo = ic->status->u.cinfo;
 				ic->status->u.cinfo = NULL;
@@ -3146,10 +3141,7 @@ exit:
 		g_clear_object (&is->priv->connection);
 		g_clear_object (&is->priv->subprocess);
 
-		if (is->priv->cinfo != NULL) {
-			imapx_free_capability (is->priv->cinfo);
-			is->priv->cinfo = NULL;
-		}
+		g_clear_pointer (&is->priv->cinfo, imapx_free_capability);
 
 		g_mutex_unlock (&is->priv->stream_lock);
 	}
@@ -3362,10 +3354,7 @@ camel_imapx_server_authenticate_sync (CamelIMAPXServer *is,
 	if (result == CAMEL_AUTHENTICATION_ACCEPTED) {
 		g_mutex_lock (&is->priv->stream_lock);
 
-		if (is->priv->cinfo) {
-			imapx_free_capability (is->priv->cinfo);
-			is->priv->cinfo = NULL;
-		}
+		g_clear_pointer (&is->priv->cinfo, imapx_free_capability);
 
 		if (ic->status->condition == IMAPX_CAPABILITY) {
 			is->priv->cinfo = ic->status->u.cinfo;
@@ -4073,10 +4062,7 @@ camel_imapx_server_process_command_sync (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_COMMAND (ic), FALSE);
 
 	camel_imapx_command_close (ic);
-	if (ic->status) {
-		imapx_free_status (ic->status);
-		ic->status = NULL;
-	}
+	g_clear_pointer (&ic->status, imapx_free_status);
 	ic->completed = FALSE;
 
 	head = g_queue_peek_head_link (&ic->parts);
@@ -4257,10 +4243,7 @@ imapx_disconnect (CamelIMAPXServer *is)
 	g_clear_object (&is->priv->connection);
 	g_clear_object (&is->priv->subprocess);
 
-	if (is->priv->cinfo) {
-		imapx_free_capability (is->priv->cinfo);
-		is->priv->cinfo = NULL;
-	}
+	g_clear_pointer (&is->priv->cinfo, imapx_free_capability);
 
 	g_mutex_unlock (&is->priv->stream_lock);
 
@@ -6321,10 +6304,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 		camel_folder_summary_remove_uids (camel_folder_get_folder_summary (folder), expunged_removed_list);
 	}
 
-	if (expunged_changes) {
-		camel_folder_change_info_free (expunged_changes);
-		expunged_changes = NULL;
-	}
+	g_clear_pointer (&expunged_changes, camel_folder_change_info_free);
 
 	if (expunged_removed_list) {
 		g_list_free_full (expunged_removed_list, (GDestroyNotify) camel_pstring_free);

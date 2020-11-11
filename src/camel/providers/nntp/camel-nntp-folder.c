@@ -133,10 +133,7 @@ nntp_folder_finalize (GObject *object)
 {
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (object);
 
-	if (nntp_folder->changes) {
-		camel_folder_change_info_free (nntp_folder->changes);
-		nntp_folder->changes = NULL;
-	}
+	g_clear_pointer (&nntp_folder->changes, camel_folder_change_info_free);
 
 	g_mutex_clear (&nntp_folder->priv->search_lock);
 	g_mutex_clear (&nntp_folder->priv->cache_lock);

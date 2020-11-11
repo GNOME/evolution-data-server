@@ -609,10 +609,7 @@ collection_backend_forget_new_sources (ECollectionBackend *backend)
 
 	g_mutex_lock (&backend->priv->unclaimed_resources_lock);
 
-	if (backend->priv->new_sources) {
-		g_hash_table_destroy (backend->priv->new_sources);
-		backend->priv->new_sources = NULL;
-	}
+	g_clear_pointer (&backend->priv->new_sources, g_hash_table_destroy);
 
 	g_mutex_unlock (&backend->priv->unclaimed_resources_lock);
 }

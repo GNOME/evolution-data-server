@@ -861,10 +861,7 @@ source_update_connection_status (ESource *source)
 	g_return_if_fail (E_IS_SOURCE (source));
 
 	g_mutex_lock (&source->priv->connection_status_change_lock);
-	if (source->priv->connection_status_change != NULL) {
-		g_source_unref (source->priv->connection_status_change);
-		source->priv->connection_status_change = NULL;
-	}
+	g_clear_pointer (&source->priv->connection_status_change, g_source_unref);
 	g_mutex_unlock (&source->priv->connection_status_change_lock);
 
 	g_object_freeze_notify (G_OBJECT (source));
@@ -1034,10 +1031,7 @@ source_idle_changed_cb (gpointer user_data)
 		return FALSE;
 
 	g_mutex_lock (&source->priv->changed_lock);
-	if (source->priv->changed != NULL) {
-		g_source_unref (source->priv->changed);
-		source->priv->changed = NULL;
-	}
+	g_clear_pointer (&source->priv->changed, g_source_unref);
 	g_mutex_unlock (&source->priv->changed_lock);
 
 	g_signal_emit (source, signals[CHANGED], 0);
@@ -1246,10 +1240,7 @@ source_dispose (GObject *object)
 
 	g_mutex_unlock (&priv->property_lock);
 
-	if (priv->main_context != NULL) {
-		g_main_context_unref (priv->main_context);
-		priv->main_context = NULL;
-	}
+	g_clear_pointer (&priv->main_context, g_main_context_unref);
 
 	/* XXX Maybe not necessary to acquire the lock? */
 	g_mutex_lock (&priv->changed_lock);

@@ -124,11 +124,7 @@ source_mail_signature_dispose (GObject *object)
 	ESourceMailSignaturePrivate *priv;
 
 	priv = E_SOURCE_MAIL_SIGNATURE (object)->priv;
-
-	if (priv->file != NULL) {
-		g_object_unref (priv->file);
-		priv->file = NULL;
-	}
+	g_clear_object (&priv->file);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_source_mail_signature_parent_class)->

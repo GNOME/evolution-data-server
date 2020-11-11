@@ -139,8 +139,7 @@ async_context_free (AsyncContext *async_context)
 	if (async_context->message != NULL)
 		g_object_unref (async_context->message);
 
-	if (async_context->info != NULL)
-		g_clear_object (&async_context->info);
+	g_clear_object (&async_context->info);
 
 	if (async_context->destination != NULL)
 		g_object_unref (async_context->destination);
@@ -5122,10 +5121,7 @@ camel_folder_change_info_clear (CamelFolderChangeInfo *info)
 	g_ptr_array_set_size (info->uid_removed, 0);
 	g_ptr_array_set_size (info->uid_changed, 0);
 	g_ptr_array_set_size (info->uid_recent, 0);
-	if (p->uid_source) {
-		g_hash_table_destroy (p->uid_source);
-		p->uid_source = NULL;
-	}
+	g_clear_pointer (&p->uid_source, g_hash_table_destroy);
 	g_hash_table_destroy (p->uid_stored);
 	p->uid_stored = g_hash_table_new (g_str_hash, g_str_equal);
 	g_ptr_array_set_size (p->uid_filter, 0);

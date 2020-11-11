@@ -260,10 +260,7 @@ pop3_folder_dispose (GObject *object)
 		pop3_folder->uids = NULL;
 	}
 
-	if (pop3_folder->uids_fi) {
-		g_hash_table_destroy (pop3_folder->uids_fi);
-		pop3_folder->uids_fi = NULL;
-	}
+	g_clear_pointer (&pop3_folder->uids_fi, g_hash_table_destroy);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_pop3_folder_parent_class)->dispose (object);
@@ -671,10 +668,7 @@ pop3_folder_refresh_info_sync (CamelFolder *folder,
 		g_ptr_array_free (pop3_folder->uids, TRUE);
 	}
 
-	if (pop3_folder->uids_fi) {
-		g_hash_table_destroy (pop3_folder->uids_fi);
-		pop3_folder->uids_fi = NULL;
-	}
+	g_clear_pointer (&pop3_folder->uids_fi, g_hash_table_destroy);
 
 	/* Get a new working set. */
 	pop3_folder->uids = g_ptr_array_new ();

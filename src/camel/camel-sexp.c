@@ -183,8 +183,7 @@ camel_sexp_fatal_error (CamelSExp *sexp,
 	/* jumps back to the caller of sexp->priv->failenv,
 	 * only to be called from inside a callback */
 
-	if (sexp->priv->error)
-		g_free (sexp->priv->error);
+	g_free (sexp->priv->error);
 
 	va_start (args, why);
 	sexp->priv->error = g_strdup_vprintf (why, args);

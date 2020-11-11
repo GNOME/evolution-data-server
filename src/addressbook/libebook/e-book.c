@@ -177,10 +177,7 @@ book_dispose (GObject *object)
 		priv->client = NULL;
 	}
 
-	if (priv->source != NULL) {
-		g_object_unref (priv->source);
-		priv->source = NULL;
-	}
+	g_clear_object (&priv->source);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_book_parent_class)->dispose (object);

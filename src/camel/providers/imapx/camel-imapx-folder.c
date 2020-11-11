@@ -209,15 +209,8 @@ imapx_folder_dispose (GObject *object)
 	CamelIMAPXFolder *folder = CAMEL_IMAPX_FOLDER (object);
 	CamelStore *store;
 
-	if (folder->cache != NULL) {
-		g_object_unref (folder->cache);
-		folder->cache = NULL;
-	}
-
-	if (folder->search != NULL) {
-		g_object_unref (folder->search);
-		folder->search = NULL;
-	}
+	g_clear_object (&folder->cache);
+	g_clear_object (&folder->search);
 
 	store = camel_folder_get_parent_store (CAMEL_FOLDER (folder));
 	if (store != NULL) {

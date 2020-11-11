@@ -104,11 +104,7 @@ source_local_finalize (GObject *object)
 	ESourceLocalPrivate *priv;
 
 	priv = E_SOURCE_LOCAL (object)->priv;
-
-	if (priv->custom_file != NULL) {
-		g_object_unref (priv->custom_file);
-		priv->custom_file = NULL;
-	}
+	g_clear_object (&priv->custom_file);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_local_parent_class)->finalize (object);

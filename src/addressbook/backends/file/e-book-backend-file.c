@@ -1055,10 +1055,7 @@ book_backend_file_dispose (GObject *object)
 		bf->priv->cursors = NULL;
 	}
 
-	if (bf->priv->sqlitedb) {
-		g_object_unref (bf->priv->sqlitedb);
-		bf->priv->sqlitedb = NULL;
-	}
+	g_clear_object (&bf->priv->sqlitedb);
 
 	g_rw_lock_writer_unlock (&(bf->priv->lock));
 

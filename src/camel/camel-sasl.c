@@ -250,11 +250,7 @@ sasl_dispose (GObject *object)
 	CamelSaslPrivate *priv;
 
 	priv = CAMEL_SASL (object)->priv;
-
-	if (priv->service != NULL) {
-		g_object_unref (priv->service);
-		priv->service = NULL;
-	}
+	g_clear_object (&priv->service);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_sasl_parent_class)->dispose (object);

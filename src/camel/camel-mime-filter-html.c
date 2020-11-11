@@ -119,11 +119,7 @@ mime_filter_html_dispose (GObject *object)
 	CamelMimeFilterHTMLPrivate *priv;
 
 	priv = CAMEL_MIME_FILTER_HTML (object)->priv;
-
-	if (priv->ctxt != NULL) {
-		g_object_unref (priv->ctxt);
-		priv->ctxt = NULL;
-	}
+	g_clear_object (&priv->ctxt);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_mime_filter_html_parent_class)->dispose (object);

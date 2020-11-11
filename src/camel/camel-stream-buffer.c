@@ -90,11 +90,7 @@ stream_buffer_dispose (GObject *object)
 	CamelStreamBufferPrivate *priv;
 
 	priv = CAMEL_STREAM_BUFFER (object)->priv;
-
-	if (priv->stream != NULL) {
-		g_object_unref (priv->stream);
-		priv->stream = NULL;
-	}
+	g_clear_object (&priv->stream);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_stream_buffer_parent_class)->dispose (object);

@@ -747,10 +747,7 @@ book_client_dispose (GObject *object)
 		priv->dbus_proxy = NULL;
 	}
 
-	if (priv->direct_backend != NULL) {
-		g_object_unref (priv->direct_backend);
-		priv->direct_backend = NULL;
-	}
+	g_clear_object (&priv->direct_backend);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_book_client_parent_class)->dispose (object);

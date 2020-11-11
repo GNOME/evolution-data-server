@@ -45,10 +45,7 @@ pop3_engine_dispose (GObject *object)
 {
 	CamelPOP3Engine *engine = CAMEL_POP3_ENGINE (object);
 
-	if (engine->stream != NULL) {
-		g_object_unref (engine->stream);
-		engine->stream = NULL;
-	}
+	g_clear_object (&engine->stream);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_pop3_engine_parent_class)->dispose (object);

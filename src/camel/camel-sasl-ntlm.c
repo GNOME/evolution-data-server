@@ -971,8 +971,7 @@ sasl_ntlm_finalize (GObject *object)
 	CamelSaslNTLM *ntlm = CAMEL_SASL_NTLM (object);
 	CamelSaslNTLMPrivate *priv = ntlm->priv;
 
-	if (priv->type1_msg)
-		g_free (priv->type1_msg);
+	g_free (priv->type1_msg);
 	if (priv->helper_stream)
 		g_object_unref (priv->helper_stream);
 #endif

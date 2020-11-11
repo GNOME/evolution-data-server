@@ -39,10 +39,7 @@ pop3_stream_dispose (GObject *object)
 {
 	CamelPOP3Stream *stream = CAMEL_POP3_STREAM (object);
 
-	if (stream->source != NULL) {
-		g_object_unref (stream->source);
-		stream->source = NULL;
-	}
+	g_clear_object (&stream->source);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_pop3_stream_parent_class)->dispose (object);

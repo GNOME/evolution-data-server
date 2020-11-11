@@ -177,15 +177,8 @@ cursor_example_dispose (GObject *object)
 
 	cursor_example_cancel_timeout (example);
 
-	if (priv->client) {
-		g_object_unref (priv->client);
-		priv->client = NULL;
-	}
-
-	if (priv->cursor) {
-		g_object_unref (priv->cursor);
-		priv->cursor = NULL;
-	}
+	g_clear_object (&priv->client);
+	g_clear_object (&priv->cursor);
 
 	G_OBJECT_CLASS (cursor_example_parent_class)->dispose (object);
 }

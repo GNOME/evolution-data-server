@@ -1052,10 +1052,7 @@ server_side_source_dispose (GObject *object)
 
 	g_weak_ref_set (&priv->oauth2_support, NULL);
 
-	if (priv->file != NULL) {
-		g_object_unref (priv->file);
-		priv->file = NULL;
-	}
+	g_clear_object (&priv->file);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_server_side_source_parent_class)->dispose (object);

@@ -236,10 +236,7 @@ e_destination_clear (EDestination *dest)
 	g_free (dest->priv->textrep);
 	dest->priv->textrep = NULL;
 
-	if (dest->priv->contact) {
-		g_object_unref (dest->priv->contact);
-		dest->priv->contact = NULL;
-	}
+	g_clear_object (&dest->priv->contact);
 	dest->priv->email_num = -1;
 
 	g_list_foreach (dest->priv->list_dests, (GFunc) g_object_unref, NULL);
@@ -1065,11 +1062,7 @@ e_destination_get_address (const EDestination *dest)
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
 
 	priv = (EDestinationPrivate *) dest->priv; /* cast out const */
-
-	if (priv->addr) {
-		g_free (priv->addr);
-		priv->addr = NULL;
-	}
+	g_clear_pointer (&priv->addr, g_free);
 
 	if (e_destination_is_evolution_list (dest)) {
 		destination_get_address (dest, addr);

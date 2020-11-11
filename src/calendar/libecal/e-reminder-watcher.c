@@ -2151,10 +2151,7 @@ e_reminder_watcher_dispose (GObject *object)
 	g_slist_free_full (watcher->priv->snoozed, e_reminder_data_free);
 	watcher->priv->snoozed = NULL;
 
-	if (watcher->priv->scheduled) {
-		g_hash_table_destroy (watcher->priv->scheduled);
-		watcher->priv->scheduled = NULL;
-	}
+	g_clear_pointer (&watcher->priv->scheduled, g_hash_table_destroy);
 
 	if (watcher->priv->settings && watcher->priv->past_changed_handler_id) {
 		g_signal_handler_disconnect (watcher->priv->settings, watcher->priv->past_changed_handler_id);

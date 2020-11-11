@@ -676,9 +676,7 @@ vee_folder_finalize (GObject *object)
 
 	g_async_queue_unref (vf->priv->change_queue);
 
-	if (vf->priv->vee_data_cache)
-		g_object_unref (vf->priv->vee_data_cache);
-	vf->priv->vee_data_cache = NULL;
+	g_clear_object (&vf->priv->vee_data_cache);
 
 	/* Chain up to parent's finalize () method. */
 	G_OBJECT_CLASS (camel_vee_folder_parent_class)->finalize (object);

@@ -497,15 +497,8 @@ finalize_categories (void)
 		idle_id = 0;
 	}
 
-	if (categories_table != NULL) {
-		g_hash_table_destroy (categories_table);
-		categories_table = NULL;
-	}
-
-	if (listeners != NULL) {
-		g_object_unref (listeners);
-		listeners = NULL;
-	}
+	g_clear_pointer (&categories_table, g_hash_table_destroy);
+	g_clear_object (&listeners);
 
 	initialized = FALSE;
 

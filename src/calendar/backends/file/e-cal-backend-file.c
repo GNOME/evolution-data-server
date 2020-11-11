@@ -1124,9 +1124,7 @@ free_refresh_data (ECalBackendFile *cbfile)
 
 	g_mutex_lock (&priv->refresh_lock);
 
-	if (priv->refresh_monitor)
-		g_object_unref (priv->refresh_monitor);
-	priv->refresh_monitor = NULL;
+	g_clear_object (&priv->refresh_monitor);
 
 	if (priv->refresh_cond) {
 		priv->refresh_thread_stop = TRUE;
@@ -3947,9 +3945,7 @@ e_cal_backend_file_set_file_name (ECalBackendFile *cbfile,
 	priv = cbfile->priv;
 	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
-	if (priv->file_name)
-		g_free (priv->file_name);
-
+	g_free (priv->file_name);
 	priv->file_name = g_strdup (file_name);
 
 	g_rec_mutex_unlock (&priv->idle_save_rmutex);

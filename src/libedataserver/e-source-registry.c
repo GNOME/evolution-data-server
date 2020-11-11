@@ -1297,16 +1297,8 @@ source_registry_dispose (GObject *object)
 	ESourceRegistryPrivate *priv;
 
 	priv = E_SOURCE_REGISTRY (object)->priv;
-
-	if (priv->dbus_object_manager != NULL) {
-		g_object_unref (priv->dbus_object_manager);
-		priv->dbus_object_manager = NULL;
-	}
-
-	if (priv->dbus_source_manager != NULL) {
-		g_object_unref (priv->dbus_source_manager);
-		priv->dbus_source_manager = NULL;
-	}
+	g_clear_object (&priv->dbus_object_manager);
+	g_clear_object (&priv->dbus_source_manager);
 
 	/* Terminate the manager thread after GDBus objects,
 	   because they can schedule GSource-s in the main context there. */
@@ -1316,10 +1308,7 @@ source_registry_dispose (GObject *object)
 		priv->manager_thread = NULL;
 	}
 
-	if (priv->thread_closure) {
-		thread_closure_free (priv->thread_closure);
-		priv->thread_closure = NULL;
-	}
+	g_clear_pointer (&priv->thread_closure, thread_closure_free);
 
 	g_hash_table_remove_all (priv->object_path_table);
 

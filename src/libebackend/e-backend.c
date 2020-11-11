@@ -639,10 +639,7 @@ backend_dispose (GObject *object)
 		priv->network_changed_handler_id = 0;
 	}
 
-	if (priv->main_context != NULL) {
-		g_main_context_unref (priv->main_context);
-		priv->main_context = NULL;
-	}
+	g_clear_pointer (&priv->main_context, g_main_context_unref);
 
 	if (priv->update_online_state != NULL) {
 		g_source_destroy (priv->update_online_state);

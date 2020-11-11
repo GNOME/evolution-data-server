@@ -867,10 +867,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl,
 
 		if (ldap_error == LDAP_PROTOCOL_ERROR) {
 			g_warning ("failed to bind using either v3 or v2 binds.");
-			if (blpriv->ldap) {
-				ldap_unbind (blpriv->ldap);
-				blpriv->ldap = NULL;
-			}
+			g_clear_pointer (&blpriv->ldap, ldap_unbind);
 			g_rec_mutex_unlock (&eds_ldap_handler_lock);
 			g_propagate_error (error,
 				e_client_error_create (E_CLIENT_ERROR_OTHER_ERROR, _("Failed to bind using either v3 or v2 binds")));
@@ -879,19 +876,13 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl,
 		} else if (ldap_error == LDAP_SERVER_DOWN) {
 			/* we only want this to be fatal if the server is down. */
 			g_warning ("failed to bind anonymously while connecting (ldap_error 0x%02x)", ldap_error);
-			if (blpriv->ldap) {
-				ldap_unbind (blpriv->ldap);
-				blpriv->ldap = NULL;
-			}
+			g_clear_pointer (&blpriv->ldap, ldap_unbind);
 			g_rec_mutex_unlock (&eds_ldap_handler_lock);
 			g_propagate_error (error, EC_ERROR (E_CLIENT_ERROR_REPOSITORY_OFFLINE));
 			return FALSE;
 		} else if (ldap_error == LDAP_INVALID_CREDENTIALS) {
 			g_warning ("Invalid credentials while connecting (ldap_error 0x%02x)", ldap_error);
-			if (blpriv->ldap) {
-				ldap_unbind (blpriv->ldap);
-				blpriv->ldap = NULL;
-			}
+			g_clear_pointer (&blpriv->ldap, ldap_unbind);
 			g_rec_mutex_unlock (&eds_ldap_handler_lock);
 			g_propagate_error (error, EC_ERROR (E_CLIENT_ERROR_AUTHENTICATION_FAILED));
 			return FALSE;
@@ -935,26 +926,17 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl,
 			e_backend_ensure_source_status_connected (E_BACKEND (bl));
 			return TRUE;
 		} else if (ldap_error == LDAP_UNWILLING_TO_PERFORM) {
-			if (blpriv->ldap) {
-				ldap_unbind (blpriv->ldap);
-				blpriv->ldap = NULL;
-			}
+			g_clear_pointer (&blpriv->ldap, ldap_unbind);
 			g_rec_mutex_unlock (&eds_ldap_handler_lock);
 			g_propagate_error (error, EC_ERROR (E_CLIENT_ERROR_AUTHENTICATION_FAILED));
 			return FALSE;
 		} else {
-			if (blpriv->ldap) {
-				ldap_unbind (blpriv->ldap);
-				blpriv->ldap = NULL;
-			}
+			g_clear_pointer (&blpriv->ldap, ldap_unbind);
 			g_rec_mutex_unlock (&eds_ldap_handler_lock);
 			g_warning ("Failed to perform root dse query anonymously, (ldap_error 0x%02x)", ldap_error);
 		}
 	} else {
-		if (blpriv->ldap) {
-			ldap_unbind (blpriv->ldap);
-			blpriv->ldap = NULL;
-		}
+		g_clear_pointer (&blpriv->ldap, ldap_unbind);
 		g_rec_mutex_unlock (&eds_ldap_handler_lock);
 	}
 
@@ -4962,10 +4944,7 @@ book_backend_ldap_finalize (GObject *object)
 		priv->summary = NULL;
 	}
 
-	if (priv->cache) {
-		g_object_unref (priv->cache);
-		priv->cache = NULL;
-	}
+	g_clear_object (&priv->cache);
 
 	g_free (priv->ldap_host);
 	g_free (priv->ldap_rootdn);
@@ -5084,10 +5063,7 @@ book_backend_ldap_open (EBookBackend *backend,
 			g_warn_if_reached ();
 	}
 
-	if (bl->priv->cache) {
-		g_object_unref (bl->priv->cache);
-		bl->priv->cache = NULL;
-	}
+	g_clear_object (&bl->priv->cache);
 
 	filename = g_build_filename (cache_dir, "cache.xml", NULL);
 	bl->priv->cache = e_book_backend_cache_new (filename);

@@ -39,11 +39,7 @@ weather_source_dispose (GObject *object)
 	EWeatherSourcePrivate *priv;
 
 	priv = E_WEATHER_SOURCE (object)->priv;
-
-	if (priv->location != NULL) {
-		gweather_location_unref (priv->location);
-		priv->location = NULL;
-	}
+	g_clear_pointer (&priv->location, gweather_location_unref);
 
 	g_clear_object (&priv->info);
 

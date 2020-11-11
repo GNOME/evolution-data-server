@@ -340,11 +340,7 @@ filter_driver_dispose (GObject *object)
 	CamelFilterDriverPrivate *priv;
 
 	priv = CAMEL_FILTER_DRIVER (object)->priv;
-
-	if (priv->transfers) {
-		g_hash_table_destroy (priv->transfers);
-		priv->transfers = NULL;
-	}
+	g_clear_pointer (&priv->transfers, g_hash_table_destroy);
 
 	g_slist_free_full (priv->delete_after_transfer, g_object_unref);
 	priv->delete_after_transfer = NULL;
@@ -355,10 +351,7 @@ filter_driver_dispose (GObject *object)
 		priv->defaultfolder = NULL;
 	}
 
-	if (priv->session != NULL) {
-		g_object_unref (priv->session);
-		priv->session = NULL;
-	}
+	g_clear_object (&priv->session);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_filter_driver_parent_class)->dispose (object);
@@ -1636,10 +1629,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 	}
 	fd = -1;
 
-	if (driver->priv->transfers) {
-		g_hash_table_destroy (driver->priv->transfers);
-		driver->priv->transfers = NULL;
-	}
+	g_clear_pointer (&driver->priv->transfers, g_hash_table_destroy);
 
 	g_slist_free_full (driver->priv->delete_after_transfer, g_object_unref);
 	driver->priv->delete_after_transfer = NULL;
@@ -1783,10 +1773,7 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 		freeuids = TRUE;
 	}
 
-	if (driver->priv->transfers) {
-		g_hash_table_destroy (driver->priv->transfers);
-		driver->priv->transfers = NULL;
-	}
+	g_clear_pointer (&driver->priv->transfers, g_hash_table_destroy);
 
 	g_slist_free_full (driver->priv->delete_after_transfer, g_object_unref);
 	driver->priv->delete_after_transfer = NULL;
@@ -1956,10 +1943,7 @@ filter_driver_filter_message_internal (CamelFilterDriver *driver,
 	}
 
 	if (can_process_transfers) {
-		if (driver->priv->transfers) {
-			g_hash_table_destroy (driver->priv->transfers);
-			driver->priv->transfers = NULL;
-		}
+		g_clear_pointer (&driver->priv->transfers, g_hash_table_destroy);
 
 		g_slist_free_full (driver->priv->delete_after_transfer, g_object_unref);
 		driver->priv->delete_after_transfer = NULL;

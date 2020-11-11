@@ -355,10 +355,7 @@ ecb_http_disconnect_sync (ECalMetaBackend *meta_backend,
 	if (cbhttp->priv->session)
 		soup_session_abort (SOUP_SESSION (cbhttp->priv->session));
 
-	if (cbhttp->priv->components) {
-		g_hash_table_destroy (cbhttp->priv->components);
-		cbhttp->priv->components = NULL;
-	}
+	g_clear_pointer (&cbhttp->priv->components, g_hash_table_destroy);
 
 	g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
 
@@ -704,10 +701,7 @@ e_cal_backend_http_dispose (GObject *object)
 	if (cbhttp->priv->session)
 		soup_session_abort (SOUP_SESSION (cbhttp->priv->session));
 
-	if (cbhttp->priv->components) {
-		g_hash_table_destroy (cbhttp->priv->components);
-		cbhttp->priv->components = NULL;
-	}
+	g_clear_pointer (&cbhttp->priv->components, g_hash_table_destroy);
 
 	g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
 

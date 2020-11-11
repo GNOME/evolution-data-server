@@ -428,11 +428,7 @@ source_camel_dispose (GObject *object)
 	ESourceCamelPrivate *priv;
 
 	priv = E_SOURCE_CAMEL (object)->priv;
-
-	if (priv->settings != NULL) {
-		g_object_unref (priv->settings);
-		priv->settings = NULL;
-	}
+	g_clear_object (&priv->settings);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_source_camel_parent_class)->dispose (object);

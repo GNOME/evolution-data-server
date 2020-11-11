@@ -176,8 +176,7 @@ e_sexp_fatal_error (ESExp *sexp,
 	g_warn_if_fail (E_IS_SEXP (sexp));
 	g_warn_if_fail (why != NULL);
 
-	if (sexp->priv->error)
-		g_free (sexp->priv->error);
+	g_free (sexp->priv->error);
 
 	va_start (args, why);
 	sexp->priv->error = g_strdup_vprintf (why, args);

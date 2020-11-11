@@ -887,8 +887,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 	g_object_unref (mp);
 	if (fd != -1)
 		close (fd);
-	if (info)
-		g_clear_object (&info);
+	g_clear_object (&info);
 
 	camel_operation_pop_message (cancellable);
 	camel_folder_summary_unlock (s);

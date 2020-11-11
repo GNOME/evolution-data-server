@@ -82,11 +82,7 @@ medium_dispose (GObject *object)
 	CamelMediumPrivate *priv;
 
 	priv = CAMEL_MEDIUM (object)->priv;
-
-	if (priv->content != NULL) {
-		g_object_unref (priv->content);
-		priv->content = NULL;
-	}
+	g_clear_object (&priv->content);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_medium_parent_class)->dispose (object);

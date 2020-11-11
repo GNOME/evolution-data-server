@@ -32,16 +32,8 @@ mime_filter_index_dispose (GObject *object)
 	CamelMimeFilterIndexPrivate *priv;
 
 	priv = CAMEL_MIME_FILTER_INDEX (object)->priv;
-
-	if (priv->name != NULL) {
-		g_object_unref (priv->name);
-		priv->name = NULL;
-	}
-
-	if (priv->index != NULL) {
-		g_object_unref (priv->index);
-		priv->index = NULL;
-	}
+	g_clear_object (&priv->name);
+	g_clear_object (&priv->index);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_mime_filter_index_parent_class)->dispose (object);

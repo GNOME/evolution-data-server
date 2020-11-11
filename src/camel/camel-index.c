@@ -367,10 +367,7 @@ index_name_dispose (GObject *object)
 {
 	CamelIndexName *index_name = CAMEL_INDEX_NAME (object);
 
-	if (index_name->index != NULL) {
-		g_object_unref (index_name->index);
-		index_name->index = NULL;
-	}
+	g_clear_object (&index_name->index);
 
 	/* Chain up to parent's dispose () method. */
 	G_OBJECT_CLASS (camel_index_name_parent_class)->dispose (object);
@@ -439,10 +436,7 @@ index_cursor_dispose (GObject *object)
 {
 	CamelIndexCursor *index_cursor = CAMEL_INDEX_CURSOR (object);
 
-	if (index_cursor->index != NULL) {
-		g_object_unref (index_cursor->index);
-		index_cursor->index = NULL;
-	}
+	g_clear_object (&index_cursor->index);
 
 	/* Chain up to parent's dispose () method. */
 	G_OBJECT_CLASS (camel_index_cursor_parent_class)->dispose (object);

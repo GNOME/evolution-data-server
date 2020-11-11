@@ -69,10 +69,7 @@ data_wrapper_dispose (GObject *object)
 {
 	CamelDataWrapper *data_wrapper = CAMEL_DATA_WRAPPER (object);
 
-	if (data_wrapper->priv->mime_type != NULL) {
-		camel_content_type_unref (data_wrapper->priv->mime_type);
-		data_wrapper->priv->mime_type = NULL;
-	}
+	g_clear_pointer (&data_wrapper->priv->mime_type, camel_content_type_unref);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_data_wrapper_parent_class)->dispose (object);

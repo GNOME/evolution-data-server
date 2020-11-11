@@ -156,35 +156,12 @@ text_index_dispose (GObject *object)
 	if (priv->word_index != NULL)
 		camel_index_sync (CAMEL_INDEX (object));
 
-	if (priv->word_index != NULL) {
-		g_object_unref (priv->word_index);
-		priv->word_index = NULL;
-	}
-
-	if (priv->word_hash != NULL) {
-		g_object_unref (priv->word_hash);
-		priv->word_hash = NULL;
-	}
-
-	if (priv->name_index != NULL) {
-		g_object_unref (priv->name_index);
-		priv->name_index = NULL;
-	}
-
-	if (priv->name_hash != NULL) {
-		g_object_unref (priv->name_hash);
-		priv->name_hash = NULL;
-	}
-
-	if (priv->blocks != NULL) {
-		g_object_unref (priv->blocks);
-		priv->blocks = NULL;
-	}
-
-	if (priv->links != NULL) {
-		g_object_unref (priv->links);
-		priv->links = NULL;
-	}
+	g_clear_object (&priv->word_index);
+	g_clear_object (&priv->word_hash);
+	g_clear_object (&priv->name_index);
+	g_clear_object (&priv->name_hash);
+	g_clear_object (&priv->blocks);
+	g_clear_object (&priv->links);
 
 	/* Chain up to parent's dispose () method. */
 	G_OBJECT_CLASS (camel_text_index_parent_class)->dispose (object);
@@ -1736,11 +1713,7 @@ text_index_key_cursor_dispose (GObject *object)
 	CamelTextIndexKeyCursorPrivate *priv;
 
 	priv = CAMEL_TEXT_INDEX_KEY_CURSOR (object)->priv;
-
-	if (priv->table != NULL) {
-		g_object_unref (priv->table);
-		priv->table = NULL;
-	}
+	g_clear_object (&priv->table);
 
 	/* Chain up parent's dispose() method. */
 	G_OBJECT_CLASS (camel_text_index_key_cursor_parent_class)->dispose (object);

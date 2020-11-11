@@ -44,18 +44,12 @@ e_xml_document_finalize (GObject *object)
 {
 	EXmlDocument *xml = E_XML_DOCUMENT (object);
 
-	if (xml->priv->doc) {
-		xmlFreeDoc (xml->priv->doc);
-		xml->priv->doc = NULL;
-	}
+	g_clear_pointer (&xml->priv->doc, xmlFreeDoc);
 
 	xml->priv->root = NULL;
 	xml->priv->current_element = NULL;
 
-	if (xml->priv->namespaces_by_href) {
-		g_hash_table_destroy (xml->priv->namespaces_by_href);
-		xml->priv->namespaces_by_href = NULL;
-	}
+	g_clear_pointer (&xml->priv->namespaces_by_href, g_hash_table_destroy);
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (e_xml_document_parent_class)->finalize (object);

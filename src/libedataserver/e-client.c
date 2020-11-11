@@ -336,12 +336,7 @@ client_dispose (GObject *object)
 	EClientPrivate *priv;
 
 	priv = E_CLIENT (object)->priv;
-
-	if (priv->main_context != NULL) {
-		g_main_context_unref (priv->main_context);
-		priv->main_context = NULL;
-	}
-
+	g_clear_pointer (&priv->main_context, g_main_context_unref);
 	g_clear_object (&priv->source);
 
 	g_free (priv->bus_name);

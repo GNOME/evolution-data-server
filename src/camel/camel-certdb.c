@@ -337,10 +337,7 @@ camel_cert_load_cert_file (CamelCert *cert,
 
 	g_return_val_if_fail (cert != NULL, FALSE);
 
-	if (cert->rawcert) {
-		g_bytes_unref (cert->rawcert);
-		cert->rawcert = NULL;
-	}
+	g_clear_pointer (&cert->rawcert, g_bytes_unref);
 
 	cert_dir = certdb_get_cert_dir ();
 	filename = g_build_filename (cert_dir, cert->fingerprint, NULL);
@@ -366,10 +363,7 @@ camel_cert_save_cert_file (CamelCert *cert,
 	g_return_val_if_fail (cert != NULL, FALSE);
 	g_return_val_if_fail (der_data != NULL, FALSE);
 
-	if (cert->rawcert) {
-		g_bytes_unref (cert->rawcert);
-		cert->rawcert = NULL;
-	}
+	g_clear_pointer (&cert->rawcert, g_bytes_unref);
 
 	cert_dir = certdb_get_cert_dir ();
 	filename = g_build_filename (cert_dir, cert->fingerprint, NULL);

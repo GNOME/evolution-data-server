@@ -344,10 +344,7 @@ impl_DataBookView_set_fields_of_interest (EDBusAddressBookView *object,
 
 	g_return_val_if_fail (in_fields_of_interest != NULL, TRUE);
 
-	if (view->priv->fields_of_interest != NULL) {
-		g_hash_table_destroy (view->priv->fields_of_interest);
-		view->priv->fields_of_interest = NULL;
-	}
+	g_clear_pointer (&view->priv->fields_of_interest, g_hash_table_destroy);
 
 	view->priv->send_uids_only = FALSE;
 

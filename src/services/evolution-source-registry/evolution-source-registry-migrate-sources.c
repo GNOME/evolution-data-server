@@ -1704,25 +1704,10 @@ migrate_parse_account_xml_end_element (GMarkupParseContext *context,
 				parse_data->collection_key_file = NULL;
 			}
 
-			if (parse_data->file != NULL) {
-				g_object_unref (parse_data->file);
-				parse_data->file = NULL;
-			}
-
-			if (parse_data->identity_file != NULL) {
-				g_object_unref (parse_data->identity_file);
-				parse_data->identity_file = NULL;
-			}
-
-			if (parse_data->transport_file != NULL) {
-				g_object_unref (parse_data->transport_file);
-				parse_data->transport_file = NULL;
-			}
-
-			if (parse_data->collection_file != NULL) {
-				g_object_unref (parse_data->collection_file);
-				parse_data->collection_file = NULL;
-			}
+			g_clear_object (&parse_data->file);
+			g_clear_object (&parse_data->identity_file);
+			g_clear_object (&parse_data->transport_file);
+			g_clear_object (&parse_data->collection_file);
 
 			parse_data->skip = FALSE;
 		}
@@ -2150,10 +2135,7 @@ migrate_parse_signature_xml_end_element (GMarkupParseContext *context,
 				parse_data->key_file = NULL;
 			}
 
-			if (parse_data->file != NULL) {
-				g_object_unref (parse_data->file);
-				parse_data->file = NULL;
-			}
+			g_clear_object (&parse_data->file);
 
 			parse_data->skip = FALSE;
 
@@ -3147,18 +3129,12 @@ migrate_parse_source_xml_end_element (GMarkupParseContext *context,
 				parse_data->key_file = NULL;
 			}
 
-			if (parse_data->file != NULL) {
-				g_object_unref (parse_data->file);
-				parse_data->file = NULL;
-			}
+			g_clear_object (&parse_data->file);
 
 			g_free (parse_data->mangled_uri);
 			parse_data->mangled_uri = NULL;
 
-			if (parse_data->soup_uri != NULL) {
-				soup_uri_free (parse_data->soup_uri);
-				parse_data->soup_uri = NULL;
-			}
+			g_clear_pointer (&parse_data->soup_uri, soup_uri_free);
 
 			parse_data->property_func = NULL;
 

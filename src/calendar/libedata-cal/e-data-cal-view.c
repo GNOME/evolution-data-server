@@ -288,10 +288,7 @@ impl_DataCalView_set_fields_of_interest (EDBusCalendarView *object,
 
 	g_return_val_if_fail (in_fields_of_interest != NULL, TRUE);
 
-	if (view->priv->fields_of_interest != NULL) {
-		g_hash_table_destroy (view->priv->fields_of_interest);
-		view->priv->fields_of_interest = NULL;
-	}
+	g_clear_pointer (&view->priv->fields_of_interest, g_hash_table_destroy);
 
 	for (ii = 0; in_fields_of_interest[ii]; ii++) {
 		const gchar *field = in_fields_of_interest[ii];

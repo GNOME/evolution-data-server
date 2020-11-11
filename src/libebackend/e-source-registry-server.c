@@ -784,10 +784,7 @@ source_registry_server_dispose (GObject *object)
 	}
 	g_mutex_unlock (&priv->file_monitor_lock);
 
-	if (priv->main_context != NULL) {
-		g_main_context_unref (priv->main_context);
-		priv->main_context = NULL;
-	}
+	g_clear_pointer (&priv->main_context, g_main_context_unref);
 
 	g_clear_object (&priv->object_manager);
 	g_clear_object (&priv->source_manager);

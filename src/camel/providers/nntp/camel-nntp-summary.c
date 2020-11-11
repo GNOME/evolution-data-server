@@ -276,10 +276,7 @@ add_range_xover (CamelNNTPSummary *cns,
 			}
 		}
 
-		if (cns->priv->uid) {
-			g_free (cns->priv->uid);
-			cns->priv->uid = NULL;
-		}
+		g_clear_pointer (&cns->priv->uid, g_free);
 
 		camel_name_value_array_clear (headers);
 	}
@@ -381,10 +378,7 @@ add_range_head (CamelNNTPSummary *cns,
 					camel_folder_change_info_recent_uid (changes, camel_message_info_get_uid (mi));
 				g_clear_object (&mi);
 			}
-			if (cns->priv->uid) {
-				g_free (cns->priv->uid);
-				cns->priv->uid = NULL;
-			}
+			g_clear_pointer (&cns->priv->uid, g_free);
 		}
 	}
 
@@ -406,10 +400,7 @@ error:
 	}
 
 ioerror:
-	if (cns->priv->uid) {
-		g_free (cns->priv->uid);
-		cns->priv->uid = NULL;
-	}
+	g_clear_pointer (&cns->priv->uid, g_free);
 	g_object_unref (mp);
 
 	g_clear_object (&nntp_stream);

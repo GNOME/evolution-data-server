@@ -83,11 +83,7 @@ local_summary_dispose (GObject *object)
 	CamelLocalSummary *local_summary;
 
 	local_summary = CAMEL_LOCAL_SUMMARY (object);
-
-	if (local_summary->index != NULL) {
-		g_object_unref (local_summary->index);
-		local_summary->index = NULL;
-	}
+	g_clear_object (&local_summary->index);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_local_summary_parent_class)->dispose (object);

@@ -55,10 +55,7 @@ prepare_shutdown_and_quit (ESubprocessCalFactory *subprocess_cal_factory,
 {
 	e_subprocess_factory_call_backends_prepare_shutdown (E_SUBPROCESS_FACTORY (subprocess_cal_factory));
 
-	if (sd->loop) {
-		g_main_loop_quit (sd->loop);
-		sd->loop = NULL;
-	}
+	g_clear_pointer (&sd->loop, g_main_loop_quit);
 }
 
 static gboolean
