@@ -3218,17 +3218,21 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
 
 		full_uri = e_webdav_session_ensure_full_uri (webdav, request_uri, (const gchar *) href_content);
 
-		e_xml_find_children_nodes (propstat_node, 2,
-			E_WEBDAV_NS_DAV, "status", &status_node,
-			E_WEBDAV_NS_DAV, "prop", &prop_node);
+		while (propstat_node && !do_stop) {
+			e_xml_find_children_nodes (propstat_node, 2,
+				E_WEBDAV_NS_DAV, "status", &status_node,
+				E_WEBDAV_NS_DAV, "prop", &prop_node);
 
-		status_content = e_xml_get_node_text (status_node);
+			status_content = e_xml_get_node_text (status_node);
 
-		if (!status_content || !soup_headers_parse_status_line ((const gchar *) status_content, NULL, &status_code, NULL))
-			status_code = 0;
+			if (!status_content || !soup_headers_parse_status_line ((const gchar *) status_content, NULL, &status_code, NULL))
+				status_code = 0;
 
-		if (prop_node && prop_node->children)
-			do_stop = !func (webdav, prop_node, request_uri, full_uri ? full_uri : (const gchar *) href_content, status_code, func_user_data);
+			if (prop_node && prop_node->children)
+				do_stop = !func (webdav, prop_node, request_uri, full_uri ? full_uri : (const gchar *) href_content, status_code, func_user_data);
+
+			propstat_node = e_xml_find_next_sibling (propstat_node, E_WEBDAV_NS_DAV, "propstat");
+		}
 
 		g_free (full_uri);
 	}
