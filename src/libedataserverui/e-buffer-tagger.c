@@ -467,6 +467,47 @@ update_mouse_cursor (GtkTextView *text_view,
 	}
 }
 
+static void
+textview_style_updated_cb (GtkWidget *textview,
+			   gpointer user_data)
+{
+	GtkStyleContext *context;
+	GtkStateFlags state;
+	GtkTextBuffer *buffer;
+	GtkTextTagTable *tag_table;
+	GtkTextTag *tag;
+	GdkRGBA rgba;
+
+	g_return_if_fail (GTK_IS_WIDGET (textview));
+
+	buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (textview));
+	tag_table = gtk_text_buffer_get_tag_table (buffer);
+	tag = gtk_text_tag_table_lookup (tag_table, E_BUFFER_TAGGER_LINK_TAG);
+
+	if (!tag)
+		return;
+
+	context = gtk_widget_get_style_context (textview);
+
+	rgba.red = 0;
+	rgba.green = 0;
+	rgba.blue = 1;
+	rgba.alpha = 1;
+
+	state = gtk_style_context_get_state (context);
+	state = state & (~(GTK_STATE_FLAG_VISITED | GTK_STATE_FLAG_LINK));
+	state = state | GTK_STATE_FLAG_LINK;
+
+	gtk_style_context_save (context);
+	/* Remove the 'view' style, because it can "confuse" some themes */
+	gtk_style_context_remove_class (context, GTK_STYLE_CLASS_VIEW);
+	gtk_style_context_set_state (context, state);
+	gtk_style_context_get_color (context, state, &rgba);
+	gtk_style_context_restore (context);
+
+	g_object_set (G_OBJECT (tag), "foreground-rgba", &rgba, NULL);
+}
+
 static gboolean
 textview_query_tooltip (GtkTextView *text_view,
                         gint x,
@@ -716,6 +757,9 @@ e_buffer_tagger_connect (GtkTextView *textview)
 	gtk_widget_set_has_tooltip (GTK_WIDGET (textview), TRUE);
 
 	g_signal_connect (
+		textview, "style-updated",
+		G_CALLBACK (textview_style_updated_cb), NULL);
+	g_signal_connect (
 		textview, "query-tooltip",
 		G_CALLBACK (textview_query_tooltip), NULL);
 	g_signal_connect (
@@ -759,6 +803,7 @@ e_buffer_tagger_disconnect (GtkTextView *textview)
 
 	gtk_widget_set_has_tooltip (GTK_WIDGET (textview), FALSE);
 
+	g_signal_handlers_disconnect_by_func (textview, G_CALLBACK (textview_style_updated_cb), NULL);
 	g_signal_handlers_disconnect_by_func (textview, G_CALLBACK (textview_query_tooltip), NULL);
 	g_signal_handlers_disconnect_by_func (textview, G_CALLBACK (textview_key_press_event), NULL);
 	g_signal_handlers_disconnect_by_func (textview, G_CALLBACK (textview_event_after), NULL);
