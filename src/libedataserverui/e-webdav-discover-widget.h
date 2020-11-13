@@ -31,6 +31,12 @@
 
 G_BEGIN_DECLS
 
+#define E_TYPE_WEBDAV_DISCOVER_DIALOG e_webdav_discover_dialog_get_type ()
+G_DECLARE_FINAL_TYPE (EWebDAVDiscoverDialog, e_webdav_discover_dialog, E, WEBDAV_DISCOVER_DIALOG, GtkDialog)
+
+#define E_TYPE_WEBDAV_DISCOVER_CONTENT e_webdav_discover_content_get_type ()
+G_DECLARE_FINAL_TYPE (EWebDAVDiscoverContent, e_webdav_discover_content, E, WEBDAV_DISCOVER_CONTENT, GtkGrid)
+
 GtkWidget *	e_webdav_discover_content_new		(ECredentialsPrompter *credentials_prompter,
 							 ESource *source,
 							 const gchar *base_url,

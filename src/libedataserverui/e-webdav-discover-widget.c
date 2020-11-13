@@ -28,9 +28,30 @@
 #include "e-trust-prompt.h"
 #include "e-webdav-discover-widget.h"
 
-#define WEBDAV_DISCOVER_CONTENT_KEY		"e-webdav-discover-content-widget-key"
-#define WEBDAV_DISCOVER_CONTENT_ENTRY_KEY	"e-webdav-discover-content-widget-entry-key"
-#define WEBDAV_DISCOVER_CONTENT_DATA_KEY	"e-webdav-discover-content-widget-data-key"
+struct _EWebDAVDiscoverDialog
+{
+	GtkDialog parent_instance;
+
+	EWebDAVDiscoverContent *content; /* not referenced */
+};
+
+G_DEFINE_TYPE (EWebDAVDiscoverDialog, e_webdav_discover_dialog, GTK_TYPE_DIALOG)
+
+struct _EWebDAVDiscoverContent
+{
+	GtkGrid parent_instance;
+
+	ECredentialsPrompter *credentials_prompter;
+	ESource *source;
+	gchar *base_url;
+	guint supports_filter;
+
+	GtkTreeView *sources_tree_view; /* not referenced */
+	GtkComboBox *email_addresses_combo; /* not referenced */
+	GtkInfoBar *info_bar; /* not referenced */
+};
+
+G_DEFINE_TYPE (EWebDAVDiscoverContent, e_webdav_discover_content, GTK_TYPE_GRID)
 
 enum {
 	COL_HREF_STRING = 0,
@@ -44,28 +65,39 @@ enum {
 	N_COLUMNS
 };
 
-typedef struct _EWebDAVDiscoverContentData {
-	ECredentialsPrompter *credentials_prompter;
-	ESource *source;
-	gchar *base_url;
-	guint supports_filter;
+static void
+e_webdav_discover_content_dispose (GObject *gobject)
+{
+	EWebDAVDiscoverContent *self = (EWebDAVDiscoverContent *)gobject;
 
-	GtkTreeView *sources_tree_view; /* not referenced */
-	GtkComboBox *email_addresses_combo; /* not referenced */
-	GtkInfoBar *info_bar; /* not referenced */
-} EWebDAVDiscoverContentData;
+	g_clear_object (&self->credentials_prompter);
+	g_clear_object (&self->source);
+
+	G_OBJECT_CLASS (e_webdav_discover_content_parent_class)->dispose (gobject);
+}
 
 static void
-e_webdav_discover_content_data_free (gpointer ptr)
+e_webdav_discover_content_finalize (GObject *gobject)
 {
-	EWebDAVDiscoverContentData *data = ptr;
+	EWebDAVDiscoverContent *self = (EWebDAVDiscoverContent *)gobject;
 
-	if (data) {
-		g_clear_object (&data->credentials_prompter);
-		g_clear_object (&data->source);
-		g_free (data->base_url);
-		g_slice_free (EWebDAVDiscoverContentData, data);
-	}
+	g_clear_pointer (&self->base_url, g_free);
+
+	G_OBJECT_CLASS (e_webdav_discover_content_parent_class)->finalize (gobject);
+}
+
+static void
+e_webdav_discover_content_class_init (EWebDAVDiscoverContentClass *klass)
+{
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+  object_class->dispose = e_webdav_discover_content_dispose;
+  object_class->finalize = e_webdav_discover_content_finalize;
+}
+
+static void
+e_webdav_discover_content_init (EWebDAVDiscoverContent *self)
+{
 }
 
 /**
@@ -82,7 +114,7 @@ e_webdav_discover_content_data_free (gpointer ptr)
  * WebDAV (CalDAV or CardDAV) sources provided by the given server. Do not pack
  * anything into this content, its content can be changed dynamically.
  *
- * Returns: (transfer full): a new WebDAV discovery content widget.
+ * Returns: (transfer full) (type EWebDAVDiscoverContent): a new #EWebDAVDiscoverContent.
  *
  * Since: 3.18
  **/
@@ -92,29 +124,24 @@ e_webdav_discover_content_new (ECredentialsPrompter *credentials_prompter,
 			       const gchar *base_url,
 			       guint supports_filter)
 {
-	EWebDAVDiscoverContentData *data;
-	GtkWidget *content, *scrolled_window, *tree_view;
+	EWebDAVDiscoverContent *self;
+	GtkWidget *scrolled_window, *tree_view;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
 	GtkListStore *list_store;
-	GtkGrid *grid;
 
 	g_return_val_if_fail (E_IS_CREDENTIALS_PROMPTER (credentials_prompter), NULL);
 	g_return_val_if_fail (base_url != NULL, NULL);
 
-	data = g_slice_new0 (EWebDAVDiscoverContentData);
-	data->credentials_prompter = g_object_ref (credentials_prompter);
-	data->source = source ? g_object_ref (source) : NULL;
-	data->base_url = g_strdup (base_url);
-	data->supports_filter = supports_filter;
-
-	content = gtk_grid_new ();
-	grid = GTK_GRID (content);
-	gtk_container_set_border_width (GTK_CONTAINER (grid), 4);
-	gtk_grid_set_row_spacing (grid, 4);
-	gtk_grid_set_column_spacing (grid, 4);
-
-	g_object_set_data_full (G_OBJECT (content), WEBDAV_DISCOVER_CONTENT_DATA_KEY, data, e_webdav_discover_content_data_free);
+	self = g_object_new (E_TYPE_WEBDAV_DISCOVER_CONTENT,
+		"row-spacing", 4,
+		"column-spacing", 4,
+		"border-width", 4,
+		NULL);
+	self->credentials_prompter = g_object_ref (credentials_prompter);
+	self->source = source ? g_object_ref (source) : NULL;
+	self->base_url = g_strdup (base_url);
+	self->supports_filter = supports_filter;
 
 	list_store = gtk_list_store_new (N_COLUMNS,
 					 G_TYPE_STRING, /* COL_HREF_STRING */
@@ -141,15 +168,15 @@ e_webdav_discover_content_new (ECredentialsPrompter *credentials_prompter,
 		GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
 	gtk_container_add (GTK_CONTAINER (scrolled_window), tree_view);
-	gtk_grid_attach (grid, scrolled_window, 0, 0, 1, 1);
+	gtk_grid_attach (GTK_GRID (self), scrolled_window, 0, 0, 1, 1);
 
-	data->sources_tree_view = GTK_TREE_VIEW (tree_view);
+	self->sources_tree_view = GTK_TREE_VIEW (tree_view);
 
 	renderer = e_cell_renderer_color_new ();
 	g_object_set (G_OBJECT (renderer), "mode", GTK_CELL_RENDERER_MODE_ACTIVATABLE, NULL);
 
 	column = gtk_tree_view_column_new_with_attributes (_("Name"), renderer, "rgba", COL_COLOR_GDKRGBA, "visible", COL_SHOW_COLOR_BOOLEAN, NULL);
-	gtk_tree_view_append_column (data->sources_tree_view, column);
+	gtk_tree_view_append_column (self->sources_tree_view, column);
 
 	renderer = gtk_cell_renderer_text_new ();
 	gtk_tree_view_column_pack_start (column, renderer, FALSE);
@@ -162,21 +189,21 @@ e_webdav_discover_content_new (ECredentialsPrompter *credentials_prompter,
 
 	renderer = gtk_cell_renderer_text_new ();
 	column = gtk_tree_view_column_new_with_attributes (_("Supports"), renderer, "text", COL_SUPPORTS_STRING, NULL);
-	gtk_tree_view_append_column (data->sources_tree_view, column);
+	gtk_tree_view_append_column (self->sources_tree_view, column);
 
 	if (!supports_filter || (supports_filter & (E_WEBDAV_DISCOVER_SUPPORTS_EVENTS |
 	    E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS)) != 0) {
 		GtkWidget *widget, *box;
 
 		widget = gtk_combo_box_text_new ();
-		data->email_addresses_combo = GTK_COMBO_BOX (widget);
+		self->email_addresses_combo = GTK_COMBO_BOX (widget);
 
 		box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
 		widget = gtk_label_new_with_mnemonic (_("_User mail:"));
-		gtk_label_set_mnemonic_widget (GTK_LABEL (widget), GTK_WIDGET (data->email_addresses_combo));
+		gtk_label_set_mnemonic_widget (GTK_LABEL (widget), GTK_WIDGET (self->email_addresses_combo));
 
 		gtk_container_add (GTK_CONTAINER (box), widget);
-		gtk_container_add (GTK_CONTAINER (box), GTK_WIDGET (data->email_addresses_combo));
+		gtk_container_add (GTK_CONTAINER (box), GTK_WIDGET (self->email_addresses_combo));
 
 		g_object_set (G_OBJECT (widget),
 			"hexpand", FALSE,
@@ -185,7 +212,7 @@ e_webdav_discover_content_new (ECredentialsPrompter *credentials_prompter,
 			"valign", GTK_ALIGN_CENTER,
 			NULL);
 
-		g_object_set (G_OBJECT (data->email_addresses_combo),
+		g_object_set (G_OBJECT (self->email_addresses_combo),
 			"hexpand", TRUE,
 			"vexpand", FALSE,
 			"halign", GTK_ALIGN_FILL,
@@ -199,17 +226,16 @@ e_webdav_discover_content_new (ECredentialsPrompter *credentials_prompter,
 			"valign", GTK_ALIGN_START,
 			NULL);
 
-		gtk_grid_attach (grid, box, 0, 1, 1, 1);
+		gtk_grid_attach (GTK_GRID (self), box, 0, 1, 1, 1);
 	}
 
-	gtk_widget_show_all (content);
-
-	return content;
+	gtk_widget_show_all (GTK_WIDGET (self));
+	return GTK_WIDGET (self);
 }
 
 /**
  * e_webdav_discover_content_get_tree_selection:
- * @content: a WebDAV discovery content, created by e_webdav_discover_content_new()
+ * @content: (type EWebDAVDiscoverContent): an #EWebDAVDiscoverContent
  *
  * Returns inner #GtkTreeViewSelection. This is meant to be able to connect
  * to its "changed" signal and update other parts of the parent widgets accordingly.
@@ -221,19 +247,14 @@ e_webdav_discover_content_new (ECredentialsPrompter *credentials_prompter,
 GtkTreeSelection *
 e_webdav_discover_content_get_tree_selection (GtkWidget *content)
 {
-	EWebDAVDiscoverContentData *data;
+	g_return_val_if_fail (E_IS_WEBDAV_DISCOVER_CONTENT (content), NULL);
 
-	g_return_val_if_fail (GTK_IS_GRID (content), NULL);
-
-	data = g_object_get_data (G_OBJECT (content), WEBDAV_DISCOVER_CONTENT_DATA_KEY);
-	g_return_val_if_fail (data != NULL, NULL);
-
-	return gtk_tree_view_get_selection (data->sources_tree_view);
+	return gtk_tree_view_get_selection (((EWebDAVDiscoverContent *) content)->sources_tree_view);
 }
 
 /**
  * e_webdav_discover_content_set_multiselect:
- * @content: a WebDAV discovery content, created by e_webdav_discover_content_new()
+ * @content: (type EWebDAVDiscoverContent): an #EWebDAVDiscoverContent
  * @multiselect: whether multiselect is allowed
  *
  * Sets whether the WebDAV discovery content allows multiselect.
@@ -244,21 +265,20 @@ void
 e_webdav_discover_content_set_multiselect (GtkWidget *content,
 					   gboolean multiselect)
 {
-	EWebDAVDiscoverContentData *data;
+	EWebDAVDiscoverContent *self;
 	GtkTreeSelection *selection;
 
-	g_return_if_fail (GTK_IS_GRID (content));
+	g_return_if_fail (E_IS_WEBDAV_DISCOVER_CONTENT (content));
 
-	data = g_object_get_data (G_OBJECT (content), WEBDAV_DISCOVER_CONTENT_DATA_KEY);
-	g_return_if_fail (data != NULL);
+	self = (EWebDAVDiscoverContent *)content;
 
-	selection = gtk_tree_view_get_selection (data->sources_tree_view);
+	selection = gtk_tree_view_get_selection (self->sources_tree_view);
 	gtk_tree_selection_set_mode (selection, multiselect ? GTK_SELECTION_MULTIPLE : GTK_SELECTION_SINGLE);
 }
 
 /**
  * e_webdav_discover_content_get_multiselect:
- * @content: a WebDAV discovery content, created by e_webdav_discover_content_new()
+ * @content: (type EWebDAVDiscoverContent): an #EWebDAVDiscoverContent
  *
  * Returns: whether multiselect is allowed for the @content.
  *
@@ -267,21 +287,21 @@ e_webdav_discover_content_set_multiselect (GtkWidget *content,
 gboolean
 e_webdav_discover_content_get_multiselect (GtkWidget *content)
 {
-	EWebDAVDiscoverContentData *data;
+	EWebDAVDiscoverContent *self;
 	GtkTreeSelection *selection;
 
-	g_return_val_if_fail (GTK_IS_GRID (content), FALSE);
+	g_return_val_if_fail (E_IS_WEBDAV_DISCOVER_CONTENT (content), FALSE);
 
-	data = g_object_get_data (G_OBJECT (content), WEBDAV_DISCOVER_CONTENT_DATA_KEY);
-	g_return_val_if_fail (data != NULL, FALSE);
+	self = (EWebDAVDiscoverContent *)content;
 
-	selection = gtk_tree_view_get_selection (data->sources_tree_view);
+	selection = gtk_tree_view_get_selection (self->sources_tree_view);
 	return gtk_tree_selection_get_mode (selection) == GTK_SELECTION_MULTIPLE;
 }
 
 /**
  * e_webdav_discover_content_set_base_url:
- * @content: a WebDAV discovery content, created by e_webdav_discover_content_new()
+ * @content: (type EWebDAVDiscoverContent): an #EWebDAVDiscoverContent
+ * @base_url: a base URL
  *
  * Sets base URL for the @content. This is used to overwrite the one set on
  * the #ESource from the creation time. The URL can be either a full URL, a path
@@ -293,23 +313,22 @@ void
 e_webdav_discover_content_set_base_url (GtkWidget *content,
 					const gchar *base_url)
 {
-	EWebDAVDiscoverContentData *data;
+	EWebDAVDiscoverContent *self;
 
-	g_return_if_fail (GTK_IS_GRID (content));
+	g_return_if_fail (E_IS_WEBDAV_DISCOVER_CONTENT (content));
 	g_return_if_fail (base_url != NULL);
 
-	data = g_object_get_data (G_OBJECT (content), WEBDAV_DISCOVER_CONTENT_DATA_KEY);
-	g_return_if_fail (data != NULL);
+	self = (EWebDAVDiscoverContent *)content;
 
-	if (g_strcmp0 (base_url, data->base_url) != 0) {
-		g_free (data->base_url);
-		data->base_url = g_strdup (base_url);
+	if (g_strcmp0 (base_url, self->base_url) != 0) {
+		g_free (self->base_url);
+		self->base_url = g_strdup (base_url);
 	}
 }
 
 /**
  * e_webdav_discover_content_get_base_url:
- * @content: a WebDAV discovery content, created by e_webdav_discover_content_new()
+ * @content: (type EWebDAVDiscoverContent): an #EWebDAVDiscoverContent
  *
  * Returns currently set base URL for the @content. This is used to overwrite the one
  * set on the #ESource from the creation time. The URL can be either a full URL, a path
@@ -322,19 +341,17 @@ e_webdav_discover_content_set_base_url (GtkWidget *content,
 const gchar *
 e_webdav_discover_content_get_base_url (GtkWidget *content)
 {
-	EWebDAVDiscoverContentData *data;
+	EWebDAVDiscoverContent *self;
 
-	g_return_val_if_fail (GTK_IS_GRID (content), NULL);
+	g_return_val_if_fail (E_IS_WEBDAV_DISCOVER_CONTENT (content), NULL);
 
-	data = g_object_get_data (G_OBJECT (content), WEBDAV_DISCOVER_CONTENT_DATA_KEY);
-	g_return_val_if_fail (data != NULL, NULL);
-
-	return data->base_url;
+	self = (EWebDAVDiscoverContent *)content;
+	return self->base_url;
 }
 
 /**
  * e_webdav_discover_content_get_selected:
- * @content: a WebDAV discovery content, created by e_webdav_discover_content_new()
+ * @content: (type EWebDAVDiscoverContent): an #EWebDAVDiscoverContent
  * @index: an index of the selected source; counts from 0
  * @out_href: (out): an output location for the URL of the selected source
  * @out_supports: (out): an output location of a bit-or of #EWebDAVDiscoverSupports, the set
@@ -362,23 +379,21 @@ e_webdav_discover_content_get_selected (GtkWidget *content,
 					gchar **out_display_name,
 					gchar **out_color)
 {
-	EWebDAVDiscoverContentData *data;
+	EWebDAVDiscoverContent *self;
 	GtkTreeSelection *selection;
 	GtkTreeModel *model = NULL;
 	GList *selected_rows, *link;
 	gboolean success = FALSE;
 
-	g_return_val_if_fail (GTK_IS_GRID (content), FALSE);
+	g_return_val_if_fail (E_IS_WEBDAV_DISCOVER_CONTENT (content), FALSE);
 	g_return_val_if_fail (index >= 0, FALSE);
 	g_return_val_if_fail (out_href != NULL, FALSE);
 	g_return_val_if_fail (out_supports != NULL, FALSE);
 	g_return_val_if_fail (out_display_name != NULL, FALSE);
 	g_return_val_if_fail (out_color != NULL, FALSE);
 
-	data = g_object_get_data (G_OBJECT (content), WEBDAV_DISCOVER_CONTENT_DATA_KEY);
-	g_return_val_if_fail (data != NULL, FALSE);
-
-	selection = gtk_tree_view_get_selection (data->sources_tree_view);
+	self = (EWebDAVDiscoverContent *)content;
+	selection = gtk_tree_view_get_selection (self->sources_tree_view);
 	selected_rows = gtk_tree_selection_get_selected_rows (selection, &model);
 
 	for (link = selected_rows; link && index > 0; link = g_list_next (link)) {
@@ -410,7 +425,7 @@ e_webdav_discover_content_get_selected (GtkWidget *content,
 
 /**
  * e_webdav_discover_content_get_user_address:
- * @content: a WebDAV discovery content, created by e_webdav_discover_content_new()
+ * @content: (type EWebDAVDiscoverContent): an #EWebDAVDiscoverContent
  *
  * Get currently selected user address in the @content, if the server returned any.
  * This value has meaning only with calendar sources.
@@ -425,21 +440,19 @@ e_webdav_discover_content_get_selected (GtkWidget *content,
 gchar *
 e_webdav_discover_content_get_user_address (GtkWidget *content)
 {
-	EWebDAVDiscoverContentData *data;
+	EWebDAVDiscoverContent *self;
 	gchar *active_text;
 
-	g_return_val_if_fail (GTK_IS_GRID (content), NULL);
+	g_return_val_if_fail (E_IS_WEBDAV_DISCOVER_CONTENT (content), NULL);
 
-	data = g_object_get_data (G_OBJECT (content), WEBDAV_DISCOVER_CONTENT_DATA_KEY);
-	g_return_val_if_fail (data != NULL, NULL);
+	self = (EWebDAVDiscoverContent *)content;
 
-	if (!data->email_addresses_combo)
+	if (!self->email_addresses_combo)
 		return NULL;
 
-	active_text = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT (data->email_addresses_combo));
+	active_text = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT (self->email_addresses_combo));
 	if (active_text && !*active_text) {
-		g_free (active_text);
-		active_text = NULL;
+		g_clear_pointer (&active_text, g_free);
 	}
 
 	return active_text;
@@ -585,9 +598,7 @@ e_webdav_discover_content_fill_calendar_emails (GtkComboBox *combo_box,
 }
 
 typedef struct _RefreshData {
-	GtkWidget *content;
-	GCancellable *cancellable;
-	GSimpleAsyncResult *simple;
+	EWebDAVDiscoverContent *content;
 	gchar *base_url;
 	ENamedParameters *credentials;
 	ESourceRegistry *registry;
@@ -595,36 +606,33 @@ typedef struct _RefreshData {
 } RefreshData;
 
 static void
-refresh_data_free (gpointer ptr)
+refresh_data_free (gpointer data)
 {
-	RefreshData *rd = ptr;
+	RefreshData *rd = data;
 
-	if (rd) {
-		if (rd->content) {
-			EWebDAVDiscoverContentData *data;
+	if (!rd)
+		return;
 
-			data = g_object_get_data (G_OBJECT (rd->content), WEBDAV_DISCOVER_CONTENT_DATA_KEY);
+	if (rd->content) {
+		EWebDAVDiscoverContent *content = rd->content;
 
-			if (data) {
-				if (data->info_bar && gtk_info_bar_get_message_type (data->info_bar) == GTK_MESSAGE_INFO) {
-					gtk_widget_destroy (GTK_WIDGET (data->info_bar));
-					data->info_bar = NULL;
-				}
-
-				gtk_widget_set_sensitive (GTK_WIDGET (data->sources_tree_view), TRUE);
-				if (data->email_addresses_combo)
-					gtk_widget_set_sensitive (GTK_WIDGET (data->email_addresses_combo), TRUE);
+		if (content) {
+			if (content->info_bar && gtk_info_bar_get_message_type (content->info_bar) == GTK_MESSAGE_INFO) {
+				gtk_widget_destroy (GTK_WIDGET (content->info_bar));
+				content->info_bar = NULL;
 			}
-		}
 
-		g_clear_object (&rd->content);
-		g_clear_object (&rd->cancellable);
-		g_clear_object (&rd->simple);
-		g_clear_object (&rd->registry);
-		g_free (rd->base_url);
-		e_named_parameters_free (rd->credentials);
-		g_slice_free (RefreshData, rd);
+			gtk_widget_set_sensitive (GTK_WIDGET (content->sources_tree_view), TRUE);
+			if (content->email_addresses_combo)
+				gtk_widget_set_sensitive (GTK_WIDGET (content->email_addresses_combo), TRUE);
+		}
 	}
+
+	g_clear_object (&rd->content);
+	g_clear_object (&rd->registry);
+	g_clear_pointer (&rd->base_url, g_free);
+	g_clear_pointer (&rd->credentials, e_named_parameters_free);
+	g_slice_free (RefreshData, rd);
 }
 
 static void
@@ -637,35 +645,32 @@ e_webdav_discover_content_trust_prompt_done_cb (GObject *source_object,
 						GAsyncResult *result,
 						gpointer user_data)
 {
+	GTask *task = user_data;
 	ETrustPromptResponse response = E_TRUST_PROMPT_RESPONSE_UNKNOWN;
 	ESource *source;
-	RefreshData *rd = user_data;
+	RefreshData *rd;
 	GError *local_error = NULL;
+	GCancellable *cancellable;
 
 	g_return_if_fail (E_IS_SOURCE (source_object));
-	g_return_if_fail (rd != NULL);
 
+	rd = g_task_get_task_data (task);
+	cancellable = g_task_get_cancellable (task);
 	source = E_SOURCE (source_object);
 	if (!e_trust_prompt_run_for_source_finish (source, result, &response, &local_error)) {
-		g_simple_async_result_take_error (rd->simple, local_error);
-		local_error = NULL;
-		g_simple_async_result_complete (rd->simple);
-		refresh_data_free (rd);
+		g_task_return_error (task, g_steal_pointer (&local_error));
 	} else if (response == E_TRUST_PROMPT_RESPONSE_ACCEPT || response == E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY) {
 		/* Use NULL credentials to reuse those from the last time. */
 		e_webdav_discover_sources_full (source, rd->base_url, rd->supports_filter, rd->credentials,
 			rd->registry ? (EWebDAVDiscoverRefSourceFunc) e_source_registry_ref_source : NULL, rd->registry,
-			rd->cancellable, e_webdav_discover_content_refresh_done_cb, rd);
+			cancellable, e_webdav_discover_content_refresh_done_cb, g_steal_pointer (&task));
 	} else {
-		g_cancellable_cancel (rd->cancellable);
-		g_warn_if_fail (g_cancellable_set_error_if_cancelled (rd->cancellable, &local_error));
-		g_simple_async_result_take_error (rd->simple, local_error);
-		local_error = NULL;
-		g_simple_async_result_complete (rd->simple);
-		refresh_data_free (rd);
+		g_cancellable_cancel (cancellable);
+		g_task_return_error_if_cancelled (task);
 	}
 
 	g_clear_error (&local_error);
+	g_clear_object (&task);
 }
 
 static void
@@ -673,24 +678,22 @@ e_webdav_discover_content_credentials_prompt_done_cb (GObject *source_object,
 						      GAsyncResult *result,
 						      gpointer user_data)
 {
-	RefreshData *rd = user_data;
+	GTask *task = user_data;
+	RefreshData *rd;
 	ENamedParameters *credentials = NULL;
 	ESource *source = NULL;
 	GError *local_error = NULL;
 
-	g_return_if_fail (rd != NULL);
 	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER (source_object));
 
+	rd = g_task_get_task_data (task);
 	if (!e_credentials_prompter_prompt_finish (E_CREDENTIALS_PROMPTER (source_object), result,
 		&source, &credentials, &local_error)) {
-		g_simple_async_result_take_error (rd->simple, local_error);
-		local_error = NULL;
-		g_simple_async_result_complete (rd->simple);
-		refresh_data_free (rd);
+		g_task_return_error (task, g_steal_pointer (&local_error));
 	} else {
+		GCancellable *cancellable = g_task_get_cancellable (task);
 		e_named_parameters_free (rd->credentials);
-		rd->credentials = credentials;
-		credentials = NULL;
+		rd->credentials = g_steal_pointer (&credentials);
 
 		if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION) &&
 		    rd->credentials && e_named_parameters_exists (rd->credentials, E_SOURCE_CREDENTIAL_USERNAME)) {
@@ -702,12 +705,13 @@ e_webdav_discover_content_credentials_prompt_done_cb (GObject *source_object,
 
 		e_webdav_discover_sources_full (source, rd->base_url, rd->supports_filter, rd->credentials,
 			rd->registry ? (EWebDAVDiscoverRefSourceFunc) e_source_registry_ref_source : NULL, rd->registry,
-			rd->cancellable, e_webdav_discover_content_refresh_done_cb, rd);
+			cancellable, e_webdav_discover_content_refresh_done_cb, g_steal_pointer (&task));
 	}
 
 	e_named_parameters_free (credentials);
 	g_clear_object (&source);
 	g_clear_error (&local_error);
+	g_clear_object (&task);
 }
 
 static void
@@ -715,94 +719,89 @@ e_webdav_discover_content_refresh_done_cb (GObject *source_object,
 					   GAsyncResult *result,
 					   gpointer user_data)
 {
-	RefreshData *rd = user_data;
+	GTask *task = user_data;
+	RefreshData *rd;
 	ESource *source;
 	gchar *certificate_pem = NULL;
 	GTlsCertificateFlags certificate_errors = 0;
 	GSList *discovered_sources = NULL;
 	GSList *calendar_user_addresses = NULL;
 	GError *local_error = NULL;
+	GCancellable *cancellable;
 
 	g_return_if_fail (E_IS_SOURCE (source_object));
-	g_return_if_fail (rd != NULL);
 
+	rd = g_task_get_task_data (task);
+	cancellable = g_task_get_cancellable (task);
 	source = E_SOURCE (source_object);
-
 	if (!e_webdav_discover_sources_finish (source, result,
 		&certificate_pem, &certificate_errors, &discovered_sources,
 		&calendar_user_addresses, &local_error)) {
-		if (!g_cancellable_is_cancelled (rd->cancellable) && certificate_pem &&
+		if (!g_cancellable_is_cancelled (cancellable) && certificate_pem &&
 		    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
 			GtkWindow *parent;
 			GtkWidget *widget;
 
-			widget = gtk_widget_get_toplevel (rd->content);
+			widget = gtk_widget_get_toplevel (GTK_WIDGET (rd->content));
 			parent = widget ? GTK_WINDOW (widget) : NULL;
 
 			e_trust_prompt_run_for_source (parent, source, certificate_pem, certificate_errors,
-				NULL, FALSE, rd->cancellable, e_webdav_discover_content_trust_prompt_done_cb, rd);
-			rd = NULL;
-		} else if (g_cancellable_is_cancelled (rd->cancellable) ||
+				NULL, FALSE, cancellable, e_webdav_discover_content_trust_prompt_done_cb, g_steal_pointer (&task));
+		} else if (g_cancellable_is_cancelled (cancellable) ||
 		    (!g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED) &&
 		    !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND) &&
 		    !g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) &&
 		    !g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN))) {
-			g_simple_async_result_take_error (rd->simple, local_error);
-			local_error = NULL;
-			g_simple_async_result_complete (rd->simple);
+			g_task_return_error (task, g_steal_pointer (&local_error));
 		} else {
-			EWebDAVDiscoverContentData *data;
+			EWebDAVDiscoverContent *content = rd->content;
 
-			data = g_object_get_data (G_OBJECT (rd->content), WEBDAV_DISCOVER_CONTENT_DATA_KEY);
-			g_return_if_fail (data != NULL);
+			g_return_if_fail (content != NULL);
 
-			e_credentials_prompter_prompt (data->credentials_prompter, source,
+			e_credentials_prompter_prompt (content->credentials_prompter, source,
 				local_error ? local_error->message : NULL,
 				rd->credentials ? E_CREDENTIALS_PROMPTER_PROMPT_FLAG_NONE:
 				E_CREDENTIALS_PROMPTER_PROMPT_FLAG_ALLOW_STORED_CREDENTIALS,
-				e_webdav_discover_content_credentials_prompt_done_cb, rd);
-			rd = NULL;
+				e_webdav_discover_content_credentials_prompt_done_cb, g_steal_pointer (&task));
 		}
 	} else {
-		EWebDAVDiscoverContentData *data;
+		EWebDAVDiscoverContent *content = rd->content;
 
-		data = g_object_get_data (G_OBJECT (rd->content), WEBDAV_DISCOVER_CONTENT_DATA_KEY);
-		g_warn_if_fail (data != NULL);
+		g_warn_if_fail (content != NULL);
 
-		if (data) {
-			e_webdav_discover_content_fill_discovered_sources (data->sources_tree_view,
-				data->supports_filter, discovered_sources);
-			e_webdav_discover_content_fill_calendar_emails (data->email_addresses_combo,
+		if (content) {
+			e_webdav_discover_content_fill_discovered_sources (content->sources_tree_view,
+				content->supports_filter, discovered_sources);
+			e_webdav_discover_content_fill_calendar_emails (content->email_addresses_combo,
 				calendar_user_addresses);
 		}
 
-		g_simple_async_result_set_op_res_gboolean (rd->simple, TRUE);
-		g_simple_async_result_complete (rd->simple);
+		g_task_return_boolean (task, TRUE);
 	}
 
 	g_free (certificate_pem);
 	e_webdav_discover_free_discovered_sources (discovered_sources);
 	g_slist_free_full (calendar_user_addresses, g_free);
-	refresh_data_free (rd);
 	g_clear_error (&local_error);
+	g_clear_object (&task);
 }
 
 static void
 e_webdav_discover_info_bar_response_cb (GtkInfoBar *info_bar,
 					gint response_id,
-					RefreshData *rd)
+					GTask *task)
 {
 	if (response_id == GTK_RESPONSE_CANCEL) {
-		g_return_if_fail (rd != NULL);
-		g_return_if_fail (rd->cancellable != NULL);
+		g_return_if_fail (task != NULL);
+		g_return_if_fail (g_task_get_cancellable (task) != NULL);
 
-		g_cancellable_cancel (rd->cancellable);
+		g_cancellable_cancel (g_task_get_cancellable (task));
 	}
 }
 
 /**
  * e_webdav_discover_content_refresh:
- * @content: a WebDAV discovery content, created by e_webdav_discover_content_new()
+ * @content: (type EWebDAVDiscoverContent): an #EWebDAVDiscoverContent
  * @display_name: (allow-none): optional display name to use for scratch sources
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: (scope async): a #GAsyncReadyCallback to call when the request
@@ -828,50 +827,53 @@ e_webdav_discover_content_refresh (GtkWidget *content,
 				   GAsyncReadyCallback callback,
 				   gpointer user_data)
 {
-	EWebDAVDiscoverContentData *data;
+	GCancellable *use_cancellable;
+	EWebDAVDiscoverContent *self;
+	GTask *task;
 	RefreshData *rd;
 	ESource *source;
 	SoupURI *soup_uri;
 	GtkWidget *label;
 
-	g_return_if_fail (GTK_IS_GRID (content));
+	g_return_if_fail (E_IS_WEBDAV_DISCOVER_CONTENT (content));
 
-	data = g_object_get_data (G_OBJECT (content), WEBDAV_DISCOVER_CONTENT_DATA_KEY);
-	g_return_if_fail (data != NULL);
-	g_return_if_fail (data->base_url != NULL);
+	self = (EWebDAVDiscoverContent *)content;
 
-	soup_uri = soup_uri_new (data->base_url);
+	g_return_if_fail (self->base_url != NULL);
+
+	use_cancellable = cancellable ? g_object_ref (cancellable) : g_cancellable_new ();
+	task = g_task_new (self, use_cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_webdav_discover_content_refresh);
+	soup_uri = soup_uri_new (self->base_url);
 	if (!soup_uri) {
-		GSimpleAsyncResult *simple;
-
-		simple = g_simple_async_result_new (G_OBJECT (content), callback, user_data, e_webdav_discover_content_refresh);
-		g_simple_async_result_set_error (simple, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
+		g_task_return_new_error (task,
+			G_IO_ERROR,
+			G_IO_ERROR_INVALID_ARGUMENT,
 			_("Invalid URL"));
-		g_simple_async_result_complete_in_idle (simple);
-		g_object_unref (simple);
-
+		g_object_unref (use_cancellable);
+		g_object_unref (task);
 		return;
 	}
 
 	rd = g_slice_new0 (RefreshData);
-	rd->content = g_object_ref (content);
-	rd->cancellable = cancellable ? g_object_ref (cancellable) : g_cancellable_new ();
-	rd->simple = g_simple_async_result_new (G_OBJECT (content), callback, user_data, e_webdav_discover_content_refresh);
-	rd->base_url = g_strdup (data->base_url);
+	rd->content = g_object_ref (self);
+	rd->base_url = g_strdup (self->base_url);
 	rd->credentials = NULL;
-	rd->registry = e_credentials_prompter_get_registry (data->credentials_prompter);
-	rd->supports_filter = data->supports_filter;
+	rd->registry = e_credentials_prompter_get_registry (self->credentials_prompter);
+	rd->supports_filter = self->supports_filter;
+
+	g_task_set_task_data (task, rd, refresh_data_free);
 
 	if (rd->registry)
 		g_object_ref (rd->registry);
 
-	if (data->source) {
-		source = g_object_ref (data->source);
+	if (self->source) {
+		source = g_object_ref (self->source);
 	} else {
 		ESourceWebdav *webdav_extension;
 		ESourceAuthentication *auth_extension;
 
-		source = e_source_new_with_uid (data->base_url, NULL, NULL);
+		source = e_source_new_with_uid (self->base_url, NULL, NULL);
 		g_return_if_fail (source != NULL);
 
 		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
@@ -885,40 +887,41 @@ e_webdav_discover_content_refresh (GtkWidget *content,
 		e_source_authentication_set_user (auth_extension, soup_uri_get_user (soup_uri));
 	}
 
-	gtk_list_store_clear (GTK_LIST_STORE (gtk_tree_view_get_model (data->sources_tree_view)));
-	if (data->email_addresses_combo)
-		gtk_combo_box_text_remove_all (GTK_COMBO_BOX_TEXT (data->email_addresses_combo));
+	gtk_list_store_clear (GTK_LIST_STORE (gtk_tree_view_get_model (self->sources_tree_view)));
+	if (self->email_addresses_combo)
+		gtk_combo_box_text_remove_all (GTK_COMBO_BOX_TEXT (self->email_addresses_combo));
 
-	if (data->info_bar)
-		gtk_widget_destroy (GTK_WIDGET (data->info_bar));
+	if (self->info_bar)
+		gtk_widget_destroy (GTK_WIDGET (self->info_bar));
 
-	data->info_bar = GTK_INFO_BAR (gtk_info_bar_new_with_buttons (_("Cancel"), GTK_RESPONSE_CANCEL, NULL));
-	gtk_info_bar_set_message_type (data->info_bar, GTK_MESSAGE_INFO);
-	gtk_info_bar_set_show_close_button (data->info_bar, FALSE);
+	self->info_bar = GTK_INFO_BAR (gtk_info_bar_new_with_buttons (_("Cancel"), GTK_RESPONSE_CANCEL, NULL));
+	gtk_info_bar_set_message_type (self->info_bar, GTK_MESSAGE_INFO);
+	gtk_info_bar_set_show_close_button (self->info_bar, FALSE);
 	label = gtk_label_new (_("Searching server sources..."));
-	gtk_container_add (GTK_CONTAINER (gtk_info_bar_get_content_area (data->info_bar)), label);
+	gtk_container_add (GTK_CONTAINER (gtk_info_bar_get_content_area (self->info_bar)), label);
 	gtk_widget_show (label);
-	gtk_widget_show (GTK_WIDGET (data->info_bar));
+	gtk_widget_show (GTK_WIDGET (self->info_bar));
 
-	g_signal_connect (data->info_bar, "response", G_CALLBACK (e_webdav_discover_info_bar_response_cb), rd);
+	g_signal_connect (self->info_bar, "response", G_CALLBACK (e_webdav_discover_info_bar_response_cb), task);
 
-	gtk_widget_set_sensitive (GTK_WIDGET (data->sources_tree_view), FALSE);
-	if (data->email_addresses_combo)
-		gtk_widget_set_sensitive (GTK_WIDGET (data->email_addresses_combo), FALSE);
+	gtk_widget_set_sensitive (GTK_WIDGET (self->sources_tree_view), FALSE);
+	if (self->email_addresses_combo)
+		gtk_widget_set_sensitive (GTK_WIDGET (self->email_addresses_combo), FALSE);
 
-	gtk_grid_attach (GTK_GRID (content), GTK_WIDGET (data->info_bar), 0, 2, 1, 1);
+	gtk_grid_attach (GTK_GRID (self), GTK_WIDGET (self->info_bar), 0, 2, 1, 1);
 
 	e_webdav_discover_sources_full (source, rd->base_url, rd->supports_filter, rd->credentials,
 		rd->registry ? (EWebDAVDiscoverRefSourceFunc) e_source_registry_ref_source : NULL, rd->registry,
-		rd->cancellable, e_webdav_discover_content_refresh_done_cb, rd);
+		use_cancellable, e_webdav_discover_content_refresh_done_cb, task);
 
 	g_object_unref (source);
+	g_object_unref (use_cancellable);
 	soup_uri_free (soup_uri);
 }
 
 /**
  * e_webdav_discover_content_refresh_finish:
- * @content: a WebDAV discovery content, created by e_webdav_discover_content_new()
+ * @content: (type EWebDAVDiscoverContent): an #EWebDAVDiscoverContent
  * @result: a #GAsyncResult
  * @error: (allow-none): return location for a #GError, or %NULL
  *
@@ -937,22 +940,10 @@ e_webdav_discover_content_refresh_finish (GtkWidget *content,
 					  GAsyncResult *result,
 					  GError **error)
 {
-	EWebDAVDiscoverContentData *data;
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (E_IS_WEBDAV_DISCOVER_CONTENT (content), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, content), FALSE);
 
-	g_return_val_if_fail (GTK_IS_GRID (content), FALSE);
-
-	data = g_object_get_data (G_OBJECT (content), WEBDAV_DISCOVER_CONTENT_DATA_KEY);
-	g_return_val_if_fail (data != NULL, FALSE);
-	g_return_val_if_fail (g_simple_async_result_is_valid (
-		result, G_OBJECT (content), e_webdav_discover_content_refresh), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	return g_simple_async_result_get_op_res_gboolean (simple);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 static void
@@ -960,22 +951,20 @@ e_webdav_discover_info_bar_error_response_cb (GtkInfoBar *info_bar,
 					      gint response_id,
 					      GtkWidget *content)
 {
-	EWebDAVDiscoverContentData *data;
+	EWebDAVDiscoverContent *self;
 
-	g_return_if_fail (GTK_IS_GRID (content));
+	g_return_if_fail (E_IS_WEBDAV_DISCOVER_CONTENT (content));
 
-	data = g_object_get_data (G_OBJECT (content), WEBDAV_DISCOVER_CONTENT_DATA_KEY);
-	g_return_if_fail (data != NULL);
-
-	if (data->info_bar == info_bar) {
-		gtk_widget_destroy (GTK_WIDGET (data->info_bar));
-		data->info_bar = NULL;
+	self = (EWebDAVDiscoverContent *)content;
+	if (self->info_bar == info_bar) {
+		gtk_widget_destroy (GTK_WIDGET (self->info_bar));
+		self->info_bar = NULL;
 	}
 }
 
 /**
  * e_webdav_discover_content_show_error:
- * @content: a WebDAV discovery content, created by e_webdav_discover_content_new()
+ * @content: (type EWebDAVDiscoverContent): an #EWebDAVDiscoverContent
  * @error: (allow-none): a #GError to show in the UI, or %NULL
  *
  * Shows the @error within @content, unless it's a #G_IO_ERROR_CANCELLED, or %NULL,
@@ -988,38 +977,36 @@ void
 e_webdav_discover_content_show_error (GtkWidget *content,
 				      const GError *error)
 {
-	EWebDAVDiscoverContentData *data;
+	EWebDAVDiscoverContent *self;
 	GtkWidget *label;
 
-	g_return_if_fail (GTK_IS_GRID (content));
+	g_return_if_fail (E_IS_WEBDAV_DISCOVER_CONTENT (content));
 
-	data = g_object_get_data (G_OBJECT (content), WEBDAV_DISCOVER_CONTENT_DATA_KEY);
-	g_return_if_fail (data != NULL);
-
-	if (data->info_bar) {
-		gtk_widget_destroy (GTK_WIDGET (data->info_bar));
-		data->info_bar = NULL;
+	self = (EWebDAVDiscoverContent *)content;
+	if (self->info_bar) {
+		gtk_widget_destroy (GTK_WIDGET (self->info_bar));
+		self->info_bar = NULL;
 	}
 
 	if (!error || g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
 		return;
 
-	data->info_bar = GTK_INFO_BAR (gtk_info_bar_new ());
-	gtk_info_bar_set_message_type (data->info_bar, GTK_MESSAGE_ERROR);
-	gtk_info_bar_set_show_close_button (data->info_bar, TRUE);
+	self->info_bar = GTK_INFO_BAR (gtk_info_bar_new ());
+	gtk_info_bar_set_message_type (self->info_bar, GTK_MESSAGE_ERROR);
+	gtk_info_bar_set_show_close_button (self->info_bar, TRUE);
 
 	label = gtk_label_new (error->message);
 	gtk_label_set_width_chars (GTK_LABEL (label), 20);
 	gtk_label_set_max_width_chars (GTK_LABEL (label), 120);
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_label_set_selectable (GTK_LABEL (label), TRUE);
-	gtk_container_add (GTK_CONTAINER (gtk_info_bar_get_content_area (data->info_bar)), label);
+	gtk_container_add (GTK_CONTAINER (gtk_info_bar_get_content_area (self->info_bar)), label);
 	gtk_widget_show (label);
-	gtk_widget_show (GTK_WIDGET (data->info_bar));
+	gtk_widget_show (GTK_WIDGET (self->info_bar));
 
-	g_signal_connect (data->info_bar, "response", G_CALLBACK (e_webdav_discover_info_bar_error_response_cb), content);
+	g_signal_connect (self->info_bar, "response", G_CALLBACK (e_webdav_discover_info_bar_error_response_cb), content);
 
-	gtk_grid_attach (GTK_GRID (content), GTK_WIDGET (data->info_bar), 0, 2, 1, 1);
+	gtk_grid_attach (GTK_GRID (content), GTK_WIDGET (self->info_bar), 0, 2, 1, 1);
 }
 
 static void
@@ -1041,10 +1028,20 @@ e_webdav_discover_content_selection_changed_cb (GtkTreeSelection *selection,
 						GtkDialog *dialog)
 {
 	g_return_if_fail (GTK_IS_TREE_SELECTION (selection));
-	g_return_if_fail (GTK_IS_DIALOG (dialog));
+	g_return_if_fail (E_IS_WEBDAV_DISCOVER_DIALOG (dialog));
 
 	gtk_dialog_set_response_sensitive (dialog, GTK_RESPONSE_ACCEPT,
 		gtk_tree_selection_count_selected_rows (selection) > 0);
+}
+
+static void
+e_webdav_discover_dialog_class_init (EWebDAVDiscoverDialogClass *klass)
+{
+}
+
+static void
+e_webdav_discover_dialog_init (EWebDAVDiscoverDialog *self)
+{
 }
 
 /**
@@ -1076,15 +1073,26 @@ e_webdav_discover_dialog_new (GtkWindow *parent,
 			      const gchar *base_url,
 			      guint supports_filter)
 {
-	GtkWidget *dialog, *container, *widget;
+	EWebDAVDiscoverDialog *dialog;
+	GtkWidget *container, *widget;
 	GtkTreeSelection *selection;
 
-	dialog = gtk_dialog_new_with_buttons (title, parent, GTK_DIALOG_DESTROY_WITH_PARENT,
+	dialog = g_object_new (E_TYPE_WEBDAV_DISCOVER_DIALOG,
+		"transient-for", parent,
+		"title", title,
+		"destroy-with-parent", TRUE,
+		"default-width", 400,
+		"default-height", 400,
+		NULL);
+
+	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 		_("_Cancel"), GTK_RESPONSE_REJECT,
 		_("_OK"), GTK_RESPONSE_ACCEPT,
 		NULL);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_ACCEPT);
 
 	widget = e_webdav_discover_content_new (credentials_prompter, source, base_url, supports_filter);
+	dialog->content = E_WEBDAV_DISCOVER_CONTENT (widget);
 
 	g_object_set (G_OBJECT (widget),
 		"hexpand", TRUE,
@@ -1094,13 +1102,7 @@ e_webdav_discover_dialog_new (GtkWindow *parent,
 		NULL);
 
 	container = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
-
 	gtk_container_add (GTK_CONTAINER (container), widget);
-
-	g_object_set_data (G_OBJECT (dialog), WEBDAV_DISCOVER_CONTENT_KEY, widget);
-
-	gtk_window_set_default_size (GTK_WINDOW (dialog), 400, 400);
-	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_ACCEPT);
 
 	selection = e_webdav_discover_content_get_tree_selection (widget);
 	g_signal_connect (selection, "changed", G_CALLBACK (e_webdav_discover_content_selection_changed_cb), dialog);
@@ -1111,30 +1113,30 @@ e_webdav_discover_dialog_new (GtkWindow *parent,
 
 /**
  * e_webdav_discover_dialog_get_content:
- * @dialog: a #GtkDialog returned by e_webdav_discover_dialog_new()
+ * @dialog: (type EWebDAVDiscoverDialog): an #EWebDAVDiscoverDialog
  *
  * Returns inner WebDAV discovery content, which can be further manipulated.
  *
- * Returns: (transfer none): inner WebDAV discovery content
+ * Returns: (transfer none) (type EWebDAVDiscoverContent): inner WebDAV discovery content
  *
  * Since: 3.18
  **/
 GtkWidget *
 e_webdav_discover_dialog_get_content (GtkDialog *dialog)
 {
-	GtkWidget *content;
+	EWebDAVDiscoverDialog *discover_dialog;
 
-	g_return_val_if_fail (GTK_IS_DIALOG (dialog), NULL);
+	g_return_val_if_fail (E_IS_WEBDAV_DISCOVER_DIALOG (dialog), NULL);
 
-	content = g_object_get_data (G_OBJECT (dialog), WEBDAV_DISCOVER_CONTENT_KEY);
-	g_return_val_if_fail (content != NULL, NULL);
+	discover_dialog = (EWebDAVDiscoverDialog *) dialog;
+	g_return_val_if_fail (discover_dialog->content != NULL, NULL);
 
-	return content;
+	return GTK_WIDGET (discover_dialog->content);
 }
 
 /**
  * e_webdav_discover_dialog_refresh:
- * @dialog: a #GtkDialog returned by e_webdav_discover_dialog_new()
+ * @dialog: (type EWebDAVDiscoverDialog): an #EWebDAVDiscoverDialog
  *
  * Invokes refresh of the inner content of the WebDAV discovery dialog.
  *
@@ -1143,13 +1145,13 @@ e_webdav_discover_dialog_get_content (GtkDialog *dialog)
 void
 e_webdav_discover_dialog_refresh (GtkDialog *dialog)
 {
-	GtkWidget *content;
+	EWebDAVDiscoverDialog *discover_dialog;
 
-	g_return_if_fail (GTK_IS_DIALOG (dialog));
+	g_return_if_fail (E_IS_WEBDAV_DISCOVER_DIALOG (dialog));
 
-	content = g_object_get_data (G_OBJECT (dialog), WEBDAV_DISCOVER_CONTENT_KEY);
-	g_return_if_fail (content != NULL);
+	discover_dialog = (EWebDAVDiscoverDialog *) dialog;
+	g_return_if_fail (discover_dialog->content != NULL);
 
-	e_webdav_discover_content_refresh (content, gtk_window_get_title (GTK_WINDOW (dialog)),
+	e_webdav_discover_content_refresh (GTK_WIDGET (discover_dialog->content), gtk_window_get_title (GTK_WINDOW (dialog)),
 		NULL, e_webdav_discover_content_dialog_refresh_done_cb, NULL);
 }
