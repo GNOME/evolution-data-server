@@ -519,7 +519,7 @@ book_backend_dispose (GObject *object)
 	g_hash_table_remove_all (priv->operation_ids);
 
 	while (!g_queue_is_empty (&priv->pending_operations))
-		g_object_unref (g_queue_pop_head (&priv->pending_operations));
+		dispatch_node_free (g_queue_pop_head (&priv->pending_operations));
 
 	g_clear_object (&priv->blocked);
 
