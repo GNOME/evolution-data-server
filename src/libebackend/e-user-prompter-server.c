@@ -423,8 +423,8 @@ e_user_prompter_server_class_init (EUserPrompterServerClass *class)
 	 * @primary_text: (nullable): primary text of the prompt; can be %NULL
 	 * @secondary_text: (nullable): secondary text of the prompt; can be %NULL
 	 * @use_markup: whether both texts are with markup
-	 * @button_captions: (type GStrv) (nullable): captions of buttons to
-	 * use in the message; can be %NULL
+	 * @button_captions: (nullable): captions of buttons to use in the message;
+	 * can be %NULL
 	 **/
 	signals[PROMPT] = g_signal_new (
 		"prompt",
@@ -439,7 +439,7 @@ e_user_prompter_server_class_init (EUserPrompterServerClass *class)
 		G_TYPE_STRING,
 		G_TYPE_STRING,
 		G_TYPE_BOOLEAN,
-		G_TYPE_POINTER);
+		G_TYPE_STRV);
 }
 
 static void
