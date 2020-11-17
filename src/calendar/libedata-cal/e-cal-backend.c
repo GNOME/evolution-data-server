@@ -80,7 +80,7 @@ struct _AsyncContext {
 	time_t end;
 	GSList *compid_list;
 	GSList *string_list;
-	guint32 opflags;
+	ECalOperationFlags opflags;
 
 	/* Outputs */
 	GQueue result_queue;
@@ -2590,7 +2590,7 @@ e_cal_backend_get_free_busy_finish (ECalBackend *backend,
 gboolean
 e_cal_backend_create_objects_sync (ECalBackend *backend,
                                    const gchar * const *calobjs,
-				   guint32 opflags,
+                                   ECalOperationFlags opflags,
                                    GQueue *out_uids,
                                    GCancellable *cancellable,
                                    GError **error)
@@ -2688,7 +2688,7 @@ cal_backend_create_objects_thread (GSimpleAsyncResult *simple,
 void
 e_cal_backend_create_objects (ECalBackend *backend,
                               const gchar * const *calobjs,
-			      guint32 opflags,
+                              ECalOperationFlags opflags,
                               GCancellable *cancellable,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
@@ -2818,7 +2818,7 @@ gboolean
 e_cal_backend_modify_objects_sync (ECalBackend *backend,
                                    const gchar * const *calobjs,
                                    ECalObjModType mod,
-				   guint32 opflags,
+                                   ECalOperationFlags opflags,
                                    GCancellable *cancellable,
                                    GError **error)
 {
@@ -2920,7 +2920,7 @@ void
 e_cal_backend_modify_objects (ECalBackend *backend,
                               const gchar * const *calobjs,
                               ECalObjModType mod,
-			      guint32 opflags,
+                              ECalOperationFlags opflags,
                               GCancellable *cancellable,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
@@ -3057,7 +3057,7 @@ gboolean
 e_cal_backend_remove_objects_sync (ECalBackend *backend,
                                    GList *component_ids,
                                    ECalObjModType mod,
-				   guint32 opflags,
+                                   ECalOperationFlags opflags,
                                    GCancellable *cancellable,
                                    GError **error)
 {
@@ -3152,7 +3152,7 @@ void
 e_cal_backend_remove_objects (ECalBackend *backend,
                               GList *component_ids,
                               ECalObjModType mod,
-			      guint32 opflags,
+                              ECalOperationFlags opflags,
                               GCancellable *cancellable,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
@@ -3302,7 +3302,7 @@ e_cal_backend_remove_objects_finish (ECalBackend *backend,
 gboolean
 e_cal_backend_receive_objects_sync (ECalBackend *backend,
                                     const gchar *calobj,
-				    guint32 opflags,
+                                    ECalOperationFlags opflags,
                                     GCancellable *cancellable,
                                     GError **error)
 {
@@ -3395,7 +3395,7 @@ cal_backend_receive_objects_thread (GSimpleAsyncResult *simple,
 void
 e_cal_backend_receive_objects (ECalBackend *backend,
                                const gchar *calobj,
-			       guint32 opflags,
+                               ECalOperationFlags opflags,
                                GCancellable *cancellable,
                                GAsyncReadyCallback callback,
                                gpointer user_data)
@@ -3487,7 +3487,7 @@ e_cal_backend_receive_objects_finish (ECalBackend *backend,
 gchar *
 e_cal_backend_send_objects_sync (ECalBackend *backend,
                                  const gchar *calobj,
-				 guint32 opflags,
+                                 ECalOperationFlags opflags,
                                  GQueue *out_users,
                                  GCancellable *cancellable,
                                  GError **error)
@@ -3579,7 +3579,7 @@ cal_backend_send_objects_thread (GSimpleAsyncResult *simple,
 void
 e_cal_backend_send_objects (ECalBackend *backend,
                             const gchar *calobj,
-			    guint32 opflags,
+                            ECalOperationFlags opflags,
                             GCancellable *cancellable,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
@@ -3887,7 +3887,7 @@ e_cal_backend_discard_alarm_sync (ECalBackend *backend,
                                   const gchar *uid,
                                   const gchar *rid,
                                   const gchar *alarm_uid,
-				  guint32 opflags,
+                                  ECalOperationFlags opflags,
                                   GCancellable *cancellable,
                                   GError **error)
 {
@@ -3994,7 +3994,7 @@ e_cal_backend_discard_alarm (ECalBackend *backend,
                              const gchar *uid,
                              const gchar *rid,
                              const gchar *alarm_uid,
-			     guint32 opflags,
+                             ECalOperationFlags opflags,
                              GCancellable *cancellable,
                              GAsyncReadyCallback callback,
                              gpointer user_data)

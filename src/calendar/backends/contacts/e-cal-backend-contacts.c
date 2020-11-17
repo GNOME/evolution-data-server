@@ -1157,7 +1157,7 @@ e_cal_backend_contacts_receive_objects (ECalBackendSync *backend,
                                         EDataCal *cal,
                                         GCancellable *cancellable,
                                         const gchar *calobj,
-					guint32 opflags,
+					ECalOperationFlags opflags,
                                         GError **perror)
 {
 	g_propagate_error (perror, EC_ERROR (E_CLIENT_ERROR_PERMISSION_DENIED));
@@ -1168,7 +1168,7 @@ e_cal_backend_contacts_send_objects (ECalBackendSync *backend,
                                      EDataCal *cal,
                                      GCancellable *cancellable,
                                      const gchar *calobj,
-				     guint32 opflags,
+				     ECalOperationFlags opflags,
                                      GSList **users,
                                      gchar **modified_calobj,
                                      GError **perror)
@@ -1404,7 +1404,7 @@ e_cal_backend_contacts_create_objects (ECalBackendSync *backend,
                                        EDataCal *cal,
                                        GCancellable *cancellable,
                                        const GSList *calobjs,
-				       guint32 opflags,
+				       ECalOperationFlags opflags,
                                        GSList **uids,
                                        GSList **new_components,
                                        GError **perror)

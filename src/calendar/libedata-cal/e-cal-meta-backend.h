@@ -136,7 +136,7 @@ struct _ECalMetaBackendClass {
 						 EConflictResolution conflict_resolution,
 						 const GSList *instances, /* ECalComponent * */
 						 const gchar *extra,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 gchar **out_new_uid,
 						 gchar **out_new_extra,
 						 GCancellable *cancellable,
@@ -147,7 +147,7 @@ struct _ECalMetaBackendClass {
 						 const gchar *uid,
 						 const gchar *extra,
 						 const gchar *object,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(* search_sync)		(ECalMetaBackend *meta_backend,
@@ -282,7 +282,7 @@ gboolean	e_cal_meta_backend_save_component_sync
 						 EConflictResolution conflict_resolution,
 						 const GSList *instances, /* ECalComponent * */
 						 const gchar *extra,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 gchar **out_new_uid,
 						 gchar **out_new_extra,
 						 GCancellable *cancellable,
@@ -293,7 +293,7 @@ gboolean	e_cal_meta_backend_remove_component_sync
 						 const gchar *uid,
 						 const gchar *extra,
 						 const gchar *object,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_meta_backend_search_sync	(ECalMetaBackend *meta_backend,

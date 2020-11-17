@@ -727,7 +727,7 @@ e_cal_backend_weather_receive_objects (ECalBackendSync *backend,
                                        EDataCal *cal,
                                        GCancellable *cancellable,
                                        const gchar *calobj,
-				       guint32 opflags,
+				       ECalOperationFlags opflags,
                                        GError **perror)
 {
 	g_propagate_error (perror, EC_ERROR (E_CLIENT_ERROR_PERMISSION_DENIED));

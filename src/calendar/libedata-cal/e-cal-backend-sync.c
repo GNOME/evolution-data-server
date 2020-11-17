@@ -248,7 +248,7 @@ e_cal_backend_sync_create_objects (ECalBackendSync *backend,
                                    EDataCal *cal,
                                    GCancellable *cancellable,
                                    const GSList *calobjs,
-				   guint32 opflags,
+				   ECalOperationFlags opflags,
                                    GSList **uids,
                                    GSList **new_components,
                                    GError **error)
@@ -297,7 +297,7 @@ e_cal_backend_sync_modify_objects (ECalBackendSync *backend,
                                    GCancellable *cancellable,
                                    const GSList *calobjs,
                                    ECalObjModType mod,
-				   guint32 opflags,
+				   ECalOperationFlags opflags,
                                    GSList **old_components,
                                    GSList **new_components,
                                    GError **error)
@@ -347,7 +347,7 @@ e_cal_backend_sync_remove_objects (ECalBackendSync *backend,
                                    GCancellable *cancellable,
                                    const GSList *ids,
                                    ECalObjModType mod,
-				   guint32 opflags,
+				   ECalOperationFlags opflags,
                                    GSList **old_components,
                                    GSList **new_components,
                                    GError **error)
@@ -388,7 +388,7 @@ e_cal_backend_sync_receive_objects (ECalBackendSync *backend,
                                     EDataCal *cal,
                                     GCancellable *cancellable,
                                     const gchar *calobj,
-				    guint32 opflags,
+				    ECalOperationFlags opflags,
                                     GError **error)
 {
 	ECalBackendSyncClass *class;
@@ -428,7 +428,7 @@ e_cal_backend_sync_send_objects (ECalBackendSync *backend,
                                  EDataCal *cal,
                                  GCancellable *cancellable,
                                  const gchar *calobj,
-				 guint32 opflags,
+				 ECalOperationFlags opflags,
                                  GSList **users,
                                  gchar **modified_calobj,
                                  GError **error)
@@ -517,7 +517,7 @@ e_cal_backend_sync_discard_alarm (ECalBackendSync *backend,
                                   const gchar *uid,
                                   const gchar *rid,
                                   const gchar *auid,
-				  guint32 opflags,
+				  ECalOperationFlags opflags,
                                   GError **error)
 {
 	ECalBackendSyncClass *class;
@@ -745,7 +745,7 @@ cal_backend_create_objects (ECalBackend *backend,
                             guint32 opid,
                             GCancellable *cancellable,
                             const GSList *calobjs,
-			    guint32 opflags)
+			    ECalOperationFlags opflags)
 {
 	GError *error = NULL;
 	GSList *uids = NULL;
@@ -769,7 +769,7 @@ cal_backend_modify_objects (ECalBackend *backend,
                             GCancellable *cancellable,
                             const GSList *calobjs,
                             ECalObjModType mod,
-			    guint32 opflags)
+			    ECalOperationFlags opflags)
 {
 	GError *error = NULL;
 	GSList *old_components = NULL, *new_components = NULL;
@@ -792,7 +792,7 @@ cal_backend_remove_objects (ECalBackend *backend,
                             GCancellable *cancellable,
                             const GSList *ids,
                             ECalObjModType mod,
-			    guint32 opflags)
+			    ECalOperationFlags opflags)
 {
 	GError *error = NULL;
 	GSList *old_components = NULL, *new_components = NULL;
@@ -811,7 +811,7 @@ cal_backend_receive_objects (ECalBackend *backend,
                              guint32 opid,
                              GCancellable *cancellable,
                              const gchar *calobj,
-			     guint32 opflags)
+			     ECalOperationFlags opflags)
 {
 	GError *error = NULL;
 
@@ -826,7 +826,7 @@ cal_backend_send_objects (ECalBackend *backend,
                           guint32 opid,
                           GCancellable *cancellable,
                           const gchar *calobj,
-			  guint32 opflags)
+			  ECalOperationFlags opflags)
 {
 	GError *error = NULL;
 	GSList *users = NULL;
@@ -868,7 +868,7 @@ cal_backend_discard_alarm (ECalBackend *backend,
                            const gchar *uid,
                            const gchar *rid,
                            const gchar *auid,
-			   guint32 opflags)
+			   ECalOperationFlags opflags)
 {
 	GError *error = NULL;
 

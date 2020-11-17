@@ -333,7 +333,7 @@ gboolean	e_cal_client_get_free_busy_sync	(ECalClient *client,
 						 GError **error);
 void		e_cal_client_create_object	(ECalClient *client,
 						 ICalComponent *icalcomp,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -344,13 +344,13 @@ gboolean	e_cal_client_create_object_finish
 						 GError **error);
 gboolean	e_cal_client_create_object_sync	(ECalClient *client,
 						 ICalComponent *icalcomp,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 gchar **out_uid,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_create_objects	(ECalClient *client,
 						 GSList *icalcomps, /* ICalComponent * */
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -362,14 +362,14 @@ gboolean	e_cal_client_create_objects_finish
 gboolean	e_cal_client_create_objects_sync
 						(ECalClient *client,
 						 GSList *icalcomps, /* ICalComponent * */
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GSList **out_uids, /* gchar * */
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_modify_object	(ECalClient *client,
 						 ICalComponent *icalcomp,
 						 ECalObjModType mod,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -380,13 +380,13 @@ gboolean	e_cal_client_modify_object_finish
 gboolean	e_cal_client_modify_object_sync	(ECalClient *client,
 						 ICalComponent *icalcomp,
 						 ECalObjModType mod,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_modify_objects	(ECalClient *client,
 						 GSList *icalcomps, /* ICalComponent * */
 						 ECalObjModType mod,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -398,14 +398,14 @@ gboolean	e_cal_client_modify_objects_sync
 						(ECalClient *client,
 						 GSList *icalcomps, /* ICalComponent * */
 						 ECalObjModType mod,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_remove_object	(ECalClient *client,
 						 const gchar *uid,
 						 const gchar *rid,
 						 ECalObjModType mod,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -417,13 +417,13 @@ gboolean	e_cal_client_remove_object_sync	(ECalClient *client,
 						 const gchar *uid,
 						 const gchar *rid,
 						 ECalObjModType mod,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_remove_objects	(ECalClient *client,
 						 const GSList *ids, /* ECalComponentId * */
 						 ECalObjModType mod,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -435,12 +435,12 @@ gboolean	e_cal_client_remove_objects_sync
 						(ECalClient *client,
 						 const GSList *ids, /* ECalComponentId * */
 						 ECalObjModType mod,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_receive_objects	(ECalClient *client,
 						 ICalComponent *icalcomp,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -451,12 +451,12 @@ gboolean	e_cal_client_receive_objects_finish
 gboolean	e_cal_client_receive_objects_sync
 						(ECalClient *client,
 						 ICalComponent *icalcomp,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_send_objects	(ECalClient *client,
 						 ICalComponent *icalcomp,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -468,7 +468,7 @@ gboolean	e_cal_client_send_objects_finish
 						 GError **error);
 gboolean	e_cal_client_send_objects_sync	(ECalClient *client,
 						 ICalComponent *icalcomp,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GSList **out_users, /* gchar * */
 						 ICalComponent **out_modified_icalcomp,
 						 GCancellable *cancellable,
@@ -496,7 +496,7 @@ void		e_cal_client_discard_alarm	(ECalClient *client,
 						 const gchar *uid,
 						 const gchar *rid,
 						 const gchar *auid,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -508,7 +508,7 @@ gboolean	e_cal_client_discard_alarm_sync	(ECalClient *client,
 						 const gchar *uid,
 						 const gchar *rid,
 						 const gchar *auid,
-						 guint32 opflags, /* bit-or of ECalOperationFlags */
+						 ECalOperationFlags opflags,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_get_view		(ECalClient *client,
