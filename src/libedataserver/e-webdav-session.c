@@ -5139,6 +5139,65 @@ e_webdav_session_util_free_privileges (GNode *privileges)
 	g_node_destroy (privileges);
 }
 
+static gint
+e_webdav_session_uricmp (const gchar *str1,
+			 const gchar *str2,
+			 gint len,
+			 gboolean case_sensitive)
+{
+	const gchar *p1, *p2;
+	gchar c1, c2;
+	gint len1, len2;
+
+	g_return_val_if_fail (len >= 0, -1);
+	g_return_val_if_fail (str1 != NULL, -1);
+	g_return_val_if_fail (str2 != NULL, -1);
+
+	if (!len)
+		return 0;
+
+	/* Decode %-encoded letters, if needed */
+	#define get_next_char(str, ll, cc) G_STMT_START { \
+		if (!*str) { \
+			cc = 0; \
+		} else if (*str == '%' && ll >= 2 && g_ascii_isxdigit (str[1]) && g_ascii_isxdigit (str[2])) { \
+			cc = ((str[1] >= '0' && str[1] <= '9') ? (str[1] - '0') : \
+			      (str[1] >= 'a' && str[1] <= 'f') ? (str[1] - 'a' + 10) : \
+			      (str[1] >= 'A' && str[1] <= 'F') ? (str[1] - 'A' + 10) : 0) * 16 + \
+			     ((str[2] >= '0' && str[2] <= '9') ? (str[2] - '0') : \
+			      (str[2] >= 'a' && str[2] <= 'f') ? (str[2] - 'a' + 10) : \
+			      (str[2] >= 'A' && str[2] <= 'F') ? (str[2] - 'A' + 10) : 0); \
+			str += 3; \
+			ll -= 3; \
+		} else { \
+			cc = *str; \
+			str++; \
+			ll--; \
+		} \
+	} G_STMT_END
+
+	p1 = str1;
+	p2 = str2;
+
+	len1 = len;
+	len2 = len;
+
+	c1 = *p1;
+	c2 = *p2;
+
+	while (len1 > 0 && len2 > 0 && *p1 && *p2) {
+		get_next_char (p1, len1, c1);
+		get_next_char (p2, len2, c2);
+
+		if ((case_sensitive && c1 != c2) || (!case_sensitive && g_ascii_tolower (c1) != g_ascii_tolower (c2)))
+			break;
+	}
+
+	#undef get_next_char
+
+	return c1 - c2;
+}
+
 /**
  * e_webdav_session_util_item_href_equal:
  * @href1: the first href
@@ -5200,18 +5259,22 @@ e_webdav_session_util_item_href_equal (const gchar *href1,
 
 		/* it's the hostname part */
 		if (from1 == href1) {
+			const gchar *dash;
+
 			/* ignore the username/password part */
 			ptr = strchr (from1, '@');
-			if (ptr)
+			dash = strchr (from1, '/');
+			if (ptr && (!dash || dash > ptr))
 				from1 = ptr + 1;
 
 			ptr = strchr (from2, '@');
-			if (ptr)
+			dash = strchr (from2, '/');
+			if (ptr && (!dash || dash > ptr))
 				from2 = ptr + 1;
 
-			if (g_ascii_strncasecmp (from1, from2, len) != 0)
+			if (e_webdav_session_uricmp (from1, from2, len, FALSE) != 0)
 				return FALSE;
-		} else if (strncmp (from1, from2, len) != 0) {
+		} else if (e_webdav_session_uricmp (from1, from2, len, TRUE) != 0) {
 			return FALSE;
 		}
 	}

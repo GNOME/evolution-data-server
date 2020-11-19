@@ -28,7 +28,7 @@ test_webdav_href_compare (ETestServerFixture *fixture,
 		const gchar *href2;
 		gboolean same;
 	} hrefs[] = {
-		{ "http://www.gnome.org/", "http://www.gnome.org/", TRUE },
+	/* 0 */	{ "http://www.gnome.org/", "http://www.gnome.org/", TRUE },
 		{ "https://www.gnome.org/", "http://www.gnome.org/", TRUE },
 		{ "http://user@www.gnome.org/", "https://www.gnome.org/", TRUE },
 		{ "http://www.gnome.org/index", "http://www.gnome.org/", FALSE },
@@ -38,7 +38,7 @@ test_webdav_href_compare (ETestServerFixture *fixture,
 		{ "http://www.gnome.org/path/collection/data.ext", "http://www.gnome.org/path/collection/data.ext", TRUE },
 		{ "https://www.gnome.org/path/collection/data.ext", "http://www.gnome.org/path/collection/data.ext", TRUE },
 		{ "http://user@www.gnome.org/path/collection/data.ext", "http://www.gnome.org/path/collection/data.ext", TRUE },
-		{ "http://www.gnome.org/Path/collection/data.ext", "http://www.gnome.org/path/collection/data.ext", FALSE },
+	/* 10 */{ "http://www.gnome.org/Path/collection/data.ext", "http://www.gnome.org/path/collection/data.ext", FALSE },
 		{ "http://www.gnome.org/path/Collection/data.ext", "http://www.gnome.org/path/collection/data.ext", FALSE },
 		{ "http://www.gnome.org/path/collection/Data.ext", "http://www.gnome.org/path/collection/data.ext", FALSE },
 		{ "http://www.GNOME.org/path/collection/data.ext", "http://www.gnome.org/path/collection/data.ext", TRUE },
@@ -48,7 +48,23 @@ test_webdav_href_compare (ETestServerFixture *fixture,
 		{ "https://www.gnome.org/path", "https://www.gnome.org/path/collection/data.ext", FALSE },
 		{ "https://www.gnome.org/path/", "https://www.gnome.org/path/collection/data.ext", FALSE },
 		{ "https://www.gnome.org/path/collection", "https://www.gnome.org/path/collection/data.ext", FALSE },
-		{ "https://www.gnome.org/path/collection/", "https://www.gnome.org/path/collection/data.ext", FALSE }
+	/* 20 */{ "https://www.gnome.org/path/collection/", "https://www.gnome.org/path/collection/data.ext", FALSE },
+		{ "https://www.gnome.org/path/user@no.where/", "http://www.gnome.org/path/user@no.where/", TRUE },
+		{ "https://www.gnome.org/path/user%40no.where/", "http://www.gnome.org/path/user@no.where/", TRUE },
+		{ "https://www.gnome.org/path/user%40no.where/", "http://www.gnome.org/path/user@no.where", FALSE },
+		{ "https://www.gnome.org/user%40no.where/", "http://www.gnome.org/path/user@no.where", FALSE },
+		{ "https://www.gnome.org/user%40no.where", "http://www.gnome.org/user%40no%2Ewhere", TRUE },
+		{ "https://www.gnome.org/user%40no.where", "http://www.gnome.org/user%40no%2ewhere", TRUE },
+		{ "https://www.gnome.org/path/user%40no.where/path", "http://www.gnome.org/path/user%40no%2Ewhere/path", TRUE },
+		{ "https://user@www.gnome.org/path/user%40no.where/path", "http://www.gnome.org/path/user%40no%2Ewhere/path", TRUE },
+		{ "https://user@www.gnome.org/path/user%40no.where/path", "http://www.gnome.org/path/user%40no%2Ewhere/path", TRUE },
+	/* 30 */{ "https://user@www.gnome.org/path/user@no.where/path", "http://www.gnome.org/path/user%40no%2Ewhere/path", TRUE },
+		{ "https://user@www.gnome.org/path/user@no.where/path", "http://no@www.gnome.org/path/user@no%2Ewhere/path", TRUE },
+		{ "https://www.gnome.org/path%", "https://www.gnome.org/path%", TRUE },
+		{ "https://www.gnome.org/path%g", "https://www.gnome.org/path%g", TRUE },
+		{ "https://www.gnome.org/path%ah", "https://www.gnome.org/path%ah", TRUE },
+		{ "https://www.gnome.org/path%32", "https://www.gnome.org/path%32", TRUE },
+		{ "https://www.gnome.org/path%20%2e", "https://www.gnome.org/path .", TRUE }
 	};
 	gint ii;
 
