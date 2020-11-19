@@ -36,6 +36,7 @@
 #include "camel-operation.h"
 #include "camel-session.h"
 #include "camel-store.h"
+#include "camel-store-settings.h"
 #include "camel-vtrash-folder.h"
 #include "camel-string-utils.h"
 
@@ -70,6 +71,10 @@ struct _CamelFolderPrivate {
 
 	CamelThreeState mark_seen;
 	gint mark_seen_timeout;
+
+	GMutex store_changes_lock;
+	guint store_changes_id;
+	gboolean store_changes_after_frozen;
 };
 
 struct _AsyncContext {
@@ -133,6 +138,110 @@ G_DEFINE_BOXED_TYPE (CamelFolderQuotaInfo,
 		camel_folder_quota_info_clone,
 		camel_folder_quota_info_free)
 
+
+static void
+folder_store_changes_job_cb (CamelSession *session,
+			     GCancellable *cancellable,
+			     gpointer user_data,
+			     GError **error)
+{
+	CamelFolder *folder = user_data;
+
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	camel_folder_synchronize_sync (folder, FALSE, cancellable, error);
+}
+
+static gboolean
+folder_schedule_store_changes_job (gpointer user_data)
+{
+	CamelFolder *folder = user_data;
+	GSource *source;
+
+	source = g_main_current_source ();
+
+	if (g_source_is_destroyed (source))
+		return FALSE;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+
+	g_mutex_lock (&folder->priv->store_changes_lock);
+
+	if (folder->priv->store_changes_id == g_source_get_id (source)) {
+		CamelSession *session;
+		CamelStore *parent_store;
+
+		folder->priv->store_changes_id = 0;
+
+		parent_store = camel_folder_get_parent_store (folder);
+		session = parent_store ? camel_service_ref_session (CAMEL_SERVICE (parent_store)) : NULL;
+		if (session) {
+			gchar *description;
+
+			/* Translators: The first “%s” is replaced with an account name and the second “%s”
+			   is replaced with a full path name. The spaces around “:” are intentional, as
+			   the whole “%s : %s” is meant as an absolute identification of the folder. */
+			description = g_strdup_printf (_("Storing changes in folder “%s : %s”"),
+				camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
+				camel_folder_get_full_name (folder));
+
+			camel_session_submit_job (session, description,
+				folder_store_changes_job_cb,
+				g_object_ref (folder), g_object_unref);
+
+			g_free (description);
+		}
+
+		g_clear_object (&session);
+	}
+
+	g_mutex_unlock (&folder->priv->store_changes_lock);
+
+	return FALSE;
+}
+
+static void
+folder_maybe_schedule_folder_change_store (CamelFolder *folder)
+{
+	CamelStore *store;
+
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	g_mutex_lock (&folder->priv->store_changes_lock);
+
+	if (folder->priv->store_changes_id)
+		g_source_remove (folder->priv->store_changes_id);
+	folder->priv->store_changes_id = 0;
+	folder->priv->store_changes_after_frozen = FALSE;
+
+	if (camel_folder_is_frozen (folder)) {
+		folder->priv->store_changes_after_frozen = TRUE;
+		g_mutex_unlock (&folder->priv->store_changes_lock);
+
+		return;
+	}
+
+	store = camel_folder_get_parent_store (folder);
+
+	if (store && camel_store_get_can_auto_save_changes (store)) {
+		CamelSettings *settings;
+		gint interval = -1;
+
+		settings = camel_service_ref_settings (CAMEL_SERVICE (store));
+		if (settings && CAMEL_IS_STORE_SETTINGS (settings))
+			interval = camel_store_settings_get_store_changes_interval (CAMEL_STORE_SETTINGS (settings));
+		g_clear_object (&settings);
+
+		if (interval == 0)
+			folder_schedule_store_changes_job (folder);
+		else if (interval > 0)
+			folder->priv->store_changes_id = g_timeout_add_seconds (interval,
+				folder_schedule_store_changes_job, folder);
+	}
+
+	g_mutex_unlock (&folder->priv->store_changes_lock);
+}
+
 static void
 async_context_free (AsyncContext *async_context)
 {
@@ -189,6 +298,9 @@ folder_emit_changed_cb (gpointer user_data)
 	g_mutex_unlock (&folder->priv->change_lock);
 
 	g_signal_emit (folder, signals[CHANGED], 0, changes);
+
+	if (changes && changes->uid_changed && changes->uid_changed->len > 0)
+		folder_maybe_schedule_folder_change_store (folder);
 
 	camel_folder_change_info_free (changes);
 
@@ -688,6 +800,12 @@ folder_dispose (GObject *object)
 		folder->priv->parent_store = NULL;
 	}
 
+	g_mutex_lock (&folder->priv->store_changes_lock);
+	if (folder->priv->store_changes_id)
+		g_source_remove (folder->priv->store_changes_id);
+	folder->priv->store_changes_id = 0;
+	g_mutex_unlock (&folder->priv->store_changes_lock);
+
 	/* Chain up to parent's dispose () method. */
 	G_OBJECT_CLASS (camel_folder_parent_class)->dispose (object);
 }
@@ -712,6 +830,7 @@ folder_finalize (GObject *object)
 
 	g_rec_mutex_clear (&priv->lock);
 	g_mutex_clear (&priv->change_lock);
+	g_mutex_clear (&priv->store_changes_lock);
 
 	/* Chain up to parent's finalize () method. */
 	G_OBJECT_CLASS (camel_folder_parent_class)->finalize (object);
@@ -1018,6 +1137,18 @@ folder_thaw (CamelFolder *folder)
 
 		if (folder->priv->summary)
 			camel_folder_summary_save (folder->priv->summary, NULL);
+	}
+
+	if (!camel_folder_is_frozen (folder)) {
+		g_mutex_lock (&folder->priv->store_changes_lock);
+		if (folder->priv->store_changes_after_frozen) {
+			folder->priv->store_changes_after_frozen = FALSE;
+			g_mutex_unlock (&folder->priv->store_changes_lock);
+
+			folder_maybe_schedule_folder_change_store (folder);
+		} else {
+			g_mutex_unlock (&folder->priv->store_changes_lock);
+		}
 	}
 }
 
@@ -1423,10 +1554,12 @@ camel_folder_init (CamelFolder *folder)
 	folder->priv = camel_folder_get_instance_private (folder);
 	folder->priv->frozen = 0;
 	folder->priv->changed_frozen = camel_folder_change_info_new ();
+	folder->priv->store_changes_after_frozen = FALSE;
 
 	g_rec_mutex_init (&folder->priv->lock);
 	g_mutex_init (&folder->priv->change_lock);
 	g_mutex_init (&folder->priv->property_lock);
+	g_mutex_init (&folder->priv->store_changes_lock);
 }
 
 G_DEFINE_QUARK (camel-folder-error-quark, camel_folder_error)

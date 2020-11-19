@@ -24,7 +24,6 @@
 
 struct _CamelOfflineSettingsPrivate {
 	gboolean stay_synchronized;
-	gint store_changes_interval;
 	gboolean limit_by_age;
 	CamelTimeUnit limit_unit;
 	gint limit_value;
@@ -33,7 +32,6 @@ struct _CamelOfflineSettingsPrivate {
 enum {
 	PROP_0,
 	PROP_STAY_SYNCHRONIZED,
-	PROP_STORE_CHANGES_INTERVAL,
 	PROP_LIMIT_BY_AGE,
 	PROP_LIMIT_UNIT,
 	PROP_LIMIT_VALUE
@@ -55,12 +53,6 @@ offline_settings_set_property (GObject *object,
 			camel_offline_settings_set_stay_synchronized (
 				CAMEL_OFFLINE_SETTINGS (object),
 				g_value_get_boolean (value));
-			return;
-
-		case PROP_STORE_CHANGES_INTERVAL:
-			camel_offline_settings_set_store_changes_interval (
-				CAMEL_OFFLINE_SETTINGS (object),
-				g_value_get_int (value));
 			return;
 
 		case PROP_LIMIT_BY_AGE:
@@ -96,13 +88,6 @@ offline_settings_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				camel_offline_settings_get_stay_synchronized (
-				CAMEL_OFFLINE_SETTINGS (object)));
-			return;
-
-		case PROP_STORE_CHANGES_INTERVAL:
-			g_value_set_int (
-				value,
-				camel_offline_settings_get_store_changes_interval (
 				CAMEL_OFFLINE_SETTINGS (object)));
 			return;
 
@@ -148,21 +133,6 @@ camel_offline_settings_class_init (CamelOfflineSettingsClass *class)
 			"Stay Synchronized",
 			"Stay synchronized with the remote server",
 			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_STORE_CHANGES_INTERVAL,
-		g_param_spec_int (
-			"store-changes-interval",
-			"Store Changes Interval",
-			"Interval, in seconds, to store folder changes",
-			G_MININT,
-			G_MAXINT,
-			3,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -261,6 +231,7 @@ camel_offline_settings_set_stay_synchronized (CamelOfflineSettings *settings,
 
 	g_object_notify (G_OBJECT (settings), "stay-synchronized");
 }
+
 /**
  * camel_offline_settings_get_store_changes_interval:
  * @settings: a #CamelOfflineSettings
@@ -273,13 +244,12 @@ camel_offline_settings_set_stay_synchronized (CamelOfflineSettings *settings,
  *
  * Since: 3.18
  **/
-
 gint
 camel_offline_settings_get_store_changes_interval (CamelOfflineSettings *settings)
 {
 	g_return_val_if_fail (CAMEL_IS_OFFLINE_SETTINGS (settings), -1);
 
-	return settings->priv->store_changes_interval;
+	return camel_store_settings_get_store_changes_interval (CAMEL_STORE_SETTINGS (settings));
 }
 
 /**
@@ -299,12 +269,7 @@ camel_offline_settings_set_store_changes_interval (CamelOfflineSettings *setting
 {
 	g_return_if_fail (CAMEL_IS_OFFLINE_SETTINGS (settings));
 
-	if (settings->priv->store_changes_interval == interval)
-		return;
-
-	settings->priv->store_changes_interval = interval;
-
-	g_object_notify (G_OBJECT (settings), "store-changes-interval");
+	camel_store_settings_set_store_changes_interval (CAMEL_STORE_SETTINGS (settings), interval);
 }
 
 /**

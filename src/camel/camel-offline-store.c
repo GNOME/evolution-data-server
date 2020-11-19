@@ -110,6 +110,24 @@ offline_store_downsync_folders_thread (CamelSession *session,
 	offline_store_downsync_folders_sync (store, cancellable, error);
 }
 
+static gboolean
+offline_store_get_can_auto_save_changes (CamelStore *store)
+{
+	CamelSession *session;
+	gboolean res;
+
+	g_return_val_if_fail (CAMEL_IS_OFFLINE_STORE (store), FALSE);
+
+	session = camel_service_ref_session (CAMEL_SERVICE (store));
+
+	res = session && camel_session_get_online (session) &&
+		camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store));
+
+	g_clear_object (&session);
+
+	return res;
+}
+
 static void
 offline_store_constructed (GObject *object)
 {
@@ -164,6 +182,7 @@ camel_offline_store_class_init (CamelOfflineStoreClass *class)
 {
 	GObjectClass *object_class;
 	CamelServiceClass *service_class;
+	CamelStoreClass *store_class;
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->constructed = offline_store_constructed;
@@ -172,6 +191,9 @@ camel_offline_store_class_init (CamelOfflineStoreClass *class)
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->settings_type = CAMEL_TYPE_OFFLINE_SETTINGS;
+
+	store_class = CAMEL_STORE_CLASS (class);
+	store_class->get_can_auto_save_changes = offline_store_get_can_auto_save_changes;
 
 	g_object_class_install_property (
 		object_class,

@@ -563,6 +563,12 @@ store_initable_init (GInitable *initable,
 	return TRUE;
 }
 
+static gboolean
+store_get_can_auto_save_changes (CamelStore *store)
+{
+	return TRUE;
+}
+
 static void
 camel_store_class_init (CamelStoreClass *class)
 {
@@ -586,6 +592,7 @@ camel_store_class_init (CamelStoreClass *class)
 	class->get_trash_folder_sync = store_get_trash_folder_sync;
 	class->synchronize_sync = store_synchronize_sync;
 	class->initial_setup_sync = store_initial_setup_sync;
+	class->get_can_auto_save_changes = store_get_can_auto_save_changes;
 
 	signals[FOLDER_CREATED] = g_signal_new (
 		"folder-created",
@@ -3332,4 +3339,28 @@ camel_store_delete_cached_folder (CamelStore *store,
 
 	camel_object_bag_remove (store->priv->folders, folder);
 	g_object_unref (folder);
+}
+
+/**
+ * camel_store_get_can_auto_save_changes:
+ * @store: a #CamelStore
+ *
+ * Returns whether there can be done automatic save of folder changes.
+ * Default is TRUE. The descendants can overwrite it with CamelStoreClass::get_can_auto_save_changes().
+ *
+ * Return: Whether there can be done automatic save of folder changes.
+ *
+ * Since: 3.38.2
+ **/
+gboolean
+camel_store_get_can_auto_save_changes (CamelStore *store)
+{
+	CamelStoreClass *klass;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+
+	klass = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (klass != NULL, FALSE);
+
+	return klass->get_can_auto_save_changes && klass->get_can_auto_save_changes (store);
 }

@@ -206,9 +206,11 @@ struct _CamelStoreClass {
 						 GHashTable *out_save_setup,
 						 GCancellable *cancellable,
 						 GError **error);
+	gboolean	(*get_can_auto_save_changes)
+						(CamelStore *store);
 
 	/* Padding for future expansion */
-	gpointer reserved_methods[20];
+	gpointer reserved_methods[19];
 
 	/* Signals */
 	void		(*folder_created)	(CamelStore *store,
@@ -416,6 +418,8 @@ gboolean	camel_store_maybe_run_db_maintenance
 void		camel_store_delete_cached_folder
 						(CamelStore *store,
 						 const gchar *folder_name);
+gboolean	camel_store_get_can_auto_save_changes
+						(CamelStore *store);
 
 G_END_DECLS
 

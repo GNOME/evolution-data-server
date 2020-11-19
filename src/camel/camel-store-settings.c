@@ -19,11 +19,13 @@
 
 struct _CamelStoreSettingsPrivate {
 	gboolean filter_inbox;
+	gint store_changes_interval;
 };
 
 enum {
 	PROP_0,
-	PROP_FILTER_INBOX
+	PROP_FILTER_INBOX,
+	PROP_STORE_CHANGES_INTERVAL
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
@@ -43,6 +45,12 @@ store_settings_set_property (GObject *object,
 				CAMEL_STORE_SETTINGS (object),
 				g_value_get_boolean (value));
 			return;
+
+		case PROP_STORE_CHANGES_INTERVAL:
+			camel_store_settings_set_store_changes_interval (
+				CAMEL_STORE_SETTINGS (object),
+				g_value_get_int (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -59,6 +67,13 @@ store_settings_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				camel_store_settings_get_filter_inbox (
+				CAMEL_STORE_SETTINGS (object)));
+			return;
+
+		case PROP_STORE_CHANGES_INTERVAL:
+			g_value_set_int (
+				value,
+				camel_store_settings_get_store_changes_interval (
 				CAMEL_STORE_SETTINGS (object)));
 			return;
 	}
@@ -83,6 +98,21 @@ camel_store_settings_class_init (CamelStoreSettingsClass *class)
 			"Filter Inbox",
 			"Whether to filter new messages in Inbox",
 			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_STORE_CHANGES_INTERVAL,
+		g_param_spec_int (
+			"store-changes-interval",
+			"Store Changes Interval",
+			"Interval, in seconds, to store folder changes",
+			G_MININT,
+			G_MAXINT,
+			3,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -136,4 +166,49 @@ camel_store_settings_set_filter_inbox (CamelStoreSettings *settings,
 	settings->priv->filter_inbox = filter_inbox;
 
 	g_object_notify (G_OBJECT (settings), "filter-inbox");
+}
+
+/**
+ * camel_store_settings_get_store_changes_interval:
+ * @settings: a #CamelStoreSettings
+ *
+ * Returns the interval, in seconds, for the changes in the folder being
+ * saved automatically. 0 means immediately, while -1 means turning off
+ * automatic folder change saving.
+ *
+ * Returns: the interval for automatic store of folder changes
+ *
+ * Since: 3.38.2
+ **/
+gint
+camel_store_settings_get_store_changes_interval (CamelStoreSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_STORE_SETTINGS (settings), -1);
+
+	return settings->priv->store_changes_interval;
+}
+
+/**
+ * camel_store_settings_set_store_changes_interval:
+ * @settings: a #CamelStoreSettings
+ * @interval: the interval, in seconds
+ *
+ * Sets the interval, in seconds, for the changes in the folder being
+ * saved automatically. 0 means immediately, while -1 means turning off
+ * automatic folder change saving.
+ *
+ * Since: 3.38.2
+ **/
+void
+camel_store_settings_set_store_changes_interval (CamelStoreSettings *settings,
+						 gint interval)
+{
+	g_return_if_fail (CAMEL_IS_STORE_SETTINGS (settings));
+
+	if (settings->priv->store_changes_interval == interval)
+		return;
+
+	settings->priv->store_changes_interval = interval;
+
+	g_object_notify (G_OBJECT (settings), "store-changes-interval");
 }

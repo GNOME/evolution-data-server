@@ -77,15 +77,15 @@ gchar *		camel_local_settings_dup_path	(CamelLocalSettings *settings);
 void		camel_local_settings_set_path	(CamelLocalSettings *settings,
 						 const gchar *path);
 gboolean	camel_local_settings_get_filter_all
-					(CamelLocalSettings *settings);
+						(CamelLocalSettings *settings);
 void		camel_local_settings_set_filter_all
-					(CamelLocalSettings *settings,
-					 gboolean filter_all);
+						(CamelLocalSettings *settings,
+						 gboolean filter_all);
 gboolean	camel_local_settings_get_filter_junk
-					(CamelLocalSettings *settings);
+						(CamelLocalSettings *settings);
 void		camel_local_settings_set_filter_junk
-					(CamelLocalSettings *settings,
-					 gboolean filter_junk);
+						(CamelLocalSettings *settings,
+						 gboolean filter_junk);
 
 G_END_DECLS
 
