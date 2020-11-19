@@ -76,6 +76,11 @@ gboolean	camel_store_settings_get_filter_inbox
 void		camel_store_settings_set_filter_inbox
 						(CamelStoreSettings *settings,
 						 gboolean filter_inbox);
+gint		camel_store_settings_get_store_changes_interval
+						(CamelStoreSettings *settings);
+void		camel_store_settings_set_store_changes_interval
+						(CamelStoreSettings *settings,
+						 gint interval);
 
 G_END_DECLS
 

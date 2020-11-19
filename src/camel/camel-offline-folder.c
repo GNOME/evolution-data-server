@@ -37,10 +37,6 @@ typedef struct _OfflineDownsyncData OfflineDownsyncData;
 struct _CamelOfflineFolderPrivate {
 	CamelThreeState offline_sync;
 
-	GMutex store_changes_lock;
-	guint store_changes_id;
-	gboolean store_changes_after_frozen;
-
 	GMutex ongoing_downloads_lock;
 	GHashTable *ongoing_downloads; /* gchar * UID ~> g_thread_self() */
 };
@@ -234,112 +230,6 @@ offline_folder_downsync_background (CamelSession *session,
 }
 
 static void
-offline_folder_store_changes_job_cb (CamelSession *session,
-				     GCancellable *cancellable,
-				     gpointer user_data,
-				     GError **error)
-{
-	CamelFolder *folder = user_data;
-
-	g_return_if_fail (CAMEL_IS_OFFLINE_FOLDER (folder));
-
-	camel_folder_synchronize_sync (folder, FALSE, cancellable, error);
-}
-
-static gboolean
-offline_folder_schedule_store_changes_job (gpointer user_data)
-{
-	CamelOfflineFolder *offline_folder = user_data;
-	GSource *source;
-
-	source = g_main_current_source ();
-
-	if (g_source_is_destroyed (source))
-		return FALSE;
-
-	g_return_val_if_fail (CAMEL_IS_OFFLINE_FOLDER (offline_folder), FALSE);
-
-	g_mutex_lock (&offline_folder->priv->store_changes_lock);
-	if (offline_folder->priv->store_changes_id == g_source_get_id (source)) {
-		CamelSession *session;
-		CamelStore *parent_store;
-
-		offline_folder->priv->store_changes_id = 0;
-
-		parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (offline_folder));
-		session = parent_store ? camel_service_ref_session (CAMEL_SERVICE (parent_store)) : NULL;
-		if (session) {
-			gchar *description;
-
-			/* Translators: The first “%s” is replaced with an account name and the second “%s”
-			   is replaced with a full path name. The spaces around “:” are intentional, as
-			   the whole “%s : %s” is meant as an absolute identification of the folder. */
-			description = g_strdup_printf (_("Storing changes in folder “%s : %s”"),
-				camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
-				camel_folder_get_full_name (CAMEL_FOLDER (offline_folder)));
-
-			camel_session_submit_job (session, description,
-				offline_folder_store_changes_job_cb,
-				g_object_ref (offline_folder), g_object_unref);
-
-			g_free (description);
-		}
-
-		g_clear_object (&session);
-	}
-	g_mutex_unlock (&offline_folder->priv->store_changes_lock);
-
-	return FALSE;
-}
-
-static void
-offline_folder_maybe_schedule_folder_change_store (CamelOfflineFolder *offline_folder)
-{
-	CamelSession *session;
-	CamelStore *store;
-
-	g_return_if_fail (CAMEL_IS_OFFLINE_FOLDER (offline_folder));
-
-	g_mutex_lock (&offline_folder->priv->store_changes_lock);
-
-	if (offline_folder->priv->store_changes_id)
-		g_source_remove (offline_folder->priv->store_changes_id);
-	offline_folder->priv->store_changes_id = 0;
-	offline_folder->priv->store_changes_after_frozen = FALSE;
-
-	if (camel_folder_is_frozen (CAMEL_FOLDER (offline_folder))) {
-		offline_folder->priv->store_changes_after_frozen = TRUE;
-		g_mutex_unlock (&offline_folder->priv->store_changes_lock);
-
-		return;
-	}
-
-	store = camel_folder_get_parent_store (CAMEL_FOLDER (offline_folder));
-	session = store ? camel_service_ref_session (CAMEL_SERVICE (store)) : NULL;
-
-	if (session && camel_session_get_online (session) && CAMEL_IS_OFFLINE_STORE (store) &&
-	    camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store))) {
-		CamelSettings *settings;
-		gint interval = -1;
-
-		settings = camel_service_ref_settings (CAMEL_SERVICE (store));
-		if (settings && CAMEL_IS_OFFLINE_SETTINGS (settings))
-			interval = camel_offline_settings_get_store_changes_interval (CAMEL_OFFLINE_SETTINGS (settings));
-		g_clear_object (&settings);
-
-		if (interval == 0)
-			offline_folder_schedule_store_changes_job (offline_folder);
-		else if (interval > 0)
-			offline_folder->priv->store_changes_id = g_timeout_add_seconds (interval,
-				offline_folder_schedule_store_changes_job, offline_folder);
-	}
-
-	g_clear_object (&session);
-
-	g_mutex_unlock (&offline_folder->priv->store_changes_lock);
-}
-
-static void
 offline_folder_changed (CamelFolder *folder,
                         CamelFolderChangeInfo *changes)
 {
@@ -380,9 +270,6 @@ offline_folder_changed (CamelFolder *folder,
 	}
 
 	g_object_unref (session);
-
-	if (changes && changes->uid_changed && changes->uid_changed->len > 0)
-		offline_folder_maybe_schedule_folder_change_store (CAMEL_OFFLINE_FOLDER (folder));
 }
 
 static void
@@ -420,57 +307,16 @@ offline_folder_get_property (GObject *object,
 }
 
 static void
-offline_folder_dispose (GObject *object)
-{
-	CamelOfflineFolder *offline_folder = CAMEL_OFFLINE_FOLDER (object);
-
-	g_mutex_lock (&offline_folder->priv->store_changes_lock);
-	if (offline_folder->priv->store_changes_id)
-		g_source_remove (offline_folder->priv->store_changes_id);
-	offline_folder->priv->store_changes_id = 0;
-	g_mutex_unlock (&offline_folder->priv->store_changes_lock);
-
-	/* Chain up to parent's method. */
-	G_OBJECT_CLASS (camel_offline_folder_parent_class)->dispose (object);
-}
-
-static void
 offline_folder_finalize (GObject *object)
 {
 	CamelOfflineFolder *offline_folder = CAMEL_OFFLINE_FOLDER (object);
 
-	g_mutex_clear (&offline_folder->priv->store_changes_lock);
 	g_mutex_clear (&offline_folder->priv->ongoing_downloads_lock);
 
 	g_hash_table_destroy (offline_folder->priv->ongoing_downloads);
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (camel_offline_folder_parent_class)->finalize (object);
-}
-
-static void
-offline_folder_thaw (CamelFolder *folder)
-{
-	/* Chain up to parent's method. */
-	CAMEL_FOLDER_CLASS (camel_offline_folder_parent_class)->thaw (folder);
-
-	if (!camel_folder_is_frozen (folder)) {
-		CamelOfflineFolder *offline_folder;
-
-		g_return_if_fail (CAMEL_IS_OFFLINE_FOLDER (folder));
-
-		offline_folder = CAMEL_OFFLINE_FOLDER (folder);
-
-		g_mutex_lock (&offline_folder->priv->store_changes_lock);
-		if (offline_folder->priv->store_changes_after_frozen) {
-			offline_folder->priv->store_changes_after_frozen = FALSE;
-			g_mutex_unlock (&offline_folder->priv->store_changes_lock);
-
-			offline_folder_maybe_schedule_folder_change_store (offline_folder);
-		} else {
-			g_mutex_unlock (&offline_folder->priv->store_changes_lock);
-		}
-	}
 }
 
 static gboolean
@@ -621,16 +467,11 @@ static void
 camel_offline_folder_class_init (CamelOfflineFolderClass *class)
 {
 	GObjectClass *object_class;
-	CamelFolderClass *folder_class;
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = offline_folder_set_property;
 	object_class->get_property = offline_folder_get_property;
-	object_class->dispose = offline_folder_dispose;
 	object_class->finalize = offline_folder_finalize;
-
-	folder_class = CAMEL_FOLDER_CLASS (class);
-	folder_class->thaw = offline_folder_thaw;
 
 	class->downsync_sync = offline_folder_downsync_sync;
 
@@ -653,9 +494,7 @@ camel_offline_folder_init (CamelOfflineFolder *folder)
 {
 	folder->priv = camel_offline_folder_get_instance_private (folder);
 
-	g_mutex_init (&folder->priv->store_changes_lock);
 	g_mutex_init (&folder->priv->ongoing_downloads_lock);
-	folder->priv->store_changes_after_frozen = FALSE;
 	folder->priv->offline_sync = CAMEL_THREE_STATE_INCONSISTENT;
 	folder->priv->ongoing_downloads = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
 

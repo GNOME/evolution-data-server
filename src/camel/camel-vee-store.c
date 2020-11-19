@@ -514,6 +514,13 @@ vee_store_rename_folder_sync (CamelStore *store,
 	return TRUE;
 }
 
+static gboolean
+vee_store_get_can_auto_save_changes (CamelStore *store)
+{
+	/* Let only the real folder auto-save the changes */
+	return FALSE;
+}
+
 static void
 camel_vee_store_class_init (CamelVeeStoreClass *class)
 {
@@ -538,6 +545,7 @@ camel_vee_store_class_init (CamelVeeStoreClass *class)
 	store_class->get_trash_folder_sync = vee_store_get_trash_folder_sync;
 	store_class->delete_folder_sync = vee_store_delete_folder_sync;
 	store_class->rename_folder_sync = vee_store_rename_folder_sync;
+	store_class->get_can_auto_save_changes = vee_store_get_can_auto_save_changes;
 
 	g_object_class_install_property (
 		object_class,

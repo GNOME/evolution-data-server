@@ -78,11 +78,13 @@ gboolean	camel_offline_settings_get_stay_synchronized
 void		camel_offline_settings_set_stay_synchronized
 					(CamelOfflineSettings *settings,
 					 gboolean stay_synchronized);
+#ifndef EDS_DISABLE_DEPRECATED
 gint		camel_offline_settings_get_store_changes_interval
 					(CamelOfflineSettings *settings);
 void		camel_offline_settings_set_store_changes_interval
 					(CamelOfflineSettings *settings,
 					 gint interval);
+#endif /* EDS_DISABLE_DEPRECATED */
 gboolean	camel_offline_settings_get_limit_by_age
 					(CamelOfflineSettings *settings);
 void		camel_offline_settings_set_limit_by_age
