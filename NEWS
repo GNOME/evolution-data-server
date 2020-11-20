@@ -1,3 +1,28 @@
+Evolution-Data-Server 3.38.2 2020-11-20
+---------------------------------------
+
+Bug Fixes:
+	I#81 - EReminderWatcher: Triggers an alarm for a removed object (Milan Crha)
+	I#257 - Ineffective refresh of book/calendar meta backends (Milan Crha)
+	I#260 - DAV: Relax collection's item href comparison (Milan Crha)
+	I#269 - EWebDAVSession: Traverse all 'propstat' nodes in the response (Milan Crha)
+	I#272 - WebDAV: Decode URI-s before comparing them (Milan Crha)
+	I#273 - Camel: Save folder changes periodically (Milan Crha)
+	M!46 - camel-internet-address: Annotate methods to fetch strings as transfer none (Corentin Noël)
+	M!47 - e-webdav-session: Fixed wrong annotation (Marco Betschart)
+	M!50 - Added style class to alarm notification window (ptrxyz)
+	evo-i#1206 - Mail: Preserve TABs in plain text body preview (Milan Crha)
+
+Miscellaneous:
+	Calendar: Fix a possible leak in e_cal_util_parse_ics_string() (Milan Crha)
+	ECalCache: Avoid runtime warning from ecc_update_timezones_table() (Milan Crha)
+	EReminderWatcher: Default alarm range should be from the day begin (Milan Crha)
+	EBufferTagger: Derive link color from the theme (Milan Crha)
+	EBook/CalBackend: Correct free function for the pending_operations queue (Milan Crha)
+
+Translations:
+	Dušan Kazik (sk)
+
 Evolution-Data-Server 3.38.1 2020-10-02
 ---------------------------------------
 
