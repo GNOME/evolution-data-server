@@ -2288,7 +2288,7 @@ e_reminder_watcher_class_init (EReminderWatcherClass *klass)
 		NULL,
 		g_cclosure_marshal_generic,
 		G_TYPE_NONE, 4,
-		E_TYPE_REMINDER_WATCHER,
+		E_TYPE_REMINDER_DATA,
 		I_CAL_TYPE_TIME,
 		G_TYPE_POINTER,
 		G_TYPE_INT);
