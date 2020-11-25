@@ -459,7 +459,7 @@ nntp_get_existing_article_numbers (CamelNNTPSummary *cns,
 
 	count = 0;
 
-	while ((ret = camel_nntp_stream_line (nntp_stream, (guchar **) &line, &len, cancellable, error)) > 0) {
+	while (camel_nntp_stream_line (nntp_stream, (guchar **) &line, &len, cancellable, error) > 0) {
 		guint nn;
 
 		if (len == 1 && g_ascii_strncasecmp (line, ".", len) == 0)
@@ -477,8 +477,6 @@ nntp_get_existing_article_numbers (CamelNNTPSummary *cns,
 			g_hash_table_insert (existing_articles, GUINT_TO_POINTER (nn), NULL);
 		}
 	}
-
-	ret = 0;
 
  ioerror:
 
