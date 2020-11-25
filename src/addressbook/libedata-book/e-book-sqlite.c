@@ -1137,6 +1137,8 @@ ebsql_exec (EBookSqlite *ebsql,
 	gint ret = -1, retries = 0;
 	gint64 t1 = 0, t2;
 
+	g_return_val_if_fail (stmt != NULL, FALSE);
+
 	/* Debug output for statements and query plans */
 	ebsql_exec_maybe_debug (ebsql, stmt);
 
@@ -1313,6 +1315,8 @@ ebsql_prepare_statement (EBookSqlite *ebsql,
 	sqlite3_stmt *stmt;
 	const gchar *stmt_tail = NULL;
 	gint ret;
+
+	g_return_val_if_fail (stmt_str != NULL, NULL);
 
 	ret = sqlite3_prepare_v2 (ebsql->priv->db, stmt_str, strlen (stmt_str), &stmt, &stmt_tail);
 

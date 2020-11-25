@@ -555,6 +555,8 @@ cdb_sql_exec (sqlite3 *db,
 	gchar *errmsg = NULL;
 	gint   ret = -1, retries = 0;
 
+	g_return_val_if_fail (stmt != NULL, -1);
+
 	d (g_print ("Camel SQL Exec:\n%s\n", stmt));
 
 	ret = sqlite3_exec (db, stmt, callback, data, &errmsg);
@@ -1080,6 +1082,7 @@ camel_db_add_to_transaction (CamelDB *cdb,
 		return -1;
 
 	g_return_val_if_fail (cdb_is_in_transaction (cdb), -1);
+	g_return_val_if_fail (query != NULL, -1);
 
 	return (cdb_sql_exec (cdb->priv->db, query, NULL, NULL, NULL, error));
 }
@@ -1169,6 +1172,8 @@ camel_db_count_message_info (CamelDB *cdb,
                              GError **error)
 {
 	gint ret = -1;
+
+	g_return_val_if_fail (query != NULL, -1);
 
 	cdb_reader_lock (cdb);
 
@@ -1440,6 +1445,8 @@ camel_db_select (CamelDB *cdb,
 
 	if (!cdb)
 		return ret;
+
+	g_return_val_if_fail (stmt != NULL, ret);
 
 	d (g_print ("\n%s:\n%s \n", G_STRFUNC, stmt));
 	cdb_reader_lock (cdb);

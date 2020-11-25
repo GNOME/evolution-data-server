@@ -411,6 +411,8 @@ book_backend_sql_exec (sqlite3 *db,
                        gpointer data,
                        GError **error)
 {
+	g_return_val_if_fail (stmt != NULL, FALSE);
+
 	if (booksql_debug ())
 		book_backend_sql_debug (db, stmt, callback, data, error);
 
