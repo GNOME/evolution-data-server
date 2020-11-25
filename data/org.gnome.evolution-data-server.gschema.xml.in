@@ -14,6 +14,11 @@
       <_summary>Whether to load photos of signers/encrypters</_summary>
       <_description>When set to “true”, tries to load also photo of the signers/encrypters, if available in the key/certificate.</_description>
     </key>
+    <key name="camel-smtp-helo-argument" type="s">
+      <default>''</default>
+      <_summary>Override SMTP HELO/EHLO argument</_summary>
+      <_description>When not empty, it's used as the SMTP HELO/EHLO argument, instead of the local host name/IP.</_description>
+    </key>
     <key name="network-monitor-gio-name" type="s">
       <default>''</default>
       <_summary>GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance</_summary>

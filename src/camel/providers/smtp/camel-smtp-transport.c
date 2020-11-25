@@ -1440,11 +1440,10 @@ smtp_helo (CamelSmtpTransport *transport,
            GCancellable *cancellable,
            GError **error)
 {
-	gchar *name = NULL, *cmdbuf = NULL, *respbuf = NULL;
+	gchar *name, *cmdbuf = NULL, *respbuf = NULL;
 	gboolean first_line = TRUE;
 	const gchar *token;
-	GResolver *resolver;
-	GInetAddress *address;
+	GSettings *settings;
 	GError *local_error = NULL;
 
 	/* these are flags that we set, so unset them in case we
@@ -1459,37 +1458,55 @@ smtp_helo (CamelSmtpTransport *transport,
 		transport->authtypes = NULL;
 	}
 
-	resolver = g_resolver_get_default ();
-	address = g_inet_socket_address_get_address (
-		G_INET_SOCKET_ADDRESS (transport->local_address));
+	settings = g_settings_new ("org.gnome.evolution-data-server");
+	name = g_settings_get_string (settings, "camel-smtp-helo-argument");
+	g_clear_object (&settings);
 
-	name = g_resolver_lookup_by_address (
-		resolver, address, cancellable, &local_error);
+	if (name) {
+		g_strstrip (name);
 
-	/* Sanity check. */
-	g_return_val_if_fail (
-		((name != NULL) && (local_error == NULL)) ||
-		((name == NULL) && (local_error != NULL)), FALSE);
+		if (!*name)
+			g_clear_pointer (&name, g_free);
 
-	if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-		return FALSE;
+		if (name) {
+			d (printf ("[SMTP] Overrides HELO/EHLO argument to '%s'\n", name));
+		}
+	}
 
-	g_clear_error (&local_error);
+	if (!name) {
+		GResolver *resolver;
+		GInetAddress *address;
 
-	/* Contains a dot, might be (like) an FQDN; if not, then use the IP */
-	if (!name || !strchr (name, '.')) {
-		GSocketFamily family;
-		gchar *string;
+		resolver = g_resolver_get_default ();
+		address = g_inet_socket_address_get_address (G_INET_SOCKET_ADDRESS (transport->local_address));
 
-		g_free (name);
+		name = g_resolver_lookup_by_address (resolver, address, cancellable, &local_error);
 
-		string = g_inet_address_to_string (address);
-		family = g_inet_address_get_family (address);
-		if (family == G_SOCKET_FAMILY_IPV6)
-			name = g_strdup_printf ("[IPv6:%s]", string);
-		else
-			name = g_strdup_printf ("[%s]", string);
-		g_free (string);
+		/* Sanity check. */
+		g_return_val_if_fail (
+			((name != NULL) && (local_error == NULL)) ||
+			((name == NULL) && (local_error != NULL)), FALSE);
+
+		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+			return FALSE;
+
+		g_clear_error (&local_error);
+
+		/* Contains a dot, might be (like) an FQDN; if not, then use the IP */
+		if (!name || !strchr (name, '.')) {
+			GSocketFamily family;
+			gchar *string;
+
+			g_free (name);
+
+			string = g_inet_address_to_string (address);
+			family = g_inet_address_get_family (address);
+			if (family == G_SOCKET_FAMILY_IPV6)
+				name = g_strdup_printf ("[IPv6:%s]", string);
+			else
+				name = g_strdup_printf ("[%s]", string);
+			g_free (string);
+		}
 	}
 
 	camel_operation_push_message (cancellable, _("SMTP Greeting"));
