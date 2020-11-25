@@ -819,6 +819,8 @@ add_printable_option(ENABLE_GOOGLE "Enable Google support" ON)
 if(ENABLE_GOOGLE)
 	pkg_check_modules_for_option(ENABLE_GOOGLE "Google" LIBGDATA libgdata>=${libgdata_minimum_version})
 	set(HAVE_LIBGDATA ON)
+	set(LIBGDATA_GIR GData-0.0)
+	set(LIBGDATA_VAPI libgdata)
 
 	set(CMAKE_REQUIRED_DEFINITIONS ${LIBGDATA_CFLAGS_OTHER})
 	set(CMAKE_REQUIRED_INCLUDES ${LIBGDATA_INCLUDE_DIRS})
