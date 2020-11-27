@@ -661,6 +661,15 @@ reminders_widget_refresh_content_cb (gpointer user_data)
 	g_list_free_full (previous_paths, (GDestroyNotify) gtk_tree_path_free);
 	g_slist_free_full (past, e_reminder_data_free);
 
+	/* Make sure there's always something selected */
+	if (!gtk_tree_selection_count_selected_rows (selection)) {
+		GtkTreePath *path;
+
+		path = gtk_tree_path_new_first ();
+		gtk_tree_selection_select_path (selection, path);
+		gtk_tree_path_free (path);
+	}
+
 	g_signal_emit (reminders, signals[CHANGED], 0, NULL);
 
 	return FALSE;
