@@ -729,9 +729,14 @@ notify_add_component (EDataCalView *view,
                       /* const */ ECalComponent *comp)
 {
 	ECalClientViewFlags flags;
-	gchar *obj;
+	ECalComponentId *id;
 
-	obj = e_data_cal_view_get_component_string (view, comp);
+	id = e_cal_component_get_id (comp);
+
+	if (!id || g_hash_table_lookup (view->priv->ids, id)) {
+		e_cal_component_id_free (id);
+		return;
+	}
 
 	send_pending_changes (view);
 	send_pending_removes (view);
@@ -739,17 +744,19 @@ notify_add_component (EDataCalView *view,
 	/* Do not send component add notifications during initial stage */
 	flags = e_data_cal_view_get_flags (view);
 	if (view->priv->complete || (flags & E_CAL_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL) != 0) {
+		gchar *obj;
+
 		if (view->priv->adds->len == THRESHOLD_ITEMS)
 			send_pending_adds (view);
+
+		obj = e_data_cal_view_get_component_string (view, comp);
+
 		g_array_append_val (view->priv->adds, obj);
 
 		ensure_pending_flush_timeout (view);
 	}
 
-	g_hash_table_insert (
-		view->priv->ids,
-		e_cal_component_get_id (comp),
-		GUINT_TO_POINTER (1));
+	g_hash_table_insert (view->priv->ids, id, GUINT_TO_POINTER (1));
 }
 
 static void
