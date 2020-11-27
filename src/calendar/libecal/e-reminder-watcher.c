@@ -172,6 +172,51 @@ e_reminder_watcher_timet_as_string (gint64 tt)
 	return buffers[index];
 }
 
+static void
+e_reminder_watcher_dump_scheduled (EReminderWatcher *watcher)
+{
+	GHashTableIter iter;
+	gpointer key, value;
+	guint ii, jj;
+
+	if (!e_reminder_watcher_debug_enabled ())
+		return;
+
+	g_rec_mutex_lock (&watcher->priv->lock);
+
+	e_reminder_watcher_debug_print ("   Has scheduled reminders for %u clients\n", g_hash_table_size (watcher->priv->scheduled));
+
+	ii = 0;
+
+	g_hash_table_iter_init (&iter, watcher->priv->scheduled);
+	while (g_hash_table_iter_next (&iter, &key, &value)) {
+		const gchar *source_uid = key;
+		GSList *items = value, *link;
+
+		jj = 0;
+
+		e_reminder_watcher_debug_print ("     [%u] Client '%s' has scheduled %d reminders\n", ii, source_uid, g_slist_length (items));
+
+		for (link = items; link; jj++, link = g_slist_next (link)) {
+			EReminderData *rd = link->data;
+			ECalComponent *comp;
+			ECalComponentAlarmInstance *alarm;
+			ICalComponent *icomp;
+
+			comp = e_reminder_data_get_component (rd);
+			alarm = e_reminder_data_get_instance (rd);
+			icomp = e_cal_component_get_icalcomponent (comp);
+
+			e_reminder_watcher_debug_print ("      - [%u] Event '%s' at %s\n", jj, i_cal_component_get_summary (icomp),
+				e_reminder_watcher_timet_as_string (e_cal_component_alarm_instance_get_time (alarm)));
+		}
+
+		ii++;
+	}
+
+	g_rec_mutex_unlock (&watcher->priv->lock);
+}
+
 static ClientData *
 client_data_new (EReminderWatcher *watcher,
 		 ECalClient *client) /* Assumes ownership of the 'client' */
@@ -917,6 +962,8 @@ e_reminder_watcher_objects_changed_thread (GTask *task,
 	} else if (reminders) {
 		g_slist_free_full (reminders, e_reminder_data_free);
 	}
+
+	e_reminder_watcher_dump_scheduled (watcher);
 }
 
 static void
@@ -994,6 +1041,9 @@ e_reminder_watcher_objects_changed (EReminderWatcher *watcher,
 		g_task_run_in_thread (task, e_reminder_watcher_objects_changed_thread);
 
 		g_object_unref (task);
+	} else {
+		e_reminder_watcher_debug_print ("No IDs recognized on change, skipping\n");
+		e_reminder_watcher_dump_scheduled (watcher);
 	}
 
 	g_rec_mutex_unlock (&watcher->priv->lock);
@@ -1044,6 +1094,8 @@ e_reminder_watcher_objects_removed (EReminderWatcher *watcher,
 			scheduled = g_slist_reverse (scheduled);
 		g_hash_table_insert (watcher->priv->scheduled, g_strdup (source_uid), scheduled);
 	}
+
+	e_reminder_watcher_dump_scheduled (watcher);
 
 	g_rec_mutex_unlock (&watcher->priv->lock);
 }
