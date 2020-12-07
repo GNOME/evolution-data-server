@@ -250,7 +250,7 @@ e_cal_component_property_bag_add (ECalComponentPropertyBag *bag,
 /**
  * e_cal_component_property_bag_take:
  * @bag: an #ECalComponentPropertyBag
- * @prop: an #ICalProperty
+ * @prop: (transfer full): an #ICalProperty
  *
  * Adds the @prop into the @bag and assumes ownership of the @prop.
  *
