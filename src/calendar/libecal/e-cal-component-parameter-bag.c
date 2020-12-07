@@ -250,7 +250,7 @@ e_cal_component_parameter_bag_add (ECalComponentParameterBag *bag,
 /**
  * e_cal_component_parameter_bag_take:
  * @bag: an #ECalComponentParameterBag
- * @param: an #ICalParameter
+ * @param: (transfer full): an #ICalParameter
  *
  * Adds the @param into the @bag and assumes ownership of the @param.
  *
