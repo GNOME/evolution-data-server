@@ -60,6 +60,7 @@ struct _CamelMaildirStoreClass {
 };
 
 GType camel_maildir_store_get_type (void);
+gchar camel_maildir_store_get_filename_flag_sep (CamelMaildirStore *maildir_store);
 
 G_END_DECLS
 

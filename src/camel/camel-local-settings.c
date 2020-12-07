@@ -24,12 +24,14 @@ struct _CamelLocalSettingsPrivate {
 	gchar *path;
 	gboolean filter_all;
 	gboolean filter_junk;
+	gboolean maildir_alt_flag_sep;
 };
 
 enum {
 	PROP_0,
 	PROP_FILTER_ALL,
 	PROP_FILTER_JUNK,
+	PROP_MAILDIR_ALT_FLAG_SEP,
 	PROP_PATH
 };
 
@@ -53,6 +55,12 @@ local_settings_set_property (GObject *object,
 
 		case PROP_FILTER_JUNK:
 			camel_local_settings_set_filter_junk (
+				CAMEL_LOCAL_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_MAILDIR_ALT_FLAG_SEP:
+			camel_local_settings_set_maildir_alt_flag_sep (
 				CAMEL_LOCAL_SETTINGS (object),
 				g_value_get_boolean (value));
 			return;
@@ -85,6 +93,13 @@ local_settings_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				camel_local_settings_get_filter_junk (
+				CAMEL_LOCAL_SETTINGS (object)));
+			return;
+
+		case PROP_MAILDIR_ALT_FLAG_SEP:
+			g_value_set_boolean (
+				value,
+				camel_local_settings_get_maildir_alt_flag_sep (
 				CAMEL_LOCAL_SETTINGS (object)));
 			return;
 
@@ -158,6 +173,19 @@ camel_local_settings_class_init (CamelLocalSettingsClass *class)
 			"Filter Junk",
 			"Whether to check new messages for junk",
 			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_MAILDIR_ALT_FLAG_SEP,
+		g_param_spec_boolean (
+			"maildir-alt-flag-sep",
+			"Maildir Alt Flag Sep",
+			"Whether to use alternative flag separator in Maildir file name",
+			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -349,4 +377,54 @@ camel_local_settings_set_filter_junk (CamelLocalSettings *settings,
 	settings->priv->filter_junk = filter_junk;
 
 	g_object_notify (G_OBJECT (settings), "filter-junk");
+}
+
+/**
+ * camel_local_settings_get_maildir_alt_flag_sep:
+ * @settings: a #CamelLocalSettings
+ *
+ * Returns, whether the Maildir provider should use alternative
+ * flag separator in the file name. When %TRUE, uses an exclamation
+ * mark (!), when %FALSE, uses the colon (:). The default
+ * is %FALSE, to be consistent with the Maildir specification.
+ * The flag separator is flipped on the Windows build.
+ *
+ * Returns: whether the Maildir provider should use an alternative flag separator
+ *
+ * Since: 3.40
+ **/
+gboolean
+camel_local_settings_get_maildir_alt_flag_sep (CamelLocalSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_LOCAL_SETTINGS (settings), FALSE);
+
+	return settings->priv->maildir_alt_flag_sep;
+}
+
+/**
+ * camel_local_settings_set_maildir_alt_flag_sep:
+ * @settings: a #CamelLocalSettings
+ * @maildir_alt_flag_sep: value to set
+ *
+ * Sets whether Maildir should use alternative flag separator.
+ * See camel_local_settings_get_maildir_alt_flag_sep() for more
+ * information on what it means.
+ *
+ * Note: Change to this setting takes effect only for newly created
+ *     Maildir stores.
+ *
+ * Since: 3.40
+ **/
+void
+camel_local_settings_set_maildir_alt_flag_sep (CamelLocalSettings *settings,
+					       gboolean maildir_alt_flag_sep)
+{
+	g_return_if_fail (CAMEL_IS_LOCAL_SETTINGS (settings));
+
+	if ((settings->priv->maildir_alt_flag_sep ? 1 : 0) == (maildir_alt_flag_sep ? 1 : 0))
+		return;
+
+	settings->priv->maildir_alt_flag_sep = maildir_alt_flag_sep;
+
+	g_object_notify (G_OBJECT (settings), "maildir-alt-flag-sep");
 }

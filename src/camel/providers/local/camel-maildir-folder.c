@@ -98,7 +98,7 @@ maildir_folder_get_filename (CamelFolder *folder,
 	CamelLocalFolder *lf = (CamelLocalFolder *) folder;
 	CamelMaildirMessageInfo *mdi;
 	CamelMessageInfo *info;
-	gchar *res;
+	gchar *res, filename_flag_sep;
 
 	/* get the message summary info */
 	if ((info = camel_folder_summary_get (camel_folder_get_folder_summary (folder), uid)) == NULL) {
@@ -108,6 +108,7 @@ maildir_folder_get_filename (CamelFolder *folder,
 		return NULL;
 	}
 
+	filename_flag_sep = camel_maildir_summary_get_filename_flag_sep (CAMEL_MAILDIR_SUMMARY (camel_folder_get_folder_summary (folder)));
 	mdi = CAMEL_MAILDIR_MESSAGE_INFO (info);
 
 	/* If filename is NULL, it means folder_summary_check is not yet executed.
@@ -130,7 +131,7 @@ maildir_folder_get_filename (CamelFolder *folder,
 				gint uid_len = strlen (info_uid);
 
 				while (filename = g_dir_read_name (dir), filename) {
-					if (g_str_has_prefix (filename, info_uid) && (filename[uid_len] == '\0' || filename[uid_len] == CAMEL_MAILDIR_FLAG_SEP)) {
+					if (g_str_has_prefix (filename, info_uid) && (filename[uid_len] == '\0' || filename[uid_len] == filename_flag_sep)) {
 						camel_maildir_message_info_take_filename (mdi, g_strdup (filename));
 						break;
 					}
@@ -431,7 +432,7 @@ maildir_folder_create_summary (CamelLocalFolder *lf,
                                CamelIndex *index)
 {
 	return (CamelLocalSummary *) camel_maildir_summary_new (
-		CAMEL_FOLDER (lf), folder, index);
+		CAMEL_FOLDER (lf), folder, index, 0);
 }
 
 static void

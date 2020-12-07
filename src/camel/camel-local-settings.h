@@ -86,6 +86,11 @@ gboolean	camel_local_settings_get_filter_junk
 void		camel_local_settings_set_filter_junk
 						(CamelLocalSettings *settings,
 						 gboolean filter_junk);
+gboolean	camel_local_settings_get_maildir_alt_flag_sep
+						(CamelLocalSettings *settings);
+void		camel_local_settings_set_maildir_alt_flag_sep
+						(CamelLocalSettings *settings,
+						 gboolean maildir_alt_flag_sep);
 
 G_END_DECLS
 

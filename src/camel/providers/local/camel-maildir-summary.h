@@ -42,11 +42,11 @@
 	((obj), CAMEL_TYPE_MAILDIR_SUMMARY, CamelMaildirSummaryClass))
 
 #ifdef G_OS_WIN32
-#define CAMEL_MAILDIR_FLAG_SEP '!'
-#define CAMEL_MAILDIR_FLAG_SEP_S "!"
+#define CAMEL_MAILDIR_FILENAME_FLAG_SEP '!'
+#define CAMEL_MAILDIR_FILENAME_FLAG_SEP_ALT ':'
 #else
-#define CAMEL_MAILDIR_FLAG_SEP ':'
-#define CAMEL_MAILDIR_FLAG_SEP_S ":"
+#define CAMEL_MAILDIR_FILENAME_FLAG_SEP ':'
+#define CAMEL_MAILDIR_FILENAME_FLAG_SEP_ALT '!'
 #endif
 
 G_BEGIN_DECLS
@@ -67,13 +67,23 @@ struct _CamelMaildirSummaryClass {
 	gpointer reserved[20];
 };
 
-GType	 camel_maildir_summary_get_type	(void);
-CamelMaildirSummary	*camel_maildir_summary_new	(struct _CamelFolder *folder, const gchar *maildirdir, CamelIndex *index);
+GType		camel_maildir_summary_get_type		(void);
+CamelMaildirSummary *
+		camel_maildir_summary_new		(struct _CamelFolder *folder,
+							 const gchar *maildirdir,
+							 CamelIndex *index,
+							 gchar filename_flag_sep);
+gchar		camel_maildir_summary_get_filename_flag_sep
+							(CamelMaildirSummary *maildir_summary);
 
 /* convert some info->flags to/from the messageinfo */
-gchar *camel_maildir_summary_info_to_name (const CamelMessageInfo *info);
-gchar *camel_maildir_summary_uid_and_flags_to_name (const gchar *uid, guint32 flags);
-gboolean camel_maildir_summary_name_to_info (CamelMessageInfo *info, const gchar *name);
+gchar *		camel_maildir_summary_info_to_name	(const CamelMessageInfo *info);
+gchar *		camel_maildir_summary_uid_and_flags_to_name
+							(CamelMaildirSummary *maildir_summary,
+							 const gchar *uid,
+							 guint32 flags);
+gboolean	camel_maildir_summary_name_to_info	(CamelMessageInfo *info,
+							 const gchar *name);
 
 G_END_DECLS
 

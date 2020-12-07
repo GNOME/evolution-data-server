@@ -50,6 +50,7 @@
 	} G_STMT_END
 
 struct _CamelMaildirStorePrivate {
+	gchar filename_flag_sep;
 	gboolean already_migrated;
 	gboolean can_escape_dots;
 };
@@ -448,6 +449,7 @@ fill_fi (CamelStore *store,
 		CamelLocalSettings *local_settings;
 		CamelSettings *settings;
 		CamelService *service;
+		CamelMaildirStore *maildir_store;
 		gchar *folderpath, *dir_name;
 		CamelFolderSummary *s;
 		gchar *root;
@@ -461,8 +463,10 @@ fill_fi (CamelStore *store,
 
 		g_object_unref (settings);
 
+		maildir_store = CAMEL_MAILDIR_STORE (store);
+
 		/* This should be fast enough not to have to test for INFO_FAST */
-		dir_name = maildir_full_name_to_dir_name (CAMEL_MAILDIR_STORE (store)->priv->can_escape_dots, fi->full_name);
+		dir_name = maildir_full_name_to_dir_name (maildir_store->priv->can_escape_dots, fi->full_name);
 
 		if (!strcmp (dir_name, "."))
 			folderpath = g_strdup (root);
@@ -471,7 +475,7 @@ fill_fi (CamelStore *store,
 
 		g_free (root);
 
-		s = (CamelFolderSummary *) camel_maildir_summary_new (NULL, folderpath, NULL);
+		s = (CamelFolderSummary *) camel_maildir_summary_new (NULL, folderpath, NULL, camel_maildir_store_get_filename_flag_sep (maildir_store));
 		if (camel_folder_summary_header_load (s, store, fi->full_name, NULL)) {
 			fi->unread = camel_folder_summary_get_unread_count (s);
 			fi->total = camel_folder_summary_get_saved_count (s);
@@ -1367,4 +1371,28 @@ maildir_migrate_hierarchy (CamelMaildirStore *mstore,
 done:
 	camel_folder_info_free (topfi);
 	g_free (meta_path);
+}
+
+gchar
+camel_maildir_store_get_filename_flag_sep (CamelMaildirStore *maildir_store)
+{
+	g_return_val_if_fail (CAMEL_IS_MAILDIR_STORE (maildir_store), CAMEL_MAILDIR_FILENAME_FLAG_SEP);
+
+	/* Populate the value on the first access. It's too early in the constructed(),
+	   the settings might not be read there yet. */
+	if (!maildir_store->priv->filename_flag_sep) {
+		CamelSettings *settings;
+
+		settings = camel_service_ref_settings (CAMEL_SERVICE (maildir_store));
+
+		if (camel_local_settings_get_maildir_alt_flag_sep (CAMEL_LOCAL_SETTINGS (settings))) {
+			maildir_store->priv->filename_flag_sep = CAMEL_MAILDIR_FILENAME_FLAG_SEP_ALT;
+		} else {
+			maildir_store->priv->filename_flag_sep = CAMEL_MAILDIR_FILENAME_FLAG_SEP;
+		}
+
+		g_clear_object (&settings);
+	}
+
+	return maildir_store->priv->filename_flag_sep;
 }
