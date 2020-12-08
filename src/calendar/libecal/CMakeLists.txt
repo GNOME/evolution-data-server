@@ -99,6 +99,7 @@ target_include_directories(ecal PUBLIC
 	${CMAKE_SOURCE_DIR}/src/calendar
 	${CMAKE_SOURCE_DIR}/src/private
 	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
 	${CALENDAR_INCLUDE_DIRS}
 )
 

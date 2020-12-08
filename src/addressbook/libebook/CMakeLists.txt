@@ -71,6 +71,7 @@ target_include_directories(ebook PUBLIC
 	${CMAKE_SOURCE_DIR}/src/private
 	${CMAKE_SOURCE_DIR}/src/addressbook
 	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
 	${ADDRESSBOOK_INCLUDE_DIRS}
 )
 
