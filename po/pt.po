@@ -13,17 +13,17 @@ msgstr ""
 "Project-Id-Version: 3.12\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2020-09-11 07:12+0000\n"
-"PO-Revision-Date: 2020-11-20 10:20-0300\n"
-"Last-Translator: Juliano de Souza Camargo <julianosc@protonmail.com>\n"
-"Language-Team: Portuguese <>\n"
+"POT-Creation-Date: 2020-11-27 15:54+0000\n"
+"PO-Revision-Date: 2020-12-08 00:13+0000\n"
+"Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
+"Language-Team: https://l10n.gnome.org/teams/pt/\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.3\n"
 "X-DamnedLies-Scope: partial\n"
-"X-Generator: Gtranslator 3.38.0\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:231
 #, c-format
@@ -83,29 +83,28 @@ msgstr "URL “%s” dada não faz referência a um livro de endereços CardDAV"
 #: ../src/libedataserver/e-client.c:183
 #: ../src/libedataserver/e-soup-session.c:1230
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
-#: ../src/libedataserverui/e-reminders-widget.c:1931
+#: ../src/libedataserverui/e-reminders-widget.c:1940
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Erro desconhecido"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1149
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1373
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1152
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1376
 #: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:930
-#| msgid "Signon service did not return a secret"
 msgid "Server didn’t return object’s href"
 msgstr "Servidor não devolveu o href do objeto"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1151
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1375
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1154
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1378
 #: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:932
 msgid "Server didn’t return object’s ETag"
 msgstr "Servidor não devolveu o ETag do objeto"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1153
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1156
 msgid "Received object is not a valid vCard"
 msgstr "Objeto recebido não é um vCard válido"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1270
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1273
 msgid ""
 "Missing information about vCard URL, local cache is possibly incomplete or "
 "broken. Remove it, please."
@@ -113,14 +112,13 @@ msgstr ""
 "Informação em falta acerca do URL vCard, memória transitória local está "
 "incompleta ou em falha. Elimine-a, por favor."
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1273
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1276
 #: ../src/addressbook/backends/google/e-book-backend-google.c:990
 msgid "Object to save is not a valid vCard"
 msgstr "Objeto a grava não é um vCard válido"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:117
 #, c-format
-#| msgid "Failed to remove file '%s': %s"
 msgid "Failed to remove file “%s”: %s"
 msgstr "Falha ao remover o ficheiro “%s”: %s"
 
@@ -131,7 +129,6 @@ msgstr "Falha ao criar a pasta %s: %s"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:416
 #, c-format
-#| msgid "Failed to create hardlink for resource '%s': %s"
 msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "Falha ao criar ligação física para o recurso “%s”: %s"
 
@@ -156,7 +153,6 @@ msgstr "A procurar..."
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1293
 #, c-format
-#| msgid "Tried to modify contact '%s' with out of sync revision"
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr "Foi tentado alterar o contacto “%s” com uma revisão por sincronizar"
 
@@ -166,37 +162,32 @@ msgstr "Foi tentado alterar o contacto “%s” com uma revisão por sincronizar
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7370
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7439
 #, c-format
-#| msgid "Contact '%s' not found"
 msgid "Contact “%s” not found"
 msgstr "Contacto “%s” não encontrado"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1624
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1707
 #, c-format
-#| msgid "Query '%s' not supported"
 msgid "Query “%s” not supported"
 msgstr "Consulta “%s” não suportada"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1633
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1716
 #, c-format
-#| msgid "Invalid Query '%s'"
 msgid "Invalid Query “%s”"
 msgstr "Consulta “%s” inválida"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1965
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2043
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2048
 msgid "Requested to delete an unrelated cursor"
 msgstr "Pedido para apagar um cursor que não está relacionado"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:2036
 #, c-format
-#| msgid "Failed to rename old database from '%s' to '%s': %s"
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Impossível mudar o nome da base de dados antiga de “%s” para “%s”: %s"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:1046
-#| msgid "Failed to create hardlink for resource '%s': %s"
 msgid "Failed to create contact from returned server data"
 msgstr "Falha ao criar contacto a partir dos dados devolvidos pelo servido"
 
@@ -309,7 +300,7 @@ msgstr "A transferir os contactos (%d)..."
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:790
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:691
 msgid "Refreshing…"
-msgstr "A atualizar..."
+msgstr "A recarregar…"
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5172
 msgid "The backend does not support bulk additions"
@@ -333,7 +324,6 @@ msgstr "A remover contacto do servidor LDAP..."
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5829
 #, c-format
-#| msgid "Failed to get the DN for user '%s'"
 msgid "Failed to get the DN for user “%s”"
 msgstr "Falha ao obter o DN do utilizador “%s”"
 
@@ -569,7 +559,6 @@ msgstr "URL de vídeo conferência"
 
 #. Misc fields
 #: ../src/addressbook/libebook-contacts/e-contact.c:224
-#| msgid "Spouse's Name"
 msgid "Spouse’s Name"
 msgstr "Nome do cônjuge"
 
@@ -978,13 +967,11 @@ msgstr "Texto é demasiado extenso para um número de telefone"
 
 #: ../src/addressbook/libebook/e-book-client.c:927
 #, c-format
-#| msgid "Unknown book property '%s'"
 msgid "Unknown book property “%s”"
 msgstr "Propriedade de livro “%s” desconhecida"
 
 #: ../src/addressbook/libebook/e-book-client.c:942
 #, c-format
-#| msgid "Cannot change value of book property '%s'"
 msgid "Cannot change value of book property “%s”"
 msgstr "Impossível alterar o valor da propriedade de livro “%s”"
 
@@ -994,7 +981,6 @@ msgstr "Impossível alterar o valor da propriedade de livro “%s”"
 #: ../src/calendar/libecal/e-cal-client.c:1709
 #: ../src/calendar/libecal/e-cal-client.c:1947
 #, c-format
-#| msgid "Unable to connect to '%s': "
 msgid "Unable to connect to “%s”: "
 msgstr "Impossível ligar a “%s”: "
 
@@ -1006,14 +992,12 @@ msgstr "O cliente desapareceu"
 
 #: ../src/addressbook/libedata-book/e-book-backend.c:3253
 #, c-format
-#| msgid "The backend does not support bulk removals"
 msgid "Addressbook backend does not support cursors"
 msgstr "A infraestrutura do livro de endereços não suporta cursores"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:899
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:2253
 #, c-format
-#| msgid "Error introspecting unknown summary field '%s'"
 msgid "Error introspecting unknown summary field “%s”"
 msgstr "Erro ao realizar introspeção sobre campo de resumo desconhecido “%s”"
 
@@ -1033,7 +1017,6 @@ msgstr "Memória insuficiente"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1690
 #, c-format
-#| msgid "Invalid contact field '%d' specified in summary"
 msgid "Invalid contact field “%d” specified in summary"
 msgstr "Campo de contacto “%d” especificado no resumo é inválido"
 
@@ -1041,9 +1024,6 @@ msgstr "Campo de contacto “%d” especificado no resumo é inválido"
 #: ../src/addressbook/libedata-book/e-book-cache.c:372
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:603
 #, c-format
-#| msgid ""
-#| "Contact field '%s' of type '%s' specified in summary, but only boolean, "
-#| "string and string list field types are supported"
 msgid ""
 "Contact field “%s” of type “%s” specified in summary, but only boolean, "
 "string and string list field types are supported"
@@ -1151,7 +1131,6 @@ msgstr ""
 #: ../src/addressbook/libedata-book/e-book-cache.c:337
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:569
 #, c-format
-#| msgid "Unsupported contact field '%d' specified in summary"
 msgid "Unsupported contact field “%d” specified in summary"
 msgstr "Campo de contacto não suportado “%d” especificado no resumo"
 
@@ -1164,14 +1143,12 @@ msgid "Invalid query: %s"
 msgstr "Consulta inválida: %s"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:3648
-#| msgid "Invalid query for EbSqlCursor"
 msgid "Invalid query for a book cursor"
 msgstr "Consulta inválida para um cursor de livro"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:4590
 #: ../src/libebackend/e-cache.c:759
 #, c-format
-#| msgid "Cannot open mailbox: %s: "
 msgid "Can’t open database %s: %s"
 msgstr "Impossível abrir a base de dados %s: %s"
 
@@ -1184,23 +1161,20 @@ msgstr "Impossível abrir a base de dados %s: %s"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2944
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3007
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3178
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1370
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1375
 #: ../src/libebackend/e-cache.c:1374 ../src/libebackend/e-cache.c:2352
 #: ../src/libebackend/e-cache.c:2392
 #, c-format
-#| msgid "Object not found"
 msgid "Object “%s” not found"
 msgstr "Objeto “%s” não encontrado"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5430
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3069
 #, c-format
-#| msgid "Object not found"
 msgid "Object with extra “%s” not found"
 msgstr "Objeto com “%s” adicional não encontrado"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5584
-#| msgid "At least one sort field must be specified to use an EbSdbCursor"
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 "Para utilizar um cursor tem de ser especificado pelo menos um campo de "
@@ -1211,30 +1185,26 @@ msgstr ""
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Impossível ordenar por um campo que não é do tipo cadeia"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1083
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1093
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1088
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1098
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Objeto pré-carregado para UID “%s” é inválido"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1091
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1101
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1096
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1106
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Objeto recebido para UID “%s” é inválido"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1913
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2369
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3314
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1918
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2374
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3319
 #, c-format
-#| msgid "Unable to create cache path"
 msgid "Failed to create cache “%s”:"
 msgstr "Falha ao criar memória transitória “%s”:"
 
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1949
-#| msgid ""
-#| "Cannot upgrade contacts database from a legacy database with more than "
-#| "one addressbook. Delete one of the entries in the 'folders' table first."
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the “folders” table first."
@@ -1330,7 +1300,7 @@ msgstr "Índice alfabético foi definido para definições regionais incorretas"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "URL indicada “%s” não refere-se a um calendário CalDAV"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1510
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1513
 #: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1164
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
@@ -1339,8 +1309,7 @@ msgstr ""
 "Informação em falta acerca dum componente URL, a memória transitória local "
 "está possivelmente incompleta ou em falha. Elimine-a, por favor."
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:2010
-#| msgid "Failed to encode data"
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:2013
 msgid "Failed to parse response data"
 msgstr "Falha ao processar os dados devolvidos"
 
@@ -1359,7 +1328,6 @@ msgid "Anniversary: %s"
 msgstr "Aniversário: %s"
 
 #: ../src/calendar/backends/file/e-cal-backend-file.c:43
-#| msgid "Cannot get contact: "
 msgid "Cannot get URI"
 msgstr "Impossível obter o URI"
 
@@ -1375,7 +1343,6 @@ msgstr "Impossível gravar dados de calendário"
 #: ../src/calendar/backends/file/e-cal-backend-file.c:1185
 #: ../src/calendar/backends/file/e-cal-backend-file.c:1314
 #, c-format
-#| msgid "Cannot create spool file: %s"
 msgid "Cannot parse ISC file “%s”"
 msgstr "Impossível processar o ficheiro ISC “%s”"
 
@@ -1390,18 +1357,16 @@ msgstr "O ficheiro “%s” não é um componente VCALENDAR"
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3653
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3659
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3686
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2541
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2546
 msgid "Unsupported method"
 msgstr "Método não suportado"
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:227
-#| msgid "URI not loaded"
 msgid "URI not set"
 msgstr "URI indefinido"
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:312
 #, c-format
-#| msgid "Malformed URI: %s"
 msgid "Malformed URI “%s”: %s"
 msgstr "URI mal-formado “%s”: %s"
 
@@ -1488,7 +1453,6 @@ msgid "Could not create cache file"
 msgstr "Impossível criar o ficheiro de cache"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:684
-#| msgid "Could not create cache file"
 msgid "Could not create cache file: "
 msgstr "Impossível criar o ficheiro de memória transitória: "
 
@@ -1523,13 +1487,11 @@ msgstr "Intervalo inválido"
 
 #: ../src/calendar/libecal/e-cal-client.c:1073
 #, c-format
-#| msgid "Unknown calendar property '%s'"
 msgid "Unknown calendar property “%s”"
 msgstr "Propriedade de calendário “%s” desconhecida"
 
 #: ../src/calendar/libecal/e-cal-client.c:1088
 #, c-format
-#| msgid "Cannot change value of calendar property '%s'"
 msgid "Cannot change value of calendar property “%s”"
 msgstr "Impossível alterar o valor da propriedade de calendário “%s”"
 
@@ -1790,8 +1752,6 @@ msgid " and Thursday"
 msgstr " e quinta-feira"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5237
-#| msgctxt "CategoryName"
-#| msgid "Holiday"
 msgctxt "recur-description"
 msgid "on Friday"
 msgstr "na sexta-feira"
@@ -2338,7 +2298,6 @@ msgstr "A reunião volta a acontecer"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5870
 #: ../src/calendar/libecal/e-cal-recur.c:5893
-#| msgid "Untitled appointment"
 msgctxt "recur-description"
 msgid "The appointment recurs"
 msgstr "O compromisso volta a acontecer"
@@ -2366,31 +2325,31 @@ msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#: ../src/calendar/libecal/e-cal-util.c:818
-#: ../src/calendar/libecal/e-cal-util.c:845
+#: ../src/calendar/libecal/e-cal-util.c:821
+#: ../src/calendar/libecal/e-cal-util.c:848
 msgctxt "Priority"
 msgid "High"
 msgstr "Alta"
 
-#: ../src/calendar/libecal/e-cal-util.c:820
-#: ../src/calendar/libecal/e-cal-util.c:847
+#: ../src/calendar/libecal/e-cal-util.c:823
+#: ../src/calendar/libecal/e-cal-util.c:850
 msgctxt "Priority"
 msgid "Normal"
 msgstr "Normal"
 
-#: ../src/calendar/libecal/e-cal-util.c:822
-#: ../src/calendar/libecal/e-cal-util.c:849
+#: ../src/calendar/libecal/e-cal-util.c:825
+#: ../src/calendar/libecal/e-cal-util.c:852
 msgctxt "Priority"
 msgid "Low"
 msgstr "Baixa"
 
 #. An empty string is the same as 'None'.
-#: ../src/calendar/libecal/e-cal-util.c:843
+#: ../src/calendar/libecal/e-cal-util.c:846
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Indefinida"
 
-#: ../src/calendar/libecal/e-cal-util.c:885
+#: ../src/calendar/libecal/e-cal-util.c:888
 #: ../src/libedataserverui/e-reminders-widget.c:296
 #, c-format
 msgid "%d week"
@@ -2398,7 +2357,7 @@ msgid_plural "%d weeks"
 msgstr[0] "%d semana"
 msgstr[1] "%d semanas"
 
-#: ../src/calendar/libecal/e-cal-util.c:894
+#: ../src/calendar/libecal/e-cal-util.c:897
 #: ../src/libedataserverui/e-reminders-widget.c:292
 #, c-format
 msgid "%d day"
@@ -2406,7 +2365,7 @@ msgid_plural "%d days"
 msgstr[0] "%d dia"
 msgstr[1] "%d dias"
 
-#: ../src/calendar/libecal/e-cal-util.c:903
+#: ../src/calendar/libecal/e-cal-util.c:906
 #: ../src/libedataserverui/e-reminders-widget.c:288
 #, c-format
 msgid "%d hour"
@@ -2414,7 +2373,7 @@ msgid_plural "%d hours"
 msgstr[0] "%d hora"
 msgstr[1] "%d horas"
 
-#: ../src/calendar/libecal/e-cal-util.c:912
+#: ../src/calendar/libecal/e-cal-util.c:915
 #: ../src/libedataserverui/e-reminders-widget.c:284
 #, c-format
 msgid "%d minute"
@@ -2423,23 +2382,22 @@ msgstr[0] "%d minuto"
 msgstr[1] "%d minutos"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: ../src/calendar/libecal/e-cal-util.c:917
+#: ../src/calendar/libecal/e-cal-util.c:920
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d segundo"
 msgstr[1] "%d segundos"
 
-#: ../src/calendar/libecal/e-reminder-watcher.c:2704
+#: ../src/calendar/libecal/e-reminder-watcher.c:2756
 msgid "No Summary"
 msgstr "Sem assunto"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2720
+#: ../src/calendar/libecal/e-reminder-watcher.c:2772
 #, c-format
-#| msgid "%s (%s)"
 msgctxt "overdue"
 msgid "%s (%s) %s"
 msgstr "%s (%s) %s"
@@ -2447,9 +2405,8 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2725
+#: ../src/calendar/libecal/e-reminder-watcher.c:2777
 #, c-format
-#| msgid "%s (%s)"
 msgctxt "overdue"
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -2457,7 +2414,7 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2730
+#: ../src/calendar/libecal/e-reminder-watcher.c:2782
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
@@ -2470,7 +2427,6 @@ msgstr "%s %s"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1634
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1683
 #, c-format
-#| msgid "\"%s\" expects one argument"
 msgid "“%s” expects one argument"
 msgstr "“%s” espera um argumento"
 
@@ -2479,13 +2435,11 @@ msgstr "“%s” espera um argumento"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1514
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1522
 #, c-format
-#| msgid "\"%s\" expects the first argument to be a string"
 msgid "“%s” expects the first argument to be a string"
 msgstr "“%s” espera que o primeiro argumento seja uma cadeia"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:164
 #, c-format
-#| msgid "\"%s\" expects two or three arguments"
 msgid "“%s” expects two or three arguments"
 msgstr "“%s” espera dois ou três argumentos"
 
@@ -2499,7 +2453,6 @@ msgstr "“%s” espera dois ou três argumentos"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1641
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1690
 #, c-format
-#| msgid "\"%s\" expects the first argument to be a time_t"
 msgid "“%s” expects the first argument to be a time_t"
 msgstr "“%s” espera que o primeiro argumento seja um time_t"
 
@@ -2508,19 +2461,16 @@ msgstr "“%s” espera que o primeiro argumento seja um time_t"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:350
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:866
 #, c-format
-#| msgid "\"%s\" expects the second argument to be a time_t"
 msgid "“%s” expects the second argument to be a time_t"
 msgstr "“%s” espera que o segundo argumento seja um time_t"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:190
 #, c-format
-#| msgid "\"%s\" expects the third argument to be a string"
 msgid "“%s” expects the third argument to be a string"
 msgstr "“%s” espera que o terceiro argumento seja uma cadeia"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:264
 #, c-format
-#| msgid "\"%s\" expects none or two arguments"
 msgid "“%s” expects none or two arguments"
 msgstr "“%s” espera nenhum ou dois argumentos"
 
@@ -2529,7 +2479,6 @@ msgstr "“%s” espera nenhum ou dois argumentos"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:850
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1576
 #, c-format
-#| msgid "\"%s\" expects two arguments"
 msgid "“%s” expects two arguments"
 msgstr "“%s” espera dois argumentos"
 
@@ -2541,22 +2490,16 @@ msgstr "“%s” espera dois argumentos"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1056
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1468
 #, c-format
-#| msgid "\"%s\" expects no arguments"
 msgid "“%s” expects no arguments"
 msgstr "“%s” não espera nenhum argumento"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:716
 #, c-format
-#| msgid "\"%s\" expects the second argument to be a string"
 msgid "“%s” expects the second argument to be a string"
 msgstr "“%s” espera que o segundo argumento seja uma cadeia"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:747
 #, c-format
-#| msgid ""
-#| "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
-#| "\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
-#| "\"classification\""
 msgid ""
 "“%s” expects the first argument to be either “any”, “summary”, or "
 "“description”, or “location”, or “attendee”, or “organizer”, or "
@@ -2567,15 +2510,11 @@ msgstr ""
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:918
 #, c-format
-#| msgid "\"%s\" expects at least one argument"
 msgid "“%s” expects at least one argument"
 msgstr "“%s” espera pelo menos um argumento"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:933
 #, c-format
-#| msgid ""
-#| "\"%s\" expects all arguments to be strings or one and only one argument "
-#| "to be a boolean false (#f)"
 msgid ""
 "“%s” expects all arguments to be strings or one and only one argument to be "
 "a boolean false (#f)"
@@ -2585,20 +2524,17 @@ msgstr ""
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1531
 #, c-format
-#| msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 "“%s” espera que o primeiro argumento seja uma expressão de data/hora ISO 8601"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1592
 #, c-format
-#| msgid "\"%s\" expects the second argument to be an integer"
 msgid "“%s” expects the second argument to be an integer"
 msgstr "“%s” espera que o segundo argumento seja um inteiro"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1825
 #, c-format
-#| msgid "Failed to create create child process '%s': %s"
 msgid "Failed to create SQLite function, error code “%d”: %s"
 msgstr "Falha ao criar a função SQLite, código do erro “%d”: %s"
 
@@ -2607,31 +2543,27 @@ msgstr "Falha ao criar a função SQLite, código do erro “%d”: %s"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2942
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3005
 #, c-format
-#| msgid "Object not found"
 msgid "Object “%s”, “%s” not found"
 msgstr "Objeto “%s”, “%s” não encontrado"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3784
-#| msgid "Cannot add contact: "
 msgid "Cannot add timezone without tzid"
 msgstr "Impossível adicionar fuso horário sem tzid"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3793
-#| msgid "Cannot authenticate without a username"
 msgid "Cannot add timezone without component"
 msgstr "Impossível adicionar fuso horário sem componente"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3801
-#| msgid "Cannot send message: one or more invalid recipients"
 msgid "Cannot add timezone with invalid component"
 msgstr "Impossível adicionar fuso horário com componente inválida"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1148
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1153
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Objeto recebido para UID “%s” não possui componente esperada"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4181
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4114
 msgid "attachment.dat"
 msgstr "anexo.dat"
 
@@ -2754,7 +2686,6 @@ msgstr "Impossível remover a entrada de cache: %s: %s"
 #: ../src/camel/camel-db.c:872
 #: ../src/camel/providers/local/camel-mbox-store.c:913
 #, c-format
-#| msgid "Could not rename '%s' to %s: %s"
 msgid "Could not rename “%s” to %s: %s"
 msgstr "Impossível mudar o nome de “%s” para %s: %s"
 
@@ -2763,14 +2694,12 @@ msgstr "Impossível mudar o nome de “%s” para %s: %s"
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-filter-driver.c:264
 #, c-format
-#| msgid "Scanning for changed messages in %s"
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr "A transferir mensagens filtradas em “%s : %s”"
 
 #: ../src/camel/camel-filter-driver.c:1120
 #: ../src/camel/camel-filter-search.c:934
 #, c-format
-#| msgid "Failed to create child process '%s': %s"
 msgid "Failed to create child process “%s”: %s"
 msgstr "Falha ao criar o processo filho “%s”: %s"
 
@@ -2818,7 +2747,6 @@ msgstr "Falha na mensagem %d"
 #: ../src/camel/camel-filter-driver.c:1715
 #: ../src/camel/camel-filter-driver.c:1847
 #, c-format
-#| msgid "Failed to cache message %s: %s"
 msgid "Failed to transfer messages: %s"
 msgstr "Falha ao transferir mensagens: %s"
 
@@ -2845,19 +2773,16 @@ msgstr "Falha na mensagem %d de %d"
 #: ../src/camel/camel-filter-driver.c:2029
 #: ../src/camel/camel-filter-driver.c:2053
 #, c-format
-#| msgid "Execution of filter '%s' failed: "
 msgid "Execution of filter “%s” failed: "
 msgstr "Falha ao executar o filtro “%s”: "
 
 #: ../src/camel/camel-filter-driver.c:2043
 #, c-format
-#| msgid "Error parsing filter '%s': %s: %s"
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Erro ao processar o filtro “%s”: %s: %s"
 
 #: ../src/camel/camel-filter-driver.c:2062
 #, c-format
-#| msgid "Error executing filter '%s': %s: %s"
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Erro ao executar o filtro “%s”: %s: %s"
 
@@ -2886,10 +2811,16 @@ msgstr "Erro ao executar uma procura com filtro: %s: %s"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:329
+#: ../src/camel/camel-folder.c:184
 #, c-format
-#| msgid "Learning new spam message in '%s'"
-#| msgid_plural "Learning new spam messages in '%s'"
+msgid "Storing changes in folder “%s : %s”"
+msgstr "A armazenar alterações na pasta “%s : %s”"
+
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. the whole “%s : %s” is meant as an absolute identification of the folder.
+#: ../src/camel/camel-folder.c:441
+#, c-format
 msgid "Learning new spam message in “%s : %s”"
 msgid_plural "Learning new spam messages in “%s : %s”"
 msgstr[0] "A aprender nova mensagem não solicitada em “%s : %s”"
@@ -2898,10 +2829,8 @@ msgstr[1] "A aprender novas mensagens não solicitadas em “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:372
+#: ../src/camel/camel-folder.c:484
 #, c-format
-#| msgid "Learning new ham message in '%s'"
-#| msgid_plural "Learning new ham messages in '%s'"
 msgid "Learning new ham message in “%s : %s”"
 msgid_plural "Learning new ham messages in “%s : %s”"
 msgstr[0] "A aprender nova mensagem solicitada em “%s : %s”"
@@ -2910,75 +2839,67 @@ msgstr[1] "A aprender novas mensagens solicitadas em “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:420
+#: ../src/camel/camel-folder.c:532
 #, c-format
-#| msgid "Filtering new message in '%s'"
-#| msgid_plural "Filtering new messages in '%s'"
 msgid "Filtering new message in “%s : %s”"
 msgid_plural "Filtering new messages in “%s : %s”"
 msgstr[0] "A filtrar nova mensagem em “%s : %s”"
 msgstr[1] "A filtrar novas mensagens em “%s : %s”"
 
-#: ../src/camel/camel-folder.c:1064
+#: ../src/camel/camel-folder.c:1195
 #: ../src/camel/providers/local/camel-maildir-folder.c:331
 msgid "Moving messages"
 msgstr "A mover mensagens"
 
-#: ../src/camel/camel-folder.c:1067
+#: ../src/camel/camel-folder.c:1198
 msgid "Copying messages"
 msgstr "A copiar mensagens"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1112
+#: ../src/camel/camel-folder.c:1243
 #, c-format
-#| msgid "Quota information not supported for folder '%s'"
 msgid "Quota information not supported for folder “%s : %s”"
 msgstr "A pasta “%s : %s” não suporta informação de quota"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1214
+#: ../src/camel/camel-folder.c:1345
 #, c-format
-#| msgid "Filtering folder '%s'"
 msgid "Filtering folder “%s : %s”"
 msgstr "A filtrar a pasta “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3176
+#: ../src/camel/camel-folder.c:3309
 #, c-format
-#| msgid "Expunging folder '%s'"
 msgid "Expunging folder “%s : %s”"
 msgstr "A expurgar a pasta “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3311
+#: ../src/camel/camel-folder.c:3444
 #, c-format
-#| msgid "Retrieving message '%s' in %s"
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "A obter a mensagem “%s” em “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3536
+#: ../src/camel/camel-folder.c:3669
 #, c-format
-#| msgid "Retrieving quota information for '%s'"
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "A obter a informação de quota para “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3836
+#: ../src/camel/camel-folder.c:3969
 #, c-format
-#| msgid "Refreshing folder '%s'"
 msgid "Refreshing folder “%s : %s”"
 msgstr "A atualizar a pasta “%s : %s”"
 
@@ -3039,7 +2960,6 @@ msgstr ""
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-folder-summary.c:1661
 #, c-format
-#| msgid "Release unused memory for folder '%s'"
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Libertar memória não usada para a pasta “%s : %s”"
 
@@ -3083,9 +3003,6 @@ msgstr "Falha ao processar o pedido de frase-passe gpg."
 
 #: ../src/camel/camel-gpg-context.c:1126
 #, c-format
-#| msgid ""
-#| "You need a PIN to unlock the key for your\n"
-#| "SmartCard: \"%s\""
 msgid ""
 "You need a PIN to unlock the key for your\n"
 "SmartCard: “%s”"
@@ -3095,9 +3012,6 @@ msgstr ""
 
 #: ../src/camel/camel-gpg-context.c:1130
 #, c-format
-#| msgid ""
-#| "You need a passphrase to unlock the key for\n"
-#| "user: \"%s\""
 msgid ""
 "You need a passphrase to unlock the key for\n"
 "user: “%s”"
@@ -3107,14 +3021,10 @@ msgstr ""
 
 #: ../src/camel/camel-gpg-context.c:1136
 #, c-format
-#| msgid "Unexpected request from GnuPG for '%s'"
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "Pedido inesperado do GnuPG para “%s”"
 
 #: ../src/camel/camel-gpg-context.c:1148
-#| msgid ""
-#| "Note the encrypted content doesn't contain information about a recipient, "
-#| "thus there will be a password prompt for each of stored private key."
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -3252,7 +3162,6 @@ msgstr "Impossível ramificar o auxiliar de exclusividade: %s"
 
 #: ../src/camel/camel-lock-client.c:216 ../src/camel/camel-lock-client.c:244
 #, c-format
-#| msgid "Could not lock '%s': protocol error with lock-helper"
 msgid "Could not lock “%s”: protocol error with lock-helper"
 msgstr ""
 "Impossível obter exclusividade sobre “%s”: erro de protocolo com o auxiliar "
@@ -3260,7 +3169,6 @@ msgstr ""
 
 #: ../src/camel/camel-lock-client.c:232
 #, c-format
-#| msgid "Could not lock '%s'"
 msgid "Could not lock “%s”"
 msgstr "Impossível obter exclusividade sobre “%s”"
 
@@ -3346,7 +3254,6 @@ msgstr "Falha ao procurar servidor"
 
 #: ../src/camel/camel-net-utils.c:745
 #, c-format
-#| msgid "Host lookup '%s' failed. Check your host name for spelling errors."
 msgid "Host lookup “%s” failed. Check your host name for spelling errors."
 msgstr ""
 "Falha ao procurar o servidor “%s”. Verifique se o nome do servidor está "
@@ -3354,7 +3261,6 @@ msgstr ""
 
 #: ../src/camel/camel-net-utils.c:749
 #, c-format
-#| msgid "Host lookup '%s' failed: %s"
 msgid "Host lookup “%s” failed: %s"
 msgstr "Falha ao procurar o servidor “%s”: %s"
 
@@ -3366,27 +3272,16 @@ msgstr "A verificar a disponibilidade da conta “%s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:179
+#: ../src/camel/camel-offline-folder.c:175
 #, c-format
-#| msgid "Downloading new messages for offline mode in '%s'"
 msgid "Downloading new messages for offline mode in “%s : %s”"
 msgstr "A transferir novas mensagens para o modo offline em “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:277
+#: ../src/camel/camel-offline-folder.c:260
 #, c-format
-#| msgid "Storing changes in folder '%s'"
-msgid "Storing changes in folder “%s : %s”"
-msgstr "A armazenar alterações na pasta “%s : %s”"
-
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
-#. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:370
-#, c-format
-#| msgid "Checking download of new messages for offline in '%s'"
 msgid "Checking download of new messages for offline in “%s : %s”"
 msgstr ""
 "A verificar a transferência de novas mensagens para o modo offline em “%s : "
@@ -3395,9 +3290,8 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:490
+#: ../src/camel/camel-offline-folder.c:336
 #, c-format
-#| msgid "Syncing messages in folder '%s' to disk"
 msgid "Syncing messages in folder “%s : %s” to disk"
 msgstr "A sincronizar as mensagens na pasta “%s : %s” para o disco"
 
@@ -3406,19 +3300,17 @@ msgstr "A sincronizar as mensagens na pasta “%s : %s” para o disco"
 #. The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:584
+#: ../src/camel/camel-offline-folder.c:430
 #, c-format
-#| msgid "Syncing messages in folder '%s' to disk"
 msgid "Syncing message %d of %d in folder “%s : %s” to disk"
 msgstr "A sincronizar %d de %d mensagens na pasta “%s : %s” para o disco"
 
-#: ../src/camel/camel-offline-folder.c:643
+#: ../src/camel/camel-offline-folder.c:484
 msgid "Copy folder content locally for _offline operation"
 msgstr "Copiar conteúdo da pasta localmente para trabalhar em modo _offline"
 
-#: ../src/camel/camel-offline-store.c:304
+#: ../src/camel/camel-offline-store.c:326
 #, c-format
-#| msgid "Syncing messages in folder '%s' to disk"
 msgid "Syncing messages in account “%s” to disk"
 msgstr "A sincronizar as mensagens na conta “%s” para o disco"
 
@@ -3448,7 +3340,6 @@ msgstr "Impossível carregar %s: nenhum código de inicialização no módulo."
 
 #: ../src/camel/camel-provider.c:463 ../src/camel/camel-session.c:430
 #, c-format
-#| msgid "No provider available for protocol '%s'"
 msgid "No provider available for protocol “%s”"
 msgstr "Nenhum fornecedor disponível para o protocolo “%s”"
 
@@ -3532,7 +3423,6 @@ msgstr "Desafio de servidor inválido\n"
 
 #: ../src/camel/camel-sasl-digest-md5.c:867
 #, c-format
-#| msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgid "Server challenge contained invalid “Quality of Protection” token"
 msgstr "Desafio de servidor continha bloco \"Qualidade da proteção\" inválido"
 
@@ -3570,7 +3460,6 @@ msgstr "(código de mecanismo GSSAPI desconhecido: %x)"
 #. the second '%s' is replaced with additional error information.
 #: ../src/camel/camel-sasl-gssapi.c:174 ../src/camel/camel-sasl-gssapi.c:246
 #, c-format
-#| msgid "%s (%s)"
 msgctxt "gssapi_error"
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -3643,7 +3532,6 @@ msgid "Bad authentication response from server."
 msgstr "Resposta de autenticação do servidor inválida."
 
 #: ../src/camel/camel-sasl-gssapi.c:288
-#| msgid "Could not get message"
 msgid "Could not get session bus:"
 msgstr "Impossível obter o barramento de sessão:"
 
@@ -3718,7 +3606,6 @@ msgid "POP Before SMTP authentication attempted with a %s service"
 msgstr "Autenticação POP antes de SMTP tentada com um serviço %s"
 
 #: ../src/camel/camel-sasl-xoauth2.c:26
-#| msgid "Author"
 msgid "OAuth2"
 msgstr "OAuth2"
 
@@ -3758,7 +3645,6 @@ msgstr "Falha ao compilar a expressão regular: %s: %s"
 
 #: ../src/camel/camel-session.c:439
 #, c-format
-#| msgid "Invalid GType registered for protocol '%s'"
 msgid "Invalid GType registered for protocol “%s”"
 msgstr "GType inválido registado para o protocolo “%s”"
 
@@ -3782,7 +3668,6 @@ msgstr "Não é suportado o reencaminhamento de mensagens"
 
 #: ../src/camel/camel-smime-context.c:343
 #, c-format
-#| msgid "Cannot find certificate for '%s'"
 msgid "Cannot find certificate for “%s”"
 msgstr "Impossível encontrar o certificado para “%s”"
 
@@ -3817,7 +3702,6 @@ msgstr "Impossível adicionar a data de assinatura CMS"
 #: ../src/camel/camel-smime-context.c:431
 #: ../src/camel/camel-smime-context.c:446
 #, c-format
-#| msgid "Encryption certificate for '%s' does not exist"
 msgid "Encryption certificate for “%s” does not exist"
 msgstr "O certificado de cifração para “%s” não existe"
 
@@ -3984,46 +3868,43 @@ msgstr "Falha ao adicionar dados ao codificador"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "Decifração S/MIME: Nenhum conteúdo cifrado encontrado"
 
-#: ../src/camel/camel-store.c:1412
+#: ../src/camel/camel-store.c:1419
 #, c-format
-#| msgid "Opening folder '%s'"
 msgid "Opening folder “%s”"
 msgstr "A abrir a pasta “%s”"
 
-#: ../src/camel/camel-store.c:1709
+#: ../src/camel/camel-store.c:1716
 #, c-format
-#| msgid "Scanning folders in '%s'"
 msgid "Scanning folders in “%s”"
 msgstr "A analisar as pastas em “%s”"
 
-#: ../src/camel/camel-store.c:1737 ../src/camel/camel-store.c:1782
+#: ../src/camel/camel-store.c:1744 ../src/camel/camel-store.c:1789
 #: ../src/camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Lixo"
 
-#: ../src/camel/camel-store.c:1751 ../src/camel/camel-store.c:1799
+#: ../src/camel/camel-store.c:1758 ../src/camel/camel-store.c:1806
 #: ../src/camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Não solicitado"
 
-#: ../src/camel/camel-store.c:2404
+#: ../src/camel/camel-store.c:2411
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Impossível criar a pasta: %s: pasta já existe"
 
-#: ../src/camel/camel-store.c:2411
+#: ../src/camel/camel-store.c:2418
 #, c-format
-#| msgid "Creating folder '%s'"
 msgid "Creating folder “%s”"
 msgstr "A criar a pasta “%s”"
 
-#: ../src/camel/camel-store.c:2589 ../src/camel/camel-vee-store.c:426
+#: ../src/camel/camel-store.c:2596 ../src/camel/camel-vee-store.c:426
 #: ../src/camel/providers/local/camel-maildir-store.c:340
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Impossível eliminar a pasta: %s: operação inválida"
 
-#: ../src/camel/camel-store.c:2780 ../src/camel/camel-vee-store.c:477
+#: ../src/camel/camel-store.c:2787 ../src/camel/camel-vee-store.c:477
 #: ../src/camel/providers/local/camel-maildir-store.c:908
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -4035,7 +3916,6 @@ msgstr "Impossível escrever sem fluxo base"
 
 #: ../src/camel/camel-stream.c:287 ../src/camel/camel-stream.c:338
 #, c-format
-#| msgid "Stream type '%s' is not seekable"
 msgid "Stream type “%s” is not seekable"
 msgstr "Tipo de fluxo “%s” não é navegável"
 
@@ -4055,31 +3935,26 @@ msgstr "Ligação cancelada"
 
 #: ../src/camel/camel-stream-process.c:287
 #, c-format
-#| msgid "Could not connect with command \"%s\": %s"
 msgid "Could not connect with command “%s”: %s"
 msgstr "Impossível ligar utilizando o comando “%s”: %s"
 
 #: ../src/camel/camel-subscribable.c:234
 #, c-format
-#| msgid "Subscribing to folder '%s'"
 msgid "Subscribing to folder “%s”"
 msgstr "A subscrever à pasta “%s”"
 
 #: ../src/camel/camel-subscribable.c:403
 #, c-format
-#| msgid "Unsubscribing from folder '%s'"
 msgid "Unsubscribing from folder “%s”"
 msgstr "A remover a subscrição à pasta “%s”"
 
 #: ../src/camel/camel-url.c:325
 #, c-format
-#| msgid "Could not parse URL '%s'"
 msgid "Could not parse URL “%s”"
 msgstr "Impossível processar o URL “%s”"
 
 #: ../src/camel/camel-vee-folder.c:558
 #, c-format
-#| msgid "Updating folder '%s'"
 msgid "Updating folder “%s”"
 msgstr "A atualizar a pasta “%s”"
 
@@ -4094,19 +3969,16 @@ msgstr "Impossível copiar ou mover as mensagens para uma pasta virtual"
 #. meant as an absolute identification of the folder.
 #: ../src/camel/camel-vee-folder.c:1322
 #, c-format
-#| msgid "No such message %s in %s"
 msgid "No such message %s in “%s : %s”"
 msgstr "Nenhuma mensagem %s em “%s : %s”"
 
 #: ../src/camel/camel-vee-folder.c:1397
 #, c-format
-#| msgid "Error storing '%s': "
 msgid "Error storing “%s”: "
 msgstr "Erro ao armazenar “%s”: "
 
 #: ../src/camel/camel-vee-folder.c:1587
 #, c-format
-#| msgid "Updating folder '%s'"
 msgid "Updating search folder “%s”"
 msgstr "A atualizar a pasta de procura “%s”"
 
@@ -4130,11 +4002,11 @@ msgstr "Impossível apagar a pasta: %s: pasta não existe"
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "Impossível renomear a pasta: %s: pasta não existe"
 
-#: ../src/camel/camel-vee-store.c:548
+#: ../src/camel/camel-vee-store.c:556
 msgid "Enable _Unmatched folder"
 msgstr "Ativar pasta _sem equivalência"
 
-#: ../src/camel/camel-vee-store.c:1104
+#: ../src/camel/camel-vee-store.c:1112
 msgid "Updating Unmatched search folder"
 msgstr "A atualizar a pasta Sem equivalência"
 
@@ -4186,7 +4058,6 @@ msgid "Unable to move deleted messages"
 msgstr "Impossível mover mensagens eliminadas"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1809
-#| msgid "Unable to move junk messages"
 msgid "Unable to move messages to Inbox"
 msgstr "Impossível mover mensagens para a Entrada"
 
@@ -4195,7 +4066,6 @@ msgstr "Impossível mover mensagens para a Entrada"
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:772
 #, c-format
-#| msgid "No quota information available for folder '%s'"
 msgid "No quota information available for folder “%s : %s”"
 msgstr "Nenhuma informação de quota disponível para a pasta “%s : %s”"
 
@@ -4232,7 +4102,6 @@ msgstr "Impossível criar a cache para %s: "
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1470
 #, c-format
-#| msgid "No IMAP mailbox available for folder '%s'"
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "Nenhuma caixa de correio IMAP para a pasta “%s : %s”"
 
@@ -4405,7 +4274,6 @@ msgid "Failed to authenticate"
 msgstr "Falha ao autenticar"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3477
-#| msgid "Failed to issue NAMESPACE"
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr "Falha ao emitir ENABLE UTF8=ACCEPT"
 
@@ -4479,7 +4347,6 @@ msgstr "Erro ao anexar mensagem"
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5417
 #, c-format
-#| msgid "Scanning for changed messages in %s"
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "A procurar mensagens alteradas em “%s : %s”"
 
@@ -4492,7 +4359,6 @@ msgstr "Erro ao sondar alterações"
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5442
 #, c-format
-#| msgid "Fetching summary information for new messages in %s"
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "A obter a informação de resumo para novas mensagens em “%s : %s”"
 
@@ -4606,21 +4472,17 @@ msgstr "Pasta %s inexistente"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:1620
 #, c-format
-#| msgid "No IMAP namespace for folder path '%s'"
 msgid "No IMAP namespace for folder path “%s”"
 msgstr "Nenhum nome-espaço IMAP para o caminho de pasta “%s”"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:1887
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2081
 #, c-format
-#| msgid "Retrieving folder list for '%s'"
 msgid "Retrieving folder list for “%s”"
 msgstr "A obter a lista de pastas para “%s”"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2349
 #, c-format
-#| msgid ""
-#| "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "O nome de pasta “%s” é inválido pois contém o carácter “%c”"
 
@@ -4774,7 +4636,6 @@ msgstr ""
 "%s"
 
 #: ../src/camel/providers/local/camel-local-provider.c:43
-#| msgid "_Use the '.folders' folder summary file (exmh)"
 msgid "_Use the “.folders” folder summary file (exmh)"
 msgstr "_Utilizar o ficheiro de resumo de pastas (exmh) “.folders”"
 
@@ -4787,7 +4648,6 @@ msgid "For storing local mail in MH-like mail directories."
 msgstr "Para armazenar correio localmente em pastas de tipo-MH."
 
 #: ../src/camel/providers/local/camel-local-provider.c:65
-#| msgid "_Apply filters to new messages in Inbox"
 msgid "Apply _filters to new messages"
 msgstr "_Aplicar filtros às novas mensagens"
 
@@ -4878,20 +4738,17 @@ msgstr "Armazenamentos locais não têm uma caixa de entrada"
 #: ../src/camel/providers/local/camel-local-store.c:440
 #: ../src/camel/providers/local/camel-mbox-store.c:746
 #, c-format
-#| msgid "Could not delete folder index file '%s': %s"
 msgid "Could not delete folder index file “%s”: %s"
 msgstr "Impossível eliminar o ficheiro de índice da pasta “%s”: %s"
 
 #: ../src/camel/providers/local/camel-local-store.c:468
 #: ../src/camel/providers/local/camel-mbox-store.c:776
 #, c-format
-#| msgid "Could not delete folder meta file '%s': %s"
 msgid "Could not delete folder meta file “%s”: %s"
 msgstr "Impossível eliminar o ficheiro meta da pasta “%s”: %s"
 
 #: ../src/camel/providers/local/camel-local-store.c:581
 #, c-format
-#| msgid "Could not rename '%s': %s"
 msgid "Could not rename “%s”: %s"
 msgstr "Impossível mudar o nome de “%s”: %s"
 
@@ -4925,7 +4782,6 @@ msgstr "Impossível transferir a mensagem para a pasta de destino: %s"
 #: ../src/camel/providers/local/camel-maildir-store.c:125
 #: ../src/camel/providers/local/camel-maildir-store.c:925
 #, c-format
-#| msgid "Cannot create folder containing '%s'"
 msgid "Cannot create folder containing “%s”"
 msgstr "Impossível criar pasta contendo “%s”"
 
@@ -4941,7 +4797,6 @@ msgstr "A pasta %s já existe"
 #: ../src/camel/providers/local/camel-mbox-store.c:410
 #: ../src/camel/providers/local/camel-mbox-store.c:431
 #, c-format
-#| msgid "Cannot create folder: %s: %s"
 msgid "Cannot create folder “%s”: %s"
 msgstr "Impossível criar a pasta “%s”: %s"
 
@@ -4949,7 +4804,6 @@ msgstr "Impossível criar a pasta “%s”: %s"
 #: ../src/camel/providers/local/camel-mbox-store.c:376
 #: ../src/camel/providers/local/camel-mh-store.c:519
 #, c-format
-#| msgid "Cannot get folder: %s: %s"
 msgid "Cannot get folder “%s”: %s"
 msgstr "Impossível obter a pasta “%s”: %s"
 
@@ -4957,13 +4811,11 @@ msgstr "Impossível obter a pasta “%s”: %s"
 #: ../src/camel/providers/local/camel-mbox-store.c:386
 #: ../src/camel/providers/local/camel-mh-store.c:528
 #, c-format
-#| msgid "Cannot get folder '%s': folder does not exist."
 msgid "Cannot get folder “%s”: folder does not exist."
 msgstr "Impossível obter a pasta “%s”: a pasta não existe."
 
 #: ../src/camel/providers/local/camel-maildir-store.c:308
 #, c-format
-#| msgid "Cannot get folder '%s': not a maildir directory."
 msgid "Cannot get folder “%s”: not a maildir directory."
 msgstr "Impossível obter a pasta “%s”: não é uma pasta maildir."
 
@@ -4971,7 +4823,6 @@ msgstr "Impossível obter a pasta “%s”: não é uma pasta maildir."
 #: ../src/camel/providers/local/camel-maildir-store.c:412
 #: ../src/camel/providers/local/camel-mh-store.c:672
 #, c-format
-#| msgid "Could not delete folder '%s': %s"
 msgid "Could not delete folder “%s”: %s"
 msgstr "Impossível eliminar a pasta “%s”: %s"
 
@@ -4984,7 +4835,6 @@ msgstr "não é uma pasta maildir"
 #: ../src/camel/providers/local/camel-spool-store.c:206
 #: ../src/camel/providers/local/camel-spool-store.c:225
 #, c-format
-#| msgid "Could not scan folder '%s': %s"
 msgid "Could not scan folder “%s”: %s"
 msgstr "Impossível procurar na pasta “%s”: %s"
 
@@ -5038,13 +4888,11 @@ msgstr "Impossível criar uma pasta com este nome."
 
 #: ../src/camel/providers/local/camel-mbox-store.c:442
 #, c-format
-#| msgid "Cannot get folder '%s': not a regular file."
 msgid "Cannot get folder “%s”: not a regular file."
 msgstr "Impossível obter a pasta “%s”: não é um ficheiro normal."
 
 #: ../src/camel/providers/local/camel-mbox-store.c:603
 #, c-format
-#| msgid "Cannot create directory '%s': %s."
 msgid "Cannot create directory “%s”: %s."
 msgstr "Impossível criar a pasta “%s”: %s."
 
@@ -5061,9 +4909,6 @@ msgstr "A pasta já existe"
 #: ../src/camel/providers/local/camel-mbox-store.c:670
 #: ../src/camel/providers/local/camel-mbox-store.c:699
 #, c-format
-#| msgid ""
-#| "Could not delete folder '%s':\n"
-#| "%s"
 msgid ""
 "Could not delete folder “%s”:\n"
 "%s"
@@ -5073,20 +4918,17 @@ msgstr ""
 
 #: ../src/camel/providers/local/camel-mbox-store.c:680
 #, c-format
-#| msgid "'%s' is not a regular file."
 msgid "“%s” is not a regular file."
 msgstr "“%s” não é um ficheiro normal."
 
 #: ../src/camel/providers/local/camel-mbox-store.c:689
 #, c-format
-#| msgid "Folder '%s' is not empty. Not deleted."
 msgid "Folder “%s” is not empty. Not deleted."
 msgstr "Pasta “%s” não está vazia. Não foi eliminada."
 
 #: ../src/camel/providers/local/camel-mbox-store.c:716
 #: ../src/camel/providers/local/camel-mbox-store.c:731
 #, c-format
-#| msgid "Could not delete folder summary file '%s': %s"
 msgid "Could not delete folder summary file “%s”: %s"
 msgstr "Impossível eliminar o ficheiro de resumo da pasta “%s”: %s"
 
@@ -5097,7 +4939,6 @@ msgstr "O nome da nova pasta é ilegal."
 
 #: ../src/camel/providers/local/camel-mbox-store.c:829
 #, c-format
-#| msgid "Could not rename '%s': '%s': %s"
 msgid "Could not rename “%s”: “%s”: %s"
 msgstr "Impossível renomear “%s”: “%s”: %s"
 
@@ -5149,9 +4990,6 @@ msgstr "Impossível armazenar a pasta: %s"
 #: ../src/camel/providers/local/camel-mbox-summary.c:803
 #: ../src/camel/providers/local/camel-mbox-summary.c:1076
 #, c-format
-#| msgid ""
-#| "MBOX file is corrupted, please fix it. (Expected a From line, but didn't "
-#| "get it.)"
 msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn’t get "
 "it.)"
@@ -5189,13 +5027,11 @@ msgstr "Impossível anexar mensagem à pasta mh: %s: "
 
 #: ../src/camel/providers/local/camel-mh-store.c:538
 #, c-format
-#| msgid "Could not create folder '%s': %s"
 msgid "Could not create folder “%s”: %s"
 msgstr "Impossível criar a pasta “%s”: %s"
 
 #: ../src/camel/providers/local/camel-mh-store.c:554
 #, c-format
-#| msgid "Cannot get folder '%s': not a directory."
 msgid "Cannot get folder “%s”: not a directory."
 msgstr "Impossível obter a pasta “%s”: não é um diretório."
 
@@ -5206,13 +5042,11 @@ msgstr "Impossível abrir o caminho de pasta MH: %s: %s"
 
 #: ../src/camel/providers/local/camel-spool-store.c:89
 #, c-format
-#| msgid "Spool '%s' cannot be opened: %s"
 msgid "Spool “%s” cannot be opened: %s"
 msgstr "Impossível abrir o spool “%s”: %s"
 
 #: ../src/camel/providers/local/camel-spool-store.c:103
 #, c-format
-#| msgid "Spool '%s' is not a regular file or directory"
 msgid "Spool “%s” is not a regular file or directory"
 msgstr "Spool “%s” não é um ficheiro ou diretório comum"
 
@@ -5232,15 +5066,11 @@ msgstr "Spool inválido"
 
 #: ../src/camel/providers/local/camel-spool-store.c:474
 #, c-format
-#| msgid "Folder '%s/%s' does not exist."
 msgid "Folder “%s/%s” does not exist."
 msgstr "Pasta “%s/%s” não existe."
 
 #: ../src/camel/providers/local/camel-spool-store.c:487
 #, c-format
-#| msgid ""
-#| "Could not open folder '%s':\n"
-#| "%s"
 msgid ""
 "Could not open folder “%s”:\n"
 "%s"
@@ -5250,15 +5080,11 @@ msgstr ""
 
 #: ../src/camel/providers/local/camel-spool-store.c:493
 #, c-format
-#| msgid "Folder '%s' does not exist."
 msgid "Folder “%s” does not exist."
 msgstr "A pasta “%s” não existe."
 
 #: ../src/camel/providers/local/camel-spool-store.c:501
 #, c-format
-#| msgid ""
-#| "Could not create folder '%s':\n"
-#| "%s"
 msgid ""
 "Could not create folder “%s”:\n"
 "%s"
@@ -5268,7 +5094,6 @@ msgstr ""
 
 #: ../src/camel/providers/local/camel-spool-store.c:514
 #, c-format
-#| msgid "'%s' is not a mailbox file."
 msgid "“%s” is not a mailbox file."
 msgstr "“%s” não é um ficheiro de caixa de correio."
 
@@ -5303,9 +5128,6 @@ msgstr "Impossível sincronizar a pasta de spool %s: %s"
 #: ../src/camel/providers/local/camel-spool-summary.c:274
 #: ../src/camel/providers/local/camel-spool-summary.c:287
 #, c-format
-#| msgid ""
-#| "Could not synchronize spool folder %s: %s\n"
-#| "Folder may be corrupt, copy saved in '%s'"
 msgid ""
 "Could not synchronize spool folder %s: %s\n"
 "Folder may be corrupt, copy saved in “%s”"
@@ -5424,7 +5246,6 @@ msgstr "Falha ao emitir STARTTLS para o servidor NNTP %s: "
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:418
 #, c-format
-#| msgid "NNTP server %s doesn't support STARTTLS: %s"
 msgid "NNTP server %s doesn’t support STARTTLS: %s"
 msgstr "Servidor NNTP %s não suporta STARTTLS: %s"
 
@@ -5526,13 +5347,11 @@ msgstr "Falha na operação: %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:451
 #, c-format
-#| msgid "%s: Scanning new messages"
 msgid "%s: Scanning existing messages"
 msgstr "%s: a procurar novas mensagens"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:464
 #, c-format
-#| msgid "Unexpected server response from xover: %s"
 msgid "Unexpected server response from listgroup: %s"
 msgstr "Resposta inesperada do servidor duma lista de grupo: %s"
 
@@ -5599,7 +5418,6 @@ msgid "Disable _support for all POP3 extensions"
 msgstr "Desativar _suporte para todas as extensões POP3"
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:48
-#| msgid "Use _Quick Resync if the server supports it"
 msgid "Enable _UTF-8 extension, when the server supports it"
 msgstr "_Utilizar sincronização rápida, se o servidor a suportar"
 
@@ -5691,9 +5509,6 @@ msgstr "Servidor POP3 para %s em %s"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:693
 #, c-format
-#| msgid ""
-#| "Unable to connect to POP server %s.\n"
-#| "Error sending password: "
 msgid ""
 "Unable to connect to POP server %s.\n"
 "Error enabling UTF-8 mode: "
@@ -5736,7 +5551,6 @@ msgstr ""
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:919
 #, c-format
-#| msgid "No such folder %s"
 msgid "No such folder “%s”."
 msgstr "Pasta “%s” inexistente."
 
@@ -5751,9 +5565,6 @@ msgid "Sendmail"
 msgstr "Sendmail"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-provider.c:33
-#| msgid ""
-#| "For delivering mail by passing it to the \"sendmail\" program on the "
-#| "local system."
 msgid ""
 "For delivering mail by passing it to the “sendmail” program on the local "
 "system."
@@ -5790,14 +5601,12 @@ msgstr "Impossível processar argumentos"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:215
 #, c-format
-#| msgid "Could not create pipe to '%s': %s: mail not sent"
 msgid "Could not create pipe to “%s”: %s: mail not sent"
 msgstr ""
 "Impossível criar encaminhamento para “%s”: %s: a mensagem não foi enviada"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:246
 #, c-format
-#| msgid "Could not fork '%s': %s: mail not sent"
 msgid "Could not fork “%s”: %s: mail not sent"
 msgstr "Impossível ramificar “%s”: %s: a mensagem não foi enviada"
 
@@ -5807,19 +5616,16 @@ msgstr "Impossível enviar a mensagem: "
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:343
 #, c-format
-#| msgid "'%s' exited with signal %s: mail not sent."
 msgid "“%s” exited with signal %s: mail not sent."
 msgstr "“%s” terminou com o sinal %s: a mensagem não foi enviada."
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:353
 #, c-format
-#| msgid "Could not execute '%s': mail not sent."
 msgid "Could not execute “%s”: mail not sent."
 msgstr "Impossível executar “%s”: a mensagem não foi enviada."
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:358
 #, c-format
-#| msgid "'%s' exited with status %d: mail not sent."
 msgid "“%s” exited with status %d: mail not sent."
 msgstr "“%s” terminou com o estado %d: a mensagem não foi enviada."
 
@@ -6012,7 +5818,7 @@ msgstr "Mecanismo de autenticação é demasiado fraco"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1198
 msgid "Encryption required for requested authentication mechanism"
-msgstr "Requerida cifração para o mecanismo de autenticação pedido"
+msgstr "Criptografia necessária para o mecanismo de autenticação solicitado"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1200
 msgid "Temporary authentication failure"
@@ -6096,12 +5902,82 @@ msgid "Birthday and anniversary reminder units"
 msgstr "Unidades de lembrete de aniversário"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:6
-#| msgid ""
-#| "Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or "
-#| "\"days\""
 msgid ""
 "Units for a birthday or anniversary reminder, “minutes”, “hours” or “days”"
-msgstr "Unidades de um lembrete de aniversário, “minutes”, “hours” ou “days”"
+msgstr "Unidades de um lembrete de aniversário, “minutos”, “horas” ou “dias”"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:7
+msgid "Past reminders for EReminderWatcher"
+msgstr "Lembretes anteriores para EReminderWatcher"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:8
+msgid "Snoozed reminders for EReminderWatcher"
+msgstr "Lembretes adiados para EReminderWatcher"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:9
+msgid "Reminder programs"
+msgstr "Programas de lembretes"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:10
+msgid "Programs that are allowed to be run by reminders"
+msgstr "Programas que podem ser executados por lembretes"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:11
+msgid "Show reminders in notification tray only"
+msgstr "Mostrar lembretes apenas na área de notificações"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:12
+msgid ""
+"When set to true, the reminders are shown only in the notification tray, "
+"otherwise the reminders dialog is shown immediately"
+msgstr ""
+"Quando definido como verdadeiro, os lembretes são mostrados apenas na área "
+"de notificação, caso contrário, a janela de lembretes é exibida imediatamente"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:13
+msgid "Show reminder notification dialog always on top"
+msgstr "Mostrar janela de notificação de lembrete sempre no topo"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:14
+msgid ""
+"Whether or not to show reminder notification dialog always on top. Note this "
+"works only as a hint for the window manager, which may or may not obey it."
+msgstr ""
+"Mostrar ou não a janela de notificação de lembrete sempre no topo. Note que "
+"isto funciona apenas como uma dica para o gestor de janelas, que pode "
+"obedecê-la ou não."
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:15
+msgid "X position of the reminder notification dialog"
+msgstr "Posição X da janela de notificação de lembrete"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:16
+msgid "Y position of the reminder notification dialog"
+msgstr "Posição Y da janela de notificação de lembrete"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:17
+msgid "Width of the reminder notification dialog"
+msgstr "Largura da janela de notificação de lembrete"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:18
+msgid "Height of the reminder notification dialog"
+msgstr "Altura da janela de notificação de lembrete"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
+msgid "Show reminder notification for completed tasks"
+msgstr "Mostrar notificação de lembrete para tarefas concluídas"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
+msgid "Show reminder notification for past events"
+msgstr "Mostrar notificação de lembrete para eventos passados"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
+msgid "The last used snooze time, in minutes"
+msgstr "O último tempo adiado usado, em minutos"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:23
+msgid "User-defined snooze times, in minutes"
+msgstr "Tempos adiados definidos pelo utilizador, em minutos"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:1
 msgid "Whether the migration of old setting was already done"
@@ -6112,9 +5988,6 @@ msgid "An absolute path where the gpg (or gpg2) binary is"
 msgstr "Um caminho absoluto onde o binário gpg (ou gpg2) está"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:3
-#| msgid ""
-#| "An example is '/usr/bin/gpg'; if it is not filled, or doesn't exist, then "
-#| "it is searched for it. Change requires restart of the application."
 msgid ""
 "An example is “/usr/bin/gpg”; when it is left empty, or an incorrect value "
 "is set, then it will be searched for. Change requires restart of the "
@@ -6128,9 +6001,6 @@ msgid "Whether to load photos of signers/encrypters"
 msgstr "Se carrega fotos de assinantes/cifradores"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:5
-#| msgid ""
-#| "When set to 'true', tries to load also photo of the signers/encrypters, "
-#| "if available in the key/certificate."
 msgid ""
 "When set to “true”, tries to load also photo of the signers/encrypters, if "
 "available in the key/certificate."
@@ -6143,10 +6013,6 @@ msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
 msgstr "Nome GIO do GNetworkMonitor para uso numa instância ENetworkMonitor"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:7
-#| msgid ""
-#| "When set to an unknown value, then the default GNetworkMonitor is used in "
-#| "the background. A special value 'always-online' is used for no network "
-#| "monitoring."
 msgid ""
 "When set to an unknown value, then the default GNetworkMonitor is used in "
 "the background. A special value “always-online” is used for no network "
@@ -6156,15 +6022,148 @@ msgstr ""
 "utilizado no fundo. Um valor especial “always-online” é utilizado para não "
 "haver monitorização de rede."
 
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
+msgid ""
+"A full path to a directory where .source files with preconfigured options "
+"can be stored"
+msgstr ""
+"Um caminho completo para um diretório onde os ficheiros .source com opções "
+"pré-configuradas podem ser armazenados"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
+msgid ""
+"This directory, if filled with an existing path, is checked additionally to "
+"XDG configure directories."
+msgstr ""
+"Este diretório, se preenchido com um caminho existente, é verificado "
+"adicionalmente aos diretórios de configuração do XDG."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
+msgid "A list of variables which can be part of the autoconfig .source files"
+msgstr ""
+"Uma lista de variáveis que podem fazer parte dos ficheiros .source do "
+"autoconfig"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
+msgid ""
+"Each item of the array is expected to be of the form: name=value. These "
+"variables are checked before environment variables, but after the predefined "
+"USER, REALNAME and HOST variables."
+msgstr ""
+"Espera-se que cada item da matriz seja da forma: nome=valor. Estas variáveis "
+"são verificadas antes das variáveis de ambiente, mas após as variáveis "
+"predefinidas de USER, REALNAME e HOSTING."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
+msgid "A list of hints for OAuth2 services"
+msgstr "Uma lista de dicas para os serviços do OAuth2"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
+msgid ""
+"Users can extend the list of supported protocols and hostnames for defined "
+"OAuth2 services, in addition to those hard-coded. Each line can be of the "
+"form: servicename[-protocol]:hostname1,hostname2,... where “servicename” is "
+"the actual service name; the “-protocol” is optional, and if written, then "
+"the service can be used only if both “protocol” and “hostnameX” match; the "
+"“hostnameX” is the actual host name to compare with, case insensitively. "
+"Each line can contain multiple values, separated by comma. There can be "
+"provided multiple lines for one OAuth2 service. Note that the actual URL "
+"where the token is requested and refreshed cannot be changed here, the "
+"hostname is to allow other servers, where the OAuth2 service can be used. "
+"Examples: Company:mail.company.com — enables “Company” OAuth2 authentication "
+"for “mail.company.com” host Company-CalDAV:caldav.company.com — enables "
+"“Company” OAuth2 authentication for any “CalDAV” source, which reads data "
+"from “caldav.company.com” host"
+msgstr ""
+"Os utilizadores podem alargar a lista de protocolos e nomes de anfitriões "
+"suportados para serviços OAuth2 definidos, para além dos que são codificados "
+"em código duro. Cada linha pode ser da forma: nome do serviço[-protocolo]:"
+"hostname1,hostname2,... onde \"servicename\" é o nome real do serviço; o \"-"
+"protocolo\" é opcional, e se escrito, então o serviço só pode ser usado se "
+"ambos \"protocol\" e \"hostnameX\" corresponderem; o \"hostnameX\" é o nome "
+"real do hospedeiro para comparar, caso a caso, insensivelmente. Cada linha "
+"pode conter múltiplos valores, separados por vírgula. Podem ser fornecidas "
+"múltiplas linhas para um serviço OAuth2. Note-se que o URL real onde o "
+"símbolo é solicitado e atualizado não pode ser alterado aqui, o nome da "
+"máquina é para permitir outros servidores, onde o serviço OAuth2 pode ser "
+"utilizado. Exemplos: Empresa:mail.company.com - permite autenticação "
+"\"Empresa\" OAuth2 para \"mail.company.com\" hospedeiro Empresa-CalDAV:"
+"caldav.company.com - permite autenticação \"Empresa\" OAuth2 para qualquer "
+"fonte \"CalDAV\", que lê dados de \"caldav.company.com\" hospedeiro"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
+msgid ""
+"An OAuth2 client ID to use to connect to Google servers, instead of the one "
+"provided during build time"
+msgstr ""
+"Um ID de cliente OAuth2 a utilizar para se ligar aos servidores Google, em "
+"vez do fornecido durante o tempo de criação"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
+msgid ""
+"User-specified OAuth2 client ID for Google servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"ID de cliente OAuth2 especificado pelo utilizador para servidores Google. "
+"Cadeia vazia significa utilizar a que é fornecida durante o tempo de "
+"criação. A alteração desta requer reinício."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
+msgid ""
+"An OAuth2 client secret to use to connect to Google servers, instead of the "
+"one provided during build time"
+msgstr ""
+"Um segredo de cliente OAuth2 a utilizar para se ligar aos servidores Google, "
+"em vez do que é fornecido durante o tempo de criação"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
+msgid ""
+"User-specified OAuth2 client secret for Google servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Segredo de cliente OAuth2 especificado pelo utilizador para servidores "
+"Google. Cadeia vazia significa utilizar a que é fornecida durante o tempo de "
+"criação. A alteração disto requer reinício."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
+msgid ""
+"An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
+"provided during build time"
+msgstr ""
+"Um ID de cliente OAuth2 a utilizar para se ligar a servidores Outlook, em "
+"vez do fornecido durante o tempo de criação"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
+msgid ""
+"User-specified OAuth2 client ID for Outlook servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"ID de cliente OAuth2 especificado pelo utilizador para servidores Outlook. "
+"Cadeia vazia significa utilizar a que é fornecida durante o tempo de "
+"criação. A alteração desta requer reinício."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
+msgid ""
+"An OAuth2 client secret to use to connect to Outlook servers, instead of the "
+"one provided during build time"
+msgstr ""
+"Um segredo de cliente OAuth2 a utilizar para se ligar aos servidores do "
+"Outlook, em vez do fornecido durante o tempo de criação"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
+msgid ""
+"User-specified OAuth2 client secret for Outlook servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Segredo de cliente OAuth2 especificado pelo utilizador para servidores "
+"Outlook. Cadeia vazia significa utilizar a que é fornecida durante o tempo "
+"de criação. A alteração disto requer reinício."
+
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
 msgstr "(Obsoleto) Tipo de proxy a utilizar"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:2
-#| msgid ""
-#| "This key was deprecated in version 3.12 and should no longer be used. "
-#| "Proxy settings are now integrated into Evolution-Data-Server's account "
-#| "system. See the ESourceProxy API documentation for details."
 msgid ""
 "This key was deprecated in version 3.12 and should no longer be used. Proxy "
 "settings are now integrated into Evolution-Data-Server’s account system. See "
@@ -6228,7 +6227,6 @@ msgid "Evolution Alarm Notify"
 msgstr "Alarmes de notificação do Evolution"
 
 #: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:2
-#| msgid "Calendar authentication request"
 msgid "Calendar event notifications"
 msgstr "Notificações de eventos do calendário"
 
@@ -6238,7 +6236,6 @@ msgstr "Memória esgotada"
 
 #: ../src/libebackend/e-cache.c:946
 #, c-format
-#| msgid "Cannot create directory '%s': %s."
 msgid "Can not make parent directory: %s"
 msgstr "Impossível criar diretório pai: %s"
 
@@ -6255,13 +6252,11 @@ msgstr "%s não suporta eliminar recursos remotos"
 #: ../src/libebackend/e-data-factory.c:1428
 #: ../src/libebackend/e-subprocess-factory.c:288
 #, c-format
-#| msgid "No such source for UID '%s'"
 msgid "No such source for UID “%s”"
 msgstr "Origem inexistente para o UID “%s”"
 
 #: ../src/libebackend/e-data-factory.c:1588
 #, c-format
-#| msgid "Backend factory for source '%s' and extension '%s' cannot be found."
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr ""
 "Impossível encontrar infraestrutura para a origem “%s” e extensão “%s”."
@@ -6278,14 +6273,11 @@ msgstr "Falha ao procurar credenciais: "
 #: ../src/libebackend/e-server-side-source.c:1392
 #: ../src/libedataserver/e-source.c:1591
 #, c-format
-#| msgid "Data source '%s' does not support creating remote resources"
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "A origem de dados “%s” não suporta a criação de recursos remotos"
 
 #: ../src/libebackend/e-server-side-source.c:1406
 #, c-format
-#| msgid ""
-#| "Data source '%s' has no collection backend to create the remote resource"
 msgid ""
 "Data source “%s” has no collection backend to create the remote resource"
 msgstr ""
@@ -6295,14 +6287,11 @@ msgstr ""
 #: ../src/libebackend/e-server-side-source.c:1434
 #: ../src/libedataserver/e-source.c:1704
 #, c-format
-#| msgid "Data source '%s' does not support deleting remote resources"
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "A origem de dados “%s” não suporta a remoção de recursos remotos"
 
 #: ../src/libebackend/e-server-side-source.c:1448
 #, c-format
-#| msgid ""
-#| "Data source '%s' has no collection backend to delete the remote resource"
 msgid ""
 "Data source “%s” has no collection backend to delete the remote resource"
 msgstr ""
@@ -6312,19 +6301,16 @@ msgstr ""
 #: ../src/libebackend/e-server-side-source.c:1479
 #: ../src/libedataserver/e-source.c:1800
 #, c-format
-#| msgid "Data source '%s' does not support OAuth 2.0 authentication"
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
 msgstr "A origem de dados “%s” não suporta autenticação OAuth 2.0"
 
 #: ../src/libebackend/e-server-side-source.c:1861
 #, c-format
-#| msgid "File must have a '.source' extension"
 msgid "File must have a “.source” extension"
 msgstr "O ficheiro tem de ter a extensão “.source”"
 
 #: ../src/libebackend/e-source-registry-server.c:318
 #, c-format
-#| msgid "UID '%s' is already in use"
 msgid "UID “%s” is already in use"
 msgstr "O UID “%s” já está a ser utilizado"
 
@@ -6337,31 +6323,26 @@ msgstr ""
 
 #: ../src/libebackend/e-source-registry-server.c:447
 #, c-format
-#| msgid "Source '%s' (%s) is not a valid Google source"
 msgid "Source “%s” is not a collection source"
 msgstr "A origem “%s” não é uma origem de coleção"
 
 #: ../src/libebackend/e-source-registry-server.c:453
 #, c-format
-#| msgid "Cannot find signature digests"
 msgid "Cannot find source “%s”"
 msgstr "Impossível encontrar a origem “%s”"
 
 #: ../src/libebackend/e-subprocess-factory.c:276
 #, c-format
-#| msgid "Module '%s' for source UID '%s' cannot be loaded"
 msgid "Module “%s” for source UID “%s” cannot be loaded"
 msgstr "Módulo “%s” da origem UID “%s” não pode ser carregado"
 
 #: ../src/libebackend/e-subprocess-factory.c:297
 #, c-format
-#| msgid "Failed to create backend of type '%s' for source UID '%s'"
 msgid "Failed to create backend of type “%s” for source UID “%s”"
 msgstr "Falha ao criar infraestrutura do tipo “%s” para a origem UID “%s”"
 
 #: ../src/libebackend/e-user-prompter-server.c:301
 #, c-format
-#| msgid "Extension dialog '%s' not found."
 msgid "Extension dialog “%s” not found."
 msgstr "Janela da extensão “%s” não encontrada."
 
@@ -6434,7 +6415,7 @@ msgstr "Cliente chave"
 #: ../src/libedataserver/e-categories.c:61
 msgctxt "CategoryName"
 msgid "Miscellaneous"
-msgstr "Miscelânea"
+msgstr "Diversos"
 
 #: ../src/libedataserver/e-categories.c:62
 msgctxt "CategoryName"
@@ -6557,7 +6538,6 @@ msgid "Timeout was reached"
 msgstr "Tempo de espera atingido"
 
 #: ../src/libedataserver/e-oauth2-service.c:919
-#| msgid "Failed on message %d"
 msgid "Malformed, no message body set"
 msgstr "Mal-formada, sem corpo de mensagem definido"
 
@@ -6565,18 +6545,15 @@ msgstr "Mal-formada, sem corpo de mensagem definido"
 #. the third is the name of the OAuth service.
 #: ../src/libedataserver/e-oauth2-service.c:1203
 #, c-format
-#| msgid "Source '%s' (%s) is not a valid Google source"
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "A origem “%s” (%s) não é válida para o serviço OAuth2 “%s”"
 
 #: ../src/libedataserver/e-oauth2-service.c:1218
-#| msgid "Google secret not found"
 msgid "OAuth2 secret not found"
 msgstr "Segredo OAuth2 não encontrado"
 
 #: ../src/libedataserver/e-oauth2-service.c:1413
 #, c-format
-#| msgid "Unexpected OK response from IMAP server: %s"
 msgid "Received incorrect response from server “%s”."
 msgstr "Recebeu uma resposta inesperada do servidor “%s”."
 
@@ -6589,7 +6566,6 @@ msgstr ""
 #. Translators: The first %s is a display name of the source, the second is its UID.
 #: ../src/libedataserver/e-oauth2-service.c:1464
 #, c-format
-#| msgid "Source '%s' (%s) is not a valid Google source"
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "A origem “%s” (%s) não é uma origem OAuth2 válida"
 
@@ -6603,7 +6579,6 @@ msgstr ""
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: ../src/libedataserver/e-oauth2-service-google.c:56
-#| msgid "Google"
 msgctxt "OAuth2Service"
 msgid "Google"
 msgstr "Google"
@@ -6615,13 +6590,11 @@ msgid "Outlook"
 msgstr "Outlook"
 
 #: ../src/libedataserver/e-soup-session.c:958
-#| msgid "Operation has been cancelled"
 msgid "Operation was cancelled"
 msgstr "A operação foi cancelada"
 
 #: ../src/libedataserver/e-soup-session.c:964
 #, c-format
-#| msgid "Failed to GPG %s: %s\n"
 msgid "Failed with HTTP error %d: %s"
 msgstr "Falhou com o erro HTTP %d: %s"
 
@@ -6632,13 +6605,11 @@ msgstr "Falta um grupo [%s] no ficheiro de origem"
 
 #: ../src/libedataserver/e-source.c:1371
 #, c-format
-#| msgid "Data source '%s' is not removable"
 msgid "Data source “%s” is not removable"
 msgstr "A origem de dados “%s” não é removível"
 
 #: ../src/libedataserver/e-source.c:1494
 #, c-format
-#| msgid "Data source '%s' is not writable"
 msgid "Data source “%s” is not writable"
 msgstr "A origem de dados “%s” não permite escrita"
 
@@ -6669,7 +6640,6 @@ msgstr "Script de assinatura tem de ser um ficheiro local"
 
 #: ../src/libedataserver/e-source-proxy.c:1650
 #, c-format
-#| msgid "Source '%s' does not support proxy lookups"
 msgid "Source “%s” does not support proxy lookups"
 msgstr "A origem de dados “%s” não suporta procura de proxy"
 
@@ -6816,11 +6786,11 @@ msgstr "%I %p"
 msgid "Notes"
 msgstr "Notas"
 
-#: ../src/libedataserver/e-webdav-session.c:726
+#: ../src/libedataserver/e-webdav-session.c:727
 msgid "Cannot determine destination URL without WebDAV extension"
 msgstr "Impossível determinar o URL destino sem uma extensão WebDAV"
 
-#: ../src/libedataserver/e-webdav-session.c:996
+#: ../src/libedataserver/e-webdav-session.c:997
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -6829,7 +6799,7 @@ msgstr ""
 "O servidor respondeu com uma página HTML, que pode significar um erro no "
 "servidor ou na requisição do cliente. o URI utilizado foi: %s"
 
-#: ../src/libedataserver/e-webdav-session.c:998
+#: ../src/libedataserver/e-webdav-session.c:999
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -6843,16 +6813,15 @@ msgstr ""
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1019
+#: ../src/libedataserver/e-webdav-session.c:1020
 #, c-format
-#| msgid "NSPR error code %d"
 msgid "%s: HTTP error code %d (%s): %s"
 msgstr "%s: código de erro HTTP %d (%s): %s"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1027
+#: ../src/libedataserver/e-webdav-session.c:1028
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
 msgstr "Falhou com o código de erro HTTP %d (%s): %s"
@@ -6861,197 +6830,173 @@ msgstr "Falhou com o código de erro HTTP %d (%s): %s"
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1042
+#: ../src/libedataserver/e-webdav-session.c:1043
 #, c-format
-#| msgid "NSPR error code %d"
 msgid "%s: HTTP error code %d (%s)"
 msgstr "%s: código de erro HTTP %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1048
+#: ../src/libedataserver/e-webdav-session.c:1049
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "Falhou com o código de erro HTTP %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:1343
-#| msgid "Failed to encode data"
+#: ../src/libedataserver/e-webdav-session.c:1344
 msgid "Failed to post data"
 msgstr "Falha ao publicar dados"
 
-#: ../src/libedataserver/e-webdav-session.c:1474
-#: ../src/libedataserver/e-webdav-session.c:1551
-#: ../src/libedataserver/e-webdav-session.c:1653
-#: ../src/libedataserver/e-webdav-session.c:2906
-#: ../src/libedataserver/e-webdav-session.c:4145
-#| msgid "Failed to find Account element"
+#: ../src/libedataserver/e-webdav-session.c:1475
+#: ../src/libedataserver/e-webdav-session.c:1552
+#: ../src/libedataserver/e-webdav-session.c:1654
+#: ../src/libedataserver/e-webdav-session.c:2907
+#: ../src/libedataserver/e-webdav-session.c:4150
 msgid "Failed to get input XML content"
 msgstr "Falha ao obter entrada de conteúdo XML"
 
-#: ../src/libedataserver/e-webdav-session.c:1485
-#| msgid "Failed to get capabilities"
+#: ../src/libedataserver/e-webdav-session.c:1486
 msgid "Failed to get properties"
 msgstr "Falha ao obter propriedades"
 
-#: ../src/libedataserver/e-webdav-session.c:1561
-#| msgid "Failed to authenticate"
+#: ../src/libedataserver/e-webdav-session.c:1562
 msgid "Failed to update properties"
 msgstr "Falha ao atualizar propriedades"
 
-#: ../src/libedataserver/e-webdav-session.c:1663
-#| msgid "Failed to issue NOTIFY"
+#: ../src/libedataserver/e-webdav-session.c:1664
 msgid "Failed to issue REPORT"
 msgstr "Falha ao emitir REPORT"
 
-#: ../src/libedataserver/e-webdav-session.c:1724
-#| msgid "Failed to select mailbox"
+#: ../src/libedataserver/e-webdav-session.c:1725
 msgid "Failed to create collection"
 msgstr "Falha ao criar coleção"
 
-#: ../src/libedataserver/e-webdav-session.c:1817
-#: ../src/libedataserver/e-webdav-session.c:1978
-#| msgid "Failed to get lock using fcntl(2): %s"
+#: ../src/libedataserver/e-webdav-session.c:1818
+#: ../src/libedataserver/e-webdav-session.c:1979
 msgid "Failed to get XML request content"
 msgstr "Falha ao obter pedido de conteúdo XML"
 
-#: ../src/libedataserver/e-webdav-session.c:1829
-#| msgid "Failed to read From address"
+#: ../src/libedataserver/e-webdav-session.c:1830
 msgid "Failed to create address book"
 msgstr "Falha ao criar livro de endereços"
 
-#: ../src/libedataserver/e-webdav-session.c:1991
-#| msgid "Failed to run calendar factory"
+#: ../src/libedataserver/e-webdav-session.c:1992
 msgid "Failed to create calendar"
 msgstr "Falha ao criar calendário"
 
-#: ../src/libedataserver/e-webdav-session.c:2119
-#: ../src/libedataserver/e-webdav-session.c:2130
-#| msgid "Failed to read From address"
+#: ../src/libedataserver/e-webdav-session.c:2120
+#: ../src/libedataserver/e-webdav-session.c:2131
 msgid "Failed to read resource"
 msgstr "Falha ao ler recurso"
 
-#: ../src/libedataserver/e-webdav-session.c:2270
-#| msgid "Credentials store is not supported"
+#: ../src/libedataserver/e-webdav-session.c:2271
 msgid "Cannot rewind input stream: Not supported"
 msgstr "Impossível retroceder fluxo de entrada: não suportada"
 
-#: ../src/libedataserver/e-webdav-session.c:2434
-#: ../src/libedataserver/e-webdav-session.c:2575
-#| msgid "Failed to encode data"
+#: ../src/libedataserver/e-webdav-session.c:2435
+#: ../src/libedataserver/e-webdav-session.c:2576
 msgid "Failed to put data"
 msgstr "Falha ao enviar dados"
 
-#: ../src/libedataserver/e-webdav-session.c:2448
-#: ../src/libedataserver/e-webdav-session.c:2583
+#: ../src/libedataserver/e-webdav-session.c:2449
+#: ../src/libedataserver/e-webdav-session.c:2584
 #, c-format
-#| msgid "Failed to obtain access token from address '%s'. Error code %d (%s)"
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Falha ao enviar dados ao servidor, código de erro %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:2677
-#| msgid "Failed to enable QResync"
+#: ../src/libedataserver/e-webdav-session.c:2678
 msgid "Failed to delete resource"
 msgstr "Falha ao eliminar recurso"
 
-#: ../src/libedataserver/e-webdav-session.c:2746
-#| msgid "Failed to copy the tmp file"
+#: ../src/libedataserver/e-webdav-session.c:2747
 msgid "Failed to copy resource"
 msgstr "Falha ao copiar recurso"
 
-#: ../src/libedataserver/e-webdav-session.c:2810
-#| msgid "Failed to retrieve message"
+#: ../src/libedataserver/e-webdav-session.c:2811
 msgid "Failed to move resource"
 msgstr "Falha ao mover recurso"
 
-#: ../src/libedataserver/e-webdav-session.c:2917
-#| msgid "Failed to lookup credentials: "
+#: ../src/libedataserver/e-webdav-session.c:2918
 msgid "Failed to lock resource"
 msgstr "Falha ao obter exclusividade do recurso"
 
-#: ../src/libedataserver/e-webdav-session.c:2931
-#: ../src/libedataserver/e-webdav-session.c:3139
+#: ../src/libedataserver/e-webdav-session.c:2932
+#: ../src/libedataserver/e-webdav-session.c:3140
 msgid "Expected application/xml response, but none returned"
 msgstr "Esperada resposta da aplicação/xml, mas nada foi devolvido"
 
-#: ../src/libedataserver/e-webdav-session.c:2934
-#: ../src/libedataserver/e-webdav-session.c:3142
+#: ../src/libedataserver/e-webdav-session.c:2935
+#: ../src/libedataserver/e-webdav-session.c:3143
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "Esperada resposta da aplicação/xml, mas foi devolvido %s"
 
-#: ../src/libedataserver/e-webdav-session.c:2946
-#: ../src/libedataserver/e-webdav-session.c:3155
-#| msgid "Failed to encode data"
+#: ../src/libedataserver/e-webdav-session.c:2947
+#: ../src/libedataserver/e-webdav-session.c:3156
 msgid "Failed to parse XML data"
 msgstr "Falha ao processar dados XML"
 
-#: ../src/libedataserver/e-webdav-session.c:3027
-#| msgid "Failed to select mailbox"
+#: ../src/libedataserver/e-webdav-session.c:3028
 msgid "Failed to refresh lock"
 msgstr "Falha ao renovar exclusividade"
 
-#: ../src/libedataserver/e-webdav-session.c:3088
-#| msgid "Failed to authenticate"
+#: ../src/libedataserver/e-webdav-session.c:3089
 msgid "Failed to unlock"
 msgstr "Falha ao remover exclusividade"
 
-#: ../src/libedataserver/e-webdav-session.c:3127
+#: ../src/libedataserver/e-webdav-session.c:3128
 #, c-format
-#| msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Esperada resposta multistatus, mas foi devolvido %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:3164
+#: ../src/libedataserver/e-webdav-session.c:3165
 msgid "XML data does not have root node"
 msgstr "Dados XML não possuem um nó raiz"
 
-#: ../src/libedataserver/e-webdav-session.c:3187
+#: ../src/libedataserver/e-webdav-session.c:3188
 #, c-format
 msgid "XML data doesn't have required structure (%s)"
 msgstr "Dados XML não possuem a infraestrutura necessitada (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:4155
-#| msgid "Failed to get lock using fcntl(2): %s"
+#: ../src/libedataserver/e-webdav-session.c:4160
 msgid "Failed to get access control list"
 msgstr "Falha ao obter a lista do controlo de acesso"
 
-#: ../src/libedataserver/e-webdav-session.c:4839
+#: ../src/libedataserver/e-webdav-session.c:4844
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 "Impossível guardar Entrada do Controlo de Acesso protegidas ou herdadas."
 
-#: ../src/libedataserver/e-webdav-session.c:4846
+#: ../src/libedataserver/e-webdav-session.c:4851
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Tipo principal inválido fornecido à Entrada do Controlo de Acesso."
 
-#: ../src/libedataserver/e-webdav-session.c:4853
+#: ../src/libedataserver/e-webdav-session.c:4858
 msgid "Cannot store property-based Access Control Entry."
 msgstr ""
 "Impossível guardar Entrada do Controlo de Acesso baseada em propriedade."
 
-#: ../src/libedataserver/e-webdav-session.c:4860
+#: ../src/libedataserver/e-webdav-session.c:4865
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Entrada do Controlo de Acesso pode ser somente Permitida ou Negada, nunca "
 "Nenhuma."
 
-#: ../src/libedataserver/e-webdav-session.c:4868
+#: ../src/libedataserver/e-webdav-session.c:4873
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Entrada do Controlo de Acesso pode ser somente Permitida ou Negada, nunca "
 "ambas."
 
-#: ../src/libedataserver/e-webdav-session.c:4927
+#: ../src/libedataserver/e-webdav-session.c:4932
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Entrada do Controlo de Acesso não pode ser Nula."
 
 #: ../src/libedataserverui/e-buffer-tagger.c:71
-#| msgid "Could not open cache directory: "
 msgid "Could not open the link."
 msgstr "Impossível abrir a ligação."
 
 #. To Translators: The text is concatenated to a form: "Ctrl-click to open a link http://www.example.com"
-#: ../src/libedataserverui/e-buffer-tagger.c:458
+#: ../src/libedataserverui/e-buffer-tagger.c:548
 msgid "Ctrl-click to open a link"
 msgstr "Clique com Ctrl carregado para abrir uma ligação"
 
@@ -7063,25 +7008,22 @@ msgstr "Pedido de credenciais foi cancelado"
 
 #: ../src/libedataserverui/e-credentials-prompter.c:775
 #, c-format
-#| msgid "Source '%s' doesn't support prompt for credentials"
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "A origem de dados “%s” não suporta pedido de credenciais"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:202
 #, c-format
-#| msgid "Failed to obtain access token from address '%s'. Error code %d (%s)"
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "Falha ao obter um código de acesso para “%s”: %s"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:246
 msgid "Requesting access token, please wait..."
-msgstr "A pedir símbolo de acesso. Aguarde..."
+msgstr "A pedir ficha de acesso. Aguarde..."
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:472
 #, c-format
-#| msgid "Address book authentication request"
 msgid "%s Address Book authentication request"
 msgstr "Pedido de autenticação de livro de endereços do %s"
 
@@ -7089,7 +7031,6 @@ msgstr "Pedido de autenticação de livro de endereços do %s"
 #. thus it can form a string like "Google Calendar authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:477
 #, c-format
-#| msgid "Calendar authentication request"
 msgid "%s Calendar authentication request"
 msgstr "Pedido de autenticação de calendário do %s"
 
@@ -7097,7 +7038,6 @@ msgstr "Pedido de autenticação de calendário do %s"
 #. thus it can form a string like "Google Memo List authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:482
 #, c-format
-#| msgid "Google Memo List authentication request"
 msgid "%s Memo List authentication request"
 msgstr "Pedido de autenticação da lista de memorandos do %s"
 
@@ -7105,7 +7045,6 @@ msgstr "Pedido de autenticação da lista de memorandos do %s"
 #. thus it can form a string like "Google Task List authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:487
 #, c-format
-#| msgid "Google Task List authentication request"
 msgid "%s Task List authentication request"
 msgstr "Pedido de autenticação da lista de tarefas do %s"
 
@@ -7113,7 +7052,6 @@ msgstr "Pedido de autenticação da lista de tarefas do %s"
 #. thus it can form a string like "Google Mail authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:493
 #, c-format
-#| msgid "Mail authentication request"
 msgid "%s Mail authentication request"
 msgstr "Pedido de autenticação de correio do %s"
 
@@ -7122,7 +7060,6 @@ msgstr "Pedido de autenticação de correio do %s"
 #. thus it can form a string like "Google account authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:498
 #, c-format
-#| msgid "Google account authentication request"
 msgid "%s account authentication request"
 msgstr "Pedido de autenticação da conta do %s"
 
@@ -7131,9 +7068,6 @@ msgstr "Pedido de autenticação da conta do %s"
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:512
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your address book \"%s\"."
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "address book “%s”."
@@ -7146,9 +7080,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:519
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your calendar \"%s\"."
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "calendar “%s”."
@@ -7161,9 +7092,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:526
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your mail account \"%s\"."
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "account “%s”."
@@ -7176,9 +7104,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:533
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your mail transport \"%s\"."
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "transport “%s”."
@@ -7191,9 +7116,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:540
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your memo list \"%s\"."
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
 "list “%s”."
@@ -7206,9 +7128,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:547
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your task list \"%s\"."
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
 "list “%s”."
@@ -7221,9 +7140,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:554
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your account \"%s\"."
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "account “%s”."
@@ -7232,7 +7148,7 @@ msgstr ""
 "conta “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:606
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:234
 #: ../src/libedataserverui/e-trust-prompt.c:111
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1083
 msgid "_Cancel"
@@ -7259,78 +7175,70 @@ msgstr "Pedido de autenticação de correio"
 msgid "Authentication request"
 msgstr "Pedido de autenticação"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:155
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:153
 #, c-format
-#| msgid "Please enter the password for address book \"%s\"."
 msgid "Please enter the password for address book “%s”."
 msgstr "Por favor, insira a palavra-passe para o livro de endereços “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:159
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:157
 #, c-format
-#| msgid "Please enter the password for calendar \"%s\"."
 msgid "Please enter the password for calendar “%s”."
 msgstr "Por favor, insira a palavra-passe para o calendário “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:163
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:161
 #, c-format
-#| msgid "Please enter the password for mail account \"%s\"."
 msgid "Please enter the password for mail account “%s”."
 msgstr ""
 "Por favor, insira a palavra-passe para a conta de correio eletrónico “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:167
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:165
 #, c-format
-#| msgid "Please enter the password for mail transport \"%s\"."
 msgid "Please enter the password for mail transport “%s”."
 msgstr ""
 "Por favor, insira a palavra-passe para o transportador de correio “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:171
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:169
 #, c-format
-#| msgid "Please enter the password for memo list \"%s\"."
 msgid "Please enter the password for memo list “%s”."
 msgstr "Por favor, insira a palavra-passe para a lista de memorandos “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:175
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:173
 #, c-format
-#| msgid "Please enter the password for task list \"%s\"."
 msgid "Please enter the password for task list “%s”."
 msgstr "Por favor, insira a palavra-passe para a lista de tarefas “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:179
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:177
 #, c-format
-#| msgid "Please enter the password for account \"%s\"."
 msgid "Please enter the password for account “%s”."
 msgstr "Por favor, insira a palavra-passe para a conta “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:235
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1084
 msgid "_OK"
 msgstr "_Aceitar"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:348
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:352
 msgid "_User Name:"
 msgstr "_Utilizador:"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:360
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:364
 msgid "_Password:"
 msgstr "_Palavra-passe:"
 
 #. Remember password check
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:376
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:380
 msgid "_Add this password to your keyring"
 msgstr "_Adicionar esta palavra-passe ao seu chaveiro"
 
 #: ../src/libedataserverui/e-reminders-widget.c:230
 msgid "Add custom time…"
-msgstr "Adicionar hora personalizada..."
+msgstr "Adicionar hora personalizada…"
 
 #: ../src/libedataserverui/e-reminders-widget.c:234
 msgid "Clear custom times"
 msgstr "Limpar hora personalizada"
 
 #: ../src/libedataserverui/e-reminders-widget.c:282
-#| msgid "Snow"
 msgctxt "overdue"
 msgid "now"
 msgstr "agora"
@@ -7347,72 +7255,67 @@ msgctxt "overdue"
 msgid "overdue"
 msgstr "atrasado"
 
-#: ../src/libedataserverui/e-reminders-widget.c:926
+#: ../src/libedataserverui/e-reminders-widget.c:935
 #, c-format
-#| msgid "Failed to cache message %s: "
 msgid "Failed to launch URI “%s”:"
 msgstr "Falha ao abrir URI “%s”:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:976
+#: ../src/libedataserverui/e-reminders-widget.c:985
 msgid "No reminder is selected."
 msgstr "Sem lembrete selecionado."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1033
-#| msgid "No stream available"
+#: ../src/libedataserverui/e-reminders-widget.c:1042
 msgid "No details are available."
 msgstr "Sem detalhes disponíveis."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1037
+#: ../src/libedataserverui/e-reminders-widget.c:1046
 msgid "Multiple reminders are selected."
 msgstr "Múltiplos lembretes estão selecionados."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1057
-#| msgid "Could not discard reminder: "
+#: ../src/libedataserverui/e-reminders-widget.c:1066
 msgid "Failed to dismiss reminder:"
 msgstr "Falha ao dispensar lembrete:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1078
-#| msgid "Failed to issue DONE"
+#: ../src/libedataserverui/e-reminders-widget.c:1087
 msgid "Failed to dismiss all:"
 msgstr "Falha ao dispensar tudo:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1214
+#: ../src/libedataserverui/e-reminders-widget.c:1223
 msgid "Set a custom snooze time for"
 msgstr "Definir tempo de suspensão para"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1227
+#: ../src/libedataserverui/e-reminders-widget.c:1236
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "di_as"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1243
+#: ../src/libedataserverui/e-reminders-widget.c:1252
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "_horas"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1259
+#: ../src/libedataserverui/e-reminders-widget.c:1268
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "_minutos"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1265
+#: ../src/libedataserverui/e-reminders-widget.c:1274
 msgid "_Add Snooze time"
 msgstr "_Suspender"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1568
+#: ../src/libedataserverui/e-reminders-widget.c:1577
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "_Dispensar"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1569
-#| msgid "_Dismiss"
+#: ../src/libedataserverui/e-reminders-widget.c:1578
 msgid "Dismiss _All"
 msgstr "Dispensar _tudo"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1571
+#: ../src/libedataserverui/e-reminders-widget.c:1580
 msgid "_Snooze"
 msgstr "_Suspender"
 
@@ -7439,8 +7342,6 @@ msgstr "_Aceitar definitivamente"
 #: ../src/libedataserverui/e-trust-prompt.c:185
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:157
 #, c-format
-#| msgid ""
-#| "SSL/TLS certificate for '%s' is not trusted. Do you wish to accept it?"
 msgid "SSL/TLS certificate for “%s” is not trusted. Do you wish to accept it?"
 msgstr "O certificado SSL/TLS de “%s” não é de confiança. Deseja aceitá-lo?"
 
@@ -7469,7 +7370,6 @@ msgstr ""
 
 #: ../src/libedataserverui/e-trust-prompt.c:276
 #: ../src/modules/trust-prompt/module-trust-prompt.c:84
-#| msgid "The certificate's activation time is still in the future."
 msgid "The certificate’s activation time is still in the future."
 msgstr "A data de ativação do certificado é no futuro."
 
@@ -7480,9 +7380,6 @@ msgstr "O certificado expirou."
 
 #: ../src/libedataserverui/e-trust-prompt.c:280
 #: ../src/modules/trust-prompt/module-trust-prompt.c:88
-#| msgid ""
-#| "The certificate has been revoked according to the connection's "
-#| "certificate revocation list."
 msgid ""
 "The certificate has been revoked according to the connection’s certificate "
 "revocation list."
@@ -7492,7 +7389,6 @@ msgstr ""
 
 #: ../src/libedataserverui/e-trust-prompt.c:282
 #: ../src/modules/trust-prompt/module-trust-prompt.c:90
-#| msgid "The certificate's algorithm is considered insecure."
 msgid "The certificate’s algorithm is considered insecure."
 msgstr "O algoritmo do certificado é considerado inseguro."
 
@@ -7538,9 +7434,6 @@ msgstr "A procurar origens de servidor..."
 
 #: ../src/modules/gnome-online-accounts/e-goa-password-based.c:248
 #, c-format
-#| msgid ""
-#| "Cannot find a corresponding account in the org.gnome.OnlineAccounts "
-#| "service from which to obtain a password for '%s'"
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain a password for “%s”"
@@ -7555,7 +7448,6 @@ msgstr "Falha ao obter palavra-passe para GOA: "
 #. TODO: more specific
 #: ../src/modules/gnome-online-accounts/goaewsclient.c:220
 #, c-format
-#| msgid "Code: %u - Unexpected response from server"
 msgid "Code: %u — Unexpected response from server"
 msgstr "Código: %u - resposta inesperada do servidor"
 
@@ -7591,9 +7483,6 @@ msgstr "Falha ao procurar ASUrl e OABUrl na resposta de autodescoberta"
 
 #: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1423
 #, c-format
-#| msgid ""
-#| "Cannot find a corresponding account in the org.gnome.OnlineAccounts "
-#| "service from which to obtain an access token for '%s'"
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain an access token for “%s”"
@@ -7603,7 +7492,6 @@ msgstr ""
 
 #: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1473
 #, c-format
-#| msgid "Failed to obtain an access token for '%s': "
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Falha ao obter uma chave de acesso para “%s”: "
 
@@ -7636,12 +7524,11 @@ msgstr ""
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:306
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:334
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:845
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1087
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1090
 msgid "Reminders"
 msgstr "Lembretes"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:446
-#| msgid "Learning junk"
 msgid "Warning"
 msgstr "Aviso"
 
@@ -7742,29 +7629,24 @@ msgid "On The Web"
 msgstr "Na Web"
 
 #: ../src/services/evolution-source-registry/builtin/webdav-notes-stub.source.in.h:1
-#| msgid "WebDAV"
 msgid "WebDAV Notes"
 msgstr "Notas WebDAV"
 
 #: ../src/services/evolution-source-registry/evolution-source-registry.c:41
-#| msgid "Don't migrate user data from previous versions of Evolution"
 msgid "Don’t migrate user data from previous versions of Evolution"
 msgstr "Não migrar dados de utilizador das versões anteriores do Evolution"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:69
 #: ../src/tools/addressbook-export/addressbook-export.c:781
-#| msgid "Cannot open message"
 msgid "Can not open file"
 msgstr "Impossível abrir o ficheiro"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:99
 #, c-format
-#| msgid "Failed to remove file '%s': %s"
 msgid "Failed to open client “%s”: %s"
 msgstr "Falha ao abrir o cliente “%s”: %s"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:889
-#| msgid "Detailed error:"
 msgid "Unhandled error"
 msgstr "Erro não tratado"
 
@@ -7777,7 +7659,6 @@ msgid "OUTPUTFILE"
 msgstr "FICHEIRODESAIDA"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:926
-#| msgid "Error loading address book: %s"
 msgid "List local address book folders"
 msgstr "Listar pastas dos livros de endereço local"
 
@@ -7800,17 +7681,14 @@ msgid "Only support csv or vcard format."
 msgstr "Só suporte os formatos csv ou vcard."
 
 #: ../src/tools/list-sources/list-sources.c:83
-#| msgid "_Show only subscribed folders"
 msgid "Show only enabled sources"
 msgstr "Mostrar só as origens ativas"
 
 #: ../src/tools/list-sources/list-sources.c:86
-#| msgid "POP Source UID"
 msgid "Show source’s UID"
 msgstr "Mostrar UID da origem"
 
 #: ../src/tools/list-sources/list-sources.c:89
-#| msgid "Unsupported authentication method"
 msgid "Show source’s authentication information"
 msgstr "Mostrar informação de autenticação da origem"
 
@@ -7831,13 +7709,10 @@ msgid "yes"
 msgstr "sim"
 
 #: ../src/tools/list-sources/list-sources.c:106
-#| msgid "Snow"
 msgid "no"
 msgstr "não"
 
 #: ../src/tools/list-sources/list-sources.c:126
-#| msgctxt "CategoryName"
-#| msgid "Competition"
 msgid "Collection"
 msgstr "Coleção"
 
@@ -7858,13 +7733,10 @@ msgid "Calendar"
 msgstr "Calendário"
 
 #: ../src/tools/list-sources/list-sources.c:149
-#| msgctxt "WebDAVDiscover"
-#| msgid "Memos"
 msgid "Memo List"
 msgstr "Lista de memorandos"
 
 #: ../src/tools/list-sources/list-sources.c:150
-#| msgid "Tasks"
 msgid "Task List"
 msgstr "Lista de tarefas"
 
@@ -7877,17 +7749,14 @@ msgid "Mail Transport"
 msgstr "Transportador de correio"
 
 #: ../src/tools/list-sources/list-sources.c:153
-#| msgid "Identity"
 msgid "Mail Identity"
 msgstr "Identidade de correio"
 
 #: ../src/tools/list-sources/list-sources.c:154
-#| msgid "Message submission port"
 msgid "Mail Submission"
 msgstr "Envio de correio"
 
 #: ../src/tools/list-sources/list-sources.c:155
-#| msgid "Bad signature"
 msgid "Mail Signature"
 msgstr "Assinatura de correio"
 
@@ -7902,37 +7771,31 @@ msgstr "UID: %s"
 
 #: ../src/tools/list-sources/list-sources.c:228
 #, c-format
-#| msgid "Malformed URI: %s"
 msgid "Parent UID: %s"
 msgstr "UID pai: %s"
 
 #: ../src/tools/list-sources/list-sources.c:231
 #, c-format
-#| msgid "Posting failed: %s"
 msgid "Enabled: %s"
 msgstr "Ativo: %s"
 
 #: ../src/tools/list-sources/list-sources.c:233
 #, c-format
-#| msgid "Backend is busy"
 msgid "Backend: %s"
 msgstr "Infraestrutura: %s"
 
 #: ../src/tools/list-sources/list-sources.c:238
 #, c-format
-#| msgid "Calendar does not exist"
 msgid "Calendar enabled: %s"
 msgstr "Calendário ativo: %s"
 
 #: ../src/tools/list-sources/list-sources.c:239
 #, c-format
-#| msgid "Contact ID already exists"
 msgid "Contacts enabled: %s"
 msgstr "Contactos ativo: %s"
 
 #: ../src/tools/list-sources/list-sources.c:240
 #, c-format
-#| msgid "Operation failed: %s"
 msgid "Mail enabled: %s"
 msgstr "Correio ativo: %s"
 
@@ -7967,13 +7830,11 @@ msgid "Auth Proxy UID: %s"
 msgstr "UID do proxy de autenticação: %s"
 
 #: ../src/tools/list-sources/list-sources.c:420
-#| msgid "Failed to parse autodiscover response XML"
 msgid "Failed to parse arguments: Unknown error"
 msgstr "Falha ao processar argumentos: erro desconhecido"
 
 #: ../src/tools/list-sources/list-sources.c:429
 #, c-format
-#| msgid "Failed to connect to a server using SSL/TLS: %s"
 msgid "Failed to connect to source registry: %s\n"
 msgstr "Falha ao ligar à origem registada: %s\n"
 
@@ -7981,6 +7842,34 @@ msgstr "Falha ao ligar à origem registada: %s\n"
 #, c-format
 msgid "No sources had been found\n"
 msgstr "Sem origem registada\n"
+
+#~ msgid "Size in pixels of the event list in the reminder notification dialog"
+#~ msgstr ""
+#~ "Tamanho em pixeis da lista de eventos na janela de notificação de lembrete"
+
+#~ msgid "Override SMTP HELO/EHLO argument"
+#~ msgstr "Substituir o argumento SMTP HELO/EHLO"
+
+#~ msgid ""
+#~ "When not empty, it's used as the SMTP HELO/EHLO argument, instead of the "
+#~ "local host name/IP."
+#~ msgstr ""
+#~ "Quando não está vazio, é usado como argumento SMTP HELO/EHLO, em vez do "
+#~ "nome do anfitrião local/IP."
+
+#~ msgid "Copy _Link Location"
+#~ msgstr "Copiar _localização do link"
+
+#~ msgid "O_pen Link in Browser"
+#~ msgstr "Abrir ligação no navegad_or"
+
+#~| msgid "Auth Host: %s"
+#~ msgid ""
+#~ "\n"
+#~ "(host: %s)"
+#~ msgstr ""
+#~ "\n"
+#~ "(host: %s)"
 
 #~ msgid "Querying for updated contacts…"
 #~ msgstr "A procurar por contactos atualizados…"
