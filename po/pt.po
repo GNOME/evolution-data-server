@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: 3.12\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2020-11-27 15:54+0000\n"
-"PO-Revision-Date: 2020-12-08 00:13+0000\n"
+"POT-Creation-Date: 2020-12-08 08:24+0000\n"
+"PO-Revision-Date: 2020-12-10 15:15+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: https://l10n.gnome.org/teams/pt/\n"
 "Language: pt\n"
@@ -1037,8 +1037,8 @@ msgstr ""
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
 msgstr ""
-"search_contacts completa não está armazenada na cache. Não podem ser "
-"devolvidos vcards."
+"A search_contacts completa não está armazenada na cache. Os vcards ão podem "
+"ser devolvidos."
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4300
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4393
@@ -1059,8 +1059,8 @@ msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
 "supported."
 msgstr ""
-"search_contacts completa não está armazenada na cache. Assim, só é suportada "
-"a consulta de resumo."
+"A search_contacts completa não está armazenada na cache. Por conseguinte, "
+"apenas é suportada uma consulta sumária.."
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4397
 #: ../src/addressbook/libedata-book/e-data-book.c:868
@@ -1075,8 +1075,8 @@ msgstr "Consulta inválida"
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
 msgstr ""
-"vcards completos não estão armazenados na cache. Assim, só é suportada a "
-"consulta de resumo."
+"Os vcards completos não estão armazenados na cache. Por conseguinte, apenas "
+"é suportada uma consulta sumária."
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:5263
 #, c-format
