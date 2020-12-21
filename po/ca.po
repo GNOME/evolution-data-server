@@ -972,16 +972,16 @@ msgid ""
 "Remaining text after the country calling code is too short for a phone "
 "number"
 msgstr ""
-"El text que hi ha després del codi de trucada de país és massa curt per ser "
-"un número de telèfon"
+"El text que hi ha després del codi de trucada de país és massa curt per a "
+"ser un número de telèfon"
 
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:49
 msgid "Text is too short for a phone number"
-msgstr "El text és massa curt per ser un número de telèfon"
+msgstr "El text és massa curt per a ser un número de telèfon"
 
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:51
 msgid "Text is too long for a phone number"
-msgstr "El text és massa llarg per ser un número de telèfon"
+msgstr "El text és massa llarg per a ser un número de telèfon"
 
 #: ../src/addressbook/libebook/e-book-client.c:927
 #, c-format
@@ -1241,7 +1241,7 @@ msgstr "La consulta per l'EbSqlCursor no és vàlida"
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7966
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
-"S'ha d'especificar com a mínim un camp d'ordenació per utilitzar un "
+"S'ha d'especificar com a mínim un camp d'ordenació per a utilitzar un "
 "EbSqlCursor"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:893
@@ -3108,7 +3108,7 @@ msgid ""
 "You need a PIN to unlock the key for your\n"
 "SmartCard: “%s”"
 msgstr ""
-"Us cal un PIN per desbloquejar la clau\n"
+"Us cal un PIN per a desbloquejar la clau\n"
 "de l'SmartCard: «%s»"
 
 #: ../src/camel/camel-gpg-context.c:1130
@@ -3117,7 +3117,7 @@ msgid ""
 "You need a passphrase to unlock the key for\n"
 "user: “%s”"
 msgstr ""
-"Us cal una contrasenya per desbloquejar la clau\n"
+"Us cal una contrasenya per a desbloquejar la clau\n"
 "de l'usuari: «%s»"
 
 #: ../src/camel/camel-gpg-context.c:1136
@@ -3130,9 +3130,9 @@ msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
 msgstr ""
-"Adoneu-vos que el contingut xifrat no conté informació sobre el "
-"destinatari, de manera que se us demanarà la contrasenya per a cada clau "
-"privada emmagatzemada."
+"Adoneu-vos que el contingut xifrat no conté informació sobre el destinatari,"
+" de manera que se us demanarà la contrasenya per a cada clau privada "
+"emmagatzemada."
 
 #: ../src/camel/camel-gpg-context.c:1179 ../src/camel/camel-net-utils.c:522
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:399
@@ -3200,7 +3200,7 @@ msgstr "No s'ha pogut verificar la signatura del missatge: "
 
 #: ../src/camel/camel-gpg-context.c:2557
 msgid "Could not generate encrypting data: "
-msgstr "No s'han pogut generar les dades per xifrar: "
+msgstr "No s'han pogut generar les dades per a xifrar: "
 
 #: ../src/camel/camel-gpg-context.c:2638
 msgid "This is a digitally encrypted message part"
@@ -3247,8 +3247,8 @@ msgstr "No s'ha pogut crear el fitxer de bloqueig per a %s: %s"
 #, c-format
 msgid "Timed out trying to get lock file on %s.  Try again later."
 msgstr ""
-"S'ha excedit el temps màxim per intentar obtenir el fitxer de bloqueig a %s."
-" Torneu-ho a provar més tard."
+"S'ha excedit el temps màxim per a intentar obtenir el fitxer de bloqueig a "
+"%s. Torneu-ho a provar més tard."
 
 #: ../src/camel/camel-lock.c:221
 #, c-format
@@ -3641,8 +3641,8 @@ msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
 msgstr ""
-"Les credencials proporcionades no eren vàlides per iniciar un context, o bé "
-"el gestor de credencials no referenciava cap credencial."
+"Les credencials proporcionades no eren vàlides per a iniciar un context, o "
+"bé el gestor de credencials no referenciava cap credencial."
 
 #: ../src/camel/camel-sasl-gssapi.c:222
 msgid "The supplied context handle did not refer to a valid context."
@@ -3754,7 +3754,7 @@ msgstr "OAuth2"
 msgid ""
 "This option will use an OAuth 2.0 access token to connect to the server"
 msgstr ""
-"Aquesta opció usarà un testimoni d'accés OAuth 2.0 per connectar amb el "
+"Aquesta opció usarà un testimoni d'accés OAuth 2.0 per a connectar amb el "
 "servidor"
 
 #: ../src/camel/camel-sasl-xoauth2-google.c:23
@@ -3766,7 +3766,7 @@ msgid ""
 "This option will use an OAuth 2.0 access token to connect to the Google "
 "server"
 msgstr ""
-"Aquesta opció usarà un testimoni d'accés OAuth 2.0 per connectar amb el "
+"Aquesta opció usarà un testimoni d'accés OAuth 2.0 per a connectar amb el "
 "servidor de Google"
 
 #: ../src/camel/camel-sasl-xoauth2-outlook.c:23
@@ -3778,7 +3778,7 @@ msgid ""
 "This option will use an OAuth 2.0 access token to connect to the Outlook.com"
 " server"
 msgstr ""
-"Aquesta opció usarà un testimoni d'accés OAuth 2.0 per connectar amb el "
+"Aquesta opció usarà un testimoni d'accés OAuth 2.0 per a connectar amb el "
 "servidor Outlook.com"
 
 #: ../src/camel/camel-search-private.c:114
@@ -3883,11 +3883,11 @@ msgstr "El contingut s'ha modificat o alterat durant el transport"
 
 #: ../src/camel/camel-smime-context.c:510
 msgid "Signing certificate not found"
-msgstr "No s'ha trobat el certificat per signar"
+msgstr "No s'ha trobat el certificat per a signar"
 
 #: ../src/camel/camel-smime-context.c:512
 msgid "Signing certificate not trusted"
-msgstr "No s'ha validat el certificat per signar"
+msgstr "No s'ha validat el certificat per a signar"
 
 #: ../src/camel/camel-smime-context.c:514
 msgid "Signature algorithm unknown"
@@ -4168,7 +4168,7 @@ msgstr "No es poden copiar els missatges a la carpeta de Brossa"
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:979
 #, c-format
 msgid "You must be working online to complete this operation (%s)"
-msgstr "Heu d'estar en línia per completar aquesta operació (%s)"
+msgstr "Heu d'estar en línia per a completar aquesta operació (%s)"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:987
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3388
@@ -4188,7 +4188,7 @@ msgstr "Heu d'estar en línia per completar aquesta operació (%s)"
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:547
 #, c-format
 msgid "You must be working online to complete this operation"
-msgstr "Heu d'estar en línia per completar aquesta operació"
+msgstr "Heu d'estar en línia per a completar aquesta operació"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1611
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1707
@@ -4815,7 +4815,7 @@ msgstr "Directoris de correu en format MH"
 
 #: ../src/camel/providers/local/camel-local-provider.c:51
 msgid "For storing local mail in MH-like mail directories."
-msgstr "Per emmagatzemar correu local en directoris de correu de tipus MH."
+msgstr "Per a emmagatzemar correu local en directoris de correu de tipus MH."
 
 #: ../src/camel/providers/local/camel-local-provider.c:65
 msgid "Apply _filters to new messages"
@@ -4844,7 +4844,7 @@ msgstr "Directoris de correu en format maildir"
 
 #: ../src/camel/providers/local/camel-local-provider.c:96
 msgid "For storing local mail in maildir directories."
-msgstr "Per emmagatzemar correu local en directoris maildir."
+msgstr "Per a emmagatzemar correu local en directoris maildir."
 
 #: ../src/camel/providers/local/camel-local-provider.c:113
 msgid "_Store status headers in Elm/Pine/Mutt format"
@@ -5611,7 +5611,7 @@ msgstr "POP"
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:64
 msgid "For connecting to and downloading mail from POP servers."
-msgstr "Per connectar-se a un servidor POP i baixar correu."
+msgstr "Per a connectar-se a un servidor POP i baixar correu."
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:84
 msgid ""
@@ -6086,7 +6086,7 @@ msgstr "Valor del recordatori d'aniversari i de commemoració"
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:4
 msgid "Number of units for determining a birthday or anniversary reminder"
 msgstr ""
-"El nombre d'unitats per determinar un recordatori del naixement o de "
+"El nombre d'unitats per a determinar un recordatori del naixement o de "
 "l'aniversari"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:5
@@ -6165,8 +6165,8 @@ msgid ""
 "Paned position in the reminder notification dialog, the split size between "
 "list of the events and the description"
 msgstr ""
-"Posició de les subfinestres al diàleg de notificacions de recordatoris, la mida "
-"dividida entre la llista d'esdeveniments i la descripció"
+"Posició de les subfinestres al diàleg de notificacions de recordatoris, la "
+"mida dividida entre la llista d'esdeveniments i la descripció"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
 msgid "Show reminder notification for completed tasks"
@@ -6293,9 +6293,9 @@ msgstr ""
 " que l'URL real on es demana i actualitza el testimoni no es pot canviar "
 "aquí, el nom d'amfitrió és per permetre a altres servidors, on es pugui "
 "utilitzar el servei OAuth2. Exemples: «Company:mail.company.com»: permet "
-"l'autenticació «Company» OAuth2 per a l'amfitrió. «mail.company.com», «Company-"
-"CalDAV:caldav.company.com» - permet l'autenticació «Company» OAuth2 per "
-"qualsevol font «CalDAV», que llegeix dades de l'amfitrió de "
+"l'autenticació «Company» OAuth2 per a l'amfitrió. «mail.company.com», "
+"«Company-CalDAV:caldav.company.com» - permet l'autenticació «Company» OAuth2"
+" per qualsevol font «CalDAV», que llegeix dades de l'amfitrió de "
 "«caldav.company.com»"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
@@ -6303,23 +6303,23 @@ msgid ""
 "An OAuth2 client ID to use to connect to Google servers, instead of the one "
 "provided during build time"
 msgstr ""
-"Un ID de client OAuth2 que s'utilitza per connectar als servidors Google, en"
-" comptes del que proveeix el programa"
+"Un ID de client OAuth2 que s'utilitza per a connectar als servidors Google, "
+"en comptes del que proveeix el programa"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
 msgid ""
 "User-specified OAuth2 client ID for Google servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
 msgstr ""
-"Un ID de client OAuth2 pels servidors Google. Una cadena buida vol dir "
-"que s'utilitza el que proveeix el programa. Canviar això requereix reiniciar."
+"Un ID de client OAuth2 pels servidors Google. Una cadena buida vol dir que "
+"s'utilitza el que proveeix el programa. Canviar això requereix reiniciar."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
 msgid ""
 "An OAuth2 client secret to use to connect to Google servers, instead of the "
 "one provided during build time"
 msgstr ""
-"Un secret de client OAuth2 que s'utilitza per connectar als servidors "
+"Un secret de client OAuth2 que s'utilitza per a connectar als servidors "
 "Google, en comptes del que proveeix el programa"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
@@ -6327,7 +6327,7 @@ msgid ""
 "User-specified OAuth2 client secret for Google servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
 msgstr ""
-"El secret de client OAuth2 especificat per l'usuari que s'utilitza per "
+"El secret de client OAuth2 especificat per l'usuari que s'utilitza per a "
 "connectar als servidors Google. Una cadena buida vol dir que s'utilitza el "
 "que proveeix el programa. Canviar això requereix reiniciar."
 
@@ -6336,15 +6336,15 @@ msgid ""
 "An OAuth2 client ID to use to connect to Outlook servers, instead of the one"
 " provided during build time"
 msgstr ""
-"Un ID de client OAuth2 que s'utilitza per connectar als servidors Outlook, "
-"en comptes del que proveeix el programa"
+"Un ID de client OAuth2 que s'utilitza per a connectar als servidors Outlook,"
+" en comptes del que proveeix el programa"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
 msgid ""
 "User-specified OAuth2 client ID for Outlook servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
 msgstr ""
-"L'ID de client OAuth2 que s'utilitza per connectar als servidors Outlook. "
+"L'ID de client OAuth2 que s'utilitza per a connectar als servidors Outlook. "
 "Una cadena buida vol dir que s'utilitza el que proveeix el programa. Canviar"
 " això requereix reiniciar."
 
@@ -6353,7 +6353,7 @@ msgid ""
 "An OAuth2 client secret to use to connect to Outlook servers, instead of the"
 " one provided during build time"
 msgstr ""
-"Un secret de client OAuth2 que s'utilitza per connectar als servidors "
+"Un secret de client OAuth2 que s'utilitza per a connectar als servidors "
 "Outlook, en comptes del que proveeix el programa"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
@@ -7304,8 +7304,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "address book “%s”."
 msgstr ""
-"Entreu al compte de %s i accepteu-ne les condicions per poder accedir a la "
-"llibreta d'adreces «%s»."
+"Entreu al compte de %s i accepteu-ne les condicions per a poder accedir a la"
+" llibreta d'adreces «%s»."
 
 #. Translators: The first %s is replaced with an OAuth2 service display name,
 #. like the strings from "OAuth2Service" translation context,
@@ -7318,7 +7318,7 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "calendar “%s”."
 msgstr ""
-"Entreu al compte de %s i accepteu-ne les condicions per poder accedir al "
+"Entreu al compte de %s i accepteu-ne les condicions per a poder accedir al "
 "calendari «%s»."
 
 #. Translators: The first %s is replaced with an OAuth2 service display name,
@@ -7332,7 +7332,7 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "account “%s”."
 msgstr ""
-"Entreu al compte de %s i accepteu-ne les condicions per poder accedir al "
+"Entreu al compte de %s i accepteu-ne les condicions per a poder accedir al "
 "compte de correu «%s»."
 
 #. Translators: The first %s is replaced with an OAuth2 service display name,
@@ -7346,7 +7346,7 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "transport “%s”."
 msgstr ""
-"Entreu al compte de %s i accepteu-ne les condicions per poder accedir al "
+"Entreu al compte de %s i accepteu-ne les condicions per a poder accedir al "
 "transport de correu «%s»."
 
 #. Translators: The first %s is replaced with an OAuth2 service display name,
@@ -7360,8 +7360,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
 "list “%s”."
 msgstr ""
-"Entreu al compte de %s i accepteu-ne les condicions per poder accedir a la "
-"llista d'anotacions «%s»."
+"Entreu al compte de %s i accepteu-ne les condicions per a poder accedir a la"
+" llista d'anotacions «%s»."
 
 #. Translators: The first %s is replaced with an OAuth2 service display name,
 #. like the strings from "OAuth2Service" translation context,
@@ -7374,8 +7374,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your task "
 "list “%s”."
 msgstr ""
-"Entreu al compte de %s i accepteu-ne les condicions per poder accedir a la "
-"llista de tasques «%s»."
+"Entreu al compte de %s i accepteu-ne les condicions per a poder accedir a la"
+" llista de tasques «%s»."
 
 #. Translators: The first %s is replaced with an OAuth2 service display name,
 #. like the strings from "OAuth2Service" translation context,
@@ -7388,7 +7388,7 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "account “%s”."
 msgstr ""
-"Entreu al compte de %s i accepteu-ne les condicions per poder accedir al "
+"Entreu al compte de %s i accepteu-ne les condicions per a poder accedir al "
 "compte «%s»."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:606
@@ -7763,8 +7763,8 @@ msgid ""
 "Overrides compile-time backend per process option; use 1 to enable, 0 to "
 "disable, any other value is to use compile-time option"
 msgstr ""
-"Ignora l'opció del rerefons de temps de compilació per procés. Useu 1 per "
-"habilitar-ho, 2 per inhabilitar-ho. Qualsevol altre valor significa usar "
+"Ignora l'opció del rerefons de temps de compilació per procés. Useu 1 per a "
+"habilitar-ho, 2 per a inhabilitar-ho. Qualsevol altre valor significa usar "
 "l'opció de temps de compilació"
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:306
@@ -7919,8 +7919,8 @@ msgstr "[vcard|csv]"
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
-"Error d'arguments de la línia d'ordres, utilitzeu l'opció --help per veure "
-"la utilització."
+"Error d'arguments de la línia d'ordres, utilitzeu l'opció --help per a veure"
+" la utilització."
 
 #: ../src/tools/addressbook-export/addressbook-export.c:992
 msgid "Only support csv or vcard format."
