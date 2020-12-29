@@ -16,7 +16,7 @@ include(CMakeParseArguments)
 add_printable_option(ENABLE_INTROSPECTION "Enable GObject introspection" OFF)
 
 if(ENABLE_INTROSPECTION)
-	pkg_check_modules_for_option(ENABLE_INTROSPECTION "GObject introspection" GOBJECT_INTROSPECTION gobject-introspection-1.0)
+	pkg_check_modules_for_option(ENABLE_INTROSPECTION "GObject introspection" GOBJECT_INTROSPECTION gobject-introspection-1.0>=1.59.1)
 
 	pkg_check_variable(G_IR_SCANNER gobject-introspection-1.0 g_ir_scanner)
 	pkg_check_variable(G_IR_COMPILER gobject-introspection-1.0 g_ir_compiler)
@@ -138,6 +138,8 @@ macro(gir_add_introspection gir)
 				--filelist=${CMAKE_CURRENT_BINARY_DIR}/${_gir_name}_files
 				--output ${CMAKE_CURRENT_BINARY_DIR}/${gir}
 				--accept-unprefixed
+				--sources-top-dirs=${CMAKE_SOURCE_DIR}
+				--sources-top-dirs=${CMAKE_BINARY_DIR}
 			DEPENDS ${${${_gir_name}_FILES}}
 				${${_gir_name}_LIBS}
 				${${_gir_name}_DEPS}
