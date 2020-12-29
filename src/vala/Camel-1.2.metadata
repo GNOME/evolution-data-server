@@ -124,6 +124,7 @@ FolderThread.tree type="Camel.FolderThreadNode"
 FolderThreadNode.next type="unowned Camel.FolderThreadNode?"
 FolderThreadNode.parent type="unowned Camel.FolderThreadNode?"
 FolderThreadNode.child type="unowned Camel.FolderThreadNode?"
+FolderThreadNode.message nullable
 
 // FILE* are supported by Vala
 StoreSummary.* skip=false
