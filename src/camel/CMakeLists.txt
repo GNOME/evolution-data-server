@@ -1,4 +1,11 @@
-glib_mkenums(camel-enumtypes camel-enums.h CAMEL_ENUMTYPES_H)
+glib_mkenums_multiple(camel-enumtypes CAMEL_ENUMTYPES_H
+	camel-enums.h
+	camel-folder.h
+	camel-service.h
+	camel-sexp.h
+	camel-store.h
+	camel-url.h
+)
 
 add_executable(camel-gen-tables
 	camel-gen-tables.c
