@@ -34,6 +34,7 @@
 #include <string.h>
 #include <glib/gi18n-lib.h>
 
+#include "camel/camel.h"
 #include "libedataserver/libedataserver.h"
 
 #include "e-cal-check-timezones.h"
@@ -48,6 +49,7 @@ typedef struct _ClientData {
 	EReminderWatcher *watcher; /* Just as an owner, not referenced */
 	ECalClient *client;
 	ECalClientView *view;
+	GCancellable *cancellable;
 } ClientData;
 
 struct _EReminderWatcherPrivate {
@@ -230,6 +232,7 @@ client_data_new (EReminderWatcher *watcher,
 	cd->watcher = watcher;
 	cd->client = client;
 	cd->view = NULL;
+	cd->cancellable = NULL;
 
 	return cd;
 }
@@ -240,6 +243,11 @@ client_data_free_view (ClientData *cd)
 	GError *local_error = NULL;
 
 	g_return_if_fail (cd != NULL);
+
+	if (cd->cancellable) {
+		g_cancellable_cancel (cd->cancellable);
+		g_clear_object (&cd->cancellable);
+	}
 
 	if (!cd->view)
 		return;
@@ -384,7 +392,7 @@ client_data_view_created_cb (GObject *source_object,
 
 	if (!e_cal_client_get_view_finish (client, result, &view, &local_error) || local_error || !view) {
 		e_reminder_watcher_debug_print ("Failed to get view for %s: %s\n",
-			e_source_get_uid (e_client_get_source (E_CLIENT (cd->client))),
+			e_source_get_uid (e_client_get_source (E_CLIENT (client))),
 			local_error ? local_error->message : "Unknown error");
 	} else {
 		cd->view = view;
@@ -446,7 +454,14 @@ client_data_start_view (ClientData *cd,
 			e_source_get_uid (e_client_get_source (E_CLIENT (cd->client))),
 			query);
 
-		e_cal_client_get_view (cd->client, query, cancellable, client_data_view_created_cb, cd);
+		if (cd->cancellable) {
+			g_cancellable_cancel (cd->cancellable);
+			g_clear_object (&cd->cancellable);
+		}
+
+		cd->cancellable = camel_operation_new_proxy (cancellable);
+
+		e_cal_client_get_view (cd->client, query, cd->cancellable, client_data_view_created_cb, cd);
 
 		g_free (query);
 	}

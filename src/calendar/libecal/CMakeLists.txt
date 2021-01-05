@@ -3,6 +3,7 @@ glib_mkenums(e-cal-enumtypes e-cal-enums.h E_CAL_ENUMTYPES_H)
 add_pkgconfig_file(libecal.pc.in libecal-${CAL_API_VERSION}.pc)
 
 set(DEPENDENCIES
+	camel
 	edbus-private
 	edataserver
 )
