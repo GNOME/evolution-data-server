@@ -155,9 +155,14 @@ void e_test_server_utils_setup    (ETestServerFixture *fixture,
 void e_test_server_utils_teardown (ETestServerFixture *fixture,
 				   gconstpointer       user_data);
 
-gint e_test_server_utils_run      (void);
-gint e_test_server_utils_run_full (ETestServerFlags flags);
-void e_test_server_utils_prepare_run (ETestServerFlags flags);
+gint e_test_server_utils_run      (gint argc,
+				   gchar *argv[]);
+gint e_test_server_utils_run_full (gint argc,
+				   gchar *argv[],
+				   ETestServerFlags flags);
+void e_test_server_utils_prepare_run (gint argc,
+				      gchar *argv[],
+				      ETestServerFlags flags);
 void e_test_server_utils_finish_run (void);
 
 #endif /* E_TEST_UTILS_H */

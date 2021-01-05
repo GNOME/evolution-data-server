@@ -603,6 +603,9 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("https://gitlab.gnome.org/GNOME/evolution-data-server/");
+
+	tcu_read_args (argc, argv);
 
 	g_test_add (
 		"/EBookCacheCursor/Calculate/Initial", TCUCursorFixture, &ascending_closure,
@@ -692,5 +695,5 @@ main (gint argc,
 		test_cursor_calculate_descending_after_modification,
 		tcu_cursor_fixture_teardown);
 
-	return e_test_server_utils_run_full (0);
+	return e_test_server_utils_run_full (argc, argv, 0);
 }

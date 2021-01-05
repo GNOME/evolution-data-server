@@ -6,7 +6,6 @@ set(extra_deps
 )
 
 set(extra_defines
-	-DSRCDIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"
 	-DINSTALLED_TEST_DIR=\"${INSTALLED_TESTS_EXEC_DIR}\"
 )
 
@@ -127,6 +126,7 @@ foreach(_test ${TESTS})
 		extra_ldflags
 		"session-exclusive"
 		"TEST_INSTALLED_SERVICES=1"
+		--data-dir "${CMAKE_CURRENT_SOURCE_DIR}/../data/vcards"
 	)
 endforeach(_test)
 

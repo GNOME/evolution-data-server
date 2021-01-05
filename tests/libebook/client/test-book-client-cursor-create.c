@@ -261,7 +261,9 @@ main (gint argc,
 	gint i, j;
 
 	g_test_init (&argc, &argv, NULL);
-	g_test_bug_base ("http://bugzilla.gnome.org/");
+	g_test_bug_base ("https://gitlab.gnome.org/GNOME/evolution-data-server/");
+
+	client_test_utils_read_args (argc, argv);
 
 	for (i = 0; i < 2; i++) {
 
@@ -295,5 +297,5 @@ main (gint argc,
 		}
 	}
 
-	return e_test_server_utils_run ();
+	return e_test_server_utils_run (argc, argv);
 }

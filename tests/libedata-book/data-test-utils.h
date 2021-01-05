@@ -63,6 +63,9 @@ G_BEGIN_DECLS
  *     http://demo.icu-project.org/icu-bin/locexp?_=en_US&d_=en&x=col
  */
 
+void	data_test_utils_read_args	(gint argc,
+					 gchar **argv);
+
 /* 13 contacts in the test data have an email address ending with ".com" */
 #define N_FILTERED_CONTACTS  13
 #define N_SORTED_CONTACTS    20

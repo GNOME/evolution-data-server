@@ -154,7 +154,7 @@ main (gint argc,
 		test_remove_source,
 		e_test_server_utils_teardown);
 
-	retval = e_test_server_utils_run ();
+	retval = e_test_server_utils_run (argc, argv);
 
 	/* XXX Something is leaking a GDBusConnection reference.
 	 *     Leave this disabled until I can track it down. */

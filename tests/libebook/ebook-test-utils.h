@@ -22,9 +22,6 @@
 
 #include <libebook/libebook.h>
 
-#define EBOOK_TEST_UTILS_DATA_DIR "data"
-#define EBOOK_TEST_UTILS_VCARDS_DIR "vcards"
-
 typedef struct {
         GSourceFunc  cb;
         gpointer     user_data;
@@ -35,6 +32,9 @@ typedef struct {
 void
 test_print (const gchar *format,
 	    ...);
+void
+ebook_test_utils_read_args (gint argc,
+			    gchar **argv);
 
 gboolean
 ebook_test_utils_callback_quit (gpointer user_data);

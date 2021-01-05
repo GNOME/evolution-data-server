@@ -294,7 +294,9 @@ main (gint argc,
       gchar **argv)
 {
 	g_test_init (&argc, &argv, NULL);
-	g_test_bug_base ("http://bugzilla.gnome.org/");
+	g_test_bug_base ("https://gitlab.gnome.org/GNOME/evolution-data-server/");
+
+	client_test_utils_read_args (argc, argv);
 
 	g_test_add (
 		"/EBookClient/UidOnlyView/Sync/AllData",
@@ -326,5 +328,5 @@ main (gint argc,
 		test_get_view_async,
 		e_test_server_utils_teardown);
 
-	return e_test_server_utils_run ();
+	return e_test_server_utils_run (argc, argv);
 }

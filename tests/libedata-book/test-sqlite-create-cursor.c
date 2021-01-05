@@ -104,6 +104,9 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("https://gitlab.gnome.org/GNOME/evolution-data-server/");
+
+	data_test_utils_read_args (argc, argv);
 
 	/* Ensure that the client and server get the same locale */
 	g_assert (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
@@ -122,5 +125,5 @@ main (gint argc,
 		"/EbSqlCursor/Create/MissingSort", EbSqlFixture, &closure,
 		e_sqlite_fixture_setup, test_create_cursor_missing_sort, e_sqlite_fixture_teardown);
 
-	return e_test_server_utils_run_full (0);
+	return e_test_server_utils_run_full (argc, argv, 0);
 }

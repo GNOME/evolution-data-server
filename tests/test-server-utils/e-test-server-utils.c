@@ -240,11 +240,59 @@ generate_source_name (void)
 	return source_name;
 }
 
+static const gchar *args_build_dir = NULL;
+
 static void
-setup_environment (void)
+eds_test_utils_read_args (gint argc,
+			  gchar *argv[])
+{
+	gint ii;
+
+	for (ii = 0; ii < argc; ii++) {
+		if (g_strcmp0 (argv[ii], "--build-dir") == 0) {
+			if (ii + 1 < argc)
+				args_build_dir = argv[ii + 1];
+			break;
+		}
+	}
+
+	g_assert_nonnull (args_build_dir);
+	g_assert (g_file_test (args_build_dir, G_FILE_TEST_IS_DIR));
+}
+
+#define EDS_TEST_WORK_DIR_SUFFIX "tests/test-server-utils/cache"
+#define EDS_TEST_DBUS_SERVICE_DIR_SUFFIX  "tests/test-server-utils/services"
+
+static gchar *
+eds_test_utils_create_build_path (const gchar *suffix)
+{
+	g_assert_nonnull (args_build_dir);
+	g_assert_nonnull (suffix);
+
+	return g_strconcat (args_build_dir, G_DIR_SEPARATOR_S, suffix, NULL);
+}
+
+static void
+eds_test_utils_setenv (const gchar *envvar,
+		       const gchar *suffix)
+{
+	gchar *path;
+
+	path = eds_test_utils_create_build_path (suffix);
+
+	g_assert (g_setenv (envvar, path, TRUE));
+
+	g_free (path);
+}
+
+static void
+setup_environment (gint argc,
+		   gchar *argv[])
 {
 	GString *libs_dir;
 	const gchar *libs_dir_env;
+
+	eds_test_utils_read_args (argc, argv);
 
 	libs_dir_env = g_getenv ("LD_LIBRARY_PATH");
 
@@ -253,7 +301,7 @@ setup_environment (void)
 	#define add_lib_path(x) G_STMT_START { \
 		if (libs_dir->len) \
 			g_string_append_c (libs_dir, ':'); \
-		g_string_append_printf (libs_dir, EDS_TEST_TOP_BUILD_DIR x); \
+		g_string_append_printf (libs_dir, "%s" G_DIR_SEPARATOR_S "%s", args_build_dir, x); \
 		} G_STMT_END
 
 	add_lib_path ("/addressbook/libebook");
@@ -277,16 +325,16 @@ setup_environment (void)
 	}
 
 	g_assert (g_setenv ("LD_LIBRARY_PATH", libs_dir->str, TRUE));
-	g_assert (g_setenv ("XDG_DATA_HOME", EDS_TEST_WORK_DIR, TRUE));
-	g_assert (g_setenv ("XDG_CACHE_HOME", EDS_TEST_WORK_DIR, TRUE));
-	g_assert (g_setenv ("XDG_CONFIG_HOME", EDS_TEST_WORK_DIR, TRUE));
-	g_assert (g_setenv ("GSETTINGS_SCHEMA_DIR", EDS_TEST_SCHEMA_DIR, TRUE));
-	g_assert (g_setenv ("EDS_CALENDAR_MODULES", EDS_TEST_CALENDAR_DIR, TRUE));
-	g_assert (g_setenv ("EDS_ADDRESS_BOOK_MODULES", EDS_TEST_ADDRESS_BOOK_DIR, TRUE));
-	g_assert (g_setenv ("EDS_REGISTRY_MODULES", EDS_TEST_REGISTRY_DIR, TRUE));
-	g_assert (g_setenv ("EDS_CAMEL_PROVIDER_DIR", EDS_TEST_CAMEL_DIR, TRUE));
-	g_assert (g_setenv ("EDS_SUBPROCESS_CAL_PATH", EDS_TEST_SUBPROCESS_CAL_PATH, TRUE));
-	g_assert (g_setenv ("EDS_SUBPROCESS_BOOK_PATH", EDS_TEST_SUBPROCESS_BOOK_PATH, TRUE));
+	eds_test_utils_setenv ("XDG_DATA_HOME", EDS_TEST_WORK_DIR_SUFFIX);
+	eds_test_utils_setenv ("XDG_CACHE_HOME", EDS_TEST_WORK_DIR_SUFFIX);
+	eds_test_utils_setenv ("XDG_CONFIG_HOME", EDS_TEST_WORK_DIR_SUFFIX);
+	eds_test_utils_setenv ("GSETTINGS_SCHEMA_DIR", "data");
+	eds_test_utils_setenv ("EDS_CALENDAR_MODULES", "src/calendar/backends/file");
+	eds_test_utils_setenv ("EDS_ADDRESS_BOOK_MODULES", "src/addressbook/backends/file");
+	eds_test_utils_setenv ("EDS_REGISTRY_MODULES", "src/modules/cache-reaper");
+	eds_test_utils_setenv ("EDS_CAMEL_PROVIDER_DIR", "src/camel/providers/local");
+	eds_test_utils_setenv ("EDS_SUBPROCESS_CAL_PATH", "src/calendar/libedata-cal/evolution-calendar-factory-subprocess");
+	eds_test_utils_setenv ("EDS_SUBPROCESS_BOOK_PATH", "src/addressbook/libedata-book/evolution-addressbook-factory-subprocess");
 	g_assert (g_setenv ("GIO_USE_VFS", "local", TRUE));
 	g_assert (g_setenv ("EDS_TESTING", "1", TRUE));
 	g_assert (g_setenv ("GSETTINGS_BACKEND", "memory", TRUE));
@@ -306,7 +354,8 @@ delete_work_directory (void)
 	 * corrupting our contained D-Bus environment with service files
 	 * from the OS.
 	 */
-	const gchar *argv[] = { "/bin/rm", "-rf", EDS_TEST_WORK_DIR, NULL };
+	gchar *workdir = eds_test_utils_create_build_path (EDS_TEST_WORK_DIR_SUFFIX);
+	const gchar *argv[] = { "/bin/rm", "-rf", workdir, NULL };
 	gboolean spawn_succeeded;
 	gint exit_status;
 
@@ -321,6 +370,8 @@ delete_work_directory (void)
 	#else
 	g_assert_cmpint (exit_status, ==, 0);
 	#endif
+
+	g_free (workdir);
 }
 
 static gboolean
@@ -634,8 +685,13 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
 	FixturePair         pair = { fixture, closure, 0 };
 
 	/* Create work directory */
-	if (!test_installed_services ())
-		g_assert (g_mkdir_with_parents (EDS_TEST_WORK_DIR, 0755) == 0);
+	if (!test_installed_services ()) {
+		gchar *workdir = eds_test_utils_create_build_path (EDS_TEST_WORK_DIR_SUFFIX);
+
+		g_assert (g_mkdir_with_parents (workdir, 0755) == 0);
+
+		g_free (workdir);
+	}
 
 	/* Init refs */
 	g_weak_ref_init (&fixture->registry_ref, NULL);
@@ -645,14 +701,18 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
 
 	if (!test_installed_services ()) {
 #if !GLOBAL_DBUS_DAEMON
+		gchar *servicedir = eds_test_utils_create_build_path (EDS_TEST_DBUS_SERVICE_DIR_SUFFIX);
+
 		/* Create the global dbus-daemon for this test suite */
 		fixture->dbus = g_test_dbus_new (G_TEST_DBUS_NONE);
 
 		/* Add the private directory with our in-tree service files */
-		g_test_dbus_add_service_dir (fixture->dbus, EDS_TEST_DBUS_SERVICE_DIR);
+		g_test_dbus_add_service_dir (fixture->dbus, servicedir);
 
 		/* Start the private D-Bus daemon */
 		g_test_dbus_up (fixture->dbus);
+
+		g_free (servicedir);
 #else
 		fixture->dbus = global_test_dbus;
 #endif
@@ -780,33 +840,40 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 }
 
 gint
-e_test_server_utils_run (void)
+e_test_server_utils_run (gint argc,
+			 gchar *argv[])
 {
-	return e_test_server_utils_run_full (0);
+	return e_test_server_utils_run_full (argc, argv, 0);
 }
 
 void
-e_test_server_utils_prepare_run (ETestServerFlags flags)
+e_test_server_utils_prepare_run (gint argc,
+				 gchar *argv[],
+				 ETestServerFlags flags)
 {
 	/* Cleanup work directory */
 	if (!test_installed_services ()) {
+		/* Do this first, to have 'args_build_dir' set */
+		setup_environment (argc, argv);
 
 		if ((flags & E_TEST_SERVER_KEEP_WORK_DIRECTORY) == 0)
 			delete_work_directory ();
-
-		setup_environment ();
 	}
 
 #if GLOBAL_DBUS_DAEMON
 	if (!test_installed_services ()) {
+		gchar *servicedir = eds_test_utils_create_build_path (EDS_TEST_DBUS_SERVICE_DIR_SUFFIX);
+
 		/* Create the global dbus-daemon for this test suite */
 		global_test_dbus = g_test_dbus_new (G_TEST_DBUS_NONE);
 
 		/* Add the private directory with our in-tree service files */
-		g_test_dbus_add_service_dir (global_test_dbus, EDS_TEST_DBUS_SERVICE_DIR);
+		g_test_dbus_add_service_dir (global_test_dbus, servicedir);
 
 		/* Start the private D-Bus daemon */
 		g_test_dbus_up (global_test_dbus);
+
+		g_free (servicedir);
 	}
 #endif
 }
@@ -825,11 +892,13 @@ e_test_server_utils_finish_run (void)
 }
 
 gint
-e_test_server_utils_run_full (ETestServerFlags flags)
+e_test_server_utils_run_full (gint argc,
+			      gchar *argv[],
+			      ETestServerFlags flags)
 {
 	gint tests_ret;
 
-	e_test_server_utils_prepare_run (flags);
+	e_test_server_utils_prepare_run (argc, argv, flags);
 
 	/* Run the GTest suite */
 	tests_ret = g_test_run ();

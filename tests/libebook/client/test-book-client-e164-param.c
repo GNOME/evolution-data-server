@@ -134,7 +134,9 @@ main (gint argc,
       gchar **argv)
 {
 	g_test_init (&argc, &argv, NULL);
-	g_test_bug_base ("http://bugzilla.gnome.org/");
+	g_test_bug_base ("https://gitlab.gnome.org/GNOME/evolution-data-server/");
+
+	client_test_utils_read_args (argc, argv);
 
 #ifdef ENABLE_PHONENUMBER
 
@@ -185,5 +187,5 @@ main (gint argc,
 
 #endif /* ENABLE_PHONENUMBER */
 
-	return e_test_server_utils_run ();
+	return e_test_server_utils_run (argc, argv);
 }

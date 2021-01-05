@@ -98,7 +98,7 @@ main (gint argc,
 			e_test_server_utils_teardown);
 	}
 
-	ret = e_test_server_utils_run ();
+	ret = e_test_server_utils_run (argc, argv);
 
 	for (i = 0; i < N_CYCLES; i++) {
 		g_free (registry_keys[i]);

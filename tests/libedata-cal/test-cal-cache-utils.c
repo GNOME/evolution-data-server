@@ -27,6 +27,23 @@
 
 #include "test-cal-cache-utils.h"
 
+static const gchar *args_data_dir = NULL;
+
+void
+tcu_read_args (gint argc,
+	       gchar **argv)
+{
+	gint ii;
+
+	for (ii = 0; ii < argc; ii++) {
+		if (g_strcmp0 (argv[ii], "--data-dir") == 0) {
+			if (ii + 1 < argc)
+				args_data_dir = argv[ii + 1];
+			break;
+		}
+	}
+}
+
 static void
 delete_work_directory (const gchar *filename)
 {
@@ -60,17 +77,7 @@ tcu_fixture_setup (TCUFixture *fixture,
 {
 	const TCUClosure *closure = user_data;
 	gchar *filename, *directory;
-	const gchar *provider_dir;
 	GError *error = NULL;
-
-	provider_dir = g_getenv (EDS_CAMEL_PROVIDER_DIR);
-	if (!provider_dir)
-		provider_dir = CAMEL_PROVIDERDIR;
-
-	if (!g_file_test (provider_dir, G_FILE_TEST_IS_DIR | G_FILE_TEST_EXISTS)) {
-		if (g_mkdir_with_parents (provider_dir, 0700) == -1)
-			g_warning ("%s: Failed to create folder '%s': %s\n", G_STRFUNC, provider_dir, g_strerror (errno));
-	}
 
 	/* Cleanup from last test */
 	directory = g_build_filename (g_get_tmp_dir (), "test-cal-cache", NULL);
@@ -129,10 +136,16 @@ tcu_get_test_case_filename (const gchar *case_name)
 	/* In the case of installed tests, they run in ${pkglibexecdir}/installed-tests
 	 * and the components are installed in ${pkglibexecdir}/installed-tests/components
 	 */
-	if (g_getenv ("TEST_INSTALLED_SERVICES") != NULL)
+	if (g_getenv ("TEST_INSTALLED_SERVICES") != NULL) {
 		filename = g_build_filename (INSTALLED_TEST_DIR, "components", case_filename, NULL);
-	else
-		filename = g_build_filename (SRCDIR, "..", "libedata-cal", "components", case_filename, NULL);
+	} else {
+		if (!args_data_dir) {
+			g_warning ("Data directory not set, pass it with `--data-dir PATH`");
+			exit(1);
+		}
+
+		filename = g_build_filename (args_data_dir, case_filename, NULL);
+	}
 
 	g_free (case_filename);
 

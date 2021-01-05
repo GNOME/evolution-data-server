@@ -336,7 +336,7 @@ main (gint argc,
       gchar **argv)
 {
 	GOptionContext *context;
-	gint ret, i;
+	gint i;
 	SuiteType suites[] = {
 		{ search_test, FALSE, FALSE, "/EBookClient/Default/Search" },
 		{ uid_test,    FALSE, FALSE, "/EBookClient/Default/SearchUID" },
@@ -358,7 +358,9 @@ main (gint argc,
 		test_regex = g_regex_new (test_filter, 0, 0, NULL);
 
 	g_test_init (&argc, &argv, NULL);
-	g_test_bug_base ("http://bugzilla.gnome.org/");
+	g_test_bug_base ("https://gitlab.gnome.org/GNOME/evolution-data-server/");
+
+	client_test_utils_read_args (argc, argv);
 
 	/* Change environment so that the addressbook factory inherits this setting */
 	if (!g_setenv ("LC_ALL", "en_US.UTF-8", TRUE)) {
@@ -1244,7 +1246,5 @@ main (gint argc,
 			FALSE);
 	}
 
-	ret = e_test_server_utils_run ();
-
-	return ret;
+	return e_test_server_utils_run (argc, argv);
 }

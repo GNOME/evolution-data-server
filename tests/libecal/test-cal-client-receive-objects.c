@@ -121,5 +121,5 @@ main (gint argc,
 		test_receive_objects_async,
 		e_test_server_utils_teardown);
 
-	return e_test_server_utils_run ();
+	return e_test_server_utils_run (argc, argv);
 }

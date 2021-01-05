@@ -2114,7 +2114,9 @@ main (gint argc,
 		test_regex = g_regex_new (test_filter, 0, 0, NULL);
 
 	g_test_init (&argc, &argv, NULL);
-	g_test_bug_base ("http://bugzilla.gnome.org/");
+	g_test_bug_base ("https://gitlab.gnome.org/GNOME/evolution-data-server/");
+
+	client_test_utils_read_args (argc, argv);
 
 	for (i = 0; i < G_N_ELEMENTS (base_params); i++) {
 
@@ -2769,5 +2771,5 @@ main (gint argc,
 		}
 	}
 
-	return e_test_server_utils_run ();
+	return e_test_server_utils_run (argc, argv);
 }

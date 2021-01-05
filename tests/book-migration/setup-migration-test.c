@@ -341,7 +341,7 @@ main (gint argc,
 			setup_migration_run,
 			e_test_server_utils_teardown);
 
-		return e_test_server_utils_run ();
+		return e_test_server_utils_run (argc, argv);
 #else
 		g_error (
 			"Requested sandboxed setup but that is not available until EDS 3.10, current version is %d.%d",

@@ -6,12 +6,7 @@ set(extra_deps
 )
 
 set(extra_defines
-	-DSRCDIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"
 	-DINSTALLED_TEST_DIR=\"${INSTALLED_TESTS_EXEC_DIR}\"
-	-DBACKENDDIR=\"${ecal_backenddir}\"
-	-DDATADIR=\"${SHARE_INSTALL_PREFIX}\"
-	-DBUILDDIR=\"${CAMKE_BINARY_DIR}\"
-	-DCAMEL_PROVIDERDIR=\"${camel_providerdir}\"
 )
 
 set(extra_cflags
@@ -98,6 +93,7 @@ foreach(_test ${TESTS})
 		extra_ldflags
 		"session-exclusive"
 		"TEST_INSTALLED_SERVICES=1"
+		--data-dir "${CMAKE_CURRENT_SOURCE_DIR}/components"
 	)
 endforeach(_test)
 

@@ -30,6 +30,23 @@
 
 #include "data-test-utils.h"
 
+static const gchar *args_data_dir = NULL;
+
+void
+data_test_utils_read_args (gint argc,
+			   gchar **argv)
+{
+	gint ii;
+
+	for (ii = 0; ii < argc; ii++) {
+		if (g_strcmp0 (argv[ii], "--data-dir") == 0) {
+			if (ii + 1 < argc)
+				args_data_dir = argv[ii + 1];
+			break;
+		}
+	}
+}
+
 gchar *
 new_vcard_from_test_case (const gchar *case_name)
 {
@@ -44,10 +61,16 @@ new_vcard_from_test_case (const gchar *case_name)
 	/* In the case of installed tests, they run in ${pkglibexecdir}/installed-tests
 	 * and the vcards are installed in ${pkglibexecdir}/installed-tests/vcards
 	 */
-	if (g_getenv ("TEST_INSTALLED_SERVICES") != NULL)
+	if (g_getenv ("TEST_INSTALLED_SERVICES") != NULL) {
 		filename = g_build_filename (INSTALLED_TEST_DIR, "vcards", case_filename, NULL);
-	else
-		filename = g_build_filename (SRCDIR, "..", "libebook", "data", "vcards", case_filename, NULL);
+	} else {
+		if (!args_data_dir) {
+			g_warning ("Data directory not set, pass it with `--data-dir PATH`");
+			exit(1);
+		}
+
+		filename = g_build_filename (args_data_dir, case_filename, NULL);
+	}
 
 	file = g_file_new_for_path (filename);
 	if (!g_file_load_contents (file, NULL, &vcard, NULL, NULL, &error))
@@ -199,17 +222,7 @@ e_sqlite_fixture_setup (EbSqlFixture *fixture,
 	EbSqlClosure *closure = (EbSqlClosure *) user_data;
 	ESourceBackendSummarySetup *setup = NULL;
 	gchar  *filename, *directory;
-	const gchar *provider_dir;
 	GError *error = NULL;
-
-	provider_dir = g_getenv (EDS_CAMEL_PROVIDER_DIR);
-	if (!provider_dir)
-		provider_dir = CAMEL_PROVIDERDIR;
-
-	if (!g_file_test (provider_dir, G_FILE_TEST_IS_DIR | G_FILE_TEST_EXISTS)) {
-		if (g_mkdir_with_parents (provider_dir, 0700) == -1)
-			g_warning ("%s: Failed to create folder '%s': %s\n", G_STRFUNC, provider_dir, g_strerror (errno));
-	}
 
 	fixture->contacts =
 		g_hash_table_new_full (

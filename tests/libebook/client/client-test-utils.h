@@ -25,6 +25,9 @@
 
 #include <libebook/libebook.h>
 
+void	client_test_utils_read_args	(gint argc,
+					 gchar **argv);
+
 void print_email (EContact *contact);
 
 gboolean add_contact_from_test_case_verify (EBookClient *book_client, const gchar *case_name, EContact **contact);

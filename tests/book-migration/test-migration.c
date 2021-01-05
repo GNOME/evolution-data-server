@@ -409,7 +409,6 @@ main (gint argc,
       gchar **argv)
 {
 	GList *sandboxes, *l;
-	gint ret;
 
 #if !GLIB_CHECK_VERSION (2, 35, 1)
 	g_type_init ();
@@ -433,7 +432,5 @@ main (gint argc,
 
 	g_list_free_full (sandboxes, g_free);
 
-	ret = e_test_server_utils_run ();
-
-	return ret;
+	return e_test_server_utils_run (argc, argv);
 }

@@ -22,6 +22,9 @@
 
 G_BEGIN_DECLS
 
+void		tcu_read_args				(gint argc,
+							 gchar **argv);
+
 typedef enum {
 	TCU_LOAD_COMPONENT_SET_NONE,
 	TCU_LOAD_COMPONENT_SET_EVENTS,

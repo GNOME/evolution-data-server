@@ -10,18 +10,7 @@ set(extra_deps
 	ecal
 )
 
-set(extra_defines
-	-DEDS_TEST_DBUS_SERVICE_DIR=\"${CMAKE_BINARY_DIR}/tests/test-server-utils/services\"
-	-DEDS_TEST_WORK_DIR=\"${CMAKE_BINARY_DIR}/tests/test-server-utils/cache\"
-	-DEDS_TEST_SCHEMA_DIR=\"${CMAKE_BINARY_DIR}/data\"
-	-DEDS_TEST_ADDRESS_BOOK_DIR=\"${CMAKE_BINARY_DIR}/src/addressbook/backends/file\"
-	-DEDS_TEST_CALENDAR_DIR=\"${CMAKE_BINARY_DIR}/src/calendar/backends/file\"
-	-DEDS_TEST_REGISTRY_DIR=\"${CMAKE_BINARY_DIR}/src/modules/cache-reaper\"
-	-DEDS_TEST_CAMEL_DIR=\"${CMAKE_BINARY_DIR}/src/camel/providers/local\"
-	-DEDS_TEST_SUBPROCESS_CAL_PATH=\"${CMAKE_BINARY_DIR}/src/calendar/libedata-cal/evolution-calendar-factory-subprocess\"
-	-DEDS_TEST_SUBPROCESS_BOOK_PATH=\"${CMAKE_BINARY_DIR}/src/addressbook/libedata-book/evolution-addressbook-factory-subprocess\"
-	-DEDS_TEST_TOP_BUILD_DIR=\"${CMAKE_BINARY_DIR}/src\"
-)
+set(extra_defines)
 
 set(extra_cflags
 	${ADDRESSBOOK_CFLAGS}

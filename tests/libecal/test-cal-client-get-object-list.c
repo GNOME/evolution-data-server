@@ -169,5 +169,5 @@ main (gint argc,
 		test_get_object_list_async,
 		e_test_server_utils_teardown);
 
-	return e_test_server_utils_run ();
+	return e_test_server_utils_run (argc, argv);
 }

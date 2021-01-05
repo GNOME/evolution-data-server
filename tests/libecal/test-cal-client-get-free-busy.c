@@ -258,5 +258,5 @@ main (gint argc,
 		test_get_free_busy_async,
 		teardown_fixture);
 
-	return e_test_server_utils_run ();
+	return e_test_server_utils_run (argc, argv);
 }

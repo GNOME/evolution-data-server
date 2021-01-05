@@ -55,7 +55,7 @@ foreach(_test ${TESTS})
 		extra_incdirs
 		extra_ldflags
 	)
-	add_check_test(${_test})
+	add_check_test(${_test} --build-dir "${CMAKE_BINARY_DIR}")
 	if(HAVE_DB_LOAD)
 		add_dependencies(${_test} libdb-addressbooks)
 	endif(HAVE_DB_LOAD)

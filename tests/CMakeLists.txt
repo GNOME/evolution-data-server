@@ -48,7 +48,7 @@ endmacro(build_only_installable_test)
 macro(add_installable_test _test_ident _sourcesvar _depsvar _defsvar _cflagsvar _incdirsvar _ldflagsvar _ittype _itenviron)
 	build_only_installable_test(${_test_ident} ${_sourcesvar} ${_depsvar} ${_defsvar} ${_cflagsvar} ${_incdirsvar} ${_ldflagsvar})
 
-	add_check_test(${_test_ident})
+	add_check_test(${_test_ident} --build-dir "${CMAKE_BINARY_DIR}" ${ARGN})
 	install_test_if_enabled(${_test_ident} ${_ittype} ${_itenviron})
 endmacro(add_installable_test)
 

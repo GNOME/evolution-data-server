@@ -52,6 +52,23 @@ ebook_test_utils_callback_quit (gpointer user_data)
 	return FALSE;
 }
 
+static const gchar *args_data_dir = NULL;
+
+void
+ebook_test_utils_read_args (gint argc,
+			    gchar **argv)
+{
+	gint ii;
+
+	for (ii = 0; ii < argc; ii++) {
+		if (g_strcmp0 (argv[ii], "--data-dir") == 0) {
+			if (ii + 1 < argc)
+				args_data_dir = argv[ii + 1];
+			break;
+		}
+	}
+}
+
 gchar *
 ebook_test_utils_new_vcard_from_test_case (const gchar *case_name)
 {
@@ -66,10 +83,16 @@ ebook_test_utils_new_vcard_from_test_case (const gchar *case_name)
 	/* In the case of installed tests, they run in ${pkglibexecdir}/installed-tests
 	 * and the vcards are installed in ${pkglibexecdir}/installed-tests/vcards
 	 */
-	if (g_getenv ("TEST_INSTALLED_SERVICES") != NULL)
+	if (g_getenv ("TEST_INSTALLED_SERVICES") != NULL) {
 		filename = g_build_filename (INSTALLED_TEST_DIR, "vcards", case_filename, NULL);
-	else
-		filename = g_build_filename (SRCDIR, EBOOK_TEST_UTILS_DATA_DIR, EBOOK_TEST_UTILS_VCARDS_DIR, case_filename, NULL);
+	} else {
+		if (!args_data_dir) {
+			g_warning ("Data directory not set, pass it with `--data-dir PATH`");
+			exit(1);
+		}
+
+		filename = g_build_filename (args_data_dir, case_filename, NULL);
+	}
 
 	file = g_file_new_for_path (filename);
 	if (!g_file_load_contents (file, NULL, &vcard, NULL, NULL, &error)) {

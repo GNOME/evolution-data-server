@@ -43,6 +43,9 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("https://gitlab.gnome.org/GNOME/evolution-data-server/");
+
+	data_test_utils_read_args (argc, argv);
 
 	for (i = 0; i < G_N_ELEMENTS (params); i++) {
 
@@ -82,5 +85,5 @@ main (gint argc,
 		step_test_add (data, TRUE);
 	}
 
-	return e_test_server_utils_run_full (0);
+	return e_test_server_utils_run_full (argc, argv, 0);
 }
