@@ -504,7 +504,7 @@ html_convert (CamelMimeFilter *mime_filter,
 			}
 
 			if (priv->div_open) {
-				if (inptr == start && *start != '\r' && *start != '\n' && !(priv->flags & CAMEL_MIME_FILTER_TOHTML_CONVERT_NL)) {
+				if (inptr == start && ((*start != '\r' && *start != '\n') || !(priv->flags & CAMEL_MIME_FILTER_TOHTML_CONVERT_NL))) {
 					outptr = check_size (mime_filter, outptr, &outend, 5);
 					outptr = g_stpcpy (outptr, "<br>");
 				}
