@@ -163,6 +163,9 @@ e_alarm_notify_audio (EAlarmNotify *an,
 			} else if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
 #ifdef HAVE_CANBERRA
 				gint err = ca_context_play (ca_gtk_context_get (), 0,
+					CA_PROP_APPLICATION_NAME, "evolution-alarm-notify",
+					CA_PROP_APPLICATION_VERSION, VERSION,
+					CA_PROP_APPLICATION_ID, "org.gnome.Evolution-alarm-notify",
 					CA_PROP_MEDIA_FILENAME, filename,
 					NULL);
 
@@ -191,6 +194,9 @@ e_alarm_notify_audio (EAlarmNotify *an,
 #ifdef HAVE_CANBERRA
 	if (!did_play) {
 		gint err = ca_context_play (ca_gtk_context_get (), 0,
+			CA_PROP_APPLICATION_NAME, "evolution-alarm-notify",
+			CA_PROP_APPLICATION_VERSION, VERSION,
+			CA_PROP_APPLICATION_ID, "org.gnome.Evolution-alarm-notify",
 			CA_PROP_EVENT_ID, "alarm-clock-elapsed",
 			NULL);
 
