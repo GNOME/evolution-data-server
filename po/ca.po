@@ -5132,7 +5132,7 @@ msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn’t get "
 "it.)"
 msgstr ""
-"El fitxer mbox està malmès, intenteu arreglar-ho. (S'esperava una línia From "
+"El fitxer mbox està malmès, intenteu arreglar-ho. (S'esperava una línia From, "
 "però no s'ha trobat.)"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:813
@@ -5716,7 +5716,7 @@ msgid ""
 "For delivering mail by passing it to the “sendmail” program on the local "
 "system."
 msgstr ""
-"Per lliurar correu transferint-lo al programa «Sendmail» en el sistema local."
+"Per a lliurar correu transferint-lo al programa «Sendmail» en el sistema local."
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:44
 msgid "sendmail"
@@ -5795,7 +5795,7 @@ msgstr "SMTP"
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:47
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr ""
-"Per lliurar correu connectant-se a una bústia remota fent servir l'SMTP."
+"Per a lliurar correu connectant-se a una bústia remota fent servir l'SMTP."
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:237
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:244
@@ -6191,7 +6191,7 @@ msgstr ""
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
-msgstr "Nom GIO de GNetworkMonitor per usar a la instància ENetworkMonitor"
+msgstr "Nom GIO de GNetworkMonitor per a usar a la instància ENetworkMonitor"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
 msgid ""
