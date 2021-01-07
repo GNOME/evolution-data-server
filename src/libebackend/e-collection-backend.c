@@ -2083,3 +2083,50 @@ e_collection_backend_thaw_populate (ECollectionBackend *backend)
 
 	g_atomic_int_add (&backend->priv->populate_freeze_count, -1);
 }
+
+/**
+ * e_collection_backend_get_part_enabled:
+ * @backend: an #ECollectionBackend
+ * @parts: a bit-or of #ECollectionBackendParts with parts to be checked
+ *
+ * Checks whether the @backend has enabled at least of the @parts.
+ *
+ * Returns: %TRUE, when at least one of the @parts is enabled and
+ *    the backend's #ESource is enabled as well.
+ *
+ * Since: 3.38.3
+ **/
+gboolean
+e_collection_backend_get_part_enabled (ECollectionBackend *backend,
+				       ECollectionBackendParts parts)
+{
+	ESourceCollection *collection_extension = NULL;
+	ESource *source;
+
+	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), FALSE);
+
+	source = e_backend_get_source (E_BACKEND (backend));
+
+	if (!e_source_get_enabled (source))
+		return FALSE;
+
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_COLLECTION))
+		collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
+
+	if (!collection_extension)
+		return TRUE;
+
+	if ((parts & E_COLLECTION_BACKEND_PART_CALENDAR) != 0 &&
+	    e_source_collection_get_calendar_enabled (collection_extension))
+		return TRUE;
+
+	if ((parts & E_COLLECTION_BACKEND_PART_CONTACTS) != 0 &&
+	    e_source_collection_get_contacts_enabled (collection_extension))
+		return TRUE;
+
+	if ((parts & E_COLLECTION_BACKEND_PART_MAIL) != 0 &&
+	    e_source_collection_get_mail_enabled (collection_extension))
+		return TRUE;
+
+	return FALSE;
+}

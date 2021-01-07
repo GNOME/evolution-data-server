@@ -299,7 +299,6 @@ webdav_collection_backend_populate (ECollectionBackend *collection)
 {
 	EWebDAVCollectionBackend *webdav_backend = E_WEBDAV_COLLECTION_BACKEND (collection);
 	ESourceRegistryServer *server;
-	ESourceCollection *collection_extension;
 	ESource *source;
 	GList *list, *liter;
 
@@ -335,11 +334,8 @@ webdav_collection_backend_populate (ECollectionBackend *collection)
 	g_list_free_full (list, g_object_unref);
 
 	source = e_backend_get_source (E_BACKEND (collection));
-	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
 
-	if (e_source_get_enabled (source) && (
-	    e_source_collection_get_calendar_enabled (collection_extension) ||
-	    e_source_collection_get_contacts_enabled (collection_extension))) {
+	if (e_collection_backend_get_part_enabled (collection, E_COLLECTION_BACKEND_PART_CALENDAR | E_COLLECTION_BACKEND_PART_CONTACTS)) {
 		gboolean needs_credentials = TRUE;
 
 		if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {

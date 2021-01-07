@@ -103,4 +103,24 @@ typedef enum {
 	E_OFFLINE_STATE_LOCALLY_DELETED
 } EOfflineState;
 
+/**
+ * ECollectionBackendParts:
+ * @E_COLLECTION_BACKEND_PART_NONE: None part.
+ * @E_COLLECTION_BACKEND_PART_CALENDAR: Check the calendar part.
+ * @E_COLLECTION_BACKEND_PART_CONTACTS: Check the contacts part.
+ * @E_COLLECTION_BACKEND_PART_MAIL: Check the mail part.
+ * @E_COLLECTION_BACKEND_PART_ANY: Shortcut to have all parts checked.
+ *
+ * Flags to check whether at least one of the asked for parts is enabled.
+ *
+ * Since: 3.38.3
+ **/
+typedef enum { /*< flags >*/
+	E_COLLECTION_BACKEND_PART_NONE = 0,
+	E_COLLECTION_BACKEND_PART_CALENDAR = 1 << 0,
+	E_COLLECTION_BACKEND_PART_CONTACTS = 1 << 1,
+	E_COLLECTION_BACKEND_PART_MAIL = 1 << 2,
+	E_COLLECTION_BACKEND_PART_ANY = ~0
+} ECollectionBackendParts;
+
 #endif /* E_BACKEND_ENUMS_H */
