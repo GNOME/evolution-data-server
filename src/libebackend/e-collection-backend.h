@@ -23,6 +23,7 @@
 #define E_COLLECTION_BACKEND_H
 
 #include <libebackend/e-backend.h>
+#include <libebackend/e-backend-enums.h>
 
 /* Standard GObject macros */
 #define E_TYPE_COLLECTION_BACKEND \
@@ -177,6 +178,9 @@ gboolean	e_collection_backend_freeze_populate
 						(ECollectionBackend *backend);
 void		e_collection_backend_thaw_populate
 						(ECollectionBackend *backend);
+gboolean	e_collection_backend_get_part_enabled
+						(ECollectionBackend *backend,
+						 ECollectionBackendParts parts);
 
 G_END_DECLS
 
