@@ -288,15 +288,16 @@ safe_name_for_photo (EBookBackendFile *bf,
                      EContactPhoto *photo,
                      EContactField field)
 {
-	gchar         *fullname = NULL, *name, *str;
-	gchar         *suffix = NULL;
-	gint           i = 0;
+	gchar *fullname = NULL, *name, *str;
+	gchar *suffix = NULL;
+	gint i = 0;
 
 	g_return_val_if_fail (photo->type == E_CONTACT_PHOTO_TYPE_INLINED, NULL);
 
 	/* Get a suitable filename extension */
 	if (photo->data.inlined.mime_type != NULL &&
-	    photo->data.inlined.mime_type[0] != '\0') {
+	    photo->data.inlined.mime_type[0] != '\0' &&
+	    g_ascii_strcasecmp (photo->data.inlined.mime_type, "image/X-EVOLUTION-UNKNOWN") != 0) {
 		suffix = g_uri_escape_string (
 			photo->data.inlined.mime_type,
 			NULL, TRUE);
@@ -322,11 +323,23 @@ safe_name_for_photo (EBookBackendFile *bf,
 		g_free (content_type);
 	}
 
+	/* Replace any percent in the text with a dash, to avoid escaping issues in URI-s */
+	str = suffix;
+	while (str = strchr (str, '%'), str) {
+		*str = '-';
+	}
+
 	/* Create a filename based on the uid/field */
 	name = g_strconcat (
 		e_contact_get_const (contact, E_CONTACT_UID), "_",
 		e_contact_field_name (field), NULL);
 	name = g_strdelimit (name, NULL, '_');
+
+	/* Replace any percent in the text with a dash, to avoid escaping issues in URI-s */
+	str = name;
+	while (str = strchr (str, '%'), str) {
+		*str = '-';
+	}
 
 	do {
 		g_free (fullname);
