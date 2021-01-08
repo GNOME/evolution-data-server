@@ -114,7 +114,7 @@ set(SOURCE_TMPL "
 GType
 @enum_name@_get_type (void)
 {
-	static volatile gsize the_type__volatile = 0;
+	static gsize the_type__volatile = 0;
 
 	if (g_once_init_enter (&the_type__volatile)) {
 		static const G\@Type\@Value values[] = {

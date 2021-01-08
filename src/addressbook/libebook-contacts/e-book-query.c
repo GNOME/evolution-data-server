@@ -936,7 +936,7 @@ e_book_query_to_string (EBookQuery *q)
 GType
 e_book_query_get_type (void)
 {
-	static volatile gsize type_id__volatile = 0;
+	static gsize type_id__volatile = 0;
 
 	if (g_once_init_enter (&type_id__volatile)) {
 		GType type_id;

@@ -2270,7 +2270,7 @@ e_contact_name_free (EContactName *name)
 	GType \
 	_tp ## _get_type (void) \
 	{ \
-		static volatile gsize type_id__volatile = 0; \
+		static gsize type_id__volatile = 0; \
  \
 		if (g_once_init_enter (&type_id__volatile)) { \
 			GType type_id; \
