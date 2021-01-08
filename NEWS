@@ -1,3 +1,24 @@
+Evolution-Data-Server 3.38.3 2021-01-08
+---------------------------------------
+
+Bug Fixes:
+	I#277 - Reminders: Preselect a reminder in the notification window (Milan Crha)
+	I#286 - Skip collection account refresh when parts disabled (Milan Crha)
+
+Miscellaneous:
+	e-categories: Show migration runtime warning only if the file exists (Milan Crha)
+	DataCalView: Created objects could be notified twice (Milan Crha)
+	EReminderWatcher: Add detailed debug prints about the scheduled reminders (Milan Crha)
+	EReminderWatcher: Catch a race condition when creating a calendar view (Milan Crha)
+	alarm-notify: Provide application reference in canberra calls (Milan Crha)
+	CamelMimeFilterToHTML: Change how empty <div> is recognized (Milan Crha)
+	Addressbook:file backend: Prevent percent letter in photo filename (Milan Crha)
+
+Translations:
+	Juliano de Souza Camargo (pt)
+	Hugo Carvalho (pt)
+	Jordi Mas (ca)
+
 Evolution-Data-Server 3.38.2 2020-11-20
 ---------------------------------------
 
