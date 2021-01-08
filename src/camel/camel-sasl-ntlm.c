@@ -492,7 +492,7 @@ static guint32 Spbox[8][64] = {
 /* Encrypt or decrypt a block of data in ECB mode */
 static void
 des (guint32 ks[16][2],
-     guchar block[8])
+     guchar *block)
 {
 	guint32 left, right, work;
 

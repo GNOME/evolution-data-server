@@ -234,6 +234,9 @@ _e_phone_number_cxx_get_country_source (const PhoneNumber &phone_number)
 		case PhoneNumber::FROM_NUMBER_WITHOUT_PLUS_SIGN:
 		case PhoneNumber::FROM_DEFAULT_COUNTRY:
 			break;
+
+		default:
+			break;
 	}
 
 	return E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT;
