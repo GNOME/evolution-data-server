@@ -67,8 +67,13 @@ weather_source_find_location_by_coords (GWeatherLocation *start,
                                         gdouble latitude,
                                         gdouble longitude)
 {
-	GWeatherLocation *location, **children;
+	GWeatherLocation *location;
+	#if GWEATHER_CHECK_VERSION(3, 39, 0)
+	GWeatherLocation *child = NULL;
+	#else
+	GWeatherLocation **children;
 	gint ii;
+	#endif
 
 	if (!start)
 		return NULL;
@@ -79,16 +84,32 @@ weather_source_find_location_by_coords (GWeatherLocation *start,
 
 		gweather_location_get_coords (location, &lat, &lon);
 
-		if (lat == latitude && lon == longitude)
+		if (lat == latitude && lon == longitude) {
+			gweather_location_ref (location);
 			return location;
+		}
 	}
 
+	#if GWEATHER_CHECK_VERSION(3, 39, 0)
+	while (child = gweather_location_next_child (location, child), child) {
+		GWeatherLocation *result;
+
+		result = weather_source_find_location_by_coords (child, latitude, longitude);
+		if (result) {
+			gweather_location_unref (child);
+			return result;
+		}
+	}
+	#else
 	children = gweather_location_get_children (location);
 	for (ii = 0; children[ii]; ii++) {
 		location = weather_source_find_location_by_coords (children[ii], latitude, longitude);
-		if (location)
+		if (location) {
+			gweather_location_ref (location);
 			return location;
+		}
 	}
+	#endif
 
 	return NULL;
 }
@@ -122,6 +143,11 @@ e_weather_source_new (const gchar *location)
 
 	glocation = gweather_location_find_by_station_code (world, tokens[0]);
 
+#if !GWEATHER_CHECK_VERSION(3, 39, 0)
+	if (glocation)
+		gweather_location_ref (glocation);
+#endif
+
 	if (!glocation) {
 		gdouble latitude, longitude;
 		gchar *endptr = NULL;
@@ -133,9 +159,9 @@ e_weather_source_new (const gchar *location)
 		}
 	}
 
-	if (glocation != NULL)
-		gweather_location_ref (glocation);
-
+#if GWEATHER_CHECK_VERSION(3, 39, 0)
+	gweather_location_unref (world);
+#endif
 	g_strfreev (tokens);
 
 	if (glocation == NULL)
@@ -182,7 +208,11 @@ e_weather_source_parse (EWeatherSource *source,
 			, GWEATHER_FORECAST_LIST
 		#endif
 		);
-		gweather_info_set_enabled_providers (source->priv->info, GWEATHER_PROVIDER_ALL);
+		#if GWEATHER_CHECK_VERSION(3, 39, 0)
+		gweather_info_set_application_id (source->priv->info, "org.gnome.Evolution-data-server");
+		gweather_info_set_contact_info (source->priv->info, "evolution-hackers@gnome.org");
+		#endif
+		gweather_info_set_enabled_providers (source->priv->info, GWEATHER_PROVIDER_METAR | GWEATHER_PROVIDER_IWIN);
 		g_signal_connect_object (
 			source->priv->info, "updated",
 			G_CALLBACK (weather_source_updated_cb), source, 0);
