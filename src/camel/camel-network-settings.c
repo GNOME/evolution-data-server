@@ -91,7 +91,7 @@ camel_network_settings_default_init (CamelNetworkSettingsInterface *iface)
 			"user",
 			"User",
 			"User name for the network account",
-			g_get_user_name (),
+			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
