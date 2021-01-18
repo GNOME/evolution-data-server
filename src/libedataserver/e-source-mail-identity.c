@@ -687,7 +687,7 @@ e_source_mail_identity_dup_signature_uid (ESourceMailIdentity *extension)
  * If the user does not want to use a signature for this identity, the
  * convention is to set the #ESourceMailIdentity:signature-uid property
  * to "none".  In keeping with that convention, the property will be set
- * to "none" if @signature is %NULL or an empty string.
+ * to "none" if @signature_uid is %NULL or an empty string.
  *
  * Since: 3.6
  **/
