@@ -77,20 +77,6 @@ main (gint argc,
 		exit (EXIT_FAILURE);
 	}
 
-	g_application_register (G_APPLICATION (alarm_notify), NULL, &error);
-
-	if (error != NULL) {
-		g_printerr ("%s\n", error->message);
-		g_error_free (error);
-		g_object_unref (alarm_notify);
-		exit (EXIT_FAILURE);
-	}
-
-	if (g_application_get_is_remote (G_APPLICATION (alarm_notify))) {
-		g_object_unref (alarm_notify);
-		return 0;
-	}
-
 #ifdef G_OS_UNIX
 	g_unix_signal_add_full (
 		G_PRIORITY_DEFAULT, SIGTERM,

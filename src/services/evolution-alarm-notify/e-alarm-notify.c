@@ -1242,5 +1242,6 @@ e_alarm_notify_new (GCancellable *cancellable,
 	return g_initable_new (
 		E_TYPE_ALARM_NOTIFY, cancellable, error,
 		"application-id", APPLICATION_ID,
+		"flags", G_APPLICATION_ALLOW_REPLACEMENT,
 		NULL);
 }
