@@ -487,15 +487,14 @@ getmodules_callback (Dwfl_Module *module,
 #endif /* HAVE_ELFUTILS_LIBDWFL */
 
 static const gchar *
-addr_lookup (gpointer addr,
-             const gchar **file_path,
-             gint *lineno,
-             const gchar *fallback)
+addr_lookup_dwfl (gpointer addr,
+		  const gchar **file_path,
+		  gint *lineno,
+		  const gchar *fallback)
 {
 #ifdef HAVE_ELFUTILS_LIBDWFL
 	Dwfl *dwfl = dwfl_get (FALSE);
 	struct getmodules_callback_arg arg;
-	static GMutex mutex;
 
 	if (!dwfl)
 		return NULL;
@@ -505,8 +504,6 @@ addr_lookup (gpointer addr,
 	arg.file_path = NULL;
 	arg.lineno = -1;
 
-	g_mutex_lock (&mutex);
-
 	dwfl_getmodules (dwfl, getmodules_callback, &arg, 0);
 
 	if (!arg.func_name && fallback && strstr (fallback, "/lib") != fallback && strstr (fallback, "/usr/lib") != fallback) {
@@ -515,8 +512,6 @@ addr_lookup (gpointer addr,
 			dwfl_getmodules (dwfl, getmodules_callback, &arg, 0);
 	}
 
-	g_mutex_unlock (&mutex);
-
 	*file_path = arg.file_path;
 	*lineno = arg.lineno;
 
@@ -524,6 +519,53 @@ addr_lookup (gpointer addr,
 #else /* HAVE_ELFUTILS_LIBDWFL */
 	return NULL;
 #endif /* HAVE_ELFUTILS_LIBDWFL */
+}
+
+typedef struct _SymbolData {
+	const gchar *func_name;
+	const gchar *file_path;
+	gint lineno;
+} SymbolData;
+
+static const gchar *
+addr_lookup (gpointer addr,
+             const gchar **file_path,
+             gint *lineno,
+             const gchar *fallback)
+{
+	static GHashTable *symbols_cache = NULL;
+	static GMutex mutex;
+	SymbolData *sd, sd_local;
+
+	g_mutex_lock (&mutex);
+	if (symbols_cache) {
+		sd = g_hash_table_lookup (symbols_cache, addr);
+		if (sd) {
+			g_mutex_unlock (&mutex);
+			*file_path = sd->file_path;
+			*lineno = sd->lineno;
+
+			return sd->func_name;
+		}
+	}
+
+	sd_local.func_name = addr_lookup_dwfl (addr, &sd_local.file_path, &sd_local.lineno, fallback);
+	if (sd_local.func_name) {
+		if (!symbols_cache)
+			symbols_cache = g_hash_table_new_full (NULL, NULL, NULL, g_free);
+		sd = g_new (SymbolData, 1);
+		sd->func_name = sd_local.func_name;
+		sd->file_path = sd_local.file_path;
+		sd->lineno = sd_local.lineno;
+		g_hash_table_insert (symbols_cache, addr, sd);
+	}
+
+	g_mutex_unlock (&mutex);
+
+	*file_path = sd_local.file_path;
+	*lineno = sd_local.lineno;
+
+	return sd_local.func_name;
 }
 
 #endif /* HAVE_BACKTRACE_SYMBOLS */
