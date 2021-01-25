@@ -28,6 +28,7 @@ time_format_date_and_time.date_tm type="Posix.tm"
 time_format_time.date_tm type="Posix.tm"
 
 webdav_discover_sources parent="E.Source" symbol_type="method" instance_idx=0
-webdav_discover_sources_full parent="E.Source" symbol_type="method" instance_idx=0
+webdav_discover_sources_finish parent="E.Source" symbol_type="method" instance_idx=0
+webdav_discover_sources_full parent="E.Source" symbol_type="method" instance_idx=0 finish_name="e_webdav_discover_sources_finish"
 webdav_discover_sources_full_sync parent="E.Source" symbol_type="method" instance_idx=0
 webdav_discover_sources_sync parent="E.Source" symbol_type="method" instance_idx=0
