@@ -35,7 +35,7 @@ G_BEGIN_DECLS
  * @E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL:
  *   If this flag is set then all contacts matching the view's query will
  *   be sent as notifications when starting the view, otherwise only future
- *   changes will be reported.  The default for a #EBookClientView is %TRUE.
+ *   changes will be reported.  The default for an #EBookClientView is %TRUE.
  *
  * Flags that control the behaviour of an #EBookClientView.
  *

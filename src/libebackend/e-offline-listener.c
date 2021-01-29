@@ -23,7 +23,7 @@
  * @short_description: Tracks Evolution's online/offline state
  *
  * An #EOfflineListener basically just tracks Evolution's online/offline
- * state and emits a #EOfflineListener:changed signal when a state change
+ * state and emits an #EOfflineListener:changed signal when a state change
  * is detected.
  *
  * This class is highly Evolution-centric and for that reason has been

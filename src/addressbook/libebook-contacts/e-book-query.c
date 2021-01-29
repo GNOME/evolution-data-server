@@ -335,7 +335,7 @@ e_book_query_vcard_field_test (const gchar *field,
 
 /**
  * e_book_query_field_exists:
- * @field: a #EContactField
+ * @field: an #EContactField
  *
  * Creates a new #EBookQuery which tests if the field @field exists.
  * Returns: the new #EBookQuery
@@ -441,7 +441,7 @@ e_book_query_unref (EBookQuery *q)
 
 /**
  * e_book_query_ref:
- * @q: a #EBookQuery
+ * @q: an #EBookQuery
  *
  * Increment the reference count on @q.
  * Returns: @q

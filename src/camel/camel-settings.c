@@ -166,7 +166,7 @@ camel_settings_class_list_settings (CamelSettingsClass *settings_class,
  * camel_settings_clone:
  * @settings: a #CamelSettings
  *
- * Creates an copy of @settings, such that passing @settings and the
+ * Creates a copy of @settings, such that passing @settings and the
  * copied instance to camel_settings_equal() would return %TRUE.
  *
  * By default, this creates a new settings instance with the same #GType

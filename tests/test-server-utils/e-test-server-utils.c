@@ -672,8 +672,8 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
  *****************************************************************/
 /**
  * e_test_server_utils_setup:
- * @fixture: A #ETestServerFixture
- * @user_data: A #ETestServerClosure or derived structure provided by the test.
+ * @fixture: An #ETestServerFixture
+ * @user_data: An #ETestServerClosure or derived structure provided by the test.
  *
  * A setup function for the #ETestServerFixture fixture
  */
@@ -735,8 +735,8 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
 
 /**
  * e_test_server_utils_teardown:
- * @fixture: A #ETestServerFixture
- * @user_data: A #ETestServerClosure or derived structure provided by the test.
+ * @fixture: An #ETestServerFixture
+ * @user_data: An #ETestServerClosure or derived structure provided by the test.
  *
  * A teardown function for the #ETestServerFixture fixture
  */

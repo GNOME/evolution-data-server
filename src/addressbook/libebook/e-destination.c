@@ -949,7 +949,7 @@ e_destination_is_ignored (const EDestination *dest)
  * @dest: an #EDestination
  * @ignored: %TRUE if this #EDestination should be ignored.
  *
- * Set the ignore flag on a #EDestination.
+ * Set the ignore flag on an #EDestination.
  */
 void
 e_destination_set_ignored (EDestination *dest,

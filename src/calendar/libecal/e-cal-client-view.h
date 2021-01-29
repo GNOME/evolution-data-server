@@ -60,7 +60,7 @@ struct _ECalClient;
  * @E_CAL_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL:
  *   If this flag is set then all objects matching the view's query will
  *   be sent as notifications when starting the view, otherwise only future
- *   changes will be reported.  The default for a #ECalClientView is %TRUE.
+ *   changes will be reported.  The default for an #ECalClientView is %TRUE.
  *
  * Flags that control the behaviour of an #ECalClientView.
  *

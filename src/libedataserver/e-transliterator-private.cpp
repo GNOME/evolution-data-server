@@ -41,7 +41,7 @@ struct _ETransliterator {
 	Transliterator *priv;
 };
 
-/* Create an Transliterator for the source and target
+/* Create a Transliterator for the source and target
  * language stripts
  */
 ETransliterator *

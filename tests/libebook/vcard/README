@@ -21,7 +21,7 @@ Test   : Description
 5.vcf  : A vCard containing utf8 characters quoted-printable encoded.
 
 6.vcf  : A vCard with several errors in attribute parameters:
-	 line 5: an missing parameter value (a , with nothing after it).
+	 line 5: a missing parameter value (a , with nothing after it).
          line 6: a missing parameter name when using multiple
                  values. (this may not be in violation of the rfc.)
 	 line 7: a missing parameter name when using multiple

@@ -93,7 +93,7 @@ typedef struct _EBookSqlitePrivate EBookSqlitePrivate;
  * @EBSQL_CHANGE_LOCALE_CHANGED: Contact was modified as a result of a locale change
  * @EBSQL_CHANGE_LAST: A symbolic end marker for this enumeration, will not be passed in callbacks.
  *
- * Indicates the type of change which occurred in a #EbSqlChangeCallback
+ * Indicates the type of change which occurred in an #EbSqlChangeCallback
  *
  * Since: 3.12
  **/

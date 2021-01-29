@@ -51,7 +51,7 @@
  *         Cast to an integer value.
  *
  *   string = (cast-string string|int|bool)
- *         Cast to an string value.
+ *         Cast to a string value.
  *
  *   Comparison operators:
  *

@@ -83,7 +83,7 @@ e_data_book_direct_class_init (EDataBookDirectClass *class)
  * @backend_factory_name: Type name of the EBookBackendFactory implemented by the library
  * @config: A backend specific configuration string
  *
- * Creates a #EDataBookDirect to report configuration data needed for direct
+ * Creates an #EDataBookDirect to report configuration data needed for direct
  * read access.
  *
  * This is returned by e_book_backend_get_direct_book() for backends

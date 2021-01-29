@@ -1568,10 +1568,10 @@ e_book_remove_contacts_async (EBook *book,
  * @requested_fields: (allow-none) (element-type utf8): a #GList containing
  *                    the names of fields to return, or NULL for all
  * @max_results: the maximum number of contacts to show (or 0 for all)
- * @book_view: (out): A #EBookView pointer, will be set to the view
+ * @book_view: (out): An #EBookView pointer, will be set to the view
  * @error: a #GError to set on failure
  *
- * Query @book with @query, creating a #EBookView in @book_view with the fields
+ * Query @book with @query, creating an #EBookView in @book_view with the fields
  * specified by @requested_fields and limited at @max_results records. On an
  * error, @error is set and %FALSE returned.
  *
@@ -1665,7 +1665,7 @@ get_book_view_reply (GObject *source_object,
  * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
- * Query @book with @query, creating a #EBookView with the fields
+ * Query @book with @query, creating an #EBookView with the fields
  * specified by @requested_fields and limited at @max_results records.
  *
  * Returns: %TRUE if successful, %FALSE otherwise
@@ -1713,7 +1713,7 @@ e_book_async_get_book_view (EBook *book,
  * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
- * Query @book with @query, creating a #EBookView with the fields
+ * Query @book with @query, creating an #EBookView with the fields
  * specified by @requested_fields and limited at @max_results records.
  *
  * Returns: %TRUE if successful, %FALSE otherwise

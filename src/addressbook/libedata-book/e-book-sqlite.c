@@ -6599,7 +6599,7 @@ ebsql_new_default (const gchar *path,
  * the #EbSqlCursor interface, using the %E_BOOK_INDEX_SORT_KEY
  * index flag.
  *
- * Returns: (transfer full): A reference to a #EBookSqlite
+ * Returns: (transfer full): A reference to an #EBookSqlite
  *
  * Since: 3.12
  **/

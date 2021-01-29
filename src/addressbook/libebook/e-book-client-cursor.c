@@ -215,7 +215,7 @@
  * These total and position values are guaranteed to always be coherent, they are
  * updated synchronously upon successful completion of any of the asynchronous
  * cursor API calls, and also updated asynchronously whenever the addressbook
- * changes and a #EBookClientCursor::refresh signal is delivered.
+ * changes and an #EBookClientCursor::refresh signal is delivered.
  * </para>
  * <para>
  * Change notifications are guaranteed to only ever be delivered in the #GMainContext which
@@ -413,7 +413,7 @@
  * addressbook is changing its active locale setting. In the case of a dynamic locale
  * change, a change notification will be delivered for the #EBookClientCursor:alphabet
  * property at which point the application should reload anything related to the
- * alphabet (a #EBookClientCursor::refresh signal will also be delivered at this point).
+ * alphabet (an #EBookClientCursor::refresh signal will also be delivered at this point).
  * </para>
  * <para>
  * While moving through the cursor results using e_book_client_cursor_step(),
@@ -2723,7 +2723,7 @@ e_book_client_cursor_set_alphabetic_index_finish (EBookClientCursor *cursor,
  * If this method completes with an %E_CLIENT_ERROR_OUT_OF_SYNC error, it is an
  * indication that the addressbook has been set into a new locale and it would be
  * unsafe to set the alphabetic index at this time. If you receive an out of sync
- * error from this method, then you should wait until a #EBookClientCursor:alphabet
+ * error from this method, then you should wait until an #EBookClientCursor:alphabet
  * property change notification is delivered and then proceed to load the new
  * alphabet before trying to set any alphabetic index.
  *

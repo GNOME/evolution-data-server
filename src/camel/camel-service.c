@@ -2352,7 +2352,7 @@ camel_service_query_auth_types_finish (CamelService *service,
 
 /**
  * camel_service_auth_type_copy:
- * @service_auth_type: an #CamelServiceAuthType
+ * @service_auth_type: a #CamelServiceAuthType
  *
  * Copies the @service_auth_type struct.
  * Does nothing and returns the given object in reality, needed for the introspection.
@@ -2372,7 +2372,7 @@ camel_service_auth_type_copy (const CamelServiceAuthType *service_auth_type)
 
 /**
  * camel_service_auth_type_free:
- * @service_auth_type: an #CamelServiceAuthType
+ * @service_auth_type: a #CamelServiceAuthType
  *
  * Frees the @service_auth_type struct.
  * Does nothing in reality, needed for the introspection.

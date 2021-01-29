@@ -1891,7 +1891,7 @@ e_book_backend_sqlitedb_new_full (const gchar *path,
  * If the path for multiple addressbooks are same, the contacts from all addressbooks
  * would be stored in same db in different tables.
  *
- * Returns: (transfer full): A reference to a #EBookBackendSqliteDB
+ * Returns: (transfer full): A reference to an #EBookBackendSqliteDB
  *
  * Since: 3.2
  *

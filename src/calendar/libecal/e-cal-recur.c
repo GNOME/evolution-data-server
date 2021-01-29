@@ -1769,7 +1769,7 @@ e_cal_recur_obtain_enddate (ICalRecurrence *ir,
  * given @zone timezone. This is needed if the DTSTART is a DATE or floating
  * time.
  *
- * Converts an #ICalProperty to a #ECalRecurrence.  This should be
+ * Converts an #ICalProperty to an #ECalRecurrence.  This should be
  * freed using the e_cal_recur_free() function.
  *
  * Returns: #ECalRecurrence structure.
@@ -1905,9 +1905,9 @@ e_cal_recur_ical_weekday_to_weekday (ICalRecurrenceWeekday day)
 
 /**
  * e_cal_recur_free:
- * @r: A #ECalRecurrence structure.
+ * @r: An #ECalRecurrence structure.
  *
- * Frees a #ECalRecurrence structure.
+ * Frees an #ECalRecurrence structure.
  **/
 static void
 e_cal_recur_free (ECalRecurrence *r)

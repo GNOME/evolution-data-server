@@ -1015,7 +1015,7 @@ func_exists (struct _ESExp *f,
 				if (prop && *prop)
 					truth = TRUE;
 			} else {
-				/* is is not a known EContact field, try with EVCard attributes */
+				/* This is not a known EContact field, try with EVCard attributes */
 				EVCardAttribute *attr;
 				GList *l, *values;
 

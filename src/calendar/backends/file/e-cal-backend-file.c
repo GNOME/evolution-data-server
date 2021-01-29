@@ -363,7 +363,7 @@ e_cal_backend_file_finalize (GObject *object)
 	G_OBJECT_CLASS (e_cal_backend_file_parent_class)->finalize (object);
 }
 
-/* Looks up an component by its UID on the backend's component hash table
+/* Looks up a component by its UID on the backend's component hash table
  * and returns TRUE if any event (regardless whether it is the master or a child)
  * with that UID exists */
 static gboolean

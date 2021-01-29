@@ -104,7 +104,7 @@ struct _ETestServerClosure {
  * @calendar_client: An #ECalClient, created for %E_TEST_SERVER_CALENDAR tests
  * @book: An #EBook, created for %E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK tests
  *
- * A union of service types, holds the object to test in a #ETestServerFixture.
+ * A union of service types, holds the object to test in an #ETestServerFixture.
  *
  */
 typedef union {

@@ -2021,7 +2021,7 @@ e_source_registry_server_ref_backend (ESourceRegistryServer *server,
  *
  * Returns the #ECollectionBackendFactory for @source, if available.
  * If @source does not have an #ESourceCollection extension, or if the
- * #ESourceCollection extension names a #ESourceBackend:backend-name for
+ * #ESourceCollection extension names an #ESourceBackend:backend-name for
  * which there is no corresponding #ECollectionBackendFactory, the function
  * returns %NULL.
  *

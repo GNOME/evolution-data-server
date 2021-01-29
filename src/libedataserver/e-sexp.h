@@ -68,7 +68,7 @@ struct _ESExpResult {
 
 /**
  * ESExpFunc:
- * @sexp: a #ESExp
+ * @sexp: an #ESExp
  * @argc: count of arguments
  * @argv: (in) (array length=argc): array of values of the arguments
  * @user_data: user data as passed to e_sexp_add_function()
@@ -84,7 +84,7 @@ typedef struct _ESExpResult *(ESExpFunc)(struct _ESExp *sexp,
 
 /**
  * ESExpIFunc:
- * @sexp: a #ESExp
+ * @sexp: an #ESExp
  * @argc: count of arguments
  * @argv: (in) (array length=argc): array of values of the arguments
  * @user_data: user data as passed to e_sexp_add_ifunction()

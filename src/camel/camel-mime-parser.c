@@ -1185,7 +1185,7 @@ folder_boundary_check (struct _header_scan_state *s,
 			if (part->boundarylenfinal <= len) {
 				gint extra = part->boundarylenfinal - part->boundarylen;
 
-				/* check the extra stuff on an final boundary, normally -- for mime parts */
+				/* check the extra stuff on a final boundary, normally -- for mime parts */
 				if (extra > 0) {
 					*lastone = memcmp(&boundary[part->boundarylen],
 							  &part->boundary[part->boundarylen],
