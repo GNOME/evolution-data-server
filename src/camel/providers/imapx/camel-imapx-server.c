@@ -741,6 +741,14 @@ imapx_server_set_connection_timeout (GIOStream *connection,
 	return previous_timeout;
 }
 
+static gboolean
+imapx_server_has_current_command (CamelIMAPXServer *is,
+				  CamelIMAPXJobKind job_kind)
+{
+	return is->priv->current_command &&
+		is->priv->current_command->job_kind == job_kind;
+}
+
 /* untagged response handler functions */
 
 static gboolean
@@ -1516,6 +1524,11 @@ imapx_untagged_lsub (CamelIMAPXServer *is,
 	if (response == NULL)
 		return FALSE;
 
+	if (!imapx_server_has_current_command (is, CAMEL_IMAPX_JOB_LSUB)) {
+		g_clear_object (&response);
+		return TRUE;
+	}
+
 	camel_imapx_list_response_add_attribute (
 		response, CAMEL_IMAPX_LIST_ATTR_SUBSCRIBED);
 
@@ -1563,6 +1576,11 @@ imapx_untagged_list (CamelIMAPXServer *is,
 		CAMEL_IMAPX_INPUT_STREAM (input_stream), cancellable, error);
 	if (response == NULL)
 		return FALSE;
+
+	if (!imapx_server_has_current_command (is, CAMEL_IMAPX_JOB_LIST)) {
+		g_clear_object (&response);
+		return TRUE;
+	}
 
 	mailbox_name = camel_imapx_list_response_get_mailbox_name (response);
 	separator = camel_imapx_list_response_get_separator (response);
@@ -1713,8 +1731,6 @@ imapx_untagged_search (CamelIMAPXServer *is,
 	search_results = g_array_new (FALSE, FALSE, sizeof (guint64));
 
 	while (TRUE) {
-		gboolean success;
-
 		/* Peek at the next token, and break
 		 * out of the loop if we get a newline. */
 		tok = camel_imapx_input_stream_token (
@@ -1728,11 +1744,7 @@ imapx_untagged_search (CamelIMAPXServer *is,
 			CAMEL_IMAPX_INPUT_STREAM (input_stream),
 			tok, token, len);
 
-		success = camel_imapx_input_stream_number (
-			CAMEL_IMAPX_INPUT_STREAM (input_stream),
-			&number, cancellable, error);
-
-		if (!success)
+		if (!camel_imapx_input_stream_number (CAMEL_IMAPX_INPUT_STREAM (input_stream), &number, cancellable, error))
 			goto exit;
 
 		g_array_append_val (search_results, number);
