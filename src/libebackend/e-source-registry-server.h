@@ -28,6 +28,7 @@
 #include <libebackend/e-data-factory.h>
 #include <libebackend/e-collection-backend.h>
 #include <libebackend/e-collection-backend-factory.h>
+#include <libebackend/e-oauth2-support.h>
 
 /* Standard GObject macros */
 #define E_TYPE_SOURCE_REGISTRY_SERVER \
@@ -159,6 +160,8 @@ ECollectionBackendFactory *
 		e_source_registry_server_ref_backend_factory
 						(ESourceRegistryServer *server,
 						 ESource *source);
+EOAuth2Support *e_source_registry_server_ref_oauth2_support
+						(ESourceRegistryServer *server);
 
 #ifndef EDS_DISABLE_DEPRECATED
 gboolean	e_source_registry_server_load_all

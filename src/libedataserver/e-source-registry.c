@@ -190,15 +190,10 @@ static guint signals[LAST_SIGNAL];
 
 /* By default, the GAsyncInitable interface calls GInitable.init()
  * from a separate thread, so we only have to override GInitable. */
-G_DEFINE_TYPE_WITH_CODE (
-	ESourceRegistry,
-	e_source_registry,
-	G_TYPE_OBJECT,
+G_DEFINE_TYPE_WITH_CODE (ESourceRegistry, e_source_registry, G_TYPE_OBJECT,
 	G_ADD_PRIVATE (ESourceRegistry)
-	G_IMPLEMENT_INTERFACE (
-		G_TYPE_INITABLE, e_source_registry_initable_init)
-	G_IMPLEMENT_INTERFACE (
-		G_TYPE_ASYNC_INITABLE, NULL))
+	G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, e_source_registry_initable_init)
+	G_IMPLEMENT_INTERFACE (G_TYPE_ASYNC_INITABLE, NULL))
 
 static void
 async_context_free (AsyncContext *async_context)
@@ -1291,6 +1286,46 @@ source_registry_get_property (GObject *object,
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
+static GObject *registry_singleton = NULL;
+G_LOCK_DEFINE_STATIC (registry_singleton);
+
+static void
+registry_singleton_weak_ref_cb (gpointer user_data,
+				GObject *object)
+{
+	G_LOCK (registry_singleton);
+
+	g_warn_if_fail (object == registry_singleton);
+	registry_singleton = NULL;
+
+	G_UNLOCK (registry_singleton);
+}
+
+static GObject *
+source_registry_constructor (GType type,
+			     guint n_construct_params,
+			     GObjectConstructParam *construct_params)
+{
+	GObject *object;
+
+	G_LOCK (registry_singleton);
+
+	if (registry_singleton) {
+		object = g_object_ref (registry_singleton);
+	} else {
+		object = G_OBJECT_CLASS (e_source_registry_parent_class)->constructor (type, n_construct_params, construct_params);
+
+		if (object)
+			g_object_weak_ref (object, registry_singleton_weak_ref_cb, NULL);
+
+		registry_singleton = object;
+	}
+
+	G_UNLOCK (registry_singleton);
+
+	return object;
+}
+
 static void
 source_registry_dispose (GObject *object)
 {
@@ -1469,6 +1504,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_registry_set_property;
 	object_class->get_property = source_registry_get_property;
+	object_class->constructor = source_registry_constructor;
 	object_class->dispose = source_registry_dispose;
 	object_class->finalize = source_registry_finalize;
 
@@ -3807,4 +3843,3 @@ e_source_registry_set_default_for_extension_name (ESourceRegistry *registry,
 		e_source_registry_set_default_task_list (
 			registry, default_source);
 }
-

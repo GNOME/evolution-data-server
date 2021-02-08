@@ -82,10 +82,11 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE_WITH_PRIVATE (
-	ESourceRegistryServer,
-	e_source_registry_server,
-	E_TYPE_DATA_FACTORY)
+static void e_source_registry_server_oauth2_support_init (EOAuth2SupportInterface *iface);
+
+G_DEFINE_TYPE_WITH_CODE (ESourceRegistryServer, e_source_registry_server, E_TYPE_DATA_FACTORY,
+	G_ADD_PRIVATE (ESourceRegistryServer)
+	G_IMPLEMENT_INTERFACE (E_TYPE_OAUTH2_SUPPORT, e_source_registry_server_oauth2_support_init))
 
 /* GDestroyNotify callback for 'sources' values */
 static void
@@ -755,6 +756,46 @@ source_registry_server_adopt_orphans (ESourceRegistryServer *server,
 	}
 }
 
+static GObject *server_singleton = NULL;
+G_LOCK_DEFINE_STATIC (server_singleton);
+
+static void
+server_singleton_weak_ref_cb (gpointer user_data,
+			      GObject *object)
+{
+	G_LOCK (server_singleton);
+
+	g_warn_if_fail (object == server_singleton);
+	server_singleton = NULL;
+
+	G_UNLOCK (server_singleton);
+}
+
+static GObject *
+source_registry_server_constructor (GType type,
+				    guint n_construct_params,
+				    GObjectConstructParam *construct_params)
+{
+	GObject *object;
+
+	G_LOCK (server_singleton);
+
+	if (server_singleton) {
+		object = g_object_ref (server_singleton);
+	} else {
+		object = G_OBJECT_CLASS (e_source_registry_server_parent_class)->constructor (type, n_construct_params, construct_params);
+
+		if (object)
+			g_object_weak_ref (object, server_singleton_weak_ref_cb, NULL);
+
+		server_singleton = object;
+	}
+
+	G_UNLOCK (server_singleton);
+
+	return object;
+}
+
 static void
 source_registry_server_constructed (GObject *object)
 {
@@ -973,6 +1014,42 @@ source_registry_server_any_true (GSignalInvocationHint *ihint,
 	return TRUE;
 }
 
+static gboolean
+e_source_registry_server_get_access_token_sync (EOAuth2Support *support,
+						ESource *source,
+						GCancellable *cancellable,
+						gchar **out_access_token,
+						gint *out_expires_in,
+						GError **error)
+{
+	EOAuth2ServiceRefSourceFunc ref_source;
+	ESourceRegistryServer *server;
+	EOAuth2Service *service;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY_SERVER (support), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	server = E_SOURCE_REGISTRY_SERVER (support);
+	service = e_oauth2_services_find (server->priv->oauth2_services, source);
+
+	if (!service) {
+		g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+			_("Data source “%s” does not support OAuth 2.0 authentication"),
+			e_source_get_display_name (source));
+		return FALSE;
+	}
+
+	ref_source = (EOAuth2ServiceRefSourceFunc) e_source_registry_server_ref_source;
+
+	success = e_oauth2_service_get_access_token_sync (service, source, ref_source, server,
+		out_access_token, out_expires_in, cancellable, error);
+
+	g_clear_object (&service);
+
+	return success;
+}
+
 static GDBusInterfaceSkeleton *
 source_registry_server_get_dbus_interface_skeleton (EDBusServer *server)
 {
@@ -999,6 +1076,7 @@ e_source_registry_server_class_init (ESourceRegistryServerClass *class)
 		modules_directory = g_strdup (modules_directory_env);
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->constructor = source_registry_server_constructor;
 	object_class->constructed = source_registry_server_constructed;
 	object_class->dispose = source_registry_server_dispose;
 	object_class->finalize = source_registry_server_finalize;
@@ -1117,6 +1195,12 @@ e_source_registry_server_class_init (ESourceRegistryServerClass *class)
 		G_TYPE_BOOLEAN, 2,
 		G_TYPE_KEY_FILE,
 		G_TYPE_STRING);
+}
+
+static void
+e_source_registry_server_oauth2_support_init (EOAuth2SupportInterface *iface)
+{
+	iface->get_access_token_sync = e_source_registry_server_get_access_token_sync;
 }
 
 static void
@@ -2067,4 +2151,29 @@ e_source_registry_server_ref_backend_factory (ESourceRegistryServer *server,
 	/* The factory *should* be an ECollectionBackendFactory.
 	 * We specify this in source_registry_server_class_init(). */
 	return E_COLLECTION_BACKEND_FACTORY (factory);
+}
+
+/**
+ * e_source_registry_server_ref_oauth2_support:
+ * @server: an #ESourceRegistryServer
+ *
+ * Returns the default #EOAuth2Support implementation, which can be used when
+ * the source doesn't have it overwritten.
+ *
+ * Free the returned object with g_object_unref(), when no longer needed.
+ *
+ * Returns: (transfer full) (nullable): the default #EOAuth2Support,
+ *    or %NULL, when none exists
+ *
+ * Since: 3.40
+ **/
+EOAuth2Support *
+e_source_registry_server_ref_oauth2_support (ESourceRegistryServer *server)
+{
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY_SERVER (server), NULL);
+
+	if (!server->priv->oauth2_services)
+		return NULL;
+
+	return g_object_ref (E_OAUTH2_SUPPORT (server));
 }
