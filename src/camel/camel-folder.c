@@ -152,50 +152,61 @@ folder_store_changes_job_cb (CamelSession *session,
 	camel_folder_synchronize_sync (folder, FALSE, cancellable, error);
 }
 
-static gboolean
-folder_schedule_store_changes_job (gpointer user_data)
+static void
+folder_schedule_store_changes_job (CamelFolder *folder)
 {
-	CamelFolder *folder = user_data;
+	CamelSession *session;
+	CamelStore *parent_store;
+
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	parent_store = camel_folder_get_parent_store (folder);
+	session = parent_store ? camel_service_ref_session (CAMEL_SERVICE (parent_store)) : NULL;
+	if (session) {
+		gchar *description;
+
+		/* Translators: The first “%s” is replaced with an account name and the second “%s”
+		   is replaced with a full path name. The spaces around “:” are intentional, as
+		   the whole “%s : %s” is meant as an absolute identification of the folder. */
+		description = g_strdup_printf (_("Storing changes in folder “%s : %s”"),
+			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
+			camel_folder_get_full_name (folder));
+
+		camel_session_submit_job (session, description,
+			folder_store_changes_job_cb,
+			g_object_ref (folder), g_object_unref);
+
+		g_free (description);
+	}
+
+	g_clear_object (&session);
+}
+
+static gboolean
+folder_schedule_store_changes_job_cb (gpointer user_data)
+{
+	GWeakRef *weak_ref = user_data;
 	GSource *source;
+	CamelFolder *folder;
 
 	source = g_main_current_source ();
 
 	if (g_source_is_destroyed (source))
 		return FALSE;
 
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	folder = g_weak_ref_get (weak_ref);
+	if (folder) {
+		g_mutex_lock (&folder->priv->store_changes_lock);
 
-	g_mutex_lock (&folder->priv->store_changes_lock);
-
-	if (folder->priv->store_changes_id == g_source_get_id (source)) {
-		CamelSession *session;
-		CamelStore *parent_store;
-
-		folder->priv->store_changes_id = 0;
-
-		parent_store = camel_folder_get_parent_store (folder);
-		session = parent_store ? camel_service_ref_session (CAMEL_SERVICE (parent_store)) : NULL;
-		if (session) {
-			gchar *description;
-
-			/* Translators: The first “%s” is replaced with an account name and the second “%s”
-			   is replaced with a full path name. The spaces around “:” are intentional, as
-			   the whole “%s : %s” is meant as an absolute identification of the folder. */
-			description = g_strdup_printf (_("Storing changes in folder “%s : %s”"),
-				camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
-				camel_folder_get_full_name (folder));
-
-			camel_session_submit_job (session, description,
-				folder_store_changes_job_cb,
-				g_object_ref (folder), g_object_unref);
-
-			g_free (description);
+		if (folder->priv->store_changes_id == g_source_get_id (source)) {
+			folder->priv->store_changes_id = 0;
+			folder_schedule_store_changes_job (folder);
 		}
 
-		g_clear_object (&session);
-	}
+		g_mutex_unlock (&folder->priv->store_changes_lock);
 
-	g_mutex_unlock (&folder->priv->store_changes_lock);
+		g_object_unref (folder);
+	}
 
 	return FALSE;
 }
@@ -235,8 +246,9 @@ folder_maybe_schedule_folder_change_store (CamelFolder *folder)
 		if (interval == 0)
 			folder_schedule_store_changes_job (folder);
 		else if (interval > 0)
-			folder->priv->store_changes_id = g_timeout_add_seconds (interval,
-				folder_schedule_store_changes_job, folder);
+			folder->priv->store_changes_id = g_timeout_add_seconds_full (G_PRIORITY_DEFAULT, interval,
+				folder_schedule_store_changes_job_cb,
+				camel_utils_weak_ref_new (folder), (GDestroyNotify) camel_utils_weak_ref_free);
 	}
 
 	g_mutex_unlock (&folder->priv->store_changes_lock);
@@ -787,6 +799,12 @@ folder_dispose (GObject *object)
 
 	folder = CAMEL_FOLDER (object);
 
+	g_mutex_lock (&folder->priv->store_changes_lock);
+	if (folder->priv->store_changes_id)
+		g_source_remove (folder->priv->store_changes_id);
+	folder->priv->store_changes_id = 0;
+	g_mutex_unlock (&folder->priv->store_changes_lock);
+
 	if (folder->priv->summary) {
 		camel_folder_summary_save (folder->priv->summary, NULL);
 		g_clear_object (&folder->priv->summary);
@@ -798,12 +816,6 @@ folder_dispose (GObject *object)
 			&folder->priv->parent_store);
 		folder->priv->parent_store = NULL;
 	}
-
-	g_mutex_lock (&folder->priv->store_changes_lock);
-	if (folder->priv->store_changes_id)
-		g_source_remove (folder->priv->store_changes_id);
-	folder->priv->store_changes_id = 0;
-	g_mutex_unlock (&folder->priv->store_changes_lock);
 
 	/* Chain up to parent's dispose () method. */
 	G_OBJECT_CLASS (camel_folder_parent_class)->dispose (object);

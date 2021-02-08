@@ -41,6 +41,9 @@ time_t		camel_time_value_apply		(time_t src_time,
 						 CamelTimeUnit unit,
 						 gint value);
 
+GWeakRef *	camel_utils_weak_ref_new	(gpointer object);
+void		camel_utils_weak_ref_free	(GWeakRef *weak_ref);
+
 G_END_DECLS
 
 #endif /* CAMEL_UTILS_H */

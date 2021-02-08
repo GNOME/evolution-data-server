@@ -380,32 +380,6 @@ fetch_changes_info_free (gpointer ptr)
 	}
 }
 
-static GWeakRef *
-imapx_weak_ref_new (gpointer object)
-{
-	GWeakRef *weak_ref;
-
-	/* XXX Might want to expose this in Camel's public API if it
-	 *     proves useful elsewhere.  Based on e_weak_ref_new(). */
-
-	weak_ref = g_slice_new0 (GWeakRef);
-	g_weak_ref_init (weak_ref, object);
-
-	return weak_ref;
-}
-
-static void
-imapx_weak_ref_free (GWeakRef *weak_ref)
-{
-	g_return_if_fail (weak_ref != NULL);
-
-	/* XXX Might want to expose this in Camel's public API if it
-	 *     proves useful elsewhere.  Based on e_weak_ref_free(). */
-
-	g_weak_ref_clear (weak_ref);
-	g_slice_free (GWeakRef, weak_ref);
-}
-
 static const CamelIMAPXUntaggedRespHandlerDesc *
 replace_untagged_descriptor (GHashTable *untagged_handlers,
                              const gchar *key,
@@ -700,8 +674,8 @@ imapx_server_reset_inactivity_timer (CamelIMAPXServer *is)
 	g_source_set_callback (
 		is->priv->inactivity_timeout,
 		imapx_server_inactivity_timeout_cb,
-		imapx_weak_ref_new (is),
-		(GDestroyNotify) imapx_weak_ref_free);
+		camel_utils_weak_ref_new (is),
+		(GDestroyNotify) camel_utils_weak_ref_free);
 	g_source_attach (is->priv->inactivity_timeout, NULL);
 
 	g_mutex_unlock (&is->priv->inactivity_timeout_lock);
@@ -7199,7 +7173,7 @@ camel_imapx_server_schedule_idle_sync (CamelIMAPXServer *is,
 	is->priv->idle_pending = g_timeout_source_new_seconds (IMAPX_IDLE_WAIT_SECONDS);
 	g_source_set_callback (
 		is->priv->idle_pending, imapx_server_run_idle_thread_cb,
-		imapx_weak_ref_new (is), (GDestroyNotify) imapx_weak_ref_free);
+		camel_utils_weak_ref_new (is), (GDestroyNotify) camel_utils_weak_ref_free);
 	g_source_attach (is->priv->idle_pending, NULL);
 
 	g_mutex_unlock (&is->priv->idle_lock);
