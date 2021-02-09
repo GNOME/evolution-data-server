@@ -133,6 +133,14 @@ void		e_cal_component_alarm_take_attachments
 ECalComponentPropertyBag *
 		e_cal_component_alarm_get_property_bag
 						(const ECalComponentAlarm *alarm);
+ICalTime *	e_cal_component_alarm_get_acknowledged
+						(const ECalComponentAlarm *alarm);
+void		e_cal_component_alarm_set_acknowledged
+						(ECalComponentAlarm *alarm,
+						 const ICalTime *when);
+void		e_cal_component_alarm_take_acknowledged
+						(ECalComponentAlarm *alarm,
+						 ICalTime *when);
 
 G_END_DECLS
 

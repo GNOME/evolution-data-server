@@ -347,6 +347,10 @@ gboolean	e_cal_util_inline_local_attachments_sync
 						(ICalComponent *component,
 						 GCancellable *cancellable,
 						 GError **error);
+gboolean	e_cal_util_set_alarm_acknowledged
+						(ECalComponent *component,
+						 const gchar *auid,
+						 gint64 when); /* as time_t in UTC */
 
 G_END_DECLS
 

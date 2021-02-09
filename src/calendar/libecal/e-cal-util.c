@@ -2950,3 +2950,49 @@ e_cal_util_inline_local_attachments_sync (ICalComponent *component,
 
 	return success;
 }
+
+/**
+ * e_cal_util_set_alarm_acknowledged:
+ * @component: an #ECalComponent
+ * @auid: an alarm UID to modify
+ * @when: a time, in UTC, when to set the acknowledged property, or 0 for the current time
+ *
+ * Sets the ACKNOWLEDGED property on the @component's alarm with UID @auid
+ * to the time @when (in UTC), or to the current time, when the @when is 0.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.40
+ **/
+gboolean
+e_cal_util_set_alarm_acknowledged (ECalComponent *component,
+				   const gchar *auid,
+				   gint64 when)
+{
+	ECalComponentAlarm *alarm, *copy;
+	ICalTime *tt;
+
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (component), FALSE);
+	g_return_val_if_fail (auid != NULL, FALSE);
+
+	alarm = e_cal_component_get_alarm (component, auid);
+
+	if (!alarm)
+		return FALSE;
+
+	if (when)
+		tt = i_cal_time_new_from_timet_with_zone (when, 0, i_cal_timezone_get_utc_timezone ());
+	else
+		tt = i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());
+
+	copy = e_cal_component_alarm_copy (alarm);
+
+	e_cal_component_alarm_take_acknowledged (copy, tt);
+	e_cal_component_remove_alarm (component, auid);
+	e_cal_component_add_alarm (component, copy);
+
+	e_cal_component_alarm_free (copy);
+	e_cal_component_alarm_free (alarm);
+
+	return TRUE;
+}

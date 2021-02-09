@@ -49,6 +49,7 @@ struct _ECalComponentAlarm {
 	GSList *attendees; /* ECalComponentAttendee * */
 	GSList *attachments; /* ICalAttach * */
 	ECalComponentPropertyBag *property_bag;
+	ICalTime *acknowledged;
 };
 
 /**
@@ -185,6 +186,9 @@ e_cal_component_alarm_copy (const ECalComponentAlarm *alarm)
 		alrm->attachments = g_slist_reverse (alrm->attachments);
 	}
 
+	if (alarm->acknowledged)
+		e_cal_component_alarm_set_acknowledged (alrm, alarm->acknowledged);
+
 	e_cal_component_property_bag_assign (alrm->property_bag, alarm->property_bag);
 
 	return alrm;
@@ -215,6 +219,7 @@ e_cal_component_alarm_free (gpointer alarm)
 		e_cal_component_property_bag_free (alrm->property_bag);
 		g_slist_free_full (alrm->attendees, e_cal_component_attendee_free);
 		g_slist_free_full (alrm->attachments, g_object_unref);
+		g_clear_object (&alrm->acknowledged);
 		g_slice_free (ECalComponentAlarm, alrm);
 	}
 }
@@ -248,6 +253,7 @@ e_cal_component_alarm_set_from_component (ECalComponentAlarm *alarm,
 	e_cal_component_alarm_trigger_free (alarm->trigger);
 	g_slist_free_full (alarm->attendees, e_cal_component_attendee_free);
 	g_slist_free_full (alarm->attachments, g_object_unref);
+	g_clear_object (&alarm->acknowledged);
 
 	alarm->uid = NULL;
 	alarm->action = E_CAL_COMPONENT_ALARM_NONE;
@@ -344,6 +350,11 @@ e_cal_component_alarm_set_from_component (ECalComponentAlarm *alarm,
 			attendee = e_cal_component_attendee_new_from_property (prop);
 			if (attendee)
 				alarm->attendees = g_slist_prepend (alarm->attendees, attendee);
+			break;
+
+		case I_CAL_ACKNOWLEDGED_PROPERTY:
+			g_clear_object (&alarm->acknowledged);
+			alarm->acknowledged = i_cal_property_get_acknowledged (prop);
 			break;
 
 		case I_CAL_X_PROPERTY:
@@ -584,6 +595,11 @@ e_cal_component_alarm_fill_component (ECalComponentAlarm *alarm,
 		prop = i_cal_property_new_attach (attach);
 		if (prop)
 			i_cal_component_take_property (component, prop);
+	}
+
+	if (alarm->acknowledged) {
+		prop = i_cal_property_new_acknowledged (alarm->acknowledged);
+		i_cal_component_take_property (component, prop);
 	}
 
 	e_cal_component_property_bag_fill_component (alarm->property_bag, component);
@@ -1118,4 +1134,71 @@ e_cal_component_alarm_get_property_bag (const ECalComponentAlarm *alarm)
 	g_return_val_if_fail (alarm != NULL, NULL);
 
 	return alarm->property_bag;
+}
+
+/**
+ * e_cal_component_alarm_get_acknowledged:
+ * @alarm: an #ECalComponentAlarm
+ *
+ * Get the last time the alarm had been acknowledged, that is, when its
+ * reminder had been triggered.
+ * The returned #ICalTime is owned by @alarm and should not be modified,
+ * neither its content.
+ *
+ * Returns: (transfer none) (nullable): the @alarm acknowledged time,
+ *    or %NULL, when none is set
+ *
+ * Since: 3.40
+ **/
+ICalTime *
+e_cal_component_alarm_get_acknowledged (const ECalComponentAlarm *alarm)
+{
+	g_return_val_if_fail (alarm != NULL, NULL);
+
+	return alarm->acknowledged;
+}
+
+/**
+ * e_cal_component_alarm_set_acknowledged:
+ * @alarm: an #ECalComponentAlarm
+ * @when: (transfer none) (nullable): an #ICalTime when the @alarm
+ *    had been acknowledged, or %NULL to unset
+ *
+ * Set the acknowledged time of the @alarm. Use %NULL to unset it.
+ *
+ * Since: 3.40
+ **/
+void
+e_cal_component_alarm_set_acknowledged (ECalComponentAlarm *alarm,
+					const ICalTime *when)
+{
+	g_return_if_fail (alarm != NULL);
+
+	if (when != alarm->acknowledged)
+		e_cal_component_alarm_take_acknowledged (alarm, when ? i_cal_time_clone (when) : NULL);
+}
+
+/**
+ * e_cal_component_alarm_take_acknowledged:
+ * @alarm: an #ECalComponentAlarm
+ * @when: (transfer full) (nullable): an #ICalTime when the @alarm
+ *    had been acknowledged, or %NULL to unset
+ *
+ * Set the acknowledged time of the @alarm. Use %NULL to unset it.
+ * The function assumes ownership of the @when.
+ *
+ * Since: 3.40
+ **/
+void
+e_cal_component_alarm_take_acknowledged (ECalComponentAlarm *alarm,
+					 ICalTime *when)
+{
+	g_return_if_fail (alarm != NULL);
+
+	if (when != alarm->acknowledged) {
+		g_clear_object (&alarm->acknowledged);
+		alarm->acknowledged = when;
+	} else {
+		g_clear_object (&when);
+	}
 }

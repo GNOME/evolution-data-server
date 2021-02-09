@@ -442,6 +442,9 @@ verify_struct_alarm_equal (const ECalComponentAlarm *expected,
 
 	verify_struct_property_bag_equal (e_cal_component_alarm_get_property_bag (expected),
 					  e_cal_component_alarm_get_property_bag (received));
+
+	verify_ical_timetype_equal (e_cal_component_alarm_get_acknowledged (expected),
+				    e_cal_component_alarm_get_acknowledged (received));
 }
 
 static void
@@ -511,17 +514,18 @@ test_component_struct_alarm (void)
 		gboolean with_attendees;
 		gboolean with_attachments;
 		gboolean with_properties;
+		gboolean with_acknowledged;
 	} values[] = {
-		{ "1", E_CAL_COMPONENT_ALARM_AUDIO, NULL, NULL, FALSE, FALSE, FALSE, FALSE, FALSE },
-		{ "2", E_CAL_COMPONENT_ALARM_DISPLAY, NULL, "display text", FALSE, FALSE, FALSE, FALSE, FALSE },
-		{ "3", E_CAL_COMPONENT_ALARM_EMAIL, "summary text", NULL, TRUE, FALSE, FALSE, FALSE, FALSE },
-		{ "4", E_CAL_COMPONENT_ALARM_PROCEDURE, NULL, "procedure", FALSE, TRUE, FALSE, FALSE, TRUE },
-		{ "5", E_CAL_COMPONENT_ALARM_AUDIO, NULL, NULL, FALSE, FALSE, TRUE, FALSE, TRUE },
-		{ "6", E_CAL_COMPONENT_ALARM_DISPLAY, NULL, "display text", FALSE, FALSE, FALSE, TRUE, TRUE },
-		{ "7", E_CAL_COMPONENT_ALARM_EMAIL, "summary", "description", TRUE, FALSE, TRUE, FALSE, TRUE },
-		{ "8", E_CAL_COMPONENT_ALARM_PROCEDURE, NULL, "procedure", TRUE, TRUE, TRUE, TRUE, TRUE }
+		{ "1", E_CAL_COMPONENT_ALARM_AUDIO, NULL, NULL, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE },
+		{ "2", E_CAL_COMPONENT_ALARM_DISPLAY, NULL, "display text", FALSE, FALSE, FALSE, FALSE, FALSE, TRUE },
+		{ "3", E_CAL_COMPONENT_ALARM_EMAIL, "summary text", NULL, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE },
+		{ "4", E_CAL_COMPONENT_ALARM_PROCEDURE, NULL, "procedure", FALSE, TRUE, FALSE, FALSE, TRUE, TRUE },
+		{ "5", E_CAL_COMPONENT_ALARM_AUDIO, NULL, NULL, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE },
+		{ "6", E_CAL_COMPONENT_ALARM_DISPLAY, NULL, "display text", FALSE, FALSE, FALSE, TRUE, TRUE, TRUE },
+		{ "7", E_CAL_COMPONENT_ALARM_EMAIL, "summary", "description", TRUE, FALSE, TRUE, FALSE, TRUE, FALSE },
+		{ "8", E_CAL_COMPONENT_ALARM_PROCEDURE, NULL, "procedure", TRUE, TRUE, TRUE, TRUE, TRUE, TRUE }
 	};
-	gint ii, nth_summary = 0, nth_description = 0, nth_repeat = 0, nth_trigger = 0, nth_attendees = 0, nth_attachments = 0, nth_properties = 0;
+	gint ii, nth_summary = 0, nth_description = 0, nth_repeat = 0, nth_trigger = 0, nth_attendees = 0, nth_attachments = 0, nth_properties = 0, nth_acknowledged = 0;
 
 	for (ii = 0; ii < G_N_ELEMENTS (values); ii++) {
 		ECalComponentAlarm *expected, *received;
@@ -693,6 +697,24 @@ test_component_struct_alarm (void)
 			g_assert_cmpint (e_cal_component_property_bag_get_count (bag), ==, nth_properties);
 		}
 
+		if (values[ii].with_acknowledged) {
+			ICalTime *tt;
+
+			nth_acknowledged++;
+
+			tt = i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());
+
+			if ((nth_acknowledged & 1) != 0) {
+				e_cal_component_alarm_set_acknowledged (expected, tt);
+				g_object_unref (tt);
+			} else {
+				e_cal_component_alarm_take_acknowledged (expected, tt);
+			}
+
+			if (nth_acknowledged == 3)
+				e_cal_component_alarm_set_acknowledged (expected, NULL);
+		}
+
 		received = e_cal_component_alarm_copy (expected);
 		verify_struct_alarm_equal (expected, received);
 		e_cal_component_alarm_free (received);
@@ -723,6 +745,7 @@ test_component_struct_alarm (void)
 	g_assert_cmpint (nth_attendees, >, 1);
 	g_assert_cmpint (nth_attachments, >, 1);
 	g_assert_cmpint (nth_properties, >, 1);
+	g_assert_cmpint (nth_acknowledged, >, 3);
 }
 
 static void

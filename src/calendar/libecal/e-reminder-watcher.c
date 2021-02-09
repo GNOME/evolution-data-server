@@ -881,7 +881,21 @@ e_reminder_watcher_objects_changed_thread (GTask *task,
 
 				if (alarms && e_cal_component_alarms_get_instances (alarms)) {
 					ECalComponent *alarms_comp = e_cal_component_alarms_get_component (alarms);
-					GSList *alink, *instances;
+					GHashTable *acknowledged_alarms; /* alarm uid ~> ICalTime * */
+					GSList *alink, *instances, *all_alarms;
+
+					acknowledged_alarms = g_hash_table_new (g_str_hash, g_str_equal);
+					all_alarms = e_cal_component_get_all_alarms (alarms_comp);
+
+					for (alink = all_alarms; alink; alink = g_slist_next (alink)) {
+						ECalComponentAlarm *alarm = alink->data;
+
+						if (e_cal_component_alarm_get_acknowledged (alarm)) {
+							g_hash_table_insert (acknowledged_alarms,
+								(gpointer) e_cal_component_alarm_get_uid (alarm),
+								e_cal_component_alarm_get_acknowledged (alarm));
+						}
+					}
 
 					instances = e_cal_component_alarms_get_instances (alarms);
 
@@ -894,11 +908,36 @@ e_reminder_watcher_objects_changed_thread (GTask *task,
 					for (alink = instances; alink; alink = g_slist_next (alink)) {
 						const ECalComponentAlarmInstance *instance = alink->data;
 
+						if (instance && e_cal_component_alarm_instance_get_uid (instance)) {
+							ICalTime *acknowledged;
+
+							acknowledged = g_hash_table_lookup (acknowledged_alarms, e_cal_component_alarm_instance_get_uid (instance));
+							if (acknowledged) {
+								gint64 ack_time, instance_time;
+
+								ack_time = i_cal_time_as_timet (acknowledged);
+								instance_time = e_cal_component_alarm_instance_get_time (instance);
+
+								if (instance_time <= ack_time) {
+									e_reminder_watcher_debug_print ("   Skipping alarm '%s' at '%s', because had been acknowledged at '%s'\n",
+										e_cal_component_alarm_instance_get_uid (instance),
+										e_reminder_watcher_timet_as_string (instance_time),
+										e_reminder_watcher_timet_as_string (ack_time));
+
+									instance = NULL;
+								}
+							}
+						}
+
 						if (instance) {
 							reminders = g_slist_prepend (reminders, e_reminder_data_new_take_component (
 								source_uid, g_object_ref (alarms_comp), instance));
 						}
 					}
+
+					g_hash_table_destroy (acknowledged_alarms);
+					/* Free all_alarms after the acknowledged_alarms, because it uses data from it */
+					g_slist_free_full (all_alarms, e_cal_component_alarm_free);
 				} else {
 					e_reminder_watcher_debug_print ("Source %s: Got no alarms for object '%s':'%s' at interval %s .. %s\n",
 						source_uid, e_cal_component_id_get_uid (id),

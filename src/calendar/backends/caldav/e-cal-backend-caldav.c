@@ -2233,6 +2233,63 @@ ecb_caldav_get_free_busy_sync (ECalBackendSync *sync_backend,
 		users, start, end, out_freebusy, error);
 }
 
+static void
+ecb_caldav_discard_alarm_sync (ECalBackendSync *sync_backend,
+			       EDataCal *cal,
+			       GCancellable *cancellable,
+			       const gchar *uid,
+			       const gchar *rid,
+			       const gchar *auid,
+			       ECalOperationFlags opflags,
+			       GError **error)
+{
+	ECalComponent *comp = NULL;
+	ECalCache *cache;
+
+	g_return_if_fail (E_IS_CAL_BACKEND_CALDAV (sync_backend));
+	g_return_if_fail (uid != NULL);
+
+	cache = e_cal_meta_backend_ref_cache (E_CAL_META_BACKEND (sync_backend));
+
+	if (cache) {
+		GError *local_error = NULL;
+
+		if (!e_cal_cache_get_component (cache, uid, rid, &comp, cancellable, &local_error) && rid && *rid) {
+			if (!e_cal_cache_get_component (cache, uid, NULL, &comp, cancellable, NULL)) {
+				g_propagate_error (error, local_error);
+				g_object_unref (cache);
+				return;
+			}
+
+			rid = NULL;
+		}
+	}
+
+	if (comp) {
+		if (e_cal_util_set_alarm_acknowledged (comp, auid, 0)) {
+			GSList *calobjs, *old_components = NULL, *new_components = NULL;
+
+			calobjs = g_slist_prepend (NULL, e_cal_component_get_as_string (comp));
+
+			e_cal_backend_sync_modify_objects (sync_backend, cal, cancellable, calobjs,
+				(rid && *rid) ? E_CAL_OBJ_MOD_THIS : E_CAL_OBJ_MOD_ALL,
+				opflags, &old_components, &new_components, error);
+
+			e_util_free_nullable_object_slist (old_components);
+			e_util_free_nullable_object_slist (new_components);
+			g_slist_free_full (calobjs, g_free);
+		} else {
+			g_propagate_error (error, ECC_ERROR (E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND));
+		}
+
+		g_object_unref (comp);
+	} else {
+		g_propagate_error (error, ECC_ERROR (E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND));
+	}
+
+	g_clear_object (&cache);
+}
+
 static gchar *
 ecb_caldav_get_backend_property (ECalBackend *backend,
 				 const gchar *prop_name)
@@ -2422,6 +2479,7 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *klass)
 	cal_backend_sync_class = E_CAL_BACKEND_SYNC_CLASS (klass);
 	cal_backend_sync_class->refresh_sync = ecb_caldav_refresh_sync;
 	cal_backend_sync_class->get_free_busy_sync = ecb_caldav_get_free_busy_sync;
+	cal_backend_sync_class->discard_alarm_sync = ecb_caldav_discard_alarm_sync;
 
 	cal_backend_class = E_CAL_BACKEND_CLASS (klass);
 	cal_backend_class->impl_get_backend_property = ecb_caldav_get_backend_property;

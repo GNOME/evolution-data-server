@@ -4155,7 +4155,7 @@ get_all_alarms_cb (ICalComponent *icalcomp,
  * @comp: A calendar component.
  *
  * Queries all alarm subcomponents of a calendar component.
- * Free the returned #GSList with g_slist_free_full (slist, e_cal_component_alarm_free));,
+ * Free the returned #GSList with g_slist_free_full (slist, e_cal_component_alarm_free);,
  * when no longer needed.
  *
  * Returns: (transfer full) (nullable) (element-type ECalComponentAlarm): the alarm subcomponents
