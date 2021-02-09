@@ -1093,6 +1093,9 @@ e_alarm_notify_activate (GApplication *application)
 
 	g_return_if_fail (an->priv->registry != NULL);
 
+	if (an->priv->watcher)
+		return;
+
 	an->priv->watcher = e_reminder_watcher_new (an->priv->registry);
 	an->priv->reminders = e_reminders_widget_new (an->priv->watcher);
 	an->priv->settings = g_object_ref (e_reminders_widget_get_settings (an->priv->reminders));
