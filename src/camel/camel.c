@@ -140,11 +140,8 @@ camel_init (const gchar *configdir,
 #else
 			gchar *user_nss_dir;
 
-			/* Use a persistent location in Flatpak */
-			if (g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
-				user_nss_dir = g_build_filename (nss_configdir, "nssdb", NULL);
-			else
-				user_nss_dir = g_build_filename (g_get_home_dir (), ".pki", "nssdb", NULL);
+			/* Flatpak should allow access to the host machine's ~/.pki */
+			user_nss_dir = g_build_filename (g_get_home_dir (), ".pki", "nssdb", NULL);
 
 			if (g_mkdir_with_parents (user_nss_dir, 0700))
 				g_warning (
