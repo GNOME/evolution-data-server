@@ -58,7 +58,7 @@ e_timezone_cache_default_init (ETimezoneCacheInterface *iface)
  * @cache: an #ETimezoneCache
  * @zone: an #ICalTimezone
  *
- * Adds a copy of @zone to @cache and emits a
+ * Adds a copy of @zone to @cache and emits an
  * #ETimezoneCache::timezone-added signal.  The @cache will use the TZID
  * string returned by i_cal_timezone_get_tzid() as the lookup key, which can
  * be passed to e_timezone_cache_get_timezone() to obtain @zone again.

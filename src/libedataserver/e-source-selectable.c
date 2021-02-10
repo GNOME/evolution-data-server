@@ -339,7 +339,7 @@ e_source_selectable_get_order (ESourceSelectable *extension)
 /**
  * e_source_selectable_set_order:
  * @extension: an #ESourceSelectable
- * @selected: selected state
+ * @order: the sorting order
  *
  * Sets the sorting order for the #ESource to which @extension belongs.
  *
