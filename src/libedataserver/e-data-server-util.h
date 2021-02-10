@@ -293,6 +293,8 @@ gboolean	e_util_identity_can_send	(struct _ESourceRegistry *registry,
 gboolean	e_util_can_use_collection_as_credential_source
 						(struct _ESource *collection_source,
 						 struct _ESource *child_source);
+gint		e_util_source_compare_for_sort	(struct _ESource *source_a,
+						 struct _ESource *source_b);
 
 G_END_DECLS
 

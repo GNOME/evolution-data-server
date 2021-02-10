@@ -38,21 +38,121 @@
 
 #include <libedataserver/e-data-server-util.h>
 
-G_DEFINE_TYPE (
-	ESourceAddressBook,
-	e_source_address_book,
-	E_TYPE_SOURCE_BACKEND)
+struct _ESourceAddressBookPrivate {
+	guint order;
+};
+
+enum {
+	PROP_0,
+	PROP_ORDER
+};
+
+G_DEFINE_TYPE_WITH_PRIVATE (ESourceAddressBook, e_source_address_book, E_TYPE_SOURCE_BACKEND)
+
+static void
+source_address_book_set_property (GObject *object,
+				  guint property_id,
+				  const GValue *value,
+				  GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_ORDER:
+			e_source_address_book_set_order (
+				E_SOURCE_ADDRESS_BOOK (object),
+				g_value_get_uint (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+source_address_book_get_property (GObject *object,
+				  guint property_id,
+				  GValue *value,
+				  GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_ORDER:
+			g_value_set_uint (
+				value,
+				e_source_address_book_get_order (
+				E_SOURCE_ADDRESS_BOOK (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
 
 static void
 e_source_address_book_class_init (ESourceAddressBookClass *class)
 {
+	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = source_address_book_set_property;
+	object_class->get_property = source_address_book_get_property;
 
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_ORDER,
+		g_param_spec_uint (
+			"order",
+			"Order",
+			"A sorting order of the source",
+			0, G_MAXUINT, 0,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
 }
 
 static void
 e_source_address_book_init (ESourceAddressBook *extension)
 {
+	extension->priv = e_source_address_book_get_instance_private (extension);
+}
+
+/**
+ * e_source_address_book_get_order:
+ * @extension: an #ESourceAddressBook
+ *
+ * Returns: the sorting order of the source, if known. Zero is the default.
+ *
+ * Since: 3.40
+ **/
+guint
+e_source_address_book_get_order (ESourceAddressBook *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_ADDRESS_BOOK (extension), 0);
+
+	return extension->priv->order;
+}
+
+/**
+ * e_source_address_book_set_order:
+ * @extension: an #ESourceAddressBook
+ * @order: a sorting order
+ *
+ * Set the sorting order of the source.
+ *
+ * Since: 3.40
+ **/
+void
+e_source_address_book_set_order (ESourceAddressBook *extension,
+				 guint order)
+{
+	g_return_if_fail (E_IS_SOURCE_ADDRESS_BOOK (extension));
+
+	if (extension->priv->order == order)
+		return;
+
+	extension->priv->order = order;
+
+	g_object_notify (G_OBJECT (extension), "order");
 }

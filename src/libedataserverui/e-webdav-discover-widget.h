@@ -57,7 +57,8 @@ gboolean	e_webdav_discover_content_get_selected	(GtkWidget *content,
 							 gchar **out_href,
 							 guint *out_supports,
 							 gchar **out_display_name,
-							 gchar **out_color);
+							 gchar **out_color,
+							 guint *out_order);
 gchar *		e_webdav_discover_content_get_user_address
 							(GtkWidget *content);
 void		e_webdav_discover_content_refresh	(GtkWidget *content,

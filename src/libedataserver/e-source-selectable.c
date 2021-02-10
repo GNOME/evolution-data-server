@@ -32,12 +32,14 @@
 struct _ESourceSelectablePrivate {
 	gchar *color;
 	gboolean selected;
+	guint order;
 };
 
 enum {
 	PROP_0,
 	PROP_COLOR,
-	PROP_SELECTED
+	PROP_SELECTED,
+	PROP_ORDER
 };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (
@@ -63,6 +65,12 @@ source_selectable_set_property (GObject *object,
 				E_SOURCE_SELECTABLE (object),
 				g_value_get_boolean (value));
 			return;
+
+		case PROP_ORDER:
+			e_source_selectable_set_order (
+				E_SOURCE_SELECTABLE (object),
+				g_value_get_uint (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -86,6 +94,13 @@ source_selectable_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				e_source_selectable_get_selected (
+				E_SOURCE_SELECTABLE (object)));
+			return;
+
+		case PROP_ORDER:
+			g_value_set_uint (
+				value,
+				e_source_selectable_get_order (
 				E_SOURCE_SELECTABLE (object)));
 			return;
 	}
@@ -141,6 +156,20 @@ e_source_selectable_class_init (ESourceSelectableClass *class)
 			"Selected",
 			"Whether the data source is selected",
 			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_ORDER,
+		g_param_spec_uint (
+			"order",
+			"Order",
+			"Preferred sorting order",
+			0, G_MAXUINT, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -288,3 +317,44 @@ e_source_selectable_set_selected (ESourceSelectable *extension,
 	g_object_notify (G_OBJECT (extension), "selected");
 }
 
+/**
+ * e_source_selectable_get_order:
+ * @extension: an #ESourceSelectable
+ *
+ * Returns the preferred sorting order for the #ESource
+ * to which @extension belongs. Default is 0.
+ *
+ * Returns: the preferred sorting order for the #ESource
+ *
+ * Since: 3.40
+ **/
+guint
+e_source_selectable_get_order (ESourceSelectable *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_SELECTABLE (extension), 0);
+
+	return extension->priv->order;
+}
+
+/**
+ * e_source_selectable_set_order:
+ * @extension: an #ESourceSelectable
+ * @selected: selected state
+ *
+ * Sets the sorting order for the #ESource to which @extension belongs.
+ *
+ * Since: 3.40
+ **/
+void
+e_source_selectable_set_order (ESourceSelectable *extension,
+			       guint order)
+{
+	g_return_if_fail (E_IS_SOURCE_SELECTABLE (extension));
+
+	if (extension->priv->order == order)
+		return;
+
+	extension->priv->order = order;
+
+	g_object_notify (G_OBJECT (extension), "order");
+}

@@ -116,6 +116,7 @@ typedef struct _EWebDAVResource {
 	glong last_modified;
 	gchar *description;
 	gchar *color;
+	guint order;
 } EWebDAVResource;
 
 GType		e_webdav_resource_get_type		(void) G_GNUC_CONST;
@@ -130,13 +131,14 @@ EWebDAVResource *
 							 glong creation_date,
 							 glong last_modified,
 							 const gchar *description,
-							 const gchar *color);
+							 const gchar *color,
+							 guint order);
 EWebDAVResource *
 		e_webdav_resource_copy			(const EWebDAVResource *src);
 void		e_webdav_resource_free			(gpointer ptr /* EWebDAVResource * */);
 
 typedef enum {
-	E_WEBDAV_LIST_ALL		= 0xFFFFFFFF,
+	E_WEBDAV_LIST_ALL		= 0x00FFFFFF,
 	E_WEBDAV_LIST_NONE		= 0,
 	E_WEBDAV_LIST_SUPPORTS		= 1 << 0,
 	E_WEBDAV_LIST_ETAG		= 1 << 1,
@@ -147,8 +149,9 @@ typedef enum {
 	E_WEBDAV_LIST_LAST_MODIFIED	= 1 << 6,
 	E_WEBDAV_LIST_DESCRIPTION	= 1 << 7,
 	E_WEBDAV_LIST_COLOR		= 1 << 8,
-	E_WEBDAV_LIST_ONLY_CALENDAR	= 1 << 9,
-	E_WEBDAV_LIST_ONLY_ADDRESSBOOK	= 1 << 10
+	E_WEBDAV_LIST_ORDER		= 1 << 9,
+	E_WEBDAV_LIST_ONLY_CALENDAR	= 1 << 28,
+	E_WEBDAV_LIST_ONLY_ADDRESSBOOK	= 1 << 29
 } EWebDAVListFlags;
 
 /**

@@ -79,6 +79,10 @@ struct _ESourceAddressBookClass {
 
 GType		e_source_address_book_get_type	(void) G_GNUC_CONST;
 
+guint		e_source_address_book_get_order	(ESourceAddressBook *extension);
+void		e_source_address_book_set_order	(ESourceAddressBook *extension,
+						 guint order);
+
 G_END_DECLS
 
 #endif /* E_SOURCE_ADDRESS_BOOK_H */

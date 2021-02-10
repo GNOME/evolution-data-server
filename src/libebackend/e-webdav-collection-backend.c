@@ -88,6 +88,7 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 				    SoupURI *uri,
 				    const gchar *display_name,
 				    const gchar *color,
+				    guint order,
 				    gboolean calendar_auto_schedule,
 				    gboolean is_subscribed_icalendar,
 				    GHashTable *known_sources)
@@ -205,7 +206,12 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 
 		e_source_webdav_set_display_name (webdav_extension, display_name);
 
-		if (source_type != E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS) {
+		if (source_type == E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS) {
+			if (is_new || e_source_webdav_get_order (webdav_extension) == e_source_address_book_get_order (E_SOURCE_ADDRESS_BOOK (backend)))
+				e_source_address_book_set_order (E_SOURCE_ADDRESS_BOOK (backend), order);
+
+			e_source_webdav_set_order (webdav_extension, order);
+		} else {
 			/* Also check whether the color format is as expected; cannot
 			   use gdk_rgba_parse() here, because it requires gdk/gtk. */
 			if (color && sscanf (color, "#%02x%02x%02x", &rr, &gg, &bb) == 3) {
@@ -221,6 +227,11 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 
 				g_free (safe_color);
 			}
+
+			if (is_new || e_source_webdav_get_order (webdav_extension) == e_source_selectable_get_order (E_SOURCE_SELECTABLE (backend)))
+				e_source_selectable_set_order (E_SOURCE_SELECTABLE (backend), order);
+
+			e_source_webdav_set_order (webdav_extension, order);
 
 			if (is_new && calendar_auto_schedule)
 				e_source_webdav_set_calendar_auto_schedule (webdav_extension, TRUE);
@@ -259,7 +270,7 @@ webdav_collection_process_discovered_sources (ECollectionBackend *collection,
 		for (ii = 0; ii < n_source_types; ii++) {
 			if ((discovered_source->supports & source_types[ii]) == source_types[ii])
 				webdav_collection_add_found_source (collection, source_types[ii], soup_uri,
-					discovered_source->display_name, discovered_source->color,
+					discovered_source->display_name, discovered_source->color, discovered_source->order,
 					(discovered_source->supports & E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE) != 0,
 					(discovered_source->supports & E_WEBDAV_DISCOVER_SUPPORTS_SUBSCRIBED_ICALENDAR) != 0,
 					known_sources);

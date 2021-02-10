@@ -62,6 +62,7 @@ enum {
 	COL_SUPPORTS_STRING,
 	COL_COLOR_GDKRGBA,
 	COL_SHOW_COLOR_BOOLEAN,
+	COL_ORDER_UINT,
 	N_COLUMNS
 };
 
@@ -151,7 +152,8 @@ e_webdav_discover_content_new (ECredentialsPrompter *credentials_prompter,
 					 G_TYPE_STRING, /* COL_DESCRIPTION_STRING */
 					 G_TYPE_STRING, /* COL_SUPPORTS_STRING */
 					 GDK_TYPE_RGBA, /* COL_COLOR_GDKRGBA */
-					 G_TYPE_BOOLEAN); /* COL_SHOW_COLOR_BOOLEAN */
+					 G_TYPE_BOOLEAN,/* COL_SHOW_COLOR_BOOLEAN */
+					 G_TYPE_UINT);  /* COL_ORDER_UINT */
 
 	tree_view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (list_store));
 	g_object_unref (list_store);
@@ -359,6 +361,7 @@ e_webdav_discover_content_get_base_url (GtkWidget *content)
  * @out_display_name: (out): an output location of the sources display name
  * @out_color: (out): an output location of the string representation of the color
  *    for the source, as set on the server
+ * @out_order: (out): an output location of the preferred sorting order
  *
  * Returns information about selected source at index @index. The function can be called
  * multiple times, with the index starting at zero and as long as it doesn't return %FALSE.
@@ -377,7 +380,8 @@ e_webdav_discover_content_get_selected (GtkWidget *content,
 					gchar **out_href,
 					guint *out_supports,
 					gchar **out_display_name,
-					gchar **out_color)
+					gchar **out_color,
+					guint *out_order)
 {
 	EWebDAVDiscoverContent *self;
 	GtkTreeSelection *selection;
@@ -413,6 +417,7 @@ e_webdav_discover_content_get_selected (GtkWidget *content,
 					COL_SUPPORTS_UINT, out_supports,
 					COL_DISPLAY_NAME_STRING, out_display_name,
 					COL_COLOR_STRING, out_color,
+					COL_ORDER_UINT, out_order,
 					-1);
 			}
 		}
@@ -547,6 +552,7 @@ e_webdav_discover_content_fill_discovered_sources (GtkTreeView *tree_view,
 			COL_SUPPORTS_UINT, source->supports,
 			COL_DISPLAY_NAME_STRING, source->display_name,
 			COL_COLOR_STRING, colorstr,
+			COL_ORDER_UINT, source->order,
 			COL_DESCRIPTION_STRING, description_markup,
 			COL_SUPPORTS_STRING, supports->str,
 			COL_COLOR_GDKRGBA, show_color ? &rgba : NULL,

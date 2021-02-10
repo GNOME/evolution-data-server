@@ -153,6 +153,9 @@ ETrustPromptResponse
 void		e_source_webdav_set_ssl_trust_response
 						(ESourceWebdav *extension,
 						 ETrustPromptResponse response);
+guint		e_source_webdav_get_order	(ESourceWebdav *extension);
+void		e_source_webdav_set_order	(ESourceWebdav *extension,
+						 guint order);
 
 G_END_DECLS
 

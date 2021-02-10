@@ -77,6 +77,9 @@ gboolean	e_source_selectable_get_selected
 void		e_source_selectable_set_selected
 						(ESourceSelectable *extension,
 						 gboolean selected);
+guint		e_source_selectable_get_order	(ESourceSelectable *extension);
+void		e_source_selectable_set_order	(ESourceSelectable *extension,
+						 guint order);
 
 G_END_DECLS
 

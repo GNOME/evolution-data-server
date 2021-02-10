@@ -48,6 +48,7 @@ typedef struct _EWebDAVDiscoveredSource {
 	gchar *display_name;
 	gchar *description;
 	gchar *color;
+	guint order;
 } EWebDAVDiscoveredSource;
 
 void		e_webdav_discover_free_discovered_sources
