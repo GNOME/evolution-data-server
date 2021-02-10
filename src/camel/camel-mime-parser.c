@@ -649,10 +649,10 @@ camel_mime_parser_drop_step (CamelMimeParser *parser)
 /**
  * camel_mime_parser_step:
  * @parser: MIME parser object
- * @databuffer: (inout) (array length=datalength) (nullable): Pointer to accept a pointer to the data
- * associated with this step (if any).  May be %NULL,
+ * @databuffer: (inout) (array length=datalength) (optional) (element-type guint8): Pointer to
+ * accept a pointer to the data associated with this step (if any).  May be %NULL,
  * in which case datalength is also ingored.
- * @datalength: (inout) (nullable): Pointer to accept a pointer to the data
+ * @datalength: (inout) (optional): Pointer to accept a pointer to the data
  * length associated with this step (if any).
  *
  * Parse the next part of the MIME message.  If camel_mime_parser_unstep()
