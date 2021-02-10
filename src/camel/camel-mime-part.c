@@ -1114,7 +1114,7 @@ camel_mime_part_new (void)
 /**
  * camel_mime_part_set_content:
  * @mime_part: a #CamelMimePart
- * @data: (array length=length) (nullable): data to put into the part
+ * @data: (array length=length) (nullable) (element-type guint8): data to put into the part
  * @length: length of @data
  * @type: (nullable): Content-Type of the data
  *
