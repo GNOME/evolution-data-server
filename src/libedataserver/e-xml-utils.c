@@ -494,7 +494,12 @@ e_xml_is_element_name (xmlNode *node,
 			if (!node->ns)
 				return TRUE;
 		} else if (node->ns) {
-			xmlNsPtr nsPtr = xmlSearchNsByHref (node->doc, node, (const xmlChar *) ns_href);
+			xmlNsPtr nsPtr;
+
+			if (g_strcmp0 ((const gchar *) node->ns->href, ns_href) == 0)
+				return TRUE;
+
+			nsPtr = xmlSearchNsByHref (node->doc, node, (const xmlChar *) ns_href);
 
 			if (nsPtr && node->ns == nsPtr)
 				return TRUE;
