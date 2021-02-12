@@ -1,3 +1,47 @@
+Evolution-Data-Server 3.39.2 2021-02-12
+---------------------------------------
+
+Bug Fixes:
+	I#196 - Use default OAuth2 services on scratch sources (Milan Crha)
+	I#283 - CamelNetworkSettings: Unset default value for the 'user' property (Milan Crha)
+	I#288 - Adapt to libgweather 40.alpha API changes (Milan Crha)
+	I#293 - IMAPx: Ignore unexpected untagged LIST/LSUB responses (Milan Crha)
+	I#295 - Calendar: Use ACKNOWLEDGED VALARM property (Milan Crha)
+	I#296 - CamelMime*: Annotate the data arrays with element-type uint8 (Corentin Noël)
+	I#297 - CalDAV: Support calendar-order property (Milan Crha)
+	I#298 - Flatpak: Share NSS database with the system (Milan Crha)
+	I#299 - e_xml_is_element_name: Can fail to match a namespaced node (Milan Crha)
+	I#300 - Camel: Conversion between UTF-8 and UTF-7 misbehaves for emoji (Milan Crha)
+	M!49 - vala: Make webdav_discover_sources E.Source methods ][ (Corentin Noël)
+	M!64 - Fix variable reference in e_source_mail_identity_set_signature_uid docs (Michael McClurg)
+	M!65 - Correct typos in a/an (Дилян Палаузов)
+
+Miscellaneous:
+	camel-debug: Cache symbol resolution to speed up backtrace demangle (Milan Crha)
+	Fix variable type to calls of g_once_init_enter() (Milan Crha)
+	Fix some compiler warnings (Milan Crha)
+	alarm-notify: Stop using g_application_register() (Milan Crha)
+	Remove OnlyShowIn from org.gnome.Evolution-alarm-notify.desktop (Milan Crha)
+	alarm-notify: Guard new glib symbol usage by a version check (Milan Crha)
+	alarm-notify: The XDG_CURRENT_DESKTOP env is a list (Sebastien Bacher)
+	CamelFolder: Cancel save of the changes early in the dispose() (Milan Crha)
+	AlarmNotify: The e_alarm_notify_activate() can be called multiple times (Milan Crha)
+	Correct few typos in the developer comments (Milan Crha)
+
+Translations:
+	Daniel Mustieles (es)
+	Marek Černocký (cs)
+	Balázs Meskó (hu)
+	Fabio Tomat (fur)
+	Мирослав Николић (sr)
+	Fran Dieguez (gl)
+	Matej Urbančič (sl)
+	Rafael Fontenelle (pt_BR)
+	Marek Černocký (cs)
+	Kukuh Syafaat (id)
+	Emin Tufan Çetin (tr)
+	Luna Jernberg (sv)
+
 Evolution-Data-Server 3.39.1 2021-01-08
 ---------------------------------------
 
