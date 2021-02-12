@@ -1,3 +1,22 @@
+Evolution-Data-Server 3.38.4 2021-02-12
+---------------------------------------
+
+Bug Fixes:
+	I#293 - IMAPx: Ignore unexpected untagged LIST/LSUB responses (Milan Crha)
+	I#296 - CamelMime*: Annotate the data arrays with element-type uint8 (Corentin Noël)
+	I#298 - Flatpak: Share NSS database with the system (Milan Crha)
+	I#299 - e_xml_is_element_name: Can fail to match a namespaced node (Milan Crha)
+	I#300 - Camel: Conversion between UTF-8 and UTF-7 misbehaves for emoji (Milan Crha)
+
+Miscellaneous:
+	alarm-notify: Stop using g_application_register() (Milan Crha)
+	alarm-notify: The XDG_CURRENT_DESKTOP env is a list (Sebastien Bacher)
+	CamelFolder: Cancel save of the changes early in the dispose() (Milan Crha)
+	AlarmNotify: The e_alarm_notify_activate() can be called multiple times (Milan Crha)
+
+Translations:
+	Мирослав Николић (sr)
+
 Evolution-Data-Server 3.38.3 2021-01-08
 ---------------------------------------
 
