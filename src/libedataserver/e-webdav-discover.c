@@ -293,7 +293,7 @@ e_webdav_discover_traverse_propfind_response_cb (EWebDAVSession *webdav,
 			e_webdav_resource_new (E_WEBDAV_RESOURCE_KIND_WEBDAV_NOTES,
 				E_WEBDAV_RESOURCE_SUPPORTS_WEBDAV_NOTES, href, NULL,
 				_("Notes"),
-				NULL, 0, 0, 0, NULL, NULL, 0));
+				NULL, 0, 0, 0, NULL, NULL, (guint) -1));
 
 		e_webdav_discover_split_resources (wdd, resources);
 
@@ -768,7 +768,7 @@ e_webdav_discover_cmp_sources (gconstpointer ptr1,
 	if (!source1 || !source2)
 		return (source1 ? 1 : 0) - (source2 ? 1 : 0);
 
-	if (source1->order != source2->order)
+	if (source1->order != source2->order && source1->order != (guint) -1 && source2->order != (guint) -1)
 		return source1->order < source2->order ? -1 : 1;
 
 	return g_strcmp0 (source1->display_name, source2->display_name);

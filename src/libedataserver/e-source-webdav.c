@@ -644,7 +644,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			"order",
 			"Order",
 			"A sorting order of the resource",
-			0, G_MAXUINT, 0,
+			0, G_MAXUINT, (guint) -1,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -1620,14 +1620,15 @@ e_source_webdav_set_ssl_trust_response (ESourceWebdav *extension,
  * e_source_webdav_get_order:
  * @extension: an #ESourceWebdav
  *
- * Returns: the sorting order of the resource, if known. Zero is the default.
+ * Returns: the sorting order of the resource, if known. The default
+ *    is (guint) -1, which means unknown/unset.
  *
  * Since: 3.40
  **/
 guint
 e_source_webdav_get_order (ESourceWebdav *extension)
 {
-	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), 0);
+	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), (guint) -1);
 
 	return extension->priv->order;
 }

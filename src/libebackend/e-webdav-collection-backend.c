@@ -207,7 +207,8 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 		e_source_webdav_set_display_name (webdav_extension, display_name);
 
 		if (source_type == E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS) {
-			if (is_new || e_source_webdav_get_order (webdav_extension) == e_source_address_book_get_order (E_SOURCE_ADDRESS_BOOK (backend)))
+			if (order != (guint) -1 && (is_new ||
+			    e_source_webdav_get_order (webdav_extension) == e_source_address_book_get_order (E_SOURCE_ADDRESS_BOOK (backend))))
 				e_source_address_book_set_order (E_SOURCE_ADDRESS_BOOK (backend), order);
 
 			e_source_webdav_set_order (webdav_extension, order);
@@ -228,7 +229,8 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 				g_free (safe_color);
 			}
 
-			if (is_new || e_source_webdav_get_order (webdav_extension) == e_source_selectable_get_order (E_SOURCE_SELECTABLE (backend)))
+			if (order != (guint) -1 && (is_new ||
+			    e_source_webdav_get_order (webdav_extension) == e_source_selectable_get_order (E_SOURCE_SELECTABLE (backend))))
 				e_source_selectable_set_order (E_SOURCE_SELECTABLE (backend), order);
 
 			e_source_webdav_set_order (webdav_extension, order);

@@ -3336,6 +3336,9 @@ e_util_source_compare_get_order (ESource *source,
 			else
 				*out_order = e_source_selectable_get_order (E_SOURCE_SELECTABLE (extension));
 
+			if (*out_order == (guint) -1)
+				return FALSE;
+
 			return TRUE;
 		}
 	}

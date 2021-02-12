@@ -116,7 +116,7 @@ typedef struct _EWebDAVResource {
 	glong last_modified;
 	gchar *description;
 	gchar *color;
-	guint order;
+	guint order; /* (guint) -1, if unknown */
 } EWebDAVResource;
 
 GType		e_webdav_resource_get_type		(void) G_GNUC_CONST;

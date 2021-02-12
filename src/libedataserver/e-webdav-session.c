@@ -66,7 +66,7 @@ G_DEFINE_BOXED_TYPE (EWebDAVAccessControlEntry, e_webdav_access_control_entry, e
  * @last_modified: optional last modified time of the resource, or 0
  * @description: (nullable): optional description of the resource, or %NULL
  * @color: (nullable): optional color of the resource, or %NULL
- * @order: sort order of the resource, or 0
+ * @order: sort order of the resource, or (guint) -1
  *
  * Some values of the resource are not always valid, depending on the @kind,
  * but also whether server stores such values and whether it had been asked
@@ -3578,18 +3578,21 @@ e_webdav_session_extract_uint (xmlNodePtr parent,
 			       const gchar *prop_ns_href,
 			       const gchar *prop_name)
 {
-	gchar *value_str;
+	gchar *value_str, *end_ptr = NULL;
 	guint64 value;
 
-	g_return_val_if_fail (parent != NULL, 0);
+	g_return_val_if_fail (parent != NULL, (guint) -1);
 
 	value_str = e_webdav_session_extract_nonempty (parent, prop_ns_href, prop_name, NULL, NULL);
 	if (!value_str)
-		return 0;
+		return (guint) -1;
 
-	value = g_ascii_strtoull (value_str, NULL, 10);
+	value = g_ascii_strtoull (value_str, &end_ptr, 10);
 
 	g_free (value_str);
+
+	if (end_ptr == value_str)
+		return (guint) -1;
 
 	return (guint) value;
 }
@@ -5013,7 +5016,7 @@ e_webdav_session_principal_property_search_cb (EWebDAVSession *webdav,
 		0, /* last_modified */
 		NULL, /* description */
 		NULL, /* color */
-		0); /* order */
+		(guint) -1); /* order */
 	resource->display_name = display_name;
 
 	*out_principals = g_slist_prepend (*out_principals, resource);
