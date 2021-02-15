@@ -499,8 +499,10 @@ gpg_ctx_free (struct _GpgCtx *gpg)
 	if (gpg->recipient_key_files) {
 		GSList *link;
 
-		for (link = gpg->recipient_key_files; link; link = g_slist_next (link)) {
-			g_unlink (link->data);
+		if (!camel_debug ("gpg:data")) {
+			for (link = gpg->recipient_key_files; link; link = g_slist_next (link)) {
+				g_unlink (link->data);
+			}
 		}
 
 		g_slist_free_full (gpg->recipient_key_files, g_free);
@@ -816,6 +818,20 @@ gpg_ctx_op_start (struct _GpgCtx *gpg,
 	}
 
 	argv = gpg_ctx_get_argv (gpg, fds[7], &status_fd, fds[8], &passwd_fd);
+
+	if (camel_debug_start ("gpg")) {
+		guint ii;
+
+		printf ("[GPG] going to execute:");
+		for (ii = 0; ii < argv->len; ii++) {
+			if (!argv->pdata[ii])
+				break;
+
+			printf (" %s", (const gchar *) argv->pdata[ii]);
+		}
+		printf ("\n");
+		camel_debug_end ();
+	}
 
 	if (!(gpg->pid = fork ())) {
 		/* child process */
