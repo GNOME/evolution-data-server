@@ -120,8 +120,7 @@ e_soup_auth_bearer_is_authenticated (SoupAuth *auth)
 
 	g_mutex_lock (&bearer->priv->property_lock);
 
-	if (!e_soup_auth_bearer_is_expired_locked (bearer))
-		authenticated = (bearer->priv->access_token != NULL);
+	authenticated = (bearer->priv->access_token != NULL);
 
 	g_mutex_unlock (&bearer->priv->property_lock);
 
@@ -214,7 +213,7 @@ e_soup_auth_bearer_set_access_token (ESoupAuthBearer *bearer,
 	bearer->priv->access_token = g_strdup (access_token);
 
 	if (expires_in_seconds > 0)
-		bearer->priv->expiry = time (NULL) + expires_in_seconds - 1;
+		bearer->priv->expiry = time (NULL) + expires_in_seconds - 5;
 	else
 		bearer->priv->expiry = EXPIRY_INVALID;
 
