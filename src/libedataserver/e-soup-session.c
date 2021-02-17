@@ -1013,7 +1013,6 @@ e_soup_session_send_request_sync (ESoupSession *session,
 				  GCancellable *cancellable,
 				  GError **error)
 {
-	ESoupAuthBearer *using_bearer_auth = NULL;
 	GInputStream *input_stream;
 	SoupMessage *message;
 	gboolean redirected;
@@ -1030,8 +1029,6 @@ e_soup_session_send_request_sync (ESoupSession *session,
 	g_clear_pointer (&session->priv->ssl_certificate_pem, g_free);
 	session->priv->ssl_certificate_errors = 0;
 	session->priv->ssl_info_set = FALSE;
-	if (session->priv->using_bearer_auth)
-		using_bearer_auth = g_object_ref (session->priv->using_bearer_auth);
 	g_mutex_unlock (&session->priv->property_lock);
 
 	if (session->priv->source &&
@@ -1043,32 +1040,39 @@ e_soup_session_send_request_sync (ESoupSession *session,
 		g_clear_object (&message);
 	}
 
-	if (using_bearer_auth &&
-	    e_soup_auth_bearer_is_expired (using_bearer_auth)) {
-		message = soup_request_http_get_message (request);
-
-		if (!e_soup_session_setup_bearer_auth (session, message, FALSE, using_bearer_auth, cancellable, &local_error)) {
-			if (local_error) {
-				soup_message_set_status_full (message, SOUP_STATUS_BAD_REQUEST, local_error->message);
-				g_propagate_error (error, local_error);
-			} else {
-				soup_message_set_status (message, SOUP_STATUS_BAD_REQUEST);
-			}
-
-			g_object_unref (using_bearer_auth);
-			g_clear_object (&message);
-
-			return NULL;
-		}
-
-		g_clear_object (&message);
-	}
-
-	g_clear_object (&using_bearer_auth);
-
 	redirected = TRUE;
 	while (redirected) {
+		ESoupAuthBearer *using_bearer_auth = NULL;
+
 		redirected = FALSE;
+
+		g_mutex_lock (&session->priv->property_lock);
+		if (session->priv->using_bearer_auth)
+			using_bearer_auth = g_object_ref (session->priv->using_bearer_auth);
+		g_mutex_unlock (&session->priv->property_lock);
+
+		if (using_bearer_auth &&
+		    e_soup_auth_bearer_is_expired (using_bearer_auth)) {
+			message = soup_request_http_get_message (request);
+
+			if (!e_soup_session_setup_bearer_auth (session, message, FALSE, using_bearer_auth, cancellable, &local_error)) {
+				if (local_error) {
+					soup_message_set_status_full (message, SOUP_STATUS_BAD_REQUEST, local_error->message);
+					g_propagate_error (error, local_error);
+				} else {
+					soup_message_set_status (message, SOUP_STATUS_BAD_REQUEST);
+				}
+
+				g_object_unref (using_bearer_auth);
+				g_clear_object (&message);
+
+				return NULL;
+			}
+
+			g_clear_object (&message);
+		}
+
+		g_clear_object (&using_bearer_auth);
 
 		input_stream = soup_request_send (SOUP_REQUEST (request), cancellable, &local_error);
 		if (input_stream) {
