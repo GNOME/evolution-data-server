@@ -35,6 +35,7 @@ set(TESTS
 	test-cal-component
 	test-cal-recur
 	test-cal-reminders
+	test-cal-utils
 )
 
 foreach(_test ${TESTS})

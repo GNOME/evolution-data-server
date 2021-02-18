@@ -351,6 +351,12 @@ gboolean	e_cal_util_set_alarm_acknowledged
 						(ECalComponent *component,
 						 const gchar *auid,
 						 gint64 when); /* as time_t in UTC */
+void		e_cal_util_clamp_vtimezone	(ICalComponent *vtimezone,
+						 const ICalTime *from,
+						 const ICalTime *to);
+void		e_cal_util_clamp_vtimezone_by_component
+						(ICalComponent *vtimezone,
+						 ICalComponent *component);
 
 G_END_DECLS
 

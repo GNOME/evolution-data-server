@@ -3982,7 +3982,9 @@ e_cal_meta_backend_merge_instances (ECalMetaBackend *meta_backend,
 {
 	ForeachTzidData f_data;
 	ICalComponent *vcalendar;
+	ICalTime *min_start = NULL, *max_end = NULL;
 	GSList *link, *sorted;
+	gboolean has_rrules = FALSE;
 
 	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), NULL);
 	g_return_val_if_fail (instances != NULL, NULL);
@@ -3997,6 +3999,8 @@ e_cal_meta_backend_merge_instances (ECalMetaBackend *meta_backend,
 
 	for (link = sorted; link; link = g_slist_next (link)) {
 		ECalComponent *comp = link->data;
+		ICalProperty *prop;
+		ICalTime *tt;
 
 		if (!E_IS_CAL_COMPONENT (comp)) {
 			g_warn_if_reached ();
@@ -4006,10 +4010,85 @@ e_cal_meta_backend_merge_instances (ECalMetaBackend *meta_backend,
 		f_data.icomp = i_cal_component_clone (e_cal_component_get_icalcomponent (comp));
 
 		i_cal_component_foreach_tzid (f_data.icomp, add_timezone_cb, &f_data);
-		i_cal_component_take_component (vcalendar, f_data.icomp);
+		i_cal_component_add_component (vcalendar, f_data.icomp);
+
+		has_rrules = has_rrules || e_cal_util_component_has_rrules (f_data.icomp);
+		tt = i_cal_component_get_dtstart (f_data.icomp);
+
+		if (!min_start && tt) {
+			min_start = tt;
+			tt = NULL;
+		} else if (tt && i_cal_time_compare (tt, min_start) < 0) {
+			g_clear_object (&min_start);
+			min_start = tt;
+			tt = NULL;
+		}
+
+		prop = has_rrules ? NULL : i_cal_component_get_first_property (f_data.icomp, I_CAL_RECURRENCEID_PROPERTY);
+		if (prop) {
+			ICalTime *recurid, *dtend;
+
+			recurid = i_cal_property_get_recurrenceid (prop);
+			g_object_unref (prop);
+
+			dtend = i_cal_component_get_dtend (f_data.icomp);
+			if (dtend && i_cal_time_compare (recurid, dtend) >= 0) {
+				g_clear_object (&dtend);
+				dtend = recurid;
+				recurid = NULL;
+			}
+
+			if (max_end && dtend && i_cal_time_compare (max_end, dtend) < 0) {
+				g_clear_object (&max_end);
+				max_end = dtend;
+				dtend = NULL;
+			} else if (!max_end) {
+				max_end = dtend;
+				dtend = NULL;
+			}
+
+			g_clear_object (&recurid);
+			g_clear_object (&dtend);
+		} else if (has_rrules) {
+			g_clear_object (&max_end);
+		} else {
+			ICalTime *dtend;
+
+			dtend = i_cal_component_get_dtend (f_data.icomp);
+
+			if (!dtend)
+				dtend = tt ? g_object_ref (tt) : (min_start ? g_object_ref (min_start) : NULL);
+
+			if (max_end && dtend && i_cal_time_compare (max_end, dtend) < 0) {
+				g_clear_object (&max_end);
+				max_end = dtend;
+				dtend = NULL;
+			} else if (!max_end) {
+				max_end = dtend;
+				dtend = NULL;
+			}
+
+			g_clear_object (&dtend);
+		}
+
+		g_clear_object (&f_data.icomp);
+		g_clear_object (&tt);
 	}
 
 	g_slist_free (sorted);
+
+	if (min_start) {
+		ICalComponent *subcomp;
+
+		for (subcomp = i_cal_component_get_first_component (vcalendar, I_CAL_VTIMEZONE_COMPONENT);
+		     subcomp;
+		     g_object_unref (subcomp), subcomp = i_cal_component_get_next_component (vcalendar, I_CAL_VTIMEZONE_COMPONENT)) {
+			e_cal_util_clamp_vtimezone (subcomp, min_start, max_end);
+		}
+	}
+
+	g_clear_object (&min_start);
+	g_clear_object (&max_end);
 
 	return vcalendar;
 }
