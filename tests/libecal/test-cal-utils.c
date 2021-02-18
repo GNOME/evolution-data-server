@@ -20,7 +20,7 @@
 
 #include "e-test-server-utils.h"
 
-static ETestServerClosure test_closure = { E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS, FALSE, NULL, FALSE };
+static ETestServerClosure test_closure = { E_TEST_SERVER_NONE, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS, FALSE, NULL, FALSE };
 
 #define DEF_SUBCOMP(x, dt) \
 	"BEGIN:" x "\r\n" \
@@ -161,11 +161,48 @@ test_clamp_vtimezone (ETestServerFixture *fixture,
 	e_cal_util_clamp_vtimezone_by_component (vtimezone, comp);
 	g_assert_cmpint (i_cal_component_count_components (vtimezone, I_CAL_XDAYLIGHT_COMPONENT), ==, 3);
 	g_assert_cmpint (i_cal_component_count_components (vtimezone, I_CAL_XSTANDARD_COMPONENT), ==, 3);
+
+	g_object_unref (comp);
+	g_object_unref (vtimezone);
+	vtimezone = i_cal_component_new_from_string (vtimezone_str);
+
+	comp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"DTSTART:20200104T080000Z\r\n"
+		"DTEND:20200104T090000Z\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (comp);
+
+	e_cal_util_clamp_vtimezone_by_component (vtimezone, comp);
+	g_assert_cmpint (i_cal_component_count_components (vtimezone, I_CAL_XDAYLIGHT_COMPONENT), ==, 1);
+	g_assert_cmpint (i_cal_component_count_components (vtimezone, I_CAL_XSTANDARD_COMPONENT), ==, 1);
+	g_object_unref (comp);
+
+	g_object_unref (from);
+	g_object_unref (to);
+
+	comp = i_cal_component_get_first_component (vtimezone, I_CAL_XDAYLIGHT_COMPONENT);
+	g_assert_nonnull (comp);
+	from = i_cal_component_get_dtstart (comp);
+	g_assert_nonnull (from);
+	g_assert_cmpint (i_cal_time_get_year (from), ==, 1985);
+	g_assert_cmpint (i_cal_time_get_month (from), ==, 3);
+	g_assert_cmpint (i_cal_time_get_day (from), ==, 1);
+	g_object_unref (from);
+	g_object_unref (comp);
+
+	comp = i_cal_component_get_first_component (vtimezone, I_CAL_XSTANDARD_COMPONENT);
+	g_assert_nonnull (comp);
+	from = i_cal_component_get_dtstart (comp);
+	g_assert_nonnull (from);
+	g_assert_cmpint (i_cal_time_get_year (from), ==, 1985);
+	g_assert_cmpint (i_cal_time_get_month (from), ==, 10);
+	g_assert_cmpint (i_cal_time_get_day (from), ==, 1);
+	g_object_unref (from);
 	g_object_unref (comp);
 
 	g_object_unref (vtimezone);
-	g_object_unref (from);
-	g_object_unref (to);
 }
 
 gint
