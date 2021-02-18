@@ -3808,8 +3808,6 @@ quit_test_with_mainloop_cb (gpointer user_data)
 
 	g_main_loop_quit (main_loop);
 
-	g_assert_not_reached ();
-
 	return FALSE;
 }
 
