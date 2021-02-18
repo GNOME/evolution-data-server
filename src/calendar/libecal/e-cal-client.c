@@ -3090,6 +3090,7 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
 typedef struct _ForeachTZIDCallbackData ForeachTZIDCallbackData;
 struct _ForeachTZIDCallbackData {
 	ECalClient *client;
+	ICalComponent *icalcomp;
 	GHashTable *timezone_hash;
 	gboolean success;
 };
@@ -3103,7 +3104,7 @@ foreach_tzid_callback (ICalParameter *param,
 	ForeachTZIDCallbackData *data = cbdata;
 	const gchar *tzid;
 	ICalTimezone *zone = NULL;
-	ICalComponent *vtimezone_comp;
+	ICalComponent *vtimezone_comp, *vtimezone_clone;
 	gchar *vtimezone_as_string;
 
 	/* Get the TZID string from the parameter. */
@@ -3125,9 +3126,14 @@ foreach_tzid_callback (ICalParameter *param,
 	if (!vtimezone_comp)
 		return;
 
-	vtimezone_as_string = i_cal_component_as_ical_string (vtimezone_comp);
+	vtimezone_clone = i_cal_component_clone (vtimezone_comp);
+	e_cal_util_clamp_vtimezone_by_component (vtimezone_clone, data->icalcomp);
+
+	vtimezone_as_string = i_cal_component_as_ical_string (vtimezone_clone);
 
 	g_hash_table_insert (data->timezone_hash, (gchar *) tzid, vtimezone_as_string);
+
+	g_clear_object (&vtimezone_clone);
 }
 
 /* This appends the value string to the GString given in data. */
@@ -3171,6 +3177,7 @@ e_cal_client_get_component_as_string (ECalClient *client,
 	/* Add any timezones needed to the hash. We use a hash since we only
 	 * want to add each timezone once at most. */
 	cbdata.client = client;
+	cbdata.icalcomp = icalcomp;
 	cbdata.timezone_hash = timezone_hash;
 	cbdata.success = TRUE;
 	i_cal_component_foreach_tzid (icalcomp, foreach_tzid_callback, &cbdata);
