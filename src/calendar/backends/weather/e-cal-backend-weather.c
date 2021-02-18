@@ -33,8 +33,10 @@
 #define EC_ERROR_EX(_code, _msg) e_client_error_create (_code, _msg)
 #define ECC_ERROR(_code) e_cal_client_error_create (_code, NULL)
 
+static void	maybe_start_reload_timeout	(ECalBackendWeather *cbw);
+static void	finished_retrieval_cb		(GWeatherInfo *info,
+						 ECalBackendWeather *cbw);
 static gboolean	reload_cb			(gpointer user_data);
-static gboolean	begin_retrieval_cb		(ECalBackendWeather *cbw);
 static ECalComponent *
 		create_weather			(ECalBackendWeather *cbw,
 						 GWeatherInfo *report,
@@ -74,6 +76,47 @@ struct _ECalBackendWeatherPrivate {
 
 G_DEFINE_TYPE_WITH_PRIVATE (ECalBackendWeather, e_cal_backend_weather, E_TYPE_CAL_BACKEND_SYNC)
 
+static void
+ecb_weather_begin_retrieval (ECalBackendWeather *cbw)
+{
+	ESource *source;
+
+	maybe_start_reload_timeout (cbw);
+
+	if (!e_backend_get_online (E_BACKEND (cbw)))
+		return;
+
+	source = e_backend_get_source (E_BACKEND (cbw));
+
+	if (!cbw->priv->source) {
+		ESourceWeather *extension;
+		const gchar *extension_name;
+		gchar *location;
+
+		extension_name = E_SOURCE_EXTENSION_WEATHER_BACKEND;
+		extension = e_source_get_extension (source, extension_name);
+
+		location = e_source_weather_dup_location (extension);
+		cbw->priv->source = e_weather_source_new (location);
+		if (cbw->priv->source == NULL) {
+			g_warning (
+				"Invalid weather location '%s' "
+				"for calendar '%s'",
+				location,
+				e_source_get_display_name (source));
+		}
+		g_free (location);
+	}
+
+	if (!cbw->priv->is_loading && cbw->priv->source != NULL) {
+		cbw->priv->is_loading = TRUE;
+
+		e_weather_source_parse (
+			cbw->priv->source, (EWeatherSourceFinished)
+			finished_retrieval_cb, cbw);
+	}
+}
+
 static gboolean
 reload_cb (gpointer user_data)
 {
@@ -85,7 +128,7 @@ reload_cb (gpointer user_data)
 		return TRUE;
 
 	cbw->priv->reload_timeout_id = 0;
-	begin_retrieval_cb (cbw);
+	ecb_weather_begin_retrieval (cbw);
 
 	return FALSE;
 }
@@ -288,53 +331,19 @@ finished_retrieval_cb (GWeatherInfo *info,
 }
 
 static gboolean
-begin_retrieval_cb (ECalBackendWeather *cbw)
+begin_retrieval_cb (gpointer user_data)
 {
-	ECalBackendWeatherPrivate *priv = cbw->priv;
-	ESource *e_source;
+	ECalBackendWeather *cbw = user_data;
 	GSource *source;
 
-	/* XXX Too much overloading of the word 'source' here! */
-
-	if (!e_backend_get_online (E_BACKEND (cbw)))
-		return TRUE;
-
-	maybe_start_reload_timeout (cbw);
-
-	e_source = e_backend_get_source (E_BACKEND (cbw));
-
-	if (priv->source == NULL) {
-		ESourceWeather *extension;
-		const gchar *extension_name;
-		gchar *location;
-
-		extension_name = E_SOURCE_EXTENSION_WEATHER_BACKEND;
-		extension = e_source_get_extension (e_source, extension_name);
-
-		location = e_source_weather_dup_location (extension);
-		priv->source = e_weather_source_new (location);
-		if (priv->source == NULL) {
-			g_warning (
-				"Invalid weather location '%s' "
-				"for calendar '%s'",
-				location,
-				e_source_get_display_name (e_source));
-		}
-		g_free (location);
-	}
-
 	source = g_main_current_source ();
+	if (g_source_is_destroyed (source))
+		return FALSE;
 
-	if (priv->begin_retrival_id == g_source_get_id (source))
-		priv->begin_retrival_id = 0;
+	if (cbw->priv->begin_retrival_id == g_source_get_id (source))
+		cbw->priv->begin_retrival_id = 0;
 
-	if (!priv->is_loading && priv->source != NULL) {
-		priv->is_loading = TRUE;
-
-		e_weather_source_parse (
-			priv->source, (EWeatherSourceFinished)
-			finished_retrieval_cb, cbw);
-	}
+	ecb_weather_begin_retrieval (cbw);
 
 	return FALSE;
 }
@@ -692,7 +701,7 @@ e_cal_backend_weather_open (ECalBackendSync *backend,
 			return;
 
 		if (!priv->begin_retrival_id)
-			priv->begin_retrival_id = g_idle_add ((GSourceFunc) begin_retrieval_cb, cbw);
+			priv->begin_retrival_id = g_idle_add (begin_retrieval_cb, cbw);
 	}
 }
 
@@ -1038,6 +1047,7 @@ e_cal_backend_weather_finalize (GObject *object)
 	priv = E_CAL_BACKEND_WEATHER (object)->priv;
 
 	g_clear_object (&priv->cache);
+	g_free (priv->last_used_location);
 	g_mutex_clear (&priv->last_used_mutex);
 
 	/* Chain up to parent's finalize() method. */
