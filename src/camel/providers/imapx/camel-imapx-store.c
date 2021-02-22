@@ -1350,7 +1350,7 @@ get_folder_info_offline (CamelStore *store,
 		if (!si_is_match)
 			continue;
 
-		if (!use_subscriptions && !(si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) &&
+		if (!si_is_inbox && !use_subscriptions && !(si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) &&
 		    !(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST)) {
 			CamelIMAPXMailbox *mailbox;
 
