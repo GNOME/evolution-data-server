@@ -2326,8 +2326,22 @@ imapx_continuation (CamelIMAPXServer *is,
 			(CamelSasl *) cp->ob, (const gchar *) token,
 			cancellable, error);
 		g_free (token);
-		if (resp == NULL)
+		if (resp == NULL) {
+			/* Cancel the request */
+			g_mutex_lock (&is->priv->stream_lock);
+			n_bytes_written = g_output_stream_write_all (
+				output_stream, "*\r\n", 3,
+				NULL, cancellable, NULL);
+			if (n_bytes_written == 3)
+				g_output_stream_flush (output_stream, cancellable, NULL);
+			g_mutex_unlock (&is->priv->stream_lock);
+
+			camel_imapx_input_stream_skip (
+				CAMEL_IMAPX_INPUT_STREAM (input_stream),
+				cancellable, NULL);
+
 			return FALSE;
+		}
 		c (is->priv->tagprefix, "got auth continuation, feeding token '%s' back to auth mech\n", resp);
 
 		g_mutex_lock (&is->priv->stream_lock);
