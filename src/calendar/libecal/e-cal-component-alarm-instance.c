@@ -34,6 +34,9 @@ struct _ECalComponentAlarmInstance {
 	/* UID of the alarm that instanceed */
 	gchar *uid;
 
+	/* recurrence ID of the component the alarm was generated from */
+	gchar *rid;
+
 	/* Instance time, i.e. "5 minutes before the appointment" */
 	time_t instance_time;
 
@@ -43,7 +46,7 @@ struct _ECalComponentAlarmInstance {
 };
 
 /**
- * e_cal_component_alarm_instance_new_relative:
+ * e_cal_component_alarm_instance_new:
  * @uid: (not nullable): UID of the alarm
  * @instance_time: instance time, i.e. "5 minutes before the appointment"
  * @occur_start: actual event occurrence start to which this instance corresponds
@@ -68,6 +71,7 @@ e_cal_component_alarm_instance_new (const gchar *uid,
 
 	instance = g_slice_new0 (ECalComponentAlarmInstance);
 	instance->uid = g_strdup (uid);
+	instance->rid = NULL;
 	instance->instance_time = instance_time;
 	instance->occur_start = occur_start;
 	instance->occur_end = occur_end;
@@ -89,12 +93,19 @@ e_cal_component_alarm_instance_new (const gchar *uid,
 ECalComponentAlarmInstance *
 e_cal_component_alarm_instance_copy (const ECalComponentAlarmInstance *instance)
 {
+	ECalComponentAlarmInstance *instnc;
+
 	g_return_val_if_fail (instance != NULL, NULL);
 
-	return e_cal_component_alarm_instance_new (instance->uid,
+	instnc = e_cal_component_alarm_instance_new (instance->uid,
 		instance->instance_time,
 		instance->occur_start,
 		instance->occur_end);
+
+	e_cal_component_alarm_instance_set_rid (instnc,
+		e_cal_component_alarm_instance_get_rid (instance));
+
+	return instnc;
 }
 
 /**
@@ -114,6 +125,7 @@ e_cal_component_alarm_instance_free (gpointer instance)
 
 	if (instnc) {
 		g_free (instnc->uid);
+		g_free (instnc->rid);
 		g_slice_free (ECalComponentAlarmInstance, instnc);
 	}
 }
@@ -136,7 +148,7 @@ e_cal_component_alarm_instance_get_uid (const ECalComponentAlarmInstance *instan
 
 /**
  * e_cal_component_alarm_instance_set_uid:
- * @instance: an ECalComponentAlarmInstance
+ * @instance: an #ECalComponentAlarmInstance
  * @uid: (not nullable): alarm UID to set
  *
  * Set the alarm UID.
@@ -153,6 +165,46 @@ e_cal_component_alarm_instance_set_uid (ECalComponentAlarmInstance *instance,
 	if (g_strcmp0 (instance->uid, uid) != 0) {
 		g_free (instance->uid);
 		instance->uid = g_strdup (uid);
+	}
+}
+
+/**
+ * e_cal_component_alarm_instance_get_rid:
+ * @instance: an #ECalComponentAlarmInstance
+ *
+ * Returns: (nullable): the Recurrence ID of the component this @instance was generated for.
+ *
+ * Since: 3.40
+ **/
+const gchar *
+e_cal_component_alarm_instance_get_rid (const ECalComponentAlarmInstance *instance)
+{
+	g_return_val_if_fail (instance != NULL, NULL);
+
+	return instance->rid;
+}
+
+/**
+ * e_cal_component_alarm_instance_set_rid:
+ * @instance: an #ECalComponentAlarmInstance
+ * @rid: (nullable): recurrence UID to set, or %NULL
+ *
+ * Set the Recurrence ID of the component this @instance was generated for.
+ *
+ * Since: 3.40
+ **/
+void
+e_cal_component_alarm_instance_set_rid (ECalComponentAlarmInstance *instance,
+					const gchar *rid)
+{
+	g_return_if_fail (instance != NULL);
+
+	if (rid && !*rid)
+		rid = NULL;
+
+	if (g_strcmp0 (instance->rid, rid) != 0) {
+		g_free (instance->rid);
+		instance->rid = g_strdup (rid);
 	}
 }
 

@@ -401,6 +401,7 @@ struct alarm_occurrence_data {
 static void
 add_trigger (struct alarm_occurrence_data *aod,
              const gchar *auid,
+	     const gchar *rid,
              time_t instance_time,
              time_t occur_start,
              time_t occur_end)
@@ -408,6 +409,9 @@ add_trigger (struct alarm_occurrence_data *aod,
 	ECalComponentAlarmInstance *instance;
 
 	instance = e_cal_component_alarm_instance_new (auid, instance_time, occur_start, occur_end);
+
+	if (rid && *rid)
+		e_cal_component_alarm_instance_set_rid (instance, rid);
 
 	aod->triggers = g_slist_prepend (aod->triggers, instance);
 	aod->n_triggers++;
@@ -427,10 +431,17 @@ add_alarm_occurrences_cb (ICalComponent *icalcomp,
 	struct alarm_occurrence_data *aod;
 	time_t start, end;
 	GSList *link;
+	gchar *rid;
 
 	aod = user_data;
 	start = i_cal_time_as_timet_with_zone (instance_start, i_cal_time_get_timezone (instance_start));
 	end = i_cal_time_as_timet_with_zone (instance_end, i_cal_time_get_timezone (instance_end));
+	rid = e_cal_util_component_get_recurid_as_string (icalcomp);
+
+	if (!rid || !*rid) {
+		g_clear_pointer (&rid, g_free);
+		rid = i_cal_time_as_ical_string (instance_start);
+	}
 
 	for (link = aod->alarm_uids; link; link = g_slist_next (link)) {
 		const gchar *auid;
@@ -503,17 +514,19 @@ add_alarm_occurrences_cb (ICalComponent *icalcomp,
 				t = trigger_time + (ii + 1) * repeat_time;
 
 				if (t >= aod->start && t < aod->end)
-					add_trigger (aod, auid, t, start, end);
+					add_trigger (aod, auid, rid, t, start, end);
 			}
 		}
 
 		/* Add the trigger itself */
 
 		if (trigger_time >= aod->start && trigger_time < aod->end)
-			add_trigger (aod, auid, trigger_time, start, end);
+			add_trigger (aod, auid, rid, trigger_time, start, end);
 
 		e_cal_component_alarm_free (alarm);
 	}
+
+	g_free (rid);
 
 	return TRUE;
 }
@@ -529,9 +542,11 @@ generate_absolute_triggers (ECalComponent *comp,
 	GSList *link;
 	ECalComponentDateTime *dtstart, *dtend;
 	time_t occur_start, occur_end;
+	gchar *rid;
 
 	dtstart = e_cal_component_get_dtstart (comp);
 	dtend = e_cal_component_get_dtend (comp);
+	rid = e_cal_component_get_recurid_as_string (comp);
 
 	/* No particular occurrence, so just use the times from the
 	 * component */
@@ -631,20 +646,21 @@ generate_absolute_triggers (ECalComponent *comp,
 				tt = abs_time + (ii + 1) * repeat_time;
 
 				if (tt >= aod->start && tt < aod->end)
-					add_trigger (aod, auid, tt, occur_start, occur_end);
+					add_trigger (aod, auid, rid, tt, occur_start, occur_end);
 			}
 		}
 
 		/* Add the trigger itself */
 
 		if (abs_time >= aod->start && abs_time < aod->end)
-			add_trigger (aod, auid, abs_time, occur_start, occur_end);
+			add_trigger (aod, auid, rid, abs_time, occur_start, occur_end);
 
 		e_cal_component_alarm_free (alarm);
 	}
 
 	e_cal_component_datetime_free (dtstart);
 	e_cal_component_datetime_free (dtend);
+	g_free (rid);
 }
 
 /* Compares two alarm instances; called from g_slist_sort() */

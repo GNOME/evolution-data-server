@@ -459,6 +459,7 @@ verify_struct_alarm_instance_equal (const ECalComponentAlarmInstance *expected,
 	g_assert_nonnull (received);
 
 	g_assert_cmpstr (e_cal_component_alarm_instance_get_uid (expected), ==, e_cal_component_alarm_instance_get_uid (received));
+	g_assert_cmpstr (e_cal_component_alarm_instance_get_rid (expected), ==, e_cal_component_alarm_instance_get_rid (received));
 	g_assert_cmpint (e_cal_component_alarm_instance_get_time (expected), ==, e_cal_component_alarm_instance_get_time (received));
 	g_assert_cmpint (e_cal_component_alarm_instance_get_occur_start (expected), ==, e_cal_component_alarm_instance_get_occur_start (received));
 	g_assert_cmpint (e_cal_component_alarm_instance_get_occur_end (expected), ==, e_cal_component_alarm_instance_get_occur_end (received));
@@ -781,6 +782,7 @@ test_component_struct_alarms (void)
 	e_cal_component_alarms_free (received);
 
 	instance = e_cal_component_alarm_instance_new ("2", (time_t) 2, (time_t) 3, (time_t) 4);
+	e_cal_component_alarm_instance_set_rid (instance, "r1");
 	e_cal_component_alarms_take_instance (expected, instance);
 	g_assert_cmpint (2, ==, g_slist_length (e_cal_component_alarms_get_instances (expected)));
 
@@ -834,15 +836,16 @@ test_component_struct_alarm_instance (void)
 {
 	struct _values {
 		const gchar *uid;
+		const gchar *rid;
 		gint instance_time;
 		gint occur_start;
 		gint occur_end;
 	} values[] = {
-		{ "1", 1, 2, 3 },
-		{ "2", 2, 3, 4 },
-		{ "3", 3, 4, 6 },
-		{ "4", 4, 5, 6 },
-		{ "5", 5, 6, 7 }
+		{ "1", NULL, 1, 2, 3 },
+		{ "2", "r1", 2, 3, 4 },
+		{ "3", "r2", 3, 4, 6 },
+		{ "4", NULL, 4, 5, 6 },
+		{ "5", "r3", 5, 6, 7 }
 	};
 	gint ii;
 
@@ -862,9 +865,12 @@ test_component_struct_alarm_instance (void)
 			e_cal_component_alarm_instance_set_occur_end (expected, (time_t) values[ii].occur_end);
 		}
 
+		e_cal_component_alarm_instance_set_rid (expected, values[ii].rid);
+
 		g_assert_nonnull (expected);
 
 		g_assert_cmpstr (e_cal_component_alarm_instance_get_uid (expected), ==, values[ii].uid);
+		g_assert_cmpstr (e_cal_component_alarm_instance_get_rid (expected), ==, values[ii].rid);
 		g_assert_cmpint (e_cal_component_alarm_instance_get_time (expected), ==, (time_t) values[ii].instance_time);
 		g_assert_cmpint (e_cal_component_alarm_instance_get_occur_start (expected), ==, (time_t) values[ii].occur_start);
 		g_assert_cmpint (e_cal_component_alarm_instance_get_occur_end (expected), ==, (time_t) values[ii].occur_end);

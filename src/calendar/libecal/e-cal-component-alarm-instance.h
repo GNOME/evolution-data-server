@@ -54,6 +54,11 @@ const gchar *	e_cal_component_alarm_instance_get_uid
 void		e_cal_component_alarm_instance_set_uid
 						(ECalComponentAlarmInstance *instance,
 						 const gchar *uid);
+const gchar *	e_cal_component_alarm_instance_get_rid
+						(const ECalComponentAlarmInstance *instance);
+void		e_cal_component_alarm_instance_set_rid
+						(ECalComponentAlarmInstance *instance,
+						 const gchar *rid);
 time_t		e_cal_component_alarm_instance_get_time
 						(const ECalComponentAlarmInstance *instance);
 void		e_cal_component_alarm_instance_set_time
