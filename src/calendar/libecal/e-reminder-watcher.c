@@ -3194,6 +3194,10 @@ e_reminder_watcher_dup_snoozed (EReminderWatcher *watcher)
  * reminders into the list of snoozed reminders and invokes the "changed"
  * signal.
  *
+ * The @until can be a special value 0, to set the time as the event start,
+ * if it's in the future. The function does nothing when the event time
+ * is in the past.
+ *
  * Since: 3.30
  **/
 void
@@ -3208,6 +3212,16 @@ e_reminder_watcher_snooze (EReminderWatcher *watcher,
 	g_return_if_fail (rd != NULL);
 
 	g_rec_mutex_lock (&watcher->priv->lock);
+
+	if (!until) {
+		until = e_cal_component_alarm_instance_get_occur_start (rd->instance);
+
+		/* Only if it's in the future. */
+		if (until <= g_get_real_time () / G_USEC_PER_SEC) {
+			g_rec_mutex_unlock (&watcher->priv->lock);
+			return;
+		}
+	}
 
 	rd_copy = e_reminder_data_copy (rd);
 	if (!rd_copy) {
