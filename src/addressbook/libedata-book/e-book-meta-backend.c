@@ -1866,6 +1866,8 @@ ebmb_get_direct_book (EBookBackend *book_backend)
 	/* Support in-tree testing / relocated modules */
 	if (modules_env) {
 		backend_path = g_build_filename (modules_env, klass->backend_module_filename, NULL);
+	} else if (klass->backend_module_directory) {
+		backend_path = g_build_filename (klass->backend_module_directory, klass->backend_module_filename, NULL);
 	} else {
 		backend_path = g_build_filename (BACKENDDIR, klass->backend_module_filename, NULL);
 	}

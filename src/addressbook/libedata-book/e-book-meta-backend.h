@@ -174,8 +174,12 @@ struct _EBookMetaBackendClass {
 						 gchar **out_certificate_pem,
 						 GTlsCertificateFlags *out_certificate_errors);
 
+	/* For Direct Read Access - directory with the backend_module_filename,
+	   when it differs from the default module directory */
+	const gchar *backend_module_directory;
+
 	/* Padding for future expansion */
-	gpointer reserved[9];
+	gpointer reserved[8];
 };
 
 GType		e_book_meta_backend_get_type	(void) G_GNUC_CONST;
