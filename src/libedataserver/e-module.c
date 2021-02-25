@@ -25,6 +25,7 @@
 
 #include <glib.h>
 
+#include "e-data-server-util.h"
 #include "e-module.h"
 
 /* This is the symbol we call when loading a module. */
@@ -336,4 +337,61 @@ e_module_load_file (const gchar *filename)
 	}
 
 	return module;
+}
+
+/**
+ * e_module_load_all_in_directory_and_prefixes:
+ * @dirname: pathname for a directory containing modules to load
+ * @dirprefix: (nullable): prefix of @dirname, which can be replaced by custom prefixes, or %NULL
+ *
+ * Loads all the modules in the specified directory into memory and the other
+ * custom prefixes returned by e_util_get_directory_variants().  If
+ * you want to unload them (enabling on-demand loading) you must call
+ * g_type_module_unuse() on all the modules.  Free the returned list
+ * with g_list_free().
+ *
+ * When @dirprefix is %NULL, or not a prefix of @dirname, behaves
+ * the same as e_module_load_all_in_directory().
+ *
+ * Returns: (element-type EModule) (transfer container): a list of #EModules loaded
+ *    from @dirname and any extra prefix directory.
+ *
+ * Since: 3.40
+ **/
+GList *
+e_module_load_all_in_directory_and_prefixes (const gchar *dirname,
+					     const gchar *dirprefix)
+{
+	GList *list = NULL;
+	GPtrArray *variants;
+	guint ii;
+
+	g_return_val_if_fail (dirname != NULL, NULL);
+
+	if (!g_module_supported ())
+		return NULL;
+
+	if (!dirprefix || !*dirprefix || !g_str_has_prefix (dirname, dirprefix))
+		return e_module_load_all_in_directory (dirname);
+
+	variants = e_util_get_directory_variants (dirname, dirprefix, TRUE);
+	if (!variants)
+		return e_module_load_all_in_directory (dirname);
+
+	for (ii = 0; ii < variants->len; ii++) {
+		const gchar *path = g_ptr_array_index (variants, ii);
+
+		if (path && *path) {
+			GList *modules;
+
+			modules = e_module_load_all_in_directory (path);
+
+			if (modules)
+				list = g_list_concat (list, modules);
+		}
+	}
+
+	g_ptr_array_unref (variants);
+
+	return list;
 }

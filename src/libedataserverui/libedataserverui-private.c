@@ -43,7 +43,7 @@ _libedataserverui_load_modules (void)
 
 		modules_loaded = TRUE;
 
-		module_types = e_module_load_all_in_directory (E_DATA_SERVER_UIMODULEDIR);
+		module_types = e_module_load_all_in_directory_and_prefixes (E_DATA_SERVER_UIMODULEDIR, E_DATA_SERVER_PREFIX);
 		g_list_free_full (module_types, (GDestroyNotify) g_type_module_unuse);
 	}
 }

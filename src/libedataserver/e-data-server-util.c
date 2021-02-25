@@ -3408,3 +3408,38 @@ e_util_source_compare_for_sort (ESource *source_a,
 
 	return e_source_compare_by_display_name (source_a, source_b);
 }
+
+/**
+ * e_util_get_directory_variants:
+ * @main_path: the main path to work with
+ * @replace_prefix: path prefix to replace
+ * @with_modules_dir: whether to add also the modules directory
+ *
+ * The @main_path is a directory, which will be always used. It
+ * should have as its prefix the @replace_prefix, otherwise
+ * the function returns only the @main_path in the paths array.
+ *
+ * When there's exported an environment variable EDS_EXTRA_PREFIXES,
+ * it is used as a list of alternative prefixes where to look for
+ * the @main_path (rest after the @replace_prefix).
+ *
+ * When the @with_modules_dir is %TRUE, there's also added
+ * g_get_user_data_dir() + "evolution/modules/", aka
+ * ~/.local/share/evolution/modules/, into the resulting array.
+ *
+ * Returns: (element-type utf8) (transfer container): a %GPtrArray
+ *    with paths to use, including the @main_path. Free it with
+ *    g_ptr_array_unref(), when no longer needed.
+ *
+ * Since: 3.40
+ **/
+GPtrArray *
+e_util_get_directory_variants (const gchar *main_path,
+			       const gchar *replace_prefix,
+			       gboolean with_modules_dir)
+{
+	g_return_val_if_fail (main_path && *main_path, NULL);
+	g_return_val_if_fail (replace_prefix && *replace_prefix, NULL);
+
+	return camel_util_get_directory_variants (main_path, replace_prefix, with_modules_dir);
+}

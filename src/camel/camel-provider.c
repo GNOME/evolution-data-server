@@ -37,6 +37,7 @@
 #include "camel-string-utils.h"
 #include "camel-vee-store.h"
 #include "camel-win32.h"
+#include "camel.h"
 
 /* table of CamelProviderModule's */
 static GHashTable *module_table;
@@ -182,45 +183,22 @@ provider_setup (gpointer param)
 	return NULL;
 }
 
-/**
- * camel_provider_init:
- *
- * Initialize the Camel provider system by reading in the .urls
- * files in the provider directory and creating a hash table mapping
- * URLs to module names.
- *
- * A .urls file has the same initial prefix as the shared library it
- * correspond to, and consists of a series of lines containing the URL
- * protocols that that library handles.
- *
- * TODO: This should be pathed?
- * TODO: This should be plugin-d?
- **/
-void
-camel_provider_init (void)
+static void
+camel_provider_traverse_directory (const gchar *provider_dir,
+				   gboolean warn_failure)
 {
 	GDir *dir;
 	const gchar *entry;
 	gchar *p, *name, buf[80];
-	static gint loaded = 0;
-	const gchar *provider_dir;
-
-	provider_dir = g_getenv (EDS_CAMEL_PROVIDER_DIR);
-	if (!provider_dir)
-		provider_dir = CAMEL_PROVIDERDIR;
-
-	g_once (&setup_once, provider_setup, NULL);
-
-	if (loaded)
-		return;
-
-	loaded = 1;
 
 	dir = g_dir_open (provider_dir, 0, NULL);
 	if (!dir) {
-		g_warning (
-			"Could not open camel provider directory (%s): %s",
-			provider_dir, g_strerror (errno));
+		if (warn_failure) {
+			g_warning (
+				"Could not open camel provider directory (%s): %s",
+				provider_dir, g_strerror (errno));
+		}
+
 		return;
 	}
 
@@ -271,6 +249,64 @@ camel_provider_init (void)
 	}
 
 	g_dir_close (dir);
+}
+
+/**
+ * camel_provider_init:
+ *
+ * Initialize the Camel provider system by reading in the .urls
+ * files in the provider directory and creating a hash table mapping
+ * URLs to module names.
+ *
+ * A .urls file has the same initial prefix as the shared library it
+ * correspond to, and consists of a series of lines containing the URL
+ * protocols that that library handles.
+ *
+ * TODO: This should be pathed?
+ * TODO: This should be plugin-d?
+ **/
+void
+camel_provider_init (void)
+{
+	static gint loaded = 0;
+	const gchar *provider_dir;
+	gboolean is_default = FALSE;
+
+	provider_dir = g_getenv (EDS_CAMEL_PROVIDER_DIR);
+	if (!provider_dir) {
+		provider_dir = CAMEL_PROVIDERDIR;
+		is_default = TRUE;
+	}
+
+	g_once (&setup_once, provider_setup, NULL);
+
+	if (loaded)
+		return;
+
+	loaded = 1;
+
+	if (is_default) {
+		GPtrArray *variants;
+
+		variants = camel_util_get_directory_variants (provider_dir, E_DATA_SERVER_PREFIX, TRUE);
+
+		if (variants) {
+			guint ii;
+
+			for (ii = 0; ii < variants->len; ii++) {
+				const gchar *path = g_ptr_array_index (variants, ii);
+
+				if (path && *path)
+					camel_provider_traverse_directory (path, g_strcmp0 (provider_dir, path) == 0);
+			}
+
+			g_ptr_array_unref (variants);
+		} else {
+			camel_provider_traverse_directory (provider_dir, TRUE);
+		}
+	} else {
+		camel_provider_traverse_directory (provider_dir, TRUE);
+	}
 }
 
 /**

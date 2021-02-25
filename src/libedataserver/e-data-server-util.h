@@ -295,6 +295,9 @@ gboolean	e_util_can_use_collection_as_credential_source
 						 struct _ESource *child_source);
 gint		e_util_source_compare_for_sort	(struct _ESource *source_a,
 						 struct _ESource *source_b);
+GPtrArray *	e_util_get_directory_variants	(const gchar *main_path,
+						 const gchar *replace_prefix,
+						 gboolean with_modules_dir);
 
 G_END_DECLS
 

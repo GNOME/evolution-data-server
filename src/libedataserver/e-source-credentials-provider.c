@@ -133,7 +133,7 @@ source_credentials_provider_constructed (GObject *object)
 
 		modules_loaded = TRUE;
 
-		module_types = e_module_load_all_in_directory (E_DATA_SERVER_CREDENTIALMODULEDIR);
+		module_types = e_module_load_all_in_directory_and_prefixes (E_DATA_SERVER_CREDENTIALMODULEDIR, E_DATA_SERVER_PREFIX);
 		g_list_free_full (module_types, (GDestroyNotify) g_type_module_unuse);
 	}
 

@@ -392,3 +392,126 @@ camel_binding_bind_property_with_closures (gpointer source,
 
 	return binding;
 }
+
+static gint
+sort_paths_by_index (gconstpointer aa,
+		     gconstpointer bb,
+		     gpointer user_data)
+{
+	GHashTable *paths_hash = user_data;
+	const gchar *path1 = *((gchar **) aa);
+	const gchar *path2 = *((gchar **) bb);
+	gint val1, val2;
+
+	val1 = GPOINTER_TO_INT (g_hash_table_lookup (paths_hash, path1));
+	val2 = GPOINTER_TO_INT (g_hash_table_lookup (paths_hash, path2));
+
+	return val1 - val2;
+}
+
+/**
+ * camel_util_get_directory_variants:
+ * @main_path: the main path to work with
+ * @replace_prefix: path prefix to replace
+ * @with_modules_dir: whether to add also the modules directory
+ *
+ * The @main_path is a directory, which will be always used. It
+ * should have as its prefix the @replace_prefix, otherwise
+ * the function returns only the @main_path in the paths array.
+ *
+ * When there's exported an environment variable EDS_EXTRA_PREFIXES,
+ * it is used as a list of alternative prefixes where to look for
+ * the @main_path (rest after the @replace_prefix).
+ *
+ * When the @with_modules_dir is %TRUE, there's also added
+ * g_get_user_data_dir() + "evolution/modules/", aka
+ * ~/.local/share/evolution/modules/, into the resulting array.
+ *
+ * Returns: (element-type utf8) (transfer container): a %GPtrArray
+ *    with paths to use, including the @main_path. Free it with
+ *    g_ptr_array_unref(), when no longer needed.
+ *
+ * Since: 3.40
+ **/
+GPtrArray *
+camel_util_get_directory_variants (const gchar *main_path,
+				   const gchar *replace_prefix,
+				   gboolean with_modules_dir)
+{
+	GPtrArray *paths;
+	GHashTable *paths_hash;
+	GHashTableIter iter;
+	gpointer key;
+	gint index = 0;
+
+	g_return_val_if_fail (main_path && *main_path, NULL);
+	g_return_val_if_fail (replace_prefix && *replace_prefix, NULL);
+
+	paths_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	g_hash_table_insert (paths_hash, g_strdup (main_path), GINT_TO_POINTER (index++));
+
+	if (g_str_has_prefix (main_path, replace_prefix)) {
+		const gchar *add_path;
+		guint len = strlen (replace_prefix);
+
+		if (replace_prefix[len - 1] == G_DIR_SEPARATOR)
+			len--;
+
+		add_path = main_path + len;
+
+		if (add_path[0] == G_DIR_SEPARATOR) {
+			const gchar *env = g_getenv ("EDS_EXTRA_PREFIXES");
+
+			/* Skip the directory separator */
+			add_path++;
+
+			if (env) {
+				gchar **strv;
+				guint ii;
+
+				strv = g_strsplit (env,
+				#ifdef G_OS_WIN32
+					";",
+				#else
+					":",
+				#endif
+					-1);
+
+				for (ii = 0; strv && strv[ii]; ii++) {
+					const gchar *prefix = strv[ii];
+
+					if (*prefix) {
+						gchar *path = g_build_filename (prefix, add_path, NULL);
+
+						if (!path || g_hash_table_contains (paths_hash, path))
+							g_free (path);
+						else
+							g_hash_table_insert (paths_hash, path, GINT_TO_POINTER (index++));
+					}
+				}
+
+				g_strfreev (strv);
+			}
+
+			if (with_modules_dir) {
+				gchar *path = g_build_filename (g_get_user_data_dir (), "evolution", "modules", add_path, NULL);
+
+				if (!path || g_hash_table_contains (paths_hash, path))
+					g_free (path);
+				else
+					g_hash_table_insert (paths_hash, path, GINT_TO_POINTER (index++));
+			}
+		}
+	}
+
+	paths = g_ptr_array_new_with_free_func (g_free);
+	g_hash_table_iter_init (&iter, paths_hash);
+
+	while (g_hash_table_iter_next (&iter, &key, NULL)) {
+		g_ptr_array_add (paths, key);
+	}
+
+	g_ptr_array_sort_with_data (paths, sort_paths_by_index, paths_hash);
+
+	return paths;
+}

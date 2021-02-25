@@ -176,6 +176,10 @@ GBinding *	camel_binding_bind_property_with_closures
 						 GBindingFlags flags,
 						 GClosure *transform_to,
 						 GClosure *transform_from);
+GPtrArray *	camel_util_get_directory_variants
+						(const gchar *main_path,
+						 const gchar *replace_prefix,
+						 gboolean with_modules_dir);
 
 G_END_DECLS
 

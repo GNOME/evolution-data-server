@@ -702,7 +702,7 @@ e_dbus_server_load_modules (EDBusServer *server)
 
 	G_LOCK (loaded_modules);
 
-	list = e_module_load_all_in_directory (class->module_directory);
+	list = e_module_load_all_in_directory_and_prefixes (class->module_directory, E_DATA_SERVER_PREFIX);
 	for (link = list; link; link = g_list_next (link)) {
 		EModule *module = link->data;
 

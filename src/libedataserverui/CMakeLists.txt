@@ -51,6 +51,7 @@ set_target_properties(edataserverui PROPERTIES
 target_compile_definitions(edataserverui PRIVATE
 	-DG_LOG_DOMAIN=\"e-data-server-ui\"
 	-DLIBEDATASERVERUI_COMPILATION
+	-DE_DATA_SERVER_PREFIX=\"${CMAKE_INSTALL_PREFIX}\"
 	-DE_DATA_SERVER_UIMODULEDIR=\"${uimoduledir}\"
 )
 

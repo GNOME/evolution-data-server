@@ -73,6 +73,9 @@ EModule *	e_module_new			(const gchar *filename);
 const gchar *	e_module_get_filename		(EModule *module);
 EModule *	e_module_load_file		(const gchar *filename);
 GList *		e_module_load_all_in_directory	(const gchar *dirname);
+GList *		e_module_load_all_in_directory_and_prefixes
+						(const gchar *dirname,
+						 const gchar *dirprefix);
 
 G_END_DECLS
 
