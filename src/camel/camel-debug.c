@@ -522,50 +522,64 @@ addr_lookup_dwfl (gpointer addr,
 }
 
 typedef struct _SymbolData {
-	const gchar *func_name;
-	const gchar *file_path;
+	gchar *func_name;
+	gchar *file_path;
 	gint lineno;
 } SymbolData;
 
+static void
+symbol_data_free (gpointer ptr)
+{
+	SymbolData *sd = ptr;
+
+	if (sd) {
+		g_free (sd->func_name);
+		g_free (sd->file_path);
+		g_free (sd);
+	}
+}
+
 static const gchar *
 addr_lookup (gpointer addr,
-             const gchar **file_path,
-             gint *lineno,
+             const gchar **out_file_path,
+             gint *out_lineno,
              const gchar *fallback)
 {
 	static GHashTable *symbols_cache = NULL;
 	static GMutex mutex;
-	SymbolData *sd, sd_local;
+	SymbolData *sd;
+	const gchar *func_name, *file_path = NULL;
+	gint lineno = -1;
 
 	g_mutex_lock (&mutex);
 	if (symbols_cache) {
 		sd = g_hash_table_lookup (symbols_cache, addr);
 		if (sd) {
 			g_mutex_unlock (&mutex);
-			*file_path = sd->file_path;
-			*lineno = sd->lineno;
+			*out_file_path = sd->file_path;
+			*out_lineno = sd->lineno;
 
 			return sd->func_name;
 		}
 	}
 
-	sd_local.func_name = addr_lookup_dwfl (addr, &sd_local.file_path, &sd_local.lineno, fallback);
-	if (sd_local.func_name) {
+	func_name = addr_lookup_dwfl (addr, &file_path, &lineno, fallback);
+	if (func_name) {
 		if (!symbols_cache)
-			symbols_cache = g_hash_table_new_full (NULL, NULL, NULL, g_free);
+			symbols_cache = g_hash_table_new_full (NULL, NULL, NULL, symbol_data_free);
 		sd = g_new (SymbolData, 1);
-		sd->func_name = sd_local.func_name;
-		sd->file_path = sd_local.file_path;
-		sd->lineno = sd_local.lineno;
+		sd->func_name = g_strdup (func_name);
+		sd->file_path = g_strdup (file_path);
+		sd->lineno = lineno;
 		g_hash_table_insert (symbols_cache, addr, sd);
 	}
 
 	g_mutex_unlock (&mutex);
 
-	*file_path = sd_local.file_path;
-	*lineno = sd_local.lineno;
+	*out_file_path = file_path;
+	*out_lineno = lineno;
 
-	return sd_local.func_name;
+	return func_name;
 }
 
 #endif /* HAVE_BACKTRACE_SYMBOLS */
