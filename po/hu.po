@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/iss"
 "ues\n"
-"POT-Creation-Date: 2021-01-08 11:35+0000\n"
-"PO-Revision-Date: 2021-01-19 20:40+0100\n"
+"POT-Creation-Date: 2021-02-23 18:20+0000\n"
+"PO-Revision-Date: 2021-02-26 01:32+0100\n"
 "Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
 "Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
 "Language: hu\n"
@@ -49,24 +49,24 @@ msgstr "A megadott „%s” URL nem egy CardDAV címjegyzékre hivatkozik"
 #: ../src/calendar/backends/http/e-cal-backend-http.c:313
 #: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:197
 #: ../src/calendar/libecal/e-cal-client.c:257
-#: ../src/calendar/libecal/e-cal-client.c:3230
-#: ../src/calendar/libecal/e-cal-client.c:3403
-#: ../src/calendar/libecal/e-cal-client.c:3676
-#: ../src/calendar/libecal/e-cal-client.c:3914
-#: ../src/calendar/libecal/e-cal-client.c:4106
-#: ../src/calendar/libecal/e-cal-client.c:4289
-#: ../src/calendar/libecal/e-cal-client.c:4497
-#: ../src/calendar/libecal/e-cal-client.c:4674
-#: ../src/calendar/libecal/e-cal-client.c:4885
-#: ../src/calendar/libecal/e-cal-client.c:5041
-#: ../src/calendar/libecal/e-cal-client.c:5241
-#: ../src/calendar/libecal/e-cal-client.c:5407
-#: ../src/calendar/libecal/e-cal-client.c:5634
-#: ../src/calendar/libecal/e-cal-client.c:5794
-#: ../src/calendar/libecal/e-cal-client.c:6025
-#: ../src/calendar/libecal/e-cal-client.c:6224
-#: ../src/calendar/libecal/e-cal-client.c:6592
-#: ../src/calendar/libecal/e-cal-client.c:6816
+#: ../src/calendar/libecal/e-cal-client.c:3237
+#: ../src/calendar/libecal/e-cal-client.c:3410
+#: ../src/calendar/libecal/e-cal-client.c:3683
+#: ../src/calendar/libecal/e-cal-client.c:3921
+#: ../src/calendar/libecal/e-cal-client.c:4113
+#: ../src/calendar/libecal/e-cal-client.c:4296
+#: ../src/calendar/libecal/e-cal-client.c:4504
+#: ../src/calendar/libecal/e-cal-client.c:4681
+#: ../src/calendar/libecal/e-cal-client.c:4892
+#: ../src/calendar/libecal/e-cal-client.c:5048
+#: ../src/calendar/libecal/e-cal-client.c:5248
+#: ../src/calendar/libecal/e-cal-client.c:5414
+#: ../src/calendar/libecal/e-cal-client.c:5641
+#: ../src/calendar/libecal/e-cal-client.c:5801
+#: ../src/calendar/libecal/e-cal-client.c:6032
+#: ../src/calendar/libecal/e-cal-client.c:6231
+#: ../src/calendar/libecal/e-cal-client.c:6599
+#: ../src/calendar/libecal/e-cal-client.c:6823
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1848
 #: ../src/camel/camel-filter-driver.c:1705
 #: ../src/camel/camel-filter-driver.c:1834
@@ -77,9 +77,9 @@ msgstr "A megadott „%s” URL nem egy CardDAV címjegyzékre hivatkozik"
 #: ../src/camel/providers/nntp/camel-nntp-store.c:419
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:183
-#: ../src/libedataserver/e-soup-session.c:1230
+#: ../src/libedataserver/e-soup-session.c:1234
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
-#: ../src/libedataserverui/e-reminders-widget.c:1940
+#: ../src/libedataserverui/e-reminders-widget.c:1994
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Ismeretlen hiba"
@@ -753,7 +753,7 @@ msgstr "Logó"
 #. Translators: This is an EContact field description, in this case it's a name
 #. * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
 #: ../src/addressbook/libebook-contacts/e-contact.c:287
-#: ../src/libedataserverui/e-webdav-discover-widget.c:178
+#: ../src/libedataserverui/e-webdav-discover-widget.c:180
 msgid "Name"
 msgstr "Név"
 
@@ -1341,10 +1341,10 @@ msgid "File “%s” is not a VCALENDAR component"
 msgstr "A(z) „%s” fájl nem egy VCALENDAR komponens"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3646
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3652
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3658
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3685
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3726
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3732
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3738
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3765
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2546
 msgid "Unsupported method"
 msgstr "Nem támogatott metódus"
@@ -1368,79 +1368,79 @@ msgstr "Hibás fájlformátum."
 msgid "Not a calendar."
 msgstr "Nem naptár."
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:171
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:214
 msgid "Could not retrieve weather data"
 msgstr "Nem sikerült letölteni az időjárási adatokat"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:349
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:358
 msgid "Weather: Fog"
 msgstr "Időjárás: köd"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:350
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:359
 msgid "Weather: Cloudy Night"
 msgstr "Időjárás: felhős éjszaka"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:351
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:360
 msgid "Weather: Cloudy"
 msgstr "Időjárás: felhős"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:352
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:361
 msgid "Weather: Overcast"
 msgstr "Időjárás: borús"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:353
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:362
 msgid "Weather: Showers"
 msgstr "Időjárás: záporok"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:354
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:363
 msgid "Weather: Snow"
 msgstr "Időjárás: hó"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:355
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:364
 msgid "Weather: Clear Night"
 msgstr "Időjárás: tiszta éjszaka"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:356
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:365
 msgid "Weather: Sunny"
 msgstr "Időjárás: napos"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:357
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:366
 msgid "Weather: Thunderstorms"
 msgstr "Időjárás: mennydörgés, vihar"
 
 #. TRANSLATOR: This is the temperature in degrees Fahrenheit (\302\260 is U+00B0 DEGREE SIGN)
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:383
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:392
 #, c-format
 msgid "%.1f °F"
 msgstr "%.1f °F"
 
 #. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN)
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:386
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:395
 #, c-format
 msgid "%.1f °C"
 msgstr "%.1f °C"
 
 #. TRANSLATOR: This is the temperature in kelvin
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:389
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:398
 #, c-format
 msgid "%.1f K"
 msgstr "%.1f K"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:395
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:404
 #, c-format
 msgid "%.1f"
 msgstr "%.1f"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:558
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:586
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:567
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:595
 msgid "Forecast"
 msgstr "Előrejelzés"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:682
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:691
 msgid "Could not create cache file"
 msgstr "Nem lehet létrehozni a gyorsítótár fájlt"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:684
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:693
 msgid "Could not create cache file: "
 msgstr "Nem lehet létrehozni a gyorsítótár fájlt: "
 
@@ -2313,56 +2313,56 @@ msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#: ../src/calendar/libecal/e-cal-util.c:821
-#: ../src/calendar/libecal/e-cal-util.c:848
+#: ../src/calendar/libecal/e-cal-util.c:837
+#: ../src/calendar/libecal/e-cal-util.c:864
 msgctxt "Priority"
 msgid "High"
 msgstr "Magas"
 
-#: ../src/calendar/libecal/e-cal-util.c:823
-#: ../src/calendar/libecal/e-cal-util.c:850
+#: ../src/calendar/libecal/e-cal-util.c:839
+#: ../src/calendar/libecal/e-cal-util.c:866
 msgctxt "Priority"
 msgid "Normal"
 msgstr "Normális"
 
-#: ../src/calendar/libecal/e-cal-util.c:825
-#: ../src/calendar/libecal/e-cal-util.c:852
+#: ../src/calendar/libecal/e-cal-util.c:841
+#: ../src/calendar/libecal/e-cal-util.c:868
 msgctxt "Priority"
 msgid "Low"
 msgstr "Alacsony"
 
 #. An empty string is the same as 'None'.
-#: ../src/calendar/libecal/e-cal-util.c:846
+#: ../src/calendar/libecal/e-cal-util.c:862
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Nem definiált"
 
-#: ../src/calendar/libecal/e-cal-util.c:888
-#: ../src/libedataserverui/e-reminders-widget.c:296
+#: ../src/calendar/libecal/e-cal-util.c:904
+#: ../src/libedataserverui/e-reminders-widget.c:299
 #, c-format
 msgid "%d week"
 msgid_plural "%d weeks"
 msgstr[0] "%d hét"
 msgstr[1] "%d hét"
 
-#: ../src/calendar/libecal/e-cal-util.c:897
-#: ../src/libedataserverui/e-reminders-widget.c:292
+#: ../src/calendar/libecal/e-cal-util.c:913
+#: ../src/libedataserverui/e-reminders-widget.c:295
 #, c-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d nap"
 msgstr[1] "%d nap"
 
-#: ../src/calendar/libecal/e-cal-util.c:906
-#: ../src/libedataserverui/e-reminders-widget.c:288
+#: ../src/calendar/libecal/e-cal-util.c:922
+#: ../src/libedataserverui/e-reminders-widget.c:291
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d óra"
 msgstr[1] "%d óra"
 
-#: ../src/calendar/libecal/e-cal-util.c:915
-#: ../src/libedataserverui/e-reminders-widget.c:284
+#: ../src/calendar/libecal/e-cal-util.c:931
+#: ../src/libedataserverui/e-reminders-widget.c:287
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -2370,21 +2370,21 @@ msgstr[0] "%d perc"
 msgstr[1] "%d perc"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: ../src/calendar/libecal/e-cal-util.c:920
+#: ../src/calendar/libecal/e-cal-util.c:936
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d másodperc"
 msgstr[1] "%d másodperc"
 
-#: ../src/calendar/libecal/e-reminder-watcher.c:2768
+#: ../src/calendar/libecal/e-reminder-watcher.c:2824
 msgid "No Summary"
 msgstr "Nincs összefoglaló"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2784
+#: ../src/calendar/libecal/e-reminder-watcher.c:2840
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
@@ -2393,7 +2393,7 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2789
+#: ../src/calendar/libecal/e-reminder-watcher.c:2845
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
@@ -2402,7 +2402,7 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2794
+#: ../src/calendar/libecal/e-reminder-watcher.c:2850
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
@@ -2554,7 +2554,7 @@ msgid "Received object for UID “%s” doesn’t contain any expected component
 msgstr ""
 "A(z) „%s” UID-hez kapott objektum nem tartalmazza egyik várt összetevőt sem"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4114
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4193
 msgid "attachment.dat"
 msgstr "melléklet.dat"
 
@@ -2802,7 +2802,7 @@ msgstr "Hiba a szűrt keresés végrehajtása közben: %s: %s"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:184
+#: ../src/camel/camel-folder.c:171
 #, c-format
 msgid "Storing changes in folder “%s : %s”"
 msgstr "Változások tárolása a(z) „%s : %s” mappában"
@@ -2810,7 +2810,7 @@ msgstr "Változások tárolása a(z) „%s : %s” mappában"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:440
+#: ../src/camel/camel-folder.c:452
 #, c-format
 msgid "Learning new spam message in “%s : %s”"
 msgid_plural "Learning new spam messages in “%s : %s”"
@@ -2820,7 +2820,7 @@ msgstr[1] "Új levélszemetek tanulása itt: „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:483
+#: ../src/camel/camel-folder.c:495
 #, c-format
 msgid "Learning new ham message in “%s : %s”"
 msgid_plural "Learning new ham messages in “%s : %s”"
@@ -2830,26 +2830,26 @@ msgstr[1] "Új érvényes levelek tanulása itt: „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:531
+#: ../src/camel/camel-folder.c:543
 #, c-format
 msgid "Filtering new message in “%s : %s”"
 msgid_plural "Filtering new messages in “%s : %s”"
 msgstr[0] "Új üzenet szűrése itt: „%s : %s”"
 msgstr[1] "Új üzenetek szűrése itt: „%s : %s”"
 
-#: ../src/camel/camel-folder.c:1194
+#: ../src/camel/camel-folder.c:1206
 #: ../src/camel/providers/local/camel-maildir-folder.c:332
 msgid "Moving messages"
 msgstr "Levelek áthelyezése"
 
-#: ../src/camel/camel-folder.c:1197
+#: ../src/camel/camel-folder.c:1209
 msgid "Copying messages"
 msgstr "Levelek másolása"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1242
+#: ../src/camel/camel-folder.c:1254
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
 msgstr "A kvótainformációk nem támogatottak a(z) „%s : %s” mappához"
@@ -2857,7 +2857,7 @@ msgstr "A kvótainformációk nem támogatottak a(z) „%s : %s” mappához"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1344
+#: ../src/camel/camel-folder.c:1356
 #, c-format
 msgid "Filtering folder “%s : %s”"
 msgstr "„%s : %s” mappa szűrése"
@@ -2865,7 +2865,7 @@ msgstr "„%s : %s” mappa szűrése"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3308
+#: ../src/camel/camel-folder.c:3320
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "„%s : %s” mappa tisztítása"
@@ -2873,7 +2873,7 @@ msgstr "„%s : %s” mappa tisztítása"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3443
+#: ../src/camel/camel-folder.c:3455
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "„%s” üzenet letöltése ebből: „%s : %s”"
@@ -2881,7 +2881,7 @@ msgstr "„%s” üzenet letöltése ebből: „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3668
+#: ../src/camel/camel-folder.c:3680
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "Kvótainformációk lekérése a következőhöz: „%s : %s”"
@@ -2889,7 +2889,7 @@ msgstr "Kvótainformációk lekérése a következőhöz: „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3968
+#: ../src/camel/camel-folder.c:3980
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "„%s : %s” mappa frissítése"
@@ -2960,18 +2960,18 @@ msgstr "Nem használt memória elengedése a következő mappánál: „%s : %s�
 msgid "Output from %s:"
 msgstr "Kimenet innen: %s:"
 
-#: ../src/camel/camel-gpg-context.c:912 ../src/camel/camel-gpg-context.c:917
-#: ../src/camel/camel-gpg-context.c:1658
+#: ../src/camel/camel-gpg-context.c:928 ../src/camel/camel-gpg-context.c:933
+#: ../src/camel/camel-gpg-context.c:1674
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "A gpg végrehajtása sikertelen: %s"
 
-#: ../src/camel/camel-gpg-context.c:917
+#: ../src/camel/camel-gpg-context.c:933
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1205
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-#: ../src/camel/camel-gpg-context.c:1029
+#: ../src/camel/camel-gpg-context.c:1045
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -2982,17 +2982,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/camel/camel-gpg-context.c:1065
+#: ../src/camel/camel-gpg-context.c:1081
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "A gpg felhasználói azonosító sikertelen elemzése."
 
-#: ../src/camel/camel-gpg-context.c:1090 ../src/camel/camel-gpg-context.c:1105
+#: ../src/camel/camel-gpg-context.c:1106 ../src/camel/camel-gpg-context.c:1121
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "A gpg jelmondatkérés elemzése sikertelen."
 
-#: ../src/camel/camel-gpg-context.c:1126
+#: ../src/camel/camel-gpg-context.c:1142
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -3001,7 +3001,7 @@ msgstr ""
 "Egy PIN szükséges a SmartCard kulcsának\n"
 "feloldásához: „%s”"
 
-#: ../src/camel/camel-gpg-context.c:1130
+#: ../src/camel/camel-gpg-context.c:1146
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -3010,12 +3010,12 @@ msgstr ""
 "Meg kell adnia a jelmondatot „%s”\n"
 "titkos kulcsának érvényesítéséhez"
 
-#: ../src/camel/camel-gpg-context.c:1136
+#: ../src/camel/camel-gpg-context.c:1152
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "Váratlan kérés a GnuPG-től a következőre: „%s”"
 
-#: ../src/camel/camel-gpg-context.c:1148
+#: ../src/camel/camel-gpg-context.c:1164
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -3024,32 +3024,32 @@ msgstr ""
 "címzettről, így minden tárolt személyes kulcs esetén be fogja kérni a "
 "jelszót a program."
 
-#: ../src/camel/camel-gpg-context.c:1179 ../src/camel/camel-net-utils.c:522
+#: ../src/camel/camel-gpg-context.c:1195 ../src/camel/camel-net-utils.c:522
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:393
 #: ../src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
 msgstr "Megszakítva"
 
-#: ../src/camel/camel-gpg-context.c:1200
+#: ../src/camel/camel-gpg-context.c:1216
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr ""
 "A titkos kulcs érvényesítéséhez 3 alkalommal adott meg rossz jelmondatot."
 
-#: ../src/camel/camel-gpg-context.c:1213
+#: ../src/camel/camel-gpg-context.c:1229
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Váratlan válasz a GnuPG részéről: %s"
 
-#: ../src/camel/camel-gpg-context.c:1330
+#: ../src/camel/camel-gpg-context.c:1346
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Sikertelen titkosítás: Nincs érvényes címzett megadva."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: ../src/camel/camel-gpg-context.c:1343
+#: ../src/camel/camel-gpg-context.c:1359
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
@@ -3058,17 +3058,17 @@ msgstr ""
 "Sikertelen titkosítás: Érvénytelen címzett megadva: %s. Gyakori hiba, hogy "
 "a(z) %s nem rendelkezik importált nyilvános kulccsal ehhez a címzetthez."
 
-#: ../src/camel/camel-gpg-context.c:2169 ../src/camel/camel-smime-context.c:869
+#: ../src/camel/camel-gpg-context.c:2185 ../src/camel/camel-smime-context.c:869
 msgid "Could not generate signing data: "
 msgstr "Nem sikerült az aláírási adatok előállítása: "
 
-#: ../src/camel/camel-gpg-context.c:2220 ../src/camel/camel-gpg-context.c:2459
-#: ../src/camel/camel-gpg-context.c:2598 ../src/camel/camel-gpg-context.c:2775
+#: ../src/camel/camel-gpg-context.c:2236 ../src/camel/camel-gpg-context.c:2475
+#: ../src/camel/camel-gpg-context.c:2614 ../src/camel/camel-gpg-context.c:2791
 msgid "Failed to execute gpg."
 msgstr "A gpg végrehajtása sikertelen."
 
-#: ../src/camel/camel-gpg-context.c:2327 ../src/camel/camel-gpg-context.c:2335
-#: ../src/camel/camel-gpg-context.c:2343 ../src/camel/camel-gpg-context.c:2363
+#: ../src/camel/camel-gpg-context.c:2343 ../src/camel/camel-gpg-context.c:2351
+#: ../src/camel/camel-gpg-context.c:2359 ../src/camel/camel-gpg-context.c:2379
 #: ../src/camel/camel-smime-context.c:1000
 #: ../src/camel/camel-smime-context.c:1014
 #: ../src/camel/camel-smime-context.c:1026
@@ -3076,40 +3076,40 @@ msgstr "A gpg végrehajtása sikertelen."
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Nem ellenőrizhető az üzenet aláírása: helytelen üzenetformátum"
 
-#: ../src/camel/camel-gpg-context.c:2409
+#: ../src/camel/camel-gpg-context.c:2425
 msgid "Cannot verify message signature: "
 msgstr "Nem ellenőrizhető az üzenet aláírása: "
 
-#: ../src/camel/camel-gpg-context.c:2557
+#: ../src/camel/camel-gpg-context.c:2573
 msgid "Could not generate encrypting data: "
 msgstr "Nem sikerült előállítani titkosított adatokat: "
 
-#: ../src/camel/camel-gpg-context.c:2638
+#: ../src/camel/camel-gpg-context.c:2654
 msgid "This is a digitally encrypted message part"
 msgstr "Ez egy digitálisan aláírt üzenetrész"
 
-#: ../src/camel/camel-gpg-context.c:2698 ../src/camel/camel-gpg-context.c:2707
-#: ../src/camel/camel-gpg-context.c:2730
+#: ../src/camel/camel-gpg-context.c:2714 ../src/camel/camel-gpg-context.c:2723
+#: ../src/camel/camel-gpg-context.c:2746
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Nem lehet visszafejteni az üzenetet: helytelen üzenetformátum"
 
-#: ../src/camel/camel-gpg-context.c:2718
+#: ../src/camel/camel-gpg-context.c:2734
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Protokoll hiba miatt sikertelen a MIME titkosítás feloldása"
 
-#: ../src/camel/camel-gpg-context.c:2790
+#: ../src/camel/camel-gpg-context.c:2806
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "A MIME rész visszafejtése sikertelen: a titkos kulcs nem található"
 
-#: ../src/camel/camel-gpg-context.c:2827
+#: ../src/camel/camel-gpg-context.c:2843
 #, c-format
 msgid "GPG blob contains unencrypted text: %s"
 msgstr "A GPG blob titkosítatlan szöveget tartalmaz: %s"
 
-#: ../src/camel/camel-gpg-context.c:2829
+#: ../src/camel/camel-gpg-context.c:2845
 #: ../src/camel/camel-smime-context.c:1546
 msgid "Encrypted content"
 msgstr "Titkosított tartalom"
@@ -4205,7 +4205,7 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Levelek olvasására és tárolására IMAP kiszolgálókon."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:1164
+#: ../src/camel/providers/imapx/camel-imapx-server.c:1146
 msgid "Error writing to cache stream"
 msgstr "Hiba a gyorsítótár-adatfolyam írása közben"
 
@@ -6020,8 +6020,8 @@ msgid ""
 "When not empty, it's used as the SMTP HELO/EHLO argument, instead of the "
 "local host name/IP."
 msgstr ""
-"Ha nem üres, akkor ez lesz használva az SMTP HELO/EHLO argumentumként a helyi"
-" gépnév vagy IP-cím helyett."
+"Ha nem üres, akkor ez lesz használva az SMTP HELO/EHLO argumentumként a "
+"helyi gépnév vagy IP-cím helyett."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
@@ -6288,7 +6288,7 @@ msgid "Failed to lookup credentials: "
 msgstr "Nem sikerült a hitelesítési adatok keresése: "
 
 #: ../src/libebackend/e-server-side-source.c:1389
-#: ../src/libedataserver/e-source.c:1582
+#: ../src/libedataserver/e-source.c:1584
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "A(z) „%s” adatforrás nem támogatja távoli erőforrások létrehozását"
@@ -6302,7 +6302,7 @@ msgstr ""
 "erőforrás létrehozásához"
 
 #: ../src/libebackend/e-server-side-source.c:1431
-#: ../src/libedataserver/e-source.c:1695
+#: ../src/libedataserver/e-source.c:1697
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "A(z) „%s” adatforrás nem támogatja távoli erőforrások törlését"
@@ -6315,33 +6315,34 @@ msgstr ""
 "A(z) „%s” adatforrás nem rendelkezik adatgyűjtő háttérprogrammal a távoli "
 "erőforrás törléséhez"
 
-#: ../src/libebackend/e-server-side-source.c:1476
-#: ../src/libedataserver/e-source.c:1791
+#: ../src/libebackend/e-server-side-source.c:1484
+#: ../src/libebackend/e-source-registry-server.c:1038
+#: ../src/libedataserver/e-source.c:1826
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
 msgstr "„%s” adatforrás nem támogatja az OAuth 2.0 hitelesítést"
 
-#: ../src/libebackend/e-server-side-source.c:1858
+#: ../src/libebackend/e-server-side-source.c:1867
 #, c-format
 msgid "File must have a “.source” extension"
 msgstr "A fájlnak „.source” kiterjesztéssel kell rendelkeznie"
 
-#: ../src/libebackend/e-source-registry-server.c:318
+#: ../src/libebackend/e-source-registry-server.c:319
 #, c-format
 msgid "UID “%s” is already in use"
 msgstr "A(z) „%s” UID már használatban van"
 
-#: ../src/libebackend/e-source-registry-server.c:443
+#: ../src/libebackend/e-source-registry-server.c:444
 #, c-format
 msgid "Cannot find corresponding collection backend for source “%s”"
 msgstr "Nem található megfelelő gyűjtemény háttérprogram a következőhöz: „%s”"
 
-#: ../src/libebackend/e-source-registry-server.c:447
+#: ../src/libebackend/e-source-registry-server.c:448
 #, c-format
 msgid "Source “%s” is not a collection source"
 msgstr "A(z) „%s” forrás nem gyűjteményforrás"
 
-#: ../src/libebackend/e-source-registry-server.c:453
+#: ../src/libebackend/e-source-registry-server.c:454
 #, c-format
 msgid "Cannot find source “%s”"
 msgstr "Nem található a következő forrás: „%s”"
@@ -6614,22 +6615,22 @@ msgstr "A művelet megszakítva"
 msgid "Failed with HTTP error %d: %s"
 msgstr "Nem sikerült %d HTTP hibával: %s"
 
-#: ../src/libedataserver/e-source.c:769
+#: ../src/libedataserver/e-source.c:771
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "A forrásfájlból hiányzik egy [%s] csoport"
 
-#: ../src/libedataserver/e-source.c:1362
+#: ../src/libedataserver/e-source.c:1364
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr "A(z) „%s” adatforrás nem távolítható el"
 
-#: ../src/libedataserver/e-source.c:1485
+#: ../src/libedataserver/e-source.c:1487
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr "A(z) „%s” adatforrás nem írható"
 
-#: ../src/libedataserver/e-source.c:2192
+#: ../src/libedataserver/e-source.c:2227
 msgid "Unnamed"
 msgstr "Névtelen"
 
@@ -6798,15 +6799,15 @@ msgstr "%H%M"
 msgid "%I %p"
 msgstr "%k óra"
 
-#: ../src/libedataserver/e-webdav-discover.c:297
+#: ../src/libedataserver/e-webdav-discover.c:295
 msgid "Notes"
 msgstr "Jegyzetek"
 
-#: ../src/libedataserver/e-webdav-session.c:727
+#: ../src/libedataserver/e-webdav-session.c:731
 msgid "Cannot determine destination URL without WebDAV extension"
 msgstr "Nem határozható meg a cél URL a WebDAV kiterjesztés nélkül"
 
-#: ../src/libedataserver/e-webdav-session.c:997
+#: ../src/libedataserver/e-webdav-session.c:1001
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -6815,7 +6816,7 @@ msgstr ""
 "A kiszolgáló egy HTML oldallal válaszolt, ami azt jelentheti, hogy hiba "
 "történt a kiszolgálón vagy a klienskéréssel kapcsolatban. A használt URI: %s"
 
-#: ../src/libedataserver/e-webdav-session.c:999
+#: ../src/libedataserver/e-webdav-session.c:1003
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -6829,7 +6830,7 @@ msgstr ""
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1020
+#: ../src/libedataserver/e-webdav-session.c:1024
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
 msgstr "%s: %d (%s) HTTP hibakód: %s"
@@ -6837,7 +6838,7 @@ msgstr "%s: %d (%s) HTTP hibakód: %s"
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1028
+#: ../src/libedataserver/e-webdav-session.c:1032
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
 msgstr "Nem sikerült %d (%s) HTTP hibával: %s"
@@ -6846,163 +6847,163 @@ msgstr "Nem sikerült %d (%s) HTTP hibával: %s"
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1043
+#: ../src/libedataserver/e-webdav-session.c:1047
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
 msgstr "%s: %d (%s) HTTP hibakód"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1049
+#: ../src/libedataserver/e-webdav-session.c:1053
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "Nem sikerült %d (%s) HTTP hibakóddal"
 
-#: ../src/libedataserver/e-webdav-session.c:1344
+#: ../src/libedataserver/e-webdav-session.c:1348
 msgid "Failed to post data"
 msgstr "Sikertelen adatküldés"
 
-#: ../src/libedataserver/e-webdav-session.c:1475
-#: ../src/libedataserver/e-webdav-session.c:1552
-#: ../src/libedataserver/e-webdav-session.c:1654
-#: ../src/libedataserver/e-webdav-session.c:2907
-#: ../src/libedataserver/e-webdav-session.c:4150
+#: ../src/libedataserver/e-webdav-session.c:1479
+#: ../src/libedataserver/e-webdav-session.c:1556
+#: ../src/libedataserver/e-webdav-session.c:1658
+#: ../src/libedataserver/e-webdav-session.c:2911
+#: ../src/libedataserver/e-webdav-session.c:4184
 msgid "Failed to get input XML content"
 msgstr "Nem sikerült lekérni a bemeneti XML tartalmat"
 
-#: ../src/libedataserver/e-webdav-session.c:1486
+#: ../src/libedataserver/e-webdav-session.c:1490
 msgid "Failed to get properties"
 msgstr "A tulajdonságok lekérése meghiúsult"
 
-#: ../src/libedataserver/e-webdav-session.c:1562
+#: ../src/libedataserver/e-webdav-session.c:1566
 msgid "Failed to update properties"
 msgstr "A tulajdonságok frissítése meghiúsult"
 
-#: ../src/libedataserver/e-webdav-session.c:1664
+#: ../src/libedataserver/e-webdav-session.c:1668
 msgid "Failed to issue REPORT"
 msgstr "Nem sikerült a REPORT kiadása"
 
-#: ../src/libedataserver/e-webdav-session.c:1725
+#: ../src/libedataserver/e-webdav-session.c:1729
 msgid "Failed to create collection"
 msgstr "Nem sikerült létrehozni a gyűjteményt"
 
-#: ../src/libedataserver/e-webdav-session.c:1818
-#: ../src/libedataserver/e-webdav-session.c:1979
+#: ../src/libedataserver/e-webdav-session.c:1822
+#: ../src/libedataserver/e-webdav-session.c:1983
 msgid "Failed to get XML request content"
 msgstr "Nem sikerült lekérni az XML kéréstartalmat"
 
-#: ../src/libedataserver/e-webdav-session.c:1830
+#: ../src/libedataserver/e-webdav-session.c:1834
 msgid "Failed to create address book"
 msgstr "A címjegyzék létrehozása meghiúsult"
 
-#: ../src/libedataserver/e-webdav-session.c:1992
+#: ../src/libedataserver/e-webdav-session.c:1996
 msgid "Failed to create calendar"
 msgstr "A naptár létrehozása meghiúsult"
 
-#: ../src/libedataserver/e-webdav-session.c:2120
-#: ../src/libedataserver/e-webdav-session.c:2131
+#: ../src/libedataserver/e-webdav-session.c:2124
+#: ../src/libedataserver/e-webdav-session.c:2135
 msgid "Failed to read resource"
 msgstr "Nem sikerült olvasni az erőforrást"
 
-#: ../src/libedataserver/e-webdav-session.c:2271
+#: ../src/libedataserver/e-webdav-session.c:2275
 msgid "Cannot rewind input stream: Not supported"
 msgstr "A bemeneti adatfolyamban újrapozicionálás nem támogatott"
 
-#: ../src/libedataserver/e-webdav-session.c:2435
-#: ../src/libedataserver/e-webdav-session.c:2576
+#: ../src/libedataserver/e-webdav-session.c:2439
+#: ../src/libedataserver/e-webdav-session.c:2580
 msgid "Failed to put data"
 msgstr "Sikertelen adatelhelyezés"
 
-#: ../src/libedataserver/e-webdav-session.c:2449
-#: ../src/libedataserver/e-webdav-session.c:2584
+#: ../src/libedataserver/e-webdav-session.c:2453
+#: ../src/libedataserver/e-webdav-session.c:2588
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Sikertelen adatelhelyezés a kiszolgálón, %d (%s) hibakóddal"
 
-#: ../src/libedataserver/e-webdav-session.c:2678
+#: ../src/libedataserver/e-webdav-session.c:2682
 msgid "Failed to delete resource"
 msgstr "A erőforrás törlése meghiúsult"
 
-#: ../src/libedataserver/e-webdav-session.c:2747
+#: ../src/libedataserver/e-webdav-session.c:2751
 msgid "Failed to copy resource"
 msgstr "Nem sikerült másolni az erőforrást"
 
-#: ../src/libedataserver/e-webdav-session.c:2811
+#: ../src/libedataserver/e-webdav-session.c:2815
 msgid "Failed to move resource"
 msgstr "Nem sikerült áthelyezni az erőforrást"
 
-#: ../src/libedataserver/e-webdav-session.c:2918
+#: ../src/libedataserver/e-webdav-session.c:2922
 msgid "Failed to lock resource"
 msgstr "Nem sikerült zárolni az erőforrást"
 
-#: ../src/libedataserver/e-webdav-session.c:2932
-#: ../src/libedataserver/e-webdav-session.c:3140
+#: ../src/libedataserver/e-webdav-session.c:2936
+#: ../src/libedataserver/e-webdav-session.c:3144
 msgid "Expected application/xml response, but none returned"
 msgstr "A várt application/xml válasz helyett nem érkezett semmi"
 
-#: ../src/libedataserver/e-webdav-session.c:2935
-#: ../src/libedataserver/e-webdav-session.c:3143
+#: ../src/libedataserver/e-webdav-session.c:2939
+#: ../src/libedataserver/e-webdav-session.c:3147
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "A várt application/xml válasz helyett %s érkezett"
 
-#: ../src/libedataserver/e-webdav-session.c:2947
-#: ../src/libedataserver/e-webdav-session.c:3156
+#: ../src/libedataserver/e-webdav-session.c:2951
+#: ../src/libedataserver/e-webdav-session.c:3160
 msgid "Failed to parse XML data"
 msgstr "A XML adatok feldolgozása sikertelen"
 
-#: ../src/libedataserver/e-webdav-session.c:3028
+#: ../src/libedataserver/e-webdav-session.c:3032
 msgid "Failed to refresh lock"
 msgstr "Nem sikerült a zár frissítése"
 
-#: ../src/libedataserver/e-webdav-session.c:3089
+#: ../src/libedataserver/e-webdav-session.c:3093
 msgid "Failed to unlock"
 msgstr "Nem sikerült a feloldás"
 
-#: ../src/libedataserver/e-webdav-session.c:3128
+#: ../src/libedataserver/e-webdav-session.c:3132
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "A várt több állapotú válasz helyett %d érkezett (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:3165
+#: ../src/libedataserver/e-webdav-session.c:3169
 msgid "XML data does not have root node"
 msgstr "Az XML adatoknak nincs gyökércsomópontja"
 
-#: ../src/libedataserver/e-webdav-session.c:3188
+#: ../src/libedataserver/e-webdav-session.c:3192
 #, c-format
 msgid "XML data doesn't have required structure (%s)"
 msgstr "Az XML adatok szerkezete nem megfelelő (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:4160
+#: ../src/libedataserver/e-webdav-session.c:4194
 msgid "Failed to get access control list"
 msgstr "Nem sikerült a hozzáférés-szabályozási lista lekérése"
 
-#: ../src/libedataserver/e-webdav-session.c:4844
+#: ../src/libedataserver/e-webdav-session.c:4878
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 "Nem tárolható sem a védett, sem az örökölt hozzáférés-szabályozási bejegyzés."
 
-#: ../src/libedataserver/e-webdav-session.c:4851
+#: ../src/libedataserver/e-webdav-session.c:4885
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Érvénytelen résztvevőtípus a hozzáférés-szabályozási bejegyzéshez."
 
-#: ../src/libedataserver/e-webdav-session.c:4858
+#: ../src/libedataserver/e-webdav-session.c:4892
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Nem tárolható tulajdonságalapú hozzáférés-szabályozási bejegyzés."
 
-#: ../src/libedataserver/e-webdav-session.c:4865
+#: ../src/libedataserver/e-webdav-session.c:4899
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "A hozzáférés-szabályozási bejegyzés csak a Grant vagy Deny egyike lehet, "
 "None nem."
 
-#: ../src/libedataserver/e-webdav-session.c:4873
+#: ../src/libedataserver/e-webdav-session.c:4907
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "A hozzáférés-szabályozási bejegyzés csak a Grant vagy Deny egyike lehet, "
 "mindkettő nem."
 
-#: ../src/libedataserver/e-webdav-session.c:4932
+#: ../src/libedataserver/e-webdav-session.c:4966
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "A hozzáférés-szabályozási bejegyzés jogosultsága nem lehet NULL."
 
@@ -7173,7 +7174,7 @@ msgstr ""
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:606
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:235
 #: ../src/libedataserverui/e-trust-prompt.c:111
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1089
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1095
 msgid "_Cancel"
 msgstr "_Mégse"
 
@@ -7236,7 +7237,6 @@ msgstr "Adja meg a(z) „%s” fiók jelszavát."
 #. Translators: This is part of a credential prompt, constructing for example: "Please enter the password for account “%s”.\n(host: hostname)"
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:183
 #, c-format
-#| msgid "Auth Host: %s"
 msgid ""
 "\n"
 "(host: %s)"
@@ -7245,7 +7245,7 @@ msgstr ""
 "(gép: %s)"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:236
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1090
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1096
 msgid "_OK"
 msgstr "_OK"
 
@@ -7262,92 +7262,97 @@ msgstr "_Jelszó:"
 msgid "_Add this password to your keyring"
 msgstr "Jelszó _hozzáadása a kulcstartóhoz"
 
-#: ../src/libedataserverui/e-reminders-widget.c:230
+#. Translators: meaning as "Snooze, until event start time"
+#: ../src/libedataserverui/e-reminders-widget.c:182
+msgid "until start time"
+msgstr "kezdési időig"
+
+#: ../src/libedataserverui/e-reminders-widget.c:233
 msgid "Add custom time…"
 msgstr "Egyéni idő hozzáadása..."
 
-#: ../src/libedataserverui/e-reminders-widget.c:234
+#: ../src/libedataserverui/e-reminders-widget.c:237
 msgid "Clear custom times"
 msgstr "Egyéni idők törlése"
 
-#: ../src/libedataserverui/e-reminders-widget.c:282
+#: ../src/libedataserverui/e-reminders-widget.c:285
 msgctxt "overdue"
 msgid "now"
 msgstr "most"
 
-#: ../src/libedataserverui/e-reminders-widget.c:300
+#: ../src/libedataserverui/e-reminders-widget.c:303
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d év"
 msgstr[1] "%d év"
 
-#: ../src/libedataserverui/e-reminders-widget.c:306
+#: ../src/libedataserverui/e-reminders-widget.c:309
 msgctxt "overdue"
 msgid "overdue"
 msgstr "lejárt"
 
-#: ../src/libedataserverui/e-reminders-widget.c:935
+#: ../src/libedataserverui/e-reminders-widget.c:938
 #, c-format
 msgid "Failed to launch URI “%s”:"
 msgstr "Nem sikerült elindítani a(z) „%s” címet:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:985
+#: ../src/libedataserverui/e-reminders-widget.c:989
 msgid "No reminder is selected."
 msgstr "Nincs emlékeztető kiválasztva."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1042
+#: ../src/libedataserverui/e-reminders-widget.c:1067
 msgid "No details are available."
 msgstr "Nem érhetők el részletek."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1046
+#: ../src/libedataserverui/e-reminders-widget.c:1071
 msgid "Multiple reminders are selected."
 msgstr "Több emlékeztető van kiválasztva."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1066
+#: ../src/libedataserverui/e-reminders-widget.c:1105
 msgid "Failed to dismiss reminder:"
 msgstr "Nem sikerült eldobni az emlékeztetőt:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1087
+#: ../src/libedataserverui/e-reminders-widget.c:1126
 msgid "Failed to dismiss all:"
 msgstr "Nem sikerült eldobni az összeset:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1223
+#: ../src/libedataserverui/e-reminders-widget.c:1262
 msgid "Set a custom snooze time for"
 msgstr "Egyéni szundi idő beállítása:"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1236
+#: ../src/libedataserverui/e-reminders-widget.c:1275
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "_nap"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1252
+#: ../src/libedataserverui/e-reminders-widget.c:1291
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "ó_ra"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1268
+#: ../src/libedataserverui/e-reminders-widget.c:1307
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "_perc"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1274
+#: ../src/libedataserverui/e-reminders-widget.c:1313
 msgid "_Add Snooze time"
 msgstr "_Szundi idő hozzáadása"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1577
+#: ../src/libedataserverui/e-reminders-widget.c:1631
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "_Rendben"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1578
+#: ../src/libedataserverui/e-reminders-widget.c:1632
 msgid "Dismiss _All"
 msgstr "Mi_nd rendben"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1580
+#: ../src/libedataserverui/e-reminders-widget.c:1634
 msgid "_Snooze"
 msgstr "_Szundi"
 
@@ -7424,43 +7429,43 @@ msgstr ""
 msgid "The certificate’s algorithm is considered insecure."
 msgstr "A tanúsítvány algoritmusa nem tekinthető biztonságosnak."
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:191
+#: ../src/libedataserverui/e-webdav-discover-widget.c:193
 msgid "Supports"
 msgstr "Támogatja"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:202
+#: ../src/libedataserverui/e-webdav-discover-widget.c:204
 msgid "_User mail:"
 msgstr "_Felhasználó e-mail:"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:537
+#: ../src/libedataserverui/e-webdav-discover-widget.c:542
 msgctxt "WebDAVDiscover"
 msgid "Contacts"
 msgstr "Névjegyek"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:538
+#: ../src/libedataserverui/e-webdav-discover-widget.c:543
 msgctxt "WebDAVDiscover"
 msgid "Events"
 msgstr "Események"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:539
+#: ../src/libedataserverui/e-webdav-discover-widget.c:544
 msgctxt "WebDAVDiscover"
 msgid "Memos"
 msgstr "Feljegyzések"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:540
+#: ../src/libedataserverui/e-webdav-discover-widget.c:545
 msgctxt "WebDAVDiscover"
 msgid "Tasks"
 msgstr "Feladatok"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:852
+#: ../src/libedataserverui/e-webdav-discover-widget.c:858
 msgid "Invalid URL"
 msgstr "Érvénytelen URL"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:897
+#: ../src/libedataserverui/e-webdav-discover-widget.c:903
 msgid "Cancel"
 msgstr "Mégse"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:900
+#: ../src/libedataserverui/e-webdav-discover-widget.c:906
 msgid "Searching server sources..."
 msgstr "Kiszolgálóforrások keresése…"
 
@@ -7554,26 +7559,26 @@ msgstr ""
 "használjon 1-et az engedélyezéshez, 0-t a letiltáshoz, bármilyen egyéb "
 "értéket a fordítási idejű lehetőség használatához"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:312
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:340
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:851
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1096
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:326
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:354
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:865
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1113
 msgid "Reminders"
 msgstr "Emlékeztetők"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:452
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:466
 msgid "Warning"
 msgstr "Figyelmeztetés"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:453
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:467
 msgid "_No"
 msgstr "_Nem"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:454
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:468
 msgid "_Yes"
 msgstr "_Igen"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:458
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:472
 #, c-format
 msgid ""
 "A calendar reminder is about to trigger. This reminder is configured to run "
@@ -7590,31 +7595,31 @@ msgstr ""
 "\n"
 "Valóban futtatni szeretné ezt a programot?"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:473
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:487
 msgid "Do not ask me about this program again"
 msgstr "Ne kérdezzen meg többet ezzel a programmal kapcsolatban"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:756
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:770
 msgid "Display Reminders window with _notifications"
 msgstr "_Emlékeztetők ablak megjelenítése értesítésekkel"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:757
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:771
 msgid "Keep reminder notification window always on _top"
 msgstr "Az emlékeztető értesítési ablak legyen _mindig felül"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:758
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:772
 msgid "Display reminders for _completed tasks"
 msgstr "E_mlékeztetők megjelenítése a befejezett feladatokról"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:759
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:773
 msgid "Display reminders for _past events"
 msgstr "E_mlékeztetők megjelenítése a múltbeli eseményekről"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:773
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
 msgid "Reminders Options:"
 msgstr "Emlékeztetők beállításai:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:867
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:881
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
@@ -7878,10 +7883,3 @@ msgstr "Nem sikerült kapcsolódni a forrásnyilvántartáshoz: %s\n"
 #, c-format
 msgid "No sources had been found\n"
 msgstr "Nem találhatók források\n"
-
-#~ msgid ""
-#~ "Paned position in the reminder notification dialog, the split size "
-#~ "between list of the events and the description"
-#~ msgstr ""
-#~ "Az emlékeztető értesítési ablak ablaktáblái közti elválasztó pozíciója, "
-#~ "amely megadja az eseménylista és a leírás felosztási méreteit"
