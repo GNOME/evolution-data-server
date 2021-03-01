@@ -3534,14 +3534,25 @@ e_reminder_watcher_dismiss_all_sync (EReminderWatcher *watcher,
 {
 	GHashTable *clients; /* gchar *source_uid ~> ECalClient * */
 	GSList *reminders, *link;
-	gboolean success = TRUE, changed = FALSE;
+	gboolean success = TRUE;
 
 	g_return_val_if_fail (E_IS_REMINDER_WATCHER (watcher), FALSE);
 
 	g_rec_mutex_lock (&watcher->priv->lock);
 
-	clients = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 	reminders = e_reminder_watcher_dup_past (watcher);
+
+	/* This will hide the window and keep running the task in the background.
+	   It can also avoid lock-wait in the main thread under e_reminder_watcher_objects_modified_cb(),
+	   when a change notification had been received during the 'reminders' processing. */
+	if (reminders) {
+		e_reminder_watcher_save_past (watcher, NULL);
+		e_reminder_watcher_emit_signal_idle (watcher, signals[CHANGED], NULL);
+	}
+
+	g_rec_mutex_unlock (&watcher->priv->lock);
+
+	clients = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 
 	for (link = reminders; link; link = g_slist_next (link)) {
 		EReminderData *rd = link->data;
@@ -3558,24 +3569,13 @@ e_reminder_watcher_dismiss_all_sync (EReminderWatcher *watcher,
 		if (client) {
 			success = e_reminder_watcher_dismiss_one_sync (client, rd, cancellable, error);
 
-			/* To keep the failed discard in the saved list. */
 			if (!success)
 				break;
 		}
 	}
 
-	if (link != reminders && reminders) {
-		e_reminder_watcher_save_past (watcher, link);
-		changed = TRUE;
-	}
-
 	g_slist_free_full (reminders, e_reminder_data_free);
 	g_hash_table_destroy (clients);
-
-	g_rec_mutex_unlock (&watcher->priv->lock);
-
-	if (changed)
-		e_reminder_watcher_emit_signal_idle (watcher, signals[CHANGED], NULL);
 
 	return success;
 }
