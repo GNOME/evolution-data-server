@@ -3094,10 +3094,11 @@ camel_folder_unlock (CamelFolder *folder)
  * camel_folder_append_message_sync:
  * @folder: a #CamelFolder
  * @message: a #CamelMimeMessage
- * @info: a #CamelMessageInfo with additional flags/etc to set on the
- *        new message, or %NULL
- * @appended_uid: if non-%NULL, the UID of the appended message will
- *                be returned here, if it is known
+ * @info: (nullable): a #CamelMessageInfo with additional flags/etc to set
+ *        on the new message, or %NULL
+ * @appended_uid: (out) (optional) (nullable): if non-%NULL, the UID
+ *                of the appended message will be returned here, if it
+ *                is known
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -3179,8 +3180,8 @@ folder_append_message_thread (GTask *task,
  * camel_folder_append_message:
  * @folder: a #CamelFolder
  * @message: a #CamelMimeMessage
- * @info: a #CamelMessageInfo with additional flags/etc to set on the
- *        new message, or %NULL
+ * @info: (nullable): a #CamelMessageInfo with additional flags/etc to set
+ *        on the new message, or %NULL
  * @io_priority: the I/O priority of the request
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
@@ -3231,8 +3232,9 @@ camel_folder_append_message (CamelFolder *folder,
  * camel_folder_append_message_finish:
  * @folder: a #CamelFolder
  * @result: a #GAsyncResult
- * @appended_uid: if non-%NULL, the UID of the appended message will
- *                be returned here, if it is known
+ * @appended_uid: (out) (optional) (nullable): if non-%NULL, the UID of
+ *                the appended message will be returned here, if it is
+ *                known
  * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with camel_folder_append_message_finish().
@@ -4417,9 +4419,9 @@ uid_index_pair_free (gpointer ptr)
  * @message_uids: (element-type utf8): message UIDs in @source
  * @destination: the destination #CamelFolder
  * @delete_originals: whether or not to delete the original messages
- * @transferred_uids: (element-type utf8) (out): if non-%NULL, the UIDs of the
- *                    resulting messages in @destination will be stored here,
- *                    if known.
+ * @transferred_uids: (element-type utf8) (out) (optional) (nullable): if
+ *                    non-%NULL, the UIDs of the resulting messages in
+ *                    @destination will be stored here, if known.
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -4689,9 +4691,9 @@ camel_folder_transfer_messages_to (CamelFolder *source,
  * camel_folder_transfer_messages_to_finish:
  * @source: a #CamelFolder
  * @result: a #GAsyncResult
- * @transferred_uids: (element-type utf8) (out): if non-%NULL, the UIDs of the
- *                    resulting messages in @destination will be stored here,
- *                    if known.
+ * @transferred_uids: (element-type utf8) (out) (optional) (nullable): if
+ *                    non-%NULL, the UIDs of the resulting messages in
+ *                    @destination will be stored here, if known.
  * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with camel_folder_transfer_messages_to().
