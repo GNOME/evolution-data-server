@@ -1186,7 +1186,7 @@ rfc2047_decode_word (const gchar *in,
 	case 'B':
 	case 'b':
 		inptr += 2;
-		decoded = g_alloca (inend - inptr);
+		decoded = g_alloca (((inend - inptr) * 3 / 4) + 3);
 		declen = g_base64_decode_step ((gchar *) inptr, inend - inptr, decoded, &state, &save);
 		break;
 	case 'Q':

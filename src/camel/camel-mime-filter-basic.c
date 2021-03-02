@@ -83,8 +83,7 @@ mime_filter_basic_filter (CamelMimeFilter *mime_filter,
 		g_return_if_fail (newlen <= (len + 2) * 2 + 62);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_BASE64_DEC:
-		/* output can't possibly exceed the input size */
-		camel_mime_filter_set_size (mime_filter, len + 3, FALSE);
+		camel_mime_filter_set_size (mime_filter, (len * 3 / 4) + 3, FALSE);
 		newlen = g_base64_decode_step (
 			in, len,
 			(guchar *) mime_filter->outbuf,
@@ -225,10 +224,7 @@ mime_filter_basic_complete (CamelMimeFilter *mime_filter,
 		g_return_if_fail (newlen <= (len + 2) * 2 + 62);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_BASE64_DEC:
-		/* Output can't possibly exceed the input size, but add 1,
-		   to make sure the mime_filter->outbuf will not be NULL,
-		   in case the input stream is empty. */
-		camel_mime_filter_set_size (mime_filter, len + 1, FALSE);
+		camel_mime_filter_set_size (mime_filter, (len * 3 / 4) + 3, FALSE);
 		newlen = g_base64_decode_step (
 			in, len,
 			(guchar *) mime_filter->outbuf,
