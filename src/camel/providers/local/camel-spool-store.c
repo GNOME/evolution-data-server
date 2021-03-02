@@ -44,7 +44,7 @@ typedef enum _camel_spool_store_t {
 } camel_spool_store_t;
 
 struct _CamelSpoolStorePrivate {
-	gint placeholder;  /* for future expansion */
+	camel_spool_store_t store_type;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
@@ -62,6 +62,9 @@ spool_store_get_type (CamelSpoolStore *spool_store,
 	camel_spool_store_t type;
 	struct stat st;
 	gchar *path;
+
+	if (spool_store->priv->store_type != CAMEL_SPOOL_STORE_INVALID)
+		return spool_store->priv->store_type;
 
 	service = CAMEL_SERVICE (spool_store);
 
@@ -106,6 +109,8 @@ spool_store_get_type (CamelSpoolStore *spool_store,
 	}
 
 	g_free (path);
+
+	spool_store->priv->store_type = type;
 
 	return type;
 }
@@ -566,7 +571,7 @@ spool_store_get_inbox_folder_sync (CamelStore *store,
 
 	switch (spool_store_get_type (spool_store, error)) {
 		case CAMEL_SPOOL_STORE_MBOX:
-			folder = spool_store_get_folder_sync (
+			folder = camel_store_get_folder_sync (
 				store, "INBOX", CAMEL_STORE_FOLDER_CREATE,
 				cancellable, error);
 			break;
@@ -701,4 +706,5 @@ static void
 camel_spool_store_init (CamelSpoolStore *spool_store)
 {
 	spool_store->priv = camel_spool_store_get_instance_private (spool_store);
+	spool_store->priv->store_type = CAMEL_SPOOL_STORE_INVALID;
 }
