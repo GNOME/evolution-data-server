@@ -590,26 +590,43 @@ e_alarm_notify_process (EAlarmNotify *an,
 
 	if (!snoozed && !g_settings_get_boolean (an->priv->settings, "notify-past-events")) {
 		ECalComponentAlarmTrigger *trigger;
-		time_t offset = 0, event_relative, orig_trigger_day, today;
+		ICalTime *itt;
+		ICalDuration *duration = NULL;
+		time_t event_relative, orig_trigger_day, today;
 
 		trigger = e_cal_component_alarm_get_trigger (alarm);
+		event_relative = e_cal_component_alarm_instance_get_occur_start (instance);
 
 		switch (trigger ? e_cal_component_alarm_trigger_get_kind (trigger) : E_CAL_COMPONENT_ALARM_TRIGGER_NONE) {
 		case E_CAL_COMPONENT_ALARM_TRIGGER_NONE:
-		case E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE:
 			break;
-
+		case E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE:
+			itt = e_cal_component_alarm_trigger_get_absolute_time (trigger);
+			if (itt)
+				event_relative = i_cal_time_as_timet_with_zone (itt, i_cal_timezone_get_utc_timezone ());
+			break;
 		case E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START:
+			duration = e_cal_component_alarm_trigger_get_duration (trigger);
+			break;
 		case E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_END:
-			offset = i_cal_duration_as_int (e_cal_component_alarm_trigger_get_duration (trigger));
+			event_relative = e_cal_component_alarm_instance_get_occur_end (instance);
+			duration = e_cal_component_alarm_trigger_get_duration (trigger);
 			break;
 
 		default:
 			break;
 		}
 
+		/* The trigger time is set as "after the event start/end". */
+		if (duration && !i_cal_duration_is_neg (duration)) {
+			gint offset;
+
+			offset = i_cal_duration_as_int (duration);
+
+			event_relative += offset;
+		}
+
 		today = time (NULL);
-		event_relative = e_cal_component_alarm_instance_get_occur_start (instance) - offset;
 
 		#define CLAMP_TO_DAY(x) ((x) - ((x) % (60 * 60 * 24)))
 

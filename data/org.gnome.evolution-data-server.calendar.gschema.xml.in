@@ -73,7 +73,7 @@
       <_summary>Show reminder notification for completed tasks</_summary>
     </key>
     <key name="notify-past-events" type="b">
-      <default>true</default>
+      <default>false</default>
       <_summary>Show reminder notification for past events</_summary>
     </key>
     <key name="notify-last-snooze-minutes" type="i">
