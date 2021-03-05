@@ -1417,7 +1417,7 @@ book_backend_file_modify_contacts_sync (EBookBackendSync *backend,
 			cursors_contact_removed (bf, E_CONTACT (link->data));
 		}
 
-		for (link = *out_contacts; link; link = g_slist_next (*out_contacts)) {
+		for (link = *out_contacts; link; link = g_slist_next (link)) {
 			cursors_contact_added (bf, E_CONTACT (link->data));
 		}
 	}
