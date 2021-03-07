@@ -8,14 +8,14 @@
 # Linux Centrs <info@linux.edu.lv>, 2006.
 # Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>, 2011.
 # Rudolfs <rudolfs.mazurs@gmail.com>, 2011.
-# Rūdofls Mazurs <rudolfs.mazurs@gmail.com>, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2020.
+# Rūdofls Mazurs <rudolfs.mazurs@gmail.com>, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2020, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: lv\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/iss"
 "ues\n"
-"POT-Creation-Date: 2020-09-11 07:12+0000\n"
-"PO-Revision-Date: 2020-09-17 17:22+0300\n"
+"POT-Creation-Date: 2021-02-23 18:20+0000\n"
+"PO-Revision-Date: 2021-03-07 16:49+0200\n"
 "Last-Translator: Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>\n"
 "Language-Team: Latvian <lata-l10n@googlegroups.com>\n"
 "Language: lv\n"
@@ -28,94 +28,92 @@ msgstr ""
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:231
 #, c-format
-#| msgid "Given URL “%s” doesn’t reference WebDAV address book"
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Dotais URL “%s” neatsaucas uz CardDAV adrešu grāmatu"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:290
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1154
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4397
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1136
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4379
 #: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
-#: ../src/addressbook/libebook/e-book.c:1070
-#: ../src/addressbook/libebook/e-book-client.c:2127
-#: ../src/addressbook/libebook/e-book-client.c:2305
-#: ../src/addressbook/libebook/e-book-client.c:2524
-#: ../src/addressbook/libebook/e-book-client.c:2661
-#: ../src/addressbook/libebook/e-book-client.c:2826
-#: ../src/addressbook/libebook/e-book-client.c:2966
-#: ../src/addressbook/libebook/e-book-client.c:3103
-#: ../src/addressbook/libebook/e-book-client.c:3266
-#: ../src/addressbook/libebook/e-book-client.c:3461
-#: ../src/addressbook/libebook/e-book-client.c:3679
+#: ../src/addressbook/libebook/e-book.c:1067
+#: ../src/addressbook/libebook/e-book-client.c:2124
+#: ../src/addressbook/libebook/e-book-client.c:2302
+#: ../src/addressbook/libebook/e-book-client.c:2521
+#: ../src/addressbook/libebook/e-book-client.c:2658
+#: ../src/addressbook/libebook/e-book-client.c:2823
+#: ../src/addressbook/libebook/e-book-client.c:2963
+#: ../src/addressbook/libebook/e-book-client.c:3100
+#: ../src/addressbook/libebook/e-book-client.c:3263
+#: ../src/addressbook/libebook/e-book-client.c:3458
+#: ../src/addressbook/libebook/e-book-client.c:3676
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:873
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:275
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:288
 #: ../src/calendar/backends/http/e-cal-backend-http.c:313
 #: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:197
 #: ../src/calendar/libecal/e-cal-client.c:257
-#: ../src/calendar/libecal/e-cal-client.c:3230
-#: ../src/calendar/libecal/e-cal-client.c:3403
-#: ../src/calendar/libecal/e-cal-client.c:3676
-#: ../src/calendar/libecal/e-cal-client.c:3914
-#: ../src/calendar/libecal/e-cal-client.c:4106
-#: ../src/calendar/libecal/e-cal-client.c:4289
-#: ../src/calendar/libecal/e-cal-client.c:4497
-#: ../src/calendar/libecal/e-cal-client.c:4674
-#: ../src/calendar/libecal/e-cal-client.c:4885
-#: ../src/calendar/libecal/e-cal-client.c:5041
-#: ../src/calendar/libecal/e-cal-client.c:5241
-#: ../src/calendar/libecal/e-cal-client.c:5407
-#: ../src/calendar/libecal/e-cal-client.c:5634
-#: ../src/calendar/libecal/e-cal-client.c:5794
-#: ../src/calendar/libecal/e-cal-client.c:6025
-#: ../src/calendar/libecal/e-cal-client.c:6224
-#: ../src/calendar/libecal/e-cal-client.c:6592
-#: ../src/calendar/libecal/e-cal-client.c:6816
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1826
-#: ../src/camel/camel-filter-driver.c:1715
-#: ../src/camel/camel-filter-driver.c:1847
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3329
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3335
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3345
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3357
+#: ../src/calendar/libecal/e-cal-client.c:3237
+#: ../src/calendar/libecal/e-cal-client.c:3410
+#: ../src/calendar/libecal/e-cal-client.c:3683
+#: ../src/calendar/libecal/e-cal-client.c:3921
+#: ../src/calendar/libecal/e-cal-client.c:4113
+#: ../src/calendar/libecal/e-cal-client.c:4296
+#: ../src/calendar/libecal/e-cal-client.c:4504
+#: ../src/calendar/libecal/e-cal-client.c:4681
+#: ../src/calendar/libecal/e-cal-client.c:4892
+#: ../src/calendar/libecal/e-cal-client.c:5048
+#: ../src/calendar/libecal/e-cal-client.c:5248
+#: ../src/calendar/libecal/e-cal-client.c:5414
+#: ../src/calendar/libecal/e-cal-client.c:5641
+#: ../src/calendar/libecal/e-cal-client.c:5801
+#: ../src/calendar/libecal/e-cal-client.c:6032
+#: ../src/calendar/libecal/e-cal-client.c:6231
+#: ../src/calendar/libecal/e-cal-client.c:6599
+#: ../src/calendar/libecal/e-cal-client.c:6823
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1848
+#: ../src/camel/camel-filter-driver.c:1705
+#: ../src/camel/camel-filter-driver.c:1834
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3321
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3327
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3337
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3349
 #: ../src/camel/providers/nntp/camel-nntp-store.c:419
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:183
-#: ../src/libedataserver/e-soup-session.c:1230
+#: ../src/libedataserver/e-soup-session.c:1234
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
-#: ../src/libedataserverui/e-reminders-widget.c:1931
+#: ../src/libedataserverui/e-reminders-widget.c:1994
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Nezināma kļūda"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1149
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1373
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1152
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1376
 #: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:930
-#| msgid "Signon service did not return a secret"
 msgid "Server didn’t return object’s href"
 msgstr "Serveris neatgrieza objekta href"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1151
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1375
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1154
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1378
 #: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:932
 msgid "Server didn’t return object’s ETag"
 msgstr "Serveris neatgrieza objekta ETag"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1153
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1156
 msgid "Received object is not a valid vCard"
 msgstr "Saņemtais objekts nav derīgs vCard"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1270
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1273
 msgid ""
 "Missing information about vCard URL, local cache is possibly incomplete or "
 "broken. Remove it, please."
 msgstr ""
-"Tūkst informācijas par cCard URL. Iespējams, ka lokālais kešs ir nepilnīgs"
-" vai salauzts. Izdzēsiet to."
+"Tūkst informācijas par cCard URL. Iespējams, ka lokālais kešs ir nepilnīgs "
+"vai salauzts. Izdzēsiet to."
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1273
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1276
 #: ../src/addressbook/backends/google/e-book-backend-google.c:990
 msgid "Object to save is not a valid vCard"
 msgstr "Saglabājamais objekts nav derīgs vCard"
@@ -130,62 +128,62 @@ msgstr "Neizdevās izņemt datni “%s” — %s"
 msgid "Failed to make directory %s: %s"
 msgstr "Neizdevās izveidot mapi %s — %s"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:416
+#: ../src/addressbook/backends/file/e-book-backend-file.c:429
 #, c-format
 msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "Neizdevās izveidot cieto saiti resursam “%s” — %s"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:521
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1265
+#: ../src/addressbook/backends/file/e-book-backend-file.c:534
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1275
 msgid "No UID in the contact"
 msgstr "Kontaktā nav UID"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:858
+#: ../src/addressbook/backends/file/e-book-backend-file.c:871
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "Pievienotajos kontaktos ir atrasti konfliktējoši UID"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:988
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1001
 msgid "Loading..."
 msgstr "Ielādē..."
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:990
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4512
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1003
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4494
 msgid "Searching..."
 msgstr "Meklē..."
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1293
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1303
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr "Mēģināja modificēt kontaktu “%s” bez sinhronām revīzijām"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1474
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1560
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3080
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7370
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7439
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1484
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1570
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3076
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7371
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7440
 #, c-format
 msgid "Contact “%s” not found"
 msgstr "Kontakts “%s” nav atrasts"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1624
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1707
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1634
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1717
 #, c-format
 msgid "Query “%s” not supported"
 msgstr "Vaicājums “%s” nav atbalstīts"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1633
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1716
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1643
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1726
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr "Nederīgs vaicājums “%s”"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1965
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2043
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1975
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2048
 msgid "Requested to delete an unrelated cursor"
 msgstr "Pieprasīja dzēst nesaistītu kursoru"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:2036
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2046
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Neizdevās pārsaukt veco datubāzi no “%s” par “%s” — %s"
@@ -228,48 +226,48 @@ msgstr "Kolēģi"
 msgid "Not connected"
 msgstr "Nav savienots"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:876
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:873
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr "Neizdevās sasaistīt, izmantojot v3 vai v2 saistījumus"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1000
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:982
 msgid "Reconnecting to LDAP server..."
 msgstr "Atkārtoti savienojas ar LDAP serveri…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1135
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1117
 msgid "Invalid DN syntax"
 msgstr "Nederīga DN sintakse"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1151
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4396
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1133
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4378
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP kļūda 0x%x (%s)"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1794
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2143
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2156
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1776
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2125
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2138
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s — no ldap_first_entry ir atgriezts NULL"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2071
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2215
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2053
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2197
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s — atgriezts neapstrādāts rezultāta tips %d"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2358
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2496
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2340
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2478
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s — atgriezts neapstrādāts meklēšanas rezultāta tips %d"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2646
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2628
 msgid "LDAP contact lists cannot be empty."
 msgstr "LDAP kontaktu saraksts nevar būt tukšs."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2684
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2666
 #, c-format
 msgid ""
 "Contact lists in LDAP address books require each member to be from the same "
@@ -278,55 +276,55 @@ msgid_plural ""
 "Contact lists in LDAP address books require each member to be from the same "
 "LDAP address book, but %d members could not be recognized."
 msgstr[0] ""
-"LDAP adrešu grāmatās kontaktu sarakstos katram dalībniekam ir jābūt no tās"
-" pašas LDAP adrešu grāmatas, bet nevarēja atpazīt %d dalībnieku."
+"LDAP adrešu grāmatās kontaktu sarakstos katram dalībniekam ir jābūt no tās "
+"pašas LDAP adrešu grāmatas, bet nevarēja atpazīt %d dalībnieku."
 msgstr[1] ""
-"LDAP adrešu grāmatās kontaktu sarakstos katram dalībniekam ir jābūt no tās"
-" pašas LDAP adrešu grāmatas, bet nevarēja atpazīt %d dalībniekus."
+"LDAP adrešu grāmatās kontaktu sarakstos katram dalībniekam ir jābūt no tās "
+"pašas LDAP adrešu grāmatas, bet nevarēja atpazīt %d dalībniekus."
 msgstr[2] ""
-"LDAP adrešu grāmatās kontaktu sarakstos katram dalībniekam ir jābūt no tās"
-" pašas LDAP adrešu grāmatas, bet nevarēja atpazīt %d dalībnieku."
+"LDAP adrešu grāmatās kontaktu sarakstos katram dalībniekam ir jābūt no tās "
+"pašas LDAP adrešu grāmatas, bet nevarēja atpazīt %d dalībnieku."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4335
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4317
 msgid "Receiving LDAP search results..."
 msgstr "Saņem LDAP meklēšanas rezultātus…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4538
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4520
 msgid "Error performing search"
 msgstr "Kļūda, veicot meklēšanu"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4678
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4660
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Lejupielādē kontaktus (%d)…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4779
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4761
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:790
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:691
 msgid "Refreshing…"
 msgstr "Atsvaidzina…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5172
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5148
 msgid "The backend does not support bulk additions"
 msgstr "Aizmugure neatbalsta masveida pievienošanu"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5263
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5239
 msgid "Adding contact to LDAP server..."
 msgstr "Pievieno kontaktu LDAP serverim…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5325
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5301
 msgid "The backend does not support bulk modifications"
 msgstr "Aizmugure neatbalsta masveida modificēšanu"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5347
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5323
 msgid "Modifying contact from LDAP server..."
 msgstr "Modificē kontaktu no LDAP servera…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5419
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5395
 msgid "Removing contact from LDAP server..."
 msgstr "Izņem kontaktu no LDAP servera…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5829
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5805
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "Neizdevās saņemt lietotāja “%s” DN"
@@ -761,7 +759,7 @@ msgstr "Logotips"
 #. Translators: This is an EContact field description, in this case it's a name
 #. * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
 #: ../src/addressbook/libebook-contacts/e-contact.c:287
-#: ../src/libedataserverui/e-webdav-discover-widget.c:151
+#: ../src/libedataserverui/e-webdav-discover-widget.c:180
 msgid "Name"
 msgstr "Vārds"
 
@@ -933,7 +931,7 @@ msgid "Twitter Name List"
 msgstr "Twitter vārdu saraksts"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:1915
-#: ../src/addressbook/libebook/e-destination.c:914
+#: ../src/addressbook/libebook/e-destination.c:911
 msgid "Unnamed List"
 msgstr "Nenosaukts saraksts"
 
@@ -966,63 +964,62 @@ msgstr "Teksts ir pārāk īss tālruņa numuram"
 msgid "Text is too long for a phone number"
 msgstr "Teksts ir pārāk garš tālruņa numuram"
 
-#: ../src/addressbook/libebook/e-book-client.c:927
+#: ../src/addressbook/libebook/e-book-client.c:924
 #, c-format
 msgid "Unknown book property “%s”"
 msgstr "Nezināma grāmatas īpašība “%s”"
 
-#: ../src/addressbook/libebook/e-book-client.c:942
+#: ../src/addressbook/libebook/e-book-client.c:939
 #, c-format
 msgid "Cannot change value of book property “%s”"
 msgstr "Nevar mainīt grāmatas īpašības vērtību “%s”"
 
-#: ../src/addressbook/libebook/e-book-client.c:1384
-#: ../src/addressbook/libebook/e-book-client.c:1615
-#: ../src/addressbook/libebook/e-book-client.c:1892
+#: ../src/addressbook/libebook/e-book-client.c:1381
+#: ../src/addressbook/libebook/e-book-client.c:1612
+#: ../src/addressbook/libebook/e-book-client.c:1889
 #: ../src/calendar/libecal/e-cal-client.c:1709
 #: ../src/calendar/libecal/e-cal-client.c:1947
 #, c-format
 msgid "Unable to connect to “%s”: "
 msgstr "Nevarēja savienoties ar “%s”: "
 
-#: ../src/addressbook/libebook/e-book-client-view.c:869
-#: ../src/calendar/libecal/e-cal-client-view.c:675
+#: ../src/addressbook/libebook/e-book-client-view.c:857
+#: ../src/calendar/libecal/e-cal-client-view.c:667
 #, c-format
 msgid "Client disappeared"
 msgstr "Klients pazuda"
 
 #: ../src/addressbook/libedata-book/e-book-backend.c:3253
 #, c-format
-#| msgid "The backend does not support bulk removals"
 msgid "Addressbook backend does not support cursors"
 msgstr "Adrešu grāmatas aizmugure neatbalsta kursorus"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:899
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:2253
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:895
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:2254
 #, c-format
 msgid "Error introspecting unknown summary field “%s”"
 msgstr "Kļūda, izpētot nezināmu kopsavilkuma lauku “%s”"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1508
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1504
 #: ../src/addressbook/libedata-book/e-book-cache.c:549
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:1392
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:1393
 msgid "Error parsing regular expression"
 msgstr "Kļūda, parsējot regulāro izteiksmi"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1553
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
 #: ../src/addressbook/libedata-book/e-book-cache.c:4586
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:1876
-#: ../src/camel/camel-db.c:818
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:1877
+#: ../src/camel/camel-db.c:814
 #, c-format
 msgid "Insufficient memory"
 msgstr "Nepietiek atmiņas"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1690
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1686
 #, c-format
 msgid "Invalid contact field “%d” specified in summary"
 msgstr "Kopsavilkumā norādīts nederīgs kontakta lauks “%d” "
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1724
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1720
 #: ../src/addressbook/libedata-book/e-book-cache.c:372
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:603
 #, c-format
@@ -1033,27 +1030,27 @@ msgstr ""
 "Kopsavilkumā norādīts kontakta lauks “%s” ar tipu “%s”, bet vienīgie "
 "atbalstītie tipi ir Būla vērtība, virkne un virkņu saraksts"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3068
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4169
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3064
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4165
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
 msgstr "Pilns search_contacts netiek glabāts kešatmiņā. Nevar atgriezt vcard."
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4300
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4393
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4296
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4389
 #: ../src/addressbook/libedata-book/e-book-cache.c:3468
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:5847
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:5848
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Vaicājums saturēja neatbalstītus elementus"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4304
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4300
 #, c-format
 msgid "Invalid Query"
 msgstr "Nederīgs vaicājums"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4328
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4324
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
@@ -1062,7 +1059,7 @@ msgstr ""
 "Pilns search_contacts netiek glabāts kešatmiņā. Tāpēc ir atbalstīts tikai "
 "kopsavilkuma vaicājums."
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4397
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4393
 #: ../src/addressbook/libedata-book/e-data-book.c:868
 #: ../src/calendar/libedata-cal/e-data-cal.c:1143
 #: ../src/libedataserver/e-client.c:170
@@ -1070,7 +1067,7 @@ msgstr ""
 msgid "Invalid query"
 msgstr "Nederīgs vaicājums"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4440
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4436
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
@@ -1078,35 +1075,35 @@ msgstr ""
 "Pilni vcards netiek glabāti kešatmiņā. Tāpēc ir atbalstīts tikai "
 "kopsavilkuma vaicājums."
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:5263
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:5259
 #, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr "Neizdevās izņemt db datni — kļūdas kods %d"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6050
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6450
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6046
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6446
 #, c-format
 msgid "Only summary queries are supported by EbSdbCursor"
 msgstr "EbSdbCursor atbalsta tikai kopsavilkuma vaicājumus"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6057
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6053
 #, c-format
 msgid "At least one sort field must be specified to use an EbSdbCursor"
 msgstr "Vismaz vienam laukam ir jābūt ar norādi, ka tas izmanto EbSdbCursor"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6071
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6067
 #, c-format
 msgid "Cannot sort by a field that is not in the summary"
 msgstr "Nevar kārtot pēc lauka, kas nav kopsavilkumā"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6078
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6074
 #, c-format
 msgid "Cannot sort by a field which may have multiple values"
 msgstr "Nevar kārtot pēc lauka, kam var būt vairākas vērtības"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6211
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6207
 #: ../src/addressbook/libedata-book/e-book-cache.c:5797
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:8144
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:8145
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1115,9 +1112,9 @@ msgstr ""
 "Mēģināja pārvietot kursoru atpakaļ, bet kursors jau ir kontaktu saraksta "
 "sākumā"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6219
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6215
 #: ../src/addressbook/libedata-book/e-book-cache.c:5804
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:8152
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:8153
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1133,9 +1130,9 @@ msgid "Unsupported contact field “%d” specified in summary"
 msgstr "Kopsavilkumā norādīts neatbalstīts kontakta lauks “%d”"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:3463
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:5840
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1681
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3545
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:5841
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1703
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3561
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Nederīgs vaicājums: %s"
@@ -1145,7 +1142,7 @@ msgid "Invalid query for a book cursor"
 msgstr "Nederīgs vaicājums grāmatas kursoram"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:4590
-#: ../src/libebackend/e-cache.c:759
+#: ../src/libebackend/e-cache.c:756
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Nevar atvērt datubāzi %s — %s"
@@ -1154,20 +1151,20 @@ msgstr "Nevar atvērt datubāzi %s — %s"
 #: ../src/addressbook/libedata-book/e-book-cache.c:5271
 #: ../src/addressbook/libedata-book/e-book-cache.c:5318
 #: ../src/addressbook/libedata-book/e-book-cache.c:5370
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2827
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2885
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2944
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3007
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3178
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1370
-#: ../src/libebackend/e-cache.c:1374 ../src/libebackend/e-cache.c:2352
-#: ../src/libebackend/e-cache.c:2392
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2843
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2901
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2960
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3023
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3194
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1375
+#: ../src/libebackend/e-cache.c:1371 ../src/libebackend/e-cache.c:2349
+#: ../src/libebackend/e-cache.c:2389
 #, c-format
 msgid "Object “%s” not found"
 msgstr "Objekts “%s” nav atrasts"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5430
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3069
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3085
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Objekts ar papildu “%s” nav atrasts"
@@ -1177,30 +1174,30 @@ msgid "At least one sort field must be specified to use a cursor"
 msgstr "Vismaz vienam laukam ir jābūt ar norādi, ka tas izmanto kursoru"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5593
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7984
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7985
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Nevar kārtot pēc lauka, kura datu tips nav virkne"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1083
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1093
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1088
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1098
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Iepriekš ielādētais UID “%s” objekts nav derīgs"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1091
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1101
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1096
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1106
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Saņemtais UID “%s” objekts nav derīgs"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1913
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2369
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3314
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1918
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2374
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3319
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Neizdevās izveidot kešu “%s”:"
 
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:1949
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:1950
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the “folders” table first."
@@ -1208,11 +1205,11 @@ msgstr ""
 "Nevar uzlabot kontaktu datubāzi no mantotās datubāzes ar vairāk kā vienu "
 "adrešu grāmatu. Vispirms dzēsiet vienu no ierakstiem tabulā “mapes”"
 
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:6015
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:6016
 msgid "Invalid query for EbSqlCursor"
 msgstr "Nederīgs EbSqlCursor vaicājums"
 
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7966
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7967
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 "Vismaz vienam kārtošanas laukam ir jābūt norādītam, ka tas izmanto "
@@ -1295,16 +1292,16 @@ msgstr "Alfabētiskais indekss bija iestatīts nepareizajai lokālei"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Saņemtais URL “%s” nenorāda uz CalDAV kalendāru"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1510
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1513
 #: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1164
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. Remove it, please."
 msgstr ""
-"Tūkst informācijas par komponentes URL. Iespējams, ka lokālais kešs ir"
-" nepilnīgs vai salauzts. Izdzēsiet to."
+"Tūkst informācijas par komponentes URL. Iespējams, ka lokālais kešs ir "
+"nepilnīgs vai salauzts. Izdzēsiet to."
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:2010
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:2013
 msgid "Failed to parse response data"
 msgstr "Neizdevās saprast atbildes datus"
 
@@ -1323,7 +1320,6 @@ msgid "Anniversary: %s"
 msgstr "Gadadiena — %s"
 
 #: ../src/calendar/backends/file/e-cal-backend-file.c:43
-#| msgid "Cannot get contact: "
 msgid "Cannot get URI"
 msgstr "Nevar iegūt URI"
 
@@ -1336,25 +1332,24 @@ msgstr "Nevar saglābāt kalendāra datus — slikti noformēts URI."
 msgid "Cannot save calendar data"
 msgstr "Nevar saglābāt kalendāra datus"
 
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1185
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1314
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1184
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1313
 #, c-format
-#| msgid "Cannot get folder “%s”: %s"
 msgid "Cannot parse ISC file “%s”"
 msgstr "Nevar parsēt ISC datni “%s”"
 
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1196
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1325
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1195
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1324
 #, c-format
 msgid "File “%s” is not a VCALENDAR component"
 msgstr "Datne “%s” nav VCALENDAR komponente"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3647
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3653
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3659
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3686
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2541
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3726
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3732
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3738
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3765
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2546
 msgid "Unsupported method"
 msgstr "Neatbalstīta metode"
 
@@ -1367,90 +1362,89 @@ msgstr "URI nav iestatīts"
 msgid "Malformed URI “%s”: %s"
 msgstr "Slikti noformēts URI “%s” — %s"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:463
+#: ../src/calendar/backends/http/e-cal-backend-http.c:460
 #, c-format
 msgid "Bad file format."
 msgstr "Nepareizs datnes formāts."
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:472
+#: ../src/calendar/backends/http/e-cal-backend-http.c:469
 #, c-format
 msgid "Not a calendar."
 msgstr "Nav kalendārs."
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:171
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:214
 msgid "Could not retrieve weather data"
 msgstr "Nevar saņemt laikapstākļu datus"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:349
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:358
 msgid "Weather: Fog"
 msgstr "Laiks — migla"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:350
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:359
 msgid "Weather: Cloudy Night"
 msgstr "Laiks — mākoņaina nakts"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:351
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:360
 msgid "Weather: Cloudy"
 msgstr "Laiks — mākoņains"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:352
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:361
 msgid "Weather: Overcast"
 msgstr "Laiks — apmācies"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:353
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:362
 msgid "Weather: Showers"
 msgstr "Laiks — lietusgāzes"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:354
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:363
 msgid "Weather: Snow"
 msgstr "Laiks — snieg"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:355
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:364
 msgid "Weather: Clear Night"
 msgstr "Laiks — skaidra nakts"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:356
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:365
 msgid "Weather: Sunny"
 msgstr "Laiks — saulains"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:357
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:366
 msgid "Weather: Thunderstorms"
 msgstr "Laiks — pērkona negaiss"
 
 #. TRANSLATOR: This is the temperature in degrees Fahrenheit (\302\260 is U+00B0 DEGREE SIGN)
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:383
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:392
 #, c-format
 msgid "%.1f °F"
 msgstr "%.1f °F"
 
 #. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN)
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:386
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:395
 #, c-format
 msgid "%.1f °C"
 msgstr "%.1f °C"
 
 #. TRANSLATOR: This is the temperature in kelvin
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:389
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:398
 #, c-format
 msgid "%.1f K"
 msgstr "%.1f K"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:395
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:404
 #, c-format
 msgid "%.1f"
 msgstr "%.1f"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:558
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:586
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:567
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:595
 msgid "Forecast"
 msgstr "Prognoze"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:682
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:691
 msgid "Could not create cache file"
 msgstr "Neizdevās izveidot kešatmiņas datni"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:684
-#| msgid "Could not create cache file"
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:693
 msgid "Could not create cache file: "
 msgstr "Neizdevās izveidot kešatmiņas datni: "
 
@@ -1756,8 +1750,6 @@ msgid " and Thursday"
 msgstr " un ceturtdien"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5237
-#| msgctxt "CategoryName"
-#| msgid "Holiday"
 msgctxt "recur-description"
 msgid "on Friday"
 msgstr "piektdien"
@@ -2312,7 +2304,6 @@ msgstr "Sanāksme atkārtojas"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5870
 #: ../src/calendar/libecal/e-cal-recur.c:5893
-#| msgid "Untitled appointment"
 msgctxt "recur-description"
 msgid "The appointment recurs"
 msgstr "Tikšanās atkārtojas"
@@ -2340,32 +2331,32 @@ msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#: ../src/calendar/libecal/e-cal-util.c:818
-#: ../src/calendar/libecal/e-cal-util.c:845
+#: ../src/calendar/libecal/e-cal-util.c:837
+#: ../src/calendar/libecal/e-cal-util.c:864
 msgctxt "Priority"
 msgid "High"
 msgstr "Augsta"
 
-#: ../src/calendar/libecal/e-cal-util.c:820
-#: ../src/calendar/libecal/e-cal-util.c:847
+#: ../src/calendar/libecal/e-cal-util.c:839
+#: ../src/calendar/libecal/e-cal-util.c:866
 msgctxt "Priority"
 msgid "Normal"
 msgstr "Normāla"
 
-#: ../src/calendar/libecal/e-cal-util.c:822
-#: ../src/calendar/libecal/e-cal-util.c:849
+#: ../src/calendar/libecal/e-cal-util.c:841
+#: ../src/calendar/libecal/e-cal-util.c:868
 msgctxt "Priority"
 msgid "Low"
 msgstr "Zema"
 
 #. An empty string is the same as 'None'.
-#: ../src/calendar/libecal/e-cal-util.c:843
+#: ../src/calendar/libecal/e-cal-util.c:862
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Nedefinēta"
 
-#: ../src/calendar/libecal/e-cal-util.c:885
-#: ../src/libedataserverui/e-reminders-widget.c:296
+#: ../src/calendar/libecal/e-cal-util.c:904
+#: ../src/libedataserverui/e-reminders-widget.c:299
 #, c-format
 msgid "%d week"
 msgid_plural "%d weeks"
@@ -2373,8 +2364,8 @@ msgstr[0] "%d nedēļu"
 msgstr[1] "%d nedēļas"
 msgstr[2] "%d nedēļas"
 
-#: ../src/calendar/libecal/e-cal-util.c:894
-#: ../src/libedataserverui/e-reminders-widget.c:292
+#: ../src/calendar/libecal/e-cal-util.c:913
+#: ../src/libedataserverui/e-reminders-widget.c:295
 #, c-format
 msgid "%d day"
 msgid_plural "%d days"
@@ -2382,8 +2373,8 @@ msgstr[0] "%d dienu"
 msgstr[1] "%d dienas"
 msgstr[2] "%d dienas"
 
-#: ../src/calendar/libecal/e-cal-util.c:903
-#: ../src/libedataserverui/e-reminders-widget.c:288
+#: ../src/calendar/libecal/e-cal-util.c:922
+#: ../src/libedataserverui/e-reminders-widget.c:291
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
@@ -2391,8 +2382,8 @@ msgstr[0] "%d stundu"
 msgstr[1] "%d stundas"
 msgstr[2] "%d stundas"
 
-#: ../src/calendar/libecal/e-cal-util.c:912
-#: ../src/libedataserverui/e-reminders-widget.c:284
+#: ../src/calendar/libecal/e-cal-util.c:931
+#: ../src/libedataserverui/e-reminders-widget.c:287
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -2401,7 +2392,7 @@ msgstr[1] "%d minūtes"
 msgstr[2] "%d minūtes"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: ../src/calendar/libecal/e-cal-util.c:917
+#: ../src/calendar/libecal/e-cal-util.c:936
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -2409,16 +2400,15 @@ msgstr[0] "%d sekundi"
 msgstr[1] "%d sekundes"
 msgstr[2] "%d sekundes"
 
-#: ../src/calendar/libecal/e-reminder-watcher.c:2704
+#: ../src/calendar/libecal/e-reminder-watcher.c:2824
 msgid "No Summary"
 msgstr "Nav kopsavilkuma"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2720
+#: ../src/calendar/libecal/e-reminder-watcher.c:2840
 #, c-format
-#| msgid "%s (%s)"
 msgctxt "overdue"
 msgid "%s (%s) %s"
 msgstr "%s (%s) %s"
@@ -2426,9 +2416,8 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2725
+#: ../src/calendar/libecal/e-reminder-watcher.c:2845
 #, c-format
-#| msgid "%s (%s)"
 msgctxt "overdue"
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -2436,26 +2425,26 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2730
+#: ../src/calendar/libecal/e-reminder-watcher.c:2850
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
 msgstr "%s %s"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:77
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1104
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1165
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1507
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1634
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1683
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1173
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1234
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1579
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1706
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1755
 #, c-format
 msgid "“%s” expects one argument"
 msgstr "“%s” gaida vienu parametru"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:84
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:707
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1514
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1522
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1586
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1594
 #, c-format
 msgid "“%s” expects the first argument to be a string"
 msgstr "“%s” gaida, ka pirmais parametrs būs virkne"
@@ -2468,12 +2457,12 @@ msgstr "“%s” gaida divus vai trīs parametrus"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:171
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:272
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:340
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:857
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1111
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1172
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1583
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1641
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1690
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:926
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1180
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1241
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1655
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1713
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1762
 #, c-format
 msgid "“%s” expects the first argument to be a time_t"
 msgstr "“%s” gaida, ka pirmais parametrs būs time_t"
@@ -2481,7 +2470,7 @@ msgstr "“%s” gaida, ka pirmais parametrs būs time_t"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:180
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:280
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:350
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:866
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:935
 #, c-format
 msgid "“%s” expects the second argument to be a time_t"
 msgstr "“%s” gaida, ka otrais parametrs būs time_t"
@@ -2498,19 +2487,22 @@ msgstr "“%s” gaida nevienu vai divus parametrus"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:333
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:700
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:850
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1576
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:919
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1648
 #, c-format
 msgid "“%s” expects two arguments"
 msgstr "“%s” gaida divus parametrus"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:639
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:662
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:782
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:814
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1023
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1056
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1468
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:790
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:812
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:834
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:857
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:883
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1092
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1125
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1540
 #, c-format
 msgid "“%s” expects no arguments"
 msgstr "“%s” negaida parametrus"
@@ -2530,12 +2522,12 @@ msgstr ""
 "“%s” gaida, ka pirmais parametrs būs viens no sekojošiem: “any”, “summary”, "
 "“description”, “location”, “attendee”, “organizer” vai \"classification\""
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:918
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:987
 #, c-format
 msgid "“%s” expects at least one argument"
 msgstr "“%s” gaida vismaz vienu parametru"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:933
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1002
 #, c-format
 msgid ""
 "“%s” expects all arguments to be strings or one and only one argument to be "
@@ -2544,47 +2536,47 @@ msgstr ""
 "“%s” gaida, ka visi parametri ir virknes vai arī viens un tikai viens "
 "arguments ir Būla aplami (boolean false (#f))"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1531
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1603
 #, c-format
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr "“%s” pirmajam parametram jābūt ISO 8601 datuma/laika virknei"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1592
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1664
 #, c-format
 msgid "“%s” expects the second argument to be an integer"
 msgstr "“%s” gaida, ka otrais parametrs būs vesels skaitlis"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1825
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1847
 #, c-format
 msgid "Failed to create SQLite function, error code “%d”: %s"
 msgstr "Neizdevās izveidot SQLite funkciju, kļūdas kods “%d” — %s"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2825
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2883
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2942
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3005
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2841
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2899
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2958
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3021
 #, c-format
 msgid "Object “%s”, “%s” not found"
 msgstr "Objekts “%s”, “%s” nav atrasts"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3784
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3800
 msgid "Cannot add timezone without tzid"
 msgstr "Nevar pievienot laika joslu bez tzid"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3793
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3809
 msgid "Cannot add timezone without component"
 msgstr "Nevar pievienot laika joslu bez komponentes"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3801
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3817
 msgid "Cannot add timezone with invalid component"
 msgstr "Nevar pievienot laika joslu ar nederīgu komponenti"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1148
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1153
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Saņemtais UID “%s” objekts nesatur nevienu gaidīto komponenti"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4181
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4193
 msgid "attachment.dat"
 msgstr "pielikums.dat"
 
@@ -2658,35 +2650,35 @@ msgstr "Neizdevās saņemt kalendāra laika joslu: "
 msgid "Could not add calendar time zone: "
 msgstr "Neizdevās pievienot kalendāra laika joslu: "
 
-#: ../src/camel/camel-cipher-context.c:198
+#: ../src/camel/camel-cipher-context.c:194
 #, c-format
 msgid "Signing is not supported by this cipher"
 msgstr "Šis šifrs neatbalsta parakstīšanu"
 
-#: ../src/camel/camel-cipher-context.c:211
+#: ../src/camel/camel-cipher-context.c:207
 #, c-format
 msgid "Verifying is not supported by this cipher"
 msgstr "Šis šifrs neatbalsta pārbaudīšanu"
 
-#: ../src/camel/camel-cipher-context.c:227
+#: ../src/camel/camel-cipher-context.c:223
 #, c-format
 msgid "Encryption is not supported by this cipher"
 msgstr "Šis šifrs neatbalsta šifrēšanu"
 
-#: ../src/camel/camel-cipher-context.c:241
+#: ../src/camel/camel-cipher-context.c:237
 #, c-format
 msgid "Decryption is not supported by this cipher"
 msgstr "Šis šifrs neatbalsta atšifrēšanu"
 
-#: ../src/camel/camel-cipher-context.c:356
+#: ../src/camel/camel-cipher-context.c:352
 msgid "Signing message"
 msgstr "Paraksta vēstuli"
 
-#: ../src/camel/camel-cipher-context.c:648
+#: ../src/camel/camel-cipher-context.c:644
 msgid "Encrypting message"
 msgstr "Šifrē vēstuli"
 
-#: ../src/camel/camel-cipher-context.c:821
+#: ../src/camel/camel-cipher-context.c:817
 msgid "Decrypting message"
 msgstr "Atšifrē vēstuli"
 
@@ -2704,7 +2696,7 @@ msgstr "Iztukšot kešatmiņas datni"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Nevarēja izņemt kešatmiņas ierakstu — %s: %s"
 
-#: ../src/camel/camel-db.c:872
+#: ../src/camel/camel-db.c:868
 #: ../src/camel/providers/local/camel-mbox-store.c:913
 #, c-format
 msgid "Could not rename “%s” to %s: %s"
@@ -2715,96 +2707,94 @@ msgstr "Nevarēja pārsaukt “%s” par %s — %s"
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-filter-driver.c:264
 #, c-format
-#| msgid "Scanning for changed messages in “%s : %s”"
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr "Pārsūta filtrētās vēstules mapē “%s : %s”"
 
-#: ../src/camel/camel-filter-driver.c:1120
+#: ../src/camel/camel-filter-driver.c:1113
 #: ../src/camel/camel-filter-search.c:934
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "Neizdevās izveidot bērna procesu “%s” — %s "
 
-#: ../src/camel/camel-filter-driver.c:1168
+#: ../src/camel/camel-filter-driver.c:1161
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "No %s saņemta nepareiza ziņu plūsma — %s"
 
-#: ../src/camel/camel-filter-driver.c:1392
-#: ../src/camel/camel-filter-driver.c:1405
+#: ../src/camel/camel-filter-driver.c:1385
+#: ../src/camel/camel-filter-driver.c:1398
 msgid "Syncing folders"
 msgstr "Sinhronizē mapes"
 
-#: ../src/camel/camel-filter-driver.c:1513
+#: ../src/camel/camel-filter-driver.c:1506
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Kļūda, parsējot filtru — %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1524
+#: ../src/camel/camel-filter-driver.c:1517
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Kļūda, izpildot filtru — %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1622
+#: ../src/camel/camel-filter-driver.c:1615
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Nevarēja atvērt spoles mapi"
 
-#: ../src/camel/camel-filter-driver.c:1634
+#: ../src/camel/camel-filter-driver.c:1627
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Nevarēja apstrādāt spoles mapi"
 
-#: ../src/camel/camel-filter-driver.c:1665
+#: ../src/camel/camel-filter-driver.c:1655
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Saņem vēstuli %d (%d%%)"
 
-#: ../src/camel/camel-filter-driver.c:1674
-#: ../src/camel/camel-filter-driver.c:1697
+#: ../src/camel/camel-filter-driver.c:1664
+#: ../src/camel/camel-filter-driver.c:1687
 #, c-format
 msgid "Failed on message %d"
 msgstr "Problēma ar vēstuli %d"
 
-#: ../src/camel/camel-filter-driver.c:1715
-#: ../src/camel/camel-filter-driver.c:1847
+#: ../src/camel/camel-filter-driver.c:1705
+#: ../src/camel/camel-filter-driver.c:1834
 #, c-format
-#| msgid "Failed on message %d"
 msgid "Failed to transfer messages: %s"
 msgstr "Neizdevās pārsūtīt vēstules: %s"
 
-#: ../src/camel/camel-filter-driver.c:1725
-#: ../src/camel/camel-filter-driver.c:1861
+#: ../src/camel/camel-filter-driver.c:1715
+#: ../src/camel/camel-filter-driver.c:1848
 msgid "Syncing folder"
 msgstr "Sinhronizē mapi"
 
-#: ../src/camel/camel-filter-driver.c:1730
-#: ../src/camel/camel-filter-driver.c:1869
+#: ../src/camel/camel-filter-driver.c:1720
+#: ../src/camel/camel-filter-driver.c:1856
 msgid "Complete"
 msgstr "Pabeigts"
 
-#: ../src/camel/camel-filter-driver.c:1801
+#: ../src/camel/camel-filter-driver.c:1788
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Saņem vēstuli %d no %d"
 
-#: ../src/camel/camel-filter-driver.c:1819
+#: ../src/camel/camel-filter-driver.c:1806
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Kļūda, pie vēstules %d no %d"
 
-#: ../src/camel/camel-filter-driver.c:2029
-#: ../src/camel/camel-filter-driver.c:2053
+#: ../src/camel/camel-filter-driver.c:2013
+#: ../src/camel/camel-filter-driver.c:2037
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Filtra “%s” izpilde neizdevās: "
 
-#: ../src/camel/camel-filter-driver.c:2043
+#: ../src/camel/camel-filter-driver.c:2027
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Kļūda, parsējot filtru “%s” — %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:2062
+#: ../src/camel/camel-filter-driver.c:2046
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Kļūda, izpildot filtru “%s” — %s: %s"
@@ -2834,7 +2824,15 @@ msgstr "Kļūda, izpildot filtra meklēšanu — %s: %s"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:329
+#: ../src/camel/camel-folder.c:171
+#, c-format
+msgid "Storing changes in folder “%s : %s”"
+msgstr "Saglabā izmaiņas mapē “%s : %s”"
+
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. the whole “%s : %s” is meant as an absolute identification of the folder.
+#: ../src/camel/camel-folder.c:452
 #, c-format
 msgid "Learning new spam message in “%s : %s”"
 msgid_plural "Learning new spam messages in “%s : %s”"
@@ -2845,7 +2843,7 @@ msgstr[2] "Iemācās jaunas mēstules iekš “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:372
+#: ../src/camel/camel-folder.c:495
 #, c-format
 msgid "Learning new ham message in “%s : %s”"
 msgid_plural "Learning new ham messages in “%s : %s”"
@@ -2856,7 +2854,7 @@ msgstr[2] "Iemācās jaunas īstas vēstules iekš “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:420
+#: ../src/camel/camel-folder.c:543
 #, c-format
 msgid "Filtering new message in “%s : %s”"
 msgid_plural "Filtering new messages in “%s : %s”"
@@ -2864,19 +2862,19 @@ msgstr[0] "Filtrē jauno vēstuli iekš “%s : %s”"
 msgstr[1] "Filtrē jaunās vēstules iekš “%s : %s”"
 msgstr[2] "Filtrē jaunās vēstules iekš “%s : %s”"
 
-#: ../src/camel/camel-folder.c:1064
-#: ../src/camel/providers/local/camel-maildir-folder.c:331
+#: ../src/camel/camel-folder.c:1206
+#: ../src/camel/providers/local/camel-maildir-folder.c:332
 msgid "Moving messages"
 msgstr "Pārvieto vēstules"
 
-#: ../src/camel/camel-folder.c:1067
+#: ../src/camel/camel-folder.c:1209
 msgid "Copying messages"
 msgstr "Kopē vēstules"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1112
+#: ../src/camel/camel-folder.c:1254
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
 msgstr "Kvotu informācija mapei “%s : %s” nav atbalstīta"
@@ -2884,7 +2882,7 @@ msgstr "Kvotu informācija mapei “%s : %s” nav atbalstīta"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1214
+#: ../src/camel/camel-folder.c:1356
 #, c-format
 msgid "Filtering folder “%s : %s”"
 msgstr "Filtrē mapi “%s : %s”"
@@ -2892,7 +2890,7 @@ msgstr "Filtrē mapi “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3176
+#: ../src/camel/camel-folder.c:3320
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "Iztīra mapi “%s : %s”"
@@ -2900,7 +2898,7 @@ msgstr "Iztīra mapi “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3311
+#: ../src/camel/camel-folder.c:3455
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "Saņem vēstuli “%s” no “%s : %s”"
@@ -2908,7 +2906,7 @@ msgstr "Saņem vēstuli “%s” no “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3536
+#: ../src/camel/camel-folder.c:3680
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "Saņem kvotas informāciju par “%s : %s”"
@@ -2916,45 +2914,45 @@ msgstr "Saņem kvotas informāciju par “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3836
+#: ../src/camel/camel-folder.c:3980
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "Atsvaidzina mapi “%s : %s”"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:918
-#: ../src/camel/camel-folder-search.c:961
+#: ../src/camel/camel-folder-search.c:926
+#: ../src/camel/camel-folder-search.c:969
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) pieprasa vienu Būla rezultātu"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:999
+#: ../src/camel/camel-folder-search.c:1007
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) nav atļauts iekš %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1006
 #: ../src/camel/camel-folder-search.c:1014
+#: ../src/camel/camel-folder-search.c:1022
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) nepieciešams atbilstoša tipa virkni"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1042
+#: ../src/camel/camel-folder-search.c:1050
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) sagaida masīva rezultātu"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1052
+#: ../src/camel/camel-folder-search.c:1060
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) nepieciešama mapju kopa"
 
-#: ../src/camel/camel-folder-search.c:2210
-#: ../src/camel/camel-folder-search.c:2384
+#: ../src/camel/camel-folder-search.c:2218
+#: ../src/camel/camel-folder-search.c:2392
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2963,8 +2961,8 @@ msgstr ""
 "Nevar parsēt meklēšanas izteiksmi — %s:\n"
 "%s"
 
-#: ../src/camel/camel-folder-search.c:2222
-#: ../src/camel/camel-folder-search.c:2396
+#: ../src/camel/camel-folder-search.c:2230
+#: ../src/camel/camel-folder-search.c:2404
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2987,18 +2985,18 @@ msgstr "Atbrīvot neizmantoto atmiņu mapei “%s : %s”"
 msgid "Output from %s:"
 msgstr "Izvade no %s:"
 
-#: ../src/camel/camel-gpg-context.c:912 ../src/camel/camel-gpg-context.c:917
-#: ../src/camel/camel-gpg-context.c:1658
+#: ../src/camel/camel-gpg-context.c:928 ../src/camel/camel-gpg-context.c:933
+#: ../src/camel/camel-gpg-context.c:1674
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Neizdevās palaist gpg — %s"
 
-#: ../src/camel/camel-gpg-context.c:917
+#: ../src/camel/camel-gpg-context.c:933
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1205
 msgid "Unknown"
 msgstr "Nezināms"
 
-#: ../src/camel/camel-gpg-context.c:1029
+#: ../src/camel/camel-gpg-context.c:1045
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -3009,17 +3007,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/camel/camel-gpg-context.c:1065
+#: ../src/camel/camel-gpg-context.c:1081
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Neizdevās parsēt gpg userid padomu."
 
-#: ../src/camel/camel-gpg-context.c:1090 ../src/camel/camel-gpg-context.c:1105
+#: ../src/camel/camel-gpg-context.c:1106 ../src/camel/camel-gpg-context.c:1121
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Neizdevās parsēt gpg paroles pieprasījumu."
 
-#: ../src/camel/camel-gpg-context.c:1126
+#: ../src/camel/camel-gpg-context.c:1142
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -3028,7 +3026,7 @@ msgstr ""
 "Vajadzīgs PIN kods, lai atslēgtu atslēgu\n"
 "savai SmartCard — “%s“"
 
-#: ../src/camel/camel-gpg-context.c:1130
+#: ../src/camel/camel-gpg-context.c:1146
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -3037,12 +3035,12 @@ msgstr ""
 "Nepieciešama parole, lai atslēgtu atslēgu\n"
 "lietotājam — “%s”"
 
-#: ../src/camel/camel-gpg-context.c:1136
+#: ../src/camel/camel-gpg-context.c:1152
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "Negaidīts pieprasījums no GnuPG “%s”"
 
-#: ../src/camel/camel-gpg-context.c:1148
+#: ../src/camel/camel-gpg-context.c:1164
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -3050,31 +3048,31 @@ msgstr ""
 "Ņemiet vērā, ka šifrētais saturs nesatur informāciju par adresātu, tāpēc "
 "katrai saglabātajai privātajai atslēgai tiks prasīta parole."
 
-#: ../src/camel/camel-gpg-context.c:1179 ../src/camel/camel-net-utils.c:522
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:399
+#: ../src/camel/camel-gpg-context.c:1195 ../src/camel/camel-net-utils.c:522
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:393
 #: ../src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
 msgstr "Atcelts"
 
-#: ../src/camel/camel-gpg-context.c:1200
+#: ../src/camel/camel-gpg-context.c:1216
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "Neizdevās atslēgt slepeno atslēgu — saņemtas 3 nederīgas paroles."
 
-#: ../src/camel/camel-gpg-context.c:1213
+#: ../src/camel/camel-gpg-context.c:1229
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Negaidīta atbilde no GnuPG — %s"
 
-#: ../src/camel/camel-gpg-context.c:1330
+#: ../src/camel/camel-gpg-context.c:1346
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Neizdevās nošifrēt — nav norādīti derīgi adresāti."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: ../src/camel/camel-gpg-context.c:1343
+#: ../src/camel/camel-gpg-context.c:1359
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
@@ -3083,17 +3081,17 @@ msgstr ""
 "Neizdevās šifrēt: norādīts nederīgs saņēmējs %s. Parasti iemesls ir tas, ka "
 "%s nav importēta publiskā atslēga šim saņēmējam."
 
-#: ../src/camel/camel-gpg-context.c:2169 ../src/camel/camel-smime-context.c:869
+#: ../src/camel/camel-gpg-context.c:2185 ../src/camel/camel-smime-context.c:869
 msgid "Could not generate signing data: "
 msgstr "Neizdevās izveidot paraksta datus: "
 
-#: ../src/camel/camel-gpg-context.c:2220 ../src/camel/camel-gpg-context.c:2459
-#: ../src/camel/camel-gpg-context.c:2598 ../src/camel/camel-gpg-context.c:2775
+#: ../src/camel/camel-gpg-context.c:2236 ../src/camel/camel-gpg-context.c:2475
+#: ../src/camel/camel-gpg-context.c:2614 ../src/camel/camel-gpg-context.c:2791
 msgid "Failed to execute gpg."
 msgstr "Neizdevās izpildīt gpg."
 
-#: ../src/camel/camel-gpg-context.c:2327 ../src/camel/camel-gpg-context.c:2335
-#: ../src/camel/camel-gpg-context.c:2343 ../src/camel/camel-gpg-context.c:2363
+#: ../src/camel/camel-gpg-context.c:2343 ../src/camel/camel-gpg-context.c:2351
+#: ../src/camel/camel-gpg-context.c:2359 ../src/camel/camel-gpg-context.c:2379
 #: ../src/camel/camel-smime-context.c:1000
 #: ../src/camel/camel-smime-context.c:1014
 #: ../src/camel/camel-smime-context.c:1026
@@ -3101,40 +3099,40 @@ msgstr "Neizdevās izpildīt gpg."
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Nevar pārbaudīt vēstules parakstu — nepareizs vēstules formāts"
 
-#: ../src/camel/camel-gpg-context.c:2409
+#: ../src/camel/camel-gpg-context.c:2425
 msgid "Cannot verify message signature: "
 msgstr "Nevar pārbaudīt vēstules parakstu: "
 
-#: ../src/camel/camel-gpg-context.c:2557
+#: ../src/camel/camel-gpg-context.c:2573
 msgid "Could not generate encrypting data: "
 msgstr "Nevarēja izveidot šifrēšanas datus: "
 
-#: ../src/camel/camel-gpg-context.c:2638
+#: ../src/camel/camel-gpg-context.c:2654
 msgid "This is a digitally encrypted message part"
 msgstr "Šī ir digitāli parakstītā vēstules daļa "
 
-#: ../src/camel/camel-gpg-context.c:2698 ../src/camel/camel-gpg-context.c:2707
-#: ../src/camel/camel-gpg-context.c:2730
+#: ../src/camel/camel-gpg-context.c:2714 ../src/camel/camel-gpg-context.c:2723
+#: ../src/camel/camel-gpg-context.c:2746
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Nevar atšifrēt vēstuli — nepareizs vēstules formāts"
 
-#: ../src/camel/camel-gpg-context.c:2718
+#: ../src/camel/camel-gpg-context.c:2734
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Neizdevās atšifrēt MIME daļu — protokola kļūda"
 
-#: ../src/camel/camel-gpg-context.c:2790
+#: ../src/camel/camel-gpg-context.c:2806
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "Neizdevās atšifrēt MIME daļu — noslēpums nav atrasts"
 
-#: ../src/camel/camel-gpg-context.c:2827
+#: ../src/camel/camel-gpg-context.c:2843
 #, c-format
 msgid "GPG blob contains unencrypted text: %s"
 msgstr "GPG bloks satur nešifrētu tekstu: %s"
 
-#: ../src/camel/camel-gpg-context.c:2829
+#: ../src/camel/camel-gpg-context.c:2845
 #: ../src/camel/camel-smime-context.c:1546
 msgid "Encrypted content"
 msgstr "Šifrēts saturs"
@@ -3278,14 +3276,13 @@ msgstr "Servera uzmeklēšana “%s” neizdevās — %s"
 
 #: ../src/camel/camel-network-service.c:1128
 #, c-format
-#| msgid "Checking reach-ability of account “%s”"
 msgid "Checking reachability of account “%s”"
 msgstr "Pārbauda konta “%s” sasniedzamību"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:179
+#: ../src/camel/camel-offline-folder.c:175
 #, c-format
 msgid "Downloading new messages for offline mode in “%s : %s”"
 msgstr "Lejupielādē jaunās vēstules, lai varētu darboties nesaistē “%s : %s”"
@@ -3293,15 +3290,7 @@ msgstr "Lejupielādē jaunās vēstules, lai varētu darboties nesaistē “%s :
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:277
-#, c-format
-msgid "Storing changes in folder “%s : %s”"
-msgstr "Saglabā izmaiņas mapē “%s : %s”"
-
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
-#. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:370
+#: ../src/camel/camel-offline-folder.c:260
 #, c-format
 msgid "Checking download of new messages for offline in “%s : %s”"
 msgstr ""
@@ -3311,7 +3300,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:490
+#: ../src/camel/camel-offline-folder.c:336
 #, c-format
 msgid "Syncing messages in folder “%s : %s” to disk"
 msgstr "Sinhronizē vēstules no mapes “%s : %s” uz disku"
@@ -3321,16 +3310,16 @@ msgstr "Sinhronizē vēstules no mapes “%s : %s” uz disku"
 #. The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:584
+#: ../src/camel/camel-offline-folder.c:430
 #, c-format
 msgid "Syncing message %d of %d in folder “%s : %s” to disk"
 msgstr "Sinhronizē vēstuli %d no %d no mapes “%s : %s” uz disku"
 
-#: ../src/camel/camel-offline-folder.c:643
+#: ../src/camel/camel-offline-folder.c:484
 msgid "Copy folder content locally for _offline operation"
 msgstr "K_opēt mapes saturu lokāli, lai varētu darboties nesaistē"
 
-#: ../src/camel/camel-offline-store.c:304
+#: ../src/camel/camel-offline-store.c:326
 #, c-format
 msgid "Syncing messages in account “%s” to disk"
 msgstr "Sinhronizē vēstules kontā “%s” uz disku"
@@ -3477,7 +3466,6 @@ msgstr "(Nezināms GSSAPI mehānisma kods: %x)"
 #. the second '%s' is replaced with additional error information.
 #: ../src/camel/camel-sasl-gssapi.c:174 ../src/camel/camel-sasl-gssapi.c:246
 #, c-format
-#| msgid "%s (%s)"
 msgctxt "gssapi_error"
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -3548,7 +3536,6 @@ msgid "Bad authentication response from server."
 msgstr "Slikta autentifikācijas atbilde no servera."
 
 #: ../src/camel/camel-sasl-gssapi.c:288
-#| msgid "Could not parse response"
 msgid "Could not get session bus:"
 msgstr "Neizdevās saņemt sesijas kopni:"
 
@@ -3664,7 +3651,7 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "Nederīgs GType reģistrēts protokolam “%s”"
 
 #: ../src/camel/camel-session.c:508
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3248
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3240
 #: ../src/camel/providers/pop3/camel-pop3-store.c:305
 #: ../src/camel/providers/pop3/camel-pop3-store.c:809
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:696
@@ -3840,7 +3827,6 @@ msgstr "Dekodētāja kļūda"
 
 #: ../src/camel/camel-smime-context.c:1297
 #, c-format
-#| msgid "Cannot find certificate for “%s”"
 msgid "No valid or appropriate certificate for “%s” was found"
 msgstr "Netika atrasts derīgs vai piemērots “%s” sertifikāts"
 
@@ -3884,44 +3870,44 @@ msgstr "Neizdevās iekodētājam pievienot datus"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME atšifrētājs — nav atrasts šifrēts saturs"
 
-#: ../src/camel/camel-store.c:1412
+#: ../src/camel/camel-store.c:1413
 #, c-format
 msgid "Opening folder “%s”"
 msgstr "Atver mapi “%s”"
 
-#: ../src/camel/camel-store.c:1709
+#: ../src/camel/camel-store.c:1710
 #, c-format
 msgid "Scanning folders in “%s”"
 msgstr "Skenē “%s” mapes"
 
-#: ../src/camel/camel-store.c:1737 ../src/camel/camel-store.c:1782
+#: ../src/camel/camel-store.c:1738 ../src/camel/camel-store.c:1783
 #: ../src/camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Miskaste"
 
-#: ../src/camel/camel-store.c:1751 ../src/camel/camel-store.c:1799
+#: ../src/camel/camel-store.c:1752 ../src/camel/camel-store.c:1800
 #: ../src/camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Mēstule"
 
-#: ../src/camel/camel-store.c:2404
+#: ../src/camel/camel-store.c:2405
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Nevar izveidot mapi — %s — mape jau eksistē"
 
-#: ../src/camel/camel-store.c:2411
+#: ../src/camel/camel-store.c:2412
 #, c-format
 msgid "Creating folder “%s”"
 msgstr "Izveido mapi “%s”"
 
-#: ../src/camel/camel-store.c:2589 ../src/camel/camel-vee-store.c:426
-#: ../src/camel/providers/local/camel-maildir-store.c:340
+#: ../src/camel/camel-store.c:2590 ../src/camel/camel-vee-store.c:426
+#: ../src/camel/providers/local/camel-maildir-store.c:341
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Nevar izdzēst mapi — %s — nederīga darbība"
 
-#: ../src/camel/camel-store.c:2780 ../src/camel/camel-vee-store.c:477
-#: ../src/camel/providers/local/camel-maildir-store.c:908
+#: ../src/camel/camel-store.c:2781 ../src/camel/camel-vee-store.c:477
+#: ../src/camel/providers/local/camel-maildir-store.c:912
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Nevar pārsaukt mapi — %s — nederīga darbība"
@@ -3974,7 +3960,7 @@ msgstr "Nevarēja parsēt URL “%s”"
 msgid "Updating folder “%s”"
 msgstr "Atjaunina mapi “%s”"
 
-#: ../src/camel/camel-vee-folder.c:1285 ../src/camel/camel-vee-folder.c:1421
+#: ../src/camel/camel-vee-folder.c:1283 ../src/camel/camel-vee-folder.c:1419
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Nevar kopēt vai pārvietot vēstules virtuālajā mapē"
@@ -3983,23 +3969,22 @@ msgstr "Nevar kopēt vai pārvietot vēstules virtuālajā mapē"
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: ../src/camel/camel-vee-folder.c:1322
+#: ../src/camel/camel-vee-folder.c:1320
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "Nav tādas vēstules %s mapē “%s : %s”"
 
-#: ../src/camel/camel-vee-folder.c:1397
+#: ../src/camel/camel-vee-folder.c:1395
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "Kļūda, glabājot “%s”: "
 
-#: ../src/camel/camel-vee-folder.c:1587
+#: ../src/camel/camel-vee-folder.c:1585
 #, c-format
-#| msgid "Updating folder “%s”"
 msgid "Updating search folder “%s”"
 msgstr "Atjaunina meklēšanas mapi “%s”"
 
-#: ../src/camel/camel-vee-folder.c:1645
+#: ../src/camel/camel-vee-folder.c:1643
 msgid "Automatically _update on change in source folders"
 msgstr "A_utomātiski atjaunināt, kad ir izmaiņas avota mapēs"
 
@@ -4019,11 +4004,11 @@ msgstr "Nevar izdzēst mapi — %s — nav tādas mapes"
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "Nevar pārsaukt mapi — %s — nav tādas mapes"
 
-#: ../src/camel/camel-vee-store.c:548
+#: ../src/camel/camel-vee-store.c:556
 msgid "Enable _Unmatched folder"
 msgstr "Aktivēt _neatbilstošas mapes"
 
-#: ../src/camel/camel-vee-store.c:1104
+#: ../src/camel/camel-vee-store.c:1112
 msgid "Updating Unmatched search folder"
 msgstr "Atjaunināt “Pārējās” meklēšanas mapi"
 
@@ -4041,15 +4026,15 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "Jums ir jāstrādā tiešsaistē, lai izpildītu šo darbību (%s)"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:987
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3417
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3406
 #: ../src/camel/providers/nntp/camel-nntp-store.c:348
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1343
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2153
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2308
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:450
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:633
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:922
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:1136
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:447
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:630
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:916
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:1130
 #: ../src/camel/providers/pop3/camel-pop3-store.c:293
 #: ../src/camel/providers/pop3/camel-pop3-store.c:528
 #: ../src/camel/providers/pop3/camel-pop3-store.c:576
@@ -4081,7 +4066,7 @@ msgstr "Nevar pārvietot vēstules uz Iesūtni"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:772
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:765
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
 msgstr "Nav pieejama kvotu informācija mapei “%s : %s”"
@@ -4090,27 +4075,26 @@ msgstr "Nav pieejama kvotu informācija mapei “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1039
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1032
 #, c-format
-#| msgid "Storing changes in folder “%s : %s”"
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr "Izņem novecojušas keša datnes mapē “%s : %s”"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1131
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:835
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1124
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:832
 msgid "Apply message _filters to this folder"
 msgstr "Šai mapei attiecināt vēstuļu _filtrus"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1143
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1136
 msgid "Always check for _new mail in this folder"
 msgstr "Vienmēr pārbaudīt jau_no pastu šajā mapē"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1258
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1251
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Neizdevās izveidot %s mapju kopsavilkumu"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1270
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1263
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Neizdevās izveidot %s kešu: "
@@ -4118,7 +4102,7 @@ msgstr "Neizdevās izveidot %s kešu: "
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1470
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1463
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "Nav pieejama IMAP pastkaste mapei “%s : %s”"
@@ -4229,230 +4213,229 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Lai lasītu un glabātu pastu uz IMAP serveriem."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:1167
+#: ../src/camel/providers/imapx/camel-imapx-server.c:1146
 msgid "Error writing to cache stream"
 msgstr "Kļūda, rakstot kešatmiņas straumē"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3041
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3130
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3450
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3038
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3125
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3439
 msgid "Failed to get capabilities"
 msgstr "Neizdevās saņemt iespējas"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3060
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3057
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Neizdevās savienoties ar IMAP serveri %s drošā režīmā — %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3061
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3058
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:283
 msgid "STARTTLS not supported"
 msgstr "STARTTLS nav atbalstīts"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3070
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3067
 msgid "Failed to issue STARTTLS"
 msgstr "Neizdevās izdot STARTTLS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3119
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3114
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Neizdevās savienoties ar IMAP serveri %s drošā režīmā: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3235
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3227
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP serveris %s neatbalsta %s autentifikāciju"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3261
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3253
 #, c-format
 msgid ""
 "Plaintext authentication disallowed on insecure connections. Change "
 "encryption to STARTTLS or TLS for account “%s”."
 msgstr ""
-"Vienkāršā teksta autentifikācija nedrošos tīklos nav atļauta. Kontam “%s”"
-" mainiet šifrēšanu uz STARTTLS vai TLS."
+"Vienkāršā teksta autentifikācija nedrošos tīklos nav atļauta. Kontam “%s” "
+"mainiet šifrēšanu uz STARTTLS vai TLS."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3274
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3266
 #: ../src/camel/providers/nntp/camel-nntp-store.c:454
 #: ../src/camel/providers/nntp/camel-nntp-store.c:596
 msgid "Cannot authenticate without a username"
 msgstr "Neizdevās autentificēties bez lietotājvārda"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3283
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3275
 #: ../src/camel/providers/nntp/camel-nntp-store.c:605
 #: ../src/camel/providers/pop3/camel-pop3-store.c:709
 #: ../src/camel/providers/pop3/camel-pop3-store.c:747
 msgid "Authentication password not available"
 msgstr "Autentifikācijas parole nav pieejama"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3293
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3308
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3285
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3300
 msgid "Failed to authenticate"
 msgstr "Neizdevās autentificēties"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3477
-#| msgid "Failed to issue NAMESPACE"
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3466
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr "Neizdevās izdot ENABLE UTF8=ACCEPT"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3499
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3488
 msgid "Failed to issue NAMESPACE"
 msgstr "Neizdevās izdot NAMESPACE"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3517
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3506
 msgid "Failed to enable QResync"
 msgstr "Neizdevās ieslēgt QResync"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3554
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3543
 msgid "Failed to issue NOTIFY"
 msgstr "Neizdevās izdot NOTIFY"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4033
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4022
 msgid "Failed to select mailbox"
 msgstr "Neizdevās izvēlēties pastkasti"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4136
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4122
 msgid "Cannot issue command, no stream available"
 msgstr "Nevar izdot komandu, nav pieejamu straumju"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4405
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4388
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nevar saņemt vēstuli ar vēstules ID %s — %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4406
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4389
 msgid "No such message available."
 msgstr "Tāda vēstule nav pieejama."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4455
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4480
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4519
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4438
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4463
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4502
 msgid "Error fetching message"
 msgstr "Kļūda, saņemot vēstuli"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4497
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5264
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4480
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5247
 msgid "Error performing NOOP"
 msgstr "Kļūda, izpildot NOOP"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4512
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4495
 msgid "Failed to close the tmp stream"
 msgstr "Neizdevās aizvērt pagaidu straumi"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4543
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4526
 msgid "Failed to copy the tmp file"
 msgstr "Neizdevās nokopēt pagaidu datni"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4781
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4764
 msgid "Error moving messages"
 msgstr "Kļūda, pārvietojot vēstules"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4781
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4764
 msgid "Error copying messages"
 msgstr "Kļūda, kopējot vēstules"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5054
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5075
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5037
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5058
 msgid "Cannot create spool file: "
 msgstr "Nevar izvedot spoles datni: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5161
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5144
 msgid "Error appending message"
 msgstr "Kļūda, pievienojot vēstuli"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5417
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5400
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Meklē izmainītās vēstules mapē “%s : %s”"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5421
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5404
 msgid "Error scanning changes"
 msgstr "Kļūda, skenējot izmaiņas"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5442
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5425
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "Saņem kopsavilkuma informāciju par jaunām vēstulēm uz “%s : %s”"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5470
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5453
 msgid "Error fetching message info"
 msgstr "Kļūda, saņemot vēstules informāciju"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5603
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5586
 msgid "Error running STATUS"
 msgstr "Kļūda, darbinot STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6177
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6232
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6296
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6160
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6215
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6279
 msgid "Error syncing changes"
 msgstr "Kļūda, sinhronizējot izmaiņas"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6190
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6242
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6315
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6459
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6173
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6225
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6298
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6439
 msgid "Error expunging message"
 msgstr "Kļūda, dzēšot vēstuli"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6541
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6521
 msgid "Error fetching folders"
 msgstr "Kļūda, saņemot mapes"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6549
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6529
 msgid "Error fetching subscribed folders"
 msgstr "Kļūda, saņemot abonētās mapes"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6606
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6586
 msgid "Error creating folder"
 msgstr "Kļūda, veidojot mapi"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6656
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6636
 msgid "Error deleting folder"
 msgstr "Kļūda, dzēšot mapi"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6702
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6682
 msgid "Error renaming folder"
 msgstr "Kļūda, pārsaucot mapi"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6734
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6714
 msgid "Error subscribing to folder"
 msgstr "Kļūda, abonējot mapi"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6770
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6750
 msgid "Error unsubscribing from folder"
 msgstr "Kļūda, atrakstoties no mapes"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6810
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6790
 msgid "IMAP server does not support quotas"
 msgstr "IMAP serveris neatbalsta kvotas"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6822
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6802
 msgid "Error retrieving quota information"
 msgstr "Kļūda, saņemot informāciju par kvotām"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6887
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6867
 msgid "Search failed"
 msgstr "Neizdevās meklēt"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:7015
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6995
 msgid "Error running IDLE"
 msgstr "Kļūda, darbinot IDLE"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../src/camel/providers/imapx/camel-imapx-store.c:353
-#: ../src/camel/providers/local/camel-maildir-folder.c:476
-#: ../src/camel/providers/local/camel-maildir-store.c:341
-#: ../src/camel/providers/local/camel-maildir-store.c:820
-#: ../src/camel/providers/local/camel-maildir-store.c:826
-#: ../src/camel/providers/local/camel-maildir-store.c:909
+#: ../src/camel/providers/local/camel-maildir-folder.c:477
+#: ../src/camel/providers/local/camel-maildir-store.c:342
+#: ../src/camel/providers/local/camel-maildir-store.c:824
+#: ../src/camel/providers/local/camel-maildir-store.c:830
+#: ../src/camel/providers/local/camel-maildir-store.c:913
 #: ../src/camel/providers/local/camel-spool-store.c:386
 msgid "Inbox"
 msgstr "Iesūtne"
@@ -4725,7 +4708,7 @@ msgstr "Lokālā pasta datne %s"
 
 #: ../src/camel/providers/local/camel-local-store.c:207
 #: ../src/camel/providers/local/camel-local-store.c:367
-#: ../src/camel/providers/local/camel-maildir-store.c:117
+#: ../src/camel/providers/local/camel-maildir-store.c:118
 #: ../src/camel/providers/local/camel-mbox-store.c:579
 #: ../src/camel/providers/local/camel-spool-store.c:81
 #, c-format
@@ -4740,7 +4723,7 @@ msgstr "Glabātuves sakne %s nav parasta mape"
 #: ../src/camel/providers/local/camel-local-store.c:228
 #: ../src/camel/providers/local/camel-local-store.c:238
 #: ../src/camel/providers/local/camel-local-store.c:380
-#: ../src/camel/providers/local/camel-maildir-store.c:159
+#: ../src/camel/providers/local/camel-maildir-store.c:160
 #, c-format
 msgid "Cannot get folder: %s: %s"
 msgstr "Nevar saņemt mapi — %s: %s"
@@ -4768,20 +4751,20 @@ msgid "Could not rename “%s”: %s"
 msgstr "Nevarēja pārsaukt “%s” — %s"
 
 #: ../src/camel/providers/local/camel-maildir-folder.c:107
-#: ../src/camel/providers/local/camel-maildir-folder.c:345
+#: ../src/camel/providers/local/camel-maildir-folder.c:346
 #: ../src/camel/providers/local/camel-mbox-folder.c:133
 #: ../src/camel/providers/local/camel-mbox-folder.c:348
 #: ../src/camel/providers/local/camel-mh-folder.c:159
 msgid "No such message"
 msgstr "Nav tādas vēstules"
 
-#: ../src/camel/providers/local/camel-maildir-folder.c:239
+#: ../src/camel/providers/local/camel-maildir-folder.c:240
 #, c-format
 msgid "Cannot append message to maildir folder: %s: "
 msgstr "Nevar pievienot vēstuli maildir mapei — %s "
 
-#: ../src/camel/providers/local/camel-maildir-folder.c:286
-#: ../src/camel/providers/local/camel-maildir-folder.c:296
+#: ../src/camel/providers/local/camel-maildir-folder.c:287
+#: ../src/camel/providers/local/camel-maildir-folder.c:297
 #: ../src/camel/providers/local/camel-mbox-folder.c:407
 #: ../src/camel/providers/local/camel-mh-folder.c:171
 #: ../src/camel/providers/local/camel-mh-folder.c:181
@@ -4789,85 +4772,85 @@ msgstr "Nevar pievienot vēstuli maildir mapei — %s "
 msgid "Cannot get message %s from folder %s: "
 msgstr "Nevar saņemt vēstuli %s no mapes %s: "
 
-#: ../src/camel/providers/local/camel-maildir-folder.c:363
+#: ../src/camel/providers/local/camel-maildir-folder.c:364
 #, c-format
 msgid "Cannot transfer message to destination folder: %s"
 msgstr "Nevar pārsūtīt vēstuli mērķa mapei: %s"
 
-#: ../src/camel/providers/local/camel-maildir-store.c:125
-#: ../src/camel/providers/local/camel-maildir-store.c:925
+#: ../src/camel/providers/local/camel-maildir-store.c:126
+#: ../src/camel/providers/local/camel-maildir-store.c:929
 #, c-format
 msgid "Cannot create folder containing “%s”"
 msgstr "Nevar izveidot mapi, kas satur “%s”"
 
-#: ../src/camel/providers/local/camel-maildir-store.c:133
-#: ../src/camel/providers/local/camel-maildir-store.c:152
-#: ../src/camel/providers/local/camel-maildir-store.c:917
+#: ../src/camel/providers/local/camel-maildir-store.c:134
+#: ../src/camel/providers/local/camel-maildir-store.c:153
+#: ../src/camel/providers/local/camel-maildir-store.c:921
 #, c-format
 msgid "Folder %s already exists"
 msgstr "Mape %s jau eksistē"
 
-#: ../src/camel/providers/local/camel-maildir-store.c:260
-#: ../src/camel/providers/local/camel-maildir-store.c:291
+#: ../src/camel/providers/local/camel-maildir-store.c:261
+#: ../src/camel/providers/local/camel-maildir-store.c:292
 #: ../src/camel/providers/local/camel-mbox-store.c:410
 #: ../src/camel/providers/local/camel-mbox-store.c:431
 #, c-format
 msgid "Cannot create folder “%s”: %s"
 msgstr "Nevar izveidot mapi “%s” — %s"
 
-#: ../src/camel/providers/local/camel-maildir-store.c:275
+#: ../src/camel/providers/local/camel-maildir-store.c:276
 #: ../src/camel/providers/local/camel-mbox-store.c:376
 #: ../src/camel/providers/local/camel-mh-store.c:519
 #, c-format
 msgid "Cannot get folder “%s”: %s"
 msgstr "Nevar saņemt mapi “%s”: %s"
 
-#: ../src/camel/providers/local/camel-maildir-store.c:281
+#: ../src/camel/providers/local/camel-maildir-store.c:282
 #: ../src/camel/providers/local/camel-mbox-store.c:386
 #: ../src/camel/providers/local/camel-mh-store.c:528
 #, c-format
 msgid "Cannot get folder “%s”: folder does not exist."
 msgstr "Nevar saņemt mapi “%s” — mape neeksistē."
 
-#: ../src/camel/providers/local/camel-maildir-store.c:308
+#: ../src/camel/providers/local/camel-maildir-store.c:309
 #, c-format
 msgid "Cannot get folder “%s”: not a maildir directory."
 msgstr "Nevar saņemt mapi “%s” — nav maildir mape."
 
-#: ../src/camel/providers/local/camel-maildir-store.c:372
-#: ../src/camel/providers/local/camel-maildir-store.c:412
+#: ../src/camel/providers/local/camel-maildir-store.c:373
+#: ../src/camel/providers/local/camel-maildir-store.c:413
 #: ../src/camel/providers/local/camel-mh-store.c:672
 #, c-format
 msgid "Could not delete folder “%s”: %s"
 msgstr "Nevarēja izdzēst mapi “%s” — %s"
 
-#: ../src/camel/providers/local/camel-maildir-store.c:374
+#: ../src/camel/providers/local/camel-maildir-store.c:375
 msgid "not a maildir directory"
 msgstr "nav maildir mape"
 
-#: ../src/camel/providers/local/camel-maildir-store.c:660
-#: ../src/camel/providers/local/camel-maildir-store.c:1138
+#: ../src/camel/providers/local/camel-maildir-store.c:664
+#: ../src/camel/providers/local/camel-maildir-store.c:1142
 #: ../src/camel/providers/local/camel-spool-store.c:206
 #: ../src/camel/providers/local/camel-spool-store.c:225
 #, c-format
 msgid "Could not scan folder “%s”: %s"
 msgstr "Nevarēja skanēt mapi “%s” — %s"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:450
-#: ../src/camel/providers/local/camel-maildir-summary.c:589
+#: ../src/camel/providers/local/camel-maildir-summary.c:494
+#: ../src/camel/providers/local/camel-maildir-summary.c:636
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
 msgstr "Nevar atvērt maildir mapes ceļu — %s: %s"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:580
+#: ../src/camel/providers/local/camel-maildir-summary.c:627
 msgid "Checking folder consistency"
 msgstr "Pārbauda mapes nepretrunīgumu"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:702
+#: ../src/camel/providers/local/camel-maildir-summary.c:749
 msgid "Checking for new messages"
 msgstr "Meklē jaunās vēstules"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:806
+#: ../src/camel/providers/local/camel-maildir-summary.c:853
 #: ../src/camel/providers/local/camel-mbox-summary.c:367
 #: ../src/camel/providers/local/camel-mbox-summary.c:585
 #: ../src/camel/providers/local/camel-mbox-summary.c:739
@@ -4997,13 +4980,13 @@ msgid "Could not rename folder: %s"
 msgstr "Nevarēja pārsaukt mapi — %s"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:762
-#: ../src/camel/providers/local/camel-mbox-summary.c:1033
+#: ../src/camel/providers/local/camel-mbox-summary.c:1032
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "Nevarēja noglabāt mapi — %s"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:803
-#: ../src/camel/providers/local/camel-mbox-summary.c:1076
+#: ../src/camel/providers/local/camel-mbox-summary.c:1075
 #, c-format
 msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn’t get "
@@ -5013,24 +4996,24 @@ msgstr ""
 "nesaņēma.)"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:813
-#: ../src/camel/providers/local/camel-mbox-summary.c:1088
+#: ../src/camel/providers/local/camel-mbox-summary.c:1087
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Kopsavilkuma un mapes nesakrīt, pat pēc sinhronizācijas"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:980
+#: ../src/camel/providers/local/camel-mbox-summary.c:979
 #: ../src/camel/providers/local/camel-spool-summary.c:358
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Nezināma kļūda — %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:1149
-#: ../src/camel/providers/local/camel-mbox-summary.c:1179
+#: ../src/camel/providers/local/camel-mbox-summary.c:1148
+#: ../src/camel/providers/local/camel-mbox-summary.c:1178
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "Neizdevās rakstīšana uz pagaidu pastkasti — %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:1168
+#: ../src/camel/providers/local/camel-mbox-summary.c:1167
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Neizdevās rakstīšana uz pagaidu pastkasti — %s — %s"
@@ -5150,47 +5133,47 @@ msgstr ""
 "Nevarēja sinhronizēt spoles mapi %s — %s\n"
 "Mape varētu būt bojāta, kopija saglabāta “%s”"
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:215
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:632
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:212
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:629
 #, c-format
 msgid "Internal error: UID in invalid format: %s"
 msgstr "Iekšējā kļūda — UID ir nepareizā formātā — %s"
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:283
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:288
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:575
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:1092
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:280
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:285
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:572
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:1086
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "Nevar saņemt vēstuli %s — %s"
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:295
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:666
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:479
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:511
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:543
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:565
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:584
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:292
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:663
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:476
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:508
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:540
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:562
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:581
 #, c-format
 msgid "Cannot get message %s: "
 msgstr "Nevar saņemt vēstuli %s: "
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:424
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:430
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:421
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:427
 #, c-format
 msgid "Posting failed: %s"
 msgstr "Pievienošana neizdevās — %s"
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:482
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:479
 msgid "Posting failed: "
 msgstr "Pievienošana neizdevās: "
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:655
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:652
 #, c-format
 msgid "This message is not currently available"
 msgstr "Šī vēstule šobrīd nav pieejama"
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:764
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:761
 #, c-format
 msgid "You cannot copy messages from a NNTP folder"
 msgstr "Jūs nevarat kopēt vēstules no NNTP mapes"
@@ -5334,7 +5317,7 @@ msgid "No such folder: %s"
 msgstr "Nav tādas mapes — %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:189
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:334
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:331
 #, c-format
 msgid "%s: Scanning new messages"
 msgstr "%s — skenē jaunas vēstules"
@@ -5344,58 +5327,58 @@ msgstr "%s — skenē jaunas vēstules"
 msgid "Unexpected server response from xover: %s"
 msgstr "Negaidīta atbilde no xover servera — %s"
 
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:355
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:352
 #, c-format
 msgid "Unexpected server response from head: %s"
 msgstr "Negaidīta atbilde no galvas — %s"
 
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:404
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:398
 #, c-format
 msgid "Operation failed: %s"
 msgstr "Darbība neizdevās — %s"
 
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:451
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:442
 #, c-format
 msgid "%s: Scanning existing messages"
 msgstr "%s — skenē esošās vēstules"
 
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:464
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:455
 #, c-format
 msgid "Unexpected server response from listgroup: %s"
 msgstr "Negaidīta atbilde no listgroup servera — %s"
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:358
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:442
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:355
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:439
 #, c-format
 msgid "No message with UID %s"
 msgstr "Nav vēstules ar UID %s"
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:458
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:455
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr "Saņem POP vēstuli %d"
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:576
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:573
 msgid "Unknown reason"
 msgstr "Nezināms iemesls"
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:645
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:642
 msgid "Retrieving POP summary"
 msgstr "Saņem POP kopsavilkumu"
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:704
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:707
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:720
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:733
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:747
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:698
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:701
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:714
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:727
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:741
 msgid "Cannot get POP summary: "
 msgstr "Nevar saņemt POP kopsavilkumu: "
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:895
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:889
 msgid "Expunging old messages"
 msgstr "Iztīra vecās vēstules"
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:927
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:921
 msgid "Expunging deleted messages"
 msgstr "Iztīra dzēstās vēstules"
 
@@ -5429,7 +5412,6 @@ msgid "Disable _support for all POP3 extensions"
 msgstr "Deaktivēt vi_su POP3 paplašinājumu atbalstu"
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:48
-#| msgid "Use _Quick Resync if the server supports it"
 msgid "Enable _UTF-8 extension, when the server supports it"
 msgstr "Ieslēgt _UTF-8 paplašinājumu, ja serveris to atbalsta"
 
@@ -5520,9 +5502,6 @@ msgstr "POP3 serviss priekš %s uz %s"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:693
 #, c-format
-#| msgid ""
-#| "Unable to connect to POP server %s.\n"
-#| "Error sending password: "
 msgid ""
 "Unable to connect to POP server %s.\n"
 "Error enabling UTF-8 mode: "
@@ -5840,51 +5819,51 @@ msgstr "Pagaidu autentifikācijas problēma"
 msgid "Authentication required"
 msgstr "Nepieciešama autentifikācija"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1495
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1512
 msgid "SMTP Greeting"
 msgstr "SMTP sveiciens (Greeting)"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1504
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1517
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1524
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1521
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1534
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1541
 msgid "HELO command failed: "
 msgstr "HELO komandas kļūda: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1608
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1622
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1631
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1625
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1639
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1648
 msgid "MAIL FROM command failed: "
 msgstr "MAIL FROM komandas kļūda: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1659
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1676
 msgid "RCPT TO command failed: "
 msgstr "RCPT TO komandas kļūda: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1675
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1684
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1692
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1701
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> neizdevās: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1758
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1769
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1780
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1863
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1881
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1894
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1902
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1775
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1786
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1797
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1880
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1898
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1911
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1919
 msgid "DATA command failed: "
 msgstr "DATA komandas kļūda: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1928
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1942
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1950
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1945
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1959
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1967
 msgid "RSET command failed: "
 msgstr "RSET komandas kļūda: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1976
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1988
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1994
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1993
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:2005
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:2011
 msgid "QUIT command failed: "
 msgstr "QUIT komandas kļūda: "
 
@@ -5978,12 +5957,10 @@ msgid "Height of the reminder notification dialog"
 msgstr "Atgādinājumu paziņojumu dialoglodziņa augstums"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
-msgid ""
-"Paned position in the reminder notification dialog, the split size between "
-"list of the events and the description"
+#| msgid "X position of the reminder notification dialog"
+msgid "Size in pixels of the event list in the reminder notification dialog"
 msgstr ""
-"Rūtotais novietojums atgādinājumu paziņojumu dialoglodziņā, sadalīts starp"
-" notikumu sarakstu un aprakstu"
+"Atgādinājumu paziņojumu dialoglodziņā esošā notikuma saraksta izmērs pikseļos"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
 msgid "Show reminder notification for completed tasks"
@@ -6031,10 +6008,22 @@ msgstr ""
 "fotogrāfijas, ja ir pieejams atslēgā / sertifikātā."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:6
+msgid "Override SMTP HELO/EHLO argument"
+msgstr "Pārrakstīt SMTP HELO/EHLO argumentus"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:7
+msgid ""
+"When not empty, it's used as the SMTP HELO/EHLO argument, instead of the "
+"local host name/IP."
+msgstr ""
+"Kad nav tukšs, to izmanto kā SMTP HELO/EHLO argumentu, nevis lokālā datora"
+" nosaukumu/IP."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
 msgstr "GNetworkMonitor GIO nosaukums, ko izmantot ENetworkMonitor instancei"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:7
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
 msgid ""
 "When set to an unknown value, then the default GNetworkMonitor is used in "
 "the background. A special value “always-online” is used for no network "
@@ -6044,7 +6033,7 @@ msgstr ""
 "GNetworkMonitor. Īpaša vērtība “always-online” tiek izmantota tīkla "
 "pārraudzīšanai."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
 msgid ""
 "A full path to a directory where .source files with preconfigured options "
 "can be stored"
@@ -6052,7 +6041,7 @@ msgstr ""
 "Pilns ceļš uz direktoriju, kur var glabāt .source datnes ar iepriekš "
 "konfigurētām opcijām."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
 msgid ""
 "This directory, if filled with an existing path, is checked additionally to "
 "XDG configure directories."
@@ -6060,11 +6049,11 @@ msgstr ""
 "Šī direktorija, ja aizpildīta ar esošu ceļu, tiks pārbaudīta kopā ar XDG "
 "konfigurētajām direktorijām."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
 msgid "A list of variables which can be part of the autoconfig .source files"
 msgstr "Saraksta ar mainīgajiem, kas var būt daļa no autoconfig .source datnēm"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
 msgid ""
 "Each item of the array is expected to be of the form: name=value. These "
 "variables are checked before environment variables, but after the predefined "
@@ -6074,27 +6063,11 @@ msgstr ""
 "pārbaudīti pirms vides mainīgajiem, bet pēc iepriekš definētajiem USER, "
 "REALNAME un HOST mainīgajiem."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
 msgid "A list of hints for OAuth2 services"
 msgstr "Saraksts ar norādēm OAuth2 pakalpojumiem"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
-#| msgid ""
-#| "Users can extend the list of supported protocols and hostnames for "
-#| "defined OAuth2 services, in addition to those hard-coded. Each line can "
-#| "be of the form: servicename[-protocol]:hostname1,hostname2,... where "
-#| "'servicename' is the actual service name; the '-protocol' is optional, "
-#| "and if written, then the service can be used only if both 'protocol' and "
-#| "'hostnameX' match; the 'hostnameX' is the actual host name to compare "
-#| "with, case insensitively. Each line can contain multiple values, "
-#| "separated by comma. There can be provided multiple lines for one OAuth2 "
-#| "service. Note that the actual URL where the token is requested and "
-#| "refreshed cannot be changed here, the hostname is to allow other servers, "
-#| "where the OAuth2 service can be used. Examples: Company:mail.company.com "
-#| "- enables 'Company' OAuth2 authentication for 'mail.company.com' host "
-#| "Company-CalDAV:caldav.company.com - enables 'Company' OAuth2 "
-#| "authentication for any 'CalDAV' source, which reads data from 'caldav."
-#| "company.com' host"
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
 msgid ""
 "Users can extend the list of supported protocols and hostnames for defined "
 "OAuth2 services, in addition to those hard-coded. Each line can be of the "
@@ -6126,73 +6099,73 @@ msgstr ""
 "caldav.company.com ļauj “Company” OAuth2 autentifikāciju jebkuram “CalDAV” "
 "avotam, kurš lasa datus no “caldav.company.com” servera."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
 msgid ""
 "An OAuth2 client ID to use to connect to Google servers, instead of the one "
 "provided during build time"
 msgstr ""
-"OAuth2 klienta ID, kuru izmantot, savienojoties ar Google serveriem; nevis"
-" tas, kuru piedāvā būvēšanas laikā"
+"OAuth2 klienta ID, kuru izmantot, savienojoties ar Google serveriem; nevis "
+"tas, kuru piedāvā būvēšanas laikā"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
 msgid ""
 "User-specified OAuth2 client ID for Google servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
 msgstr ""
-"Lietotāja norādītais OAuth2 klienta ID Google serveriem. Tukša virkne nozīmē,"
-" ka jāizmanto tā, kas ir norādīta būvēšanas laikā. Ja ir veiktas izmaiņas,"
-" programma ir jāpārstartē."
+"Lietotāja norādītais OAuth2 klienta ID Google serveriem. Tukša virkne "
+"nozīmē, ka jāizmanto tā, kas ir norādīta būvēšanas laikā. Ja ir veiktas "
+"izmaiņas, programma ir jāpārstartē."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
 msgid ""
 "An OAuth2 client secret to use to connect to Google servers, instead of the "
 "one provided during build time"
 msgstr ""
-"OAuth2 klienta noslēpums, kuru izmantot Google serveriem; nevis tas, kuru"
-" piedāvā būvēšanas laikā"
+"OAuth2 klienta noslēpums, kuru izmantot Google serveriem; nevis tas, kuru "
+"piedāvā būvēšanas laikā"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
 msgid ""
 "User-specified OAuth2 client secret for Google servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
 msgstr ""
-"Lietotāja norādītais OAuth2 klienta noslēpums Google serveriem. Tukša virkne"
-" nozīmē, ka jāizmanto tā, kas ir norādīta būvēšanas laikā. Ja ir veiktas"
-" izmaiņas, programma ir jāpārstartē."
+"Lietotāja norādītais OAuth2 klienta noslēpums Google serveriem. Tukša virkne "
+"nozīmē, ka jāizmanto tā, kas ir norādīta būvēšanas laikā. Ja ir veiktas "
+"izmaiņas, programma ir jāpārstartē."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
 msgid ""
 "An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
 "provided during build time"
 msgstr ""
-"OAuth2 klienta ID, kuru izmantot, savienojoties ar Outlook serveriem; nevis"
-" tas, kuru piedāvā būvēšanas laikā"
+"OAuth2 klienta ID, kuru izmantot, savienojoties ar Outlook serveriem; nevis "
+"tas, kuru piedāvā būvēšanas laikā"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
 msgid ""
 "User-specified OAuth2 client ID for Outlook servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
 msgstr ""
-"Lietotāja norādītais OAuth2 klienta ID Outlook serveriem. Tukša virkne"
-" nozīmē, ka jāizmanto tā, kas ir norādīta būvēšanas laikā. Ja ir veiktas"
-" izmaiņas, programma ir jāpārstartē."
+"Lietotāja norādītais OAuth2 klienta ID Outlook serveriem. Tukša virkne "
+"nozīmē, ka jāizmanto tā, kas ir norādīta būvēšanas laikā. Ja ir veiktas "
+"izmaiņas, programma ir jāpārstartē."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:22
 msgid ""
 "An OAuth2 client secret to use to connect to Outlook servers, instead of the "
 "one provided during build time"
 msgstr ""
-"OAuth2 klienta noslēpums, kuru izmantot, savienojoties ar Outlook serveriem;"
-" nevis tas, kuru piedāvā būvēšanas laikā"
+"OAuth2 klienta noslēpums, kuru izmantot, savienojoties ar Outlook serveriem; "
+"nevis tas, kuru piedāvā būvēšanas laikā"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:23
 msgid ""
 "User-specified OAuth2 client secret for Outlook servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
 msgstr ""
-"Lietotāja norādītais OAuth2 klienta noslēpums Outlook serveriem. Tukša virkne"
-" nozīmē, ka jāizmanto tā, kas ir norādīta būvēšanas laikā. Ja ir veiktas"
-" izmaiņas, programma ir jāpārstartē."
+"Lietotāja norādītais OAuth2 klienta noslēpums Outlook serveriem. Tukša "
+"virkne nozīmē, ka jāizmanto tā, kas ir norādīta būvēšanas laikā. Ja ir "
+"veiktas izmaiņas, programma ir jāpārstartē."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
@@ -6262,25 +6235,24 @@ msgid "Evolution Alarm Notify"
 msgstr "Evolution signāla paziņojums"
 
 #: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:2
-#| msgid "Calendar authentication request"
 msgid "Calendar event notifications"
 msgstr "Kalendāra notikuma paziņojumi"
 
-#: ../src/libebackend/e-cache.c:754
+#: ../src/libebackend/e-cache.c:751
 msgid "Out of memory"
 msgstr "Nepietiek atmiņas"
 
-#: ../src/libebackend/e-cache.c:946
+#: ../src/libebackend/e-cache.c:943
 #, c-format
 msgid "Can not make parent directory: %s"
 msgstr "Neizdevās izveidot vecāka mapi — %s"
 
-#: ../src/libebackend/e-collection-backend.c:1113
+#: ../src/libebackend/e-collection-backend.c:1110
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s neatbalsta attālinātu resursu veidošanu"
 
-#: ../src/libebackend/e-collection-backend.c:1172
+#: ../src/libebackend/e-collection-backend.c:1169
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s neatbalsta attālinātu resursu dzēšanu"
@@ -6305,63 +6277,61 @@ msgstr "Datu avotam trūkst [%s] grupas"
 msgid "Failed to lookup credentials: "
 msgstr "Neizdevās uzmeklēt akreditācijas datus:"
 
-#: ../src/libebackend/e-server-side-source.c:1392
-#: ../src/libedataserver/e-source.c:1591
+#: ../src/libebackend/e-server-side-source.c:1389
+#: ../src/libedataserver/e-source.c:1584
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "Datu avots “%s” neatbalsta attālinātu resursu veidošanu"
 
-#: ../src/libebackend/e-server-side-source.c:1406
+#: ../src/libebackend/e-server-side-source.c:1403
 #, c-format
 msgid ""
 "Data source “%s” has no collection backend to create the remote resource"
 msgstr ""
 "Datu avotam “%s” nav kolekciju aizmugures, lai izveidotu attālinātus resursus"
 
-#: ../src/libebackend/e-server-side-source.c:1434
-#: ../src/libedataserver/e-source.c:1704
+#: ../src/libebackend/e-server-side-source.c:1431
+#: ../src/libedataserver/e-source.c:1697
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "Datu avots “%s” neatbalsta attālinātu resursu dzēšanu"
 
-#: ../src/libebackend/e-server-side-source.c:1448
+#: ../src/libebackend/e-server-side-source.c:1445
 #, c-format
 msgid ""
 "Data source “%s” has no collection backend to delete the remote resource"
 msgstr ""
 "Datu avotam “%s” nav kolekciju aizmugures, lai dzēstu attālinātus resursus"
 
-#: ../src/libebackend/e-server-side-source.c:1479
-#: ../src/libedataserver/e-source.c:1800
+#: ../src/libebackend/e-server-side-source.c:1484
+#: ../src/libebackend/e-source-registry-server.c:1038
+#: ../src/libedataserver/e-source.c:1826
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
 msgstr "Datu avots “%s” neatbalsta OAuth 2.0 autentifikāciju"
 
-#: ../src/libebackend/e-server-side-source.c:1861
+#: ../src/libebackend/e-server-side-source.c:1867
 #, c-format
 msgid "File must have a “.source” extension"
 msgstr "Datnei jābūt “.source” paplašinājumam"
 
-#: ../src/libebackend/e-source-registry-server.c:318
+#: ../src/libebackend/e-source-registry-server.c:319
 #, c-format
 msgid "UID “%s” is already in use"
 msgstr "UID “%s” jau tiek izmantots"
 
-#: ../src/libebackend/e-source-registry-server.c:443
+#: ../src/libebackend/e-source-registry-server.c:444
 #, c-format
-#| msgid "Cannot find certificate for “%s”"
 msgid "Cannot find corresponding collection backend for source “%s”"
 msgstr "Nevar atrast atbilstošu  kolekcijas aizmuguri avotam “%s”"
 
-#: ../src/libebackend/e-source-registry-server.c:447
+#: ../src/libebackend/e-source-registry-server.c:448
 #, c-format
-#| msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgid "Source “%s” is not a collection source"
 msgstr "Avots “%s” nav kolekciju avots"
 
-#: ../src/libebackend/e-source-registry-server.c:453
+#: ../src/libebackend/e-source-registry-server.c:454
 #, c-format
-#| msgid "Cannot find certificate for “%s”"
 msgid "Cannot find source “%s”"
 msgstr "Nevar atrast avotu “%s”"
 
@@ -6567,12 +6537,11 @@ msgstr "Aizmugure vēl nav atvērta"
 msgid "Object is out of sync"
 msgstr "Objekts nav sinhrons"
 
-#: ../src/libedataserver/e-client.c:2042
+#: ../src/libedataserver/e-client.c:2037
 msgid "Timeout was reached"
 msgstr "Iestājās noildze"
 
 #: ../src/libedataserver/e-oauth2-service.c:919
-#| msgid "Failed on message %d"
 msgid "Malformed, no message body set"
 msgstr "Slikti formatēts, nav iestatīts vēstules saturs"
 
@@ -6633,22 +6602,22 @@ msgstr "Darbība tika atcelta"
 msgid "Failed with HTTP error %d: %s"
 msgstr "Neizdevās. HTTP kļūda %d — %s"
 
-#: ../src/libedataserver/e-source.c:769
+#: ../src/libedataserver/e-source.c:771
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "Avota datnē trūkst [%s] grupas"
 
-#: ../src/libedataserver/e-source.c:1371
+#: ../src/libedataserver/e-source.c:1364
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr "Datu avots “%s” nav izņemams"
 
-#: ../src/libedataserver/e-source.c:1494
+#: ../src/libedataserver/e-source.c:1487
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr "Datu avots “%s” nav rakstāms"
 
-#: ../src/libedataserver/e-source.c:2201
+#: ../src/libedataserver/e-source.c:2227
 msgid "Unnamed"
 msgstr "Nenosaukts"
 
@@ -6668,7 +6637,7 @@ msgstr "Akreditācijas datu dzēšana nav atbalstīta "
 msgid "Password not found"
 msgstr "Parole nav atrasta"
 
-#: ../src/libedataserver/e-source-mail-signature.c:477
+#: ../src/libedataserver/e-source-mail-signature.c:473
 #, c-format
 msgid "Signature script must be a local file"
 msgstr "Paraksta skriptam ir jābūt lokālai datnei"
@@ -6818,15 +6787,14 @@ msgid "%I %p"
 msgstr "%I %p"
 
 #: ../src/libedataserver/e-webdav-discover.c:295
-#| msgid "Note"
 msgid "Notes"
 msgstr "Piezīmes"
 
-#: ../src/libedataserver/e-webdav-session.c:726
+#: ../src/libedataserver/e-webdav-session.c:731
 msgid "Cannot determine destination URL without WebDAV extension"
 msgstr "Nevar noteikt mērķa URL bez WebDAV paplašinājuma"
 
-#: ../src/libedataserver/e-webdav-session.c:996
+#: ../src/libedataserver/e-webdav-session.c:1001
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -6835,7 +6803,7 @@ msgstr ""
 "Serveris atbildēja ar HTML lapu, kas var nozīmēt, ka gadījās kļūda uz "
 "servera vai ar klienta atbildi. Izmantotais URI bija %s"
 
-#: ../src/libedataserver/e-webdav-session.c:998
+#: ../src/libedataserver/e-webdav-session.c:1003
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -6849,7 +6817,7 @@ msgstr ""
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1019
+#: ../src/libedataserver/e-webdav-session.c:1024
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
 msgstr "%s: HTTP kļūdas kods %d (%s): %s"
@@ -6857,7 +6825,7 @@ msgstr "%s: HTTP kļūdas kods %d (%s): %s"
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1027
+#: ../src/libedataserver/e-webdav-session.c:1032
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
 msgstr "Neizdevās. HTTP kļūdas kods %d (%s) — %s"
@@ -6866,173 +6834,180 @@ msgstr "Neizdevās. HTTP kļūdas kods %d (%s) — %s"
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1042
+#: ../src/libedataserver/e-webdav-session.c:1047
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
 msgstr "%s: HTTP kļūdas kods %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1048
+#: ../src/libedataserver/e-webdav-session.c:1053
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "Neizdevās. HTTP kļūdas kods %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:1343
+#: ../src/libedataserver/e-webdav-session.c:1348
 msgid "Failed to post data"
 msgstr "Neizdevās nosūtīt datus"
 
-#: ../src/libedataserver/e-webdav-session.c:1474
-#: ../src/libedataserver/e-webdav-session.c:1551
-#: ../src/libedataserver/e-webdav-session.c:1653
-#: ../src/libedataserver/e-webdav-session.c:2906
-#: ../src/libedataserver/e-webdav-session.c:4145
+#: ../src/libedataserver/e-webdav-session.c:1479
+#: ../src/libedataserver/e-webdav-session.c:1556
+#: ../src/libedataserver/e-webdav-session.c:1658
+#: ../src/libedataserver/e-webdav-session.c:2911
+#: ../src/libedataserver/e-webdav-session.c:4184
 msgid "Failed to get input XML content"
 msgstr "Neizdevās saņemt ievades XML saturu"
 
-#: ../src/libedataserver/e-webdav-session.c:1485
+#: ../src/libedataserver/e-webdav-session.c:1490
 msgid "Failed to get properties"
 msgstr "Neizdevās saņemt īpašības"
 
-#: ../src/libedataserver/e-webdav-session.c:1561
+#: ../src/libedataserver/e-webdav-session.c:1566
 msgid "Failed to update properties"
 msgstr "Neizdevās atjaunināt īpašības"
 
-#: ../src/libedataserver/e-webdav-session.c:1663
+#: ../src/libedataserver/e-webdav-session.c:1668
 msgid "Failed to issue REPORT"
 msgstr "Neizdevās izdot REPORT"
 
-#: ../src/libedataserver/e-webdav-session.c:1724
+#: ../src/libedataserver/e-webdav-session.c:1729
 msgid "Failed to create collection"
 msgstr "Neizdevās izveidot kolekciju"
 
-#: ../src/libedataserver/e-webdav-session.c:1817
-#: ../src/libedataserver/e-webdav-session.c:1978
+#: ../src/libedataserver/e-webdav-session.c:1822
+#: ../src/libedataserver/e-webdav-session.c:1983
 msgid "Failed to get XML request content"
 msgstr "Neizdevās saņemt XML pieprasījuma saturu"
 
-#: ../src/libedataserver/e-webdav-session.c:1829
+#: ../src/libedataserver/e-webdav-session.c:1834
 msgid "Failed to create address book"
 msgstr "Neizdevās izveidot adrešu grāmatu"
 
-#: ../src/libedataserver/e-webdav-session.c:1991
+#: ../src/libedataserver/e-webdav-session.c:1996
 msgid "Failed to create calendar"
 msgstr "Neizdevās izveidot kalendāru"
 
-#: ../src/libedataserver/e-webdav-session.c:2119
-#: ../src/libedataserver/e-webdav-session.c:2130
+#: ../src/libedataserver/e-webdav-session.c:2124
+#: ../src/libedataserver/e-webdav-session.c:2135
 msgid "Failed to read resource"
 msgstr "Neizdevās nolasīt resursu"
 
-#: ../src/libedataserver/e-webdav-session.c:2270
+#: ../src/libedataserver/e-webdav-session.c:2275
 msgid "Cannot rewind input stream: Not supported"
 msgstr "Nevar attīt ievades straumi: nav atbalstīts"
 
-#: ../src/libedataserver/e-webdav-session.c:2434
-#: ../src/libedataserver/e-webdav-session.c:2575
+#: ../src/libedataserver/e-webdav-session.c:2439
+#: ../src/libedataserver/e-webdav-session.c:2580
 msgid "Failed to put data"
 msgstr "Neizdevās ierakstīt datus"
 
-#: ../src/libedataserver/e-webdav-session.c:2448
-#: ../src/libedataserver/e-webdav-session.c:2583
+#: ../src/libedataserver/e-webdav-session.c:2453
+#: ../src/libedataserver/e-webdav-session.c:2588
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Neizdevās ierakstīt datus serverī, kļūdas kods %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:2677
+#: ../src/libedataserver/e-webdav-session.c:2682
 msgid "Failed to delete resource"
 msgstr "Neizdevās dzēst resursu"
 
-#: ../src/libedataserver/e-webdav-session.c:2746
+#: ../src/libedataserver/e-webdav-session.c:2751
 msgid "Failed to copy resource"
 msgstr "Neizdevās nokopēt resursu"
 
-#: ../src/libedataserver/e-webdav-session.c:2810
+#: ../src/libedataserver/e-webdav-session.c:2815
 msgid "Failed to move resource"
 msgstr "Neizdevās pārvietot resursu"
 
-#: ../src/libedataserver/e-webdav-session.c:2917
+#: ../src/libedataserver/e-webdav-session.c:2922
 msgid "Failed to lock resource"
 msgstr "Neizdevās noslēgt resursu"
 
-#: ../src/libedataserver/e-webdav-session.c:2931
-#: ../src/libedataserver/e-webdav-session.c:3139
+#: ../src/libedataserver/e-webdav-session.c:2936
+#: ../src/libedataserver/e-webdav-session.c:3144
 msgid "Expected application/xml response, but none returned"
 msgstr "Gaidīja lietotnes/xml atbildi, bet tā nav saņemta"
 
-#: ../src/libedataserver/e-webdav-session.c:2934
-#: ../src/libedataserver/e-webdav-session.c:3142
+#: ../src/libedataserver/e-webdav-session.c:2939
+#: ../src/libedataserver/e-webdav-session.c:3147
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "Gaidīja lietotnes/xml atbildi, bet tika saņemta %s"
 
-#: ../src/libedataserver/e-webdav-session.c:2946
-#: ../src/libedataserver/e-webdav-session.c:3155
+#: ../src/libedataserver/e-webdav-session.c:2951
+#: ../src/libedataserver/e-webdav-session.c:3160
 msgid "Failed to parse XML data"
 msgstr "Neizdevās parsēt XML datus"
 
-#: ../src/libedataserver/e-webdav-session.c:3027
+#: ../src/libedataserver/e-webdav-session.c:3032
 msgid "Failed to refresh lock"
 msgstr "Neizdevās atsvaidzināt noslēgšanu"
 
-#: ../src/libedataserver/e-webdav-session.c:3088
+#: ../src/libedataserver/e-webdav-session.c:3093
 msgid "Failed to unlock"
 msgstr "Neizdevās atslēgt"
 
-#: ../src/libedataserver/e-webdav-session.c:3127
+#: ../src/libedataserver/e-webdav-session.c:3132
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Gaidīja vairāku statusu atbildi, bet saņēma %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:3164
+#: ../src/libedataserver/e-webdav-session.c:3169
 msgid "XML data does not have root node"
 msgstr "XML datiem nav saknes mezgla"
 
-#: ../src/libedataserver/e-webdav-session.c:3187
+#: ../src/libedataserver/e-webdav-session.c:3192
 #, c-format
 msgid "XML data doesn't have required structure (%s)"
 msgstr "XML datos nav vajadzīgā struktūra (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:4155
+#: ../src/libedataserver/e-webdav-session.c:4194
 msgid "Failed to get access control list"
 msgstr "Neizdevās saņemt piekļuves kontroles sarakstu"
 
-#: ../src/libedataserver/e-webdav-session.c:4839
+#: ../src/libedataserver/e-webdav-session.c:4878
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr "Nevar saglabāt aizsargātu vai mantotu piekļuves kontroles ierakstu."
 
-#: ../src/libedataserver/e-webdav-session.c:4846
+#: ../src/libedataserver/e-webdav-session.c:4885
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Tika sniegts nederīgs galvenais veids piekļuves kontroles ierakstam."
 
-#: ../src/libedataserver/e-webdav-session.c:4853
+#: ../src/libedataserver/e-webdav-session.c:4892
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Nevar saglabāt uz īpašībām balstītu piekļuves kontroles ierakstu."
 
-#: ../src/libedataserver/e-webdav-session.c:4860
+#: ../src/libedataserver/e-webdav-session.c:4899
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Piekļuves kontroles ieraksts var būt tikai “Atļaut” vai “Liegt”, bet ne "
 "“Nav”."
 
-#: ../src/libedataserver/e-webdav-session.c:4868
+#: ../src/libedataserver/e-webdav-session.c:4907
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Piekļuves kontroles ieraksts var būt tikai “Atļaut” vai “Liegt”, bet ne abi."
 
-#: ../src/libedataserver/e-webdav-session.c:4927
+#: ../src/libedataserver/e-webdav-session.c:4966
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Piekļuves kontroles ieraksta privilēģija nevar būt NULL."
 
 #: ../src/libedataserverui/e-buffer-tagger.c:71
-#| msgid "Could not open file: %s: %s"
 msgid "Could not open the link."
 msgstr "Neizdevās atvērt saiti."
 
 #. To Translators: The text is concatenated to a form: "Ctrl-click to open a link http://www.example.com"
-#: ../src/libedataserverui/e-buffer-tagger.c:458
+#: ../src/libedataserverui/e-buffer-tagger.c:548
 msgid "Ctrl-click to open a link"
 msgstr "Ctrl-klikšķis atvērs saiti"
+
+#: ../src/libedataserverui/e-buffer-tagger.c:810
+msgid "Copy _Link Location"
+msgstr "Kopēt _saites vietu"
+
+#: ../src/libedataserverui/e-buffer-tagger.c:817
+msgid "O_pen Link in Browser"
+msgstr "Atvērt saiti _pārlūkā"
 
 #: ../src/libedataserverui/e-credentials-prompter.c:259
 #: ../src/libedataserverui/e-credentials-prompter.c:1692
@@ -7182,9 +7157,9 @@ msgstr ""
 "kontam “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:606
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:235
 #: ../src/libedataserverui/e-trust-prompt.c:111
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1083
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1095
 msgid "_Cancel"
 msgstr "At_celt"
 
@@ -7209,74 +7184,89 @@ msgstr "Pasta autentifikācijas pieprasījums"
 msgid "Authentication request"
 msgstr "Autentifikācijas pieprasījums"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:155
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:153
 #, c-format
 msgid "Please enter the password for address book “%s”."
 msgstr "Lūdzu, ievadiet paroli adrešu grāmatai “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:159
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:157
 #, c-format
 msgid "Please enter the password for calendar “%s”."
 msgstr "Lūdzu, ievadiet paroli kalendāram “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:163
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:161
 #, c-format
 msgid "Please enter the password for mail account “%s”."
 msgstr "Lūdzu, ievadiet paroli pasta kontam “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:167
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:165
 #, c-format
 msgid "Please enter the password for mail transport “%s”."
 msgstr "Lūdzu, ievadiet paroli pasta transportam “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:171
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:169
 #, c-format
 msgid "Please enter the password for memo list “%s”."
 msgstr "Lūdzu, ievadiet paroli memo sarakstam “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:175
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:173
 #, c-format
 msgid "Please enter the password for task list “%s”."
 msgstr "Lūdzu, ievadiet paroli uzdevumu sarakstam “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:179
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:177
 #, c-format
 msgid "Please enter the password for account “%s”."
 msgstr "Lūdzu, ievadiet paroli kontam “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1084
+#. Translators: This is part of a credential prompt, constructing for example: "Please enter the password for account “%s”.\n(host: hostname)"
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:183
+#, c-format
+#| msgid "Auth Host: %s"
+msgid ""
+"\n"
+"(host: %s)"
+msgstr ""
+"\n"
+"(resursdators: %s)"
+
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:236
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1096
 msgid "_OK"
 msgstr "_Labi"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:348
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:353
 msgid "_User Name:"
 msgstr "_Lietotājvārds:"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:360
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:365
 msgid "_Password:"
 msgstr "_Parole:"
 
 #. Remember password check
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:376
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:381
 msgid "_Add this password to your keyring"
 msgstr "Pievienot šo p_aroli atslēgu saišķim"
 
-#: ../src/libedataserverui/e-reminders-widget.c:230
+#. Translators: meaning as "Snooze, until event start time"
+#: ../src/libedataserverui/e-reminders-widget.c:182
+msgid "until start time"
+msgstr "līdz sākuma laikam"
+
+#: ../src/libedataserverui/e-reminders-widget.c:233
 msgid "Add custom time…"
 msgstr "Pievienot pielāgotu laiku…"
 
-#: ../src/libedataserverui/e-reminders-widget.c:234
+#: ../src/libedataserverui/e-reminders-widget.c:237
 msgid "Clear custom times"
 msgstr "Attīrīt pielāgotos laikus"
 
-#: ../src/libedataserverui/e-reminders-widget.c:282
-#| msgid "no"
+#: ../src/libedataserverui/e-reminders-widget.c:285
 msgctxt "overdue"
 msgid "now"
 msgstr "tagad"
 
-#: ../src/libedataserverui/e-reminders-widget.c:300
+#: ../src/libedataserverui/e-reminders-widget.c:303
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -7284,77 +7274,72 @@ msgstr[0] "%d gads"
 msgstr[1] "%d gadi"
 msgstr[2] "%d gadu"
 
-#: ../src/libedataserverui/e-reminders-widget.c:306
+#: ../src/libedataserverui/e-reminders-widget.c:309
 msgctxt "overdue"
 msgid "overdue"
 msgstr "nokavēts"
 
-#: ../src/libedataserverui/e-reminders-widget.c:926
+#: ../src/libedataserverui/e-reminders-widget.c:938
 #, c-format
-#| msgid "Failed to create cache “%s”:"
 msgid "Failed to launch URI “%s”:"
 msgstr "Neizdevās palaist URI “%s”:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:976
+#: ../src/libedataserverui/e-reminders-widget.c:989
 msgid "No reminder is selected."
 msgstr "Nav izvēlētu atgādinājumu."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1033
-#| msgid "No signature available"
+#: ../src/libedataserverui/e-reminders-widget.c:1067
 msgid "No details are available."
 msgstr "Nav pieejama papildu informācija."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1037
+#: ../src/libedataserverui/e-reminders-widget.c:1071
 msgid "Multiple reminders are selected."
 msgstr "Ir izvēlēti vairāki atgādinājumi."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1057
-#| msgid "Could not discard reminder: "
+#: ../src/libedataserverui/e-reminders-widget.c:1105
 msgid "Failed to dismiss reminder:"
 msgstr "Neizdevās atmest atgādinājumu:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1078
-#| msgid "Failed to issue NOTIFY"
+#: ../src/libedataserverui/e-reminders-widget.c:1126
 msgid "Failed to dismiss all:"
 msgstr "Neizdevās atmest visu:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1214
+#: ../src/libedataserverui/e-reminders-widget.c:1262
 msgid "Set a custom snooze time for"
 msgstr "Iestatīt pielāgotu iesnaušanas laiku uz"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1227
+#: ../src/libedataserverui/e-reminders-widget.c:1275
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "d_ienām"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1243
+#: ../src/libedataserverui/e-reminders-widget.c:1291
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "_stundām"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1259
+#: ../src/libedataserverui/e-reminders-widget.c:1307
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "_minūtēm"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1265
+#: ../src/libedataserverui/e-reminders-widget.c:1313
 msgid "_Add Snooze time"
 msgstr "Pievienot iesn_audināšanas laiku"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1568
+#: ../src/libedataserverui/e-reminders-widget.c:1631
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "_Atmest"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1569
-#| msgid "_Dismiss"
+#: ../src/libedataserverui/e-reminders-widget.c:1632
 msgid "Dismiss _All"
 msgstr "_Atmest visu"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1571
+#: ../src/libedataserverui/e-reminders-widget.c:1634
 msgid "_Snooze"
 msgstr "Ie_snaudināt"
 
@@ -7431,43 +7416,43 @@ msgstr ""
 msgid "The certificate’s algorithm is considered insecure."
 msgstr "Sertifikāta algoritms tiek uzskatīts par nedrošu."
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:164
+#: ../src/libedataserverui/e-webdav-discover-widget.c:193
 msgid "Supports"
 msgstr "Atbalsta"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:175
+#: ../src/libedataserverui/e-webdav-discover-widget.c:204
 msgid "_User mail:"
 msgstr "_Lietotāja pasts:"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:524
+#: ../src/libedataserverui/e-webdav-discover-widget.c:542
 msgctxt "WebDAVDiscover"
 msgid "Contacts"
 msgstr "Kontakti"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:525
+#: ../src/libedataserverui/e-webdav-discover-widget.c:543
 msgctxt "WebDAVDiscover"
 msgid "Events"
 msgstr "Notikumi"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:526
+#: ../src/libedataserverui/e-webdav-discover-widget.c:544
 msgctxt "WebDAVDiscover"
 msgid "Memos"
 msgstr "Memo"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:527
+#: ../src/libedataserverui/e-webdav-discover-widget.c:545
 msgctxt "WebDAVDiscover"
 msgid "Tasks"
 msgstr "Uzdevumi"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:849
+#: ../src/libedataserverui/e-webdav-discover-widget.c:858
 msgid "Invalid URL"
 msgstr "Nederīgs URL"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:895
+#: ../src/libedataserverui/e-webdav-discover-widget.c:903
 msgid "Cancel"
 msgstr "Atcelt"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:898
+#: ../src/libedataserverui/e-webdav-discover-widget.c:906
 msgid "Searching server sources..."
 msgstr "Meklē servera resursus..."
 
@@ -7560,26 +7545,26 @@ msgstr ""
 "lai ieslēgtu; 0, lai izslēgtu; jebkura cita vērtība nozīmēs izmantot "
 "kompilēšanas laika opciju"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:306
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:334
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:845
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1087
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:326
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:354
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:865
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1113
 msgid "Reminders"
 msgstr "Atgādinājumi"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:446
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:466
 msgid "Warning"
 msgstr "Brīdinājums"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:447
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:467
 msgid "_No"
 msgstr "_Nē"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:448
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:468
 msgid "_Yes"
 msgstr "_Jā"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:452
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:472
 #, c-format
 msgid ""
 "A calendar reminder is about to trigger. This reminder is configured to run "
@@ -7596,31 +7581,31 @@ msgstr ""
 "\n"
 "Vai tiešām vēlaties palaist šo programmu?"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:467
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:487
 msgid "Do not ask me about this program again"
 msgstr "Vairs man nevaicāt par šo programmu"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:750
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:770
 msgid "Display Reminders window with _notifications"
 msgstr "Rādīt atgādinājumu logu ar _paziņojumiem"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:751
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:771
 msgid "Keep reminder notification window always on _top"
 msgstr "Paturēt a_tgādinājuma paziņojumu logu vienmēr augšpusē"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:752
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:772
 msgid "Display reminders for _completed tasks"
 msgstr "Rādīt atgādinājumus _izpildītiem uzdevumiem"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:753
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:773
 msgid "Display reminders for _past events"
 msgstr "Rādīt atgādinājumus _pagātnes uzdevumiem"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:767
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
 msgid "Reminders Options:"
 msgstr "Atgādinājumu opcijas:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:861
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:881
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
@@ -7670,7 +7655,6 @@ msgid "On The Web"
 msgstr "Tīmeklī"
 
 #: ../src/services/evolution-source-registry/builtin/webdav-notes-stub.source.in.h:1
-#| msgid "WebDAV"
 msgid "WebDAV Notes"
 msgstr "WebDAV piezīmes"
 
@@ -7885,6 +7869,13 @@ msgstr "Neizdevās savienoties ar avota reģistru: %s\n"
 #, c-format
 msgid "No sources had been found\n"
 msgstr "Nav atrastu avotu\n"
+
+#~ msgid ""
+#~ "Paned position in the reminder notification dialog, the split size "
+#~ "between list of the events and the description"
+#~ msgstr ""
+#~ "Rūtotais novietojums atgādinājumu paziņojumu dialoglodziņā, sadalīts "
+#~ "starp notikumu sarakstu un aprakstu"
 
 #~ msgid "Success"
 #~ msgstr "Izdevās"
