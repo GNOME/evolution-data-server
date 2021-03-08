@@ -150,7 +150,7 @@ gint main (gint argc, gchar **argv)
 
 	camel_test_push ("PGP/MIME signing");
 	mps = camel_multipart_signed_new ();
-	camel_multipart_signed_sign (mps, ctx, mime_part, "no.user@no.domain", CAMEL_CIPHER_HASH_SHA1, ex);
+	camel_multipart_signed_sign (mps, ctx, mime_part, "no.user@no.domain", CAMEL_CIPHER_HASH_SHA256, ex);
 	check_msg (!camel_exception_is_set (ex), "%s", camel_exception_get_description (ex));
 	camel_test_pull ();
 

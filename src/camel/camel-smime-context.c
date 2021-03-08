@@ -347,6 +347,7 @@ sm_signing_cmsmessage (CamelSMIMEContext *context,
 	if (*hash == SEC_OID_UNKNOWN) {
 		/* use signature algorithm from the certificate */
 		switch (SECOID_GetAlgorithmTag (&cert->signature)) {
+		default:
 		case SEC_OID_PKCS1_SHA256_WITH_RSA_ENCRYPTION:
 			*hash = SEC_OID_SHA256;
 			break;
@@ -360,7 +361,6 @@ sm_signing_cmsmessage (CamelSMIMEContext *context,
 			*hash = SEC_OID_MD5;
 			break;
 		case SEC_OID_PKCS1_SHA1_WITH_RSA_ENCRYPTION:
-		default:
 			*hash = SEC_OID_SHA1;
 			break;
 		}
@@ -739,8 +739,8 @@ smime_context_hash_to_id (CamelCipherContext *context,
 		case CAMEL_CIPHER_HASH_MD5:
 			return "md5";
 		case CAMEL_CIPHER_HASH_SHA1:
-		case CAMEL_CIPHER_HASH_DEFAULT:
 			return "sha-1";
+		case CAMEL_CIPHER_HASH_DEFAULT:
 		case CAMEL_CIPHER_HASH_SHA256:
 			return "sha-256";
 		case CAMEL_CIPHER_HASH_SHA384:

@@ -128,7 +128,7 @@ gint main (gint argc, gchar **argv)
 
 	camel_test_push ("PKCS7 signing");
 	camel_smime_sign (
-		ctx, "smime@xtorshun.org", CAMEL_CIPHER_HASH_SHA1,
+		ctx, "smime@xtorshun.org", CAMEL_CIPHER_HASH_SHA256,
 		stream1, stream2, ex);
 	check_msg (!camel_exception_is_set (ex), "%s", camel_exception_get_description (ex));
 	camel_test_pull ();
@@ -138,7 +138,7 @@ gint main (gint argc, gchar **argv)
 	camel_test_push ("PKCS7 verify");
 	g_seekable_seek (G_SEEKABLE (stream1), 0, G_SEEK_SET, NULL, NULL);
 	g_seekable_seek (G_SEEKABLE (stream2), 0, G_SEEK_SET, NULL, NULL);
-	valid = camel_smime_verify (ctx, CAMEL_CIPHER_HASH_SHA1, stream1, stream2, ex);
+	valid = camel_smime_verify (ctx, CAMEL_CIPHER_HASH_SHA256, stream1, stream2, ex);
 	check_msg (!camel_exception_is_set (ex), "%s", camel_exception_get_description (ex));
 	check_msg (camel_cipher_validity_get_valid (valid), "%s", camel_cipher_validity_get_description (valid));
 	camel_cipher_validity_free (valid);

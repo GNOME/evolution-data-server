@@ -1206,7 +1206,7 @@ e_source_webdav_set_resource_query (ESourceWebdav *extension,
  * The value encodes three parameters, divided by a pipe '|',
  * the first is users preference, can be one of "reject", "accept",
  * "temporary-reject" and "temporary-accept". The second is a host
- * name for which the trust was set. Finally the last is a SHA1
+ * name for which the trust was set. Finally the last is a SHA256
  * hash of the certificate. This is not meant to be changed by a caller,
  * it is supposed to be manipulated with e_source_webdav_update_ssl_trust()
  * and e_source_webdav_verify_ssl_trust().
@@ -1473,7 +1473,7 @@ e_source_webdav_update_ssl_trust (ESourceWebdav *extension,
 	if (!bytes)
 		return;
 
-	hash = g_compute_checksum_for_data (G_CHECKSUM_SHA1, bytes->data, bytes->len);
+	hash = g_compute_checksum_for_data (G_CHECKSUM_SHA256, bytes->data, bytes->len);
 
 	encode_ssl_trust (extension, response, host, hash);
 
@@ -1520,7 +1520,7 @@ e_source_webdav_verify_ssl_trust (ESourceWebdav *extension,
 	if (decode_ssl_trust (extension, &response, &old_host, &old_hash)) {
 		gchar *hash;
 
-		hash = g_compute_checksum_for_data (G_CHECKSUM_SHA1, bytes->data, bytes->len);
+		hash = g_compute_checksum_for_data (G_CHECKSUM_SHA256, bytes->data, bytes->len);
 
 		if (response != E_TRUST_PROMPT_RESPONSE_UNKNOWN &&
 		    g_strcmp0 (old_host, host) == 0 &&

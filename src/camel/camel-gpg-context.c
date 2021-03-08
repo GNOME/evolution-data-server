@@ -2074,8 +2074,8 @@ gpg_hash_to_id (CamelCipherContext *context,
 	case CAMEL_CIPHER_HASH_MD5:
 		return "pgp-md5";
 	case CAMEL_CIPHER_HASH_SHA1:
-	case CAMEL_CIPHER_HASH_DEFAULT:
 		return "pgp-sha1";
+	case CAMEL_CIPHER_HASH_DEFAULT:
 	case CAMEL_CIPHER_HASH_SHA256:
 		return "pgp-sha256";
 	case CAMEL_CIPHER_HASH_SHA384:

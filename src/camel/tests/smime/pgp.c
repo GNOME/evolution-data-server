@@ -138,7 +138,7 @@ gint main (gint argc, gchar **argv)
 
 	camel_test_push ("PGP signing");
 	camel_cipher_context_sign_sync (
-		ctx, "no.user@no.domain", CAMEL_CIPHER_HASH_SHA1,
+		ctx, "no.user@no.domain", CAMEL_CIPHER_HASH_SHA256,
 		conpart, sigpart, NULL, &error);
 	if (error != NULL) {
 		printf ("PGP signing failed assuming non-functional environment\n%s", error->message);
