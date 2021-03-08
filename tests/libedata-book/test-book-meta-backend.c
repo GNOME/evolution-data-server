@@ -697,6 +697,7 @@ test_one_photo (EBookMetaBackend *meta_backend,
 	gchar *new_content = NULL;
 	gsize orig_len = 0, new_len = 0;
 	gchar *filename;
+	gchar *mime_type;
 	gboolean success;
 	GError *error = NULL;
 
@@ -714,6 +715,9 @@ test_one_photo (EBookMetaBackend *meta_backend,
 	orig_content = (guchar *) e_contact_photo_get_inlined (photo, &orig_len);
 	g_assert_nonnull (orig_content);
 	g_assert_cmpint (orig_len, >, 0);
+
+	mime_type = g_strdup (e_contact_photo_get_mime_type (photo));
+	g_assert_nonnull (mime_type);
 
 	orig_content = g_memdup (orig_content, (guint) orig_len);
 
@@ -754,9 +758,11 @@ test_one_photo (EBookMetaBackend *meta_backend,
 	new_content = (gchar *) e_contact_photo_get_inlined (photo, &new_len);
 	g_assert_nonnull (new_content);
 	g_assert_cmpmem (orig_content, orig_len, new_content, new_len);
+	g_assert_cmpstr (mime_type, ==, e_contact_photo_get_mime_type (photo));
 
 	e_contact_photo_free (photo);
 	g_free (orig_content);
+	g_free (mime_type);
 
 	/* Also try with remote URI, which should be left as is */
 	photo = e_contact_photo_new ();

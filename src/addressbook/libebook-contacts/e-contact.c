@@ -2633,6 +2633,7 @@ mime_type_from_filename (const gchar *filename)
 	gchar *extension;
 	gchar *mime_type;
 	gchar *content_type;
+	guint len;
 
 	extension = strrchr (filename, '.');
 	if (extension)
@@ -2641,8 +2642,40 @@ mime_type_from_filename (const gchar *filename)
 	if (!extension)
 		return NULL;
 
-	mime_type = g_uri_unescape_string (extension, NULL);
-	content_type = g_content_type_from_mime_type (mime_type);
+	len = strlen (extension);
+
+	if (len == 3 || len == 4) {
+		mime_type = g_strconcat ("image/", extension, NULL);
+
+	/* The '/' is URL-escaped to '%2F' and the '%' is replaced to '-',
+	   to avoid URL-escaping in the URI */
+	} else if (strstr (extension, "-2F") || strstr (extension, "-2f")) {
+		gchar *copy, *pp, *ww;
+
+		copy = g_strdup (extension);
+
+		/* De-mangle dashes to percent marks; cannot recognize valid dashes,
+		   but the extension might be "image-2Fext", which should be fine
+		   (it decodes to "image/ext" at the end). */
+		for (pp = copy, ww = pp; *pp; pp++, ww++) {
+			if (*pp == '-' && pp[1] == '2' && (pp[2] == 'F' || pp[2] == 'f')) {
+				*ww = '/';
+				pp += 2;
+			} else if (pp != ww) {
+				*ww = *pp;
+			}
+		}
+
+		*ww = '\0';
+
+		mime_type = g_uri_unescape_string (copy, NULL);
+
+		g_free (copy);
+	} else {
+		mime_type = g_uri_unescape_string (extension, NULL);
+	}
+
+	content_type = mime_type ? g_content_type_from_mime_type (mime_type) : NULL;
 
 	if (!content_type) {
 		g_free (mime_type);

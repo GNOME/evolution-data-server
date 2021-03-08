@@ -65,6 +65,8 @@ print_contact (EContact *contact)
 	g_assert (photo != NULL);
 	g_assert (photo->type == E_CONTACT_PHOTO_TYPE_URI);
 	g_print ("Test passed with photo uri: %s\n", photo->data.uri);
+
+	e_contact_photo_free (photo);
 }
 
 static void
@@ -139,6 +141,9 @@ give_james_brown_micheal_jacksons_face (EBookClient *book)
 
 	if (!e_book_client_modify_contact_sync (book, james, E_BOOK_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("Failed to modify contact with cross referenced photo: %s", error->message);
+
+	g_object_unref (micheal);
+	g_object_unref (james);
 }
 
 static void
@@ -160,7 +165,7 @@ update_contact_inline (EBookClient *book,
 
 	photo = e_contact_photo_new ();
 	photo->type = E_CONTACT_PHOTO_TYPE_INLINED;
-	photo->data.inlined.mime_type = NULL;
+	photo->data.inlined.mime_type = g_strdup ("image/png");
 	photo->data.inlined.data = data;
 	photo->data.inlined.length = length;
 
@@ -171,6 +176,8 @@ update_contact_inline (EBookClient *book,
 
 	if (!e_book_client_modify_contact_sync (book, contact, E_BOOK_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("Failed to modify contact with inline photo data: %s", error->message);
+
+	g_object_unref (contact);
 }
 
 /* This assertion is made a couple of times in the view-complete
@@ -180,13 +187,14 @@ static void
 assert_uri_exists (EBookClient *book,
                    const gchar *uid)
 {
-	EContact      *contact;
+	EContact *contact;
 	EContactPhoto *photo;
-	const gchar   *filename;
-	GError        *error = NULL;
+	gchar *filename;
+	gboolean success;
+	GError *error = NULL;
 
 	if (!e_book_client_get_contact_sync (book, uid, &contact, NULL, &error))
-	  g_error ("Unable to get contact: %s", error->message);
+		g_error ("Unable to get contact: %s", error->message);
 
 	g_assert (contact);
 
@@ -199,6 +207,21 @@ assert_uri_exists (EBookClient *book,
 
 	/* The file should absolutely exist at this point */
 	g_assert (g_file_test (filename, G_FILE_TEST_EXISTS));
+
+	e_contact_photo_free (photo);
+
+	success = e_contact_inline_local_photos (contact, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+
+	photo = e_contact_get (contact, E_CONTACT_PHOTO);
+	g_assert (photo);
+	g_assert (photo->type == E_CONTACT_PHOTO_TYPE_INLINED);
+	g_assert_cmpstr (e_contact_photo_get_mime_type (photo), ==, "image/png");
+
+	e_contact_photo_free (photo);
+	g_object_unref (contact);
+	g_free (filename);
 }
 
 static void
@@ -284,7 +307,7 @@ add_contact_inline (EBookClient *book)
 
 	photo = e_contact_photo_new ();
 	photo->type = E_CONTACT_PHOTO_TYPE_INLINED;
-	photo->data.inlined.mime_type = NULL;
+	photo->data.inlined.mime_type = g_strdup ("image/png");
 	photo->data.inlined.data = data;
 	photo->data.inlined.length = length;
 
@@ -298,6 +321,8 @@ add_contact_inline (EBookClient *book)
 		g_error ("Failed to add contact");
 
 	micheal_jackson_uid = e_contact_get (contact, E_CONTACT_UID);
+
+	g_object_unref (contact);
 }
 
 static void
@@ -322,6 +347,8 @@ add_contact_uri (EBookClient *book)
 		g_error ("Failed to add contact");
 
 	james_brown_uid = e_contact_get (contact, E_CONTACT_UID);
+
+	g_object_unref (contact);
 }
 
 static void
