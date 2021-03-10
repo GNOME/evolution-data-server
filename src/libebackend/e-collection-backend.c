@@ -654,7 +654,7 @@ collection_backend_schedule_populate_idle (ECollectionBackend *backend,
 	if (!force) {
 		/* Let automatically check for new child sources only once per day.
 		   Users can still force this manually using e_source_registry_refresh_backend(). */
-		if (g_get_real_time () - backend->priv->last_populate_call < G_USEC_PER_SEC * 60L * 60L * 24L)
+		if (g_get_real_time () - backend->priv->last_populate_call < G_USEC_PER_SEC * ((gint64) 60) * 60 * 24)
 			return;
 	}
 
