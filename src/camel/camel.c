@@ -513,5 +513,7 @@ camel_util_get_directory_variants (const gchar *main_path,
 
 	g_ptr_array_sort_with_data (paths, sort_paths_by_index, paths_hash);
 
+	g_hash_table_destroy (paths_hash);
+
 	return paths;
 }
