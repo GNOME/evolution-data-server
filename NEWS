@@ -1,3 +1,62 @@
+Evolution-Data-Server 3.39.3 2021-03-12
+---------------------------------------
+
+Bug Fixes:
+	I#301 - alarm-notify: Add "until start time" as predefined snooze time (Milan Crha)
+	I#303 - camel-folder: Add nullable and optional annotations to out parameters. (Corentin Noël)
+	I#304 - IMAPx: Inbox hidden in offline when not subscribed (Milan Crha)
+	I#309 - EContact: Inline locally stored image does not retain its mime type (Milan Crha)
+	ews-I#144 - Calendar: Dismiss of a reminder doesn't provide recurrence ID (Milan Crha)
+
+Miscellaneous:
+	ESoupAuthBearer: Shorten the token expiry time by 4 more seconds (Milan Crha)
+	ESoupSession: Refresh Bearer auth token during request redirect (Milan Crha)
+	MetaBackend tests: Relax a runtime requirement (Milan Crha)
+	Calendar: Add functions to clamp a VTIMEZONE component (Milan Crha)
+	e_cal_client_get_component_as_string: Clamp the VTIMEZONE component (Milan Crha)
+	test-cal-utils: Add test to clamp a VTIMEZONE by a future time (Milan Crha)
+	Calendar: Make few improvements in the Weather backend (Milan Crha)
+	camel-debug: Copy cached backtrace symbol strings (Milan Crha)
+	camel-gpg-context: Add some debug prints (Milan Crha)
+	[IMAPx] Cancel authentication request when failed to get the SASL response (Milan Crha)
+	EBookMetaBackend: Add 'backend_module_directory' property into the class (Milan Crha)
+	Allow to load modules from custom prefixes (Milan Crha)
+	reminder-watcher: Process "Dismiss All" requests in the background (Milan Crha)
+	Allocate large-enough buffer for g_base64_decode_step() (Milan Crha)
+	CamelSpoolStore: Use cache for often accessed data (Milan Crha)
+	alarm-notify: Default notify-past-events to false plus few related fixes (Milan Crha)
+	e-book-backend-file: Fix busy loop when modifying multiple contacts at once (Milan Crha)
+	Use SHA256 instead of SHA1 where appropriate (Milan Crha)
+	Fix integer overflow on 32-bit architectures (Milan Crha)
+	Fix a memory leak in camel_util_get_directory_variants() (Milan Crha)
+
+Translations:
+	Charles Monzat (fr)
+	Ask Hjorth Larsen (da)
+	Yuri Chornoivan (uk)
+	Asier Sarasua Garmendia (eu)
+	Fran Dieguez (gl)
+	Kukuh Syafaat (id)
+	Hugo Carvalho (pt)
+	Мирослав Николић (sr)
+	Emin Tufan Çetin (tr)
+	Jiri Grönroos (fi)
+	Matej Urbančič (sl)
+	Balázs Úr (hu)
+	Philipp Kiemle (de)
+	Goran Vidović (hr)
+	Henrique Machado Campos (pt_BR)
+	Aurimas Černius (lt)
+	Anders Jonsson (sv)
+	Jordi Mas (ca)
+	Piotr Drąg (pl)
+	Rūdolfs Mazurs (lv)
+	Daniel Mustieles (es)
+	Daniel Șerbănescu (ro)
+	Marek Černocký (cs)
+	Guillaume Bernard (fr)
+	Changwoo Ryu (ko)
+
 Evolution-Data-Server 3.39.2 2021-02-12
 ---------------------------------------
 
