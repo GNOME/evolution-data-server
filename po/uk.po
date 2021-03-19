@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/issues\n"
-"POT-Creation-Date: 2021-03-19 08:30+0000\n"
-"PO-Revision-Date: 2021-03-19 10:34+0200\n"
+"POT-Creation-Date: 2021-03-19 08:43+0000\n"
+"PO-Revision-Date: 2021-03-19 11:28+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -3670,6 +3670,20 @@ msgstr ""
 "Цей параметр використовуватиме ключ доступу OAuth 2.0, щоб під'єднатись до "
 "сервера Outlook.com"
 
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:23
+#| msgid "OAuth2 (Google)"
+msgid "OAuth2 (Yahoo!)"
+msgstr "OAuth2 (Yahoo!)"
+
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:24
+#| msgid ""
+#| "This option will use an OAuth 2.0 access token to connect to the server"
+msgid ""
+"This option will use an OAuth 2.0 access token to connect to the Yahoo! "
+"server"
+msgstr ""
+"Цей параметр використовуватиме ключ доступу OAuth 2.0, щоб з'єднатися із сервером Yahoo!"
+
 #: ../src/camel/camel-search-private.c:114
 #, c-format
 msgid "Regular expression compilation failed: %s: %s"
@@ -4708,7 +4722,6 @@ msgid "For storing local mail in maildir directories."
 msgstr "Збереження локальної пошти у форматі поштових каталогів maildir."
 
 #: ../src/camel/providers/local/camel-local-provider.c:110
-#| msgid "_Listen for server change notifications"
 msgid "_Listen for change notifications"
 msgstr "_Стежити за повідомленнями про зміни"
 
@@ -5149,7 +5162,6 @@ msgid "Spool folders cannot be renamed"
 msgstr "Накопичувальні теки не можна перейменовувати"
 
 #: ../src/camel/providers/local/camel-spool-store.c:779
-#| msgid "Unable to process spool folder"
 msgid "Refreshing spool folder"
 msgstr "Освіження буферної теки"
 
@@ -6215,6 +6227,53 @@ msgstr ""
 "використовувати той, який надається під час збирання. Для набуття чинності "
 "зміненим параметром програму слід перезапустити."
 
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
+#| msgid ""
+#| "An OAuth2 client ID to use to connect to Google servers, instead of the "
+#| "one provided during build time"
+msgid ""
+"An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
+"provided during build time"
+msgstr ""
+"Ідентифікатор клієнта OAuth2, який використовується для з'єднання із "
+"серверами Yahoo!, не той, який надається під час збирання"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
+#| msgid ""
+#| "User-specified OAuth2 client ID for Google servers. Empty string means to "
+#| "use the one provided during build time. Change of this requires restart."
+msgid ""
+"User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Ідентифікатор клієнта OAuth2 для серверів Yahoo!. Порожній рядок означає "
+"«використовувати той, який надається під час збирання». Для набуття чинності "
+"змінами програму слід перезапустити."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
+#| msgid ""
+#| "An OAuth2 client secret to use to connect to Google servers, instead of "
+#| "the one provided during build time"
+msgid ""
+"An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
+"one provided during build time"
+msgstr ""
+"Клієнтський ключ OAuth2, який слід використовувати для з'єднання із "
+"серверами Yahoo!, замість того, який надається під час збирання"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
+#| msgid ""
+#| "User-specified OAuth2 client secret for Google servers. Empty string "
+#| "means to use the one provided during build time. Change of this requires "
+#| "restart."
+msgid ""
+"User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Ключ клієнта OAuth2 для серверів Yahoo!. Порожній рядок означає "
+"використовувати той, який надається під час збирання. Для набуття чинності "
+"зміненим параметром програму слід перезапустити."
+
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
 msgstr "(Застаріле) Тип проксі"
@@ -6641,6 +6700,13 @@ msgstr "Google"
 msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
+
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#: ../src/libedataserver/e-oauth2-service-yahoo.c:53
+msgctxt "OAuth2Service"
+msgid "Yahoo!"
+msgstr ""
+"Yahoo!"
 
 #: ../src/libedataserver/e-soup-session.c:958
 msgid "Operation was cancelled"
