@@ -71,5 +71,15 @@
       <_summary>An OAuth2 client secret to use to connect to Outlook servers, instead of the one provided during build time</_summary>
       <_description>User-specified OAuth2 client secret for Outlook servers. Empty string means to use the one provided during build time. Change of this requires restart.</_description>
     </key>
+    <key name="oauth2-yahoo-client-id" type="s">
+      <default>''</default>
+      <_summary>An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one provided during build time</_summary>
+      <_description>User-specified OAuth2 client ID for Yahoo! servers. Empty string means to use the one provided during build time. Change of this requires restart.</_description>
+    </key>
+    <key name="oauth2-yahoo-client-secret" type="s">
+      <default>''</default>
+      <_summary>An OAuth2 client secret to use to connect to Yahoo! servers, instead of the one provided during build time</_summary>
+      <_description>User-specified OAuth2 client secret for Yahoo! servers. Empty string means to use the one provided during build time. Change of this requires restart.</_description>
+    </key>
   </schema>
 </schemalist>

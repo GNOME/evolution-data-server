@@ -34,6 +34,7 @@
 #include "camel-sasl-xoauth2.h"
 #include "camel-sasl-xoauth2-google.h"
 #include "camel-sasl-xoauth2-outlook.h"
+#include "camel-sasl-xoauth2-yahoo.h"
 #include "camel-sasl.h"
 #include "camel-service.h"
 
@@ -131,6 +132,7 @@ sasl_build_class_table (void)
 	g_type_ensure (CAMEL_TYPE_SASL_XOAUTH2);
 	g_type_ensure (CAMEL_TYPE_SASL_XOAUTH2_GOOGLE);
 	g_type_ensure (CAMEL_TYPE_SASL_XOAUTH2_OUTLOOK);
+	g_type_ensure (CAMEL_TYPE_SASL_XOAUTH2_YAHOO);
 
 	class_table = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
