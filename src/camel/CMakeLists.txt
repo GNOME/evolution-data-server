@@ -107,6 +107,7 @@ set(SOURCES
 	camel-sasl-xoauth2.c
 	camel-sasl-xoauth2-google.c
 	camel-sasl-xoauth2-outlook.c
+	camel-sasl-xoauth2-yahoo.c
 	camel-sasl.c
 	camel-search-private.c
 	camel-search-sql-sexp.c
@@ -248,6 +249,7 @@ set(HEADERS
 	camel-sasl-xoauth2.h
 	camel-sasl-xoauth2-google.h
 	camel-sasl-xoauth2-outlook.h
+	camel-sasl-xoauth2-yahoo.h
 	camel-sasl.h
 	camel-search-private.h
 	camel-search-sql-sexp.h

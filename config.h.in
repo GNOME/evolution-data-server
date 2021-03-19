@@ -45,6 +45,12 @@
 /* Define Outlook.com OAuth 2.0 Client Secret to use */
 #define OUTLOOK_CLIENT_SECRET "@WITH_OUTLOOK_CLIENT_SECRET@"
 
+/* Define Yahoo! OAuth 2.0 Client ID to use */
+#define YAHOO_CLIENT_ID "@WITH_YAHOO_CLIENT_ID@"
+
+/* Define Yahoo! OAuth 2.0 Client Secret to use */
+#define YAHOO_CLIENT_SECRET "@WITH_YAHOO_CLIENT_SECRET@"
+
 /* Path to a sendmail binary, or equivalent */
 #define SENDMAIL_PATH "@SENDMAIL_PATH@"
 

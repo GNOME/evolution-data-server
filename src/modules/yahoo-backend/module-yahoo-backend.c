@@ -44,8 +44,8 @@
 #define YAHOO_SMTP_SECURITY_METHOD	METHOD (SSL_ON_ALTERNATE_PORT)
 
 /* WebDAV Configuration Details */
-#define YAHOO_WEBDAV_URL		"https://caldav.calendar.yahoo.com/dav/"
-
+#define YAHOO_CALDAV_URL		"https://caldav.calendar.yahoo.com/dav/"
+#define YAHOO_CARDDAV_URL		"https://carddav.address.yahoo.com/dav/"
 
 typedef struct _EYahooBackend EYahooBackend;
 typedef struct _EYahooBackendClass EYahooBackendClass;
@@ -99,7 +99,7 @@ yahoo_backend_authenticate_sync (EBackend *backend,
 	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), E_SOURCE_AUTHENTICATION_ERROR);
 
 	return e_webdav_collection_backend_discover_sync (E_WEBDAV_COLLECTION_BACKEND (backend),
-		YAHOO_WEBDAV_URL, YAHOO_WEBDAV_URL, credentials,
+		YAHOO_CALDAV_URL, YAHOO_CARDDAV_URL, credentials,
 		out_certificate_pem, out_certificate_errors, cancellable, error);
 }
 

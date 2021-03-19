@@ -42,6 +42,7 @@
 #include <libedataserver/e-oauth2-service-base.h>
 #include <libedataserver/e-oauth2-service-google.h>
 #include <libedataserver/e-oauth2-service-outlook.h>
+#include <libedataserver/e-oauth2-service-yahoo.h>
 #include <libedataserver/e-oauth2-services.h>
 #include <libedataserver/e-operation-pool.h>
 #include <libedataserver/e-proxy.h>

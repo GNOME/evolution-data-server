@@ -117,6 +117,7 @@ src/camel/camel-sasl-popb4smtp.c
 src/camel/camel-sasl-xoauth2.c
 src/camel/camel-sasl-xoauth2-google.c
 src/camel/camel-sasl-xoauth2-outlook.c
+src/camel/camel-sasl-xoauth2-yahoo.c
 src/camel/camel-search-private.c
 src/camel/camel-service.c
 src/camel/camel-session.c
@@ -198,6 +199,7 @@ src/libedataserver/e-client.c
 src/libedataserver/e-oauth2-service.c
 src/libedataserver/e-oauth2-service-google.c
 src/libedataserver/e-oauth2-service-outlook.c
+src/libedataserver/e-oauth2-service-yahoo.c
 src/libedataserver/e-soup-session.c
 src/libedataserver/e-source.c
 src/libedataserver/e-source-credentials-provider-impl.c

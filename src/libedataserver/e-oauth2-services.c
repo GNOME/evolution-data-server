@@ -37,6 +37,7 @@
 /* Known built-in implementations */
 #include "e-oauth2-service-google.h"
 #include "e-oauth2-service-outlook.h"
+#include "e-oauth2-service-yahoo.h"
 
 #include "e-oauth2-services.h"
 
@@ -136,6 +137,7 @@ e_oauth2_services_class_init (EOAuth2ServicesClass *klass)
 	/* Ensure built-in service types are registered */
 	g_type_ensure (E_TYPE_OAUTH2_SERVICE_GOOGLE);
 	g_type_ensure (E_TYPE_OAUTH2_SERVICE_OUTLOOK);
+	g_type_ensure (E_TYPE_OAUTH2_SERVICE_YAHOO);
 }
 
 static void

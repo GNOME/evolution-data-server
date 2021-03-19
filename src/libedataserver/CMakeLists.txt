@@ -68,6 +68,7 @@ set(SOURCES
 	e-oauth2-service-base.c
 	e-oauth2-service-google.c
 	e-oauth2-service-outlook.c
+	e-oauth2-service-yahoo.c
 	e-oauth2-services.c
 	e-operation-pool.c
 	e-proxy.c
@@ -158,6 +159,7 @@ set(HEADERS
 	e-oauth2-service-base.h
 	e-oauth2-service-google.h
 	e-oauth2-service-outlook.h
+	e-oauth2-service-yahoo.h
 	e-oauth2-services.h
 	e-operation-pool.h
 	e-proxy.h
