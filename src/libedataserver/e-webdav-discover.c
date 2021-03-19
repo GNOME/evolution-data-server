@@ -774,6 +774,14 @@ e_webdav_discover_cmp_sources (gconstpointer ptr1,
 	return g_strcmp0 (source1->display_name, source2->display_name);
 }
 
+static gboolean
+e_webdav_discover_is_fatal_error (const GError *error)
+{
+	return g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED) ||
+	       g_error_matches (error, G_IO_ERROR, G_IO_ERROR_TIMED_OUT) ||
+	       g_error_matches (error, G_IO_ERROR, G_IO_ERROR_FAILED);
+}
+
 /**
  * e_webdav_discover_sources_full_sync:
  * @source: an #ESource from which to take connection details
@@ -876,6 +884,7 @@ e_webdav_discover_sources_full_sync (ESource *source,
 	if (!g_cancellable_set_error_if_cancelled (cancellable, error)) {
 		WebDAVDiscoverData wdd;
 		gchar *uri;
+		gboolean fatal_error;
 		GError *local_error = NULL;
 
 		wdd.covered_hrefs = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
@@ -892,7 +901,9 @@ e_webdav_discover_sources_full_sync (ESource *source,
 
 		g_free (uri);
 
-		if (!g_cancellable_is_cancelled (cancellable) && !wdd.calendars &&
+		fatal_error = e_webdav_discover_is_fatal_error (local_error);
+
+		if (!fatal_error && !g_cancellable_is_cancelled (cancellable) && !wdd.calendars &&
 		    ((only_supports & (~CUSTOM_SUPPORTS_FLAGS)) == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
 		    (only_supports & (E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS)) != 0) &&
 		    (!soup_uri_get_path (soup_uri) || !strstr (soup_uri_get_path (soup_uri), "/.well-known/"))) {
@@ -913,6 +924,8 @@ e_webdav_discover_sources_full_sync (ESource *source,
 
 			g_free (uri);
 
+			fatal_error = e_webdav_discover_is_fatal_error (local_error_2nd);
+
 			soup_uri_set_path (soup_uri, saved_path);
 			g_free (saved_path);
 
@@ -924,7 +937,7 @@ e_webdav_discover_sources_full_sync (ESource *source,
 			wdd.error = NULL;
 		}
 
-		if (!g_cancellable_is_cancelled (cancellable) &&
+		if (!fatal_error && !g_cancellable_is_cancelled (cancellable) &&
 		    ((only_supports & (~CUSTOM_SUPPORTS_FLAGS)) == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
 		    (only_supports & (E_WEBDAV_DISCOVER_SUPPORTS_WEBDAV_NOTES)) != 0) &&
 		    (!soup_uri_get_path (soup_uri) || !strstr (soup_uri_get_path (soup_uri), "/.well-known/"))) {
@@ -945,6 +958,8 @@ e_webdav_discover_sources_full_sync (ESource *source,
 
 			g_free (uri);
 
+			fatal_error = e_webdav_discover_is_fatal_error (local_error_2nd);
+
 			soup_uri_set_path (soup_uri, saved_path);
 			g_free (saved_path);
 
@@ -956,7 +971,7 @@ e_webdav_discover_sources_full_sync (ESource *source,
 			wdd.error = NULL;
 		}
 
-		if (!g_cancellable_is_cancelled (cancellable) && !wdd.addressbooks &&
+		if (!fatal_error && !g_cancellable_is_cancelled (cancellable) && !wdd.addressbooks &&
 		    ((only_supports & (~CUSTOM_SUPPORTS_FLAGS)) == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
 		    (only_supports & (E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS)) != 0) &&
 		    (!soup_uri_get_path (soup_uri) || !strstr (soup_uri_get_path (soup_uri), "/.well-known/"))) {
@@ -980,6 +995,8 @@ e_webdav_discover_sources_full_sync (ESource *source,
 			soup_uri_set_path (soup_uri, saved_path);
 			g_free (saved_path);
 
+			fatal_error = e_webdav_discover_is_fatal_error (local_error_2nd);
+
 			if (e_webdav_discover_maybe_replace_auth_error (&local_error, &local_error_2nd))
 				success = FALSE;
 
@@ -990,25 +1007,32 @@ e_webdav_discover_sources_full_sync (ESource *source,
 
 		if (wdd.calendars || wdd.addressbooks) {
 			success = TRUE;
+			fatal_error = FALSE;
 			g_clear_error (&local_error);
 		} else if (local_error) {
+			success = FALSE;
 			g_propagate_error (error, local_error);
 		}
 
-		if (out_discovered_sources) {
+		if (out_discovered_sources && !fatal_error) {
 			if (only_supports == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
 			    (only_supports & E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE) != 0) {
 				GSList *link;
 
-				for (link = wdd.calendars; link && !g_cancellable_is_cancelled (cancellable); link = g_slist_next (link)) {
+				for (link = wdd.calendars; link && !fatal_error && !g_cancellable_is_cancelled (cancellable); link = g_slist_next (link)) {
 					EWebDAVDiscoveredSource *discovered = link->data;
 					GHashTable *allows = NULL, *capabilities = NULL;
 
+					local_error = NULL;
+
 					if (discovered && discovered->href &&
-					    e_webdav_session_options_sync (webdav, discovered->href, &capabilities, &allows, cancellable, NULL)) {
+					    e_webdav_session_options_sync (webdav, discovered->href, &capabilities, &allows, cancellable, &local_error)) {
 						if (capabilities && g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_AUTO_SCHEDULE))
 							discovered->supports |= E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE;
 					}
+
+					fatal_error = e_webdav_discover_is_fatal_error (local_error);
+					g_clear_error (&local_error);
 
 					if (allows)
 						g_hash_table_destroy (allows);
