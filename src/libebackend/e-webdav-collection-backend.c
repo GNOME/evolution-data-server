@@ -163,15 +163,16 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 	}
 
 	if (source) {
-		ESource *master_source;
+		ESource *collection_source;
 		ESourceCollection *collection_extension;
-		ESourceAuthentication *child_auth;
+		ESourceAuthentication *collection_auth, *child_auth;
 		ESourceResource *resource;
-		ESourceWebdav *master_webdav, *child_webdav;
+		ESourceWebdav *collection_webdav, *child_webdav;
 
-		master_source = e_backend_get_source (E_BACKEND (collection));
-		master_webdav = e_source_get_extension (master_source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-		collection_extension = e_source_get_extension (master_source, E_SOURCE_EXTENSION_COLLECTION);
+		collection_source = e_backend_get_source (E_BACKEND (collection));
+		collection_auth = e_source_get_extension (collection_source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		collection_webdav = e_source_get_extension (collection_source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+		collection_extension = e_source_get_extension (collection_source, E_SOURCE_EXTENSION_COLLECTION);
 		child_auth = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
 		child_webdav = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 		resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
@@ -183,8 +184,9 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 		e_source_resource_set_identity (resource, identity);
 
 		if (is_new) {
-			/* inherit ssl trust options */
-			e_source_webdav_set_ssl_trust (child_webdav, e_source_webdav_get_ssl_trust (master_webdav));
+			/* inherit common settings */
+			e_source_webdav_set_ssl_trust (child_webdav, e_source_webdav_get_ssl_trust (collection_webdav));
+			e_source_authentication_set_method (child_auth, e_source_authentication_get_method (collection_auth));
 		}
 	}
 
