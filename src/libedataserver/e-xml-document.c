@@ -162,7 +162,7 @@ e_xml_document_get_content (const EXmlDocument *xml,
 	g_return_val_if_fail (E_IS_XML_DOCUMENT (xml), NULL);
 
 	xmlbuffer = xmlAllocOutputBuffer (NULL);
-	xmlNodeDumpOutput (xmlbuffer, xml->priv->doc, xml->priv->root, 0, 1, NULL);
+	xmlNodeDumpOutput (xmlbuffer, xml->priv->doc, xml->priv->root, 0, 0, NULL);
 	xmlOutputBufferFlush (xmlbuffer);
 
 #ifdef LIBXML2_NEW_BUFFER
