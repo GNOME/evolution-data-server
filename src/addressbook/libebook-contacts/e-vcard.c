@@ -210,6 +210,18 @@ e_vcard_attribute_new_take (gchar *attr_group,
 	return attr;
 }
 
+static gboolean
+e_vcard_attribute_is_singlevalue_type (EVCardAttribute *attr)
+{
+	g_return_val_if_fail (attr != NULL, FALSE);
+
+	return g_ascii_strcasecmp (attr->name, EVC_KEY) == 0 ||
+		g_ascii_strcasecmp (attr->name, EVC_LOGO) == 0 ||
+		g_ascii_strcasecmp (attr->name, EVC_PHOTO) == 0 ||
+		g_ascii_strcasecmp (attr->name, "SOUND") == 0 ||
+		g_ascii_strcasecmp (attr->name, "TZ") == 0;
+}
+
 /* Case insensitive version of strstr */
 static gchar *
 strstr_nocase (const gchar *haystack,
@@ -431,7 +443,7 @@ read_attribute_value (EVCardAttribute *attr,
 			}
 			lp = g_utf8_next_char (lp);
 		}
-		else if ((*lp == ';') ||
+		else if ((*lp == ';' && !e_vcard_attribute_is_singlevalue_type (attr)) ||
 			 (*lp == ',' && !g_ascii_strcasecmp (attr->name, "CATEGORIES"))) {
 			WRITE_CHUNK ();
 			if (charset) {
