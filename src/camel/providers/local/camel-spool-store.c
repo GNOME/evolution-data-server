@@ -37,6 +37,8 @@
 
 #define d(x)
 
+#define REFRESH_INTERVAL 2
+
 typedef enum _camel_spool_store_t {
 	CAMEL_SPOOL_STORE_INVALID,
 	CAMEL_SPOOL_STORE_MBOX,	/* a single mbox */
@@ -45,6 +47,10 @@ typedef enum _camel_spool_store_t {
 
 struct _CamelSpoolStorePrivate {
 	camel_spool_store_t store_type;
+	GFileMonitor *monitor;
+	GMutex refresh_lock;
+	guint refresh_id;
+	gint64 last_modified_time;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
@@ -679,12 +685,302 @@ spool_store_get_meta_path (CamelLocalStore *ls,
 	return path;
 }
 
+typedef struct _RefreshData {
+	GWeakRef *spool_weak_ref;
+	gchar *folder_name;
+} RefreshData;
+
+static void
+refresh_data_free (gpointer ptr)
+{
+	RefreshData *rd = ptr;
+
+	if (rd) {
+		camel_utils_weak_ref_free (rd->spool_weak_ref);
+		g_free (rd->folder_name);
+		g_slice_free (RefreshData, rd);
+	}
+}
+
+static void
+spool_store_refresh_folder_cb (CamelSession *session,
+			       GCancellable *cancellable,
+			       gpointer user_data,
+			       GError **error)
+{
+	RefreshData *rd = user_data;
+	CamelFolder *folder;
+	CamelSpoolStore *spool;
+
+	g_return_if_fail (rd != NULL);
+
+	spool = g_weak_ref_get (rd->spool_weak_ref);
+	if (!spool)
+		return;
+
+	if (rd->folder_name)
+		folder = camel_store_get_folder_sync (CAMEL_STORE (spool), rd->folder_name, CAMEL_STORE_FOLDER_NONE, cancellable, NULL);
+	else
+		folder = camel_store_get_inbox_folder_sync (CAMEL_STORE (spool), cancellable, NULL);
+
+	if (folder) {
+		CamelLocalFolder *lf;
+		GStatBuf st;
+
+		lf = CAMEL_LOCAL_FOLDER (folder);
+
+		if (g_stat (lf->folder_path, &st) == 0) {
+			CamelFolderSummary *summary;
+
+			summary = camel_folder_get_folder_summary (folder);
+
+			if (summary && camel_folder_summary_get_timestamp (summary) != st.st_mtime)
+				camel_folder_refresh_info_sync (folder, cancellable, error);
+		}
+
+		g_object_unref (folder);
+	}
+
+	g_object_unref (spool);
+}
+
+static gboolean
+spool_store_submit_refresh_job_cb (gpointer user_data)
+{
+	RefreshData *rd = user_data;
+	CamelSpoolStore *spool;
+	gboolean scheduled = FALSE;
+
+	g_return_val_if_fail (rd != NULL, FALSE);
+
+	if (g_source_is_destroyed (g_main_current_source ())) {
+		refresh_data_free (rd);
+		return FALSE;
+	}
+
+	spool = g_weak_ref_get (rd->spool_weak_ref);
+
+	if (spool) {
+		gboolean refresh = FALSE;
+
+		g_mutex_lock (&spool->priv->refresh_lock);
+		if (spool->priv->refresh_id == g_source_get_id (g_main_current_source ())) {
+			spool->priv->refresh_id = 0;
+			refresh = TRUE;
+		}
+		g_mutex_unlock (&spool->priv->refresh_lock);
+
+		if (refresh) {
+			CamelSession *session;
+
+			session = camel_service_ref_session (CAMEL_SERVICE (spool));
+
+			if (session) {
+				camel_session_submit_job (session, _("Refreshing spool folder"),
+					spool_store_refresh_folder_cb, rd, refresh_data_free);
+				scheduled = TRUE;
+				g_object_unref (session);
+			}
+		}
+
+		g_object_unref (spool);
+	}
+
+	if (!scheduled)
+		refresh_data_free (rd);
+
+	return FALSE;
+}
+
+static void
+spool_store_monitor_changed_cb (GFileMonitor *monitor,
+				GFile *file,
+				GFile *other_file,
+				GFileMonitorEvent event_type,
+				gpointer user_data)
+{
+	CamelSpoolStore *spool = user_data;
+	GStatBuf st;
+	const gchar *file_path;
+	gchar *full_path = NULL;
+	gchar *basename = NULL;
+	gboolean refresh = FALSE;
+
+	g_return_if_fail (CAMEL_IS_SPOOL_STORE (spool));
+
+	if (event_type != G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT)
+		return;
+
+	if (!file)
+		return;
+
+	file_path = g_file_peek_path (file);
+
+	switch (spool_store_get_type (spool, NULL)) {
+	case CAMEL_SPOOL_STORE_INVALID:
+		break;
+	case CAMEL_SPOOL_STORE_MBOX:
+		full_path = camel_local_store_get_full_path (CAMEL_LOCAL_STORE (spool), NULL);
+
+		if (g_strcmp0 (full_path, file_path) == 0)
+			refresh = TRUE;
+		break;
+	case CAMEL_SPOOL_STORE_ELM:
+		basename = g_file_get_basename (file);
+		full_path = camel_local_store_get_full_path (CAMEL_LOCAL_STORE (spool), basename);
+		if (g_strcmp0 (full_path, file_path) == 0)
+			refresh = TRUE;
+		break;
+	}
+
+	if (refresh && g_stat (file_path, &st) == 0 &&
+	    st.st_mtime != spool->priv->last_modified_time) {
+		spool->priv->last_modified_time = st.st_mtime;
+
+		g_mutex_lock (&spool->priv->refresh_lock);
+
+		if (!spool->priv->refresh_id) {
+			RefreshData *rd;
+
+			rd = g_slice_new0 (RefreshData);
+			rd->spool_weak_ref = camel_utils_weak_ref_new (spool);
+			rd->folder_name = basename;
+			basename = NULL;
+
+			spool->priv->refresh_id = g_timeout_add_seconds (REFRESH_INTERVAL,
+				spool_store_submit_refresh_job_cb, rd);
+		}
+
+		g_mutex_unlock (&spool->priv->refresh_lock);
+	}
+
+	g_free (full_path);
+	g_free (basename);
+}
+
+static void
+spool_store_update_listen_notifications_cb (GObject *settings,
+					    GParamSpec *param,
+					    gpointer user_data)
+{
+	CamelSpoolStore *spool = user_data;
+	gchar *path = NULL;
+	gboolean listen_notifications = FALSE;
+
+	g_return_if_fail (CAMEL_IS_SPOOL_STORE (spool));
+
+	g_object_get (settings,
+		"path", &path,
+		"listen-notifications", &listen_notifications,
+		NULL);
+
+	g_clear_object (&spool->priv->monitor);
+
+	spool->priv->store_type = CAMEL_SPOOL_STORE_INVALID;
+
+	if (listen_notifications && path &&
+	    g_file_test (path, G_FILE_TEST_EXISTS)) {
+		GFile *file;
+
+		file = g_file_new_for_path (path);
+		spool->priv->monitor = g_file_monitor (file, G_FILE_MONITOR_WATCH_MOUNTS, NULL, NULL);
+
+		if (spool->priv->monitor) {
+			g_signal_connect_object (spool->priv->monitor, "changed",
+				G_CALLBACK (spool_store_monitor_changed_cb), spool, 0);
+		}
+
+		g_object_unref (file);
+	}
+
+	g_free (path);
+}
+
+static void
+spool_store_connect_settings (GObject *object)
+{
+	CamelSettings *settings;
+
+	g_return_if_fail (CAMEL_IS_SPOOL_STORE (object));
+
+	settings = camel_service_ref_settings (CAMEL_SERVICE (object));
+	if (!settings)
+		return;
+
+	g_signal_connect_object (settings, "notify::listen-notifications",
+		G_CALLBACK (spool_store_update_listen_notifications_cb), object, 0);
+
+	g_signal_connect_object (settings, "notify::path",
+		G_CALLBACK (spool_store_update_listen_notifications_cb), object, 0);
+
+	spool_store_update_listen_notifications_cb (G_OBJECT (settings), NULL, object);
+
+	g_object_unref (settings);
+}
+
+static void
+spool_store_settings_changed_cb (GObject *object,
+				 GParamSpec *param,
+				 gpointer user_data)
+{
+	g_return_if_fail (CAMEL_IS_SPOOL_STORE (object));
+
+	spool_store_connect_settings (object);
+}
+
+static void
+spool_store_constructed (GObject *object)
+{
+	/* Chain up to parent's method. */
+	G_OBJECT_CLASS (camel_spool_store_parent_class)->constructed (object);
+
+	g_signal_connect (object, "notify::settings",
+		G_CALLBACK (spool_store_settings_changed_cb), NULL);
+
+	spool_store_connect_settings (object);
+}
+
+static void
+spool_store_dispose (GObject *object)
+{
+	CamelSpoolStore *spool = CAMEL_SPOOL_STORE (object);
+
+	g_mutex_lock (&spool->priv->refresh_lock);
+	if (spool->priv->refresh_id) {
+		g_source_remove (spool->priv->refresh_id);
+		spool->priv->refresh_id = 0;
+	}
+	g_mutex_unlock (&spool->priv->refresh_lock);
+
+	g_clear_object (&spool->priv->monitor);
+
+	/* Chain up to parent's method. */
+	G_OBJECT_CLASS (camel_spool_store_parent_class)->dispose (object);
+}
+
+static void
+spool_store_finalize (GObject *object)
+{
+	CamelSpoolStore *spool = CAMEL_SPOOL_STORE (object);
+
+	g_mutex_clear (&spool->priv->refresh_lock);
+
+	/* Chain up to parent's method. */
+	G_OBJECT_CLASS (camel_spool_store_parent_class)->finalize (object);
+}
+
 static void
 camel_spool_store_class_init (CamelSpoolStoreClass *class)
 {
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 	CamelLocalStoreClass *local_store_class;
+	GObjectClass *object_class;
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->constructed = spool_store_constructed;
+	object_class->dispose = spool_store_dispose;
+	object_class->finalize = spool_store_finalize;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->settings_type = CAMEL_TYPE_SPOOL_SETTINGS;
@@ -707,4 +1003,6 @@ camel_spool_store_init (CamelSpoolStore *spool_store)
 {
 	spool_store->priv = camel_spool_store_get_instance_private (spool_store);
 	spool_store->priv->store_type = CAMEL_SPOOL_STORE_INVALID;
+
+	g_mutex_init (&spool_store->priv->refresh_lock);
 }

@@ -63,6 +63,11 @@ gboolean	camel_spool_settings_get_use_xstatus_headers
 void		camel_spool_settings_set_use_xstatus_headers
 						(CamelSpoolSettings *settings,
 						 gboolean use_xstatus_headers);
+gboolean	camel_spool_settings_get_listen_notifications
+						(CamelSpoolSettings *settings);
+void		camel_spool_settings_set_listen_notifications
+						(CamelSpoolSettings *settings,
+						 gboolean listen_notifications);
 
 G_END_DECLS
 

@@ -106,6 +106,8 @@ static CamelProvider maildir_provider = {
 
 static CamelProviderConfEntry spool_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "listen-notifications", NULL,
+	  N_("_Listen for change notifications"), "1" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-inbox", NULL,
 	  N_("_Apply filters to new messages in Inbox"), "0" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-junk", NULL,
