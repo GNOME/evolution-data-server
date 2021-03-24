@@ -602,7 +602,13 @@ system_flag (struct _CamelSExp *f,
 			tstr = g_strdup ("unknown");
 		}
 
-		r->value.string = g_strdup_printf ("(%s = 1)", tstr);
+		if (g_ascii_strcasecmp (tstr, "read") == 0) {
+			/* The 'read' column is different, it covers also Junk and Deleted flags,
+			   to not count them for the real folders, thus check the flags directly. */
+			r->value.string = g_strdup_printf ("((flags & 0x%x) != 0)", CAMEL_MESSAGE_SEEN);
+		} else {
+			r->value.string = g_strdup_printf ("(%s = 1)", tstr);
+		}
 		g_free (tstr);
 	}
 
