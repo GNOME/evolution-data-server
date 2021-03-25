@@ -152,6 +152,7 @@
       <xi:include href="xml/camel-sasl-xoauth2.xml"/>
       <xi:include href="xml/camel-sasl-xoauth2-google.xml"/>
       <xi:include href="xml/camel-sasl-xoauth2-outlook.xml"/>
+      <xi:include href="xml/camel-sasl-xoauth2-yahoo.xml"/>
     </chapter>
 
     <chapter id="MIME">

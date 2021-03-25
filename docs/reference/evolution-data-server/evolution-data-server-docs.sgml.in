@@ -269,6 +269,7 @@
       <xi:include href="xml/e-oauth2-service-base.xml"/>
       <xi:include href="xml/e-oauth2-service-google.xml"/>
       <xi:include href="xml/e-oauth2-service-outlook.xml"/>
+      <xi:include href="xml/e-oauth2-service-yahoo.xml"/>
     </chapter>
 
     <chapter>
