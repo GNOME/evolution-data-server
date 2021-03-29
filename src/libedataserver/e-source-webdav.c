@@ -1520,7 +1520,12 @@ e_source_webdav_verify_ssl_trust (ESourceWebdav *extension,
 	if (decode_ssl_trust (extension, &response, &old_host, &old_hash)) {
 		gchar *hash;
 
-		hash = g_compute_checksum_for_data (G_CHECKSUM_SHA256, bytes->data, bytes->len);
+		/* This is required for Flatpak, which can be built with eds before the 3.40, where
+		   had been changed to use SHA256. */
+		if (old_hash && strlen (old_hash) == g_checksum_type_get_length (G_CHECKSUM_SHA1) * 2)
+			hash = g_compute_checksum_for_data (G_CHECKSUM_SHA1, bytes->data, bytes->len);
+		else
+			hash = g_compute_checksum_for_data (G_CHECKSUM_SHA256, bytes->data, bytes->len);
 
 		if (response != E_TRUST_PROMPT_RESPONSE_UNKNOWN &&
 		    g_strcmp0 (old_host, host) == 0 &&
