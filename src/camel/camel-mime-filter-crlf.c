@@ -26,6 +26,8 @@ struct _CamelMimeFilterCRLFPrivate {
 	gboolean saw_cr;
 	gboolean saw_lf;
 	gboolean saw_dot;
+	gboolean ends_with_lf;
+	gboolean ensure_crlf_end;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelMimeFilterCRLF, camel_mime_filter_crlf, CAMEL_TYPE_MIME_FILTER)
@@ -74,6 +76,9 @@ mime_filter_crlf_filter (CamelMimeFilter *mime_filter,
 
 			*outptr++ = *inptr++;
 		}
+
+		if (len > 0)
+			priv->ends_with_lf = in[len - 1] == '\n';
 	} else {
 		/* Output can "grow" by one byte if priv->saw_cr was set as
 		 * a carry-over from the previous invocation. This will happen
@@ -130,10 +135,34 @@ mime_filter_crlf_complete (CamelMimeFilter *mime_filter,
                            gsize *outlen,
                            gsize *outprespace)
 {
+	CamelMimeFilterCRLF *crlf_filter;
+
 	if (len)
 		mime_filter_crlf_filter (
 			mime_filter, in, len, prespace,
 			out, outlen, outprespace);
+	else
+		*outlen = 0;
+
+	crlf_filter = CAMEL_MIME_FILTER_CRLF (mime_filter);
+
+	if (crlf_filter->priv->direction == CAMEL_MIME_FILTER_CRLF_ENCODE &&
+	    crlf_filter->priv->ensure_crlf_end &&
+	    !crlf_filter->priv->ends_with_lf) {
+		gchar *outptr;
+
+		camel_mime_filter_set_size (mime_filter, *outlen + 2, FALSE);
+
+		outptr = mime_filter->outbuf + *outlen;
+		*outptr++ = '\r';
+		*outptr++ = '\n';
+
+		crlf_filter->priv->ends_with_lf = TRUE;
+
+		*out = mime_filter->outbuf;
+		*outlen = outptr - mime_filter->outbuf;
+		*outprespace = mime_filter->outpre;
+	}
 }
 
 static void
@@ -146,6 +175,7 @@ mime_filter_crlf_reset (CamelMimeFilter *mime_filter)
 	priv->saw_cr = FALSE;
 	priv->saw_lf = TRUE;
 	priv->saw_dot = FALSE;
+	priv->ends_with_lf = FALSE;
 }
 
 static void
@@ -167,6 +197,8 @@ camel_mime_filter_crlf_init (CamelMimeFilterCRLF *filter)
 	filter->priv->saw_cr = FALSE;
 	filter->priv->saw_lf = TRUE;
 	filter->priv->saw_dot = FALSE;
+	filter->priv->ends_with_lf = FALSE;
+	filter->priv->ensure_crlf_end = FALSE;
 }
 
 /**
@@ -192,4 +224,41 @@ camel_mime_filter_crlf_new (CamelMimeFilterCRLFDirection direction,
 	priv->mode = mode;
 
 	return filter;
+}
+
+/**
+ * camel_mime_filter_crlf_set_ensure_crlf_end:
+ * @filter: a #CamelMimeFilterCRLF
+ * @ensure_crlf_end: value to set
+ *
+ * When set to true, the filter will ensure that the output stream will
+ * end with CRLF, in case it does not. The default is to not do that.
+ * The option is used only when encoding the stream.
+ *
+ * Since: 3.42
+ **/
+void
+camel_mime_filter_crlf_set_ensure_crlf_end (CamelMimeFilterCRLF *filter,
+					    gboolean ensure_crlf_end)
+{
+	g_return_if_fail (CAMEL_IS_MIME_FILTER_CRLF (filter));
+
+	filter->priv->ensure_crlf_end = ensure_crlf_end;
+}
+
+/**
+ * camel_mime_filter_crlf_get_ensure_crlf_end:
+ * @filter: a #CamelMimeFilterCRLF
+ *
+ * Returns: whether the filter will ensure that the output stream will
+ *    end with CRLF
+ *
+ * Since: 3.42
+ **/
+gboolean
+camel_mime_filter_crlf_get_ensure_crlf_end (CamelMimeFilterCRLF *filter)
+{
+	g_return_val_if_fail (CAMEL_IS_MIME_FILTER_CRLF (filter), FALSE);
+
+	return filter->priv->ensure_crlf_end;
 }

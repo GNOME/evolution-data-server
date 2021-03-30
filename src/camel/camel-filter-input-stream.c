@@ -144,7 +144,7 @@ filter_input_stream_read (GInputStream *stream,
 
 	if (n_bytes_read == 0) {
 		camel_mime_filter_complete (
-			filter, priv->filtered, priv->filtered_length, presize,
+			filter, priv->filtered ? priv->filtered : "", priv->filtered ? priv->filtered_length : 0, presize,
 			&priv->filtered, &priv->filtered_length, &presize);
 
 		n_bytes_read = priv->filtered_length;

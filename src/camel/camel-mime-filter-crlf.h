@@ -69,6 +69,11 @@ GType		camel_mime_filter_crlf_get_type	(void);
 CamelMimeFilter *
 		camel_mime_filter_crlf_new	(CamelMimeFilterCRLFDirection direction,
 						 CamelMimeFilterCRLFMode mode);
+void		camel_mime_filter_crlf_set_ensure_crlf_end
+						(CamelMimeFilterCRLF *filter,
+						 gboolean ensure_crlf_end);
+gboolean	camel_mime_filter_crlf_get_ensure_crlf_end
+						(CamelMimeFilterCRLF *filter);
 
 G_END_DECLS
 

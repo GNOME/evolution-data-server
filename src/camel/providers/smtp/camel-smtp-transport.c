@@ -1824,6 +1824,7 @@ smtp_data (CamelSmtpTransport *transport,
 	filter = camel_mime_filter_crlf_new (
 		CAMEL_MIME_FILTER_CRLF_ENCODE,
 		CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS);
+	camel_mime_filter_crlf_set_ensure_crlf_end (CAMEL_MIME_FILTER_CRLF (filter), TRUE);
 	camel_stream_filter_add (
 		CAMEL_STREAM_FILTER (filtered_stream), filter);
 	g_object_unref (filter);
@@ -1843,6 +1844,7 @@ smtp_data (CamelSmtpTransport *transport,
 		filter = camel_mime_filter_crlf_new (
 			CAMEL_MIME_FILTER_CRLF_ENCODE,
 			CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS);
+		camel_mime_filter_crlf_set_ensure_crlf_end (CAMEL_MIME_FILTER_CRLF (filter), TRUE);
 		camel_stream_filter_add (CAMEL_STREAM_FILTER (sec_filtered_stream), filter);
 		g_object_unref (filter);
 
@@ -1892,9 +1894,9 @@ smtp_data (CamelSmtpTransport *transport,
 
 	/* terminate the message body */
 
-	d (fprintf (stderr, "[SMTP] sending: \\r\\n.\\r\\n\n"));
+	d (fprintf (stderr, "[SMTP] sending: .\\r\\n\n"));
 
-	if (camel_stream_write (ostream, "\r\n.\r\n", 5, cancellable, error) == -1) {
+	if (camel_stream_write (ostream, ".\r\n", 3, cancellable, error) == -1) {
 		g_prefix_error (error, _("DATA command failed: "));
 		camel_service_disconnect_sync (
 			CAMEL_SERVICE (transport),

@@ -176,22 +176,110 @@ test_case (gint test_num)
 	camel_test_pull ();
 }
 
+static gboolean
+test_case_ensure_crlf_end_run (const gchar *in,
+			       const gchar *expected,
+			       gboolean ensure_crlf_end)
+{
+	CamelMimeFilter *filter;
+	GInputStream *input_stream;
+	GInputStream *filter_stream;
+	gchar bytes[64];
+	gsize bytes_read = 0;
+	gboolean success = FALSE;
+
+	if (strlen (expected) >= sizeof (bytes) - 1) {
+		camel_test_fail ("Local buffer too small (%u bytes) to cover %u bytes", sizeof (bytes), strlen (expected));
+		return FALSE;
+	}
+
+	input_stream = g_memory_input_stream_new_from_data (in, strlen (in), NULL);
+
+	filter = camel_mime_filter_crlf_new (CAMEL_MIME_FILTER_CRLF_ENCODE, CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS);
+	camel_mime_filter_crlf_set_ensure_crlf_end (CAMEL_MIME_FILTER_CRLF (filter), ensure_crlf_end);
+	filter_stream = camel_filter_input_stream_new (input_stream, filter);
+	g_object_unref (filter);
+
+	if (g_input_stream_read_all (filter_stream, bytes, sizeof (bytes) - 1, &bytes_read, NULL, NULL)) {
+		bytes[bytes_read] = '\0';
+
+		if (bytes_read == strlen (expected)) {
+			success = memcmp (bytes, expected, bytes_read) == 0;
+
+			if (!success)
+				camel_test_fail ("Returned text '%s' and expected text '%s' do not match", bytes, expected);
+		} else {
+			camel_test_fail ("Read %u bytes, but expected %u bytes", bytes_read, strlen (expected));
+		}
+	} else {
+		camel_test_fail ("Failed to read up to %u bytes from the input stream", sizeof (bytes));
+	}
+
+	g_object_unref (filter_stream);
+	g_object_unref (input_stream);
+
+	return success;
+}
+
+static void
+test_case_ensure_crlf_end (void)
+{
+	struct _data {
+		const gchar *in;
+		const gchar *out_without;
+		const gchar *out_with;
+	} data[] = {
+		{ "", "", "\r\n" },
+		{ "a", "a", "a\r\n" },
+		{ "a\n", "a\r\n", "a\r\n" },
+		{ "a\r\n", "a\r\n", "a\r\n" },
+		{ "a\r\nb", "a\r\nb", "a\r\nb\r\n" },
+		{ "a\nb", "a\r\nb", "a\r\nb\r\n" },
+		{ "a\r\nb\n", "a\r\nb\r\n", "a\r\nb\r\n" },
+		{ "a\n\nb", "a\r\n\r\nb", "a\r\n\r\nb\r\n" }
+	};
+	guint ii;
+
+	camel_test_push ("Test encode with used ensure-crlf-end");
+
+	for (ii = 0; ii < G_N_ELEMENTS (data); ii++) {
+		camel_test_push ("case %d/a (without set option)", ii);
+		if (!test_case_ensure_crlf_end_run (data[ii].in, data[ii].out_without, FALSE)) {
+			camel_test_pull ();
+			break;
+		}
+
+		camel_test_pull ();
+		camel_test_push ("case %d/b (with set option)", ii);
+
+		if (!test_case_ensure_crlf_end_run (data[ii].in, data[ii].out_with, TRUE)) {
+			camel_test_pull ();
+			break;
+		}
+
+		camel_test_pull ();
+	}
+
+	camel_test_pull ();
+}
+
 gint
 main (gint argc,
       gchar **argv)
 {
-	gchar *work;
 	gint ii;
 
 	camel_test_init (argc, argv);
 
-	work = g_strdup_printf ("CRLF/DOT filter, test case %d", 0);
-	camel_test_start (work);
-	g_free (work);
+	camel_test_start ("CRLF/DOT filter, test case 0");
 
 	for (ii = CRLF_ENCODE; ii < CRLF_DONE; ii++)
 		test_case (ii);
 
+	camel_test_end ();
+
+	camel_test_start ("CRLF/DOT filter, test case 1");
+	test_case_ensure_crlf_end ();
 	camel_test_end ();
 
 	return 0;
