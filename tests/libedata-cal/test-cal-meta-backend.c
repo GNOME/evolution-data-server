@@ -1489,6 +1489,153 @@ tcmb_get_tzid_ref_count (ECalCache *cal_cache,
 }
 
 static void
+test_timezones_verify_tz_sub (ICalComponent *sub1,
+			      ICalComponent *sub2)
+{
+	ICalProperty *prop1, *prop2;
+	ICalRecurrence *rrule1, *rrule2;
+	ICalTime *tt1, *tt2;
+
+	g_assert_nonnull (sub1);
+	g_assert_nonnull (sub2);
+
+	g_assert_cmpint (i_cal_component_count_properties (sub1, I_CAL_ANY_PROPERTY), ==, 5);
+	g_assert_cmpint (i_cal_component_count_properties (sub1, I_CAL_ANY_PROPERTY), ==, i_cal_component_count_properties (sub2, I_CAL_ANY_PROPERTY));
+
+	prop1 = i_cal_component_get_first_property (sub1, I_CAL_TZNAME_PROPERTY);
+	prop2 = i_cal_component_get_first_property (sub2, I_CAL_TZNAME_PROPERTY);
+	g_assert_nonnull (prop1);
+	g_assert_nonnull (prop2);
+	g_assert_cmpstr (i_cal_property_get_tzname (prop1), ==, i_cal_property_get_tzname (prop2));
+	g_object_unref (prop1);
+	g_object_unref (prop2);
+
+	tt1 = i_cal_component_get_dtstart (sub1);
+	tt2 = i_cal_component_get_dtstart (sub2);
+	g_assert_nonnull (tt1);
+	g_assert_nonnull (tt2);
+	g_assert_cmpint (i_cal_time_compare (tt1, tt2), ==, 0);
+	g_object_unref (tt1);
+	g_object_unref (tt2);
+
+	prop1 = i_cal_component_get_first_property (sub1, I_CAL_TZOFFSETFROM_PROPERTY);
+	prop2 = i_cal_component_get_first_property (sub2, I_CAL_TZOFFSETFROM_PROPERTY);
+	g_assert_nonnull (prop1);
+	g_assert_nonnull (prop2);
+	g_assert_cmpint (i_cal_property_get_tzoffsetfrom (prop1), ==, i_cal_property_get_tzoffsetfrom (prop2));
+	g_object_unref (prop1);
+	g_object_unref (prop2);
+
+	prop1 = i_cal_component_get_first_property (sub1, I_CAL_TZOFFSETTO_PROPERTY);
+	prop2 = i_cal_component_get_first_property (sub2, I_CAL_TZOFFSETTO_PROPERTY);
+	g_assert_nonnull (prop1);
+	g_assert_nonnull (prop2);
+	g_assert_cmpint (i_cal_property_get_tzoffsetto (prop1), ==, i_cal_property_get_tzoffsetto (prop2));
+	g_object_unref (prop1);
+	g_object_unref (prop2);
+
+	prop1 = i_cal_component_get_first_property (sub1, I_CAL_RRULE_PROPERTY);
+	prop2 = i_cal_component_get_first_property (sub2, I_CAL_RRULE_PROPERTY);
+	g_assert_nonnull (prop1);
+	g_assert_nonnull (prop2);
+	rrule1 = i_cal_property_get_rrule (prop1);
+	rrule2 = i_cal_property_get_rrule (prop2);
+	g_assert_nonnull (rrule1);
+	g_assert_nonnull (rrule2);
+	g_assert_cmpint (i_cal_recurrence_get_freq (rrule1), ==, i_cal_recurrence_get_freq (rrule2));
+	g_assert_cmpint (i_cal_recurrence_get_by_second (rrule1, 0), ==, i_cal_recurrence_get_by_second (rrule2, 0));
+	g_assert_cmpint (i_cal_recurrence_get_by_second (rrule1, 1), ==, i_cal_recurrence_get_by_second (rrule2, 1));
+	g_assert_cmpint (i_cal_recurrence_get_by_month (rrule1, 0), ==, i_cal_recurrence_get_by_month (rrule2, 0));
+	g_assert_cmpint (i_cal_recurrence_get_by_month (rrule1, 1), ==, i_cal_recurrence_get_by_month (rrule2, 1));
+	g_assert_cmpint (i_cal_recurrence_get_by_set_pos (rrule1, 0), ==, i_cal_recurrence_get_by_set_pos (rrule2, 0));
+	g_assert_cmpint (i_cal_recurrence_get_by_set_pos (rrule1, 1), ==, i_cal_recurrence_get_by_set_pos (rrule2, 1));
+	g_assert_cmpint (i_cal_recurrence_get_by_week_no (rrule1, 0), ==, i_cal_recurrence_get_by_week_no (rrule2, 0));
+	g_assert_cmpint (i_cal_recurrence_get_by_week_no (rrule1, 1), ==, i_cal_recurrence_get_by_week_no (rrule2, 1));
+	g_assert_cmpint (i_cal_recurrence_get_by_year_day (rrule1, 0), ==, i_cal_recurrence_get_by_year_day (rrule2, 0));
+	g_assert_cmpint (i_cal_recurrence_get_by_year_day (rrule1, 1), ==, i_cal_recurrence_get_by_year_day (rrule2, 1));
+	g_assert_cmpint (i_cal_recurrence_get_by_month_day (rrule1, 0), ==, i_cal_recurrence_get_by_month_day (rrule2, 0));
+	g_assert_cmpint (i_cal_recurrence_get_by_month_day (rrule1, 1), ==, i_cal_recurrence_get_by_month_day (rrule2, 1));
+	g_assert_cmpint (i_cal_recurrence_get_by_day (rrule1, 0), ==, i_cal_recurrence_get_by_day (rrule2, 0));
+	g_assert_cmpint (i_cal_recurrence_get_by_day (rrule1, 1), ==, i_cal_recurrence_get_by_day (rrule2, 1));
+	g_assert_cmpint (i_cal_recurrence_get_by_hour (rrule1, 0), ==, i_cal_recurrence_get_by_hour (rrule2, 0));
+	g_assert_cmpint (i_cal_recurrence_get_by_hour (rrule1, 1), ==, i_cal_recurrence_get_by_hour (rrule2, 1));
+	g_assert_cmpint (i_cal_recurrence_get_by_minute (rrule1, 0), ==, i_cal_recurrence_get_by_minute (rrule2, 0));
+	g_assert_cmpint (i_cal_recurrence_get_by_minute (rrule1, 1), ==, i_cal_recurrence_get_by_minute (rrule2, 1));
+	g_assert_cmpint (i_cal_recurrence_get_by_second (rrule1, 0), ==, i_cal_recurrence_get_by_second (rrule2, 0));
+	g_assert_cmpint (i_cal_recurrence_get_by_second (rrule1, 1), ==, i_cal_recurrence_get_by_second (rrule2, 1));
+	g_assert_cmpint (i_cal_recurrence_get_interval (rrule1), ==, i_cal_recurrence_get_interval (rrule2));
+	g_assert_cmpint (i_cal_recurrence_get_count (rrule1), ==, i_cal_recurrence_get_count (rrule2));
+
+	tt1 = i_cal_recurrence_get_until (rrule1);
+	tt2 = i_cal_recurrence_get_until (rrule2);
+	g_assert_nonnull (tt1);
+	g_assert_nonnull (tt2);
+	g_assert_cmpint (i_cal_time_compare (tt1, tt2), ==, 0);
+	g_object_unref (tt1);
+	g_object_unref (tt2);
+
+	g_object_unref (rrule1);
+	g_object_unref (rrule2);
+	g_object_unref (prop1);
+	g_object_unref (prop2);
+}
+
+static void
+test_timezones_verify_tz (const gchar *tz1str,
+			  const gchar *tz2str)
+{
+	ICalComponent *tz1, *tz2;
+	ICalComponent *sub1, *sub2;
+	ICalProperty *prop1, *prop2;
+	gchar *str1, *str2;
+
+	tz1 = i_cal_component_new_from_string (tz1str);
+	tz2 = i_cal_component_new_from_string (tz2str);
+
+	g_assert_nonnull (tz1);
+	g_assert_nonnull (tz2);
+
+	g_assert_cmpint (i_cal_component_isa (tz1), ==, i_cal_component_isa (tz2));
+	g_assert_cmpint (i_cal_component_count_components (tz1, I_CAL_XSTANDARD_COMPONENT), ==, 1);
+	g_assert_cmpint (i_cal_component_count_components (tz1, I_CAL_XSTANDARD_COMPONENT), ==, i_cal_component_count_components (tz2, I_CAL_XSTANDARD_COMPONENT));
+	g_assert_cmpint (i_cal_component_count_components (tz1, I_CAL_XDAYLIGHT_COMPONENT), ==, 1);
+	g_assert_cmpint (i_cal_component_count_components (tz1, I_CAL_XDAYLIGHT_COMPONENT), ==, i_cal_component_count_components (tz2, I_CAL_XDAYLIGHT_COMPONENT));
+	g_assert_cmpint (i_cal_component_count_components (tz1, I_CAL_ANY_COMPONENT), ==, 2);
+	g_assert_cmpint (i_cal_component_count_components (tz1, I_CAL_ANY_COMPONENT), ==, i_cal_component_count_components (tz2, I_CAL_ANY_COMPONENT));
+	g_assert_cmpint (i_cal_component_count_properties (tz1, I_CAL_ANY_PROPERTY), ==, 2);
+	g_assert_cmpint (i_cal_component_count_properties (tz1, I_CAL_ANY_PROPERTY), ==, i_cal_component_count_properties (tz2, I_CAL_ANY_PROPERTY));
+
+	prop1 = i_cal_component_get_first_property (tz1, I_CAL_TZID_PROPERTY);
+	prop2 = i_cal_component_get_first_property (tz2, I_CAL_TZID_PROPERTY);
+	g_assert_nonnull (prop1);
+	g_assert_nonnull (prop2);
+	g_assert_cmpstr (i_cal_property_get_tzid (prop1), ==, i_cal_property_get_tzid (prop2));
+	g_object_unref (prop1);
+	g_object_unref (prop2);
+
+	str1 = e_cal_util_component_dup_x_property (tz1, "X-LIC-LOCATION");
+	str2 = e_cal_util_component_dup_x_property (tz2, "X-LIC-LOCATION");
+	g_assert_cmpstr (str1, ==, str2);
+	g_free (str1);
+	g_free (str2);
+
+	sub1 = i_cal_component_get_first_component (tz1, I_CAL_XSTANDARD_COMPONENT);
+	sub2 = i_cal_component_get_first_component (tz2, I_CAL_XSTANDARD_COMPONENT);
+	test_timezones_verify_tz_sub (sub1, sub2);
+	g_object_unref (sub1);
+	g_object_unref (sub2);
+
+	sub1 = i_cal_component_get_first_component (tz1, I_CAL_XDAYLIGHT_COMPONENT);
+	sub2 = i_cal_component_get_first_component (tz2, I_CAL_XDAYLIGHT_COMPONENT);
+	test_timezones_verify_tz_sub (sub1, sub2);
+	g_object_unref (sub1);
+	g_object_unref (sub2);
+
+	g_object_unref (tz1);
+	g_object_unref (tz2);
+}
+
+static void
 test_timezones (ECalMetaBackend *meta_backend)
 {
 	#define TZID1 "/meta/backend/test/timezone1"
@@ -1556,7 +1703,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 	backend_class->get_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, TZID1, &tzobj, &error);
 	g_assert_no_error (error);
-	g_assert_cmpstr (tzobj, ==, in_tz1obj);
+	test_timezones_verify_tz (tzobj, in_tz1obj);
 	g_free (tzobj);
 	tzobj = NULL;
 
