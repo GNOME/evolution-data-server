@@ -154,7 +154,7 @@ e_cal_component_property_bag_set_from_component (ECalComponentPropertyBag *bag,
 	ICalProperty *prop;
 
 	g_return_if_fail (bag != NULL);
-	g_return_if_fail (I_CAL_IS_COMPONENT (component));
+	g_return_if_fail (I_CAL_IS_COMPONENT ((ICalComponent *) component));
 
 	e_cal_component_property_bag_clear (bag);
 
@@ -241,7 +241,7 @@ e_cal_component_property_bag_add (ECalComponentPropertyBag *bag,
 				  const ICalProperty *prop)
 {
 	g_return_if_fail (bag != NULL);
-	g_return_if_fail (I_CAL_IS_PROPERTY (prop));
+	g_return_if_fail (I_CAL_IS_PROPERTY ((ICalProperty *) prop));
 
 	e_cal_component_property_bag_take (bag,
 		i_cal_property_clone ((ICalProperty *) prop));

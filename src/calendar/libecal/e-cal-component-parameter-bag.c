@@ -154,7 +154,7 @@ e_cal_component_parameter_bag_set_from_property (ECalComponentParameterBag *bag,
 	ICalParameter *param;
 
 	g_return_if_fail (bag != NULL);
-	g_return_if_fail (I_CAL_IS_PROPERTY (property));
+	g_return_if_fail (I_CAL_IS_PROPERTY ((ICalProperty *) property));
 
 	e_cal_component_parameter_bag_clear (bag);
 
@@ -241,7 +241,7 @@ e_cal_component_parameter_bag_add (ECalComponentParameterBag *bag,
 				  const ICalParameter *param)
 {
 	g_return_if_fail (bag != NULL);
-	g_return_if_fail (I_CAL_IS_PARAMETER (param));
+	g_return_if_fail (I_CAL_IS_PARAMETER ((ICalParameter *) param));
 
 	e_cal_component_parameter_bag_take (bag,
 		i_cal_parameter_clone ((ICalParameter *) param));

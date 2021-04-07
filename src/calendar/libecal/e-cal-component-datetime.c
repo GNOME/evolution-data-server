@@ -57,7 +57,7 @@ e_cal_component_datetime_new (const ICalTime *value,
 {
 	ECalComponentDateTime *dt;
 
-	g_return_val_if_fail (I_CAL_IS_TIME (value), NULL);
+	g_return_val_if_fail (I_CAL_IS_TIME ((ICalTime *) value), NULL);
 
 	dt = g_slice_new0 (ECalComponentDateTime);
 	e_cal_component_datetime_set (dt, value, tzid);
@@ -155,7 +155,7 @@ e_cal_component_datetime_set (ECalComponentDateTime *dt,
 			      const gchar *tzid)
 {
 	g_return_if_fail (dt != NULL);
-	g_return_if_fail (I_CAL_IS_TIME (value));
+	g_return_if_fail (I_CAL_IS_TIME ((ICalTime *) value));
 
 	e_cal_component_datetime_set_value (dt, value);
 	e_cal_component_datetime_set_tzid (dt, tzid);
@@ -194,7 +194,7 @@ e_cal_component_datetime_set_value (ECalComponentDateTime *dt,
 				    const ICalTime *value)
 {
 	g_return_if_fail (dt != NULL);
-	g_return_if_fail (I_CAL_IS_TIME (value));
+	g_return_if_fail (I_CAL_IS_TIME ((ICalTime *) value));
 
 	if (dt->value != value) {
 		g_clear_object (&dt->value);

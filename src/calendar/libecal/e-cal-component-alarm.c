@@ -93,7 +93,7 @@ e_cal_component_alarm_new_from_component (const ICalComponent *component)
 {
 	ECalComponentAlarm *alarm;
 
-	g_return_val_if_fail (I_CAL_IS_COMPONENT (component), NULL);
+	g_return_val_if_fail (I_CAL_IS_COMPONENT ((ICalComponent *) component), NULL);
 
 	if (i_cal_component_isa ((ICalComponent *) component) != I_CAL_VALARM_COMPONENT)
 		return NULL;
@@ -243,7 +243,7 @@ e_cal_component_alarm_set_from_component (ECalComponentAlarm *alarm,
 	ICalProperty *prop, *repeat = NULL;
 
 	g_return_if_fail (alarm != NULL);
-	g_return_if_fail (I_CAL_IS_COMPONENT (component));
+	g_return_if_fail (I_CAL_IS_COMPONENT ((ICalComponent *) component));
 	g_return_if_fail (i_cal_component_isa ((ICalComponent *) component) == I_CAL_VALARM_COMPONENT);
 
 	g_free (alarm->uid);

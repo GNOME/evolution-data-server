@@ -1852,7 +1852,7 @@ e_cal_component_set_dtstamp (ECalComponent *comp,
 	ICalProperty *prop;
 
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
-	g_return_if_fail (I_CAL_IS_TIME (tt));
+	g_return_if_fail (I_CAL_IS_TIME ((ICalTime *) tt));
 	g_return_if_fail (comp->priv->icalcomp != NULL);
 
 	prop = i_cal_component_get_first_property (comp->priv->icalcomp, I_CAL_DTSTAMP_PROPERTY);
