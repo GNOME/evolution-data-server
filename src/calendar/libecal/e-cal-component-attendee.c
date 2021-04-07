@@ -146,7 +146,7 @@ e_cal_component_attendee_new_from_property (const ICalProperty *property)
 {
 	ECalComponentAttendee *attendee;
 
-	g_return_val_if_fail (I_CAL_IS_PROPERTY (property), NULL);
+	g_return_val_if_fail (I_CAL_IS_PROPERTY ((ICalProperty *) property), NULL);
 
 	if (i_cal_property_isa ((ICalProperty *) property) != I_CAL_ATTENDEE_PROPERTY)
 		return NULL;
@@ -260,7 +260,7 @@ e_cal_component_attendee_set_from_property (ECalComponentAttendee *attendee,
 	ICalParameter *param;
 
 	g_return_if_fail (attendee != NULL);
-	g_return_if_fail (I_CAL_IS_PROPERTY (property));
+	g_return_if_fail (I_CAL_IS_PROPERTY ((ICalProperty *) property));
 	g_return_if_fail (i_cal_property_isa (prop) == I_CAL_ATTENDEE_PROPERTY);
 
 	e_cal_component_attendee_set_value (attendee, i_cal_property_get_attendee (prop));

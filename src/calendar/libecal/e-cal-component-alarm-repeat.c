@@ -52,7 +52,7 @@ ECalComponentAlarmRepeat *
 e_cal_component_alarm_repeat_new (gint repetitions,
 				  const ICalDuration *interval)
 {
-	g_return_val_if_fail (I_CAL_IS_DURATION (interval), NULL);
+	g_return_val_if_fail (I_CAL_IS_DURATION ((ICalDuration *) interval), NULL);
 
 	return e_cal_component_alarm_repeat_new_seconds (repetitions,
 		i_cal_duration_as_int ((ICalDuration *) interval));

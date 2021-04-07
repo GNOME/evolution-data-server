@@ -59,7 +59,7 @@ e_cal_component_period_new_datetime (const ICalTime *start,
 {
 	ECalComponentPeriod *period;
 
-	g_return_val_if_fail (I_CAL_IS_TIME (start), NULL);
+	g_return_val_if_fail (I_CAL_IS_TIME ((ICalTime *) start), NULL);
 
 	period = g_slice_new0 (ECalComponentPeriod);
 	period->kind = E_CAL_COMPONENT_PERIOD_DATETIME;
@@ -88,8 +88,8 @@ e_cal_component_period_new_duration (const ICalTime *start,
 {
 	ECalComponentPeriod *period;
 
-	g_return_val_if_fail (I_CAL_IS_TIME (start), NULL);
-	g_return_val_if_fail (I_CAL_IS_DURATION (duration), NULL);
+	g_return_val_if_fail (I_CAL_IS_TIME ((ICalTime *) start), NULL);
+	g_return_val_if_fail (I_CAL_IS_DURATION ((ICalDuration *) duration), NULL);
 
 	period = g_slice_new0 (ECalComponentPeriod);
 	period->kind = E_CAL_COMPONENT_PERIOD_DURATION;
@@ -193,7 +193,7 @@ e_cal_component_period_set_datetime_full (ECalComponentPeriod *period,
 					  const ICalTime *end)
 {
 	g_return_if_fail (period != NULL);
-	g_return_if_fail (I_CAL_IS_TIME (start));
+	g_return_if_fail (I_CAL_IS_TIME ((ICalTime *) start));
 
 	g_clear_object (&period->duration);
 
@@ -220,8 +220,8 @@ e_cal_component_period_set_duration_full (ECalComponentPeriod *period,
 					  const ICalDuration *duration)
 {
 	g_return_if_fail (period != NULL);
-	g_return_if_fail (I_CAL_IS_TIME (start));
-	g_return_if_fail (I_CAL_IS_DURATION (duration));
+	g_return_if_fail (I_CAL_IS_TIME ((ICalTime *) start));
+	g_return_if_fail (I_CAL_IS_DURATION ((ICalDuration *) duration));
 
 	g_clear_object (&period->end);
 
@@ -265,7 +265,7 @@ e_cal_component_period_set_start (ECalComponentPeriod *period,
 				  const ICalTime *start)
 {
 	g_return_if_fail (period != NULL);
-	g_return_if_fail (I_CAL_IS_TIME (start));
+	g_return_if_fail (I_CAL_IS_TIME ((ICalTime *) start));
 
 	if (period->start != start) {
 		g_clear_object (&period->start);
@@ -360,7 +360,7 @@ e_cal_component_period_set_duration (ECalComponentPeriod *period,
 {
 	g_return_if_fail (period != NULL);
 	g_return_if_fail (period->kind == E_CAL_COMPONENT_PERIOD_DURATION);
-	g_return_if_fail (I_CAL_IS_DURATION (duration));
+	g_return_if_fail (I_CAL_IS_DURATION ((ICalDuration *) duration));
 
 	if (period->duration != duration) {
 		g_clear_object (&period->duration);

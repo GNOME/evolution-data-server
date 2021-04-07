@@ -3090,9 +3090,9 @@ e_cal_util_clamp_vtimezone (ICalComponent *vtimezone,
 {
 	g_return_if_fail (I_CAL_IS_COMPONENT (vtimezone));
 	g_return_if_fail (i_cal_component_isa (vtimezone) == I_CAL_VTIMEZONE_COMPONENT);
-	g_return_if_fail (I_CAL_IS_TIME (from));
+	g_return_if_fail (I_CAL_IS_TIME ((ICalTime *) from));
 	if (to)
-		g_return_if_fail (I_CAL_IS_TIME (to));
+		g_return_if_fail (I_CAL_IS_TIME ((ICalTime *) to));
 
 	e_cal_util_clamp_vtimezone_subcomps (vtimezone, I_CAL_XSTANDARD_COMPONENT, from, to);
 	e_cal_util_clamp_vtimezone_subcomps (vtimezone, I_CAL_XDAYLIGHT_COMPONENT, from, to);

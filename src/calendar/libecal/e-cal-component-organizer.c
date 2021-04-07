@@ -113,7 +113,7 @@ e_cal_component_organizer_new_from_property (const ICalProperty *property)
 {
 	ECalComponentOrganizer *organizer;
 
-	g_return_val_if_fail (I_CAL_IS_PROPERTY (property), NULL);
+	g_return_val_if_fail (I_CAL_IS_PROPERTY ((ICalProperty *) property), NULL);
 
 	if (i_cal_property_isa ((ICalProperty *) property) != I_CAL_ORGANIZER_PROPERTY)
 		return NULL;
@@ -210,7 +210,7 @@ e_cal_component_organizer_set_from_property (ECalComponentOrganizer *organizer,
 	ICalParameter *param;
 
 	g_return_if_fail (organizer != NULL);
-	g_return_if_fail (I_CAL_IS_PROPERTY (property));
+	g_return_if_fail (I_CAL_IS_PROPERTY ((ICalProperty *) property));
 	g_return_if_fail (i_cal_property_isa (prop) == I_CAL_ORGANIZER_PROPERTY);
 
 	e_cal_component_organizer_set_value (organizer, i_cal_property_get_organizer (prop));
