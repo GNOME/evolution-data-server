@@ -347,7 +347,7 @@ list_migration_sandboxes (void)
 		    g_file_test (old_bdb, G_FILE_TEST_IS_REGULAR) ||
 		    g_file_test (new_contactsdb, G_FILE_TEST_IS_REGULAR))) {
 
-#if defined (TEST_VERSIONS_WITH_BDB)
+#if defined (TEST_VERSIONS_WITH_BDB) && defined (HAVE_LIBDB)
 			sandboxes = g_list_prepend (sandboxes, g_strdup (filename));
 #else
 			/* We allow compilation of EDS on a system without the db_load utility, if this
