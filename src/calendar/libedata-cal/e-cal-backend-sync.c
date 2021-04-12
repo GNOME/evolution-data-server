@@ -796,13 +796,40 @@ cal_backend_remove_objects (ECalBackend *backend,
 {
 	GError *error = NULL;
 	GSList *old_components = NULL, *new_components = NULL;
+	GSList *tmp_ids = NULL;
 
 	e_cal_backend_sync_remove_objects (E_CAL_BACKEND_SYNC (backend), cal, cancellable, ids, mod, opflags, &old_components, &new_components, &error);
 
-	e_data_cal_respond_remove_objects (cal, opid, error, ids, old_components, new_components);
+	/* Ensure there is no recurrence-id on the IDs when removing all components. */
+	if (!error && mod == E_CAL_OBJ_MOD_ALL) {
+		GSList *link;
+
+		for (link = (GSList *) ids; link; link = g_slist_next (link)) {
+			ECalComponentId *id = link->data;
+
+			if (id && e_cal_component_id_get_rid (id))
+				break;
+		}
+
+		if (link) {
+			for (link = (GSList *) ids; link; link = g_slist_next (link)) {
+				ECalComponentId *id = e_cal_component_id_copy (link->data);
+
+				if (id)
+					e_cal_component_id_set_rid (id, NULL);
+
+				tmp_ids = g_slist_prepend (tmp_ids, id);
+			}
+
+			tmp_ids = g_slist_reverse (tmp_ids);
+		}
+	}
+
+	e_data_cal_respond_remove_objects (cal, opid, error, tmp_ids ? tmp_ids : ids, old_components, new_components);
 
 	e_util_free_nullable_object_slist (old_components);
 	e_util_free_nullable_object_slist (new_components);
+	g_slist_free_full (tmp_ids, e_cal_component_id_free);
 }
 
 static void
