@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/issues\n"
-"POT-Creation-Date: 2021-02-23 18:20+0000\n"
-"PO-Revision-Date: 2021-02-23 20:29+0200\n"
+"POT-Creation-Date: 2021-04-12 13:01+0000\n"
+"PO-Revision-Date: 2021-04-12 16:05+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Lokalize 20.11.70\n"
+"X-Generator: Lokalize 20.12.0\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:231
 #, c-format
@@ -176,7 +176,7 @@ msgid "Invalid Query “%s”"
 msgstr "Некоректний запит «%s»"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1975
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2048
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2050
 msgid "Requested to delete an unrelated cursor"
 msgstr "Запитано видалення незв'язаного курсору"
 
@@ -1195,8 +1195,8 @@ msgstr "Попередньо завантажений об'єкт для UID «%
 msgid "Received object for UID “%s” is invalid"
 msgstr "Отриманий об'єкт для UID «%s» недійсний"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1918
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2374
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1920
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2376
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3319
 #, c-format
 msgid "Failed to create cache “%s”:"
@@ -2918,7 +2918,7 @@ msgstr "Фільтруємо теку «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3320
+#: ../src/camel/camel-folder.c:3322
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "Знищення теки «%s : %s»"
@@ -2926,7 +2926,7 @@ msgstr "Знищення теки «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3455
+#: ../src/camel/camel-folder.c:3457
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "Отримання повідомлення «%s» у «%s : %s»"
@@ -2934,7 +2934,7 @@ msgstr "Отримання повідомлення «%s» у «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3680
+#: ../src/camel/camel-folder.c:3682
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "Отримання відомостей про квоту для «%s : %s»"
@@ -2942,7 +2942,7 @@ msgstr "Отримання відомостей про квоту для «%s : 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3980
+#: ../src/camel/camel-folder.c:3982
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "Оновлюємо теку «%s : %s»"
@@ -3351,30 +3351,30 @@ msgstr "Скопіювати вміст теки на локальну маши�
 msgid "Syncing messages in account “%s” to disk"
 msgstr "Синхронізація повідомлень в обліковому записі «%s» на диск"
 
-#: ../src/camel/camel-provider.c:89
+#: ../src/camel/camel-provider.c:90
 msgid "Virtual folder email provider"
 msgstr "Постачальник віртуальних тек ел.пошти"
 
-#: ../src/camel/camel-provider.c:91
+#: ../src/camel/camel-provider.c:92
 msgid "For reading mail as a query of another set of folders"
 msgstr "Для читання пошти як запиту до іншого набору тек"
 
-#: ../src/camel/camel-provider.c:299
+#: ../src/camel/camel-provider.c:335
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr "Не вдалося завантажити %s: Завантаження модулів не підтримується."
 
-#: ../src/camel/camel-provider.c:308
+#: ../src/camel/camel-provider.c:344
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "Не вдалося завантажити %s: %s"
 
-#: ../src/camel/camel-provider.c:317
+#: ../src/camel/camel-provider.c:353
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "Не вдалося завантажити %s: в модулі немає коду ініціалізації."
 
-#: ../src/camel/camel-provider.c:463 ../src/camel/camel-session.c:430
+#: ../src/camel/camel-provider.c:499 ../src/camel/camel-session.c:430
 #, c-format
 msgid "No provider available for protocol “%s”"
 msgstr "Постачальник протоколу «%s» недоступний"
@@ -3669,6 +3669,21 @@ msgid ""
 msgstr ""
 "Цей параметр використовуватиме ключ доступу OAuth 2.0, щоб під'єднатись до "
 "сервера Outlook.com"
+
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:23
+#| msgid "OAuth2 (Google)"
+msgid "OAuth2 (Yahoo!)"
+msgstr "OAuth2 (Yahoo!)"
+
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:24
+#| msgid ""
+#| "This option will use an OAuth 2.0 access token to connect to the server"
+msgid ""
+"This option will use an OAuth 2.0 access token to connect to the Yahoo! "
+"server"
+msgstr ""
+"Цей параметр використовуватиме ключ доступу OAuth 2.0, щоб під'єднатись до "
+"сервера Yahoo!"
 
 #: ../src/camel/camel-search-private.c:114
 #, c-format
@@ -4468,7 +4483,7 @@ msgstr "Помилка виконання IDLE"
 #: ../src/camel/providers/local/camel-maildir-store.c:824
 #: ../src/camel/providers/local/camel-maildir-store.c:830
 #: ../src/camel/providers/local/camel-maildir-store.c:913
-#: ../src/camel/providers/local/camel-spool-store.c:386
+#: ../src/camel/providers/local/camel-spool-store.c:391
 msgid "Inbox"
 msgstr "Вхідні"
 
@@ -4743,7 +4758,7 @@ msgstr "Файл локальної пошти %s"
 #: ../src/camel/providers/local/camel-local-store.c:367
 #: ../src/camel/providers/local/camel-maildir-store.c:118
 #: ../src/camel/providers/local/camel-mbox-store.c:579
-#: ../src/camel/providers/local/camel-spool-store.c:81
+#: ../src/camel/providers/local/camel-spool-store.c:84
 #, c-format
 msgid "Store root %s is not an absolute path"
 msgstr "Корінь сховища %s не є абсолютним шляхом"
@@ -4863,8 +4878,8 @@ msgstr "не є каталогом Maildir"
 
 #: ../src/camel/providers/local/camel-maildir-store.c:664
 #: ../src/camel/providers/local/camel-maildir-store.c:1142
-#: ../src/camel/providers/local/camel-spool-store.c:206
-#: ../src/camel/providers/local/camel-spool-store.c:225
+#: ../src/camel/providers/local/camel-spool-store.c:211
+#: ../src/camel/providers/local/camel-spool-store.c:230
 #, c-format
 msgid "Could not scan folder “%s”: %s"
 msgstr "Не вдалося просканувати теку «%s»: %s"
@@ -5071,36 +5086,36 @@ msgstr "Не вдалося отримати теку «%s»: не є катал
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "Не вдалося відкрити каталог MH: %s: %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:89
+#: ../src/camel/providers/local/camel-spool-store.c:92
 #, c-format
 msgid "Spool “%s” cannot be opened: %s"
 msgstr "Не вдалося відкрити сховище «%s»: %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:103
+#: ../src/camel/providers/local/camel-spool-store.c:106
 #, c-format
 msgid "Spool “%s” is not a regular file or directory"
 msgstr "Сховище «%s» не є звичайним файлом або каталогом"
 
-#: ../src/camel/providers/local/camel-spool-store.c:418
+#: ../src/camel/providers/local/camel-spool-store.c:423
 #, c-format
 msgid "Spool mail file %s"
 msgstr "Накопичувальний файл пошти %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:422
+#: ../src/camel/providers/local/camel-spool-store.c:427
 #, c-format
 msgid "Spool folder tree %s"
 msgstr "Дерево тек накопичувача %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:425
+#: ../src/camel/providers/local/camel-spool-store.c:430
 msgid "Invalid spool"
 msgstr "Неправильний буфер"
 
-#: ../src/camel/providers/local/camel-spool-store.c:474
+#: ../src/camel/providers/local/camel-spool-store.c:479
 #, c-format
 msgid "Folder “%s/%s” does not exist."
 msgstr "Теки «%s/%s» не існує."
 
-#: ../src/camel/providers/local/camel-spool-store.c:487
+#: ../src/camel/providers/local/camel-spool-store.c:492
 #, c-format
 msgid ""
 "Could not open folder “%s”:\n"
@@ -5109,12 +5124,12 @@ msgstr ""
 "Не вдалося відкрити теку «%s»:\n"
 "%s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:493
+#: ../src/camel/providers/local/camel-spool-store.c:498
 #, c-format
 msgid "Folder “%s” does not exist."
 msgstr "Тека «%s» не існує."
 
-#: ../src/camel/providers/local/camel-spool-store.c:501
+#: ../src/camel/providers/local/camel-spool-store.c:506
 #, c-format
 msgid ""
 "Could not create folder “%s”:\n"
@@ -5123,22 +5138,22 @@ msgstr ""
 "Не вдалося створити теку «%s»:\n"
 "%s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:514
+#: ../src/camel/providers/local/camel-spool-store.c:519
 #, c-format
 msgid "“%s” is not a mailbox file."
 msgstr "«%s» не є файлом поштової скриньки."
 
-#: ../src/camel/providers/local/camel-spool-store.c:578
+#: ../src/camel/providers/local/camel-spool-store.c:583
 #, c-format
 msgid "Store does not support an INBOX"
 msgstr "Сховище не підтримує INBOX"
 
-#: ../src/camel/providers/local/camel-spool-store.c:597
+#: ../src/camel/providers/local/camel-spool-store.c:602
 #, c-format
 msgid "Spool folders cannot be deleted"
 msgstr "Накопичувальні теки не можна вилучати"
 
-#: ../src/camel/providers/local/camel-spool-store.c:612
+#: ../src/camel/providers/local/camel-spool-store.c:617
 #, c-format
 msgid "Spool folders cannot be renamed"
 msgstr "Накопичувальні теки не можна перейменовувати"
@@ -6205,6 +6220,53 @@ msgstr ""
 "використовувати той, який надається під час збирання. Для набуття чинності "
 "зміненим параметром програму слід перезапустити."
 
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
+#| msgid ""
+#| "An OAuth2 client ID to use to connect to Google servers, instead of the "
+#| "one provided during build time"
+msgid ""
+"An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
+"provided during build time"
+msgstr ""
+"Ідентифікатор клієнта OAuth2, який використовується для з'єднання із "
+"серверами Yahoo!, не той, який надається під час збирання"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
+#| msgid ""
+#| "User-specified OAuth2 client ID for Google servers. Empty string means to "
+#| "use the one provided during build time. Change of this requires restart."
+msgid ""
+"User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Ідентифікатор клієнта OAuth2 для серверів Yahoo!. Порожній рядок означає "
+"«використовувати той, який надається під час збирання». Для набуття чинності "
+"змінами програму слід перезапустити."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
+#| msgid ""
+#| "An OAuth2 client secret to use to connect to Google servers, instead of "
+#| "the one provided during build time"
+msgid ""
+"An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
+"one provided during build time"
+msgstr ""
+"Клієнтський ключ OAuth2, який слід використовувати для з'єднання із "
+"серверами Yahoo!, замість того, який надається під час збирання"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
+#| msgid ""
+#| "User-specified OAuth2 client secret for Google servers. Empty string "
+#| "means to use the one provided during build time. Change of this requires "
+#| "restart."
+msgid ""
+"User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Ключ клієнта OAuth2 для серверів Yahoo!. Порожній рядок означає "
+"використовувати той, який надається під час збирання. Для набуття чинності "
+"зміненим параметром програму слід перезапустити."
+
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
 msgstr "(Застаріле) Тип проксі"
@@ -6631,6 +6693,13 @@ msgstr "Google"
 msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
+
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#: ../src/libedataserver/e-oauth2-service-yahoo.c:53
+msgctxt "OAuth2Service"
+msgid "Yahoo!"
+msgstr ""
+"Yahoo!"
 
 #: ../src/libedataserver/e-soup-session.c:958
 msgid "Operation was cancelled"
@@ -7289,8 +7358,7 @@ msgstr "_Додати цей пароль у зв'язку ключів"
 #. Translators: meaning as "Snooze, until event start time"
 #: ../src/libedataserverui/e-reminders-widget.c:182
 msgid "until start time"
-msgstr ""
-"до часу початку"
+msgstr "до часу початку"
 
 #: ../src/libedataserverui/e-reminders-widget.c:233
 msgid "Add custom time…"
@@ -7586,8 +7654,8 @@ msgstr ""
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:326
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:354
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:865
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1113
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:882
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1130
 msgid "Reminders"
 msgstr "Нагадування"
 
@@ -7624,27 +7692,27 @@ msgstr ""
 msgid "Do not ask me about this program again"
 msgstr "Не питайте мене знову про цю програму"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:770
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
 msgid "Display Reminders window with _notifications"
 msgstr "Показувати вікно нагадувань за допомогою с_повіщень"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:771
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
 msgid "Keep reminder notification window always on _top"
 msgstr "Тримати вікно сповіщень нагадування завжди _над іншими"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:772
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
 msgid "Display reminders for _completed tasks"
 msgstr "Відображення нагадувань про _виконані завдання"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:773
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
 msgid "Display reminders for _past events"
 msgstr "Показувати нагадування _минулих завдань"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:804
 msgid "Reminders Options:"
 msgstr "Параметри нагадувань:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:881
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:898
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
