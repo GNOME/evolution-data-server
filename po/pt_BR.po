@@ -15,24 +15,24 @@
 # Jonh Wendell <jwendell@gnome.org>, 2012.
 # Felipe Braga <fbobraga@gmail.com>, 2015.
 # Rafael Fontenelle <rafaelff@gnome.org>, 2012-2021.
-# Enrico Nicoletto <liverig@gmail.com>, 2013-2016, 2021.
 # Henrique Machado Campos <henriquecamposrj@gmail.com>, 2021.
+# Enrico Nicoletto <liverig@gmail.com>, 2013-2016, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2021-02-26 09:55+0000\n"
-"PO-Revision-Date: 2021-02-26 22:47-0300\n"
-"Last-Translator: Henrique Machado Campos <henriquecamposrj@gmail.com>\n"
+"POT-Creation-Date: 2021-04-12 13:01+0000\n"
+"PO-Revision-Date: 2021-04-12 22:48-0300\n"
+"Last-Translator: Enrico Nicoletto <liverig@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
-"X-Generator: Gtranslator 3.38.0\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 2.4.2\n"
 "X-DamnedLies-Scope: partial\n"
 "X-Project-Style: gnome\n"
 
@@ -2888,7 +2888,7 @@ msgstr "Filtrando pasta “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3320
+#: ../src/camel/camel-folder.c:3322
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "Excluindo pasta “%s : %s”"
@@ -2896,7 +2896,7 @@ msgstr "Excluindo pasta “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3455
+#: ../src/camel/camel-folder.c:3457
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "Recuperando mensagem “%s” em “%s : %s”"
@@ -2904,7 +2904,7 @@ msgstr "Recuperando mensagem “%s” em “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3680
+#: ../src/camel/camel-folder.c:3682
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "Recuperando informações de cota para “%s : %s”"
@@ -2912,7 +2912,7 @@ msgstr "Recuperando informações de cota para “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3980
+#: ../src/camel/camel-folder.c:3982
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "Atualizando pasta “%s : %s”"
@@ -3651,6 +3651,19 @@ msgid ""
 msgstr ""
 "Essa opção vai usar um token de acesso OAuth 2.0 para conectar ao servidor "
 "do Outlook.com"
+
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:23
+#| msgid "OAuth2 (Google)"
+msgid "OAuth2 (Yahoo!)"
+msgstr "OAuth2 (Yahoo!)"
+
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:24
+msgid ""
+"This option will use an OAuth 2.0 access token to connect to the Yahoo! "
+"server"
+msgstr ""
+"Essa opção vai usar um token de acesso OAuth 2.0 para conectar ao servidor "
+"do Yahoo!"
 
 #: ../src/camel/camel-search-private.c:114
 #, c-format
@@ -4454,7 +4467,7 @@ msgstr "Erro ao executar IDLE"
 #: ../src/camel/providers/local/camel-maildir-store.c:824
 #: ../src/camel/providers/local/camel-maildir-store.c:830
 #: ../src/camel/providers/local/camel-maildir-store.c:913
-#: ../src/camel/providers/local/camel-spool-store.c:386
+#: ../src/camel/providers/local/camel-spool-store.c:391
 msgid "Inbox"
 msgstr "Entrada"
 
@@ -4730,7 +4743,7 @@ msgstr "Arquivo de correio local %s"
 #: ../src/camel/providers/local/camel-local-store.c:367
 #: ../src/camel/providers/local/camel-maildir-store.c:118
 #: ../src/camel/providers/local/camel-mbox-store.c:579
-#: ../src/camel/providers/local/camel-spool-store.c:81
+#: ../src/camel/providers/local/camel-spool-store.c:84
 #, c-format
 msgid "Store root %s is not an absolute path"
 msgstr "A raiz de armazenamento %s não é um caminho absoluto"
@@ -4850,8 +4863,8 @@ msgstr "não é um diretório maildir"
 
 #: ../src/camel/providers/local/camel-maildir-store.c:664
 #: ../src/camel/providers/local/camel-maildir-store.c:1142
-#: ../src/camel/providers/local/camel-spool-store.c:206
-#: ../src/camel/providers/local/camel-spool-store.c:225
+#: ../src/camel/providers/local/camel-spool-store.c:211
+#: ../src/camel/providers/local/camel-spool-store.c:230
 #, c-format
 msgid "Could not scan folder “%s”: %s"
 msgstr "Não foi possível examinar a pasta “%s”: %s"
@@ -5058,36 +5071,36 @@ msgstr "Não foi possível obter a pasta “%s”: não é um diretório."
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "Não foi possível abrir o diretório MH: %s: %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:89
+#: ../src/camel/providers/local/camel-spool-store.c:92
 #, c-format
 msgid "Spool “%s” cannot be opened: %s"
 msgstr "A fila “%s” não pode ser aberta: %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:103
+#: ../src/camel/providers/local/camel-spool-store.c:106
 #, c-format
 msgid "Spool “%s” is not a regular file or directory"
 msgstr "A fila “%s” não é um arquivo comum ou um diretório"
 
-#: ../src/camel/providers/local/camel-spool-store.c:418
+#: ../src/camel/providers/local/camel-spool-store.c:423
 #, c-format
 msgid "Spool mail file %s"
 msgstr "Arquivo de fila de correio %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:422
+#: ../src/camel/providers/local/camel-spool-store.c:427
 #, c-format
 msgid "Spool folder tree %s"
 msgstr "Árvore de pastas de fila %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:425
+#: ../src/camel/providers/local/camel-spool-store.c:430
 msgid "Invalid spool"
 msgstr "Fila inválida"
 
-#: ../src/camel/providers/local/camel-spool-store.c:474
+#: ../src/camel/providers/local/camel-spool-store.c:479
 #, c-format
 msgid "Folder “%s/%s” does not exist."
 msgstr "A pasta “%s/%s” não existe."
 
-#: ../src/camel/providers/local/camel-spool-store.c:487
+#: ../src/camel/providers/local/camel-spool-store.c:492
 #, c-format
 msgid ""
 "Could not open folder “%s”:\n"
@@ -5096,12 +5109,12 @@ msgstr ""
 "Não foi possível abrir a pasta “%s”:\n"
 "%s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:493
+#: ../src/camel/providers/local/camel-spool-store.c:498
 #, c-format
 msgid "Folder “%s” does not exist."
 msgstr "A pasta “%s” não existe."
 
-#: ../src/camel/providers/local/camel-spool-store.c:501
+#: ../src/camel/providers/local/camel-spool-store.c:506
 #, c-format
 msgid ""
 "Could not create folder “%s”:\n"
@@ -5110,22 +5123,22 @@ msgstr ""
 "Não foi possível criar a pasta “%s”:\n"
 "%s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:514
+#: ../src/camel/providers/local/camel-spool-store.c:519
 #, c-format
 msgid "“%s” is not a mailbox file."
 msgstr "“%s” não é um arquivo de caixa de correio."
 
-#: ../src/camel/providers/local/camel-spool-store.c:578
+#: ../src/camel/providers/local/camel-spool-store.c:583
 #, c-format
 msgid "Store does not support an INBOX"
 msgstr "O armazenamento não oferece suporte a caixa de entrada"
 
-#: ../src/camel/providers/local/camel-spool-store.c:597
+#: ../src/camel/providers/local/camel-spool-store.c:602
 #, c-format
 msgid "Spool folders cannot be deleted"
 msgstr "As pastas de fila não podem ser excluídas"
 
-#: ../src/camel/providers/local/camel-spool-store.c:612
+#: ../src/camel/providers/local/camel-spool-store.c:617
 #, c-format
 msgid "Spool folders cannot be renamed"
 msgstr "As pastas de fila não podem ser renomeadas"
@@ -6195,6 +6208,40 @@ msgstr ""
 "Outlook. String vazia significa usar o fornecido durante a compilação. A "
 "alteração disso requer reiniciar."
 
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
+msgid ""
+"An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
+"provided during build time"
+msgstr ""
+"Um ID de cliente OAuth2 a ser usado para se conectar aos servidores do "
+"Yahoo!, em vez do fornecido durante a compilação"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
+msgid ""
+"User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"ID de cliente OAuth2 especificado pelo usuário para servidores do Yahoo!. "
+"String vazia significa usar o fornecido durante a compilação. A alteração "
+"disso requer reiniciar."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
+msgid ""
+"An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
+"one provided during build time"
+msgstr ""
+"Um segredo de cliente OAuth2 a ser usado para conectar aos servidores do "
+"Yahoo!, em vez do fornecido durante a compilação."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
+msgid ""
+"User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Segredo de cliente OAuth2 especificado pelo usuário para servidores do "
+"Yahoo!. String vazia significa usar o fornecido durante a compilação. A "
+"alteração disso requer reiniciar."
+
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
 msgstr "(Obsoleto) Tipo de proxy a ser usado"
@@ -6625,6 +6672,13 @@ msgstr "Google"
 msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
+
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#: ../src/libedataserver/e-oauth2-service-yahoo.c:53
+#| msgid "Yahoo! Mail"
+msgctxt "OAuth2Service"
+msgid "Yahoo!"
+msgstr "Yahoo!"
 
 #: ../src/libedataserver/e-soup-session.c:958
 msgid "Operation was cancelled"
@@ -7584,8 +7638,8 @@ msgstr ""
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:326
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:354
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:865
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1113
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:882
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1130
 msgid "Reminders"
 msgstr "Lembretes"
 
@@ -7622,27 +7676,27 @@ msgstr ""
 msgid "Do not ask me about this program again"
 msgstr "Não me perguntar sobre esse programa novamente"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:770
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
 msgid "Display Reminders window with _notifications"
 msgstr "Exibir janela de lembretes com _notificações"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:771
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
 msgid "Keep reminder notification window always on _top"
 msgstr "Manter a janela de notificação de lembrete sempre no _topo"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:772
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
 msgid "Display reminders for _completed tasks"
 msgstr "Exibir lembretes para tarefas _concluídas"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:773
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
 msgid "Display reminders for _past events"
 msgstr "Exibir lembretes para e_ventos anteriores"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:804
 msgid "Reminders Options:"
 msgstr "Opções de lembretes:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:881
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:898
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
@@ -8037,9 +8091,6 @@ msgstr "Nenhuma fonte foi localizada\n"
 
 #~ msgid "Yahoo! Calendar"
 #~ msgstr "Agenda do Yahoo!"
-
-#~ msgid "Yahoo! Mail"
-#~ msgstr "E-mail do Yahoo!"
 
 #~ msgid "User name not filled"
 #~ msgstr "Nome de usuário não preenchido"
