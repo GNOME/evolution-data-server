@@ -8,8 +8,8 @@
 msgid ""
 msgstr "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/issues\n"
-"POT-Creation-Date: 2021-02-23 18:20+0000\n"
-"PO-Revision-Date: 2021-02-23 06:00+0100\n"
+"POT-Creation-Date: 2021-04-13 09:20+0000\n"
+"PO-Revision-Date: 2021-04-13 06:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asiersarasua@ni.eus>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
@@ -169,7 +169,7 @@ msgid "Invalid Query “%s”"
 msgstr "Baliogabeko “%s” kontsulta"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1975
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2048
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2050
 msgid "Requested to delete an unrelated cursor"
 msgstr "Zerikusirik ez duen kurtsorea ezabatzea eskatu da"
 
@@ -1163,8 +1163,8 @@ msgstr "Aurre-kargatutako “%s” UIDaren objektua baliogabea da"
 msgid "Received object for UID “%s” is invalid"
 msgstr "Jasotako “%s” UIDaren objektua baliogabea da"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1918
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2374
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1920
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2376
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3319
 #, c-format
 msgid "Failed to create cache “%s”:"
@@ -2831,7 +2831,7 @@ msgstr "“%s : %s” karpeta iragazten"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3320
+#: ../src/camel/camel-folder.c:3322
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "“%s : %s” karpeta betirako ezabatzen"
@@ -2839,7 +2839,7 @@ msgstr "“%s : %s” karpeta betirako ezabatzen"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3455
+#: ../src/camel/camel-folder.c:3457
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "“%s : %s” mezua eskuratzen “%s”(e)n"
@@ -2847,7 +2847,7 @@ msgstr "“%s : %s” mezua eskuratzen “%s”(e)n"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3680
+#: ../src/camel/camel-folder.c:3682
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "“%s : %s“(r)en kuotaren informazioa eskuratzen"
@@ -2855,7 +2855,7 @@ msgstr "“%s : %s“(r)en kuotaren informazioa eskuratzen"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3980
+#: ../src/camel/camel-folder.c:3982
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "“%s : %s” karpeta freskatzen"
@@ -3251,30 +3251,30 @@ msgstr "Kopiatu karpetaren edukia lokalean _lineaz kanpo lan egiteko"
 msgid "Syncing messages in account “%s” to disk"
 msgstr "“%s” kontuko mezuak diskoarekin sinkronizatzen"
 
-#: ../src/camel/camel-provider.c:89
+#: ../src/camel/camel-provider.c:90
 msgid "Virtual folder email provider"
 msgstr "Karpeta birtualen posta-hornitzailea"
 
-#: ../src/camel/camel-provider.c:91
+#: ../src/camel/camel-provider.c:92
 msgid "For reading mail as a query of another set of folders"
 msgstr "Mezuak beste karpeta-multzo bateko kontsulta gisa irakurtzeko"
 
-#: ../src/camel/camel-provider.c:299
+#: ../src/camel/camel-provider.c:335
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr "Ezin izan da %s kargatu: moduluak kargatzea ez da onartzen sistema honetan."
 
-#: ../src/camel/camel-provider.c:308
+#: ../src/camel/camel-provider.c:344
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "Ezin izan da %s kargatu: %s"
 
-#: ../src/camel/camel-provider.c:317
+#: ../src/camel/camel-provider.c:353
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "Ezin izan da %s kargatu: moduluak ez du hasieratze-koderik."
 
-#: ../src/camel/camel-provider.c:463 ../src/camel/camel-session.c:430
+#: ../src/camel/camel-provider.c:499 ../src/camel/camel-session.c:430
 #, c-format
 msgid "No provider available for protocol “%s”"
 msgstr "Ez dago hornitzailerik “%s” protokolorako"
@@ -3541,6 +3541,16 @@ msgid ""
 "This option will use an OAuth 2.0 access token to connect to the Outlook.com "
 "server"
 msgstr "Aukera honek OAuth 2.0 atzipen-token bat erabiliko du Outlook.com zerbitzariarekin konektatzeko"
+
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:23
+msgid "OAuth2 (Yahoo!)"
+msgstr "OAuth2 (Yahoo!)"
+
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:24
+msgid ""
+"This option will use an OAuth 2.0 access token to connect to the Yahoo! "
+"server"
+msgstr "Aukera honek OAuth 2.0 atzipen-token bat erabiliko du Yahoo! zerbitzariarekin konektatzeko"
 
 #: ../src/camel/camel-search-private.c:114
 #, c-format
@@ -4336,7 +4346,7 @@ msgstr "Errorea IDLE (inaktibo) exekutatzean"
 #: ../src/camel/providers/local/camel-maildir-store.c:824
 #: ../src/camel/providers/local/camel-maildir-store.c:830
 #: ../src/camel/providers/local/camel-maildir-store.c:913
-#: ../src/camel/providers/local/camel-spool-store.c:386
+#: ../src/camel/providers/local/camel-spool-store.c:391
 msgid "Inbox"
 msgstr "Sarrerako ontzia"
 
@@ -4606,7 +4616,7 @@ msgstr "%s posta-fitxategi lokala"
 #: ../src/camel/providers/local/camel-local-store.c:367
 #: ../src/camel/providers/local/camel-maildir-store.c:118
 #: ../src/camel/providers/local/camel-mbox-store.c:579
-#: ../src/camel/providers/local/camel-spool-store.c:81
+#: ../src/camel/providers/local/camel-spool-store.c:84
 #, c-format
 msgid "Store root %s is not an absolute path"
 msgstr "%s gordetze-erroa ez da bide-izen absolutua"
@@ -4726,8 +4736,8 @@ msgstr "ez da maildir direktorioa"
 
 #: ../src/camel/providers/local/camel-maildir-store.c:664
 #: ../src/camel/providers/local/camel-maildir-store.c:1142
-#: ../src/camel/providers/local/camel-spool-store.c:206
-#: ../src/camel/providers/local/camel-spool-store.c:225
+#: ../src/camel/providers/local/camel-spool-store.c:211
+#: ../src/camel/providers/local/camel-spool-store.c:230
 #, c-format
 msgid "Could not scan folder “%s”: %s"
 msgstr "Ezin izan da “%s” karpeta eskaneatu: %s"
@@ -4931,36 +4941,36 @@ msgstr "Ezin da “%s” karpeta atzitu: ez da direktorioa."
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "Ezin da MH direktorioaren bide-izena ireki: %s: %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:89
+#: ../src/camel/providers/local/camel-spool-store.c:92
 #, c-format
 msgid "Spool “%s” cannot be opened: %s"
 msgstr "“%s” ilara ezin izan da ireki: %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:103
+#: ../src/camel/providers/local/camel-spool-store.c:106
 #, c-format
 msgid "Spool “%s” is not a regular file or directory"
 msgstr "“%s” ilara ez da fitxategi edo direktorio arrunta"
 
-#: ../src/camel/providers/local/camel-spool-store.c:418
+#: ../src/camel/providers/local/camel-spool-store.c:423
 #, c-format
 msgid "Spool mail file %s"
 msgstr "%s ilarako posta fitxategia"
 
-#: ../src/camel/providers/local/camel-spool-store.c:422
+#: ../src/camel/providers/local/camel-spool-store.c:427
 #, c-format
 msgid "Spool folder tree %s"
 msgstr "%s ilara-karpetaren zuhaitza"
 
-#: ../src/camel/providers/local/camel-spool-store.c:425
+#: ../src/camel/providers/local/camel-spool-store.c:430
 msgid "Invalid spool"
 msgstr "Ilara baliogabea"
 
-#: ../src/camel/providers/local/camel-spool-store.c:474
+#: ../src/camel/providers/local/camel-spool-store.c:479
 #, c-format
 msgid "Folder “%s/%s” does not exist."
 msgstr "“%s/%s” karpetarik ez dago."
 
-#: ../src/camel/providers/local/camel-spool-store.c:487
+#: ../src/camel/providers/local/camel-spool-store.c:492
 #, c-format
 msgid ""
 "Could not open folder “%s”:\n"
@@ -4968,12 +4978,12 @@ msgid ""
 msgstr "Ezin izan da “%s” karpeta ireki:\n"
 "%s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:493
+#: ../src/camel/providers/local/camel-spool-store.c:498
 #, c-format
 msgid "Folder “%s” does not exist."
 msgstr "“%s” karpeta ez dago."
 
-#: ../src/camel/providers/local/camel-spool-store.c:501
+#: ../src/camel/providers/local/camel-spool-store.c:506
 #, c-format
 msgid ""
 "Could not create folder “%s”:\n"
@@ -4981,22 +4991,22 @@ msgid ""
 msgstr "Ezin izan da “%s” karpeta sortu:\n"
 "%s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:514
+#: ../src/camel/providers/local/camel-spool-store.c:519
 #, c-format
 msgid "“%s” is not a mailbox file."
 msgstr "“%s” ez da mailbox fitxategia."
 
-#: ../src/camel/providers/local/camel-spool-store.c:578
+#: ../src/camel/providers/local/camel-spool-store.c:583
 #, c-format
 msgid "Store does not support an INBOX"
 msgstr "Biltegiak ez du onartzen sarrera-ontzirik"
 
-#: ../src/camel/providers/local/camel-spool-store.c:597
+#: ../src/camel/providers/local/camel-spool-store.c:602
 #, c-format
 msgid "Spool folders cannot be deleted"
 msgstr "Ilara-karpetak ezin dira ezabatu"
 
-#: ../src/camel/providers/local/camel-spool-store.c:612
+#: ../src/camel/providers/local/camel-spool-store.c:617
 #, c-format
 msgid "Spool folders cannot be renamed"
 msgstr "Ilara-karpetei ezin zaie izena aldatu"
@@ -5976,6 +5986,30 @@ msgid ""
 "to use the one provided during build time. Change of this requires restart."
 msgstr "Outlook zerbitzariekin konektatzeko erabiliko den OAuth2 bezeroen sekretu bat, eraikuntza-denboran hornitu denaren ordez erabiltzeko"
 
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
+msgid ""
+"An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
+"provided during build time"
+msgstr "Yahoo! zerbitzariekin konektatzeko erabiliko den OAuth2 bezeroen ID bat, eraikuntza-denboran hornitu denaren ordez erabiltzeko"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
+msgid ""
+"User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr "Yahoo! zerbitzariekin erabiltzeko OAuth2 bezeroen ID bat, erabiltzaileak zehaztutakoa. Kate hutsak esan nahi du eraikuntza-denboran hornitutakoa erabiliko dela. Hau aldatzeko, sistema berrabiarazi behar da."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
+msgid ""
+"An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
+"one provided during build time"
+msgstr "Yahoo! zerbitzariekin konektatzeko erabiliko den OAuth2 bezeroen sekretu bat, eraikuntza-denboran hornitu denaren ordez erabiltzeko"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
+msgid ""
+"User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr "Yahoo! zerbitzariekin erabiltzeko OAuth2 bezeroen sekretu bat, erabiltzaileak zehaztutakoa. Kate hutsak esan nahi du eraikuntza-denboran hornitutakoa erabiliko dela. Hau aldatzeko, sistema berrabiarazi behar da."
+
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
 msgstr "(Zaharkituta) Proxy mota"
@@ -6391,6 +6425,12 @@ msgstr "Google"
 msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
+
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#: ../src/libedataserver/e-oauth2-service-yahoo.c:53
+msgctxt "OAuth2Service"
+msgid "Yahoo!"
+msgstr "Yahoo!"
 
 #: ../src/libedataserver/e-soup-session.c:958
 msgid "Operation was cancelled"
@@ -7311,8 +7351,8 @@ msgstr "Konpilazio-garaiko motorra gainidazten du prozesu-aukeraren arabera: era
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:326
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:354
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:865
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1113
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:882
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1130
 msgid "Reminders"
 msgstr "Oroigarriak"
 
@@ -7347,27 +7387,27 @@ msgstr "Egutegi-oroigarri bat abian jartzera doa. Oroigarri hori honako programa
 msgid "Do not ask me about this program again"
 msgstr "Ez galdetu programa honi buruz berriro"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:770
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
 msgid "Display Reminders window with _notifications"
 msgstr "Bistaratu oroigarrien leihoa _jakinarazpenekin"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:771
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
 msgid "Keep reminder notification window always on _top"
 msgstr "Mantendu oroigarrien jakinarazpen-_leihoa beti gainean"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:772
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
 msgid "Display reminders for _completed tasks"
 msgstr "Bistaratu _osatutako zereginen oroigarriak"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:773
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
 msgid "Display reminders for _past events"
 msgstr "Bistaratu igarotako _gertaeren oroigarriak"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:804
 msgid "Reminders Options:"
 msgstr "Oroigarrien aukerak:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:881
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:898
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
