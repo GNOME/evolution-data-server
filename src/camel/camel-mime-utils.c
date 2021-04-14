@@ -3131,6 +3131,7 @@ static void
 header_references_decode_single (const gchar **in, GSList **list)
 {
 	const gchar *inptr = *in;
+	GString *accum_word = NULL;
 	gchar *id, *word;
 
 	while (*inptr) {
@@ -3143,12 +3144,34 @@ header_references_decode_single (const gchar **in, GSList **list)
 			}
 		} else {
 			word = header_decode_word (&inptr);
-			if (word)
+			if (word) {
+				/* To support broken clients, which do not enclose message IDs into angle brackets, as
+				   required in the RFC 2822: https://tools.ietf.org/html/rfc2822#section-3.6.4 */
+				if (!*inptr || camel_mime_is_lwsp (*inptr)) {
+					if (accum_word) {
+						g_string_append (accum_word, word);
+						*list = g_slist_prepend (*list, g_string_free (accum_word, FALSE));
+						accum_word = NULL;
+					} else {
+						*list = g_slist_prepend (*list, word);
+						word = NULL;
+					}
+				} else {
+					if (accum_word)
+						g_string_append (accum_word, word);
+					else
+						accum_word = g_string_new (word);
+
+					g_string_append_c (accum_word, *inptr);
+				}
 				g_free (word);
-			else if (*inptr != '\0')
+			} else if (*inptr != '\0')
 				inptr++; /* Stupid mailer tricks */
 		}
 	}
+
+	if (accum_word)
+		*list = g_slist_prepend (*list, g_string_free (accum_word, FALSE));
 
 	*in = inptr;
 }
