@@ -3055,9 +3055,9 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
 
 	rrule_list = e_cal_component_get_rrules (comp);
 	len = g_slist_length (rrule_list);
-	if (len > 1
-	    || e_cal_component_has_rdates (comp)
-	    || e_cal_component_has_exrules (comp))
+	if (len > 1 || !rrule_list ||
+	    e_cal_component_has_rdates (comp) ||
+	    e_cal_component_has_exrules (comp))
 		goto cleanup;
 
 	/* Down to one rule, so test that one */
