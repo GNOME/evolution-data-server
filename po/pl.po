@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-07 14:40+0100\n"
-"PO-Revision-Date: 2021-03-07 14:42+0100\n"
+"POT-Creation-Date: 2021-04-17 14:44+0200\n"
+"PO-Revision-Date: 2021-04-17 14:45+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -3660,6 +3660,18 @@ msgstr ""
 "Ta opcja spowoduje użycie tokenu dostępu OAuth 2.0 do łączenia się "
 "z serwerem Outlook.com"
 
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:23
+msgid "OAuth2 (Yahoo!)"
+msgstr "OAuth2 (Yahoo!)"
+
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:24
+msgid ""
+"This option will use an OAuth 2.0 access token to connect to the Yahoo! "
+"server"
+msgstr ""
+"Ta opcja spowoduje użycie tokenu dostępu OAuth 2.0 do łączenia się "
+"z serwerem Yahoo!"
+
 #: ../src/camel/camel-search-private.c:114
 #, c-format
 msgid "Regular expression compilation failed: %s: %s"
@@ -6217,6 +6229,40 @@ msgstr ""
 "ciąg oznacza użycie sekretu podanego podczas budowania. Zmiana wymaga "
 "ponownego uruchomienia."
 
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
+msgid ""
+"An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
+"provided during build time"
+msgstr ""
+"Identyfikator klienta OAuth2 używany do łączenia z serwerami Yahoo!, zamiast "
+"identyfikatora podanego podczas budowania"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
+msgid ""
+"User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Identyfikator klienta OAuth2 dla serwerów Yahoo! podany przez użytkownika. "
+"Pusty ciąg oznacza użycie identyfikatora podanego podczas budowania. Zmiana "
+"wymaga ponownego uruchomienia."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
+msgid ""
+"An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
+"one provided during build time"
+msgstr ""
+"Sekret klienta OAuth2 używany do łączenia z serwerami Yahoo!, zamiast "
+"sekretu podanego podczas budowania"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
+msgid ""
+"User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Sekret klienta OAuth2 dla serwerów Yahoo! podany przez użytkownika. Pusty "
+"ciąg oznacza użycie sekretu podanego podczas budowania. Zmiana wymaga "
+"ponownego uruchomienia."
+
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
 msgstr "(Przestarzałe) typ używanego pośrednika"
@@ -6644,6 +6690,12 @@ msgstr "Google"
 msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
+
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#: ../src/libedataserver/e-oauth2-service-yahoo.c:53
+msgctxt "OAuth2Service"
+msgid "Yahoo!"
+msgstr "Yahoo!"
 
 #: ../src/libedataserver/e-soup-session.c:958
 msgid "Operation was cancelled"
