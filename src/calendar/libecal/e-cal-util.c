@@ -2674,21 +2674,30 @@ e_cal_util_mark_task_complete_sync (ICalComponent *vtodo,
 			}
 
 			if (new_dtstart && !i_cal_time_is_null_time (new_dtstart) && i_cal_time_is_valid_time (new_dtstart)) {
-				ICalTime *old_due;
+				ICalTime *old_dtstart, *old_due;
 
+				old_dtstart = i_cal_component_get_dtstart (vtodo);
 				old_due = i_cal_component_get_due (vtodo);
 
-				/* When the previous DUE is before new DTSTART, then move relatively also the DUE
-				   date, to keep the difference... */
-				if (old_due && !i_cal_time_is_null_time (old_due) && i_cal_time_is_valid_time (old_due) &&
-				    i_cal_time_compare (old_due, new_dtstart) < 0) {
-					if (!e_cal_util_find_next_occurrence (vtodo, old_due, &new_due, cal_client, cancellable, error)) {
+				/* Move relatively also the DUE date, to keep the difference... */
+				if (old_due && !i_cal_time_is_null_time (old_due) && i_cal_time_is_valid_time (old_due)) {
+					if (old_dtstart && !i_cal_time_is_null_time (old_dtstart) && i_cal_time_is_valid_time (old_dtstart)) {
+						gint64 diff;
+
+						diff = i_cal_time_as_timet (old_due) - i_cal_time_as_timet (old_dtstart);
+						new_due = i_cal_time_clone (new_dtstart);
+						i_cal_time_adjust (new_due, diff / (24 * 60 * 60), (diff / (60 * 60)) % 24,
+							(diff / 60) % 60, diff % 60);
+					} else if (!e_cal_util_find_next_occurrence (vtodo, old_due, &new_due, cal_client, cancellable, error)) {
 						g_clear_object (&new_dtstart);
 						g_clear_object (&new_due);
+						g_clear_object (&old_dtstart);
 						g_clear_object (&old_due);
 						return FALSE;
 					}
 				}
+
+				g_clear_object (&old_dtstart);
 
 				/* ...  otherwise set the new DUE as the next-next-DTSTART ... */
 				if (!new_due || i_cal_time_is_null_time (new_due) || !i_cal_time_is_valid_time (new_due)) {
