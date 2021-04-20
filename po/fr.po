@@ -18,26 +18,26 @@
 # Laurent Coudeur <laurentc@iol.ie>, 2009, 2010.
 # Laurent de Burlet <thevedeburlet@gmail.com>, 2016.
 # William Oprandi <william.oprandi@gmail.com>, 2019.
-# Charles Monzat <charles.monzat@free.fr>, 2018-2020.
 # Thibault Martin <mail@thibaultmart.in>, 2020.
 # Julien Humbert <julroy67@gmail.com>, 2020.
 # Guillaume Bernard <associations@guillaume-bernard.fr>, 2021
+# Charles Monzat <charles.monzat@free.fr>, 2018-2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2021-03-06 21:43+0000\n"
-"PO-Revision-Date: 2021-03-07 10:15+0100\n"
-"Last-Translator: Guillaume Bernard <associations@guillaume-bernard.fr>\n"
-"Language-Team: French <gnomefr@traduc.org>\n"
+"POT-Creation-Date: 2021-04-14 15:03+0000\n"
+"PO-Revision-Date: 2021-04-15 15:35+0200\n"
+"Last-Translator: Charles Monzat <charles.monzat@free.fr>\n"
+"Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Gtranslator 40.0\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:231
 #, c-format
@@ -3674,6 +3674,21 @@ msgstr ""
 "Cette option utilise un jeton d’accès OAuth 2.0 pour se connecter au serveur "
 "Outlook.com"
 
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:23
+#| msgid "OAuth2 (Google)"
+msgid "OAuth2 (Yahoo!)"
+msgstr "OAuth2 (Yahoo!)"
+
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:24
+#| msgid ""
+#| "This option will use an OAuth 2.0 access token to connect to the server"
+msgid ""
+"This option will use an OAuth 2.0 access token to connect to the Yahoo! "
+"server"
+msgstr ""
+"Cette option utilise un jeton d’accès OAuth 2.0 pour se connecter au serveur "
+"Yahoo!"
+
 #: ../src/camel/camel-search-private.c:114
 #, c-format
 msgid "Regular expression compilation failed: %s: %s"
@@ -6260,6 +6275,53 @@ msgstr ""
 "Une chaîne vide signifie utiliser celui fourni durant la construction. Le "
 "changer nécessite un redémarrage."
 
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
+#| msgid ""
+#| "An OAuth2 client ID to use to connect to Google servers, instead of the "
+#| "one provided during build time"
+msgid ""
+"An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
+"provided during build time"
+msgstr ""
+"Un identifiant client OAuth2 à utiliser pour se connecter aux serveurs "
+"Yahoo!, au lieu de celui fourni lors de la construction"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
+#| msgid ""
+#| "User-specified OAuth2 client ID for Google servers. Empty string means to "
+#| "use the one provided during build time. Change of this requires restart."
+msgid ""
+"User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Identifiant client OAuth2 spécifié par l’utilisateur pour les serveurs "
+"Yahoo!. Une chaîne vide signifie utiliser celui fourni lors de la "
+"construction. Le changer nécessite un redémarrage."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
+#| msgid ""
+#| "An OAuth2 client secret to use to connect to Google servers, instead of "
+#| "the one provided during build time"
+msgid ""
+"An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
+"one provided during build time"
+msgstr ""
+"Un secret client OAuth2 à utiliser pour se connecter aux serveurs Yahoo!, au "
+"lieu de celui fourni lors de la construction"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
+#| msgid ""
+#| "User-specified OAuth2 client secret for Google servers. Empty string "
+#| "means to use the one provided during build time. Change of this requires "
+#| "restart."
+msgid ""
+"User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Secret client OAuth2 spécifié par l’utilisateur pour les serveurs Yahoo!. "
+"Une chaîne vide signifie utiliser celui fourni lors de la construction. Le "
+"changer nécessite un redémarrage."
+
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
 msgstr "(obsolète) Type de serveur mandataire à utiliser"
@@ -6698,6 +6760,12 @@ msgstr "Google"
 msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
+
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#: ../src/libedataserver/e-oauth2-service-yahoo.c:53
+msgctxt "OAuth2Service"
+msgid "Yahoo!"
+msgstr "Yahoo!"
 
 #: ../src/libedataserver/e-soup-session.c:958
 msgid "Operation was cancelled"
