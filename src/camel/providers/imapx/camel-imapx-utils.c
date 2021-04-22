@@ -585,13 +585,6 @@ imapx_parse_capability (CamelIMAPXInputStream *stream,
 			stream, &token, &len, cancellable, &local_error);
 	}
 
-	/* Some capabilities are extensions of other capabilities.
-	 * Make sure all prerequisite capability flags are present. */
-
-	/* LIST-STATUS is an extension of LIST-EXTENDED. */
-	if (CAMEL_IMAPX_HAVE_CAPABILITY (cinfo, LIST_STATUS))
-		cinfo->capa |= imapx_lookup_capability ("LIST-EXTENDED");
-
 	if (local_error != NULL) {
 		g_propagate_error (error, local_error);
 		imapx_free_capability (cinfo);
