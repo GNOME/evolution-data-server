@@ -601,6 +601,12 @@ imapx_server_stash_command_arguments (CamelIMAPXServer *is)
 		if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, SPECIAL_USE) || CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, X_GM_EXT_1))
 			g_string_append_printf (buffer, " SPECIAL-USE");
 		is->priv->list_return_opts = g_string_free (buffer, FALSE);
+	} else if (!is->priv->is_broken_cyrus && CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, LIST_STATUS)) {
+		buffer = g_string_new ("");
+		g_string_append_printf (
+			buffer, "STATUS (%s)",
+			is->priv->status_data_items);
+		is->priv->list_return_opts = g_string_free (buffer, FALSE);
 	} else {
 		is->priv->list_return_opts = NULL;
 	}
@@ -6522,7 +6528,7 @@ camel_imapx_server_list_sync (CamelIMAPXServer *is,
 
 	camel_imapx_command_unref (ic);
 
-	if (success && !is->priv->list_return_opts) {
+	if (success && (!is->priv->list_return_opts || CAMEL_IMAPX_LACK_CAPABILITY (is->priv->cinfo, LIST_EXTENDED))) {
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_LSUB, "LSUB \"\" %s",
 			utf7_pattern ? utf7_pattern : in_pattern);
 
