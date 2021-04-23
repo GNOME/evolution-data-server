@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.tr\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2021-02-23 18:20+0000\n"
-"PO-Revision-Date: 2021-02-25 16:46+0300\n"
+"POT-Creation-Date: 2021-04-22 21:25+0000\n"
+"PO-Revision-Date: 2021-04-23 23:56+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -26,7 +26,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Poedit 2.4.2\n"
 "X-POOTLE-MTIME: 1433363404.000000\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:231
@@ -78,10 +78,10 @@ msgstr "Verilen URL “%s”, CardDAV adres defterine ait değil"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1848
 #: ../src/camel/camel-filter-driver.c:1705
 #: ../src/camel/camel-filter-driver.c:1834
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3321
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3327
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3337
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3349
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3333
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3343
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3355
 #: ../src/camel/providers/nntp/camel-nntp-store.c:419
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:183
@@ -182,7 +182,7 @@ msgid "Invalid Query “%s”"
 msgstr "Geçersiz Sorgu “%s”"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1975
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2048
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2050
 msgid "Requested to delete an unrelated cursor"
 msgstr "İlgisiz bir imlecin silinmesi istendi"
 
@@ -986,7 +986,7 @@ msgstr "“%s”e bağlanılamadı: "
 #: ../src/calendar/libecal/e-cal-client-view.c:667
 #, c-format
 msgid "Client disappeared"
-msgstr "İstemci kayboldu"
+msgstr "İstemci yitirildi"
 
 #: ../src/addressbook/libedata-book/e-book-backend.c:3253
 #, c-format
@@ -1191,8 +1191,8 @@ msgstr "UID “%s” için önceden yüklenmiş nesne geçersiz"
 msgid "Received object for UID “%s” is invalid"
 msgstr "UID “%s” için alınan nesne geçersiz"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1918
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2374
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1920
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2376
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3319
 #, c-format
 msgid "Failed to create cache “%s”:"
@@ -2847,7 +2847,7 @@ msgstr "“%s : %s” klasörü süzülüyor"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3320
+#: ../src/camel/camel-folder.c:3322
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "“%s : %s” klasörü siliniyor"
@@ -2855,7 +2855,7 @@ msgstr "“%s : %s” klasörü siliniyor"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3455
+#: ../src/camel/camel-folder.c:3457
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "“%2$s : %3$s” içindeki %1$s iletisi alınıyor"
@@ -2863,7 +2863,7 @@ msgstr "“%2$s : %3$s” içindeki %1$s iletisi alınıyor"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3680
+#: ../src/camel/camel-folder.c:3682
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "“%s : %s” için kota bilgisi alınıyor"
@@ -2871,7 +2871,7 @@ msgstr "“%s : %s” için kota bilgisi alınıyor"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3980
+#: ../src/camel/camel-folder.c:3982
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "“%s : %s” klasörü tazeleniyor"
@@ -3284,30 +3284,30 @@ msgstr "Klasör içeriğini _çevrim dışı işlem için yerele kopyala"
 msgid "Syncing messages in account “%s” to disk"
 msgstr "“%s” hesabındaki iletiler diske eşzamanlandırılıyor"
 
-#: ../src/camel/camel-provider.c:89
+#: ../src/camel/camel-provider.c:90
 msgid "Virtual folder email provider"
 msgstr "Sanal klasör e-posta sağlayıcısı"
 
-#: ../src/camel/camel-provider.c:91
+#: ../src/camel/camel-provider.c:92
 msgid "For reading mail as a query of another set of folders"
 msgstr "Başka klasör kümesi sorgusu olarak mektup okumak için"
 
-#: ../src/camel/camel-provider.c:299
+#: ../src/camel/camel-provider.c:335
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr "%s yüklenemedi: Modül yükleme bu sistemde desteklenmiyor."
 
-#: ../src/camel/camel-provider.c:308
+#: ../src/camel/camel-provider.c:344
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "%s yüklenemedi: %s"
 
-#: ../src/camel/camel-provider.c:317
+#: ../src/camel/camel-provider.c:353
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "%s yüklenemedi: Modülde başlangıç kodu bulunamadı."
 
-#: ../src/camel/camel-provider.c:463 ../src/camel/camel-session.c:430
+#: ../src/camel/camel-provider.c:499 ../src/camel/camel-session.c:430
 #, c-format
 msgid "No provider available for protocol “%s”"
 msgstr "“%s” iletişim kuralı için sağlayıcı yok"
@@ -3600,6 +3600,18 @@ msgstr ""
 "Bu seçenek, Outlook.com sunucusuna bağlanmak için OAuth 2.0 erişim jetonu "
 "kullanacak"
 
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:23
+msgid "OAuth2 (Yahoo!)"
+msgstr "OAuth2 (Yahoo!)"
+
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:24
+msgid ""
+"This option will use an OAuth 2.0 access token to connect to the Yahoo! "
+"server"
+msgstr ""
+"Bu seçenek, Yahoo! sunucusuna bağlanmak için OAuth 2.0 erişim jetonu "
+"kullanacak"
+
 #: ../src/camel/camel-search-private.c:114
 #, c-format
 msgid "Regular expression compilation failed: %s: %s"
@@ -3611,7 +3623,7 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "“%s” iletişim kuralı için geçersiz GType kaydedilmiş"
 
 #: ../src/camel/camel-session.c:508
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3240
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3246
 #: ../src/camel/providers/pop3/camel-pop3-store.c:305
 #: ../src/camel/providers/pop3/camel-pop3-store.c:809
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:696
@@ -3988,7 +4000,7 @@ msgstr ""
 "Bu işlemi tamamlayabilmek için çevirim içi çalışıyor olmanız gerekir (%s)"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:987
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3406
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3412
 #: ../src/camel/providers/nntp/camel-nntp-store.c:348
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1343
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2153
@@ -4176,41 +4188,41 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "IMAP sunucularından ileti alma ve göndermede kullanmak için."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:1146
+#: ../src/camel/providers/imapx/camel-imapx-server.c:1152
 msgid "Error writing to cache stream"
 msgstr "Ön bellek akışına yazmada hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3038
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3125
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3439
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3044
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3131
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3445
 msgid "Failed to get capabilities"
 msgstr "Yetenekler alınamadı"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3057
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3063
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "%s IMAP sunucusuna güvenli kipte bağlantı başarısız oldu: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3058
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3064
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:283
 msgid "STARTTLS not supported"
 msgstr "STARTTLS desteklenmiyor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3067
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3073
 msgid "Failed to issue STARTTLS"
 msgstr "STARTTLS verme başarısız oldu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3114
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3120
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "%s IMAP sunucusuna güvenli kipte bağlantı başarısız oldu: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3227
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3233
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "%s IMAP sunucusu %s kimlik doğrulamayı desteklemiyor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3253
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3259
 #, c-format
 msgid ""
 "Plaintext authentication disallowed on insecure connections. Change "
@@ -4219,176 +4231,176 @@ msgstr ""
 "Güvenli olmayan bağlantılarda düz metin kimlik doğrulamaya izin verilmedi. "
 "“%s” hesabı için şifrelemeyi STARTTLS veya TLS olarak değiştirin."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3266
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3272
 #: ../src/camel/providers/nntp/camel-nntp-store.c:454
 #: ../src/camel/providers/nntp/camel-nntp-store.c:596
 msgid "Cannot authenticate without a username"
 msgstr "Kullanıcı adı olmadan kimlik doğrulanamaz"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3275
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3281
 #: ../src/camel/providers/nntp/camel-nntp-store.c:605
 #: ../src/camel/providers/pop3/camel-pop3-store.c:709
 #: ../src/camel/providers/pop3/camel-pop3-store.c:747
 msgid "Authentication password not available"
 msgstr "Kimlik doğrulama parolası kullanılabilir değil"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3285
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3300
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3291
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3306
 msgid "Failed to authenticate"
 msgstr "Kimlik doğrulama başarısız oldu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3466
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3472
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr "ENABLE UTF8=ACCEPT verilmesi başarısız oldu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3488
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3494
 msgid "Failed to issue NAMESPACE"
 msgstr "NAMESPACE verilmesi başarısız oldu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3506
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3512
 msgid "Failed to enable QResync"
 msgstr "QResync etkinleştirme başarısız oldu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3543
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3549
 msgid "Failed to issue NOTIFY"
 msgstr "NOTIFY verilmesi başarısız oldu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4022
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4028
 msgid "Failed to select mailbox"
 msgstr "Posta kutusu seçme başarısız oldu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4122
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4128
 msgid "Cannot issue command, no stream available"
 msgstr "Komut verilemiyor, kullanılabilir akış yok"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4388
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4394
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "%s ileti IDʼsine sahip ileti alınamıyor: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4389
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4395
 msgid "No such message available."
 msgstr "Böyle bir ileti yok."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4438
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4463
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4502
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4444
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4469
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4508
 msgid "Error fetching message"
 msgstr "İleti alınırken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4480
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5247
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4486
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5253
 msgid "Error performing NOOP"
 msgstr "NOOP İşlemi başarısız"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4495
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4501
 msgid "Failed to close the tmp stream"
 msgstr "Tmp akışı kapatılamadı"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4526
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4532
 msgid "Failed to copy the tmp file"
 msgstr "Tmp dosyası kopyalanamadı"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4764
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4770
 msgid "Error moving messages"
 msgstr "İletiler taşınırken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4764
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4770
 msgid "Error copying messages"
 msgstr "İletiler kopyalanırken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5037
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5058
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5043
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5064
 msgid "Cannot create spool file: "
 msgstr "Kuyruk dosyası oluşturulamadı: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5144
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5150
 msgid "Error appending message"
 msgstr "İleti eklenirken hata"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5400
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5406
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "“%s : %s” içerisindeki değiştirilen iletiler taranıyor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5404
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5410
 msgid "Error scanning changes"
 msgstr "Değişiklikler taranırken hata"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5425
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5431
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "“%s : %s” içindeki yeni iletilerin özet bilgisi getiriliyor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5453
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5459
 msgid "Error fetching message info"
 msgstr "İleti bilgisi getirilirken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5586
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5592
 msgid "Error running STATUS"
 msgstr "STATUS çalıştırılırken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6160
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6215
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6279
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6166
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6221
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6285
 msgid "Error syncing changes"
 msgstr "Değişiklikler eşlenirken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6173
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6225
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6298
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6439
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6179
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6231
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6304
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6445
 msgid "Error expunging message"
 msgstr "İleti silinirken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6521
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6527
 msgid "Error fetching folders"
 msgstr "Klasörler alınırken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6529
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6535
 msgid "Error fetching subscribed folders"
 msgstr "Abone olunan klasörler getirilirken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6586
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6592
 msgid "Error creating folder"
 msgstr "Klasör oluştururken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6636
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6642
 msgid "Error deleting folder"
 msgstr "Klasör silinirken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6682
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6688
 msgid "Error renaming folder"
 msgstr "Klasör yeniden adlandırılırken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6714
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6720
 msgid "Error subscribing to folder"
 msgstr "Klasöre abone olunurken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6750
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6756
 msgid "Error unsubscribing from folder"
 msgstr "Klasör aboneliği iptal edilirken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6790
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6796
 msgid "IMAP server does not support quotas"
 msgstr "IMAP sunucusu kotaları desteklemiyor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6802
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6808
 msgid "Error retrieving quota information"
 msgstr "Kota bilgisi getirilirken hata"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6867
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6873
 msgid "Search failed"
 msgstr "Arama başarısız"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6995
+#: ../src/camel/providers/imapx/camel-imapx-server.c:7001
 msgid "Error running IDLE"
 msgstr "IDLE çalıştırılırken hata"
 
@@ -4399,7 +4411,7 @@ msgstr "IDLE çalıştırılırken hata"
 #: ../src/camel/providers/local/camel-maildir-store.c:824
 #: ../src/camel/providers/local/camel-maildir-store.c:830
 #: ../src/camel/providers/local/camel-maildir-store.c:913
-#: ../src/camel/providers/local/camel-spool-store.c:386
+#: ../src/camel/providers/local/camel-spool-store.c:391
 msgid "Inbox"
 msgstr "Gelenler"
 
@@ -4646,7 +4658,7 @@ msgstr "_Durum başlıkları Elm/Pine/Mutt biçiminde sakla"
 
 #: ../src/camel/providers/local/camel-local-provider.c:120
 msgid "Standard Unix mbox spool file"
-msgstr "Standart Unix mbox dosyası"
+msgstr "Standart Unix kuyruk dosyası"
 
 #: ../src/camel/providers/local/camel-local-provider.c:121
 #: ../src/camel/providers/local/camel-local-provider.c:135
@@ -4654,13 +4666,13 @@ msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
-"Yerel mektupları harici standart mbox depo dosyalarından okumak ve saklamak "
-"için.\n"
+"Yerel mektupları harici standart mbox kuyruk dosyalarından okumak ve "
+"saklamak için.\n"
 "Ayrıca Elm, Pine ya da Mutt biçemli klasörleri okumak için de kullanılabilir."
 
 #: ../src/camel/providers/local/camel-local-provider.c:134
 msgid "Standard Unix mbox spool directory"
-msgstr "Standart Unix mbox dizini"
+msgstr "Standart Unix mbox kuyruk dizini"
 
 #: ../src/camel/providers/local/camel-local-store.c:82
 #, c-format
@@ -4676,7 +4688,7 @@ msgstr "Yerel mektup dosyası %s"
 #: ../src/camel/providers/local/camel-local-store.c:367
 #: ../src/camel/providers/local/camel-maildir-store.c:118
 #: ../src/camel/providers/local/camel-mbox-store.c:579
-#: ../src/camel/providers/local/camel-spool-store.c:81
+#: ../src/camel/providers/local/camel-spool-store.c:84
 #, c-format
 msgid "Store root %s is not an absolute path"
 msgstr "%s saklama kökü mutlak bir yol değil"
@@ -4796,8 +4808,8 @@ msgstr "maildir dizini değil"
 
 #: ../src/camel/providers/local/camel-maildir-store.c:664
 #: ../src/camel/providers/local/camel-maildir-store.c:1142
-#: ../src/camel/providers/local/camel-spool-store.c:206
-#: ../src/camel/providers/local/camel-spool-store.c:225
+#: ../src/camel/providers/local/camel-spool-store.c:211
+#: ../src/camel/providers/local/camel-spool-store.c:230
 #, c-format
 msgid "Could not scan folder “%s”: %s"
 msgstr "“%s” klasörü taranamadı: %s"
@@ -5003,36 +5015,36 @@ msgstr "“%s” klasörü alınamıyor: bir dizin değil."
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "MH dizin yolu açılamıyor: %s: %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:89
+#: ../src/camel/providers/local/camel-spool-store.c:92
 #, c-format
 msgid "Spool “%s” cannot be opened: %s"
 msgstr "“%s” kuyruğu açılamadı: %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:103
+#: ../src/camel/providers/local/camel-spool-store.c:106
 #, c-format
 msgid "Spool “%s” is not a regular file or directory"
 msgstr "“%s” kuyruğu sıradan bir dosya ya da dizin değil"
 
-#: ../src/camel/providers/local/camel-spool-store.c:418
+#: ../src/camel/providers/local/camel-spool-store.c:423
 #, c-format
 msgid "Spool mail file %s"
 msgstr "Kuyruk mektup dosyası %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:422
+#: ../src/camel/providers/local/camel-spool-store.c:427
 #, c-format
 msgid "Spool folder tree %s"
 msgstr "Kuyruk klasör ağacı %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:425
+#: ../src/camel/providers/local/camel-spool-store.c:430
 msgid "Invalid spool"
 msgstr "Geçersiz kuyruk"
 
-#: ../src/camel/providers/local/camel-spool-store.c:474
+#: ../src/camel/providers/local/camel-spool-store.c:479
 #, c-format
 msgid "Folder “%s/%s” does not exist."
 msgstr "“%s/%s” klasörü yok."
 
-#: ../src/camel/providers/local/camel-spool-store.c:487
+#: ../src/camel/providers/local/camel-spool-store.c:492
 #, c-format
 msgid ""
 "Could not open folder “%s”:\n"
@@ -5041,12 +5053,12 @@ msgstr ""
 "“%s” klasörü açılamadı:\n"
 "%s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:493
+#: ../src/camel/providers/local/camel-spool-store.c:498
 #, c-format
 msgid "Folder “%s” does not exist."
 msgstr "“%s” klasörü yok."
 
-#: ../src/camel/providers/local/camel-spool-store.c:501
+#: ../src/camel/providers/local/camel-spool-store.c:506
 #, c-format
 msgid ""
 "Could not create folder “%s”:\n"
@@ -5055,22 +5067,22 @@ msgstr ""
 "“%s” klasörü oluşturulamadı:\n"
 "%s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:514
+#: ../src/camel/providers/local/camel-spool-store.c:519
 #, c-format
 msgid "“%s” is not a mailbox file."
 msgstr "“%s” bir posta kutusu dosyası değil."
 
-#: ../src/camel/providers/local/camel-spool-store.c:578
+#: ../src/camel/providers/local/camel-spool-store.c:583
 #, c-format
 msgid "Store does not support an INBOX"
 msgstr "Saklama Gelen Kutusu desteklemiyor"
 
-#: ../src/camel/providers/local/camel-spool-store.c:597
+#: ../src/camel/providers/local/camel-spool-store.c:602
 #, c-format
 msgid "Spool folders cannot be deleted"
 msgstr "Kuyruk klasörleri silinemez"
 
-#: ../src/camel/providers/local/camel-spool-store.c:612
+#: ../src/camel/providers/local/camel-spool-store.c:617
 #, c-format
 msgid "Spool folders cannot be renamed"
 msgstr "Kuyruk klasörleri yeniden adlandırılamaz"
@@ -6132,6 +6144,40 @@ msgstr ""
 "dizge inşa zamanında sağlananı kullan anlamına gelir. Bunu değiştirmek "
 "yeniden başlatma gerektirir."
 
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
+msgid ""
+"An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
+"provided during build time"
+msgstr ""
+"İnşa zamanında sağlananın yerine Yahoo! sunucularına bağlantıda kullanılacak "
+"OAuth2 istemci kimliği"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
+msgid ""
+"User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Yahoo! sunucuları için kullanıcının tanımladığı OAuth2 istemci kimliği. Boş "
+"dizge inşa zamanında sağlananı kullan anlamına gelir. Bunu değiştirmek "
+"yeniden başlatma gerektirir."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
+msgid ""
+"An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
+"one provided during build time"
+msgstr ""
+"İnşa zamanında sağlananın yerine Yahoo! sunucularına bağlantıda kullanılacak "
+"OAuth2 istemci gizi"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
+msgid ""
+"User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Yahoo! sunucuları için kullanıcının tanımladığı OAuth2 istemci gizi. Boş "
+"dizge inşa zamanında sağlananı kullan anlamına gelir. Bunu değiştirmek "
+"yeniden başlatma gerektirir."
+
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
 msgstr "(Kullanılmıyor) Kullanılacak vekil tipi"
@@ -6552,6 +6598,12 @@ msgstr "Google"
 msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
+
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#: ../src/libedataserver/e-oauth2-service-yahoo.c:53
+msgctxt "OAuth2Service"
+msgid "Yahoo!"
+msgstr "Yahoo!"
 
 #: ../src/libedataserver/e-soup-session.c:958
 msgid "Operation was cancelled"
@@ -7483,12 +7535,12 @@ msgstr "Bağlantılar"
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:40
 #: ../src/services/evolution-user-prompter/evolution-user-prompter.c:33
 msgid "Keep running after the last client is closed"
-msgstr "Son istemci kapandıktan sonra çalışmaya devam et"
+msgstr "Son istemci kapandıktan sonra çalışmayı sürdür"
 
 #: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:40
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:42
 msgid "Wait running until at least one client is connected"
-msgstr "En az bir istemci bağlanana dek çalışmaya devam et"
+msgstr "En az bir istemci bağlanana dek çalışmayı sürdür"
 
 #: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:42
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:44
@@ -7502,8 +7554,8 @@ msgstr ""
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:326
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:354
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:865
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1113
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:882
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1130
 msgid "Reminders"
 msgstr "Anımsatıcılar"
 
@@ -7540,27 +7592,27 @@ msgstr ""
 msgid "Do not ask me about this program again"
 msgstr "Bu program hakkında bir daha bana soru sorma"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:770
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
 msgid "Display Reminders window with _notifications"
 msgstr "Anımsatıcı penceresini _bildirimlerle birlikte göster"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:771
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
 msgid "Keep reminder notification window always on _top"
 msgstr "Anımsatıcı bildirim penceresini daima _yukarda tut"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:772
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
 msgid "Display reminders for _completed tasks"
 msgstr "Tamamlanan _görevlerin anımsatıcılarını göster"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:773
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
 msgid "Display reminders for _past events"
 msgstr "_Geçmiş olaylar için anımsatıcıları göster"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:804
 msgid "Reminders Options:"
 msgstr "Anımsatıcı Seçenekleri:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:881
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:898
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
@@ -7952,9 +8004,6 @@ msgstr "Kaynak bulunamadı\n"
 
 #~ msgid "Yahoo! Calendar"
 #~ msgstr "Yahoo! Takvim"
-
-#~ msgid "Yahoo! Mail"
-#~ msgstr "Yahoo! E-posta"
 
 #~ msgid "User name not filled"
 #~ msgstr "Kullanıcı adı doldurulmamış"
