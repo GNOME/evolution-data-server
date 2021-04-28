@@ -210,6 +210,17 @@ G_BEGIN_DECLS
  **/
 #define E_CAL_STATIC_CAPABILITY_SIMPLE_MEMO		"simple-memo"
 
+/**
+ * E_CAL_STATIC_CAPABILITY_SIMPLE_MEMO_WITH_SUMMARY:
+ *
+ * Similar to the %E_CAL_STATIC_CAPABILITY_SIMPLE_MEMO, except the backend stores
+ * the description and the summary separately.
+ *
+ * Since: 3.40.1
+ **/
+
+#define E_CAL_STATIC_CAPABILITY_SIMPLE_MEMO_WITH_SUMMARY "simple-memo-with-summary"
+
 struct _ECalClient;
 
 ICalComponent *	e_cal_util_new_top_level	(void);
