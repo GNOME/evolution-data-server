@@ -1,3 +1,49 @@
+Evolution-Data-Server 3.40.1 2021-04-30
+---------------------------------------
+
+Bug Fixes:
+	I#313 - EXmlDocument: Export unformatted text, to save bandwidth (Milan Crha)
+	I#315 - EWebDAVDiscover: Correct error response (Milan Crha)
+	I#316 - vCard: PHOTO/LOGO is a single value attribute (Milan Crha)
+	I#317 - Add OAuth2 for Yahoo! accounts (Milan Crha)
+	I#323 - Camel: Consider plain words as message ids in In-Reply-To/References headers (Milan Crha)
+	I#326 - libecal: Move Due date relative to the Start date on a recurring task completion (Milan Crha)
+	I#328 - IMAPx: LIST-STATUS is not an extension of the LIST-EXTENDED (Milan Crha)
+	I#329 - Calendar: Add SIMPLE_MEMO_WITH_SUMMARY capability (Milan Crha)
+	M!68 - SetupBuildFlags.cmake: Correct testing of two compiler/linker build flags (Matt Turner)
+	evo-I#571 - IMAPx QResync: Folder doesn't show all messages actually in it (Milan Crha)
+
+Miscellaneous:
+	EWebDAVCollectionBackend: Preset also auth method on the new child (Milan Crha)
+	Camel: Fails to filter unread junk messages in a virtual Junk folder (Milan Crha)
+	ESourceWebDAV: Fallback to SHA1 on SSL trust verification if needed (Milan Crha)
+	tests: Change how timezone is verified in CalMetaBackend test (Milan Crha)
+	Ensure non-const pointers passed to I_CAL_IS_... functions (Milan Crha)
+	tests: Run book-migration Berkeley DB tests only if libdb had been found (Milan Crha)
+	ECalBackendSync: Ensure no Recurrence-ID set when removing all components (Milan Crha)
+	PrintableOptions.cmake: Correct variable name comparison (Milan Crha)
+	libecal: Fix a warning caught by a gcc static analyzer (Milan Crha)
+
+Translations:
+	Bruce Cowan (en_GB)
+	Gianvito Cavasoli (it)
+	Nathan Follens (nl)
+	Chao-Hsiung Liao (zh_TW)
+	Yuri Chornoivan (uk)
+	Matej Urbančič (sl)
+	Hugo Carvalho (pt)
+	Enrico Nicoletto (pt_BR)
+	Daniel Șerbănescu (ro)
+	Asier Sarasua Garmendia (eu)
+	Aurimas Černius (lt)
+	Piotr Drąg (pl)
+	Daniel Mustieles (es)
+	Tim Sabsch (de)
+	Charles Monzat (fr)
+	Kukuh Syafaat (id)
+	Luna Jernberg (sv)
+	Emin Tufan Çetin (tr)
+
 Evolution-Data-Server 3.40.0 2021-03-19
 ---------------------------------------
 
