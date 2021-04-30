@@ -5642,6 +5642,9 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 				imapx_summary->modseq,
 				highestmodseq,
 				camel_folder_get_full_name (folder));
+
+			/* To make sure whole folder content is re-checked when the cache is out of sync */
+			total = 0;
 		} else {
 			imapx_summary->uidnext = uidnext;
 
