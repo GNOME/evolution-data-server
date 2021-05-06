@@ -156,8 +156,8 @@ data_book_factory_create_backend (EDataFactory *data_factory,
 	}
 
 	if (backend) {
-		g_signal_connect (backend, "closed",
-			G_CALLBACK (data_book_factory_backend_closed_cb), data_factory);
+		g_signal_connect_object (backend, "closed",
+			G_CALLBACK (data_book_factory_backend_closed_cb), data_factory, 0);
 	}
 
 	return backend;
@@ -343,10 +343,10 @@ e_data_book_factory_init (EDataBookFactory *factory)
 	factory->priv->dbus_factory =
 		e_dbus_address_book_factory_skeleton_new ();
 
-	g_signal_connect (
+	g_signal_connect_object (
 		factory->priv->dbus_factory, "handle-open-address-book",
 		G_CALLBACK (data_book_factory_handle_open_address_book_cb),
-		factory);
+		factory, 0);
 }
 
 EDBusServer *

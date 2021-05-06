@@ -188,18 +188,31 @@ data_factory_subprocess_helper_free (DataFactorySubprocessHelper *helper)
 	}
 }
 
+static void
+data_factory_backend_toggle_notify_cb (gpointer user_data,
+				       GObject *backend,
+				       gboolean is_last_ref);
+
 typedef struct _OpenedBackendData {
+	EDataFactory *data_factory;
 	EBackend *backend;
 	gchar *object_path;
 } OpenedBackendData;
 
 static OpenedBackendData *
-opened_backend_data_new (EBackend *backend, /* assumes ownership of 'backend' */
+opened_backend_data_new (EDataFactory *data_factory,
+			 EBackend *backend, /* assumes ownership of 'backend' */
 			 const gchar *object_path)
 {
 	OpenedBackendData *obd;
 
+	g_object_add_toggle_ref (
+		G_OBJECT (backend),
+		data_factory_backend_toggle_notify_cb,
+		data_factory);
+
 	obd = g_slice_new0 (OpenedBackendData);
+	obd->data_factory = data_factory;
 	obd->backend = backend;
 	obd->object_path = g_strdup (object_path);
 
@@ -212,6 +225,9 @@ opened_backend_data_free (gpointer ptr)
 	OpenedBackendData *obd = ptr;
 
 	if (obd) {
+		if (obd->backend)
+			g_object_remove_toggle_ref (G_OBJECT (obd->backend), data_factory_backend_toggle_notify_cb, obd->data_factory);
+
 		g_clear_object (&obd->backend);
 		g_free (obd->object_path);
 		g_slice_free (OpenedBackendData, obd);
@@ -1347,9 +1363,6 @@ data_factory_backend_toggle_notify_cb (gpointer user_data,
 
 		g_object_ref (backend);
 
-		g_object_remove_toggle_ref (
-			backend, data_factory_backend_toggle_notify_cb, user_data);
-
 		g_signal_emit_by_name (backend, "shutdown");
 
 		g_mutex_lock (&data_factory->priv->mutex);
@@ -1465,14 +1478,9 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 			backend = e_data_factory_create_backend (data_factory, backend_factory, source);
 			object_path = e_data_factory_open_backend (data_factory, backend, g_dbus_method_invocation_get_connection (invocation), NULL, &error);
 			if (object_path) {
-				g_object_add_toggle_ref (
-					G_OBJECT (backend),
-					data_factory_backend_toggle_notify_cb,
-					data_factory);
-
 				g_mutex_lock (&data_factory->priv->mutex);
 				g_hash_table_insert (data_factory->priv->opened_backends, backend_key,
-					opened_backend_data_new (backend, object_path));
+					opened_backend_data_new (data_factory, backend, object_path));
 				g_mutex_unlock (&data_factory->priv->mutex);
 
 				backend_key = NULL;
