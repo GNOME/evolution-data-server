@@ -186,8 +186,8 @@ data_cal_factory_create_backend (EDataFactory *data_factory,
 	}
 
 	if (backend) {
-		g_signal_connect (backend, "closed",
-			G_CALLBACK (data_cal_factory_backend_closed_cb), data_factory);
+		g_signal_connect_object (backend, "closed",
+			G_CALLBACK (data_cal_factory_backend_closed_cb), data_factory, 0);
 	}
 
 	return backend;
@@ -338,20 +338,20 @@ e_data_cal_factory_init (EDataCalFactory *factory)
 	factory->priv->dbus_factory =
 		e_dbus_calendar_factory_skeleton_new ();
 
-	g_signal_connect (
+	g_signal_connect_object (
 		factory->priv->dbus_factory, "handle-open-calendar",
 		G_CALLBACK (data_cal_factory_handle_open_calendar_cb),
-		factory);
+		factory, 0);
 
-	g_signal_connect (
+	g_signal_connect_object (
 		factory->priv->dbus_factory, "handle-open-task-list",
 		G_CALLBACK (data_cal_factory_handle_open_task_list_cb),
-		factory);
+		factory, 0);
 
-	g_signal_connect (
+	g_signal_connect_object (
 		factory->priv->dbus_factory, "handle-open-memo-list",
 		G_CALLBACK (data_cal_factory_handle_open_memo_list_cb),
-		factory);
+		factory, 0);
 }
 
 EDBusServer *
