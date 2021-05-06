@@ -886,6 +886,7 @@ collection_backend_finalize (GObject *object)
 
 	priv = E_COLLECTION_BACKEND (object)->priv;
 
+	g_free (priv->cache_dir);
 	g_hash_table_destroy (priv->children);
 	g_mutex_clear (&priv->children_lock);
 
