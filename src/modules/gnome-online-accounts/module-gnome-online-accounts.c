@@ -1258,8 +1258,7 @@ gnome_online_accounts_create_client_cb (GObject *source_object,
 	extension->goa_client = goa_client;  /* takes ownership */
 
 	/* Don't need the GCancellable anymore. */
-	g_object_unref (extension->create_client);
-	extension->create_client = NULL;
+	g_clear_object (&extension->create_client);
 
 	list = e_goa_client_list_accounts (extension->goa_client);
 
