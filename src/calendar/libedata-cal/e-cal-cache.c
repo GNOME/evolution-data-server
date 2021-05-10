@@ -76,7 +76,6 @@ struct _ECalCachePrivate {
 
 	GHashTable *loaded_timezones; /* gchar *tzid ~> ICalTimezone * */
 	GHashTable *modified_timezones; /* gchar *tzid ~> ICalTimezone * */
-	GRecMutex timezones_lock;
 
 	GHashTable *sexps; /* gint ~> ECalBackendSExp * */
 	GMutex sexps_lock;
@@ -2236,7 +2235,7 @@ e_cal_cache_migrate (ECache *cache,
 		gboolean refs_column_exists = FALSE;
 		gchar *stmt;
 
-		g_rec_mutex_lock (&cal_cache->priv->timezones_lock);
+		e_cache_lock (cache, E_CACHE_LOCK_WRITE);
 
 		/* In case an older version modified the local cache version,
 		   then the ALTER TABLE command can fail due to duplicate 'refs' column */
@@ -2258,7 +2257,7 @@ e_cal_cache_migrate (ECache *cache,
 			e_cache_sqlite_stmt_free (stmt);
 		}
 
-		g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
+		e_cache_unlock (cache, E_CACHE_UNLOCK_COMMIT);
 	}
 
 	/* Re-add all components, to have properly filled values in the columns.
@@ -2284,7 +2283,7 @@ e_cal_cache_migrate (ECache *cache,
 	}
 
 	if (success && timezones) {
-		g_rec_mutex_lock (&cal_cache->priv->timezones_lock);
+		e_cache_lock (cache, E_CACHE_LOCK_WRITE);
 
 		success = e_cal_cache_remove_timezones (cal_cache, cancellable, error);
 		if (success) {
@@ -2307,7 +2306,7 @@ e_cal_cache_migrate (ECache *cache,
 			}
 		}
 
-		g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
+		e_cache_unlock (cache, E_CACHE_UNLOCK_COMMIT);
 	}
 
 	if (timezones)
@@ -3818,7 +3817,7 @@ e_cal_cache_put_timezone (ECalCache *cal_cache,
 		return FALSE;
 	}
 
-	g_rec_mutex_lock (&cal_cache->priv->timezones_lock);
+	e_cache_lock (E_CACHE (cal_cache), E_CACHE_LOCK_WRITE);
 
 	if (inc_ref_counts > 0) {
 		gint current_refs;
@@ -3842,7 +3841,7 @@ e_cal_cache_put_timezone (ECalCache *cal_cache,
 
 	g_free (component_str);
 
-	g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
+	e_cache_unlock (E_CACHE (cal_cache), E_CACHE_UNLOCK_COMMIT);
 
 	return success;
 }
@@ -3879,17 +3878,17 @@ e_cal_cache_get_timezone (ECalCache *cal_cache,
 	g_return_val_if_fail (tzid != NULL, FALSE);
 	g_return_val_if_fail (out_zone != NULL, FALSE);
 
-	g_rec_mutex_lock (&cal_cache->priv->timezones_lock);
+	e_cache_lock (E_CACHE (cal_cache), E_CACHE_LOCK_READ);
 
 	*out_zone = g_hash_table_lookup (cal_cache->priv->loaded_timezones, tzid);
 	if (*out_zone) {
-		g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
+		e_cache_unlock (E_CACHE (cal_cache), E_CACHE_UNLOCK_NONE);
 		return TRUE;
 	}
 
 	*out_zone = g_hash_table_lookup (cal_cache->priv->modified_timezones, tzid);
 	if (*out_zone) {
-		g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
+		e_cache_unlock (E_CACHE (cal_cache), E_CACHE_UNLOCK_NONE);
 		return TRUE;
 	}
 
@@ -3907,7 +3906,7 @@ e_cal_cache_get_timezone (ECalCache *cal_cache,
 		}
 	}
 
-	g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
+	e_cache_unlock (E_CACHE (cal_cache), E_CACHE_UNLOCK_NONE);
 
 	g_free (zone_str);
 
@@ -3947,8 +3946,6 @@ e_cal_cache_dup_timezone_as_string (ECalCache *cal_cache,
 
 	*out_zone_string = NULL;
 
-	g_rec_mutex_lock (&cal_cache->priv->timezones_lock);
-
 	stmt = e_cache_sqlite_stmt_printf (
 		"SELECT zone FROM " ECC_TABLE_TIMEZONES " WHERE tzid=%Q",
 		tzid);
@@ -3957,8 +3954,6 @@ e_cal_cache_dup_timezone_as_string (ECalCache *cal_cache,
 		*out_zone_string != NULL;
 
 	e_cache_sqlite_stmt_free (stmt);
-
-	g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
 
 	return success;
 }
@@ -4021,7 +4016,7 @@ e_cal_cache_list_timezones (ECalCache *cal_cache,
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
 	g_return_val_if_fail (out_timezones != NULL, FALSE);
 
-	g_rec_mutex_lock (&cal_cache->priv->timezones_lock);
+	e_cache_lock (E_CACHE (cal_cache), E_CACHE_LOCK_READ);
 
 	success = e_cache_sqlite_select (E_CACHE (cal_cache),
 		"SELECT COUNT(*) FROM " ECC_TABLE_TIMEZONES,
@@ -4029,7 +4024,7 @@ e_cal_cache_list_timezones (ECalCache *cal_cache,
 
 	if (success && n_stored != g_hash_table_size (cal_cache->priv->loaded_timezones)) {
 		if (n_stored == 0) {
-			g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
+			e_cache_unlock (E_CACHE (cal_cache), E_CACHE_UNLOCK_NONE);
 			*out_timezones = NULL;
 
 			return TRUE;
@@ -4053,7 +4048,7 @@ e_cal_cache_list_timezones (ECalCache *cal_cache,
 			*out_timezones = loaded ? loaded : modified;
 	}
 
-	g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
+	e_cache_unlock (E_CACHE (cal_cache), E_CACHE_UNLOCK_NONE);
 
 	return success;
 }
@@ -4093,14 +4088,11 @@ e_cal_cache_remove_timezone (ECalCache *cal_cache,
 
 	e_cache_lock (E_CACHE (cal_cache), E_CACHE_LOCK_WRITE);
 
-	g_rec_mutex_lock (&cal_cache->priv->timezones_lock);
-
 	if (dec_ref_counts) {
 		gint current_refs;
 
 		current_refs = e_cal_cache_get_current_timezone_refs (cal_cache, tzid, cancellable);
 		if (current_refs <= 0) {
-			g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
 			e_cache_unlock (E_CACHE (cal_cache), E_CACHE_UNLOCK_COMMIT);
 
 			return TRUE;
@@ -4120,8 +4112,6 @@ e_cal_cache_remove_timezone (ECalCache *cal_cache,
 	success = e_cache_sqlite_exec (E_CACHE (cal_cache), stmt, cancellable, error);
 
 	e_cache_sqlite_stmt_free (stmt);
-
-	g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
 
 	e_cache_unlock (E_CACHE (cal_cache), success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
 
@@ -4151,11 +4141,7 @@ e_cal_cache_remove_timezones (ECalCache *cal_cache,
 
 	e_cache_lock (E_CACHE (cal_cache), E_CACHE_LOCK_WRITE);
 
-	g_rec_mutex_lock (&cal_cache->priv->timezones_lock);
-
 	success = e_cache_sqlite_exec (E_CACHE (cal_cache), "DELETE FROM " ECC_TABLE_TIMEZONES, cancellable, error);
-
-	g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
 
 	e_cache_unlock (E_CACHE (cal_cache), success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
 
@@ -4168,12 +4154,12 @@ _e_cal_cache_remove_loaded_timezones (ECalCache *cal_cache)
 {
 	g_return_if_fail (E_IS_CAL_CACHE (cal_cache));
 
-	g_rec_mutex_lock (&cal_cache->priv->timezones_lock);
+	e_cache_lock (E_CACHE (cal_cache), E_CACHE_LOCK_READ);
 
 	g_hash_table_remove_all (cal_cache->priv->loaded_timezones);
 	g_hash_table_remove_all (cal_cache->priv->modified_timezones);
 
-	g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
+	e_cache_unlock (E_CACHE (cal_cache), E_CACHE_UNLOCK_NONE);
 }
 
 /**
@@ -4453,7 +4439,7 @@ ecc_get_cached_timezone (ETimezoneCache *cache,
 	if (g_str_equal (tzid, "UTC"))
 		return i_cal_timezone_get_utc_timezone ();
 
-	g_rec_mutex_lock (&cal_cache->priv->timezones_lock);
+	e_cache_lock (E_CACHE (cal_cache), E_CACHE_LOCK_READ);
 
 	/* See if we already have it in the cache. */
 	zone = g_hash_table_lookup (cal_cache->priv->loaded_timezones, tzid);
@@ -4514,7 +4500,7 @@ ecc_get_cached_timezone (ETimezoneCache *cache,
 	g_clear_object (&icomp);
 
  exit:
-	g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
+	e_cache_unlock (E_CACHE (cal_cache), E_CACHE_UNLOCK_NONE);
 
 	return zone;
 }
@@ -4539,7 +4525,6 @@ e_cal_cache_finalize (GObject *object)
 	g_hash_table_destroy (cal_cache->priv->modified_timezones);
 	g_hash_table_destroy (cal_cache->priv->sexps);
 
-	g_rec_mutex_clear (&cal_cache->priv->timezones_lock);
 	g_mutex_clear (&cal_cache->priv->sexps_lock);
 
 	/* Chain up to parent's method. */
@@ -4628,6 +4613,5 @@ e_cal_cache_init (ECalCache *cal_cache)
 
 	cal_cache->priv->sexps = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
 
-	g_rec_mutex_init (&cal_cache->priv->timezones_lock);
 	g_mutex_init (&cal_cache->priv->sexps_lock);
 }
