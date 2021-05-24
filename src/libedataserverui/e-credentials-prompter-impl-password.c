@@ -339,6 +339,7 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 		G_OBJECT (password_entry),
 		"hexpand", TRUE,
 		"halign", GTK_ALIGN_FILL,
+		"truncate-multiline", TRUE,
 		NULL);
 	if (e_named_parameters_get (prompter_password->priv->credentials, E_SOURCE_CREDENTIAL_PASSWORD))
 		gtk_entry_set_text (password_entry, e_named_parameters_get (prompter_password->priv->credentials, E_SOURCE_CREDENTIAL_PASSWORD));
