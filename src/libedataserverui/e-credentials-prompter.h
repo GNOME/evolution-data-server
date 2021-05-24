@@ -120,6 +120,8 @@ struct _ECredentialsPrompterClass {
 
 	/* Signals */
 	GtkWindow *	(*get_dialog_parent)	(ECredentialsPrompter *prompter);
+	/*GtkWindow *	(*get_dialog_parent_full)(ECredentialsPrompter *prompter,
+						 ESource *auth_source); */
 };
 
 GType		e_credentials_prompter_get_type	(void) G_GNUC_CONST;
@@ -145,6 +147,9 @@ gboolean	e_credentials_prompter_get_auto_prompt_disabled_for
 						 ESource *source);
 GtkWindow *	e_credentials_prompter_get_dialog_parent
 						(ECredentialsPrompter *prompter);
+GtkWindow *	e_credentials_prompter_get_dialog_parent_full
+						(ECredentialsPrompter *prompter,
+						 ESource *auth_source);
 gboolean	e_credentials_prompter_register_impl
 						(ECredentialsPrompter *prompter,
 						 const gchar *authentication_method,

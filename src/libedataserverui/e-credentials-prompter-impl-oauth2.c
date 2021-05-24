@@ -589,7 +589,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	prompter = e_credentials_prompter_impl_get_credentials_prompter (E_CREDENTIALS_PROMPTER_IMPL (prompter_oauth2));
 	g_return_val_if_fail (prompter != NULL, FALSE);
 
-	dialog_parent = e_credentials_prompter_get_dialog_parent (prompter);
+	dialog_parent = e_credentials_prompter_get_dialog_parent_full (prompter, prompter_oauth2->priv->auth_source);
 
 	credentials_prompter_impl_oauth2_get_prompt_strings (e_credentials_prompter_get_registry (prompter),
 		prompter_oauth2->priv->auth_source,

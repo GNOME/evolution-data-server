@@ -71,6 +71,7 @@ enum {
 
 enum {
 	GET_DIALOG_PARENT,
+	GET_DIALOG_PARENT_FULL,
 	LAST_SIGNAL
 };
 
@@ -1157,6 +1158,28 @@ e_credentials_prompter_class_init (ECredentialsPrompterClass *class)
 		credentials_prompter_get_dialog_parent_accumulator, NULL, NULL,
 		GTK_TYPE_WINDOW, 0, G_TYPE_NONE);
 
+	/**
+	 * ECredentialsPrompter::get-dialog-parent-full:
+	 * @prompter: the #ECredentialsPrompter which emitted the signal
+	 * @auth_source: (nullable): an #ESource, for which to show the credentials prompt
+	 *
+	 * Emitted when a new dialog will be shown, to get the right parent
+	 * window for it. If the result of the call is %NULL, then it tries
+	 * to get the window from the default GtkApplication.
+	 *
+	 * Returns: (transfer none): a #GtkWindow, to be used as a dialog parent,
+	 * or %NULL.
+	 *
+	 * Since: 3.42
+	 **/
+	signals[GET_DIALOG_PARENT_FULL] = g_signal_new (
+		"get-dialog-parent-full",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		/*G_STRUCT_OFFSET (ECredentialsPrompterClass, get_dialog_parent_full)*/ 0,
+		credentials_prompter_get_dialog_parent_accumulator, NULL, NULL,
+		GTK_TYPE_WINDOW, 1, E_TYPE_SOURCE);
+
 	/* Ensure built-in credential providers implementation types */
 	g_type_ensure (E_TYPE_CREDENTIALS_PROMPTER_IMPL_PASSWORD);
 	g_type_ensure (E_TYPE_CREDENTIALS_PROMPTER_IMPL_OAUTH2);
@@ -1390,6 +1413,44 @@ e_credentials_prompter_get_dialog_parent (ECredentialsPrompter *prompter)
 	g_return_val_if_fail (E_IS_CREDENTIALS_PROMPTER (prompter), NULL);
 
 	g_signal_emit (prompter, signals[GET_DIALOG_PARENT], 0, &parent);
+
+	if (!parent)
+		parent = credentials_prompter_guess_dialog_parent (prompter);
+
+	return parent;
+}
+
+/**
+ * e_credentials_prompter_get_dialog_parent_full:
+ * @prompter: an #ECredentialsPrompter
+ * @auth_source: (nullable): an #ESource
+ *
+ * Returns a #GtkWindow, which should be used as a dialog parent for the @auth_source.
+ *
+ * This is determined by an ECredentialsPrompter::get-dialog-parent-full signal emission
+ * and an ECredentialsPrompter::get-dialog-parent when the first doesn't return anything.
+ * If there is no callback registered or the current callbacks don't have any suitable
+ * window, then there's chosen the last active window from the default GApplication,
+ * if any available.
+ *
+ * Returns: (transfer none): a #GtkWindow, to be used as a dialog parent, or %NULL.
+ *
+ * Since: 3.42
+ **/
+GtkWindow *
+e_credentials_prompter_get_dialog_parent_full (ECredentialsPrompter *prompter,
+					       ESource *auth_source)
+{
+	GtkWindow *parent = NULL;
+
+	g_return_val_if_fail (E_IS_CREDENTIALS_PROMPTER (prompter), NULL);
+	if (auth_source)
+		g_return_val_if_fail (E_IS_SOURCE (auth_source), NULL);
+
+	g_signal_emit (prompter, signals[GET_DIALOG_PARENT_FULL], 0, auth_source, &parent);
+
+	if (!parent)
+		g_signal_emit (prompter, signals[GET_DIALOG_PARENT], 0, &parent);
 
 	if (!parent)
 		parent = credentials_prompter_guess_dialog_parent (prompter);

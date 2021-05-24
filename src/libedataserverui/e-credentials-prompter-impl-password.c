@@ -219,7 +219,7 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 	prompter = e_credentials_prompter_impl_get_credentials_prompter (E_CREDENTIALS_PROMPTER_IMPL (prompter_password));
 	g_return_val_if_fail (prompter != NULL, FALSE);
 
-	dialog_parent = e_credentials_prompter_get_dialog_parent (prompter);
+	dialog_parent = e_credentials_prompter_get_dialog_parent_full (prompter, prompter_password->priv->auth_source);
 
 	credentials_prompter_impl_password_get_prompt_strings (
 		e_credentials_prompter_get_registry (prompter),
