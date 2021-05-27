@@ -351,11 +351,11 @@ folder_filter_data_free_thread (gpointer user_data)
 	if (data->driver != NULL)
 		g_object_unref (data->driver);
 	if (data->recents != NULL)
-		camel_folder_free_deep (data->folder, data->recents);
+		g_ptr_array_unref (data->recents);
 	if (data->junk != NULL)
-		camel_folder_free_deep (data->folder, data->junk);
+		g_ptr_array_unref (data->junk);
 	if (data->notjunk != NULL)
-		camel_folder_free_deep (data->folder, data->notjunk);
+		g_ptr_array_unref (data->notjunk);
 
 	/* XXX Too late to pass a GError here. */
 	camel_folder_summary_save (camel_folder_get_folder_summary (data->folder), NULL);
@@ -412,10 +412,12 @@ folder_filter (CamelSession *session,
 
 		for (i = 0; i < data->junk->len; i++) {
 			info = camel_folder_summary_get (summary, data->junk->pdata[i]);
-			if (!info)
-				continue;
 
-			camel_message_info_set_flags (info, CAMEL_MESSAGE_JUNK_LEARN, 0);
+			/* The flag can be unset by another thread - recheck it again, to avoid repeated junk learn */
+			if (!info || !camel_message_info_set_flags (info, CAMEL_MESSAGE_JUNK_LEARN, 0)) {
+				g_ptr_array_remove_index_fast (data->junk, i);
+				i--;
+			}
 			g_clear_object (&info);
 		}
 
@@ -431,17 +433,19 @@ folder_filter (CamelSession *session,
 
 		for (i = 0; i < data->notjunk->len; i++) {
 			info = camel_folder_summary_get (summary, data->notjunk->pdata[i]);
-			if (!info)
-				continue;
 
-			camel_message_info_set_flags (info, CAMEL_MESSAGE_JUNK_LEARN, 0);
+			/* The flag can be unset by another thread - recheck it again, to avoid repeated not-junk learn */
+			if (!info || !camel_message_info_set_flags (info, CAMEL_MESSAGE_JUNK_LEARN, 0)) {
+				g_ptr_array_remove_index_fast (data->notjunk, i);
+				i--;
+			}
 			g_clear_object (&info);
 		}
 
 		camel_folder_summary_unlock (summary);
 	}
 
-	if (data->junk) {
+	if (data->junk && data->junk->len > 0) {
 		gboolean success = TRUE;
 
 		camel_operation_push_message (
@@ -484,7 +488,7 @@ folder_filter (CamelSession *session,
 	if (error && *error)
 		goto exit;
 
-	if (data->notjunk) {
+	if (data->notjunk && data->notjunk->len > 0) {
 		gboolean success = TRUE;
 
 		camel_operation_push_message (
@@ -1302,12 +1306,12 @@ folder_changed (CamelFolder *folder,
 			if (flags != (~0) && (flags & CAMEL_MESSAGE_JUNK_LEARN) != 0) {
 				if (flags & CAMEL_MESSAGE_JUNK) {
 					if (!junk)
-						junk = g_ptr_array_new ();
-					g_ptr_array_add (junk, g_strdup (info->uid_changed->pdata[i]));
+						junk = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
+					g_ptr_array_add (junk, (gpointer) camel_pstring_strdup (info->uid_changed->pdata[i]));
 				} else {
 					if (!notjunk)
-						notjunk = g_ptr_array_new ();
-					g_ptr_array_add (notjunk, g_strdup (info->uid_changed->pdata[i]));
+						notjunk = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
+					g_ptr_array_add (notjunk, (gpointer) camel_pstring_strdup (info->uid_changed->pdata[i]));
 				}
 
 				/* the flag will be unset in the thread, to not block the UI/main thread */
@@ -1323,9 +1327,9 @@ folder_changed (CamelFolder *folder,
 			? "incoming" : "junktest", folder, NULL);
 
 	if (driver) {
-		recents = g_ptr_array_new ();
+		recents = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
 		for (i = 0; i < p->uid_filter->len; i++)
-			g_ptr_array_add (recents, g_strdup (p->uid_filter->pdata[i]));
+			g_ptr_array_add (recents, (gpointer) camel_pstring_strdup (p->uid_filter->pdata[i]));
 
 		g_ptr_array_set_size (p->uid_filter, 0);
 	}
