@@ -4,24 +4,24 @@
 # Gareth Owen <gowen72@yahoo.com>, David Lodge <dave@cirt.net>, 2004.
 # Philip Withnall <philip@tecnocode.co.uk>, 2009, 2010.
 # Chris Leonard <cjl@laptop.org>, 2012.
-# Zander Brown <zbrown@gnome.org>, 2020.
 # Bruce Cowan <bruce@bcowan.me.uk>, 2010-2021.
+# Zander Brown <zbrown@gnome.org>, 2020-2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution 0.6\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2021-03-19 11:14+0000\n"
-"PO-Revision-Date: 2021-03-21 20:33+0000\n"
-"Last-Translator: Bruce Cowan <bruce@bcowan.me.uk>\n"
-"Language-Team: English - United Kingdom <en@li.org>\n"
+"POT-Creation-Date: 2021-04-14 15:03+0000\n"
+"PO-Revision-Date: 2021-05-14 19:16+0100\n"
+"Last-Translator: Zander Brown <zbrown@gnome.org>\n"
+"Language-Team: English - United Kingdom <en_GB@li.org>\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 3.38.0\n"
+"X-Generator: Gtranslator 40.0\n"
 "X-Project-Style: gnome\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:231
@@ -3610,6 +3610,21 @@ msgstr ""
 "This option will use an OAuth 2.0 access token to connect to the Outlook.com "
 "server"
 
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:23
+#| msgid "OAuth2 (Google)"
+msgid "OAuth2 (Yahoo!)"
+msgstr "OAuth2 (Yahoo!)"
+
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:24
+#| msgid ""
+#| "This option will use an OAuth 2.0 access token to connect to the server"
+msgid ""
+"This option will use an OAuth 2.0 access token to connect to the Yahoo! "
+"server"
+msgstr ""
+"This option will use an OAuth 2.0 access token to connect to the Yahoo! "
+"server"
+
 #: ../src/camel/camel-search-private.c:114
 #, c-format
 msgid "Regular expression compilation failed: %s: %s"
@@ -5925,7 +5940,6 @@ msgid "Height of the reminder notification dialog"
 msgstr "Height of the reminder notification dialogue"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
-#| msgid "X position of the reminder notification dialog"
 msgid "Size in pixels of the event list in the reminder notification dialog"
 msgstr "Size in pixels of the event list in the reminder notification dialogue"
 
@@ -6129,6 +6143,51 @@ msgid ""
 "to use the one provided during build time. Change of this requires restart."
 msgstr ""
 "User-specified OAuth2 client secret for Outlook servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
+#| msgid ""
+#| "An OAuth2 client ID to use to connect to Google servers, instead of the "
+#| "one provided during build time"
+msgid ""
+"An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
+"provided during build time"
+msgstr ""
+"An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
+"provided during build time"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
+#| msgid ""
+#| "User-specified OAuth2 client ID for Google servers. Empty string means to "
+#| "use the one provided during build time. Change of this requires restart."
+msgid ""
+"User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
+#| msgid ""
+#| "An OAuth2 client secret to use to connect to Google servers, instead of "
+#| "the one provided during build time"
+msgid ""
+"An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
+"one provided during build time"
+msgstr ""
+"An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
+"one provided during build time"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
+#| msgid ""
+#| "User-specified OAuth2 client secret for Google servers. Empty string "
+#| "means to use the one provided during build time. Change of this requires "
+#| "restart."
+msgid ""
+"User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
@@ -6553,6 +6612,13 @@ msgstr "Google"
 msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
+
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#: ../src/libedataserver/e-oauth2-service-yahoo.c:53
+#| msgid "Yahoo! Mail"
+msgctxt "OAuth2Service"
+msgid "Yahoo!"
+msgstr "Yahoo!"
 
 #: ../src/libedataserver/e-soup-session.c:958
 msgid "Operation was cancelled"
@@ -7180,7 +7246,6 @@ msgstr "Please enter the password for account “%s”."
 #. Translators: This is part of a credential prompt, constructing for example: "Please enter the password for account “%s”.\n(host: hostname)"
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:183
 #, c-format
-#| msgid "Auth Host: %s"
 msgid ""
 "\n"
 "(host: %s)"
@@ -7953,9 +8018,6 @@ msgstr "No sources had been found\n"
 
 #~ msgid "Yahoo! Calendar"
 #~ msgstr "Yahoo! Calendar"
-
-#~ msgid "Yahoo! Mail"
-#~ msgstr "Yahoo! Mail"
 
 #~ msgid "User name not filled"
 #~ msgstr "User name not filled"
