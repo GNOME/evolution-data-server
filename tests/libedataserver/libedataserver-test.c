@@ -64,7 +64,14 @@ test_webdav_href_compare (ETestServerFixture *fixture,
 		{ "https://www.gnome.org/path%g", "https://www.gnome.org/path%g", TRUE },
 		{ "https://www.gnome.org/path%ah", "https://www.gnome.org/path%ah", TRUE },
 		{ "https://www.gnome.org/path%32", "https://www.gnome.org/path%32", TRUE },
-		{ "https://www.gnome.org/path%20%2e", "https://www.gnome.org/path .", TRUE }
+		{ "https://www.gnome.org/path%20%2e", "https://www.gnome.org/path .", TRUE },
+		{ "https://Xww.gnome.org", "https://www.gnome.org", FALSE },
+		{ "http://www.gnome.org/a%2e%2e%2e/b", "https://www.gnome.org/a.../b", TRUE },
+		{ "http://www.gnome.org/a%2e%2e%2eb", "https://www.gnome.org/a...b", TRUE },
+	/* 40 */{ "http://www.gnome.org/a%2e%2e%2e//", "https://www.gnome.org/a.../", FALSE },
+		{ "https://www.gnome.ORG", "https://www.gnome.org", TRUE },
+		{ "https://www.gnome.orG", "https://www.gnome.org", TRUE },
+		{ "https://www.gnome.org/2", "https://www.gnome.org/234", FALSE }
 	};
 	gint ii;
 
