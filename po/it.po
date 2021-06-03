@@ -29,8 +29,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2021-03-28 14:22+0000\n"
-"PO-Revision-Date: 2021-03-29 16:07+0200\n"
+"POT-Creation-Date: 2021-04-14 15:03+0000\n"
+"PO-Revision-Date: 2021-06-02 10:11+0200\n"
 "Last-Translator: Gianvito Cavasoli <gianvito@gmx.it>\n"
 "Language-Team: Italian <gnome-it-list@gnome.org>\n"
 "Language: it\n"
@@ -38,7 +38,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"X-Generator: Gtranslator 3.38.0\n"
+"X-Generator: Gtranslator 40.0\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:231
 #, c-format
@@ -3684,6 +3684,21 @@ msgstr ""
 "Questa opzione userà un token di accesso OAuth 2.0 per connettersi al server "
 "Outlook.com"
 
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:23
+#| msgid "OAuth2 (Google)"
+msgid "OAuth2 (Yahoo!)"
+msgstr "OAuth2 (Yahoo)"
+
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:24
+#| msgid ""
+#| "This option will use an OAuth 2.0 access token to connect to the server"
+msgid ""
+"This option will use an OAuth 2.0 access token to connect to the Yahoo! "
+"server"
+msgstr ""
+"Questa opzione userà un token di accesso OAuth 2.0 per connettersi al server "
+"Outlook.com"
+
 #: ../src/camel/camel-search-private.c:114
 #, c-format
 msgid "Regular expression compilation failed: %s: %s"
@@ -6218,7 +6233,7 @@ msgid ""
 "An OAuth2 client ID to use to connect to Google servers, instead of the one "
 "provided during build time"
 msgstr ""
-"Un identificato del client di OAuth2 da usare per connettersi ai server di "
+"Un identificativo del client di OAuth2 da usare per connettersi ai server di "
 "Google, invece di quello fornito durante il periodo di compilazione"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
@@ -6252,7 +6267,7 @@ msgid ""
 "An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
 "provided during build time"
 msgstr ""
-"Un identificato del client di OAuth2 da usare per connettersi ai server di "
+"Un identificativo del client di OAuth2 da usare per connettersi ai server di "
 "Outlook, invece di quello fornito durante il periodo di compilazione"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
@@ -6279,6 +6294,53 @@ msgid ""
 msgstr ""
 "Una chiave segreta del client di OAuth2 specificata dall'utente per i server "
 "di Outlook. La stringa vuota significa usare quella fornita durante il tempo "
+"di compilazione. Cambiare la stringa richiede il riavvio."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
+#| msgid ""
+#| "An OAuth2 client ID to use to connect to Google servers, instead of the "
+#| "one provided during build time"
+msgid ""
+"An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
+"provided during build time"
+msgstr ""
+"Un identificativo del client di OAuth2 da usare per connettersi ai server di "
+"Yahoo!, invece di quello fornito durante il periodo di compilazione"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
+#| msgid ""
+#| "User-specified OAuth2 client ID for Google servers. Empty string means to "
+#| "use the one provided during build time. Change of this requires restart."
+msgid ""
+"User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Una chiave segreta del client di OAuth2 specificata dall'utente per i server "
+"di Yahoo!. La stringa vuota significa usare quella fornita durante il tempo "
+"di compilazione. Cambiare la stringa richiede il riavvio."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
+#| msgid ""
+#| "An OAuth2 client secret to use to connect to Google servers, instead of "
+#| "the one provided during build time"
+msgid ""
+"An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
+"one provided during build time"
+msgstr ""
+"Una chiave segreta del client di OAuth2 da usare per connettersi ai server "
+"di Yahoo!, invece di quella fornita durante il periodo di compilazione"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
+#| msgid ""
+#| "User-specified OAuth2 client secret for Google servers. Empty string "
+#| "means to use the one provided during build time. Change of this requires "
+#| "restart."
+msgid ""
+"User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Una chiave segreta del client di OAuth2 specificata dall'utente per i server "
+"di Yahoo!. La stringa vuota significa usare quella fornita durante il tempo "
 "di compilazione. Cambiare la stringa richiede il riavvio."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
@@ -6713,6 +6775,12 @@ msgstr "Google"
 msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
+
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#: ../src/libedataserver/e-oauth2-service-yahoo.c:53
+msgctxt "OAuth2Service"
+msgid "Yahoo!"
+msgstr "Yahoo!"
 
 #: ../src/libedataserver/e-soup-session.c:958
 msgid "Operation was cancelled"
