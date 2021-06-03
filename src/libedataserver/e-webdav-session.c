@@ -5176,19 +5176,20 @@ e_webdav_session_util_free_privileges (GNode *privileges)
 
 static gint
 e_webdav_session_uricmp (const gchar *str1,
+			 gint len1,
 			 const gchar *str2,
-			 gint len,
+			 gint len2,
 			 gboolean case_sensitive)
 {
 	const gchar *p1, *p2;
 	gchar c1, c2;
-	gint len1, len2;
 
-	g_return_val_if_fail (len >= 0, -1);
 	g_return_val_if_fail (str1 != NULL, -1);
+	g_return_val_if_fail (len1 >= 0, -1);
 	g_return_val_if_fail (str2 != NULL, -1);
+	g_return_val_if_fail (len2 >= 0, -1);
 
-	if (!len)
+	if (!len1 && !len2)
 		return 0;
 
 	/* Decode %-encoded letters, if needed */
@@ -5214,9 +5215,6 @@ e_webdav_session_uricmp (const gchar *str1,
 	p1 = str1;
 	p2 = str2;
 
-	len1 = len;
-	len2 = len;
-
 	c1 = *p1;
 	c2 = *p2;
 
@@ -5225,10 +5223,16 @@ e_webdav_session_uricmp (const gchar *str1,
 		get_next_char (p2, len2, c2);
 
 		if ((case_sensitive && c1 != c2) || (!case_sensitive && g_ascii_tolower (c1) != g_ascii_tolower (c2)))
-			break;
+			return c1 - c2;
 	}
 
 	#undef get_next_char
+
+	if (!len1 || !*p1)
+		c1 = 0;
+
+	if (!len2 || !*p2)
+		c2 = 0;
 
 	return c1 - c2;
 }
@@ -5272,7 +5276,7 @@ e_webdav_session_util_item_href_equal (const gchar *href1,
 		href2 = ptr + 3;
 
 	for (from1 = href1, from2 = href2; from1 && from2; from1 = next1, from2 = next2) {
-		gint len;
+		gint len1, len2;
 
 		ptr = strchr (from1, '/');
 		if (ptr)
@@ -5287,10 +5291,8 @@ e_webdav_session_util_item_href_equal (const gchar *href1,
 		if ((!next1 && next2) || (next1 && !next2))
 			break;
 
-		len = next1 ? next1 - from1 : strlen (from1);
-
-		if (!len)
-			len = next2 ? next2 - from2 : strlen (from2);
+		len1 = next1 ? next1 - from1 : strlen (from1);
+		len2 = next2 ? next2 - from2 : strlen (from2);
 
 		/* it's the hostname part */
 		if (from1 == href1) {
@@ -5299,17 +5301,21 @@ e_webdav_session_util_item_href_equal (const gchar *href1,
 			/* ignore the username/password part */
 			ptr = strchr (from1, '@');
 			dash = strchr (from1, '/');
-			if (ptr && (!dash || dash > ptr))
+			if (ptr && (!dash || dash > ptr)) {
+				len1 = len1 - (ptr - from1 + 1);
 				from1 = ptr + 1;
+			}
 
 			ptr = strchr (from2, '@');
 			dash = strchr (from2, '/');
-			if (ptr && (!dash || dash > ptr))
+			if (ptr && (!dash || dash > ptr)) {
+				len2 = len2 - (ptr - from2 + 1);
 				from2 = ptr + 1;
+			}
 
-			if (e_webdav_session_uricmp (from1, from2, len, FALSE) != 0)
+			if (e_webdav_session_uricmp (from1, len1, from2, len2, FALSE) != 0)
 				return FALSE;
-		} else if (e_webdav_session_uricmp (from1, from2, len, TRUE) != 0) {
+		} else if (e_webdav_session_uricmp (from1, len1, from2, len2, TRUE) != 0) {
 			return FALSE;
 		}
 	}
