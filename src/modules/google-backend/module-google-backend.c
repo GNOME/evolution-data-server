@@ -50,11 +50,6 @@
 #define GOOGLE_SMTP_PORT		465
 #define GOOGLE_SMTP_SECURITY_METHOD	METHOD (SSL_ON_ALTERNATE_PORT)
 
-/* Contacts Configuration Details */
-#define GOOGLE_CONTACTS_BACKEND_NAME	"google"
-#define GOOGLE_CONTACTS_HOST		"www.google.com"
-#define GOOGLE_CONTACTS_RESOURCE_ID	"Contacts"
-
 /* Tasks Configuration Details */
 #define GOOGLE_TASKS_BACKEND_NAME	"gtasks"
 
@@ -489,6 +484,7 @@ google_backend_authenticate_sync (EBackend *backend,
 	GList *sources;
 	ENamedParameters *credentials_copy = NULL;
 	const gchar *calendar_url;
+	const gchar *contacts_url = NULL;
 
 	g_return_val_if_fail (collection != NULL, E_SOURCE_AUTHENTICATION_ERROR);
 
@@ -538,8 +534,14 @@ google_backend_authenticate_sync (EBackend *backend,
 		}
 	}
 
-	if (e_source_collection_get_calendar_enabled (collection_extension) && calendar_url) {
-		result = e_webdav_collection_backend_discover_sync (E_WEBDAV_COLLECTION_BACKEND (backend), calendar_url, NULL,
+	if (!e_source_collection_get_calendar_enabled (collection_extension))
+		calendar_url = NULL;
+
+	if (e_source_collection_get_contacts_enabled (collection_extension))
+		contacts_url = "https://www.googleapis.com/.well-known/carddav";
+
+	if (calendar_url || contacts_url) {
+		result = e_webdav_collection_backend_discover_sync (E_WEBDAV_COLLECTION_BACKEND (backend), calendar_url, contacts_url,
 			credentials, out_certificate_pem, out_certificate_errors, cancellable, error);
 	} else {
 		result = E_SOURCE_AUTHENTICATION_ACCEPTED;
@@ -616,78 +618,13 @@ google_backend_authenticate_sync (EBackend *backend,
 	return result;
 }
 
-static void
-google_backend_add_contacts (ECollectionBackend *backend)
-{
-	ESource *source;
-	ESource *collection_source;
-	ESourceRegistryServer *server;
-	ESourceExtension *extension;
-	ESourceCollection *collection_extension;
-	const gchar *backend_name;
-	const gchar *extension_name;
-	const gchar *resource_id;
-
-	collection_source = e_backend_get_source (E_BACKEND (backend));
-
-	resource_id = GOOGLE_CONTACTS_RESOURCE_ID;
-	source = e_collection_backend_new_child (backend, resource_id);
-	e_source_set_display_name (source, _("Contacts"));
-
-	/* Add the address book source to the collection. */
-	collection_extension = e_source_get_extension (
-		collection_source, E_SOURCE_EXTENSION_COLLECTION);
-
-	/* Configure the address book source. */
-
-	backend_name = GOOGLE_CONTACTS_BACKEND_NAME;
-
-	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
-	extension = e_source_get_extension (source, extension_name);
-
-	e_source_backend_set_backend_name (
-		E_SOURCE_BACKEND (extension), backend_name);
-
-	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
-	extension = e_source_get_extension (source, extension_name);
-
-	e_source_authentication_set_host (
-		E_SOURCE_AUTHENTICATION (extension),
-		GOOGLE_CONTACTS_HOST);
-
-	e_binding_bind_property (
-		collection_extension, "identity",
-		extension, "user",
-		G_BINDING_SYNC_CREATE);
-
-	server = e_collection_backend_ref_server (backend);
-	e_source_registry_server_add_source (server, source);
-	g_object_unref (server);
-
-	g_object_unref (source);
-}
-
-static gchar *
-google_backend_get_resource_id (EWebDAVCollectionBackend *webdav_backend,
-				ESource *source)
-{
-	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
-
-	if (e_source_has_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK))
-		return g_strdup (GOOGLE_CONTACTS_RESOURCE_ID);
-
-	/* Chain up to parent's method. */
-	return E_WEBDAV_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->get_resource_id (webdav_backend, source);
-}
-
 static gboolean
 google_backend_is_custom_source (EWebDAVCollectionBackend *webdav_backend,
 				 ESource *source)
 {
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
-	if (e_source_has_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK) ||
-	    e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST))
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST))
 		return TRUE;
 
 	/* Chain up to parent's method. */
@@ -697,12 +634,10 @@ google_backend_is_custom_source (EWebDAVCollectionBackend *webdav_backend,
 static void
 google_backend_populate (ECollectionBackend *backend)
 {
-	ESourceCollection *collection_extension;
 	ESourceAuthentication *authentication_extension;
 	ESource *source;
 
 	source = e_backend_get_source (E_BACKEND (backend));
-	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
 	authentication_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
 
 	/* When the WebDAV extension is created, the auth method can be reset, thus ensure
@@ -716,15 +651,6 @@ google_backend_populate (ECollectionBackend *backend)
 
 	/* Chain up to parent's method. */
 	E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->populate (backend);
-
-	if (e_source_collection_get_contacts_enabled (collection_extension)) {
-		GList *list;
-
-		list = e_collection_backend_list_contacts_sources (backend);
-		if (list == NULL)
-			google_backend_add_contacts (backend);
-		g_list_free_full (list, (GDestroyNotify) g_object_unref);
-	}
 }
 
 static gchar *
@@ -733,11 +659,9 @@ google_backend_dup_resource_id (ECollectionBackend *backend,
 {
 	if (e_source_has_extension (child_source, E_SOURCE_EXTENSION_CALENDAR) ||
 	    e_source_has_extension (child_source, E_SOURCE_EXTENSION_MEMO_LIST) ||
-	    e_source_has_extension (child_source, E_SOURCE_EXTENSION_TASK_LIST))
+	    e_source_has_extension (child_source, E_SOURCE_EXTENSION_TASK_LIST) ||
+	    e_source_has_extension (child_source, E_SOURCE_EXTENSION_ADDRESS_BOOK))
 		return E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->dup_resource_id (backend, child_source);
-
-	if (e_source_has_extension (child_source, E_SOURCE_EXTENSION_ADDRESS_BOOK))
-		return g_strdup (GOOGLE_CONTACTS_RESOURCE_ID);
 
 	return NULL;
 }
@@ -749,7 +673,6 @@ google_backend_child_added (ECollectionBackend *backend,
 	ESource *collection_source;
 	const gchar *extension_name;
 	gboolean is_mail = FALSE;
-	gboolean has_external_auth = FALSE;
 
 	/* Chain up to parent's child_added() method. */
 	E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->
@@ -784,8 +707,6 @@ google_backend_child_added (ECollectionBackend *backend,
 		auth_child_extension = e_source_get_extension (
 			child_source, extension_name);
 		auth_child_user = e_source_authentication_get_user (
-			auth_child_extension);
-		has_external_auth = e_source_authentication_get_is_external (
 			auth_child_extension);
 
 		/* XXX Do not override an existing user name setting.
@@ -846,42 +767,6 @@ google_backend_child_added (ECollectionBackend *backend,
 			child_source, "notify::oauth2-support",
 			G_CALLBACK (google_backend_contacts_update_auth_method_cb),
 			backend);
-
-		if (!has_external_auth) {
-			/* Even the book is part of the collection it can be removed
-			   separately, if not configured through GOA or UOA. */
-			e_server_side_source_set_removable (E_SERVER_SIDE_SOURCE (child_source), TRUE);
-		}
-	}
-}
-
-static void
-google_backend_child_removed (ECollectionBackend *backend,
-			      ESource *child_source)
-{
-	ESource *collection_source;
-	gboolean has_external_auth = FALSE;
-
-	/* Chain up to parent's method. */
-	E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->child_removed (backend, child_source);
-
-	collection_source = e_backend_get_source (E_BACKEND (backend));
-
-	if (e_source_has_extension (child_source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
-		ESourceAuthentication *auth_child_extension;
-
-		auth_child_extension = e_source_get_extension (child_source, E_SOURCE_EXTENSION_AUTHENTICATION);
-		has_external_auth = e_source_authentication_get_is_external (auth_child_extension);
-	}
-
-	if (e_source_has_extension (child_source, E_SOURCE_EXTENSION_ADDRESS_BOOK) &&
-	    e_source_has_extension (collection_source, E_SOURCE_EXTENSION_COLLECTION) &&
-	    !has_external_auth) {
-		ESourceCollection *collection_extension;
-
-		collection_extension = e_source_get_extension (collection_source, E_SOURCE_EXTENSION_COLLECTION);
-
-		e_source_collection_set_contacts_enabled (collection_extension, FALSE);
 	}
 }
 
@@ -914,10 +799,8 @@ e_google_backend_class_init (EGoogleBackendClass *class)
 	collection_backend_class->populate = google_backend_populate;
 	collection_backend_class->dup_resource_id = google_backend_dup_resource_id;
 	collection_backend_class->child_added = google_backend_child_added;
-	collection_backend_class->child_removed = google_backend_child_removed;
 
 	webdav_collection_backend_class = E_WEBDAV_COLLECTION_BACKEND_CLASS (class);
-	webdav_collection_backend_class->get_resource_id = google_backend_get_resource_id;
 	webdav_collection_backend_class->is_custom_source = google_backend_is_custom_source;
 }
 

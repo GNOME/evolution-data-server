@@ -4,8 +4,6 @@
 src/addressbook/backends/carddav/e-book-backend-carddav.c
 src/addressbook/backends/file/e-book-backend-file.c
 src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c
-src/addressbook/backends/google/e-book-backend-google.c
-src/addressbook/backends/google/e-book-google-utils.c
 src/addressbook/backends/ldap/e-book-backend-ldap.c
 src/addressbook/libebook-contacts/e-book-contacts-utils.c
 src/addressbook/libebook-contacts/e-contact.c

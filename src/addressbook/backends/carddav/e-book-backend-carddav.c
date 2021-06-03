@@ -165,7 +165,8 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 				}
 
 				g_free (path);
-			} else if (soup_uri->host && e_util_utf8_strstrcase (soup_uri->host, ".googleusercontent.com")) {
+			} else if (soup_uri->host && (e_util_utf8_strstrcase (soup_uri->host, ".googleusercontent.com") ||
+						      e_util_utf8_strstrcase (soup_uri->host, ".googleapis.com"))) {
 				g_clear_error (&local_error);
 				success = TRUE;
 
