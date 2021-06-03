@@ -129,14 +129,16 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 		&capabilities, &allows, cancellable, &local_error);
 
 	/* iCloud and Google servers can return "404 Not Found" when issued OPTIONS on the addressbook collection */
-	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND) ||
+	    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_BAD_REQUEST)) {
 		ESourceWebdav *webdav_extension;
 		SoupURI *soup_uri;
 
 		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 		soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
 		if (soup_uri) {
-			if (soup_uri->host && soup_uri->path && *soup_uri->path &&
+			if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND) &&
+			    soup_uri->host && soup_uri->path && *soup_uri->path &&
 			    e_util_utf8_strstrcase (soup_uri->host, ".icloud.com")) {
 				/* Try parent directory */
 				gchar *path;
