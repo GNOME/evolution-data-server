@@ -1,3 +1,27 @@
+Evolution-Data-Server 3.40.2 2021-06-04
+---------------------------------------
+
+Bug Fixes:
+	I#334 - ECredentialsPrompter: Truncate multiline for pasted passwords (Milan Crha)
+	I#335 - CamelFolder: Calls Junk/Not-Junk learn repeatedly (Milan Crha)
+
+Miscellaneous:
+	ECollectionBackend: Fix a memory leak (Milan Crha)
+	gnome_online_accounts_create_client_cb: Prefer g_clear_object() (Milan Crha)
+	Data Factories: Miscellaneous fixes (Milan Crha)
+	ECalCache: Drop timezones_lock (Milan Crha)
+	ECalBackend: Deliver component change notifications in a dedicated thread (Milan Crha)
+	CardDAV: Recognize OPTIONS 'Bad Request' response as success for Google (Milan Crha)
+	Fix e_webdav_session_util_item_href_equal() (Milan Crha)
+
+Translations:
+	Мирослав Николић (sr)
+	Kjartan Maraas (nb)
+	Fabio Tomat (fur)
+	Fran Dieguez (gl)
+	Zander Brown (en_GB)
+	Gianvito Cavasoli (it)
+
 Evolution-Data-Server 3.40.1 2021-04-30
 ---------------------------------------
 
