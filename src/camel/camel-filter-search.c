@@ -1334,7 +1334,7 @@ camel_search_result_to_string (gint value)
  * @folder: in which folder the message is stored
  * @expression:
  * @logfile: (nullable): an optional log file to write logging information to, or %NULL
- * @cancellable: (allow-none): a #GCancellable, or %NULL
+ * @cancellable: a #GCancellable, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Returns: one of CAMEL_SEARCH_MATCHED, CAMEL_SEARCH_NOMATCH, or
@@ -1459,7 +1459,7 @@ camel_filter_search_match_with_log (CamelSession *session,
  * @source:
  * @folder: in which folder the message is stored
  * @expression:
- * @cancellable: (allow-none): a #GCancellable, or %NULL
+ * @cancellable: a #GCancellable, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Returns: one of CAMEL_SEARCH_MATCHED, CAMEL_SEARCH_NOMATCH, or

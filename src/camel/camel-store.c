@@ -3259,7 +3259,7 @@ camel_store_initial_setup_finish (CamelStore *store,
 /**
  * camel_store_maybe_run_db_maintenance:
  * @store: a #CamelStore instance
- * @error: (allow-none): return location for a #GError, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Checks the state of the current CamelDB used for the @store and eventually
  * runs maintenance routines on it.
