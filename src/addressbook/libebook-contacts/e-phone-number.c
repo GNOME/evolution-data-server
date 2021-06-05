@@ -90,9 +90,9 @@ e_phone_number_is_supported (void)
 
 /**
  * e_phone_number_get_country_code_for_region:
- * @region_code: (allow-none): a two-letter country code, a locale name, or
+ * @region_code: (nullable): a two-letter country code, a locale name, or
  * %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Retrieves the preferred country calling code for @region_code,
  * e.g. 358 for "fi" or 1 for "en_US@UTF-8".
@@ -123,7 +123,7 @@ e_phone_number_get_country_code_for_region (const gchar *region_code,
 
 /**
  * e_phone_number_get_default_region:
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Retrieves the current two-letter country code that's used by default for
  * parsing phone numbers in e_phone_number_from_string(). It can be useful
@@ -134,7 +134,7 @@ e_phone_number_get_country_code_for_region (const gchar *region_code,
  * for %_NL_ADDRESS_COUNTRY_AB2 this value is returned. Otherwise the
  * locale name configured for %LC_ADDRESS is parsed.
  *
- * Returns: (transfer full): a newly allocated string containing the
+ * Returns: a newly allocated string containing the
  * current locale's two-letter code for phone number parsing.
  *
  * Since: 3.8
@@ -157,8 +157,8 @@ e_phone_number_get_default_region (GError **error)
 /**
  * e_phone_number_from_string:
  * @phone_number: the phone number to parse
- * @region_code: (allow-none): a two-letter country code, or %NULL
- * @error: (out): a #GError to set an error, if any
+ * @region_code: (nullable): a two-letter country code, or %NULL
+ * @error: a #GError to set an error, if any
  *
  * Parses the string passed in @phone_number. Note that no validation is
  * performed whether the recognized phone number is valid for a particular
@@ -227,7 +227,7 @@ e_phone_number_to_string (const EPhoneNumber *phone_number,
 /**
  * e_phone_number_get_country_code:
  * @phone_number: the phone number to query
- * @source: an optional location for storing the phone number's origin, or %NULL
+ * @source: (nullable): an optional location for storing the phone number's origin, or %NULL
  *
  * Queries the @phone_number's country calling code and optionally stores the country
  * calling code's origin in @source. For instance when parsing "+1-617-5423789" this
@@ -320,7 +320,7 @@ e_phone_number_compare (const EPhoneNumber *first_number,
  * e_phone_number_compare_strings:
  * @first_number: the first EPhoneNumber to compare
  * @second_number: the second EPhoneNumber to compare
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Compares two phone numbers.
  *
@@ -341,8 +341,8 @@ e_phone_number_compare_strings (const gchar *first_number,
  * e_phone_number_compare_strings_with_region:
  * @first_number: the first EPhoneNumber to compare
  * @second_number: the second EPhoneNumber to compare
- * @region_code: (allow-none): a two-letter country code, or %NULL
- * @error: (out): a #GError to set an error, if any
+ * @region_code: (nullable): a two-letter country code, or %NULL
+ * @error: a #GError to set an error, if any
  *
  * Compares two phone numbers within the context of @region_code.
  *

@@ -1285,7 +1285,7 @@ e_client_retrieve_capabilities (EClient *client,
  * @client: an #EClient
  * @result: a #GAsyncResult
  * @capabilities: (out): Comma-separated list of capabilities of the @client
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_client_retrieve_capabilities().
  * Returned value of @capabilities should be freed with g_free(),
@@ -1327,7 +1327,7 @@ e_client_retrieve_capabilities_finish (EClient *client,
  * @client: an #EClient
  * @capabilities: (out): Comma-separated list of capabilities of the @client
  * @cancellable: a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Initiates retrieval of capabilities on the @client. This is usually
  * required only once, after the @client is opened. The returned value
@@ -1406,7 +1406,7 @@ e_client_get_backend_property (EClient *client,
  * @client: an #EClient
  * @result: a #GAsyncResult
  * @prop_value: (out): Retrieved backend property value; cannot be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_client_get_backend_property().
  *
@@ -1439,7 +1439,7 @@ e_client_get_backend_property_finish (EClient *client,
  * @prop_name: property name, whose value to retrieve; cannot be %NULL
  * @prop_value: (out): Retrieved backend property value; cannot be %NULL
  * @cancellable: a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Queries @client's backend for a property of name @prop_name.
  *
@@ -1514,7 +1514,7 @@ e_client_set_backend_property (EClient *client,
  * e_client_set_backend_property_finish:
  * @client: an #EClient
  * @result: a #GAsyncResult
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_client_set_backend_property().
  *
@@ -1547,7 +1547,7 @@ e_client_set_backend_property_finish (EClient *client,
  * @prop_name: property name, whose value to change; cannot be %NULL
  * @prop_value: property value, to set; cannot be %NULL
  * @cancellable: a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Sets @client's backend property of name @prop_name
  * to value @prop_value.
@@ -1621,7 +1621,7 @@ e_client_open (EClient *client,
  * e_client_open_finish:
  * @client: an #EClient
  * @result: a #GAsyncResult
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_client_open().
  *
@@ -1655,7 +1655,7 @@ e_client_open_finish (EClient *client,
  * @client: an #EClient
  * @only_if_exists: this parameter is not used anymore
  * @cancellable: a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Opens the @client, making it ready for queries and other operations.
  *
@@ -1718,7 +1718,7 @@ e_client_remove (EClient *client,
  * e_client_remove_finish:
  * @client: an #EClient
  * @result: a #GAsyncResult
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_client_remove().
  *
@@ -1748,7 +1748,7 @@ e_client_remove_finish (EClient *client,
  * e_client_remove_sync:
  * @client: an #EClient
  * @cancellable: a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Removes the backing data for this #EClient. For example, with the file
  * backend this deletes the database file. You cannot get it back!
@@ -1810,7 +1810,7 @@ e_client_refresh (EClient *client,
  * e_client_refresh_finish:
  * @client: an #EClient
  * @result: a #GAsyncResult
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_client_refresh().
  *
@@ -1838,7 +1838,7 @@ e_client_refresh_finish (EClient *client,
  * e_client_refresh_sync:
  * @client: an #EClient
  * @cancellable: a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Initiates refresh on the @client. Finishing the method doesn't mean
  * that the refresh is done, backend only notifies whether it started
@@ -1887,7 +1887,7 @@ client_wait_for_connected_thread (GTask *task,
  * e_client_wait_for_connected:
  * @client: an #EClient
  * @timeout_seconds: a timeout for the wait, in seconds
- * @cancellable: (allow-none): a #GCancellable; or %NULL
+ * @cancellable: a #GCancellable; or %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
  *
@@ -1923,7 +1923,7 @@ e_client_wait_for_connected (EClient *client,
  * e_client_wait_for_connected_finish:
  * @client: an #EClient
  * @result: a #GAsyncResult
- * @error: (out) (allow-none): a #GError to set an error, or %NULL
+ * @error: a #GError to set an error, or %NULL
  *
  * Finishes previous call of e_client_wait_for_connected().
  *
@@ -1970,8 +1970,8 @@ client_wait_for_connected_notify_cb (ESource *source,
  * e_client_wait_for_connected_sync:
  * @client: an #EClient
  * @timeout_seconds: a timeout for the wait, in seconds
- * @cancellable: (allow-none): a #GCancellable; or %NULL
- * @error: (out) (allow-none): a #GError to set an error, or %NULL
+ * @cancellable: a #GCancellable; or %NULL
+ * @error: a #GError to set an error, or %NULL
  *
  * Synchronously waits until the @client is connected (according
  * to @ESource::connection-status property), but not longer than @timeout_seconds.
@@ -2044,8 +2044,8 @@ e_client_wait_for_connected_sync (EClient *client,
 /**
  * e_client_retrieve_properties_sync:
  * @client: an #EClient
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @error: (allow-none): return location for a #GError, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Retrieves @client properties to match server-side values, without waiting
  * for the D-Bus property change notifications delivery.
@@ -2093,7 +2093,7 @@ client_retrieve_properties_thread (GTask *task,
 /**
  * e_client_retrieve_properties:
  * @client: an #EClient
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
  *
@@ -2197,7 +2197,7 @@ e_client_util_strv_to_slist (const gchar * const *strv)
 
 /**
  * e_client_util_copy_string_slist:
- * @copy_to: (element-type utf8) (allow-none): Where to copy; may be %NULL
+ * @copy_to: (element-type utf8) (nullable) (transfer full): Where to copy; may be %NULL
  * @strings: (element-type utf8): #GSList of strings to be copied
  *
  * Copies the #GSList of strings to the end of @copy_to.
@@ -2218,7 +2218,7 @@ e_client_util_copy_string_slist (GSList *copy_to,
 
 /**
  * e_client_util_copy_object_slist:
- * @copy_to: (element-type GObject) (allow-none): Where to copy; may be %NULL
+ * @copy_to: (element-type GObject) (nullable) (transfer full): Where to copy; may be %NULL
  * @objects: (element-type GObject): #GSList of #GObject<!-- -->s to be copied
  *
  * Copies a #GSList of #GObject<!-- -->s to the end of @copy_to.

@@ -86,7 +86,7 @@ e_cancellable_mutex_clear (ECancellableMutex *mutex)
 /**
  * e_cancellable_mutex_lock:
  * @mutex: an #ECancellableMutex instance
- * @cancellable: (allow-none): a #GCancellable, or %NULL
+ * @cancellable: a #GCancellable, or %NULL
  *
  * Acquires lock on @mutex. The returned value indicates whether
  * the lock was acquired, while %FALSE is returned only either or
@@ -233,7 +233,7 @@ e_cancellable_rec_mutex_clear (ECancellableRecMutex *rec_mutex)
 /**
  * e_cancellable_rec_mutex_lock:
  * @rec_mutex: an #ECancellableRecMutex instance
- * @cancellable: (allow-none): a #GCancellable, or %NULL
+ * @cancellable: a #GCancellable, or %NULL
  *
  * Acquires lock on @rec_mutex. The returned value indicates whether
  * the lock was acquired, while %FALSE is returned only either or

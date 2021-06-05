@@ -218,7 +218,7 @@ e_source_security_dup_method (ESourceSecurity *extension)
 /**
  * e_source_security_set_method:
  * @extension: an #ESourceSecurity
- * @method: (allow-none): security method, or %NULL
+ * @method: (nullable): security method, or %NULL
  *
  * Sets the method used to establish a secure network connection to a
  * remote account.  There are no pre-defined method names; backends are

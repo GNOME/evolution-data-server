@@ -2520,8 +2520,8 @@ __e_source_private_replace_dbus_object (ESource *source,
 
 /**
  * e_source_new:
- * @dbus_object: (allow-none): a #GDBusObject or %NULL
- * @main_context: (allow-none): a #GMainContext or %NULL
+ * @dbus_object: (nullable): a #GDBusObject or %NULL
+ * @main_context: (nullable): a #GMainContext or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Creates a new #ESource instance.
@@ -2558,7 +2558,7 @@ e_source_new (GDBusObject *dbus_object,
 /**
  * e_source_new_with_uid:
  * @uid: a new unique identifier string
- * @main_context: (allow-none): a #GMainContext or %NULL
+ * @main_context: (nullable): a #GMainContext or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Creates a new "scratch" #ESource with a predetermined unique identifier.
@@ -2729,7 +2729,7 @@ e_source_dup_uid (ESource *source)
  *
  * Returns the unique identifier string of the parent #ESource.
  *
- * Returns: the UID of the parent #ESource
+ * Returns: (nullable): the UID of the parent #ESource
  *
  * Since: 3.6
  **/
@@ -2750,7 +2750,7 @@ e_source_get_parent (ESource *source)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESource:parent
+ * Returns: (nullable): a newly-allocated copy of #ESource:parent
  *
  * Since: 3.6
  **/
@@ -2775,7 +2775,7 @@ e_source_dup_parent (ESource *source)
 /**
  * e_source_set_parent:
  * @source: an #ESource
- * @parent: (allow-none): the UID of the parent #ESource, or %NULL
+ * @parent: (nullable): the UID of the parent #ESource, or %NULL
  *
  * Identifies the parent of @source by its unique identifier string.
  * This can only be set prior to adding @source to an #ESourceRegistry.
@@ -3146,7 +3146,7 @@ e_source_has_extension (ESource *source,
  * The returned #GDBusObject is referenced for thread-safety and must be
  * unreferenced with g_object_unref() when finished with it.
  *
- * Returns: (transfer full): the #GDBusObject for @source, or %NULL
+ * Returns: (transfer full) (nullable): the #GDBusObject for @source, or %NULL
  *
  * Since: 3.6
  **/
@@ -3435,7 +3435,7 @@ e_source_compare_by_display_name (ESource *source1,
 /**
  * e_source_to_string:
  * @source: an #ESource
- * @length: (allow-none): return location for the length of the returned
+ * @length: (optional) (out): return location for the length of the returned
  *          string, or %NULL
  *
  * Outputs the current contents of @source as a key file string.
@@ -3581,7 +3581,7 @@ e_source_set_connection_status (ESource *source,
 /**
  * e_source_remove_sync:
  * @source: the #ESource to be removed
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Requests the D-Bus service to delete the key files for @source and all of
@@ -3613,10 +3613,9 @@ e_source_remove_sync (ESource *source,
 /**
  * e_source_remove:
  * @source: the #ESource to be removed
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to the callback function
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
  * Asynchronously requests the D-Bus service to delete the key files for
  * @source and all of its descendants and broadcast their removal to all
@@ -3677,7 +3676,7 @@ e_source_remove_finish (ESource *source,
 /**
  * e_source_write_sync:
  * @source: a writable #ESource
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Submits the current contents of @source to the D-Bus service to be
@@ -3709,10 +3708,9 @@ e_source_write_sync (ESource *source,
 /**
  * e_source_write:
  * @source: a writable #ESource
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to the callback function
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
  * Asynchronously submits the current contents of @source to the D-Bus
  * service to be written to disk and broadcast to other clients.  The
@@ -3774,7 +3772,7 @@ e_source_write_finish (ESource *source,
  * e_source_remote_create_sync:
  * @source: an #ESource
  * @scratch_source: an #ESource describing the resource to create
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Creates a new remote resource by picking out relevant details from
@@ -3815,10 +3813,9 @@ e_source_remote_create_sync (ESource *source,
  * e_source_remote_create:
  * @source: an #ESource
  * @scratch_source: an #ESource describing the resource to create
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to the callback function
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
  * Asynchronously creates a new remote resource by picking out relevant
  * details from @scratch_source.  The @scratch_source must be an #ESource
@@ -3887,7 +3884,7 @@ e_source_remote_create_finish (ESource *source,
 /**
  * e_source_remote_delete_sync:
  * @source: an #ESource
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Deletes the resource represented by @source from a remote server.
@@ -3920,10 +3917,9 @@ e_source_remote_delete_sync (ESource *source,
 /**
  * e_source_remote_delete:
  * @source: an #ESource
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to the callback function
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
  * Asynchronously deletes the resource represented by @source from a remote
  * server.  The @source must be #ESource:remote-deletable.  This will also
@@ -3984,10 +3980,10 @@ e_source_remote_delete_finish (ESource *source,
 /**
  * e_source_get_oauth2_access_token_sync:
  * @source: an #ESource
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @out_access_token: (allow-none) (out): return location for the access token,
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @out_access_token: (optional) (out): return location for the access token,
  *                    or %NULL
- * @out_expires_in: (allow-none) (out): return location for the token expiry,
+ * @out_expires_in: (optional) (out): return location for the token expiry,
  *                  or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -4023,10 +4019,10 @@ e_source_get_oauth2_access_token_sync (ESource *source,
 /**
  * e_source_get_oauth2_access_token:
  * @source: an #ESource
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request
  *            is satisfied
- * @user_data: (closure): data to pass to the callback function
+ * @user_data: data to pass to the callback function
  *
  * Asynchronously obtains the OAuth 2.0 access token for @source along
  * with its expiry in seconds from the current time (or 0 if unknown).
@@ -4059,9 +4055,9 @@ e_source_get_oauth2_access_token (ESource *source,
  * e_source_get_oauth2_access_token_finish:
  * @source: an #ESource
  * @result: a #GAsyncResult
- * @out_access_token: (allow-none) (out): return location for the access token,
+ * @out_access_token: (optional) (out): return location for the access token,
  *                    or %NULL
- * @out_expires_in: (allow-none) (out): return location for the token expiry,
+ * @out_expires_in: (optional) (out): return location for the token expiry,
  *                  or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -4247,7 +4243,7 @@ e_source_store_password_finish (ESource *source,
  * e_source_lookup_password_sync:
  * @source: an #ESource
  * @cancellable: optional #GCancellable object, or %NULL
- * @out_password: (out): return location for the password, or %NULL
+ * @out_password: (out) (optional) (nullable): return location for the password, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Looks up a password for @source.  Both the default and session keyrings
@@ -4351,7 +4347,7 @@ e_source_lookup_password (ESource *source,
  * e_source_lookup_password_finish:
  * @source: an #ESource
  * @result: a #GAsyncResult
- * @out_password: (out): return location for the password, or %NULL
+ * @out_password: (out) (optional) (nullable): return location for the password, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_source_lookup_password().
@@ -4519,9 +4515,9 @@ e_source_delete_password_finish (ESource *source,
  * @reason: an #ESourceCredentialsReason, why the credentials are required
  * @certificate_pem: PEM-encoded secure connection certificate, or an empty string
  * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate
- * @op_error: (allow-none): a #GError with a description of the previous credentials error, or %NULL
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @error: (allow-none): return location for a #GError, or %NULL
+ * @op_error: (nullable): a #GError with a description of the previous credentials error, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Let's the client-side know that credentials are required. The @reason defines which
  * parameters are used. The client passed the credentials with an e_source_invoke_authenticate()
@@ -4684,8 +4680,8 @@ source_invoke_credentials_required_thread (GTask *task,
  * @reason: an #ESourceCredentialsReason, why the credentials are required
  * @certificate_pem: PEM-encoded secure connection certificate, or an empty string
  * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate
- * @op_error: (allow-none): a #GError with a description of the previous credentials error, or %NULL
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @op_error: (nullable): a #GError with a description of the previous credentials error, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
  *
@@ -4731,7 +4727,7 @@ e_source_invoke_credentials_required (ESource *source,
  * e_source_invoke_credentials_required_finish:
  * @source: an #ESource
  * @result: a #GAsyncResult
- * @error: (allow-none): return location for a #GError, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_source_invoke_credentials_required().
  *
@@ -4759,10 +4755,10 @@ e_source_invoke_credentials_required_finish (ESource *source,
 /**
  * e_source_invoke_authenticate_sync:
  * @source: an #ESource
- * @credentials: (allow-none): an #ENamedParameters structure with credentials to use; can be %NULL
+ * @credentials: (nullable): an #ENamedParameters structure with credentials to use; can be %NULL
  *    to use those from the last call
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @error: (allow-none): return location for a #GError, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Calls the InvokeAuthenticate method on the server side, thus the backend
  * knows what credentials to use to connect to its (possibly remote) data store.
@@ -4866,9 +4862,9 @@ source_invoke_authenticate_thread (GTask *task,
 /**
  * e_source_invoke_authenticate:
  * @source: an #ESource
- * @credentials: (allow-none): an #ENamedParameters structure with credentials to use; can be %NULL
+ * @credentials: (nullable): an #ENamedParameters structure with credentials to use; can be %NULL
  *    to use those from the last call
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
  *
@@ -4908,7 +4904,7 @@ e_source_invoke_authenticate (ESource *source,
  * e_source_invoke_authenticate_finish:
  * @source: an #ESource
  * @result: a #GAsyncResult
- * @error: (allow-none): return location for a #GError, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_source_invoke_authenticate().
  *
@@ -4939,7 +4935,7 @@ e_source_invoke_authenticate_finish (ESource *source,
  * @reason: an #ESourceCredentialsReason, why the credentials are required
  * @certificate_pem: PEM-encoded secure connection certificate, or an empty string
  * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate
- * @op_error: (allow-none): a #GError with a description of the previous credentials error, or %NULL
+ * @op_error: (nullable): a #GError with a description of the previous credentials error, or %NULL
  *
  * Emits localy (in this process only) the ESource::credentials-required
  * signal with given parameters. That's the difference with e_source_invoke_credentials_required(),
@@ -4966,8 +4962,8 @@ e_source_emit_credentials_required (ESource *source,
  * @out_certificate_pem: (out): PEM-encoded secure connection certificate, or an empty string
  * @out_certificate_errors: (out): a bit-or of #GTlsCertificateFlags for secure connection certificate
  * @out_op_error: (out): a #GError with a description of the previous credentials error
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @error: (allow-none): return location for a #GError, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Retrieves the last used arguments of the 'credentials-required' signal emission.
  * If there was none emitted yet, or a corresponding 'authenitcate' had been emitted
@@ -5081,7 +5077,7 @@ source_get_last_credentials_required_arguments_thread (GTask *task,
 /**
  * e_source_get_last_credentials_required_arguments:
  * @source: an #ESource
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
  *
@@ -5122,7 +5118,7 @@ e_source_get_last_credentials_required_arguments (ESource *source,
  * @out_certificate_pem: (out): PEM-encoded secure connection certificate, or an empty string
  * @out_certificate_errors: (out): a bit-or of #GTlsCertificateFlags for secure connection certificate
  * @out_op_error: (out): a #GError with a description of the previous credentials error
- * @error: (allow-none): return location for a #GError, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_source_get_last_credentials_required_arguments().
  * See e_source_get_last_credentials_required_arguments_sync() for more information
@@ -5173,8 +5169,8 @@ e_source_get_last_credentials_required_arguments_finish (ESource *source,
 /**
  * e_source_unset_last_credentials_required_arguments_sync:
  * @source: an #ESource
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @error: (allow-none): return location for a #GError, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Unsets the last used arguments of the 'credentials-required' signal emission.
  *
@@ -5221,7 +5217,7 @@ source_unset_last_credentials_required_arguments_thread (GTask *task,
 /**
  * e_source_unset_last_credentials_required_arguments:
  * @source: an #ESource
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
  *
@@ -5257,7 +5253,7 @@ e_source_unset_last_credentials_required_arguments (ESource *source,
  * e_source_unset_last_credentials_required_arguments_finish:
  * @source: an #ESource
  * @result: a #GAsyncResult
- * @error: (allow-none): return location for a #GError, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_source_unset_last_credentials_required_arguments().
  *

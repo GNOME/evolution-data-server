@@ -515,13 +515,12 @@ e_webdav_discover_setup_proxy_resolver (EWebDAVSession *webdav,
 /**
  * e_webdav_discover_sources:
  * @source: an #ESource from which to take connection details
- * @url_use_path: (allow-none): optional URL override, or %NULL
+ * @url_use_path: (nullable): optional URL override, or %NULL
  * @only_supports: bit-or of EWebDAVDiscoverSupports, to limit what type of sources to search
- * @credentials: (allow-none): credentials to use for authentication to the server
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to the callback function
+ * @credentials: (nullable): credentials to use for authentication to the server
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
  * Asynchronously runs discovery of the WebDAV sources (CalDAV and CardDAV), eventually
  * limited by the @only_supports filter, which can be %E_WEBDAV_DISCOVER_SUPPORTS_NONE
@@ -558,9 +557,8 @@ e_webdav_discover_sources (ESource *source,
  * @ref_source_func: (nullable) (scope async): optional callback to use to get an ESource
  * @ref_source_func_user_data: (nullable): user data for @ref_source_func
  * @cancellable: optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to the callback function
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
  * This is the same as e_webdav_discover_sources(), it only allows to
  * provide a callback function (with its user_data), to reference an additional
@@ -603,16 +601,16 @@ e_webdav_discover_sources_full (ESource *source,
  * e_webdav_discover_sources_finish:
  * @source: an #ESource on which the operation was started
  * @result: a #GAsyncResult
- * @out_certificate_pem: (out) (allow-none): optional return location
+ * @out_certificate_pem: (out) (optional): optional return location
  *   for a server SSL certificate in PEM format, when the operation failed
  *   with an SSL error
- * @out_certificate_errors: (out) (allow-none): optional #GTlsCertificateFlags,
+ * @out_certificate_errors: (out) (optional): optional #GTlsCertificateFlags,
  *   with certificate error flags when the operation failed with SSL error
- * @out_discovered_sources: (out) (element-type EWebDAVDiscoveredSource): a #GSList
+ * @out_discovered_sources: (out) (optional) (element-type EWebDAVDiscoveredSource): a #GSList
  *   of all discovered sources
- * @out_calendar_user_addresses: (out) (allow-none) (element-type utf8): a #GSList of
+ * @out_calendar_user_addresses: (out) (optional) (element-type utf8): a #GSList of
  *   all discovered mail addresses for calendar sources
- * @error: (allow-none): return location for a #GError, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_webdav_discover_sources(). If an
  * error occurred, the function will set @error and return %FALSE. The function
@@ -699,20 +697,20 @@ e_webdav_discover_maybe_replace_auth_error (GError **target,
 /**
  * e_webdav_discover_sources_sync:
  * @source: an #ESource from which to take connection details
- * @url_use_path: (allow-none): optional URL override, or %NULL
+ * @url_use_path: (nullable): optional URL override, or %NULL
  * @only_supports: bit-or of EWebDAVDiscoverSupports, to limit what type of sources to search
- * @credentials: (allow-none): credentials to use for authentication to the server
- * @out_certificate_pem: (out) (allow-none): optional return location
+ * @credentials: (nullable): credentials to use for authentication to the server
+ * @out_certificate_pem: (out) (optional): optional return location
  *   for a server SSL certificate in PEM format, when the operation failed
  *   with an SSL error
- * @out_certificate_errors: (out) (allow-none): optional #GTlsCertificateFlags,
+ * @out_certificate_errors: (out) (optional): optional #GTlsCertificateFlags,
  *   with certificate error flags when the operation failed with SSL error
- * @out_discovered_sources: (out) (element-type EWebDAVDiscoveredSource): a #GSList
+ * @out_discovered_sources: (out) (optional) (element-type EWebDAVDiscoveredSource): a #GSList
  *   of all discovered sources
- * @out_calendar_user_addresses: (out) (allow-none) (element-type utf8): a #GSList of
+ * @out_calendar_user_addresses: (out) (optional) (element-type utf8): a #GSList of
  *   all discovered mail addresses for calendar sources
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @error: (allow-none): return location for a #GError, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Synchronously runs discovery of the WebDAV sources (CalDAV and CardDAV), eventually
  * limited by the @only_supports filter, which can be %E_WEBDAV_DISCOVER_SUPPORTS_NONE
@@ -790,14 +788,14 @@ e_webdav_discover_is_fatal_error (const GError *error)
  * @credentials: (nullable): credentials to use for authentication to the server
  * @ref_source_func: (nullable) (scope call): optional callback to use to get an ESource
  * @ref_source_func_user_data: (nullable): user data for @ref_source_func
- * @out_certificate_pem: (out) (nullable): optional return location
+ * @out_certificate_pem: (out) (optional): optional return location
  *   for a server SSL certificate in PEM format, when the operation failed
  *   with an SSL error
- * @out_certificate_errors: (out) (nullable): optional #GTlsCertificateFlags,
+ * @out_certificate_errors: (out) (optional): optional #GTlsCertificateFlags,
  *   with certificate error flags when the operation failed with SSL error
- * @out_discovered_sources: (out) (element-type EWebDAVDiscoveredSource): a #GSList
+ * @out_discovered_sources: (out) (optional) (element-type EWebDAVDiscoveredSource): a #GSList
  *   of all discovered sources
- * @out_calendar_user_addresses: (out) (nullable) (element-type utf8): a #GSList of
+ * @out_calendar_user_addresses: (out) (optional) (element-type utf8): a #GSList of
  *   all discovered mail addresses for calendar sources
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL

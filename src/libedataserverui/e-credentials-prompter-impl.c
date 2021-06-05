@@ -86,7 +86,7 @@ e_credentials_prompter_impl_class_init (ECredentialsPrompterImplClass *klass)
 	 * ECredentialsPrompterImpl::prompt-finished:
 	 * @prompter_impl: an #ECredentialsPrompterImpl which emitted the signal
 	 * @prompt_id: an ID of the prompt which was finished
-	 * @credentials: (allow-none): entered credentials, or %NULL for cancelled prompts
+	 * @credentials: (nullable): entered credentials, or %NULL for cancelled prompts
 	 *
 	 * Emitted when a prompt of ID @prompt_id is finished.
 	 *
@@ -139,7 +139,7 @@ e_credentials_prompter_impl_get_credentials_prompter (ECredentialsPrompterImpl *
  * @prompt_id: a prompt ID to be passed to e_credentials_prompter_impl_prompt_finish()
  * @auth_source: an #ESource, to prompt the credentials for (the source which asked for credentials)
  * @cred_source: a parent #ESource, from which credentials were taken, or should be stored to
- * @error_text: (allow-none): an optional error text from the previous credentials prompt; can be %NULL
+ * @error_text: (nullable): an optional error text from the previous credentials prompt; can be %NULL
  * @credentials: credentials, as saved in keyring; can be empty, but not %NULL
  *
  * Runs a credentials prompt for the @prompter_impl. The actual prompter implementation
@@ -182,7 +182,7 @@ e_credentials_prompter_impl_prompt (ECredentialsPrompterImpl *prompter_impl,
  * e_credentials_prompter_impl_prompt_finish:
  * @prompter_impl: an #ECredentialsPrompterImpl
  * @prompt_id: a prompt ID
- * @credentials: (allow-none): credentials to use; can be %NULL for cancelled prompts
+ * @credentials: (nullable): credentials to use; can be %NULL for cancelled prompts
  *
  * The actual credentials prompt implementation finishes a previously started
  * credentials prompt @prompt_id with ECredentialsPrompterImplClass::process_prompt()

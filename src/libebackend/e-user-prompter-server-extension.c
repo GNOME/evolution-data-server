@@ -103,7 +103,7 @@ e_user_prompter_server_extension_init (EUserPrompterServerExtension *extension)
  * @extension: an #EUserPrompterServerExtension
  * @prompt_id: Prompt identificator, which is used in call to e_user_prompter_server_extension_response()
  * @dialog_name: Name of a dialog to run
- * @parameters: (allow-none): Optional extension parameters for the dialog, as passed by a caller
+ * @parameters: (nullable): Optional extension parameters for the dialog, as passed by a caller
  *
  * Instructs extension to show dialog @dialog_name. If it cannot be found,
  * or any error, then return %FALSE. The caller can pass optional @parameters,
@@ -145,7 +145,7 @@ e_user_prompter_server_extension_prompt (EUserPrompterServerExtension *extension
  * @extension: an #EUserPrompterServerExtension
  * @prompt_id: Prompt identificator
  * @response: Response of the prompt
- * @values: (allow-none): Additional response values, if extension defines any
+ * @values: (nullable): Additional response values, if extension defines any
  *
  * A conveniente wrapper function around e_user_prompter_server_response(),
  * which ends previous call of e_user_prompter_server_extension_prompt().

@@ -148,7 +148,7 @@ e_source_resource_init (ESourceResource *extension)
  * Returns the server-assigned identity of the remote resource associated
  * with the #ESource to which @extension belongs.
  *
- * Returns: the identity of a remote resource
+ * Returns: (nullable): the identity of a remote resource
  *
  * Since: 3.6
  **/
@@ -169,7 +169,7 @@ e_source_resource_get_identity (ESourceResource *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceResource:identity
+ * Returns: (nullable): a newly-allocated copy of #ESourceResource:identity
  *
  * Since: 3.6
  **/
@@ -194,7 +194,7 @@ e_source_resource_dup_identity (ESourceResource *extension)
 /**
  * e_source_resource_set_identity:
  * @extension: an #ESourceResource
- * @identity: (allow-none): the identity of a remote resource
+ * @identity: (nullable): the identity of a remote resource
  *
  * Sets the server-assigned identity of the remote resource associated with
  * the #ESource to which @extension belongs.

@@ -263,7 +263,7 @@ e_source_mail_account_init (ESourceMailAccount *extension)
  * Returns the #ESource:uid of the #ESource that describes the mail
  * identity to be used for this account.
  *
- * Returns: the mail identity #ESource:uid
+ * Returns: (nullable): the mail identity #ESource:uid
  *
  * Since: 3.6
  **/
@@ -284,7 +284,7 @@ e_source_mail_account_get_identity_uid (ESourceMailAccount *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceMailAccount:identity-uid
+ * Returns: (nullable): a newly-allocated copy of #ESourceMailAccount:identity-uid
  *
  * Since: 3.6
  **/
@@ -309,7 +309,7 @@ e_source_mail_account_dup_identity_uid (ESourceMailAccount *extension)
 /**
  * e_source_mail_account_set_identity_uid:
  * @extension: an #ESourceMailAccount
- * @identity_uid: (allow-none): the mail identity #ESource:uid, or %NULL
+ * @identity_uid: (nullable): the mail identity #ESource:uid, or %NULL
  *
  * Sets the #ESource:uid of the #ESource that describes the mail
  * identity to be used for this account.
@@ -344,7 +344,7 @@ e_source_mail_account_set_identity_uid (ESourceMailAccount *extension,
  * Returns a string identifying the archive folder.
  * The format of the identifier string is defined by the client application.
  *
- * Returns: an identifier of the archive folder
+ * Returns: (nullable): an identifier of the archive folder
  *
  * Since: 3.16
  **/
@@ -365,7 +365,7 @@ e_source_mail_account_get_archive_folder (ESourceMailAccount *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceMailAccount:archive-folder
+ * Returns: (nullable): a newly-allocated copy of #ESourceMailAccount:archive-folder
  *
  * Since: 3.16
  **/
@@ -390,7 +390,7 @@ e_source_mail_account_dup_archive_folder (ESourceMailAccount *extension)
 /**
  * e_source_mail_account_set_archive_folder:
  * @extension: an #ESourceMailAccount
- * @archive_folder: (allow-none): an identifier for the archive folder, or %NULL
+ * @archive_folder: (nullable): an identifier for the archive folder, or %NULL
  *
  * Sets the folder for sent messages by an identifier string.
  * The format of the identifier string is defined by the client application.

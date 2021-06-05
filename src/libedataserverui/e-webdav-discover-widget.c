@@ -104,8 +104,8 @@ e_webdav_discover_content_init (EWebDAVDiscoverContent *self)
 /**
  * e_webdav_discover_content_new:
  * @credentials_prompter: an #ECredentialsPrompter to use to ask for credentials
- * @source: (allow-none): optional #ESource to use for authentication, or %NULL
- * @base_url: (allow-none): optional base URL to use for discovery, or %NULL
+ * @source: (nullable): optional #ESource to use for authentication, or %NULL
+ * @base_url: (nullable): optional base URL to use for discovery, or %NULL
  * @supports_filter: a bit-or of #EWebDAVDiscoverSupports, a filter to limit what source
  *    types will be shown in the dialog content; use %E_WEBDAV_DISCOVER_SUPPORTS_NONE
  *    to show all
@@ -808,11 +808,10 @@ e_webdav_discover_info_bar_response_cb (GtkInfoBar *info_bar,
 /**
  * e_webdav_discover_content_refresh:
  * @content: (type EWebDAVDiscoverContent): an #EWebDAVDiscoverContent
- * @display_name: (allow-none): optional display name to use for scratch sources
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to the callback function
+ * @display_name: (nullable): optional display name to use for scratch sources
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
  * Asynchronously starts refresh of the @content. This means to access the server
  * and search it for available sources. The @content shows a feedback and a Cancel
@@ -929,7 +928,7 @@ e_webdav_discover_content_refresh (GtkWidget *content,
  * e_webdav_discover_content_refresh_finish:
  * @content: (type EWebDAVDiscoverContent): an #EWebDAVDiscoverContent
  * @result: a #GAsyncResult
- * @error: (allow-none): return location for a #GError, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_webdav_discover_content_refresh(). If an
  * error occurred, the function will set @error and return %FALSE. There is
@@ -971,7 +970,7 @@ e_webdav_discover_info_bar_error_response_cb (GtkInfoBar *info_bar,
 /**
  * e_webdav_discover_content_show_error:
  * @content: (type EWebDAVDiscoverContent): an #EWebDAVDiscoverContent
- * @error: (allow-none): a #GError to show in the UI, or %NULL
+ * @error: a #GError to show in the UI, or %NULL
  *
  * Shows the @error within @content, unless it's a #G_IO_ERROR_CANCELLED, or %NULL,
  * which are safely ignored. The advantage of this function is that the error
@@ -1056,7 +1055,7 @@ e_webdav_discover_dialog_init (EWebDAVDiscoverDialog *self)
  * @title: title of the window
  * @credentials_prompter: an #ECredentialsPrompter to use to ask for credentials
  * @source: an #ESource to use for authentication
- * @base_url: (allow-none): optional base URL to use for discovery, or %NULL
+ * @base_url: (nullable): optional base URL to use for discovery, or %NULL
  * @supports_filter: a bit-or of #EWebDAVDiscoverSupports, a filter to limit what source
  *    types will be shown in the dialog content; use %E_WEBDAV_DISCOVER_SUPPORTS_NONE
  *    to show all

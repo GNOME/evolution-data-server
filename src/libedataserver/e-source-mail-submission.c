@@ -232,7 +232,7 @@ e_source_mail_submission_init (ESourceMailSubmission *extension)
  * Returns a string identifying the preferred folder for sent messages.
  * The format of the identifier string is defined by the client application.
  *
- * Returns: an identifier for the preferred sent folder
+ * Returns: (nullable): an identifier for the preferred sent folder
  *
  * Since: 3.6
  **/
@@ -253,7 +253,7 @@ e_source_mail_submission_get_sent_folder (ESourceMailSubmission *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceMailSubmission:sent-folder
+ * Returns: (nullable): a newly-allocated copy of #ESourceMailSubmission:sent-folder
  *
  * Since: 3.6
  **/
@@ -278,7 +278,7 @@ e_source_mail_submission_dup_sent_folder (ESourceMailSubmission *extension)
 /**
  * e_source_mail_submission_set_sent_folder:
  * @extension: an #ESourceMailSubmission
- * @sent_folder: (allow-none): an identifier for the preferred sent folder,
+ * @sent_folder: (nullable): an identifier for the preferred sent folder,
  *               or %NULL
  *
  * Sets the preferred folder for sent messages by an identifier string.
@@ -357,7 +357,7 @@ e_source_mail_submission_set_use_sent_folder (ESourceMailSubmission *extension,
  * Returns the #ESource:uid of the #ESource that describes the mail
  * transport to be used for outgoing messages.
  *
- * Returns: the mail transport #ESource:uid
+ * Returns: (nullable): the mail transport #ESource:uid
  *
  * Since: 3.6
  **/
@@ -378,7 +378,7 @@ e_source_mail_submission_get_transport_uid (ESourceMailSubmission *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceMailSubmission:transport-uid
+ * Returns: (nullable): a newly-allocated copy of #ESourceMailSubmission:transport-uid
  *
  * Since: 3.6
  **/
@@ -403,7 +403,7 @@ e_source_mail_submission_dup_transport_uid (ESourceMailSubmission *extension)
 /**
  * e_source_mail_submission_set_transport_uid:
  * @extension: an #ESourceMailSubmission
- * @transport_uid: (allow-none): the mail transport #ESource:uid, or %NULL
+ * @transport_uid: (nullable): the mail transport #ESource:uid, or %NULL
  *
  * Sets the #ESource:uid of the #ESource that describes the mail
  * transport to be used for outgoing messages.

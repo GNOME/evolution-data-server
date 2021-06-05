@@ -363,7 +363,7 @@ intersects_interval (const ICalTime *tt,
  * @get_tz_callback_user_data: (closure get_tz_callback): user data for @get_tz_callback
  * @default_timezone: a default #ICalTimezone
  * @cancellable: a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Calls the given callback function for each occurrence of the event that
  * intersects the range between the given @start and @end times (the end time is

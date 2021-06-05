@@ -479,11 +479,11 @@ e_source_refresh_set_interval_minutes (ESourceRefresh *extension,
 /**
  * e_source_refresh_add_timeout:
  * @source: an #ESource
- * @context: (allow-none): a #GMainContext, or %NULL (if %NULL, the default
+ * @context: (nullable): a #GMainContext, or %NULL (if %NULL, the default
  *           context will be used)
  * @callback: function to call on each timeout
  * @user_data: data to pass to @callback
- * @notify: (allow-none): function to call when the timeout is removed,
+ * @notify: (nullable): function to call when the timeout is removed,
  *          or %NULL
  *
  * This is a simple way to schedule a periodic data source refresh.

@@ -772,7 +772,7 @@ e_source_webdav_set_calendar_auto_schedule (ESourceWebdav *extension,
  * differ from the #ESource:display-name property of the #ESource to which
  * @extension belongs.
  *
- * Returns: the display name of the WebDAV resource
+ * Returns: (nullable): the display name of the WebDAV resource
  *
  * Since: 3.6
  **/
@@ -793,7 +793,7 @@ e_source_webdav_get_display_name (ESourceWebdav *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceWebdav:display-name
+ * Returns: (nullable): a newly-allocated copy of #ESourceWebdav:display-name
  *
  * Since: 3.6
  **/
@@ -818,7 +818,7 @@ e_source_webdav_dup_display_name (ESourceWebdav *extension)
 /**
  * e_source_webdav_set_display_name:
  * @extension: an #ESourceWebdav
- * @display_name: (allow-none): the display name of the WebDAV resource,
+ * @display_name: (nullable): the display name of the WebDAV resource,
  *                or %NULL
  *
  * Updates the last known display name of a WebDAV resource, which may
@@ -858,7 +858,7 @@ e_source_webdav_set_display_name (ESourceWebdav *extension,
  *
  * Returns the last known color of a WebDAV resource as provided by the server.
  *
- * Returns: the color of the WebDAV resource, if any set on the server
+ * Returns: (nullable): the color of the WebDAV resource, if any set on the server
  *
  * Since: 3.30
  **/
@@ -879,7 +879,7 @@ e_source_webdav_get_color (ESourceWebdav *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceWebdav:color
+ * Returns: (nullable): a newly-allocated copy of #ESourceWebdav:color
  *
  * Since: 3.30
  **/
@@ -942,7 +942,7 @@ e_source_webdav_set_color (ESourceWebdav *extension,
  * Returns the user's email address which can be passed to a CalDAV server
  * if the user wishes to receive scheduling messages.
  *
- * Returns: the user's email address
+ * Returns: (nullable): the user's email address
  *
  * Since: 3.6
  **/
@@ -963,7 +963,7 @@ e_source_webdav_get_email_address (ESourceWebdav *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: the newly-allocated copy of #ESourceWebdav:email-address
+ * Returns: (nullable): the newly-allocated copy of #ESourceWebdav:email-address
  *
  * Since: 3.6
  **/
@@ -988,7 +988,7 @@ e_source_webdav_dup_email_address (ESourceWebdav *extension)
 /**
  * e_source_webdav_set_email_address:
  * @extension: an #ESourceWebdav
- * @email_address: (allow-none): the user's email address, or %NULL
+ * @email_address: (nullable): the user's email address, or %NULL
  *
  * Sets the user's email address which can be passed to a CalDAV server if
  * the user wishes to receive scheduling messages.
@@ -1026,7 +1026,7 @@ e_source_webdav_set_email_address (ESourceWebdav *extension,
  *
  * Returns the absolute path to a resource on a WebDAV server.
  *
- * Returns: the absolute path to a WebDAV resource
+ * Returns: (nullable): the absolute path to a WebDAV resource
  *
  * Since: 3.6
  **/
@@ -1047,7 +1047,7 @@ e_source_webdav_get_resource_path (ESourceWebdav *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: the newly-allocated copy of #ESourceWebdav:resource-path
+ * Returns: (nullable): the newly-allocated copy of #ESourceWebdav:resource-path
  *
  * Since: 3.6
  **/
@@ -1072,7 +1072,7 @@ e_source_webdav_dup_resource_path (ESourceWebdav *extension)
 /**
  * e_source_webdav_set_resource_path:
  * @extension: an #ESourceWebdav
- * @resource_path: (allow-none): the absolute path to a WebDAV resource,
+ * @resource_path: (nullable): the absolute path to a WebDAV resource,
  *                 or %NULL
  *
  * Sets the absolute path to a resource on a WebDAV server.
@@ -1115,7 +1115,7 @@ e_source_webdav_set_resource_path (ESourceWebdav *extension,
  * content on-the-fly.  The #ESourceWebdav:resource-query holds the input
  * values for the program.
  *
- * Returns: the query to access a WebDAV resource
+ * Returns: (nullable): the query to access a WebDAV resource
  *
  * Since: 3.6
  **/
@@ -1136,7 +1136,7 @@ e_source_webdav_get_resource_query (ESourceWebdav *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: the newly-allocated copy of #ESourceWebdav:resource-query
+ * Returns: (nullable): the newly-allocated copy of #ESourceWebdav:resource-query
  *
  * Since: 3.6
  **/
@@ -1161,7 +1161,7 @@ e_source_webdav_dup_resource_query (ESourceWebdav *extension)
 /**
  * e_source_webdav_set_resource_query:
  * @extension: an #ESourceWebdav
- * @resource_query: (allow-none): the query to access a WebDAV resource,
+ * @resource_query: (nullable): the query to access a WebDAV resource,
  *                  or %NULL
  *
  * Sets the URI query required to access a resource on a WebDAV server.
@@ -1211,7 +1211,7 @@ e_source_webdav_set_resource_query (ESourceWebdav *extension,
  * it is supposed to be manipulated with e_source_webdav_update_ssl_trust()
  * and e_source_webdav_verify_ssl_trust().
  *
- * Returns: an SSL/TLS certificate trust for the @extension
+ * Returns: (nullable): an SSL/TLS certificate trust for the @extension
  *
  * Since: 3.8
  **/
@@ -1232,7 +1232,7 @@ e_source_webdav_get_ssl_trust (ESourceWebdav *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: the newly-allocated copy of #ESourceWebdav:ssl-trust
+ * Returns: (nullable): the newly-allocated copy of #ESourceWebdav:ssl-trust
  *
  * Since: 3.8
  **/
@@ -1257,7 +1257,7 @@ e_source_webdav_dup_ssl_trust (ESourceWebdav *extension)
 /**
  * e_source_webdav_set_ssl_trust:
  * @extension: an #ESourceWebdav
- * @ssl_trust: (allow-none): the ssl_trust to store, or %NULL to unset
+ * @ssl_trust: (nullable): the ssl_trust to store, or %NULL to unset
  *
  * Sets the SSL/TLS certificate trust. See e_source_webdav_get_ssl_trust()
  * for more infomation about its content and how to use it.

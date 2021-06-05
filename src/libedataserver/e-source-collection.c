@@ -326,7 +326,7 @@ e_source_collection_init (ESourceCollection *extension)
  * Returns the string used to uniquely identify the user account at
  * the service provider.  Often this is an email address or user name.
  *
- * Returns: the collection identity
+ * Returns: (nullable): the collection identity
  *
  * Since: 3.6
  **/
@@ -347,7 +347,7 @@ e_source_collection_get_identity (ESourceCollection *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceCollection:identity
+ * Returns: (nullable): a newly-allocated copy of #ESourceCollection:identity
  *
  * Since: 3.6
  **/
@@ -372,7 +372,7 @@ e_source_collection_dup_identity (ESourceCollection *extension)
 /**
  * e_source_collection_set_identity:
  * @extension: an #ESourceCollection
- * @identity: (allow-none): the collection identity, or %NULL
+ * @identity: (nullable): the collection identity, or %NULL
  *
  * Sets the string used to uniquely identify the user account at the
  * service provider.  Often this is an email address or user name.
@@ -592,7 +592,7 @@ e_source_collection_get_calendar_url (ESourceCollection *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceCollection:calendar-url
+ * Returns: (nullable): a newly-allocated copy of #ESourceCollection:calendar-url
  *
  * Since: 3.26
  **/
@@ -675,7 +675,7 @@ e_source_collection_get_contacts_url (ESourceCollection *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceCollection:contacts-url
+ * Returns: (nullable): a newly-allocated copy of #ESourceCollection:contacts-url
  *
  * Since: 3.26
  **/

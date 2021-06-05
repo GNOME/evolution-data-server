@@ -1038,7 +1038,7 @@ e_vcard_construct (EVCard *evc,
  * e_vcard_construct_with_uid:
  * @evc: an existing #EVCard
  * @str: a vCard string
- * @uid: (allow-none): a unique ID string
+ * @uid: (nullable): a unique ID string
  *
  * Constructs the existing #EVCard, @evc, setting its vCard data to @str, and
  * adding a new UID attribute with the value given in @uid (if @uid is
@@ -1061,7 +1061,7 @@ e_vcard_construct_with_uid (EVCard *evc,
  * @evc: an existing #EVCard
  * @str: a vCard string
  * @len: length of @str, or -1 if @str is %NULL terminated
- * @uid: (allow-none): a unique ID string
+ * @uid: (nullable): a unique ID string
  *
  * Similar to e_vcard_construct_with_uid(), but can also
  * be used with an @str that is not %NULL terminated.
@@ -1619,7 +1619,7 @@ e_vcard_dump_structure (EVCard *evc)
 
 /**
  * e_vcard_attribute_new:
- * @attr_group: (allow-none): a group name
+ * @attr_group: (nullable): a group name
  * @attr_name: an attribute name
  *
  * Creates a new #EVCardAttribute with the specified group and
@@ -1706,7 +1706,7 @@ e_vcard_attribute_copy (EVCardAttribute *attr)
 /**
  * e_vcard_remove_attributes:
  * @evc: vcard object
- * @attr_group: (allow-none): group name of attributes to be removed
+ * @attr_group: (nullable): group name of attributes to be removed
  * @attr_name: name of the arributes to be removed
  *
  * Removes all the attributes with group name and attribute name equal to the
@@ -2523,7 +2523,7 @@ e_vcard_get_attributes (EVCard *evcard)
  * is more efficient to iterate once over the list returned by
  * e_vcard_get_attributes().</para></note>
  *
- * Returns: (transfer none) (allow-none): An #EVCardAttribute if found, or %NULL.
+ * Returns: (transfer none) (nullable): An #EVCardAttribute if found, or %NULL.
  **/
 EVCardAttribute *
 e_vcard_get_attribute (EVCard *evc,
@@ -2562,7 +2562,7 @@ e_vcard_get_attribute (EVCard *evc,
  * Similar to e_vcard_get_attribute() but this method will not attempt to
  * parse the vCard if it is not already parsed.
  *
- * Returns: (transfer none) (allow-none): An #EVCardAttribute if found, or %NULL.
+ * Returns: (transfer none) (nullable): An #EVCardAttribute if found, or %NULL.
  *
  * Since: 3.4
  **/
@@ -2591,7 +2591,7 @@ e_vcard_get_attribute_if_parsed (EVCard *evc,
  *
  * Gets the group name of @attr.
  *
- * Returns: (allow-none): The attribute's group name, or %NULL.
+ * Returns: (nullable): The attribute's group name, or %NULL.
  **/
 const gchar *
 e_vcard_attribute_get_group (EVCardAttribute *attr)
@@ -2733,7 +2733,7 @@ e_vcard_attribute_is_single_valued (EVCardAttribute *attr)
  * single-valued (i.e. for which e_vcard_attribute_is_single_valued() returns
  * %FALSE). Use e_vcard_attribute_get_values() in such cases instead.
  *
- * Returns: (allow-none) (transfer full): A newly allocated string representing
+ * Returns: (nullable): A newly allocated string representing
  * the value, or %NULL if the attribute has no value.
  **/
 gchar *
@@ -2763,7 +2763,7 @@ e_vcard_attribute_get_value (EVCardAttribute *attr)
  * single-valued (i.e. for which e_vcard_attribute_is_single_valued() returns
  * %FALSE). Use e_vcard_attribute_get_values_decoded() in such cases instead.
  *
- * Returns: (allow-none) (transfer full): A newly allocated #GString
+ * Returns: (nullable) (transfer full): A newly allocated #GString
  * representing the value, or %NULL if the attribute has no value.
  **/
 GString *
@@ -2864,7 +2864,7 @@ e_vcard_attribute_get_params (EVCardAttribute *attr)
  * contents are owned by @attr, and must not be freed. If no parameter with the
  * given @name exists, %NULL is returned.
  *
- * Returns: (transfer none) (element-type utf8) (allow-none): A list of string
+ * Returns: (transfer none) (element-type utf8) (nullable): A list of string
  * elements representing the parameter's values, or %NULL.
  **/
 GList *
@@ -2998,7 +2998,7 @@ e_vcard_util_set_x_attribute (EVCard *vcard,
  * @vcard: an #EVCard
  * @x_name: the attribute name, which starts with "X-"
  *
- * Returns: (nullable) (transfer full): Value of attribute @x_name, or %NULL,
+ * Returns: (nullable): Value of attribute @x_name, or %NULL,
  *    when there is no such attribute. Free the returned pointer with g_free(),
  *    when no longer needed.
  *

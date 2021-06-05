@@ -207,9 +207,9 @@ e_source_credentials_provider_impl_can_prompt (ESourceCredentialsProviderImpl *p
  * e_source_credentials_provider_impl_lookup_sync:
  * @provider_impl: an #ESourceCredentialsProviderImpl
  * @source: an #ESource
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @out_credentials: (out): an #ENamedParameters to be set with stored credentials
- * @error: (allow-none): return location for a #GError, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Asks @provider_impl to lookup for stored credentials for @source.
  * The @out_credentials is populated with them. If the result is not
@@ -250,8 +250,8 @@ e_source_credentials_provider_impl_lookup_sync (ESourceCredentialsProviderImpl *
  * @source: an #ESource
  * @credentials: an #ENamedParameters containing credentials to store
  * @permanently: whether to store credentials permanently, or for the current session only
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @error: (allow-none): return location for a #GError, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Asks @provider_impl to store @credentials for @source.
  *
@@ -288,8 +288,8 @@ e_source_credentials_provider_impl_store_sync (ESourceCredentialsProviderImpl *p
  * e_source_credentials_provider_impl_delete_sync:
  * @provider_impl: an #ESourceCredentialsProviderImpl
  * @source: an #ESource
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @error: (allow-none): return location for a #GError, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Asks @provider_impl to delete any stored credentials for @source.
  *

@@ -131,7 +131,7 @@ e_source_backend_init (ESourceBackend *extension)
  *
  * Returns the backend name for @extension.
  *
- * Returns: the backend name for @extension
+ * Returns: (nullable): the backend name for @extension
  *
  * Since: 3.6
  **/
@@ -152,7 +152,7 @@ e_source_backend_get_backend_name (ESourceBackend *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceBackend:backend-name
+ * Returns: (nullable): a newly-allocated copy of #ESourceBackend:backend-name
  *
  * Since: 3.6
  **/
@@ -177,7 +177,7 @@ e_source_backend_dup_backend_name (ESourceBackend *extension)
 /**
  * e_source_backend_set_backend_name:
  * @extension: an #ESourceBackend
- * @backend_name: (allow-none): a backend name, or %NULL
+ * @backend_name: (nullable): a backend name, or %NULL
  *
  * Sets the backend name for @extension.
  *

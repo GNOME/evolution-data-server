@@ -2151,7 +2151,7 @@ alphabet_index_thread (GSimpleAsyncResult *simple,
  *
  * Unreference the #EBookClient with g_object_unref() when finished with it.
  *
- * Returns: (transfer full): an #EBookClient
+ * Returns: (transfer full) (type EBookClient): an #EBookClient
  *
  * Since: 3.12
  */
@@ -2166,10 +2166,10 @@ e_book_client_cursor_ref_client (EBookClientCursor *cursor)
 /**
  * e_book_client_cursor_get_alphabet:
  * @cursor: an #EBookClientCursor
- * @n_labels: (out) (allow-none): The number of labels in the active alphabet
- * @underflow: (allow-none) (out): The underflow index, for any words which sort below the active alphabet
- * @inflow: (allow-none) (out): The inflow index, for any words which sort between the active alphabets (if there is more than one)
- * @overflow: (allow-none) (out): The overflow index, for any words which sort above the active alphabet
+ * @n_labels: (out) (optional): The number of labels in the active alphabet
+ * @underflow: (optional) (out): The underflow index, for any words which sort below the active alphabet
+ * @inflow: (optional) (out): The inflow index, for any words which sort between the active alphabets (if there is more than one)
+ * @overflow: (optional) (out): The overflow index, for any words which sort above the active alphabet
  *
  * Fetches the array of displayable labels for the <link linkend="cursor-alphabet">active alphabet</link>.
  *
@@ -2267,7 +2267,7 @@ e_book_client_cursor_get_position (EBookClientCursor *cursor)
  * e_book_client_cursor_set_sexp:
  * @cursor: an #EBookClientCursor
  * @sexp: the new search expression for @cursor
- * @cancellable: (allow-none): a #GCancellable to optionally cancel this operation while in progress
+ * @cancellable: a #GCancellable to optionally cancel this operation while in progress
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
  *
@@ -2316,7 +2316,7 @@ e_book_client_cursor_set_sexp (EBookClientCursor *cursor,
  * e_book_client_cursor_set_sexp_finish:
  * @cursor: an #EBookClientCursor
  * @result: a #GAsyncResult
- * @error: (out) (allow-none): return location for a #GError, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Completes an asynchronous call initiated by e_book_client_cursor_set_sexp(), reporting
  * whether the new search expression was accepted.
@@ -2361,8 +2361,8 @@ e_book_client_cursor_set_sexp_finish (EBookClientCursor *cursor,
  * e_book_client_cursor_set_sexp_sync:
  * @cursor: an #EBookClientCursor
  * @sexp: the new search expression for @cursor
- * @cancellable: (allow-none): a #GCancellable to optionally cancel this operation while in progress
- * @error: (out) (allow-none): return location for a #GError, or %NULL
+ * @cancellable: a #GCancellable to optionally cancel this operation while in progress
+ * @error: return location for a #GError, or %NULL
  *
  * Sets the <link linkend="cursor-search">Search Expression</link> for the cursor.
  *
@@ -2422,7 +2422,7 @@ e_book_client_cursor_set_sexp_sync (EBookClientCursor *cursor,
  * @flags: The #EBookCursorStepFlags for this step
  * @origin: The #EBookCursorOrigin from whence to step
  * @count: a positive or negative amount of contacts to try and fetch
- * @cancellable: (allow-none): a #GCancellable to optionally cancel this operation while in progress
+ * @cancellable: a #GCancellable to optionally cancel this operation while in progress
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
  *
@@ -2475,8 +2475,8 @@ e_book_client_cursor_step (EBookClientCursor *cursor,
  * e_book_client_cursor_step_finish:
  * @cursor: an #EBookClientCursor
  * @result: a #GAsyncResult
- * @out_contacts: (element-type EContact) (out) (transfer full) (allow-none): return location for a #GSList of #EContact
- * @error: (out) (allow-none): return location for a #GError, or %NULL
+ * @out_contacts: (element-type EContact) (out) (transfer full) (optional): return location for a #GSList of #EContact
+ * @error: return location for a #GError, or %NULL
  *
  * Completes an asynchronous call initiated by e_book_client_cursor_step(), fetching
  * any contacts which might have been returned by the call.
@@ -2530,9 +2530,9 @@ e_book_client_cursor_step_finish (EBookClientCursor *cursor,
  * @flags: The #EBookCursorStepFlags for this step
  * @origin: The #EBookCursorOrigin from whence to step
  * @count: a positive or negative amount of contacts to try and fetch
- * @out_contacts: (element-type EContact) (out) (transfer full) (allow-none): return location for a #GSList of #EContact
- * @cancellable: (allow-none): a #GCancellable to optionally cancel this operation while in progress
- * @error: (out) (allow-none): return location for a #GError, or %NULL
+ * @out_contacts: (element-type EContact) (out) (transfer full) (optional): return location for a #GSList of #EContact
+ * @cancellable: a #GCancellable to optionally cancel this operation while in progress
+ * @error: return location for a #GError, or %NULL
  *
  * <link linkend="cursor-iteration">Steps the cursor through the results</link> by 
  * a maximum of @count and fetch the results traversed.
@@ -2607,7 +2607,7 @@ e_book_client_cursor_step_sync (EBookClientCursor *cursor,
  * e_book_client_cursor_set_alphabetic_index:
  * @cursor: an #EBookClientCursor
  * @index: the alphabetic index
- * @cancellable: (allow-none): a #GCancellable to optionally cancel this operation while in progress
+ * @cancellable: a #GCancellable to optionally cancel this operation while in progress
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
  *
@@ -2656,7 +2656,7 @@ e_book_client_cursor_set_alphabetic_index (EBookClientCursor *cursor,
  * e_book_client_cursor_set_alphabetic_index_finish:
  * @cursor: an #EBookClientCursor
  * @result: a #GAsyncResult
- * @error: (out) (allow-none): return location for a #GError, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Completes an asynchronous call initiated by e_book_client_cursor_set_alphabetic_index().
  *
@@ -2700,8 +2700,8 @@ e_book_client_cursor_set_alphabetic_index_finish (EBookClientCursor *cursor,
  * e_book_client_cursor_set_alphabetic_index_sync:
  * @cursor: an #EBookClientCursor
  * @index: the alphabetic index
- * @cancellable: (allow-none): a #GCancellable to optionally cancel this operation while in progress
- * @error: (out) (allow-none): return location for a #GError, or %NULL
+ * @cancellable: a #GCancellable to optionally cancel this operation while in progress
+ * @error: return location for a #GError, or %NULL
  *
  * Sets the cursor to point to an <link linkend="cursor-alphabet">Alphabetic Index</link>.
  *

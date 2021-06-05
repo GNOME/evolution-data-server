@@ -1782,7 +1782,7 @@ e_source_registry_init (ESourceRegistry *registry)
 
 /**
  * e_source_registry_new_sync:
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Creates a new #ESourceRegistry front-end for the registry D-Bus service.
@@ -1842,10 +1842,9 @@ source_registry_init_cb (GObject *source_object,
 
 /**
  * e_source_registry_new:
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to the callback function
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
  * Asynchronously creates a new #ESourceRegistry front-end for the registry
  * D-Bus service.
@@ -1940,7 +1939,7 @@ source_registry_commit_source_thread (GSimpleAsyncResult *simple,
  * e_source_registry_commit_source_sync:
  * @registry: an #ESourceRegistry
  * @source: an #ESource with changes to commit
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for #GError, or %NULL
  *
  * This is a convenience function intended for use with graphical
@@ -2010,10 +2009,9 @@ e_source_registry_commit_source_sync (ESourceRegistry *registry,
  * e_source_registry_commit_source:
  * @registry: an #ESourceRegistry
  * @source: an #ESource with changes to commit
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to the callback function
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
  * See e_source_registry_commit_source_sync() for details.
  *
@@ -2154,7 +2152,7 @@ source_registry_create_sources_object_added_cb (GDBusObjectManager *object_manag
  * @registry: an #ESourceRegistry
  * @list_of_sources: (element-type ESource): a list of #ESource instances with
  * no #GDBusObject
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Requests the D-Bus service create new key files for each #ESource in
@@ -2263,10 +2261,9 @@ e_source_registry_create_sources_sync (ESourceRegistry *registry,
  * @registry: an #ESourceRegistry
  * @list_of_sources: (element-type ESource): a list of #ESource instances with
  * no #GDBusObject
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to the callback function
+ * @cancellable:optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
  * Asynchronously requests the D-Bus service create new key files for each
  * #ESource in @list_of_sources.  Each list element must be a scratch
@@ -2404,9 +2401,8 @@ e_source_registry_refresh_backend_thread (GTask *task,
  * @registry: an #ESourceRegistry
  * @source_uid: UID of a collection #ESource whose backend to refresh
  * @cancellable: optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to the callback function
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
  * Asynchronously requests the D-Bus service to refresh collection backend
  * for an #ESource with UID @source_uid. The result means that the refresh
@@ -2476,7 +2472,7 @@ e_source_registry_refresh_backend_finish (ESourceRegistry *registry,
  * The returned #ESource is referenced for thread-safety and must be
  * unreferenced with g_object_unref() when finished with it.
  *
- * Returns: (transfer full): an #ESource, or %NULL if no match was found
+ * Returns: (transfer full) (nullable): an #ESource, or %NULL if no match was found
  *
  * Since: 3.6
  **/
@@ -2493,7 +2489,7 @@ e_source_registry_ref_source (ESourceRegistry *registry,
 /**
  * e_source_registry_list_sources:
  * @registry: an #ESourceRegistry
- * @extension_name: (allow-none): an extension name, or %NULL
+ * @extension_name: (nullable): an extension name, or %NULL
  *
  * Returns a list of registered sources, sorted by display name.  If
  * @extension_name is given, restrict the list to sources having that
@@ -2548,7 +2544,7 @@ e_source_registry_list_sources (ESourceRegistry *registry,
 /**
  * e_source_registry_list_enabled:
  * @registry: an #ESourceRegistry
- * @extension_name: (allow-none): an extension name, or %NULL
+ * @extension_name: (nullable): an extension name, or %NULL
  *
  * Similar to e_source_registry_list_sources(), but returns only enabled
  * sources according to e_source_registry_check_enabled().
@@ -2620,7 +2616,7 @@ e_source_registry_list_enabled (ESourceRegistry *registry,
  * instead of the #ESourceExtension itself because extension instances are
  * not to be referenced directly (see e_source_get_extension()).
  *
- * Returns: (transfer full): an #ESource, or %NULL if no match was found
+ * Returns: (transfer full) (nullable): an #ESource, or %NULL if no match was found
  *
  * Since: 3.6
  **/
@@ -2766,7 +2762,7 @@ source_registry_prune_nodes (GNode *node,
 /**
  * e_source_registry_build_display_tree: (skip)
  * @registry: an #ESourceRegistry
- * @extension_name: (allow-none): an extension name, or %NULL
+ * @extension_name: (nullable): an extension name, or %NULL
  *
  * Returns a single #GNode tree of registered sources that can be used to
  * populate a #GtkTreeModel.  (The root #GNode is just an empty placeholder.)
@@ -2850,7 +2846,7 @@ e_source_registry_free_display_tree (GNode *display_tree)
  * e_source_registry_dup_unique_display_name:
  * @registry: an #ESourceRegistry
  * @source: an #ESource
- * @extension_name: (allow-none): an extension name, or %NULL
+ * @extension_name: (nullable): an extension name, or %NULL
  *
  * Compares @source's #ESource:display-name against other sources having
  * an #ESourceExtension named @extension_name, if given, or else against
@@ -2985,7 +2981,7 @@ source_registry_debug_dump_cb (GNode *node)
 /**
  * e_source_registry_debug_dump:
  * @registry: an #ESourceRegistry
- * @extension_name: (allow-none): an extension name, or %NULL
+ * @extension_name: (nullable): an extension name, or %NULL
  *
  * Handy debugging function that uses e_source_registry_build_display_tree()
  * to print a tree of registered sources to standard output.
@@ -3230,7 +3226,7 @@ e_source_registry_ref_default_address_book (ESourceRegistry *registry)
 /**
  * e_source_registry_set_default_address_book:
  * @registry: an #ESourceRegistry
- * @default_source: (allow-none): an address book #ESource, or %NULL
+ * @default_source: (nullable): an address book #ESource, or %NULL
  *
  * Sets @default_source as the default address book.  If @default_source
  * is %NULL, the default address book is reset to the built-in address book.
@@ -3302,7 +3298,7 @@ e_source_registry_ref_default_calendar (ESourceRegistry *registry)
 /**
  * e_source_registry_set_default_calendar:
  * @registry: an #ESourceRegistry
- * @default_source: (allow-none): a calendar #ESource, or %NULL
+ * @default_source: (nullable): a calendar #ESource, or %NULL
  *
  * Sets @default_source as the default calendar.  If @default_source
  * is %NULL, the default calendar is reset to the built-in calendar.
@@ -3374,7 +3370,7 @@ e_source_registry_ref_default_mail_account (ESourceRegistry *registry)
 /**
  * e_source_registry_set_default_mail_account:
  * @registry: an #ESourceRegistry
- * @default_source: (allow-none): a mail account #ESource, or %NULL
+ * @default_source: (nullable): a mail account #ESource, or %NULL
  *
  * Sets @default_source as the default mail account.  If @default_source
  * is %NULL, the default mail account is reset to the built-in mail account.
@@ -3502,7 +3498,7 @@ e_source_registry_ref_default_mail_identity (ESourceRegistry *registry)
 /**
  * e_source_registry_set_default_mail_identity:
  * @registry: an #ESourceRegistry
- * @default_source: (allow-none): a mail identity #ESource, or %NULL
+ * @default_source: (nullable): a mail identity #ESource, or %NULL
  *
  * Sets @default_source as the default mail identity.  If @default_source
  * is %NULL, the next request for the default mail identity will use the
@@ -3574,7 +3570,7 @@ e_source_registry_ref_default_memo_list (ESourceRegistry *registry)
 /**
  * e_source_registry_set_default_memo_list:
  * @registry: an #ESourceRegistry
- * @default_source: (allow-none): a memo list #ESource, or %NULL
+ * @default_source: (nullable): a memo list #ESource, or %NULL
  *
  * Sets @default_source as the default memo list.  If @default_source
  * is %NULL, the default memo list is reset to the built-in memo list.
@@ -3646,7 +3642,7 @@ e_source_registry_ref_default_task_list (ESourceRegistry *registry)
 /**
  * e_source_registry_set_default_task_list:
  * @registry: an #ESourceRegistry
- * @default_source: (allow-none): a task list #ESource, or %NULL
+ * @default_source: (nullable): a task list #ESource, or %NULL
  *
  * Sets @default_source as the default task list.  If @default_source
  * is %NULL, the default task list is reset to the built-in task list.
@@ -3711,7 +3707,7 @@ e_source_registry_set_default_task_list (ESourceRegistry *registry,
  * The returned #ESource is referenced for thread-safety and must be
  * unreferenced with g_object_unref() when finished with it.
  *
- * Returns: (transfer full): the default #ESource based on @extension_name
+ * Returns: (transfer full) (nullable): the default #ESource based on @extension_name
  *
  * Since: 3.6
  **/
@@ -3747,7 +3743,7 @@ e_source_registry_ref_default_for_extension_name (ESourceRegistry *registry,
  * e_source_registry_set_default_for_extension_name:
  * @registry: an #ESourceRegistry
  * @extension_name: an extension name
- * @default_source: (allow-none): an #ESource, or %NULL
+ * @default_source: (nullable): an #ESource, or %NULL
  *
  * This is a convenience function to set a default #ESource based on
  * @extension_name.  This only works with a subset of extension names.

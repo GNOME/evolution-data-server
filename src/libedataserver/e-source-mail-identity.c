@@ -297,7 +297,7 @@ e_source_mail_identity_init (ESourceMailIdentity *extension)
  * Returns the email address for this identity from which to send messages.
  * This may be an empty string but will never be %NULL.
  *
- * Returns: the sender's email address
+ * Returns: (nullable): the sender's email address
  *
  * Since: 3.6
  **/
@@ -318,7 +318,7 @@ e_source_mail_identity_get_address (ESourceMailIdentity *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceMailIdentity:address
+ * Returns: (nullable): a newly-allocated copy of #ESourceMailIdentity:address
  *
  * Since: 3.6
  **/
@@ -343,7 +343,7 @@ e_source_mail_identity_dup_address (ESourceMailIdentity *extension)
 /**
  * e_source_mail_identity_set_address:
  * @extension: an #ESourceMailIdentity
- * @address: (allow-none): the sender's email address, or %NULL
+ * @address: (nullable): the sender's email address, or %NULL
  *
  * Sets the email address for this identity from which to send messages.
  *
@@ -380,7 +380,7 @@ e_source_mail_identity_set_address (ESourceMailIdentity *extension,
  *
  * Returns the sender's name for this identity.
  *
- * Returns: the sender's name
+ * Returns: (nullable): the sender's name
  *
  * Since: 3.6
  **/
@@ -401,7 +401,7 @@ e_source_mail_identity_get_name (ESourceMailIdentity *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceMailIdentity:name
+ * Returns: (nullable): a newly-allocated copy of #ESourceMailIdentity:name
  *
  * Since: 3.6
  **/
@@ -426,7 +426,7 @@ e_source_mail_identity_dup_name (ESourceMailIdentity *extension)
 /**
  * e_source_mail_identity_set_name:
  * @extension: an #ESourceMailIdentity
- * @name: (allow-none): the sender's name, or %NULL
+ * @name: (nullable): the sender's name, or %NULL
  *
  * Sets the sender's name for this identity.
  *
@@ -462,7 +462,7 @@ e_source_mail_identity_set_name (ESourceMailIdentity *extension,
  *
  * Returns the sender's organization for this identity.
  *
- * Returns: the sender's organization
+ * Returns: (nullable): the sender's organization
  *
  * Since: 3.6
  **/
@@ -483,7 +483,7 @@ e_source_mail_identity_get_organization (ESourceMailIdentity *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceMailIdentity:organization
+ * Returns: (nullable): a newly-allocated copy of #ESourceMailIdentity:organization
  *
  * Since: 3.6
  **/
@@ -508,7 +508,7 @@ e_source_mail_identity_dup_organization (ESourceMailIdentity *extension)
 /**
  * e_source_mail_identity_set_organization:
  * @extension: an #ESourceMailIdentity
- * @organization: (allow-none): the sender's organization, or %NULL
+ * @organization: (nullable): the sender's organization, or %NULL
  *
  * Sets the sender's organization for this identity.
  *
@@ -546,7 +546,7 @@ e_source_mail_identity_set_organization (ESourceMailIdentity *extension,
  * Returns the email address for this identity to which recipients should
  * send replies.
  *
- * Returns: the sender's reply-to address
+ * Returns: (nullable): the sender's reply-to address
  *
  * Since: 3.6
  **/
@@ -567,7 +567,7 @@ e_source_mail_identity_get_reply_to (ESourceMailIdentity *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceMailIdentity:reply-to
+ * Returns: (nullable): a newly-allocated copy of #ESourceMailIdentity:reply-to
  *
  * Since: 3.6
  **/
@@ -592,7 +592,7 @@ e_source_mail_identity_dup_reply_to (ESourceMailIdentity *extension)
 /**
  * e_source_mail_identity_set_reply_to:
  * @extension: an #ESourceMailIdentity
- * @reply_to: (allow-none): the sender's reply-to address, or %NULL
+ * @reply_to: (nullable): the sender's reply-to address, or %NULL
  *
  * Sets the email address for this identity to which recipients should
  * send replies.
@@ -634,7 +634,7 @@ e_source_mail_identity_set_reply_to (ESourceMailIdentity *extension,
  * convention is to set the #ESourceMailIdentity:signature-uid property
  * to "none".
  *
- * Returns: the sender's signature ID, or "none"
+ * Returns: (nullable): the sender's signature ID, or "none"
  *
  * Since: 3.6
  **/
@@ -655,7 +655,7 @@ e_source_mail_identity_get_signature_uid (ESourceMailIdentity *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceMailIdentity:signature-uid
+ * Returns: (nullable): a newly-allocated copy of #ESourceMailIdentity:signature-uid
  *
  * Since: 3.6
  **/
@@ -680,7 +680,7 @@ e_source_mail_identity_dup_signature_uid (ESourceMailIdentity *extension)
 /**
  * e_source_mail_identity_set_signature_uid:
  * @extension: an #ESourceMailIdentity
- * @signature_uid: (allow-none): the sender's signature ID, or %NULL
+ * @signature_uid: (nullable): the sender's signature ID, or %NULL
  *
  * Sets the #ESource:uid of an #ESource describing a mail signature.
  *
@@ -726,7 +726,7 @@ e_source_mail_identity_set_signature_uid (ESourceMailIdentity *extension,
  * There can be used camel_address_decode() on a #CamelInternetAddress
  * to decode the list of aliases.
  *
- * Returns: (transfer none): the sender's email address aliases
+ * Returns: (nullable): the sender's email address aliases
  *
  * Since: 3.24
  **/
@@ -747,7 +747,7 @@ e_source_mail_identity_get_aliases (ESourceMailIdentity *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: (transfer full): a newly-allocated copy of #ESourceMailIdentity:aliases
+ * Returns: (nullable): a newly-allocated copy of #ESourceMailIdentity:aliases
  *
  * Since: 3.24
  **/
@@ -772,7 +772,7 @@ e_source_mail_identity_dup_aliases (ESourceMailIdentity *extension)
 /**
  * e_source_mail_identity_set_aliases:
  * @extension: an #ESourceMailIdentity
- * @aliases: (allow-none): the sender's email address aliases, or %NULL
+ * @aliases: (nullable): the sender's email address aliases, or %NULL
  *
  * Sets the email address aliases for this identity. These are comma-separated
  * email addresses which may or may not contain also different name.

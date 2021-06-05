@@ -440,7 +440,7 @@ e_source_authentication_required (ESourceAuthentication *extension)
  * The returned #GSocketConnectable is referenced for thread-safety and must
  * be unreferenced with g_object_unref() when finished with it.
  *
- * Returns: (transfer full): a #GSocketConnectable, or %NULL
+ * Returns: (transfer full) (nullable): a #GSocketConnectable, or %NULL
  *
  * Since: 3.8
  **/
@@ -467,7 +467,7 @@ e_source_authentication_ref_connectable (ESourceAuthentication *extension)
  *
  * Returns the host name used to authenticate to a remote account.
  *
- * Returns: the host name of a remote account
+ * Returns: (nullable): the host name of a remote account
  *
  * Since: 3.6
  **/
@@ -488,7 +488,7 @@ e_source_authentication_get_host (ESourceAuthentication *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceAuthentication:host
+ * Returns: (nullable): a newly-allocated copy of #ESourceAuthentication:host
  *
  * Since: 3.6
  **/
@@ -513,7 +513,7 @@ e_source_authentication_dup_host (ESourceAuthentication *extension)
 /**
  * e_source_authentication_set_host:
  * @extension: an #ESourceAuthentication
- * @host: (allow-none): a host name, or %NULL
+ * @host: (nullable): a host name, or %NULL
  *
  * Sets the host name used to authenticate to a remote account.
  *
@@ -558,7 +558,7 @@ e_source_authentication_set_host (ESourceAuthentication *extension,
  * they wish.  If authentication is not required for a remote account,
  * the convention is to set #ESourceAuthentication:method to "none".
  *
- * Returns: the authentication method for a remote account
+ * Returns: (nullable): the authentication method for a remote account
  *
  * Since: 3.6
  **/
@@ -579,7 +579,7 @@ e_source_authentication_get_method (ESourceAuthentication *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceAuthentication:method
+ * Returns: (nullable): a newly-allocated copy of #ESourceAuthentication:method
  *
  * Since: 3.6
  **/
@@ -604,7 +604,7 @@ e_source_authentication_dup_method (ESourceAuthentication *extension)
 /**
  * e_source_authentication_set_method:
  * @extension: an #ESourceAuthentication
- * @method: (allow-none): authentication method, or %NULL
+ * @method: (nullable): authentication method, or %NULL
  *
  * Sets the authentication method for a remote account.  There are no
  * pre-defined method names; backends are free to set this however they
@@ -824,7 +824,7 @@ e_source_authentication_set_remember_password (ESourceAuthentication *extension,
  *
  * Returns the user name used to authenticate to a remote account.
  *
- * Returns: the user name of a remote account
+ * Returns: (nullable): the user name of a remote account
  *
  * Since: 3.6
  **/
@@ -845,7 +845,7 @@ e_source_authentication_get_user (ESourceAuthentication *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceAuthentication:user
+ * Returns: (nullable): a newly-allocated copy of #ESourceAuthentication:user
  *
  * Since: 3.6
  **/
@@ -870,7 +870,7 @@ e_source_authentication_dup_user (ESourceAuthentication *extension)
 /**
  * e_source_authentication_set_user:
  * @extension: an #ESourceAuthentication
- * @user: (allow-none): a user name, or %NULL
+ * @user: (nullable): a user name, or %NULL
  *
  * Sets the user name used to authenticate to a remote account.
  *
@@ -910,7 +910,7 @@ e_source_authentication_set_user (ESourceAuthentication *extension,
  * a counterpart of the authentication method. The %NULL means to use
  * the default name, which is #E_SOURCE_CREDENTIAL_PASSWORD.
  *
- * Returns: the credential name to use for authentication, or %NULL
+ * Returns: (nullable): the credential name to use for authentication, or %NULL
  *
  * Since: 3.16
  **/
@@ -931,7 +931,7 @@ e_source_authentication_get_credential_name (ESourceAuthentication *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceAuthentication:credential-name
+ * Returns: (nullable): a newly-allocated copy of #ESourceAuthentication:credential-name
  *
  * Since: 3.16
  **/
@@ -956,7 +956,7 @@ e_source_authentication_dup_credential_name (ESourceAuthentication *extension)
 /**
  * e_source_authentication_set_credential_name:
  * @extension: an #ESourceAuthentication
- * @credential_name: (allow-none): a credential name, or %NULL
+ * @credential_name: (nullable): a credential name, or %NULL
  *
  * Sets the credential name used to pass the stored or gathered credential
  * (like password) into the e_source_invoke_authenticate(). This is

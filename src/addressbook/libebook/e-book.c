@@ -1565,8 +1565,8 @@ e_book_remove_contacts_async (EBook *book,
  * e_book_get_book_view:
  * @book: an #EBook
  * @query: an #EBookQuery
- * @requested_fields: (allow-none) (element-type utf8): a #GList containing
- *                    the names of fields to return, or NULL for all
+ * @requested_fields: (nullable) (element-type utf8): a #GList containing
+ *                    the names of fields to return, or %NULL for all
  * @max_results: the maximum number of contacts to show (or 0 for all)
  * @book_view: (out): An #EBookView pointer, will be set to the view
  * @error: a #GError to set on failure
@@ -1706,9 +1706,8 @@ e_book_async_get_book_view (EBook *book,
  * e_book_get_book_view_async:
  * @book: an #EBook
  * @query: an #EBookQuery
- * @requested_fields: (allow-none) (element-type utf8): a #GList containing
- *                    the names of fields to
- * return, or NULL for all
+ * @requested_fields: (nullable) (element-type utf8): a #GList containing
+ *                    the names of fields to return, or %NULL for all
  * @max_results: the maximum number of contacts to show (or 0 for all)
  * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function

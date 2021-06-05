@@ -132,8 +132,8 @@ e_get_user_data_dir (void)
 
 /**
  * e_util_strv_equal:
- * @v1: (allow-none): a %NULL-terminated string array, or %NULL
- * @v2: (allow-none): another %NULL-terminated string array, or %NULL
+ * @v1: (array zero-terminated=1) (element-type utf8): a %NULL-terminated string array, or %NULL
+ * @v2: (array zero-terminated=1) (element-type utf8): another %NULL-terminated string array, or %NULL
  *
  * Compares @v1 and @v2 for equality, handling %NULL gracefully.
  *
@@ -173,7 +173,7 @@ e_util_strv_equal (gconstpointer v1,
 
 /**
  * e_util_strdup_strip:
- * @string: (allow-none): a string value, or %NULL
+ * @string: (nullable): a string value, or %NULL
  *
  * Duplicates @string and strips off any leading or trailing whitespace.
  * The resulting string is returned unless it is empty or %NULL, in which
@@ -181,7 +181,7 @@ e_util_strv_equal (gconstpointer v1,
  *
  * Free the returned string with g_free().
  *
- * Returns: a newly-allocated, stripped copy of @string, or %NULL
+ * Returns: (nullable): a newly-allocated, stripped copy of @string, or %NULL
  *
  * Since: 3.6
  **/
@@ -204,8 +204,8 @@ e_util_strdup_strip (const gchar *string)
 
 /**
  * e_util_strcmp0:
- * @str1: a C string on %NULL
- * @str2: another C string or %NULL
+ * @str1: (nullable): a C string on %NULL
+ * @str2: (nullable): another C string or %NULL
  *
  * Compares @str1 and @str2 like g_strcmp0(), except it handles %NULL and
  * empty strings as equal.
@@ -236,7 +236,7 @@ e_util_strcmp0 (const gchar *str1,
  * Find the first instance of @needle in @haystack, ignoring case for
  * bytes that are ASCII characters.
  *
- * Returns: A pointer to the start of @needle in @haystack, or NULL if
+ * Returns: (nullable): A pointer to the start of @needle in @haystack, or NULL if
  *          @needle is not found.
  **/
 gchar *
@@ -271,7 +271,7 @@ e_util_strstrcase (const gchar *haystack,
  *
  * Get a UTF-8 character from the beginning of @text.
  *
- * Returns: A pointer to the next character in @text after @out.
+ * Returns: (nullable): A pointer to the next character in @text after @out.
  **/
 gchar *
 e_util_unicode_get_utf8 (const gchar *text,
@@ -286,14 +286,14 @@ e_util_unicode_get_utf8 (const gchar *text,
 
 /**
  * e_util_utf8_strstrcase:
- * @haystack: The string to search in.
- * @needle: The string to search for.
+ * @haystack: (nullable): The string to search in.
+ * @needle: (nullable): The string to search for.
  *
  * Find the first instance of @needle in @haystack, ignoring case. (No
  * proper case folding or decomposing is done.) Both @needle and
  * @haystack are UTF-8 strings.
  *
- * Returns: A pointer to the first instance of @needle in @haystack, or
+ * Returns: (nullable): A pointer to the first instance of @needle in @haystack, or
  *          %NULL if no match is found, or if either of the strings are
  *          not legal UTF-8 strings.
  **/
@@ -664,11 +664,11 @@ e_util_utf8_data_make_valid (const gchar *data,
 
 /**
  * e_util_utf8_normalize:
- * @str: a UTF-8 string
+ * @str: (nullable): a UTF-8 string
  *
  * Normalizes @str by making it all lower case and removing any accents from it.
  *
- * Returns: The normalized version of @str, or %NULL if @str was not valid UTF-8
+ * Returns: (nullable): The normalized version of @str, or %NULL if @str was not valid UTF-8
  *
  * Since: 3.8
  */
@@ -1070,7 +1070,7 @@ e_util_strv_to_slist (const gchar * const *strv)
 
 /**
  * e_util_copy_string_slist:
- * @copy_to: (element-type utf8) (allow-none): Where to copy; can be %NULL
+ * @copy_to: (element-type utf8) (nullable) (transfer full): Where to copy; can be %NULL
  * @strings: (element-type utf8): #GSList of strings to be copied
  *
  * Copies #GSList of strings at the end of @copy_to.
@@ -1098,7 +1098,7 @@ e_util_copy_string_slist (GSList *copy_to,
 
 /**
  * e_util_copy_object_slist:
- * @copy_to: (element-type GObject) (allow-none): Where to copy; can be %NULL
+ * @copy_to: (element-type GObject) (nullable) (transfer full): Where to copy; can be %NULL
  * @objects: (element-type GObject): #GSList of #GObject<!-- -->s to be copied
  *
  * Copies #GSList of #GObject<!-- -->s at the end of @copy_to.
@@ -1226,7 +1226,7 @@ e_queue_transfer (GQueue *src_queue,
 
 /**
  * e_weak_ref_new: (skip)
- * @object: (allow-none): a #GObject or %NULL
+ * @object: (nullable): a #GObject or %NULL
  *
  * Allocates a new #GWeakRef and calls g_weak_ref_set() with @object.
  *
@@ -1412,7 +1412,7 @@ e_file_recursive_delete (GFile *file,
 /**
  * e_file_recursive_delete_finish:
  * @file: a #GFile to delete
- * @result: (transfer full): a #GAsyncResult
+ * @result: a #GAsyncResult
  * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_file_recursive_delete().
@@ -1473,9 +1473,9 @@ e_binding_bind_property (gpointer source,
  * @target: (type GObject.Object): the target #GObject
  * @target_property: the property on @target to bind
  * @flags: flags to pass to #GBinding
- * @transform_to: (scope notified) (allow-none): the transformation function
+ * @transform_to: (scope notified) (nullable): the transformation function
  *   from the @source to the @target, or %NULL to use the default
- * @transform_from: (scope notified) (allow-none): the transformation function
+ * @transform_from: (scope notified) (nullable): the transformation function
  *   from the @target to the @source, or %NULL to use the default
  * @user_data: custom data to be passed to the transformation functions,
  *   or %NULL
@@ -1513,9 +1513,9 @@ e_binding_bind_property_full (gpointer source,
  * @target: (type GObject.Object): the target #GObject
  * @target_property: the property on @target to bind
  * @flags: flags to pass to #GBinding
- * @transform_to: a #GClosure wrapping the transformation function
+ * @transform_to: (nullable): a #GClosure wrapping the transformation function
  *   from the @source to the @target, or %NULL to use the default
- * @transform_from: a #GClosure wrapping the transformation function
+ * @transform_from: (nullable): a #GClosure wrapping the transformation function
  *   from the @target to the @source, or %NULL to use the default
  *
  * Thread safe variant of g_object_bind_property_with_closures(). See its
@@ -2355,7 +2355,7 @@ e_named_parameters_clear (ENamedParameters *parameters)
 /**
  * e_named_parameters_assign:
  * @parameters: an #ENamedParameters to assign values to
- * @from: (allow-none): an #ENamedParameters to get values from, or %NULL
+ * @from: (nullable): an #ENamedParameters to get values from, or %NULL
  *
  * Makes content of the @parameters the same as @from.
  * Functions clears content of @parameters if @from is %NULL.
@@ -2416,7 +2416,7 @@ get_parameter_index (const ENamedParameters *parameters,
  * e_named_parameters_set:
  * @parameters: an #ENamedParameters
  * @name: name of a parameter to set
- * @value: (allow-none): value to set, or %NULL to unset
+ * @value: (nullable): value to set, or %NULL to unset
  *
  * Sets parameter named @name to value @value. If @value is NULL,
  * then the parameter is removed. @value can be an empty string.
@@ -2466,7 +2466,7 @@ e_named_parameters_set (ENamedParameters *parameters,
  * Returns current value of a parameter with name @name. If not such
  * exists, then returns %NULL.
  *
- * Returns: value of a parameter named @name, or %NULL.
+ * Returns: (nullable): value of a parameter named @name, or %NULL.
  *
  * Since: 3.8
  **/
@@ -2557,7 +2557,7 @@ e_named_parameters_to_strv (const ENamedParameters *parameters)
  * e_named_parameters_to_string:
  * @parameters: an #ENamedParameters
  *
- * Returns: (transfer full): Contents of @parameters as a string
+ * Returns: (transfer full) (nullable): Contents of @parameters as a string
  *
  * Since: 3.18
  */
@@ -2625,7 +2625,7 @@ e_named_parameters_count (const ENamedParameters *parameters)
  * @parameters: an #ENamedParameters
  * @index: an index of the parameter whose name to retrieve
  *
- * Returns: (transfer full): The name of the parameters at index @index,
+ * Returns: (transfer full) (nullable): The name of the parameters at index @index,
  *    or %NULL, of the @index is out of bounds or other error. The returned
  *    string should be freed with g_free() when done with it.
  *
@@ -2741,10 +2741,10 @@ G_DEFINE_BOXED_TYPE (
  *            range between #G_PRIORITY_DEFAULT and #G_PRIORITY_HIGH
  * @interval: the time between calls to the function, in milliseconds
  *            (1/1000ths of a second)
- * @name: (allow-none): debug name for the source
+ * @name: (nullable): debug name for the source
  * @function: function to call
  * @data: data to pass to @function
- * @notify: (allow-none): function to call when the timeout is removed,
+ * @notify: (nullable): function to call when the timeout is removed,
  *          or %NULL
  *
  * Similar to g_timeout_add_full(), but also names the #GSource as @name.
@@ -2780,10 +2780,10 @@ e_timeout_add_with_name (gint priority,
  * @priority: the priority of the timeout source, typically in the
  *            range between #G_PRIORITY_DEFAULT and #G_PRIORITY_HIGH
  * @interval: the time between calls to the function, in seconds
- * @name: (allow-none): debug name for the source
+ * @name: (nullable): debug name for the source
  * @function: function to call
  * @data: data to pass to @function
- * @notify: (allow-none): function to call when the timeout is removed,
+ * @notify: (nullable): function to call when the timeout is removed,
  *          or %NULL
  *
  * Similar to g_timeout_add_seconds_full(), but also names the #GSource as

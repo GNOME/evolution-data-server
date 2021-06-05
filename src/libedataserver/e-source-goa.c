@@ -263,7 +263,7 @@ e_source_goa_init (ESourceGoa *extension)
  * Returns the identifier string of the GNOME Online Account associated
  * with the #ESource to which @extension belongs.
  *
- * Returns: the associated GNOME Online Account ID
+ * Returns: (nullable): the associated GNOME Online Account ID
  *
  * Since: 3.6
  **/
@@ -284,7 +284,7 @@ e_source_goa_get_account_id (ESourceGoa *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceGoa:account-id
+ * Returns: (nullable): a newly-allocated copy of #ESourceGoa:account-id
  *
  * Since: 3.6
  **/
@@ -309,7 +309,7 @@ e_source_goa_dup_account_id (ESourceGoa *extension)
 /**
  * e_source_goa_set_account_id:
  * @extension: an #ESourceGoa
- * @account_id: (allow-none): the associated GNOME Online Account ID, or %NULL
+ * @account_id: (nullable): the associated GNOME Online Account ID, or %NULL
  *
  * Sets the identifier string of the GNOME Online Account associated
  * with the #ESource to which @extension belongs.
@@ -349,7 +349,7 @@ e_source_goa_set_account_id (ESourceGoa *extension,
  * with the #ESource to which @extension belongs. Can be %NULL or an empty
  * string for accounts not supporting this property.
  *
- * Returns: the associated GNOME Online Account calendar URL
+ * Returns: (nullable): the associated GNOME Online Account calendar URL
  *
  * Since: 3.8
  **/
@@ -370,7 +370,7 @@ e_source_goa_get_calendar_url (ESourceGoa *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceGoa:calendar-url
+ * Returns: (nullable): a newly-allocated copy of #ESourceGoa:calendar-url
  *
  * Since: 3.8
  **/
@@ -395,7 +395,7 @@ e_source_goa_dup_calendar_url (ESourceGoa *extension)
 /**
  * e_source_goa_set_calendar_url:
  * @extension: an #ESourceGoa
- * @calendar_url: (allow-none): the associated GNOME Online Account
+ * @calendar_url: (nullable): the associated GNOME Online Account
  *                calendar URL, or %NULL
  *
  * Sets the calendar URL of the GNOME Online Account associated
@@ -436,7 +436,7 @@ e_source_goa_set_calendar_url (ESourceGoa *extension,
  * with the #ESource to which @extension belongs. Can be %NULL or an empty
  * string for accounts not supporting this property.
  *
- * Returns: the associated GNOME Online Account contacts URL
+ * Returns: (nullable): the associated GNOME Online Account contacts URL
  *
  * Since: 3.8
  **/
@@ -457,7 +457,7 @@ e_source_goa_get_contacts_url (ESourceGoa *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceGoa:contacts-url
+ * Returns: (nullable): a newly-allocated copy of #ESourceGoa:contacts-url
  *
  * Since: 3.8
  **/
@@ -482,7 +482,7 @@ e_source_goa_dup_contacts_url (ESourceGoa *extension)
 /**
  * e_source_goa_set_contacts_url:
  * @extension: an #ESourceGoa
- * @contacts_url: (allow-none): the associated GNOME Online Account
+ * @contacts_url: (nullable): the associated GNOME Online Account
  *                contacts URL, or %NULL
  *
  * Sets the contacts URL of the GNOME Online Account associated
@@ -523,7 +523,7 @@ e_source_goa_set_contacts_url (ESourceGoa *extension,
  * with the #ESource to which @extension belongs. Can be %NULL or an empty
  * string when not filled.
  *
- * Returns: the associated GNOME Online Account's Name
+ * Returns: (nullable): the associated GNOME Online Account's Name
  *
  * Since: 3.24
  **/
@@ -544,7 +544,7 @@ e_source_goa_get_name (ESourceGoa *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceGoa:name
+ * Returns: (nullable): a newly-allocated copy of #ESourceGoa:name
  *
  * Since: 3.24
  **/
@@ -609,7 +609,7 @@ e_source_goa_set_name (ESourceGoa *extension,
  * with the #ESource to which @extension belongs. Can be %NULL or an empty
  * string when not filled.
  *
- * Returns: the associated GNOME Online Account's Address
+ * Returns: (nullable): the associated GNOME Online Account's Address
  *
  * Since: 3.24
  **/
@@ -630,7 +630,7 @@ e_source_goa_get_address (ESourceGoa *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceGoa:address
+ * Returns: (nullable): a newly-allocated copy of #ESourceGoa:address
  *
  * Since: 3.24
  **/

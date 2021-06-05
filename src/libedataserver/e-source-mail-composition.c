@@ -561,7 +561,7 @@ e_source_mail_composition_set_cc (ESourceMailComposition *extension,
  * Returns a string identifying the preferred folder for draft messages.
  * The format of the identifier string is defined by the client application.
  *
- * Returns: an identifier for the preferred drafts folder
+ * Returns: (nullable): an identifier for the preferred drafts folder
  *
  * Since: 3.6
  **/
@@ -582,7 +582,7 @@ e_source_mail_composition_get_drafts_folder (ESourceMailComposition *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceMailComposition:drafts-folder
+ * Returns: (nullable): a newly-allocated copy of #ESourceMailComposition:drafts-folder
  *
  * Since: 3.6
  **/
@@ -607,7 +607,7 @@ e_source_mail_composition_dup_drafts_folder (ESourceMailComposition *extension)
 /**
  * e_source_mail_composition_set_drafts_folder:
  * @extension: an #ESourceMailComposition
- * @drafts_folder: (allow-none): an identifier for the preferred drafts
+ * @drafts_folder: (nullable): an identifier for the preferred drafts
  *                 folder, or %NULL
  *
  * Sets the preferred folder for draft messages by an identifier string.
@@ -692,7 +692,7 @@ e_source_mail_composition_set_sign_imip (ESourceMailComposition *extension,
  * Returns a string identifying the preferred folder for message templates.
  * The format of the identifier string is defined by the client application.
  *
- * Returns: an identifier for the preferred templates folder
+ * Returns: (nullable): an identifier for the preferred templates folder
  *
  * Since: 3.6
  **/
@@ -713,7 +713,7 @@ e_source_mail_composition_get_templates_folder (ESourceMailComposition *extensio
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceMailComposition:templates-folder
+ * Returns: (nullable): a newly-allocated copy of #ESourceMailComposition:templates-folder
  *
  * Since: 3.6
  **/
@@ -738,7 +738,7 @@ e_source_mail_composition_dup_templates_folder (ESourceMailComposition *extensio
 /**
  * e_source_mail_composition_set_templates_folder:
  * @extension: an #ESourceMailComposition
- * @templates_folder: (allow-none): an identifier for the preferred templates
+ * @templates_folder: (nullable): an identifier for the preferred templates
  *                    folder, or %NULL
  *
  * Sets the preferred folder for message templates by an identifier string.
@@ -932,7 +932,7 @@ e_source_mail_composition_get_language (ESourceMailComposition *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceMailComposition:language
+ * Returns: (nullable): a newly-allocated copy of #ESourceMailComposition:language
  *
  * Since: 3.32
  **/

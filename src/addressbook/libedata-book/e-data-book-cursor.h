@@ -50,8 +50,8 @@ typedef struct _EDataBookCursorPrivate EDataBookCursorPrivate;
 /**
  * EDataBookCursorSetSexpFunc:
  * @cursor: an #EDataBookCursor
- * @sexp: (allow-none): the search expression to set, or %NULL for unfiltered results
- * @error: (out) (allow-none): return location for a #GError, or %NULL
+ * @sexp: (nullable): the search expression to set, or %NULL for unfiltered results
+ * @error: return location for a #GError, or %NULL
  *
  * Method type for #EDataBookCursorClass.set_sexp()
  *
@@ -75,14 +75,14 @@ typedef gboolean (*EDataBookCursorSetSexpFunc) (EDataBookCursor     *cursor,
 /**
  * EDataBookCursorStepFunc:
  * @cursor: an #EDataBookCursor
- * @revision_guard: (allow-none): The expected current addressbook revision, or %NULL
+ * @revision_guard: (nullable): The expected current addressbook revision, or %NULL
  * @flags: The #EBookCursorStepFlags for this step
  * @origin: The #EBookCursorOrigin from whence to step
  * @count: a positive or negative amount of contacts to try and fetch
- * @results: (out) (allow-none) (element-type utf8) (transfer full):
+ * @results: (out) (nullable) (element-type utf8) (transfer full):
  *   A return location to store the results, or %NULL if %E_BOOK_CURSOR_STEP_FETCH is not specified in @flags
- * @cancellable: (allow-none): A #GCancellable
- * @error: (out) (allow-none): return location for a #GError, or %NULL
+ * @cancellable: A #GCancellable
+ * @error: return location for a #GError, or %NULL
  *
  * Method type for #EDataBookCursorClass.step()
  *
@@ -122,7 +122,7 @@ typedef gint (*EDataBookCursorStepFunc) (EDataBookCursor     *cursor,
  * @cursor: an #EDataBookCursor
  * @index: the alphabetic index
  * @locale: the locale in which @index is expected to be a valid alphabetic index
- * @error: (out) (allow-none): return location for a #GError, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Method type for #EDataBookCursorClass.set_alphabetic_index()
  *
@@ -148,8 +148,8 @@ typedef gboolean (*EDataBookCursorSetAlphabetIndexFunc) (EDataBookCursor     *cu
  * @cursor: an #EDataBookCursor
  * @total: (out): The total number of contacts matching @cursor's query expression
  * @position: (out): The current position of @cursor in it's result list
- * @cancellable: (allow-none): A #GCancellable
- * @error: (out) (allow-none): return location for a #GError, or %NULL
+ * @cancellable: A #GCancellable
+ * @error: return location for a #GError, or %NULL
  *
  * Method type for #EDataBookCursorClass.get_position()
  *
@@ -189,7 +189,7 @@ typedef gboolean (*EDataBookCursorGetPositionFunc) (EDataBookCursor     *cursor,
  * EDataBookCursorCompareContactFunc:
  * @cursor: an #EDataBookCursor
  * @contact: the #EContact to compare with @cursor
- * @matches_sexp: (out) (allow-none): return location to set whether @contact matched @cursor's search expression
+ * @matches_sexp: (out) (nullable): return location to set whether @contact matched @cursor's search expression
  *
  * Method type for #EDataBookCursorClass.compare_contact()
  *
@@ -213,7 +213,7 @@ typedef gint (*EDataBookCursorCompareContactFunc) (EDataBookCursor     *cursor,
  * EDataBookCursorLoadLocaleFunc:
  * @cursor: an #EDataBookCursor
  * @locale: (out) (transfer full): return location to store the newly loaded locale
- * @error: (out) (allow-none): return location for a #GError, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Method type for #EDataBookCursorClass.load_locale()
  *

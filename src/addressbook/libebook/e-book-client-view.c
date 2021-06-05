@@ -983,6 +983,12 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * EBookClientView::objects-added:
+	 * @client_view: the #EBookClientView which emitted the signal
+	 * @objects: (type GSList) (transfer none) (element-type EContact): a #GSList
+	 *    of added #EContact objects into the @client_view.
+	 */
 	signals[OBJECTS_ADDED] = g_signal_new (
 		"objects-added",
 		G_OBJECT_CLASS_TYPE (object_class),
@@ -992,6 +998,12 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 
+	/**
+	 * EBookClientView::objects-modified:
+	 * @client_view: the #EBookClientView which emitted the signal
+	 * @objects: (type GSList) (transfer none) (element-type EContact): a #GSList
+	 *    of modified #EContact objects within the @client_view
+	 */
 	signals[OBJECTS_MODIFIED] = g_signal_new (
 		"objects-modified",
 		G_OBJECT_CLASS_TYPE (object_class),
@@ -1001,6 +1013,12 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 
+	/**
+	 * EBookClientView::objects-removed:
+	 * @client_view: the #EBookClientView which emitted the signal
+	 * @uids: (type GSList) (transfer none) (element-type utf8): a #GSList
+	 *    of removed objects, described by their UID.
+	 */
 	signals[OBJECTS_REMOVED] = g_signal_new (
 		"objects-removed",
 		G_OBJECT_CLASS_TYPE (object_class),
@@ -1054,7 +1072,7 @@ e_book_client_view_init (EBookClientView *client_view)
  * The returned #EBookClient is referenced for thread-safety.  Unreference
  * the #EBookClient with g_object_unref() when finished with it.
  *
- * Returns: (transfer full): an #EBookClient
+ * Returns: (transfer full) (type EBookClient): an #EBookClient
  *
  * Since: 3.10
  **/
@@ -1075,7 +1093,7 @@ e_book_client_view_ref_client (EBookClientView *client_view)
  *
  * Returns the #EBookClientView:client associated with @client_view.
  *
- * Returns: (transfer none): an #EBookClient
+ * Returns: (transfer none) (type EBookClient): an #EBookClient
  *
  * Deprecated: 3.10: Use e_book_client_view_ref_client() instead.
  **/

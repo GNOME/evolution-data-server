@@ -289,7 +289,7 @@ e_source_smime_init (ESourceSMIME *extension)
  *
  * Returns the S/MIME certificate name used to encrypt messages.
  *
- * Returns: the certificate name used to encrypt messages
+ * Returns: (nullable): the certificate name used to encrypt messages
  *
  * Since: 3.6
  **/
@@ -310,7 +310,7 @@ e_source_smime_get_encryption_certificate (ESourceSMIME *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceSMIME:encryption-certificate
+ * Returns: (nullable): a newly-allocated copy of #ESourceSMIME:encryption-certificate
  *
  * Since: 3.6
  **/
@@ -335,7 +335,7 @@ e_source_smime_dup_encryption_certificate (ESourceSMIME *extension)
 /**
  * e_source_smime_set_encryption_certificate:
  * @extension: an #ESourceSMIME
- * @encryption_certificate: (allow-none): the certificate name used to encrypt
+ * @encryption_certificate: (nullable): the certificate name used to encrypt
  *                          messages, or %NULL
  *
  * Sets the certificate name used to encrypt messages.
@@ -461,7 +461,7 @@ e_source_smime_set_encrypt_to_self (ESourceSMIME *extension,
  * Returns the name of the hash algorithm used to digitally sign outgoing
  * messages.
  *
- * Returns: the signing algorithm for outgoing messages
+ * Returns: (nullable): the signing algorithm for outgoing messages
  *
  * Since: 3.6
  **/
@@ -482,7 +482,7 @@ e_source_smime_get_signing_algorithm (ESourceSMIME *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceSMIME:signing-algorithm
+ * Returns: (nullable): a newly-allocated copy of #ESourceSMIME:signing-algorithm
  *
  * Since: 3.6
  **/
@@ -507,7 +507,7 @@ e_source_smime_dup_signing_algorithm (ESourceSMIME *extension)
 /**
  * e_source_smime_set_signing_algorithm:
  * @extension: an #ESourceSMIME
- * @signing_algorithm: (allow-none): the signing algorithm for outgoing
+ * @signing_algorithm: (nullable): the signing algorithm for outgoing
  *                     messages, or %NULL
  *
  * Sets the name of the hash algorithm used to digitally sign outgoing
@@ -547,7 +547,7 @@ e_source_smime_set_signing_algorithm (ESourceSMIME *extension,
  *
  * Returns the S/MIME certificate name used to sign messages.
  *
- * Returns: the certificate name used to sign messages
+ * Returns: (nullable): the certificate name used to sign messages
  *
  * Since: 3.6
  **/
@@ -568,7 +568,7 @@ e_source_smime_get_signing_certificate (ESourceSMIME *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceSMIME:signing-certificate
+ * Returns: (nullable): a newly-allocated copy of #ESourceSMIME:signing-certificate
  *
  * Since: 3.6
  **/
@@ -593,7 +593,7 @@ e_source_smime_dup_signing_certificate (ESourceSMIME *extension)
 /**
  * e_source_smime_set_signing_certificate:
  * @extension: an #ESourceSMIME
- * @signing_certificate: (allow-none): the certificate name used to sign
+ * @signing_certificate: (nullable): the certificate name used to sign
  *                       messages, or %NULL
  *
  * Sets the S/MIME certificate name used to sign messages.

@@ -1637,7 +1637,7 @@ e_cal_client_init (ECalClient *client)
  * @source: an #ESource
  * @source_type: source type of the calendar
  * @wait_for_connected_seconds: timeout, in seconds, to wait for the backend to be fully connected
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Creates a new #ECalClient for @source and @source_type.  If an error
@@ -1659,7 +1659,7 @@ e_cal_client_init (ECalClient *client)
  * function will have a descriptive prefix that includes the display
  * name of @source.
  *
- * Returns: (transfer full): a new #ECalClient, or %NULL
+ * Returns: (transfer full) (nullable): a new #ECalClient, or %NULL
  *
  * Since: 3.8
  **/
@@ -1830,10 +1830,10 @@ exit:
  * @source: an #ESource
  * @source_type: source tpe of the calendar
  * @wait_for_connected_seconds: timeout, in seconds, to wait for the backend to be fully connected
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request
  *            is satisfied
- * @user_data: (closure): data to pass to the callback function
+ * @user_data: data to pass to the callback function
  *
  * Asynchronously creates a new #ECalClient for @source and @source_type.
  *
@@ -1922,7 +1922,7 @@ e_cal_client_connect (ESource *source,
  * function will have a descriptive prefix that includes the display
  * name of the #ESource passed to e_cal_client_connect().
  *
- * Returns: (transfer full): a new #ECalClient, or %NULL
+ * Returns: (transfer full) (nullable): a new #ECalClient, or %NULL
  *
  * Since: 3.8
  **/
@@ -3155,7 +3155,7 @@ append_timezone_string (gpointer key,
  * Gets a calendar component as an iCalendar string, with a toplevel
  * VCALENDAR component and all VTIMEZONEs needed for the component.
  *
- * Returns: the component as a complete iCalendar string, or NULL on
+ * Returns: (nullable): the component as a complete iCalendar string, or NULL on
  * failure. The string should be freed with g_free().
  *
  * Since: 3.2
@@ -3288,7 +3288,7 @@ e_cal_client_get_default_object (ECalClient *client,
  * @client: an #ECalClient
  * @result: a #GAsyncResult
  * @out_icalcomp: (out) (transfer full): Return value for the default calendar object.
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_get_default_object() and
  * sets @out_icalcomp to an #ICalComponent from the backend that contains
@@ -3334,7 +3334,7 @@ e_cal_client_get_default_object_finish (ECalClient *client,
  * @client: an #ECalClient
  * @out_icalcomp: (out) (transfer full): Return value for the default calendar object.
  * @cancellable: a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Retrives an #ICalComponent from the backend that contains the default
  * values for properties needed. This @out_icalcomp should be freed with
@@ -3418,7 +3418,7 @@ cal_client_get_object_thread (GSimpleAsyncResult *simple,
  * e_cal_client_get_object:
  * @client: an #ECalClient
  * @uid: Unique identifier for a calendar component.
- * @rid: Recurrence identifier.
+ * @rid: (nullable): Recurrence identifier.
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -3473,7 +3473,7 @@ e_cal_client_get_object (ECalClient *client,
  * @client: an #ECalClient
  * @result: a #GAsyncResult
  * @out_icalcomp: (out) (transfer full): Return value for the calendar component object.
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_get_object() and
  * sets @out_icalcomp to queried component. This function always returns
@@ -3522,10 +3522,10 @@ e_cal_client_get_object_finish (ECalClient *client,
  * e_cal_client_get_object_sync:
  * @client: an #ECalClient
  * @uid: Unique identifier for a calendar component.
- * @rid: Recurrence identifier.
+ * @rid: (nullable): Recurrence identifier.
  * @out_icalcomp: (out) (transfer full): Return value for the calendar component object.
  * @cancellable: a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Queries a calendar for a calendar component object based
  * on its unique identifier. This function always returns
@@ -3742,7 +3742,7 @@ e_cal_client_get_objects_for_uid (ECalClient *client,
  * @out_ecalcomps: (out) (transfer full) (element-type ECalComponent):
  *                 Return location for the list of objects obtained from the
  *                 backend
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_get_objects_for_uid() and
  * sets @out_ecalcomps to a list of #ECalComponent<!-- -->s corresponding to
@@ -3788,8 +3788,8 @@ e_cal_client_get_objects_for_uid_finish (ECalClient *client,
  * @out_ecalcomps: (out) (transfer full) (element-type ECalComponent):
  *                 Return location for the list of objects obtained from the
  *                 backend
- * @cancellable: (allow-none): a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: a #GError to set an error, if any
  *
  * Queries a calendar for all calendar components with the given unique
  * ID. This will return any recurring event and all its detached recurrences.
@@ -3978,7 +3978,7 @@ e_cal_client_get_object_list (ECalClient *client,
  * @result: a #GAsyncResult
  * @out_icalcomps: (out) (element-type ICalComponent): list of matching
  *                 #ICalComponent<!-- -->s
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_get_object_list() and
  * sets @out_icalcomps to a matching list of #ICalComponent-s.
@@ -4022,8 +4022,8 @@ e_cal_client_get_object_list_finish (ECalClient *client,
  * @sexp: an S-expression representing the query
  * @out_icalcomps: (out) (element-type ICalComponent): list of matching
  *                 #ICalComponent<!-- -->s
- * @cancellable: (allow-none): a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: a #GError to set an error, if any
  *
  * Gets a list of objects from the calendar that match the query specified
  * by the @sexp argument. The objects will be returned in the @out_icalcomps
@@ -4170,7 +4170,7 @@ e_cal_client_get_object_list_as_comps (ECalClient *client,
  * @result: a #GAsyncResult
  * @out_ecalcomps: (out) (element-type ECalComponent): list of matching
  *                 #ECalComponent<!-- -->s
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_get_object_list_as_comps() and
  * sets @out_ecalcomps to a matching list of #ECalComponent-s.
@@ -4214,8 +4214,8 @@ e_cal_client_get_object_list_as_comps_finish (ECalClient *client,
  * @sexp: an S-expression representing the query
  * @out_ecalcomps: (out) (element-type ECalComponent): list of matching
  *                 #ECalComponent<!-- -->s
- * @cancellable: (allow-none): a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: a #GError to set an error, if any
  *
  * Gets a list of objects from the calendar that match the query specified
  * by the @sexp argument. The objects will be returned in the @out_ecalcomps
@@ -4306,7 +4306,7 @@ cal_client_get_free_busy_thread (GSimpleAsyncResult *simple,
  * @start: Start time for query
  * @end: End time for query
  * @users: (element-type utf8): List of users to retrieve free/busy information for
- * @cancellable: (allow-none): a #GCancellable; can be %NULL
+ * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
  *
@@ -4360,8 +4360,8 @@ e_cal_client_get_free_busy (ECalClient *client,
  * e_cal_client_get_free_busy_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @out_freebusy: (element-type ECalComponent): a #GSList of #ECalComponent-s with overall returned Free/Busy data
- * @error: (out): a #GError to set an error, if any
+ * @out_freebusy: (out) (element-type ECalComponent): a #GSList of #ECalComponent-s with overall returned Free/Busy data
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_get_free_busy().
  * The @out_freebusy contains all VFREEBUSY #ECalComponent-s, which could be also
@@ -4409,9 +4409,9 @@ e_cal_client_get_free_busy_finish (ECalClient *client,
  * @start: Start time for query
  * @end: End time for query
  * @users: (element-type utf8): List of users to retrieve free/busy information for
- * @out_freebusy: (element-type ECalComponent): a #GSList of #ECalComponent-s with overall returned Free/Busy data
- * @cancellable: (allow-none): a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @out_freebusy: (out) (element-type ECalComponent): a #GSList of #ECalComponent-s with overall returned Free/Busy data
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: a #GError to set an error, if any
  *
  * Gets free/busy information from the calendar server.
  * The @out_freebusy contains all VFREEBUSY #ECalComponent-s, which could be also
@@ -4512,7 +4512,7 @@ cal_client_create_object_thread (GSimpleAsyncResult *simple,
  * e_cal_client_create_object:
  * @client: an #ECalClient
  * @icalcomp: The component to create
- * @opflags: bit-or of #ECalOperationFlags
+ * @opflags: (type ECalOperationFlags): bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -4561,9 +4561,9 @@ e_cal_client_create_object (ECalClient *client,
  * e_cal_client_create_object_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @out_uid: (out) (nullable): Return value for the UID assigned to the new component
+ * @out_uid: (out) (nullable) (optional): Return value for the UID assigned to the new component
  *           by the calendar backend
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_create_object() and
  * sets @out_uid to newly assigned UID for the created object.
@@ -4608,10 +4608,10 @@ e_cal_client_create_object_finish (ECalClient *client,
  * @client: an #ECalClient
  * @icalcomp: The component to create
  * @opflags: bit-or of #ECalOperationFlags
- * @out_uid: (out) (nullable): Return value for the UID assigned to the new component
+ * @out_uid: (out) (nullable) (optional): Return value for the UID assigned to the new component
  *           by the calendar backend
  * @cancellable: a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Requests the calendar backend to create the object specified by the
  * @icalcomp argument. Some backends would assign a specific UID to the newly
@@ -4689,8 +4689,8 @@ cal_client_create_objects_thread (GSimpleAsyncResult *simple,
  * e_cal_client_create_objects:
  * @client: an #ECalClient
  * @icalcomps: (element-type ICalComponent): The components to create
- * @opflags: bit-or of #ECalOperationFlags
- * @cancellable: (allow-none): a #GCancellable; can be %NULL
+ * @opflags: (type ECalOperationFlags): bit-or of #ECalOperationFlags
+ * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
  *
@@ -4741,9 +4741,9 @@ e_cal_client_create_objects (ECalClient *client,
  * e_cal_client_create_objects_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @out_uids: (out) (nullable) (element-type utf8): Return value for the UIDs assigned
+ * @out_uids: (out) (optional) (element-type utf8): Return value for the UIDs assigned
  *            to the new components by the calendar backend
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_create_objects() and
  * sets @out_uids to newly assigned UIDs for the created objects.
@@ -4785,11 +4785,11 @@ e_cal_client_create_objects_finish (ECalClient *client,
  * e_cal_client_create_objects_sync:
  * @client: an #ECalClient
  * @icalcomps: (element-type ICalComponent): The components to create
- * @opflags: bit-or of #ECalOperationFlags
+ * @opflags: (type ECalOperationFlags): bit-or of #ECalOperationFlags
  * @out_uids: (out) (nullable) (element-type utf8): Return value for the UIDs assigned
  *            to the new components by the calendar backend
- * @cancellable: (allow-none): a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: a #GError to set an error, if any
  *
  * Requests the calendar backend to create the objects specified by the
  * @icalcomps argument. Some backends would assign a specific UID to the
@@ -4901,7 +4901,7 @@ cal_client_modify_object_thread (GSimpleAsyncResult *simple,
  * @client: an #ECalClient
  * @icalcomp: Component to modify
  * @mod: Type of modification
- * @opflags: bit-or of #ECalOperationFlags
+ * @opflags: (type ECalOperationFlags): bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -4959,7 +4959,7 @@ e_cal_client_modify_object (ECalClient *client,
  * e_cal_client_modify_object_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_modify_object().
  *
@@ -4990,9 +4990,9 @@ e_cal_client_modify_object_finish (ECalClient *client,
  * @client: an #ECalClient
  * @icalcomp: Component to modify
  * @mod: Type of modification
- * @opflags: bit-or of #ECalOperationFlags
+ * @opflags: (type ECalOperationFlags): bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Requests the calendar backend to modify an existing object. If the object
  * does not exist on the calendar, an error will be returned.
@@ -5057,8 +5057,8 @@ cal_client_modify_objects_thread (GSimpleAsyncResult *simple,
  * @client: an #ECalClient
  * @icalcomps: (element-type ICalComponent): Components to modify
  * @mod: Type of modification
- * @opflags: bit-or of #ECalOperationFlags
- * @cancellable: (allow-none): a #GCancellable; can be %NULL
+ * @opflags: (type ECalOperationFlags): bit-or of #ECalOperationFlags
+ * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
  *
@@ -5116,7 +5116,7 @@ e_cal_client_modify_objects (ECalClient *client,
  * e_cal_client_modify_objects_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_modify_objects().
  *
@@ -5147,9 +5147,9 @@ e_cal_client_modify_objects_finish (ECalClient *client,
  * @client: an #ECalClient
  * @icalcomps: (element-type ICalComponent): Components to modify
  * @mod: Type of modification
- * @opflags: bit-or of #ECalOperationFlags
- * @cancellable: (allow-none): a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @opflags: (type ECalOperationFlags): bit-or of #ECalOperationFlags
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: a #GError to set an error, if any
  *
  * Requests the calendar backend to modify existing objects. If an object
  * does not exist on the calendar, an error will be returned.
@@ -5256,9 +5256,9 @@ cal_client_remove_object_thread (GSimpleAsyncResult *simple,
  * e_cal_client_remove_object:
  * @client: an #ECalClient
  * @uid: UID of the object to remove
- * @rid: Recurrence ID of the specific recurrence to remove
+ * @rid: (nullable): Recurrence ID of the specific recurrence to remove
  * @mod: Type of the removal
- * @opflags: bit-or of #ECalOperationFlags
+ * @opflags: (type ECalOperationFlags): bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -5317,7 +5317,7 @@ e_cal_client_remove_object (ECalClient *client,
  * e_cal_client_remove_object_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_remove_object().
  *
@@ -5347,11 +5347,11 @@ e_cal_client_remove_object_finish (ECalClient *client,
  * e_cal_client_remove_object_sync:
  * @client: an #ECalClient
  * @uid: UID of the object to remove
- * @rid: Recurrence ID of the specific recurrence to remove
+ * @rid: (nullable): Recurrence ID of the specific recurrence to remove
  * @mod: Type of the removal
- * @opflags: bit-or of #ECalOperationFlags
+ * @opflags: (type ECalOperationFlags): bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * This function allows the removal of instances of a recurrent
  * appointment. By using a combination of the @uid, @rid and @mod
@@ -5480,7 +5480,7 @@ e_cal_client_remove_objects (ECalClient *client,
  * e_cal_client_remove_objects_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_remove_objects().
  *
@@ -5512,9 +5512,9 @@ e_cal_client_remove_objects_finish (ECalClient *client,
  * @ids: (element-type ECalComponentId): a list of #ECalComponentId objects
  *       identifying the objects to remove
  * @mod: Type of the removal
- * @opflags: bit-or of #ECalOperationFlags
- * @cancellable: (allow-none): a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @opflags: (type ECalOperationFlags): bit-or of #ECalOperationFlags
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: a #GError to set an error, if any
  *
  * This function allows the removal of instances of recurrent
  * appointments. #ECalComponentId objects can identify specific instances
@@ -5701,7 +5701,7 @@ e_cal_client_receive_objects (ECalClient *client,
  * e_cal_client_receive_objects_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_receive_objects().
  *
@@ -5733,7 +5733,7 @@ e_cal_client_receive_objects_finish (ECalClient *client,
  * @icalcomp: An #ICalComponent
  * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Makes the backend receive the set of iCalendar objects specified in the
  * @icalcomp argument. This is used for iTIP confirmation/cancellation
@@ -5862,7 +5862,7 @@ e_cal_client_send_objects (ECalClient *client,
  * @out_users: (out) (transfer full) (element-type utf8): List of users to send
  *             the @out_modified_icalcomp to
  * @out_modified_icalcomp: (out) (transfer full): Return value for the #ICalComponent to be sent
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_send_objects() and
  * populates @out_users with a list of users to send @out_modified_icalcomp to.
@@ -5914,12 +5914,12 @@ e_cal_client_send_objects_finish (ECalClient *client,
  * e_cal_client_send_objects_sync:
  * @client: an #ECalClient
  * @icalcomp: An #ICalComponent to be sent
- * @opflags: bit-or of #ECalOperationFlags
+ * @opflags: (type ECalOperationFlags): bit-or of #ECalOperationFlags
  * @out_users: (out) (transfer full) (element-type utf8): List of users to send the
  *             @out_modified_icalcomp to
  * @out_modified_icalcomp: (out) (transfer full): Return value for the #ICalComponent to be sent
- * @cancellable: (allow-none): a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: a #GError to set an error, if any
  *
  * Requests a calendar backend to send meeting information stored in @icalcomp.
  * The backend can modify this component and request a send to users in the
@@ -6040,7 +6040,7 @@ cal_client_get_attachment_uris_thread (GSimpleAsyncResult *simple,
  * e_cal_client_get_attachment_uris:
  * @client: an #ECalClient
  * @uid: Unique identifier for a calendar component
- * @rid: Recurrence identifier
+ * @rid: (nullable): Recurrence identifier
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -6092,7 +6092,7 @@ e_cal_client_get_attachment_uris (ECalClient *client,
  * @result: a #GAsyncResult
  * @out_attachment_uris: (out) (element-type utf8): Return location for the
  *                       list of attachment URIs
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_get_attachment_uris() and
  * sets @out_attachment_uris to uris for component's attachments.
@@ -6134,11 +6134,11 @@ e_cal_client_get_attachment_uris_finish (ECalClient *client,
  * e_cal_client_get_attachment_uris_sync:
  * @client: an #ECalClient
  * @uid: Unique identifier for a calendar component
- * @rid: Recurrence identifier
+ * @rid: (nullable): Recurrence identifier
  * @out_attachment_uris: (out) (element-type utf8): Return location for the
  *                       list of attachment URIs
- * @cancellable: (allow-none): a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: a #GError to set an error, if any
  *
  * Queries a calendar for a specified component's object attachment URIs.
  * The list should be freed with e_client_util_free_string_slist().
@@ -6239,9 +6239,9 @@ cal_client_discard_alarm_thread (GSimpleAsyncResult *simple,
  * e_cal_client_discard_alarm:
  * @client: an #ECalClient
  * @uid: Unique identifier for a calendar component
- * @rid: Recurrence identifier
+ * @rid: (nullable): Recurrence identifier
  * @auid: Alarm identifier to discard
- * @opflags: bit-or of #ECalOperationFlags
+ * @opflags: (type ECalOperationFlags): bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -6296,7 +6296,7 @@ e_cal_client_discard_alarm (ECalClient *client,
  * e_cal_client_discard_alarm_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_discard_alarm().
  *
@@ -6326,11 +6326,11 @@ e_cal_client_discard_alarm_finish (ECalClient *client,
  * e_cal_client_discard_alarm_sync:
  * @client: an #ECalClient
  * @uid: Unique identifier for a calendar component
- * @rid: Recurrence identifier
+ * @rid: (nullable): Recurrence identifier
  * @auid: Alarm identifier to discard
- * @opflags: bit-or of #ECalOperationFlags
+ * @opflags: (type ECalOperationFlags): bit-or of #ECalOperationFlags
  * @cancellable: a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Discards alarm @auid from a given component identified by @uid and @rid.
  *
@@ -6489,8 +6489,8 @@ e_cal_client_get_view (ECalClient *client,
  * e_cal_client_get_view_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @out_view: (out): an #ECalClientView
- * @error: (out): a #GError to set an error, if any
+ * @out_view: (out) (transfer full): an #ECalClientView
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_get_view().
  * If successful, then the @out_view is set to newly allocated #ECalClientView,
@@ -6534,7 +6534,7 @@ e_cal_client_get_view_finish (ECalClient *client,
  * @sexp: an S-expression representing the query.
  * @out_view: (out): an #ECalClientView
  * @cancellable: a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Query @client with @sexp, creating an #ECalClientView.
  * If successful, then the @out_view is set to newly allocated #ECalClientView,
@@ -6654,7 +6654,7 @@ e_cal_client_get_timezone (ECalClient *client,
  * @client: an #ECalClient
  * @result: a #GAsyncResult
  * @out_zone: (out) (transfer none): Return value for the timezone
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_get_timezone() and
  * sets @out_zone to a retrieved timezone object from the calendar backend.
@@ -6700,7 +6700,7 @@ e_cal_client_get_timezone_finish (ECalClient *client,
  * @tzid: ID of the timezone to retrieve
  * @out_zone: (out) (transfer none): Return value for the timezone
  * @cancellable: a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Retrieves a timezone object from the calendar backend.
  * This object is owned by the @client, thus do not free it.
@@ -6880,7 +6880,7 @@ e_cal_client_add_timezone (ECalClient *client,
  * e_cal_client_add_timezone_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_add_timezone().
  *
@@ -6911,7 +6911,7 @@ e_cal_client_add_timezone_finish (ECalClient *client,
  * @client: an #ECalClient
  * @zone: The timezone to add
  * @cancellable: a #GCancellable; can be %NULL
- * @error: (out): a #GError to set an error, if any
+ * @error: a #GError to set an error, if any
  *
  * Add a VTIMEZONE object to the given calendar client.
  *

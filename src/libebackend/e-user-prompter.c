@@ -316,17 +316,16 @@ user_prompter_prompt_thread (GSimpleAsyncResult *simple,
 /**
  * e_user_prompter_prompt:
  * @prompter: an #EUserPrompter
- * @type: (allow-none): type of the prompt; can be %NULL
- * @title: (allow-none): window title of the prompt; can be %NULL
- * @primary_text: (allow-none): primary text of the prompt; can be %NULL
- * @secondary_text: (allow-none): secondary text of the prompt; can be %NULL
+ * @type: (nullable): type of the prompt; can be %NULL
+ * @title: (nullable): window title of the prompt; can be %NULL
+ * @primary_text: (nullable): primary text of the prompt; can be %NULL
+ * @secondary_text: (nullable): secondary text of the prompt; can be %NULL
  * @use_markup: whether both texts are with markup
- * @button_captions: (allow-none) (element-type utf8): captions of buttons to
+ * @button_captions: (nullable) (element-type utf8): captions of buttons to
  *    use in the message; can be %NULL
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to the callback function
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
  * Asynchronously prompt a user for a decision.
  *
@@ -424,14 +423,14 @@ e_user_prompter_prompt_finish (EUserPrompter *prompter,
 /**
  * e_user_prompter_prompt_sync:
  * @prompter: an #EUserPrompter
- * @type: (allow-none): type of the prompt; can be %NULL
- * @title: (allow-none): window title of the prompt; can be %NULL
- * @primary_text: (allow-none): primary text of the prompt; can be %NULL
- * @secondary_text: (allow-none): secondary text of the prompt; can be %NULL
+ * @type: (nullable): type of the prompt; can be %NULL
+ * @title: (nullable): window title of the prompt; can be %NULL
+ * @primary_text: (nullable): primary text of the prompt; can be %NULL
+ * @secondary_text: (nullable): secondary text of the prompt; can be %NULL
  * @use_markup: whether both texts are with markup
- * @button_captions: (allow-none) (element-type utf8): captions of buttons to
+ * @button_captions: (nullable) (element-type utf8): captions of buttons to
  *    use in the message; can be %NULL
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Prompts a user for a decision.
@@ -487,11 +486,10 @@ e_user_prompter_prompt_sync (EUserPrompter *prompter,
  * e_user_prompter_extension_prompt:
  * @prompter: an #EUserPrompter
  * @dialog_name: name of a dialog to invoke
- * @in_parameters: (allow-none): optional parameters to pass to extension; can be %NULL
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to the callback function
+ * @in_parameters: (nullable): optional parameters to pass to extension; can be %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
  * Asynchronously prompt a user for a decision on an extension-provided dialog.
  * The caller usually provides an extension for #EUserPrompterServer, a descendant
@@ -552,7 +550,7 @@ e_user_prompter_extension_prompt (EUserPrompter *prompter,
  * e_user_prompter_extension_prompt_finish:
  * @prompter: an #EUserPrompter
  * @result: a #GAsyncResult
- * @out_values: (allow-none): Where to store values from the extension, or %NULL
+ * @out_values: (nullable): Where to store values from the extension, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_user_prompter_extension_prompt().
@@ -600,9 +598,9 @@ e_user_prompter_extension_prompt_finish (EUserPrompter *prompter,
  * e_user_prompter_extension_prompt_sync:
  * @prompter: an #EUserPrompter
  * @dialog_name: name of a dialog to invoke
- * @in_parameters: (allow-none): optional parameters to pass to extension; can be %NULL
- * @out_values: (allow-none): Where to store values from the extension, or %NULL
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @in_parameters: (nullable): optional parameters to pass to extension; can be %NULL
+ * @out_values: (nullable): Where to store values from the extension, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Synchronously prompt a user for a decision on an extension-provided dialog.

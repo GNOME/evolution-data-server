@@ -265,7 +265,7 @@ e_source_alarms_dup_last_notified (ESourceAlarms *extension)
 /**
  * e_source_alarms_set_last_notified:
  * @extension: an #ESourceAlarms
- * @last_notified: (allow-none): an ISO 8601 timestamp, or %NULL
+ * @last_notified: (nullable): an ISO 8601 timestamp, or %NULL
  *
  * Sets an ISO 8601 formatted timestamp of when the user was last
  * alerted about an upcoming appointment in the calendar described

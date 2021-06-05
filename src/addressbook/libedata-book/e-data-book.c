@@ -1237,7 +1237,7 @@ e_data_book_respond_get_contact (EDataBook *book,
  * @book: An #EDataBook
  * @opid: An operation ID
  * @error: Operation error, if any, automatically freed if passed it
- * @contacts: (allow-none) (element-type EContact): A list of #EContact, or %NULL on error
+ * @contacts: (element-type EContact): A list of #EContact, empty on error
  *
  * Finishes a call to get list of #EContact, which satisfy certain criteria.
  *
@@ -1289,7 +1289,7 @@ e_data_book_respond_get_contact_list (EDataBook *book,
  * @book: An #EDataBook
  * @opid: An operation ID
  * @error: Operation error, if any, automatically freed if passed it
- * @uids: (allow-none) (element-type utf8): A list of picked UIDs, or %NULL on error
+ * @uids: (element-type utf8): A list of picked UIDs, empty on error
  *
  * Finishes a call to get list of UIDs which satisfy certain criteria.
  *
@@ -1340,7 +1340,7 @@ e_data_book_respond_get_contact_list_uids (EDataBook *book,
  * @book: An #EDataBook
  * @opid: An operation ID
  * @error: Operation error, if any, automatically freed if passed it
- * @contacts: (allow-none) (element-type EContact): A list of created #EContact(s), or %NULL on error
+ * @contacts: (element-type EContact): A list of created #EContact(s), empty on error
  *
  * Finishes a call to create a list contacts.
  *
@@ -1391,7 +1391,7 @@ e_data_book_respond_create_contacts (EDataBook *book,
  * @book: An #EDataBook
  * @opid: An operation ID
  * @error: Operation error, if any, automatically freed if passed it
- * @contacts: (allow-none) (element-type EContact): A list of modified #EContact(s), or %NULL on error
+ * @contacts: (element-type EContact): A list of modified #EContact(s), empty on error
  *
  * Finishes a call to modify a list of contacts.
  *
@@ -1443,7 +1443,7 @@ e_data_book_respond_modify_contacts (EDataBook *book,
  * @book: An #EDataBook
  * @opid: An operation ID
  * @error: Operation error, if any, automatically freed if passed it
- * @ids: (allow-none) (element-type utf8): A list of removed contact UID-s, or %NULL on error
+ * @ids: (element-type utf8): A list of removed contact UID-s, empty on error
  *
  * Finishes a call to remove a list of contacts.
  *
@@ -1516,7 +1516,7 @@ e_data_book_report_error (EDataBook *book,
  * e_data_book_report_backend_property_changed:
  * @book: An #EDataBook
  * @prop_name: Property name which changed
- * @prop_value: The new property value
+ * @prop_value: (nullable): The new property value
  *
  * Notifies the clients about a property change.
  *
@@ -2050,8 +2050,8 @@ e_data_book_get_object_path (EDataBook *book)
  * e_data_book_set_locale:
  * @book: an #EDataBook 
  * @locale: the new locale to set for this book
- * @cancellable: (allow-none): a #GCancellable
- * @error: (allow-none): a location to store any error which might occur
+ * @cancellable: a #GCancellable
+ * @error: a location to store any error which might occur
  *
  * Set's the locale for this addressbook, this can result in renormalization of
  * locale sensitive data.

@@ -189,7 +189,7 @@ book_utils_get_recipient_certificates_thread (gpointer data,
  * @registry: an #ESourceRegistry
  * @only_clients: (element-type EBookClient) (nullable): optional #GSList of
  *    the #EBookClient objects to search for the certificates in, or %NULL
- * @flags: bit-or of #CamelRecipientCertificateFlags
+ * @flags: (type Camel.RecipientCertificateFlags): bit-or of #CamelRecipientCertificateFlags
  * @recipients: (element-type utf8): a #GPtrArray of recipients' email addresses
  * @out_certificates: (element-type utf8) (out): a #GSList of gathered certificates
  *    encoded in base64

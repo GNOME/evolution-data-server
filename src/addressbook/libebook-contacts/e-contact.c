@@ -1792,7 +1792,7 @@ e_contact_field_id_from_vcard (const gchar *vcard_field)
  *
  * Gets the value of @contact's field specified by @field_id.
  *
- * Returns: (transfer full) (allow-none): Depends on the field's type, owned by the caller. This may be %NULL if the field isn't set.
+ * Returns: (transfer full) (nullable): Depends on the field's type, owned by the caller. This may be %NULL if the field isn't set.
  **/
 gpointer
 e_contact_get (EContact *contact,
@@ -2068,7 +2068,7 @@ e_contact_get_attributes (EContact *contact,
 /**
  * e_contact_get_attributes_set:
  * @contact: an #EContact
- * @field_ids: an array of #EContactField
+ * @field_ids: (array length=size): an array of #EContactField
  * @size: number of elements in field_ids
  *
  * Gets a list of the vcard attributes for @contact's @field_ids.
@@ -2293,7 +2293,7 @@ E_CONTACT_DEFINE_BOXED_TYPE (e_contact_name, "EContactName")
  *
  * Creates a new #EContactDate based on @str.
  *
- * Returns: A new #EContactDate struct.
+ * Returns: (transfer full): A new #EContactDate struct.
  **/
 EContactDate *
 e_contact_date_from_string (const gchar *str)
@@ -2502,11 +2502,11 @@ e_contact_photo_copy (EContactPhoto *photo)
 /**
  * e_contact_photo_get_inlined:
  * @photo: an #EContactPhoto
- * @len: (out caller-allocates) (transfer none): the length of the inlined data
+ * @len: (out): the length of the inlined data
  *
  * Gets the @photo's data.
  *
- * Returns: (transfer none) (array length=len) (allow-none): the inlined image in the
+ * Returns: (transfer none) (array length=len) (nullable): the inlined image in the
  * #EContactPhoto, or %NULL if it has not been set.
  *
  * Since: 3.2
@@ -2551,7 +2551,7 @@ e_contact_photo_set_inlined (EContactPhoto *photo,
  *
  * Gets the @photo's mime type.
  *
- * Returns: (transfer none) (allow-none): the MIME type of the image, or %NULL if it has not been set.
+ * Returns: (transfer none) (nullable): the MIME type of the image, or %NULL if it has not been set.
  *
  * Since: 3.2
  **/
@@ -2590,7 +2590,7 @@ e_contact_photo_set_mime_type (EContactPhoto *photo,
  *
  * Gets the @photo's URI.
  *
- * Returns: (transfer none) (allow-none): the URI of the image, or %NULL if it has not been set
+ * Returns: (transfer none) (nullable): the URI of the image, or %NULL if it has not been set
  *
  * Since: 3.2
  **/
