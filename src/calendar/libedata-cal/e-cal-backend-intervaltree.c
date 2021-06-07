@@ -606,7 +606,7 @@ e_intervaltree_remove (EIntervalTree *tree,
 	g_return_val_if_fail (y, FALSE);
 	x = (y->left == nil) ? y->right : y->left;
 	g_return_val_if_fail (x, FALSE);
-	/* y is to be spliced out. x is it's only child */
+	/* y is to be spliced out. x is its only child */
 
 	x->parent = y->parent;
 

@@ -103,9 +103,9 @@ objects_removed (EBookClientView *book_view,
 }
 
 /* This provokes the backend to handle a cross-referenced photo
- * between contacts, how the backend handles this is it's choice,
+ * between contacts, how the backend handles this is its choice,
  * we should test that when deleting one of the contacts, the other
- * contact does not lose it's photo on disk as a result.
+ * contact does not lose its photo on disk as a result.
  */
 static void
 give_james_brown_micheal_jacksons_face (EBookClient *book)

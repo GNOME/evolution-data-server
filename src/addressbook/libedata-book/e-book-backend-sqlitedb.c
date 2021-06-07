@@ -3617,19 +3617,19 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 		gboolean suffix_search = FALSE;
 		gboolean phone_search = FALSE;
 
-		/* If its a suffix search and we have reverse data to search... */
+		/* If it's a suffix search and we have reverse data to search... */
 		if (match == MATCH_ENDS_WITH &&
 		    (ebsdb->priv->summary_fields[summary_index].index & INDEX_SUFFIX) != 0)
 			suffix_search = TRUE;
 
-		/* If its a phone-number search and we have E.164 data to search... */
+		/* If it's a phone-number search and we have E.164 data to search... */
 		else if ((match == MATCH_PHONE_NUMBER ||
 				match == MATCH_NATIONAL_PHONE_NUMBER ||
 				match == MATCH_SHORT_PHONE_NUMBER) &&
 		    (ebsdb->priv->summary_fields[summary_index].index & INDEX_PHONE) != 0)
 			phone_search = TRUE;
 
-		/* Or also if its an exact match, and we *only* have reverse data which is indexed,
+		/* Or also if it's an exact match, and we *only* have reverse data which is indexed,
 		 * then prefer the indexed reverse search. */
 		else if (match == MATCH_IS &&
 			 (ebsdb->priv->summary_fields[summary_index].index & INDEX_SUFFIX) != 0 &&
@@ -6149,7 +6149,7 @@ collect_results_for_cursor_cb (gpointer ref,
  *   A return location to store the results, or %NULL if %EBSDB_CURSOR_STEP_FETCH is not specified in @flags.
  * @error: A location to store any error that may have occurred.
  *
- * Steps @cursor through it's sorted query by a maximum of @count contacts
+ * Steps @cursor through its sorted query by a maximum of @count contacts
  * starting from @origin.
  *
  * If @count is negative, then the cursor will move through the list in reverse.

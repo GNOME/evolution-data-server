@@ -49,7 +49,7 @@
  * EDS_ADDRESS_BOOK_MODULES:
  *
  * This environment variable configures where the address book
- * factory loads it's backend modules from.
+ * factory loads its backend modules from.
  */
 #define EDS_ADDRESS_BOOK_MODULES "EDS_ADDRESS_BOOK_MODULES"
 

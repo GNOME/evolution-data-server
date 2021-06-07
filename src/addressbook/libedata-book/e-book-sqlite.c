@@ -1445,7 +1445,7 @@ ebsql_compare_vcard (sqlite3_context *context,
 	/* Reuse the same vcard as much as possible (it can be referred to more than
 	 * once in the query, so it can be reused for multiple comparisons on the same row)
 	 *
-	 * This may look extensive, but as the vcard might be resolved by calling a
+	 * This may look extensive, but as the vcard might be resolved by calling an
 	 * EbSqlVCardCallback, it's important to reuse this string as much as possible.
 	 *
 	 * See ebsql_fetch_vcard() for details.
@@ -3011,7 +3011,7 @@ ebsql_new_internal (const gchar *path,
 
 	/* When loading addressbooks created by EBookBackendSqlite, we
 	 * need to fetch the 'folderid' which was in use for that existing
-	 * addressbook before introspecting it's summary and upgrading
+	 * addressbook before introspecting its summary and upgrading
 	 * the schema.
 	 */
 	if (success)
@@ -8078,7 +8078,7 @@ collect_results_for_cursor_cb (gpointer ref,
  * @cancellable: A #GCancellable
  * @error: A return location to store any error that might be reported.
  *
- * Steps @cursor through it's sorted query by a maximum of @count contacts
+ * Steps @cursor through its sorted query by a maximum of @count contacts
  * starting from @origin.
  *
  * If @count is negative, then the cursor will move through the list in reverse.

@@ -660,7 +660,7 @@ e_destination_set_contact_uid (EDestination *dest,
 		dest->priv->contact_uid = g_strdup (uid);
 		dest->priv->email_num = email_num;
 
-		/* If we already have a contact, remove it unless it's uid matches the one
+		/* If we already have a contact, remove it unless its uid matches the one
 		 * we just set. */
 		if (dest->priv->contact && strcmp (uid,
 						   e_contact_get_const (dest->priv->contact, E_CONTACT_UID))) {

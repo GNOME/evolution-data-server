@@ -89,7 +89,7 @@ typedef struct _EBookSqlitePrivate EBookSqlitePrivate;
 
 /**
  * EbSqlChangeType:
- * @EBSQL_CHANGE_CONTACT_ADDED: Contact was modified as a result of it's addition to the addressbook
+ * @EBSQL_CHANGE_CONTACT_ADDED: Contact was modified as a result of its addition to the addressbook
  * @EBSQL_CHANGE_LOCALE_CHANGED: Contact was modified as a result of a locale change
  * @EBSQL_CHANGE_LAST: A symbolic end marker for this enumeration, will not be passed in callbacks.
  *

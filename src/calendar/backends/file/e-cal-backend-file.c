@@ -3520,7 +3520,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 
 	kind = i_cal_component_isa (toplevel_comp);
 	if (kind != I_CAL_VCALENDAR_COMPONENT) {
-		/* If its not a VCALENDAR, make it one to simplify below */
+		/* If it is not a VCALENDAR, make it one to simplify below */
 		icomp = toplevel_comp;
 		toplevel_comp = e_cal_util_new_top_level ();
 		if (i_cal_component_get_method (icomp) == I_CAL_METHOD_CANCEL)

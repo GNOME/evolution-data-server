@@ -932,7 +932,7 @@ n_setter (EContact *contact,
 	e_vcard_attribute_add_value (attr, name->prefixes ? name->prefixes : "");
 	e_vcard_attribute_add_value (attr, name->suffixes ? name->suffixes : "");
 
-	/* now find the attribute for FileAs.  if it's not present, fill it in */
+	/* now find the attribute for FileAs.  If it's not present, fill it in */
 	attr = e_vcard_get_attribute (E_VCARD (contact), EVC_X_FILE_AS);
 	if (!attr) {
 		gchar *strings[3], **stringptr;

@@ -800,7 +800,7 @@ e_data_book_cursor_set_sexp (EDataBookCursor *cursor,
  * @cancellable: A #GCancellable
  * @error: return location for a #GError, or %NULL
  *
- * Steps @cursor through it's sorted query by a maximum of @count contacts
+ * Steps @cursor through its sorted query by a maximum of @count contacts
  * starting from @origin.
  *
  * If @count is negative, then the cursor will move through the list in reverse.

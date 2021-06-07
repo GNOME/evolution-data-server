@@ -147,7 +147,7 @@ typedef gboolean (*EDataBookCursorSetAlphabetIndexFunc) (EDataBookCursor     *cu
  * EDataBookCursorGetPositionFunc:
  * @cursor: an #EDataBookCursor
  * @total: (out): The total number of contacts matching @cursor's query expression
- * @position: (out): The current position of @cursor in it's result list
+ * @position: (out): The current position of @cursor in its result list
  * @cancellable: A #GCancellable
  * @error: return location for a #GError, or %NULL
  *

@@ -50,7 +50,7 @@ e_phone_number_util_get_instance (void)
 
 	if (g_once_init_enter (&instance)) {
 		/* FIXME: Ideally PhoneNumberUtil would not be a singleton,
-		 * so that we could safely tweak it's attributes without
+		 * so that we could safely tweak its attributes without
 		 * influencing other users of the library. */
 		PhoneNumberUtil *new_instance = PhoneNumberUtil::GetInstance ();
 

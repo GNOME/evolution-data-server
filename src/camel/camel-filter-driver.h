@@ -72,7 +72,7 @@ enum camel_filter_status_t {
 	CAMEL_FILTER_STATUS_NONE,
 	CAMEL_FILTER_STATUS_START,	/* start of new message processed */
 	CAMEL_FILTER_STATUS_ACTION,	/* an action performed */
-	CAMEL_FILTER_STATUS_PROGRESS,	/* (an) extra update (s), if its taking longer to process */
+	CAMEL_FILTER_STATUS_PROGRESS,	/* (an) extra update (s), if it is taking longer to process */
 	CAMEL_FILTER_STATUS_END		/* end of message */
 };
 

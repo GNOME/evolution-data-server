@@ -287,7 +287,7 @@ block_file_use (CamelBlockFile *bs)
 	while (link != NULL && block_file_count > block_file_threshhold) {
 		struct _CamelBlockFilePrivate *nw = link->data;
 
-		/* We never hit the current blockfile here, as its removed from the list first */
+		/* We never hit the current blockfile here, as it is removed from the list first */
 		bf = nw->base;
 		if (bf->priv->fd != -1) {
 			/* Need to trylock, as any of these lock levels might be trying
@@ -636,7 +636,7 @@ camel_block_file_get_block (CamelBlockFile *bs,
 
 	g_return_val_if_fail (CAMEL_IS_BLOCK_FILE (bs), NULL);
 
-	/* Sanity check: Dont allow reading of root block (except before its been read)
+	/* Sanity check: Don't allow reading of root block (except before it's been read)
 	 * or blocks with invalid block id's */
 	if ((bs->priv->root == NULL && id != 0)
 	    || (bs->priv->root != NULL && (id > bs->priv->root->last || id == 0))

@@ -115,7 +115,7 @@ macro(gir_add_introspection gir)
 		_gir_list_prefix(_gir_packages ${_gir_name}_PACKAGES "--pkg=")
 		_gir_list_prefix(_gir_includes ${_gir_name}_INCLUDES "--include=")
 
-		# Reuse the LIBTOOL variable from by automake if it's set
+		# Reuse the LIBTOOL variable from automake if it's set
 		set(_gir_libtool "--no-libtool")
 
 		_gir_list_prefix_path_to_string(_gir_files ${${_gir_name}_FILES} "${CMAKE_CURRENT_SOURCE_DIR}")

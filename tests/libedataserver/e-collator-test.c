@@ -123,7 +123,7 @@ test_el_GR (CollatorFixture *fixture,
   /* Δ is the 4th letter, the 0 index is the underflow bucket... */
   g_assert_cmpint (e_collator_get_index (fixture->collator, "Δευτέρα"), ==, 4);
 
-  /* In greek 'D' doesnt sort under the 'Δ' bucket, instead it's in the underflow bucket */
+  /* In greek 'D' does not sort under the 'Δ' bucket, instead it's in the underflow bucket */
   g_assert_cmpint (e_collator_get_index (fixture->collator, "Damsel"), ==, 0);
 
   /* 'Τ' is the 19th letter */
