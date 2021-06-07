@@ -416,14 +416,14 @@ enriched_to_html (CamelMimeFilter *mime_filter,
 
 						len = inptr - start;
 						param = param_parse (enriched_tag, start, len);
-						len = strlen (param);
+						len = param ? strlen (param) : 0;
 
 						inptr += 7;
 
 						len += strlen (html_tag);
 
 						if ((outptr + len) < outend) {
-							outptr += snprintf (outptr, len, html_tag, param);
+							outptr += snprintf (outptr, len, html_tag, param ? param : "");
 							g_free (param);
 						} else {
 							g_free (param);
