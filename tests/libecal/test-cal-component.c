@@ -3158,14 +3158,15 @@ test_component_recurid (void)
 	struct _values {
 		const gchar *time;
 		const gchar *tzid;
+		ECalComponentRangeKind range_kind;
 	} values[] = {
-		{ "20181215T111213Z", NULL },
-		{ "20190131T121314Z", NULL },
-		{ NULL, NULL },
-		{ "20200708T010305Z", NULL },
-		{ "20211215T101112", "America/New_York" },
-		{ "20221110T090807", "UTC" },
-		{ "20231009", NULL }
+		{ "20181215T111213Z",	NULL,			E_CAL_COMPONENT_RANGE_SINGLE },
+		{ "20190131T121314Z",	NULL,			E_CAL_COMPONENT_RANGE_THISFUTURE },
+		{ NULL,			NULL,			E_CAL_COMPONENT_RANGE_SINGLE },
+		{ "20200708T010305Z",	NULL,			E_CAL_COMPONENT_RANGE_SINGLE },
+		{ "20211215T101112",	"America/New_York",	E_CAL_COMPONENT_RANGE_SINGLE },
+		{ "20221110T090807",	"UTC",			E_CAL_COMPONENT_RANGE_THISFUTURE },
+		{ "20231009",		NULL,			E_CAL_COMPONENT_RANGE_THISFUTURE }
 	};
 	ECalComponent *comp;
 	gint ii;
@@ -3193,7 +3194,7 @@ test_component_recurid (void)
 				}
 			}
 
-			rid = e_cal_component_range_new_take (E_CAL_COMPONENT_RANGE_SINGLE, dt);
+			rid = e_cal_component_range_new_take (values[ii].range_kind, dt);
 		}
 
 		e_cal_component_set_recurid (comp, rid);

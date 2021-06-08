@@ -2513,7 +2513,20 @@ ecmb_receive_object_sync (ECalMetaBackend *meta_backend,
 		}
 	}
 
-	mod = e_cal_component_is_instance (comp) ? E_CAL_OBJ_MOD_THIS : E_CAL_OBJ_MOD_ALL;
+	if (e_cal_component_is_instance (comp)) {
+		ECalComponentRange *range;
+
+		range = e_cal_component_get_recurid (comp);
+
+		if (range && e_cal_component_range_get_kind (range) == E_CAL_COMPONENT_RANGE_THISFUTURE)
+			mod = E_CAL_OBJ_MOD_THIS_AND_FUTURE;
+		else
+			mod = E_CAL_OBJ_MOD_THIS;
+
+		e_cal_component_range_free (range);
+	} else {
+		mod = E_CAL_OBJ_MOD_ALL;
+	}
 
 	switch (method) {
 	case I_CAL_METHOD_PUBLISH:
@@ -2535,7 +2548,7 @@ ecmb_receive_object_sync (ECalMetaBackend *meta_backend,
 		break;
 	case I_CAL_METHOD_CANCEL:
 		if (is_in_cache) {
-			success = ecmb_remove_object_sync (meta_backend, cal_cache, offline_flag, conflict_resolution, E_CAL_OBJ_MOD_THIS, opflags,
+			success = ecmb_remove_object_sync (meta_backend, cal_cache, offline_flag, conflict_resolution, mod, opflags,
 				e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id), NULL, NULL, cancellable, error);
 		} else {
 			g_propagate_error (error, e_cal_client_error_create (E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND, NULL));

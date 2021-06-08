@@ -1587,12 +1587,16 @@ e_cal_component_set_descriptions (ECalComponent *comp,
 static ECalComponentDateTime *
 get_datetime (ICalComponent *icalcomp,
 	      ICalPropertyKind prop_kind,
-              ICalTime * (* get_prop_func) (ICalProperty *prop))
+              ICalTime * (* get_prop_func) (ICalProperty *prop),
+	      ICalProperty **out_prop)
 {
 	ICalProperty *prop;
 	ICalParameter *param;
 	ICalTime *value = NULL;
 	gchar *tzid;
+
+	if (out_prop)
+		*out_prop = NULL;
 
 	prop = i_cal_component_get_first_property (icalcomp, prop_kind);
 	if (prop)
@@ -1614,7 +1618,11 @@ get_datetime (ICalComponent *icalcomp,
 		tzid = NULL;
 
 	g_clear_object (&param);
-	g_clear_object (&prop);
+
+	if (out_prop)
+		*out_prop = prop;
+	else
+		g_clear_object (&prop);
 
 	return e_cal_component_datetime_new_take (value, tzid);
 }
@@ -1626,12 +1634,16 @@ set_datetime (ICalComponent *icalcomp,
 	      ICalProperty *(* prop_new_func) (ICalTime *tt),
               void (* prop_set_func) (ICalProperty *prop,
 				      ICalTime *tt),
-	      const ECalComponentDateTime *dt)
+	      const ECalComponentDateTime *dt,
+	      ICalProperty **out_prop)
 {
 	ICalProperty *prop;
 	ICalParameter *param;
 	ICalTime *tt;
 	const gchar *tzid;
+
+	if (out_prop)
+		*out_prop = NULL;
 
 	prop = i_cal_component_get_first_property (icalcomp, prop_kind);
 
@@ -1683,7 +1695,11 @@ set_datetime (ICalComponent *icalcomp,
 	}
 
 	g_clear_object (&param);
-	g_clear_object (&prop);
+
+	if (out_prop)
+		*out_prop = prop;
+	else
+		g_clear_object (&prop);
 }
 
 /* This tries to get the DTSTART + DURATION for a VEVENT or VTODO. In a
@@ -1704,7 +1720,7 @@ e_cal_component_get_start_plus_duration (ECalComponent *comp)
 	}
 
 	/* Get the DTSTART time. */
-	dt = get_datetime (comp->priv->icalcomp, I_CAL_DTSTART_PROPERTY, i_cal_property_get_dtstart);
+	dt = get_datetime (comp->priv->icalcomp, I_CAL_DTSTART_PROPERTY, i_cal_property_get_dtstart, NULL);
 	if (!dt) {
 		g_object_unref (duration);
 		return NULL;
@@ -1760,7 +1776,7 @@ e_cal_component_get_dtend (ECalComponent *comp)
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
 
-	dt = get_datetime (comp->priv->icalcomp, I_CAL_DTEND_PROPERTY, i_cal_property_get_dtend);
+	dt = get_datetime (comp->priv->icalcomp, I_CAL_DTEND_PROPERTY, i_cal_property_get_dtend, NULL);
 
 	/* If we don't have a DTEND property, then we try to get DTSTART
 	 * + DURATION. */
@@ -1789,7 +1805,8 @@ e_cal_component_set_dtend (ECalComponent *comp,
 	set_datetime (comp->priv->icalcomp, I_CAL_DTEND_PROPERTY,
 		i_cal_property_new_dtend,
 		i_cal_property_set_dtend,
-		dt);
+		dt,
+		NULL);
 
 	/* Make sure we remove any existing DURATION property, as it can't be
 	 * used with a DTEND. If DTEND is set to NULL, i.e. removed, we also
@@ -1883,7 +1900,7 @@ e_cal_component_get_dtstart (ECalComponent *comp)
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
 
-	return get_datetime (comp->priv->icalcomp, I_CAL_DTSTART_PROPERTY, i_cal_property_get_dtstart);
+	return get_datetime (comp->priv->icalcomp, I_CAL_DTSTART_PROPERTY, i_cal_property_get_dtstart, NULL);
 }
 
 /**
@@ -1905,7 +1922,8 @@ e_cal_component_set_dtstart (ECalComponent *comp,
 	set_datetime (comp->priv->icalcomp, I_CAL_DTSTART_PROPERTY,
 		i_cal_property_new_dtstart,
 		i_cal_property_set_dtstart,
-		dt);
+		dt,
+		NULL);
 
 	comp->priv->need_sequence_inc = TRUE;
 }
@@ -1931,7 +1949,7 @@ e_cal_component_get_due (ECalComponent *comp)
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
 
-	dt = get_datetime (comp->priv->icalcomp, I_CAL_DUE_PROPERTY, i_cal_property_get_due);
+	dt = get_datetime (comp->priv->icalcomp, I_CAL_DUE_PROPERTY, i_cal_property_get_due, NULL);
 
 	/* If we don't have a DTEND property, then we try to get DTSTART
 	 * + DURATION. */
@@ -1962,7 +1980,8 @@ e_cal_component_set_due (ECalComponent *comp,
 	set_datetime (comp->priv->icalcomp, I_CAL_DUE_PROPERTY,
 		i_cal_property_new_due,
 		i_cal_property_set_due,
-		dt);
+		dt,
+		NULL);
 
 	/* Make sure we remove any existing DURATION property, as it can't be
 	 * used with a DTEND. If DTEND is set to NULL, i.e. removed, we also
@@ -2788,16 +2807,31 @@ ECalComponentRange *
 e_cal_component_get_recurid (ECalComponent *comp)
 {
 	ECalComponentDateTime *dt;
+	ECalComponentRangeKind range_kind;
+	ICalProperty *prop = NULL;
+	ICalParameter *param;
 
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
 
-	dt = get_datetime (comp->priv->icalcomp, I_CAL_RECURRENCEID_PROPERTY, i_cal_property_get_recurrenceid);
+	dt = get_datetime (comp->priv->icalcomp, I_CAL_RECURRENCEID_PROPERTY, i_cal_property_get_recurrenceid, &prop);
 
-	if (!dt)
+	if (!dt) {
+		g_clear_object (&prop);
 		return NULL;
+	}
 
-	return e_cal_component_range_new_take (E_CAL_COMPONENT_RANGE_SINGLE, dt);
+	range_kind = E_CAL_COMPONENT_RANGE_SINGLE;
+	param = i_cal_property_get_first_parameter (prop, I_CAL_RANGE_PARAMETER);
+
+	/* RFC 5545 says it can use only THIS_AND_FUTURE here */
+	if (param && i_cal_parameter_get_range (param) == I_CAL_RANGE_THISANDFUTURE)
+		range_kind = E_CAL_COMPONENT_RANGE_THISFUTURE;
+
+	g_clear_object (&param);
+	g_clear_object (&prop);
+
+	return e_cal_component_range_new_take (range_kind, dt);
 }
 
 /**
@@ -2830,6 +2864,7 @@ e_cal_component_set_recurid (ECalComponent *comp,
 			     const ECalComponentRange *recur_id)
 {
 	ECalComponentDateTime *dt;
+	ICalProperty *prop = NULL;
 
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 	g_return_if_fail (comp->priv->icalcomp != NULL);
@@ -2839,7 +2874,29 @@ e_cal_component_set_recurid (ECalComponent *comp,
 	set_datetime (comp->priv->icalcomp, I_CAL_RECURRENCEID_PROPERTY,
 		i_cal_property_new_recurrenceid,
 		i_cal_property_set_recurrenceid,
-		dt);
+		dt,
+		&prop);
+
+	if (prop) {
+		ICalParameter *param;
+
+		param = i_cal_property_get_first_parameter (prop, I_CAL_RANGE_PARAMETER);
+
+		/* RFC 5545 says it can use only THIS_AND_FUTURE here */
+		if (e_cal_component_range_get_kind (recur_id) == E_CAL_COMPONENT_RANGE_THISFUTURE) {
+			if (param) {
+				i_cal_parameter_set_range (param, I_CAL_RANGE_THISANDFUTURE);
+			} else {
+				param = i_cal_parameter_new_range (I_CAL_RANGE_THISANDFUTURE);
+				i_cal_property_add_parameter (prop, param);
+			}
+		} else if (param) {
+			i_cal_property_remove_parameter_by_ref (prop, param);
+		}
+
+		g_clear_object (&param);
+		g_clear_object (&prop);
+	}
 }
 
 /**

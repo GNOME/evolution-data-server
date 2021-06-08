@@ -3038,7 +3038,7 @@ remove_instance (ECalBackendFile *cbfile,
 
 		e_cal_util_remove_instances_ex (
 			e_cal_component_get_icalcomponent (obj_data->full_object),
-			rid_struct, E_CAL_OBJ_MOD_THIS, resolve_tzid_cb, &rtd);
+			rid_struct, mod, resolve_tzid_cb, &rtd);
 
 		resolve_tzid_data_clear (&rtd);
 		g_clear_object (&rid_struct);
@@ -3317,6 +3317,7 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 static gboolean
 cancel_received_object (ECalBackendFile *cbfile,
                         ECalComponent *comp,
+			ECalObjModType mod,
                         ECalComponent **old_comp,
                         ECalComponent **new_comp)
 {
@@ -3341,7 +3342,7 @@ cancel_received_object (ECalBackendFile *cbfile,
 	rid = e_cal_component_get_recurid_as_string (comp);
 	if (rid && *rid) {
 		obj_data = remove_instance (
-			cbfile, obj_data, uid, rid, E_CAL_OBJ_MOD_THIS,
+			cbfile, obj_data, uid, rid, mod,
 			old_comp, new_comp, NULL);
 		if (obj_data && obj_data->full_object && !*new_comp) {
 			*new_comp = e_cal_component_clone (obj_data->full_object);
@@ -3629,6 +3630,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 	for (link = comps; link; link = g_slist_next (link)) {
 		ECalComponent *old_component = NULL;
 		ECalComponent *new_component = NULL;
+		ECalObjModType mod = E_CAL_OBJ_MOD_THIS;
 		ICalTime *current;
 		const gchar *uid;
 		gchar *rid;
@@ -3659,6 +3661,17 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 		uid = e_cal_component_get_uid (comp);
 		rid = e_cal_component_get_recurid_as_string (comp);
 
+		if (rid) {
+			ECalComponentRange *range;
+
+			range = e_cal_component_get_recurid (comp);
+
+			if (range && e_cal_component_range_get_kind (range) == E_CAL_COMPONENT_RANGE_THISFUTURE)
+				mod = E_CAL_OBJ_MOD_THIS_AND_FUTURE;
+
+			e_cal_component_range_free (range);
+		}
+
 		if (e_cal_util_component_has_property (subcomp, I_CAL_METHOD_PROPERTY))
 			method = i_cal_component_get_method (subcomp);
 		else
@@ -3680,7 +3693,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 					ECalComponent *ignore_comp = NULL;
 
 					remove_instance (
-						cbfile, obj_data, uid, rid, E_CAL_OBJ_MOD_THIS,
+						cbfile, obj_data, uid, rid, mod,
 						&old_component, &ignore_comp, NULL);
 
 					if (ignore_comp)
@@ -3741,7 +3754,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 			goto error;
 			break;
 		case I_CAL_METHOD_CANCEL:
-			if (cancel_received_object (cbfile, comp, &old_component, &new_component)) {
+			if (cancel_received_object (cbfile, comp, mod, &old_component, &new_component)) {
 				ECalComponentId *id;
 
 				id = e_cal_component_get_id (comp);
