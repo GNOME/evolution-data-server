@@ -1587,6 +1587,11 @@ e_cal_client_class_init (ECalClientClass *class)
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * ECalClient::free-busy-data
+	 * @client: A calendar client.
+	 * @free_busy_ecalcomps: (type GSList<ECalComponent>):
+	 **/
 	signals[FREE_BUSY_DATA] = g_signal_new (
 		"free-busy-data",
 		G_OBJECT_CLASS_TYPE (class),

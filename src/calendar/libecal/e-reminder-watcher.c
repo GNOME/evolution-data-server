@@ -534,7 +534,7 @@ e_reminder_data_copy (const EReminderData *rd)
 
 /**
  * e_reminder_data_free:
- * @rd: (nullable): an #EReminderData, or %NULL
+ * @rd: (nullable) (type EReminderData): an #EReminderData, or %NULL
  *
  * Frees previously allocated #EReminderData structure with e_reminder_data_new()
  * or e_reminder_data_copy(). The function does nothing when @rd is %NULL.

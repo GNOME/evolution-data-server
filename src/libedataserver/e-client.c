@@ -916,7 +916,7 @@ e_client_class_init (EClientClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * EClient:opened-signal: (skip)
+	 * EClient::opened-signal: (skip)
 	 *
 	 * Deprecated: 3.8: This signal is no longer emitted.
 	 **/

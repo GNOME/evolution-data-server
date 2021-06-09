@@ -1,2 +1,5 @@
 TimezoneCache.add_timezone name="add_tz"
 TimezoneCache.get_timezone name="get_tz"
+util_icaltime_to_tm type="Posix.tm"
+util_icaltime_to_tm_with_zone type="Posix.tm"
+util_tm_to_icaltime.tm type="Posix.tm"
