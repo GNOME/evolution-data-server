@@ -813,7 +813,7 @@ ebmb_refresh_internal_sync (EBookMetaBackend *meta_backend,
 	} else {
 		GError *local_error = NULL;
 
-		success = ebmb_upload_local_changes_sync (meta_backend, book_cache, E_CONFLICT_RESOLUTION_FAIL, cancellable, &local_error);
+		success = ebmb_upload_local_changes_sync (meta_backend, book_cache, E_CONFLICT_RESOLUTION_KEEP_SERVER, cancellable, &local_error);
 
 		if (local_error) {
 			if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_HOST_NOT_FOUND))
