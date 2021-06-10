@@ -714,7 +714,7 @@ ecmb_refresh_internal_sync (ECalMetaBackend *meta_backend,
 	} else {
 		GError *local_error = NULL;
 
-		success = ecmb_upload_local_changes_sync (meta_backend, cal_cache, E_CONFLICT_RESOLUTION_FAIL, cancellable, &local_error);
+		success = ecmb_upload_local_changes_sync (meta_backend, cal_cache, E_CONFLICT_RESOLUTION_KEEP_SERVER, cancellable, &local_error);
 		if (local_error) {
 			if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_HOST_NOT_FOUND))
 				e_backend_set_online (E_BACKEND (meta_backend), FALSE);

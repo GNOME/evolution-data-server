@@ -1172,7 +1172,13 @@ ecb_webdav_notes_save_component_sync (ECalMetaBackend *meta_backend,
 
 	if (overwrite_existing && g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_PRECONDITION_FAILED)) {
 		g_clear_error (&local_error);
-		local_error = EC_ERROR (E_CLIENT_ERROR_OUT_OF_SYNC);
+
+		/* Pretend success when using the serer version on conflict,
+		   the component will be updated during the refresh */
+		if (conflict_resolution == E_CONFLICT_RESOLUTION_KEEP_SERVER)
+			success = TRUE;
+		else
+			local_error = EC_ERROR (E_CLIENT_ERROR_OUT_OF_SYNC);
 	}
 
 	if (local_error) {
@@ -1237,7 +1243,13 @@ ecb_webdav_notes_remove_component_sync (ECalMetaBackend *meta_backend,
 		success = TRUE;
 	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_PRECONDITION_FAILED)) {
 		g_clear_error (&local_error);
-		local_error = EC_ERROR (E_CLIENT_ERROR_OUT_OF_SYNC);
+
+		/* Pretend success when using the serer version on conflict,
+		   the component will be updated during the refresh */
+		if (conflict_resolution == E_CONFLICT_RESOLUTION_KEEP_SERVER)
+			success = TRUE;
+		else
+			local_error = EC_ERROR (E_CLIENT_ERROR_OUT_OF_SYNC);
 	}
 
 	if (local_error) {
