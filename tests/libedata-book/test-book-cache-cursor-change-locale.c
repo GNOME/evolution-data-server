@@ -84,7 +84,7 @@ main (gint argc,
 		tcu_step_test_add_assertion (data, 5, 17, 16, 18, 10, 14);
 		tcu_step_test_add_assertion (data, 5, 13, 12, 9,  19, 20);
 
-		/* When changing from fr_CA to de_DE, two numbers change:
+		/* Depending on the libphonenumber, when changing from fr_CA to de_DE, two numbers change:
 		 *
 		 * sorted-5:
 		 *    049-2459-4393 is now parsed with the national number as 4924594393
@@ -92,8 +92,9 @@ main (gint argc,
 		 * sorted-4:
 		 *    12 245999 is now parsed with national number 12245999 instead of 2245999
 		 *
+		 * or only one. Skip this check, because a lack of a way to get the libphonenumber version.
 		 */
-		tcu_step_test_change_locale (data, "de_DE.UTF-8", 2);
+		tcu_step_test_change_locale (data, "de_DE.UTF-8", -1);
 		tcu_step_test_add_assertion (data, 5, 11, 1,  2,  5,  6);
 		tcu_step_test_add_assertion (data, 5, 7,  8,  4,  3,  15);
 		tcu_step_test_add_assertion (data, 5, 17, 16, 18, 10, 14);
