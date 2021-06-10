@@ -645,6 +645,7 @@ test_step (EbSqlCursorFixture *fixture,
 			 * contact changes only happen because of e164 number interpretations.
 			 */
 			if (e_phone_number_is_supported () &&
+			    assertion->count != -1 &&
 			    assertion->count != n_locale_changes)
 				g_error (
 					"Expected %d e164 numbers to change, %d actually changed.",
