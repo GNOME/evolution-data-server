@@ -45,14 +45,14 @@ typedef struct {
 } TestData;
 
 typedef struct {
-	ESourceRegistry *registry;
+	ETestServerFixture *fixture;
 	GThread       *thread;
 	const gchar   *book_uid;
 	const gchar   *contact_uid;
 	EContactField  field;
 	const gchar   *value;
 	EBookClient   *client;
-	GMainLoop     *loop;
+	EFlag         *flag;
 } ThreadData;
 
 /* Special attention needed for this array:
@@ -114,7 +114,7 @@ test_write_thread_contact_modified (GObject *source_object,
 	if (retry)
 		try_write_field_thread_idle (data);
 	else
-		g_main_loop_quit (data->loop);
+		e_flag_set (data->flag);
 }
 
 static void
@@ -154,9 +154,7 @@ test_write_thread_client_opened (GObject *source_object,
                                  GAsyncResult *res,
                                  ThreadData *data)
 {
-	GMainContext *context;
-	GSource      *gsource;
-	GError       *error = NULL;
+	GError *error = NULL;
 
 	if (!e_client_open_finish (E_CLIENT (source_object), res, &error))
 		g_error (
@@ -164,10 +162,7 @@ test_write_thread_client_opened (GObject *source_object,
 			e_contact_field_name (data->field),
 			error->message);
 
-	context = g_main_loop_get_context (data->loop);
-	gsource = g_idle_source_new ();
-	g_source_set_callback (gsource, (GSourceFunc) try_write_field_thread_idle, data, NULL);
-	g_source_attach (gsource, context);
+	g_idle_add ((GSourceFunc) try_write_field_thread_idle, data);
 }
 
 static gboolean
@@ -182,17 +177,11 @@ test_write_thread_open_idle (ThreadData *data)
 static gpointer
 test_write_thread (ThreadData *data)
 {
-	GMainContext    *context;
-	GSource         *gsource;
-	ESource         *source;
-	GError          *error = NULL;
-
-	context = g_main_context_new ();
-	data->loop = g_main_loop_new (context, FALSE);
-	g_main_context_push_thread_default (context);
+	ESource *source;
+	GError *error = NULL;
 
 	/* Open the test book client in this thread */
-	source = e_source_registry_ref_source (data->registry, data->book_uid);
+	source = e_source_registry_ref_source (data->fixture->registry, data->book_uid);
 	if (!source)
 		g_error ("Unable to fetch source uid '%s' from the registry", data->book_uid);
 
@@ -202,23 +191,18 @@ test_write_thread (ThreadData *data)
 
 	/* Retry setting the contact field until we succeed setting the field
 	 */
-	gsource = g_idle_source_new ();
-	g_source_set_callback (gsource, (GSourceFunc) test_write_thread_open_idle, data, NULL);
-	g_source_attach (gsource, context);
-	g_main_loop_run (data->loop);
+	g_idle_add ((GSourceFunc) test_write_thread_open_idle, data);
+
+	e_flag_wait (data->flag);
 
 	g_object_unref (source);
-
 	g_object_unref (data->client);
-	g_main_context_pop_thread_default (context);
-	g_main_loop_unref (data->loop);
-	g_main_context_unref (context);
 
 	return NULL;
 }
 
 static ThreadData *
-create_test_thread (ESourceRegistry *registry,
+create_test_thread (ETestServerFixture *fixture,
 		    const gchar *book_uid,
                     const gchar *contact_uid,
                     EContactField field,
@@ -227,13 +211,14 @@ create_test_thread (ESourceRegistry *registry,
 	ThreadData  *data = g_slice_new0 (ThreadData);
 	const gchar *name = e_contact_field_name (field);
 
-	g_assert_nonnull (registry);
+	g_assert_nonnull (fixture);
 
-	data->registry = registry;
+	data->fixture = fixture;
 	data->book_uid = book_uid;
 	data->contact_uid = contact_uid;
 	data->field = field;
 	data->value = value;
+	data->flag = e_flag_new ();
 
 	data->thread = g_thread_new (name, (GThreadFunc) test_write_thread, data);
 
@@ -244,12 +229,34 @@ static void
 wait_thread_test (ThreadData *data)
 {
 	g_thread_join (data->thread);
+	e_flag_free (data->flag);
 	g_slice_free (ThreadData, data);
+}
+
+typedef struct _WaitForThreadsData {
+	ETestServerFixture *fixture;
+	ThreadData **tests;
+	guint n_tests;
+} WaitForThreadsData;
+
+static gpointer
+wait_for_tests_thread (gpointer user_data)
+{
+	WaitForThreadsData *data = user_data;
+	gint ii;
+
+	/* Wait for all threads to complete */
+	for (ii = 0; ii < data->n_tests; ii++)
+		wait_thread_test (data->tests[ii]);
+
+	g_main_loop_quit (data->fixture->loop);
+
+	return NULL;
 }
 
 static void
 test_concurrent_writes (ETestServerFixture *fixture,
-                       gconstpointer user_data)
+			gconstpointer user_data)
 {
 	EBookClient *main_client;
 	ESource *source;
@@ -257,6 +264,8 @@ test_concurrent_writes (ETestServerFixture *fixture,
 	GError *error = NULL;
 	const gchar *book_uid = NULL;
 	gchar *contact_uid = NULL;
+	WaitForThreadsData wait_data;
+	GThread *wait_thread;
 	ThreadData **tests;
 	gint i;
 
@@ -275,14 +284,19 @@ test_concurrent_writes (ETestServerFixture *fixture,
 	tests = g_new0 (ThreadData *, G_N_ELEMENTS (field_tests));
 	for (i = 0; i < G_N_ELEMENTS (field_tests); i++)
 		tests[i] = create_test_thread (
-			fixture->registry,
+			fixture,
 			book_uid, contact_uid,
 			field_tests[i].field,
 			field_tests[i].value);
 
-	/* Wait for all threads to complete */
-	for (i = 0; i < G_N_ELEMENTS (field_tests); i++)
-		wait_thread_test (tests[i]);
+	wait_data.fixture = fixture;
+	wait_data.tests = tests;
+	wait_data.n_tests = G_N_ELEMENTS (field_tests);
+
+	wait_thread = g_thread_new ("wait-tests", wait_for_tests_thread, &wait_data);
+	g_thread_unref (wait_thread);
+
+	g_main_loop_run (fixture->loop);
 
 	/* Fetch the updated contact */
 	if (!e_book_client_get_contact_sync (main_client, contact_uid, &contact, NULL, &error))
@@ -312,6 +326,7 @@ test_concurrent_writes (ETestServerFixture *fixture,
 	g_object_unref (contact);
 
 	g_free (contact_uid);
+	g_free (tests);
 }
 
 gint
