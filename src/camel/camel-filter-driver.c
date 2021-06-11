@@ -695,6 +695,8 @@ do_forward_to (struct _CamelSExp *f,
                struct _CamelSExpResult **argv,
                CamelFilterDriver *driver)
 {
+	const gchar *forward_with;
+
 	d (fprintf (stderr, "marking message for forwarding\n"));
 
 	/* requires one parameter, string with a destination address */
@@ -712,10 +714,17 @@ do_forward_to (struct _CamelSExp *f,
 			return NULL;
 	}
 
-	camel_filter_driver_log (
-		driver, FILTER_LOG_ACTION,
-		"Forward message to '%s'",
-		argv[0]->value.string);
+	forward_with = (argc > 1 && argv[1]->type == CAMEL_SEXP_RES_STRING) ? argv[1]->value.string : NULL;
+
+	if (forward_with && !*forward_with)
+		forward_with = NULL;
+
+	if (forward_with) {
+		camel_medium_set_header (CAMEL_MEDIUM (driver->priv->message), "X-Evolution-Forward-With", forward_with);
+		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Forward message to '%s' with '%s'", argv[0]->value.string, forward_with);
+	} else {
+		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Forward message to '%s'", argv[0]->value.string);
+	}
 
 	/* XXX Not cancellable. */
 	camel_session_forward_to_sync (
@@ -725,6 +734,9 @@ do_forward_to (struct _CamelSExp *f,
 		argv[0]->value.string,
 		NULL,
 		&driver->priv->error);
+
+	if (forward_with)
+		camel_medium_remove_header (CAMEL_MEDIUM (driver->priv->message), "X-Evolution-Forward-With");
 
 	return NULL;
 }
