@@ -365,6 +365,12 @@ imapx_update_message_info_flags (CamelMessageInfo *info,
 	if ((permanent_flags & CAMEL_MESSAGE_USER) != 0 && imapx_update_user_flags (info, server_user_flags))
 		changed = TRUE;
 
+	/* When both Junk and NotJunk are set, pretend the Junk flag is not set (this can happen when
+	   the server fails to unset the Junk flag on message copy/move). */
+	if ((server_flags & CAMEL_MESSAGE_JUNK) != 0 && (server_flags & CAMEL_MESSAGE_NOTJUNK) != 0) {
+		changed = camel_message_info_set_flags (info, CAMEL_MESSAGE_JUNK, 0) || changed;
+	}
+
 	return changed;
 }
 
@@ -385,6 +391,14 @@ imapx_set_message_info_flags_for_new_message (CamelMessageInfo *info,
 		imapx_update_user_flags (info, server_user_flags);
 
 	camel_message_info_take_user_tags (info, camel_name_value_array_copy (user_tags));
+
+	/* When the server has set both flags it means the user marked the message as not being junk;
+	   in that case pretend the server has the Junk flag off, otherwise the message won't be
+	   shown in its destination folder. */
+	if ((server_flags & CAMEL_MESSAGE_JUNK) != 0 &&
+	    (server_flags & CAMEL_MESSAGE_NOTJUNK) != 0) {
+		camel_message_info_set_flags (info, CAMEL_MESSAGE_JUNK, 0);
+	}
 
 	camel_message_info_set_folder_flagged (info, FALSE);
 }

@@ -4903,8 +4903,14 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 
 						if (remove_deleted_flags)
 							camel_message_info_set_flags (destination_info, CAMEL_MESSAGE_DELETED, 0);
-						if (remove_junk_flags)
+						if (remove_junk_flags) {
 							camel_message_info_set_flags (destination_info, CAMEL_MESSAGE_JUNK, 0);
+
+							/* Force unset of the flag at the destination */
+							camel_imapx_message_info_set_server_flags (CAMEL_IMAPX_MESSAGE_INFO (destination_info),
+								camel_imapx_message_info_get_server_flags (CAMEL_IMAPX_MESSAGE_INFO (destination_info)) | CAMEL_MESSAGE_JUNK);
+							camel_message_info_set_folder_flagged (destination_info, TRUE);
+						}
 						imapx_copy_move_message_cache (folder, destination_folder, delete_originals || use_move_command,
 							camel_message_info_get_uid (source_info),
 							camel_message_info_get_uid (destination_info),
@@ -5955,9 +5961,12 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 			gboolean move_to_real_trash;
 			gboolean move_to_inbox;
 
+			/* Some servers can leave the Junk flag even it had been unset, thus check also the NotJunk flag
+			   to avoid move back to the Junk folder. */
 			move_to_real_junk =
 				use_real_junk_path &&
-				(flags & CAMEL_MESSAGE_JUNK);
+				(flags & CAMEL_MESSAGE_JUNK) &&
+				(camel_message_info_get_flags (info) & CAMEL_MESSAGE_NOTJUNK) == 0;
 
 			move_to_real_trash =
 				use_real_trash_path && remove_deleted_flags &&
@@ -6364,7 +6373,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 			    !(has_flags & CAMEL_MESSAGE_DELETED)) {
 				set_folder_flagged = FALSE;
 			} else {
-				/* to stare back the \Deleted flag */
+				/* to store back the \Deleted flag */
 				set_server_flags &= ~CAMEL_MESSAGE_DELETED;
 				set_folder_flagged = TRUE;
 			}
