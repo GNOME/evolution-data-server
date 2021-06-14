@@ -249,6 +249,14 @@ typedef enum {
 
 	E_CONTACT_IM_TWITTER,		/* Multi-valued */
 
+	E_CONTACT_IM_MATRIX_HOME_1,	/* Synthetic string field */
+	E_CONTACT_IM_MATRIX_HOME_2,	/* Synthetic string field */
+	E_CONTACT_IM_MATRIX_HOME_3,	/* Synthetic string field */
+	E_CONTACT_IM_MATRIX_WORK_1,	/* Synthetic string field */
+	E_CONTACT_IM_MATRIX_WORK_2,	/* Synthetic string field */
+	E_CONTACT_IM_MATRIX_WORK_3,	/* Synthetic string field */
+	E_CONTACT_IM_MATRIX,		/* Multi-valued */
+
 	E_CONTACT_FIELD_LAST,
 	E_CONTACT_FIELD_FIRST = E_CONTACT_UID,
 

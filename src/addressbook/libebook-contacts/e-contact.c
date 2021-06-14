@@ -75,7 +75,8 @@ static AttrTypeValue glob_attr_type_values[] = {
 	{ EVC_X_JABBER, "WORK;HOME" },
 	{ EVC_X_MSN, "WORK;HOME" },
 	{ EVC_X_SKYPE, "WORK;HOME" },
-	{ EVC_X_YAHOO, "WORK;HOME" }
+	{ EVC_X_YAHOO, "WORK;HOME" },
+	{ EVC_X_MATRIX, "WORK;HOME" }
 };
 
 #define E_CONTACT_FIELD_TYPE_STRING       0x00000001   /* used for simple single valued attributes */
@@ -345,7 +346,15 @@ static const EContactFieldInfo field_info[] = {
 	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_GOOGLE_TALK_WORK_3,  EVC_X_GOOGLE_TALK,  "im_google_talk_work_3",  N_("Google Talk Work Name 3"),         FALSE, "WORK", 2),
 	MULTI_LIST_FIELD (E_CONTACT_IM_GOOGLE_TALK,	  EVC_X_GOOGLE_TALK,     "im_google_talk",     N_("Google Talk Name List"),         FALSE),
 
-	MULTI_LIST_FIELD (E_CONTACT_IM_TWITTER,	  EVC_X_TWITTER,     "im_twitter",     N_("Twitter Name List"),         FALSE)
+	MULTI_LIST_FIELD (E_CONTACT_IM_TWITTER,	  EVC_X_TWITTER,     "im_twitter",     N_("Twitter Name List"),         FALSE),
+
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_MATRIX_HOME_1, EVC_X_MATRIX, "im_matrix_home_1", N_("Matrix Home ID 1"),          FALSE, "HOME", 0),
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_MATRIX_HOME_2, EVC_X_MATRIX, "im_matrix_home_2", N_("Matrix Home ID 2"),          FALSE, "HOME", 1),
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_MATRIX_HOME_3, EVC_X_MATRIX, "im_matrix_home_3", N_("Matrix Home ID 3"),          FALSE, "HOME", 2),
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_MATRIX_WORK_1, EVC_X_MATRIX, "im_matrix_work_1", N_("Matrix Work ID 1"),          FALSE, "WORK", 0),
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_MATRIX_WORK_2, EVC_X_MATRIX, "im_matrix_work_2", N_("Matrix Work ID 2"),          FALSE, "WORK", 1),
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_MATRIX_WORK_3, EVC_X_MATRIX, "im_matrix_work_3", N_("Matrix Work ID 3"),          FALSE, "WORK", 2),
+	MULTI_LIST_FIELD (E_CONTACT_IM_MATRIX,	  EVC_X_MATRIX,    "im_matrix",    N_("Matrix ID List"),          FALSE)
 };
 
 #undef LIST_ELEM_STR_FIELD
