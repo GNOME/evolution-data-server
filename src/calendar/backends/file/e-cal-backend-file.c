@@ -298,7 +298,8 @@ free_calendar_data (ECalBackendFile *cbfile)
 
 	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
-	e_intervaltree_destroy (priv->interval_tree);
+	if (priv->interval_tree)
+		e_intervaltree_destroy (priv->interval_tree);
 	priv->interval_tree = NULL;
 
 	free_calendar_components (priv->comp_uid_hash, priv->vcalendar);
