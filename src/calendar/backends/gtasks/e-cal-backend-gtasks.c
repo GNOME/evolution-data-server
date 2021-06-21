@@ -379,15 +379,7 @@ ecb_gtasks_request_authorization_locked (ECalBackendGTasks *cbgtasks,
 			G_BINDING_SYNC_CREATE);
 	}
 
-	/* If we're using OAuth tokens, then as far as the backend
-	 * is concerned it's always authorized.  The GDataAuthorizer
-	 * will take care of everything in the background. */
-	if (!GDATA_IS_CLIENT_LOGIN_AUTHORIZER (cbgtasks->priv->authorizer))
-		return TRUE;
-
-	/* Otherwise it's up to us to obtain a login secret, but
-	   there is currently no way to do it, thus simply fail. */
-	return FALSE;
+	return TRUE;
 }
 
 static gboolean
