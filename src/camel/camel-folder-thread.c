@@ -729,7 +729,7 @@ camel_folder_thread_messages_new (CamelFolder *folder,
 	thread->folder = g_object_ref (folder);
 
 	camel_folder_summary_prepare_fetch_all (camel_folder_get_folder_summary (folder), NULL);
-	thread->summary = summary = g_ptr_array_new ();
+	thread->summary = summary = g_ptr_array_new_with_free_func (g_object_unref);
 
 	/* prefer given order from the summary order */
 	if (!uids) {
@@ -739,12 +739,11 @@ camel_folder_thread_messages_new (CamelFolder *folder,
 
 	for (i = 0; i < uids->len; i++) {
 		CamelMessageInfo *info;
-		gchar *uid = uids->pdata[i];
+		const gchar *uid = g_ptr_array_index (uids, i);
 
 		info = camel_folder_get_message_info (folder, uid);
 		if (info)
 			g_ptr_array_add (summary, info);
-		/* FIXME: Check if the info is leaking */
 	}
 
 	if (fsummary)
@@ -799,7 +798,7 @@ camel_folder_thread_messages_apply (CamelFolderThread *thread,
 	GHashTable *table;
 	CamelMessageInfo *info;
 
-	all = g_ptr_array_new ();
+	all = g_ptr_array_new_with_free_func (g_object_unref);
 	table = g_hash_table_new (g_str_hash, g_str_equal);
 	for (i = 0; i < uids->len; i++)
 		g_hash_table_insert (table, uids->pdata[i], uids->pdata[i]);
@@ -818,7 +817,7 @@ camel_folder_thread_messages_apply (CamelFolderThread *thread,
 	thread->node_chunks = camel_memchunk_new (32, sizeof (CamelFolderThreadNode));
 	thread_summary (thread, all);
 
-	g_ptr_array_free (thread->summary, TRUE);
+	g_clear_pointer (&thread->summary, g_ptr_array_unref);
 	thread->summary = all;
 }
 
@@ -851,15 +850,9 @@ camel_folder_thread_messages_unref (CamelFolderThread *thread)
 		return;
 	}
 
-	if (thread->folder) {
-		gint i;
-
-		for (i = 0; i < thread->summary->len; i++)
-			g_clear_object (&thread->summary->pdata[i]);
-		g_ptr_array_free (thread->summary, TRUE);
-		g_object_unref (thread->folder);
-	}
-	camel_memchunk_destroy (thread->node_chunks);
+	g_clear_pointer (&thread->summary, g_ptr_array_unref);
+	g_clear_object (&thread->folder);
+	g_clear_pointer (&thread->node_chunks, camel_memchunk_destroy);
 	g_free (thread);
 }
 
