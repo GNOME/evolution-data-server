@@ -1,3 +1,15 @@
+Evolution-Data-Server 3.40.3 2021-07-09
+---------------------------------------
+
+Bug Fixes:
+	I#336 - Handle "Object is out of sync" during backend refresh better (Milan Crha)
+
+Miscellaneous:
+	tests: Workaround libphonenumber behavior change (Milan Crha)
+	test-book-client-write-write: Fix occasional test failure (Milan Crha)
+	IMAPx: Change how Junk and NotJunk flags are handled (Milan Crha)
+	ECalBackendFile: Free interval tree only when being allocated (Milan Crha)
+
 Evolution-Data-Server 3.40.2 2021-06-04
 ---------------------------------------
 
