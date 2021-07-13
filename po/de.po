@@ -14,16 +14,16 @@
 # Mario Blättermann <mario.blaettermann@gmail.com>, 2009-2013, 2015-2018, 2020.
 # Wolfgang Stöggl <c72578@yahoo.de> 2011, 2017, 2020.
 # Tim Sabsch <tim@sabsch.com>, 2017, 2019-2020.
-# Philipp Kiemle <philipp.kiemle@gmail.com>, 2020, 2021.
+# Philipp Kiemle <philipp.kiemle@gmail.com>, 2020-2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2021-04-14 15:03+0000\n"
-"PO-Revision-Date: 2021-04-16 19:38+0200\n"
-"Last-Translator: Tim Sabsch <tim@sabsch.com>\n"
+"POT-Creation-Date: 2021-04-19 17:37+0000\n"
+"PO-Revision-Date: 2021-05-17 21:51+0200\n"
+"Last-Translator: Philipp Kiemle <philipp.kiemle@gmail.com>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -4257,7 +4257,7 @@ msgstr "_Filter auf neue Nachrichten im Eingang dieses Servers anwenden"
 #: ../src/camel/providers/local/camel-local-provider.c:41
 #: ../src/camel/providers/local/camel-local-provider.c:67
 #: ../src/camel/providers/local/camel-local-provider.c:88
-#: ../src/camel/providers/local/camel-local-provider.c:112
+#: ../src/camel/providers/local/camel-local-provider.c:114
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:40
 msgid "Check new messages for _Junk contents"
 msgstr "Neue Nachrichten auf _unerwünschten Inhalt prüfen"
@@ -4512,7 +4512,7 @@ msgstr "Fehler beim Ausführen von IDLE"
 #: ../src/camel/providers/local/camel-maildir-store.c:824
 #: ../src/camel/providers/local/camel-maildir-store.c:830
 #: ../src/camel/providers/local/camel-maildir-store.c:913
-#: ../src/camel/providers/local/camel-spool-store.c:391
+#: ../src/camel/providers/local/camel-spool-store.c:397
 msgid "Inbox"
 msgstr "Eingang"
 
@@ -4741,7 +4741,7 @@ msgstr ""
 "Format in von Evolution verwaltete Ordner."
 
 #: ../src/camel/providers/local/camel-local-provider.c:86
-#: ../src/camel/providers/local/camel-local-provider.c:110
+#: ../src/camel/providers/local/camel-local-provider.c:112
 msgid "_Apply filters to new messages in Inbox"
 msgstr "Filter auf neue Nachrichten im Posteingang _anwenden"
 
@@ -4753,16 +4753,20 @@ msgstr "E-Mail-Ordner im Maildir-Format"
 msgid "For storing local mail in maildir directories."
 msgstr "Zum Speichern lokaler E-Mails in Maildir-Ordnern."
 
-#: ../src/camel/providers/local/camel-local-provider.c:113
+#: ../src/camel/providers/local/camel-local-provider.c:110
+msgid "_Listen for change notifications"
+msgstr "Nach Benachrich_tigungen über Änderungen lauschen"
+
+#: ../src/camel/providers/local/camel-local-provider.c:115
 msgid "_Store status headers in Elm/Pine/Mutt format"
 msgstr "Status-_Kopfzeilen im Elm/Pine/Mutt-Format speichern"
 
-#: ../src/camel/providers/local/camel-local-provider.c:120
+#: ../src/camel/providers/local/camel-local-provider.c:122
 msgid "Standard Unix mbox spool file"
 msgstr "Standard-UNIX-mbox-Spool-Datei"
 
-#: ../src/camel/providers/local/camel-local-provider.c:121
-#: ../src/camel/providers/local/camel-local-provider.c:135
+#: ../src/camel/providers/local/camel-local-provider.c:123
+#: ../src/camel/providers/local/camel-local-provider.c:137
 msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
@@ -4772,7 +4776,7 @@ msgstr ""
 "Kann außerdem zum Einlesen eines Baums mit Elm-, Pine- oder Mutt-Ordnern "
 "verwendet werden."
 
-#: ../src/camel/providers/local/camel-local-provider.c:134
+#: ../src/camel/providers/local/camel-local-provider.c:136
 msgid "Standard Unix mbox spool directory"
 msgstr "Standard-UNIX-mbox-Spool-Ordner"
 
@@ -4790,7 +4794,7 @@ msgstr "Lokale E-Mail-Datei %s"
 #: ../src/camel/providers/local/camel-local-store.c:367
 #: ../src/camel/providers/local/camel-maildir-store.c:118
 #: ../src/camel/providers/local/camel-mbox-store.c:579
-#: ../src/camel/providers/local/camel-spool-store.c:84
+#: ../src/camel/providers/local/camel-spool-store.c:90
 #, c-format
 msgid "Store root %s is not an absolute path"
 msgstr "Speicherwurzel %s ist kein absoluter Pfad"
@@ -4910,8 +4914,8 @@ msgstr "kein Maildir-Ordner"
 
 #: ../src/camel/providers/local/camel-maildir-store.c:664
 #: ../src/camel/providers/local/camel-maildir-store.c:1142
-#: ../src/camel/providers/local/camel-spool-store.c:211
-#: ../src/camel/providers/local/camel-spool-store.c:230
+#: ../src/camel/providers/local/camel-spool-store.c:217
+#: ../src/camel/providers/local/camel-spool-store.c:236
 #, c-format
 msgid "Could not scan folder “%s”: %s"
 msgstr "Ordner »%s« konnte nicht eingelesen werden: %s"
@@ -5120,36 +5124,36 @@ msgstr "Ordner »%s« konnte nicht abgerufen werden: kein Ordner."
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "MH-Ordnerpfad konnte nicht geöffnet werden: %s: %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:92
+#: ../src/camel/providers/local/camel-spool-store.c:98
 #, c-format
 msgid "Spool “%s” cannot be opened: %s"
 msgstr "Spool »%s« konnte nicht geöffnet werden: %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:106
+#: ../src/camel/providers/local/camel-spool-store.c:112
 #, c-format
 msgid "Spool “%s” is not a regular file or directory"
 msgstr "Spool »%s« ist weder eine reguläre Datei noch ein regulärer Ordner"
 
-#: ../src/camel/providers/local/camel-spool-store.c:423
+#: ../src/camel/providers/local/camel-spool-store.c:429
 #, c-format
 msgid "Spool mail file %s"
 msgstr "E-Mail-Spooldatei %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:427
+#: ../src/camel/providers/local/camel-spool-store.c:433
 #, c-format
 msgid "Spool folder tree %s"
 msgstr "Spool-Ordnerbaum %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:430
+#: ../src/camel/providers/local/camel-spool-store.c:436
 msgid "Invalid spool"
 msgstr "Ungültige Warteschlange"
 
-#: ../src/camel/providers/local/camel-spool-store.c:479
+#: ../src/camel/providers/local/camel-spool-store.c:485
 #, c-format
 msgid "Folder “%s/%s” does not exist."
 msgstr "Ordner »%s/%s« existiert nicht."
 
-#: ../src/camel/providers/local/camel-spool-store.c:492
+#: ../src/camel/providers/local/camel-spool-store.c:498
 #, c-format
 msgid ""
 "Could not open folder “%s”:\n"
@@ -5158,12 +5162,12 @@ msgstr ""
 "Ordner »%s« konnte nicht geöffnet werden:\n"
 "%s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:498
+#: ../src/camel/providers/local/camel-spool-store.c:504
 #, c-format
 msgid "Folder “%s” does not exist."
 msgstr "Ordner »%s« existiert nicht."
 
-#: ../src/camel/providers/local/camel-spool-store.c:506
+#: ../src/camel/providers/local/camel-spool-store.c:512
 #, c-format
 msgid ""
 "Could not create folder “%s”:\n"
@@ -5172,25 +5176,29 @@ msgstr ""
 "Ordner »%s« konnte nicht angelegt werden:\n"
 "%s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:519
+#: ../src/camel/providers/local/camel-spool-store.c:525
 #, c-format
 msgid "“%s” is not a mailbox file."
 msgstr "»%s« ist keine Postfachdatei."
 
-#: ../src/camel/providers/local/camel-spool-store.c:583
+#: ../src/camel/providers/local/camel-spool-store.c:589
 #, c-format
 msgid "Store does not support an INBOX"
 msgstr "Speicher unterstützt keinen Eingangsordner"
 
-#: ../src/camel/providers/local/camel-spool-store.c:602
+#: ../src/camel/providers/local/camel-spool-store.c:608
 #, c-format
 msgid "Spool folders cannot be deleted"
 msgstr "Spool-Ordner können nicht gelöscht werden"
 
-#: ../src/camel/providers/local/camel-spool-store.c:617
+#: ../src/camel/providers/local/camel-spool-store.c:623
 #, c-format
 msgid "Spool folders cannot be renamed"
 msgstr "Spool-Ordner können nicht umbenannt werden"
+
+#: ../src/camel/providers/local/camel-spool-store.c:779
+msgid "Refreshing spool folder"
+msgstr "Der Spool-Ordner wird aktualisiert"
 
 #: ../src/camel/providers/local/camel-spool-summary.c:179
 #: ../src/camel/providers/local/camel-spool-summary.c:191
@@ -5950,22 +5958,22 @@ msgstr "RCPT TO <%s> gescheitert: "
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1775
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1786
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1797
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1880
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1898
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1911
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1919
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1882
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1900
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1913
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1921
 msgid "DATA command failed: "
 msgstr "DATA-Befehl gescheitert: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1945
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1959
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1967
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1947
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1961
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1969
 msgid "RSET command failed: "
 msgstr "RSET-Befehl gescheitert: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1993
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:2005
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:2011
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1995
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:2007
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:2013
 msgid "QUIT command failed: "
 msgstr "QUIT-Befehl gescheitert: "
 
