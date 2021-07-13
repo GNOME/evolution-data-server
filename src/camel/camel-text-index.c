@@ -311,7 +311,7 @@ text_index_sync (CamelIndex *idx)
 
 	CAMEL_TEXT_INDEX_LOCK (idx, lock);
 
-	/* we sync, bump down the cache limits since we dont need them for reading */
+	/* we sync, bump down the cache limits since we don't need them for reading */
 	camel_block_file_set_cache_limit (p->blocks, 128);
 	/* this doesn't really need to be dropped, its only used in updates anyway */
 	p->word_cache_limit = 1024;

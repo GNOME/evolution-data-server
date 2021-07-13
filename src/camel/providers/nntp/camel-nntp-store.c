@@ -1208,7 +1208,7 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 			memcpy (date + 7, nntp_store_summary->last_newslist + 8, 6); /* HHMMSS */
 			date[13] = '\0';
 
-			/* Some servers don't support date (!), so fallback if they dont */
+			/* Some servers don't support date (!), so fallback if they don't */
 			if (!nntp_get_date (nntp_store, cancellable, NULL))
 				goto do_complete_list_nodate;
 

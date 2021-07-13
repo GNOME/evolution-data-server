@@ -306,7 +306,7 @@ camel_maildir_summary_name_to_info (CamelMessageInfo *info,
 	return FALSE;
 }
 
-/* for maildir, x-evolution isn't used, so dont try and get anything out of it */
+/* for maildir, x-evolution isn't used, so don't try and get anything out of it */
 static gint maildir_summary_decode_x_evolution (CamelLocalSummary *cls, const gchar *xev, CamelMessageInfo *mi)
 {
 	return -1;
@@ -396,7 +396,7 @@ message_info_new_from_headers (CamelFolderSummary *summary,
 			camel_maildir_summary_name_to_info (mi, mds->priv->current_file);
 
 #if 0
-			/* Actually, I dont think all this effort is worth it at all ... */
+			/* Actually, I don't think all this effort is worth it at all ... */
 
 			/* also, see if we can extract the next-id from tne name, and safe-if-fy ourselves against collisions */
 			/* we check for something.something_number.something */
@@ -460,7 +460,7 @@ maildir_summary_next_uid_string (CamelFolderSummary *s)
 			retry++;
 		} while (g_stat (name, &st) == 0 && retry < 3);
 
-		/* I dont know what we're supposed to do if it fails to find a unique name?? */
+		/* I don't know what we're supposed to do if it fails to find a unique name?? */
 
 		g_free (name);
 		return uid;
@@ -911,7 +911,7 @@ maildir_summary_sync (CamelLocalSummary *cls,
 					g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC, name, dest, g_strerror (errno));
 				}
 				if (g_stat (dest, &st) == -1) {
-					/* we'll assume it didn't work, but dont change anything else */
+					/* we'll assume it didn't work, but don't change anything else */
 				} else {
 					/* TODO: If this is made mt-safe, then this code could be a problem, since
 					 * the estrv is being modified.

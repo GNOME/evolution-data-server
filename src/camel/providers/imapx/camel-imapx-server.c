@@ -2263,7 +2263,7 @@ imapx_continuation (CamelIMAPXServer *is,
 	gboolean success;
 
 	/* The 'literal' pointer is like a write-lock, nothing else
-	 * can write while we have it ... so we dont need any
+	 * can write while we have it ... so we don't need any
 	 * ohter lock here.  All other writes go through
 	 * queue-lock */
 	if (camel_imapx_server_is_in_idle (is)) {

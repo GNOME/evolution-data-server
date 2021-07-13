@@ -19,7 +19,7 @@
  */
 
 /* Should this be a subclass of multipart?
- * No, because we dont have different parts?
+ * No, because we don't have different parts?
  * I'm not really sure yet ... ? */
 
 #if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)

@@ -171,7 +171,7 @@ mbox_folder_append_message_sync (CamelFolder *folder,
 
 	camel_local_folder_lock_changes (lf);
 
-	/* If we can't lock, dont do anything */
+	/* If we can't lock, don't do anything */
 	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1) {
 		camel_local_folder_unlock_changes (lf);
 		return FALSE;
@@ -357,7 +357,7 @@ retry:
 
 	/* we use an fd instead of a normal stream here - the reason is subtle, camel_mime_part will cache
 	 * the whole message in memory if the stream is non-seekable (which it is when built from a parser
-	 * with no stream).  This means we dont have to lock the mbox for the life of the message, but only
+	 * with no stream).  This means we don't have to lock the mbox for the life of the message, but only
 	 * while it is being created. */
 
 	fd = g_open (lf->folder_path, O_LARGEFILE | O_RDONLY | O_BINARY, 0);

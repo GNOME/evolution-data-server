@@ -101,7 +101,7 @@ struct _ESExpPrivate {
 	gchar *error;
 	GSList *operators;
 
-	/* TODO: may also need a pool allocator for term strings, so we dont lose them
+	/* TODO: may also need a pool allocator for term strings, so we don't lose them
 	 * in error conditions? */
 	struct _EMemChunk *term_chunks;
 	struct _EMemChunk *result_chunks;

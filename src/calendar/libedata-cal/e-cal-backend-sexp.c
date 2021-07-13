@@ -863,7 +863,7 @@ func_has_duration (ESExp *esexp,
 
 /* (has-alarms?)
  *
- * A boolean value for components that have/dont have alarms.
+ * A boolean value for components that have/don't have alarms.
  *
  * Returns: a boolean indicating whether the component has alarms or not.
  */
@@ -1072,7 +1072,7 @@ func_has_categories (ESExp *esexp,
 
 /* (has-recurrences?)
  *
- * A boolean value for components that have/dont have recurrences.
+ * A boolean value for components that have/don't have recurrences.
  *
  * Returns: a boolean indicating whether the component has recurrences or not.
  */

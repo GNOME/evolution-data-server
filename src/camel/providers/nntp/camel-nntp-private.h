@@ -22,7 +22,7 @@
 #define CAMEL_NNTP_PRIVATE_H
 
 /* need a way to configure and save this data, if this header is to
- * be installed.  For now, dont install it */
+ * be installed.  For now, don't install it */
 
 #include "evolution-data-server-config.h"
 

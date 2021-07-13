@@ -159,7 +159,7 @@ filter_run (CamelMimeFilter *f,
 
 		newlen = len + prespace + f->backlen;
 		if (p->inlen < newlen) {
-			/* NOTE: g_realloc copies data, we dont need that (slower) */
+			/* NOTE: g_realloc copies data, we don't need that (slower) */
 			g_free (p->inbuf);
 			p->inbuf = g_malloc (newlen + PRE_HEAD);
 			p->inlen = newlen + PRE_HEAD;

@@ -1446,7 +1446,7 @@ camel_mime_part_set_disposition (CamelMimePart *mime_part,
 
 	medium = CAMEL_MEDIUM (mime_part);
 
-	/* we poke in a new disposition (so we dont lose 'filename', etc) */
+	/* we poke in a new disposition (so we don't lose 'filename', etc) */
 	if (mime_part->priv->disposition == NULL)
 		mime_part_set_disposition (mime_part, disposition);
 

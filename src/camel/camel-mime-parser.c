@@ -89,7 +89,7 @@ struct _header_scan_state {
 	/* for scanning input buffers */
 	gchar *realbuf;		/* the real buffer, SCAN_HEAD *2 + SCAN_BUF bytes */
 	gchar *inbuf;		/* points to a subset of the allocated memory, the underflow */
-	gchar *inptr;		/* (upto SCAN_HEAD) is for use by filters so they dont copy all data */
+	gchar *inptr;		/* (upto SCAN_HEAD) is for use by filters so they don't copy all data */
 	gchar *inend;
 
 	gint atleast;
@@ -130,7 +130,7 @@ struct _header_scan_stack {
 
 	CamelContentType *content_type;
 
-	/* I dont use GString's casue you can't efficiently append a buffer to them */
+	/* I don't use GString's casue you can't efficiently append a buffer to them */
 	GByteArray *pretext;	/* for multipart types, save the pre-boundary data here */
 	GByteArray *posttext;	/* for multipart types, save the post-boundary data here */
 	gint prestage;		/* used to determine if it is a pre-boundary or post-boundary data segment */
@@ -1170,7 +1170,7 @@ folder_boundary_check (struct _header_scan_state *s,
                        gint *lastone)
 {
 	struct _header_scan_stack *part;
-	gint len = s->inend - boundary; /* make sure we dont access past the buffer */
+	gint len = s->inend - boundary; /* make sure we don't access past the buffer */
 
 	h (printf ("checking boundary marker upto %d bytes\n", len));
 	part = s->parts;

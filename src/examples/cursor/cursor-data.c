@@ -153,7 +153,7 @@ get_cursor (EBookClient *book_client)
 }
 
 /* Entry point for this file, here we take care of
- * creating the addressbook if it doesnt exist,
+ * creating the addressbook if it doesn't exist,
  * getting an EBookClient, and creating our EBookClientCursor.
  */
 EBookClient *

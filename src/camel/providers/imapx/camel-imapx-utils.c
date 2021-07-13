@@ -1323,7 +1323,7 @@ imapx_parse_envelope (CamelIMAPXInputStream *stream,
 		camel_header_address_list_clear (&addr_from);
 	}
 
-	/* we dont keep reply_to */
+	/* we don't keep reply_to */
 
 	/* env_reply_to    ::= "(" 1*address ")" / nil */
 	addr = imapx_parse_address_list (stream, cancellable, &local_error);
@@ -1356,7 +1356,7 @@ imapx_parse_envelope (CamelIMAPXInputStream *stream,
 	if (local_error)
 		goto error;
 
-	/* we dont keep bcc either */
+	/* we don't keep bcc either */
 
 	/* env_bcc         ::= "(" 1*address ")" / nil */
 	addr = imapx_parse_address_list (stream, cancellable, &local_error);
@@ -1702,7 +1702,7 @@ imapx_parse_section (CamelIMAPXInputStream *stream,
 	/* header_list     ::= "(" 1#header_fld_name ")"
 	 * header_fld_name ::= astring */
 
-	/* we dont need the header specifiers */
+	/* we don't need the header specifiers */
 	tok = camel_imapx_input_stream_token (
 		stream, &token, &len, cancellable, NULL);
 
@@ -2700,7 +2700,7 @@ imapx_parse_status (CamelIMAPXInputStream *stream,
 		if (!success)
 			goto fail;
 
-		/* ignore anything we dont know about */
+		/* ignore anything we don't know about */
 		do {
 			tok = camel_imapx_input_stream_token (
 				stream, &token, &len, cancellable, NULL);

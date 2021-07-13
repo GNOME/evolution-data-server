@@ -821,7 +821,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 
 		xev = camel_mime_parser_header (mp, "X-Evolution", &xevoffset);
 		if (xev == NULL || camel_local_summary_decode_x_evolution (cls, xev, NULL) == -1) {
-			g_warning ("We're supposed to have a valid x-ev header, but we dont");
+			g_warning ("We're supposed to have a valid x-ev header, but we don't");
 			goto error;
 		}
 		xevnew = camel_local_summary_encode_x_evolution (cls, info);

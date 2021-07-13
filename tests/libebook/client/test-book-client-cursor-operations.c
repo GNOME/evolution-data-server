@@ -2667,7 +2667,7 @@ main (gint argc,
 		cursor_closure_alphabet (closure, FALSE, "あ", "か", "さ", "た", "な");
 		cursor_closure_add (closure, "/EBookClientCursor/ChangeLocale/Alphabet/ja_JP%s", base_params[i].base_path);
 
-		/* The alphabet doesnt change for chinese */
+		/* The alphabet doesn't change for chinese */
 		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_alphabet (closure, TRUE, "A", "B", "C", "D", "E");
 		cursor_closure_change_locale (closure, "zh_CN.utf8");

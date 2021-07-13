@@ -596,7 +596,7 @@ match_words_1message (CamelDataWrapper *object,
 		/* for messages we only look at its contents */
 		truth = match_words_1message ((CamelDataWrapper *) containee, words, mask, cancellable);
 	} else if (camel_content_type_is (camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (containee)), "text", "*")) {
-		/* for all other text parts, we look inside, otherwise we dont care */
+		/* for all other text parts, we look inside, otherwise we don't care */
 		CamelStream *stream;
 		GByteArray *byte_array;
 		const gchar *charset;

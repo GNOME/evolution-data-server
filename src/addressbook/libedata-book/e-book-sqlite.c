@@ -1023,8 +1023,8 @@ ebsql_string_append_vprintf (GString *string,
 {
 	gchar *stmt;
 
-	/* Unfortunately, sqlite3_vsnprintf() doesnt tell us
-	 * how many bytes it would have needed if it doesnt fit
+	/* Unfortunately, sqlite3_vsnprintf() doesn't tell us
+	 * how many bytes it would have needed if it doesn't fit
 	 * into the target buffer, so we can't avoid this
 	 * really disgusting memory dup.
 	 */

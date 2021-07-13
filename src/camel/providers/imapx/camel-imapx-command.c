@@ -380,7 +380,7 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 			ps = p;
 			break;
 
-		case '\\':	/* only for \\ really, we dont support \n\r etc at all */
+		case '\\':	/* only for \\ really, we don't support \n\r etc at all */
 			c = *p;
 			if (c) {
 				g_warn_if_fail (c == '\\');

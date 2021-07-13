@@ -569,7 +569,7 @@ cs_getaddrinfo (gpointer data)
 		msg->hostbufmem = g_realloc (msg->hostbufmem, msg->hostbuflen);
 	}
 
-	/* If we got cancelled, dont reply, just free it */
+	/* If we got cancelled, don't reply, just free it */
 	if (msg->cancelled)
 		goto cancel;
 

@@ -440,7 +440,7 @@ test_folder_message_ops (CamelSession *session,
 			}
 #endif
 			/*if (!local)
-			  camel_test_nonfatal ("unread counts dont seem right for imap");*/
+			  camel_test_nonfatal ("unread counts don't seem right for imap");*/
 
 			test_folder_counts (folder, j + 1, j + 1);
 

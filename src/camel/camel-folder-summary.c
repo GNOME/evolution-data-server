@@ -2047,7 +2047,7 @@ save_to_db_cb (gpointer key,
 
 	/* Reset the dirty flag which decides if the changes are synced to the DB or not.
 	The FOLDER_FLAGGED should be used to check if the changes are synced to the server.
-	So, dont unset the FOLDER_FLAGGED flag */
+	So, don't unset the FOLDER_FLAGGED flag */
 	camel_message_info_set_dirty (mi, FALSE);
 
 	camel_db_camel_mir_free (mir);
@@ -2535,7 +2535,7 @@ camel_folder_summary_info_new_from_parser (CamelFolderSummary *summary,
 			camel_mime_filter_index_set_name (CAMEL_MIME_FILTER_INDEX (summary->priv->filter_index), name);
 		}
 
-		/* always scan the content info, even if we dont save it */
+		/* always scan the content info, even if we don't save it */
 		summary_traverse_content_with_parser (summary, info, mp);
 
 		if (name && summary->priv->index) {

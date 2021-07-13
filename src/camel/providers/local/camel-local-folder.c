@@ -632,7 +632,7 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 			/* yes, this isn't fatal at all */
 			g_warning ("Could not open/create index file: %s: indexing not performed", g_strerror (errno));
 			forceindex = FALSE;
-			/* record that we dont have an index afterall */
+			/* record that we don't have an index afterall */
 			lf->flags &= ~CAMEL_STORE_FOLDER_BODY_INDEX;
 		}
 	} else {

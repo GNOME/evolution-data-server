@@ -633,7 +633,7 @@ static gint tokenize_step (CamelHTMLParserPrivate *p, gchar **datap, gint *lenp)
 				*lenp = in-start-1;
 				goto done;
 			} else if (c == '-') {
-				/* we dont care if we get 'n' --'s before the > */
+				/* we don't care if we get 'n' --'s before the > */
 				if (p->tag->len < 2)
 					g_string_append_c (p->tag, c);
 			} else {

@@ -180,7 +180,7 @@ gint main (gint argc, gchar **argv)
 	check (camel_internet_address_find_name (addr, "  Zed ", &where) == 0);
 	check (camel_internet_address_find_name (addr, "Zed 20", &where) == -1);
 	check (camel_internet_address_find_name (addr, "", &where) == -1);
-	/* interface dont handle nulls :) */
+	/* interface don't handle nulls :) */
 	/*check(camel_internet_address_find_name(addr, NULL, &where) == -1);*/
 
 	check (camel_internet_address_find_address (addr, "nowhere@here-1.com.au", &where) == 1);

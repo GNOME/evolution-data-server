@@ -256,7 +256,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 				"Folder may be corrupt, copy saved in “%s”"),
 				((CamelLocalSummary *) cls)->folder_path,
 				g_strerror (errno), tmpname);
-			/* so we dont delete it */
+			/* so we don't delete it */
 			tmpname[0] = '\0';
 			g_free (buffer);
 			goto error;

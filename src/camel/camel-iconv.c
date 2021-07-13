@@ -502,7 +502,7 @@ camel_iconv_close (GIConv ip)
 		in->busy = FALSE;
 		g_queue_push_tail (&in->parent->open, in);
 	} else {
-		g_warning ("trying to close iconv i dont know about: %p", ip);
+		g_warning ("trying to close iconv I don't know about: %p", ip);
 		g_iconv_close (ip);
 	}
 	G_UNLOCK (iconv);

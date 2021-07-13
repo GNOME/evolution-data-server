@@ -4938,7 +4938,7 @@ change_info_remove (gchar *key,
 		return;
 	}
 
-	/* we dont need to copy this, as they've already been copied into our pool */
+	/* we don't need to copy this, as they've already been copied into our pool */
 	g_ptr_array_add (info->uid_removed, key);
 	g_hash_table_insert (p->uid_stored, key, info->uid_removed);
 }
@@ -4976,7 +4976,7 @@ change_info_recent_uid (CamelFolderChangeInfo *info,
 
 	p = info->priv;
 
-	/* always add to recent, but dont let anyone else know */
+	/* always add to recent, but don't let anyone else know */
 	if (!g_hash_table_lookup_extended (p->uid_stored, uid, (gpointer *) &olduid, (gpointer *) &olduids)) {
 		olduid = camel_mempool_strdup (p->uid_pool, uid);
 	}
@@ -4993,7 +4993,7 @@ change_info_filter_uid (CamelFolderChangeInfo *info,
 
 	p = info->priv;
 
-	/* always add to filter, but dont let anyone else know */
+	/* always add to filter, but don't let anyone else know */
 	if (!g_hash_table_lookup_extended (p->uid_stored, uid, (gpointer *) &olduid, (gpointer *) &olduids)) {
 		olduid = camel_mempool_strdup (p->uid_pool, uid);
 	}

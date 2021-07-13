@@ -568,7 +568,7 @@ camel_vee_store_init (CamelVeeStore *vee_store)
 	vee_store->priv->vee_data_cache = camel_vee_data_cache_new ();
 	vee_store->priv->unmatched_enabled = TRUE;
 
-	/* we dont want a vtrash/vjunk on this one */
+	/* we don't want a vtrash/vjunk on this one */
 	camel_store_set_flags (store, camel_store_get_flags (store) & ~(CAMEL_STORE_VTRASH | CAMEL_STORE_VJUNK));
 }
 

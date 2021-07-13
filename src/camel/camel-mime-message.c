@@ -84,7 +84,7 @@ typedef enum {
 } CamelHeaderType;
 
 static const gchar *header_names[] = {
-	/* dont include HEADER_UNKNOWN string */
+	/* don't include HEADER_UNKNOWN string */
 	"From", "Reply-To", "Subject", "To", "Resent-To", "Cc", "Resent-Cc",
 	"Bcc", "Resent-Bcc", "Date", "Message-ID", NULL
 };
@@ -1046,7 +1046,7 @@ find_best_encoding (CamelMimePart *part,
 		charset = NULL;
 	}
 
-	/* if we have US-ASCII, or we're not doing text, we dont need to bother with the rest */
+	/* if we have US-ASCII, or we're not doing text, we don't need to bother with the rest */
 	if (istext && charsetin && charset && (required & CAMEL_BESTENC_GET_CHARSET) != 0) {
 		d (printf ("have charset, trying conversion/etc\n"));
 

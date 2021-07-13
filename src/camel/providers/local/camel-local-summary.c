@@ -274,7 +274,7 @@ do_stat_mi (CamelLocalSummary *cls,
 		info->msgcount += mi->references->size;
 	}
 
-	/* dont have any user flags yet */
+	/* don't have any user flags yet */
 
 	if (mi->content) {
 		do_stat_ci (cls, info, mi->content);
@@ -697,7 +697,7 @@ summary_header_load (CamelFolderSummary *s,
 	CamelLocalSummary *cls = (CamelLocalSummary *) s;
 	gchar *part, *tmp;
 
-	/* We dont actually add our own headers, but version that we don't anyway */
+	/* We don't actually add our own headers, but version that we don't anyway */
 
 	if (!CAMEL_FOLDER_SUMMARY_CLASS (camel_local_summary_parent_class)->summary_header_load (s, fir))
 		return FALSE;

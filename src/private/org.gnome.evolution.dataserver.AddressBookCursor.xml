@@ -64,7 +64,7 @@
       Sets the cursor's alphabetic index, the index must be valid for @locale
       and @locale is expected to be the current locale of the addressbook.
 
-      If the addressbook's locale has changed and doesnt match the @locale
+      If the addressbook's locale has changed and doesn't match the @locale
       argument then an error will be returned and the call should be retried.
 
       This will also result in changes of the Position and Total properties

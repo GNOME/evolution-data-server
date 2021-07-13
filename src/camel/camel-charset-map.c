@@ -133,7 +133,7 @@ gint main (gint argc, gchar **argv)
 	gint bytes;
 	GIConv cd;
 
-	/* dont count the terminator */
+	/* don't count the terminator */
 	bytes = (G_N_ELEMENTS (tables) + 7 - 1) / 8;
 	g_return_val_if_fail (bytes <= 4, -1);
 

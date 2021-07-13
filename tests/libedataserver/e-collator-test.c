@@ -129,7 +129,7 @@ test_el_GR (CollatorFixture *fixture,
   /* 'Τ' is the 19th letter */
   g_assert_cmpint (e_collator_get_index (fixture->collator, "Τρίτη"), ==, 19);
 
-  /* Texas doesnt start with 'T' ! --> Underflow */
+  /* Texas doesn't start with 'T' ! --> Underflow */
   g_assert_cmpint (e_collator_get_index (fixture->collator, "Texas"), ==, 0);
 }
 

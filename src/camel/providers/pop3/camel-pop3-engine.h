@@ -70,7 +70,7 @@ typedef enum {
 
 /* flags for command types */
 enum {
-	CAMEL_POP3_COMMAND_SIMPLE = 0, /* dont expect multiline response */
+	CAMEL_POP3_COMMAND_SIMPLE = 0, /* don't expect multiline response */
 	CAMEL_POP3_COMMAND_MULTI = 1 /* expect multiline response */
 };
 
@@ -126,7 +126,7 @@ struct _CamelPOP3Engine {
 
 	CamelPOP3Stream *stream;
 
-	guint sentlen;	/* data sent (so we dont overflow network buffer) */
+	guint sentlen;	/* data sent (so we don't overflow network buffer) */
 
 	GQueue active;	/* active commands */
 	GQueue queue;	/* queue of waiting commands */

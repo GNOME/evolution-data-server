@@ -609,7 +609,7 @@ mh_store_get_folder_info_sync (CamelStore *store,
 			path, top, flags, cancellable);
 
 		/* If we actually scanned from root,
-		 * we have a "" root node we dont want. */
+		 * we have a "" root node we don't want. */
 		if (fi != NULL && top[0] == 0) {
 			CamelFolderInfo *rfi;
 

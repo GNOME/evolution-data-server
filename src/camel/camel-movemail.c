@@ -427,7 +427,7 @@ camel_movemail_copy_filter (gint fromfd,
 	return written;
 }
 
-/* write the headers back out again, but not he Content-Length header, because we dont
+/* write the headers back out again, but not the Content-Length header, because we don't
  * want	to maintain it! */
 static gint
 solaris_header_write (gint fd,
