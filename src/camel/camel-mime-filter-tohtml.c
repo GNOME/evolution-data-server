@@ -292,7 +292,7 @@ html_convert (CamelMimeFilter *mime_filter,
 
 	priv = CAMEL_MIME_FILTER_TOHTML (mime_filter)->priv;
 
-	if (inlen == 0) {
+	if (inlen == 0 && !priv->backup) {
 		if (!priv->pre_open && !priv->div_open && !priv->blockquote_depth) {
 			/* No closing tags needed. */
 			*out = (gchar *) in;
@@ -332,8 +332,22 @@ html_convert (CamelMimeFilter *mime_filter,
 
 	camel_mime_filter_set_size (mime_filter, inlen * 2 + 6, FALSE);
 
-	inptr = in;
-	inend = in + inlen;
+	if (inlen == 0 && priv->backup) {
+		gsize backup_len;
+
+		backup_len = priv->backup->len;
+		backup_str = g_string_free (priv->backup, FALSE);
+		priv->backup = NULL;
+
+		inptr = backup_str + backup_len;
+		inend = inptr;
+		start = backup_str;
+	} else {
+		inptr = in;
+		inend = in + inlen;
+		start = inptr;
+	}
+
 	outptr = mime_filter->outbuf;
 	outend = mime_filter->outbuf + mime_filter->outsize;
 
@@ -343,7 +357,6 @@ html_convert (CamelMimeFilter *mime_filter,
 		priv->pre_open = TRUE;
 	}
 
-	start = inptr;
 	do {
 		while (inptr < inend && *inptr != '\n')
 			inptr++;
