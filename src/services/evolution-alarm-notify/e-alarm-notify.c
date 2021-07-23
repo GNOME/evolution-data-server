@@ -741,7 +741,8 @@ e_alarm_notify_status_icon_activated_cb (GtkStatusIcon *status_icon,
 
 	g_return_if_fail (E_IS_ALARM_NOTIFY (an));
 
-	if (gtk_widget_get_visible (an->priv->window))
+	if (gtk_widget_get_visible (an->priv->window) &&
+	    gtk_window_is_active (GTK_WINDOW (an->priv->window)))
 		gtk_widget_set_visible (an->priv->window, FALSE);
 	else
 		e_alarm_notify_show_window (an, TRUE);
