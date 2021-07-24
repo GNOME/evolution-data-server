@@ -191,7 +191,7 @@ camel_mime_filter_canon_init (CamelMimeFilterCanon *filter)
 
 /**
  * camel_mime_filter_canon_new:
- * @flags: bitwise flags defining the behaviour of the filter
+ * @flags: (type CamelMimeFilterCanonFlags): bitwise flags defining the behaviour of the filter
  *
  * Create a new filter to canonicalise an input stream.
  *

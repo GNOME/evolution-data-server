@@ -21,6 +21,7 @@
 #include <string.h>
 
 #include "camel-db.h"
+#include "camel-enumtypes.h"
 #include "camel-folder.h"
 #include "camel-folder-summary.h"
 #include "camel-message-info-base.h"
@@ -479,7 +480,7 @@ message_info_set_property (GObject *object,
 		return;
 
 	case PROP_FLAGS:
-		camel_message_info_set_flags (mi, ~0, g_value_get_uint (value));
+		camel_message_info_set_flags (mi, ~0, g_value_get_flags (value));
 		return;
 
 	case PROP_USER_FLAGS:
@@ -580,7 +581,7 @@ message_info_get_property (GObject *object,
 		return;
 
 	case PROP_FLAGS:
-		g_value_set_uint (value, camel_message_info_get_flags (mi));
+		g_value_set_flags (value, camel_message_info_get_flags (mi));
 		return;
 
 	case PROP_USER_FLAGS:
@@ -820,11 +821,12 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 	g_object_class_install_property (
 		object_class,
 		PROP_FLAGS,
-		g_param_spec_uint (
+		g_param_spec_flags (
 			"flags",
 			"Flags",
 			NULL,
-			0, G_MAXUINT32, 0,
+			CAMEL_TYPE_MESSAGE_FLAGS,
+			0,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));

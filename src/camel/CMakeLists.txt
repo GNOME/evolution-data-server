@@ -1,6 +1,9 @@
 glib_mkenums_multiple(camel-enumtypes CAMEL_ENUMTYPES_H
 	camel-enums.h
 	camel-folder.h
+	camel-message-info.h
+	camel-mime-filter-canon.h
+	camel-mime-filter-enriched.h
 	camel-service.h
 	camel-sexp.h
 	camel-store.h
