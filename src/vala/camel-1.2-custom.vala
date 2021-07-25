@@ -3,4 +3,8 @@ namespace Camel {
   [Compact]
 	public class HeaderParam {
 	}
+
+	public abstract class Sasl : GLib.Object {
+		public class Camel.ServiceAuthType auth_type;
+	}
 }
