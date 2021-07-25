@@ -145,9 +145,7 @@ VeeStore.get_unmatched_folder type="unowned Camel.VeeFolder"
 WeakRefGroup.get type="GLib.Object"
 WeakRefGroup.set.object type="owned GLib.Object"
 
-ServiceAuthType.authproto unowned=false
-ServiceAuthType.description unowned=false
-ServiceAuthType.name unowned=false
+ServiceAuthType struct
 
 // Abstract classes can't have creation methods
 Sasl.new symbol_type="function" name="for_service"

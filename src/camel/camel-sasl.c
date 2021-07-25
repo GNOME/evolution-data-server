@@ -931,7 +931,7 @@ camel_sasl_authtype_list (gboolean include_plain)
  * camel_sasl_authtype:
  * @mechanism: the SASL mechanism to get an authtype for
  *
- * Returns: a #CamelServiceAuthType for the given mechanism, if
+ * Returns: (transfer none) (nullable): a #CamelServiceAuthType for the given mechanism, if
  * it is supported.
  **/
 CamelServiceAuthType *

@@ -5,6 +5,6 @@ namespace Camel {
 	}
 
 	public abstract class Sasl : GLib.Object {
-		public class Camel.ServiceAuthType auth_type;
+		public class weak Camel.ServiceAuthType? auth_type;
 	}
 }
