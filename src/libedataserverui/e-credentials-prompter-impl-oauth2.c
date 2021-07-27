@@ -560,6 +560,130 @@ credentials_prompter_impl_oauth2_get_prompt_strings (ESourceRegistry *registry,
 
 	g_free (display_name);
 }
+
+static void
+credentials_prompter_impl_oauth2_set_proxy (WebKitWebContext *web_context,
+					    ESourceRegistry *registry,
+					    ESource *auth_source)
+{
+	ESource *proxy_source = NULL;
+
+	if (E_IS_SOURCE (auth_source) &&
+	    e_source_has_extension (auth_source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+		ESourceAuthentication *auth_extension;
+		gchar *uid;
+
+		auth_extension = e_source_get_extension (auth_source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		uid = e_source_authentication_dup_proxy_uid (auth_extension);
+
+		if (uid) {
+			proxy_source = e_source_registry_ref_source (registry, uid);
+			g_free (uid);
+		}
+	}
+
+	if (!proxy_source)
+		proxy_source = e_source_registry_ref_builtin_proxy (registry);
+
+	if (proxy_source && e_source_has_extension (proxy_source, E_SOURCE_EXTENSION_PROXY)) {
+		ESourceProxy *proxy;
+		WebKitWebsiteDataManager *data_manager;
+		WebKitNetworkProxySettings *proxy_settings = NULL;
+		SoupURI *suri;
+		gchar **ignore_hosts = NULL;
+		gchar *tmp;
+		guint16 port;
+
+		proxy = e_source_get_extension (proxy_source, E_SOURCE_EXTENSION_PROXY);
+		data_manager = webkit_web_context_get_website_data_manager (web_context);
+
+		switch (e_source_proxy_get_method (proxy)) {
+		case E_PROXY_METHOD_DEFAULT:
+			webkit_website_data_manager_set_network_proxy_settings (data_manager, WEBKIT_NETWORK_PROXY_MODE_DEFAULT, NULL);
+			break;
+		case E_PROXY_METHOD_MANUAL:
+			ignore_hosts = e_source_proxy_dup_ignore_hosts (proxy);
+
+			tmp = e_source_proxy_dup_socks_host (proxy);
+			if (tmp && *tmp) {
+				suri = soup_uri_new (NULL);
+				soup_uri_set_scheme (suri, "socks");
+				soup_uri_set_host (suri, tmp);
+				soup_uri_set_path (suri, "");
+				port = e_source_proxy_get_socks_port (proxy);
+				if (port)
+					soup_uri_set_port (suri, port);
+				g_free (tmp);
+				tmp = soup_uri_to_string (suri, FALSE);
+				proxy_settings = webkit_network_proxy_settings_new (tmp, (const gchar * const *) ignore_hosts);
+				webkit_network_proxy_settings_add_proxy_for_scheme (proxy_settings, "socks", tmp);
+				soup_uri_free (suri);
+			} else {
+				proxy_settings = webkit_network_proxy_settings_new (NULL, (const gchar * const *) ignore_hosts);
+			}
+			g_free (tmp);
+
+			tmp = e_source_proxy_dup_http_host (proxy);
+			if (tmp && *tmp) {
+				suri = soup_uri_new (NULL);
+				soup_uri_set_scheme (suri, SOUP_URI_SCHEME_HTTP);
+				soup_uri_set_host (suri, tmp);
+				soup_uri_set_path (suri, "");
+				port = e_source_proxy_get_http_port (proxy);
+				if (port)
+					soup_uri_set_port (suri, port);
+				if (e_source_proxy_get_http_use_auth (proxy)) {
+					g_free (tmp);
+					tmp = e_source_proxy_dup_http_auth_user (proxy);
+					if (tmp)
+						soup_uri_set_user (suri, tmp);
+
+					g_free (tmp);
+					tmp = e_source_proxy_dup_http_auth_password (proxy);
+					if (tmp)
+						soup_uri_set_password (suri, tmp);
+				}
+				g_free (tmp);
+				tmp = soup_uri_to_string (suri, FALSE);
+				webkit_network_proxy_settings_add_proxy_for_scheme (proxy_settings, SOUP_URI_SCHEME_HTTP, tmp);
+				soup_uri_free (suri);
+			}
+			g_free (tmp);
+
+			tmp = e_source_proxy_dup_https_host (proxy);
+			if (tmp && *tmp) {
+				suri = soup_uri_new (NULL);
+				soup_uri_set_scheme (suri, SOUP_URI_SCHEME_HTTP);
+				soup_uri_set_host (suri, tmp);
+				soup_uri_set_path (suri, "");
+				port = e_source_proxy_get_https_port (proxy);
+				if (port)
+					soup_uri_set_port (suri, port);
+				g_free (tmp);
+				tmp = soup_uri_to_string (suri, FALSE);
+				webkit_network_proxy_settings_add_proxy_for_scheme (proxy_settings, SOUP_URI_SCHEME_HTTPS, tmp);
+				soup_uri_free (suri);
+			}
+			g_free (tmp);
+
+			webkit_website_data_manager_set_network_proxy_settings (data_manager, WEBKIT_NETWORK_PROXY_MODE_CUSTOM, proxy_settings);
+			break;
+		case E_PROXY_METHOD_AUTO:
+			/* not supported by WebKitGTK */
+			break;
+		case E_PROXY_METHOD_NONE:
+			webkit_website_data_manager_set_network_proxy_settings (data_manager, WEBKIT_NETWORK_PROXY_MODE_NO_PROXY, NULL);
+			break;
+		}
+
+		if (proxy_settings)
+			webkit_network_proxy_settings_free (proxy_settings);
+
+		g_strfreev (ignore_hosts);
+	}
+
+	g_clear_object (&proxy_source);
+}
 #endif /* ENABLE_OAUTH2 */
 
 static gboolean
@@ -736,6 +860,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 
 	web_context = webkit_web_context_new ();
 	webkit_web_context_set_sandbox_enabled (web_context, TRUE);
+	credentials_prompter_impl_oauth2_set_proxy (web_context,  e_credentials_prompter_get_registry (prompter), prompter_oauth2->priv->auth_source);
 
 	widget = g_object_new (WEBKIT_TYPE_WEB_VIEW,
 			"settings", webkit_settings,
