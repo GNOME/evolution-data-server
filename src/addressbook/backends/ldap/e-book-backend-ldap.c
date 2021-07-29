@@ -810,7 +810,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl,
 			return FALSE;
 		}
 
-		if (bl->priv->ldap_port == LDAPS_PORT && bl->priv->security == E_SOURCE_LDAP_SECURITY_LDAPS) {
+		if (bl->priv->security == E_SOURCE_LDAP_SECURITY_LDAPS) {
 #ifdef SUNLDAP
 			if (ldap_error == LDAP_SUCCESS) {
 				ldap_set_option (blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
