@@ -295,6 +295,11 @@ e_soup_session_maybe_prepare_auth (ESoupSession *session,
 		if (g_strcmp0 (auth_method, "OAuth2") == 0 ||
 		    e_oauth2_services_is_oauth2_alias_static (auth_method)) {
 			success = e_soup_session_maybe_prepare_bearer_auth (session, soup_uri, message, cancellable, error);
+		} else if (g_strcmp0 (auth_method, "GSSAPI") == 0 && soup_auth_negotiate_supported ()) {
+			SoupSession *soup_session = SOUP_SESSION (session);
+
+			soup_session_add_feature_by_type (soup_session, SOUP_TYPE_AUTH_NEGOTIATE);
+			soup_session_remove_feature_by_type (soup_session, SOUP_TYPE_AUTH_BASIC);
 		} else if (user && *user) {
 			/* Default to Basic authentication when user is filled */
 			success = e_soup_session_maybe_prepare_basic_auth (session, soup_uri, message, user, credentials, cancellable, error);
