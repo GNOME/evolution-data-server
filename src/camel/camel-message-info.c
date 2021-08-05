@@ -63,7 +63,9 @@ enum {
 	PROP_DATE_RECEIVED,
 	PROP_MESSAGE_ID,
 	PROP_REFERENCES,
-	PROP_HEADERS
+	PROP_HEADERS,
+	PROP_USER_HEADERS,
+	PROP_PREVIEW
 };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (CamelMessageInfo, camel_message_info, G_TYPE_OBJECT)
@@ -108,6 +110,7 @@ message_info_clone (const CamelMessageInfo *mi,
 	camel_message_info_set_to (result, camel_message_info_get_to (mi));
 	camel_message_info_set_cc (result, camel_message_info_get_cc (mi));
 	camel_message_info_set_mlist (result, camel_message_info_get_mlist (mi));
+	camel_message_info_set_preview (result, camel_message_info_get_preview (mi));
 	camel_message_info_set_size (result, camel_message_info_get_size (mi));
 	camel_message_info_set_date_sent (result, camel_message_info_get_date_sent (mi));
 	camel_message_info_set_date_received (result, camel_message_info_get_date_received (mi));
@@ -132,6 +135,12 @@ message_info_clone (const CamelMessageInfo *mi,
 	headers = camel_message_info_get_headers (mi);
 	if (headers) {
 		camel_message_info_take_headers (result,
+			camel_name_value_array_copy (headers));
+	}
+
+	headers = camel_message_info_get_user_headers (mi);
+	if (headers) {
+		camel_message_info_take_user_headers (result,
 			camel_name_value_array_copy (headers));
 	}
 
@@ -173,6 +182,7 @@ message_info_load (CamelMessageInfo *mi,
 	camel_message_info_set_to (mi, record->to);
 	camel_message_info_set_cc (mi, record->cc);
 	camel_message_info_set_mlist (mi, record->mlist);
+	camel_message_info_set_preview (mi, record->preview);
 
 	/* Extract Message id & References */
 	part = record->part;
@@ -220,6 +230,11 @@ message_info_load (CamelMessageInfo *mi,
 		if (label && *label)
 			camel_named_flags_insert (user_flags, label);
 
+		if (camel_named_flags_get_length (user_flags) == 0) {
+			camel_named_flags_free (user_flags);
+			user_flags = NULL;
+		}
+
 		camel_message_info_take_user_flags (mi, user_flags);
 	}
 
@@ -245,7 +260,42 @@ message_info_load (CamelMessageInfo *mi,
 			g_free (value);
 		}
 
+		if (camel_name_value_array_get_length (user_tags) == 0) {
+			camel_name_value_array_free (user_tags);
+			user_tags = NULL;
+		}
+
 		camel_message_info_take_user_tags (mi, user_tags);
+	}
+
+	/* Extract User headers */
+	part = record->userheaders;
+	if (part) {
+		CamelNameValueArray *user_headers;
+
+		count = camel_util_bdata_get_number (&part, 0);
+
+		user_headers = camel_name_value_array_new_sized (count);
+
+		for (ii = 0; ii < count; ii++) {
+			gchar *name, *value;
+
+			name = camel_util_bdata_get_string (&part, NULL);
+			value = camel_util_bdata_get_string (&part, NULL);
+
+			if (name)
+				camel_name_value_array_set_named (user_headers, CAMEL_COMPARE_CASE_SENSITIVE, name, value ? value : "");
+
+			g_free (name);
+			g_free (value);
+		}
+
+		if (camel_name_value_array_get_length (user_headers) == 0) {
+			camel_name_value_array_free (user_headers);
+			user_headers = NULL;
+		}
+
+		camel_message_info_take_user_headers (mi, user_headers);
 	}
 
 	return TRUE;
@@ -307,6 +357,7 @@ message_info_save (const CamelMessageInfo *mi,
 	record->to = camel_pstring_strdup (camel_message_info_get_to (mi));
 	record->cc = camel_pstring_strdup (camel_message_info_get_cc (mi));
 	record->mlist = camel_pstring_strdup (camel_message_info_get_mlist (mi));
+	record->preview = g_strdup (camel_message_info_get_preview (mi));
 
 	record->followup_flag = g_strdup (camel_message_info_get_user_tag (mi, "follow-up"));
 	record->followup_completed_on = g_strdup (camel_message_info_get_user_tag (mi, "completed-on"));
@@ -372,6 +423,28 @@ message_info_save (const CamelMessageInfo *mi,
 		g_string_append_c (tmp, '0');
 	}
 	record->usertags = g_string_free (tmp, FALSE);
+
+	tmp = g_string_new (NULL);
+	user_tags = camel_message_info_get_user_headers (mi);
+	if (user_tags) {
+		guint32 ii, count;
+
+		count = camel_name_value_array_get_length (user_tags);
+		g_string_append_printf (tmp, "%" G_GUINT32_FORMAT, count);
+
+		for (ii = 0; ii < count; ii++) {
+			const gchar *name = NULL, *value = NULL;
+
+			if (camel_name_value_array_get (user_tags, ii, &name, &value) && name && value) {
+				g_string_append_printf (tmp, " %" G_GUINT32_FORMAT "-%s %" G_GUINT32_FORMAT "-%s",
+					(guint32) strlen (name), name,
+					(guint32) strlen (value), value);
+			}
+		}
+	} else {
+		g_string_append_c (tmp, '0');
+	}
+	record->userheaders = g_string_free (tmp, FALSE);
 
 	return TRUE;
 }
@@ -459,6 +532,14 @@ message_info_set_property (GObject *object,
 
 	case PROP_HEADERS:
 		camel_message_info_take_headers (mi, g_value_dup_boxed (value));
+		return;
+
+	case PROP_USER_HEADERS:
+		camel_message_info_take_user_headers (mi, g_value_dup_boxed (value));
+		return;
+
+	case PROP_PREVIEW:
+		camel_message_info_set_preview (mi, g_value_get_string (value));
 		return;
 	}
 
@@ -552,6 +633,14 @@ message_info_get_property (GObject *object,
 
 	case PROP_HEADERS:
 		g_value_take_boxed (value, camel_message_info_dup_headers (mi));
+		return;
+
+	case PROP_USER_HEADERS:
+		g_value_take_boxed (value, camel_message_info_dup_user_headers (mi));
+		return;
+
+	case PROP_PREVIEW:
+		g_value_take_string (value, camel_message_info_dup_preview (mi));
 		return;
 	}
 
@@ -990,6 +1079,44 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			"Headers",
 			NULL,
 			CAMEL_TYPE_NAME_VALUE_ARRAY,
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * CamelMessageInfo:user-headers
+	 *
+	 * User-defined headers of the associated message. Can be %NULL.
+	 *
+	 * Since: 3.42
+	 **/
+	g_object_class_install_property (
+		object_class,
+		PROP_USER_HEADERS,
+		g_param_spec_boxed (
+			"user-headers",
+			"User Headers",
+			NULL,
+			CAMEL_TYPE_NAME_VALUE_ARRAY,
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * CamelMessageInfo:preview
+	 *
+	 * Body preview of the associated message. Can be %NULL.
+	 *
+	 * Since: 3.42
+	 **/
+	g_object_class_install_property (
+		object_class,
+		PROP_PREVIEW,
+		g_param_spec_string (
+			"preview",
+			"Preview",
+			NULL,
+			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
@@ -3019,6 +3146,304 @@ camel_message_info_take_headers (CamelMessageInfo *mi,
 		g_object_notify (G_OBJECT (mi), "headers");
 		camel_message_info_set_dirty (mi, TRUE);
 		camel_message_info_set_folder_flagged (mi, TRUE);
+	}
+
+	return changed;
+}
+
+/**
+ * camel_message_info_get_user_header:
+ * @mi: a #CamelMessageInfo
+ * @name: header name
+ *
+ * Returns: (transfer none) (nullable): Value of the header named @name from
+ *    the user-defined message headers of the associated message, or %NULL,
+ *    when not available.
+ *
+ * Since: 3.42
+ **/
+const gchar *
+camel_message_info_get_user_header (const CamelMessageInfo *mi,
+				    const gchar *name)
+{
+	CamelMessageInfoClass *klass;
+	const gchar *result;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO (mi), NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	klass = CAMEL_MESSAGE_INFO_GET_CLASS (mi);
+	g_return_val_if_fail (klass != NULL, NULL);
+	g_return_val_if_fail (klass->get_user_header != NULL, NULL);
+
+	camel_message_info_property_lock (mi);
+	result = klass->get_user_header (mi, name);
+	camel_message_info_property_unlock (mi);
+
+	return result;
+}
+
+/**
+ * camel_message_info_dup_user_header:
+ * @mi: a #CamelMessageInfo
+ * @name: header name
+ *
+ * Returns: (transfer full) (nullable): Value of the header named @name from
+ *    the user-defined message headers of the associated message, or %NULL,
+ *    when not available. Free the returned string with g_free(), when no longer
+ *    needed.
+ *
+ * Since: 3.42
+ **/
+gchar *
+camel_message_info_dup_user_header (const CamelMessageInfo *mi,
+				    const gchar *name)
+{
+	gchar *result;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO (mi), NULL);
+
+	camel_message_info_property_lock (mi);
+	result = g_strdup (camel_message_info_get_user_header (mi, name));
+	camel_message_info_property_unlock (mi);
+
+	return result;
+}
+
+/**
+ * camel_message_info_set_user_header:
+ * @mi: a #CamelMessageInfo
+ * @name: header name
+ * @value: (nullable): header value, or %NULL
+ *
+ * Set @value for a single user-defined message header of the associated message.
+ * When the @value is %NULL, the header @name is removed from the user-defined
+ * headers.
+ *
+ * If the @mi changed, the 'dirty' flag is set automatically, unless the @mi is
+ * aborting notifications. There is not emitted folder's "changed" signal for this @mi.
+ *
+ * Returns: Whether the value changed.
+ *
+ * Since: 3.42
+ **/
+gboolean
+camel_message_info_set_user_header (CamelMessageInfo *mi,
+				    const gchar *name,
+				    const gchar *value)
+{
+	CamelMessageInfoClass *klass;
+	gboolean changed, abort_notifications;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO (mi), FALSE);
+
+	klass = CAMEL_MESSAGE_INFO_GET_CLASS (mi);
+	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass->set_user_header != NULL, FALSE);
+
+	camel_message_info_property_lock (mi);
+	changed = klass->set_user_header (mi, name, value);
+	abort_notifications = mi->priv->abort_notifications;
+	camel_message_info_property_unlock (mi);
+
+	if (changed && !abort_notifications) {
+		g_object_notify (G_OBJECT (mi), "user-headers");
+		camel_message_info_set_dirty (mi, TRUE);
+	}
+
+	return changed;
+}
+
+/**
+ * camel_message_info_get_user_headers:
+ * @mi: a #CamelMessageInfo
+ *
+ * Returns: (transfer none) (nullable): All the user-defined message headers
+ *    of the associated message, or %NULL, when none are available.
+ *
+ * Since: 3.42
+ **/
+const CamelNameValueArray *
+camel_message_info_get_user_headers (const CamelMessageInfo *mi)
+{
+	CamelMessageInfoClass *klass;
+	const CamelNameValueArray *result;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO (mi), NULL);
+
+	klass = CAMEL_MESSAGE_INFO_GET_CLASS (mi);
+	g_return_val_if_fail (klass != NULL, NULL);
+	g_return_val_if_fail (klass->get_user_headers != NULL, NULL);
+
+	camel_message_info_property_lock (mi);
+	result = klass->get_user_headers (mi);
+	camel_message_info_property_unlock (mi);
+
+	return result;
+}
+
+/**
+ * camel_message_info_dup_user_headers:
+ * @mi: a #CamelMessageInfo
+ *
+ * Returns: (transfer full) (nullable): All the user-defined message headers
+ *    of the associated message, or %NULL, when none are available. Free returned
+ *    array with camel_name_value_array_free() when no longer needed.
+ *
+ * Since: 3.42
+ **/
+CamelNameValueArray *
+camel_message_info_dup_user_headers (const CamelMessageInfo *mi)
+{
+	const CamelNameValueArray *arr;
+	CamelNameValueArray *result;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO (mi), NULL);
+
+	camel_message_info_property_lock (mi);
+	arr = camel_message_info_get_user_headers (mi);
+	if (arr) {
+		result = camel_name_value_array_copy (arr);
+	} else {
+		result = NULL;
+	}
+	camel_message_info_property_unlock (mi);
+
+	return result;
+}
+
+/**
+ * camel_message_info_take_user_headers:
+ * @mi: a #CamelMessageInfo
+ * @headers: (transfer full) (nullable): headers to set, as #CamelNameValueArray, or %NULL
+ *
+ * Takes user-defined message headers of the associated message.
+ *
+ * If the @mi changed, the 'dirty' flag is set automatically, unless the @mi is
+ * aborting notifications. There is not emitted folder's "changed" signal for this @mi.
+ *
+ * Note that it's not safe to use the @headers after the call to this function,
+ * because it can be freed due to no change.
+ *
+ * Returns: Whether the value changed.
+ *
+ * Since: 3.42
+ **/
+gboolean
+camel_message_info_take_user_headers (CamelMessageInfo *mi,
+				      CamelNameValueArray *headers)
+{
+	CamelMessageInfoClass *klass;
+	gboolean changed, abort_notifications;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO (mi), FALSE);
+
+	klass = CAMEL_MESSAGE_INFO_GET_CLASS (mi);
+	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass->take_user_headers != NULL, FALSE);
+
+	camel_message_info_property_lock (mi);
+	changed = klass->take_user_headers (mi, headers);
+	abort_notifications = mi->priv->abort_notifications;
+	camel_message_info_property_unlock (mi);
+
+	if (changed && !abort_notifications) {
+		g_object_notify (G_OBJECT (mi), "user-headers");
+		camel_message_info_set_dirty (mi, TRUE);
+	}
+
+	return changed;
+}
+
+/**
+ * camel_message_info_get_preview:
+ * @mi: a #CamelMessageInfo
+ *
+ * Returns: (transfer none) (nullable): Body preview of the associated
+ *    message, or %NULL, when not available.
+ *
+ * Since: 3.42
+ **/
+const gchar *
+camel_message_info_get_preview (const CamelMessageInfo *mi)
+{
+	CamelMessageInfoClass *klass;
+	const gchar *result;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO (mi), NULL);
+
+	klass = CAMEL_MESSAGE_INFO_GET_CLASS (mi);
+	g_return_val_if_fail (klass != NULL, NULL);
+	g_return_val_if_fail (klass->get_preview != NULL, NULL);
+
+	camel_message_info_property_lock (mi);
+	result = klass->get_preview (mi);
+	camel_message_info_property_unlock (mi);
+
+	return result;
+}
+
+/**
+ * camel_message_info_dup_preview:
+ * @mi: a #CamelMessageInfo
+ * @name: header name
+ *
+ * Returns: (transfer none) (nullable): Body preview of the associated
+ *    message, or %NULL, when not available. Free the returned string
+ *    with g_free(), when no longer needed.
+ *
+ * Since: 3.42
+ **/
+gchar *
+camel_message_info_dup_preview (const CamelMessageInfo *mi)
+{
+	gchar *result;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO (mi), NULL);
+
+	camel_message_info_property_lock (mi);
+	result = g_strdup (camel_message_info_get_preview (mi));
+	camel_message_info_property_unlock (mi);
+
+	return result;
+}
+
+/**
+ * camel_message_info_set_preview:
+ * @mi: a #CamelMessageInfo
+ * @preview: (nullable): message body preview, or %NULL
+ *
+ * Set @preview as the body preview of the associated message. Use %NULL or an empty
+ * string to unset the value.
+ *
+ * If the @mi changed, the 'dirty' flag is set automatically, unless the @mi is
+ * aborting notifications. There is not emitted folder's "changed" signal for this @mi.
+ *
+ * Returns: Whether the value changed.
+ *
+ * Since: 3.42
+ **/
+gboolean
+camel_message_info_set_preview (CamelMessageInfo *mi,
+				const gchar *preview)
+{
+	CamelMessageInfoClass *klass;
+	gboolean changed, abort_notifications;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO (mi), FALSE);
+
+	klass = CAMEL_MESSAGE_INFO_GET_CLASS (mi);
+	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass->set_preview != NULL, FALSE);
+
+	camel_message_info_property_lock (mi);
+	changed = klass->set_preview (mi, preview);
+	abort_notifications = mi->priv->abort_notifications;
+	camel_message_info_property_unlock (mi);
+
+	if (changed && !abort_notifications) {
+		g_object_notify (G_OBJECT (mi), "preview");
+		camel_message_info_set_dirty (mi, TRUE);
 	}
 
 	return changed;

@@ -38,6 +38,8 @@
 
 #include "camel-db.h"
 
+#define MESSAGE_INFO_TABLE_VERSION 3
+
 /* how long to wait before invoking sync on the file */
 #define SYNC_TIMEOUT_SECONDS 5
 
@@ -1682,11 +1684,16 @@ camel_db_create_message_info_table (CamelDB *cdb,
 			"usertags TEXT , "
 			"cinfo TEXT , "
 			"bdata TEXT, "
+			"userheaders TEXT, "
+			"preview TEXT, "
 			"created TEXT, "
 			"modified TEXT)",
 			folder_name);
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 	sqlite3_free (table_creation_query);
+
+	if (ret != 0)
+		return ret;
 
 	/* FIXME: sqlize folder_name before you create the index */
 	safe_index = g_strdup_printf ("SINDEX-%s", folder_name);
@@ -1695,6 +1702,9 @@ camel_db_create_message_info_table (CamelDB *cdb,
 	g_free (safe_index);
 	sqlite3_free (table_creation_query);
 
+	if (ret != 0)
+		return ret;
+
 	/* Index on deleted*/
 	safe_index = g_strdup_printf ("DELINDEX-%s", folder_name);
 	table_creation_query = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON %Q (deleted)", safe_index, folder_name);
@@ -1702,12 +1712,18 @@ camel_db_create_message_info_table (CamelDB *cdb,
 	g_free (safe_index);
 	sqlite3_free (table_creation_query);
 
+	if (ret != 0)
+		return ret;
+
 	/* Index on Junk*/
 	safe_index = g_strdup_printf ("JUNKINDEX-%s", folder_name);
 	table_creation_query = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON %Q (junk)", safe_index, folder_name);
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 	g_free (safe_index);
 	sqlite3_free (table_creation_query);
+
+	if (ret != 0)
+		return ret;
 
 	/* Index on unread*/
 	safe_index = g_strdup_printf ("READINDEX-%s", folder_name);
@@ -1733,13 +1749,17 @@ camel_db_migrate_folder_prepare (CamelDB *cdb,
 	if (version < 0) {
 		ret = camel_db_create_message_info_table (cdb, folder_name, error);
 		g_clear_error (error);
-	} else if (version < 1) {
+	} else if (version < 3) {
 
 		/* Between version 0-1 the following things are changed
 		 * ADDED: created: time
 		 * ADDED: modified: time
 		 * RENAMED: msg_security to dirty
-		 * */
+		 *
+		 * Between version 2-3 the following things are changed
+		 * ADDED: userheaders: text
+		 * ADDED: preview: text
+		 */
 
 		table_creation_query = sqlite3_mprintf ("DROP TABLE IF EXISTS 'mem.%q'", folder_name);
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
@@ -1773,6 +1793,8 @@ camel_db_migrate_folder_prepare (CamelDB *cdb,
 				"usertags TEXT , "
 				"cinfo TEXT , "
 				"bdata TEXT, "
+				"userheaders TEXT, "
+				"preview TEXT, "
 				"created TEXT, "
 				"modified TEXT )",
 				folder_name);
@@ -1787,7 +1809,7 @@ camel_db_migrate_folder_prepare (CamelDB *cdb,
 			"size , dsent , dreceived , subject , mail_from , "
 			"mail_to , mail_cc , mlist , followup_flag , "
 			"followup_completed_on , followup_due_by , "
-			"part , labels , usertags , cinfo , bdata , "
+			"part , labels , usertags , cinfo , bdata , '', '', "
 			"strftime(\"%%s\", 'now'), "
 			"strftime(\"%%s\", 'now') FROM %Q",
 			folder_name, folder_name);
@@ -1820,7 +1842,7 @@ camel_db_migrate_folder_recreate (CamelDB *cdb,
 
 	/* Migration stage two: writing back the old data */
 
-	if (version < 2) {
+	if (version < 3) {
 		GError *local_error = NULL;
 
 		table_creation_query = sqlite3_mprintf (
@@ -1830,7 +1852,7 @@ camel_db_migrate_folder_recreate (CamelDB *cdb,
 			"subject , mail_from , mail_to , mail_cc , mlist , "
 			"followup_flag , followup_completed_on , "
 			"followup_due_by , part , labels , usertags , "
-			"cinfo , bdata, created, modified FROM 'mem.%q'",
+			"cinfo , bdata, userheaders, preview, created, modified FROM 'mem.%q'",
 			folder_name, folder_name);
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, &local_error);
 		sqlite3_free (table_creation_query);
@@ -1910,9 +1932,9 @@ camel_db_write_folder_version (CamelDB *cdb,
 	version_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS '%q_version' ( version TEXT )", folder_name);
 
 	if (old_version == -1)
-		version_insert_query = sqlite3_mprintf ("INSERT INTO '%q_version' VALUES ('2')", folder_name);
+		version_insert_query = sqlite3_mprintf ("INSERT INTO '%q_version' VALUES ('" G_STRINGIFY (MESSAGE_INFO_TABLE_VERSION) "')", folder_name);
 	else
-		version_insert_query = sqlite3_mprintf ("UPDATE '%q_version' SET version='2'", folder_name);
+		version_insert_query = sqlite3_mprintf ("UPDATE '%q_version' SET version='" G_STRINGIFY (MESSAGE_INFO_TABLE_VERSION) "'", folder_name);
 
 	ret = camel_db_add_to_transaction (cdb, version_creation_query, error);
 	ret = camel_db_add_to_transaction (cdb, version_insert_query, error);
@@ -1989,6 +2011,10 @@ camel_db_prepare_message_info_table (CamelDB *cdb,
 		current_version = -1;
 	}
 
+	/* Avoid the migration when not needed */
+	if (current_version == MESSAGE_INFO_TABLE_VERSION)
+		goto exit;
+
 	camel_db_begin_transaction (cdb, &err);
 	in_transaction = TRUE;
 
@@ -2053,7 +2079,7 @@ camel_db_write_message_info_record (CamelDB *cdb,
 		"INSERT OR REPLACE INTO %Q VALUES ("
 		"%Q, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, "
 		"%lld, %lld, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, "
-		"%Q, %Q, %Q, %Q, %Q, "
+		"%Q, %Q, %Q, %Q, %Q, %Q, %Q, "
 		"strftime(\"%%s\", 'now'), "
 		"strftime(\"%%s\", 'now') )",
 		folder_name,
@@ -2082,7 +2108,9 @@ camel_db_write_message_info_record (CamelDB *cdb,
 		record->labels,
 		record->usertags,
 		record->cinfo,
-		record->bdata);
+		record->bdata,
+		record->userheaders,
+		record->preview);
 
 	ret = camel_db_add_to_transaction (cdb, ins_query, error);
 
@@ -2274,7 +2302,7 @@ camel_db_read_message_info_record_with_uid (CamelDB *cdb,
 	query = sqlite3_mprintf (
 		"SELECT uid, flags, size, dsent, dreceived, subject, "
 		"mail_from, mail_to, mail_cc, mlist, part, labels, "
-		"usertags, cinfo, bdata FROM %Q WHERE uid = %Q",
+		"usertags, cinfo, bdata, userheaders, preview FROM %Q WHERE uid = %Q",
 		folder_name, uid);
 	ret = camel_db_select (cdb, query, callback, user_data, error);
 	sqlite3_free (query);
@@ -2309,7 +2337,7 @@ camel_db_read_message_info_records (CamelDB *cdb,
 	query = sqlite3_mprintf (
 		"SELECT uid, flags, size, dsent, dreceived, subject, "
 		"mail_from, mail_to, mail_cc, mlist, part, labels, "
-		"usertags, cinfo, bdata FROM %Q ", folder_name);
+		"usertags, cinfo, bdata, userheaders, preview FROM %Q ", folder_name);
 	ret = camel_db_select (cdb, query, callback, user_data, error);
 	sqlite3_free (query);
 
@@ -2577,6 +2605,8 @@ camel_db_camel_mir_free (CamelMIRecord *record)
 		g_free (record->usertags);
 		g_free (record->cinfo);
 		g_free (record->bdata);
+		g_free (record->userheaders);
+		g_free (record->preview);
 
 		g_free (record);
 	}
@@ -2720,7 +2750,9 @@ camel_db_start_in_memory_transactions (CamelDB *cdb,
 			"labels TEXT , "
 			"usertags TEXT , "
 			"cinfo TEXT , "
-			"bdata TEXT )",
+			"bdata TEXT, "
+			"userheaders TEXT, "
+			"preview TEXT)",
 		CAMEL_DB_IN_MEMORY_TABLE);
 	ret = camel_db_command (cdb, cmd, error);
 	if (ret != 0 )
@@ -2792,6 +2824,7 @@ static struct _known_column_names {
 	{ "mlist",			CAMEL_DB_COLUMN_MLIST },
 	{ "nextuid",			CAMEL_DB_COLUMN_NEXTUID },
 	{ "part",			CAMEL_DB_COLUMN_PART },
+	{ "preview",			CAMEL_DB_COLUMN_PREVIEW },
 	{ "read",			CAMEL_DB_COLUMN_READ },
 	{ "replied",			CAMEL_DB_COLUMN_REPLIED },
 	{ "saved_count",		CAMEL_DB_COLUMN_SAVED_COUNT },
@@ -2800,6 +2833,7 @@ static struct _known_column_names {
 	{ "time",			CAMEL_DB_COLUMN_TIME },
 	{ "uid",			CAMEL_DB_COLUMN_UID },
 	{ "unread_count",		CAMEL_DB_COLUMN_UNREAD_COUNT },
+	{ "userheaders",		CAMEL_DB_COLUMN_USERHEADERS },
 	{ "usertags",			CAMEL_DB_COLUMN_USERTAGS },
 	{ "version",			CAMEL_DB_COLUMN_VERSION },
 	{ "visible_count",		CAMEL_DB_COLUMN_VISIBLE_COUNT },

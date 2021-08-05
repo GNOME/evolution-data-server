@@ -26,7 +26,6 @@
 
 #include <camel/camel-named-flags.h>
 #include <camel/camel-name-value-array.h>
-#include <camel/camel-utils.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_MESSAGE_INFO \
@@ -188,9 +187,25 @@ struct _CamelMessageInfoClass {
 				(* get_headers)	(const CamelMessageInfo *mi);
 	gboolean		(* take_headers)(CamelMessageInfo *mi,
 						 CamelNameValueArray *headers);
+	const gchar *		(* get_user_header)
+						(const CamelMessageInfo *mi,
+						 const gchar *name);
+	gboolean		(* set_user_header)
+						(CamelMessageInfo *mi,
+						 const gchar *name,
+						 const gchar *value);
+	const CamelNameValueArray *
+				(* get_user_headers)
+						(const CamelMessageInfo *mi);
+	gboolean		(* take_user_headers)
+						(CamelMessageInfo *mi,
+						 CamelNameValueArray *headers);
+	const gchar *		(* get_preview)	(const CamelMessageInfo *mi);
+	gboolean		(* set_preview) (CamelMessageInfo *mi,
+						 const gchar *preview);
 
 	/* Padding for future expansion */
-	gpointer reserved[20];
+	gpointer reserved[14];
 };
 
 GType		camel_message_info_get_type	(void);
@@ -319,6 +334,29 @@ CamelNameValueArray *
 		camel_message_info_dup_headers	(const CamelMessageInfo *mi);
 gboolean	camel_message_info_take_headers	(CamelMessageInfo *mi,
 						 CamelNameValueArray *headers);
+const gchar *	camel_message_info_get_user_header
+						(const CamelMessageInfo *mi,
+						 const gchar *name);
+gchar *		camel_message_info_dup_user_header
+						(const CamelMessageInfo *mi,
+						 const gchar *name);
+gboolean	camel_message_info_set_user_header
+						(CamelMessageInfo *mi,
+						 const gchar *name,
+						 const gchar *value);
+const CamelNameValueArray *
+		camel_message_info_get_user_headers
+						(const CamelMessageInfo *mi);
+CamelNameValueArray *
+		camel_message_info_dup_user_headers
+						(const CamelMessageInfo *mi);
+gboolean	camel_message_info_take_user_headers
+						(CamelMessageInfo *mi,
+						 CamelNameValueArray *headers);
+const gchar *	camel_message_info_get_preview	(const CamelMessageInfo *mi);
+gchar *		camel_message_info_dup_preview	(const CamelMessageInfo *mi);
+gboolean	camel_message_info_set_preview	(CamelMessageInfo *mi,
+						 const gchar *preview);
 
 /* Debugging functions */
 void		camel_message_info_dump		(CamelMessageInfo *mi);

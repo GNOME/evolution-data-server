@@ -52,6 +52,7 @@
 #include "camel-stream-null.h"
 #include "camel-string-utils.h"
 #include "camel-store.h"
+#include "camel-utils.h"
 #include "camel-vee-folder.h"
 #include "camel-vtrash-folder.h"
 #include "camel-mime-part-utils.h"
@@ -1814,7 +1815,6 @@ camel_folder_summary_load (CamelFolderSummary *summary,
 	CamelStore *parent_store;
 	const gchar *full_name;
 	gint ret = 0;
-	GError *local_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 
@@ -1844,18 +1844,10 @@ camel_folder_summary_load (CamelFolderSummary *summary,
 
 	cdb = camel_store_get_db (parent_store);
 
-	ret = camel_db_get_folder_uids (
-		cdb, full_name, klass->sort_by, klass->collate,
-		summary->priv->uids, &local_error);
+	ret = camel_db_prepare_message_info_table (cdb, full_name, error);
 
-	if (local_error != NULL && local_error->message != NULL &&
-	    strstr (local_error->message, "no such table") != NULL) {
-		g_clear_error (&local_error);
-
-		/* create table the first time it is accessed and missing */
-		ret = camel_db_prepare_message_info_table (cdb, full_name, error);
-	} else if (local_error != NULL)
-		g_propagate_error (error, local_error);
+	if (ret == 0)
+		ret = camel_db_get_folder_uids (cdb, full_name, klass->sort_by, klass->collate, summary->priv->uids, error);
 
 	camel_folder_summary_unlock (summary);
 
@@ -1949,6 +1941,12 @@ mir_from_cols (CamelMIRecord *mir,
 				break;
 			case CAMEL_DB_COLUMN_BDATA:
 				mir->bdata = cols[i];
+				break;
+			case CAMEL_DB_COLUMN_USERHEADERS:
+				mir->userheaders = cols[i];
+				break;
+			case CAMEL_DB_COLUMN_PREVIEW:
+				mir->preview = cols[i];
 				break;
 			default:
 				g_warn_if_reached ();
@@ -2980,6 +2978,8 @@ message_info_new_from_headers (CamelFolderSummary *summary,
 	g_free (to);
 	g_free (cc);
 	g_free (mlist);
+
+	camel_util_fill_message_info_user_headers (mi, headers);
 
 	if ((date = camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "Date")))
 		camel_message_info_set_date_sent (mi, camel_header_decode_date (date, NULL));

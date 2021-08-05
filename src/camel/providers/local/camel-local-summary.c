@@ -477,11 +477,17 @@ local_summary_sync (CamelLocalSummary *cls,
                     GError **error)
 {
 	CamelFolderSummary *folder_summary;
+	GError *local_error = NULL;
 
 	folder_summary = CAMEL_FOLDER_SUMMARY (cls);
 
-	if (!camel_folder_summary_save (folder_summary, error)) {
-		g_warning ("Could not save summary for local providers");
+	if (!camel_folder_summary_save (folder_summary, &local_error)) {
+		CamelFolder *folder = camel_folder_summary_get_folder (folder_summary);
+		g_warning ("Could not save summary for local providers folder '%s': %s",
+			folder ? camel_folder_get_full_name (folder) : "???",
+			local_error ? local_error->message : "Unknown error");
+		if (local_error)
+			g_propagate_error (error, local_error);
 		return -1;
 	}
 

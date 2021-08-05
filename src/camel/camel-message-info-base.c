@@ -40,6 +40,8 @@ struct _CamelMessageInfoBasePrivate {
 	guint64 message_id;
 	GArray *references;	/* guint64, aka CamelSummaryMessageID */
 	CamelNameValueArray *headers;
+	CamelNameValueArray *user_headers;
+	gchar *preview;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelMessageInfoBase, camel_message_info_base, CAMEL_TYPE_MESSAGE_INFO)
@@ -779,8 +781,149 @@ message_info_base_take_headers (CamelMessageInfo *mi,
 	if (changed) {
 		camel_name_value_array_free (bmi->priv->headers);
 		bmi->priv->headers = headers;
+
+		/* Automatically fill user headers from the known message headers */
+		if (headers)
+			camel_util_fill_message_info_user_headers (mi, headers);
 	} else {
 		camel_name_value_array_free (headers);
+	}
+
+	camel_message_info_property_unlock (mi);
+
+	return changed;
+}
+
+static const gchar *
+message_info_base_get_user_header (const CamelMessageInfo *mi,
+				   const gchar *name)
+{
+	CamelMessageInfoBase *bmi;
+	const gchar *result;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO_BASE (mi), NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	bmi = CAMEL_MESSAGE_INFO_BASE (mi);
+
+	camel_message_info_property_lock (mi);
+	if (bmi->priv->user_headers)
+		result = camel_name_value_array_get_named (bmi->priv->user_headers, CAMEL_COMPARE_CASE_INSENSITIVE, name);
+	else
+		result = NULL;
+	camel_message_info_property_unlock (mi);
+
+	return result;
+}
+
+static gboolean
+message_info_base_set_user_header (CamelMessageInfo *mi,
+				   const gchar *name,
+				   const gchar *value)
+{
+	CamelMessageInfoBase *bmi;
+	gboolean changed;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO_BASE (mi), FALSE);
+	g_return_val_if_fail (name != NULL, FALSE);
+
+	bmi = CAMEL_MESSAGE_INFO_BASE (mi);
+
+	camel_message_info_property_lock (mi);
+	if (!bmi->priv->user_headers)
+		bmi->priv->user_headers = camel_name_value_array_new ();
+
+	if (value)
+		changed = camel_name_value_array_set_named (bmi->priv->user_headers, CAMEL_COMPARE_CASE_INSENSITIVE, name, value);
+	else
+		changed = camel_name_value_array_remove_named (bmi->priv->user_headers, CAMEL_COMPARE_CASE_INSENSITIVE, name, TRUE);
+	camel_message_info_property_unlock (mi);
+
+	return changed;
+}
+
+static const CamelNameValueArray *
+message_info_base_get_user_headers (const CamelMessageInfo *mi)
+{
+	CamelMessageInfoBase *bmi;
+	const CamelNameValueArray *result;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO_BASE (mi), NULL);
+
+	bmi = CAMEL_MESSAGE_INFO_BASE (mi);
+
+	camel_message_info_property_lock (mi);
+	result = bmi->priv->user_headers;
+	camel_message_info_property_unlock (mi);
+
+	return result;
+}
+
+static gboolean
+message_info_base_take_user_headers (CamelMessageInfo *mi,
+				     CamelNameValueArray *headers)
+{
+	CamelMessageInfoBase *bmi;
+	gboolean changed;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO_BASE (mi), FALSE);
+
+	bmi = CAMEL_MESSAGE_INFO_BASE (mi);
+
+	camel_message_info_property_lock (mi);
+
+	changed = !camel_name_value_array_equal (bmi->priv->user_headers, headers, CAMEL_COMPARE_CASE_INSENSITIVE);
+
+	if (changed) {
+		camel_name_value_array_free (bmi->priv->user_headers);
+		bmi->priv->user_headers = headers;
+	} else {
+		camel_name_value_array_free (headers);
+	}
+
+	camel_message_info_property_unlock (mi);
+
+	return changed;
+}
+
+static const gchar *
+message_info_base_get_preview (const CamelMessageInfo *mi)
+{
+	CamelMessageInfoBase *bmi;
+	const gchar *result;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO_BASE (mi), NULL);
+
+	bmi = CAMEL_MESSAGE_INFO_BASE (mi);
+
+	camel_message_info_property_lock (mi);
+	result = bmi->priv->preview;
+	camel_message_info_property_unlock (mi);
+
+	return result;
+}
+
+static gboolean
+message_info_base_set_preview (CamelMessageInfo *mi,
+			       const gchar *preview)
+{
+	CamelMessageInfoBase *bmi;
+	gboolean changed;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO_BASE (mi), FALSE);
+
+	bmi = CAMEL_MESSAGE_INFO_BASE (mi);
+
+	camel_message_info_property_lock (mi);
+
+	if (preview && !*preview)
+		preview = NULL;
+
+	changed = g_strcmp0 (bmi->priv->preview, preview) != 0;
+
+	if (changed) {
+		g_free (bmi->priv->preview);
+		bmi->priv->preview = g_strdup (preview);
 	}
 
 	camel_message_info_property_unlock (mi);
@@ -804,11 +947,15 @@ message_info_base_dispose (GObject *object)
 	g_clear_pointer (&bmi->priv->to, (GDestroyNotify) camel_pstring_free);
 	g_clear_pointer (&bmi->priv->cc, (GDestroyNotify) camel_pstring_free);
 	g_clear_pointer (&bmi->priv->mlist, (GDestroyNotify) camel_pstring_free);
+	g_clear_pointer (&bmi->priv->preview, g_free);
 
 	g_clear_pointer (&bmi->priv->references, g_array_unref);
 
 	camel_name_value_array_free (bmi->priv->headers);
 	bmi->priv->headers = NULL;
+
+	camel_name_value_array_free (bmi->priv->user_headers);
+	bmi->priv->user_headers = NULL;
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (camel_message_info_base_parent_class)->dispose (object);
@@ -855,6 +1002,12 @@ camel_message_info_base_class_init (CamelMessageInfoBaseClass *class)
 	mi_class->take_references = message_info_base_take_references;
 	mi_class->get_headers = message_info_base_get_headers;
 	mi_class->take_headers = message_info_base_take_headers;
+	mi_class->get_user_header = message_info_base_get_user_header;
+	mi_class->set_user_header = message_info_base_set_user_header;
+	mi_class->get_user_headers = message_info_base_get_user_headers;
+	mi_class->take_user_headers = message_info_base_take_user_headers;
+	mi_class->get_preview = message_info_base_get_preview;
+	mi_class->set_preview = message_info_base_set_preview;
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = message_info_base_dispose;

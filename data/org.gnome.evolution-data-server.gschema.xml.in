@@ -19,6 +19,11 @@
       <_summary>Override SMTP HELO/EHLO argument</_summary>
       <_description>When not empty, it's used as the SMTP HELO/EHLO argument, instead of the local host name/IP.</_description>
     </key>
+    <key name="camel-message-info-user-headers" type="as">
+      <default>[]</default>
+      <_summary>Array of user header names</_summary>
+      <_description>These headers can be stored in the folder summary, eventually being visible in the GUI. The value can contain a pipe character ('|'), which delimits the display name from the header name. Example: 'Span Score|X-Spam-Score'</_description>
+    </key>
     <key name="network-monitor-gio-name" type="s">
       <default>''</default>
       <_summary>GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance</_summary>

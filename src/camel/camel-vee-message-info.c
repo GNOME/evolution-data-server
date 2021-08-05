@@ -430,6 +430,47 @@ vee_message_info_take_headers (CamelMessageInfo *mi,
 	vee_call_from_parent_mi (FALSE, gboolean, camel_message_info_take_headers, (orig_mi, headers), TRUE);
 }
 
+static const gchar *
+vee_message_info_get_user_header (const CamelMessageInfo *mi,
+				  const gchar *name)
+{
+	vee_call_from_parent_mi (NULL, const gchar *, camel_message_info_get_user_header, (orig_mi, name), FALSE);
+}
+
+static gboolean
+vee_message_info_set_user_header (CamelMessageInfo *mi,
+				  const gchar *name,
+				  const gchar *value)
+{
+	vee_call_from_parent_mi (FALSE, gboolean, camel_message_info_set_user_header, (orig_mi, name, value), TRUE);
+}
+
+static const CamelNameValueArray *
+vee_message_info_get_user_headers (const CamelMessageInfo *mi)
+{
+	vee_call_from_parent_mi (NULL, const CamelNameValueArray *, camel_message_info_get_user_headers, (orig_mi), FALSE);
+}
+
+static gboolean
+vee_message_info_take_user_headers (CamelMessageInfo *mi,
+				    CamelNameValueArray *headers)
+{
+	vee_call_from_parent_mi (FALSE, gboolean, camel_message_info_take_user_headers, (orig_mi, headers), TRUE);
+}
+
+static const gchar *
+vee_message_info_get_preview (const CamelMessageInfo *mi)
+{
+	vee_call_from_parent_mi (NULL, const gchar *, camel_message_info_get_preview, (orig_mi), FALSE);
+}
+
+static gboolean
+vee_message_info_set_preview (CamelMessageInfo *mi,
+			      const gchar *preview)
+{
+	vee_call_from_parent_mi (FALSE, gboolean, camel_message_info_set_preview, (orig_mi, preview), TRUE);
+}
+
 #undef vee_call_from_parent_mi
 
 static void
@@ -485,6 +526,12 @@ camel_vee_message_info_class_init (CamelVeeMessageInfoClass *class)
 	mi_class->take_references = vee_message_info_take_references;
 	mi_class->get_headers = vee_message_info_get_headers;
 	mi_class->take_headers = vee_message_info_take_headers;
+	mi_class->get_user_header = vee_message_info_get_user_header;
+	mi_class->set_user_header = vee_message_info_set_user_header;
+	mi_class->get_user_headers = vee_message_info_get_user_headers;
+	mi_class->take_user_headers = vee_message_info_take_user_headers;
+	mi_class->get_preview = vee_message_info_get_preview;
+	mi_class->set_preview = vee_message_info_set_preview;
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = vee_message_info_dispose;

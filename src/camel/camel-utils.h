@@ -25,6 +25,10 @@
 #include <glib-object.h>
 #include <time.h>
 #include <camel/camel-enums.h>
+#include <camel/camel-message-info.h>
+#include <camel/camel-name-value-array.h>
+
+#define CAMEL_UTILS_MAX_USER_HEADERS 3
 
 G_BEGIN_DECLS
 
@@ -43,6 +47,17 @@ time_t		camel_time_value_apply		(time_t src_time,
 
 GWeakRef *	camel_utils_weak_ref_new	(gpointer object);
 void		camel_utils_weak_ref_free	(GWeakRef *weak_ref);
+
+gboolean	camel_util_fill_message_info_user_headers
+						(CamelMessageInfo *info,
+						 const CamelNameValueArray *headers);
+gchar *		camel_util_encode_user_header_setting
+						(const gchar *display_name,
+						 const gchar *header_name);
+void		camel_util_decode_user_header_setting
+						(const gchar *setting_value,
+						 gchar **out_display_name,
+						 const gchar **out_header_name);
 
 G_END_DECLS
 

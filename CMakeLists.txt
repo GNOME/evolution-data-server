@@ -48,7 +48,7 @@ set(USER_PROMPTER_DBUS_SERVICE_NAME	"org.gnome.evolution.dataserver.UserPrompter
 # ******************************
 # Library versioning
 # ******************************
-set(LIBCAMEL_CURRENT 62)
+set(LIBCAMEL_CURRENT 63)
 set(LIBCAMEL_REVISION 0)
 set(LIBCAMEL_AGE 0)
 

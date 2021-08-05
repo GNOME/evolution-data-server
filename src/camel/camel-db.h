@@ -160,6 +160,8 @@ typedef gint (* CamelDBCollate)(gpointer enc, gint length1, gconstpointer data1,
  * @usertags: composite string of user tags
  * @cinfo: content info string - composite string
  * @bdata: provider specific data
+ * @userheaders: value for user-defined message headers; Since: 3.42
+ * @preview: message body preview; Since: 3.42
  *
  * The extensive DB format, supporting basic searching and sorting.
  *
@@ -192,6 +194,8 @@ typedef struct _CamelMIRecord {
 	gchar *usertags;
 	gchar *cinfo;
 	gchar *bdata;
+	gchar *userheaders;
+	gchar *preview;
 } CamelMIRecord;
 
 /**
@@ -254,6 +258,7 @@ typedef struct _CamelFIRecord {
  * @CAMEL_DB_COLUMN_MLIST: mlist
  * @CAMEL_DB_COLUMN_NEXTUID: nextuid
  * @CAMEL_DB_COLUMN_PART: part
+ * @CAMEL_DB_COLUMN_PREVIEW: preview
  * @CAMEL_DB_COLUMN_READ: read
  * @CAMEL_DB_COLUMN_REPLIED: replied
  * @CAMEL_DB_COLUMN_SAVED_COUNT: saved_count
@@ -262,6 +267,7 @@ typedef struct _CamelFIRecord {
  * @CAMEL_DB_COLUMN_TIME: time
  * @CAMEL_DB_COLUMN_UID: uid
  * @CAMEL_DB_COLUMN_UNREAD_COUNT: unread_count
+ * @CAMEL_DB_COLUMN_USERHEADERS: userheaders
  * @CAMEL_DB_COLUMN_USERTAGS: usertags
  * @CAMEL_DB_COLUMN_VERSION: version
  * @CAMEL_DB_COLUMN_VISIBLE_COUNT: visible_count
@@ -296,6 +302,7 @@ typedef enum {
 	CAMEL_DB_COLUMN_MLIST,
 	CAMEL_DB_COLUMN_NEXTUID,
 	CAMEL_DB_COLUMN_PART,
+	CAMEL_DB_COLUMN_PREVIEW,
 	CAMEL_DB_COLUMN_READ,
 	CAMEL_DB_COLUMN_REPLIED,
 	CAMEL_DB_COLUMN_SAVED_COUNT,
@@ -304,6 +311,7 @@ typedef enum {
 	CAMEL_DB_COLUMN_TIME,
 	CAMEL_DB_COLUMN_UID,
 	CAMEL_DB_COLUMN_UNREAD_COUNT,
+	CAMEL_DB_COLUMN_USERHEADERS,
 	CAMEL_DB_COLUMN_USERTAGS,
 	CAMEL_DB_COLUMN_VERSION,
 	CAMEL_DB_COLUMN_VISIBLE_COUNT,

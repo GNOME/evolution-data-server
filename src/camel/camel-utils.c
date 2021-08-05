@@ -19,7 +19,9 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <gio/gio.h>
 
+#include "camel-mime-utils.h"
 #include "camel-utils.h"
 
 /**
@@ -283,4 +285,246 @@ camel_utils_weak_ref_free (GWeakRef *weak_ref)
 
 	g_weak_ref_clear (weak_ref);
 	g_slice_free (GWeakRef, weak_ref);
+}
+
+G_LOCK_DEFINE_STATIC (mi_user_headers);
+static GSettings *mi_user_headers_settings = NULL;
+static gchar **mi_user_headers = NULL;
+
+static void
+mi_user_headers_settings_changed_cb (GSettings *settings,
+				     const gchar *key,
+				     gpointer user_data)
+{
+	G_LOCK (mi_user_headers);
+
+	if (mi_user_headers_settings) {
+		gboolean changed;
+		gchar **strv;
+		guint ii, jj = 0;
+
+		strv = g_settings_get_strv (mi_user_headers_settings, "camel-message-info-user-headers");
+		changed = (!mi_user_headers && strv && strv[0]) || (mi_user_headers && (!strv || !strv[0]));
+
+		if (mi_user_headers && strv && !changed) {
+			for (ii = 0, jj = 0; strv[ii] && mi_user_headers[jj] && jj < CAMEL_UTILS_MAX_USER_HEADERS; ii++) {
+				const gchar *name = NULL;
+
+				camel_util_decode_user_header_setting (strv[ii], NULL, &name);
+
+				if (name && *name) {
+					if (g_ascii_strcasecmp (mi_user_headers[jj], name) != 0) {
+						changed = TRUE;
+						break;
+					}
+					jj++;
+				}
+			}
+
+			changed = changed || (strv[ii] && jj < CAMEL_UTILS_MAX_USER_HEADERS) || (!strv[ii] && jj < CAMEL_UTILS_MAX_USER_HEADERS && mi_user_headers[jj]);
+		}
+
+		if (changed) {
+			GPtrArray *array;
+
+			array = g_ptr_array_sized_new (jj + 2);
+
+			for (ii = 0, jj = 0; strv && strv[ii] && jj < CAMEL_UTILS_MAX_USER_HEADERS; ii++) {
+				const gchar *name = NULL;
+
+				camel_util_decode_user_header_setting (strv[ii], NULL, &name);
+
+				if (name && *name) {
+					g_ptr_array_add (array, g_strdup (name));
+					jj++;
+				}
+			}
+
+			/* NULL-terminated */
+			g_ptr_array_add (array, NULL);
+
+			g_strfreev (mi_user_headers);
+			mi_user_headers = (gchar **) g_ptr_array_free (array, FALSE);
+		}
+
+		g_strfreev (strv);
+	}
+
+	G_UNLOCK (mi_user_headers);
+}
+
+/* private functions */
+void _camel_utils_initialize (void);
+void _camel_utils_shutdown (void);
+
+/* <private> */
+void
+_camel_utils_initialize (void)
+{
+	G_LOCK (mi_user_headers);
+	mi_user_headers_settings = g_settings_new ("org.gnome.evolution-data-server");
+	g_signal_connect (mi_user_headers_settings, "changed::camel-message-info-user-headers",
+		G_CALLBACK (mi_user_headers_settings_changed_cb), NULL);
+	G_UNLOCK (mi_user_headers);
+	mi_user_headers_settings_changed_cb (NULL, NULL, NULL);
+}
+
+/* <private> */
+void
+_camel_utils_shutdown (void)
+{
+	G_LOCK (mi_user_headers);
+	if (mi_user_headers_settings) {
+		g_clear_object (&mi_user_headers_settings);
+		g_strfreev (mi_user_headers);
+		mi_user_headers = NULL;
+	}
+	G_UNLOCK (mi_user_headers);
+}
+
+/**
+ * camel_util_fill_message_info_user_headers:
+ * @info: a #CamelMessageInfo
+ * @headers: a #CamelNameValueArray with the headers to read from
+ *
+ * Fill @info 's user-headers with the user-defined headers from
+ * the @headers array.
+ *
+ * Returns: Whether the @info's user headers changed
+ *
+ * Since: 3.42
+ **/
+gboolean
+camel_util_fill_message_info_user_headers (CamelMessageInfo *info,
+					   const CamelNameValueArray *headers)
+{
+	gboolean changed = FALSE;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO (info), FALSE);
+	g_return_val_if_fail (headers != NULL, FALSE);
+
+	camel_message_info_freeze_notifications (info);
+
+	G_LOCK (mi_user_headers);
+
+	if (mi_user_headers) {
+		CamelNameValueArray *array;
+		guint ii;
+
+		array = camel_name_value_array_new ();
+
+		for (ii = 0; mi_user_headers[ii]; ii++) {
+			const gchar *value;
+			gchar *str;
+
+			value = camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, mi_user_headers[ii]);
+			if (!value)
+				continue;
+
+			while (*value && g_ascii_isspace (*value))
+				value++;
+
+			str = camel_header_unfold (value);
+
+			if (str && *str)
+				camel_name_value_array_set_named (array, CAMEL_COMPARE_CASE_INSENSITIVE, mi_user_headers[ii], str);
+			else
+				camel_name_value_array_remove_named (array, CAMEL_COMPARE_CASE_INSENSITIVE, mi_user_headers[ii], TRUE);
+
+			g_free (str);
+		}
+
+		if (camel_name_value_array_get_length (array) == 0) {
+			camel_name_value_array_free (array);
+			array = NULL;
+		}
+
+		changed = camel_message_info_take_user_headers (info, array);
+	}
+
+	G_UNLOCK (mi_user_headers);
+
+	camel_message_info_thaw_notifications (info);
+
+	return changed;
+}
+
+/**
+ * camel_util_encode_user_header_setting:
+ * @display_name: (nullable): display name for the header name, or %NULL
+ * @header_name: the header name
+ *
+ * Encode the optional @display_name and the @header_name to a value suitable
+ * for GSettings schema org.gnome.evolution-data-server and key camel-message-info-user-headers.
+ *
+ * Free the returned string with g_free(), when no longer needed.
+ *
+ * Returns: (transfer full): a newly allocated string with encoded @display_name
+ *    and @header_name
+ *
+ * Since: 3.42
+ **/
+gchar *
+camel_util_encode_user_header_setting (const gchar *display_name,
+				       const gchar *header_name)
+{
+	g_return_val_if_fail (header_name && *header_name, NULL);
+
+	if (display_name && *display_name)
+		return g_strconcat (display_name, "|", header_name, NULL);
+
+	return g_strdup (header_name);
+}
+
+/**
+ * camel_util_decode_user_header_setting:
+ * @setting_value: the value to decode
+ * @out_display_name: (out) (transfer full) (nullable): location for the decoded display name, or %NULL when not needed
+ * @out_header_name: (out): the location for the decoded header name
+ *
+ * Decode the values previously encoded by camel_util_encode_user_header_setting().
+ * The @out_header_name points to the @setting_value, thus it's valid as long
+ * as the @setting_value is valid and unchanged.
+ *
+ * The @out_header_name can result in %NULL when the @setting_value
+ * contains invalid data.
+ *
+ * The @out_display_name can result in %NULL when the @setting_value
+ * does not contain the display name. In such case the header name can
+ * be used as the display name.
+ *
+ * Since: 3.42
+ **/
+void
+camel_util_decode_user_header_setting (const gchar *setting_value,
+				       gchar **out_display_name,
+				       const gchar **out_header_name)
+{
+	const gchar *ptr;
+
+	g_return_if_fail (setting_value != NULL);
+	g_return_if_fail (out_header_name != NULL);
+
+	*out_header_name = NULL;
+
+	if (out_display_name)
+		*out_display_name = NULL;
+
+	if (!*setting_value)
+		return;
+
+	ptr = strchr (setting_value, '|');
+
+	/* Nothing after the pipe means no header name */
+	if (ptr && !ptr[1])
+		return;
+
+	if (ptr) {
+		if (out_display_name && ptr != setting_value)
+			*out_display_name = g_strndup (setting_value, ptr - setting_value);
+
+		*out_header_name = ptr + 1;
+	} else {
+		*out_header_name = setting_value;
+	}
 }

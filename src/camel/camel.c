@@ -37,6 +37,10 @@
 #include "camel-provider.h"
 #include "camel-win32.h"
 
+/* private functions from camel-utils.c */
+void _camel_utils_initialize (void);
+void _camel_utils_shutdown (void);
+
 /* To protect NSS initialization and shutdown. This prevents
  * concurrent calls to shutdown () and init () by different threads */
 PRLock *nss_initlock = NULL;
@@ -232,6 +236,8 @@ skip_nss_init:
 
 	g_object_unref (certdb);
 
+	_camel_utils_initialize ();
+
 	initialised = TRUE;
 
 	return 0;
@@ -264,6 +270,8 @@ camel_shutdown (void)
 			NSS_Shutdown ();
 		PR_Unlock (nss_initlock);
 	}
+
+	_camel_utils_shutdown ();
 
 	initialised = FALSE;
 }
