@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: 3.12\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2021-06-21 10:04+0000\n"
-"PO-Revision-Date: 2021-06-25 19:14+0100\n"
+"POT-Creation-Date: 2021-08-05 08:45+0000\n"
+"PO-Revision-Date: 2021-08-06 14:45+0100\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: https://l10n.gnome.org/teams/pt/\n"
 "Language: pt\n"
@@ -82,7 +82,7 @@ msgstr "URL “%s” dada não faz referência a um livro de endereços CardDAV"
 #: ../src/camel/providers/nntp/camel-nntp-store.c:419
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:183
-#: ../src/libedataserver/e-soup-session.c:1234
+#: ../src/libedataserver/e-soup-session.c:1239
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
 #: ../src/libedataserverui/e-reminders-widget.c:1994
 #: ../src/tools/list-sources/list-sources.c:429
@@ -1006,7 +1006,7 @@ msgstr "Erro ao processar a expressão regular"
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
 #: ../src/addressbook/libedata-book/e-book-cache.c:4586
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1877
-#: ../src/camel/camel-db.c:814
+#: ../src/camel/camel-db.c:816
 #, c-format
 msgid "Insufficient memory"
 msgstr "Memória insuficiente"
@@ -2682,7 +2682,7 @@ msgstr "Esvaziar o ficheiro de cache"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Impossível remover a entrada de cache: %s: %s"
 
-#: ../src/camel/camel-db.c:868
+#: ../src/camel/camel-db.c:870
 #: ../src/camel/providers/local/camel-mbox-store.c:913
 #, c-format
 msgid "Could not rename “%s” to %s: %s"
@@ -2957,7 +2957,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder-summary.c:1661
+#: ../src/camel/camel-folder-summary.c:1662
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Libertar memória não usada para a pasta “%s : %s”"
@@ -3638,7 +3638,6 @@ msgstr ""
 "Outlook.com"
 
 #: ../src/camel/camel-sasl-xoauth2-yahoo.c:23
-#| msgid "OAuth2 (Google)"
 msgid "OAuth2 (Yahoo!)"
 msgstr "OAuth2 (Yahoo!)"
 
@@ -6046,10 +6045,25 @@ msgstr ""
 "do anfitrião local/IP."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
+msgid "Array of user header names"
+msgstr "Matriz de nomes de cabeçalho de utilizador"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
+msgid ""
+"These headers can be stored in the folder summary, eventually being visible "
+"in the GUI. The value can contain a pipe character ('|'), which delimits the "
+"display name from the header name. Example: 'Span Score|X-Spam-Score'"
+msgstr ""
+"Estes cabeçalhos podem ser armazenados no resumo da pasta, eventualmente "
+"visíveis na GUI. O valor pode conter um carácter de 'pipe' ('|'), que "
+"delimita o nome de exibição do nome do cabeçalho. Exemplo: 'Pontuação de "
+"span| X-Spam-Score'"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
 msgstr "Nome GIO do GNetworkMonitor para uso numa instância ENetworkMonitor"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
 msgid ""
 "When set to an unknown value, then the default GNetworkMonitor is used in "
 "the background. A special value “always-online” is used for no network "
@@ -6059,7 +6073,7 @@ msgstr ""
 "utilizado no fundo. Um valor especial “always-online” é utilizado para não "
 "haver monitorização de rede."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
 msgid ""
 "A full path to a directory where .source files with preconfigured options "
 "can be stored"
@@ -6067,7 +6081,7 @@ msgstr ""
 "Um caminho completo para um diretório onde os ficheiros .source com opções "
 "pré-configuradas podem ser armazenados"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
 msgid ""
 "This directory, if filled with an existing path, is checked additionally to "
 "XDG configure directories."
@@ -6075,13 +6089,13 @@ msgstr ""
 "Este diretório, se preenchido com um caminho existente, é verificado "
 "adicionalmente aos diretórios de configuração do XDG."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
 msgid "A list of variables which can be part of the autoconfig .source files"
 msgstr ""
 "Uma lista de variáveis que podem fazer parte dos ficheiros .source do "
 "autoconfig"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
 msgid ""
 "Each item of the array is expected to be of the form: name=value. These "
 "variables are checked before environment variables, but after the predefined "
@@ -6091,11 +6105,11 @@ msgstr ""
 "são verificadas antes das variáveis de ambiente, mas após as variáveis "
 "predefinidas de USER, REALNAME e HOSTING."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
 msgid "A list of hints for OAuth2 services"
 msgstr "Uma lista de dicas para os serviços do OAuth2"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
 msgid ""
 "Users can extend the list of supported protocols and hostnames for defined "
 "OAuth2 services, in addition to those hard-coded. Each line can be of the "
@@ -6128,7 +6142,7 @@ msgstr ""
 "caldav.company.com - permite autenticação \"Empresa\" OAuth2 para qualquer "
 "fonte \"CalDAV\", que lê dados de \"caldav.company.com\" hospedeiro"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
 msgid ""
 "An OAuth2 client ID to use to connect to Google servers, instead of the one "
 "provided during build time"
@@ -6136,7 +6150,7 @@ msgstr ""
 "Um ID de cliente OAuth2 a utilizar para se ligar aos servidores Google, em "
 "vez do fornecido durante a hora da compilação"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
 msgid ""
 "User-specified OAuth2 client ID for Google servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
@@ -6145,7 +6159,7 @@ msgstr ""
 "Cadeia vazia significa utilizar a que é fornecida durante a hora da "
 "compilação. A alteração desta requer reinício."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
 msgid ""
 "An OAuth2 client secret to use to connect to Google servers, instead of the "
 "one provided during build time"
@@ -6153,7 +6167,7 @@ msgstr ""
 "Um segredo de cliente OAuth2 a utilizar para se ligar aos servidores Google, "
 "em vez do que é fornecido durante a hora da compilação"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
 msgid ""
 "User-specified OAuth2 client secret for Google servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
@@ -6162,7 +6176,7 @@ msgstr ""
 "Google. Cadeia vazia significa utilizar a que é fornecida durante a hora da "
 "compilação. A alteração disto requer reinício."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:22
 msgid ""
 "An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
 "provided during build time"
@@ -6170,7 +6184,7 @@ msgstr ""
 "Um ID de cliente OAuth2 a utilizar para se ligar a servidores Outlook, em "
 "vez do fornecido durante a hora da compilação"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:23
 msgid ""
 "User-specified OAuth2 client ID for Outlook servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
@@ -6179,7 +6193,7 @@ msgstr ""
 "Cadeia vazia significa utilizar a que é fornecida durante a hora da "
 "compilação. A alteração desta requer reinício."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:22
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
 msgid ""
 "An OAuth2 client secret to use to connect to Outlook servers, instead of the "
 "one provided during build time"
@@ -6187,7 +6201,7 @@ msgstr ""
 "Um segredo de cliente OAuth2 a utilizar para se ligar aos servidores do "
 "Outlook, em vez do fornecido durante a hora da compilação"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:23
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
 msgid ""
 "User-specified OAuth2 client secret for Outlook servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
@@ -6196,7 +6210,7 @@ msgstr ""
 "Outlook. Cadeia vazia significa utilizar a que é fornecida durante a hora da "
 "compilação. A alteração disto requer reinício."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
 msgid ""
 "An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
 "provided during build time"
@@ -6204,7 +6218,7 @@ msgstr ""
 "Um ID de cliente OAuth2 a utilizar para se ligar aos servidores Yahoo, em "
 "vez do fornecido durante o tempo da compilação"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
 msgid ""
 "User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
@@ -6213,7 +6227,7 @@ msgstr ""
 "Cadeia vazia significa utilizar a que é fornecida durante a hora da "
 "compilação. A alteração desta requer reinício."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:28
 msgid ""
 "An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
 "one provided during build time"
@@ -6221,7 +6235,7 @@ msgstr ""
 "Um segredo de cliente OAuth2 a utilizar para se ligar aos servidores Yahoo, "
 "em vez do que é fornecido durante a hora da compilação"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:29
 msgid ""
 "User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
@@ -6663,16 +6677,15 @@ msgstr "Outlook"
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: ../src/libedataserver/e-oauth2-service-yahoo.c:53
-#| msgid "Yahoo! Mail"
 msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: ../src/libedataserver/e-soup-session.c:958
+#: ../src/libedataserver/e-soup-session.c:963
 msgid "Operation was cancelled"
 msgstr "A operação foi cancelada"
 
-#: ../src/libedataserver/e-soup-session.c:964
+#: ../src/libedataserver/e-soup-session.c:969
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Falhou com o erro HTTP %d: %s"
@@ -7234,14 +7247,14 @@ msgstr ""
 "Autentique-se na sua conta %s e aceite as condições de forma a aceder à sua "
 "conta “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:606
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:730
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:235
 #: ../src/libedataserverui/e-trust-prompt.c:111
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1094
 msgid "_Cancel"
 msgstr "_Cancelar"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:680
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:804
 msgid "URL:"
 msgstr "URL:"
 
@@ -7620,8 +7633,8 @@ msgstr ""
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:326
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:354
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:882
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1130
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:883
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1131
 msgid "Reminders"
 msgstr "Lembretes"
 
@@ -7657,27 +7670,27 @@ msgstr ""
 msgid "Do not ask me about this program again"
 msgstr "Não volte a perguntar desta aplicação"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
 msgid "Display Reminders window with _notifications"
 msgstr "Mostrar janela dos Lembretes com _notificações"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
 msgid "Keep reminder notification window always on _top"
 msgstr "Manter a janela de notificação do lembrete sempre no _topo"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
 msgid "Display reminders for _completed tasks"
 msgstr "Mostrar lembretes para tarefas _completadas"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:791
 msgid "Display reminders for _past events"
 msgstr "Mostrar lembretes para eventos _passados"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:804
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:805
 msgid "Reminders Options:"
 msgstr "Opções dos lembretes:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:898
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:899
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
