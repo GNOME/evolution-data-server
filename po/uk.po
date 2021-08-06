@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/issues\n"
-"POT-Creation-Date: 2021-06-14 20:06+0000\n"
-"PO-Revision-Date: 2021-06-15 22:24+0300\n"
+"POT-Creation-Date: 2021-08-05 08:45+0000\n"
+"PO-Revision-Date: 2021-08-06 20:45+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -79,7 +79,7 @@ msgstr "Вказана адреса, «%s» не є адресою адресн�
 #: ../src/camel/providers/nntp/camel-nntp-store.c:419
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:183
-#: ../src/libedataserver/e-soup-session.c:1234
+#: ../src/libedataserver/e-soup-session.c:1239
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
 #: ../src/libedataserverui/e-reminders-widget.c:1994
 #: ../src/tools/list-sources/list-sources.c:429
@@ -898,37 +898,30 @@ msgid "Twitter Name List"
 msgstr "Список назв Twitter"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:351
-#| msgid "Jabber Home ID 1"
 msgid "Matrix Home ID 1"
 msgstr "Домашній ідентифікатор Matrix 1"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:352
-#| msgid "Jabber Home ID 2"
 msgid "Matrix Home ID 2"
 msgstr "Домашній ідентифікатор Matrix 2"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:353
-#| msgid "Jabber Home ID 3"
 msgid "Matrix Home ID 3"
 msgstr "Домашній ідентифікатор Matrix 3"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:354
-#| msgid "Jabber Work ID 1"
 msgid "Matrix Work ID 1"
 msgstr "Робочий ідентифікатор Matrix 1"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:355
-#| msgid "Jabber Work ID 2"
 msgid "Matrix Work ID 2"
 msgstr "Робочий ідентифікатор Matrix 1"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:356
-#| msgid "Jabber Work ID 3"
 msgid "Matrix Work ID 3"
 msgstr "Робочий ідентифікатор Matrix 1"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:357
-#| msgid "Jabber ID List"
 msgid "Matrix ID List"
 msgstr "Список ідентифікаторів Matrix"
 
@@ -1011,7 +1004,7 @@ msgstr "Помилка аналізу регулярного виразу"
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
 #: ../src/addressbook/libedata-book/e-book-cache.c:4586
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1877
-#: ../src/camel/camel-db.c:814
+#: ../src/camel/camel-db.c:816
 #, c-format
 msgid "Insufficient memory"
 msgstr "Недостатньо пам'яті"
@@ -1339,23 +1332,23 @@ msgstr "Не вдалося зберегти дані календаря: неп
 msgid "Cannot save calendar data"
 msgstr "Не вдалося зберегти дані календаря"
 
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1184
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1313
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1185
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1314
 #, c-format
 msgid "Cannot parse ISC file “%s”"
 msgstr "Не вдалося обробити файл ISC «%s»"
 
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1195
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1324
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1196
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1325
 #, c-format
 msgid "File “%s” is not a VCALENDAR component"
 msgstr "Файл «%s» не є компонентом VCALENDAR"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3739
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3745
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3751
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3778
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3740
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3746
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3752
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3779
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2559
 msgid "Unsupported method"
 msgstr "Непідтримуваний метод"
@@ -2723,7 +2716,7 @@ msgstr "Порожній файл кешу"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Не вдалося вилучити кешований елемент: %s: %s"
 
-#: ../src/camel/camel-db.c:868
+#: ../src/camel/camel-db.c:870
 #: ../src/camel/providers/local/camel-mbox-store.c:913
 #, c-format
 msgid "Could not rename “%s” to %s: %s"
@@ -3004,7 +2997,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder-summary.c:1661
+#: ../src/camel/camel-folder-summary.c:1662
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Звільнення невикористаної пам'яті для теки «%s : %s»"
@@ -6076,11 +6069,24 @@ msgstr ""
 "назви або IP-адреси локального вузла."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
+msgid "Array of user header names"
+msgstr ""
+"Масив назв заголовків користувача"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
+msgid ""
+"These headers can be stored in the folder summary, eventually being visible "
+"in the GUI. The value can contain a pipe character ('|'), which delimits the "
+"display name from the header name. Example: 'Span Score|X-Spam-Score'"
+msgstr ""
+"Ці заголовки може бути збережено у резюме теки і колись показано у графічному інтерфейсі. Значення може містити символ каналу («|»), яке відділяє показану назву від назви заголовка. Приклад: «Span Score|X-Spam-Score»"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
 msgstr ""
 "GIO-назва для GNetworkMonitor для використання екземпляра ENetworkMonitor"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
 msgid ""
 "When set to an unknown value, then the default GNetworkMonitor is used in "
 "the background. A special value “always-online” is used for no network "
@@ -6090,7 +6096,7 @@ msgstr ""
 "GNetworkMonitor у фоновому режимі. Спеціальне значення «always-online» "
 "використовується, якщо немає спостереження за мережею."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
 msgid ""
 "A full path to a directory where .source files with preconfigured options "
 "can be stored"
@@ -6098,7 +6104,7 @@ msgstr ""
 "Повний шлях до каталогу, де можна зберігати файли .source з попередньо "
 "налаштованими параметрами"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
 msgid ""
 "This directory, if filled with an existing path, is checked additionally to "
 "XDG configure directories."
@@ -6106,12 +6112,12 @@ msgstr ""
 "У цьому каталозі, якщо вказано наявний шлях, буде здійснено додатковий до "
 "каталогів XDG пошук налаштувань."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
 msgid "A list of variables which can be part of the autoconfig .source files"
 msgstr ""
 "Список змінних, які можуть бути частиною .source-файлів автоналаштувань"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
 msgid ""
 "Each item of the array is expected to be of the form: name=value. These "
 "variables are checked before environment variables, but after the predefined "
@@ -6121,11 +6127,11 @@ msgstr ""
 "враховано до змінних середовища, але після попередньо визначених змінних "
 "USER, REALNAME та HOST."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
 msgid "A list of hints for OAuth2 services"
 msgstr "Список підказок для служб OAuth2"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
 msgid ""
 "Users can extend the list of supported protocols and hostnames for defined "
 "OAuth2 services, in addition to those hard-coded. Each line can be of the "
@@ -6158,7 +6164,7 @@ msgstr ""
 "caldav.company.com — вмикає розпізнавання OAuth2 «Company» для будь-якого "
 "джерела «CalDAV», яке читає дані з вузла «caldav.company.com»"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
 msgid ""
 "An OAuth2 client ID to use to connect to Google servers, instead of the one "
 "provided during build time"
@@ -6166,7 +6172,7 @@ msgstr ""
 "Ідентифікатор клієнта OAuth2, який використовується для з'єднання із "
 "серверами Google, не той, який надається під час збирання"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
 msgid ""
 "User-specified OAuth2 client ID for Google servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
@@ -6175,7 +6181,7 @@ msgstr ""
 "«використовувати той, який надається під час збирання». Для набуття чинності "
 "змінами програму слід перезапустити."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
 msgid ""
 "An OAuth2 client secret to use to connect to Google servers, instead of the "
 "one provided during build time"
@@ -6183,7 +6189,7 @@ msgstr ""
 "Клієнтський ключ OAuth2, який слід використовувати для з'єднання із "
 "серверами Google, замість того, який надається під час збирання"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
 msgid ""
 "User-specified OAuth2 client secret for Google servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
@@ -6192,7 +6198,7 @@ msgstr ""
 "використовувати той, який надається під час збирання. Для набуття чинності "
 "зміненим параметром програму слід перезапустити."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:22
 msgid ""
 "An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
 "provided during build time"
@@ -6200,7 +6206,7 @@ msgstr ""
 "Ідентифікатор клієнта OAuth2, який використовується для з'єднання із "
 "серверами Outlook, замість того, який надається під час збирання"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:23
 msgid ""
 "User-specified OAuth2 client ID for Outlook servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
@@ -6210,7 +6216,7 @@ msgstr ""
 "збирання. Для набуття чинності змінами у цьому параметрі програму слід "
 "перезапустити."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:22
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
 msgid ""
 "An OAuth2 client secret to use to connect to Outlook servers, instead of the "
 "one provided during build time"
@@ -6218,7 +6224,7 @@ msgstr ""
 "Клієнтський ключ OAuth2, який слід використовувати для з'єднання із "
 "серверами Outlook, замість того, який надається під час збирання"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:23
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
 msgid ""
 "User-specified OAuth2 client secret for Outlook servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
@@ -6227,7 +6233,7 @@ msgstr ""
 "використовувати той, який надається під час збирання. Для набуття чинності "
 "зміненим параметром програму слід перезапустити."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
 msgid ""
 "An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
 "provided during build time"
@@ -6235,7 +6241,7 @@ msgstr ""
 "Ідентифікатор клієнта OAuth2, який використовується для з'єднання із "
 "серверами Yahoo!, не той, який надається під час збирання"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
 msgid ""
 "User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
@@ -6244,7 +6250,7 @@ msgstr ""
 "«використовувати той, який надається під час збирання». Для набуття чинності "
 "змінами програму слід перезапустити."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:28
 msgid ""
 "An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
 "one provided during build time"
@@ -6252,7 +6258,7 @@ msgstr ""
 "Клієнтський ключ OAuth2, який слід використовувати для з'єднання із "
 "серверами Yahoo!, замість того, який надається під час збирання"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:29
 msgid ""
 "User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
@@ -6694,11 +6700,11 @@ msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: ../src/libedataserver/e-soup-session.c:958
+#: ../src/libedataserver/e-soup-session.c:963
 msgid "Operation was cancelled"
 msgstr "Операцію скасовано"
 
-#: ../src/libedataserver/e-soup-session.c:964
+#: ../src/libedataserver/e-soup-session.c:969
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Помилка HTTP %d: %s"
@@ -7257,14 +7263,14 @@ msgstr ""
 "Щоб мати доступ до вашого облікового запису «%s», ви маєте увійти до вашого "
 "облікового запису %s і погодитися із умовами."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:606
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:730
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:235
 #: ../src/libedataserverui/e-trust-prompt.c:111
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1094
 msgid "_Cancel"
 msgstr "_Скасувати"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:680
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:804
 msgid "URL:"
 msgstr "Адреса:"
 
@@ -7642,8 +7648,8 @@ msgstr ""
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:326
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:354
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:882
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1130
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:883
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1131
 msgid "Reminders"
 msgstr "Нагадування"
 
@@ -7680,27 +7686,27 @@ msgstr ""
 msgid "Do not ask me about this program again"
 msgstr "Не питайте мене знову про цю програму"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
 msgid "Display Reminders window with _notifications"
 msgstr "Показувати вікно нагадувань за допомогою с_повіщень"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
 msgid "Keep reminder notification window always on _top"
 msgstr "Тримати вікно сповіщень нагадування завжди _над іншими"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
 msgid "Display reminders for _completed tasks"
 msgstr "Відображення нагадувань про _виконані завдання"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:791
 msgid "Display reminders for _past events"
 msgstr "Показувати нагадування _минулих завдань"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:804
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:805
 msgid "Reminders Options:"
 msgstr "Параметри нагадувань:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:898
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:899
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
