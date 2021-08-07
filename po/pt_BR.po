@@ -15,24 +15,24 @@
 # Jonh Wendell <jwendell@gnome.org>, 2012.
 # Felipe Braga <fbobraga@gmail.com>, 2015.
 # Henrique Machado Campos <henriquecamposrj@gmail.com>, 2021.
-# Enrico Nicoletto <liverig@gmail.com>, 2013-2016, 2021.
 # Rafael Fontenelle <rafaelff@gnome.org>, 2012-2021.
+# Enrico Nicoletto <liverig@gmail.com>, 2013-2016, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2021-06-14 20:06+0000\n"
-"PO-Revision-Date: 2021-07-10 17:22-0300\n"
-"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
+"POT-Creation-Date: 2021-08-05 08:45+0000\n"
+"PO-Revision-Date: 2021-08-07 15:16-0300\n"
+"Last-Translator: Enrico Nicoletto <liverig@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
-"X-Generator: Gtranslator 40.0\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.0\n"
 "X-DamnedLies-Scope: partial\n"
 "X-Project-Style: gnome\n"
 
@@ -92,7 +92,7 @@ msgstr "A URL “%s” dada não faz referência ao catálogo de endereços Card
 #: ../src/camel/providers/nntp/camel-nntp-store.c:419
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:183
-#: ../src/libedataserver/e-soup-session.c:1234
+#: ../src/libedataserver/e-soup-session.c:1239
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
 #: ../src/libedataserverui/e-reminders-widget.c:1994
 #: ../src/tools/list-sources/list-sources.c:429
@@ -907,37 +907,30 @@ msgid "Twitter Name List"
 msgstr "Lista de nomes do Twitter"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:351
-#| msgid "Jabber Home ID 1"
 msgid "Matrix Home ID 1"
 msgstr "ID Matrix particular 1"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:352
-#| msgid "Jabber Home ID 2"
 msgid "Matrix Home ID 2"
 msgstr "ID Matrix particular 2"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:353
-#| msgid "Jabber Home ID 3"
 msgid "Matrix Home ID 3"
 msgstr "ID Matrix particular 3"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:354
-#| msgid "Jabber Work ID 1"
 msgid "Matrix Work ID 1"
 msgstr "ID Matrix profissional 1"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:355
-#| msgid "Jabber Work ID 2"
 msgid "Matrix Work ID 2"
 msgstr "ID Matrix profissional 2"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:356
-#| msgid "Jabber Work ID 3"
 msgid "Matrix Work ID 3"
 msgstr "ID Matrix profissional 3"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:357
-#| msgid "Jabber ID List"
 msgid "Matrix ID List"
 msgstr "Lista de IDs Matrix"
 
@@ -1024,7 +1017,7 @@ msgstr "Erro ao analisar expressão regular"
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
 #: ../src/addressbook/libedata-book/e-book-cache.c:4586
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1877
-#: ../src/camel/camel-db.c:814
+#: ../src/camel/camel-db.c:816
 #, c-format
 msgid "Insufficient memory"
 msgstr "Memória insuficiente"
@@ -1352,23 +1345,23 @@ msgstr "Não é possível salvar dados da agenda: URI malformado."
 msgid "Cannot save calendar data"
 msgstr "Não é possível salvar dados da agenda"
 
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1184
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1313
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1185
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1314
 #, c-format
 msgid "Cannot parse ISC file “%s”"
 msgstr "Não foi possível analisar arquivo ISC “%s”"
 
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1195
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1324
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1196
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1325
 #, c-format
 msgid "File “%s” is not a VCALENDAR component"
 msgstr "O arquivo “%s” não é um componente de VCALENDAR"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3739
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3745
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3751
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3778
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3740
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3746
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3752
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3779
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2559
 msgid "Unsupported method"
 msgstr "Não há suporte ao método"
@@ -2699,7 +2692,7 @@ msgstr "Arquivo de cache vazio"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Não foi possível remover item do cache: %s: %s"
 
-#: ../src/camel/camel-db.c:868
+#: ../src/camel/camel-db.c:870
 #: ../src/camel/providers/local/camel-mbox-store.c:913
 #, c-format
 msgid "Could not rename “%s” to %s: %s"
@@ -2974,7 +2967,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder-summary.c:1661
+#: ../src/camel/camel-folder-summary.c:1662
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Liberar memória inutilizada para a pasta “%s : %s”"
@@ -4709,7 +4702,6 @@ msgid "For storing local mail in maildir directories."
 msgstr "Para armazenar correio local em diretórios maildir."
 
 #: ../src/camel/providers/local/camel-local-provider.c:110
-#| msgid "_Listen for server change notifications"
 msgid "_Listen for change notifications"
 msgstr "_Ouvir notificações de mudanças"
 
@@ -5150,7 +5142,6 @@ msgid "Spool folders cannot be renamed"
 msgstr "As pastas de fila não podem ser renomeadas"
 
 #: ../src/camel/providers/local/camel-spool-store.c:779
-#| msgid "Error refreshing folder"
 msgid "Refreshing spool folder"
 msgstr "Renovando a pasta do spool"
 
@@ -6069,11 +6060,26 @@ msgstr ""
 "nome/IP local do host."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
+msgid "Array of user header names"
+msgstr "Vetor de nomes de cabeçalho de usuário"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
+msgid ""
+"These headers can be stored in the folder summary, eventually being visible "
+"in the GUI. The value can contain a pipe character ('|'), which delimits the "
+"display name from the header name. Example: 'Span Score|X-Spam-Score'"
+msgstr ""
+"Estes cabeçalhos podem ser armazenados no resumo de pasta, eventualmente "
+"estando visível na GUI. O valor pode conter um caractere pipe ('|'), que "
+"delimita o nome exibido do nome do cabeçalho. Exemplo: “Pontuação de Spam|X-"
+"Spam-Score”"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
 msgstr ""
 "Nome GIO do GNetworkMonitor a ser usado para uma instância ENetworkMonitor"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
 msgid ""
 "When set to an unknown value, then the default GNetworkMonitor is used in "
 "the background. A special value “always-online” is used for no network "
@@ -6083,7 +6089,7 @@ msgstr ""
 "no plano de fundo. Um valor especial “always-online” é usado para nenhum "
 "monitoramento de rede."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
 msgid ""
 "A full path to a directory where .source files with preconfigured options "
 "can be stored"
@@ -6091,7 +6097,7 @@ msgstr ""
 "Um caminho completo para um diretório no qual arquivos .source com opções "
 "pré-configuradas podem ser armazenadas"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
 msgid ""
 "This directory, if filled with an existing path, is checked additionally to "
 "XDG configure directories."
@@ -6099,13 +6105,13 @@ msgstr ""
 "Esse diretório, se preenchido com um caminho existente, é verificado "
 "adicionalmente aos diretórios de configuração de XDG."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
 msgid "A list of variables which can be part of the autoconfig .source files"
 msgstr ""
 "Uma lista de variáveis que podem ser parte dos arquivos de autoconfiguração ."
 "source"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
 msgid ""
 "Each item of the array is expected to be of the form: name=value. These "
 "variables are checked before environment variables, but after the predefined "
@@ -6115,11 +6121,11 @@ msgstr ""
 "são verificadas antes das variáveis de ambiente, mas após as variáveis pré-"
 "definidas USER, REALNAME e HOST."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
 msgid "A list of hints for OAuth2 services"
 msgstr "Uma lista de dicas para serviços OAuth2"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
 msgid ""
 "Users can extend the list of supported protocols and hostnames for defined "
 "OAuth2 services, in addition to those hard-coded. Each line can be of the "
@@ -6151,7 +6157,7 @@ msgstr ""
 "com.br – habilita a autenticação “Company” OAuth2 para qualquer fonte "
 "“CalDAV”, que lê dados do host “caldav.empresa.com.br”"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
 msgid ""
 "An OAuth2 client ID to use to connect to Google servers, instead of the one "
 "provided during build time"
@@ -6159,7 +6165,7 @@ msgstr ""
 "Um ID de cliente OAuth2 a ser usado para se conectar aos servidores do "
 "Google, em vez do fornecido durante a compilação"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
 msgid ""
 "User-specified OAuth2 client ID for Google servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
@@ -6168,7 +6174,7 @@ msgstr ""
 "String vazia significa usar o fornecido durante a compilação. A alteração "
 "disso requer reiniciar."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
 msgid ""
 "An OAuth2 client secret to use to connect to Google servers, instead of the "
 "one provided during build time"
@@ -6176,7 +6182,7 @@ msgstr ""
 "Um segredo de cliente OAuth2 a ser usado para conectar aos servidores do "
 "Google, em vez do fornecido durante a compilação."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
 msgid ""
 "User-specified OAuth2 client secret for Google servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
@@ -6185,7 +6191,7 @@ msgstr ""
 "Google. String vazia significa usar o fornecido durante a compilação. A "
 "alteração disso requer reiniciar."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:22
 msgid ""
 "An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
 "provided during build time"
@@ -6193,7 +6199,7 @@ msgstr ""
 "Um ID de cliente OAuth2 a ser usado para conectar aos servidores do Outlook, "
 "em vez do fornecido durante a compilação."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:23
 msgid ""
 "User-specified OAuth2 client ID for Outlook servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
@@ -6202,7 +6208,7 @@ msgstr ""
 "String vazia significa usar o fornecido durante a compilação. A alteração "
 "disso requer reiniciar."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:22
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
 msgid ""
 "An OAuth2 client secret to use to connect to Outlook servers, instead of the "
 "one provided during build time"
@@ -6210,7 +6216,7 @@ msgstr ""
 "Um segredo de cliente OAuth2 a ser usado para conectar aos servidores do "
 "Outlook, em vez do fornecido durante a compilação."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:23
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
 msgid ""
 "User-specified OAuth2 client secret for Outlook servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
@@ -6219,7 +6225,7 @@ msgstr ""
 "Outlook. String vazia significa usar o fornecido durante a compilação. A "
 "alteração disso requer reiniciar."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
 msgid ""
 "An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
 "provided during build time"
@@ -6227,7 +6233,7 @@ msgstr ""
 "Um ID de cliente OAuth2 a ser usado para se conectar aos servidores do "
 "Yahoo!, em vez do fornecido durante a compilação"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
 msgid ""
 "User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
@@ -6236,7 +6242,7 @@ msgstr ""
 "String vazia significa usar o fornecido durante a compilação. A alteração "
 "disso requer reiniciar."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:28
 msgid ""
 "An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
 "one provided during build time"
@@ -6244,7 +6250,7 @@ msgstr ""
 "Um segredo de cliente OAuth2 a ser usado para conectar aos servidores do "
 "Yahoo!, em vez do fornecido durante a compilação."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:29
 msgid ""
 "User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
@@ -6690,11 +6696,11 @@ msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: ../src/libedataserver/e-soup-session.c:958
+#: ../src/libedataserver/e-soup-session.c:963
 msgid "Operation was cancelled"
 msgstr "A operação foi cancelada"
 
-#: ../src/libedataserver/e-soup-session.c:964
+#: ../src/libedataserver/e-soup-session.c:969
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Falha com error HTTP %d: %s"
@@ -7259,14 +7265,14 @@ msgstr ""
 "Autentique-se na sua conta %s e aceite condições para ter acesso a sua conta "
 "“%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:606
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:730
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:235
 #: ../src/libedataserverui/e-trust-prompt.c:111
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1094
 msgid "_Cancel"
 msgstr "_Cancelar"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:680
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:804
 msgid "URL:"
 msgstr "URL:"
 
@@ -7643,8 +7649,8 @@ msgstr ""
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:326
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:354
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:882
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1130
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:883
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1131
 msgid "Reminders"
 msgstr "Lembretes"
 
@@ -7681,27 +7687,27 @@ msgstr ""
 msgid "Do not ask me about this program again"
 msgstr "Não me perguntar sobre esse programa novamente"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
 msgid "Display Reminders window with _notifications"
 msgstr "Exibir janela de lembretes com _notificações"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
 msgid "Keep reminder notification window always on _top"
 msgstr "Manter a janela de notificação de lembrete sempre no _topo"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
 msgid "Display reminders for _completed tasks"
 msgstr "Exibir lembretes para tarefas _concluídas"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:791
 msgid "Display reminders for _past events"
 msgstr "Exibir lembretes para e_ventos anteriores"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:804
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:805
 msgid "Reminders Options:"
 msgstr "Opções de lembretes:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:898
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:899
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
@@ -7975,684 +7981,3 @@ msgstr "Falha ao conectar a um servidor fonte: %s\n"
 #, c-format
 msgid "No sources had been found\n"
 msgstr "Nenhuma fonte foi localizada\n"
-
-#~ msgid "Failed to create contact from returned server data"
-#~ msgstr "Falha ao criar contato a partir dos dados retornados do servidor"
-
-#~ msgid "Server returned contact without UID"
-#~ msgstr "O servidor retornou contato sem UID"
-
-#~ msgid "Friends"
-#~ msgstr "Amigos"
-
-#~ msgid "Family"
-#~ msgstr "Família"
-
-#~ msgid "Coworkers"
-#~ msgstr "Colegas de trabalho"
-
-#~ msgid ""
-#~ "Paned position in the reminder notification dialog, the split size "
-#~ "between list of the events and the description"
-#~ msgstr ""
-#~ "Posição panorâmica na caixa de diálogo de notificação de lembrete, o "
-#~ "tamanho da divisão entre a lista dos eventos e a descrição"
-
-#~ msgid "Success"
-#~ msgstr "Sucesso"
-
-#~ msgid "Authentication Failed"
-#~ msgstr "A autenticação falhou"
-
-#~ msgid "Authentication Required"
-#~ msgstr "Autenticação exigida"
-
-#~ msgid "Unsupported field"
-#~ msgstr "Não há suporte ao campo"
-
-#~ msgid "Address book does not exist"
-#~ msgstr "O catálogo de endereços não existe"
-
-#~ msgid "Book removed"
-#~ msgstr "Catálogo removido"
-
-#~ msgid "Not available in offline mode"
-#~ msgstr "Não disponível no modo desconectado"
-
-#~ msgid "Invalid server version"
-#~ msgstr "Versão do servidor inválida"
-
-#~ msgid "Repository is offline"
-#~ msgstr "O repositório está desconectado"
-
-#~ msgid "URI not loaded"
-#~ msgstr "URI não foi carregada"
-
-#~ msgid "URI already loaded"
-#~ msgstr "URI já foi carregada"
-
-#~ msgid "Unknown User"
-#~ msgstr "Usuário desconhecido"
-
-#~ msgid "Protocol not supported"
-#~ msgstr "Não há suporte ao protocolo"
-
-#~ msgid "Operation has been cancelled"
-#~ msgstr "A operação foi cancelada"
-
-#~ msgid "Could not cancel operation"
-#~ msgstr "Não foi possível cancelar a operação"
-
-#~ msgid "A D-Bus exception has occurred"
-#~ msgstr "Ocorreu uma exceção D-Bus"
-
-#~ msgid "No error"
-#~ msgstr "Sem erro"
-
-#~ msgid "Calendar does not exist"
-#~ msgstr "A agenda não existe"
-
-#~ msgid ""
-#~ "Invalid trace information:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Informação de rastreamento inválida:\n"
-#~ "%s"
-
-#~ msgid "Integrate your calendars"
-#~ msgstr "Integre suas agendas"
-
-#~ msgid "Integrate your contacts"
-#~ msgstr "Integre seus contatos"
-
-#~ msgid "Signon service did not return a secret"
-#~ msgstr "Serviço de autenticação de sessão não retornou um segredo"
-
-#~ msgid "Evolution Data Server"
-#~ msgstr "Servidor de dados do Evolution"
-
-# Uma forma de associar o EDS ao nome traduzido.
-#~ msgid "Required to have EDS appear in UOA"
-#~ msgstr ""
-#~ "É necessário que servidor de dados do Evolution (EDS) apareça no UOA"
-
-#~ msgid "Google Calendar"
-#~ msgstr "Agenda do Google"
-
-#~ msgid "Google Contacts"
-#~ msgstr "Contatos do Google"
-
-#~ msgid "GMail"
-#~ msgstr "GMail"
-
-#~ msgid "Mail"
-#~ msgstr "Correio"
-
-#~ msgid "Integrate your mailboxes"
-#~ msgstr "Integre suas caixas de correio"
-
-#~ msgid ""
-#~ "Cannot find a corresponding account service in the accounts database from "
-#~ "which to obtain an access token for “%s”"
-#~ msgstr ""
-#~ "Não foi possível encontrar um serviço de conta correspondente na base de "
-#~ "dados de contas a fim de obter um token de acesso para “%s”"
-
-#~ msgid ""
-#~ "Expected status 200 when requesting your identity, instead got status %d "
-#~ "(%s)"
-#~ msgstr ""
-#~ "Esperava-se estado 200 ao solicitar sua identidade, ao invés disso obteve-"
-#~ "se estado %d (%s)"
-
-#~ msgid "Error parsing response as JSON: "
-#~ msgstr "Erro ao analisar resposta em JSON: "
-
-#~ msgid "Didn’t find “email” in JSON data"
-#~ msgstr "Não foi possível encontrar “email” em dados JSON"
-
-#~ msgid "Didn’t find “id” in JSON data"
-#~ msgstr "Não foi possível encontrar “id” em dados JSON"
-
-#~ msgid "Didn’t find “emails.account” in JSON data"
-#~ msgstr "Não foi possível encontrar “emails.account” em dados JSON"
-
-#~ msgid "Windows Live Mail"
-#~ msgstr "Windows Live Mail"
-
-#~ msgid "Yahoo! Calendar"
-#~ msgstr "Agenda do Yahoo!"
-
-#~ msgid "User name not filled"
-#~ msgstr "Nome de usuário não preenchido"
-
-#~| msgid "Credentials store is not supported"
-#~ msgid "Credentials required"
-#~ msgstr "Credenciais exigidas"
-
-#~ msgid "Google authentication is not supported"
-#~ msgstr "Não há suporte à autenticação do Google"
-
-#~ msgid "Failed to get Google secret from credentials"
-#~ msgstr "Falha ao obter segredo de Google para credenciais"
-
-#~ msgid "Refresh token not found in Google secret"
-#~ msgstr "Token de renovação não localizado no segredo de Google"
-
-#~ msgid "Failed to construct refresh_token request"
-#~ msgstr "Falha ao construir requisição de refresh_token"
-
-#~ msgid "Failed to encode new access token to Google secret"
-#~ msgstr "Falha ao codificar novo token de acesso ao segredo de Google"
-
-#~ msgid "Failed to refresh token"
-#~ msgstr "Falha ao renovar token"
-
-#~ msgid "Failed to obtain access token from address “%s”. Error code %d (%s)"
-#~ msgstr ""
-#~ "Falha ao obter um token de acesso para o endereço “%s”: código de erro %d "
-#~ "(%s)"
-
-#~ msgid "Google Address book authentication request"
-#~ msgstr "Requisição de autenticação de Google Contatos"
-
-#~ msgid "Google Calendar authentication request"
-#~ msgstr "Requisição de autenticação de Google Agenda"
-
-#~ msgid "Google Mail authentication request"
-#~ msgstr "Requisição de autenticação do Google Mail"
-
-#~ msgid "Querying for updated contacts…"
-#~ msgstr "Consultando por contatos atualizados…"
-
-#~ msgid "Querying for updated groups…"
-#~ msgstr "Consultando por grupos atualizados…"
-
-#~ msgid "Loading…"
-#~ msgstr "Carregando…"
-
-#~ msgid "Loading Addressbook summary..."
-#~ msgstr "Carregando resumo do catálogo de endereços…"
-
-#~ msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
-#~ msgstr "Falha ao PROPFIND no webdav com HTTP estado: %d (%s)"
-
-#~ msgid "No response body in webdav PROPFIND result"
-#~ msgstr "Nenhum conteúdo de reposta no resultado de PROPFIND do webdav"
-
-#~ msgid "Loading Contacts (%d%%)"
-#~ msgstr "Baixando contatos (%d%%)"
-
-#~ msgid "Cannot transform SoupURI to string"
-#~ msgstr "Não foi possível transformar SoupURI em string"
-
-#~ msgid "Create resource “%s” failed with HTTP status %d (%s)"
-#~ msgstr "A criação do recurso “%s” falhou com HTTP estado: %d (%s)"
-
-#~ msgid "Contact on server changed -> not modifying"
-#~ msgstr "Contato no servidor alterado -> não modificando"
-
-#~ msgid "Modify contact failed with HTTP status %d (%s)"
-#~ msgstr "A modificação de contato falhou com HTTP estado: %d (%s)"
-
-#~ msgid "DELETE failed with HTTP status %d"
-#~ msgstr "Falha ao EXCLUIR com HTTP estado: %d"
-
-#~ msgid "Server is unreachable (%s)"
-#~ msgstr "O servidor está inacessível (%s)"
-
-#~ msgid "Failed to login to the server: %s"
-#~ msgstr "Falha ao iniciar sessão no servidor: %s"
-
-#~ msgid "CalDAV backend is not loaded yet"
-#~ msgstr "O backend CalDAV ainda não está carregado"
-
-#~ msgid "Invalid Redirect URL"
-#~ msgstr "URL de redirecionamento inválida"
-
-#~ msgid "Cannot create local cache folder “%s”"
-#~ msgstr "Não foi possível criar a pasta cache local “%s”"
-
-#~ msgid ""
-#~ "Server is unreachable, calendar is opened in read-only mode.\n"
-#~ "Error message: %s"
-#~ msgstr ""
-#~ "O servidor está inacessível, calendário foi aberto em modo somente "
-#~ "leitura.\n"
-#~ "Mensagem de erro: %s"
-
-#~ msgid "CalDAV does not support bulk additions"
-#~ msgstr "CalDAV não oferece suporte a adição em massa"
-
-#~ msgid "CalDAV does not support bulk modifications"
-#~ msgstr "CalDAV não oferece suporte a alterações em massa"
-
-#~ msgid "CalDAV does not support bulk removals"
-#~ msgstr "CalDAV não oferece suporte a remoção em massa"
-
-#~ msgid "Calendar doesn’t support Free/Busy"
-#~ msgstr "Agenda não oferece suporte a livre/ocupado"
-
-# Schedule outbox = caixa de saíde de agendamento? (ou talvez "de agenda" ou "de reunião"?)
-#~ msgid "Schedule outbox url not found"
-#~ msgstr "URL de saída do agendamento não encontrada"
-
-# Vendo pelo código fonte, "schedule-response" parece ser algum tipo campo, e não meramente uma "resposta de agendamento"
-#~ msgid "Unexpected result in schedule-response"
-#~ msgstr "Resultado inesperado no schedule-response"
-
-#~ msgid "Redirected to Invalid URI"
-#~ msgstr "Redirecionado para URI inválida"
-
-#~ msgid "HTTP Error: %s"
-#~ msgstr "Erro de HTTP: %s"
-
-#~ msgid "Empty response"
-#~ msgstr "Resposta vazia"
-
-#~ msgid "Unexpected reply from server"
-#~ msgstr "Resposta não esperada do servidor"
-
-#~ msgid "Update preview data for folder '%s : %s'"
-#~ msgstr "Atualizar previsão de dados para a pasta \"%s : %s\""
-
-#~ msgid "Cannot create folder '%s': %s"
-#~ msgstr "Não foi possível criar a pasta \"%s\": %s"
-
-#~ msgid "Cannot get folder '%s': %s"
-#~ msgstr "Não foi possível obter a pasta \"%s\": %s"
-
-#~ msgid "No such folder '%s'."
-#~ msgstr "A pasta \"%s\" não existe."
-
-#~ msgid "Server disconnected"
-#~ msgstr "Servidor desconectado"
-
-#~ msgid "Error fetching message headers"
-#~ msgstr "Erro ao obter os cabeçalhos da mensagem"
-
-#~ msgid "Error retrieving message"
-#~ msgstr "Erro ao recuperar a mensagem"
-
-#~ msgid "Error fetching new messages"
-#~ msgstr "Erro ao obter novas mensagens"
-
-#~ msgid "No host information available"
-#~ msgstr "Não há informações disponível sobre a máquina"
-
-#~ msgid "Bus name vanished (client terminated?)"
-#~ msgstr "Nome do barramento desapareceu (cliente terminou?)"
-
-#~ msgid "No response from client"
-#~ msgstr "Nenhuma resposta do cliente"
-
-#~ msgid "Client cancelled the operation"
-#~ msgstr "O cliente cancelou a operação"
-
-#~ msgid "Client reports password was rejected"
-#~ msgstr "Cliente relata que a senha foi rejeitada"
-
-#~ msgid "Password was incorrect"
-#~ msgstr "Senha estava incorreta"
-
-#~ msgid "%s does not support authentication"
-#~ msgstr "%s não oferece suporte a autenticação"
-
-# Um alocador é algo que instancia componentes de servidor, por gentileza manter este padrão de tradução.
-#~ msgid "No backend factory for hash key '%s'"
-#~ msgstr "Não há alocador de backend para a chave de hash \"%s\""
-
-#~ msgid "No backend name in source '%s'"
-#~ msgstr "Sem nome de backend na fonte \"%s\""
-
-#~ msgid "Missing source UID"
-#~ msgstr "Falta UID da fonte"
-
-#~ msgid "The user declined to authenticate"
-#~ msgstr "O usuário se recusou a autenticar."
-
-#~ msgid ""
-#~ "SSL certificate for host '%s', used by address book '%s', is not trusted. "
-#~ "Do you wish to accept it?"
-#~ msgstr ""
-#~ "O certificado SSL para a máquina \"%s\", usado pelo livro de endereços "
-#~ "\"%s\", não é confiável. Você deseja aceitá-lo?"
-
-#~ msgid ""
-#~ "SSL certificate for host '%s', used by calendar '%s', is not trusted. Do "
-#~ "you wish to accept it?"
-#~ msgstr ""
-#~ "O certificado SSL para a máquina \"%s\", usado pela agenda \"%s\", não é "
-#~ "confiável. Você deseja aceitá-lo?"
-
-#~ msgid ""
-#~ "SSL certificate for host '%s', used by memo list '%s', is not trusted. Do "
-#~ "you wish to accept it?"
-#~ msgstr ""
-#~ "O certificado SSL para a máquina \"%s\", usado pela lista de memorandos "
-#~ "\"%s\", não é confiável. Você deseja aceitá-lo?"
-
-#~ msgid ""
-#~ "SSL certificate for host '%s', used by task list '%s', is not trusted. Do "
-#~ "you wish to accept it?"
-#~ msgstr ""
-#~ "O certificado SSL para a máquina \"%s\", usado pela lista de tarefas \"%s"
-#~ "\", não é confiável. Você deseja aceitá-lo?"
-
-#~ msgid "No such data source for UID '%s'"
-#~ msgstr "Nenhuma fonte de dados para o UID \"%s\""
-
-#~ msgid "Invalid password for '%s'"
-#~ msgstr "Senha inválida para \"%s\""
-
-#~ msgid "Cannot create folder '%s': folder exists"
-#~ msgstr "Não foi possível criar a pasta \"%s\": pasta existe"
-
-#~ msgid "Cannot create folder '%s': folder exists."
-#~ msgstr "Não foi possível criar a pasta \"%s\": a pasta existe."
-
-#~ msgid ""
-#~ "Could not write log entry: %s\n"
-#~ "Further operations on this server will not be replayed when you\n"
-#~ "reconnect to the network."
-#~ msgstr ""
-#~ "Não foi possível escrever entrada de registro: %s\n"
-#~ "Operações subseqüentes neste servidor não serão reexecutadas quando\n"
-#~ "você se reconectar à rede."
-
-#~ msgid ""
-#~ "Could not open '%s':\n"
-#~ "%s\n"
-#~ "Changes made to this folder will not be resynchronized."
-#~ msgstr ""
-#~ "Não foi possível abrir \"%s\":\n"
-#~ "%s\n"
-#~ "Alterações feitas a esta pasta não serão ressincronizadas."
-
-#~ msgid "Resynchronizing with server"
-#~ msgstr "Ressincronizando com servidor"
-
-#~ msgid "Preparing folder '%s' for offline"
-#~ msgstr "Preparando a pasta \"%s\" para modo desconectado"
-
-#~ msgid ""
-#~ "Alert from IMAP server %s:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Alerta do servidor IMAP %s:\n"
-#~ "%s"
-
-#~ msgid "Error while fetching messages"
-#~ msgstr "Erro ao recuperar as mensagens"
-
-#~ msgid "Fetching summary information for %d message in '%s'"
-#~ msgid_plural "Fetching summary information for %d messages in '%s'"
-#~ msgstr[0] "Obtendo resumo para %d nova mensagem em \"%s\""
-#~ msgstr[1] "Obtendo resumo para %d novas mensagens em \"%s\""
-
-#~ msgid "Unknown parent folder: %s"
-#~ msgstr "Pasta pai desconhecida: %s"
-
-#~ msgid "The parent folder is not allowed to contain subfolders"
-#~ msgstr "A pasta pai não pode conter subpastas"
-
-#~ msgid "You cannot post NNTP messages while working offline!"
-#~ msgstr ""
-#~ "Você não pode publicar mensagens NNTP enquanto trabalha desconectado!"
-
-#~ msgid ""
-#~ "What proxy type to use. \"0\" means system, \"1\" means no proxy, \"2\" "
-#~ "means manual proxy."
-#~ msgstr ""
-#~ "Qual o tipo de proxy a ser usado. \"0\" significa sistema, \"1\" "
-#~ "significa sem proxy, \"2\" significa proxy manual."
-
-#~ msgid "Whether to use proxy for HTTP requests."
-#~ msgstr "Se o proxy deve ser usado nas requisições HTTP."
-
-#~ msgid "Whether authentication is required to access proxy server."
-#~ msgstr ""
-#~ "Se autenticação é necessária para acessar este servidor proxy ou não."
-
-#~ msgid "Host name to use for HTTP requests."
-#~ msgstr "Nome da máquina para requisições HTTP"
-
-#~ msgid "Port number to use for HTTP requests."
-#~ msgstr "Número da porta nas requisições HTTP"
-
-#~ msgid "User name to use to authenticate against proxy server."
-#~ msgstr "Nome de usuário a ser usado na autenticação do servidor proxy."
-
-#~ msgid "Password to use to authenticate against proxy server."
-#~ msgstr "Senha a ser usada na autenticação do servidor proxy."
-
-#~ msgid "List of hosts for which do not use proxy."
-#~ msgstr "Lista de máquinas nas quais o proxy não será usado"
-
-#~ msgid "Host name to use for HTTPS requests."
-#~ msgstr "Nome da máquina para requisições HTTPS"
-
-#~ msgid "Port number to use for HTTPS requests."
-#~ msgstr "Número da porta nas requisições HTTPS"
-
-#~ msgid "Host name to use for SOCKS requests."
-#~ msgstr "Nome da máquina para requisições SOCKS"
-
-#~ msgid "Port number to use for SOCKS requests."
-#~ msgstr "Número da porta nas requisições SOCKS"
-
-#~ msgid "Where to read automatic proxy configuration from."
-#~ msgstr "De onde ler a configuração automática do proxy."
-
-#~ msgid "You may not import keys with this cipher"
-#~ msgstr "Você não pode importar chaves com esta cifra"
-
-#~ msgid "You may not export keys with this cipher"
-#~ msgstr "Você não pode exportar chaves com esta cifra"
-
-#~ msgid "Resolving address"
-#~ msgstr "Resolvendo endereço"
-
-#~ msgid "Name lookup failed"
-#~ msgstr "A consulta de nome falhou"
-
-#~ msgid "Name lookup failed. Check your host name for spelling errors."
-#~ msgstr ""
-#~ "A consulta de nome falhou. Verifique seu nome de máquina por erros de "
-#~ "escrita."
-
-#~ msgid "Name lookup failed: %s"
-#~ msgstr "A consulta de nome falhou: %s"
-
-#~ msgid "Could not connect to '%s:%s': "
-#~ msgstr "Não foi possível conectar-se a \"%s:%s\": "
-
-#~ msgid "Please enter the %s password for %s on host %s."
-#~ msgstr "Por favor, entre com a senha de %s para %s no servidor %s."
-
-#~ msgid "The proxy host does not support SOCKS4"
-#~ msgstr "O proxy não tem suporte a SOCKS4"
-
-#~ msgid "The proxy host denied our request: code %d"
-#~ msgstr "O proxy negou a requisição: código %d"
-
-#~ msgid "The proxy host does not support SOCKS5"
-#~ msgstr "O proxy não tem suporte a SOCKS5"
-
-#~ msgid "Could not find a suitable authentication type: code 0x%x"
-#~ msgstr "Não foi possível localizar um tipo de autenticação: código 0x%x"
-
-#~ msgid "General SOCKS server failure"
-#~ msgstr "Falha geral no serviço de SOCKS"
-
-#~ msgid "SOCKS server's rules do not allow connection"
-#~ msgstr "Regras dos servidores SOCKS não permitem conexões"
-
-#~ msgid "Network is unreachable from SOCKS server"
-#~ msgstr "A rede está inacessível do servidor SOCKS"
-
-#~ msgid "Host is unreachable from SOCKS server"
-#~ msgstr "A máquina está inacessível do servidor SOCKS"
-
-#~ msgid "Connection refused"
-#~ msgstr "Conexão recusada"
-
-#~ msgid "Time-to-live expired"
-#~ msgstr "Tempo de vida expirou"
-
-#~ msgid "Command not supported by SOCKS server"
-#~ msgstr "Comando sem suporte do serviço SOCKS"
-
-#~ msgid "Address type not supported by SOCKS server"
-#~ msgstr "Tipo de endereço sem suporte pelo servidor SOCKS"
-
-#~ msgid "Unknown error from SOCKS server"
-#~ msgstr "Erro desconhecido do serviço SOCKS"
-
-#~ msgid "Got unknown address type from SOCKS server"
-#~ msgstr "Tipo de endereço desconhecido do servidor SOCKS"
-
-#~ msgid "Incomplete reply from SOCKS server"
-#~ msgstr "Resposta incompleta do servidor SOCKS"
-
-#~ msgid "Hostname is too long (maximum is 255 characters)"
-#~ msgstr "Nome de máquina é muito longo (máximo é de 255 caracteres)"
-
-#~ msgid "Invalid reply from proxy server"
-#~ msgstr "Resposta inválida do servidor proxy"
-
-#~ msgid "Unable to add message to summary: unknown reason"
-#~ msgstr "Não foi possível adicionar mensagem ao resumo: razão desconhecida"
-
-#~ msgid "Fatal mail parser error near position %s in folder %s"
-#~ msgstr ""
-#~ "Erro fatal do analisador de correio próximo à posição %s na pasta %s"
-
-#~ msgid "Not part of certificate"
-#~ msgstr "Não faz parte do certificado"
-
-#~ msgid "_Close"
-#~ msgstr "_Fechar"
-
-#~ msgid "This certificate has been verified for the following uses:"
-#~ msgstr "Este certificado foi verificado para os seguintes usos:"
-
-#~ msgid "SSL Client Certificate"
-#~ msgstr "Certificado do cliente SSL"
-
-#~ msgid "SSL Server Certificate"
-#~ msgstr "Certificado do servidor SSL"
-
-#~ msgid "Email Signer Certificate"
-#~ msgstr "Certificado do signatário do e-mail"
-
-#~ msgid "Email Recipient Certificate"
-#~ msgstr "Certificado do destinatário do e-mail"
-
-#~ msgid "Issued To"
-#~ msgstr "Emitido para"
-
-#~ msgid "Common Name (CN)"
-#~ msgstr "Nome comum (CN)"
-
-#~ msgid "Organization (O)"
-#~ msgstr "Organização (O)"
-
-#~ msgid "Organizational Unit (OU)"
-#~ msgstr "Unidade organizacional (OU)"
-
-#~ msgid "Serial Number"
-#~ msgstr "Número de série"
-
-#~ msgid "Issued By"
-#~ msgstr "Emitido por"
-
-#~ msgid "Validity"
-#~ msgstr "Validade"
-
-#~ msgid "Issued On"
-#~ msgstr "Emitido em"
-
-#~ msgid "Expires On"
-#~ msgstr "Válido até"
-
-#~ msgid "Fingerprints"
-#~ msgstr "Impressões digitais"
-
-#~ msgid "SHA1 Fingerprint"
-#~ msgstr "Impressão digital SHA1"
-
-#~ msgid "MD5 Fingerprint"
-#~ msgstr "Impressão digital MD5"
-
-#~ msgid "General"
-#~ msgstr "Geral"
-
-#~ msgid "Certificate Hierarchy"
-#~ msgstr "Hierarquia do certificado"
-
-#~ msgid "Certificate Fields"
-#~ msgstr "Campos do certificado"
-
-#~ msgid "Field Value"
-#~ msgstr "Valor do campo"
-
-#~ msgid "Details"
-#~ msgstr "Detalhes"
-
-#~ msgid "Version"
-#~ msgstr "Versão"
-
-#~ msgid "Version 1"
-#~ msgstr "Versão 1"
-
-#~ msgid "Version 2"
-#~ msgstr "Versão 2"
-
-#~ msgid "Version 3"
-#~ msgstr "Versão 3"
-
-#~ msgid "PKCS #1 MD2 With RSA Encryption"
-#~ msgstr "PKCS #1 MD2 com criptografia RSA"
-
-#~ msgid "PKCS #1 MD5 With RSA Encryption"
-#~ msgstr "PKCS #1 MD5 com criptografia RSA"
-
-#~ msgid "PKCS #1 SHA-1 With RSA Encryption"
-#~ msgstr "PKCS #1 SHA-1 com criptografia RSA"
-
-#~ msgid "PKCS #1 SHA-256 With RSA Encryption"
-#~ msgstr "PKCS #1 SHA-256 com criptografia RSA"
-
-#~ msgid "PKCS #1 SHA-384 With RSA Encryption"
-#~ msgstr "PKCS #1 SHA-384 com criptografia RSA"
-
-#~ msgid "PKCS #1 SHA-512 With RSA Encryption"
-#~ msgstr "PKCS #1 SHA-512 com criptografia RSA"
-
-#~ msgid "PKCS #1 RSA Encryption"
-#~ msgstr "PKCS #1 criptografia RSA"
-
-#~ msgid "Certificate Key Usage"
-#~ msgstr "Utilização da chave do certificado"
-
-#~ msgid "Netscape Certificate Type"
-#~ msgstr "Tipo de certificado Netscape"
-
-#~ msgid "Certificate Authority Key Identifier"
-#~ msgstr "Identificador de chave da autoridade certificadora"
-
-#~ msgid "Object Identifier (%s)"
-#~ msgstr "Identificador do objeto (%s)"
-
-#~ msgid "Algorithm Identifier"
-#~ msgstr "Identificador do algoritmo"
-
-#~ msgid "Algorithm Parameters"
-#~ msgstr "Parâmetros do algoritmo"
-
-#~ msgid "Subject Public Key Info"
-#~ msgstr "Informações da chave pública da entidade"
-
-#~ msgid "Subject Public Key Algorithm"
-#~ msgstr "Algoritmo da chave pública da entidade"
