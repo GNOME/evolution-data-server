@@ -1126,10 +1126,11 @@ pipe_to_system (struct _CamelSExp *f,
 		goto wait;
 	}
 
-	if (camel_stream_flush (stream, NULL, NULL) == -1) {
-		g_object_unref (stream);
-		close (pipe_from_child);
-		goto wait;
+	if (camel_stream_flush (stream, NULL, &error) == -1) {
+		if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT))
+			g_warning ("%s: Failed to flush output stream: %s", G_STRFUNC, error->message);
+		/* Ignore flush errors, it can be due to calling fsync() on the pipe */
+		g_clear_error (&error);
 	}
 
 	g_object_unref (stream);
