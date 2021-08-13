@@ -1,3 +1,36 @@
+Evolution-Data-Server 3.41.2 2021-08-13
+---------------------------------------
+
+Bug Fixes:
+	I#341 - Pass Proxy settings to WebKit in OAuth2 credentials prompter (Milan Crha)
+	I#346 - Camel: "Pipe to program" filter does not work (Milan Crha)
+	M!72 - Typos its <=> it's (Дилян Палаузов)
+	M!73 - Add more GType for many Camel Flags (Corentin Noël)
+	M!74 - LDAP: Don't force LDAPS port to 636 (Christoph Ruegge)
+	evo-I#1433 - Message List columns for custom headers (Milan Crha)
+
+Miscellaneous:
+	CamelMimeFilterToHTML: Speed up read of long lines (Milan Crha)
+	CamelMimeFilterToHTML: Correct filtering of text without new line at the end (Milan Crha)
+	alarm-notify: Focus window on status icon click when shown (Milan Crha)
+	vala: Add support for the auth_type class field of CamelSasl (Corentin Noël)
+	vala: Properly annotate CamelServiceAuthType (Corentin Noël)
+	ESoupSession: Let it understand GSSAPI authentication method (Milan Crha)
+
+Translations:
+	Chao-Hsiung Liao (zh_TW)
+	Rafael Fontenelle (pt_BR)
+	Philipp Kiemle (de)
+	Fabio Tomat (fur)
+	Hugo Carvalho (pt)
+	Yuri Chornoivan (uk)
+	Alexey Rubtsov (ru)
+	Enrico Nicoletto (pt_BR)
+	Marek Černocký (cs)
+	Emin Tufan Çetin (tr)
+	Quentin PAGÈS (oc)
+	Matej Urbančič (sl)
+
 Evolution-Data-Server 3.41.1 2021-07-09
 ---------------------------------------
 
