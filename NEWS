@@ -1,3 +1,20 @@
+Evolution-Data-Server 3.40.4 2021-08-13
+---------------------------------------
+
+Bug Fixes:
+	I#346 - Camel: "Pipe to program" filter does not work (Milan Crha)
+	M!74 - LDAP: Don't force LDAPS port to 636 (Christoph Ruegge)
+
+Miscellaneous:
+	CamelMimeFilterToHTML: Speed up read of long lines (Milan Crha)
+	CamelMimeFilterToHTML: Correct filtering of text without new line at the end (Milan Crha)
+	alarm-notify: Focus window on status icon click when shown (Milan Crha)
+	ESoupSession: Let it understand GSSAPI authentication method (Milan Crha)
+
+Translations:
+	Marek Černocký (cs)
+	Quentin PAGÈS (oc)
+
 Evolution-Data-Server 3.40.3 2021-07-09
 ---------------------------------------
 
