@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2021-06-14 20:06+0000\n"
-"PO-Revision-Date: 2021-06-15 12:09+0200\n"
+"POT-Creation-Date: 2021-08-11 20:23+0000\n"
+"PO-Revision-Date: 2021-08-17 13:51+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -76,8 +76,8 @@ msgstr ""
 #: ../src/calendar/libecal/e-cal-client.c:6604
 #: ../src/calendar/libecal/e-cal-client.c:6828
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1847
-#: ../src/camel/camel-filter-driver.c:1717
-#: ../src/camel/camel-filter-driver.c:1846
+#: ../src/camel/camel-filter-driver.c:1718
+#: ../src/camel/camel-filter-driver.c:1847
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3327
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3333
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3343
@@ -85,7 +85,7 @@ msgstr ""
 #: ../src/camel/providers/nntp/camel-nntp-store.c:419
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:183
-#: ../src/libedataserver/e-soup-session.c:1234
+#: ../src/libedataserver/e-soup-session.c:1239
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
 #: ../src/libedataserverui/e-reminders-widget.c:1994
 #: ../src/tools/list-sources/list-sources.c:429
@@ -901,37 +901,30 @@ msgid "Twitter Name List"
 msgstr "Lista de nombres de Twitter"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:351
-#| msgid "Jabber Home ID 1"
 msgid "Matrix Home ID 1"
 msgstr "ID Matrix 1 (domicilio)"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:352
-#| msgid "Jabber Home ID 2"
 msgid "Matrix Home ID 2"
 msgstr "ID Matrix 2 (domicilio)"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:353
-#| msgid "Jabber Home ID 3"
 msgid "Matrix Home ID 3"
 msgstr "ID Matrix 3 (domicilio)"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:354
-#| msgid "Jabber Work ID 1"
 msgid "Matrix Work ID 1"
 msgstr "ID Matrix 1 (trabajo)"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:355
-#| msgid "Jabber Work ID 2"
 msgid "Matrix Work ID 2"
 msgstr "ID Matrix 2 (trabajo)"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:356
-#| msgid "Jabber Work ID 3"
 msgid "Matrix Work ID 3"
 msgstr "ID Matrix 3 (trabajo)"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:357
-#| msgid "Jabber ID List"
 msgid "Matrix ID List"
 msgstr "Lista de ID Matrix"
 
@@ -1018,7 +1011,7 @@ msgstr "Error al analizar la expresión regular"
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
 #: ../src/addressbook/libedata-book/e-book-cache.c:4586
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1877
-#: ../src/camel/camel-db.c:814
+#: ../src/camel/camel-db.c:816
 #, c-format
 msgid "Insufficient memory"
 msgstr "Memoria insuficiente"
@@ -1347,23 +1340,23 @@ msgstr "No se pueden guardar los datos del calendario: URI malformado."
 msgid "Cannot save calendar data"
 msgstr "No se pueden guardar los datos del calendario"
 
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1184
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1313
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1185
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1314
 #, c-format
 msgid "Cannot parse ISC file “%s”"
 msgstr "No se puede analizar el archivo ISC «%s»"
 
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1195
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1324
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1196
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1325
 #, c-format
 msgid "File “%s” is not a VCALENDAR component"
 msgstr "El archivo «%s» no es un componente VCALENDAR"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3739
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3745
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3751
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3778
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3740
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3746
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3752
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3779
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2559
 msgid "Unsupported method"
 msgstr "Método no soportado"
@@ -2695,7 +2688,7 @@ msgstr "Vaciar caché de archivos"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "No se pudo quitar la entrada de caché: %s: %s"
 
-#: ../src/camel/camel-db.c:868
+#: ../src/camel/camel-db.c:870
 #: ../src/camel/providers/local/camel-mbox-store.c:913
 #, c-format
 msgid "Could not rename “%s” to %s: %s"
@@ -2715,85 +2708,85 @@ msgstr "Transfiriendo mensajes filtrados en «%s : %s»"
 msgid "Failed to create child process “%s”: %s"
 msgstr "Error al crear proceso hijo «%s»: %s"
 
-#: ../src/camel/camel-filter-driver.c:1173
+#: ../src/camel/camel-filter-driver.c:1174
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Flujo de mensaje no válido recibido desde %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1397
-#: ../src/camel/camel-filter-driver.c:1410
+#: ../src/camel/camel-filter-driver.c:1398
+#: ../src/camel/camel-filter-driver.c:1411
 msgid "Syncing folders"
 msgstr "Sincronizando carpetas"
 
-#: ../src/camel/camel-filter-driver.c:1518
+#: ../src/camel/camel-filter-driver.c:1519
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Error analizando filtro: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1529
+#: ../src/camel/camel-filter-driver.c:1530
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Error ejecutando filtro: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1627
+#: ../src/camel/camel-filter-driver.c:1628
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "No se pudo abrir la carpeta «spool»"
 
-#: ../src/camel/camel-filter-driver.c:1639
+#: ../src/camel/camel-filter-driver.c:1640
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "No se pudo procesar la carpeta temporal"
 
-#: ../src/camel/camel-filter-driver.c:1667
+#: ../src/camel/camel-filter-driver.c:1668
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Obteniendo mensaje %d (%d%%)"
 
-#: ../src/camel/camel-filter-driver.c:1676
-#: ../src/camel/camel-filter-driver.c:1699
+#: ../src/camel/camel-filter-driver.c:1677
+#: ../src/camel/camel-filter-driver.c:1700
 #, c-format
 msgid "Failed on message %d"
 msgstr "Falló en el mensaje %d"
 
-#: ../src/camel/camel-filter-driver.c:1717
-#: ../src/camel/camel-filter-driver.c:1846
+#: ../src/camel/camel-filter-driver.c:1718
+#: ../src/camel/camel-filter-driver.c:1847
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "Falló al transferir mensajes: %s"
 
-#: ../src/camel/camel-filter-driver.c:1727
-#: ../src/camel/camel-filter-driver.c:1860
+#: ../src/camel/camel-filter-driver.c:1728
+#: ../src/camel/camel-filter-driver.c:1861
 msgid "Syncing folder"
 msgstr "Sincronizando carpeta"
 
-#: ../src/camel/camel-filter-driver.c:1732
-#: ../src/camel/camel-filter-driver.c:1868
+#: ../src/camel/camel-filter-driver.c:1733
+#: ../src/camel/camel-filter-driver.c:1869
 msgid "Complete"
 msgstr "Completo"
 
-#: ../src/camel/camel-filter-driver.c:1800
+#: ../src/camel/camel-filter-driver.c:1801
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Obteniendo mensaje %d de %d"
 
-#: ../src/camel/camel-filter-driver.c:1818
+#: ../src/camel/camel-filter-driver.c:1819
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Falló en el mensaje %d de %d"
 
-#: ../src/camel/camel-filter-driver.c:2025
-#: ../src/camel/camel-filter-driver.c:2049
+#: ../src/camel/camel-filter-driver.c:2026
+#: ../src/camel/camel-filter-driver.c:2050
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Falló la ejecución del filtro «%s»: "
 
-#: ../src/camel/camel-filter-driver.c:2039
+#: ../src/camel/camel-filter-driver.c:2040
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Error al analizar el filtro «%s»: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:2058
+#: ../src/camel/camel-filter-driver.c:2059
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Error al ejecutar el filtro «%s»: %s: %s"
@@ -2970,7 +2963,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder-summary.c:1661
+#: ../src/camel/camel-folder-summary.c:1662
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Liberar la memoria sin usar para la carpeta «%s : %s»"
@@ -3648,13 +3641,10 @@ msgstr ""
 "de Outlook.com"
 
 #: ../src/camel/camel-sasl-xoauth2-yahoo.c:23
-#| msgid "OAuth2 (Google)"
 msgid "OAuth2 (Yahoo!)"
 msgstr "OAuth2 (Yahoo!)"
 
 #: ../src/camel/camel-sasl-xoauth2-yahoo.c:24
-#| msgid ""
-#| "This option will use an OAuth 2.0 access token to connect to the server"
 msgid ""
 "This option will use an OAuth 2.0 access token to connect to the Yahoo! "
 "server"
@@ -4707,7 +4697,6 @@ msgid "For storing local mail in maildir directories."
 msgstr "Para guardar el correo local en directorios del tipo maildir."
 
 #: ../src/camel/providers/local/camel-local-provider.c:110
-#| msgid "_Listen for server change notifications"
 msgid "_Listen for change notifications"
 msgstr "_Escuchar las notificaciones de cambios"
 
@@ -5148,7 +5137,6 @@ msgid "Spool folders cannot be renamed"
 msgstr "Las carpetas «spool» no se pueden renombrar"
 
 #: ../src/camel/providers/local/camel-spool-store.c:779
-#| msgid "Error refreshing folder"
 msgid "Refreshing spool folder"
 msgstr "Actualizando la carpeta «spool»"
 
@@ -6070,11 +6058,22 @@ msgstr ""
 "nombre/IP del equipo local."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
+msgid "Array of user header names"
+msgstr "Vector de nombres de cabecera de usuario"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
+msgid ""
+"These headers can be stored in the folder summary, eventually being visible "
+"in the GUI. The value can contain a pipe character ('|'), which delimits the "
+"display name from the header name. Example: 'Span Score|X-Spam-Score'"
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
 msgstr ""
 "Nombre GIO del GNetworkMonitor que usar para una instancia de ENetworkMonitor"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
 msgid ""
 "When set to an unknown value, then the default GNetworkMonitor is used in "
 "the background. A special value “always-online” is used for no network "
@@ -6084,7 +6083,7 @@ msgstr ""
 "predeterminado en segundo plano. El valor especial 'always-online' se usa "
 "para no monitorizar la red."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
 msgid ""
 "A full path to a directory where .source files with preconfigured options "
 "can be stored"
@@ -6092,7 +6091,7 @@ msgstr ""
 "Una ruta completa a la carpeta donde se guardan los archivos .source con "
 "opciones configuradas previamente"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
 msgid ""
 "This directory, if filled with an existing path, is checked additionally to "
 "XDG configure directories."
@@ -6100,13 +6099,13 @@ msgstr ""
 "Esta carpeta, si se rellena con una ruta existente, se comprueba además de "
 "las carpetas de configuración de XDG."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
 msgid "A list of variables which can be part of the autoconfig .source files"
 msgstr ""
 "Una lista de variables que pueden ser parte de los archivos .source de "
 "configuración automática"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
 msgid ""
 "Each item of the array is expected to be of the form: name=value. These "
 "variables are checked before environment variables, but after the predefined "
@@ -6116,11 +6115,11 @@ msgstr ""
 "variables se considera antes que las variables de entorno, pero después de "
 "las variables predefinidas USER, REALNAME y HOST."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
 msgid "A list of hints for OAuth2 services"
 msgstr "Una lista de consejos para servicios OAuth2"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
 msgid ""
 "Users can extend the list of supported protocols and hostnames for defined "
 "OAuth2 services, in addition to those hard-coded. Each line can be of the "
@@ -6153,7 +6152,7 @@ msgstr ""
 "com — activa la autenticación OAuth2 de “Empresa” OAuth2 para cualquier "
 "fuente “CalDAV”,que lea datos del equipo “caldav.empresa.com” host"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
 msgid ""
 "An OAuth2 client ID to use to connect to Google servers, instead of the one "
 "provided during build time"
@@ -6161,7 +6160,7 @@ msgstr ""
 "Se usa un ID de cliente OAuth2 para conectarse a servidores de Google, en "
 "lugar de uno proporcionado durante la construcción"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
 msgid ""
 "User-specified OAuth2 client ID for Google servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
@@ -6170,7 +6169,7 @@ msgstr ""
 "cadena vacía significa que se usa uno proporcionado durante la construcción. "
 "Cambiar esto requiere reiniciar."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
 msgid ""
 "An OAuth2 client secret to use to connect to Google servers, instead of the "
 "one provided during build time"
@@ -6178,7 +6177,7 @@ msgstr ""
 "Un secreto de cliente OAuth2 que usar para conectarse a servidores de "
 "Google, en lugar de uno proporcionado durante la construcción"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
 msgid ""
 "User-specified OAuth2 client secret for Google servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
@@ -6187,7 +6186,7 @@ msgstr ""
 "conectarse a servidores de Google. Una cadena vacía significa que se usa uno "
 "proporcionado durante la construcción. Cambiar esto requiere reiniciar."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:22
 msgid ""
 "An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
 "provided during build time"
@@ -6195,7 +6194,7 @@ msgstr ""
 "Usar un ID de cliente OAuth2 para conectarse a servidores de Outlook, en "
 "lugar de uno proporcionado durante la construcción"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:23
 msgid ""
 "User-specified OAuth2 client ID for Outlook servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
@@ -6204,7 +6203,7 @@ msgstr ""
 "servidores de Google. Una cadena vacía significa que se usa uno "
 "proporcionado durante la construcción. Cambiar esto requiere reiniciar."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:22
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
 msgid ""
 "An OAuth2 client secret to use to connect to Outlook servers, instead of the "
 "one provided during build time"
@@ -6212,7 +6211,7 @@ msgstr ""
 "Usar un secreto de cliente OAuth2 para conectarse a servidores de Outlook, "
 "en lugar de uno proporcionado durante la construcción"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:23
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
 msgid ""
 "User-specified OAuth2 client secret for Outlook servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
@@ -6221,10 +6220,7 @@ msgstr ""
 "conectarse a servidores de Google. Una cadena vacía significa que se usa uno "
 "proporcionado durante la construcción. Cambiar esto requiere reiniciar."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
-#| msgid ""
-#| "An OAuth2 client ID to use to connect to Google servers, instead of the "
-#| "one provided during build time"
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
 msgid ""
 "An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
 "provided during build time"
@@ -6232,10 +6228,7 @@ msgstr ""
 "Se usa un ID de cliente OAuth2 para conectarse a servidores de Yahoo!, en "
 "lugar de uno proporcionado durante la construcción"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
-#| msgid ""
-#| "User-specified OAuth2 client ID for Google servers. Empty string means to "
-#| "use the one provided during build time. Change of this requires restart."
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
 msgid ""
 "User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
@@ -6244,10 +6237,7 @@ msgstr ""
 "cadena vacía significa que se usa uno proporcionado durante la construcción. "
 "Cambiar esto requiere reiniciar."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
-#| msgid ""
-#| "An OAuth2 client secret to use to connect to Google servers, instead of "
-#| "the one provided during build time"
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:28
 msgid ""
 "An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
 "one provided during build time"
@@ -6255,11 +6245,7 @@ msgstr ""
 "Un secreto de cliente OAuth2 que usar para conectarse a servidores de "
 "Yahoo!, en lugar de uno proporcionado durante la construcción"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
-#| msgid ""
-#| "User-specified OAuth2 client secret for Google servers. Empty string "
-#| "means to use the one provided during build time. Change of this requires "
-#| "restart."
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:29
 msgid ""
 "User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
@@ -6698,16 +6684,15 @@ msgstr "Outlook"
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: ../src/libedataserver/e-oauth2-service-yahoo.c:53
-#| msgid "Yahoo! Mail"
 msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: ../src/libedataserver/e-soup-session.c:958
+#: ../src/libedataserver/e-soup-session.c:963
 msgid "Operation was cancelled"
 msgstr "Operación cancelada"
 
-#: ../src/libedataserver/e-soup-session.c:964
+#: ../src/libedataserver/e-soup-session.c:969
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Falló con código de error HTTP %d: %s"
@@ -7267,14 +7252,14 @@ msgstr ""
 "Inicie sesión en su cuenta de %s y acepte las condiciones para poder acceder "
 "a su cuenta «%s»."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:606
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:730
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:235
 #: ../src/libedataserverui/e-trust-prompt.c:111
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1094
 msgid "_Cancel"
 msgstr "_Cancelar"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:680
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:804
 msgid "URL:"
 msgstr "URL:"
 
@@ -7652,8 +7637,8 @@ msgstr ""
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:326
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:354
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:882
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1130
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:883
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1131
 msgid "Reminders"
 msgstr "Recordatorios"
 
@@ -7690,29 +7675,29 @@ msgstr ""
 msgid "Do not ask me about this program again"
 msgstr "No preguntar otra vez sobre este programa"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
 msgid "Display Reminders window with _notifications"
 msgstr "Mostrar ventana de recordatorios sólo en el área de _notificación"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
 msgid "Keep reminder notification window always on _top"
 msgstr ""
 "Mantener la _ventana del diálogo de notificación de recordatorios siempre "
 "encima"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
 msgid "Display reminders for _completed tasks"
 msgstr "Mostrar recordatorios para las _tareas completadas"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:791
 msgid "Display reminders for _past events"
 msgstr "Mostrar recordatorios para eventos _pasados"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:804
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:805
 msgid "Reminders Options:"
 msgstr "Opciones del recordatorio:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:898
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:899
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
