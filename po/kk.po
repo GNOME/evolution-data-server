@@ -1,15 +1,15 @@
 # Kazakh translation for evolution-data-server.
 # Copyright (C) 2014 evolution-data-server's COPYRIGHT HOLDER
 # This file is distributed under the same license as the evolution-data-server package.
-# Baurzhan Muftakhidinov <baurthefirst@gmail.com>, 2014-2020.
+# Baurzhan Muftakhidinov <baurthefirst@gmail.com>, 2014-2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2020-06-26 06:00+0000\n"
-"PO-Revision-Date: 2020-07-08 08:12+0500\n"
+"POT-Creation-Date: 2021-08-05 08:45+0000\n"
+"PO-Revision-Date: 2021-08-29 22:36+0500\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
 "Language: kk\n"
@@ -17,95 +17,94 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.3.1\n"
+"X-Generator: Poedit 3.0\n"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:231
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:234
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr ""
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:290
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:293
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1154
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4397
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1136
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4379
 #: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
-#: ../src/addressbook/libebook/e-book.c:1070
-#: ../src/addressbook/libebook/e-book-client.c:2127
-#: ../src/addressbook/libebook/e-book-client.c:2305
-#: ../src/addressbook/libebook/e-book-client.c:2524
-#: ../src/addressbook/libebook/e-book-client.c:2661
-#: ../src/addressbook/libebook/e-book-client.c:2826
-#: ../src/addressbook/libebook/e-book-client.c:2966
-#: ../src/addressbook/libebook/e-book-client.c:3103
-#: ../src/addressbook/libebook/e-book-client.c:3266
-#: ../src/addressbook/libebook/e-book-client.c:3461
-#: ../src/addressbook/libebook/e-book-client.c:3679
+#: ../src/addressbook/libebook/e-book.c:1067
+#: ../src/addressbook/libebook/e-book-client.c:2122
+#: ../src/addressbook/libebook/e-book-client.c:2300
+#: ../src/addressbook/libebook/e-book-client.c:2519
+#: ../src/addressbook/libebook/e-book-client.c:2656
+#: ../src/addressbook/libebook/e-book-client.c:2821
+#: ../src/addressbook/libebook/e-book-client.c:2961
+#: ../src/addressbook/libebook/e-book-client.c:3098
+#: ../src/addressbook/libebook/e-book-client.c:3261
+#: ../src/addressbook/libebook/e-book-client.c:3456
+#: ../src/addressbook/libebook/e-book-client.c:3674
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:873
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:275
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:288
 #: ../src/calendar/backends/http/e-cal-backend-http.c:313
 #: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:197
 #: ../src/calendar/libecal/e-cal-client.c:257
-#: ../src/calendar/libecal/e-cal-client.c:3230
-#: ../src/calendar/libecal/e-cal-client.c:3403
-#: ../src/calendar/libecal/e-cal-client.c:3676
-#: ../src/calendar/libecal/e-cal-client.c:3914
-#: ../src/calendar/libecal/e-cal-client.c:4106
-#: ../src/calendar/libecal/e-cal-client.c:4289
-#: ../src/calendar/libecal/e-cal-client.c:4497
-#: ../src/calendar/libecal/e-cal-client.c:4674
-#: ../src/calendar/libecal/e-cal-client.c:4885
-#: ../src/calendar/libecal/e-cal-client.c:5041
-#: ../src/calendar/libecal/e-cal-client.c:5241
-#: ../src/calendar/libecal/e-cal-client.c:5407
-#: ../src/calendar/libecal/e-cal-client.c:5634
-#: ../src/calendar/libecal/e-cal-client.c:5794
-#: ../src/calendar/libecal/e-cal-client.c:6025
-#: ../src/calendar/libecal/e-cal-client.c:6224
-#: ../src/calendar/libecal/e-cal-client.c:6592
-#: ../src/calendar/libecal/e-cal-client.c:6816
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1799
-#: ../src/camel/camel-filter-driver.c:1715
-#: ../src/camel/camel-filter-driver.c:1847
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3300
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3306
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3316
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3328
+#: ../src/calendar/libecal/e-cal-client.c:3242
+#: ../src/calendar/libecal/e-cal-client.c:3415
+#: ../src/calendar/libecal/e-cal-client.c:3688
+#: ../src/calendar/libecal/e-cal-client.c:3926
+#: ../src/calendar/libecal/e-cal-client.c:4118
+#: ../src/calendar/libecal/e-cal-client.c:4301
+#: ../src/calendar/libecal/e-cal-client.c:4509
+#: ../src/calendar/libecal/e-cal-client.c:4686
+#: ../src/calendar/libecal/e-cal-client.c:4897
+#: ../src/calendar/libecal/e-cal-client.c:5053
+#: ../src/calendar/libecal/e-cal-client.c:5253
+#: ../src/calendar/libecal/e-cal-client.c:5419
+#: ../src/calendar/libecal/e-cal-client.c:5646
+#: ../src/calendar/libecal/e-cal-client.c:5806
+#: ../src/calendar/libecal/e-cal-client.c:6037
+#: ../src/calendar/libecal/e-cal-client.c:6236
+#: ../src/calendar/libecal/e-cal-client.c:6604
+#: ../src/calendar/libecal/e-cal-client.c:6828
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1847
+#: ../src/camel/camel-filter-driver.c:1717
+#: ../src/camel/camel-filter-driver.c:1846
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3327
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3333
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3343
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3355
 #: ../src/camel/providers/nntp/camel-nntp-store.c:419
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:183
-#: ../src/libedataserver/e-soup-session.c:1224
+#: ../src/libedataserver/e-soup-session.c:1239
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
-#: ../src/libedataserverui/e-reminders-widget.c:1931
+#: ../src/libedataserverui/e-reminders-widget.c:1994
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Белгісіз қате"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1095
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1373
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1155
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1376
 #: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:930
 msgid "Server didn’t return object’s href"
 msgstr ""
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1097
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1375
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1157
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1378
 #: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:932
 msgid "Server didn’t return object’s ETag"
 msgstr ""
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1099
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1159
 msgid "Received object is not a valid vCard"
 msgstr ""
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1216
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1276
 msgid ""
 "Missing information about vCard URL, local cache is possibly incomplete or "
 "broken. Remove it, please."
 msgstr ""
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1219
-#: ../src/addressbook/backends/google/e-book-backend-google.c:990
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1279
 msgid "Object to save is not a valid vCard"
 msgstr ""
 
@@ -119,97 +118,65 @@ msgstr "\"%s\" файлын өшіру сәтсіз аяқталды: %s"
 msgid "Failed to make directory %s: %s"
 msgstr "%s бумасын жасау сәтсіз аяқталды: %s"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:416
+#: ../src/addressbook/backends/file/e-book-backend-file.c:429
 #, c-format
 msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr ""
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:521
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1265
+#: ../src/addressbook/backends/file/e-book-backend-file.c:534
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1275
 msgid "No UID in the contact"
 msgstr ""
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:858
+#: ../src/addressbook/backends/file/e-book-backend-file.c:871
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr ""
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:988
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1001
 msgid "Loading..."
 msgstr "Жүктеу..."
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:990
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4512
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1003
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4494
 msgid "Searching..."
 msgstr "Іздеу..."
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1293
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1303
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr ""
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1474
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1560
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3080
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7370
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7439
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1484
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1570
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3076
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7371
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7440
 #, c-format
 msgid "Contact “%s” not found"
 msgstr "\"%s\" контакты табылмады"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1624
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1707
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1634
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1717
 #, c-format
 msgid "Query “%s” not supported"
 msgstr ""
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1633
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1716
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1643
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1726
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr "Жарамсыз сұраным \"%s\""
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1965
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2041
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1975
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2050
 msgid "Requested to delete an unrelated cursor"
 msgstr ""
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:2036
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2046
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr ""
-
-#: ../src/addressbook/backends/google/e-book-backend-google.c:1046
-msgid "Failed to create contact from returned server data"
-msgstr ""
-
-#: ../src/addressbook/backends/google/e-book-backend-google.c:1062
-msgid "Server returned contact without UID"
-msgstr ""
-
-#. System Group: My Contacts
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1656
-#: ../src/services/evolution-source-registry/builtin/system-address-book.source.in.h:1
-#: ../src/services/evolution-source-registry/builtin/system-calendar.source.in.h:1
-#: ../src/services/evolution-source-registry/builtin/system-memo-list.source.in.h:1
-#: ../src/services/evolution-source-registry/builtin/system-task-list.source.in.h:1
-msgid "Personal"
-msgstr "Жеке"
-
-#. System Group: Friends
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1658
-msgid "Friends"
-msgstr "Достар"
-
-#. System Group: Family
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1660
-msgid "Family"
-msgstr "Отбасы"
-
-#. System Group: Coworkers
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1662
-msgid "Coworkers"
-msgstr "Жұмыстастар"
 
 #. Translators: An error message shown to a user when trying to do an
 #. * operation on the LDAP address book which is not connected to the server
@@ -217,48 +184,48 @@ msgstr "Жұмыстастар"
 msgid "Not connected"
 msgstr "Байланыспаған"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:876
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:873
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr ""
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1000
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:982
 msgid "Reconnecting to LDAP server..."
 msgstr ""
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1135
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1117
 msgid "Invalid DN syntax"
 msgstr "DN синтаксисі қате"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1151
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4396
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1133
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4378
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP қатесі 0x%x (%s)"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1794
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2143
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2156
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1776
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2125
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2138
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr ""
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2071
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2215
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2053
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2197
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr ""
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2358
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2496
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2340
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2478
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr ""
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2646
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2628
 msgid "LDAP contact lists cannot be empty."
 msgstr ""
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2684
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2666
 #, c-format
 msgid ""
 "Contact lists in LDAP address books require each member to be from the same "
@@ -268,46 +235,46 @@ msgid_plural ""
 "LDAP address book, but %d members could not be recognized."
 msgstr[0] ""
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4335
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4317
 msgid "Receiving LDAP search results..."
 msgstr ""
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4538
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4520
 msgid "Error performing search"
 msgstr "Іздеуді орындау қатесі"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4678
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4660
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Контакттарды жүктеп алу (%d)..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4779
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:788
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4761
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:790
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:691
 msgid "Refreshing…"
-msgstr ""
+msgstr "Жаңарту…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5172
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5148
 msgid "The backend does not support bulk additions"
 msgstr ""
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5263
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5239
 msgid "Adding contact to LDAP server..."
 msgstr ""
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5325
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5301
 msgid "The backend does not support bulk modifications"
 msgstr ""
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5347
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5323
 msgid "Modifying contact from LDAP server..."
 msgstr ""
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5419
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5395
 msgid "Removing contact from LDAP server..."
 msgstr ""
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5829
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5805
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr ""
@@ -333,7 +300,7 @@ msgid "No space"
 msgstr "Аралықсыз"
 
 #. Dummy row as EContactField starts from 1
-#: ../src/addressbook/libebook-contacts/e-contact.c:148
+#: ../src/addressbook/libebook-contacts/e-contact.c:149
 msgid "Unique ID"
 msgstr ""
 
@@ -341,12 +308,12 @@ msgstr ""
 #. * so we can generate its value if necessary in the getter
 #. Translators: This is an EContact field description, in this case it's a
 #. * preferred user's description (or display name) of the contact. Note 'File' is a verb here.
-#: ../src/addressbook/libebook-contacts/e-contact.c:153
+#: ../src/addressbook/libebook-contacts/e-contact.c:154
 msgid "File Under"
 msgstr ""
 
 #. URI of the book to which the contact belongs to
-#: ../src/addressbook/libebook-contacts/e-contact.c:155
+#: ../src/addressbook/libebook-contacts/e-contact.c:156
 msgid "Book UID"
 msgstr ""
 
@@ -354,435 +321,435 @@ msgstr ""
 #. FN isn't really a structured field - we use a getter/setter
 #. * so we can set the N property (since evo 1.4 works fine with
 #. * vcards that don't even have a N attribute.  *sigh*)
-#: ../src/addressbook/libebook-contacts/e-contact.c:161
+#: ../src/addressbook/libebook-contacts/e-contact.c:162
 msgid "Full Name"
 msgstr "Толық аты"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:162
+#: ../src/addressbook/libebook-contacts/e-contact.c:163
 msgid "Given Name"
 msgstr "Әкесінің аты"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:163
+#: ../src/addressbook/libebook-contacts/e-contact.c:164
 msgid "Family Name"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:164
+#: ../src/addressbook/libebook-contacts/e-contact.c:165
 msgid "Nickname"
 msgstr "Бүркеншік аты"
 
 #. Email fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:167
+#: ../src/addressbook/libebook-contacts/e-contact.c:168
 msgid "Email 1"
 msgstr "Эл. пошта 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:168
+#: ../src/addressbook/libebook-contacts/e-contact.c:169
 msgid "Email 2"
 msgstr "Эл. пошта 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:169
+#: ../src/addressbook/libebook-contacts/e-contact.c:170
 msgid "Email 3"
 msgstr "Эл. пошта 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:170
+#: ../src/addressbook/libebook-contacts/e-contact.c:171
 msgid "Email 4"
 msgstr "Эл. пошта 4"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:172
+#: ../src/addressbook/libebook-contacts/e-contact.c:173
 msgid "Mailer"
 msgstr ""
 
 #. Address Labels
-#: ../src/addressbook/libebook-contacts/e-contact.c:175
+#: ../src/addressbook/libebook-contacts/e-contact.c:176
 msgid "Home Address Label"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:176
+#: ../src/addressbook/libebook-contacts/e-contact.c:177
 msgid "Work Address Label"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:177
+#: ../src/addressbook/libebook-contacts/e-contact.c:178
 msgid "Other Address Label"
 msgstr ""
 
 #. Phone fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:180
+#: ../src/addressbook/libebook-contacts/e-contact.c:181
 msgid "Assistant Phone"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:181
+#: ../src/addressbook/libebook-contacts/e-contact.c:182
 msgid "Business Phone"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:182
+#: ../src/addressbook/libebook-contacts/e-contact.c:183
 msgid "Business Phone 2"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:183
+#: ../src/addressbook/libebook-contacts/e-contact.c:184
 msgid "Business Fax"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:184
+#: ../src/addressbook/libebook-contacts/e-contact.c:185
 msgid "Callback Phone"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:185
+#: ../src/addressbook/libebook-contacts/e-contact.c:186
 msgid "Car Phone"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:186
+#: ../src/addressbook/libebook-contacts/e-contact.c:187
 msgid "Company Phone"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:187
+#: ../src/addressbook/libebook-contacts/e-contact.c:188
 msgid "Home Phone"
 msgstr "Үй телефоны"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:188
+#: ../src/addressbook/libebook-contacts/e-contact.c:189
 msgid "Home Phone 2"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:189
+#: ../src/addressbook/libebook-contacts/e-contact.c:190
 msgid "Home Fax"
 msgstr "Үй факсы"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:190
+#: ../src/addressbook/libebook-contacts/e-contact.c:191
 msgid "ISDN"
 msgstr "ISDN"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:191
+#: ../src/addressbook/libebook-contacts/e-contact.c:192
 msgid "Mobile Phone"
 msgstr "Мобильді телефоны"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:192
+#: ../src/addressbook/libebook-contacts/e-contact.c:193
 msgid "Other Phone"
 msgstr "Басқа телефон"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:193
+#: ../src/addressbook/libebook-contacts/e-contact.c:194
 msgid "Other Fax"
 msgstr "Басқа факс"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:194
+#: ../src/addressbook/libebook-contacts/e-contact.c:195
 msgid "Pager"
 msgstr "Пейджер"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:195
+#: ../src/addressbook/libebook-contacts/e-contact.c:196
 msgid "Primary Phone"
 msgstr "Негізгі телефон"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:196
+#: ../src/addressbook/libebook-contacts/e-contact.c:197
 msgid "Radio"
 msgstr "Радио"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:197
+#: ../src/addressbook/libebook-contacts/e-contact.c:198
 msgid "Telex"
 msgstr "Телекс"
 
 #. To translators: TTY is Teletypewriter
-#: ../src/addressbook/libebook-contacts/e-contact.c:199
+#: ../src/addressbook/libebook-contacts/e-contact.c:200
 msgid "TTY"
 msgstr "TTY"
 
 #. Organizational fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:202
+#: ../src/addressbook/libebook-contacts/e-contact.c:203
 msgid "Organization"
 msgstr "Ұйым"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:203
+#: ../src/addressbook/libebook-contacts/e-contact.c:204
 msgid "Organizational Unit"
 msgstr "Ұйым бөлімі"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:204
+#: ../src/addressbook/libebook-contacts/e-contact.c:205
 msgid "Office"
 msgstr "Офис"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:205
+#: ../src/addressbook/libebook-contacts/e-contact.c:206
 msgid "Title"
 msgstr "Үндеу"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:206
+#: ../src/addressbook/libebook-contacts/e-contact.c:207
 msgid "Role"
 msgstr "Ролі"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:207
+#: ../src/addressbook/libebook-contacts/e-contact.c:208
 msgid "Manager"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:208
+#: ../src/addressbook/libebook-contacts/e-contact.c:209
 msgid "Assistant"
 msgstr "Көмекші"
 
 #. Web fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:211
+#: ../src/addressbook/libebook-contacts/e-contact.c:212
 msgid "Homepage URL"
 msgstr "Үй парағы сілтемесі"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:212
+#: ../src/addressbook/libebook-contacts/e-contact.c:213
 msgid "Weblog URL"
 msgstr "Блог сілтемесі"
 
 #. Contact categories
-#: ../src/addressbook/libebook-contacts/e-contact.c:215
+#: ../src/addressbook/libebook-contacts/e-contact.c:216
 msgid "Categories"
 msgstr "Санаттар"
 
 #. Collaboration fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:218
+#: ../src/addressbook/libebook-contacts/e-contact.c:219
 msgid "Calendar URI"
 msgstr "Күнтізбе сілтемесі"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:219
+#: ../src/addressbook/libebook-contacts/e-contact.c:220
 msgid "Free/Busy URL"
 msgstr "Бос/бос емес сілтемесі"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:220
+#: ../src/addressbook/libebook-contacts/e-contact.c:221
 msgid "ICS Calendar"
 msgstr "ICS күнтізбесі"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:221
+#: ../src/addressbook/libebook-contacts/e-contact.c:222
 msgid "Video Conferencing URL"
 msgstr "Видео қоңырау сілтемесі"
 
 #. Misc fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:224
+#: ../src/addressbook/libebook-contacts/e-contact.c:225
 msgid "Spouse’s Name"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:225
+#: ../src/addressbook/libebook-contacts/e-contact.c:226
 msgid "Note"
 msgstr "Ескерту"
 
 #. Instant messaging fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:228
+#: ../src/addressbook/libebook-contacts/e-contact.c:229
 msgid "AIM Home Screen Name 1"
 msgstr "AIM - үй экранындағы аты 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:229
+#: ../src/addressbook/libebook-contacts/e-contact.c:230
 msgid "AIM Home Screen Name 2"
 msgstr "AIM - үй экранындағы аты 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:230
+#: ../src/addressbook/libebook-contacts/e-contact.c:231
 msgid "AIM Home Screen Name 3"
 msgstr "AIM - үй экранындағы аты 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:231
+#: ../src/addressbook/libebook-contacts/e-contact.c:232
 msgid "AIM Work Screen Name 1"
 msgstr "AIM - жұмыс экранындағы аты 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:232
+#: ../src/addressbook/libebook-contacts/e-contact.c:233
 msgid "AIM Work Screen Name 2"
 msgstr "AIM - жұмыс экранындағы аты 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:233
+#: ../src/addressbook/libebook-contacts/e-contact.c:234
 msgid "AIM Work Screen Name 3"
 msgstr "AIM - жұмыс экранындағы аты 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:234
+#: ../src/addressbook/libebook-contacts/e-contact.c:235
 msgid "GroupWise Home Screen Name 1"
 msgstr "GroupWise - үй экранындағы аты 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:235
+#: ../src/addressbook/libebook-contacts/e-contact.c:236
 msgid "GroupWise Home Screen Name 2"
 msgstr "GroupWise - үй экранындағы аты 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:236
+#: ../src/addressbook/libebook-contacts/e-contact.c:237
 msgid "GroupWise Home Screen Name 3"
 msgstr "GroupWise - үй экранындағы аты 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:237
+#: ../src/addressbook/libebook-contacts/e-contact.c:238
 msgid "GroupWise Work Screen Name 1"
 msgstr "GroupWise - жұмыс экранындағы аты 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:238
+#: ../src/addressbook/libebook-contacts/e-contact.c:239
 msgid "GroupWise Work Screen Name 2"
 msgstr "GroupWise - жұмыс экранындағы аты 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:239
+#: ../src/addressbook/libebook-contacts/e-contact.c:240
 msgid "GroupWise Work Screen Name 3"
 msgstr "GroupWise - жұмыс экранындағы аты 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:240
+#: ../src/addressbook/libebook-contacts/e-contact.c:241
 msgid "Jabber Home ID 1"
 msgstr "Jabber - үй идентификаторы 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:241
+#: ../src/addressbook/libebook-contacts/e-contact.c:242
 msgid "Jabber Home ID 2"
 msgstr "Jabber - үй идентификаторы 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:242
+#: ../src/addressbook/libebook-contacts/e-contact.c:243
 msgid "Jabber Home ID 3"
 msgstr "Jabber - үй идентификаторы 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:243
+#: ../src/addressbook/libebook-contacts/e-contact.c:244
 msgid "Jabber Work ID 1"
 msgstr "Jabber - жұмыс идентификаторы 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:244
+#: ../src/addressbook/libebook-contacts/e-contact.c:245
 msgid "Jabber Work ID 2"
 msgstr "Jabber - жұмыс идентификаторы 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:245
+#: ../src/addressbook/libebook-contacts/e-contact.c:246
 msgid "Jabber Work ID 3"
 msgstr "Jabber - жұмыс идентификаторы 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:246
+#: ../src/addressbook/libebook-contacts/e-contact.c:247
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Yahoo! - үй экранындағы аты 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:247
+#: ../src/addressbook/libebook-contacts/e-contact.c:248
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Yahoo! - үй экранындағы аты 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:248
+#: ../src/addressbook/libebook-contacts/e-contact.c:249
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Yahoo! - үй экранындағы аты 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:249
+#: ../src/addressbook/libebook-contacts/e-contact.c:250
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Yahoo! - жұмыс экранындағы аты 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:250
+#: ../src/addressbook/libebook-contacts/e-contact.c:251
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Yahoo! - жұмыс экранындағы аты 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:251
+#: ../src/addressbook/libebook-contacts/e-contact.c:252
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Yahoo! - жұмыс экранындағы аты 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:252
+#: ../src/addressbook/libebook-contacts/e-contact.c:253
 msgid "MSN Home Screen Name 1"
 msgstr "MSN - үй экранындағы аты 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:253
+#: ../src/addressbook/libebook-contacts/e-contact.c:254
 msgid "MSN Home Screen Name 2"
 msgstr "MSN - үй экранындағы аты 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:254
+#: ../src/addressbook/libebook-contacts/e-contact.c:255
 msgid "MSN Home Screen Name 3"
 msgstr "MSN - үй экранындағы аты 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:255
+#: ../src/addressbook/libebook-contacts/e-contact.c:256
 msgid "MSN Work Screen Name 1"
 msgstr "MSN - жұмыс экранындағы аты 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:256
+#: ../src/addressbook/libebook-contacts/e-contact.c:257
 msgid "MSN Work Screen Name 2"
 msgstr "MSN - жұмыс экранындағы аты 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:257
+#: ../src/addressbook/libebook-contacts/e-contact.c:258
 msgid "MSN Work Screen Name 3"
 msgstr "MSN - жұмыс экранындағы аты 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:258
+#: ../src/addressbook/libebook-contacts/e-contact.c:259
 msgid "ICQ Home ID 1"
 msgstr "ICQ - үй идентификаторы 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:259
+#: ../src/addressbook/libebook-contacts/e-contact.c:260
 msgid "ICQ Home ID 2"
 msgstr "ICQ - үй идентификаторы 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:260
+#: ../src/addressbook/libebook-contacts/e-contact.c:261
 msgid "ICQ Home ID 3"
 msgstr "ICQ - үй идентификаторы 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:261
+#: ../src/addressbook/libebook-contacts/e-contact.c:262
 msgid "ICQ Work ID 1"
 msgstr "ICQ - жұмыс идентификаторы 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:262
+#: ../src/addressbook/libebook-contacts/e-contact.c:263
 msgid "ICQ Work ID 2"
 msgstr "ICQ - жұмыс идентификаторы 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:263
+#: ../src/addressbook/libebook-contacts/e-contact.c:264
 msgid "ICQ Work ID 3"
 msgstr "ICQ - жұмыс идентификаторы 3"
 
 #. Last modified time
-#: ../src/addressbook/libebook-contacts/e-contact.c:266
+#: ../src/addressbook/libebook-contacts/e-contact.c:267
 msgid "Last Revision"
 msgstr ""
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * virtual field, which returns either name of the contact or the organization
 #. * name, recognized by multiple other fields, where the first filled is used.
-#: ../src/addressbook/libebook-contacts/e-contact.c:270
+#: ../src/addressbook/libebook-contacts/e-contact.c:271
 msgid "Name or Org"
 msgstr ""
 
 #. Address fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:273
+#: ../src/addressbook/libebook-contacts/e-contact.c:274
 msgid "Address List"
 msgstr "Адрестер тізімі"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:274
+#: ../src/addressbook/libebook-contacts/e-contact.c:275
 msgid "Home Address"
 msgstr "Үй адресі"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:275
+#: ../src/addressbook/libebook-contacts/e-contact.c:276
 msgid "Work Address"
 msgstr "Жұмыс адресі"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:276
+#: ../src/addressbook/libebook-contacts/e-contact.c:277
 msgid "Other Address"
 msgstr "Басқа адресі"
 
 #. Contact categories
-#: ../src/addressbook/libebook-contacts/e-contact.c:279
+#: ../src/addressbook/libebook-contacts/e-contact.c:280
 msgid "Category List"
 msgstr "Санаттар тізімі"
 
 #. Photo/Logo
-#: ../src/addressbook/libebook-contacts/e-contact.c:282
+#: ../src/addressbook/libebook-contacts/e-contact.c:283
 msgid "Photo"
 msgstr "Фотосурет"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:283
+#: ../src/addressbook/libebook-contacts/e-contact.c:284
 msgid "Logo"
 msgstr "Логотип"
 
 #. Translators: This is an EContact field description, in this case it's a name
 #. * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
-#: ../src/addressbook/libebook-contacts/e-contact.c:287
-#: ../src/libedataserverui/e-webdav-discover-widget.c:151
+#: ../src/addressbook/libebook-contacts/e-contact.c:288
+#: ../src/libedataserverui/e-webdav-discover-widget.c:180
 msgid "Name"
 msgstr "Аты"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:288
+#: ../src/addressbook/libebook-contacts/e-contact.c:289
 msgid "Email List"
 msgstr "Эл. пошта тізімі"
 
 #. Instant messaging fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:291
+#: ../src/addressbook/libebook-contacts/e-contact.c:292
 msgid "AIM Screen Name List"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:292
+#: ../src/addressbook/libebook-contacts/e-contact.c:293
 msgid "GroupWise ID List"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:293
+#: ../src/addressbook/libebook-contacts/e-contact.c:294
 msgid "Jabber ID List"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:294
+#: ../src/addressbook/libebook-contacts/e-contact.c:295
 msgid "Yahoo! Screen Name List"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:295
+#: ../src/addressbook/libebook-contacts/e-contact.c:296
 msgid "MSN Screen Name List"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:296
+#: ../src/addressbook/libebook-contacts/e-contact.c:297
 msgid "ICQ ID List"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:298
+#: ../src/addressbook/libebook-contacts/e-contact.c:299
 msgid "Wants HTML Mail"
 msgstr "HTML поштаны талап етеді"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * field describing whether it's a Contact list (list of email addresses) or a
 #. * regular contact for one person/organization/...
-#: ../src/addressbook/libebook-contacts/e-contact.c:303
+#: ../src/addressbook/libebook-contacts/e-contact.c:304
 msgid "List"
 msgstr "Тізім"
 
@@ -790,131 +757,165 @@ msgstr "Тізім"
 #. * used to determine whether when sending to Contact lists the addresses should be
 #. * shown or not to other recipients - basically whether to use BCC field or CC
 #. * message header when sending messages to this Contact list.
-#: ../src/addressbook/libebook-contacts/e-contact.c:308
+#: ../src/addressbook/libebook-contacts/e-contact.c:309
 msgid "List Shows Addresses"
 msgstr "Тізім адрестерді көрсетеді"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:310
+#: ../src/addressbook/libebook-contacts/e-contact.c:311
 msgid "Birth Date"
 msgstr "Туған күні"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:311
+#: ../src/addressbook/libebook-contacts/e-contact.c:312
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:957
 msgid "Anniversary"
 msgstr "Жылдық"
 
 #. Security fields
-#: ../src/addressbook/libebook-contacts/e-contact.c:314
+#: ../src/addressbook/libebook-contacts/e-contact.c:315
 msgid "X.509 Certificate"
 msgstr "X.509 сертификаты"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:315
+#: ../src/addressbook/libebook-contacts/e-contact.c:316
 msgid "PGP Certificate"
 msgstr "PGP сертификаты"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:317
+#: ../src/addressbook/libebook-contacts/e-contact.c:318
 msgid "Gadu-Gadu Home ID 1"
 msgstr "Gadu-Gadu - үй идентификаторы 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:318
+#: ../src/addressbook/libebook-contacts/e-contact.c:319
 msgid "Gadu-Gadu Home ID 2"
 msgstr "Gadu-Gadu - үй идентификаторы 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:319
+#: ../src/addressbook/libebook-contacts/e-contact.c:320
 msgid "Gadu-Gadu Home ID 3"
 msgstr "Gadu-Gadu - үй идентификаторы 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:320
+#: ../src/addressbook/libebook-contacts/e-contact.c:321
 msgid "Gadu-Gadu Work ID 1"
 msgstr "Gadu-Gadu - жұмыс идентификаторы 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:321
+#: ../src/addressbook/libebook-contacts/e-contact.c:322
 msgid "Gadu-Gadu Work ID 2"
 msgstr "Gadu-Gadu - жұмыс идентификаторы 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:322
+#: ../src/addressbook/libebook-contacts/e-contact.c:323
 msgid "Gadu-Gadu Work ID 3"
 msgstr "Gadu-Gadu - жұмыс идентификаторы 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:323
+#: ../src/addressbook/libebook-contacts/e-contact.c:324
 msgid "Gadu-Gadu ID List"
 msgstr "Gadu-Gadu идентификаторлар тізімі"
 
 #. Geo information
-#: ../src/addressbook/libebook-contacts/e-contact.c:326
+#: ../src/addressbook/libebook-contacts/e-contact.c:327
 msgid "Geographic Information"
 msgstr "Географиялық ақпараты"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:328
+#: ../src/addressbook/libebook-contacts/e-contact.c:329
 msgid "Telephone"
 msgstr "Телефон"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:330
+#: ../src/addressbook/libebook-contacts/e-contact.c:331
 msgid "Skype Home Name 1"
 msgstr "Skype - үй экранындағы аты 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:331
+#: ../src/addressbook/libebook-contacts/e-contact.c:332
 msgid "Skype Home Name 2"
 msgstr "Skype - үй экранындағы аты 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:332
+#: ../src/addressbook/libebook-contacts/e-contact.c:333
 msgid "Skype Home Name 3"
 msgstr "Skype - үй экранындағы аты 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:333
+#: ../src/addressbook/libebook-contacts/e-contact.c:334
 msgid "Skype Work Name 1"
 msgstr "Skype - жұмыс экранындағы аты 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:334
+#: ../src/addressbook/libebook-contacts/e-contact.c:335
 msgid "Skype Work Name 2"
 msgstr "Skype - жұмыс экранындағы аты 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:335
+#: ../src/addressbook/libebook-contacts/e-contact.c:336
 msgid "Skype Work Name 3"
 msgstr "Skype - жұмыс экранындағы аты 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:336
+#: ../src/addressbook/libebook-contacts/e-contact.c:337
 msgid "Skype Name List"
 msgstr "Skype аттар тізімі"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:338
+#: ../src/addressbook/libebook-contacts/e-contact.c:339
 msgid "SIP address"
 msgstr "SIP адресі"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:340
+#: ../src/addressbook/libebook-contacts/e-contact.c:341
 msgid "Google Talk Home Name 1"
 msgstr "Google Talk - үй экранындағы аты 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:341
+#: ../src/addressbook/libebook-contacts/e-contact.c:342
 msgid "Google Talk Home Name 2"
 msgstr "Google Talk - үй экранындағы аты 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:342
+#: ../src/addressbook/libebook-contacts/e-contact.c:343
 msgid "Google Talk Home Name 3"
 msgstr "Google Talk - үй экранындағы аты 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:343
+#: ../src/addressbook/libebook-contacts/e-contact.c:344
 msgid "Google Talk Work Name 1"
 msgstr "Google Talk - жұмыс экранындағы аты 1"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:344
+#: ../src/addressbook/libebook-contacts/e-contact.c:345
 msgid "Google Talk Work Name 2"
 msgstr "Google Talk - жұмыс экранындағы аты 2"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:345
+#: ../src/addressbook/libebook-contacts/e-contact.c:346
 msgid "Google Talk Work Name 3"
 msgstr "Google Talk - жұмыс экранындағы аты 3"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:346
+#: ../src/addressbook/libebook-contacts/e-contact.c:347
 msgid "Google Talk Name List"
 msgstr ""
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:348
+#: ../src/addressbook/libebook-contacts/e-contact.c:349
 msgid "Twitter Name List"
 msgstr "Twitter аттар тізімі"
 
-#: ../src/addressbook/libebook-contacts/e-contact.c:1915
-#: ../src/addressbook/libebook/e-destination.c:914
+#: ../src/addressbook/libebook-contacts/e-contact.c:351
+#| msgid "Jabber Home ID 1"
+msgid "Matrix Home ID 1"
+msgstr ""
+
+#: ../src/addressbook/libebook-contacts/e-contact.c:352
+#| msgid "Jabber Home ID 2"
+msgid "Matrix Home ID 2"
+msgstr ""
+
+#: ../src/addressbook/libebook-contacts/e-contact.c:353
+#| msgid "Jabber Home ID 3"
+msgid "Matrix Home ID 3"
+msgstr ""
+
+#: ../src/addressbook/libebook-contacts/e-contact.c:354
+#| msgid "Jabber Work ID 1"
+msgid "Matrix Work ID 1"
+msgstr ""
+
+#: ../src/addressbook/libebook-contacts/e-contact.c:355
+#| msgid "Jabber Work ID 2"
+msgid "Matrix Work ID 2"
+msgstr ""
+
+#: ../src/addressbook/libebook-contacts/e-contact.c:356
+#| msgid "Jabber Work ID 3"
+msgid "Matrix Work ID 3"
+msgstr ""
+
+#: ../src/addressbook/libebook-contacts/e-contact.c:357
+msgid "Matrix ID List"
+msgstr ""
+
+#: ../src/addressbook/libebook-contacts/e-contact.c:1924
+#: ../src/addressbook/libebook/e-destination.c:911
 msgid "Unnamed List"
 msgstr "Атаусыз тізім"
 
@@ -947,27 +948,27 @@ msgstr ""
 msgid "Text is too long for a phone number"
 msgstr ""
 
-#: ../src/addressbook/libebook/e-book-client.c:927
+#: ../src/addressbook/libebook/e-book-client.c:924
 #, c-format
 msgid "Unknown book property “%s”"
 msgstr ""
 
-#: ../src/addressbook/libebook/e-book-client.c:942
+#: ../src/addressbook/libebook/e-book-client.c:939
 #, c-format
 msgid "Cannot change value of book property “%s”"
 msgstr ""
 
-#: ../src/addressbook/libebook/e-book-client.c:1384
-#: ../src/addressbook/libebook/e-book-client.c:1615
-#: ../src/addressbook/libebook/e-book-client.c:1892
-#: ../src/calendar/libecal/e-cal-client.c:1709
-#: ../src/calendar/libecal/e-cal-client.c:1947
+#: ../src/addressbook/libebook/e-book-client.c:1381
+#: ../src/addressbook/libebook/e-book-client.c:1611
+#: ../src/addressbook/libebook/e-book-client.c:1887
+#: ../src/calendar/libecal/e-cal-client.c:1714
+#: ../src/calendar/libecal/e-cal-client.c:1952
 #, c-format
 msgid "Unable to connect to “%s”: "
 msgstr ""
 
-#: ../src/addressbook/libebook/e-book-client-view.c:869
-#: ../src/calendar/libecal/e-cal-client-view.c:675
+#: ../src/addressbook/libebook/e-book-client-view.c:857
+#: ../src/calendar/libecal/e-cal-client-view.c:667
 #, c-format
 msgid "Client disappeared"
 msgstr ""
@@ -977,32 +978,32 @@ msgstr ""
 msgid "Addressbook backend does not support cursors"
 msgstr "Адрестік кітапша қозғалтқышы курсорларды қолдамайды"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:899
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:2253
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:895
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:2254
 #, c-format
 msgid "Error introspecting unknown summary field “%s”"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1508
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1504
 #: ../src/addressbook/libedata-book/e-book-cache.c:549
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:1392
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:1393
 msgid "Error parsing regular expression"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1553
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
 #: ../src/addressbook/libedata-book/e-book-cache.c:4586
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:1876
-#: ../src/camel/camel-db.c:818
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:1877
+#: ../src/camel/camel-db.c:816
 #, c-format
 msgid "Insufficient memory"
 msgstr "Жады жеткіліксіз"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1690
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1686
 #, c-format
 msgid "Invalid contact field “%d” specified in summary"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1724
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1720
 #: ../src/addressbook/libedata-book/e-book-cache.c:372
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:603
 #, c-format
@@ -1011,34 +1012,34 @@ msgid ""
 "string and string list field types are supported"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3068
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4169
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3064
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4165
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4300
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4393
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4296
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4389
 #: ../src/addressbook/libedata-book/e-book-cache.c:3468
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:5847
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:5848
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4304
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4300
 #, c-format
 msgid "Invalid Query"
 msgstr "Жарамсыз сұраным"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4328
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4324
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
 "supported."
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4397
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4393
 #: ../src/addressbook/libedata-book/e-data-book.c:868
 #: ../src/calendar/libedata-cal/e-data-cal.c:1143
 #: ../src/libedataserver/e-client.c:170
@@ -1046,50 +1047,50 @@ msgstr ""
 msgid "Invalid query"
 msgstr "Жарамсыз сұраным"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4440
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4436
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:5263
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:5259
 #, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6050
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6450
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6046
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6446
 #, c-format
 msgid "Only summary queries are supported by EbSdbCursor"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6057
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6053
 #, c-format
 msgid "At least one sort field must be specified to use an EbSdbCursor"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6071
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6067
 #, c-format
 msgid "Cannot sort by a field that is not in the summary"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6078
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6074
 #, c-format
 msgid "Cannot sort by a field which may have multiple values"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6211
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6207
 #: ../src/addressbook/libedata-book/e-book-cache.c:5797
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:8144
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:8145
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
 "the contact list"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6219
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6215
 #: ../src/addressbook/libedata-book/e-book-cache.c:5804
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:8152
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:8153
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1103,9 +1104,9 @@ msgid "Unsupported contact field “%d” specified in summary"
 msgstr ""
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:3463
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:5840
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1654
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3518
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:5841
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1702
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3560
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Жарамсыз сұраным: %s"
@@ -1115,7 +1116,7 @@ msgid "Invalid query for a book cursor"
 msgstr ""
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:4590
-#: ../src/libebackend/e-cache.c:759
+#: ../src/libebackend/e-cache.c:756
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "%s дерекқорын ашу мүмкін емес: %s"
@@ -1124,20 +1125,20 @@ msgstr "%s дерекқорын ашу мүмкін емес: %s"
 #: ../src/addressbook/libedata-book/e-book-cache.c:5271
 #: ../src/addressbook/libedata-book/e-book-cache.c:5318
 #: ../src/addressbook/libedata-book/e-book-cache.c:5370
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2800
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2858
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2917
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2980
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3151
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1370
-#: ../src/libebackend/e-cache.c:1374 ../src/libebackend/e-cache.c:2352
-#: ../src/libebackend/e-cache.c:2392
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2842
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2900
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2959
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3022
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3193
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1375
+#: ../src/libebackend/e-cache.c:1371 ../src/libebackend/e-cache.c:2349
+#: ../src/libebackend/e-cache.c:2389
 #, c-format
 msgid "Object “%s” not found"
 msgstr "\"%s\" объекті табылмады"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5430
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3042
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3084
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr ""
@@ -1147,40 +1148,40 @@ msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5593
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7984
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7985
 msgid "Cannot sort by a field that is not a string type"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1081
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1093
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1088
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1098
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1089
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1101
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1096
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1106
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1911
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2367
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3314
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1920
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2376
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3332
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:1949
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:1950
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the “folders” table first."
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:6015
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:6016
 msgid "Invalid query for EbSqlCursor"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7966
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7967
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 
@@ -1261,14 +1262,14 @@ msgstr ""
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr ""
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1510
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1513
 #: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1164
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. Remove it, please."
 msgstr ""
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:2010
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:2025
 msgid "Failed to parse response data"
 msgstr ""
 
@@ -1312,11 +1313,11 @@ msgid "File “%s” is not a VCALENDAR component"
 msgstr ""
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3642
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3648
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3654
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3681
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2541
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3740
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3746
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3752
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3779
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2559
 msgid "Unsupported method"
 msgstr "Қолдауы жоқ тәсілі"
 
@@ -1329,89 +1330,89 @@ msgstr ""
 msgid "Malformed URI “%s”: %s"
 msgstr ""
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:459
+#: ../src/calendar/backends/http/e-cal-backend-http.c:460
 #, c-format
 msgid "Bad file format."
 msgstr "Файл пішімі қате."
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:468
+#: ../src/calendar/backends/http/e-cal-backend-http.c:469
 #, c-format
 msgid "Not a calendar."
 msgstr "Күнтізбе емес."
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:171
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:214
 msgid "Could not retrieve weather data"
 msgstr "Ауа райы деректерін алу мүмкін емес"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:349
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:358
 msgid "Weather: Fog"
 msgstr "Ауа райы: Тұман"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:350
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:359
 msgid "Weather: Cloudy Night"
 msgstr "Ауа райы: Бұлтты түн"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:351
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:360
 msgid "Weather: Cloudy"
 msgstr "Ауа райы: Бұлтты"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:352
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:361
 msgid "Weather: Overcast"
 msgstr "Ауа райы: Тұтас бұлттылық"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:353
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:362
 msgid "Weather: Showers"
 msgstr "Ауа райы: Нөсер жауын"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:354
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:363
 msgid "Weather: Snow"
 msgstr "Ауа райы: Қар"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:355
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:364
 msgid "Weather: Clear Night"
 msgstr "Ауа райы: Ашық түн"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:356
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:365
 msgid "Weather: Sunny"
 msgstr "Ауа райы: Күннің көзі"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:357
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:366
 msgid "Weather: Thunderstorms"
 msgstr "Ауа райы: Күн күркірейді"
 
 #. TRANSLATOR: This is the temperature in degrees Fahrenheit (\302\260 is U+00B0 DEGREE SIGN)
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:383
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:392
 #, c-format
 msgid "%.1f °F"
 msgstr "%.1f °F"
 
 #. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN)
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:386
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:395
 #, c-format
 msgid "%.1f °C"
 msgstr "%.1f °C"
 
 #. TRANSLATOR: This is the temperature in kelvin
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:389
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:398
 #, c-format
 msgid "%.1f K"
 msgstr "%.1f K"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:395
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:404
 #, c-format
 msgid "%.1f"
 msgstr "%.1f"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:558
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:586
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:567
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:595
 msgid "Forecast"
 msgstr "Ауа райы болжамы"
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:682
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:691
 msgid "Could not create cache file"
 msgstr ""
 
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:684
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:693
 msgid "Could not create cache file: "
 msgstr "Кэш файлын жасау мүмкін емес: "
 
@@ -1582,37 +1583,37 @@ msgstr "30-ы"
 msgid "31st"
 msgstr "31-і"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5064
+#: ../src/calendar/libecal/e-cal-recur.c:5069
 #, c-format
 msgid "every day forever"
 msgid_plural "every %d days forever"
 msgstr[0] "әр %d күн сайын мәңгі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5070
+#: ../src/calendar/libecal/e-cal-recur.c:5075
 #, c-format
 msgid "Every day forever"
 msgid_plural "Every %d days forever"
 msgstr[0] "Әр %d күн сайын мәңгі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5078
+#: ../src/calendar/libecal/e-cal-recur.c:5083
 #, c-format
 msgid "every day"
 msgid_plural "every %d days"
 msgstr[0] "әр %d күнде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5084
+#: ../src/calendar/libecal/e-cal-recur.c:5089
 #, c-format
 msgid "Every day"
 msgid_plural "Every %d days"
 msgstr[0] "Әр %d күнде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5170
+#: ../src/calendar/libecal/e-cal-recur.c:5175
 #, c-format
 msgid "every week"
 msgid_plural "every %d weeks"
 msgstr[0] "әр %d апта сайын"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5176
+#: ../src/calendar/libecal/e-cal-recur.c:5181
 #, c-format
 msgid "Every week"
 msgid_plural "Every %d weeks"
@@ -1623,551 +1624,551 @@ msgstr[0] "Әр %d апта сайын"
 #. with ", DAYNAME" or " and DAYNAME", thus it can be something like "on Monday and Tuesday"
 #. or "on Monday, Wednesday and Friday" or simply "on Saturday". The '%1$s' is replaced with
 #. the previously gathered text, while the '%2$s' is replaced with the text to append.
-#: ../src/calendar/libecal/e-cal-recur.c:5190
+#: ../src/calendar/libecal/e-cal-recur.c:5195
 #, c-format
 msgctxt "recur-description-dayname"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5207
+#: ../src/calendar/libecal/e-cal-recur.c:5212
 msgctxt "recur-description"
 msgid "on Sunday"
 msgstr "Жексенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5208
+#: ../src/calendar/libecal/e-cal-recur.c:5213
 msgctxt "recur-description"
 msgid ", Sunday"
 msgstr ", Жексенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5209
+#: ../src/calendar/libecal/e-cal-recur.c:5214
 msgctxt "recur-description"
 msgid " and Sunday"
 msgstr " және Жексенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5212
+#: ../src/calendar/libecal/e-cal-recur.c:5217
 msgctxt "recur-description"
 msgid "on Monday"
 msgstr "Дүйсенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5213
+#: ../src/calendar/libecal/e-cal-recur.c:5218
 msgctxt "recur-description"
 msgid ", Monday"
 msgstr ", Дүйсенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5214
+#: ../src/calendar/libecal/e-cal-recur.c:5219
 msgctxt "recur-description"
 msgid " and Monday"
 msgstr " және Дүйсенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5217
+#: ../src/calendar/libecal/e-cal-recur.c:5222
 msgctxt "recur-description"
 msgid "on Tuesday"
 msgstr "Сейсенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5218
+#: ../src/calendar/libecal/e-cal-recur.c:5223
 msgctxt "recur-description"
 msgid ", Tuesday"
 msgstr ", Сейсенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5219
+#: ../src/calendar/libecal/e-cal-recur.c:5224
 msgctxt "recur-description"
 msgid " and Tuesday"
 msgstr " және Сейсенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5222
+#: ../src/calendar/libecal/e-cal-recur.c:5227
 msgctxt "recur-description"
 msgid "on Wednesday"
 msgstr "Сәрсенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5223
+#: ../src/calendar/libecal/e-cal-recur.c:5228
 msgctxt "recur-description"
 msgid ", Wednesday"
 msgstr ", Сәрсенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5224
+#: ../src/calendar/libecal/e-cal-recur.c:5229
 msgctxt "recur-description"
 msgid " and Wednesday"
 msgstr " және Сәрсенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5227
+#: ../src/calendar/libecal/e-cal-recur.c:5232
 msgctxt "recur-description"
 msgid "on Thursday"
 msgstr "Бейсенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5228
+#: ../src/calendar/libecal/e-cal-recur.c:5233
 msgctxt "recur-description"
 msgid ", Thursday"
 msgstr ", Бейсенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5229
+#: ../src/calendar/libecal/e-cal-recur.c:5234
 msgctxt "recur-description"
 msgid " and Thursday"
 msgstr " және Бейсенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5232
+#: ../src/calendar/libecal/e-cal-recur.c:5237
 msgctxt "recur-description"
 msgid "on Friday"
 msgstr "Жұма"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5233
+#: ../src/calendar/libecal/e-cal-recur.c:5238
 msgctxt "recur-description"
 msgid ", Friday"
 msgstr ", Жұма"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5234
+#: ../src/calendar/libecal/e-cal-recur.c:5239
 msgctxt "recur-description"
 msgid " and Friday"
 msgstr " және Жұма"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5237
+#: ../src/calendar/libecal/e-cal-recur.c:5242
 msgctxt "recur-description"
 msgid "on Saturday"
 msgstr "Сенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5238
+#: ../src/calendar/libecal/e-cal-recur.c:5243
 msgctxt "recur-description"
 msgid ", Saturday"
 msgstr ", Сенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5239
+#: ../src/calendar/libecal/e-cal-recur.c:5244
 msgctxt "recur-description"
 msgid " and Saturday"
 msgstr " және Сенбі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5368
+#: ../src/calendar/libecal/e-cal-recur.c:5373
 #, c-format
 msgid "every month"
 msgid_plural "every %d months"
 msgstr[0] "әр %d ай сайын"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5374
+#: ../src/calendar/libecal/e-cal-recur.c:5379
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
 msgstr[0] "Әр %d ай сайын"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5384
-#: ../src/calendar/libecal/e-cal-recur.c:5705
+#: ../src/calendar/libecal/e-cal-recur.c:5389
+#: ../src/calendar/libecal/e-cal-recur.c:5710
 msgctxt "recur-description"
 msgid "on the last Sunday"
 msgstr "соңғы Жексенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5387
-#: ../src/calendar/libecal/e-cal-recur.c:5555
+#: ../src/calendar/libecal/e-cal-recur.c:5392
+#: ../src/calendar/libecal/e-cal-recur.c:5560
 msgctxt "recur-description"
 msgid "on the last Monday"
 msgstr "соңғы Дүйсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5390
-#: ../src/calendar/libecal/e-cal-recur.c:5580
+#: ../src/calendar/libecal/e-cal-recur.c:5395
+#: ../src/calendar/libecal/e-cal-recur.c:5585
 msgctxt "recur-description"
 msgid "on the last Tuesday"
 msgstr "соңғы Сейсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5393
-#: ../src/calendar/libecal/e-cal-recur.c:5605
+#: ../src/calendar/libecal/e-cal-recur.c:5398
+#: ../src/calendar/libecal/e-cal-recur.c:5610
 msgctxt "recur-description"
 msgid "on the last Wednesday"
 msgstr "соңғы Сәрсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5396
-#: ../src/calendar/libecal/e-cal-recur.c:5630
+#: ../src/calendar/libecal/e-cal-recur.c:5401
+#: ../src/calendar/libecal/e-cal-recur.c:5635
 msgctxt "recur-description"
 msgid "on the last Thursday"
 msgstr "соңғы Бейсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5399
-#: ../src/calendar/libecal/e-cal-recur.c:5655
+#: ../src/calendar/libecal/e-cal-recur.c:5404
+#: ../src/calendar/libecal/e-cal-recur.c:5660
 msgctxt "recur-description"
 msgid "on the last Friday"
 msgstr "соңғы Жұмада"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5402
-#: ../src/calendar/libecal/e-cal-recur.c:5680
+#: ../src/calendar/libecal/e-cal-recur.c:5407
+#: ../src/calendar/libecal/e-cal-recur.c:5685
 msgctxt "recur-description"
 msgid "on the last Saturday"
 msgstr "соңғы Сенбіде"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5412
+#: ../src/calendar/libecal/e-cal-recur.c:5417
 msgctxt "recur-description"
 msgid "on the 1st day"
 msgstr "1-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5416
+#: ../src/calendar/libecal/e-cal-recur.c:5421
 msgctxt "recur-description"
 msgid "on the 2nd day"
 msgstr "2-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5420
+#: ../src/calendar/libecal/e-cal-recur.c:5425
 msgctxt "recur-description"
 msgid "on the 3rd day"
 msgstr "3-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5424
+#: ../src/calendar/libecal/e-cal-recur.c:5429
 msgctxt "recur-description"
 msgid "on the 4th day"
 msgstr "4-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5428
+#: ../src/calendar/libecal/e-cal-recur.c:5433
 msgctxt "recur-description"
 msgid "on the 5th day"
 msgstr "5-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5432
+#: ../src/calendar/libecal/e-cal-recur.c:5437
 msgctxt "recur-description"
 msgid "on the 6th day"
 msgstr "6-шы күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5436
+#: ../src/calendar/libecal/e-cal-recur.c:5441
 msgctxt "recur-description"
 msgid "on the 7th day"
 msgstr "7-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5440
+#: ../src/calendar/libecal/e-cal-recur.c:5445
 msgctxt "recur-description"
 msgid "on the 8th day"
 msgstr "8-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5444
+#: ../src/calendar/libecal/e-cal-recur.c:5449
 msgctxt "recur-description"
 msgid "on the 9th day"
 msgstr "9-шы күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5448
+#: ../src/calendar/libecal/e-cal-recur.c:5453
 msgctxt "recur-description"
 msgid "on the 10th day"
 msgstr "10-шы күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5452
+#: ../src/calendar/libecal/e-cal-recur.c:5457
 msgctxt "recur-description"
 msgid "on the 11th day"
 msgstr "11-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5456
+#: ../src/calendar/libecal/e-cal-recur.c:5461
 msgctxt "recur-description"
 msgid "on the 12th day"
 msgstr "12-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5460
+#: ../src/calendar/libecal/e-cal-recur.c:5465
 msgctxt "recur-description"
 msgid "on the 13th day"
 msgstr "13-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5464
+#: ../src/calendar/libecal/e-cal-recur.c:5469
 msgctxt "recur-description"
 msgid "on the 14th day"
 msgstr "14-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5468
+#: ../src/calendar/libecal/e-cal-recur.c:5473
 msgctxt "recur-description"
 msgid "on the 15th day"
 msgstr "15-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5472
+#: ../src/calendar/libecal/e-cal-recur.c:5477
 msgctxt "recur-description"
 msgid "on the 16th day"
 msgstr "16-шы күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5476
+#: ../src/calendar/libecal/e-cal-recur.c:5481
 msgctxt "recur-description"
 msgid "on the 17th day"
 msgstr "17-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5480
+#: ../src/calendar/libecal/e-cal-recur.c:5485
 msgctxt "recur-description"
 msgid "on the 18th day"
 msgstr "18-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5484
+#: ../src/calendar/libecal/e-cal-recur.c:5489
 msgctxt "recur-description"
 msgid "on the 19th day"
 msgstr "19-шы күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5488
+#: ../src/calendar/libecal/e-cal-recur.c:5493
 msgctxt "recur-description"
 msgid "on the 20th day"
 msgstr "20-шы күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5492
+#: ../src/calendar/libecal/e-cal-recur.c:5497
 msgctxt "recur-description"
 msgid "on the 21st day"
 msgstr "21-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5496
+#: ../src/calendar/libecal/e-cal-recur.c:5501
 msgctxt "recur-description"
 msgid "on the 22nd day"
 msgstr "22-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5500
+#: ../src/calendar/libecal/e-cal-recur.c:5505
 msgctxt "recur-description"
 msgid "on the 23rd day"
 msgstr "23-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5504
+#: ../src/calendar/libecal/e-cal-recur.c:5509
 msgctxt "recur-description"
 msgid "on the 24th day"
 msgstr "24-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5508
+#: ../src/calendar/libecal/e-cal-recur.c:5513
 msgctxt "recur-description"
 msgid "on the 25th day"
 msgstr "25-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5512
+#: ../src/calendar/libecal/e-cal-recur.c:5517
 msgctxt "recur-description"
 msgid "on the 26th day"
 msgstr "26-шы күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5516
+#: ../src/calendar/libecal/e-cal-recur.c:5521
 msgctxt "recur-description"
 msgid "on the 27th day"
 msgstr "27-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5520
+#: ../src/calendar/libecal/e-cal-recur.c:5525
 msgctxt "recur-description"
 msgid "on the 28th day"
 msgstr "28-ші күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5524
+#: ../src/calendar/libecal/e-cal-recur.c:5529
 msgctxt "recur-description"
 msgid "on the 29th day"
 msgstr "29-шы күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5528
+#: ../src/calendar/libecal/e-cal-recur.c:5533
 msgctxt "recur-description"
 msgid "on the 30th day"
 msgstr "30-шы күні"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5532
+#: ../src/calendar/libecal/e-cal-recur.c:5537
 msgctxt "recur-description"
 msgid "on the 31st day"
 msgstr "31-ші күні"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5540
+#: ../src/calendar/libecal/e-cal-recur.c:5545
 msgctxt "recur-description"
 msgid "on the first Monday"
 msgstr "бірінші Дүйсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5543
+#: ../src/calendar/libecal/e-cal-recur.c:5548
 msgctxt "recur-description"
 msgid "on the second Monday"
 msgstr "екінші Дүйсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5546
+#: ../src/calendar/libecal/e-cal-recur.c:5551
 msgctxt "recur-description"
 msgid "on the third Monday"
 msgstr "үшінші Дүйсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5549
+#: ../src/calendar/libecal/e-cal-recur.c:5554
 msgctxt "recur-description"
 msgid "on the fourth Monday"
 msgstr "төртінші Дүйсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5552
+#: ../src/calendar/libecal/e-cal-recur.c:5557
 msgctxt "recur-description"
 msgid "on the fifth Monday"
 msgstr "бесінші Дүйсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5565
+#: ../src/calendar/libecal/e-cal-recur.c:5570
 msgctxt "recur-description"
 msgid "on the first Tuesday"
 msgstr "бірінші Сейсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5568
+#: ../src/calendar/libecal/e-cal-recur.c:5573
 msgctxt "recur-description"
 msgid "on the second Tuesday"
 msgstr "екінші Сейсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5571
+#: ../src/calendar/libecal/e-cal-recur.c:5576
 msgctxt "recur-description"
 msgid "on the third Tuesday"
 msgstr "үшінші Сейсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5574
+#: ../src/calendar/libecal/e-cal-recur.c:5579
 msgctxt "recur-description"
 msgid "on the fourth Tuesday"
 msgstr "төртінші Сейсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5577
+#: ../src/calendar/libecal/e-cal-recur.c:5582
 msgctxt "recur-description"
 msgid "on the fifth Tuesday"
 msgstr "бесінші Сейсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5590
+#: ../src/calendar/libecal/e-cal-recur.c:5595
 msgctxt "recur-description"
 msgid "on the first Wednesday"
 msgstr "бірінші Сәрсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5593
+#: ../src/calendar/libecal/e-cal-recur.c:5598
 msgctxt "recur-description"
 msgid "on the second Wednesday"
 msgstr "екінші Сәрсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5596
+#: ../src/calendar/libecal/e-cal-recur.c:5601
 msgctxt "recur-description"
 msgid "on the third Wednesday"
 msgstr "үшінші Сәрсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5599
+#: ../src/calendar/libecal/e-cal-recur.c:5604
 msgctxt "recur-description"
 msgid "on the fourth Wednesday"
 msgstr "төртінші Сәрсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5602
+#: ../src/calendar/libecal/e-cal-recur.c:5607
 msgctxt "recur-description"
 msgid "on the fifth Wednesday"
 msgstr "бесінші Сәрсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5615
+#: ../src/calendar/libecal/e-cal-recur.c:5620
 msgctxt "recur-description"
 msgid "on the first Thursday"
 msgstr "бiрiншi Бейсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5618
+#: ../src/calendar/libecal/e-cal-recur.c:5623
 msgctxt "recur-description"
 msgid "on the second Thursday"
 msgstr "екінші Бейсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5621
+#: ../src/calendar/libecal/e-cal-recur.c:5626
 msgctxt "recur-description"
 msgid "on the third Thursday"
 msgstr "үшінші Бейсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5624
+#: ../src/calendar/libecal/e-cal-recur.c:5629
 msgctxt "recur-description"
 msgid "on the fourth Thursday"
 msgstr "төртінші Бейсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5627
+#: ../src/calendar/libecal/e-cal-recur.c:5632
 msgctxt "recur-description"
 msgid "on the fifth Thursday"
 msgstr "бесінші Бейсенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5640
+#: ../src/calendar/libecal/e-cal-recur.c:5645
 msgctxt "recur-description"
 msgid "on the first Friday"
 msgstr "бiрiншi Жұмада"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5643
+#: ../src/calendar/libecal/e-cal-recur.c:5648
 msgctxt "recur-description"
 msgid "on the second Friday"
 msgstr "екінші Жұмада"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5646
+#: ../src/calendar/libecal/e-cal-recur.c:5651
 msgctxt "recur-description"
 msgid "on the third Friday"
 msgstr "үшінші Жұмада"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5649
+#: ../src/calendar/libecal/e-cal-recur.c:5654
 msgctxt "recur-description"
 msgid "on the fourth Friday"
 msgstr "төртінші Жұмада"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5652
+#: ../src/calendar/libecal/e-cal-recur.c:5657
 msgctxt "recur-description"
 msgid "on the fifth Friday"
 msgstr "бесінші Жұмада"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5665
+#: ../src/calendar/libecal/e-cal-recur.c:5670
 msgctxt "recur-description"
 msgid "on the first Saturday"
 msgstr "бірінші Сенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5668
+#: ../src/calendar/libecal/e-cal-recur.c:5673
 msgctxt "recur-description"
 msgid "on the second Saturday"
 msgstr "екінші Сенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5671
+#: ../src/calendar/libecal/e-cal-recur.c:5676
 msgctxt "recur-description"
 msgid "on the third Saturday"
 msgstr "үшінші Сенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5674
+#: ../src/calendar/libecal/e-cal-recur.c:5679
 msgctxt "recur-description"
 msgid "on the fourth Saturday"
 msgstr "төртінші Сенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5677
+#: ../src/calendar/libecal/e-cal-recur.c:5682
 msgctxt "recur-description"
 msgid "on the fifth Saturday"
 msgstr "бесінші Сенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5690
+#: ../src/calendar/libecal/e-cal-recur.c:5695
 msgctxt "recur-description"
 msgid "on the first Sunday"
 msgstr "бірінші Жексенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5693
+#: ../src/calendar/libecal/e-cal-recur.c:5698
 msgctxt "recur-description"
 msgid "on the second Sunday"
 msgstr "екінші Жексенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5696
+#: ../src/calendar/libecal/e-cal-recur.c:5701
 msgctxt "recur-description"
 msgid "on the third Sunday"
 msgstr "үшінші Жексенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5699
+#: ../src/calendar/libecal/e-cal-recur.c:5704
 msgctxt "recur-description"
 msgid "on the fourth Sunday"
 msgstr "төртінші Жексенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5702
+#: ../src/calendar/libecal/e-cal-recur.c:5707
 msgctxt "recur-description"
 msgid "on the fifth Sunday"
 msgstr "бесінші Жексенбіде"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5731
+#: ../src/calendar/libecal/e-cal-recur.c:5736
 #, c-format
 msgid "every year forever"
 msgid_plural "every %d years forever"
 msgstr[0] "әр %d жыл сайын мәңгі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5737
+#: ../src/calendar/libecal/e-cal-recur.c:5742
 #, c-format
 msgid "Every year forever"
 msgid_plural "Every %d years forever"
 msgstr[0] "Әр %d жыл сайын мәңгі"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5745
+#: ../src/calendar/libecal/e-cal-recur.c:5750
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
 msgstr[0] "әр %d жыл сайын"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5751
+#: ../src/calendar/libecal/e-cal-recur.c:5756
 #, c-format
 msgid "Every year"
 msgid_plural "Every %d years"
@@ -2176,7 +2177,7 @@ msgstr[0] "Әр %d жыл сайын"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 3 days for 10 occurrences"
-#: ../src/calendar/libecal/e-cal-recur.c:5770
+#: ../src/calendar/libecal/e-cal-recur.c:5775
 #, c-format
 msgid "for one occurrence"
 msgid_plural "for %d occurrences"
@@ -2186,7 +2187,7 @@ msgstr[0] "%d қайталануымен"
 #. The '%s' is replaced with actual date, thus it can create something like
 #. "until Mon 15.1.2018". The text is appended at the end of the complete
 #. recurrence description, making it for example: "Every 3 days until Mon 15.1.2018"
-#: ../src/calendar/libecal/e-cal-recur.c:5801
+#: ../src/calendar/libecal/e-cal-recur.c:5811
 #, c-format
 msgctxt "recur-description"
 msgid "until %s"
@@ -2195,7 +2196,7 @@ msgstr "%s дейін"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 2 months on Tuesday, Thursday and Friday forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5807
+#: ../src/calendar/libecal/e-cal-recur.c:5817
 msgctxt "recur-description"
 msgid "forever"
 msgstr "әрқашан"
@@ -2203,7 +2204,7 @@ msgstr "әрқашан"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
 #. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
 #. together one sentence: "Every 2 weeks on Tuesday and Friday for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5817
+#: ../src/calendar/libecal/e-cal-recur.c:5827
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s %3$s"
@@ -2212,7 +2213,7 @@ msgstr "%1$s %2$s %3$s"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
 #. the '%2$s' is like "for 10 occurrences", constructing together one sentence:
 #. "Every 2 days for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5822
+#: ../src/calendar/libecal/e-cal-recur.c:5832
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s"
@@ -2220,7 +2221,7 @@ msgstr "%1$s %2$s"
 
 #. Translators: This text is appended at the end of complete recur description using "%s%s" in
 #. context "recur-description"
-#: ../src/calendar/libecal/e-cal-recur.c:5838
+#: ../src/calendar/libecal/e-cal-recur.c:5848
 #, c-format
 msgid ", with one exception"
 msgid_plural ", with %d exceptions"
@@ -2229,33 +2230,33 @@ msgstr[0] ", %d ерекшелікпен"
 #. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
 #. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
 #. It will form something like: "Every 2 weeks on Tuesday and Friday for 10 occurrences, with 3 exceptions"
-#: ../src/calendar/libecal/e-cal-recur.c:5845
+#: ../src/calendar/libecal/e-cal-recur.c:5855
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5858
-#: ../src/calendar/libecal/e-cal-recur.c:5881
+#: ../src/calendar/libecal/e-cal-recur.c:5868
+#: ../src/calendar/libecal/e-cal-recur.c:5891
 msgctxt "recur-description"
 msgid "The meeting recurs"
 msgstr "Жиналыс қайталанады"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5860
-#: ../src/calendar/libecal/e-cal-recur.c:5883
+#: ../src/calendar/libecal/e-cal-recur.c:5870
+#: ../src/calendar/libecal/e-cal-recur.c:5893
 msgctxt "recur-description"
 msgid "The appointment recurs"
 msgstr "Кездесу қайталанады"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5863
-#: ../src/calendar/libecal/e-cal-recur.c:5886
+#: ../src/calendar/libecal/e-cal-recur.c:5873
+#: ../src/calendar/libecal/e-cal-recur.c:5896
 msgctxt "recur-description"
 msgid "The task recurs"
 msgstr "Тапсырма қайталанады"
 
 #. if (i_cal_component_isa (comp) == I_CAL_VJOURNAL_COMPONENT)
-#: ../src/calendar/libecal/e-cal-recur.c:5865
-#: ../src/calendar/libecal/e-cal-recur.c:5888
+#: ../src/calendar/libecal/e-cal-recur.c:5875
+#: ../src/calendar/libecal/e-cal-recur.c:5898
 msgctxt "recur-description"
 msgid "The memo recurs"
 msgstr "Естелік қайталанады"
@@ -2264,79 +2265,79 @@ msgstr "Естелік қайталанады"
 #. The '%1$s' is replaced with something like "The meeting recurs" and
 #. the '%2$s' with something like "every 2 days forever", thus forming
 #. sentence like "This meeting recurs every 2 days forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5872
+#: ../src/calendar/libecal/e-cal-recur.c:5882
 #, c-format
 msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#: ../src/calendar/libecal/e-cal-util.c:818
-#: ../src/calendar/libecal/e-cal-util.c:845
+#: ../src/calendar/libecal/e-cal-util.c:837
+#: ../src/calendar/libecal/e-cal-util.c:864
 msgctxt "Priority"
 msgid "High"
 msgstr "Жоғары"
 
-#: ../src/calendar/libecal/e-cal-util.c:820
-#: ../src/calendar/libecal/e-cal-util.c:847
+#: ../src/calendar/libecal/e-cal-util.c:839
+#: ../src/calendar/libecal/e-cal-util.c:866
 msgctxt "Priority"
 msgid "Normal"
 msgstr "Қалыпты"
 
-#: ../src/calendar/libecal/e-cal-util.c:822
-#: ../src/calendar/libecal/e-cal-util.c:849
+#: ../src/calendar/libecal/e-cal-util.c:841
+#: ../src/calendar/libecal/e-cal-util.c:868
 msgctxt "Priority"
 msgid "Low"
 msgstr "Төмен"
 
 #. An empty string is the same as 'None'.
-#: ../src/calendar/libecal/e-cal-util.c:843
+#: ../src/calendar/libecal/e-cal-util.c:862
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Анықталмаған"
 
-#: ../src/calendar/libecal/e-cal-util.c:885
-#: ../src/libedataserverui/e-reminders-widget.c:296
+#: ../src/calendar/libecal/e-cal-util.c:904
+#: ../src/libedataserverui/e-reminders-widget.c:299
 #, c-format
 msgid "%d week"
 msgid_plural "%d weeks"
 msgstr[0] "%d апта"
 
-#: ../src/calendar/libecal/e-cal-util.c:894
-#: ../src/libedataserverui/e-reminders-widget.c:292
+#: ../src/calendar/libecal/e-cal-util.c:913
+#: ../src/libedataserverui/e-reminders-widget.c:295
 #, c-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d күн"
 
-#: ../src/calendar/libecal/e-cal-util.c:903
-#: ../src/libedataserverui/e-reminders-widget.c:288
+#: ../src/calendar/libecal/e-cal-util.c:922
+#: ../src/libedataserverui/e-reminders-widget.c:291
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d сағат"
 
-#: ../src/calendar/libecal/e-cal-util.c:912
-#: ../src/libedataserverui/e-reminders-widget.c:284
+#: ../src/calendar/libecal/e-cal-util.c:931
+#: ../src/libedataserverui/e-reminders-widget.c:287
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d минут"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: ../src/calendar/libecal/e-cal-util.c:917
+#: ../src/calendar/libecal/e-cal-util.c:936
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d секунд"
 
-#: ../src/calendar/libecal/e-reminder-watcher.c:2704
+#: ../src/calendar/libecal/e-reminder-watcher.c:2824
 msgid "No Summary"
 msgstr "Қорытындысы жоқ"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2720
+#: ../src/calendar/libecal/e-reminder-watcher.c:2840
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
@@ -2345,7 +2346,7 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2725
+#: ../src/calendar/libecal/e-reminder-watcher.c:2845
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
@@ -2354,25 +2355,26 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2730
+#: ../src/calendar/libecal/e-reminder-watcher.c:2850
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
 msgstr "%s %s"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:77
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1104
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1443
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1570
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1619
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1173
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1234
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1579
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1706
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1755
 #, c-format
 msgid "“%s” expects one argument"
 msgstr ""
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:84
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:707
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1450
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1458
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1586
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1594
 #, c-format
 msgid "“%s” expects the first argument to be a string"
 msgstr ""
@@ -2385,11 +2387,12 @@ msgstr ""
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:171
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:272
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:340
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:857
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1111
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1519
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1577
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1626
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:926
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1180
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1241
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1655
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1713
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1762
 #, c-format
 msgid "“%s” expects the first argument to be a time_t"
 msgstr ""
@@ -2397,7 +2400,7 @@ msgstr ""
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:180
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:280
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:350
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:866
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:935
 #, c-format
 msgid "“%s” expects the second argument to be a time_t"
 msgstr ""
@@ -2414,19 +2417,22 @@ msgstr ""
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:333
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:700
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:850
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1512
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:919
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1648
 #, c-format
 msgid "“%s” expects two arguments"
 msgstr ""
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:639
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:662
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:782
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:814
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1023
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1056
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1404
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:790
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:812
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:834
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:857
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:883
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1092
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1125
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1540
 #, c-format
 msgid "“%s” expects no arguments"
 msgstr ""
@@ -2444,59 +2450,59 @@ msgid ""
 "“classification”"
 msgstr ""
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:918
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:987
 #, c-format
 msgid "“%s” expects at least one argument"
 msgstr ""
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:933
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1002
 #, c-format
 msgid ""
 "“%s” expects all arguments to be strings or one and only one argument to be "
 "a boolean false (#f)"
 msgstr ""
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1467
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1603
 #, c-format
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1528
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1664
 #, c-format
 msgid "“%s” expects the second argument to be an integer"
 msgstr ""
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1798
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1846
 #, c-format
 msgid "Failed to create SQLite function, error code “%d”: %s"
 msgstr ""
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2798
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2856
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2915
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2978
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2840
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2898
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2957
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3020
 #, c-format
 msgid "Object “%s”, “%s” not found"
 msgstr ""
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3757
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3799
 msgid "Cannot add timezone without tzid"
 msgstr ""
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3766
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3808
 msgid "Cannot add timezone without component"
 msgstr ""
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3774
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3816
 msgid "Cannot add timezone with invalid component"
 msgstr ""
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1148
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1153
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr ""
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4181
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4206
 msgid "attachment.dat"
 msgstr ""
 
@@ -2570,35 +2576,35 @@ msgstr ""
 msgid "Could not add calendar time zone: "
 msgstr ""
 
-#: ../src/camel/camel-cipher-context.c:198
+#: ../src/camel/camel-cipher-context.c:194
 #, c-format
 msgid "Signing is not supported by this cipher"
 msgstr ""
 
-#: ../src/camel/camel-cipher-context.c:211
+#: ../src/camel/camel-cipher-context.c:207
 #, c-format
 msgid "Verifying is not supported by this cipher"
 msgstr ""
 
-#: ../src/camel/camel-cipher-context.c:227
+#: ../src/camel/camel-cipher-context.c:223
 #, c-format
 msgid "Encryption is not supported by this cipher"
 msgstr ""
 
-#: ../src/camel/camel-cipher-context.c:241
+#: ../src/camel/camel-cipher-context.c:237
 #, c-format
 msgid "Decryption is not supported by this cipher"
 msgstr ""
 
-#: ../src/camel/camel-cipher-context.c:356
+#: ../src/camel/camel-cipher-context.c:352
 msgid "Signing message"
 msgstr "Хабарламаға қолтаңба қою"
 
-#: ../src/camel/camel-cipher-context.c:648
+#: ../src/camel/camel-cipher-context.c:644
 msgid "Encrypting message"
 msgstr "Хабарламаны шифрлеу"
 
-#: ../src/camel/camel-cipher-context.c:821
+#: ../src/camel/camel-cipher-context.c:817
 msgid "Decrypting message"
 msgstr "Хабарламаны дешифрлеу"
 
@@ -2616,7 +2622,7 @@ msgstr ""
 msgid "Could not remove cache entry: %s: %s"
 msgstr ""
 
-#: ../src/camel/camel-db.c:872
+#: ../src/camel/camel-db.c:870
 #: ../src/camel/providers/local/camel-mbox-store.c:913
 #, c-format
 msgid "Could not rename “%s” to %s: %s"
@@ -2630,91 +2636,91 @@ msgstr "\"%s\" атауын %s етіп орнату мүмкін емес: %s"
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr ""
 
-#: ../src/camel/camel-filter-driver.c:1120
+#: ../src/camel/camel-filter-driver.c:1125
 #: ../src/camel/camel-filter-search.c:934
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr ""
 
-#: ../src/camel/camel-filter-driver.c:1168
+#: ../src/camel/camel-filter-driver.c:1173
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr ""
 
-#: ../src/camel/camel-filter-driver.c:1392
-#: ../src/camel/camel-filter-driver.c:1405
+#: ../src/camel/camel-filter-driver.c:1397
+#: ../src/camel/camel-filter-driver.c:1410
 msgid "Syncing folders"
 msgstr "Бумаларды синхрондау"
 
-#: ../src/camel/camel-filter-driver.c:1513
+#: ../src/camel/camel-filter-driver.c:1518
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr ""
 
-#: ../src/camel/camel-filter-driver.c:1524
+#: ../src/camel/camel-filter-driver.c:1529
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr ""
 
-#: ../src/camel/camel-filter-driver.c:1622
+#: ../src/camel/camel-filter-driver.c:1627
 #, c-format
 msgid "Unable to open spool folder"
 msgstr ""
 
-#: ../src/camel/camel-filter-driver.c:1634
+#: ../src/camel/camel-filter-driver.c:1639
 #, c-format
 msgid "Unable to process spool folder"
 msgstr ""
 
-#: ../src/camel/camel-filter-driver.c:1665
+#: ../src/camel/camel-filter-driver.c:1667
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr ""
 
-#: ../src/camel/camel-filter-driver.c:1674
-#: ../src/camel/camel-filter-driver.c:1697
+#: ../src/camel/camel-filter-driver.c:1676
+#: ../src/camel/camel-filter-driver.c:1699
 #, c-format
 msgid "Failed on message %d"
 msgstr ""
 
-#: ../src/camel/camel-filter-driver.c:1715
-#: ../src/camel/camel-filter-driver.c:1847
+#: ../src/camel/camel-filter-driver.c:1717
+#: ../src/camel/camel-filter-driver.c:1846
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr ""
 
-#: ../src/camel/camel-filter-driver.c:1725
-#: ../src/camel/camel-filter-driver.c:1861
+#: ../src/camel/camel-filter-driver.c:1727
+#: ../src/camel/camel-filter-driver.c:1860
 msgid "Syncing folder"
 msgstr "Бумаланы синхрондау"
 
-#: ../src/camel/camel-filter-driver.c:1730
-#: ../src/camel/camel-filter-driver.c:1869
+#: ../src/camel/camel-filter-driver.c:1732
+#: ../src/camel/camel-filter-driver.c:1868
 msgid "Complete"
 msgstr "Аяқталды"
 
-#: ../src/camel/camel-filter-driver.c:1801
+#: ../src/camel/camel-filter-driver.c:1800
 #, c-format
 msgid "Getting message %d of %d"
 msgstr ""
 
-#: ../src/camel/camel-filter-driver.c:1819
+#: ../src/camel/camel-filter-driver.c:1818
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr ""
 
-#: ../src/camel/camel-filter-driver.c:2029
-#: ../src/camel/camel-filter-driver.c:2053
+#: ../src/camel/camel-filter-driver.c:2025
+#: ../src/camel/camel-filter-driver.c:2049
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr ""
 
-#: ../src/camel/camel-filter-driver.c:2043
+#: ../src/camel/camel-filter-driver.c:2039
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr ""
 
-#: ../src/camel/camel-filter-driver.c:2062
+#: ../src/camel/camel-filter-driver.c:2058
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr ""
@@ -2744,7 +2750,15 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:329
+#: ../src/camel/camel-folder.c:171
+#, c-format
+msgid "Storing changes in folder “%s : %s”"
+msgstr ""
+
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. the whole “%s : %s” is meant as an absolute identification of the folder.
+#: ../src/camel/camel-folder.c:456
 #, c-format
 msgid "Learning new spam message in “%s : %s”"
 msgid_plural "Learning new spam messages in “%s : %s”"
@@ -2753,7 +2767,7 @@ msgstr[0] ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:372
+#: ../src/camel/camel-folder.c:499
 #, c-format
 msgid "Learning new ham message in “%s : %s”"
 msgid_plural "Learning new ham messages in “%s : %s”"
@@ -2762,25 +2776,25 @@ msgstr[0] ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:420
+#: ../src/camel/camel-folder.c:547
 #, c-format
 msgid "Filtering new message in “%s : %s”"
 msgid_plural "Filtering new messages in “%s : %s”"
 msgstr[0] ""
 
-#: ../src/camel/camel-folder.c:1064
-#: ../src/camel/providers/local/camel-maildir-folder.c:331
+#: ../src/camel/camel-folder.c:1210
+#: ../src/camel/providers/local/camel-maildir-folder.c:332
 msgid "Moving messages"
 msgstr "Хабарламаларды жылжыту"
 
-#: ../src/camel/camel-folder.c:1067
+#: ../src/camel/camel-folder.c:1213
 msgid "Copying messages"
 msgstr "Хабарламаларды көшіру"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1112
+#: ../src/camel/camel-folder.c:1258
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
 msgstr ""
@@ -2788,7 +2802,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1214
+#: ../src/camel/camel-folder.c:1360
 #, c-format
 msgid "Filtering folder “%s : %s”"
 msgstr ""
@@ -2796,7 +2810,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3176
+#: ../src/camel/camel-folder.c:3326
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr ""
@@ -2804,7 +2818,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3311
+#: ../src/camel/camel-folder.c:3461
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr ""
@@ -2812,7 +2826,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3536
+#: ../src/camel/camel-folder.c:3686
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "\"%s : %s\" үшін квоталар ақпаратын алу"
@@ -2820,53 +2834,53 @@ msgstr "\"%s : %s\" үшін квоталар ақпаратын алу"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3836
+#: ../src/camel/camel-folder.c:3986
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr ""
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:918
-#: ../src/camel/camel-folder-search.c:961
+#: ../src/camel/camel-folder-search.c:926
+#: ../src/camel/camel-folder-search.c:969
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr ""
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:999
+#: ../src/camel/camel-folder-search.c:1007
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr ""
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1006
 #: ../src/camel/camel-folder-search.c:1014
+#: ../src/camel/camel-folder-search.c:1022
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr ""
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1042
+#: ../src/camel/camel-folder-search.c:1050
 #, c-format
 msgid "(%s) expects an array result"
 msgstr ""
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1052
+#: ../src/camel/camel-folder-search.c:1060
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr ""
 
-#: ../src/camel/camel-folder-search.c:2210
-#: ../src/camel/camel-folder-search.c:2384
+#: ../src/camel/camel-folder-search.c:2218
+#: ../src/camel/camel-folder-search.c:2392
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
 "%s"
 msgstr ""
 
-#: ../src/camel/camel-folder-search.c:2222
-#: ../src/camel/camel-folder-search.c:2396
+#: ../src/camel/camel-folder-search.c:2230
+#: ../src/camel/camel-folder-search.c:2404
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2876,7 +2890,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder-summary.c:1661
+#: ../src/camel/camel-folder-summary.c:1662
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr ""
@@ -2887,18 +2901,18 @@ msgstr ""
 msgid "Output from %s:"
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:912 ../src/camel/camel-gpg-context.c:917
-#: ../src/camel/camel-gpg-context.c:1658
+#: ../src/camel/camel-gpg-context.c:928 ../src/camel/camel-gpg-context.c:933
+#: ../src/camel/camel-gpg-context.c:1674
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:917
+#: ../src/camel/camel-gpg-context.c:933
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1205
 msgid "Unknown"
 msgstr "Белгісіз"
 
-#: ../src/camel/camel-gpg-context.c:1029
+#: ../src/camel/camel-gpg-context.c:1045
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -2906,83 +2920,83 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:1065
+#: ../src/camel/camel-gpg-context.c:1081
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:1090 ../src/camel/camel-gpg-context.c:1105
+#: ../src/camel/camel-gpg-context.c:1106 ../src/camel/camel-gpg-context.c:1121
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:1126
+#: ../src/camel/camel-gpg-context.c:1142
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
 "SmartCard: “%s”"
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:1130
+#: ../src/camel/camel-gpg-context.c:1146
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
 "user: “%s”"
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:1136
+#: ../src/camel/camel-gpg-context.c:1152
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:1148
+#: ../src/camel/camel-gpg-context.c:1164
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:1179 ../src/camel/camel-net-utils.c:522
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:399
+#: ../src/camel/camel-gpg-context.c:1195 ../src/camel/camel-net-utils.c:522
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:393
 #: ../src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
 msgstr "Тоқтатылған"
 
-#: ../src/camel/camel-gpg-context.c:1200
+#: ../src/camel/camel-gpg-context.c:1216
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:1213
+#: ../src/camel/camel-gpg-context.c:1229
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:1330
+#: ../src/camel/camel-gpg-context.c:1346
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr ""
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: ../src/camel/camel-gpg-context.c:1343
+#: ../src/camel/camel-gpg-context.c:1359
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
 "the %s doesn’t have imported public key for this recipient."
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:2169 ../src/camel/camel-smime-context.c:869
+#: ../src/camel/camel-gpg-context.c:2185 ../src/camel/camel-smime-context.c:869
 msgid "Could not generate signing data: "
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:2220 ../src/camel/camel-gpg-context.c:2459
-#: ../src/camel/camel-gpg-context.c:2598 ../src/camel/camel-gpg-context.c:2775
+#: ../src/camel/camel-gpg-context.c:2236 ../src/camel/camel-gpg-context.c:2475
+#: ../src/camel/camel-gpg-context.c:2614 ../src/camel/camel-gpg-context.c:2791
 msgid "Failed to execute gpg."
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:2327 ../src/camel/camel-gpg-context.c:2335
-#: ../src/camel/camel-gpg-context.c:2343 ../src/camel/camel-gpg-context.c:2363
+#: ../src/camel/camel-gpg-context.c:2343 ../src/camel/camel-gpg-context.c:2351
+#: ../src/camel/camel-gpg-context.c:2359 ../src/camel/camel-gpg-context.c:2379
 #: ../src/camel/camel-smime-context.c:1000
 #: ../src/camel/camel-smime-context.c:1014
 #: ../src/camel/camel-smime-context.c:1026
@@ -2990,40 +3004,40 @@ msgstr ""
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:2409
+#: ../src/camel/camel-gpg-context.c:2425
 msgid "Cannot verify message signature: "
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:2557
+#: ../src/camel/camel-gpg-context.c:2573
 msgid "Could not generate encrypting data: "
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:2638
+#: ../src/camel/camel-gpg-context.c:2654
 msgid "This is a digitally encrypted message part"
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:2698 ../src/camel/camel-gpg-context.c:2707
-#: ../src/camel/camel-gpg-context.c:2730
+#: ../src/camel/camel-gpg-context.c:2714 ../src/camel/camel-gpg-context.c:2723
+#: ../src/camel/camel-gpg-context.c:2746
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:2718
+#: ../src/camel/camel-gpg-context.c:2734
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:2790
+#: ../src/camel/camel-gpg-context.c:2806
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:2827
+#: ../src/camel/camel-gpg-context.c:2843
 #, c-format
 msgid "GPG blob contains unencrypted text: %s"
 msgstr ""
 
-#: ../src/camel/camel-gpg-context.c:2829
+#: ../src/camel/camel-gpg-context.c:2845
 #: ../src/camel/camel-smime-context.c:1546
 msgid "Encrypted content"
 msgstr ""
@@ -3170,7 +3184,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:179
+#: ../src/camel/camel-offline-folder.c:175
 #, c-format
 msgid "Downloading new messages for offline mode in “%s : %s”"
 msgstr ""
@@ -3178,15 +3192,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:277
-#, c-format
-msgid "Storing changes in folder “%s : %s”"
-msgstr ""
-
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
-#. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:370
+#: ../src/camel/camel-offline-folder.c:260
 #, c-format
 msgid "Checking download of new messages for offline in “%s : %s”"
 msgstr ""
@@ -3194,7 +3200,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:490
+#: ../src/camel/camel-offline-folder.c:336
 #, c-format
 msgid "Syncing messages in folder “%s : %s” to disk"
 msgstr ""
@@ -3204,44 +3210,44 @@ msgstr ""
 #. The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:584
+#: ../src/camel/camel-offline-folder.c:430
 #, c-format
 msgid "Syncing message %d of %d in folder “%s : %s” to disk"
 msgstr ""
 
-#: ../src/camel/camel-offline-folder.c:643
+#: ../src/camel/camel-offline-folder.c:484
 msgid "Copy folder content locally for _offline operation"
 msgstr ""
 
-#: ../src/camel/camel-offline-store.c:304
+#: ../src/camel/camel-offline-store.c:326
 #, c-format
 msgid "Syncing messages in account “%s” to disk"
 msgstr ""
 
-#: ../src/camel/camel-provider.c:89
+#: ../src/camel/camel-provider.c:90
 msgid "Virtual folder email provider"
 msgstr ""
 
-#: ../src/camel/camel-provider.c:91
+#: ../src/camel/camel-provider.c:92
 msgid "For reading mail as a query of another set of folders"
 msgstr ""
 
-#: ../src/camel/camel-provider.c:299
+#: ../src/camel/camel-provider.c:335
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr ""
 
-#: ../src/camel/camel-provider.c:308
+#: ../src/camel/camel-provider.c:344
 #, c-format
 msgid "Could not load %s: %s"
 msgstr ""
 
-#: ../src/camel/camel-provider.c:317
+#: ../src/camel/camel-provider.c:353
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr ""
 
-#: ../src/camel/camel-provider.c:463 ../src/camel/camel-session.c:430
+#: ../src/camel/camel-provider.c:499 ../src/camel/camel-session.c:430
 #, c-format
 msgid "No provider available for protocol “%s”"
 msgstr ""
@@ -3507,6 +3513,17 @@ msgid ""
 "server"
 msgstr ""
 
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:23
+#| msgid "OAuth2 (Google)"
+msgid "OAuth2 (Yahoo!)"
+msgstr "OAuth2 (Yahoo!)"
+
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:24
+msgid ""
+"This option will use an OAuth 2.0 access token to connect to the Yahoo! "
+"server"
+msgstr ""
+
 #: ../src/camel/camel-search-private.c:114
 #, c-format
 msgid "Regular expression compilation failed: %s: %s"
@@ -3518,7 +3535,7 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr ""
 
 #: ../src/camel/camel-session.c:508
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3219
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3246
 #: ../src/camel/providers/pop3/camel-pop3-store.c:305
 #: ../src/camel/providers/pop3/camel-pop3-store.c:809
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:696
@@ -3737,44 +3754,44 @@ msgstr ""
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr ""
 
-#: ../src/camel/camel-store.c:1412
+#: ../src/camel/camel-store.c:1413
 #, c-format
 msgid "Opening folder “%s”"
 msgstr ""
 
-#: ../src/camel/camel-store.c:1709
+#: ../src/camel/camel-store.c:1710
 #, c-format
 msgid "Scanning folders in “%s”"
 msgstr ""
 
-#: ../src/camel/camel-store.c:1737 ../src/camel/camel-store.c:1782
+#: ../src/camel/camel-store.c:1738 ../src/camel/camel-store.c:1783
 #: ../src/camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Қоқыс шелегі"
 
-#: ../src/camel/camel-store.c:1751 ../src/camel/camel-store.c:1799
+#: ../src/camel/camel-store.c:1752 ../src/camel/camel-store.c:1800
 #: ../src/camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Спам"
 
-#: ../src/camel/camel-store.c:2404
+#: ../src/camel/camel-store.c:2405
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr ""
 
-#: ../src/camel/camel-store.c:2411
+#: ../src/camel/camel-store.c:2412
 #, c-format
 msgid "Creating folder “%s”"
 msgstr "\"%s\" бумасын жасау"
 
-#: ../src/camel/camel-store.c:2589 ../src/camel/camel-vee-store.c:426
-#: ../src/camel/providers/local/camel-maildir-store.c:340
+#: ../src/camel/camel-store.c:2590 ../src/camel/camel-vee-store.c:426
+#: ../src/camel/providers/local/camel-maildir-store.c:341
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr ""
 
-#: ../src/camel/camel-store.c:2780 ../src/camel/camel-vee-store.c:477
-#: ../src/camel/providers/local/camel-maildir-store.c:908
+#: ../src/camel/camel-store.c:2781 ../src/camel/camel-vee-store.c:477
+#: ../src/camel/providers/local/camel-maildir-store.c:912
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr ""
@@ -3827,7 +3844,7 @@ msgstr "\"%s\" сілтемесін талдау мүмкін емес"
 msgid "Updating folder “%s”"
 msgstr ""
 
-#: ../src/camel/camel-vee-folder.c:1275 ../src/camel/camel-vee-folder.c:1411
+#: ../src/camel/camel-vee-folder.c:1283 ../src/camel/camel-vee-folder.c:1419
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr ""
@@ -3836,22 +3853,22 @@ msgstr ""
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: ../src/camel/camel-vee-folder.c:1312
+#: ../src/camel/camel-vee-folder.c:1320
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "%s хабарламасы \"%s : %s\" ішінде жоқ"
 
-#: ../src/camel/camel-vee-folder.c:1387
+#: ../src/camel/camel-vee-folder.c:1395
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "\"%s\" сақтау қатесі: "
 
-#: ../src/camel/camel-vee-folder.c:1577
+#: ../src/camel/camel-vee-folder.c:1585
 #, c-format
 msgid "Updating search folder “%s”"
 msgstr "\"%s\" іздеу бумасын жаңарту"
 
-#: ../src/camel/camel-vee-folder.c:1635
+#: ../src/camel/camel-vee-folder.c:1643
 msgid "Automatically _update on change in source folders"
 msgstr ""
 
@@ -3871,11 +3888,11 @@ msgstr ""
 msgid "Cannot rename folder: %s: No such folder"
 msgstr ""
 
-#: ../src/camel/camel-vee-store.c:548
+#: ../src/camel/camel-vee-store.c:556
 msgid "Enable _Unmatched folder"
 msgstr ""
 
-#: ../src/camel/camel-vee-store.c:1104
+#: ../src/camel/camel-vee-store.c:1112
 msgid "Updating Unmatched search folder"
 msgstr ""
 
@@ -3893,15 +3910,15 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr ""
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:987
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3388
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3412
 #: ../src/camel/providers/nntp/camel-nntp-store.c:348
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1343
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2153
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2308
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:450
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:633
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:922
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:1136
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:447
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:630
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:916
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:1130
 #: ../src/camel/providers/pop3/camel-pop3-store.c:293
 #: ../src/camel/providers/pop3/camel-pop3-store.c:528
 #: ../src/camel/providers/pop3/camel-pop3-store.c:576
@@ -3933,7 +3950,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:772
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:765
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
 msgstr ""
@@ -3942,26 +3959,26 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1039
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1032
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1131
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:835
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1124
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:832
 msgid "Apply message _filters to this folder"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1143
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1136
 msgid "Always check for _new mail in this folder"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1258
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1251
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1270
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1263
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr ""
@@ -3969,7 +3986,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1470
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1463
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr ""
@@ -4051,7 +4068,7 @@ msgstr ""
 #: ../src/camel/providers/local/camel-local-provider.c:41
 #: ../src/camel/providers/local/camel-local-provider.c:67
 #: ../src/camel/providers/local/camel-local-provider.c:88
-#: ../src/camel/providers/local/camel-local-provider.c:112
+#: ../src/camel/providers/local/camel-local-provider.c:114
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:40
 msgid "Check new messages for _Junk contents"
 msgstr ""
@@ -4080,228 +4097,228 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:1164
+#: ../src/camel/providers/imapx/camel-imapx-server.c:1152
 msgid "Error writing to cache stream"
 msgstr "Кэш ағымына жазу қатесі"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3012
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3101
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3421
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3044
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3131
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3445
 msgid "Failed to get capabilities"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3031
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3063
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3032
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3064
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:283
 msgid "STARTTLS not supported"
 msgstr "STARTTLS үшін қолдау жоқ"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3041
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3073
 msgid "Failed to issue STARTTLS"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3090
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3120
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3206
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3233
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3232
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3259
 #, c-format
 msgid ""
 "Plaintext authentication disallowed on insecure connections. Change "
 "encryption to STARTTLS or TLS for account “%s”."
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3245
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3272
 #: ../src/camel/providers/nntp/camel-nntp-store.c:454
 #: ../src/camel/providers/nntp/camel-nntp-store.c:596
 msgid "Cannot authenticate without a username"
 msgstr "Пайдаланушы аты болмаса, аутентификация өтпейді"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3254
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3281
 #: ../src/camel/providers/nntp/camel-nntp-store.c:605
 #: ../src/camel/providers/pop3/camel-pop3-store.c:709
 #: ../src/camel/providers/pop3/camel-pop3-store.c:747
 msgid "Authentication password not available"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3264
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3279
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3291
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3306
 msgid "Failed to authenticate"
 msgstr "Аутентификация сәтсіз аяқталды"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3448
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3472
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3470
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3494
 msgid "Failed to issue NAMESPACE"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3488
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3512
 msgid "Failed to enable QResync"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3525
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3549
 msgid "Failed to issue NOTIFY"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4004
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4028
 msgid "Failed to select mailbox"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4107
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4128
 msgid "Cannot issue command, no stream available"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4373
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4394
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4374
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4395
 msgid "No such message available."
 msgstr "Ондай хабарлама жоқ."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4423
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4448
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4487
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4444
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4469
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4508
 msgid "Error fetching message"
 msgstr "Хабарламаны алу қатемен аяқталды"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4465
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5232
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4486
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5259
 msgid "Error performing NOOP"
 msgstr "NOOP орындау қатесі"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4480
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4501
 msgid "Failed to close the tmp stream"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4511
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4532
 msgid "Failed to copy the tmp file"
 msgstr "Уақытша файлды көшіру қатесі"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4749
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4770
 msgid "Error moving messages"
 msgstr "Хабарламаларды жылжыту қатесі"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4749
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4770
 msgid "Error copying messages"
 msgstr "Хабарламаларды көшіру қатесі"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5022
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5043
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5049
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5070
 msgid "Cannot create spool file: "
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5129
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5156
 msgid "Error appending message"
 msgstr "Хабарламаны жалғау қатесі"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5385
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5412
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5389
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5416
 msgid "Error scanning changes"
 msgstr "Өзгерістерді анықтау қатесі"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5410
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5437
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5438
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5465
 msgid "Error fetching message info"
 msgstr "Хабарлама ақпаратын алу қатемен аяқталды"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5571
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5598
 msgid "Error running STATUS"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6145
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6200
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6264
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6178
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6233
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6297
 msgid "Error syncing changes"
 msgstr "Өзгерістерді синхрондау қатесі"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6158
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6210
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6283
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6427
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6191
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6243
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6316
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6457
 msgid "Error expunging message"
 msgstr "Хабарламаны өшіру қатесі"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6509
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6539
 msgid "Error fetching folders"
 msgstr "Бумаларды алу қатесі"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6517
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6547
 msgid "Error fetching subscribed folders"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6574
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6604
 msgid "Error creating folder"
 msgstr "Буманы жасау қатесі"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6624
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6654
 msgid "Error deleting folder"
 msgstr "Буманы өшіру қатесі"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6670
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6700
 msgid "Error renaming folder"
 msgstr "Бума атын ауыстыру қатесі"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6702
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6732
 msgid "Error subscribing to folder"
 msgstr "Бумаға жазылу қатесі"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6738
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6768
 msgid "Error unsubscribing from folder"
 msgstr "Бумадан жазылуды өшіру қатесі"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6778
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6808
 msgid "IMAP server does not support quotas"
 msgstr "IMAP сервері квоталарды қолдамайды"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6790
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6820
 msgid "Error retrieving quota information"
 msgstr "Квоталар ақпаратын алу қатесі"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6855
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6885
 msgid "Search failed"
 msgstr "Іздеу сәтсіз аяқталды"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6983
+#: ../src/camel/providers/imapx/camel-imapx-server.c:7013
 msgid "Error running IDLE"
 msgstr "IDLE орындау қатесі"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../src/camel/providers/imapx/camel-imapx-store.c:353
-#: ../src/camel/providers/local/camel-maildir-folder.c:476
-#: ../src/camel/providers/local/camel-maildir-store.c:341
-#: ../src/camel/providers/local/camel-maildir-store.c:820
-#: ../src/camel/providers/local/camel-maildir-store.c:826
-#: ../src/camel/providers/local/camel-maildir-store.c:909
-#: ../src/camel/providers/local/camel-spool-store.c:386
+#: ../src/camel/providers/local/camel-maildir-folder.c:477
+#: ../src/camel/providers/local/camel-maildir-store.c:342
+#: ../src/camel/providers/local/camel-maildir-store.c:824
+#: ../src/camel/providers/local/camel-maildir-store.c:830
+#: ../src/camel/providers/local/camel-maildir-store.c:913
+#: ../src/camel/providers/local/camel-spool-store.c:397
 msgid "Inbox"
 msgstr "Кіріс"
 
@@ -4524,7 +4541,7 @@ msgid ""
 msgstr ""
 
 #: ../src/camel/providers/local/camel-local-provider.c:86
-#: ../src/camel/providers/local/camel-local-provider.c:110
+#: ../src/camel/providers/local/camel-local-provider.c:112
 msgid "_Apply filters to new messages in Inbox"
 msgstr ""
 
@@ -4536,22 +4553,26 @@ msgstr ""
 msgid "For storing local mail in maildir directories."
 msgstr ""
 
-#: ../src/camel/providers/local/camel-local-provider.c:113
+#: ../src/camel/providers/local/camel-local-provider.c:110
+msgid "_Listen for change notifications"
+msgstr ""
+
+#: ../src/camel/providers/local/camel-local-provider.c:115
 msgid "_Store status headers in Elm/Pine/Mutt format"
 msgstr ""
 
-#: ../src/camel/providers/local/camel-local-provider.c:120
+#: ../src/camel/providers/local/camel-local-provider.c:122
 msgid "Standard Unix mbox spool file"
 msgstr ""
 
-#: ../src/camel/providers/local/camel-local-provider.c:121
-#: ../src/camel/providers/local/camel-local-provider.c:135
+#: ../src/camel/providers/local/camel-local-provider.c:123
+#: ../src/camel/providers/local/camel-local-provider.c:137
 msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
 
-#: ../src/camel/providers/local/camel-local-provider.c:134
+#: ../src/camel/providers/local/camel-local-provider.c:136
 msgid "Standard Unix mbox spool directory"
 msgstr ""
 
@@ -4567,9 +4588,9 @@ msgstr ""
 
 #: ../src/camel/providers/local/camel-local-store.c:207
 #: ../src/camel/providers/local/camel-local-store.c:367
-#: ../src/camel/providers/local/camel-maildir-store.c:117
+#: ../src/camel/providers/local/camel-maildir-store.c:118
 #: ../src/camel/providers/local/camel-mbox-store.c:579
-#: ../src/camel/providers/local/camel-spool-store.c:81
+#: ../src/camel/providers/local/camel-spool-store.c:90
 #, c-format
 msgid "Store root %s is not an absolute path"
 msgstr ""
@@ -4582,7 +4603,7 @@ msgstr ""
 #: ../src/camel/providers/local/camel-local-store.c:228
 #: ../src/camel/providers/local/camel-local-store.c:238
 #: ../src/camel/providers/local/camel-local-store.c:380
-#: ../src/camel/providers/local/camel-maildir-store.c:159
+#: ../src/camel/providers/local/camel-maildir-store.c:160
 #, c-format
 msgid "Cannot get folder: %s: %s"
 msgstr "Буманы алу мүмкін емес: %s: %s"
@@ -4610,20 +4631,20 @@ msgid "Could not rename “%s”: %s"
 msgstr "\"%s\" атын өзгерту мүмкін емес: %s"
 
 #: ../src/camel/providers/local/camel-maildir-folder.c:107
-#: ../src/camel/providers/local/camel-maildir-folder.c:345
+#: ../src/camel/providers/local/camel-maildir-folder.c:346
 #: ../src/camel/providers/local/camel-mbox-folder.c:133
 #: ../src/camel/providers/local/camel-mbox-folder.c:348
 #: ../src/camel/providers/local/camel-mh-folder.c:159
 msgid "No such message"
 msgstr "Ондай хабарлама жоқ"
 
-#: ../src/camel/providers/local/camel-maildir-folder.c:239
+#: ../src/camel/providers/local/camel-maildir-folder.c:240
 #, c-format
 msgid "Cannot append message to maildir folder: %s: "
 msgstr ""
 
-#: ../src/camel/providers/local/camel-maildir-folder.c:286
-#: ../src/camel/providers/local/camel-maildir-folder.c:296
+#: ../src/camel/providers/local/camel-maildir-folder.c:287
+#: ../src/camel/providers/local/camel-maildir-folder.c:297
 #: ../src/camel/providers/local/camel-mbox-folder.c:407
 #: ../src/camel/providers/local/camel-mh-folder.c:171
 #: ../src/camel/providers/local/camel-mh-folder.c:181
@@ -4631,85 +4652,85 @@ msgstr ""
 msgid "Cannot get message %s from folder %s: "
 msgstr ""
 
-#: ../src/camel/providers/local/camel-maildir-folder.c:363
+#: ../src/camel/providers/local/camel-maildir-folder.c:364
 #, c-format
 msgid "Cannot transfer message to destination folder: %s"
 msgstr ""
 
-#: ../src/camel/providers/local/camel-maildir-store.c:125
-#: ../src/camel/providers/local/camel-maildir-store.c:925
+#: ../src/camel/providers/local/camel-maildir-store.c:126
+#: ../src/camel/providers/local/camel-maildir-store.c:929
 #, c-format
 msgid "Cannot create folder containing “%s”"
 msgstr "\"%s\" бар буманы жасау мүмкін емес"
 
-#: ../src/camel/providers/local/camel-maildir-store.c:133
-#: ../src/camel/providers/local/camel-maildir-store.c:152
-#: ../src/camel/providers/local/camel-maildir-store.c:917
+#: ../src/camel/providers/local/camel-maildir-store.c:134
+#: ../src/camel/providers/local/camel-maildir-store.c:153
+#: ../src/camel/providers/local/camel-maildir-store.c:921
 #, c-format
 msgid "Folder %s already exists"
 msgstr "%s бумасы бар болып тұр"
 
-#: ../src/camel/providers/local/camel-maildir-store.c:260
-#: ../src/camel/providers/local/camel-maildir-store.c:291
+#: ../src/camel/providers/local/camel-maildir-store.c:261
+#: ../src/camel/providers/local/camel-maildir-store.c:292
 #: ../src/camel/providers/local/camel-mbox-store.c:410
 #: ../src/camel/providers/local/camel-mbox-store.c:431
 #, c-format
 msgid "Cannot create folder “%s”: %s"
 msgstr "\"%s\" бумасын жасау мүмкін емес: %s"
 
-#: ../src/camel/providers/local/camel-maildir-store.c:275
+#: ../src/camel/providers/local/camel-maildir-store.c:276
 #: ../src/camel/providers/local/camel-mbox-store.c:376
 #: ../src/camel/providers/local/camel-mh-store.c:519
 #, c-format
 msgid "Cannot get folder “%s”: %s"
 msgstr "\"%s\" бумасын алу мүмкін емес: %s"
 
-#: ../src/camel/providers/local/camel-maildir-store.c:281
+#: ../src/camel/providers/local/camel-maildir-store.c:282
 #: ../src/camel/providers/local/camel-mbox-store.c:386
 #: ../src/camel/providers/local/camel-mh-store.c:528
 #, c-format
 msgid "Cannot get folder “%s”: folder does not exist."
 msgstr "\"%s\" бумасын алу мүмкін емес: бума жоқ болып тұр."
 
-#: ../src/camel/providers/local/camel-maildir-store.c:308
+#: ../src/camel/providers/local/camel-maildir-store.c:309
 #, c-format
 msgid "Cannot get folder “%s”: not a maildir directory."
 msgstr ""
 
-#: ../src/camel/providers/local/camel-maildir-store.c:372
-#: ../src/camel/providers/local/camel-maildir-store.c:412
+#: ../src/camel/providers/local/camel-maildir-store.c:373
+#: ../src/camel/providers/local/camel-maildir-store.c:413
 #: ../src/camel/providers/local/camel-mh-store.c:672
 #, c-format
 msgid "Could not delete folder “%s”: %s"
 msgstr "\"%s\" бумасын өшіру мүмкін емес: %s"
 
-#: ../src/camel/providers/local/camel-maildir-store.c:374
+#: ../src/camel/providers/local/camel-maildir-store.c:375
 msgid "not a maildir directory"
 msgstr ""
 
-#: ../src/camel/providers/local/camel-maildir-store.c:660
-#: ../src/camel/providers/local/camel-maildir-store.c:1138
-#: ../src/camel/providers/local/camel-spool-store.c:206
-#: ../src/camel/providers/local/camel-spool-store.c:225
+#: ../src/camel/providers/local/camel-maildir-store.c:664
+#: ../src/camel/providers/local/camel-maildir-store.c:1142
+#: ../src/camel/providers/local/camel-spool-store.c:217
+#: ../src/camel/providers/local/camel-spool-store.c:236
 #, c-format
 msgid "Could not scan folder “%s”: %s"
 msgstr "\"%s\" бумасын сканерлеу мүмкін емес: %s"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:450
-#: ../src/camel/providers/local/camel-maildir-summary.c:589
+#: ../src/camel/providers/local/camel-maildir-summary.c:494
+#: ../src/camel/providers/local/camel-maildir-summary.c:636
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
 msgstr ""
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:580
+#: ../src/camel/providers/local/camel-maildir-summary.c:627
 msgid "Checking folder consistency"
 msgstr ""
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:702
+#: ../src/camel/providers/local/camel-maildir-summary.c:749
 msgid "Checking for new messages"
 msgstr "Жаңа хабарлармаларды тексеру"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:806
+#: ../src/camel/providers/local/camel-maildir-summary.c:853
 #: ../src/camel/providers/local/camel-mbox-summary.c:367
 #: ../src/camel/providers/local/camel-mbox-summary.c:585
 #: ../src/camel/providers/local/camel-mbox-summary.c:739
@@ -4839,13 +4860,13 @@ msgid "Could not rename folder: %s"
 msgstr ""
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:762
-#: ../src/camel/providers/local/camel-mbox-summary.c:1033
+#: ../src/camel/providers/local/camel-mbox-summary.c:1032
 #, c-format
 msgid "Could not store folder: %s"
 msgstr ""
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:803
-#: ../src/camel/providers/local/camel-mbox-summary.c:1076
+#: ../src/camel/providers/local/camel-mbox-summary.c:1075
 #, c-format
 msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn’t get "
@@ -4853,24 +4874,24 @@ msgid ""
 msgstr ""
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:813
-#: ../src/camel/providers/local/camel-mbox-summary.c:1088
+#: ../src/camel/providers/local/camel-mbox-summary.c:1087
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr ""
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:980
+#: ../src/camel/providers/local/camel-mbox-summary.c:979
 #: ../src/camel/providers/local/camel-spool-summary.c:358
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Белгісіз қате: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:1149
-#: ../src/camel/providers/local/camel-mbox-summary.c:1179
+#: ../src/camel/providers/local/camel-mbox-summary.c:1148
+#: ../src/camel/providers/local/camel-mbox-summary.c:1178
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr ""
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:1168
+#: ../src/camel/providers/local/camel-mbox-summary.c:1167
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr ""
@@ -4895,36 +4916,36 @@ msgstr "\"%s\" бумасын алу мүмкін емес: бума емес."
 msgid "Cannot open MH directory path: %s: %s"
 msgstr ""
 
-#: ../src/camel/providers/local/camel-spool-store.c:89
+#: ../src/camel/providers/local/camel-spool-store.c:98
 #, c-format
 msgid "Spool “%s” cannot be opened: %s"
 msgstr ""
 
-#: ../src/camel/providers/local/camel-spool-store.c:103
+#: ../src/camel/providers/local/camel-spool-store.c:112
 #, c-format
 msgid "Spool “%s” is not a regular file or directory"
 msgstr "\"%s\" спулы қалыпты файл немесе бума емес"
 
-#: ../src/camel/providers/local/camel-spool-store.c:418
+#: ../src/camel/providers/local/camel-spool-store.c:429
 #, c-format
 msgid "Spool mail file %s"
 msgstr ""
 
-#: ../src/camel/providers/local/camel-spool-store.c:422
+#: ../src/camel/providers/local/camel-spool-store.c:433
 #, c-format
 msgid "Spool folder tree %s"
 msgstr ""
 
-#: ../src/camel/providers/local/camel-spool-store.c:425
+#: ../src/camel/providers/local/camel-spool-store.c:436
 msgid "Invalid spool"
 msgstr ""
 
-#: ../src/camel/providers/local/camel-spool-store.c:474
+#: ../src/camel/providers/local/camel-spool-store.c:485
 #, c-format
 msgid "Folder “%s/%s” does not exist."
 msgstr "\"%s/%s\" бумасы жоқ болып тұр."
 
-#: ../src/camel/providers/local/camel-spool-store.c:487
+#: ../src/camel/providers/local/camel-spool-store.c:498
 #, c-format
 msgid ""
 "Could not open folder “%s”:\n"
@@ -4933,12 +4954,12 @@ msgstr ""
 "\"%s\" бумасын ашу мүмкін емес:\n"
 "%s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:493
+#: ../src/camel/providers/local/camel-spool-store.c:504
 #, c-format
 msgid "Folder “%s” does not exist."
 msgstr "\"%s\" бумасы жоқ болып тұр."
 
-#: ../src/camel/providers/local/camel-spool-store.c:501
+#: ../src/camel/providers/local/camel-spool-store.c:512
 #, c-format
 msgid ""
 "Could not create folder “%s”:\n"
@@ -4947,24 +4968,28 @@ msgstr ""
 "\"%s\" бумасын жасау мүмкін емес:\n"
 "%s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:514
+#: ../src/camel/providers/local/camel-spool-store.c:525
 #, c-format
 msgid "“%s” is not a mailbox file."
 msgstr "\"%s\" mailbox файлы емес."
 
-#: ../src/camel/providers/local/camel-spool-store.c:578
+#: ../src/camel/providers/local/camel-spool-store.c:589
 #, c-format
 msgid "Store does not support an INBOX"
 msgstr ""
 
-#: ../src/camel/providers/local/camel-spool-store.c:597
+#: ../src/camel/providers/local/camel-spool-store.c:608
 #, c-format
 msgid "Spool folders cannot be deleted"
 msgstr ""
 
-#: ../src/camel/providers/local/camel-spool-store.c:612
+#: ../src/camel/providers/local/camel-spool-store.c:623
 #, c-format
 msgid "Spool folders cannot be renamed"
+msgstr ""
+
+#: ../src/camel/providers/local/camel-spool-store.c:779
+msgid "Refreshing spool folder"
 msgstr ""
 
 #: ../src/camel/providers/local/camel-spool-summary.c:179
@@ -4988,47 +5013,47 @@ msgid ""
 "Folder may be corrupt, copy saved in “%s”"
 msgstr ""
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:215
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:632
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:212
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:629
 #, c-format
 msgid "Internal error: UID in invalid format: %s"
 msgstr ""
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:283
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:288
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:575
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:1092
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:280
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:285
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:572
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:1086
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr ""
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:295
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:666
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:479
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:511
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:543
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:565
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:584
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:292
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:663
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:476
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:508
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:540
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:562
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:581
 #, c-format
 msgid "Cannot get message %s: "
 msgstr ""
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:424
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:430
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:421
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:427
 #, c-format
 msgid "Posting failed: %s"
 msgstr ""
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:482
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:479
 msgid "Posting failed: "
 msgstr ""
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:655
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:652
 #, c-format
 msgid "This message is not currently available"
 msgstr ""
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:764
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:761
 #, c-format
 msgid "You cannot copy messages from a NNTP folder"
 msgstr ""
@@ -5161,7 +5186,7 @@ msgid "No such folder: %s"
 msgstr "Ондай бума жоқ: %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:189
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:334
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:331
 #, c-format
 msgid "%s: Scanning new messages"
 msgstr ""
@@ -5171,58 +5196,58 @@ msgstr ""
 msgid "Unexpected server response from xover: %s"
 msgstr ""
 
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:355
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:352
 #, c-format
 msgid "Unexpected server response from head: %s"
 msgstr ""
 
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:404
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:398
 #, c-format
 msgid "Operation failed: %s"
 msgstr "Операция сәтсіз аяқталды: %s"
 
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:451
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:442
 #, c-format
 msgid "%s: Scanning existing messages"
 msgstr ""
 
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:464
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:455
 #, c-format
 msgid "Unexpected server response from listgroup: %s"
 msgstr ""
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:358
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:442
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:355
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:439
 #, c-format
 msgid "No message with UID %s"
 msgstr ""
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:458
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:455
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr ""
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:576
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:573
 msgid "Unknown reason"
 msgstr "Себебі белгісіз"
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:645
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:642
 msgid "Retrieving POP summary"
 msgstr ""
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:704
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:707
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:720
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:733
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:747
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:698
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:701
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:714
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:727
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:741
 msgid "Cannot get POP summary: "
 msgstr ""
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:895
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:889
 msgid "Expunging old messages"
 msgstr ""
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:927
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:921
 msgid "Expunging deleted messages"
 msgstr ""
 
@@ -5644,51 +5669,51 @@ msgstr ""
 msgid "Authentication required"
 msgstr "Аутентификация керек"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1492
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1512
 msgid "SMTP Greeting"
 msgstr "SMTP қарсы алуы"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1501
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1514
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1521
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1534
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1541
 msgid "HELO command failed: "
 msgstr "HELO командасы сәтсіз аяқталды: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1605
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1619
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1628
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1625
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1639
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1648
 msgid "MAIL FROM command failed: "
 msgstr "MAIL FROM командасы сәтсіз: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1656
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1676
 msgid "RCPT TO command failed: "
 msgstr "RCPT TO командасы сәтсіз аяқталды: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1672
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1681
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1692
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1701
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> сәтсіз: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1755
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1766
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1777
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1860
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1878
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1891
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1899
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1775
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1786
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1797
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1882
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1900
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1913
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1921
 msgid "DATA command failed: "
 msgstr "DATA командасы сәтсіз аяқталды: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1925
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1939
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1947
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1961
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1969
 msgid "RSET command failed: "
 msgstr "RSET командасы сәтсіз аяқталды: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1973
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1985
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1991
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1995
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:2007
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:2013
 msgid "QUIT command failed: "
 msgstr "QUIT командасы сәтсіз: "
 
@@ -5774,9 +5799,7 @@ msgid "Height of the reminder notification dialog"
 msgstr ""
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
-msgid ""
-"Paned position in the reminder notification dialog, the split size between "
-"list of the events and the description"
+msgid "Size in pixels of the event list in the reminder notification dialog"
 msgstr ""
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
@@ -5821,44 +5844,65 @@ msgid ""
 msgstr ""
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:6
-msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
+msgid "Override SMTP HELO/EHLO argument"
 msgstr ""
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:7
+msgid ""
+"When not empty, it's used as the SMTP HELO/EHLO argument, instead of the "
+"local host name/IP."
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
+msgid "Array of user header names"
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
+msgid ""
+"These headers can be stored in the folder summary, eventually being visible "
+"in the GUI. The value can contain a pipe character ('|'), which delimits the "
+"display name from the header name. Example: 'Span Score|X-Spam-Score'"
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
+msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
 msgid ""
 "When set to an unknown value, then the default GNetworkMonitor is used in "
 "the background. A special value “always-online” is used for no network "
 "monitoring."
 msgstr ""
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
 msgid ""
 "A full path to a directory where .source files with preconfigured options "
 "can be stored"
 msgstr ""
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
 msgid ""
 "This directory, if filled with an existing path, is checked additionally to "
 "XDG configure directories."
 msgstr ""
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
 msgid "A list of variables which can be part of the autoconfig .source files"
 msgstr ""
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
 msgid ""
 "Each item of the array is expected to be of the form: name=value. These "
 "variables are checked before environment variables, but after the predefined "
 "USER, REALNAME and HOST variables."
 msgstr ""
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
 msgid "A list of hints for OAuth2 services"
 msgstr ""
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
 msgid ""
 "Users can extend the list of supported protocols and hostnames for defined "
 "OAuth2 services, in addition to those hard-coded. Each line can be of the "
@@ -5876,51 +5920,75 @@ msgid ""
 "from “caldav.company.com” host"
 msgstr ""
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
 msgid ""
 "An OAuth2 client ID to use to connect to Google servers, instead of the one "
 "provided during build time"
 msgstr ""
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
 msgid ""
 "User-specified OAuth2 client ID for Google servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
 msgstr ""
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
 msgid ""
 "An OAuth2 client secret to use to connect to Google servers, instead of the "
 "one provided during build time"
 msgstr ""
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
 msgid ""
 "User-specified OAuth2 client secret for Google servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
 msgstr ""
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:22
 msgid ""
 "An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
 "provided during build time"
 msgstr ""
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:23
 msgid ""
 "User-specified OAuth2 client ID for Outlook servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
 msgstr ""
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
 msgid ""
 "An OAuth2 client secret to use to connect to Outlook servers, instead of the "
 "one provided during build time"
 msgstr ""
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
 msgid ""
 "User-specified OAuth2 client secret for Outlook servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
+msgid ""
+"An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
+"provided during build time"
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
+msgid ""
+"User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:28
+msgid ""
+"An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
+"one provided during build time"
+msgstr ""
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:29
+msgid ""
+"User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
 msgstr ""
 
@@ -5991,32 +6059,32 @@ msgstr ""
 msgid "Calendar event notifications"
 msgstr ""
 
-#: ../src/libebackend/e-cache.c:754
+#: ../src/libebackend/e-cache.c:751
 msgid "Out of memory"
 msgstr "Жады жеткіліксіз"
 
-#: ../src/libebackend/e-cache.c:946
+#: ../src/libebackend/e-cache.c:943
 #, c-format
 msgid "Can not make parent directory: %s"
 msgstr ""
 
-#: ../src/libebackend/e-collection-backend.c:1091
+#: ../src/libebackend/e-collection-backend.c:1111
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr ""
 
-#: ../src/libebackend/e-collection-backend.c:1150
+#: ../src/libebackend/e-collection-backend.c:1170
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr ""
 
-#: ../src/libebackend/e-data-factory.c:1428
+#: ../src/libebackend/e-data-factory.c:1441
 #: ../src/libebackend/e-subprocess-factory.c:288
 #, c-format
 msgid "No such source for UID “%s”"
 msgstr ""
 
-#: ../src/libebackend/e-data-factory.c:1588
+#: ../src/libebackend/e-data-factory.c:1596
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr ""
@@ -6030,57 +6098,58 @@ msgstr ""
 msgid "Failed to lookup credentials: "
 msgstr ""
 
-#: ../src/libebackend/e-server-side-source.c:1392
-#: ../src/libedataserver/e-source.c:1591
+#: ../src/libebackend/e-server-side-source.c:1389
+#: ../src/libedataserver/e-source.c:1584
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr ""
 
-#: ../src/libebackend/e-server-side-source.c:1406
+#: ../src/libebackend/e-server-side-source.c:1403
 #, c-format
 msgid ""
 "Data source “%s” has no collection backend to create the remote resource"
 msgstr ""
 
-#: ../src/libebackend/e-server-side-source.c:1434
-#: ../src/libedataserver/e-source.c:1704
+#: ../src/libebackend/e-server-side-source.c:1431
+#: ../src/libedataserver/e-source.c:1697
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr ""
 
-#: ../src/libebackend/e-server-side-source.c:1448
+#: ../src/libebackend/e-server-side-source.c:1445
 #, c-format
 msgid ""
 "Data source “%s” has no collection backend to delete the remote resource"
 msgstr ""
 
-#: ../src/libebackend/e-server-side-source.c:1479
-#: ../src/libedataserver/e-source.c:1800
+#: ../src/libebackend/e-server-side-source.c:1484
+#: ../src/libebackend/e-source-registry-server.c:1038
+#: ../src/libedataserver/e-source.c:1826
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
 msgstr ""
 
-#: ../src/libebackend/e-server-side-source.c:1861
+#: ../src/libebackend/e-server-side-source.c:1867
 #, c-format
 msgid "File must have a “.source” extension"
 msgstr ""
 
-#: ../src/libebackend/e-source-registry-server.c:318
+#: ../src/libebackend/e-source-registry-server.c:319
 #, c-format
 msgid "UID “%s” is already in use"
 msgstr ""
 
-#: ../src/libebackend/e-source-registry-server.c:443
+#: ../src/libebackend/e-source-registry-server.c:444
 #, c-format
 msgid "Cannot find corresponding collection backend for source “%s”"
 msgstr ""
 
-#: ../src/libebackend/e-source-registry-server.c:447
+#: ../src/libebackend/e-source-registry-server.c:448
 #, c-format
 msgid "Source “%s” is not a collection source"
 msgstr ""
 
-#: ../src/libebackend/e-source-registry-server.c:453
+#: ../src/libebackend/e-source-registry-server.c:454
 #, c-format
 msgid "Cannot find source “%s”"
 msgstr "\"%s\" қайнар көзін табу мүмкін емес"
@@ -6287,7 +6356,7 @@ msgstr ""
 msgid "Object is out of sync"
 msgstr ""
 
-#: ../src/libedataserver/e-client.c:2042
+#: ../src/libedataserver/e-client.c:2037
 msgid "Timeout was reached"
 msgstr ""
 
@@ -6339,31 +6408,38 @@ msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
 
-#: ../src/libedataserver/e-soup-session.c:949
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#: ../src/libedataserver/e-oauth2-service-yahoo.c:53
+#| msgid "Yahoo! Mail"
+msgctxt "OAuth2Service"
+msgid "Yahoo!"
+msgstr "Yahoo!"
+
+#: ../src/libedataserver/e-soup-session.c:963
 msgid "Operation was cancelled"
 msgstr "Әрекеттен бас тартылды"
 
-#: ../src/libedataserver/e-soup-session.c:955
+#: ../src/libedataserver/e-soup-session.c:969
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr ""
 
-#: ../src/libedataserver/e-source.c:769
+#: ../src/libedataserver/e-source.c:771
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr ""
 
-#: ../src/libedataserver/e-source.c:1371
+#: ../src/libedataserver/e-source.c:1364
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr ""
 
-#: ../src/libedataserver/e-source.c:1494
+#: ../src/libedataserver/e-source.c:1487
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr ""
 
-#: ../src/libedataserver/e-source.c:2201
+#: ../src/libedataserver/e-source.c:2227
 msgid "Unnamed"
 msgstr "Атаусыз"
 
@@ -6383,7 +6459,7 @@ msgstr ""
 msgid "Password not found"
 msgstr "Пароль табылмады"
 
-#: ../src/libedataserver/e-source-mail-signature.c:477
+#: ../src/libedataserver/e-source-mail-signature.c:473
 #, c-format
 msgid "Signature script must be a local file"
 msgstr ""
@@ -6536,18 +6612,18 @@ msgstr "%I %p"
 msgid "Notes"
 msgstr "Естеліктер"
 
-#: ../src/libedataserver/e-webdav-session.c:726
+#: ../src/libedataserver/e-webdav-session.c:731
 msgid "Cannot determine destination URL without WebDAV extension"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:996
+#: ../src/libedataserver/e-webdav-session.c:1001
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request. The used URI was: %s"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:998
+#: ../src/libedataserver/e-webdav-session.c:1003
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -6559,7 +6635,7 @@ msgstr ""
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1019
+#: ../src/libedataserver/e-webdav-session.c:1024
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
 msgstr ""
@@ -6567,7 +6643,7 @@ msgstr ""
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1027
+#: ../src/libedataserver/e-webdav-session.c:1032
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
 msgstr ""
@@ -6576,158 +6652,158 @@ msgstr ""
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1042
+#: ../src/libedataserver/e-webdav-session.c:1047
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
 msgstr ""
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1048
+#: ../src/libedataserver/e-webdav-session.c:1053
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:1343
+#: ../src/libedataserver/e-webdav-session.c:1348
 msgid "Failed to post data"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:1474
-#: ../src/libedataserver/e-webdav-session.c:1551
-#: ../src/libedataserver/e-webdav-session.c:1653
-#: ../src/libedataserver/e-webdav-session.c:2927
-#: ../src/libedataserver/e-webdav-session.c:4165
+#: ../src/libedataserver/e-webdav-session.c:1479
+#: ../src/libedataserver/e-webdav-session.c:1556
+#: ../src/libedataserver/e-webdav-session.c:1658
+#: ../src/libedataserver/e-webdav-session.c:2911
+#: ../src/libedataserver/e-webdav-session.c:4184
 msgid "Failed to get input XML content"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:1485
+#: ../src/libedataserver/e-webdav-session.c:1490
 msgid "Failed to get properties"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:1561
+#: ../src/libedataserver/e-webdav-session.c:1566
 msgid "Failed to update properties"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:1663
+#: ../src/libedataserver/e-webdav-session.c:1668
 msgid "Failed to issue REPORT"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:1724
+#: ../src/libedataserver/e-webdav-session.c:1729
 msgid "Failed to create collection"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:1817
-#: ../src/libedataserver/e-webdav-session.c:1978
+#: ../src/libedataserver/e-webdav-session.c:1822
+#: ../src/libedataserver/e-webdav-session.c:1983
 msgid "Failed to get XML request content"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:1829
+#: ../src/libedataserver/e-webdav-session.c:1834
 msgid "Failed to create address book"
 msgstr "Адрестік кітапшаны жасау сәтсіз аяқталды"
 
-#: ../src/libedataserver/e-webdav-session.c:1991
+#: ../src/libedataserver/e-webdav-session.c:1996
 msgid "Failed to create calendar"
 msgstr "Күнтізбені жасау сәтсіз аяқталды"
 
-#: ../src/libedataserver/e-webdav-session.c:2125
-#: ../src/libedataserver/e-webdav-session.c:2136
+#: ../src/libedataserver/e-webdav-session.c:2124
+#: ../src/libedataserver/e-webdav-session.c:2135
 msgid "Failed to read resource"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:2285
+#: ../src/libedataserver/e-webdav-session.c:2275
 msgid "Cannot rewind input stream: Not supported"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:2450
-#: ../src/libedataserver/e-webdav-session.c:2596
+#: ../src/libedataserver/e-webdav-session.c:2439
+#: ../src/libedataserver/e-webdav-session.c:2580
 msgid "Failed to put data"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:2469
-#: ../src/libedataserver/e-webdav-session.c:2604
+#: ../src/libedataserver/e-webdav-session.c:2453
+#: ../src/libedataserver/e-webdav-session.c:2588
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:2698
+#: ../src/libedataserver/e-webdav-session.c:2682
 msgid "Failed to delete resource"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:2767
+#: ../src/libedataserver/e-webdav-session.c:2751
 msgid "Failed to copy resource"
 msgstr "Ресурсты көшіру сәтсіз аяқталды"
 
-#: ../src/libedataserver/e-webdav-session.c:2831
+#: ../src/libedataserver/e-webdav-session.c:2815
 msgid "Failed to move resource"
 msgstr "Ресурсты жылжыту сәтсіз аяқталды"
 
-#: ../src/libedataserver/e-webdav-session.c:2938
+#: ../src/libedataserver/e-webdav-session.c:2922
 msgid "Failed to lock resource"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:2952
-#: ../src/libedataserver/e-webdav-session.c:3160
+#: ../src/libedataserver/e-webdav-session.c:2936
+#: ../src/libedataserver/e-webdav-session.c:3144
 msgid "Expected application/xml response, but none returned"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:2955
-#: ../src/libedataserver/e-webdav-session.c:3163
+#: ../src/libedataserver/e-webdav-session.c:2939
+#: ../src/libedataserver/e-webdav-session.c:3147
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:2967
-#: ../src/libedataserver/e-webdav-session.c:3176
+#: ../src/libedataserver/e-webdav-session.c:2951
+#: ../src/libedataserver/e-webdav-session.c:3160
 msgid "Failed to parse XML data"
 msgstr "XML деректерін талдау сәтсіз"
 
-#: ../src/libedataserver/e-webdav-session.c:3048
+#: ../src/libedataserver/e-webdav-session.c:3032
 msgid "Failed to refresh lock"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:3109
+#: ../src/libedataserver/e-webdav-session.c:3093
 msgid "Failed to unlock"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:3148
+#: ../src/libedataserver/e-webdav-session.c:3132
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:3185
+#: ../src/libedataserver/e-webdav-session.c:3169
 msgid "XML data does not have root node"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:3211
+#: ../src/libedataserver/e-webdav-session.c:3192
 #, c-format
 msgid "XML data doesn't have required structure (%s)"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:4175
+#: ../src/libedataserver/e-webdav-session.c:4194
 msgid "Failed to get access control list"
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:4859
+#: ../src/libedataserver/e-webdav-session.c:4878
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:4866
+#: ../src/libedataserver/e-webdav-session.c:4885
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:4873
+#: ../src/libedataserver/e-webdav-session.c:4892
 msgid "Cannot store property-based Access Control Entry."
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:4880
+#: ../src/libedataserver/e-webdav-session.c:4899
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:4888
+#: ../src/libedataserver/e-webdav-session.c:4907
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:4947
+#: ../src/libedataserver/e-webdav-session.c:4966
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr ""
 
@@ -6736,17 +6812,25 @@ msgid "Could not open the link."
 msgstr "Сілтемені ашу мүмкін емес."
 
 #. To Translators: The text is concatenated to a form: "Ctrl-click to open a link http://www.example.com"
-#: ../src/libedataserverui/e-buffer-tagger.c:458
+#: ../src/libedataserverui/e-buffer-tagger.c:548
 msgid "Ctrl-click to open a link"
 msgstr ""
 
-#: ../src/libedataserverui/e-credentials-prompter.c:259
-#: ../src/libedataserverui/e-credentials-prompter.c:1692
-#: ../src/libedataserverui/e-credentials-prompter.c:1736
+#: ../src/libedataserverui/e-buffer-tagger.c:810
+msgid "Copy _Link Location"
+msgstr ""
+
+#: ../src/libedataserverui/e-buffer-tagger.c:817
+msgid "O_pen Link in Browser"
+msgstr ""
+
+#: ../src/libedataserverui/e-credentials-prompter.c:260
+#: ../src/libedataserverui/e-credentials-prompter.c:1753
+#: ../src/libedataserverui/e-credentials-prompter.c:1797
 msgid "Credentials prompt was cancelled"
 msgstr ""
 
-#: ../src/libedataserverui/e-credentials-prompter.c:775
+#: ../src/libedataserverui/e-credentials-prompter.c:776
 #, c-format
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr ""
@@ -6887,14 +6971,14 @@ msgstr ""
 "Өзіңіздің %s тіркелгіңізге кіріп, \"%s\" тіркелгіңізге қатынау үшін "
 "шарттарды қабылдаңыз."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:606
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:730
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:235
 #: ../src/libedataserverui/e-trust-prompt.c:111
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1083
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1094
 msgid "_Cancel"
 msgstr "Ба_с тарту"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:680
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:804
 msgid "URL:"
 msgstr "URL:"
 
@@ -6915,144 +6999,157 @@ msgstr "Пошта аутентификация сұранымы"
 msgid "Authentication request"
 msgstr "Аутентификация қажет"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:155
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:153
 #, c-format
 msgid "Please enter the password for address book “%s”."
 msgstr "\"%s\" адрестік кітапшасы үшін парольді енгіңіз."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:159
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:157
 #, c-format
 msgid "Please enter the password for calendar “%s”."
 msgstr "\"%s\" күнтізбесі үшін парольді енгіңіз."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:163
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:161
 #, c-format
 msgid "Please enter the password for mail account “%s”."
 msgstr "\"%s\" пошта тіркелгісі үшін парольді енгіңіз."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:167
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:165
 #, c-format
 msgid "Please enter the password for mail transport “%s”."
 msgstr "\"%s\" пошта транспорты үшін парольді енгіңіз."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:171
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:169
 #, c-format
 msgid "Please enter the password for memo list “%s”."
 msgstr "\"%s\" естеліктер тізімі үшін парольді енгіңіз."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:175
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:173
 #, c-format
 msgid "Please enter the password for task list “%s”."
 msgstr "\"%s\" тапсырмалар тізімі үшін парольді енгіңіз."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:179
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:177
 #, c-format
 msgid "Please enter the password for account “%s”."
 msgstr "\"%s\" тіркелгісі үшін парольді енгіңіз."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1084
+#. Translators: This is part of a credential prompt, constructing for example: "Please enter the password for account “%s”.\n(host: hostname)"
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:183
+#, c-format
+msgid ""
+"\n"
+"(host: %s)"
+msgstr ""
+
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:236
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1095
 msgid "_OK"
 msgstr "О_К"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:348
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:354
 msgid "_User Name:"
 msgstr "_Пайдаланушы аты:"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:360
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:366
 msgid "_Password:"
 msgstr "_Пароль:"
 
 #. Remember password check
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:376
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:382
 msgid "_Add this password to your keyring"
 msgstr "Бұл парольді сіздің кілттер б_ауыңызға қосу"
 
-#: ../src/libedataserverui/e-reminders-widget.c:230
+#. Translators: meaning as "Snooze, until event start time"
+#: ../src/libedataserverui/e-reminders-widget.c:182
+msgid "until start time"
+msgstr ""
+
+#: ../src/libedataserverui/e-reminders-widget.c:233
 msgid "Add custom time…"
 msgstr ""
 
-#: ../src/libedataserverui/e-reminders-widget.c:234
+#: ../src/libedataserverui/e-reminders-widget.c:237
 msgid "Clear custom times"
 msgstr ""
 
-#: ../src/libedataserverui/e-reminders-widget.c:282
+#: ../src/libedataserverui/e-reminders-widget.c:285
 msgctxt "overdue"
 msgid "now"
 msgstr "қазір"
 
-#: ../src/libedataserverui/e-reminders-widget.c:300
+#: ../src/libedataserverui/e-reminders-widget.c:303
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d жыл"
 
-#: ../src/libedataserverui/e-reminders-widget.c:306
+#: ../src/libedataserverui/e-reminders-widget.c:309
 msgctxt "overdue"
 msgid "overdue"
 msgstr "мерзімі өткен"
 
-#: ../src/libedataserverui/e-reminders-widget.c:926
+#: ../src/libedataserverui/e-reminders-widget.c:938
 #, c-format
 msgid "Failed to launch URI “%s”:"
 msgstr ""
 
-#: ../src/libedataserverui/e-reminders-widget.c:976
+#: ../src/libedataserverui/e-reminders-widget.c:989
 msgid "No reminder is selected."
 msgstr ""
 
-#: ../src/libedataserverui/e-reminders-widget.c:1033
+#: ../src/libedataserverui/e-reminders-widget.c:1067
 msgid "No details are available."
 msgstr "Мәліметтер жоқ."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1037
+#: ../src/libedataserverui/e-reminders-widget.c:1071
 msgid "Multiple reminders are selected."
 msgstr ""
 
-#: ../src/libedataserverui/e-reminders-widget.c:1057
+#: ../src/libedataserverui/e-reminders-widget.c:1105
 msgid "Failed to dismiss reminder:"
 msgstr ""
 
-#: ../src/libedataserverui/e-reminders-widget.c:1078
+#: ../src/libedataserverui/e-reminders-widget.c:1126
 msgid "Failed to dismiss all:"
 msgstr ""
 
-#: ../src/libedataserverui/e-reminders-widget.c:1214
+#: ../src/libedataserverui/e-reminders-widget.c:1262
 msgid "Set a custom snooze time for"
 msgstr ""
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1227
+#: ../src/libedataserverui/e-reminders-widget.c:1275
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "_күн"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1243
+#: ../src/libedataserverui/e-reminders-widget.c:1291
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "_сағат"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1259
+#: ../src/libedataserverui/e-reminders-widget.c:1307
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "_минут"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1265
+#: ../src/libedataserverui/e-reminders-widget.c:1313
 msgid "_Add Snooze time"
 msgstr ""
 
-#: ../src/libedataserverui/e-reminders-widget.c:1568
+#: ../src/libedataserverui/e-reminders-widget.c:1631
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "_Елемеу"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1569
+#: ../src/libedataserverui/e-reminders-widget.c:1632
 msgid "Dismiss _All"
 msgstr "Б_арлығын тайдыру"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1571
+#: ../src/libedataserverui/e-reminders-widget.c:1634
 msgid "_Snooze"
 msgstr ""
 
@@ -7125,43 +7222,43 @@ msgstr ""
 msgid "The certificate’s algorithm is considered insecure."
 msgstr "Сертификат алгоритмі қауіпсіз емес ретінде саналады."
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:164
+#: ../src/libedataserverui/e-webdav-discover-widget.c:193
 msgid "Supports"
 msgstr "Қолдайды"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:175
+#: ../src/libedataserverui/e-webdav-discover-widget.c:204
 msgid "_User mail:"
 msgstr "_Пайдаланушы поштасы:"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:524
+#: ../src/libedataserverui/e-webdav-discover-widget.c:542
 msgctxt "WebDAVDiscover"
 msgid "Contacts"
 msgstr "Контакттар"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:525
+#: ../src/libedataserverui/e-webdav-discover-widget.c:543
 msgctxt "WebDAVDiscover"
 msgid "Events"
 msgstr "Оқиғалар"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:526
+#: ../src/libedataserverui/e-webdav-discover-widget.c:544
 msgctxt "WebDAVDiscover"
 msgid "Memos"
 msgstr "Естеліктер"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:527
+#: ../src/libedataserverui/e-webdav-discover-widget.c:545
 msgctxt "WebDAVDiscover"
 msgid "Tasks"
 msgstr "Тапсырмалар"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:849
+#: ../src/libedataserverui/e-webdav-discover-widget.c:857
 msgid "Invalid URL"
 msgstr "Сілтеме қате"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:895
+#: ../src/libedataserverui/e-webdav-discover-widget.c:902
 msgid "Cancel"
 msgstr "Бас тарту"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:898
+#: ../src/libedataserverui/e-webdav-discover-widget.c:905
 msgid "Searching server sources..."
 msgstr ""
 
@@ -7212,22 +7309,17 @@ msgstr "Account элементін табу сәтсіз аяқталды"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Autodiscover жауабында ASUrl және OABUrl табу сәтсіз аяқталды"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1423
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1422
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain an access token for “%s”"
 msgstr ""
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1473
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1472
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr ""
-
-#: ../src/modules/google-backend/module-google-backend.c:631
-#: ../src/services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
-msgid "Contacts"
-msgstr "Контакттар"
 
 #: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:38
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:40
@@ -7247,26 +7339,26 @@ msgid ""
 "disable, any other value is to use compile-time option"
 msgstr ""
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:306
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:334
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:845
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1087
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:326
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:354
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:883
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1131
 msgid "Reminders"
 msgstr "Еске салулар"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:446
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:466
 msgid "Warning"
 msgstr "Ескерту"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:447
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:467
 msgid "_No"
 msgstr "_Жоқ"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:448
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:468
 msgid "_Yes"
 msgstr "_Иә"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:452
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:472
 #, c-format
 msgid ""
 "A calendar reminder is about to trigger. This reminder is configured to run "
@@ -7277,31 +7369,31 @@ msgid ""
 "Are you sure you want to run this program?"
 msgstr ""
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:467
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:487
 msgid "Do not ask me about this program again"
 msgstr "Мені бұл бағдарлама жөнінде келесіде сұрамау"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:750
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
 msgid "Display Reminders window with _notifications"
 msgstr ""
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:751
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
 msgid "Keep reminder notification window always on _top"
 msgstr ""
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:752
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
 msgid "Display reminders for _completed tasks"
 msgstr ""
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:753
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:791
 msgid "Display reminders for _past events"
 msgstr ""
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:767
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:805
 msgid "Reminders Options:"
 msgstr "Еске салулар опциялары:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:861
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:899
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
@@ -7319,6 +7411,10 @@ msgstr "CalDAV"
 msgid "CardDAV"
 msgstr "CardDAV"
 
+#: ../src/services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
+msgid "Contacts"
+msgstr "Контакттар"
+
 #: ../src/services/evolution-source-registry/builtin/google-stub.source.in.h:1
 msgid "Google"
 msgstr "Google"
@@ -7331,6 +7427,13 @@ msgstr "LDAP серверлерде"
 #: ../src/services/evolution-source-registry/builtin/local-stub.source.in.h:1
 msgid "On This Computer"
 msgstr "Бұл компьютерде"
+
+#: ../src/services/evolution-source-registry/builtin/system-address-book.source.in.h:1
+#: ../src/services/evolution-source-registry/builtin/system-calendar.source.in.h:1
+#: ../src/services/evolution-source-registry/builtin/system-memo-list.source.in.h:1
+#: ../src/services/evolution-source-registry/builtin/system-task-list.source.in.h:1
+msgid "Personal"
+msgstr "Жеке"
 
 #: ../src/services/evolution-source-registry/builtin/system-proxy.source.in.h:1
 msgid "Default Proxy Settings"
@@ -7560,6 +7663,15 @@ msgstr ""
 msgid "No sources had been found\n"
 msgstr "Қайнар көздер табылмады\n"
 
+#~ msgid "Friends"
+#~ msgstr "Достар"
+
+#~ msgid "Family"
+#~ msgstr "Отбасы"
+
+#~ msgid "Coworkers"
+#~ msgstr "Жұмыстастар"
+
 #~ msgid "Success"
 #~ msgstr "Сәтті"
 
@@ -7615,9 +7727,6 @@ msgstr "Қайнар көздер табылмады\n"
 
 #~ msgid "Yahoo! Calendar"
 #~ msgstr "Yahoo! Calendar"
-
-#~ msgid "Yahoo! Mail"
-#~ msgstr "Yahoo! Mail"
 
 #~ msgid "Google Address book authentication request"
 #~ msgstr "Google адрестік кітапшасының аутентификация сұранымы"
