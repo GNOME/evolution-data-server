@@ -199,3 +199,6 @@
 
 /* evolution-alarm-notify - Define if using Canberra-GTK for sound */
 #cmakedefine HAVE_CANBERRA 1
+
+/* Whether glib provides GPowerProfileMonitor */
+#cmakedefine HAVE_GPOWERPROFILEMONITOR 1

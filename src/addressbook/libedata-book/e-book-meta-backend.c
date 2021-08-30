@@ -779,6 +779,9 @@ ebmb_refresh_internal_sync (EBookMetaBackend *meta_backend,
 			    GCancellable *cancellable,
 			    GError **error)
 {
+#ifdef HAVE_GPOWERPROFILEMONITOR
+	GPowerProfileMonitor *power_monitor;
+#endif
 	EBookCache *book_cache;
 	gboolean success = FALSE, repeat = TRUE, is_repeat = FALSE;
 
@@ -786,6 +789,18 @@ ebmb_refresh_internal_sync (EBookMetaBackend *meta_backend,
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		goto done;
+
+#ifdef HAVE_GPOWERPROFILEMONITOR
+	/* Silently ignore the refresh request when in the power-saver mode */
+	power_monitor = g_power_profile_monitor_dup_default ();
+	if (power_monitor && g_power_profile_monitor_get_power_saver_enabled (power_monitor)) {
+		g_clear_object (&power_monitor);
+		success = TRUE;
+		goto done;
+	}
+
+	g_clear_object (&power_monitor);
+#endif
 
 	e_book_backend_foreach_view_notify_progress (E_BOOK_BACKEND (meta_backend), TRUE, 0, _("Refreshing…"));
 

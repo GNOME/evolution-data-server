@@ -5558,6 +5558,15 @@ camel_imapx_server_skip_old_flags_update (CamelStore *store)
 
 	skip_old_flags_update = network_monitor && g_network_monitor_get_network_metered (network_monitor);
 
+#ifdef HAVE_GPOWERPROFILEMONITOR
+	if (!skip_old_flags_update) {
+		GPowerProfileMonitor *power_monitor;
+
+		power_monitor = g_power_profile_monitor_dup_default ();
+		skip_old_flags_update = power_monitor && g_power_profile_monitor_get_power_saver_enabled (power_monitor);
+		g_clear_object (&power_monitor);
+	}
+#endif
 	g_clear_object (&network_monitor);
 	g_clear_object (&session);
 

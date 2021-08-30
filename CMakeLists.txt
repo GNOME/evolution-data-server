@@ -910,6 +910,19 @@ else(ENABLE_LARGEFILE)
 endif(ENABLE_LARGEFILE)
 
 # ******************************
+# Miscellaneous checks
+# ******************************
+
+set(CMAKE_REQUIRED_FLAGS ${GNOME_PLATFORM_CFLAGS})
+set(CMAKE_REQUIRED_INCLUDES ${GNOME_PLATFORM_INCLUDE_DIRS})
+set(CMAKE_REQUIRED_LIBRARIES ${GNOME_PLATFORM_LDFLAGS})
+CHECK_C_SOURCE_COMPILES("#include <gio/gio.h>
+			int main(void) { GPowerProfileMonitor *monitor = g_power_profile_monitor_dup_default (); g_clear_object (&monitor); return 0; }" HAVE_GPOWERPROFILEMONITOR)
+unset(CMAKE_REQUIRED_FLAGS)
+unset(CMAKE_REQUIRED_INCLUDES)
+unset(CMAKE_REQUIRED_LIBRARIES)
+
+# ******************************
 # subparts flags
 # ******************************
 
