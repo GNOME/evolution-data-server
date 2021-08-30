@@ -121,6 +121,7 @@ FolderThread.node_chunks unowned=false
 FolderThread.summary type="GLib.GenericArray<Camel.MessageInfo>"
 FolderThread.tree type="Camel.FolderThreadNode"
 
+FolderThreadNode struct=false
 FolderThreadNode.next type="unowned Camel.FolderThreadNode?"
 FolderThreadNode.parent type="unowned Camel.FolderThreadNode?"
 FolderThreadNode.child type="unowned Camel.FolderThreadNode?"
