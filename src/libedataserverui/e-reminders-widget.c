@@ -514,6 +514,13 @@ reminders_sort_by_occur (gconstpointer ptr1,
 	return cmp;
 }
 
+static gint
+reminders_sort_by_occur_reverse (gconstpointer ptr1,
+				 gconstpointer ptr2)
+{
+	return reminders_sort_by_occur (ptr1, ptr2) * (-1);
+}
+
 static void
 reminders_widget_set_is_empty (ERemindersWidget *reminders,
 			       gboolean is_empty)
@@ -624,7 +631,7 @@ reminders_widget_refresh_content_cb (gpointer user_data)
 		GSList *link;
 		GtkTreeIter iter;
 
-		past = g_slist_sort (past, reminders_sort_by_occur);
+		past = g_slist_sort (past, reminders_sort_by_occur_reverse);
 		for (link = past; link; link = g_slist_next (link)) {
 			const EReminderData *rd = link->data;
 			gchar *overdue = NULL, *description = NULL;
