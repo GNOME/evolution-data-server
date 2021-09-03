@@ -1,3 +1,24 @@
+Evolution-Data-Server 3.41.3 2021-09-03
+---------------------------------------
+
+Bug Fixes:
+	I#343 - Slow down automatic background downloads when in power saver mode (Milan Crha)
+	I#349 - ERemindersWidget: Reverse order of the shown reminders (Milan Crha)
+
+Miscellaneous:
+	vala: FolderThreadNode is a compact class (Corentin Noël)
+
+Translations:
+	Daniel Mustieles (es)
+	Asier Sarasua Garmendia (eu)
+	Fran Dieguez (gl)
+	Kukuh Syafaat (id)
+	Baurzhan Muftakhidinov (kk)
+	Jiri Grönroos (fi)
+	Jordi Mas (ca)
+	Nathan Follens (nl)
+	Aurimas Černius (lt)
+
 Evolution-Data-Server 3.41.2 2021-08-13
 ---------------------------------------
 
