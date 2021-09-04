@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2021-02-23 18:20+0000\n"
-"PO-Revision-Date: 2021-02-26 10:53+0100\n"
+"POT-Creation-Date: 2021-04-14 15:03+0000\n"
+"PO-Revision-Date: 2021-09-04 19:06+0200\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
 "Language: hr\n"
@@ -172,7 +172,7 @@ msgid "Invalid Query “%s”"
 msgstr "Neispravan upit “%s”"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1975
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2048
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2050
 msgid "Requested to delete an unrelated cursor"
 msgstr "Zatraženo je brisanje nepovezanog pokazivača"
 
@@ -1188,8 +1188,8 @@ msgstr "Predučitani objekt za UID “%s” je neispravan"
 msgid "Received object for UID “%s” is invalid"
 msgstr "Primljeni objekt za UID “%s” je neispravan"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1918
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2374
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1920
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2376
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3319
 #, c-format
 msgid "Failed to create cache “%s”:"
@@ -2887,7 +2887,7 @@ msgstr "Filtriranje mape “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3320
+#: ../src/camel/camel-folder.c:3322
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "Uklanjanje mape “%s : %s”"
@@ -2895,7 +2895,7 @@ msgstr "Uklanjanje mape “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3455
+#: ../src/camel/camel-folder.c:3457
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "Primanje poruke “%s” u “%s : %s”"
@@ -2903,7 +2903,7 @@ msgstr "Primanje poruke “%s” u “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3680
+#: ../src/camel/camel-folder.c:3682
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "Primanje informacija kvota za “%s : %s”"
@@ -2911,7 +2911,7 @@ msgstr "Primanje informacija kvota za “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3980
+#: ../src/camel/camel-folder.c:3982
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "Osvježavanje mape “%s : %s”"
@@ -3322,31 +3322,31 @@ msgstr "Kopiraj sadržaj lokalno za _izvanmrežno korištenje"
 msgid "Syncing messages in account “%s” to disk"
 msgstr "Usklađivanje poruka u računu “%s” na disk"
 
-#: ../src/camel/camel-provider.c:89
+#: ../src/camel/camel-provider.c:90
 msgid "Virtual folder email provider"
 msgstr "Pružatelj usluge virtualne mape e-pošte"
 
-#: ../src/camel/camel-provider.c:91
+#: ../src/camel/camel-provider.c:92
 msgid "For reading mail as a query of another set of folders"
 msgstr "Za čitanje pošte kao upita drugog skupa mapa"
 
-#: ../src/camel/camel-provider.c:299
+#: ../src/camel/camel-provider.c:335
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr ""
 "Nemoguće je učitati %s: Učitavanje modula nije podržano na ovom sustavu."
 
-#: ../src/camel/camel-provider.c:308
+#: ../src/camel/camel-provider.c:344
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "Nemoguće je učitati %s: %s"
 
-#: ../src/camel/camel-provider.c:317
+#: ../src/camel/camel-provider.c:353
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "Nemoguće je učitati %s: Nema kôda pokretanja u modulu."
 
-#: ../src/camel/camel-provider.c:463 ../src/camel/camel-session.c:430
+#: ../src/camel/camel-provider.c:499 ../src/camel/camel-session.c:430
 #, c-format
 msgid "No provider available for protocol “%s”"
 msgstr "Nema dostupnog pružatelja usluge za protokol “%s”"
@@ -3616,7 +3616,7 @@ msgstr "OAuth2"
 #: ../src/camel/camel-sasl-xoauth2.c:27
 msgid "This option will use an OAuth 2.0 access token to connect to the server"
 msgstr ""
-"Ova mogućnost će koristiti token OAuth 2.0 pristupa za povezivanje s "
+"Ova mogućnost će koristiti token pristupa OAuth 2.0 za povezivanje s "
 "poslužiteljem"
 
 #: ../src/camel/camel-sasl-xoauth2-google.c:23
@@ -3628,7 +3628,7 @@ msgid ""
 "This option will use an OAuth 2.0 access token to connect to the Google "
 "server"
 msgstr ""
-"Ova mogućnost će koristiti token OAuth 2.0 pristupa za povezivanje s Google "
+"Ova mogućnost će koristiti token pristupa OAuth 2.0 za povezivanje s Google "
 "poslužiteljem"
 
 #: ../src/camel/camel-sasl-xoauth2-outlook.c:23
@@ -3640,8 +3640,20 @@ msgid ""
 "This option will use an OAuth 2.0 access token to connect to the Outlook.com "
 "server"
 msgstr ""
-"Ova mogućnost će koristiti token OAuth 2.0 pristupa za povezivanje s Outlook."
+"Ova mogućnost će koristiti token pristupa OAuth 2.0 za povezivanje s Outlook."
 "com poslužiteljem"
+
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:23
+msgid "OAuth2 (Yahoo!)"
+msgstr "OAuth2 (Yahoo!)"
+
+#: ../src/camel/camel-sasl-xoauth2-yahoo.c:24
+msgid ""
+"This option will use an OAuth 2.0 access token to connect to the Yahoo! "
+"server"
+msgstr ""
+"Ova mogućnost će koristiti token pristupa OAuth 2.0 za povezivanje s Yahoo! "
+"poslužiteljem"
 
 #: ../src/camel/camel-search-private.c:114
 #, c-format
@@ -4442,7 +4454,7 @@ msgstr "Greška pokretanja IDLE"
 #: ../src/camel/providers/local/camel-maildir-store.c:824
 #: ../src/camel/providers/local/camel-maildir-store.c:830
 #: ../src/camel/providers/local/camel-maildir-store.c:913
-#: ../src/camel/providers/local/camel-spool-store.c:386
+#: ../src/camel/providers/local/camel-spool-store.c:391
 msgid "Inbox"
 msgstr "Pristigla pošta"
 
@@ -4719,7 +4731,7 @@ msgstr "Lokalna datoteka pošte %s"
 #: ../src/camel/providers/local/camel-local-store.c:367
 #: ../src/camel/providers/local/camel-maildir-store.c:118
 #: ../src/camel/providers/local/camel-mbox-store.c:579
-#: ../src/camel/providers/local/camel-spool-store.c:81
+#: ../src/camel/providers/local/camel-spool-store.c:84
 #, c-format
 msgid "Store root %s is not an absolute path"
 msgstr "Korijenski spremnik %s nije apsolutna putanja"
@@ -4839,8 +4851,8 @@ msgstr "nije mapa pošte"
 
 #: ../src/camel/providers/local/camel-maildir-store.c:664
 #: ../src/camel/providers/local/camel-maildir-store.c:1142
-#: ../src/camel/providers/local/camel-spool-store.c:206
-#: ../src/camel/providers/local/camel-spool-store.c:225
+#: ../src/camel/providers/local/camel-spool-store.c:211
+#: ../src/camel/providers/local/camel-spool-store.c:230
 #, c-format
 msgid "Could not scan folder “%s”: %s"
 msgstr "Nemoguće pretraga mape “%s”: %s"
@@ -5047,36 +5059,36 @@ msgstr "Nemoguće dobivanje mape “%s”: nije direktorij."
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "Nemoguće otvaranje putanje MH direktorija: %s: %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:89
+#: ../src/camel/providers/local/camel-spool-store.c:92
 #, c-format
 msgid "Spool “%s” cannot be opened: %s"
 msgstr "Priprema “%s” se ne može otvoriti: %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:103
+#: ../src/camel/providers/local/camel-spool-store.c:106
 #, c-format
 msgid "Spool “%s” is not a regular file or directory"
 msgstr "Priprema “%s” nije obična datoteka ili direktorij"
 
-#: ../src/camel/providers/local/camel-spool-store.c:418
+#: ../src/camel/providers/local/camel-spool-store.c:423
 #, c-format
 msgid "Spool mail file %s"
 msgstr "Priprema datoteke pošte %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:422
+#: ../src/camel/providers/local/camel-spool-store.c:427
 #, c-format
 msgid "Spool folder tree %s"
 msgstr "Stablo mape pripreme %s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:425
+#: ../src/camel/providers/local/camel-spool-store.c:430
 msgid "Invalid spool"
 msgstr "Neispravna priprema"
 
-#: ../src/camel/providers/local/camel-spool-store.c:474
+#: ../src/camel/providers/local/camel-spool-store.c:479
 #, c-format
 msgid "Folder “%s/%s” does not exist."
 msgstr "Mapa “%s/%s” ne postoji."
 
-#: ../src/camel/providers/local/camel-spool-store.c:487
+#: ../src/camel/providers/local/camel-spool-store.c:492
 #, c-format
 msgid ""
 "Could not open folder “%s”:\n"
@@ -5085,12 +5097,12 @@ msgstr ""
 "Nemoguće otvaranje mape “%s”:\n"
 "%s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:493
+#: ../src/camel/providers/local/camel-spool-store.c:498
 #, c-format
 msgid "Folder “%s” does not exist."
 msgstr "Mapa “%s” ne postoji."
 
-#: ../src/camel/providers/local/camel-spool-store.c:501
+#: ../src/camel/providers/local/camel-spool-store.c:506
 #, c-format
 msgid ""
 "Could not create folder “%s”:\n"
@@ -5099,22 +5111,22 @@ msgstr ""
 "Nemoguće stvaranje mape “%s”:\n"
 "%s"
 
-#: ../src/camel/providers/local/camel-spool-store.c:514
+#: ../src/camel/providers/local/camel-spool-store.c:519
 #, c-format
 msgid "“%s” is not a mailbox file."
 msgstr "“%s” nije datoteka pretinca."
 
-#: ../src/camel/providers/local/camel-spool-store.c:578
+#: ../src/camel/providers/local/camel-spool-store.c:583
 #, c-format
 msgid "Store does not support an INBOX"
 msgstr "Spremnik ne podržava PRISTIGLU POŠTU"
 
-#: ../src/camel/providers/local/camel-spool-store.c:597
+#: ../src/camel/providers/local/camel-spool-store.c:602
 #, c-format
 msgid "Spool folders cannot be deleted"
 msgstr "Mape pripreme se ne mogu obrisati"
 
-#: ../src/camel/providers/local/camel-spool-store.c:612
+#: ../src/camel/providers/local/camel-spool-store.c:617
 #, c-format
 msgid "Spool folders cannot be renamed"
 msgstr "Mape pripreme se ne mogu preimenovati"
@@ -6181,6 +6193,40 @@ msgstr ""
 "izraz znači da se koristi ona omogućena tijekom vremena izgradnje. Promjena "
 "ovog izraza zahtijeva ponovno pokretanje."
 
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
+msgid ""
+"An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
+"provided during build time"
+msgstr ""
+"ID OAuth2 klijenta koji se koristi za povezivanje s Yahoo! poslužiteljima, "
+"umjesto onog omogućenog tijekom vremena izgradnje"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
+msgid ""
+"User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Korisnički određen ID OAuth2 klijenta za Yahoo! poslužitelje, Prazni izraz "
+"znači da se koristi onaj omogućen tijekom vremena izgradnje. Promjena ovog "
+"izraza zahtijeva ponovno pokretanje."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
+msgid ""
+"An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
+"one provided during build time"
+msgstr ""
+"Tajna OAuth2 klijenta koja se koristi za povezivanje s Yahoo! "
+"poslužiteljima, umjesto one omogućene tijekom vremena izgradnje"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
+msgid ""
+"User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
+"to use the one provided during build time. Change of this requires restart."
+msgstr ""
+"Korisnički određena tajna OAuth2 klijenta za Yahoo! poslužitelje. Prazni "
+"izraz znači da se koristi ona omogućena tijekom vremena izgradnje. Promjena "
+"ovog izraza zahtijeva ponovno pokretanje."
+
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
 msgstr "(Zastarjelo) Proxy vrsta za korištenje"
@@ -6605,6 +6651,12 @@ msgstr "Google"
 msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
+
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#: ../src/libedataserver/e-oauth2-service-yahoo.c:53
+msgctxt "OAuth2Service"
+msgid "Yahoo!"
+msgstr "Yahoo!"
 
 #: ../src/libedataserver/e-soup-session.c:958
 msgid "Operation was cancelled"
@@ -7560,8 +7612,8 @@ msgstr ""
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:326
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:354
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:865
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1113
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:882
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1130
 msgid "Reminders"
 msgstr "Podsjetnici"
 
@@ -7598,27 +7650,27 @@ msgstr ""
 msgid "Do not ask me about this program again"
 msgstr "Ne pitaj me ponovno o ovome programu"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:770
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
 msgid "Display Reminders window with _notifications"
 msgstr "Prikaži prozor podsjetnika sa _obavijestima"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:771
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
 msgid "Keep reminder notification window always on _top"
 msgstr "Zadrži prozor obavijesti podsjetnika uvijek na _vrhu"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:772
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
 msgid "Display reminders for _completed tasks"
 msgstr "Prikaži podsjetnike za _završene zadatke"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:773
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
 msgid "Display reminders for _past events"
 msgstr "Prikaži podsjetnike za _protekle događaje"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:804
 msgid "Reminders Options:"
 msgstr "Mogućnosti podsjetnika:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:881
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:898
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
