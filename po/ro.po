@@ -18,8 +18,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.ro\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2021-06-14 20:06+0000\n"
-"PO-Revision-Date: 2021-07-02 19:21+0300\n"
+"POT-Creation-Date: 2021-09-04 17:07+0000\n"
+"PO-Revision-Date: 2021-09-05 21:09+0200\n"
 "Last-Translator: Florentina Mușat <florentina.musat.28@gmail.com>\n"
 "Language-Team: Gnome Romanian Translation Team <gnomero-list@lists."
 "sourceforge.net>\n"
@@ -82,8 +82,8 @@ msgstr "URL-ul furnizat „%s” nu face referință la o agendă CardDAV"
 #: ../src/calendar/libecal/e-cal-client.c:6604
 #: ../src/calendar/libecal/e-cal-client.c:6828
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1847
-#: ../src/camel/camel-filter-driver.c:1717
-#: ../src/camel/camel-filter-driver.c:1846
+#: ../src/camel/camel-filter-driver.c:1718
+#: ../src/camel/camel-filter-driver.c:1847
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3327
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3333
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3343
@@ -91,9 +91,9 @@ msgstr "URL-ul furnizat „%s” nu face referință la o agendă CardDAV"
 #: ../src/camel/providers/nntp/camel-nntp-store.c:419
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:183
-#: ../src/libedataserver/e-soup-session.c:1234
+#: ../src/libedataserver/e-soup-session.c:1239
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
-#: ../src/libedataserverui/e-reminders-widget.c:1994
+#: ../src/libedataserverui/e-reminders-widget.c:2001
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Eroare necunoscută"
@@ -187,7 +187,7 @@ msgid "Invalid Query “%s”"
 msgstr "Interogare nevalidă „%s”"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1975
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2050
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2065
 msgid "Requested to delete an unrelated cursor"
 msgstr "S-a cerut ștergerea unui cursor fără legătură"
 
@@ -275,8 +275,8 @@ msgid "Downloading contacts (%d)..."
 msgstr "Se descarcă contacte (%d)..."
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4761
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:790
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:691
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:805
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:706
 msgid "Refreshing…"
 msgstr "Se reîmprospătează…"
 
@@ -1015,7 +1015,7 @@ msgstr "Eroare la analiza expresiei regulate"
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
 #: ../src/addressbook/libedata-book/e-book-cache.c:4586
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1877
-#: ../src/camel/camel-db.c:814
+#: ../src/camel/camel-db.c:816
 #, c-format
 msgid "Insufficient memory"
 msgstr "Memorie insuficientă"
@@ -1167,7 +1167,7 @@ msgstr "Nu s-a putut deschide baza de date %s: %s"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2959
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3022
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3193
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1375
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1390
 #: ../src/libebackend/e-cache.c:1371 ../src/libebackend/e-cache.c:2349
 #: ../src/libebackend/e-cache.c:2389
 #, c-format
@@ -1190,21 +1190,21 @@ msgstr ""
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Nu se poate sorta după un câmp care nu este de tip șir de caractere"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1088
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1098
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1103
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1113
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Obiectul preîncărcat pentru UID-ul „%s” este nevalid"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1096
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1106
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1111
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1121
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Obiectul primit pentru UID-ul „%s” este nevalid"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1920
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2376
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3332
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1935
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2391
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3347
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Nu s-a putut crea cache-ul „%s”:"
@@ -1345,24 +1345,24 @@ msgstr "Nu s-au putut salva datele calendarului: Adresă (URI) malformată."
 msgid "Cannot save calendar data"
 msgstr "Nu s-au putut salva datele din calendar"
 
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1184
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1313
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1185
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1314
 #, c-format
 msgid "Cannot parse ISC file “%s”"
 msgstr "Nu se poate parsa fișierul ISC „%s”"
 
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1195
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1324
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1196
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1325
 #, c-format
 msgid "File “%s” is not a VCALENDAR component"
 msgstr "Fișierul „%s” nu este o componentă VCALENDAR"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3739
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3745
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3751
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3778
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2559
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3740
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3746
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3752
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3779
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2574
 msgid "Unsupported method"
 msgstr "Metodă nesuportată"
 
@@ -2587,13 +2587,13 @@ msgstr "Nu s-a putut adăuga fusul orar fără component"
 msgid "Cannot add timezone with invalid component"
 msgstr "Nu s-a putut adăuga fusul orar cu un component nevalid"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1153
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1168
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr ""
 "Obiectul primit pentru UID-ul „%s” nu conține niciun component așteptat"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4206
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4221
 msgid "attachment.dat"
 msgstr "atașament.dat"
 
@@ -2713,7 +2713,7 @@ msgstr "Fișier cache gol"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Nu s-a putut șterge înregistrarea din cache: %s: %s"
 
-#: ../src/camel/camel-db.c:868
+#: ../src/camel/camel-db.c:870
 #: ../src/camel/providers/local/camel-mbox-store.c:913
 #, c-format
 msgid "Could not rename “%s” to %s: %s"
@@ -2733,85 +2733,85 @@ msgstr "Se transferă mesajele filtrate în „%s : %s”"
 msgid "Failed to create child process “%s”: %s"
 msgstr "Eroare la crearea procesului copil „%s”: %s"
 
-#: ../src/camel/camel-filter-driver.c:1173
+#: ../src/camel/camel-filter-driver.c:1174
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "S-a primit un flux de mesaj nevalid de la %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1397
-#: ../src/camel/camel-filter-driver.c:1410
+#: ../src/camel/camel-filter-driver.c:1398
+#: ../src/camel/camel-filter-driver.c:1411
 msgid "Syncing folders"
 msgstr "Se sincronizează dosarele"
 
-#: ../src/camel/camel-filter-driver.c:1518
+#: ../src/camel/camel-filter-driver.c:1519
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Eroare la procesarea filtrului: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1529
+#: ../src/camel/camel-filter-driver.c:1530
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Eroare la execuția filtrului: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1627
+#: ../src/camel/camel-filter-driver.c:1628
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Nu s-a putut deschide dosarul „spool”"
 
-#: ../src/camel/camel-filter-driver.c:1639
+#: ../src/camel/camel-filter-driver.c:1640
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Nu s-a putut procesa dosarul „spool”"
 
-#: ../src/camel/camel-filter-driver.c:1667
+#: ../src/camel/camel-filter-driver.c:1668
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Se primește mesajul %d (%d%%)"
 
-#: ../src/camel/camel-filter-driver.c:1676
-#: ../src/camel/camel-filter-driver.c:1699
+#: ../src/camel/camel-filter-driver.c:1677
+#: ../src/camel/camel-filter-driver.c:1700
 #, c-format
 msgid "Failed on message %d"
 msgstr "Eroare la mesajul %d"
 
-#: ../src/camel/camel-filter-driver.c:1717
-#: ../src/camel/camel-filter-driver.c:1846
+#: ../src/camel/camel-filter-driver.c:1718
+#: ../src/camel/camel-filter-driver.c:1847
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "Eroare la transferul mesajelor: %s"
 
-#: ../src/camel/camel-filter-driver.c:1727
-#: ../src/camel/camel-filter-driver.c:1860
+#: ../src/camel/camel-filter-driver.c:1728
+#: ../src/camel/camel-filter-driver.c:1861
 msgid "Syncing folder"
 msgstr "Se sincronizează dosarul"
 
-#: ../src/camel/camel-filter-driver.c:1732
-#: ../src/camel/camel-filter-driver.c:1868
+#: ../src/camel/camel-filter-driver.c:1733
+#: ../src/camel/camel-filter-driver.c:1869
 msgid "Complete"
 msgstr "Terminat"
 
-#: ../src/camel/camel-filter-driver.c:1800
+#: ../src/camel/camel-filter-driver.c:1801
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Se primește mesajul %d din %d"
 
-#: ../src/camel/camel-filter-driver.c:1818
+#: ../src/camel/camel-filter-driver.c:1819
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Eroare la mesajul %d din %d"
 
-#: ../src/camel/camel-filter-driver.c:2025
-#: ../src/camel/camel-filter-driver.c:2049
+#: ../src/camel/camel-filter-driver.c:2026
+#: ../src/camel/camel-filter-driver.c:2050
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Executarea filtrului „%s” a eșuat: "
 
-#: ../src/camel/camel-filter-driver.c:2039
+#: ../src/camel/camel-filter-driver.c:2040
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Eroare la parsarea filtrului „%s”: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:2058
+#: ../src/camel/camel-filter-driver.c:2059
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Eroare la execuția filtrului „%s”: %s: %s"
@@ -2992,7 +2992,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder-summary.c:1661
+#: ../src/camel/camel-folder-summary.c:1662
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Eliberează memoria nefolosită pentru dosarul „%s : %s”"
@@ -4417,65 +4417,65 @@ msgstr "Se preia sumarul informațiilor pentru noile mesaje în „%s : %s”"
 msgid "Error fetching message info"
 msgstr "Eroare la preluarea informațiilor mesajului"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5598
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5607
 msgid "Error running STATUS"
 msgstr "Eroare la rularea STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6178
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6233
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6297
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6187
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6242
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6306
 msgid "Error syncing changes"
 msgstr "Eroare la sincronizarea modificărilor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6191
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6243
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6316
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6457
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6200
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6252
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6325
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6466
 msgid "Error expunging message"
 msgstr "Eroare la ștergerea definitivă a mesajului"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6539
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6548
 msgid "Error fetching folders"
 msgstr "Eroare la preluarea dosarelor"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6547
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6556
 msgid "Error fetching subscribed folders"
 msgstr "Eroare la preluarea dosarelor abonate"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6604
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6613
 msgid "Error creating folder"
 msgstr "Eroare la crearea dosarului"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6654
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6663
 msgid "Error deleting folder"
 msgstr "Eroare la ștergerea dosarului"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6700
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6709
 msgid "Error renaming folder"
 msgstr "Eroare la redenumirea dosarului"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6732
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6741
 msgid "Error subscribing to folder"
 msgstr "Eroare în timpul abonării la dosar"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6768
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6777
 msgid "Error unsubscribing from folder"
 msgstr "Eroare în timpul dezabonării de la dosar"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6808
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6817
 msgid "IMAP server does not support quotas"
 msgstr "Serverul IMAP nu suportă cote"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6820
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6829
 msgid "Error retrieving quota information"
 msgstr "Eroare la obținerea informațiilor de cotă"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6885
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6894
 msgid "Search failed"
 msgstr "Căutarea a eșuat"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:7013
+#: ../src/camel/providers/imapx/camel-imapx-server.c:7022
 msgid "Error running IDLE"
 msgstr "Eroare la rularea IDLE"
 
@@ -6103,11 +6103,26 @@ msgstr ""
 "numelui de gazdă local/IP-ului."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
+msgid "Array of user header names"
+msgstr "Matrice de nume de antete ale utilizatorului"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
+msgid ""
+"These headers can be stored in the folder summary, eventually being visible "
+"in the GUI. The value can contain a pipe character ('|'), which delimits the "
+"display name from the header name. Example: 'Span Score|X-Spam-Score'"
+msgstr ""
+"Aceste antete pot fi stocate în sumarul dosarului, în final fiind vizibile "
+"în interfața pentru utilizator. Valoarea poate conține caracterul țeavă "
+"(„|”), care delimitează numele afișat de numele antetului. De exemplu: „Span "
+"Score|X-Spam-Score”"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
 msgstr ""
 "Numele GIO al GNetworkMonitor de folosit pentru o instanță ENetworkMonitor"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
 msgid ""
 "When set to an unknown value, then the default GNetworkMonitor is used in "
 "the background. A special value “always-online” is used for no network "
@@ -6117,7 +6132,7 @@ msgstr ""
 "este folosit în fundal. O valoare specială „always-online” este folosită "
 "pentru a evita monitorizarea rețelei."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
 msgid ""
 "A full path to a directory where .source files with preconfigured options "
 "can be stored"
@@ -6125,7 +6140,7 @@ msgstr ""
 "O cale completă către un dosar unde fișierele .source cu opțiuni "
 "preconfigurate pot fi stocate"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
 msgid ""
 "This directory, if filled with an existing path, is checked additionally to "
 "XDG configure directories."
@@ -6133,13 +6148,13 @@ msgstr ""
 "Acest dosar, dacă completat cu o cale existentă, este verificat adițional "
 "pentru configurarea directoarelor XDG."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
 msgid "A list of variables which can be part of the autoconfig .source files"
 msgstr ""
 "O listă de variabile care poate fi parte a fișierelor de autoconfigurare ."
 "source"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
 msgid ""
 "Each item of the array is expected to be of the form: name=value. These "
 "variables are checked before environment variables, but after the predefined "
@@ -6149,11 +6164,11 @@ msgstr ""
 "Aceste variabile sunt verificate înaintea variabilelor de mediu, dar după "
 "variabilelor predefinite USER, REALNAME și HOST."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
 msgid "A list of hints for OAuth2 services"
 msgstr "O listă de sugestii pentru serviciile OAuth2"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
 msgid ""
 "Users can extend the list of supported protocols and hostnames for defined "
 "OAuth2 services, in addition to those hard-coded. Each line can be of the "
@@ -6187,7 +6202,7 @@ msgstr ""
 "„Companie” pentru orice sursă „CalDav” care citește date de la gazda „caldav."
 "company.com”"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
 msgid ""
 "An OAuth2 client ID to use to connect to Google servers, instead of the one "
 "provided during build time"
@@ -6195,7 +6210,7 @@ msgstr ""
 "Un ID de client OAuth2 de utilizat pentru conectarea la serverele Google, în "
 "loc de cel oferit la timpul construirii"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
 msgid ""
 "User-specified OAuth2 client ID for Google servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
@@ -6204,7 +6219,7 @@ msgstr ""
 "de caractere înseamă folosirea celui oferit la timpul construirii. "
 "Modificarea acestuia necesită repornirea."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
 msgid ""
 "An OAuth2 client secret to use to connect to Google servers, instead of the "
 "one provided during build time"
@@ -6212,7 +6227,7 @@ msgstr ""
 "Un secret pentru clientul OAuth2 de folosit la conectarea la serverele "
 "Google, în locul celuia oferit la timpul construirii"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
 msgid ""
 "User-specified OAuth2 client secret for Google servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
@@ -6221,7 +6236,7 @@ msgstr ""
 "Google. Șir gol de caractere înseamnă să se folosească cel oferit la timpul "
 "construirii. Modificarea acestuia necesită repornirea."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:22
 msgid ""
 "An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
 "provided during build time"
@@ -6229,7 +6244,7 @@ msgstr ""
 "Un ID de client OAuth2 de utilizat pentru conectarea la serverele Outlook, "
 "în loc de cel oferit la timpul construirii"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:23
 msgid ""
 "User-specified OAuth2 client ID for Outlook servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
@@ -6238,7 +6253,7 @@ msgstr ""
 "de caractere înseamă folosirea celui oferit la timpul construirii. "
 "Modificarea acestuia necesită repornirea."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:22
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
 msgid ""
 "An OAuth2 client secret to use to connect to Outlook servers, instead of the "
 "one provided during build time"
@@ -6246,7 +6261,7 @@ msgstr ""
 "Un secret pentru clientul OAuth2 de folosit la conectarea la serverele "
 "Outlook, în locul celuia oferit la timpul construirii"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:23
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
 msgid ""
 "User-specified OAuth2 client secret for Outlook servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
@@ -6255,7 +6270,7 @@ msgstr ""
 "Outlook. Șir gol de caractere înseamnă să se folosească cel oferit la timpul "
 "construirii. Modificarea acestuia necesită repornirea."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
 msgid ""
 "An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
 "provided during build time"
@@ -6263,7 +6278,7 @@ msgstr ""
 "Un ID de client OAuth2 de utilizat pentru conectarea la serverele Yahoo!, în "
 "loc de cel oferit la timpul construirii"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
 msgid ""
 "User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
@@ -6272,7 +6287,7 @@ msgstr ""
 "de caractere înseamnă folosirea celui oferit la timpul construirii. "
 "Modificarea acestuia necesită repornirea."
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:28
 msgid ""
 "An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
 "one provided during build time"
@@ -6280,7 +6295,7 @@ msgstr ""
 "Un secret pentru clientul OAuth2 de folosit la conectarea la serverele "
 "Yahoo!, în locul celuia oferit la timpul construirii"
 
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:29
 msgid ""
 "User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
@@ -6723,11 +6738,11 @@ msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: ../src/libedataserver/e-soup-session.c:958
+#: ../src/libedataserver/e-soup-session.c:963
 msgid "Operation was cancelled"
 msgstr "Operația a fost anulată"
 
-#: ../src/libedataserver/e-soup-session.c:964
+#: ../src/libedataserver/e-soup-session.c:969
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Eșec cu eroarea HTTP %d: %s"
@@ -7289,14 +7304,14 @@ msgstr ""
 "Autentificați-vă la contul %s și acceptați condițiile pentru a accesa contul "
 "„%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:606
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:730
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:235
 #: ../src/libedataserverui/e-trust-prompt.c:111
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1094
 msgid "_Cancel"
 msgstr "_Anulează"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:680
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:804
 msgid "URL:"
 msgstr "URL:"
 
@@ -7411,67 +7426,67 @@ msgctxt "overdue"
 msgid "overdue"
 msgstr "întârziat"
 
-#: ../src/libedataserverui/e-reminders-widget.c:938
+#: ../src/libedataserverui/e-reminders-widget.c:945
 #, c-format
 msgid "Failed to launch URI “%s”:"
 msgstr "Eșec la lansarea URI-ului „%s”:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:989
+#: ../src/libedataserverui/e-reminders-widget.c:996
 msgid "No reminder is selected."
 msgstr "Nu este selectat niciun memento."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1067
+#: ../src/libedataserverui/e-reminders-widget.c:1074
 msgid "No details are available."
 msgstr "Nu sunt disponibile detalii."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1071
+#: ../src/libedataserverui/e-reminders-widget.c:1078
 msgid "Multiple reminders are selected."
 msgstr "Sunt selectate multiple memento-uri."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1105
+#: ../src/libedataserverui/e-reminders-widget.c:1112
 msgid "Failed to dismiss reminder:"
 msgstr "Eșec la eliberarea mementoului:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1126
+#: ../src/libedataserverui/e-reminders-widget.c:1133
 msgid "Failed to dismiss all:"
 msgstr "Eșec la eliberarea tuturor:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1262
+#: ../src/libedataserverui/e-reminders-widget.c:1269
 msgid "Set a custom snooze time for"
 msgstr "Stabilește un timp de amânare personalizat pentru"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1275
+#: ../src/libedataserverui/e-reminders-widget.c:1282
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "_zile"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1291
+#: ../src/libedataserverui/e-reminders-widget.c:1298
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "_ore"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1307
+#: ../src/libedataserverui/e-reminders-widget.c:1314
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "_minute"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1313
+#: ../src/libedataserverui/e-reminders-widget.c:1320
 msgid "_Add Snooze time"
 msgstr "_Adaugă timp de amânare"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1631
+#: ../src/libedataserverui/e-reminders-widget.c:1638
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "_Renunță"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1632
+#: ../src/libedataserverui/e-reminders-widget.c:1639
 msgid "Dismiss _All"
 msgstr "Renunță la to_ate"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1634
+#: ../src/libedataserverui/e-reminders-widget.c:1641
 msgid "_Snooze"
 msgstr "_Amână"
 
@@ -7675,8 +7690,8 @@ msgstr ""
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:326
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:354
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:882
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1130
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:883
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1131
 msgid "Reminders"
 msgstr "Mementouri"
 
@@ -7713,27 +7728,27 @@ msgstr ""
 msgid "Do not ask me about this program again"
 msgstr "Nu întreba despre acest program din nou"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
 msgid "Display Reminders window with _notifications"
 msgstr "Afișează fereastra mementourilor cu î_nștiințări"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
 msgid "Keep reminder notification window always on _top"
 msgstr "Menține fereastra de notificare a mementoului în_totdeauna deasupra"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
 msgid "Display reminders for _completed tasks"
 msgstr "Afișează mementouri pentru sarcini _completate"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:791
 msgid "Display reminders for _past events"
 msgstr "Afișează mementouri pentru evenimente _trecute"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:804
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:805
 msgid "Reminders Options:"
 msgstr "Opțiuni memento:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:898
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:899
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
