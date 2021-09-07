@@ -22,7 +22,7 @@
     <key name="camel-message-info-user-headers" type="as">
       <default>[]</default>
       <_summary>Array of user header names</_summary>
-      <_description>These headers can be stored in the folder summary, eventually being visible in the GUI. The value can contain a pipe character ('|'), which delimits the display name from the header name. Example: 'Span Score|X-Spam-Score'</_description>
+      <_description>These headers can be stored in the folder summary, possibly being visible in the GUI. The value can contain a pipe character ('|'), which delimits the display name from the header name. Example: 'Spam Score|X-Spam-Score'</_description>
     </key>
     <key name="network-monitor-gio-name" type="s">
       <default>''</default>
