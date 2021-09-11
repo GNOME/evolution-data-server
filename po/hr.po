@@ -7,7 +7,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
 "POT-Creation-Date: 2021-09-04 17:07+0000\n"
-"PO-Revision-Date: 2021-09-07 21:42+0200\n"
+"PO-Revision-Date: 2021-09-11 15:19+0200\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
 "Language: hr\n"
@@ -6737,7 +6737,7 @@ msgstr "Izvor “%s” ne podržava pretragu proxya"
 #: ../src/libedataserver/e-time-utils.c:1691
 #: ../src/libedataserver/e-time-utils.c:1990
 msgid "%a %m/%d/%Y %I:%M:%S %p"
-msgstr "%a, %d.%m.%Y. %I:%M:%S %p"
+msgstr "%a %m/%d/%Y %I:%M:%S %p"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 24-hour format.
