@@ -1083,6 +1083,7 @@ pipe_to_system (struct _CamelSExp *f,
 	CamelStream *stream, *mem;
 	GPid child_pid;
 	GError *error = NULL;
+	GByteArray *bytes;
 	GPtrArray *args;
 	child_watch_data_t child_watch_data;
 	GSource *source;
@@ -1156,6 +1157,11 @@ pipe_to_system (struct _CamelSExp *f,
 	}
 
 	g_object_unref (stream);
+
+	bytes = camel_stream_mem_get_byte_array (CAMEL_STREAM_MEM (mem));
+
+	if (!bytes || !bytes->len)
+		goto wait;
 
 	g_seekable_seek (G_SEEKABLE (mem), 0, G_SEEK_SET, NULL, NULL);
 
