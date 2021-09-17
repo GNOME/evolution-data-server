@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: 3.12\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2021-08-05 08:45+0000\n"
-"PO-Revision-Date: 2021-08-06 14:45+0100\n"
+"POT-Creation-Date: 2021-09-17 08:57+0000\n"
+"PO-Revision-Date: 2021-09-17 14:09+0100\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: https://l10n.gnome.org/teams/pt/\n"
 "Language: pt\n"
@@ -73,8 +73,8 @@ msgstr "URL “%s” dada não faz referência a um livro de endereços CardDAV"
 #: ../src/calendar/libecal/e-cal-client.c:6604
 #: ../src/calendar/libecal/e-cal-client.c:6828
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1847
-#: ../src/camel/camel-filter-driver.c:1717
-#: ../src/camel/camel-filter-driver.c:1846
+#: ../src/camel/camel-filter-driver.c:1718
+#: ../src/camel/camel-filter-driver.c:1847
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3327
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3333
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3343
@@ -84,7 +84,7 @@ msgstr "URL “%s” dada não faz referência a um livro de endereços CardDAV"
 #: ../src/libedataserver/e-client.c:183
 #: ../src/libedataserver/e-soup-session.c:1239
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
-#: ../src/libedataserverui/e-reminders-widget.c:1994
+#: ../src/libedataserverui/e-reminders-widget.c:2001
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Erro desconhecido"
@@ -178,7 +178,7 @@ msgid "Invalid Query “%s”"
 msgstr "Consulta “%s” inválida"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1975
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2050
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2065
 msgid "Requested to delete an unrelated cursor"
 msgstr "Pedido para eliminar um cursor que não está relacionado"
 
@@ -265,8 +265,8 @@ msgid "Downloading contacts (%d)..."
 msgstr "A transferir os contactos (%d)..."
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4761
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:790
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:691
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:805
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:706
 msgid "Refreshing…"
 msgstr "A recarregar…"
 
@@ -1157,7 +1157,7 @@ msgstr "Impossível abrir a base de dados %s: %s"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2959
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3022
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3193
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1375
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1390
 #: ../src/libebackend/e-cache.c:1371 ../src/libebackend/e-cache.c:2349
 #: ../src/libebackend/e-cache.c:2389
 #, c-format
@@ -1181,21 +1181,21 @@ msgstr ""
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Impossível ordenar por um campo que não é do tipo cadeia"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1088
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1098
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1103
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1113
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Objeto pré-carregado para UID “%s” é inválido"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1096
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1106
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1111
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1121
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Objeto recebido para UID “%s” é inválido"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1920
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2376
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3332
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1935
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2391
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3347
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Falha ao criar memória transitória “%s”:"
@@ -1353,7 +1353,7 @@ msgstr "O ficheiro “%s” não é um componente VCALENDAR"
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3746
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3752
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3779
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2559
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2574
 msgid "Unsupported method"
 msgstr "Método não suportado"
 
@@ -2557,12 +2557,12 @@ msgstr "Impossível adicionar fuso horário sem componente"
 msgid "Cannot add timezone with invalid component"
 msgstr "Impossível adicionar fuso horário com componente inválida"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1153
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1168
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Objeto recebido para UID “%s” não possui componente esperada"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4206
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4221
 msgid "attachment.dat"
 msgstr "anexo.dat"
 
@@ -2702,85 +2702,85 @@ msgstr "A transferir mensagens filtradas em “%s : %s”"
 msgid "Failed to create child process “%s”: %s"
 msgstr "Falha ao criar o processo filho “%s”: %s"
 
-#: ../src/camel/camel-filter-driver.c:1173
+#: ../src/camel/camel-filter-driver.c:1174
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Fluxo de mensagem inválido recebido de %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1397
-#: ../src/camel/camel-filter-driver.c:1410
+#: ../src/camel/camel-filter-driver.c:1398
+#: ../src/camel/camel-filter-driver.c:1411
 msgid "Syncing folders"
 msgstr "A sincronizar as pastas"
 
-#: ../src/camel/camel-filter-driver.c:1518
+#: ../src/camel/camel-filter-driver.c:1519
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Erro ao processar o filtro: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1529
+#: ../src/camel/camel-filter-driver.c:1530
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Erro ao executar o filtro: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1627
+#: ../src/camel/camel-filter-driver.c:1628
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Impossível abrir a pasta de spool"
 
-#: ../src/camel/camel-filter-driver.c:1639
+#: ../src/camel/camel-filter-driver.c:1640
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Impossível processar a pasta de spool"
 
-#: ../src/camel/camel-filter-driver.c:1667
+#: ../src/camel/camel-filter-driver.c:1668
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "A receber a mensagem %d (%d%%)"
 
-#: ../src/camel/camel-filter-driver.c:1676
-#: ../src/camel/camel-filter-driver.c:1699
+#: ../src/camel/camel-filter-driver.c:1677
+#: ../src/camel/camel-filter-driver.c:1700
 #, c-format
 msgid "Failed on message %d"
 msgstr "Falha na mensagem %d"
 
-#: ../src/camel/camel-filter-driver.c:1717
-#: ../src/camel/camel-filter-driver.c:1846
+#: ../src/camel/camel-filter-driver.c:1718
+#: ../src/camel/camel-filter-driver.c:1847
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "Falha ao transferir mensagens: %s"
 
-#: ../src/camel/camel-filter-driver.c:1727
-#: ../src/camel/camel-filter-driver.c:1860
+#: ../src/camel/camel-filter-driver.c:1728
+#: ../src/camel/camel-filter-driver.c:1861
 msgid "Syncing folder"
 msgstr "A sincronizar a pasta"
 
-#: ../src/camel/camel-filter-driver.c:1732
-#: ../src/camel/camel-filter-driver.c:1868
+#: ../src/camel/camel-filter-driver.c:1733
+#: ../src/camel/camel-filter-driver.c:1869
 msgid "Complete"
 msgstr "Terminada"
 
-#: ../src/camel/camel-filter-driver.c:1800
+#: ../src/camel/camel-filter-driver.c:1801
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "A receber a mensagem %d de %d"
 
-#: ../src/camel/camel-filter-driver.c:1818
+#: ../src/camel/camel-filter-driver.c:1819
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Falha na mensagem %d de %d"
 
-#: ../src/camel/camel-filter-driver.c:2025
-#: ../src/camel/camel-filter-driver.c:2049
+#: ../src/camel/camel-filter-driver.c:2026
+#: ../src/camel/camel-filter-driver.c:2050
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Falha ao executar o filtro “%s”: "
 
-#: ../src/camel/camel-filter-driver.c:2039
+#: ../src/camel/camel-filter-driver.c:2040
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Erro ao processar o filtro “%s”: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:2058
+#: ../src/camel/camel-filter-driver.c:2059
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Erro ao executar o filtro “%s”: %s: %s"
@@ -4377,65 +4377,65 @@ msgstr "A obter a informação de resumo para novas mensagens em “%s : %s”"
 msgid "Error fetching message info"
 msgstr "Erro ao obter informação da mensagem"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5598
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5607
 msgid "Error running STATUS"
 msgstr "Erro ao executar STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6178
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6233
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6297
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6187
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6242
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6306
 msgid "Error syncing changes"
 msgstr "Erro ao sincronizar alterações"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6191
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6243
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6316
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6457
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6200
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6252
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6325
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6466
 msgid "Error expunging message"
 msgstr "Erro ao expurgar a mensagem"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6539
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6548
 msgid "Error fetching folders"
 msgstr "Erro ao obter as pastas"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6547
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6556
 msgid "Error fetching subscribed folders"
 msgstr "Erro ao obter as pastas subscritas"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6604
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6613
 msgid "Error creating folder"
 msgstr "Erro ao criar a pasta"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6654
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6663
 msgid "Error deleting folder"
 msgstr "Erro ao eliminar a pasta"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6700
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6709
 msgid "Error renaming folder"
 msgstr "Erro ao renomear a pasta"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6732
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6741
 msgid "Error subscribing to folder"
 msgstr "Erro ao subscrever a pasta"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6768
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6777
 msgid "Error unsubscribing from folder"
 msgstr "Erro ao remover subscrição da pasta"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6808
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6817
 msgid "IMAP server does not support quotas"
 msgstr "Servidor IMAP não suporta quotas"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6820
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6829
 msgid "Error retrieving quota information"
 msgstr "Erro ao obter a informação de quota"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6885
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6894
 msgid "Search failed"
 msgstr "Falha na procura"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:7013
+#: ../src/camel/providers/imapx/camel-imapx-server.c:7022
 msgid "Error running IDLE"
 msgstr "Erro ao executar IDLE"
 
@@ -6050,14 +6050,14 @@ msgstr "Matriz de nomes de cabeçalho de utilizador"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
 msgid ""
-"These headers can be stored in the folder summary, eventually being visible "
-"in the GUI. The value can contain a pipe character ('|'), which delimits the "
-"display name from the header name. Example: 'Span Score|X-Spam-Score'"
+"These headers can be stored in the folder summary, possibly being visible in "
+"the GUI. The value can contain a pipe character ('|'), which delimits the "
+"display name from the header name. Example: 'Spam Score|X-Spam-Score'"
 msgstr ""
-"Estes cabeçalhos podem ser armazenados no resumo da pasta, eventualmente "
-"visíveis na GUI. O valor pode conter um carácter de 'pipe' ('|'), que "
-"delimita o nome de exibição do nome do cabeçalho. Exemplo: 'Pontuação de "
-"span| X-Spam-Score'"
+"Estes cabeçalhos podem ser armazenados no resumo da pasta, possivelmente "
+"visíveis na GUI. O valor pode conter um carácter de barra vertical ('|'), "
+"que delimita o nome de apresentação do nome do cabeçalho. Exemplo: 'Spam "
+"Score|X-Spam-Score'"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
@@ -7370,67 +7370,67 @@ msgctxt "overdue"
 msgid "overdue"
 msgstr "atrasado"
 
-#: ../src/libedataserverui/e-reminders-widget.c:938
+#: ../src/libedataserverui/e-reminders-widget.c:945
 #, c-format
 msgid "Failed to launch URI “%s”:"
 msgstr "Falha ao abrir URI “%s”:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:989
+#: ../src/libedataserverui/e-reminders-widget.c:996
 msgid "No reminder is selected."
 msgstr "Sem lembrete selecionado."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1067
+#: ../src/libedataserverui/e-reminders-widget.c:1074
 msgid "No details are available."
 msgstr "Sem detalhes disponíveis."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1071
+#: ../src/libedataserverui/e-reminders-widget.c:1078
 msgid "Multiple reminders are selected."
 msgstr "Múltiplos lembretes estão selecionados."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1105
+#: ../src/libedataserverui/e-reminders-widget.c:1112
 msgid "Failed to dismiss reminder:"
 msgstr "Falha ao dispensar lembrete:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1126
+#: ../src/libedataserverui/e-reminders-widget.c:1133
 msgid "Failed to dismiss all:"
 msgstr "Falha ao dispensar tudo:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1262
+#: ../src/libedataserverui/e-reminders-widget.c:1269
 msgid "Set a custom snooze time for"
 msgstr "Definir tempo de suspensão para"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1275
+#: ../src/libedataserverui/e-reminders-widget.c:1282
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "di_as"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1291
+#: ../src/libedataserverui/e-reminders-widget.c:1298
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "_horas"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1307
+#: ../src/libedataserverui/e-reminders-widget.c:1314
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "_minutos"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1313
+#: ../src/libedataserverui/e-reminders-widget.c:1320
 msgid "_Add Snooze time"
 msgstr "_Suspender"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1631
+#: ../src/libedataserverui/e-reminders-widget.c:1638
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "_Dispensar"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1632
+#: ../src/libedataserverui/e-reminders-widget.c:1639
 msgid "Dismiss _All"
 msgstr "Dispensar _tudo"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1634
+#: ../src/libedataserverui/e-reminders-widget.c:1641
 msgid "_Snooze"
 msgstr "_Suspender"
 
