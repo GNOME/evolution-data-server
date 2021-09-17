@@ -23,9 +23,9 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2021-08-05 08:45+0000\n"
-"PO-Revision-Date: 2021-09-04 11:26-0400\n"
-"Last-Translator: mars <gzhqyz@gmail.com>\n"
+"POT-Creation-Date: 2021-09-17 15:30+0000\n"
+"PO-Revision-Date: 2021-09-17 14:13-0400\n"
+"Last-Translator: Boyuan Yang <073plan@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
@@ -41,8 +41,8 @@ msgstr "给定的 URL“%s”未引用 CardDAV 地址簿"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:293
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1136
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4379
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1137
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4380
 #: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
 #: ../src/addressbook/libebook/e-book.c:1067
@@ -81,8 +81,8 @@ msgstr "给定的 URL“%s”未引用 CardDAV 地址簿"
 #: ../src/calendar/libecal/e-cal-client.c:6604
 #: ../src/calendar/libecal/e-cal-client.c:6828
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1847
-#: ../src/camel/camel-filter-driver.c:1717
-#: ../src/camel/camel-filter-driver.c:1846
+#: ../src/camel/camel-filter-driver.c:1724
+#: ../src/camel/camel-filter-driver.c:1853
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3327
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3333
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3343
@@ -92,7 +92,7 @@ msgstr "给定的 URL“%s”未引用 CardDAV 地址簿"
 #: ../src/libedataserver/e-client.c:183
 #: ../src/libedataserver/e-soup-session.c:1239
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
-#: ../src/libedataserverui/e-reminders-widget.c:1994
+#: ../src/libedataserverui/e-reminders-widget.c:2001
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "未知的错误"
@@ -153,7 +153,7 @@ msgid "Loading..."
 msgstr "正在载入..."
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1003
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4494
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4495
 msgid "Searching..."
 msgstr "正在搜索..."
 
@@ -184,7 +184,7 @@ msgid "Invalid Query “%s”"
 msgstr "无效的查询 “%s”"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1975
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2050
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2065
 msgid "Requested to delete an unrelated cursor"
 msgstr "请求删除一个无关的游标"
 
@@ -199,48 +199,48 @@ msgstr "将旧数据库“%s”改名为“%s”失败：%s"
 msgid "Not connected"
 msgstr "未连接"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:873
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:874
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr "无法使用 v3 或 v2 绑定"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:982
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:983
 msgid "Reconnecting to LDAP server..."
 msgstr "正在重新连接 LDAP 服务器..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1117
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1118
 msgid "Invalid DN syntax"
 msgstr "无效 DN 语法"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1133
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4378
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1134
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4379
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP 错误 0x%x (%s)"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1776
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2125
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2138
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1777
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2126
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2139
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s：ldap_first_entry 返回 NULL"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2053
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2197
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2054
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2198
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s：返回了未处理的结果类型 %d"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2340
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2478
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2341
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2479
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s：返回了未处理的搜索结果类型 %d"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2628
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2629
 msgid "LDAP contact lists cannot be empty."
 msgstr "LDAP 联系人列表不能为空。"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2666
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2667
 #, c-format
 msgid ""
 "Contact lists in LDAP address books require each member to be from the same "
@@ -252,46 +252,46 @@ msgstr[0] ""
 "LDAP 通讯簿中的联系人列表要求每个成员都来自同一个 LDAP 通讯簿，但无法识别 %d "
 "个成员。"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4317
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4318
 msgid "Receiving LDAP search results..."
 msgstr "正在接收 LDAP 的搜索结果..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4520
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4521
 msgid "Error performing search"
 msgstr "执行搜索错误"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4660
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4661
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "正在下载联系人（%d 个）..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4761
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:790
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:691
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4762
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:805
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:706
 msgid "Refreshing…"
 msgstr "正在刷新…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5148
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5176
 msgid "The backend does not support bulk additions"
 msgstr "后端不支持批量添加"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5239
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5267
 msgid "Adding contact to LDAP server..."
 msgstr "正在将联系人添加到 LDAP 服务器..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5301
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5329
 msgid "The backend does not support bulk modifications"
 msgstr "后端不支持批量修改"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5323
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5351
 msgid "Modifying contact from LDAP server..."
 msgstr "正在修改 LDAP 服务器上的联系人..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5395
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5423
 msgid "Removing contact from LDAP server..."
 msgstr "正在从 LDAP 服务器删除联系人..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5805
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5833
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "无法获取用户“%s”的 DN"
@@ -1143,7 +1143,7 @@ msgstr "无法打开数据库 %s：%s"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2959
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3022
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3193
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1375
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1390
 #: ../src/libebackend/e-cache.c:1371 ../src/libebackend/e-cache.c:2349
 #: ../src/libebackend/e-cache.c:2389
 #, c-format
@@ -1165,21 +1165,21 @@ msgstr "必须至少指定一个排序字段才能使用游标"
 msgid "Cannot sort by a field that is not a string type"
 msgstr "无法按非字符串类型的字段排序"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1088
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1098
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1103
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1113
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "UID“%s”的预加载对象无效"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1096
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1106
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1111
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1121
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "UID“%s”接收到的对象无效"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1920
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2376
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3332
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1935
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2391
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3347
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "创建缓存“%s”失败："
@@ -1332,7 +1332,7 @@ msgstr "文件“%s”不是 VCALENDAR 组件"
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3746
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3752
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3779
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2559
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2574
 msgid "Unsupported method"
 msgstr "不支持的方式"
 
@@ -2515,12 +2515,12 @@ msgstr "无法添加没有组件的时区"
 msgid "Cannot add timezone with invalid component"
 msgstr "无法添加具有无效组件的时区"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1153
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1168
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "UID“%s”的接收对象不包含任何预期的组件"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4206
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4221
 msgid "attachment.dat"
 msgstr "attachment.dat"
 
@@ -2654,91 +2654,91 @@ msgstr "无法将“%s”重命名为 %s：%s"
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr "正在传输“%s：%s”中的已筛选消息"
 
-#: ../src/camel/camel-filter-driver.c:1125
+#: ../src/camel/camel-filter-driver.c:1126
 #: ../src/camel/camel-filter-search.c:934
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "创建子进程“%s”失败：%s"
 
-#: ../src/camel/camel-filter-driver.c:1173
+#: ../src/camel/camel-filter-driver.c:1180
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "收到 %s 发来的无效消息流：%s"
 
-#: ../src/camel/camel-filter-driver.c:1397
-#: ../src/camel/camel-filter-driver.c:1410
+#: ../src/camel/camel-filter-driver.c:1404
+#: ../src/camel/camel-filter-driver.c:1417
 msgid "Syncing folders"
 msgstr "同步文件夹"
 
-#: ../src/camel/camel-filter-driver.c:1518
+#: ../src/camel/camel-filter-driver.c:1525
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "解析过滤规则出错：%s：%s"
 
-#: ../src/camel/camel-filter-driver.c:1529
+#: ../src/camel/camel-filter-driver.c:1536
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "执行过滤规则错误：%s：%s"
 
-#: ../src/camel/camel-filter-driver.c:1627
+#: ../src/camel/camel-filter-driver.c:1634
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "无法打开离线文件夹"
 
-#: ../src/camel/camel-filter-driver.c:1639
+#: ../src/camel/camel-filter-driver.c:1646
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "无法处理离线文件夹"
 
-#: ../src/camel/camel-filter-driver.c:1667
+#: ../src/camel/camel-filter-driver.c:1674
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "正在获取第 %d 封信 (%d%%)"
 
-#: ../src/camel/camel-filter-driver.c:1676
-#: ../src/camel/camel-filter-driver.c:1699
+#: ../src/camel/camel-filter-driver.c:1683
+#: ../src/camel/camel-filter-driver.c:1706
 #, c-format
 msgid "Failed on message %d"
 msgstr "在第 %d 封信时失败"
 
-#: ../src/camel/camel-filter-driver.c:1717
-#: ../src/camel/camel-filter-driver.c:1846
+#: ../src/camel/camel-filter-driver.c:1724
+#: ../src/camel/camel-filter-driver.c:1853
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "无法传输消息：%s"
 
-#: ../src/camel/camel-filter-driver.c:1727
-#: ../src/camel/camel-filter-driver.c:1860
+#: ../src/camel/camel-filter-driver.c:1734
+#: ../src/camel/camel-filter-driver.c:1867
 msgid "Syncing folder"
 msgstr "同步文件夹"
 
-#: ../src/camel/camel-filter-driver.c:1732
-#: ../src/camel/camel-filter-driver.c:1868
+#: ../src/camel/camel-filter-driver.c:1739
+#: ../src/camel/camel-filter-driver.c:1875
 msgid "Complete"
 msgstr "完成"
 
-#: ../src/camel/camel-filter-driver.c:1800
+#: ../src/camel/camel-filter-driver.c:1807
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "获取第 %d 封信，共 %d 封"
 
-#: ../src/camel/camel-filter-driver.c:1818
+#: ../src/camel/camel-filter-driver.c:1825
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "在第 %d 封信时失败，共 %d 封"
 
-#: ../src/camel/camel-filter-driver.c:2025
-#: ../src/camel/camel-filter-driver.c:2049
+#: ../src/camel/camel-filter-driver.c:2032
+#: ../src/camel/camel-filter-driver.c:2056
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "执行过滤规则“%s”失败："
 
-#: ../src/camel/camel-filter-driver.c:2039
+#: ../src/camel/camel-filter-driver.c:2046
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "解析过滤规则“%s”出错：%s：%s"
 
-#: ../src/camel/camel-filter-driver.c:2058
+#: ../src/camel/camel-filter-driver.c:2065
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "执行过滤规则“%s”错误：%s：%s"
@@ -4290,65 +4290,65 @@ msgstr "正在获取“%s : %s”中新消息的概要信息"
 msgid "Error fetching message info"
 msgstr "取回消息信息时出错"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5598
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5607
 msgid "Error running STATUS"
 msgstr "运行 STATUS 命令时出错"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6178
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6233
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6297
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6187
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6242
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6306
 msgid "Error syncing changes"
 msgstr "同步变更出错"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6191
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6243
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6316
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6457
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6200
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6252
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6325
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6466
 msgid "Error expunging message"
 msgstr "销毁消息出错"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6539
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6548
 msgid "Error fetching folders"
 msgstr "取回文件夹出错"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6547
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6556
 msgid "Error fetching subscribed folders"
 msgstr "取回订阅文件夹出错"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6604
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6613
 msgid "Error creating folder"
 msgstr "创建文件夹出错"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6654
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6663
 msgid "Error deleting folder"
 msgstr "删除文件夹出错"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6700
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6709
 msgid "Error renaming folder"
 msgstr "重命名文件夹出错"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6732
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6741
 msgid "Error subscribing to folder"
 msgstr "订阅文件夹出错"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6768
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6777
 msgid "Error unsubscribing from folder"
 msgstr "取消订阅文件夹出错"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6808
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6817
 msgid "IMAP server does not support quotas"
 msgstr "IMAP 服务器不支持配额"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6820
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6829
 msgid "Error retrieving quota information"
 msgstr "获取配额信息出错"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6885
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6894
 msgid "Search failed"
 msgstr "搜索失败"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:7013
+#: ../src/camel/providers/imapx/camel-imapx-server.c:7022
 msgid "Error running IDLE"
 msgstr "运行 IDLE 命令时出错"
 
@@ -5930,7 +5930,7 @@ msgstr "非空时，取代本地主机名/地址作为 SMTP HELO/EHLO 参数。"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
 msgid "Array of user header names"
-msgstr ""
+msgstr "用户邮件头名称列表"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
 msgid ""
@@ -5938,6 +5938,9 @@ msgid ""
 "in the GUI. The value can contain a pipe character ('|'), which delimits the "
 "display name from the header name. Example: 'Span Score|X-Spam-Score'"
 msgstr ""
+"这些邮件头信息将存储在文件夹概述中，并最终在图形界面上可见。其值可以包含一个"
+"管道符号（“|”），用来分隔显示名称和邮件头原名称。例如：“垃圾消息评分|X-Spam-"
+"Score”"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
@@ -7185,67 +7188,67 @@ msgctxt "overdue"
 msgid "overdue"
 msgstr "逾期的"
 
-#: ../src/libedataserverui/e-reminders-widget.c:938
+#: ../src/libedataserverui/e-reminders-widget.c:945
 #, c-format
 msgid "Failed to launch URI “%s”:"
 msgstr "启动 URI“%s”失败："
 
-#: ../src/libedataserverui/e-reminders-widget.c:989
+#: ../src/libedataserverui/e-reminders-widget.c:996
 msgid "No reminder is selected."
 msgstr "未选择提醒。"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1067
+#: ../src/libedataserverui/e-reminders-widget.c:1074
 msgid "No details are available."
 msgstr "无详细信息可用。"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1071
+#: ../src/libedataserverui/e-reminders-widget.c:1078
 msgid "Multiple reminders are selected."
 msgstr "选择了多个提醒。"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1105
+#: ../src/libedataserverui/e-reminders-widget.c:1112
 msgid "Failed to dismiss reminder:"
 msgstr "取消提醒失败："
 
-#: ../src/libedataserverui/e-reminders-widget.c:1126
+#: ../src/libedataserverui/e-reminders-widget.c:1133
 msgid "Failed to dismiss all:"
 msgstr "未能全部取消："
 
-#: ../src/libedataserverui/e-reminders-widget.c:1262
+#: ../src/libedataserverui/e-reminders-widget.c:1269
 msgid "Set a custom snooze time for"
 msgstr "设置自定义睡眠时间为"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1275
+#: ../src/libedataserverui/e-reminders-widget.c:1282
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "天(_Y)"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1291
+#: ../src/libedataserverui/e-reminders-widget.c:1298
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "小时(_H)"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1307
+#: ../src/libedataserverui/e-reminders-widget.c:1314
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "分钟(_M)"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1313
+#: ../src/libedataserverui/e-reminders-widget.c:1320
 msgid "_Add Snooze time"
 msgstr "增加睡眠时间(_A)"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1631
+#: ../src/libedataserverui/e-reminders-widget.c:1638
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "消除(_D)"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1632
+#: ../src/libedataserverui/e-reminders-widget.c:1639
 msgid "Dismiss _All"
 msgstr "消除所有(_A)"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1634
+#: ../src/libedataserverui/e-reminders-widget.c:1641
 msgid "_Snooze"
 msgstr "睡眠(_S)"
 
