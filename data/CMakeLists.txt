@@ -10,7 +10,7 @@ configure_file(org.gnome.Evolution-alarm-notify.desktop.in.in
 	@ONLY
 )
 
-intltool_merge(${CMAKE_CURRENT_BINARY_DIR}/org.gnome.Evolution-alarm-notify.desktop.in org.gnome.Evolution-alarm-notify.desktop --desktop-style --utf8)
+i18n_merge_file(${CMAKE_CURRENT_BINARY_DIR}/org.gnome.Evolution-alarm-notify.desktop.in org.gnome.Evolution-alarm-notify.desktop ${CMAKE_SOURCE_DIR}/po)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.gnome.Evolution-alarm-notify.desktop
 	DESTINATION ${autostartdir}
@@ -36,7 +36,7 @@ set(SCHEMAS
 
 set(BUILT_SCHEMAS)
 foreach(_schema IN LISTS SCHEMAS)
-	intltool_merge(${_schema}.in ${_schema} --no-translations --xml-style --utf8)
+	configure_file(${_schema}.in ${_schema} COPYONLY)
 	list(APPEND BUILT_SCHEMAS ${CMAKE_CURRENT_BINARY_DIR}/${_schema})
 endforeach(_schema)
 

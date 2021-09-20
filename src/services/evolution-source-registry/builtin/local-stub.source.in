@@ -2,6 +2,6 @@
 # mail store forced the introduction of this "stub" suffix.
 
 [Data Source]
-_DisplayName=On This Computer
+DisplayName=On This Computer
 Enabled=true
 Parent=

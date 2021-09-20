@@ -1,6 +1,5 @@
 # List of source files containing translatable strings.
 # Please keep this list in alphabetic order.
-[encoding: UTF-8]
 src/addressbook/backends/carddav/e-book-backend-carddav.c
 src/addressbook/backends/file/e-book-backend-file.c
 src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c
@@ -226,24 +225,6 @@ src/modules/yahoo-backend/module-yahoo-backend.c
 src/services/evolution-addressbook-factory/evolution-addressbook-factory.c
 src/services/evolution-alarm-notify/e-alarm-notify.c
 src/services/evolution-calendar-factory/evolution-calendar-factory.c
-[type: gettext/ini]src/services/evolution-source-registry/builtin/birthdays.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/caldav-stub.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/carddav-stub.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/contacts-stub.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/google-stub.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/ldap-stub.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/local.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/local-stub.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/sendmail.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/system-address-book.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/system-calendar.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/system-memo-list.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/system-proxy.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/system-task-list.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/vfolder.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/weather-stub.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/webcal-stub.source.in
-[type: gettext/ini]src/services/evolution-source-registry/builtin/webdav-notes-stub.source.in
 src/services/evolution-source-registry/evolution-source-registry.c
 src/services/evolution-user-prompter/evolution-user-prompter.c
 src/services/evolution-user-prompter/prompt-user-gtk.c

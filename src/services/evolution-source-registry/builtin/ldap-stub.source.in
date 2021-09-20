@@ -1,5 +1,5 @@
 
 [Data Source]
-_DisplayName=On LDAP Servers
+DisplayName=On LDAP Servers
 Enabled=true
 Parent=

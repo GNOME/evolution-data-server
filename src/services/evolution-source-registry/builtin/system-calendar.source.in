@@ -1,6 +1,6 @@
 
 [Data Source]
-_DisplayName=Personal
+DisplayName=Personal
 Enabled=true
 Parent=local-stub
 

@@ -1,5 +1,5 @@
 
 [Data Source]
-_DisplayName=CalDAV
+DisplayName=CalDAV
 Enabled=true
 Parent=

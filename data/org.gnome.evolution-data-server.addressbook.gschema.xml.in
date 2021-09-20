@@ -2,7 +2,7 @@
   <schema gettext-domain="evolution-data-server" id="org.gnome.evolution-data-server.addressbook" path="/org/gnome/evolution-data-server/addressbook/">
     <key name="self-contact-uid" type="s">
       <default>''</default>
-      <_summary>Contact UID of a user</_summary>
+      <summary>Contact UID of a user</summary>
     </key>
   </schema>
 </schemalist>

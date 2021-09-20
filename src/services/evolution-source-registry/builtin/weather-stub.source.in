@@ -1,5 +1,5 @@
 
 [Data Source]
-_DisplayName=Weather
+DisplayName=Weather
 Enabled=true
 Parent=

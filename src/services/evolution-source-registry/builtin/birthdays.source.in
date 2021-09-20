@@ -1,6 +1,6 @@
 
 [Data Source]
-_DisplayName=Birthdays & Anniversaries
+DisplayName=Birthdays & Anniversaries
 Enabled=true
 Parent=contacts-stub
 

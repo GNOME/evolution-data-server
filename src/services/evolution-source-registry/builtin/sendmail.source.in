@@ -1,6 +1,6 @@
 
 [Data Source]
-_DisplayName=Sendmail
+DisplayName=Sendmail
 Enabled=true
 Parent=
 

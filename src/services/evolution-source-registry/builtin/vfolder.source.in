@@ -1,7 +1,7 @@
 # Special built-in mail store.
 
 [Data Source]
-_DisplayName=Search Folders
+DisplayName=Search Folders
 Enabled=true
 Parent=
 

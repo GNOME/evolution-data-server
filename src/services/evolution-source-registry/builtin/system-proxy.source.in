@@ -1,6 +1,6 @@
 
 [Data Source]
-_DisplayName=Default Proxy Settings
+DisplayName=Default Proxy Settings
 Enabled=true
 Parent=
 

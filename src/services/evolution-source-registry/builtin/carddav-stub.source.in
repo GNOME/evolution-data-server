@@ -1,5 +1,5 @@
 
 [Data Source]
-_DisplayName=CardDAV
+DisplayName=CardDAV
 Enabled=true
 Parent=
