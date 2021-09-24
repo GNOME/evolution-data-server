@@ -54,6 +54,9 @@
 
 G_BEGIN_DECLS
 
+#define CAMEL_SESSION_BOOK_UID_ANY "*any"
+#define CAMEL_SESSION_BOOK_UID_COMPLETION "*completion"
+
 typedef struct _CamelSession CamelSession;
 typedef struct _CamelSessionClass CamelSessionClass;
 typedef struct _CamelSessionPrivate CamelSessionPrivate;
@@ -146,9 +149,15 @@ struct _CamelSessionClass {
 						 GSList **out_certificates, /* gchar * */
 						 GCancellable *cancellable,
 						 GError **error);
+	gboolean	(*addressbook_contains_sync)
+						(CamelSession *session,
+						 const gchar *book_uid,
+						 const gchar *email_address,
+						 GCancellable *cancellable,
+						 GError **error);
 
 	/* Padding for future expansion */
-	gpointer reserved_methods[19];
+	gpointer reserved_methods[18];
 
 	/* Signals */
 	void		(*job_started)		(CamelSession *session,
@@ -239,6 +248,12 @@ void		camel_session_set_junk_headers	(CamelSession *session,
 						 gint len);
 gboolean	camel_session_lookup_addressbook (CamelSession *session,
 						 const gchar *name);
+gboolean	camel_session_addressbook_contains_sync
+						(CamelSession *session,
+						 const gchar *book_uid,
+						 const gchar *email_address,
+						 GCancellable *cancellable,
+						 GError **error);
 
 gboolean	camel_session_authenticate_sync	(CamelSession *session,
 						 CamelService *service,

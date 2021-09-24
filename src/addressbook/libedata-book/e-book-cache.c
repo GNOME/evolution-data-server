@@ -5541,6 +5541,94 @@ e_book_cache_search_with_callback (EBookCache *book_cache,
 	return ebc_search_internal (book_cache, sexp, SEARCH_FULL, NULL, func, user_data, cancellable, error);
 }
 
+typedef struct _ContainsEmailData {
+	GString *query;
+	const gchar *dbname;
+} ContainsEmailData;
+
+static gboolean
+ebc_gather_addresses_cb (gpointer in_name,
+			  gpointer in_email,
+			  gpointer user_data)
+{
+	ContainsEmailData *ced = user_data;
+	const gchar *email = in_email;
+
+	if (email && *email) {
+		if (ced->query->len)
+			g_string_append (ced->query, " OR ");
+		else
+			e_cache_sqlite_stmt_append_printf (ced->query, "SELECT COUNT(*) FROM %Q WHERE ", ced->dbname);
+
+		e_cache_sqlite_stmt_append_printf (ced->query, "%Q.value LIKE %Q", ced->dbname, email);
+	}
+
+	return TRUE;
+}
+
+/**
+ * e_book_cache_contains_email:
+ * @book_cache: an #EBookCache
+ * @email_address: an email address to check for
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Checks whether contains an @email_address. When the @email_address
+ * contains multiple addresses, then returns %TRUE when at least one
+ * address exists in the cache.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE when found the @email_address, %FALSE on failure
+ *
+ * Since: 3.44
+ **/
+gboolean
+e_book_cache_contains_email (EBookCache *book_cache,
+			     const gchar *email_address,
+			     GCancellable *cancellable,
+			     GError **error)
+{
+	ContainsEmailData ced;
+	gboolean success = FALSE;
+	gint ii;
+
+	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
+	g_return_val_if_fail (email_address != NULL, FALSE);
+
+	for (ii = 0; ii < book_cache->priv->n_summary_fields; ii++) {
+		if (book_cache->priv->summary_fields[ii].field_id == E_CONTACT_EMAIL)
+			break;
+	}
+
+	if (ii == book_cache->priv->n_summary_fields) {
+		g_set_error_literal (error, E_CACHE_ERROR, E_CACHE_ERROR_UNSUPPORTED_FIELD,
+			_("Search by email not supported"));
+		return FALSE;
+	}
+
+	ced.query = g_string_new ("");
+	ced.dbname = book_cache->priv->summary_fields[ii].aux_table;
+
+	e_book_util_foreach_address (email_address, ebc_gather_addresses_cb, &ced);
+
+	if (ced.query->len == 0) {
+		g_set_error_literal (error, E_CACHE_ERROR, E_CACHE_ERROR_CONSTRAINT,
+			_("No email address provided"));
+	} else {
+		gint n_found = 0;
+
+		g_string_append (ced.query, " LIMIT 1");
+
+		success = e_cache_sqlite_select (E_CACHE (book_cache), ced.query->str, ebc_get_int_cb, &n_found, cancellable, error);
+		success = success && n_found > 0;
+	}
+
+	g_string_free (ced.query, TRUE);
+
+	return success;
+}
+
 /**
  * e_book_cache_cursor_new:
  * @book_cache: An #EBookCache

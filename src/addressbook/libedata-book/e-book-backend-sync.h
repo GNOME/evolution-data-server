@@ -139,8 +139,13 @@ struct _EBookBackendSyncClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
+	gboolean	(*contains_email_sync)	(EBookBackendSync *backend,
+						 const gchar *email_address,
+						 GCancellable *cancellable,
+						 GError **error);
+
 	/* Padding for future expansion */
-	gpointer reserved_padding[20];
+	gpointer reserved_padding[19];
 };
 
 GType		e_book_backend_sync_get_type	(void) G_GNUC_CONST;
@@ -186,6 +191,11 @@ gboolean	e_book_backend_sync_get_contact_list_uids
 						(EBookBackendSync *backend,
 						 const gchar *query,
 						 GSList **out_uids, /* gchar * */
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_book_backend_sync_contains_email
+						(EBookBackendSync *backend,
+						 const gchar *email_address,
 						 GCancellable *cancellable,
 						 GError **error);
 

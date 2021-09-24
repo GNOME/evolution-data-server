@@ -93,6 +93,7 @@ static CamelSExpResult *junk_test (struct _CamelSExp *f, gint argc, struct _Came
 static CamelSExpResult *message_location (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
 static CamelSExpResult *make_time_func (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
 static CamelSExpResult *compare_date_func (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
+static CamelSExpResult *addressbook_contains_func (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
 
 /* builtin functions */
 static struct {
@@ -126,7 +127,8 @@ static struct {
 	{ "junk-test",          (CamelSExpFunc) junk_test,          0 },
 	{ "message-location",   (CamelSExpFunc) message_location,   0 },
 	{ "make-time",          (CamelSExpFunc) make_time_func,     0 },
-	{ "compare-date",       (CamelSExpFunc) compare_date_func,  0 }
+	{ "compare-date",       (CamelSExpFunc) compare_date_func,  0 },
+	{ "addressbook-contains",(CamelSExpFunc) addressbook_contains_func, 0 }
 };
 
 static void
@@ -1312,6 +1314,64 @@ compare_date_func (CamelSExp *sexp,
 	}
 
 	camel_filter_search_log (fms, "compare-date result:%d", res->value.number);
+
+	return res;
+}
+
+static CamelSExpResult *
+addressbook_contains_func (CamelSExp *sexp,
+			   gint argc,
+			   CamelSExpResult **argv,
+			   FilterMessageSearch *fms)
+{
+	CamelSExpResult *res;
+
+	res = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
+	res->value.boolean = FALSE;
+
+	if (argc == 2) {
+		GError *local_error = NULL;
+		const gchar *book_uid, *header, *email_address = NULL;
+		gboolean address_set = FALSE;
+
+		if (argv[0]->type != CAMEL_SEXP_RES_STRING) {
+			camel_filter_search_log (fms, "addressbook-contains result:%d (incorrect first argument type, expects string)", res->value.boolean);
+			return res;
+		}
+
+		if (argv[1]->type != CAMEL_SEXP_RES_STRING) {
+			camel_filter_search_log (fms, "addressbook-contains result:%d (incorrect second argument type, expects string)", res->value.boolean);
+			return res;
+		}
+
+		book_uid = argv[0]->value.string;
+		header = argv[1]->value.string;
+
+		if (header && g_ascii_strcasecmp (header, "From") == 0) {
+			email_address = camel_message_info_get_from (fms->info);
+			address_set = TRUE;
+		} else if (header && g_ascii_strcasecmp (header, "To") == 0) {
+			email_address = camel_message_info_get_to (fms->info);
+			address_set = TRUE;
+		} else if (header && g_ascii_strcasecmp (header, "Cc") == 0) {
+			email_address = camel_message_info_get_cc (fms->info);
+			address_set = TRUE;
+		}
+
+		res->value.boolean = email_address && camel_session_addressbook_contains_sync (fms->session,
+			book_uid, email_address, fms->cancellable, &local_error);
+
+		if (!address_set)
+			camel_filter_search_log (fms, "addressbook-contains result:%d unsupported header '%s'", res->value.boolean, header);
+		else if (local_error)
+			camel_filter_search_log (fms, "addressbook-contains result:%d for '%s' in '%s' error:%s", res->value.boolean, email_address, book_uid, local_error->message);
+		else
+			camel_filter_search_log (fms, "addressbook-contains result:%d for '%s' in '%s' ", res->value.boolean, email_address, book_uid);
+
+		g_clear_error (&local_error);
+	} else {
+		camel_filter_search_log (fms, "addressbook-contains result:%d expects two arguments, received %d", res->value.boolean, argc);
+	}
 
 	return res;
 }

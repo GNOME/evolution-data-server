@@ -304,6 +304,10 @@ gboolean	e_book_cache_search_with_callback
 						 gpointer user_data,
 						 GCancellable *cancellable,
 						 GError **error);
+gboolean	e_book_cache_contains_email	(EBookCache *book_cache,
+						 const gchar *email_address,
+						 GCancellable *cancellable,
+						 GError **error);
 /* Cursor API */
 GType		e_book_cache_cursor_get_type	(void) G_GNUC_CONST;
 

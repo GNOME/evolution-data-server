@@ -271,8 +271,17 @@ struct _CamelFolderSearchClass {
 						 CamelSExpResult **argv,
 						 CamelFolderSearch *search);
 
+	/* (addressbook-contains "book_uid" "header-name")
+	 * Checks whether at least one address from header "header-name"
+	 * is in the address book "book_uid". Not all headers are supported. */
+	CamelSExpResult *	(*addressbook_contains)
+						(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
+
 	/* Padding for future expansion */
-	gpointer reserved[18];
+	gpointer reserved[17];
 };
 
 GType		camel_folder_search_get_type	(void) G_GNUC_CONST;

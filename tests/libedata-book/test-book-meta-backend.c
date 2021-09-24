@@ -1750,6 +1750,46 @@ test_cursor (EBookMetaBackend *meta_backend)
 	g_assert (success);
 }
 
+static void
+test_contains_email (EBookMetaBackend *meta_backend)
+{
+	EBookBackendSyncClass *backend_sync_class;
+	gboolean success;
+	GError *error = NULL;
+
+	g_assert_nonnull (meta_backend);
+
+	backend_sync_class = E_BOOK_BACKEND_SYNC_GET_CLASS (meta_backend);
+	g_return_if_fail (backend_sync_class != NULL);
+	g_return_if_fail (backend_sync_class->contains_email_sync != NULL);
+
+	success = backend_sync_class->contains_email_sync (E_BOOK_BACKEND_SYNC (meta_backend),
+		"bobby@brown.com", NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+
+	success = backend_sync_class->contains_email_sync (E_BOOK_BACKEND_SYNC (meta_backend),
+		"\"Bobby\" <bobby@brown.org>", NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+
+	success = backend_sync_class->contains_email_sync (E_BOOK_BACKEND_SYNC (meta_backend),
+		"\"Unknown\" <unknown@no.where>", NULL, &error);
+	g_assert_no_error (error);
+	g_assert (!success);
+
+	success = backend_sync_class->contains_email_sync (E_BOOK_BACKEND_SYNC (meta_backend),
+		"\"Unknown\" <unknown@no.where>, \"Bobby\" <bobby@brown.org>", NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+
+	success = backend_sync_class->contains_email_sync (E_BOOK_BACKEND_SYNC (meta_backend),
+		"", NULL, &error);
+	g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_CONSTRAINT);
+	g_assert (!success);
+	g_clear_error (&error);
+}
+
 typedef void (* TestWithMainLoopFunc) (EBookMetaBackend *meta_backend);
 
 typedef struct _MainLoopThreadData {
@@ -1843,6 +1883,7 @@ main_loop_wrapper (test_get_contact_list)
 main_loop_wrapper (test_get_contact_list_uids)
 main_loop_wrapper (test_refresh)
 main_loop_wrapper (test_cursor)
+main_loop_wrapper (test_contains_email)
 
 #undef main_loop_wrapper
 
@@ -1899,6 +1940,8 @@ main (gint argc,
 		tcu_fixture_setup, test_refresh_tcu, tcu_fixture_teardown);
 	g_test_add ("/EBookMetaBackend/Cursor", TCUFixture, &closure,
 		tcu_fixture_setup, test_cursor_tcu, tcu_fixture_teardown);
+	g_test_add ("/EBookMetaBackend/ContainsEmail", TCUFixture, &closure,
+		tcu_fixture_setup, test_contains_email_tcu, tcu_fixture_teardown);
 
 	res = g_test_run ();
 

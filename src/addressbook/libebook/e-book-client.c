@@ -79,6 +79,7 @@ struct _AsyncContext {
 	gchar *uid;
 	GMainContext *context;
 	guint32 opflags;
+	gboolean success;
 };
 
 struct _SignalClosure {
@@ -3869,6 +3870,164 @@ e_book_client_get_contacts_uids_sync (EBookClient *client,
 	}
 
 	return TRUE;
+}
+
+/* Helper for e_book_client_contains_email() */
+static void
+book_client_contains_email_thread (GSimpleAsyncResult *simple,
+				   GObject *source_object,
+				   GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *local_error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	async_context->success = e_book_client_contains_email_sync (E_BOOK_CLIENT (source_object), async_context->sexp, cancellable, &local_error);
+
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
+}
+
+/**
+ * e_book_client_contains_email:
+ * @client: an #EBookClient
+ * @email_address: an email address
+ * @cancellable: a #GCancellable; can be %NULL
+ * @callback: callback to call when a result is ready
+ * @user_data: user data for the @callback
+ *
+ * Asynchronously checks whether contains an @email_address. When the @email_address
+ * contains multiple addresses, then returns %TRUE when at least one
+ * address exists in the address book.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_book_client_contains_email_finish() to get the result of the
+ * operation.
+ *
+ * Since: 3.44
+ **/
+void
+e_book_client_contains_email (EBookClient *client,
+			      const gchar *email_address,
+			      GCancellable *cancellable,
+			      GAsyncReadyCallback callback,
+			      gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
+	g_return_if_fail (email_address != NULL);
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->sexp = g_strdup (email_address);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data,
+		e_book_client_contains_email);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, book_client_contains_email_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_book_client_contains_email_finish:
+ * @client: an #EBookClient
+ * @result: a #GAsyncResult
+ * @error: a #GError to set an error, if any
+ *
+ * Finishes previous call of e_book_client_contains_email().
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.44
+ **/
+gboolean
+e_book_client_contains_email_finish (EBookClient *client,
+				     GAsyncResult *result,
+				     GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client),
+		e_book_client_contains_email), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return async_context->success;
+}
+
+/**
+ * e_book_client_cotnains_email_sync:
+ * @client: an #EBookClient
+ * @email_address: an email address
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: a #GError to set an error, if any
+ *
+ * Checks whether contains an @email_address. When the @email_address
+ * contains multiple addresses, then returns %TRUE when at least one
+ * address exists in the address book.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE when found the @email_address, %FALSE on failure
+ *
+ * Since: 3.44
+ **/
+gboolean
+e_book_client_contains_email_sync (EBookClient *client,
+				   const gchar *email_address,
+				   GCancellable *cancellable,
+				   GError **error)
+{
+	GError *local_error = NULL;
+	gchar *utf8_email_address;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+	g_return_val_if_fail (email_address != NULL, FALSE);
+
+	if (client->priv->direct_backend != NULL) {
+		/* Direct backend is not using D-Bus (obviously),
+		 * so no need to strip D-Bus info from the error. */
+		success = e_book_backend_contains_email_sync (
+			client->priv->direct_backend,
+			email_address, cancellable, error);
+
+		return success;
+	}
+
+	utf8_email_address = e_util_utf8_make_valid (email_address);
+
+	e_dbus_address_book_call_contains_email_sync (
+		client->priv->dbus_proxy, utf8_email_address, &success,
+		cancellable, &local_error);
+
+	g_free (utf8_email_address);
+
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return success;
 }
 
 /* Helper for e_book_client_get_view() */

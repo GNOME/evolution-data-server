@@ -83,4 +83,9 @@
     <arg name="object_path" direction="out" type="o"/>
   </method>
 
+  <method name="ContainsEmail">
+    <arg name="email" direction="in" type="s"/>
+    <arg name="result" direction="out" type="b"/>
+  </method>
+
 </interface>

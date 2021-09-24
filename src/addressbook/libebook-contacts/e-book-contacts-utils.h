@@ -114,6 +114,10 @@ EConflictResolution
 guint32		e_book_util_conflict_resolution_to_operation_flags /* bit-or of EBookOperationFlags */
 						(EConflictResolution conflict_resolution);
 
+void		e_book_util_foreach_address	(const gchar *email_address,
+						 GHRFunc func,
+						 gpointer user_data);
+
 #ifndef EDS_DISABLE_DEPRECATED
 
 /**

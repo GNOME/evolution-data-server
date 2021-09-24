@@ -234,6 +234,24 @@ book_backend_sync_get_contact_list_uids_sync (EBookBackendSync *backend,
 }
 
 static void
+book_backend_sync_contains_email (EBookBackend *backend,
+				  EDataBook *book,
+				  guint32 opid,
+				  GCancellable *cancellable,
+				  const gchar *email_address)
+{
+	GError *error = NULL;
+	gboolean found;
+
+	g_return_if_fail (E_IS_BOOK_BACKEND_SYNC (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+
+	found = e_book_backend_sync_contains_email (E_BOOK_BACKEND_SYNC (backend), email_address, cancellable, &error);
+
+	e_data_book_respond_contains_email (book, opid, error, found);
+}
+
+static void
 e_book_backend_sync_class_init (EBookBackendSyncClass *klass)
 {
 	EBookBackendClass *book_backend_class;
@@ -249,6 +267,7 @@ e_book_backend_sync_class_init (EBookBackendSyncClass *klass)
 	book_backend_class->impl_get_contact = book_backend_sync_get_contact;
 	book_backend_class->impl_get_contact_list = book_backend_sync_get_contact_list;
 	book_backend_class->impl_get_contact_list_uids = book_backend_sync_get_contact_list_uids;
+	book_backend_class->impl_contains_email = book_backend_sync_contains_email;
 }
 
 static void
@@ -576,6 +595,44 @@ e_book_backend_sync_get_contact_list_uids (EBookBackendSync *backend,
 
 	if (klass->get_contact_list_uids_sync)
 		return klass->get_contact_list_uids_sync (backend, query, out_uids, cancellable, error);
+
+	g_propagate_error (error, e_client_error_create (E_CLIENT_ERROR_NOT_SUPPORTED, NULL));
+
+	return FALSE;
+}
+
+/**
+ * e_book_backend_sync_contains_email:
+ * @backend: an #EBookBackendSync
+ * @email_address: an email address
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Checks whether contains an @email_address. When the @email_address
+ * contains multiple addresses, then returns %TRUE when at least one
+ * address exists in the address book.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE when found the @email_address, %FALSE on failure
+ *
+ * Since: 3.44
+ **/
+gboolean
+e_book_backend_sync_contains_email (EBookBackendSync *backend,
+				    const gchar *email_address,
+				    GCancellable *cancellable,
+				    GError **error)
+{
+	EBookBackendSyncClass *klass;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), FALSE);
+
+	klass = E_BOOK_BACKEND_SYNC_GET_CLASS (backend);
+	g_return_val_if_fail (klass != NULL, FALSE);
+
+	if (klass->contains_email_sync)
+		return klass->contains_email_sync (backend, email_address, cancellable, error);
 
 	g_propagate_error (error, e_client_error_create (E_CLIENT_ERROR_NOT_SUPPORTED, NULL));
 

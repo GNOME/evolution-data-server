@@ -1330,6 +1330,68 @@ camel_session_lookup_addressbook (CamelSession *session,
 }
 
 /**
+ * CAMEL_SESSION_BOOK_UID_ANY:
+ *
+ * Can be used with camel_session_addressbook_contains_sync() as the book UID,
+ * meaning to check in all configured address books.
+ *
+ * Since: 3.44
+ **/
+
+/**
+ * CAMEL_SESSION_BOOK_UID_COMPLETION:
+ *
+ * Can be used with camel_session_addressbook_contains_sync() as the book UID,
+ * meaning to check in all address books enabled for auto-completion.
+ *
+ * Since: 3.44
+ **/
+
+/**
+ * camel_session_addressbook_contains_sync:
+ * @session: a #CamelSession
+ * @book_uid: an address book UID
+ * @email_address: an email address to check for
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Look up in an address book @book_uid for an address @email_address
+ * and returns whether any such contact exists.
+ *
+ * The @book_uid can be either one of the special constants
+ * %CAMEL_SESSION_BOOK_UID_ANY or %CAMEL_SESSION_BOOK_UID_COMPLETION,
+ * or it can be a UID of a configured address book.
+ *
+ * The @email_address can contain multiple addresses, then the function
+ * checks whether any of the given addresses is in the address book.
+ *
+ * Returns: %TRUE, when the @email_address could be found in the @book_uid
+ *
+ * Since: 3.44
+ **/
+gboolean
+camel_session_addressbook_contains_sync (CamelSession *session,
+					 const gchar *book_uid,
+					 const gchar *email_address,
+					 GCancellable *cancellable,
+					 GError **error)
+{
+	CamelSessionClass *klass;
+
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
+	g_return_val_if_fail (book_uid != NULL, FALSE);
+	g_return_val_if_fail (email_address != NULL, FALSE);
+
+	klass = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (klass != NULL, FALSE);
+
+	if (!klass->addressbook_contains_sync)
+		return FALSE;
+
+	return klass->addressbook_contains_sync (session, book_uid, email_address, cancellable, error);
+}
+
+/**
  * camel_session_get_online:
  * @session: a #CamelSession
  *

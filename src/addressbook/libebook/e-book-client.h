@@ -277,6 +277,20 @@ gboolean	e_book_client_get_contacts_uids_sync
 						 GSList **out_contact_uids,
 						 GCancellable *cancellable,
 						 GError **error);
+void		e_book_client_contains_email	(EBookClient *client,
+						 const gchar *email_address,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_book_client_contains_email_finish
+						(EBookClient *client,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_book_client_contains_email_sync
+						(EBookClient *client,
+						 const gchar *email_address,
+						 GCancellable *cancellable,
+						 GError **error);
 void		e_book_client_get_view		(EBookClient *client,
 						 const gchar *sexp,
 						 GCancellable *cancellable,

@@ -1819,6 +1819,29 @@ ebmb_get_contact_list_uids_sync (EBookBackendSync *book_backend,
 	return e_book_meta_backend_search_uids_sync (E_BOOK_META_BACKEND (book_backend), query, out_uids, cancellable, error);
 }
 
+static gboolean
+ebmb_contains_email_sync (EBookBackendSync *book_backend,
+			  const gchar *email_address,
+			  GCancellable *cancellable,
+			  GError **error)
+{
+	EBookCache *cache;
+	gboolean found;
+
+	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (book_backend), FALSE);
+	g_return_val_if_fail (email_address != NULL, FALSE);
+
+	cache = e_book_meta_backend_ref_cache (E_BOOK_META_BACKEND (book_backend));
+	if (!cache)
+		return FALSE;
+
+	found = e_book_cache_contains_email (cache, email_address, cancellable, error);
+
+	g_object_unref (cache);
+
+	return found;
+}
+
 static void
 ebmb_start_view (EBookBackend *book_backend,
 		 EDataBookView *view)
@@ -2513,6 +2536,7 @@ e_book_meta_backend_class_init (EBookMetaBackendClass *klass)
 	book_backend_sync_class->get_contact_sync = ebmb_get_contact_sync;
 	book_backend_sync_class->get_contact_list_sync = ebmb_get_contact_list_sync;
 	book_backend_sync_class->get_contact_list_uids_sync = ebmb_get_contact_list_uids_sync;
+	book_backend_sync_class->contains_email_sync = ebmb_contains_email_sync;
 
 	book_backend_class = E_BOOK_BACKEND_CLASS (klass);
 	book_backend_class->impl_get_backend_property = ebmb_get_backend_property;

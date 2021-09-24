@@ -112,6 +112,11 @@ void		e_data_book_respond_get_contact_list_uids
 						 guint32 opid,
 						 GError *error,
 						 const GSList *uids); /* gchar * */
+void		e_data_book_respond_contains_email
+						(EDataBook *book,
+						 guint32 opid,
+						 GError *error,
+						 gboolean found);
 
 void		e_data_book_report_error	(EDataBook *book,
 						 const gchar *message);

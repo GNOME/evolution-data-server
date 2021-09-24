@@ -5756,6 +5756,247 @@ book_backend_ldap_get_contact_list_uids (EBookBackend *backend,
 	}
 }
 
+typedef struct {
+	LDAPOp op;
+	gboolean found;
+} LDAPContainsEmailOp;
+
+static void
+contains_email_dtor (LDAPOp *op)
+{
+	LDAPContainsEmailOp *contains_email_op = (LDAPContainsEmailOp *) op;
+
+	g_slice_free (LDAPContainsEmailOp, contains_email_op);
+}
+
+static void
+contains_email_handler (LDAPOp *op,
+			LDAPMessage *res)
+{
+	LDAPContainsEmailOp *contains_email_op = (LDAPContainsEmailOp *) op;
+	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
+	LDAPMessage *e;
+	gint msg_type;
+
+	if (enable_debug)
+		printf ("%s:\n", G_STRFUNC);
+
+	g_rec_mutex_lock (&eds_ldap_handler_lock);
+	if (!bl->priv->ldap) {
+		g_rec_mutex_unlock (&eds_ldap_handler_lock);
+		e_data_book_respond_contains_email (op->book, op->opid, EC_ERROR_NOT_CONNECTED (), FALSE);
+		ldap_op_finished (op);
+		if (enable_debug)
+			printf ("%s: ldap handler is NULL\n", G_STRFUNC);
+		return;
+	}
+	g_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+	msg_type = ldap_msgtype (res);
+	if (msg_type == LDAP_RES_SEARCH_ENTRY) {
+		g_rec_mutex_lock (&eds_ldap_handler_lock);
+		if (bl->priv->ldap)
+			e = ldap_first_entry (bl->priv->ldap, res);
+		else
+			e = NULL;
+		g_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+		while (NULL != e) {
+			EContact *contact;
+			gchar *uid = NULL;
+
+			contact = build_contact_from_entry (bl, e, NULL, &uid);
+			g_clear_object (&contact);
+
+			if (enable_debug)
+				printf ("uid = %s\n", uid ? uid : "(null)");
+
+			if (uid) {
+				contains_email_op->found = TRUE;
+				g_free (uid);
+			}
+
+			g_rec_mutex_lock (&eds_ldap_handler_lock);
+			if (bl->priv->ldap)
+				e = ldap_next_entry (bl->priv->ldap, e);
+			else
+				e = NULL;
+			g_rec_mutex_unlock (&eds_ldap_handler_lock);
+		}
+	} else if (msg_type == LDAP_RES_SEARCH_REFERENCE) {
+		/* ignore references */
+	} else if (msg_type == LDAP_RES_SEARCH_RESULT) {
+		gchar *ldap_error_msg = NULL;
+		gint ldap_error;
+
+		g_rec_mutex_lock (&eds_ldap_handler_lock);
+		if (bl->priv->ldap) {
+			ldap_parse_result (
+				bl->priv->ldap, res, &ldap_error,
+				NULL, &ldap_error_msg, NULL, NULL, 0);
+		} else {
+			ldap_error = LDAP_SERVER_DOWN;
+		}
+		g_rec_mutex_unlock (&eds_ldap_handler_lock);
+		if (ldap_error != LDAP_SUCCESS) {
+			printf (
+				"%s: %02X (%s), additional info: %s\n", G_STRFUNC,
+				ldap_error,
+				ldap_err2string (ldap_error), ldap_error_msg);
+		}
+		if (ldap_error_msg)
+			ldap_memfree (ldap_error_msg);
+
+		if (ldap_error == LDAP_TIMELIMIT_EXCEEDED)
+			e_data_book_respond_contains_email (
+				op->book, op->opid,
+				EC_ERROR (E_CLIENT_ERROR_SEARCH_TIME_LIMIT_EXCEEDED),
+				FALSE);
+		else if (ldap_error == LDAP_SIZELIMIT_EXCEEDED)
+			e_data_book_respond_contains_email (
+				op->book, op->opid,
+				EC_ERROR (E_CLIENT_ERROR_SEARCH_SIZE_LIMIT_EXCEEDED),
+				FALSE);
+		else if (ldap_error == LDAP_SUCCESS)
+			e_data_book_respond_contains_email (
+				op->book, op->opid,
+				NULL,
+				contains_email_op->found);
+		else
+			e_data_book_respond_contains_email (
+				op->book, op->opid,
+				ldap_error_to_response (ldap_error),
+				contains_email_op->found);
+
+		ldap_op_finished (op);
+	} else {
+		g_warning ("unhandled search result type %d returned", msg_type);
+		e_data_book_respond_contains_email (
+			op->book, op->opid,
+			e_client_error_create_fmt (E_CLIENT_ERROR_OTHER_ERROR,
+			_("%s: Unhandled search result type %d returned"), G_STRFUNC, msg_type),
+			FALSE);
+		ldap_op_finished (op);
+	}
+}
+
+static gboolean
+book_backend_ldap_gather_addresses_cb (gpointer ptr_name,
+				       gpointer ptr_email,
+				       gpointer user_data)
+{
+	GPtrArray *array = user_data;
+	const gchar *email = ptr_email;
+
+	if (email && *email)
+		g_ptr_array_add (array, e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_IS, email));
+
+	return TRUE;
+}
+
+static void
+book_backend_ldap_contains_email (EBookBackend *backend,
+				  EDataBook *book,
+				  guint32 opid,
+				  GCancellable *cancellable,
+				  const gchar *email_address)
+{
+	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
+	EBookQuery *book_query = NULL;
+	GPtrArray *array;
+	gchar *sexp = NULL;
+	GError *error = NULL;
+	gboolean found = FALSE, finished = TRUE;
+
+	array = g_ptr_array_new_full (1, (GDestroyNotify) e_book_query_unref);
+
+	e_book_util_foreach_address (email_address, book_backend_ldap_gather_addresses_cb, array);
+
+	if (array->len > 0)
+		book_query = e_book_query_or (array->len, (EBookQuery **) array->pdata, FALSE);
+
+	if (book_query)
+		sexp = e_book_query_to_string (book_query);
+
+	if (sexp) {
+		if (bl->priv->cache) {
+			GList *contacts;
+			contacts = e_book_backend_cache_get_contacts (bl->priv->cache, sexp);
+			found = contacts != NULL;
+			g_list_free_full (contacts, g_object_unref);
+		}
+
+		if (!found && !e_backend_get_online (E_BACKEND (backend))) {
+			if (!bl->priv->marked_for_offline)
+				error = EC_ERROR (E_CLIENT_ERROR_REPOSITORY_OFFLINE);
+		} else if (!found) {
+			LDAPContainsEmailOp *contains_email_op;
+			gint contains_email_msgid = 0;
+			EDataBookView *book_view;
+			gint ldap_error;
+			gchar *ldap_query;
+
+			g_rec_mutex_lock (&eds_ldap_handler_lock);
+			if (!bl->priv->ldap) {
+				g_rec_mutex_unlock (&eds_ldap_handler_lock);
+				error = EC_ERROR_NOT_CONNECTED ();
+				goto out;
+			}
+			g_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+			contains_email_op = g_slice_new0 (LDAPContainsEmailOp);
+			book_view = find_book_view (bl);
+
+			ldap_query = e_book_backend_ldap_build_query (bl, sexp);
+
+			if (enable_debug)
+				printf ("checking emails with filter: '%s'\n", ldap_query);
+
+			do {
+				g_rec_mutex_lock (&eds_ldap_handler_lock);
+				if (bl->priv->ldap) {
+					ldap_error = ldap_search_ext (
+						bl->priv->ldap,
+						bl->priv->ldap_rootdn,
+						bl->priv->ldap_scope,
+						ldap_query,
+						NULL, 0, NULL, NULL,
+						NULL, /* XXX timeout */
+						1 /* sizelimit */, &contains_email_msgid);
+				} else {
+					ldap_error = LDAP_SERVER_DOWN;
+				}
+				g_rec_mutex_unlock (&eds_ldap_handler_lock);
+			} while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
+
+			g_free (ldap_query);
+
+			if (ldap_error == LDAP_SUCCESS) {
+				finished = FALSE;
+				ldap_op_add (
+					(LDAPOp *) contains_email_op, backend, book,
+					book_view, opid, contains_email_msgid,
+					contains_email_handler, contains_email_dtor);
+			} else {
+				error = ldap_error_to_response (ldap_error);
+				contains_email_dtor ((LDAPOp *) contains_email_op);
+			}
+		}
+	} else {
+		error = EC_ERROR (E_CLIENT_ERROR_INVALID_QUERY);
+	}
+
+ out:
+	if (finished)
+		e_data_book_respond_contains_email (book, opid, error, found);
+	else
+		g_clear_error (&error);
+
+	g_clear_pointer (&book_query, e_book_query_unref);
+	g_ptr_array_unref (array);
+	g_free (sexp);
+}
+
 static ESourceAuthenticationResult
 book_backend_ldap_authenticate_sync (EBackend *backend,
 				     const ENamedParameters *credentials,
@@ -6027,6 +6268,7 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *class)
 	book_backend_class->impl_get_contact = book_backend_ldap_get_contact;
 	book_backend_class->impl_get_contact_list = book_backend_ldap_get_contact_list;
 	book_backend_class->impl_get_contact_list_uids = book_backend_ldap_get_contact_list_uids;
+	book_backend_class->impl_contains_email = book_backend_ldap_contains_email;
 	book_backend_class->impl_start_view = book_backend_ldap_start_view;
 	book_backend_class->impl_stop_view = book_backend_ldap_stop_view;
 	book_backend_class->impl_refresh = book_backend_ldap_refresh;

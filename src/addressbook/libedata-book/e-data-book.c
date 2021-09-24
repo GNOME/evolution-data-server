@@ -1069,6 +1069,56 @@ data_book_handle_get_cursor_cb (EDBusAddressBook *dbus_interface,
 }
 
 static void
+data_book_complete_contains_email_cb (GObject *source_object,
+				      GAsyncResult *result,
+				      gpointer user_data)
+{
+	AsyncContext *async_context = user_data;
+	GError *error = NULL;
+	gboolean res;
+
+	res = e_book_backend_contains_email_finish (E_BOOK_BACKEND (source_object), result, &error);
+
+	if (error == NULL) {
+		e_dbus_address_book_complete_contains_email (
+			async_context->dbus_interface,
+			async_context->invocation,
+			res);
+	} else {
+		data_book_convert_to_client_error (error);
+		g_dbus_method_invocation_take_error (
+			async_context->invocation, error);
+	}
+
+	async_context_free (async_context);
+}
+
+static gboolean
+data_book_handle_contains_email_cb (EDBusAddressBook *dbus_interface,
+				    GDBusMethodInvocation *invocation,
+				    const gchar *in_email,
+				    EDataBook *data_book)
+{
+	EBookBackend *backend;
+	AsyncContext *async_context;
+
+	backend = e_data_book_ref_backend (data_book);
+	g_return_val_if_fail (backend != NULL, FALSE);
+
+	async_context = async_context_new (data_book, invocation);
+
+	e_book_backend_contains_email (
+		backend, in_email,
+		async_context->cancellable,
+		data_book_complete_contains_email_cb,
+		async_context);
+
+	g_object_unref (backend);
+
+	return TRUE;
+}
+
+static void
 data_book_source_unset_last_credentials_required_arguments_cb (GObject *source_object,
 							       GAsyncResult *result,
 							       gpointer user_data)
@@ -1477,6 +1527,49 @@ e_data_book_respond_remove_contacts (EDataBook *book,
 		for (link = (GSList *) ids; link; link = g_slist_next (link))
 			g_queue_push_tail (queue, g_strdup (link->data));
 
+	} else {
+		g_simple_async_result_take_error (simple, error);
+	}
+
+	g_simple_async_result_complete_in_idle (simple);
+
+	g_object_unref (simple);
+	g_object_unref (backend);
+}
+
+/**
+ * e_data_book_respond_contains_email:
+ * @book: An #EDataBook
+ * @opid: An operation ID
+ * @error: Operation error, if any, automatically freed if passed it
+ * @found: %TRUE, when found the email in the address book
+ *
+ * Finishes a call to check whether contains an email address.
+ *
+ * Since: 3.44
+ **/
+void
+e_data_book_respond_contains_email (EDataBook *book,
+				    guint32 opid,
+				    GError *error,
+				    gboolean found)
+{
+	EBookBackend *backend;
+	GSimpleAsyncResult *simple;
+
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+
+	backend = e_data_book_ref_backend (book);
+	g_return_if_fail (backend != NULL);
+
+	simple = e_book_backend_prepare_for_completion (backend, opid, NULL);
+	g_return_if_fail (simple != NULL);
+
+	/* Translators: This is prefix to a detailed error message */
+	g_prefix_error (&error, "%s", _("Cannot find email address: "));
+
+	if (error == NULL) {
+		g_simple_async_result_set_op_res_gboolean (simple, found);
 	} else {
 		g_simple_async_result_take_error (simple, error);
 	}
@@ -1947,6 +2040,10 @@ e_data_book_init (EDataBook *data_book)
 	g_signal_connect (
 		dbus_interface, "handle-get-cursor",
 		G_CALLBACK (data_book_handle_get_cursor_cb),
+		data_book);
+	g_signal_connect (
+		dbus_interface, "handle-contains-email",
+		G_CALLBACK (data_book_handle_contains_email_cb),
 		data_book);
 	g_signal_connect (
 		dbus_interface, "handle-close",

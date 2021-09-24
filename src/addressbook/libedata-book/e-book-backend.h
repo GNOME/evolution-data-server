@@ -97,6 +97,7 @@ struct _EBookBackend {
  * @impl_dup_locale: Return the currently set locale setting (must be a string duplicate, for thread safety).
  * @impl_create_cursor: Create an #EDataBookCursor
  * @impl_delete_cursor: Delete an #EDataBookCursor previously created by this backend
+ * @impl_contains_email: Checkes whether the backend contains an email address
  * @closed: A signal notifying that the backend was closed
  * @shutdown: A signal notifying that the backend is being shut down
  *
@@ -198,8 +199,14 @@ struct _EBookBackendClass {
 						 const gchar *sender);
 	void		(*shutdown)		(EBookBackend *backend);
 
+	void		(*impl_contains_email)	(EBookBackend *backend,
+						 EDataBook *book,
+						 guint32 opid,
+						 GCancellable *cancellable,
+						 const gchar *email_address);
+
 	/* Padding for future expansion */
-	gpointer reserved_padding[20];
+	gpointer reserved_padding[19];
 };
 
 GType		e_book_backend_get_type		(void) G_GNUC_CONST;
@@ -341,6 +348,20 @@ gboolean	e_book_backend_get_contact_list_uids_finish
 						(EBookBackend *backend,
 						 GAsyncResult *result,
 						 GQueue *out_uids,
+						 GError **error);
+gboolean	e_book_backend_contains_email_sync
+						(EBookBackend *backend,
+						 const gchar *email_address,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_book_backend_contains_email	(EBookBackend *backend,
+						 const gchar *email_address,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_book_backend_contains_email_finish
+						(EBookBackend *backend,
+						 GAsyncResult *result,
 						 GError **error);
 
 void		e_book_backend_start_view	(EBookBackend *backend,

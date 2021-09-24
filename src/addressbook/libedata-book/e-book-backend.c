@@ -2570,6 +2570,188 @@ e_book_backend_get_contact_list_uids_finish (EBookBackend *backend,
 }
 
 /**
+ * e_book_backend_contains_email_sync:
+ * @backend: an #EBookBackend
+ * @email_address: an email address
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Checks whether contains an @email_address. When the @email_address
+ * contains multiple addresses, then returns %TRUE when at least one
+ * address exists in the address book.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE when found the @email_address, %FALSE on failure
+ *
+ * Since: 3.44
+ **/
+gboolean
+e_book_backend_contains_email_sync (EBookBackend *backend,
+				    const gchar *email_address,
+				    GCancellable *cancellable,
+				    GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
+	g_return_val_if_fail (email_address != NULL, FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_book_backend_contains_email (backend, email_address, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_book_backend_contains_email_finish (backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_book_backend_contains_email() */
+static void
+book_backend_contains_email_thread (GSimpleAsyncResult *simple,
+				    GObject *source_object,
+				    GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *klass;
+	EDataBook *data_book;
+	AsyncContext *async_context;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	klass = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (klass != NULL);
+
+	if (!klass->impl_contains_email) {
+		g_simple_async_result_take_error (simple, e_client_error_create (E_CLIENT_ERROR_NOT_SUPPORTED, NULL));
+		g_simple_async_result_complete_in_idle (simple);
+		return;
+	}
+
+	data_book = e_book_backend_ref_data_book (backend);
+	g_return_if_fail (data_book != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_book_backend_is_opened (backend)) {
+		g_simple_async_result_take_error (simple, e_client_error_create (E_CLIENT_ERROR_NOT_OPENED, NULL));
+		g_simple_async_result_complete_in_idle (simple);
+	} else {
+		guint32 opid;
+
+		opid = book_backend_stash_operation (backend, simple);
+
+		klass->impl_contains_email (backend, data_book, opid, cancellable, async_context->query);
+	}
+
+	g_object_unref (data_book);
+}
+
+/**
+ * e_book_backend_contains_email:
+ * @backend: an #EBookBackend
+ * @email_address: an email address
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously checks whether contains an @email_address. When the @email_address
+ * contains multiple addresses, then returns %TRUE when at least one
+ * address exists in the address book.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_book_backend_contains_email_finish() to get the result of the
+ * operation.
+ *
+ * Since: 3.44
+ **/
+void
+e_book_backend_contains_email (EBookBackend *backend,
+			       const gchar *email_address,
+			       GCancellable *cancellable,
+			       GAsyncReadyCallback callback,
+			       gpointer user_data)
+{
+	EBookBackendClass *klass;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (email_address != NULL);
+
+	klass = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (klass != NULL);
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->query = g_strdup (email_address);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_book_backend_contains_email);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	if (klass->impl_contains_email != NULL) {
+		book_backend_push_operation (
+			backend, simple, cancellable, FALSE,
+			book_backend_contains_email_thread);
+		book_backend_dispatch_next_operation (backend);
+
+	} else {
+		g_simple_async_result_take_error (simple, e_client_error_create (E_CLIENT_ERROR_NOT_SUPPORTED, NULL));
+		g_simple_async_result_complete_in_idle (simple);
+	}
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_book_backend_contains_email_finish:
+ * @backend: an #EBookBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_book_backend_contains_email().
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.44
+ **/
+gboolean
+e_book_backend_contains_email_finish (EBookBackend *backend,
+				      GAsyncResult *result,
+				      GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_book_backend_contains_email), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	book_backend_unblock_operations (backend, simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+/**
  * e_book_backend_start_view:
  * @backend: an #EBookBackend
  * @view: the #EDataBookView to start

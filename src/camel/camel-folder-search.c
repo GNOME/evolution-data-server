@@ -229,6 +229,10 @@ static struct {
 	{ "compare-date",
 	  G_STRUCT_OFFSET (CamelFolderSearchClass, compare_date),
 	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "addressbook-contains",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, addressbook_contains),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelFolderSearch, camel_folder_search, G_TYPE_OBJECT)
@@ -1799,6 +1803,68 @@ folder_search_compare_date (CamelSExp *sexp,
 	return res;
 }
 
+static CamelSExpResult *
+folder_search_addressbook_contains (CamelSExp *sexp,
+				    gint argc,
+				    CamelSExpResult **argv,
+				    CamelFolderSearch *search)
+{
+	CamelSExpResult *res;
+
+	r (printf ("executing addressbook-contains\n"));
+
+	if (!search->priv->current) {
+		res = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_ARRAY_PTR);
+		res->value.ptrarray = g_ptr_array_new ();
+
+		return res;
+	}
+
+	res = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
+	res->value.boolean = FALSE;
+
+	if (argc == 2) {
+		const gchar *book_uid, *header, *email_address = NULL;
+		gboolean address_set = FALSE;
+
+		if (argv[0]->type != CAMEL_SEXP_RES_STRING ||
+		    argv[1]->type != CAMEL_SEXP_RES_STRING)
+			return res;
+
+		book_uid = argv[0]->value.string;
+		header = argv[1]->value.string;
+
+		if (header && g_ascii_strcasecmp (header, "From") == 0) {
+			email_address = camel_message_info_get_from (search->priv->current);
+			address_set = TRUE;
+		} else if (header && g_ascii_strcasecmp (header, "To") == 0) {
+			email_address = camel_message_info_get_to (search->priv->current);
+			address_set = TRUE;
+		} else if (header && g_ascii_strcasecmp (header, "Cc") == 0) {
+			email_address = camel_message_info_get_cc (search->priv->current);
+			address_set = TRUE;
+		}
+
+		if (address_set) {
+			CamelStore *store;
+			CamelSession *session = NULL;
+
+			store = camel_folder_get_parent_store (search->priv->folder);
+			if (store)
+				session = camel_service_ref_session (CAMEL_SERVICE (store));
+
+			if (session) {
+				res->value.boolean = email_address && camel_session_addressbook_contains_sync (session,
+					book_uid, email_address, search->priv->cancellable, NULL);
+
+				g_object_unref (session);
+			}
+		}
+	}
+
+	return res;
+}
+
 static void
 camel_folder_search_class_init (CamelFolderSearchClass *class)
 {
@@ -1834,6 +1900,7 @@ camel_folder_search_class_init (CamelFolderSearchClass *class)
 	class->message_location = folder_search_message_location;
 	class->make_time = folder_search_make_time;
 	class->compare_date = folder_search_compare_date;
+	class->addressbook_contains = folder_search_addressbook_contains;
 }
 
 static void
@@ -2116,6 +2183,7 @@ do_search_in_memory (CamelFolder *search_in_folder,
 		"header-contains",
 		"header-has-words",
 		"header-ends-with",
+		"addressbook-contains",
 		NULL };
 	gint i;
 
