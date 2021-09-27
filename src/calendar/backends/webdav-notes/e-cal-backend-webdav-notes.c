@@ -43,6 +43,45 @@ struct _ECalBackendWebDAVNotesPrivate {
 
 G_DEFINE_TYPE_WITH_PRIVATE (ECalBackendWebDAVNotes, e_cal_backend_webdav_notes, E_TYPE_CAL_META_BACKEND)
 
+static gboolean
+ecb_webdav_notes_has_supported_extension (const gchar *filename,
+					  gint *out_ext_len,
+					  const gchar **out_ext,
+					  const gchar **out_ext_num_suffix,
+					  const gchar **out_content_type)
+{
+	if (!filename || !*filename)
+		return FALSE;
+
+	if (g_str_has_suffix (filename, ".txt")) {
+		if (out_ext_len)
+			*out_ext_len = 4;
+		if (out_ext)
+			*out_ext = ".txt";
+		if (out_ext_num_suffix)
+			*out_ext_num_suffix = ").txt";
+		if (out_content_type)
+			*out_content_type = "text/plain; charset=\"utf-8\"";
+
+		return TRUE;
+	}
+
+	if (g_str_has_suffix (filename, ".md")) {
+		if (out_ext_len)
+			*out_ext_len = 3;
+		if (out_ext)
+			*out_ext = ".md";
+		if (out_ext_num_suffix)
+			*out_ext_num_suffix = ").md";
+		if (out_content_type)
+			*out_content_type = "text/markdown; charset=\"utf-8\"";
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 static EWebDAVSession *
 ecb_webdav_notes_ref_session (ECalBackendWebDAVNotes *cbnotes)
 {
@@ -418,6 +457,7 @@ ecb_webdav_notes_new_icomp (glong creation_date,
 	ICalComponent *icomp;
 	ICalTime *itt;
 	glong tt;
+	gint ext_len = 0;
 
 	icomp = i_cal_component_new_vjournal ();
 
@@ -443,10 +483,10 @@ ecb_webdav_notes_new_icomp (glong creation_date,
 
 	i_cal_component_set_uid (icomp, uid);
 
-	if (summary && g_str_has_suffix (summary, ".txt")) {
+	if (ecb_webdav_notes_has_supported_extension (summary, &ext_len, NULL, NULL, NULL)) {
 		gchar *tmp;
 
-		tmp = g_strndup (summary, strlen (summary) - 4);
+		tmp = g_strndup (summary, strlen (summary) - ext_len);
 		i_cal_component_set_summary (icomp, tmp);
 		g_free (tmp);
 	} else if (summary && *summary) {
@@ -605,7 +645,8 @@ ecb_webdav_notes_get_changes_sync (ECalMetaBackend *meta_backend,
 		for (link = resources; link; link = g_slist_next (link)) {
 			EWebDAVResource *resource = link->data;
 
-			if (resource && resource->kind == E_WEBDAV_RESOURCE_KIND_RESOURCE && resource->href && g_str_has_suffix (resource->href, ".txt")) {
+			if (resource && resource->kind == E_WEBDAV_RESOURCE_KIND_RESOURCE && resource->href &&
+			    ecb_webdav_notes_has_supported_extension (resource->href, NULL, NULL, NULL, NULL)) {
 				gchar *filename = ecb_webdav_notes_href_to_uid (resource->href);
 
 				g_hash_table_insert (known_items, g_strdup (resource->href),
@@ -683,7 +724,8 @@ ecb_webdav_notes_list_existing_sync (ECalMetaBackend *meta_backend,
 		for (link = resources; link; link = g_slist_next (link)) {
 			EWebDAVResource *resource = link->data;
 
-			if (resource && resource->kind == E_WEBDAV_RESOURCE_KIND_RESOURCE && resource->href && g_str_has_suffix (resource->href, ".txt")) {
+			if (resource && resource->kind == E_WEBDAV_RESOURCE_KIND_RESOURCE && resource->href &&
+			    ecb_webdav_notes_has_supported_extension (resource->href, NULL, NULL, NULL, NULL)) {
 				gchar *filename = ecb_webdav_notes_href_to_uid (resource->href);
 
 				*out_existing_objects = g_slist_prepend (*out_existing_objects,
@@ -1044,12 +1086,19 @@ ecb_webdav_notes_save_component_sync (ECalMetaBackend *meta_backend,
 
 	if (uid && (!overwrite_existing || (extra && *extra))) {
 		gchar *new_extra = NULL, *new_etag = NULL;
-		gchar *base_filename, *expected_filename;
+		gchar *base_filename, *expected_filename = NULL;
 		gboolean force_write = FALSE, new_filename = FALSE;
 		guint counter = 1;
+		const gchar *use_ext = NULL, *use_ext_num_suffix = NULL, *use_content_type = NULL;
+		gint ext_len = 0;
 
 		base_filename = ecb_webdav_notes_construct_base_filename (description);
-		expected_filename = g_strconcat (base_filename, ".txt", NULL);
+		if (!ecb_webdav_notes_has_supported_extension (uid, &ext_len, &use_ext, &use_ext_num_suffix, &use_content_type)) {
+			/* Default to the markdown format */
+			g_warn_if_fail (ecb_webdav_notes_has_supported_extension (".md", &ext_len, &use_ext, &use_ext_num_suffix, &use_content_type));
+		}
+
+		expected_filename = g_strconcat (base_filename, use_ext, NULL);
 
 		if (overwrite_existing) {
 			switch (conflict_resolution) {
@@ -1066,11 +1115,10 @@ ecb_webdav_notes_save_component_sync (ECalMetaBackend *meta_backend,
 
 		new_filename = g_strcmp0 (expected_filename, uid) != 0;
 
-		/* Checkw whether the saved file on the server is already with the "(nnn)" suffix */
+		/* Checks whether the saved file on the server is already with the "(nnn)" suffix */
 		if (new_filename && expected_filename && uid &&
-		    g_str_has_suffix (uid, ").txt") &&
-		    g_ascii_strncasecmp (uid, expected_filename, strlen (expected_filename) - 4 /* strlen (".txt") */) == 0) {
-			gint ii = strlen (expected_filename) - 4;
+		    g_str_has_suffix (uid, use_ext_num_suffix) && g_ascii_strncasecmp (uid, expected_filename, strlen (expected_filename) - ext_len) == 0) {
+			gint ii = strlen (expected_filename) - ext_len;
 
 			if (uid[ii] == ' ' && uid[ii + 1] == '(') {
 				ii += 2;
@@ -1078,7 +1126,7 @@ ecb_webdav_notes_save_component_sync (ECalMetaBackend *meta_backend,
 				while (uid[ii] >= '0' && uid[ii] <= '9')
 					ii++;
 
-				if (g_strcmp0 (uid + ii, ").txt") == 0)
+				if (g_strcmp0 (uid + ii, use_ext_num_suffix) == 0)
 					new_filename = FALSE;
 			}
 		}
@@ -1097,7 +1145,7 @@ ecb_webdav_notes_save_component_sync (ECalMetaBackend *meta_backend,
 
 			if (counter > 1) {
 				g_free (expected_filename);
-				expected_filename = g_strdup_printf ("%s (%u).txt", base_filename, counter);
+				expected_filename = g_strdup_printf ("%s (%u)%s", base_filename, counter, use_ext);
 
 				g_free (href);
 				href = ecb_webdav_notes_uid_to_uri (cbnotes, expected_filename);
@@ -1106,7 +1154,7 @@ ecb_webdav_notes_save_component_sync (ECalMetaBackend *meta_backend,
 			}
 
 			success = e_webdav_session_put_data_sync (webdav, (!new_filename && extra && *extra) ? extra : href,
-				force_write ? "" : (overwrite_existing && !new_filename) ? etag : NULL, "text/plain; charset=\"utf-8\"",
+				force_write ? "" : (overwrite_existing && !new_filename) ? etag : NULL, use_content_type,
 				description ? description : "", -1, &new_extra, &new_etag, cancellable, &local_error);
 
 			counter++;
@@ -1125,9 +1173,10 @@ ecb_webdav_notes_save_component_sync (ECalMetaBackend *meta_backend,
 				ICalComponent *icomp_copy;
 				gchar *tmp = NULL, *ical_string;
 				glong now = (glong) time (NULL);
+				gint len = 0;
 
-				if (g_str_has_suffix (uid, ".txt"))
-					tmp = g_strndup (uid, strlen (uid) - 4);
+				if (ecb_webdav_notes_has_supported_extension (uid, &len, NULL, NULL, NULL))
+					tmp = g_strndup (uid, strlen (uid) - len);
 
 				icomp_copy = ecb_webdav_notes_new_icomp (now, now, uid, new_etag,
 					tmp ? tmp : uid, description);
