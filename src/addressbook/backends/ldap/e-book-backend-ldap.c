@@ -3093,12 +3093,22 @@ category_compare (EContact *contact1,
 	return equal;
 }
 
-static EContactAddress * getormakeEContactAddress (EContact * card, EContactField field)
+static EContactAddress *
+getormakeEContactAddress (EContact *card,
+			  EContactField field)
 {
-    EContactAddress *contact_addr = e_contact_get (card, field);
-    if (!contact_addr)
-	contact_addr = g_new0 (EContactAddress, 1);
-    return contact_addr;
+	EContactAddress *contact_addr = e_contact_get (card, field);
+	if (!contact_addr)
+		contact_addr = e_contact_address_new ();
+	return contact_addr;
+}
+
+static void
+replace_address_member (gchar **property,
+			gchar *value)
+{
+	g_clear_pointer (property, g_free);
+	*property = value;
 }
 
 static void
@@ -3119,7 +3129,7 @@ address_populate (EContact *card,
 		e_contact_set (card, field, temp);
 
 		contact_addr = getormakeEContactAddress (card, other_field);
-		contact_addr->street = temp;
+		replace_address_member (&contact_addr->street, temp);
 		e_contact_set (card, other_field, contact_addr);
 		e_contact_address_free (contact_addr);
 	}
@@ -3130,7 +3140,7 @@ work_city_populate (EContact *card,
                     gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
-	contact_addr->locality = g_strdup (values[0]);
+	replace_address_member (&contact_addr->locality, g_strdup (values[0]));
 	e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
 	e_contact_address_free (contact_addr);
 }
@@ -3140,7 +3150,7 @@ work_state_populate (EContact *card,
                      gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
-	contact_addr->region = g_strdup (values[0]);
+	replace_address_member (&contact_addr->region, g_strdup (values[0]));
 	e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
 	e_contact_address_free (contact_addr);
 }
@@ -3150,7 +3160,7 @@ work_po_populate (EContact *card,
                   gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
-	contact_addr->po = g_strdup (values[0]);
+	replace_address_member (&contact_addr->po, g_strdup (values[0]));
 	e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
 	e_contact_address_free (contact_addr);
 }
@@ -3160,7 +3170,7 @@ work_zip_populate (EContact *card,
                    gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
-	contact_addr->code = g_strdup (values[0]);
+	replace_address_member (&contact_addr->code, g_strdup (values[0]));
 	e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
 	e_contact_address_free (contact_addr);
 }
@@ -3170,7 +3180,7 @@ work_country_populate (EContact *card,
                        gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
-	contact_addr->country = g_strdup (values[0]);
+	replace_address_member (&contact_addr->country, g_strdup (values[0]));
 	e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
 	e_contact_address_free (contact_addr);
 }
@@ -3180,7 +3190,7 @@ home_city_populate (EContact *card,
                     gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_HOME);
-	contact_addr->locality = g_strdup (values[0]);
+	replace_address_member (&contact_addr->locality, g_strdup (values[0]));
 	e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
 	e_contact_address_free (contact_addr);
 }
@@ -3190,7 +3200,7 @@ home_state_populate (EContact *card,
                      gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_HOME);
-	contact_addr->region = g_strdup (values[0]);
+	replace_address_member (&contact_addr->region, g_strdup (values[0]));
 	e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
 	e_contact_address_free (contact_addr);
 }
@@ -3200,7 +3210,7 @@ home_zip_populate (EContact *card,
                    gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_HOME);
-	contact_addr->code = g_strdup (values[0]);
+	replace_address_member (&contact_addr->code, g_strdup (values[0]));
 	e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
 	e_contact_address_free (contact_addr);
 }
@@ -3210,7 +3220,7 @@ home_country_populate (EContact *card,
                        gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_HOME);
-	contact_addr->country = g_strdup (values[0]);
+	replace_address_member (&contact_addr->country, g_strdup (values[0]));
 	e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
 	e_contact_address_free (contact_addr);
 }
