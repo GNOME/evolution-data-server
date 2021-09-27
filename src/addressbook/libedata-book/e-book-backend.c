@@ -516,10 +516,14 @@ book_backend_dispose (GObject *object)
 	priv->views = NULL;
 	g_mutex_unlock (&priv->views_mutex);
 
+	g_mutex_lock (&priv->operation_lock);
+
 	g_hash_table_remove_all (priv->operation_ids);
 
 	while (!g_queue_is_empty (&priv->pending_operations))
 		dispatch_node_free (g_queue_pop_head (&priv->pending_operations));
+
+	g_mutex_unlock (&priv->operation_lock);
 
 	g_clear_object (&priv->blocked);
 
@@ -539,6 +543,7 @@ book_backend_finalize (GObject *object)
 
 	g_free (priv->cache_dir);
 
+	g_warn_if_fail (g_queue_is_empty (&priv->pending_operations));
 	g_mutex_clear (&priv->operation_lock);
 	g_hash_table_destroy (priv->operation_ids);
 
