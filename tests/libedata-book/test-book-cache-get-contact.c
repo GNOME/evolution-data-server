@@ -90,7 +90,7 @@ main (gint argc,
 	tcu_read_args (argc, argv);
 
 	/* Ensure that the client and server get the same locale */
-	g_assert (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
+	g_assert_true (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
 	setlocale (LC_ALL, "");
 
 	for (ii = 0; ii < G_N_ELEMENTS (closures); ii++) {

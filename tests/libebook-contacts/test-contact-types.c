@@ -46,7 +46,7 @@ test_undefined_field (TypesFixture *fixture,
 	gpointer test;
 
 	test = e_contact_get (fixture->contact, 6000 /* something suitably high. */);
-	g_assert (test == NULL);
+	g_assert_true (test == NULL);
 }
 #endif
 
@@ -116,7 +116,7 @@ test_certificates (TypesFixture *fixture,
 			break;
 	}
 
-	g_assert (ii == pgp_blob_length);
+	g_assert_true (ii == pgp_blob_length);
 
 	e_contact_cert_free (cert);
 
@@ -129,7 +129,7 @@ test_certificates (TypesFixture *fixture,
 			break;
 	}
 
-	g_assert (ii == x509_blob_length);
+	g_assert_true (ii == x509_blob_length);
 
 	e_contact_cert_free (cert);
 }
@@ -196,7 +196,7 @@ test_categories_initially_null_list (TypesFixture *fixture,
 	gpointer test;
 
 	test = e_contact_get (fixture->contact, E_CONTACT_CATEGORY_LIST);
-	g_assert (test == NULL);
+	g_assert_true (test == NULL);
 }
 
 static void

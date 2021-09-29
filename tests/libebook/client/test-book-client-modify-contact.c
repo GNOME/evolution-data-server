@@ -31,7 +31,7 @@ verify_premodify_and_prepare_contact (EContact *contact)
 	EVCardAttribute *attr;
 
 	/* ensure there is no email address to begin with, then add one */
-	g_assert (!e_vcard_get_attribute (E_VCARD (contact), EVC_EMAIL));
+	g_assert_true (!e_vcard_get_attribute (E_VCARD (contact), EVC_EMAIL));
 	attr = e_vcard_attribute_new (NULL, EVC_EMAIL);
 	e_vcard_add_attribute_with_value (E_VCARD (contact), attr, EMAIL_ADD);
 }
@@ -43,10 +43,10 @@ verify_modify (EContact *contact)
 	gchar *email_value;
 
 	attr = e_vcard_get_attribute (E_VCARD (contact), EVC_EMAIL);
-	g_assert (attr != NULL);
-	g_assert (e_vcard_attribute_is_single_valued (attr));
+	g_assert_true (attr != NULL);
+	g_assert_true (e_vcard_attribute_is_single_valued (attr));
 	email_value = e_vcard_attribute_get_value (attr);
-	g_assert (!g_strcmp0 (email_value, EMAIL_ADD));
+	g_assert_true (!g_strcmp0 (email_value, EMAIL_ADD));
 	g_free (email_value);
 }
 

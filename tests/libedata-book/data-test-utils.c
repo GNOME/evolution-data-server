@@ -144,9 +144,9 @@ delete_work_directory (const gchar *filename)
 		NULL, (gchar **) argv, NULL, 0, NULL, NULL,
 					NULL, NULL, &exit_status, NULL);
 
-	g_assert (spawn_succeeded);
+	g_assert_true (spawn_succeeded);
 	#ifndef G_OS_WIN32
-	g_assert (WIFEXITED (exit_status));
+	g_assert_true (WIFEXITED (exit_status));
 	g_assert_cmpint (WEXITSTATUS (exit_status), ==, 0);
 	#else
 	g_assert_cmpint (exit_status, ==, 0);
@@ -185,7 +185,7 @@ fetch_vcard_from_hash (const gchar *uid,
 	EbSqlFixture *fixture = user_data;
 	EContact     *contact;
 
-	g_assert (extra && extra[0]);
+	g_assert_true (extra && extra[0]);
 
 	/* vCards not stored in shallow addressbooks, instead loaded on the fly */
 	contact = g_hash_table_lookup (fixture->contacts, extra);
@@ -431,7 +431,7 @@ assert_contacts_order (GSList *results,
 	gchar *uid;
 	va_list args;
 
-	g_assert (first_uid);
+	g_assert_true (first_uid);
 
 	uids = g_slist_append (uids, (gpointer) first_uid);
 

@@ -65,7 +65,7 @@ verify_ical_attach_list_equal (GSList *expected, /* ICalAttach * */
 		verify_ical_attach_equal (link1->data, link2->data);
 	}
 
-	g_assert (link1 == link2);
+	g_assert_true (link1 == link2);
 }
 
 static void
@@ -233,7 +233,7 @@ verify_struct_attendee_list_equal (GSList *expected, /* ECalComponentAttendee * 
 		verify_struct_attendee_equal (link1->data, link2->data);
 	}
 
-	g_assert (link1 == link2);
+	g_assert_true (link1 == link2);
 }
 
 static void
@@ -267,7 +267,7 @@ verify_struct_id_equal (const ECalComponentId *expected,
 	g_assert_cmpstr (e_cal_component_id_get_uid (expected), ==, e_cal_component_id_get_uid (received));
 	g_assert_cmpstr (e_cal_component_id_get_rid (expected), ==, e_cal_component_id_get_rid (received));
 	g_assert_cmpint (e_cal_component_id_hash (expected), ==, e_cal_component_id_hash (received));
-	g_assert (e_cal_component_id_equal (expected, received));
+	g_assert_true (e_cal_component_id_equal (expected, received));
 }
 
 static void
@@ -499,7 +499,7 @@ verify_struct_alarms_equal (const ECalComponentAlarms *expected,
 		verify_struct_alarm_instance_equal (link1->data, link2->data);
 	}
 
-	g_assert (link1 == link2);
+	g_assert_true (link1 == link2);
 }
 
 static void
@@ -790,8 +790,8 @@ test_component_struct_alarms (void)
 	verify_struct_alarms_equal (expected, received);
 	e_cal_component_alarms_free (received);
 
-	g_assert (!e_cal_component_alarms_remove_instance (expected, GINT_TO_POINTER (123)));
-	g_assert (e_cal_component_alarms_remove_instance (expected, instance));
+	g_assert_true (!e_cal_component_alarms_remove_instance (expected, GINT_TO_POINTER (123)));
+	g_assert_true (e_cal_component_alarms_remove_instance (expected, instance));
 
 	received = e_cal_component_alarms_copy (expected);
 	verify_struct_alarms_equal (expected, received);
@@ -1377,7 +1377,7 @@ test_component_struct_id (void)
 			received = e_cal_component_id_copy (expected);
 			verify_struct_id_equal (expected, received);
 			g_assert_cmpint (e_cal_component_id_hash (expected), ==, e_cal_component_id_hash (received));
-			g_assert (e_cal_component_id_equal (expected, received));
+			g_assert_true (e_cal_component_id_equal (expected, received));
 			e_cal_component_id_free (received);
 
 			e_cal_component_id_free (expected);
@@ -1625,11 +1625,11 @@ test_component_struct_parameter_bag (void)
 
 		param2 = e_cal_component_parameter_bag_get (bag, ii);
 		if (ii == 0) {
-			g_assert (param != param2);
+			g_assert_true (param != param2);
 			g_assert_cmpint (i_cal_parameter_isa (param2), ==, I_CAL_CN_PARAMETER);
 			g_assert_cmpstr (i_cal_parameter_get_cn (param2), ==, "234");
 		} else {
-			g_assert (param == param2);
+			g_assert_true (param == param2);
 			g_assert_cmpint (i_cal_parameter_isa (param2), ==, I_CAL_CUTYPE_PARAMETER);
 			g_assert_cmpint (i_cal_parameter_get_cutype (param2), ==, I_CAL_CUTYPE_ROOM);
 		}
@@ -1945,11 +1945,11 @@ test_component_struct_property_bag (void)
 
 		prop2 = e_cal_component_property_bag_get (bag, ii);
 		if (ii == 0) {
-			g_assert (prop != prop2);
+			g_assert_true (prop != prop2);
 			g_assert_cmpint (i_cal_property_isa (prop2), ==, I_CAL_UID_PROPERTY);
 			g_assert_cmpstr (i_cal_property_get_uid (prop2), ==, "234");
 		} else {
-			g_assert (prop == prop2);
+			g_assert_true (prop == prop2);
 			g_assert_cmpint (i_cal_property_isa (prop2), ==, I_CAL_STATUS_PROPERTY);
 			g_assert_cmpint (i_cal_property_get_status (prop2), ==, I_CAL_STATUS_CANCELLED);
 		}
@@ -2154,7 +2154,7 @@ verify_changes (ECalComponent *comp,
 	g_assert_nonnull (icalcomp);
 	clone = e_cal_component_new ();
 	g_assert_nonnull (clone);
-	g_assert (e_cal_component_set_icalcomponent (clone, icalcomp));
+	g_assert_true (e_cal_component_set_icalcomponent (clone, icalcomp));
 	verify_func (clone, user_data);
 	g_object_unref (clone);
 
@@ -2273,7 +2273,7 @@ verify_component_categories (ECalComponent *comp,
 		g_assert_cmpstr (link1->data, ==, link2->data);
 	}
 
-	g_assert (link1 == link2);
+	g_assert_true (link1 == link2);
 
 	g_slist_free_full (expected, g_free);
 	g_slist_free_full (received, g_free);
@@ -2390,7 +2390,7 @@ verify_component_text_list (GSList * (* get_func) (ECalComponent *comp),
 {
 	GSList *expected, *received, *link1, *link2;
 
-	g_assert (get_func != NULL);
+	g_assert_true (get_func != NULL);
 
 	expected = user_data;
 	received = get_func (comp);
@@ -2408,7 +2408,7 @@ verify_component_text_list (GSList * (* get_func) (ECalComponent *comp),
 		verify_struct_text_equal (text1, text2);
 	}
 
-	g_assert (link1 == link2);
+	g_assert_true (link1 == link2);
 
 	g_slist_free_full (received, e_cal_component_text_free);
 }
@@ -2429,8 +2429,8 @@ test_component_text_list (void (* set_func) (ECalComponent *comp,
 	ECalComponent *comp;
 	gint ii;
 
-	g_assert (set_func != NULL);
-	g_assert (verify_func != NULL);
+	g_assert_true (set_func != NULL);
+	g_assert_true (verify_func != NULL);
 
 	comp = e_cal_component_new_vtype (E_CAL_COMPONENT_EVENT);
 	g_assert_nonnull (comp);
@@ -2454,7 +2454,7 @@ verify_component_icaltime (ICalTime * (* get_func) (ECalComponent *comp),
 {
 	ICalTime *expected, *received;
 
-	g_assert (get_func != NULL);
+	g_assert_true (get_func != NULL);
 
 	expected = user_data;
 	received = get_func (comp);
@@ -2480,8 +2480,8 @@ test_component_icaltime (void (* set_func) (ECalComponent *comp,
 	ECalComponent *comp;
 	gint ii;
 
-	g_assert (set_func != NULL);
-	g_assert (verify_func != NULL);
+	g_assert_true (set_func != NULL);
+	g_assert_true (verify_func != NULL);
 
 	comp = e_cal_component_new_vtype (E_CAL_COMPONENT_EVENT);
 	g_assert_nonnull (comp);
@@ -2514,7 +2514,7 @@ verify_component_datetime (ECalComponentDateTime * (* get_func) (ECalComponent *
 {
 	ECalComponentDateTime *expected, *received;
 
-	g_assert (get_func != NULL);
+	g_assert_true (get_func != NULL);
 
 	expected = user_data;
 	received = get_func (comp);
@@ -2545,8 +2545,8 @@ test_component_datetime (void (* set_func) (ECalComponent *comp,
 	ECalComponent *comp;
 	gint ii;
 
-	g_assert (set_func != NULL);
-	g_assert (verify_func != NULL);
+	g_assert_true (set_func != NULL);
+	g_assert_true (verify_func != NULL);
 
 	comp = e_cal_component_new_vtype (E_CAL_COMPONENT_EVENT);
 	g_assert_nonnull (comp);
@@ -2599,29 +2599,29 @@ verify_component_rules (GSList * (* get_func) (ECalComponent *comp),
 		g_assert_null (received);
 		g_assert_null (received_props);
 		if (is_exception) {
-			g_assert (!e_cal_component_has_exrules (comp));
-			g_assert (!e_cal_component_has_exceptions (comp));
+			g_assert_true (!e_cal_component_has_exrules (comp));
+			g_assert_true (!e_cal_component_has_exceptions (comp));
 		} else {
-			g_assert (!e_cal_component_has_rrules (comp));
-			g_assert (!e_cal_component_has_recurrences (comp));
-			g_assert (e_cal_component_has_simple_recurrence (comp));
+			g_assert_true (!e_cal_component_has_rrules (comp));
+			g_assert_true (!e_cal_component_has_recurrences (comp));
+			g_assert_true (e_cal_component_has_simple_recurrence (comp));
 		}
 	} else {
 		GSList *link1, *link2, *link3;
 
 		if (is_exception) {
-			g_assert (e_cal_component_has_exrules (comp));
-			g_assert (e_cal_component_has_exceptions (comp));
-			g_assert (!e_cal_component_has_rrules (comp));
+			g_assert_true (e_cal_component_has_exrules (comp));
+			g_assert_true (e_cal_component_has_exceptions (comp));
+			g_assert_true (!e_cal_component_has_rrules (comp));
 		} else {
-			g_assert (!e_cal_component_has_exrules (comp));
-			g_assert (!e_cal_component_has_exceptions (comp));
-			g_assert (e_cal_component_has_rrules (comp));
-			g_assert (e_cal_component_has_recurrences (comp));
+			g_assert_true (!e_cal_component_has_exrules (comp));
+			g_assert_true (!e_cal_component_has_exceptions (comp));
+			g_assert_true (e_cal_component_has_rrules (comp));
+			g_assert_true (e_cal_component_has_recurrences (comp));
 			if (expected->next)
-				g_assert (!e_cal_component_has_simple_recurrence (comp));
+				g_assert_true (!e_cal_component_has_simple_recurrence (comp));
 			else
-				g_assert (e_cal_component_has_simple_recurrence (comp));
+				g_assert_true (e_cal_component_has_simple_recurrence (comp));
 		}
 
 		g_assert_cmpint (g_slist_length (expected), ==, g_slist_length (received));
@@ -2657,8 +2657,8 @@ verify_component_rules (GSList * (* get_func) (ECalComponent *comp),
 			g_clear_object (&rt_received_prop);
 		}
 
-		g_assert (link1 == link2);
-		g_assert (link2 == link3);
+		g_assert_true (link1 == link2);
+		g_assert_true (link2 == link3);
 	}
 
 	g_slist_free_full (received, g_object_unref);
@@ -2841,13 +2841,13 @@ verify_component_exdates (ECalComponent *comp,
 
 	if (!expected) {
 		g_assert_null (received);
-		g_assert (!e_cal_component_has_exdates (comp));
-		g_assert (!e_cal_component_has_exceptions (comp));
+		g_assert_true (!e_cal_component_has_exdates (comp));
+		g_assert_true (!e_cal_component_has_exceptions (comp));
 	} else {
 		GSList *link1, *link2;
 
-		g_assert (e_cal_component_has_exdates (comp));
-		g_assert (e_cal_component_has_exceptions (comp));
+		g_assert_true (e_cal_component_has_exdates (comp));
+		g_assert_true (e_cal_component_has_exceptions (comp));
 		g_assert_cmpint (g_slist_length (expected), ==, g_slist_length (received));
 
 		for (link1 = expected, link2 = received; link1 && link2; link1 = g_slist_next (link1), link2 = g_slist_next (link2)) {
@@ -2856,7 +2856,7 @@ verify_component_exdates (ECalComponent *comp,
 			verify_struct_datetime_equal (dt_expected, dt_received);
 		}
 
-		g_assert (link1 == link2);
+		g_assert_true (link1 == link2);
 	}
 
 	g_slist_free_full (received, e_cal_component_datetime_free);
@@ -3010,10 +3010,10 @@ verify_component_organizer (ECalComponent *comp,
 
 	if (!expected) {
 		g_assert_null (received);
-		g_assert (!e_cal_component_has_organizer (comp));
+		g_assert_true (!e_cal_component_has_organizer (comp));
 	} else {
 		g_assert_nonnull (received);
-		g_assert (e_cal_component_has_organizer (comp));
+		g_assert_true (e_cal_component_has_organizer (comp));
 		verify_struct_organizer_equal (expected, received);
 	}
 
@@ -3137,11 +3137,11 @@ verify_component_recurid (ECalComponent *comp,
 		g_assert_null (received);
 		g_assert_null (rid_str);
 		g_assert_null (e_cal_component_id_get_rid (id));
-		g_assert (!e_cal_component_is_instance (comp));
+		g_assert_true (!e_cal_component_is_instance (comp));
 	} else {
 		g_assert_nonnull (rid_str);
 		g_assert_nonnull (e_cal_component_id_get_rid (id));
-		g_assert (e_cal_component_is_instance (comp));
+		g_assert_true (e_cal_component_is_instance (comp));
 		g_assert_cmpstr (e_cal_component_id_get_rid (id), ==, rid_str);
 
 		verify_struct_range_equal (expected, received);
@@ -3217,13 +3217,13 @@ verify_component_rdates (ECalComponent *comp,
 
 	if (!expected) {
 		g_assert_null (received);
-		g_assert (!e_cal_component_has_rdates (comp));
-		g_assert (!e_cal_component_has_recurrences (comp));
+		g_assert_true (!e_cal_component_has_rdates (comp));
+		g_assert_true (!e_cal_component_has_recurrences (comp));
 	} else {
 		GSList *link1, *link2;
 
-		g_assert (e_cal_component_has_rdates (comp));
-		g_assert (e_cal_component_has_recurrences (comp));
+		g_assert_true (e_cal_component_has_rdates (comp));
+		g_assert_true (e_cal_component_has_recurrences (comp));
 		g_assert_cmpint (g_slist_length (expected), ==, g_slist_length (received));
 
 		for (link1 = expected, link2 = received; link1 && link2; link1 = g_slist_next (link1), link2 = g_slist_next (link2)) {
@@ -3232,7 +3232,7 @@ verify_component_rdates (ECalComponent *comp,
 			verify_struct_period_equal (period_expected, period_received);
 		}
 
-		g_assert (link1 == link2);
+		g_assert_true (link1 == link2);
 	}
 
 	g_slist_free_full (received, e_cal_component_period_free);
@@ -3530,12 +3530,12 @@ verify_component_attendees (ECalComponent *comp,
 
 	if (!expected) {
 		g_assert_null (received);
-		g_assert (!e_cal_component_has_attendees (comp));
+		g_assert_true (!e_cal_component_has_attendees (comp));
 	} else {
 		GSList *link1, *link2;
 
 		g_assert_nonnull (received);
-		g_assert (e_cal_component_has_attendees (comp));
+		g_assert_true (e_cal_component_has_attendees (comp));
 
 		g_assert_cmpint (g_slist_length (expected), ==, g_slist_length (received));
 
@@ -3545,7 +3545,7 @@ verify_component_attendees (ECalComponent *comp,
 			verify_struct_attendee_equal (att_expected, att_received);
 		}
 
-		g_assert (link1 == link2);
+		g_assert_true (link1 == link2);
 	}
 
 	g_slist_free_full (received, e_cal_component_attendee_free);
@@ -3698,12 +3698,12 @@ verify_component_attachments (ECalComponent *comp,
 
 	if (!expected) {
 		g_assert_null (received);
-		g_assert (!e_cal_component_has_attachments (comp));
+		g_assert_true (!e_cal_component_has_attachments (comp));
 	} else {
 		ECalComponent *clone;
 
 		g_assert_nonnull (received);
-		g_assert (e_cal_component_has_attachments (comp));
+		g_assert_true (e_cal_component_has_attachments (comp));
 
 		verify_ical_attach_list_equal (expected, received);
 
@@ -3787,13 +3787,13 @@ verify_component_alarms (ECalComponent *comp,
 	if (!expected) {
 		g_assert_null (received);
 		g_assert_null (received_uids);
-		g_assert (!e_cal_component_has_alarms (comp));
+		g_assert_true (!e_cal_component_has_alarms (comp));
 	} else {
 		GSList *link1, *link2, *link3;
 
 		g_assert_nonnull (received);
 		g_assert_nonnull (received_uids);
-		g_assert (e_cal_component_has_alarms (comp));
+		g_assert_true (e_cal_component_has_alarms (comp));
 
 		g_assert_cmpint (g_slist_length (expected), ==, g_slist_length (received));
 		g_assert_cmpint (g_slist_length (expected), ==, g_slist_length (received_uids));
@@ -3815,8 +3815,8 @@ verify_component_alarms (ECalComponent *comp,
 			verify_struct_alarm_equal (al_expected, al_received);
 		}
 
-		g_assert (link1 == link2);
-		g_assert (link1 == link3);
+		g_assert_true (link1 == link2);
+		g_assert_true (link1 == link3);
 
 		if (expected->next) {
 			ECalComponentAlarm *al_expected;
@@ -3836,7 +3836,7 @@ verify_component_alarms (ECalComponent *comp,
 			g_slist_free_full (received, e_cal_component_alarm_free);
 			g_slist_free_full (received_uids, g_free);
 
-			g_assert (e_cal_component_has_alarms (comp));
+			g_assert_true (e_cal_component_has_alarms (comp));
 
 			received = e_cal_component_get_all_alarms (comp);
 			received_uids = e_cal_component_get_alarm_uids (comp);
@@ -3859,11 +3859,11 @@ verify_component_alarms (ECalComponent *comp,
 				g_assert_cmpstr (e_cal_component_alarm_get_uid (al_expected), !=, e_cal_component_alarm_get_uid (al_received));
 			}
 
-			g_assert (link1 == link2);
+			g_assert_true (link1 == link2);
 		} else {
 			e_cal_component_remove_alarm (comp, e_cal_component_alarm_get_uid (expected->data));
 
-			g_assert (!e_cal_component_has_alarms (comp));
+			g_assert_true (!e_cal_component_has_alarms (comp));
 			g_assert_null (e_cal_component_get_all_alarms (comp));
 			g_assert_null (e_cal_component_get_alarm_uids (comp));
 		}

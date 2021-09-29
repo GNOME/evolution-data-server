@@ -387,9 +387,9 @@ test_vcard_quoted_printable (void)
 		  "67890=201234567890=201234567890=201234567890\r\n"
 		"END:VCARD\r\n";
 
-	g_assert (test_vcard_qp_2_1_parsing (vcard_2_1_str, expected_text));
-	g_assert (test_vcard_qp_2_1_saving (expected_text));
-	g_assert (test_vcard_qp_3_0_saving (expected_text));
+	g_assert_true (test_vcard_qp_2_1_parsing (vcard_2_1_str, expected_text));
+	g_assert_true (test_vcard_qp_2_1_saving (expected_text));
+	g_assert_true (test_vcard_qp_3_0_saving (expected_text));
 }
 
 static const gchar *test_vcard_no_uid_str =
@@ -412,25 +412,25 @@ static const gchar *test_vcard_with_uid_str =
 static void
 test_vcard_with_uid (void)
 {
-	g_assert (test_vcard (test_vcard_with_uid_str));
+	g_assert_true (test_vcard (test_vcard_with_uid_str));
 }
 
 static void
 test_vcard_without_uid (void)
 {
-	g_assert (test_vcard (test_vcard_no_uid_str));
+	g_assert_true (test_vcard (test_vcard_no_uid_str));
 }
 
 static void
 test_contact_with_uid (void)
 {
-	g_assert (test_econtact (test_vcard_with_uid_str));
+	g_assert_true (test_econtact (test_vcard_with_uid_str));
 }
 
 static void
 test_contact_without_uid (void)
 {
-	g_assert (test_econtact (test_vcard_no_uid_str));
+	g_assert_true (test_econtact (test_vcard_no_uid_str));
 }
 
 static void
@@ -442,30 +442,30 @@ test_phone_params_and_value (EContact *contact,
 	GList *attributes, *params, *link;
 	EVCardAttribute *attr = NULL;
 
-	g_assert (E_IS_CONTACT (contact));
-	g_assert (expected_value != NULL);
-	g_assert (expected_value_type != NULL);
+	g_assert_true (E_IS_CONTACT (contact));
+	g_assert_true (expected_value != NULL);
+	g_assert_true (expected_value_type != NULL);
 
 	g_assert_nonnull (e_contact_get_const (contact, field_id));
 	g_assert_cmpstr (e_contact_get_const (contact, field_id), ==, expected_value);
 
 	attributes = e_contact_get_attributes (contact, field_id);
 
-	g_assert (attributes != NULL);
-	g_assert (attributes->next != NULL);
-	g_assert (attributes->next->next != NULL);
-	g_assert (attributes->next->next->next == NULL);
+	g_assert_true (attributes != NULL);
+	g_assert_true (attributes->next != NULL);
+	g_assert_true (attributes->next->next != NULL);
+	g_assert_true (attributes->next->next->next == NULL);
 
 	for (link = attributes; link; link = g_list_next (link)) {
 		gchar *value;
 
 		attr = link->data;
 
-		g_assert (attr != NULL);
+		g_assert_true (attr != NULL);
 
 		value = e_vcard_attribute_get_value (attr);
 
-		g_assert (value != NULL);
+		g_assert_true (value != NULL);
 
 		if (g_strcmp0 (value, expected_value) == 0) {
 			g_free (value);
@@ -476,25 +476,25 @@ test_phone_params_and_value (EContact *contact,
 		attr = NULL;
 	}
 
-	g_assert (attr != NULL);
+	g_assert_true (attr != NULL);
 
-	g_assert (e_vcard_attribute_get_name (attr) != NULL);
+	g_assert_true (e_vcard_attribute_get_name (attr) != NULL);
 
 	params = e_vcard_attribute_get_params (attr);
-	g_assert (params != NULL);
-	g_assert (params->next != NULL);
-	g_assert (params->next->next == NULL);
+	g_assert_true (params != NULL);
+	g_assert_true (params->next != NULL);
+	g_assert_true (params->next->next == NULL);
 
 	for (link = params; link; link = g_list_next (link)) {
 		EVCardAttributeParam *param = link->data;
 		const gchar *name;
 
-		g_assert (param != NULL);
+		g_assert_true (param != NULL);
 
 		name = e_vcard_attribute_param_get_name (param);
 
-		g_assert (name != NULL);
-		g_assert (g_ascii_strcasecmp (name, EVC_TYPE) == 0 ||
+		g_assert_true (name != NULL);
+		g_assert_true (g_ascii_strcasecmp (name, EVC_TYPE) == 0 ||
 			  g_ascii_strcasecmp (name, EVC_X_E164) == 0);
 
 		if (g_ascii_strcasecmp (name, EVC_X_E164) == 0) {
@@ -503,12 +503,12 @@ test_phone_params_and_value (EContact *contact,
 
 			values = e_vcard_attribute_param_get_values (param);
 
-			g_assert (values != NULL);
-			g_assert (values->next == NULL || values->next->next == NULL);
+			g_assert_true (values != NULL);
+			g_assert_true (values->next == NULL || values->next->next == NULL);
 
 			value = values->data;
 
-			g_assert (value != NULL);
+			g_assert_true (value != NULL);
 			g_assert_cmpstr (value, ==, expected_value);
 
 			if (values->next) {
@@ -523,15 +523,15 @@ test_phone_params_and_value (EContact *contact,
 
 			values = e_vcard_attribute_param_get_values (param);
 
-			g_assert (values != NULL);
-			g_assert (values->next != NULL);
-			g_assert (values->next->next == NULL);
+			g_assert_true (values != NULL);
+			g_assert_true (values->next != NULL);
+			g_assert_true (values->next->next == NULL);
 
 			value1 = values->data;
 			value2 = values->next->data;
 
-			g_assert (value1 != NULL);
-			g_assert (value2 != NULL);
+			g_assert_true (value1 != NULL);
+			g_assert_true (value2 != NULL);
 			g_assert_cmpstr (value1, ==, expected_value_type);
 			g_assert_cmpstr (value2, ==, "VOICE");
 		}
@@ -558,7 +558,7 @@ test_contact_empty_value (void)
 		"TEL;X-EVOLUTION-E164=002233445566;TYPE=HOME,VOICE:002233445566\r\n"
 		"END:VCARD\r\n");
 
-	g_assert (E_IS_CONTACT (contact));
+	g_assert_true (E_IS_CONTACT (contact));
 
 	test_phone_params_and_value (contact, E_CONTACT_PHONE_BUSINESS, "00123456789", "WORK");
 	test_phone_params_and_value (contact, E_CONTACT_PHONE_BUSINESS_2, "11123456789", "WORK");

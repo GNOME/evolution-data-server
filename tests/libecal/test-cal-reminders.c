@@ -128,7 +128,7 @@ test_reminders_verify (const gchar *comp_str,
 					g_hash_table_insert (used_indexes, GUINT_TO_POINTER (ii), NULL);
 			}
 
-			g_assert (found);
+			g_assert_true (found);
 		}
 
 		g_assert_cmpint (n_expected_instances, ==, g_hash_table_size (used_indexes));

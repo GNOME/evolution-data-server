@@ -44,7 +44,7 @@ test_cursor_sexp_calculate_position (TCUCursorFixture *fixture,
 
 	/* Ensure we moved to the right contact */
 	node = g_slist_last (results);
-	g_assert (node);
+	g_assert_true (node);
 	data = node->data;
 	g_assert_cmpstr (data->uid, ==, "sorted-16");
 	g_slist_free_full (results, e_book_cache_search_data_free);
@@ -108,7 +108,7 @@ test_cursor_sexp_and_step (TCUCursorFixture *fixture,
 
 	/* Ensure we moved to the right contact */
 	node = g_slist_last (results);
-	g_assert (node);
+	g_assert_true (node);
 	data = node->data;
 	g_assert_cmpstr (data->uid, ==, "sorted-8");
 	g_slist_free_full (results, e_book_cache_search_data_free);
@@ -124,7 +124,7 @@ test_cursor_sexp_and_step (TCUCursorFixture *fixture,
 
 	/* Ensure we moved to the right contact */
 	node = g_slist_last (results);
-	g_assert (node);
+	g_assert_true (node);
 	data = node->data;
 	g_assert_cmpstr (data->uid, ==, "sorted-12");
 	g_slist_free_full (results, e_book_cache_search_data_free);

@@ -62,9 +62,9 @@ delete_work_directory (const gchar *filename)
 		NULL, (gchar **) argv, NULL, 0, NULL, NULL,
 					NULL, NULL, &exit_status, NULL);
 
-	g_assert (spawn_succeeded);
+	g_assert_true (spawn_succeeded);
 	#ifndef G_OS_WIN32
-	g_assert (WIFEXITED (exit_status));
+	g_assert_true (WIFEXITED (exit_status));
 	g_assert_cmpint (WEXITSTATUS (exit_status), ==, 0);
 	#else
 	g_assert_cmpint (exit_status, ==, 0);

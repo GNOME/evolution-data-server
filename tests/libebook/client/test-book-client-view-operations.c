@@ -53,7 +53,7 @@ objects_added (EBookClientView *view,
 {
 	const GSList *l;
 
-	g_assert (g_thread_self () == data->thread);
+	g_assert_true (g_thread_self () == data->thread);
 
 	for (l = contacts; l; l = l->next) {
 		/* print_email (l->data); */
@@ -69,7 +69,7 @@ objects_modified (EBookClientView *view,
 {
 	const GSList *l;
 
-	g_assert (g_thread_self () == data->thread);
+	g_assert_true (g_thread_self () == data->thread);
 
 	for (l = contacts; l; l = l->next) {
 		/* print_email (l->data); */
@@ -83,7 +83,7 @@ objects_removed (EBookClientView *view,
 {
 	const GSList *l;
 
-	g_assert (g_thread_self () == data->thread);
+	g_assert_true (g_thread_self () == data->thread);
 
 	for (l = ids; l; l = l->next) {
 		/* printf ("   Removed contact: %s\n", (gchar *) l->data); */
@@ -97,7 +97,7 @@ complete (EBookClientView *view,
           const GError *error,
           ThreadData *data)
 {
-	g_assert (g_thread_self () == data->thread);
+	g_assert_true (g_thread_self () == data->thread);
 
 	g_mutex_lock (&data->complete_mutex);
 	data->complete = TRUE;

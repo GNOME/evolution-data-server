@@ -36,7 +36,7 @@ test_create_cursor_empty_query (TCUFixture *fixture,
 		fixture->book_cache, NULL,
 		sort_fields, sort_types, 2, &error);
 
-	g_assert (cursor != NULL);
+	g_assert_true (cursor != NULL);
 	e_book_cache_cursor_free (fixture->book_cache, cursor);
 }
 
@@ -58,7 +58,7 @@ test_create_cursor_valid_query (TCUFixture *fixture,
 		fixture->book_cache, sexp,
 		sort_fields, sort_types, 2, &error);
 
-	g_assert (cursor != NULL);
+	g_assert_true (cursor != NULL);
 	e_book_cache_cursor_free (fixture->book_cache, cursor);
 	g_free (sexp);
 	e_book_query_unref (query);
@@ -77,7 +77,7 @@ test_create_cursor_invalid_sort (TCUFixture *fixture,
 		fixture->book_cache, NULL,
 		sort_fields, sort_types, 1, &error);
 
-	g_assert (cursor == NULL);
+	g_assert_true (cursor == NULL);
 	g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_INVALID_QUERY);
 	g_clear_error (&error);
 }
@@ -91,7 +91,7 @@ test_create_cursor_missing_sort (TCUFixture *fixture,
 
 	cursor = e_book_cache_cursor_new (fixture->book_cache, NULL, NULL, NULL, 0, &error);
 
-	g_assert (cursor == NULL);
+	g_assert_true (cursor == NULL);
 	g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_INVALID_QUERY);
 	g_clear_error (&error);
 }
@@ -109,7 +109,7 @@ main (gint argc,
 	tcu_read_args (argc, argv);
 
 	/* Ensure that the client and server get the same locale */
-	g_assert (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
+	g_assert_true (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
 	setlocale (LC_ALL, "");
 
 	g_test_add (

@@ -34,11 +34,11 @@ static void
 test_fixture_setup_session (TestFixture *fixture,
                             gconstpointer user_data)
 {
-	g_assert (fixture->prompter == NULL);
-	g_assert (fixture->main_loop == NULL);
+	g_assert_true (fixture->prompter == NULL);
+	g_assert_true (fixture->main_loop == NULL);
 
 	fixture->prompter = e_user_prompter_new ();
-	g_assert (fixture->prompter != NULL);
+	g_assert_true (fixture->prompter != NULL);
 
 	fixture->main_loop = g_main_loop_new (NULL, FALSE);
 }
@@ -152,8 +152,8 @@ test_trust_prompt (EUserPrompter *prompter)
 
 	g_print ("Unknown dialog prompt, result:%d, error: %s\n", result, error ? error->message : "None");
 
-	g_assert (result == -1);
-	g_assert (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND));
+	g_assert_true (result == -1);
+	g_assert_true (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND));
 
 	g_clear_error (&error);
 }

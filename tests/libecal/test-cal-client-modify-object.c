@@ -73,7 +73,7 @@ test_modify_object_sync (ETestServerFixture *fixture,
 
 	setup_cal (cal_client);
 	uid = g_object_get_data (G_OBJECT (cal_client), "use-uid");
-	g_assert (uid != NULL);
+	g_assert_true (uid != NULL);
 
 	if (!e_cal_client_get_object_sync (cal_client, uid, NULL, &icomp, NULL, &error))
 		g_error ("get object sync: %s", error->message);
@@ -131,7 +131,7 @@ test_modify_object_async (ETestServerFixture *fixture,
 
 	setup_cal (cal_client);
 	uid = g_object_get_data (G_OBJECT (cal_client), "use-uid");
-	g_assert (uid != NULL);
+	g_assert_true (uid != NULL);
 
 	if (!e_cal_client_get_object_sync (cal_client, uid, NULL, &icomp, NULL, &error))
 		g_error ("get object sync: %s", error->message);

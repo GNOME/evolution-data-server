@@ -45,7 +45,7 @@ test_add_timezone_sync (ETestServerFixture *fixture,
 	property = i_cal_property_new_tzname (TZNAME_NEW);
 	i_cal_component_take_property (component, property);
 	zone = i_cal_timezone_new ();
-	g_assert (i_cal_timezone_set_component (zone, component));
+	g_assert_true (i_cal_timezone_set_component (zone, component));
 	g_object_unref (component);
 
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
@@ -128,7 +128,7 @@ test_add_timezone_async (ETestServerFixture *fixture,
 	property = i_cal_property_new_tzname (TZNAME_NEW);
 	i_cal_component_take_property (component, property);
 	zone = i_cal_timezone_new ();
-	g_assert (i_cal_timezone_set_component (zone, component));
+	g_assert_true (i_cal_timezone_set_component (zone, component));
 	g_object_unref (component);
 
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);

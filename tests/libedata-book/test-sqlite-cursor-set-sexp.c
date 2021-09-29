@@ -44,7 +44,7 @@ test_cursor_sexp_calculate_position (EbSqlCursorFixture *fixture,
 
 	/* Ensure we moved to the right contact */
 	node = g_slist_last (results);
-	g_assert (node);
+	g_assert_true (node);
 	data = node->data;
 	g_assert_cmpstr (data->uid, ==, "sorted-16");
 	g_slist_foreach (results, (GFunc) e_book_sqlite_search_data_free, NULL);
@@ -107,7 +107,7 @@ test_cursor_sexp_and_step (EbSqlCursorFixture *fixture,
 
 	/* Ensure we moved to the right contact */
 	node = g_slist_last (results);
-	g_assert (node);
+	g_assert_true (node);
 	data = node->data;
 	g_assert_cmpstr (data->uid, ==, "sorted-8");
 	g_slist_foreach (results, (GFunc) e_book_sqlite_search_data_free, NULL);
@@ -124,7 +124,7 @@ test_cursor_sexp_and_step (EbSqlCursorFixture *fixture,
 
 	/* Ensure we moved to the right contact */
 	node = g_slist_last (results);
-	g_assert (node);
+	g_assert_true (node);
 	data = node->data;
 	g_assert_cmpstr (data->uid, ==, "sorted-12");
 	g_slist_foreach (results, (GFunc) e_book_sqlite_search_data_free, NULL);

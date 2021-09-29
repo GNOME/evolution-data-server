@@ -61,8 +61,8 @@ get_revision_compare_cycle (EBookClient *client)
 			g_error ("Error getting book revision: %s", error->message);
 	}
 
-	g_assert (revision_before);
-	g_assert (revision_after);
+	g_assert_true (revision_before);
+	g_assert_true (revision_after);
 	g_assert_cmpstr (revision_before, !=, revision_after);
 
 	g_message (

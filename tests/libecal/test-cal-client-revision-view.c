@@ -102,7 +102,7 @@ objects_added_cb (GObject *object,
 		g_free (str_recurrence);
 		g_free (str_last_modified);
 
-		g_assert (i_cal_component_get_summary (component) == NULL);
+		g_assert_true (i_cal_component_get_summary (component) == NULL);
 	}
 
 	subtest_passed (SUBTEST_OBJECTS_ADDED, loop);
@@ -136,7 +136,7 @@ objects_modified_cb (GObject *object,
 		g_free (str_recurrence);
 		g_free (str_last_modified);
 
-		g_assert (i_cal_component_get_summary (component) == NULL);
+		g_assert_true (i_cal_component_get_summary (component) == NULL);
 	}
 
 	subtest_passed (SUBTEST_OBJECTS_MODIFIED, loop);

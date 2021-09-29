@@ -74,7 +74,7 @@ test_uid_conflict (ETestServerFixture *fixture,
 	e_contact_set (contact, E_CONTACT_UID, TEST_CONTACT_UID);
 
 	if (!e_book_client_add_contact_sync (book_client, contact, E_BOOK_OPERATION_FLAG_NONE, NULL, NULL, &error)) {
-		g_assert (g_error_matches (error, E_BOOK_CLIENT_ERROR, E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS));
+		g_assert_true (g_error_matches (error, E_BOOK_CLIENT_ERROR, E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS));
 		g_error_free (error);
 	} else
 		g_error ("Succeeded in adding two contacts with the same UID !");

@@ -41,10 +41,10 @@ test_remove_contacts_sync (ETestServerFixture *fixture,
 
 	contact_final = NULL;
 	e_book_get_contact (book, uid_1, &contact_final, NULL);
-	g_assert (contact_final == NULL);
+	g_assert_true (contact_final == NULL);
 
 	e_book_get_contact (book, uid_2, &contact_final, NULL);
-	g_assert (contact_final == NULL);
+	g_assert_true (contact_final == NULL);
 
 	test_print ("successfully added and removed contacts\n");
 

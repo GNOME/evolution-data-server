@@ -27,11 +27,11 @@ extract_id_from_component (ECalComponent *component)
 {
 	ECalComponentId *id;
 
-	g_assert (component != NULL);
+	g_assert_true (component != NULL);
 
 	id = e_cal_component_get_id (component);
-	g_assert (id != NULL);
-	g_assert (e_cal_component_id_get_uid (id) != NULL);
+	g_assert_true (id != NULL);
+	g_assert_true (e_cal_component_id_get_uid (id) != NULL);
 
 	return id;
 }
@@ -42,10 +42,10 @@ extract_id_from_string (const gchar *icalstring)
 	ECalComponent *component;
 	ECalComponentId *id;
 
-	g_assert (icalstring != NULL);
+	g_assert_true (icalstring != NULL);
 
 	component = e_cal_component_new_from_string (icalstring);
-	g_assert (component != NULL);
+	g_assert_true (component != NULL);
 
 	id = extract_id_from_component (component);
 
@@ -69,13 +69,13 @@ test_get_one (ECalCache *cal_cache,
 	success = e_cal_cache_get_component (cal_cache, uid, rid, &component, NULL, &error);
 	if (expect_failure) {
 		g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND);
-		g_assert (!success);
-		g_assert (!component);
+		g_assert_true (!success);
+		g_assert_true (!component);
 
 		g_clear_error (&error);
 	} else {
 		g_assert_no_error (error);
-		g_assert (success);
+		g_assert_true (success);
 		g_assert_nonnull (component);
 
 		id = extract_id_from_component (component);
@@ -90,13 +90,13 @@ test_get_one (ECalCache *cal_cache,
 	success = e_cal_cache_get_component_as_string (cal_cache, uid, rid, &icalstring, NULL, &error);
 	if (expect_failure) {
 		g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND);
-		g_assert (!success);
-		g_assert (!icalstring);
+		g_assert_true (!success);
+		g_assert_true (!icalstring);
 
 		g_clear_error (&error);
 	} else {
 		g_assert_no_error (error);
-		g_assert (success);
+		g_assert_true (success);
 		g_assert_nonnull (icalstring);
 
 		id = extract_id_from_string (icalstring);
@@ -159,13 +159,13 @@ test_get_all (ECalCache *cal_cache,
 	success = e_cal_cache_get_components_by_uid (cal_cache, uid, &items, NULL, &error);
 	if (!g_hash_table_size (expects)) {
 		g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND);
-		g_assert (!success);
-		g_assert (!items);
+		g_assert_true (!success);
+		g_assert_true (!items);
 
 		g_clear_error (&error);
 	} else {
 		g_assert_no_error (error);
-		g_assert (success);
+		g_assert_true (success);
 		g_assert_nonnull (items);
 
 		g_assert_cmpint (g_hash_table_size (expects), ==, g_slist_length (items));
@@ -174,7 +174,7 @@ test_get_all (ECalCache *cal_cache,
 			id = extract_id_from_component (link->data);
 
 			g_assert_cmpstr (e_cal_component_id_get_uid (id), ==, uid);
-			g_assert (g_hash_table_contains (expects, id));
+			g_assert_true (g_hash_table_contains (expects, id));
 
 			e_cal_component_id_free (id);
 		}
@@ -187,13 +187,13 @@ test_get_all (ECalCache *cal_cache,
 	success = e_cal_cache_get_components_by_uid_as_string (cal_cache, uid, &items, NULL, &error);
 	if (!g_hash_table_size (expects)) {
 		g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND);
-		g_assert (!success);
-		g_assert (!items);
+		g_assert_true (!success);
+		g_assert_true (!items);
 
 		g_clear_error (&error);
 	} else {
 		g_assert_no_error (error);
-		g_assert (success);
+		g_assert_true (success);
 		g_assert_nonnull (items);
 
 		g_assert_cmpint (g_hash_table_size (expects), ==, g_slist_length (items));
@@ -202,7 +202,7 @@ test_get_all (ECalCache *cal_cache,
 			id = extract_id_from_string (link->data);
 
 			g_assert_cmpstr (e_cal_component_id_get_uid (id), ==, uid);
-			g_assert (g_hash_table_contains (expects, id));
+			g_assert_true (g_hash_table_contains (expects, id));
 
 			e_cal_component_id_free (id);
 		}
@@ -239,7 +239,7 @@ main (gint argc,
 	tcu_read_args (argc, argv);
 
 	/* Ensure that the client and server get the same locale */
-	g_assert (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
+	g_assert_true (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
 	setlocale (LC_ALL, "");
 
 	g_test_add ("/ECalCache/Getters/One", TCUFixture, &closure_events,

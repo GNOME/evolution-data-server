@@ -87,7 +87,7 @@ manage_result (GSList *attachment_uris)
 {
 	gboolean res;
 
-	g_assert (attachment_uris != NULL);
+	g_assert_true (attachment_uris != NULL);
 	g_assert_cmpint (g_slist_length (attachment_uris), ==, 3);
 
 	res = g_slist_find_custom (attachment_uris, ATTACH1, g_str_equal)

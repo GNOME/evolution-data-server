@@ -36,7 +36,7 @@ test_remove_contact_sync (ETestServerFixture *fixture,
 	ebook_test_utils_book_remove_contact (book, uid);
 	e_book_get_contact (book, uid, &contact_final, NULL);
 
-	g_assert (contact_final == NULL);
+	g_assert_true (contact_final == NULL);
 	test_print ("successfully added and removed contact '%s'\n", uid);
 
 	g_free (uid);

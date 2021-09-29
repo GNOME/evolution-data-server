@@ -43,11 +43,11 @@ test_search_manual (ECalCache *cal_cache,
 	/* Get all the components stored in the summary. */
 	success = e_cal_cache_search_components	(cal_cache, NULL, &components, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_nonnull (components);
 
 	sexp = e_cal_backend_sexp_new (expr);
-	g_assert (sexp != NULL);
+	g_assert_true (sexp != NULL);
 
 	for (link = components; link; link = g_slist_next (link)) {
 		ECalComponent *comp = link->data;
@@ -112,7 +112,7 @@ test_search_result_equal (GSList *items,
 	g_assert_cmpint (g_slist_length (items), ==, g_hash_table_size (should_be));
 
 	for (link = items; link; link = g_slist_next (link)) {
-		g_assert (check_cb (should_be, link->data));
+		g_assert_true (check_cb (should_be, link->data));
 	}
 }
 
@@ -124,8 +124,8 @@ search_data_check_cb (GHashTable *should_be,
 	ECalComponentId *id;
 	gboolean contains;
 
-	g_assert (sd != NULL);
-	g_assert (sd->uid != NULL);
+	g_assert_true (sd != NULL);
+	g_assert_true (sd->uid != NULL);
 
 	id = e_cal_component_id_new (sd->uid, sd->rid);
 
@@ -185,7 +185,7 @@ test_search_expr (TCUFixture *fixture,
 
 	success = e_cal_cache_search (fixture->cal_cache, expr, &items, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	dd (test_search_dump_results (items, should_be));
 
@@ -196,7 +196,7 @@ test_search_expr (TCUFixture *fixture,
 
 	success = e_cal_cache_search_components (fixture->cal_cache, expr, &items, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	test_search_result_equal (items, should_be, component_check_cb);
 
@@ -205,7 +205,7 @@ test_search_expr (TCUFixture *fixture,
 
 	success = e_cal_cache_search_ids (fixture->cal_cache, expr, &items, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	if (expects) {
 		GSList *link;
@@ -485,7 +485,7 @@ main (gint argc,
 	tcu_read_args (argc, argv);
 
 	/* Ensure that the client and server get the same locale */
-	g_assert (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
+	g_assert_true (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
 	setlocale (LC_ALL, "");
 
 	g_test_add ("/ECalCache/Search/Uid", TCUFixture, &closure_events,

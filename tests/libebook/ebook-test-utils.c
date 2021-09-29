@@ -125,7 +125,7 @@ ebook_test_utils_book_add_contact_from_test_case_verify (EBook *book,
 	contact_final = ebook_test_utils_book_get_contact (book, uid);
 
 	/* verify the contact was added "successfully" (not thorough) */
-	g_assert (ebook_test_utils_contacts_are_equal_shallow (contact_orig, contact_final));
+	g_assert_true (ebook_test_utils_contacts_are_equal_shallow (contact_orig, contact_final));
 
 	if (contact)
 		*contact = g_object_ref (contact_final);

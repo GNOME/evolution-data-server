@@ -132,7 +132,7 @@ check_search_results (GSList *ecalcomps,
 		id = e_cal_component_get_id (comp);
 		g_assert_nonnull (id);
 
-		g_assert (g_hash_table_contains (from_intervals, id));
+		g_assert_true (g_hash_table_contains (from_intervals, id));
 
 		e_cal_component_id_free (id);
 	}
@@ -213,7 +213,7 @@ test_intervals (TCUFixture *fixture,
 		start = g_rand_int_range (myrand, 0, 1000);
 		end = g_rand_int_range (myrand, start, 2000);
 		comp = create_test_component (start, end);
-		g_assert (comp != NULL);
+		g_assert_true (comp != NULL);
 
 		interval = g_new (IntervalData, 1);
 		interval->start = start;
@@ -224,7 +224,7 @@ test_intervals (TCUFixture *fixture,
 
 		success = e_cal_cache_put_component (fixture->cal_cache, comp, NULL, 0, E_CACHE_IS_ONLINE, NULL, &error);
 		g_assert_no_error (error);
-		g_assert (success);
+		g_assert_true (success);
 	}
 
 	end = _TIME_MAX;
@@ -233,7 +233,7 @@ test_intervals (TCUFixture *fixture,
 	for (ii = 0; ii < NUM_INTERVALS_OPEN; ii++) {
 		start = g_rand_int_range (myrand, 0, 1000);
 		comp = create_test_component (start, end);
-		g_assert (comp != NULL);
+		g_assert_true (comp != NULL);
 
 		interval = g_new (IntervalData, 1);
 		interval->start = start;
@@ -244,7 +244,7 @@ test_intervals (TCUFixture *fixture,
 
 		success = e_cal_cache_put_component (fixture->cal_cache, comp, NULL, 0, E_CACHE_IS_ONLINE, NULL, &error);
 		g_assert_no_error (error);
-		g_assert (success);
+		g_assert_true (success);
 	}
 
 	for (ii = 0; ii < NUM_SEARCHES; ii++) {
@@ -255,7 +255,7 @@ test_intervals (TCUFixture *fixture,
 
 		success = e_cal_cache_get_components_in_range (fixture->cal_cache, start, end, &l1, NULL, &error);
 		g_assert_no_error (error);
-		g_assert (success);
+		g_assert_true (success);
 
 		from_intervals = search_in_intervals (zone_cache, intervals, start, end);
 
@@ -274,7 +274,7 @@ test_intervals (TCUFixture *fixture,
 
 		success = e_cal_cache_get_components_in_range (fixture->cal_cache, start, end, &l1, NULL, &error);
 		g_assert_no_error (error);
-		g_assert (success);
+		g_assert_true (success);
 
 		from_intervals = search_in_intervals (zone_cache, intervals, start, end);
 
@@ -298,12 +298,12 @@ test_intervals (TCUFixture *fixture,
 			comp = interval->comp;
 
 			id = e_cal_component_get_id (comp);
-			g_assert (id != NULL);
+			g_assert_true (id != NULL);
 
 			success = e_cal_cache_remove_component (fixture->cal_cache, e_cal_component_id_get_uid (id),
 				e_cal_component_id_get_rid (id), 0, E_CACHE_IS_ONLINE, NULL, &error);
 			g_assert_no_error (error);
-			g_assert (success);
+			g_assert_true (success);
 
 			e_cal_component_id_free (id);
 
@@ -324,7 +324,7 @@ test_intervals (TCUFixture *fixture,
 
 		success = e_cal_cache_get_components_in_range (fixture->cal_cache, start, end, &l1, NULL, &error);
 		g_assert_no_error (error);
-		g_assert (success);
+		g_assert_true (success);
 
 		from_intervals = search_in_intervals (zone_cache, intervals, start, end);
 
@@ -351,7 +351,7 @@ main (gint argc,
 	tcu_read_args (argc, argv);
 
 	/* Ensure that the client and server get the same locale */
-	g_assert (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
+	g_assert_true (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
 	setlocale (LC_ALL, "");
 
 	g_test_add ("/ECalCache/Intervals", TCUFixture, NULL,

@@ -412,29 +412,29 @@ mem_test (void)
 
 	tree = e_intervaltree_new ();
 
-	g_assert (((GObject *) comp)->ref_count == 1);
+	g_assert_true (((GObject *) comp)->ref_count == 1);
 	e_intervaltree_insert (tree, start, end, comp);
-	g_assert (((GObject *) comp)->ref_count == 2);
+	g_assert_true (((GObject *) comp)->ref_count == 2);
 
 	uid = e_cal_component_get_uid (comp);
 	rid = e_cal_component_get_recurid_as_string (comp);
 	e_intervaltree_remove (tree, uid, rid);
 	g_free (rid);
-	g_assert (((GObject *) comp)->ref_count == 1);
+	g_assert_true (((GObject *) comp)->ref_count == 1);
 
 	e_intervaltree_insert (tree, start, end, comp);
-	g_assert (((GObject *) comp)->ref_count == 2);
+	g_assert_true (((GObject *) comp)->ref_count == 2);
 
 	clone_comp = e_cal_component_clone (comp);
 	e_intervaltree_insert (tree, start, end, clone_comp);
 
-	g_assert (((GObject *) comp)->ref_count == 1);
-	g_assert (((GObject *) clone_comp)->ref_count == 2);
+	g_assert_true (((GObject *) comp)->ref_count == 1);
+	g_assert_true (((GObject *) clone_comp)->ref_count == 2);
 
 	e_intervaltree_destroy (tree);
 
-	g_assert (((GObject *) comp)->ref_count == 1);
-	g_assert (((GObject *) clone_comp)->ref_count == 1);
+	g_assert_true (((GObject *) comp)->ref_count == 1);
+	g_assert_true (((GObject *) clone_comp)->ref_count == 1);
 
 	g_object_unref (comp);
 	g_object_unref (clone_comp);

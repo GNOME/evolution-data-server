@@ -62,8 +62,8 @@ print_contact (EContact *contact)
 {
 	EContactPhoto *photo = e_contact_get (contact, E_CONTACT_PHOTO);
 
-	g_assert (photo != NULL);
-	g_assert (photo->type == E_CONTACT_PHOTO_TYPE_URI);
+	g_assert_true (photo != NULL);
+	g_assert_true (photo->type == E_CONTACT_PHOTO_TYPE_URI);
 	g_print ("Test passed with photo uri: %s\n", photo->data.uri);
 
 	e_contact_photo_free (photo);
@@ -121,12 +121,12 @@ give_james_brown_micheal_jacksons_face (EBookClient *book)
 	if (!e_book_client_get_contact_sync (book, james_brown_uid, &james, NULL, &error))
 		g_error ("Unable to get james brown's contact information: %s", error->message);
 
-	g_assert (micheal);
-	g_assert (james);
+	g_assert_true (micheal);
+	g_assert_true (james);
 
 	micheal_face = e_contact_get (micheal, E_CONTACT_PHOTO);
 	g_assert_nonnull (micheal_face);
-	g_assert (micheal_face->type == E_CONTACT_PHOTO_TYPE_URI);
+	g_assert_true (micheal_face->type == E_CONTACT_PHOTO_TYPE_URI);
 
 	james_face = e_contact_photo_new ();
 	james_face->type = E_CONTACT_PHOTO_TYPE_URI;
@@ -159,7 +159,7 @@ update_contact_inline (EBookClient *book,
 	if (!e_book_client_get_contact_sync (book, uid, &contact, NULL, &error))
 		g_error ("Unable to get contact: %s", error->message);
 
-	g_assert (contact);
+	g_assert_true (contact);
 
 	data = g_base64_decode (photo_data, &length);
 
@@ -196,27 +196,27 @@ assert_uri_exists (EBookClient *book,
 	if (!e_book_client_get_contact_sync (book, uid, &contact, NULL, &error))
 		g_error ("Unable to get contact: %s", error->message);
 
-	g_assert (contact);
+	g_assert_true (contact);
 
 	photo = e_contact_get (contact, E_CONTACT_PHOTO);
-	g_assert (photo);
-	g_assert (photo->type == E_CONTACT_PHOTO_TYPE_URI);
+	g_assert_true (photo);
+	g_assert_true (photo->type == E_CONTACT_PHOTO_TYPE_URI);
 
 	filename = g_filename_from_uri (photo->data.uri, NULL, NULL);
-	g_assert (filename);
+	g_assert_true (filename);
 
 	/* The file should absolutely exist at this point */
-	g_assert (g_file_test (filename, G_FILE_TEST_EXISTS));
+	g_assert_true (g_file_test (filename, G_FILE_TEST_EXISTS));
 
 	e_contact_photo_free (photo);
 
 	success = e_contact_inline_local_photos (contact, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	photo = e_contact_get (contact, E_CONTACT_PHOTO);
-	g_assert (photo);
-	g_assert (photo->type == E_CONTACT_PHOTO_TYPE_INLINED);
+	g_assert_true (photo);
+	g_assert_true (photo->type == E_CONTACT_PHOTO_TYPE_INLINED);
 	g_assert_cmpstr (e_contact_photo_get_mime_type (photo), ==, "image/png");
 
 	e_contact_photo_free (photo);

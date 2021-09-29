@@ -190,9 +190,9 @@ ecmb_test_vcalendar_contains (ICalComponent *vcalendar,
 
 		if (exact) {
 			if (negate)
-				g_assert (!g_hash_table_remove (expects, id));
+				g_assert_true (!g_hash_table_remove (expects, id));
 			else
-				g_assert (g_hash_table_remove (expects, id));
+				g_assert_true (g_hash_table_remove (expects, id));
 		} else {
 			g_hash_table_remove (expects, id);
 		}
@@ -269,7 +269,7 @@ ecmb_test_cache_and_server_equal (ECalCache *cal_cache,
 		uid = i_cal_component_get_uid (icomp);
 		rid = ecmb_test_get_rid_as_string (icomp);
 
-		g_assert (e_cal_cache_contains (cal_cache, uid, rid, deleted_flag));
+		g_assert_true (e_cal_cache_contains (cal_cache, uid, rid, deleted_flag));
 
 		g_free (rid);
 	}
@@ -418,7 +418,7 @@ e_cal_meta_backend_test_list_existing_sync (ECalMetaBackend *meta_backend,
 	test_backend = E_CAL_META_BACKEND_TEST (meta_backend);
 	test_backend->list_count++;
 
-	g_assert (test_backend->is_connected);
+	g_assert_true (test_backend->is_connected);
 
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
 	g_assert_nonnull (cal_cache);
@@ -474,7 +474,7 @@ e_cal_meta_backend_test_save_component_sync (ECalMetaBackend *meta_backend,
 	test_backend = E_CAL_META_BACKEND_TEST (meta_backend);
 	test_backend->save_count++;
 
-	g_assert (test_backend->is_connected);
+	g_assert_true (test_backend->is_connected);
 
 	uid = e_cal_component_get_uid (instances->data);
 	g_assert_nonnull (uid);
@@ -540,7 +540,7 @@ e_cal_meta_backend_test_load_component_sync (ECalMetaBackend *meta_backend,
 	test_backend = E_CAL_META_BACKEND_TEST (meta_backend);
 	test_backend->load_count++;
 
-	g_assert (test_backend->is_connected);
+	g_assert_true (test_backend->is_connected);
 
 	*out_instances = NULL;
 
@@ -591,7 +591,7 @@ e_cal_meta_backend_test_remove_component_sync (ECalMetaBackend *meta_backend,
 	test_backend = E_CAL_META_BACKEND_TEST (meta_backend);
 	test_backend->remove_count++;
 
-	g_assert (test_backend->is_connected);
+	g_assert_true (test_backend->is_connected);
 
 	for (icomp = i_cal_component_get_first_component (test_backend->vcalendar, I_CAL_VEVENT_COMPONENT);
 	     icomp;) {
@@ -731,7 +731,7 @@ e_cal_meta_backend_test_new (ECalCache *cache)
 	gboolean success;
 	GError *error = NULL;
 
-	g_assert (E_IS_CAL_CACHE (cache));
+	g_assert_true (E_IS_CAL_CACHE (cache));
 
 	g_assert_nonnull (glob_registry);
 	g_assert_null (glob_use_cache);
@@ -749,7 +749,7 @@ e_cal_meta_backend_test_new (ECalCache *cache)
 		NULL);
 	g_assert_nonnull (meta_backend);
 
-	g_assert (glob_use_cache == cache);
+	g_assert_true (glob_use_cache == cache);
 	glob_use_cache = NULL;
 
 	g_object_unref (scratch);
@@ -759,7 +759,7 @@ e_cal_meta_backend_test_new (ECalCache *cache)
 	#define set_extra_data(_uid, _rid) \
 		success = e_cal_cache_set_component_extra (cache, _uid, _rid, "extra for " _uid, NULL, &error); \
 		g_assert_no_error (error); \
-		g_assert (success);
+		g_assert_true (success);
 
 	set_extra_data ("event-1", NULL);
 	set_extra_data ("event-2", NULL);
@@ -861,7 +861,7 @@ test_merge_instances (TCUFixture *fixture,
 	/* event-1 has only UTC times, with no TZID */
 	success = e_cal_cache_get_components_by_uid (fixture->cal_cache, "event-1", &instances, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_nonnull (instances);
 
 	/* TZID as is */
@@ -896,7 +896,7 @@ test_merge_instances (TCUFixture *fixture,
 	/* event-7 has built-in TZID */
 	success = e_cal_cache_get_components_by_uid (fixture->cal_cache, "event-7", &instances, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_nonnull (instances);
 
 	/* TZID as is */
@@ -956,7 +956,7 @@ test_merge_instances (TCUFixture *fixture,
 	/* event-6 has TZID-s as locations already and a detached instance */
 	success = e_cal_cache_get_components_by_uid (fixture->cal_cache, "event-6", &instances, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_nonnull (instances);
 
 	/* TZID as is */
@@ -1045,7 +1045,7 @@ check_attachment_content (ICalAttach *attach,
 
 		url = i_cal_attach_get_url (attach);
 		g_assert_nonnull (url);
-		g_assert (g_str_has_prefix (url, "file://"));
+		g_assert_true (g_str_has_prefix (url, "file://"));
 
 		filename = g_filename_from_uri (url, NULL, &error);
 		g_assert_no_error (error);
@@ -1053,7 +1053,7 @@ check_attachment_content (ICalAttach *attach,
 
 		success = g_file_get_contents (filename, &content, &content_len, &error);
 		g_assert_no_error (error);
-		g_assert (success);
+		g_assert_true (success);
 		g_assert_nonnull (content);
 		g_assert_cmpint (content_len, >, 0);
 
@@ -1096,7 +1096,7 @@ test_attachments (TCUFixture *fixture,
 	/* It has a URL attachment */
 	success = e_cal_cache_get_component (fixture->cal_cache, "event-7", NULL, &comp, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_nonnull (comp);
 
 	icomp = i_cal_component_clone (e_cal_component_get_icalcomponent (comp));
@@ -1105,11 +1105,11 @@ test_attachments (TCUFixture *fixture,
 
 	prop = i_cal_component_get_first_property (icomp, I_CAL_ATTACH_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert (!e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
+	g_assert_true (!e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
 
 	attach = i_cal_property_get_attach (prop);
 	g_assert_nonnull (attach);
-	g_assert (i_cal_attach_get_is_url (attach));
+	g_assert_true (i_cal_attach_get_is_url (attach));
 
 	filename = g_filename_from_uri (i_cal_attach_get_url (attach), NULL, &error);
 	g_assert_no_error (error);
@@ -1121,13 +1121,13 @@ test_attachments (TCUFixture *fixture,
 
 	success = g_file_get_contents (filename, &content, &content_len, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_nonnull (content);
 	g_assert_cmpint (content_len, >, 0);
 
 	success = e_cal_meta_backend_inline_local_attachments_sync (meta_backend, icomp, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (i_cal_component_count_properties (icomp, I_CAL_ATTACH_PROPERTY), ==, 1);
 
 	g_object_unref (attach);
@@ -1135,9 +1135,9 @@ test_attachments (TCUFixture *fixture,
 
 	prop = i_cal_component_get_first_property (icomp, I_CAL_ATTACH_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert (e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
-	g_assert (e_cal_util_property_has_parameter (prop, I_CAL_VALUE_PARAMETER));
-	g_assert (e_cal_util_property_has_parameter (prop, I_CAL_ENCODING_PARAMETER));
+	g_assert_true (e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
+	g_assert_true (e_cal_util_property_has_parameter (prop, I_CAL_VALUE_PARAMETER));
+	g_assert_true (e_cal_util_property_has_parameter (prop, I_CAL_ENCODING_PARAMETER));
 
 	param = i_cal_property_get_first_parameter (prop, I_CAL_FILENAME_PARAMETER);
 	g_assert_cmpstr (i_cal_parameter_get_filename (param), ==, basename);
@@ -1145,7 +1145,7 @@ test_attachments (TCUFixture *fixture,
 
 	attach = i_cal_property_get_attach (prop);
 	g_assert_nonnull (attach);
-	g_assert (!i_cal_attach_get_is_url (attach));
+	g_assert_true (!i_cal_attach_get_is_url (attach));
 
 	check_attachment_content (attach, content, content_len);
 
@@ -1154,14 +1154,14 @@ test_attachments (TCUFixture *fixture,
 
 	success = e_cal_meta_backend_store_inline_attachments_sync (meta_backend, icomp, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (i_cal_component_count_properties (icomp, I_CAL_ATTACH_PROPERTY), ==, 1);
 
 	prop = i_cal_component_get_first_property (icomp, I_CAL_ATTACH_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert (e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
-	g_assert (!e_cal_util_property_has_parameter (prop, I_CAL_VALUE_PARAMETER));
-	g_assert (!e_cal_util_property_has_parameter (prop, I_CAL_ENCODING_PARAMETER));
+	g_assert_true (e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
+	g_assert_true (!e_cal_util_property_has_parameter (prop, I_CAL_VALUE_PARAMETER));
+	g_assert_true (!e_cal_util_property_has_parameter (prop, I_CAL_ENCODING_PARAMETER));
 
 	param = i_cal_property_get_first_parameter (prop, I_CAL_FILENAME_PARAMETER);
 	g_assert_cmpstr (i_cal_parameter_get_filename (param), ==, basename);
@@ -1169,7 +1169,7 @@ test_attachments (TCUFixture *fixture,
 
 	attach = i_cal_property_get_attach (prop);
 	g_assert_nonnull (attach);
-	g_assert (i_cal_attach_get_is_url (attach));
+	g_assert_true (i_cal_attach_get_is_url (attach));
 
 	check_attachment_content (attach, content, content_len);
 
@@ -1186,14 +1186,14 @@ test_attachments (TCUFixture *fixture,
 
 	success = e_cal_meta_backend_inline_local_attachments_sync (meta_backend, icomp, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (i_cal_component_count_properties (icomp, I_CAL_ATTACH_PROPERTY), ==, 2);
 
 	prop = i_cal_component_get_first_property (icomp, I_CAL_ATTACH_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert (e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
-	g_assert (e_cal_util_property_has_parameter (prop, I_CAL_VALUE_PARAMETER));
-	g_assert (e_cal_util_property_has_parameter (prop, I_CAL_ENCODING_PARAMETER));
+	g_assert_true (e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
+	g_assert_true (e_cal_util_property_has_parameter (prop, I_CAL_VALUE_PARAMETER));
+	g_assert_true (e_cal_util_property_has_parameter (prop, I_CAL_ENCODING_PARAMETER));
 
 	param = i_cal_property_get_first_parameter (prop, I_CAL_FILENAME_PARAMETER);
 	g_assert_cmpstr (i_cal_parameter_get_filename (param), ==, basename);
@@ -1201,7 +1201,7 @@ test_attachments (TCUFixture *fixture,
 
 	attach = i_cal_property_get_attach (prop);
 	g_assert_nonnull (attach);
-	g_assert (!i_cal_attach_get_is_url (attach));
+	g_assert_true (!i_cal_attach_get_is_url (attach));
 
 	check_attachment_content (attach, content, content_len);
 
@@ -1211,11 +1211,11 @@ test_attachments (TCUFixture *fixture,
 	/* Verify the remote URL did not change */
 	prop = i_cal_component_get_next_property (icomp, I_CAL_ATTACH_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert (!e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
+	g_assert_true (!e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
 
 	attach = i_cal_property_get_attach (prop);
 	g_assert_nonnull (attach);
-	g_assert (i_cal_attach_get_is_url (attach));
+	g_assert_true (i_cal_attach_get_is_url (attach));
 	g_assert_cmpstr (i_cal_attach_get_url (attach), ==, REMOTE_URL);
 
 	g_object_unref (attach);
@@ -1223,14 +1223,14 @@ test_attachments (TCUFixture *fixture,
 
 	success = e_cal_meta_backend_store_inline_attachments_sync (meta_backend, icomp, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (i_cal_component_count_properties (icomp, I_CAL_ATTACH_PROPERTY), ==, 2);
 
 	prop = i_cal_component_get_first_property (icomp, I_CAL_ATTACH_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert (e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
-	g_assert (!e_cal_util_property_has_parameter (prop, I_CAL_VALUE_PARAMETER));
-	g_assert (!e_cal_util_property_has_parameter (prop, I_CAL_ENCODING_PARAMETER));
+	g_assert_true (e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
+	g_assert_true (!e_cal_util_property_has_parameter (prop, I_CAL_VALUE_PARAMETER));
+	g_assert_true (!e_cal_util_property_has_parameter (prop, I_CAL_ENCODING_PARAMETER));
 
 	param = i_cal_property_get_first_parameter (prop, I_CAL_FILENAME_PARAMETER);
 	g_assert_cmpstr (i_cal_parameter_get_filename (param), ==, basename);
@@ -1238,7 +1238,7 @@ test_attachments (TCUFixture *fixture,
 
 	attach = i_cal_property_get_attach (prop);
 	g_assert_nonnull (attach);
-	g_assert (i_cal_attach_get_is_url (attach));
+	g_assert_true (i_cal_attach_get_is_url (attach));
 
 	check_attachment_content (attach, content, content_len);
 
@@ -1248,11 +1248,11 @@ test_attachments (TCUFixture *fixture,
 	/* Verify the remote URL did not change */
 	prop = i_cal_component_get_next_property (icomp, I_CAL_ATTACH_PROPERTY);
 	g_assert_nonnull (prop);
-	g_assert (!e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
+	g_assert_true (!e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER));
 
 	attach = i_cal_property_get_attach (prop);
 	g_assert_nonnull (attach);
-	g_assert (i_cal_attach_get_is_url (attach));
+	g_assert_true (i_cal_attach_get_is_url (attach));
 	g_assert_cmpstr (i_cal_attach_get_url (attach), ==, REMOTE_URL);
 
 	g_object_unref (attach);
@@ -1322,7 +1322,7 @@ test_empty_cache (TCUFixture *fixture,
 	zones = NULL;
 	success = e_cal_cache_list_timezones (fixture->cal_cache, &zones, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_list_length (zones), ==, 1);
 	g_list_free (zones);
 
@@ -1332,13 +1332,13 @@ test_empty_cache (TCUFixture *fixture,
 	/* Empty the cache */
 	success = e_cal_meta_backend_empty_cache_sync (meta_backend, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	/* Verify the cache is truly empty */
 	zones = NULL;
 	success = e_cal_cache_list_timezones (fixture->cal_cache, &zones, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_list_length (zones), ==, 0);
 	g_list_free (zones);
 
@@ -1481,7 +1481,7 @@ tcmb_get_tzid_ref_count (ECalCache *cal_cache,
 
 	success = e_cache_sqlite_select (E_CACHE (cal_cache), stmt, tcmb_get_uint64_cb, &refs, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	e_cache_sqlite_stmt_free (stmt);
 
@@ -1719,7 +1719,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 		NULL, NULL, "America/New_York", &tzobj, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (tzobj);
-	g_assert (strstr (tzobj, "America/New_York") != NULL);
+	g_assert_true (strstr (tzobj, "America/New_York") != NULL);
 	g_free (tzobj);
 	tzobj = NULL;
 
@@ -1780,7 +1780,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 	zones = NULL;
 	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_list_length (zones), ==, 0);
 	g_list_free (zones);
 
@@ -1791,12 +1791,12 @@ test_timezones (ECalMetaBackend *meta_backend)
 	/* Merge with existing */
 	success = e_cal_meta_backend_gather_timezones_sync (meta_backend, vcalendar, FALSE, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	zones = NULL;
 	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_list_length (zones), ==, 0);
 	g_list_free (zones);
 
@@ -1806,7 +1806,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 
 	success = e_cal_cache_remove_timezones (cal_cache, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	_e_cal_cache_remove_loaded_timezones (cal_cache);
 	_e_cal_backend_remove_cached_timezones (E_CAL_BACKEND (meta_backend));
@@ -1825,7 +1825,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 	/* Remove existing and add the new */
 	success = e_cal_meta_backend_gather_timezones_sync (meta_backend, vcalendar, TRUE, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	_e_cal_cache_remove_loaded_timezones (cal_cache);
 	_e_cal_backend_remove_cached_timezones (E_CAL_BACKEND (meta_backend));
@@ -1848,7 +1848,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 	zones = NULL;
 	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_list_length (zones), ==, 0);
 
 	/* Uses TZID1 twice */
@@ -1868,7 +1868,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 	/* Add a component which uses TZID1, thus it's in the cache */
 	success = e_cal_cache_put_component (cal_cache, comp, NULL, 0, E_CACHE_IS_ONLINE, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	g_object_unref (comp);
 	_e_cal_cache_remove_loaded_timezones (cal_cache);
@@ -1876,7 +1876,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 	zones = NULL;
 	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_list_length (zones), ==, 1);
 	g_list_free (zones);
 
@@ -1903,7 +1903,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 	/* Add a component which uses TZID1 and TZID2, thus it's in the cache */
 	success = e_cal_cache_put_component (cal_cache, comp, NULL, 0, E_CACHE_IS_ONLINE, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	g_object_unref (comp);
 	_e_cal_cache_remove_loaded_timezones (cal_cache);
@@ -1911,7 +1911,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 	zones = NULL;
 	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_list_length (zones), ==, 2);
 	g_list_free (zones);
 
@@ -1921,7 +1921,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 	/* Remove in offline doesn't modify timezone cache, because the component is still there */
 	success = e_cal_cache_remove_component (cal_cache, "tz1", NULL, 0, E_CACHE_IS_OFFLINE, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	g_assert_cmpint (tcmb_get_tzid_ref_count (cal_cache, TZID1), ==, 3);
 	g_assert_cmpint (tcmb_get_tzid_ref_count (cal_cache, TZID2), ==, 1);
@@ -1929,14 +1929,14 @@ test_timezones (ECalMetaBackend *meta_backend)
 	/* Remove in online modifies timezone cache */
 	success = e_cal_cache_remove_component (cal_cache, "tz1", NULL, 0, E_CACHE_IS_ONLINE, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	_e_cal_cache_remove_loaded_timezones (cal_cache);
 
 	zones = NULL;
 	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_list_length (zones), ==, 2);
 	g_list_free (zones);
 
@@ -1959,7 +1959,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 
 	success = e_cal_cache_put_component (cal_cache, comp, NULL, 0, E_CACHE_IS_ONLINE, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	g_object_unref (comp);
 	_e_cal_cache_remove_loaded_timezones (cal_cache);
@@ -1967,7 +1967,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 	zones = NULL;
 	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_list_length (zones), ==, 1);
 	g_list_free (zones);
 
@@ -1977,14 +1977,14 @@ test_timezones (ECalMetaBackend *meta_backend)
 	/* Finally remove component straight in online, which removed the only one timezone too */
 	success = e_cal_cache_remove_component (cal_cache, "tz2", NULL, 0, E_CACHE_IS_ONLINE, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	_e_cal_cache_remove_loaded_timezones (cal_cache);
 
 	zones = NULL;
 	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_list_length (zones), ==, 0);
 
 	g_assert_cmpint (tcmb_get_tzid_ref_count (cal_cache, TZID1), ==, 0);
@@ -2605,7 +2605,7 @@ test_remove_objects (ECalMetaBackend *meta_backend)
 
 	success = e_cache_set_offline_state (E_CACHE (cal_cache), uid, E_OFFLINE_STATE_LOCALLY_CREATED, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	state = e_cal_cache_get_offline_state (cal_cache, uid, NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (state, ==, E_OFFLINE_STATE_LOCALLY_CREATED);
@@ -2639,7 +2639,7 @@ test_remove_objects (ECalMetaBackend *meta_backend)
 
 	success = e_cache_set_offline_state (E_CACHE (cal_cache), uid, E_OFFLINE_STATE_LOCALLY_MODIFIED, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	state = e_cal_cache_get_offline_state (cal_cache, uid, NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (state, ==, E_OFFLINE_STATE_LOCALLY_MODIFIED);
@@ -2673,7 +2673,7 @@ test_remove_objects (ECalMetaBackend *meta_backend)
 
 	success = e_cache_set_offline_state (E_CACHE (cal_cache), uid, E_OFFLINE_STATE_LOCALLY_DELETED, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	state = e_cal_cache_get_offline_state (cal_cache, uid, NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (state, ==, E_OFFLINE_STATE_LOCALLY_DELETED);
@@ -3627,8 +3627,8 @@ test_get_object (ECalMetaBackend *meta_backend)
 
 	g_assert_no_error (error);
 	g_assert_nonnull (calobj);
-	g_assert (strstr (calobj, "UID:event-6"));
-	g_assert (strstr (calobj, "RECURRENCE-ID;TZID=America/New_York:20170225T134900"));
+	g_assert_true (strstr (calobj, "UID:event-6"));
+	g_assert_true (strstr (calobj, "RECURRENCE-ID;TZID=America/New_York:20170225T134900"));
 
 	icomp = i_cal_component_new_from_string (calobj);
 	g_assert_nonnull (icomp);
@@ -3645,8 +3645,8 @@ test_get_object (ECalMetaBackend *meta_backend)
 
 	g_assert_no_error (error);
 	g_assert_nonnull (calobj);
-	g_assert (strstr (calobj, "UID:event-6"));
-	g_assert (strstr (calobj, "RECURRENCE-ID;TZID=America/New_York:20170225T134900"));
+	g_assert_true (strstr (calobj, "UID:event-6"));
+	g_assert_true (strstr (calobj, "RECURRENCE-ID;TZID=America/New_York:20170225T134900"));
 
 	icomp = i_cal_component_new_from_string (calobj);
 	g_assert_nonnull (icomp);
@@ -3659,7 +3659,7 @@ test_get_object (ECalMetaBackend *meta_backend)
 	/* Going offline */
 	e_cal_meta_backend_test_change_online (meta_backend, FALSE);
 
-	g_assert (!e_cal_cache_contains (cal_cache, "event-7", NULL, E_CACHE_EXCLUDE_DELETED));
+	g_assert_true (!e_cal_cache_contains (cal_cache, "event-7", NULL, E_CACHE_EXCLUDE_DELETED));
 
 	e_cal_meta_backend_test_reset_counters (test_backend);
 
@@ -3675,7 +3675,7 @@ test_get_object (ECalMetaBackend *meta_backend)
 	/* Going online */
 	e_cal_meta_backend_test_change_online (meta_backend, TRUE);
 
-	g_assert (e_cal_cache_contains (cal_cache, "event-7", NULL, E_CACHE_EXCLUDE_DELETED));
+	g_assert_true (e_cal_cache_contains (cal_cache, "event-7", NULL, E_CACHE_EXCLUDE_DELETED));
 
 	/* Remove it from the cache, thus it's loaded from the "server" on demand */
 	e_cal_cache_remove_component (cal_cache, "event-7", NULL, 0, E_CACHE_IS_ONLINE, NULL, &error);
@@ -3695,7 +3695,7 @@ test_get_object (ECalMetaBackend *meta_backend)
 	g_assert_nonnull (strstr (calobj, "UID:event-7"));
 	g_free (calobj);
 
-	g_assert (e_cal_cache_contains (cal_cache, "event-7", NULL, E_CACHE_EXCLUDE_DELETED));
+	g_assert_true (e_cal_cache_contains (cal_cache, "event-7", NULL, E_CACHE_EXCLUDE_DELETED));
 
 	g_object_unref (cal_cache);
 }
@@ -3723,7 +3723,7 @@ test_get_object_list (ECalMetaBackend *meta_backend)
 	g_assert_no_error (error);
 	g_assert_nonnull (calobjs);
 	g_assert_cmpint (g_slist_length (calobjs), ==, 1);
-	g_assert (strstr (calobjs->data, "UID:event-3"));
+	g_assert_true (strstr (calobjs->data, "UID:event-3"));
 	g_slist_free_full (calobjs, g_free);
 	calobjs = NULL;
 
@@ -3732,8 +3732,8 @@ test_get_object_list (ECalMetaBackend *meta_backend)
 	g_assert_no_error (error);
 	g_assert_nonnull (calobjs);
 	g_assert_cmpint (g_slist_length (calobjs), ==, 2);
-	g_assert (strstr (calobjs->data, "UID:event-6"));
-	g_assert (strstr (calobjs->next->data, "UID:event-6"));
+	g_assert_true (strstr (calobjs->data, "UID:event-6"));
+	g_assert_true (strstr (calobjs->next->data, "UID:event-6"));
 	g_assert_cmpstr (calobjs->data, !=, calobjs->next->data);
 	g_slist_free_full (calobjs, g_free);
 }
@@ -4047,7 +4047,7 @@ main (gint argc,
 	tcu_read_args (argc, argv);
 
 	/* Ensure that the client and server get the same locale */
-	g_assert (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
+	g_assert_true (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
 	setlocale (LC_ALL, "");
 
 	e_test_server_utils_prepare_run (argc, argv, 0);

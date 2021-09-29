@@ -38,7 +38,7 @@ test_business (void)
 	contact = e_contact_new_from_vcard (VCARD);
 
 	phone = e_contact_get_const (contact, E_CONTACT_PHONE_BUSINESS);
-	g_assert (phone != NULL);
+	g_assert_true (phone != NULL);
 	g_assert_cmpstr (phone, ==, "123-123-1234");
 
 	g_object_unref (contact);
@@ -53,7 +53,7 @@ test_other_phone (void)
 	contact = e_contact_new_from_vcard (VCARD);
 
 	phone = e_contact_get_const (contact, E_CONTACT_PHONE_OTHER);
-	g_assert (phone != NULL);
+	g_assert_true (phone != NULL);
 	g_assert_cmpstr (phone, ==, "456-456-4567");
 
 	g_object_unref (contact);
@@ -68,7 +68,7 @@ test_other_fax (void)
 	contact = e_contact_new_from_vcard (VCARD);
 
 	phone = e_contact_get_const (contact, E_CONTACT_PHONE_OTHER_FAX);
-	g_assert (phone != NULL);
+	g_assert_true (phone != NULL);
 	g_assert_cmpstr (phone, ==, "321-321-4321");
 
 	g_object_unref (contact);

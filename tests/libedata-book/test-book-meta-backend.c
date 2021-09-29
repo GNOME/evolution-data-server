@@ -126,9 +126,9 @@ ebmb_test_hash_contains (GHashTable *contacts, /* gchar *uid ~> EContact * */
 	while (g_hash_table_iter_next (&iter, &uid, NULL)) {
 		if (exact) {
 			if (negate)
-				g_assert (!g_hash_table_remove (expects, uid));
+				g_assert_true (!g_hash_table_remove (expects, uid));
 			else
-				g_assert (g_hash_table_remove (expects, uid));
+				g_assert_true (g_hash_table_remove (expects, uid));
 		} else {
 			g_hash_table_remove (expects, uid);
 		}
@@ -203,7 +203,7 @@ ebmb_test_cache_and_server_equal (EBookCache *book_cache,
 
 	g_hash_table_iter_init (&iter, contacts);
 	while (g_hash_table_iter_next (&iter, &uid, NULL)) {
-		g_assert (e_cache_contains (cache, uid, deleted_flag));
+		g_assert_true (e_cache_contains (cache, uid, deleted_flag));
 	}
 }
 
@@ -349,7 +349,7 @@ e_book_meta_backend_test_list_existing_sync (EBookMetaBackend *meta_backend,
 	test_backend = E_BOOK_META_BACKEND_TEST (meta_backend);
 	test_backend->list_count++;
 
-	g_assert (test_backend->is_connected);
+	g_assert_true (test_backend->is_connected);
 
 	*out_existing_objects = NULL;
 
@@ -393,7 +393,7 @@ e_book_meta_backend_test_save_contact_sync (EBookMetaBackend *meta_backend,
 	test_backend = E_BOOK_META_BACKEND_TEST (meta_backend);
 	test_backend->save_count++;
 
-	g_assert (test_backend->is_connected);
+	g_assert_true (test_backend->is_connected);
 
 	uid = e_contact_get_const (contact, E_CONTACT_UID);
 	g_assert_nonnull (uid);
@@ -435,7 +435,7 @@ e_book_meta_backend_test_load_contact_sync (EBookMetaBackend *meta_backend,
 	test_backend = E_BOOK_META_BACKEND_TEST (meta_backend);
 	test_backend->load_count++;
 
-	g_assert (test_backend->is_connected);
+	g_assert_true (test_backend->is_connected);
 
 	*out_contact = g_hash_table_lookup (test_backend->contacts, uid);
 
@@ -470,7 +470,7 @@ e_book_meta_backend_test_remove_contact_sync (EBookMetaBackend *meta_backend,
 	test_backend = E_BOOK_META_BACKEND_TEST (meta_backend);
 	test_backend->remove_count++;
 
-	g_assert (test_backend->is_connected);
+	g_assert_true (test_backend->is_connected);
 
 	success = g_hash_table_remove (test_backend->contacts, uid);
 	if (success) {
@@ -587,7 +587,7 @@ e_book_meta_backend_test_new (EBookCache *cache)
 	gboolean success;
 	GError *error = NULL;
 
-	g_assert (E_IS_BOOK_CACHE (cache));
+	g_assert_true (E_IS_BOOK_CACHE (cache));
 
 	g_assert_nonnull (glob_registry);
 	g_assert_null (glob_use_cache);
@@ -604,7 +604,7 @@ e_book_meta_backend_test_new (EBookCache *cache)
 		NULL);
 	g_assert_nonnull (meta_backend);
 
-	g_assert (glob_use_cache == cache);
+	g_assert_true (glob_use_cache == cache);
 	glob_use_cache = NULL;
 
 	g_object_unref (scratch);
@@ -618,7 +618,7 @@ e_book_meta_backend_test_new (EBookCache *cache)
 		g_free (extra);
 
 		g_assert_no_error (error);
-		g_assert (success);
+		g_assert_true (success);
 	}
 
 	return meta_backend;
@@ -678,7 +678,7 @@ e_book_meta_backend_test_call_refresh (EBookMetaBackend *meta_backend)
 
 	success = backend_sync_class->refresh_sync (E_BOOK_BACKEND_SYNC (meta_backend), NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	e_flag_wait (flag);
 	e_flag_free (flag);
@@ -701,9 +701,9 @@ test_one_photo (EBookMetaBackend *meta_backend,
 	gboolean success;
 	GError *error = NULL;
 
-	g_assert (E_IS_BOOK_META_BACKEND (meta_backend));
+	g_assert_true (E_IS_BOOK_META_BACKEND (meta_backend));
 	g_assert_nonnull (test_case);
-	g_assert (field == E_CONTACT_PHOTO || field == E_CONTACT_LOGO);
+	g_assert_true (field == E_CONTACT_PHOTO || field == E_CONTACT_LOGO);
 
 	contact = tcu_new_contact_from_test_case (test_case);
 	g_assert_nonnull (contact);
@@ -725,7 +725,7 @@ test_one_photo (EBookMetaBackend *meta_backend,
 
 	success = e_book_meta_backend_store_inline_photos_sync (meta_backend, contact, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	photo = e_contact_get (contact, field);
 	g_assert_nonnull (photo);
@@ -738,7 +738,7 @@ test_one_photo (EBookMetaBackend *meta_backend,
 
 	success = g_file_get_contents (filename, &new_content, &new_len, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_nonnull (new_content);
 	g_assert_cmpmem (orig_content, orig_len, new_content, new_len);
 
@@ -749,7 +749,7 @@ test_one_photo (EBookMetaBackend *meta_backend,
 
 	success = e_book_meta_backend_inline_local_photos_sync (meta_backend, contact, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	photo = e_contact_get (contact, field);
 	g_assert_nonnull (photo);
@@ -781,7 +781,7 @@ test_one_photo (EBookMetaBackend *meta_backend,
 
 	success = e_book_meta_backend_store_inline_photos_sync (meta_backend, contact, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	photo = e_contact_get (contact, field);
 	g_assert_nonnull (photo);
@@ -791,7 +791,7 @@ test_one_photo (EBookMetaBackend *meta_backend,
 
 	success = e_book_meta_backend_inline_local_photos_sync (meta_backend, contact, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	photo = e_contact_get (contact, field);
 	g_assert_nonnull (photo);
@@ -836,7 +836,7 @@ test_empty_cache (TCUFixture *fixture,
 	uids = NULL;
 	success = e_book_cache_search_uids (fixture->book_cache, NULL, &uids, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_slist_length (uids), >, 0);
 	g_slist_free_full (uids, g_free);
 
@@ -846,13 +846,13 @@ test_empty_cache (TCUFixture *fixture,
 	/* Empty the cache */
 	success = e_book_meta_backend_empty_cache_sync (meta_backend, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	/* Verify the cache is truly empty */
 	uids = NULL;
 	success = e_book_cache_search_uids (fixture->book_cache, NULL, &uids, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_slist_length (uids), ==, 0);
 	g_slist_free_full (uids, g_free);
 
@@ -892,7 +892,7 @@ test_create_contacts (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->create_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		(const gchar * const *) vcards, E_BOOK_OPERATION_FLAG_NONE, &new_contacts, NULL, &error);
 	g_assert_error (error, E_BOOK_CLIENT_ERROR, E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS);
-	g_assert (!success);
+	g_assert_true (!success);
 	g_assert_cmpint (g_slist_length (new_contacts), ==, 0);
 	g_clear_error (&error);
 	g_free (vcards[0]);
@@ -905,7 +905,7 @@ test_create_contacts (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->create_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		(const gchar * const *) vcards, E_BOOK_OPERATION_FLAG_NONE, &new_contacts, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_slist_length (new_contacts), ==, 1);
 	g_assert_cmpstr (e_contact_get_const (new_contacts->data, E_CONTACT_UID), ==, "custom-7");
 	g_assert_cmpint (test_backend->connect_count, ==, 1);
@@ -930,7 +930,7 @@ test_create_contacts (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->create_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		(const gchar * const *) vcards, E_BOOK_OPERATION_FLAG_NONE, &new_contacts, NULL, &error);
 	g_assert_error (error, E_BOOK_CLIENT_ERROR, E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS);
-	g_assert (!success);
+	g_assert_true (!success);
 	g_assert_cmpint (g_slist_length (new_contacts), ==, 0);
 	g_clear_error (&error);
 	g_free (vcards[0]);
@@ -943,7 +943,7 @@ test_create_contacts (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->create_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		(const gchar * const *) vcards, E_BOOK_OPERATION_FLAG_NONE, &new_contacts, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_slist_length (new_contacts), ==, 1);
 	g_assert_cmpstr (e_contact_get_const (new_contacts->data, E_CONTACT_UID), ==, "custom-8");
 	g_assert_cmpint (test_backend->connect_count, ==, 0);
@@ -982,7 +982,7 @@ test_create_contacts (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->create_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		(const gchar * const *) vcards, E_BOOK_OPERATION_FLAG_NONE, &new_contacts, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_slist_length (new_contacts), ==, 1);
 	g_assert_cmpstr (e_contact_get_const (new_contacts->data, E_CONTACT_UID), !=, "custom-9");
 	g_assert_cmpint (test_backend->connect_count, ==, 1);
@@ -1067,7 +1067,7 @@ test_modify_contacts (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->modify_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		(const gchar * const *) vcards, E_BOOK_OPERATION_FLAG_NONE, &new_contacts, NULL, &error);
 	g_assert_error (error, E_BOOK_CLIENT_ERROR, E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND);
-	g_assert (!success);
+	g_assert_true (!success);
 	g_assert_cmpint (g_slist_length (new_contacts), ==, 0);
 	g_clear_error (&error);
 	g_free (vcards[0]);
@@ -1078,7 +1078,7 @@ test_modify_contacts (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->modify_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		(const gchar * const *) vcards, E_BOOK_OPERATION_FLAG_NONE, &new_contacts, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_slist_length (new_contacts), ==, 1);
 	g_assert_cmpint (test_backend->load_count, ==, 1);
 	g_assert_cmpint (test_backend->save_count, ==, 1);
@@ -1119,7 +1119,7 @@ test_modify_contacts (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->modify_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		(const gchar * const *) vcards, E_BOOK_OPERATION_FLAG_NONE, &new_contacts, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_slist_length (new_contacts), ==, 1);
 	g_assert_cmpint (test_backend->load_count, ==, 0);
 	g_assert_cmpint (test_backend->save_count, ==, 0);
@@ -1193,7 +1193,7 @@ test_remove_contacts (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->remove_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		(const gchar * const *) uids, E_BOOK_OPERATION_FLAG_NONE, &removed_uids, NULL, &error);
 	g_assert_error (error, E_BOOK_CLIENT_ERROR, E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND);
-	g_assert (!success);
+	g_assert_true (!success);
 	g_assert_null (removed_uids);
 	g_clear_error (&error);
 
@@ -1203,7 +1203,7 @@ test_remove_contacts (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->remove_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		(const gchar * const *) uids, E_BOOK_OPERATION_FLAG_NONE, &removed_uids, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (test_backend->load_count, ==, 0);
 	g_assert_cmpint (test_backend->save_count, ==, 0);
 	g_assert_cmpint (test_backend->remove_count, ==, 1);
@@ -1227,7 +1227,7 @@ test_remove_contacts (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->remove_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		(const gchar * const *) uids, E_BOOK_OPERATION_FLAG_NONE, &removed_uids, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (test_backend->load_count, ==, 0);
 	g_assert_cmpint (test_backend->save_count, ==, 0);
 	g_assert_cmpint (test_backend->remove_count, ==, 0);
@@ -1268,7 +1268,7 @@ test_remove_contacts (EBookMetaBackend *meta_backend)
 
 	success = e_cache_set_offline_state (E_CACHE (book_cache), uids[0], E_OFFLINE_STATE_LOCALLY_CREATED, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	state = e_cache_get_offline_state (E_CACHE (book_cache), uids[0], NULL, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (state, ==, E_OFFLINE_STATE_LOCALLY_CREATED);
@@ -1276,7 +1276,7 @@ test_remove_contacts (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->remove_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		(const gchar * const *) uids, E_BOOK_OPERATION_FLAG_NONE, &removed_uids, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (test_backend->load_count, ==, 0);
 	g_assert_cmpint (test_backend->save_count, ==, 0);
 	g_assert_cmpint (test_backend->remove_count, ==, 1);
@@ -1297,7 +1297,7 @@ test_remove_contacts (EBookMetaBackend *meta_backend)
 
 	success = e_cache_set_offline_state (E_CACHE (book_cache), uids[0], E_OFFLINE_STATE_LOCALLY_MODIFIED, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	state = e_cache_get_offline_state (E_CACHE (book_cache), uids[0], NULL, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (state, ==, E_OFFLINE_STATE_LOCALLY_MODIFIED);
@@ -1305,7 +1305,7 @@ test_remove_contacts (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->remove_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		(const gchar * const *) uids, E_BOOK_OPERATION_FLAG_NONE, &removed_uids, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (test_backend->load_count, ==, 0);
 	g_assert_cmpint (test_backend->save_count, ==, 0);
 	g_assert_cmpint (test_backend->remove_count, ==, 2);
@@ -1326,7 +1326,7 @@ test_remove_contacts (EBookMetaBackend *meta_backend)
 
 	success = e_cache_set_offline_state (E_CACHE (book_cache), uids[0], E_OFFLINE_STATE_LOCALLY_DELETED, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	state = e_cache_get_offline_state (E_CACHE (book_cache), uids[0], NULL, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (state, ==, E_OFFLINE_STATE_LOCALLY_DELETED);
@@ -1334,7 +1334,7 @@ test_remove_contacts (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->remove_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		(const gchar * const *) uids, E_BOOK_OPERATION_FLAG_NONE, &removed_uids, NULL, &error);
 	g_assert_error (error, E_BOOK_CLIENT_ERROR, E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND);
-	g_assert (!success);
+	g_assert_true (!success);
 	g_assert_null (removed_uids);
 	g_clear_error (&error);
 
@@ -1392,7 +1392,7 @@ test_get_contact (EBookMetaBackend *meta_backend)
 	/* Going offline */
 	e_book_meta_backend_test_change_online (meta_backend, FALSE);
 
-	g_assert (!e_cache_contains (E_CACHE (book_cache), "custom-5", E_CACHE_EXCLUDE_DELETED));
+	g_assert_true (!e_cache_contains (E_CACHE (book_cache), "custom-5", E_CACHE_EXCLUDE_DELETED));
 
 	e_book_meta_backend_test_reset_counters (test_backend);
 
@@ -1407,7 +1407,7 @@ test_get_contact (EBookMetaBackend *meta_backend)
 	/* Going online */
 	e_book_meta_backend_test_change_online (meta_backend, TRUE);
 
-	g_assert (e_cache_contains (E_CACHE (book_cache), "custom-5", E_CACHE_EXCLUDE_DELETED));
+	g_assert_true (e_cache_contains (E_CACHE (book_cache), "custom-5", E_CACHE_EXCLUDE_DELETED));
 
 	/* Remove it from the cache, thus it's loaded from the "server" on demand */
 	e_book_cache_remove_contact (book_cache, "custom-5", 0, E_CACHE_IS_ONLINE, NULL, &error);
@@ -1426,7 +1426,7 @@ test_get_contact (EBookMetaBackend *meta_backend)
 	g_assert_cmpstr (e_contact_get_const (contact, E_CONTACT_UID), ==, "custom-5");
 	g_object_unref (contact);
 
-	g_assert (e_cache_contains (E_CACHE (book_cache), "custom-5", E_CACHE_EXCLUDE_DELETED));
+	g_assert_true (e_cache_contains (E_CACHE (book_cache), "custom-5", E_CACHE_EXCLUDE_DELETED));
 
 	g_object_unref (book_cache);
 }
@@ -1449,13 +1449,13 @@ test_get_contact_list (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->get_contact_list_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		"(is \"uid\" \"unknown-contact\")", &contacts, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_slist_length (contacts), ==, 0);
 
 	success = backend_sync_class->get_contact_list_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		"(is \"uid\" \"custom-3\")", &contacts, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_slist_length (contacts), ==, 1);
 	contact = contacts->data;
 	g_assert_nonnull (contact);
@@ -1480,13 +1480,13 @@ test_get_contact_list_uids (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->get_contact_list_uids_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		"(is \"uid\" \"unknown-contact\")", &uids, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_slist_length (uids), ==, 0);
 
 	success = backend_sync_class->get_contact_list_uids_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		"(is \"uid\" \"custom-3\")", &uids, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_slist_length (uids), ==, 1);
 	g_assert_nonnull (uids->data);
 	g_assert_cmpstr (uids->data, ==, "custom-3");
@@ -1707,7 +1707,7 @@ test_cursor (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->create_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		(const gchar * const *) vcards, E_BOOK_OPERATION_FLAG_NONE, &contacts, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_slist_length (contacts), ==, 1);
 	g_slist_free_full (contacts, g_object_unref);
 	contacts = NULL;
@@ -1721,7 +1721,7 @@ test_cursor (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->modify_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		(const gchar * const *) vcards, E_BOOK_OPERATION_FLAG_NONE, &contacts, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_slist_length (contacts), ==, 1);
 	g_slist_free_full (contacts, g_object_unref);
 	contacts = NULL;
@@ -1735,7 +1735,7 @@ test_cursor (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->remove_contacts_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		(const gchar * const *) uids, E_BOOK_OPERATION_FLAG_NONE, &removed_uids, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (g_slist_length (removed_uids), ==, 1);
 	g_assert_cmpstr (removed_uids->data, ==, uids[0]);
 	g_slist_free_full (removed_uids, g_free);
@@ -1747,7 +1747,7 @@ test_cursor (EBookMetaBackend *meta_backend)
 	/* Free the cursor */
 	success = backend_class->impl_delete_cursor (E_BOOK_BACKEND (meta_backend), cursor, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 }
 
 static void
@@ -1766,27 +1766,27 @@ test_contains_email (EBookMetaBackend *meta_backend)
 	success = backend_sync_class->contains_email_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		"bobby@brown.com", NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	success = backend_sync_class->contains_email_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		"\"Bobby\" <bobby@brown.org>", NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	success = backend_sync_class->contains_email_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		"\"Unknown\" <unknown@no.where>", NULL, &error);
 	g_assert_no_error (error);
-	g_assert (!success);
+	g_assert_true (!success);
 
 	success = backend_sync_class->contains_email_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		"\"Unknown\" <unknown@no.where>, \"Bobby\" <bobby@brown.org>", NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	success = backend_sync_class->contains_email_sync (E_BOOK_BACKEND_SYNC (meta_backend),
 		"", NULL, &error);
 	g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_CONSTRAINT);
-	g_assert (!success);
+	g_assert_true (!success);
 	g_clear_error (&error);
 }
 
@@ -1911,7 +1911,7 @@ main (gint argc,
 	tcu_read_args (argc, argv);
 
 	/* Ensure that the client and server get the same locale */
-	g_assert (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
+	g_assert_true (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
 	setlocale (LC_ALL, "");
 
 	e_test_server_utils_prepare_run (argc, argv, 0);

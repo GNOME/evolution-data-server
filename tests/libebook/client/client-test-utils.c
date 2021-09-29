@@ -147,7 +147,7 @@ add_contact_from_test_case_verify (EBookClient *book_client,
 		g_error ("get contact sync: %s", error->message);
 
         /* verify the contact was added "successfully" (not thorough) */
-	g_assert (contacts_are_equal_shallow (contact_orig, contact_final));
+	g_assert_true (contacts_are_equal_shallow (contact_orig, contact_final));
 
 	if (contact)
                 *contact = contact_final;
@@ -176,7 +176,7 @@ add_contact_verify (EBookClient *book_client,
 		g_error ("get contact sync: %s", error->message);
 
         /* verify the contact was added "successfully" (not thorough) */
-	g_assert (contacts_are_equal_shallow (contact, contact_final));
+	g_assert_true (contacts_are_equal_shallow (contact, contact_final));
 
 	g_object_unref (contact_final);
 	g_free (uid);

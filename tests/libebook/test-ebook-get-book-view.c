@@ -90,7 +90,7 @@ static void
 get_book_view_cb (EBookTestClosure *closure)
 {
 	GMainLoop *loop = closure->user_data;
-	g_assert (closure->view);
+	g_assert_true (closure->view);
 
 	setup_and_start_view (closure->view, loop);
 }

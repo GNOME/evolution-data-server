@@ -68,12 +68,12 @@ create_component (const gchar *tz_location)
 
 	itt = i_cal_component_get_dtstart (icomp);
 	g_assert_nonnull (itt);
-	g_assert (i_cal_time_get_timezone (itt) == zone);
+	g_assert_true (i_cal_time_get_timezone (itt) == zone);
 	g_object_unref (itt);
 
 	itt = i_cal_component_get_dtend (icomp);
 	g_assert_nonnull (itt);
-	g_assert (i_cal_time_get_timezone (itt) == zone);
+	g_assert_true (i_cal_time_get_timezone (itt) == zone);
 	g_object_unref (itt);
 
 	return icomp;
@@ -95,7 +95,7 @@ setup_cal (ECalClient *cal_client,
 
 	success = e_cal_client_create_object_sync (cal_client, icomp, E_CAL_OPERATION_FLAG_NONE, &uid, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_nonnull (uid);
 
 	g_object_unref (icomp);
@@ -179,7 +179,7 @@ verify_received_instances (GHashTable *instances,
 		g_assert_nonnull (expected_start);
 
 		ins.start = expected_start;
-		g_assert (g_hash_table_remove (instances, &ins));
+		g_assert_true (g_hash_table_remove (instances, &ins));
 
 		g_object_unref (expected_start);
 	}
@@ -246,7 +246,7 @@ test_recur_plain_run (ECalClient *client,
 		e_cal_client_tzlookup_cb, client,
 		default_zone, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	g_assert_cmpint (g_hash_table_size (rd.instances), ==, 5);
 
@@ -431,7 +431,7 @@ test_recur_exdate_component (const gchar *comp_str)
 		NULL, &error);
 
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (found, ==, 2);
 
 	found = 0;
@@ -443,7 +443,7 @@ test_recur_exdate_component (const gchar *comp_str)
 		NULL, &error);
 
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (found, ==, 2);
 
 	g_object_unref (start);
@@ -556,7 +556,7 @@ test_recur_duration (ETestServerFixture *fixture,
 		NULL, &error);
 
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (dd.n_found, ==, 8);
 
 	dd.n_found = 0;
@@ -568,7 +568,7 @@ test_recur_duration (ETestServerFixture *fixture,
 		NULL, &error);
 
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (dd.n_found, ==, 8);
 
 	dd.n_found = 0;
@@ -580,7 +580,7 @@ test_recur_duration (ETestServerFixture *fixture,
 		NULL, &error);
 
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_cmpint (dd.n_found, ==, 8);
 
 	g_object_unref (start);

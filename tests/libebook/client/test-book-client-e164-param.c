@@ -92,11 +92,11 @@ test_add_e164_param (ETestServerFixture *fixture,
 	tel = e_vcard_get_attribute (E_VCARD (contact), EVC_TEL);
 	values = tel ? e_vcard_attribute_get_values (tel) : NULL;
 
-	g_assert (values != NULL);
+	g_assert_true (values != NULL);
 	g_assert_cmpstr (values->data, ==, data->formatted_number);
 
 	values = e_vcard_attribute_get_param (tel, EVC_X_E164);
-	g_assert (values == NULL);
+	g_assert_true (values == NULL);
 
 	if (!e_book_client_add_contact_sync (book_client, contact, E_BOOK_OPERATION_FLAG_NONE, &uid, NULL, &error))
 		g_error ("Failed to add contact: %s", error->message);
@@ -111,19 +111,19 @@ test_add_e164_param (ETestServerFixture *fixture,
 	tel = e_vcard_get_attribute (E_VCARD (contact), EVC_TEL);
 	values = tel ? e_vcard_attribute_get_values (tel) : NULL;
 
-	g_assert (values != NULL);
+	g_assert_true (values != NULL);
 	g_assert_cmpstr (values->data, ==, data->formatted_number);
 
 	values = e_vcard_attribute_get_param (tel, EVC_X_E164);
 
-	g_assert (values != NULL);
+	g_assert_true (values != NULL);
 	g_assert_cmpstr (values->data, ==, data->national_number);
 
 	if (data->country_calling_code) {
-		g_assert (values->next != NULL);
+		g_assert_true (values->next != NULL);
 		g_assert_cmpstr (values->next->data, ==, data->country_calling_code);
 	} else {
-		g_assert (values->next == NULL);
+		g_assert_true (values->next == NULL);
 	}
 }
 

@@ -60,7 +60,7 @@
  * attr = e_vcard_get_attribute (vcard, "ADR");
  *
  * g_assert_cmpstr (e_vcard_attribute_get_name (attr), ==, "ADR");
- * g_assert (e_vcard_attribute_is_single_valued (attr) == FALSE);
+ * g_assert_true (e_vcard_attribute_is_single_valued (attr) == FALSE);
  *
  * param_values = e_vcard_attribute_get_param (attr, "TYPE");
  * g_assert_cmpuint (g_list_length (param_values), ==, 1);
@@ -2799,9 +2799,9 @@ e_vcard_attribute_get_value_decoded (EVCardAttribute *attr)
  * ]|
  * the following holds true:
  * |[
- * g_assert (e_vcard_attribute_has_type (attr, "WORK") == TRUE);
- * g_assert (e_vcard_attribute_has_type (attr, "voice") == TRUE);
- * g_assert (e_vcard_attribute_has_type (attr, "HOME") == FALSE);
+ * g_assert_true (e_vcard_attribute_has_type (attr, "WORK") == TRUE);
+ * g_assert_true (e_vcard_attribute_has_type (attr, "voice") == TRUE);
+ * g_assert_true (e_vcard_attribute_has_type (attr, "HOME") == FALSE);
  * ]|
  *
  * Comparisons against @typestr are case-insensitive.

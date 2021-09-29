@@ -66,7 +66,7 @@ test_query (gconstpointer data)
 	EBookQuery *query;
 	gchar *sexp;
 
-	g_assert (setlocale (CATEGORY, test->locale) != NULL);
+	g_assert_true (setlocale (CATEGORY, test->locale) != NULL);
 	sexp = e_book_query_to_string (test->query);
 	normalize_space (sexp);
 
@@ -74,7 +74,7 @@ test_query (gconstpointer data)
 	g_free (sexp);
 
 	query = e_book_query_from_string (test->sexp);
-	g_assert (query != NULL);
+	g_assert_true (query != NULL);
 
 	sexp = e_book_query_to_string (query);
 	e_book_query_unref (query);

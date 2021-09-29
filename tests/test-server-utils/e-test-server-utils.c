@@ -257,7 +257,7 @@ eds_test_utils_read_args (gint argc,
 	}
 
 	g_assert_nonnull (args_build_dir);
-	g_assert (g_file_test (args_build_dir, G_FILE_TEST_IS_DIR));
+	g_assert_true (g_file_test (args_build_dir, G_FILE_TEST_IS_DIR));
 }
 
 #define EDS_TEST_WORK_DIR_SUFFIX "tests/test-server-utils/cache"
@@ -280,7 +280,7 @@ eds_test_utils_setenv (const gchar *envvar,
 
 	path = eds_test_utils_create_build_path (suffix);
 
-	g_assert (g_setenv (envvar, path, TRUE));
+	g_assert_true (g_setenv (envvar, path, TRUE));
 
 	g_free (path);
 }
@@ -324,7 +324,7 @@ setup_environment (gint argc,
 		g_string_append (libs_dir, libs_dir_env);
 	}
 
-	g_assert (g_setenv ("LD_LIBRARY_PATH", libs_dir->str, TRUE));
+	g_assert_true (g_setenv ("LD_LIBRARY_PATH", libs_dir->str, TRUE));
 	eds_test_utils_setenv ("XDG_DATA_HOME", EDS_TEST_WORK_DIR_SUFFIX);
 	eds_test_utils_setenv ("XDG_CACHE_HOME", EDS_TEST_WORK_DIR_SUFFIX);
 	eds_test_utils_setenv ("XDG_CONFIG_HOME", EDS_TEST_WORK_DIR_SUFFIX);
@@ -335,9 +335,9 @@ setup_environment (gint argc,
 	eds_test_utils_setenv ("EDS_CAMEL_PROVIDER_DIR", "src/camel/providers/local");
 	eds_test_utils_setenv ("EDS_SUBPROCESS_CAL_PATH", "src/calendar/libedata-cal/evolution-calendar-factory-subprocess");
 	eds_test_utils_setenv ("EDS_SUBPROCESS_BOOK_PATH", "src/addressbook/libedata-book/evolution-addressbook-factory-subprocess");
-	g_assert (g_setenv ("GIO_USE_VFS", "local", TRUE));
-	g_assert (g_setenv ("EDS_TESTING", "1", TRUE));
-	g_assert (g_setenv ("GSETTINGS_BACKEND", "memory", TRUE));
+	g_assert_true (g_setenv ("GIO_USE_VFS", "local", TRUE));
+	g_assert_true (g_setenv ("EDS_TESTING", "1", TRUE));
+	g_assert_true (g_setenv ("GSETTINGS_BACKEND", "memory", TRUE));
 
 	g_unsetenv ("DISPLAY");
 
@@ -363,9 +363,9 @@ delete_work_directory (void)
 		NULL, (gchar **) argv, NULL, 0, NULL, NULL,
 					NULL, NULL, &exit_status, NULL);
 
-	g_assert (spawn_succeeded);
+	g_assert_true (spawn_succeeded);
 	#ifndef G_OS_WIN32
-	g_assert (WIFEXITED (exit_status));
+	g_assert_true (WIFEXITED (exit_status));
 	g_assert_cmpint (WEXITSTATUS (exit_status), ==, 0);
 	#else
 	g_assert_cmpint (exit_status, ==, 0);
@@ -567,7 +567,7 @@ e_test_server_utils_retry_open_client_cb (gpointer user_data)
 
 	source = e_source_registry_ref_source (pair->fixture->registry, pair->fixture->source_name);
 
-	g_assert (E_IS_SOURCE (source));
+	g_assert_true (E_IS_SOURCE (source));
 
 	e_test_server_utils_source_added (pair->fixture->registry, source, pair);
 	g_object_unref (source);
@@ -647,7 +647,7 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 
 				g_clear_error (&error);
 
-				g_assert (E_IS_SOURCE (source));
+				g_assert_true (E_IS_SOURCE (source));
 
 				e_test_server_utils_source_added (pair->fixture->registry, source, pair);
 				g_object_unref (source);
@@ -688,7 +688,7 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
 	if (!test_installed_services ()) {
 		gchar *workdir = eds_test_utils_create_build_path (EDS_TEST_WORK_DIR_SUFFIX);
 
-		g_assert (g_mkdir_with_parents (workdir, 0755) == 0);
+		g_assert_true (g_mkdir_with_parents (workdir, 0755) == 0);
 
 		g_free (workdir);
 	}

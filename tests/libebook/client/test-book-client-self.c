@@ -70,7 +70,7 @@ test_set_self (ETestServerFixture *fixture,
 	}
 
 	/* Add contact to addressbook */
-	g_assert (add_contact_from_test_case_verify (client, "simple-1", &loaded_contact));
+	g_assert_true (add_contact_from_test_case_verify (client, "simple-1", &loaded_contact));
 
 	/* Set contact as self */
 	if (!e_book_client_set_self (client, loaded_contact, &error))

@@ -65,7 +65,7 @@ setup_migration_sandbox (const gchar *version)
 	src = g_build_filename (EDS_TEST_SQLITE_BOOKS, version, "contacts.db", NULL);
 
 	/* Create the directory for the database files */
-	g_assert (g_mkdir_with_parents (dest_dir, 0755) == 0);
+	g_assert_true (g_mkdir_with_parents (dest_dir, 0755) == 0);
 
 	/* If there is a BDB for this version, copy it over */
 	if (g_file_test (src_bdb, G_FILE_TEST_IS_REGULAR)) {

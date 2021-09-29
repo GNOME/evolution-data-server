@@ -99,7 +99,7 @@ main (gint argc,
 	data_test_utils_read_args (argc, argv);
 
 	/* Ensure that the client and server get the same locale */
-	g_assert (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
+	g_assert_true (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
 	setlocale (LC_ALL, "");
 
 	for (i = 0; i < G_N_ELEMENTS (closures); i++)

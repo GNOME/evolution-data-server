@@ -77,8 +77,8 @@ static void
 check_removed (ECalClient *cal_client,
                const GSList *uids)
 {
-	g_assert (cal_client != NULL);
-	g_assert (uids != NULL);
+	g_assert_true (cal_client != NULL);
+	g_assert_true (uids != NULL);
 
 	while (uids) {
 		GError *error = NULL;
@@ -151,7 +151,7 @@ test_bulk_methods_sync (ECalClient *cal_client,
 	if (!e_cal_client_create_objects_sync (cal_client, icomps, E_CAL_OPERATION_FLAG_NONE, &uids, NULL, &error))
 		g_error ("create objects sync: %s", error->message);
 
-	g_assert (uids != NULL);
+	g_assert_true (uids != NULL);
 	g_assert_cmpint (g_slist_length (uids), ==, NB_COMPONENTS);
 
 	/* Update ICalComponents uids */
@@ -217,12 +217,12 @@ bulk_async_remove_objects_cb (GObject *source_object,
 	GError *error = NULL;
 
 	g_assert_nonnull (async_context);
-	g_assert (E_IS_CAL_CLIENT (source_object));
-	g_assert (async_context->cal_client == E_CAL_CLIENT (source_object));
+	g_assert_true (E_IS_CAL_CLIENT (source_object));
+	g_assert_true (async_context->cal_client == E_CAL_CLIENT (source_object));
 
 	success = e_cal_client_remove_objects_finish (async_context->cal_client, result, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	/* Check that the objects don't exist anymore */
 	check_removed (async_context->cal_client, async_context->uids);
@@ -240,12 +240,12 @@ bulk_async_modify_objects_cb (GObject *source_object,
 	GError *error = NULL;
 
 	g_assert_nonnull (async_context);
-	g_assert (E_IS_CAL_CLIENT (source_object));
-	g_assert (async_context->cal_client == E_CAL_CLIENT (source_object));
+	g_assert_true (E_IS_CAL_CLIENT (source_object));
+	g_assert_true (async_context->cal_client == E_CAL_CLIENT (source_object));
 
 	success = e_cal_client_modify_objects_finish (async_context->cal_client, result, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 
 	/* Retrieve all the objects and check that they have been modified */
 	check_icomps_exist (async_context->cal_client, async_context->icomps);
@@ -269,12 +269,12 @@ bulk_async_create_objects_cb (GObject *source_object,
 	GError *error = NULL;
 
 	g_assert_nonnull (async_context);
-	g_assert (E_IS_CAL_CLIENT (source_object));
-	g_assert (async_context->cal_client == E_CAL_CLIENT (source_object));
+	g_assert_true (E_IS_CAL_CLIENT (source_object));
+	g_assert_true (async_context->cal_client == E_CAL_CLIENT (source_object));
 
 	success = e_cal_client_create_objects_finish (async_context->cal_client, result, &async_context->uids, &error);
 	g_assert_no_error (error);
-	g_assert (success);
+	g_assert_true (success);
 	g_assert_nonnull (async_context->uids);
 	g_assert_cmpint (g_slist_length (async_context->uids), ==, NB_COMPONENTS);
 

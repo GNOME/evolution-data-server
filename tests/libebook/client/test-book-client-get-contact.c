@@ -38,7 +38,7 @@ test_get_contact_sync (ETestServerFixture *fixture,
 		g_error ("Failed to get contact");
 	}
 
-	g_assert (contact != NULL);
+	g_assert_true (contact != NULL);
 	g_object_unref (contact);
 }
 

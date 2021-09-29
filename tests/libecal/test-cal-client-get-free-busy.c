@@ -175,8 +175,8 @@ test_get_free_busy_sync (ETestServerFixture *fixture,
 
 	wait_for_dbus_signal (fixture->loop);
 
-	g_assert (received_free_busy_data);
-	g_assert (freebusy_data);
+	g_assert_true (received_free_busy_data);
+	g_assert_true (freebusy_data);
 
 	g_slist_free_full (freebusy_data, g_object_unref);
 }
@@ -198,8 +198,8 @@ async_get_free_busy_result_ready (GObject *source_object,
 
 	wait_for_dbus_signal (loop);
 
-	g_assert (received_free_busy_data);
-	g_assert (freebusy_data);
+	g_assert_true (received_free_busy_data);
+	g_assert_true (freebusy_data);
 
 	g_slist_free_full (freebusy_data, g_object_unref);
 
