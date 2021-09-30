@@ -487,12 +487,14 @@ e_destination_set_contact (EDestination *dest,
 
 						raw = e_vcard_attribute_get_value (attr->data);
 						addr = camel_internet_address_new ();
-						if (camel_address_unformat (CAMEL_ADDRESS (addr), raw) > 0 &&
-						    camel_internet_address_get (addr, 0, &name, &email)) {
-							e_destination_set_name (s_dest, name);
-							e_destination_set_email (s_dest, email);
+						if (camel_address_unformat (CAMEL_ADDRESS (addr), raw) > 0) {
+							camel_internet_address_sanitize_ascii_domain (addr);
+							if (camel_internet_address_get (addr, 0, &name, &email)) {
+								e_destination_set_name (s_dest, name);
+								e_destination_set_email (s_dest, email);
 
-							dest->priv->list_alldests = g_list_append (dest->priv->list_alldests, s_dest);
+								dest->priv->list_alldests = g_list_append (dest->priv->list_alldests, s_dest);
+							}
 						}
 
 						g_object_unref (addr);
@@ -743,13 +745,15 @@ e_destination_set_email (EDestination *dest,
 
 	if (email == NULL) {
 		if (dest->priv->email != NULL) {
-			g_free (dest->priv->addr);
-			dest->priv->addr = NULL;
+			g_free (dest->priv->email);
+			dest->priv->email = NULL;
 			changed = TRUE;
 		}
 	} else if (dest->priv->email == NULL || strcmp (dest->priv->email, email)) {
 		g_free (dest->priv->email);
-		dest->priv->email = g_strdup (email);
+		dest->priv->email = camel_utils_sanitize_ascii_domain_in_address (email, TRUE);
+		if (!dest->priv->email)
+			dest->priv->email = g_strdup (email);
 		changed = TRUE;
 	}
 
@@ -995,6 +999,7 @@ e_destination_get_email (const EDestination *dest)
 
 			if (camel_address_unformat (CAMEL_ADDRESS (addr), priv->raw)) {
 				const gchar *camel_email = NULL;
+				camel_internet_address_sanitize_ascii_domain (addr);
 				if (camel_internet_address_get (addr, 0, NULL, &camel_email))
 					priv->email = g_strdup (camel_email);
 			}
@@ -1066,12 +1071,16 @@ e_destination_get_address (const EDestination *dest)
 
 	if (e_destination_is_evolution_list (dest)) {
 		destination_get_address (dest, addr);
+		camel_internet_address_sanitize_ascii_domain (addr);
 		priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
 	} else if (priv->raw) {
-		if (camel_address_unformat (CAMEL_ADDRESS (addr), priv->raw))
+		if (camel_address_unformat (CAMEL_ADDRESS (addr), priv->raw)) {
+			camel_internet_address_sanitize_ascii_domain (addr);
 			priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
+		}
 	} else {
 		destination_get_address (dest, addr);
+		camel_internet_address_sanitize_ascii_domain (addr);
 		priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
 	}
 
@@ -1096,9 +1105,17 @@ e_destination_set_raw (EDestination *dest,
 	g_return_if_fail (raw != NULL);
 
 	if (dest->priv->raw == NULL || strcmp (dest->priv->raw, raw)) {
+		CamelInternetAddress *addr = camel_internet_address_new ();
 
 		e_destination_clear (dest);
-		dest->priv->raw = g_strdup (raw);
+
+		if (camel_address_unformat (CAMEL_ADDRESS (addr), raw) > 0 &&
+		    camel_internet_address_sanitize_ascii_domain (addr))
+			dest->priv->raw = camel_address_format (CAMEL_ADDRESS (addr));
+		else
+			dest->priv->raw = g_strdup (raw);
+
+		g_object_unref (addr);
 
 		g_signal_emit (dest, signals[CHANGED], 0);
 	}
@@ -1133,11 +1150,12 @@ e_destination_get_textrep (const EDestination *dest,
 		return name;
 
 	/* Make sure that our address gets quoted properly */
-	if (name && email && dest->priv->textrep == NULL) {
+	if (email && dest->priv->textrep == NULL) {
 		CamelInternetAddress *addr = camel_internet_address_new ();
 
 		camel_internet_address_add (addr, name, email);
 		g_free (dest->priv->textrep);
+		camel_internet_address_sanitize_ascii_domain (addr);
 		dest->priv->textrep = camel_address_format (CAMEL_ADDRESS (addr));
 		g_object_unref (addr);
 	}

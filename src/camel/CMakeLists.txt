@@ -46,6 +46,7 @@ set(SOURCES
 	camel-folder-thread.c
 	camel-folder.c
 	camel-gpg-context.c
+	camel-hostname-utils.c
 	camel-html-parser.c
 	camel-iconv.c
 	camel-index.c
@@ -185,6 +186,7 @@ set(HEADERS
 	camel-folder-thread.h
 	camel-folder.h
 	camel-gpg-context.h
+	camel-hostname-utils.h
 	camel-html-parser.h
 	camel-iconv.h
 	camel-index.h
