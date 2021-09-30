@@ -477,7 +477,7 @@ camel_internet_address_ensure_ascii_domains (CamelInternetAddress *addr)
  *
  * Returns: %TRUE, when converted at least one address
  *
- * Since: 3.44
+ * Since: 3.42.1
  **/
 gboolean
 camel_internet_address_sanitize_ascii_domain (CamelInternetAddress *addr)

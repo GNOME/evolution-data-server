@@ -882,7 +882,7 @@ camel_host_idna_to_ascii (const gchar *host)
  * See: camel_hostname_utils_requires_ascii(), camel_internet_address_sanitize_ascii_domain(),
  *    camel_utils_sanitize_ascii_domain_in_url_str()
  *
- * Since: 3.44
+ * Since: 3.42.1
  **/
 gchar *
 camel_utils_sanitize_ascii_domain_in_address (const gchar *email_address,
@@ -926,7 +926,7 @@ camel_utils_sanitize_ascii_domain_in_address (const gchar *email_address,
  *
  * See: camel_hostname_utils_requires_ascii(), camel_utils_sanitize_ascii_domain_in_url()
  *
- * Since: 3.44
+ * Since: 3.42.1
  **/
 gchar *
 camel_utils_sanitize_ascii_domain_in_url_str (const gchar *url_str)
@@ -962,7 +962,7 @@ camel_utils_sanitize_ascii_domain_in_url_str (const gchar *url_str)
  *
  * See: camel_hostname_utils_requires_ascii(), camel_utils_sanitize_ascii_domain_in_url_str()
  *
- * Since: 3.44
+ * Since: 3.42.1
  **/
 gboolean
 camel_utils_sanitize_ascii_domain_in_url (CamelURL *url)

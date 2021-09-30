@@ -382,7 +382,7 @@ camel_pstring_dump_stat (void)
  * Returns: %TRUE, when the @str is %NULL, an empty string or when
  *    it contains only ASCII letters.
  *
- * Since: 3.44
+ * Since: 3.42.1
  **/
 gboolean
 camel_string_is_all_ascii (const gchar *str)
