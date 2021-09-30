@@ -3303,6 +3303,9 @@ camel_transfer_encoding_from_string (const gchar *string)
 		for (i = 0; i < G_N_ELEMENTS (encodings); i++)
 			if (!g_ascii_strcasecmp (string, encodings[i]))
 				return i;
+
+		if (!g_ascii_strcasecmp (string, "uuencode"))
+			return CAMEL_TRANSFER_ENCODING_UUENCODE;
 	}
 
 	return CAMEL_TRANSFER_ENCODING_DEFAULT;
