@@ -3139,7 +3139,8 @@ summary_traverse_content_with_parser (CamelFolderSummary *summary,
 					else
 						camel_mime_filter_reset (summary->priv->filter_qp);
 					enc_id = camel_mime_parser_filter_add (mp, summary->priv->filter_qp);
-				} else if (!g_ascii_strcasecmp (encoding, "x-uuencode")) {
+				} else if (!g_ascii_strcasecmp (encoding, "x-uuencode") ||
+					   !g_ascii_strcasecmp (encoding, "uuencode")) {
 					d (printf (" decoding x-uuencode\n"));
 					if (summary->priv->filter_uu == NULL)
 						summary->priv->filter_uu = camel_mime_filter_basic_new (CAMEL_MIME_FILTER_BASIC_UU_DEC);
