@@ -374,3 +374,28 @@ camel_pstring_dump_stat (void)
 
 	g_mutex_unlock (&string_pool_lock);
 }
+
+/**
+ * camel_string_is_all_ascii:
+ * @str: (nullable): a string to check, or %NULL
+ *
+ * Returns: %TRUE, when the @str is %NULL, an empty string or when
+ *    it contains only ASCII letters.
+ *
+ * Since: 3.44
+ **/
+gboolean
+camel_string_is_all_ascii (const gchar *str)
+{
+	gint ii;
+
+	if (!str || !*str)
+		return TRUE;
+
+	for (ii = 0; str[ii]; ii++) {
+		if (str[ii] < 0)
+			break;
+	}
+
+	return str[ii] == '\0';
+}

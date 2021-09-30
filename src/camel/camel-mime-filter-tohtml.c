@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include "camel-mime-filter-tohtml.h"
+#include "camel-net-utils.h"
 #include "camel-url-scanner.h"
 #include "camel-utf8.h"
 
@@ -459,6 +460,9 @@ html_convert (CamelMimeFilter *mime_filter,
 
 			do {
 				if (camel_url_scanner_scan (priv->scanner, start, len - (len > 0 && start[len - 1] == 0 ? 1 : 0), &match)) {
+					gchar *url_str, *sanitized_url;
+					gint prefix_len = strlen (match.prefix), url_len;
+
 					/* write out anything before the first regex match */
 					outptr = writeln (
 						mime_filter,
@@ -471,18 +475,22 @@ html_convert (CamelMimeFilter *mime_filter,
 
 					matchlen = match.um_eo - match.um_so;
 
+					url_str = g_strdup_printf ("%s%.*s", match.prefix, (gint) matchlen, start);
+					sanitized_url = camel_utils_sanitize_ascii_domain_in_url_str (url_str);
+					if (sanitized_url) {
+						g_free (url_str);
+						url_str = sanitized_url;
+						sanitized_url = NULL;
+					}
+
+					url_len = strlen (url_str);
+
 					/* write out the href tag */
 					outptr = append_string_verbatim (mime_filter, "<a href=\"", outptr, &outend);
-					/* prefix shouldn't need escaping, but let's be safe */
 					outptr = writeln (
 						mime_filter,
-						match.prefix,
-						match.prefix + strlen (match.prefix),
-						outptr, &outend);
-					outptr = writeln (
-						mime_filter,
-						start,
-						start + matchlen,
+						url_str,
+						url_str + url_len,
 						outptr, &outend);
 					outptr = append_string_verbatim (
 						mime_filter, "\">",
@@ -491,10 +499,10 @@ html_convert (CamelMimeFilter *mime_filter,
 					/* now write the matched string */
 					outptr = writeln (
 						mime_filter,
-						start,
-						start + matchlen,
+						url_str + prefix_len,
+						url_str + url_len,
 						outptr, &outend);
-					priv->column += matchlen;
+					priv->column += url_len - prefix_len;
 					start += matchlen;
 					len -= matchlen;
 
@@ -502,6 +510,8 @@ html_convert (CamelMimeFilter *mime_filter,
 					outptr = append_string_verbatim (
 						mime_filter, "</a>",
 						outptr, &outend);
+
+					g_free (url_str);
 				} else {
 					/* nothing matched so write out the remainder of this line buffer */
 					outptr = writeln (

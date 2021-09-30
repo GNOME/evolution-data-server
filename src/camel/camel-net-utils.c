@@ -40,6 +40,8 @@
 #include "camel-object.h"
 #include "camel-operation.h"
 #include "camel-service.h"
+#include "camel-hostname-utils.h"
+#include "camel-string-utils.h"
 
 #define d(x)
 
@@ -860,4 +862,145 @@ camel_host_idna_to_ascii (const gchar *host)
 		ascii = g_strdup (host);
 
 	return ascii;
+}
+
+/**
+ * camel_utils_sanitize_ascii_domain_in_address:
+ * @email_address: an email address as string
+ * @do_format: what format will be returned
+ *
+ * Checks whether the domain in the @email_address requires
+ * conversion to ASCII and if it does it also converts it.
+ * When the @do_format is %TRUE, the output string is formatted
+ * for display, otherwise it's encoded for use in the message
+ * headers. A %NULL is returned when no conversion was needed.
+ *
+ * Returns: (nullable): the @email_address with only ASCII letters,
+ *    if such conversion is needed or %NULL, when no conversion was
+ *    required.
+ *
+ * See: camel_hostname_utils_requires_ascii(), camel_internet_address_sanitize_ascii_domain(),
+ *    camel_utils_sanitize_ascii_domain_in_url_str()
+ *
+ * Since: 3.44
+ **/
+gchar *
+camel_utils_sanitize_ascii_domain_in_address (const gchar *email_address,
+					      gboolean do_format)
+{
+	CamelInternetAddress *addr;
+	gchar *res = NULL;
+
+	g_return_val_if_fail (email_address != NULL, NULL);
+
+	if (camel_string_is_all_ascii (email_address))
+		return NULL;
+
+	addr = camel_internet_address_new ();
+
+	if (camel_address_decode (CAMEL_ADDRESS (addr), email_address) == -1)
+		camel_address_unformat (CAMEL_ADDRESS (addr), email_address);
+
+	if (camel_internet_address_sanitize_ascii_domain (addr)) {
+		if (do_format)
+			res = camel_address_format (CAMEL_ADDRESS (addr));
+		else
+			res = camel_address_encode (CAMEL_ADDRESS (addr));
+	}
+
+	g_clear_object (&addr);
+
+	return res;
+}
+
+/**
+ * camel_utils_sanitize_ascii_domain_in_url_str:
+ * @url_str: a URL as string
+ *
+ * Checks whether the host name of the @url_str requires conversion
+ * to ASCII and converts it if needed. Returns %NULL, when no conversion
+ * was required.
+ *
+ * Returns: (nullable): converted @url_str to ASCII host name, or %NULL, when
+ *    no conversion was needed.
+ *
+ * See: camel_hostname_utils_requires_ascii(), camel_utils_sanitize_ascii_domain_in_url()
+ *
+ * Since: 3.44
+ **/
+gchar *
+camel_utils_sanitize_ascii_domain_in_url_str (const gchar *url_str)
+{
+	CamelURL *url;
+	gchar *res = NULL;
+
+	g_return_val_if_fail (url_str != NULL, NULL);
+
+	if (camel_string_is_all_ascii (url_str))
+		return NULL;
+
+	url = camel_url_new (url_str, NULL);
+	if (!url)
+		return NULL;
+
+	if (camel_utils_sanitize_ascii_domain_in_url (url))
+		res = camel_url_to_string (url, 0);
+
+	camel_url_free (url);
+
+	return res;
+}
+
+/**
+ * camel_utils_sanitize_ascii_domain_in_url:
+ * @url: a #CamelURL
+ *
+ * Checks whether the host name of the @url requires conversion
+ * to ASCII and converts it, if needed.
+ *
+ * Returns: %TRUE, when the conversion was required.
+ *
+ * See: camel_hostname_utils_requires_ascii(), camel_utils_sanitize_ascii_domain_in_url_str()
+ *
+ * Since: 3.44
+ **/
+gboolean
+camel_utils_sanitize_ascii_domain_in_url (CamelURL *url)
+{
+	g_return_val_if_fail (url != NULL, FALSE);
+
+	if (!url->host && url->path && url->protocol && g_ascii_strcasecmp (url->protocol, "mailto") == 0) {
+		const gchar *at_pos = strchr (url->path, '@');
+		gboolean res = FALSE;
+
+		if (at_pos && camel_hostname_utils_requires_ascii (at_pos + 1)) {
+			gchar *ascii_domain, *tmp;
+
+			ascii_domain = camel_host_idna_to_ascii (at_pos + 1);
+			tmp = g_strdup_printf ("%.*s@%s", (gint) (at_pos - url->path), url->path, ascii_domain);
+			g_free (ascii_domain);
+			g_free (url->path);
+			url->path = tmp;
+
+			res = TRUE;
+		} else if (camel_hostname_utils_requires_ascii (url->path)) {
+			gchar *ascii_path = camel_host_idna_to_ascii (url->path);
+			g_free (url->path);
+			url->path = ascii_path;
+
+			res = TRUE;
+		}
+
+		return res;
+	}
+
+	if (camel_hostname_utils_requires_ascii (url->host)) {
+		gchar *ascii_host = camel_host_idna_to_ascii (url->host);
+		g_free (url->host);
+		url->host = ascii_host;
+
+		return TRUE;
+	}
+
+	return FALSE;
 }

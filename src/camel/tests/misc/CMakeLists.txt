@@ -1,6 +1,7 @@
 set(TESTS
 	test1
 	test2
+	test3
 	utf7
 	split
 	rfc2047

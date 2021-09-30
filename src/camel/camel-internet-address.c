@@ -20,6 +20,7 @@
 #include <string.h>
 
 #include "camel-internet-address.h"
+#include "camel-hostname-utils.h"
 #include "camel-mime-utils.h"
 #include "camel-net-utils.h"
 
@@ -452,8 +453,7 @@ camel_internet_address_ensure_ascii_domains (CamelInternetAddress *addr)
 
 			domain = camel_host_idna_to_ascii (a->address + at_pos + 1);
 			if (at_pos >= 0) {
-				gchar *name = g_strndup (a->address, at_pos);
-				address = g_strconcat (name, "@", domain, NULL);
+				address = g_strdup_printf ("%.*s@%s", at_pos, a->address, domain);
 			} else {
 				address = domain;
 				domain = NULL;
@@ -464,6 +464,56 @@ camel_internet_address_ensure_ascii_domains (CamelInternetAddress *addr)
 			a->address = address;
 		}
 	}
+}
+
+/**
+ * camel_internet_address_sanitize_ascii_domain:
+ * @addr: a #CamelInternetAddress
+ *
+ * Checks the addresses in @addr for any suspicious characters in the domain
+ * name and coverts those domains into their representation. In contrast to
+ * camel_internet_address_ensure_ascii_domains(), this converts the domains
+ * into ASCII only when needed, as returned by camel_hostname_utils_requires_ascii().
+ *
+ * Returns: %TRUE, when converted at least one address
+ *
+ * Since: 3.44
+ **/
+gboolean
+camel_internet_address_sanitize_ascii_domain (CamelInternetAddress *addr)
+{
+	struct _address *a;
+	gboolean did_convert = FALSE;
+	gint ii, len;
+
+	g_return_val_if_fail (CAMEL_IS_INTERNET_ADDRESS (addr), FALSE);
+
+	len = addr->priv->addresses->len;
+	for (ii = 0; ii < len; ii++) {
+		gint at_pos = -1;
+		a = g_ptr_array_index (addr->priv->addresses, ii);
+		if (a->address && !domain_contains_only_ascii (a->address, &at_pos) &&
+		    at_pos >= 0 && at_pos + 1 < strlen (a->address) &&
+		    camel_hostname_utils_requires_ascii (a->address + at_pos + 1)) {
+			gchar *address, *domain;
+
+			did_convert = TRUE;
+
+			domain = camel_host_idna_to_ascii (a->address + at_pos + 1);
+			if (at_pos >= 0) {
+				address = g_strdup_printf ("%.*s@%s", at_pos, a->address, domain);
+			} else {
+				address = domain;
+				domain = NULL;
+			}
+
+			g_free (domain);
+			g_free (a->address);
+			a->address = address;
+		}
+	}
+
+	return did_convert;
 }
 
 /**

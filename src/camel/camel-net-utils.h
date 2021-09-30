@@ -37,6 +37,9 @@ struct sockaddr;
 struct addrinfo;
 #endif
 
+#include <camel/camel-internet-address.h>
+#include <camel/camel-url.h>
+
 G_BEGIN_DECLS
 
 #ifndef _WIN32
@@ -95,6 +98,14 @@ struct addrinfo *
 void		camel_freeaddrinfo		(struct addrinfo *host);
 
 gchar *		camel_host_idna_to_ascii	(const gchar *host);
+
+gchar *		camel_utils_sanitize_ascii_domain_in_address
+						(const gchar *email_address,
+						 gboolean do_format);
+gchar *		camel_utils_sanitize_ascii_domain_in_url_str
+						(const gchar *url_str);
+gboolean	camel_utils_sanitize_ascii_domain_in_url
+						(CamelURL *url);
 
 G_END_DECLS
 

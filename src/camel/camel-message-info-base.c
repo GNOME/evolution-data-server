@@ -21,6 +21,7 @@
 
 #include "camel-folder-summary.h"
 #include "camel-message-info.h"
+#include "camel-net-utils.h"
 #include "camel-string-utils.h"
 
 #include "camel-message-info-base.h"
@@ -364,6 +365,28 @@ message_info_base_get_from (const CamelMessageInfo *mi)
 	return result;
 }
 
+#define SET_ADDRESS(_member, _value) G_STMT_START { \
+	changed = g_strcmp0 (bmi->_member, _value) != 0; \
+	\
+	if (changed) { \
+		gchar *in_ascii; \
+	\
+		in_ascii = camel_utils_sanitize_ascii_domain_in_address (_value, TRUE); \
+		if (in_ascii) { \
+			if (g_strcmp0 (in_ascii, bmi->_member) == 0) { \
+				changed = FALSE; \
+				g_free (in_ascii); \
+			} else { \
+				camel_pstring_free (bmi->_member); \
+				bmi->_member = camel_pstring_add (in_ascii, TRUE); \
+			} \
+		} else { \
+			camel_pstring_free (bmi->_member); \
+			bmi->_member = camel_pstring_strdup (_value); \
+		} \
+	} \
+	} G_STMT_END
+
 static gboolean
 message_info_base_set_from (CamelMessageInfo *mi,
 			    const gchar *from)
@@ -377,12 +400,7 @@ message_info_base_set_from (CamelMessageInfo *mi,
 
 	camel_message_info_property_lock (mi);
 
-	changed = g_strcmp0 (bmi->priv->from, from) != 0;
-
-	if (changed) {
-		camel_pstring_free (bmi->priv->from);
-		bmi->priv->from = camel_pstring_strdup (from);
-	}
+	SET_ADDRESS (priv->from, from);
 
 	camel_message_info_property_unlock (mi);
 
@@ -419,12 +437,7 @@ message_info_base_set_to (CamelMessageInfo *mi,
 
 	camel_message_info_property_lock (mi);
 
-	changed = g_strcmp0 (bmi->priv->to, to) != 0;
-
-	if (changed) {
-		camel_pstring_free (bmi->priv->to);
-		bmi->priv->to = camel_pstring_strdup (to);
-	}
+	SET_ADDRESS (priv->to, to);
 
 	camel_message_info_property_unlock (mi);
 
@@ -461,12 +474,7 @@ message_info_base_set_cc (CamelMessageInfo *mi,
 
 	camel_message_info_property_lock (mi);
 
-	changed = g_strcmp0 (bmi->priv->cc, cc) != 0;
-
-	if (changed) {
-		camel_pstring_free (bmi->priv->cc);
-		bmi->priv->cc = camel_pstring_strdup (cc);
-	}
+	SET_ADDRESS (priv->cc, cc);
 
 	camel_message_info_property_unlock (mi);
 
@@ -503,17 +511,14 @@ message_info_base_set_mlist (CamelMessageInfo *mi,
 
 	camel_message_info_property_lock (mi);
 
-	changed = g_strcmp0 (bmi->priv->mlist, mlist) != 0;
-
-	if (changed) {
-		camel_pstring_free (bmi->priv->mlist);
-		bmi->priv->mlist = camel_pstring_strdup (mlist);
-	}
+	SET_ADDRESS (priv->mlist, mlist);
 
 	camel_message_info_property_unlock (mi);
 
 	return changed;
 }
+
+#undef SET_ADDRESS
 
 static guint32
 message_info_base_get_size (const CamelMessageInfo *mi)
