@@ -243,6 +243,15 @@ reminders_widget_fill_snooze_combo (ERemindersWidget *reminders,
 		gtk_combo_box_set_active_iter (combo, &tosel_iter);
 	else
 		gtk_combo_box_set_active (combo, 0);
+
+	if (gtk_combo_box_get_active_iter (combo, &iter)) {
+		gint minutes = -3;
+
+		gtk_tree_model_get (GTK_TREE_MODEL (list_store), &iter, 1, &minutes, -1);
+		reminders->priv->last_selected_snooze_minutes = minutes;
+	} else {
+		reminders->priv->last_selected_snooze_minutes = 0;
+	}
 }
 
 static void
