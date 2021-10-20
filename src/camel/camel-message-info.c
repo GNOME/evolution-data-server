@@ -3388,7 +3388,6 @@ camel_message_info_get_preview (const CamelMessageInfo *mi)
 /**
  * camel_message_info_dup_preview:
  * @mi: a #CamelMessageInfo
- * @name: header name
  *
  * Returns: (transfer none) (nullable): Body preview of the associated
  *    message, or %NULL, when not available. Free the returned string
