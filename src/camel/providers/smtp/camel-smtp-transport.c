@@ -1631,7 +1631,7 @@ smtp_mail (CamelSmtpTransport *transport,
 	g_free (cmdbuf);
 
 	do {
-		/* Check for "250 Sender OK..." */
+		/* Check for "250 Sender OK..." or anything starting with "2" */
 		g_free (respbuf);
 		respbuf = camel_stream_buffer_read_line (istream, cancellable, error);
 		d (fprintf (stderr, "[SMTP] received: %s\n", respbuf ? respbuf : "(null)"));
@@ -1642,14 +1642,14 @@ smtp_mail (CamelSmtpTransport *transport,
 				FALSE, cancellable, NULL);
 			return FALSE;
 		}
-		if (strncmp (respbuf, "250", 3)) {
+		if (*respbuf != '2') {
 			smtp_set_error (transport, istream, respbuf, cancellable, error);
 			g_prefix_error (
 				error, _("MAIL FROM command failed: "));
 			g_free (respbuf);
 			return FALSE;
 		}
-	} while (*(respbuf+3) == '-'); /* if we got "250-" then loop again */
+	} while (*(respbuf+3) == '-'); /* if we got "2xx-" then loop again */
 	g_free (respbuf);
 
 	return TRUE;
