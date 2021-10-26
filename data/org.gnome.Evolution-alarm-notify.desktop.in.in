@@ -12,3 +12,4 @@ X-GNOME-Bugzilla-Bugzilla=GNOME
 X-GNOME-Bugzilla-Product=evolution-data-server
 X-GNOME-Bugzilla-Component=calendar
 X-GNOME-Bugzilla-Version=@BASE_VERSION@.x
+X-GNOME-UsesNotifications=true
