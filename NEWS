@@ -1,3 +1,27 @@
+Evolution-Data-Server 3.42.1 2021-10-29
+---------------------------------------
+
+Bug Fixes:
+	I#352 - LDAP: Claim capabilities change on "sync for offline" change (Milan Crha)
+	I#355 - Camel: Ignore empty output from "Pipe to program" filter (Milan Crha)
+	I#360 - WebDAVNotes: Recognize and prefer files with .md extension (Milan Crha)
+	I#361 - Camel: Understand non-standard "Content-Transfer-Encoding: uuencode" (Milan Crha)
+	M!81 - Camel-SMTP: accept any 2xx code on MAIL FROM: as success (Дилян Палаузов)
+	evo-I#1621 - Prevent IDN homograph attacks (Milan Crha)
+
+Miscellaneous:
+	LDAP: Fix a memory leak when filling a contact address (Milan Crha)
+	book/cal-backend: Add some safety checks around pending_operations queue (Milan Crha)
+	Correct 'Since:' tag in the developer comments (Milan Crha)
+	ERemindersWidget: Incorrect value for last selected snooze time after open (Milan Crha)
+	Camel: Correct a copy&paste error in a function documentation (Milan Crha)
+	org.gnome.Evolution-alarm-notify.desktop: Add X-GNOME-UsesNotifications=true (Milan Crha)
+
+Translations:
+	Boyuan Yang (zh_CN)
+	Мирослав Николић (sr)
+	Rūdolfs Mazurs (lv)
+
 Evolution-Data-Server 3.42.0 2021-09-17
 ---------------------------------------
 
