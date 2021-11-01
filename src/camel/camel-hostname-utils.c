@@ -24,6 +24,7 @@
 
 #include <unicode/uchar.h>
 #include <unicode/uscript.h>
+#include <unicode/ustring.h>
 
 #include "camel-string-utils.h"
 #include "camel-hostname-utils.h"
