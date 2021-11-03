@@ -17,4 +17,4 @@ execversion=@BASE_VERSION@
 Name: evolution-data-server
 Description: The evolution data server for the calendar and addressbook
 Version: @PROJECT_VERSION@
-Requires: gio-2.0 @mozilla_nss@ @mozilla_nspr@
+Requires: gio-2.0

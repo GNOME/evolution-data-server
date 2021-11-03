@@ -10,6 +10,6 @@ camel_providerdir=@camel_providerdir@
 Name: camel
 Description: the Evolution MIME message handling library
 Version: @PROJECT_VERSION@
-Requires: gio-2.0 sqlite3 @mozilla_nss@ @mozilla_nspr@
-Libs: -L${libdir} -lcamel-@API_VERSION@ @MANUAL_NSS_LIBS@
-Cflags: -I${privincludedir} @MANUAL_NSS_CFLAGS@
+Requires: gio-2.0
+Libs: -L${libdir} -lcamel-@API_VERSION@
+Cflags: -I${privincludedir}
