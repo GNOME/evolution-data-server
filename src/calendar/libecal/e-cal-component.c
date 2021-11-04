@@ -95,6 +95,8 @@ foreach_subcomponent (ICalComponent *icalcomp,
 	while (subcomp) {
 		ICalComponent *next_subcomp;
 
+		i_cal_object_set_owner (I_CAL_OBJECT (subcomp), G_OBJECT (icalcomp));
+
 		next_subcomp = i_cal_comp_iter_next (iter);
 
 		if (!func (icalcomp, subcomp, user_data)) {

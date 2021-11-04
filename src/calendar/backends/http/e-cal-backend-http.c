@@ -477,13 +477,18 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 	} else {
 		iter = i_cal_component_begin_component (maincomp, I_CAL_VCALENDAR_COMPONENT);
 		subcomp = i_cal_comp_iter_deref (iter);
+		if (subcomp)
+			i_cal_object_set_owner (I_CAL_OBJECT (subcomp), G_OBJECT (maincomp));
 	}
 
 	while (subcomp && success) {
 		ICalComponent *next_subcomp = NULL;
 
-		if (iter)
+		if (iter) {
 			next_subcomp = i_cal_comp_iter_next (iter);
+			if (next_subcomp)
+				i_cal_object_set_owner (I_CAL_OBJECT (next_subcomp), G_OBJECT (maincomp));
+		}
 
 		if (i_cal_component_isa (subcomp) == I_CAL_VCALENDAR_COMPONENT) {
 			success = e_cal_meta_backend_gather_timezones_sync (meta_backend, subcomp, TRUE, cancellable, error);
