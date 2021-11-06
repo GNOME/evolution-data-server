@@ -14,17 +14,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.2\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/issues\n"
-"POT-Creation-Date: 2021-08-05 08:45+0000\n"
-"PO-Revision-Date: 2020-12-19 15:57+0100\n"
-"Last-Translator: Miquel-Àngel Burgos i Fradeja <miquel.angel.burgos@gmail.com>\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
+"issues\n"
+"POT-Creation-Date: 2021-09-24 12:12+0000\n"
+"PO-Revision-Date: 2021-11-06 18:27+0100\n"
+"Last-Translator: maite guix <maite.guix@me.com>\n"
 "Language-Team: Catalan <info@softcatala.org>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Poedit 3.0\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:234
 #, c-format
@@ -33,21 +34,21 @@ msgstr "L'URL donada «%s» no fa referència a la llibreta d'adreces de CardDAV
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:293
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1136
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4379
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1137
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4380
 #: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
 #: ../src/addressbook/libebook/e-book.c:1067
-#: ../src/addressbook/libebook/e-book-client.c:2122
-#: ../src/addressbook/libebook/e-book-client.c:2300
-#: ../src/addressbook/libebook/e-book-client.c:2519
-#: ../src/addressbook/libebook/e-book-client.c:2656
-#: ../src/addressbook/libebook/e-book-client.c:2821
-#: ../src/addressbook/libebook/e-book-client.c:2961
-#: ../src/addressbook/libebook/e-book-client.c:3098
-#: ../src/addressbook/libebook/e-book-client.c:3261
-#: ../src/addressbook/libebook/e-book-client.c:3456
-#: ../src/addressbook/libebook/e-book-client.c:3674
+#: ../src/addressbook/libebook/e-book-client.c:2123
+#: ../src/addressbook/libebook/e-book-client.c:2301
+#: ../src/addressbook/libebook/e-book-client.c:2520
+#: ../src/addressbook/libebook/e-book-client.c:2657
+#: ../src/addressbook/libebook/e-book-client.c:2822
+#: ../src/addressbook/libebook/e-book-client.c:2962
+#: ../src/addressbook/libebook/e-book-client.c:3099
+#: ../src/addressbook/libebook/e-book-client.c:3262
+#: ../src/addressbook/libebook/e-book-client.c:3457
+#: ../src/addressbook/libebook/e-book-client.c:3675
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:873
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:275
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:288
@@ -73,8 +74,8 @@ msgstr "L'URL donada «%s» no fa referència a la llibreta d'adreces de CardDAV
 #: ../src/calendar/libecal/e-cal-client.c:6604
 #: ../src/calendar/libecal/e-cal-client.c:6828
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1847
-#: ../src/camel/camel-filter-driver.c:1717
-#: ../src/camel/camel-filter-driver.c:1846
+#: ../src/camel/camel-filter-driver.c:1724
+#: ../src/camel/camel-filter-driver.c:1853
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3327
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3333
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3343
@@ -84,7 +85,7 @@ msgstr "L'URL donada «%s» no fa referència a la llibreta d'adreces de CardDAV
 #: ../src/libedataserver/e-client.c:183
 #: ../src/libedataserver/e-soup-session.c:1239
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
-#: ../src/libedataserverui/e-reminders-widget.c:1994
+#: ../src/libedataserverui/e-reminders-widget.c:2001
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Error desconegut"
@@ -147,7 +148,7 @@ msgid "Loading..."
 msgstr "S'està carregant..."
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1003
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4494
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4495
 msgid "Searching..."
 msgstr "S'està cercant..."
 
@@ -178,12 +179,12 @@ msgstr "La consulta «%s» no està implementada"
 msgid "Invalid Query “%s”"
 msgstr "La consulta «%s» no és vàlida"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1975
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2050
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2031
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2088
 msgid "Requested to delete an unrelated cursor"
 msgstr "S'ha sol·licitat la supressió d'un cursor sense cap relació"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:2046
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2102
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr ""
@@ -195,50 +196,51 @@ msgstr ""
 msgid "Not connected"
 msgstr "No connectat"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:873
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:874
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr ""
 "Ha fallat la vinculació tant amb la versió 2 com la versió 3 vinculades"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:982
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:983
 msgid "Reconnecting to LDAP server..."
 msgstr "S'està tornant a connectar amb el servidor LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1117
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1118
 msgid "Invalid DN syntax"
 msgstr "Sintaxi no vàlida en el nom de domini (DN)"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1133
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4378
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1134
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4379
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "Error de l'LDAP 0x%x (%s)"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1776
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2125
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2138
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1777
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2126
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2139
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: la funció «ldap_first_entry» ha retornat nul"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2053
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2197
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2054
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2198
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: s'ha retornat el tipus de valor %d que no està gestionat"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2340
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2478
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2341
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2479
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5877
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr ""
 "%s: s'ha retornat el tipus de resultat de cerca %d que no està gestionat"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2628
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2629
 msgid "LDAP contact lists cannot be empty."
 msgstr "La llista de contactes LDAP no pot ser buida."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2666
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2667
 #, c-format
 msgid ""
 "Contact lists in LDAP address books require each member to be from the same "
@@ -247,54 +249,54 @@ msgid_plural ""
 "Contact lists in LDAP address books require each member to be from the same "
 "LDAP address book, but %d members could not be recognized."
 msgstr[0] ""
-"La llistes de contactes en llibretes d'adreces LDAP requereixen que tots els"
-" membres estiguin a la mateixa llibreta d'adreces LDAP, però un membre no ha"
-" pogut ser reconegut."
+"La llistes de contactes en llibretes d'adreces LDAP requereixen que tots els "
+"membres estiguin a la mateixa llibreta d'adreces LDAP, però un membre no ha "
+"pogut ser reconegut."
 msgstr[1] ""
-"La llistes de contactes en llibretes d'adreces LDAP requereixen que tots els"
-" membres estiguin a la mateixa llibreta d'adreces LDAP, però %d membres no "
+"La llistes de contactes en llibretes d'adreces LDAP requereixen que tots els "
+"membres estiguin a la mateixa llibreta d'adreces LDAP, però %d membres no "
 "han pogut ser reconeguts."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4317
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4318
 msgid "Receiving LDAP search results..."
 msgstr "S'estan rebent els resultats de la cerca LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4520
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4521
 msgid "Error performing search"
 msgstr "S'ha produït un error en fer la cerca"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4660
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4661
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "S'estan baixant els contactes (%d)..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4761
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:790
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:691
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4762
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:805
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:706
 msgid "Refreshing…"
 msgstr "S'està actualitzant…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5148
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5176
 msgid "The backend does not support bulk additions"
 msgstr "El rerefons no permet les addicions en bloc"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5239
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5267
 msgid "Adding contact to LDAP server..."
 msgstr "S'està afegint un contacte al servidor LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5301
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5329
 msgid "The backend does not support bulk modifications"
 msgstr "El rerefons no permet les modificacions en bloc"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5323
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5351
 msgid "Modifying contact from LDAP server..."
 msgstr "S'està modificant un contacte del servidor LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5395
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5423
 msgid "Removing contact from LDAP server..."
 msgstr "S'està suprimint un contacte del servidor LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5805
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:6074
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "No s'ha pogut obtenir el nom distingit (DN) per l'usuari «%s»"
@@ -327,8 +329,7 @@ msgstr "ID únic"
 #. FILE_AS is not really a structured field - we use a getter/setter
 #. * so we can generate its value if necessary in the getter
 #. Translators: This is an EContact field description, in this case it's a
-#. * preferred user's description (or display name) of the contact. Note
-#. 'File' is a verb here.
+#. * preferred user's description (or display name) of the contact. Note 'File' is a verb here.
 #: ../src/addressbook/libebook-contacts/e-contact.c:154
 msgid "File Under"
 msgstr "Arxiva a"
@@ -690,10 +691,8 @@ msgid "Last Revision"
 msgstr "Última revisió"
 
 #. Translators: This is an EContact field description, in this case it's a
-#. * virtual field, which returns either name of the contact or the
-#. organization
-#. * name, recognized by multiple other fields, where the first filled is
-#. used.
+#. * virtual field, which returns either name of the contact or the organization
+#. * name, recognized by multiple other fields, where the first filled is used.
 #: ../src/addressbook/libebook-contacts/e-contact.c:271
 msgid "Name or Org"
 msgstr "Nom o organització"
@@ -729,10 +728,8 @@ msgstr "Fotografia"
 msgid "Logo"
 msgstr "Logotip"
 
-#. Translators: This is an EContact field description, in this case it's a
-#. name
-#. * of the contact, as specified in
-#. http://tools.ietf.org/html/rfc6350#section-6.2.2
+#. Translators: This is an EContact field description, in this case it's a name
+#. * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
 #: ../src/addressbook/libebook-contacts/e-contact.c:288
 #: ../src/libedataserverui/e-webdav-discover-widget.c:180
 msgid "Name"
@@ -772,19 +769,15 @@ msgid "Wants HTML Mail"
 msgstr "Accepta correu en format HTML"
 
 #. Translators: This is an EContact field description, in this case it's a
-#. * field describing whether it's a Contact list (list of email addresses) or
-#. a
+#. * field describing whether it's a Contact list (list of email addresses) or a
 #. * regular contact for one person/organization/...
 #: ../src/addressbook/libebook-contacts/e-contact.c:304
 msgid "List"
 msgstr "Llista"
 
-#. Translators: This is an EContact field description, in this case it's a
-#. flag
-#. * used to determine whether when sending to Contact lists the addresses
-#. should be
-#. * shown or not to other recipients - basically whether to use BCC field or
-#. CC
+#. Translators: This is an EContact field description, in this case it's a flag
+#. * used to determine whether when sending to Contact lists the addresses should be
+#. * shown or not to other recipients - basically whether to use BCC field or CC
 #. * message header when sending messages to this Contact list.
 #: ../src/addressbook/libebook-contacts/e-contact.c:309
 msgid "List Shows Addresses"
@@ -962,8 +955,7 @@ msgstr "El codi de trucada de país no és vàlid"
 
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:47
 msgid ""
-"Remaining text after the country calling code is too short for a phone "
-"number"
+"Remaining text after the country calling code is too short for a phone number"
 msgstr ""
 "El text que hi ha després del codi de trucada de país és massa curt per a "
 "ser un número de telèfon"
@@ -976,19 +968,19 @@ msgstr "El text és massa curt per a ser un número de telèfon"
 msgid "Text is too long for a phone number"
 msgstr "El text és massa llarg per a ser un número de telèfon"
 
-#: ../src/addressbook/libebook/e-book-client.c:924
+#: ../src/addressbook/libebook/e-book-client.c:925
 #, c-format
 msgid "Unknown book property “%s”"
 msgstr "Es desconeix la propietat «%s» de la llibreta"
 
-#: ../src/addressbook/libebook/e-book-client.c:939
+#: ../src/addressbook/libebook/e-book-client.c:940
 #, c-format
 msgid "Cannot change value of book property “%s”"
 msgstr "No s'ha pogut canviar el valor de la propietat «%s» de la llibreta"
 
-#: ../src/addressbook/libebook/e-book-client.c:1381
-#: ../src/addressbook/libebook/e-book-client.c:1611
-#: ../src/addressbook/libebook/e-book-client.c:1887
+#: ../src/addressbook/libebook/e-book-client.c:1382
+#: ../src/addressbook/libebook/e-book-client.c:1612
+#: ../src/addressbook/libebook/e-book-client.c:1888
 #: ../src/calendar/libecal/e-cal-client.c:1714
 #: ../src/calendar/libecal/e-cal-client.c:1952
 #, c-format
@@ -1001,7 +993,7 @@ msgstr "No s'ha pogut connectar a «%s»: "
 msgid "Client disappeared"
 msgstr "El client ha desaparegut"
 
-#: ../src/addressbook/libedata-book/e-book-backend.c:3253
+#: ../src/addressbook/libedata-book/e-book-backend.c:3435
 #, c-format
 msgid "Addressbook backend does not support cursors"
 msgstr "El rerefons de la llibreta d'adreces no permet cursors"
@@ -1010,8 +1002,7 @@ msgstr "El rerefons de la llibreta d'adreces no permet cursors"
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:2254
 #, c-format
 msgid "Error introspecting unknown summary field “%s”"
-msgstr ""
-"S'ha produït un error en inspeccionar el camp de resum desconegut «%s»"
+msgstr "S'ha produït un error en inspeccionar el camp de resum desconegut «%s»"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1504
 #: ../src/addressbook/libedata-book/e-book-cache.c:549
@@ -1040,9 +1031,9 @@ msgid ""
 "Contact field “%s” of type “%s” specified in summary, but only boolean, "
 "string and string list field types are supported"
 msgstr ""
-"En el resum s'especifica que el camp de contacte «%s» és de tipus «%s», però"
-" només s'admeten camps de tipus booleà, cadena de text o llista de cadenes "
-"de text"
+"En el resum s'especifica que el camp de contacte «%s» és de tipus «%s», però "
+"només s'admeten camps de tipus booleà, cadena de text o llista de cadenes de "
+"text"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3064
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4165
@@ -1072,8 +1063,8 @@ msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
 "supported."
 msgstr ""
-"Els contactes de cerca no s'emmagatzemen sencers a la memòria cau. De manera"
-" que només es poden fer consultes al resum."
+"Els contactes de cerca no s'emmagatzemen sencers a la memòria cau. De manera "
+"que només es poden fer consultes al resum."
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4393
 #: ../src/addressbook/libedata-book/e-data-book.c:868
@@ -1121,18 +1112,18 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "No es pot ordenar per un camp que pot tenir valors múltiples"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6207
-#: ../src/addressbook/libedata-book/e-book-cache.c:5797
+#: ../src/addressbook/libedata-book/e-book-cache.c:5885
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8145
 #, c-format
 msgid ""
-"Tried to step a cursor in reverse, but cursor is already at the beginning of"
-" the contact list"
+"Tried to step a cursor in reverse, but cursor is already at the beginning of "
+"the contact list"
 msgstr ""
 "S'ha provat de moure un cursor cap enrere, però el cursor ja es troba al "
 "començament de la llista de contactes"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6215
-#: ../src/addressbook/libedata-book/e-book-cache.c:5804
+#: ../src/addressbook/libedata-book/e-book-cache.c:5892
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8153
 #, c-format
 msgid ""
@@ -1175,7 +1166,7 @@ msgstr "No s'ha pogut obrir la base de dades %s: %s"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2959
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3022
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3193
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1375
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1390
 #: ../src/libebackend/e-cache.c:1371 ../src/libebackend/e-cache.c:2349
 #: ../src/libebackend/e-cache.c:2389
 #, c-format
@@ -1188,32 +1179,40 @@ msgstr "No s'ha trobat l'objecte «%s»"
 msgid "Object with extra “%s” not found"
 msgstr "No s'ha trobat l'objecte amb «%s» extra"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5584
+#: ../src/addressbook/libedata-book/e-book-cache.c:5606
+msgid "Search by email not supported"
+msgstr "La cerca per correu electrònic no és compatible"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:5617
+msgid "No email address provided"
+msgstr "No s'ha proporcionat cap adreça electrònica"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:5672
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 "Com a mínim s'ha d'especificar un camp de classificació per a utilitzar un "
 "cursor"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5593
+#: ../src/addressbook/libedata-book/e-book-cache.c:5681
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7985
 msgid "Cannot sort by a field that is not a string type"
 msgstr "No es pot ordenar per un camp que no sigui de tipus cadena de text"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1088
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1098
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1103
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1113
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "L'objecte precarregat per l'UID «%s» no és vàlid"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1096
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1106
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1111
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1121
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "L'objecte rebut per l'UID «%s» no és vàlid"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1920
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2376
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3332
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1958
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2414
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3347
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "No s'ha pogut crear la memòria cau «%s»:"
@@ -1224,8 +1223,8 @@ msgid ""
 "addressbook. Delete one of the entries in the “folders” table first."
 msgstr ""
 "No es pot actualitzar la base de dades dels contactes des d'una base de "
-"dades antiga amb més d'una llibreta d'adreces. Primer heu de suprimir una de"
-" les entrades a la taula «carpetes»."
+"dades antiga amb més d'una llibreta d'adreces. Primer heu de suprimir una de "
+"les entrades a la taula «carpetes»."
 
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:6016
 msgid "Invalid query for EbSqlCursor"
@@ -1243,46 +1242,50 @@ msgid "Invalid query: "
 msgstr "La consulta no és vàlida: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1142
+#: ../src/addressbook/libedata-book/e-data-book.c:1192
 msgid "Cannot open book: "
 msgstr "No es pot obrir la llibreta: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1180
+#: ../src/addressbook/libedata-book/e-data-book.c:1230
 msgid "Cannot refresh address book: "
 msgstr "No es pot refrescar la llibreta d'adreces: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1221
+#: ../src/addressbook/libedata-book/e-data-book.c:1271
 msgid "Cannot get contact: "
 msgstr "No es pot obtenir el contacte: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1266
+#: ../src/addressbook/libedata-book/e-data-book.c:1316
 msgid "Cannot get contact list: "
 msgstr "No es pot obtenir la llista de contactes: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1318
+#: ../src/addressbook/libedata-book/e-data-book.c:1368
 msgid "Cannot get contact list uids: "
 msgstr ""
-"No es poden obtenir els identificadors universals de la llista de contactes:"
-" "
+"No es poden obtenir els identificadors universals de la llista de contactes: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1369
+#: ../src/addressbook/libedata-book/e-data-book.c:1419
 msgid "Cannot add contact: "
 msgstr "No es pot afegir el contacte: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1420
+#: ../src/addressbook/libedata-book/e-data-book.c:1470
 msgid "Cannot modify contacts: "
 msgstr "No es poden modificar els contactes: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1472
+#: ../src/addressbook/libedata-book/e-data-book.c:1522
 msgid "Cannot remove contacts: "
 msgstr "No es poden suprimir els contactes: "
+
+#. Translators: This is prefix to a detailed error message
+#: ../src/addressbook/libedata-book/e-data-book.c:1569
+msgid "Cannot find email address: "
+msgstr "No es troba l'adreça electrònica: "
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor.c:771
 msgid "Cursor does not support setting the search expression"
@@ -1373,7 +1376,7 @@ msgstr "El fitxer «%s» no és un component VCALENDAR"
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3746
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3752
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3779
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2559
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2574
 msgid "Unsupported method"
 msgstr "Aquest mètode no està implementat"
 
@@ -1436,15 +1439,13 @@ msgstr "Temps: assolellat"
 msgid "Weather: Thunderstorms"
 msgstr "Temps: llamps i trons"
 
-#. TRANSLATOR: This is the temperature in degrees Fahrenheit (\302\260 is
-#. U+00B0 DEGREE SIGN)
+#. TRANSLATOR: This is the temperature in degrees Fahrenheit (\302\260 is U+00B0 DEGREE SIGN)
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:392
 #, c-format
 msgid "%.1f °F"
 msgstr "%.1f °F"
 
-#. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0
-#. DEGREE SIGN)
+#. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN)
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:395
 #, c-format
 msgid "%.1f °C"
@@ -1683,16 +1684,11 @@ msgid_plural "Every %d weeks"
 msgstr[0] "Cada setmana"
 msgstr[1] "Cada %d setmanes"
 
-#. Translators: This is used to merge set of week day names in a recurrence,
-#. which can contain any
-#. of the week day names. The string always starts with "on DAYNAME", then it
-#. can continue either
-#. with ", DAYNAME" or " and DAYNAME", thus it can be something like "on
-#. Monday and Tuesday"
-#. or "on Monday, Wednesday and Friday" or simply "on Saturday". The '%1$s' is
-#. replaced with
-#. the previously gathered text, while the '%2$s' is replaced with the text to
-#. append.
+#. Translators: This is used to merge set of week day names in a recurrence, which can contain any
+#. of the week day names. The string always starts with "on DAYNAME", then it can continue either
+#. with ", DAYNAME" or " and DAYNAME", thus it can be something like "on Monday and Tuesday"
+#. or "on Monday, Wednesday and Friday" or simply "on Saturday". The '%1$s' is replaced with
+#. the previously gathered text, while the '%2$s' is replaced with the text to append.
 #: ../src/calendar/libecal/e-cal-recur.c:5195
 #, c-format
 msgctxt "recur-description-dayname"
@@ -1815,8 +1811,8 @@ msgstr[1] "cada %d mesos"
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
-msgstr[0] "cada mes"
-msgstr[1] "cada %d mesos"
+msgstr[0] "Cada mes"
+msgstr[1] "Cada %d mesos"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5389
 #: ../src/calendar/libecal/e-cal-recur.c:5710
@@ -1860,218 +1856,187 @@ msgctxt "recur-description"
 msgid "on the last Saturday"
 msgstr "el darrer dissabte"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5417
 msgctxt "recur-description"
 msgid "on the 1st day"
 msgstr "el 1r dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5421
 msgctxt "recur-description"
 msgid "on the 2nd day"
 msgstr "el 2n dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5425
 msgctxt "recur-description"
 msgid "on the 3rd day"
 msgstr "el 3r dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5429
 msgctxt "recur-description"
 msgid "on the 4th day"
 msgstr "el 4t dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5433
 msgctxt "recur-description"
 msgid "on the 5th day"
 msgstr "el 5è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5437
 msgctxt "recur-description"
 msgid "on the 6th day"
 msgstr "el 6è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5441
 msgctxt "recur-description"
 msgid "on the 7th day"
 msgstr "el 7è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5445
 msgctxt "recur-description"
 msgid "on the 8th day"
 msgstr "el 8è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5449
 msgctxt "recur-description"
 msgid "on the 9th day"
 msgstr "el 9è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5453
 msgctxt "recur-description"
 msgid "on the 10th day"
 msgstr "el 10è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5457
 msgctxt "recur-description"
 msgid "on the 11th day"
 msgstr "l'11è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5461
 msgctxt "recur-description"
 msgid "on the 12th day"
 msgstr "el 12è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5465
 msgctxt "recur-description"
 msgid "on the 13th day"
 msgstr "el 13è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5469
 msgctxt "recur-description"
 msgid "on the 14th day"
 msgstr "el 14è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5473
 msgctxt "recur-description"
 msgid "on the 15th day"
 msgstr "el 15è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5477
 msgctxt "recur-description"
 msgid "on the 16th day"
 msgstr "el 16è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5481
 msgctxt "recur-description"
 msgid "on the 17th day"
 msgstr "el 17è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5485
 msgctxt "recur-description"
 msgid "on the 18th day"
 msgstr "el 18è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5489
 msgctxt "recur-description"
 msgid "on the 19th day"
 msgstr "el 19è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5493
 msgctxt "recur-description"
 msgid "on the 20th day"
 msgstr "el 20è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5497
 msgctxt "recur-description"
 msgid "on the 21st day"
 msgstr "el 21è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5501
 msgctxt "recur-description"
 msgid "on the 22nd day"
 msgstr "el 22è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5505
 msgctxt "recur-description"
 msgid "on the 23rd day"
 msgstr "el 23è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5509
 msgctxt "recur-description"
 msgid "on the 24th day"
 msgstr "el 24è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5513
 msgctxt "recur-description"
 msgid "on the 25th day"
 msgstr "el 25è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5517
 msgctxt "recur-description"
 msgid "on the 26th day"
 msgstr "el 26è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5521
 msgctxt "recur-description"
 msgid "on the 27th day"
 msgstr "el 27è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5525
 msgctxt "recur-description"
 msgid "on the 28th day"
 msgstr "el 28è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5529
 msgctxt "recur-description"
 msgid "on the 29th day"
 msgstr "el 29è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5533
 msgctxt "recur-description"
 msgid "on the 30th day"
 msgstr "el 30è dia"
 
-#. Translators: This is added to a monthly recurrence, forming something like
-#. "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: ../src/calendar/libecal/e-cal-recur.c:5537
 msgctxt "recur-description"
 msgid "on the 31st day"
@@ -2280,10 +2245,8 @@ msgid_plural "Every %d years"
 msgstr[0] "Cada any"
 msgstr[1] "Cada %d anys"
 
-#. Translators: This is one of the last possible parts of a recurrence
-#. description.
-#. The text is appended at the end of the complete recurrence description,
-#. making it
+#. Translators: This is one of the last possible parts of a recurrence description.
+#. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 3 days for 10 occurrences"
 #: ../src/calendar/libecal/e-cal-recur.c:5775
 #, c-format
@@ -2292,44 +2255,35 @@ msgid_plural "for %d occurrences"
 msgstr[0] "per una ocurrència"
 msgstr[1] "per %d ocurrències"
 
-#. Translators: This is one of the last possible parts of a recurrence
-#. description.
+#. Translators: This is one of the last possible parts of a recurrence description.
 #. The '%s' is replaced with actual date, thus it can create something like
 #. "until Mon 15.1.2018". The text is appended at the end of the complete
-#. recurrence description, making it for example: "Every 3 days until Mon
-#. 15.1.2018"
+#. recurrence description, making it for example: "Every 3 days until Mon 15.1.2018"
 #: ../src/calendar/libecal/e-cal-recur.c:5811
 #, c-format
 msgctxt "recur-description"
 msgid "until %s"
 msgstr "fins a %s"
 
-#. Translators: This is one of the last possible parts of a recurrence
-#. description.
-#. The text is appended at the end of the complete recurrence description,
-#. making it
+#. Translators: This is one of the last possible parts of a recurrence description.
+#. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 2 months on Tuesday, Thursday and Friday forever"
 #: ../src/calendar/libecal/e-cal-recur.c:5817
 msgctxt "recur-description"
 msgid "forever"
 msgstr "per sempre"
 
-#. Translators: This constructs a complete recurrence description; the '%1$s'
-#. is like "Every 2 weeks",
-#. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10
-#. occurrences", constructing
-#. together one sentence: "Every 2 weeks on Tuesday and Friday for 10
-#. occurrences".
+#. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
+#. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
+#. together one sentence: "Every 2 weeks on Tuesday and Friday for 10 occurrences".
 #: ../src/calendar/libecal/e-cal-recur.c:5827
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s %3$s"
 msgstr "%1$s %2$s %3$s"
 
-#. Translators: This constructs a complete recurrence description; the '%1$s'
-#. is like "Every 2 days",
-#. the '%2$s' is like "for 10 occurrences", constructing together one
-#. sentence:
+#. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
+#. the '%2$s' is like "for 10 occurrences", constructing together one sentence:
 #. "Every 2 days for 10 occurrences".
 #: ../src/calendar/libecal/e-cal-recur.c:5832
 #, c-format
@@ -2337,8 +2291,7 @@ msgctxt "recur-description"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#. Translators: This text is appended at the end of complete recur description
-#. using "%s%s" in
+#. Translators: This text is appended at the end of complete recur description using "%s%s" in
 #. context "recur-description"
 #: ../src/calendar/libecal/e-cal-recur.c:5848
 #, c-format
@@ -2347,12 +2300,9 @@ msgid_plural ", with %d exceptions"
 msgstr[0] ", amb una excepció"
 msgstr[1] ", amb %d excepcions"
 
-#. Translators: This appends text like ", with 3 exceptions" at the end of
-#. complete recurrence description.
-#. The "%1$s" is replaced with the recurrence description, the "%2$s" with the
-#. text about exceptions.
-#. It will form something like: "Every 2 weeks on Tuesday and Friday for 10
-#. occurrences, with 3 exceptions"
+#. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
+#. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
+#. It will form something like: "Every 2 weeks on Tuesday and Friday for 10 occurrences, with 3 exceptions"
 #: ../src/calendar/libecal/e-cal-recur.c:5855
 #, c-format
 msgctxt "recur-description"
@@ -2384,8 +2334,7 @@ msgctxt "recur-description"
 msgid "The memo recurs"
 msgstr "La nota es repeteix"
 
-#. Translators: This adds a prefix in front of the complete recurrence
-#. description.
+#. Translators: This adds a prefix in front of the complete recurrence description.
 #. The '%1$s' is replaced with something like "The meeting recurs" and
 #. the '%2$s' with something like "every 2 days forever", thus forming
 #. sentence like "This meeting recurs every 2 days forever"
@@ -2451,8 +2400,7 @@ msgid_plural "%d minutes"
 msgstr[0] "%d minut"
 msgstr[1] "%d minuts"
 
-#. Translators: here, "second" is the time division (like "minute"), not the
-#. ordinal number (like "third")
+#. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
 #: ../src/calendar/libecal/e-cal-util.c:936
 #, c-format
 msgid "%d second"
@@ -2579,9 +2527,10 @@ msgid ""
 "“description”, or “location”, or “attendee”, or “organizer”, or "
 "“classification”"
 msgstr ""
-"«%s» espera que el primer argument sigui «any» (qualsevol), «summary» "
-"(resum), «description» (descripció), «location» (ubicació), «attendee» "
-"(assistent), «organizer» (organitzador), o «classification» (classificació)"
+"«%s» espera que el primer argument sigui «any» (qualsevol), "
+"«summary» (resum), «description» (descripció), «location» (ubicació), "
+"«attendee» (assistent), «organizer» (organitzador), o "
+"«classification» (classificació)"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:987
 #, c-format
@@ -2634,12 +2583,12 @@ msgstr "No es pot afegir el fus horari sense el component"
 msgid "Cannot add timezone with invalid component"
 msgstr "No es pot afegir el fus horari amb un component no vàlid"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1153
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1168
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "L'objecte rebut per l'UID «%s» no conté cap component esperat"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4206
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4221
 msgid "attachment.dat"
 msgstr "attachment.dat"
 
@@ -2765,141 +2714,135 @@ msgstr "No s'ha pogut suprimir l'entrada de la memòria cau: %s. %s"
 msgid "Could not rename “%s” to %s: %s"
 msgstr "No s'ha pogut canviar el nom de «%s» a %s: %s"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-filter-driver.c:264
 #, c-format
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr "S'estan transferint els missatges filtrats a «%s : %s»"
 
-#: ../src/camel/camel-filter-driver.c:1125
-#: ../src/camel/camel-filter-search.c:934
+#: ../src/camel/camel-filter-driver.c:1126
+#: ../src/camel/camel-filter-search.c:936
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "No s'ha pogut crear el procés fill «%s»: %s"
 
-#: ../src/camel/camel-filter-driver.c:1173
+#: ../src/camel/camel-filter-driver.c:1180
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "S'ha rebut un flux de missatge no vàlid de %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1397
-#: ../src/camel/camel-filter-driver.c:1410
+#: ../src/camel/camel-filter-driver.c:1404
+#: ../src/camel/camel-filter-driver.c:1417
 msgid "Syncing folders"
 msgstr "S'estan sincronitzant les carpetes"
 
-#: ../src/camel/camel-filter-driver.c:1518
+#: ../src/camel/camel-filter-driver.c:1525
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "S'ha produït un error en analitzar el filtre: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1529
+#: ../src/camel/camel-filter-driver.c:1536
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "S'ha produït un error en executar el filtre: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1627
+#: ../src/camel/camel-filter-driver.c:1634
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "No s'ha pogut obrir la carpeta per a cues"
 
-#: ../src/camel/camel-filter-driver.c:1639
+#: ../src/camel/camel-filter-driver.c:1646
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "No s'ha pogut processar la carpeta per a cues"
 
-#: ../src/camel/camel-filter-driver.c:1667
+#: ../src/camel/camel-filter-driver.c:1674
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "S'està obtenint el missatge %d (%d%%)"
 
-#: ../src/camel/camel-filter-driver.c:1676
-#: ../src/camel/camel-filter-driver.c:1699
+#: ../src/camel/camel-filter-driver.c:1683
+#: ../src/camel/camel-filter-driver.c:1706
 #, c-format
 msgid "Failed on message %d"
 msgstr "S'ha produït un error en el missatge %d"
 
-#: ../src/camel/camel-filter-driver.c:1717
-#: ../src/camel/camel-filter-driver.c:1846
+#: ../src/camel/camel-filter-driver.c:1724
+#: ../src/camel/camel-filter-driver.c:1853
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "S'ha produït un error en transferir els missatges: %s"
 
-#: ../src/camel/camel-filter-driver.c:1727
-#: ../src/camel/camel-filter-driver.c:1860
+#: ../src/camel/camel-filter-driver.c:1734
+#: ../src/camel/camel-filter-driver.c:1867
 msgid "Syncing folder"
 msgstr "S'està sincronitzant la carpeta"
 
-#: ../src/camel/camel-filter-driver.c:1732
-#: ../src/camel/camel-filter-driver.c:1868
+#: ../src/camel/camel-filter-driver.c:1739
+#: ../src/camel/camel-filter-driver.c:1875
 msgid "Complete"
 msgstr "Acabat"
 
-#: ../src/camel/camel-filter-driver.c:1800
+#: ../src/camel/camel-filter-driver.c:1807
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "S'està obtenint el missatge %d de %d"
 
-#: ../src/camel/camel-filter-driver.c:1818
+#: ../src/camel/camel-filter-driver.c:1825
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "No s'ha pogut obtenir el missatge %d de %d"
 
-#: ../src/camel/camel-filter-driver.c:2025
-#: ../src/camel/camel-filter-driver.c:2049
+#: ../src/camel/camel-filter-driver.c:2032
+#: ../src/camel/camel-filter-driver.c:2056
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Ha fallat l'execució del filtre «%s»: "
 
-#: ../src/camel/camel-filter-driver.c:2039
+#: ../src/camel/camel-filter-driver.c:2046
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "S'ha produït un error en analitzar el filtre «%s»: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:2058
+#: ../src/camel/camel-filter-driver.c:2065
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "S'ha produït un error en executar el filtre «%s»: %s: %s"
 
-#: ../src/camel/camel-filter-search.c:171
+#: ../src/camel/camel-filter-search.c:173
 msgid "Failed to retrieve message"
 msgstr "No s'ha pogut obtenir el missatge"
 
-#: ../src/camel/camel-filter-search.c:635
+#: ../src/camel/camel-filter-search.c:637
 msgid "Invalid arguments to (system-flag)"
 msgstr "Els arguments per a (system-flag) no són vàlids"
 
-#: ../src/camel/camel-filter-search.c:654
+#: ../src/camel/camel-filter-search.c:656
 msgid "Invalid arguments to (user-tag)"
 msgstr "Els arguments per a (user-tag) no són vàlids"
 
-#: ../src/camel/camel-filter-search.c:1236
+#: ../src/camel/camel-filter-search.c:1238
 msgid "Invalid arguments to (message-location)"
 msgstr "Els arguments per a (message-location) no són vàlids"
 
-#: ../src/camel/camel-filter-search.c:1391
-#: ../src/camel/camel-filter-search.c:1402
+#: ../src/camel/camel-filter-search.c:1451
+#: ../src/camel/camel-filter-search.c:1462
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "S'ha produït un error en executar la cerca de filtres: %s. %s"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-folder.c:171
 #, c-format
 msgid "Storing changes in folder “%s : %s”"
 msgstr "S'estan desant els canvis a la carpeta «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-folder.c:456
 #, c-format
@@ -2908,23 +2851,18 @@ msgid_plural "Learning new spam messages in “%s : %s”"
 msgstr[0] "S'està aprenent del nou missatge brossa a «%s : %s»"
 msgstr[1] "S'està aprenent dels nous missatges brossa a «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-folder.c:499
 #, c-format
 msgid "Learning new ham message in “%s : %s”"
 msgid_plural "Learning new ham messages in “%s : %s”"
 msgstr[0] "S'està aprenent del missatge de correu legítim nou a «%s : %s»"
-msgstr[1] ""
-"S'està aprenent dels missatges de correus legítims nous a «%s : %s»"
+msgstr[1] "S'està aprenent dels missatges de correus legítims nous a «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-folder.c:547
 #, c-format
@@ -2942,106 +2880,88 @@ msgstr "S'estan movent els missatges"
 msgid "Copying messages"
 msgstr "S'estan copiant els missatges"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-folder.c:1258
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
-msgstr ""
-"La informació de quota no està implementada per a la carpeta «%s : %s»"
+msgstr "La informació de quota no està implementada per a la carpeta «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-folder.c:1360
 #, c-format
 msgid "Filtering folder “%s : %s”"
 msgstr "S'està filtrant la carpeta «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-folder.c:3326
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "S'està buidant la carpeta «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-folder.c:3461
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "S'està recuperant el missatge «%s» a «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-folder.c:3686
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "S'està recuperant la informació de la quota per «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-folder.c:3986
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "S'està actualitzant la carpeta «%s : %s»"
 
-#. Translators: The '%s' is an element type name, part of an expressing
-#. language
-#: ../src/camel/camel-folder-search.c:926
-#: ../src/camel/camel-folder-search.c:969
+#. Translators: The '%s' is an element type name, part of an expressing language
+#: ../src/camel/camel-folder-search.c:930
+#: ../src/camel/camel-folder-search.c:973
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) necessita un únic resultat booleà"
 
-#. Translators: Each '%s' is an element type name, part of an expressing
-#. language
-#: ../src/camel/camel-folder-search.c:1007
+#. Translators: Each '%s' is an element type name, part of an expressing language
+#: ../src/camel/camel-folder-search.c:1011
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) no és permès dins de %s"
 
-#. Translators: The '%s' is an element type name, part of an expressing
-#. language
-#: ../src/camel/camel-folder-search.c:1014
-#: ../src/camel/camel-folder-search.c:1022
+#. Translators: The '%s' is an element type name, part of an expressing language
+#: ../src/camel/camel-folder-search.c:1018
+#: ../src/camel/camel-folder-search.c:1026
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) necessita una cadena de tipus de concordança"
 
-#. Translators: The '%s' is an element type name, part of an expressing
-#. language
-#: ../src/camel/camel-folder-search.c:1050
+#. Translators: The '%s' is an element type name, part of an expressing language
+#: ../src/camel/camel-folder-search.c:1054
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) espera un resultat de tipus matriu"
 
-#. Translators: The '%s' is an element type name, part of an expressing
-#. language
-#: ../src/camel/camel-folder-search.c:1060
+#. Translators: The '%s' is an element type name, part of an expressing language
+#: ../src/camel/camel-folder-search.c:1064
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) necessita el conjunt de carpetes"
 
-#: ../src/camel/camel-folder-search.c:2218
-#: ../src/camel/camel-folder-search.c:2392
+#: ../src/camel/camel-folder-search.c:2286
+#: ../src/camel/camel-folder-search.c:2460
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -3050,8 +2970,8 @@ msgstr ""
 "No s'ha pogut analitzar l'expressió de cerca: %s.\n"
 "%s"
 
-#: ../src/camel/camel-folder-search.c:2230
-#: ../src/camel/camel-folder-search.c:2404
+#: ../src/camel/camel-folder-search.c:2298
+#: ../src/camel/camel-folder-search.c:2472
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -3060,18 +2980,15 @@ msgstr ""
 "S'ha produït un error en executar l'expressió de cerca %s:\n"
 "%s"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-folder-summary.c:1662
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Allibera memòria no utilitzada per a la carpeta «%s : %s»"
 
-#. Translators: The '%s' is replaced with the actual path and filename of the
-#. used gpg, like '/usr/bin/gpg2'
+#. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
 #: ../src/camel/camel-gpg-context.c:447
 #, c-format
 msgid "Output from %s:"
@@ -3138,8 +3055,8 @@ msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
 msgstr ""
-"Adoneu-vos que el contingut xifrat no conté informació sobre el destinatari,"
-" de manera que se us demanarà la contrasenya per a cada clau privada "
+"Adoneu-vos que el contingut xifrat no conté informació sobre el destinatari, "
+"de manera que se us demanarà la contrasenya per a cada clau privada "
 "emmagatzemada."
 
 #: ../src/camel/camel-gpg-context.c:1195 ../src/camel/camel-net-utils.c:522
@@ -3164,13 +3081,10 @@ msgstr "Resposta inesperada del GnuPG: %s"
 #: ../src/camel/camel-gpg-context.c:1346
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
-msgstr ""
-"No s'ha pogut xifrar perquè no s'ha especificat cap destinatari vàlid."
+msgstr "No s'ha pogut xifrar perquè no s'ha especificat cap destinatari vàlid."
 
-#. Translators: The first '%s' is replaced with the e-mail address, like
-#. '<user@example.com>';
-#. the second '%s' is replaced with the actual path and filename of the used
-#. gpg, like '/usr/bin/gpg2'
+#. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
+#. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
 #: ../src/camel/camel-gpg-context.c:1359
 #, c-format
 msgid ""
@@ -3181,8 +3095,7 @@ msgstr ""
 "problema corrent és que %s no té importada la clau pública d'aquest "
 "destinatari."
 
-#: ../src/camel/camel-gpg-context.c:2185
-#: ../src/camel/camel-smime-context.c:869
+#: ../src/camel/camel-gpg-context.c:2185 ../src/camel/camel-smime-context.c:869
 msgid "Could not generate signing data: "
 msgstr "No s'han pogut generar les dades de signatura: "
 
@@ -3199,8 +3112,8 @@ msgstr "No s'ha pogut executar el GPG."
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr ""
-"No s'ha pogut verificar la signatura del missatge. El format del missatge no"
-" és correcte"
+"No s'ha pogut verificar la signatura del missatge. El format del missatge no "
+"és correcte"
 
 #: ../src/camel/camel-gpg-context.c:2425
 msgid "Cannot verify message signature: "
@@ -3276,8 +3189,7 @@ msgstr "No s'ha pogut crear el conducte de l'ajudant per a bloquejar: %s"
 #: ../src/camel/camel-lock-client.c:129
 #, c-format
 msgid "Cannot fork locking helper: %s"
-msgstr ""
-"No s'ha pogut crear un procés fill per a l'ajudant per a bloquejar: %s"
+msgstr "No s'ha pogut crear un procés fill per a l'ajudant per a bloquejar: %s"
 
 #: ../src/camel/camel-lock-client.c:216 ../src/camel/camel-lock-client.c:244
 #, c-format
@@ -3388,10 +3300,8 @@ msgstr "Ha fallat la cerca del servidor amfitrió «%s»: %s"
 msgid "Checking reachability of account “%s”"
 msgstr "S'està comprovant l'accessibilitat del compte «%s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-offline-folder.c:175
 #, c-format
@@ -3399,10 +3309,8 @@ msgid "Downloading new messages for offline mode in “%s : %s”"
 msgstr ""
 "S'estan baixant els missatges nous per a treballar fora de línia a «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-offline-folder.c:260
 #, c-format
@@ -3410,22 +3318,18 @@ msgid "Checking download of new messages for offline in “%s : %s”"
 msgstr ""
 "S'està comprovant la baixada de missatges nous fora de línia a «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-offline-folder.c:336
 #, c-format
 msgid "Syncing messages in folder “%s : %s” to disk"
 msgstr "S'estan sincronitzant els missatges de la carpeta «%s : %s» al disc"
 
-#. Translators: The first “%d” is the sequence number of the message, the
-#. second “%d”
+#. Translators: The first “%d” is the sequence number of the message, the second “%d”
 #. is the total number of messages to synchronize.
 #. The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-offline-folder.c:430
 #, c-format
@@ -3488,8 +3392,7 @@ msgstr ""
 msgid "Authentication failed."
 msgstr "Ha fallat l'autenticació."
 
-#. Translators: the 'trace information' term comes from
-#. https://tools.ietf.org/html/rfc4505
+#. Translators: the 'trace information' term comes from https://tools.ietf.org/html/rfc4505
 #. In this case the user set to use an email address as the trace information,
 #. but the provided value is not a valid email address.
 #: ../src/camel/camel-sasl-anonymous.c:84
@@ -3501,8 +3404,7 @@ msgstr ""
 "La informació de la traça de l'adreça electrònica no és vàlida:\n"
 "%s"
 
-#. Translators: the 'trace information' term comes from
-#. https://tools.ietf.org/html/rfc4505
+#. Translators: the 'trace information' term comes from https://tools.ietf.org/html/rfc4505
 #. In this case the user set to use an opaque trace information,
 #. but the provided value looks like an email address.
 #: ../src/camel/camel-sasl-anonymous.c:101
@@ -3514,8 +3416,7 @@ msgstr ""
 "La informació de la traça opaca no és vàlida:\n"
 "%s"
 
-#: ../src/camel/camel-sasl-anonymous.c:115
-#: ../src/libedataserver/e-client.c:135
+#: ../src/camel/camel-sasl-anonymous.c:115 ../src/libedataserver/e-client.c:135
 msgid "Invalid argument"
 msgstr "Argument no vàlid"
 
@@ -3557,8 +3458,8 @@ msgstr "El desafiament del servidor no és vàlid\n"
 #, c-format
 msgid "Server challenge contained invalid “Quality of Protection” token"
 msgstr ""
-"El desafiament del servidor contenia un testimoni «Qualitat de la protecció»"
-" no vàlid"
+"El desafiament del servidor contenia un testimoni «Qualitat de la protecció» "
+"no vàlid"
 
 #: ../src/camel/camel-sasl-digest-md5.c:900
 #, c-format
@@ -3580,8 +3481,7 @@ msgid "GSSAPI"
 msgstr "GSSAPI"
 
 #: ../src/camel/camel-sasl-gssapi.c:90
-msgid ""
-"This option will connect to the server using Kerberos 5 authentication."
+msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr ""
 "Amb aquesta opció es connectarà al servidor que utilitza l'autenticació "
 "basada en Kerberos 5."
@@ -3629,8 +3529,8 @@ msgstr ""
 
 #: ../src/camel/camel-sasl-gssapi.c:213
 msgid ""
-"The input_token contains an invalid signature, or a signature that could not"
-" be verified."
+"The input_token contains an invalid signature, or a signature that could not "
+"be verified."
 msgstr ""
 "L'input_token conté una signatura no vàlida, o bé una signatura que no es "
 "pot verificar."
@@ -3645,8 +3545,7 @@ msgstr ""
 
 #: ../src/camel/camel-sasl-gssapi.c:222
 msgid "The supplied context handle did not refer to a valid context."
-msgstr ""
-"El gestor del context proporcionat no es refereix a cap context vàlid."
+msgstr "El gestor del context proporcionat no es refereix a cap context vàlid."
 
 #: ../src/camel/camel-sasl-gssapi.c:225
 msgid "The consistency checks performed on the input_token failed."
@@ -3695,8 +3594,8 @@ msgstr "Entrada"
 #: ../src/camel/camel-sasl-login.c:33 ../src/camel/camel-sasl-plain.c:37
 msgid "This option will connect to the server using a simple password."
 msgstr ""
-"Amb aquesta opció es connectarà al servidor mitjançant una contrasenya sense"
-" xifrar."
+"Amb aquesta opció es connectarà al servidor mitjançant una contrasenya sense "
+"xifrar."
 
 #: ../src/camel/camel-sasl-login.c:101
 #, c-format
@@ -3712,8 +3611,8 @@ msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
 msgstr ""
-"Aquesta opció us connectarà a un servidor basat en Windows que utilitzi NTLM"
-" / Autenticació de contrasenya segura."
+"Aquesta opció us connectarà a un servidor basat en Windows que utilitzi "
+"NTLM / Autenticació de contrasenya segura."
 
 #: ../src/camel/camel-sasl-plain.c:35
 msgid "PLAIN"
@@ -3735,8 +3634,7 @@ msgstr "UID de l'origen POP"
 #: ../src/camel/camel-sasl-popb4smtp.c:91
 #, c-format
 msgid "POP Before SMTP authentication using an unknown transport"
-msgstr ""
-"POP abans que l'autenticació SMTP en utilitzar un transport desconegut"
+msgstr "POP abans que l'autenticació SMTP en utilitzar un transport desconegut"
 
 #: ../src/camel/camel-sasl-popb4smtp.c:103
 #: ../src/camel/camel-sasl-popb4smtp.c:112
@@ -3750,8 +3648,7 @@ msgid "OAuth2"
 msgstr "OAuth2"
 
 #: ../src/camel/camel-sasl-xoauth2.c:27
-msgid ""
-"This option will use an OAuth 2.0 access token to connect to the server"
+msgid "This option will use an OAuth 2.0 access token to connect to the server"
 msgstr ""
 "Aquesta opció usarà un testimoni d'accés OAuth 2.0 per a connectar amb el "
 "servidor"
@@ -3774,8 +3671,8 @@ msgstr "OAuth2 (Outlook)"
 
 #: ../src/camel/camel-sasl-xoauth2-outlook.c:24
 msgid ""
-"This option will use an OAuth 2.0 access token to connect to the Outlook.com"
-" server"
+"This option will use an OAuth 2.0 access token to connect to the Outlook.com "
+"server"
 msgstr ""
 "Aquesta opció usarà un testimoni d'accés OAuth 2.0 per a connectar amb el "
 "servidor Outlook.com"
@@ -4143,8 +4040,7 @@ msgstr "S'està actualitzant la carpeta de cerca «%s»"
 msgid "Automatically _update on change in source folders"
 msgstr "Act_ualitza automàticament si canvien les carpetes fonts"
 
-#. Translators: 'Unmatched' is a folder name under Search folders where are
-#. shown
+#. Translators: 'Unmatched' is a folder name under Search folders where are shown
 #. * all messages not belonging into any other configured search folder
 #: ../src/camel/camel-vee-store.c:34
 msgid "Unmatched"
@@ -4219,10 +4115,8 @@ msgstr "No s'han pogut moure els missatges suprimits"
 msgid "Unable to move messages to Inbox"
 msgstr "No s'han pogut moure els missatges a la safata d'entrada"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:765
 #, c-format
@@ -4230,17 +4124,14 @@ msgid "No quota information available for folder “%s : %s”"
 msgstr "La informació de quota no està disponible per a la carpeta «%s : %s»"
 
 #. transfer ownership to 'rcf'
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1032
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr ""
-"S'estan suprimint els fitxers de memòria cau obsolets en la carpeta «%s : "
-"%s»"
+"S'estan suprimint els fitxers de memòria cau obsolets en la carpeta «%s : %s»"
 
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1124
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:832
@@ -4261,10 +4152,8 @@ msgstr "No s'ha pogut crear el resum de les carpetes per a %s"
 msgid "Could not create cache for %s: "
 msgstr "No s'ha pogut crear la de memòria cau per a %s: "
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1463
 #, c-format
@@ -4511,10 +4400,8 @@ msgstr "No es pot crear el fitxer de cua: "
 msgid "Error appending message"
 msgstr "S'ha produït un error en afegir el missatge"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5412
 #, c-format
@@ -4525,10 +4412,8 @@ msgstr "S'estan cercant els missatges canviats a «%s : %s»"
 msgid "Error scanning changes"
 msgstr "Error en escanejar els canvis"
 
-#. Translators: The first “%s” is replaced with an account name and the second
-#. “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional,
-#. as
+#. Translators: The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5437
 #, c-format
@@ -4540,70 +4425,69 @@ msgstr ""
 msgid "Error fetching message info"
 msgstr "Error en obtenir la informació del missatge"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5598
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5607
 msgid "Error running STATUS"
 msgstr "Error en executar STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6178
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6233
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6297
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6187
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6242
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6306
 msgid "Error syncing changes"
 msgstr "S'ha produït un error en sincronitzar els canvis"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6191
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6243
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6316
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6457
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6200
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6252
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6325
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6466
 msgid "Error expunging message"
 msgstr "S'ha produït un error en buidar el missatge"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6539
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6548
 msgid "Error fetching folders"
 msgstr "S'ha produït un error en recollir les carpetes"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6547
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6556
 msgid "Error fetching subscribed folders"
 msgstr "Error d'obtenció de les carpetes subscrites"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6604
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6613
 msgid "Error creating folder"
 msgstr "S'ha produït un error en crear la carpeta"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6654
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6663
 msgid "Error deleting folder"
 msgstr "S'ha produït un error en suprimir la carpeta"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6700
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6709
 msgid "Error renaming folder"
 msgstr "S'ha produït un error en canviar el nom de la carpeta"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6732
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6741
 msgid "Error subscribing to folder"
 msgstr "S'ha produït un error en subscriure's a la carpeta"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6768
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6777
 msgid "Error unsubscribing from folder"
 msgstr "S'ha produït un error en cancel·lar la subscripció a la carpeta"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6808
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6817
 msgid "IMAP server does not support quotas"
 msgstr "El servidor d'IMAP no implementa les quotes"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6820
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6829
 msgid "Error retrieving quota information"
 msgstr "S'ha produït un error en recuperar la informació de la quota"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6885
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6894
 msgid "Search failed"
 msgstr "Ha fallat la cerca"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:7013
+#: ../src/camel/providers/imapx/camel-imapx-server.c:7022
 msgid "Error running IDLE"
 msgstr "Error en executar IDLE"
 
-#. create a dummy "." parent inbox, use to scan, then put back at the top
-#. level
+#. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../src/camel/providers/imapx/camel-imapx-store.c:353
 #: ../src/camel/providers/local/camel-maildir-folder.c:477
 #: ../src/camel/providers/local/camel-maildir-store.c:342
@@ -4635,8 +4519,7 @@ msgid "Password"
 msgstr "Contrasenya"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:1069
-msgid ""
-"This option will connect to the IMAP server using a plaintext password."
+msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Amb aquesta opció es connectarà al servidor IMAP mitjançant una contrasenya "
 "de text sense xifrar."
@@ -4662,16 +4545,11 @@ msgstr "S'està recuperant la llista de carpetes per a «%s»"
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "El nom de carpeta «%s» no és vàlid perquè conté el caràcter «%c»"
 
-#. Translators: The strings in "IMAPDefaults" context are folder names as can
-#. be presented
-#. by the server; There's checked for the localized version of it and for the
-#. non-localized
-#. version as well. It's always the folder name (eventually path) as provided
-#. by the server,
-#. when returned in given localization. it can be checked semi-easily in the
-#. case of
-#. the GMail variants, by changing the GMail interface language in the GMail
-#. Preferences.
+#. Translators: The strings in "IMAPDefaults" context are folder names as can be presented
+#. by the server; There's checked for the localized version of it and for the non-localized
+#. version as well. It's always the folder name (eventually path) as provided by the server,
+#. when returned in given localization. it can be checked semi-easily in the case of
+#. the GMail variants, by changing the GMail interface language in the GMail Preferences.
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2744
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
@@ -4875,8 +4753,10 @@ msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
-"Per a llegir i emmagatzemar correu local en fitxers externs per a cues mbox estàndard.\n"
-"També es pot utilitzar per a llegir un arbre de carpetes a l'estil de l'Elm, el Pine o el Mutt."
+"Per a llegir i emmagatzemar correu local en fitxers externs per a cues mbox "
+"estàndard.\n"
+"També es pot utilitzar per a llegir un arbre de carpetes a l'estil de l'Elm, "
+"el Pine o el Mutt."
 
 #: ../src/camel/providers/local/camel-local-provider.c:136
 msgid "Standard Unix mbox spool directory"
@@ -5175,8 +5055,8 @@ msgstr "No s'ha pogut desar la carpeta: %s"
 #: ../src/camel/providers/local/camel-mbox-summary.c:1075
 #, c-format
 msgid ""
-"MBOX file is corrupted, please fix it. (Expected a From line, but didn’t get"
-" it.)"
+"MBOX file is corrupted, please fix it. (Expected a From line, but didn’t get "
+"it.)"
 msgstr ""
 "El fitxer mbox està malmès, intenteu arreglar-ho. (S'esperava una línia "
 "From, però no s'ha trobat.)"
@@ -5381,8 +5261,7 @@ msgstr ""
 msgid "In the subscription _dialog, show relative folder names"
 msgstr "Mostra noms de carpeta relatius al _diàleg de subscripció"
 
-#. Translators: The '%s' is replaced with a spin button with the actual value
-#. to use
+#. Translators: The '%s' is replaced with a spin button with the actual value to use
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:51
 #, c-format
 msgid "Download only up to %s latest messages"
@@ -5465,8 +5344,8 @@ msgstr ""
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
-"No es pot crear una carpeta en un magatzem de notícies. Heu de subscriure-"
-"us-hi."
+"No es pot crear una carpeta en un magatzem de notícies. Heu de subscriure-us-"
+"hi."
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1376
 #, c-format
@@ -5638,8 +5517,8 @@ msgid ""
 "is the only option supported by many POP servers."
 msgstr ""
 "Aquesta opció us connectarà al servidor POP mitjançant una contrasenya de "
-"text sense xifrar. És l'única opció que funciona amb la majoria de servidors"
-" POP."
+"text sense xifrar. És l'única opció que funciona amb la majoria de servidors "
+"POP."
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:94
 msgid ""
@@ -5728,12 +5607,12 @@ msgstr ""
 #: ../src/camel/providers/pop3/camel-pop3-store.c:761
 #, c-format
 msgid ""
-"Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation"
-" attack suspected. Please contact your admin."
+"Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
+"attack suspected. Please contact your admin."
 msgstr ""
-"No s'ha pogut connectar al servidor POP %s:\tS'ha rebut un ID APOP no vàlid."
-" És possible que s'hagi produït un atac de personificació; és recomanable "
-"que contacteu l'administrador del sistema."
+"No s'ha pogut connectar al servidor POP %s:\tS'ha rebut un ID APOP no vàlid. "
+"És possible que s'hagi produït un atac de personificació; és recomanable que "
+"contacteu l'administrador del sistema."
 
 #. Translators: Last %s is an optional explanation
 #. * beginning with ": " separator.
@@ -5757,7 +5636,6 @@ msgid "POP3 stores have no folder hierarchy"
 msgstr "Els magatzems POP3 no tenen cap jerarquia de carpetes"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-provider.c:31
-#: ../src/services/evolution-source-registry/builtin/sendmail.source.in.h:1
 msgid "Sendmail"
 msgstr "Sendmail"
 
@@ -5993,14 +5871,12 @@ msgstr ""
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1182
 msgid "Requested action not taken: insufficient system storage"
-msgstr ""
-"No s'ha fet l'acció sol·licitada: no hi ha prou espai d'emmagatzematge"
+msgstr "No s'ha fet l'acció sol·licitada: no hi ha prou espai d'emmagatzematge"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1184
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr ""
-"S'ha interromput l'acció sol·licitada: s'ha excedit l'emmagatzematge "
-"assignat"
+"S'ha interromput l'acció sol·licitada: s'ha excedit l'emmagatzematge assignat"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1186
 msgid "Requested action not taken: mailbox name not allowed"
@@ -6085,436 +5961,6 @@ msgstr "Ha fallat l'ordre RSET: "
 msgid "QUIT command failed: "
 msgstr "Ha fallat l'ordre QUIT: "
 
-#: ../data/org.gnome.evolution-data-server.addressbook.gschema.xml.in.h:1
-msgid "Contact UID of a user"
-msgstr "L'identificador del contacte d'un usuari"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:1
-msgid "Birthday and anniversary reminder"
-msgstr "Recordatori d'aniversari i de commemoració"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:2
-msgid "Whether to set a reminder for birthdays and anniversaries"
-msgstr ""
-"Si s'ha d'establir un recordatori per als aniversaris i les commemoracions"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:3
-msgid "Birthday and anniversary reminder value"
-msgstr "Valor del recordatori d'aniversari i de commemoració"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:4
-msgid "Number of units for determining a birthday or anniversary reminder"
-msgstr ""
-"El nombre d'unitats per a determinar un recordatori del naixement o de "
-"l'aniversari"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:5
-msgid "Birthday and anniversary reminder units"
-msgstr "Unitats per al recordatori d'aniversari i de commemoració"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:6
-msgid ""
-"Units for a birthday or anniversary reminder, “minutes”, “hours” or “days”"
-msgstr ""
-"Unitats per al recordatori d'aniversari o de commemoració, pot ser: "
-"«minutes» (minuts), «hours» (hores) o «days» (dies)"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:7
-msgid "Past reminders for EReminderWatcher"
-msgstr "Recordatoris anteriors per EReminderWatcher"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:8
-msgid "Snoozed reminders for EReminderWatcher"
-msgstr "Repetir recordatoris per EReminderWatcher"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:9
-msgid "Reminder programs"
-msgstr "Programes de recordatori"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:10
-msgid "Programs that are allowed to be run by reminders"
-msgstr "Programes que es poden executar per recordatoris"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:11
-msgid "Show reminders in notification tray only"
-msgstr "Mostrar recordatoris només a la safata de notificacions"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:12
-msgid ""
-"When set to true, the reminders are shown only in the notification tray, "
-"otherwise the reminders dialog is shown immediately"
-msgstr ""
-"Quan s'estableix a cert, els recordatoris només es mostren a la safata de "
-"notificació, en cas contrari el quadre de diàleg dels recordatoris es "
-"mostrarà immediatament"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:13
-msgid "Show reminder notification dialog always on top"
-msgstr ""
-"Mostra el quadre de diàleg de notificacions de recordatoris a la part "
-"superior"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:14
-msgid ""
-"Whether or not to show reminder notification dialog always on top. Note this"
-" works only as a hint for the window manager, which may or may not obey it."
-msgstr ""
-"Si es mostrarà o no un quadre de diàleg de notificacions de recordatoris "
-"sempre a la part superior. Tingueu en compte que això només funciona com a "
-"suggeriment per al gestor de finestres, que pot o no obeir-lo."
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:15
-msgid "X position of the reminder notification dialog"
-msgstr "posició X del quadre de diàleg de notificacions de recordatoris"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:16
-msgid "Y position of the reminder notification dialog"
-msgstr "posició Y del quadre de diàleg de notificacions de recordatoris"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:17
-msgid "Width of the reminder notification dialog"
-msgstr "Amplada del quadre de diàleg de notificacions de recordatoris"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:18
-msgid "Height of the reminder notification dialog"
-msgstr "Alçada del quadre de diàleg de notificacions de recordatoris"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
-msgid "Size in pixels of the event list in the reminder notification dialog"
-msgstr ""
-"Mida en píxels de la llista d'esdeveniments del quadre de diàleg de "
-"notificacions de recordatoris"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
-msgid "Show reminder notification for completed tasks"
-msgstr "Mostra la notificació de recordatori per a tasques completades"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
-msgid "Show reminder notification for past events"
-msgstr "Mostra la notificació de recordatori per a esdeveniments passats"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
-msgid "The last used snooze time, in minutes"
-msgstr "Últim temps de repetició usat, en minuts"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:23
-msgid "User-defined snooze times, in minutes"
-msgstr "Temps de repetició definit per l'usuari, en minuts"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:1
-msgid "Whether the migration of old setting was already done"
-msgstr "Si la migració de la configuració antiga ja s'ha fet"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:2
-msgid "An absolute path where the gpg (or gpg2) binary is"
-msgstr "El camí absolut en què el binari gpg (o gpg2) és"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:3
-msgid ""
-"An example is “/usr/bin/gpg”; when it is left empty, or an incorrect value "
-"is set, then it will be searched for. Change requires restart of the "
-"application."
-msgstr ""
-"Un exemple és «/usr/bin/gpg». Si no s'ha emplenat o no existeix, se cerca. "
-"Si es canvia cal reiniciar l'aplicació."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:4
-msgid "Whether to load photos of signers/encrypters"
-msgstr "Si cal carregar fotografies de les signatures/xifrats"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:5
-msgid ""
-"When set to “true”, tries to load also photo of the signers/encrypters, if "
-"available in the key/certificate."
-msgstr ""
-"Quan s'estableix com «true» (cert) , intenteu carregar alguna fotografia de "
-"la signatura/xifrat, si és disponible a la clau/certificat."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:6
-msgid "Override SMTP HELO/EHLO argument"
-msgstr "Sobreescriu l'argument SMTP HELO/EHLO"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:7
-msgid ""
-"When not empty, it's used as the SMTP HELO/EHLO argument, instead of the "
-"local host name/IP."
-msgstr ""
-"Quan no és buit, s'utilitza com a argument SMTP HELO/EHLO, en lloc del nom o"
-" la IP de l'amfitrió local."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
-msgid "Array of user header names"
-msgstr "Matriu de noms de capçalera d'usuari"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
-msgid ""
-"These headers can be stored in the folder summary, eventually being visible "
-"in the GUI. The value can contain a pipe character ('|'), which delimits the"
-" display name from the header name. Example: 'Span Score|X-Spam-Score'"
-msgstr ""
-"Aquestes capçaleres es poden emmagatzemar en el resum de la carpeta, i "
-"eventualment es poden veure a la IGU. El valor pot contenir un caràcter de "
-"canonada («|»), que delimita el nom de visualització del nom de la "
-"capçalera. Exemple: «Span Score|X-Spam-Score»"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
-msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
-msgstr "Nom GIO de GNetworkMonitor per a usar a la instància ENetworkMonitor"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
-msgid ""
-"When set to an unknown value, then the default GNetworkMonitor is used in "
-"the background. A special value “always-online” is used for no network "
-"monitoring."
-msgstr ""
-"Quan s'estableix un valor desconegut, llavors el GNetworkMonitor  per "
-"defecte s'utilitza en segon pla. El valor especial «always-online» "
-"s'utilitza per no monitorar xarxes."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
-msgid ""
-"A full path to a directory where .source files with preconfigured options "
-"can be stored"
-msgstr ""
-"Es pot emmagatzemar el camí complet al directori on es trobin els fitxers "
-".source amb les opcions preconfigurades"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
-msgid ""
-"This directory, if filled with an existing path, is checked additionally to "
-"XDG configure directories."
-msgstr ""
-"Aquest directori, si s'omple amb un camí, es comprova addicionalment per a "
-"configurar directoris XDG."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
-msgid "A list of variables which can be part of the autoconfig .source files"
-msgstr ""
-"Una llista de variables poden formar part dels fitxers .source (font) "
-"d'autoconfiguració"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
-msgid ""
-"Each item of the array is expected to be of the form: name=value. These "
-"variables are checked before environment variables, but after the predefined"
-" USER, REALNAME and HOST variables."
-msgstr ""
-"S'espera que cada element de la matriu sigui de la forma: nom=valor. "
-"Aquestes variables són verificades abans que les variables de sistema, però "
-"després de les variables predefinides USER (USUARI), REALNAME (NOM REAL) i "
-"HOST (AMFITRIÓ)."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
-msgid "A list of hints for OAuth2 services"
-msgstr "Una llista de suggeriments per als serveis d'OAuth2"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
-msgid ""
-"Users can extend the list of supported protocols and hostnames for defined "
-"OAuth2 services, in addition to those hard-coded. Each line can be of the "
-"form: servicename[-protocol]:hostname1,hostname2,... where “servicename” is "
-"the actual service name; the “-protocol” is optional, and if written, then "
-"the service can be used only if both “protocol” and “hostnameX” match; the "
-"“hostnameX” is the actual host name to compare with, case insensitively. "
-"Each line can contain multiple values, separated by comma. There can be "
-"provided multiple lines for one OAuth2 service. Note that the actual URL "
-"where the token is requested and refreshed cannot be changed here, the "
-"hostname is to allow other servers, where the OAuth2 service can be used. "
-"Examples: Company:mail.company.com — enables “Company” OAuth2 authentication"
-" for “mail.company.com” host Company-CalDAV:caldav.company.com — enables "
-"“Company” OAuth2 authentication for any “CalDAV” source, which reads data "
-"from “caldav.company.com” host"
-msgstr ""
-"Els usuaris poden ampliar la llista dels protocols i els noms d'amfitrió "
-"admesos per als serveis OAuth2 definits, a més a més dels que ja hi ha al "
-"codi. Cada línia pot tenir la forma següent: servicename [-protocol]: "
-"hostname1, hostname2, ... on «servicename» és el nom del servei real; el "
-"«-protocol» és opcional i, si s'escriu, el servei només es pot utilitzar si "
-"coincideixen amb «protocol» i «nom del servidor X»; el «nom de l'amfitrióX» "
-"és el nom de l'amfitrió real per a comparar-lo, sense distingir majúscules "
-"de minúscules. Cada línia pot contenir diversos valors, separats per coma. "
-"Es poden proporcionar diverses línies per a un servei OAuth2. Tingueu en "
-"compte que l'URL real on es demana i actualitza el testimoni no es pot "
-"canviar aquí, el nom d'amfitrió és per a permetre a altres servidors, on es "
-"pugui utilitzar el servei OAuth2. Exemples: «Company:mail.company.com»: "
-"permet l'autenticació «Company» OAuth2 per a l'amfitrió. «mail.company.com»,"
-" «Company-CalDAV:caldav.company.com» - permet l'autenticació «Company» "
-"OAuth2 per qualsevol font «CalDAV», que llegeix dades de l'amfitrió de "
-"«caldav.company.com»"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
-msgid ""
-"An OAuth2 client ID to use to connect to Google servers, instead of the one "
-"provided during build time"
-msgstr ""
-"Un ID de client OAuth2 que s'utilitza per a connectar als servidors Google, "
-"en comptes del que proveeix el programa"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
-msgid ""
-"User-specified OAuth2 client ID for Google servers. Empty string means to "
-"use the one provided during build time. Change of this requires restart."
-msgstr ""
-"Un ID de client OAuth2 pels servidors Google. Una cadena buida vol dir que "
-"s'utilitza el que proveeix el programa. Canviar això requereix reiniciar."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
-msgid ""
-"An OAuth2 client secret to use to connect to Google servers, instead of the "
-"one provided during build time"
-msgstr ""
-"Un secret de client OAuth2 que s'utilitza per a connectar als servidors "
-"Google, en comptes del que proveeix el programa"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
-msgid ""
-"User-specified OAuth2 client secret for Google servers. Empty string means "
-"to use the one provided during build time. Change of this requires restart."
-msgstr ""
-"El secret de client OAuth2 especificat per l'usuari que s'utilitza per a "
-"connectar als servidors Google. Una cadena buida vol dir que s'utilitza el "
-"que proveeix el programa. Canviar això requereix reiniciar."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:22
-msgid ""
-"An OAuth2 client ID to use to connect to Outlook servers, instead of the one"
-" provided during build time"
-msgstr ""
-"Un ID de client OAuth2 que s'utilitza per a connectar als servidors Outlook,"
-" en comptes del que proveeix el programa"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:23
-msgid ""
-"User-specified OAuth2 client ID for Outlook servers. Empty string means to "
-"use the one provided during build time. Change of this requires restart."
-msgstr ""
-"L'ID de client OAuth2 que s'utilitza per a connectar als servidors Outlook. "
-"Una cadena buida vol dir que s'utilitza el que proveeix el programa. Canviar"
-" això requereix reiniciar."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
-msgid ""
-"An OAuth2 client secret to use to connect to Outlook servers, instead of the"
-" one provided during build time"
-msgstr ""
-"Un secret de client OAuth2 que s'utilitza per a connectar als servidors "
-"Outlook, en comptes del que proveeix el programa"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
-msgid ""
-"User-specified OAuth2 client secret for Outlook servers. Empty string means "
-"to use the one provided during build time. Change of this requires restart."
-msgstr ""
-"El secret de client OAuth2 especificat per l'usuari que s'utilitza per als "
-"servidors Outlook. Una cadena buida vol dir que s'utilitza el que proveeix "
-"el programa. Canviar això requereix reiniciar."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
-msgid ""
-"An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
-"provided during build time"
-msgstr ""
-"Un ID de client OAuth2 que s'utilitza per a connectar als servidors Yahoo!, "
-"en comptes del que proveeix el programa"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
-msgid ""
-"User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
-"use the one provided during build time. Change of this requires restart."
-msgstr ""
-"Un ID de client OAuth2 pels servidors Yahoo!. Una cadena buida vol dir que "
-"s'utilitza el que proveeix el programa. Canviar això requereix reiniciar."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:28
-msgid ""
-"An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
-"one provided during build time"
-msgstr ""
-"Un secret de client OAuth2 que s'utilitza per a connectar als servidors "
-"Yahoo!, en comptes del que proveeix el programa"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:29
-msgid ""
-"User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
-"to use the one provided during build time. Change of this requires restart."
-msgstr ""
-"El secret de client OAuth2 especificat per l'usuari que s'utilitza per a "
-"connectar als servidors Yahoo!. Una cadena buida vol dir que s'utilitza el "
-"que proveeix el programa. Canviar això requereix reiniciar."
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
-msgid "(Deprecated) Proxy type to use"
-msgstr "(Obsolet) El tipus de servidor intermediari que s'ha d'utilitzar"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:2
-msgid ""
-"This key was deprecated in version 3.12 and should no longer be used. Proxy "
-"settings are now integrated into Evolution-Data-Server’s account system. See"
-" the ESourceProxy API documentation for details."
-msgstr ""
-"La clau és obsoleta en la versió 3.12 i no s'ha de fer servir. Els "
-"paràmetres de servidor intermediari estan integrats al sistema de comptes de"
-" l'Evolution-Data-Server. Vegeu la documentació de l'API ESourceProxy per a "
-"més informació."
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
-msgid "(Deprecated) Whether to use http-proxy"
-msgstr "(Obsolet) Si s'utilitza un servidor intermediari HTTP"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:4
-msgid "(Deprecated) Whether proxy server requires authentication"
-msgstr "(Obsolet) Si el servidor intermediari requereix autenticació"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:5
-msgid "(Deprecated) Host name for HTTP requests"
-msgstr "(Obsolet) Nom de l'ordinador on fer les sol·licituds HTTP"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:6
-msgid "(Deprecated) Port number for HTTP requests"
-msgstr "(Obsolet) Número de port on fer les sol·licituds HTTP"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:7
-msgid "(Deprecated) Proxy authentication user name"
-msgstr "(Obsolet) Nom d'usuari per l'autenticació del servidor intermediari"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:8
-msgid "(Deprecated) Proxy authentication password"
-msgstr "(Obsolet) Contrasenya per l'autenticació del servidor intermediari"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:9
-msgid "(Deprecated) List of hosts to connect to without proxy"
-msgstr ""
-"(Obsolet) Llista d'amfitrions als quals es connectarà sense servidor "
-"intermediari"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:10
-msgid "(Deprecated) Host name for HTTPS requests"
-msgstr "(Obsolet) Nom de l'amfitrió on fer les sol·licituds HTTPS"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:11
-msgid "(Deprecated) Port number for HTTPS requests"
-msgstr "(Obsolet) Número de port on fer les sol·licituds HTTPS"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:12
-msgid "(Deprecated) Host name for SOCKS requests"
-msgstr "(Obsolet) Nom de l'ordinador per a fer les sol·licituds SOCKS"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:13
-msgid "(Deprecated) Port number for SOCKS requests"
-msgstr "(Obsolet) Número de port on fer les sol·licituds SOCKS"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:14
-msgid "(Deprecated) Automatic proxy configuration URL"
-msgstr "(Obsolet) URL de configuració automàtica del servidor intermediari"
-
-#: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:1
-msgid "Evolution Alarm Notify"
-msgstr "Notificador d'alarmes Evolution"
-
-#: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:2
-msgid "Calendar event notifications"
-msgstr "Notificació d'esdeveniments del calendari"
-
 #: ../src/libebackend/e-cache.c:751
 msgid "Out of memory"
 msgstr "No hi ha prou memòria"
@@ -6544,8 +5990,7 @@ msgstr "No hi ha cap font per a l'UID «%s»"
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr ""
-"No es pot trobar el rerefons de fàbrica per a la font «%s» i l'extensió "
-"«%s»."
+"No es pot trobar el rerefons de fàbrica per a la font «%s» i l'extensió «%s»."
 
 #: ../src/libebackend/e-server-side-source.c:139
 #, c-format
@@ -6714,8 +6159,7 @@ msgctxt "CategoryName"
 msgid "Phone Calls"
 msgstr "Trucades de telèfon"
 
-#. Translators: "Status" is a category name; it can mean anything user wants
-#. to
+#. Translators: "Status" is a category name; it can mean anything user wants to
 #: ../src/libedataserver/e-categories.c:65
 msgctxt "CategoryName"
 msgid "Status"
@@ -6829,8 +6273,7 @@ msgstr "S'ha esgotat el temps d'espera"
 msgid "Malformed, no message body set"
 msgstr "Mal format, no s'ha establert el cos de missatge"
 
-#. Translators: The first %s is a display name of the source, the second is
-#. its UID and
+#. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
 #: ../src/libedataserver/e-oauth2-service.c:1203
 #, c-format
@@ -6851,8 +6294,7 @@ msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 "No s'ha pogut actualitzar el testimoni d'accés. Torneu a entrar al servidor."
 
-#. Translators: The first %s is a display name of the source, the second is
-#. its UID.
+#. Translators: The first %s is a display name of the source, the second is its UID.
 #: ../src/libedataserver/e-oauth2-service.c:1464
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
@@ -6866,22 +6308,19 @@ msgstr ""
 "El testimoni d'accés ha vençut i ha fallat actualitzar-lo. Torneu a entrar "
 "al servidor."
 
-#. Translators: This is a user-visible string, display name of an OAuth2
-#. service.
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: ../src/libedataserver/e-oauth2-service-google.c:56
 msgctxt "OAuth2Service"
 msgid "Google"
 msgstr "Google"
 
-#. Translators: This is a user-visible string, display name of an OAuth2
-#. service.
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: ../src/libedataserver/e-oauth2-service-outlook.c:57
 msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
 
-#. Translators: This is a user-visible string, display name of an OAuth2
-#. service.
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: ../src/libedataserver/e-oauth2-service-yahoo.c:53
 msgctxt "OAuth2Service"
 msgid "Yahoo!"
@@ -7094,8 +6533,8 @@ msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request. The used URI was: %s"
 msgstr ""
-"El servidor respon amb una pàgina HTML, el que pot significar és que hi hagi"
-" un error al servidor o amb la sol·licitud del client. L'URI utilitzat va "
+"El servidor respon amb una pàgina HTML, el que pot significar és que hi hagi "
+"un error al servidor o amb la sol·licitud del client. L'URI utilitzat va "
 "ser: %s"
 
 #: ../src/libedataserver/e-webdav-session.c:1003
@@ -7104,26 +6543,22 @@ msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request."
 msgstr ""
-"El servidor respon amb una pàgina HTML, el que pot significar és que hi hagi"
-" un error al servidor o amb la sol·licitud del client."
+"El servidor respon amb una pàgina HTML, el que pot significar és que hi hagi "
+"un error al servidor o amb la sol·licitud del client."
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
-#. The second '%s' is replaced with a reason phrase of the error (user
-#. readable text).
-#. The last '%s' is replaced with detailed error text, as returned by the
-#. server.
+#. The second '%s' is replaced with a reason phrase of the error (user readable text).
+#. The last '%s' is replaced with detailed error text, as returned by the server.
 #: ../src/libedataserver/e-webdav-session.c:1024
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
 msgstr "%s: Codi d'error HTTP %d (%s): %s"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
-#. The '%s' is replaced with a reason phrase of the error (user readable
-#. text).
-#. The last '%s' is replaced with detailed error text, as returned by the
-#. server.
+#. The '%s' is replaced with a reason phrase of the error (user readable text).
+#. The last '%s' is replaced with detailed error text, as returned by the server.
 #: ../src/libedataserver/e-webdav-session.c:1032
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
@@ -7132,16 +6567,14 @@ msgstr "No s'ha pogut amb el codi d'error HTTP %d (%s): %s"
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
-#. The second '%s' is replaced with a reason phrase of the error (user
-#. readable text).
+#. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #: ../src/libedataserver/e-webdav-session.c:1047
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
 msgstr "%s: Codi d'error HTTP %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
-#. The '%s' is replaced with a reason phrase of the error (user readable
-#. text).
+#. The '%s' is replaced with a reason phrase of the error (user readable text).
 #: ../src/libedataserver/e-webdav-session.c:1053
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
@@ -7302,8 +6735,7 @@ msgstr "El privilegi de l'entrada del control d'accés no pot ser NULL."
 msgid "Could not open the link."
 msgstr "No s'ha pogut obrir l'enllaç."
 
-#. To Translators: The text is concatenated to a form: "Ctrl-click to open a
-#. link http://www.example.com"
+#. To Translators: The text is concatenated to a form: "Ctrl-click to open a link http://www.example.com"
 #: ../src/libedataserverui/e-buffer-tagger.c:548
 msgid "Ctrl-click to open a link"
 msgstr "Ctrl-clic per a obrir un enllaç"
@@ -7336,41 +6768,35 @@ msgstr "No s'ha pogut obtenir un testimoni d'accés per a «%s»: %s"
 msgid "Requesting access token, please wait..."
 msgstr "S'està sol·licitant el testimoni d'accés; espereu..."
 
-#. Translators: The %s is replaced with an OAuth2 service display name, like
-#. the strings from "OAuth2Service" translation context,
-#. thus it can form a string like "Google Address Book authentication
-#. request".
+#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Google Address Book authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:472
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "Sol·licitud d'autenticació de la llibreta d'adreces de %s"
 
-#. Translators: The %s is replaced with an OAuth2 service display name, like
-#. the strings from "OAuth2Service" translation context,
+#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:477
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "Sol·licitud d'autenticació del calendari de %s"
 
-#. Translators: The %s is replaced with an OAuth2 service display name, like
-#. the strings from "OAuth2Service" translation context,
+#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:482
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "Sol·licitud d'autenticació de la llista d'anotacions de %s"
 
-#. Translators: The %s is replaced with an OAuth2 service display name, like
-#. the strings from "OAuth2Service" translation context,
+#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:487
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "Sol·licitud d'autenticació de la llista de tasques de %s"
 
-#. Translators: The %s is replaced with an OAuth2 service display name, like
-#. the strings from "OAuth2Service" translation context,
+#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:493
 #, c-format
@@ -7378,18 +6804,15 @@ msgid "%s Mail authentication request"
 msgstr "Sol·licitud d'autenticació del correu de %s"
 
 #. generic account prompt
-#. Translators: The %s is replaced with an OAuth2 service display name, like
-#. the strings from "OAuth2Service" translation context,
+#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:498
 #, c-format
 msgid "%s account authentication request"
 msgstr "Sol·licitud d'autenticació del compte de %s"
 
-#. Translators: The first %s is replaced with an OAuth2 service display name,
-#. like the strings from "OAuth2Service" translation context,
-#. thus it can form a string like "Login to your Google account and...". The
-#. second %s is the actual source display name,
+#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:512
 #, c-format
@@ -7397,13 +6820,11 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "address book “%s”."
 msgstr ""
-"Entreu al compte de %s i accepteu-ne les condicions per a poder accedir a la"
-" llibreta d'adreces «%s»."
+"Entreu al compte de %s i accepteu-ne les condicions per a poder accedir a la "
+"llibreta d'adreces «%s»."
 
-#. Translators: The first %s is replaced with an OAuth2 service display name,
-#. like the strings from "OAuth2Service" translation context,
-#. thus it can form a string like "Login to your Google account and...". The
-#. second %s is the actual source display name,
+#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:519
 #, c-format
@@ -7414,10 +6835,8 @@ msgstr ""
 "Entreu al compte de %s i accepteu-ne les condicions per a poder accedir al "
 "calendari «%s»."
 
-#. Translators: The first %s is replaced with an OAuth2 service display name,
-#. like the strings from "OAuth2Service" translation context,
-#. thus it can form a string like "Login to your Google account and...". The
-#. second %s is the actual source display name,
+#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:526
 #, c-format
@@ -7428,10 +6847,8 @@ msgstr ""
 "Entreu al compte de %s i accepteu-ne les condicions per a poder accedir al "
 "compte de correu «%s»."
 
-#. Translators: The first %s is replaced with an OAuth2 service display name,
-#. like the strings from "OAuth2Service" translation context,
-#. thus it can form a string like "Login to your Google account and...". The
-#. second %s is the actual source display name,
+#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:533
 #, c-format
@@ -7442,10 +6859,8 @@ msgstr ""
 "Entreu al compte de %s i accepteu-ne les condicions per a poder accedir al "
 "transport de correu «%s»."
 
-#. Translators: The first %s is replaced with an OAuth2 service display name,
-#. like the strings from "OAuth2Service" translation context,
-#. thus it can form a string like "Login to your Google account and...". The
-#. second %s is the actual source display name,
+#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:540
 #, c-format
@@ -7453,13 +6868,11 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
 "list “%s”."
 msgstr ""
-"Entreu al compte de %s i accepteu-ne les condicions per a poder accedir a la"
-" llista d'anotacions «%s»."
+"Entreu al compte de %s i accepteu-ne les condicions per a poder accedir a la "
+"llista d'anotacions «%s»."
 
-#. Translators: The first %s is replaced with an OAuth2 service display name,
-#. like the strings from "OAuth2Service" translation context,
-#. thus it can form a string like "Login to your Google account and...". The
-#. second %s is the actual source display name,
+#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:547
 #, c-format
@@ -7467,13 +6880,11 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your task "
 "list “%s”."
 msgstr ""
-"Entreu al compte de %s i accepteu-ne les condicions per a poder accedir a la"
-" llista de tasques «%s»."
+"Entreu al compte de %s i accepteu-ne les condicions per a poder accedir a la "
+"llista de tasques «%s»."
 
-#. Translators: The first %s is replaced with an OAuth2 service display name,
-#. like the strings from "OAuth2Service" translation context,
-#. thus it can form a string like "Login to your Google account and...". The
-#. second %s is the actual source display name,
+#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:554
 #, c-format
@@ -7547,8 +6958,7 @@ msgstr "Introduïu la contrasenya per la llista de tasques «%s»."
 msgid "Please enter the password for account “%s”."
 msgstr "Introduïu la contrasenya per al compte «%s»."
 
-#. Translators: This is part of a credential prompt, constructing for example:
-#. "Please enter the password for account “%s”.\n(host: hostname)"
+#. Translators: This is part of a credential prompt, constructing for example: "Please enter the password for account “%s”.\n(host: hostname)"
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:183
 #, c-format
 msgid ""
@@ -7606,70 +7016,67 @@ msgctxt "overdue"
 msgid "overdue"
 msgstr "endarrerit"
 
-#: ../src/libedataserverui/e-reminders-widget.c:938
+#: ../src/libedataserverui/e-reminders-widget.c:945
 #, c-format
 msgid "Failed to launch URI “%s”:"
 msgstr "No s'ha pogut iniciar l'URI «%s»:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:989
+#: ../src/libedataserverui/e-reminders-widget.c:996
 msgid "No reminder is selected."
 msgstr "No s'ha seleccionat cap recordatori."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1067
+#: ../src/libedataserverui/e-reminders-widget.c:1074
 msgid "No details are available."
 msgstr "No hi ha detalls disponibles."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1071
+#: ../src/libedataserverui/e-reminders-widget.c:1078
 msgid "Multiple reminders are selected."
 msgstr "S'han seleccionat diversos recordatoris."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1105
+#: ../src/libedataserverui/e-reminders-widget.c:1112
 msgid "Failed to dismiss reminder:"
 msgstr "No s'ha pogut rebutjar el recordatori:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1126
+#: ../src/libedataserverui/e-reminders-widget.c:1133
 msgid "Failed to dismiss all:"
 msgstr "No s'ha pogut descartar tot:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1262
+#: ../src/libedataserverui/e-reminders-widget.c:1269
 msgid "Set a custom snooze time for"
 msgstr "Establiu un temps de repetició personalitzat per a"
 
-#. Translators: this is part of: "Set a custom snooze time for [nnn] days
-#. [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1275
+#. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
+#: ../src/libedataserverui/e-reminders-widget.c:1282
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "_dies"
 
-#. Translators: this is part of: "Set a custom snooze time for [nnn] days
-#. [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1291
+#. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
+#: ../src/libedataserverui/e-reminders-widget.c:1298
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "_hores"
 
-#. Translators: this is part of: "Set a custom snooze time for [nnn] days
-#. [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1307
+#. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
+#: ../src/libedataserverui/e-reminders-widget.c:1314
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "_minuts"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1313
+#: ../src/libedataserverui/e-reminders-widget.c:1320
 msgid "_Add Snooze time"
 msgstr "_Afegir temps de repetició"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1631
+#: ../src/libedataserverui/e-reminders-widget.c:1638
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "_Descarta"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1632
+#: ../src/libedataserverui/e-reminders-widget.c:1639
 msgid "Dismiss _All"
 msgstr "Desactivar _tot"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1634
+#: ../src/libedataserverui/e-reminders-widget.c:1641
 msgid "_Snooze"
 msgstr "_Repetició"
 
@@ -7716,8 +7123,8 @@ msgstr "Es desconeix l'autoritat de certificació que signa."
 #: ../src/libedataserverui/e-trust-prompt.c:274
 #: ../src/modules/trust-prompt/module-trust-prompt.c:82
 msgid ""
-"The certificate does not match the expected identity of the site that it was"
-" retrieved from."
+"The certificate does not match the expected identity of the site that it was "
+"retrieved from."
 msgstr ""
 "El certificat no coincideix amb la identitat que s'esperava del lloc del "
 "qual s'ha recollit."
@@ -7792,8 +7199,8 @@ msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain a password for “%s”"
 msgstr ""
-"No s'ha pogut trobar cap compte relacionat en el servei "
-"org.gnome.OnlineAccounts del qual obtenir-ne la contrasenya per a «%s»"
+"No s'ha pogut trobar cap compte relacionat en el servei org.gnome."
+"OnlineAccounts del qual obtenir-ne la contrasenya per a «%s»"
 
 #: ../src/modules/gnome-online-accounts/e-goa-password-based.c:315
 msgid "Failed to get password from GOA: "
@@ -7833,8 +7240,7 @@ msgstr "No s'ha pogut trobar l'element de compte"
 #: ../src/modules/gnome-online-accounts/goaewsclient.c:288
 #, c-format
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
-msgstr ""
-"No s'ha trobat l'«ASUrl» ni l'«OABUrl» en la resposta d'autodescoberta"
+msgstr "No s'ha trobat l'«ASUrl» ni l'«OABUrl» en la resposta d'autodescoberta"
 
 #: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1422
 #, c-format
@@ -7842,8 +7248,8 @@ msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain an access token for “%s”"
 msgstr ""
-"No s'ha pogut trobar cap compte relacionat en el servei "
-"org.gnome.OnlineAccounts del qual obtenir-ne un testimoni d'accés per a «%s»"
+"No s'ha pogut trobar cap compte relacionat en el servei org.gnome."
+"OnlineAccounts del qual obtenir-ne un testimoni d'accés per a «%s»"
 
 #: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1472
 #, c-format
@@ -7893,13 +7299,15 @@ msgstr "_Sí"
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:472
 #, c-format
 msgid ""
-"A calendar reminder is about to trigger. This reminder is configured to run the following program:\n"
+"A calendar reminder is about to trigger. This reminder is configured to run "
+"the following program:\n"
 "\n"
 "        %s\n"
 "\n"
 "Are you sure you want to run this program?"
 msgstr ""
-"S'està activant un recordatori pel calendari. Aquest recordatori està configurat per a executar el programa següent:\n"
+"S'està activant un recordatori pel calendari. Aquest recordatori està "
+"configurat per a executar el programa següent:\n"
 "\n"
 "        %s\n"
 "\n"
@@ -7935,62 +7343,6 @@ msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
 msgstr[0] "Tens %d recordatori"
 msgstr[1] "Tens %d recordatoris"
-
-#: ../src/services/evolution-source-registry/builtin/birthdays.source.in.h:1
-msgid "Birthdays & Anniversaries"
-msgstr "Aniversaris i commemoracions"
-
-#: ../src/services/evolution-source-registry/builtin/caldav-stub.source.in.h:1
-msgid "CalDAV"
-msgstr "CalDAV"
-
-#: ../src/services/evolution-source-registry/builtin/carddav-stub.source.in.h:1
-msgid "CardDAV"
-msgstr "CardDAV"
-
-#: ../src/services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
-msgid "Contacts"
-msgstr "Contactes"
-
-#: ../src/services/evolution-source-registry/builtin/google-stub.source.in.h:1
-msgid "Google"
-msgstr "Google"
-
-#: ../src/services/evolution-source-registry/builtin/ldap-stub.source.in.h:1
-msgid "On LDAP Servers"
-msgstr "En servidors d'LDAP"
-
-#: ../src/services/evolution-source-registry/builtin/local.source.in.h:1
-#: ../src/services/evolution-source-registry/builtin/local-stub.source.in.h:1
-msgid "On This Computer"
-msgstr "En aquest ordinador"
-
-#: ../src/services/evolution-source-registry/builtin/system-address-book.source.in.h:1
-#: ../src/services/evolution-source-registry/builtin/system-calendar.source.in.h:1
-#: ../src/services/evolution-source-registry/builtin/system-memo-list.source.in.h:1
-#: ../src/services/evolution-source-registry/builtin/system-task-list.source.in.h:1
-msgid "Personal"
-msgstr "Personal"
-
-#: ../src/services/evolution-source-registry/builtin/system-proxy.source.in.h:1
-msgid "Default Proxy Settings"
-msgstr "Configuració predeterminada del servidor intermediari"
-
-#: ../src/services/evolution-source-registry/builtin/vfolder.source.in.h:1
-msgid "Search Folders"
-msgstr "Carpetes de cerca"
-
-#: ../src/services/evolution-source-registry/builtin/weather-stub.source.in.h:1
-msgid "Weather"
-msgstr "El temps"
-
-#: ../src/services/evolution-source-registry/builtin/webcal-stub.source.in.h:1
-msgid "On The Web"
-msgstr "A Internet"
-
-#: ../src/services/evolution-source-registry/builtin/webdav-notes-stub.source.in.h:1
-msgid "WebDAV Notes"
-msgstr "Notes WebDAV"
 
 #: ../src/services/evolution-source-registry/evolution-source-registry.c:41
 msgid "Don’t migrate user data from previous versions of Evolution"
@@ -8034,8 +7386,8 @@ msgstr "[vcard|csv]"
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
-"Error d'arguments de la línia d'ordres, utilitzeu l'opció --help per a veure"
-" la utilització."
+"Error d'arguments de la línia d'ordres, utilitzeu l'opció --help per a veure "
+"la utilització."
 
 #: ../src/tools/addressbook-export/addressbook-export.c:992
 msgid "Only support csv or vcard format."
@@ -8058,8 +7410,8 @@ msgid ""
 "Write in machine readable format (one source per line, without localized "
 "property names and tab as separator)"
 msgstr ""
-"Escriu en format llegible per una màquina (una font per línia, sense noms de"
-" propietat localitzats i tabulació com a separador)"
+"Escriu en format llegible per una màquina (una font per línia, sense noms de "
+"propietat localitzats i tabulació com a separador)"
 
 #: ../src/tools/list-sources/list-sources.c:95
 msgid "Limit only to sources with given extension name"
@@ -8067,11 +7419,11 @@ msgstr "Limita sols a orígens amb un nom d'extensió donat"
 
 #: ../src/tools/list-sources/list-sources.c:106
 msgid "yes"
-msgstr "Sí"
+msgstr "sí"
 
 #: ../src/tools/list-sources/list-sources.c:106
 msgid "no"
-msgstr "No"
+msgstr "no"
 
 #: ../src/tools/list-sources/list-sources.c:126
 msgid "Collection"
@@ -8207,6 +7559,418 @@ msgstr ""
 msgid "No sources had been found\n"
 msgstr "No s'han trobat orígens\n"
 
+#~ msgid "Contact UID of a user"
+#~ msgstr "L'identificador del contacte d'un usuari"
+
+#~ msgid "Birthday and anniversary reminder"
+#~ msgstr "Recordatori d'aniversari i de commemoració"
+
+#~ msgid "Whether to set a reminder for birthdays and anniversaries"
+#~ msgstr ""
+#~ "Si s'ha d'establir un recordatori per als aniversaris i les commemoracions"
+
+#~ msgid "Birthday and anniversary reminder value"
+#~ msgstr "Valor del recordatori d'aniversari i de commemoració"
+
+#~ msgid "Number of units for determining a birthday or anniversary reminder"
+#~ msgstr ""
+#~ "El nombre d'unitats per a determinar un recordatori del naixement o de "
+#~ "l'aniversari"
+
+#~ msgid "Birthday and anniversary reminder units"
+#~ msgstr "Unitats per al recordatori d'aniversari i de commemoració"
+
+#~ msgid ""
+#~ "Units for a birthday or anniversary reminder, “minutes”, “hours” or “days”"
+#~ msgstr ""
+#~ "Unitats per al recordatori d'aniversari o de commemoració, pot ser: "
+#~ "«minutes» (minuts), «hours» (hores) o «days» (dies)"
+
+#~ msgid "Past reminders for EReminderWatcher"
+#~ msgstr "Recordatoris anteriors per EReminderWatcher"
+
+#~ msgid "Snoozed reminders for EReminderWatcher"
+#~ msgstr "Repetir recordatoris per EReminderWatcher"
+
+#~ msgid "Reminder programs"
+#~ msgstr "Programes de recordatori"
+
+#~ msgid "Programs that are allowed to be run by reminders"
+#~ msgstr "Programes que es poden executar per recordatoris"
+
+#~ msgid "Show reminders in notification tray only"
+#~ msgstr "Mostrar recordatoris només a la safata de notificacions"
+
+#~ msgid ""
+#~ "When set to true, the reminders are shown only in the notification tray, "
+#~ "otherwise the reminders dialog is shown immediately"
+#~ msgstr ""
+#~ "Quan s'estableix a cert, els recordatoris només es mostren a la safata de "
+#~ "notificació, en cas contrari el quadre de diàleg dels recordatoris es "
+#~ "mostrarà immediatament"
+
+#~ msgid "Show reminder notification dialog always on top"
+#~ msgstr ""
+#~ "Mostra el quadre de diàleg de notificacions de recordatoris a la part "
+#~ "superior"
+
+#~ msgid ""
+#~ "Whether or not to show reminder notification dialog always on top. Note "
+#~ "this works only as a hint for the window manager, which may or may not "
+#~ "obey it."
+#~ msgstr ""
+#~ "Si es mostrarà o no un quadre de diàleg de notificacions de recordatoris "
+#~ "sempre a la part superior. Tingueu en compte que això només funciona com "
+#~ "a suggeriment per al gestor de finestres, que pot o no obeir-lo."
+
+#~ msgid "X position of the reminder notification dialog"
+#~ msgstr "posició X del quadre de diàleg de notificacions de recordatoris"
+
+#~ msgid "Y position of the reminder notification dialog"
+#~ msgstr "posició Y del quadre de diàleg de notificacions de recordatoris"
+
+#~ msgid "Width of the reminder notification dialog"
+#~ msgstr "Amplada del quadre de diàleg de notificacions de recordatoris"
+
+#~ msgid "Height of the reminder notification dialog"
+#~ msgstr "Alçada del quadre de diàleg de notificacions de recordatoris"
+
+#~ msgid "Size in pixels of the event list in the reminder notification dialog"
+#~ msgstr ""
+#~ "Mida en píxels de la llista d'esdeveniments del quadre de diàleg de "
+#~ "notificacions de recordatoris"
+
+#~ msgid "Show reminder notification for completed tasks"
+#~ msgstr "Mostra la notificació de recordatori per a tasques completades"
+
+#~ msgid "Show reminder notification for past events"
+#~ msgstr "Mostra la notificació de recordatori per a esdeveniments passats"
+
+#~ msgid "The last used snooze time, in minutes"
+#~ msgstr "Últim temps de repetició usat, en minuts"
+
+#~ msgid "User-defined snooze times, in minutes"
+#~ msgstr "Temps de repetició definit per l'usuari, en minuts"
+
+#~ msgid "Whether the migration of old setting was already done"
+#~ msgstr "Si la migració de la configuració antiga ja s'ha fet"
+
+#~ msgid "An absolute path where the gpg (or gpg2) binary is"
+#~ msgstr "El camí absolut en què el binari gpg (o gpg2) és"
+
+#~ msgid ""
+#~ "An example is “/usr/bin/gpg”; when it is left empty, or an incorrect "
+#~ "value is set, then it will be searched for. Change requires restart of "
+#~ "the application."
+#~ msgstr ""
+#~ "Un exemple és «/usr/bin/gpg». Si no s'ha emplenat o no existeix, se "
+#~ "cerca. Si es canvia cal reiniciar l'aplicació."
+
+#~ msgid "Whether to load photos of signers/encrypters"
+#~ msgstr "Si cal carregar fotografies de les signatures/xifrats"
+
+#~ msgid ""
+#~ "When set to “true”, tries to load also photo of the signers/encrypters, "
+#~ "if available in the key/certificate."
+#~ msgstr ""
+#~ "Quan s'estableix com «true» (cert) , intenteu carregar alguna fotografia "
+#~ "de la signatura/xifrat, si és disponible a la clau/certificat."
+
+#~ msgid "Override SMTP HELO/EHLO argument"
+#~ msgstr "Sobreescriu l'argument SMTP HELO/EHLO"
+
+#~ msgid ""
+#~ "When not empty, it's used as the SMTP HELO/EHLO argument, instead of the "
+#~ "local host name/IP."
+#~ msgstr ""
+#~ "Quan no és buit, s'utilitza com a argument SMTP HELO/EHLO, en lloc del "
+#~ "nom o la IP de l'amfitrió local."
+
+#~ msgid "Array of user header names"
+#~ msgstr "Matriu de noms de capçalera d'usuari"
+
+#~ msgid ""
+#~ "These headers can be stored in the folder summary, eventually being "
+#~ "visible in the GUI. The value can contain a pipe character ('|'), which "
+#~ "delimits the display name from the header name. Example: 'Span Score|X-"
+#~ "Spam-Score'"
+#~ msgstr ""
+#~ "Aquestes capçaleres es poden emmagatzemar en el resum de la carpeta, i "
+#~ "eventualment es poden veure a la IGU. El valor pot contenir un caràcter "
+#~ "de canonada («|»), que delimita el nom de visualització del nom de la "
+#~ "capçalera. Exemple: «Span Score|X-Spam-Score»"
+
+#~ msgid ""
+#~ "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
+#~ msgstr ""
+#~ "Nom GIO de GNetworkMonitor per a usar a la instància ENetworkMonitor"
+
+#~ msgid ""
+#~ "When set to an unknown value, then the default GNetworkMonitor is used in "
+#~ "the background. A special value “always-online” is used for no network "
+#~ "monitoring."
+#~ msgstr ""
+#~ "Quan s'estableix un valor desconegut, llavors el GNetworkMonitor  per "
+#~ "defecte s'utilitza en segon pla. El valor especial «always-online» "
+#~ "s'utilitza per no monitorar xarxes."
+
+#~ msgid ""
+#~ "A full path to a directory where .source files with preconfigured options "
+#~ "can be stored"
+#~ msgstr ""
+#~ "Es pot emmagatzemar el camí complet al directori on es trobin els "
+#~ "fitxers .source amb les opcions preconfigurades"
+
+#~ msgid ""
+#~ "This directory, if filled with an existing path, is checked additionally "
+#~ "to XDG configure directories."
+#~ msgstr ""
+#~ "Aquest directori, si s'omple amb un camí, es comprova addicionalment per "
+#~ "a configurar directoris XDG."
+
+#~ msgid ""
+#~ "A list of variables which can be part of the autoconfig .source files"
+#~ msgstr ""
+#~ "Una llista de variables poden formar part dels fitxers .source (font) "
+#~ "d'autoconfiguració"
+
+#~ msgid ""
+#~ "Each item of the array is expected to be of the form: name=value. These "
+#~ "variables are checked before environment variables, but after the "
+#~ "predefined USER, REALNAME and HOST variables."
+#~ msgstr ""
+#~ "S'espera que cada element de la matriu sigui de la forma: nom=valor. "
+#~ "Aquestes variables són verificades abans que les variables de sistema, "
+#~ "però després de les variables predefinides USER (USUARI), REALNAME (NOM "
+#~ "REAL) i HOST (AMFITRIÓ)."
+
+#~ msgid "A list of hints for OAuth2 services"
+#~ msgstr "Una llista de suggeriments per als serveis d'OAuth2"
+
+#~ msgid ""
+#~ "Users can extend the list of supported protocols and hostnames for "
+#~ "defined OAuth2 services, in addition to those hard-coded. Each line can "
+#~ "be of the form: servicename[-protocol]:hostname1,hostname2,... where "
+#~ "“servicename” is the actual service name; the “-protocol” is optional, "
+#~ "and if written, then the service can be used only if both “protocol” and "
+#~ "“hostnameX” match; the “hostnameX” is the actual host name to compare "
+#~ "with, case insensitively. Each line can contain multiple values, "
+#~ "separated by comma. There can be provided multiple lines for one OAuth2 "
+#~ "service. Note that the actual URL where the token is requested and "
+#~ "refreshed cannot be changed here, the hostname is to allow other servers, "
+#~ "where the OAuth2 service can be used. Examples: Company:mail.company.com "
+#~ "— enables “Company” OAuth2 authentication for “mail.company.com” host "
+#~ "Company-CalDAV:caldav.company.com — enables “Company” OAuth2 "
+#~ "authentication for any “CalDAV” source, which reads data from “caldav."
+#~ "company.com” host"
+#~ msgstr ""
+#~ "Els usuaris poden ampliar la llista dels protocols i els noms d'amfitrió "
+#~ "admesos per als serveis OAuth2 definits, a més a més dels que ja hi ha al "
+#~ "codi. Cada línia pot tenir la forma següent: servicename [-protocol]: "
+#~ "hostname1, hostname2, ... on «servicename» és el nom del servei real; el "
+#~ "«-protocol» és opcional i, si s'escriu, el servei només es pot utilitzar "
+#~ "si coincideixen amb «protocol» i «nom del servidor X»; el «nom de "
+#~ "l'amfitrióX» és el nom de l'amfitrió real per a comparar-lo, sense "
+#~ "distingir majúscules de minúscules. Cada línia pot contenir diversos "
+#~ "valors, separats per coma. Es poden proporcionar diverses línies per a un "
+#~ "servei OAuth2. Tingueu en compte que l'URL real on es demana i actualitza "
+#~ "el testimoni no es pot canviar aquí, el nom d'amfitrió és per a permetre "
+#~ "a altres servidors, on es pugui utilitzar el servei OAuth2. Exemples: "
+#~ "«Company:mail.company.com»: permet l'autenticació «Company» OAuth2 per a "
+#~ "l'amfitrió. «mail.company.com», «Company-CalDAV:caldav.company.com» - "
+#~ "permet l'autenticació «Company» OAuth2 per qualsevol font «CalDAV», que "
+#~ "llegeix dades de l'amfitrió de «caldav.company.com»"
+
+#~ msgid ""
+#~ "An OAuth2 client ID to use to connect to Google servers, instead of the "
+#~ "one provided during build time"
+#~ msgstr ""
+#~ "Un ID de client OAuth2 que s'utilitza per a connectar als servidors "
+#~ "Google, en comptes del que proveeix el programa"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client ID for Google servers. Empty string means to "
+#~ "use the one provided during build time. Change of this requires restart."
+#~ msgstr ""
+#~ "Un ID de client OAuth2 pels servidors Google. Una cadena buida vol dir "
+#~ "que s'utilitza el que proveeix el programa. Canviar això requereix "
+#~ "reiniciar."
+
+#~ msgid ""
+#~ "An OAuth2 client secret to use to connect to Google servers, instead of "
+#~ "the one provided during build time"
+#~ msgstr ""
+#~ "Un secret de client OAuth2 que s'utilitza per a connectar als servidors "
+#~ "Google, en comptes del que proveeix el programa"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client secret for Google servers. Empty string "
+#~ "means to use the one provided during build time. Change of this requires "
+#~ "restart."
+#~ msgstr ""
+#~ "El secret de client OAuth2 especificat per l'usuari que s'utilitza per a "
+#~ "connectar als servidors Google. Una cadena buida vol dir que s'utilitza "
+#~ "el que proveeix el programa. Canviar això requereix reiniciar."
+
+#~ msgid ""
+#~ "An OAuth2 client ID to use to connect to Outlook servers, instead of the "
+#~ "one provided during build time"
+#~ msgstr ""
+#~ "Un ID de client OAuth2 que s'utilitza per a connectar als servidors "
+#~ "Outlook, en comptes del que proveeix el programa"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client ID for Outlook servers. Empty string means "
+#~ "to use the one provided during build time. Change of this requires "
+#~ "restart."
+#~ msgstr ""
+#~ "L'ID de client OAuth2 que s'utilitza per a connectar als servidors "
+#~ "Outlook. Una cadena buida vol dir que s'utilitza el que proveeix el "
+#~ "programa. Canviar això requereix reiniciar."
+
+#~ msgid ""
+#~ "An OAuth2 client secret to use to connect to Outlook servers, instead of "
+#~ "the one provided during build time"
+#~ msgstr ""
+#~ "Un secret de client OAuth2 que s'utilitza per a connectar als servidors "
+#~ "Outlook, en comptes del que proveeix el programa"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client secret for Outlook servers. Empty string "
+#~ "means to use the one provided during build time. Change of this requires "
+#~ "restart."
+#~ msgstr ""
+#~ "El secret de client OAuth2 especificat per l'usuari que s'utilitza per "
+#~ "als servidors Outlook. Una cadena buida vol dir que s'utilitza el que "
+#~ "proveeix el programa. Canviar això requereix reiniciar."
+
+#~ msgid ""
+#~ "An OAuth2 client ID to use to connect to Yahoo! servers, instead of the "
+#~ "one provided during build time"
+#~ msgstr ""
+#~ "Un ID de client OAuth2 que s'utilitza per a connectar als servidors "
+#~ "Yahoo!, en comptes del que proveeix el programa"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
+#~ "use the one provided during build time. Change of this requires restart."
+#~ msgstr ""
+#~ "Un ID de client OAuth2 pels servidors Yahoo!. Una cadena buida vol dir "
+#~ "que s'utilitza el que proveeix el programa. Canviar això requereix "
+#~ "reiniciar."
+
+#~ msgid ""
+#~ "An OAuth2 client secret to use to connect to Yahoo! servers, instead of "
+#~ "the one provided during build time"
+#~ msgstr ""
+#~ "Un secret de client OAuth2 que s'utilitza per a connectar als servidors "
+#~ "Yahoo!, en comptes del que proveeix el programa"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client secret for Yahoo! servers. Empty string "
+#~ "means to use the one provided during build time. Change of this requires "
+#~ "restart."
+#~ msgstr ""
+#~ "El secret de client OAuth2 especificat per l'usuari que s'utilitza per a "
+#~ "connectar als servidors Yahoo!. Una cadena buida vol dir que s'utilitza "
+#~ "el que proveeix el programa. Canviar això requereix reiniciar."
+
+#~ msgid "(Deprecated) Proxy type to use"
+#~ msgstr "(Obsolet) El tipus de servidor intermediari que s'ha d'utilitzar"
+
+#~ msgid ""
+#~ "This key was deprecated in version 3.12 and should no longer be used. "
+#~ "Proxy settings are now integrated into Evolution-Data-Server’s account "
+#~ "system. See the ESourceProxy API documentation for details."
+#~ msgstr ""
+#~ "La clau és obsoleta en la versió 3.12 i no s'ha de fer servir. Els "
+#~ "paràmetres de servidor intermediari estan integrats al sistema de comptes "
+#~ "de l'Evolution-Data-Server. Vegeu la documentació de l'API ESourceProxy "
+#~ "per a més informació."
+
+#~ msgid "(Deprecated) Whether to use http-proxy"
+#~ msgstr "(Obsolet) Si s'utilitza un servidor intermediari HTTP"
+
+#~ msgid "(Deprecated) Whether proxy server requires authentication"
+#~ msgstr "(Obsolet) Si el servidor intermediari requereix autenticació"
+
+#~ msgid "(Deprecated) Host name for HTTP requests"
+#~ msgstr "(Obsolet) Nom de l'ordinador on fer les sol·licituds HTTP"
+
+#~ msgid "(Deprecated) Port number for HTTP requests"
+#~ msgstr "(Obsolet) Número de port on fer les sol·licituds HTTP"
+
+#~ msgid "(Deprecated) Proxy authentication user name"
+#~ msgstr "(Obsolet) Nom d'usuari per l'autenticació del servidor intermediari"
+
+#~ msgid "(Deprecated) Proxy authentication password"
+#~ msgstr "(Obsolet) Contrasenya per l'autenticació del servidor intermediari"
+
+#~ msgid "(Deprecated) List of hosts to connect to without proxy"
+#~ msgstr ""
+#~ "(Obsolet) Llista d'amfitrions als quals es connectarà sense servidor "
+#~ "intermediari"
+
+#~ msgid "(Deprecated) Host name for HTTPS requests"
+#~ msgstr "(Obsolet) Nom de l'amfitrió on fer les sol·licituds HTTPS"
+
+#~ msgid "(Deprecated) Port number for HTTPS requests"
+#~ msgstr "(Obsolet) Número de port on fer les sol·licituds HTTPS"
+
+#~ msgid "(Deprecated) Host name for SOCKS requests"
+#~ msgstr "(Obsolet) Nom de l'ordinador per a fer les sol·licituds SOCKS"
+
+#~ msgid "(Deprecated) Port number for SOCKS requests"
+#~ msgstr "(Obsolet) Número de port on fer les sol·licituds SOCKS"
+
+#~ msgid "(Deprecated) Automatic proxy configuration URL"
+#~ msgstr "(Obsolet) URL de configuració automàtica del servidor intermediari"
+
+#~ msgid "Evolution Alarm Notify"
+#~ msgstr "Notificador d'alarmes Evolution"
+
+#~ msgid "Calendar event notifications"
+#~ msgstr "Notificació d'esdeveniments del calendari"
+
+#~ msgid "Birthdays & Anniversaries"
+#~ msgstr "Aniversaris i commemoracions"
+
+#~ msgid "CalDAV"
+#~ msgstr "CalDAV"
+
+#~ msgid "CardDAV"
+#~ msgstr "CardDAV"
+
+#~ msgid "Contacts"
+#~ msgstr "Contactes"
+
+#~ msgid "Google"
+#~ msgstr "Google"
+
+#~ msgid "On LDAP Servers"
+#~ msgstr "En servidors d'LDAP"
+
+#~ msgid "On This Computer"
+#~ msgstr "En aquest ordinador"
+
+#~ msgid "Personal"
+#~ msgstr "Personal"
+
+#~ msgid "Default Proxy Settings"
+#~ msgstr "Configuració predeterminada del servidor intermediari"
+
+#~ msgid "Search Folders"
+#~ msgstr "Carpetes de cerca"
+
+#~ msgid "Weather"
+#~ msgstr "El temps"
+
+#~ msgid "On The Web"
+#~ msgstr "A Internet"
+
+#~ msgid "WebDAV Notes"
+#~ msgstr "Notes WebDAV"
+
 #~ msgid "Failed to create contact from returned server data"
 #~ msgstr ""
 #~ "No s'ha pogut crear un contacte a partir de dades que ha retornat el "
@@ -8225,11 +7989,11 @@ msgstr "No s'han trobat orígens\n"
 #~ msgstr "Companys de feina"
 
 #~ msgid ""
-#~ "Paned position in the reminder notification dialog, the split size between "
-#~ "list of the events and the description"
+#~ "Paned position in the reminder notification dialog, the split size "
+#~ "between list of the events and the description"
 #~ msgstr ""
-#~ "Posició de les subfinestres al diàleg de notificacions de recordatoris, la "
-#~ "mida dividida entre la llista d'esdeveniments i la descripció"
+#~ "Posició de les subfinestres al diàleg de notificacions de recordatoris, "
+#~ "la mida dividida entre la llista d'esdeveniments i la descripció"
 
 #~ msgid "Success"
 #~ msgstr "Correcte"
@@ -8266,9 +8030,6 @@ msgstr "No s'han trobat orígens\n"
 
 #~ msgid "Unknown User"
 #~ msgstr "Usuari desconegut"
-
-#~ msgid "Protocol not supported"
-#~ msgstr "El protocol no està implementat"
 
 #~ msgid "Operation has been cancelled"
 #~ msgstr "S'ha cancel·lat l'operació"
@@ -8333,8 +8094,8 @@ msgstr "No s'han trobat orígens\n"
 #~ "Expected status 200 when requesting your identity, instead got status %d "
 #~ "(%s)"
 #~ msgstr ""
-#~ "S'esperava l'estat 200 en sol·licitar la vostra identitat, però s'ha rebut "
-#~ "l'estat %d (%s)"
+#~ "S'esperava l'estat 200 en sol·licitar la vostra identitat, però s'ha "
+#~ "rebut l'estat %d (%s)"
 
 #~ msgid "Error parsing response as JSON: "
 #~ msgstr "S'ha produït un error en analitzar la resposta com a JSON: "
