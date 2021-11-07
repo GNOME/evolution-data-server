@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2021-06-14 20:06+0000\n"
-"PO-Revision-Date: 2021-07-28 08:12+0200\n"
+"POT-Creation-Date: 2021-09-24 12:12+0000\n"
+"PO-Revision-Date: 2021-11-07 14:30+0100\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
@@ -26,21 +26,21 @@ msgstr "Il URL “%s” furnît nol fâs riferiment a une rubriche CardDAV"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:293
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1136
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4379
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1137
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4380
 #: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
 #: ../src/addressbook/libebook/e-book.c:1067
-#: ../src/addressbook/libebook/e-book-client.c:2122
-#: ../src/addressbook/libebook/e-book-client.c:2300
-#: ../src/addressbook/libebook/e-book-client.c:2519
-#: ../src/addressbook/libebook/e-book-client.c:2656
-#: ../src/addressbook/libebook/e-book-client.c:2821
-#: ../src/addressbook/libebook/e-book-client.c:2961
-#: ../src/addressbook/libebook/e-book-client.c:3098
-#: ../src/addressbook/libebook/e-book-client.c:3261
-#: ../src/addressbook/libebook/e-book-client.c:3456
-#: ../src/addressbook/libebook/e-book-client.c:3674
+#: ../src/addressbook/libebook/e-book-client.c:2123
+#: ../src/addressbook/libebook/e-book-client.c:2301
+#: ../src/addressbook/libebook/e-book-client.c:2520
+#: ../src/addressbook/libebook/e-book-client.c:2657
+#: ../src/addressbook/libebook/e-book-client.c:2822
+#: ../src/addressbook/libebook/e-book-client.c:2962
+#: ../src/addressbook/libebook/e-book-client.c:3099
+#: ../src/addressbook/libebook/e-book-client.c:3262
+#: ../src/addressbook/libebook/e-book-client.c:3457
+#: ../src/addressbook/libebook/e-book-client.c:3675
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:873
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:275
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:288
@@ -66,8 +66,8 @@ msgstr "Il URL “%s” furnît nol fâs riferiment a une rubriche CardDAV"
 #: ../src/calendar/libecal/e-cal-client.c:6604
 #: ../src/calendar/libecal/e-cal-client.c:6828
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1847
-#: ../src/camel/camel-filter-driver.c:1717
-#: ../src/camel/camel-filter-driver.c:1846
+#: ../src/camel/camel-filter-driver.c:1724
+#: ../src/camel/camel-filter-driver.c:1853
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3327
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3333
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3343
@@ -75,9 +75,9 @@ msgstr "Il URL “%s” furnît nol fâs riferiment a une rubriche CardDAV"
 #: ../src/camel/providers/nntp/camel-nntp-store.c:419
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:183
-#: ../src/libedataserver/e-soup-session.c:1234
+#: ../src/libedataserver/e-soup-session.c:1239
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
-#: ../src/libedataserverui/e-reminders-widget.c:1994
+#: ../src/libedataserverui/e-reminders-widget.c:2001
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Erôr no cognossût"
@@ -140,7 +140,7 @@ msgid "Loading..."
 msgstr "Daûr a cjariâ..."
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1003
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4494
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4495
 msgid "Searching..."
 msgstr "Daûr a cirî..."
 
@@ -170,12 +170,12 @@ msgstr "Interogazion “%s” no supuartade"
 msgid "Invalid Query “%s”"
 msgstr "Interogazion “%s” no valide"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1975
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2050
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2031
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2088
 msgid "Requested to delete an unrelated cursor"
 msgstr "Si à domandât di eliminâ un cursôr no relazionât"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:2046
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2102
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "No si è rivâts a cambiâ non di “%s” a “%s” ae base di dâts vecje: %s"
@@ -186,48 +186,49 @@ msgstr "No si è rivâts a cambiâ non di “%s” a “%s” ae base di dâts v
 msgid "Not connected"
 msgstr "No tacât"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:873
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:874
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr "No si è rivâts a vincolâ doprant vincui v3 o v2"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:982
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:983
 msgid "Reconnecting to LDAP server..."
 msgstr "Daûr a tornâ a conetisi al servidôr LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1117
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1118
 msgid "Invalid DN syntax"
 msgstr "Sintassi DN no valide"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1133
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4378
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1134
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4379
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "Erôr LDAP 0x%x (%s)"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1776
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2125
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2138
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1777
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2126
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2139
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: al è stât tornât NULL di ldap_first_entry"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2053
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2197
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2054
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2198
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: Al è stât tornât il gjenar di risultât %d no gjestît"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2340
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2478
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2341
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2479
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5877
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: Al è stât tornât il gjenar di risultât di ricercje %d no gjestît"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2628
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2629
 msgid "LDAP contact lists cannot be empty."
 msgstr "Lis listis di contats LDAP no puedin jessi vueidis."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2666
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2667
 #, c-format
 msgid ""
 "Contact lists in LDAP address books require each member to be from the same "
@@ -242,46 +243,46 @@ msgstr[1] ""
 "Lis listis di contats intes rubrichis LDAP a àn bisugne che ogni membri al "
 "sedi de stesse rubriche LDAP, ma nol è stât pussibil ricognossi %d membris."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4317
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4318
 msgid "Receiving LDAP search results..."
 msgstr "Daûr a ricevi i risultâts de ricercje LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4520
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4521
 msgid "Error performing search"
 msgstr "Erôr tal eseguî la ricercje"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4660
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4661
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Daûr a discjariâ i contats (%d)..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4761
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:790
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:691
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4762
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:805
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:706
 msgid "Refreshing…"
 msgstr "Daûr a inzornâ…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5148
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5176
 msgid "The backend does not support bulk additions"
 msgstr "Il backend nol supuarte zontis in bloc"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5239
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5267
 msgid "Adding contact to LDAP server..."
 msgstr "Zonte dal contat al servidôr LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5301
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5329
 msgid "The backend does not support bulk modifications"
 msgstr "Il backend nol supuarte modifichis in bloc"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5323
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5351
 msgid "Modifying contact from LDAP server..."
 msgstr "Modifiche dal contat dal servidôr LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5395
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5423
 msgid "Removing contact from LDAP server..."
 msgstr "Daûr a gjavâ il contat dal servidôr LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5805
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:6074
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "No si è rivâts a vê il DN pal utent “%s”"
@@ -800,7 +801,7 @@ msgstr "ID Gadu-Gadu personâl 3"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:321
 msgid "Gadu-Gadu Work ID 1"
-msgstr "ID Gadu-Gadu di vore 1 "
+msgstr "ID Gadu-Gadu di vore 1"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:322
 msgid "Gadu-Gadu Work ID 2"
@@ -954,19 +955,19 @@ msgstr "Test masse curt par jessi un numar di telefon"
 msgid "Text is too long for a phone number"
 msgstr "Test masse lunc par jessi un numar di telefon"
 
-#: ../src/addressbook/libebook/e-book-client.c:924
+#: ../src/addressbook/libebook/e-book-client.c:925
 #, c-format
 msgid "Unknown book property “%s”"
 msgstr "Proprietât di rubriche “%s” no cognossude"
 
-#: ../src/addressbook/libebook/e-book-client.c:939
+#: ../src/addressbook/libebook/e-book-client.c:940
 #, c-format
 msgid "Cannot change value of book property “%s”"
 msgstr "Impussibil cambiâ valôr de proprietât di rubriche “%s”"
 
-#: ../src/addressbook/libebook/e-book-client.c:1381
-#: ../src/addressbook/libebook/e-book-client.c:1611
-#: ../src/addressbook/libebook/e-book-client.c:1887
+#: ../src/addressbook/libebook/e-book-client.c:1382
+#: ../src/addressbook/libebook/e-book-client.c:1612
+#: ../src/addressbook/libebook/e-book-client.c:1888
 #: ../src/calendar/libecal/e-cal-client.c:1714
 #: ../src/calendar/libecal/e-cal-client.c:1952
 #, c-format
@@ -979,7 +980,7 @@ msgstr "Impussibil tacâsi a “%s”: "
 msgid "Client disappeared"
 msgstr "Client sparît"
 
-#: ../src/addressbook/libedata-book/e-book-backend.c:3253
+#: ../src/addressbook/libedata-book/e-book-backend.c:3435
 #, c-format
 msgid "Addressbook backend does not support cursors"
 msgstr "Il backend de rubriche nol supuarte i cursôrs"
@@ -999,7 +1000,7 @@ msgstr "Erôr tal analizâ la espression regolâr"
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
 #: ../src/addressbook/libedata-book/e-book-cache.c:4586
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1877
-#: ../src/camel/camel-db.c:814
+#: ../src/camel/camel-db.c:816
 #, c-format
 msgid "Insufficient memory"
 msgstr "Memorie insuficient"
@@ -1097,7 +1098,7 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Impussibil ordenâ par un cjamp che al pues vê plui valôrs"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6207
-#: ../src/addressbook/libedata-book/e-book-cache.c:5797
+#: ../src/addressbook/libedata-book/e-book-cache.c:5885
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8145
 #, c-format
 msgid ""
@@ -1108,7 +1109,7 @@ msgstr ""
 "de liste dai contats"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6215
-#: ../src/addressbook/libedata-book/e-book-cache.c:5804
+#: ../src/addressbook/libedata-book/e-book-cache.c:5892
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8153
 #, c-format
 msgid ""
@@ -1151,7 +1152,7 @@ msgstr "Impussibil vierzi la base di dâts %s: %s"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2959
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3022
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3193
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1375
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1390
 #: ../src/libebackend/e-cache.c:1371 ../src/libebackend/e-cache.c:2349
 #: ../src/libebackend/e-cache.c:2389
 #, c-format
@@ -1164,32 +1165,40 @@ msgstr "Ogjet “%s” no cjatât"
 msgid "Object with extra “%s” not found"
 msgstr "Ogjet cun “%s” adizionâl no cjatât"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5584
+#: ../src/addressbook/libedata-book/e-book-cache.c:5606
+msgid "Search by email not supported"
+msgstr "Cîr par e-mail no supuartade"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:5617
+msgid "No email address provided"
+msgstr "Nissune direzion e-mail furnide"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:5672
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 "Al à di jessi specificât almancul un cjamp di ordenament par doprâ "
 "EbSdbCursor"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5593
+#: ../src/addressbook/libedata-book/e-book-cache.c:5681
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7985
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Impussibil ordenâ par un cjamp che nol è un gjenar stringhe"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1088
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1098
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1103
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1113
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Ogjet pre-cjariât pal UID “%s” nol è valit"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1096
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1106
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1111
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1121
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Ogjet ricevût pal UID “%s” nol è valit"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1920
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2376
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3332
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1958
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2414
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3347
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "No si è rivâts a creâ la cache “%s”:"
@@ -1219,44 +1228,49 @@ msgid "Invalid query: "
 msgstr "Interogazion no valide: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1142
+#: ../src/addressbook/libedata-book/e-data-book.c:1192
 msgid "Cannot open book: "
 msgstr "Impussibil vierzi la rubriche: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1180
+#: ../src/addressbook/libedata-book/e-data-book.c:1230
 msgid "Cannot refresh address book: "
 msgstr "Impussibil inzornâ la rubriche: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1221
+#: ../src/addressbook/libedata-book/e-data-book.c:1271
 msgid "Cannot get contact: "
 msgstr "Impussibil otignî il contat: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1266
+#: ../src/addressbook/libedata-book/e-data-book.c:1316
 msgid "Cannot get contact list: "
 msgstr "Impussibil otignî la liste contats: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1318
+#: ../src/addressbook/libedata-book/e-data-book.c:1368
 msgid "Cannot get contact list uids: "
 msgstr "Impussibil otignî i uid de liste contats: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1369
+#: ../src/addressbook/libedata-book/e-data-book.c:1419
 msgid "Cannot add contact: "
 msgstr "Impussibil zontâ il contat: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1420
+#: ../src/addressbook/libedata-book/e-data-book.c:1470
 msgid "Cannot modify contacts: "
 msgstr "Impussibil modificâ i contats: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1472
+#: ../src/addressbook/libedata-book/e-data-book.c:1522
 msgid "Cannot remove contacts: "
 msgstr "Impussibil gjavâ i contats: "
+
+#. Translators: This is prefix to a detailed error message
+#: ../src/addressbook/libedata-book/e-data-book.c:1569
+msgid "Cannot find email address: "
+msgstr "Impussibil cjatâ la direzion email: "
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor.c:771
 msgid "Cursor does not support setting the search expression"
@@ -1330,24 +1344,24 @@ msgstr "Impussibil salvâ i dâts calendari: URI malformât."
 msgid "Cannot save calendar data"
 msgstr "Impussibil salvâ i dâts calendari"
 
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1184
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1313
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1185
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1314
 #, c-format
 msgid "Cannot parse ISC file “%s”"
 msgstr "Impussibil analizâ il file ISC “%s”"
 
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1195
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1324
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1196
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1325
 #, c-format
 msgid "File “%s” is not a VCALENDAR component"
 msgstr "Il file “%s” nol è un component VCALENDAR"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3739
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3745
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3751
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3778
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2559
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3740
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3746
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3752
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3779
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2574
 msgid "Unsupported method"
 msgstr "Metodi no supuartât"
 
@@ -2551,12 +2565,12 @@ msgstr "Impussibil zontâ un fûs orari cence component"
 msgid "Cannot add timezone with invalid component"
 msgstr "Impussibil zontâ un fûs orari cuntun component no valit"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1153
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1168
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Ogjet ricevût pal UID “%s” nol conten nissun component spietât"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4206
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4221
 msgid "attachment.dat"
 msgstr "zonte.dat"
 
@@ -2676,7 +2690,7 @@ msgstr "File di cache vueit"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Impussibil gjavâ la vôs cache: %s: %s"
 
-#: ../src/camel/camel-db.c:868
+#: ../src/camel/camel-db.c:870
 #: ../src/camel/providers/local/camel-mbox-store.c:913
 #, c-format
 msgid "Could not rename “%s” to %s: %s"
@@ -2690,113 +2704,113 @@ msgstr "Impussibil cambiâ non a “%s” in %s: %s"
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr "Daûr a trasferî i messaçs filtrâts in “%s : %s”"
 
-#: ../src/camel/camel-filter-driver.c:1125
-#: ../src/camel/camel-filter-search.c:934
+#: ../src/camel/camel-filter-driver.c:1126
+#: ../src/camel/camel-filter-search.c:936
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "No si è rivâts a creâ il procès fi “%s”: %s"
 
-#: ../src/camel/camel-filter-driver.c:1173
+#: ../src/camel/camel-filter-driver.c:1180
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Flus di messaçs no valit ricevût di %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1397
-#: ../src/camel/camel-filter-driver.c:1410
+#: ../src/camel/camel-filter-driver.c:1404
+#: ../src/camel/camel-filter-driver.c:1417
 msgid "Syncing folders"
 msgstr "Sincronizazion cartelis"
 
-#: ../src/camel/camel-filter-driver.c:1518
+#: ../src/camel/camel-filter-driver.c:1525
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Erôr tal analizâ il filtri: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1529
+#: ../src/camel/camel-filter-driver.c:1536
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Erôr tal eseguî il filtri: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1627
+#: ../src/camel/camel-filter-driver.c:1634
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Impussibil vierzi la cartele code di pueste"
 
-#: ../src/camel/camel-filter-driver.c:1639
+#: ../src/camel/camel-filter-driver.c:1646
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Impussibil elaborâ la cartele code di pueste"
 
-#: ../src/camel/camel-filter-driver.c:1667
+#: ../src/camel/camel-filter-driver.c:1674
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Ricezion dal messaç %d (%d%%)"
 
-#: ../src/camel/camel-filter-driver.c:1676
-#: ../src/camel/camel-filter-driver.c:1699
+#: ../src/camel/camel-filter-driver.c:1683
+#: ../src/camel/camel-filter-driver.c:1706
 #, c-format
 msgid "Failed on message %d"
 msgstr "Falît al messaç %d"
 
-#: ../src/camel/camel-filter-driver.c:1717
-#: ../src/camel/camel-filter-driver.c:1846
+#: ../src/camel/camel-filter-driver.c:1724
+#: ../src/camel/camel-filter-driver.c:1853
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "No si è rivâts a trasferî i messaçs: %s"
 
-#: ../src/camel/camel-filter-driver.c:1727
-#: ../src/camel/camel-filter-driver.c:1860
+#: ../src/camel/camel-filter-driver.c:1734
+#: ../src/camel/camel-filter-driver.c:1867
 msgid "Syncing folder"
 msgstr "Sincronizazion cartele"
 
-#: ../src/camel/camel-filter-driver.c:1732
-#: ../src/camel/camel-filter-driver.c:1868
+#: ../src/camel/camel-filter-driver.c:1739
+#: ../src/camel/camel-filter-driver.c:1875
 msgid "Complete"
 msgstr "Completât"
 
-#: ../src/camel/camel-filter-driver.c:1800
+#: ../src/camel/camel-filter-driver.c:1807
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Ricezion dal messaç %d di %d"
 
-#: ../src/camel/camel-filter-driver.c:1818
+#: ../src/camel/camel-filter-driver.c:1825
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Falît al messaç %d di %d"
 
-#: ../src/camel/camel-filter-driver.c:2025
-#: ../src/camel/camel-filter-driver.c:2049
+#: ../src/camel/camel-filter-driver.c:2032
+#: ../src/camel/camel-filter-driver.c:2056
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Esecuzion dal filtri “%s” falide: "
 
-#: ../src/camel/camel-filter-driver.c:2039
+#: ../src/camel/camel-filter-driver.c:2046
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Erôr tal analizâ il filtri “%s”: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:2058
+#: ../src/camel/camel-filter-driver.c:2065
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Erôr tal eseguî il filtri “%s”: %s: %s"
 
-#: ../src/camel/camel-filter-search.c:171
+#: ../src/camel/camel-filter-search.c:173
 msgid "Failed to retrieve message"
 msgstr "No si è rivâts a recuperâ il messaç"
 
-#: ../src/camel/camel-filter-search.c:635
+#: ../src/camel/camel-filter-search.c:637
 msgid "Invalid arguments to (system-flag)"
 msgstr "Argoments no valits par (system-flag)"
 
-#: ../src/camel/camel-filter-search.c:654
+#: ../src/camel/camel-filter-search.c:656
 msgid "Invalid arguments to (user-tag)"
 msgstr "Argoments no valits par (user-tag)"
 
-#: ../src/camel/camel-filter-search.c:1236
+#: ../src/camel/camel-filter-search.c:1238
 msgid "Invalid arguments to (message-location)"
 msgstr "Argoments no valits par (message-location)"
 
-#: ../src/camel/camel-filter-search.c:1391
-#: ../src/camel/camel-filter-search.c:1402
+#: ../src/camel/camel-filter-search.c:1451
+#: ../src/camel/camel-filter-search.c:1462
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Erôr tal eseguî la ricercje tai filtris: %s: %s"
@@ -2897,39 +2911,39 @@ msgid "Refreshing folder “%s : %s”"
 msgstr "Inzornament cartele “%s : %s”"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:926
-#: ../src/camel/camel-folder-search.c:969
+#: ../src/camel/camel-folder-search.c:930
+#: ../src/camel/camel-folder-search.c:973
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) al à bisugne di un singul risultât boolean"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1007
+#: ../src/camel/camel-folder-search.c:1011
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) no permetût dentri %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1014
-#: ../src/camel/camel-folder-search.c:1022
+#: ../src/camel/camel-folder-search.c:1018
+#: ../src/camel/camel-folder-search.c:1026
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) al à bisugne di une stringhe di coincidence"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1050
+#: ../src/camel/camel-folder-search.c:1054
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) si spiete un risultât array"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1060
+#: ../src/camel/camel-folder-search.c:1064
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) i covente che la cartele e sedi stabilide"
 
-#: ../src/camel/camel-folder-search.c:2218
-#: ../src/camel/camel-folder-search.c:2392
+#: ../src/camel/camel-folder-search.c:2286
+#: ../src/camel/camel-folder-search.c:2460
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2938,8 +2952,8 @@ msgstr ""
 "Impussibil analizâ la espression di ricercje: %s:\n"
 "%s"
 
-#: ../src/camel/camel-folder-search.c:2230
-#: ../src/camel/camel-folder-search.c:2404
+#: ../src/camel/camel-folder-search.c:2298
+#: ../src/camel/camel-folder-search.c:2472
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2951,7 +2965,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder-summary.c:1661
+#: ../src/camel/camel-folder-summary.c:1662
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Liberâ memorie no doprade pe cartele “%s : %s”"
@@ -4367,65 +4381,65 @@ msgstr ""
 msgid "Error fetching message info"
 msgstr "Erôr tal recuperâ lis informazion dal messaç"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5598
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5607
 msgid "Error running STATUS"
 msgstr "Erôr tal eseguî STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6178
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6233
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6297
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6187
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6242
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6306
 msgid "Error syncing changes"
 msgstr "Erôr tal sincronizâ lis modifichis"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6191
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6243
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6316
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6457
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6200
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6252
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6325
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6466
 msgid "Error expunging message"
 msgstr "Erôr tal netâ il messaç"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6539
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6548
 msgid "Error fetching folders"
 msgstr "Erôr tal recuperâ lis cartelis"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6547
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6556
 msgid "Error fetching subscribed folders"
 msgstr "Erôr tal recuperâ lis cartelis sotscrivudis"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6604
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6613
 msgid "Error creating folder"
 msgstr "Erôr tal creâ la cartele"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6654
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6663
 msgid "Error deleting folder"
 msgstr "Erôr tal eliminâ la cartele"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6700
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6709
 msgid "Error renaming folder"
 msgstr "Erôr tal cambiâ non ae cartele"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6732
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6741
 msgid "Error subscribing to folder"
 msgstr "Erôr tal sotscrivi ae cartele"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6768
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6777
 msgid "Error unsubscribing from folder"
 msgstr "Erôr tal gjavâ la sotscrizion de cartele"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6808
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6817
 msgid "IMAP server does not support quotas"
 msgstr "Il servidôr IMAP nol supuarte lis cuotis"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6820
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6829
 msgid "Error retrieving quota information"
 msgstr "Erôr tal recuperâ lis informazions su la cuote"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6885
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6894
 msgid "Search failed"
 msgstr "Ricercje falide"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:7013
+#: ../src/camel/providers/imapx/camel-imapx-server.c:7022
 msgid "Error running IDLE"
 msgstr "Erôr tal eseguî IDLE"
 
@@ -5575,7 +5589,6 @@ msgid "POP3 stores have no folder hierarchy"
 msgstr "I archivis POP3 no àn une gjerarchie di cartelis"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-provider.c:31
-#: ../src/services/evolution-source-registry/builtin/sendmail.source.in.h:1
 msgid "Sendmail"
 msgstr "Sendmail"
 
@@ -5894,416 +5907,6 @@ msgstr "Comant RSET falît: "
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:2013
 msgid "QUIT command failed: "
 msgstr "Comant QUIT falît: "
-
-#: ../data/org.gnome.evolution-data-server.addressbook.gschema.xml.in.h:1
-msgid "Contact UID of a user"
-msgstr "UID dal contat di un utent"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:1
-msgid "Birthday and anniversary reminder"
-msgstr "Promemorie compleans e aniversaris"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:2
-msgid "Whether to set a reminder for birthdays and anniversaries"
-msgstr "Indiche se stabilî un pro memoria pai compleans e aniversaris"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:3
-msgid "Birthday and anniversary reminder value"
-msgstr "Valôr pro memoria compleans e aniversaris"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:4
-msgid "Number of units for determining a birthday or anniversary reminder"
-msgstr "Numar di unitâts par determinâ un pro memoria di complean o aniversari"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:5
-msgid "Birthday and anniversary reminder units"
-msgstr "Unitâts pro memoria compleans e aniversaris"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:6
-msgid ""
-"Units for a birthday or anniversary reminder, “minutes”, “hours” or “days”"
-msgstr ""
-"Unitâts di timp par un pro memoria di complean o aniversari, “minutes”, "
-"“hours” o “days”"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:7
-msgid "Past reminders for EReminderWatcher"
-msgstr "Pro memoria passâts par EReminderWatcher"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:8
-msgid "Snoozed reminders for EReminderWatcher"
-msgstr "Pro memoria ritardâts par EReminderWatcher"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:9
-msgid "Reminder programs"
-msgstr "Programs pro memoria"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:10
-msgid "Programs that are allowed to be run by reminders"
-msgstr "I programs che a puedin jessi eseguîts dai pro memoria"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:11
-msgid "Show reminders in notification tray only"
-msgstr "Mostre i pro memoria dome te guantiere des notifichis"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:12
-msgid ""
-"When set to true, the reminders are shown only in the notification tray, "
-"otherwise the reminders dialog is shown immediately"
-msgstr ""
-"Cuant che al è metût a vêr, i pro memoria a vegnin mostrâts dome te "
-"guantiere des notifichis, in câs contrari il dialic dai pro memoria al ven "
-"mostrât subite"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:13
-msgid "Show reminder notification dialog always on top"
-msgstr "Ten simpri denant il dialic des notifichis dai pro memoria"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:14
-msgid ""
-"Whether or not to show reminder notification dialog always on top. Note this "
-"works only as a hint for the window manager, which may or may not obey it."
-msgstr ""
-"Indiche se mostrâ o no il dialic des notifichis dai pro memoria simpri "
-"denant di dut. Viôt che chest al funzione dome come sugjeriment pal gjestôr "
-"dai barcons (window manager), che al pues decidi se lâ daûr o no di chel "
-"sugjeriment."
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:15
-msgid "X position of the reminder notification dialog"
-msgstr "Posizion X dal dialic di notifiche dal pro memoria"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:16
-msgid "Y position of the reminder notification dialog"
-msgstr "Posizion Y dal dialic di notifiche dal pro memoria"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:17
-msgid "Width of the reminder notification dialog"
-msgstr "Largjece dal dialic di notifiche dal pro memoria"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:18
-msgid "Height of the reminder notification dialog"
-msgstr "Altece dal dialic di notifiche dal pro memoria"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
-msgid "Size in pixels of the event list in the reminder notification dialog"
-msgstr ""
-"Dimensions in pixels de liste di events intal dialic di notifiche dal pro "
-"memoria"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
-msgid "Show reminder notification for completed tasks"
-msgstr "Mostre la notifiche dal pro memoria pes ativitâts completadis"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
-msgid "Show reminder notification for past events"
-msgstr "Mostre la notifiche dal pro memoria pai events passâts"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
-msgid "The last used snooze time, in minutes"
-msgstr "L'ultin timp di ritart doprât, in minûts"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:23
-msgid "User-defined snooze times, in minutes"
-msgstr "Timps di ritart definîts dal utent, in minûts"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:1
-msgid "Whether the migration of old setting was already done"
-msgstr "Indiche se la migrazion de impostazion vecje e jere za fate"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:2
-msgid "An absolute path where the gpg (or gpg2) binary is"
-msgstr "Un percors assolût dulà che al sta il binari gpg (o gpg2)"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:3
-msgid ""
-"An example is “/usr/bin/gpg”; when it is left empty, or an incorrect value "
-"is set, then it will be searched for. Change requires restart of the "
-"application."
-msgstr ""
-"Un esempli al è “/usr/bin/gpg”; cuant che al ven lassât vueit o al ven metût "
-"un valôr sbaliât, alore al vignarà cirût. La modifiche e domande il tornâ a "
-"inviâ la aplicazion."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:4
-msgid "Whether to load photos of signers/encrypters"
-msgstr "Indiche se cjariâ lis fotos dai firmataris/cifradôrs"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:5
-msgid ""
-"When set to “true”, tries to load also photo of the signers/encrypters, if "
-"available in the key/certificate."
-msgstr ""
-"Cuant che al è metût a “true”, al cîr di cjariâ ancje la foto dai firmataris/"
-"cifradôrs, se disponibile te clâf/certificât."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:6
-msgid "Override SMTP HELO/EHLO argument"
-msgstr "Passe sore dal argoment HELO/EHLO SMTP"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:7
-msgid ""
-"When not empty, it's used as the SMTP HELO/EHLO argument, instead of the "
-"local host name/IP."
-msgstr ""
-"Cuant che nol è vueit, al ven doprât tant che argoment SMTP HELO/EHLO, al "
-"puest dal non/IP dal host locâl."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
-msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
-msgstr "Non GIO dal GNetworkMonitor di doprâ par une istance ENetworkMonitor"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
-msgid ""
-"When set to an unknown value, then the default GNetworkMonitor is used in "
-"the background. A special value “always-online” is used for no network "
-"monitoring."
-msgstr ""
-"Cuant che al è metût a un valôr no cognossût, alore il valôr predefinît di "
-"GNetworkMonitor al ven doprât intal secont plan (background). un valôr "
-"speciâl “always-online” al ven doprât par no monitorâ la rêt."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
-msgid ""
-"A full path to a directory where .source files with preconfigured options "
-"can be stored"
-msgstr ""
-"Un percors complet a une cartele dulà che i file .source cun opzions pre-"
-"configuradis a puedin jessi archiviadis"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
-msgid ""
-"This directory, if filled with an existing path, is checked additionally to "
-"XDG configure directories."
-msgstr ""
-"Ancje cheste cartele, se jemplade cuntun percors esistent, e je controlade "
-"in diplui aes cartelis di configurazion XDG."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
-msgid "A list of variables which can be part of the autoconfig .source files"
-msgstr ""
-"Une liste di variabilis che a puedin jessi part dai file .source di auto-"
-"configurazion"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
-msgid ""
-"Each item of the array is expected to be of the form: name=value. These "
-"variables are checked before environment variables, but after the predefined "
-"USER, REALNAME and HOST variables."
-msgstr ""
-"Ogni element dal array si spiete che al sedi te forme: non=valôr. Chestis "
-"variabilis a vegnin controladis prime des variabilis di ambient, ma dopo des "
-"variabilis HOST, REALNAME e USER predefinidis."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
-msgid "A list of hints for OAuth2 services"
-msgstr "Une liste di sugjeriments pai servizis OAuth2"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
-msgid ""
-"Users can extend the list of supported protocols and hostnames for defined "
-"OAuth2 services, in addition to those hard-coded. Each line can be of the "
-"form: servicename[-protocol]:hostname1,hostname2,... where “servicename” is "
-"the actual service name; the “-protocol” is optional, and if written, then "
-"the service can be used only if both “protocol” and “hostnameX” match; the "
-"“hostnameX” is the actual host name to compare with, case insensitively. "
-"Each line can contain multiple values, separated by comma. There can be "
-"provided multiple lines for one OAuth2 service. Note that the actual URL "
-"where the token is requested and refreshed cannot be changed here, the "
-"hostname is to allow other servers, where the OAuth2 service can be used. "
-"Examples: Company:mail.company.com — enables “Company” OAuth2 authentication "
-"for “mail.company.com” host Company-CalDAV:caldav.company.com — enables "
-"“Company” OAuth2 authentication for any “CalDAV” source, which reads data "
-"from “caldav.company.com” host"
-msgstr ""
-"I utents a puedin estindi la liste dai protocoi supuartâts e dai nons host "
-"pai servizis OAuth2 definîts, a chei codificâts in maniere fisse. Ogni rie e "
-"pues jessi de forme: nonservizi[-protocol]:nonhost1,nonhost2,... dulà che "
-"“nonservizi” al è il non dal servizi atuâl; il “-protocol” al è opzionâl e, "
-"se scrit, il servizi al pues jessi doprât dome se ducj i doi, “protocol” e "
-"“nonhostX”, a corispuindin; il “nonhostX” al è il non host atuâl che cun "
-"chel si à di comparâ, indiferent se maiuscul o minuscul. Ogni rie e pues "
-"contignî plui valôrs separâts di virgule. Lì a puedin jessi furnidis plui "
-"riis par un servizi OAuth2. Viôt che il URL atuâl, dulà che il token al è "
-"domandât e inzornât, nol pues jessi cambiât achì, il nonhost al è par "
-"permeti altris servidôrs, dulà che il servizi OAuth2 al pues jessi doprât. "
-"Esemplis: Compagnie:pueste.compagnie.com — al abilite la autenticazion "
-"OAuth2 di “Compagnie” pal host “pueste.compagnie.com” Company-CalDAV:caldav."
-"company.com — al abilite la autenticazion OAuth2 di “Company” par ogni "
-"sorzint “CalDAV” che e lei dâts dal host “caldav.company.com”"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
-msgid ""
-"An OAuth2 client ID to use to connect to Google servers, instead of the one "
-"provided during build time"
-msgstr ""
-"Un ID di client OAuth2 di doprâ par conetisi ai servidôrs di Google, al "
-"puest di chel furnît inte compilazion"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
-msgid ""
-"User-specified OAuth2 client ID for Google servers. Empty string means to "
-"use the one provided during build time. Change of this requires restart."
-msgstr ""
-"ID di client OAuth2 specificât dal utent pai servidôrs di Google. Une "
-"stringhe vueide e significhe che si dopre chel furnît in fase di "
-"compilazion. Se si modifiche chest valôr si scugne tornâ a inviâ."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
-msgid ""
-"An OAuth2 client secret to use to connect to Google servers, instead of the "
-"one provided during build time"
-msgstr ""
-"Un segret di client OAuth2 di doprâ par conetisi ai servidôrs di Google, al "
-"puest di chel furnît inte compilazion"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
-msgid ""
-"User-specified OAuth2 client secret for Google servers. Empty string means "
-"to use the one provided during build time. Change of this requires restart."
-msgstr ""
-"Segret di client OAuth2 specificât dal utent pai servidôrs di Google. Une "
-"stringhe vueide e significhe che si dopre chel furnît in fase di "
-"compilazion. Se si modifiche chest valôr si scugne tornâ a inviâ."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
-msgid ""
-"An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
-"provided during build time"
-msgstr ""
-"Un ID di client OAuth2 di doprâ par conetisi ai servidôrs di Outlook, al "
-"puest di chel furnît inte compilazion"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
-msgid ""
-"User-specified OAuth2 client ID for Outlook servers. Empty string means to "
-"use the one provided during build time. Change of this requires restart."
-msgstr ""
-"ID di client OAuth2 specificât dal utent pai servidôrs di Outlook. Une "
-"stringhe vueide e significhe che si dopre chel furnît in fase di "
-"compilazion. Se si modifiche chest valôr si scugne tornâ a inviâ."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:22
-msgid ""
-"An OAuth2 client secret to use to connect to Outlook servers, instead of the "
-"one provided during build time"
-msgstr ""
-"Un segret di client OAuth2 di doprâ par conetisi ai servidôrs di Outlook, al "
-"puest di chel furnît inte compilazion"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:23
-msgid ""
-"User-specified OAuth2 client secret for Outlook servers. Empty string means "
-"to use the one provided during build time. Change of this requires restart."
-msgstr ""
-"Segret di client OAuth2 specificât dal utent pai servidôrs di Outlook. Une "
-"stringhe vueide e significhe che si dopre chel furnît in fase di "
-"compilazion. Se si modifiche chest valôr si scugne tornâ a inviâ."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
-msgid ""
-"An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
-"provided during build time"
-msgstr ""
-"Un ID di client OAuth2 di doprâ par conetisi ai servidôrs di Yahoo!, al "
-"puest di chel furnît inte compilazion"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
-msgid ""
-"User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
-"use the one provided during build time. Change of this requires restart."
-msgstr ""
-"ID di client OAuth2 specificât dal utent pai servidôrs di Yahoo!. Une "
-"stringhe vueide e significhe che si dopre chel furnît in fase di "
-"compilazion. Se si modifiche chest valôr si scugne tornâ a inviâ."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
-msgid ""
-"An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
-"one provided during build time"
-msgstr ""
-"Un segret di client OAuth2 di doprâ par conetisi ai servidôrs di Yahoo!, al "
-"puest di chel furnît in fase di compilazion"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
-msgid ""
-"User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
-"to use the one provided during build time. Change of this requires restart."
-msgstr ""
-"Segret di client OAuth2 specificât dal utent pai servidôrs di Yahoo!. Une "
-"stringhe vueide e significhe che si dopre chel furnît in fase di "
-"compilazion. Se si modifiche chest valôr si scugne tornâ a inviâ."
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
-msgid "(Deprecated) Proxy type to use"
-msgstr "(Deplorât) Gjenar di proxy di doprâ"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:2
-msgid ""
-"This key was deprecated in version 3.12 and should no longer be used. Proxy "
-"settings are now integrated into Evolution-Data-Server’s account system. See "
-"the ESourceProxy API documentation for details."
-msgstr ""
-"Cheste clâf e je stade deplorade te version 3.12 e no varès di jessi plui "
-"doprade. Lis impostazions proxy a son cumò integradis intal sisteme di "
-"account di Evolution-Data-Server. Viodi la documentazion de API ESourceProxy "
-"pai detais."
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
-msgid "(Deprecated) Whether to use http-proxy"
-msgstr "(Deplorât) Indiche se doprâ http-proxy"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:4
-msgid "(Deprecated) Whether proxy server requires authentication"
-msgstr "(Deplorât) Indiche se il servidôr proxy al domande autenticazion"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:5
-msgid "(Deprecated) Host name for HTTP requests"
-msgstr "(Deplorât) Non host pes richiestis HTTP"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:6
-msgid "(Deprecated) Port number for HTTP requests"
-msgstr "(Deplorât) Numar di puarte pes richiestis HTTP"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:7
-msgid "(Deprecated) Proxy authentication user name"
-msgstr "(Deplorât) Non utent di autenticazion dal proxy"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:8
-msgid "(Deprecated) Proxy authentication password"
-msgstr "(Deplorât) Password di autenticazion dal proxy"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:9
-msgid "(Deprecated) List of hosts to connect to without proxy"
-msgstr "(Deplorât) Liste dai host dulà conetisi cence proxy"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:10
-msgid "(Deprecated) Host name for HTTPS requests"
-msgstr "(Deplorât) Non host pes richiestis HTTPS"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:11
-msgid "(Deprecated) Port number for HTTPS requests"
-msgstr "(Deplorât) Numar di puarte pes richiestis HTTPS"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:12
-msgid "(Deprecated) Host name for SOCKS requests"
-msgstr "(Deplorât) Non host pes richiestis SOCKS"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:13
-msgid "(Deprecated) Port number for SOCKS requests"
-msgstr "(Deplorât) Numar di puarte pes richiestis SOCKS"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:14
-msgid "(Deprecated) Automatic proxy configuration URL"
-msgstr "(Deplorât) URL di configurazion automatiche dal proxy"
-
-#: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:1
-msgid "Evolution Alarm Notify"
-msgstr "Notifiche di alarme di Evolution"
-
-#: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:2
-msgid "Calendar event notifications"
-msgstr "Notifichis events dal calendari"
 
 #: ../src/libebackend/e-cache.c:751
 msgid "Out of memory"
@@ -6668,11 +6271,11 @@ msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: ../src/libedataserver/e-soup-session.c:958
+#: ../src/libedataserver/e-soup-session.c:963
 msgid "Operation was cancelled"
 msgstr "La operazion e jere anulade"
 
-#: ../src/libedataserver/e-soup-session.c:964
+#: ../src/libedataserver/e-soup-session.c:969
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Falît cun erôr HTTP %d: %s"
@@ -7231,14 +6834,14 @@ msgstr ""
 "Jentre tal to account %s e acete lis condizions par podê acedi al to account "
 "“%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:606
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:730
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:235
 #: ../src/libedataserverui/e-trust-prompt.c:111
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1094
 msgid "_Cancel"
 msgstr "_Anule"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:680
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:804
 msgid "URL:"
 msgstr "URL:"
 
@@ -7354,67 +6957,67 @@ msgctxt "overdue"
 msgid "overdue"
 msgstr "scjadût"
 
-#: ../src/libedataserverui/e-reminders-widget.c:938
+#: ../src/libedataserverui/e-reminders-widget.c:945
 #, c-format
 msgid "Failed to launch URI “%s”:"
 msgstr "No si è rivâts a inviâ il URI “%s”:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:989
+#: ../src/libedataserverui/e-reminders-widget.c:996
 msgid "No reminder is selected."
 msgstr "Nol è selezionât nissun pro memoria."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1067
+#: ../src/libedataserverui/e-reminders-widget.c:1074
 msgid "No details are available."
 msgstr "Nissun detai disponibil."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1071
+#: ../src/libedataserverui/e-reminders-widget.c:1078
 msgid "Multiple reminders are selected."
 msgstr "A son selezionâts plui pro memoria."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1105
+#: ../src/libedataserverui/e-reminders-widget.c:1112
 msgid "Failed to dismiss reminder:"
 msgstr "No si è rivâts a scartâ il pro memoria:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1126
+#: ../src/libedataserverui/e-reminders-widget.c:1133
 msgid "Failed to dismiss all:"
 msgstr "No si è rivâts a scartâ dut:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1262
+#: ../src/libedataserverui/e-reminders-widget.c:1269
 msgid "Set a custom snooze time for"
 msgstr "Stabilìs un timp di ritart personalizât par"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1275
+#: ../src/libedataserverui/e-reminders-widget.c:1282
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "_dîs"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1291
+#: ../src/libedataserverui/e-reminders-widget.c:1298
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "_oris"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1307
+#: ../src/libedataserverui/e-reminders-widget.c:1314
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "_minûts"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1313
+#: ../src/libedataserverui/e-reminders-widget.c:1320
 msgid "_Add Snooze time"
 msgstr "_Zonte timp di ritart"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1631
+#: ../src/libedataserverui/e-reminders-widget.c:1638
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "_Scarte"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1632
+#: ../src/libedataserverui/e-reminders-widget.c:1639
 msgid "Dismiss _All"
 msgstr "Scarte _dut"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1634
+#: ../src/libedataserverui/e-reminders-widget.c:1641
 msgid "_Snooze"
 msgstr "_Ritarde"
 
@@ -7617,8 +7220,8 @@ msgstr ""
 
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:326
 #: ../src/services/evolution-alarm-notify/e-alarm-notify.c:354
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:882
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1130
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:883
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1131
 msgid "Reminders"
 msgstr "Pro memoria"
 
@@ -7655,88 +7258,32 @@ msgstr ""
 msgid "Do not ask me about this program again"
 msgstr "No sta domandâmi plui in merit a chest program"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
 msgid "Display Reminders window with _notifications"
 msgstr "Mostre il barcon dai pro memoria cun lis _notifichis"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
 msgid "Keep reminder notification window always on _top"
 msgstr "_Ten il barcon di notifiche pro memoria simpri denant"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
 msgid "Display reminders for _completed tasks"
 msgstr "Mostre i pro memoria pes ativitâts _completadis"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:791
 msgid "Display reminders for _past events"
 msgstr "Mostre i pro memoria pai events _passâts"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:804
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:805
 msgid "Reminders Options:"
 msgstr "Opzions pro memoria:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:898
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:899
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
 msgstr[0] "Tu âs %d pro memoria"
 msgstr[1] "Tu âs %d pro memoria"
-
-#: ../src/services/evolution-source-registry/builtin/birthdays.source.in.h:1
-msgid "Birthdays & Anniversaries"
-msgstr "Compleans e aniversaris"
-
-#: ../src/services/evolution-source-registry/builtin/caldav-stub.source.in.h:1
-msgid "CalDAV"
-msgstr "CalDAV"
-
-#: ../src/services/evolution-source-registry/builtin/carddav-stub.source.in.h:1
-msgid "CardDAV"
-msgstr "CardDAV"
-
-#: ../src/services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
-msgid "Contacts"
-msgstr "Contats"
-
-#: ../src/services/evolution-source-registry/builtin/google-stub.source.in.h:1
-msgid "Google"
-msgstr "Google"
-
-#: ../src/services/evolution-source-registry/builtin/ldap-stub.source.in.h:1
-msgid "On LDAP Servers"
-msgstr "Su servidôrs LDAP"
-
-#: ../src/services/evolution-source-registry/builtin/local.source.in.h:1
-#: ../src/services/evolution-source-registry/builtin/local-stub.source.in.h:1
-msgid "On This Computer"
-msgstr "Su chest computer"
-
-#: ../src/services/evolution-source-registry/builtin/system-address-book.source.in.h:1
-#: ../src/services/evolution-source-registry/builtin/system-calendar.source.in.h:1
-#: ../src/services/evolution-source-registry/builtin/system-memo-list.source.in.h:1
-#: ../src/services/evolution-source-registry/builtin/system-task-list.source.in.h:1
-msgid "Personal"
-msgstr "Personâl"
-
-#: ../src/services/evolution-source-registry/builtin/system-proxy.source.in.h:1
-msgid "Default Proxy Settings"
-msgstr "Impostazions proxy predefinidis"
-
-#: ../src/services/evolution-source-registry/builtin/vfolder.source.in.h:1
-msgid "Search Folders"
-msgstr "Cartelis di ricercje"
-
-#: ../src/services/evolution-source-registry/builtin/weather-stub.source.in.h:1
-msgid "Weather"
-msgstr "Condizions meteo"
-
-#: ../src/services/evolution-source-registry/builtin/webcal-stub.source.in.h:1
-msgid "On The Web"
-msgstr "Sul web"
-
-#: ../src/services/evolution-source-registry/builtin/webdav-notes-stub.source.in.h:1
-msgid "WebDAV Notes"
-msgstr "Notis WebDAV"
 
 #: ../src/services/evolution-source-registry/evolution-source-registry.c:41
 msgid "Don’t migrate user data from previous versions of Evolution"
@@ -7950,6 +7497,399 @@ msgstr "No si è rivâts a conetisi al regjistri de sorzint: %s\n"
 msgid "No sources had been found\n"
 msgstr "No je stade cjatade nissune risorse\n"
 
+#~ msgid "Contact UID of a user"
+#~ msgstr "UID dal contat di un utent"
+
+#~ msgid "Birthday and anniversary reminder"
+#~ msgstr "Promemorie compleans e aniversaris"
+
+#~ msgid "Whether to set a reminder for birthdays and anniversaries"
+#~ msgstr "Indiche se stabilî un pro memoria pai compleans e aniversaris"
+
+#~ msgid "Birthday and anniversary reminder value"
+#~ msgstr "Valôr pro memoria compleans e aniversaris"
+
+#~ msgid "Number of units for determining a birthday or anniversary reminder"
+#~ msgstr ""
+#~ "Numar di unitâts par determinâ un pro memoria di complean o aniversari"
+
+#~ msgid "Birthday and anniversary reminder units"
+#~ msgstr "Unitâts pro memoria compleans e aniversaris"
+
+#~ msgid ""
+#~ "Units for a birthday or anniversary reminder, “minutes”, “hours” or “days”"
+#~ msgstr ""
+#~ "Unitâts di timp par un pro memoria di complean o aniversari, “minutes”, "
+#~ "“hours” o “days”"
+
+#~ msgid "Past reminders for EReminderWatcher"
+#~ msgstr "Pro memoria passâts par EReminderWatcher"
+
+#~ msgid "Snoozed reminders for EReminderWatcher"
+#~ msgstr "Pro memoria ritardâts par EReminderWatcher"
+
+#~ msgid "Reminder programs"
+#~ msgstr "Programs pro memoria"
+
+#~ msgid "Programs that are allowed to be run by reminders"
+#~ msgstr "I programs che a puedin jessi eseguîts dai pro memoria"
+
+#~ msgid "Show reminders in notification tray only"
+#~ msgstr "Mostre i pro memoria dome te guantiere des notifichis"
+
+#~ msgid ""
+#~ "When set to true, the reminders are shown only in the notification tray, "
+#~ "otherwise the reminders dialog is shown immediately"
+#~ msgstr ""
+#~ "Cuant che al è metût a vêr, i pro memoria a vegnin mostrâts dome te "
+#~ "guantiere des notifichis, in câs contrari il dialic dai pro memoria al "
+#~ "ven mostrât subite"
+
+#~ msgid "Show reminder notification dialog always on top"
+#~ msgstr "Ten simpri denant il dialic des notifichis dai pro memoria"
+
+#~ msgid ""
+#~ "Whether or not to show reminder notification dialog always on top. Note "
+#~ "this works only as a hint for the window manager, which may or may not "
+#~ "obey it."
+#~ msgstr ""
+#~ "Indiche se mostrâ o no il dialic des notifichis dai pro memoria simpri "
+#~ "denant di dut. Viôt che chest al funzione dome come sugjeriment pal "
+#~ "gjestôr dai barcons (window manager), che al pues decidi se lâ daûr o no "
+#~ "di chel sugjeriment."
+
+#~ msgid "X position of the reminder notification dialog"
+#~ msgstr "Posizion X dal dialic di notifiche dal pro memoria"
+
+#~ msgid "Y position of the reminder notification dialog"
+#~ msgstr "Posizion Y dal dialic di notifiche dal pro memoria"
+
+#~ msgid "Width of the reminder notification dialog"
+#~ msgstr "Largjece dal dialic di notifiche dal pro memoria"
+
+#~ msgid "Height of the reminder notification dialog"
+#~ msgstr "Altece dal dialic di notifiche dal pro memoria"
+
+#~ msgid "Size in pixels of the event list in the reminder notification dialog"
+#~ msgstr ""
+#~ "Dimensions in pixels de liste di events intal dialic di notifiche dal pro "
+#~ "memoria"
+
+#~ msgid "Show reminder notification for completed tasks"
+#~ msgstr "Mostre la notifiche dal pro memoria pes ativitâts completadis"
+
+#~ msgid "Show reminder notification for past events"
+#~ msgstr "Mostre la notifiche dal pro memoria pai events passâts"
+
+#~ msgid "The last used snooze time, in minutes"
+#~ msgstr "L'ultin timp di ritart doprât, in minûts"
+
+#~ msgid "User-defined snooze times, in minutes"
+#~ msgstr "Timps di ritart definîts dal utent, in minûts"
+
+#~ msgid "Whether the migration of old setting was already done"
+#~ msgstr "Indiche se la migrazion de impostazion vecje e jere za fate"
+
+#~ msgid "An absolute path where the gpg (or gpg2) binary is"
+#~ msgstr "Un percors assolût dulà che al sta il binari gpg (o gpg2)"
+
+#~ msgid ""
+#~ "An example is “/usr/bin/gpg”; when it is left empty, or an incorrect "
+#~ "value is set, then it will be searched for. Change requires restart of "
+#~ "the application."
+#~ msgstr ""
+#~ "Un esempli al è “/usr/bin/gpg”; cuant che al ven lassât vueit o al ven "
+#~ "metût un valôr sbaliât, alore al vignarà cirût. La modifiche e domande il "
+#~ "tornâ a inviâ la aplicazion."
+
+#~ msgid "Whether to load photos of signers/encrypters"
+#~ msgstr "Indiche se cjariâ lis fotos dai firmataris/cifradôrs"
+
+#~ msgid ""
+#~ "When set to “true”, tries to load also photo of the signers/encrypters, "
+#~ "if available in the key/certificate."
+#~ msgstr ""
+#~ "Cuant che al è metût a “true”, al cîr di cjariâ ancje la foto dai "
+#~ "firmataris/cifradôrs, se disponibile te clâf/certificât."
+
+#~ msgid "Override SMTP HELO/EHLO argument"
+#~ msgstr "Passe sore dal argoment HELO/EHLO SMTP"
+
+#~ msgid ""
+#~ "When not empty, it's used as the SMTP HELO/EHLO argument, instead of the "
+#~ "local host name/IP."
+#~ msgstr ""
+#~ "Cuant che nol è vueit, al ven doprât tant che argoment SMTP HELO/EHLO, al "
+#~ "puest dal non/IP dal host locâl."
+
+#~ msgid ""
+#~ "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
+#~ msgstr ""
+#~ "Non GIO dal GNetworkMonitor di doprâ par une istance ENetworkMonitor"
+
+#~ msgid ""
+#~ "When set to an unknown value, then the default GNetworkMonitor is used in "
+#~ "the background. A special value “always-online” is used for no network "
+#~ "monitoring."
+#~ msgstr ""
+#~ "Cuant che al è metût a un valôr no cognossût, alore il valôr predefinît "
+#~ "di GNetworkMonitor al ven doprât intal secont plan (background). un valôr "
+#~ "speciâl “always-online” al ven doprât par no monitorâ la rêt."
+
+#~ msgid ""
+#~ "A full path to a directory where .source files with preconfigured options "
+#~ "can be stored"
+#~ msgstr ""
+#~ "Un percors complet a une cartele dulà che i file .source cun opzions pre-"
+#~ "configuradis a puedin jessi archiviadis"
+
+#~ msgid ""
+#~ "This directory, if filled with an existing path, is checked additionally "
+#~ "to XDG configure directories."
+#~ msgstr ""
+#~ "Ancje cheste cartele, se jemplade cuntun percors esistent, e je "
+#~ "controlade in diplui aes cartelis di configurazion XDG."
+
+#~ msgid ""
+#~ "A list of variables which can be part of the autoconfig .source files"
+#~ msgstr ""
+#~ "Une liste di variabilis che a puedin jessi part dai file .source di auto-"
+#~ "configurazion"
+
+#~ msgid ""
+#~ "Each item of the array is expected to be of the form: name=value. These "
+#~ "variables are checked before environment variables, but after the "
+#~ "predefined USER, REALNAME and HOST variables."
+#~ msgstr ""
+#~ "Ogni element dal array si spiete che al sedi te forme: non=valôr. Chestis "
+#~ "variabilis a vegnin controladis prime des variabilis di ambient, ma dopo "
+#~ "des variabilis HOST, REALNAME e USER predefinidis."
+
+#~ msgid "A list of hints for OAuth2 services"
+#~ msgstr "Une liste di sugjeriments pai servizis OAuth2"
+
+#~ msgid ""
+#~ "Users can extend the list of supported protocols and hostnames for "
+#~ "defined OAuth2 services, in addition to those hard-coded. Each line can "
+#~ "be of the form: servicename[-protocol]:hostname1,hostname2,... where "
+#~ "“servicename” is the actual service name; the “-protocol” is optional, "
+#~ "and if written, then the service can be used only if both “protocol” and "
+#~ "“hostnameX” match; the “hostnameX” is the actual host name to compare "
+#~ "with, case insensitively. Each line can contain multiple values, "
+#~ "separated by comma. There can be provided multiple lines for one OAuth2 "
+#~ "service. Note that the actual URL where the token is requested and "
+#~ "refreshed cannot be changed here, the hostname is to allow other servers, "
+#~ "where the OAuth2 service can be used. Examples: Company:mail.company.com "
+#~ "— enables “Company” OAuth2 authentication for “mail.company.com” host "
+#~ "Company-CalDAV:caldav.company.com — enables “Company” OAuth2 "
+#~ "authentication for any “CalDAV” source, which reads data from “caldav."
+#~ "company.com” host"
+#~ msgstr ""
+#~ "I utents a puedin estindi la liste dai protocoi supuartâts e dai nons "
+#~ "host pai servizis OAuth2 definîts, a chei codificâts in maniere fisse. "
+#~ "Ogni rie e pues jessi de forme: nonservizi[-protocol]:nonhost1,"
+#~ "nonhost2,... dulà che “nonservizi” al è il non dal servizi atuâl; il “-"
+#~ "protocol” al è opzionâl e, se scrit, il servizi al pues jessi doprât dome "
+#~ "se ducj i doi, “protocol” e “nonhostX”, a corispuindin; il “nonhostX” al "
+#~ "è il non host atuâl che cun chel si à di comparâ, indiferent se maiuscul "
+#~ "o minuscul. Ogni rie e pues contignî plui valôrs separâts di virgule. Lì "
+#~ "a puedin jessi furnidis plui riis par un servizi OAuth2. Viôt che il URL "
+#~ "atuâl, dulà che il token al è domandât e inzornât, nol pues jessi cambiât "
+#~ "achì, il nonhost al è par permeti altris servidôrs, dulà che il servizi "
+#~ "OAuth2 al pues jessi doprât. Esemplis: Compagnie:pueste.compagnie.com — "
+#~ "al abilite la autenticazion OAuth2 di “Compagnie” pal host “pueste."
+#~ "compagnie.com” Company-CalDAV:caldav.company.com — al abilite la "
+#~ "autenticazion OAuth2 di “Company” par ogni sorzint “CalDAV” che e lei "
+#~ "dâts dal host “caldav.company.com”"
+
+#~ msgid ""
+#~ "An OAuth2 client ID to use to connect to Google servers, instead of the "
+#~ "one provided during build time"
+#~ msgstr ""
+#~ "Un ID di client OAuth2 di doprâ par conetisi ai servidôrs di Google, al "
+#~ "puest di chel furnît inte compilazion"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client ID for Google servers. Empty string means to "
+#~ "use the one provided during build time. Change of this requires restart."
+#~ msgstr ""
+#~ "ID di client OAuth2 specificât dal utent pai servidôrs di Google. Une "
+#~ "stringhe vueide e significhe che si dopre chel furnît in fase di "
+#~ "compilazion. Se si modifiche chest valôr si scugne tornâ a inviâ."
+
+#~ msgid ""
+#~ "An OAuth2 client secret to use to connect to Google servers, instead of "
+#~ "the one provided during build time"
+#~ msgstr ""
+#~ "Un segret di client OAuth2 di doprâ par conetisi ai servidôrs di Google, "
+#~ "al puest di chel furnît inte compilazion"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client secret for Google servers. Empty string "
+#~ "means to use the one provided during build time. Change of this requires "
+#~ "restart."
+#~ msgstr ""
+#~ "Segret di client OAuth2 specificât dal utent pai servidôrs di Google. Une "
+#~ "stringhe vueide e significhe che si dopre chel furnît in fase di "
+#~ "compilazion. Se si modifiche chest valôr si scugne tornâ a inviâ."
+
+#~ msgid ""
+#~ "An OAuth2 client ID to use to connect to Outlook servers, instead of the "
+#~ "one provided during build time"
+#~ msgstr ""
+#~ "Un ID di client OAuth2 di doprâ par conetisi ai servidôrs di Outlook, al "
+#~ "puest di chel furnît inte compilazion"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client ID for Outlook servers. Empty string means "
+#~ "to use the one provided during build time. Change of this requires "
+#~ "restart."
+#~ msgstr ""
+#~ "ID di client OAuth2 specificât dal utent pai servidôrs di Outlook. Une "
+#~ "stringhe vueide e significhe che si dopre chel furnît in fase di "
+#~ "compilazion. Se si modifiche chest valôr si scugne tornâ a inviâ."
+
+#~ msgid ""
+#~ "An OAuth2 client secret to use to connect to Outlook servers, instead of "
+#~ "the one provided during build time"
+#~ msgstr ""
+#~ "Un segret di client OAuth2 di doprâ par conetisi ai servidôrs di Outlook, "
+#~ "al puest di chel furnît inte compilazion"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client secret for Outlook servers. Empty string "
+#~ "means to use the one provided during build time. Change of this requires "
+#~ "restart."
+#~ msgstr ""
+#~ "Segret di client OAuth2 specificât dal utent pai servidôrs di Outlook. "
+#~ "Une stringhe vueide e significhe che si dopre chel furnît in fase di "
+#~ "compilazion. Se si modifiche chest valôr si scugne tornâ a inviâ."
+
+#~ msgid ""
+#~ "An OAuth2 client ID to use to connect to Yahoo! servers, instead of the "
+#~ "one provided during build time"
+#~ msgstr ""
+#~ "Un ID di client OAuth2 di doprâ par conetisi ai servidôrs di Yahoo!, al "
+#~ "puest di chel furnît inte compilazion"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
+#~ "use the one provided during build time. Change of this requires restart."
+#~ msgstr ""
+#~ "ID di client OAuth2 specificât dal utent pai servidôrs di Yahoo!. Une "
+#~ "stringhe vueide e significhe che si dopre chel furnît in fase di "
+#~ "compilazion. Se si modifiche chest valôr si scugne tornâ a inviâ."
+
+#~ msgid ""
+#~ "An OAuth2 client secret to use to connect to Yahoo! servers, instead of "
+#~ "the one provided during build time"
+#~ msgstr ""
+#~ "Un segret di client OAuth2 di doprâ par conetisi ai servidôrs di Yahoo!, "
+#~ "al puest di chel furnît in fase di compilazion"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client secret for Yahoo! servers. Empty string "
+#~ "means to use the one provided during build time. Change of this requires "
+#~ "restart."
+#~ msgstr ""
+#~ "Segret di client OAuth2 specificât dal utent pai servidôrs di Yahoo!. Une "
+#~ "stringhe vueide e significhe che si dopre chel furnît in fase di "
+#~ "compilazion. Se si modifiche chest valôr si scugne tornâ a inviâ."
+
+#~ msgid "(Deprecated) Proxy type to use"
+#~ msgstr "(Deplorât) Gjenar di proxy di doprâ"
+
+#~ msgid ""
+#~ "This key was deprecated in version 3.12 and should no longer be used. "
+#~ "Proxy settings are now integrated into Evolution-Data-Server’s account "
+#~ "system. See the ESourceProxy API documentation for details."
+#~ msgstr ""
+#~ "Cheste clâf e je stade deplorade te version 3.12 e no varès di jessi plui "
+#~ "doprade. Lis impostazions proxy a son cumò integradis intal sisteme di "
+#~ "account di Evolution-Data-Server. Viodi la documentazion de API "
+#~ "ESourceProxy pai detais."
+
+#~ msgid "(Deprecated) Whether to use http-proxy"
+#~ msgstr "(Deplorât) Indiche se doprâ http-proxy"
+
+#~ msgid "(Deprecated) Whether proxy server requires authentication"
+#~ msgstr "(Deplorât) Indiche se il servidôr proxy al domande autenticazion"
+
+#~ msgid "(Deprecated) Host name for HTTP requests"
+#~ msgstr "(Deplorât) Non host pes richiestis HTTP"
+
+#~ msgid "(Deprecated) Port number for HTTP requests"
+#~ msgstr "(Deplorât) Numar di puarte pes richiestis HTTP"
+
+#~ msgid "(Deprecated) Proxy authentication user name"
+#~ msgstr "(Deplorât) Non utent di autenticazion dal proxy"
+
+#~ msgid "(Deprecated) Proxy authentication password"
+#~ msgstr "(Deplorât) Password di autenticazion dal proxy"
+
+#~ msgid "(Deprecated) List of hosts to connect to without proxy"
+#~ msgstr "(Deplorât) Liste dai host dulà conetisi cence proxy"
+
+#~ msgid "(Deprecated) Host name for HTTPS requests"
+#~ msgstr "(Deplorât) Non host pes richiestis HTTPS"
+
+#~ msgid "(Deprecated) Port number for HTTPS requests"
+#~ msgstr "(Deplorât) Numar di puarte pes richiestis HTTPS"
+
+#~ msgid "(Deprecated) Host name for SOCKS requests"
+#~ msgstr "(Deplorât) Non host pes richiestis SOCKS"
+
+#~ msgid "(Deprecated) Port number for SOCKS requests"
+#~ msgstr "(Deplorât) Numar di puarte pes richiestis SOCKS"
+
+#~ msgid "(Deprecated) Automatic proxy configuration URL"
+#~ msgstr "(Deplorât) URL di configurazion automatiche dal proxy"
+
+#~ msgid "Evolution Alarm Notify"
+#~ msgstr "Notifiche di alarme di Evolution"
+
+#~ msgid "Calendar event notifications"
+#~ msgstr "Notifichis events dal calendari"
+
+#~ msgid "Birthdays & Anniversaries"
+#~ msgstr "Compleans e aniversaris"
+
+#~ msgid "CalDAV"
+#~ msgstr "CalDAV"
+
+#~ msgid "CardDAV"
+#~ msgstr "CardDAV"
+
+#~ msgid "Contacts"
+#~ msgstr "Contats"
+
+#~ msgid "Google"
+#~ msgstr "Google"
+
+#~ msgid "On LDAP Servers"
+#~ msgstr "Su servidôrs LDAP"
+
+#~ msgid "On This Computer"
+#~ msgstr "Su chest computer"
+
+#~ msgid "Personal"
+#~ msgstr "Personâl"
+
+#~ msgid "Default Proxy Settings"
+#~ msgstr "Impostazions proxy predefinidis"
+
+#~ msgid "Search Folders"
+#~ msgstr "Cartelis di ricercje"
+
+#~ msgid "Weather"
+#~ msgstr "Condizions meteo"
+
+#~ msgid "On The Web"
+#~ msgstr "Sul web"
+
+#~ msgid "WebDAV Notes"
+#~ msgstr "Notis WebDAV"
+
 #~ msgid "Failed to create contact from returned server data"
 #~ msgstr "No si è rivâts a creâ il contat dai dâts tornâts al servidôr"
 
@@ -8007,9 +7947,6 @@ msgstr "No je stade cjatade nissune risorse\n"
 
 #~ msgid "Unknown User"
 #~ msgstr "Utent no cognossût"
-
-#~ msgid "Protocol not supported"
-#~ msgstr "Protocol no supuartât"
 
 #~ msgid "Operation has been cancelled"
 #~ msgstr "La operazion e je stade anulade"
