@@ -93,7 +93,7 @@ tcu_fixture_setup (TCUFixture *fixture,
 	g_free (filename);
 
 	if (closure) {
-		if (closure->load_set == TCU_LOAD_COMPONENT_SET_EVENTS) {
+		if (closure->load_set == TCU_LOAD_COMPONENT_SET_EVENTS || closure->load_set == TCU_LOAD_COMPONENT_SET_EVENTS_WITH_0) {
 			tcu_add_component_from_test_case (fixture, "event-1", NULL);
 			tcu_add_component_from_test_case (fixture, "event-2", NULL);
 			tcu_add_component_from_test_case (fixture, "event-3", NULL);
@@ -104,6 +104,9 @@ tcu_fixture_setup (TCUFixture *fixture,
 			tcu_add_component_from_test_case (fixture, "event-7", NULL);
 			tcu_add_component_from_test_case (fixture, "event-8", NULL);
 			tcu_add_component_from_test_case (fixture, "event-9", NULL);
+
+			if (closure->load_set == TCU_LOAD_COMPONENT_SET_EVENTS_WITH_0)
+				tcu_add_component_from_test_case (fixture, "event-0", NULL);
 		} else if (closure->load_set == TCU_LOAD_COMPONENT_SET_TASKS) {
 			tcu_add_component_from_test_case (fixture, "task-1", NULL);
 			tcu_add_component_from_test_case (fixture, "task-2", NULL);
