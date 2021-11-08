@@ -343,8 +343,12 @@ intersects_interval (const ICalTime *tt,
 		i_cal_time_adjust (ttend, default_duration_days, 0, 0, default_duration_seconds);
 	}
 
-	res = e_timetype_compare_without_date (ttstart, interval_end) < 0 &&
-	      e_timetype_compare_without_date (interval_start, ttend) < 0;
+	if (i_cal_time_compare (ttstart, ttend) == 0)
+		res = e_timetype_compare_without_date (ttstart, interval_end) < 0 &&
+		      e_timetype_compare_without_date (interval_start, ttend) <= 0;
+	else
+		res = e_timetype_compare_without_date (ttstart, interval_end) < 0 &&
+		      e_timetype_compare_without_date (interval_start, ttend) < 0;
 
 	g_clear_object (&ttstart);
 	g_clear_object (&ttend);

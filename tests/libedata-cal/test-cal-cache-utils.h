@@ -28,6 +28,7 @@ void		tcu_read_args				(gint argc,
 typedef enum {
 	TCU_LOAD_COMPONENT_SET_NONE,
 	TCU_LOAD_COMPONENT_SET_EVENTS,
+	TCU_LOAD_COMPONENT_SET_EVENTS_WITH_0,
 	TCU_LOAD_COMPONENT_SET_TASKS
 } TCULoadComponentSet;
 

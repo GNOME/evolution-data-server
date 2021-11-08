@@ -275,6 +275,13 @@ test_search_occur_in_time_range (TCUFixture *fixture,
 	test_search (fixture, "(occur-in-time-range? (make-time \"20170221T180000Z\") (make-time \"20170221T190000Z\") \"America/New_York\")", "event-6");
 	test_search (fixture, "(occur-in-time-range? (make-time \"20170221T200000Z\") (make-time \"20170221T210000Z\") \"Europe/Berlin\")", "!event-6");
 	test_search (fixture, "(occur-in-time-range? (make-time \"20170221T180000Z\") (make-time \"20170221T190000Z\") \"Europe/Berlin\")", "event-6");
+
+	/* event-0 */
+	test_search (fixture, "(occur-in-time-range? (make-time \"20170209T000000Z\") (make-time \"20170209T012900Z\"))", "!event-0");
+	test_search (fixture, "(occur-in-time-range? (make-time \"20170209T000000Z\") (make-time \"20170209T013000Z\"))", "!event-0");
+	test_search (fixture, "(occur-in-time-range? (make-time \"20170209T010000Z\") (make-time \"20170209T020000Z\"))", "event-0");
+	test_search (fixture, "(occur-in-time-range? (make-time \"20170209T013000Z\") (make-time \"20170209T020000Z\"))", "event-0");
+	test_search (fixture, "(occur-in-time-range? (make-time \"20170209T013100Z\") (make-time \"20170209T020000Z\"))", "!event-0");
 }
 
 static void
@@ -474,6 +481,7 @@ main (gint argc,
       gchar **argv)
 {
 	TCUClosure closure_events = { TCU_LOAD_COMPONENT_SET_EVENTS };
+	TCUClosure closure_events0 = { TCU_LOAD_COMPONENT_SET_EVENTS_WITH_0 };
 	TCUClosure closure_tasks = { TCU_LOAD_COMPONENT_SET_TASKS };
 
 #if !GLIB_CHECK_VERSION (2, 35, 1)
@@ -490,7 +498,7 @@ main (gint argc,
 
 	g_test_add ("/ECalCache/Search/Uid", TCUFixture, &closure_events,
 		tcu_fixture_setup, test_search_uid, tcu_fixture_teardown);
-	g_test_add ("/ECalCache/Search/OccurInTimeRange", TCUFixture, &closure_events,
+	g_test_add ("/ECalCache/Search/OccurInTimeRange", TCUFixture, &closure_events0,
 		tcu_fixture_setup, test_search_occur_in_time_range, tcu_fixture_teardown);
 	g_test_add ("/ECalCache/Search/DueInTimeRange", TCUFixture, &closure_tasks,
 		tcu_fixture_setup, test_search_due_in_time_range, tcu_fixture_teardown);
