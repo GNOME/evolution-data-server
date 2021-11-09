@@ -13,7 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
 "POT-Creation-Date: 2021-09-24 12:12+0000\n"
-"PO-Revision-Date: 2021-11-08 21:49+0100\n"
+"PO-Revision-Date: 2021-11-09 09:26+0100\n"
 "Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Tot En Òc\n"
 "Language: oc\n"
@@ -246,7 +246,13 @@ msgid_plural ""
 "Contact lists in LDAP address books require each member to be from the same "
 "LDAP address book, but %d members could not be recognized."
 msgstr[0] ""
+"Las listas de contactes dins los quasernets d'adreças requerisson que cada "
+"membre siá lo meteis del quasernet d'adreça LDAP estant, mes un membre se "
+"pòt pas reconéisser."
 msgstr[1] ""
+"Las listas de contactes dins los quasernets d'adreças requerisson que cada "
+"membre siá lo meteis del quasernet d'adreça LDAP estant, mes %d membres se "
+"pòdon pas reconéisser."
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4318
 msgid "Receiving LDAP search results..."
@@ -1311,6 +1317,8 @@ msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. Remove it, please."
 msgstr ""
+"Informacions mancantas tocant l'URL del compausant, lo cache local es benlèu "
+"incomplèt o copat. Suprimissètz-lo se vos plai."
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:2025
 msgid "Failed to parse response data"
@@ -4307,6 +4315,8 @@ msgid ""
 "Plaintext authentication disallowed on insecure connections. Change "
 "encryption to STARTTLS or TLS for account “%s”."
 msgstr ""
+"L’autentificacion en tèxt brut es desactivada sus las connexions pas "
+"seguras. Cambiatz lo chiframent per STARTTLS o TLS pel compte « %s »."
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3272
 #: ../src/camel/providers/nntp/camel-nntp-store.c:454
@@ -4327,10 +4337,8 @@ msgid "Failed to authenticate"
 msgstr "Fracàs de l'autentificacion"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3472
-#, fuzzy
-#| msgid "Failed to issue NAMESPACE"
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
-msgstr "Impossible d'emetre NAMESPACE"
+msgstr "Emission impossibla de ENABLE UTF8=ACCEPT"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3494
 msgid "Failed to issue NAMESPACE"
