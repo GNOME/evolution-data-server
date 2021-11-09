@@ -71,11 +71,9 @@ set(SOURCES
 	e-oauth2-service-yahoo.c
 	e-oauth2-services.c
 	e-operation-pool.c
-	e-proxy.c
 	e-secret-store.c
 	e-sexp.c
 	e-soup-auth-bearer.c
-	e-soup-logger.c
 	e-soup-session.c
 	e-soup-ssl-trust.c
 	e-source.c
@@ -163,11 +161,9 @@ set(HEADERS
 	e-oauth2-service-yahoo.h
 	e-oauth2-services.h
 	e-operation-pool.h
-	e-proxy.h
 	e-secret-store.h
 	e-sexp.h
 	e-soup-auth-bearer.h
-	e-soup-logger.h
 	e-soup-session.h
 	e-soup-ssl-trust.h
 	e-source.h
@@ -299,7 +295,7 @@ install(FILES ${HEADERS}
 
 set(gir_sources ${SOURCES} ${HEADERS})
 set(gir_identifies_prefixes E)
-set(gir_includes GObject-2.0 Gio-2.0 Soup-2.4 libxml2-2.0 ${LIBGDATA_GIR})
+set(gir_includes GObject-2.0 Gio-2.0 Soup-3.0 libxml2-2.0 ${LIBGDATA_GIR})
 set(gir_cflags
 	-DLIBEDATASERVER_COMPILATION
 )

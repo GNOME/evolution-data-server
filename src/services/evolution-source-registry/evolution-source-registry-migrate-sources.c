@@ -140,7 +140,7 @@ struct _ParseData {
 
 	/* Set by <source> tags. */
 	gchar *mangled_uri;
-	SoupURI *soup_uri;
+	GUri *parsed_uri;
 	PropertyFunc property_func;
 };
 
@@ -218,8 +218,8 @@ parse_data_free (ParseData *parse_data)
 	g_free (parse_data->base_uri);
 	g_free (parse_data->mangled_uri);
 
-	if (parse_data->soup_uri != NULL)
-		soup_uri_free (parse_data->soup_uri);
+	if (parse_data->parsed_uri != NULL)
+		g_uri_unref (parse_data->parsed_uri);
 
 	g_slice_free (ParseData, parse_data);
 }
@@ -2263,38 +2263,38 @@ migrate_parse_caldav_property (ParseData *parse_data,
 static void
 migrate_parse_caldav_source (ParseData *parse_data)
 {
-	if (parse_data->soup_uri->host != NULL)
+	if (g_uri_get_host (parse_data->parsed_uri) != NULL)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_AUTHENTICATION,
-			"Host", parse_data->soup_uri->host);
+			"Host", g_uri_get_host (parse_data->parsed_uri));
 
 	/* We may override this later if we see an "ssl" property. */
-	if (parse_data->soup_uri->port == 0)
-		parse_data->soup_uri->port = 80;
+	if (g_uri_get_port (parse_data->parsed_uri) < 0)
+		e_util_change_uri_port (&parse_data->parsed_uri, 80);
 
 	g_key_file_set_integer (
 		parse_data->key_file,
 		E_SOURCE_EXTENSION_AUTHENTICATION,
-		"Port", parse_data->soup_uri->port);
+		"Port", g_uri_get_port (parse_data->parsed_uri));
 
-	if (parse_data->soup_uri->user != NULL)
+	if (g_uri_get_user (parse_data->parsed_uri) != NULL)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_AUTHENTICATION,
-			"User", parse_data->soup_uri->user);
+			"User", g_uri_get_user (parse_data->parsed_uri));
 
-	if (parse_data->soup_uri->path != NULL)
+	if (g_uri_get_path (parse_data->parsed_uri) != NULL)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_WEBDAV_BACKEND,
-			"ResourcePath", parse_data->soup_uri->path);
+			"ResourcePath", g_uri_get_path (parse_data->parsed_uri));
 
-	if (parse_data->soup_uri->query != NULL)
+	if (g_uri_get_query (parse_data->parsed_uri) != NULL)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_WEBDAV_BACKEND,
-			"ResourceQuery", parse_data->soup_uri->query);
+			"ResourceQuery", g_uri_get_query (parse_data->parsed_uri));
 
 	parse_data->property_func = migrate_parse_caldav_property;
 }
@@ -2407,38 +2407,38 @@ migrate_parse_ldap_property (ParseData *parse_data,
 static void
 migrate_parse_ldap_source (ParseData *parse_data)
 {
-	if (parse_data->soup_uri->host != NULL)
+	if (g_uri_get_host (parse_data->parsed_uri) != NULL)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_AUTHENTICATION,
-			"Host", parse_data->soup_uri->host);
+			"Host", g_uri_get_host (parse_data->parsed_uri));
 
-	if (parse_data->soup_uri->port != 0)
+	if (g_uri_get_port (parse_data->parsed_uri) > 0)
 		g_key_file_set_integer (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_AUTHENTICATION,
-			"Port", parse_data->soup_uri->port);
+			"Port", g_uri_get_port (parse_data->parsed_uri));
 
-	if (parse_data->soup_uri->user != NULL)
+	if (g_uri_get_user (parse_data->parsed_uri) != NULL)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_AUTHENTICATION,
-			"User", parse_data->soup_uri->user);
+			"User", g_uri_get_user (parse_data->parsed_uri));
 
 	/* Skip the leading slash on the URI path to get the RootDn. */
-	if (parse_data->soup_uri->path != NULL)
+	if (g_uri_get_path (parse_data->parsed_uri) != NULL)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_LDAP_BACKEND,
-			"RootDn", parse_data->soup_uri->path + 1);
+			"RootDn", g_uri_get_path (parse_data->parsed_uri) + 1);
 
-	if (g_strcmp0 (parse_data->soup_uri->query, "?sub?") == 0)
+	if (g_strcmp0 (g_uri_get_query (parse_data->parsed_uri), "?sub?") == 0)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_LDAP_BACKEND,
 			"Scope", "subtree");
 
-	if (g_strcmp0 (parse_data->soup_uri->query, "?one?") == 0)
+	if (g_strcmp0 (g_uri_get_query (parse_data->parsed_uri), "?one?") == 0)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_LDAP_BACKEND,
@@ -2450,11 +2450,11 @@ migrate_parse_ldap_source (ParseData *parse_data)
 static void
 migrate_parse_vcf_source (ParseData *parse_data)
 {
-	if (parse_data->soup_uri->path != NULL)
+	if (g_uri_get_path (parse_data->parsed_uri) != NULL)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_VCF_BACKEND,
-			"Path", parse_data->soup_uri->path);
+			"Path", g_uri_get_path (parse_data->parsed_uri));
 
 	/* VCF Backend has no special properties to parse. */
 }
@@ -2493,15 +2493,15 @@ migrate_parse_weather_source (ParseData *parse_data)
 	/* Oh man, we actually try to shove a weather location into
 	 * a URI!  The station code winds up as the host component,
 	 * and the location name winds up as the path component. */
-	if (parse_data->soup_uri->host != NULL) {
+	if (g_uri_get_host (parse_data->parsed_uri) != NULL) {
 		gchar *location;
 
-		if (parse_data->soup_uri->path != NULL)
+		if (g_uri_get_path (parse_data->parsed_uri) != NULL)
 			location = g_strconcat (
-				parse_data->soup_uri->host,
-				parse_data->soup_uri->path, NULL);
+				g_uri_get_host (parse_data->parsed_uri),
+				g_uri_get_path (parse_data->parsed_uri), NULL);
 		else
-			location = g_strdup (parse_data->soup_uri->host);
+			location = g_strdup (g_uri_get_host (parse_data->parsed_uri));
 
 		g_key_file_set_string (
 			parse_data->key_file,
@@ -2517,38 +2517,38 @@ migrate_parse_weather_source (ParseData *parse_data)
 static void
 migrate_parse_webcal_source (ParseData *parse_data)
 {
-	if (parse_data->soup_uri->host != NULL)
+	if (g_uri_get_host (parse_data->parsed_uri) != NULL)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_AUTHENTICATION,
-			"Host", parse_data->soup_uri->host);
+			"Host", g_uri_get_host (parse_data->parsed_uri));
 
 	/* We may override this later if we see an "ssl" property. */
-	if (parse_data->soup_uri->port == 0)
-		parse_data->soup_uri->port = 80;
+	if (g_uri_get_port (parse_data->parsed_uri) < 0)
+		e_util_change_uri_port (&parse_data->parsed_uri, 80);
 
 	g_key_file_set_integer (
 		parse_data->key_file,
 		E_SOURCE_EXTENSION_AUTHENTICATION,
-		"Port", parse_data->soup_uri->port);
+		"Port", g_uri_get_port (parse_data->parsed_uri));
 
-	if (parse_data->soup_uri->user != NULL)
+	if (g_uri_get_user (parse_data->parsed_uri) != NULL)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_AUTHENTICATION,
-			"User", parse_data->soup_uri->user);
+			"User", g_uri_get_user (parse_data->parsed_uri));
 
-	if (parse_data->soup_uri->path != NULL)
+	if (g_uri_get_path (parse_data->parsed_uri) != NULL)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_WEBDAV_BACKEND,
-			"ResourcePath", parse_data->soup_uri->path);
+			"ResourcePath", g_uri_get_path (parse_data->parsed_uri));
 
-	if (parse_data->soup_uri->query != NULL)
+	if (g_uri_get_query (parse_data->parsed_uri) != NULL)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_WEBDAV_BACKEND,
-			"ResourceQuery", parse_data->soup_uri->query);
+			"ResourceQuery", g_uri_get_query (parse_data->parsed_uri));
 
 	/* Webcal Backend has no special properties to parse. */
 }
@@ -2570,35 +2570,35 @@ migrate_parse_webdav_property (ParseData *parse_data,
 static void
 migrate_parse_webdav_source (ParseData *parse_data)
 {
-	if (parse_data->soup_uri->host != NULL)
+	if (g_uri_get_host (parse_data->parsed_uri) != NULL)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_AUTHENTICATION,
-			"Host", parse_data->soup_uri->host);
+			"Host", g_uri_get_host (parse_data->parsed_uri));
 
-	if (parse_data->soup_uri->port != 0)
+	if (g_uri_get_port (parse_data->parsed_uri) > 0)
 		g_key_file_set_integer (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_AUTHENTICATION,
-			"Port", parse_data->soup_uri->port);
+			"Port", g_uri_get_port (parse_data->parsed_uri));
 
-	if (parse_data->soup_uri->user != NULL)
+	if (g_uri_get_user (parse_data->parsed_uri) != NULL)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_AUTHENTICATION,
-			"User", parse_data->soup_uri->user);
+			"User", g_uri_get_user (parse_data->parsed_uri));
 
-	if (parse_data->soup_uri->path != NULL)
+	if (g_uri_get_path (parse_data->parsed_uri) != NULL)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_WEBDAV_BACKEND,
-			"ResourcePath", parse_data->soup_uri->path);
+			"ResourcePath", g_uri_get_path (parse_data->parsed_uri));
 
-	if (parse_data->soup_uri->query != NULL)
+	if (g_uri_get_query (parse_data->parsed_uri) != NULL)
 		g_key_file_set_string (
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_WEBDAV_BACKEND,
-			"ResourceQuery", parse_data->soup_uri->query);
+			"ResourceQuery", g_uri_get_query (parse_data->parsed_uri));
 
 	parse_data->property_func = migrate_parse_webdav_property;
 }
@@ -2780,7 +2780,7 @@ migrate_parse_source (ParseData *parse_data,
 		uri_string = g_strconcat (
 			parse_data->base_uri, "/", relative_uri, NULL);
 
-	parse_data->soup_uri = soup_uri_new (uri_string);
+	parse_data->parsed_uri = g_uri_parse (uri_string, SOUP_HTTP_URI_FLAGS, NULL);
 
 	/* Mangle the URI to not contain invalid characters.  We'll need
 	 * this later to rename the source's cache and data directories. */
@@ -2790,7 +2790,7 @@ migrate_parse_source (ParseData *parse_data,
 	 * now owns 'uri_string'.  Clear the pointer to emphasize that. */
 	uri_string = NULL;
 
-	if (parse_data->soup_uri == NULL) {
+	if (parse_data->parsed_uri == NULL) {
 		g_warning (
 			"  Failed to parse source URI: %s",
 			(absolute_uri != NULL) ? absolute_uri : relative_uri);
@@ -2825,9 +2825,9 @@ migrate_parse_source (ParseData *parse_data,
 
 	migrate_keyring_entry (
 		uid,
-		parse_data->soup_uri->user,
-		parse_data->soup_uri->host,
-		parse_data->soup_uri->scheme);
+		g_uri_get_user (parse_data->parsed_uri),
+		g_uri_get_host (parse_data->parsed_uri),
+		g_uri_get_scheme (parse_data->parsed_uri));
 }
 
 static void
@@ -2949,7 +2949,7 @@ migrate_parse_property (ParseData *parse_data,
 		 * (http://) by default.  If we see that and we're
 		 * using a secure connection, bump the port to 443
 		 * (https://). */
-		if (parse_data->soup_uri->port == 80)
+		if (g_uri_get_port (parse_data->parsed_uri) == 80)
 			if (is_true (property_value))
 				g_key_file_set_integer (
 					parse_data->key_file,
@@ -2968,7 +2968,7 @@ migrate_parse_property (ParseData *parse_data,
 		 * (http://) by default.  If we see that and we're
 		 * using a secure connection, bump the port to 443
 		 * (https://). */
-		if (parse_data->soup_uri->port == 80)
+		if (g_uri_get_port (parse_data->parsed_uri) == 80)
 			if (is_true (property_value))
 				g_key_file_set_integer (
 					parse_data->key_file,
@@ -3134,7 +3134,7 @@ migrate_parse_source_xml_end_element (GMarkupParseContext *context,
 			g_free (parse_data->mangled_uri);
 			parse_data->mangled_uri = NULL;
 
-			g_clear_pointer (&parse_data->soup_uri, soup_uri_free);
+			g_clear_pointer (&parse_data->parsed_uri, g_uri_unref);
 
 			parse_data->property_func = NULL;
 

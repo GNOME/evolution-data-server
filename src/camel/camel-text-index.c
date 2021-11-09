@@ -1600,7 +1600,7 @@ camel_text_index_name_new (CamelTextIndex *idx,
 	CamelIndexName *cin = &idn->parent;
 	CamelTextIndexNamePrivate *p = CAMEL_TEXT_INDEX_NAME (idn)->priv;
 
-	cin->index = g_object_ref (idx);
+	cin->index = CAMEL_INDEX (g_object_ref (idx));
 	cin->name = camel_mempool_strdup (p->pool, name);
 	p->nameid = nameid;
 
@@ -1692,7 +1692,7 @@ camel_text_index_cursor_new (CamelTextIndex *idx,
 	CamelIndexCursor *cic = &idc->parent;
 	CamelTextIndexCursorPrivate *p = CAMEL_TEXT_INDEX_CURSOR (idc)->priv;
 
-	cic->index = g_object_ref (idx);
+	cic->index = CAMEL_INDEX (g_object_ref (idx));
 	p->first = data;
 	p->next = data;
 	p->record_count = 0;
@@ -1787,7 +1787,7 @@ camel_text_index_key_cursor_new (CamelTextIndex *idx,
 	CamelIndexCursor *cic = &idc->parent;
 	CamelTextIndexKeyCursorPrivate *p = CAMEL_TEXT_INDEX_KEY_CURSOR (idc)->priv;
 
-	cic->index = g_object_ref (idx);
+	cic->index = CAMEL_INDEX (g_object_ref (idx));
 	p->table = g_object_ref (table);
 
 	return idc;

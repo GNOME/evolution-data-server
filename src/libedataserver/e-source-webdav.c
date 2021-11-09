@@ -28,7 +28,7 @@
  * this class directly or subclass it with additional settings.
  * Subclasses should override the extension name.
  *
- * The #SoupURI is parsed into components and distributed across
+ * The #GUri is parsed into components and distributed across
  * several other built-in extensions such as #ESourceAuthentication
  * and #ESourceSecurity.
  *
@@ -67,7 +67,7 @@ struct _ESourceWebdavPrivate {
 	gchar *ssl_trust;
 	gboolean avoid_ifmatch;
 	gboolean calendar_auto_schedule;
-	SoupURI *soup_uri;
+	GUri *uri;
 	guint order;
 };
 
@@ -80,7 +80,7 @@ enum {
 	PROP_EMAIL_ADDRESS,
 	PROP_RESOURCE_PATH,
 	PROP_RESOURCE_QUERY,
-	PROP_SOUP_URI,
+	PROP_URI,
 	PROP_SSL_TRUST,
 	PROP_ORDER
 };
@@ -95,7 +95,7 @@ source_webdav_notify_cb (GObject *object,
                          GParamSpec *pspec,
                          ESourceWebdav *extension)
 {
-	g_object_notify (G_OBJECT (extension), "soup-uri");
+	g_object_notify (G_OBJECT (extension), "uri");
 }
 
 static gboolean
@@ -141,17 +141,17 @@ source_webdav_user_to_method (GBinding *binding,
 }
 
 static void
-source_webdav_update_properties_from_soup_uri (ESourceWebdav *webdav_extension)
+source_webdav_update_properties_from_uri (ESourceWebdav *webdav_extension)
 {
 	ESource *source;
 	ESourceExtension *extension;
-	SoupURI *soup_uri;
+	GUri *uri;
 	const gchar *extension_name;
 
-	/* Do not use e_source_webdav_dup_soup_uri() here.  That
+	/* Do not use e_source_webdav_dup_uri() here.  That
 	 * builds the URI from properties we haven't yet updated. */
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (webdav_extension));
-	soup_uri = soup_uri_copy (webdav_extension->priv->soup_uri);
+	uri = g_uri_ref (webdav_extension->priv->uri);
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (webdav_extension));
 
 	extension = E_SOURCE_EXTENSION (webdav_extension);
@@ -159,8 +159,8 @@ source_webdav_update_properties_from_soup_uri (ESourceWebdav *webdav_extension)
 
 	g_object_set (
 		extension,
-		"resource-path", soup_uri->path,
-		"resource-query", soup_uri->query,
+		"resource-path", g_uri_get_path (uri),
+		"resource-query", g_uri_get_query (uri),
 		NULL);
 
 	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
@@ -168,14 +168,14 @@ source_webdav_update_properties_from_soup_uri (ESourceWebdav *webdav_extension)
 
 	g_object_set (
 		extension,
-		"host", soup_uri->host,
-		"port", soup_uri->port,
+		"host", g_uri_get_host (uri),
+		"port", g_uri_get_port (uri),
 		NULL);
 
-	if (soup_uri->user && *soup_uri->user)
+	if (g_uri_get_user (uri) && *g_uri_get_user (uri))
 		g_object_set (
 			extension,
-			"user", soup_uri->user,
+			"user", g_uri_get_user (uri),
 			NULL);
 
 	extension_name = E_SOURCE_EXTENSION_SECURITY;
@@ -183,21 +183,22 @@ source_webdav_update_properties_from_soup_uri (ESourceWebdav *webdav_extension)
 
 	g_object_set (
 		extension,
-		"secure", (soup_uri->scheme == SOUP_URI_SCHEME_HTTPS),
+		"secure", !strcmp(g_uri_get_scheme (uri), "https"),
 		NULL);
 
 	g_object_unref (source);
 
-	soup_uri_free (soup_uri);
+	g_uri_unref (uri);
 }
 
 static void
-source_webdav_update_soup_uri_from_properties (ESourceWebdav *webdav_extension)
+source_webdav_update_uri_from_properties (ESourceWebdav *webdav_extension)
 {
 	ESource *source;
+	GUri *nuri;
 	ESourceExtension *extension;
-	SoupURI *soup_uri;
 	const gchar *extension_name;
+	const gchar *scheme;
 	gchar *user;
 	gchar *host;
 	gchar *path;
@@ -236,25 +237,29 @@ source_webdav_update_soup_uri_from_properties (ESourceWebdav *webdav_extension)
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (webdav_extension));
 
-	soup_uri = webdav_extension->priv->soup_uri;
+	if (port == 0)
+		port = g_uri_get_port (webdav_extension->priv->uri);
+
+	scheme = g_uri_get_scheme (webdav_extension->priv->uri);
 
 	/* Try not to disturb the scheme, in case it's "webcal" or some
 	 * other non-standard value.  But if we have to change it, do it. */
-	if (secure && soup_uri->scheme != SOUP_URI_SCHEME_HTTPS)
-		soup_uri_set_scheme (soup_uri, SOUP_URI_SCHEME_HTTPS);
-	if (!secure && soup_uri->scheme == SOUP_URI_SCHEME_HTTPS)
-		soup_uri_set_scheme (soup_uri, SOUP_URI_SCHEME_HTTP);
+	if (secure && strcmp (scheme, "https"))
+		scheme = "https";
+	if (!secure && !strcmp (scheme, "https"))
+		scheme = "http";
 
-	soup_uri_set_user (soup_uri, user);
-	soup_uri_set_host (soup_uri, host);
+	nuri = soup_uri_copy (webdav_extension->priv->uri,
+	                      SOUP_URI_SCHEME, scheme,
+	                      SOUP_URI_HOST, host,
+	                      SOUP_URI_USER, user,
+	                      SOUP_URI_PORT, port,
+	                      SOUP_URI_PATH, (path != NULL) ? path : "",
+	                      SOUP_URI_QUERY, query,
+	                      SOUP_URI_NONE);
 
-	if (port > 0)
-		soup_uri_set_port (soup_uri, port);
-
-	/* SoupURI doesn't like NULL paths. */
-	soup_uri_set_path (soup_uri, (path != NULL) ? path : "");
-
-	soup_uri_set_query (soup_uri, query);
+	g_uri_unref (webdav_extension->priv->uri);
+	webdav_extension->priv->uri = nuri;
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (webdav_extension));
 
@@ -313,8 +318,8 @@ source_webdav_set_property (GObject *object,
 				g_value_get_string (value));
 			return;
 
-		case PROP_SOUP_URI:
-			e_source_webdav_set_soup_uri (
+		case PROP_URI:
+			e_source_webdav_set_uri (
 				E_SOURCE_WEBDAV (object),
 				g_value_get_boxed (value));
 			return;
@@ -391,10 +396,10 @@ source_webdav_get_property (GObject *object,
 				E_SOURCE_WEBDAV (object)));
 			return;
 
-		case PROP_SOUP_URI:
+		case PROP_URI:
 			g_value_take_boxed (
 				value,
-				e_source_webdav_dup_soup_uri (
+				e_source_webdav_dup_uri (
 				E_SOURCE_WEBDAV (object)));
 			return;
 
@@ -430,7 +435,7 @@ source_webdav_finalize (GObject *object)
 	g_free (priv->resource_query);
 	g_free (priv->ssl_trust);
 
-	soup_uri_free (priv->soup_uri);
+	g_uri_unref (priv->uri);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_webdav_parent_class)->finalize (object);
@@ -613,12 +618,12 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 
 	g_object_class_install_property (
 		object_class,
-		PROP_SOUP_URI,
+		PROP_URI,
 		g_param_spec_boxed (
-			"soup-uri",
-			"SoupURI",
-			"WebDAV service as a SoupURI",
-			SOUP_TYPE_URI,
+			"uri",
+			"Uri",
+			"WebDAV service as a GUri",
+			G_TYPE_URI,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
@@ -657,10 +662,9 @@ e_source_webdav_init (ESourceWebdav *extension)
 {
 	extension->priv = e_source_webdav_get_instance_private (extension);
 
-	/* Initialize this enough for SOUP_URI_IS_VALID() to pass. */
-	extension->priv->soup_uri = soup_uri_new (NULL);
-	extension->priv->soup_uri->scheme = SOUP_URI_SCHEME_HTTP;
-	extension->priv->soup_uri->path = g_strdup ("");
+	/* Initialize this enough */
+	extension->priv->uri = g_uri_build (SOUP_HTTP_URI_FLAGS, "http", NULL,
+					    NULL, -1, "", NULL, NULL);
 }
 
 /**
@@ -1286,31 +1290,31 @@ e_source_webdav_set_ssl_trust (ESourceWebdav *extension,
 }
 
 /**
- * e_source_webdav_dup_soup_uri:
+ * e_source_webdav_dup_uri:
  * @extension: an #ESourceWebdav
  *
  * This is a convenience function which returns a newly-allocated
- * #SoupURI, its contents assembled from the #ESourceAuthentication
+ * #GUri, its contents assembled from the #ESourceAuthentication
  * extension, the #ESourceSecurity extension, and @extension itself.
- * Free the returned #SoupURI with soup_uri_free().
+ * Free the returned #GUri with g_uri_unref().
  *
- * Returns: (transfer full): a newly-allocated #SoupURI
+ * Returns: (transfer full): a newly-allocated #GUri
  *
- * Since: 3.6
+ * Since: 3.48
  **/
-SoupURI *
-e_source_webdav_dup_soup_uri (ESourceWebdav *extension)
+GUri *
+e_source_webdav_dup_uri (ESourceWebdav *extension)
 {
-	SoupURI *duplicate;
+	GUri *duplicate;
 
 	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), NULL);
 
 	/* Keep this outside of the property lock. */
-	source_webdav_update_soup_uri_from_properties (extension);
+	source_webdav_update_uri_from_properties (extension);
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	duplicate = soup_uri_copy (extension->priv->soup_uri);
+	duplicate = g_uri_ref (extension->priv->uri);
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
@@ -1318,37 +1322,36 @@ e_source_webdav_dup_soup_uri (ESourceWebdav *extension)
 }
 
 /**
- * e_source_webdav_set_soup_uri:
+ * e_source_webdav_set_uri:
  * @extension: an #ESourceWebdav
- * @soup_uri: a #SoupURI
+ * @uri: a #GUri
  *
  * This is a convenience function which propagates the components of
  * @uri to the #ESourceAuthentication extension, the #ESourceSecurity
  * extension, and @extension itself.  (The "fragment" component of
  * @uri is ignored.)
  *
- * Since: 3.6
+ * Since: 3.48
  **/
 void
-e_source_webdav_set_soup_uri (ESourceWebdav *extension,
-                              SoupURI *soup_uri)
+e_source_webdav_set_uri (ESourceWebdav *extension,
+			 GUri *uri)
 {
 	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
-	g_return_if_fail (SOUP_URI_IS_VALID (soup_uri));
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	/* Do not test for URI equality because our
-	 * internal SoupURI might not be up-to-date. */
+	 * internal GUri might not be up-to-date. */
 
-	soup_uri_free (extension->priv->soup_uri);
-	extension->priv->soup_uri = soup_uri_copy (soup_uri);
+	g_uri_unref (extension->priv->uri);
+	extension->priv->uri = g_uri_ref (uri);
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_freeze_notify (G_OBJECT (extension));
-	source_webdav_update_properties_from_soup_uri (extension);
-	g_object_notify (G_OBJECT (extension), "soup-uri");
+	source_webdav_update_properties_from_uri (extension);
+	g_object_notify (G_OBJECT (extension), "uri");
 	g_object_thaw_notify (G_OBJECT (extension));
 }
 

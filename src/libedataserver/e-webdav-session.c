@@ -692,27 +692,27 @@ e_webdav_session_get_last_dav_error_is_permission (EWebDAVSession *webdav)
 }
 
 /**
- * e_webdav_session_new_request:
+ * e_webdav_session_new_message:
  * @webdav: an #EWebDAVSession
  * @method: an HTTP method
  * @uri: (nullable): URI to create the request for, or %NULL to read from #ESource
  * @error: return location for a #GError, or %NULL
  *
- * Returns: (transfer full): A new #SoupRequestHTTP for the given @uri, or, when %NULL,
+ * Returns: (transfer full): A new #SoupMessage for the given @uri, or, when %NULL,
  *    for the URI stored in the associated #ESource. Free the returned structure
  *    with g_object_unref(), when no longer needed.
  *
  * Since: 3.26
  **/
-SoupRequestHTTP *
-e_webdav_session_new_request (EWebDAVSession *webdav,
+SoupMessage *
+e_webdav_session_new_message (EWebDAVSession *webdav,
 			      const gchar *method,
 			      const gchar *uri,
 			      GError **error)
 {
 	ESoupSession *session;
-	SoupRequestHTTP *request;
-	SoupURI *soup_uri;
+	SoupMessage *message;
+	GUri *guri;
 	ESource *source;
 	ESourceWebdav *webdav_extension;
 	const gchar *path;
@@ -721,7 +721,7 @@ e_webdav_session_new_request (EWebDAVSession *webdav,
 
 	session = E_SOUP_SESSION (webdav);
 	if (uri && *uri)
-		return e_soup_session_new_request (session, method, uri, error);
+		return e_soup_session_new_message (session, method, uri, error);
 
 	source = e_soup_session_get_source (session);
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
@@ -733,32 +733,32 @@ e_webdav_session_new_request (EWebDAVSession *webdav,
 	}
 
 	webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-	soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
+	guri = e_source_webdav_dup_uri (webdav_extension);
 
-	g_return_val_if_fail (soup_uri != NULL, NULL);
+	g_return_val_if_fail (guri != NULL, NULL);
 
 	/* The URI in the ESource should be to a collection, with an ending
 	   forward slash, thus ensure it's there. */
-	path = soup_uri_get_path (soup_uri);
+	path = g_uri_get_path (guri);
 	if (!path || !*path || !g_str_has_suffix (path, "/")) {
 		gchar *new_path;
 
 		new_path = g_strconcat (path ? path : "", "/", NULL);
-		soup_uri_set_path (soup_uri, new_path);
+		e_util_change_uri_component (&guri, SOUP_URI_PATH, new_path);
 		g_free (new_path);
 	}
 
-	request = e_soup_session_new_request_uri (session, method, soup_uri, error);
+	message = e_soup_session_new_message_from_uri (session, method, guri, error);
 
-	soup_uri_free (soup_uri);
+	g_uri_unref (guri);
 
-	return request;
+	return message;
 }
 
 static gboolean
 e_webdav_session_extract_propstat_error_cb (EWebDAVSession *webdav,
 					    xmlNodePtr prop_node,
-					    const SoupURI *request_uri,
+					    const GUri *request_uri,
 					    const gchar *href,
 					    guint status_code,
 					    gpointer user_data)
@@ -790,7 +790,7 @@ e_webdav_session_extract_propstat_error_cb (EWebDAVSession *webdav,
 		}
 
 		g_clear_error (error);
-		g_set_error_literal (error, SOUP_HTTP_ERROR, status_code,
+		g_set_error_literal (error, E_SOUP_SESSION_ERROR, status_code,
 			e_soup_session_util_status_to_string (status_code, (const gchar *) description));
 	}
 
@@ -864,7 +864,7 @@ e_webdav_session_extract_dav_error (EWebDAVSession *webdav,
 
 static gboolean
 e_webdav_session_replace_with_detailed_error_internal (EWebDAVSession *webdav,
-						       SoupRequestHTTP *request,
+						       SoupMessage *message,
 						       const GByteArray *response_data,
 						       gboolean ignore_multistatus,
 						       const gchar *prefix,
@@ -872,7 +872,6 @@ e_webdav_session_replace_with_detailed_error_internal (EWebDAVSession *webdav,
 						       gboolean can_change_last_dav_error_code,
 						       gboolean skip_text_on_success)
 {
-	SoupMessage *message;
 	GByteArray byte_array = { 0 };
 	const gchar *content_type, *reason_phrase;
 	gchar *detail_text = NULL;
@@ -882,23 +881,16 @@ e_webdav_session_replace_with_detailed_error_internal (EWebDAVSession *webdav,
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
-	g_return_val_if_fail (SOUP_IS_REQUEST_HTTP (request), FALSE);
+	g_return_val_if_fail (SOUP_IS_MESSAGE (message), FALSE);
 
-	message = soup_request_http_get_message (request);
-	if (!message)
-		return FALSE;
-
-	status_code = message->status_code;
-	reason_phrase = message->reason_phrase;
+	status_code = soup_message_get_status (message);
+	reason_phrase = soup_message_get_reason_phrase (message);
 	byte_array.data = NULL;
 	byte_array.len = 0;
 
 	if (response_data && response_data->len) {
 		byte_array.data = (gpointer) response_data->data;
 		byte_array.len = response_data->len;
-	} else if (message->response_body && message->response_body->length) {
-		byte_array.data = (gpointer) message->response_body->data;
-		byte_array.len = message->response_body->length;
 	}
 
 	if (!byte_array.data || !byte_array.len)
@@ -916,12 +908,10 @@ e_webdav_session_replace_with_detailed_error_internal (EWebDAVSession *webdav,
 			g_prefix_error (&local_error, "%s: ", prefix);
 		g_propagate_error (inout_error, local_error);
 
-		g_object_unref (message);
-
 		return TRUE;
 	}
 
-	content_type = soup_message_headers_get_content_type (message->response_headers, NULL);
+	content_type = soup_message_headers_get_content_type (soup_message_get_response_headers (message), NULL);
 	if (content_type && (!skip_text_on_success || (status_code && !SOUP_STATUS_IS_SUCCESSFUL (status_code))) && (
 	    (g_ascii_strcasecmp (content_type, "application/xml") == 0 ||
 	     g_ascii_strcasecmp (content_type, "text/xml") == 0))) {
@@ -984,17 +974,12 @@ e_webdav_session_replace_with_detailed_error_internal (EWebDAVSession *webdav,
 		detail_text = g_strndup ((const gchar *) byte_array.data, byte_array.len);
 	} else if (content_type && (!skip_text_on_success || (status_code && !SOUP_STATUS_IS_SUCCESSFUL (status_code))) &&
 	     g_ascii_strcasecmp (content_type, "text/html") == 0) {
-		SoupURI *soup_uri;
+		GUri *g_uri;
 		gchar *uri = NULL;
 
-		soup_uri = soup_message_get_uri (message);
-		if (soup_uri) {
-			soup_uri = soup_uri_copy (soup_uri);
-			soup_uri_set_password (soup_uri, NULL);
-
-			uri = soup_uri_to_string (soup_uri, FALSE);
-
-			soup_uri_free (soup_uri);
+		g_uri = soup_message_get_uri (message);
+		if (g_uri) {
+			uri = g_uri_to_string_partial (g_uri, G_URI_HIDE_PASSWORD);
 		}
 
 		if (uri && *uri)
@@ -1015,7 +1000,7 @@ e_webdav_session_replace_with_detailed_error_internal (EWebDAVSession *webdav,
 		g_clear_error (inout_error);
 
 		if (prefix) {
-			g_set_error (inout_error, SOUP_HTTP_ERROR, status_code,
+			g_set_error (inout_error, E_SOUP_SESSION_ERROR, status_code,
 				/* Translators: The first '%s' is replaced with error prefix, as provided
 				   by the caller, which can be in a form: "Failed with something".
 				   The '%d' is replaced with actual HTTP status code.
@@ -1025,7 +1010,7 @@ e_webdav_session_replace_with_detailed_error_internal (EWebDAVSession *webdav,
 				e_soup_session_util_status_to_string (status_code, reason_phrase),
 				detail_text);
 		} else {
-			g_set_error (inout_error, SOUP_HTTP_ERROR, status_code,
+			g_set_error (inout_error, E_SOUP_SESSION_ERROR, status_code,
 				/* Translators: The '%d' is replaced with actual HTTP status code.
 				   The '%s' is replaced with a reason phrase of the error (user readable text).
 				   The last '%s' is replaced with detailed error text, as returned by the server. */
@@ -1039,7 +1024,7 @@ e_webdav_session_replace_with_detailed_error_internal (EWebDAVSession *webdav,
 		g_clear_error (inout_error);
 
 		if (prefix) {
-			g_set_error (inout_error, SOUP_HTTP_ERROR, status_code,
+			g_set_error (inout_error, E_SOUP_SESSION_ERROR, status_code,
 				/* Translators: The first '%s' is replaced with error prefix, as provided
 				   by the caller, which can be in a form: "Failed with something".
 				   The '%d' is replaced with actual HTTP status code.
@@ -1047,7 +1032,7 @@ e_webdav_session_replace_with_detailed_error_internal (EWebDAVSession *webdav,
 				_("%s: HTTP error code %d (%s)"), prefix, status_code,
 				e_soup_session_util_status_to_string (status_code, reason_phrase));
 		} else {
-			g_set_error (inout_error, SOUP_HTTP_ERROR, status_code,
+			g_set_error (inout_error, E_SOUP_SESSION_ERROR, status_code,
 				/* Translators: The '%d' is replaced with actual HTTP status code.
 				   The '%s' is replaced with a reason phrase of the error (user readable text). */
 				_("Failed with HTTP error code %d (%s)"), status_code,
@@ -1055,7 +1040,6 @@ e_webdav_session_replace_with_detailed_error_internal (EWebDAVSession *webdav,
 		}
 	}
 
-	g_object_unref (message);
 	g_free (reason_phrase_copy);
 	g_free (detail_text);
 
@@ -1065,14 +1049,14 @@ e_webdav_session_replace_with_detailed_error_internal (EWebDAVSession *webdav,
 /**
  * e_webdav_session_replace_with_detailed_error:
  * @webdav: an #EWebDAVSession
- * @request: a #SoupRequestHTTP
+ * @message: a #SoupMessage
  * @response_data: (nullable): received response data, or %NULL
  * @ignore_multistatus: whether to ignore multistatus responses
  * @prefix: (nullable): error message prefix, used when replacing, or %NULL
  * @inout_error: (inout) (nullable) (transfer full): a #GError variable to replace content to, or %NULL
  *
  * Tries to read detailed error information from @response_data,
- * if not provided, then from @request's response_body. If the detailed
+ * if not provided, then from @message's response_body. If the detailed
  * error cannot be found, then does nothing, otherwise frees the content
  * of @inout_error, if any, and then populates it with an error message
  * prefixed with @prefix.
@@ -1092,19 +1076,19 @@ e_webdav_session_replace_with_detailed_error_internal (EWebDAVSession *webdav,
  **/
 gboolean
 e_webdav_session_replace_with_detailed_error (EWebDAVSession *webdav,
-					      SoupRequestHTTP *request,
+					      SoupMessage *message,
 					      const GByteArray *response_data,
 					      gboolean ignore_multistatus,
 					      const gchar *prefix,
 					      GError **inout_error)
 {
-	return e_webdav_session_replace_with_detailed_error_internal (webdav, request, response_data, ignore_multistatus, prefix, inout_error, FALSE, FALSE);
+	return e_webdav_session_replace_with_detailed_error_internal (webdav, message, response_data, ignore_multistatus, prefix, inout_error, FALSE, FALSE);
 }
 
 /**
  * e_webdav_session_ensure_full_uri:
  * @webdav: an #EWebDAVSession
- * @request_uri: (nullable): a #SoupURI to which the @href belongs, or %NULL
+ * @request_uri: (nullable): a #GUri to which the @href belongs, or %NULL
  * @href: a possibly path-only href
  *
  * Converts possibly path-only @href into a full URI under the @request_uri.
@@ -1119,18 +1103,18 @@ e_webdav_session_replace_with_detailed_error (EWebDAVSession *webdav,
  **/
 gchar *
 e_webdav_session_ensure_full_uri (EWebDAVSession *webdav,
-				  const SoupURI *request_uri,
+				  const GUri *request_uri,
 				  const gchar *href)
 {
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), NULL);
 	g_return_val_if_fail (href != NULL, NULL);
 
 	if (*href == '/' || !strstr (href, "://")) {
-		SoupURI *soup_uri;
+		GUri *guri;
 		gchar *full_uri;
 
 		if (request_uri) {
-			soup_uri = soup_uri_copy ((SoupURI *) request_uri);
+			guri = g_uri_ref ((GUri *) request_uri);
 		} else {
 			ESource *source;
 			ESourceWebdav *webdav_extension;
@@ -1142,18 +1126,15 @@ e_webdav_session_ensure_full_uri (EWebDAVSession *webdav,
 				return g_strdup (href);
 
 			webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-			soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
+			guri = e_source_webdav_dup_uri (webdav_extension);
 		}
 
-		g_return_val_if_fail (soup_uri != NULL, NULL);
+		g_return_val_if_fail (guri != NULL, NULL);
 
-		soup_uri_set_path (soup_uri, href);
-		soup_uri_set_user (soup_uri, NULL);
-		soup_uri_set_password (soup_uri, NULL);
+		e_util_change_uri_component (&guri, SOUP_URI_PATH, href);
+		full_uri = g_uri_to_string_partial (guri, G_URI_HIDE_PASSWORD | G_URI_HIDE_USERINFO);
 
-		full_uri = soup_uri_to_string (soup_uri, FALSE);
-
-		soup_uri_free (soup_uri);
+		g_uri_unref (guri);
 
 		return full_uri;
 	}
@@ -1234,7 +1215,6 @@ e_webdav_session_options_sync (EWebDAVSession *webdav,
 			       GCancellable *cancellable,
 			       GError **error)
 {
-	SoupRequestHTTP *request;
 	SoupMessage *message;
 	GByteArray *bytes;
 
@@ -1247,49 +1227,72 @@ e_webdav_session_options_sync (EWebDAVSession *webdav,
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, SOUP_METHOD_OPTIONS, uri, error);
-	if (!request)
-		return FALSE;
+	message = e_webdav_session_new_message (webdav, SOUP_METHOD_OPTIONS, uri, error);
 
-	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+	bytes = e_soup_session_send_message_simple_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
 	if (!bytes) {
-		g_object_unref (request);
+		g_object_unref (message);
 		return FALSE;
 	}
 
-	message = soup_request_http_get_message (request);
-
 	g_byte_array_free (bytes, TRUE);
-	g_object_unref (request);
 
 	g_return_val_if_fail (message != NULL, FALSE);
 
-	*out_capabilities = e_webdav_session_comma_header_to_hashtable (message->response_headers, "DAV");
-	*out_allows = e_webdav_session_comma_header_to_hashtable (message->response_headers, "Allow");
+	*out_capabilities = e_webdav_session_comma_header_to_hashtable (soup_message_get_response_headers (message), "DAV");
+	*out_allows = e_webdav_session_comma_header_to_hashtable (soup_message_get_response_headers (message), "Allow");
 
 	g_object_unref (message);
 
 	return TRUE;
 }
 
+static void
+e_webdav_session_copy_request_headers (SoupMessage *message,
+				       SoupMessageHeaders *headers)
+{
+	SoupMessageHeaders *request_headers;
+	SoupMessageHeadersIter iter;
+	const gchar *name, *value;
+
+	if (!headers)
+		return;
+
+	request_headers = soup_message_get_request_headers (message);
+
+	soup_message_headers_iter_init (&iter, headers);
+
+	while (soup_message_headers_iter_next (&iter, &name, &value)) {
+		soup_message_headers_replace (request_headers, name, value);
+	}
+}
+
 /**
- * e_webdav_session_post_with_content_type_sync:
+ * e_webdav_session_post_sync:
  * @webdav: an #EWebDAVSession
  * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
  * @data: data to post to the server
  * @data_length: length of @data, or -1, when @data is NUL-terminated
  * @in_content_type: (nullable): a Content-Type of the @data, or %NULL, to use application/xml
- * @out_content_type: (nullable) (transfer full): return location for response Content-Type, or %NULL
- * @out_content: (nullable) (transfer full): return location for response content, or %NULL
+ * @in_headers: (optional): additional #SoupMessageHeaders to be added to the request, or %NULL
+ * @out_content_type: (out) (nullable) (transfer full): return location for response Content-Type, or %NULL
+ * @out_headers: (out) (optional) (transfer full): optional return location for response #SoupMessageHeaders, or %NULL
+ * @out_content: (out) (nullable) (transfer full): return location for response content, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Issues POST request on the provided @uri, or, in case it's %NULL, on the URI
  * defined in associated #ESource.
  *
+ * The optional @in_headers can contain additional headers to be added to the request.
+ * These headers replace any existing in the request headers, without support for the list-values headers.
+ *
  * The optional @out_content_type can be used to get content type of the response.
  * Free it with g_free(), when no longer needed.
+ *
+ * The optional @out_headers contains response headers. Free it with soup_message_headers_free(),
+ * when no longer needed.
  *
  * The optional @out_content can be used to get actual result content. Free it
  * with g_byte_array_free(), when no longer needed.
@@ -1299,17 +1302,18 @@ e_webdav_session_options_sync (EWebDAVSession *webdav,
  * Since: 3.32
  **/
 gboolean
-e_webdav_session_post_with_content_type_sync (EWebDAVSession *webdav,
-					      const gchar *uri,
-					      const gchar *data,
-					      gsize data_length,
-					      const gchar *in_content_type,
-					      gchar **out_content_type,
-					      GByteArray **out_content,
-					      GCancellable *cancellable,
-					      GError **error)
+e_webdav_session_post_sync (EWebDAVSession *webdav,
+			    const gchar *uri,
+			    const gchar *data,
+			    gsize data_length,
+			    const gchar *in_content_type,
+			    SoupMessageHeaders *in_headers,
+			    gchar **out_content_type,
+			    SoupMessageHeaders **out_headers,
+			    GByteArray **out_content,
+			    GCancellable *cancellable,
+			    GError **error)
 {
-	SoupRequestHTTP *request;
 	SoupMessage *message;
 	GByteArray *bytes;
 	gboolean success;
@@ -1320,6 +1324,9 @@ e_webdav_session_post_with_content_type_sync (EWebDAVSession *webdav,
 	if (out_content_type)
 		*out_content_type = NULL;
 
+	if (out_headers)
+		*out_headers = NULL;
+
 	if (out_content)
 		*out_content = NULL;
 
@@ -1328,30 +1335,28 @@ e_webdav_session_post_with_content_type_sync (EWebDAVSession *webdav,
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, SOUP_METHOD_POST, uri, error);
-	if (!request)
+	message = e_webdav_session_new_message (webdav, SOUP_METHOD_POST, uri, error);
+	if (!message)
 		return FALSE;
 
-	message = soup_request_http_get_message (request);
-	if (!message) {
-		g_warn_if_fail (message != NULL);
-		g_object_unref (request);
+	e_webdav_session_copy_request_headers (message, in_headers);
 
-		return FALSE;
-	}
+	e_soup_session_util_set_message_request_body_from_data (message, FALSE,
+		(in_content_type && *in_content_type) ? in_content_type : E_WEBDAV_CONTENT_TYPE_XML,
+		data, data_length, NULL);
 
-	soup_message_set_request (message, (in_content_type && *in_content_type) ? in_content_type : E_WEBDAV_CONTENT_TYPE_XML,
-		SOUP_MEMORY_COPY, data, data_length);
+	bytes = e_soup_session_send_message_simple_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
-	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
-
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, TRUE, _("Failed to post data"), error, TRUE, FALSE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, bytes, TRUE, _("Failed to post data"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (success) {
 		if (out_content_type) {
-			*out_content_type = g_strdup (soup_message_headers_get_content_type (message->response_headers, NULL));
+			*out_content_type = g_strdup (soup_message_headers_get_content_type (soup_message_get_response_headers (message), NULL));
 		}
+
+		if (out_headers)
+			*out_headers = g_boxed_copy (SOUP_TYPE_MESSAGE_HEADERS, soup_message_get_response_headers (message));
 
 		if (out_content) {
 			*out_content = bytes;
@@ -1362,51 +1367,8 @@ e_webdav_session_post_with_content_type_sync (EWebDAVSession *webdav,
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
-	g_object_unref (request);
 
 	return success;
-}
-
-/**
- * e_webdav_session_post_sync:
- * @webdav: an #EWebDAVSession
- * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
- * @data: data to post to the server
- * @data_length: length of @data, or -1, when @data is NUL-terminated
- * @out_content_type: (nullable) (transfer full): return location for response Content-Type, or %NULL
- * @out_content: (nullable) (transfer full): return location for response content, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Issues POST request on the provided @uri, or, in case it's %NULL, on the URI
- * defined in associated #ESource. The Content-Type of the @data is set to
- * application/xml. To POST the @data with a different Content-Type use
- * e_webdav_session_post_with_content_type_sync().
- *
- * The optional @out_content_type can be used to get content type of the response.
- * Free it with g_free(), when no longer needed.
- *
- * The optional @out_content can be used to get actual result content. Free it
- * with g_byte_array_free(), when no longer needed.
- *
- * Returns: Whether succeeded.
- *
- * Since: 3.26
- **/
-gboolean
-e_webdav_session_post_sync (EWebDAVSession *webdav,
-			    const gchar *uri,
-			    const gchar *data,
-			    gsize data_length,
-			    gchar **out_content_type,
-			    GByteArray **out_content,
-			    GCancellable *cancellable,
-			    GError **error)
-{
-	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
-	g_return_val_if_fail (data != NULL, FALSE);
-
-	return e_webdav_session_post_with_content_type_sync (webdav, uri, data, data_length, NULL, out_content_type, out_content, cancellable, error);
 }
 
 /**
@@ -1440,7 +1402,6 @@ e_webdav_session_propfind_sync (EWebDAVSession *webdav,
 				GCancellable *cancellable,
 				GError **error)
 {
-	SoupRequestHTTP *request;
 	SoupMessage *message;
 	GByteArray *bytes;
 	gboolean success;
@@ -1453,19 +1414,11 @@ e_webdav_session_propfind_sync (EWebDAVSession *webdav,
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, SOUP_METHOD_PROPFIND, uri, error);
-	if (!request)
+	message = e_webdav_session_new_message (webdav, SOUP_METHOD_PROPFIND, uri, error);
+	if (!message)
 		return FALSE;
 
-	message = soup_request_http_get_message (request);
-	if (!message) {
-		g_warn_if_fail (message != NULL);
-		g_object_unref (request);
-
-		return FALSE;
-	}
-
-	soup_message_headers_replace (message->request_headers, "Depth", depth);
+	soup_message_headers_replace (soup_message_get_request_headers (message), "Depth", depth);
 
 	if (xml) {
 		gchar *content;
@@ -1474,20 +1427,19 @@ e_webdav_session_propfind_sync (EWebDAVSession *webdav,
 		content = e_xml_document_get_content (xml, &content_length);
 		if (!content) {
 			g_object_unref (message);
-			g_object_unref (request);
 
 			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, _("Failed to get input XML content"));
 
 			return FALSE;
 		}
 
-		soup_message_set_request (message, E_WEBDAV_CONTENT_TYPE_XML,
-			SOUP_MEMORY_TAKE, content, content_length);
+		e_soup_session_util_set_message_request_body_from_data (message, FALSE, E_WEBDAV_CONTENT_TYPE_XML,
+			content, content_length, g_free);
 	}
 
-	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+	bytes = e_soup_session_send_message_simple_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, TRUE, _("Failed to get properties"), error, TRUE, FALSE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, bytes, TRUE, _("Failed to get properties"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (success)
@@ -1496,7 +1448,6 @@ e_webdav_session_propfind_sync (EWebDAVSession *webdav,
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
-	g_object_unref (request);
 
 	return success;
 }
@@ -1524,7 +1475,6 @@ e_webdav_session_proppatch_sync (EWebDAVSession *webdav,
 				 GCancellable *cancellable,
 				 GError **error)
 {
-	SoupRequestHTTP *request;
 	SoupMessage *message;
 	GByteArray *bytes;
 	gchar *content;
@@ -1536,40 +1486,30 @@ e_webdav_session_proppatch_sync (EWebDAVSession *webdav,
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, SOUP_METHOD_PROPPATCH, uri, error);
-	if (!request)
+	message = e_webdav_session_new_message (webdav, SOUP_METHOD_PROPPATCH, uri, error);
+	if (!message)
 		return FALSE;
-
-	message = soup_request_http_get_message (request);
-	if (!message) {
-		g_warn_if_fail (message != NULL);
-		g_object_unref (request);
-
-		return FALSE;
-	}
 
 	content = e_xml_document_get_content (xml, &content_length);
 	if (!content) {
 		g_object_unref (message);
-		g_object_unref (request);
 
 		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, _("Failed to get input XML content"));
 
 		return FALSE;
 	}
 
-	soup_message_set_request (message, E_WEBDAV_CONTENT_TYPE_XML,
-		SOUP_MEMORY_TAKE, content, content_length);
+	e_soup_session_util_set_message_request_body_from_data (message, FALSE, E_WEBDAV_CONTENT_TYPE_XML,
+		content, content_length, g_free);
 
-	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+	bytes = e_soup_session_send_message_simple_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to update properties"), error, TRUE, FALSE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, bytes, FALSE, _("Failed to update properties"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
-	g_object_unref (request);
 
 	return success;
 }
@@ -1617,7 +1557,6 @@ e_webdav_session_report_sync (EWebDAVSession *webdav,
 			      GCancellable *cancellable,
 			      GError **error)
 {
-	SoupRequestHTTP *request;
 	SoupMessage *message;
 	GByteArray *bytes;
 	gchar *content;
@@ -1635,45 +1574,36 @@ e_webdav_session_report_sync (EWebDAVSession *webdav,
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, "REPORT", uri, error);
-	if (!request)
+	message = e_webdav_session_new_message (webdav, "REPORT", uri, error);
+	if (!message)
 		return FALSE;
-
-	message = soup_request_http_get_message (request);
-	if (!message) {
-		g_warn_if_fail (message != NULL);
-		g_object_unref (request);
-
-		return FALSE;
-	}
 
 	if (depth)
-		soup_message_headers_replace (message->request_headers, "Depth", depth);
+		soup_message_headers_replace (soup_message_get_request_headers (message), "Depth", depth);
 
 	content = e_xml_document_get_content (xml, &content_length);
 	if (!content) {
 		g_object_unref (message);
-		g_object_unref (request);
 
 		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, _("Failed to get input XML content"));
 
 		return FALSE;
 	}
 
-	soup_message_set_request (message, E_WEBDAV_CONTENT_TYPE_XML,
-		SOUP_MEMORY_TAKE, content, content_length);
+	e_soup_session_util_set_message_request_body_from_data (message, FALSE, E_WEBDAV_CONTENT_TYPE_XML,
+		content, content_length, g_free);
 
-	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+	bytes = e_soup_session_send_message_simple_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, TRUE, _("Failed to issue REPORT"), error, TRUE, FALSE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, bytes, TRUE, _("Failed to issue REPORT"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
-	if (success && func && message->status_code == SOUP_STATUS_MULTI_STATUS)
+	if (success && func && soup_message_get_status (message) == SOUP_STATUS_MULTI_STATUS)
 		success = e_webdav_session_traverse_multistatus_response (webdav, message, bytes, func, func_user_data, error);
 
 	if (success) {
 		if (out_content_type) {
-			*out_content_type = g_strdup (soup_message_headers_get_content_type (message->response_headers, NULL));
+			*out_content_type = g_strdup (soup_message_headers_get_content_type (soup_message_get_response_headers (message), NULL));
 		}
 
 		if (out_content) {
@@ -1685,7 +1615,6 @@ e_webdav_session_report_sync (EWebDAVSession *webdav,
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
-	g_object_unref (request);
 
 	return success;
 }
@@ -1711,7 +1640,7 @@ e_webdav_session_mkcol_sync (EWebDAVSession *webdav,
 			     GCancellable *cancellable,
 			     GError **error)
 {
-	SoupRequestHTTP *request;
+	SoupMessage *message;
 	GByteArray *bytes;
 	gboolean success;
 
@@ -1720,18 +1649,18 @@ e_webdav_session_mkcol_sync (EWebDAVSession *webdav,
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, SOUP_METHOD_MKCOL, uri, error);
-	if (!request)
+	message = e_webdav_session_new_message (webdav, SOUP_METHOD_MKCOL, uri, error);
+	if (!message)
 		return FALSE;
 
-	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+	bytes = e_soup_session_send_message_simple_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to create collection"), error, TRUE, FALSE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, bytes, FALSE, _("Failed to create collection"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
-	g_object_unref (request);
+	g_object_unref (message);
 
 	return success;
 }
@@ -1763,7 +1692,6 @@ e_webdav_session_mkcol_addressbook_sync (EWebDAVSession *webdav,
 					 GCancellable *cancellable,
 					 GError **error)
 {
-	SoupRequestHTTP *request;
 	SoupMessage *message;
 	EXmlDocument *xml;
 	gchar *content;
@@ -1776,17 +1704,9 @@ e_webdav_session_mkcol_addressbook_sync (EWebDAVSession *webdav,
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, SOUP_METHOD_MKCOL, uri, error);
-	if (!request)
+	message = e_webdav_session_new_message (webdav, SOUP_METHOD_MKCOL, uri, error);
+	if (!message)
 		return FALSE;
-
-	message = soup_request_http_get_message (request);
-	if (!message) {
-		g_warn_if_fail (message != NULL);
-		g_object_unref (request);
-
-		return FALSE;
-	}
 
 	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "mkcol");
 	e_xml_document_add_namespaces (xml, "A", E_WEBDAV_NS_CARDDAV, NULL);
@@ -1816,7 +1736,6 @@ e_webdav_session_mkcol_addressbook_sync (EWebDAVSession *webdav,
 	content = e_xml_document_get_content (xml, &content_length);
 	if (!content) {
 		g_object_unref (message);
-		g_object_unref (request);
 		g_object_unref (xml);
 
 		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, _("Failed to get XML request content"));
@@ -1824,20 +1743,19 @@ e_webdav_session_mkcol_addressbook_sync (EWebDAVSession *webdav,
 		return FALSE;
 	}
 
-	soup_message_set_request (message, E_WEBDAV_CONTENT_TYPE_XML,
-		SOUP_MEMORY_TAKE, content, content_length);
+	e_soup_session_util_set_message_request_body_from_data (message, FALSE, E_WEBDAV_CONTENT_TYPE_XML,
+		content, content_length, g_free);
 
 	g_object_unref (xml);
 
-	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+	bytes = e_soup_session_send_message_simple_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to create address book"), error, TRUE, FALSE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, bytes, FALSE, _("Failed to create address book"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
-	g_object_unref (request);
 
 	return success;
 }
@@ -1877,7 +1795,6 @@ e_webdav_session_mkcalendar_sync (EWebDAVSession *webdav,
 				  GCancellable *cancellable,
 				  GError **error)
 {
-	SoupRequestHTTP *request;
 	SoupMessage *message;
 	GByteArray *bytes;
 	gboolean success;
@@ -1887,17 +1804,9 @@ e_webdav_session_mkcalendar_sync (EWebDAVSession *webdav,
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, "MKCALENDAR", uri, error);
-	if (!request)
+	message = e_webdav_session_new_message (webdav, "MKCALENDAR", uri, error);
+	if (!message)
 		return FALSE;
-
-	message = soup_request_http_get_message (request);
-	if (!message) {
-		g_warn_if_fail (message != NULL);
-		g_object_unref (request);
-
-		return FALSE;
-	}
 
 	supports = supports & (
 		E_WEBDAV_RESOURCE_SUPPORTS_EVENTS |
@@ -1977,7 +1886,6 @@ e_webdav_session_mkcalendar_sync (EWebDAVSession *webdav,
 		content = e_xml_document_get_content (xml, &content_length);
 		if (!content) {
 			g_object_unref (message);
-			g_object_unref (request);
 			g_object_unref (xml);
 
 			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, _("Failed to get XML request content"));
@@ -1985,21 +1893,20 @@ e_webdav_session_mkcalendar_sync (EWebDAVSession *webdav,
 			return FALSE;
 		}
 
-		soup_message_set_request (message, E_WEBDAV_CONTENT_TYPE_XML,
-			SOUP_MEMORY_TAKE, content, content_length);
+		e_soup_session_util_set_message_request_body_from_data (message, FALSE, E_WEBDAV_CONTENT_TYPE_XML,
+			content, content_length, g_free);
 
 		g_object_unref (xml);
 	}
 
-	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+	bytes = e_soup_session_send_message_simple_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to create calendar"), error, TRUE, FALSE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, bytes, FALSE, _("Failed to create calendar"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
-	g_object_unref (request);
 
 	return success;
 }
@@ -2016,20 +1923,21 @@ e_webdav_session_extract_href_and_etag (SoupMessage *message,
 
 		*out_href = NULL;
 
-		header = soup_message_headers_get_list (message->response_headers, "Location");
+		header = soup_message_headers_get_one (soup_message_get_response_headers (message), "Location");
 		if (header) {
-			SoupURI *uri;
+			GUri *uri;
 
-			uri = soup_uri_new_with_base (soup_message_get_uri (message), header);
-			if (uri && uri->host)
-				*out_href = soup_uri_to_string (uri, FALSE);
+			uri = g_uri_parse_relative (soup_message_get_uri (message), header, SOUP_HTTP_URI_FLAGS, NULL);
+
+			if (uri && g_uri_get_host (uri))
+				*out_href = g_uri_to_string_partial (uri, G_URI_HIDE_PASSWORD);
 
 			if (uri)
-				soup_uri_free (uri);
+				g_uri_unref (uri);
 		}
 
 		if (!*out_href)
-			*out_href = soup_uri_to_string (soup_message_get_uri (message), FALSE);
+			*out_href = g_uri_to_string_partial (soup_message_get_uri (message), G_URI_HIDE_PASSWORD);
 	}
 
 	if (out_etag) {
@@ -2037,7 +1945,7 @@ e_webdav_session_extract_href_and_etag (SoupMessage *message,
 
 		*out_etag = NULL;
 
-		header = soup_message_headers_get_list (message->response_headers, "ETag");
+		header = soup_message_headers_get_list (soup_message_get_response_headers (message), "ETag");
 		if (header)
 			*out_etag = e_webdav_session_util_maybe_dequote (g_strdup (header));
 	}
@@ -2049,6 +1957,7 @@ e_webdav_session_extract_href_and_etag (SoupMessage *message,
  * @uri: URI of the resource to read
  * @out_href: (out) (nullable) (transfer full): optional return location for href of the resource, or %NULL
  * @out_etag: (out) (nullable) (transfer full): optional return location for etag of the resource, or %NULL
+ * @out_headers: (out) (optional) (transfer full): optional return location for response #SoupMessageHeaders, or %NULL
  * @out_stream: (out caller-allocates): a #GOutputStream to write data to
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -2057,6 +1966,9 @@ e_webdav_session_extract_href_and_etag (SoupMessage *message,
  * to the @stream. The URI cannot reference a collection.
  *
  * Free returned pointer of @out_href and @out_etag, if not %NULL, with g_free(),
+ * when no longer needed.
+ *
+ * The optional @out_headers contains response headers. Free it with soup_message_headers_free(),
  * when no longer needed.
  *
  * The e_webdav_session_get_data_sync() can be used to read the resource data
@@ -2071,11 +1983,11 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
 			   const gchar *uri,
 			   gchar **out_href,
 			   gchar **out_etag,
+			   SoupMessageHeaders **out_headers,
 			   GOutputStream *out_stream,
 			   GCancellable *cancellable,
 			   GError **error)
 {
-	SoupRequestHTTP *request;
 	SoupMessage *message;
 	GInputStream *input_stream;
 	gboolean success;
@@ -2086,19 +1998,14 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, SOUP_METHOD_GET, uri, error);
-	if (!request)
+	if (out_headers)
+		*out_headers = NULL;
+
+	message = e_webdav_session_new_message (webdav, SOUP_METHOD_GET, uri, error);
+	if (!message)
 		return FALSE;
 
-	message = soup_request_http_get_message (request);
-	if (!message) {
-		g_warn_if_fail (message != NULL);
-		g_object_unref (request);
-
-		return FALSE;
-	}
-
-	input_stream = e_soup_session_send_request_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+	input_stream = e_soup_session_send_message_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
 	success = input_stream != NULL;
 
@@ -2119,7 +2026,7 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
 				tmp_bytes.data = buffer;
 				tmp_bytes.len = nread;
 
-				success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, &tmp_bytes, FALSE, _("Failed to read resource"), error, TRUE, TRUE);
+				success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, &tmp_bytes, FALSE, _("Failed to read resource"), error, TRUE, TRUE);
 				if (!success)
 					break;
 			}
@@ -2130,18 +2037,21 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
 		}
 
 		if (success && first_chunk) {
-			success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, NULL, FALSE, _("Failed to read resource"), error, TRUE, TRUE);
+			success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, NULL, FALSE, _("Failed to read resource"), error, TRUE, TRUE);
 		}
 
 		g_free (buffer);
 	}
 
-	if (success)
+	if (success) {
 		e_webdav_session_extract_href_and_etag (message, out_href, out_etag);
+
+		if (out_headers)
+			*out_headers = g_boxed_copy (SOUP_TYPE_MESSAGE_HEADERS, soup_message_get_response_headers (message));
+	}
 
 	g_clear_object (&input_stream);
 	g_object_unref (message);
-	g_object_unref (request);
 
 	return success;
 }
@@ -2152,6 +2062,7 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
  * @uri: URI of the resource to read
  * @out_href: (out) (nullable) (transfer full): optional return location for href of the resource, or %NULL
  * @out_etag: (out) (nullable) (transfer full): optional return location for etag of the resource, or %NULL
+ * @out_headers: (out) (optional) (transfer full): optional return location for response #SoupMessageHeaders, or %NULL
  * @out_bytes: (out) (transfer full): return location for bytes being read
  * @out_length: (out) (nullable): option return location for length of bytes being read, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
@@ -2168,6 +2079,9 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
  * Free returned pointer of @out_href and @out_etag, if not %NULL, with g_free(),
  * when no longer needed.
  *
+ * The optional @out_headers contains response headers. Free it with soup_message_headers_free(),
+ * when no longer needed.
+ *
  * To read large data use e_webdav_session_get_sync() instead.
  *
  * Returns: Whether succeeded.
@@ -2179,6 +2093,7 @@ e_webdav_session_get_data_sync (EWebDAVSession *webdav,
 				const gchar *uri,
 				gchar **out_href,
 				gchar **out_etag,
+				SoupMessageHeaders **out_headers,
 				gchar **out_bytes,
 				gsize *out_length,
 				GCancellable *cancellable,
@@ -2193,12 +2108,16 @@ e_webdav_session_get_data_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (out_bytes != NULL, FALSE);
 
 	*out_bytes = NULL;
+
 	if (out_length)
 		*out_length = 0;
 
+	if (out_headers)
+		*out_headers = NULL;
+
 	output_stream = g_memory_output_stream_new_resizable ();
 
-	success = e_webdav_session_get_sync (webdav, uri, out_href, out_etag, output_stream, cancellable, error) &&
+	success = e_webdav_session_get_sync (webdav, uri, out_href, out_etag, out_headers, output_stream, cancellable, error) &&
 		g_output_stream_write_all (output_stream, "", 1, &bytes_written, cancellable, error) &&
 		g_output_stream_close (output_stream, cancellable, error);
 
@@ -2214,71 +2133,6 @@ e_webdav_session_get_data_sync (EWebDAVSession *webdav,
 	return success;
 }
 
-typedef struct _ChunkWriteData {
-	SoupSession *session;
-	GInputStream *stream;
-	goffset read_from;
-	gboolean wrote_any;
-	gsize buffer_size;
-	gpointer buffer;
-	GCancellable *cancellable;
-	GError *error;
-} ChunkWriteData;
-
-static void
-e_webdav_session_write_next_chunk (SoupMessage *message,
-				   gpointer user_data)
-{
-	ChunkWriteData *cwd = user_data;
-	gsize nread;
-
-	g_return_if_fail (SOUP_IS_MESSAGE (message));
-	g_return_if_fail (cwd != NULL);
-
-	if (!g_input_stream_read_all (cwd->stream, cwd->buffer, cwd->buffer_size, &nread, cwd->cancellable, &cwd->error)) {
-		soup_session_cancel_message (cwd->session, message, SOUP_STATUS_CANCELLED);
-		return;
-	}
-
-	if (nread == 0) {
-		soup_message_body_complete (message->request_body);
-	} else {
-		cwd->wrote_any = TRUE;
-		soup_message_body_append (message->request_body, SOUP_MEMORY_TEMPORARY, cwd->buffer, nread);
-	}
-}
-
-static void
-e_webdav_session_write_restarted (SoupMessage *message,
-				  gpointer user_data)
-{
-	ChunkWriteData *cwd = user_data;
-
-	g_return_if_fail (SOUP_IS_MESSAGE (message));
-	g_return_if_fail (cwd != NULL);
-
-	/* The 302 redirect will turn it into a GET request and
-	 * reset the body encoding back to "NONE". Fix that.
-	 */
-	soup_message_headers_set_encoding (message->request_headers, SOUP_ENCODING_CHUNKED);
-	message->method = SOUP_METHOD_PUT;
-
-	if (cwd->wrote_any) {
-		cwd->wrote_any = FALSE;
-
-		if (!G_IS_SEEKABLE (cwd->stream) || !g_seekable_can_seek (G_SEEKABLE (cwd->stream)) ||
-		    !g_seekable_seek (G_SEEKABLE (cwd->stream), cwd->read_from, G_SEEK_SET, cwd->cancellable, &cwd->error)) {
-			if (!cwd->error)
-				g_set_error_literal (&cwd->error, G_IO_ERROR, G_IO_ERROR_PARTIAL_INPUT,
-					_("Cannot rewind input stream: Not supported"));
-
-			soup_session_cancel_message (cwd->session, message, SOUP_STATUS_CANCELLED);
-		} else {
-			soup_message_body_truncate (message->request_body);
-		}
-	}
-}
-
 static void
 e_webdav_session_set_if_match_header (SoupMessage *message,
 				      const gchar *etag)
@@ -2291,12 +2145,12 @@ e_webdav_session_set_if_match_header (SoupMessage *message,
 	len = strlen (etag);
 
 	if ((*etag == '\"' && len > 2 && etag[len - 1] == '\"') || strchr (etag, '\"')) {
-		soup_message_headers_replace (message->request_headers, "If-Match", etag);
+		soup_message_headers_replace (soup_message_get_request_headers (message), "If-Match", etag);
 	} else {
 		gchar *quoted;
 
 		quoted = g_strconcat ("\"", etag, "\"", NULL);
-		soup_message_headers_replace (message->request_headers, "If-Match", quoted);
+		soup_message_headers_replace (soup_message_get_request_headers (message), "If-Match", quoted);
 		g_free (quoted);
 	}
 }
@@ -2307,9 +2161,12 @@ e_webdav_session_set_if_match_header (SoupMessage *message,
  * @uri: URI of the resource to write
  * @etag: (nullable): an ETag of the resource, if it's an existing resource, or %NULL
  * @content_type: Content-Type of the @bytes to be written
+ * @in_headers: (optional): additional #SoupMessageHeaders to be added to the request, or %NULL
  * @stream: a #GInputStream with data to be written
+ * @stream_length: length of the @stream, or -1 if unknown
  * @out_href: (out) (nullable) (transfer full): optional return location for href of the resource, or %NULL
  * @out_etag: (out) (nullable) (transfer full): optional return location for etag of the resource, or %NULL
+ * @out_headers: (out) (optional) (transfer full): optional return location for response #SoupMessageHeaders, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -2325,11 +2182,17 @@ e_webdav_session_set_if_match_header (SoupMessage *message,
  * Note that the actual behaviour is also influenced by #ESourceWebdav:avoid-ifmatch
  * property of the associated #ESource.
  *
+ * The optional @in_headers can contain additional headers to be added to the request.
+ * These headers replace any existing in the request headers, without support for the list-values headers.
+ *
  * The @out_href, if provided, is filled with the resulting URI
  * of the written resource. It can be different from the @uri when the server
  * redirected to a different location.
  *
  * The @out_etag contains ETag of the resource after it had been saved.
+ *
+ * The optional @out_headers contains response headers. Free it with soup_message_headers_free(),
+ * when no longer needed.
  *
  * The @stream should support also #GSeekable interface, because the data
  * send can require restart of the send due to redirect or other reasons.
@@ -2347,17 +2210,17 @@ e_webdav_session_put_sync (EWebDAVSession *webdav,
 			   const gchar *uri,
 			   const gchar *etag,
 			   const gchar *content_type,
+			   SoupMessageHeaders *in_headers,
 			   GInputStream *stream,
+			   gssize stream_length,
 			   gchar **out_href,
 			   gchar **out_etag,
+			   SoupMessageHeaders **out_headers,
 			   GCancellable *cancellable,
 			   GError **error)
 {
-	ChunkWriteData cwd;
-	SoupRequestHTTP *request;
 	SoupMessage *message;
 	GByteArray *bytes;
-	gulong restarted_id, wrote_headers_id, wrote_chunk_id;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
@@ -2369,20 +2232,16 @@ e_webdav_session_put_sync (EWebDAVSession *webdav,
 		*out_href = NULL;
 	if (out_etag)
 		*out_etag = NULL;
+	if (out_headers)
+		*out_headers = NULL;
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, SOUP_METHOD_PUT, uri, error);
-	if (!request)
+	message = e_webdav_session_new_message (webdav, SOUP_METHOD_PUT, uri, error);
+	if (!message)
 		return FALSE;
 
-	message = soup_request_http_get_message (request);
-	if (!message) {
-		g_warn_if_fail (message != NULL);
-		g_object_unref (request);
-
-		return FALSE;
-	}
+	e_webdav_session_copy_request_headers (message, in_headers);
 
 	if (!etag || *etag) {
 		ESource *source;
@@ -2400,67 +2259,43 @@ e_webdav_session_put_sync (EWebDAVSession *webdav,
 			if (etag) {
 				e_webdav_session_set_if_match_header (message, etag);
 			} else {
-				soup_message_headers_replace (message->request_headers, "If-None-Match", "*");
+				soup_message_headers_replace (soup_message_get_request_headers (message), "If-None-Match", "*");
 			}
 		}
 	}
 
-	cwd.session = SOUP_SESSION (webdav);
-	cwd.stream = stream;
-	cwd.read_from = 0;
-	cwd.wrote_any = FALSE;
-	cwd.buffer_size = BUFFER_SIZE;
-	cwd.buffer = g_malloc (cwd.buffer_size);
-	cwd.cancellable = cancellable;
-	cwd.error = NULL;
-
-	if (G_IS_SEEKABLE (stream) && g_seekable_can_seek (G_SEEKABLE (stream)))
-		cwd.read_from = g_seekable_tell (G_SEEKABLE (stream));
+	e_soup_session_util_set_message_request_body (message, NULL, stream, stream_length);
 
 	if (content_type && *content_type)
-		soup_message_headers_replace (message->request_headers, "Content-Type", content_type);
+		soup_message_headers_replace (soup_message_get_request_headers (message), "Content-Type", content_type);
 
-	soup_message_headers_set_encoding (message->request_headers, SOUP_ENCODING_CHUNKED);
-	soup_message_body_set_accumulate (message->request_body, FALSE);
-	soup_message_set_flags (message, SOUP_MESSAGE_CAN_REBUILD);
+	soup_message_headers_set_encoding (soup_message_get_request_headers (message), SOUP_ENCODING_CHUNKED);
 
-	restarted_id = g_signal_connect (message, "restarted", G_CALLBACK (e_webdav_session_write_restarted), &cwd);
-	wrote_headers_id = g_signal_connect (message, "wrote-headers", G_CALLBACK (e_webdav_session_write_next_chunk), &cwd);
-	wrote_chunk_id = g_signal_connect (message, "wrote-chunk", G_CALLBACK (e_webdav_session_write_next_chunk), &cwd);
+	bytes = e_soup_session_send_message_simple_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
-	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
-
-	g_signal_handler_disconnect (message, restarted_id);
-	g_signal_handler_disconnect (message, wrote_headers_id);
-	g_signal_handler_disconnect (message, wrote_chunk_id);
-
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to put data"), error, TRUE, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, bytes, FALSE, _("Failed to put data"), error, TRUE, TRUE) &&
 		bytes != NULL;
 
-	if (cwd.error) {
-		g_clear_error (error);
-		g_propagate_error (error, cwd.error);
-		success = FALSE;
-	}
-
 	if (success) {
-		if (success && !SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
+		if (success && !SOUP_STATUS_IS_SUCCESSFUL (soup_message_get_status (message))) {
 			success = FALSE;
 
-			g_set_error (error, SOUP_HTTP_ERROR, message->status_code,
-				_("Failed to put data to server, error code %d (%s)"), message->status_code,
-				e_soup_session_util_status_to_string (message->status_code, message->reason_phrase));
+			g_set_error (error, E_SOUP_SESSION_ERROR, soup_message_get_status (message),
+				_("Failed to put data to server, error code %d (%s)"), soup_message_get_status (message),
+				e_soup_session_util_status_to_string (soup_message_get_status (message), soup_message_get_reason_phrase (message)));
 		}
 	}
 
-	if (success)
+	if (success) {
 		e_webdav_session_extract_href_and_etag (message, out_href, out_etag);
+
+		if (out_headers)
+			*out_headers = g_boxed_copy (SOUP_TYPE_MESSAGE_HEADERS, soup_message_get_response_headers (message));
+	}
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
-	g_object_unref (request);
-	g_free (cwd.buffer);
 
 	return success;
 }
@@ -2471,10 +2306,12 @@ e_webdav_session_put_sync (EWebDAVSession *webdav,
  * @uri: URI of the resource to write
  * @etag: (nullable): an ETag of the resource, if it's an existing resource, or %NULL
  * @content_type: Content-Type of the @bytes to be written
+ * @in_headers: (optional): additional #SoupMessageHeaders to be added to the request, or %NULL
  * @bytes: actual bytes to be written
  * @length: how many bytes to write, or -1, when the @bytes is NUL-terminated
  * @out_href: (out) (nullable) (transfer full): optional return location for href of the resource, or %NULL
  * @out_etag: (out) (nullable) (transfer full): optional return location for etag of the resource, or %NULL
+ * @out_headers: (out) (optional) (transfer full): optional return location for response #SoupMessageHeaders, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -2490,11 +2327,17 @@ e_webdav_session_put_sync (EWebDAVSession *webdav,
  * Note that the actual usage of @etag is also influenced by #ESourceWebdav:avoid-ifmatch
  * property of the associated #ESource.
  *
+ * The optional @in_headers can contain additional headers to be added to the request.
+ * These headers replace any existing in the request headers, without support for the list-values headers.
+ *
  * The @out_href, if provided, is filled with the resulting URI
  * of the written resource. It can be different from the @uri when the server
  * redirected to a different location.
  *
  * The @out_etag contains ETag of the resource after it had been saved.
+ *
+ * The optional @out_headers contains response headers. Free it with soup_message_headers_free(),
+ * when no longer needed.
  *
  * To write large data use e_webdav_session_put_sync() instead.
  *
@@ -2507,14 +2350,15 @@ e_webdav_session_put_data_sync (EWebDAVSession *webdav,
 				const gchar *uri,
 				const gchar *etag,
 				const gchar *content_type,
+				SoupMessageHeaders *in_headers,
 				const gchar *bytes,
 				gsize length,
 				gchar **out_href,
 				gchar **out_etag,
+				SoupMessageHeaders **out_headers,
 				GCancellable *cancellable,
 				GError **error)
 {
-	SoupRequestHTTP *request;
 	SoupMessage *message;
 	GByteArray *ret_bytes;
 	gboolean success;
@@ -2530,20 +2374,16 @@ e_webdav_session_put_data_sync (EWebDAVSession *webdav,
 		*out_href = NULL;
 	if (out_etag)
 		*out_etag = NULL;
+	if (out_headers)
+		*out_headers = NULL;
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, SOUP_METHOD_PUT, uri, error);
-	if (!request)
+	message = e_webdav_session_new_message (webdav, SOUP_METHOD_PUT, uri, error);
+	if (!message)
 		return FALSE;
 
-	message = soup_request_http_get_message (request);
-	if (!message) {
-		g_warn_if_fail (message != NULL);
-		g_object_unref (request);
-
-		return FALSE;
-	}
+	e_webdav_session_copy_request_headers (message, in_headers);
 
 	if (!etag || *etag) {
 		ESource *source;
@@ -2561,40 +2401,43 @@ e_webdav_session_put_data_sync (EWebDAVSession *webdav,
 			if (etag) {
 				e_webdav_session_set_if_match_header (message, etag);
 			} else {
-				soup_message_headers_replace (message->request_headers, "If-None-Match", "*");
+				soup_message_headers_replace (soup_message_get_request_headers (message), "If-None-Match", "*");
 			}
 		}
 	}
 
 	if (content_type && *content_type)
-		soup_message_headers_replace (message->request_headers, "Content-Type", content_type);
+		soup_message_headers_replace (soup_message_get_request_headers (message), "Content-Type", content_type);
 
-	soup_message_headers_replace (message->request_headers, "Prefer", "return=minimal");
+	soup_message_headers_replace (soup_message_get_request_headers (message), "Prefer", "return=minimal");
 
-	soup_message_set_request (message, content_type, SOUP_MEMORY_TEMPORARY, bytes, length);
+	e_soup_session_util_set_message_request_body_from_data (message, FALSE, content_type, bytes, length, NULL);
 
-	ret_bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+	ret_bytes = e_soup_session_send_message_simple_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, ret_bytes, FALSE, _("Failed to put data"), error, TRUE, TRUE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, ret_bytes, FALSE, _("Failed to put data"), error, TRUE, TRUE) &&
 		ret_bytes != NULL;
 
 	if (success) {
-		if (success && !SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
+		if (success && !SOUP_STATUS_IS_SUCCESSFUL (soup_message_get_status (message))) {
 			success = FALSE;
 
-			g_set_error (error, SOUP_HTTP_ERROR, message->status_code,
-				_("Failed to put data to server, error code %d (%s)"), message->status_code,
-				e_soup_session_util_status_to_string (message->status_code, message->reason_phrase));
+			g_set_error (error, E_SOUP_SESSION_ERROR, soup_message_get_status (message),
+				_("Failed to put data to server, error code %d (%s)"), soup_message_get_status (message),
+				e_soup_session_util_status_to_string (soup_message_get_status (message), soup_message_get_reason_phrase (message)));
 		}
 	}
 
-	if (success)
+	if (success) {
 		e_webdav_session_extract_href_and_etag (message, out_href, out_etag);
+
+		if (out_headers)
+			*out_headers = g_boxed_copy (SOUP_TYPE_MESSAGE_HEADERS, soup_message_get_response_headers (message));
+	}
 
 	if (ret_bytes)
 		g_byte_array_free (ret_bytes, TRUE);
 	g_object_unref (message);
-	g_object_unref (request);
 
 	return success;
 }
@@ -2633,7 +2476,6 @@ e_webdav_session_delete_sync (EWebDAVSession *webdav,
 			      GCancellable *cancellable,
 			      GError **error)
 {
-	SoupRequestHTTP *request;
 	SoupMessage *message;
 	GByteArray *bytes;
 	gboolean success;
@@ -2643,17 +2485,9 @@ e_webdav_session_delete_sync (EWebDAVSession *webdav,
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, SOUP_METHOD_DELETE, uri, error);
-	if (!request)
+	message = e_webdav_session_new_message (webdav, SOUP_METHOD_DELETE, uri, error);
+	if (!message)
 		return FALSE;
-
-	message = soup_request_http_get_message (request);
-	if (!message) {
-		g_warn_if_fail (message != NULL);
-		g_object_unref (request);
-
-		return FALSE;
-	}
 
 	if (etag) {
 		ESource *source;
@@ -2673,17 +2507,16 @@ e_webdav_session_delete_sync (EWebDAVSession *webdav,
 	}
 
 	if (depth)
-		soup_message_headers_replace (message->request_headers, "Depth", depth);
+		soup_message_headers_replace (soup_message_get_request_headers (message), "Depth", depth);
 
-	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+	bytes = e_soup_session_send_message_simple_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to delete resource"), error, TRUE, FALSE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, bytes, FALSE, _("Failed to delete resource"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
-	g_object_unref (request);
 
 	return success;
 }
@@ -2716,7 +2549,6 @@ e_webdav_session_copy_sync (EWebDAVSession *webdav,
 			    GCancellable *cancellable,
 			    GError **error)
 {
-	SoupRequestHTTP *request;
 	SoupMessage *message;
 	GByteArray *bytes;
 	gboolean success;
@@ -2728,31 +2560,22 @@ e_webdav_session_copy_sync (EWebDAVSession *webdav,
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, SOUP_METHOD_COPY, source_uri, error);
-	if (!request)
+	message = e_webdav_session_new_message (webdav, SOUP_METHOD_COPY, source_uri, error);
+	if (!message)
 		return FALSE;
 
-	message = soup_request_http_get_message (request);
-	if (!message) {
-		g_warn_if_fail (message != NULL);
-		g_object_unref (request);
+	soup_message_headers_replace (soup_message_get_request_headers (message), "Depth", depth);
+	soup_message_headers_replace (soup_message_get_request_headers (message), "Destination", destination_uri);
+	soup_message_headers_replace (soup_message_get_request_headers (message), "Overwrite", can_overwrite ? "T" : "F");
 
-		return FALSE;
-	}
+	bytes = e_soup_session_send_message_simple_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
-	soup_message_headers_replace (message->request_headers, "Depth", depth);
-	soup_message_headers_replace (message->request_headers, "Destination", destination_uri);
-	soup_message_headers_replace (message->request_headers, "Overwrite", can_overwrite ? "T" : "F");
-
-	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
-
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to copy resource"), error, TRUE, FALSE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, bytes, FALSE, _("Failed to copy resource"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
-	g_object_unref (request);
 
 	return success;
 }
@@ -2781,7 +2604,6 @@ e_webdav_session_move_sync (EWebDAVSession *webdav,
 			    GCancellable *cancellable,
 			    GError **error)
 {
-	SoupRequestHTTP *request;
 	SoupMessage *message;
 	GByteArray *bytes;
 	gboolean success;
@@ -2792,31 +2614,22 @@ e_webdav_session_move_sync (EWebDAVSession *webdav,
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, SOUP_METHOD_MOVE, source_uri, error);
-	if (!request)
+	message = e_webdav_session_new_message (webdav, SOUP_METHOD_MOVE, source_uri, error);
+	if (!message)
 		return FALSE;
 
-	message = soup_request_http_get_message (request);
-	if (!message) {
-		g_warn_if_fail (message != NULL);
-		g_object_unref (request);
+	soup_message_headers_replace (soup_message_get_request_headers (message), "Depth", E_WEBDAV_DEPTH_INFINITY);
+	soup_message_headers_replace (soup_message_get_request_headers (message), "Destination", destination_uri);
+	soup_message_headers_replace (soup_message_get_request_headers (message), "Overwrite", can_overwrite ? "T" : "F");
 
-		return FALSE;
-	}
+	bytes = e_soup_session_send_message_simple_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
-	soup_message_headers_replace (message->request_headers, "Depth", E_WEBDAV_DEPTH_INFINITY);
-	soup_message_headers_replace (message->request_headers, "Destination", destination_uri);
-	soup_message_headers_replace (message->request_headers, "Overwrite", can_overwrite ? "T" : "F");
-
-	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
-
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to move resource"), error, TRUE, FALSE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, bytes, FALSE, _("Failed to move resource"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
-	g_object_unref (request);
 
 	return success;
 }
@@ -2858,7 +2671,6 @@ e_webdav_session_lock_sync (EWebDAVSession *webdav,
 			    GCancellable *cancellable,
 			    GError **error)
 {
-	SoupRequestHTTP *request;
 	SoupMessage *message;
 	GByteArray *bytes;
 	gboolean success;
@@ -2872,29 +2684,21 @@ e_webdav_session_lock_sync (EWebDAVSession *webdav,
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, SOUP_METHOD_LOCK, uri, error);
-	if (!request)
+	message = e_webdav_session_new_message (webdav, SOUP_METHOD_LOCK, uri, error);
+	if (!message)
 		return FALSE;
-
-	message = soup_request_http_get_message (request);
-	if (!message) {
-		g_warn_if_fail (message != NULL);
-		g_object_unref (request);
-
-		return FALSE;
-	}
 
 	if (depth)
-		soup_message_headers_replace (message->request_headers, "Depth", depth);
+		soup_message_headers_replace (soup_message_get_request_headers (message), "Depth", depth);
 
 	if (lock_timeout) {
 		gchar *value;
 
 		value = g_strdup_printf ("Second-%d", lock_timeout);
-		soup_message_headers_replace (message->request_headers, "Timeout", value);
+		soup_message_headers_replace (soup_message_get_request_headers (message), "Timeout", value);
 		g_free (value);
 	} else {
-		soup_message_headers_replace (message->request_headers, "Timeout", "Infinite");
+		soup_message_headers_replace (soup_message_get_request_headers (message), "Timeout", "Infinite");
 	}
 
 	if (xml) {
@@ -2904,20 +2708,19 @@ e_webdav_session_lock_sync (EWebDAVSession *webdav,
 		content = e_xml_document_get_content (xml, &content_length);
 		if (!content) {
 			g_object_unref (message);
-			g_object_unref (request);
 
 			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, _("Failed to get input XML content"));
 
 			return FALSE;
 		}
 
-		soup_message_set_request (message, E_WEBDAV_CONTENT_TYPE_XML,
-			SOUP_MEMORY_TAKE, content, content_length);
+		e_soup_session_util_set_message_request_body_from_data (message, FALSE, E_WEBDAV_CONTENT_TYPE_XML,
+			content, content_length, g_free);
 	}
 
-	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+	bytes = e_soup_session_send_message_simple_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to lock resource"), error, TRUE, FALSE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, bytes, FALSE, _("Failed to lock resource"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (success && out_xml_response) {
@@ -2925,7 +2728,7 @@ e_webdav_session_lock_sync (EWebDAVSession *webdav,
 
 		*out_xml_response = NULL;
 
-		content_type = soup_message_headers_get_content_type (message->response_headers, NULL);
+		content_type = soup_message_headers_get_content_type (soup_message_get_response_headers (message), NULL);
 		if (!content_type ||
 		    (g_ascii_strcasecmp (content_type, "application/xml") != 0 &&
 		     g_ascii_strcasecmp (content_type, "text/xml") != 0)) {
@@ -2956,12 +2759,11 @@ e_webdav_session_lock_sync (EWebDAVSession *webdav,
 	}
 
 	if (success)
-		*out_lock_token = g_strdup (soup_message_headers_get_list (message->response_headers, "Lock-Token"));
+		*out_lock_token = g_strdup (soup_message_headers_get_list (soup_message_get_response_headers (message), "Lock-Token"));
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
-	g_object_unref (request);
 
 	return success;
 }
@@ -2992,7 +2794,6 @@ e_webdav_session_refresh_lock_sync (EWebDAVSession *webdav,
 				    GCancellable *cancellable,
 				    GError **error)
 {
-	SoupRequestHTTP *request;
 	SoupMessage *message;
 	GByteArray *bytes;
 	gchar *value;
@@ -3003,37 +2804,28 @@ e_webdav_session_refresh_lock_sync (EWebDAVSession *webdav,
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, SOUP_METHOD_LOCK, uri, error);
-	if (!request)
+	message = e_webdav_session_new_message (webdav, SOUP_METHOD_LOCK, uri, error);
+	if (!message)
 		return FALSE;
-
-	message = soup_request_http_get_message (request);
-	if (!message) {
-		g_warn_if_fail (message != NULL);
-		g_object_unref (request);
-
-		return FALSE;
-	}
 
 	if (lock_timeout) {
 		value = g_strdup_printf ("Second-%d", lock_timeout);
-		soup_message_headers_replace (message->request_headers, "Timeout", value);
+		soup_message_headers_replace (soup_message_get_request_headers (message), "Timeout", value);
 		g_free (value);
 	} else {
-		soup_message_headers_replace (message->request_headers, "Timeout", "Infinite");
+		soup_message_headers_replace (soup_message_get_request_headers (message), "Timeout", "Infinite");
 	}
 
-	soup_message_headers_replace (message->request_headers, "Lock-Token", lock_token);
+	soup_message_headers_replace (soup_message_get_request_headers (message), "Lock-Token", lock_token);
 
-	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+	bytes = e_soup_session_send_message_simple_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to refresh lock"), error, TRUE, FALSE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, bytes, FALSE, _("Failed to refresh lock"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
-	g_object_unref (request);
 
 	return success;
 }
@@ -3062,7 +2854,6 @@ e_webdav_session_unlock_sync (EWebDAVSession *webdav,
 			      GCancellable *cancellable,
 			      GError **error)
 {
-	SoupRequestHTTP *request;
 	SoupMessage *message;
 	GByteArray *bytes;
 	gboolean success;
@@ -3072,36 +2863,27 @@ e_webdav_session_unlock_sync (EWebDAVSession *webdav,
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, SOUP_METHOD_UNLOCK, uri, error);
-	if (!request)
+	message = e_webdav_session_new_message (webdav, SOUP_METHOD_UNLOCK, uri, error);
+	if (!message)
 		return FALSE;
 
-	message = soup_request_http_get_message (request);
-	if (!message) {
-		g_warn_if_fail (message != NULL);
-		g_object_unref (request);
+	soup_message_headers_replace (soup_message_get_request_headers (message), "Lock-Token", lock_token);
 
-		return FALSE;
-	}
+	bytes = e_soup_session_send_message_simple_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
-	soup_message_headers_replace (message->request_headers, "Lock-Token", lock_token);
-
-	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
-
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, FALSE, _("Failed to unlock"), error, TRUE, FALSE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, bytes, FALSE, _("Failed to unlock"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
-	g_object_unref (request);
 
 	return success;
 }
 
 static gboolean
 e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
-					     const SoupMessage *message,
+					     SoupMessage *message,
 					     const GByteArray *xml_data,
 					     gboolean require_multistatus,
 					     const gchar *top_path_ns_href1,
@@ -3112,7 +2894,7 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
 					     gpointer func_user_data,
 					     GError **error)
 {
-	SoupURI *request_uri = NULL;
+	GUri *request_uri = NULL;
 	xmlDocPtr doc;
 	xmlNodePtr top_node, node;
 	gboolean do_stop = FALSE;
@@ -3125,15 +2907,15 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
 	if (message) {
 		const gchar *content_type;
 
-		if (require_multistatus && message->status_code != SOUP_STATUS_MULTI_STATUS) {
-			g_set_error (error, SOUP_HTTP_ERROR, message->status_code,
-				_("Expected multistatus response, but %d returned (%s)"), message->status_code,
-				e_soup_session_util_status_to_string (message->status_code, message->reason_phrase));
+		if (require_multistatus && soup_message_get_status (message) != SOUP_STATUS_MULTI_STATUS) {
+			g_set_error (error, E_SOUP_SESSION_ERROR, soup_message_get_status (message),
+				_("Expected multistatus response, but %d returned (%s)"), soup_message_get_status (message),
+				e_soup_session_util_status_to_string (soup_message_get_status (message), soup_message_get_reason_phrase (message)));
 
 			return FALSE;
 		}
 
-		content_type = soup_message_headers_get_content_type (message->response_headers, NULL);
+		content_type = soup_message_headers_get_content_type (soup_message_get_response_headers (message), NULL);
 		if (!content_type ||
 		    (g_ascii_strcasecmp (content_type, "application/xml") != 0 &&
 		     g_ascii_strcasecmp (content_type, "text/xml") != 0)) {
@@ -3265,7 +3047,7 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
  **/
 gboolean
 e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
-						const SoupMessage *message,
+						SoupMessage *message,
 						const GByteArray *xml_data,
 						EWebDAVPropstatTraverseFunc func,
 						gpointer func_user_data,
@@ -3301,7 +3083,7 @@ e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
  **/
 gboolean
 e_webdav_session_traverse_mkcol_response (EWebDAVSession *webdav,
-					  const SoupMessage *message,
+					  SoupMessage *message,
 					  const GByteArray *xml_data,
 					  EWebDAVPropstatTraverseFunc func,
 					  gpointer func_user_data,
@@ -3337,7 +3119,7 @@ e_webdav_session_traverse_mkcol_response (EWebDAVSession *webdav,
  **/
 gboolean
 e_webdav_session_traverse_mkcalendar_response (EWebDAVSession *webdav,
-					       const SoupMessage *message,
+					       SoupMessage *message,
 					       const GByteArray *xml_data,
 					       EWebDAVPropstatTraverseFunc func,
 					       gpointer func_user_data,
@@ -3356,7 +3138,7 @@ e_webdav_session_traverse_mkcalendar_response (EWebDAVSession *webdav,
 static gboolean
 e_webdav_session_getctag_cb (EWebDAVSession *webdav,
 			     xmlNodePtr prop_node,
-			     const SoupURI *request_uri,
+			     const GUri *request_uri,
 			     const gchar *href,
 			     guint status_code,
 			     gpointer user_data)
@@ -3630,7 +3412,7 @@ e_webdav_session_extract_datetime (xmlNodePtr parent,
 static gboolean
 e_webdav_session_list_cb (EWebDAVSession *webdav,
 			  xmlNodePtr prop_node,
-			  const SoupURI *request_uri,
+			  const GUri *request_uri,
 			  const gchar *href,
 			  guint status_code,
 			  gpointer user_data)
@@ -3850,7 +3632,7 @@ e_webdav_session_list_sync (EWebDAVSession *webdav,
 			EWebDAVResource *resource = link->data;
 
 			if (resource && !resource->display_name && resource->href) {
-				gchar *href_decoded = soup_uri_decode (resource->href);
+				gchar *href_decoded = g_filename_from_uri (resource->href, NULL, NULL);
 
 				if (href_decoded) {
 					gchar *cp;
@@ -4110,7 +3892,7 @@ e_webdav_session_traverse_privilege_level (xmlNodePtr parent_node,
 static gboolean
 e_webdav_session_supported_privilege_set_cb (EWebDAVSession *webdav,
 					     xmlNodePtr prop_node,
-					     const SoupURI *request_uri,
+					     const GUri *request_uri,
 					     const gchar *href,
 					     guint status_code,
 					     gpointer user_data)
@@ -4155,7 +3937,6 @@ e_webdav_session_acl_sync (EWebDAVSession *webdav,
 			   GCancellable *cancellable,
 			   GError **error)
 {
-	SoupRequestHTTP *request;
 	SoupMessage *message;
 	GByteArray *bytes;
 	gchar *content;
@@ -4167,40 +3948,30 @@ e_webdav_session_acl_sync (EWebDAVSession *webdav,
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
 
-	request = e_webdav_session_new_request (webdav, "ACL", uri, error);
-	if (!request)
+	message = e_webdav_session_new_message (webdav, "ACL", uri, error);
+	if (!message)
 		return FALSE;
-
-	message = soup_request_http_get_message (request);
-	if (!message) {
-		g_warn_if_fail (message != NULL);
-		g_object_unref (request);
-
-		return FALSE;
-	}
 
 	content = e_xml_document_get_content (xml, &content_length);
 	if (!content) {
 		g_object_unref (message);
-		g_object_unref (request);
 
 		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, _("Failed to get input XML content"));
 
 		return FALSE;
 	}
 
-	soup_message_set_request (message, E_WEBDAV_CONTENT_TYPE_XML,
-		SOUP_MEMORY_TAKE, content, content_length);
+	e_soup_session_util_set_message_request_body_from_data (message, FALSE, E_WEBDAV_CONTENT_TYPE_XML,
+		content, content_length, g_free);
 
-	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+	bytes = e_soup_session_send_message_simple_sync (E_SOUP_SESSION (webdav), message, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, request, bytes, TRUE, _("Failed to get access control list"), error, TRUE, FALSE) &&
+	success = !e_webdav_session_replace_with_detailed_error_internal (webdav, message, bytes, TRUE, _("Failed to get access control list"), error, TRUE, FALSE) &&
 		bytes != NULL;
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
-	g_object_unref (request);
 
 	return success;
 }
@@ -4286,7 +4057,7 @@ typedef struct _PrivilegeSetData {
 static gboolean
 e_webdav_session_current_user_privilege_set_cb (EWebDAVSession *webdav,
 						xmlNodePtr prop_node,
-						const SoupURI *request_uri,
+						const GUri *request_uri,
 						const gchar *href,
 						guint status_code,
 						gpointer user_data)
@@ -4369,7 +4140,7 @@ e_webdav_session_get_current_user_privilege_set_sync (EWebDAVSession *webdav,
 
 	if (success && !psd.any_found) {
 		success = FALSE;
-		g_set_error_literal (error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND, soup_status_get_phrase (SOUP_STATUS_NOT_FOUND));
+		g_set_error_literal (error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND, soup_status_get_phrase (SOUP_STATUS_NOT_FOUND));
 	} else if (success) {
 		*out_privileges = g_slist_reverse (*out_privileges);
 	}
@@ -4472,7 +4243,7 @@ e_webdav_session_extract_acl_principal (xmlNodePtr principal_node,
 static gboolean
 e_webdav_session_acl_cb (EWebDAVSession *webdav,
 			 xmlNodePtr prop_node,
-			 const SoupURI *request_uri,
+			 const GUri *request_uri,
 			 const gchar *href,
 			 guint status_code,
 			 gpointer user_data)
@@ -4622,7 +4393,7 @@ typedef struct _ACLRestrictionsData {
 static gboolean
 e_webdav_session_acl_restrictions_cb (EWebDAVSession *webdav,
 				      xmlNodePtr prop_node,
-				      const SoupURI *request_uri,
+				      const GUri *request_uri,
 				      const gchar *href,
 				      guint status_code,
 				      gpointer user_data)
@@ -4729,7 +4500,7 @@ e_webdav_session_get_acl_restrictions_sync (EWebDAVSession *webdav,
 static gboolean
 e_webdav_session_principal_collection_set_cb (EWebDAVSession *webdav,
 					      xmlNodePtr prop_node,
-					      const SoupURI *request_uri,
+					      const GUri *request_uri,
 					      const gchar *href,
 					      guint status_code,
 					      gpointer user_data)
@@ -4991,7 +4762,7 @@ e_webdav_session_set_acl_sync (EWebDAVSession *webdav,
 static gboolean
 e_webdav_session_principal_property_search_cb (EWebDAVSession *webdav,
 					       xmlNodePtr prop_node,
-					       const SoupURI *request_uri,
+					       const GUri *request_uri,
 					       const gchar *href,
 					       guint status_code,
 					       gpointer user_data)

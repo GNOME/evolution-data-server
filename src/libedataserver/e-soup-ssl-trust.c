@@ -30,35 +30,28 @@
 
 #include "e-soup-ssl-trust.h"
 
-typedef struct _ESoupSslTrustData {
-	SoupMessage *soup_message; /* weak */
-	ESource *source;
-
-	GClosure *accept_certificate_closure;
-} ESoupSslTrustData;
-
 static gboolean
-e_soup_ssl_trust_accept_certificate_cb (GTlsConnection *conn,
+e_soup_ssl_trust_accept_certificate_cb (SoupMessage *message,
 					GTlsCertificate *peer_cert,
 					GTlsCertificateFlags errors,
 					gpointer user_data)
 {
-	ESoupSslTrustData *handler = user_data;
+	ESource *source = user_data;
 	ETrustPromptResponse response;
-	SoupURI *soup_uri;
+	GUri *g_uri;
 	const gchar *host;
 	gchar *auth_host = NULL;
 
-	soup_uri = soup_message_get_uri (handler->soup_message);
-	if (!soup_uri || !soup_uri_get_host (soup_uri))
+	g_uri = soup_message_get_uri (message);
+	if (!g_uri || !g_uri_get_host (g_uri))
 		return FALSE;
 
-	host = soup_uri_get_host (soup_uri);
+	host = g_uri_get_host (g_uri);
 
-	if (e_source_has_extension (handler->source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
 		ESourceAuthentication *extension_authentication;
 
-		extension_authentication = e_source_get_extension (handler->source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		extension_authentication = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
 		auth_host = e_source_authentication_dup_host (extension_authentication);
 
 		if (auth_host && *auth_host) {
@@ -73,50 +66,13 @@ e_soup_ssl_trust_accept_certificate_cb (GTlsConnection *conn,
 	}
 
 	response = e_source_webdav_verify_ssl_trust (
-		e_source_get_extension (handler->source, E_SOURCE_EXTENSION_WEBDAV_BACKEND),
+		e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND),
 		host, peer_cert, errors);
 
 	g_free (auth_host);
 
 	return (response == E_TRUST_PROMPT_RESPONSE_ACCEPT ||
 	        response == E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY);
-}
-
-static void
-e_soup_ssl_trust_network_event_cb (SoupMessage *msg,
-				   GSocketClientEvent event,
-				   GIOStream *connection,
-				   gpointer user_data)
-{
-	ESoupSslTrustData *handler = user_data;
-
-	/* It's either a GTlsConnection or a GTcpConnection */
-	if (event == G_SOCKET_CLIENT_TLS_HANDSHAKING &&
-	    G_IS_TLS_CONNECTION (connection)) {
-		g_signal_connect_closure (
-			G_TLS_CONNECTION (connection), "accept-certificate",
-			handler->accept_certificate_closure, FALSE);
-	}
-}
-
-static void
-e_soup_ssl_trust_message_finalized_cb (gpointer data,
-				       GObject *unused_message)
-{
-	ESoupSslTrustData *handler;
-
-	/* The network event handler will be disconnected from the message just
-	 * before this is called. */
-	handler = data;
-
-	g_clear_object (&handler->source);
-
-	/* Synchronously disconnects the accept certificate handler from all
-	 * GTlsConnections. */
-	g_closure_invalidate (handler->accept_certificate_closure);
-	g_closure_unref (handler->accept_certificate_closure);
-
-	g_free (handler);
 }
 
 /**
@@ -144,21 +100,11 @@ void
 e_soup_ssl_trust_connect (SoupMessage *soup_message,
                           ESource *source)
 {
-	ESoupSslTrustData *handler;
-
 	g_return_if_fail (SOUP_IS_MESSAGE (soup_message));
 	g_return_if_fail (E_IS_SOURCE (source));
 
-	handler = g_malloc (sizeof (ESoupSslTrustData));
-	handler->soup_message = soup_message;
-	g_object_weak_ref (G_OBJECT (soup_message), e_soup_ssl_trust_message_finalized_cb, handler);
-	handler->source = g_object_ref (source);
-	handler->accept_certificate_closure = g_cclosure_new (G_CALLBACK (e_soup_ssl_trust_accept_certificate_cb), handler, NULL);
-
-	g_closure_ref (handler->accept_certificate_closure);
-	g_closure_sink (handler->accept_certificate_closure);
-
-	g_signal_connect (
-		soup_message, "network-event",
-		G_CALLBACK (e_soup_ssl_trust_network_event_cb), handler);
+	g_signal_connect_data (
+		soup_message, "accept-certificate",
+		G_CALLBACK (e_soup_ssl_trust_accept_certificate_cb), g_object_ref (source),
+		(GClosureNotify) g_object_unref, 0);
 }

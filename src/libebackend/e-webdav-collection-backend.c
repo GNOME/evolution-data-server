@@ -103,7 +103,7 @@ webdav_collection_remove_unknown_sources_cb (gpointer resource_id,
 static void
 webdav_collection_add_found_source (ECollectionBackend *collection,
 				    EWebDAVDiscoverSupports source_type,
-				    SoupURI *uri,
+				    GUri *uri,
 				    const gchar *display_name,
 				    const gchar *color,
 				    guint order,
@@ -167,7 +167,7 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 	if (!server)
 		return;
 
-	url = soup_uri_to_string (uri, FALSE);
+	url = g_uri_to_string_partial (uri, G_URI_HIDE_PASSWORD);
 	identity = g_strconcat (identity_prefix, "::", url, NULL);
 	source_uid = g_hash_table_lookup (known_sources, identity);
 	is_new = !source_uid;
@@ -198,7 +198,7 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 		if (!is_subscribed_icalendar)
 			e_source_authentication_set_user (child_auth, e_source_collection_get_identity (collection_extension));
 
-		e_source_webdav_set_soup_uri (child_webdav, uri);
+		e_source_webdav_set_uri (child_webdav, uri);
 		e_source_resource_set_identity (resource, identity);
 
 		if (is_new) {
@@ -280,25 +280,25 @@ webdav_collection_process_discovered_sources (ECollectionBackend *collection,
 
 	for (link = discovered_sources; link; link = g_slist_next (link)) {
 		EWebDAVDiscoveredSource *discovered_source = link->data;
-		SoupURI *soup_uri;
+		GUri *parsed_uri;
 
 		if (!discovered_source || !discovered_source->href || !discovered_source->display_name)
 			continue;
 
-		soup_uri = soup_uri_new (discovered_source->href);
-		if (!soup_uri)
+		parsed_uri = g_uri_parse (discovered_source->href, SOUP_HTTP_URI_FLAGS, NULL);
+		if (!parsed_uri)
 			continue;
 
 		for (ii = 0; ii < n_source_types; ii++) {
 			if ((discovered_source->supports & source_types[ii]) == source_types[ii])
-				webdav_collection_add_found_source (collection, source_types[ii], soup_uri,
+				webdav_collection_add_found_source (collection, source_types[ii], parsed_uri,
 					discovered_source->display_name, discovered_source->color, discovered_source->order,
 					(discovered_source->supports & E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE) != 0,
 					(discovered_source->supports & E_WEBDAV_DISCOVER_SUPPORTS_SUBSCRIBED_ICALENDAR) != 0,
 					known_sources);
 		}
 
-		soup_uri_free (soup_uri);
+		g_uri_unref (parsed_uri);
 	}
 }
 
@@ -627,8 +627,8 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 
 		if (webdav_collection_debug_enabled () &&
 		    (!credentials_empty || (
-		     !g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) &&
-		     !g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN))))
+		     !g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED) &&
+		     !g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_FORBIDDEN))))
 			e_util_debug_print ("WEBDAV", "%p: Failed to get calendars from '%s': %s\n", webdav_backend, calendar_url, local_error->message);
 	} else if (e_source_collection_get_calendar_enabled (collection_extension) && calendar_url) {
 		if (webdav_collection_debug_enabled ()) {
@@ -665,8 +665,8 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 
 		if (webdav_collection_debug_enabled () &&
 		    (!credentials_empty || (
-		     !g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) &&
-		     !g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN))))
+		     !g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED) &&
+		     !g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_FORBIDDEN))))
 			e_util_debug_print ("WEBDAV", "%p: Failed to get books from '%s': %s\n", webdav_backend, contacts_url, local_error->message);
 	} else if (e_source_collection_get_contacts_enabled (collection_extension) && contacts_url) {
 		if (webdav_collection_debug_enabled ()) {
@@ -696,14 +696,14 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 	if (local_error == NULL) {
 		result = E_SOURCE_AUTHENTICATION_ACCEPTED;
 		e_collection_backend_authenticate_children (collection, credentials);
-	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
-		   g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
+	} else if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
+		   g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_FORBIDDEN)) {
 		if (credentials_empty)
 			result = E_SOURCE_AUTHENTICATION_REQUIRED;
 		else
 			result = E_SOURCE_AUTHENTICATION_REJECTED;
 		g_clear_error (&local_error);
-	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
+	} else if (g_error_matches (local_error, G_TLS_ERROR, G_TLS_ERROR_BAD_CERTIFICATE)) {
 		result = E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED;
 		g_propagate_error (error, local_error);
 	} else {

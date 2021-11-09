@@ -129,31 +129,35 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 		&capabilities, &allows, cancellable, &local_error);
 
 	/* iCloud and Google servers can return "404 Not Found" when issued OPTIONS on the addressbook collection */
-	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND) ||
-	    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_BAD_REQUEST)) {
+	if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND) ||
+	    g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_BAD_REQUEST)) {
 		ESourceWebdav *webdav_extension;
-		SoupURI *soup_uri;
+		GUri *g_uri;
 
 		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-		soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
-		if (soup_uri) {
-			if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND) &&
-			    soup_uri->host && soup_uri->path && *soup_uri->path &&
-			    e_util_utf8_strstrcase (soup_uri->host, ".icloud.com")) {
+		g_uri = e_source_webdav_dup_uri (webdav_extension);
+		if (g_uri) {
+			if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND) &&
+			    g_uri_get_host (g_uri) && *g_uri_get_path (g_uri) &&
+			    e_util_utf8_strstrcase (g_uri_get_host (g_uri), ".icloud.com")) {
 				/* Try parent directory */
 				gchar *path;
-				gint len = strlen (soup_uri->path);
+				gint len = strlen (g_uri_get_path (g_uri));
 
-				if (soup_uri->path[len - 1] == '/')
-					soup_uri->path[len - 1] = '\0';
+				if (g_uri_get_path (g_uri)[len - 1] == '/') {
+					gchar *np = g_strdup (g_uri_get_path (g_uri));
+					np[len - 1] = '\0';
+					e_util_change_uri_component (&g_uri, SOUP_URI_PATH, np);
+					g_free (np);
+				}
 
-				path = g_path_get_dirname (soup_uri->path);
-				if (path && g_str_has_prefix (soup_uri->path, path)) {
+				path = g_path_get_dirname (g_uri_get_path (g_uri));
+				if (path && g_str_has_prefix (g_uri_get_path (g_uri), path)) {
 					gchar *uri;
 
-					soup_uri_set_path (soup_uri, path);
+					e_util_change_uri_component (&g_uri, SOUP_URI_PATH, path);
 
-					uri = soup_uri_to_string (soup_uri, FALSE);
+					uri = g_uri_to_string_partial (g_uri, SOUP_HTTP_URI_FLAGS);
 					if (uri) {
 						g_clear_error (&local_error);
 
@@ -165,8 +169,8 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 				}
 
 				g_free (path);
-			} else if (soup_uri->host && (e_util_utf8_strstrcase (soup_uri->host, ".googleusercontent.com") ||
-						      e_util_utf8_strstrcase (soup_uri->host, ".googleapis.com"))) {
+			} else if (g_uri_get_host (g_uri) && (e_util_utf8_strstrcase (g_uri_get_host (g_uri), ".googleusercontent.com") ||
+						      e_util_utf8_strstrcase (g_uri_get_host (g_uri), ".googleapis.com"))) {
 				g_clear_error (&local_error);
 				success = TRUE;
 
@@ -178,7 +182,7 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 				g_hash_table_insert (allows, g_strdup (SOUP_METHOD_PUT), GINT_TO_POINTER (1));
 			}
 
-			soup_uri_free (soup_uri);
+			g_uri_unref (g_uri);
 		}
 	}
 
@@ -208,11 +212,11 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 
 	if (success) {
 		ESourceWebdav *webdav_extension;
-		SoupURI *soup_uri;
+		GUri *g_uri;
 		gboolean addressbook;
 
 		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-		soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
+		g_uri = e_source_webdav_dup_uri (webdav_extension);
 
 		addressbook = capabilities && g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_ADDRESSBOOK);
 
@@ -221,13 +225,13 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTED);
 
-			bbdav->priv->is_google = soup_uri && soup_uri->host && (
-				g_ascii_strcasecmp (soup_uri->host, "www.google.com") == 0 ||
-				g_ascii_strcasecmp (soup_uri->host, "apidata.googleusercontent.com") == 0);
+			bbdav->priv->is_google = g_uri && g_uri_get_host (g_uri) && (
+				g_ascii_strcasecmp (g_uri_get_host (g_uri), "www.google.com") == 0 ||
+				g_ascii_strcasecmp (g_uri_get_host (g_uri), "apidata.googleusercontent.com") == 0);
 		} else {
 			gchar *uri;
 
-			uri = soup_uri_to_string (soup_uri, FALSE);
+			uri = g_uri_to_string_partial (g_uri, G_URI_HIDE_PASSWORD);
 
 			success = FALSE;
 			g_set_error (&local_error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
@@ -238,7 +242,7 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 		}
 
-		soup_uri_free (soup_uri);
+		g_uri_unref (g_uri);
 	}
 
 	if (success) {
@@ -251,7 +255,7 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 		   The 'getctag' extension is not required, thus check
 		   for unauthorized error only. */
 		if (!e_webdav_session_getctag_sync (webdav, NULL, &ctag, cancellable, &local_error) &&
-		    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
+		    g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
 			success = FALSE;
 		} else {
 			g_clear_error (&local_error);
@@ -264,22 +268,19 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 		*out_auth_result = E_SOURCE_AUTHENTICATION_ACCEPTED;
 	} else {
 		gboolean credentials_empty;
-		gboolean is_ssl_error;
+		gboolean is_tls_error = FALSE;
 
 		credentials_empty = (!credentials || !e_named_parameters_count (credentials) ||
 			(e_named_parameters_count (credentials) == 1 && e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_SSL_TRUST))) &&
 			e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (webdav));
-		is_ssl_error = g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED);
+		is_tls_error = g_error_matches (local_error, G_TLS_ERROR, G_TLS_ERROR_BAD_CERTIFICATE);
 
 		*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR;
 
 		/* because evolution knows only G_IO_ERROR_CANCELLED */
-		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_CANCELLED)) {
-			local_error->domain = G_IO_ERROR;
-			local_error->code = G_IO_ERROR_CANCELLED;
-		} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN) && credentials_empty) {
+		if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_FORBIDDEN) && credentials_empty) {
 			*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
-		} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
+		} else if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
 			if (credentials_empty)
 				*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
 			else
@@ -298,7 +299,7 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 			local_error = NULL;
 		}
 
-		if (is_ssl_error) {
+		if (is_tls_error) {
 			*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED;
 
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_SSL_FAILED);
@@ -443,7 +444,7 @@ ebb_carddav_ensure_uid (EContact *contact,
 static gboolean
 ebb_carddav_multiget_response_cb (EWebDAVSession *webdav,
 				  xmlNodePtr prop_node,
-				  const SoupURI *request_uri,
+				  const GUri *request_uri,
 				  const gchar *href,
 				  guint status_code,
 				  gpointer user_data)
@@ -567,7 +568,7 @@ ebb_carddav_multiget_from_sets_sync (EBookBackendCardDAV *bbdav,
 
 	while (link && left_to_go > 0) {
 		EBookMetaBackendInfo *nfo = link->data;
-		SoupURI *suri;
+		GUri *suri;
 		gchar *path = NULL;
 
 		link = g_slist_next (link);
@@ -581,10 +582,15 @@ ebb_carddav_multiget_from_sets_sync (EBookBackendCardDAV *bbdav,
 
 		left_to_go--;
 
-		suri = soup_uri_new (nfo->extra);
+		suri = g_uri_parse (nfo->extra, SOUP_HTTP_URI_FLAGS, NULL);
 		if (suri) {
-			path = soup_uri_to_string (suri, TRUE);
-			soup_uri_free (suri);
+			if (g_uri_get_query (suri))
+				path = g_strdup_printf ("%s?%s",
+				                        *g_uri_get_path (suri) ? g_uri_get_path (suri) : "/",
+				                        g_uri_get_query (suri));
+			else
+				path = g_strdup (*g_uri_get_path (suri) ? g_uri_get_path (suri) : "/");
+			g_uri_unref (suri);
 		}
 
 		e_xml_document_start_element (xml, E_WEBDAV_NS_DAV, "href");
@@ -611,7 +617,7 @@ ebb_carddav_multiget_from_sets_sync (EBookBackendCardDAV *bbdav,
 static gboolean
 ebb_carddav_get_contact_items_cb (EWebDAVSession *webdav,
 				  xmlNodePtr prop_node,
-				  const SoupURI *request_uri,
+				  const GUri *request_uri,
 				  const gchar *href,
 				  guint status_code,
 				  gpointer user_data)
@@ -629,7 +635,7 @@ ebb_carddav_get_contact_items_cb (EWebDAVSession *webdav,
 
 		/* Skip collection resource, if returned by the server (like iCloud.com does) */
 		if (g_str_has_suffix (href, "/") ||
-		    (request_uri && request_uri->path && g_str_has_suffix (href, request_uri->path))) {
+		    (request_uri && *g_uri_get_path ((GUri *) request_uri) && g_str_has_suffix (href, g_uri_get_path ((GUri *) request_uri)))) {
 			return TRUE;
 		}
 
@@ -705,12 +711,12 @@ ebb_carddav_check_credentials_error (EBookBackendCardDAV *bbdav,
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND_CARDDAV (bbdav));
 
-	if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED) && webdav) {
+	if (g_error_matches (op_error, G_TLS_ERROR, G_TLS_ERROR_BAD_CERTIFICATE) && webdav) {
 		op_error->domain = E_CLIENT_ERROR;
 		op_error->code = E_CLIENT_ERROR_TLS_NOT_AVAILABLE;
-	} else if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
-		   g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
-		gboolean was_forbidden = g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN);
+	} else if (g_error_matches (op_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
+		   g_error_matches (op_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_FORBIDDEN)) {
+		gboolean was_forbidden = g_error_matches (op_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_FORBIDDEN);
 
 		op_error->domain = E_CLIENT_ERROR;
 		op_error->code = E_CLIENT_ERROR_AUTHENTICATION_REQUIRED;
@@ -863,7 +869,7 @@ ebb_carddav_get_changes_sync (EBookMetaBackend *meta_backend,
 static gboolean
 ebb_carddav_extract_existing_cb (EWebDAVSession *webdav,
 				 xmlNodePtr prop_node,
-				 const SoupURI *request_uri,
+				 const GUri *request_uri,
 				 const gchar *href,
 				 guint status_code,
 				 gpointer user_data)
@@ -978,15 +984,15 @@ ebb_carddav_uid_to_uri (EBookBackendCardDAV *bbdav,
 		        const gchar *extension)
 {
 	ESourceWebdav *webdav_extension;
-	SoupURI *soup_uri;
+	GUri *guri;
 	gchar *uri, *tmp, *filename, *uid_hash = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_CARDDAV (bbdav), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
 
 	webdav_extension = e_source_get_extension (e_backend_get_source (E_BACKEND (bbdav)), E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-	soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
-	g_return_val_if_fail (soup_uri != NULL, NULL);
+	guri = e_source_webdav_dup_uri (webdav_extension);
+	g_return_val_if_fail (guri != NULL, NULL);
 
 	/* UIDs with forward slashes can cause trouble, because the destination server
 	   can consider them as a path delimiter. For example Google book backend uses
@@ -1001,29 +1007,29 @@ ebb_carddav_uid_to_uri (EBookBackendCardDAV *bbdav,
 
 	if (extension) {
 		tmp = g_strconcat (uid, extension, NULL);
-		filename = soup_uri_encode (tmp, NULL);
+		filename = g_uri_escape_string (tmp, NULL, FALSE);
 		g_free (tmp);
 	} else {
-		filename = soup_uri_encode (uid, NULL);
+		filename = g_uri_escape_string (uid, NULL, FALSE);
 	}
 
-	if (soup_uri->path) {
-		gchar *slash = strrchr (soup_uri->path, '/');
+	if (g_uri_get_path (guri) && *g_uri_get_path (guri)) {
+		const gchar *slash = strrchr (g_uri_get_path (guri), '/');
 
 		if (slash && !slash[1])
-			*slash = '\0';
+			tmp = g_strconcat (g_uri_get_path (guri), filename, NULL);
+		else
+			tmp = g_strconcat (g_uri_get_path (guri), "/", filename, NULL);
+	} else {
+		tmp = g_strconcat ("/", filename, NULL);
 	}
 
-	soup_uri_set_user (soup_uri, NULL);
-	soup_uri_set_password (soup_uri, NULL);
-
-	tmp = g_strconcat (soup_uri->path && *soup_uri->path ? soup_uri->path : "", "/", filename, NULL);
-	soup_uri_set_path (soup_uri, tmp);
+	e_util_change_uri_component (&guri, SOUP_URI_PATH, tmp);
 	g_free (tmp);
 
-	uri = soup_uri_to_string (soup_uri, FALSE);
+	uri = g_uri_to_string_partial (guri, G_URI_HIDE_USERINFO | G_URI_HIDE_PASSWORD);
 
-	soup_uri_free (soup_uri);
+	g_uri_unref (guri);
 	g_free (filename);
 	g_free (uid_hash);
 
@@ -1078,7 +1084,7 @@ ebb_carddav_load_contact_sync (EBookMetaBackend *meta_backend,
 	if (extra && *extra) {
 		uri = g_strdup (extra);
 
-		success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
+		success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, NULL, &bytes, &length, cancellable, &local_error);
 
 		if (!success) {
 			g_free (uri);
@@ -1118,19 +1124,19 @@ ebb_carddav_load_contact_sync (EBookMetaBackend *meta_backend,
 
 		g_clear_error (&local_error);
 
-		success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
+		success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, NULL, &bytes, &length, cancellable, &local_error);
 
 		/* Do not try twice with Google, it's either without extension or not there.
 		   The worst, it counts to the Error requests quota limit. */
 		if (!success && !bbdav->priv->is_google && !g_cancellable_is_cancelled (cancellable) &&
-		    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+		    g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND)) {
 			g_free (uri);
 			uri = ebb_carddav_uid_to_uri (bbdav, uid, NULL);
 
 			if (uri) {
 				g_clear_error (&local_error);
 
-				success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
+				success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, NULL, &bytes, &length, cancellable, &local_error);
 			}
 		}
 	}
@@ -1170,7 +1176,7 @@ ebb_carddav_load_contact_sync (EBookMetaBackend *meta_backend,
 	if (local_error) {
 		ebb_carddav_check_credentials_error (bbdav, webdav, local_error);
 
-		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+		if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND)) {
 			local_error->domain = E_BOOK_CLIENT_ERROR;
 			local_error->code = E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND;
 		}
@@ -1239,7 +1245,7 @@ ebb_carddav_save_contact_sync (EBookMetaBackend *meta_backend,
 
 		success = e_webdav_session_put_data_sync (webdav, (extra && *extra) ? extra : href,
 			force_write ? "" : overwrite_existing ? etag : NULL, E_WEBDAV_CONTENT_TYPE_VCARD,
-			vcard_string, -1, &new_extra, &new_etag, cancellable, &local_error);
+			NULL, vcard_string, -1, &new_extra, &new_etag, NULL, cancellable, &local_error);
 
 		if (success) {
 			/* Only if both are returned and it's not a weak ETag */
@@ -1284,7 +1290,7 @@ ebb_carddav_save_contact_sync (EBookMetaBackend *meta_backend,
 	g_free (etag);
 	g_free (uid);
 
-	if (overwrite_existing && g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_PRECONDITION_FAILED)) {
+	if (overwrite_existing && g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_PRECONDITION_FAILED)) {
 		g_clear_error (&local_error);
 
 		/* Pretend success when using the serer version on conflict,
@@ -1347,7 +1353,7 @@ ebb_carddav_remove_contact_sync (EBookMetaBackend *meta_backend,
 	success = e_webdav_session_delete_sync (webdav, extra,
 		NULL, etag, cancellable, &local_error);
 
-	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+	if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND)) {
 		gchar *href;
 
 		href = ebb_carddav_uid_to_uri (bbdav, uid, ".vcf");
@@ -1359,7 +1365,7 @@ ebb_carddav_remove_contact_sync (EBookMetaBackend *meta_backend,
 			g_free (href);
 		}
 
-		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+		if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND)) {
 			href = ebb_carddav_uid_to_uri (bbdav, uid, NULL);
 			if (href) {
 				g_clear_error (&local_error);
@@ -1376,10 +1382,10 @@ ebb_carddav_remove_contact_sync (EBookMetaBackend *meta_backend,
 
 	/* Ignore not found errors, this was a delete and the resource is gone.
 	   It can be that it had been deleted on the server by other application. */
-	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+	if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND)) {
 		g_clear_error (&local_error);
 		success = TRUE;
-	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_PRECONDITION_FAILED)) {
+	} else if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_PRECONDITION_FAILED)) {
 		g_clear_error (&local_error);
 
 		/* Pretend success when using the serer version on conflict,

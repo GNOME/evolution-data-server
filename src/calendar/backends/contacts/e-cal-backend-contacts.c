@@ -409,7 +409,7 @@ book_client_connected_cb (GObject *source_object,
 	}
 
 	source = e_client_get_source (client);
-	br->book_client = g_object_ref (client);
+	br->book_client = g_object_ref (E_BOOK_CLIENT (client));
 	br->online = e_client_is_online (client);
 	br->notify_online_id = g_signal_connect (client, "notify::online", G_CALLBACK (book_client_notify_online_cb), br);
 	cal_backend_contacts_insert_book_record (br->cbc, source, br);

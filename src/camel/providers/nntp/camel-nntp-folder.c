@@ -270,7 +270,7 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder,
 			if (!success)
 				goto fail;
 		} else {
-			stream = g_object_ref (nntp_stream);
+			stream = CAMEL_STREAM (g_object_ref (nntp_stream));
 		}
 
 	} else if (ret == 423 || ret == 430) {

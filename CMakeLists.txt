@@ -52,49 +52,49 @@ set(LIBCAMEL_CURRENT 64)
 set(LIBCAMEL_REVISION 0)
 set(LIBCAMEL_AGE 0)
 
-set(LIBEBACKEND_CURRENT 10)
+set(LIBEBACKEND_CURRENT 11)
 set(LIBEBACKEND_REVISION 0)
 set(LIBEBACKEND_AGE 0)
 
-set(LIBEDATASERVER_CURRENT 26)
+set(LIBEDATASERVER_CURRENT 27)
 set(LIBEDATASERVER_REVISION 0)
 set(LIBEDATASERVER_AGE 0)
 
-set(LIBEDATASERVERUI_CURRENT 3)
+set(LIBEDATASERVERUI_CURRENT 4)
 set(LIBEDATASERVERUI_REVISION 0)
 set(LIBEDATASERVERUI_AGE 0)
 
-set(LIBEBOOK_CURRENT 20)
+set(LIBEBOOK_CURRENT 21)
 set(LIBEBOOK_REVISION 1)
 set(LIBEBOOK_AGE 3)
 
-set(LIBEBOOK_CONTACTS_CURRENT 3)
+set(LIBEBOOK_CONTACTS_CURRENT 4)
 set(LIBEBOOK_CONTACTS_REVISION 0)
 set(LIBEBOOK_CONTACTS_AGE 0)
 
-set(LIBEDATABOOK_CURRENT 26)
+set(LIBEDATABOOK_CURRENT 27)
 set(LIBEDATABOOK_REVISION 0)
 set(LIBEDATABOOK_AGE 0)
 
-set(LIBECAL_CURRENT 1)
+set(LIBECAL_CURRENT 2)
 set(LIBECAL_REVISION 0)
 set(LIBECAL_AGE 0)
 
-set(LIBEDATACAL_CURRENT 1)
+set(LIBEDATACAL_CURRENT 2)
 set(LIBEDATACAL_REVISION 0)
 set(LIBEDATACAL_AGE 0)
 
 # Keep these two definitions in agreement.
-set(glib_minimum_version 2.46)
-set(glib_encoded_version GLIB_VERSION_2_46)
+set(glib_minimum_version 2.68)
+set(glib_encoded_version GLIB_VERSION_2_68)
 
 # Keep these two definitions in agreement.
 set(gdk_minimum_version 3.16)
 set(gdk_encoded_version GDK_VERSION_3_16)
 
 # Keep these two definitions in agreement.
-set(soup_minimum_version 2.58)
-set(soup_encoded_version SOUP_VERSION_2_58)
+set(soup_minimum_version 3.0)
+set(soup_encoded_version SOUP_VERSION_3_0)
 
 # Warn about API usage that violates our minimum requirements.
 add_definitions(-DGLIB_VERSION_MAX_ALLOWED=${glib_encoded_version})
@@ -118,12 +118,11 @@ set(sqlite_minimum_version 3.7.17)
 
 # Optional Packages
 set(goa_minimum_version 3.8)
-set(gweather_minimum_version 3.10)
-set(gweather4_minimum_version 3.91.0)
+set(gweather_minimum_version 3.91)
 set(libaccounts_glib_minimum_version 1.4)
 set(libsignon_glib_minimum_version 1.8)
 set(json_glib_minimum_version 1.0.4)
-set(webkit2gtk_minimum_version 2.28.0)
+set(webkit2gtk_minimum_version 2.34.0)
 set(libcanberra_gtk_minimum_version 0.25)
 
 # Load modules from the source tree
@@ -342,7 +341,7 @@ pkg_check_modules(GNOME_PLATFORM REQUIRED
 	gio-2.0>=${glib_minimum_version}
 	gmodule-2.0>=${glib_minimum_version}
 	libxml-2.0>=${libxml_minimum_version}
-	libsoup-2.4>=${soup_minimum_version}
+	libsoup-3.0>=${soup_minimum_version}
 )
 
 if(WIN32)
@@ -402,7 +401,7 @@ add_printable_option(ENABLE_OAUTH2_WEBKITGTK "Enable WebKitGTK for built-in OAut
 
 if(ENABLE_OAUTH2_WEBKITGTK)
 	pkg_check_modules_for_option(ENABLE_OAUTH2_WEBKITGTK "WebKitGTK for built-in OAuth2 authentications" OAUTH2_WEBKITGTK
-		webkit2gtk-4.0>=${webkit2gtk_minimum_version}
+		webkit2gtk-4.1>=${webkit2gtk_minimum_version}
 	)
 endif(ENABLE_OAUTH2_WEBKITGTK)
 
@@ -754,26 +753,13 @@ endif(NOT have_addrinfo)
 add_printable_option(ENABLE_WEATHER "Build the weather calendar backend" ON)
 
 if(ENABLE_WEATHER)
-	add_printable_variable(WITH_GWEATHER4 "Use GWeather 4 instead of 3" OFF)
+	pkg_check_modules_for_option(ENABLE_WEATHER "weather calendar backend" LIBGWEATHER gweather4>=${gweather_minimum_version})
 
-	if(WITH_GWEATHER4)
-		pkg_check_modules_for_option(ENABLE_WEATHER "weather calendar backend" LIBGWEATHER gweather4>=${gweather4_minimum_version})
-	else(WITH_GWEATHER4)
-		pkg_check_modules_for_option(ENABLE_WEATHER "weather calendar backend" LIBGWEATHER gweather-3.0>=${gweather_minimum_version})
-	endif(WITH_GWEATHER4)
-
-	set(CMAKE_REQUIRED_INCLUDES ${LIBGWEATHER_INCLUDE_DIRS})
-	set(CMAKE_REQUIRED_LIBRARIES ${LIBGWEATHER_LDFLAGS})
-	CHECK_C_SOURCE_COMPILES("#define GWEATHER_I_KNOW_THIS_IS_UNSTABLE
-				#include <libgweather/gweather.h>
-				#undef GWEATHER_I_KNOW_THIS_IS_UNSTABLE
-
-				int main(void) {
-					gweather_info_new (NULL);
-					return 0;
-				}" HAVE_ONE_ARG_GWEATHER_INFO_NEW)
-	unset(CMAKE_REQUIRED_INCLUDES)
-	unset(CMAKE_REQUIRED_LIBRARIES)
+	# compatibility check
+	pkg_check_variable(gweather_soupapiversion gweather4 soupapiversion)
+	if(NOT "${gweather_soupapiversion}" STREQUAL "3.0")
+		message(FATAL_ERROR "Requires libgweather compiled with libsoup 3.0 API, but found version '${gweather_soupapiversion}' instead. If you want to disable weather calendar backend, please use -DENABLE_WEATHER=OFF argument to cmake command.")
+	endif(NOT "${gweather_soupapiversion}" STREQUAL "3.0")
 endif(ENABLE_WEATHER)
 
 # ************************************************
@@ -839,7 +825,7 @@ add_printable_option(ENABLE_GOOGLE "Enable Google support" ON)
 if(ENABLE_GOOGLE)
 	pkg_check_modules_for_option(ENABLE_GOOGLE "Google" LIBGDATA libgdata>=${libgdata_minimum_version})
 	set(HAVE_LIBGDATA ON)
-	set(LIBGDATA_GIR GData-0.0)
+	set(LIBGDATA_GIR GData-1.0)
 	set(LIBGDATA_VAPI libgdata)
 
 	set(CMAKE_REQUIRED_DEFINITIONS ${LIBGDATA_CFLAGS_OTHER})
@@ -935,14 +921,14 @@ unset(CMAKE_REQUIRED_LIBRARIES)
 # subparts flags
 # ******************************
 
-pkg_check_modules(SOUP REQUIRED libsoup-2.4)
-pkg_check_modules(DATA_SERVER REQUIRED gio-2.0 gmodule-2.0 libsecret-1 libxml-2.0 libsoup-2.4 ${mozilla_nspr} ${mozilla_nss})
+pkg_check_modules(SOUP REQUIRED libsoup-3.0)
+pkg_check_modules(DATA_SERVER REQUIRED gio-2.0 gmodule-2.0 libsecret-1 libxml-2.0 libsoup-3.0 ${mozilla_nspr} ${mozilla_nss})
 set(E_DATA_SERVER_INCLUDES ${E_DATA_SERVER_INCLUDES} ${MANUAL_NSPR_INCLUDES} ${MANUAL_NSS_INCLUDES})
 set(E_DATA_SERVER_LDFLAGS ${E_DATA_SERVER_LDFLAGS} ${MANUAL_NSPR_LIBS} ${MANUAL_NSS_LIBS})
 
-pkg_check_modules(BACKEND REQUIRED gio-2.0 gmodule-2.0 libsecret-1 libsoup-2.4 libxml-2.0)
-pkg_check_modules(ADDRESSBOOK REQUIRED gio-2.0 libxml-2.0 libsoup-2.4 libsecret-1)
-pkg_check_modules(CALENDAR REQUIRED gio-2.0 libical-glib>=${libical_glib_minimum_version} libsoup-2.4 libxml-2.0 libsecret-1)
+pkg_check_modules(BACKEND REQUIRED gio-2.0 gmodule-2.0 libsecret-1 libsoup-3.0 libxml-2.0)
+pkg_check_modules(ADDRESSBOOK REQUIRED gio-2.0 libxml-2.0 libsoup-3.0 libsecret-1)
+pkg_check_modules(CALENDAR REQUIRED gio-2.0 libical-glib>=${libical_glib_minimum_version} libsoup-3.0 libxml-2.0 libsecret-1)
 set(ADDRESSBOOK_CFLAGS ${ADDRESSBOOK_CFLAGS} ${PHONENUMBER_DEFINITIONS})
 set(ADDRESSBOOK_INCLUDE_DIRS ${ADDRESSBOOK_INCLUDE_DIRS} ${PHONENUMBER_INCLUDE_DIRS})
 set(ADDRESSBOOK_LDFLAGS ${ADDRESSBOOK_LDFLAGS} ${PHONENUMBER_LDFLAGS})

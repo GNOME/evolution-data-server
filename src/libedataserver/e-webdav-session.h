@@ -158,7 +158,7 @@ typedef enum {
  * EWebDAVPropstatTraverseFunc:
  * @webdav: an #EWebDAVSession
  * @prop_node: an #xmlNode
- * @request_uri: a #SoupURI, containing the request URI, maybe redirected by the server
+ * @request_uri: a #GUri, containing the request URI, maybe redirected by the server
  * @href: (nullable): a full URI to which the property belongs, or %NULL, when not found
  * @status_code: an HTTP status code for this property
  * @user_data: user data, as passed to e_webdav_session_propfind_sync()
@@ -176,7 +176,7 @@ typedef enum {
  **/
 typedef gboolean (* EWebDAVPropstatTraverseFunc)	(EWebDAVSession *webdav,
 							 xmlNode *prop_node,
-							 const SoupURI *request_uri,
+							 const GUri *request_uri,
 							 const gchar *href,
 							 guint status_code,
 							 gpointer user_data);
@@ -342,20 +342,20 @@ EWebDAVSession *e_webdav_session_new			(ESource *source);
 const gchar *	e_webdav_session_get_last_dav_error_code(EWebDAVSession *webdav);
 gboolean	e_webdav_session_get_last_dav_error_is_permission
 							(EWebDAVSession *webdav);
-SoupRequestHTTP *
-		e_webdav_session_new_request		(EWebDAVSession *webdav,
+SoupMessage *
+		e_webdav_session_new_message		(EWebDAVSession *webdav,
 							 const gchar *method,
 							 const gchar *uri,
 							 GError **error);
 gboolean	e_webdav_session_replace_with_detailed_error
 							(EWebDAVSession *webdav,
-							 SoupRequestHTTP *request,
+							 SoupMessage *request,
 							 const GByteArray *response_data,
 							 gboolean ignore_multistatus,
 							 const gchar *prefix,
 							 GError **inout_error);
 gchar *		e_webdav_session_ensure_full_uri	(EWebDAVSession *webdav,
-							 const SoupURI *request_uri,
+							 const GUri *request_uri,
 							 const gchar *href);
 gboolean	e_webdav_session_options_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
@@ -367,17 +367,10 @@ gboolean	e_webdav_session_post_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 const gchar *data,
 							 gsize data_length,
-							 gchar **out_content_type,
-							 GByteArray **out_content,
-							 GCancellable *cancellable,
-							 GError **error);
-gboolean	e_webdav_session_post_with_content_type_sync
-							(EWebDAVSession *webdav,
-							 const gchar *uri,
-							 const gchar *data,
-							 gsize data_length,
 							 const gchar *in_content_type,
+							 SoupMessageHeaders *in_headers,
 							 gchar **out_content_type,
+							 SoupMessageHeaders **out_headers,
 							 GByteArray **out_content,
 							 GCancellable *cancellable,
 							 GError **error);
@@ -426,6 +419,7 @@ gboolean	e_webdav_session_get_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 gchar **out_href,
 							 gchar **out_etag,
+							 SoupMessageHeaders **out_headers,
 							 GOutputStream *out_stream,
 							 GCancellable *cancellable,
 							 GError **error);
@@ -433,6 +427,7 @@ gboolean	e_webdav_session_get_data_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 gchar **out_href,
 							 gchar **out_etag,
+							 SoupMessageHeaders **out_headers,
 							 gchar **out_bytes,
 							 gsize *out_length,
 							 GCancellable *cancellable,
@@ -441,19 +436,24 @@ gboolean	e_webdav_session_put_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 const gchar *etag,
 							 const gchar *content_type,
+							 SoupMessageHeaders *in_headers,
 							 GInputStream *stream,
+							 gssize stream_length,
 							 gchar **out_href,
 							 gchar **out_etag,
+							 SoupMessageHeaders **out_headers,
 							 GCancellable *cancellable,
 							 GError **error);
 gboolean	e_webdav_session_put_data_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 const gchar *etag,
 							 const gchar *content_type,
+							 SoupMessageHeaders *in_headers,
 							 const gchar *bytes,
 							 gsize length,
 							 gchar **out_href,
 							 gchar **out_etag,
+							 SoupMessageHeaders **out_headers,
 							 GCancellable *cancellable,
 							 GError **error);
 gboolean	e_webdav_session_delete_sync		(EWebDAVSession *webdav,
@@ -497,21 +497,21 @@ gboolean	e_webdav_session_unlock_sync		(EWebDAVSession *webdav,
 							 GError **error);
 gboolean	e_webdav_session_traverse_multistatus_response
 							(EWebDAVSession *webdav,
-							 const SoupMessage *message,
+							 SoupMessage *message,
 							 const GByteArray *xml_data,
 							 EWebDAVPropstatTraverseFunc func,
 							 gpointer func_user_data,
 							 GError **error);
 gboolean	e_webdav_session_traverse_mkcol_response
 							(EWebDAVSession *webdav,
-							 const SoupMessage *message,
+							 SoupMessage *message,
 							 const GByteArray *xml_data,
 							 EWebDAVPropstatTraverseFunc func,
 							 gpointer func_user_data,
 							 GError **error);
 gboolean	e_webdav_session_traverse_mkcalendar_response
 							(EWebDAVSession *webdav,
-							 const SoupMessage *message,
+							 SoupMessage *message,
 							 const GByteArray *xml_data,
 							 EWebDAVPropstatTraverseFunc func,
 							 gpointer func_user_data,

@@ -744,7 +744,7 @@ e_webdav_discover_content_refresh_done_cb (GObject *source_object,
 		&certificate_pem, &certificate_errors, &discovered_sources,
 		&calendar_user_addresses, &local_error)) {
 		if (!g_cancellable_is_cancelled (cancellable) && certificate_pem &&
-		    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
+		    g_error_matches (local_error, G_TLS_ERROR, G_TLS_ERROR_BAD_CERTIFICATE)) {
 			GtkWindow *parent;
 			GtkWidget *widget;
 
@@ -756,8 +756,8 @@ e_webdav_discover_content_refresh_done_cb (GObject *source_object,
 		} else if (g_cancellable_is_cancelled (cancellable) ||
 		    (!g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED) &&
 		    !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND) &&
-		    !g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) &&
-		    !g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN))) {
+		    !g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED) &&
+		    !g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_FORBIDDEN))) {
 			g_task_return_error (task, g_steal_pointer (&local_error));
 		} else {
 			EWebDAVDiscoverContent *content = rd->content;
@@ -837,7 +837,7 @@ e_webdav_discover_content_refresh (GtkWidget *content,
 	GTask *task;
 	RefreshData *rd;
 	ESource *source;
-	SoupURI *soup_uri;
+	GUri *parsed_uri;
 	GtkWidget *label;
 
 	g_return_if_fail (E_IS_WEBDAV_DISCOVER_CONTENT (content));
@@ -849,8 +849,8 @@ e_webdav_discover_content_refresh (GtkWidget *content,
 	use_cancellable = cancellable ? g_object_ref (cancellable) : g_cancellable_new ();
 	task = g_task_new (self, use_cancellable, callback, user_data);
 	g_task_set_source_tag (task, e_webdav_discover_content_refresh);
-	soup_uri = soup_uri_new (self->base_url);
-	if (!soup_uri) {
+	parsed_uri = g_uri_parse (self->base_url, SOUP_HTTP_URI_FLAGS, NULL);
+	if (!parsed_uri) {
 		g_task_return_new_error (task,
 			G_IO_ERROR,
 			G_IO_ERROR_INVALID_ARGUMENT,
@@ -886,10 +886,10 @@ e_webdav_discover_content_refresh (GtkWidget *content,
 
 		if (display_name && *display_name)
 			e_source_set_display_name (source, display_name);
-		e_source_webdav_set_soup_uri (webdav_extension, soup_uri);
-		e_source_authentication_set_host (auth_extension, soup_uri_get_host (soup_uri));
-		e_source_authentication_set_port (auth_extension, soup_uri_get_port (soup_uri));
-		e_source_authentication_set_user (auth_extension, soup_uri_get_user (soup_uri));
+		e_source_webdav_set_uri (webdav_extension, parsed_uri);
+		e_source_authentication_set_host (auth_extension, g_uri_get_host (parsed_uri));
+		e_source_authentication_set_port (auth_extension, g_uri_get_port (parsed_uri));
+		e_source_authentication_set_user (auth_extension, g_uri_get_user (parsed_uri));
 	}
 
 	gtk_list_store_clear (GTK_LIST_STORE (gtk_tree_view_get_model (self->sources_tree_view)));
@@ -921,7 +921,7 @@ e_webdav_discover_content_refresh (GtkWidget *content,
 
 	g_object_unref (source);
 	g_object_unref (use_cancellable);
-	soup_uri_free (soup_uri);
+	g_uri_unref (parsed_uri);
 }
 
 /**

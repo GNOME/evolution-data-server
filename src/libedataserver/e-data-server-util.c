@@ -31,6 +31,7 @@
 #endif
 
 #include <glib-object.h>
+#include <libsoup/soup.h>
 
 #include "e-source.h"
 #include "e-source-address-book.h"
@@ -3443,4 +3444,62 @@ e_util_get_directory_variants (const gchar *main_path,
 	g_return_val_if_fail (replace_prefix && *replace_prefix, NULL);
 
 	return camel_util_get_directory_variants (main_path, replace_prefix, with_modules_dir);
+}
+
+/**
+ * e_util_change_uri_component:
+ * @inout_uri: (inout): a #GUri
+ * @component: a string #SoupURIComponent to change
+ * @value: (nullable): a value to set, or %NULL to unset
+ *
+ * Changes component @component in the @inout_uri to value @value.
+ * As the #GUri cannot be modified the @inout_uri points to a new #GUri
+ * at the end of the call and the previous structure is unreffed.
+ *
+ * See: e_util_change_uri_port()
+ *
+ * Since: 3.48
+ **/
+void
+e_util_change_uri_component (GUri **inout_uri,
+			     SoupURIComponent component,
+			     const gchar *value)
+{
+	GUri *tmp;
+
+	g_return_if_fail (inout_uri != NULL);
+	g_return_if_fail (*inout_uri != NULL);
+	g_return_if_fail (component != SOUP_URI_PORT);
+	g_return_if_fail (component != SOUP_URI_NONE);
+
+	tmp = soup_uri_copy (*inout_uri, component, value, SOUP_URI_NONE);
+	g_uri_unref (*inout_uri);
+	*inout_uri = tmp;
+}
+
+/**
+ * e_util_change_uri_port:
+ * @inout_uri: (inout): a #GUri
+ * @port: the port number to set
+ *
+ * Changes the port in the @inout_uri to value @port.
+ * As the #GUri cannot be modified the @inout_uri points to a new #GUri
+ * at the end of the call and the previous structure is unreffed.
+ *
+ * See: e_util_change_uri_component()
+ *
+ * Since: 3.48
+ **/
+void
+e_util_change_uri_port (GUri **inout_uri,
+			gint port)
+{
+	GUri *tmp;
+
+	g_return_if_fail (inout_uri != NULL);
+	g_return_if_fail (*inout_uri != NULL);
+
+	tmp = soup_uri_copy (*inout_uri, SOUP_URI_PORT, port, SOUP_URI_NONE);
+	g_uri_unref (*inout_uri);
+	*inout_uri = tmp;
 }

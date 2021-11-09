@@ -28,6 +28,7 @@
 
 #include <sys/types.h>
 #include <gio/gio.h>
+#include <libsoup/soup.h>
 
 #include <libedataserver/e-source-enums.h>
 
@@ -298,6 +299,11 @@ gint		e_util_source_compare_for_sort	(struct _ESource *source_a,
 GPtrArray *	e_util_get_directory_variants	(const gchar *main_path,
 						 const gchar *replace_prefix,
 						 gboolean with_modules_dir);
+void		e_util_change_uri_component	(GUri **inout_uri,
+						 SoupURIComponent component,
+						 const gchar *value);
+void		e_util_change_uri_port		(GUri **inout_uri,
+						 gint port);
 
 G_END_DECLS
 

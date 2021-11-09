@@ -947,11 +947,11 @@ message_info_base_dispose (GObject *object)
 	camel_name_value_array_free (bmi->priv->user_tags);
 	bmi->priv->user_tags = NULL;
 
-	g_clear_pointer (&bmi->priv->subject, (GDestroyNotify) camel_pstring_free);
-	g_clear_pointer (&bmi->priv->from, (GDestroyNotify) camel_pstring_free);
-	g_clear_pointer (&bmi->priv->to, (GDestroyNotify) camel_pstring_free);
-	g_clear_pointer (&bmi->priv->cc, (GDestroyNotify) camel_pstring_free);
-	g_clear_pointer (&bmi->priv->mlist, (GDestroyNotify) camel_pstring_free);
+	g_clear_pointer (&bmi->priv->subject, camel_pstring_free);
+	g_clear_pointer (&bmi->priv->from, camel_pstring_free);
+	g_clear_pointer (&bmi->priv->to, camel_pstring_free);
+	g_clear_pointer (&bmi->priv->cc, camel_pstring_free);
+	g_clear_pointer (&bmi->priv->mlist, camel_pstring_free);
 	g_clear_pointer (&bmi->priv->preview, g_free);
 
 	g_clear_pointer (&bmi->priv->references, g_array_unref);

@@ -39,11 +39,7 @@ weather_source_dispose (GObject *object)
 	EWeatherSourcePrivate *priv;
 
 	priv = E_WEATHER_SOURCE (object)->priv;
-	#ifdef WITH_GWEATHER4
 	g_clear_object (&priv->location);
-	#else
-	g_clear_pointer (&priv->location, gweather_location_unref);
-	#endif
 
 	g_clear_object (&priv->info);
 
@@ -72,12 +68,7 @@ weather_source_find_location_by_coords (GWeatherLocation *start,
                                         gdouble longitude)
 {
 	GWeatherLocation *location;
-	#if GWEATHER_CHECK_VERSION(3, 39, 0)
 	GWeatherLocation *child = NULL;
-	#else
-	GWeatherLocation **children;
-	gint ii;
-	#endif
 
 	if (!start)
 		return NULL;
@@ -89,39 +80,20 @@ weather_source_find_location_by_coords (GWeatherLocation *start,
 		gweather_location_get_coords (location, &lat, &lon);
 
 		if (lat == latitude && lon == longitude) {
-			#ifdef WITH_GWEATHER4
 			g_object_ref (location);
-			#else
-			gweather_location_ref (location);
-			#endif
 			return location;
 		}
 	}
 
-	#if GWEATHER_CHECK_VERSION(3, 39, 0)
 	while (child = gweather_location_next_child (location, child), child) {
 		GWeatherLocation *result;
 
 		result = weather_source_find_location_by_coords (child, latitude, longitude);
 		if (result) {
-			#ifdef WITH_GWEATHER4
 			g_object_unref (child);
-			#else
-			gweather_location_unref (child);
-			#endif
 			return result;
 		}
 	}
-	#else
-	children = gweather_location_get_children (location);
-	for (ii = 0; children[ii]; ii++) {
-		location = weather_source_find_location_by_coords (children[ii], latitude, longitude);
-		if (location) {
-			gweather_location_ref (location);
-			return location;
-		}
-	}
-	#endif
 
 	return NULL;
 }
@@ -155,11 +127,6 @@ e_weather_source_new (const gchar *location)
 
 	glocation = gweather_location_find_by_station_code (world, tokens[0]);
 
-#if !GWEATHER_CHECK_VERSION(3, 39, 0)
-	if (glocation)
-		gweather_location_ref (glocation);
-#endif
-
 	if (!glocation) {
 		gdouble latitude, longitude;
 		gchar *endptr = NULL;
@@ -171,11 +138,7 @@ e_weather_source_new (const gchar *location)
 		}
 	}
 
-#ifdef WITH_GWEATHER4
 	g_object_unref (world);
-#elif GWEATHER_CHECK_VERSION(3, 39, 0)
-	gweather_location_unref (world);
-#endif
 	g_strfreev (tokens);
 
 	if (glocation == NULL)
@@ -216,16 +179,9 @@ e_weather_source_parse (EWeatherSource *source,
 	source->priv->done = done;
 
 	if (source->priv->info == NULL) {
-		source->priv->info = gweather_info_new (
-			source->priv->location
-		#ifndef HAVE_ONE_ARG_GWEATHER_INFO_NEW
-			, GWEATHER_FORECAST_LIST
-		#endif
-		);
-		#if GWEATHER_CHECK_VERSION(3, 39, 0)
+		source->priv->info = gweather_info_new (source->priv->location);
 		gweather_info_set_application_id (source->priv->info, "org.gnome.Evolution-data-server");
 		gweather_info_set_contact_info (source->priv->info, "evolution-hackers@gnome.org");
-		#endif
 		gweather_info_set_enabled_providers (source->priv->info, GWEATHER_PROVIDER_METAR | GWEATHER_PROVIDER_IWIN);
 		g_signal_connect_object (
 			source->priv->info, "updated",

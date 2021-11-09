@@ -90,7 +90,7 @@ struct _EBookMetaBackendPrivate {
 	gchar *authentication_method;
 	gchar *authentication_proxy_uid;
 	gchar *authentication_credential_name;
-	SoupURI *webdav_soup_uri;
+	GUri *webdav_uri;
 
 	GSList *cursors;
 };
@@ -287,7 +287,7 @@ ebmb_update_connection_values (EBookMetaBackend *meta_backend)
 	g_clear_pointer (&meta_backend->priv->authentication_method, g_free);
 	g_clear_pointer (&meta_backend->priv->authentication_proxy_uid, g_free);
 	g_clear_pointer (&meta_backend->priv->authentication_credential_name, g_free);
-	g_clear_pointer (&meta_backend->priv->webdav_soup_uri, (GDestroyNotify) soup_uri_free);
+	g_clear_pointer (&meta_backend->priv->webdav_uri, g_uri_unref);
 
 	if (source && e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
 		ESourceAuthentication *auth_extension;
@@ -307,7 +307,7 @@ ebmb_update_connection_values (EBookMetaBackend *meta_backend)
 
 		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 
-		meta_backend->priv->webdav_soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
+		meta_backend->priv->webdav_uri = e_source_webdav_dup_uri (webdav_extension);
 	}
 
 	g_mutex_unlock (&meta_backend->priv->property_lock);
@@ -485,17 +485,17 @@ ebmb_requires_reconnect (EBookMetaBackend *meta_backend)
 
 	if (!requires && e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
 		ESourceWebdav *webdav_extension;
-		SoupURI *soup_uri;
+		GUri *g_uri;
 
 		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-		soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
+		g_uri = e_source_webdav_dup_uri (webdav_extension);
 
-		requires = (!meta_backend->priv->webdav_soup_uri && soup_uri) ||
-			(soup_uri && meta_backend->priv->webdav_soup_uri &&
-			!soup_uri_equal (meta_backend->priv->webdav_soup_uri, soup_uri));
+		requires = (!meta_backend->priv->webdav_uri && g_uri) ||
+			(g_uri && meta_backend->priv->webdav_uri &&
+			!soup_uri_equal (meta_backend->priv->webdav_uri, g_uri));
 
-		if (soup_uri)
-			soup_uri_free (soup_uri);
+		if (g_uri)
+			g_uri_unref (g_uri);
 	}
 
 	g_mutex_unlock (&meta_backend->priv->property_lock);
@@ -2521,7 +2521,7 @@ e_book_meta_backend_finalize (GObject *object)
 	g_clear_pointer (&meta_backend->priv->authentication_method, g_free);
 	g_clear_pointer (&meta_backend->priv->authentication_proxy_uid, g_free);
 	g_clear_pointer (&meta_backend->priv->authentication_credential_name, g_free);
-	g_clear_pointer (&meta_backend->priv->webdav_soup_uri, (GDestroyNotify) soup_uri_free);
+	g_clear_pointer (&meta_backend->priv->webdav_uri, g_uri_unref);
 
 	g_mutex_clear (&meta_backend->priv->connect_lock);
 	g_mutex_clear (&meta_backend->priv->property_lock);

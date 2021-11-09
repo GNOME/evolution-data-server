@@ -36,8 +36,8 @@
 struct _ECalBackendHttpPrivate {
 	ESoupSession *session;
 
-	SoupRequestHTTP *request;
-	GInputStream *input_stream;
+	SoupMessage *message;
+	gchar *icalstring;
 	GRecMutex conn_lock;
 	GHashTable *components; /* gchar *uid ~> ICalComponent * */
 	gint64 hsts_until_time;
@@ -69,7 +69,7 @@ ecb_http_dup_uri (ECalBackendHttp *cbhttp)
 	ESource *source;
 	ESourceSecurity *security_extension;
 	ESourceWebdav *webdav_extension;
-	SoupURI *soup_uri;
+	GUri *parsed_uri;
 	gboolean secure_connection;
 	const gchar *extension_name;
 	gchar *uri_string, *uri;
@@ -86,9 +86,9 @@ ecb_http_dup_uri (ECalBackendHttp *cbhttp)
 
 	secure_connection = e_source_security_get_secure (security_extension);
 
-	soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
-	uri_string = soup_uri_to_string (soup_uri, FALSE);
-	soup_uri_free (soup_uri);
+	parsed_uri = e_source_webdav_dup_uri (webdav_extension);
+	uri_string = g_uri_to_string_partial (parsed_uri, G_URI_HIDE_PASSWORD);
+	g_uri_unref (parsed_uri);
 
 	if (!uri_string || !*uri_string) {
 		g_free (uri_string);
@@ -108,24 +108,20 @@ ecb_http_dup_uri (ECalBackendHttp *cbhttp)
 static gint64
 ecb_http_extract_hsts_until_time (ECalBackendHttp *cbhttp)
 {
-	SoupMessage *message;
 	GTlsCertificate *cert = NULL;
 	GTlsCertificateFlags cert_errors = 0;
 	gint64 hsts_until_time = 0;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_HTTP (cbhttp), hsts_until_time);
-	g_return_val_if_fail (cbhttp->priv->request, hsts_until_time);
+	g_return_val_if_fail (cbhttp->priv->message, hsts_until_time);
 
-	message = soup_request_http_get_message (cbhttp->priv->request);
-	if (!message)
-		return hsts_until_time;
+	cert = soup_message_get_tls_peer_certificate (cbhttp->priv->message);
+	cert_errors = soup_message_get_tls_peer_certificate_errors (cbhttp->priv->message);
 
-	if (message->response_headers &&
-	    soup_message_get_https_status (message, &cert, &cert_errors) &&
-	    !cert_errors) {
+	if (soup_message_get_response_headers (cbhttp->priv->message) && cert && !cert_errors) {
 		const gchar *hsts_header;
 
-		hsts_header = soup_message_headers_get_one (message->response_headers, "Strict-Transport-Security");
+		hsts_header = soup_message_headers_get_one (soup_message_get_response_headers (cbhttp->priv->message), "Strict-Transport-Security");
 		if (hsts_header && *hsts_header) {
 			GHashTable *params;
 
@@ -151,8 +147,6 @@ ecb_http_extract_hsts_until_time (ECalBackendHttp *cbhttp)
 			}
 		}
 	}
-
-	g_object_unref (message);
 
 	return hsts_until_time;
 }
@@ -195,7 +189,7 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 {
 	ECalBackendHttp *cbhttp;
 	ESource *source;
-	SoupRequestHTTP *request;
+	SoupMessage *message;
 	GInputStream *input_stream = NULL;
 	gchar *uri;
 	gboolean success;
@@ -208,15 +202,15 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 
 	g_rec_mutex_lock (&cbhttp->priv->conn_lock);
 
-	if (cbhttp->priv->request && cbhttp->priv->input_stream) {
+	if (cbhttp->priv->message && cbhttp->priv->icalstring) {
 		g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
 		return TRUE;
 	}
 
 	source = e_backend_get_source (E_BACKEND (meta_backend));
 
-	g_clear_object (&cbhttp->priv->input_stream);
-	g_clear_object (&cbhttp->priv->request);
+	g_clear_pointer (&cbhttp->priv->icalstring, g_free);
+	g_clear_object (&cbhttp->priv->message);
 
 	uri = ecb_http_dup_uri (cbhttp);
 
@@ -232,32 +226,30 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 
 	e_soup_session_set_credentials (cbhttp->priv->session, credentials);
 
-	request = e_soup_session_new_request (cbhttp->priv->session, SOUP_METHOD_GET, uri, &local_error);
-	success = request != NULL;
+	message = e_soup_session_new_message (cbhttp->priv->session, SOUP_METHOD_GET, uri, &local_error);
+	success = message != NULL;
 
 	if (success) {
-		SoupMessage *message;
+		gchar *last_etag;
 
-		message = soup_request_http_get_message (request);
+		last_etag = e_cal_meta_backend_dup_sync_tag (meta_backend);
 
-		if (message) {
-			gchar *last_etag;
+		if (last_etag && *last_etag)
+			soup_message_headers_append (soup_message_get_request_headers (message), "If-None-Match", last_etag);
 
-			last_etag = e_cal_meta_backend_dup_sync_tag (meta_backend);
+		g_free (last_etag);
 
-			if (last_etag && *last_etag)
-				soup_message_headers_append (message->request_headers, "If-None-Match", last_etag);
-
-			g_free (last_etag);
-		}
-
-		input_stream = e_soup_session_send_request_sync (cbhttp->priv->session, request, cancellable, &local_error);
+		input_stream = e_soup_session_send_message_sync (cbhttp->priv->session, message, cancellable, &local_error);
 
 		success = input_stream != NULL;
 
-		if (success && message && !SOUP_STATUS_IS_SUCCESSFUL (message->status_code) && message->status_code != SOUP_STATUS_NOT_MODIFIED) {
+		if (success && !SOUP_STATUS_IS_SUCCESSFUL (soup_message_get_status (message)) && soup_message_get_status (message) != SOUP_STATUS_NOT_MODIFIED) {
 			g_clear_object (&input_stream);
 			success = FALSE;
+		} else if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_MODIFIED)) {
+			g_clear_object (&input_stream);
+			g_clear_error (&local_error);
+			success = TRUE;
 		}
 
 		if (success) {
@@ -265,22 +257,19 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 		} else {
 			guint status_code;
 			gboolean credentials_empty;
+			gboolean is_tsl_error;
 
-			if (local_error && local_error->domain == SOUP_HTTP_ERROR)
+			if (local_error && local_error->domain == E_SOUP_SESSION_ERROR)
 				status_code = local_error->code;
 			else
-				status_code = message ? message->status_code : SOUP_STATUS_MALFORMED;
+				status_code = soup_message_get_status (message);
 
 			credentials_empty = !credentials || !e_named_parameters_count (credentials);
+			is_tsl_error = g_error_matches (local_error, G_TLS_ERROR, G_TLS_ERROR_BAD_CERTIFICATE);
 
 			*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR;
 
-			/* because evolution knows only G_IO_ERROR_CANCELLED */
-			if (status_code == SOUP_STATUS_CANCELLED) {
-				g_set_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED,
-					"%s", (local_error && local_error->domain == SOUP_HTTP_ERROR) ? local_error->message :
-					(message && message->reason_phrase) ? message->reason_phrase : soup_status_get_phrase (status_code));
-			} else if (status_code == SOUP_STATUS_FORBIDDEN && credentials_empty) {
+			if (status_code == SOUP_STATUS_FORBIDDEN && credentials_empty) {
 				*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
 			} else if (status_code == SOUP_STATUS_UNAUTHORIZED) {
 				if (credentials_empty)
@@ -291,11 +280,11 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 				g_propagate_error (error, local_error);
 				local_error = NULL;
 			} else {
-				g_set_error_literal (error, SOUP_HTTP_ERROR, status_code,
-					message ? message->reason_phrase : soup_status_get_phrase (status_code));
+				g_set_error_literal (error, E_SOUP_SESSION_ERROR, status_code,
+					soup_message_get_reason_phrase (message) ? soup_message_get_reason_phrase (message) : soup_status_get_phrase (status_code));
 			}
 
-			if (status_code == SOUP_STATUS_SSL_FAILED) {
+			if (is_tsl_error) {
 				*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED;
 
 				e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_SSL_FAILED);
@@ -304,8 +293,6 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 				e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 			}
 		}
-
-		g_clear_object (&message);
 	} else {
 		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 
@@ -314,14 +301,18 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 	}
 
 	if (success) {
-		cbhttp->priv->request = request;
-		cbhttp->priv->input_stream = input_stream;
+		cbhttp->priv->icalstring = ecb_http_read_stream_sync (input_stream,
+			soup_message_headers_get_content_length (soup_message_get_response_headers (message)), cancellable, error);
+		success =  cbhttp->priv->icalstring != NULL;
+	}
+
+	if (success) {
+		cbhttp->priv->message = message;
 		cbhttp->priv->hsts_until_time = ecb_http_extract_hsts_until_time (cbhttp);
 
 		*out_auth_result = E_SOURCE_AUTHENTICATION_ACCEPTED;
 	} else {
-		g_clear_object (&request);
-		g_clear_object (&input_stream);
+		g_clear_object (&message);
 
 		if (*out_auth_result != E_SOURCE_AUTHENTICATION_REQUIRED &&
 		    *out_auth_result != E_SOURCE_AUTHENTICATION_REJECTED)
@@ -329,6 +320,7 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 	}
 
 	g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
+	g_clear_object (&input_stream);
 	g_clear_error (&local_error);
 	g_free (uri);
 
@@ -349,8 +341,8 @@ ecb_http_disconnect_sync (ECalMetaBackend *meta_backend,
 
 	g_rec_mutex_lock (&cbhttp->priv->conn_lock);
 
-	g_clear_object (&cbhttp->priv->input_stream);
-	g_clear_object (&cbhttp->priv->request);
+	g_clear_pointer (&cbhttp->priv->icalstring, g_free);
+	g_clear_object (&cbhttp->priv->message);
 
 	if (cbhttp->priv->session)
 		soup_session_abort (SOUP_SESSION (cbhttp->priv->session));
@@ -378,12 +370,11 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 			   GError **error)
 {
 	ECalBackendHttp *cbhttp;
-	SoupMessage *message;
-	gchar *icalstring;
 	ICalCompIter *iter = NULL;
 	ICalComponent *maincomp, *subcomp;
 	ICalComponentKind backend_kind;
 	GHashTable *components = NULL;
+	const gchar *new_etag;
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_HTTP (meta_backend), FALSE);
@@ -397,67 +388,46 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 
 	g_rec_mutex_lock (&cbhttp->priv->conn_lock);
 
-	if (!cbhttp->priv->request || !cbhttp->priv->input_stream) {
+	if (!cbhttp->priv->message || !cbhttp->priv->icalstring) {
 		g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
 		g_propagate_error (error, EC_ERROR (E_CLIENT_ERROR_REPOSITORY_OFFLINE));
 		return FALSE;
 	}
 
-	message = soup_request_http_get_message (cbhttp->priv->request);
-	if (message) {
-		const gchar *new_etag;
+	if (soup_message_get_status (cbhttp->priv->message) == SOUP_STATUS_NOT_MODIFIED) {
+		g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
 
-		if (message->status_code == SOUP_STATUS_NOT_MODIFIED) {
-			g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
-			g_object_unref (message);
+		ecb_http_disconnect_sync (meta_backend, cancellable, NULL);
 
-			ecb_http_disconnect_sync (meta_backend, cancellable, NULL);
-
-			return TRUE;
-		}
-
-		new_etag = soup_message_headers_get_one (message->response_headers, "ETag");
-		if (new_etag && !*new_etag) {
-			new_etag = NULL;
-		} else if (new_etag && g_strcmp0 (last_sync_tag, new_etag) == 0) {
-			g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
-			/* Nothing changed */
-			g_object_unref (message);
-
-			ecb_http_disconnect_sync (meta_backend, cancellable, NULL);
-
-			return TRUE;
-		}
-
-		*out_new_sync_tag = g_strdup (new_etag);
+		return TRUE;
 	}
 
-	g_clear_object (&message);
+	new_etag = soup_message_headers_get_one (soup_message_get_response_headers (cbhttp->priv->message), "ETag");
+	if (new_etag && !*new_etag) {
+		new_etag = NULL;
+	} else if (new_etag && g_strcmp0 (last_sync_tag, new_etag) == 0) {
+		g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
 
-	icalstring = ecb_http_read_stream_sync (cbhttp->priv->input_stream,
-		soup_request_get_content_length (SOUP_REQUEST (cbhttp->priv->request)), cancellable, error);
+		/* Nothing changed */
+		ecb_http_disconnect_sync (meta_backend, cancellable, NULL);
+
+		return TRUE;
+	}
+
+	*out_new_sync_tag = g_strdup (new_etag);
 
 	g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
 
-	if (!icalstring) {
-		/* The error is already set */
-		e_cal_meta_backend_empty_cache_sync (meta_backend, cancellable, NULL);
-		ecb_http_disconnect_sync (meta_backend, cancellable, NULL);
-		return FALSE;
-	}
-
 	/* Skip the UTF-8 marker at the beginning of the string */
-	if (((guchar) icalstring[0]) == 0xEF &&
-	    ((guchar) icalstring[1]) == 0xBB &&
-	    ((guchar) icalstring[2]) == 0xBF)
-		maincomp = i_cal_parser_parse_string (icalstring + 3);
+	if (((guchar) cbhttp->priv->icalstring[0]) == 0xEF &&
+	    ((guchar) cbhttp->priv->icalstring[1]) == 0xBB &&
+	    ((guchar) cbhttp->priv->icalstring[2]) == 0xBF)
+		maincomp = i_cal_parser_parse_string (cbhttp->priv->icalstring + 3);
 	else
-		maincomp = i_cal_parser_parse_string (icalstring);
-
-	g_free (icalstring);
+		maincomp = i_cal_parser_parse_string (cbhttp->priv->icalstring);
 
 	if (!maincomp) {
-		g_set_error (error, SOUP_HTTP_ERROR, SOUP_STATUS_MALFORMED, _("Bad file format."));
+		g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Bad file format."));
 		e_cal_meta_backend_empty_cache_sync (meta_backend, cancellable, NULL);
 		ecb_http_disconnect_sync (meta_backend, cancellable, NULL);
 		return FALSE;
@@ -466,7 +436,7 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 	if (i_cal_component_isa (maincomp) != I_CAL_VCALENDAR_COMPONENT &&
 	    i_cal_component_isa (maincomp) != I_CAL_XROOT_COMPONENT) {
 		g_object_unref (maincomp);
-		g_set_error (error, SOUP_HTTP_ERROR, SOUP_STATUS_MALFORMED, _("Not a calendar."));
+		g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Not a calendar."));
 		e_cal_meta_backend_empty_cache_sync (meta_backend, cancellable, NULL);
 		ecb_http_disconnect_sync (meta_backend, cancellable, NULL);
 		return FALSE;
@@ -563,8 +533,8 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 		g_object_unref (maincomp);
 	}
 
-	if (!success)
-		ecb_http_disconnect_sync (meta_backend, cancellable, NULL);
+	/* Always disconnect, to free the resources needed to download the iCalendar file */
+	ecb_http_disconnect_sync (meta_backend, cancellable, NULL);
 
 	return success;
 }
@@ -700,8 +670,8 @@ e_cal_backend_http_dispose (GObject *object)
 
 	g_rec_mutex_lock (&cbhttp->priv->conn_lock);
 
-	g_clear_object (&cbhttp->priv->request);
-	g_clear_object (&cbhttp->priv->input_stream);
+	g_clear_object (&cbhttp->priv->message);
+	g_clear_pointer (&cbhttp->priv->icalstring, g_free);
 
 	if (cbhttp->priv->session)
 		soup_session_abort (SOUP_SESSION (cbhttp->priv->session));

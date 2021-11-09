@@ -489,24 +489,24 @@ save_source_thread (GTask *task,
 static gchar *
 trust_prompt_get_host_from_url (const gchar *url)
 {
-	SoupURI *suri;
+	GUri *suri;
 	gchar *host;
 
 	if (!url || !*url)
 		return NULL;
 
-	suri = soup_uri_new (url);
+	suri = g_uri_parse (url, SOUP_HTTP_URI_FLAGS, NULL);
 	if (!suri)
 		return NULL;
 
-	host = g_strdup (soup_uri_get_host (suri));
+	host = g_strdup (g_uri_get_host (suri));
 
 	if (!host || !*host) {
 		g_free (host);
 		host = NULL;
 	}
 
-	soup_uri_free (suri);
+	g_uri_unref (suri);
 
 	return host;
 }

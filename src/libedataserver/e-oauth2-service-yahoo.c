@@ -175,11 +175,11 @@ eos_yahoo_extract_authorization_code (EOAuth2Service *service,
 	*out_authorization_code = NULL;
 
 	if (page_uri && *page_uri) {
-		SoupURI *suri;
+		GUri *suri;
 
-		suri = soup_uri_new (page_uri);
+		suri = g_uri_parse (page_uri, SOUP_HTTP_URI_FLAGS, NULL);
 		if (suri) {
-			const gchar *query = soup_uri_get_query (suri);
+			const gchar *query = g_uri_get_query (suri);
 			gboolean known = FALSE;
 
 			if (query && *query) {
@@ -199,7 +199,7 @@ eos_yahoo_extract_authorization_code (EOAuth2Service *service,
 				}
 			}
 
-			soup_uri_free (suri);
+			g_uri_unref (suri);
 
 			if (known)
 				return TRUE;

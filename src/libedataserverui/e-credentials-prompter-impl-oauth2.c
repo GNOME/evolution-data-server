@@ -74,24 +74,25 @@ cpi_oauth2_create_auth_uri (EOAuth2Service *service,
 			    ESource *source)
 {
 	GHashTable *uri_query;
-	SoupURI *soup_uri;
-	gchar *uri;
+	GUri *parsed_uri;
+	gchar *uri, *query;
 
 	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), NULL);
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
-	soup_uri = soup_uri_new (e_oauth2_service_get_authentication_uri (service, source));
-	g_return_val_if_fail (soup_uri != NULL, NULL);
+	parsed_uri = g_uri_parse (e_oauth2_service_get_authentication_uri (service, source), SOUP_HTTP_URI_FLAGS, NULL);
+	g_return_val_if_fail (parsed_uri != NULL, NULL);
 
 	uri_query = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
 	e_oauth2_service_prepare_authentication_uri_query (service, source, uri_query);
 
-	soup_uri_set_query_from_form (soup_uri, uri_query);
+	query = soup_form_encode_hash (uri_query);
+	e_util_change_uri_component (&parsed_uri, SOUP_URI_QUERY, query);
 
-	uri = soup_uri_to_string (soup_uri, FALSE);
+	uri = g_uri_to_string_partial (parsed_uri, G_URI_HIDE_PASSWORD);
 
-	soup_uri_free (soup_uri);
+	g_uri_unref (parsed_uri);
 	g_hash_table_destroy (uri_query);
 
 	return uri;
@@ -629,7 +630,7 @@ credentials_prompter_impl_oauth2_set_proxy (WebKitWebContext *web_context,
 		ESourceProxy *proxy;
 		WebKitWebsiteDataManager *data_manager;
 		WebKitNetworkProxySettings *proxy_settings = NULL;
-		SoupURI *suri;
+		GUri *guri;
 		gchar **ignore_hosts = NULL;
 		gchar *tmp;
 		guint16 port;
@@ -646,18 +647,13 @@ credentials_prompter_impl_oauth2_set_proxy (WebKitWebContext *web_context,
 
 			tmp = credentials_prompter_impl_oauth2_sanitize_host (e_source_proxy_dup_socks_host (proxy));
 			if (tmp && *tmp) {
-				suri = soup_uri_new (NULL);
-				soup_uri_set_scheme (suri, "socks");
-				soup_uri_set_host (suri, tmp);
-				soup_uri_set_path (suri, "");
 				port = e_source_proxy_get_socks_port (proxy);
-				if (port)
-					soup_uri_set_port (suri, port);
+				guri = g_uri_build (G_URI_FLAGS_PARSE_RELAXED | SOUP_HTTP_URI_FLAGS, "socks", NULL, tmp, port ? port : -1, "", NULL, NULL);
 				g_free (tmp);
-				tmp = soup_uri_to_string (suri, FALSE);
+				tmp = g_uri_to_string_partial (guri, G_URI_HIDE_NONE);
 				proxy_settings = webkit_network_proxy_settings_new (tmp, (const gchar * const *) ignore_hosts);
 				webkit_network_proxy_settings_add_proxy_for_scheme (proxy_settings, "socks", tmp);
-				soup_uri_free (suri);
+				g_uri_unref (guri);
 			} else {
 				proxy_settings = webkit_network_proxy_settings_new (NULL, (const gchar * const *) ignore_hosts);
 			}
@@ -665,44 +661,36 @@ credentials_prompter_impl_oauth2_set_proxy (WebKitWebContext *web_context,
 
 			tmp = credentials_prompter_impl_oauth2_sanitize_host (e_source_proxy_dup_http_host (proxy));
 			if (tmp && *tmp) {
-				suri = soup_uri_new (NULL);
-				soup_uri_set_scheme (suri, SOUP_URI_SCHEME_HTTP);
-				soup_uri_set_host (suri, tmp);
-				soup_uri_set_path (suri, "");
 				port = e_source_proxy_get_http_port (proxy);
-				if (port)
-					soup_uri_set_port (suri, port);
 				if (e_source_proxy_get_http_use_auth (proxy)) {
-					g_free (tmp);
-					tmp = e_source_proxy_dup_http_auth_user (proxy);
-					if (tmp)
-						soup_uri_set_user (suri, tmp);
+					gchar *user, *password;
 
-					g_free (tmp);
-					tmp = e_source_proxy_dup_http_auth_password (proxy);
-					if (tmp)
-						soup_uri_set_password (suri, tmp);
+					user = e_source_proxy_dup_http_auth_user (proxy);
+					password = e_source_proxy_dup_http_auth_password (proxy);
+
+					guri = g_uri_build_with_user (G_URI_FLAGS_PARSE_RELAXED | SOUP_HTTP_URI_FLAGS, "http",
+						user, password, NULL, tmp, port ? port : -1, "", NULL, NULL);
+
+					e_util_safe_free_string (password);
+					g_free (user);
+				} else {
+					guri = g_uri_build (G_URI_FLAGS_PARSE_RELAXED | SOUP_HTTP_URI_FLAGS, "http", NULL, tmp, port ? port : -1, "", NULL, NULL);
 				}
 				g_free (tmp);
-				tmp = soup_uri_to_string (suri, FALSE);
-				webkit_network_proxy_settings_add_proxy_for_scheme (proxy_settings, SOUP_URI_SCHEME_HTTP, tmp);
-				soup_uri_free (suri);
+				tmp = g_uri_to_string_partial (guri, G_URI_HIDE_NONE);
+				webkit_network_proxy_settings_add_proxy_for_scheme (proxy_settings, "http", tmp);
+				g_uri_unref (guri);
 			}
 			g_free (tmp);
 
 			tmp = credentials_prompter_impl_oauth2_sanitize_host (e_source_proxy_dup_https_host (proxy));
 			if (tmp && *tmp) {
-				suri = soup_uri_new (NULL);
-				soup_uri_set_scheme (suri, SOUP_URI_SCHEME_HTTP);
-				soup_uri_set_host (suri, tmp);
-				soup_uri_set_path (suri, "");
 				port = e_source_proxy_get_https_port (proxy);
-				if (port)
-					soup_uri_set_port (suri, port);
+				guri = g_uri_build (G_URI_FLAGS_PARSE_RELAXED | SOUP_HTTP_URI_FLAGS, "http", NULL, tmp, port ? port : -1, "", NULL, NULL);
 				g_free (tmp);
-				tmp = soup_uri_to_string (suri, FALSE);
-				webkit_network_proxy_settings_add_proxy_for_scheme (proxy_settings, SOUP_URI_SCHEME_HTTPS, tmp);
-				soup_uri_free (suri);
+				tmp = g_uri_to_string_partial (guri, G_URI_HIDE_NONE);
+				webkit_network_proxy_settings_add_proxy_for_scheme (proxy_settings, "https", tmp);
+				g_uri_unref (guri);
 			}
 			g_free (tmp);
 

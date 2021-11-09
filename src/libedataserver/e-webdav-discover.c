@@ -157,7 +157,7 @@ e_webdav_discover_propfind_uri_sync (EWebDAVSession *webdav,
 static gboolean
 e_webdav_discover_traverse_propfind_response_cb (EWebDAVSession *webdav,
 						 xmlNodePtr prop_node,
-						 const SoupURI *request_uri,
+						 const GUri *request_uri,
 						 const gchar *href,
 						 guint status_code,
 						 gpointer user_data)
@@ -548,7 +548,7 @@ e_webdav_discover_setup_proxy_resolver (EWebDAVSession *webdav,
 
 		proxy_resolver = G_PROXY_RESOLVER (source);
 		if (g_proxy_resolver_is_supported (proxy_resolver))
-			g_object_set (E_SOUP_SESSION (webdav), SOUP_SESSION_PROXY_RESOLVER, proxy_resolver, NULL);
+			g_object_set (E_SOUP_SESSION (webdav), "proxy-resolver", proxy_resolver, NULL);
 
 		g_object_unref (source);
 	}
@@ -660,7 +660,7 @@ e_webdav_discover_sources_full (ESource *source,
  * error occurred, the function will set @error and return %FALSE. The function
  * can return success and no discovered sources, the same as it can return failure,
  * but still set some output arguments, like the certificate related output
- * arguments with SOUP_STATUS_SSL_FAILED error.
+ * arguments with G_TLS_ERROR_BAD_CERTIFICATE error.
  *
  * The return value of @out_certificate_pem should be freed with g_free()
  * when no longer needed.
@@ -726,8 +726,8 @@ e_webdav_discover_maybe_replace_auth_error (GError **target,
 	g_return_val_if_fail (target != NULL, FALSE);
 	g_return_val_if_fail (candidate != NULL, FALSE);
 
-	if (!g_error_matches (*target, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) &&
-	    g_error_matches (*candidate, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
+	if (!g_error_matches (*target, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED) &&
+	    g_error_matches (*candidate, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
 		g_clear_error (target);
 		*target = *candidate;
 		*candidate = NULL;
@@ -735,7 +735,7 @@ e_webdav_discover_maybe_replace_auth_error (GError **target,
 		return TRUE;
 	}
 
-	return g_error_matches (*target, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED);
+	return g_error_matches (*target, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED);
 }
 
 /**
@@ -766,7 +766,7 @@ e_webdav_discover_maybe_replace_auth_error (GError **target,
  * If an error occurred, the function will set @error and return %FALSE. The function
  * can return success and no discovered sources, the same as it can return failure,
  * but still set some output arguments, like the certificate related output
- * arguments with SOUP_STATUS_SSL_FAILED error.
+ * arguments with G_TLS_ERROR_BAD_CERTIFICATE error.
  *
  * The return value of @out_certificate_pem should be freed with g_free()
  * when no longer needed.
@@ -869,23 +869,23 @@ e_webdav_discover_sources_full_sync (ESource *source,
 {
 	ESourceWebdav *webdav_extension;
 	EWebDAVSession *webdav;
-	SoupURI *soup_uri;
+	GUri *guri;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	if (url_use_path && (g_ascii_strncasecmp (url_use_path, "http://", 7) == 0 ||
 	    g_ascii_strncasecmp (url_use_path, "https://", 8) == 0)) {
-		soup_uri = soup_uri_new (url_use_path);
+		guri = g_uri_parse (url_use_path, SOUP_HTTP_URI_FLAGS, NULL);
 		url_use_path = NULL;
 	} else {
 		g_return_val_if_fail (e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND), FALSE);
 
 		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-		soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
+		guri = e_source_webdav_dup_uri (webdav_extension);
 	}
 
-	g_return_val_if_fail (soup_uri != NULL, FALSE);
+	g_return_val_if_fail (guri != NULL, FALSE);
 
 	if (url_use_path) {
 		GString *new_path;
@@ -896,7 +896,7 @@ e_webdav_discover_sources_full_sync (ESource *source,
 		} else {
 			const gchar *current_path;
 
-			current_path = soup_uri_get_path (soup_uri);
+			current_path = g_uri_get_path (guri);
 			new_path = g_string_new (current_path ? current_path : "");
 			if (!new_path->len || new_path->str[new_path->len - 1] != '/')
 				g_string_append_c (new_path, '/');
@@ -906,7 +906,7 @@ e_webdav_discover_sources_full_sync (ESource *source,
 		if (!new_path->len || new_path->str[new_path->len - 1] != '/')
 			g_string_append_c (new_path, '/');
 
-		soup_uri_set_path (soup_uri, new_path->str);
+		e_util_change_uri_component (&guri, SOUP_URI_PATH, new_path->str);
 
 		g_string_free (new_path, TRUE);
 	}
@@ -914,7 +914,7 @@ e_webdav_discover_sources_full_sync (ESource *source,
 	webdav = e_webdav_session_new (source);
 
 	if (!e_webdav_discover_setup_proxy_resolver (webdav, source, ref_source_func, ref_source_func_user_data, cancellable, error)) {
-		soup_uri_free (soup_uri);
+		g_uri_unref (guri);
 		g_object_unref (webdav);
 
 		return FALSE;
@@ -937,7 +937,7 @@ e_webdav_discover_sources_full_sync (ESource *source,
 		wdd.cancellable = cancellable;
 		wdd.error = &local_error;
 
-		uri = soup_uri_to_string (soup_uri, FALSE);
+		uri = g_uri_to_string_partial (guri, G_URI_HIDE_PASSWORD);
 
 		success = uri && *uri && e_webdav_discover_propfind_uri_sync (webdav, &wdd, uri, FALSE);
 
@@ -948,15 +948,15 @@ e_webdav_discover_sources_full_sync (ESource *source,
 		if (!fatal_error && !g_cancellable_is_cancelled (cancellable) && !wdd.calendars &&
 		    ((only_supports & (~CUSTOM_SUPPORTS_FLAGS)) == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
 		    (only_supports & (E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS)) != 0) &&
-		    (!soup_uri_get_path (soup_uri) || !strstr (soup_uri_get_path (soup_uri), "/.well-known/"))) {
+		    (!g_uri_get_path (guri) || !strstr (g_uri_get_path (guri), "/.well-known/"))) {
 			gchar *saved_path;
 			GError *local_error_2nd = NULL;
 
-			saved_path = g_strdup (soup_uri_get_path (soup_uri));
+			saved_path = g_strdup (g_uri_get_path (guri));
 
-			soup_uri_set_path (soup_uri, "/.well-known/caldav");
+			e_util_change_uri_component (&guri, SOUP_URI_PATH, "/.well-known/caldav");
 
-			uri = soup_uri_to_string (soup_uri, FALSE);
+			uri = g_uri_to_string_partial (guri, SOUP_HTTP_URI_FLAGS);
 
 			wdd.error = &local_error_2nd;
 			wdd.only_supports = E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS;
@@ -968,7 +968,8 @@ e_webdav_discover_sources_full_sync (ESource *source,
 
 			fatal_error = e_webdav_discover_is_fatal_error (local_error_2nd);
 
-			soup_uri_set_path (soup_uri, saved_path);
+			e_util_change_uri_component (&guri, SOUP_URI_PATH, saved_path);
+
 			g_free (saved_path);
 
 			if (e_webdav_discover_maybe_replace_auth_error (&local_error, &local_error_2nd))
@@ -982,15 +983,15 @@ e_webdav_discover_sources_full_sync (ESource *source,
 		if (!fatal_error && !g_cancellable_is_cancelled (cancellable) &&
 		    ((only_supports & (~CUSTOM_SUPPORTS_FLAGS)) == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
 		    (only_supports & (E_WEBDAV_DISCOVER_SUPPORTS_WEBDAV_NOTES)) != 0) &&
-		    (!soup_uri_get_path (soup_uri) || !strstr (soup_uri_get_path (soup_uri), "/.well-known/"))) {
+		    (!g_uri_get_path (guri) || !strstr (g_uri_get_path (guri), "/.well-known/"))) {
 			gchar *saved_path;
 			GError *local_error_2nd = NULL;
 
-			saved_path = g_strdup (soup_uri_get_path (soup_uri));
+			saved_path = g_strdup (g_uri_get_path (guri));
 
-			soup_uri_set_path (soup_uri, "/.well-known/webdav/Notes/");
+			e_util_change_uri_component (&guri, SOUP_URI_PATH, "/.well-known/webdav/Notes/");
 
-			uri = soup_uri_to_string (soup_uri, FALSE);
+			uri = g_uri_to_string_partial (guri, G_URI_HIDE_PASSWORD);
 
 			wdd.error = &local_error_2nd;
 			wdd.only_supports = E_WEBDAV_DISCOVER_SUPPORTS_WEBDAV_NOTES;
@@ -1002,7 +1003,8 @@ e_webdav_discover_sources_full_sync (ESource *source,
 
 			fatal_error = e_webdav_discover_is_fatal_error (local_error_2nd);
 
-			soup_uri_set_path (soup_uri, saved_path);
+			e_util_change_uri_component (&guri, SOUP_URI_PATH, saved_path);
+
 			g_free (saved_path);
 
 			if (e_webdav_discover_maybe_replace_auth_error (&local_error, &local_error_2nd))
@@ -1016,15 +1018,15 @@ e_webdav_discover_sources_full_sync (ESource *source,
 		if (!fatal_error && !g_cancellable_is_cancelled (cancellable) && !wdd.addressbooks &&
 		    ((only_supports & (~CUSTOM_SUPPORTS_FLAGS)) == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
 		    (only_supports & (E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS)) != 0) &&
-		    (!soup_uri_get_path (soup_uri) || !strstr (soup_uri_get_path (soup_uri), "/.well-known/"))) {
+		    (!g_uri_get_path (guri) || !strstr (g_uri_get_path (guri), "/.well-known/"))) {
 			gchar *saved_path;
 			GError *local_error_2nd = NULL;
 
-			saved_path = g_strdup (soup_uri_get_path (soup_uri));
+			saved_path = g_strdup (g_uri_get_path (guri));
 
-			soup_uri_set_path (soup_uri, "/.well-known/carddav");
+			e_util_change_uri_component (&guri, SOUP_URI_PATH, "/.well-known/carddav");
 
-			uri = soup_uri_to_string (soup_uri, FALSE);
+			uri = g_uri_to_string_partial (guri, SOUP_HTTP_URI_FLAGS);
 
 			wdd.error = &local_error_2nd;
 			wdd.only_supports = E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS;
@@ -1034,7 +1036,8 @@ e_webdav_discover_sources_full_sync (ESource *source,
 
 			g_free (uri);
 
-			soup_uri_set_path (soup_uri, saved_path);
+			e_util_change_uri_component (&guri, SOUP_URI_PATH, saved_path);
+
 			g_free (saved_path);
 
 			fatal_error = e_webdav_discover_is_fatal_error (local_error_2nd);
@@ -1107,7 +1110,7 @@ e_webdav_discover_sources_full_sync (ESource *source,
 	if (!success)
 		e_soup_session_get_ssl_error_details (E_SOUP_SESSION (webdav), out_certificate_pem, out_certificate_errors);
 
-	soup_uri_free (soup_uri);
+	g_uri_unref (guri);
 	g_object_unref (webdav);
 
 	return success;

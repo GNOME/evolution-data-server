@@ -175,9 +175,9 @@ ecb_webdav_notes_connect_sync (ECalMetaBackend *meta_backend,
 			g_slist_free_full (privileges, e_webdav_privilege_free);
 		} else {
 			is_writable = allows && (
-				g_hash_table_contains (allows, SOUP_METHOD_PUT) ||
-				g_hash_table_contains (allows, SOUP_METHOD_POST) ||
-				g_hash_table_contains (allows, SOUP_METHOD_DELETE));
+				g_hash_table_contains (allows, "PUT") ||
+				g_hash_table_contains (allows, "POST") ||
+				g_hash_table_contains (allows, "DELETE"));
 		}
 	}
 
@@ -196,7 +196,7 @@ ecb_webdav_notes_connect_sync (ECalMetaBackend *meta_backend,
 		   The 'getctag' extension is not required, thus check
 		   for unauthorized error only. */
 		if (!e_webdav_session_getctag_sync (webdav, NULL, &ctag, cancellable, &local_error) &&
-		    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
+		    g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
 			success = FALSE;
 		} else {
 			g_clear_error (&local_error);
@@ -207,22 +207,18 @@ ecb_webdav_notes_connect_sync (ECalMetaBackend *meta_backend,
 
 	if (!success) {
 		gboolean credentials_empty;
-		gboolean is_ssl_error;
+		gboolean is_tls_error = FALSE;
 
 		credentials_empty = (!credentials || !e_named_parameters_count (credentials) ||
 			(e_named_parameters_count (credentials) == 1 && e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_SSL_TRUST))) &&
 			e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (webdav));
-		is_ssl_error = g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED);
+		is_tls_error = g_error_matches (local_error, G_TLS_ERROR, G_TLS_ERROR_BAD_CERTIFICATE);
 
 		*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR;
 
-		/* because evolution knows only G_IO_ERROR_CANCELLED */
-		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_CANCELLED)) {
-			local_error->domain = G_IO_ERROR;
-			local_error->code = G_IO_ERROR_CANCELLED;
-		} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN) && credentials_empty) {
+		if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_FORBIDDEN) && credentials_empty) {
 			*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
-		} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
+		} else if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
 			if (credentials_empty)
 				*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
 			else
@@ -241,7 +237,7 @@ ecb_webdav_notes_connect_sync (ECalMetaBackend *meta_backend,
 			local_error = NULL;
 		}
 
-		if (is_ssl_error) {
+		if (is_tls_error) {
 			*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED;
 
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_SSL_FAILED);
@@ -355,12 +351,12 @@ ecb_webdav_notes_check_credentials_error (ECalBackendWebDAVNotes *cbnotes,
 {
 	g_return_if_fail (E_IS_CAL_BACKEND_WEBDAV_NOTES (cbnotes));
 
-	if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED) && webdav) {
+	if (g_error_matches (op_error, G_TLS_ERROR, G_TLS_ERROR_BAD_CERTIFICATE) && webdav) {
 		op_error->domain = E_CLIENT_ERROR;
 		op_error->code = E_CLIENT_ERROR_TLS_NOT_AVAILABLE;
-	} else if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
-		   g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
-		gboolean was_forbidden = g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN);
+	} else if (g_error_matches (op_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
+		   g_error_matches (op_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_FORBIDDEN)) {
+		gboolean was_forbidden = g_error_matches (op_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_FORBIDDEN);
 
 		op_error->domain = E_CLIENT_ERROR;
 		op_error->code = E_CLIENT_ERROR_AUTHENTICATION_REQUIRED;
@@ -396,7 +392,7 @@ ecb_webdav_notes_check_credentials_error (ECalBackendWebDAVNotes *cbnotes,
 static gboolean
 ecb_webdav_notes_getetag_cb (EWebDAVSession *webdav,
 			     xmlNodePtr prop_node,
-			     const SoupURI *request_uri,
+			     const GUri *request_uri,
 			     const gchar *href,
 			     guint status_code,
 			     gpointer user_data)
@@ -520,7 +516,7 @@ ecb_webdav_notes_get_objects_sync (EWebDAVSession *webdav,
 		if (!nfo)
 			continue;
 
-		success = e_webdav_session_get_data_sync (webdav, nfo->extra, NULL, &etag, &bytes, NULL, cancellable, error);
+		success = e_webdav_session_get_data_sync (webdav, nfo->extra, NULL, &etag, NULL, &bytes, NULL, cancellable, error);
 
 		if (success) {
 			EWebDAVResource *resource;
@@ -754,15 +750,15 @@ ecb_webdav_notes_uid_to_uri (ECalBackendWebDAVNotes *cbnotes,
 			     const gchar *uid)
 {
 	ESourceWebdav *webdav_extension;
-	SoupURI *soup_uri;
+	GUri *parsed_uri;
 	gchar *uri, *tmp, *filename, *uid_hash = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_WEBDAV_NOTES (cbnotes), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
 
 	webdav_extension = e_source_get_extension (e_backend_get_source (E_BACKEND (cbnotes)), E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-	soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
-	g_return_val_if_fail (soup_uri != NULL, NULL);
+	parsed_uri = e_source_webdav_dup_uri (webdav_extension);
+	g_return_val_if_fail (parsed_uri != NULL, NULL);
 
 	/* UIDs with forward slashes can cause trouble, because the destination server can
 	   consider them as a path delimiter. Double-encode the URL doesn't always work,
@@ -774,25 +770,22 @@ ecb_webdav_notes_uid_to_uri (ECalBackendWebDAVNotes *cbnotes,
 			uid = uid_hash;
 	}
 
-	filename = soup_uri_encode (uid, NULL);
+	filename = g_uri_escape_string (uid, NULL, FALSE);
 
-	if (soup_uri->path) {
-		gchar *slash = strrchr (soup_uri->path, '/');
+	if (*g_uri_get_path (parsed_uri)) {
+		const gchar *slash = strrchr (g_uri_get_path (parsed_uri), '/');
 
 		if (slash && !slash[1])
-			*slash = '\0';
-	}
+			tmp = g_strconcat (g_uri_get_path (parsed_uri), filename, NULL);
+		else
+			tmp = g_strconcat (g_uri_get_path (parsed_uri), "/", filename, NULL);
+	} else
+		tmp = g_strconcat ("/", filename, NULL);
 
-	soup_uri_set_user (soup_uri, NULL);
-	soup_uri_set_password (soup_uri, NULL);
+	e_util_change_uri_component (&parsed_uri, SOUP_URI_PATH, tmp);
+	uri = g_uri_to_string_partial (parsed_uri, G_URI_HIDE_USERINFO | G_URI_HIDE_PASSWORD);
 
-	tmp = g_strconcat (soup_uri->path && *soup_uri->path ? soup_uri->path : "", "/", filename, NULL);
-	soup_uri_set_path (soup_uri, tmp);
-	g_free (tmp);
-
-	uri = soup_uri_to_string (soup_uri, FALSE);
-
-	soup_uri_free (soup_uri);
+	g_uri_unref (parsed_uri);
 	g_free (filename);
 	g_free (uid_hash);
 
@@ -870,7 +863,7 @@ ecb_webdav_notes_load_component_sync (ECalMetaBackend *meta_backend,
 	if (extra && *extra) {
 		uri = g_strdup (extra);
 
-		success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
+		success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, NULL, &bytes, &length, cancellable, &local_error);
 
 		if (!success) {
 			g_free (uri);
@@ -910,7 +903,7 @@ ecb_webdav_notes_load_component_sync (ECalMetaBackend *meta_backend,
 
 		g_clear_error (&local_error);
 
-		success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
+		success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, NULL, &bytes, &length, cancellable, &local_error);
 	}
 
 	if (success) {
@@ -988,7 +981,7 @@ ecb_webdav_notes_load_component_sync (ECalMetaBackend *meta_backend,
 	if (local_error) {
 		ecb_webdav_notes_check_credentials_error (cbnotes, webdav, local_error);
 
-		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+		if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND)) {
 			local_error->domain = E_CAL_CLIENT_ERROR;
 			local_error->code = E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND;
 		}
@@ -1169,11 +1162,11 @@ ecb_webdav_notes_save_component_sync (ECalMetaBackend *meta_backend,
 
 			success = e_webdav_session_put_data_sync (webdav, (!new_filename && extra && *extra) ? extra : href,
 				force_write ? "" : (overwrite_existing && !new_filename) ? etag : NULL, use_content_type,
-				description ? description : "", -1, &new_extra, &new_etag, cancellable, &local_error);
+				NULL, description ? description : "", -1, &new_extra, &new_etag, NULL, cancellable, &local_error);
 
 			counter++;
 		} while (!success && new_filename && !g_cancellable_is_cancelled (cancellable) &&
-			 g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_PRECONDITION_FAILED));
+			 g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_PRECONDITION_FAILED));
 
 		if (success && new_filename && extra && *extra) {
 			/* The name on the server changed, remove the old file */
@@ -1233,7 +1226,7 @@ ecb_webdav_notes_save_component_sync (ECalMetaBackend *meta_backend,
 	g_free (href);
 	g_free (etag);
 
-	if (overwrite_existing && g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_PRECONDITION_FAILED)) {
+	if (overwrite_existing && g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_PRECONDITION_FAILED)) {
 		g_clear_error (&local_error);
 
 		/* Pretend success when using the serer version on conflict,
@@ -1301,10 +1294,10 @@ ecb_webdav_notes_remove_component_sync (ECalMetaBackend *meta_backend,
 
 	/* Ignore not found errors, this was a delete and the resource is gone.
 	   It can be that it had been deleted on the server by other application. */
-	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+	if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND)) {
 		g_clear_error (&local_error);
 		success = TRUE;
-	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_PRECONDITION_FAILED)) {
+	} else if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_PRECONDITION_FAILED)) {
 		g_clear_error (&local_error);
 
 		/* Pretend success when using the serer version on conflict,

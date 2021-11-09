@@ -35,6 +35,7 @@
 #include <json-glib/json-glib.h>
 
 #include "e-secret-store.h"
+#include "e-soup-session.h"
 #include "e-soup-ssl-trust.h"
 #include "e-source-authentication.h"
 
@@ -805,16 +806,14 @@ eos_create_soup_session (EOAuth2ServiceRefSourceFunc ref_source,
 	session = soup_session_new ();
 	g_object_set (
 		session,
-		SOUP_SESSION_TIMEOUT, 90,
-		SOUP_SESSION_SSL_STRICT, TRUE,
-		SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,
-		SOUP_SESSION_ACCEPT_LANGUAGE_AUTO, TRUE,
+		"timeout", 90,
+		"accept-language-auto", TRUE,
 		NULL);
 
 	if (oauth2_debug) {
 		SoupLogger *logger;
 
-		logger = soup_logger_new (SOUP_LOGGER_LOG_BODY, -1);
+		logger = soup_logger_new (SOUP_LOGGER_LOG_BODY);
 		soup_session_add_feature (session, SOUP_SESSION_FEATURE (logger));
 		g_object_unref (logger);
 	}
@@ -835,7 +834,7 @@ eos_create_soup_session (EOAuth2ServiceRefSourceFunc ref_source,
 
 		proxy_resolver = G_PROXY_RESOLVER (proxy_source);
 		if (g_proxy_resolver_is_supported (proxy_resolver))
-			g_object_set (session, SOUP_SESSION_PROXY_RESOLVER, proxy_resolver, NULL);
+			g_object_set (session, "proxy-resolver", proxy_resolver, NULL);
 
 		g_object_unref (proxy_source);
 	}
@@ -866,12 +865,10 @@ eos_create_soup_message (ESource *source,
 		return NULL;
 	}
 
-	soup_message_set_request (message, "application/x-www-form-urlencoded",
-		SOUP_MEMORY_TAKE, post_data, strlen (post_data));
-
+	e_soup_session_util_set_message_request_body_from_data (message, FALSE, "application/x-www-form-urlencoded", post_data, strlen (post_data), g_free);
 	e_soup_ssl_trust_connect (message, source);
 
-	soup_message_headers_append (message->request_headers, "Connection", "close");
+	soup_message_headers_append (soup_message_get_request_headers (message), "Connection", "close");
 
 	return message;
 }
@@ -886,11 +883,12 @@ eos_abort_session_cb (GCancellable *cancellable,
 static gboolean
 eos_send_message (SoupSession *session,
 		  SoupMessage *message,
-		  gchar **out_response_body,
+		  GBytes **out_response_body,
 		  GCancellable *cancellable,
 		  GError **error)
 {
-	guint status_code = SOUP_STATUS_CANCELLED;
+	guint status_code = 0;
+	GBytes *response_body = NULL;
 	gboolean success = FALSE;
 
 	g_return_val_if_fail (SOUP_IS_SESSION (session), FALSE);
@@ -903,34 +901,38 @@ eos_send_message (SoupSession *session,
 		if (cancellable)
 			cancel_handler_id = g_cancellable_connect (cancellable, G_CALLBACK (eos_abort_session_cb), session, NULL);
 
-		status_code = soup_session_send_message (session, message);
+		response_body = soup_session_send_and_read (session, message, cancellable, error);
 
 		if (cancel_handler_id)
 			g_cancellable_disconnect (cancellable, cancel_handler_id);
+
+		status_code = soup_message_get_status (message);
 	}
 
 	if (SOUP_STATUS_IS_SUCCESSFUL (status_code)) {
-		if (message->response_body) {
-			*out_response_body = g_strndup (message->response_body->data, message->response_body->length);
+		if (response_body) {
+			*out_response_body = g_steal_pointer (&response_body);
 			success = TRUE;
 		} else {
-			status_code = SOUP_STATUS_MALFORMED;
-			g_set_error_literal (error, SOUP_HTTP_ERROR, status_code, _("Malformed, no message body set"));
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA, _("Malformed, no message body set"));
 		}
-	} else if (status_code != SOUP_STATUS_CANCELLED) {
+	} else if (status_code != 0) {
 		GString *error_msg;
 
-		error_msg = g_string_new (message->reason_phrase);
-		if (message->response_body && message->response_body->length) {
+		error_msg = g_string_new (soup_message_get_reason_phrase (message));
+		if (response_body && g_bytes_get_size (response_body)) {
 			g_string_append (error_msg, " (");
-			g_string_append_len (error_msg, message->response_body->data, message->response_body->length);
+			g_string_append_len (error_msg, (const gchar *) g_bytes_get_data (response_body, NULL), g_bytes_get_size (response_body));
 			g_string_append_c (error_msg, ')');
 		}
 
-		g_set_error_literal (error, SOUP_HTTP_ERROR, message->status_code, error_msg->str);
+		g_set_error_literal (error, E_SOUP_SESSION_ERROR, soup_message_get_status (message), error_msg->str);
 
 		g_string_free (error_msg, TRUE);
 	}
+
+	if (response_body)
+		g_object_unref (response_body);
 
 	return success;
 }
@@ -1034,12 +1036,14 @@ eos_encode_to_secret (gchar **out_secret,
 
 static gboolean
 eos_decode_from_secret (const gchar *secret,
+			gssize length,
 			const gchar *key1_name,
 			gchar **out_value1,
 			...) G_GNUC_NULL_TERMINATED;
 
 static gboolean
 eos_decode_from_secret (const gchar *secret,
+			gssize length,
 			const gchar *key1_name,
 			gchar **out_value1,
 			...)
@@ -1058,7 +1062,7 @@ eos_decode_from_secret (const gchar *secret,
 		return FALSE;
 
 	parser = json_parser_new ();
-	if (!json_parser_load_from_data (parser, secret, -1, &error)) {
+	if (!json_parser_load_from_data (parser, secret, length, &error)) {
 		g_object_unref (parser);
 
 		g_debug ("%s: Failed to parse secret '%s': %s", G_STRFUNC, secret, error ? error->message : "Unknown error");
@@ -1210,7 +1214,7 @@ eos_lookup_token_sync (EOAuth2Service *service,
 		return FALSE;
 	}
 
-	success = eos_decode_from_secret (secret,
+	success = eos_decode_from_secret (secret, -1,
 		E_OAUTH2_SECRET_REFRESH_TOKEN, out_refresh_token,
 		E_OAUTH2_SECRET_ACCESS_TOKEN, out_access_token,
 		E_OAUTH2_SECRET_EXPIRES_AFTER, &expires_after,
@@ -1269,7 +1273,7 @@ e_oauth2_service_receive_and_store_token_sync (EOAuth2Service *service,
 	SoupSession *session;
 	SoupMessage *message;
 	GHashTable *post_form;
-	gchar *response_json = NULL;
+	GBytes *response_json = NULL;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), FALSE);
@@ -1300,7 +1304,7 @@ e_oauth2_service_receive_and_store_token_sync (EOAuth2Service *service,
 	if (success) {
 		gchar *access_token = NULL, *refresh_token = NULL, *expires_in = NULL, *token_type = NULL;
 
-		if (eos_decode_from_secret (response_json,
+		if (eos_decode_from_secret (g_bytes_get_data (response_json, NULL), g_bytes_get_size (response_json),
 			"access_token", &access_token,
 			"refresh_token", &refresh_token,
 			"expires_in", &expires_in,
@@ -1323,7 +1327,8 @@ e_oauth2_service_receive_and_store_token_sync (EOAuth2Service *service,
 
 	g_object_unref (message);
 	g_object_unref (session);
-	e_util_safe_free_string (response_json);
+	if (response_json)
+		g_bytes_unref (response_json);
 
 	return success;
 }
@@ -1358,7 +1363,7 @@ e_oauth2_service_refresh_and_store_token_sync (EOAuth2Service *service,
 	SoupSession *session;
 	SoupMessage *message;
 	GHashTable *post_form;
-	gchar *response_json = NULL;
+	GBytes *response_json = NULL;
 	gboolean success;
 	GError *local_error = NULL;
 
@@ -1387,10 +1392,11 @@ e_oauth2_service_refresh_and_store_token_sync (EOAuth2Service *service,
 	e_oauth2_service_prepare_refresh_token_message (service, source, message);
 
 	success = eos_send_message (session, message, &response_json, cancellable, &local_error);
+
 	if (success) {
 		gchar *access_token = NULL, *expires_in = NULL, *new_refresh_token = NULL;
 
-		if (eos_decode_from_secret (response_json,
+		if (eos_decode_from_secret (g_bytes_get_data (response_json, NULL), g_bytes_get_size (response_json),
 			"access_token", &access_token,
 			"expires_in", &expires_in,
 			"refresh_token", &new_refresh_token,
@@ -1408,7 +1414,7 @@ e_oauth2_service_refresh_and_store_token_sync (EOAuth2Service *service,
 		e_util_safe_free_string (access_token);
 		g_free (new_refresh_token);
 		g_free (expires_in);
-	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_BAD_REQUEST)) {
+	} else if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_BAD_REQUEST)) {
 		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED,
 			_("Failed to refresh access token. Sign to the server again, please."));
 		g_clear_error (&local_error);
@@ -1419,7 +1425,8 @@ e_oauth2_service_refresh_and_store_token_sync (EOAuth2Service *service,
 
 	g_object_unref (message);
 	g_object_unref (session);
-	e_util_safe_free_string (response_json);
+	if (response_json)
+		g_bytes_unref (response_json);
 
 	return success;
 }

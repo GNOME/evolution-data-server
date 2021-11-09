@@ -281,14 +281,14 @@ goa_ews_autodiscover_done_cb (GObject *source_object,
 	if (source_extension != NULL) {
 		GoaAccount *goa_account;
 		CamelSettings *settings;
-		SoupURI *suri;
+		GUri *suri;
 		gchar *user, *email;
 
 		goa_account = goa_object_peek_account (goa_object);
 		user = goa_account_dup_identity (goa_account);
 		email = goa_account_dup_presentation_identity (goa_account);
 
-		suri = soup_uri_new (as_url);
+		suri = g_uri_parse (as_url, SOUP_HTTP_URI_FLAGS, NULL);
 
 		g_object_set (
 			source_extension,
@@ -302,12 +302,12 @@ goa_ews_autodiscover_done_cb (GObject *source_object,
 
 		g_object_set (
 			settings,
-			"host", soup_uri_get_host (suri),
+			"host", g_uri_get_host (suri),
 			"user", user,
 			"email", email,
 			NULL);
 
-		soup_uri_free (suri);
+		g_uri_unref (suri);
 		g_free (user);
 		g_free (email);
 	} else {

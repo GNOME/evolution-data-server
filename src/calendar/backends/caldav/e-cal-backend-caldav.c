@@ -85,7 +85,7 @@ static void
 ecb_caldav_update_tweaks (ECalBackendCalDAV *cbdav)
 {
 	ESource *source;
-	SoupURI *soup_uri;
+	GUri *parsed_uri;
 
 	g_return_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav));
 
@@ -94,18 +94,18 @@ ecb_caldav_update_tweaks (ECalBackendCalDAV *cbdav)
 	if (!e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND))
 		return;
 
-	soup_uri = e_source_webdav_dup_soup_uri (e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND));
-	if (!soup_uri)
+	parsed_uri = e_source_webdav_dup_uri (e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND));
+	if (!parsed_uri)
 		return;
 
-	cbdav->priv->is_google = soup_uri->host && (
-		g_ascii_strcasecmp (soup_uri->host, "www.google.com") == 0 ||
-		g_ascii_strcasecmp (soup_uri->host, "apidata.googleusercontent.com") == 0);
+	cbdav->priv->is_google = g_uri_get_host (parsed_uri) && (
+		g_ascii_strcasecmp (g_uri_get_host (parsed_uri), "www.google.com") == 0 ||
+		g_ascii_strcasecmp (g_uri_get_host (parsed_uri), "apidata.googleusercontent.com") == 0);
 
-	cbdav->priv->is_icloud = soup_uri->host &&
-		e_util_utf8_strstrcase (soup_uri->host, ".icloud.com");
+	cbdav->priv->is_icloud = g_uri_get_host (parsed_uri) &&
+		e_util_utf8_strstrcase (g_uri_get_host (parsed_uri), ".icloud.com");
 
-	soup_uri_free (soup_uri);
+	g_uri_unref (parsed_uri);
 }
 
 static gboolean
@@ -184,19 +184,19 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 			g_slist_free_full (privileges, e_webdav_privilege_free);
 		} else {
 			is_writable = allows && (
-				g_hash_table_contains (allows, SOUP_METHOD_PUT) ||
-				g_hash_table_contains (allows, SOUP_METHOD_POST) ||
-				g_hash_table_contains (allows, SOUP_METHOD_DELETE));
+				g_hash_table_contains (allows, "PUT") ||
+				g_hash_table_contains (allows, "POST") ||
+				g_hash_table_contains (allows, "DELETE"));
 		}
 	}
 
 	if (success) {
 		ESourceWebdav *webdav_extension;
-		SoupURI *soup_uri;
+		GUri *parsed_uri;
 		gboolean calendar_access;
 
 		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-		soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
+		parsed_uri = e_source_webdav_dup_uri (webdav_extension);
 
 		cbdav->priv->calendar_schedule = e_cal_backend_get_kind (E_CAL_BACKEND (cbdav)) != I_CAL_VJOURNAL_COMPONENT &&
 			(!capabilities || g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_AUTO_SCHEDULE) ||
@@ -212,7 +212,7 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 		} else {
 			gchar *uri;
 
-			uri = soup_uri_to_string (soup_uri, FALSE);
+			uri = g_uri_to_string_partial (parsed_uri, G_URI_HIDE_PASSWORD);
 
 			success = FALSE;
 			g_set_error (&local_error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
@@ -223,7 +223,7 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 		}
 
-		soup_uri_free (soup_uri);
+		g_uri_unref (parsed_uri);
 	}
 
 	if (success) {
@@ -236,33 +236,28 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 		   The 'getctag' extension is not required, thus check
 		   for unauthorized error only. */
 		if (!e_webdav_session_getctag_sync (webdav, NULL, &ctag, cancellable, &local_error) &&
-		    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
+		    g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
 			success = FALSE;
 		} else {
 			g_clear_error (&local_error);
 		}
-
 		g_free (ctag);
 	}
 
 	if (!success) {
 		gboolean credentials_empty;
-		gboolean is_ssl_error;
+		gboolean is_tls_error;
 
 		credentials_empty = (!credentials || !e_named_parameters_count (credentials) ||
 			(e_named_parameters_count (credentials) == 1 && e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_SSL_TRUST))) &&
 			e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (webdav));
-		is_ssl_error = g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED);
+		is_tls_error = g_error_matches (local_error, G_TLS_ERROR, G_TLS_ERROR_BAD_CERTIFICATE);
 
 		*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR;
 
-		/* because evolution knows only G_IO_ERROR_CANCELLED */
-		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_CANCELLED)) {
-			local_error->domain = G_IO_ERROR;
-			local_error->code = G_IO_ERROR_CANCELLED;
-		} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN) && credentials_empty) {
+		if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_FORBIDDEN) && credentials_empty) {
 			*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
-		} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
+		} else if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
 			if (credentials_empty)
 				*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
 			else
@@ -281,7 +276,7 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 			local_error = NULL;
 		}
 
-		if (is_ssl_error) {
+		if (is_tls_error) {
 			*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED;
 
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_SSL_FAILED);
@@ -418,7 +413,7 @@ typedef struct _MultigetData {
 static gboolean
 ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
 				 xmlNodePtr prop_node,
-				 const SoupURI *request_uri,
+				 const GUri *request_uri,
 				 const gchar *href,
 				 guint status_code,
 				 gpointer user_data)
@@ -570,49 +565,33 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 			/* iCloud returns '@' escaped as "%40", but it doesn't accept it in GET,
 			   thus try to unescape it, together with some other characters */
 			if (nfo->extra && strchr (nfo->extra, '%')) {
-				SoupURI *suri;
+				GUri *suri;
 				gchar *new_uri = NULL;
 
-				suri = soup_uri_new (nfo->extra);
+				suri = g_uri_parse (nfo->extra, SOUP_HTTP_URI_FLAGS, NULL);
 
 				if (suri) {
 					const gchar *path;
+					gchar *unesc;
+					gchar *esc;
 
-					path = soup_uri_get_path (suri);
+					path = g_uri_get_path (suri);
+					unesc = g_uri_unescape_string (path, NULL);
 
-					if (path && *path) {
-						gchar **parts, *new_path;
-						gint jj;
+					/* now re-escape the string but allowing a @ */
+					esc = g_uri_escape_string (unesc, "@", FALSE);
 
-						parts = g_strsplit (path, "/", -1);
+					e_util_change_uri_component (&suri, SOUP_URI_PATH, esc);
 
-						for (jj = 0; parts && parts[jj]; jj++) {
-							if (parts[jj][0]) {
-								gchar *part;
+					g_free (unesc);
+					g_free (esc);
 
-								part = soup_uri_normalize (parts[jj], "@");
-
-								if (part) {
-									g_free (parts[jj]);
-									parts[jj] = part;
-								}
-							}
-						}
-
-						new_path = g_strjoinv ("/", parts);
-						soup_uri_set_path (suri, new_path);
-
-						new_uri = soup_uri_to_string (suri, FALSE);
-
-						g_strfreev (parts);
-						g_free (new_path);
-					}
-
-					soup_uri_free (suri);
+					new_uri = g_uri_to_string_partial (suri, G_URI_HIDE_PASSWORD);
+					g_uri_unref (suri);
 				}
 
 				if (new_uri) {
-					success = e_webdav_session_get_data_sync (webdav, new_uri, NULL, &etag, &calendar_data, NULL, cancellable, NULL);
+					success = e_webdav_session_get_data_sync (webdav, new_uri, NULL, &etag, NULL, &calendar_data, NULL, cancellable, NULL);
 
 					if (success) {
 						/* Remember the corrected URI */
@@ -628,9 +607,9 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 			if (!success) {
 				GError *local_error = NULL;
 
-				success = e_webdav_session_get_data_sync (webdav, nfo->extra, NULL, &etag, &calendar_data, NULL, cancellable, &local_error);
+				success = e_webdav_session_get_data_sync (webdav, nfo->extra, NULL, &etag, NULL, &calendar_data, NULL, cancellable, &local_error);
 
-				if (!success && g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+				if (!success && g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND)) {
 					if (out_removed_objects)
 						*out_removed_objects = g_slist_prepend (*out_removed_objects, nfo);
 					else
@@ -660,13 +639,24 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 			if (!success)
 				break;
 		} else {
-			SoupURI *suri;
+			GUri *suri;
 			gchar *path = NULL;
 
-			suri = soup_uri_new (nfo->extra);
+			suri = g_uri_parse (nfo->extra, SOUP_HTTP_URI_FLAGS, NULL);
+
 			if (suri) {
-				path = soup_uri_to_string (suri, TRUE);
-				soup_uri_free (suri);
+				const gchar *upath, *uquery;
+
+				upath = g_uri_get_path (suri);
+				if (!*upath) upath = "/";
+				uquery = g_uri_get_query (suri);
+
+				if (uquery)
+					path = g_strdup_printf ("%s?%s", upath, uquery);
+				else
+					path = g_strdup (upath);
+
+				g_uri_unref (suri);
 			}
 
 			e_xml_document_start_element (xml, E_WEBDAV_NS_DAV, "href");
@@ -698,7 +688,7 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 static gboolean
 ecb_caldav_get_calendar_items_cb (EWebDAVSession *webdav,
 				  xmlNodePtr prop_node,
-				  const SoupURI *request_uri,
+				  const GUri *request_uri,
 				  const gchar *href,
 				  guint status_code,
 				  gpointer user_data)
@@ -717,7 +707,7 @@ ecb_caldav_get_calendar_items_cb (EWebDAVSession *webdav,
 
 	/* Skip collection resource, if returned by the server (like iCloud.com does) */
 	if (g_str_has_suffix (href, "/") ||
-	    (request_uri && request_uri->path && g_str_has_suffix (href, request_uri->path)))
+	    (request_uri && *g_uri_get_path ((GUri *) request_uri) && g_str_has_suffix (href, g_uri_get_path ((GUri *) request_uri))))
 		return TRUE;
 
 	etag = e_webdav_session_util_maybe_dequote (g_strdup ((const gchar *) e_xml_find_child_and_get_text (prop_node, E_WEBDAV_NS_DAV, "getetag")));
@@ -793,12 +783,12 @@ ecb_caldav_check_credentials_error (ECalBackendCalDAV *cbdav,
 {
 	g_return_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav));
 
-	if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED) && webdav) {
+	if (g_error_matches (op_error, G_TLS_ERROR, G_TLS_ERROR_BAD_CERTIFICATE) && webdav) {
 		op_error->domain = E_CLIENT_ERROR;
 		op_error->code = E_CLIENT_ERROR_TLS_NOT_AVAILABLE;
-	} else if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
-		   g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
-		gboolean was_forbidden = g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN);
+	} else if (g_error_matches (op_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
+		   g_error_matches (op_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_FORBIDDEN)) {
+		gboolean was_forbidden = g_error_matches (op_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_FORBIDDEN);
 
 		op_error->domain = E_CLIENT_ERROR;
 		op_error->code = E_CLIENT_ERROR_AUTHENTICATION_REQUIRED;
@@ -1037,7 +1027,7 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 static gboolean
 ecb_caldav_extract_existing_cb (EWebDAVSession *webdav,
 				xmlNodePtr prop_node,
-				const SoupURI *request_uri,
+				const GUri *request_uri,
 				const gchar *href,
 				guint status_code,
 				gpointer user_data)
@@ -1176,15 +1166,15 @@ ecb_caldav_uid_to_uri (ECalBackendCalDAV *cbdav,
 		       const gchar *extension)
 {
 	ESourceWebdav *webdav_extension;
-	SoupURI *soup_uri;
+	GUri *guri;
 	gchar *uri, *tmp, *filename, *uid_hash = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
 
 	webdav_extension = e_source_get_extension (e_backend_get_source (E_BACKEND (cbdav)), E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-	soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
-	g_return_val_if_fail (soup_uri != NULL, NULL);
+	guri = e_source_webdav_dup_uri (webdav_extension);
+	g_return_val_if_fail (guri != NULL, NULL);
 
 	/* UIDs with forward slashes can cause trouble, because the destination server can
 	   consider them as a path delimiter. Double-encode the URL doesn't always work,
@@ -1198,29 +1188,29 @@ ecb_caldav_uid_to_uri (ECalBackendCalDAV *cbdav,
 
 	if (extension) {
 		tmp = g_strconcat (uid, extension, NULL);
-		filename = soup_uri_encode (tmp, NULL);
+		filename = g_uri_escape_string (tmp, NULL, FALSE);
 		g_free (tmp);
 	} else {
-		filename = soup_uri_encode (uid, NULL);
+		filename = g_uri_escape_string (uid, NULL, FALSE);
 	}
 
-	if (soup_uri->path) {
-		gchar *slash = strrchr (soup_uri->path, '/');
+	if (g_uri_get_path (guri) && *g_uri_get_path (guri)) {
+		const gchar *slash = strrchr (g_uri_get_path (guri), '/');
 
 		if (slash && !slash[1])
-			*slash = '\0';
+			tmp = g_strconcat (g_uri_get_path (guri), filename, NULL);
+		else
+			tmp = g_strconcat (g_uri_get_path (guri), "/", filename, NULL);
+	} else {
+		tmp = g_strconcat ("/", filename, NULL);
 	}
 
-	soup_uri_set_user (soup_uri, NULL);
-	soup_uri_set_password (soup_uri, NULL);
-
-	tmp = g_strconcat (soup_uri->path && *soup_uri->path ? soup_uri->path : "", "/", filename, NULL);
-	soup_uri_set_path (soup_uri, tmp);
+	e_util_change_uri_component (&guri, SOUP_URI_PATH, tmp);
 	g_free (tmp);
 
-	uri = soup_uri_to_string (soup_uri, FALSE);
+	uri = g_uri_to_string_partial (guri, G_URI_HIDE_USERINFO | G_URI_HIDE_PASSWORD);
 
-	soup_uri_free (soup_uri);
+	g_uri_unref (guri);
 	g_free (filename);
 	g_free (uid_hash);
 
@@ -1299,7 +1289,7 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 	if (extra && *extra) {
 		uri = g_strdup (extra);
 
-		success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
+		success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, NULL, &bytes, &length, cancellable, &local_error);
 
 		if (!success) {
 			g_free (uri);
@@ -1339,19 +1329,19 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 
 		g_clear_error (&local_error);
 
-		success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
+		success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, NULL, &bytes, &length, cancellable, &local_error);
 
 		/* Do not try twice with Google, it's either with ".ics" extension or not there.
 		   The worst, it counts to the Error requests quota limit. */
 		if (!success && !cbdav->priv->is_google && !g_cancellable_is_cancelled (cancellable) &&
-		    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+		    g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND)) {
 			g_free (uri);
 			uri = ecb_caldav_uid_to_uri (cbdav, uid, NULL);
 
 			if (uri) {
 				g_clear_error (&local_error);
 
-				success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
+				success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, NULL, &bytes, &length, cancellable, &local_error);
 			}
 		}
 	}
@@ -1393,7 +1383,7 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 	if (local_error) {
 		ecb_caldav_check_credentials_error (cbdav, webdav, local_error);
 
-		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+		if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND)) {
 			local_error->domain = E_CAL_CLIENT_ERROR;
 			local_error->code = E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND;
 		}
@@ -1479,7 +1469,7 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 
 		success = e_webdav_session_put_data_sync (webdav, (extra && *extra) ? extra : href,
 			force_write ? "" : overwrite_existing ? etag : NULL, E_WEBDAV_CONTENT_TYPE_CALENDAR,
-			ical_string, -1, &new_extra, &new_etag, cancellable, &local_error);
+			NULL, ical_string, -1, &new_extra, &new_etag, NULL, cancellable, &local_error);
 
 		if (success) {
 			/* Only if both are returned and it's not a weak ETag */
@@ -1524,7 +1514,7 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 	g_free (etag);
 	g_free (uid);
 
-	if (overwrite_existing && g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_PRECONDITION_FAILED)) {
+	if (overwrite_existing && g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_PRECONDITION_FAILED)) {
 		g_clear_error (&local_error);
 
 		/* Pretend success when using the serer version on conflict,
@@ -1587,7 +1577,7 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 	success = e_webdav_session_delete_sync (webdav, extra,
 		NULL, etag, cancellable, &local_error);
 
-	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+	if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND)) {
 		gchar *href;
 
 		href = ecb_caldav_uid_to_uri (cbdav, uid, ".ics");
@@ -1599,7 +1589,7 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 			g_free (href);
 		}
 
-		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+		if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND)) {
 			href = ecb_caldav_uid_to_uri (cbdav, uid, NULL);
 			if (href) {
 				g_clear_error (&local_error);
@@ -1616,10 +1606,10 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 
 	/* Ignore not found errors, this was a delete and the resource is gone.
 	   It can be that it had been deleted on the server by other application. */
-	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+	if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND)) {
 		g_clear_error (&local_error);
 		success = TRUE;
-	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_PRECONDITION_FAILED)) {
+	} else if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_PRECONDITION_FAILED)) {
 		g_clear_error (&local_error);
 
 		/* Pretend success when using the serer version on conflict,
@@ -1666,7 +1656,7 @@ ecb_caldav_get_ssl_error_details (ECalMetaBackend *meta_backend,
 
 static gboolean
 ecb_caldav_dup_href_node_value (EWebDAVSession *webdav,
-				const SoupURI *request_uri,
+				const GUri *request_uri,
 				xmlNodePtr from_node,
 				const gchar *parent_ns_href,
 				const gchar *parent_name,
@@ -1699,7 +1689,7 @@ ecb_caldav_dup_href_node_value (EWebDAVSession *webdav,
 static gboolean
 ecb_caldav_propfind_get_owner_cb (EWebDAVSession *webdav,
 				  xmlNodePtr prop_node,
-				  const SoupURI *request_uri,
+				  const GUri *request_uri,
 				  const gchar *href,
 				  guint status_code,
 				  gpointer user_data)
@@ -1720,7 +1710,7 @@ ecb_caldav_propfind_get_owner_cb (EWebDAVSession *webdav,
 static gboolean
 ecb_caldav_propfind_get_schedule_outbox_url_cb (EWebDAVSession *webdav,
 						xmlNodePtr prop_node,
-						const SoupURI *request_uri,
+						const GUri *request_uri,
 						const gchar *href,
 						guint status_code,
 						gpointer user_data)
@@ -2013,8 +2003,8 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 
 	webdav = ecb_caldav_ref_session (cbdav);
 
-	if (e_webdav_session_post_with_content_type_sync (webdav, cbdav->priv->schedule_outbox_url, str, -1,
-							  E_WEBDAV_CONTENT_TYPE_CALENDAR, NULL, &response, cancellable, &local_error) &&
+	if (e_webdav_session_post_sync (webdav, cbdav->priv->schedule_outbox_url, str, -1, E_WEBDAV_CONTENT_TYPE_CALENDAR,
+					NULL, NULL, NULL, &response, cancellable, &local_error) &&
 	    response) {
 		/* parse returned xml */
 		xmlDocPtr doc;

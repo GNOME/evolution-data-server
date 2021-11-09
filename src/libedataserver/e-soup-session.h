@@ -47,6 +47,8 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), E_TYPE_SOUP_SESSION, ESoupSessionClass))
 
+#define E_SOUP_SESSION_ERROR (e_soup_session_error_quark())
+
 G_BEGIN_DECLS
 
 typedef struct _ESoupSession ESoupSession;
@@ -74,6 +76,8 @@ struct _ESoupSessionClass {
 	gpointer reserved[10];
 };
 
+GQuark		e_soup_session_error_quark		(void) G_GNUC_CONST;
+
 GType		e_soup_session_get_type			(void) G_GNUC_CONST;
 
 ESoupSession *	e_soup_session_new			(ESource *source);
@@ -91,33 +95,61 @@ gboolean	e_soup_session_get_authentication_requires_credentials
 gboolean	e_soup_session_get_ssl_error_details	(ESoupSession *session,
 							 gchar **out_certificate_pem,
 							 GTlsCertificateFlags *out_certificate_errors);
-SoupRequestHTTP *
-		e_soup_session_new_request		(ESoupSession *session,
+SoupMessage *	e_soup_session_new_message		(ESoupSession *session,
 							 const gchar *method,
 							 const gchar *uri_string,
 							 GError **error);
-SoupRequestHTTP *
-		e_soup_session_new_request_uri		(ESoupSession *session,
+SoupMessage *	e_soup_session_new_message_from_uri	(ESoupSession *session,
 							 const gchar *method,
-							 SoupURI *uri,
+							 GUri *uri,
 							 GError **error);
 gboolean	e_soup_session_check_result		(ESoupSession *session,
-							 SoupRequestHTTP *request,
+							 SoupMessage *message,
 							 gconstpointer read_bytes,
 							 gsize bytes_length,
 							 GError **error);
-GInputStream *	e_soup_session_send_request_sync	(ESoupSession *session,
-							 SoupRequestHTTP *request,
+gpointer	e_soup_session_prepare_message_send_sync(ESoupSession *session,
+							 SoupMessage *message,
 							 GCancellable *cancellable,
 							 GError **error);
-GByteArray *	e_soup_session_send_request_simple_sync	(ESoupSession *session,
-							 SoupRequestHTTP *request,
+void		e_soup_session_send_message		(ESoupSession *session,
+							 SoupMessage *message,
+							 gint io_priority,
+							 gpointer prepare_data,
+							 GCancellable *cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer user_data);
+GInputStream *	e_soup_session_send_message_finish	(ESoupSession *session,
+							 GAsyncResult *result,
+							 gchar **out_certificate_pem,
+							 GTlsCertificateFlags *out_certificate_errors,
+							 GError **error);
+GInputStream *	e_soup_session_send_message_sync	(ESoupSession *session,
+							 SoupMessage *message,
+							 GCancellable *cancellable,
+							 GError **error);
+GByteArray *	e_soup_session_send_message_simple_sync	(ESoupSession *session,
+							 SoupMessage *message,
 							 GCancellable *cancellable,
 							 GError **error);
 const gchar *	e_soup_session_util_status_to_string	(guint status_code,
 							 const gchar *reason_phrase);
-gboolean	e_soup_session_util_normalize_uri_path	(SoupURI *suri);
-
+GUri *		e_soup_session_util_normalize_uri_path	(GUri *uri);
+void		e_soup_session_util_set_message_request_body
+							(SoupMessage *message,
+							 const gchar *content_type,
+							 GInputStream *input_stream,
+							 gssize length);
+void		e_soup_session_util_set_message_request_body_from_data
+							(SoupMessage *message,
+							 gboolean create_copy,
+							 const gchar *content_type,
+							 gconstpointer data,
+							 gssize length,
+							 GDestroyNotify free_func);
+GInputStream *	e_soup_session_util_ref_message_request_body
+							(SoupMessage *message,
+							 gssize *out_length);
 G_END_DECLS
 
 #endif /* E_SOUP_SESSION_H */

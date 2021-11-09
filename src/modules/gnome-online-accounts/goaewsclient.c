@@ -91,17 +91,16 @@ ews_check_node (const xmlNode *node,
 		(g_strcmp0 ((gchar *) node->name, name) == 0);
 }
 
-static void
-ews_authenticate (SoupSession *session,
-                  SoupMessage *msg,
+static gboolean
+ews_authenticate (SoupMessage *msg,
                   SoupAuth *auth,
                   gboolean retrying,
                   AutodiscoverAuthData *data)
 {
-	if (retrying)
-		return;
+	if (!retrying)
+		soup_auth_authenticate (auth, data->username, data->password);
 
-	soup_auth_authenticate (auth, data->username, data->password);
+	return FALSE;
 }
 
 static void
@@ -180,27 +179,41 @@ ews_autodiscover_parse_protocol (xmlNode *node,
 	return (got_as_url && got_oab_url);
 }
 
+typedef struct _ResponseData {
+	SoupMessage *msg;
+	GSimpleAsyncResult *simple;
+} ResponseData;
+
 static void
-ews_autodiscover_response_cb (SoupSession *session,
-                              SoupMessage *msg,
+ews_autodiscover_response_cb (GObject *source_object,
+                              GAsyncResult *result,
                               gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	ResponseData *rd = user_data;
+	GSimpleAsyncResult *simple = rd->simple;
+	SoupMessage *msg = rd->msg;
 	AutodiscoverData *data;
+	GBytes *bytes;
 	gboolean success = FALSE;
-	guint status;
 	gint idx;
 	gsize size;
 	xmlDoc *doc;
 	xmlNode *node;
 	GError *error = NULL;
 
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
 	data = g_simple_async_result_get_op_res_gpointer (simple);
 
-	status = msg->status_code;
-	if (status == SOUP_STATUS_CANCELLED)
+	g_slice_free (ResponseData, rd);
+	rd = NULL;
+
+	bytes = soup_session_send_and_read_finish (SOUP_SESSION (source_object), result, &error);
+
+	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+		g_clear_error (&error);
+		g_clear_object (&msg);
+		g_clear_object (&simple);
 		return;
+	}
 
 	size = sizeof (data->msgs) / sizeof (data->msgs[0]);
 
@@ -208,32 +221,41 @@ ews_autodiscover_response_cb (SoupSession *session,
 		if (data->msgs[idx] == msg)
 			break;
 	}
-	if (idx == size)
+	if (idx == size) {
+		g_clear_error (&error);
+		if (bytes)
+			g_bytes_unref (bytes);
+		g_clear_object (&msg);
+		g_clear_object (&simple);
 		return;
+	}
 
 	data->msgs[idx] = NULL;
 
-	if (status != SOUP_STATUS_OK) {
-		g_set_error (
-			&error, GOA_ERROR,
-			GOA_ERROR_FAILED, /* TODO: more specific */
-			_("Code: %u — Unexpected response from server"),
-			status);
+	if (soup_message_get_status (msg) != SOUP_STATUS_OK) {
+		if (!error) {
+			g_set_error (
+				&error, GOA_ERROR,
+				GOA_ERROR_FAILED, /* TODO: more specific */
+				_("Code: %u — Unexpected response from server"),
+				soup_message_get_status (msg));
+		}
+		if (bytes)
+			g_bytes_unref (bytes);
 		goto out;
 	}
 
-	soup_buffer_free (
-		soup_message_body_flatten (
-		SOUP_MESSAGE (msg)->response_body));
-
-	g_debug ("The response headers");
+	g_debug ("The response body");
 	g_debug ("===================");
-	g_debug ("%s", SOUP_MESSAGE (msg)->response_body->data);
+	g_debug ("%.*s", (gint) g_bytes_get_size (bytes), (const gchar *) g_bytes_get_data (bytes, NULL));
 
 	doc = xmlReadMemory (
-		msg->response_body->data,
-		msg->response_body->length,
+		g_bytes_get_data (bytes, NULL),
+		g_bytes_get_size (bytes),
 		"autodiscover.xml", NULL, 0);
+
+	g_clear_pointer (&bytes, g_bytes_unref);
+
 	if (doc == NULL) {
 		g_set_error (
 			&error, GOA_ERROR,
@@ -291,24 +313,25 @@ ews_autodiscover_response_cb (SoupSession *session,
 
 	for (idx = 0; idx < size; idx++) {
 		if (data->msgs[idx] != NULL) {
-			/* Since we are cancelling from the same thread
-			 * that we queued the message, the callback (ie.
-			 * this function) will be invoked before
-			 * soup_session_cancel_message returns. */
-			soup_session_cancel_message (
-				data->session, data->msgs[idx],
-				SOUP_STATUS_CANCELLED);
 			data->msgs[idx] = NULL;
 		}
 	}
 
-out:
+	/* Since we are cancelling from the same thread
+	 * that we queued the message, the callback (ie.
+	 * this function) will be invoked before
+	 * soup_session_abort returns. */
+	soup_session_abort (data->session);
+
+ out:
 	if (error != NULL) {
 		for (idx = 0; idx < size; idx++) {
 			if (data->msgs[idx] != NULL) {
 				/* There's another request outstanding.
 				 * Hope that it has better luck. */
 				g_clear_error (&error);
+				g_clear_object (&msg);
+				g_clear_object (&simple);
 				return;
 			}
 		}
@@ -317,6 +340,8 @@ out:
 
 	g_simple_async_result_complete_in_idle (simple);
 	g_object_unref (simple);
+	g_clear_object (&msg);
+	g_clear_object (&simple);
 }
 
 static xmlDoc *
@@ -369,41 +394,23 @@ ews_post_restarted_cb (SoupMessage *msg,
 	/* In violation of RFC2616, libsoup will change a
 	 * POST request to a GET on receiving a 302 redirect. */
 	g_debug ("Working around libsoup bug with redirect");
-	g_object_set (msg, SOUP_MESSAGE_METHOD, "POST", NULL);
+	g_object_set (msg, "method", "POST", NULL);
 
 	buf_content = compat_libxml_output_buffer_get_content (buf, &buf_size);
-	soup_message_set_request (
-		msg, "text/xml; charset=utf-8",
-		SOUP_MEMORY_COPY,
-		buf_content, buf_size);
+	e_soup_session_util_set_message_request_body_from_data (msg, TRUE, "text/xml; charset=utf-8", buf_content, buf_size, NULL);
 }
 
 static gboolean
-go_ews_client_accept_certificate_cb (GTlsConnection *conn,
-				     GTlsCertificate *peer_cert,
-				     GTlsCertificateFlags errors,
-				     gpointer user_data)
+goa_ews_client_accept_certificate_cb (SoupMessage *msg,
+				      GTlsCertificate *tls_peer_certificate,
+				      GTlsCertificateFlags tls_peer_errors,
+				      gpointer user_data)
 {
 	/* As much as EDS is interested, any certificate error during
 	   autodiscover is ignored, because it had been allowed during
 	   the GOA account creation. */
 
 	return TRUE;
-}
-
-static void
-goa_ews_client_network_event_cb (SoupMessage *msg,
-				 GSocketClientEvent event,
-				 GIOStream *connection,
-				 gpointer user_data)
-{
-	/* It's either a GTlsConnection or a GTcpConnection */
-	if (event == G_SOCKET_CLIENT_TLS_HANDSHAKING &&
-	    G_IS_TLS_CONNECTION (connection)) {
-		g_signal_connect (
-			G_TLS_CONNECTION (connection), "accept-certificate",
-			G_CALLBACK (go_ews_client_accept_certificate_cb), NULL);
-	}
 }
 
 static SoupMessage *
@@ -416,29 +423,18 @@ ews_create_msg_for_url (const gchar *url,
 
 	msg = soup_message_new (buf != NULL ? "POST" : "GET", url);
 	soup_message_headers_append (
-		msg->request_headers, "User-Agent", "libews/0.1");
+		soup_message_get_request_headers (msg), "User-Agent", "libews/0.1");
 
-	g_signal_connect (msg, "network-event",
-		G_CALLBACK (goa_ews_client_network_event_cb), NULL);
+	g_signal_connect (msg, "accept-certificate",
+		G_CALLBACK (goa_ews_client_accept_certificate_cb), NULL);
 
 	if (buf != NULL) {
 		buf_content = compat_libxml_output_buffer_get_content (buf, &buf_size);
-		soup_message_set_request (
-			msg, "text/xml; charset=utf-8",
-			SOUP_MEMORY_COPY,
-			buf_content, buf_size);
+		e_soup_session_util_set_message_request_body_from_data (msg, TRUE, "text/xml; charset=utf-8", buf_content, buf_size, NULL);
 		g_signal_connect (
 			msg, "restarted",
 			G_CALLBACK (ews_post_restarted_cb), buf);
 	}
-
-	soup_buffer_free (
-		soup_message_body_flatten (
-		SOUP_MESSAGE (msg)->request_body));
-
-	g_debug ("The request headers");
-	g_debug ("===================");
-	g_debug ("%s", SOUP_MESSAGE (msg)->request_body->data);
 
 	return msg;
 }
@@ -496,11 +492,9 @@ goa_ews_autodiscover (GoaObject *goa_object,
 	data->buf = buf;
 	data->msgs[0] = ews_create_msg_for_url (url1, buf);
 	data->msgs[1] = ews_create_msg_for_url (url2, buf);
-	data->session = soup_session_async_new_with_options (
-		SOUP_SESSION_USE_NTLM, TRUE,
-		SOUP_SESSION_USE_THREAD_CONTEXT, TRUE,
-		SOUP_SESSION_TIMEOUT, 90,
-		SOUP_SESSION_ACCEPT_LANGUAGE_AUTO, TRUE,
+	data->session = soup_session_new_with_options (
+		"timeout", 90,
+		"accept-language-auto", TRUE,
 		NULL);
 	if (G_IS_CANCELLABLE (cancellable)) {
 		data->cancellable = g_object_ref (cancellable);
@@ -528,6 +522,7 @@ goa_ews_autodiscover (GoaObject *goa_object,
 		((password == NULL) && (error != NULL)));
 
 	if (error == NULL) {
+		ResponseData *rd;
 		gchar *username;
 
 		username = goa_account_dup_identity (goa_account);
@@ -537,16 +532,32 @@ goa_ews_autodiscover (GoaObject *goa_object,
 		auth->password = password;  /* takes ownership */
 
 		g_signal_connect_data (
-			data->session, "authenticate",
+			data->msgs[0], "authenticate",
 			G_CALLBACK (ews_authenticate), auth,
 			ews_autodiscover_auth_data_free, 0);
 
-		soup_session_queue_message (
-			data->session, data->msgs[0],
-			ews_autodiscover_response_cb, simple);
-		soup_session_queue_message (
-			data->session, data->msgs[1],
-			ews_autodiscover_response_cb, simple);
+		auth = g_slice_new0 (AutodiscoverAuthData);
+		auth->username = g_strdup (username);
+		auth->password = g_strdup (password);
+
+		g_signal_connect_data (
+			data->msgs[1], "authenticate",
+			G_CALLBACK (ews_authenticate), auth,
+			ews_autodiscover_auth_data_free, 0);
+
+		rd = g_slice_new (ResponseData);
+		rd->msg = g_object_ref (data->msgs[0]);
+		rd->simple = g_object_ref (simple);
+
+		soup_session_send_and_read_async (data->session, data->msgs[0], G_PRIORITY_DEFAULT, cancellable,
+			ews_autodiscover_response_cb, rd);
+
+		rd = g_slice_new (ResponseData);
+		rd->msg = g_object_ref (data->msgs[1]);
+		rd->simple = g_object_ref (simple);
+
+		soup_session_send_and_read_async (data->session, data->msgs[1], G_PRIORITY_DEFAULT, cancellable,
+			ews_autodiscover_response_cb, rd);
 	} else {
 		g_dbus_error_strip_remote_error (error);
 		g_simple_async_result_take_error (simple, error);

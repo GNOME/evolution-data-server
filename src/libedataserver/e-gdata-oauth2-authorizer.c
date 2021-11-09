@@ -218,7 +218,7 @@ e_gdata_oauth2_authorizer_process_request (GDataAuthorizer *authorizer,
 	/* Use replace here, not append, to make sure
 	 * there's only one "Authorization" header. */
 	soup_message_headers_replace (
-		message->request_headers,
+		soup_message_get_request_headers (message),
 		"Authorization", authorization);
 
 	g_free (authorization);

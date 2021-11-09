@@ -1053,7 +1053,7 @@ source_set_dbus_object (ESource *source,
 	g_return_if_fail (E_DBUS_IS_OBJECT (dbus_object));
 	g_return_if_fail (source->priv->dbus_object == NULL);
 
-	source->priv->dbus_object = g_object_ref (dbus_object);
+	source->priv->dbus_object = G_DBUS_OBJECT (g_object_ref (dbus_object));
 }
 
 static void

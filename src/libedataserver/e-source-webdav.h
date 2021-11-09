@@ -131,9 +131,9 @@ const gchar *	e_source_webdav_get_ssl_trust	(ESourceWebdav *extension);
 gchar *		e_source_webdav_dup_ssl_trust	(ESourceWebdav *extension);
 void		e_source_webdav_set_ssl_trust	(ESourceWebdav *extension,
 						 const gchar *ssl_trust);
-SoupURI *	e_source_webdav_dup_soup_uri	(ESourceWebdav *extension);
-void		e_source_webdav_set_soup_uri	(ESourceWebdav *extension,
-						 SoupURI *soup_uri);
+GUri *		e_source_webdav_dup_uri		(ESourceWebdav *extension);
+void		e_source_webdav_set_uri		(ESourceWebdav *extension,
+						 GUri *uri);
 void		e_source_webdav_update_ssl_trust
 						(ESourceWebdav *extension,
 						 const gchar *host,
