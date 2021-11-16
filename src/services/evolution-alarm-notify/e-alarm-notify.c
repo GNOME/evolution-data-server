@@ -144,6 +144,11 @@ e_alarm_notify_audio (EAlarmNotify *an,
 	g_return_val_if_fail (rd != NULL, FALSE);
 	g_return_val_if_fail (alarm != NULL, FALSE);
 
+	if (!g_settings_get_boolean (an->priv->settings, "notify-enable-audio")) {
+		ean_debug_print ("Audio notify: Skipped, because disabled in the settings\n");
+		return FALSE;
+	}
+
 	attachments = e_cal_component_alarm_get_attachments (alarm);
 	if (attachments && !attachments->next)
 		attach = attachments->data;
@@ -787,6 +792,7 @@ e_alarm_notify_status_icon_popup_menu_cb (GtkStatusIcon *status_icon,
 	} items[] = {
 		{ N_("Display Reminders window with _notifications"), "notify-with-tray", G_SETTINGS_BIND_DEFAULT | G_SETTINGS_BIND_INVERT_BOOLEAN },
 		{ N_("Keep reminder notification window always on _top"), "notify-window-on-top", G_SETTINGS_BIND_DEFAULT },
+		{ N_("Enable _audio notifications"), "notify-enable-audio", G_SETTINGS_BIND_DEFAULT },
 		{ N_("Display reminders for _completed tasks"), "notify-completed-tasks", G_SETTINGS_BIND_DEFAULT },
 		{ N_("Display reminders for _past events"), "notify-past-events", G_SETTINGS_BIND_DEFAULT }
 	};

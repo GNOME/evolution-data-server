@@ -38,6 +38,11 @@
       <summary>Reminder programs</summary>
       <description>Programs that are allowed to be run by reminders</description>
     </key>
+    <key name="notify-enable-audio" type="b">
+      <default>true</default>
+      <summary>Enable audio notifications</summary>
+      <description>When set to true, the audio reminders will be played, otherwise audio reminders will be silently ignored</description>
+    </key>
     <key name="notify-with-tray" type="b">
       <default>true</default>
       <summary>Show reminders in notification tray only</summary>
