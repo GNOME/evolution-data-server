@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: 3.12\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2021-11-06 18:44+0000\n"
-"PO-Revision-Date: 2021-11-07 21:11+0000\n"
+"POT-Creation-Date: 2021-11-16 13:33+0000\n"
+"PO-Revision-Date: 2021-11-17 12:21+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: https://l10n.gnome.org/teams/pt/\n"
 "Language: pt\n"
@@ -1509,166 +1509,166 @@ msgstr "Impossível alterar o valor da propriedade de calendário “%s”"
 msgid "Untitled appointment"
 msgstr "Compromisso sem título"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4889
+#: ../src/calendar/libecal/e-cal-recur.c:4893
 msgid "1st"
 msgstr "1.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4890
+#: ../src/calendar/libecal/e-cal-recur.c:4894
 msgid "2nd"
 msgstr "2.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4891
+#: ../src/calendar/libecal/e-cal-recur.c:4895
 msgid "3rd"
 msgstr "3.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4892
+#: ../src/calendar/libecal/e-cal-recur.c:4896
 msgid "4th"
 msgstr "4.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4893
+#: ../src/calendar/libecal/e-cal-recur.c:4897
 msgid "5th"
 msgstr "5.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4894
+#: ../src/calendar/libecal/e-cal-recur.c:4898
 msgid "6th"
 msgstr "6.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4895
+#: ../src/calendar/libecal/e-cal-recur.c:4899
 msgid "7th"
 msgstr "7.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4896
+#: ../src/calendar/libecal/e-cal-recur.c:4900
 msgid "8th"
 msgstr "8.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4897
+#: ../src/calendar/libecal/e-cal-recur.c:4901
 msgid "9th"
 msgstr "9.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4898
+#: ../src/calendar/libecal/e-cal-recur.c:4902
 msgid "10th"
 msgstr "10.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4899
+#: ../src/calendar/libecal/e-cal-recur.c:4903
 msgid "11th"
 msgstr "11.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4900
+#: ../src/calendar/libecal/e-cal-recur.c:4904
 msgid "12th"
 msgstr "12.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4901
+#: ../src/calendar/libecal/e-cal-recur.c:4905
 msgid "13th"
 msgstr "13.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4902
+#: ../src/calendar/libecal/e-cal-recur.c:4906
 msgid "14th"
 msgstr "14.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4903
+#: ../src/calendar/libecal/e-cal-recur.c:4907
 msgid "15th"
 msgstr "15.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4904
+#: ../src/calendar/libecal/e-cal-recur.c:4908
 msgid "16th"
 msgstr "16.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4905
+#: ../src/calendar/libecal/e-cal-recur.c:4909
 msgid "17th"
 msgstr "17.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4906
+#: ../src/calendar/libecal/e-cal-recur.c:4910
 msgid "18th"
 msgstr "18.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4907
+#: ../src/calendar/libecal/e-cal-recur.c:4911
 msgid "19th"
 msgstr "19.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4908
+#: ../src/calendar/libecal/e-cal-recur.c:4912
 msgid "20th"
 msgstr "20.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4909
+#: ../src/calendar/libecal/e-cal-recur.c:4913
 msgid "21st"
 msgstr "21.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4910
+#: ../src/calendar/libecal/e-cal-recur.c:4914
 msgid "22nd"
 msgstr "22.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4911
+#: ../src/calendar/libecal/e-cal-recur.c:4915
 msgid "23rd"
 msgstr "23.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4912
+#: ../src/calendar/libecal/e-cal-recur.c:4916
 msgid "24th"
 msgstr "24.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4913
+#: ../src/calendar/libecal/e-cal-recur.c:4917
 msgid "25th"
 msgstr "25.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4914
+#: ../src/calendar/libecal/e-cal-recur.c:4918
 msgid "26th"
 msgstr "26.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4915
+#: ../src/calendar/libecal/e-cal-recur.c:4919
 msgid "27th"
 msgstr "27.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4916
+#: ../src/calendar/libecal/e-cal-recur.c:4920
 msgid "28th"
 msgstr "28.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4917
+#: ../src/calendar/libecal/e-cal-recur.c:4921
 msgid "29th"
 msgstr "29.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4918
+#: ../src/calendar/libecal/e-cal-recur.c:4922
 msgid "30th"
 msgstr "30.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4919
+#: ../src/calendar/libecal/e-cal-recur.c:4923
 msgid "31st"
 msgstr "31.º"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5069
+#: ../src/calendar/libecal/e-cal-recur.c:5073
 #, c-format
 msgid "every day forever"
 msgid_plural "every %d days forever"
 msgstr[0] "todo dia sempre"
 msgstr[1] "a cada %d dias sempre"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5075
+#: ../src/calendar/libecal/e-cal-recur.c:5079
 #, c-format
 msgid "Every day forever"
 msgid_plural "Every %d days forever"
 msgstr[0] "Todo dia sempre"
 msgstr[1] "A cada %d dias sempre"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5083
+#: ../src/calendar/libecal/e-cal-recur.c:5087
 #, c-format
 msgid "every day"
 msgid_plural "every %d days"
 msgstr[0] "todo dia"
 msgstr[1] "a cada %d dias"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5089
+#: ../src/calendar/libecal/e-cal-recur.c:5093
 #, c-format
 msgid "Every day"
 msgid_plural "Every %d days"
 msgstr[0] "Todo dia"
 msgstr[1] "A cada %d dias"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5175
+#: ../src/calendar/libecal/e-cal-recur.c:5179
 #, c-format
 msgid "every week"
 msgid_plural "every %d weeks"
 msgstr[0] "toda semana"
 msgstr[1] "a cada %d semanas"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5181
+#: ../src/calendar/libecal/e-cal-recur.c:5185
 #, c-format
 msgid "Every week"
 msgid_plural "Every %d weeks"
@@ -1680,556 +1680,556 @@ msgstr[1] "A cada %d semanas"
 #. with ", DAYNAME" or " and DAYNAME", thus it can be something like "on Monday and Tuesday"
 #. or "on Monday, Wednesday and Friday" or simply "on Saturday". The '%1$s' is replaced with
 #. the previously gathered text, while the '%2$s' is replaced with the text to append.
-#: ../src/calendar/libecal/e-cal-recur.c:5195
+#: ../src/calendar/libecal/e-cal-recur.c:5199
 #, c-format
 msgctxt "recur-description-dayname"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5212
+#: ../src/calendar/libecal/e-cal-recur.c:5216
 msgctxt "recur-description"
 msgid "on Sunday"
 msgstr "no domingo"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5213
+#: ../src/calendar/libecal/e-cal-recur.c:5217
 msgctxt "recur-description"
 msgid ", Sunday"
 msgstr ", domingo"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5214
+#: ../src/calendar/libecal/e-cal-recur.c:5218
 msgctxt "recur-description"
 msgid " and Sunday"
 msgstr " e domingo"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5217
+#: ../src/calendar/libecal/e-cal-recur.c:5221
 msgctxt "recur-description"
 msgid "on Monday"
 msgstr "na segunda-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5218
+#: ../src/calendar/libecal/e-cal-recur.c:5222
 msgctxt "recur-description"
 msgid ", Monday"
 msgstr ", segunda-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5219
+#: ../src/calendar/libecal/e-cal-recur.c:5223
 msgctxt "recur-description"
 msgid " and Monday"
 msgstr " e segunda-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5222
+#: ../src/calendar/libecal/e-cal-recur.c:5226
 msgctxt "recur-description"
 msgid "on Tuesday"
 msgstr "na terça-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5223
+#: ../src/calendar/libecal/e-cal-recur.c:5227
 msgctxt "recur-description"
 msgid ", Tuesday"
 msgstr ", terça-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5224
+#: ../src/calendar/libecal/e-cal-recur.c:5228
 msgctxt "recur-description"
 msgid " and Tuesday"
 msgstr " e terça-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5227
+#: ../src/calendar/libecal/e-cal-recur.c:5231
 msgctxt "recur-description"
 msgid "on Wednesday"
 msgstr "na quarta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5228
+#: ../src/calendar/libecal/e-cal-recur.c:5232
 msgctxt "recur-description"
 msgid ", Wednesday"
 msgstr ", quarta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5229
+#: ../src/calendar/libecal/e-cal-recur.c:5233
 msgctxt "recur-description"
 msgid " and Wednesday"
 msgstr " e quarta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5232
+#: ../src/calendar/libecal/e-cal-recur.c:5236
 msgctxt "recur-description"
 msgid "on Thursday"
 msgstr "na quinta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5233
+#: ../src/calendar/libecal/e-cal-recur.c:5237
 msgctxt "recur-description"
 msgid ", Thursday"
 msgstr ", quinta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5234
+#: ../src/calendar/libecal/e-cal-recur.c:5238
 msgctxt "recur-description"
 msgid " and Thursday"
 msgstr " e quinta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5237
+#: ../src/calendar/libecal/e-cal-recur.c:5241
 msgctxt "recur-description"
 msgid "on Friday"
 msgstr "na sexta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5238
+#: ../src/calendar/libecal/e-cal-recur.c:5242
 msgctxt "recur-description"
 msgid ", Friday"
 msgstr ", sexta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5239
+#: ../src/calendar/libecal/e-cal-recur.c:5243
 msgctxt "recur-description"
 msgid " and Friday"
 msgstr " e sexta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5242
+#: ../src/calendar/libecal/e-cal-recur.c:5246
 msgctxt "recur-description"
 msgid "on Saturday"
 msgstr "no sábado"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5243
+#: ../src/calendar/libecal/e-cal-recur.c:5247
 msgctxt "recur-description"
 msgid ", Saturday"
 msgstr ", sábado"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5244
+#: ../src/calendar/libecal/e-cal-recur.c:5248
 msgctxt "recur-description"
 msgid " and Saturday"
 msgstr " e sábado"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5373
+#: ../src/calendar/libecal/e-cal-recur.c:5377
 #, c-format
 msgid "every month"
 msgid_plural "every %d months"
 msgstr[0] "todo mês"
 msgstr[1] "a cada %d meses"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5379
+#: ../src/calendar/libecal/e-cal-recur.c:5383
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
 msgstr[0] "Todo mês"
 msgstr[1] "A cada %d meses"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5389
-#: ../src/calendar/libecal/e-cal-recur.c:5710
+#: ../src/calendar/libecal/e-cal-recur.c:5393
+#: ../src/calendar/libecal/e-cal-recur.c:5714
 msgctxt "recur-description"
 msgid "on the last Sunday"
 msgstr "no último domingo"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5392
-#: ../src/calendar/libecal/e-cal-recur.c:5560
+#: ../src/calendar/libecal/e-cal-recur.c:5396
+#: ../src/calendar/libecal/e-cal-recur.c:5564
 msgctxt "recur-description"
 msgid "on the last Monday"
 msgstr "na última segunda"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5395
-#: ../src/calendar/libecal/e-cal-recur.c:5585
+#: ../src/calendar/libecal/e-cal-recur.c:5399
+#: ../src/calendar/libecal/e-cal-recur.c:5589
 msgctxt "recur-description"
 msgid "on the last Tuesday"
 msgstr "na última terça"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5398
-#: ../src/calendar/libecal/e-cal-recur.c:5610
+#: ../src/calendar/libecal/e-cal-recur.c:5402
+#: ../src/calendar/libecal/e-cal-recur.c:5614
 msgctxt "recur-description"
 msgid "on the last Wednesday"
 msgstr "na última quarta"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5401
-#: ../src/calendar/libecal/e-cal-recur.c:5635
+#: ../src/calendar/libecal/e-cal-recur.c:5405
+#: ../src/calendar/libecal/e-cal-recur.c:5639
 msgctxt "recur-description"
 msgid "on the last Thursday"
 msgstr "na última quinta"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5404
-#: ../src/calendar/libecal/e-cal-recur.c:5660
+#: ../src/calendar/libecal/e-cal-recur.c:5408
+#: ../src/calendar/libecal/e-cal-recur.c:5664
 msgctxt "recur-description"
 msgid "on the last Friday"
 msgstr "na última sexta"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5407
-#: ../src/calendar/libecal/e-cal-recur.c:5685
+#: ../src/calendar/libecal/e-cal-recur.c:5411
+#: ../src/calendar/libecal/e-cal-recur.c:5689
 msgctxt "recur-description"
 msgid "on the last Saturday"
 msgstr "no último sábado"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5417
+#: ../src/calendar/libecal/e-cal-recur.c:5421
 msgctxt "recur-description"
 msgid "on the 1st day"
 msgstr "no dia 1"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5421
+#: ../src/calendar/libecal/e-cal-recur.c:5425
 msgctxt "recur-description"
 msgid "on the 2nd day"
 msgstr "no dia 2"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5425
+#: ../src/calendar/libecal/e-cal-recur.c:5429
 msgctxt "recur-description"
 msgid "on the 3rd day"
 msgstr "no dia 3"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5429
+#: ../src/calendar/libecal/e-cal-recur.c:5433
 msgctxt "recur-description"
 msgid "on the 4th day"
 msgstr "no dia 4"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5433
+#: ../src/calendar/libecal/e-cal-recur.c:5437
 msgctxt "recur-description"
 msgid "on the 5th day"
 msgstr "no dia 5"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5437
+#: ../src/calendar/libecal/e-cal-recur.c:5441
 msgctxt "recur-description"
 msgid "on the 6th day"
 msgstr "no dia 6"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5441
+#: ../src/calendar/libecal/e-cal-recur.c:5445
 msgctxt "recur-description"
 msgid "on the 7th day"
 msgstr "no dia 7"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5445
+#: ../src/calendar/libecal/e-cal-recur.c:5449
 msgctxt "recur-description"
 msgid "on the 8th day"
 msgstr "no dia 8"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5449
+#: ../src/calendar/libecal/e-cal-recur.c:5453
 msgctxt "recur-description"
 msgid "on the 9th day"
 msgstr "no dia 9"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5453
+#: ../src/calendar/libecal/e-cal-recur.c:5457
 msgctxt "recur-description"
 msgid "on the 10th day"
 msgstr "no dia 10"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5457
+#: ../src/calendar/libecal/e-cal-recur.c:5461
 msgctxt "recur-description"
 msgid "on the 11th day"
 msgstr "no dia 11"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5461
+#: ../src/calendar/libecal/e-cal-recur.c:5465
 msgctxt "recur-description"
 msgid "on the 12th day"
 msgstr "no dia 12"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5465
+#: ../src/calendar/libecal/e-cal-recur.c:5469
 msgctxt "recur-description"
 msgid "on the 13th day"
 msgstr "no dia 13"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5469
+#: ../src/calendar/libecal/e-cal-recur.c:5473
 msgctxt "recur-description"
 msgid "on the 14th day"
 msgstr "no dia 14"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5473
+#: ../src/calendar/libecal/e-cal-recur.c:5477
 msgctxt "recur-description"
 msgid "on the 15th day"
 msgstr "no dia 15"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5477
+#: ../src/calendar/libecal/e-cal-recur.c:5481
 msgctxt "recur-description"
 msgid "on the 16th day"
 msgstr "no dia 16"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5481
+#: ../src/calendar/libecal/e-cal-recur.c:5485
 msgctxt "recur-description"
 msgid "on the 17th day"
 msgstr "no dia 17"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5485
+#: ../src/calendar/libecal/e-cal-recur.c:5489
 msgctxt "recur-description"
 msgid "on the 18th day"
 msgstr "no dia 18"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5489
+#: ../src/calendar/libecal/e-cal-recur.c:5493
 msgctxt "recur-description"
 msgid "on the 19th day"
 msgstr "no dia 19"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5493
+#: ../src/calendar/libecal/e-cal-recur.c:5497
 msgctxt "recur-description"
 msgid "on the 20th day"
 msgstr "no dia 20"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5497
+#: ../src/calendar/libecal/e-cal-recur.c:5501
 msgctxt "recur-description"
 msgid "on the 21st day"
 msgstr "no dia 21"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5501
+#: ../src/calendar/libecal/e-cal-recur.c:5505
 msgctxt "recur-description"
 msgid "on the 22nd day"
 msgstr "no dia 22"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5505
+#: ../src/calendar/libecal/e-cal-recur.c:5509
 msgctxt "recur-description"
 msgid "on the 23rd day"
 msgstr "no dia 23"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5509
+#: ../src/calendar/libecal/e-cal-recur.c:5513
 msgctxt "recur-description"
 msgid "on the 24th day"
 msgstr "no dia 24"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5513
+#: ../src/calendar/libecal/e-cal-recur.c:5517
 msgctxt "recur-description"
 msgid "on the 25th day"
 msgstr "no dia 25"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5517
+#: ../src/calendar/libecal/e-cal-recur.c:5521
 msgctxt "recur-description"
 msgid "on the 26th day"
 msgstr "no dia 26"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5521
+#: ../src/calendar/libecal/e-cal-recur.c:5525
 msgctxt "recur-description"
 msgid "on the 27th day"
 msgstr "no dia 27"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5525
+#: ../src/calendar/libecal/e-cal-recur.c:5529
 msgctxt "recur-description"
 msgid "on the 28th day"
 msgstr "no dia 28"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5529
+#: ../src/calendar/libecal/e-cal-recur.c:5533
 msgctxt "recur-description"
 msgid "on the 29th day"
 msgstr "no dia 29"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5533
+#: ../src/calendar/libecal/e-cal-recur.c:5537
 msgctxt "recur-description"
 msgid "on the 30th day"
 msgstr "no dia 30"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5537
+#: ../src/calendar/libecal/e-cal-recur.c:5541
 msgctxt "recur-description"
 msgid "on the 31st day"
 msgstr "no dia 31"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5545
+#: ../src/calendar/libecal/e-cal-recur.c:5549
 msgctxt "recur-description"
 msgid "on the first Monday"
 msgstr "na primeira segunda-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5548
+#: ../src/calendar/libecal/e-cal-recur.c:5552
 msgctxt "recur-description"
 msgid "on the second Monday"
 msgstr "na segunda segunda-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5551
+#: ../src/calendar/libecal/e-cal-recur.c:5555
 msgctxt "recur-description"
 msgid "on the third Monday"
 msgstr "na terceira segunda-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5554
+#: ../src/calendar/libecal/e-cal-recur.c:5558
 msgctxt "recur-description"
 msgid "on the fourth Monday"
 msgstr "na quarta segunda-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5557
+#: ../src/calendar/libecal/e-cal-recur.c:5561
 msgctxt "recur-description"
 msgid "on the fifth Monday"
 msgstr "na quinta segunda-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5570
+#: ../src/calendar/libecal/e-cal-recur.c:5574
 msgctxt "recur-description"
 msgid "on the first Tuesday"
 msgstr "na primeira terça-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5573
+#: ../src/calendar/libecal/e-cal-recur.c:5577
 msgctxt "recur-description"
 msgid "on the second Tuesday"
 msgstr "na segunda terça-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5576
+#: ../src/calendar/libecal/e-cal-recur.c:5580
 msgctxt "recur-description"
 msgid "on the third Tuesday"
 msgstr "na terceira terça-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5579
+#: ../src/calendar/libecal/e-cal-recur.c:5583
 msgctxt "recur-description"
 msgid "on the fourth Tuesday"
 msgstr "na quarta terça-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5582
+#: ../src/calendar/libecal/e-cal-recur.c:5586
 msgctxt "recur-description"
 msgid "on the fifth Tuesday"
 msgstr "na quinta terça-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5595
+#: ../src/calendar/libecal/e-cal-recur.c:5599
 msgctxt "recur-description"
 msgid "on the first Wednesday"
 msgstr "na primeira quarta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5598
+#: ../src/calendar/libecal/e-cal-recur.c:5602
 msgctxt "recur-description"
 msgid "on the second Wednesday"
 msgstr "na segunda quarta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5601
+#: ../src/calendar/libecal/e-cal-recur.c:5605
 msgctxt "recur-description"
 msgid "on the third Wednesday"
 msgstr "na terceira quarta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5604
+#: ../src/calendar/libecal/e-cal-recur.c:5608
 msgctxt "recur-description"
 msgid "on the fourth Wednesday"
 msgstr "na quarta quarta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5607
+#: ../src/calendar/libecal/e-cal-recur.c:5611
 msgctxt "recur-description"
 msgid "on the fifth Wednesday"
 msgstr "na quinta quarta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5620
+#: ../src/calendar/libecal/e-cal-recur.c:5624
 msgctxt "recur-description"
 msgid "on the first Thursday"
 msgstr "na primeira quinta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5623
+#: ../src/calendar/libecal/e-cal-recur.c:5627
 msgctxt "recur-description"
 msgid "on the second Thursday"
 msgstr "na segunda quinta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5626
+#: ../src/calendar/libecal/e-cal-recur.c:5630
 msgctxt "recur-description"
 msgid "on the third Thursday"
 msgstr "na terceira quinta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5629
+#: ../src/calendar/libecal/e-cal-recur.c:5633
 msgctxt "recur-description"
 msgid "on the fourth Thursday"
 msgstr "na quarta quinta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5632
+#: ../src/calendar/libecal/e-cal-recur.c:5636
 msgctxt "recur-description"
 msgid "on the fifth Thursday"
 msgstr "na quinta quinta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5645
+#: ../src/calendar/libecal/e-cal-recur.c:5649
 msgctxt "recur-description"
 msgid "on the first Friday"
 msgstr "na primeira sexta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5648
+#: ../src/calendar/libecal/e-cal-recur.c:5652
 msgctxt "recur-description"
 msgid "on the second Friday"
 msgstr "na segunda sexta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5651
+#: ../src/calendar/libecal/e-cal-recur.c:5655
 msgctxt "recur-description"
 msgid "on the third Friday"
 msgstr "na terceira sexta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5654
+#: ../src/calendar/libecal/e-cal-recur.c:5658
 msgctxt "recur-description"
 msgid "on the fourth Friday"
 msgstr "na quarta sexta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5657
+#: ../src/calendar/libecal/e-cal-recur.c:5661
 msgctxt "recur-description"
 msgid "on the fifth Friday"
 msgstr "na quinta sexta-feira"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5670
+#: ../src/calendar/libecal/e-cal-recur.c:5674
 msgctxt "recur-description"
 msgid "on the first Saturday"
 msgstr "no primeiro sábado"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5673
+#: ../src/calendar/libecal/e-cal-recur.c:5677
 msgctxt "recur-description"
 msgid "on the second Saturday"
 msgstr "no segundo sábado"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5676
+#: ../src/calendar/libecal/e-cal-recur.c:5680
 msgctxt "recur-description"
 msgid "on the third Saturday"
 msgstr "no terceiro sábado"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5679
+#: ../src/calendar/libecal/e-cal-recur.c:5683
 msgctxt "recur-description"
 msgid "on the fourth Saturday"
 msgstr "no quarto sábado"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5682
+#: ../src/calendar/libecal/e-cal-recur.c:5686
 msgctxt "recur-description"
 msgid "on the fifth Saturday"
 msgstr "no quinto sábado"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5695
+#: ../src/calendar/libecal/e-cal-recur.c:5699
 msgctxt "recur-description"
 msgid "on the first Sunday"
 msgstr "no primeiro domingo"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5698
+#: ../src/calendar/libecal/e-cal-recur.c:5702
 msgctxt "recur-description"
 msgid "on the second Sunday"
 msgstr "no segundo domingo"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5701
+#: ../src/calendar/libecal/e-cal-recur.c:5705
 msgctxt "recur-description"
 msgid "on the third Sunday"
 msgstr "no terceiro domingo"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5704
+#: ../src/calendar/libecal/e-cal-recur.c:5708
 msgctxt "recur-description"
 msgid "on the fourth Sunday"
 msgstr "no quarto domingo"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5707
+#: ../src/calendar/libecal/e-cal-recur.c:5711
 msgctxt "recur-description"
 msgid "on the fifth Sunday"
 msgstr "no quinto domingo"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5736
+#: ../src/calendar/libecal/e-cal-recur.c:5740
 #, c-format
 msgid "every year forever"
 msgid_plural "every %d years forever"
 msgstr[0] "todo ano sempre"
 msgstr[1] "a cada %d anos sempre"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5742
+#: ../src/calendar/libecal/e-cal-recur.c:5746
 #, c-format
 msgid "Every year forever"
 msgid_plural "Every %d years forever"
 msgstr[0] "Todo ano sempre"
 msgstr[1] "A cada %d anos sempre"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5750
+#: ../src/calendar/libecal/e-cal-recur.c:5754
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
 msgstr[0] "todo ano"
 msgstr[1] "a cada %d anos"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5756
+#: ../src/calendar/libecal/e-cal-recur.c:5760
 #, c-format
 msgid "Every year"
 msgid_plural "Every %d years"
@@ -2239,7 +2239,7 @@ msgstr[1] "A cada %d anos"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 3 days for 10 occurrences"
-#: ../src/calendar/libecal/e-cal-recur.c:5775
+#: ../src/calendar/libecal/e-cal-recur.c:5779
 #, c-format
 msgid "for one occurrence"
 msgid_plural "for %d occurrences"
@@ -2250,7 +2250,7 @@ msgstr[1] "por %d vezes"
 #. The '%s' is replaced with actual date, thus it can create something like
 #. "until Mon 15.1.2018". The text is appended at the end of the complete
 #. recurrence description, making it for example: "Every 3 days until Mon 15.1.2018"
-#: ../src/calendar/libecal/e-cal-recur.c:5811
+#: ../src/calendar/libecal/e-cal-recur.c:5815
 #, c-format
 msgctxt "recur-description"
 msgid "until %s"
@@ -2259,7 +2259,7 @@ msgstr "até %s"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 2 months on Tuesday, Thursday and Friday forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5817
+#: ../src/calendar/libecal/e-cal-recur.c:5821
 msgctxt "recur-description"
 msgid "forever"
 msgstr "para sempre"
@@ -2267,7 +2267,7 @@ msgstr "para sempre"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
 #. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
 #. together one sentence: "Every 2 weeks on Tuesday and Friday for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5827
+#: ../src/calendar/libecal/e-cal-recur.c:5831
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s %3$s"
@@ -2276,7 +2276,7 @@ msgstr "%1$s %2$s %3$s"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
 #. the '%2$s' is like "for 10 occurrences", constructing together one sentence:
 #. "Every 2 days for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5832
+#: ../src/calendar/libecal/e-cal-recur.c:5836
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s"
@@ -2284,7 +2284,7 @@ msgstr "%1$s %2$s"
 
 #. Translators: This text is appended at the end of complete recur description using "%s%s" in
 #. context "recur-description"
-#: ../src/calendar/libecal/e-cal-recur.c:5848
+#: ../src/calendar/libecal/e-cal-recur.c:5852
 #, c-format
 msgid ", with one exception"
 msgid_plural ", with %d exceptions"
@@ -2294,33 +2294,33 @@ msgstr[1] ", com %d exceções"
 #. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
 #. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
 #. It will form something like: "Every 2 weeks on Tuesday and Friday for 10 occurrences, with 3 exceptions"
-#: ../src/calendar/libecal/e-cal-recur.c:5855
+#: ../src/calendar/libecal/e-cal-recur.c:5859
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5868
-#: ../src/calendar/libecal/e-cal-recur.c:5891
+#: ../src/calendar/libecal/e-cal-recur.c:5872
+#: ../src/calendar/libecal/e-cal-recur.c:5895
 msgctxt "recur-description"
 msgid "The meeting recurs"
 msgstr "A reunião volta a acontecer"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5870
-#: ../src/calendar/libecal/e-cal-recur.c:5893
+#: ../src/calendar/libecal/e-cal-recur.c:5874
+#: ../src/calendar/libecal/e-cal-recur.c:5897
 msgctxt "recur-description"
 msgid "The appointment recurs"
 msgstr "O compromisso volta a acontecer"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5873
-#: ../src/calendar/libecal/e-cal-recur.c:5896
+#: ../src/calendar/libecal/e-cal-recur.c:5877
+#: ../src/calendar/libecal/e-cal-recur.c:5900
 msgctxt "recur-description"
 msgid "The task recurs"
 msgstr "A tarefa volta a acontecer"
 
 #. if (i_cal_component_isa (comp) == I_CAL_VJOURNAL_COMPONENT)
-#: ../src/calendar/libecal/e-cal-recur.c:5875
-#: ../src/calendar/libecal/e-cal-recur.c:5898
+#: ../src/calendar/libecal/e-cal-recur.c:5879
+#: ../src/calendar/libecal/e-cal-recur.c:5902
 msgctxt "recur-description"
 msgid "The memo recurs"
 msgstr "O memorando volta a acontecer"
@@ -2329,7 +2329,7 @@ msgstr "O memorando volta a acontecer"
 #. The '%1$s' is replaced with something like "The meeting recurs" and
 #. the '%2$s' with something like "every 2 days forever", thus forming
 #. sentence like "This meeting recurs every 2 days forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5882
+#: ../src/calendar/libecal/e-cal-recur.c:5886
 #, c-format
 msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
@@ -7225,26 +7225,26 @@ msgstr ""
 "ativar, 0 para desativar, qualquer outro valor será para utilizar a opção "
 "compile-time"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:326
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:354
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:883
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1131
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:331
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:359
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:889
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1137
 msgid "Reminders"
 msgstr "Lembretes"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:466
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:471
 msgid "Warning"
 msgstr "Aviso"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:467
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:472
 msgid "_No"
 msgstr "_Não"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:468
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:473
 msgid "_Yes"
 msgstr "_Sim"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:472
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:477
 #, c-format
 msgid ""
 "A calendar reminder is about to trigger. This reminder is configured to run "
@@ -7260,31 +7260,35 @@ msgstr ""
 "\n"
 "Tem a certeza que quer executar esta aplicação?"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:487
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:492
 msgid "Do not ask me about this program again"
 msgstr "Não volte a perguntar desta aplicação"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:793
 msgid "Display Reminders window with _notifications"
 msgstr "Mostrar janela dos Lembretes com _notificações"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:794
 msgid "Keep reminder notification window always on _top"
 msgstr "Manter a janela de notificação do lembrete sempre no _topo"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:795
+msgid "Enable _audio notifications"
+msgstr "Ativ_ar notificações áudio"
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:796
 msgid "Display reminders for _completed tasks"
 msgstr "Mostrar lembretes para tarefas _completadas"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:791
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:797
 msgid "Display reminders for _past events"
 msgstr "Mostrar lembretes para eventos _passados"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:805
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:811
 msgid "Reminders Options:"
 msgstr "Opções dos lembretes:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:899
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:905
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
@@ -7860,9 +7864,6 @@ msgstr "Sem origem registada\n"
 
 #~ msgid "Evolution Alarm Notify"
 #~ msgstr "Alarmes de notificação do Evolution"
-
-#~ msgid "Calendar event notifications"
-#~ msgstr "Notificações de eventos do calendário"
 
 #~ msgid "Birthdays & Anniversaries"
 #~ msgstr "Aniversários"
