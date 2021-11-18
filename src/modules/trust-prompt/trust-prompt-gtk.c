@@ -95,6 +95,18 @@ trust_prompt_response_cb (GtkWidget *dialog,
 	e_user_prompter_server_extension_response (extension, prompt_id, response, NULL);
 }
 
+static void
+_init_icon_theme (void)
+{
+	static gboolean icons_added = FALSE;
+
+	if (!icons_added) {
+		icons_added = TRUE;
+
+		gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (), E_DATA_SERVER_ICONDIR);
+	}
+}
+
 gboolean
 trust_prompt_show (EUserPrompterServerExtension *extension,
                    gint prompt_id,
@@ -112,6 +124,8 @@ trust_prompt_show (EUserPrompterServerExtension *extension,
 	gsize length;
 	gchar *tmp;
 	gint row = 0;
+
+	_init_icon_theme ();
 
 	dialog = gtk_dialog_new_with_buttons (
 		_("Certificate trust..."), NULL, 0,

@@ -195,6 +195,7 @@ set(privdatadir "${SHARE_INSTALL_PREFIX}/${PROJECT_NAME}")
 set(privincludedir "${INCLUDE_INSTALL_DIR}/${PROJECT_NAME}")
 set(privlibdir "${LIB_INSTALL_DIR}/${PROJECT_NAME}")
 set(privlibexecdir "${LIBEXEC_INSTALL_DIR}/${PROJECT_NAME}")
+set(icondir "${privdatadir}/icons")
 
 SET(CMAKE_INSTALL_RPATH "${privlibdir}")
 
@@ -273,6 +274,7 @@ include(InstalledTests)
 include(PkgConfigEx)
 include(SetupBuildFlags)
 include(UninstallTarget)
+include(IconCache)
 
 include(FindGettext)
 include(I18n)

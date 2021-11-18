@@ -18,6 +18,7 @@
 #include "evolution-data-server-config.h"
 
 #include <glib.h>
+#include <gtk/gtk.h>
 
 #include "libedataserver/libedataserver.h"
 #include "libedataserver/libedataserver-private.h"
@@ -45,5 +46,24 @@ _libedataserverui_load_modules (void)
 
 		module_types = e_module_load_all_in_directory_and_prefixes (E_DATA_SERVER_UIMODULEDIR, E_DATA_SERVER_PREFIX);
 		g_list_free_full (module_types, (GDestroyNotify) g_type_module_unuse);
+	}
+}
+
+/*
+ * _libedataserverui_init_icon_theme:
+ *
+ * Adds fallback icons to the gtk+ default theme search path.
+ *
+ * Since: 3.44
+ */
+void
+_libedataserverui_init_icon_theme (void)
+{
+	static gboolean icons_added = FALSE;
+
+	if (!icons_added) {
+		icons_added = TRUE;
+
+		gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (), E_DATA_SERVER_ICONDIR);
 	}
 }

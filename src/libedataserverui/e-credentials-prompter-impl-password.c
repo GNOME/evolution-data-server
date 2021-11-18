@@ -24,6 +24,8 @@
 
 #include <libedataserver/libedataserver.h>
 
+#include "libedataserverui-private.h"
+
 #include "e-credentials-prompter.h"
 #include "e-credentials-prompter-impl-password.h"
 
@@ -544,6 +546,8 @@ e_credentials_prompter_impl_password_class_init (ECredentialsPrompterImplPasswor
 	prompter_impl_class->authentication_methods = (const gchar * const *) authentication_methods;
 	prompter_impl_class->process_prompt = e_credentials_prompter_impl_password_process_prompt;
 	prompter_impl_class->cancel_prompt = e_credentials_prompter_impl_password_cancel_prompt;
+
+	_libedataserverui_init_icon_theme ();
 }
 
 static void

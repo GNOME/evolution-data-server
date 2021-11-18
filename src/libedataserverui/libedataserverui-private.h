@@ -23,6 +23,7 @@
 G_BEGIN_DECLS
 
 void		_libedataserverui_load_modules		(void);
+void		_libedataserverui_init_icon_theme	(void);
 
 G_END_DECLS
 

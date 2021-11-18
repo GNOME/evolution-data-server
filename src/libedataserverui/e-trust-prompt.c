@@ -28,6 +28,7 @@
 
 #include "camel/camel.h"
 #include "libedataserver/libedataserver.h"
+#include "libedataserverui-private.h"
 
 #include "e-trust-prompt.h"
 
@@ -105,6 +106,8 @@ trust_prompt_show (GtkWindow *parent,
 	gchar *bhost, *tmp;
 	gsize length;
 	gint row = 0;
+
+	_libedataserverui_init_icon_theme ();
 
 	dialog = gtk_dialog_new_with_buttons (
 		_("Certificate trust..."), parent, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,

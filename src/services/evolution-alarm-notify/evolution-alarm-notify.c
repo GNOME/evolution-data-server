@@ -23,6 +23,7 @@
 
 #include <libedataserver/libedataserver.h>
 #include <libedataserverui/libedataserverui.h>
+#include "libedataserverui/libedataserverui-private.h"
 
 #include "e-alarm-notify.h"
 
@@ -62,12 +63,8 @@ main (gint argc,
 
 	gtk_init (&argc, &argv);
 
-	if (error != NULL) {
-		g_printerr ("%s\n", error->message);
-		exit (EXIT_FAILURE);
-	}
-
 	e_xml_initialize_in_main ();
+	_libedataserverui_init_icon_theme ();
 
 	alarm_notify = e_alarm_notify_new (NULL, &error);
 

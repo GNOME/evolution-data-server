@@ -53,6 +53,7 @@ target_compile_definitions(edataserverui PRIVATE
 	-DLIBEDATASERVERUI_COMPILATION
 	-DE_DATA_SERVER_PREFIX=\"${CMAKE_INSTALL_PREFIX}\"
 	-DE_DATA_SERVER_UIMODULEDIR=\"${uimoduledir}\"
+	-DE_DATA_SERVER_ICONDIR=\"${icondir}\"
 )
 
 target_compile_options(edataserverui PUBLIC

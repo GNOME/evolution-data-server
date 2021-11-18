@@ -26,7 +26,7 @@ set(sources
 	trust-prompt.h
 	${TRUST_PROMPT_SOURCES}
 )
-set(extra_defines)
+set(extra_defines -DE_DATA_SERVER_ICONDIR=\"${icondir}\")
 set(extra_cflags ${TRUST_PROMPT_CFLAGS})
 set(extra_incdirs ${TRUST_PROMPT_INCLUDE_DIRS})
 set(extra_ldflags ${TRUST_PROMPT_LDFLAGS})

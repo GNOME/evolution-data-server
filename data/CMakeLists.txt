@@ -87,3 +87,36 @@ set(IMAGES
 install(FILES ${IMAGES}
 	DESTINATION ${imagesdir}
 )
+
+# ********************************
+# Fallback icons
+# ********************************
+
+set(private_icons
+	hicolor_legacy_16x16_appointment-missed.png
+	hicolor_legacy_22x22_appointment-missed.png
+	hicolor_legacy_24x24_appointment-missed.png
+	hicolor_legacy_32x32_appointment-missed.png
+	hicolor_legacy_48x48_appointment-missed.png
+	hicolor_legacy_256x256_appointment-missed.png
+	hicolor_legacy_16x16_appointment-soon.png
+	hicolor_legacy_22x22_appointment-soon.png
+	hicolor_legacy_24x24_appointment-soon.png
+	hicolor_legacy_32x32_appointment-soon.png
+	hicolor_legacy_48x48_appointment-soon.png
+	hicolor_legacy_256x256_appointment-soon.png
+	hicolor_legacy_16x16_dialog-password.png
+	hicolor_legacy_22x22_dialog-password.png
+	hicolor_legacy_24x24_dialog-password.png
+	hicolor_legacy_32x32_dialog-password.png
+	hicolor_legacy_48x48_dialog-password.png
+	hicolor_legacy_256x256_dialog-password.png
+	hicolor_legacy_16x16_dialog-warning.png
+	hicolor_legacy_22x22_dialog-warning.png
+	hicolor_legacy_24x24_dialog-warning.png
+	hicolor_legacy_32x32_dialog-warning.png
+	hicolor_legacy_48x48_dialog-warning.png
+	hicolor_legacy_256x256_dialog-warning.png
+)
+
+add_icon_cache_files("${privdatadir}" private_icons)
