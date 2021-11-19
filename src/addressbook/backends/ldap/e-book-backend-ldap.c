@@ -941,12 +941,14 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl,
 		g_rec_mutex_unlock (&eds_ldap_handler_lock);
 	}
 
+	g_rec_mutex_lock (&eds_ldap_handler_lock);
 	g_warning (
 		"e_book_backend_ldap_connect failed for "
 		"'ldap://%s:%d/%s'\n",
 		blpriv->ldap_host,
 		blpriv->ldap_port,
 		blpriv->ldap_rootdn ? blpriv->ldap_rootdn : "");
+	g_rec_mutex_unlock (&eds_ldap_handler_lock);
 	blpriv->connected = FALSE;
 
 	g_propagate_error (error, EC_ERROR (E_CLIENT_ERROR_REPOSITORY_OFFLINE));
@@ -1835,6 +1837,7 @@ modify_contact_search_handler (LDAPOp *op,
 			const gchar *current_dn = e_contact_get_const (modify_op->current_contact, E_CONTACT_UID);
 			gchar *new_uid;
 
+			g_rec_mutex_lock (&eds_ldap_handler_lock);
 			if (modify_op->ldap_uid)
 				new_uid = g_strdup_printf (
 					"%s=%s", get_dn_attribute_name (bl->priv->ldap_rootdn, NULL),
@@ -1844,6 +1847,7 @@ modify_contact_search_handler (LDAPOp *op,
 
 			if (new_uid)
 				modify_op->new_id = create_full_dn_from_contact (new_uid, bl->priv->ldap_rootdn);
+			g_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 #ifdef LDAP_DEBUG_MODIFY
 			if (enable_debug)
@@ -3950,6 +3954,7 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 	r = e_sexp_eval (sexp);
 
 	if (r && r->type == ESEXP_RES_STRING) {
+		g_rec_mutex_lock (&eds_ldap_handler_lock);
 		if (bl->priv->ldap_search_filter && *bl->priv->ldap_search_filter &&
 		    g_ascii_strcasecmp (bl->priv->ldap_search_filter, "(objectClass=*)") != 0) {
 			retval = g_strdup_printf ("(& %s %s)", bl->priv->ldap_search_filter, r->value.string);
@@ -3957,6 +3962,7 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 			retval = r->value.string;
 			r->value.string = NULL;
 		}
+		g_rec_mutex_unlock (&eds_ldap_handler_lock);
 	} else {
 		if (g_strcmp0 (query, "(contains \"x-evolution-any-field\" \"\")") != 0)
 			g_warning ("LDAP: conversion of '%s' to ldap query string failed", query);
@@ -5007,6 +5013,105 @@ book_backend_ldap_get_backend_property (EBookBackend *backend,
 	return E_BOOK_BACKEND_CLASS (e_book_backend_ldap_parent_class)->impl_get_backend_property (backend, prop_name);
 }
 
+static gboolean
+book_backend_ldap_read_settings (EBookBackendLDAP *bl)
+{
+	ESourceAuthentication *auth_extension;
+	ESourceLDAP *ldap_extension;
+	ESourceOffline *offline_extension;
+	ESource *source;
+	gint ldap_port = 0, ldap_scope = LDAP_SCOPE_ONELEVEL;
+	gboolean changed = FALSE;
+
+	#define check_str(_prop, _value) G_STMT_START { \
+			gchar *tmp = _value; \
+			if (g_strcmp0 (_prop, tmp) != 0) { \
+				g_free (_prop); \
+				_prop = tmp; \
+				changed = TRUE; \
+			} else { \
+				g_free (tmp); \
+			} \
+		} G_STMT_END
+	#define check_direct(_prop, _value) G_STMT_START { \
+			if (_prop != _value) { \
+				_prop = _value; \
+				changed = TRUE; \
+			} \
+		} G_STMT_END
+	#define check_bool(_prop, _value) G_STMT_START { \
+			if (((_prop) ? 1 : 0) != ((_value) ? 1 : 0)) { \
+				_prop = _value; \
+				changed = TRUE; \
+			} \
+		} G_STMT_END
+
+	source = e_backend_get_source (E_BACKEND (bl));
+	auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+	ldap_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_LDAP_BACKEND);
+	offline_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_OFFLINE);
+
+	ldap_port = e_source_authentication_get_port (auth_extension);
+	/* If a port wasn't specified, default to LDAP_PORT. */
+	if (ldap_port == 0)
+		ldap_port = LDAP_PORT;
+
+	switch (e_source_ldap_get_scope (ldap_extension)) {
+		case E_SOURCE_LDAP_SCOPE_ONELEVEL:
+			ldap_scope = LDAP_SCOPE_ONELEVEL;
+			break;
+		case E_SOURCE_LDAP_SCOPE_SUBTREE:
+			ldap_scope = LDAP_SCOPE_SUBTREE;
+			break;
+		default:
+			g_warn_if_reached ();
+	}
+
+	g_rec_mutex_lock (&eds_ldap_handler_lock);
+
+	check_bool (bl->priv->marked_for_offline, e_source_offline_get_stay_synchronized (offline_extension));
+	check_bool (bl->priv->marked_can_browse, e_source_ldap_get_can_browse (ldap_extension));
+	check_direct (bl->priv->security, e_source_ldap_get_security (ldap_extension));
+	check_str (bl->priv->ldap_host, e_source_authentication_dup_host (auth_extension));
+	check_direct (bl->priv->ldap_port, ldap_port);
+	check_direct (bl->priv->ldap_scope, ldap_scope);
+	check_str (bl->priv->ldap_rootdn, e_source_ldap_dup_root_dn (ldap_extension));
+	check_str (bl->priv->ldap_search_filter, e_source_ldap_dup_filter (ldap_extension));
+	check_direct (bl->priv->ldap_limit, e_source_ldap_get_limit (ldap_extension));
+
+	g_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+	#undef check_str
+	#undef check_direct
+	#undef check_bool
+
+	return changed;
+}
+
+static void
+book_backend_ldap_check_settings_changed (EBookBackend *backend,
+					  gpointer user_data,
+					  GCancellable *cancellable,
+					  GError **error)
+{
+	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
+
+	if (book_backend_ldap_read_settings (bl) && e_backend_get_online (E_BACKEND (backend))) {
+		/* Cancel all running operations */
+		ldap_cancel_all_operations (backend);
+
+		e_book_backend_set_writable (backend, TRUE);
+
+		if (e_book_backend_is_opened (backend) &&
+		    e_book_backend_ldap_connect (bl, error)) {
+			if (bl->priv->marked_for_offline && bl->priv->cache) {
+				e_book_backend_cache_set_time (bl->priv->cache, "");
+				generate_cache (bl);
+			}
+		}
+	}
+}
+
 static void
 book_backend_ldap_source_changed_cb (ESource *source,
 				     gpointer user_data)
@@ -5029,6 +5134,8 @@ book_backend_ldap_source_changed_cb (ESource *source,
 
 		g_free (value);
 	}
+
+	e_book_backend_schedule_custom_operation (backend, NULL, book_backend_ldap_check_settings_changed, NULL, NULL);
 }
 
 static void
@@ -5039,8 +5146,6 @@ book_backend_ldap_open (EBookBackend *backend,
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
 	ESourceAuthentication *auth_extension;
-	ESourceLDAP *ldap_extension;
-	ESourceOffline *offline_extension;
 	ESource *source;
 	const gchar *extension_name;
 	const gchar *cache_dir;
@@ -5059,44 +5164,7 @@ book_backend_ldap_open (EBookBackend *backend,
 	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
 	auth_extension = e_source_get_extension (source, extension_name);
 
-	extension_name = E_SOURCE_EXTENSION_LDAP_BACKEND;
-	ldap_extension = e_source_get_extension (source, extension_name);
-
-	extension_name = E_SOURCE_EXTENSION_OFFLINE;
-	offline_extension = e_source_get_extension (source, extension_name);
-
-	bl->priv->marked_for_offline = e_source_offline_get_stay_synchronized (offline_extension);
-	bl->priv->marked_can_browse = e_source_ldap_get_can_browse (ldap_extension);
-
-	bl->priv->security = e_source_ldap_get_security (ldap_extension);
-
-	bl->priv->ldap_host =
-		e_source_authentication_dup_host (auth_extension);
-
-	bl->priv->ldap_port =
-		e_source_authentication_get_port (auth_extension);
-	/* If a port wasn't specified, default to LDAP_PORT. */
-	if (bl->priv->ldap_port == 0)
-		bl->priv->ldap_port = LDAP_PORT;
-
-	bl->priv->ldap_rootdn =
-		e_source_ldap_dup_root_dn (ldap_extension);
-
-	bl->priv->ldap_search_filter =
-		e_source_ldap_dup_filter (ldap_extension);
-
-	bl->priv->ldap_limit = e_source_ldap_get_limit (ldap_extension);
-
-	switch (e_source_ldap_get_scope (ldap_extension)) {
-		case E_SOURCE_LDAP_SCOPE_ONELEVEL:
-			bl->priv->ldap_scope = LDAP_SCOPE_ONELEVEL;
-			break;
-		case E_SOURCE_LDAP_SCOPE_SUBTREE:
-			bl->priv->ldap_scope = LDAP_SCOPE_SUBTREE;
-			break;
-		default:
-			g_warn_if_reached ();
-	}
+	book_backend_ldap_read_settings (bl);
 
 	g_clear_object (&bl->priv->cache);
 
@@ -5209,8 +5277,12 @@ book_backend_ldap_create_contacts (EBookBackend *backend,
 	create_op = g_new0 (LDAPCreateOp, 1);
 	create_op->new_contact = e_contact_new_from_vcard (vcard);
 
+	g_rec_mutex_lock (&eds_ldap_handler_lock);
+
 	new_uid = create_dn_from_contact (create_op->new_contact, bl->priv->ldap_rootdn);
 	create_op->dn = create_full_dn_from_contact (new_uid, bl->priv->ldap_rootdn);
+
+	g_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	e_contact_set (create_op->new_contact, E_CONTACT_UID, create_op->dn);
 
