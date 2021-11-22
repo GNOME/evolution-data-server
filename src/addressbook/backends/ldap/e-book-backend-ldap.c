@@ -4853,6 +4853,14 @@ generate_cache_handler (LDAPOp *op,
 		gchar *status_msg;
 		GTimeVal now;
 		gchar *update_str;
+		GList *contacts, *link;
+
+		contacts = e_book_backend_cache_get_contacts (bl->priv->cache, NULL);
+		for (link = contacts; link; link = g_list_next (link)) {
+			EContact *contact = link->data;
+			e_book_backend_notify_remove (op->backend, e_contact_get_const (contact, E_CONTACT_UID));
+		}
+		g_list_free_full (contacts, g_object_unref);
 
 		e_file_cache_clean (E_FILE_CACHE (bl->priv->cache));
 
@@ -5313,6 +5321,8 @@ book_backend_ldap_source_changed_cb (ESource *source,
 	if ((bl->priv->marked_for_offline ? 0 : 1) != (get_marked_for_offline (backend) ? 1 : 0) ||
 	    (bl->priv->marked_can_browse ? 0 : 1) != (can_browse (backend) ? 1 : 0)) {
 		gchar *value;
+		gboolean old_marked_for_offline = bl->priv->marked_for_offline;
+		gboolean old_marked_can_browse = bl->priv->marked_can_browse;
 
 		bl->priv->marked_for_offline = get_marked_for_offline (backend);
 		bl->priv->marked_can_browse = can_browse (backend);
@@ -5322,6 +5332,11 @@ book_backend_ldap_source_changed_cb (ESource *source,
 		e_book_backend_notify_property_changed (backend, CLIENT_BACKEND_PROPERTY_CAPABILITIES, value);
 
 		g_free (value);
+
+		/* Restore the values, thus the below callback notices something changed
+		   and will refresh the backend cache. */
+		bl->priv->marked_for_offline = old_marked_for_offline;
+		bl->priv->marked_can_browse = old_marked_can_browse;
 	}
 
 	e_book_backend_schedule_custom_operation (backend, NULL, book_backend_ldap_check_settings_changed, NULL, NULL);
