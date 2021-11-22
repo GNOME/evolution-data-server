@@ -190,43 +190,43 @@ static EContact *build_contact_from_entry (EBookBackendLDAP *bl, LDAPMessage *e,
 
 static void email_populate (EContact *contact, gchar **values);
 static struct berval ** email_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean email_compare (EContact *contact1, EContact *contact2);
+static gboolean email_compare (EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
 static void member_populate (EContact *contact, gchar **values);
 static struct berval ** member_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean member_compare (EContact *contact1, EContact *contact2);
+static gboolean member_compare (EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
 static void homephone_populate (EContact *contact, gchar **values);
 static struct berval ** homephone_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean homephone_compare (EContact *contact1, EContact *contact2);
+static gboolean homephone_compare (EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
 static void business_populate (EContact *contact, gchar **values);
 static struct berval ** business_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean business_compare (EContact *contact1, EContact *contact2);
+static gboolean business_compare (EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
 static void anniversary_populate (EContact *contact, gchar **values);
 static struct berval ** anniversary_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean anniversary_compare (EContact *contact1, EContact *contact2);
+static gboolean anniversary_compare (EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
 static void birthday_populate (EContact *contact, gchar **values);
 static struct berval ** birthday_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean birthday_compare (EContact *contact1, EContact *contact2);
+static gboolean birthday_compare (EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
 static void category_populate (EContact *contact, gchar **values);
 static struct berval ** category_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean category_compare (EContact *contact1, EContact *contact2);
+static gboolean category_compare (EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
 static void home_address_populate (EContact * card, gchar **values);
 static struct berval **home_address_ber (EContact * card, const gchar *ldap_attr, GError **error);
-static gboolean home_address_compare (EContact * ecard1, EContact * ecard2);
+static gboolean home_address_compare (EContact * ecard1, EContact * ecard2, const gchar *ldap_attr);
 
 static void work_address_populate (EContact * card, gchar **values);
 static struct berval **work_address_ber (EContact * card, const gchar *ldap_attr, GError **error);
-static gboolean work_address_compare (EContact * ecard1, EContact * ecard2);
+static gboolean work_address_compare (EContact * ecard1, EContact * ecard2, const gchar *ldap_attr);
 
 static void other_address_populate (EContact * card, gchar **values);
 static struct berval **other_address_ber (EContact * card, const gchar *ldap_attr, GError **error);
-static gboolean other_address_compare (EContact * ecard1, EContact * ecard2);
+static gboolean other_address_compare (EContact * ecard1, EContact * ecard2, const gchar *ldap_attr);
 
 static void work_city_populate (EContact * card, gchar **values);
 static void work_state_populate (EContact * card, gchar **values);
@@ -240,15 +240,15 @@ static void home_country_populate (EContact * card, gchar **values);
 
 static void photo_populate (EContact *contact, struct berval **ber_values);
 static struct berval **photo_ber (EContact * contact, const gchar *ldap_attr, GError **error);
-static gboolean photo_compare (EContact * ecard1, EContact * ecard2);
+static gboolean photo_compare (EContact * ecard1, EContact * ecard2, const gchar *ldap_attr);
 
 static void cert_populate (EContact *contact, struct berval **ber_values);
 static struct berval **cert_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean cert_compare (EContact *ecard1, EContact *ecard2);
+static gboolean cert_compare (EContact *ecard1, EContact *ecard2, const gchar *ldap_attr);
 
 static void org_unit_populate (EContact *contact, gchar **values);
 static struct berval ** org_unit_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean org_unit_compare (EContact *contact1, EContact *contact2);
+static gboolean org_unit_compare (EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
 static struct prop_info {
 	EContactField field_id;
@@ -271,7 +271,7 @@ static struct prop_info {
 	/* used when writing to an ldap server.  returns a NULL terminated array of berval*'s */
 	struct berval ** (*ber_func)(EContact *contact, const gchar *ldap_attr, GError **error);
 	/* used to compare list attributes */
-	gboolean (*compare_func)(EContact *contact1, EContact *contact2);
+	gboolean (*compare_func)(EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
 	void (*binary_populate_contact_func)(EContact *contact, struct berval **ber_values);
 
@@ -1360,7 +1360,7 @@ build_mods_from_contacts (EBookBackendLDAP *bl,
 					g_free (current_prop_bers);
 				}
 
-				include = prop_info[i].compare_func ? !prop_info[i].compare_func (new, current) : FALSE;
+				include = prop_info[i].compare_func ? !prop_info[i].compare_func (new, current, prop_info[i].ldap_attr) : FALSE;
 			}
 		}
 
@@ -2560,7 +2560,8 @@ email_ber (EContact *contact,
 
 static gboolean
 email_compare (EContact *contact1,
-               EContact *contact2)
+	       EContact *contact2,
+	       const gchar *ldap_attr)
 {
 	const gchar *email1, *email2;
 	gint i;
@@ -2691,7 +2692,8 @@ member_ber (EContact *contact,
 
 static gboolean
 member_compare (EContact *contact_new,
-                EContact *contact_current)
+		EContact *contact_current,
+		const gchar *ldap_attr)
 {
 	GList *members_new, *members_cur, *l1, *l2, *p_new, *p_cur;
 	gint len1 = 0, len2 = 0;
@@ -2830,7 +2832,8 @@ homephone_ber (EContact *contact,
 
 static gboolean
 homephone_compare (EContact *contact1,
-                   EContact *contact2)
+		   EContact *contact2,
+		   const gchar *ldap_attr)
 {
 	gint phone_ids[2] = { E_CONTACT_PHONE_HOME, E_CONTACT_PHONE_HOME_2 };
 	const gchar *phone1, *phone2;
@@ -2902,7 +2905,8 @@ business_ber (EContact *contact,
 
 static gboolean
 business_compare (EContact *contact1,
-                  EContact *contact2)
+		  EContact *contact2,
+		  const gchar *ldap_attr)
 {
 	gint phone_ids[2] = { E_CONTACT_PHONE_BUSINESS, E_CONTACT_PHONE_BUSINESS_2 };
 	const gchar *phone1, *phone2;
@@ -2966,7 +2970,8 @@ anniversary_ber (EContact *contact,
 
 static gboolean
 anniversary_compare (EContact *contact1,
-                     EContact *contact2)
+		     EContact *contact2,
+		     const gchar *ldap_attr)
 {
 	EContactDate *dt1, *dt2;
 	gboolean equal;
@@ -3022,7 +3027,8 @@ birthday_ber (EContact *contact,
 
 static gboolean
 birthday_compare (EContact *contact1,
-                  EContact *contact2)
+		  EContact *contact2,
+		  const gchar *ldap_attr)
 {
 	EContactDate *dt1, *dt2;
 	gboolean equal;
@@ -3093,7 +3099,8 @@ category_ber (EContact *contact,
 
 static gboolean
 category_compare (EContact *contact1,
-                  EContact *contact2)
+		  EContact *contact2,
+		  const gchar *ldap_attr)
 {
 	const gchar *categories1, *categories2;
 	gboolean equal;
@@ -3333,21 +3340,24 @@ address_compare (EContact *ecard1,
 
 static gboolean
 home_address_compare (EContact *ecard1,
-                      EContact *ecard2)
+		      EContact *ecard2,
+		      const gchar *ldap_attr)
 {
 	return address_compare (ecard1, ecard2, E_CONTACT_ADDRESS_LABEL_HOME);
 }
 
 static gboolean
 work_address_compare (EContact *ecard1,
-                      EContact *ecard2)
+		      EContact *ecard2,
+		      const gchar *ldap_attr)
 {
 	return address_compare (ecard1, ecard2, E_CONTACT_ADDRESS_LABEL_WORK);
 }
 
 static gboolean
 other_address_compare (EContact *ecard1,
-                       EContact *ecard2)
+		       EContact *ecard2,
+		       const gchar *ldap_attr)
 {
 	return address_compare (ecard1, ecard2, E_CONTACT_ADDRESS_LABEL_OTHER);
 }
@@ -3394,7 +3404,8 @@ photo_ber (EContact *contact,
 
 static gboolean
 photo_compare (EContact *ecard1,
-               EContact *ecard2)
+	       EContact *ecard2,
+	       const gchar *ldap_attr)
 {
 	EContactPhoto *photo1, *photo2;
 	gboolean equal;
@@ -3467,7 +3478,8 @@ cert_ber (EContact *contact,
 
 static gboolean
 cert_compare (EContact *ecard1,
-	      EContact *ecard2)
+	      EContact *ecard2,
+	      const gchar *ldap_attr)
 {
 	EContactCert *cert1, *cert2;
 	gboolean equal;
@@ -3492,20 +3504,31 @@ static void
 org_unit_populate (EContact *contact,
 		   gchar **values)
 {
-	if (values[0] && *values[0]) {
-		gchar *org_unit = e_contact_get (contact, E_CONTACT_ORG_UNIT);
-		if (org_unit && *org_unit) {
-			gchar *tmp;
+	GString *str;
+	gchar *org_unit = NULL;
+	guint ii;
 
-			tmp = g_strconcat (org_unit, ";", values[0], NULL);
-			e_contact_set (contact, E_CONTACT_ORG_UNIT, tmp);
-			g_free (tmp);
-		} else {
-			e_contact_set (contact, E_CONTACT_ORG_UNIT, values[0]);
+	if (!values[0] || !*values[0])
+		return;
+
+	org_unit = e_contact_get (contact, E_CONTACT_ORG_UNIT);
+	str = g_string_new (org_unit ? org_unit : "");
+
+	for (ii = 0; values[ii]; ii++) {
+		const gchar *value = values[ii];
+
+		if (value && *value) {
+			if (str->len)
+				g_string_append_c (str, ';');
+			g_string_append (str, value);
 		}
-
-		g_free (org_unit);
 	}
+
+	if (str->len && g_strcmp0 (str->str, org_unit) != 0)
+		e_contact_set (contact, E_CONTACT_ORG_UNIT, str->str);
+
+	g_string_free (str, TRUE);
+	g_free (org_unit);
 }
 
 static struct berval **
@@ -3526,40 +3549,110 @@ org_unit_ber (EContact *contact,
 	ptr = strchr (org_unit, ';');
 
 	if (g_strcmp0 (ldap_attr, "departmentNumber") == 0) {
-		gchar *tmp;
+		GPtrArray *array;
+		const gchar *from;
 
 		if (!ptr || !ptr[1]) {
 			g_free (org_unit);
 			return NULL;
 		}
 
-		tmp = g_strdup (ptr + 1);
-		g_free (org_unit);
-		org_unit = tmp;
-	} else if (ptr) {
-		*ptr = '\0';
+		array = g_ptr_array_new ();
+		ptr++; /* skip the ';' */
+
+		for (from = ptr; *ptr; ptr++) {
+			if (!ptr[1] || (*ptr == ';' && ptr[1])) {
+				if (*ptr == ';')
+					*ptr = '\0';
+				if (from + 1 < ptr) {
+					struct berval *bval = g_new (struct berval, 1);
+					bval->bv_val = g_strdup (from);
+					bval->bv_len = strlen (from);
+					g_ptr_array_add (array, bval);
+				}
+
+				from = ptr + 1;
+			}
+		}
+
+		g_ptr_array_add (array, NULL);
+		result = (struct berval **) g_ptr_array_free (array, array->len == 1);
+	} else {
+		if (ptr)
+			*ptr = '\0';
+
+		if (*org_unit) {
+			result = g_new (struct berval *, 2);
+			result[0] = g_new (struct berval, 1);
+			result[0]->bv_val = org_unit;
+			result[0]->bv_len = strlen (org_unit);
+			result[1] = NULL;
+
+			org_unit = NULL;
+		} else {
+			result = NULL;
+		}
 	}
 
-	result = g_new (struct berval *, 2);
-	result[0] = g_new (struct berval, 1);
-	result[0]->bv_val = org_unit;
-	result[0]->bv_len = strlen (org_unit);
-	result[1] = NULL;
+	g_free (org_unit);
 
 	return result;
 }
 
 static gboolean
 org_unit_compare (EContact *contact1,
-		  EContact *contact2)
+		  EContact *contact2,
+		  const gchar *ldap_attr)
 {
 	gchar *org_unit1, *org_unit2;
 	gboolean equal;
 
 	org_unit1 = e_contact_get (contact1, E_CONTACT_ORG_UNIT);
-	org_unit2 = e_contact_get (contact1, E_CONTACT_ORG_UNIT);
+	org_unit2 = e_contact_get (contact2, E_CONTACT_ORG_UNIT);
 
-	equal = g_strcmp0 (org_unit1, org_unit2);
+	if (g_strcmp0 (ldap_attr, "departmentNumber") == 0) {
+		gchar *ptr;
+
+		if (org_unit1) {
+			ptr = strchr (org_unit1, ';');
+			if (ptr && ptr[1]) {
+				gchar *tmp = g_strdup (ptr + 1);
+				g_free (org_unit1);
+				org_unit1 = tmp;
+			} else {
+				g_free (org_unit1);
+				org_unit1 = NULL;
+			}
+		}
+
+		if (org_unit2) {
+			ptr = strchr (org_unit2, ';');
+			if (ptr && ptr[1]) {
+				gchar *tmp = g_strdup (ptr + 1);
+				g_free (org_unit2);
+				org_unit2 = tmp;
+			} else {
+				g_free (org_unit2);
+				org_unit2 = NULL;
+			}
+		}
+	} else {
+		gchar *ptr;
+
+		if (org_unit1) {
+			ptr = strchr (org_unit1, ';');
+			if (ptr)
+				*ptr = '\0';
+		}
+
+		if (org_unit2) {
+			ptr = strchr (org_unit2, ';');
+			if (ptr)
+				*ptr = '\0';
+		}
+	}
+
+	equal = g_strcmp0 (org_unit1, org_unit2) == 0;
 
 	g_free (org_unit1);
 	g_free (org_unit2);
