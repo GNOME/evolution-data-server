@@ -179,7 +179,7 @@ secret_monitor_scan_secrets_thread (gpointer user_data)
 	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
 	if (local_error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, local_error->message);
+		e_source_registry_debug_print ("%s: %s", G_STRFUNC, local_error->message);
 		g_error_free (local_error);
 	}
 
@@ -218,7 +218,7 @@ secret_monitor_scan_secrets_timeout_cb (gpointer user_data)
 		g_thread_unref (thread);
 
 	if (local_error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, local_error->message);
+		e_source_registry_debug_print ("%s: %s", G_STRFUNC, local_error->message);
 		g_error_free (local_error);
 		g_object_unref (server);
 	}
