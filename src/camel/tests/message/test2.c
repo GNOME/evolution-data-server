@@ -42,7 +42,10 @@ test_header_encode_phrase (void)
 		{ "BéB Cí AšA", "=?UTF-8?Q?B=C3=A9B_C=C3=AD_A=C5=A1A?=" },
 		{ "x AšA BéB Cí", "x =?UTF-8?Q?A=C5=A1A_B=C3=A9B_C=C3=AD?=" },
 		{ "BéB AšA Cí y", "=?UTF-8?Q?B=C3=A9B_A=C5=A1A_C=C3=AD?= y" },
-		{ "x BéB Cí AšA y", "x =?UTF-8?Q?B=C3=A9B_C=C3=AD_A=C5=A1A?= y" }
+		{ "x BéB Cí AšA y", "x =?UTF-8?Q?B=C3=A9B_C=C3=AD_A=C5=A1A?= y" },
+		{ "🐈", "=?UTF-8?Q?=F0=9F=90=88?=" },
+		{ "🐈 BéB", "=?UTF-8?Q?=F0=9F=90=88_B=C3=A9B?=" },
+		{ "BéB 🐈", "=?UTF-8?Q?B=C3=A9B_=F0=9F=90=88?=" }
 	};
 	guint ii;
 
@@ -76,7 +79,10 @@ test_header_encode_string (void)
 		{ "BéB Cí AšA", "=?UTF-8?Q?B=C3=A9B?= =?UTF-8?Q?_C=C3=AD?= =?UTF-8?Q?_A=C5=A1A?=" },
 		{ "x AšA BéB Cí", "x =?UTF-8?Q?A=C5=A1A?= =?UTF-8?Q?_B=C3=A9B?= =?UTF-8?Q?_C=C3=AD?=" },
 		{ "BéB AšA Cí y", "=?UTF-8?Q?B=C3=A9B?= =?UTF-8?Q?_A=C5=A1A?= =?UTF-8?Q?_C=C3=AD?= y" },
-		{ "x BéB Cí AšA y", "x =?UTF-8?Q?B=C3=A9B?= =?UTF-8?Q?_C=C3=AD?= =?UTF-8?Q?_A=C5=A1A?= y" }
+		{ "x BéB Cí AšA y", "x =?UTF-8?Q?B=C3=A9B?= =?UTF-8?Q?_C=C3=AD?= =?UTF-8?Q?_A=C5=A1A?= y" },
+		{ "🐈", "=?UTF-8?Q?=F0=9F=90=88?=" },
+		{ "🐈 BéB", "=?UTF-8?Q?=F0=9F=90=88?= =?UTF-8?Q?_B=C3=A9B?=" },
+		{ "BéB 🐈", "=?UTF-8?Q?B=C3=A9B?= =?UTF-8?Q?_=F0=9F=90=88?=" }
 	};
 	guint ii;
 
