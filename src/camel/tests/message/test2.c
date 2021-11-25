@@ -25,6 +25,74 @@
 
 #include "address-data.h"
 
+static void
+test_header_encode_phrase (void)
+{
+	struct _items {
+		const gchar *input;
+		const gchar *output;
+	} items[] = {
+		{ "a b c", "a b c" },
+		{ "AšA", "=?iso-8859-2?Q?A=B9A?=" },
+		{ "BéB", "=?ISO-8859-1?Q?B=E9B?=" },
+		{ "Cí", "=?ISO-8859-1?Q?C=ED?=" },
+		{ "BéB Cí", "=?ISO-8859-1?Q?B=E9B_C=ED?=" },
+		{ "AšA BéB Cí", "=?UTF-8?Q?A=C5=A1A_B=C3=A9B_C=C3=AD?=" },
+		{ "BéB AšA Cí", "=?UTF-8?Q?B=C3=A9B_A=C5=A1A_C=C3=AD?=" },
+		{ "BéB Cí AšA", "=?UTF-8?Q?B=C3=A9B_C=C3=AD_A=C5=A1A?=" },
+		{ "x AšA BéB Cí", "x =?UTF-8?Q?A=C5=A1A_B=C3=A9B_C=C3=AD?=" },
+		{ "BéB AšA Cí y", "=?UTF-8?Q?B=C3=A9B_A=C5=A1A_C=C3=AD?= y" },
+		{ "x BéB Cí AšA y", "x =?UTF-8?Q?B=C3=A9B_C=C3=AD_A=C5=A1A?= y" }
+	};
+	guint ii;
+
+	camel_test_start ("camel_header_encode_phrase");
+
+	for (ii = 0; ii < G_N_ELEMENTS (items); ii++) {
+		gchar *str;
+
+		str = camel_header_encode_phrase ((const guchar *) items[ii].input);
+		check_msg (g_ascii_strcasecmp (str, items[ii].output) == 0, "returned = '%s' expected = '%s'", str, items[ii].output);
+		test_free (str);
+	}
+
+	camel_test_end ();
+}
+
+static void
+test_header_encode_string (void)
+{
+	struct _items {
+		const gchar *input;
+		const gchar *output;
+	} items[] = {
+		{ "a b c", "a b c" },
+		{ "AšA", "=?iso-8859-2?Q?A=B9A?=" },
+		{ "BéB", "=?ISO-8859-1?Q?B=E9B?=" },
+		{ "Cí", "=?ISO-8859-1?Q?C=ED?=" },
+		{ "BéB Cí", "=?ISO-8859-1?Q?B=E9B?= =?ISO-8859-1?Q?_C=ED?=" },
+		{ "AšA BéB Cí", "=?UTF-8?Q?A=C5=A1A?= =?UTF-8?Q?_B=C3=A9B?= =?UTF-8?Q?_C=C3=AD?=" },
+		{ "BéB AšA Cí", "=?UTF-8?Q?B=C3=A9B?= =?UTF-8?Q?_A=C5=A1A?= =?UTF-8?Q?_C=C3=AD?=" },
+		{ "BéB Cí AšA", "=?UTF-8?Q?B=C3=A9B?= =?UTF-8?Q?_C=C3=AD?= =?UTF-8?Q?_A=C5=A1A?=" },
+		{ "x AšA BéB Cí", "x =?UTF-8?Q?A=C5=A1A?= =?UTF-8?Q?_B=C3=A9B?= =?UTF-8?Q?_C=C3=AD?=" },
+		{ "BéB AšA Cí y", "=?UTF-8?Q?B=C3=A9B?= =?UTF-8?Q?_A=C5=A1A?= =?UTF-8?Q?_C=C3=AD?= y" },
+		{ "x BéB Cí AšA y", "x =?UTF-8?Q?B=C3=A9B?= =?UTF-8?Q?_C=C3=AD?= =?UTF-8?Q?_A=C5=A1A?= y" }
+	};
+	guint ii;
+
+	camel_test_start ("camel_header_encode_string");
+
+	for (ii = 0; ii < G_N_ELEMENTS (items); ii++) {
+		gchar *str;
+
+		str = camel_header_encode_string ((const guchar *) items[ii].input);
+		check_msg (g_ascii_strcasecmp (str, items[ii].output) == 0, "returned = '%s' expected = '%s'", str, items[ii].output);
+		test_free (str);
+	}
+
+	camel_test_end ();
+}
+
 static gchar *convert (const gchar *in, const gchar *from, const gchar *to)
 {
 	GIConv ic = g_iconv_open (to, from);
@@ -252,6 +320,8 @@ gint main (gint argc, gchar **argv)
 	camel_test_start ("CamelInternetAddress, I18N");
 
 	for (i = 0; i < G_N_ELEMENTS (test_lines); i++) {
+		gchar *ptr;
+
 		push ("Testing text line %d (%s) '%s'", i, test_lines[i].type, test_lines[i].line);
 
 		addr = camel_internet_address_new ();
@@ -259,6 +329,12 @@ gint main (gint argc, gchar **argv)
 		/* first, convert to api format (utf-8) */
 		charset = test_lines[i].type;
 		name = to_utf8 (test_lines[i].line, charset);
+
+		/* remove new-line characters from the name, because they are truncated on decode */
+		for (ptr = name; *ptr; ptr++) {
+			if (*ptr == '\n' || *ptr == '\r')
+				*ptr = ' ';
+		}
 
 		push ("Address setup");
 		camel_internet_address_add (addr, name, "nobody@nowhere.com");
@@ -333,7 +409,7 @@ gint main (gint argc, gchar **argv)
 		push ("checking decoded");
 		check (camel_address_decode (CAMEL_ADDRESS (addr), test_address[i].addr) == test_address[i].count);
 		format = camel_address_format (CAMEL_ADDRESS (addr));
-		check (strcmp (format, test_address[i].utf8) == 0);
+		check_msg (string_equal (format, test_address[i].utf8), "format = '%s\n\tformat2 = '%s'", format, test_address[i].utf8);
 		test_free (format);
 		pull ();
 
@@ -380,6 +456,9 @@ gint main (gint argc, gchar **argv)
 	}
 
 	camel_test_end ();
+
+	test_header_encode_phrase ();
+	test_header_encode_string ();
 
 	return 0;
 }

@@ -1620,9 +1620,9 @@ header_encode_string_rfc2047 (const guchar *in,
                               gboolean include_lwsp)
 {
 	const guchar *inptr = in, *start, *word;
-	gboolean last_was_encoded = FALSE;
-	gboolean last_was_space = FALSE;
-	const gchar *charset;
+	gboolean last_was_encoded;
+	gboolean last_was_space;
+	const gchar *charset = NULL;
 	gint encoding;
 	GString *out;
 
@@ -1640,11 +1640,14 @@ header_encode_string_rfc2047 (const guchar *in,
 	if (*inptr == '\0')
 		return g_strdup ((gchar *) in);
 
-	/* This gets each word out of the input, and checks to see what charset
-	 * can be used to encode it. */
+	/* This gets each word out of the input, and checks to see what charset can be
+	 * used to encode it. The same charset (the first or UTF-8) is used for all words. */
 	/* TODO: Work out when to merge subsequent words, or across word-parts */
 	out = g_string_new ("");
+ restart:
 	inptr = in;
+	last_was_encoded = FALSE;
+	last_was_space = FALSE;
 	encoding = 0;
 	word = NULL;
 	start = inptr;
@@ -1680,14 +1683,36 @@ header_encode_string_rfc2047 (const guchar *in,
 				if (last_was_encoded)
 					g_string_append_c (out, ' ');
 
-				rfc2047_encode_word (out, (const gchar *) start, inptr - start, "ISO-8859-1", CAMEL_MIME_IS_ESAFE);
+				if (!charset)
+					charset = "ISO-8859-1";
+				else if (g_ascii_strcasecmp (charset, "UTF-8") != 0 && g_ascii_strcasecmp (charset, "ISO-8859-1") != 0) {
+					/* Use the UTF-8, when different words require different character sets */
+					g_string_truncate (out, 0);
+					charset = "UTF-8";
+					goto restart;
+				}
+				rfc2047_encode_word (out, (const gchar *) start, inptr - start, charset, CAMEL_MIME_IS_ESAFE);
 				last_was_encoded = TRUE;
 				break;
 			case 2:
 				if (last_was_encoded)
 					g_string_append_c (out, ' ');
 
-				if (!(charset = camel_charset_best ((const gchar *) start, inptr - start)))
+				if (charset && g_ascii_strcasecmp (charset, "UTF-8") != 0) {
+					const gchar *would_use_charset;
+
+					if (!(would_use_charset = camel_charset_best ((const gchar *) start, inptr - start)))
+						would_use_charset = "UTF-8";
+
+					if (g_ascii_strcasecmp (would_use_charset, charset) != 0) {
+						/* Use the UTF-8, when different words require different character sets */
+						g_string_truncate (out, 0);
+						charset = "UTF-8";
+						goto restart;
+					}
+				}
+
+				if (!charset && !(charset = camel_charset_best ((const gchar *) start, inptr - start)))
 					charset = "UTF-8";
 				rfc2047_encode_word (out, (const gchar *) start, inptr - start, charset, CAMEL_MIME_IS_ESAFE);
 				last_was_encoded = TRUE;
@@ -1728,13 +1753,35 @@ header_encode_string_rfc2047 (const guchar *in,
 			if (last_was_encoded)
 				g_string_append_c (out, ' ');
 
-			rfc2047_encode_word (out, (const gchar *) start, inptr - start, "ISO-8859-1", CAMEL_MIME_IS_ESAFE);
+			if (!charset)
+				charset = "ISO-8859-1";
+			else if (g_ascii_strcasecmp (charset, "UTF-8") != 0 && g_ascii_strcasecmp (charset, "ISO-8859-1") != 0) {
+				/* Use the UTF-8, when different words require different character sets */
+				g_string_truncate (out, 0);
+				charset = "UTF-8";
+				goto restart;
+			}
+			rfc2047_encode_word (out, (const gchar *) start, inptr - start, charset, CAMEL_MIME_IS_ESAFE);
 			break;
 		case 2:
 			if (last_was_encoded)
 				g_string_append_c (out, ' ');
 
-			if (!(charset = camel_charset_best ((const gchar *) start, inptr - start)))
+			if (charset && g_ascii_strcasecmp (charset, "UTF-8") != 0) {
+				const gchar *would_use_charset;
+
+				if (!(would_use_charset = camel_charset_best ((const gchar *) start, inptr - start)))
+					would_use_charset = "UTF-8";
+
+				if (g_ascii_strcasecmp (would_use_charset, charset) != 0) {
+					/* Use the UTF-8, when different words require different character sets */
+					g_string_truncate (out, 0);
+					charset = "UTF-8";
+					goto restart;
+				}
+			}
+
+			if (!charset && !(charset = camel_charset_best ((const gchar *) start, inptr - start)))
 				charset = "UTF-8";
 			rfc2047_encode_word (out, (const gchar *) start, inptr - start, charset, CAMEL_MIME_IS_ESAFE);
 			break;
@@ -1813,12 +1860,14 @@ word_types_compatable (enum _phrase_word_t type1,
 /* split the input into words with info about each word
  * merge common word types clean up */
 static GList *
-header_encode_phrase_get_words (const guchar *in)
+header_encode_phrase_get_words (const guchar *in,
+				const gchar **out_charset)
 {
 	const guchar *inptr = in, *start, *last;
 	struct _phrase_word *word;
 	enum _phrase_word_t type;
 	gint encoding, count = 0;
+	gboolean has_encoding_2 = FALSE;
 	GList *words = NULL;
 
 	/* break the input into words */
@@ -1852,6 +1901,19 @@ header_encode_phrase_get_words (const guchar *in)
 				word->encoding = encoding;
 				words = g_list_append (words, word);
 				count = 0;
+
+				if (encoding > 0 && (!*out_charset || g_ascii_strcasecmp (*out_charset, "UTF-8") != 0)) {
+					const gchar *charset;
+
+					if (!(charset = camel_charset_best ((const gchar *) word->start, word->end - word->start)))
+						charset = "UTF-8";
+
+					/* Use the UTF-8, when different words require different character sets */
+					if (!*out_charset)
+						*out_charset = charset;
+					else if (g_ascii_strcasecmp (*out_charset, charset) != 0)
+						*out_charset = "UTF-8";
+				}
 			}
 
 			start = inptr;
@@ -1868,6 +1930,7 @@ header_encode_phrase_get_words (const guchar *in)
 			} else if (c >= 256) {
 				type = WORD_2047;
 				encoding = MAX (encoding, 2);
+				has_encoding_2 = TRUE;
 			}
 		}
 
@@ -1881,6 +1944,31 @@ header_encode_phrase_get_words (const guchar *in)
 		word->type = type;
 		word->encoding = encoding;
 		words = g_list_append (words, word);
+
+		if (encoding > 0 && (!*out_charset || g_ascii_strcasecmp (*out_charset, "UTF-8") != 0)) {
+			const gchar *charset;
+
+			if (!(charset = camel_charset_best ((const gchar *) word->start, word->end - word->start)))
+				charset = "UTF-8";
+
+			/* Use the UTF-8, when different words require different character sets */
+			if (!*out_charset)
+				*out_charset = charset;
+			else if (g_ascii_strcasecmp (*out_charset, charset) != 0)
+				*out_charset = "UTF-8";
+		}
+	}
+
+	/* Make sure all encodings are of the same type */
+	if (has_encoding_2) {
+		GList *link;
+
+		for (link = words; link; link = g_list_next (link)) {
+			word = link->data;
+
+			if (word->type == WORD_2047 && word->encoding == 1)
+				word->encoding = 2;
+		}
 	}
 
 	return words;
@@ -1950,13 +2038,13 @@ camel_header_encode_phrase (const guchar *in)
 {
 	struct _phrase_word *word = NULL, *last_word = NULL;
 	GList *words, *wordl;
-	const gchar *charset;
+	const gchar *charset = NULL;
 	GString *out;
 
 	if (in == NULL)
 		return NULL;
 
-	words = header_encode_phrase_get_words (in);
+	words = header_encode_phrase_get_words (in, &charset);
 	if (!words)
 		return NULL;
 
@@ -2002,24 +2090,24 @@ camel_header_encode_phrase (const guchar *in)
 			}
 
 			if (word->encoding == 1) {
-				rfc2047_encode_word (out, start, len, "ISO-8859-1", CAMEL_MIME_IS_PSAFE);
+				if (!charset)
+					charset = "ISO-8859-1";
+				rfc2047_encode_word (out, start, len, charset, CAMEL_MIME_IS_PSAFE);
 			} else {
-				if (!(charset = camel_charset_best (start, len)))
+				if (!charset && !(charset = camel_charset_best (start, len)))
 					charset = "UTF-8";
 				rfc2047_encode_word (out, start, len, charset, CAMEL_MIME_IS_PSAFE);
 			}
 			break;
 		}
 
-		g_free (last_word);
 		wordl = g_list_next (wordl);
 
 		last_word = word;
 	}
 
 	/* and we no longer need the list */
-	g_free (word);
-	g_list_free (words);
+	g_list_free_full (words, g_free);
 
 	return g_string_free (out, FALSE);
 }

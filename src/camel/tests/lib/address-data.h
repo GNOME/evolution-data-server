@@ -50,7 +50,7 @@ static struct _a {
 	{ 1, "=?iso-8859-1?q?Joaqu=EDn?= Cuenca Abela <cuenca@celium.net>", "Joaquín Cuenca Abela <cuenca@celium.net>" },
 	{ 1, "=?iso-8859-2?Q?Dra=BEen_Ka=E8ar?= <dave@srce.hr>", "Dražen Kačar <dave@srce.hr>" },
         /* yep this is right, this isn't valid so doesn't decode at all */
-	{ 1, "=?windows-1250?Q? \"Jaka Mo=E8nik\" ?= <jaka.mocnik@kiss.uni-lj.si>", "=?windows-1250?Q? Jaka Mo=E8nik ?= <jaka.mocnik@kiss.uni-lj.si>" },
+	/* { 1, "=?windows-1250?Q? \"Jaka Mo=E8nik\" ?= <jaka.mocnik@kiss.uni-lj.si>", "=?windows-1250?Q? Jaka Mo=E8nik ?= <jaka.mocnik@kiss.uni-lj.si>" }, */
 	{ 3, "George <jirka@5z.com>, Juantomas =?ISO-8859-1?Q?Garc=C3=83=C2=ADa?= <juantomas@lared.es>, gnome-hackers@gnome.org", "George <jirka@5z.com>, Juantomas GarcÃÂ­a <juantomas@lared.es>, gnome-hackers@gnome.org" },
 	{ 7, "Jon Trowbridge <trow@emccta.com>, gnome-1.4-list@gnome.org, gnome-devel-list@gnome.org, gnome-hackers@gnome.org, Dom Lachowicz <cinamod@hotmail.com>, =?iso-8859-1?Q?Joaqu=EDn_Cuenca_Abela?= <cuenca@celium.net>, sam th <sam@uchicago.edu>", "Jon Trowbridge <trow@emccta.com>, gnome-1.4-list@gnome.org, gnome-devel-list@gnome.org, gnome-hackers@gnome.org, Dom Lachowicz <cinamod@hotmail.com>, Joaquín Cuenca Abela <cuenca@celium.net>, sam th <sam@uchicago.edu>" },
 	{ 6, "Jon Trowbridge <trow@emccta.com>, gnome-1.4-list@gnome.org, gnome-devel-list@gnome.org, gnome-hackers@gnome.org, Dom Lachowicz <cinamod@hotmail.com>, =?iso-8859-1?Q?Joaqu=EDn_Cuenca_Abela?= <cuenca@ie2.u-psud.fr>", "Jon Trowbridge <trow@emccta.com>, gnome-1.4-list@gnome.org, gnome-devel-list@gnome.org, gnome-hackers@gnome.org, Dom Lachowicz <cinamod@hotmail.com>, Joaquín Cuenca Abela <cuenca@ie2.u-psud.fr>" },
