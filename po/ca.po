@@ -7341,8 +7341,8 @@ msgstr "Opcions pels recordatoris:"
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
-msgstr[0] "Tens %d recordatori"
-msgstr[1] "Tens %d recordatoris"
+msgstr[0] "Teniu %d recordatori"
+msgstr[1] "Teniu %d recordatoris"
 
 #: ../src/services/evolution-source-registry/evolution-source-registry.c:41
 msgid "Don’t migrate user data from previous versions of Evolution"
