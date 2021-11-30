@@ -1154,7 +1154,7 @@ camel_mime_part_set_content (CamelMimePart *mime_part,
  * Get the disposition of the MIME part as a structure.
  * Returned pointer is owned by @mime_part.
  *
- * Returns: the disposition structure
+ * Returns: (nullable): the disposition structure
  *
  * Since: 2.30
  **/
@@ -1172,7 +1172,7 @@ camel_mime_part_get_content_disposition (CamelMimePart *mime_part)
  *
  * Get the content-id field of a MIME part.
  *
- * Returns: the content-id field of the MIME part
+ * Returns: (nullable): the content-id field of the MIME part
  **/
 const gchar *
 camel_mime_part_get_content_id (CamelMimePart *mime_part)
@@ -1185,7 +1185,7 @@ camel_mime_part_get_content_id (CamelMimePart *mime_part)
 /**
  * camel_mime_part_set_content_id:
  * @mime_part: a #CamelMimePart
- * @contentid: content id
+ * @contentid: (nullable): content id
  *
  * Set the content-id field on a MIME part.
  **/
@@ -1220,7 +1220,7 @@ camel_mime_part_set_content_id (CamelMimePart *mime_part,
  *
  * Get the content-location field of a MIME part.
  *
- * Returns: the content-location field of a MIME part
+ * Returns: (nullable): the content-location field of a MIME part
  **/
 const gchar *
 camel_mime_part_get_content_location (CamelMimePart *mime_part)
@@ -1233,7 +1233,7 @@ camel_mime_part_get_content_location (CamelMimePart *mime_part)
 /**
  * camel_mime_part_set_content_location:
  * @mime_part: a #CamelMimePart
- * @location: the content-location value of the MIME part
+ * @location: (nullable): the content-location value of the MIME part
  *
  * Set the content-location field of the MIME part.
  **/
@@ -1259,7 +1259,7 @@ camel_mime_part_set_content_location (CamelMimePart *mime_part,
  *
  * Get the content-md5 field of the MIME part.
  *
- * Returns: the content-md5 field of the MIME part
+ * Returns: (nullable): the content-md5 field of the MIME part
  **/
 const gchar *
 camel_mime_part_get_content_md5 (CamelMimePart *mime_part)
@@ -1272,7 +1272,7 @@ camel_mime_part_get_content_md5 (CamelMimePart *mime_part)
 /**
  * camel_mime_part_set_content_md5:
  * @mime_part: a #CamelMimePart
- * @md5sum: the md5sum of the MIME part
+ * @md5sum: (nullable): the md5sum of the MIME part
  *
  * Set the content-md5 field of the MIME part.
  **/
@@ -1295,7 +1295,7 @@ camel_mime_part_set_content_md5 (CamelMimePart *mime_part,
  *
  * Get the Content-Languages set on the MIME part.
  *
- * Returns: (element-type utf8) (transfer none): a #GList of languages
+ * Returns: (element-type utf8) (transfer none) (nullable): a #GList of languages
  **/
 const GList *
 camel_mime_part_get_content_languages (CamelMimePart *mime_part)
@@ -1308,7 +1308,7 @@ camel_mime_part_get_content_languages (CamelMimePart *mime_part)
 /**
  * camel_mime_part_set_content_languages:
  * @mime_part: a #CamelMimePart
- * @content_languages: (element-type utf8): list of languages
+ * @content_languages: (element-type utf8) (nullable) (transfer full): list of languages
  *
  * Set the Content-Languages field of a MIME part.
  **/
@@ -1317,6 +1317,9 @@ camel_mime_part_set_content_languages (CamelMimePart *mime_part,
                                        GList *content_languages)
 {
 	g_return_if_fail (CAMEL_IS_MIME_PART (mime_part));
+
+	if (mime_part->priv->content_languages == content_languages)
+		return;
 
 	g_list_free_full (
 		mime_part->priv->content_languages,
@@ -1333,7 +1336,7 @@ camel_mime_part_set_content_languages (CamelMimePart *mime_part,
  *
  * Get the Content-Type of a MIME part.
  *
- * Returns: (transfer none): the parsed #CamelContentType of the MIME part
+ * Returns: (transfer none) (nullable): the parsed #CamelContentType of the MIME part
  **/
 CamelContentType *
 camel_mime_part_get_content_type (CamelMimePart *mime_part)
@@ -1350,7 +1353,7 @@ camel_mime_part_get_content_type (CamelMimePart *mime_part)
 /**
  * camel_mime_part_set_content_type:
  * @mime_part: a #CamelMimePart
- * @content_type: content-type string
+ * @content_type: (nullable): content-type string
  *
  * Set the content-type on a MIME part.
  **/
@@ -1373,7 +1376,7 @@ camel_mime_part_set_content_type (CamelMimePart *mime_part,
  *
  * Get the description of the MIME part.
  *
- * Returns: the description
+ * Returns: (nullable): the description
  **/
 const gchar *
 camel_mime_part_get_description (CamelMimePart *mime_part)
@@ -1415,7 +1418,7 @@ camel_mime_part_set_description (CamelMimePart *mime_part,
  *
  * Get the disposition of the MIME part.
  *
- * Returns: the disposition
+ * Returns: (nullable): the disposition
  **/
 const gchar *
 camel_mime_part_get_disposition (CamelMimePart *mime_part)
@@ -1431,7 +1434,7 @@ camel_mime_part_get_disposition (CamelMimePart *mime_part)
 /**
  * camel_mime_part_set_disposition:
  * @mime_part: a #CamelMimePart
- * @disposition: disposition of the MIME part
+ * @disposition: (nullable): disposition of the MIME part
  *
  * Set a disposition on the MIME part.
  **/
@@ -1508,7 +1511,7 @@ camel_mime_part_set_encoding (CamelMimePart *mime_part,
  *
  * Get the filename of a MIME part.
  *
- * Returns: the filename of the MIME part
+ * Returns: (nullable): the filename of the MIME part
  **/
 const gchar *
 camel_mime_part_get_filename (CamelMimePart *mime_part)
@@ -1526,7 +1529,7 @@ camel_mime_part_get_filename (CamelMimePart *mime_part)
 /**
  * camel_mime_part_set_filename:
  * @mime_part: a #CamelMimePart
- * @filename: filename given to the MIME part
+ * @filename: (nullable): filename given to the MIME part
  *
  * Set the filename on a MIME part.
  **/

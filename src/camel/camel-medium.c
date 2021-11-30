@@ -188,7 +188,7 @@ camel_medium_add_header (CamelMedium *medium,
  * camel_medium_set_header:
  * @medium: a #CamelMedium object
  * @name: name of the header
- * @value: value of the header
+ * @value: (nullable): value of the header
  *
  * Sets the value of a header.  Any other occurances of the header
  * will be removed.  Setting a %NULL header can be used to remove
@@ -330,7 +330,7 @@ camel_medium_get_headers (CamelMedium *medium)
  * without its headers.
  *
  * Returns: (transfer none) (nullable): a #CamelDataWrapper containing
- * @medium's content. Can return NULL.
+ * @medium's content. Can return %NULL.
  **/
 CamelDataWrapper *
 camel_medium_get_content (CamelMedium *medium)
@@ -349,7 +349,7 @@ camel_medium_get_content (CamelMedium *medium)
 /**
  * camel_medium_set_content:
  * @medium: a #CamelMedium object
- * @content: a #CamelDataWrapper object
+ * @content: (nullable): a #CamelDataWrapper object
  *
  * Sets the content of @medium to be @content.
  **/

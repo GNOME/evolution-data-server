@@ -566,7 +566,7 @@ camel_data_wrapper_get_mime_type (CamelDataWrapper *data_wrapper)
  * camel_data_wrapper_get_mime_type_field:
  * @data_wrapper: a #CamelDataWrapper
  *
- * Returns: (transfer none): the parsed form of the data wrapper's MIME type
+ * Returns: (transfer none) (nullable): the parsed form of the data wrapper's MIME type
  **/
 CamelContentType *
 camel_data_wrapper_get_mime_type_field (CamelDataWrapper *data_wrapper)
