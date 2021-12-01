@@ -184,6 +184,7 @@
       <xi:include href="xml/camel-charset-map.xml"/>
       <xi:include href="xml/camel-file-utils.xml"/>
       <xi:include href="xml/camel-html-parser.xml"/>
+      <xi:include href="xml/camel-hostname-utils.xml"/>
       <xi:include href="xml/camel-iconv.xml"/>
       <xi:include href="xml/camel-lock.xml"/>
       <xi:include href="xml/camel-lock-client.xml"/>
