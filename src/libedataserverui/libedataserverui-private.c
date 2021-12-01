@@ -61,7 +61,8 @@ _libedataserverui_init_icon_theme (void)
 {
 	static gboolean icons_added = FALSE;
 
-	if (!icons_added) {
+	/* The screen can be NULL when building the documentation */
+	if (!icons_added && gdk_screen_get_default ()) {
 		icons_added = TRUE;
 
 		gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (), E_DATA_SERVER_ICONDIR);
