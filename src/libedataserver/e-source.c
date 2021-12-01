@@ -115,6 +115,7 @@
 #include "e-source-uoa.h"
 #include "e-source-weather.h"
 #include "e-source-webdav.h"
+#include "e-source-webdav-notes.h"
 
 #include "e-source.h"
 
@@ -2432,6 +2433,7 @@ e_source_class_init (ESourceClass *class)
 	g_type_ensure (E_TYPE_SOURCE_UOA);
 	g_type_ensure (E_TYPE_SOURCE_WEATHER);
 	g_type_ensure (E_TYPE_SOURCE_WEBDAV);
+	g_type_ensure (E_TYPE_SOURCE_WEBDAV_NOTES);
 }
 
 static void

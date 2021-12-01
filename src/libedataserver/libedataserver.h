@@ -94,6 +94,7 @@
 #include <libedataserver/e-source-task-list.h>
 #include <libedataserver/e-source-uoa.h>
 #include <libedataserver/e-source-webdav.h>
+#include <libedataserver/e-source-webdav-notes.h>
 #include <libedataserver/e-source-weather.h>
 #include <libedataserver/e-source.h>
 #include <libedataserver/e-time-utils.h>

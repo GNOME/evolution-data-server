@@ -1094,8 +1094,22 @@ ecb_webdav_notes_save_component_sync (ECalMetaBackend *meta_backend,
 
 		base_filename = ecb_webdav_notes_construct_base_filename (description);
 		if (!ecb_webdav_notes_has_supported_extension (uid, &ext_len, &use_ext, &use_ext_num_suffix, &use_content_type)) {
-			/* Default to the markdown format */
-			g_warn_if_fail (ecb_webdav_notes_has_supported_extension (".md", &ext_len, &use_ext, &use_ext_num_suffix, &use_content_type));
+			ESource *source;
+			ESourceWebDAVNotes *notes_extension;
+			const gchar *default_ext;
+
+			source = e_backend_get_source (E_BACKEND (meta_backend));
+			notes_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_NOTES);
+
+			e_source_extension_property_lock (E_SOURCE_EXTENSION (notes_extension));
+			default_ext = e_source_webdav_notes_get_default_ext (notes_extension);
+
+			if (!ecb_webdav_notes_has_supported_extension (default_ext, &ext_len, &use_ext, &use_ext_num_suffix, &use_content_type)) {
+				/* Fallback to the markdown format in case of broken setup */
+				g_warn_if_fail (ecb_webdav_notes_has_supported_extension (".md", &ext_len, &use_ext, &use_ext_num_suffix, &use_content_type));
+			}
+
+			e_source_extension_property_unlock (E_SOURCE_EXTENSION (notes_extension));
 		}
 
 		expected_filename = g_strconcat (base_filename, use_ext, NULL);

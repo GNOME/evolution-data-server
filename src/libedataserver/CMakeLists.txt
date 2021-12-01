@@ -120,6 +120,7 @@ set(SOURCES
 	e-source-uoa.c
 	e-source-weather.c
 	e-source-webdav.c
+	e-source-webdav-notes.c
 	e-debug-log.c
 	e-time-utils.c
 	e-transliterator-private.h
@@ -212,6 +213,7 @@ set(HEADERS
 	e-source-uoa.h
 	e-source-weather.h
 	e-source-webdav.h
+	e-source-webdav-notes.h
 	e-debug-log.h
 	e-time-utils.h
 	e-uid.h
