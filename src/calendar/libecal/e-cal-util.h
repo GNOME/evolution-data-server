@@ -221,6 +221,16 @@ G_BEGIN_DECLS
 
 #define E_CAL_STATIC_CAPABILITY_SIMPLE_MEMO_WITH_SUMMARY "simple-memo-with-summary"
 
+/**
+ * E_CAL_STATIC_CAPABILITY_TASK_ESTIMATED_DURATION:
+ *
+ * Set, when the backend supports ESTIMATED-DURATION property for tasks.
+ *
+ * Since: 3.44
+ **/
+
+#define E_CAL_STATIC_CAPABILITY_TASK_ESTIMATED_DURATION "task-estimated-duration"
+
 struct _ECalClient;
 
 ICalComponent *	e_cal_util_new_top_level	(void);
