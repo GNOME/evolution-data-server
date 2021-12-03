@@ -1,3 +1,15 @@
+Evolution-Data-Server 3.42.2 2021-12-03
+---------------------------------------
+
+Bug Fixes:
+	I#364 - Camel: Add a missing header include into camel-hostname-utils.c (Milan Crha)
+	I#365 - Calendar: Crash on local calandar file change (Milan Crha)
+	I#366 - Calendar: Correct 'occur-in-time-range?' for zero-length events (Milan Crha)
+
+Translations:
+	Christian Kirbach (de)
+	Quentin PAGÈS (oc)
+
 Evolution-Data-Server 3.42.1 2021-10-29
 ---------------------------------------
 
