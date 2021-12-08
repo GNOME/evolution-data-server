@@ -4791,7 +4791,7 @@ e_cal_client_create_objects_finish (ECalClient *client,
  * @client: an #ECalClient
  * @icalcomps: (element-type ICalComponent): The components to create
  * @opflags: (type ECalOperationFlags): bit-or of #ECalOperationFlags
- * @out_uids: (out) (nullable) (element-type utf8): Return value for the UIDs assigned
+ * @out_uids: (out) (optional) (element-type utf8): Return value for the UIDs assigned
  *            to the new components by the calendar backend
  * @cancellable: a #GCancellable; can be %NULL
  * @error: a #GError to set an error, if any
@@ -4822,7 +4822,6 @@ e_cal_client_create_objects_sync (ECalClient *client,
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (icalcomps != NULL, FALSE);
-	g_return_val_if_fail (out_uids != NULL, FALSE);
 
 	strv = g_new0 (gchar *, g_slist_length (icalcomps) + 1);
 	while (icalcomps != NULL) {
