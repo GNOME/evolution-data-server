@@ -145,6 +145,7 @@ include(CheckCSourceRuns)
 include(CheckFunctionExists)
 include(CheckIncludeFile)
 include(CheckLibraryExists)
+include(CheckTypeSize)
 
 # Project custom modules
 include(PrintableOptions)
@@ -976,6 +977,13 @@ if(ENABLE_VALA_BINDINGS)
 	endif(NOT VAPIGEN)
 
 endif(ENABLE_VALA_BINDINGS)
+
+set(CMAKE_EXTRA_INCLUDE_FILES "time.h")
+CHECK_TYPE_SIZE("time_t" SIZEOF_TIME_T)
+if("${SIZEOF_TIME_T}" STREQUAL "4")
+	set(HAVE_32BIT_TIME_T 1)
+endif("${SIZEOF_TIME_T}" STREQUAL "4")
+unset(CMAKE_EXTRA_INCLUDE_FILES)
 
 # Generate the ${PROJECT_NAME}-config.h file
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config.h)

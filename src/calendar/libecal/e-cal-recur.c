@@ -900,10 +900,14 @@ e_cal_recur_generate_instances_sync (ICalComponent *icalcomp,
  *     spec.
  */
 
+#ifdef HAVE_32BIT_TIME_T
 /* This is the maximum year we will go up to (inclusive). Since we use time_t
  * values we can't go past 2037 anyway, and some of our VTIMEZONEs may stop
  * at 2037 as well. */
 #define MAX_YEAR	2037
+#else
+#define MAX_YEAR	9999
+#endif
 
 /* Define this for some debugging output. */
 #if 0
@@ -4858,6 +4862,11 @@ e_cal_recur_set_rule_end_date (ICalProperty *prop,
 	ICalTime *icaltime;
 	const gchar *xname;
 	gchar *end_date_string;
+
+	if (end_date <= 0) {
+		i_cal_property_remove_parameter_by_name (prop, E_CAL_EVOLUTION_ENDDATE_PARAMETER);
+		return;
+	}
 
 	/* We save the value as a UTC DATE-TIME. */
 	utc_zone = i_cal_timezone_get_utc_timezone ();

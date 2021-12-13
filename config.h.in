@@ -202,3 +202,6 @@
 
 /* Whether glib provides GPowerProfileMonitor */
 #cmakedefine HAVE_GPOWERPROFILEMONITOR 1
+
+/* Defined, when time_t is of the 32bit size */
+#cmakedefine HAVE_32BIT_TIME_T 1
