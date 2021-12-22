@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2021-08-17 11:56+0000\n"
-"PO-Revision-Date: 2021-08-28 18:52+0700\n"
+"POT-Creation-Date: 2021-11-16 13:33+0000\n"
+"PO-Revision-Date: 2021-12-22 10:44+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "Language: id\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.0\n"
-"Plural-Forms: nplurals=2; plural= n!=1;\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:234
 #, c-format
@@ -33,26 +33,26 @@ msgstr "URL yang diberikan \"%s\" tidak mereferensikan buku alamat CardDAV"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:293
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1136
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4379
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1137
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4390
 #: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
 #: ../src/addressbook/libebook/e-book.c:1067
-#: ../src/addressbook/libebook/e-book-client.c:2122
-#: ../src/addressbook/libebook/e-book-client.c:2300
-#: ../src/addressbook/libebook/e-book-client.c:2519
-#: ../src/addressbook/libebook/e-book-client.c:2656
-#: ../src/addressbook/libebook/e-book-client.c:2821
-#: ../src/addressbook/libebook/e-book-client.c:2961
-#: ../src/addressbook/libebook/e-book-client.c:3098
-#: ../src/addressbook/libebook/e-book-client.c:3261
-#: ../src/addressbook/libebook/e-book-client.c:3456
-#: ../src/addressbook/libebook/e-book-client.c:3674
+#: ../src/addressbook/libebook/e-book-client.c:2123
+#: ../src/addressbook/libebook/e-book-client.c:2301
+#: ../src/addressbook/libebook/e-book-client.c:2520
+#: ../src/addressbook/libebook/e-book-client.c:2657
+#: ../src/addressbook/libebook/e-book-client.c:2822
+#: ../src/addressbook/libebook/e-book-client.c:2962
+#: ../src/addressbook/libebook/e-book-client.c:3099
+#: ../src/addressbook/libebook/e-book-client.c:3262
+#: ../src/addressbook/libebook/e-book-client.c:3457
+#: ../src/addressbook/libebook/e-book-client.c:3675
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:873
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:275
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:288
 #: ../src/calendar/backends/http/e-cal-backend-http.c:313
-#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:197
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:236
 #: ../src/calendar/libecal/e-cal-client.c:257
 #: ../src/calendar/libecal/e-cal-client.c:3242
 #: ../src/calendar/libecal/e-cal-client.c:3415
@@ -73,8 +73,8 @@ msgstr "URL yang diberikan \"%s\" tidak mereferensikan buku alamat CardDAV"
 #: ../src/calendar/libecal/e-cal-client.c:6604
 #: ../src/calendar/libecal/e-cal-client.c:6828
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1847
-#: ../src/camel/camel-filter-driver.c:1718
-#: ../src/camel/camel-filter-driver.c:1847
+#: ../src/camel/camel-filter-driver.c:1724
+#: ../src/camel/camel-filter-driver.c:1853
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3327
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3333
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3343
@@ -84,20 +84,20 @@ msgstr "URL yang diberikan \"%s\" tidak mereferensikan buku alamat CardDAV"
 #: ../src/libedataserver/e-client.c:183
 #: ../src/libedataserver/e-soup-session.c:1239
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
-#: ../src/libedataserverui/e-reminders-widget.c:1994
+#: ../src/libedataserverui/e-reminders-widget.c:2010
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Kesalahan tidak dikenal"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1155
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1376
-#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:930
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:972
 msgid "Server didn’t return object’s href"
 msgstr "Peladen tidak mengembalikan berkas objek"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1157
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1378
-#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:932
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:974
 msgid "Server didn’t return object’s ETag"
 msgstr "Peladen tidak mengembalikan ETag objek"
 
@@ -147,7 +147,7 @@ msgid "Loading..."
 msgstr "Memuat..."
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1003
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4494
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4505
 msgid "Searching..."
 msgstr "Mencari..."
 
@@ -177,12 +177,12 @@ msgstr "Kueri \"%s\" tidak didukung"
 msgid "Invalid Query “%s”"
 msgstr "Kueri \"%s\" Tidak Valid"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1975
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2050
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2031
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2088
 msgid "Requested to delete an unrelated cursor"
 msgstr "Diminta untuk menghapus kursor yang tak berhubungan"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:2046
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2102
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Gagal mengubah nama basis data lama dari \"%s\" menjadi \"%s\": %s"
@@ -193,48 +193,49 @@ msgstr "Gagal mengubah nama basis data lama dari \"%s\" menjadi \"%s\": %s"
 msgid "Not connected"
 msgstr "Tidak terhubung"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:873
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:874
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr "Gagal mengikat memakai pengikatan v3 atau v2"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:982
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:983
 msgid "Reconnecting to LDAP server..."
 msgstr "Sambung-ulang ke peladen LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1117
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1118
 msgid "Invalid DN syntax"
 msgstr "Sintaks DN tidak sah"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1133
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4378
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1134
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4389
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "Galat LDAP 0x%x (%s)"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1776
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2125
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2138
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1777
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2126
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2139
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: NULL dikembalikan dari ldap_first_entry"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2053
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2197
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2054
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2198
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: Hasil tipe %d yang tak ditangani dikembalikan"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2340
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2478
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2341
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2479
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5887
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: Hasil pencarian tipe %d yang tak ditangani dikembalikan"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2628
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2629
 msgid "LDAP contact lists cannot be empty."
 msgstr "Daftar kontak LDAP tidak boleh kosong."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2666
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2667
 #, c-format
 msgid ""
 "Contact lists in LDAP address books require each member to be from the same "
@@ -244,51 +245,48 @@ msgid_plural ""
 "LDAP address book, but %d members could not be recognized."
 msgstr[0] ""
 "Daftar kontak dalam buku alamat LDAP mengharuskan setiap anggota berasal "
-"dari buku alamat LDAP yang sama, tetapi satu anggota tidak dapat dikenali."
-msgstr[1] ""
-"Daftar kontak dalam buku alamat LDAP mengharuskan setiap anggota berasal "
 "dari buku alamat LDAP yang sama, tetapi %d anggota tidak dapat dikenali."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4317
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4328
 msgid "Receiving LDAP search results..."
 msgstr "Menerima hasil pencarian LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4520
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4531
 msgid "Error performing search"
 msgstr "Kesalahan saat melakukan pencarian"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4660
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4671
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Mengunduh kontak (%d)..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4761
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:790
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:691
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4772
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:805
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:706
 msgid "Refreshing…"
 msgstr "Menyegarkan…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5148
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5186
 msgid "The backend does not support bulk additions"
 msgstr "Backend tak mendukung penambahan masal"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5239
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5277
 msgid "Adding contact to LDAP server..."
 msgstr "Menambahkan kontak ke peladen LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5301
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5339
 msgid "The backend does not support bulk modifications"
 msgstr "Backend tak mendukung pengubahan masal"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5323
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5361
 msgid "Modifying contact from LDAP server..."
 msgstr "Mengubah kontak dari peladen LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5395
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5433
 msgid "Removing contact from LDAP server..."
 msgstr "Menghapus kontak dari peladen LDAP..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5805
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:6084
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "Gagal mendapat DN bagi pengguna \"%s\""
@@ -923,7 +921,7 @@ msgid "Matrix ID List"
 msgstr "Daftar ID Matrix"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:1924
-#: ../src/addressbook/libebook/e-destination.c:911
+#: ../src/addressbook/libebook/e-destination.c:915
 msgid "Unnamed List"
 msgstr "Daftar Belum Berjudul"
 
@@ -958,19 +956,19 @@ msgstr "Teks terlalu pendek bagi suatu nomor telepon"
 msgid "Text is too long for a phone number"
 msgstr "Teks terlalu panjang bagi suatu nomor telepon"
 
-#: ../src/addressbook/libebook/e-book-client.c:924
+#: ../src/addressbook/libebook/e-book-client.c:925
 #, c-format
 msgid "Unknown book property “%s”"
 msgstr "Properti buku \"%s\" tidak dikenal"
 
-#: ../src/addressbook/libebook/e-book-client.c:939
+#: ../src/addressbook/libebook/e-book-client.c:940
 #, c-format
 msgid "Cannot change value of book property “%s”"
 msgstr "Tidak dapat membuat mengubah nilai dari properti buku \"%s\""
 
-#: ../src/addressbook/libebook/e-book-client.c:1381
-#: ../src/addressbook/libebook/e-book-client.c:1611
-#: ../src/addressbook/libebook/e-book-client.c:1887
+#: ../src/addressbook/libebook/e-book-client.c:1382
+#: ../src/addressbook/libebook/e-book-client.c:1612
+#: ../src/addressbook/libebook/e-book-client.c:1888
 #: ../src/calendar/libecal/e-cal-client.c:1714
 #: ../src/calendar/libecal/e-cal-client.c:1952
 #, c-format
@@ -983,7 +981,7 @@ msgstr "Tidak bisa menyambung ke \"%s\": "
 msgid "Client disappeared"
 msgstr "Klien menghilang"
 
-#: ../src/addressbook/libedata-book/e-book-backend.c:3253
+#: ../src/addressbook/libedata-book/e-book-backend.c:3440
 #, c-format
 msgid "Addressbook backend does not support cursors"
 msgstr "Backend buku alamat tidak mendukung kursor"
@@ -1100,7 +1098,7 @@ msgstr ""
 "Tak bisa mengurut berdasarkan ruas yang mungkin bisa memiliki nilai berganda"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6207
-#: ../src/addressbook/libedata-book/e-book-cache.c:5797
+#: ../src/addressbook/libedata-book/e-book-cache.c:5885
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8145
 #, c-format
 msgid ""
@@ -1111,7 +1109,7 @@ msgstr ""
 "kontak"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6215
-#: ../src/addressbook/libedata-book/e-book-cache.c:5804
+#: ../src/addressbook/libedata-book/e-book-cache.c:5892
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8153
 #, c-format
 msgid ""
@@ -1154,7 +1152,7 @@ msgstr "Tidak dapat membuka basis data %s: %s"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2959
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3022
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3193
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1375
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1390
 #: ../src/libebackend/e-cache.c:1371 ../src/libebackend/e-cache.c:2349
 #: ../src/libebackend/e-cache.c:2389
 #, c-format
@@ -1167,31 +1165,39 @@ msgstr "Objek \"%s\" tidak ditemukan"
 msgid "Object with extra “%s” not found"
 msgstr "Objek dengan ekstra \"%s\" tidak ditemukan"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5584
+#: ../src/addressbook/libedata-book/e-book-cache.c:5606
+msgid "Search by email not supported"
+msgstr "Pencarian melalui surel tidak didukung"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:5617
+msgid "No email address provided"
+msgstr "Tak ada alamat surel yang diberikan"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:5672
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 "Paling tidak satu ruas pengurutan mesti dinyatakan untuk memakai kursor"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5593
+#: ../src/addressbook/libedata-book/e-book-cache.c:5681
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7985
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Tak bisa mengurut berdasarkan ruas yang bukan bertipe string"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1088
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1098
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1103
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1113
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Objek pramuat untuk UID \"%s\" tidak valid"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1096
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1106
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1111
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1121
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Objek yang diterima untuk UID \"%s\" tidak valid"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1920
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2376
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3332
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1958
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2414
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3347
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Gagal membuat singgahan \"%s\":"
@@ -1220,44 +1226,49 @@ msgid "Invalid query: "
 msgstr "Query tidak valid: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1142
+#: ../src/addressbook/libedata-book/e-data-book.c:1192
 msgid "Cannot open book: "
 msgstr "Tidak dapat membuka buku: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1180
+#: ../src/addressbook/libedata-book/e-data-book.c:1230
 msgid "Cannot refresh address book: "
 msgstr "Tidak dapat menyegarkan kalender: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1221
+#: ../src/addressbook/libedata-book/e-data-book.c:1271
 msgid "Cannot get contact: "
 msgstr "Tidak dapat mendapat kontak: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1266
+#: ../src/addressbook/libedata-book/e-data-book.c:1316
 msgid "Cannot get contact list: "
 msgstr "Tidak dapat memperoleh daftar kontak: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1318
+#: ../src/addressbook/libedata-book/e-data-book.c:1368
 msgid "Cannot get contact list uids: "
 msgstr "Tidak dapat memperoleh uid daftar kontak: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1369
+#: ../src/addressbook/libedata-book/e-data-book.c:1419
 msgid "Cannot add contact: "
 msgstr "Tidak dapat menambah kontak: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1420
+#: ../src/addressbook/libedata-book/e-data-book.c:1470
 msgid "Cannot modify contacts: "
 msgstr "Tidak dapat mengubah kontak: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../src/addressbook/libedata-book/e-data-book.c:1472
+#: ../src/addressbook/libedata-book/e-data-book.c:1522
 msgid "Cannot remove contacts: "
 msgstr "Tidak dapat menghapus kontak: "
+
+#. Translators: This is prefix to a detailed error message
+#: ../src/addressbook/libedata-book/e-data-book.c:1569
+msgid "Cannot find email address: "
+msgstr "Tidak dapat menemukan alamat surel: "
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor.c:771
 msgid "Cursor does not support setting the search expression"
@@ -1292,7 +1303,7 @@ msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "URL yang diberikan \"%s\" tidak mengacu pada kalender CalDAV"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1513
-#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1164
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1213
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. Remove it, please."
@@ -1331,24 +1342,24 @@ msgstr "Tidak dapat menyimpan data kalender: URI tidak benar."
 msgid "Cannot save calendar data"
 msgstr "Tidak dapat menyimpan data kalender"
 
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1185
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1314
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1186
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1315
 #, c-format
 msgid "Cannot parse ISC file “%s”"
 msgstr "Tidak dapat mengurai berkas ISC \"%s\""
 
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1196
-#: ../src/calendar/backends/file/e-cal-backend-file.c:1325
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1197
+#: ../src/calendar/backends/file/e-cal-backend-file.c:1326
 #, c-format
 msgid "File “%s” is not a VCALENDAR component"
 msgstr "Berkas “%s” bukan komponen VCALENDAR"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3740
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3746
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3752
-#: ../src/calendar/backends/file/e-cal-backend-file.c:3779
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2559
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3741
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3747
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3753
+#: ../src/calendar/backends/file/e-cal-backend-file.c:3780
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2574
 msgid "Unsupported method"
 msgstr "Metode tidak didukung"
 
@@ -1447,8 +1458,8 @@ msgstr "Tidak dapat membuat berkas cache"
 msgid "Could not create cache file: "
 msgstr "Tidak dapat membuat berkas cache: "
 
-#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:973
-#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1002
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1015
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1044
 msgid "New note"
 msgstr "Catatan baru"
 
@@ -1486,752 +1497,739 @@ msgstr "Properti kalender tidak dikenal \"%s\""
 msgid "Cannot change value of calendar property “%s”"
 msgstr "Tidak dapat mengubah properti kalender \"%s\""
 
-#: ../src/calendar/libecal/e-cal-component.c:716
+#: ../src/calendar/libecal/e-cal-component.c:718
 msgid "Untitled appointment"
 msgstr "Pertemuan tak berjudul"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4889
+#: ../src/calendar/libecal/e-cal-recur.c:4893
 msgid "1st"
 msgstr "1"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4890
+#: ../src/calendar/libecal/e-cal-recur.c:4894
 msgid "2nd"
 msgstr "2"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4891
+#: ../src/calendar/libecal/e-cal-recur.c:4895
 msgid "3rd"
 msgstr "3"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4892
+#: ../src/calendar/libecal/e-cal-recur.c:4896
 msgid "4th"
 msgstr "4"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4893
+#: ../src/calendar/libecal/e-cal-recur.c:4897
 msgid "5th"
 msgstr "5"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4894
+#: ../src/calendar/libecal/e-cal-recur.c:4898
 msgid "6th"
 msgstr "6"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4895
+#: ../src/calendar/libecal/e-cal-recur.c:4899
 msgid "7th"
 msgstr "7"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4896
+#: ../src/calendar/libecal/e-cal-recur.c:4900
 msgid "8th"
 msgstr "8"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4897
+#: ../src/calendar/libecal/e-cal-recur.c:4901
 msgid "9th"
 msgstr "9"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4898
+#: ../src/calendar/libecal/e-cal-recur.c:4902
 msgid "10th"
 msgstr "10"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4899
+#: ../src/calendar/libecal/e-cal-recur.c:4903
 msgid "11th"
 msgstr "11"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4900
+#: ../src/calendar/libecal/e-cal-recur.c:4904
 msgid "12th"
 msgstr "12"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4901
+#: ../src/calendar/libecal/e-cal-recur.c:4905
 msgid "13th"
 msgstr "13"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4902
+#: ../src/calendar/libecal/e-cal-recur.c:4906
 msgid "14th"
 msgstr "14"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4903
+#: ../src/calendar/libecal/e-cal-recur.c:4907
 msgid "15th"
 msgstr "15"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4904
+#: ../src/calendar/libecal/e-cal-recur.c:4908
 msgid "16th"
 msgstr "16"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4905
+#: ../src/calendar/libecal/e-cal-recur.c:4909
 msgid "17th"
 msgstr "17"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4906
+#: ../src/calendar/libecal/e-cal-recur.c:4910
 msgid "18th"
 msgstr "18"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4907
+#: ../src/calendar/libecal/e-cal-recur.c:4911
 msgid "19th"
 msgstr "19"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4908
+#: ../src/calendar/libecal/e-cal-recur.c:4912
 msgid "20th"
 msgstr "20"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4909
+#: ../src/calendar/libecal/e-cal-recur.c:4913
 msgid "21st"
 msgstr "21"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4910
+#: ../src/calendar/libecal/e-cal-recur.c:4914
 msgid "22nd"
 msgstr "22"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4911
+#: ../src/calendar/libecal/e-cal-recur.c:4915
 msgid "23rd"
 msgstr "23"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4912
+#: ../src/calendar/libecal/e-cal-recur.c:4916
 msgid "24th"
 msgstr "24"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4913
+#: ../src/calendar/libecal/e-cal-recur.c:4917
 msgid "25th"
 msgstr "25"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4914
+#: ../src/calendar/libecal/e-cal-recur.c:4918
 msgid "26th"
 msgstr "26"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4915
+#: ../src/calendar/libecal/e-cal-recur.c:4919
 msgid "27th"
 msgstr "27"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4916
+#: ../src/calendar/libecal/e-cal-recur.c:4920
 msgid "28th"
 msgstr "28"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4917
+#: ../src/calendar/libecal/e-cal-recur.c:4921
 msgid "29th"
 msgstr "29"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4918
+#: ../src/calendar/libecal/e-cal-recur.c:4922
 msgid "30th"
 msgstr "30"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4919
+#: ../src/calendar/libecal/e-cal-recur.c:4923
 msgid "31st"
 msgstr "31"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5069
+#: ../src/calendar/libecal/e-cal-recur.c:5073
 #, c-format
 msgid "every day forever"
 msgid_plural "every %d days forever"
 msgstr[0] "setiap %d hari selamanya"
-msgstr[1] "setiap %d hari selamanya"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5075
+#: ../src/calendar/libecal/e-cal-recur.c:5079
 #, c-format
 msgid "Every day forever"
 msgid_plural "Every %d days forever"
 msgstr[0] "Setiap %d hari selamanya"
-msgstr[1] "Setiap %d hari selamanya"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5083
+#: ../src/calendar/libecal/e-cal-recur.c:5087
 #, c-format
 msgid "every day"
 msgid_plural "every %d days"
 msgstr[0] "setiap %d hari"
-msgstr[1] "setiap %d hari"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5089
+#: ../src/calendar/libecal/e-cal-recur.c:5093
 #, c-format
 msgid "Every day"
 msgid_plural "Every %d days"
 msgstr[0] "Setiap %d hari"
-msgstr[1] "Setiap %d hari"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5175
+#: ../src/calendar/libecal/e-cal-recur.c:5179
 #, c-format
 msgid "every week"
 msgid_plural "every %d weeks"
 msgstr[0] "setiap %d minggu"
-msgstr[1] "setiap %d minggu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5181
+#: ../src/calendar/libecal/e-cal-recur.c:5185
 #, c-format
 msgid "Every week"
 msgid_plural "Every %d weeks"
 msgstr[0] "Setiap %d minggu"
-msgstr[1] "Setiap %d minggu"
 
 #. Translators: This is used to merge set of week day names in a recurrence, which can contain any
 #. of the week day names. The string always starts with "on DAYNAME", then it can continue either
 #. with ", DAYNAME" or " and DAYNAME", thus it can be something like "on Monday and Tuesday"
 #. or "on Monday, Wednesday and Friday" or simply "on Saturday". The '%1$s' is replaced with
 #. the previously gathered text, while the '%2$s' is replaced with the text to append.
-#: ../src/calendar/libecal/e-cal-recur.c:5195
+#: ../src/calendar/libecal/e-cal-recur.c:5199
 #, c-format
 msgctxt "recur-description-dayname"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5212
+#: ../src/calendar/libecal/e-cal-recur.c:5216
 msgctxt "recur-description"
 msgid "on Sunday"
 msgstr "pada hari Minggu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5213
+#: ../src/calendar/libecal/e-cal-recur.c:5217
 msgctxt "recur-description"
 msgid ", Sunday"
 msgstr ", Minggu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5214
+#: ../src/calendar/libecal/e-cal-recur.c:5218
 msgctxt "recur-description"
 msgid " and Sunday"
 msgstr " dan Minggu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5217
+#: ../src/calendar/libecal/e-cal-recur.c:5221
 msgctxt "recur-description"
 msgid "on Monday"
 msgstr "pada hari Senin"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5218
+#: ../src/calendar/libecal/e-cal-recur.c:5222
 msgctxt "recur-description"
 msgid ", Monday"
 msgstr ", Senin"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5219
+#: ../src/calendar/libecal/e-cal-recur.c:5223
 msgctxt "recur-description"
 msgid " and Monday"
 msgstr " dan Senin"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5222
+#: ../src/calendar/libecal/e-cal-recur.c:5226
 msgctxt "recur-description"
 msgid "on Tuesday"
 msgstr "pada hari Selasa"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5223
+#: ../src/calendar/libecal/e-cal-recur.c:5227
 msgctxt "recur-description"
 msgid ", Tuesday"
 msgstr ", Selasa"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5224
+#: ../src/calendar/libecal/e-cal-recur.c:5228
 msgctxt "recur-description"
 msgid " and Tuesday"
 msgstr " dan Selasa"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5227
+#: ../src/calendar/libecal/e-cal-recur.c:5231
 msgctxt "recur-description"
 msgid "on Wednesday"
 msgstr "pada hari Rabu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5228
+#: ../src/calendar/libecal/e-cal-recur.c:5232
 msgctxt "recur-description"
 msgid ", Wednesday"
 msgstr ", Rabu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5229
+#: ../src/calendar/libecal/e-cal-recur.c:5233
 msgctxt "recur-description"
 msgid " and Wednesday"
 msgstr " dan Rabu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5232
+#: ../src/calendar/libecal/e-cal-recur.c:5236
 msgctxt "recur-description"
 msgid "on Thursday"
 msgstr "pada hari Kamis"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5233
+#: ../src/calendar/libecal/e-cal-recur.c:5237
 msgctxt "recur-description"
 msgid ", Thursday"
 msgstr ", Kamis"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5234
+#: ../src/calendar/libecal/e-cal-recur.c:5238
 msgctxt "recur-description"
 msgid " and Thursday"
 msgstr " dan Kamis"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5237
+#: ../src/calendar/libecal/e-cal-recur.c:5241
 msgctxt "recur-description"
 msgid "on Friday"
 msgstr "pada hari Jumat"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5238
+#: ../src/calendar/libecal/e-cal-recur.c:5242
 msgctxt "recur-description"
 msgid ", Friday"
 msgstr ", Jumat"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5239
+#: ../src/calendar/libecal/e-cal-recur.c:5243
 msgctxt "recur-description"
 msgid " and Friday"
 msgstr " dan Jumat"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5242
+#: ../src/calendar/libecal/e-cal-recur.c:5246
 msgctxt "recur-description"
 msgid "on Saturday"
 msgstr "pada hari Sabtu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5243
+#: ../src/calendar/libecal/e-cal-recur.c:5247
 msgctxt "recur-description"
 msgid ", Saturday"
 msgstr ", Sabtu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5244
+#: ../src/calendar/libecal/e-cal-recur.c:5248
 msgctxt "recur-description"
 msgid " and Saturday"
 msgstr " dan Sabtu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5373
+#: ../src/calendar/libecal/e-cal-recur.c:5377
 #, c-format
 msgid "every month"
 msgid_plural "every %d months"
 msgstr[0] "setiap %d bulan"
-msgstr[1] "setiap %d bulan"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5379
+#: ../src/calendar/libecal/e-cal-recur.c:5383
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
 msgstr[0] "Setiap %d bulan"
-msgstr[1] "Setiap %d bulan"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5389
-#: ../src/calendar/libecal/e-cal-recur.c:5710
+#: ../src/calendar/libecal/e-cal-recur.c:5393
+#: ../src/calendar/libecal/e-cal-recur.c:5714
 msgctxt "recur-description"
 msgid "on the last Sunday"
 msgstr "pada hari Minggu terakhir"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5392
-#: ../src/calendar/libecal/e-cal-recur.c:5560
+#: ../src/calendar/libecal/e-cal-recur.c:5396
+#: ../src/calendar/libecal/e-cal-recur.c:5564
 msgctxt "recur-description"
 msgid "on the last Monday"
 msgstr "pada hari Senin terakhir"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5395
-#: ../src/calendar/libecal/e-cal-recur.c:5585
+#: ../src/calendar/libecal/e-cal-recur.c:5399
+#: ../src/calendar/libecal/e-cal-recur.c:5589
 msgctxt "recur-description"
 msgid "on the last Tuesday"
 msgstr "pada hari Selasa terakhir"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5398
-#: ../src/calendar/libecal/e-cal-recur.c:5610
+#: ../src/calendar/libecal/e-cal-recur.c:5402
+#: ../src/calendar/libecal/e-cal-recur.c:5614
 msgctxt "recur-description"
 msgid "on the last Wednesday"
 msgstr "pada hari Rabu terakhir"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5401
-#: ../src/calendar/libecal/e-cal-recur.c:5635
+#: ../src/calendar/libecal/e-cal-recur.c:5405
+#: ../src/calendar/libecal/e-cal-recur.c:5639
 msgctxt "recur-description"
 msgid "on the last Thursday"
 msgstr "pada hari Kamis terakhir"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5404
-#: ../src/calendar/libecal/e-cal-recur.c:5660
+#: ../src/calendar/libecal/e-cal-recur.c:5408
+#: ../src/calendar/libecal/e-cal-recur.c:5664
 msgctxt "recur-description"
 msgid "on the last Friday"
 msgstr "pada hari Jumat terakhir"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5407
-#: ../src/calendar/libecal/e-cal-recur.c:5685
+#: ../src/calendar/libecal/e-cal-recur.c:5411
+#: ../src/calendar/libecal/e-cal-recur.c:5689
 msgctxt "recur-description"
 msgid "on the last Saturday"
 msgstr "pada hari Sabtu terakhir"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5417
+#: ../src/calendar/libecal/e-cal-recur.c:5421
 msgctxt "recur-description"
 msgid "on the 1st day"
 msgstr "pada hari ke-1"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5421
+#: ../src/calendar/libecal/e-cal-recur.c:5425
 msgctxt "recur-description"
 msgid "on the 2nd day"
 msgstr "pada hari ke-2"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5425
+#: ../src/calendar/libecal/e-cal-recur.c:5429
 msgctxt "recur-description"
 msgid "on the 3rd day"
 msgstr "pada hari ke-3"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5429
+#: ../src/calendar/libecal/e-cal-recur.c:5433
 msgctxt "recur-description"
 msgid "on the 4th day"
 msgstr "pada hari ke-4"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5433
+#: ../src/calendar/libecal/e-cal-recur.c:5437
 msgctxt "recur-description"
 msgid "on the 5th day"
 msgstr "pada hari ke-5"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5437
+#: ../src/calendar/libecal/e-cal-recur.c:5441
 msgctxt "recur-description"
 msgid "on the 6th day"
 msgstr "pada hari ke-6"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5441
+#: ../src/calendar/libecal/e-cal-recur.c:5445
 msgctxt "recur-description"
 msgid "on the 7th day"
 msgstr "pada hari ke-7"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5445
+#: ../src/calendar/libecal/e-cal-recur.c:5449
 msgctxt "recur-description"
 msgid "on the 8th day"
 msgstr "pada hari ke-8"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5449
+#: ../src/calendar/libecal/e-cal-recur.c:5453
 msgctxt "recur-description"
 msgid "on the 9th day"
 msgstr "pada hari ke-9"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5453
+#: ../src/calendar/libecal/e-cal-recur.c:5457
 msgctxt "recur-description"
 msgid "on the 10th day"
 msgstr "pada hari ke-10"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5457
+#: ../src/calendar/libecal/e-cal-recur.c:5461
 msgctxt "recur-description"
 msgid "on the 11th day"
 msgstr "pada hari ke-11"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5461
+#: ../src/calendar/libecal/e-cal-recur.c:5465
 msgctxt "recur-description"
 msgid "on the 12th day"
 msgstr "pada hari ke-12"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5465
+#: ../src/calendar/libecal/e-cal-recur.c:5469
 msgctxt "recur-description"
 msgid "on the 13th day"
 msgstr "pada hari ke-13"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5469
+#: ../src/calendar/libecal/e-cal-recur.c:5473
 msgctxt "recur-description"
 msgid "on the 14th day"
 msgstr "pada hari ke-14"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5473
+#: ../src/calendar/libecal/e-cal-recur.c:5477
 msgctxt "recur-description"
 msgid "on the 15th day"
 msgstr "pada hari ke-15"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5477
+#: ../src/calendar/libecal/e-cal-recur.c:5481
 msgctxt "recur-description"
 msgid "on the 16th day"
 msgstr "pada hari ke-16"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5481
+#: ../src/calendar/libecal/e-cal-recur.c:5485
 msgctxt "recur-description"
 msgid "on the 17th day"
 msgstr "pada hari ke-17"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5485
+#: ../src/calendar/libecal/e-cal-recur.c:5489
 msgctxt "recur-description"
 msgid "on the 18th day"
 msgstr "pada hari ke-18"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5489
+#: ../src/calendar/libecal/e-cal-recur.c:5493
 msgctxt "recur-description"
 msgid "on the 19th day"
 msgstr "pada hari ke-19"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5493
+#: ../src/calendar/libecal/e-cal-recur.c:5497
 msgctxt "recur-description"
 msgid "on the 20th day"
 msgstr "pada hari ke-20"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5497
+#: ../src/calendar/libecal/e-cal-recur.c:5501
 msgctxt "recur-description"
 msgid "on the 21st day"
 msgstr "pada hari ke-21"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5501
+#: ../src/calendar/libecal/e-cal-recur.c:5505
 msgctxt "recur-description"
 msgid "on the 22nd day"
 msgstr "pada hari ke-22"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5505
+#: ../src/calendar/libecal/e-cal-recur.c:5509
 msgctxt "recur-description"
 msgid "on the 23rd day"
 msgstr "pada hari ke-23"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5509
+#: ../src/calendar/libecal/e-cal-recur.c:5513
 msgctxt "recur-description"
 msgid "on the 24th day"
 msgstr "pada hari ke-24"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5513
+#: ../src/calendar/libecal/e-cal-recur.c:5517
 msgctxt "recur-description"
 msgid "on the 25th day"
 msgstr "pada hari ke-25"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5517
+#: ../src/calendar/libecal/e-cal-recur.c:5521
 msgctxt "recur-description"
 msgid "on the 26th day"
 msgstr "pada hari ke-26"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5521
+#: ../src/calendar/libecal/e-cal-recur.c:5525
 msgctxt "recur-description"
 msgid "on the 27th day"
 msgstr "pada hari ke-27"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5525
+#: ../src/calendar/libecal/e-cal-recur.c:5529
 msgctxt "recur-description"
 msgid "on the 28th day"
 msgstr "pada hari ke-28"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5529
+#: ../src/calendar/libecal/e-cal-recur.c:5533
 msgctxt "recur-description"
 msgid "on the 29th day"
 msgstr "pada hari ke-29"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5533
+#: ../src/calendar/libecal/e-cal-recur.c:5537
 msgctxt "recur-description"
 msgid "on the 30th day"
 msgstr "pada hari ke-30"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5537
+#: ../src/calendar/libecal/e-cal-recur.c:5541
 msgctxt "recur-description"
 msgid "on the 31st day"
 msgstr "pada hari ke-30"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5545
+#: ../src/calendar/libecal/e-cal-recur.c:5549
 msgctxt "recur-description"
 msgid "on the first Monday"
 msgstr "pada hari Senin pertama"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5548
+#: ../src/calendar/libecal/e-cal-recur.c:5552
 msgctxt "recur-description"
 msgid "on the second Monday"
 msgstr "pada hari Senin kedua"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5551
+#: ../src/calendar/libecal/e-cal-recur.c:5555
 msgctxt "recur-description"
 msgid "on the third Monday"
 msgstr "pada hari Senin ketiga"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5554
+#: ../src/calendar/libecal/e-cal-recur.c:5558
 msgctxt "recur-description"
 msgid "on the fourth Monday"
 msgstr "pada hari Senin keempat"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5557
+#: ../src/calendar/libecal/e-cal-recur.c:5561
 msgctxt "recur-description"
 msgid "on the fifth Monday"
 msgstr "pada hari Senin kelima"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5570
+#: ../src/calendar/libecal/e-cal-recur.c:5574
 msgctxt "recur-description"
 msgid "on the first Tuesday"
 msgstr "pada hari Selasa pertama"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5573
+#: ../src/calendar/libecal/e-cal-recur.c:5577
 msgctxt "recur-description"
 msgid "on the second Tuesday"
 msgstr "pada hari Selasa kedua"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5576
+#: ../src/calendar/libecal/e-cal-recur.c:5580
 msgctxt "recur-description"
 msgid "on the third Tuesday"
 msgstr "pada hari Selasa ketiga"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5579
+#: ../src/calendar/libecal/e-cal-recur.c:5583
 msgctxt "recur-description"
 msgid "on the fourth Tuesday"
 msgstr "pada hari Selasa keempat"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5582
+#: ../src/calendar/libecal/e-cal-recur.c:5586
 msgctxt "recur-description"
 msgid "on the fifth Tuesday"
 msgstr "pada hari Selasa kelima"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5595
+#: ../src/calendar/libecal/e-cal-recur.c:5599
 msgctxt "recur-description"
 msgid "on the first Wednesday"
 msgstr "pada hari Rabu pertama"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5598
+#: ../src/calendar/libecal/e-cal-recur.c:5602
 msgctxt "recur-description"
 msgid "on the second Wednesday"
 msgstr "pada hari Rabu kedua"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5601
+#: ../src/calendar/libecal/e-cal-recur.c:5605
 msgctxt "recur-description"
 msgid "on the third Wednesday"
 msgstr "pada hari Rabu ketiga"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5604
+#: ../src/calendar/libecal/e-cal-recur.c:5608
 msgctxt "recur-description"
 msgid "on the fourth Wednesday"
 msgstr "pada hari Rabu keempat"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5607
+#: ../src/calendar/libecal/e-cal-recur.c:5611
 msgctxt "recur-description"
 msgid "on the fifth Wednesday"
 msgstr "pada hari Rabu kelima"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5620
+#: ../src/calendar/libecal/e-cal-recur.c:5624
 msgctxt "recur-description"
 msgid "on the first Thursday"
 msgstr "pada hari Kamis pertama"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5623
+#: ../src/calendar/libecal/e-cal-recur.c:5627
 msgctxt "recur-description"
 msgid "on the second Thursday"
 msgstr "pada hari Kamis kedua"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5626
+#: ../src/calendar/libecal/e-cal-recur.c:5630
 msgctxt "recur-description"
 msgid "on the third Thursday"
 msgstr "pada hari Kamis ketiga"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5629
+#: ../src/calendar/libecal/e-cal-recur.c:5633
 msgctxt "recur-description"
 msgid "on the fourth Thursday"
 msgstr "pada hari Kamis keempat"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5632
+#: ../src/calendar/libecal/e-cal-recur.c:5636
 msgctxt "recur-description"
 msgid "on the fifth Thursday"
 msgstr "pada hari Kamis kelima"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5645
+#: ../src/calendar/libecal/e-cal-recur.c:5649
 msgctxt "recur-description"
 msgid "on the first Friday"
 msgstr "pada hari Jumat pertama"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5648
+#: ../src/calendar/libecal/e-cal-recur.c:5652
 msgctxt "recur-description"
 msgid "on the second Friday"
 msgstr "pada hari Jumat kedua"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5651
+#: ../src/calendar/libecal/e-cal-recur.c:5655
 msgctxt "recur-description"
 msgid "on the third Friday"
 msgstr "pada hari Jumat ketiga"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5654
+#: ../src/calendar/libecal/e-cal-recur.c:5658
 msgctxt "recur-description"
 msgid "on the fourth Friday"
 msgstr "pada hari Jumat keempat"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5657
+#: ../src/calendar/libecal/e-cal-recur.c:5661
 msgctxt "recur-description"
 msgid "on the fifth Friday"
 msgstr "pada hari Jumat kelima"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5670
+#: ../src/calendar/libecal/e-cal-recur.c:5674
 msgctxt "recur-description"
 msgid "on the first Saturday"
 msgstr "pada hari Sabtu pertama"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5673
+#: ../src/calendar/libecal/e-cal-recur.c:5677
 msgctxt "recur-description"
 msgid "on the second Saturday"
 msgstr "pada hari Sabtu kedua"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5676
+#: ../src/calendar/libecal/e-cal-recur.c:5680
 msgctxt "recur-description"
 msgid "on the third Saturday"
 msgstr "pada hari Sabtu ketiga"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5679
+#: ../src/calendar/libecal/e-cal-recur.c:5683
 msgctxt "recur-description"
 msgid "on the fourth Saturday"
 msgstr "pada hari Sabtu keempat"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5682
+#: ../src/calendar/libecal/e-cal-recur.c:5686
 msgctxt "recur-description"
 msgid "on the fifth Saturday"
 msgstr "pada hari Sabtu kelima"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5695
+#: ../src/calendar/libecal/e-cal-recur.c:5699
 msgctxt "recur-description"
 msgid "on the first Sunday"
 msgstr "pada hari Minggu pertama"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5698
+#: ../src/calendar/libecal/e-cal-recur.c:5702
 msgctxt "recur-description"
 msgid "on the second Sunday"
 msgstr "pada hari Minggu kedua"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5701
+#: ../src/calendar/libecal/e-cal-recur.c:5705
 msgctxt "recur-description"
 msgid "on the third Sunday"
 msgstr "pada hari Minggu ketiga"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5704
+#: ../src/calendar/libecal/e-cal-recur.c:5708
 msgctxt "recur-description"
 msgid "on the fourth Sunday"
 msgstr "pada hari Minggu keempat"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5707
+#: ../src/calendar/libecal/e-cal-recur.c:5711
 msgctxt "recur-description"
 msgid "on the fifth Sunday"
 msgstr "pada hari Minggu kelima"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5736
+#: ../src/calendar/libecal/e-cal-recur.c:5740
 #, c-format
 msgid "every year forever"
 msgid_plural "every %d years forever"
 msgstr[0] "setiap %d tahun selamanya"
-msgstr[1] "setiap %d tahun selamanya"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5742
+#: ../src/calendar/libecal/e-cal-recur.c:5746
 #, c-format
 msgid "Every year forever"
 msgid_plural "Every %d years forever"
 msgstr[0] "Setiap %d tahun selamanya"
-msgstr[1] "Setiap %d tahun selamanya"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5750
+#: ../src/calendar/libecal/e-cal-recur.c:5754
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
 msgstr[0] "setiap %d tahun"
-msgstr[1] "setiap %d tahun"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5756
+#: ../src/calendar/libecal/e-cal-recur.c:5760
 #, c-format
 msgid "Every year"
 msgid_plural "Every %d years"
 msgstr[0] "Setiap %d tahun"
-msgstr[1] "Setiap %d tahun"
 
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 3 days for 10 occurrences"
-#: ../src/calendar/libecal/e-cal-recur.c:5775
+#: ../src/calendar/libecal/e-cal-recur.c:5779
 #, c-format
 msgid "for one occurrence"
 msgid_plural "for %d occurrences"
 msgstr[0] "untuk %d kejadian"
-msgstr[1] "untuk %d kejadian"
 
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The '%s' is replaced with actual date, thus it can create something like
 #. "until Mon 15.1.2018". The text is appended at the end of the complete
 #. recurrence description, making it for example: "Every 3 days until Mon 15.1.2018"
-#: ../src/calendar/libecal/e-cal-recur.c:5811
+#: ../src/calendar/libecal/e-cal-recur.c:5815
 #, c-format
 msgctxt "recur-description"
 msgid "until %s"
@@ -2240,7 +2238,7 @@ msgstr "hingga %s"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 2 months on Tuesday, Thursday and Friday forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5817
+#: ../src/calendar/libecal/e-cal-recur.c:5821
 msgctxt "recur-description"
 msgid "forever"
 msgstr "selamanya"
@@ -2248,7 +2246,7 @@ msgstr "selamanya"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
 #. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
 #. together one sentence: "Every 2 weeks on Tuesday and Friday for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5827
+#: ../src/calendar/libecal/e-cal-recur.c:5831
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s %3$s"
@@ -2257,7 +2255,7 @@ msgstr "%1$s %2$s %3$s"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
 #. the '%2$s' is like "for 10 occurrences", constructing together one sentence:
 #. "Every 2 days for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5832
+#: ../src/calendar/libecal/e-cal-recur.c:5836
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s"
@@ -2265,43 +2263,42 @@ msgstr "%1$s %2$s"
 
 #. Translators: This text is appended at the end of complete recur description using "%s%s" in
 #. context "recur-description"
-#: ../src/calendar/libecal/e-cal-recur.c:5848
+#: ../src/calendar/libecal/e-cal-recur.c:5852
 #, c-format
 msgid ", with one exception"
 msgid_plural ", with %d exceptions"
 msgstr[0] ", dengan %d pengecualian"
-msgstr[1] ", dengan %d pengecualian"
 
 #. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
 #. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
 #. It will form something like: "Every 2 weeks on Tuesday and Friday for 10 occurrences, with 3 exceptions"
-#: ../src/calendar/libecal/e-cal-recur.c:5855
+#: ../src/calendar/libecal/e-cal-recur.c:5859
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5868
-#: ../src/calendar/libecal/e-cal-recur.c:5891
+#: ../src/calendar/libecal/e-cal-recur.c:5872
+#: ../src/calendar/libecal/e-cal-recur.c:5895
 msgctxt "recur-description"
 msgid "The meeting recurs"
 msgstr "Pertemuan ini berulang"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5870
-#: ../src/calendar/libecal/e-cal-recur.c:5893
+#: ../src/calendar/libecal/e-cal-recur.c:5874
+#: ../src/calendar/libecal/e-cal-recur.c:5897
 msgctxt "recur-description"
 msgid "The appointment recurs"
 msgstr "Pertemuan berulang"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5873
-#: ../src/calendar/libecal/e-cal-recur.c:5896
+#: ../src/calendar/libecal/e-cal-recur.c:5877
+#: ../src/calendar/libecal/e-cal-recur.c:5900
 msgctxt "recur-description"
 msgid "The task recurs"
 msgstr "Tugas ini berulang"
 
 #. if (i_cal_component_isa (comp) == I_CAL_VJOURNAL_COMPONENT)
-#: ../src/calendar/libecal/e-cal-recur.c:5875
-#: ../src/calendar/libecal/e-cal-recur.c:5898
+#: ../src/calendar/libecal/e-cal-recur.c:5879
+#: ../src/calendar/libecal/e-cal-recur.c:5902
 msgctxt "recur-description"
 msgid "The memo recurs"
 msgstr "Memo ini berulang"
@@ -2310,7 +2307,7 @@ msgstr "Memo ini berulang"
 #. The '%1$s' is replaced with something like "The meeting recurs" and
 #. the '%2$s' with something like "every 2 days forever", thus forming
 #. sentence like "This meeting recurs every 2 days forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5882
+#: ../src/calendar/libecal/e-cal-recur.c:5886
 #, c-format
 msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
@@ -2341,36 +2338,32 @@ msgid "Undefined"
 msgstr "Tak terdefinisi"
 
 #: ../src/calendar/libecal/e-cal-util.c:904
-#: ../src/libedataserverui/e-reminders-widget.c:299
+#: ../src/libedataserverui/e-reminders-widget.c:308
 #, c-format
 msgid "%d week"
 msgid_plural "%d weeks"
 msgstr[0] "%d minggu"
-msgstr[1] "%d minggu"
 
 #: ../src/calendar/libecal/e-cal-util.c:913
-#: ../src/libedataserverui/e-reminders-widget.c:295
+#: ../src/libedataserverui/e-reminders-widget.c:304
 #, c-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d hari"
-msgstr[1] "%d hari"
 
 #: ../src/calendar/libecal/e-cal-util.c:922
-#: ../src/libedataserverui/e-reminders-widget.c:291
+#: ../src/libedataserverui/e-reminders-widget.c:300
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d jam"
-msgstr[1] "%d jam"
 
 #: ../src/calendar/libecal/e-cal-util.c:931
-#: ../src/libedataserverui/e-reminders-widget.c:287
+#: ../src/libedataserverui/e-reminders-widget.c:296
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d menit"
-msgstr[1] "%d menit"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
 #: ../src/calendar/libecal/e-cal-util.c:936
@@ -2378,7 +2371,6 @@ msgstr[1] "%d menit"
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d detik"
-msgstr[1] "%d detik"
 
 #: ../src/calendar/libecal/e-reminder-watcher.c:2824
 msgid "No Summary"
@@ -2553,14 +2545,14 @@ msgstr "Tidak dapat menambah zona waktu tanpa komponen"
 msgid "Cannot add timezone with invalid component"
 msgstr "Tidak dapat menambah zona waktu dengan komponen yang tidak valid"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1153
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1168
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr ""
 "Objek yang diterima untuk UID \"%s\" tidak mengandung komponen yang "
 "diharapkan"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4206
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4221
 msgid "attachment.dat"
 msgstr "attachment.dat"
 
@@ -2694,113 +2686,113 @@ msgstr "Tidak bisa mengubah nama \"%s\" menjadi %s: %s"
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr "Mentransfer pesan yang disaring di “%s : %s”"
 
-#: ../src/camel/camel-filter-driver.c:1125
-#: ../src/camel/camel-filter-search.c:934
+#: ../src/camel/camel-filter-driver.c:1126
+#: ../src/camel/camel-filter-search.c:936
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "Gagal membuat proses anak \"%s\": %s"
 
-#: ../src/camel/camel-filter-driver.c:1174
+#: ../src/camel/camel-filter-driver.c:1180
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Diterima aliran pesan invalid dari %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1398
-#: ../src/camel/camel-filter-driver.c:1411
+#: ../src/camel/camel-filter-driver.c:1404
+#: ../src/camel/camel-filter-driver.c:1417
 msgid "Syncing folders"
 msgstr "Mensinkronkan folder-folder"
 
-#: ../src/camel/camel-filter-driver.c:1519
+#: ../src/camel/camel-filter-driver.c:1525
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Kesalahan saat mengurai penyaring: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1530
+#: ../src/camel/camel-filter-driver.c:1536
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Kesalahan saat mengeksekusi penyaring: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1628
+#: ../src/camel/camel-filter-driver.c:1634
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Tidak bisa membuka folder spool"
 
-#: ../src/camel/camel-filter-driver.c:1640
+#: ../src/camel/camel-filter-driver.c:1646
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Tidak bisa memproses folder spool"
 
-#: ../src/camel/camel-filter-driver.c:1668
+#: ../src/camel/camel-filter-driver.c:1674
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Mengambil pesan %d (%d%%)"
 
-#: ../src/camel/camel-filter-driver.c:1677
-#: ../src/camel/camel-filter-driver.c:1700
+#: ../src/camel/camel-filter-driver.c:1683
+#: ../src/camel/camel-filter-driver.c:1706
 #, c-format
 msgid "Failed on message %d"
 msgstr "Gagal pada pesan %d"
 
-#: ../src/camel/camel-filter-driver.c:1718
-#: ../src/camel/camel-filter-driver.c:1847
+#: ../src/camel/camel-filter-driver.c:1724
+#: ../src/camel/camel-filter-driver.c:1853
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "Gagal mentransfer pesan: %s"
 
-#: ../src/camel/camel-filter-driver.c:1728
-#: ../src/camel/camel-filter-driver.c:1861
+#: ../src/camel/camel-filter-driver.c:1734
+#: ../src/camel/camel-filter-driver.c:1867
 msgid "Syncing folder"
 msgstr "Mensinkronkan folder"
 
-#: ../src/camel/camel-filter-driver.c:1733
-#: ../src/camel/camel-filter-driver.c:1869
+#: ../src/camel/camel-filter-driver.c:1739
+#: ../src/camel/camel-filter-driver.c:1875
 msgid "Complete"
 msgstr "Selesai"
 
-#: ../src/camel/camel-filter-driver.c:1801
+#: ../src/camel/camel-filter-driver.c:1807
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Mengambil pesan %d dari %d"
 
-#: ../src/camel/camel-filter-driver.c:1819
+#: ../src/camel/camel-filter-driver.c:1825
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Gagal pada pesan %d dari %d"
 
-#: ../src/camel/camel-filter-driver.c:2026
-#: ../src/camel/camel-filter-driver.c:2050
+#: ../src/camel/camel-filter-driver.c:2032
+#: ../src/camel/camel-filter-driver.c:2056
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Eksekusi penyaring \"%s\" gagal: "
 
-#: ../src/camel/camel-filter-driver.c:2040
+#: ../src/camel/camel-filter-driver.c:2046
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Galat saat mengurai penyaring \"%s\": %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:2059
+#: ../src/camel/camel-filter-driver.c:2065
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Galat saat mengeksekusi penyaring \"%s\": %s: %s"
 
-#: ../src/camel/camel-filter-search.c:171
+#: ../src/camel/camel-filter-search.c:173
 msgid "Failed to retrieve message"
 msgstr "Gagal mengambil pesan"
 
-#: ../src/camel/camel-filter-search.c:635
+#: ../src/camel/camel-filter-search.c:637
 msgid "Invalid arguments to (system-flag)"
 msgstr "Argumen invalid untuk (system-flag)"
 
-#: ../src/camel/camel-filter-search.c:654
+#: ../src/camel/camel-filter-search.c:656
 msgid "Invalid arguments to (user-tag)"
 msgstr "Argumen invalid untuk (user-tag)"
 
-#: ../src/camel/camel-filter-search.c:1236
+#: ../src/camel/camel-filter-search.c:1238
 msgid "Invalid arguments to (message-location)"
 msgstr "Argumen invalid untuk (message-location)"
 
-#: ../src/camel/camel-filter-search.c:1391
-#: ../src/camel/camel-filter-search.c:1402
+#: ../src/camel/camel-filter-search.c:1451
+#: ../src/camel/camel-filter-search.c:1462
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Kesalahan saat mengeksekusi saringan pencarian: %s: %s"
@@ -2821,7 +2813,6 @@ msgstr "Menyimpan perubahan dalam folder \"%s : %s\""
 msgid "Learning new spam message in “%s : %s”"
 msgid_plural "Learning new spam messages in “%s : %s”"
 msgstr[0] "Mempelajari pesan sampah baru dalam \"%s : %s\""
-msgstr[1] "Mempelajari pesan sampah baru dalam \"%s : %s\""
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2831,7 +2822,6 @@ msgstr[1] "Mempelajari pesan sampah baru dalam \"%s : %s\""
 msgid "Learning new ham message in “%s : %s”"
 msgid_plural "Learning new ham messages in “%s : %s”"
 msgstr[0] "Mempelajari pesan ham baru dalam \"%s : %s\""
-msgstr[1] "Mempelajari pesan ham baru dalam \"%s : %s\""
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2841,7 +2831,6 @@ msgstr[1] "Mempelajari pesan ham baru dalam \"%s : %s\""
 msgid "Filtering new message in “%s : %s”"
 msgid_plural "Filtering new messages in “%s : %s”"
 msgstr[0] "Menyaring pesan baru dalam \"%s : %s\""
-msgstr[1] "Menyaring pesan baru dalam \"%s : %s\""
 
 #: ../src/camel/camel-folder.c:1210
 #: ../src/camel/providers/local/camel-maildir-folder.c:332
@@ -2901,39 +2890,39 @@ msgid "Refreshing folder “%s : %s”"
 msgstr "Menyegarkan folder \"%s : %s\""
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:926
-#: ../src/camel/camel-folder-search.c:969
+#: ../src/camel/camel-folder-search.c:930
+#: ../src/camel/camel-folder-search.c:973
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) membutuhkan hasil bool tunggal"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1007
+#: ../src/camel/camel-folder-search.c:1011
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) tidak diperbolehkan di dalam %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1014
-#: ../src/camel/camel-folder-search.c:1022
+#: ../src/camel/camel-folder-search.c:1018
+#: ../src/camel/camel-folder-search.c:1026
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) membutuhkan tipe string yang cocok"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1050
+#: ../src/camel/camel-folder-search.c:1054
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) mengharapkan hasil berupa larik"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1060
+#: ../src/camel/camel-folder-search.c:1064
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) membutuhkan set folder"
 
-#: ../src/camel/camel-folder-search.c:2218
-#: ../src/camel/camel-folder-search.c:2392
+#: ../src/camel/camel-folder-search.c:2286
+#: ../src/camel/camel-folder-search.c:2460
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2942,8 +2931,8 @@ msgstr ""
 "Tidak bisa mengurai ekspresi pencarian: %s:\n"
 "%s"
 
-#: ../src/camel/camel-folder-search.c:2230
-#: ../src/camel/camel-folder-search.c:2404
+#: ../src/camel/camel-folder-search.c:2298
+#: ../src/camel/camel-folder-search.c:2472
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -3029,7 +3018,7 @@ msgstr ""
 "Catat bahwa isi terenkripsi tak memuat informasi tentang penerima, sehingga "
 "akan ada permintaan kata sandi bagi setiap kunci privat yang disimpan."
 
-#: ../src/camel/camel-gpg-context.c:1195 ../src/camel/camel-net-utils.c:522
+#: ../src/camel/camel-gpg-context.c:1195 ../src/camel/camel-net-utils.c:524
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:393
 #: ../src/libedataserver/e-client.c:156
 #, c-format
@@ -3235,22 +3224,22 @@ msgstr "Tidak tersedia tanda tangan"
 msgid "parse error"
 msgstr "kesalahan mengurai"
 
-#: ../src/camel/camel-net-utils.c:714
+#: ../src/camel/camel-net-utils.c:716
 #, c-format
 msgid "Resolving: %s"
 msgstr "Mencari nama: %s"
 
-#: ../src/camel/camel-net-utils.c:739
+#: ../src/camel/camel-net-utils.c:741
 msgid "Host lookup failed"
 msgstr "Pencarian host gagal"
 
-#: ../src/camel/camel-net-utils.c:745
+#: ../src/camel/camel-net-utils.c:747
 #, c-format
 msgid "Host lookup “%s” failed. Check your host name for spelling errors."
 msgstr ""
 "Pencarian host \"%s\" gagal. Periksalah apakah nama host Anda salah eja."
 
-#: ../src/camel/camel-net-utils.c:749
+#: ../src/camel/camel-net-utils.c:751
 #, c-format
 msgid "Host lookup “%s” failed: %s"
 msgstr "Pencarian host \"%s\" gagal: %s"
@@ -4125,7 +4114,7 @@ msgstr "Pakai Resync _Cepat bila peladen mendukungnya"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:44
 msgid "_Listen for server change notifications"
-msgstr "_Dengarkan pemberitahuan perubahan peladen"
+msgstr "_Dengarkan notifikasi perubahan peladen"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:47
 msgid "Connection to Server"
@@ -4363,65 +4352,65 @@ msgstr "Mengambil ringkasan informasi untuk pesan baru dalam \"%s : %s\""
 msgid "Error fetching message info"
 msgstr "Galat saat mengambil info pesan"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5598
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5607
 msgid "Error running STATUS"
 msgstr "Galat saat menjalankan STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6178
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6233
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6297
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6187
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6242
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6306
 msgid "Error syncing changes"
 msgstr "Galat saat menyelaraskan perubahan"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6191
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6243
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6316
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6457
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6200
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6252
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6325
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6466
 msgid "Error expunging message"
 msgstr "Galat saat menghapus pesan-pesan lama"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6539
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6548
 msgid "Error fetching folders"
 msgstr "Galat saat mengambil folder"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6547
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6556
 msgid "Error fetching subscribed folders"
 msgstr "Galat saat mengambil folder yang dilanggani"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6604
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6613
 msgid "Error creating folder"
 msgstr "Galat saat membuat folder"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6654
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6663
 msgid "Error deleting folder"
 msgstr "Galat saat menghapus folder"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6700
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6709
 msgid "Error renaming folder"
 msgstr "Galat saat mengubah nama folder"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6732
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6741
 msgid "Error subscribing to folder"
 msgstr "Galat saat berlangganan ke folder"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6768
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6777
 msgid "Error unsubscribing from folder"
 msgstr "Galat saat berhenti langganan dari folder"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6808
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6817
 msgid "IMAP server does not support quotas"
 msgstr "Peladen IMAP tidak mendukung kuota"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6820
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6829
 msgid "Error retrieving quota information"
 msgstr "Galat saat mengambil informasi kuota"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6885
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6894
 msgid "Search failed"
 msgstr "Pencarian gagal"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:7013
+#: ../src/camel/providers/imapx/camel-imapx-server.c:7022
 msgid "Error running IDLE"
 msgstr "Galat saat menjalankan IDLE"
 
@@ -4674,7 +4663,7 @@ msgstr "Untuk menyimpan surat lokal dalam direktori maildir."
 
 #: ../src/camel/providers/local/camel-local-provider.c:110
 msgid "_Listen for change notifications"
-msgstr "_Dengarkan pemberitahuan perubahan"
+msgstr "_Dengarkan notifikasi perubahan"
 
 #: ../src/camel/providers/local/camel-local-provider.c:115
 msgid "_Store status headers in Elm/Pine/Mutt format"
@@ -5564,7 +5553,6 @@ msgid "POP3 stores have no folder hierarchy"
 msgstr "Penyimpanan POP3 tak punya hirarki folder"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-provider.c:31
-#: ../src/services/evolution-source-registry/builtin/sendmail.source.in.h:1
 msgid "Sendmail"
 msgstr "Sendmail"
 
@@ -5877,426 +5865,6 @@ msgstr "Perintah RSET gagal: "
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:2013
 msgid "QUIT command failed: "
 msgstr "Perintah QUIT gagal: "
-
-#: ../data/org.gnome.evolution-data-server.addressbook.gschema.xml.in.h:1
-msgid "Contact UID of a user"
-msgstr "UID kontak dari suatu pengguna"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:1
-msgid "Birthday and anniversary reminder"
-msgstr "Pengingat ulang tahun dan perayaan tahunan"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:2
-msgid "Whether to set a reminder for birthdays and anniversaries"
-msgstr "Apakah menata pengingat bagi ulang tahun dan perayaan tahunan"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:3
-msgid "Birthday and anniversary reminder value"
-msgstr "Nilai pengingat ulang tahun dan perayaan tahunan"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:4
-msgid "Number of units for determining a birthday or anniversary reminder"
-msgstr ""
-"Cacah unit untuk menentukan suatu pengingat hari ulang tahun atau perayaan "
-"tahunan"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:5
-msgid "Birthday and anniversary reminder units"
-msgstr "Unit pengingat ulang tahun dan perayaan tahunan"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:6
-msgid ""
-"Units for a birthday or anniversary reminder, “minutes”, “hours” or “days”"
-msgstr ""
-"Unit bagi pengingat ulang tahun atau perayaan tahunan, \"minutes\" (menit), "
-"\"hours\" (jam), atau \"days\" (hari)"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:7
-msgid "Past reminders for EReminderWatcher"
-msgstr "Pengingat sebelumnya untuk EReminderWatcher"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:8
-msgid "Snoozed reminders for EReminderWatcher"
-msgstr "Menunda pengingat untuk EReminderWatcher"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:9
-msgid "Reminder programs"
-msgstr "Program pengingat"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:10
-msgid "Programs that are allowed to be run by reminders"
-msgstr "Program yang boleh dijalankan oleh pengingat"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:11
-msgid "Show reminders in notification tray only"
-msgstr "Tampilkan pengingat dalam bilah pemberitahuan saja"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:12
-msgid ""
-"When set to true, the reminders are shown only in the notification tray, "
-"otherwise the reminders dialog is shown immediately"
-msgstr ""
-"Ketika diatur ke true, pengingat ditampilkan hanya pada bilah notifikasi, "
-"jika tidak dialog pengingat ditampilkan segera"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:13
-msgid "Show reminder notification dialog always on top"
-msgstr "Tampilkan dialog pemberitahuan pengingat selalu di atas"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:14
-msgid ""
-"Whether or not to show reminder notification dialog always on top. Note this "
-"works only as a hint for the window manager, which may or may not obey it."
-msgstr ""
-"Apakah menampilkan dialog pemberitahuan pengingat selalu di atas atau tidak. "
-"Perhatikan ini hanya berfungsi sebagai petunjuk untuk pengatur jendela, yang "
-"mungkin atau mungkin tidak menaatinya."
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:15
-msgid "X position of the reminder notification dialog"
-msgstr "Posisi X dialog pemberitahuan pengingat"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:16
-msgid "Y position of the reminder notification dialog"
-msgstr "Posisi Y dialog pemberitahuan pengingat"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:17
-msgid "Width of the reminder notification dialog"
-msgstr "Lebar dialog pemberitahuan pengingat"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:18
-msgid "Height of the reminder notification dialog"
-msgstr "Tinggi dialog pemberitahuan pengingat"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:19
-msgid "Size in pixels of the event list in the reminder notification dialog"
-msgstr "Ukuran dalam piksel daftar acara dalam dialog pemberitahuan pengingat"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:20
-msgid "Show reminder notification for completed tasks"
-msgstr "Tampilkan pemberitahuan pengingat untuk tugas yang sudah selesai"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:21
-msgid "Show reminder notification for past events"
-msgstr "Tampilkan pemberitahuan pengingat untuk acara sebelumnya"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:22
-msgid "The last used snooze time, in minutes"
-msgstr "Waktu jeda terakhir yang digunakan, dalam hitungan menit"
-
-#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:23
-msgid "User-defined snooze times, in minutes"
-msgstr "Waktu jeda pengguna, dalam hitungan menit"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:1
-msgid "Whether the migration of old setting was already done"
-msgstr "﻿Apakah migrasi pengaturan lama telah dilakukan"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:2
-msgid "An absolute path where the gpg (or gpg2) binary is"
-msgstr "Path absolut tempat biner gpg (atau gpg2)"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:3
-msgid ""
-"An example is “/usr/bin/gpg”; when it is left empty, or an incorrect value "
-"is set, then it will be searched for. Change requires restart of the "
-"application."
-msgstr ""
-"Contoh adalah \"/usr/bin/gpg\"; bila tidak diisi, atau nilai yang salah "
-"diisikan, maka itu akan dicari. Perubahan memerlukan start ulang aplikasi."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:4
-msgid "Whether to load photos of signers/encrypters"
-msgstr "Apakah memuat foto penandatangan/pengenkripsi"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:5
-msgid ""
-"When set to “true”, tries to load also photo of the signers/encrypters, if "
-"available in the key/certificate."
-msgstr ""
-"Ketika diisi \"true\", mencoba juga memuat foto penandatangan/pengenkripsi, "
-"bila tersedia dalam kunci/sertifikat."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:6
-msgid "Override SMTP HELO/EHLO argument"
-msgstr "Timpa Argumen SMTP HELO/EHLO"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:7
-msgid ""
-"When not empty, it's used as the SMTP HELO/EHLO argument, instead of the "
-"local host name/IP."
-msgstr ""
-"Ketika tidak kosong, itu digunakan sebagai argumen SMTP HELO EHLO, alih-alih "
-"nama host/IP lokal."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
-msgid "Array of user header names"
-msgstr "Array nama tajuk pengguna"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
-msgid ""
-"These headers can be stored in the folder summary, eventually being visible "
-"in the GUI. The value can contain a pipe character ('|'), which delimits the "
-"display name from the header name. Example: 'Span Score|X-Spam-Score'"
-msgstr ""
-"Tajuk ini dapat disimpan dalam ringkasan folder, akhirnya terlihat di GUI. "
-"Nilai dapat berisi karakter pipa ('|'), yang membatasi nama tampilan dari "
-"nama tajuk. Contoh: 'Span Score| X-Spam-Score'"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
-msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
-msgstr ""
-"Nama GIO dari GNetworkMonitor yang akan dipakai bagi instansi ENetworkMonitor"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
-msgid ""
-"When set to an unknown value, then the default GNetworkMonitor is used in "
-"the background. A special value “always-online” is used for no network "
-"monitoring."
-msgstr ""
-"Ketika ditata ke nilai yang tak dikenal, maka GNetworkMonitor baku dipakai "
-"di latar belakang. Suatu nilai khusus \"always-online\" dipakai untuk tanpa "
-"pemantauan jaringan."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
-msgid ""
-"A full path to a directory where .source files with preconfigured options "
-"can be stored"
-msgstr ""
-"Path lengkap ke suatu direktori dimana berkas .source dengan opsi "
-"terprakonfigurasi dapat disimpan"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
-msgid ""
-"This directory, if filled with an existing path, is checked additionally to "
-"XDG configure directories."
-msgstr ""
-"Direktori ini, bila diisi dengan path yang ada, diperiksa sebagai tambahan "
-"ke direktori yang dikonfigurasi XDG."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:14
-msgid "A list of variables which can be part of the autoconfig .source files"
-msgstr ""
-"Daftar variabel yang bisa menjadi bagian dari berkas .source autoconfig"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:15
-msgid ""
-"Each item of the array is expected to be of the form: name=value. These "
-"variables are checked before environment variables, but after the predefined "
-"USER, REALNAME and HOST variables."
-msgstr ""
-"Setiap butir larik diharapkan ada dalam bentuk: nama=nilai. Variabel-"
-"variabel ini diperiksa sebelum variabel lingkungan, tapi setelah variabel "
-"terpradefinisi USER, REALNAME, dan HOST."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:16
-msgid "A list of hints for OAuth2 services"
-msgstr "Daftar petunjuk untuk layanan OAuth2"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:17
-msgid ""
-"Users can extend the list of supported protocols and hostnames for defined "
-"OAuth2 services, in addition to those hard-coded. Each line can be of the "
-"form: servicename[-protocol]:hostname1,hostname2,... where “servicename” is "
-"the actual service name; the “-protocol” is optional, and if written, then "
-"the service can be used only if both “protocol” and “hostnameX” match; the "
-"“hostnameX” is the actual host name to compare with, case insensitively. "
-"Each line can contain multiple values, separated by comma. There can be "
-"provided multiple lines for one OAuth2 service. Note that the actual URL "
-"where the token is requested and refreshed cannot be changed here, the "
-"hostname is to allow other servers, where the OAuth2 service can be used. "
-"Examples: Company:mail.company.com — enables “Company” OAuth2 authentication "
-"for “mail.company.com” host Company-CalDAV:caldav.company.com — enables "
-"“Company” OAuth2 authentication for any “CalDAV” source, which reads data "
-"from “caldav.company.com” host"
-msgstr ""
-"Pengguna dapat memperluas daftar dari protokol dan nama host yang didukung "
-"untuk layanan OAuth2 yang didefinisikan, sebagai tambahan dari yang sudah "
-"ditanam. Setiap baris dapat berbentuk: namalayanan[-protokol]:namahost1,"
-"namahost2,... dimana \"namalayanan\" adalah nama layanan sebenarnya; \"-"
-"protokol\" opsional, dan bila ditulis, maka layanan hanya dapat dipakai bila "
-"\"protokol\" dan \"namahostX\" cocok; \"namahostX\" adalah nama host "
-"sebenarnya yang akan dibandingkan, tidak membedakan huruf besar kecil. "
-"Setiap baris dapat memuat beberapa nilai, dipisahkan oleh koma. Bisa "
-"disediakan beberapa baris untuk satu layanan OAuth2. Perhatikan bahwa URL "
-"sebenarnya dimana token diminta dan disegarkan tidak dapat diubah di sini, "
-"nama host untuk mengizinkan peladen lain, dimana layanan OAuth2 dapat "
-"dipakai. Contoh: Company:mail.company.com - memfungsikan autentikasi OAuth2 "
-"\"Company\" untuk \"mail.company.com\" host Company-CalDAV:caldav.company."
-"com - memfungsikan autentikasi OAuth2 'Company' untuk sebarang sumber "
-"\"CalDAV\", yang membaca data dari host \"caldav.companycaldav.com\""
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:18
-msgid ""
-"An OAuth2 client ID to use to connect to Google servers, instead of the one "
-"provided during build time"
-msgstr ""
-"ID klien OAuth2 yang akan digunakan untuk terhubung ke peladen Google, bukan "
-"yang disediakan saat membangun"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:19
-msgid ""
-"User-specified OAuth2 client ID for Google servers. Empty string means to "
-"use the one provided during build time. Change of this requires restart."
-msgstr ""
-"ID klien OAuth2 yang ditentukan pengguna untuk peladen Google. String kosong "
-"berarti menggunakan yang disediakan selama waktu pembuatan. Perubahan ini "
-"membutuhkan mulai ulang."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:20
-msgid ""
-"An OAuth2 client secret to use to connect to Google servers, instead of the "
-"one provided during build time"
-msgstr ""
-"Klien OAuth2 rahasia untuk digunakan untuk terhubung ke peladen Google, alih-"
-"alih yang disediakan saat membangun"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:21
-msgid ""
-"User-specified OAuth2 client secret for Google servers. Empty string means "
-"to use the one provided during build time. Change of this requires restart."
-msgstr ""
-"Klien OAuth2 rahasia yang ditentukan pengguna untuk peladen Google. String "
-"kosong berarti menggunakan yang disediakan selama waktu pembuatan. Perubahan "
-"ini membutuhkan mulai ulang."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:22
-msgid ""
-"An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
-"provided during build time"
-msgstr ""
-"ID klien OAuth2 yang akan digunakan untuk menyambung ke peladen Outlook, "
-"bukan yang disediakan saat membangun"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:23
-msgid ""
-"User-specified OAuth2 client ID for Outlook servers. Empty string means to "
-"use the one provided during build time. Change of this requires restart."
-msgstr ""
-"ID klien OAuth2 yang ditentukan pengguna untuk peladen Outlook. String "
-"kosong berarti menggunakan yang disediakan selama waktu pembuatan. Perubahan "
-"ini membutuhkan mulai ulang."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:24
-msgid ""
-"An OAuth2 client secret to use to connect to Outlook servers, instead of the "
-"one provided during build time"
-msgstr ""
-"Klien OAuth2 rahasia untuk digunakan untuk terhubung ke peladen Outlook, "
-"bukan yang disediakan saat membangun"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:25
-msgid ""
-"User-specified OAuth2 client secret for Outlook servers. Empty string means "
-"to use the one provided during build time. Change of this requires restart."
-msgstr ""
-"Klien OAuth2 rahasia yang ditentukan pengguna untuk peladen Outlook. String "
-"kosong berarti menggunakan yang disediakan selama waktu pembuatan. Perubahan "
-"ini membutuhkan mulai ulang."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:26
-msgid ""
-"An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
-"provided during build time"
-msgstr ""
-"ID klien OAuth2 yang akan digunakan untuk terhubung ke peladen Yahoo!, bukan "
-"yang disediakan saat membangun"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:27
-msgid ""
-"User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
-"use the one provided during build time. Change of this requires restart."
-msgstr ""
-"ID klien OAuth2 yang ditentukan pengguna untuk peladen Yahoo!. String kosong "
-"berarti menggunakan yang disediakan selama waktu pembuatan. Perubahan ini "
-"membutuhkan mulai ulang."
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:28
-msgid ""
-"An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
-"one provided during build time"
-msgstr ""
-"Klien OAuth2 rahasia untuk digunakan untuk terhubung ke peladen Yahoo!, alih-"
-"alih yang disediakan saat membangun"
-
-#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:29
-msgid ""
-"User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
-"to use the one provided during build time. Change of this requires restart."
-msgstr ""
-"Klien OAuth2 rahasia yang ditentukan pengguna untuk peladen Yahoo!. String "
-"kosong berarti menggunakan yang disediakan selama waktu pembuatan. Perubahan "
-"ini membutuhkan mulai ulang."
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
-msgid "(Deprecated) Proxy type to use"
-msgstr "(Usang) Tipe proksi yang akan dipakai"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:2
-msgid ""
-"This key was deprecated in version 3.12 and should no longer be used. Proxy "
-"settings are now integrated into Evolution-Data-Server’s account system. See "
-"the ESourceProxy API documentation for details."
-msgstr ""
-"Kunci ini usang sejak versi 3.12 dan mestinya tidak dipakai lagi. Pengaturan "
-"proksi kini terintegrasi ke dalam sistem akun Evolution-Data-Server. Lihat "
-"dokumentasi API ESourceProxy untuk rincian."
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
-msgid "(Deprecated) Whether to use http-proxy"
-msgstr "(Usang) Apakah memakai http-proxy"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:4
-msgid "(Deprecated) Whether proxy server requires authentication"
-msgstr "(Usang) Apakah peladen proksi perlu autentikasi"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:5
-msgid "(Deprecated) Host name for HTTP requests"
-msgstr "(Usang) Nama host bagi permintaan HTTP"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:6
-msgid "(Deprecated) Port number for HTTP requests"
-msgstr "(Usang) Nomor port bagi permintaan HTTP"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:7
-msgid "(Deprecated) Proxy authentication user name"
-msgstr "(Usang) Nama pengguna autentikasi proksi"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:8
-msgid "(Deprecated) Proxy authentication password"
-msgstr "(Usang) Kata sandi autentikasi proksi"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:9
-msgid "(Deprecated) List of hosts to connect to without proxy"
-msgstr "(Usang) Daftar host yang dihubungi tanpa proksi"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:10
-msgid "(Deprecated) Host name for HTTPS requests"
-msgstr "(Usang) Nama host bagi permintaan HTTPS"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:11
-msgid "(Deprecated) Port number for HTTPS requests"
-msgstr "(Usang) Nomor port bagi permintaan HTTPS"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:12
-msgid "(Deprecated) Host name for SOCKS requests"
-msgstr "(Usang) Nama host bagi permintaan SOCKS"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:13
-msgid "(Deprecated) Port number for SOCKS requests"
-msgstr "(Usang) Nomor port bagi permintaan SOCKS"
-
-#: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:14
-msgid "(Deprecated) Automatic proxy configuration URL"
-msgstr "(Usang) URL konfigurasi proksi otomatis"
-
-#: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:1
-msgid "Evolution Alarm Notify"
-msgstr "Pemberitahuan Alarm Evolution"
-
-#: ../data/org.gnome.Evolution-alarm-notify.desktop.in.in.h:2
-msgid "Calendar event notifications"
-msgstr "Notifikasi acara kalender"
 
 #: ../src/libebackend/e-cache.c:751
 msgid "Out of memory"
@@ -7330,84 +6898,83 @@ msgstr "Tambahkan waktu khusus…"
 msgid "Clear custom times"
 msgstr "Hapus waktu khusus"
 
-#: ../src/libedataserverui/e-reminders-widget.c:285
+#: ../src/libedataserverui/e-reminders-widget.c:294
 msgctxt "overdue"
 msgid "now"
 msgstr "sekarang"
 
-#: ../src/libedataserverui/e-reminders-widget.c:303
+#: ../src/libedataserverui/e-reminders-widget.c:312
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d tahun"
-msgstr[1] "%d tahun"
 
-#: ../src/libedataserverui/e-reminders-widget.c:309
+#: ../src/libedataserverui/e-reminders-widget.c:318
 msgctxt "overdue"
 msgid "overdue"
 msgstr "terlambat"
 
-#: ../src/libedataserverui/e-reminders-widget.c:938
+#: ../src/libedataserverui/e-reminders-widget.c:954
 #, c-format
 msgid "Failed to launch URI “%s”:"
 msgstr "Gagal meluncurkan URI “%s”:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:989
+#: ../src/libedataserverui/e-reminders-widget.c:1005
 msgid "No reminder is selected."
 msgstr "Tidak ada pengingat yang dipilih."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1067
+#: ../src/libedataserverui/e-reminders-widget.c:1083
 msgid "No details are available."
 msgstr "Tidak ada rincian yang tersedia."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1071
+#: ../src/libedataserverui/e-reminders-widget.c:1087
 msgid "Multiple reminders are selected."
 msgstr "Beberapa pengingat dipilih."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1105
+#: ../src/libedataserverui/e-reminders-widget.c:1121
 msgid "Failed to dismiss reminder:"
 msgstr "Gagal menutup pengingat:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1126
+#: ../src/libedataserverui/e-reminders-widget.c:1142
 msgid "Failed to dismiss all:"
 msgstr "Gagal menutup semua:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1262
+#: ../src/libedataserverui/e-reminders-widget.c:1278
 msgid "Set a custom snooze time for"
 msgstr "Atur waktu jeda khusus untuk"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1275
+#: ../src/libedataserverui/e-reminders-widget.c:1291
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "ha_ri"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1291
+#: ../src/libedataserverui/e-reminders-widget.c:1307
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "_jam"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1307
+#: ../src/libedataserverui/e-reminders-widget.c:1323
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "_menit"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1313
+#: ../src/libedataserverui/e-reminders-widget.c:1329
 msgid "_Add Snooze time"
 msgstr "T_ambahkan waktu Jeda"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1631
+#: ../src/libedataserverui/e-reminders-widget.c:1647
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "_Tutup"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1632
+#: ../src/libedataserverui/e-reminders-widget.c:1648
 msgid "Dismiss _All"
 msgstr "Tutup Semu_a"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1634
+#: ../src/libedataserverui/e-reminders-widget.c:1650
 msgid "_Snooze"
 msgstr "_Jeda"
 
@@ -7608,26 +7175,26 @@ msgstr ""
 "Timpa opsi per proses backend waktu-kompail; gunakan 1 untuk mengaktifkan, 0 "
 "menonaktifkan, sebarang nilai lain untuk memakai opsi waktu-kompail"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:326
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:354
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:883
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1131
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:331
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:359
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:889
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1137
 msgid "Reminders"
 msgstr "Pengingat"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:466
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:471
 msgid "Warning"
 msgstr "Peringatan"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:467
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:472
 msgid "_No"
 msgstr "_Tidak"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:468
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:473
 msgid "_Yes"
 msgstr "_Ya"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:472
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:477
 #, c-format
 msgid ""
 "A calendar reminder is about to trigger. This reminder is configured to run "
@@ -7644,92 +7211,39 @@ msgstr ""
 "\n"
 "Apakah Anda yakin ingin menjalankan program ini?"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:487
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:492
 msgid "Do not ask me about this program again"
 msgstr "Jangan tanya saya tentang program ini lagi"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:788
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:793
 msgid "Display Reminders window with _notifications"
 msgstr "Tampilkan jendela Pengingat dengan _notifikasi"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:789
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:794
 msgid "Keep reminder notification window always on _top"
 msgstr "Jaga jendela pemberitahuan pengingat selalu di a_tas"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:790
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:795
+msgid "Enable _audio notifications"
+msgstr "Aktifkan notifikasi _audio"
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:796
 msgid "Display reminders for _completed tasks"
 msgstr "Tampil_kan pengingat untuk menyelesaikan tugas"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:791
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:797
 msgid "Display reminders for _past events"
 msgstr "Tampilkan _pengingat untuk acara masa lalu"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:805
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:811
 msgid "Reminders Options:"
 msgstr "Opsi Pengingat:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:899
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:905
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
 msgstr[0] "Anda memiliki %d pengingat"
-msgstr[1] "Anda memiliki %d pengingat"
-
-#: ../src/services/evolution-source-registry/builtin/birthdays.source.in.h:1
-msgid "Birthdays & Anniversaries"
-msgstr "Ulang Tahun & Perayaan Tahunan"
-
-#: ../src/services/evolution-source-registry/builtin/caldav-stub.source.in.h:1
-msgid "CalDAV"
-msgstr "CalDAV"
-
-#: ../src/services/evolution-source-registry/builtin/carddav-stub.source.in.h:1
-msgid "CardDAV"
-msgstr "CardDAV"
-
-#: ../src/services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
-msgid "Contacts"
-msgstr "Kontak"
-
-#: ../src/services/evolution-source-registry/builtin/google-stub.source.in.h:1
-msgid "Google"
-msgstr "Google"
-
-#: ../src/services/evolution-source-registry/builtin/ldap-stub.source.in.h:1
-msgid "On LDAP Servers"
-msgstr "Pada Peladen LDAP"
-
-#: ../src/services/evolution-source-registry/builtin/local.source.in.h:1
-#: ../src/services/evolution-source-registry/builtin/local-stub.source.in.h:1
-msgid "On This Computer"
-msgstr "Pada Komputer Ini"
-
-#: ../src/services/evolution-source-registry/builtin/system-address-book.source.in.h:1
-#: ../src/services/evolution-source-registry/builtin/system-calendar.source.in.h:1
-#: ../src/services/evolution-source-registry/builtin/system-memo-list.source.in.h:1
-#: ../src/services/evolution-source-registry/builtin/system-task-list.source.in.h:1
-msgid "Personal"
-msgstr "Pribadi"
-
-#: ../src/services/evolution-source-registry/builtin/system-proxy.source.in.h:1
-msgid "Default Proxy Settings"
-msgstr "Pengaturan Proksi Bawaan"
-
-#: ../src/services/evolution-source-registry/builtin/vfolder.source.in.h:1
-msgid "Search Folders"
-msgstr "Cari Folder"
-
-#: ../src/services/evolution-source-registry/builtin/weather-stub.source.in.h:1
-msgid "Weather"
-msgstr "Cuaca"
-
-#: ../src/services/evolution-source-registry/builtin/webcal-stub.source.in.h:1
-msgid "On The Web"
-msgstr "Di Web"
-
-#: ../src/services/evolution-source-registry/builtin/webdav-notes-stub.source.in.h:1
-msgid "WebDAV Notes"
-msgstr "Catatan WebDAV"
 
 #: ../src/services/evolution-source-registry/evolution-source-registry.c:41
 msgid "Don’t migrate user data from previous versions of Evolution"
@@ -7943,6 +7457,405 @@ msgstr "Gagal terhubung ke sumber registri: %s\n"
 msgid "No sources had been found\n"
 msgstr "Tidak ada sumber yang ditemukan\n"
 
+#~ msgid "Contact UID of a user"
+#~ msgstr "UID kontak dari suatu pengguna"
+
+#~ msgid "Birthday and anniversary reminder"
+#~ msgstr "Pengingat ulang tahun dan perayaan tahunan"
+
+#~ msgid "Whether to set a reminder for birthdays and anniversaries"
+#~ msgstr "Apakah menata pengingat bagi ulang tahun dan perayaan tahunan"
+
+#~ msgid "Birthday and anniversary reminder value"
+#~ msgstr "Nilai pengingat ulang tahun dan perayaan tahunan"
+
+#~ msgid "Number of units for determining a birthday or anniversary reminder"
+#~ msgstr ""
+#~ "Cacah unit untuk menentukan suatu pengingat hari ulang tahun atau "
+#~ "perayaan tahunan"
+
+#~ msgid "Birthday and anniversary reminder units"
+#~ msgstr "Unit pengingat ulang tahun dan perayaan tahunan"
+
+#~ msgid ""
+#~ "Units for a birthday or anniversary reminder, “minutes”, “hours” or “days”"
+#~ msgstr ""
+#~ "Unit bagi pengingat ulang tahun atau perayaan tahunan, \"minutes"
+#~ "\" (menit), \"hours\" (jam), atau \"days\" (hari)"
+
+#~ msgid "Past reminders for EReminderWatcher"
+#~ msgstr "Pengingat sebelumnya untuk EReminderWatcher"
+
+#~ msgid "Snoozed reminders for EReminderWatcher"
+#~ msgstr "Menunda pengingat untuk EReminderWatcher"
+
+#~ msgid "Reminder programs"
+#~ msgstr "Program pengingat"
+
+#~ msgid "Programs that are allowed to be run by reminders"
+#~ msgstr "Program yang boleh dijalankan oleh pengingat"
+
+#~ msgid "Show reminders in notification tray only"
+#~ msgstr "Tampilkan pengingat dalam bilah pemberitahuan saja"
+
+#~ msgid ""
+#~ "When set to true, the reminders are shown only in the notification tray, "
+#~ "otherwise the reminders dialog is shown immediately"
+#~ msgstr ""
+#~ "Ketika diatur ke true, pengingat ditampilkan hanya pada bilah notifikasi, "
+#~ "jika tidak dialog pengingat ditampilkan segera"
+
+#~ msgid "Show reminder notification dialog always on top"
+#~ msgstr "Tampilkan dialog pemberitahuan pengingat selalu di atas"
+
+#~ msgid ""
+#~ "Whether or not to show reminder notification dialog always on top. Note "
+#~ "this works only as a hint for the window manager, which may or may not "
+#~ "obey it."
+#~ msgstr ""
+#~ "Apakah menampilkan dialog pemberitahuan pengingat selalu di atas atau "
+#~ "tidak. Perhatikan ini hanya berfungsi sebagai petunjuk untuk pengatur "
+#~ "jendela, yang mungkin atau mungkin tidak menaatinya."
+
+#~ msgid "X position of the reminder notification dialog"
+#~ msgstr "Posisi X dialog pemberitahuan pengingat"
+
+#~ msgid "Y position of the reminder notification dialog"
+#~ msgstr "Posisi Y dialog pemberitahuan pengingat"
+
+#~ msgid "Width of the reminder notification dialog"
+#~ msgstr "Lebar dialog pemberitahuan pengingat"
+
+#~ msgid "Height of the reminder notification dialog"
+#~ msgstr "Tinggi dialog pemberitahuan pengingat"
+
+#~ msgid "Size in pixels of the event list in the reminder notification dialog"
+#~ msgstr ""
+#~ "Ukuran dalam piksel daftar acara dalam dialog pemberitahuan pengingat"
+
+#~ msgid "Show reminder notification for completed tasks"
+#~ msgstr "Tampilkan pemberitahuan pengingat untuk tugas yang sudah selesai"
+
+#~ msgid "Show reminder notification for past events"
+#~ msgstr "Tampilkan pemberitahuan pengingat untuk acara sebelumnya"
+
+#~ msgid "The last used snooze time, in minutes"
+#~ msgstr "Waktu jeda terakhir yang digunakan, dalam hitungan menit"
+
+#~ msgid "User-defined snooze times, in minutes"
+#~ msgstr "Waktu jeda pengguna, dalam hitungan menit"
+
+#~ msgid "Whether the migration of old setting was already done"
+#~ msgstr "﻿Apakah migrasi pengaturan lama telah dilakukan"
+
+#~ msgid "An absolute path where the gpg (or gpg2) binary is"
+#~ msgstr "Path absolut tempat biner gpg (atau gpg2)"
+
+#~ msgid ""
+#~ "An example is “/usr/bin/gpg”; when it is left empty, or an incorrect "
+#~ "value is set, then it will be searched for. Change requires restart of "
+#~ "the application."
+#~ msgstr ""
+#~ "Contoh adalah \"/usr/bin/gpg\"; bila tidak diisi, atau nilai yang salah "
+#~ "diisikan, maka itu akan dicari. Perubahan memerlukan start ulang aplikasi."
+
+#~ msgid "Whether to load photos of signers/encrypters"
+#~ msgstr "Apakah memuat foto penandatangan/pengenkripsi"
+
+#~ msgid ""
+#~ "When set to “true”, tries to load also photo of the signers/encrypters, "
+#~ "if available in the key/certificate."
+#~ msgstr ""
+#~ "Ketika diisi \"true\", mencoba juga memuat foto penandatangan/"
+#~ "pengenkripsi, bila tersedia dalam kunci/sertifikat."
+
+#~ msgid "Override SMTP HELO/EHLO argument"
+#~ msgstr "Timpa Argumen SMTP HELO/EHLO"
+
+#~ msgid ""
+#~ "When not empty, it's used as the SMTP HELO/EHLO argument, instead of the "
+#~ "local host name/IP."
+#~ msgstr ""
+#~ "Ketika tidak kosong, itu digunakan sebagai argumen SMTP HELO EHLO, alih-"
+#~ "alih nama host/IP lokal."
+
+#~ msgid "Array of user header names"
+#~ msgstr "Array nama tajuk pengguna"
+
+#~ msgid ""
+#~ "These headers can be stored in the folder summary, eventually being "
+#~ "visible in the GUI. The value can contain a pipe character ('|'), which "
+#~ "delimits the display name from the header name. Example: 'Span Score|X-"
+#~ "Spam-Score'"
+#~ msgstr ""
+#~ "Tajuk ini dapat disimpan dalam ringkasan folder, akhirnya terlihat di "
+#~ "GUI. Nilai dapat berisi karakter pipa ('|'), yang membatasi nama tampilan "
+#~ "dari nama tajuk. Contoh: 'Span Score| X-Spam-Score'"
+
+#~ msgid ""
+#~ "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
+#~ msgstr ""
+#~ "Nama GIO dari GNetworkMonitor yang akan dipakai bagi instansi "
+#~ "ENetworkMonitor"
+
+#~ msgid ""
+#~ "When set to an unknown value, then the default GNetworkMonitor is used in "
+#~ "the background. A special value “always-online” is used for no network "
+#~ "monitoring."
+#~ msgstr ""
+#~ "Ketika ditata ke nilai yang tak dikenal, maka GNetworkMonitor baku "
+#~ "dipakai di latar belakang. Suatu nilai khusus \"always-online\" dipakai "
+#~ "untuk tanpa pemantauan jaringan."
+
+#~ msgid ""
+#~ "A full path to a directory where .source files with preconfigured options "
+#~ "can be stored"
+#~ msgstr ""
+#~ "Path lengkap ke suatu direktori dimana berkas .source dengan opsi "
+#~ "terprakonfigurasi dapat disimpan"
+
+#~ msgid ""
+#~ "This directory, if filled with an existing path, is checked additionally "
+#~ "to XDG configure directories."
+#~ msgstr ""
+#~ "Direktori ini, bila diisi dengan path yang ada, diperiksa sebagai "
+#~ "tambahan ke direktori yang dikonfigurasi XDG."
+
+#~ msgid ""
+#~ "A list of variables which can be part of the autoconfig .source files"
+#~ msgstr ""
+#~ "Daftar variabel yang bisa menjadi bagian dari berkas .source autoconfig"
+
+#~ msgid ""
+#~ "Each item of the array is expected to be of the form: name=value. These "
+#~ "variables are checked before environment variables, but after the "
+#~ "predefined USER, REALNAME and HOST variables."
+#~ msgstr ""
+#~ "Setiap butir larik diharapkan ada dalam bentuk: nama=nilai. Variabel-"
+#~ "variabel ini diperiksa sebelum variabel lingkungan, tapi setelah variabel "
+#~ "terpradefinisi USER, REALNAME, dan HOST."
+
+#~ msgid "A list of hints for OAuth2 services"
+#~ msgstr "Daftar petunjuk untuk layanan OAuth2"
+
+#~ msgid ""
+#~ "Users can extend the list of supported protocols and hostnames for "
+#~ "defined OAuth2 services, in addition to those hard-coded. Each line can "
+#~ "be of the form: servicename[-protocol]:hostname1,hostname2,... where "
+#~ "“servicename” is the actual service name; the “-protocol” is optional, "
+#~ "and if written, then the service can be used only if both “protocol” and "
+#~ "“hostnameX” match; the “hostnameX” is the actual host name to compare "
+#~ "with, case insensitively. Each line can contain multiple values, "
+#~ "separated by comma. There can be provided multiple lines for one OAuth2 "
+#~ "service. Note that the actual URL where the token is requested and "
+#~ "refreshed cannot be changed here, the hostname is to allow other servers, "
+#~ "where the OAuth2 service can be used. Examples: Company:mail.company.com "
+#~ "— enables “Company” OAuth2 authentication for “mail.company.com” host "
+#~ "Company-CalDAV:caldav.company.com — enables “Company” OAuth2 "
+#~ "authentication for any “CalDAV” source, which reads data from “caldav."
+#~ "company.com” host"
+#~ msgstr ""
+#~ "Pengguna dapat memperluas daftar dari protokol dan nama host yang "
+#~ "didukung untuk layanan OAuth2 yang didefinisikan, sebagai tambahan dari "
+#~ "yang sudah ditanam. Setiap baris dapat berbentuk: namalayanan[-protokol]:"
+#~ "namahost1,namahost2,... dimana \"namalayanan\" adalah nama layanan "
+#~ "sebenarnya; \"-protokol\" opsional, dan bila ditulis, maka layanan hanya "
+#~ "dapat dipakai bila \"protokol\" dan \"namahostX\" cocok; \"namahostX\" "
+#~ "adalah nama host sebenarnya yang akan dibandingkan, tidak membedakan "
+#~ "huruf besar kecil. Setiap baris dapat memuat beberapa nilai, dipisahkan "
+#~ "oleh koma. Bisa disediakan beberapa baris untuk satu layanan OAuth2. "
+#~ "Perhatikan bahwa URL sebenarnya dimana token diminta dan disegarkan tidak "
+#~ "dapat diubah di sini, nama host untuk mengizinkan peladen lain, dimana "
+#~ "layanan OAuth2 dapat dipakai. Contoh: Company:mail.company.com - "
+#~ "memfungsikan autentikasi OAuth2 \"Company\" untuk \"mail.company.com\" "
+#~ "host Company-CalDAV:caldav.company.com - memfungsikan autentikasi OAuth2 "
+#~ "'Company' untuk sebarang sumber \"CalDAV\", yang membaca data dari host "
+#~ "\"caldav.companycaldav.com\""
+
+#~ msgid ""
+#~ "An OAuth2 client ID to use to connect to Google servers, instead of the "
+#~ "one provided during build time"
+#~ msgstr ""
+#~ "ID klien OAuth2 yang akan digunakan untuk terhubung ke peladen Google, "
+#~ "bukan yang disediakan saat membangun"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client ID for Google servers. Empty string means to "
+#~ "use the one provided during build time. Change of this requires restart."
+#~ msgstr ""
+#~ "ID klien OAuth2 yang ditentukan pengguna untuk peladen Google. String "
+#~ "kosong berarti menggunakan yang disediakan selama waktu pembuatan. "
+#~ "Perubahan ini membutuhkan mulai ulang."
+
+#~ msgid ""
+#~ "An OAuth2 client secret to use to connect to Google servers, instead of "
+#~ "the one provided during build time"
+#~ msgstr ""
+#~ "Klien OAuth2 rahasia untuk digunakan untuk terhubung ke peladen Google, "
+#~ "alih-alih yang disediakan saat membangun"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client secret for Google servers. Empty string "
+#~ "means to use the one provided during build time. Change of this requires "
+#~ "restart."
+#~ msgstr ""
+#~ "Klien OAuth2 rahasia yang ditentukan pengguna untuk peladen Google. "
+#~ "String kosong berarti menggunakan yang disediakan selama waktu pembuatan. "
+#~ "Perubahan ini membutuhkan mulai ulang."
+
+#~ msgid ""
+#~ "An OAuth2 client ID to use to connect to Outlook servers, instead of the "
+#~ "one provided during build time"
+#~ msgstr ""
+#~ "ID klien OAuth2 yang akan digunakan untuk menyambung ke peladen Outlook, "
+#~ "bukan yang disediakan saat membangun"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client ID for Outlook servers. Empty string means "
+#~ "to use the one provided during build time. Change of this requires "
+#~ "restart."
+#~ msgstr ""
+#~ "ID klien OAuth2 yang ditentukan pengguna untuk peladen Outlook. String "
+#~ "kosong berarti menggunakan yang disediakan selama waktu pembuatan. "
+#~ "Perubahan ini membutuhkan mulai ulang."
+
+#~ msgid ""
+#~ "An OAuth2 client secret to use to connect to Outlook servers, instead of "
+#~ "the one provided during build time"
+#~ msgstr ""
+#~ "Klien OAuth2 rahasia untuk digunakan untuk terhubung ke peladen Outlook, "
+#~ "bukan yang disediakan saat membangun"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client secret for Outlook servers. Empty string "
+#~ "means to use the one provided during build time. Change of this requires "
+#~ "restart."
+#~ msgstr ""
+#~ "Klien OAuth2 rahasia yang ditentukan pengguna untuk peladen Outlook. "
+#~ "String kosong berarti menggunakan yang disediakan selama waktu pembuatan. "
+#~ "Perubahan ini membutuhkan mulai ulang."
+
+#~ msgid ""
+#~ "An OAuth2 client ID to use to connect to Yahoo! servers, instead of the "
+#~ "one provided during build time"
+#~ msgstr ""
+#~ "ID klien OAuth2 yang akan digunakan untuk terhubung ke peladen Yahoo!, "
+#~ "bukan yang disediakan saat membangun"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
+#~ "use the one provided during build time. Change of this requires restart."
+#~ msgstr ""
+#~ "ID klien OAuth2 yang ditentukan pengguna untuk peladen Yahoo!. String "
+#~ "kosong berarti menggunakan yang disediakan selama waktu pembuatan. "
+#~ "Perubahan ini membutuhkan mulai ulang."
+
+#~ msgid ""
+#~ "An OAuth2 client secret to use to connect to Yahoo! servers, instead of "
+#~ "the one provided during build time"
+#~ msgstr ""
+#~ "Klien OAuth2 rahasia untuk digunakan untuk terhubung ke peladen Yahoo!, "
+#~ "alih-alih yang disediakan saat membangun"
+
+#~ msgid ""
+#~ "User-specified OAuth2 client secret for Yahoo! servers. Empty string "
+#~ "means to use the one provided during build time. Change of this requires "
+#~ "restart."
+#~ msgstr ""
+#~ "Klien OAuth2 rahasia yang ditentukan pengguna untuk peladen Yahoo!. "
+#~ "String kosong berarti menggunakan yang disediakan selama waktu pembuatan. "
+#~ "Perubahan ini membutuhkan mulai ulang."
+
+#~ msgid "(Deprecated) Proxy type to use"
+#~ msgstr "(Usang) Tipe proksi yang akan dipakai"
+
+#~ msgid ""
+#~ "This key was deprecated in version 3.12 and should no longer be used. "
+#~ "Proxy settings are now integrated into Evolution-Data-Server’s account "
+#~ "system. See the ESourceProxy API documentation for details."
+#~ msgstr ""
+#~ "Kunci ini usang sejak versi 3.12 dan mestinya tidak dipakai lagi. "
+#~ "Pengaturan proksi kini terintegrasi ke dalam sistem akun Evolution-Data-"
+#~ "Server. Lihat dokumentasi API ESourceProxy untuk rincian."
+
+#~ msgid "(Deprecated) Whether to use http-proxy"
+#~ msgstr "(Usang) Apakah memakai http-proxy"
+
+#~ msgid "(Deprecated) Whether proxy server requires authentication"
+#~ msgstr "(Usang) Apakah peladen proksi perlu autentikasi"
+
+#~ msgid "(Deprecated) Host name for HTTP requests"
+#~ msgstr "(Usang) Nama host bagi permintaan HTTP"
+
+#~ msgid "(Deprecated) Port number for HTTP requests"
+#~ msgstr "(Usang) Nomor port bagi permintaan HTTP"
+
+#~ msgid "(Deprecated) Proxy authentication user name"
+#~ msgstr "(Usang) Nama pengguna autentikasi proksi"
+
+#~ msgid "(Deprecated) Proxy authentication password"
+#~ msgstr "(Usang) Kata sandi autentikasi proksi"
+
+#~ msgid "(Deprecated) List of hosts to connect to without proxy"
+#~ msgstr "(Usang) Daftar host yang dihubungi tanpa proksi"
+
+#~ msgid "(Deprecated) Host name for HTTPS requests"
+#~ msgstr "(Usang) Nama host bagi permintaan HTTPS"
+
+#~ msgid "(Deprecated) Port number for HTTPS requests"
+#~ msgstr "(Usang) Nomor port bagi permintaan HTTPS"
+
+#~ msgid "(Deprecated) Host name for SOCKS requests"
+#~ msgstr "(Usang) Nama host bagi permintaan SOCKS"
+
+#~ msgid "(Deprecated) Port number for SOCKS requests"
+#~ msgstr "(Usang) Nomor port bagi permintaan SOCKS"
+
+#~ msgid "(Deprecated) Automatic proxy configuration URL"
+#~ msgstr "(Usang) URL konfigurasi proksi otomatis"
+
+#~ msgid "Evolution Alarm Notify"
+#~ msgstr "Pemberitahuan Alarm Evolution"
+
+#~ msgid "Birthdays & Anniversaries"
+#~ msgstr "Ulang Tahun & Perayaan Tahunan"
+
+#~ msgid "CalDAV"
+#~ msgstr "CalDAV"
+
+#~ msgid "CardDAV"
+#~ msgstr "CardDAV"
+
+#~ msgid "Contacts"
+#~ msgstr "Kontak"
+
+#~ msgid "Google"
+#~ msgstr "Google"
+
+#~ msgid "On LDAP Servers"
+#~ msgstr "Pada Peladen LDAP"
+
+#~ msgid "On This Computer"
+#~ msgstr "Pada Komputer Ini"
+
+#~ msgid "Personal"
+#~ msgstr "Pribadi"
+
+#~ msgid "Default Proxy Settings"
+#~ msgstr "Pengaturan Proksi Bawaan"
+
+#~ msgid "Search Folders"
+#~ msgstr "Cari Folder"
+
+#~ msgid "Weather"
+#~ msgstr "Cuaca"
+
+#~ msgid "On The Web"
+#~ msgstr "Di Web"
+
+#~ msgid "WebDAV Notes"
+#~ msgstr "Catatan WebDAV"
+
 #~ msgid "Failed to create contact from returned server data"
 #~ msgstr "Gagal membuat kontak dari data peladen yang dikembalikan"
 
@@ -8000,9 +7913,6 @@ msgstr "Tidak ada sumber yang ditemukan\n"
 
 #~ msgid "Unknown User"
 #~ msgstr "Pengguna tak dikenal"
-
-#~ msgid "Protocol not supported"
-#~ msgstr "Protokol tidak didukung"
 
 #~ msgid "Operation has been cancelled"
 #~ msgstr "Operasi telah dibatalkan"
