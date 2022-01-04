@@ -3100,8 +3100,15 @@ e_cal_util_clamp_vtimezone (ICalComponent *vtimezone,
 	g_return_if_fail (I_CAL_IS_COMPONENT (vtimezone));
 	g_return_if_fail (i_cal_component_isa (vtimezone) == I_CAL_VTIMEZONE_COMPONENT);
 	g_return_if_fail (I_CAL_IS_TIME ((ICalTime *) from));
-	if (to)
+	if (to) {
 		g_return_if_fail (I_CAL_IS_TIME ((ICalTime *) to));
+
+		if (i_cal_time_is_null_time (to) || !i_cal_time_is_valid_time (to))
+			to = NULL;
+	}
+
+	if (i_cal_time_is_null_time (from) || !i_cal_time_is_valid_time (from))
+		return;
 
 	e_cal_util_clamp_vtimezone_subcomps (vtimezone, I_CAL_XSTANDARD_COMPONENT, from, to);
 	e_cal_util_clamp_vtimezone_subcomps (vtimezone, I_CAL_XDAYLIGHT_COMPONENT, from, to);
@@ -3139,6 +3146,12 @@ e_cal_util_clamp_vtimezone_by_component (ICalComponent *vtimezone,
 		recurid = i_cal_property_get_recurrenceid (prop);
 
 		dtend = i_cal_component_get_dtend (component);
+
+		if (dtend && (i_cal_time_is_null_time (dtend) || !i_cal_time_is_valid_time (dtend))) {
+			g_object_unref (dtend);
+			dtend = i_cal_component_get_due (component);
+		}
+
 		if (dtend && i_cal_time_compare (recurid, dtend) >= 0) {
 			g_clear_object (&dtend);
 			dtend = recurid;
@@ -3149,8 +3162,24 @@ e_cal_util_clamp_vtimezone_by_component (ICalComponent *vtimezone,
 		g_object_unref (prop);
 	} else if (!e_cal_util_component_has_rrules (component)) {
 		dtend = i_cal_component_get_dtend (component);
+
+		if (dtend && (i_cal_time_is_null_time (dtend) || !i_cal_time_is_valid_time (dtend))) {
+			g_object_unref (dtend);
+			dtend = i_cal_component_get_due (component);
+		}
+
+		if (dtend && (i_cal_time_is_null_time (dtend) || !i_cal_time_is_valid_time (dtend)))
+			g_clear_object (&dtend);
+
 		if (!dtend)
 			dtend = g_object_ref (dtstart);
+	}
+
+	if (i_cal_time_is_null_time (dtstart) || !i_cal_time_is_valid_time (dtstart)) {
+		g_clear_object (&dtstart);
+
+		if (dtend && !i_cal_time_is_null_time (dtend) && i_cal_time_is_valid_time (dtend))
+			dtstart = g_object_ref (dtend);
 	}
 
 	e_cal_util_clamp_vtimezone (vtimezone, dtstart, dtend);
