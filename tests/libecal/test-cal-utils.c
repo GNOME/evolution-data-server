@@ -203,6 +203,21 @@ test_clamp_vtimezone (ETestServerFixture *fixture,
 	g_object_unref (comp);
 
 	g_object_unref (vtimezone);
+	vtimezone = i_cal_component_new_from_string (vtimezone_str);
+
+	comp = i_cal_component_new_from_string (
+		"BEGIN:VTODO\r\n"
+		"UID:1\r\n"
+		"DUE:19821004T080000Z\r\n"
+		"END:VTODO\r\n");
+	g_assert_nonnull (comp);
+
+	e_cal_util_clamp_vtimezone_by_component (vtimezone, comp);
+	g_assert_cmpint (i_cal_component_count_components (vtimezone, I_CAL_XDAYLIGHT_COMPONENT), ==, 1);
+	g_assert_cmpint (i_cal_component_count_components (vtimezone, I_CAL_XSTANDARD_COMPONENT), ==, 1);
+
+	g_object_unref (comp);
+	g_object_unref (vtimezone);
 }
 
 gint
