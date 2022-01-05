@@ -2548,7 +2548,7 @@ test_component_datetime (void (* set_func) (ECalComponent *comp,
 	g_assert_true (set_func != NULL);
 	g_assert_true (verify_func != NULL);
 
-	comp = e_cal_component_new_vtype (E_CAL_COMPONENT_EVENT);
+	comp = e_cal_component_new_vtype (set_func == e_cal_component_set_due ? E_CAL_COMPONENT_TODO : E_CAL_COMPONENT_EVENT);
 	g_assert_nonnull (comp);
 
 	for (ii = 0; ii < G_N_ELEMENTS (values); ii++) {

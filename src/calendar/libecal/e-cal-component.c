@@ -1711,9 +1711,17 @@ static ECalComponentDateTime *
 e_cal_component_get_start_plus_duration (ECalComponent *comp)
 {
 	ICalDuration *duration;
+	ICalProperty *prop;
 	ICalTime *tt;
 	ECalComponentDateTime *dt;
 	guint dur_days, dur_hours, dur_minutes, dur_seconds;
+
+	/* libical can calculate it from DTSTART/DTEND, which is not needed here */
+	prop = i_cal_component_get_first_property (comp->priv->icalcomp, I_CAL_DURATION_PROPERTY);
+	if (!prop)
+		return NULL;
+
+	g_clear_object (&prop);
 
 	duration = i_cal_component_get_duration (comp->priv->icalcomp);
 	if (!duration || i_cal_duration_is_null_duration (duration) || i_cal_duration_is_bad_duration (duration)) {
@@ -1778,10 +1786,13 @@ e_cal_component_get_dtend (ECalComponent *comp)
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
 
+	if (e_cal_component_get_vtype (comp) != E_CAL_COMPONENT_EVENT &&
+	    e_cal_component_get_vtype (comp) != E_CAL_COMPONENT_FREEBUSY)
+		return NULL;
+
 	dt = get_datetime (comp->priv->icalcomp, I_CAL_DTEND_PROPERTY, i_cal_property_get_dtend, NULL);
 
-	/* If we don't have a DTEND property, then we try to get DTSTART
-	 * + DURATION. */
+	/* If we don't have a DTEND property, then we try to get DTSTART + DURATION. */
 	if (!dt)
 		dt = e_cal_component_get_start_plus_duration (comp);
 
@@ -1803,6 +1814,9 @@ e_cal_component_set_dtend (ECalComponent *comp,
 {
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 	g_return_if_fail (comp->priv->icalcomp != NULL);
+
+	g_warn_if_fail (e_cal_component_get_vtype (comp) == E_CAL_COMPONENT_EVENT ||
+			e_cal_component_get_vtype (comp) == E_CAL_COMPONENT_FREEBUSY);
 
 	set_datetime (comp->priv->icalcomp, I_CAL_DTEND_PROPERTY,
 		i_cal_property_new_dtend,
@@ -1951,10 +1965,12 @@ e_cal_component_get_due (ECalComponent *comp)
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
 
+	if (e_cal_component_get_vtype (comp) != E_CAL_COMPONENT_TODO)
+		return NULL;
+
 	dt = get_datetime (comp->priv->icalcomp, I_CAL_DUE_PROPERTY, i_cal_property_get_due, NULL);
 
-	/* If we don't have a DTEND property, then we try to get DTSTART
-	 * + DURATION. */
+	/* If we don't have a DUE property, then we try to get DTSTART + DURATION. */
 	if (!dt)
 		dt = e_cal_component_get_start_plus_duration (comp);
 
@@ -1978,6 +1994,8 @@ e_cal_component_set_due (ECalComponent *comp,
 
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 	g_return_if_fail (comp->priv->icalcomp != NULL);
+
+	g_warn_if_fail (e_cal_component_get_vtype (comp) == E_CAL_COMPONENT_TODO);
 
 	set_datetime (comp->priv->icalcomp, I_CAL_DUE_PROPERTY,
 		i_cal_property_new_due,
