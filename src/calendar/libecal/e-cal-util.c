@@ -3145,12 +3145,13 @@ e_cal_util_clamp_vtimezone_by_component (ICalComponent *vtimezone,
 
 		recurid = i_cal_property_get_recurrenceid (prop);
 
-		dtend = i_cal_component_get_dtend (component);
+		dtend = i_cal_component_isa (component) == I_CAL_VEVENT_COMPONENT ? i_cal_component_get_dtend (component) : NULL;
 
-		if (dtend && (i_cal_time_is_null_time (dtend) || !i_cal_time_is_valid_time (dtend))) {
-			g_object_unref (dtend);
+		if (dtend && (i_cal_time_is_null_time (dtend) || !i_cal_time_is_valid_time (dtend)))
+			g_clear_object (&dtend);
+
+		if (!dtend)
 			dtend = i_cal_component_get_due (component);
-		}
 
 		if (dtend && i_cal_time_compare (recurid, dtend) >= 0) {
 			g_clear_object (&dtend);
@@ -3161,12 +3162,13 @@ e_cal_util_clamp_vtimezone_by_component (ICalComponent *vtimezone,
 		g_clear_object (&recurid);
 		g_object_unref (prop);
 	} else if (!e_cal_util_component_has_rrules (component)) {
-		dtend = i_cal_component_get_dtend (component);
+		dtend = i_cal_component_isa (component) == I_CAL_VEVENT_COMPONENT ? i_cal_component_get_dtend (component) : NULL;
 
-		if (dtend && (i_cal_time_is_null_time (dtend) || !i_cal_time_is_valid_time (dtend))) {
-			g_object_unref (dtend);
+		if (dtend && (i_cal_time_is_null_time (dtend) || !i_cal_time_is_valid_time (dtend)))
+			g_clear_object (&dtend);
+
+		if (!dtend)
 			dtend = i_cal_component_get_due (component);
-		}
 
 		if (dtend && (i_cal_time_is_null_time (dtend) || !i_cal_time_is_valid_time (dtend)))
 			g_clear_object (&dtend);
