@@ -423,7 +423,7 @@ e_cal_recur_generate_instances_sync (ICalComponent *icalcomp,
 		get_tz_callback, get_tz_callback_user_data, default_timezone, &cached_zones, cancellable, error);
 
 	duration_seconds = 0;
-	dtend = i_cal_component_get_dtend (icalcomp);
+	dtend = i_cal_component_isa (icalcomp) == I_CAL_VEVENT_COMPONENT ? i_cal_component_get_dtend (icalcomp) : NULL;
 
 	if (!dtend || i_cal_time_is_null_time (dtend)) {
 		g_clear_object (&dtend);
