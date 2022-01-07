@@ -1,3 +1,69 @@
+Evolution-Data-Server 3.43.1 2022-01-07
+---------------------------------------
+
+Bug Fixes:
+	I#352 - LDAP: Claim capabilities change on "sync for offline" change
+	I#354 - LDAP: Listen for ESource changes
+	I#355 - Camel: Ignore empty output from "Pipe to program" filter
+	I#356 - LDAP: Consume departmentNumber
+	I#360 - WebDAVNotes: Recognize and prefer files with .md extension
+	I#361 - Camel: Understand non-standard "Content-Transfer-Encoding: uuencode"
+	I#364 - Camel: Add a missing header include into camel-hostname-utils.c
+	I#365 - Calendar: Crash on local calandar file change
+	I#366 - Calendar: Correct 'occur-in-time-range?' for zero-length events
+	I#368 - Calendar: X-EVOLUTION-ENDDATE can be calculated incorrectly
+	I#371 - e-cal-util: Fix timezone clamp with DUE date only
+	M!76 - Fixups (Span->Spam, Eventually->Possibly) in a translatable string (Anders Jonsson)
+	M!78 - Remove dependency on intltool (Corentin Noël)
+	M!81 - Camel-SMTP: accept any 2xx code on MAIL FROM: as success (Дилян Палаузов)
+	M!83 - Adjust .pc file not to expose used crypto library (Alexander Traud)
+	M!84 - Correct typos of doesnt/dont (Дилян Палаузов)
+	M!87 - Typo cvs2vcard -> csv2vcard (Дилян Палаузов)
+	M!88 - Camel: Add missing nullable annotations to Medium and MimePart (Corentin Noël)
+	evo-I#1032 - alarm-notify: Add a way to disable sound notifications
+	evo-I#1621 - Prevent IDN homograph attacks
+	evo-I#1639 - Filter messages by condition if sender is in address book
+	evo-I#1645 - Tasks: Support ESTIMATED-DURATION
+	evo-I#1698 - Bundle legacy icons removed from adwaita-icon-theme
+
+Miscellaneous:
+	LDAP: Fix a memory leak when filling a contact address
+	book/cal-backend: Add some safety checks around pending_operations queue
+	Use `g_assert_true()` instead of `g_assert()` in the unit tests
+	ERemindersWidget: Incorrect value for last selected snooze time after open
+	Camel: Correct a copy&paste error in a function documentation
+	org.gnome.Evolution-alarm-notify.desktop: Add X-GNOME-UsesNotifications=true
+	Install legacy icons into correct directory
+	LDAP: Some property changes do not update local cache properly
+	secret-monitor: Turn runtime warnings into debug prints
+	Camel: Use the same charset in all RFC2047-encoded words
+	WebDAVNotes: Let the user choose which extension is used for new notes
+	_libedataserverui_init_icon_theme: Test whether default GdkScreen exists
+	camel-docs.sgml.in: Add camel-hostname-utils documentation
+	e-cal-client: Correct non-NULL check in e_cal_client_create_objects_sync()
+	Calendar: Adapt to libical 3.0.12 change
+	ECalComponent: Add safety checks on get/set of DTEND/DUE properties
+
+Translations:
+	Alan Mortensen (da)
+	Aleksandr Melman (ru)
+	Aurimas Černius (lt)
+	Boyuan Yang (zh)
+	Boyuan Yang (zh_CN)
+	Christian Kirbach (de)
+	Daniel Mustieles (es)
+	Fabio Tomat (fur)
+	Fran Dieguez (gl)
+	Gianvito Cavasoli (it)
+	Goran Vidović (hr)
+	Hugo Carvalho (pt)
+	Jordi Mas i Hernandez (ca)
+	Kukuh Syafaat (id)
+	Quentin PAGÈS (oc)
+	Rūdolfs Mazurs (lv)
+	Yuri Chornoivan (uk)
+	Мирослав Николић (sr)
+
 Evolution-Data-Server 3.42.0 2021-09-17
 ---------------------------------------
 
