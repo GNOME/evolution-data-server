@@ -62,7 +62,7 @@ set(LINGUAS)
 foreach(file IN LISTS po_files)
     get_filename_component(lang ${file} NAME_WE)
     list(APPEND LINGUAS ${lang})
-    gettext_process_po_files(${lang} ALL INSTALL_DESTINATION "${LOCALE_INSTALL_DIR}" PO_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${lang}.po")
+    configure_file("${lang}.po" "${lang}.po" COPYONLY)
 endforeach(file)
 
 string (REPLACE ";" "\n" LINGUAS_CONTENT "${LINGUAS}")
@@ -84,3 +84,5 @@ foreach(LANG ${LINGUAS})
         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${POT_FILE}
     )
 endforeach(LANG)
+
+gettext_process_pot_file(${CMAKE_CURRENT_BINARY_DIR}/${POT_FILE} ALL INSTALL_DESTINATION "${LOCALE_INSTALL_DIR}" LANGUAGES ${LINGUAS})
