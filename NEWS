@@ -1,10 +1,25 @@
+Evolution-Data-Server 3.42.3 2022-01-07
+---------------------------------------
+
+Bug Fixes:
+	I#368 - Calendar: X-EVOLUTION-ENDDATE can be calculated incorrectly
+	I#371 - e-cal-util: Fix timezone clamp with DUE date only
+
+Miscellaneous:
+	e-cal-client: Correct non-NULL check in e_cal_client_create_objects_sync()
+	Calendar: Adapt to libical 3.0.12 change
+
+Translations:
+	Gianvito Cavasoli (it)
+	Quentin PAGÈS (oc)
+
 Evolution-Data-Server 3.42.2 2021-12-03
 ---------------------------------------
 
 Bug Fixes:
-	I#364 - Camel: Add a missing header include into camel-hostname-utils.c (Milan Crha)
-	I#365 - Calendar: Crash on local calandar file change (Milan Crha)
-	I#366 - Calendar: Correct 'occur-in-time-range?' for zero-length events (Milan Crha)
+	I#364 - Camel: Add a missing header include into camel-hostname-utils.c
+	I#365 - Calendar: Crash on local calandar file change
+	I#366 - Calendar: Correct 'occur-in-time-range?' for zero-length events
 
 Translations:
 	Christian Kirbach (de)
@@ -14,20 +29,20 @@ Evolution-Data-Server 3.42.1 2021-10-29
 ---------------------------------------
 
 Bug Fixes:
-	I#352 - LDAP: Claim capabilities change on "sync for offline" change (Milan Crha)
-	I#355 - Camel: Ignore empty output from "Pipe to program" filter (Milan Crha)
-	I#360 - WebDAVNotes: Recognize and prefer files with .md extension (Milan Crha)
-	I#361 - Camel: Understand non-standard "Content-Transfer-Encoding: uuencode" (Milan Crha)
+	I#352 - LDAP: Claim capabilities change on "sync for offline" change
+	I#355 - Camel: Ignore empty output from "Pipe to program" filter
+	I#360 - WebDAVNotes: Recognize and prefer files with .md extension
+	I#361 - Camel: Understand non-standard "Content-Transfer-Encoding: uuencode"
 	M!81 - Camel-SMTP: accept any 2xx code on MAIL FROM: as success (Дилян Палаузов)
-	evo-I#1621 - Prevent IDN homograph attacks (Milan Crha)
+	evo-I#1621 - Prevent IDN homograph attacks
 
 Miscellaneous:
-	LDAP: Fix a memory leak when filling a contact address (Milan Crha)
-	book/cal-backend: Add some safety checks around pending_operations queue (Milan Crha)
-	Correct 'Since:' tag in the developer comments (Milan Crha)
-	ERemindersWidget: Incorrect value for last selected snooze time after open (Milan Crha)
-	Camel: Correct a copy&paste error in a function documentation (Milan Crha)
-	org.gnome.Evolution-alarm-notify.desktop: Add X-GNOME-UsesNotifications=true (Milan Crha)
+	LDAP: Fix a memory leak when filling a contact address
+	book/cal-backend: Add some safety checks around pending_operations queue
+	Correct 'Since:' tag in the developer comments
+	ERemindersWidget: Incorrect value for last selected snooze time after open
+	Camel: Correct a copy&paste error in a function documentation
+	org.gnome.Evolution-alarm-notify.desktop: Add X-GNOME-UsesNotifications=true
 
 Translations:
 	Boyuan Yang (zh_CN)
