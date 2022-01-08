@@ -464,7 +464,7 @@ create_weather (ECalBackendWeather *cbw,
 	time_t			   update_time;
 	ICalTimezone		  *update_zone = NULL;
 	const GWeatherLocation    *location;
-	const GWeatherTimezone    *w_timezone;
+	GTimeZone                 *w_timezone;
 	gdouble tmin = 0.0, tmax = 0.0, temp = 0.0;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw), NULL);
@@ -484,7 +484,7 @@ create_weather (ECalBackendWeather *cbw,
 	/* use timezone of the location to determine date for which this is set */
 	location = gweather_info_get_location (report);
 	if (location && (w_timezone = gweather_location_get_timezone ((GWeatherLocation *) location)))
-		update_zone = i_cal_timezone_get_builtin_timezone (gweather_timezone_get_tzid ((GWeatherTimezone *) w_timezone));
+		update_zone = i_cal_timezone_get_builtin_timezone (g_time_zone_get_identifier (w_timezone));
 
 	if (!update_zone)
 		update_zone = i_cal_timezone_get_utc_timezone ();

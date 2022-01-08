@@ -118,7 +118,7 @@ set(sqlite_minimum_version 3.7.17)
 
 # Optional Packages
 set(goa_minimum_version 3.8)
-set(gweather_minimum_version 3.10)
+set(gweather_minimum_version 3.91.0)
 set(libaccounts_glib_minimum_version 1.4)
 set(libsignon_glib_minimum_version 1.8)
 set(json_glib_minimum_version 1.0.4)
@@ -755,18 +755,10 @@ endif(NOT have_addrinfo)
 add_printable_option(ENABLE_WEATHER "Build the weather calendar backend" ON)
 
 if(ENABLE_WEATHER)
-	pkg_check_modules_for_option(ENABLE_WEATHER "weather calendar backend" LIBGWEATHER gweather-3.0>=${gweather_minimum_version})
+	pkg_check_modules_for_option(ENABLE_WEATHER "weather calendar backend" LIBGWEATHER gweather4>=${gweather_minimum_version})
 
 	set(CMAKE_REQUIRED_INCLUDES ${LIBGWEATHER_INCLUDE_DIRS})
 	set(CMAKE_REQUIRED_LIBRARIES ${LIBGWEATHER_LDFLAGS})
-	CHECK_C_SOURCE_COMPILES("#define GWEATHER_I_KNOW_THIS_IS_UNSTABLE
-				#include <libgweather/gweather.h>
-				#undef GWEATHER_I_KNOW_THIS_IS_UNSTABLE
-
-				int main(void) {
-					gweather_info_new (NULL);
-					return 0;
-				}" HAVE_ONE_ARG_GWEATHER_INFO_NEW)
 	unset(CMAKE_REQUIRED_INCLUDES)
 	unset(CMAKE_REQUIRED_LIBRARIES)
 endif(ENABLE_WEATHER)
