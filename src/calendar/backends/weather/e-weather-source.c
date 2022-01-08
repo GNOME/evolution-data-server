@@ -39,7 +39,11 @@ weather_source_dispose (GObject *object)
 	EWeatherSourcePrivate *priv;
 
 	priv = E_WEATHER_SOURCE (object)->priv;
+	#ifdef WITH_GWEATHER4
+	g_clear_object (&priv->location);
+	#else
 	g_clear_pointer (&priv->location, gweather_location_unref);
+	#endif
 
 	g_clear_object (&priv->info);
 
@@ -85,7 +89,11 @@ weather_source_find_location_by_coords (GWeatherLocation *start,
 		gweather_location_get_coords (location, &lat, &lon);
 
 		if (lat == latitude && lon == longitude) {
+			#ifdef WITH_GWEATHER4
+			g_object_ref (location);
+			#else
 			gweather_location_ref (location);
+			#endif
 			return location;
 		}
 	}
@@ -96,7 +104,11 @@ weather_source_find_location_by_coords (GWeatherLocation *start,
 
 		result = weather_source_find_location_by_coords (child, latitude, longitude);
 		if (result) {
+			#ifdef WITH_GWEATHER4
+			g_object_unref (child);
+			#else
 			gweather_location_unref (child);
+			#endif
 			return result;
 		}
 	}
@@ -159,7 +171,9 @@ e_weather_source_new (const gchar *location)
 		}
 	}
 
-#if GWEATHER_CHECK_VERSION(3, 39, 0)
+#ifdef WITH_GWEATHER4
+	g_object_unref (world);
+#elif GWEATHER_CHECK_VERSION(3, 39, 0)
 	gweather_location_unref (world);
 #endif
 	g_strfreev (tokens);

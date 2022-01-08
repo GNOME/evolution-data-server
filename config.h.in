@@ -197,6 +197,9 @@
 /* gweather_info_new() has only one argument */
 #cmakedefine HAVE_ONE_ARG_GWEATHER_INFO_NEW 1
 
+/* Defined when linking against gweather4. Cannot just use GWEATHER_CHECK_VERSION because 40.0 made the versions non-monotonic. */
+#cmakedefine WITH_GWEATHER4 1
+
 /* evolution-alarm-notify - Define if using Canberra-GTK for sound */
 #cmakedefine HAVE_CANBERRA 1
 
