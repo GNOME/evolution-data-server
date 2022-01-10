@@ -47,6 +47,7 @@ struct _CamelIMAPXSettingsPrivate {
 	gboolean ignore_other_users_namespace;
 	gboolean ignore_shared_folders_namespace;
 	gboolean full_update_on_metered_network;
+	gboolean send_client_id;
 
 	CamelSortType fetch_order;
 };
@@ -79,7 +80,8 @@ enum {
 	PROP_USE_SUBSCRIPTIONS,
 	PROP_IGNORE_OTHER_USERS_NAMESPACE,
 	PROP_IGNORE_SHARED_FOLDERS_NAMESPACE,
-	PROP_FULL_UPDATE_ON_METERED_NETWORK
+	PROP_FULL_UPDATE_ON_METERED_NETWORK,
+	PROP_SEND_CLIENT_ID
 };
 
 G_DEFINE_TYPE_WITH_CODE (
@@ -255,6 +257,12 @@ imapx_settings_set_property (GObject *object,
 
 		case PROP_FULL_UPDATE_ON_METERED_NETWORK:
 			camel_imapx_settings_set_full_update_on_metered_network (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_SEND_CLIENT_ID:
+			camel_imapx_settings_set_send_client_id (
 				CAMEL_IMAPX_SETTINGS (object),
 				g_value_get_boolean (value));
 			return;
@@ -456,6 +464,13 @@ imapx_settings_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				camel_imapx_settings_get_full_update_on_metered_network (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_SEND_CLIENT_ID:
+			g_value_set_boolean (
+				value,
+				camel_imapx_settings_get_send_client_id (
 				CAMEL_IMAPX_SETTINGS (object)));
 			return;
 	}
@@ -806,6 +821,19 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 			"Full Update On Metered Network",
 			"Whether can do full folder update even on metered network",
 			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_SEND_CLIENT_ID,
+		g_param_spec_boolean (
+			"send-client-id",
+			"Send Client ID",
+			"Whether to send client ID to the server",
+			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -1952,4 +1980,45 @@ camel_imapx_settings_set_full_update_on_metered_network (CamelIMAPXSettings *set
 	settings->priv->full_update_on_metered_network = full_update_on_metered_network;
 
 	g_object_notify (G_OBJECT (settings), "full-update-on-metered-network");
+}
+
+/**
+ * camel_imapx_settings_get_send_client_id:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns whether to send client ID to the server, using the 'ID' extension (RFC 2971).
+ *
+ * Returns: whether to send client ID to the server
+ *
+ * Since: 3.44
+ **/
+gboolean
+camel_imapx_settings_get_send_client_id (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), FALSE);
+
+	return settings->priv->send_client_id;
+}
+
+/**
+ * camel_imapx_settings_set_send_client_id:
+ * @settings: a #CamelIMAPXSettings
+ * @send_client_id: whether to send client ID to the server
+ *
+ * Sets whether to send client ID to the server, using the 'ID' extension (RFC 2971).
+ *
+ * Since: 3.44
+ **/
+void
+camel_imapx_settings_set_send_client_id (CamelIMAPXSettings *settings,
+					 gboolean send_client_id)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	if ((settings->priv->send_client_id ? 1 : 0) == (send_client_id ? 1 : 0))
+		return;
+
+	settings->priv->send_client_id = send_client_id;
+
+	g_object_notify (G_OBJECT (settings), "send-client-id");
 }

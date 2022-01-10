@@ -49,6 +49,8 @@ CamelProviderConfEntry imapx_conf_entries[] = {
 	  N_("Numbe_r of concurrent connections to use"), "y:1:3:7" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "full-update-on-metered-network", NULL,
 	  N_("Enable full folder update on _metered network"), "1" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "send-client-id", NULL,
+	  N_("Send client I_D to the server"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "folders", NULL,
 	  N_("Folders") },

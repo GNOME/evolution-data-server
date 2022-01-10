@@ -3203,6 +3203,7 @@ camel_imapx_server_authenticate_sync (CamelIMAPXServer *is,
 	gchar *host;
 	gchar *user;
 	gboolean can_retry_login = FALSE;
+	gboolean send_client_id;
 	gboolean success;
 
 	g_return_val_if_fail (
@@ -3217,6 +3218,8 @@ camel_imapx_server_authenticate_sync (CamelIMAPXServer *is,
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
 	user = camel_network_settings_dup_user (network_settings);
+
+	send_client_id = camel_imapx_settings_get_send_client_id (CAMEL_IMAPX_SETTINGS (settings));
 
 	g_object_unref (settings);
 
@@ -3370,6 +3373,14 @@ camel_imapx_server_authenticate_sync (CamelIMAPXServer *is,
 		}
 
 		g_mutex_unlock (&is->priv->stream_lock);
+
+		if (send_client_id) {
+			camel_imapx_command_unref (ic);
+
+			ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_ID, "ID (\"name\" \"" PACKAGE "\" \"version\" \"" VERSION "\")");
+			if (!camel_imapx_server_process_command_sync (is, ic, _("Failed to issue ID"), cancellable, error))
+				result = CAMEL_AUTHENTICATION_ERROR;
+		}
 	}
 
 	camel_imapx_command_unref (ic);

@@ -40,6 +40,8 @@ camel_imapx_job_get_kind_name (guint32 job_kind)
 		return "AUTHENTICATE";
 	case CAMEL_IMAPX_JOB_LOGIN:
 		return "LOGIN";
+	case CAMEL_IMAPX_JOB_ID:
+		return "ID";
 	case CAMEL_IMAPX_JOB_NAMESPACE:
 		return "NAMESPACE";
 	case CAMEL_IMAPX_JOB_SELECT:

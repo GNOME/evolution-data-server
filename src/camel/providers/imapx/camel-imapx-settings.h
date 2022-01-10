@@ -176,6 +176,11 @@ gboolean	camel_imapx_settings_get_full_update_on_metered_network
 void		camel_imapx_settings_set_full_update_on_metered_network
 						(CamelIMAPXSettings *settings,
 						 gboolean full_update_on_metered_network);
+gboolean	camel_imapx_settings_get_send_client_id
+						(CamelIMAPXSettings *settings);
+void		camel_imapx_settings_set_send_client_id
+						(CamelIMAPXSettings *settings,
+						 gboolean send_client_id);
 
 G_END_DECLS
 
