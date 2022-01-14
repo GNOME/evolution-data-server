@@ -176,6 +176,22 @@ test_case (gint test_num)
 	camel_test_pull ();
 }
 
+static void
+dump_data (const gchar *what,
+	   const gchar *data,
+	   guint len)
+{
+	guint ii;
+
+	printf ("%s %u bytes:\n", what, len);
+	for (ii = 0; ii < len; ii++) {
+		printf (" %02x", data[ii]);
+		if (!((ii + 1) % 16) && ii + 1 < len)
+			printf ("\n");
+	}
+	printf ("\n");
+}
+
 static gboolean
 test_case_ensure_crlf_end_run (const gchar *in,
 			       const gchar *expected,
@@ -209,6 +225,9 @@ test_case_ensure_crlf_end_run (const gchar *in,
 			if (!success)
 				camel_test_fail ("Returned text '%s' and expected text '%s' do not match", bytes, expected);
 		} else {
+			dump_data ("   Wrote", in, strlen (in));
+			dump_data ("   Read", bytes, bytes_read);
+			dump_data ("   Expected", expected, strlen (expected));
 			camel_test_fail ("Read %u bytes, but expected %u bytes", bytes_read, strlen (expected));
 		}
 	} else {
@@ -236,7 +255,26 @@ test_case_ensure_crlf_end (void)
 		{ "a\r\nb", "a\r\nb", "a\r\nb\r\n" },
 		{ "a\nb", "a\r\nb", "a\r\nb\r\n" },
 		{ "a\r\nb\n", "a\r\nb\r\n", "a\r\nb\r\n" },
-		{ "a\n\nb", "a\r\n\r\nb", "a\r\n\r\nb\r\n" }
+		{ "a\n\nb", "a\r\n\r\nb", "a\r\n\r\nb\r\n" },
+		{ "\n", "\r\n", "\r\n" },
+		{ "\r", "\r\n", "\r\n" },
+		{ ".", "..", "..\r\n" },
+		{ "\n.", "\r\n..", "\r\n..\r\n" },
+		{ "\r.", "\r\n..", "\r\n..\r\n" },
+		{ "\r\n.", "\r\n..", "\r\n..\r\n" },
+		{ "a.b", "a.b", "a.b\r\n" },
+		{ "\r.b", "\r\n..b", "\r\n..b\r\n" },
+		{ "\n.b", "\r\n..b", "\r\n..b\r\n" },
+		{ "\n.\rb", "\r\n..\r\nb", "\r\n..\r\nb\r\n" },
+		{ "\n.\nb", "\r\n..\r\nb", "\r\n..\r\nb\r\n" },
+		{ "\r.\nb", "\r\n..\r\nb", "\r\n..\r\nb\r\n" },
+		{ "\r.\rb", "\r\n..\r\nb", "\r\n..\r\nb\r\n" },
+		{ "a\r\nb\rc\nd\n\re\r\nf\ng\n\r\n\r\r\n\n\r",
+		  "a\r\nb\r\nc\r\nd\r\n\r\ne\r\nf\r\ng\r\n\r\n\r\n\r\n\r\n\r\n",
+		  "a\r\nb\r\nc\r\nd\r\n\r\ne\r\nf\r\ng\r\n\r\n\r\n\r\n\r\n\r\n" },
+		{ "a\n\rb\nc\rd\r\ne\n\rf\rg\r\n\r\n\n\r\r\n",
+		  "a\r\n\r\nb\r\nc\r\nd\r\ne\r\n\r\nf\r\ng\r\n\r\n\r\n\r\n\r\n",
+		  "a\r\n\r\nb\r\nc\r\nd\r\ne\r\n\r\nf\r\ng\r\n\r\n\r\n\r\n\r\n" }
 	};
 	guint ii;
 
