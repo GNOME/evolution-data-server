@@ -60,13 +60,21 @@ mime_filter_crlf_filter (CamelMimeFilter *mime_filter,
 		outptr = mime_filter->outbuf;
 		while (inptr < inend) {
 			if (*inptr == '\r') {
+				if (priv->saw_cr && !priv->saw_lf)
+					*outptr++ = '\n';
 				priv->saw_cr = TRUE;
+				priv->saw_lf = FALSE;
 			} else if (*inptr == '\n') {
 				priv->saw_lf = TRUE;
 				if (!priv->saw_cr)
 					*outptr++ = '\r';
 				priv->saw_cr = FALSE;
 			} else {
+				if (priv->saw_cr && !priv->saw_lf) {
+					priv->saw_lf = TRUE;
+					*outptr++ = '\n';
+				}
+
 				if (do_dots && *inptr == '.' && priv->saw_lf)
 					*outptr++ = '.';
 
@@ -145,6 +153,23 @@ mime_filter_crlf_complete (CamelMimeFilter *mime_filter,
 		*outlen = 0;
 
 	crlf_filter = CAMEL_MIME_FILTER_CRLF (mime_filter);
+
+	if (crlf_filter->priv->direction == CAMEL_MIME_FILTER_CRLF_ENCODE &&
+	    crlf_filter->priv->saw_cr && !crlf_filter->priv->saw_lf) {
+		gchar *outptr;
+
+		camel_mime_filter_set_size (mime_filter, *outlen + 1, FALSE);
+
+		outptr = mime_filter->outbuf + *outlen;
+		*outptr++ = '\n';
+
+		*out = mime_filter->outbuf;
+		*outlen = outptr - mime_filter->outbuf;
+		*outprespace = mime_filter->outpre;
+
+		crlf_filter->priv->saw_cr = FALSE;
+		crlf_filter->priv->ends_with_lf = TRUE;
+	}
 
 	if (crlf_filter->priv->direction == CAMEL_MIME_FILTER_CRLF_ENCODE &&
 	    crlf_filter->priv->ensure_crlf_end &&
