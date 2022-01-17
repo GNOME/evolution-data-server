@@ -1547,9 +1547,12 @@ normal_exit:
 
 	*data = start;
 	/* if we hit a boundary, we should not include the closing \n */
-	if (onboundary && (inptr - start) > 0)
+	if (onboundary && (inptr - start) > 0) {
 		*length = inptr-start-1;
-	else
+		/* in case it was "\r\n", remove also the "\r" */
+		if (*length > 0 && start[*length - 1] == '\r')
+			*length = (*length) - 1;
+	} else
 		*length = inptr-start;
 
 	/*printf("got %scontent: '%.*s'\n", s->midline?"partial ":"", inptr-start, start);*/
