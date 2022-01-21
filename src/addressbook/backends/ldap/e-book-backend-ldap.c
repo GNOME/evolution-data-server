@@ -839,11 +839,16 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl,
 			ldap_error = ldap_start_tls_s (blpriv->ldap, NULL, NULL);
 #endif
 			if (ldap_error != LDAP_SUCCESS) {
-				g_message ("TLS not available (fatal version), (ldap_error 0x%02x)", ldap_error);
+				if (ldap_error == LDAP_SERVER_DOWN) {
+					g_message ("TLS failed due to server being down");
+					g_propagate_error (error, EC_ERROR (E_CLIENT_ERROR_REPOSITORY_OFFLINE));
+				} else {
+					g_message ("TLS not available (fatal version), (ldap_error 0x%02x)", ldap_error);
+					g_propagate_error (error, EC_ERROR (E_CLIENT_ERROR_TLS_NOT_AVAILABLE));
+				}
 				ldap_unbind (blpriv->ldap);
 				blpriv->ldap = NULL;
 				g_rec_mutex_unlock (&eds_ldap_handler_lock);
-				g_propagate_error (error, EC_ERROR (E_CLIENT_ERROR_TLS_NOT_AVAILABLE));
 				return FALSE;
 			} else if (enable_debug)
 				g_message ("TLS active");
@@ -5142,9 +5147,12 @@ book_backend_ldap_open (EBookBackend *backend,
 	}
 
 	if (error != NULL && enable_debug)
-		printf ("%s ... failed to connect to server \n", G_STRFUNC);
+		printf ("%s ... failed to connect to server: %s\n", G_STRFUNC, error->message);
 
-	if (error == NULL && bl->priv->marked_for_offline)
+	/* Ignore 'Repository Offline' error when being marked for offline work */
+	if (bl->priv->marked_for_offline && g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_REPOSITORY_OFFLINE))
+		g_clear_error (&error);
+	else if (!error && bl->priv->marked_for_offline)
 		generate_cache (bl);
 
 	g_signal_connect_object (source, "changed",
