@@ -133,7 +133,7 @@ multipart_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 
 		part = g_ptr_array_index (priv->parts, ii);
 
-		content = g_strdup_printf ("\n--%s\n", boundary);
+		content = g_strdup_printf ("%s--%s\n", ii > 0  || priv->preface ? "\n" : "", boundary);
 		count = camel_stream_write_string (
 			stream, content, cancellable, error);
 		g_free (content);
@@ -218,7 +218,7 @@ multipart_write_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 
 		part = g_ptr_array_index (priv->parts, ii);
 
-		content = g_strdup_printf ("\n--%s\n", boundary);
+		content = g_strdup_printf ("%s--%s\n", ii > 0  || priv->preface ? "\n" : "", boundary);
 		success = g_output_stream_write_all (
 			output_stream,
 			content, strlen (content),
