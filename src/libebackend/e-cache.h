@@ -78,6 +78,7 @@ GQuark		e_cache_error_quark	(void);
  * @E_CACHE_ERROR_UNSUPPORTED_QUERY: A query was not supported.
  * @E_CACHE_ERROR_END_OF_LIST: An attempt was made to fetch results past the end of a the list.
  * @E_CACHE_ERROR_LOAD: An error occured while loading or creating the database.
+ * @E_CACHE_ERROR_CORRUPT: The database file is corrupt. (Since: 3.44)
  *
  * Defines the types of possible errors reported by the #ECache
  *
@@ -91,7 +92,8 @@ typedef enum {
 	E_CACHE_ERROR_UNSUPPORTED_FIELD,
 	E_CACHE_ERROR_UNSUPPORTED_QUERY,
 	E_CACHE_ERROR_END_OF_LIST,
-	E_CACHE_ERROR_LOAD
+	E_CACHE_ERROR_LOAD,
+	E_CACHE_ERROR_CORRUPT
 } ECacheError;
 
 typedef struct _ECacheColumnValues ECacheColumnValues;

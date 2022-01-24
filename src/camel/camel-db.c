@@ -43,6 +43,8 @@
 /* how long to wait before invoking sync on the file */
 #define SYNC_TIMEOUT_SECONDS 5
 
+G_DEFINE_QUARK (camel-db-error-quark, camel_db_error)
+
 static sqlite3_vfs *old_vfs = NULL;
 static GThreadPool *sync_pool = NULL;
 
@@ -540,20 +542,21 @@ camel_db_init (CamelDB *cdb)
 
 /*
  * cdb_sql_exec 
- * @db: 
- * @stmt: 
- * @error: 
- * 
+ * @cdb:
+ * @stmt:
+ * @error:
+ *
  * Callers should hold the lock
  */
 static gint
-cdb_sql_exec (sqlite3 *db,
+cdb_sql_exec (CamelDB *cdb,
               const gchar *stmt,
               gint (*callback)(gpointer ,gint,gchar **,gchar **),
               gpointer data,
 	      gint *out_sqlite_error_code,
               GError **error)
 {
+	sqlite3 *db = cdb->priv->db;
 	gchar *errmsg = NULL;
 	gint   ret = -1, retries = 0;
 
@@ -580,9 +583,19 @@ cdb_sql_exec (sqlite3 *db,
 
 	if (ret != SQLITE_OK) {
 		d (g_print ("Error in SQL EXEC statement: %s [%s].\n", stmt, errmsg));
-		g_set_error (
-			error, CAMEL_ERROR,
-			CAMEL_ERROR_GENERIC, "%s", errmsg);
+		if (ret == SQLITE_CORRUPT) {
+			if (cdb->priv->filename && *cdb->priv->filename) {
+				g_set_error (error, CAMEL_DB_ERROR,
+					CAMEL_DB_ERROR_CORRUPT, "%s (%s)", errmsg, cdb->priv->filename);
+			} else {
+				g_set_error (error, CAMEL_DB_ERROR,
+					CAMEL_DB_ERROR_CORRUPT, "%s", errmsg);
+			}
+		} else {
+			g_set_error (
+				error, CAMEL_ERROR,
+				CAMEL_ERROR_GENERIC, "%s", errmsg);
+		}
 		sqlite3_free (errmsg);
 		errmsg = NULL;
 		return -1;
@@ -775,7 +788,7 @@ camel_db_command_internal (CamelDB *cdb,
 	cdb_writer_lock (cdb);
 
 	START (stmt);
-	ret = cdb_sql_exec (cdb->priv->db, stmt, NULL, NULL, out_sqlite_error_code, error);
+	ret = cdb_sql_exec (cdb, stmt, NULL, NULL, out_sqlite_error_code, error);
 	END;
 
 	cdb_writer_unlock (cdb);
@@ -997,7 +1010,7 @@ camel_db_begin_transaction (CamelDB *cdb,
 	stmt = cdb_construct_transaction_stmt (cdb, "SAVEPOINT ");
 
 	STARTTS (stmt);
-	res = cdb_sql_exec (cdb->priv->db, stmt, NULL, NULL, NULL, error);
+	res = cdb_sql_exec (cdb, stmt, NULL, NULL, NULL, error);
 	g_free (stmt);
 
 	return res;
@@ -1025,7 +1038,7 @@ camel_db_end_transaction (CamelDB *cdb,
 		return -1;
 
 	stmt = cdb_construct_transaction_stmt (cdb, "RELEASE SAVEPOINT ");
-	ret = cdb_sql_exec (cdb->priv->db, stmt, NULL, NULL, NULL, error);
+	ret = cdb_sql_exec (cdb, stmt, NULL, NULL, NULL, error);
 	g_free (stmt);
 
 	ENDTS;
@@ -1054,7 +1067,7 @@ camel_db_abort_transaction (CamelDB *cdb,
 	gint ret;
 
 	stmt = cdb_construct_transaction_stmt (cdb, "ROLLBACK TO SAVEPOINT ");
-	ret = cdb_sql_exec (cdb->priv->db, stmt, NULL, NULL, NULL, error);
+	ret = cdb_sql_exec (cdb, stmt, NULL, NULL, NULL, error);
 	g_free (stmt);
 
 	cdb_writer_unlock (cdb);
@@ -1086,7 +1099,7 @@ camel_db_add_to_transaction (CamelDB *cdb,
 	g_return_val_if_fail (cdb_is_in_transaction (cdb), -1);
 	g_return_val_if_fail (query != NULL, -1);
 
-	return (cdb_sql_exec (cdb->priv->db, query, NULL, NULL, NULL, error));
+	return (cdb_sql_exec (cdb, query, NULL, NULL, NULL, error));
 }
 
 /**
@@ -1121,7 +1134,7 @@ camel_db_transaction_command (CamelDB *cdb,
 
 	while (qry_list) {
 		query = qry_list->data;
-		ret = cdb_sql_exec (cdb->priv->db, query, NULL, NULL, NULL, error);
+		ret = cdb_sql_exec (cdb, query, NULL, NULL, NULL, error);
 		if (ret)
 			goto end;
 		qry_list = g_list_next (qry_list);
@@ -1180,7 +1193,7 @@ camel_db_count_message_info (CamelDB *cdb,
 	cdb_reader_lock (cdb);
 
 	START (query);
-	ret = cdb_sql_exec (cdb->priv->db, query, count_cb, count, NULL, error);
+	ret = cdb_sql_exec (cdb, query, count_cb, count, NULL, error);
 	END;
 
 	cdb_reader_unlock (cdb);
@@ -1454,7 +1467,7 @@ camel_db_select (CamelDB *cdb,
 	cdb_reader_lock (cdb);
 
 	START (stmt);
-	ret = cdb_sql_exec (cdb->priv->db, stmt, callback, user_data, NULL, error);
+	ret = cdb_sql_exec (cdb, stmt, callback, user_data, NULL, error);
 	END;
 
 	cdb_reader_unlock (cdb);
@@ -2945,12 +2958,12 @@ camel_db_maybe_run_maintenance (CamelDB *cdb,
 
 	cdb_writer_lock (cdb);
 
-	if (cdb_sql_exec (cdb->priv->db, "PRAGMA page_count;", get_number_cb, &page_count, NULL, &local_error) == SQLITE_OK &&
-	    cdb_sql_exec (cdb->priv->db, "PRAGMA page_size;", get_number_cb, &page_size, NULL, &local_error) == SQLITE_OK &&
-	    cdb_sql_exec (cdb->priv->db, "PRAGMA freelist_count;", get_number_cb, &freelist_count, NULL, &local_error) == SQLITE_OK) {
+	if (cdb_sql_exec (cdb, "PRAGMA page_count;", get_number_cb, &page_count, NULL, &local_error) == SQLITE_OK &&
+	    cdb_sql_exec (cdb, "PRAGMA page_size;", get_number_cb, &page_size, NULL, &local_error) == SQLITE_OK &&
+	    cdb_sql_exec (cdb, "PRAGMA freelist_count;", get_number_cb, &freelist_count, NULL, &local_error) == SQLITE_OK) {
 		/* Vacuum, if there's more than 5% of the free pages, or when free pages use more than 10MB */
 		success = !page_count || !freelist_count || (freelist_count * page_size < 1024 * 1024 * 10 && freelist_count * 1000 / page_count <= 50) ||
-		    cdb_sql_exec (cdb->priv->db, "vacuum;", NULL, NULL, NULL, &local_error) == SQLITE_OK;
+		    cdb_sql_exec (cdb, "vacuum;", NULL, NULL, NULL, &local_error) == SQLITE_OK;
 	}
 
 	cdb_writer_unlock (cdb);

@@ -46,7 +46,25 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_DB, CamelDBClass))
 
+/**
+ * CAMEL_DB_ERROR:
+ *
+ * Since: 3.44
+ **/
+#define CAMEL_DB_ERROR \
+	(camel_db_error_quark ())
+
 G_BEGIN_DECLS
+
+/**
+ * CamelDBError:
+ * @CAMEL_DB_ERROR_CORRUPT: database is corrupt
+ *
+ * Since: 3.44
+ **/
+typedef enum {
+	CAMEL_DB_ERROR_CORRUPT
+} CamelDBError;
 
 typedef struct _CamelDB CamelDB;
 typedef struct _CamelDBClass CamelDBClass;
@@ -336,6 +354,7 @@ CamelDBKnownColumnNames camel_db_get_column_ident (GHashTable **hash, gint index
  **/
 typedef gint (* CamelDBSelectCB) (gpointer user_data, gint ncol, gchar **colvalues, gchar **colnames);
 
+GQuark		camel_db_error_quark		(void) G_GNUC_CONST;
 GType		camel_db_get_type		(void) G_GNUC_CONST;
 
 CamelDB *	camel_db_new			(const gchar *filename,
