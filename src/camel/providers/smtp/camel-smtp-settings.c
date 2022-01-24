@@ -17,21 +17,23 @@
 
 #include "camel-smtp-settings.h"
 
+struct _CamelSmtpSettingsPrivate {
+	gboolean reencode_data;
+};
+
 enum {
 	PROP_0,
 	PROP_AUTH_MECHANISM,
 	PROP_HOST,
 	PROP_PORT,
 	PROP_SECURITY_METHOD,
-	PROP_USER
+	PROP_USER,
+	PROP_REENCODE_DATA
 };
 
-G_DEFINE_TYPE_WITH_CODE (
-	CamelSmtpSettings,
-	camel_smtp_settings,
-	CAMEL_TYPE_SETTINGS,
-	G_IMPLEMENT_INTERFACE (
-		CAMEL_TYPE_NETWORK_SETTINGS, NULL))
+G_DEFINE_TYPE_WITH_CODE (CamelSmtpSettings, camel_smtp_settings, CAMEL_TYPE_SETTINGS,
+	G_ADD_PRIVATE (CamelSmtpSettings)
+	G_IMPLEMENT_INTERFACE (CAMEL_TYPE_NETWORK_SETTINGS, NULL))
 
 static void
 smtp_settings_set_property (GObject *object,
@@ -68,6 +70,12 @@ smtp_settings_set_property (GObject *object,
 			camel_network_settings_set_user (
 				CAMEL_NETWORK_SETTINGS (object),
 				g_value_get_string (value));
+			return;
+
+		case PROP_REENCODE_DATA:
+			camel_smtp_settings_set_reencode_data (
+				CAMEL_SMTP_SETTINGS (object),
+				g_value_get_boolean (value));
 			return;
 	}
 
@@ -115,6 +123,13 @@ smtp_settings_get_property (GObject *object,
 				camel_network_settings_dup_user (
 				CAMEL_NETWORK_SETTINGS (object)));
 			return;
+
+		case PROP_REENCODE_DATA:
+			g_value_set_boolean (
+				value,
+				camel_smtp_settings_get_reencode_data (
+				CAMEL_SMTP_SETTINGS (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -158,10 +173,45 @@ camel_smtp_settings_class_init (CamelSmtpSettingsClass *class)
 		object_class,
 		PROP_USER,
 		"user");
+
+	g_object_class_install_property (
+		object_class,
+		PROP_REENCODE_DATA,
+		g_param_spec_boolean (
+			"reencode-data",
+			"Reencode Data",
+			"Whether to re-encode data on send",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
 camel_smtp_settings_init (CamelSmtpSettings *settings)
 {
+	settings->priv = camel_smtp_settings_get_instance_private (settings);
 }
 
+gboolean
+camel_smtp_settings_get_reencode_data (CamelSmtpSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_SMTP_SETTINGS (settings), FALSE);
+
+	return settings->priv->reencode_data;
+}
+
+void
+camel_smtp_settings_set_reencode_data (CamelSmtpSettings *settings,
+				       gboolean reencode_data)
+{
+	g_return_if_fail (CAMEL_IS_SMTP_SETTINGS (settings));
+
+	if ((settings->priv->reencode_data ? 1 : 0) == (reencode_data ? 1 : 0))
+		return;
+
+	settings->priv->reencode_data = reencode_data;
+
+	g_object_notify (G_OBJECT (settings), "reencode-data");
+}

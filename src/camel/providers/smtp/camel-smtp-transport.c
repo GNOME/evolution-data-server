@@ -1745,26 +1745,35 @@ smtp_data (CamelSmtpTransport *transport,
            GCancellable *cancellable,
            GError **error)
 {
+	CamelSettings *settings;
 	CamelNameValueArray *previous_headers;
 	const gchar *header_name = NULL, *header_value = NULL;
-	CamelBestencEncoding enctype = CAMEL_BESTENC_8BIT;
 	CamelStream *filtered_stream;
 	gchar *cmdbuf, *respbuf = NULL;
 	CamelMimeFilter *filter;
 	gsize bytes_written;
+	gboolean reencode_data;
 	gint ret;
 	guint ii;
 
-	/* If the server doesn't support 8BITMIME, set our required encoding to be 7bit */
-	if (!(transport->flags & CAMEL_SMTP_TRANSPORT_8BITMIME))
-		enctype = CAMEL_BESTENC_7BIT;
+	settings = camel_service_ref_settings (CAMEL_SERVICE (transport));
+	reencode_data = camel_smtp_settings_get_reencode_data (CAMEL_SMTP_SETTINGS (settings));
+	g_clear_object (&settings);
 
-	/* FIXME: should we get the best charset too?? */
-	/* Changes the encoding of all mime parts to fit within our required
-	 * encoding type and also force any text parts with long lines (longer
-	 * than 998 octets) to wrap by QP or base64 encoding them. */
-	camel_mime_message_set_best_encoding (
-		message, CAMEL_BESTENC_GET_ENCODING, enctype);
+	if (reencode_data) {
+		CamelBestencEncoding enctype = CAMEL_BESTENC_8BIT;
+
+		/* If the server doesn't support 8BITMIME, set our required encoding to be 7bit */
+		if (!(transport->flags & CAMEL_SMTP_TRANSPORT_8BITMIME))
+			enctype = CAMEL_BESTENC_7BIT;
+
+		/* FIXME: should we get the best charset too?? */
+		/* Changes the encoding of all mime parts to fit within our required
+		 * encoding type and also force any text parts with long lines (longer
+		 * than 998 octets) to wrap by QP or base64 encoding them. */
+		camel_mime_message_set_best_encoding (
+			message, CAMEL_BESTENC_GET_ENCODING, enctype);
+	}
 
 	cmdbuf = g_strdup ("DATA\r\n");
 

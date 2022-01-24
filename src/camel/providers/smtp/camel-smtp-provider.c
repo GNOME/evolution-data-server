@@ -33,6 +33,15 @@
 static guint smtp_url_hash (gconstpointer key);
 static gint smtp_url_equal (gconstpointer a, gconstpointer b);
 
+CamelProviderConfEntry smtp_conf_entries[] = {
+	{ CAMEL_PROVIDER_CONF_SECTION_START, "smtpsection", NULL,
+	  N_("Send Options") },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "reencode-data", NULL,
+	  N_("_Re-encode message before send"), "0" },
+	{ CAMEL_PROVIDER_CONF_SECTION_END },
+	{ CAMEL_PROVIDER_CONF_END }
+};
+
 CamelProviderPortEntry smtp_port_entries[] = {
 	{ 25, N_("Default SMTP port"), FALSE },
 	{ 465, N_("SMTP over TLS"), TRUE },
@@ -53,7 +62,7 @@ static CamelProvider smtp_provider = {
 
 	CAMEL_URL_NEED_HOST | CAMEL_URL_ALLOW_AUTH | CAMEL_URL_ALLOW_USER,
 
-	NULL,
+	smtp_conf_entries,
 
 	smtp_port_entries,
 
