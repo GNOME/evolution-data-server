@@ -1941,7 +1941,7 @@ e_source_registry_server_ref_source (ESourceRegistryServer *server,
 /**
  * e_source_registry_server_list_sources:
  * @server: an #ESourceRegistryServer
- * @extension_name: an extension name, or %NULL
+ * @extension_name: (nullable): an extension name, or %NULL
  *
  * Returns a list of registered sources, sorted by display name.  If
  * @extension_name is given, restrict the list to sources having that

@@ -301,8 +301,8 @@ e_cache_column_values_remove_all (ECacheColumnValues *other_columns)
  * The returned pointer is owned by @other_columns and is valid until
  * the value is overwritten of the @other_columns freed.
  *
- * Returns: Stored value for the column named @name, or %NULL, if
- *    no such column values is stored.
+ * Returns: (nullable): Stored value for the column named @name,
+ *    or %NULL, if no such column values is stored.
  *
  * Since: 3.26
  **/
@@ -397,9 +397,9 @@ e_cache_offline_change_new (const gchar *uid,
  * e_cache_offline_change_copy:
  * @change: (nullable): a source #ECacheOfflineChange to copy, or %NULL
  *
- * Returns: (transfer full): Copy of the given @change. Free it with
- *    e_cache_offline_change_free() when no longer needed.
- *    If the @change is %NULL, then returns %NULL as well.
+ * Returns: (transfer full) (nullable): Copy of the given @change.
+ *    Free it with e_cache_offline_change_free() when no longer
+ *    needed. If the @change is %NULL, then returns %NULL as well.
  *
  * Since: 3.26
  **/
@@ -467,8 +467,8 @@ e_cache_column_info_new (const gchar *name,
  * e_cache_column_info_copy:
  * @info: (nullable): a source #ECacheColumnInfo to copy, or %NULL
  *
- * Returns: (transfer full): Copy of the given @info. Free it with
- *    e_cache_column_info_free() when no longer needed.
+ * Returns: (transfer full) (nullable): Copy of the given @info.
+ *    Free it with e_cache_column_info_free() when no longer needed.
  *    If the @info is %NULL, then returns %NULL as well.
  *
  * Since: 3.26

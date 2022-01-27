@@ -186,8 +186,8 @@ struct EXmlHash {
  * Creates a new #EXmlHash from the file @filename. If @filename does
  * not already exist, an empty #EXmlHash will be created.
  *
- * Returns: (transfer full): The new #EXmlHash structure, or %NULL if unable to parse
- *          @filename.
+ * Returns: (transfer full) (nullable): The new #EXmlHash structure,
+ *    or %NULL if unable to parse @filename.
  **/
 EXmlHash *
 e_xmlhash_new (const gchar *filename)

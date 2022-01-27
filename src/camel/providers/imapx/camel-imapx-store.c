@@ -3810,7 +3810,7 @@ camel_imapx_store_ref_mailbox (CamelIMAPXStore *imapx_store,
  * camel_imapx_store_list_mailboxes:
  * @imapx_store: a #CamelIMAPXStore
  * @namespace_: a #CamelIMAPXNamespace
- * @pattern: mailbox name with possible wildcards, or %NULL
+ * @pattern: (nullable): mailbox name with possible wildcards, or %NULL
  *
  * Returns a list of #CamelIMAPXMailbox instances which match @namespace and
  * @pattern. The @pattern may contain wildcard characters '*' and '%', which

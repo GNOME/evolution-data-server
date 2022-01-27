@@ -588,7 +588,7 @@ append:
 
 /**
  * camel_internet_address_encode_address:
- * @len: the length of the line the address is being appended to
+ * @len: (nullable): the length of the line the address is being appended to
  * @name: the unencoded real name associated with the address
  * @addr: the routing address
  *

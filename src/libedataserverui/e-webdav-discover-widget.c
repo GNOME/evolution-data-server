@@ -435,10 +435,10 @@ e_webdav_discover_content_get_selected (GtkWidget *content,
  * Get currently selected user address in the @content, if the server returned any.
  * This value has meaning only with calendar sources.
  *
- * Returns: (transfer full): currently selected user address. The returned string
- *   is newly allocated and should be freed with g_free() when no longer needed.
- *   If there are none addresses provided by the server, or no calendar sources
- *   were found, then %NULL is returned instead.
+ * Returns: (transfer full) (nullable): currently selected user address. The
+ *   returned string is newly allocated and should be freed with g_free() when
+ *   no longer needed. If there are none addresses provided by the server, or
+ *   no calendar sources were found, then %NULL is returned instead.
  *
  * Since: 3.18
  **/

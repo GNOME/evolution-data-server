@@ -575,7 +575,7 @@ camel_sasl_get_service_name (CamelSasl *sasl)
 /**
  * camel_sasl_challenge_sync:
  * @sasl: a #CamelSasl
- * @token: a token, or %NULL
+ * @token: (nullable): a token, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -586,8 +586,8 @@ camel_sasl_get_service_name (CamelSasl *sasl)
  *
  * Free the returned #GByteArray with g_byte_array_free().
  *
- * Returns: (transfer full): the SASL response or %NULL. If an error occurred, @error will
- * also be set.
+ * Returns: (transfer full) (nullable): the SASL response or %NULL. If an error
+ * occurred, @error will also be set.
  **/
 GByteArray *
 camel_sasl_challenge_sync (CamelSasl *sasl,
@@ -643,7 +643,7 @@ sasl_challenge_thread (GTask *task,
 /**
  * camel_sasl_challenge:
  * @sasl: a #CamelSasl
- * @token: a token, or %NULL
+ * @token: (nullable): a token, or %NULL
  * @io_priority: the I/O priority of the request
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
@@ -699,8 +699,8 @@ camel_sasl_challenge (CamelSasl *sasl,
  * Finishes the operation started with camel_sasl_challenge().  Free the
  * returned #GByteArray with g_byte_array_free().
  *
- * Returns: (transfer full): the SASL response or %NULL.  If an error occurred, @error will
- * also be set.
+ * Returns: (transfer full) (nullable): the SASL response or %NULL.  If an
+ * error occurred, @error will also be set.
  *
  * Since: 3.0
  **/

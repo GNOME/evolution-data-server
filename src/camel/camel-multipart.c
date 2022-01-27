@@ -452,7 +452,7 @@ camel_multipart_add_part (CamelMultipart *multipart,
  * @multipart: a #CamelMultipart object
  * @index: a zero-based index indicating the part to get
  *
- * Returns: (transfer none): the indicated subpart, or %NULL
+ * Returns: (transfer none) (nullable): the indicated subpart, or %NULL
  **/
 CamelMimePart *
 camel_multipart_get_part (CamelMultipart *multipart,

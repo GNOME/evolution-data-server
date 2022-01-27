@@ -791,7 +791,7 @@ e_data_book_cursor_set_sexp (EDataBookCursor *cursor,
 /**
  * e_data_book_cursor_step:
  * @cursor: an #EDataBookCursor
- * @revision_guard: The expected current addressbook revision, or %NULL
+ * @revision_guard: (nullable): The expected current addressbook revision, or %NULL
  * @flags: The #EBookCursorStepFlags for this step
  * @origin: The #EBookCursorOrigin from whence to step
  * @count: a positive or negative amount of contacts to try and fetch

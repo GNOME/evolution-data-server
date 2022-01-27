@@ -163,7 +163,7 @@ camel_async_closure_free (CamelAsyncClosure *closure)
 
 /**
  * camel_async_closure_callback: (skip)
- * @source_object: a #GObject or %NULL
+ * @source_object: (nullable): a #GObject or %NULL
  * @result: a #GAsyncResult
  * @closure: a #CamelAsyncClosure
  *

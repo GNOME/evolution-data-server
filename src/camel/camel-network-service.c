@@ -742,7 +742,8 @@ camel_network_service_init (CamelNetworkService *service)
  * name for unencrypted IMAP or encrypted IMAP using STARTTLS is "imap",
  * but the service name for IMAP over SSL is "imaps".
  *
- * Returns: the network service name for @service and @method, or %NULL
+ * Returns: (nullable): the network service name for @service and @method,
+ * or %NULL
  *
  * Since: 3.2
  **/
@@ -843,7 +844,7 @@ camel_network_service_ref_connectable (CamelNetworkService *service)
 /**
  * camel_network_service_set_connectable:
  * @service: a #CamelNetworkService
- * @connectable: a #GSocketConnectable, or %NULL
+ * @connectable: (nullable): a #GSocketConnectable, or %NULL
  *
  * Sets the socket endpoint for the network service to which @service is
  * a client.  If @connectable is %NULL, a #GSocketConnectable is derived
@@ -923,7 +924,7 @@ camel_network_service_get_host_reachable (CamelNetworkService *service)
  * connection attempt is cancelled, the function sets @error and returns
  * %NULL.
  *
- * Returns: (transfer full): a #GIOStream, or %NULL
+ * Returns: (transfer full) (nullable): a #GIOStream, or %NULL
  *
  * Since: 3.2
  **/
@@ -955,7 +956,8 @@ camel_network_service_connect_sync (CamelNetworkService *service,
  * This should typically be called after issuing a STARTTLS command
  * to a server to initiate a Transport Layer Security handshake.
  *
- * Returns: (transfer full): the new #GTlsClientConnection, or %NULL on error
+ * Returns: (transfer full) (nullable): the new #GTlsClientConnection,
+ * or %NULL on error
  *
  * Since: 3.12
  **/

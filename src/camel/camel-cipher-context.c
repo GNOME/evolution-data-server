@@ -456,7 +456,7 @@ camel_cipher_context_sign_finish (CamelCipherContext *context,
  *
  * Verifies the signature.
  *
- * Returns: a #CamelCipherValidity structure containing information
+ * Returns: (nullable): a #CamelCipherValidity structure containing information
  * about the integrity of the input stream, or %NULL on failure to
  * execute at all
  **/
@@ -575,7 +575,7 @@ camel_cipher_context_verify (CamelCipherContext *context,
  *
  * Finishes the operation started with camel_cipher_context_verify().
  *
- * Returns: a #CamelCipherValidity structure containing information
+ * Returns: (nullable): a #CamelCipherValidity structure containing information
  * about the integrity of the input stream, or %NULL on failure to
  * execute at all
  *
@@ -599,7 +599,7 @@ camel_cipher_context_verify_finish (CamelCipherContext *context,
 /**
  * camel_cipher_context_encrypt_sync:
  * @context: a #CamelCipherContext
- * @userid: key ID (or email address) to use when signing, or %NULL to not sign
+ * @userid: (nullable): key ID (or email address) to use when signing, or %NULL to not sign
  * @recipients: (element-type utf8): an array of recipient key IDs and/or email addresses
  * @ipart: clear-text #CamelMimePart
  * @opart: cipher-text #CamelMimePart
@@ -686,7 +686,7 @@ cipher_context_encrypt_thread (GTask *task,
 /**
  * camel_cipher_context_encrypt:
  * @context: a #CamelCipherContext
- * @userid: key id (or email address) to use when signing, or %NULL to not sign
+ * @userid: (nullable): key id (or email address) to use when signing, or %NULL to not sign
  * @recipients: (element-type utf8): an array of recipient key IDs and/or email addresses
  * @ipart: clear-text #CamelMimePart
  * @opart: cipher-text #CamelMimePart
@@ -784,7 +784,7 @@ camel_cipher_context_encrypt_finish (CamelCipherContext *context,
  *
  * Decrypts @ipart into @opart.
  *
- * Returns: a validity/encryption status, or %NULL on error
+ * Returns: (nullable): a validity/encryption status, or %NULL on error
  *
  * Since: 3.0
  **/
@@ -915,7 +915,7 @@ camel_cipher_context_decrypt (CamelCipherContext *context,
  *
  * Finishes the operation started with camel_cipher_context_decrypt().
  *
- * Returns: a validity/encryption status, or %NULL on error
+ * Returns: (nullable): a validity/encryption status, or %NULL on error
  *
  * Since: 3.0
  **/

@@ -946,7 +946,8 @@ system_timezone_win32_query_registry (void)
  *
  * The returned string should be freed with g_free().
  *
- * Returns: (transfer full): system timezone location string, or %NULL on an error.
+ * Returns: (transfer full) (nullable): system timezone location string, or
+ * %NULL on an error.
  *
  * Since: 2.28
  **/

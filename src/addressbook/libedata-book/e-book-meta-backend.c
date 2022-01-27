@@ -165,7 +165,7 @@ e_book_meta_backend_info_new (const gchar *uid,
  * e_book_meta_backend_info_copy:
  * @src: (nullable): a source EBookMetaBackendInfo to copy, or %NULL
  *
- * Returns: (transfer full): Copy of the given @src. Free it with
+ * Returns: (transfer full) (nullable): Copy of the given @src. Free it with
  *    e_book_meta_backend_info_free() when no longer needed.
  *    If the @src is %NULL, then returns %NULL as well.
  *

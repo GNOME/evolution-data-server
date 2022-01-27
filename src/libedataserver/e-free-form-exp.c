@@ -272,7 +272,7 @@ ffe_finish_and_or_not (GString *sexp)
  * The @symbols is a NULL-terminated array of known symbols. The NULL should
  * be set for the symbol's name.
  *
- * Returns: converted @free_form_exp into S-Expression, %NULL on error.
+ * Returns: (nullable): converted @free_form_exp into S-Expression, %NULL on error.
  *    Free the returned string with a g_free(), when done with it.
  *
  * Since: 3.16

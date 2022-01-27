@@ -306,8 +306,8 @@ e_cal_component_new_vtype (ECalComponentVType vtype)
  *
  * Creates a new calendar component object from the given iCalendar string.
  *
- * Returns: (transfer full): A calendar component representing the given iCalendar string on
- * success, NULL if there was an error.
+ * Returns: (transfer full) (nullable): A calendar component representing
+ *    the given iCalendar string on success, %NULL if there was an error.
  *
  * Since: 3.34
  **/
@@ -335,8 +335,9 @@ e_cal_component_new_from_string (const gchar *calobj)
  * to e_cal_component_set_icalcomponent() fails, then @icalcomp
  * is freed.
  *
- * Returns: (transfer full): An #ECalComponent with @icalcomp assigned on success,
- * NULL if the @icalcomp cannot be assigned to #ECalComponent.
+ * Returns: (transfer full) (nullable): An #ECalComponent with @icalcomp
+ *    assigned on success, %NULL if the @icalcomp cannot be assigned to
+ *    #ECalComponent.
  *
  * Since: 3.34
  **/
@@ -1444,7 +1445,8 @@ set_icaltimetype (ICalComponent *icalcomp,
  * Free the returned non-NULL pointer with g_object_unref(), when
  * no longer needed.
  *
- * Returns: (transfer full): the completion date, as an #ICalTime, or %NULL, when none is set
+ * Returns: (transfer full) (nullable): the completion date, as an #ICalTime,
+ * or %NULL, when none is set
  *
  * Since: 3.34
  **/
@@ -1502,7 +1504,8 @@ e_cal_component_set_completed (ECalComponent *comp,
  * calendar store. Free the returned non-NULL pointer with g_object_unref(), when
  * no longer needed.
  *
- * Returns: (transfer full): the creation date, as an #ICalTime, or %NULL, when none is set
+ * Returns: (transfer full) (nullable): the creation date, as an #ICalTime, or
+ * %NULL, when none is set
  *
  * Since: 3.34
  **/
@@ -2544,7 +2547,8 @@ e_cal_component_set_geo (ECalComponent *comp,
  * the calendar store. Free the returned non-NULL pointer with g_object_unref(),
  * when no longer needed.
  *
- * Returns: (transfer full): the last modified time, as an #ICalTime, or %NULL, when none is set
+ * Returns: (transfer full) (nullable): the last modified time, as an
+ * #ICalTime, or %NULL, when none is set
  *
  * Since: 3.34
  **/

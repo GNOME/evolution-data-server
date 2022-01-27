@@ -2390,9 +2390,9 @@ fail:
  * Run a search.  Search must have had Folder already set on it, and
  * it must implement summaries.
  *
- * Returns: (element-type utf8) (transfer full): a #GPtrArray with matching UIDs,
- *    or %NULL on error. Use camel_folder_search_free_result() to free it when
- *    no longer needed.
+ * Returns: (element-type utf8) (transfer full) (nullable): a #GPtrArray with
+ *    matching UIDs, or %NULL on error. Use camel_folder_search_free_result()
+ *    to free it when no longer needed.
  **/
 GPtrArray *
 camel_folder_search_search (CamelFolderSearch *search,

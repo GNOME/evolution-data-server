@@ -280,7 +280,7 @@ camel_imapx_store_summary_init (CamelIMAPXStoreSummary *summary)
  * and should be unreferenced with camel_store_summary_info_unref()
  * when finished with it.
  *
- * Returns: a #CamelIMAPXStoreInfo, or %NULL
+ * Returns: (nullable): a #CamelIMAPXStoreInfo, or %NULL
  **/
 CamelIMAPXStoreInfo *
 camel_imapx_store_summary_mailbox (CamelStoreSummary *summary,

@@ -1792,7 +1792,7 @@ e_source_registry_init (ESourceRegistry *registry)
  * Since 3.12 a singleton will be returned.  No strong reference is kept
  * internally, so it is the caller's responsibility to keep one.
  *
- * Returns: a new #ESourceRegistry, or %NULL
+ * Returns: (nullable): a new #ESourceRegistry, or %NULL
  *
  * Since: 3.6
  **/
@@ -1886,7 +1886,7 @@ e_source_registry_new (GCancellable *cancellable,
  * If an error occurs in connecting to the D-Bus service, the function
  * sets @error and returns %NULL.
  *
- * Returns: a new #ESourceRegistry, or %NULL
+ * Returns: (nullable): a new #ESourceRegistry, or %NULL
  *
  * Since: 3.6
  **/
@@ -3471,7 +3471,8 @@ source_registry_ref_any_mail_identity (ESourceRegistry *registry)
  * The returned #ESource is referenced for thread-safety and must be
  * unreferenced with g_object_unref() when finished with it.
  *
- * Returns: (transfer full): the default mail identity #ESource, or %NULL
+ * Returns: (transfer full) (nullable): the default mail identity #ESource,
+ *    or %NULL
  *
  * Since: 3.6
  **/

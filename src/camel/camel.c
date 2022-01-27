@@ -322,8 +322,8 @@ camel_binding_bind_property (gpointer source,
  *   from the @source to the @target, or %NULL to use the default
  * @transform_from: (scope notified) (nullable): the transformation function
  *   from the @target to the @source, or %NULL to use the default
- * @user_data: custom data to be passed to the transformation functions,
- *   or %NULL
+ * @user_data: (nullable): custom data to be passed to the transformation
+ *   functions, or %NULL
  * @notify: function to be called when disposing the binding, to free the
  *   resources used by the transformation functions
  *

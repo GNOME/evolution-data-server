@@ -322,7 +322,7 @@ camel_mime_parser_filter_remove (CamelMimeParser *m,
  *
  * Lookup a header by name.
  *
- * Returns: The header value, or NULL if the header is not
+ * Returns: (nullable): The header value, or %NULL if the header is not
  * defined.
  **/
 const gchar *
@@ -346,8 +346,9 @@ camel_mime_parser_header (CamelMimeParser *m,
  * current state of the parser.  These headers are valid
  * until the next call to camel_mime_parser_step(), or camel_mime_parser_drop_step().
  *
- * Returns: (transfer full): The headers, or %NULL, if there are no headers
- * defined for the current part or state. Free it with camel_name_value_array_free().
+ * Returns: (transfer full) (nullable): The headers, or %NULL, if there are no
+ * headers defined for the current part or state. Free it with
+ * camel_name_value_array_free().
  *
  * Since: 3.24
  **/
@@ -388,7 +389,7 @@ byte_array_to_string (GByteArray *array)
  * Retrieve the preface text for the current multipart.
  * Can only be used when the state is CAMEL_MIME_PARSER_STATE_MULTIPART_END.
  *
- * Returns: The preface text, or NULL if there wasn't any.
+ * Returns: (nullable): The preface text, or %NULL if there wasn't any.
  *
  * Since: 2.22
  **/
@@ -411,7 +412,7 @@ camel_mime_parser_preface (CamelMimeParser *m)
  * Only returns valid data when the current state if
  * CAMEL_MIME_PARSER_STATE_MULTIPART_END.
  *
- * Returns: The postface text, or NULL if there wasn't any.
+ * Returns: (nullable): The postface text, or %NULL if there wasn't any.
  *
  * Since: 2.22
  **/
@@ -437,7 +438,7 @@ camel_mime_parser_postface (CamelMimeParser *m)
  * The return value will remain valid while in the CAMEL_MIME_PARSER_STATE_FROM
  * state, or any deeper state.
  *
- * Returns: The From line, or NULL if called out of context.
+ * Returns: (nullable): The From line, or %NULL if called out of context.
  *
  * Since: 2.22
  **/
@@ -590,7 +591,7 @@ camel_mime_parser_scan_pre_from (CamelMimeParser *parser,
  *
  * Get the content type defined in the current part.
  *
- * Returns: A content_type structure, or NULL if there
+ * Returns: (nullable): A content_type structure, or %NULL if there
  * is no content-type defined for this part of state of the
  * parser.
  **/

@@ -78,7 +78,7 @@ typedef gboolean (* CamelIMAPXUntaggedRespHandler) (CamelIMAPXServer *server,
  *                     all-uppercase with underscores allowed
  *                     (see RFC 3501)
  * @handler: an untagged response handler function for #CamelIMAPXServer
- * @next_response: the IMAP untagged code to call a registered
+ * @next_response: (nullable): the IMAP untagged code to call a registered
  *                 handler for directly after successfully
  *                 running @handler. If not NULL, @skip_stream_when_done
  *                 for the current handler has no effect

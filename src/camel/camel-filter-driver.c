@@ -1754,8 +1754,8 @@ fail:
  * @driver: CamelFilterDriver
  * @folder: CamelFolder to be filtered
  * @cache: UID cache (needed for POP folders)
- * @uids: (element-type utf8): message uids to be filtered or NULL (as a
- *        shortcut to filter all messages)
+ * @uids: (element-type utf8) (nullable): message uids to be filtered or
+ *         %NULL (as a shortcut to filter all messages)
  * @remove: TRUE to mark filtered messages as deleted
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -2171,12 +2171,12 @@ filter_driver_filter_message_internal (CamelFilterDriver *driver,
 /**
  * camel_filter_driver_filter_message:
  * @driver: CamelFilterDriver
- * @message: message to filter or NULL
- * @info: message info or NULL
- * @uid: message uid or NULL
- * @source: source folder or NULL
- * @store_uid: UID of source store, or %NULL
- * @original_store_uid: UID of source store (pre-movemail), or %NULL
+ * @message: (nullable): message to filter or %NULL
+ * @info: (nullable): message info or %NULL
+ * @uid: (nullable): message uid or %NULL
+ * @source: (nullable): source folder or %NULL
+ * @store_uid: (nullable): UID of source store, or %NULL
+ * @original_store_uid: (nullable): UID of source store (pre-movemail), or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *

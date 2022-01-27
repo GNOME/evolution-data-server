@@ -205,8 +205,8 @@ camel_weak_ref_group_set (CamelWeakRefGroup *group,
  * camel_weak_ref_group_get:
  * @group: a #CamelWeakRefGroup
  *
- * Returns: (transfer full): A referenced object associated with @group,
- *    or %NULL, when no object had been set to it. Use g_object_unref()
+ * Returns: (transfer full) (nullable): A referenced object associated with
+ *    @group, or %NULL, when no object had been set to it. Use g_object_unref()
  *    to free it, when no longer needed.
  *
  * Since: 3.24

@@ -582,7 +582,7 @@ camel_offline_folder_can_downsync (CamelOfflineFolder *folder)
 /**
  * camel_offline_folder_downsync_sync:
  * @folder: a #CamelOfflineFolder
- * @expression: search expression describing which set of messages
+ * @expression: (nullable): search expression describing which set of messages
  *              to downsync (%NULL for all)
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -644,7 +644,7 @@ offline_folder_downsync_thread (GTask *task,
 /**
  * camel_offline_folder_downsync:
  * @folder: a #CamelOfflineFolder
- * @expression: search expression describing which set of messages
+ * @expression: (nullable): search expression describing which set of messages
  *              to downsync (%NULL for all)
  * @io_priority: the I/O priority of the request
  * @cancellable: optional #GCancellable object, or %NULL

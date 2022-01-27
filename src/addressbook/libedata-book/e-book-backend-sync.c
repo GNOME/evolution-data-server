@@ -490,7 +490,7 @@ e_book_backend_sync_remove_contacts (EBookBackendSync *backend,
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
- * Returns: (transfer full): an #EContact, or %NULL
+ * Returns: (transfer full) (nullable): an #EContact, or %NULL
  *
  * Since: 3.34
  **/

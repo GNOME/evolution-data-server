@@ -102,7 +102,7 @@ typedef void (*EBookIdAsyncCallback)       (EBook *book, const GError *error, co
  * EBookContactAsyncCallback:
  * @book: an #EBook
  * @error: a #GError or %NULL
- * @contact: an #EContact or %NULL
+ * @contact: (nullable): an #EContact or %NULL
  * @closure: the callback closure
  *
  * Since: 2.32

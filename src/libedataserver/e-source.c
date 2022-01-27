@@ -2538,7 +2538,7 @@ __e_source_private_replace_dbus_object (ESource *source,
  *
  * FIXME: Elaborate on scratch sources.
  *
- * Returns: a new #ESource, or %NULL on error
+ * Returns: (nullable): a new #ESource, or %NULL on error
  *
  * Since: 3.6
  **/
@@ -2569,7 +2569,7 @@ e_source_new (GDBusObject *dbus_object,
  * or else from the thread-default #GMainContext at the time this function is
  * called.
  *
- * Returns: a new scratch #ESource, or %NULL on error
+ * Returns: (nullable): a new scratch #ESource, or %NULL on error
  *
  * Since: 3.6
  **/

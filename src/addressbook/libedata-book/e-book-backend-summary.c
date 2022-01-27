@@ -1292,10 +1292,10 @@ e_book_backend_summary_search (EBookBackendSummary *summary,
  * @summary: an #EBookBackendSummary
  * @id: a unique contact ID
  *
- * Constructs and returns a VCard from the contact summary specified
- * by @id.
+ * Constructs and returns a VCard from the contact summary specified by @id.
  *
- * Returns: A new VCard, or %NULL if the contact summary didn't exist.
+ * Returns: (nullable): A new VCard, or %NULL if the contact summary
+ * didn't exist.
  *
  * Deprecated: 3.12: Use #EBookSqlite instead
  **/

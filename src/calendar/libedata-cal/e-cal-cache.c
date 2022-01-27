@@ -143,7 +143,7 @@ e_cal_cache_offline_change_new (const gchar *uid,
  * e_cal_cache_offline_change_copy:
  * @change: (nullable): a source #ECalCacheOfflineChange to copy, or %NULL
  *
- * Returns: (transfer full): Copy of the given @change. Free it with
+ * Returns: (transfer full) (nullable): Copy of the given @change. Free it with
  *    e_cal_cache_offline_change_free() when no longer needed.
  *    If the @change is %NULL, then returns %NULL as well.
  *
@@ -219,7 +219,7 @@ e_cal_cache_search_data_new (const gchar *uid,
  * e_cal_cache_search_data_copy:
  * @data: (nullable): a source #ECalCacheSearchData to copy, or %NULL
  *
- * Returns: (transfer full): Copy of the given @data. Free it with
+ * Returns: (transfer full) (nullable): Copy of the given @data. Free it with
  *    e_cal_cache_search_data_free() when no longer needed.
  *    If the @data is %NULL, then returns %NULL as well.
  *

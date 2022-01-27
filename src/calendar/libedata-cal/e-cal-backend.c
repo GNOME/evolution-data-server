@@ -1343,7 +1343,7 @@ e_cal_backend_get_kind (ECalBackend *backend)
  * The returned #EDataCal is referenced for thread-safety and must be
  * unreferenced with g_object_unref() when finished with it.
  *
- * Returns: (transfer full): an #EDataCal, or %NULL
+ * Returns: (transfer full) (nullable): an #EDataCal, or %NULL
  *
  * Since: 3.10
  **/
@@ -1603,8 +1603,8 @@ e_cal_backend_set_cache_dir (ECalBackend *backend,
  * e_cal_backend_create_cache_filename:
  * @backend: an #ECalBackend
  * @uid: a component UID
- * @filename: a filename to use; can be NULL
- * @fileindex: index of a file; used only when @filename is NULL
+ * @filename: (nullable): a filename to use; can be %NULL
+ * @fileindex: index of a file; used only when @filename is %NULL
  *
  * Returns: a filename for an attachment in a local cache dir. Free returned
  * pointer with a g_free().
@@ -2188,7 +2188,7 @@ e_cal_backend_refresh_finish (ECalBackend *backend,
  * e_cal_backend_get_object_sync:
  * @backend: an #ECalBackend
  * @uid: a unique ID for an iCalendar object
- * @rid: a recurrence ID, or %NULL
+ * @rid: (nullable): a recurrence ID, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -2199,7 +2199,7 @@ e_cal_backend_refresh_finish (ECalBackend *backend,
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
- * Returns: an #ECalComponent, or %NULL
+ * Returns: (nullable): an #ECalComponent, or %NULL
  *
  * Since: 3.10
  **/
@@ -2281,7 +2281,7 @@ cal_backend_get_object_thread (GSimpleAsyncResult *simple,
  * e_cal_backend_get_object:
  * @backend: an #ECalBackend
  * @uid: a unique ID for an iCalendar object
- * @rid: a recurrence ID, or %NULL
+ * @rid: (nullable): a recurrence ID, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
@@ -2344,7 +2344,7 @@ e_cal_backend_get_object (ECalBackend *backend,
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
- * Returns: an #ECalComponent, or %NULL
+ * Returns: (nullable): an #ECalComponent, or %NULL
  *
  * Since: 3.10
  **/
@@ -3705,7 +3705,7 @@ e_cal_backend_receive_objects_finish (ECalBackend *backend,
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
- * Returns: a vCalendar string, or %NULL
+ * Returns: (nullable): a vCalendar string, or %NULL
  *
  * Since: 3.10
  **/
@@ -3854,7 +3854,7 @@ e_cal_backend_send_objects (ECalBackend *backend,
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
- * Returns: a newly allocated vCalendar string, or %NULL
+ * Returns: (nullable): a newly allocated vCalendar string, or %NULL
  *
  * Since: 3.10
  **/
@@ -3893,7 +3893,7 @@ e_cal_backend_send_objects_finish (ECalBackend *backend,
  * e_cal_backend_get_attachment_uris_sync:
  * @backend: an #ECalBackend
  * @uid: a unique ID for an iCalendar object
- * @rid: a recurrence ID, or %NULL
+ * @rid: (nullable): a recurrence ID, or %NULL
  * @out_attachment_uris: a #GQueue in which to deposit results
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -3990,7 +3990,7 @@ cal_backend_get_attachment_uris_thread (GSimpleAsyncResult *simple,
  * e_cal_backend_get_attachment_uris:
  * @backend: an #ECalBackend
  * @uid: a unique ID for an iCalendar object
- * @rid: a recurrence ID, or %NULL
+ * @rid: (nullable): a recurrence ID, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
@@ -4092,7 +4092,7 @@ e_cal_backend_get_attachment_uris_finish (ECalBackend *backend,
  * e_cal_backend_discard_alarm_sync:
  * @backend: an #ECalBackend
  * @uid: a unique ID for an iCalendar object
- * @rid: a recurrence ID, or %NULL
+ * @rid: (nullable): a recurrence ID, or %NULL
  * @alarm_uid: a unique ID for an iCalendar VALARM object
  * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: optional #GCancellable object, or %NULL
@@ -4198,7 +4198,7 @@ cal_backend_discard_alarm_thread (GSimpleAsyncResult *simple,
  * e_cal_backend_discard_alarm:
  * @backend: an #ECalBackend
  * @uid: a unique ID for an iCalendar object
- * @rid: a recurrence ID, or %NULL
+ * @rid: (nullable): a recurrence ID, or %NULL
  * @alarm_uid: a unique ID for an iCalendar VALARM object
  * @opflags: bit-or of #ECalOperationFlags
  * @cancellable: optional #GCancellable object, or %NULL
@@ -4302,7 +4302,7 @@ e_cal_backend_discard_alarm_finish (ECalBackend *backend,
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
- * Returns: an iCalendar string, or %NULL
+ * Returns: (nullable): an iCalendar string, or %NULL
  *
  * Since: 3.10
  **/
@@ -4440,7 +4440,7 @@ e_cal_backend_get_timezone (ECalBackend *backend,
  *
  * If an error occurred, the function will set @error and return %NULL.
  *
- * Returns: an iCalendar string, or %NULL
+ * Returns: (nullable): an iCalendar string, or %NULL
  *
  * Since: 3.10
  **/

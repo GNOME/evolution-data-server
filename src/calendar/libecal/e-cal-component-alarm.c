@@ -626,7 +626,7 @@ e_cal_component_alarm_get_uid (const ECalComponentAlarm *alarm)
 /**
  * e_cal_component_alarm_set_uid:
  * @alarm: an #ECalComponentAlarm
- * @uid: (nullable): a UID to set, or %NULL or emptry string to generate new
+ * @uid: (nullable): a UID to set, or %NULL or empty string to generate new
  *
  * Set the @alarm UID, or generates a new UID, if @uid is %NULL or an empty string.
  *

@@ -1788,7 +1788,7 @@ e_server_side_source_get_user_dir (void)
 
 /**
  * e_server_side_source_new_user_file:
- * @uid: unique identifier for a data source, or %NULL
+ * @uid: (nullable): unique identifier for a data source, or %NULL
  *
  * Generates a unique file name for a new user-specific data source.
  * If @uid is non-%NULL it will be used in the basename of the file,
@@ -1840,7 +1840,7 @@ e_server_side_source_new_user_file (const gchar *uid)
  * If the base name of @file is missing a '.source' extension, the
  * function sets @error and returns %NULL.
  *
- * Returns: the unique identity string for @file, or %NULL
+ * Returns: (nullable): the unique identity string for @file, or %NULL
  *
  * Since: 3.6
  **/
@@ -1875,7 +1875,7 @@ e_server_side_source_uid_from_file (GFile *file,
 /**
  * e_server_side_source_new:
  * @server: an #ESourceRegistryServer
- * @file: a #GFile, or %NULL
+ * @file: (nullable): a #GFile, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Creates a new #EServerSideSource which belongs to @server.  If @file
@@ -1883,7 +1883,7 @@ e_server_side_source_uid_from_file (GFile *file,
  * initialized from the file content.  If a read error occurs or the file
  * contains syntax errors, the function sets @error and returns %NULL.
  *
- * Returns: a new #EServerSideSource, or %NULL
+ * Returns: (nullable): a new #EServerSideSource, or %NULL
  *
  * Since: 3.6
  **/
@@ -1925,7 +1925,7 @@ e_server_side_source_new (ESourceRegistryServer *server,
 /**
  * e_server_side_source_new_memory_only:
  * @server: an #ESourceRegistryServer
- * @uid: a unique identifier, or %NULL
+ * @uid: (nullable): a unique identifier, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Creates a memory-only #EServerSideSource which belongs to @server.
@@ -1941,7 +1941,7 @@ e_server_side_source_new (ESourceRegistryServer *server,
  * function sets @error and returns %NULL.  Although at this time there
  * are no known error conditions for memory-only data sources.
  *
- * Returns: a new memory-only #EServerSideSource, or %NULL
+ * Returns: (nullable): a new memory-only #EServerSideSource, or %NULL
  *
  * Since: 3.6
  **/
@@ -2449,7 +2449,7 @@ e_server_side_source_ref_oauth2_support (EServerSideSource *source)
 /**
  * e_server_side_source_set_oauth2_support:
  * @source: an #EServerSideSource
- * @oauth2_support: an #EOAuth2Support object, or %NULL
+ * @oauth2_support: (nullable): an #EOAuth2Support object, or %NULL
  *
  * Indicates whether @source supports OAuth 2.0 authentication.
  *

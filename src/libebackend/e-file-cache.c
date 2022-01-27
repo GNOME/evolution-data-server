@@ -332,7 +332,7 @@ find_object_in_hash (gpointer key,
  * Returns the object corresponding to @key.  If no such object exists
  * in @cache, the function returns %NULL.
  *
- * Returns: the object corresponding to @key
+ * Returns: (nullable): the object corresponding to @key
  */
 const gchar *
 e_file_cache_get_object (EFileCache *cache,

@@ -143,7 +143,7 @@ string_pool_init (void)
 
 /**
  * camel_pstring_add:
- * @string: string to add to the string pool
+ * @string: (nullable): string to add to the string pool
  * @own: whether the string pool will own the memory pointed to by
  *       @string, if @string is not yet in the pool
  *
@@ -153,7 +153,7 @@ string_pool_init (void)
  *
  * Unreference the returned string with camel_pstring_free().
  *
- * Returns: a canonicalized copy of @string
+ * Returns: (nullable): a canonicalized copy of @string
  **/
 const gchar *
 camel_pstring_add (gchar *string,
@@ -198,7 +198,7 @@ camel_pstring_add (gchar *string,
 
 /**
  * camel_pstring_peek:
- * @string: string to fetch from the string pool
+ * @string: (nullable): string to fetch from the string pool
  *
  * Returns the canonicalized copy of @string without increasing its
  * reference count in the string pool.  If necessary, @string is first
@@ -206,7 +206,7 @@ camel_pstring_add (gchar *string,
  *
  * The %NULL and empty strings are special cased to constant values.
  *
- * Returns: a canonicalized copy of @string
+ * Returns: (nullable): a canonicalized copy of @string
  *
  * Since: 2.24
  **/
@@ -243,7 +243,7 @@ camel_pstring_peek (const gchar *string)
 
 /**
  * camel_pstring_contains:
- * @string: string to look up in the string pool
+ * @string: (nullable): string to look up in the string pool
  *
  * Returns whether the @string exists in the string pool.
  *
@@ -278,7 +278,7 @@ camel_pstring_contains (const gchar *string)
 
 /**
  * camel_pstring_strdup:
- * @string: string to copy
+ * @string: (nullable): string to copy
  *
  * Create a new pooled string entry for @strings.  A pooled string
  * is a table where common strings are canonicalized.  They are also
@@ -288,7 +288,7 @@ camel_pstring_contains (const gchar *string)
  *
  * Unreference the returned string with camel_pstring_free().
  *
- * Returns: a canonicalized copy of @string
+ * Returns: (nullable): a canonicalized copy of @string
  **/
 const gchar *
 camel_pstring_strdup (const gchar *string)
@@ -298,7 +298,7 @@ camel_pstring_strdup (const gchar *string)
 
 /**
  * camel_pstring_free:
- * @string: string to free
+ * @string: (nullable): string to free
  *
  * Unreferences a pooled string.  If the string's reference count drops to
  * zero it will be deallocated.  %NULL and the empty string are special cased.

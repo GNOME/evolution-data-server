@@ -54,7 +54,7 @@ e_book_client_error_to_string (EBookClientError code)
 /**
  * e_book_client_error_create:
  * @code: an #EBookClientError code to create
- * @custom_msg: custom message to use for the error; can be %NULL
+ * @custom_msg: (nullable): custom message to use for the error; can be %NULL
  *
  * Returns: a new #GError containing an E_BOOK_CLIENT_ERROR of the given
  * @code. If the @custom_msg is NULL, then the error message is

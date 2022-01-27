@@ -689,7 +689,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 	object_class->finalize = message_info_finalize;
 
 	/**
-	 * CamelMessageInfo:summary
+	 * CamelMessageInfo:summary:
 	 *
 	 * The #CamelFolderSummary to which the message info belongs, or %NULL.
 	 * It can be set only during construction of the object.
@@ -709,7 +709,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:uid
+	 * CamelMessageInfo:uid:
 	 *
 	 * A unique ID of the message in its folder.
 	 *
@@ -728,7 +728,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:dirty
+	 * CamelMessageInfo:dirty:
 	 *
 	 * Flag, whether the info is changed and requires save to disk.
 	 * Compare with CamelMessageInfo:folder-flagged
@@ -748,7 +748,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:folder-flagged
+	 * CamelMessageInfo:folder-flagged:
 	 *
 	 * Flag, whether the info is changed and requires save to
 	 * the destination store/server. This is different from
@@ -770,7 +770,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:folder-flagged-stamp
+	 * CamelMessageInfo:folder-flagged-stamp:
 	 *
 	 * The 'folder-flagged-stamp' is a stamp of the 'folder-flagged' flag. This stamp
 	 * changes whenever anything would mark the @mi 'folder-flagged', regardless the @mi
@@ -791,7 +791,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:abort-notifications
+	 * CamelMessageInfo:abort-notifications:
 	 *
 	 * Flag, whether the info is currently aborting notifications. It is used to avoid
 	 * unnecessary 'folder-flagged' and 'dirty' flags changes and also to avoid
@@ -812,7 +812,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:flags
+	 * CamelMessageInfo:flags:
 	 *
 	 * Bit-or of #CamelMessageFlags.
 	 *
@@ -832,7 +832,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:user-flags
+	 * CamelMessageInfo:user-flags:
 	 *
 	 * User flags for the associated message. Can be %NULL.
 	 * Unlike user-tags, which can contain various values, the user-flags
@@ -853,7 +853,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:user-tags
+	 * CamelMessageInfo:user-tags:
 	 *
 	 * User tags for the associated message. Can be %NULL.
 	 * Unlike user-flags, which can be set or not, the user-tags
@@ -874,7 +874,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:subject
+	 * CamelMessageInfo:subject:
 	 *
 	 * Subject of the associated message.
 	 *
@@ -893,7 +893,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:from
+	 * CamelMessageInfo:from:
 	 *
 	 * From address of the associated message.
 	 *
@@ -912,7 +912,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:to
+	 * CamelMessageInfo:to:
 	 *
 	 * To address of the associated message.
 	 *
@@ -931,7 +931,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:cc
+	 * CamelMessageInfo:cc:
 	 *
 	 * CC address of the associated message.
 	 *
@@ -950,7 +950,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:mlist
+	 * CamelMessageInfo:mlist:
 	 *
 	 * Mailing list address of the associated message.
 	 *
@@ -969,7 +969,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:size
+	 * CamelMessageInfo:size:
 	 *
 	 * Size of the associated message.
 	 *
@@ -988,7 +988,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:date-sent
+	 * CamelMessageInfo:date-sent:
 	 *
 	 * Sent Date of the associated message.
 	 *
@@ -1007,7 +1007,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:date-received
+	 * CamelMessageInfo:date-received:
 	 *
 	 * Received date of the associated message.
 	 *
@@ -1026,7 +1026,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:message-id
+	 * CamelMessageInfo:message-id:
 	 *
 	 * Encoded Message-ID of the associated message as a guint64 number,
 	 * partial MD5 sum. The value can be cast to #CamelSummaryMessageID.
@@ -1046,7 +1046,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:references
+	 * CamelMessageInfo:references:
 	 *
 	 * Encoded In-Reply-To and References headers of the associated message
 	 * as an array of guint64 numbers, partial MD5 sums. Each value can be
@@ -1067,7 +1067,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:headers
+	 * CamelMessageInfo:headers:
 	 *
 	 * Headers of the associated message. Can be %NULL.
 	 *
@@ -1086,7 +1086,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:user-headers
+	 * CamelMessageInfo:user-headers:
 	 *
 	 * User-defined headers of the associated message. Can be %NULL.
 	 *
@@ -1105,7 +1105,7 @@ camel_message_info_class_init (CamelMessageInfoClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * CamelMessageInfo:preview
+	 * CamelMessageInfo:preview:
 	 *
 	 * Body preview of the associated message. Can be %NULL.
 	 *
@@ -1295,8 +1295,9 @@ camel_message_info_save (const CamelMessageInfo *mi,
  * camel_message_info_ref_summary:
  * @mi: a #CamelMessageInfo
  *
- * Returns: (transfer full): Referenced #CamelFolderSummary to which the @mi belongs, or %NULL,
- * if there is none. Use g_object_unref() for non-NULL returned values when done with it.
+ * Returns: (transfer full) (nullable): Referenced #CamelFolderSummary to which
+ * the @mi belongs, or %NULL, if there is none. Use g_object_unref() for
+ * non-NULL returned values when done with it.
  *
  * Since: 3.24
  **/
@@ -1978,9 +1979,9 @@ camel_message_info_get_user_flags (const CamelMessageInfo *mi)
  * camel_message_info_dup_user_flags:
  * @mi: a #CamelMessageInfo
  *
- * Returns: (transfer full): A newly allocated #CamelNamedFlags with all the currently set
- *   user flags on the @mi. Free the returned structure with camel_named_flags_free()
- *   when no londer needed.
+ * Returns: (transfer full) (nullable): A newly allocated #CamelNamedFlags with
+ *   all the currently set user flags on the @mi. Free the returned structure
+ *   with camel_named_flags_free() when no londer needed.
  *
  * Since: 3.24
  **/

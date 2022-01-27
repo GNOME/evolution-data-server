@@ -5799,7 +5799,7 @@ ebsql_do_search_query (EBookSqlite *ebsql,
 
 /* ebsql_search_query:
  * @ebsql: An EBookSqlite
- * @sexp: The search expression, or NULL for all contacts
+ * @sexp: (nullable): The search expression, or %NULL for all contacts
  * @search_type: Indicates what kind of data should be returned
  * @return_data: A list of data fetched from the DB, as specified by 'search_type'
  * @error: Location to store any error which may have occurred
@@ -6617,7 +6617,7 @@ e_book_sqlite_new (const gchar *path,
 /**
  * e_book_sqlite_new_full:
  * @path: location to load or create the new database
- * @source: an optional #ESource, associated with the #EBookSqlite, or %NULL
+ * @source: (nullable): an optional #ESource, associated with the #EBookSqlite, or %NULL
  * @setup: (nullable): an #ESourceBackendSummarySetup describing how the summary should be setup, or %NULL to use the default
  * @vcard_callback: (nullable) (scope async) (closure user_data): A function to resolve vcards
  * @change_callback: (nullable) (scope async) (closure user_data): A function to catch notifications of vcard changes
@@ -6651,7 +6651,8 @@ e_book_sqlite_new (const gchar *path,
  * if at all possible, however in some cases the vcards must be stored in some
  * other storage.
  *
- * Returns: (transfer full): The newly created #EBookSqlite, or %NULL if opening or creating the addressbook failed.
+ * Returns: (transfer full) (nullable): The newly created #EBookSqlite, or %NULL if
+ * opening or creating the addressbook failed.
  *
  * Since: 3.12
  **/
@@ -6907,8 +6908,8 @@ e_book_sqlite_ref_collator (EBookSqlite *ebsql)
  * use g_object_unref() when finished using the source.
  * It can be %NULL in some cases, like when running tests.
  *
- * Returns: (transfer full): A reference to the #ESource to which @ebsql
- * is paired, or %NULL.
+ * Returns: (transfer full) (nullable): A reference to the #ESource to which
+ * @ebsql is paired, or %NULL.
  *
  * Since: 3.16
 */
@@ -7927,7 +7928,7 @@ e_book_sqlite_get_locale (EBookSqlite *ebsql,
 /**
  * e_book_sqlite_cursor_new: (skip)
  * @ebsql: An #EBookSqlite
- * @sexp: search expression; use NULL or an empty string to get all stored contacts.
+ * @sexp: (nullable): search expression; use %NULL or an empty string to get all stored contacts.
  * @sort_fields: (array length=n_sort_fields): An array of #EContactFields as sort keys in order of priority
  * @sort_types: (array length=n_sort_fields): An array of #EBookCursorSortTypes, one for each field in @sort_fields
  * @n_sort_fields: The number of fields to sort results by.

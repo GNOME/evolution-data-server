@@ -383,7 +383,7 @@ e_gdata_oauth2_authorizer_supported (void)
  * and @service_type. The function always returns %NULL when
  * e_gdata_oauth2_authorizer_supported() returns %FALSE.
  *
- * Returns: (transfer full): a new #EGDataOAuth2Authorizer, or %NULL when
+ * Returns: (transfer full) (nullable): a new #EGDataOAuth2Authorizer, or %NULL when
  *    the #EGDataOAuth2Authorizer is not supported.
  *
  * Since: 3.28
@@ -408,7 +408,7 @@ e_gdata_oauth2_authorizer_new (ESource *source,
  * e_gdata_oauth2_authorizer_ref_source:
  * @oauth2_authorizer: an #EGDataOAuth2Authorizer
  *
- * Returns: (transfer full): an #ESource, for which the @oauth2_authorizer
+ * Returns: (transfer full) (nullable): an #ESource, for which the @oauth2_authorizer
  *    had been created, or %NULL. Free returned non-NULL object with g_object_unref(),
  *    when done with it.
  *

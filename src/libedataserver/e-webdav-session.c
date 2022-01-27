@@ -116,7 +116,7 @@ e_webdav_resource_new (EWebDAVResourceKind kind,
  * e_webdav_resource_copy:
  * @src: (nullable): an #EWebDAVResource to make a copy of
  *
- * Returns: (transfer full): A new #EWebDAVResource prefilled with
+ * Returns: (transfer full) (nullable): A new #EWebDAVResource prefilled with
  *    the same values as @src, or %NULL, when @src is %NULL.
  *    Free it with e_webdav_resource_free(), when no longer needed.
  *
@@ -240,8 +240,8 @@ e_webdav_property_change_new_remove (const gchar *ns_uri,
  * e_webdav_property_change_copy:
  * @src: (nullable): an #EWebDAVPropertyChange to make a copy of
  *
- * Returns: (transfer full): A new #EWebDAVPropertyChange prefilled with
- *    the same values as @src, or %NULL, when @src is %NULL.
+ * Returns: (transfer full) (nullable): A new #EWebDAVPropertyChange prefilled
+ *    with the same values as @src, or %NULL, when @src is %NULL.
  *    Free it with e_webdav_property_change_free(), when no longer needed.
  *
  * Since: 3.26
@@ -410,7 +410,7 @@ e_webdav_privilege_new (const gchar *ns_uri,
  * e_webdav_privilege_copy:
  * @src: (nullable): an #EWebDAVPrivilege to make a copy of
  *
- * Returns: (transfer full): A new #EWebDAVPrivilege prefilled with
+ * Returns: (transfer full) (nullable): A new #EWebDAVPrivilege prefilled with
  *    the same values as @src, or %NULL, when @src is %NULL.
  *    Free it with e_webdav_privilege_free(), when no longer needed.
  *
@@ -504,8 +504,8 @@ e_webdav_access_control_entry_new (EWebDAVACEPrincipalKind principal_kind,
  * e_webdav_access_control_entry_copy:
  * @src: (nullable): an #EWebDAVAccessControlEntry to make a copy of
  *
- * Returns: (transfer full): A new #EWebDAVAccessControlEntry prefilled with
- *    the same values as @src, or %NULL, when @src is %NULL.
+ * Returns: (transfer full) (nullable): A new #EWebDAVAccessControlEntry
+ *    prefilled with the same values as @src, or %NULL, when @src is %NULL.
  *    Free it with e_webdav_access_control_entry_free(), when no longer needed.
  *
  * Since: 3.26
@@ -659,8 +659,8 @@ e_webdav_session_new (ESource *source)
  *
  * The string is valid until the next request is executed.
  *
- * Returns: (transfer none): a DAV error from the last request, or %NULL, when
- *    no error had been recognized.
+ * Returns: (transfer none) (nullable): a DAV error from the last request,
+ *    or %NULL, when no error had been recognized.
  *
  * Since: 3.36
  **/

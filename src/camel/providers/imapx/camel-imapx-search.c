@@ -680,7 +680,7 @@ camel_imapx_search_new (CamelIMAPXStore *imapx_store)
  * The returned #CamelIMAPXStore is referenced for thread-safety and
  * must be unreferenced with g_object_unref() when finished with it.
  *
- * Returns: a #CamelIMAPXStore, or %NULL
+ * Returns: (nullable): a #CamelIMAPXStore, or %NULL
  *
  * Since: 3.8
  **/
@@ -721,7 +721,7 @@ camel_imapx_search_ref_store (CamelIMAPXSearch *search)
 /**
  * camel_imapx_search_set_store:
  * @search: a #CamelIMAPXSearch
- * @imapx_store: a #CamelIMAPXStore, or %NULL
+ * @imapx_store: (nullable): a #CamelIMAPXStore, or %NULL
  *
  * Sets a #CamelIMAPXStore to use for server-side searches. Generally
  * this is set for the duration of a single search when online, and then

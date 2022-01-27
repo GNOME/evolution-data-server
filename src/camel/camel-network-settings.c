@@ -104,7 +104,7 @@ camel_network_settings_default_init (CamelNetworkSettingsInterface *iface)
  * Returns the mechanism name used to authenticate to a network service.
  * Often this refers to a SASL mechanism such as "LOGIN" or "GSSAPI".
  *
- * Returns: the authentication mechanism name
+ * Returns: (nullable): the authentication mechanism name
  *
  * Since: 3.4
  **/
@@ -125,7 +125,7 @@ camel_network_settings_get_auth_mechanism (CamelNetworkSettings *settings)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #CamelNetworkSettings:auth-mechanism
+ * Returns: (nullable): a newly-allocated copy of #CamelNetworkSettings:auth-mechanism
  *
  * Since: 3.4
  **/
@@ -150,7 +150,7 @@ camel_network_settings_dup_auth_mechanism (CamelNetworkSettings *settings)
 /**
  * camel_network_settings_set_auth_mechanism:
  * @settings: a #CamelNetworkSettings
- * @auth_mechanism: an authentication mechanism name, or %NULL
+ * @auth_mechanism: (nullable): an authentication mechanism name, or %NULL
  *
  * Sets the mechanism name used to authenticate to a network service.
  * Often this refers to a SASL mechanism such as "LOGIN" or "GSSAPI".
@@ -271,7 +271,7 @@ camel_network_settings_dup_host_ensure_ascii (CamelNetworkSettings *settings)
 /**
  * camel_network_settings_set_host:
  * @settings: a #CamelNetworkSettings
- * @host: a host name, or %NULL
+ * @host: (nullable): a host name, or %NULL
  *
  * Sets the host name used to authenticate to a network service.  The
  * #CamelNetworkSettings:host property is automatically stripped of
@@ -452,7 +452,7 @@ camel_network_settings_dup_user (CamelNetworkSettings *settings)
 /**
  * camel_network_settings_set_user:
  * @settings: a #CamelNetworkSettings
- * @user: a user name, or %NULL
+ * @user: (nullable): a user name, or %NULL
  *
  * Sets the user name used to authenticate to a network service.  The
  * #CamelNetworkSettings:user property is automatically stripped of

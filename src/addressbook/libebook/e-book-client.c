@@ -1338,7 +1338,8 @@ e_book_client_init (EBookClient *client)
  * function will have a descriptive prefix that includes the display
  * name of @source.
  *
- * Returns: (transfer full) (type EBookClient): a new #EBookClient, or %NULL
+ * Returns: (transfer full) (type EBookClient) (nullable): a new #EBookClient,
+ * or %NULL
  *
  * Since: 3.8
  **/
@@ -1587,7 +1588,8 @@ e_book_client_connect (ESource *source,
  * function will have a descriptive prefix that includes the display
  * name of the #ESource passed to e_book_client_connect().
  *
- * Returns: (transfer full) (type EBookClient): a new #EBookClient, or %NULL
+ * Returns: (transfer full) (type EBookClient) (nullable): a new #EBookClient,
+ * or %NULL
  *
  * Since: 3.8
  **/
@@ -1717,7 +1719,7 @@ connect_direct (EBookClient *client,
  * Like e_book_client_connect_sync(), except creates the book client for
  * direct read access to the underlying addressbook.
  *
- * Returns: (transfer full) (type EBookClient): a new but unopened #EBookClient.
+ * Returns: (transfer full) (type EBookClient) (nullable): a new but unopened #EBookClient.
  *
  * Since: 3.8
  **/
@@ -1863,7 +1865,8 @@ e_book_client_connect_direct (ESource *source,
  * function will have a descriptive prefix that includes the display
  * name of the #ESource passed to e_book_client_connect_direct().
  *
- * Returns: (transfer full) (type EBookClient): a new #EBookClient, or %NULL
+ * Returns: (transfer full) (type EBookClient) (nullable): a new #EBookClient,
+ * or %NULL
  *
  * Since: 3.12
  **/

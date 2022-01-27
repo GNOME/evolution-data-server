@@ -1210,7 +1210,7 @@ camel_service_get_connection_status (CamelService *service)
  * Compare this with camel_service_get_name(), which returns a built-in
  * description of the type of service (IMAP, SMTP, etc.).
  *
- * Returns: the display name for @service, or %NULL
+ * Returns: (nullable): the display name for @service, or %NULL
  *
  * Since: 3.2
  **/
@@ -1231,7 +1231,7 @@ camel_service_get_display_name (CamelService *service)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #CamelService:display-name
+ * Returns: (nullable): a newly-allocated copy of #CamelService:display-name
  *
  * Since: 3.12
  **/
@@ -1256,7 +1256,7 @@ camel_service_dup_display_name (CamelService *service)
 /**
  * camel_service_set_display_name:
  * @service: a #CamelService
- * @display_name: a valid UTF-8 string, or %NULL
+ * @display_name: (nullable): a valid UTF-8 string, or %NULL
  *
  * Assigns a UTF-8 display name to @service.  The display name is intended
  * for use in a user interface and should generally be given a user-defined
@@ -1469,7 +1469,7 @@ camel_service_get_provider (CamelService *service)
  * The returned #GProxyResolver is referenced for thread-safety and must
  * be unreferenced with g_object_unref() when finished with it.
  *
- * Returns: (transfer full): a #GProxyResolver, or %NULL
+ * Returns: (transfer full) (nullable): a #GProxyResolver, or %NULL
  *
  * Since: 3.12
  **/
@@ -1493,7 +1493,7 @@ camel_service_ref_proxy_resolver (CamelService *service)
 /**
  * camel_service_set_proxy_resolver:
  * @service: a #CamelService
- * @proxy_resolver: a #GProxyResolver, or %NULL for the default
+ * @proxy_resolver: (nullable): a #GProxyResolver, or %NULL for the default
  *
  * Sets the #GProxyResolver for @service.  If an application needs to
  * override this, it should do so prior to calling functions on @service
@@ -1591,7 +1591,7 @@ camel_service_ref_settings (CamelService *service)
 /**
  * camel_service_set_settings:
  * @service: a #CamelService
- * @settings: an instance derviced from #CamelSettings, or %NULL
+ * @settings: (nullable): an instance derviced from #CamelSettings, or %NULL
  *
  * Associates a new #CamelSettings instance with the service.
  * The @settings instance must match the settings type defined in

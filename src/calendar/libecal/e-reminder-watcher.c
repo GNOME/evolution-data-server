@@ -518,8 +518,8 @@ e_reminder_data_new (const gchar *source_uid,
  *
  * Copies given #EReminderData structure. When the @rd is %NULL, simply returns %NULL as well.
  *
- * Returns: (transfer full): copy of @rd. Free the returned structure
- *    with e_reminder_data_free() when no longer needed.
+ * Returns: (transfer full) (nullable): copy of @rd. Free the returned
+ *    structure with e_reminder_data_free() when no longer needed.
  *
  * Since: 3.30
  **/

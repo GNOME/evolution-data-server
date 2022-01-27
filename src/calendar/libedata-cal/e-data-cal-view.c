@@ -1060,9 +1060,10 @@ e_data_cal_view_is_completed (EDataCalView *view)
  * e_data_cal_view_get_fields_of_interest:
  * @view: an #EDataCalView
  *
- * Returns: (transfer none): Hash table of field names which the listener is interested in.
- * Backends can return fully populated objects, but the listener advertised
- * that it will use only these. Returns %NULL for all available fields.
+ * Returns: (transfer none) (nullable): Hash table of field names which the
+ * listener is interested in. Backends can return fully populated objects, but
+ * the listener advertised that it will use only these. Returns %NULL for all
+ * available fields.
  *
  * Note: The data pointer in the hash table has no special meaning, it's
  * only GINT_TO_POINTER(1) for easier checking. Also, field names are

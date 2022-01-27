@@ -831,8 +831,9 @@ static struct {
  * Converts a search expression to an SQL 'WHERE' part statement,
  * without the 'WHERE' keyword.
  *
- * Returns: (transfer full): a newly allocated string, an SQL 'WHERE' part statement,
- *    or %NULL, when could not convert it. Free it with g_free(), when done with it.
+ * Returns: (transfer full) (nullable): a newly allocated string, an SQL
+ *    'WHERE' part statement, or %NULL, when could not convert it. Free it with
+ *    g_free(), when done with it.
  *
  * Since: 2.26
  **/

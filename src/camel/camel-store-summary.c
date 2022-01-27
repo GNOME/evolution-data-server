@@ -400,7 +400,7 @@ camel_store_summary_array_free (CamelStoreSummary *summary,
  * The returned #CamelStoreInfo is referenced for thread-safety and should be
  * unreferenced with camel_store_summary_info_unref() when finished with it.
  *
- * Returns: the summary item, or %NULL if the @path name is not
+ * Returns: (nullable): the summary item, or %NULL if the @path name is not
  * available
  **/
 CamelStoreInfo *

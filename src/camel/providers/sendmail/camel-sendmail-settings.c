@@ -312,7 +312,7 @@ camel_sendmail_settings_set_use_custom_args (CamelSendmailSettings *settings,
  *
  * Returns the custom binary to run, instead of sendmail.
  *
- * Returns: the custom binary to run, instead of sendmail, or %NULL
+ * Returns: (nullable): the custom binary to run, instead of sendmail, or %NULL
  *
  * Since: 3.8
  **/
@@ -333,7 +333,7 @@ camel_sendmail_settings_get_custom_binary (CamelSendmailSettings *settings)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #CamelSendmailSettings:custom-binary
+ * Returns: (nullable): a newly-allocated copy of #CamelSendmailSettings:custom-binary
  *
  * Since: 3.8
  **/
@@ -358,7 +358,7 @@ camel_sendmail_settings_dup_custom_binary (CamelSendmailSettings *settings)
 /**
  * camel_sendmail_settings_set_custom_binary:
  * @settings: a #CamelSendmailSettings
- * @custom_binary: a custom binary name, or %NULL
+ * @custom_binary: (nullable): a custom binary name, or %NULL
  *
  * Sets the custom binary name to run, instead of sendmail.
  *
@@ -395,7 +395,8 @@ camel_sendmail_settings_set_custom_binary (CamelSendmailSettings *settings,
  *
  * Returns the custom arguments to use, instead of default arguments.
  *
- * Returns: the custom arguments to use, instead of default arguments, or %NULL
+ * Returns: (nullable): the custom arguments to use, instead of default
+ * arguments, or %NULL
  *
  * Since: 3.8
  **/
@@ -416,7 +417,7 @@ camel_sendmail_settings_get_custom_args (CamelSendmailSettings *settings)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #CamelSendmailSettings:custom-args
+ * Returns: (nullable): a newly-allocated copy of #CamelSendmailSettings:custom-args
  *
  * Since: 3.8
  **/
@@ -441,7 +442,7 @@ camel_sendmail_settings_dup_custom_args (CamelSendmailSettings *settings)
 /**
  * camel_sendmail_settings_set_custom_args:
  * @settings: a #CamelSendmailSettings
- * @custom_args: a custom arguments, or %NULL
+ * @custom_args: (nullable): a custom arguments, or %NULL
  *
  * Sets the custom arguments to use, instead of default arguments.
  *

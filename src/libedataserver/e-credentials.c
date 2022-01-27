@@ -301,7 +301,7 @@ decode_string (const gchar *encoded)
  * e_credentials_set:
  * @credentials: an #ECredentials
  * @key: a key string
- * @value: a value string
+ * @value: (nullable): a value string
  *
  * Sets value for @key, if @value is %NULL or an empty string then @key is
  * removed.  The value is supposed to be in a clear form (unencoded).

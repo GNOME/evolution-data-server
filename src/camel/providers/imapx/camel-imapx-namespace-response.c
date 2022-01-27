@@ -196,7 +196,7 @@ repeat:
  * successful, stores the response data in a new #CamelIMAPXNamespaceResponse.
  * If an error occurs, the function sets @error and returns %NULL.
  *
- * Returns: a #CamelIMAPXNamespaceResponse, or %NULL
+ * Returns: (nullable): a #CamelIMAPXNamespaceResponse, or %NULL
  *
  * Since: 3.12
  **/
@@ -380,7 +380,7 @@ camel_imapx_namespace_response_remove (CamelIMAPXNamespaceResponse *response,
  * The returned #CamelIMAPXNamespace is referenced for thread-safety and
  * should be unreferenced with g_object_unref() when finished with it.
  *
- * Returns: a #CamelIMAPXNamespace, or %NULL
+ * Returns: (nullable): a #CamelIMAPXNamespace, or %NULL
  *
  * Since: 3.12
  **/
@@ -507,7 +507,7 @@ imapx_namespace_response_rank_candidates (gconstpointer a,
  * The returned #CamelIMAPXNamespace is referenced for thread-safety and
  * should be unreferenced with g_object_unref() when finished with it.
  *
- * Returns: a #CamelIMAPXNamespace, or %NULL
+ * Returns: (nullable): a #CamelIMAPXNamespace, or %NULL
  *
  * Since: 3.12
  **/

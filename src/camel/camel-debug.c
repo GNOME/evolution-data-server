@@ -800,7 +800,7 @@ camel_pointer_tracker_dump (void)
  *
  * Gets current backtrace leading to this function call and demangles it.
  *
- * Returns: Current backtrace, or %NULL, if cannot determine it.
+ * Returns: (nullable): Current backtrace, or %NULL, if cannot determine it.
  *
  * Note: Getting backtraces only works if the library was
  * configured with --enable-backtraces.
@@ -833,7 +833,7 @@ camel_debug_get_backtrace (void)
  * with actual function calls and eventually line numbers, if
  * available) call camel_debug_demangle_backtrace().
  *
- * Returns: Current raw backtrace, or %NULL, if cannot determine it.
+ * Returns: (nullable): Current raw backtrace, or %NULL, if cannot determine it.
  *
  * Note: Getting backtraces only works if the library was
  * configured with --enable-backtraces.

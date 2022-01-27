@@ -1268,7 +1268,8 @@ e_data_factory_init (EDataFactory *data_factory)
  * Unreference the #EBackendFactory with g_object_unref() when finished
  * with it.
  *
- * Returns: (transfer full): the #EBackendFactory for @hash_key, or %NULL
+ * Returns: (transfer full) (nullable): the #EBackendFactory for @hash_key,
+ *    or %NULL
  *
  * Since: 3.6
  **/
@@ -1738,7 +1739,7 @@ e_data_factory_use_backend_per_process (EDataFactory *data_factory)
  * Free the returned pointer with g_object_unref(), if not NULL and no longer
  * needed.
  *
- * Returns: (transfer full): a newly-created #EBackend
+ * Returns: (transfer full) (nullable): a newly-created #EBackend
  **/
 EBackend *
 e_data_factory_create_backend (EDataFactory *data_factory,

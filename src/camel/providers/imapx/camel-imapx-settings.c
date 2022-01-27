@@ -1202,7 +1202,7 @@ camel_imapx_settings_set_filter_junk_inbox (CamelIMAPXSettings *settings,
  *
  * Returns the custom IMAP namespace in which to find folders.
  *
- * Returns: the custom IMAP namespace, or %NULL
+ * Returns: (nullable): the custom IMAP namespace, or %NULL
  *
  * Since: 3.2
  **/
@@ -1223,7 +1223,7 @@ camel_imapx_settings_get_namespace (CamelIMAPXSettings *settings)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #CamelIMAPXSettings:namespace
+ * Returns: (nullable): a newly-allocated copy of #CamelIMAPXSettings:namespace
  *
  * Since: 3.4
  **/
@@ -1248,7 +1248,7 @@ camel_imapx_settings_dup_namespace (CamelIMAPXSettings *settings)
 /**
  * camel_imapx_settings_set_namespace:
  * @settings: a #CamelIMAPXSettings
- * @namespace_: an IMAP namespace, or %NULL
+ * @namespace_: (nullable): an IMAP namespace, or %NULL
  *
  * Sets the custom IMAP namespace in which to find folders.  If @namespace_
  * is %NULL, the default namespace is used.
@@ -1287,7 +1287,7 @@ camel_imapx_settings_set_namespace (CamelIMAPXSettings *settings,
  * Returns the path to a real, non-virtual Junk folder to be used instead
  * of Camel's standard virtual Junk folder.
  *
- * Returns: path to a real junk folder
+ * Returns: (nullable): path to a real junk folder
  *
  * Since: 3.8
  **/
@@ -1308,7 +1308,7 @@ camel_imapx_settings_get_real_junk_path (CamelIMAPXSettings *settings)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #CamelIMAPXSettings:real-junk-path
+ * Returns: (nullable): a newly-allocated copy of #CamelIMAPXSettings:real-junk-path
  *
  * Since: 3.8
  **/
@@ -1333,7 +1333,7 @@ camel_imapx_settings_dup_real_junk_path (CamelIMAPXSettings *settings)
 /**
  * camel_imapx_settings_set_real_junk_path:
  * @settings: a #CamelIMAPXSettings
- * @real_junk_path: path to a real Junk folder, or %NULL
+ * @real_junk_path: (nullable): path to a real Junk folder, or %NULL
  *
  * Sets the path to a real, non-virtual Junk folder to be used instead of
  * Camel's standard virtual Junk folder.
@@ -1367,7 +1367,7 @@ camel_imapx_settings_set_real_junk_path (CamelIMAPXSettings *settings,
  * Returns the path to a real, non-virtual Trash folder to be used instead
  * of Camel's standard virtual Trash folder.
  *
- * Returns: path to a real Trash folder
+ * Returns: (nullable): path to a real Trash folder
  *
  * Since: 3.8
  **/
@@ -1388,7 +1388,7 @@ camel_imapx_settings_get_real_trash_path (CamelIMAPXSettings *settings)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #CamelIMAPXsettings:real-trash-path
+ * Returns: (nullable): a newly-allocated copy of #CamelIMAPXsettings:real-trash-path
  *
  * Since: 3.8
  **/
@@ -1413,7 +1413,7 @@ camel_imapx_settings_dup_real_trash_path (CamelIMAPXSettings *settings)
 /**
  * camel_imapx_settings_set_real_trash_path:
  * @settings: a #CamelIMAPXSettings
- * @real_trash_path: path to a real Trash folder, or %NULL
+ * @real_trash_path: (nullable): path to a real Trash folder, or %NULL
  *
  * Sets the path to a real, non-virtual Trash folder to be used instead of
  * Camel's standard virtual Trash folder.
@@ -1453,7 +1453,7 @@ camel_imapx_settings_set_real_trash_path (CamelIMAPXSettings *settings,
  * this option menas or how to use it.  Probably not worth exposing in a
  * graphical interface.
  *
- * Returns: shell command for connecting to the server, or %NULL
+ * Returns: (nullable): shell command for connecting to the server, or %NULL
  *
  * Since: 3.2
  **/
@@ -1474,7 +1474,7 @@ camel_imapx_settings_get_shell_command (CamelIMAPXSettings *settings)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #CamelIMAPXSettings:shell-command
+ * Returns: (nullable): a newly-allocated copy of #CamelIMAPXSettings:shell-command
  *
  * Since: 3.4
  **/
@@ -1499,7 +1499,7 @@ camel_imapx_settings_dup_shell_command (CamelIMAPXSettings *settings)
 /**
  * camel_imapx_settings_set_shell_command:
  * @settings: a #CamelIMAPXSettings
- * @shell_command: shell command for connecting to the server, or %NULL
+ * @shell_command: (nullable): shell command for connecting to the server, or %NULL
  *
  * Sets an optional shell command used to establish an input/output stream
  * with an IMAP server.  Normally the input/output stream is established

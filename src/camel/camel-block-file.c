@@ -352,7 +352,7 @@ block_file_unuse (CamelBlockFile *bs)
  *
  * @block_size is currently ignored and is set to CAMEL_BLOCK_SIZE.
  *
- * Returns: The new block file, or NULL if it could not be created.
+ * Returns: (nullable): The new block file, or %NULL if it could not be created.
  **/
 CamelBlockFile *
 camel_block_file_new (const gchar *path,
@@ -553,7 +553,7 @@ camel_block_file_delete (CamelBlockFile *bs)
  * Allocate a new block, return a pointer to it.  Old blocks
  * may be flushed to disk during this call.
  *
- * Returns: The block, or NULL if an error occurred.
+ * Returns: (nullable): The block, or %NULL if an error occurred.
  **/
 CamelBlock *
 camel_block_file_new_block (CamelBlockFile *bs)
@@ -625,8 +625,8 @@ camel_block_file_free_block (CamelBlockFile *bs,
  *
  * Retreive a block @id.
  *
- * Returns: The block, or NULL if blockid is invalid or a file error
- * occurred.
+ * Returns: (nullable): The block, or %NULL if blockid is invalid or a file
+ *    error occurred.
  **/
 CamelBlock *
 camel_block_file_get_block (CamelBlockFile *bs,
@@ -1116,8 +1116,8 @@ key_file_unuse (CamelKeyFile *kf)
  *
  * Create a new key file.  A linked list of record blocks.
  *
- * Returns: A new key file, or NULL if the file could not
- * be opened/created/initialised.
+ * Returns: (nullable): A new key file, or %NULL if the file could not
+ *    be opened/created/initialised.
  **/
 CamelKeyFile *
 camel_key_file_new (const gchar *path,

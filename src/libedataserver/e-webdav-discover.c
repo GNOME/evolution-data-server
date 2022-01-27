@@ -1100,7 +1100,7 @@ e_webdav_discovered_source_copy (EWebDAVDiscoveredSource *discovered_source)
 
 /**
  * e_webdav_discovered_source_free:
- * @discovered_source: an #EWebDAVDiscoveredSource to free
+ * @discovered_source: (nullable): an #EWebDAVDiscoveredSource to free
  *
  * Frees the @discovered_source. Function does nothing, when it's %NULL.
  *

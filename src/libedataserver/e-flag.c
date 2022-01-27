@@ -141,7 +141,7 @@ e_flag_wait (EFlag *flag)
 /**
  * e_flag_timed_wait: (skip)
  * @flag: an #EFlag
- * @abs_time: a #GTimeVal, determining the final time
+ * @abs_time: (nullable): a #GTimeVal, determining the final time
  *
  * Blocks until @flag is set, or until the time specified by @abs_time.
  * If @flag is already set, the function returns immediately.  The return

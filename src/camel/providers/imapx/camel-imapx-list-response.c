@@ -292,7 +292,7 @@ imapx_list_response_parse_extended_item (CamelIMAPXInputStream *stream,
  * stores the response data in a new #CamelIMAPXListResponse.  If an error
  * occurs, the function sets @error and returns %NULL.
  *
- * Returns: a #CamelIMAPXListResponse, or %NULL
+ * Returns: (nullable): a #CamelIMAPXListResponse, or %NULL
  *
  * Since: 3.10
  **/
@@ -783,7 +783,7 @@ camel_imapx_list_response_dup_attributes (CamelIMAPXListResponse *response)
  * The returned #GVariant is referenced for thread-safety and should
  * be unreferenced with g_variant_unref() when finished with it.
  *
- * Returns: a #GVariant, or %NULL
+ * Returns: (nullable): a #GVariant, or %NULL
  *
  * Since: 3.10
  **/
@@ -815,7 +815,7 @@ camel_imapx_list_response_ref_extended_item (CamelIMAPXListResponse *response,
  * renamed.  See <ulink url="http://tools.ietf.org/html/rfc5465#section-5.4">
  * RFC 5465 Section 5.4</ulink> for further details.
  *
- * Returns: the old mailbox name, or %NULL
+ * Returns: (nullable): the old mailbox name, or %NULL
  *
  * Since: 3.12
  **/

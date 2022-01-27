@@ -397,8 +397,8 @@ stripped_char (gunichar ch)
  * and @haystack are UTF-8 strings. Both strings are stripped and
  * decomposed for comparison, and case is ignored.
  *
- * Returns: A pointer to the first instance of @needle in @haystack, or
- *          %NULL if either of the strings are not legal UTF-8 strings.
+ * Returns: (nullable): A pointer to the first instance of @needle in @haystack,
+ *    or %NULL if either of the strings are not legal UTF-8 strings.
  **/
 const gchar *
 e_util_utf8_strstrcasedecomp (const gchar *haystack,
@@ -504,11 +504,11 @@ e_util_utf8_strcasecmp (const gchar *s1,
 
 /**
  * e_util_utf8_remove_accents:
- * @str: a UTF-8 string, or %NULL
+ * @str: (nullable): a UTF-8 string, or %NULL
  *
  * Returns a newly-allocated copy of @str with accents removed.
  *
- * Returns: a newly-allocated string
+ * Returns: (nullable): a newly-allocated string
  *
  * Since: 2.28
  **/
@@ -587,7 +587,7 @@ e_util_utf8_decompose (const gchar *text)
 
 /**
  * e_util_utf8_make_valid:
- * @str: a UTF-8 string
+ * @str: (nullable): a UTF-8 string
  *
  * Returns a newly-allocated copy of @str, with invalid characters
  * replaced by Unicode replacement characters (U+FFFD).
@@ -608,7 +608,7 @@ e_util_utf8_make_valid (const gchar *str)
 
 /**
  * e_util_utf8_data_make_valid:
- * @data: UTF-8 binary data
+ * @data: (nullable): UTF-8 binary data
  * @data_bytes: length of the binary data
  *
  * Returns a newly-allocated NULL-terminated string with invalid characters
@@ -698,7 +698,7 @@ e_util_utf8_normalize (const gchar *str)
 
 /**
  * e_util_ensure_gdbus_string:
- * @str: a possibly invalid UTF-8 string, or %NULL
+ * @str: (nullable): a possibly invalid UTF-8 string, or %NULL
  * @gdbus_str: return location for the corrected string
  *
  * If @str is a valid UTF-8 string, the function returns @str and does
@@ -953,7 +953,7 @@ e_filename_make_safe (gchar *string)
  * e_filename_mkdir_encoded:
  * @basepath: base path of a file name; this is left unchanged
  * @fileprefix: prefix for the filename; this is encoded
- * @filename: file name to use; this is encoded; can be %NULL
+ * @filename: (nullable): file name to use; this is encoded; can be %NULL
  * @fileindex: used when @filename is NULL, then the filename
  *        is generated as "file" + fileindex
  *
@@ -961,7 +961,7 @@ e_filename_make_safe (gchar *string)
  * and makes sure the path @basepath exists. If creation of
  * the path fails, then NULL is returned.
  *
- * Returns: Full local path like g_build_filename() except that @fileprefix
+ * Returns: (nullable): Full local path like g_build_filename() except that @fileprefix
  * and @filename are encoded to create a proper file elements for
  * a file system. Free returned pointer with g_free().
  *
@@ -1477,7 +1477,7 @@ e_binding_bind_property (gpointer source,
  *   from the @source to the @target, or %NULL to use the default
  * @transform_from: (scope notified) (nullable): the transformation function
  *   from the @target to the @source, or %NULL to use the default
- * @user_data: custom data to be passed to the transformation functions,
+ * @user_data: (nullable): custom data to be passed to the transformation functions,
  *   or %NULL
  * @notify: function to be called when disposing the binding, to free the
  *   resources used by the transformation functions
@@ -1872,7 +1872,8 @@ e_async_closure_free (EAsyncClosure *closure)
 
 /**
  * e_async_closure_callback: (skip)
- * @object: a #GObject or %NULL, it is not used by the function at all
+ * @object: (nullable): a #GObject or %NULL, it is not used by the function
+ *   at all
  * @result: a #GAsyncResult
  * @closure: an #EAsyncClosure
  *

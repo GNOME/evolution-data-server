@@ -798,7 +798,7 @@ e_soup_session_preset_request (SoupRequestHTTP *request)
  *
  * See also e_soup_session_new_request_uri().
  *
- * Returns: (transfer full): a new #SoupRequestHTTP, or %NULL on error
+ * Returns: (transfer full) (nullable): a new #SoupRequestHTTP, or %NULL on error
  *
  * Since: 3.26
  **/

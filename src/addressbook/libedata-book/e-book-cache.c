@@ -183,7 +183,7 @@ e_book_cache_search_data_new (const gchar *uid,
  * e_book_cache_search_data_copy:
  * @data: (nullable): a source #EBookCacheSearchData to copy, or %NULL
  *
- * Returns: (transfer full): Copy of the given @data. Free it with
+ * Returns: (transfer full) (nullable): Copy of the given @data. Free it with
  *    e_book_cache_search_data_free() when no longer needed.
  *    If the @data is %NULL, then returns %NULL as well.
  *
@@ -4706,8 +4706,8 @@ e_book_cache_new_full (const gchar *filename,
  * use g_object_unref() when no longer needed.
  * It can be %NULL in some cases, like when running tests.
  *
- * Returns: (transfer full): A reference to the #ESource to which @book_cache
- *    is paired, or %NULL.
+ * Returns: (transfer full) (nullable): A reference to the #ESource to which
+ *    @book_cache is paired, or %NULL.
  *
  * Since: 3.26
  **/
@@ -5632,7 +5632,7 @@ e_book_cache_contains_email (EBookCache *book_cache,
 /**
  * e_book_cache_cursor_new:
  * @book_cache: An #EBookCache
- * @sexp: search expression; use %NULL or an empty string to get all stored contacts
+ * @sexp: (nullable): search expression; use %NULL or an empty string to get all stored contacts
  * @sort_fields: (array length=n_sort_fields): An array of #EContactField(s) as sort keys in order of priority
  * @sort_types: (array length=n_sort_fields): An array of #EBookCursorSortTypes, one for each field in @sort_fields
  * @n_sort_fields: The number of fields to sort results by

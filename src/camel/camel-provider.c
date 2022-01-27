@@ -466,7 +466,7 @@ camel_provider_list (gboolean load)
  * The returned #CamelProvider is owned by Camel and should not be
  * modified or freed.
  *
- * Returns: a #CamelProvider for @protocol, or %NULL
+ * Returns: (nullable): a #CamelProvider for @protocol, or %NULL
  **/
 CamelProvider *
 camel_provider_get (const gchar *protocol,

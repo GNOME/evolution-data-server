@@ -172,7 +172,7 @@ e_phone_number_get_default_region (GError **error)
  * If the number is guaranteed to start with a '+' followed by the country
  * calling code, then "ZZ" can be passed for @region_code.
  *
- * Returns: (transfer full): a new EPhoneNumber instance on success,
+ * Returns: (transfer full) (nullable): a new EPhoneNumber instance on success,
  * or %NULL on error. Call e_phone_number_free() to release this instance.
  *
  * Since: 3.8

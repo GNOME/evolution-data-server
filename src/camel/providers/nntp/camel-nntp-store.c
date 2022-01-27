@@ -1874,7 +1874,7 @@ camel_nntp_store_ref_summary (CamelNNTPStore *nntp_store)
  * Returns the currently selected newsgroup name, or %NULL if no newsgroup
  * is selected.
  *
- * Returns: the currently selected newsgroup name, or %NULL
+ * Returns: (nullable): the currently selected newsgroup name, or %NULL
  **/
 const gchar *
 camel_nntp_store_get_current_group (CamelNNTPStore *nntp_store)
@@ -1893,7 +1893,7 @@ camel_nntp_store_get_current_group (CamelNNTPStore *nntp_store)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated string, or %NULL
+ * Returns: (nullable): a newly-allocated string, or %NULL
  **/
 gchar *
 camel_nntp_store_dup_current_group (CamelNNTPStore *nntp_store)
@@ -1916,7 +1916,7 @@ camel_nntp_store_dup_current_group (CamelNNTPStore *nntp_store)
 /**
  * camel_nntp_store_set_current_group:
  * @nntp_store: a #CamelNNTPStore
- * @current_group: a newsgroup name
+ * @current_group: (nullable): a newsgroup name
  *
  * Sets the name of the currently selected newsgroup.
  **/

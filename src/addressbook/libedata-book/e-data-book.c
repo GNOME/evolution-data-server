@@ -2063,7 +2063,7 @@ e_data_book_init (EDataBook *data_book)
  * method invocations and forwards them to the @backend.  If the AddressBook
  * interface fails to export, the function sets @error and returns %NULL.
  *
- * Returns: an #EDataBook, or %NULL on error
+ * Returns: (nullable): an #EDataBook, or %NULL on error
  **/
 EDataBook *
 e_data_book_new (EBookBackend *backend,

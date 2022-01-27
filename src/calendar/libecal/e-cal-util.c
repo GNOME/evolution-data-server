@@ -1945,7 +1945,8 @@ e_cal_util_is_first_instance (ECalComponent *comp,
  *
  * Fetches system timezone localtion string.
  *
- * Returns: (transfer full): system timezone location string, %NULL on an error.
+ * Returns: (transfer full) (nullable): system timezone location string, %NULL
+ * on an error.
  *
  * Since: 2.28
  **/

@@ -70,7 +70,7 @@ e_xml_initialize_in_main (void)
  * structure.  If the XML file cannot be read or its contents are malformed,
  * the function returns %NULL.
  *
- * Returns: (transfer full): an XML document structure, or %NULL
+ * Returns: (transfer full) (nullable): an XML document structure, or %NULL
  **/
 xmlDoc *
 e_xml_parse_file (const gchar *filename)

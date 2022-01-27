@@ -2520,7 +2520,7 @@ camel_content_type_set_param (CamelContentType *t,
 
 /**
  * camel_content_type_is:
- * @content_type: A content type specifier, or %NULL.
+ * @content_type: (nullable): A content type specifier, or %NULL.
  * @type: A type to check against.
  * @subtype: A subtype to check against, or "*" to match any subtype.
  *
@@ -4697,10 +4697,10 @@ camel_header_location_decode (const gchar *in)
 
 /**
  * camel_header_msgid_generate:
- * @domain: domain to use (like "example.com") for the ID suffix; can be NULL
+ * @domain: (nullable): domain to use (like "example.com") for the ID suffix; can be %NULL
  *
  * Either the @domain is used, or the user's local hostname,
- * in case it's NULL or empty.
+ * in case it's %NULL or empty.
  *
  * Returns: Unique message ID.
  **/

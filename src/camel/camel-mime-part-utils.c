@@ -180,7 +180,7 @@ camel_message_content_info_new (void)
  * camel_message_content_info_copy:
  * @src: (nullable): a source #CamelMessageContentInfo to copy
  *
- * Returns: a copy of @src, or %NULL, if @src was %NULL
+ * Returns: (nullable): a copy of @src, or %NULL, if @src was %NULL
  *
  * Since: 3.24
  **/

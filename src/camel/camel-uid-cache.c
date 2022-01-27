@@ -45,7 +45,7 @@ struct _uid_state {
  * doesn't already exist, the UID cache will be empty. Otherwise, if
  * it does exist but can't be read, the function will return %NULL.
  *
- * Returns: a new UID cache, or %NULL
+ * Returns: (nullable): a new UID cache, or %NULL
  **/
 CamelUIDCache *
 camel_uid_cache_new (const gchar *filename)

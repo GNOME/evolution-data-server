@@ -375,7 +375,7 @@ e_source_credentials_provider_unregister_impl (ESourceCredentialsProvider *provi
  *
  * Returns referenced #ESource with the given @uid, or %NULL, when it could not be found.
  *
- * Returns: (transfer full): Referenced #ESource with the given @uid, or %NULL, when it
+ * Returns: (transfer full) (nullable): Referenced #ESource with the given @uid, or %NULL, when it
  *    could not be found. Unref the returned #ESource with g_object_unref(), when no longer needed.
  *
  * Since: 3.16
@@ -407,8 +407,9 @@ e_source_credentials_provider_ref_source (ESourceCredentialsProvider *provider,
  * sources. When ther eis no such parent source, a %NULL is returned, which
  * means the @source holds credentials for itself.
  *
- * Returns: (transfer full): referenced parent #ESource, which holds credentials, or %NULL. Unref
- *    the returned non-NULL #ESource with g_object_unref(), when no longer needed.
+ * Returns: (transfer full) (nullable): referenced parent #ESource, which holds
+ *    credentials, or %NULL. Unref the returned non-NULL #ESource with
+ *    g_object_unref(), when no longer needed.
  *
  * Since: 3.16
  **/

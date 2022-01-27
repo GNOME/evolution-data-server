@@ -605,8 +605,8 @@ camel_vee_store_get_vee_data_cache (CamelVeeStore *vstore)
  * camel_vee_store_get_unmatched_folder:
  * @vstore: a #CamelVeeStore
  *
- * Returns: (transfer none): the Unmatched folder instance, or %NULL,
- *    when it's disabled.
+ * Returns: (transfer none) (nullable): the Unmatched folder instance,
+ *    or %NULL, when it's disabled.
  *
  * Since: 3.6
  **/

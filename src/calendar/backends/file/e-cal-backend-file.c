@@ -2936,10 +2936,10 @@ e_cal_backend_file_discard_alarm_sync (ECalBackendSync *backend,
  *         TODO: E_CAL_OBJ_MOD_ONLY_THIS
  * @uid    pointer to UID which must remain valid even if the object gets
  *         removed
- * @rid    NULL, "", or non-empty string when manipulating a specific recurrence;
- *         also must remain valid
- * @error  may be NULL if caller is not interested in errors
- * @return modified object or NULL if it got removed
+ * @rid:   (nullable): %NULL, "", or non-empty string when manipulating a
+ *         specific recurrence; also must remain valid
+ * @error  may be %NULL if caller is not interested in errors
+ * @return: (nullable): modified object or %NULL if it got removed
  */
 static ECalBackendFileObject *
 remove_instance (ECalBackendFile *cbfile,

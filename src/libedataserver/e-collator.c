@@ -463,7 +463,8 @@ e_collator_unref (ECollator *collator)
  *
  * This function will first ensure that @str is valid UTF-8 encoded.
  *
- * Returns: (transfer full): A collation key for @str, or %NULL on failure with @error set.
+ * Returns: (transfer full) (nullable): A collation key for @str, or
+ *    %NULL on failure with @error set.
  *
  * Since: 3.12
  */

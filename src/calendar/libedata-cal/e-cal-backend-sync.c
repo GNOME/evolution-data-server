@@ -110,8 +110,8 @@ e_cal_backend_sync_refresh (ECalBackendSync *backend,
  * @cal: An EDataCal object.
  * @cancellable: a #GCancellable for the operation
  * @uid: UID of the object to get.
- * @rid: Recurrence ID of the specific instance to get, or NULL if getting the
- * master object.
+ * @rid: (nullable): Recurrence ID of the specific instance to get, or %NULL if
+ *    getting the master object.
  * @calobj: (out) (transfer full): Placeholder for returned object.
  * @error: Out parameter for a #GError.
  *

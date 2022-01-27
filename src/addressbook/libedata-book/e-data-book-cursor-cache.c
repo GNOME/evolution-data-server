@@ -389,7 +389,7 @@ e_data_book_cursor_cache_init (EDataBookCursorCache *cache_cursor)
  * This is suitable cursor type for any backend which stores its contacts
  * using the #EBookCache object. The #EBookMetaBackend does that transparently.
  *
- * Returns: (transfer full): A newly created #EDataBookCursor, or %NULL if cursor creation failed.
+ * Returns: (transfer full) (nullable): A newly created #EDataBookCursor, or %NULL if cursor creation failed.
  *
  * Since: 3.26
  */

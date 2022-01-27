@@ -1991,7 +1991,7 @@ e_book_backend_remove_contacts_finish (EBookBackend *backend,
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
- * Returns: (transfer full): an #EContact, or %NULL
+ * Returns: (transfer full) (nullable): an #EContact, or %NULL
  *
  * Since: 3.10
  **/
@@ -2136,7 +2136,7 @@ e_book_backend_get_contact (EBookBackend *backend,
  *
  * If an error occurred, the function will set @error and return %NULL.
  *
- * Returns: (transfer full): an #EContact, or %NULL
+ * Returns: (transfer full) (nullable): an #EContact, or %NULL
  *
  * Since: 3.10
  **/
@@ -3406,8 +3406,8 @@ e_book_backend_prepare_for_completion (EBookBackend *backend,
  * The returned cursor belongs to @backend and should be destroyed
  * with e_book_backend_delete_cursor() when no longer needed.
  *
- * Returns: (transfer none): A newly created cursor, the cursor belongs
- * to the backend and should not be unreffed, or %NULL
+ * Returns: (transfer none) (nullable): A newly created cursor, the cursor
+ * belongs to the backend and should not be unreffed, or %NULL
  *
  * Since: 3.12
  */

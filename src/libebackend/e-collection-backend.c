@@ -1480,7 +1480,8 @@ e_collection_backend_get_cache_dir (ECollectionBackend *backend)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated resource ID for @child_source, or %NULL
+ * Returns: (nullable): a newly-allocated resource ID for @child_source,
+ *    or %NULL
  *
  * Since: 3.6
  **/
@@ -1545,7 +1546,8 @@ e_collection_backend_dup_resource_id (ECollectionBackend *backend,
  *   g_list_free_full (list, g_object_unref);
  * ]|
  *
- * Returns: (element-type ESource) (transfer full): a list of previously used sources
+ * Returns: (element-type ESource) (transfer full) (nullable): a list
+ *    of previously used sources
  *
  * Since: 3.6
  **/

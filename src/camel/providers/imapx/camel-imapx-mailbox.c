@@ -796,7 +796,7 @@ camel_imapx_mailbox_set_permanentflags (CamelIMAPXMailbox *mailbox,
  * The returned newly-allocated, %NULL-terminated string array should
  * be freed with g_strfreev() when finished with it.
  *
- * Returns: the last known "QUOTAROOT" value
+ * Returns: (nullable): the last known "QUOTAROOT" value
  *
  * Since: 3.12
  **/
@@ -920,7 +920,7 @@ camel_imapx_mailbox_take_message_map (CamelIMAPXMailbox *mailbox,
  * camel_imapx_mailbox_get_msn_for_uid:
  * @mailbox: a #CamelIMAPXMailbox
  * @uid: a message's unique identifier
- * @out_msn: return location for the message's sequence number, or %NULL
+ * @out_msn: (nullable): return location for the message's sequence number, or %NULL
  *
  * Given a message's unique identifier (@uid), write the message's sequence
  * number to @out_msn and return %TRUE.  If the unique identifier is unknown

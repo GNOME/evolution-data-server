@@ -35,10 +35,10 @@ const guint eds_micro_version = EDS_MICRO_VERSION;
  * use is compatible with the version of Evolution-Data-Server the
  * application or module was compiled against.
  *
- * Returns: %NULL if the Evolution-Data-Server library is compatible with
- * the given version, or a string describing the version mismatch.  The
- * returned string is owned by libedataserver and must not be modified or
- * freed.
+ * Returns: (nullable): %NULL if the Evolution-Data-Server library is
+ * compatible with the given version, or a string describing the version
+ * mismatch.  The returned string is owned by libedataserver and must not be
+ * modified or freed.
  *
  * Since: 2.24
  **/

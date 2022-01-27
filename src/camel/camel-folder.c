@@ -2317,9 +2317,9 @@ camel_folder_set_message_user_tag (CamelFolder *folder,
  *
  * Retrieve the #CamelMessageInfo for the specified @uid.
  *
- * Returns: (transfer full): The summary information for the indicated message, or %NULL
- *   if the uid does not exist. Free the returned object with g_object_unref(),
- *   when done with it.
+ * Returns: (transfer full) (nullable): The summary information for the
+ *   indicated message, or %NULL if the uid does not exist. Free the returned
+ *   object with g_object_unref(), when done with it.
  **/
 CamelMessageInfo *
 camel_folder_get_message_info (CamelFolder *folder,
@@ -3662,7 +3662,7 @@ camel_folder_get_message_finish (CamelFolder *folder,
  * If quotas are not supported for @folder, the function returns %NULL
  * and sets @error to #G_IO_ERROR_NOT_SUPPORTED.
  *
- * Returns: a #CamelFolderQuotaInfo, or %NULL
+ * Returns: (nullable): a #CamelFolderQuotaInfo, or %NULL
  *
  * Since: 3.2
  **/
@@ -3769,7 +3769,7 @@ camel_folder_get_quota_info (CamelFolder *folder,
  * If quotas are not supported for @folder, the function returns %NULL
  * and sets @error to #G_IO_ERROR_NOT_SUPPORTED.
  *
- * Returns: a #CamelFolderQuotaInfo, or %NULL
+ * Returns: (nullable): a #CamelFolderQuotaInfo, or %NULL
  *
  * Since: 3.2
  **/

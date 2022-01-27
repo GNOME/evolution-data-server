@@ -305,7 +305,7 @@ copy_param (GQuark key_id,
  *
  * Parses an absolute URL.
  *
- * Returns: a #CamelURL if it can be parsed, or %NULL otherwise
+ * Returns: (nullable): a #CamelURL if it can be parsed, or %NULL otherwise
  **/
 CamelURL *
 camel_url_new (const gchar *url_string,
@@ -597,7 +597,7 @@ camel_url_set_param (CamelURL *url,
  *
  * Get the value of the specified param on the URL.
  *
- * Returns: the value of a param if found or %NULL otherwise
+ * Returns: (nullable): the value of a param if found or %NULL otherwise
  **/
 const gchar *
 camel_url_get_param (CamelURL *url,
@@ -647,7 +647,7 @@ append_url_encoded (GString *str,
 /**
  * camel_url_encode:
  * @part: a URL part
- * @escape_extra: additional characters beyond " \"%#<>{}|\^[]`"
+ * @escape_extra: (nullable): additional characters beyond " \"%#<>{}|\^[]`"
  * to escape (or %NULL)
  *
  * This &percnt;-encodes the given URL part and returns the escaped version

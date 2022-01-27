@@ -3000,7 +3000,7 @@ store_data_to_vcard (gpointer ref,
  * In either case, @with_all_required_fields if specified, will be updated to reflect whether
  * the returned vcard string satisfies the passed 'fields_of_interest' parameter.
  * 
- * Returns: (transfer full): The vcard string for @uid or %NULL if @uid was not found.
+ * Returns: (transfer full) (nullable): The vcard string for @uid or %NULL if @uid was not found.
  *
  * Since: 3.2
  *
@@ -4803,7 +4803,8 @@ e_book_backend_sqlitedb_set_has_partial_content (EBookBackendSqliteDB *ebsdb,
  * not being present in @ebsdb, you must pass the @error parameter and
  * check whether it was set by this function.</para></note>
  *
- * Returns: (transfer full): The extra data previously set for @uid, or %NULL
+ * Returns: (transfer full) (nullable): The extra data previously set
+ * for @uid, or %NULL
  *
  * Since: 3.2
  *
@@ -5093,7 +5094,7 @@ e_book_backend_sqlitedb_set_key_value (EBookBackendSqliteDB *ebsdb,
  *
  * Obsolete, do not use, this always ends with an error.
  *
- * Returns: (element-type utf8) (transfer full): %NULL
+ * Returns: (element-type utf8) (transfer full) (nullable): %NULL
  *
  * Since: 3.2
  *
@@ -6004,7 +6005,7 @@ cursor_count_position_locked (EBookBackendSqliteDB *ebsdb,
  * e_book_backend_sqlitedb_cursor_new: (skip)
  * @ebsdb: An #EBookBackendSqliteDB
  * @folderid: folder id of the address-book
- * @sexp: search expression; use NULL or an empty string to get all stored contacts.
+ * @sexp: (nullable): search expression; use %NULL or an empty string to get all stored contacts.
  * @sort_fields: (array length=n_sort_fields): An array of #EContactFields as sort keys in order of priority
  * @sort_types: (array length=n_sort_fields): An array of #EBookCursorSortTypes, one for each field in @sort_fields
  * @n_sort_fields: The number of fields to sort results by.
