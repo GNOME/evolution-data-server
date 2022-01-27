@@ -6651,7 +6651,7 @@ e_book_sqlite_new (const gchar *path,
  * if at all possible, however in some cases the vcards must be stored in some
  * other storage.
  *
- * Returns: (transfer full) (nullable): The newly created #EBookSqlite, or %NULL if
+ * Returns: (transfer full): The newly created #EBookSqlite, or %NULL if
  * opening or creating the addressbook failed.
  *
  * Since: 3.12

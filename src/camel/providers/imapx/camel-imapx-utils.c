@@ -2947,7 +2947,7 @@ exit:
  *
  * If an error occurs, the function sets @error and returns %NULL.
  *
- * Returns: (nullable): a newly-allocated mailbox name, or %NULL
+ * Returns: a newly-allocated mailbox name, or %NULL on error
  *
  * Since: 3.10
  **/

@@ -125,10 +125,7 @@ read_greeting (CamelPOP3Engine *pe,
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: optional #GError, or %NULL
  *
- * Returns a NULL stream.  A null stream is always at eof, and
- * always returns success for all reads and writes.
- *
- * Returns: (nullable): the stream
+ * Returns: (transfer full): a new #CamelPOP3Engine, or %NULL on error
  **/
 CamelPOP3Engine *
 camel_pop3_engine_new (CamelStream *source,

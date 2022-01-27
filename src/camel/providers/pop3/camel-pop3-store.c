@@ -1159,7 +1159,7 @@ camel_pop3_store_expunge (CamelPOP3Store *store,
  * The returned #CamelStream is referenced for thread-safety and must be
  * unreferenced when finished with it.
  *
- * Returns: (nullable): a #CamelStream, or %NULL
+ * Returns: a #CamelStream, or %NULL on error
  **/
 CamelStream *
 camel_pop3_store_cache_add (CamelPOP3Store *store,

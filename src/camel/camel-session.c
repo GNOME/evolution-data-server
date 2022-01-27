@@ -896,7 +896,7 @@ camel_session_ref_network_monitor (CamelSession *session)
  * The returned #CamelService is referenced for thread-safety and must be
  * unreferenced with g_object_unref() when finished with it.
  *
- * Returns: (transfer full) (nullable): a #CamelService instance, or %NULL
+ * Returns: (transfer full): a #CamelService instance, or %NULL on error
  *
  * Since: 3.2
  **/
@@ -1155,7 +1155,7 @@ camel_session_remove_services (CamelSession *session)
  * the user did not provide the information. The caller must g_free()
  * the information returned when it is done with it.
  *
- * Returns: (nullable): the authentication information or %NULL
+ * Returns: the authentication information or %NULL on error
  **/
 gchar *
 camel_session_get_password (CamelSession *session,

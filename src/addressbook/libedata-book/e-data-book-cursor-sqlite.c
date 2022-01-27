@@ -504,7 +504,7 @@ e_data_book_cursor_sqlite_load_locale (EDataBookCursor *cursor,
  * This is a suitable cursor type for any backend which stores its contacts
  * using the #EBookSqlite object.
  *
- * Returns: (transfer full) (nullable): A newly created #EDataBookCursor, or %NULL if cursor creation failed.
+ * Returns: (transfer full): A newly created #EDataBookCursor, or %NULL if cursor creation failed.
  *
  * Since: 3.12
  */

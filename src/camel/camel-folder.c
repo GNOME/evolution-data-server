@@ -3662,7 +3662,7 @@ camel_folder_get_message_finish (CamelFolder *folder,
  * If quotas are not supported for @folder, the function returns %NULL
  * and sets @error to #G_IO_ERROR_NOT_SUPPORTED.
  *
- * Returns: (nullable): a #CamelFolderQuotaInfo, or %NULL
+ * Returns: a #CamelFolderQuotaInfo, or %NULL on error
  *
  * Since: 3.2
  **/
@@ -3769,7 +3769,7 @@ camel_folder_get_quota_info (CamelFolder *folder,
  * If quotas are not supported for @folder, the function returns %NULL
  * and sets @error to #G_IO_ERROR_NOT_SUPPORTED.
  *
- * Returns: (nullable): a #CamelFolderQuotaInfo, or %NULL
+ * Returns: a #CamelFolderQuotaInfo, or %NULL on error
  *
  * Since: 3.2
  **/

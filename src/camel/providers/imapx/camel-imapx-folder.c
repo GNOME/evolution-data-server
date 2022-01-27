@@ -1384,7 +1384,7 @@ camel_imapx_folder_set_mailbox (CamelIMAPXFolder *folder,
  * The returned #CamelIMAPXMailbox is referenced for thread-safety and
  * should be unreferenced with g_object_unref() when finished with it.
  *
- * Returns: (nullable): a #CamelIMAPXMailbox, or %NULL
+ * Returns: a #CamelIMAPXMailbox, or %NULL on error
  *
  * Since: 3.12
  **/

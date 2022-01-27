@@ -3000,7 +3000,7 @@ store_data_to_vcard (gpointer ref,
  * In either case, @with_all_required_fields if specified, will be updated to reflect whether
  * the returned vcard string satisfies the passed 'fields_of_interest' parameter.
  * 
- * Returns: (transfer full) (nullable): The vcard string for @uid or %NULL if @uid was not found.
+ * Returns: (transfer full): The vcard string for @uid or %NULL if @uid was not found.
  *
  * Since: 3.2
  *
@@ -4803,8 +4803,7 @@ e_book_backend_sqlitedb_set_has_partial_content (EBookBackendSqliteDB *ebsdb,
  * not being present in @ebsdb, you must pass the @error parameter and
  * check whether it was set by this function.</para></note>
  *
- * Returns: (transfer full) (nullable): The extra data previously set
- * for @uid, or %NULL
+ * Returns: (transfer full): The extra data previously set for @uid, or %NULL on error
  *
  * Since: 3.2
  *
@@ -5094,7 +5093,7 @@ e_book_backend_sqlitedb_set_key_value (EBookBackendSqliteDB *ebsdb,
  *
  * Obsolete, do not use, this always ends with an error.
  *
- * Returns: (element-type utf8) (transfer full) (nullable): %NULL
+ * Returns: (element-type utf8) (transfer full): %NULL on error
  *
  * Since: 3.2
  *

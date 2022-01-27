@@ -71,8 +71,8 @@ e_cal_match_location (const gchar *location)
  * Matches @tzid against the system timezone definitions
  * and returns the matching TZID, or %NULL if none found
  *
- * Returns: (nullable): The matching TZID, or %NULL
- * if none found
+ * Returns: (nullable): The matching TZID, or %NULL if none found or for UTC
+ *
  * Since: 2.24
  */
 const gchar *

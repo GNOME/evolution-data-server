@@ -304,7 +304,7 @@ camel_stream_fs_new_with_fd (gint fd)
  * Creates a new #CamelStreamFs corresponding to the named file, flags,
  * and mode.
  *
- * Returns: (nullable): the new stream, or %NULL on error.
+ * Returns: the new stream, or %NULL on error
  **/
 CamelStream *
 camel_stream_fs_new_with_name (const gchar *name,

@@ -456,7 +456,7 @@ camel_cipher_context_sign_finish (CamelCipherContext *context,
  *
  * Verifies the signature.
  *
- * Returns: (nullable): a #CamelCipherValidity structure containing information
+ * Returns: a #CamelCipherValidity structure containing information
  * about the integrity of the input stream, or %NULL on failure to
  * execute at all
  **/
@@ -575,7 +575,7 @@ camel_cipher_context_verify (CamelCipherContext *context,
  *
  * Finishes the operation started with camel_cipher_context_verify().
  *
- * Returns: (nullable): a #CamelCipherValidity structure containing information
+ * Returns: a #CamelCipherValidity structure containing information
  * about the integrity of the input stream, or %NULL on failure to
  * execute at all
  *
@@ -784,7 +784,7 @@ camel_cipher_context_encrypt_finish (CamelCipherContext *context,
  *
  * Decrypts @ipart into @opart.
  *
- * Returns: (nullable): a validity/encryption status, or %NULL on error
+ * Returns: a validity/encryption status, or %NULL on error
  *
  * Since: 3.0
  **/
@@ -915,7 +915,7 @@ camel_cipher_context_decrypt (CamelCipherContext *context,
  *
  * Finishes the operation started with camel_cipher_context_decrypt().
  *
- * Returns: (nullable): a validity/encryption status, or %NULL on error
+ * Returns: a validity/encryption status, or %NULL on error
  *
  * Since: 3.0
  **/

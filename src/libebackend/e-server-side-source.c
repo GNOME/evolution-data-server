@@ -1941,7 +1941,7 @@ e_server_side_source_new (ESourceRegistryServer *server,
  * function sets @error and returns %NULL.  Although at this time there
  * are no known error conditions for memory-only data sources.
  *
- * Returns: (nullable): a new memory-only #EServerSideSource, or %NULL
+ * Returns: a new memory-only #EServerSideSource, or %NULL on error
  *
  * Since: 3.6
  **/

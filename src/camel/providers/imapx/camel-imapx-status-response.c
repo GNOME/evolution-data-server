@@ -94,7 +94,7 @@ camel_imapx_status_response_init (CamelIMAPXStatusResponse *response)
  * stores the response data in a new #CamelIMAPXStatusResponse.  If an error
  * occurs, the function sets @error and returns %NULL.
  *
- * Returns: (nullable): a #CamelIMAPXStatusResponse, or %NULL
+ * Returns: a #CamelIMAPXStatusResponse, or %NULL on error
  *
  * Since: 3.10
  **/

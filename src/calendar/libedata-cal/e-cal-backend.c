@@ -2199,7 +2199,7 @@ e_cal_backend_refresh_finish (ECalBackend *backend,
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
- * Returns: (nullable): an #ECalComponent, or %NULL
+ * Returns: an #ECalComponent, or %NULL on error
  *
  * Since: 3.10
  **/
@@ -2344,7 +2344,7 @@ e_cal_backend_get_object (ECalBackend *backend,
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
- * Returns: (nullable): an #ECalComponent, or %NULL
+ * Returns: an #ECalComponent, or %NULL on error
  *
  * Since: 3.10
  **/
@@ -2368,7 +2368,7 @@ e_cal_backend_get_object_finish (ECalBackend *backend,
 	cal_backend_unblock_operations (backend, simple);
 
 	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
+		return NULL;
 
 	calobj = g_queue_pop_head (&async_context->result_queue);
 
@@ -3705,7 +3705,7 @@ e_cal_backend_receive_objects_finish (ECalBackend *backend,
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
- * Returns: (nullable): a vCalendar string, or %NULL
+ * Returns: a vCalendar string, or %NULL on error
  *
  * Since: 3.10
  **/
@@ -3854,7 +3854,7 @@ e_cal_backend_send_objects (ECalBackend *backend,
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
- * Returns: (nullable): a newly allocated vCalendar string, or %NULL
+ * Returns: a newly allocated vCalendar string, or %NULL on error
  *
  * Since: 3.10
  **/
@@ -4302,7 +4302,7 @@ e_cal_backend_discard_alarm_finish (ECalBackend *backend,
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
- * Returns: (nullable): an iCalendar string, or %NULL
+ * Returns: an iCalendar string, or %NULL on error
  *
  * Since: 3.10
  **/
@@ -4440,7 +4440,7 @@ e_cal_backend_get_timezone (ECalBackend *backend,
  *
  * If an error occurred, the function will set @error and return %NULL.
  *
- * Returns: (nullable): an iCalendar string, or %NULL
+ * Returns: an iCalendar string, or %NULL on error
  *
  * Since: 3.10
  **/

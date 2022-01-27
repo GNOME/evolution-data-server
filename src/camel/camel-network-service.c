@@ -924,7 +924,7 @@ camel_network_service_get_host_reachable (CamelNetworkService *service)
  * connection attempt is cancelled, the function sets @error and returns
  * %NULL.
  *
- * Returns: (transfer full) (nullable): a #GIOStream, or %NULL
+ * Returns: (transfer full): a #GIOStream, or %NULL on error
  *
  * Since: 3.2
  **/

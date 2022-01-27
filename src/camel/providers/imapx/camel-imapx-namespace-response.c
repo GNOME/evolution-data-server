@@ -196,7 +196,7 @@ repeat:
  * successful, stores the response data in a new #CamelIMAPXNamespaceResponse.
  * If an error occurs, the function sets @error and returns %NULL.
  *
- * Returns: (nullable): a #CamelIMAPXNamespaceResponse, or %NULL
+ * Returns: a #CamelIMAPXNamespaceResponse, or %NULL on error
  *
  * Since: 3.12
  **/

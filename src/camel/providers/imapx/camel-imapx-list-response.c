@@ -292,7 +292,7 @@ imapx_list_response_parse_extended_item (CamelIMAPXInputStream *stream,
  * stores the response data in a new #CamelIMAPXListResponse.  If an error
  * occurs, the function sets @error and returns %NULL.
  *
- * Returns: (nullable): a #CamelIMAPXListResponse, or %NULL
+ * Returns: a #CamelIMAPXListResponse, or %NULL on error
  *
  * Since: 3.10
  **/

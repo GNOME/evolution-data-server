@@ -490,7 +490,7 @@ e_book_backend_sync_remove_contacts (EBookBackendSync *backend,
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
- * Returns: (transfer full) (nullable): an #EContact, or %NULL
+ * Returns: (transfer full): an #EContact, or %NULL on error
  *
  * Since: 3.34
  **/
@@ -502,17 +502,17 @@ e_book_backend_sync_get_contact (EBookBackendSync *backend,
 {
 	EBookBackendSyncClass *klass;
 
-	g_return_val_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), FALSE);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), NULL);
 
 	klass = E_BOOK_BACKEND_SYNC_GET_CLASS (backend);
-	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass != NULL, NULL);
 
 	if (klass->get_contact_sync)
 		return klass->get_contact_sync (backend, uid, cancellable, error);
 
 	g_propagate_error (error, e_client_error_create (E_CLIENT_ERROR_NOT_SUPPORTED, NULL));
 
-	return FALSE;
+	return NULL;
 }
 
 /**

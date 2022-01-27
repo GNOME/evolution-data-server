@@ -1792,7 +1792,7 @@ e_source_registry_init (ESourceRegistry *registry)
  * Since 3.12 a singleton will be returned.  No strong reference is kept
  * internally, so it is the caller's responsibility to keep one.
  *
- * Returns: (nullable): a new #ESourceRegistry, or %NULL
+ * Returns: a new #ESourceRegistry, or %NULL on error
  *
  * Since: 3.6
  **/
@@ -1886,7 +1886,7 @@ e_source_registry_new (GCancellable *cancellable,
  * If an error occurs in connecting to the D-Bus service, the function
  * sets @error and returns %NULL.
  *
- * Returns: (nullable): a new #ESourceRegistry, or %NULL
+ * Returns: a new #ESourceRegistry, or %NULL on error
  *
  * Since: 3.6
  **/

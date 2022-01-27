@@ -688,7 +688,7 @@ e_data_book_view_init (EDataBookView *view)
  * @connection at @object_path.  If an error occurs while exporting,
  * the function sets @error and returns %NULL.
  *
- * Returns: (nullable): an #EDataBookView
+ * Returns: an #EDataBookView or %NULL on error
  */
 EDataBookView *
 e_data_book_view_new (EBookBackend *backend,
