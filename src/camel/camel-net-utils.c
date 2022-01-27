@@ -793,14 +793,15 @@ camel_freeaddrinfo (struct addrinfo *host)
 
 /**
  * camel_host_idna_to_ascii:
- * @host: Host name, with or without non-ascii letters in utf8
+ * @host: (nullable): Host name, with or without non-ascii letters in utf8
  *
  * Converts IDN (Internationalized Domain Name) into ASCII representation.
  * If there's a failure or the @host has only ASCII letters, then a copy
  * of @host is returned.
  *
- * Returns: Newly allocated string with only ASCII letters describing the @host.
- *   Free it with g_free() when done with it.
+ * Returns: (nullable): Newly allocated string with only ASCII letters
+ *   describing the @host or %NULL, when the @host is %NULL. Free the returned
+ *   string with g_free() when no longer needed.
  *
  * Since: 3.16
  **/
@@ -812,7 +813,8 @@ camel_host_idna_to_ascii (const gchar *host)
 	const gchar *ptr;
 	gchar *ascii = NULL;
 
-	g_return_val_if_fail (host != NULL, NULL);
+	if (!host)
+		return NULL;
 
 	ptr = host;
 	while (*ptr > 0)
@@ -866,7 +868,7 @@ camel_host_idna_to_ascii (const gchar *host)
 
 /**
  * camel_utils_sanitize_ascii_domain_in_address:
- * @email_address: an email address as string
+ * @email_address: (nullable): an email address as string
  * @do_format: what format will be returned
  *
  * Checks whether the domain in the @email_address requires
@@ -891,9 +893,7 @@ camel_utils_sanitize_ascii_domain_in_address (const gchar *email_address,
 	CamelInternetAddress *addr;
 	gchar *res = NULL;
 
-	g_return_val_if_fail (email_address != NULL, NULL);
-
-	if (camel_string_is_all_ascii (email_address))
+	if (!email_address || camel_string_is_all_ascii (email_address))
 		return NULL;
 
 	addr = camel_internet_address_new ();
@@ -915,7 +915,7 @@ camel_utils_sanitize_ascii_domain_in_address (const gchar *email_address,
 
 /**
  * camel_utils_sanitize_ascii_domain_in_url_str:
- * @url_str: a URL as string
+ * @url_str: (nullable): a URL as string
  *
  * Checks whether the host name of the @url_str requires conversion
  * to ASCII and converts it if needed. Returns %NULL, when no conversion
@@ -934,9 +934,7 @@ camel_utils_sanitize_ascii_domain_in_url_str (const gchar *url_str)
 	CamelURL *url;
 	gchar *res = NULL;
 
-	g_return_val_if_fail (url_str != NULL, NULL);
-
-	if (camel_string_is_all_ascii (url_str))
+	if (!url_str || camel_string_is_all_ascii (url_str))
 		return NULL;
 
 	url = camel_url_new (url_str, NULL);
