@@ -24,16 +24,16 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2022-01-24 17:09+0000\n"
-"PO-Revision-Date: 2022-01-25 20:25+0800\n"
-"Last-Translator: lumingzh <lumingzh@qq.com>\n"
+"POT-Creation-Date: 2022-01-31 03:24+0000\n"
+"PO-Revision-Date: 2022-02-03 13:47-0500\n"
+"Last-Translator: Boyuan Yang <073plan@gmail.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: Gtranslator 41.0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:234
 #, c-format
@@ -47,16 +47,16 @@ msgstr "给定的 URL“%s”未引用 CardDAV 地址簿"
 #: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
 #: ../src/addressbook/libebook/e-book.c:1067
-#: ../src/addressbook/libebook/e-book-client.c:2123
-#: ../src/addressbook/libebook/e-book-client.c:2301
-#: ../src/addressbook/libebook/e-book-client.c:2520
-#: ../src/addressbook/libebook/e-book-client.c:2657
-#: ../src/addressbook/libebook/e-book-client.c:2822
-#: ../src/addressbook/libebook/e-book-client.c:2962
-#: ../src/addressbook/libebook/e-book-client.c:3099
-#: ../src/addressbook/libebook/e-book-client.c:3262
-#: ../src/addressbook/libebook/e-book-client.c:3457
-#: ../src/addressbook/libebook/e-book-client.c:3675
+#: ../src/addressbook/libebook/e-book-client.c:2125
+#: ../src/addressbook/libebook/e-book-client.c:2303
+#: ../src/addressbook/libebook/e-book-client.c:2522
+#: ../src/addressbook/libebook/e-book-client.c:2659
+#: ../src/addressbook/libebook/e-book-client.c:2824
+#: ../src/addressbook/libebook/e-book-client.c:2964
+#: ../src/addressbook/libebook/e-book-client.c:3101
+#: ../src/addressbook/libebook/e-book-client.c:3264
+#: ../src/addressbook/libebook/e-book-client.c:3459
+#: ../src/addressbook/libebook/e-book-client.c:3677
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:873
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:275
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:288
@@ -166,8 +166,8 @@ msgstr "试图修改没有同步的联系人“%s”"
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1484
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1570
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3076
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7371
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7440
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7372
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7441
 #, c-format
 msgid "Contact “%s” not found"
 msgstr "未找到联系人“%s”"
@@ -971,9 +971,9 @@ msgstr "未知的地址簿属性“%s”"
 msgid "Cannot change value of book property “%s”"
 msgstr "无法更改地址簿属性“%s”的值"
 
-#: ../src/addressbook/libebook/e-book-client.c:1382
-#: ../src/addressbook/libebook/e-book-client.c:1612
-#: ../src/addressbook/libebook/e-book-client.c:1888
+#: ../src/addressbook/libebook/e-book-client.c:1383
+#: ../src/addressbook/libebook/e-book-client.c:1614
+#: ../src/addressbook/libebook/e-book-client.c:1890
 #: ../src/calendar/libecal/e-cal-client.c:1714
 #: ../src/calendar/libecal/e-cal-client.c:1952
 #, c-format
@@ -1096,7 +1096,7 @@ msgstr "无法按可能有多个值的字段排序"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6207
 #: ../src/addressbook/libedata-book/e-book-cache.c:5885
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:8145
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:8146
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1105,7 +1105,7 @@ msgstr "试图向起始方向移动游标，但游标已经在联系人列表的
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6215
 #: ../src/addressbook/libedata-book/e-book-cache.c:5892
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:8153
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:8154
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1171,7 +1171,7 @@ msgid "At least one sort field must be specified to use a cursor"
 msgstr "必须至少指定一个排序字段才能使用游标"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5681
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7985
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7986
 msgid "Cannot sort by a field that is not a string type"
 msgstr "无法按非字符串类型的字段排序"
 
@@ -1206,7 +1206,7 @@ msgstr ""
 msgid "Invalid query for EbSqlCursor"
 msgstr "无效的 EbSqlCursor 查询"
 
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7967
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7968
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr "要使用 EbSqlCursor 至少要指定一个排序字段"
 
@@ -1485,7 +1485,7 @@ msgstr "未知的日历属性“%s”"
 msgid "Cannot change value of calendar property “%s”"
 msgstr "无法更改日历属性的值“%s”"
 
-#: ../src/calendar/libecal/e-cal-component.c:718
+#: ../src/calendar/libecal/e-cal-component.c:719
 msgid "Untitled appointment"
 msgstr "无标题约会"
 
@@ -3224,7 +3224,7 @@ msgstr "主机“%s”查找失败，请检查主机名是否存在拼写错误�
 msgid "Host lookup “%s” failed: %s"
 msgstr "查找主机“%s”失败：%s"
 
-#: ../src/camel/camel-network-service.c:1128
+#: ../src/camel/camel-network-service.c:1130
 #, c-format
 msgid "Checking reachability of account “%s”"
 msgstr "正在检查帐户“%s”的可访问性"
@@ -3821,7 +3821,7 @@ msgstr "扫描“%s”中的文件夹"
 #: ../src/camel/camel-store.c:1738 ../src/camel/camel-store.c:1783
 #: ../src/camel/camel-vtrash-folder.c:48
 msgid "Trash"
-msgstr "回收站"
+msgstr "废件箱"
 
 #: ../src/camel/camel-store.c:1752 ../src/camel/camel-store.c:1800
 #: ../src/camel/camel-vtrash-folder.c:50
@@ -3952,7 +3952,7 @@ msgstr "正在更新未匹配的搜索文件夹"
 
 #: ../src/camel/camel-vtrash-folder.c:49
 msgid "Cannot copy messages to the Trash folder"
-msgstr "无法将消息复制到回收站文件夹"
+msgstr "无法将消息复制到废件箱文件夹"
 
 #: ../src/camel/camel-vtrash-folder.c:51
 msgid "Cannot copy messages to the Junk folder"
@@ -5566,12 +5566,10 @@ msgid "“%s” exited with status %d: mail not sent."
 msgstr "“%s”以状态码 %d 退出：邮件未发送。"
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:38
-#| msgid "Options"
 msgid "Send Options"
 msgstr "发送选项"
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:40
-#| msgid "_Index message body data"
 msgid "_Re-encode message before send"
 msgstr "发送前对消息重新编码(_R)"
 
@@ -5838,13 +5836,13 @@ msgstr "%s 不支持创建远程资源"
 msgid "%s does not support deleting remote resources"
 msgstr "%s 不支持删除远程资源"
 
-#: ../src/libebackend/e-data-factory.c:1441
+#: ../src/libebackend/e-data-factory.c:1442
 #: ../src/libebackend/e-subprocess-factory.c:288
 #, c-format
 msgid "No such source for UID “%s”"
 msgstr "没有 UID 为“%s”的源"
 
-#: ../src/libebackend/e-data-factory.c:1596
+#: ../src/libebackend/e-data-factory.c:1597
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr "未找到源“%s”和扩展“%s”的后端工厂。"
@@ -6224,7 +6222,7 @@ msgstr "未找到密码"
 msgid "Signature script must be a local file"
 msgstr "签名脚本必须为本地文件"
 
-#: ../src/libedataserver/e-source-proxy.c:1650
+#: ../src/libedataserver/e-source-proxy.c:1651
 #, c-format
 msgid "Source “%s” does not support proxy lookups"
 msgstr "数据源“%s”不支持代理查找"
@@ -6587,8 +6585,8 @@ msgid "O_pen Link in Browser"
 msgstr "在浏览器中打开链接(_P)"
 
 #: ../src/libedataserverui/e-credentials-prompter.c:260
-#: ../src/libedataserverui/e-credentials-prompter.c:1753
-#: ../src/libedataserverui/e-credentials-prompter.c:1797
+#: ../src/libedataserverui/e-credentials-prompter.c:1755
+#: ../src/libedataserverui/e-credentials-prompter.c:1799
 msgid "Credentials prompt was cancelled"
 msgstr "提示请求凭据失败"
 
