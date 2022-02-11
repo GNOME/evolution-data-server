@@ -67,6 +67,7 @@ enum {
 
 struct _CamelStoreInfo {
 	volatile gint refcount;
+	CamelStoreSummary *summary;
 	gchar *path;
 	guint32 flags;
 	guint32 unread;
@@ -104,7 +105,7 @@ struct _CamelStoreSummaryClass {
 						 CamelStoreInfo *info);
 
 	/* virtualise access methods */
-	void		(*store_info_set_string)
+	void		(*store_info_set_value)
 						(CamelStoreSummary *summary,
 						 CamelStoreInfo *info,
 						 gint type,
@@ -141,11 +142,13 @@ CamelStoreInfo *
 /* Just build raw summary items */
 CamelStoreInfo *
 		camel_store_summary_info_new	(CamelStoreSummary *summary);
+#ifndef CAMEL_DISABLE_DEPRECATED
 CamelStoreInfo *
 		camel_store_summary_info_ref	(CamelStoreSummary *summary,
 						 CamelStoreInfo *info);
 void		camel_store_summary_info_unref	(CamelStoreSummary *summary,
 						 CamelStoreInfo *info);
+#endif /* CAMEL_DISABLE_DEPRECATED */
 
 /* removes a summary item */
 void		camel_store_summary_remove	(CamelStoreSummary *summary,
@@ -162,15 +165,25 @@ GPtrArray *	camel_store_summary_array	(CamelStoreSummary *summary);
 void		camel_store_summary_array_free	(CamelStoreSummary *summary,
 						 GPtrArray *array);
 
+GType		camel_store_info_get_type	(void) G_GNUC_CONST;
+CamelStoreInfo *
+		camel_store_info_ref		(CamelStoreInfo *info);
+void		camel_store_info_unref		(CamelStoreInfo *info);
+void		camel_store_info_set_value	(CamelStoreInfo *info,
+						 gint type,
+						 const gchar *value);
+const gchar *	camel_store_info_get_path	(CamelStoreInfo *info);
+const gchar *	camel_store_info_get_name	(CamelStoreInfo *info);
+#ifndef CAMEL_DISABLE_DEPRECATED
 void		camel_store_info_set_string	(CamelStoreSummary *summary,
 						 CamelStoreInfo *info,
 						 gint type,
 						 const gchar *value);
-
 const gchar *	camel_store_info_path		(CamelStoreSummary *summary,
 						 CamelStoreInfo *info);
 const gchar *	camel_store_info_name		(CamelStoreSummary *summary,
 						 CamelStoreInfo *info);
+#endif /* CAMEL_DISABLE_DEPRECATED */
 void		camel_store_summary_sort	(CamelStoreSummary *summary,
 						 GCompareDataFunc compare_func,
 						 gpointer user_data);

@@ -41,7 +41,7 @@ static CamelStoreInfo * store_info_load (CamelStoreSummary *, FILE *);
 static gint		 store_info_save (CamelStoreSummary *, FILE *, CamelStoreInfo *);
 static void		 store_info_free (CamelStoreSummary *, CamelStoreInfo *);
 
-static void store_info_set_string (CamelStoreSummary *, CamelStoreInfo *, int, const gchar *);
+static void store_info_set_value (CamelStoreSummary *, CamelStoreInfo *, int, const gchar *);
 
 G_DEFINE_TYPE (CamelNNTPStoreSummary, camel_nntp_store_summary, CAMEL_TYPE_STORE_SUMMARY)
 
@@ -57,7 +57,7 @@ camel_nntp_store_summary_class_init (CamelNNTPStoreSummaryClass *class)
 	store_summary_class->store_info_load = store_info_load;
 	store_summary_class->store_info_save = store_info_save;
 	store_summary_class->store_info_free = store_info_free;
-	store_summary_class->store_info_set_string = store_info_set_string;
+	store_summary_class->store_info_set_value = store_info_set_value;
 }
 
 static void
@@ -267,7 +267,7 @@ camel_nntp_store_summary_add_from_full (CamelNNTPStoreSummary *s,
 	info = (CamelNNTPStoreInfo *) camel_store_summary_add_from_path ((CamelStoreSummary *) s, pathu8);
 	if (info) {
 		d (printf ("  '%s' -> '%s'\n", pathu8, full_name));
-		camel_store_info_set_string ((CamelStoreSummary *) s, (CamelStoreInfo *) info, CAMEL_NNTP_STORE_INFO_FULL_NAME, full_name);
+		camel_store_info_set_value ((CamelStoreInfo *) info, CAMEL_NNTP_STORE_INFO_FULL_NAME, full_name);
 	} else {
 		d (printf ("  failed\n"));
 	}
@@ -367,10 +367,10 @@ store_info_free (CamelStoreSummary *s,
 }
 
 static void
-store_info_set_string (CamelStoreSummary *s,
-                       CamelStoreInfo *mi,
-                       gint type,
-                       const gchar *str)
+store_info_set_value (CamelStoreSummary *s,
+                      CamelStoreInfo *mi,
+                      gint type,
+                      const gchar *str)
 {
 	CamelNNTPStoreInfo *nsi = (CamelNNTPStoreInfo *) mi;
 
@@ -383,7 +383,7 @@ store_info_set_string (CamelStoreSummary *s,
 		nsi->full_name = g_strdup (str);
 		break;
 	default:
-		CAMEL_STORE_SUMMARY_CLASS (camel_nntp_store_summary_parent_class)->store_info_set_string (s, mi, type, str);
+		CAMEL_STORE_SUMMARY_CLASS (camel_nntp_store_summary_parent_class)->store_info_set_value (s, mi, type, str);
 		break;
 	}
 }
