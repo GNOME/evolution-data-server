@@ -1,3 +1,35 @@
+Evolution-Data-Server 3.43.2 2022-02-11
+---------------------------------------
+
+Bug Fixes:
+	I#369 - IMAPx: Add an option to send client 'ID' during login phase (z-z-zoey)
+	I#372 - SMTP: Add option to not re-encode message on upload
+	I#374 - LDAP: Let open when server is offline and marked for offline work
+	M!79 - Add nullable annotations into developer documentation (Michael McClurg)
+
+Miscellaneous:
+	IMAPx: Avoid creating NOSELECT CamelFolder-s
+	CamelMimeFilterCRLF: Correct encoding part of the filter
+	CamelMimeParser: Correct body content parse when CRLF is used
+	Provide database file name in SQLITE_CORRUPT error message
+	camel-net-utils: Allow NULL string arguments in IDNA/ASCII functions
+
+Translations:
+	Aleksandr Melman (ru)
+	Aurimas Černius (lt)
+	Boyuan Yang (zh_CN)
+	Daniel Mustieles (es)
+	Fran Dieguez (gl)
+	Hugo Carvalho (pt)
+	Kukuh Syafaat (id)
+	Leônidas Araújo (pt_BR)
+	Luming Zh (zh_CN)
+	Marek Černocký (cs)
+	Matej Urbančič (sl)
+	Matheus Barbosa (pt_BR)
+	Quentin PAGÈS (oc)
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.43.1.1 2022-01-07
 -----------------------------------------
 
