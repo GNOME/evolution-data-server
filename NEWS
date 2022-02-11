@@ -1,3 +1,15 @@
+Evolution-Data-Server 3.42.4 2022-02-11
+---------------------------------------
+
+Bug Fixes:
+	I#374 - LDAP: Let open when server is offline and marked for offline work
+
+Miscellaneous:
+	IMAPx: Avoid creating NOSELECT CamelFolder-s
+	CamelMimeFilterCRLF: Correct encoding part of the filter
+	CamelMimeParser: Correct body content parse when CRLF is used
+	camel-net-utils: Allow NULL string arguments in IDNA/ASCII functions
+
 Evolution-Data-Server 3.42.3 2022-01-07
 ---------------------------------------
 
