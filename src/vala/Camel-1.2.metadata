@@ -139,6 +139,8 @@ CertDB.header_load.istream type="GLib.FileStream"
 CertDB.header_save.ostream type="GLib.FileStream"
 FilterDriver.set_logfile.logfile type="GLib.FileStream"
 
+StoreSummary.store_info_free.info owned
+
 FolderSummary.prepare_fetch_all#virtual_method name="prepare_fetch_all_v"
 
 VeeStore.get_unmatched_folder type="unowned Camel.VeeFolder"
