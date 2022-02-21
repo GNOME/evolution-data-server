@@ -1250,18 +1250,12 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 		goto fail;
 	}
 
-	frd.recipients_table = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
-	for (i = 0; i < recipients->len; i++) {
-		g_hash_table_insert (
-				frd.recipients_table,
-				recipients->pdata[i],
-				&recipient_certs[i]);
-	}
-	frd.certs_missing = g_hash_table_size (frd.recipients_table);
 	frd.now = PR_Now();
+	frd.recipients_table = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
+	frd.certs_missing = recipients->len;
 
-	for (link = gathered_certificates; link; link = g_slist_next (link)) {
-		const gchar *certstr = link->data;
+	for (i = 0, link = gathered_certificates; i < recipients->len; i++, link = g_slist_next (link)) {
+		const gchar *certstr = link ? link->data : NULL;
 
 		if (certstr && *certstr) {
 			CERTCertificate *cert = NULL;
@@ -1275,11 +1269,21 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 
 			g_free (data);
 
+			/* Default to the provided certificate, if valid */
 			if (cert) {
-				camel_smime_find_recipients_certs (cert, NULL, &frd);
-				CERT_DestroyCertificate (cert);
+				if (CERT_CheckCertValidTimes (cert, frd.now, PR_FALSE) == secCertTimeValid) {
+					recipient_certs[i] = cert;
+					frd.certs_missing--;
+				} else {
+					CERT_DestroyCertificate (cert);
+				}
 			}
 		}
+
+		g_hash_table_insert (
+				frd.recipients_table,
+				recipients->pdata[i],
+				&recipient_certs[i]);
 	}
 
 	g_slist_free_full (gathered_certificates, g_free);
