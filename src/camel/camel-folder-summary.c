@@ -2351,6 +2351,7 @@ summary_assign_uid (CamelFolderSummary *summary,
 
 		if (mi == info) {
 			camel_message_info_property_unlock (info);
+			camel_message_info_set_abort_notifications (info, FALSE);
 			return FALSE;
 		}
 
