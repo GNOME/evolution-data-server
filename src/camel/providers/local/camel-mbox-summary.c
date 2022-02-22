@@ -275,7 +275,12 @@ message_info_new_from_headers (CamelFolderSummary *summary,
 			info = camel_folder_summary_peek_loaded (summary, uid);
 			if (info) {
 				if ((camel_message_info_get_flags (info) & CAMEL_MESSAGE_FOLDER_NOTSEEN)) {
-					camel_message_info_set_flags (info, CAMEL_MESSAGE_FOLDER_NOTSEEN, 0);
+					if (camel_message_info_get_folder_flagged (info)) {
+						camel_message_info_set_flags (info, CAMEL_MESSAGE_FOLDER_NOTSEEN, 0);
+					} else {
+						camel_message_info_set_flags (info, CAMEL_MESSAGE_FOLDER_FLAGGED | CAMEL_MESSAGE_FOLDER_NOTSEEN | 0xffff,
+							camel_message_info_get_flags (mi) & (~(CAMEL_MESSAGE_FOLDER_FLAGGED | CAMEL_MESSAGE_FOLDER_NOTSEEN)));
+					}
 					g_clear_object (&mi);
 					mi = info;
 				} else {
@@ -407,7 +412,7 @@ summary_update (CamelLocalSummary *cls,
 	known_uids = camel_folder_summary_get_array (s);
 	for (i = 0; known_uids && i < known_uids->len; i++) {
 		mi = camel_folder_summary_get (s, g_ptr_array_index (known_uids, i));
-		camel_message_info_set_flags (mi, CAMEL_MESSAGE_FOLDER_NOTSEEN, offset == 0 ? CAMEL_MESSAGE_FOLDER_NOTSEEN : 0);
+		camel_message_info_set_flags (mi, CAMEL_MESSAGE_FOLDER_FLAGGED | CAMEL_MESSAGE_FOLDER_NOTSEEN, offset == 0 ? CAMEL_MESSAGE_FOLDER_NOTSEEN : 0);
 		g_clear_object (&mi);
 	}
 	camel_folder_summary_free_array (known_uids);
@@ -856,7 +861,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 		camel_mime_parser_drop_step (mp);
 		camel_mime_parser_drop_step (mp);
 
-		camel_message_info_set_flags (info, 0xffff, camel_message_info_get_flags (info));
+		camel_message_info_set_flags (info, CAMEL_MESSAGE_FOLDER_FLAGGED | 0xffff, camel_message_info_get_flags (info) & (~CAMEL_MESSAGE_FOLDER_FLAGGED));
 		g_clear_object (&info);
 	}
 
@@ -1149,7 +1154,7 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 					g_strerror (errno));
 				goto error;
 			}
-			camel_message_info_set_flags (info, 0xffff, camel_message_info_get_flags (info));
+			camel_message_info_set_flags (info, CAMEL_MESSAGE_FOLDER_FLAGGED | 0xffff, camel_message_info_get_flags (info) & (~CAMEL_MESSAGE_FOLDER_FLAGGED));
 			g_free (xevnew);
 			xevnew = NULL;
 			camel_mime_parser_drop_step (mp);
