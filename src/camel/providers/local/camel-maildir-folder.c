@@ -341,6 +341,14 @@ maildir_folder_transfer_messages_to_sync (CamelFolder *source,
 			CamelMessageInfo *info;
 
 			if ((info = camel_folder_summary_get (camel_folder_get_folder_summary (source), uid)) == NULL) {
+				camel_local_folder_claim_changes (lf);
+				camel_local_folder_claim_changes (df);
+
+				camel_folder_thaw (source);
+				camel_folder_thaw (dest);
+
+				camel_operation_pop_message (cancellable);
+
 				set_cannot_get_message_ex (
 					error, CAMEL_FOLDER_ERROR_INVALID_UID,
 					uid, lf->folder_path, _("No such message"));
