@@ -1,3 +1,26 @@
+Evolution-Data-Server 3.43.3 2022-03-04
+---------------------------------------
+
+Bug Fixes:
+	I#377 - Camel: Use contact certificate unconditionally in S/MIME encryption
+	I#378 - Camel: Spool auto-refresh too aggressive
+	M!92 - CamelStoreSummary: Fix ref/unref annotations (Corentin Noël)
+	M!93 - Port to libgweather4 (Javier Jardón)
+
+Miscellaneous:
+	Camel: Thaw frozen folders on failed Maildir message transfer
+	CamelFolderSummary: Re-enable notifications on message info in summary_assign_uid()
+
+Translations:
+	Asier Sarasua Garmendia (eu)
+	Changwoo Ryu (ko)
+	Dušan Kazik (sk)
+	Emin Tufan Çetin (tr)
+	Goran Vidović (hr)
+	Jordi Mas i Hernandez (ca)
+	Luna Jernberg (sv)
+	Quentin PAGÈS (oc)
+
 Evolution-Data-Server 3.43.2 2022-02-11
 ---------------------------------------
 
