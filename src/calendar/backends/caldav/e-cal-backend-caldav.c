@@ -199,7 +199,8 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 		soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
 
 		cbdav->priv->calendar_schedule = e_cal_backend_get_kind (E_CAL_BACKEND (cbdav)) != I_CAL_VJOURNAL_COMPONENT &&
-			capabilities && g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_SCHEDULE);
+			(!capabilities || g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_AUTO_SCHEDULE) ||
+			g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_SCHEDULE));
 		calendar_access = capabilities && g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_ACCESS);
 
 		if (calendar_access) {
@@ -2211,7 +2212,9 @@ ecb_caldav_get_free_busy_sync (ECalBackendSync *sync_backend,
 		const GSList *link;
 		GError *local_error = NULL;
 
-		if (ecb_caldav_get_free_busy_from_schedule_outbox_sync (cbdav, users, start, end, out_freebusy, cancellable, &local_error)) {
+		/* Finish only if found anything, otherwise re-check with the principals */
+		if (ecb_caldav_get_free_busy_from_schedule_outbox_sync (cbdav, users, start, end, out_freebusy, cancellable, &local_error) &&
+		    out_freebusy && *out_freebusy) {
 			g_clear_object (&webdav);
 			return;
 		}
