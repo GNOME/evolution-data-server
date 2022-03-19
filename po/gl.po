@@ -21,15 +21,15 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
 "POT-Creation-Date: 2022-01-24 17:09+0000\n"
-"PO-Revision-Date: 2022-01-26 20:04+0100\n"
+"PO-Revision-Date: 2022-03-19 17:01+0100\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"X-Generator: Gtranslator 40.0\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
 "X-Project-Style: gnome\n"
 "X-DL-Team: gl\n"
 "X-DL-Module: evolution-data-server\n"
@@ -302,7 +302,7 @@ msgstr "Modificando o contacto do servidor LDAP…"
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5717
 msgid "Removing contact from LDAP server..."
-msgstr "Retirando o contacto do servidor LDAP"
+msgstr "Retirando o contacto do servidor LDAP..."
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:6368
 #, c-format
