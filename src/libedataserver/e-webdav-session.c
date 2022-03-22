@@ -2018,16 +2018,14 @@ e_webdav_session_extract_href_and_etag (SoupMessage *message,
 
 		header = soup_message_headers_get_list (message->response_headers, "Location");
 		if (header) {
-			gchar *file = strrchr (header, '/');
+			SoupURI *uri;
 
-			if (file) {
-				gchar *decoded;
+			uri = soup_uri_new_with_base (soup_message_get_uri (message), header);
+			if (uri && uri->host)
+				*out_href = soup_uri_to_string (uri, FALSE);
 
-				decoded = soup_uri_decode (file + 1);
-				*out_href = soup_uri_encode (decoded ? decoded : (file + 1), NULL);
-
-				g_free (decoded);
-			}
+			if (uri)
+				soup_uri_free (uri);
 		}
 
 		if (!*out_href)
