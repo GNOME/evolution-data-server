@@ -72,8 +72,8 @@
 /* Define to 1 if you have the gtk+-3.0 package. */
 #cmakedefine HAVE_GTK 1
 
-/* Define to 1 if OAuth2 autentication support is enabled. */
-#cmakedefine ENABLE_OAUTH2 1
+/* Define to 1 to use WebKitGTK for OAuth2 authentication. */
+#cmakedefine ENABLE_OAUTH2_WEBKITGTK 1
 
 /* Define to 1 if the examples should be built. */
 #cmakedefine BUILD_EXAMPLES 1

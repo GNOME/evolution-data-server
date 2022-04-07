@@ -64,8 +64,8 @@ target_compile_options(edataserverui PUBLIC
 	${GCR_BASE_CFLAGS}
 	${GCR_CFLAGS}
 	${GTK_CFLAGS}
-	${OAUTH2_JSON_GLIB_CFLAGS}
-	${OAUTH2_WEBKIT2GTK_CFLAGS}
+	${JSON_GLIB_CFLAGS}
+	${OAUTH2_WEBKITGTK_CFLAGS}
 )
 
 target_include_directories(edataserverui PUBLIC
@@ -80,8 +80,8 @@ target_include_directories(edataserverui PUBLIC
 	${GCR_BASE_INCLUDE_DIRS}
 	${GCR_INCLUDE_DIRS}
 	${GTK_INCLUDE_DIRS}
-	${OAUTH2_JSON_GLIB_INCLUDE_DIRS}
-	${OAUTH2_WEBKIT2GTK_INCLUDE_DIRS}
+	${JSON_GLIB_INCLUDE_DIRS}
+	${OAUTH2_WEBKITGTK_INCLUDE_DIRS}
 )
 
 target_link_libraries(edataserverui
@@ -93,8 +93,8 @@ target_link_libraries(edataserverui
 	${GCR_BASE_LDFLAGS}
 	${GCR_LDFLAGS}
 	${GTK_LDFLAGS}
-	${OAUTH2_JSON_GLIB_LDFLAGS}
-	${OAUTH2_WEBKIT2GTK_LDFLAGS}
+	${JSON_GLIB_LDFLAGS}
+	${OAUTH2_WEBKITGTK_LDFLAGS}
 )
 
 install(TARGETS edataserverui

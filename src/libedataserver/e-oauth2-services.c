@@ -159,11 +159,7 @@ e_oauth2_services_init (EOAuth2Services *oauth2_services)
 gboolean
 e_oauth2_services_is_supported (void)
 {
-#ifdef ENABLE_OAUTH2
 	return TRUE;
-#else
-	return FALSE;
-#endif
 }
 
 /**

@@ -396,51 +396,49 @@ endif(ENABLE_GTK)
 # Check for WebKitGTK+ and json-glib for OAuth2 authentications
 # **************************************************************
 
-add_printable_option(ENABLE_OAUTH2 "Enable built-in OAuth2 authentications" ON)
+pkg_check_modules(JSON_GLIB REQUIRED json-glib-1.0>=${json_glib_minimum_version})
 
-if(ENABLE_OAUTH2)
-	pkg_check_modules_for_option(ENABLE_OAUTH2 "OAuth2 authentication support" OAUTH2_JSON_GLIB
-		json-glib-1.0>=${json_glib_minimum_version}
-	)
+add_printable_option(ENABLE_OAUTH2_WEBKITGTK "Enable WebKitGTK for built-in OAuth2 authentications" ON)
 
-	pkg_check_modules_for_option(ENABLE_OAUTH2 "OAuth2 authentication support" OAUTH2_WEBKIT2GTK
+if(ENABLE_OAUTH2_WEBKITGTK)
+	pkg_check_modules_for_option(ENABLE_OAUTH2_WEBKITGTK "WebKitGTK for built-in OAuth2 authentications" OAUTH2_WEBKITGTK
 		webkit2gtk-4.0>=${webkit2gtk_minimum_version}
 	)
+endif(ENABLE_OAUTH2_WEBKITGTK)
 
-	add_printable_variable(WITH_GOOGLE_CLIENT_ID "Google OAuth 2.0 client id" "")
-	add_printable_variable(WITH_GOOGLE_CLIENT_SECRET "Google OAuth 2.0 client secret" "")
+add_printable_variable(WITH_GOOGLE_CLIENT_ID "Google OAuth 2.0 client id" "")
+add_printable_variable(WITH_GOOGLE_CLIENT_SECRET "Google OAuth 2.0 client secret" "")
 
-	if(WITH_GOOGLE_CLIENT_ID STREQUAL "")
-		set(WITH_GOOGLE_CLIENT_ID "590402290962-2i0b7rqma8b9nmtfrcp7fa06g6cf7g74.apps.googleusercontent.com")
-	endif(WITH_GOOGLE_CLIENT_ID STREQUAL "")
+if(WITH_GOOGLE_CLIENT_ID STREQUAL "")
+	set(WITH_GOOGLE_CLIENT_ID "590402290962-2i0b7rqma8b9nmtfrcp7fa06g6cf7g74.apps.googleusercontent.com")
+endif(WITH_GOOGLE_CLIENT_ID STREQUAL "")
 
-	if(WITH_GOOGLE_CLIENT_SECRET STREQUAL "")
-		set(WITH_GOOGLE_CLIENT_SECRET "mtfUe5W8Aal9DcgVipOY1T9G")
-	endif(WITH_GOOGLE_CLIENT_SECRET STREQUAL "")
+if(WITH_GOOGLE_CLIENT_SECRET STREQUAL "")
+	set(WITH_GOOGLE_CLIENT_SECRET "mtfUe5W8Aal9DcgVipOY1T9G")
+endif(WITH_GOOGLE_CLIENT_SECRET STREQUAL "")
 
-	add_printable_variable(WITH_OUTLOOK_CLIENT_ID "Outlook.com OAuth 2.0 client id" "")
-	add_printable_variable(WITH_OUTLOOK_CLIENT_SECRET "Outlook.com OAuth 2.0 client secret" "")
+add_printable_variable(WITH_OUTLOOK_CLIENT_ID "Outlook.com OAuth 2.0 client id" "")
+add_printable_variable(WITH_OUTLOOK_CLIENT_SECRET "Outlook.com OAuth 2.0 client secret" "")
 
-	if(WITH_OUTLOOK_CLIENT_ID STREQUAL "")
-		set(WITH_OUTLOOK_CLIENT_ID "cc6e0693-0e26-4220-8322-9d363e308fc6")
-	endif(WITH_OUTLOOK_CLIENT_ID STREQUAL "")
+if(WITH_OUTLOOK_CLIENT_ID STREQUAL "")
+	set(WITH_OUTLOOK_CLIENT_ID "cc6e0693-0e26-4220-8322-9d363e308fc6")
+endif(WITH_OUTLOOK_CLIENT_ID STREQUAL "")
 
-	# Outlook.com requires client secret only for Web applications
-	#if(WITH_OUTLOOK_CLIENT_SECRET STREQUAL "")
-	#	set(WITH_OUTLOOK_CLIENT_SECRET "")
-	#endif(WITH_OUTLOOK_CLIENT_SECRET STREQUAL "")
+# Outlook.com requires client secret only for Web applications
+#if(WITH_OUTLOOK_CLIENT_SECRET STREQUAL "")
+#	set(WITH_OUTLOOK_CLIENT_SECRET "")
+#endif(WITH_OUTLOOK_CLIENT_SECRET STREQUAL "")
 
-	add_printable_variable(WITH_YAHOO_CLIENT_ID "Yahoo! OAuth 2.0 client id" "")
-	add_printable_variable(WITH_YAHOO_CLIENT_SECRET "Yahoo! OAuth 2.0 client secret" "")
+add_printable_variable(WITH_YAHOO_CLIENT_ID "Yahoo! OAuth 2.0 client id" "")
+add_printable_variable(WITH_YAHOO_CLIENT_SECRET "Yahoo! OAuth 2.0 client secret" "")
 
-	if(WITH_YAHOO_CLIENT_ID STREQUAL "")
-		set(WITH_YAHOO_CLIENT_ID "dj0yJmk9RHNlMGFKTXdkYzRXJmQ9WVdrOVNUUXpUWGhzWjJzbWNHbzlNQT09JnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PWNi")
-	endif(WITH_YAHOO_CLIENT_ID STREQUAL "")
+if(WITH_YAHOO_CLIENT_ID STREQUAL "")
+	set(WITH_YAHOO_CLIENT_ID "dj0yJmk9RHNlMGFKTXdkYzRXJmQ9WVdrOVNUUXpUWGhzWjJzbWNHbzlNQT09JnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PWNi")
+endif(WITH_YAHOO_CLIENT_ID STREQUAL "")
 
-	if(WITH_YAHOO_CLIENT_SECRET STREQUAL "")
-		set(WITH_YAHOO_CLIENT_SECRET "35f49f199dd754ec5e86d3c7cd576a1341c9bc0b")
-	endif(WITH_YAHOO_CLIENT_SECRET STREQUAL "")
-endif(ENABLE_OAUTH2)
+if(WITH_YAHOO_CLIENT_SECRET STREQUAL "")
+	set(WITH_YAHOO_CLIENT_SECRET "35f49f199dd754ec5e86d3c7cd576a1341c9bc0b")
+endif(WITH_YAHOO_CLIENT_SECRET STREQUAL "")
 
 # ******************************************
 # Check whether to build examples/demos

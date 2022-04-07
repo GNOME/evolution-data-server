@@ -67,10 +67,7 @@ add_subdirectory(google-backend)
 add_subdirectory(outlook-backend)
 add_subdirectory(webdav-backend)
 add_subdirectory(yahoo-backend)
-
-if(ENABLE_OAUTH2)
-	add_subdirectory(oauth2-services)
-endif(ENABLE_OAUTH2)
+add_subdirectory(oauth2-services)
 
 if(HAVE_GTK)
 	add_subdirectory(trust-prompt)

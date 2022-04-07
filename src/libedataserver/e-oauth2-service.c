@@ -30,10 +30,7 @@
 
 #include <string.h>
 #include <glib/gi18n-lib.h>
-
-#ifdef ENABLE_OAUTH2
 #include <json-glib/json-glib.h>
-#endif
 
 #include "e-secret-store.h"
 #include "e-soup-ssl-trust.h"
@@ -980,7 +977,6 @@ eos_encode_to_secret (gchar **out_secret,
 		      const gchar *value1,
 		      ...)
 {
-#ifdef ENABLE_OAUTH2
 	JsonBuilder *builder;
 	JsonNode *node;
 	const gchar *key, *value;
@@ -1032,9 +1028,6 @@ eos_encode_to_secret (gchar **out_secret,
 	}
 
 	return *out_secret != NULL;
-#else
-	return FALSE;
-#endif
 }
 
 static gboolean
@@ -1049,7 +1042,6 @@ eos_decode_from_secret (const gchar *secret,
 			gchar **out_value1,
 			...)
 {
-#ifdef ENABLE_OAUTH2
 	JsonParser *parser;
 	JsonReader *reader;
 	const gchar *key;
@@ -1120,9 +1112,6 @@ eos_decode_from_secret (const gchar *secret,
 	va_end (va);
 
 	return TRUE;
-#else
-	return FALSE;
-#endif
 }
 
 static gboolean
