@@ -331,3 +331,31 @@ gir_add_introspection_simple(
 	gir_deps
 	gir_sources
 )
+
+if(ENABLE_MAINTAINER_MODE)
+	add_executable(oauth2-value-helper
+		e-oauth2-service.c
+	)
+
+	add_dependencies(oauth2-value-helper
+		${DEPENDENCIES}
+	)
+
+	target_compile_definitions(oauth2-value-helper PRIVATE
+		-DG_LOG_DOMAIN=\"oauth2-value-helper\"
+		-DBUILDING_VALUE_HELPER=1
+	)
+
+	target_compile_options(oauth2-value-helper PUBLIC
+		${DATA_SERVER_CFLAGS}
+	)
+
+	target_include_directories(oauth2-value-helper PUBLIC
+		${CMAKE_BINARY_DIR}
+		${DATA_SERVER_INCLUDE_DIRS}
+	)
+
+	target_link_libraries(oauth2-value-helper
+		${DATA_SERVER_LDFLAGS}
+	)
+endif(ENABLE_MAINTAINER_MODE)

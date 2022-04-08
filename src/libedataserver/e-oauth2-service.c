@@ -30,6 +30,8 @@
 
 #include <string.h>
 #include <glib/gi18n-lib.h>
+
+#ifndef BUILDING_VALUE_HELPER
 #include <json-glib/json-glib.h>
 
 #include "e-secret-store.h"
@@ -1590,3 +1592,160 @@ e_oauth2_service_util_take_to_form (GHashTable *form,
 	else
 		g_hash_table_remove (form, name);
 }
+
+/**
+ * e_oauth2_service_util_compile_value:
+ * @compile_value: a value provided in the compile time
+ * @out_glob_buff: (out caller-allocates): a global buffer to store the processed value to
+ * @out_glob_buff_size: size of the @out_glob_buff
+ *
+ * Processes the @compile_value and returns the result, which is stored
+ * into the @out_glob_buff. The @out_glob_buff should be large enough to hold
+ * the processed value and it should be a global memory buffer (usually
+ * statically allocated) initialized to 0, which is used to short-circuit
+ * the call, because the processing is done only if the first element
+ * of the @out_glob_buff is 0, in all other cases the function
+ * immediately returns the @out_glob_buff.
+ *
+ * Returns: processed @compile_value, saved into *out_glob_buff
+ *
+ * Since: 3.46
+ **/
+#else  /* !BUILDING_VALUE_HELPER */
+static /* to not claim missing prototype */
+#endif /* !BUILDING_VALUE_HELPER */
+const gchar *
+e_oauth2_service_util_compile_value (const gchar *compile_value,
+				     gchar *out_glob_buff,
+				     gsize out_glob_buff_size)
+{
+	G_LOCK_DEFINE_STATIC (lock);
+
+	g_return_val_if_fail (out_glob_buff != NULL, NULL);
+	g_return_val_if_fail (out_glob_buff_size > 0, NULL);
+
+	if (!compile_value || !*compile_value) {
+		out_glob_buff[0] = '\0';
+		return out_glob_buff;
+	}
+
+	G_LOCK (lock);
+
+	if (!*out_glob_buff) {
+		if (g_str_has_prefix (compile_value, "|") &&
+		    g_str_has_suffix (compile_value, "|") && compile_value[1]) {
+			gchar *tmp = g_strndup (compile_value + 1, strlen (compile_value) - 2);
+			guchar *data;
+			gsize data_len = 0;
+
+			data = g_base64_decode (tmp, &data_len);
+			if (!data) {
+				g_warning ("Failed to decode base64 data");
+			} else if (!data_len) {
+				/* Nothing to decode */
+			} else if (out_glob_buff_size < data_len) {
+				g_warning ("global buffer size (%" G_GSIZE_FORMAT ") is not large enough, requires at least %" G_GSIZE_FORMAT " bytes",
+					out_glob_buff_size, (gsize) data_len);
+			} else {
+				guchar rval = data[data_len - 1];
+				guint ii;
+
+				for (ii = 0; ii < data_len; ii++) {
+					out_glob_buff[ii] = data[ii] ^ rval;
+				}
+			}
+			g_free (data);
+			g_free (tmp);
+		} else if (out_glob_buff_size < strlen (compile_value) + 1) {
+			g_warning ("global buffer size (%" G_GSIZE_FORMAT ") is not large enough, requires at least %" G_GSIZE_FORMAT " bytes",
+				out_glob_buff_size, (gsize) (strlen (compile_value) + 1));
+		} else {
+			strcpy (out_glob_buff, compile_value);
+		}
+	}
+
+	G_UNLOCK (lock);
+
+	return out_glob_buff;
+}
+
+#ifdef BUILDING_VALUE_HELPER
+#include <stdio.h>
+
+gint
+main (void)
+{
+	gchar chr;
+	GString *str;
+
+	str = g_string_new ("");
+
+	g_random_set_seed ((gint) (g_get_monotonic_time () + g_get_real_time ()));
+
+	while (chr = fgetc (stdin), !feof (stdin) || str->len) {
+		if (chr == '\n' || feof (stdin)) {
+			if (str->len) {
+				GByteArray *array;
+				const gchar *processed;
+				gchar *b64, *res, *test_buff;
+				gsize test_buff_size;
+				guchar rval;
+				guint ii;
+
+				while (rval = g_random_int_range (1, 255), !rval) {
+					;
+				}
+
+				array = g_byte_array_new ();
+
+				for (ii = 0; ii < str->len; ii++) {
+					guchar val = (guchar) str->str[ii];
+					val = val ^ rval;
+					g_byte_array_append (array, &val, 1);
+				}
+
+				g_byte_array_append (array, &rval, 1);
+
+				b64 = g_base64_encode (array->data, array->len);
+				res = g_strconcat ("|", b64, "|", NULL);
+
+				g_byte_array_unref (array);
+				g_free (b64);
+
+				test_buff_size = strlen (res) + 1;
+				test_buff = g_malloc0 (sizeof (gchar) * test_buff_size);
+
+				processed = e_oauth2_service_util_compile_value (res, test_buff, test_buff_size);
+				if (g_strcmp0 (processed, str->str) != 0) {
+					g_warning ("Failed to de-process '%s', stopping", str->str);
+					g_free (test_buff);
+					g_free (res);
+					break;
+				}
+
+				processed = e_oauth2_service_util_compile_value (res, test_buff, test_buff_size);
+				if (g_strcmp0 (processed, str->str) != 0) {
+					g_warning ("Failed to de-process '%s' for the second call, stopping", str->str);
+					g_free (test_buff);
+					g_free (res);
+					break;
+				}
+
+				printf ("%s ~> %s\n", str->str, res);
+
+				g_free (test_buff);
+				g_free (res);
+
+				g_string_truncate (str, 0);
+			}
+		} else if (chr != '\t' && chr != '\r' && chr != ' ') {
+			g_string_append_c (str, chr);
+		}
+	}
+
+	g_string_free (str, TRUE);
+
+	return 0;
+}
+
+#endif /* BUILDING_VALUE_HELPER */

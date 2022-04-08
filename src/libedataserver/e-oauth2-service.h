@@ -249,6 +249,9 @@ void		e_oauth2_service_util_set_to_form	(GHashTable *form,
 void		e_oauth2_service_util_take_to_form	(GHashTable *form,
 							 const gchar *name,
 							 gchar *value);
+const gchar *	e_oauth2_service_util_compile_value	(const gchar *compile_value,
+							 gchar *out_glob_buff,
+							 gsize out_glob_buff_size);
 
 G_END_DECLS
 

@@ -410,11 +410,11 @@ add_printable_variable(WITH_GOOGLE_CLIENT_ID "Google OAuth 2.0 client id" "")
 add_printable_variable(WITH_GOOGLE_CLIENT_SECRET "Google OAuth 2.0 client secret" "")
 
 if(WITH_GOOGLE_CLIENT_ID STREQUAL "")
-	set(WITH_GOOGLE_CLIENT_ID "590402290962-2i0b7rqma8b9nmtfrcp7fa06g6cf7g74.apps.googleusercontent.com")
+	set(WITH_GOOGLE_CLIENT_ID "|7uLr7+vp6eLr4u3p9umy67nsqaq2uuO54rW2r72puKvsvbrr7bztuL3svOzv9bqrq6j1vLS0vLe+rqi+qbi0ta++ta/1uLS22w==|")
 endif(WITH_GOOGLE_CLIENT_ID STREQUAL "")
 
 if(WITH_GOOGLE_CLIENT_SECRET STREQUAL "")
-	set(WITH_GOOGLE_CLIENT_SECRET "mtfUe5W8Aal9DcgVipOY1T9G")
+	set(WITH_GOOGLE_CLIENT_SECRET "|UUhaaVkJawR9XVAFeF9balVMc2UNaAV7PA==|")
 endif(WITH_GOOGLE_CLIENT_SECRET STREQUAL "")
 
 add_printable_variable(WITH_OUTLOOK_CLIENT_ID "Outlook.com OAuth 2.0 client id" "")
@@ -433,11 +433,11 @@ add_printable_variable(WITH_YAHOO_CLIENT_ID "Yahoo! OAuth 2.0 client id" "")
 add_printable_variable(WITH_YAHOO_CLIENT_SECRET "Yahoo! OAuth 2.0 client secret" "")
 
 if(WITH_YAHOO_CLIENT_ID STREQUAL "")
-	set(WITH_YAHOO_CLIENT_ID "dj0yJmk9RHNlMGFKTXdkYzRXJmQ9WVdrOVNUUXpUWGhzWjJzbWNHbzlNQT09JnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PWNi")
+	set(WITH_YAHOO_CLIENT_ID "|Q00XXm1KTB51b2lLamBhbHN/Q0x+XXV/bUp2HnBxQ1VocWlycn9XcnBgT11wTW1dRXBpb0VdS2l2cxcebUlqHn4VHlJEFHFTfX9tXX1waV59f3ZKRBR+HmpkfRN3cGlOJw==|")
 endif(WITH_YAHOO_CLIENT_ID STREQUAL "")
 
 if(WITH_YAHOO_CLIENT_SECRET STREQUAL "")
-	set(WITH_YAHOO_CLIENT_SECRET "35f49f199dd754ec5e86d3c7cd576a1341c9bc0b")
+	set(WITH_YAHOO_CLIENT_SECRET "|c3UmdHkmcXl5JCR3dXQlI3UleHYkcyN3IyR1d3YhcXN0cSN5IiNwIkA=|")
 endif(WITH_YAHOO_CLIENT_SECRET STREQUAL "")
 
 # ******************************************

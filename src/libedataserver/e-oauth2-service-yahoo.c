@@ -89,6 +89,7 @@ static const gchar *
 eos_yahoo_get_client_id (EOAuth2Service *service,
 			 ESource *source)
 {
+	static gchar glob_buff[128] = {0, };
 	const gchar *client_id;
 
 	client_id = eos_yahoo_read_settings (service, "oauth2-yahoo-client-id");
@@ -96,13 +97,14 @@ eos_yahoo_get_client_id (EOAuth2Service *service,
 	if (client_id && *client_id)
 		return client_id;
 
-	return YAHOO_CLIENT_ID;
+	return e_oauth2_service_util_compile_value (YAHOO_CLIENT_ID, glob_buff, sizeof (glob_buff));
 }
 
 static const gchar *
 eos_yahoo_get_client_secret (EOAuth2Service *service,
 			     ESource *source)
 {
+	static gchar glob_buff[128] = {0, };
 	const gchar *client_secret;
 
 	client_secret = eos_yahoo_read_settings (service, "oauth2-yahoo-client-secret");
@@ -110,7 +112,7 @@ eos_yahoo_get_client_secret (EOAuth2Service *service,
 	if (client_secret && *client_secret)
 		return client_secret;
 
-	return YAHOO_CLIENT_SECRET;
+	return e_oauth2_service_util_compile_value (YAHOO_CLIENT_SECRET, glob_buff, sizeof (glob_buff));
 }
 
 static const gchar *

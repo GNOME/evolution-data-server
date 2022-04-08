@@ -92,6 +92,7 @@ static const gchar *
 eos_google_get_client_id (EOAuth2Service *service,
 			  ESource *source)
 {
+	static gchar glob_buff[128] = {0, };
 	const gchar *client_id;
 
 	client_id = eos_google_read_settings (service, "oauth2-google-client-id");
@@ -99,13 +100,14 @@ eos_google_get_client_id (EOAuth2Service *service,
 	if (client_id && *client_id)
 		return client_id;
 
-	return GOOGLE_CLIENT_ID;
+	return e_oauth2_service_util_compile_value (GOOGLE_CLIENT_ID, glob_buff, sizeof (glob_buff));
 }
 
 static const gchar *
 eos_google_get_client_secret (EOAuth2Service *service,
 			      ESource *source)
 {
+	static gchar glob_buff[128] = {0, };
 	const gchar *client_secret;
 
 	client_secret = eos_google_read_settings (service, "oauth2-google-client-secret");
@@ -113,7 +115,7 @@ eos_google_get_client_secret (EOAuth2Service *service,
 	if (client_secret && *client_secret)
 		return client_secret;
 
-	return GOOGLE_CLIENT_SECRET;
+	return e_oauth2_service_util_compile_value (GOOGLE_CLIENT_SECRET, glob_buff, sizeof (glob_buff));
 }
 
 static const gchar *
