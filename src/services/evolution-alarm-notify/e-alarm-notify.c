@@ -323,7 +323,8 @@ e_alarm_notify_display (EAlarmNotify *an,
 
 	notif_id = e_alarm_notify_build_notif_id (rd);
 
-	if (!g_hash_table_contains (an->priv->notification_ids, notif_id)) {
+	if (g_settings_get_boolean (an->priv->settings, "notify-enable-display") &&
+	    !g_hash_table_contains (an->priv->notification_ids, notif_id)) {
 		GNotification *notification;
 		GtkIconInfo *icon_info;
 		gchar *detailed_action;
@@ -364,6 +365,11 @@ e_alarm_notify_display (EAlarmNotify *an,
 		g_object_unref (notification);
 
 		g_hash_table_insert (an->priv->notification_ids, notif_id, NULL);
+	} else {
+		g_free (notif_id);
+
+		if (!g_settings_get_boolean (an->priv->settings, "notify-enable-display"))
+			ean_debug_print ("Display notify: Skipped, because disabled in the settings\n");
 	}
 
 	g_free (an->priv->status_icon_tooltip);
@@ -792,6 +798,7 @@ e_alarm_notify_status_icon_popup_menu_cb (GtkStatusIcon *status_icon,
 	} items[] = {
 		{ N_("Display Reminders window with _notifications"), "notify-with-tray", G_SETTINGS_BIND_DEFAULT | G_SETTINGS_BIND_INVERT_BOOLEAN },
 		{ N_("Keep reminder notification window always on _top"), "notify-window-on-top", G_SETTINGS_BIND_DEFAULT },
+		{ N_("Enable _desktop notifications"), "notify-enable-display", G_SETTINGS_BIND_DEFAULT },
 		{ N_("Enable _audio notifications"), "notify-enable-audio", G_SETTINGS_BIND_DEFAULT },
 		{ N_("Display reminders for _completed tasks"), "notify-completed-tasks", G_SETTINGS_BIND_DEFAULT },
 		{ N_("Display reminders for _past events"), "notify-past-events", G_SETTINGS_BIND_DEFAULT }

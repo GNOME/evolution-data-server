@@ -38,6 +38,11 @@
       <summary>Reminder programs</summary>
       <description>Programs that are allowed to be run by reminders</description>
     </key>
+    <key name="notify-enable-display" type="b">
+      <default>true</default>
+      <summary>Enable desktop notifications</summary>
+      <description>When set to true, the desktop/system notifications are shown</description>
+    </key>
     <key name="notify-enable-audio" type="b">
       <default>true</default>
       <summary>Enable audio notifications</summary>
