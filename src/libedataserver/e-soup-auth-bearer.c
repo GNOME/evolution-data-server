@@ -145,6 +145,20 @@ e_soup_auth_bearer_get_authorization (SoupAuth *auth,
 	return res;
 }
 
+static gboolean
+e_soup_auth_bearer_can_authenticate (SoupAuth *auth)
+{
+	return FALSE;
+}
+
+static void
+e_soup_auth_bearer_authenticate (SoupAuth *auth,
+				 const gchar *username,
+				 const gchar *password)
+{
+	/* Not applicable here */
+}
+
 static void
 e_soup_auth_bearer_class_init (ESoupAuthBearerClass *class)
 {
@@ -164,6 +178,8 @@ e_soup_auth_bearer_class_init (ESoupAuthBearerClass *class)
 	auth_class->get_protection_space = e_soup_auth_bearer_get_protection_space;
 	auth_class->is_authenticated = e_soup_auth_bearer_is_authenticated;
 	auth_class->get_authorization = e_soup_auth_bearer_get_authorization;
+	auth_class->can_authenticate = e_soup_auth_bearer_can_authenticate;
+	auth_class->authenticate = e_soup_auth_bearer_authenticate;
 }
 
 static void
