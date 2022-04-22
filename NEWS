@@ -1,3 +1,13 @@
+Evolution-Data-Server 3.44.1 2022-04-22
+---------------------------------------
+
+Bug Fixes:
+	I#380 - CalDAV: Free / Busy not working with Nextcloud
+	I#381 - EWebDAVSession: Correct extract of href from Location header
+
+Miscellaneous:
+	ESoupAuthBearer: Implement two more SoupAuth virtual methods
+
 Evolution-Data-Server 3.44.0 2022-03-18
 ---------------------------------------
 
