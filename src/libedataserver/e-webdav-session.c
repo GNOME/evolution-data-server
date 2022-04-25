@@ -3459,57 +3459,62 @@ e_webdav_session_extract_kind (xmlNodePtr parent_node)
 }
 
 static guint32
-e_webdav_session_extract_supports (xmlNodePtr prop_node)
+e_webdav_session_extract_supports (xmlNodePtr prop_node,
+				   EWebDAVResourceKind kind)
 {
-	xmlNodePtr calendar_components;
 	guint32 supports = E_WEBDAV_RESOURCE_SUPPORTS_NONE;
 
 	g_return_val_if_fail (prop_node != NULL, E_WEBDAV_RESOURCE_SUPPORTS_NONE);
 
-	if (e_xml_find_in_hierarchy (prop_node, E_WEBDAV_NS_DAV, "resourcetype", E_WEBDAV_NS_CARDDAV, "addressbook", NULL, NULL))
+	if (kind == E_WEBDAV_RESOURCE_KIND_ADDRESSBOOK &&
+	    e_xml_find_in_hierarchy (prop_node, E_WEBDAV_NS_DAV, "resourcetype", E_WEBDAV_NS_CARDDAV, "addressbook", NULL, NULL))
 		supports = supports | E_WEBDAV_RESOURCE_SUPPORTS_CONTACTS;
 
-	calendar_components = e_xml_find_child (prop_node, E_WEBDAV_NS_CALDAV, "supported-calendar-component-set");
+	if (kind == E_WEBDAV_RESOURCE_KIND_CALENDAR) {
+		xmlNodePtr calendar_components;
 
-	if (calendar_components) {
-		xmlNodePtr node;
-		gint found_comps = 0;
+		calendar_components = e_xml_find_child (prop_node, E_WEBDAV_NS_CALDAV, "supported-calendar-component-set");
 
-		for (node = calendar_components->children; node; node = xmlNextElementSibling (node)) {
-			if (e_xml_is_element_name (node, E_WEBDAV_NS_CALDAV, "comp")) {
-				xmlChar *name;
+		if (calendar_components) {
+			xmlNodePtr node;
+			gint found_comps = 0;
 
-				found_comps++;
+			for (node = calendar_components->children; node; node = xmlNextElementSibling (node)) {
+				if (e_xml_is_element_name (node, E_WEBDAV_NS_CALDAV, "comp")) {
+					xmlChar *name;
 
-				name = xmlGetProp (node, (const xmlChar *) "name");
+					found_comps++;
 
-				if (!name)
-					continue;
+					name = xmlGetProp (node, (const xmlChar *) "name");
 
-				if (g_ascii_strcasecmp ((const gchar *) name, "VEVENT") == 0)
-					supports |= E_WEBDAV_RESOURCE_SUPPORTS_EVENTS;
-				else if (g_ascii_strcasecmp ((const gchar *) name, "VJOURNAL") == 0)
-					supports |= E_WEBDAV_RESOURCE_SUPPORTS_MEMOS;
-				else if (g_ascii_strcasecmp ((const gchar *) name, "VTODO") == 0)
-					supports |= E_WEBDAV_RESOURCE_SUPPORTS_TASKS;
-				else if (g_ascii_strcasecmp ((const gchar *) name, "VFREEBUSY") == 0)
-					supports |= E_WEBDAV_RESOURCE_SUPPORTS_FREEBUSY;
-				else if (g_ascii_strcasecmp ((const gchar *) name, "VTIMEZONE") == 0)
-					supports |= E_WEBDAV_RESOURCE_SUPPORTS_TIMEZONE;
+					if (!name)
+						continue;
 
-				xmlFree (name);
+					if (g_ascii_strcasecmp ((const gchar *) name, "VEVENT") == 0)
+						supports |= E_WEBDAV_RESOURCE_SUPPORTS_EVENTS;
+					else if (g_ascii_strcasecmp ((const gchar *) name, "VJOURNAL") == 0)
+						supports |= E_WEBDAV_RESOURCE_SUPPORTS_MEMOS;
+					else if (g_ascii_strcasecmp ((const gchar *) name, "VTODO") == 0)
+						supports |= E_WEBDAV_RESOURCE_SUPPORTS_TASKS;
+					else if (g_ascii_strcasecmp ((const gchar *) name, "VFREEBUSY") == 0)
+						supports |= E_WEBDAV_RESOURCE_SUPPORTS_FREEBUSY;
+					else if (g_ascii_strcasecmp ((const gchar *) name, "VTIMEZONE") == 0)
+						supports |= E_WEBDAV_RESOURCE_SUPPORTS_TIMEZONE;
+
+					xmlFree (name);
+				}
 			}
-		}
 
-		if (!found_comps) {
-			/* If the property is not present, assume all component
-			 * types are supported.  (RFC 4791, Section 5.2.3) */
-			supports = supports |
-				E_WEBDAV_RESOURCE_SUPPORTS_EVENTS |
-				E_WEBDAV_RESOURCE_SUPPORTS_MEMOS |
-				E_WEBDAV_RESOURCE_SUPPORTS_TASKS |
-				E_WEBDAV_RESOURCE_SUPPORTS_FREEBUSY |
-				E_WEBDAV_RESOURCE_SUPPORTS_TIMEZONE;
+			if (!found_comps) {
+				/* If the property is not present, assume all component
+				 * types are supported.  (RFC 4791, Section 5.2.3) */
+				supports = supports |
+					E_WEBDAV_RESOURCE_SUPPORTS_EVENTS |
+					E_WEBDAV_RESOURCE_SUPPORTS_MEMOS |
+					E_WEBDAV_RESOURCE_SUPPORTS_TASKS |
+					E_WEBDAV_RESOURCE_SUPPORTS_FREEBUSY |
+					E_WEBDAV_RESOURCE_SUPPORTS_TIMEZONE;
+			}
 		}
 	}
 
@@ -3672,7 +3677,7 @@ e_webdav_session_list_cb (EWebDAVSession *webdav,
 			source_href = e_webdav_session_util_maybe_dequote (g_strdup ((const gchar *) x_source_href));
 		}
 
-		supports = e_webdav_session_extract_supports (prop_node);
+		supports = e_webdav_session_extract_supports (prop_node, kind);
 		etag = e_webdav_session_extract_nonempty (prop_node, E_WEBDAV_NS_DAV, "getetag", E_WEBDAV_NS_CALENDARSERVER, "getctag");
 		display_name = e_webdav_session_extract_nonempty (prop_node, E_WEBDAV_NS_DAV, "displayname", NULL, NULL);
 		content_type = e_webdav_session_extract_nonempty (prop_node, E_WEBDAV_NS_DAV, "getcontenttype", NULL, NULL);
