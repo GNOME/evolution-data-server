@@ -1547,7 +1547,9 @@ reminders_widget_constructed (GObject *object)
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
 	GtkWidget *widget;
-	GtkBox *box;
+	GtkCssProvider *css_provider;
+	GtkFlowBox *flow_box;
+	GError *error = NULL;
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (e_reminders_widget_parent_class)->constructed (object);
@@ -1652,27 +1654,44 @@ reminders_widget_constructed (GObject *object)
 	reminders_widget_fill_snooze_combo (reminders,
 		g_settings_get_int (reminders->priv->settings, "notify-last-snooze-minutes"));
 
-	box = GTK_BOX (gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL));
-	g_object_set (G_OBJECT (box),
-		"halign", GTK_ALIGN_END,
-		"hexpand", TRUE,
-		"valign", GTK_ALIGN_CENTER,
-		"vexpand", FALSE,
-		"margin-top", 4,
+	flow_box = GTK_FLOW_BOX (gtk_flow_box_new ());
+	g_object_set (G_OBJECT (flow_box),
+		"homogeneous", FALSE,
+		"selection-mode", GTK_SELECTION_NONE,
+		"column-spacing", 1,
+		"row-spacing", 1,
 		NULL);
 
 	widget = gtk_label_new ("");
+	gtk_widget_set_margin_start (widget, 8);
 
-	gtk_box_pack_start (box, reminders->priv->snooze_combo, FALSE, FALSE, 0);
-	gtk_box_pack_start (box, reminders->priv->snooze_button, FALSE, FALSE, 0);
-	gtk_box_pack_start (box, widget, FALSE, FALSE, 0);
-	gtk_box_pack_start (box, reminders->priv->dismiss_button, FALSE, FALSE, 0);
-	gtk_box_pack_start (box, reminders->priv->dismiss_all_button, FALSE, FALSE, 0);
+	gtk_flow_box_insert (flow_box, reminders->priv->snooze_combo, -1);
+	gtk_flow_box_insert (flow_box, reminders->priv->snooze_button, -1);
+	gtk_flow_box_insert (flow_box, widget, -1);
+	gtk_flow_box_insert (flow_box, reminders->priv->dismiss_button, -1);
+	gtk_flow_box_insert (flow_box, reminders->priv->dismiss_all_button, -1);
 
-	gtk_button_box_set_child_non_homogeneous (GTK_BUTTON_BOX (box), reminders->priv->snooze_combo, TRUE);
-	gtk_button_box_set_child_non_homogeneous (GTK_BUTTON_BOX (box), widget, TRUE);
+	gtk_grid_attach (GTK_GRID (reminders), GTK_WIDGET (flow_box), 0, 1, 1, 1);
 
-	gtk_grid_attach (GTK_GRID (reminders), GTK_WIDGET (box), 0, 1, 1, 1);
+	css_provider = gtk_css_provider_new ();
+
+	if (gtk_css_provider_load_from_data (css_provider, "flowboxchild { padding: 0px; }", -1, &error)) {
+		GtkFlowBoxChild *child;
+		guint ii = 0;
+
+		while (child = gtk_flow_box_get_child_at_index (flow_box, ii), child) {
+			gtk_style_context_add_provider (
+				gtk_widget_get_style_context (GTK_WIDGET (child)),
+					GTK_STYLE_PROVIDER (css_provider),
+					GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+			ii++;
+		}
+	} else {
+		g_warning ("%s: Failed to parse CSS: %s", G_STRFUNC, error ? error->message : "Unknown error");
+	}
+
+	g_clear_object (&css_provider);
+	g_clear_error (&error);
 
 	gtk_widget_show_all (GTK_WIDGET (reminders));
 
