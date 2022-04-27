@@ -280,12 +280,14 @@ e_module_load_all_in_directory (const gchar *dirname)
 
 	g_return_val_if_fail (dirname != NULL, NULL);
 
-	if (!g_module_supported ())
+	if (!g_module_supported ()) {
+		e_source_registry_debug_print ("Cannot load *." G_MODULE_SUFFIX " in '%s': modules not supported by glib\n", dirname);
 		return NULL;
+	}
 
 	dir = g_dir_open (dirname, 0, &error);
 	if (dir == NULL) {
-		g_debug ("%s: %s", G_STRFUNC, error ? error->message : "Unknown error");
+		e_source_registry_debug_print ("Cannot open module dir '%s': %s\n", dirname, error ? error->message : "Unknown error");
 		g_clear_error (&error);
 		return NULL;
 	}
@@ -294,8 +296,10 @@ e_module_load_all_in_directory (const gchar *dirname)
 		EModule *module;
 		gchar *filename;
 
-		if (!g_str_has_suffix (basename, "." G_MODULE_SUFFIX))
+		if (!g_str_has_suffix (basename, "." G_MODULE_SUFFIX)) {
+			e_source_registry_debug_print ("Skipping file '%s/%s': incorrect extension\n", dirname, basename);
 			continue;
+		}
 
 		filename = g_build_filename (dirname, basename, NULL);
 
@@ -306,6 +310,8 @@ e_module_load_all_in_directory (const gchar *dirname)
 		if (module != NULL)
 			loaded_modules = g_list_prepend (loaded_modules, module);
 	}
+
+	e_source_registry_debug_print ("Loaded %u *." G_MODULE_SUFFIX " modules in '%s'\n", g_list_length (loaded_modules), dirname);
 
 	g_dir_close (dir);
 
