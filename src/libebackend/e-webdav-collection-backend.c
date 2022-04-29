@@ -57,6 +57,19 @@ webdav_collection_add_uid_to_hashtable (gpointer source,
 	g_hash_table_insert (known_sources, rid, uid);
 }
 
+static gboolean
+webdav_collection_debug_enabled (void)
+{
+	static gint enabled = -1;
+
+	if (enabled == -1) {
+		const gchar *envval = g_getenv ("WEBDAV_DEBUG");
+		enabled = envval && *envval && g_strcmp0 (envval, "0") != 0 ? 1 : 0;
+	}
+
+	return enabled == 1;
+}
+
 typedef struct _RemoveSourcesData {
 	ESourceRegistryServer *server;
 	EWebDAVCollectionBackend *webdav_backend;
@@ -75,8 +88,13 @@ webdav_collection_remove_unknown_sources_cb (gpointer resource_id,
 	source = e_source_registry_server_ref_source (rsd->server, uid);
 
 	if (source) {
-		if (!e_webdav_collection_backend_is_custom_source (rsd->webdav_backend, source))
+		if (!e_webdav_collection_backend_is_custom_source (rsd->webdav_backend, source)) {
+			if (webdav_collection_debug_enabled ()) {
+				e_util_debug_print ("WEBDAV", "   %p: Going to remove previously known source '%s' (%s)\n", rsd->webdav_backend,
+					e_source_get_display_name (source), e_source_get_uid (source));
+			}
 			e_source_remove_sync (source, NULL, NULL);
+		}
 
 		g_object_unref (source);
 	}
@@ -571,6 +589,9 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 	g_list_foreach (sources, webdav_collection_add_uid_to_hashtable, known_sources);
 	g_list_free_full (sources, g_object_unref);
 
+	if (webdav_collection_debug_enabled ())
+		e_util_debug_print ("WEBDAV", "%p: This is '%s' (%s)\n", webdav_backend, e_source_get_display_name (source), e_source_get_uid (source));
+
 	server = e_collection_backend_ref_server (collection);
 
 	if (e_source_collection_get_calendar_enabled (collection_extension) && calendar_url &&
@@ -589,9 +610,13 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 
 		webdav_collection_process_discovered_sources (collection, discovered_sources, known_sources, source_types, G_N_ELEMENTS (source_types));
 
+		if (webdav_collection_debug_enabled ())
+			e_util_debug_print ("WEBDAV", "%p: Received %u calendars from '%s'\n", webdav_backend, g_slist_length (discovered_sources), calendar_url);
+
 		e_webdav_discover_free_discovered_sources (discovered_sources);
 		discovered_sources = NULL;
 		any_success = TRUE;
+	/* Prevent lost of already known calendars when the discover failed */
 	} else if (local_error) {
 		RemoveSourceTypesData rstd;
 
@@ -599,6 +624,17 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 		rstd.calendars = TRUE;
 
 		g_hash_table_foreach_remove (known_sources, webdav_collection_remove_source_types_cb, &rstd);
+
+		if (webdav_collection_debug_enabled () &&
+		    (!credentials_empty || (
+		     !g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) &&
+		     !g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN))))
+			e_util_debug_print ("WEBDAV", "%p: Failed to get calendars from '%s': %s\n", webdav_backend, calendar_url, local_error->message);
+	} else if (e_source_collection_get_calendar_enabled (collection_extension) && calendar_url) {
+		if (webdav_collection_debug_enabled ()) {
+			e_util_debug_print ("WEBDAV", "%p: Failed to get calendars from '%s': %s\n", webdav_backend, calendar_url,
+				g_cancellable_is_cancelled (cancellable) ? "Is cancelled" : "Unknown error");
+		}
 	}
 
 	if (!local_error && e_source_collection_get_contacts_enabled (collection_extension) && contacts_url &&
@@ -612,16 +648,31 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 
 		webdav_collection_process_discovered_sources (collection, discovered_sources, known_sources, source_types, G_N_ELEMENTS (source_types));
 
+		if (webdav_collection_debug_enabled ())
+			e_util_debug_print ("WEBDAV", "%p: Received %u books from '%s'\n", webdav_backend, g_slist_length (discovered_sources), contacts_url);
+
 		e_webdav_discover_free_discovered_sources (discovered_sources);
 		discovered_sources = NULL;
 		any_success = TRUE;
-	} else if (any_success && local_error) {
+	/* Prevent lost of already known address books when the discover failed */
+	} else if (local_error) {
 		RemoveSourceTypesData rstd;
 
 		rstd.server = server;
 		rstd.calendars = FALSE;
 
 		g_hash_table_foreach_remove (known_sources, webdav_collection_remove_source_types_cb, &rstd);
+
+		if (webdav_collection_debug_enabled () &&
+		    (!credentials_empty || (
+		     !g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) &&
+		     !g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN))))
+			e_util_debug_print ("WEBDAV", "%p: Failed to get books from '%s': %s\n", webdav_backend, contacts_url, local_error->message);
+	} else if (e_source_collection_get_contacts_enabled (collection_extension) && contacts_url) {
+		if (webdav_collection_debug_enabled ()) {
+			e_util_debug_print ("WEBDAV", "%p: Failed to get books from '%s': %s\n", webdav_backend, contacts_url,
+				g_cancellable_is_cancelled (cancellable) ? "Is cancelled" : "Unknown error");
+		}
 	}
 
 	if (any_success && server && !g_cancellable_is_cancelled (cancellable)) {
@@ -629,6 +680,11 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 
 		rsd.server = server;
 		rsd.webdav_backend = webdav_backend;
+
+		if (webdav_collection_debug_enabled () && g_hash_table_size (known_sources)) {
+			e_util_debug_print ("WEBDAV", "%p: Have %u leftover previously known sources\n", webdav_backend,
+				g_hash_table_size (known_sources));
+		}
 
 		g_hash_table_foreach (known_sources, webdav_collection_remove_unknown_sources_cb, &rsd);
 
