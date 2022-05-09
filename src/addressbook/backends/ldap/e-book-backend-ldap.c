@@ -2841,7 +2841,7 @@ homephone_compare (EContact *contact1,
 		   const gchar *ldap_attr)
 {
 	gint phone_ids[2] = { E_CONTACT_PHONE_HOME, E_CONTACT_PHONE_HOME_2 };
-	const gchar *phone1, *phone2;
+	gchar *phone1, *phone2;
 	gint i;
 
 	for (i = 0; i < 2; i++) {
@@ -2853,6 +2853,9 @@ homephone_compare (EContact *contact1,
 			equal = !strcmp (phone1, phone2);
 		else
 			equal = (!!phone1 == !!phone2);
+
+		g_free (phone1);
+		g_free (phone2);
 
 		if (!equal)
 			return equal;
@@ -2914,7 +2917,7 @@ business_compare (EContact *contact1,
 		  const gchar *ldap_attr)
 {
 	gint phone_ids[2] = { E_CONTACT_PHONE_BUSINESS, E_CONTACT_PHONE_BUSINESS_2 };
-	const gchar *phone1, *phone2;
+	gchar *phone1, *phone2;
 	gint i;
 
 	for (i = 0; i < 2; i++) {
@@ -2926,6 +2929,9 @@ business_compare (EContact *contact1,
 			equal = !strcmp (phone1, phone2);
 		else
 			equal = (!!phone1 == !!phone2);
+
+		g_free (phone1);
+		g_free (phone2);
 
 		if (!equal)
 			return equal;
