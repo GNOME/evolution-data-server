@@ -1442,6 +1442,9 @@ nntp_migrate_to_user_cache_dir (CamelService *service)
 			/* return back the .ev-store-summary file, it's saved in user_data_dir */
 			if (g_rename (ucd_ev_store_summary, udd_ev_store_summary) == -1)
 				g_debug ("%s: Failed to return back '%s' to '%s': %s", G_STRFUNC, ucd_ev_store_summary, udd_ev_store_summary, g_strerror (errno));
+
+			g_free (udd_ev_store_summary);
+			g_free (ucd_ev_store_summary);
 		}
 	}
 
