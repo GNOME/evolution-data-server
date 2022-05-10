@@ -2317,6 +2317,17 @@ imapx_store_create_folder_sync (CamelStore *store,
 		goto exit;
 
 	separator = camel_imapx_mailbox_get_separator (parent_mailbox);
+
+	/* NIL separator means flat structure, where subfolders cannot be created */
+	if (!separator) {
+		g_set_error_literal (
+			error, CAMEL_FOLDER_ERROR,
+			CAMEL_FOLDER_ERROR_INVALID_PATH,
+			_("The account does not support folder hierarchy. Create the folder on the account level instead."));
+		g_object_unref (parent_mailbox);
+		goto exit;
+	}
+
 	parent_mailbox_name = camel_imapx_mailbox_get_name (parent_mailbox);
 
 	mailbox_name = g_strdup_printf (
@@ -2355,7 +2366,7 @@ check_namespace:
 
 check_separator:
 
-	if (strchr (folder_name, separator) != NULL) {
+	if (separator && strchr (folder_name, separator) != NULL) {
 		g_set_error (
 			error, CAMEL_FOLDER_ERROR,
 			CAMEL_FOLDER_ERROR_INVALID_PATH,
