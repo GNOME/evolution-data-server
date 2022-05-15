@@ -7,19 +7,21 @@
 # Elnaz Sarbar <elnaz@farsiweb.info>, 2005.
 # Hedayat Vatankhah <hedayat@grad.com>, 2008.
 # Roozbeh Pournader <roozbeh@gmail.com>, 2008.
+# Danial Behzadi <dani.behzi@ubuntu.com>, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-05-19 15:07+0000\n"
-"PO-Revision-Date: 2008-06-05 13:25-0700\n"
-"Last-Translator: Roozbeh Pournader <roozbeh@gmail.com>\n"
+"PO-Revision-Date: 2022-05-15 11:36+0430\n"
+"Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
 "Language-Team: Persian\n"
 "Language: fa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:555
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2360
@@ -34,20 +36,20 @@ msgstr "در حال بار کردن..."
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4220
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
-msgstr "در حال جست و جو"
+msgstr "جست‌وجو…"
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2725
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4384
 #, c-format
 msgid "Downloading contacts (%d)... "
-msgstr "در حال بارگیری آشناها (%Id)‏..."
+msgstr "بارگیری آشنایان (%Id)‏… "
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2874
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3059
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3103
 #, c-format
 msgid "Updating contacts cache (%d)... "
-msgstr "در حال به‌هنگام کردن حافظه‌ی پنهان آشنا‌ها (%Id)..."
+msgstr "به‌روز رسانی انبارهٔ آشنا‌یان (%Id)… "
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:742
 msgid "Using Distinguished Name (DN)"
@@ -55,27 +57,27 @@ msgstr "استفاده از نام مشخصه"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:745
 msgid "Using Email Address"
-msgstr "استفاده از نشانی پست الکترونیکی"
+msgstr "استفاده از نشانی رایانامه"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1005
 msgid "Reconnecting to LDAP server..."
-msgstr "در حال اتصال مجدد به کارگزار LDAP..."
+msgstr "در حال اتصال مجدد به کارساز LDAP..."
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1598
 msgid "Adding contact to LDAP server..."
-msgstr "در حال اضافه کردن آشنا به کارگزار LDAP..."
+msgstr "در حال اضافه کردن آشنا به کارساز LDAP..."
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1732
 msgid "Removing contact from LDAP server..."
-msgstr "در حال حذف آشنا از کارگزار LDAP..."
+msgstr "در حال حذف آشنا از کارساز LDAP..."
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2043
 msgid "Modifying contact from LDAP server..."
-msgstr "در حال تغییر دادن آشنا از کارگزار LDAP..."
+msgstr "در حال تغییر دادن آشنا از کارساز LDAP..."
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4087
 msgid "Receiving LDAP search results..."
-msgstr "در حال دریافت نتایج جستجوی LDAP..."
+msgstr "در حال دریافت نتایج جست‌وجوی LDAP..."
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4242
 msgid "Error performing search"
@@ -136,19 +138,19 @@ msgid "%s: there is no current operation"
 msgstr "‏%s: عملیاتی در‌ جریان نیست"
 
 #: ../addressbook/libebook/e-book.c:2552
-#, fuzzy, c-format
+#, c-format
 msgid "%s: could not cancel"
-msgstr "‏%s: انصراف ممکن نبود"
+msgstr "%s: نتوانست لغو کند"
 
 #: ../addressbook/libebook/e-book.c:2579 ../addressbook/libebook/e-book.c:2583
 #, c-format
 msgid "\"%s\" on book after \"%s\""
-msgstr "‏«%s» در دفترچه بعد از «%s» "
+msgstr "«%s» در دفترچه بعد از «%s»"
 
 #: ../addressbook/libebook/e-book.c:2647
-#, fuzzy, c-format
+#, c-format
 msgid "%s: canceled"
-msgstr "‏%s: صرف نظر شد"
+msgstr "%s: لغو شد"
 
 #: ../addressbook/libebook/e-book.c:3203
 #, c-format
@@ -168,17 +170,17 @@ msgstr "‏%s: ایجاد  EBookListener ممکن نبود"
 #: ../addressbook/libebook/e-book.c:3490
 #, fuzzy, c-format
 msgid "%s: there was no self contact UID stored in gconf"
-msgstr "‏%s: شناسه‌ی کاربری اطلاعات تماس شخصی در gconf ذخیره نشده است"
+msgstr "‏%s: شناسهٔ کاربری اطلاعات تماس شخصی در gconf ذخیره نشده است"
 
 #: ../addressbook/libebook/e-book.c:3623
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
-msgstr "‏%s: مبدئی برای شناسه‌ی کاربری `%s' در gconf ذخیره نشده است. "
+msgstr "%s: منبعی برای شناسهٔ کاربری `%s' در gconf ذخیره نشده."
 
 #. Dummy row as EContactField starts from 1
 #: ../addressbook/libebook/e-contact.c:113
 msgid "Unique ID"
-msgstr "شناسه‌ی یکتا"
+msgstr "شناسهٔ یکتا"
 
 #: ../addressbook/libebook/e-contact.c:114
 msgid "File Under"
@@ -187,7 +189,7 @@ msgstr "پرونده در دستِ"
 #. URI of the book to which the contact belongs to
 #: ../addressbook/libebook/e-contact.c:116
 msgid "Book URI"
-msgstr "نشانی اینترنتی دفترچه"
+msgstr "نشانی دفترچه"
 
 #. Name fields
 #. FN isn't really a structured field - we use a getter/setter
@@ -199,7 +201,7 @@ msgstr "نام کامل"
 
 #: ../addressbook/libebook/e-contact.c:123
 msgid "Given Name"
-msgstr "اسم کوچک"
+msgstr "نام کوچک"
 
 #: ../addressbook/libebook/e-contact.c:124
 msgid "Family Name"
@@ -212,19 +214,19 @@ msgstr "لقب"
 #. Email fields
 #: ../addressbook/libebook/e-contact.c:128
 msgid "Email 1"
-msgstr "پست الکترونیکی ۱"
+msgstr "رایانامه ۱"
 
 #: ../addressbook/libebook/e-contact.c:129
 msgid "Email 2"
-msgstr "پست الکترونیکی ۲"
+msgstr "رایانامه ۲"
 
 #: ../addressbook/libebook/e-contact.c:130
 msgid "Email 3"
-msgstr "پست الکترونیکی ۳"
+msgstr "رایانامه ۳"
 
 #: ../addressbook/libebook/e-contact.c:131
 msgid "Email 4"
-msgstr "پست الکترونیکی ۴"
+msgstr "رایانامه ۴"
 
 #: ../addressbook/libebook/e-contact.c:133
 msgid "Mailer"
@@ -262,7 +264,7 @@ msgstr "دورنگار کاری"
 
 #: ../addressbook/libebook/e-contact.c:145
 msgid "Callback Phone"
-msgstr ""
+msgstr "تلفن پاسخ"
 
 #: ../addressbook/libebook/e-contact.c:146
 msgid "Car Phone"
@@ -278,7 +280,7 @@ msgstr "تلفن خانه"
 
 #: ../addressbook/libebook/e-contact.c:149
 msgid "Home Phone 2"
-msgstr "تلفن خانه‌ی ۲"
+msgstr "تلفن خانهٔ ۲"
 
 #: ../addressbook/libebook/e-contact.c:150
 msgid "Home Fax"
@@ -353,7 +355,7 @@ msgstr "دستیار"
 #. Web fields
 #: ../addressbook/libebook/e-contact.c:172
 msgid "Homepage URL"
-msgstr "نشانی اینترنتی صفحه‌ی آغازه"
+msgstr "نشانی اینترنتی صفحهٔ آغازه"
 
 #: ../addressbook/libebook/e-contact.c:173
 msgid "Weblog URL"
@@ -394,147 +396,147 @@ msgstr "یادداشت"
 #. Instant messaging fields
 #: ../addressbook/libebook/e-contact.c:189
 msgid "AIM Home Screen Name 1"
-msgstr "نام نمایشی AIM خانگی ۱"
+msgstr "نام نمایشی ایم خانگی ۱"
 
 #: ../addressbook/libebook/e-contact.c:190
 msgid "AIM Home Screen Name 2"
-msgstr "نام نمایشی AIM خانگی ۲"
+msgstr "نام نمایشی ایم خانگی ۲"
 
 #: ../addressbook/libebook/e-contact.c:191
 msgid "AIM Home Screen Name 3"
-msgstr "نام نمایشی AIM خانگی ۳"
+msgstr "نام نمایشی ایم خانگی ۳"
 
 #: ../addressbook/libebook/e-contact.c:192
 msgid "AIM Work Screen Name 1"
-msgstr "نام نمایشی AIM کاری ۱"
+msgstr "نام نمایشی ایم کاری ۱"
 
 #: ../addressbook/libebook/e-contact.c:193
 msgid "AIM Work Screen Name 2"
-msgstr "نام نمایشی AIM کاری ۲"
+msgstr "نام نمایشی ایم کاری ۲"
 
 #: ../addressbook/libebook/e-contact.c:194
 msgid "AIM Work Screen Name 3"
-msgstr "نام نمایشی AIM کاری ۳"
+msgstr "نام نمایشی ایم کاری ۳"
 
 #: ../addressbook/libebook/e-contact.c:195
 msgid "GroupWise Home Screen Name 1"
-msgstr "نام نمایشی خانگی GroupWise ۱"
+msgstr "نام نمایشی خانگی گروپ‌وایز ۱"
 
 #: ../addressbook/libebook/e-contact.c:196
 msgid "GroupWise Home Screen Name 2"
-msgstr "نام نمایشی خانگی GroupWise ۲"
+msgstr "نام نمایشی خانگی گروپ‌وایز ۲"
 
 #: ../addressbook/libebook/e-contact.c:197
 msgid "GroupWise Home Screen Name 3"
-msgstr "نام نمایشی خانگی GroupWise ۳"
+msgstr "نام نمایشی خانگی گروپ‌وایز ۳"
 
 #: ../addressbook/libebook/e-contact.c:198
 msgid "GroupWise Work Screen Name 1"
-msgstr "نام نمایشی کاری GroupWise ۱"
+msgstr "نام نمایشی کاری گروپ‌وایز ۱"
 
 #: ../addressbook/libebook/e-contact.c:199
 msgid "GroupWise Work Screen Name 2"
-msgstr "نام نمایشی کاری GroupWise ۲"
+msgstr "نام نمایشی کاری گروپ‌وایز ۲"
 
 #: ../addressbook/libebook/e-contact.c:200
 msgid "GroupWise Work Screen Name 3"
-msgstr "نام نمایشی کاری GroupWise ۳"
+msgstr "نام نمایشی کاری گروپ‌وایز ۳"
 
 #: ../addressbook/libebook/e-contact.c:201
 msgid "Jabber Home Id 1"
-msgstr "شناسه‌ی خانگی Jabber ۱"
+msgstr "شناسهٔ خانگی جبر ۱"
 
 #: ../addressbook/libebook/e-contact.c:202
 msgid "Jabber Home Id 2"
-msgstr "شناسه‌ی خانگی Jabber ۲"
+msgstr "شناسهٔ خانگی جبر ۲"
 
 #: ../addressbook/libebook/e-contact.c:203
 msgid "Jabber Home Id 3"
-msgstr "شناسه‌ی خانگی Jabber ۳"
+msgstr "شناسهٔ خانگی جبر ۳"
 
 #: ../addressbook/libebook/e-contact.c:204
 msgid "Jabber Work Id 1"
-msgstr "شناسه‌ی کاری Jabber ۱"
+msgstr "شناسهٔ کاری جبر ۱"
 
 #: ../addressbook/libebook/e-contact.c:205
 msgid "Jabber Work Id 2"
-msgstr "شناسه‌ی کاری Jabber ۲"
+msgstr "شناسهٔ کاری جبر ۲"
 
 #: ../addressbook/libebook/e-contact.c:206
 msgid "Jabber Work Id 3"
-msgstr "شناسه‌ی کاری Jabber ۳"
+msgstr "شناسهٔ کاری جبر ۳"
 
 #: ../addressbook/libebook/e-contact.c:207
 msgid "Yahoo! Home Screen Name 1"
-msgstr "نام نمایشی خانگی Yahoo! ۱"
+msgstr "نام نمایشی خانگی یاهو! ۱"
 
 #: ../addressbook/libebook/e-contact.c:208
 msgid "Yahoo! Home Screen Name 2"
-msgstr "نام نمایشی خانگی Yahoo! ۱"
+msgstr "نام نمایشی خانگی یاهو! ۱"
 
 #: ../addressbook/libebook/e-contact.c:209
 msgid "Yahoo! Home Screen Name 3"
-msgstr "نام نمایشی خانگی Yahoo! ۳"
+msgstr "نام نمایشی خانگی یاهو! ۳"
 
 #: ../addressbook/libebook/e-contact.c:210
 msgid "Yahoo! Work Screen Name 1"
-msgstr "نام نمایشی کاری Yahoo! ۱"
+msgstr "نام نمایشی کاری یاهو! ۱"
 
 #: ../addressbook/libebook/e-contact.c:211
 msgid "Yahoo! Work Screen Name 2"
-msgstr "نام نمایشی کاری Yahoo! ۲"
+msgstr "نام نمایشی کاری یاهو! ۲"
 
 #: ../addressbook/libebook/e-contact.c:212
 msgid "Yahoo! Work Screen Name 3"
-msgstr "نام نمایشی کاری Yahoo! ۳"
+msgstr "نام نمایشی کاری یاهو! ۳"
 
 #: ../addressbook/libebook/e-contact.c:213
 msgid "MSN Home Screen Name 1"
-msgstr "نام نمایشی خانگی MSN ۱"
+msgstr "نام نمایشی خانگی ام‌اس‌ان ۱"
 
 #: ../addressbook/libebook/e-contact.c:214
 msgid "MSN Home Screen Name 2"
-msgstr "نام نمایشی خانگی MSN ۲"
+msgstr "نام نمایشی خانگی ام‌اس‌ان ۲"
 
 #: ../addressbook/libebook/e-contact.c:215
 msgid "MSN Home Screen Name 3"
-msgstr "نام نمایشی خانگی MSN ۳"
+msgstr "نام نمایشی خانگی ام‌اس‌ان ۳"
 
 #: ../addressbook/libebook/e-contact.c:216
 msgid "MSN Work Screen Name 1"
-msgstr "نام نمایشی کاری MSN ۱"
+msgstr "نام نمایشی کاری ام‌اس‌ان ۱"
 
 #: ../addressbook/libebook/e-contact.c:217
 msgid "MSN Work Screen Name 2"
-msgstr "نام نمایشی کاری MSN ۲"
+msgstr "نام نمایشی کاری ام‌اس‌ان ۲"
 
 #: ../addressbook/libebook/e-contact.c:218
 msgid "MSN Work Screen Name 3"
-msgstr "نام نمایشی کاری MSN ۳"
+msgstr "نام نمایشی کاری ام‌اس‌ان ۳"
 
 #: ../addressbook/libebook/e-contact.c:219
 msgid "ICQ Home Id 1"
-msgstr "شناسه‌ی خانگی ICQ ۱"
+msgstr "شناسهٔ خانگی آی‌سیک‌یو ۱"
 
 #: ../addressbook/libebook/e-contact.c:220
 msgid "ICQ Home Id 2"
-msgstr "شناسه‌ی خانگی ICQ ۲"
+msgstr "شناسهٔ خانگی آی‌سیک‌یو ۲"
 
 #: ../addressbook/libebook/e-contact.c:221
 msgid "ICQ Home Id 3"
-msgstr "شناسه‌ی خانگی ICQ ۳"
+msgstr "شناسهٔ خانگی آی‌سیک‌یو ۳"
 
 #: ../addressbook/libebook/e-contact.c:222
 msgid "ICQ Work Id 1"
-msgstr "شناسه‌ی کاری ICQ ۱"
+msgstr "شناسهٔ کاری آی‌سیک‌یو ۱"
 
 #: ../addressbook/libebook/e-contact.c:223
 msgid "ICQ Work Id 2"
-msgstr "شناسه‌ی کاری ICQ ۲"
+msgstr "شناسهٔ کاری آی‌سیک‌یو ۲"
 
 #: ../addressbook/libebook/e-contact.c:224
 msgid "ICQ Work Id 3"
-msgstr "شناسه‌ی کاری ICQ ۳"
+msgstr "شناسهٔ کاری آی‌سیک‌یو ۳"
 
 #. Last modified time
 #: ../addressbook/libebook/e-contact.c:227
@@ -548,7 +550,7 @@ msgstr "نام یا سازمان"
 #. Address fields
 #: ../addressbook/libebook/e-contact.c:231
 msgid "Address List"
-msgstr "فهرست نشانی‌ها"
+msgstr "سیاههٔ نشانی"
 
 #: ../addressbook/libebook/e-contact.c:232
 msgid "Home Address"
@@ -565,7 +567,7 @@ msgstr "نشانی‌های دیگر"
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:237
 msgid "Category List"
-msgstr "فهرست مقولات"
+msgstr "سیاههٔ دسته"
 
 #. Photo/Logo
 #: ../addressbook/libebook/e-contact.c:240
@@ -582,44 +584,44 @@ msgstr "نام"
 
 #: ../addressbook/libebook/e-contact.c:244
 msgid "Email List"
-msgstr "فهرست پست الکترونیکی"
+msgstr "سیاههٔ رایانامه"
 
 #. Instant messaging fields
 #: ../addressbook/libebook/e-contact.c:247
 msgid "AIM Screen Name List"
-msgstr "فهرست نام‌های نمایشی AIM"
+msgstr "سیاههٔ نام‌های نمایشی ایم"
 
 #: ../addressbook/libebook/e-contact.c:248
 msgid "GroupWise Id List"
-msgstr "فهرست شناسه‌های GroupWise"
+msgstr "سیاههٔ شناسه‌های گروپ‌وایز"
 
 #: ../addressbook/libebook/e-contact.c:249
 msgid "Jabber Id List"
-msgstr "فهرست شناسه‌های Jabber"
+msgstr "سیاههٔ شناسه‌های جبر"
 
 #: ../addressbook/libebook/e-contact.c:250
 msgid "Yahoo! Screen Name List"
-msgstr "فهرست نام‌های نمایشی Yahoo!"
+msgstr "سیاههٔ نام‌های نمایشی یاهو"
 
 #: ../addressbook/libebook/e-contact.c:251
 msgid "MSN Screen Name List"
-msgstr "فهرست نام‌های نمایشی MSN"
+msgstr "سیاههٔ نام‌های نمایشی ام‌اس‌ان"
 
 #: ../addressbook/libebook/e-contact.c:252
 msgid "ICQ Id List"
-msgstr "فهرست شناسه‌های ICQ"
+msgstr "سیاههٔ شناسه‌های آی‌سیک‌یو"
 
 #: ../addressbook/libebook/e-contact.c:254
 msgid "Wants HTML Mail"
-msgstr "می‌خواهد نامه‌ی HTML دریافت کند"
+msgstr "می‌خواهد نامهٔ HTML دریافت کند"
 
 #: ../addressbook/libebook/e-contact.c:256
 msgid "List"
-msgstr "فهرست"
+msgstr "سیاهه"
 
 #: ../addressbook/libebook/e-contact.c:257
 msgid "List Show Addresses"
-msgstr "نشان دادن نشانی‌ها در فهرست"
+msgstr "سیاهه کردن نمایش نشانی‌ها"
 
 #: ../addressbook/libebook/e-contact.c:259
 msgid "Birth Date"
@@ -634,55 +636,49 @@ msgstr "سالگرد ازدواج"
 #. Security fields
 #: ../addressbook/libebook/e-contact.c:263
 msgid "X.509 Certificate"
-msgstr ""
+msgstr "گواهینامهٔ X.509"
 
 #: ../addressbook/libebook/e-contact.c:265
-#, fuzzy
 msgid "Gadu-Gadu Home Id 1"
-msgstr "شناسه‌ی خانگی Jabber ۱"
+msgstr "شناسهٔ خانگی گادوکادو ۱"
 
 #: ../addressbook/libebook/e-contact.c:266
-#, fuzzy
 msgid "Gadu-Gadu Home Id 2"
-msgstr "شناسه‌ی خانگی Jabber ۲"
+msgstr "شناسهٔ خانگی گادوکادو ۲"
 
 #: ../addressbook/libebook/e-contact.c:267
-#, fuzzy
 msgid "Gadu-Gadu Home Id 3"
-msgstr "شناسه‌ی خانگی Jabber ۳"
+msgstr "شناسهٔ خانگی گادوکادو ۳"
 
 #: ../addressbook/libebook/e-contact.c:268
-#, fuzzy
 msgid "Gadu-Gadu Work Id 1"
-msgstr "شناسه‌ی کاری Jabber ۱"
+msgstr "شناسهٔ کاری گادوکادو ۱"
 
 #: ../addressbook/libebook/e-contact.c:269
-#, fuzzy
 msgid "Gadu-Gadu Work Id 2"
-msgstr "شناسه‌ی کاری Jabber ۲"
+msgstr "شناسهٔ کاری گادوکادو ۲"
 
 #: ../addressbook/libebook/e-contact.c:270
-#, fuzzy
 msgid "Gadu-Gadu Work Id 3"
-msgstr "شناسه‌ی کاری Jabber ۳"
+msgstr "شناسهٔ کاری گادوکادو ۳"
 
 #: ../addressbook/libebook/e-contact.c:271
 msgid "Gadu-Gadu Id List"
-msgstr ""
+msgstr "سیاههٔ شناسه‌های گادوگادو"
 
 #. Geo information
 #: ../addressbook/libebook/e-contact.c:274
 msgid "Geographic Information"
-msgstr ""
+msgstr "اطّلاعات جغرافیایی"
 
 #: ../addressbook/libebook/e-contact.c:276
 msgid "Telephone"
-msgstr ""
+msgstr "تلفن"
 
 #: ../addressbook/libebook/e-contact.c:1493
 #: ../addressbook/libebook/e-destination.c:761
 msgid "Unnamed List"
-msgstr "فهرست بی‌نام"
+msgstr "سیاههٔ بی‌نام"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
 #: ../libedataserver/e-categories.c:44
@@ -700,15 +696,13 @@ msgid "Anniversary: %s"
 msgstr "سالگرد ازدواج: %s"
 
 #: ../calendar/backends/file/e-cal-backend-file.c:213
-#, fuzzy
 msgid "Cannot save calendar data: Malformed URI."
-msgstr "نمی‌توان داده‌های تقویم را ذخیره کرد: نشانی اینترنتی معیوب است."
+msgstr "نمی‌توان دادهٔ تقویم را ذخیره کرد: نشانی بدشکل."
 
 #: ../calendar/backends/file/e-cal-backend-file.c:220
 #: ../calendar/backends/file/e-cal-backend-file.c:226
-#, fuzzy
 msgid "Cannot save calendar data"
-msgstr "نمی‌توان داده‌های تقویم را ذخیره کرد: نشانی اینترنتی معیوب است."
+msgstr "نمی‌توان دادهٔ تقویم را ذخیره کرد"
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:335
 msgid "Could not create thread for getting deltas"
@@ -721,12 +715,12 @@ msgstr "ایجاد رشته برای گرفتن دلتاها ممکن نبود"
 #: ../calendar/backends/http/e-cal-backend-http.c:569
 #: ../calendar/backends/weather/e-cal-backend-weather.c:466
 msgid "Could not create cache file"
-msgstr "ایجاد پرونده‌ی حافظه‌ی نهان ممکن نبود"
+msgstr "ایجاد پروندهٔ حافظهٔ نهان ممکن نبود"
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:380
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1061
 msgid "Could not create thread for populating cache"
-msgstr "ایجاد رشته برای پر کردن حافظه‌ی نهان ممکن نبود"
+msgstr "ایجاد رشته برای پر کردن حافظهٔ نهان ممکن نبود"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1056
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1801
@@ -750,7 +744,7 @@ msgstr "تقویم"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:943
 msgid "Invalid server URI"
-msgstr "نشانی اینترنتی کارگزار نامعتبر"
+msgstr "نشانی اینترنتی کارساز نامعتبر"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:962
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
@@ -844,7 +838,7 @@ msgstr "مه آلود"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:231
 msgid "Rain/snow mixed"
-msgstr "مخلوط باران و برف "
+msgstr "مخلوط باران و برف"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:232
 msgid "Sleet"
@@ -1119,7 +1113,7 @@ msgstr "نامعین"
 #: ../calendar/libecal/e-cal.c:1665 ../libedataserverui/e-book-auth-util.c:200
 #, c-format
 msgid "Enter password for %s (user %s)"
-msgstr "گذرواژه‌ی %s (کاربر %s) را وارد کنید"
+msgstr "گذرواژهٔ %s (کاربر %s) را وارد کنید"
 
 #.
 #. This password prompt will be prompted rarely. Since the key that is passed to
@@ -1128,7 +1122,7 @@ msgstr "گذرواژه‌ی %s (کاربر %s) را وارد کنید"
 #: ../calendar/libecal/e-cal.c:1679
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
-msgstr "گذرواژه‌ی %s را برای به‌کار انداختن پیشکار برای کاربر %s وارد کنید"
+msgstr "گذرواژهٔ %s را برای به‌کار انداختن پیشکار برای کاربر %s وارد کنید"
 
 #: ../calendar/libecal/e-cal.c:5007
 msgid "Invalid argument"
@@ -1162,8 +1156,7 @@ msgstr "نشانی اینترنتی بار نشد"
 msgid "URI already loaded"
 msgstr "نشانی اینترنتی قبلاْ بار شده است"
 
-#: ../calendar/libecal/e-cal.c:5023
-#: ../servers/exchange/storage/e-storage.c:571
+#: ../calendar/libecal/e-cal.c:5023 ../servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "اجازه داده نشد"
 
@@ -1173,16 +1166,15 @@ msgstr "کاربر نامعلوم"
 
 #: ../calendar/libecal/e-cal.c:5027
 msgid "Object ID already exists"
-msgstr "شناسه‌ی شیء از قبل وجود دارد"
+msgstr "شناسهٔ شیء از قبل وجود دارد"
 
 #: ../calendar/libecal/e-cal.c:5029
 msgid "Protocol not supported"
 msgstr "پروتکل پشتیبانی نمی‌شود"
 
 #: ../calendar/libecal/e-cal.c:5031
-#, fuzzy
 msgid "Operation has been canceled"
-msgstr "از عملیات صرف نظر شده است"
+msgstr "عمل لغو شد"
 
 #: ../calendar/libecal/e-cal.c:5033
 msgid "Could not cancel operation"
@@ -1211,8 +1203,7 @@ msgstr "یک استثنای CORBA رخ داده است"
 msgid "Unknown error"
 msgstr "خطای ناشناخته"
 
-#: ../calendar/libecal/e-cal.c:5043
-#: ../servers/exchange/storage/e-storage.c:553
+#: ../calendar/libecal/e-cal.c:5043 ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
 msgstr "بدون خطا"
 
@@ -1247,7 +1238,7 @@ msgstr "‏«%s» انتظار دارد آرگومان اول رشته باشد"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:121
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "‏«%s» انتظار دارد آرگومان اول یک رشته‌ی تاریخ/زمان ISO 8601 باشد"
+msgstr "‏«%s» انتظار دارد آرگومان اول یک رشتهٔ تاریخ/زمان ISO 8601 باشد"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:160
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:361
@@ -1287,13 +1278,14 @@ msgid "\"%s\" expects the second argument to be a string"
 msgstr "‏«%s» انتظار دارد آرگومان دوم رشته باشد"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:773
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
 "\"classification\""
 msgstr ""
-"‏«%s» انتظار دارد آرگومان اول «any»، ‏«summary»، ‏«description» یا «location» باشد"
+"«%s» انتظار دارد آرگومان نخست «any»، ‏«summary»، ‏«description»، «location»، "
+"«location»، «attendee»، «organizer» یا «classification» باشد"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:925
 #, c-format
@@ -1303,11 +1295,10 @@ msgstr "‏«%s» حداقل یک آرگومان می‌خواهد"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:939
 #, c-format
 msgid ""
-"\"%s\" expects all arguments to be strings or one and only one argument to "
-"be a boolean false (#f)"
+"\"%s\" expects all arguments to be strings or one and only one argument to be a "
+"boolean false (#f)"
 msgstr ""
-"‏«%s» انتظار دارد همه‌ی آرگومان‌ها رشته باشند یا فقط یک آرگومان بولی غلط (#f) "
-"باشد"
+"‏«%s» انتظار دارد همهٔ آرگومان‌ها رشته باشند یا فقط یک آرگومان بولی غلط (#f) باشد"
 
 #: ../camel/camel-cipher-context.c:102
 msgid "Signing is not supported by this cipher"
@@ -1315,7 +1306,7 @@ msgstr ""
 
 #: ../camel/camel-cipher-context.c:128
 msgid "Signing message"
-msgstr "در حال امضا کردن پیغام"
+msgstr "در حال امضا کردن پیام"
 
 #: ../camel/camel-cipher-context.c:145
 msgid "Verifying is not supported by this cipher"
@@ -1323,7 +1314,7 @@ msgstr ""
 
 #: ../camel/camel-cipher-context.c:171
 msgid "Verifying message"
-msgstr "در حال تأیید پیغام"
+msgstr "در حال تأیید پیام"
 
 #: ../camel/camel-cipher-context.c:189
 msgid "Encryption is not supported by this cipher"
@@ -1331,7 +1322,7 @@ msgstr ""
 
 #: ../camel/camel-cipher-context.c:215
 msgid "Encrypting message"
-msgstr "در حال رمزنگاری پیغام"
+msgstr "در حال رمزنگاری پیام"
 
 #: ../camel/camel-cipher-context.c:232
 msgid "Decryption is not supported by this cipher"
@@ -1339,7 +1330,7 @@ msgstr ""
 
 #: ../camel/camel-cipher-context.c:254
 msgid "Decrypting message"
-msgstr "در حال رمزگشایی پیغام"
+msgstr "در حال رمزگشایی پیام"
 
 #: ../camel/camel-cipher-context.c:271
 msgid "You may not import keys with this cipher"
@@ -1351,12 +1342,12 @@ msgstr ""
 
 #: ../camel/camel-data-cache.c:137
 msgid "Unable to create cache path"
-msgstr "ایجاد مسیر حافظه‌ی نهان مقدور نیست"
+msgstr "ایجاد مسیر حافظهٔ نهان مقدور نیست"
 
 #: ../camel/camel-data-cache.c:384
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
-msgstr "حذف مدخل حافظه‌ی نهان ممکن نیست: %s‏: %s"
+msgstr "حذف مدخل حافظهٔ نهان ممکن نیست: %s‏: %s"
 
 #: ../camel/camel-disco-diary.c:198
 #, c-format
@@ -1366,45 +1357,44 @@ msgid ""
 "reconnect to the network."
 msgstr ""
 "نوشتن مدخل ثبت وقایع امکان پذیر نبود: %s\n"
-"عملیات بیشتر بر روی این کارگزار پس از برقراری ارتباط مجدد با شبکه\n"
+"عملیات بیشتر بر روی این کارساز پس از برقراری ارتباط مجدد با شبکه\n"
 " از سر گرفته نخواهد شد."
 
 #: ../camel/camel-disco-diary.c:261
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Could not open '%s':\n"
 "%s\n"
 "Changes made to this folder will not be resynchronized."
 msgstr ""
-"باز کردن «%s» امکان پذیر نبود:\n"
+"نتوانست «%s» را بگشاید:\n"
 "‏%s\n"
-"تغییرات اعمال شده بر روی این پوشه مجدداً همگام‌سازی نخواهد شد."
+"تغییرات این شاخه همگام نخواهند شد."
 
 #: ../camel/camel-disco-diary.c:297
 msgid "Resynchronizing with server"
-msgstr "همگام‌سازی مجدد با کارگزار"
+msgstr "همگام‌سازی مجدد با کارساز"
 
 #: ../camel/camel-disco-folder.c:43 ../camel/camel-offline-folder.c:52
 msgid "Copy folder content locally for offline operation"
-msgstr "نسخه‌برداری محلی از محتویات پوشه برای عملیات در حالت منفصل"
+msgstr "نسخه‌برداری محلی از محتویات شاخه برای عملیات در حالت منفصل"
 
 #: ../camel/camel-disco-folder.c:105 ../camel/camel-offline-folder.c:111
 msgid "Downloading new messages for offline mode"
-msgstr "بارگیری پیغام‌های جدید برای حالت منفصل"
+msgstr "بارگیری پیام‌های جدید برای حالت منفصل"
 
 #: ../camel/camel-disco-folder.c:468
 #, c-format
 msgid "Preparing folder '%s' for offline"
-msgstr "آماده‌سازی پوشه‌ی «%s» برای حالت منفصل"
+msgstr "آماده‌سازی شاخهٔ «%s» برای حالت منفصل"
 
-#: ../camel/camel-disco-store.c:403
-#: ../camel/providers/imap/camel-imap-store.c:3026
+#: ../camel/camel-disco-store.c:403 ../camel/providers/imap/camel-imap-store.c:3026
 msgid "You must be working online to complete this operation"
 msgstr "برای تکمیل این عملیات باید برخط کار کنید"
 
 #: ../camel/camel-exception.c:264
 msgid "No description available"
-msgstr ""
+msgstr "شرحی موجود نیست"
 
 #: ../camel/camel-filter-driver.c:786
 #, c-format
@@ -1414,16 +1404,16 @@ msgstr "ساختن فراروند فرزند «%s» شکست خورد: %s"
 #: ../camel/camel-filter-driver.c:828
 #, c-format
 msgid "Invalid message stream received from %s: %s"
-msgstr "جریان پیغام نامعتبر از %s دریافت شد: %s"
+msgstr "جریان پیام نامعتبر از %s دریافت شد: %s"
 
 #: ../camel/camel-filter-driver.c:1017 ../camel/camel-filter-driver.c:1026
 msgid "Syncing folders"
-msgstr "همگام سازی پوشه‌ها"
+msgstr "همگام سازی شاخه‌ها"
 
 #: ../camel/camel-filter-driver.c:1115 ../camel/camel-filter-driver.c:1495
 #, c-format
 msgid "Error parsing filter: %s: %s"
-msgstr "خطا در تجزیه‌ی صافی: %s: %s"
+msgstr "خطا در تجزیهٔ صافی: %s: %s"
 
 #: ../camel/camel-filter-driver.c:1124 ../camel/camel-filter-driver.c:1504
 #, c-format
@@ -1432,29 +1422,29 @@ msgstr "خطا در اجرای صافی: %s: %s"
 
 #: ../camel/camel-filter-driver.c:1192
 msgid "Unable to open spool folder"
-msgstr "باز کردن پوشه‌ی قرقره مقدور نیست"
+msgstr "گشودن شاخهٔ قرقره مقدور نیست"
 
 #: ../camel/camel-filter-driver.c:1201
 msgid "Unable to process spool folder"
-msgstr "پردازش پوشه‌ی قرقره مقدور نیست"
+msgstr "پردازش شاخهٔ قرقره مقدور نیست"
 
 #: ../camel/camel-filter-driver.c:1216
 #, c-format
 msgid "Getting message %d (%d%%)"
-msgstr "در حال گرفتن پیغام %Id (٪%Id)"
+msgstr "در حال گرفتن پیام %Id (٪%Id)"
 
 #: ../camel/camel-filter-driver.c:1220
 msgid "Cannot open message"
-msgstr "پیغام باز نمی‌شود"
+msgstr "پیام باز نمی‌شود"
 
 #: ../camel/camel-filter-driver.c:1221 ../camel/camel-filter-driver.c:1234
 #, c-format
 msgid "Failed on message %d"
-msgstr "شکست در پیغام %Id"
+msgstr "شکست در پیام %Id"
 
 #: ../camel/camel-filter-driver.c:1248 ../camel/camel-filter-driver.c:1339
 msgid "Syncing folder"
-msgstr "در حال همگام‌سازی پوشه"
+msgstr "در حال همگام‌سازی شاخه"
 
 #: ../camel/camel-filter-driver.c:1252 ../camel/camel-filter-driver.c:1344
 msgid "Complete"
@@ -1463,16 +1453,16 @@ msgstr "انجام شده"
 #: ../camel/camel-filter-driver.c:1309
 #, c-format
 msgid "Getting message %d of %d"
-msgstr "در حال دریافت پیغام %Id از %Id"
+msgstr "در حال دریافت پیام %Id از %Id"
 
 #: ../camel/camel-filter-driver.c:1324
 #, c-format
 msgid "Failed at message %d of %d"
-msgstr "شکست در پیغام %Id از %Id"
+msgstr "شکست در پیام %Id از %Id"
 
 #: ../camel/camel-filter-search.c:139
 msgid "Failed to retrieve message"
-msgstr "بازیابی پیغام شکست خورد"
+msgstr "بازیابی پیام شکست خورد"
 
 #: ../camel/camel-filter-search.c:402
 msgid "Invalid arguments to (system-flag)"
@@ -1491,7 +1481,7 @@ msgstr "شکست در ایجاد فراروند فرزند «%s»: %s"
 #: ../camel/camel-filter-search.c:737 ../camel/camel-filter-search.c:745
 #, c-format
 msgid "Error executing filter search: %s: %s"
-msgstr "خطا در اجرای صافی جستجو: %s: %s"
+msgstr "خطا در اجرای صافی جست‌وجو: %s: %s"
 
 #: ../camel/camel-folder-search.c:358 ../camel/camel-folder-search.c:480
 #, c-format
@@ -1499,7 +1489,7 @@ msgid ""
 "Cannot parse search expression: %s:\n"
 "%s"
 msgstr ""
-"نمی‌توان عبارت جستجو را تجزیه کرد: %s:\n"
+"نمی‌توان عبارت جست‌وجو را تجزیه کرد: %s:\n"
 "‏%s"
 
 #: ../camel/camel-folder-search.c:368 ../camel/camel-folder-search.c:490
@@ -1508,61 +1498,61 @@ msgid ""
 "Error executing search expression: %s:\n"
 "%s"
 msgstr ""
-"خطا در اجرای عبارت جستجو: %s:\n"
+"خطا در اجرای عبارت جست‌وجو: %s:\n"
 "‏%s"
 
 #: ../camel/camel-folder-search.c:677 ../camel/camel-folder-search.c:712
-#, fuzzy, c-format
+#, c-format
 msgid "(%s) requires a single bool result"
-msgstr "‏(match-all) یک نتیجه‌ی بولی تکی لازم دارد "
+msgstr "(%s) یک نتیجهٔ بولی تکی لازم دارد"
 
 #: ../camel/camel-folder-search.c:765
-#, fuzzy, c-format
+#, c-format
 msgid "(%s) not allowed inside %s"
-msgstr "‏(match-threads) داخل match-all مجاز نیست"
+msgstr "(%s) داخل %s مجاز نیست"
 
 #: ../camel/camel-folder-search.c:771 ../camel/camel-folder-search.c:778
-#, fuzzy, c-format
+#, c-format
 msgid "(%s) requires a match type string"
-msgstr "‏(match-threads) یک رشته‌ی نوع تطابق لازم دارد"
+msgstr "(%s) یک رشتهٔ نوع تطابق لازم دارد"
 
 #: ../camel/camel-folder-search.c:805
-#, fuzzy, c-format
+#, c-format
 msgid "(%s) expects an array result"
-msgstr "‏(match-threads) یک نتیجه‌ی آرایه‌ای انتظار دارد"
+msgstr "(%s) یک نتیجهٔ آرایه‌ای انتظار دارد"
 
 #: ../camel/camel-folder-search.c:814
-#, fuzzy, c-format
+#, c-format
 msgid "(%s) requires the folder set"
-msgstr "‏(match-threads) لازم دارد که پوشه تنظیم شده باشد"
+msgstr "(%s) لازم دارد که شاخه تنظیم شده باشد"
 
 #: ../camel/camel-folder-search.c:909
 #, c-format
 msgid "Performing query on unknown header: %s"
-msgstr "انجام پرس و جو درباره‌ی سرصفحه‌ی نامعلوم: %s"
+msgstr "انجام پرس و جو دربارهٔ سرصفحهٔ نامعلوم: %s"
 
 #: ../camel/camel-folder.c:628
 #, c-format
 msgid "Unsupported operation: append message: for %s"
-msgstr "عملیات پشتیبانی نشده: الحاق پیغام: برای %s"
+msgstr "عملیات پشتیبانی نشده: الحاق پیام: برای %s"
 
 #: ../camel/camel-folder.c:1250
 #, c-format
 msgid "Unsupported operation: search by expression: for %s"
-msgstr "عملیات پشتیبانی نشده: جستجو با عبارت: برای %s"
+msgstr "عملیات پشتیبانی نشده: جست‌وجو با عبارت: برای %s"
 
 #: ../camel/camel-folder.c:1291
-#, fuzzy, c-format
+#, c-format
 msgid "Unsupported operation: search by UIDs: for %s"
-msgstr "عملیات پشتیبانی نشده: جستجو با شناسه‌ی کاربر: برای %s"
+msgstr "عملیات پشتیبانی نشده: جست‌وجو با شناسهٔ کاربر: برای %s"
 
 #: ../camel/camel-folder.c:1407
 msgid "Moving messages"
-msgstr "در حال جابه‌جایی پیغام‌ها"
+msgstr "در حال جابه‌جایی پیام‌ها"
 
 #: ../camel/camel-folder.c:1407
 msgid "Copying messages"
-msgstr "در حال نسخه‌برداری از پیغام‌ها"
+msgstr "در حال نسخه‌برداری از پیام‌ها"
 
 #: ../camel/camel-folder.c:1750
 msgid "Learning junk"
@@ -1574,7 +1564,7 @@ msgstr "در حال یاد گرفتن نا‌آشغال"
 
 #: ../camel/camel-folder.c:1786
 msgid "Filtering new message(s)"
-msgstr "در حال از صافی رد کردن پیغام‌(های) جدید"
+msgstr "در حال از صافی رد کردن پیام‌(های) جدید"
 
 #: ../camel/camel-gpg-context.c:755
 #, c-format
@@ -1583,26 +1573,26 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"با پیغام وضعیت GnuPG غیرمنتظره‌ای برخورد شد:\n"
+"با پیام وضعیت GnuPG غیرمنتظره‌ای برخورد شد:\n"
 "\n"
 "‏%s"
 
 #: ../camel/camel-gpg-context.c:770
 msgid "Failed to parse gpg userid hint."
-msgstr "تجزیه‌ی راهنمای شناسه‌ی کاربر gpg شکست خورد."
+msgstr "تجزیهٔ راهنمای شناسهٔ کاربر gpg شکست خورد."
 
 #: ../camel/camel-gpg-context.c:794 ../camel/camel-gpg-context.c:808
 msgid "Failed to parse gpg passphrase request."
-msgstr "تجزیه‌ی درخواست اسم شب gpg شکست خورد."
+msgstr "تجزیهٔ درخواست اسم شب gpg شکست خورد."
 
 #: ../camel/camel-gpg-context.c:828
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
 "SmartCard: \"%s\""
 msgstr ""
-"برای باز کردن کلید کاربر\n"
-"یک اسم شب لازم است: ‏«%s»"
+"برای گشودن کلید کارت هوشمندتان\n"
+"نیاز به یک پین دارید: ‏«%s»"
 
 #: ../camel/camel-gpg-context.c:832
 #, c-format
@@ -1610,23 +1600,22 @@ msgid ""
 "You need a passphrase to unlock the key for\n"
 "user: \"%s\""
 msgstr ""
-"برای باز کردن کلید کاربر\n"
+"برای گشودن کلید کاربر\n"
 "یک اسم شب لازم است: ‏«%s»"
 
 #: ../camel/camel-gpg-context.c:837
-#, fuzzy, c-format
+#, c-format
 msgid "Unexpected request from GnuPG for '%s'"
-msgstr "پاسخ غیرمنتظره از GnuPG‏: %s"
+msgstr "درخواست نامنتظره از GnuPG‏ برای «%s»"
 
 #: ../camel/camel-gpg-context.c:862 ../camel/camel-gpg-context.c:1068
 #: ../camel/providers/nntp/camel-nntp-store.c:1281
-#, fuzzy
 msgid "Canceled."
-msgstr "صرف نظر شد."
+msgstr "لغو شد."
 
 #: ../camel/camel-gpg-context.c:876
 msgid "Failed to unlock secret key: 3 bad passphrases given."
-msgstr "باز کردن کلید سری شکست خورد: ۳ اسم شب غلط داده شد."
+msgstr "گشودن کلید سری شکست خورد: ۳ اسم شب غلط داده شد."
 
 #: ../camel/camel-gpg-context.c:884
 #, c-format
@@ -1635,7 +1624,7 @@ msgstr "پاسخ غیرمنتظره از GnuPG‏: %s"
 
 #: ../camel/camel-gpg-context.c:937
 msgid "Failed to encrypt: No valid recipients specified."
-msgstr "رمزنگاری شکست خورد: گیرنده‌ی معتبری مشخص نشده است."
+msgstr "رمزنگاری شکست خورد: گیرندهٔ معتبری مشخص نشده است."
 
 #. always called on an i/o error
 #: ../camel/camel-gpg-context.c:1206 ../camel/camel-gpg-context.c:1334
@@ -1658,19 +1647,19 @@ msgstr "اجرای gpg شکست خورد."
 
 #: ../camel/camel-gpg-context.c:1368
 msgid "This is a digitally signed message part"
-msgstr "این قسمت از پیغام به طور دیجیتال امضا شده است"
+msgstr "این قسمت از پیام به طور دیجیتال امضا شده است"
 
 #: ../camel/camel-gpg-context.c:1453 ../camel/camel-gpg-context.c:1459
 #: ../camel/camel-gpg-context.c:1465 ../camel/camel-gpg-context.c:1480
 #: ../camel/camel-smime-context.c:695 ../camel/camel-smime-context.c:706
 #: ../camel/camel-smime-context.c:713
 msgid "Cannot verify message signature: Incorrect message format"
-msgstr "نمی‌توان امضای پیغام را تأیید کرد: قالب پیغام نادرست است"
+msgstr "نمی‌توان امضای پیام را تأیید کرد: قالب پیام نادرست است"
 
 #: ../camel/camel-gpg-context.c:1519
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
-msgstr "نمی‌توان امضای پیغام را تأیید کرد: ایجاد پرونده‌ی موقت ممکن نبود: %s"
+msgstr "نمی‌توان امضای پیام را تأیید کرد: ایجاد پروندهٔ موقت ممکن نبود: %s"
 
 #: ../camel/camel-gpg-context.c:1602
 #, c-format
@@ -1679,12 +1668,12 @@ msgstr "تولید داده‌های رمزنگاری شده ممکن نبود: 
 
 #: ../camel/camel-gpg-context.c:1652
 msgid "This is a digitally encrypted message part"
-msgstr "این قسمت از پیغام به طور دیجیتال رمزنگاری شده است"
+msgstr "این قسمت از پیام به طور دیجیتال رمزنگاری شده است"
 
 #: ../camel/camel-gpg-context.c:1705 ../camel/camel-gpg-context.c:1713
 #: ../camel/camel-gpg-context.c:1732
 msgid "Cannot decrypt message: Incorrect message format"
-msgstr "نمی‌توان پیغام را رمزگشایی کرد: قالب پیغام نادرست است"
+msgstr "نمی‌توان پیام را رمزگشایی کرد: قالب پیام نادرست است"
 
 #: ../camel/camel-gpg-context.c:1722
 msgid "Failed to decrypt MIME part: protocol error"
@@ -1696,7 +1685,7 @@ msgstr "محتویات رمزنگاری شده"
 
 #: ../camel/camel-gpg-context.c:1806
 msgid "Unable to parse message content"
-msgstr "تجزیه‌ی محتویات پیغام مقدور نیست"
+msgstr "تجزیهٔ محتویات پیام مقدور نیست"
 
 #: ../camel/camel-gpg-context.c:1830 ../camel/camel-gpg-context.c:1875
 #: ../camel/camel-tcp-stream-openssl.c:635
@@ -1715,7 +1704,7 @@ msgstr "نامعلوم"
 #: ../camel/camel-lock-client.c:104
 #, c-format
 msgid "Cannot build locking helper pipe: %s"
-msgstr "نمی‌توان لوله‌ی کمک قفل کننده را ساهت: %s"
+msgstr "نمی‌توان لولهٔ کمک قفل کننده را ساهت: %s"
 
 #: ../camel/camel-lock-client.c:126
 #, c-format
@@ -1735,14 +1724,13 @@ msgstr "قفل کردن '%s' ممکن نبود"
 #: ../camel/camel-lock.c:103
 #, c-format
 msgid "Could not create lock file for %s: %s"
-msgstr "ایجاد پرونده‌ی قفل برای %s ممکن نبود: %s"
+msgstr "ایجاد پروندهٔ قفل برای %s ممکن نبود: %s"
 
 #: ../camel/camel-lock.c:144
 #, c-format
 msgid "Timed out trying to get lock file on %s. Try again later."
 msgstr ""
-"هنگام تلاش برای گرفتن پرونده‌ی قفل در %s مدت منقضی شد. بعداً دوباره تلاش خواهد "
-"شد."
+"هنگام تلاش برای گرفتن پروندهٔ قفل در %s مدت منقضی شد. بعداً دوباره تلاش خواهد شد."
 
 #: ../camel/camel-lock.c:199
 #, c-format
@@ -1757,22 +1745,22 @@ msgstr "گرفتن قفل با استفاده از flock(2) شکست خورد: %
 #: ../camel/camel-movemail.c:106
 #, c-format
 msgid "Could not check mail file %s: %s"
-msgstr "بررسی پرونده‌ی نامه‌ی %s ممکن نبود: %s"
+msgstr "بررسی پروندهٔ نامهٔ %s ممکن نبود: %s"
 
 #: ../camel/camel-movemail.c:119
 #, c-format
 msgid "Could not open mail file %s: %s"
-msgstr "باز کردن پرونده‌ی نامه‌ی %s ممکن نبود: %s"
+msgstr "گشودن پروندهٔ نامهٔ %s ممکن نبود: %s"
 
 #: ../camel/camel-movemail.c:127
 #, c-format
 msgid "Could not open temporary mail file %s: %s"
-msgstr "باز کردن پرونده‌ی موقت نامه‌ی %s ممکن نبود: %s"
+msgstr "گشودن پروندهٔ موقت نامهٔ %s ممکن نبود: %s"
 
 #: ../camel/camel-movemail.c:156
 #, c-format
 msgid "Failed to store mail in temp file %s: %s"
-msgstr "ذخیره‌ی نامه در پرونده‌ی موقت %s شکست خورد: %s"
+msgstr "ذخیرهٔ نامه در پروندهٔ موقت %s شکست خورد: %s"
 
 #: ../camel/camel-movemail.c:186
 #, c-format
@@ -1787,7 +1775,7 @@ msgstr "دادن انشعاب ممکن نبود: %s"
 #: ../camel/camel-movemail.c:236
 #, c-format
 msgid "Movemail program failed: %s"
-msgstr "برنامه‌ی movemail شکست خورد: %s"
+msgstr "برنامهٔ movemail شکست خورد: %s"
 
 #: ../camel/camel-movemail.c:237
 msgid "(Unknown error)"
@@ -1796,29 +1784,27 @@ msgstr "(خطای نامعلوم)"
 #: ../camel/camel-movemail.c:260
 #, c-format
 msgid "Error reading mail file: %s"
-msgstr "خطا در خواندن پرونده‌ی نامه: %s"
+msgstr "خطا در خواندن پروندهٔ نامه: %s"
 
 #: ../camel/camel-movemail.c:271
 #, c-format
 msgid "Error writing mail temp file: %s"
-msgstr "خطا در نوشتن پرونده‌ی موقت نامه: %s"
+msgstr "خطا در نوشتن پروندهٔ موقت نامه: %s"
 
 #: ../camel/camel-movemail.c:464 ../camel/camel-movemail.c:531
 #, c-format
 msgid "Error copying mail temp file: %s"
-msgstr "خطا در نسخه‌برداری از پرونده‌ی موقت نامه: %s"
+msgstr "خطا در نسخه‌برداری از پروندهٔ موقت نامه: %s"
 
 #: ../camel/camel-multipart-signed.c:593
 msgid "parse error"
 msgstr "خطا در تجزیه"
 
 #: ../camel/camel-net-utils.c:505 ../camel/camel-net-utils.c:667
-#: ../camel/camel-net-utils.c:799
-#: ../camel/providers/pop3/camel-pop3-store.c:447
+#: ../camel/camel-net-utils.c:799 ../camel/providers/pop3/camel-pop3-store.c:447
 #: ../camel/providers/pop3/camel-pop3-store.c:547
-#, fuzzy
 msgid "Canceled"
-msgstr "صرف نظر شد"
+msgstr "لغو شده"
 
 #: ../camel/camel-net-utils.c:524
 msgid "cannot create thread"
@@ -1854,20 +1840,20 @@ msgstr "گشتن به دنبال نام شکست خورد: %s"
 #: ../camel/camel-offline-folder.c:254
 #, c-format
 msgid "Syncing messages in folder '%s' to disk"
-msgstr "‌در حال همگام‌سازی پیغام‌های پوشه‌ی «%s» در دیسک"
+msgstr "‌در حال همگام‌سازی پیام‌های شاخهٔ «%s» در دیسک"
 
 #: ../camel/camel-offline-journal.c:164 ../camel/camel-offline-journal.c:187
 #, fuzzy, c-format
 msgid "Cannot write offline journal for folder '%s': %s"
-msgstr "‌نمی‌توان پوشه‌ی «%s» را ایجاد کرد: %s"
+msgstr "‌نمی‌توان شاخهٔ «%s» را ایجاد کرد: %s"
 
 #: ../camel/camel-provider.c:62
 msgid "Virtual folder email provider"
-msgstr ""
+msgstr "فراهم‌کنندهٔ رایانامهٔ شاخهٔ مجازی"
 
 #: ../camel/camel-provider.c:64
 msgid "For reading mail as a query of another set of folders"
-msgstr "برای خواندن نامه به عنوان پرس و جویی از یک مجموعه پوشه‌ی دیگر"
+msgstr "برای خواندن نامه به عنوان پرس و جویی از یک مجموعه شاخهٔ دیگر"
 
 #: ../camel/camel-provider.c:187
 #, c-format
@@ -1895,8 +1881,7 @@ msgstr "گمنامانه"
 
 #: ../camel/camel-sasl-anonymous.c:39
 msgid "This option will connect to the server using an anonymous login."
-msgstr ""
-"این گزینه با استفاده از ورود گمنامانه به سیستم به کارگزار متصل خواهد شد."
+msgstr "این گزینه با استفاده از ورود گمنامانه به سیستم به کارساز متصل خواهد شد."
 
 #: ../camel/camel-sasl-anonymous.c:124 ../camel/camel-sasl-plain.c:91
 msgid "Authentication failed."
@@ -1929,11 +1914,11 @@ msgstr "CRAM-MD5"
 
 #: ../camel/camel-sasl-cram-md5.c:40
 msgid ""
-"This option will connect to the server using a secure CRAM-MD5 password, if "
-"the server supports it."
+"This option will connect to the server using a secure CRAM-MD5 password, if the "
+"server supports it."
 msgstr ""
-"این گزینه در صورت پشتیبانی کارگزار، با استفاده از یک گذرواژه‌ی امن CRAM-MD5 "
-"به آن متصل خواهد شد."
+"این گزینه در صورت پشتیبانی کارساز، با استفاده از یک گذرواژهٔ امن CRAM-MD5 به آن "
+"متصل خواهد شد."
 
 #: ../camel/camel-sasl-digest-md5.c:48
 msgid "DIGEST-MD5"
@@ -1941,11 +1926,11 @@ msgstr "DIGEST-MD5"
 
 #: ../camel/camel-sasl-digest-md5.c:50
 msgid ""
-"This option will connect to the server using a secure DIGEST-MD5 password, "
-"if the server supports it."
+"This option will connect to the server using a secure DIGEST-MD5 password, if the "
+"server supports it."
 msgstr ""
-"این گزینه در صورت پشتیبانی کارگزار، با استفاده از یک گذرواژه‌ی امن DIGEST-MD4 "
-"به آن متصل خواهد شد."
+"این گزینه در صورت پشتیبانی کارساز، با استفاده از یک گذرواژهٔ امن DIGEST-MD4 به آن "
+"متصل خواهد شد."
 
 #: ../camel/camel-sasl-digest-md5.c:845
 msgid "Server challenge too long (>2048 octets)"
@@ -1961,15 +1946,15 @@ msgstr ""
 
 #: ../camel/camel-sasl-digest-md5.c:890
 msgid "Server response did not contain authorization data"
-msgstr "پاسخ کارگزار حاوی داده‌های تأیید هویت نبود"
+msgstr "پاسخ کارساز حاوی داده‌های تأیید هویت نبود"
 
 #: ../camel/camel-sasl-digest-md5.c:908
 msgid "Server response contained incomplete authorization data"
-msgstr "پاسخ کارگزار حاوی داده‌های تأیید هویت ناقص بود"
+msgstr "پاسخ کارساز حاوی داده‌های تأیید هویت ناقص بود"
 
 #: ../camel/camel-sasl-digest-md5.c:918
 msgid "Server response does not match"
-msgstr "پاسخ کارگزار مطابقت نمی‌کند"
+msgstr "پاسخ کارساز مطابقت نمی‌کند"
 
 #: ../camel/camel-sasl-gssapi.c:64
 msgid "GSSAPI"
@@ -1977,7 +1962,7 @@ msgstr "GSSAPI"
 
 #: ../camel/camel-sasl-gssapi.c:66
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr "این گزینه با استفاده از تأیید هویت Kerberos 5 به کارگزار متصل می‌شود."
+msgstr "این گزینه با استفاده از تأیید هویت Kerberos 5 به کارساز متصل می‌شود."
 
 #: ../camel/camel-sasl-gssapi.c:164
 msgid ""
@@ -1991,26 +1976,26 @@ msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:172
 msgid ""
-"The provided target_name parameter contained an invalid or unsupported type "
-"of name."
+"The provided target_name parameter contained an invalid or unsupported type of "
+"name."
 msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:176
 msgid ""
-"The input_token contains different channel bindings to those specified via "
-"the input_chan_bindings parameter."
+"The input_token contains different channel bindings to those specified via the "
+"input_chan_bindings parameter."
 msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:181
 msgid ""
-"The input_token contains an invalid signature, or a signature that could not "
-"be verified."
+"The input_token contains an invalid signature, or a signature that could not be "
+"verified."
 msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:185
 msgid ""
-"The supplied credentials were not valid for context initiation, or the "
-"credential handle did not reference any credentials."
+"The supplied credentials were not valid for context initiation, or the credential "
+"handle did not reference any credentials."
 msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:190
@@ -2034,11 +2019,11 @@ msgstr ""
 #: ../camel/camel-sasl-kerberos4.c:231
 #: ../camel/providers/imap/camel-imap-store.c:1318
 msgid "Bad authentication response from server."
-msgstr "پاسخ تأیید هویت نامناسب از کارگزار."
+msgstr "پاسخ تأیید هویت نامناسب از کارساز."
 
 #: ../camel/camel-sasl-gssapi.c:314
 msgid "Unsupported security layer."
-msgstr "لایه‌ی امنیتی پشتیبانی نشده."
+msgstr "لایهٔ امنیتی پشتیبانی نشده."
 
 #: ../camel/camel-sasl-kerberos4.c:47
 msgid "Kerberos 4"
@@ -2046,7 +2031,7 @@ msgstr "Kerberos 4"
 
 #: ../camel/camel-sasl-kerberos4.c:49
 msgid "This option will connect to the server using Kerberos 4 authentication."
-msgstr "این گزینه با استفاده از تأیید هویت Kerberos 4 به کارگزار متصل می‌شود."
+msgstr "این گزینه با استفاده از تأیید هویت Kerberos 4 به کارساز متصل می‌شود."
 
 #: ../camel/camel-sasl-kerberos4.c:174
 #, c-format
@@ -2063,11 +2048,11 @@ msgstr "ورود به سیستم"
 
 #: ../camel/camel-sasl-login.c:38 ../camel/camel-sasl-plain.c:38
 msgid "This option will connect to the server using a simple password."
-msgstr "این گزینه با استفاده از گذرواژه‌ی ساده به کارگزار متصل می‌شود."
+msgstr "این گزینه با استفاده از گذرواژهٔ ساده به کارساز متصل می‌شود."
 
 #: ../camel/camel-sasl-login.c:135
 msgid "Unknown authentication state."
-msgstr "وضعیت تأیید هویت نامعلوم"
+msgstr "وضعیت تأیید هویت نامعلوم."
 
 #: ../camel/camel-sasl-ntlm.c:34
 msgid "NTLM / SPA"
@@ -2075,11 +2060,11 @@ msgstr "NTLM / SPA"
 
 #: ../camel/camel-sasl-ntlm.c:36
 msgid ""
-"This option will connect to a Windows-based server using NTLM / Secure "
-"Password Authentication."
+"This option will connect to a Windows-based server using NTLM / Secure Password "
+"Authentication."
 msgstr ""
-"این گزینه با استفاده از تأیید هویت با گذرواژه‌ی امن NTLM به یک کارگزار "
-"ویندوزی متصل می‌شود"
+"این گزینه با استفاده از تأیید هویت با گذرواژهٔ امن یا NTLM به کارسازی ویندوزی وصل "
+"خواهد شد."
 
 #: ../camel/camel-sasl-plain.c:36
 msgid "PLAIN"
@@ -2091,8 +2076,7 @@ msgstr "POP قبل از SMTP"
 
 #: ../camel/camel-sasl-popb4smtp.c:41
 msgid "This option will authorise a POP connection before attempting SMTP"
-msgstr ""
-"این گزینه پیش از تلاش برای اتصال SMTP یک اتصال POP را تأیید هویت خواهد کرد"
+msgstr "این گزینه پیش از تلاش برای اتصال SMTP یک اتصال POP را تأیید هویت خواهد کرد"
 
 #: ../camel/camel-sasl-popb4smtp.c:106
 msgid "POP Source URI"
@@ -2109,7 +2093,7 @@ msgstr "POP قبل از تأیید هویت SMTP با استفاده از یک �
 #: ../camel/camel-search-private.c:150
 #, c-format
 msgid "Regular expression compilation failed: %s: %s"
-msgstr "ترجمه‌ی عبارت منظم شکست خورد: %s‏: %s"
+msgstr "ترجمهٔ عبارت منظم شکست خورد: %s‏: %s"
 
 #: ../camel/camel-service.c:272
 #, c-format
@@ -2132,13 +2116,13 @@ msgid ""
 "Could not create directory %s:\n"
 "%s"
 msgstr ""
-"ایجاد شاخه‌ی %s ممکن نبود:\n"
+"ایجاد شاخهٔ %s ممکن نبود:\n"
 "‏%s"
 
 #: ../camel/camel-session.c:478
-#, fuzzy, c-format
+#, c-format
 msgid "Please enter the %s password for %s on host %s."
-msgstr "‏%sلطفاً گذرواژه‌ی POP برای %s روی میزبان %s را وارد کنید"
+msgstr "لطفاً گذرواژهٔ %s برای %s روی میزبان %s را وارد کنید."
 
 #: ../camel/camel-smime-context.c:234 ../camel/camel-smime-context.c:778
 #, c-format
@@ -2147,15 +2131,15 @@ msgstr ""
 
 #: ../camel/camel-smime-context.c:240
 msgid "Cannot create CMS message"
-msgstr "نمی‌توان پیغام CMS را ایجاد کرد"
+msgstr "نمی‌توان پیام CMS را ایجاد کرد"
 
 #: ../camel/camel-smime-context.c:245
 msgid "Cannot create CMS signed data"
-msgstr "نمی‌توان داده‌های امضا شده‌ی CMS را ایجاد کرد"
+msgstr "نمی‌توان داده‌های امضا شدهٔ CMS را ایجاد کرد"
 
 #: ../camel/camel-smime-context.c:251
 msgid "Cannot attach CMS signed data"
-msgstr "نمی‌توان داده‌های امضا شده‌ی CMS را پیوست کرد"
+msgstr "نمی‌توان داده‌های امضا شدهٔ CMS را پیوست کرد"
 
 #: ../camel/camel-smime-context.c:258
 msgid "Cannot attach CMS data"
@@ -2163,7 +2147,7 @@ msgstr "نمی‌توان داده‌های CMS را پیوست کرد"
 
 #: ../camel/camel-smime-context.c:264
 msgid "Cannot create CMS Signer information"
-msgstr "نمی‌توان اطلاعات امضا کننده‌ی CMS را ایجاد کرد"
+msgstr "نمی‌توان اطلاعات امضا کنندهٔ CMS را ایجاد کرد"
 
 #: ../camel/camel-smime-context.c:270
 msgid "Cannot find certificate chain"
@@ -2180,7 +2164,7 @@ msgstr ""
 
 #: ../camel/camel-smime-context.c:317
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
-msgstr "نمی‌توان مشخصه‌ی SMIMEEncKeyPrefs را اضافه کرد"
+msgstr "نمی‌توان مشخصهٔ SMIMEEncKeyPrefs را اضافه کرد"
 
 #: ../camel/camel-smime-context.c:322
 msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
@@ -2192,7 +2176,7 @@ msgstr "نمی‌توان گواهی رمزنگاری را اضافه کرد"
 
 #: ../camel/camel-smime-context.c:333
 msgid "Cannot add CMS Signer information"
-msgstr "نمی‌توان اطلاعات امضا کننده‌ی CMS را اضافه کرد"
+msgstr "نمی‌توان اطلاعات امضا کنندهٔ CMS را اضافه کرد"
 
 #: ../camel/camel-smime-context.c:403 ../camel/camel-smime-context.c:851
 msgid "Cannot create encoder context"
@@ -2300,7 +2284,7 @@ msgstr ""
 
 #: ../camel/camel-smime-context.c:805
 msgid "Cannot create CMS Message"
-msgstr "نمی‌توان پیغام CMS را ایجاد کرد"
+msgstr "نمی‌توان پیام CMS را ایجاد کرد"
 
 #: ../camel/camel-smime-context.c:811
 msgid "Cannot create CMS Enveloped data"
@@ -2316,7 +2300,7 @@ msgstr "نمی‌توان شیء داده‌ای CMS را ایجاد کرد"
 
 #: ../camel/camel-smime-context.c:832
 msgid "Cannot create CMS Recipient information"
-msgstr "نمی‌توان اطلاعات گیرنده‌ی CMS را ایجاد کرد"
+msgstr "نمی‌توان اطلاعات گیرندهٔ CMS را ایجاد کرد"
 
 #: ../camel/camel-smime-context.c:837
 msgid "Cannot add CMS Recipient information"
@@ -2351,7 +2335,7 @@ msgstr ""
 #: ../camel/camel-store.c:252
 #, fuzzy, c-format
 msgid "Cannot create folder '%s': folder exists"
-msgstr "نمی‌توان پوشه‌ی «%s» را ایجاد کرد: پوشه وجود دارد"
+msgstr "نمی‌توان شاخهٔ «%s» را ایجاد کرد: شاخه وجود دارد"
 
 #: ../camel/camel-store.c:316
 msgid "Cannot create folder: Invalid operation on this store"
@@ -2360,19 +2344,19 @@ msgstr ""
 #: ../camel/camel-store.c:344
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
-msgstr "نمی‌توان پوشه را ایجاد کرد: %s: پوشه وجود دارد"
+msgstr "نمی‌توان شاخه را ایجاد کرد: %s: شاخه وجود دارد"
 
 #: ../camel/camel-store.c:408 ../camel/camel-vee-store.c:369
 #: ../camel/providers/local/camel-maildir-store.c:218
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
-msgstr "نمی‌توان پوشه را حذف کرد: %s: عملیات نامعتبر"
+msgstr "نمی‌توان شاخه را حذف کرد: %s: عملیات نامعتبر"
 
 #: ../camel/camel-store.c:458 ../camel/camel-vee-store.c:406
 #: ../camel/providers/local/camel-maildir-store.c:290
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
-msgstr "نمی‌توان نام پوشه را تغییر داد: %s: عملیات نامعتبر"
+msgstr "نمی‌توان نام شاخه را تغییر داد: %s: عملیات نامعتبر"
 
 #. the name of the Trash folder, used for deleted messages
 #: ../camel/camel-store.c:799 ../camel/camel-vtrash-folder.c:52
@@ -2423,19 +2407,19 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-openssl.c:590
 msgid "CRL not yet valid"
-msgstr ""
+msgstr "CRL هنوز معتبر نیست"
 
 #: ../camel/camel-tcp-stream-openssl.c:592
 msgid "CRL has expired"
-msgstr ""
+msgstr "CRL منقضی شده"
 
 #: ../camel/camel-tcp-stream-openssl.c:597
 msgid "Error in CRL"
-msgstr ""
+msgstr "خطا در CRL"
 
 #: ../camel/camel-tcp-stream-openssl.c:599
 msgid "Out of memory"
-msgstr ""
+msgstr "خارج از حافظه"
 
 #: ../camel/camel-tcp-stream-openssl.c:601
 msgid "Zero-depth self-signed certificate"
@@ -2572,45 +2556,43 @@ msgstr ""
 #: ../camel/camel-url.c:313
 #, fuzzy, c-format
 msgid "Could not parse URL '%s'"
-msgstr "تجزیه‌ی نشانی اینترنتی «%s» ممکن نبود"
+msgstr "تجزیهٔ نشانی اینترنتی «%s» ممکن نبود"
 
 #: ../camel/camel-vee-folder.c:486
-#, fuzzy, c-format
+#, c-format
 msgid "Error storing '%s': %s"
-msgstr "خطا در ذخیره‌سازی «%s»‏: %s"
+msgstr "خطا در ذخیرهٔ «%s»‏: %s"
 
 #: ../camel/camel-vee-folder.c:528
 #, c-format
 msgid "No such message %s in %s"
-msgstr "پیغام %sدر %s نیست"
+msgstr "پیام %sدر %s نیست"
 
 #: ../camel/camel-vee-folder.c:653 ../camel/camel-vee-folder.c:659
 msgid "Cannot copy or move messages into a Virtual Folder"
-msgstr ""
-"نمی‌توان از پیغام‌ها در پوشه‌های مجازی نسخه‌برداری کرد یا آنها را به آنجا جابه‌جا "
-"کرد."
+msgstr "نمی‌توان پیام‌ها را در شاخه‌ای مجازی رونوشت یا جابه‌جا کرد"
 
 #: ../camel/camel-vee-store.c:102 ../camel/camel-vee-store.c:345
 msgid "Unmatched"
-msgstr ""
+msgstr "تطبیق نیافته"
 
 #: ../camel/camel-vee-store.c:392
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
-msgstr "نمی‌توان پوشه را حذف کرد: %s: چنین پوشه‌ای وجود ندارد"
+msgstr "نمی‌توان شاخه را حذف کرد: %s: چنین شاخه‌ای وجود ندارد"
 
 #: ../camel/camel-vee-store.c:414
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
-msgstr "نمی‌توان نام پوشه را تغییر داد: %s: پوشه وجود ندارد"
+msgstr "نمی‌توان نام شاخه را تغییر داد: %s: شاخه وجود ندارد"
 
 #: ../camel/camel-vtrash-folder.c:53
 msgid "Cannot copy messages to the Trash folder"
-msgstr "نمی‌توان از پیغام‌ها در پوشه‌ی زباله‌دان نسخه‌برداری کرد"
+msgstr "نمی‌توان از پیام‌ها در شاخهٔ زباله‌دان نسخه‌برداری کرد"
 
 #: ../camel/camel-vtrash-folder.c:55
 msgid "Cannot copy messages to the Junk folder"
-msgstr "نمی‌توان از پیغام در پوشه‌ی آشغال نسخه‌برداری کرد"
+msgstr "نمی‌توان از پیام در شاخهٔ آشغال نسخه‌برداری کرد"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:118
 #: ../camel/providers/imap/camel-imap-folder.c:2486
@@ -2618,7 +2600,7 @@ msgstr "نمی‌توان از پیغام در پوشه‌ی آشغال نسخه
 msgid ""
 "Cannot get message: %s\n"
 "  %s"
-msgstr "دسترسی به پیغام ممکن نیست: %s‏  %s"
+msgstr "دسترسی به پیام ممکن نیست: %s‏  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:118
 #: ../camel/providers/imap/camel-imap-folder.c:2486
@@ -2626,7 +2608,7 @@ msgstr "دسترسی به پیغام ممکن نیست: %s‏  %s"
 #: ../camel/providers/local/camel-mbox-folder.c:348
 #: ../camel/providers/local/camel-mh-folder.c:204
 msgid "No such message"
-msgstr "چنین پیغامی وجود ندارد"
+msgstr "چنین پیامی وجود ندارد"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:130
 #: ../camel/providers/imap4/camel-imap4-folder.c:812
@@ -2637,9 +2619,8 @@ msgstr "چنین پیغامی وجود ندارد"
 #: ../camel/providers/pop3/camel-pop3-folder.c:560
 #: ../camel/providers/pop3/camel-pop3-folder.c:621
 #: ../camel/providers/pop3/camel-pop3-folder.c:639
-#, fuzzy
 msgid "User canceled"
-msgstr "کاربر منصرف شد"
+msgstr "کاربر لغو کرد"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:137
 #: ../camel/providers/imap4/camel-imap4-folder.c:817
@@ -2654,27 +2635,27 @@ msgstr "کاربر منصرف شد"
 #: ../camel/providers/pop3/camel-pop3-folder.c:642
 #, c-format
 msgid "Cannot get message %s: %s"
-msgstr "دسترسی به پیغام %s ممکن نیست: %s"
+msgstr "دسترسی به پیام %s ممکن نیست: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:154
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:162
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2169
 #: ../camel/providers/imap4/camel-imap4-folder.c:835
 msgid "This message is not available in offline mode."
-msgstr "این پیغام در حالت منفصل قابل دسترسی نیست."
+msgstr "این پیام در حالت منفصل قابل دسترسی نیست."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:174
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:181
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1702
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1753
 msgid "Could not get message"
-msgstr "گرفتن پیغام ممکن نبود"
+msgstr "گرفتن پیام ممکن نبود"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:818
 #: ../camel/providers/imap/camel-imap-folder.c:268
 #, c-format
 msgid "Could not load summary for %s"
-msgstr "بار کردن خلاصه‌ی %s ممکن نبود"
+msgstr "بار کردن خلاصهٔ %s ممکن نبود"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1071
 msgid "Trash Folder Full. Please Empty."
@@ -2687,18 +2668,18 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-folder.c:2932
 #, fuzzy, c-format
 msgid "Fetching summary information for new messages in %s"
-msgstr "در حال آوردن اطلاعات خلاصه‌ی پیغام‌های جدید"
+msgstr "در حال آوردن اطلاعات خلاصهٔ پیام‌های جدید"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2036
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2078
 #, fuzzy, c-format
 msgid "Cannot append message to folder '%s': %s"
-msgstr "‌نمی‌توان پیغام را به پوشه‌ی «%s» الحاق کرد: %s"
+msgstr "‌نمی‌توان پیام را به شاخهٔ «%s» الحاق کرد: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2066
 #, c-format
 msgid "Cannot create message: %s"
-msgstr "پیغام ایجاد نمی‌شود: %s"
+msgstr "پیام ایجاد نمی‌شود: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:284
 #, c-format
@@ -2714,19 +2695,19 @@ msgstr ""
 #: ../camel/providers/imap4/camel-imap4-journal.c:335
 #, c-format
 msgid "Cannot append message in offline mode: %s"
-msgstr "نمی‌توان در حالت ونفصل پیغام را الحاق کرد: %s"
+msgstr "نمی‌توان در حالت ونفصل پیام را الحاق کرد: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:55
 #: ../camel/providers/imap4/camel-imap4-provider.c:39
 msgid "Checking for new mail"
-msgstr "در حال بررسی به دنبال نامه‌ی جدید"
+msgstr "در حال بررسی به دنبال نامهٔ جدید"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:57
 #: ../camel/providers/hula/camel-hula-provider.c:51
 #: ../camel/providers/imap/camel-imap-provider.c:46
 #: ../camel/providers/imap4/camel-imap4-provider.c:41
 msgid "C_heck for new messages in all folders"
-msgstr "‌_بررسی به دنبال نامه‌های جدید در همه‌ی پوشه‌ها"
+msgstr "‌_بررسی به دنبال نامه‌های جدید در همهٔ شاخه‌ها"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:60
 #: ../camel/providers/imap/camel-imap-provider.c:66
@@ -2740,18 +2721,18 @@ msgstr "گزینه‌ها"
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:62
 #, fuzzy
 msgid "_Apply filters to new messages in Inbox on this server"
-msgstr "اِعمال صافی‌ها بر پیغام‌های جدید در دریافتی این کارگزار"
+msgstr "اِعمال صافی‌ها بر پیام‌های جدید در دریافتی این کارساز"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:64
 #, fuzzy
 msgid "Check new messages for J_unk contents"
-msgstr "بررسی پیغام‌های جدید به دنبال محتویات آشغال"
+msgstr "بررسی پیام‌های جدید به دنبال محتویات آشغال"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:66
 #: ../camel/providers/imap/camel-imap-provider.c:72
 #, fuzzy
 msgid "Only check for Junk messages in the IN_BOX folder"
-msgstr "بررسی به دنبال پیغام‌های آشغال فقط در پوشه‌ی INBOX"
+msgstr "بررسی به دنبال پیام‌های آشغال فقط در شاخهٔ INBOX"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:68
 #, fuzzy
@@ -2768,7 +2749,7 @@ msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:89
 msgid "Novell GroupWise"
-msgstr ""
+msgstr "گروپ‌وایز ناول"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:91
 msgid "For accessing Novell GroupWise servers"
@@ -2785,96 +2766,92 @@ msgid "Password"
 msgstr "گذرواژه"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:108
-msgid ""
-"This option will connect to the GroupWise server using a plaintext password."
-msgstr ""
-"این گزینه با استفاده از گذرواژه‌ی متن ساده به کارگزار GroupWise متصل خواهد شد."
+msgid "This option will connect to the GroupWise server using a plaintext password."
+msgstr "این گزینه با استفاده از گذرواژهٔ متن ساده به کارساز گروپ‌وایز متصل خواهد شد."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:103
-#, fuzzy
 msgid "Host or user not available in url"
-msgstr "میزبان یا کاربر در نشانی اینترنتی موجود نیست"
+msgstr "میزبان یا کاربر در نشانی موجود نیست"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:206
 #: ../camel/providers/imap/camel-imap-store.c:1402
-#, fuzzy
 msgid "You did not enter a password."
 msgstr "گذرواژه‌ای وارد نکردید."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:302
 msgid "Some features may not work correctly with your current server version"
-msgstr "ممکن است برخی امکانات با نسخه‌ی فعلی کارگزار شما درست کار نکنند"
+msgstr "ممکن است برخی امکانات با نسخهٔ فعلی کارساز شما درست کار نکنند"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:532
 #: ../camel/providers/imap/camel-imap-store.c:1913
 #: ../camel/providers/imap/camel-imap-store.c:2111
 #, c-format
 msgid "No such folder %s"
-msgstr "پوشه‌ی %s وجود ندارد"
+msgstr "شاخهٔ %s وجود ندارد"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1217
 msgid "Cannot create GroupWise folders in offline mode."
-msgstr "نمی‌توان پوشه‌های GroupWise را در حالت نامتصل ایجاد کرد."
+msgstr "نمی‌توان شاخه‌های گروپ‌وایز را در حالت نامتصل ایجاد کرد."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1231
 #: ../camel/providers/imap/camel-imap-store.c:1988
 #: ../camel/providers/imap/camel-imap-store.c:2364
 msgid "The parent folder is not allowed to contain subfolders"
-msgstr "پوشه‌ی پدر اجازه‌ی داشتن زیرپوشه را ندارد"
+msgstr "شاخهٔ پدر اجازهٔ داشتن زیرشاخه را ندارد"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1307
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1328
 #, fuzzy, c-format
 msgid "Cannot rename Groupwise folder '%s' to '%s'"
-msgstr "نمی‌توان نام پوشه‌ی GroupWise ‏«%s» را به «%s» تغییر داد"
+msgstr "نمی‌توان نام شاخهٔ گروپ‌وایز ‏«%s» را به «%s» تغییر داد"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1360
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
-msgstr "‏‏کارگزار GroupWise ‏%s"
+msgstr "‏‏کارساز گروپ‌وایز ‏%s"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1362
 #, c-format
 msgid "GroupWise service for %s on %s"
-msgstr "سرویس GroupWise برای %s روی %s"
+msgstr "سرویس گروپ‌وایز برای %s روی %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:123
 #, c-format
 msgid "GroupWise mail delivery via %s"
-msgstr "تحویل نامه‌ی GroupWise از طریق %s"
+msgstr "تحویل نامهٔ گروپ‌وایز از طریق %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:167
 msgid "Sending Message"
-msgstr "در حال ارسال پیغام"
+msgstr "در حال ارسال پیام"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:221
 msgid ""
-"You have exceeded this account's storage limit. Your messages are queued in "
-"your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
-"of your mail.\n"
+"You have exceeded this account's storage limit. Your messages are queued in your "
+"Outbox. Resend by pressing Send/Receive after deleting/archiving some of your "
+"mail.\n"
 msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:209
 #, c-format
 msgid "Could not send message: %s"
-msgstr "ارسال پیغام ممکن نبود: %s"
+msgstr "ارسال پیام ممکن نبود: %s"
 
 #: ../camel/providers/hula/camel-hula-provider.c:49
 #: ../camel/providers/imap/camel-imap-provider.c:44
 msgid "Checking for New Mail"
-msgstr "بررسی به دنبال نامه‌ی جدید"
+msgstr "بررسی به دنبال نامهٔ جدید"
 
 #: ../camel/providers/hula/camel-hula-provider.c:54
 #: ../camel/providers/imap/camel-imap-provider.c:50
 msgid "Connection to Server"
-msgstr "اتصال به کارگزار"
+msgstr "اتصال به کارساز"
 
 #: ../camel/providers/hula/camel-hula-provider.c:56
 #: ../camel/providers/imap/camel-imap-provider.c:52
 msgid "_Use custom command to connect to server"
-msgstr "است_فاده از فرمان سفارشی برای اتصال به کارگزار"
+msgstr "است_فاده از فرمان سفارشی برای اتصال به کارساز"
 
 #: ../camel/providers/hula/camel-hula-provider.c:58
 #: ../camel/providers/imap/camel-imap-provider.c:54
@@ -2886,13 +2863,13 @@ msgstr "فرمان:"
 #: ../camel/providers/imap4/camel-imap4-provider.c:44
 #: ../camel/providers/nntp/camel-nntp-provider.c:44
 msgid "Folders"
-msgstr "پوشه‌ها"
+msgstr "شاخه‌ها"
 
 #: ../camel/providers/hula/camel-hula-provider.c:63
 #: ../camel/providers/imap/camel-imap-provider.c:60
 #: ../camel/providers/imap4/camel-imap4-provider.c:46
 msgid "_Show only subscribed folders"
-msgstr "_نشان دادن فقط پوشه‌های آبونه شده"
+msgstr "_نشان دادن فقط شاخه‌های آبونه شده"
 
 #: ../camel/providers/hula/camel-hula-provider.c:65
 #: ../camel/providers/imap/camel-imap-provider.c:62
@@ -2906,7 +2883,7 @@ msgstr "فضای نام"
 
 #: ../camel/providers/hula/camel-hula-provider.c:78
 msgid "Hula"
-msgstr ""
+msgstr "هولا"
 
 #: ../camel/providers/hula/camel-hula-provider.c:80
 msgid "For accessing Hula servers"
@@ -2915,21 +2892,20 @@ msgstr ""
 #: ../camel/providers/hula/camel-hula-provider.c:97
 #, fuzzy
 msgid "This option will connect to the Hula server using a plaintext password."
-msgstr ""
-"این گزینه با استفاده از گذرواژه‌ی متن ساده به کارگزار IMAP متصل خواهد شد."
+msgstr "این گزینه با استفاده از گذرواژهٔ متن ساده به کارساز IMAP متصل خواهد شد."
 
 #: ../camel/providers/imap/camel-imap-command.c:224
 #: ../camel/providers/imap/camel-imap-command.c:266
 #: ../camel/providers/imap/camel-imap-command.c:472
 #: ../camel/providers/imap/camel-imap-store.c:3066
 msgid "Operation cancelled"
-msgstr "از عملیات صرف نظر شد"
+msgstr "از عملیات لغو شد"
 
 #: ../camel/providers/imap/camel-imap-command.c:311
 #: ../camel/providers/imap/camel-imap-store.c:3069
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
-msgstr "اتصال کارگزار به طور غیر منتظره قطع شد: %s"
+msgstr "اتصال کارساز به طور غیر منتظره قطع شد: %s"
 
 #. for imap ALERT codes, account user@host
 #. we might get a ']' from a BAD response since we +12, but who cares?
@@ -2943,7 +2919,7 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-command.c:401
 #, c-format
 msgid "Unexpected response from IMAP server: %s"
-msgstr "پاسخ غیر منتظره از کارگزار IMAP‏: %s"
+msgstr "پاسخ غیر منتظره از کارساز IMAP‏: %s"
 
 #: ../camel/providers/imap/camel-imap-command.c:411
 #, c-format
@@ -2952,73 +2928,72 @@ msgstr "فرمان IMAP شکست خورد: %s"
 
 #: ../camel/providers/imap/camel-imap-command.c:486
 msgid "Server response ended too soon."
-msgstr "پاسخ کارگزار زودتر از موقع تمام شد."
+msgstr "پاسخ کارساز زودتر از موقع تمام شد."
 
 #: ../camel/providers/imap/camel-imap-command.c:693
 #, c-format
 msgid "IMAP server response did not contain %s information"
-msgstr "پاسخ کارگزار IMAP حاوی اطلاعات %s نبود"
+msgstr "پاسخ کارساز IMAP حاوی اطلاعات %s نبود"
 
 #: ../camel/providers/imap/camel-imap-command.c:729
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
-msgstr "پاسخ «باشد» غیرمنتظره از کارگزار %s :IMAP"
+msgstr "پاسخ «باشد» غیرمنتظره از کارساز %s :IMAP"
 
 #: ../camel/providers/imap/camel-imap-folder.c:88
 #, fuzzy
 msgid "Always check for new mail in this folder"
-msgstr "بررسی به دنبال پیغام‌های آشغال فقط در پوشه‌ی INBOX"
+msgstr "بررسی به دنبال پیام‌های آشغال فقط در شاخهٔ INBOX"
 
 #: ../camel/providers/imap/camel-imap-folder.c:249
 #, c-format
 msgid "Could not create directory %s: %s"
-msgstr "ایجاد شاخه‌ی %s ممکن نبود: %s"
+msgstr "ایجاد شاخهٔ %s ممکن نبود: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:353
 msgid "Folder was destroyed and recreated on server."
-msgstr "پوشه روی کارگزار نابود و مجدداْ ایجاد شد."
+msgstr "شاخه روی کارساز نابود و مجدداْ ایجاد شد."
 
 #. Check UIDs and flags of all messages we already know of.
 #: ../camel/providers/imap/camel-imap-folder.c:839
 #, fuzzy, c-format
 msgid "Scanning for changed messages in %s"
-msgstr "پویش به دنبال پیغام‌های تغییر‌ یافته"
+msgstr "پویش به دنبال پیام‌های تغییر‌ یافته"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2446
 #, c-format
 msgid "Unable to retrieve message: %s"
-msgstr "بازیابی پیغام امکان پذیر نیست: %s"
+msgstr "بازیابی پیام امکان پذیر نیست: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2525
 #: ../camel/providers/imap/camel-imap-folder.c:3226
 #: ../camel/providers/nntp/camel-nntp-folder.c:220
 msgid "This message is not currently available"
-msgstr "این پیغام در حال حاضر قابل دسترسی نیست"
+msgstr "این پیام در حال حاضر قابل دسترسی نیست"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3061
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
-msgstr "پاسخ کارگزار ناقص: اطلاعاتی برای پیغام %Id ارائه نشد"
+msgstr "پاسخ کارساز ناقص: اطلاعاتی برای پیام %Id ارائه نشد"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3069
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
-msgstr "پاسخ کارگزار ناقص: شناسه‌ی کاربری برای پیغام %Id ارائه نشد"
+msgstr "پاسخ کارساز ناقص: شناسهٔ کاربری برای پیام %Id ارائه نشد"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3082
 #, c-format
-msgid ""
-"Unexpected server response: Identical UIDs provided for messages %d and %d"
+msgid "Unexpected server response: Identical UIDs provided for messages %d and %d"
 msgstr ""
 
 #: ../camel/providers/imap/camel-imap-folder.c:3264
 msgid "Could not find message body in FETCH response."
-msgstr "پیدا کردن بدنه‌ی پیغام در پاسخ FETCH ممکن نبود."
+msgstr "پیدا کردن بدنهٔ پیام در پاسخ FETCH ممکن نبود."
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:161
 #, c-format
 msgid "Could not open cache directory: %s"
-msgstr "باز کردن شاخه‌ی حافظه‌ی نهان ممکن نبود: %s"
+msgstr "گشودن شاخهٔ حافظهٔ نهان ممکن نبود: %s"
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:267
 #: ../camel/providers/imap/camel-imap-message-cache.c:324
@@ -3035,19 +3010,18 @@ msgstr ""
 
 #: ../camel/providers/imap/camel-imap-provider.c:64
 #: ../camel/providers/imap4/camel-imap4-provider.c:50
-#, fuzzy
 msgid "Namespace:"
-msgstr "فضای نام"
+msgstr "فضانام:"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
 #: ../camel/providers/imap4/camel-imap4-provider.c:54
 msgid "_Apply filters to new messages in INBOX on this server"
-msgstr "اِ_عمال صافی‌ها بر پیغام‌های جدید در دریافتی این کارگزار"
+msgstr "اِ_عمال صافی‌ها بر پیام‌های جدید در دریافتی این کارساز"
 
 #: ../camel/providers/imap/camel-imap-provider.c:70
 #, fuzzy
 msgid "Check new messages for Jun_k contents"
-msgstr "بررسی پیغام‌های جدید به دنبال محتویات آشغال"
+msgstr "بررسی پیام‌های جدید به دنبال محتویات آشغال"
 
 #: ../camel/providers/imap/camel-imap-provider.c:74
 #: ../camel/providers/imap4/camel-imap4-provider.c:60
@@ -3060,19 +3034,18 @@ msgstr "IMAP"
 
 #: ../camel/providers/imap/camel-imap-provider.c:83
 msgid "For reading and storing mail on IMAP servers."
-msgstr "برای خواندن و ذخیره‌ی نامه روی کارگزارهای IMAP."
+msgstr "برای خواندن و ذخیرهٔ نامه روی کارسازهای IMAP."
 
 #: ../camel/providers/imap/camel-imap-provider.c:100
 #: ../camel/providers/imapp/camel-imapp-provider.c:69
 msgid "This option will connect to the IMAP server using a plaintext password."
-msgstr ""
-"این گزینه با استفاده از گذرواژه‌ی متن ساده به کارگزار IMAP متصل خواهد شد."
+msgstr "این گزینه با استفاده از گذرواژهٔ متن ساده به کارساز IMAP متصل خواهد شد."
 
 #: ../camel/providers/imap/camel-imap-store.c:457
 #: ../camel/providers/imap4/camel-imap4-store.c:214
 #, c-format
 msgid "IMAP server %s"
-msgstr "‏‏کارگزار IMAP ‏%s"
+msgstr "‏‏کارساز IMAP ‏%s"
 
 #: ../camel/providers/imap/camel-imap-store.c:459
 #: ../camel/providers/imap4/camel-imap4-store.c:216
@@ -3105,7 +3078,7 @@ msgstr "SSL موجود نیست"
 #: ../camel/providers/imap/camel-imap-store.c:600
 #: ../camel/providers/imap/camel-imap-store.c:882
 msgid "Connection cancelled"
-msgstr "از اتصال صرف نظر شد"
+msgstr "از اتصال لغو شد"
 
 #: ../camel/providers/imap/camel-imap-store.c:711
 #: ../camel/providers/imap/camel-imap-store.c:730
@@ -3116,7 +3089,7 @@ msgstr "از اتصال صرف نظر شد"
 #: ../camel/providers/imap4/camel-imap4-store.c:338
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
-msgstr "اتصال به کارگزار IMAP ‏%s در حالت امن شکست خورد: %s"
+msgstr "اتصال به کارساز IMAP ‏%s در حالت امن شکست خورد: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:712
 #: ../camel/providers/smtp/camel-smtp-transport.c:331
@@ -3125,7 +3098,7 @@ msgstr "پشتیبانی نمی‌شود STARTTLS"
 
 #: ../camel/providers/imap/camel-imap-store.c:731
 msgid "SSL negotiations failed"
-msgstr "مذاکره‌ی SSL شکست خورد"
+msgstr "مذاکرهٔ SSL شکست خورد"
 
 #: ../camel/providers/imap/camel-imap-store.c:737
 #: ../camel/providers/imap4/camel-imap4-store.c:339
@@ -3159,18 +3132,17 @@ msgid "Drafts"
 msgstr "پیش‌نویس‌ها"
 
 #: ../camel/providers/imap/camel-imap-store.c:1074
-#, fuzzy
 msgid "Sent"
-msgstr "برف توأم با باران"
+msgstr "فرستاده شده"
 
 #: ../camel/providers/imap/camel-imap-store.c:1076
 msgid "Templates"
-msgstr ""
+msgstr "قالب‌ها"
 
 #: ../camel/providers/imap/camel-imap-store.c:1349
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
-msgstr "کارگزار IMAP ‏%s از نوع تأیید هویت درخواست شده‌ی %s پشتیبانی نمی‌کند"
+msgstr "کارساز IMAP ‏%s از نوع تأیید هویت درخواست شدهٔ %s پشتیبانی نمی‌کند"
 
 #: ../camel/providers/imap/camel-imap-store.c:1359
 #: ../camel/providers/smtp/camel-smtp-transport.c:504
@@ -3185,16 +3157,15 @@ msgid ""
 "%s\n"
 "\n"
 msgstr ""
-"تأیید هویت با کارگزار IMAP امکان پذیر نیست.%s\n"
+"تأیید هویت با کارساز IMAP امکان پذیر نیست.%s\n"
 "\n"
 
 #: ../camel/providers/imap/camel-imap-store.c:1925
 #: ../camel/providers/imap/camel-imap-store.c:2302
 #: ../camel/providers/imap4/camel-imap4-store.c:959
 #, c-format
-msgid ""
-"The folder name \"%s\" is invalid because it contains the character \"%c\""
-msgstr "نام پرونده‌ی «%s» نامعتبر است چون حاوی نویسه‌ی «%c» است"
+msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgstr "نام پروندهٔ «%s» نامعتبر است چون حاوی نویسهٔ «%c» است"
 
 #: ../camel/providers/imap/camel-imap-store.c:2042
 #: ../camel/providers/local/camel-maildir-store.c:191
@@ -3202,48 +3173,47 @@ msgstr "نام پرونده‌ی «%s» نامعتبر است چون حاوی ن
 #: ../camel/providers/local/camel-mh-store.c:249
 #, fuzzy, c-format
 msgid "Cannot create folder '%s': folder exists."
-msgstr "نمی‌توان پوشه‌ی «%s» را ایجاد کرد: پوشه وجود دارد."
+msgstr "نمی‌توان شاخهٔ «%s» را ایجاد کرد: شاخه وجود دارد."
 
 #: ../camel/providers/imap/camel-imap-store.c:2313
 #, c-format
 msgid "Unknown parent folder: %s"
-msgstr "پوشه‌ی پدر ناشناخته: %s"
+msgstr "شاخهٔ پدر ناشناخته: %s"
 
 #: ../camel/providers/imap4/camel-imap4-command.c:576
 #: ../camel/providers/imap4/camel-imap4-command.c:583
 #, c-format
 msgid "Failed sending command to IMAP server %s: %s"
-msgstr "ارسال فرمان به کارگزار IMAP ‏%s شکست خورد: %s"
+msgstr "ارسال فرمان به کارساز IMAP ‏%s شکست خورد: %s"
 
 #: ../camel/providers/imap4/camel-imap4-command.c:686
 #, c-format
 msgid "Unexpected response from IMAP4 server %s: %s"
-msgstr "پاسخ غیرمنتظره از کارگزار IMAP4 ‏%s‏: %s"
+msgstr "پاسخ غیرمنتظره از کارساز IMAP4 ‏%s‏: %s"
 
 #: ../camel/providers/imap4/camel-imap4-engine.c:221
 #, c-format
 msgid "Unexpected greeting from IMAP server %s."
-msgstr "خوش‌آمد غیرمنتظره از کارگزار IMAP ‏%s."
+msgstr "خوش‌آمد غیرمنتظره از کارساز IMAP ‏%s."
 
 #: ../camel/providers/imap4/camel-imap4-engine.c:450
 #, fuzzy, c-format
 msgid "Cannot select folder '%s': Invalid mailbox name"
-msgstr "نمی‌توان پوشه‌ی «%s» را انتخاب کرد: نام نامه‌دان نامعتبر است"
+msgstr "نمی‌توان شاخهٔ «%s» را انتخاب کرد: نام نامه‌دان نامعتبر است"
 
 #: ../camel/providers/imap4/camel-imap4-engine.c:456
 #, fuzzy, c-format
 msgid "Cannot select folder '%s': Bad command"
-msgstr "نمی‌توان پوشه‌ی «%s» را انتخاب کرد: فرمان نامناسب"
+msgstr "نمی‌توان شاخهٔ «%s» را انتخاب کرد: فرمان نامناسب"
 
 #: ../camel/providers/imap4/camel-imap4-engine.c:1433
 #, fuzzy, c-format
 msgid "Failed to send command to IMAP server %s: %s"
-msgstr "ارسال فرمان به کارگزار IMAP ‏%s شکست خورد: %s"
+msgstr "ارسال فرمان به کارساز IMAP ‏%s شکست خورد: %s"
 
 #: ../camel/providers/imap4/camel-imap4-engine.c:1435
-#, fuzzy
 msgid "service unavailable"
-msgstr "SSL موجود نیست"
+msgstr "خدمت ناموجود"
 
 #: ../camel/providers/imap4/camel-imap4-engine.c:1569
 #: ../camel/providers/imap4/camel-imap4-engine.c:1608
@@ -3251,16 +3221,14 @@ msgstr "SSL موجود نیست"
 #: ../camel/providers/imap4/camel-imap4-engine.c:1709
 #, c-format
 msgid "IMAP4 server %s unexpectedly disconnected: %s"
-msgstr "اتصال کارگزار IMAP4 ‏%s به طور غیرمنتظره‌ای قطع شد: %s"
+msgstr "اتصال کارساز IMAP4 ‏%s به طور غیرمنتظره‌ای قطع شد: %s"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:89
 #, fuzzy
 msgid ""
-"Enable extended Mailing-List detection required for some filter and vFolder "
-"rules"
+"Enable extended Mailing-List detection required for some filter and vFolder rules"
 msgstr ""
-"به کار انداختن تشخیص فهرست پستی مورد نیاز برای بعضی صافی‌ها و قواعد پوشه‌های "
-"مجازی"
+"به کار انداختن تشخیص سیاههٔ پستی مورد نیاز برای بعضی صافی‌ها و قواعد شاخه‌های مجازی"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:90
 msgid "Expire cached messages that haven't been read in X seconds"
@@ -3273,81 +3241,80 @@ msgstr ""
 #: ../camel/providers/imap4/camel-imap4-folder.c:423
 #, fuzzy, c-format
 msgid "Cannot access folder '%s': %s"
-msgstr "‌دسترسی به پوشه‌ی «%s» ممکن نبود: %s"
+msgstr "‌دسترسی به شاخهٔ «%s» ممکن نبود: %s"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:482
 #, fuzzy, c-format
 msgid "Cannot sync flags to folder '%s': Unknown"
-msgstr "نمی‌توان پرچم‌ها را با پوشه‌ی «%s» همگام کرد: نامعلوم"
+msgstr "نمی‌توان پرچم‌ها را با شاخهٔ «%s» همگام کرد: نامعلوم"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:488
 #, fuzzy, c-format
 msgid "Cannot sync flags to folder '%s': Bad command"
-msgstr "نمی‌توان پرچم‌ها را با پوشه‌ی «%s» همگام کرد: فرمان نامناسب"
+msgstr "نمی‌توان پرچم‌ها را با شاخهٔ «%s» همگام کرد: فرمان نامناسب"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:628
 #, fuzzy, c-format
 msgid "Cannot expunge folder '%s': Unknown"
-msgstr "پاکسازی پوشه‌ی «%s» ممکن نیست: نامعلوم"
+msgstr "پاکسازی شاخهٔ «%s» ممکن نیست: نامعلوم"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:633
 #, fuzzy, c-format
 msgid "Cannot expunge folder '%s': Bad command"
-msgstr "پاکسازی پوشه‌ی «%s» ممکن نیست: فرمان نامناسب"
+msgstr "پاکسازی شاخهٔ «%s» ممکن نیست: فرمان نامناسب"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:889
 #, fuzzy, c-format
 msgid "Cannot get message %s from folder '%s': No such message"
-msgstr "نمی‌توان پیغام %s را از پوشه‌ی «%s» گرفت: چنین پیغامی وجود ندارد"
+msgstr "نمی‌توان پیام %s را از شاخهٔ «%s» گرفت: چنین پیامی وجود ندارد"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:894
 #, fuzzy, c-format
 msgid "Cannot get message %s from folder '%s': Bad command"
-msgstr "نمی‌توان پیغام %s را از پوشه‌ی «%s» گرفت: فرمان نامناسب"
+msgstr "نمی‌توان پیام %s را از شاخهٔ «%s» گرفت: فرمان نامناسب"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:938
 #, fuzzy, c-format
 msgid "Cannot append message to folder '%s': Folder is read-only"
-msgstr "‌نمی‌توان پیغام را به پوشه‌ی «%s» الحاق کرد: پوشه فقط خواندنی است"
+msgstr "‌نمی‌توان پیام را به شاخهٔ «%s» الحاق کرد: شاخه فقط خواندنی است"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1031
 #, fuzzy, c-format
 msgid "Cannot append message to folder '%s': Unknown error"
-msgstr "نمی‌توان پیغام را به پوشه‌ی «%s» الحاق کرد: خطای نامعلوم"
+msgstr "نمی‌توان پیام را به شاخهٔ «%s» الحاق کرد: خطای نامعلوم"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1061
 #, fuzzy, c-format
 msgid "Cannot append message to folder '%s': Bad command"
-msgstr "نمی‌توان پیغام را به پوشه‌ی «%s» الحاق کرد: فرمان نامناسب"
+msgstr "نمی‌توان پیام را به شاخهٔ «%s» الحاق کرد: فرمان نامناسب"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1181
 #, fuzzy, c-format
 msgid "Cannot move messages from folder '%s' to folder '%s': Unknown"
-msgstr "نمی‌توان پیغام را از پوشه‌ی «%s» به پوشه‌ی «%s» جابه‌جا کرد: نامعلوم"
+msgstr "نمی‌توان پیام را از شاخهٔ «%s» به شاخهٔ «%s» جابه‌جا کرد: نامعلوم"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1185
 #, fuzzy, c-format
 msgid "Cannot copy messages from folder '%s' to folder '%s': Unknown"
-msgstr "نمی‌توان پیغام را از پوشه‌ی «%s» در پوشه‌ی «%s» نسخه‌برداری کرد: نامعلوم"
+msgstr "نمی‌توان پیام را از شاخهٔ «%s» در شاخهٔ «%s» نسخه‌برداری کرد: نامعلوم"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1193
 #, fuzzy, c-format
 msgid "Cannot move messages from folder '%s' to folder '%s': Bad command"
-msgstr "نمی‌توان پیغام را از پوشه‌ی «%s» به پوشه‌ی «%s» جابه‌جا کرد: فرمان نامناسب"
+msgstr "نمی‌توان پیام را از شاخهٔ «%s» به شاخهٔ «%s» جابه‌جا کرد: فرمان نامناسب"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1197
 #, fuzzy, c-format
 msgid "Cannot copy messages from folder '%s' to folder '%s': Bad command"
-msgstr ""
-"نمی‌توان پیغام را از پوشه‌ی «%s» در پوشه‌ی «%s» نسخه‌برداری کرد: فرمان نامناسب"
+msgstr "نمی‌توان پیام را از شاخهٔ «%s» در شاخهٔ «%s» نسخه‌برداری کرد: فرمان نامناسب"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:56
 msgid "Check new messages for _Junk contents"
-msgstr "بررسی پیغام‌های جدید به دنبال محتویات آش_غال"
+msgstr "بررسی پیام‌های جدید به دنبال محتویات آش_غال"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:58
 msgid "Only check for Junk messa_ges in the INBOX folder"
-msgstr "بررسی به دنبال پی_غام‌های آشغال فقط در پوشه‌ی دریافتی"
+msgstr "بررسی به دنبال پی_غام‌های آشغال فقط در شاخهٔ دریافتی"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:67
 msgid "IMAP4rev1"
@@ -3355,14 +3322,13 @@ msgstr "IMAP4rev1"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:69
 msgid "For reading and storing mail on IMAPv4rev1 servers."
-msgstr "برای خواندن و ذخیره‌ی نامه روی کارگزارهای IMAP4rev1."
+msgstr "برای خواندن و ذخیرهٔ نامه روی کارسازهای IMAP4rev1."
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:86
 msgid ""
 "This option will connect to the IMAPv4rev1 server using a plaintext password."
 msgstr ""
-"این گزینه با استفاده از یک گذرواژه‌ی متنی ساده به کارگزار IMAPv4rev1 متصل "
-"خواهد شد."
+"این گزینه با استفاده از یک گذرواژهٔ متنی ساده به کارساز IMAPv4rev1 متصل خواهد شد."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:263
 #: ../camel/providers/imapp/camel-imapp-store.c:249
@@ -3370,49 +3336,46 @@ msgstr ""
 #: ../camel/providers/nntp/camel-nntp-store.c:214
 #: ../camel/providers/pop3/camel-pop3-store.c:182
 #: ../camel/providers/smtp/camel-smtp-transport.c:270
-#, fuzzy
 msgid "Connection canceled"
-msgstr "از اتصال صرف نظر شد"
+msgstr "اتصال لغو شد"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:300
 #, fuzzy, c-format
 msgid ""
 "Failed to connect to IMAP server %s in secure mode: Server does not support "
 "STARTTLS"
-msgstr "اتصال به کارگزار IMAP ‏%s در حالت امن شکست خورد: %s"
+msgstr "اتصال به کارساز IMAP ‏%s در حالت امن شکست خورد: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:330
 #: ../camel/providers/pop3/camel-pop3-store.c:250
 #, fuzzy
 msgid "TLS negotiations failed"
-msgstr "مذاکره‌ی SSL شکست خورد"
+msgstr "مذاکرهٔ SSL شکست خورد"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:415
 #, c-format
-msgid ""
-"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
-msgstr ""
-"تأیید هویت با کارگزار IMAP ‏%s با استفاده از سازوکار تأیید هویت %s ممکن نیست"
+msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+msgstr "تأیید هویت با کارساز IMAP ‏%s با استفاده از سازوکار تأیید هویت %s ممکن نیست"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:538
 #, c-format
 msgid "Cannot authenticate to IMAP server %s using %s"
-msgstr "تأیید هویت با کارگزار IMAP ‏%s با استفاده از %s ممکن نیست"
+msgstr "تأیید هویت با کارساز IMAP ‏%s با استفاده از %s ممکن نیست"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:701
 #: ../camel/providers/imap4/camel-imap4-store.c:969
 msgid "Cannot create IMAP folders in offline mode."
-msgstr "نمی‌توان در حالت منفصل پوشه‌ی IMAP ایجاد کرد."
+msgstr "نمی‌توان در حالت منفصل شاخهٔ IMAP ایجاد کرد."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:740
 #, fuzzy, c-format
 msgid "Cannot get folder '%s' on IMAP server %s: Unknown"
-msgstr "نمی‌توان پوشه‌ی «%s» در کارگزار IMAP ‏%s را گرفت: نامعلوم"
+msgstr "نمی‌توان شاخهٔ «%s» در کارساز IMAP ‏%s را گرفت: نامعلوم"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:821
 #, fuzzy, c-format
 msgid "Cannot get LIST information for '%s' on IMAP server %s: %s"
-msgstr "نمی‌توان اطلاعات %s را برای الگوی «%s» روی کارگزار IMAP ‏%s گرفت: %s"
+msgstr "نمی‌توان اطلاعات %s را برای الگوی «%s» روی کارساز IMAP ‏%s گرفت: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:823
 #: ../camel/providers/imap4/camel-imap4-store.c:1577
@@ -3422,87 +3385,87 @@ msgstr "فرمان نامناسب"
 #: ../camel/providers/imap4/camel-imap4-store.c:902
 #, fuzzy, c-format
 msgid "Cannot create folder '%s': Invalid mailbox name"
-msgstr "نمی‌توان پوشه‌ی «%s» را ایجادکرد: نام نامه‌دان نامعتبر است"
+msgstr "نمی‌توان شاخهٔ «%s» را ایجادکرد: نام نامه‌دان نامعتبر است"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:907
 #, fuzzy, c-format
 msgid "Cannot create folder '%s': Bad command"
-msgstr "نمی‌توان پوشه‌ی «%s» را ایجاد کرد: فرمان نامناسب"
+msgstr "نمی‌توان شاخهٔ «%s» را ایجاد کرد: فرمان نامناسب"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1013
 #, fuzzy, c-format
 msgid "Cannot delete folder '%s': Special folder"
-msgstr "نمی‌توان پوشه‌ی «%s» را حذف کرد: پوشه‌ی خاص"
+msgstr "نمی‌توان شاخهٔ «%s» را حذف کرد: شاخهٔ خاص"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1020
 msgid "Cannot delete IMAP folders in offline mode."
-msgstr "نمی‌توان پوشه‌های IMAP را در حالت منفصل حذف کرد."
+msgstr "نمی‌توان شاخه‌های IMAP را در حالت منفصل حذف کرد."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1079
 #, fuzzy, c-format
 msgid "Cannot delete folder '%s': Invalid mailbox name"
-msgstr "نمی‌توان پوشه‌ی «%s» را حذف کرد: نام نامه‌دان نامعتبر"
+msgstr "نمی‌توان شاخهٔ «%s» را حذف کرد: نام نامه‌دان نامعتبر"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1084
 #, fuzzy, c-format
 msgid "Cannot delete folder '%s': Bad command"
-msgstr "نمی‌توان پوشه‌ی «%s» را حذف کرد: فرمان نامناسب"
+msgstr "نمی‌توان شاخهٔ «%s» را حذف کرد: فرمان نامناسب"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1104
 #, fuzzy, c-format
 msgid "Cannot rename folder '%s' to '%s': Special folder"
-msgstr "نمی‌توان نام پوشه‌ی «%s» را به «%s» تغییر داد: پوشه‌ی خاص"
+msgstr "نمی‌توان نام شاخهٔ «%s» را به «%s» تغییر داد: شاخهٔ خاص"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1111
 msgid "Cannot rename IMAP folders in offline mode."
-msgstr "نمی‌توان نام پوشه‌های IMAP را در حالت منفصل تغییر داد."
+msgstr "نمی‌توان نام شاخه‌های IMAP را در حالت منفصل تغییر داد."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1142
 #, fuzzy, c-format
 msgid "Cannot rename folder '%s' to '%s': Invalid mailbox name"
-msgstr "نمی‌توان نام پوشه‌ی «%s» را به «%s» تغییر داد: نام نامه‌دان نامعتبر"
+msgstr "نمی‌توان نام شاخهٔ «%s» را به «%s» تغییر داد: نام نامه‌دان نامعتبر"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1147
 #, fuzzy, c-format
 msgid "Cannot rename folder '%s' to '%s': Bad command"
-msgstr "نمی‌توان نام پوشه‌ی «%s» را به «%s» تغییر داد: فرمان نامناسب"
+msgstr "نمی‌توان نام شاخهٔ «%s» را به «%s» تغییر داد: فرمان نامناسب"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1575
 #, fuzzy, c-format
 msgid "Cannot get %s information for pattern '%s' on IMAP server %s: %s"
-msgstr "نمی‌توان اطلاعات %s را برای الگوی «%s» روی کارگزار IMAP ‏%s گرفت: %s"
+msgstr "نمی‌توان اطلاعات %s را برای الگوی «%s» روی کارساز IMAP ‏%s گرفت: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1636
 msgid "Cannot subscribe to IMAP folders in offline mode."
-msgstr "نمی‌توان در حالت منفصل آبونه‌ی پوشه‌های IMAP شد."
+msgstr "نمی‌توان در حالت منفصل آبونهٔ شاخه‌های IMAP شد."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1681
 #, fuzzy, c-format
 msgid "Cannot subscribe to folder '%s': Invalid mailbox name"
-msgstr "نمی‌توان پوشه‌ی «%s» را آبونه شد: نام نامه‌دان نامعتبر"
+msgstr "نمی‌توان شاخهٔ «%s» را آبونه شد: نام نامه‌دان نامعتبر"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1686
 #, fuzzy, c-format
 msgid "Cannot subscribe to folder '%s': Bad command"
-msgstr "نمی‌توان پوشه‌ی «%s» را آبونه شد: فرمان نامناسب"
+msgstr "نمی‌توان شاخهٔ «%s» را آبونه شد: فرمان نامناسب"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1708
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
-msgstr "نمی‌توان آبونه‌ی پوشه‌های IMAP را در حالت منفصل قطع کرد."
+msgstr "نمی‌توان آبونهٔ شاخه‌های IMAP را در حالت منفصل قطع کرد."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1753
 #, fuzzy, c-format
 msgid "Cannot unsubscribe from folder '%s': Invalid mailbox name"
-msgstr "نمی‌توان آبونه‌ی پوشه‌ی «%s» را قطع کرد: نام نامه‌دان نامعتبر"
+msgstr "نمی‌توان آبونهٔ شاخهٔ «%s» را قطع کرد: نام نامه‌دان نامعتبر"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1758
 #, fuzzy, c-format
 msgid "Cannot unsubscribe from folder '%s': Bad command"
-msgstr "نمی‌توان آبونه‌ی پوشه‌ی «%s» را قطع کرد: فرمان نامناسب"
+msgstr "نمی‌توان آبونهٔ شاخهٔ «%s» را قطع کرد: فرمان نامناسب"
 
 #: ../camel/providers/imap4/camel-imap4-summary.c:1596
 msgid "Scanning for changed messages"
-msgstr "پویش به دنبال پیغام‌های تغییر‌ یافته"
+msgstr "پویش به دنبال پیام‌های تغییر‌ یافته"
 
 #: ../camel/providers/imap4/camel-imap4-summary.c:1617
 #, c-format
@@ -3512,7 +3475,7 @@ msgstr ""
 #: ../camel/providers/imap4/camel-imap4-summary.c:1644
 #, fuzzy
 msgid "Fetching envelopes of new messages"
-msgstr "در حال آوردن پاکت برای پیغام‌های جدید"
+msgstr "در حال آوردن پاکت برای پیام‌های جدید"
 
 #: ../camel/providers/imap4/camel-imap4-utils.c:437
 #, c-format
@@ -3526,12 +3489,12 @@ msgstr "داده‌ای نیست"
 #: ../camel/providers/imap4/camel-imap4-utils.c:623
 #, c-format
 msgid "IMAP server %s unexpectedly disconnected: %s"
-msgstr "اتصال کارگزار IMAP ‏%s به طور غیر منتظره‌ای قطع شد: %s"
+msgstr "اتصال کارساز IMAP ‏%s به طور غیر منتظره‌ای قطع شد: %s"
 
 #: ../camel/providers/imapp/camel-imapp-provider.c:41
 #: ../camel/providers/pop3/camel-pop3-provider.c:41
 msgid "Message storage"
-msgstr ""
+msgstr "ذخیره‌ساز پیام"
 
 #: ../camel/providers/imapp/camel-imapp-provider.c:49
 msgid "IMAP+"
@@ -3553,11 +3516,11 @@ msgstr "اتصال به %s (درگاه %s) ممکن نبود: %s"
 #: ../camel/providers/imapp/camel-imapp-store.c:349
 #, c-format
 msgid "Could not connect to POP server on %s"
-msgstr "اتصال به کارگزار POP روی %s ممکن نبود"
+msgstr "اتصال به کارساز POP روی %s ممکن نبود"
 
 #: ../camel/providers/local/camel-local-folder.c:174
 msgid "Index message body data"
-msgstr "نمایه‌گذاری کردن داده‌های بدنه‌ی پیغام"
+msgstr "نمایه‌گذاری کردن داده‌های بدنهٔ پیام"
 
 #. $HOME relative path + protocol string
 #: ../camel/providers/local/camel-local-folder.c:382
@@ -3581,7 +3544,7 @@ msgstr "‏%s (%s)"
 #: ../camel/providers/local/camel-local-provider.c:48
 #, fuzzy
 msgid "_Use the '.folders' folder summary file (exmh)"
-msgstr "استفاده از پرونده‌های خلاصه‌ی پوشه‌ی «.folders» ‏(exmh)"
+msgstr "استفاده از پرونده‌های خلاصهٔ شاخهٔ «.folders» ‏(exmh)"
 
 #: ../camel/providers/local/camel-local-provider.c:55
 msgid "MH-format mail directories"
@@ -3589,7 +3552,7 @@ msgstr "شاخه‌های نامه با قالب MH"
 
 #: ../camel/providers/local/camel-local-provider.c:56
 msgid "For storing local mail in MH-like mail directories."
-msgstr "برای ذخیره کردن نامه‌های محلی با شاخه‌های نامه‌ی شبیه MH"
+msgstr "برای ذخیرهٔ نامه‌های محلّی در شاخه‌های نامهٔ شبهMH."
 
 #: ../camel/providers/local/camel-local-provider.c:73
 msgid "Local delivery"
@@ -3602,13 +3565,13 @@ msgid ""
 "folders managed by Evolution."
 msgstr ""
 "برای بازیابی (جابه‌جایی) نامه‌های محلی از قرقره‌های استاندارد با قالب mbox در "
-"پوشه‌هایی که توسط Evolution مدیریت می‌شوند."
+"شاخه‌هایی که توسط Evolution مدیریت می‌شوند."
 
 #: ../camel/providers/local/camel-local-provider.c:88
 #: ../camel/providers/local/camel-local-provider.c:107
 #, fuzzy
 msgid "_Apply filters to new messages in INBOX"
-msgstr "اعمال صافی‌ها بر پیغام‌های جدید در دریافتی"
+msgstr "اعمال صافی‌ها بر پیام‌های جدید در دریافتی"
 
 #: ../camel/providers/local/camel-local-provider.c:95
 msgid "Maildir-format mail directories"
@@ -3616,17 +3579,17 @@ msgstr "شاخه‌های نامه با قالب maildir"
 
 #: ../camel/providers/local/camel-local-provider.c:96
 msgid "For storing local mail in maildir directories."
-msgstr "برای ذخیره‌ی نامه‌های محلی در شاخه‌های maildir."
+msgstr "برای ذخیرهٔ نامه‌های محلی در شاخه‌های maildir."
 
 #: ../camel/providers/local/camel-local-provider.c:108
 #, fuzzy
 msgid "_Store status headers in Elm/Pine/Mutt format"
-msgstr "ذخیره‌ی سرصفحه‌های وضعیت با قالب Elm‏/Pine‏/Mutt"
+msgstr "ذخیرهٔ سرصفحه‌های وضعیت با قالب Elm‏/Pine‏/Mutt"
 
 #: ../camel/providers/local/camel-local-provider.c:115
 #, fuzzy
 msgid "Standard Unix mbox spool file"
-msgstr "شاخه یا قرقره‌ی mbox یونیکسی استاندارد"
+msgstr "شاخه یا قرقرهٔ mbox یونیکسی استاندارد"
 
 #: ../camel/providers/local/camel-local-provider.c:116
 #: ../camel/providers/local/camel-local-provider.c:127
@@ -3634,14 +3597,13 @@ msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
-"برای خواندن و ذخیره کردن نامه‌های محلی در پرونده‌های قرقره‌ی mbox استاندارد "
-"خارجی.\n"
-"ممکن است برای خواندن درخت پوشه‌هایی به سبک Elm، ‏Pine یا Mutt به کار رود."
+"برای خواندن و ذخیره کردن نامه‌های محلی در پرونده‌های قرقرهٔ mbox استاندارد خارجی.\n"
+"ممکن است برای خواندن درخت شاخه‌هایی به سبک Elm، ‏Pine یا Mutt به کار رود."
 
 #: ../camel/providers/local/camel-local-provider.c:126
 #, fuzzy
 msgid "Standard Unix mbox spool directory"
-msgstr "شاخه یا قرقره‌ی mbox یونیکسی استاندارد"
+msgstr "شاخه یا قرقرهٔ mbox یونیکسی استاندارد"
 
 #: ../camel/providers/local/camel-local-store.c:159
 #: ../camel/providers/local/camel-local-store.c:270
@@ -3661,7 +3623,7 @@ msgstr ""
 #: ../camel/providers/local/camel-local-store.c:281
 #, c-format
 msgid "Cannot get folder: %s: %s"
-msgstr "نمی‌توان پوشه را گرفت: %s‏: %s"
+msgstr "نمی‌توان شاخه را گرفت: %s‏: %s"
 
 #: ../camel/providers/local/camel-local-store.c:195
 msgid "Local stores do not have an inbox"
@@ -3670,12 +3632,12 @@ msgstr ""
 #: ../camel/providers/local/camel-local-store.c:241
 #, c-format
 msgid "Local mail file %s"
-msgstr "پرونده‌ی نامه‌ی محلی %s"
+msgstr "پروندهٔ نامهٔ محلی %s"
 
 #: ../camel/providers/local/camel-local-store.c:359
 #, c-format
 msgid "Could not rename folder %s to %s: %s"
-msgstr "تغییر نام پوشه‌ی %s به %s ممکن نبود: %s"
+msgstr "تغییر نام شاخهٔ %s به %s ممکن نبود: %s"
 
 #: ../camel/providers/local/camel-local-store.c:427
 #, c-format
@@ -3688,38 +3650,38 @@ msgstr "تغییر نام «%s» ممکن نبود: %s"
 #: ../camel/providers/local/camel-mbox-store.c:288
 #, fuzzy, c-format
 msgid "Could not delete folder summary file '%s': %s"
-msgstr "حذف پرونده‌ی خلاصه‌ی پوشه‌ی «%s» ممکن نبود: %s"
+msgstr "حذف پروندهٔ خلاصهٔ شاخهٔ «%s» ممکن نبود: %s"
 
 #: ../camel/providers/local/camel-local-store.c:472
 #: ../camel/providers/local/camel-mbox-store.c:300
 #, fuzzy, c-format
 msgid "Could not delete folder index file '%s': %s"
-msgstr "حذف پرونده‌ی نمایه‌ی پوشه‌ی «%s» ممکن نبود: %s"
+msgstr "حذف پروندهٔ نمایهٔ شاخهٔ «%s» ممکن نبود: %s"
 
 #: ../camel/providers/local/camel-local-store.c:495
 #: ../camel/providers/local/camel-mbox-store.c:324
 #, fuzzy, c-format
 msgid "Could not delete folder meta file '%s': %s"
-msgstr "حذف فوق پرونده‌ی پوشه‌ی «%s» ممکن نبود: %s"
+msgstr "حذف فوق پروندهٔ شاخهٔ «%s» ممکن نبود: %s"
 
 #: ../camel/providers/local/camel-local-summary.c:409
 #, c-format
 msgid "Could not save summary: %s: %s"
-msgstr "ذخیره‌ی خلاصه ممکن نبود: %s‏: %s"
+msgstr "ذخیرهٔ خلاصه ممکن نبود: %s‏: %s"
 
 #: ../camel/providers/local/camel-local-summary.c:467
 msgid "Unable to add message to summary: unknown reason"
-msgstr "اضافه کردن پیغام به خلاصه امکان نداشت: دلیل نامعلوم"
+msgstr "اضافه کردن پیام به خلاصه امکان نداشت: دلیل نامعلوم"
 
 #: ../camel/providers/local/camel-maildir-folder.c:220
 #, fuzzy
 msgid "Maildir append message canceled"
-msgstr "از الحاق پیغام به maildir صرف نظر شد"
+msgstr "از الحاق پیام به maildir لغو شد"
 
 #: ../camel/providers/local/camel-maildir-folder.c:223
 #, c-format
 msgid "Cannot append message to maildir folder: %s: %s"
-msgstr "نمی‌توان پیغام را به پوشه‌ی maildir الحاق کرد: %s‏: %s"
+msgstr "نمی‌توان پیام را به شاخهٔ maildir الحاق کرد: %s‏: %s"
 
 #: ../camel/providers/local/camel-maildir-folder.c:250
 #: ../camel/providers/local/camel-maildir-folder.c:264
@@ -3736,12 +3698,12 @@ msgid ""
 "Cannot get message: %s from folder %s\n"
 "  %s"
 msgstr ""
-"دسترسی به پیغام ممکن نیست: %s از پوشه‌ی %s‏\n"
+"دسترسی به پیام ممکن نیست: %s از شاخهٔ %s‏\n"
 "  ‏%s"
 
 #: ../camel/providers/local/camel-maildir-folder.c:274
 msgid "Invalid message contents"
-msgstr "محتویات پیغام نامعتبر است"
+msgstr "محتویات پیام نامعتبر است"
 
 #: ../camel/providers/local/camel-maildir-store.c:147
 #: ../camel/providers/local/camel-maildir-store.c:172
@@ -3749,58 +3711,58 @@ msgstr "محتویات پیغام نامعتبر است"
 #: ../camel/providers/local/camel-mbox-store.c:188
 #, fuzzy, c-format
 msgid "Cannot create folder '%s': %s"
-msgstr "‌نمی‌توان پوشه‌ی «%s» را ایجاد کرد: %s"
+msgstr "‌نمی‌توان شاخهٔ «%s» را ایجاد کرد: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:160
 #: ../camel/providers/local/camel-mbox-store.c:147
 #: ../camel/providers/local/camel-mh-store.c:217
 #, fuzzy, c-format
 msgid "Cannot get folder '%s': %s"
-msgstr "نمی‌توان پوشه‌ی «%s» را گرفت: %s"
+msgstr "نمی‌توان شاخهٔ «%s» را گرفت: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:164
 #: ../camel/providers/local/camel-mbox-store.c:155
 #: ../camel/providers/local/camel-mh-store.c:224
 #, fuzzy, c-format
 msgid "Cannot get folder '%s': folder does not exist."
-msgstr "نمی‌توان پوشه‌ی «%s» را گرفت: پوشه وجود ندارد."
+msgstr "نمی‌توان شاخهٔ «%s» را گرفت: شاخه وجود ندارد."
 
 #: ../camel/providers/local/camel-maildir-store.c:188
 #, fuzzy, c-format
 msgid "Cannot get folder '%s': not a maildir directory."
-msgstr "نمی‌توان پوشه‌ی «%s» را گرفت: شاخه‌ی maildir نیست."
+msgstr "نمی‌توان شاخهٔ «%s» را گرفت: شاخهٔ maildir نیست."
 
 #: ../camel/providers/local/camel-maildir-store.c:233
 #: ../camel/providers/local/camel-maildir-store.c:271
 #: ../camel/providers/local/camel-mh-store.c:273
 #, fuzzy, c-format
 msgid "Could not delete folder '%s': %s"
-msgstr "حذف پوشه‌ی '%s' ممکن نبود: %s"
+msgstr "حذف شاخهٔ '%s' ممکن نبود: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:235
 msgid "not a maildir directory"
-msgstr "شاخه‌ی maildir نیست"
+msgstr "شاخهٔ maildir نیست"
 
 #: ../camel/providers/local/camel-maildir-store.c:439
 #: ../camel/providers/local/camel-spool-store.c:331
 #: ../camel/providers/local/camel-spool-store.c:345
 #, fuzzy, c-format
 msgid "Could not scan folder '%s': %s"
-msgstr "پویش پوشه‌ی «%s» ممکن نبود: %s"
+msgstr "پویش شاخهٔ «%s» ممکن نبود: %s"
 
 #: ../camel/providers/local/camel-maildir-summary.c:433
 #: ../camel/providers/local/camel-maildir-summary.c:567
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
-msgstr "نمی‌توان مسیر شاخه‌ی maildir را باز کرد: %s‏: %s"
+msgstr "نمی‌توان مسیر شاخهٔ maildir را باز کرد: %s‏: %s"
 
 #: ../camel/providers/local/camel-maildir-summary.c:560
 msgid "Checking folder consistency"
-msgstr "در حال بررسی همخوانی پوشه"
+msgstr "در حال بررسی همخوانی شاخه"
 
 #: ../camel/providers/local/camel-maildir-summary.c:664
 msgid "Checking for new messages"
-msgstr "در حال بررسی به دنبال پیغام‌های جدید"
+msgstr "در حال بررسی به دنبال پیام‌های جدید"
 
 #: ../camel/providers/local/camel-maildir-summary.c:755
 #: ../camel/providers/local/camel-mbox-summary.c:436
@@ -3808,13 +3770,13 @@ msgstr "در حال بررسی به دنبال پیغام‌های جدید"
 #: ../camel/providers/local/camel-mbox-summary.c:706
 #: ../camel/providers/local/camel-spool-summary.c:140
 msgid "Storing folder"
-msgstr "در حال ذخیره‌سازی پوشه"
+msgstr "در حال ذخیره‌سازی شاخه"
 
 #: ../camel/providers/local/camel-mbox-folder.c:156
 #: ../camel/providers/local/camel-spool-folder.c:150
 #, c-format
 msgid "Cannot create folder lock on %s: %s"
-msgstr "نمی‌توان قفل پوشه را روی %s ایجاد کرد: %s"
+msgstr "نمی‌توان قفل شاخه را روی %s ایجاد کرد: %s"
 
 #: ../camel/providers/local/camel-mbox-folder.c:217
 #, c-format
@@ -3824,31 +3786,31 @@ msgstr "نمی‌توان نامه‌دان را باز کرد: %s‏: %s\n"
 #: ../camel/providers/local/camel-mbox-folder.c:278
 #, fuzzy
 msgid "Mail append canceled"
-msgstr "از الحاق نامه صرف نظر شد"
+msgstr "از الحاق نامه لغو شد"
 
 #: ../camel/providers/local/camel-mbox-folder.c:281
 #, c-format
 msgid "Cannot append message to mbox file: %s: %s"
-msgstr "نمی‌توان پیغام را به پرونده‌ی mbox الحاق کرد: %s‏:%s"
+msgstr "نمی‌توان پیام را به پروندهٔ mbox الحاق کرد: %s‏:%s"
 
 #: ../camel/providers/local/camel-mbox-folder.c:400
 msgid "The folder appears to be irrecoverably corrupted."
-msgstr "به نظر می‌رسد پوشه مخدوش شده و قابل بازیابی نیست."
+msgstr "به نظر می‌رسد شاخه مخدوش شده و قابل بازیابی نیست."
 
 #: ../camel/providers/local/camel-mbox-folder.c:408
 #: ../camel/providers/local/camel-mh-folder.c:224
 msgid "Message construction failed."
-msgstr "ساخت پیغام شکست خورد."
+msgstr "ساخت پیام شکست خورد."
 
 #: ../camel/providers/local/camel-mbox-store.c:166
 #: ../camel/providers/local/camel-mbox-store.c:365
 msgid "Cannot create a folder by this name."
-msgstr "نمی‌توان پوشه‌ای با این نام ایجاد کرد."
+msgstr "نمی‌توان شاخه‌ای با این نام ایجاد کرد."
 
 #: ../camel/providers/local/camel-mbox-store.c:198
 #, fuzzy, c-format
 msgid "Cannot get folder '%s': not a regular file."
-msgstr "نمی‌توان پوشه‌ی «%s» را گرفت: پرونده‌ی متعارفی نیست."
+msgstr "نمی‌توان شاخهٔ «%s» را گرفت: پروندهٔ متعارفی نیست."
 
 #: ../camel/providers/local/camel-mbox-store.c:228
 #: ../camel/providers/local/camel-mbox-store.c:239
@@ -3858,36 +3820,36 @@ msgid ""
 "Could not delete folder '%s':\n"
 "%s"
 msgstr ""
-"حذف پوشه‌ی «%s» ممکن نبود:\n"
+"حذف شاخهٔ «%s» ممکن نبود:\n"
 "‏%s"
 
 #: ../camel/providers/local/camel-mbox-store.c:247
 #, fuzzy, c-format
 msgid "'%s' is not a regular file."
-msgstr "‏«%s» پرونده‌ی متعارفی نیست."
+msgstr "‏«%s» پروندهٔ متعارفی نیست."
 
 #: ../camel/providers/local/camel-mbox-store.c:254
 #, fuzzy, c-format
 msgid "Folder '%s' is not empty. Not deleted."
-msgstr "پوشه‌ی «%s» خالی نیست. حذف نشد."
+msgstr "شاخهٔ «%s» خالی نیست. حذف نشد."
 
 #: ../camel/providers/local/camel-mbox-store.c:378
 #, fuzzy, c-format
 msgid "Cannot create directory '%s': %s."
-msgstr "نمی‌توان شاخه‌ی «%s» را ایجاد کرد: %s."
+msgstr "نمی‌توان شاخهٔ «%s» را ایجاد کرد: %s."
 
 #: ../camel/providers/local/camel-mbox-store.c:392
 #, c-format
 msgid "Cannot create folder: %s: %s"
-msgstr "نمی‌توان پوشه را ایجاد کرد: %s: %s"
+msgstr "نمی‌توان شاخه را ایجاد کرد: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:394
 msgid "Folder already exists"
-msgstr "پوشه از قبل وجود دارد"
+msgstr "شاخه از قبل وجود دارد"
 
 #: ../camel/providers/local/camel-mbox-store.c:485
 msgid "The new folder name is illegal."
-msgstr "نام جدید پوشه غیرمجاز است."
+msgstr "نام جدید شاخه غیرمجاز است."
 
 #: ../camel/providers/local/camel-mbox-store.c:498
 #, fuzzy, c-format
@@ -3902,24 +3864,24 @@ msgstr "تغییر نام «%s» به %s ممکن نبود: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:442
 #, c-format
 msgid "Could not open folder: %s: %s"
-msgstr "باز کردن پوشه ممکن نبود: %s‏: %s"
+msgstr "گشودن شاخه ممکن نبود: %s‏: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:490
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
-msgstr "خطای مهلک تجزیه‌گر نامه نزدیک موقعیت %Ild در پوشه‌ی %s"
+msgstr "خطای مهلک تجزیه‌گر نامه نزدیک موقعیت %Ild در شاخهٔ %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:546
 #, c-format
 msgid "Cannot check folder: %s: %s"
-msgstr "نمی‌توان پوشه را بررسی کرد: %s‏: %s"
+msgstr "نمی‌توان شاخه را بررسی کرد: %s‏: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:614
 #: ../camel/providers/local/camel-mbox-summary.c:711
 #: ../camel/providers/local/camel-spool-summary.c:145
 #, c-format
 msgid "Could not open file: %s: %s"
-msgstr "باز کردن پرونده ممکن نبود: %s‏: %s"
+msgstr "گشودن پرونده ممکن نبود: %s‏: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:626
 #: ../camel/providers/local/camel-spool-summary.c:158
@@ -3931,17 +3893,17 @@ msgstr "نمی‌توان نامه‌دان موقت را باز کرد: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:859
 #, c-format
 msgid "Could not close source folder %s: %s"
-msgstr "باز کردن پوشه‌ی مبدأ %s ممکن نبود: %s"
+msgstr "گشودن شاخهٔ مبدأ %s ممکن نبود: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:648
 #, fuzzy, c-format
 msgid "Could not close temporary folder: %s"
-msgstr "بستن پوشه‌ی موقت ممکن نبود: %s"
+msgstr "بستن شاخهٔ موقت ممکن نبود: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:663
 #, c-format
 msgid "Could not rename folder: %s"
-msgstr "تغییر نام پوشه ممکن نبود: %s"
+msgstr "تغییر نام شاخه ممکن نبود: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:722
 #: ../camel/providers/local/camel-mbox-summary.c:1046
@@ -3965,7 +3927,7 @@ msgstr "خطای نامعلوم: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:971
 #, fuzzy, c-format
 msgid "Folder %s cannot be opened: %s"
-msgstr "نمی‌توان قرقره‌ی «%s» را باز کرد: %s"
+msgstr "نمی‌توان قرقرهٔ «%s» را باز کرد: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:1182
 #: ../camel/providers/local/camel-mbox-summary.c:1208
@@ -3981,22 +3943,22 @@ msgstr "نوشتن در نامه‌دان tmp شکست خورد: %s‏: %s"
 #: ../camel/providers/local/camel-mh-folder.c:176
 #, fuzzy
 msgid "MH append message canceled"
-msgstr "الحاق پیغام MH لغو شد"
+msgstr "الحاق پیام MH لغو شد"
 
 #: ../camel/providers/local/camel-mh-folder.c:179
 #, c-format
 msgid "Cannot append message to mh folder: %s: %s"
-msgstr "نمی‌توان پیغام را به پوشه‌ی mh الحاق کرد: %s‏: %s"
+msgstr "نمی‌توان پیام را به شاخهٔ mh الحاق کرد: %s‏: %s"
 
 #: ../camel/providers/local/camel-mh-store.c:232
 #, fuzzy, c-format
 msgid "Could not create folder '%s': %s"
-msgstr "نمی‌توان پوشه‌ی «%s» را ایجاد کرد: %s"
+msgstr "نمی‌توان شاخهٔ «%s» را ایجاد کرد: %s"
 
 #: ../camel/providers/local/camel-mh-store.c:244
 #, fuzzy, c-format
 msgid "Cannot get folder '%s': not a directory."
-msgstr "نمی‌توان پوشه‌ی «%s» را گرفت: شاخه‌ی maildir نیست."
+msgstr "نمی‌توان شاخهٔ «%s» را گرفت: شاخهٔ maildir نیست."
 
 #: ../camel/providers/local/camel-mh-summary.c:246
 #, c-format
@@ -4006,17 +3968,17 @@ msgstr ""
 #: ../camel/providers/local/camel-spool-store.c:135
 #, fuzzy, c-format
 msgid "Spool '%s' cannot be opened: %s"
-msgstr "نمی‌توان قرقره‌ی «%s» را باز کرد: %s"
+msgstr "نمی‌توان قرقرهٔ «%s» را باز کرد: %s"
 
 #: ../camel/providers/local/camel-spool-store.c:147
 #, fuzzy, c-format
 msgid "Spool '%s' is not a regular file or directory"
-msgstr "قرقره‌ی «%s» پرونده یا شاخه‌ی متعارفی نیست"
+msgstr "قرقرهٔ «%s» پرونده یا شاخهٔ متعارفی نیست"
 
 #: ../camel/providers/local/camel-spool-store.c:166
 #, fuzzy, c-format
 msgid "Folder '%s/%s' does not exist."
-msgstr "پوشه‌ی «%s/%s» وجود ندارد."
+msgstr "شاخهٔ «%s/%s» وجود ندارد."
 
 #: ../camel/providers/local/camel-spool-store.c:176
 #, fuzzy, c-format
@@ -4024,25 +3986,25 @@ msgid ""
 "Could not open folder '%s':\n"
 "%s"
 msgstr ""
-"باز کردن پوشه‌ی «%s» ممکن نیست:\n"
+"گشودن شاخهٔ «%s» ممکن نیست:\n"
 "‏%s"
 
 #: ../camel/providers/local/camel-spool-store.c:180
 #, fuzzy, c-format
 msgid "Folder '%s' does not exist."
-msgstr "پوشه‌ی «%s» وجود ندارد."
+msgstr "شاخهٔ «%s» وجود ندارد."
 
 #: ../camel/providers/local/camel-spool-store.c:185
 #, fuzzy, c-format
 msgid ""
 "Could not create folder '%s':\n"
 "%s"
-msgstr "نمی‌توان پوشه‌ی «%s» را ایجاد کرد: %s"
+msgstr "نمی‌توان شاخهٔ «%s» را ایجاد کرد: %s"
 
 #: ../camel/providers/local/camel-spool-store.c:193
 #, fuzzy, c-format
 msgid "'%s' is not a mailbox file."
-msgstr "‏«%s» پرونده‌ی نامه‌دان نیست."
+msgstr "‏«%s» پروندهٔ نامه‌دان نیست."
 
 #: ../camel/providers/local/camel-spool-store.c:210
 msgid "Store does not support an INBOX"
@@ -4051,32 +4013,32 @@ msgstr ""
 #: ../camel/providers/local/camel-spool-store.c:222
 #, c-format
 msgid "Spool mail file %s"
-msgstr "پرونده‌ی نامه‌ی قرقره‌ی %s"
+msgstr "پروندهٔ نامهٔ قرقرهٔ %s"
 
 #: ../camel/providers/local/camel-spool-store.c:222
 #, c-format
 msgid "Spool folder tree %s"
-msgstr "درخت پوشه‌ی قرقره‌ی %s"
+msgstr "درخت شاخهٔ قرقرهٔ %s"
 
 #: ../camel/providers/local/camel-spool-store.c:230
 msgid "Spool folders cannot be renamed"
-msgstr "نمی‌توان نام پوشه‌های قرقره را تغییر داد"
+msgstr "نمی‌توان نام شاخه‌های قرقره را تغییر داد"
 
 #: ../camel/providers/local/camel-spool-store.c:238
 msgid "Spool folders cannot be deleted"
-msgstr "پوشه‌های قرقره را نمی‌توان حذف کرد"
+msgstr "شاخه‌های قرقره را نمی‌توان حذف کرد"
 
 #: ../camel/providers/local/camel-spool-summary.c:171
 #: ../camel/providers/local/camel-spool-summary.c:181
 #: ../camel/providers/local/camel-spool-summary.c:191
 #, c-format
 msgid "Could not sync temporary folder %s: %s"
-msgstr "همگام کردن پوشه‌ی موقت %s ممکن نبود: %s"
+msgstr "همگام کردن شاخهٔ موقت %s ممکن نبود: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:207
 #, c-format
 msgid "Could not sync spool folder %s: %s"
-msgstr "همگام کردن پوشه‌ی قرقره‌ی %s ممکن نبود: %s"
+msgstr "همگام کردن شاخهٔ قرقرهٔ %s ممکن نبود: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:238
 #: ../camel/providers/local/camel-spool-summary.c:255
@@ -4086,14 +4048,14 @@ msgid ""
 "Could not sync spool folder %s: %s\n"
 "Folder may be corrupt, copy saved in '%s'"
 msgstr ""
-"همگام کردن پوشه‌ی قرقره‌ی %s ممکن نبود: %s‏\n"
-"ممکن است پوشه مخدوش شده باشد، یک نسخه در «%s» ذخیره شد"
+"همگام کردن شاخهٔ قرقرهٔ %s ممکن نبود: %s‏\n"
+"ممکن است شاخه مخدوش شده باشد، یک نسخه در «%s» ذخیره شد"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:176
 #: ../camel/providers/nntp/camel-nntp-folder.c:208
 #, fuzzy, c-format
 msgid "Internal error: UID in invalid format: %s"
-msgstr "خطای داخلی: قالب شناسه‌ی کاربر نامعتبر است: %s"
+msgstr "خطای داخلی: قالب شناسهٔ کاربر نامعتبر است: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:328
 #: ../camel/providers/nntp/camel-nntp-folder.c:331
@@ -4105,24 +4067,23 @@ msgstr "پست شکست خورد: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:393
 msgid "You cannot post NNTP messages while working offline!"
-msgstr "نمی‌شود پیغام‌های NNTP را هنگام کار کردن نامتصل پست کرد"
+msgstr "نمی‌توانید هنگام برون‌خط بودن، پیام‌های NNTP بفرستید!"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:404
 msgid "You cannot copy messages from a NNTP folder!"
-msgstr "نمی‌شود از پیغام‌های یک پوشه‌ی NNTP نسخه‌برداری کرد!"
+msgstr "نمی‌شود از پیام‌های یک شاخهٔ NNTP نسخه‌برداری کرد!"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
 #, fuzzy
-msgid ""
-"_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgid "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr ""
-"پوشه‌ها به صورت مخفف نشان داده شوند (مثلاً به جای comp.os.linux نشان داده شود "
-"c.o.linux)"
+"شاخه‌ها به صورت مخفف نشان داده شوند (مثلاً به جای comp.os.linux نشان داده شود c.o."
+"linux)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:48
 #, fuzzy
 msgid "In the subscription _dialog, show relative folder names"
-msgstr "در محاوره‌ی اشتراک، نام پوشه‌ها به طور نسبی نشان داده شود"
+msgstr "در محاورهٔ اشتراک، نام شاخه‌ها به طور نسبی نشان داده شود"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
 msgid "USENET news"
@@ -4134,11 +4095,9 @@ msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:76
 msgid ""
-"This option will authenticate with the NNTP server using a plaintext "
-"password."
+"This option will authenticate with the NNTP server using a plaintext password."
 msgstr ""
-"این گزینه با استفاده از یک گذرواژه‌ی متنی ساده با کارگزار NNTP تأیید هویت "
-"می‌کند."
+"این گزینه با استفاده از یک گذرواژهٔ متنی ساده با کارساز NNTP تأیید هویت می‌کند."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:217
 #, c-format
@@ -4148,7 +4107,7 @@ msgstr "خواندن خوش‌آمد از %s ممکن نبود: %s"
 #: ../camel/providers/nntp/camel-nntp-store.c:229
 #, c-format
 msgid "NNTP server %s returned error code %d: %s"
-msgstr "کارگزار NNTP ‏%s کد خطای %Id را بازگرداند: %s"
+msgstr "کارساز NNTP ‏%s کد خطای %Id را بازگرداند: %s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:406
 #, c-format
@@ -4174,7 +4133,7 @@ msgid ""
 msgstr ""
 "نمی‌توانید مشترک این گروه خبری بشوید:\n"
 "\n"
-"چنین گروه خبری‌ای وجود ندارد. مورد انتخاب شده احتمالاً یک پوشه‌ی والد می‌باشد."
+"چنین گروه خبری‌ای وجود ندارد. مورد انتخاب شده احتمالاً یک شاخهٔ والد می‌باشد."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:924
 msgid ""
@@ -4188,26 +4147,24 @@ msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-store.c:949
 msgid "You cannot create a folder in a News store: subscribe instead."
-msgstr "نمی‌توانید در یک News store پوشه‌ای ایجاد کنید. در عوض مشترک آن شوید."
+msgstr "نمی‌توانید در یک News store شاخه‌ای ایجاد کنید. در عوض مشترک آن شوید."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:957
 msgid "You cannot rename a folder in a News store."
-msgstr "نمی‌توان  نام پوشه‌ای را در یک News store تغییر دهید."
+msgstr "نمی‌توان  نام شاخه‌ای را در یک News store تغییر دهید."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:965
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
-msgstr ""
-"نمی‌توانید در یک News store پوشه‌ای را حذف کنید: در عوض اشتراک خود را قطع "
-"کنید. "
+msgstr "نمی‌توانید در فروشگاه خبری، شاخه‌ای را حذف کنید: به‌جاش نامشترک شوید."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1154
 msgid "Authentication requested but no username provided"
-msgstr "تأیید هویت درخواست شده اما شناسه‌ی کاربری در‌ اختیار قرار داده نشده است "
+msgstr "تأیید هویت خواسته شد، ولی نام کاربری فراهم نشد"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1166
 #, c-format
 msgid "Cannot authenticate to server: %s"
-msgstr "نمی‌توان با کارگزار تأیید هویت کرد: %s"
+msgstr "نمی‌توان با کارساز تأیید هویت کرد: %s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1283
 #, c-format
@@ -4221,18 +4178,18 @@ msgstr "اتصال برقرار نیست."
 #: ../camel/providers/nntp/camel-nntp-store.c:1390
 #, c-format
 msgid "No such folder: %s"
-msgstr "چنین پوشه‌ای وجود ندارد: %s"
+msgstr "چنین شاخه‌ای وجود ندارد: %s"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:222
 #: ../camel/providers/nntp/camel-nntp-summary.c:318
 #, c-format
 msgid "%s: Scanning new messages"
-msgstr "‏%s: در حال پویش پیغام‌های جدید"
+msgstr "‏%s: در حال پویش پیام‌های جدید"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:229
 #, c-format
 msgid "Unexpected server response from xover: %s"
-msgstr "پاسخ غیرمنتظره‌ی کارگزار از xover: %s"
+msgstr "پاسخ غیرمنتظرهٔ کارساز از xover: %s"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:332
 #, c-format
@@ -4250,33 +4207,33 @@ msgstr "عملیات شکست خورد: %s"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:251
 msgid "Retrieving POP summary"
-msgstr "در حال بازیابی خلاصه‌ی POP"
+msgstr "در حال بازیابی خلاصهٔ POP"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:269
 #, c-format
 msgid "Cannot get POP summary: %s"
-msgstr "گرفتن خلاصه‌ی POP امکان‌پذیر نیست: %s"
+msgstr "گرفتن خلاصهٔ POP امکان‌پذیر نیست: %s"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:312
 #, fuzzy
 msgid "Expunging old messages"
-msgstr "در حال پاکسازی پیغام‌های حذف شده"
+msgstr "در حال پاکسازی پیام‌های حذف شده"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:320
 msgid "Expunging deleted messages"
-msgstr "در حال پاکسازی پیغام‌های حذف شده"
+msgstr "در حال پاکسازی پیام‌های حذف شده"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:534
 #, fuzzy, c-format
 msgid "No message with UID %s"
-msgstr "پیغامی با شناسه کاربری %s وجود ندارد"
+msgstr "پیامی با شناسه کاربری %s وجود ندارد"
 
 #. Sigh, most of the crap in this function is so that the cancel button
 #. returns the proper exception code.  Sigh.
 #: ../camel/providers/pop3/camel-pop3-folder.c:541
 #, c-format
 msgid "Retrieving POP message %d"
-msgstr "در حال بازیابی پیغام %Id POP"
+msgstr "در حال بازیابی پیام %Id POP"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:631
 msgid "Unknown reason"
@@ -4285,7 +4242,7 @@ msgstr "دلیل نامعلوم"
 #: ../camel/providers/pop3/camel-pop3-provider.c:43
 #, fuzzy
 msgid "_Leave messages on server"
-msgstr "باقی گذاشتن پیغام روی کارگزار"
+msgstr "باقی گذاشتن پیام روی کارساز"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:45
 #, fuzzy, c-format
@@ -4303,30 +4260,30 @@ msgstr "POP"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:57
 msgid "For connecting to and downloading mail from POP servers."
-msgstr "برای اتصال و بارگیری نامه از کارگزارهای POP‎."
+msgstr "برای اتصال و بارگیری نامه از کارسازهای POP‎."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:74
 msgid ""
-"This option will connect to the POP server using a plaintext password. This "
-"is the only option supported by many POP servers."
+"This option will connect to the POP server using a plaintext password. This is "
+"the only option supported by many POP servers."
 msgstr ""
-"این گزینه با استفاده از یک گذرواژه‌ی متنی ساده به کارگزار POP متصل خواهد شد. "
-"این تنها گزینه‌ی پشتیبانی شده برای بسیاری از کارگزارهای POP است."
+"این گزینه با استفاده از یک گذرواژهٔ متنی ساده به کارساز POP متصل خواهد شد. این "
+"تنها گزینهٔ پشتیبانی شده برای بسیاری از کارسازهای POP است."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:84
 msgid ""
-"This option will connect to the POP server using an encrypted password via "
-"the APOP protocol. This may not work for all users even on servers that "
-"claim to support it."
+"This option will connect to the POP server using an encrypted password via the "
+"APOP protocol. This may not work for all users even on servers that claim to "
+"support it."
 msgstr ""
-"این گزینه با استفاده از گذرواژه‌ی رمزبندی شده از طریق قرارداد APOP به کارگزار "
-"POP متصل می‌شود.ممکن است این روش برای همه‌ی کاربران قابل استفاده نباشد، حتی در "
-"کارگزارهایی که ادعای پشتیبانی آن را دارند."
+"این گزینه با استفاده از گذرواژهٔ رمزبندی شده از طریق قرارداد APOP به کارساز POP "
+"متصل می‌شود.ممکن است این روش برای همهٔ کاربران قابل استفاده نباشد، حتی در "
+"کارسازهایی که ادعای پشتیبانی آن را دارند."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:208
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
-msgstr "خواندن خوش‌آمد معتبر از کارگزار POP ‏%s شکست خورد"
+msgstr "خواندن خوش‌آمد معتبر از کارساز POP ‏%s شکست خورد"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:225
 #: ../camel/providers/pop3/camel-pop3-store.c:239
@@ -4334,7 +4291,7 @@ msgstr "خواندن خوش‌آمد معتبر از کارگزار POP ‏%s ش
 #: ../camel/providers/pop3/camel-pop3-store.c:255
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
-msgstr "اتصال به کارگزار  POP ‏%s در حالت امن شکست خورد: %s"
+msgstr "اتصال به کارساز  POP ‏%s در حالت امن شکست خورد: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:226
 #, fuzzy
@@ -4349,7 +4306,7 @@ msgstr "SSL در این ساخت موجود نیست"
 #: ../camel/providers/pop3/camel-pop3-store.c:362
 #, c-format
 msgid "Could not connect to POP server %s"
-msgstr "اتصال به کارگزار POP ‏%s ممکن نبود"
+msgstr "اتصال به کارساز POP ‏%s ممکن نبود"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:403
 #: ../camel/providers/pop3/camel-pop3-store.c:536
@@ -4358,13 +4315,13 @@ msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
 "mechanism."
 msgstr ""
-"اتصال به کارگزار POP ‏%s امکان پذیر نیست: پشتیبانی برای سازوکار تشخیص هویت "
-"درخواست شده وجود ندارد."
+"اتصال به کارساز POP ‏%s امکان پذیر نیست: پشتیبانی برای سازوکار تشخیص هویت درخواست "
+"شده وجود ندارد."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:419
 #, fuzzy, c-format
 msgid "SASL '%s' Login failed for POP server %s: %s"
-msgstr "ورود به سیستم SASL‎ ‏«%s» برای کارگزار POP ‏%s شکست خورد: %s"
+msgstr "ورود به سیستم SASL‎ ‏«%s» برای کارساز POP ‏%s شکست خورد: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:431
 #, c-format
@@ -4374,7 +4331,7 @@ msgstr "ورود به سیستم POP ‏%s شکست خورد: خطا در پرو
 #: ../camel/providers/pop3/camel-pop3-store.c:450
 #, c-format
 msgid "Failed to authenticate on POP server %s: %s"
-msgstr "تأیید هویت با کارگزار POP ‏%s شکست خورد: %s"
+msgstr "تأیید هویت با کارساز POP ‏%s شکست خورد: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:509
 #, c-format
@@ -4390,7 +4347,7 @@ msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending password: %s"
 msgstr ""
-"اتصال به کارگزار POP ‏%s امکان پذیر نیست.\n"
+"اتصال به کارساز POP ‏%s امکان پذیر نیست.\n"
 "خطا در ارسال گذرواژه: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:557
@@ -4399,13 +4356,13 @@ msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending username: %s"
 msgstr ""
-"اتصال به کارگزار POP ‏%s امکان پذیر نیست.\n"
+"اتصال به کارساز POP ‏%s امکان پذیر نیست.\n"
 "خطا در ارسال نام کاربر: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:663
 #, fuzzy, c-format
 msgid "No such folder '%s'."
-msgstr "پوشه‌ای به نام «%s» وجود ندارد."
+msgstr "شاخه‌ای به نام «%s» وجود ندارد."
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:38
 msgid "Sendmail"
@@ -4413,14 +4370,12 @@ msgstr "Sendmail"
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:40
 msgid ""
-"For delivering mail by passing it to the \"sendmail\" program on the local "
-"system."
-msgstr ""
-"برای تحویل نامه از طریق فرستادن آن به برنامه‌ی «sendmail» بر روی سیستم محلی."
+"For delivering mail by passing it to the \"sendmail\" program on the local system."
+msgstr "برای تحویل نامه از طریق فرستادن آن به برنامهٔ «sendmail» بر روی سیستم محلی."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:115
 msgid "Could not parse recipient list"
-msgstr "تجزیه‌ی فهرست گیرندگان ممکن نبود"
+msgstr "تجزیهٔ سیاههٔ گیرندگان ممکن نبود"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:146
 #, c-format
@@ -4435,7 +4390,7 @@ msgstr "انشعاب در sendmail ممکن نبود: %s: نامه ارسال ن
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:237
 #, c-format
 msgid "sendmail exited with signal %s: mail not sent."
-msgstr "sendmail با علامت %s خارج شد: نامه ارسال نشد"
+msgstr "sendmail با علامت %s خارج شد: نامه ارسال نشد."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:244
 #, c-format
@@ -4453,7 +4408,7 @@ msgstr "sendmail"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:265
 msgid "Mail delivery via the sendmail program"
-msgstr "ارسال نامه از طریق برنامه‌ی sendmail"
+msgstr "ارسال نامه از طریق برنامهٔ sendmail"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:39
 msgid "SMTP"
@@ -4461,8 +4416,7 @@ msgstr "SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:41
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
-msgstr ""
-"برای رساندن نامه از طریق اتصال به یک mailhub دوردست با استفاده از SMTP."
+msgstr "برای رساندن نامه از طریق اتصال به یک mailhub دوردست با استفاده از SMTP."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:166
 msgid "Syntax error, command unrecognized"
@@ -4486,7 +4440,7 @@ msgstr "وضعیت سیستم، یا پاسخ راهنمای سیستم"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:176
 msgid "Help message"
-msgstr "پیغام راهنما"
+msgstr "پیام راهنما"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:178
 msgid "Service ready"
@@ -4514,7 +4468,7 @@ msgstr "عمل پست درخواست شده انجام نشد: جعبه نامه
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:190
 msgid "Requested action not taken: mailbox unavailable"
-msgstr "عمل درخواست شده انجام نشد: جعبه نامه قابل دسترسی نیست "
+msgstr "کنش درخواستی انجام نشد: صندوق نامه ناموجود"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:192
 msgid "Requested action aborted: error in processing"
@@ -4526,11 +4480,11 @@ msgstr "کاربر محلی نیست؛ لطفاً <مسیر-ارجاع> را ا�
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:196
 msgid "Requested action not taken: insufficient system storage"
-msgstr "عمل درخواست شده انجام نشد: حافظه‌ی سیستم کافی نیست"
+msgstr "عمل درخواست شده انجام نشد: حافظهٔ سیستم کافی نیست"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:198
 msgid "Requested mail action aborted: exceeded storage allocation"
-msgstr "عمل پست درخواست شده قطع شد: تجاوز از حافظه‌ی تخصیص یافته"
+msgstr "عمل پست درخواست شده قطع شد: تجاوز از حافظهٔ تخصیص یافته"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:200
 msgid "Requested action not taken: mailbox name not allowed"
@@ -4569,7 +4523,7 @@ msgstr "خطا در پاسخ خوش‌آمد"
 #: ../camel/providers/smtp/camel-smtp-transport.c:369
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
-msgstr "اتصال به کارگزار SMTP ‏%s در حالت امن شکست خورد: %s"
+msgstr "اتصال به کارساز SMTP ‏%s در حالت امن شکست خورد: %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:339
 #, c-format
@@ -4583,7 +4537,7 @@ msgstr "فرمان STARTTLS شکست خورد"
 #: ../camel/providers/smtp/camel-smtp-transport.c:494
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
-msgstr "کارگزار SMTP ‏%s تشخیص هویت درخواست شده‌ی نوع %s را پشتیبانی نمی‌کند."
+msgstr "کارساز SMTP ‏%s تشخیص هویت درخواست شدهٔ نوع %s را پشتیبانی نمی‌کند."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:559
 #, c-format
@@ -4592,39 +4546,39 @@ msgid ""
 "%s\n"
 "\n"
 msgstr ""
-"تأیید هویت با کارگزار SMTP امکان پذیر نیست.\n"
+"تأیید هویت با کارساز SMTP امکان پذیر نیست.\n"
 "%s\n"
 "\n"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:683
 #, c-format
 msgid "SMTP server %s"
-msgstr "کارگزار %s SMTP"
+msgstr "کارساز %s SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:685
 #, c-format
 msgid "SMTP mail delivery via %s"
-msgstr "تحویل نامه‌ی SMTP از طریق %s"
+msgstr "تحویل نامهٔ SMTP از طریق %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:703
 msgid "Cannot send message: service not connected."
-msgstr "نمی‌توان پیغام را ارسال کرد: سرویس متصل نیست."
+msgstr "نمی‌توان پیام را ارسال کرد: سرویس متصل نیست."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:709
 msgid "Cannot send message: sender address not valid."
-msgstr "نمی‌توان پیغام را ارسال کرد: نشانی فرستنده معتبر نیست."
+msgstr "نمی‌توان پیام را ارسال کرد: نشانی فرستنده معتبر نیست."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:713
 msgid "Sending message"
-msgstr "در حال ارسال پیغام"
+msgstr "در حال ارسال پیام"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:728
 msgid "Cannot send message: no recipients defined."
-msgstr "نمی‌توان پیغام را ارسال کرد: گیرنده‌ای معین نشده است."
+msgstr "نمی‌توان پیام را ارسال کرد: گیرنده‌ای معین نشده است."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:739
 msgid "Cannot send message: one or more invalid recipients"
-msgstr "نمی‌توان پیغام را ارسال کرد: دست کم یکی از گیرنده‌ها معتبر نیست"
+msgstr "نمی‌توان پیام را ارسال کرد: دست کم یکی از گیرنده‌ها معتبر نیست"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:968
 msgid "SMTP Greeting"
@@ -4659,7 +4613,7 @@ msgstr "فرمان AUTH شکست خورد"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1177
 msgid "Bad authentication response from server.\n"
-msgstr ".پاسخ تأیید هویت نامناسب از کارگزار \n"
+msgstr ".پاسخ تأیید هویت نامناسب از کارساز \n"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1202
 #, c-format
@@ -4668,7 +4622,7 @@ msgstr "فرمان MAIL FROM شکست خورد: %s: نامه ارسال نشد"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1219
 msgid "MAIL FROM command failed"
-msgstr "فرمان MAIL FROM شکست خورد "
+msgstr "فرمان MAIL FROM شکست خورد"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1243
 #, c-format
@@ -4744,7 +4698,7 @@ msgstr "کارت‌های تعطیلات"
 #. important people (e.g. new business partners)
 #: ../libedataserver/e-categories.c:53
 msgid "Hot Contacts"
-msgstr "آشناهای مهم "
+msgstr "آشنایان پرکاربرد"
 
 #: ../libedataserver/e-categories.c:54
 msgid "Ideas"
@@ -4924,7 +4878,7 @@ msgstr "%OH"
 
 #: ../libedataserverui/e-book-auth-util.c:89
 msgid "Accessing LDAP Server anonymously"
-msgstr "در حال دسترسی گمنامانه به کارگزار LDAP"
+msgstr "در حال دسترسی گمنامانه به کارساز LDAP"
 
 #: ../libedataserverui/e-book-auth-util.c:193
 msgid "Failed to authenticate.\n"
@@ -4933,34 +4887,32 @@ msgstr "تأیید هویت شکست خورد.\n"
 #: ../libedataserverui/e-categories-dialog.c:274
 #, c-format
 msgid ""
-"There is already a category '%s' in the configuration. Please use another "
-"name"
-msgstr ""
-"از قبل یک مقوله‌ی «%s» در پیکربندی وجود دارد. لطفاً از یک نام دیگر استفاده کنید"
+"There is already a category '%s' in the configuration. Please use another name"
+msgstr "از قبل یک دستهٔ «%s» در پیکربندی وجود دارد. لطفاً از یک نام دیگر استفاده کنید"
 
 #: ../libedataserverui/e-categories-dialog.c:475
 msgid "Icon"
-msgstr ""
+msgstr "نقشک"
 
 #: ../libedataserverui/e-categories-dialog.c:480
 msgid "Category"
-msgstr "مقوله:"
+msgstr "دسته"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:1
 msgid "Category Icon"
-msgstr "شمایل مقوله"
+msgstr "شمایل دسته"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:2
 msgid "Category Properties"
-msgstr "ویژگی‌های مقوله"
+msgstr "ویژگی‌های دسته"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:3
 msgid "Category _Icon"
-msgstr "_شمایل مقوله"
+msgstr "_شمایل دسته"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:4
 msgid "Category _Name"
-msgstr "_نام مقوله"
+msgstr "_نام دسته"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:5
 msgid "Item(s) belong to these _categories:"
@@ -4976,11 +4928,11 @@ msgstr "_ویرایش"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:8
 msgid "categories"
-msgstr "مقوله"
+msgstr "دسته"
 
 #: ../libedataserverui/e-name-selector-dialog.c:275
 msgid "Select Contacts from Address Book"
-msgstr "آشنا‌ها را از دفترچه‌ی نشانی انتخاب کنید"
+msgstr "آشنا‌ها را از دفترچهٔ نشانی انتخاب کنید"
 
 #: ../libedataserverui/e-name-selector-dialog.c:555
 msgid "_Add"
@@ -4992,9 +4944,8 @@ msgstr "_حذف"
 
 #: ../libedataserverui/e-name-selector-dialog.c:753
 #: ../libedataserverui/e-name-selector-dialog.glade.h:6
-#, fuzzy
 msgid "Any Category"
-msgstr "مقوله:"
+msgstr "هر دسته‌ای"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:1
 msgid "*"
@@ -5010,18 +4961,16 @@ msgid "<b>Show Contacts</b>"
 msgstr "<b>نشان دادن آشنا‌ها</b>"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:4
-#, fuzzy
 msgid "Address B_ook:"
-msgstr "_دفترچه‌ی نشانی:"
+msgstr "دفترچهٔ _نشانی:"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:5
 msgid "Address Book"
-msgstr "دفترچه‌ی نشانی"
+msgstr "دفترچهٔ نشانی"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:7
-#, fuzzy
 msgid "Cate_gory:"
-msgstr "مقوله:"
+msgstr "_دسته:"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:8
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
@@ -5050,9 +4999,9 @@ msgstr ""
 
 #. Cut Contact Item
 #: ../libedataserverui/e-name-selector-entry.c:2274
-#, fuzzy, c-format
+#, c-format
 msgid "C_ut %s"
-msgstr "_ویرایش %s"
+msgstr "_برش %s"
 
 #. Edit Contact item
 #: ../libedataserverui/e-name-selector-entry.c:2291
@@ -5061,9 +5010,9 @@ msgid "_Edit %s"
 msgstr "_ویرایش %s"
 
 #: ../libedataserverui/e-name-selector-list.c:479
-#, fuzzy, c-format
+#, c-format
 msgid "_Delete %s"
-msgstr "موارد حذف شده"
+msgstr "_حذف %s"
 
 #: ../libedataserverui/e-passwords.c:214
 #, c-format
@@ -5082,7 +5031,7 @@ msgstr "به _خاطر سپردن این گذرواژه"
 #: ../libedataserverui/e-passwords.c:1165
 #, fuzzy
 msgid "_Remember this passphrase for the remainder of this session"
-msgstr "به _خاطر سپردن این گذرواژه برای بقیه‌ی این نشست"
+msgstr "به _خاطر سپردن این گذرواژه برای بقیهٔ این نشست"
 
 #: ../libedataserverui/e-passwords.c:1170
 msgid "_Remember this password"
@@ -5090,7 +5039,7 @@ msgstr "به _خاطر سپردن این گذرواژه"
 
 #: ../libedataserverui/e-passwords.c:1171
 msgid "_Remember this password for the remainder of this session"
-msgstr "به _خاطر سپردن این گذرواژه برای بقیه‌ی این نشست"
+msgstr "به _خاطر سپردن این گذرواژه برای بقیهٔ این نشست"
 
 #. prepare the dialog
 #: ../libedataserverui/e-source-selector-dialog.c:101
@@ -5105,7 +5054,7 @@ msgstr "م_قصد"
 #: ../servers/exchange/storage/exchange-account.c:971
 #, c-format
 msgid "Enter password for %s"
-msgstr "گذرواژه‌ی %s را وارد کنید"
+msgstr "گذرواژهٔ %s را وارد کنید"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1661
 #: ../servers/exchange/storage/exchange-account.c:976
@@ -5160,11 +5109,11 @@ msgstr "خطای عام"
 
 #: ../servers/exchange/storage/e-storage.c:557
 msgid "A folder with the same name already exists"
-msgstr "پوشه‌ای با همین نام از قبل وجود دارد"
+msgstr "شاخه‌ای با همین نام از قبل وجود دارد"
 
 #: ../servers/exchange/storage/e-storage.c:559
 msgid "The specified folder type is not valid"
-msgstr "نوع پوشه‌ی مشخص شده معتبر نیست"
+msgstr "نوع شاخهٔ مشخص شده معتبر نیست"
 
 #: ../servers/exchange/storage/e-storage.c:561
 msgid "I/O error"
@@ -5172,15 +5121,15 @@ msgstr "خطای ورودی/خروجی"
 
 #: ../servers/exchange/storage/e-storage.c:563
 msgid "Not enough space to create the folder"
-msgstr "فضای کافی برای ایجاد پوشه موجود نیست"
+msgstr "فضای کافی برای ایجاد شاخه موجود نیست"
 
 #: ../servers/exchange/storage/e-storage.c:565
 msgid "The folder is not empty"
-msgstr "پوشه خالی نیست"
+msgstr "شاخه خالی نیست"
 
 #: ../servers/exchange/storage/e-storage.c:567
 msgid "The specified folder was not found"
-msgstr "پوشه‌ی مشخص شده پیدا نشد"
+msgstr "شاخهٔ مشخص شده پیدا نشد"
 
 #: ../servers/exchange/storage/e-storage.c:569
 msgid "Function not implemented in this storage"
@@ -5196,15 +5145,15 @@ msgstr ""
 
 #: ../servers/exchange/storage/e-storage.c:577
 msgid "The specified folder cannot be modified or removed"
-msgstr "نمی‌توان پوشه‌ی مشخص شده را تغییر داد یا حذف کرد"
+msgstr "نمی‌توان شاخهٔ مشخص شده را تغییر داد یا حذف کرد"
 
 #: ../servers/exchange/storage/e-storage.c:579
 msgid "Cannot make a folder a child of one of its descendants"
-msgstr "نمی‌توان پوشه‌ای را فرزند یکی از فرزندانش قرار داد"
+msgstr "نمی‌توان شاخه‌ای را فرزند یکی از فرزندانش قرار داد"
 
 #: ../servers/exchange/storage/e-storage.c:581
 msgid "Cannot create a folder with that name"
-msgstr "نمی‌توان پوشه‌ای با این نام ایجاد کرد."
+msgstr "نمی‌توان شاخه‌ای با این نام ایجاد کرد"
 
 #: ../servers/exchange/storage/e-storage.c:583
 msgid "This operation cannot be performed in off-line mode"
@@ -5215,39 +5164,37 @@ msgstr "این عملیات را نمی‌توان در حالت منفصل ان
 #: ../servers/exchange/storage/exchange-account.c:662
 #, c-format
 msgid "%s's Folders"
-msgstr "پوشه‌های %s"
+msgstr "شاخه‌های %s"
 
 #: ../servers/exchange/storage/exchange-account.c:1277
 msgid "Personal Folders"
-msgstr "پوشه‌های شخصی"
+msgstr "شاخه‌های شخصی"
 
 #: ../servers/exchange/storage/exchange-account.c:1292
 msgid "Favorite Public Folders"
-msgstr "پوشه‌های عمومی محبوب"
+msgstr "شاخه‌های عمومی محبوب"
 
 #. i18n: Outlookism
 #: ../servers/exchange/storage/exchange-account.c:1309
 msgid "All Public Folders"
-msgstr "همه‌ی پوشه‌های عمومی"
+msgstr "همهٔ شاخه‌های عمومی"
 
 #. i18n: Outlookism
 #: ../servers/exchange/storage/exchange-account.c:1323
 msgid "Global Address List"
-msgstr "فهرست نشانی سراسری"
+msgstr "سیاههٔ نشانی سراسری"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:262
 msgid "Deleted Items"
 msgstr "موارد حذف شده"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:265
-#, fuzzy
 msgid "Journal"
-msgstr "عادی"
+msgstr "دفتر"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:266
-#, fuzzy
 msgid "Notes"
-msgstr "یادداشت"
+msgstr "یادداشت‌ها"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:267
 msgid "Outbox"
@@ -5267,11 +5214,11 @@ msgstr "اتصال نامعتبر"
 
 #: ../servers/groupwise/e-gw-connection.c:228
 msgid "Invalid response from server"
-msgstr "پاسخ نامعتبر از کارگزار"
+msgstr "پاسخ نامعتبر از کارساز"
 
 #: ../servers/groupwise/e-gw-connection.c:230
 msgid "No response from the server"
-msgstr "پاسخی از کارگزار دریافت نشد"
+msgstr "پاسخی از کارساز دریافت نشد"
 
 #: ../servers/groupwise/e-gw-connection.c:236
 msgid "Bad parameter"
@@ -5279,11 +5226,11 @@ msgstr "پارامتر نامناسب"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
-msgstr "پسانه‌ی پرونده‌ی دفترچه‌ی نشانی Evolution"
+msgstr "پسانهٔ پروندهٔ دفترچهٔ نشانی Evolution"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:2
 msgid "Evolution Calendar file and webcal backend"
-msgstr "پرونده‌ی تقویم و پسانه‌ی تقویمِ وبی Evolution"
+msgstr "پروندهٔ تقویم و پسانهٔ تقویمِ وبی Evolution"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:3
 msgid "Evolution Data Server interface check service"
@@ -5291,13 +5238,13 @@ msgstr ""
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:4
 msgid "Evolution Data Server logging service"
-msgstr "سرویس ثبت وقایع کارگزار داده‌های Evolution"
+msgstr "سرویس ثبت وقایع کارساز داده‌های Evolution"
 
 #. dialog display isn't working out
 #: ../src/server.c:109
 #, fuzzy, c-format
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
-msgstr "نقص‌های قطعه‌بندی متعددی رخ داد؛ نمی‌توان محاوره‌ی خطا را نمایش داد\n"
+msgstr "نقص‌های قطعه‌بندی متعددی رخ داد؛ نمی‌توان محاورهٔ خطا را نمایش داد\n"
 
 #: ../libedataserverui/e-cell-renderer-color.c:210
 msgid "Color Info"
@@ -5306,6 +5253,10 @@ msgstr ""
 #: ../libedataserverui/e-cell-renderer-color.c:211
 msgid "The color to render"
 msgstr ""
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "در این کامپیوتر"
 
 #~ msgid "Failed to create pipe to '%s': %s"
 #~ msgstr "ایجاد لوله به «%s» شکست خورد: %s"
@@ -5394,7 +5345,3 @@ msgstr ""
 
 #~ msgid "Failed to send username to server"
 #~ msgstr "ارسال نام کاربر به کارگزار شکست خورد"
-
-#: ../calendar/libecal/e-cal.c:1049
-msgid "On This Computer"
-msgstr "در این کامپیوتر"
