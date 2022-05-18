@@ -74,29 +74,31 @@ extensible_get_extensions (EExtensible *extensible)
 	return g_object_get_qdata (G_OBJECT (extensible), extensible_quark);
 }
 
+typedef struct _LoadData {
+	EExtensible *extensible;
+	GPtrArray *extensions;
+	GHashTable *known_types; /* GUINT_TO_POINTER (GType) ~> NULL */
+} LoadData;
+
 static void
 extensible_load_extension (GType extension_type,
-                           EExtensible *extensible)
+                           LoadData *ld)
 {
 	EExtensionClass *extension_class;
 	GType extensible_type;
-	GPtrArray *extensions;
 	EExtension *extension;
 
-	extensible_type = G_OBJECT_TYPE (extensible);
+	extensible_type = G_OBJECT_TYPE (ld->extensible);
 	extension_class = g_type_class_ref (extension_type);
 
 	/* Only load extensions that extend the given extensible object. */
-	if (!g_type_is_a (extensible_type, extension_class->extensible_type))
-		goto exit;
+	if (g_type_is_a (extensible_type, extension_class->extensible_type) &&
+	    (!ld->known_types || !g_hash_table_contains (ld->known_types, GUINT_TO_POINTER (extension_type)))) {
+		extension = g_object_new (extension_type, "extensible", ld->extensible, NULL);
 
-	extension = g_object_new (
-		extension_type, "extensible", extensible, NULL);
+		g_ptr_array_add (ld->extensions, extension);
+	}
 
-	extensions = extensible_get_extensions (extensible);
-	g_ptr_array_add (extensions, extension);
-
-exit:
 	g_type_class_unref (extension_class);
 }
 
@@ -120,34 +122,66 @@ e_extensible_default_init (EExtensibleInterface *iface)
 void
 e_extensible_load_extensions (EExtensible *extensible)
 {
-	GPtrArray *extensions;
+	g_return_if_fail (E_IS_EXTENSIBLE (extensible));
+
+	if (!extensible_get_extensions (extensible))
+		e_extensible_reload_extensions (extensible);
+}
+
+/**
+ * e_extensible_reload_extensions:
+ * @extensible: an #EExtensible
+ *
+ * Similar to e_extensible_load_extensions(), only loads newly discovered
+ * extensions again. This can help in case a new module had been loaded
+ * to the process, which provides the extensions for the @extensible.
+ *
+ * Since: 3.46
+ **/
+void
+e_extensible_reload_extensions (EExtensible *extensible)
+{
+	LoadData ld;
+	GPtrArray *known_extensions;
 
 	g_return_if_fail (E_IS_EXTENSIBLE (extensible));
 
-	if (extensible_get_extensions (extensible) != NULL)
-		return;
+	ld.extensible = extensible;
+	ld.extensions = extensible_get_extensions (extensible);
+	ld.known_types = NULL;
 
-	extensions = g_ptr_array_new_with_free_func (
-		(GDestroyNotify) g_object_unref);
+	known_extensions = ld.extensions;
 
-	g_object_set_qdata_full (
-		G_OBJECT (extensible), extensible_quark,
-		g_ptr_array_ref (extensions),
-		(GDestroyNotify) g_ptr_array_unref);
+	if (known_extensions) {
+		guint ii;
 
-	e_type_traverse (
-		E_TYPE_EXTENSION, (ETypeFunc)
-		extensible_load_extension, extensible);
+		g_ptr_array_ref (ld.extensions);
 
-	/* If the extension array is still empty, remove it from the
-	 * extensible object.  It may be that no extension types have
-	 * been registered yet, so this allows for trying again later. */
-	if (extensions->len == 0)
-		g_object_set_qdata (
-			G_OBJECT (extensible),
-			extensible_quark, NULL);
+		ld.known_types = g_hash_table_new (NULL, NULL);
 
-	g_ptr_array_unref (extensions);
+		for (ii = 0; ii < known_extensions->len; ii++) {
+			EExtension *extension = g_ptr_array_index (known_extensions, ii);
+			GType extension_type = G_OBJECT_TYPE (extension);
+
+			g_hash_table_add (ld.known_types, GUINT_TO_POINTER (extension_type));
+		}
+	} else {
+		ld.extensions = g_ptr_array_new_with_free_func (g_object_unref);
+	}
+
+	e_type_traverse (E_TYPE_EXTENSION, (ETypeFunc) extensible_load_extension, &ld);
+
+	/* It may be that no extension types have been registered yet, so not
+	 * setting the empty extensions allows to try again later. */
+	if (!known_extensions && ld.extensions->len > 0) {
+		g_object_set_qdata_full (
+			G_OBJECT (extensible), extensible_quark,
+			g_ptr_array_ref (ld.extensions),
+			(GDestroyNotify) g_ptr_array_unref);
+	}
+
+	g_ptr_array_unref (ld.extensions);
+	g_clear_pointer (&ld.known_types, g_hash_table_destroy);
 }
 
 /**

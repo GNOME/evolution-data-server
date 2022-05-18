@@ -54,6 +54,7 @@ struct _EExtensibleInterface {
 
 GType		e_extensible_get_type		(void) G_GNUC_CONST;
 void		e_extensible_load_extensions	(EExtensible *extensible);
+void		e_extensible_reload_extensions	(EExtensible *extensible);
 GList *		e_extensible_list_extensions	(EExtensible *extensible,
 						 GType extension_type);
 
