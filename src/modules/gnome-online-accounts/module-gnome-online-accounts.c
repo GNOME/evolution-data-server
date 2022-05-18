@@ -1154,11 +1154,14 @@ gnome_online_accounts_populate_accounts_table (EGnomeOnlineAccounts *extension,
 
 	e_goa_debug_printf ("Found %d existing sources\n", g_list_length (list));
 
+	g_hash_table_remove_all (extension->goa_to_eds);
+
 	for (link = list; link != NULL; link = g_list_next (link)) {
 		ESource *source;
 		ESourceGoa *goa_ext;
 		const gchar *account_id;
 		const gchar *source_uid;
+		const gchar *existing_source_uid;
 		GList *match;
 
 		source = E_SOURCE (link->data);
@@ -1173,14 +1176,20 @@ gnome_online_accounts_populate_accounts_table (EGnomeOnlineAccounts *extension,
 			continue;
 		}
 
-		if (g_hash_table_lookup (extension->goa_to_eds, account_id)) {
-			e_goa_debug_printf ("Source '%s' references account '%s' which is already used by other source\n",
-				source_uid, account_id);
+		existing_source_uid = g_hash_table_lookup (extension->goa_to_eds, account_id);
+		if (existing_source_uid) {
+			if (g_strcmp0 (source_uid, existing_source_uid) == 0) {
+				e_goa_debug_printf ("Already know the source '%s' references account '%s'\n",
+					source_uid, account_id);
+			} else {
+				e_goa_debug_printf ("Source '%s' references account '%s' which is already used by source '%s'\n",
+					source_uid, account_id, existing_source_uid);
 
-			/* There are more ESource-s referencing the same GOA account;
-			   delete the later. */
-			g_queue_push_tail (&trash, source);
-			continue;
+				/* There are more ESource-s referencing the same GOA account;
+				   delete the later. */
+				g_queue_push_tail (&trash, source);
+				continue;
+			}
 		}
 
 		/* Verify the GOA account still exists. */
