@@ -378,6 +378,34 @@ ews_post_restarted_cb (SoupMessage *msg,
 		buf_content, buf_size);
 }
 
+static gboolean
+go_ews_client_accept_certificate_cb (GTlsConnection *conn,
+				     GTlsCertificate *peer_cert,
+				     GTlsCertificateFlags errors,
+				     gpointer user_data)
+{
+	/* As much as EDS is interested, any certificate error during
+	   autodiscover is ignored, because it had been allowed during
+	   the GOA account creation. */
+
+	return TRUE;
+}
+
+static void
+goa_ews_client_network_event_cb (SoupMessage *msg,
+				 GSocketClientEvent event,
+				 GIOStream *connection,
+				 gpointer user_data)
+{
+	/* It's either a GTlsConnection or a GTcpConnection */
+	if (event == G_SOCKET_CLIENT_TLS_HANDSHAKING &&
+	    G_IS_TLS_CONNECTION (connection)) {
+		g_signal_connect (
+			G_TLS_CONNECTION (connection), "accept-certificate",
+			G_CALLBACK (go_ews_client_accept_certificate_cb), NULL);
+	}
+}
+
 static SoupMessage *
 ews_create_msg_for_url (const gchar *url,
                         xmlOutputBuffer *buf)
@@ -389,6 +417,9 @@ ews_create_msg_for_url (const gchar *url,
 	msg = soup_message_new (buf != NULL ? "POST" : "GET", url);
 	soup_message_headers_append (
 		msg->request_headers, "User-Agent", "libews/0.1");
+
+	g_signal_connect (msg, "network-event",
+		G_CALLBACK (goa_ews_client_network_event_cb), NULL);
 
 	if (buf != NULL) {
 		buf_content = compat_libxml_output_buffer_get_content (buf, &buf_size);
