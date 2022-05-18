@@ -929,6 +929,53 @@ data_factory_bus_name_lost (EDBusServer *server,
 }
 
 static void
+data_factory_register_extensions (EDataFactory *data_factory)
+{
+	EDataFactoryClass *klass;
+	GList *list, *link;
+
+	klass = E_DATA_FACTORY_GET_CLASS (data_factory);
+	g_return_if_fail (klass != NULL);
+
+	/* Collect all backend factories into a hash table. */
+
+	e_extensible_reload_extensions (E_EXTENSIBLE (data_factory));
+
+	list = e_extensible_list_extensions (E_EXTENSIBLE (data_factory), klass->backend_factory_type);
+
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		EBackendFactory *backend_factory;
+		const gchar *hash_key;
+
+		backend_factory = E_BACKEND_FACTORY (link->data);
+		hash_key = e_backend_factory_get_hash_key (backend_factory);
+
+		if (hash_key != NULL &&
+		    !g_hash_table_contains (data_factory->priv->backend_factories, hash_key)) {
+			g_hash_table_insert (
+				data_factory->priv->backend_factories,
+				g_strdup (hash_key),
+				g_object_ref (backend_factory));
+			e_source_registry_debug_print (
+				"Registering %s ('%s')\n",
+				G_OBJECT_TYPE_NAME (backend_factory),
+				hash_key);
+		}
+	}
+
+	g_list_free (list);
+}
+
+static EDBusServerExitCode
+data_factory_run_server (EDBusServer *server)
+{
+	data_factory_register_extensions (E_DATA_FACTORY (server));
+
+	/* Chain up to parent's method. */
+	return E_DBUS_SERVER_CLASS (e_data_factory_parent_class)->run_server (server);
+}
+
+static void
 data_factory_quit_server (EDBusServer *server,
 			  EDBusServerExitCode exit_code)
 {
@@ -1085,48 +1132,6 @@ data_factory_finalize (GObject *object)
 	G_OBJECT_CLASS (e_data_factory_parent_class)->finalize (object);
 }
 
-static void
-data_factory_constructed (GObject *object)
-{
-	EDataFactoryClass *class;
-	EDataFactory *data_factory;
-	GList *list, *link;
-
-	data_factory = E_DATA_FACTORY (object);
-
-	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (e_data_factory_parent_class)->constructed (object);
-
-	class = E_DATA_FACTORY_GET_CLASS (data_factory);
-	g_return_if_fail (class != NULL);
-
-	/* Collect all backend factories into a hash table. */
-
-	list = e_extensible_list_extensions (
-		E_EXTENSIBLE (object), class->backend_factory_type);
-
-	for (link = list; link != NULL; link = g_list_next (link)) {
-		EBackendFactory *backend_factory;
-		const gchar *hash_key;
-
-		backend_factory = E_BACKEND_FACTORY (link->data);
-		hash_key = e_backend_factory_get_hash_key (backend_factory);
-
-		if (hash_key != NULL) {
-			g_hash_table_insert (
-				data_factory->priv->backend_factories,
-				g_strdup (hash_key),
-				g_object_ref (backend_factory));
-			g_debug (
-				"Registering %s ('%s')\n",
-				G_OBJECT_TYPE_NAME (backend_factory),
-				hash_key);
-		}
-	}
-
-	g_list_free (list);
-}
-
 static gboolean
 data_factory_initable_init (GInitable *initable,
 			    GCancellable *cancellable,
@@ -1159,13 +1164,13 @@ e_data_factory_class_init (EDataFactoryClass *class)
 	object_class->set_property = e_data_factory_set_property;
 	object_class->dispose = data_factory_dispose;
 	object_class->finalize = data_factory_finalize;
-	object_class->constructed = data_factory_constructed;
 
 	class->backend_factory_type = E_TYPE_BACKEND_FACTORY;
 
 	dbus_server_class = E_DBUS_SERVER_CLASS (class);
 	dbus_server_class->bus_acquired = data_factory_bus_acquired;
 	dbus_server_class->bus_name_lost = data_factory_bus_name_lost;
+	dbus_server_class->run_server = data_factory_run_server;
 	dbus_server_class->quit_server = data_factory_quit_server;
 
 	g_object_class_install_property (
