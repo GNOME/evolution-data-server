@@ -545,7 +545,8 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 	link = *in_link;
 
 	while (link && left_to_go > 0) {
-		ECalMetaBackendInfo *nfo = link->data;
+		GSList *nfo_link = link;
+		ECalMetaBackendInfo *nfo = nfo_link->data;
 
 		link = g_slist_next (link);
 		if (!link) {
@@ -635,7 +636,7 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 					else
 						e_cal_meta_backend_info_free (nfo);
 
-					link->data = NULL;
+					nfo_link->data = NULL;
 					g_clear_error (&local_error);
 					continue;
 				} else if (local_error) {
