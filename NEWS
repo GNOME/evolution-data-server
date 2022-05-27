@@ -1,3 +1,18 @@
+Evolution-Data-Server 3.44.2 2022-05-27
+---------------------------------------
+
+Bug Fixes:
+	I#359 - CalDAV: Crash on calendar update
+	I#386 - e-webdav-discover: Fails to find Radicale calendars within collection account
+	I#388 - Google OAuth out-of-band (oob) flow will be deprecated
+	I#389 - IMAPx: Fails to create folder with NIL folder hierarchy delimiter
+	evo-I#1348 - WebDAVCollectionBackend: Removes sources on server error
+
+Miscellaneous:
+	ERemindersWidget: Allow width shrink for small screens
+	Fix few memory leaks discovered by Coverity scan
+	GOA module: Prevent ESource removal on D-Bus reconnect or registry reload
+
 Evolution-Data-Server 3.44.1 2022-04-22
 ---------------------------------------
 
