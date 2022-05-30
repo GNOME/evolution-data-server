@@ -69,7 +69,7 @@ main (gint argc,
 		tcu_step_test_add_assertion (data, 5, 17, 16, 18, 10, 14);
 		tcu_step_test_add_assertion (data, 5, 12, 13, 9,  19, 20);
 
-		tcu_step_test_change_locale (data, "fr_CA.UTF-8", 0);
+		tcu_step_test_change_locale (data, "fr_CA.UTF-8", -1);
 		tcu_step_test_add_assertion (data, 5, 11, 1,  2,  5,  6);
 		tcu_step_test_add_assertion (data, 5, 4,  3,  7,  8,  15);
 		tcu_step_test_add_assertion (data, 5, 17, 16, 18, 10, 14);
