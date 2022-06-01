@@ -1083,6 +1083,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		"enable-page-cache", FALSE,
 		"enable-plugins", FALSE,
 		"media-playback-allows-inline", FALSE,
+		"hardware-acceleration-policy", WEBKIT_HARDWARE_ACCELERATION_POLICY_NEVER,
 		NULL);
 
 	web_context = webkit_web_context_new ();
