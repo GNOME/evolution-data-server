@@ -262,6 +262,8 @@ static struct prop_info {
 #define PROP_TYPE_GROUP		(1 << 6)
 #define PROP_TYPE_CONTACT	(1 << 7) /* is ignored for contact lists */
 #define PROP_TYPE_FORCE_BINARY	(1 << 8) /* to force ";binary" in attribute name */
+#define PROP_WITH_EVOSCHEME	(1 << 9)
+#define PROP_WITHOUT_EVOSCHEME	(1 << 10)
 	gint prop_type;
 
 	/* the remaining items are only used for the TYPE_COMPLEX props */
@@ -287,6 +289,8 @@ static struct prop_info {
 #define GROUP_PROP(fid,a,ctor,ber,cmp) {fid, a, PROP_TYPE_GROUP, ctor, ber, cmp}
 #define ADDRESS_STRING_PROP(fid,a, ctor) {fid, a, PROP_TYPE_COMPLEX, ctor}
 #define CONTACT_STRING_PROP(fid,a) {fid, a, PROP_TYPE_STRING | PROP_TYPE_CONTACT}
+#define CONTACT_STRING_PROP_WITH_EVOSCHEME(fid,a) {fid, a, PROP_TYPE_STRING | PROP_TYPE_CONTACT | PROP_WITH_EVOSCHEME}
+#define CONTACT_STRING_PROP_WITHOUT_EVOSCHEME(fid,a) {fid, a, PROP_TYPE_STRING | PROP_TYPE_CONTACT | PROP_WITHOUT_EVOSCHEME}
 #define CALENTRY_CONTACT_STRING_PROP(fid,a) {fid, a, PROP_TYPE_STRING | PROP_TYPE_CONTACT | PROP_CALENTRY}
 
 	/* name fields */
@@ -361,7 +365,8 @@ static struct prop_info {
 	/* map nickname to displayName */
 	CONTACT_STRING_PROP    (E_CONTACT_NICKNAME,    "displayName"),
 	E_STRING_PROP  (E_CONTACT_SPOUSE,      "spouseName"),
-	E_STRING_PROP  (E_CONTACT_NOTE,        "note"),
+	CONTACT_STRING_PROP_WITH_EVOSCHEME (E_CONTACT_NOTE, "note"),
+	CONTACT_STRING_PROP_WITHOUT_EVOSCHEME (E_CONTACT_NOTE, "description"),
 	E_COMPLEX_PROP (E_CONTACT_ANNIVERSARY, "anniversary", anniversary_populate, anniversary_ber, anniversary_compare),
 	E_COMPLEX_PROP (E_CONTACT_BIRTH_DATE,  "birthDate", birthday_populate, birthday_ber, birthday_compare),
 	E_STRING_PROP  (E_CONTACT_MAILER,      "mailer"),
@@ -1300,6 +1305,13 @@ build_mods_from_contacts (EBookBackendLDAP *bl,
 			if (is_list)
 				continue;
 		}
+
+		if (((prop_info[i].prop_type & PROP_WITHOUT_EVOSCHEME) != 0 &&
+		    bl->priv->evolutionPersonSupported) ||
+		    ((prop_info[i].prop_type & PROP_WITH_EVOSCHEME) != 0 &&
+		    !bl->priv->evolutionPersonSupported))
+			continue;
+
 		if ((prop_info[i].prop_type & PROP_CALENTRY) != 0) {
 			if (!bl->priv->calEntrySupported)
 				continue;
@@ -3874,6 +3886,11 @@ func_contains (struct _ESExp *f,
 				    !(prop_info[i].prop_type & PROP_WRITE_ONLY) &&
 				    (ldap_data->bl->priv->evolutionPersonSupported ||
 				     !(prop_info[i].prop_type & PROP_EVOLVE)) &&
+				    (!(prop_info[i].prop_type & (PROP_WITH_EVOSCHEME | PROP_WITHOUT_EVOSCHEME)) ||
+				     ((prop_info[i].prop_type & PROP_WITHOUT_EVOSCHEME) != 0 &&
+				     !ldap_data->bl->priv->evolutionPersonSupported) ||
+				    ((prop_info[i].prop_type & PROP_WITH_EVOSCHEME) != 0 &&
+				     ldap_data->bl->priv->evolutionPersonSupported)) &&
 				    (ldap_data->bl->priv->calEntrySupported ||
 				     !(prop_info[i].prop_type & PROP_CALENTRY))) {
 					g_string_append_c (big_query, '(');
@@ -4073,6 +4090,11 @@ func_exists (struct _ESExp *f,
 				if (!(prop_info[i].prop_type & PROP_WRITE_ONLY) &&
 				    (ldap_data->bl->priv->evolutionPersonSupported ||
 				     !(prop_info[i].prop_type & PROP_EVOLVE)) &&
+				    (!(prop_info[i].prop_type & (PROP_WITH_EVOSCHEME | PROP_WITHOUT_EVOSCHEME)) ||
+				     ((prop_info[i].prop_type & PROP_WITHOUT_EVOSCHEME) != 0 &&
+				     !ldap_data->bl->priv->evolutionPersonSupported) ||
+				    ((prop_info[i].prop_type & PROP_WITH_EVOSCHEME) != 0 &&
+				     ldap_data->bl->priv->evolutionPersonSupported)) &&
 				    (ldap_data->bl->priv->calEntrySupported ||
 				     !(prop_info[i].prop_type & PROP_CALENTRY))) {
 					g_string_append_c (big_query, '(');
@@ -4192,6 +4214,11 @@ query_prop_to_ldap (const gchar *query_prop,
 		if (!strcmp (query_prop, e_contact_field_name (prop_info[i].field_id))) {
 			if ((evolution_person_supported ||
 			    !(prop_info[i].prop_type & PROP_EVOLVE)) &&
+			    (!(prop_info[i].prop_type & (PROP_WITH_EVOSCHEME | PROP_WITHOUT_EVOSCHEME)) ||
+			     ((prop_info[i].prop_type & PROP_WITHOUT_EVOSCHEME) != 0 &&
+			     !evolution_person_supported) ||
+			    ((prop_info[i].prop_type & PROP_WITH_EVOSCHEME) != 0 &&
+			     evolution_person_supported)) &&
 			    (calentry_supported ||
 			    !(prop_info[i].prop_type & PROP_CALENTRY))) {
 				return prop_info[i].ldap_attr;
@@ -4268,7 +4295,12 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 		}
 		else {
 			for (i = 0; i < G_N_ELEMENTS (prop_info); i++) {
-				if (!g_ascii_strcasecmp (attr, prop_info[i].ldap_attr)) {
+				if (!g_ascii_strcasecmp (attr, prop_info[i].ldap_attr) &&
+				    (!(prop_info[i].prop_type & (PROP_WITH_EVOSCHEME | PROP_WITHOUT_EVOSCHEME)) ||
+				     ((prop_info[i].prop_type & PROP_WITHOUT_EVOSCHEME) != 0 &&
+				      !bl->priv->evolutionPersonSupported) ||
+				     ((prop_info[i].prop_type & PROP_WITH_EVOSCHEME) != 0 &&
+				      bl->priv->evolutionPersonSupported))) {
 					info = &prop_info[i];
 					break;
 				}
