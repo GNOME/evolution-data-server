@@ -142,6 +142,23 @@ static gboolean ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
 						  GCancellable *cancellable,
 						  GError **error);
 
+static gboolean
+ecmb_is_power_saver_enabled (void)
+{
+#ifdef HAVE_GPOWERPROFILEMONITOR
+	GPowerProfileMonitor *power_monitor;
+	gboolean enabled;
+
+	power_monitor = g_power_profile_monitor_dup_default ();
+	enabled = power_monitor && g_power_profile_monitor_get_power_saver_enabled (power_monitor);
+	g_clear_object (&power_monitor);
+
+	return enabled;
+#else
+	return FALSE;
+#endif
+}
+
 /**
  * e_cal_meta_backend_info_new:
  * @uid: a component UID; cannot be %NULL
@@ -680,9 +697,6 @@ ecmb_refresh_internal_sync (ECalMetaBackend *meta_backend,
 			    GCancellable *cancellable,
 			    GError **error)
 {
-#ifdef HAVE_GPOWERPROFILEMONITOR
-	GPowerProfileMonitor *power_monitor;
-#endif
 	ECalCache *cal_cache;
 	gboolean success = FALSE, repeat = TRUE, is_repeat = FALSE;
 
@@ -691,17 +705,11 @@ ecmb_refresh_internal_sync (ECalMetaBackend *meta_backend,
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		goto done;
 
-#ifdef HAVE_GPOWERPROFILEMONITOR
 	/* Silently ignore the refresh request when in the power-saver mode */
-	power_monitor = g_power_profile_monitor_dup_default ();
-	if (power_monitor && g_power_profile_monitor_get_power_saver_enabled (power_monitor)) {
-		g_clear_object (&power_monitor);
+	if (ecmb_is_power_saver_enabled ()) {
 		success = TRUE;
 		goto done;
 	}
-
-	g_clear_object (&power_monitor);
-#endif
 
 	e_cal_backend_foreach_view_notify_progress (E_CAL_BACKEND (meta_backend), TRUE, 0, _("Refreshing…"));
 
@@ -1344,6 +1352,12 @@ ecmb_refresh_sync (ECalBackendSync *sync_backend,
 
 	if (!e_backend_get_online (backend))
 		return;
+
+	if (ecmb_is_power_saver_enabled ()) {
+		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_OTHER_ERROR,
+			_("Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode and repeat the action."));
+		return;
+	}
 
 	if (e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, error))
 		e_cal_meta_backend_schedule_refresh (meta_backend);
