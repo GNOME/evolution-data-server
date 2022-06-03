@@ -132,12 +132,20 @@ static gboolean
 ebmb_is_power_saver_enabled (void)
 {
 #ifdef HAVE_GPOWERPROFILEMONITOR
-	GPowerProfileMonitor *power_monitor;
-	gboolean enabled;
+	GSettings *settings;
+	gboolean enabled = FALSE;
 
-	power_monitor = g_power_profile_monitor_dup_default ();
-	enabled = power_monitor && g_power_profile_monitor_get_power_saver_enabled (power_monitor);
-	g_clear_object (&power_monitor);
+	settings = g_settings_new ("org.gnome.evolution-data-server");
+
+	if (g_settings_get_boolean (settings, "limit-operations-in-power-saver-mode")) {
+		GPowerProfileMonitor *power_monitor;
+
+		power_monitor = g_power_profile_monitor_dup_default ();
+		enabled = power_monitor && g_power_profile_monitor_get_power_saver_enabled (power_monitor);
+		g_clear_object (&power_monitor);
+	}
+
+	g_clear_object (&settings);
 
 	return enabled;
 #else

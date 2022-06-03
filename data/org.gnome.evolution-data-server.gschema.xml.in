@@ -86,5 +86,10 @@
       <summary>An OAuth2 client secret to use to connect to Yahoo! servers, instead of the one provided during build time</summary>
       <description>User-specified OAuth2 client secret for Yahoo! servers. Empty string means to use the one provided during build time. Change of this requires restart.</description>
     </key>
+    <key name="limit-operations-in-power-saver-mode" type="b">
+      <default>false</default>
+      <summary>Whether to limit operations in Power Saver mode</summary>
+      <description>When set to “true”, possibly expensive operations required to refresh books/calendars/mail accounts/... are skipped when the machine is in the Power Saver mode.</description>
+    </key>
   </schema>
 </schemalist>
