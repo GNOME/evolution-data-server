@@ -583,6 +583,24 @@ credentials_prompter_impl_oauth2_get_prompt_strings (ESourceRegistry *registry,
 
 #ifdef ENABLE_OAUTH2_WEBKITGTK
 
+static gchar *
+credentials_prompter_impl_oauth2_sanitize_host (gchar *host)
+{
+	if (!host || !*host)
+		return host;
+
+	if (*host == '[' && strchr (host, ':')) {
+		gint len = strlen (host);
+
+		if (len > 2 && host[len - 1] == ']') {
+			memmove (host, host + 1, len - 2);
+			host[len - 2] = '\0';
+		}
+	}
+
+	return host;
+}
+
 static void
 credentials_prompter_impl_oauth2_set_proxy (WebKitWebContext *web_context,
 					    ESourceRegistry *registry,
@@ -626,7 +644,7 @@ credentials_prompter_impl_oauth2_set_proxy (WebKitWebContext *web_context,
 		case E_PROXY_METHOD_MANUAL:
 			ignore_hosts = e_source_proxy_dup_ignore_hosts (proxy);
 
-			tmp = e_source_proxy_dup_socks_host (proxy);
+			tmp = credentials_prompter_impl_oauth2_sanitize_host (e_source_proxy_dup_socks_host (proxy));
 			if (tmp && *tmp) {
 				suri = soup_uri_new (NULL);
 				soup_uri_set_scheme (suri, "socks");
@@ -645,7 +663,7 @@ credentials_prompter_impl_oauth2_set_proxy (WebKitWebContext *web_context,
 			}
 			g_free (tmp);
 
-			tmp = e_source_proxy_dup_http_host (proxy);
+			tmp = credentials_prompter_impl_oauth2_sanitize_host (e_source_proxy_dup_http_host (proxy));
 			if (tmp && *tmp) {
 				suri = soup_uri_new (NULL);
 				soup_uri_set_scheme (suri, SOUP_URI_SCHEME_HTTP);
@@ -672,7 +690,7 @@ credentials_prompter_impl_oauth2_set_proxy (WebKitWebContext *web_context,
 			}
 			g_free (tmp);
 
-			tmp = e_source_proxy_dup_https_host (proxy);
+			tmp = credentials_prompter_impl_oauth2_sanitize_host (e_source_proxy_dup_https_host (proxy));
 			if (tmp && *tmp) {
 				suri = soup_uri_new (NULL);
 				soup_uri_set_scheme (suri, SOUP_URI_SCHEME_HTTP);
