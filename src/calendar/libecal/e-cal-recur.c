@@ -529,11 +529,6 @@ e_cal_recur_generate_instances_sync (ICalComponent *icalcomp,
 			if (rrule_until && !i_cal_time_is_null_time (rrule_until) &&
 			    i_cal_time_is_date (rrule_until) && !i_cal_time_is_date (dtstart)) {
 				i_cal_time_adjust (rrule_until, 1, 0, 0, 0);
-				i_cal_time_set_is_date (rrule_until, FALSE);
-				i_cal_time_set_time (rrule_until, 0, 0, 0);
-
-				if (!i_cal_time_get_timezone (rrule_until) && !i_cal_time_is_utc (rrule_until))
-					i_cal_time_set_timezone (rrule_until, dtstart_zone);
 			}
 
 			if (rrule_until && !i_cal_time_is_null_time (rrule_until))
@@ -676,11 +671,6 @@ e_cal_recur_generate_instances_sync (ICalComponent *icalcomp,
 			if (exrule_until && !i_cal_time_is_null_time (exrule_until) &&
 			    i_cal_time_is_date (exrule_until) && !i_cal_time_is_date (dtstart)) {
 				i_cal_time_adjust (exrule_until, 1, 0, 0, 0);
-				i_cal_time_set_is_date (exrule_until, FALSE);
-				i_cal_time_set_time (exrule_until, 0, 0, 0);
-
-				if (!i_cal_time_get_timezone (exrule_until) && !i_cal_time_is_utc (exrule_until))
-					i_cal_time_set_timezone (exrule_until, dtstart_zone);
 			}
 
 			if (exrule_until && !i_cal_time_is_null_time (exrule_until))
