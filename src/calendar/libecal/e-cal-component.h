@@ -131,6 +131,10 @@ void		e_cal_component_set_classification
 GSList *	e_cal_component_get_comments	(ECalComponent *comp); /* ECalComponentText * */
 void		e_cal_component_set_comments	(ECalComponent *comp,
 						 const GSList *text_list); /* ECalComponentText * */
+ECalComponentText *
+		e_cal_component_dup_comment_for_locale
+						(ECalComponent *comp,
+						 const gchar *locale);
 
 ICalTime *	e_cal_component_get_completed	(ECalComponent *comp);
 void		e_cal_component_set_completed	(ECalComponent *comp,
@@ -147,6 +151,10 @@ void		e_cal_component_set_created	(ECalComponent *comp,
 GSList *	e_cal_component_get_descriptions(ECalComponent *comp);  /* ECalComponentText * */
 void		e_cal_component_set_descriptions(ECalComponent *comp,
 						 const GSList *text_list); /* ECalComponentText * */
+ECalComponentText *
+		e_cal_component_dup_description_for_locale
+						(ECalComponent *comp,
+						 const gchar *locale);
 
 ECalComponentDateTime *
 		e_cal_component_get_dtend	(ECalComponent *comp);
@@ -244,6 +252,13 @@ ECalComponentText *
 		e_cal_component_get_summary	(ECalComponent *comp);
 void		e_cal_component_set_summary	(ECalComponent *comp,
 						 const ECalComponentText *summary);
+GSList *	e_cal_component_dup_summaries	(ECalComponent *comp);
+void		e_cal_component_set_summaries	(ECalComponent *comp,
+						 const GSList *text_list);
+ECalComponentText *
+		e_cal_component_dup_summary_for_locale
+						(ECalComponent *comp,
+						 const gchar *locale);
 
 ECalComponentTransparency
 		e_cal_component_get_transparency(ECalComponent *comp);

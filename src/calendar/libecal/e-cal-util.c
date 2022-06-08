@@ -3190,3 +3190,129 @@ e_cal_util_clamp_vtimezone_by_component (ICalComponent *vtimezone,
 	g_clear_object (&dtstart);
 	g_clear_object (&dtend);
 }
+
+static gboolean
+locale_equals_language (const gchar *locale,
+			const gchar *language)
+{
+	guint ii;
+
+	for (ii = 0; locale[ii] && language[ii]; ii++) {
+		if ((locale[ii] == '-' || locale[ii] == '_') &&
+		    (language[ii] == '-' || language[ii] == '_')) {
+			continue;
+		}
+
+		if (g_ascii_tolower (locale[ii]) != g_ascii_tolower (language[ii]))
+			break;
+	}
+
+	return !locale[ii] && !language[ii];
+}
+
+/**
+ * e_cal_util_component_find_property_for_locale:
+ * @icalcomp: an #ICalComponent
+ * @prop_kind: an #ICalPropertyKind to traverse
+ * @locale: (nullable): a locale identifier, or %NULL
+ *
+ * Searches properties of kind @prop_kind in the @icalcomp and returns
+ * one, which is usable for the @locale. When @locale is %NULL,
+ * the current locale is assumed. If no such property for the locale
+ * exists either the one with no language parameter or the first
+ * found is returned.
+ *
+ * Free the returned non-NULL #ICalProperty with g_object_unref(),
+ * when no longer needed.
+ *
+ * Returns: (transfer full) (nullable): a property of kind @prop_kind for the @locale,
+ *    %NULL if no such property is set on the @comp.
+ *
+ * Since: 3.46
+
+ **/
+ICalProperty *
+e_cal_util_component_find_property_for_locale (ICalComponent *icalcomp,
+					       ICalPropertyKind prop_kind,
+					       const gchar *locale)
+{
+	ICalProperty *prop;
+	ICalProperty *result = NULL;
+	ICalProperty *first = NULL;
+	ICalProperty *nolang = NULL;
+	ICalProperty *best = NULL;
+	gint best_index = -1;
+	gchar **locale_variants = NULL;
+	const gchar *const *locales = NULL;
+
+	g_return_val_if_fail (I_CAL_IS_COMPONENT (icalcomp), NULL);
+
+	if (locale) {
+		locale_variants = g_get_locale_variants (locale);
+		locales = (const gchar * const *) locale_variants;
+	}
+
+	if (!locales)
+		locales = g_get_language_names ();
+
+	for (prop = i_cal_component_get_first_property (icalcomp, prop_kind);
+	     prop;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, prop_kind)) {
+		ICalParameter *param;
+
+		param = i_cal_property_get_first_parameter (prop, I_CAL_LANGUAGE_PARAMETER);
+		if (param) {
+			const gchar *language = i_cal_parameter_get_language (param);
+
+			if (!language || !*language) {
+				if (!best) {
+					if (!first)
+						first = g_object_ref (prop);
+					if (!nolang)
+						nolang = g_object_ref (prop);
+				}
+			} else {
+				guint ii;
+
+				for (ii = 0; locales && locales[ii] && (best_index == -1 || ii < best_index); ii++) {
+					if (locale_equals_language (locales[ii], language)) {
+						g_clear_object (&best);
+						best = g_object_ref (prop);
+						best_index = ii;
+						break;
+					}
+				}
+
+				if (!ii && best) {
+					g_clear_object (&param);
+					g_clear_object (&prop);
+					break;
+				}
+
+				if (!best && !first)
+					first = g_object_ref (prop);
+			}
+
+			g_clear_object (&param);
+		} else if (!best) {
+			if (!first)
+				first = g_object_ref (prop);
+			if (!nolang)
+				nolang = g_object_ref (prop);
+		}
+	}
+
+	if (best)
+		result = g_steal_pointer (&best);
+	else if (nolang)
+		result = g_steal_pointer (&nolang);
+	else if (first)
+		result = g_steal_pointer (&first);
+
+	g_clear_object (&first);
+	g_clear_object (&nolang);
+	g_clear_object (&best);
+	g_clear_pointer (&locale_variants, g_strfreev);
+
+	return result;
+}

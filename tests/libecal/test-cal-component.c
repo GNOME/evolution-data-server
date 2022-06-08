@@ -348,6 +348,7 @@ verify_struct_text_equal (const ECalComponentText *expected,
 
 	g_assert_cmpstr (e_cal_component_text_get_value (expected), ==, e_cal_component_text_get_value (received));
 	g_assert_cmpstr (e_cal_component_text_get_altrep (expected), ==, e_cal_component_text_get_altrep (received));
+	g_assert_cmpstr (e_cal_component_text_get_language (expected), ==, e_cal_component_text_get_language (received));
 }
 
 static void
@@ -1524,7 +1525,7 @@ static void
 test_component_struct_parameter_bag (void)
 {
 	const gchar *prop_str =
-		"ATTENDEE;CHARSET=utf-8;CN=User;CUTYPE=INDIVIDUAL;" X_PARAM_NAME "=" X_PARAM_VALUE ";LANGUAGE=en_US:mailto:user@no.where";
+		"ATTENDEE;CHARSET=utf-8;CN=User;CUTYPE=INDIVIDUAL;" X_PARAM_NAME "=" X_PARAM_VALUE ";LANGUAGE=en-US:mailto:user@no.where";
 	ICalParameterKind expected_unfiltered[] = {
 		I_CAL_CHARSET_PARAMETER,
 		I_CAL_CN_PARAMETER,
@@ -2078,17 +2079,24 @@ test_component_struct_text (void)
 	struct _values {
 		const gchar *value;
 		const gchar *altrep;
+		const gchar *language;
 	} values[] = {
-		{ "value1", NULL },
-		{ "value2", "altrep1" },
-		{ "value3", "altrep2" },
-		{ "value4", NULL }
+		{ "value1", NULL, NULL },
+		{ "value2", "altrep1", NULL },
+		{ "value3", "altrep2", NULL },
+		{ "value4", NULL, NULL },
+		{ "value1", NULL, "en_US" },
+		{ "value2", "altrep1", "en" },
+		{ "value3", "altrep2", "en_GB" },
+		{ "value4", NULL, "en" }
 	};
+	ICalProperty *prop;
+	ECalComponentText *expected, *received;
 	gint ii, set_kind;
 
 	for (set_kind = 0; set_kind < 3; set_kind++) {
 		for (ii = 0; ii < G_N_ELEMENTS (values); ii++) {
-			ECalComponentText *expected = NULL, *received;
+			expected = NULL;
 
 			if (set_kind == 1) {
 				expected = e_cal_component_text_new ("non-empty", NULL);
@@ -2099,13 +2107,16 @@ test_component_struct_text (void)
 			if (expected) {
 				e_cal_component_text_set_value (expected, values[ii].value);
 				e_cal_component_text_set_altrep (expected, values[ii].altrep);
+				e_cal_component_text_set_language (expected, values[ii].language);
 			} else {
 				expected = e_cal_component_text_new (values[ii].value, values[ii].altrep);
+				e_cal_component_text_set_language (expected, values[ii].language);
 			}
 
 			g_assert_nonnull (expected);
 			g_assert_cmpstr (e_cal_component_text_get_value (expected), ==, values[ii].value);
 			g_assert_cmpstr (e_cal_component_text_get_altrep (expected), ==, values[ii].altrep);
+			g_assert_cmpstr (e_cal_component_text_get_language (expected), ==, values[ii].language);
 
 			received = e_cal_component_text_copy (expected);
 			verify_struct_text_equal (expected, received);
@@ -2114,6 +2125,64 @@ test_component_struct_text (void)
 			e_cal_component_text_free (expected);
 		}
 	}
+
+	prop = i_cal_property_new_summary ("summary1");
+
+	expected = e_cal_component_text_new ("summary1", NULL);
+
+	received = e_cal_component_text_new_from_property (prop);
+	g_assert_nonnull (received);
+	g_assert_cmpstr (e_cal_component_text_get_value (received), ==, "summary1");
+	g_assert_null (e_cal_component_text_get_altrep (received));
+	g_assert_null (e_cal_component_text_get_language (received));
+	verify_struct_text_equal (expected, received);
+
+	e_cal_component_text_set_value (expected, "summary2");
+	e_cal_component_text_set_altrep (expected, "altrep");
+	e_cal_component_text_fill_property (expected, prop);
+
+	e_cal_component_text_set_from_property (received, prop);
+	g_assert_cmpstr (e_cal_component_text_get_value (received), ==, "summary2");
+	g_assert_cmpstr (e_cal_component_text_get_altrep (received), ==, "altrep");
+	g_assert_null (e_cal_component_text_get_language (received));
+	verify_struct_text_equal (expected, received);
+
+	e_cal_component_text_set_value (expected, "summary3");
+	e_cal_component_text_set_altrep (expected, NULL);
+	e_cal_component_text_set_language (expected, "en");
+	e_cal_component_text_fill_property (expected, prop);
+
+	e_cal_component_text_set_from_property (received, prop);
+	g_assert_cmpstr (e_cal_component_text_get_value (received), ==, "summary3");
+	g_assert_null (e_cal_component_text_get_altrep (received));
+	g_assert_cmpstr (e_cal_component_text_get_language (received), ==, "en");
+	verify_struct_text_equal (expected, received);
+
+	e_cal_component_text_set_value (expected, "summary4");
+	e_cal_component_text_set_altrep (expected, "altrep2");
+	e_cal_component_text_set_language (expected, "en_GB");
+	e_cal_component_text_fill_property (expected, prop);
+
+	e_cal_component_text_set_from_property (received, prop);
+	g_assert_cmpstr (e_cal_component_text_get_value (received), ==, "summary4");
+	g_assert_cmpstr (e_cal_component_text_get_altrep (received), ==, "altrep2");
+	g_assert_cmpstr (e_cal_component_text_get_language (received), ==, "en_GB");
+	verify_struct_text_equal (expected, received);
+
+	e_cal_component_text_set_value (expected, "summary5");
+	e_cal_component_text_set_altrep (expected, NULL);
+	e_cal_component_text_set_language (expected, NULL);
+	e_cal_component_text_fill_property (expected, prop);
+
+	e_cal_component_text_set_from_property (received, prop);
+	g_assert_cmpstr (e_cal_component_text_get_value (received), ==, "summary5");
+	g_assert_null (e_cal_component_text_get_altrep (received));
+	g_assert_null (e_cal_component_text_get_language (received));
+	verify_struct_text_equal (expected, received);
+
+	e_cal_component_text_free (received);
+	e_cal_component_text_free (expected);
+	g_clear_object (&prop);
 }
 
 static void
@@ -2364,16 +2433,30 @@ test_split_texts (const gchar *value)
 	if (textsv) {
 		for (ii = 0; textsv[ii]; ii++) {
 			ECalComponentText *comptext;
-			gchar *altrep;
+			gchar *altrep, *language = NULL;
 
 			altrep = strchr (textsv[ii], '|');
 			if (altrep) {
 				*altrep = '\0';
 				altrep++;
+
+				language = strchr (altrep, '|');
+				if (language) {
+					*language = '\0';
+					language++;
+
+					if (!*language)
+						language = NULL;
+				}
+
+				if (!*altrep)
+					altrep = NULL;
 			}
 
 			comptext = e_cal_component_text_new (textsv[ii], altrep);
 			g_assert_nonnull (comptext);
+			if (language)
+				e_cal_component_text_set_language (comptext, language);
 			result = g_slist_prepend (result, comptext);
 		}
 
@@ -2424,6 +2507,10 @@ test_component_text_list (void (* set_func) (ECalComponent *comp,
 		"line1\nline2|altrep",
 		"text|altrep",
 		"text1:text2|altrep2:text3a\ntext3b|altrep3",
+		"text||en",
+		"line1\nline2|altrep|en_US",
+		"text|altrep|en_GB",
+		"text1:text2|altrep2|en_GB:text3a\ntext3b|altrep3|en",
 		NULL
 	};
 	ECalComponent *comp;
@@ -2727,6 +2814,64 @@ test_component_comments (void)
 }
 
 static void
+test_component_comments_locale (void)
+{
+	const gchar *comp_str =
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"COMMENT;LANGUAGE=en-US:desc-en-US\r\n"
+		"COMMENT;LANGUAGE=en:desc-en\r\n"
+		"COMMENT;LANGUAGE=en-GB:desc-en-GB\r\n"
+		"COMMENT:desc\r\n"
+		"END:VEVENT\r\n";
+	ECalComponent *comp;
+	ECalComponentText *text;
+
+	comp = e_cal_component_new_from_string (comp_str);
+	g_assert_nonnull (comp);
+
+	text = e_cal_component_dup_comment_for_locale (comp, NULL);
+	g_assert_nonnull (text);
+	e_cal_component_text_free (text);
+
+	text = e_cal_component_dup_comment_for_locale (comp, "en_US");
+	g_assert_cmpstr (e_cal_component_text_get_value (text), ==, "desc-en-US");
+	e_cal_component_text_free (text);
+
+	text = e_cal_component_dup_comment_for_locale (comp, "en_GB");
+	g_assert_cmpstr (e_cal_component_text_get_value (text), ==, "desc-en-GB");
+	e_cal_component_text_free (text);
+
+	text = e_cal_component_dup_comment_for_locale (comp, "en");
+	g_assert_cmpstr (e_cal_component_text_get_value (text), ==, "desc-en");
+	e_cal_component_text_free (text);
+
+	text = e_cal_component_dup_comment_for_locale (comp, "xxx");
+	g_assert_cmpstr (e_cal_component_text_get_value (text), ==, "desc");
+	e_cal_component_text_free (text);
+
+	g_clear_object (&comp);
+
+	comp_str =
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"COMMENT;LANGUAGE=en-US:desc-en-US\r\n"
+		"COMMENT;LANGUAGE=en:desc-en\r\n"
+		"COMMENT;LANGUAGE=en-GB:desc-en-GB\r\n"
+		"END:VEVENT\r\n";
+
+	comp = e_cal_component_new_from_string (comp_str);
+	g_assert_nonnull (comp);
+
+	text = e_cal_component_dup_comment_for_locale (comp, "xxx");
+	g_assert_nonnull (text);
+	g_assert_cmpstr (e_cal_component_text_get_value (text), ==, "desc-en-US");
+	e_cal_component_text_free (text);
+
+	g_clear_object (&comp);
+}
+
+static void
 verify_component_completed (ECalComponent *comp,
 			    gpointer user_data)
 {
@@ -2776,6 +2921,64 @@ static void
 test_component_descriptions (void)
 {
 	test_component_text_list (e_cal_component_set_descriptions, verify_component_descriptions);
+}
+
+static void
+test_component_descriptions_locale (void)
+{
+	const gchar *comp_str =
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"DESCRIPTION;LANGUAGE=en-US:desc-en-US\r\n"
+		"DESCRIPTION;LANGUAGE=en:desc-en\r\n"
+		"DESCRIPTION;LANGUAGE=en-GB:desc-en-GB\r\n"
+		"DESCRIPTION:desc\r\n"
+		"END:VEVENT\r\n";
+	ECalComponent *comp;
+	ECalComponentText *text;
+
+	comp = e_cal_component_new_from_string (comp_str);
+	g_assert_nonnull (comp);
+
+	text = e_cal_component_dup_description_for_locale (comp, NULL);
+	g_assert_nonnull (text);
+	e_cal_component_text_free (text);
+
+	text = e_cal_component_dup_description_for_locale (comp, "en_US");
+	g_assert_cmpstr (e_cal_component_text_get_value (text), ==, "desc-en-US");
+	e_cal_component_text_free (text);
+
+	text = e_cal_component_dup_description_for_locale (comp, "en_GB");
+	g_assert_cmpstr (e_cal_component_text_get_value (text), ==, "desc-en-GB");
+	e_cal_component_text_free (text);
+
+	text = e_cal_component_dup_description_for_locale (comp, "en");
+	g_assert_cmpstr (e_cal_component_text_get_value (text), ==, "desc-en");
+	e_cal_component_text_free (text);
+
+	text = e_cal_component_dup_description_for_locale (comp, "xxx");
+	g_assert_cmpstr (e_cal_component_text_get_value (text), ==, "desc");
+	e_cal_component_text_free (text);
+
+	g_clear_object (&comp);
+
+	comp_str =
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"DESCRIPTION;LANGUAGE=en-US:desc-en-US\r\n"
+		"DESCRIPTION;LANGUAGE=en:desc-en\r\n"
+		"DESCRIPTION;LANGUAGE=en-GB:desc-en-GB\r\n"
+		"END:VEVENT\r\n";
+
+	comp = e_cal_component_new_from_string (comp_str);
+	g_assert_nonnull (comp);
+
+	text = e_cal_component_dup_description_for_locale (comp, "xxx");
+	g_assert_nonnull (text);
+	g_assert_cmpstr (e_cal_component_text_get_value (text), ==, "desc-en-US");
+	e_cal_component_text_free (text);
+
+	g_clear_object (&comp);
 }
 
 static void
@@ -3420,7 +3623,11 @@ test_component_summary (void)
 		"line1\nline2|altrep",
 		"text|altrep",
 		NULL,
-		"text1:text2|altrep2:text3a\ntext3b|altrep3"
+		"text1:text2|altrep2:text3a\ntext3b|altrep3",
+		"text||en",
+		"line1\nline2|altrep|en_US",
+		"text|altrep|en_GB",
+		"text1:text2|altrep2|en:text3a\ntext3b|altrep3|en_US"
 	};
 	ECalComponent *comp;
 	gint ii;
@@ -3447,6 +3654,107 @@ test_component_summary (void)
 	}
 
 	g_object_unref (comp);
+}
+
+static void
+test_component_summary_locale (void)
+{
+	const gchar *comp_str =
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"SUMMARY;LANGUAGE=en-US:summ-en-US\r\n"
+		"SUMMARY;LANGUAGE=en:summ-en\r\n"
+		"SUMMARY;LANGUAGE=en-GB:summ-en-GB\r\n"
+		"SUMMARY:summ\r\n"
+		"END:VEVENT\r\n";
+	ECalComponent *comp;
+	ECalComponentText *text;
+
+	comp = e_cal_component_new_from_string (comp_str);
+	g_assert_nonnull (comp);
+
+	text = e_cal_component_dup_summary_for_locale (comp, NULL);
+	g_assert_nonnull (text);
+	e_cal_component_text_free (text);
+
+	text = e_cal_component_dup_summary_for_locale (comp, "en_US");
+	g_assert_cmpstr (e_cal_component_text_get_value (text), ==, "summ-en-US");
+	e_cal_component_text_free (text);
+
+	text = e_cal_component_dup_summary_for_locale (comp, "en_GB");
+	g_assert_cmpstr (e_cal_component_text_get_value (text), ==, "summ-en-GB");
+	e_cal_component_text_free (text);
+
+	text = e_cal_component_dup_summary_for_locale (comp, "en");
+	g_assert_cmpstr (e_cal_component_text_get_value (text), ==, "summ-en");
+	e_cal_component_text_free (text);
+
+	text = e_cal_component_dup_summary_for_locale (comp, "xxx");
+	g_assert_cmpstr (e_cal_component_text_get_value (text), ==, "summ");
+	e_cal_component_text_free (text);
+
+	g_clear_object (&comp);
+
+	comp_str =
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"SUMMARY;LANGUAGE=en-US:summ-en-US\r\n"
+		"SUMMARY;LANGUAGE=en:summ-en\r\n"
+		"SUMMARY;LANGUAGE=en-GB:summ-en-GB\r\n"
+		"END:VEVENT\r\n";
+
+	comp = e_cal_component_new_from_string (comp_str);
+	g_assert_nonnull (comp);
+
+	text = e_cal_component_dup_summary_for_locale (comp, "xxx");
+	g_assert_nonnull (text);
+	g_assert_cmpstr (e_cal_component_text_get_value (text), ==, "summ-en-US");
+	e_cal_component_text_free (text);
+
+	g_clear_object (&comp);
+}
+
+static void
+verify_component_summaries (ECalComponent *comp,
+			    gpointer user_data)
+{
+	verify_component_text_list (e_cal_component_dup_summaries, comp, user_data);
+}
+
+static void
+test_component_summaries (void)
+{
+	const gchar *comp_str =
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"SUMMARY;LANGUAGE=en-US:summ-en-US\r\n"
+		"SUMMARY;LANGUAGE=en:summ-en\r\n"
+		"SUMMARY;LANGUAGE=en-GB:summ-en-GB\r\n"
+		"SUMMARY:summ\r\n"
+		"END:VEVENT\r\n";
+	ECalComponent *comp;
+	ECalComponentText *text;
+	GSList *slist1, *slist2;
+
+	comp = e_cal_component_new_from_string (comp_str);
+	g_assert_nonnull (comp);
+
+	slist1 = e_cal_component_dup_summaries (comp);
+	g_assert_cmpint (g_slist_length (slist1), ==, 4);
+
+	text = e_cal_component_text_new ("summary", NULL);
+	e_cal_component_set_summary (comp, text);
+	slist2 = e_cal_component_dup_summaries (comp);
+	g_assert_cmpint (g_slist_length (slist2), ==, 1);
+	verify_struct_text_equal (text, slist2->data);
+	g_slist_free_full (slist2, e_cal_component_text_free);
+	e_cal_component_text_free (text);
+
+	e_cal_component_set_summaries (comp, slist1);
+	verify_changes (comp, verify_component_summaries, slist1);
+
+	g_slist_free_full (slist1, e_cal_component_text_free);
+	g_clear_object (&comp);
 }
 
 static void
@@ -4019,10 +4327,12 @@ main (gint argc,
 	g_test_add_func ("/ECalComponent/categories", test_component_categories);
 	g_test_add_func ("/ECalComponent/classification", test_component_classification);
 	g_test_add_func ("/ECalComponent/comments", test_component_comments);
+	g_test_add_func ("/ECalComponent/comments-locale", test_component_comments_locale);
 	g_test_add_func ("/ECalComponent/completed", test_component_completed);
 	g_test_add_func ("/ECalComponent/contacts", test_component_contacts);
 	g_test_add_func ("/ECalComponent/created", test_component_created);
 	g_test_add_func ("/ECalComponent/descriptions", test_component_descriptions);
+	g_test_add_func ("/ECalComponent/descriptions-locale", test_component_descriptions_locale);
 	g_test_add_func ("/ECalComponent/dtend", test_component_dtend);
 	g_test_add_func ("/ECalComponent/dtstamp", test_component_dtstamp);
 	g_test_add_func ("/ECalComponent/dtstart", test_component_dtstart);
@@ -4040,6 +4350,8 @@ main (gint argc,
 	g_test_add_func ("/ECalComponent/sequence", test_component_sequence);
 	g_test_add_func ("/ECalComponent/status", test_component_status);
 	g_test_add_func ("/ECalComponent/summary", test_component_summary);
+	g_test_add_func ("/ECalComponent/summaries", test_component_summaries);
+	g_test_add_func ("/ECalComponent/summary-locale", test_component_summary_locale);
 	g_test_add_func ("/ECalComponent/transparency", test_component_transparency);
 	g_test_add_func ("/ECalComponent/url", test_component_url);
 	g_test_add_func ("/ECalComponent/attendees", test_component_attendees);

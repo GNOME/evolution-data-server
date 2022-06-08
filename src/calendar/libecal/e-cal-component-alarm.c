@@ -309,27 +309,13 @@ e_cal_component_alarm_set_from_component (ECalComponentAlarm *alarm,
 			break;
 
 		case I_CAL_SUMMARY_PROPERTY:
-			if (i_cal_property_get_summary (prop)) {
-				ICalParameter *param;
-
-				param = i_cal_property_get_first_parameter (prop, I_CAL_ALTREP_PARAMETER);
-				e_cal_component_alarm_take_summary (alarm,
-					e_cal_component_text_new (i_cal_property_get_summary (prop),
-					param ? i_cal_parameter_get_altrep (param) : NULL));
-				g_clear_object (&param);
-			}
+			if (i_cal_property_get_summary (prop))
+				e_cal_component_alarm_take_summary (alarm, e_cal_component_text_new_from_property (prop));
 			break;
 
 		case I_CAL_DESCRIPTION_PROPERTY:
-			if (i_cal_property_get_description (prop)) {
-				ICalParameter *param;
-
-				param = i_cal_property_get_first_parameter (prop, I_CAL_ALTREP_PARAMETER);
-				e_cal_component_alarm_take_description (alarm,
-					e_cal_component_text_new (i_cal_property_get_description (prop),
-					param ? i_cal_parameter_get_altrep (param) : NULL));
-				g_clear_object (&param);
-			}
+			if (i_cal_property_get_description (prop))
+				e_cal_component_alarm_take_description (alarm, e_cal_component_text_new_from_property (prop));
 			break;
 
 		case I_CAL_DURATION_PROPERTY:
@@ -524,16 +510,7 @@ e_cal_component_alarm_fill_component (ECalComponentAlarm *alarm,
 		prop = i_cal_property_new_summary (e_cal_component_text_get_value (alarm->summary));
 
 		if (prop) {
-			const gchar *altrep = e_cal_component_text_get_altrep (alarm->summary);
-
-			if (altrep && *altrep) {
-				ICalParameter *param;
-
-				param = i_cal_parameter_new_altrep (altrep);
-				if (param)
-					i_cal_property_take_parameter (prop, param);
-			}
-
+			e_cal_component_text_fill_property (alarm->summary, prop);
 			i_cal_component_take_property (component, prop);
 		}
 	}
@@ -542,16 +519,7 @@ e_cal_component_alarm_fill_component (ECalComponentAlarm *alarm,
 		prop = i_cal_property_new_description (e_cal_component_text_get_value (alarm->description));
 
 		if (prop) {
-			const gchar *altrep = e_cal_component_text_get_altrep (alarm->description);
-
-			if (altrep && *altrep) {
-				ICalParameter *param;
-
-				param = i_cal_parameter_new_altrep (altrep);
-				if (param)
-					i_cal_property_take_parameter (prop, param);
-			}
-
+			e_cal_component_text_fill_property (alarm->description, prop);
 			i_cal_component_take_property (component, prop);
 		}
 	}

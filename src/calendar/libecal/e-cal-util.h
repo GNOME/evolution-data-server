@@ -378,6 +378,10 @@ void		e_cal_util_clamp_vtimezone	(ICalComponent *vtimezone,
 void		e_cal_util_clamp_vtimezone_by_component
 						(ICalComponent *vtimezone,
 						 ICalComponent *component);
+ICalProperty *	e_cal_util_component_find_property_for_locale
+						(ICalComponent *icalcomp,
+						 ICalPropertyKind prop_kind,
+						 const gchar *locale);
 
 G_END_DECLS
 
