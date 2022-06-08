@@ -128,8 +128,10 @@ foreach_property (ICalComponent *icalcomp,
 	for (prop = i_cal_component_get_first_property (icalcomp, prop_kind);
 	     prop;
 	     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, prop_kind)) {
-		if (!func (icalcomp, prop, user_data))
+		if (!func (icalcomp, prop, user_data)) {
+			g_object_unref (prop);
 			break;
+		}
 	}
 }
 
