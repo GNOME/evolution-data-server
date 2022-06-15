@@ -1035,13 +1035,15 @@ reminders_widget_update_content (ERemindersWidget *reminders,
 
 					if (comp) {
 						ICalComponent *icomp;
+						ICalProperty *prop;
 
 						icomp = e_cal_component_get_icalcomponent (comp);
+						prop = icomp ? e_cal_util_component_find_property_for_locale (icomp, I_CAL_DESCRIPTION_PROPERTY, NULL) : NULL;
 
-						if (icomp) {
+						if (prop) {
 							const gchar *icomp_description;
 
-							icomp_description = i_cal_component_get_description (icomp);
+							icomp_description = i_cal_property_get_description (prop);
 
 							if (icomp_description && *icomp_description) {
 								gchar *tmp;
@@ -1052,6 +1054,8 @@ reminders_widget_update_content (ERemindersWidget *reminders,
 
 								g_free (tmp);
 							}
+
+							g_clear_object (&prop);
 						}
 					}
 

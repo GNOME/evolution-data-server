@@ -2686,7 +2686,7 @@ e_reminder_watcher_get_alarm_summary (EReminderWatcher *watcher,
 
 	alarm_text = NULL;
 
-	summary_text = e_cal_component_get_summary (rd->component);
+	summary_text = e_cal_component_dup_summary_for_locale (rd->component, NULL);
 	if (summary_text) {
 		const gchar *value;
 
