@@ -2706,7 +2706,7 @@ header_decode_addrspec (const gchar **in)
 				w (g_warning ("Invalid address spec: %s", *in));
 			}
 		}
-		if (*inptr == '@') {
+		while (*inptr == '@') {
 			inptr++;
 			g_string_append_c (addr, '@');
 			word = header_decode_domain (&inptr);
@@ -2716,8 +2716,6 @@ header_decode_addrspec (const gchar **in)
 			} else {
 				w (g_warning ("Invalid address, missing domain: %s", *in));
 			}
-		} else {
-			w (g_warning ("Invalid addr-spec, missing @: %s", *in));
 		}
 	} else {
 		w (g_warning ("invalid addr-spec, no local part"));
@@ -3216,7 +3214,9 @@ camel_header_contentid_decode (const gchar *in)
 }
 
 static void
-header_references_decode_single (const gchar **in, GSList **list)
+header_references_decode_single (const gchar **in,
+				 gboolean *had_valid_value,
+				 GSList **list)
 {
 	const gchar *inptr = *in;
 	GString *accum_word = NULL;
@@ -3227,30 +3227,33 @@ header_references_decode_single (const gchar **in, GSList **list)
 		if (*inptr == '<') {
 			id = header_msgid_decode_internal (&inptr);
 			if (id) {
+				*had_valid_value = TRUE;
 				*list = g_slist_prepend (*list, id);
 				break;
 			}
 		} else {
 			word = header_decode_word (&inptr);
 			if (word) {
-				/* To support broken clients, which do not enclose message IDs into angle brackets, as
-				   required in the RFC 2822: https://tools.ietf.org/html/rfc2822#section-3.6.4 */
-				if (!*inptr || camel_mime_is_lwsp (*inptr)) {
-					if (accum_word) {
-						g_string_append (accum_word, word);
-						*list = g_slist_prepend (*list, g_string_free (accum_word, FALSE));
-						accum_word = NULL;
+				if (!*had_valid_value) {
+					/* To support broken clients, which do not enclose message IDs into angle brackets, as
+					   required in the RFC 2822: https://tools.ietf.org/html/rfc2822#section-3.6.4 */
+					if (!*inptr || camel_mime_is_lwsp (*inptr)) {
+						if (accum_word) {
+							g_string_append (accum_word, word);
+							*list = g_slist_prepend (*list, g_string_free (accum_word, FALSE));
+							accum_word = NULL;
+						} else {
+							*list = g_slist_prepend (*list, word);
+							word = NULL;
+						}
 					} else {
-						*list = g_slist_prepend (*list, word);
-						word = NULL;
-					}
-				} else {
-					if (accum_word)
-						g_string_append (accum_word, word);
-					else
-						accum_word = g_string_new (word);
+						if (accum_word)
+							g_string_append (accum_word, word);
+						else
+							accum_word = g_string_new (word);
 
-					g_string_append_c (accum_word, *inptr);
+						g_string_append_c (accum_word, *inptr);
+					}
 				}
 				g_free (word);
 			} else if (*inptr != '\0')
@@ -3276,12 +3279,13 @@ GSList *
 camel_header_references_decode (const gchar *in)
 {
 	GSList *refs = NULL;
+	gboolean had_valid_value = FALSE;
 
 	if (in == NULL || in[0] == '\0')
 		return NULL;
 
 	while (*in)
-		header_references_decode_single (&in, &refs);
+		header_references_decode_single (&in, &had_valid_value, &refs);
 
 	return refs;
 }

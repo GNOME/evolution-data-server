@@ -36,6 +36,11 @@ struct {
 	  { "test@camel.host", "test.groupwise@bug.novell", "test@camel.host" } },
 	{ " << test.groupwise@bug.novell>@novell> <test@camel.host> <<test.groupwise@bug.novell>@novell>",
 	  { "test.groupwise@bug.novell", "test@camel.host", "test.groupwise@bug.novell" } },
+	{ "<test@camel@host>", { "test@camel@host" } }, /* broken clients with multiple '@' */
+	{ "test@camel.host", { "test@camel.host" } }, /* broken clients without <> */
+	{ "test@camel@host", { "test@camel@host" } }, /* broken clients without <> */
+	{ "<test@camel> <test.1.2.3@camel.1.2.3@host.3.2.1> <t.e.s.t@c.a.m.e.l>", /* mix of good and broken values */
+	  { "t.e.s.t@c.a.m.e.l", "test.1.2.3@camel.1.2.3@host.3.2.1", "test@camel" } },
 };
 
 gint
@@ -55,7 +60,9 @@ main (gint argc,
 		list = camel_header_references_decode (test1[i].header);
 		for (j = 0; test1[i].values[j]; j++) {
 			check_msg (list != NULL, "didn't find all references");
-			check (strcmp (test1[i].values[j], list->data) == 0);
+			check_msg (string_equal (test1[i].values[j], list->data),
+				"returned ID '%s' doesn't match expected '%s'",
+				(const gchar *) list->data, test1[i].values[j]);
 			list = g_slist_next (list);
 		}
 		check_msg (list == NULL, "found more references than should have");
