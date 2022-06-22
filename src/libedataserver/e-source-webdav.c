@@ -1300,7 +1300,7 @@ e_source_webdav_set_ssl_trust (ESourceWebdav *extension,
  *
  * Returns: (transfer full): a newly-allocated #GUri
  *
- * Since: 3.48
+ * Since: 3.46
  **/
 GUri *
 e_source_webdav_dup_uri (ESourceWebdav *extension)
@@ -1331,7 +1331,7 @@ e_source_webdav_dup_uri (ESourceWebdav *extension)
  * extension, and @extension itself.  (The "fragment" component of
  * @uri is ignored.)
  *
- * Since: 3.48
+ * Since: 3.46
  **/
 void
 e_source_webdav_set_uri (ESourceWebdav *extension,

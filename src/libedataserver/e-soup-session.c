@@ -877,7 +877,7 @@ e_soup_session_new_message (ESoupSession *session,
  *
  * Returns: (transfer full): a new #SoupMessage, or %NULL on error
  *
- * Since: 3.48
+ * Since: 3.46
  **/
 SoupMessage *
 e_soup_session_new_message_from_uri (ESoupSession *session,
@@ -1151,7 +1151,7 @@ async_send_data_free (gpointer ptr)
  * Returns: (nullable) (transfer full): prepare data for e_soup_session_send_message(),
  *   or %NULL on error.
  *
- * Since: 3.48
+ * Since: 3.46
  **/
 gpointer
 e_soup_session_prepare_message_send_sync (ESoupSession *session,
@@ -1253,7 +1253,7 @@ e_soup_session_send_message_ready_cb (GObject *source_object,
  * and this function assumes ownership of it. The @prepare_data cannot be used
  * again after this call.
  *
- * Since: 3.48
+ * Since: 3.46
  **/
 void
 e_soup_session_send_message (ESoupSession *session,
@@ -1308,7 +1308,7 @@ e_soup_session_send_message (ESoupSession *session,
  *
  * Returns: (transfer full) (nullable): a #GInputStream for reading the response body, or %NULL on error
  *
- * Since: 3.48
+ * Since: 3.46
  **/
 GInputStream *
 e_soup_session_send_message_finish (ESoupSession *session,
@@ -1592,7 +1592,7 @@ part_needs_encoding (const gchar *part)
  * Returns: (transfer full) (nullable): a new #GUri with modified path, or %NULL, when
  *    no change was required.
  *
- * Since: 3.48
+ * Since: 3.46
  **/
 GUri *
 e_soup_session_util_normalize_uri_path (GUri *uri)
@@ -1848,7 +1848,7 @@ e_soup_session_message_restarted_cb (SoupMessage *message,
  *
  * The @input_stream should implement the #GSeekable interface.
  *
- * Since: 3.48
+ * Since: 3.46
  **/
 void
 e_soup_session_util_set_message_request_body (SoupMessage *message,
@@ -1886,7 +1886,7 @@ e_soup_session_util_set_message_request_body (SoupMessage *message,
  *
  * When the @create_copy is %TRUE, the @free_func should be %NULL.
  *
- * Since: 3.48
+ * Since: 3.46
  **/
 void
 e_soup_session_util_set_message_request_body_from_data (SoupMessage *message,
@@ -1930,7 +1930,7 @@ e_soup_session_util_set_message_request_body_from_data (SoupMessage *message,
  *    body being previously set, or %NULL. The @out_length is set to the length
  *    of the returned input stream.
  *
- * Since: 3.48
+ * Since: 3.46
  **/
 GInputStream *
 e_soup_session_util_ref_message_request_body (SoupMessage *message,

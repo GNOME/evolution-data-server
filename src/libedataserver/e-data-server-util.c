@@ -3458,7 +3458,7 @@ e_util_get_directory_variants (const gchar *main_path,
  *
  * See: e_util_change_uri_port()
  *
- * Since: 3.48
+ * Since: 3.46
  **/
 void
 e_util_change_uri_component (GUri **inout_uri,
@@ -3488,7 +3488,7 @@ e_util_change_uri_component (GUri **inout_uri,
  *
  * See: e_util_change_uri_component()
  *
- * Since: 3.48
+ * Since: 3.46
  **/
 void
 e_util_change_uri_port (GUri **inout_uri,
