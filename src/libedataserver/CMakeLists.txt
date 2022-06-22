@@ -252,7 +252,6 @@ target_compile_definitions(edataserver PRIVATE
 
 target_compile_options(edataserver PUBLIC
 	${DATA_SERVER_CFLAGS}
-	${GCR_BASE_CFLAGS}
 	${GIO_UNIX_CFLAGS}
 	${ICU_CFLAGS}
 	${JSON_GLIB_CFLAGS}
@@ -268,7 +267,6 @@ target_include_directories(edataserver PUBLIC
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${DATA_SERVER_INCLUDE_DIRS}
-	${GCR_BASE_INCLUDE_DIRS}
 	${GIO_UNIX_INCLUDE_DIRS}
 	${ICU_INCLUDE_DIRS}
 	${JSON_GLIB_INCLUDE_DIRS}
@@ -278,7 +276,6 @@ target_include_directories(edataserver PUBLIC
 target_link_libraries(edataserver
 	${DEPENDENCIES}
 	${DATA_SERVER_LDFLAGS}
-	${GCR_BASE_LDFLAGS}
 	${GIO_UNIX_LDFLAGS}
 	${ICU_LDFLAGS}
 	${JSON_GLIB_LDFLAGS}

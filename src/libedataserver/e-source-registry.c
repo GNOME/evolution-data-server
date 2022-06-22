@@ -46,11 +46,6 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
-/* XXX Yeah, yeah... */
-#define GCR_API_SUBJECT_TO_CHANGE
-
-#include <gcr/gcr-base.h>
-
 /* Private D-Bus classes. */
 #include "e-dbus-source.h"
 #include "e-dbus-source-manager.h"

@@ -21,9 +21,20 @@
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
+#include <gtk/gtk.h>
 
 #define GCR_API_SUBJECT_TO_CHANGE
+#define GCK_API_SUBJECT_TO_CHANGE
+#if GTK_CHECK_VERSION(4, 0, 0)
+#include <gcr-gtk4/gcr-certificate-widget.h>
+#else
+#ifdef WITH_GCR3
 #include <gcr/gcr.h>
+#else
+#include <gcr-gtk3/gcr-gtk3.h>
+#endif
+#endif
+#undef GCK_API_SUBJECT_TO_CHANGE
 #undef GCR_API_SUBJECT_TO_CHANGE
 
 #include "camel/camel.h"
@@ -57,13 +68,22 @@ trust_prompt_add_info_line (GtkGrid *grid,
 	pango_attr_list_insert (bold, attr);
 
 	widget = gtk_label_new (label_text);
+#if GTK_CHECK_VERSION(4, 0, 0)
+	g_object_set (
+		G_OBJECT (widget),
+		"halign", GTK_ALIGN_START,
+		"valign", GTK_ALIGN_START,
+		"xalign", 0.0,
+		"yalign", 0.0,
+		NULL);
+#else
 	gtk_misc_set_padding (GTK_MISC (widget), 0, 0);
 	gtk_misc_set_alignment (GTK_MISC (widget), 0.0, 0.0);
+#endif
 
 	gtk_grid_attach (grid, widget, 1, *at_row, 1, 1);
 
 	widget = gtk_label_new (value_text);
-	gtk_label_set_line_wrap (GTK_LABEL (widget), wrap);
 	g_object_set (
 		G_OBJECT (widget),
 		"hexpand", TRUE,
@@ -76,6 +96,7 @@ trust_prompt_add_info_line (GtkGrid *grid,
 		"max-width-chars", 80,
 		"xalign", 0.0,
 		"yalign", 0.0,
+		"wrap", wrap,
 		NULL);
 
 	gtk_grid_attach (grid, widget, 2, *at_row, 1, 1);
@@ -97,14 +118,15 @@ trust_prompt_show (GtkWindow *parent,
 		   gpointer user_data)
 {
 	ETrustPromptResponse response;
-	GcrCertificateWidget *certificate_widget;
 	GcrCertificate *certificate;
-	GckAttributes *attributes;
-	GtkWidget *dialog, *widget;
-	GtkGrid *grid;
 	const guchar *data;
-	gchar *bhost, *tmp;
 	gsize length;
+	GtkWidget *dialog, *widget;
+#if !defined(WITH_GCR3) || GTK_CHECK_VERSION(4, 0, 0)
+	GtkWidget *scrolled_window;
+#endif
+	GtkGrid *grid;
+	gchar *bhost, *tmp;
 	gint row = 0;
 
 	_libedataserverui_init_icon_theme ();
@@ -119,7 +141,9 @@ trust_prompt_show (GtkWindow *parent,
 
 	widget = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 
+#if !GTK_CHECK_VERSION(4, 0, 0)
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+#endif
 
 	grid = g_object_new (
 		GTK_TYPE_GRID,
@@ -134,10 +158,25 @@ trust_prompt_show (GtkWindow *parent,
 		"valign", GTK_ALIGN_FILL,
 		NULL);
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+	g_object_set (G_OBJECT (grid),
+		"halign", GTK_ALIGN_FILL,
+		"valign", GTK_ALIGN_FILL,
+		"margin-start", 5,
+		"margin-end", 5,
+		"margin-top", 5,
+		"margin-bottom", 5,
+		NULL);
+	gtk_box_append (GTK_BOX (widget), GTK_WIDGET (grid));
+
+	widget = gtk_image_new_from_icon_name ("dialog-warning");
+	gtk_image_set_pixel_size (GTK_IMAGE (widget), 48);
+#else
 	gtk_container_set_border_width (GTK_CONTAINER (grid), 5);
 	gtk_container_add (GTK_CONTAINER (widget), GTK_WIDGET (grid));
 
 	widget = gtk_image_new_from_icon_name ("dialog-warning", GTK_ICON_SIZE_DIALOG);
+#endif
 	g_object_set (
 		G_OBJECT (widget),
 		"vexpand", FALSE,
@@ -189,7 +228,6 @@ trust_prompt_show (GtkWindow *parent,
 	g_free (bhost);
 
 	widget = gtk_label_new (NULL);
-	gtk_label_set_line_wrap (GTK_LABEL (widget), TRUE);
 	gtk_label_set_markup (GTK_LABEL (widget), tmp);
 	g_object_set (
 		G_OBJECT (widget),
@@ -200,6 +238,7 @@ trust_prompt_show (GtkWindow *parent,
 		"max-width-chars", 80,
 		"xalign", 0.0,
 		"yalign", 0.0,
+		"wrap", TRUE,
 		NULL);
 
 	g_free (tmp);
@@ -212,26 +251,76 @@ trust_prompt_show (GtkWindow *parent,
 	if (error_text)
 		trust_prompt_add_info_line (grid, _("Detailed error:"), error_text, FALSE, TRUE, FALSE, &row);
 
+#if defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0)
+	/* the certificate widget has its own scrollbars */
+#else /* defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0) */
+#if GTK_CHECK_VERSION(4, 0, 0)
+	scrolled_window = gtk_scrolled_window_new ();
+#else
+	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+#endif
+	g_object_set (G_OBJECT (scrolled_window),
+		"halign", GTK_ALIGN_FILL,
+		"hexpand", TRUE,
+		"valign", GTK_ALIGN_FILL,
+		"vexpand", TRUE,
+		"hscrollbar-policy", GTK_POLICY_NEVER,
+		"vscrollbar-policy", GTK_POLICY_AUTOMATIC,
+		"propagate-natural-height", TRUE,
+#if GTK_CHECK_VERSION(4, 0, 0)
+		"has-frame", FALSE,
+#else
+		"shadow-type", GTK_SHADOW_NONE,
+#endif
+		NULL);
+
+	gtk_grid_attach (grid, scrolled_window, 1, row, 2, 1);
+#endif /* defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0) */
+
 	data = gcr_parsed_get_data (parsed, &length);
-	attributes = gcr_parsed_get_attributes (parsed);
-
 	certificate = gcr_simple_certificate_new (data, length);
+	#if defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0)
+	{
+		GcrCertificateWidget *certificate_widget;
+		GckAttributes *attributes;
 
-	certificate_widget = gcr_certificate_widget_new (certificate);
-	gcr_certificate_widget_set_attributes (certificate_widget, attributes);
+		attributes = gcr_parsed_get_attributes (parsed);
+		certificate_widget = gcr_certificate_widget_new (certificate);
+		gcr_certificate_widget_set_attributes (certificate_widget, attributes);
 
-	widget = GTK_WIDGET (certificate_widget);
+		widget = GTK_WIDGET (certificate_widget);
+
+		g_object_set (G_OBJECT (widget),
+			"halign", GTK_ALIGN_FILL,
+			"hexpand", TRUE,
+			"valign", GTK_ALIGN_FILL,
+			"vexpand", TRUE,
+			NULL);
+	}
+	#else /* defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0) */
+	widget = gcr_certificate_widget_new (certificate);
+	#endif /* defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0) */
+
+#if defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0)
 	gtk_grid_attach (grid, widget, 1, row, 2, 1);
-	gtk_widget_show (widget);
+#else /* defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0) */
+#if GTK_CHECK_VERSION(4, 0, 0)
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (scrolled_window), widget);
+#else
+	gtk_container_add (GTK_CONTAINER (scrolled_window), widget);
+#endif
+#endif /* defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0) */
 
 	g_clear_object (&certificate);
 
+#if !GTK_CHECK_VERSION(4, 0, 0)
 	gtk_widget_show_all (GTK_WIDGET (grid));
+#endif
 
 	if (dialog_ready_cb)
 		dialog_ready_cb (GTK_DIALOG (dialog), user_data);
 
-	switch (gtk_dialog_run (GTK_DIALOG (dialog))) {
+	switch (_libedataserverui_dialog_run (GTK_DIALOG (dialog))) {
 	case GTK_RESPONSE_REJECT:
 		response = E_TRUST_PROMPT_RESPONSE_REJECT;
 		break;
@@ -246,7 +335,11 @@ trust_prompt_show (GtkWindow *parent,
 		break;
 	}
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+	gtk_window_destroy (GTK_WINDOW (dialog));
+#else
 	gtk_widget_destroy (dialog);
+#endif
 
 	return response;
 }

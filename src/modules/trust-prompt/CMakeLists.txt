@@ -20,13 +20,18 @@ set(TRUST_PROMPT_LDFLAGS
 	${GCR_LDFLAGS}
 )
 
+set(extra_defines)
+if(WITH_GCR3)
+	set(extra_defines -DWITH_GCR3=1)
+endif(WITH_GCR3)
+
 set(extra_deps)
 set(sources
 	module-trust-prompt.c
 	trust-prompt.h
 	${TRUST_PROMPT_SOURCES}
 )
-set(extra_defines -DE_DATA_SERVER_ICONDIR=\"${icondir}\")
+set(extra_defines ${extra_defines} -DE_DATA_SERVER_ICONDIR=\"${icondir}\")
 set(extra_cflags ${TRUST_PROMPT_CFLAGS})
 set(extra_incdirs ${TRUST_PROMPT_INCLUDE_DIRS})
 set(extra_ldflags ${TRUST_PROMPT_LDFLAGS})

@@ -24,12 +24,28 @@
 
 #include <libedataserver/libedataserver.h>
 
+#include "libedataserverui-private.h"
+
 #include "e-credentials-prompter.h"
 #include "e-credentials-prompter-impl-oauth2.h"
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+#ifdef ENABLE_OAUTH2_WEBKITGTK4
+#define WITH_WEBKITGTK 1
+#else
+#undef WITH_WEBKITGTK
+#endif
+#else
 #ifdef ENABLE_OAUTH2_WEBKITGTK
+#define WITH_WEBKITGTK 1
+#else
+#undef WITH_WEBKITGTK
+#endif
+#endif
+
+#ifdef WITH_WEBKITGTK
 #include <webkit2/webkit2.h>
-#endif /* ENABLE_OAUTH2_WEBKITGTK */
+#endif /* WITH_WEBKITGTK */
 
 struct _ECredentialsPrompterImplOAuth2Private {
 	GMutex property_lock;
@@ -45,7 +61,7 @@ struct _ECredentialsPrompterImplOAuth2Private {
 	gboolean refresh_failed_with_transport_error;
 
 	GtkDialog *dialog;
-#ifdef ENABLE_OAUTH2_WEBKITGTK
+#ifdef WITH_WEBKITGTK
 	WebKitWebView *web_view;
 #endif
 	GtkNotebook *notebook;
@@ -103,15 +119,15 @@ cpi_oauth2_show_error (ECredentialsPrompterImplOAuth2 *prompter_oauth2,
 		       const gchar *title,
 		       const gchar *body_text)
 {
-#ifdef ENABLE_OAUTH2_WEBKITGTK
+#ifdef WITH_WEBKITGTK
 	gchar *html;
 
 	g_return_if_fail (WEBKIT_IS_WEB_VIEW (prompter_oauth2->priv->web_view));
-#endif /* ENABLE_OAUTH2_WEBKITGTK */
+#endif /* WITH_WEBKITGTK */
 	g_return_if_fail (title != NULL);
 	g_return_if_fail (body_text != NULL);
 
-#ifdef ENABLE_OAUTH2_WEBKITGTK
+#ifdef WITH_WEBKITGTK
 	html = g_markup_printf_escaped (
 		"<html>"
 		"<head><title>%s</title></head>"
@@ -121,7 +137,7 @@ cpi_oauth2_show_error (ECredentialsPrompterImplOAuth2 *prompter_oauth2,
 		body_text);
 	webkit_web_view_load_html (prompter_oauth2->priv->web_view, html, "none-local://");
 	g_free (html);
-#endif /* ENABLE_OAUTH2_WEBKITGTK */
+#endif /* WITH_WEBKITGTK */
 
 	gtk_label_set_text (prompter_oauth2->priv->error_text_label, body_text);
 }
@@ -265,7 +281,7 @@ cpi_oauth2_test_authorization_code (ECredentialsPrompterImplOAuth2 *prompter_oau
 	}
 }
 
-#ifdef ENABLE_OAUTH2_WEBKITGTK
+#ifdef WITH_WEBKITGTK
 
 static void
 cpi_oauth2_extract_authentication_code (ECredentialsPrompterImplOAuth2 *prompter_oauth2,
@@ -422,7 +438,7 @@ cpi_oauth2_notify_estimated_load_progress_cb (WebKitWebView *web_view,
 	gtk_progress_bar_set_fraction (progress_bar, visible ? progress : 0.0);
 }
 
-#endif /* ENABLE_OAUTH2_WEBKITGTK */
+#endif /* WITH_WEBKITGTK */
 
 static void
 credentials_prompter_impl_oauth2_get_prompt_strings (ESourceRegistry *registry,
@@ -582,7 +598,7 @@ credentials_prompter_impl_oauth2_get_prompt_strings (ESourceRegistry *registry,
 	g_free (display_name);
 }
 
-#ifdef ENABLE_OAUTH2_WEBKITGTK
+#ifdef WITH_WEBKITGTK
 
 static gchar *
 credentials_prompter_impl_oauth2_sanitize_host (gchar *host)
@@ -712,22 +728,33 @@ credentials_prompter_impl_oauth2_set_proxy (WebKitWebContext *web_context,
 
 	g_clear_object (&proxy_source);
 }
-#endif /* ENABLE_OAUTH2_WEBKITGTK */
+#endif /* WITH_WEBKITGTK */
 
 static void
 cpi_oauth2_url_entry_icon_release_cb (GtkEntry *entry,
 				      GtkEntryIconPosition icon_position,
+				      #if !GTK_CHECK_VERSION (4, 0, 0)
 				      GdkEvent *event,
+				      #endif
 				      gpointer user_data)
 {
 	ECredentialsPrompterImplOAuth2 *prompter_oauth2 = user_data;
 	gpointer toplevel;
 
+	#if GTK_CHECK_VERSION (4, 0, 0)
+	toplevel = GTK_WIDGET (entry);
+	while (toplevel && !GTK_IS_WINDOW (toplevel)) {
+		toplevel = gtk_widget_get_parent (toplevel);
+	}
+	#else
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (entry));
-	toplevel = gtk_widget_is_toplevel (toplevel) ? toplevel : NULL;
+	toplevel = GTK_IS_WINDOW (toplevel) ? toplevel : NULL;
+	#endif
 
 	if (icon_position == GTK_ENTRY_ICON_SECONDARY) {
+		#if !GTK_CHECK_VERSION (4, 0, 0)
 		GError *error = NULL;
+		#endif
 		gchar *uri;
 
 		uri = cpi_oauth2_create_auth_uri (prompter_oauth2->priv->service, prompter_oauth2->priv->cred_source);
@@ -736,6 +763,10 @@ cpi_oauth2_url_entry_icon_release_cb (GtkEntry *entry,
 		if (cpi_oauth2_get_debug ())
 			e_util_debug_print ("OAuth2", "Opening URI in browser: '%s'\n", uri);
 
+		#if GTK_CHECK_VERSION (4, 0, 0)
+		gtk_show_uri (toplevel, uri, GDK_CURRENT_TIME);
+		gtk_notebook_set_current_page (prompter_oauth2->priv->notebook, 0);
+		#else
 		if (!
 			#if GTK_CHECK_VERSION (3, 22, 0)
 			gtk_show_uri_on_window (toplevel ? GTK_WINDOW (toplevel) : NULL,
@@ -752,6 +783,7 @@ cpi_oauth2_url_entry_icon_release_cb (GtkEntry *entry,
 		}
 
 		g_clear_error (&error);
+		#endif
 		g_free (uri);
 	}
 }
@@ -765,7 +797,7 @@ cpi_oauth2_manual_continue_clicked_cb (GtkButton *button,
 
 	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_OAUTH2 (prompter_oauth2));
 
-	auth_code = gtk_entry_get_text (prompter_oauth2->priv->auth_code_entry);
+	auth_code = _libedataserverui_entry_get_text (prompter_oauth2->priv->auth_code_entry);
 
 	if (cpi_oauth2_get_debug ())
 		e_util_debug_print ("OAuth2", "Continue with user-entered authorization code: '%s'\n", auth_code);
@@ -780,7 +812,7 @@ cpi_oauth2_auth_code_entry_changed_cb (GtkEntry *entry,
 	GtkWidget *button = user_data;
 	const gchar *text;
 
-	text = gtk_entry_get_text (entry);
+	text = _libedataserverui_entry_get_text (entry);
 
 	gtk_widget_set_sensitive (button, text && *text);
 }
@@ -790,21 +822,23 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 {
 	GtkWidget *dialog, *content_area, *widget, *vbox, *hbox, *url_entry;
 	GtkStyleContext *style_context;
-	GtkCssProvider *css_provider;
 	GtkGrid *grid;
 	GtkWindow *dialog_parent;
 	ECredentialsPrompter *prompter;
-#ifdef ENABLE_OAUTH2_WEBKITGTK
+#ifdef WITH_WEBKITGTK
 	GtkScrolledWindow *scrolled_window;
 	GtkWidget *progress_bar;
 	WebKitSettings *webkit_settings;
 	WebKitWebContext *web_context;
-#endif /* ENABLE_OAUTH2_WEBKITGTK */
+#endif /* WITH_WEBKITGTK */
 	gchar *title, *uri;
 	GString *info_markup;
 	gint row = 0;
 	gboolean success;
+#if !GTK_CHECK_VERSION(4, 0, 0)
+	GtkCssProvider *css_provider;
 	GError *error = NULL;
+#endif
 
 	g_return_val_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_OAUTH2 (prompter_oauth2), FALSE);
 	g_return_val_if_fail (prompter_oauth2->priv->prompt_id != NULL, FALSE);
@@ -831,11 +865,12 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		_("_Cancel"), GTK_RESPONSE_CANCEL,
 		NULL);
 
-#ifdef ENABLE_OAUTH2_WEBKITGTK
+#ifdef WITH_WEBKITGTK
 	gtk_window_set_default_size (GTK_WINDOW (dialog), 400, 680);
 #endif
 	gtk_widget_set_name (dialog, "oauth2-prompt");
 
+	#if !GTK_CHECK_VERSION(4, 0, 0)
 	css_provider = gtk_css_provider_new ();
 	gtk_css_provider_load_from_data (css_provider,
 		"#oauth2-prompt { -GtkDialog-action-area-border:0px; -GtkDialog-content-area-border:0px; }",
@@ -851,29 +886,33 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		g_clear_error (&error);
 	}
 	g_object_unref (css_provider);
+	#endif
 
 	prompter_oauth2->priv->dialog = GTK_DIALOG (dialog);
 	gtk_window_set_resizable (GTK_WINDOW (dialog), TRUE);
 	if (dialog_parent)
 		gtk_window_set_transient_for (GTK_WINDOW (dialog), dialog_parent);
+#if !GTK_CHECK_VERSION(4, 0, 0)
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 6);
+#endif
 
 	content_area = gtk_dialog_get_content_area (prompter_oauth2->priv->dialog);
 
 	/* Override GtkDialog defaults */
 	gtk_box_set_spacing (GTK_BOX (content_area), 12);
+#if !GTK_CHECK_VERSION(4, 0, 0)
 	gtk_container_set_border_width (GTK_CONTAINER (content_area), 0);
+#endif
 
 	grid = GTK_GRID (gtk_grid_new ());
 	gtk_grid_set_column_spacing (grid, 12);
 	gtk_grid_set_row_spacing (grid, 6);
 
-	gtk_box_pack_start (GTK_BOX (content_area), GTK_WIDGET (grid), FALSE, TRUE, 0);
+	_libedataserverui_box_pack_start (GTK_BOX (content_area), GTK_WIDGET (grid), FALSE, TRUE, 0);
 
 	/* Info Label */
 	widget = gtk_label_new (NULL);
-	gtk_label_set_line_wrap (GTK_LABEL (widget), TRUE);
 	gtk_label_set_markup (GTK_LABEL (widget), info_markup->str);
 	g_object_set (
 		G_OBJECT (widget),
@@ -884,6 +923,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		"width-chars", 60,
 		"max-width-chars", 80,
 		"xalign", 0.0,
+		"wrap", TRUE,
 		NULL);
 
 	gtk_grid_attach (grid, widget, 0, row, 1, 1);
@@ -902,7 +942,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
 
-	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+	_libedataserverui_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
 	widget = gtk_label_new (_("URL:"));
 	g_object_set (
@@ -914,12 +954,14 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		"xalign", 0.0,
 		NULL);
 
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	_libedataserverui_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 
 	url_entry = gtk_entry_new ();
 	g_object_set (
 		G_OBJECT (url_entry),
+#if !GTK_CHECK_VERSION(4, 0, 0)
 		"can-default", FALSE,
+#endif
 		"can-focus", FALSE,
 		"hexpand", TRUE,
 		"vexpand", FALSE,
@@ -929,7 +971,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		NULL);
 
 	style_context = gtk_widget_get_style_context (url_entry);
-	gtk_style_context_add_class (style_context, GTK_STYLE_CLASS_LABEL);
+	gtk_style_context_add_class (style_context, "label");
 	gtk_style_context_set_state (style_context, GTK_STATE_FLAG_INSENSITIVE);
 
 	gtk_entry_set_icon_tooltip_text (GTK_ENTRY (url_entry), GTK_ENTRY_ICON_SECONDARY, _("Click here to open the URL"));
@@ -938,8 +980,11 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	g_signal_connect_object (
 		url_entry, "icon-release",
 		G_CALLBACK (cpi_oauth2_url_entry_icon_release_cb), prompter_oauth2, 0);
-
-	gtk_box_pack_start (GTK_BOX (hbox), url_entry, TRUE, TRUE, 2);
+#if GTK_CHECK_VERSION(4, 0, 0)
+	_libedataserverui_box_pack_start (GTK_BOX (hbox), url_entry, FALSE, FALSE, 2);
+#else
+	_libedataserverui_box_pack_start (GTK_BOX (hbox), url_entry, TRUE, TRUE, 2);
+#endif
 
 	widget = gtk_notebook_new ();
 	g_object_set (
@@ -952,7 +997,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		"show-tabs", FALSE,
 		NULL);
 
-	gtk_box_pack_start (GTK_BOX (vbox), widget, TRUE, TRUE, 0);
+	_libedataserverui_box_pack_start (GTK_BOX (vbox), widget, TRUE, TRUE, 0);
 
 	prompter_oauth2->priv->notebook = GTK_NOTEBOOK (widget);
 
@@ -983,7 +1028,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		"yalign", 0.0,
 		NULL);
 
-	gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 0);
+	_libedataserverui_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 0);
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
 	g_object_set (
@@ -991,7 +1036,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		"margin-bottom", 12,
 		NULL);
 
-	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+	_libedataserverui_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
 	widget = gtk_entry_new ();
 	g_object_set (
@@ -1014,15 +1059,15 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		"mnemonic-widget", prompter_oauth2->priv->auth_code_entry,
 		NULL);
 
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (prompter_oauth2->priv->auth_code_entry), FALSE, FALSE, 0);
+	_libedataserverui_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	_libedataserverui_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (prompter_oauth2->priv->auth_code_entry), FALSE, FALSE, 0);
 
 	widget = gtk_button_new_with_mnemonic (_("C_ontinue"));
 	g_object_set (
 		G_OBJECT (widget),
 		"sensitive", FALSE,
 		NULL);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	_libedataserverui_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 
 	g_signal_connect_object (widget, "clicked",
 		G_CALLBACK (cpi_oauth2_manual_continue_clicked_cb), prompter_oauth2, 0);
@@ -1048,11 +1093,11 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		"wrap", TRUE,
 		NULL);
 
-	gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 0);
+	_libedataserverui_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 0);
 
 	prompter_oauth2->priv->error_text_label = GTK_LABEL (widget);
 
-#ifdef ENABLE_OAUTH2_WEBKITGTK
+#ifdef WITH_WEBKITGTK
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 1);
 	g_object_set (
 		G_OBJECT (vbox),
@@ -1064,7 +1109,11 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 
 	gtk_notebook_append_page (prompter_oauth2->priv->notebook, vbox, NULL);
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+	widget = gtk_scrolled_window_new ();
+#else
 	widget = gtk_scrolled_window_new (NULL, NULL);
+#endif
 	g_object_set (
 		G_OBJECT (widget),
 		"hexpand", TRUE,
@@ -1075,7 +1124,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		"vscrollbar-policy", GTK_POLICY_AUTOMATIC,
 		NULL);
 
-	gtk_box_pack_start (GTK_BOX (vbox), widget, TRUE, TRUE, 0);
+	_libedataserverui_box_pack_start (GTK_BOX (vbox), widget, TRUE, TRUE, 0);
 
 	scrolled_window = GTK_SCROLLED_WINDOW (widget);
 
@@ -1108,7 +1157,11 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		"halign", GTK_ALIGN_FILL,
 		"valign", GTK_ALIGN_FILL,
 		NULL);
+#if GTK_CHECK_VERSION(4, 0, 0)
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (scrolled_window), widget);
+#else
 	gtk_container_add (GTK_CONTAINER (scrolled_window), widget);
+#endif
 	g_object_unref (webkit_settings);
 	g_object_unref (web_context);
 
@@ -1135,23 +1188,24 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		"ellipsize", PANGO_ELLIPSIZE_END,
 		"fraction", 0.0,
 		NULL);
-	gtk_style_context_add_class (gtk_widget_get_style_context (progress_bar), GTK_STYLE_CLASS_OSD);
 
-	gtk_box_pack_start (GTK_BOX (vbox), progress_bar, FALSE, FALSE, 0);
-#endif /* ENABLE_OAUTH2_WEBKITGTK */
+	_libedataserverui_box_pack_start (GTK_BOX (vbox), progress_bar, FALSE, FALSE, 0);
+#endif /* WITH_WEBKITGTK */
 
+#if !GTK_CHECK_VERSION(4, 0, 0)
 	gtk_widget_show_all (GTK_WIDGET (grid));
+#endif
 
-#ifdef ENABLE_OAUTH2_WEBKITGTK
+#ifdef WITH_WEBKITGTK
 	/* Switch to the last page, to prefer the built-in browser */
 	gtk_notebook_set_current_page (prompter_oauth2->priv->notebook, -1);
-#endif /* ENABLE_OAUTH2_WEBKITGTK */
+#endif /* WITH_WEBKITGTK */
 
 	uri = cpi_oauth2_create_auth_uri (prompter_oauth2->priv->service, prompter_oauth2->priv->cred_source);
 	if (!uri) {
 		success = FALSE;
 	} else {
-#ifdef ENABLE_OAUTH2_WEBKITGTK
+#ifdef WITH_WEBKITGTK
 		WebKitWebView *web_view = prompter_oauth2->priv->web_view;
 		gulong decide_policy_handler_id, load_finished_handler_id, progress_handler_id;
 
@@ -1163,20 +1217,20 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 			G_CALLBACK (cpi_oauth2_notify_estimated_load_progress_cb), progress_bar);
 
 		webkit_web_view_load_uri (web_view, uri);
-#else /* ENABLE_OAUTH2_WEBKITGTK */
-		gtk_entry_set_text (GTK_ENTRY (url_entry), uri);
-#endif /* ENABLE_OAUTH2_WEBKITGTK */
+#else /* WITH_WEBKITGTK */
+		_libedataserverui_entry_set_text (GTK_ENTRY (url_entry), uri);
+#endif /* WITH_WEBKITGTK */
 
-		success = gtk_dialog_run (prompter_oauth2->priv->dialog) == GTK_RESPONSE_OK;
+		success = _libedataserverui_dialog_run (prompter_oauth2->priv->dialog) == GTK_RESPONSE_OK;
 
-#ifdef ENABLE_OAUTH2_WEBKITGTK
+#ifdef WITH_WEBKITGTK
 		if (decide_policy_handler_id)
 			g_signal_handler_disconnect (web_view, decide_policy_handler_id);
 		if (load_finished_handler_id)
 			g_signal_handler_disconnect (web_view, load_finished_handler_id);
 		if (progress_handler_id)
 			g_signal_handler_disconnect (web_view, progress_handler_id);
-#endif /* ENABLE_OAUTH2_WEBKITGTK */
+#endif /* WITH_WEBKITGTK */
 	}
 
 	g_free (uri);
@@ -1184,11 +1238,15 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	if (prompter_oauth2->priv->cancellable)
 		g_cancellable_cancel (prompter_oauth2->priv->cancellable);
 
-#ifdef ENABLE_OAUTH2_WEBKITGTK
+#ifdef WITH_WEBKITGTK
 	prompter_oauth2->priv->web_view = NULL;
-#endif /* ENABLE_OAUTH2_WEBKITGTK */
+#endif /* WITH_WEBKITGTK */
 	prompter_oauth2->priv->dialog = NULL;
+#if GTK_CHECK_VERSION(4, 0, 0)
+	gtk_window_destroy (GTK_WINDOW (dialog));
+#else
 	gtk_widget_destroy (dialog);
+#endif
 
 	g_string_free (info_markup, TRUE);
 	g_free (title);

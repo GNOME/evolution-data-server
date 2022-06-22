@@ -42,6 +42,7 @@ struct _ECredentialsPrompterImplPasswordPrivate {
 
 G_DEFINE_TYPE_WITH_PRIVATE (ECredentialsPrompterImplPassword, e_credentials_prompter_impl_password, E_TYPE_CREDENTIALS_PROMPTER_IMPL)
 
+#if !GTK_CHECK_VERSION(4, 0, 0)
 static gboolean
 password_dialog_map_event_cb (GtkWidget *dialog,
 			      GdkEvent *event,
@@ -51,6 +52,7 @@ password_dialog_map_event_cb (GtkWidget *dialog,
 
 	return FALSE;
 }
+#endif
 
 static void
 credentials_prompter_impl_password_get_prompt_strings (ESourceRegistry *registry,
@@ -205,7 +207,11 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 	GtkGrid *grid;
 	GtkEntry *username_entry = NULL;
 	GtkEntry *password_entry;
+#if GTK_CHECK_VERSION(4, 0, 0)
+	GtkCheckButton *remember_check = NULL;
+#else
 	GtkToggleButton *remember_toggle = NULL;
+#endif
 	GtkWindow *dialog_parent;
 	ECredentialsPrompter *prompter;
 	gchar *title;
@@ -243,23 +249,36 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 	if (dialog_parent)
 		gtk_window_set_transient_for (GTK_WINDOW (dialog), dialog_parent);
-	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
-	gtk_container_set_border_width (GTK_CONTAINER (dialog), 12);
 
 	content_area = gtk_dialog_get_content_area (prompter_password->priv->dialog);
+	g_object_set (G_OBJECT (content_area),
+		"margin-start", 12,
+		"margin-end", 12,
+		"margin-top", 12,
+		"margin-bottom", 12,
+		NULL);
+
+#if !GTK_CHECK_VERSION(4, 0, 0)
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+	gtk_container_set_border_width (GTK_CONTAINER (content_area), 0);
+#endif
 
 	/* Override GtkDialog defaults */
 	gtk_box_set_spacing (GTK_BOX (content_area), 12);
-	gtk_container_set_border_width (GTK_CONTAINER (content_area), 0);
 
 	grid = GTK_GRID (gtk_grid_new ());
 	gtk_grid_set_column_spacing (grid, 12);
 	gtk_grid_set_row_spacing (grid, 6);
 
-	gtk_box_pack_start (GTK_BOX (content_area), GTK_WIDGET (grid), FALSE, TRUE, 0);
+	_libedataserverui_box_pack_start (GTK_BOX (content_area), GTK_WIDGET (grid), FALSE, TRUE, 0);
 
 	/* Password Image */
+#if GTK_CHECK_VERSION(4, 0, 0)
+	widget = gtk_image_new_from_icon_name ("dialog-password");
+	gtk_image_set_pixel_size (GTK_IMAGE (widget), 48);
+#else
 	widget = gtk_image_new_from_icon_name ("dialog-password", GTK_ICON_SIZE_DIALOG);
+#endif
 	g_object_set (
 		G_OBJECT (widget),
 		"halign", GTK_ALIGN_START,
@@ -271,7 +290,6 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 
 	/* Password Label */
 	widget = gtk_label_new (NULL);
-	gtk_label_set_line_wrap (GTK_LABEL (widget), TRUE);
 	gtk_label_set_markup (GTK_LABEL (widget), info_markup->str);
 	g_object_set (
 		G_OBJECT (widget),
@@ -281,6 +299,7 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 		"width-chars", 60,
 		"max-width-chars", 80,
 		"xalign", 0.0,
+		"wrap", TRUE,
 		NULL);
 
 	gtk_grid_attach (grid, widget, 1, row, 1, 1);
@@ -327,7 +346,7 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 			row++;
 
 			if (username && *username) {
-				gtk_entry_set_text (username_entry, username);
+				_libedataserverui_entry_set_text (username_entry, username);
 			}
 
 			g_free (username);
@@ -344,10 +363,15 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 		"truncate-multiline", TRUE,
 		NULL);
 	if (e_named_parameters_get (prompter_password->priv->credentials, E_SOURCE_CREDENTIAL_PASSWORD))
-		gtk_entry_set_text (password_entry, e_named_parameters_get (prompter_password->priv->credentials, E_SOURCE_CREDENTIAL_PASSWORD));
+		_libedataserverui_entry_set_text (password_entry, e_named_parameters_get (prompter_password->priv->credentials, E_SOURCE_CREDENTIAL_PASSWORD));
 
-	g_signal_connect (dialog, "map-event", G_CALLBACK (password_dialog_map_event_cb),
-		(username_entry && g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (username_entry)), "") == 0) ? username_entry : password_entry);
+	widget = GTK_WIDGET ((username_entry && g_strcmp0 (_libedataserverui_entry_get_text (GTK_ENTRY (username_entry)), "") == 0) ? username_entry : password_entry);
+
+#if GTK_CHECK_VERSION(4, 0, 0)
+	g_signal_connect_swapped (dialog, "map", G_CALLBACK (gtk_widget_grab_focus), widget);
+#else
+	g_signal_connect (dialog, "map-event", G_CALLBACK (password_dialog_map_event_cb), widget);
+#endif
 
 	gtk_grid_attach (grid, GTK_WIDGET (password_entry), 1, row, 1, 1);
 	row++;
@@ -382,8 +406,13 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 	if (auth_extension && !is_scratch_source) {
 		/* Remember password check */
 		widget = gtk_check_button_new_with_mnemonic (_("_Add this password to your keyring"));
+#if GTK_CHECK_VERSION(4, 0, 0)
+		remember_check = GTK_CHECK_BUTTON (widget);
+		gtk_check_button_set_active (remember_check, e_source_authentication_get_remember_password (auth_extension));
+#else
 		remember_toggle = GTK_TOGGLE_BUTTON (widget);
 		gtk_toggle_button_set_active (remember_toggle, e_source_authentication_get_remember_password (auth_extension));
+#endif
 		g_object_set (
 			G_OBJECT (widget),
 			"hexpand", TRUE,
@@ -395,24 +424,37 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 		gtk_grid_attach (grid, widget, 1, row, 1, 1);
 	}
 
+#if !GTK_CHECK_VERSION(4, 0, 0)
 	gtk_widget_show_all (GTK_WIDGET (grid));
+#endif
 
-	success = gtk_dialog_run (prompter_password->priv->dialog) == GTK_RESPONSE_OK;
+	success = _libedataserverui_dialog_run (prompter_password->priv->dialog) == GTK_RESPONSE_OK;
 
 	if (success) {
 		if (username_entry)
 			e_named_parameters_set (prompter_password->priv->credentials,
-				E_SOURCE_CREDENTIAL_USERNAME, gtk_entry_get_text (username_entry));
+				E_SOURCE_CREDENTIAL_USERNAME, _libedataserverui_entry_get_text (username_entry));
 		e_named_parameters_set (prompter_password->priv->credentials,
-			E_SOURCE_CREDENTIAL_PASSWORD, gtk_entry_get_text (password_entry));
+			E_SOURCE_CREDENTIAL_PASSWORD, _libedataserverui_entry_get_text (password_entry));
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+		if (auth_extension && remember_check) {
+			e_source_authentication_set_remember_password (auth_extension,
+				gtk_check_button_get_active (remember_check));
+		}
+#else
 		if (auth_extension && remember_toggle) {
 			e_source_authentication_set_remember_password (auth_extension,
 				gtk_toggle_button_get_active (remember_toggle));
 		}
+#endif
 	}
 
-	gtk_widget_destroy (dialog);
+#if GTK_CHECK_VERSION(4, 0, 0)
+	gtk_window_destroy (GTK_WINDOW (dialog));
+#else
+	g_object_unref (dialog);
+#endif
 	prompter_password->priv->dialog = NULL;
 
 	g_string_free (info_markup, TRUE);

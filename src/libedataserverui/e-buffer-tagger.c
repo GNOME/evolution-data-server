@@ -33,34 +33,42 @@ static void
 e_show_uri (GtkWindow *parent,
 	    const gchar *uri)
 {
+#if !GTK_CHECK_VERSION(4, 0, 0)
 	GtkWidget *dialog;
 	GdkScreen *screen = NULL;
-	gchar *scheme;
 	GError *error = NULL;
-	guint32 timestamp;
 	gboolean success;
+#endif
+	gchar *scheme, *schemed_uri = NULL;
+	guint32 timestamp;
 
 	g_return_if_fail (uri != NULL);
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+	timestamp = GDK_CURRENT_TIME;
+#else
 	timestamp = gtk_get_current_event_time ();
 
 	if (parent != NULL)
 		screen = gtk_widget_get_screen (GTK_WIDGET (parent));
+#endif
 
 	scheme = g_uri_parse_scheme (uri);
 
 	if (!scheme || !*scheme) {
-		gchar *schemed_uri;
-
 		schemed_uri = g_strconcat ("http://", uri, NULL);
-		success = gtk_show_uri (screen, schemed_uri, timestamp, &error);
-		g_free (schemed_uri);
-	} else {
-		success = gtk_show_uri (screen, uri, timestamp, &error);
+		uri = schemed_uri;
 	}
+#if GTK_CHECK_VERSION(4, 0, 0)
+	gtk_show_uri (parent, uri, timestamp);
+#else
+	success = gtk_show_uri (screen, uri, timestamp, &error);
+#endif
 
+	g_free (schemed_uri);
 	g_free (scheme);
 
+#if !GTK_CHECK_VERSION(4, 0, 0)
 	if (success)
 		return;
 
@@ -77,6 +85,7 @@ e_show_uri (GtkWindow *parent,
 
 	gtk_widget_destroy (dialog);
 	g_error_free (error);
+#endif
 }
 
 enum EBufferTaggerState {
@@ -88,8 +97,12 @@ enum EBufferTaggerState {
 	E_BUFFER_TAGGER_STATE_CTRL_DOWN = 1 << 4  /* Ctrl key is down */
 };
 
-#define E_BUFFER_TAGGER_DATA_STATE "EBufferTagger::state"
-#define E_BUFFER_TAGGER_LINK_TAG   "EBufferTagger::link"
+#define E_BUFFER_TAGGER_DATA_STATE		"EBufferTagger::state"
+#define E_BUFFER_TAGGER_DATA_KEY_CONTROLLER	"EBufferTagger::key-controller"
+#define E_BUFFER_TAGGER_DATA_LEGACY_CONTROLLER	"EBufferTagger::legacy-controller"
+#define E_BUFFER_TAGGER_DATA_MOTION_CONTROLLER	"EBufferTagger::motion-controller"
+#define E_BUFFER_TAGGER_DATA_CURRENT_URI	"EBufferTagger::current-uri"
+#define E_BUFFER_TAGGER_LINK_TAG   		"EBufferTagger::link"
 
 struct _MagicInsertMatch {
 	const gchar *regex;
@@ -226,9 +239,25 @@ markup_text (GtkTextBuffer *buffer)
 
 static void
 get_pointer_position (GtkTextView *text_view,
-                      gint *x,
-                      gint *y)
+		      GdkEvent *event,
+                      gint *out_x,
+                      gint *out_y)
 {
+#if GTK_CHECK_VERSION(4, 0, 0)
+	gdouble tmp_x = -1.0, tmp_y = -1.0;
+	if (!event || !gdk_event_get_position (event, &tmp_x, &tmp_y)) {
+		tmp_x = -1;
+		tmp_y = -1;
+	} else {
+		GtkWidget *window = gtk_widget_get_ancestor (GTK_WIDGET (text_view), GTK_TYPE_WINDOW);
+		if (window)
+			gtk_widget_translate_coordinates (window, GTK_WIDGET (text_view), tmp_x, tmp_y, &tmp_x, &tmp_y);
+	}
+	if (out_x)
+		*out_x = tmp_x;
+	if (out_y)
+		*out_y = tmp_y;
+#else
 	GdkWindow *window;
 	GdkDisplay *display;
 	GdkDeviceManager *device_manager;
@@ -239,7 +268,8 @@ get_pointer_position (GtkTextView *text_view,
 	device_manager = gdk_display_get_device_manager (display);
 	device = gdk_device_manager_get_client_pointer (device_manager);
 
-	gdk_window_get_device_position (window, device, x, y, NULL);
+	gdk_window_get_device_position (window, device, out_x, out_y, NULL);
+#endif
 }
 
 static guint32
@@ -295,7 +325,7 @@ get_tag_bounds (GtkTextIter *iter,
 		*start = *iter;
 		*end = *iter;
 
-		if (!gtk_text_iter_begins_tag (start, tag))
+		if (!gtk_text_iter_starts_tag (start, tag))
 			gtk_text_iter_backward_to_tag_toggle (start, tag);
 
 		if (!gtk_text_iter_ends_tag (end, tag))
@@ -409,13 +439,76 @@ buffer_cursor_position (GtkTextBuffer *buffer,
 	set_state (buffer, state);
 }
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+static void
+textview_open_uri_cb (GSimpleAction *simple,
+		      GVariant *parameter,
+		      gpointer user_data)
+#else
+static void
+textview_open_uri_cb (GtkWidget *widget,
+		      gpointer user_data)
+#endif
+{
+#if GTK_CHECK_VERSION(4, 0, 0)
+	const gchar *uri = parameter ? g_variant_get_string (parameter, NULL) : NULL;
+#else
+	const gchar *uri = user_data;
+#endif
+
+	g_return_if_fail (uri != NULL);
+
+	e_show_uri (NULL, uri);
+}
+
+#if GTK_CHECK_VERSION(4, 0, 0)
+static void
+textview_copy_uri_cb (GSimpleAction *simple,
+		      GVariant *parameter,
+		      gpointer user_data)
+#else
+static void
+textview_copy_uri_cb (GtkWidget *widget,
+		      gpointer user_data)
+#endif
+{
+#if GTK_CHECK_VERSION(4, 0, 0)
+	GdkClipboard *clipboard;
+	GtkWidget *widget = user_data;
+	const gchar *uri = parameter ? g_variant_get_string (parameter, NULL) : NULL;
+#else
+	const gchar *uri = user_data;
+	GtkClipboard *clipboard;
+#endif
+
+	g_return_if_fail (uri != NULL);
+
+#if GTK_CHECK_VERSION(4, 0, 0)
+	clipboard = gtk_widget_get_primary_clipboard (widget);
+	gdk_clipboard_set_text (clipboard, uri);
+
+	clipboard = gtk_widget_get_clipboard (widget);
+	gdk_clipboard_set_text (clipboard, uri);
+#else
+	clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
+	gtk_clipboard_set_text (clipboard, uri, -1);
+	gtk_clipboard_store (clipboard);
+
+	clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
+	gtk_clipboard_set_text (clipboard, uri, -1);
+	gtk_clipboard_store (clipboard);
+#endif
+}
+
 static void
 update_mouse_cursor (GtkTextView *text_view,
                      gint x,
                      gint y)
 {
+#if !GTK_CHECK_VERSION(4, 0, 0)
 	static GdkCursor *hand_cursor = NULL;
 	static GdkCursor *regular_cursor = NULL;
+#endif
 	gboolean hovering = FALSE, hovering_over_link = FALSE, hovering_real;
 	guint32 state;
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer (text_view);
@@ -423,10 +516,12 @@ update_mouse_cursor (GtkTextView *text_view,
 	GtkTextTag *tag;
 	GtkTextIter iter;
 
+#if !GTK_CHECK_VERSION(4, 0, 0)
 	if (!hand_cursor) {
 		hand_cursor = gdk_cursor_new (GDK_HAND2);
 		regular_cursor = gdk_cursor_new (GDK_XTERM);
 	}
+#endif
 
 	g_return_if_fail (buffer != NULL);
 
@@ -439,6 +534,65 @@ update_mouse_cursor (GtkTextView *text_view,
 	gtk_text_view_get_iter_at_location (text_view, &iter, x, y);
 	hovering_real = gtk_text_iter_has_tag (&iter, tag);
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+	if (hovering_real) {
+		gchar *url;
+
+		url = get_url_at_iter (buffer, &iter);
+
+		if (url && *url && g_strcmp0 (url, g_object_get_data (G_OBJECT (text_view), E_BUFFER_TAGGER_DATA_CURRENT_URI)) != 0) {
+			GActionGroup *action_group;
+			GMenu *menu, *section;
+			GMenuItem *item;
+			GVariant *variant;
+			const GActionEntry entries[] = {
+				{ "copy-uri",	textview_copy_uri_cb, "s" },
+				{ "open-uri",	textview_open_uri_cb, "s" }
+			};
+
+			action_group = G_ACTION_GROUP (g_simple_action_group_new ());
+			g_action_map_add_action_entries (G_ACTION_MAP (action_group), entries, G_N_ELEMENTS (entries), text_view);
+			gtk_widget_insert_action_group (GTK_WIDGET (text_view), "e-buffer-tagger", action_group);
+			g_object_unref (action_group);
+
+			variant = g_variant_new_string (url);
+
+			section = g_menu_new ();
+
+			item = g_menu_item_new (_("Copy _Link Location"), "e-buffer-tagger.copy-uri");
+			g_menu_item_set_attribute_value (item, G_MENU_ATTRIBUTE_TARGET, variant);
+			g_menu_append_item (section, item);
+			g_object_unref (item);
+
+			item = g_menu_item_new (_("O_pen Link in Browser"), "e-buffer-tagger.open-uri");
+			g_menu_item_set_attribute_value (item, G_MENU_ATTRIBUTE_TARGET, variant);
+			g_menu_append_item (section, item);
+			g_object_unref (item);
+
+			menu = g_menu_new ();
+			g_menu_append_section (menu, NULL, G_MENU_MODEL (section));
+			g_object_unref (section);
+
+			gtk_text_view_set_extra_menu (text_view, G_MENU_MODEL (menu));
+
+			g_object_unref (menu);
+
+			g_object_set_data_full (G_OBJECT (text_view), E_BUFFER_TAGGER_DATA_CURRENT_URI, url, g_free);
+			url = NULL;
+		} else if (!url || !*url) {
+			gtk_text_view_set_extra_menu (text_view, NULL);
+			gtk_widget_insert_action_group (GTK_WIDGET (text_view), "e-buffer-tagger", NULL);
+			g_object_set_data (G_OBJECT (text_view), E_BUFFER_TAGGER_DATA_CURRENT_URI, NULL);
+		}
+
+		g_free (url);
+	} else {
+		gtk_text_view_set_extra_menu (text_view, NULL);
+		gtk_widget_insert_action_group (GTK_WIDGET (text_view), "e-buffer-tagger", NULL);
+		g_object_set_data (G_OBJECT (text_view), E_BUFFER_TAGGER_DATA_CURRENT_URI, NULL);
+	}
+#endif
+
 	hovering_over_link = (state & E_BUFFER_TAGGER_STATE_IS_HOVERING) != 0;
 	if ((state & E_BUFFER_TAGGER_STATE_CTRL_DOWN) == 0) {
 		hovering = FALSE;
@@ -449,13 +603,17 @@ update_mouse_cursor (GtkTextView *text_view,
 	if (hovering != hovering_over_link) {
 		update_state (buffer, E_BUFFER_TAGGER_STATE_IS_HOVERING, hovering);
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+		if (hovering && gtk_widget_has_focus (GTK_WIDGET (text_view)))
+			gtk_widget_set_cursor_from_name (GTK_WIDGET (text_view), "pointer");
+		else
+			gtk_widget_set_cursor_from_name (GTK_WIDGET (text_view), NULL);
+#else
 		if (hovering && gtk_widget_has_focus (GTK_WIDGET (text_view)))
 			gdk_window_set_cursor (gtk_text_view_get_window (text_view, GTK_TEXT_WINDOW_TEXT), hand_cursor);
 		else
 			gdk_window_set_cursor (gtk_text_view_get_window (text_view, GTK_TEXT_WINDOW_TEXT), regular_cursor);
-
-		/* XXX Is this necessary?  Appears to be a no-op. */
-		get_pointer_position (text_view, NULL, NULL);
+#endif
 	}
 
 	hovering_over_link = (state & E_BUFFER_TAGGER_STATE_IS_HOVERING_TOOLTIP) != 0;
@@ -467,6 +625,7 @@ update_mouse_cursor (GtkTextView *text_view,
 	}
 }
 
+#if !GTK_CHECK_VERSION(4, 0, 0)
 static void
 textview_style_updated_cb (GtkWidget *textview,
 			   gpointer user_data)
@@ -499,14 +658,19 @@ textview_style_updated_cb (GtkWidget *textview,
 	state = state | GTK_STATE_FLAG_LINK;
 
 	gtk_style_context_save (context);
+	gtk_style_context_set_state (context, state);
+#if GTK_CHECK_VERSION(4, 0, 0)
+	gtk_style_context_get_color (context, &rgba);
+#else
 	/* Remove the 'view' style, because it can "confuse" some themes */
 	gtk_style_context_remove_class (context, GTK_STYLE_CLASS_VIEW);
-	gtk_style_context_set_state (context, state);
 	gtk_style_context_get_color (context, state, &rgba);
+#endif
 	gtk_style_context_restore (context);
 
 	g_object_set (G_OBJECT (tag), "foreground-rgba", &rgba, NULL);
 }
+#endif
 
 static gboolean
 textview_query_tooltip (GtkTextView *text_view,
@@ -557,17 +721,30 @@ textview_query_tooltip (GtkTextView *text_view,
 }
 
 /* Links can be activated by pressing Enter. */
+#if GTK_CHECK_VERSION(4, 0, 0)
+static gboolean
+textview_key_press_event (GtkEventControllerKey *controller,
+			  guint keyval,
+			  guint keycode,
+			  GdkModifierType state,
+			  GtkWidget *text_view)
+#else
 static gboolean
 textview_key_press_event (GtkWidget *text_view,
                           GdkEventKey *event)
+#endif
 {
+#if !GTK_CHECK_VERSION(4, 0, 0)
+	guint keyval = event->keyval;
+	GdkModifierType state = event->state;
+#endif
 	GtkTextIter iter;
 	GtkTextBuffer *buffer;
 
-	if ((event->state & GDK_CONTROL_MASK) == 0)
+	if ((state & GDK_CONTROL_MASK) == 0)
 		return FALSE;
 
-	switch (event->keyval) {
+	switch (keyval) {
 	case GDK_KEY_Return:
 	case GDK_KEY_KP_Enter:
 		buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (text_view));
@@ -585,7 +762,8 @@ textview_key_press_event (GtkWidget *text_view,
 
 static void
 update_ctrl_state (GtkTextView *textview,
-                   gboolean ctrl_is_down)
+                   gboolean ctrl_is_down,
+		   GdkEvent *event)
 {
 	GtkTextBuffer *buffer;
 	gint x, y;
@@ -596,7 +774,7 @@ update_ctrl_state (GtkTextView *textview,
 			update_state (buffer, E_BUFFER_TAGGER_STATE_CTRL_DOWN, ctrl_is_down != FALSE);
 		}
 
-		get_pointer_position (textview, &x, &y);
+		get_pointer_position (textview, event, &x, &y);
 		gtk_text_view_window_to_buffer_coords (textview, GTK_TEXT_WINDOW_WIDGET, x, y, &x, &y);
 		update_mouse_cursor (textview, x, y);
 	}
@@ -611,29 +789,44 @@ textview_event_after (GtkTextView *textview,
 	GtkTextBuffer *buffer;
 	gint x, y;
 	GdkModifierType mt = 0;
+	GdkEventType event_type;
 	guint event_button = 0;
 	gdouble event_x_win = 0;
 	gdouble event_y_win = 0;
 
 	g_return_val_if_fail (GTK_IS_TEXT_VIEW (textview), FALSE);
 
-	if (event->type == GDK_KEY_PRESS || event->type == GDK_KEY_RELEASE) {
+#if GTK_CHECK_VERSION(4, 0, 0)
+	event_type = gdk_event_get_event_type (event);
+#else
+	event_type = event->type;
+#endif
+
+	if (event_type == GDK_KEY_PRESS || event_type == GDK_KEY_RELEASE) {
 		guint event_keyval = 0;
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+		event_keyval = gdk_key_event_get_keyval (event);
+#else
 		gdk_event_get_keyval (event, &event_keyval);
+#endif
 
 		switch (event_keyval) {
 			case GDK_KEY_Control_L:
 			case GDK_KEY_Control_R:
 				update_ctrl_state (
 					textview,
-					event->type == GDK_KEY_PRESS);
+					event_type == GDK_KEY_PRESS,
+					event);
 				break;
 		}
 
 		return FALSE;
 	}
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+	mt = gdk_event_get_modifier_state (event);
+#else
 	if (!gdk_event_get_state (event, &mt)) {
 		GdkWindow *window;
 		GdkDisplay *display;
@@ -647,14 +840,24 @@ textview_event_after (GtkTextView *textview,
 
 		gdk_window_get_device_position (window, device, NULL, NULL, &mt);
 	}
+#endif
 
-	update_ctrl_state (textview, (mt & GDK_CONTROL_MASK) != 0);
+	update_ctrl_state (textview, (mt & GDK_CONTROL_MASK) != 0, event);
 
-	if (event->type != GDK_BUTTON_RELEASE)
+	if (event_type != GDK_BUTTON_RELEASE)
 		return FALSE;
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+	event_button = gdk_button_event_get_button (event);
+	if (gdk_event_get_position (event, &event_x_win, &event_y_win)) {
+		GtkWidget *window = gtk_widget_get_ancestor (GTK_WIDGET (textview), GTK_TYPE_WINDOW);
+		if (window)
+			gtk_widget_translate_coordinates (window, GTK_WIDGET (textview), event_y_win, event_y_win, &event_x_win, &event_y_win);
+	}
+#else
 	gdk_event_get_button (event, &event_button);
 	gdk_event_get_coords (event, &event_x_win, &event_y_win);
+#endif
 
 	if (event_button != 1 || (mt & GDK_CONTROL_MASK) == 0)
 		return FALSE;
@@ -679,10 +882,21 @@ textview_event_after (GtkTextView *textview,
 	return FALSE;
 }
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+static gboolean
+textview_motion_notify_event (GtkTextView *textview,
+                              gdouble event_x,
+			      gdouble event_y,
+			      GtkEventControllerMotion *controller)
+#else
 static gboolean
 textview_motion_notify_event (GtkTextView *textview,
                               GdkEventMotion *event)
+#endif
 {
+#if !GTK_CHECK_VERSION(4, 0, 0)
+	gint event_x = event->x, event_y = event->y;
+#endif
 	gint x, y;
 
 	g_return_val_if_fail (GTK_IS_TEXT_VIEW (textview), FALSE);
@@ -690,62 +904,14 @@ textview_motion_notify_event (GtkTextView *textview,
 	gtk_text_view_window_to_buffer_coords (
 		textview,
 		GTK_TEXT_WINDOW_WIDGET,
-		event->x, event->y, &x, &y);
+		event_x, event_y, &x, &y);
 
 	update_mouse_cursor (textview, x, y);
 
 	return FALSE;
 }
 
-static gboolean
-textview_visibility_notify_event (GtkTextView *textview,
-                                  GdkEventVisibility *event)
-{
-	gint wx, wy, bx, by;
-
-	g_return_val_if_fail (GTK_IS_TEXT_VIEW (textview), FALSE);
-
-	get_pointer_position (textview, &wx, &wy);
-
-	gtk_text_view_window_to_buffer_coords (
-		textview,
-		GTK_TEXT_WINDOW_WIDGET,
-		wx, wy, &bx, &by);
-
-	update_mouse_cursor (textview, bx, by);
-
-	return FALSE;
-}
-
-static void
-textview_open_uri_cb (GtkWidget *widget,
-		      gpointer user_data)
-{
-	const gchar *uri = user_data;
-
-	g_return_if_fail (uri != NULL);
-
-	e_show_uri (NULL, uri);
-}
-
-static void
-textview_copy_uri_cb (GtkWidget *widget,
-		      gpointer user_data)
-{
-	GtkClipboard *clipboard;
-	const gchar *uri = user_data;
-
-	g_return_if_fail (uri != NULL);
-
-	clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
-	gtk_clipboard_set_text (clipboard, uri, -1);
-	gtk_clipboard_store (clipboard);
-
-	clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
-	gtk_clipboard_set_text (clipboard, uri, -1);
-	gtk_clipboard_store (clipboard);
-}
-
+#if !GTK_CHECK_VERSION(4, 0, 0)
 static void
 textview_populate_popup_cb (GtkTextView *textview,
 			    GtkWidget *widget,
@@ -824,6 +990,7 @@ textview_populate_popup_cb (GtkTextView *textview,
 		g_free (uri);
 	}
 }
+#endif
 
 void
 e_buffer_tagger_connect (GtkTextView *textview)
@@ -831,6 +998,10 @@ e_buffer_tagger_connect (GtkTextView *textview)
 	GtkTextBuffer *buffer;
 	GtkTextTagTable *tag_table;
 	GtkTextTag *tag;
+#if GTK_CHECK_VERSION(4, 0, 0)
+	GtkEventController *controller;
+	GtkWidget *widget;
+#endif
 
 	init_magic_links ();
 
@@ -865,11 +1036,36 @@ e_buffer_tagger_connect (GtkTextView *textview)
 	gtk_widget_set_has_tooltip (GTK_WIDGET (textview), TRUE);
 
 	g_signal_connect (
-		textview, "style-updated",
-		G_CALLBACK (textview_style_updated_cb), NULL);
-	g_signal_connect (
 		textview, "query-tooltip",
 		G_CALLBACK (textview_query_tooltip), NULL);
+#if GTK_CHECK_VERSION(4, 0, 0)
+	widget = GTK_WIDGET (textview);
+
+	controller = gtk_event_controller_key_new ();
+	g_object_set_data_full (G_OBJECT (textview), E_BUFFER_TAGGER_DATA_KEY_CONTROLLER,
+		g_object_ref (controller), g_object_unref);
+	gtk_widget_add_controller (widget, controller);
+	g_signal_connect_object (controller, "key-pressed",
+		G_CALLBACK (textview_key_press_event), textview, 0);
+
+	controller = gtk_event_controller_legacy_new ();
+	g_object_set_data_full (G_OBJECT (textview), E_BUFFER_TAGGER_DATA_LEGACY_CONTROLLER,
+		g_object_ref (controller), g_object_unref);
+	gtk_widget_add_controller (widget, controller);
+	g_signal_connect_object (controller, "event",
+		G_CALLBACK (textview_event_after), textview, G_CONNECT_SWAPPED);
+
+	controller = gtk_event_controller_motion_new ();
+	g_object_set_data_full (G_OBJECT (textview), E_BUFFER_TAGGER_DATA_MOTION_CONTROLLER,
+		g_object_ref (controller), g_object_unref);
+	gtk_widget_add_controller (widget, controller);
+	g_signal_connect_object (controller, "motion",
+		G_CALLBACK (textview_motion_notify_event), textview, G_CONNECT_SWAPPED);
+
+#else
+	g_signal_connect (
+		textview, "style-updated",
+		G_CALLBACK (textview_style_updated_cb), NULL);
 	g_signal_connect (
 		textview, "key-press-event",
 		G_CALLBACK (textview_key_press_event), NULL);
@@ -880,11 +1076,9 @@ e_buffer_tagger_connect (GtkTextView *textview)
 		textview, "motion-notify-event",
 		G_CALLBACK (textview_motion_notify_event), NULL);
 	g_signal_connect (
-		textview, "visibility-notify-event",
-		G_CALLBACK (textview_visibility_notify_event), NULL);
-	g_signal_connect (
 		textview, "populate-popup",
 		G_CALLBACK (textview_populate_popup_cb), NULL);
+#endif
 }
 
 void
@@ -893,6 +1087,9 @@ e_buffer_tagger_disconnect (GtkTextView *textview)
 	GtkTextBuffer *buffer;
 	GtkTextTagTable *tag_table;
 	GtkTextTag *tag;
+#if GTK_CHECK_VERSION(4, 0, 0)
+	GtkWidget *widget;
+#endif
 
 	g_return_if_fail (textview != NULL);
 	g_return_if_fail (GTK_IS_TEXT_VIEW (textview));
@@ -914,13 +1111,34 @@ e_buffer_tagger_disconnect (GtkTextView *textview)
 
 	gtk_widget_set_has_tooltip (GTK_WIDGET (textview), FALSE);
 
-	g_signal_handlers_disconnect_by_func (textview, G_CALLBACK (textview_style_updated_cb), NULL);
 	g_signal_handlers_disconnect_by_func (textview, G_CALLBACK (textview_query_tooltip), NULL);
+#if GTK_CHECK_VERSION(4, 0, 0)
+	widget = GTK_WIDGET (textview);
+
+#define drop_controller(_name) { \
+	gpointer controller = g_object_get_data (G_OBJECT (textview), _name); \
+	if (controller) \
+		gtk_widget_remove_controller (widget, controller); \
+	g_object_set_data (G_OBJECT (textview), _name, NULL); \
+	}
+
+	drop_controller (E_BUFFER_TAGGER_DATA_KEY_CONTROLLER);
+	drop_controller (E_BUFFER_TAGGER_DATA_LEGACY_CONTROLLER);
+	drop_controller (E_BUFFER_TAGGER_DATA_MOTION_CONTROLLER);
+
+#undef drop_controller
+
+	g_object_set_data (G_OBJECT (textview), E_BUFFER_TAGGER_DATA_CURRENT_URI, NULL);
+
+	gtk_text_view_set_extra_menu (textview, NULL);
+	gtk_widget_insert_action_group (widget, "e-buffer-tagger", NULL);
+#else
+	g_signal_handlers_disconnect_by_func (textview, G_CALLBACK (textview_style_updated_cb), NULL);
 	g_signal_handlers_disconnect_by_func (textview, G_CALLBACK (textview_key_press_event), NULL);
 	g_signal_handlers_disconnect_by_func (textview, G_CALLBACK (textview_event_after), NULL);
 	g_signal_handlers_disconnect_by_func (textview, G_CALLBACK (textview_motion_notify_event), NULL);
-	g_signal_handlers_disconnect_by_func (textview, G_CALLBACK (textview_visibility_notify_event), NULL);
 	g_signal_handlers_disconnect_by_func (textview, G_CALLBACK (textview_populate_popup_cb), NULL);
+#endif
 }
 
 void

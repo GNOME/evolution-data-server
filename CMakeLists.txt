@@ -64,6 +64,11 @@ set(LIBEDATASERVERUI_CURRENT 4)
 set(LIBEDATASERVERUI_REVISION 0)
 set(LIBEDATASERVERUI_AGE 0)
 
+set(LIBEDATASERVERUI4_API_VERSION 1.0)
+set(LIBEDATASERVERUI4_CURRENT 0)
+set(LIBEDATASERVERUI4_REVISION 0)
+set(LIBEDATASERVERUI4_AGE 0)
+
 set(LIBEBOOK_CURRENT 21)
 set(LIBEBOOK_REVISION 1)
 set(LIBEBOOK_AGE 3)
@@ -89,8 +94,12 @@ set(glib_minimum_version 2.68)
 set(glib_encoded_version GLIB_VERSION_2_68)
 
 # Keep these two definitions in agreement.
-set(gdk_minimum_version 3.16)
-set(gdk_encoded_version GDK_VERSION_3_16)
+set(gdk_minimum_version 3.20)
+set(gdk_encoded_version GDK_VERSION_3_20)
+
+# Keep these two definitions in agreement.
+set(gdk4_minimum_version 4.4)
+set(gdk4_encoded_version GDK_VERSION_4_4)
 
 # Keep these two definitions in agreement.
 set(soup_minimum_version 3.0)
@@ -98,7 +107,6 @@ set(soup_encoded_version SOUP_VERSION_3_0)
 
 # Warn about API usage that violates our minimum requirements.
 add_definitions(-DGLIB_VERSION_MAX_ALLOWED=${glib_encoded_version})
-add_definitions(-DGDK_VERSION_MAX_ALLOWED=${gdk_encoded_version})
 add_definitions(-DSOUP_VERSION_MAX_ALLOWED=${soup_encoded_version})
 
 # These will suppress warnings about newly-deprecated symbols. Ideally
@@ -106,10 +114,10 @@ add_definitions(-DSOUP_VERSION_MAX_ALLOWED=${soup_encoded_version})
 # up any new deprecation warnings after bumping our minimum requirements.
 # But if the warnings get to be overwhelming, use fixed versions instead.
 add_definitions(-DGLIB_VERSION_MIN_REQUIRED=${glib_encoded_version})
-add_definitions(-DGDK_VERSION_MIN_REQUIRED=${gdk_encoded_version})
 add_definitions(-DSOUP_VERSION_MIN_REQUIRED=${soup_encoded_version})
 
-set(gcr_minimum_version 3.4)
+set(gcr3_minimum_version 3.4)
+set(gcr4_minimum_version 3.90)
 set(libgdata_minimum_version 0.15.1)
 set(libical_glib_minimum_version 3.0.7)
 set(libsecret_minimum_version 0.5)
@@ -123,6 +131,7 @@ set(libaccounts_glib_minimum_version 1.4)
 set(libsignon_glib_minimum_version 1.8)
 set(json_glib_minimum_version 1.0.4)
 set(webkit2gtk_minimum_version 2.34.0)
+set(webkit2gtk4_minimum_version 2.36.0)
 set(libcanberra_gtk_minimum_version 0.25)
 
 # Load modules from the source tree
@@ -382,14 +391,27 @@ endif(NOT ICU_FOUND)
 # Check for GTK+
 # *************************
 
+add_printable_option(WITH_GCR3 "Use gcr3, instead of gcr4" OFF)
 add_printable_option(ENABLE_GTK "Enable gtk+ support" ON)
 
 if(ENABLE_GTK)
 	pkg_check_modules_for_option(ENABLE_GTK "GTK+ support" GTK gtk+-3.0>=${gdk_minimum_version})
-	pkg_check_modules_for_option(ENABLE_GTK "GTK+ support" GCR gcr-3>=${gcr_minimum_version})
+	if(WITH_GCR3)
+		pkg_check_modules_for_option(ENABLE_GTK "GTK+ support" GCR gcr-3>=${gcr3_minimum_version})
+	else(WITH_GCR3)
+		pkg_check_modules_for_option(ENABLE_GTK "GTK+ support" GCR gcr-4-gtk3>=${gcr4_minimum_version})
+	endif(WITH_GCR3)
 
 	set(HAVE_GTK 1)
 endif(ENABLE_GTK)
+
+add_printable_option(ENABLE_GTK4 "Enable gtk4 support" ON)
+if(ENABLE_GTK4)
+	pkg_check_modules_for_option(ENABLE_GTK4 "gtk4 support" GTK4 gtk4>=${gdk4_minimum_version})
+	pkg_check_modules_for_option(ENABLE_GTK4 "gtk4 support" GCR4 gcr-4-gtk4>=${gcr4_minimum_version})
+
+	set(HAVE_GTK4 1)
+endif(ENABLE_GTK4)
 
 # **************************************************************
 # Check for WebKitGTK+ and json-glib for OAuth2 authentications
@@ -397,13 +419,21 @@ endif(ENABLE_GTK)
 
 pkg_check_modules(JSON_GLIB REQUIRED json-glib-1.0>=${json_glib_minimum_version})
 
-add_printable_option(ENABLE_OAUTH2_WEBKITGTK "Enable WebKitGTK for built-in OAuth2 authentications" ON)
+add_printable_option(ENABLE_OAUTH2_WEBKITGTK "Enable WebKitGTK gtk3 for built-in OAuth2 authentications" ON)
 
 if(ENABLE_OAUTH2_WEBKITGTK)
-	pkg_check_modules_for_option(ENABLE_OAUTH2_WEBKITGTK "WebKitGTK for built-in OAuth2 authentications" OAUTH2_WEBKITGTK
+	pkg_check_modules_for_option(ENABLE_OAUTH2_WEBKITGTK "WebKitGTK gtk3 for built-in OAuth2 authentications" OAUTH2_WEBKITGTK
 		webkit2gtk-4.1>=${webkit2gtk_minimum_version}
 	)
 endif(ENABLE_OAUTH2_WEBKITGTK)
+
+add_printable_option(ENABLE_OAUTH2_WEBKITGTK4 "Enable WebKitGTK gtk4 for built-in OAuth2 authentications" ON)
+
+if(ENABLE_OAUTH2_WEBKITGTK4)
+	pkg_check_modules_for_option(ENABLE_OAUTH2_WEBKITGTK4 "WebKitGTK gtk4 for built-in OAuth2 authentications" OAUTH2_WEBKITGTK4
+		webkit2gtk-5.0>=${webkit2gtk4_minimum_version}
+	)
+endif(ENABLE_OAUTH2_WEBKITGTK4)
 
 add_printable_variable(WITH_GOOGLE_CLIENT_ID "Google OAuth 2.0 client id" "")
 add_printable_variable(WITH_GOOGLE_CLIENT_SECRET "Google OAuth 2.0 client secret" "")
@@ -448,7 +478,7 @@ add_printable_option(ENABLE_EXAMPLES "Enable the build of examples" ON)
 if(ENABLE_EXAMPLES)
 	pkg_check_modules_for_option(ENABLE_EXAMPLES "build the example program(s)" EXAMPLES
 		gtk+-3.0>=3.10
-		glib-2.0>=2.38
+		glib-2.0>=${glib_minimum_version}
 	)
 
 	set(BUILD_EXAMPLES 1)
@@ -473,12 +503,11 @@ endif(ENABLE_GOA)
 add_printable_option(ENABLE_BACKEND_PER_PROCESS "Enable backend per process support" OFF)
 
 # ***********************************
-# Check for libsecret and gcr-base
+# Check for libsecret
 # ***********************************
 
 if(NOT WIN32)
 	pkg_check_modules(LIBSECRET REQUIRED libsecret-unstable>=${libsecret_minimum_version})
-	pkg_check_modules(GCR_BASE REQUIRED gcr-base-3>=${gcr_minimum_version})
 endif(NOT WIN32)
 
 # ******************************

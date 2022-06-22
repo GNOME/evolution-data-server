@@ -72,8 +72,11 @@
 /* Define to 1 if you have the gtk+-3.0 package. */
 #cmakedefine HAVE_GTK 1
 
-/* Define to 1 to use WebKitGTK for OAuth2 authentication. */
+/* Define to 1 to use WebKitGTK gtk3 for OAuth2 authentication. */
 #cmakedefine ENABLE_OAUTH2_WEBKITGTK 1
+
+/* Define to 1 to use WebKitGTK gtk4 for OAuth2 authentication. */
+#cmakedefine ENABLE_OAUTH2_WEBKITGTK4 1
 
 /* Define to 1 if the examples should be built. */
 #cmakedefine BUILD_EXAMPLES 1
@@ -202,3 +205,6 @@
 
 /* Defined, when time_t is of the 32bit size */
 #cmakedefine HAVE_32BIT_TIME_T 1
+
+/* Defined, when using gcr3, not gcr4 */
+#cmakedefine WITH_GCR3 1

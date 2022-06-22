@@ -101,7 +101,6 @@ target_compile_options(ebackend PUBLIC
 	${LIBDB_CFLAGS}
 	${CAMEL_CFLAGS}
 	${SQLITE3_CFLAGS}
-	${GCR_BASE_CFLAGS}
 	${GIO_UNIX_CFLAGS}
 )
 
@@ -117,7 +116,6 @@ target_include_directories(ebackend PUBLIC
 	${LIBDB_INCLUDE_DIRS}
 	${CAMEL_INCLUDE_DIRS}
 	${SQLITE3_INCLUDE_DIRS}
-	${GCR_BASE_INCLUDE_DIRS}
 	${GIO_UNIX_INCLUDE_DIRS}
 )
 
@@ -128,7 +126,6 @@ target_link_libraries(ebackend
 	${LIBDB_LIBS}
 	${CAMEL_LDFLAGS}
 	${SQLITE3_LDFLAGS}
-	${GCR_BASE_LDFLAGS}
 	${GIO_UNIX_LDFLAGS}
 )
 
