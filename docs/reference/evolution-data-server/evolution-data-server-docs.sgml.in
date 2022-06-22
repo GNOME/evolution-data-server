@@ -110,6 +110,7 @@
       <xi:include href="xml/e-source-mdn.xml"/>
       <xi:include href="xml/e-source-offline.xml"/>
       <xi:include href="xml/e-source-openpgp.xml"/>
+      <xi:include href="xml/e-source-proxy.xml"/>
       <xi:include href="xml/e-source-refresh.xml"/>
       <xi:include href="xml/e-source-resource.xml"/>
       <xi:include href="xml/e-source-revision-guards.xml"/>
