@@ -1838,7 +1838,7 @@ e_soup_session_message_restarted_cb (SoupMessage *message,
 /**
  * e_soup_session_util_set_message_request_body:
  * @message: a #SoupMessage
- * @content_type: (optional): optional Content-Type of the @data, or %NULL
+ * @content_type: (nullable): optional Content-Type of the @data, or %NULL
  * @input_stream (transfer none): the request body data as a #GInputStream
  * @length: length of the @data
  *
@@ -1875,10 +1875,10 @@ e_soup_session_util_set_message_request_body (SoupMessage *message,
  * e_soup_session_util_set_message_request_body_from_data:
  * @message: a #SoupMessage
  * @create_copy: whether to create copy of the @data
- * @content_type: (optional): optional Content-Type of the @data, or %NULL
+ * @content_type: (nullable): optional Content-Type of the @data, or %NULL
  * @data: the request body data
  * @length: length of the @data
- * @free_func: (optional): a free function for the @data, or %NULL
+ * @free_func: (nullable): a free function for the @data, or %NULL
  *
  * Sets the request body of the @message from the @data of the @length, with optional
  * @content_type. The function makes sure the @message request body is set again

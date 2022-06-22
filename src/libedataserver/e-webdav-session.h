@@ -349,7 +349,7 @@ SoupMessage *
 							 GError **error);
 gboolean	e_webdav_session_replace_with_detailed_error
 							(EWebDAVSession *webdav,
-							 SoupMessage *request,
+							 SoupMessage *message,
 							 const GByteArray *response_data,
 							 gboolean ignore_multistatus,
 							 const gchar *prefix,

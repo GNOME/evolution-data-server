@@ -1275,7 +1275,7 @@ e_webdav_session_copy_request_headers (SoupMessage *message,
  * @data: data to post to the server
  * @data_length: length of @data, or -1, when @data is NUL-terminated
  * @in_content_type: (nullable): a Content-Type of the @data, or %NULL, to use application/xml
- * @in_headers: (optional): additional #SoupMessageHeaders to be added to the request, or %NULL
+ * @in_headers: (nullable): additional #SoupMessageHeaders to be added to the request, or %NULL
  * @out_content_type: (out) (nullable) (transfer full): return location for response Content-Type, or %NULL
  * @out_headers: (out) (optional) (transfer full): optional return location for response #SoupMessageHeaders, or %NULL
  * @out_content: (out) (nullable) (transfer full): return location for response content, or %NULL
@@ -2161,7 +2161,7 @@ e_webdav_session_set_if_match_header (SoupMessage *message,
  * @uri: URI of the resource to write
  * @etag: (nullable): an ETag of the resource, if it's an existing resource, or %NULL
  * @content_type: Content-Type of the @bytes to be written
- * @in_headers: (optional): additional #SoupMessageHeaders to be added to the request, or %NULL
+ * @in_headers: (nullable): additional #SoupMessageHeaders to be added to the request, or %NULL
  * @stream: a #GInputStream with data to be written
  * @stream_length: length of the @stream, or -1 if unknown
  * @out_href: (out) (nullable) (transfer full): optional return location for href of the resource, or %NULL
@@ -2306,7 +2306,7 @@ e_webdav_session_put_sync (EWebDAVSession *webdav,
  * @uri: URI of the resource to write
  * @etag: (nullable): an ETag of the resource, if it's an existing resource, or %NULL
  * @content_type: Content-Type of the @bytes to be written
- * @in_headers: (optional): additional #SoupMessageHeaders to be added to the request, or %NULL
+ * @in_headers: (nullable): additional #SoupMessageHeaders to be added to the request, or %NULL
  * @bytes: actual bytes to be written
  * @length: how many bytes to write, or -1, when the @bytes is NUL-terminated
  * @out_href: (out) (nullable) (transfer full): optional return location for href of the resource, or %NULL
