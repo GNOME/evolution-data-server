@@ -453,7 +453,7 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 #if GTK_CHECK_VERSION(4, 0, 0)
 	gtk_window_destroy (GTK_WINDOW (dialog));
 #else
-	g_object_unref (dialog);
+	gtk_widget_destroy (dialog);
 #endif
 	prompter_password->priv->dialog = NULL;
 
