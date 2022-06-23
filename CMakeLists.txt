@@ -419,21 +419,25 @@ endif(ENABLE_GTK4)
 
 pkg_check_modules(JSON_GLIB REQUIRED json-glib-1.0>=${json_glib_minimum_version})
 
-add_printable_option(ENABLE_OAUTH2_WEBKITGTK "Enable WebKitGTK gtk3 for built-in OAuth2 authentications" ON)
+if(ENABLE_GTK)
+	add_printable_option(ENABLE_OAUTH2_WEBKITGTK "Enable WebKitGTK gtk3 for built-in OAuth2 authentications" ON)
 
-if(ENABLE_OAUTH2_WEBKITGTK)
-	pkg_check_modules_for_option(ENABLE_OAUTH2_WEBKITGTK "WebKitGTK gtk3 for built-in OAuth2 authentications" OAUTH2_WEBKITGTK
-		webkit2gtk-4.1>=${webkit2gtk_minimum_version}
-	)
-endif(ENABLE_OAUTH2_WEBKITGTK)
+	if(ENABLE_OAUTH2_WEBKITGTK)
+		pkg_check_modules_for_option(ENABLE_OAUTH2_WEBKITGTK "WebKitGTK gtk3 for built-in OAuth2 authentications" OAUTH2_WEBKITGTK
+			webkit2gtk-4.1>=${webkit2gtk_minimum_version}
+		)
+	endif(ENABLE_OAUTH2_WEBKITGTK)
+endif(ENABLE_GTK)
 
-add_printable_option(ENABLE_OAUTH2_WEBKITGTK4 "Enable WebKitGTK gtk4 for built-in OAuth2 authentications" ON)
+if(ENABLE_GTK4)
+	add_printable_option(ENABLE_OAUTH2_WEBKITGTK4 "Enable WebKitGTK gtk4 for built-in OAuth2 authentications" ON)
 
-if(ENABLE_OAUTH2_WEBKITGTK4)
-	pkg_check_modules_for_option(ENABLE_OAUTH2_WEBKITGTK4 "WebKitGTK gtk4 for built-in OAuth2 authentications" OAUTH2_WEBKITGTK4
-		webkit2gtk-5.0>=${webkit2gtk4_minimum_version}
-	)
-endif(ENABLE_OAUTH2_WEBKITGTK4)
+	if(ENABLE_OAUTH2_WEBKITGTK4)
+		pkg_check_modules_for_option(ENABLE_OAUTH2_WEBKITGTK4 "WebKitGTK gtk4 for built-in OAuth2 authentications" OAUTH2_WEBKITGTK4
+			webkit2gtk-5.0>=${webkit2gtk4_minimum_version}
+		)
+	endif(ENABLE_OAUTH2_WEBKITGTK4)
+endif(ENABLE_GTK4)
 
 add_printable_variable(WITH_GOOGLE_CLIENT_ID "Google OAuth 2.0 client id" "")
 add_printable_variable(WITH_GOOGLE_CLIENT_SECRET "Google OAuth 2.0 client secret" "")
