@@ -17,7 +17,6 @@
 
 /**
  * SECTION: e-reminders-widget
- * @include: libedataserverui/libedataserverui.h
  * @short_description: An #ERemindersWidget to work with past reminders
  *
  * The #ERemindersWidget is a widget which does common tasks on past reminders

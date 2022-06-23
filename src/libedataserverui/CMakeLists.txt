@@ -4,6 +4,12 @@ set(UI_VERSION)
 set(UI_API_VERSION ${API_VERSION})
 add_pkgconfig_file(libedataserverui.pc.in libedataserverui-${UI_API_VERSION}.pc)
 
+configure_file(
+	${CMAKE_CURRENT_SOURCE_DIR}/libedataserverui.h.in
+	${CMAKE_CURRENT_BINARY_DIR}/libedataserverui${UI_VERSION}.h
+	@ONLY
+)
+
 set(SOURCES
 	e-buffer-tagger.c
 	e-cell-renderer-color.c
@@ -19,7 +25,7 @@ set(SOURCES
 )
 
 set(HEADERS
-	libedataserverui.h
+	${CMAKE_CURRENT_BINARY_DIR}/libedataserverui${UI_VERSION}.h
 	e-buffer-tagger.h
 	e-cell-renderer-color.h
 	e-credentials-prompter.h
@@ -138,7 +144,7 @@ gir_add_introspection_simple(
 	EDataServerUI
 	libedataserverui
 	${UI_API_VERSION}
-	"libedataserverui/libedataserverui.h"
+	"libedataserverui${UI_VERSION}/libedataserverui${UI_VERSION}.h"
 	gir_identifies_prefixes
 	gir_includes
 	gir_cflags
@@ -157,6 +163,12 @@ set(UI_VERSION 4)
 set(UI_API_VERSION ${LIBEDATASERVERUI4_API_VERSION})
 add_pkgconfig_file(libedataserverui.pc.in libedataserverui${UI_VERSION}-${UI_API_VERSION}.pc)
 
+configure_file(
+	${CMAKE_CURRENT_SOURCE_DIR}/libedataserverui.h.in
+	${CMAKE_CURRENT_BINARY_DIR}/libedataserverui${UI_VERSION}.h
+	@ONLY
+)
+
 set(SOURCES
 	e-buffer-tagger.c
 	e-cell-renderer-color.c
@@ -172,7 +184,7 @@ set(SOURCES
 )
 
 set(HEADERS
-	libedataserverui.h
+	${CMAKE_CURRENT_BINARY_DIR}/libedataserverui${UI_VERSION}.h
 	e-buffer-tagger.h
 	e-cell-renderer-color.h
 	e-credentials-prompter.h
@@ -261,6 +273,11 @@ install(FILES ${HEADERS}
 	DESTINATION ${privincludedir}/libedataserverui${UI_VERSION}
 )
 
+# create libedataserverui4/... in the build dir, thus .gir can find it
+file(COPY ${HEADERS}
+	DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/libedataserverui${UI_VERSION}/
+)
+
 set(gir_sources ${SOURCES} ${HEADERS})
 set(gir_identifies_prefixes E)
 set(gir_includes GObject-2.0 Gio-2.0 Gtk-4.0 Soup-3.0)
@@ -268,6 +285,7 @@ set(gir_cflags
 	-DLIBEDATASERVERUI_COMPILATION
 	-I${CMAKE_BINARY_DIR}/src/calendar
 	-I${CMAKE_SOURCE_DIR}/src/calendar
+	-I${CMAKE_CURRENT_BINARY_DIR}
 )
 set(gir_libdirs
 	${CMAKE_BINARY_DIR}/src/private
@@ -291,7 +309,7 @@ gir_add_introspection_simple(
 	EDataServerUI${UI_VERSION}
 	libedataserverui${UI_VERSION}
 	${UI_API_VERSION}
-	"libedataserverui${UI_VERSION}/libedataserverui.h"
+	"libedataserverui${UI_VERSION}/libedataserverui${UI_VERSION}.h"
 	gir_identifies_prefixes
 	gir_includes
 	gir_cflags

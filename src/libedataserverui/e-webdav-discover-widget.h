@@ -15,16 +15,19 @@
  *
  */
 
-#if !defined (__LIBEDATASERVERUI_H_INSIDE__) && !defined (LIBEDATASERVERUI_COMPILATION)
-#error "Only <libedataserverui/libedataserverui.h> should be included directly."
-#endif
-
 #ifndef E_WEBDAV_DISCOVER_WIDGET_H
 #define E_WEBDAV_DISCOVER_WIDGET_H
 
 #include <gio/gio.h>
-
 #include <gtk/gtk.h>
+
+#if !defined (__LIBEDATASERVERUI_H_INSIDE__) && !defined (LIBEDATASERVERUI_COMPILATION)
+#if GTK_CHECK_VERSION(4, 0, 0)
+#error "Only <libedataserverui4/libedataserverui4.h> should be included directly."
+#else
+#error "Only <libedataserverui/libedataserverui.h> should be included directly."
+#endif
+#endif
 
 #include <libedataserver/libedataserver.h>
 #include <libedataserverui/e-credentials-prompter.h>

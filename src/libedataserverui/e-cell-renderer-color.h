@@ -16,14 +16,18 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined (__LIBEDATASERVERUI_H_INSIDE__) && !defined (LIBEDATASERVERUI_COMPILATION)
-#error "Only <libedataserverui/libedataserverui.h> should be included directly."
-#endif
-
 #ifndef E_CELL_RENDERER_COLOR_H
 #define E_CELL_RENDERER_COLOR_H
 
 #include <gtk/gtk.h>
+
+#if !defined (__LIBEDATASERVERUI_H_INSIDE__) && !defined (LIBEDATASERVERUI_COMPILATION)
+#if GTK_CHECK_VERSION(4, 0, 0)
+#error "Only <libedataserverui4/libedataserverui4.h> should be included directly."
+#else
+#error "Only <libedataserverui/libedataserverui.h> should be included directly."
+#endif
+#endif
 
 /* Standard GObject macros */
 #define E_TYPE_CELL_RENDERER_COLOR \
