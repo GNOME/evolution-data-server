@@ -30,7 +30,11 @@
 #endif
 
 #include <libedataserver/libedataserver.h>
+#if GTK_CHECK_VERSION(4, 0, 0)
+#include <libedataserverui4/e-credentials-prompter.h>
+#else
 #include <libedataserverui/e-credentials-prompter.h>
+#endif
 
 G_BEGIN_DECLS
 

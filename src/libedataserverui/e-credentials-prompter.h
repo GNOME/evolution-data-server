@@ -34,7 +34,11 @@
 
 #include <libedataserver/libedataserver.h>
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+#include <libedataserverui4/e-credentials-prompter-impl.h>
+#else
 #include <libedataserverui/e-credentials-prompter-impl.h>
+#endif
 
 /* Standard GObject macros */
 #define E_TYPE_CREDENTIALS_PROMPTER \
