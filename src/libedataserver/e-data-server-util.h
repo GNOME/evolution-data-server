@@ -205,6 +205,8 @@ gboolean	e_named_parameters_exists	(const ENamedParameters *parameters,
 guint		e_named_parameters_count	(const ENamedParameters *parameters);
 gchar *		e_named_parameters_get_name	(const ENamedParameters *parameters,
 						 gint index);
+gboolean	e_named_parameters_equal	(const ENamedParameters *parameters1,
+						 const ENamedParameters *parameters2);
 
 #define e_named_timeout_add(interval, function, data) \
 	(e_timeout_add_with_name ( \

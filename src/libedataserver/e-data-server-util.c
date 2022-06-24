@@ -2651,6 +2651,55 @@ e_named_parameters_get_name (const ENamedParameters *parameters,
 	return g_strndup (name_and_value, colon - name_and_value);
 }
 
+/**
+ * e_named_parameters_equal:
+ * @parameters1: the first #ENamedParameters
+ * @parameters2: the second #ENamedParameters
+ *
+ * Compares the two parameters objects and returns whether they equal.
+ * Note a %NULL and empty parameters are also considered equal.
+ *
+ * Returns: whether the two parameters are equal
+ *
+ * Since: 3.46
+ **/
+gboolean
+e_named_parameters_equal (const ENamedParameters *parameters1,
+			  const ENamedParameters *parameters2)
+{
+	GPtrArray *arr1, *arr2;
+	guint ii, jj;
+
+	if (parameters1 == parameters2 ||
+	    (!parameters1 && e_named_parameters_count (parameters2) == 0) ||
+	    (!parameters2 && e_named_parameters_count (parameters1) == 0))
+		return TRUE;
+
+	if (!parameters1 || !parameters2 ||
+	    e_named_parameters_count (parameters1) != e_named_parameters_count (parameters1))
+		return FALSE;
+
+	arr1 = (GPtrArray *) parameters1;
+	arr2 = (GPtrArray *) parameters2;
+
+	for (ii = 0; ii < arr1->len; ii++) {
+		const gchar *name_and_value1 = g_ptr_array_index (arr1, ii);
+
+		for (jj = 0; jj < arr2->len; jj++) {
+			const gchar *name_and_value2 = g_ptr_array_index (arr2, jj);
+
+			if (g_strcmp0 (name_and_value1, name_and_value2) == 0)
+				break;
+		}
+
+		/* went through all the items, none matched */
+		if (jj == arr2->len)
+			return FALSE;
+	}
+
+	return TRUE;
+}
+
 static ENamedParameters *
 e_named_parameters_ref (ENamedParameters *params)
 {

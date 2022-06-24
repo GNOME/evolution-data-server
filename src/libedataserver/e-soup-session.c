@@ -44,6 +44,7 @@ G_DEFINE_QUARK (e-soup-session-error-quark, e_soup_session_error)
 struct _ESoupSessionPrivate {
 	GMutex property_lock;
 	GRecMutex session_lock; /* libsoup3 has no thread safety */
+	GHashTable *using_auths; /* guarded by the session_lock, gchar *uri ~> gchar *authtype, as set in the SoupAuthManager */
 	ESource *source;
 	ENamedParameters *credentials;
 
@@ -67,6 +68,38 @@ enum {
 
 G_DEFINE_TYPE_WITH_PRIVATE (ESoupSession, e_soup_session, SOUP_TYPE_SESSION)
 
+/* Hold the session lock when calling this */
+static gboolean
+e_soup_session_auth_already_set_locked (ESoupSession *session,
+					GUri *g_uri,
+					SoupAuth *soup_auth,
+					gboolean *out_auth_was_set)
+{
+	gchar *uri_str;
+	const gchar *auth_type;
+	const gchar *current_auth_type;
+	gboolean same_types;
+
+	uri_str = g_uri_to_string_partial (g_uri, G_URI_HIDE_PASSWORD);
+	auth_type = G_OBJECT_TYPE_NAME (soup_auth);
+	current_auth_type = g_hash_table_lookup (session->priv->using_auths, uri_str);
+	*out_auth_was_set = current_auth_type != NULL;
+	same_types = g_strcmp0 (auth_type, current_auth_type) == 0;
+
+	if (!same_types) {
+		/* Because the caller calls soup_auth_manager_clear_cached_credentials() in this case */
+		if (*out_auth_was_set)
+			g_hash_table_remove_all (session->priv->using_auths);
+
+		g_hash_table_insert (session->priv->using_auths, uri_str, g_strdup (auth_type));
+		uri_str = NULL;
+	}
+
+	g_free (uri_str);
+
+	return same_types;
+}
+
 static void
 e_soup_session_ensure_auth_usage (ESoupSession *session,
 				  GUri *in_g_uri,
@@ -77,6 +110,7 @@ e_soup_session_ensure_auth_usage (ESoupSession *session,
 	SoupSessionFeature *feature;
 	GUri *g_uri;
 	GType auth_type;
+	gboolean auth_was_set = FALSE;
 
 	g_return_if_fail (E_IS_SOUP_SESSION (session));
 	g_return_if_fail (SOUP_IS_AUTH (soup_auth));
@@ -121,10 +155,16 @@ e_soup_session_ensure_auth_usage (ESoupSession *session,
 
 	auth_manager = SOUP_AUTH_MANAGER (feature);
 
-	/* This will make sure the 'soup_auth' is used regardless of the current 'auth_manager' state.
+	/* This will make sure the 'soup_auth' is used regardless of the current 'auth_manager' state,
+	   but do not set the same 'soup_auth' when it's already set (which can happen, when the session
+	   is reused by multiple sources, which connect to the same server, with the same user.
 	   See https://gitlab.gnome.org/GNOME/libsoup/-/issues/196 for more information. */
-	soup_auth_manager_clear_cached_credentials (auth_manager);
-	soup_auth_manager_use_auth (auth_manager, g_uri, soup_auth);
+	if (!e_soup_session_auth_already_set_locked (session, g_uri, soup_auth, &auth_was_set)) {
+		if (auth_was_set)
+			soup_auth_manager_clear_cached_credentials (auth_manager);
+
+		soup_auth_manager_use_auth (auth_manager, g_uri, soup_auth);
+	}
 
 	g_rec_mutex_unlock (&session->priv->session_lock);
 
@@ -316,7 +356,8 @@ e_soup_session_maybe_prepare_auth (ESoupSession *session,
 
 			if (!soup_session_get_feature (soup_session, SOUP_TYPE_AUTH_NEGOTIATE))
 				soup_session_add_feature_by_type (soup_session, SOUP_TYPE_AUTH_NEGOTIATE);
-			soup_session_remove_feature_by_type (soup_session, SOUP_TYPE_AUTH_BASIC);
+			if (soup_session_get_feature (soup_session, SOUP_TYPE_AUTH_BASIC))
+				soup_session_remove_feature_by_type (soup_session, SOUP_TYPE_AUTH_BASIC);
 
 			g_rec_mutex_unlock (&session->priv->session_lock);
 		} else if (g_strcmp0 (auth_method, "NTLM") == 0) {
@@ -356,6 +397,8 @@ e_soup_session_authenticate_cb (SoupMessage *message,
 
 	g_return_val_if_fail (E_IS_SOUP_SESSION (session), FALSE);
 
+	g_mutex_lock (&session->priv->property_lock);
+
 	if (E_IS_SOUP_AUTH_BEARER (auth)) {
 		g_object_ref (auth);
 		g_warn_if_fail ((gpointer) session->priv->using_bearer_auth == (gpointer) auth);
@@ -363,7 +406,6 @@ e_soup_session_authenticate_cb (SoupMessage *message,
 		session->priv->using_bearer_auth = E_SOUP_AUTH_BEARER (auth);
 	}
 
-	g_mutex_lock (&session->priv->property_lock);
 	if (retrying && !session->priv->auth_prefilled) {
 		g_mutex_unlock (&session->priv->property_lock);
 		return FALSE;
@@ -407,8 +449,11 @@ e_soup_session_authenticate_cb (SoupMessage *message,
 	}
 
 	if (username && *username && credentials &&
-	    e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_PASSWORD))
+	    e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_PASSWORD)) {
 		soup_auth_authenticate (auth, username, e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_PASSWORD));
+	} else if (g_strcmp0 (soup_auth_get_scheme_name (auth), "NTLM") == 0) {
+		soup_auth_cancel (auth);
+	}
 
 	e_named_parameters_free (credentials);
 	g_free (auth_user);
@@ -485,6 +530,7 @@ e_soup_session_finalize (GObject *object)
 	g_clear_object (&session->priv->using_bearer_auth);
 	g_clear_pointer (&session->priv->credentials, e_named_parameters_free);
 	g_clear_pointer (&session->priv->ssl_certificate_pem, g_free);
+	g_clear_pointer (&session->priv->using_auths, g_hash_table_unref);
 
 	g_mutex_clear (&session->priv->property_lock);
 	g_rec_mutex_clear (&session->priv->session_lock);
@@ -546,6 +592,7 @@ static void
 e_soup_session_init (ESoupSession *session)
 {
 	session->priv = e_soup_session_get_instance_private (session);
+	session->priv->using_auths = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	session->priv->ssl_info_set = FALSE;
 	session->priv->log_level = SOUP_LOGGER_LOG_NONE;
 	session->priv->auth_prefilled = FALSE;
@@ -694,7 +741,7 @@ e_soup_session_set_credentials (ESoupSession *session,
 
 	g_mutex_lock (&session->priv->property_lock);
 
-	if (credentials == session->priv->credentials) {
+	if (e_named_parameters_equal (credentials, session->priv->credentials)) {
 		g_mutex_unlock (&session->priv->property_lock);
 		return;
 	}
@@ -713,6 +760,7 @@ e_soup_session_set_credentials (ESoupSession *session,
 	g_rec_mutex_lock (&session->priv->session_lock);
 	feature = soup_session_get_feature (SOUP_SESSION (session), SOUP_TYPE_AUTH_MANAGER);
 	soup_auth_manager_clear_cached_credentials (SOUP_AUTH_MANAGER (feature));
+	g_hash_table_remove_all (session->priv->using_auths);
 	g_rec_mutex_unlock (&session->priv->session_lock);
 }
 
