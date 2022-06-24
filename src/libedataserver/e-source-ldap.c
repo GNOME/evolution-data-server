@@ -17,6 +17,7 @@
 
 #include "evolution-data-server-config.h"
 
+#include "e-data-server-util.h"
 #include "e-source-authentication.h"
 #include "e-source-security.h"
 #include "e-source-enumtypes.h"

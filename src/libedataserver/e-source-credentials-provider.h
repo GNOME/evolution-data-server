@@ -26,7 +26,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-#include <libedataserver/e-data-server-util.h>
+#include <libedataserver/e-named-parameters.h>
 #include <libedataserver/e-source.h>
 #include <libedataserver/e-source-registry.h>
 #include <libedataserver/e-source-credentials-provider-impl.h>

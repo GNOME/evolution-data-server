@@ -17,6 +17,7 @@
 
 #include "evolution-data-server-config.h"
 
+#include "e-data-server-util.h"
 #include "e-source-enumtypes.h"
 #include "e-source-weather.h"
 

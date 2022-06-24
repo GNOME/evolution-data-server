@@ -17,6 +17,8 @@
 
 #include "evolution-data-server-config.h"
 
+#include "e-data-server-util.h"
+
 #include "e-source-local.h"
 
 struct _ESourceLocalPrivate {

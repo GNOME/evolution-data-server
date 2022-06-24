@@ -22,8 +22,8 @@
 #ifndef E_GDATA_OAUTH2_AUTHORIZER_H
 #define E_GDATA_OAUTH2_AUTHORIZER_H
 
+#include <libedataserver/e-named-parameters.h>
 #include <libedataserver/e-source.h>
-#include <libedataserver/e-data-server-util.h>
 
 /* Standard GObject macros */
 #define E_TYPE_GDATA_OAUTH2_AUTHORIZER \

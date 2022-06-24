@@ -24,6 +24,7 @@
 
 #include <glib.h>
 
+#include <libedataserver/e-named-parameters.h>
 #include <libedataserver/e-source.h>
 #include <libedataserver/e-webdav-session.h>
 

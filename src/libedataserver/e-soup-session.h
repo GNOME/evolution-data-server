@@ -25,7 +25,7 @@
 #include <glib.h>
 #include <libsoup/soup.h>
 
-#include <libedataserver/e-data-server-util.h>
+#include <libedataserver/e-named-parameters.h>
 #include <libedataserver/e-source.h>
 
 /* Standard GObject macros */

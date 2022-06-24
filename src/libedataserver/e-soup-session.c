@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <glib/gi18n-lib.h>
 
+#include "e-data-server-util.h"
 #include "e-oauth2-services.h"
 #include "e-soup-auth-bearer.h"
 #include "e-soup-ssl-trust.h"

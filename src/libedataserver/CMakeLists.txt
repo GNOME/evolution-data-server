@@ -63,6 +63,7 @@ set(SOURCES
 	e-list-iterator.c
 	e-memory.c
 	e-module.c
+	e-named-parameters.c
 	e-network-monitor.c
 	e-oauth2-service.c
 	e-oauth2-service-base.c
@@ -153,6 +154,7 @@ set(HEADERS
 	e-list-iterator.h
 	e-memory.h
 	e-module.h
+	e-named-parameters.h
 	e-network-monitor.h
 	e-oauth2-service.h
 	e-oauth2-service-base.h

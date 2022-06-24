@@ -34,6 +34,7 @@
 #ifndef BUILDING_VALUE_HELPER
 #include <json-glib/json-glib.h>
 
+#include "e-data-server-util.h"
 #include "e-secret-store.h"
 #include "e-soup-session.h"
 #include "e-soup-ssl-trust.h"

@@ -15,6 +15,8 @@
  *
  */
 
+#include "evolution-data-server-config.h"
+
 /**
  * SECTION: e-source-autoconfig
  * @include: libedataserver/libedataserver.h
@@ -33,6 +35,8 @@
  *   extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTOCONFIG);
  * ]|
  **/
+
+#include "e-data-server-util.h"
 
 #include "e-source-autoconfig.h"
 

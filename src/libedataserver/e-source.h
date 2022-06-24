@@ -23,7 +23,8 @@
 #define E_SOURCE_H
 
 #include <gio/gio.h>
-#include <libedataserver/e-data-server-util.h>
+
+#include <libedataserver/e-named-parameters.h>
 #include <libedataserver/e-source-enums.h>
 
 /* Standard GObject macros */

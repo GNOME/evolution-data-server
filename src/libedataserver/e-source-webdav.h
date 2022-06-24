@@ -58,10 +58,6 @@
 
 G_BEGIN_DECLS
 
-/* forward declaration */
-struct _ENamedParameters;
-struct _ESourceRegistry;
-
 typedef struct _ESourceWebdav ESourceWebdav;
 typedef struct _ESourceWebdavClass ESourceWebdavClass;
 typedef struct _ESourceWebdavPrivate ESourceWebdavPrivate;

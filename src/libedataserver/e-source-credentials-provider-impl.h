@@ -26,6 +26,7 @@
 #include <glib-object.h>
 
 #include <libedataserver/e-extension.h>
+#include <libedataserver/e-named-parameters.h>
 #include <libedataserver/e-source.h>
 
 /* Standard GObject macros */

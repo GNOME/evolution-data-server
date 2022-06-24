@@ -37,6 +37,7 @@
 #include <libedataserver/e-list.h>
 #include <libedataserver/e-memory.h>
 #include <libedataserver/e-module.h>
+#include <libedataserver/e-named-parameters.h>
 #include <libedataserver/e-network-monitor.h>
 #include <libedataserver/e-oauth2-service.h>
 #include <libedataserver/e-oauth2-service-base.h>

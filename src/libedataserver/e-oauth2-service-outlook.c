@@ -18,6 +18,7 @@
 
 #include <glib/gi18n-lib.h>
 
+#include "e-data-server-util.h"
 #include "e-oauth2-service.h"
 #include "e-oauth2-service-base.h"
 
