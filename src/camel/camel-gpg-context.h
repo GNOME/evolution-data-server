@@ -77,6 +77,11 @@ gboolean	camel_gpg_context_get_prefer_inline
 void		camel_gpg_context_set_prefer_inline
 						(CamelGpgContext *context,
 						 gboolean prefer_inline);
+gboolean	camel_gpg_context_get_locate_keys
+						(CamelGpgContext *context);
+void		camel_gpg_context_set_locate_keys
+						(CamelGpgContext *context,
+						 gboolean locate_keys);
 
 G_END_DECLS
 

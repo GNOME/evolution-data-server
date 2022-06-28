@@ -80,12 +80,14 @@ static gint logid;
 struct _CamelGpgContextPrivate {
 	gboolean always_trust;
 	gboolean prefer_inline;
+	gboolean locate_keys;
 };
 
 enum {
 	PROP_0,
 	PROP_ALWAYS_TRUST,
-	PROP_PREFER_INLINE
+	PROP_PREFER_INLINE,
+	PROP_LOCATE_KEYS,
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelGpgContext, camel_gpg_context, CAMEL_TYPE_CIPHER_CONTEXT)
@@ -171,6 +173,7 @@ struct _GpgCtx {
 	guint seen_eof2 : 1;
 	guint always_trust : 1;
 	guint prefer_inline : 1;
+	guint locate_keys : 1;
 	guint armor : 1;
 	guint need_passwd : 1;
 	guint send_passwd : 1;
@@ -231,6 +234,7 @@ gpg_ctx_new (CamelCipherContext *context,
 	gpg->hash = CAMEL_CIPHER_HASH_DEFAULT;
 	gpg->always_trust = FALSE;
 	gpg->prefer_inline = FALSE;
+	gpg->locate_keys = FALSE;
 	gpg->armor = FALSE;
 	gpg->load_photos = FALSE;
 	gpg->photos_filename = NULL;
@@ -328,6 +332,13 @@ gpg_ctx_set_prefer_inline (struct _GpgCtx *gpg,
 			   gboolean prefer_inline)
 {
 	gpg->prefer_inline = prefer_inline;
+}
+
+static void
+gpg_ctx_set_locate_keys (struct _GpgCtx *gpg,
+			 gboolean locate_keys)
+{
+	gpg->locate_keys = locate_keys;
 }
 
 static void
@@ -733,6 +744,10 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 			g_ptr_array_add (argv, (guint8 *) "--armor");
 		if (gpg->always_trust)
 			g_ptr_array_add (argv, (guint8 *) "--always-trust");
+		if (gpg->locate_keys && camel_session_get_online (gpg->session)) {
+			g_ptr_array_add (argv, (guint8 *) "--auto-key-locate");
+			g_ptr_array_add (argv, (guint8 *) "local,wkd");
+		}
 		if (gpg->userids) {
 			GSList *uiter;
 
@@ -2082,6 +2097,12 @@ gpg_context_set_property (GObject *object,
 				g_value_get_boolean (value));
 			return;
 
+		case PROP_LOCATE_KEYS:
+			camel_gpg_context_set_locate_keys (
+				CAMEL_GPG_CONTEXT (object),
+				g_value_get_boolean (value));
+			return;
+
 		case PROP_PREFER_INLINE:
 			camel_gpg_context_set_prefer_inline (
 				CAMEL_GPG_CONTEXT (object),
@@ -2103,6 +2124,13 @@ gpg_context_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				camel_gpg_context_get_always_trust (
+				CAMEL_GPG_CONTEXT (object)));
+			return;
+
+		case PROP_LOCATE_KEYS:
+			g_value_set_boolean (
+				value,
+				camel_gpg_context_get_locate_keys (
 				CAMEL_GPG_CONTEXT (object)));
 			return;
 
@@ -2635,6 +2663,7 @@ gpg_encrypt_sync (CamelCipherContext *context,
 	gpg_ctx_set_ostream (gpg, ostream);
 	gpg_ctx_set_always_trust (gpg, ctx->priv->always_trust);
 	gpg_ctx_set_prefer_inline (gpg, prefer_inline);
+	gpg_ctx_set_locate_keys (gpg, ctx->priv->locate_keys);
 
 	if (gathered_keys && g_slist_length (gathered_keys) != recipients->len) {
 		g_slist_free_full (gathered_keys, g_free);
@@ -2968,6 +2997,18 @@ camel_gpg_context_class_init (CamelGpgContextClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_LOCATE_KEYS,
+		g_param_spec_boolean (
+			"locate-keys",
+			"Locate Keys",
+			NULL,
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY));
 }
 
 static void
@@ -3067,4 +3108,49 @@ camel_gpg_context_set_prefer_inline (CamelGpgContext *context,
 	context->priv->prefer_inline = prefer_inline;
 
 	g_object_notify (G_OBJECT (context), "prefer-inline");
+}
+
+/**
+ * camel_gpg_context_get_locate_keys:
+ * @context: a #CamelGpgContext
+ *
+ * Returns, whether gpg can locate keys using Web Key Directory (WKD) lookup
+ * when encrypting messages. The default is %TRUE.
+ *
+ * Returns: whether gpg can locate keys using Web Key Directory (WKD) lookup
+ *    when encrypting messages.
+ *
+ * Since: 3.46
+ **/
+gboolean
+camel_gpg_context_get_locate_keys (CamelGpgContext *context)
+{
+	g_return_val_if_fail (CAMEL_IS_GPG_CONTEXT (context), FALSE);
+
+	return context->priv->locate_keys;
+}
+
+/**
+ * camel_gpg_context_set_locate_keys:
+ * @context: gpg context
+ * @locate_keys: value to set
+ *
+ * Sets the @locate_keys on the gpg context which is used to instruct
+ * gpg to locate keys using Web Key Directory (WKD) lookup when encrypting
+ * messages.
+ *
+ * Since: 3.46
+ **/
+void
+camel_gpg_context_set_locate_keys (CamelGpgContext *context,
+				   gboolean locate_keys)
+{
+	g_return_if_fail (CAMEL_IS_GPG_CONTEXT (context));
+
+	if (!context->priv->locate_keys == !locate_keys)
+		return;
+
+	context->priv->locate_keys = locate_keys;
+
+	g_object_notify (G_OBJECT (context), "locate-keys");
 }

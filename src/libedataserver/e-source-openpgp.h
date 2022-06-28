@@ -114,6 +114,9 @@ gboolean	e_source_openpgp_get_prefer_inline
 void		e_source_openpgp_set_prefer_inline
 						(ESourceOpenPGP *extension,
 						 gboolean prefer_inline);
+gboolean	e_source_openpgp_get_locate_keys(ESourceOpenPGP *extension);
+void		e_source_openpgp_set_locate_keys(ESourceOpenPGP *extension,
+						 gboolean locate_keys);
 
 G_END_DECLS
 

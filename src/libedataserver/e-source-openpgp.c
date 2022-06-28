@@ -47,6 +47,7 @@ struct _ESourceOpenPGPPrivate {
 	gboolean sign_by_default;
 	gboolean encrypt_by_default;
 	gboolean prefer_inline;
+	gboolean locate_keys;
 };
 
 enum {
@@ -57,7 +58,8 @@ enum {
 	PROP_SIGNING_ALGORITHM,
 	PROP_SIGN_BY_DEFAULT,
 	PROP_ENCRYPT_BY_DEFAULT,
-	PROP_PREFER_INLINE
+	PROP_PREFER_INLINE,
+	PROP_LOCATE_KEYS
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
@@ -110,6 +112,12 @@ source_openpgp_set_property (GObject *object,
 
 		case PROP_PREFER_INLINE:
 			e_source_openpgp_set_prefer_inline (
+				E_SOURCE_OPENPGP (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_LOCATE_KEYS:
+			e_source_openpgp_set_locate_keys (
 				E_SOURCE_OPENPGP (object),
 				g_value_get_boolean (value));
 			return;
@@ -171,6 +179,13 @@ source_openpgp_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				e_source_openpgp_get_prefer_inline (
+				E_SOURCE_OPENPGP (object)));
+			return;
+
+		case PROP_LOCATE_KEYS:
+			g_value_set_boolean (
+				value,
+				e_source_openpgp_get_locate_keys (
 				E_SOURCE_OPENPGP (object)));
 			return;
 	}
@@ -298,6 +313,20 @@ e_source_openpgp_class_init (ESourceOpenPGPClass *class)
 			"Prefer inline",
 			"Prefer inline sign/encrypt",
 			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_LOCATE_KEYS,
+		g_param_spec_boolean (
+			"locate-keys",
+			"Locate Keys",
+			"Locate keys in WKD for encryption",
+			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -689,4 +718,50 @@ e_source_openpgp_set_prefer_inline (ESourceOpenPGP *extension,
 	extension->priv->prefer_inline = prefer_inline;
 
 	g_object_notify (G_OBJECT (extension), "prefer-inline");
+}
+
+/**
+ * e_source_openpgp_get_locate_keys:
+ * @extension: an #ESourceOpenPGP
+ *
+ * Returns, whether gpg can locate keys using Web Key Directory (WKD) lookup
+ * when encrypting messages. The default is %TRUE.
+ *
+ * Returns: whether gpg can locate keys using Web Key Directory (WKD) lookup
+ *    when encrypting messages.
+ *
+ * Since: 3.46
+ **/
+
+gboolean
+e_source_openpgp_get_locate_keys (ESourceOpenPGP *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_OPENPGP (extension), FALSE);
+
+	return extension->priv->locate_keys;
+}
+
+/**
+ * e_source_openpgp_set_locate_keys:
+ * @extension: an #ESourceOpenPGP
+ * @locate_keys: value to set
+ *
+ * Sets the @locate_keys on the @extension, which is used to instruct
+ * gpg to locate keys using Web Key Directory (WKD) lookup when encrypting
+ * messages.
+ *
+ * Since: 3.46
+ **/
+void
+e_source_openpgp_set_locate_keys (ESourceOpenPGP *extension,
+				  gboolean locate_keys)
+{
+	g_return_if_fail (E_IS_SOURCE_OPENPGP (extension));
+
+	if (!extension->priv->locate_keys == !locate_keys)
+		return;
+
+	extension->priv->locate_keys = locate_keys;
+
+	g_object_notify (G_OBJECT (extension), "locate-keys");
 }
