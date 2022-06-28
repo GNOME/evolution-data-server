@@ -859,10 +859,10 @@ camel_imapx_settings_init (CamelIMAPXSettings *settings)
  *
  * Since: 3.20
  **/
-guint
+gboolean
 camel_imapx_settings_get_use_multi_fetch (CamelIMAPXSettings *settings)
 {
-	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), 0);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), FALSE);
 
 	return settings->priv->use_multi_fetch;
 }
@@ -878,7 +878,7 @@ camel_imapx_settings_get_use_multi_fetch (CamelIMAPXSettings *settings)
  **/
 void
 camel_imapx_settings_set_use_multi_fetch (CamelIMAPXSettings *settings,
-					  guint use_multi_fetch)
+					  gboolean use_multi_fetch)
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
 
