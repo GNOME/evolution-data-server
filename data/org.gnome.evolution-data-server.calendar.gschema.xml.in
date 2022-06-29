@@ -32,6 +32,10 @@
       <default>['']</default>
       <summary>Snoozed reminders for EReminderWatcher</summary>
     </key>
+    <key name="reminders-past-days" type="i">
+      <default>7</default>
+      <summary>How many days the reminders-past can hold back. Reminders older than these days are automatically removed from the list of the past reminders. Use '0' to not remove old reminders.</summary>
+    </key>
 
     <key name="notify-programs" type="as">
       <default>[]</default>

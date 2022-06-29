@@ -79,6 +79,7 @@ struct _EReminderWatcherPrivate {
 
 	gint64 next_midnight;
 	gint64 next_trigger;
+	gint64 last_cleanup_date;
 };
 
 enum {
@@ -1722,6 +1723,81 @@ e_reminder_watcher_add (GSList **inout_reminders, /* EReminderData * */
 }
 
 static void
+e_reminder_watcher_cleanup_past_reminders (EReminderWatcher *watcher)
+{
+	gint64 reminders_past_days;
+	gint64 check_date; /* midnight / (24 * 60 * 60) */
+	time_t now, midnight;
+
+	g_rec_mutex_lock (&watcher->priv->lock);
+
+	reminders_past_days = g_settings_get_int (watcher->priv->settings, "reminders-past-days");
+	if (!reminders_past_days) {
+		g_rec_mutex_unlock (&watcher->priv->lock);
+		return;
+	} else if (reminders_past_days < 1) {
+		reminders_past_days = 1;
+	}
+
+	now = time (NULL);
+	midnight = time_day_end_with_zone (now, watcher->priv->default_zone);
+
+	while (midnight <= now) {
+		now += 60 * 60; /* increment one day */
+		midnight = time_day_end_with_zone (now, watcher->priv->default_zone);
+	}
+
+	check_date = midnight / (24 * 60 * 60);
+
+	if (check_date != watcher->priv->last_cleanup_date) {
+		GSList *past_reminders, *new_past_reminders = NULL, *link;
+		guint64 n_removed = 0;
+
+		watcher->priv->last_cleanup_date = check_date;
+
+		past_reminders = e_reminder_watcher_dup_past (watcher);
+
+		for (link = past_reminders; link; link = g_slist_next (link)) {
+			EReminderData *rd = link->data;
+			gint64 diff;
+
+			diff = (g_get_real_time () / G_USEC_PER_SEC) - ((gint64) e_cal_component_alarm_instance_get_occur_start (rd->instance));
+			if (diff > 0) {
+				diff /= 60 * 60 * 24;
+
+				if (diff <= reminders_past_days) {
+					new_past_reminders = g_slist_prepend (new_past_reminders, rd);
+				} else {
+					n_removed++;
+					e_reminder_watcher_debug_print ("Auto-removed reminder from past for '%s' from %s at %s due to being %" G_GINT64_FORMAT " days old\n",
+						i_cal_component_get_summary (e_cal_component_get_icalcomponent (rd->component)),
+						rd->source_uid,
+						e_reminder_watcher_timet_as_string (e_cal_component_alarm_instance_get_time (rd->instance)),
+						diff);
+				}
+			} else {
+				new_past_reminders = g_slist_prepend (new_past_reminders, rd);
+			}
+		}
+
+		if (n_removed > 0) {
+			e_reminder_watcher_debug_print ("Auto-removed %" G_GUINT64_FORMAT " past reminders older than %" G_GINT64_FORMAT " days, left %d reminders\n",
+				n_removed, reminders_past_days, g_slist_length (new_past_reminders));
+
+			new_past_reminders = g_slist_reverse (new_past_reminders);
+
+			e_reminder_watcher_save_past (watcher, new_past_reminders);
+			e_reminder_watcher_emit_signal_idle (watcher, signals[CHANGED], NULL);
+		}
+
+		g_slist_free_full (past_reminders, e_reminder_data_free);
+		g_slist_free (new_past_reminders);
+	}
+
+	g_rec_mutex_unlock (&watcher->priv->lock);
+}
+
+static void
 e_reminder_watcher_gather_nearest_scheduled_cb (gpointer key,
 						gpointer value,
 						gpointer user_data)
@@ -1754,6 +1830,8 @@ e_reminder_watcher_maybe_schedule_next_trigger (EReminderWatcher *watcher,
 						gint64 next_trigger)
 {
 	g_rec_mutex_lock (&watcher->priv->lock);
+
+	e_reminder_watcher_cleanup_past_reminders (watcher);
 
 	if (!watcher->priv->timers_enabled) {
 		g_rec_mutex_unlock (&watcher->priv->lock);
