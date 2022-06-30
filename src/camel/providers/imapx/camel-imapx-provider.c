@@ -90,6 +90,9 @@ CamelProviderConfEntry imapx_conf_entries[] = {
 	  N_("ascending order"),
 	  /* Translators: This constructs "Fetch new messages in descending order" */
 	  N_("descending order") },
+	{ CAMEL_PROVIDER_CONF_CHECKSPIN, "store-changes-interval", NULL,
+	  /* Translators: The '%s' is replaced with a spin button with the actual value */
+	  N_("Store folder changes after %s second(s)"), "" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };

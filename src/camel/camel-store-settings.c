@@ -110,8 +110,8 @@ camel_store_settings_class_init (CamelStoreSettingsClass *class)
 			"store-changes-interval",
 			"Store Changes Interval",
 			"Interval, in seconds, to store folder changes",
-			G_MININT,
-			G_MAXINT,
+			-1,
+			999,
 			3,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
