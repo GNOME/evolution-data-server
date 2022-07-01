@@ -854,12 +854,19 @@ pkg_check_modules(SQLITE3 REQUIRED sqlite3>=${sqlite_minimum_version})
 # Google flags
 # ******************************
 
-add_printable_option(ENABLE_GOOGLE "Enable Google support" ON)
+add_printable_option(ENABLE_GOOGLE "Enable Google support" OFF)
 if(ENABLE_GOOGLE)
 	pkg_check_modules_for_option(ENABLE_GOOGLE "Google" LIBGDATA libgdata>=${libgdata_minimum_version})
 	set(HAVE_LIBGDATA ON)
 	set(LIBGDATA_GIR GData-1.0)
 	set(LIBGDATA_VAPI libgdata)
+
+	# compatibility check
+	pkg_check_variable(libgdata_soupapiversion libgdata soupapiversion)
+	if(NOT "${libgdata_soupapiversion}" STREQUAL "3.0")
+		message(FATAL_ERROR "Requires libgdata compiled with libsoup 3.0 API, but found version '${libgdata_soupapiversion}' instead. If you want to disable Google tasks support, please use -DENABLE_GOOGLE=OFF argument to cmake command.")
+	endif(NOT "${libgdata_soupapiversion}" STREQUAL "3.0")
+	unset(libgdata_soupapiversion)
 
 	set(CMAKE_REQUIRED_DEFINITIONS ${LIBGDATA_CFLAGS_OTHER})
 	set(CMAKE_REQUIRED_INCLUDES ${LIBGDATA_INCLUDE_DIRS})
