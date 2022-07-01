@@ -1,3 +1,17 @@
+Evolution-Data-Server 3.44.3 2022-07-01
+---------------------------------------
+
+Bug Fixes:
+	I#350 - LDAP: Conditionally use 'description' as Note
+	I#391 - Tests fail with libphonenumber 8.12.49
+	I#392 - Sanitize IPv6 proxy address before passing it to WebKitGTK
+	I#393 - Calendar: Correct UNTIL recurrence with midnight start
+	I#396 - Camel: Read message ID-s with multiple `@`
+
+Miscellaneous:
+	Disable hardware acceleration for WebKitGTK
+	ESource: Reconnect signal handlers when the D-Bus 'source' interface changes
+
 Evolution-Data-Server 3.44.2 2022-05-27
 ---------------------------------------
 
