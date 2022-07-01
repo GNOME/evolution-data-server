@@ -1,3 +1,62 @@
+Evolution-Data-Server 3.45.1 2022-07-01
+---------------------------------------
+
+ * The Evolution-Data-Server had been ported to libsoup3, which
+   means anything what uses it, and all of its dependencies, should
+   be libsoup3 too.
+
+Bug Fixes:
+	I#39 - Add Web Key Directory (WKD) support for OpenPGP
+	I#234 - EReminderWatcher: Auto-remove old reminders
+	I#350 - LDAP: Conditionally use 'description' as Note
+	I#359 - CalDAV: Crash on calendar update
+	I#379 - OAuth2: Option to use browser of choice for authentication
+	I#380 - CalDAV: Free / Busy not working with Nextcloud
+	I#381 - EWebDAVSession: Correct extract of href from Location header
+	I#383 - Add option to respect Power Saver mode
+	I#386 - e-webdav-discover: Fails to find Radicale calendars within collection account
+	I#388 - Google OAuth out-of-band (oob) flow will be deprecated
+	I#389 - IMAPx: Fails to create folder with NIL folder hierarchy delimiter
+	I#390 - Camel: Give more precise error on failed message encryption
+	I#391 - Tests fail with libphonenumber 8.12.49
+	I#392 - Sanitize IPv6 proxy address before passing it to WebKitGTK
+	I#393 - Calendar: Correct UNTIL recurrence with midnight start
+	I#396 - Camel: Read message ID-s with multiple `@`
+	M!80 - Provide libedataserverui for gtk4
+	M!85 - Port to libsoup3
+	M!91 - CamelStoreSummary: Make CamelStoreInfo a boxed class (Corentin Noël)
+	evo-I#1026 - alarm-notify: Add option to enable/disable desktop notifications
+	evo-I#1348 - WebDAVCollectionBackend: Removes sources on server error
+
+Miscellaneous:
+	Change how OAuth2 credentials are stored in the code
+	ESoupAuthBearer: Implement two more SoupAuth virtual methods
+	ERemindersWidget: Allow width shrink for small screens
+	e-module: Add debug prints about module loading
+	Fix few memory leaks discovered by Coverity scan
+	goa-ews: Handle certificate errors during autodiscover
+	GOA module: Prevent ESource removal on D-Bus reconnect or registry reload
+	EExtensible: Introduce e_extensible_reload_extensions()
+	EDataFactory: Reload extensions on factory start
+	Disable hardware acceleration for WebKitGTK
+	book/cal-meta-backend: Claim error on refresh call in Power Saver mode
+	Calendar: Add functions to handle LANGUAGE parameter on properties
+	e-cal-component: Fix a logic flaw in the foreach_property()
+	alarm-notify: Use localized summary/description properties, if available
+	build: Look for WebKitGTK only when GTK/GTK4 is enabled
+	Correct libedataserverui4 main header file
+	ECredentialsPrompterImplPassword: Dialog not closed on OK/Cancel click in gtk3
+	ESoupSession: Change handling of credentials
+	ESource: Reconnect signal handlers when the D-Bus 'source' interface changes
+	Camel: Add 'Advanced Options' section to provider configuration
+	IMAPx: Expose store-changes-interval in Advanced Options
+	build: Disable libgdata dependency by default and check its soupapiversion
+
+Translations:
+	Fran Dieguez (gl)
+	Danial Behzadi (fa)
+	Daniel Mustieles (es)
+
 Evolution-Data-Server 3.44.0 2022-03-18
 ---------------------------------------
 
