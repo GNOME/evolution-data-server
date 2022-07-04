@@ -102,8 +102,8 @@ set(gdk4_minimum_version 4.4)
 set(gdk4_encoded_version GDK_VERSION_4_4)
 
 # Keep these two definitions in agreement.
-set(soup_minimum_version 3.0)
-set(soup_encoded_version SOUP_VERSION_3_0)
+set(soup_minimum_version 3.1.1)
+set(soup_encoded_version SOUP_VERSION_3_2)
 
 # Warn about API usage that violates our minimum requirements.
 add_definitions(-DGLIB_VERSION_MAX_ALLOWED=${glib_encoded_version})
