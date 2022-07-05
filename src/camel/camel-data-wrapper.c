@@ -1548,6 +1548,42 @@ camel_data_wrapper_construct_from_input_stream_finish (CamelDataWrapper *data_wr
 }
 
 /**
+ * camel_data_wrapper_construct_from_data_sync:
+ * @data_wrapper: a #CamelDataWrapper
+ * @data: (not nullable): data to set
+ * @data_len: length of @data
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Constructs the content of @data_wrapper from @data of length @data_len.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.46
+ **/
+gboolean
+camel_data_wrapper_construct_from_data_sync (CamelDataWrapper *data_wrapper,
+					     gconstpointer data,
+					     gssize data_len,
+					     GCancellable *cancellable,
+					     GError **error)
+{
+	GInputStream *input_stream;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), FALSE);
+	g_return_val_if_fail (data != NULL, FALSE);
+
+	input_stream = g_memory_input_stream_new_from_data (data, data_len, NULL);
+
+	success = camel_data_wrapper_construct_from_input_stream_sync (data_wrapper, input_stream, cancellable, error);
+
+	g_clear_object (&input_stream);
+
+	return success;
+}
+
+/**
  * camel_data_wrapper_calculate_size_sync:
  * @data_wrapper: a #CamelDataWrapper
  * @cancellable: a #GCancellable, or %NULL

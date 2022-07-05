@@ -1133,14 +1133,10 @@ camel_mime_part_set_content (CamelMimePart *mime_part,
 
 	if (length) {
 		CamelDataWrapper *dw;
-		CamelStream *stream;
 
 		dw = camel_data_wrapper_new ();
 		camel_data_wrapper_set_mime_type (dw, type);
-		stream = camel_stream_mem_new_with_buffer (data, length);
-		camel_data_wrapper_construct_from_stream_sync (
-			dw, stream, NULL, NULL);
-		g_object_unref (stream);
+		camel_data_wrapper_construct_from_data_sync (dw, data, length, NULL, NULL);
 		camel_medium_set_content (medium, dw);
 		g_object_unref (dw);
 	} else
