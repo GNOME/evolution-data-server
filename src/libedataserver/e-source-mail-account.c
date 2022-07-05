@@ -46,6 +46,7 @@ struct _ESourceMailAccountPrivate {
 	gboolean needs_initial_setup;
 	EThreeState mark_seen;
 	gint mark_seen_timeout;
+	gboolean builtin;
 };
 
 enum {
@@ -54,7 +55,8 @@ enum {
 	PROP_ARCHIVE_FOLDER,
 	PROP_NEEDS_INITIAL_SETUP,
 	PROP_MARK_SEEN,
-	PROP_MARK_SEEN_TIMEOUT
+	PROP_MARK_SEEN_TIMEOUT,
+	PROP_BUILTIN
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
@@ -97,6 +99,12 @@ source_mail_account_set_property (GObject *object,
 			e_source_mail_account_set_mark_seen_timeout (
 				E_SOURCE_MAIL_ACCOUNT (object),
 				g_value_get_int (value));
+			return;
+
+		case PROP_BUILTIN:
+			e_source_mail_account_set_builtin (
+				E_SOURCE_MAIL_ACCOUNT (object),
+				g_value_get_boolean (value));
 			return;
 	}
 
@@ -142,6 +150,13 @@ source_mail_account_get_property (GObject *object,
 			g_value_set_int (
 				value,
 				e_source_mail_account_get_mark_seen_timeout (
+				E_SOURCE_MAIL_ACCOUNT (object)));
+			return;
+
+		case PROP_BUILTIN:
+			g_value_set_boolean (
+				value,
+				e_source_mail_account_get_builtin (
 				E_SOURCE_MAIL_ACCOUNT (object)));
 			return;
 	}
@@ -243,6 +258,20 @@ e_source_mail_account_class_init (ESourceMailAccountClass *class)
 			"Timeout in milliseconds for Mark messages as read after N seconds",
 			0, G_MAXINT,
 			1500,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_BUILTIN,
+		g_param_spec_boolean (
+			"builtin",
+			"Builtin",
+			"Whether the account is builtin",
+			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -545,4 +574,47 @@ e_source_mail_account_set_mark_seen_timeout (ESourceMailAccount *extension,
 	extension->priv->mark_seen_timeout = timeout;
 
 	g_object_notify (G_OBJECT (extension), "mark-seen-timeout");
+}
+
+/**
+ * e_source_mail_account_get_builtin:
+ * @extension: an #ESourceMailAccount
+ *
+ * Returns whether the mail account is a builtin account. The builtin
+ * account cannot be created by a user. The default value is %FALSE.
+ *
+ * Returns: %TRUE, when the account is a builtin account
+ *
+ * Since: 3.46
+ **/
+gboolean
+e_source_mail_account_get_builtin (ESourceMailAccount *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_MAIL_ACCOUNT (extension), FALSE);
+
+	return extension->priv->builtin;
+}
+
+/**
+ * e_source_mail_account_set_builtin:
+ * @extension: an #ESourceMailAccount
+ * @builtin: value to set
+ *
+ * Sets whether the account is a builtin account. See e_source_mail_account_get_builtin()
+ * for more information about what it means.
+ *
+ * Since: 3.46
+ **/
+void
+e_source_mail_account_set_builtin (ESourceMailAccount *extension,
+				   gboolean builtin)
+{
+	g_return_if_fail (E_IS_SOURCE_MAIL_ACCOUNT (extension));
+
+	if ((extension->priv->builtin ? 1 : 0) == (builtin ? 1 : 0))
+		return;
+
+	extension->priv->builtin = builtin;
+
+	g_object_notify (G_OBJECT (extension), "builtin");
 }

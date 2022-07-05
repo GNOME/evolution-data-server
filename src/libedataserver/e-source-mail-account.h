@@ -109,6 +109,11 @@ gint		e_source_mail_account_get_mark_seen_timeout
 void		e_source_mail_account_set_mark_seen_timeout
 					(ESourceMailAccount *extension,
 					 gint timeout);
+gboolean	e_source_mail_account_get_builtin
+					(ESourceMailAccount *extension);
+void		e_source_mail_account_set_builtin
+					(ESourceMailAccount *extension,
+					 gint builtin);
 
 G_END_DECLS
 
