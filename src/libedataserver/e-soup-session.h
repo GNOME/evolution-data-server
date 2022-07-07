@@ -132,6 +132,7 @@ GByteArray *	e_soup_session_send_message_simple_sync	(ESoupSession *session,
 							 SoupMessage *message,
 							 GCancellable *cancellable,
 							 GError **error);
+GByteArray *	e_soup_session_util_get_message_bytes	(SoupMessage *message);
 const gchar *	e_soup_session_util_status_to_string	(guint status_code,
 							 const gchar *reason_phrase);
 GUri *		e_soup_session_util_normalize_uri_path	(GUri *uri);

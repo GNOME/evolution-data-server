@@ -40,6 +40,7 @@
 
 G_DEFINE_QUARK (e-soup-session-error-quark, e_soup_session_error)
 
+#define E_SOUP_SESSION_MESSAGE_BYTES_KEY "e-soup-session-message-bytes"
 #define BUFFER_SIZE 16384
 
 struct _ESoupSessionPrivate {
@@ -1240,6 +1241,56 @@ e_soup_session_prepare_message_send_sync (ESoupSession *session,
 	return NULL;
 }
 
+static GByteArray *
+e_soup_session_read_bytes (SoupMessage *message,
+			   GInputStream *input_stream,
+			   GCancellable *cancellable,
+			   GError **error)
+{
+	GByteArray *bytes;
+	goffset expected_length;
+	gpointer buffer;
+	gsize nread = 0;
+	gboolean success = FALSE;
+
+	expected_length = soup_message_headers_get_content_length (soup_message_get_response_headers (message));
+	if (expected_length > 0)
+		bytes = g_byte_array_sized_new (expected_length > 1024 * 1024 * 10 ? 1024 * 1024 * 10 : expected_length);
+	else
+		bytes = g_byte_array_new ();
+
+	buffer = g_malloc (BUFFER_SIZE);
+
+	while (success = g_input_stream_read_all (input_stream, buffer, BUFFER_SIZE, &nread, cancellable, error),
+	       success && nread > 0) {
+		g_byte_array_append (bytes, buffer, nread);
+	}
+
+	g_free (buffer);
+
+	if (!success)
+		g_clear_pointer (&bytes, g_byte_array_unref);
+
+	return bytes;
+}
+
+static void
+e_soup_session_store_data_on_message (SoupMessage *message,
+				      GInputStream *input_stream,
+				      GCancellable *cancellable)
+{
+	if (input_stream) {
+		GByteArray *bytes;
+
+		bytes = e_soup_session_read_bytes (message, input_stream, cancellable, NULL);
+
+		if (bytes) {
+			g_object_set_data_full (G_OBJECT (message), E_SOUP_SESSION_MESSAGE_BYTES_KEY,
+				bytes, (GDestroyNotify) g_byte_array_unref);
+		}
+	}
+}
+
 static void
 e_soup_session_send_message_ready_cb (GObject *source_object,
 				      GAsyncResult *result,
@@ -1263,11 +1314,18 @@ e_soup_session_send_message_ready_cb (GObject *source_object,
 	message = soup_session_get_async_result_message (session, result);
 
 	if (message) {
+		if (!SOUP_STATUS_IS_SUCCESSFUL (soup_message_get_status (message))) {
+			e_soup_session_store_data_on_message (message, input_stream, NULL);
+			g_clear_object (&input_stream);
+		}
+
 		if (g_error_matches (local_error, G_TLS_ERROR, G_TLS_ERROR_BAD_CERTIFICATE)) {
 			e_soup_session_extract_ssl_data (E_SOUP_SESSION (session), message, &asd->certificate_pem, &asd->certificate_errors);
 		} else if (!local_error && !SOUP_STATUS_IS_SUCCESSFUL (soup_message_get_status (message))) {
+			GByteArray *bytes = e_soup_session_util_get_message_bytes (message);
+
 			if (soup_message_get_status (message) != SOUP_STATUS_FORBIDDEN ||
-			    !e_soup_session_extract_google_daily_limit_error (NULL, 0, &local_error))
+			    !e_soup_session_extract_google_daily_limit_error (bytes ? bytes->data : NULL, bytes ? bytes->len : 0, &local_error))
 				g_set_error_literal (&local_error, E_SOUP_SESSION_ERROR, soup_message_get_status (message),
 					soup_message_get_reason_phrase (message));
 		}
@@ -1502,11 +1560,18 @@ e_soup_session_send_message_sync (ESoupSession *session,
 	if (restarted_id)
 		g_signal_handler_disconnect (message, restarted_id);
 
+	if (!SOUP_STATUS_IS_SUCCESSFUL (soup_message_get_status (message))) {
+		e_soup_session_store_data_on_message (message, input_stream, cancellable);
+		g_clear_object (&input_stream);
+	}
+
 	if (g_error_matches (local_error, G_TLS_ERROR, G_TLS_ERROR_BAD_CERTIFICATE)) {
 		e_soup_session_extract_ssl_data_internal (session, message);
 	} else if (!local_error && !SOUP_STATUS_IS_SUCCESSFUL (soup_message_get_status (message))) {
+		GByteArray *bytes = e_soup_session_util_get_message_bytes (message);
+
 		if (soup_message_get_status (message) != SOUP_STATUS_FORBIDDEN ||
-		    !e_soup_session_extract_google_daily_limit_error (NULL, 0, error))
+		    !e_soup_session_extract_google_daily_limit_error (bytes ? bytes->data : NULL, bytes ? bytes->len : 0, error))
 			g_set_error_literal (&local_error, E_SOUP_SESSION_ERROR, soup_message_get_status (message),
 				soup_message_get_reason_phrase (message));
 	}
@@ -1544,41 +1609,39 @@ e_soup_session_send_message_simple_sync (ESoupSession *session,
 {
 	GInputStream *input_stream;
 	GByteArray *bytes;
-	gint expected_length;
-	gpointer buffer;
-	gsize nread = 0;
 	gboolean success = FALSE;
 
 	g_return_val_if_fail (E_IS_SOUP_SESSION (session), NULL);
 	g_return_val_if_fail (SOUP_IS_MESSAGE (message), NULL);
 
 	input_stream = e_soup_session_send_message_sync (session, message, cancellable, error);
-	if (!input_stream)
+
+	if (!input_stream) {
+		bytes = e_soup_session_util_get_message_bytes (message);
+
+		if (bytes) {
+			GError *local_error = NULL;
+
+			if (!e_soup_session_check_result (session, message, bytes->data, bytes->len, &local_error) && local_error) {
+				g_clear_error (error);
+				g_propagate_error (error, local_error);
+			}
+		}
+
 		return NULL;
-
-	expected_length = soup_message_headers_get_content_length (soup_message_get_response_headers (message));
-	if (expected_length > 0)
-		bytes = g_byte_array_sized_new (expected_length > 1024 * 1024 * 10 ? 1024 * 1024 * 10 : expected_length);
-	else
-		bytes = g_byte_array_new ();
-
-	buffer = g_malloc (BUFFER_SIZE);
-
-	while (success = g_input_stream_read_all (input_stream, buffer, BUFFER_SIZE, &nread, cancellable, error),
-	       success && nread > 0) {
-		g_byte_array_append (bytes, buffer, nread);
 	}
 
-	g_free (buffer);
+	bytes = e_soup_session_read_bytes (message, input_stream, cancellable, error);
+
 	g_object_unref (input_stream);
+
+	success = bytes != NULL;
 
 	if (success)
 		success = e_soup_session_check_result (session, message, bytes->data, bytes->len, error);
 
-	if (!success) {
-		g_byte_array_free (bytes, TRUE);
-		bytes = NULL;
-	}
+	if (!success)
+		g_clear_pointer (&bytes, g_byte_array_unref);
 
 	return bytes;
 }
@@ -2005,4 +2068,24 @@ e_soup_session_util_ref_message_request_body (SoupMessage *message,
 		*out_length = md->length;
 
 	return e_input_stream_wrapper_dup (E_INPUT_STREAM_WRAPPER (md->input_stream));
+}
+
+/**
+ * e_soup_session_util_get_message_bytes:
+ * @message: a #SoupMessage
+ *
+ * Returns bytes read from the message response, when the message send failed.
+ * This can be used to examine detailed error returned by the server in
+ * the response body.
+ *
+ * Returns: (transfer none) (nullable): read message data on failed request, or %NULL, when none had been read
+ *
+ * Since: 3.46
+ **/
+GByteArray *
+e_soup_session_util_get_message_bytes (SoupMessage *message)
+{
+	g_return_val_if_fail (SOUP_IS_MESSAGE (message), NULL);
+
+	return g_object_get_data (G_OBJECT (message), E_SOUP_SESSION_MESSAGE_BYTES_KEY);
 }

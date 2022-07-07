@@ -891,6 +891,13 @@ e_webdav_session_replace_with_detailed_error_internal (EWebDAVSession *webdav,
 	if (response_data && response_data->len) {
 		byte_array.data = (gpointer) response_data->data;
 		byte_array.len = response_data->len;
+	} else {
+		GByteArray *bytes = e_soup_session_util_get_message_bytes (message);
+
+		if (bytes) {
+			byte_array.data = bytes->data;
+			byte_array.len = bytes->len;
+		}
 	}
 
 	if (!byte_array.data || !byte_array.len)
