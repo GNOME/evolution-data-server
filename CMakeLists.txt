@@ -118,7 +118,6 @@ add_definitions(-DSOUP_VERSION_MIN_REQUIRED=${soup_encoded_version})
 
 set(gcr3_minimum_version 3.4)
 set(gcr4_minimum_version 3.90)
-set(libgdata_minimum_version 0.15.1)
 set(libical_glib_minimum_version 3.0.7)
 set(libsecret_minimum_version 0.5)
 set(libxml_minimum_version 2.0.0)
@@ -849,40 +848,6 @@ unset(defval)
 # sqlite3 flags
 # ******************************
 pkg_check_modules(SQLITE3 REQUIRED sqlite3>=${sqlite_minimum_version})
-
-# ******************************
-# Google flags
-# ******************************
-
-add_printable_option(ENABLE_GOOGLE "Enable Google support" OFF)
-if(ENABLE_GOOGLE)
-	pkg_check_modules_for_option(ENABLE_GOOGLE "Google" LIBGDATA libgdata>=${libgdata_minimum_version})
-	set(HAVE_LIBGDATA ON)
-	set(LIBGDATA_GIR GData-1.0)
-	set(LIBGDATA_VAPI libgdata)
-
-	# compatibility check
-	pkg_check_variable(libgdata_soupapiversion libgdata soupapiversion)
-	if(NOT "${libgdata_soupapiversion}" STREQUAL "3.0")
-		message(FATAL_ERROR "Requires libgdata compiled with libsoup 3.0 API, but found version '${libgdata_soupapiversion}' instead. If you want to disable Google tasks support, please use -DENABLE_GOOGLE=OFF argument to cmake command.")
-	endif(NOT "${libgdata_soupapiversion}" STREQUAL "3.0")
-	unset(libgdata_soupapiversion)
-
-	set(CMAKE_REQUIRED_DEFINITIONS ${LIBGDATA_CFLAGS_OTHER})
-	set(CMAKE_REQUIRED_INCLUDES ${LIBGDATA_INCLUDE_DIRS})
-	set(CMAKE_REQUIRED_LIBRARIES ${LIBGDATA_LDFLAGS})
-
-	CHECK_C_SOURCE_COMPILES("#include <gdata/gdata.h>
-				int main(void) {
-					gdata_feed_get_next_page_token (NULL);
-					gdata_query_next_page (NULL);
-					return 0;
-				}" HAVE_LIBGDATA_TASKS_PAGINATION_FUNCTIONS)
-
-	unset(CMAKE_REQUIRED_DEFINITIONS)
-	unset(CMAKE_REQUIRED_INCLUDES)
-	unset(CMAKE_REQUIRED_LIBRARIES)
-endif(ENABLE_GOOGLE)
 
 # ******************************
 # Checks for large file support

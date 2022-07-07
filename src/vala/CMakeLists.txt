@@ -108,7 +108,6 @@ set(vala_deps
 	libsoup-3.0
 	libxml-2.0
 	posix
-	${LIBGDATA_VAPI}
 )
 
 set(extra_vapigen_files)

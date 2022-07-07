@@ -183,12 +183,6 @@
 /* Have <et/com_err.h> */
 #cmakedefine HAVE_ET_COM_ERR_H 1
 
-/* Define to 1 if you have the libgdata package */
-#cmakedefine HAVE_LIBGDATA 1
-
-/* Define to 1 when the libgdata provides GTasks pagination functions */
-#cmakedefine HAVE_LIBGDATA_TASKS_PAGINATION_FUNCTIONS 1
-
 /* Define to 1 when have O_LARGEFILE open flag */
 #cmakedefine HAVE_O_LARGEFILE 1
 

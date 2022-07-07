@@ -57,7 +57,6 @@ set(SOURCES
 	e-extension.c
 	e-flag.c
 	e-free-form-exp.c
-	e-gdata-oauth2-authorizer.c
 	e-gdata-query.c
 	e-gdata-session.c
 	e-iterator.c
@@ -151,7 +150,6 @@ set(HEADERS
 	e-extension.h
 	e-flag.h
 	e-free-form-exp.h
-	e-gdata-oauth2-authorizer.h
 	e-gdata-query.h
 	e-gdata-session.h
 	e-iterator.h
@@ -263,7 +261,6 @@ target_compile_options(edataserver PUBLIC
 	${GIO_UNIX_CFLAGS}
 	${ICU_CFLAGS}
 	${JSON_GLIB_CFLAGS}
-	${LIBGDATA_CFLAGS}
 )
 
 target_include_directories(edataserver PUBLIC
@@ -278,7 +275,6 @@ target_include_directories(edataserver PUBLIC
 	${GIO_UNIX_INCLUDE_DIRS}
 	${ICU_INCLUDE_DIRS}
 	${JSON_GLIB_INCLUDE_DIRS}
-	${LIBGDATA_INCLUDE_DIRS}
 )
 
 target_link_libraries(edataserver
@@ -287,7 +283,6 @@ target_link_libraries(edataserver
 	${GIO_UNIX_LDFLAGS}
 	${ICU_LDFLAGS}
 	${JSON_GLIB_LDFLAGS}
-	${LIBGDATA_LDFLAGS}
 )
 
 install(TARGETS edataserver
@@ -300,7 +295,7 @@ install(FILES ${HEADERS}
 
 set(gir_sources ${SOURCES} ${HEADERS})
 set(gir_identifies_prefixes E)
-set(gir_includes GObject-2.0 Gio-2.0 Soup-3.0 libxml2-2.0 ${LIBGDATA_GIR})
+set(gir_includes GObject-2.0 Gio-2.0 Soup-3.0 libxml2-2.0)
 set(gir_cflags
 	-DLIBEDATASERVER_COMPILATION
 )

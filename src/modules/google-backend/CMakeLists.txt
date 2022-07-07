@@ -1,17 +1,11 @@
 set(extra_deps)
-if(HAVE_LIBGDATA)
-	set(sources
-		module-google-backend.c
-	)
-else(HAVE_LIBGDATA)
-	set(sources
-		module-google-backend.c
-	)
-endif(HAVE_LIBGDATA)
+set(sources
+	module-google-backend.c
+)
 set(extra_defines)
-set(extra_cflags ${LIBGDATA_CFLAGS})
-set(extra_incdirs ${LIBGDATA_INCLUDE_DIRS})
-set(extra_ldflags ${LIBGDATA_LDFLAGS})
+set(extra_cflags)
+set(extra_incdirs)
+set(extra_ldflags)
 
 add_source_registry_module(module-google-backend
 	sources

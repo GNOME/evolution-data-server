@@ -22,10 +22,6 @@
 #include <libebackend/libebackend.h>
 #include <libedataserver/libedataserver.h>
 
-#ifdef HAVE_LIBGDATA
-#include <gdata/gdata.h>
-#endif
-
 /* Standard GObject macros */
 #define E_TYPE_GOOGLE_BACKEND \
 	(e_google_backend_get_type ())
@@ -386,7 +382,6 @@ google_remove_unknown_sources_cb (gpointer resource_id,
 	}
 }
 
-#ifdef HAVE_LIBGDATA
 static void
 google_add_task_list (ECollectionBackend *collection,
 		      const gchar *resource_id,
@@ -464,7 +459,26 @@ google_add_task_list (ECollectionBackend *collection,
 	g_object_unref (server);
 	g_free (identity);
 }
-#endif /* HAVE_LIBGDATA */
+
+typedef struct _TaskListsData {
+	ECollectionBackend *collection;
+	GHashTable *known_sources;
+} TaskListsData;
+
+static gboolean
+google_backend_list_task_lists_cb (EGDataSession *gdata,
+				   JsonObject *tasklist,
+				   gpointer user_data)
+{
+	TaskListsData *tld = user_data;
+
+	google_add_task_list (tld->collection,
+		e_gdata_tasklist_get_id (tasklist),
+		e_gdata_tasklist_get_title (tasklist),
+		tld->known_sources);
+
+	return TRUE;
+}
 
 static ESourceAuthenticationResult
 google_backend_authenticate_sync (EBackend *backend,
@@ -547,57 +561,29 @@ google_backend_authenticate_sync (EBackend *backend,
 		result = E_SOURCE_AUTHENTICATION_ACCEPTED;
 	}
 
-#ifdef HAVE_LIBGDATA
 	if (result == E_SOURCE_AUTHENTICATION_ACCEPTED &&
 	    e_source_collection_get_calendar_enabled (collection_extension) &&
 	    (goa_extension || e_oauth2_services_is_supported ())) {
-		EGDataOAuth2Authorizer *authorizer;
-		GDataTasksService *tasks_service;
+		EGDataSession *gdata;
+		TaskListsData tld;
 		GError *local_error = NULL;
 
-		authorizer = e_gdata_oauth2_authorizer_new (e_backend_get_source (backend), GDATA_TYPE_TASKS_SERVICE);
-		e_gdata_oauth2_authorizer_set_credentials (authorizer, credentials);
-
-		tasks_service = gdata_tasks_service_new (GDATA_AUTHORIZER (authorizer));
+		gdata = e_gdata_session_new (e_backend_get_source (backend));
 
 		e_binding_bind_property (
 			backend, "proxy-resolver",
-			tasks_service, "proxy-resolver",
+			gdata, "proxy-resolver",
 			G_BINDING_SYNC_CREATE);
 
-		if (gdata_authorizer_refresh_authorization (GDATA_AUTHORIZER (authorizer), cancellable, &local_error)) {
-			GDataQuery *query;
-			GDataFeed *feed;
+		tld.collection = collection;
+		tld.known_sources = known_sources;
 
-			query = gdata_query_new (NULL);
-			feed = gdata_tasks_service_query_all_tasklists (tasks_service, query, cancellable, NULL, NULL, &local_error);
-			if (feed) {
-				GList *link;
+		if (!e_gdata_session_tasklists_list_sync (gdata, NULL, google_backend_list_task_lists_cb, &tld, cancellable, &local_error))
+			e_source_registry_debug_print ("%s: Failed to get tasks list: %s\n", G_STRFUNC, local_error ? local_error->message : "Unknown error");
 
-				for (link = gdata_feed_get_entries (feed); link; link = g_list_next (link)) {
-					GDataEntry *entry = link->data;
-
-					if (entry) {
-						google_add_task_list (collection,
-							gdata_entry_get_id (entry),
-							gdata_entry_get_title (entry),
-							known_sources);
-					}
-				}
-			}
-
-			g_clear_object (&feed);
-			g_object_unref (query);
-		}
-
-		if (local_error)
-			g_debug ("%s: Failed to get tasks list: %s", G_STRFUNC, local_error->message);
-
-		g_clear_object (&tasks_service);
-		g_clear_object (&authorizer);
+		g_clear_object (&gdata);
 		g_clear_error (&local_error);
 	}
-#endif /* HAVE_LIBGDATA */
 
 	if (result == E_SOURCE_AUTHENTICATION_ACCEPTED) {
 		ESourceRegistryServer *server;

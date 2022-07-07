@@ -31,7 +31,6 @@
 #include <libedataserver/e-extension.h>
 #include <libedataserver/e-flag.h>
 #include <libedataserver/e-free-form-exp.h>
-#include <libedataserver/e-gdata-oauth2-authorizer.h>
 #include <libedataserver/e-gdata-query.h>
 #include <libedataserver/e-gdata-session.h>
 #include <libedataserver/e-iterator.h>

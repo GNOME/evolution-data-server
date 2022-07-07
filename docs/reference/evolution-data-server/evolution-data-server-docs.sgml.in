@@ -243,7 +243,6 @@
       <xi:include href="xml/e-error.xml"/>
       <xi:include href="xml/e-flag.xml"/>
       <xi:include href="xml/e-free-form-exp.xml"/>
-      <xi:include href="xml/e-gdata-oauth2-authorizer.xml"/>
       <xi:include href="xml/e-gdata-query.xml"/>
       <xi:include href="xml/e-gdata-session.xml"/>
       <xi:include href="xml/e-json-utils.xml"/>

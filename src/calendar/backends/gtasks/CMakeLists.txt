@@ -26,7 +26,6 @@ target_compile_definitions(ecalbackendgtasks PRIVATE
 
 target_compile_options(ecalbackendgtasks PUBLIC
 	${CALENDAR_CFLAGS}
-	${LIBGDATA_CFLAGS}
 )
 
 target_include_directories(ecalbackendgtasks PUBLIC
@@ -36,13 +35,11 @@ target_include_directories(ecalbackendgtasks PUBLIC
 	${CMAKE_BINARY_DIR}/src/calendar
 	${CMAKE_SOURCE_DIR}/src/calendar
 	${CALENDAR_INCLUDE_DIRS}
-	${LIBGDATA_INCLUDE_DIRS}
 )
 
 target_link_libraries(ecalbackendgtasks
 	${DEPENDENCIES}
 	${CALENDAR_LDFLAGS}
-	${LIBGDATA_LDFLAGS}
 )
 
 install(TARGETS ecalbackendgtasks
