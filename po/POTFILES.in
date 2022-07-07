@@ -193,6 +193,7 @@ src/libebackend/e-subprocess-factory.c
 src/libebackend/e-user-prompter-server.c
 src/libedataserver/e-categories.c
 src/libedataserver/e-client.c
+src/libedataserver/e-gdata-session.c
 src/libedataserver/e-oauth2-service.c
 src/libedataserver/e-oauth2-service-google.c
 src/libedataserver/e-oauth2-service-outlook.c

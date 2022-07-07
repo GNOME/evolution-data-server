@@ -58,7 +58,10 @@ set(SOURCES
 	e-flag.c
 	e-free-form-exp.c
 	e-gdata-oauth2-authorizer.c
+	e-gdata-query.c
+	e-gdata-session.c
 	e-iterator.c
+	e-json-utils.c
 	e-list.c
 	e-list-iterator.c
 	e-memory.c
@@ -149,7 +152,10 @@ set(HEADERS
 	e-flag.h
 	e-free-form-exp.h
 	e-gdata-oauth2-authorizer.h
+	e-gdata-query.h
+	e-gdata-session.h
 	e-iterator.h
+	e-json-utils.h
 	e-list.h
 	e-list-iterator.h
 	e-memory.h
