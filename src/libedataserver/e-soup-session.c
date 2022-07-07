@@ -1649,9 +1649,16 @@ e_soup_session_util_normalize_uri_path (GUri *uri)
 	const gchar *path;
 	gchar **parts, *tmp;
 	GUri *nuri = NULL;
+	GUriFlags flags;
 	gint ii;
 
 	if (!uri)
+		return NULL;
+
+	flags = g_uri_get_flags (uri);
+
+	if ((flags & G_URI_FLAGS_ENCODED) != 0 ||
+	    (flags & G_URI_FLAGS_ENCODED_PATH) != 0)
 		return NULL;
 
 	path = g_uri_get_path (uri);
