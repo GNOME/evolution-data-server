@@ -1661,7 +1661,7 @@ cfs_try_release_memory (gpointer user_data)
 	   the whole “%s : %s” is meant as an absolute identification of the folder. */
 	description = g_strdup_printf (_("Release unused memory for folder “%s : %s”"),
 		camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
-		camel_folder_get_full_name (summary->priv->folder));
+		camel_folder_get_full_display_name (summary->priv->folder));
 
 	camel_session_submit_job (
 		session, description,

@@ -170,7 +170,7 @@ folder_schedule_store_changes_job (CamelFolder *folder)
 		   the whole “%s : %s” is meant as an absolute identification of the folder. */
 		description = g_strdup_printf (_("Storing changes in folder “%s : %s”"),
 			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
-			camel_folder_get_full_name (folder));
+			camel_folder_get_full_display_name (folder));
 
 		camel_session_submit_job (session, description,
 			folder_store_changes_job_cb,
@@ -392,9 +392,10 @@ folder_filter (CamelSession *session,
 	gint i;
 	CamelJunkFilter *junk_filter;
 	gboolean synchronize = FALSE;
-	const gchar *full_name;
+	const gchar *full_name, *full_display_name;
 
 	full_name = camel_folder_get_full_name (data->folder);
+	full_display_name = camel_folder_get_full_display_name (data->folder);
 	parent_store = camel_folder_get_parent_store (data->folder);
 	junk_filter = camel_session_get_junk_filter (session);
 
@@ -457,7 +458,7 @@ folder_filter (CamelSession *session,
 			"Learning new spam messages in “%s : %s”",
 			data->junk->len),
 			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
-			full_name);
+			full_display_name);
 
 		for (i = 0; success && i < data->junk->len; i++) {
 			CamelMimeMessage *message;
@@ -500,7 +501,7 @@ folder_filter (CamelSession *session,
 			"Learning new ham messages in “%s : %s”",
 			data->notjunk->len),
 			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
-			full_name);
+			full_display_name);
 
 		for (i = 0; success && i < data->notjunk->len; i++) {
 			CamelMimeMessage *message;
@@ -548,7 +549,7 @@ folder_filter (CamelSession *session,
 			"Filtering new messages in “%s : %s”",
 			data->recents->len),
 			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
-			full_name);
+			full_display_name);
 
 		camel_filter_driver_log_info (data->driver, "\nReported %d recent messages in '%s : %s'",
 			data->recents->len, camel_service_get_display_name (CAMEL_SERVICE (parent_store)), full_name);
@@ -1257,7 +1258,7 @@ folder_get_quota_info_sync (CamelFolder *folder,
 		   the whole “%s : %s” is meant as an absolute identification of the folder. */
 		_("Quota information not supported for folder “%s : %s”"),
 		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
-		camel_folder_get_full_name (folder));
+		camel_folder_get_full_display_name (folder));
 
 	return NULL;
 }
@@ -1359,7 +1360,7 @@ folder_changed (CamelFolder *folder,
 		   the whole “%s : %s” is meant as an absolute identification of the folder. */
 		description = g_strdup_printf (_("Filtering folder “%s : %s”"),
 			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
-			camel_folder_get_full_name (folder));
+			camel_folder_get_full_display_name (folder));
 
 		camel_session_submit_job (
 			session, description, (CamelSessionCallback) folder_filter,
@@ -1371,6 +1372,25 @@ folder_changed (CamelFolder *folder,
 	}
 
 	g_object_unref (session);
+}
+
+/* Providers having different display names from the folder names can override
+   the function to return appropriate display name. */
+static const gchar *
+folder_get_full_display_name (CamelFolder *folder)
+{
+	const gchar *res;
+
+	g_mutex_lock (&folder->priv->property_lock);
+
+	if (!strchr (folder->priv->full_name, '/'))
+		res = folder->priv->display_name;
+	else
+		res = folder->priv->full_name;
+
+	g_mutex_unlock (&folder->priv->property_lock);
+
+	return res;
 }
 
 static void
@@ -1410,6 +1430,7 @@ camel_folder_class_init (CamelFolderClass *class)
 	class->refresh_info_sync = folder_refresh_info_sync;
 	class->transfer_messages_to_sync = folder_transfer_messages_to_sync;
 	class->changed = folder_changed;
+	class->get_full_display_name = folder_get_full_display_name;
 
 	/**
 	 * CamelFolder:description
@@ -1787,6 +1808,31 @@ camel_folder_set_display_name (CamelFolder *folder,
 	g_mutex_unlock (&folder->priv->property_lock);
 
 	g_object_notify (G_OBJECT (folder), "display-name");
+}
+
+/**
+ * camel_folder_get_full_display_name:
+ * @folder: a #CamelFolder
+ *
+ * Similar to the camel_folder_get_full_name(), only returning
+ * full path to the @folder suitable for the display to a user.
+ *
+ * Return: (transfer none): full path to the @folder suitable for the display to a user
+ *
+ * Since: 3.46
+ **/
+const gchar *
+camel_folder_get_full_display_name (CamelFolder *folder)
+{
+	CamelFolderClass *klass;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+
+	klass = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (klass != NULL, NULL);
+	g_return_val_if_fail (klass->get_full_display_name != NULL, NULL);
+
+	return klass->get_full_display_name (folder);
 }
 
 /**
@@ -3325,7 +3371,7 @@ camel_folder_expunge_sync (CamelFolder *folder,
 	   the whole “%s : %s” is meant as an absolute identification of the folder. */
 	camel_operation_push_message (cancellable, _("Expunging folder “%s : %s”"),
 		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
-		camel_folder_get_full_name (folder));
+		camel_folder_get_full_display_name (folder));
 
 	if (!(camel_folder_get_flags (folder) & CAMEL_FOLDER_HAS_BEEN_DELETED)) {
 		success = class->expunge_sync (folder, cancellable, error);
@@ -3460,7 +3506,7 @@ camel_folder_get_message_sync (CamelFolder *folder,
 		   the whole “%s : %s” is meant as an absolute identification of the folder. */
 		cancellable, _("Retrieving message “%s” in “%s : %s”"),
 		message_uid, camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
-		camel_folder_get_full_name (folder));
+		camel_folder_get_full_display_name (folder));
 
 	message = camel_folder_get_message_cached (folder, message_uid, cancellable);
 
@@ -3685,7 +3731,7 @@ camel_folder_get_quota_info_sync (CamelFolder *folder,
 	   the whole “%s : %s” is meant as an absolute identification of the folder. */
 	camel_operation_push_message (cancellable, _("Retrieving quota information for “%s : %s”"),
 		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
-		camel_folder_get_full_name (folder));
+		camel_folder_get_full_display_name (folder));
 
 	quota_info = class->get_quota_info_sync (folder, cancellable, error);
 	CAMEL_CHECK_GERROR (
@@ -3985,7 +4031,7 @@ camel_folder_refresh_info_sync (CamelFolder *folder,
 	   the whole “%s : %s” is meant as an absolute identification of the folder. */
 	camel_operation_push_message (cancellable, _("Refreshing folder “%s : %s”"),
 		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
-		camel_folder_get_full_name (folder));
+		camel_folder_get_full_display_name (folder));
 
 	success = class->refresh_info_sync (folder, cancellable, error);
 	CAMEL_CHECK_GERROR (folder, refresh_info_sync, success, error);

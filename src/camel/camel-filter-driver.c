@@ -263,7 +263,7 @@ filter_driver_process_transfers (CamelFilterDriver *driver,
 		   the whole “%s : %s” is meant as an absolute identification of the folder. */
 		camel_operation_push_message (cancellable, _("Transferring filtered messages in “%s : %s”"),
 			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
-			camel_folder_get_full_name (driver->priv->source));
+			camel_folder_get_full_display_name (driver->priv->source));
 
 		ii = 0;
 		sz = g_hash_table_size (driver->priv->transfers);

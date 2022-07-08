@@ -764,7 +764,7 @@ imapx_get_quota_info_sync (CamelFolder *folder,
 			   the whole “%s : %s” is meant as an absolute identification of the folder. */
 			_("No quota information available for folder “%s : %s”"),
 			camel_service_get_display_name (CAMEL_SERVICE (store)),
-			camel_folder_get_full_name (folder));
+			camel_folder_get_full_display_name (folder));
 
 exit:
 	g_clear_object (&mailbox);
@@ -1031,7 +1031,7 @@ imapx_folder_changed (CamelFolder *folder,
 				   the whole “%s : %s” is meant as an absolute identification of the folder. */
 				description = g_strdup_printf (_("Removing stale cache files in folder “%s : %s”"),
 					camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
-					camel_folder_get_full_name (CAMEL_FOLDER (imapx_folder)));
+					camel_folder_get_full_display_name (CAMEL_FOLDER (imapx_folder)));
 
 				camel_session_submit_job (session, description,
 					imapx_folder_remove_cache_files_thread, rcf, remove_cache_files_free);
@@ -1462,7 +1462,7 @@ camel_imapx_folder_list_mailbox (CamelIMAPXFolder *folder,
 			   the whole “%s : %s” is meant as an absolute identification of the folder. */
 			_("No IMAP mailbox available for folder “%s : %s”"),
 			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
-			camel_folder_get_full_name (CAMEL_FOLDER (folder)));
+			camel_folder_get_full_display_name (CAMEL_FOLDER (folder)));
 	}
 
 exit:

@@ -260,9 +260,10 @@ struct _CamelFolderClass {
 						 GError **error);
 	void		(*prepare_content_refresh)
 						(CamelFolder *folder);
+	const gchar *	(*get_full_display_name)(CamelFolder *folder);
 
 	/* Padding for future expansion */
-	gpointer reserved_methods[20];
+	gpointer reserved_methods[19];
 
 	/* Signals */
 	void		(*changed)		(CamelFolder *folder,
@@ -294,6 +295,8 @@ const gchar *	camel_folder_get_display_name	(CamelFolder *folder);
 gchar *		camel_folder_dup_display_name	(CamelFolder *folder);
 void		camel_folder_set_display_name	(CamelFolder *folder,
 						 const gchar *display_name);
+const gchar *	camel_folder_get_full_display_name
+						(CamelFolder *folder);
 const gchar *	camel_folder_get_description	(CamelFolder *folder);
 gchar *		camel_folder_dup_description	(CamelFolder *folder);
 void		camel_folder_set_description	(CamelFolder *folder,
