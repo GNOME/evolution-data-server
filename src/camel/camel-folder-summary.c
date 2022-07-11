@@ -2909,6 +2909,13 @@ summary_format_address (const CamelNameValueArray *headers,
 	if ((addr = camel_header_address_decode (text, charset))) {
 		str = camel_header_address_list_format (addr);
 		camel_header_address_list_clear (&addr);
+
+		/* Special-case empty email part only here, not in the camel_header_address_list_format(),
+		   to cover only the user-visible string, which looks odd with the empty email address. */
+		if (str && g_str_has_suffix (str, " <>") && strlen (str) > 3) {
+			str[strlen (str) - 3] = '\0';
+		}
+
 		g_free (text);
 	} else {
 		str = text;
