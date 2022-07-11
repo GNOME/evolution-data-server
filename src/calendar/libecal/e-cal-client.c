@@ -4484,6 +4484,33 @@ e_cal_client_get_free_busy_sync (ECalClient *client,
 	return TRUE;
 }
 
+static gchar *
+e_cal_client_sanitize_comp_as_string (ICalComponent *icomp)
+{
+	gchar *utf8_string;
+	gchar *ical_string;
+
+	if (i_cal_component_count_errors (icomp) > 0) {
+		ICalComponent *clone;
+
+		clone = i_cal_component_clone (icomp);
+
+		i_cal_component_strip_errors (clone);
+
+		ical_string = i_cal_component_as_ical_string (clone);
+
+		g_clear_object (&clone);
+	} else {
+		ical_string = i_cal_component_as_ical_string (icomp);
+	}
+
+	utf8_string = e_util_utf8_make_valid (ical_string);
+
+	g_free (ical_string);
+
+	return utf8_string;
+}
+
 /* Helper for e_cal_client_create_object() */
 static void
 cal_client_create_object_thread (GSimpleAsyncResult *simple,
@@ -4825,11 +4852,9 @@ e_cal_client_create_objects_sync (ECalClient *client,
 
 	strv = g_new0 (gchar *, g_slist_length (icalcomps) + 1);
 	while (icalcomps != NULL) {
-		gchar *ical_string;
+		ICalComponent *icomp = icalcomps->data;
 
-		ical_string = i_cal_component_as_ical_string (icalcomps->data);
-		strv[ii++] = e_util_utf8_make_valid (ical_string);
-		g_free (ical_string);
+		strv[ii++] = e_cal_client_sanitize_comp_as_string (icomp);
 
 		icalcomps = g_slist_next (icalcomps);
 	}
@@ -5198,11 +5223,9 @@ e_cal_client_modify_objects_sync (ECalClient *client,
 
 	strv = g_new0 (gchar *, g_slist_length (icalcomps) + 1);
 	while (icalcomps != NULL) {
-		gchar *ical_string;
+		ICalComponent *icomp = icalcomps->data;
 
-		ical_string = i_cal_component_as_ical_string (icalcomps->data);
-		strv[ii++] = e_util_utf8_make_valid (ical_string);
-		g_free (ical_string);
+		strv[ii++] = e_cal_client_sanitize_comp_as_string (icomp);
 
 		icalcomps = g_slist_next (icalcomps);
 	}
@@ -5755,19 +5778,16 @@ e_cal_client_receive_objects_sync (ECalClient *client,
                                    GError **error)
 {
 	gchar *ical_string;
-	gchar *utf8_ical_string;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
-	ical_string = i_cal_component_as_ical_string (icalcomp);
-	utf8_ical_string = e_util_utf8_make_valid (ical_string);
+	ical_string = e_cal_client_sanitize_comp_as_string (icalcomp);
 
 	e_dbus_calendar_call_receive_objects_sync (
-		client->priv->dbus_proxy, utf8_ical_string, opflags,
+		client->priv->dbus_proxy, ical_string, opflags,
 		cancellable, &local_error);
 
-	g_free (utf8_ical_string);
 	g_free (ical_string);
 
 	if (local_error != NULL) {
@@ -5946,7 +5966,6 @@ e_cal_client_send_objects_sync (ECalClient *client,
                                 GError **error)
 {
 	gchar *ical_string;
-	gchar *utf8_ical_string;
 	gchar **users = NULL;
 	gchar *out_ical_string = NULL;
 	GError *local_error = NULL;
@@ -5956,14 +5975,12 @@ e_cal_client_send_objects_sync (ECalClient *client,
 	g_return_val_if_fail (out_users != NULL, FALSE);
 	g_return_val_if_fail (out_modified_icalcomp != NULL, FALSE);
 
-	ical_string = i_cal_component_as_ical_string (icalcomp);
-	utf8_ical_string = e_util_utf8_make_valid (ical_string);
+	ical_string = e_cal_client_sanitize_comp_as_string (icalcomp);
 
 	e_dbus_calendar_call_send_objects_sync (
-		client->priv->dbus_proxy, utf8_ical_string, opflags,
+		client->priv->dbus_proxy, ical_string, opflags,
 		&users, &out_ical_string, cancellable, &local_error);
 
-	g_free (utf8_ical_string);
 	g_free (ical_string);
 
 	/* Sanity check. */
