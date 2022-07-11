@@ -188,67 +188,71 @@ static gboolean poll_ldap (gpointer user_data);
 
 static EContact *build_contact_from_entry (EBookBackendLDAP *bl, LDAPMessage *e, GList **existing_objectclasses, gchar **ldap_uid);
 
-static void email_populate (EContact *contact, gchar **values);
-static struct berval ** email_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean email_compare (EContact *contact1, EContact *contact2, const gchar *ldap_attr);
+static void email_populate (EBookBackendLDAP *self, EContact *contact, gchar **values);
+static struct berval ** email_ber (EBookBackendLDAP *self, EContact *contact, const gchar *ldap_attr, GError **error);
+static gboolean email_compare (EBookBackendLDAP *self, EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
-static void member_populate (EContact *contact, gchar **values);
-static struct berval ** member_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean member_compare (EContact *contact1, EContact *contact2, const gchar *ldap_attr);
+static void member_populate (EBookBackendLDAP *self, EContact *contact, gchar **values);
+static struct berval ** member_ber (EBookBackendLDAP *self, EContact *contact, const gchar *ldap_attr, GError **error);
+static gboolean member_compare (EBookBackendLDAP *self, EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
-static void homephone_populate (EContact *contact, gchar **values);
-static struct berval ** homephone_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean homephone_compare (EContact *contact1, EContact *contact2, const gchar *ldap_attr);
+static void homephone_populate (EBookBackendLDAP *self, EContact *contact, gchar **values);
+static struct berval ** homephone_ber (EBookBackendLDAP *self, EContact *contact, const gchar *ldap_attr, GError **error);
+static gboolean homephone_compare (EBookBackendLDAP *self, EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
-static void business_populate (EContact *contact, gchar **values);
-static struct berval ** business_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean business_compare (EContact *contact1, EContact *contact2, const gchar *ldap_attr);
+static void business_populate (EBookBackendLDAP *self, EContact *contact, gchar **values);
+static struct berval ** business_ber (EBookBackendLDAP *self, EContact *contact, const gchar *ldap_attr, GError **error);
+static gboolean business_compare (EBookBackendLDAP *self, EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
-static void anniversary_populate (EContact *contact, gchar **values);
-static struct berval ** anniversary_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean anniversary_compare (EContact *contact1, EContact *contact2, const gchar *ldap_attr);
+static void anniversary_populate (EBookBackendLDAP *self, EContact *contact, gchar **values);
+static struct berval ** anniversary_ber (EBookBackendLDAP *self, EContact *contact, const gchar *ldap_attr, GError **error);
+static gboolean anniversary_compare (EBookBackendLDAP *self, EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
-static void birthday_populate (EContact *contact, gchar **values);
-static struct berval ** birthday_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean birthday_compare (EContact *contact1, EContact *contact2, const gchar *ldap_attr);
+static void birthday_populate (EBookBackendLDAP *self, EContact *contact, gchar **values);
+static struct berval ** birthday_ber (EBookBackendLDAP *self, EContact *contact, const gchar *ldap_attr, GError **error);
+static gboolean birthday_compare (EBookBackendLDAP *self, EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
-static void category_populate (EContact *contact, gchar **values);
-static struct berval ** category_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean category_compare (EContact *contact1, EContact *contact2, const gchar *ldap_attr);
+static void category_populate (EBookBackendLDAP *self, EContact *contact, gchar **values);
+static struct berval ** category_ber (EBookBackendLDAP *self, EContact *contact, const gchar *ldap_attr, GError **error);
+static gboolean category_compare (EBookBackendLDAP *self, EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
-static void home_address_populate (EContact * card, gchar **values);
-static struct berval **home_address_ber (EContact * card, const gchar *ldap_attr, GError **error);
-static gboolean home_address_compare (EContact * ecard1, EContact * ecard2, const gchar *ldap_attr);
+static void home_address_populate (EBookBackendLDAP *self, EContact *card, gchar **values);
+static struct berval **home_address_ber (EBookBackendLDAP *self, EContact *card, const gchar *ldap_attr, GError **error);
+static gboolean home_address_compare (EBookBackendLDAP *self, EContact *ecard1, EContact * ecard2, const gchar *ldap_attr);
 
-static void work_address_populate (EContact * card, gchar **values);
-static struct berval **work_address_ber (EContact * card, const gchar *ldap_attr, GError **error);
-static gboolean work_address_compare (EContact * ecard1, EContact * ecard2, const gchar *ldap_attr);
+static void work_address_populate (EBookBackendLDAP *self, EContact *card, gchar **values);
+static struct berval **work_address_ber (EBookBackendLDAP *self, EContact *card, const gchar *ldap_attr, GError **error);
+static gboolean work_address_compare (EBookBackendLDAP *self, EContact *ecard1, EContact * ecard2, const gchar *ldap_attr);
 
-static void other_address_populate (EContact * card, gchar **values);
-static struct berval **other_address_ber (EContact * card, const gchar *ldap_attr, GError **error);
-static gboolean other_address_compare (EContact * ecard1, EContact * ecard2, const gchar *ldap_attr);
+static void other_address_populate (EBookBackendLDAP *self, EContact *card, gchar **values);
+static struct berval **other_address_ber (EBookBackendLDAP *self, EContact *card, const gchar *ldap_attr, GError **error);
+static gboolean other_address_compare (EBookBackendLDAP *self, EContact *ecard1, EContact * ecard2, const gchar *ldap_attr);
 
-static void work_city_populate (EContact * card, gchar **values);
-static void work_state_populate (EContact * card, gchar **values);
-static void work_po_populate (EContact * card, gchar **values);
-static void work_zip_populate (EContact * card, gchar **values);
-static void work_country_populate (EContact * card, gchar **values);
-static void home_city_populate (EContact * card, gchar **values);
-static void home_state_populate (EContact * card, gchar **values);
-static void home_zip_populate (EContact * card, gchar **values);
-static void home_country_populate (EContact * card, gchar **values);
+static void work_city_populate (EBookBackendLDAP *self, EContact *card, gchar **values);
+static void work_state_populate (EBookBackendLDAP *self, EContact *card, gchar **values);
+static void work_po_populate (EBookBackendLDAP *self, EContact *card, gchar **values);
+static void work_zip_populate (EBookBackendLDAP *self, EContact *card, gchar **values);
+static void work_country_populate (EBookBackendLDAP *self, EContact *card, gchar **values);
+static void home_city_populate (EBookBackendLDAP *self, EContact *card, gchar **values);
+static void home_state_populate (EBookBackendLDAP *self, EContact *card, gchar **values);
+static void home_zip_populate (EBookBackendLDAP *self, EContact *card, gchar **values);
+static void home_country_populate (EBookBackendLDAP *self, EContact *card, gchar **values);
 
-static void photo_populate (EContact *contact, struct berval **ber_values);
-static struct berval **photo_ber (EContact * contact, const gchar *ldap_attr, GError **error);
-static gboolean photo_compare (EContact * ecard1, EContact * ecard2, const gchar *ldap_attr);
+static void photo_populate (EBookBackendLDAP *self, EContact *contact, struct berval **ber_values);
+static struct berval **photo_ber (EBookBackendLDAP *self, EContact *contact, const gchar *ldap_attr, GError **error);
+static gboolean photo_compare (EBookBackendLDAP *self, EContact *ecard1, EContact *ecard2, const gchar *ldap_attr);
 
-static void cert_populate (EContact *contact, struct berval **ber_values);
-static struct berval **cert_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean cert_compare (EContact *ecard1, EContact *ecard2, const gchar *ldap_attr);
+static void cert_populate (EBookBackendLDAP *self, EContact *contact, struct berval **ber_values);
+static struct berval **cert_ber (EBookBackendLDAP *self, EContact *contact, const gchar *ldap_attr, GError **error);
+static gboolean cert_compare (EBookBackendLDAP *self, EContact *ecard1, EContact *ecard2, const gchar *ldap_attr);
 
-static void org_unit_populate (EContact *contact, gchar **values);
-static struct berval ** org_unit_ber (EContact *contact, const gchar *ldap_attr, GError **error);
-static gboolean org_unit_compare (EContact *contact1, EContact *contact2, const gchar *ldap_attr);
+static void org_unit_populate (EBookBackendLDAP *self, EContact *contact, gchar **values);
+static struct berval ** org_unit_ber (EBookBackendLDAP *self, EContact *contact, const gchar *ldap_attr, GError **error);
+static gboolean org_unit_compare (EBookBackendLDAP *self, EContact *contact1, EContact *contact2, const gchar *ldap_attr);
+
+static void nickname_populate (EBookBackendLDAP *self, EContact *contact, gchar **values);
+static struct berval **nickname_ber (EBookBackendLDAP *self, EContact *contact, const gchar *ldap_attr, GError **error);
+static gboolean nickname_compare (EBookBackendLDAP *self, EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
 static struct prop_info {
 	EContactField field_id;
@@ -269,13 +273,13 @@ static struct prop_info {
 	/* the remaining items are only used for the TYPE_COMPLEX props */
 
 	/* used when reading from the ldap server populates EContact with the values in **values. */
-	void (*populate_contact_func)(EContact *contact, gchar **values);
+	void (*populate_contact_func)(EBookBackendLDAP *self, EContact *contact, gchar **values);
 	/* used when writing to an ldap server.  returns a NULL terminated array of berval*'s */
-	struct berval ** (*ber_func)(EContact *contact, const gchar *ldap_attr, GError **error);
+	struct berval ** (*ber_func)(EBookBackendLDAP *self, EContact *contact, const gchar *ldap_attr, GError **error);
 	/* used to compare list attributes */
-	gboolean (*compare_func)(EContact *contact1, EContact *contact2, const gchar *ldap_attr);
+	gboolean (*compare_func)(EBookBackendLDAP *self, EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
-	void (*binary_populate_contact_func)(EContact *contact, struct berval **ber_values);
+	void (*binary_populate_contact_func)(EBookBackendLDAP *self, EContact *contact, struct berval **ber_values);
 
 } prop_info[] = {
 
@@ -362,8 +366,8 @@ static struct prop_info {
 
 	/* misc fields */
 	CONTACT_STRING_PROP    (E_CONTACT_HOMEPAGE_URL,  "labeledURI"),
-	/* map nickname to displayName */
-	CONTACT_STRING_PROP    (E_CONTACT_NICKNAME,    "displayName"),
+	/* map nickname to the displayName with the evo scheme, or possibly prefill the file-as without the evo scheme */
+	COMPLEX_PROP   (E_CONTACT_NICKNAME, "displayName", nickname_populate, nickname_ber, nickname_compare),
 	E_STRING_PROP  (E_CONTACT_SPOUSE,      "spouseName"),
 	CONTACT_STRING_PROP_WITH_EVOSCHEME (E_CONTACT_NOTE, "note"),
 	CONTACT_STRING_PROP_WITHOUT_EVOSCHEME (E_CONTACT_NOTE, "description"),
@@ -1333,7 +1337,7 @@ build_mods_from_contacts (EBookBackendLDAP *bl,
 			new_prop_present = (new_prop != NULL);
 		}
 		else {
-			new_prop_bers = prop_info[i].ber_func ? prop_info[i].ber_func (new, prop_info[i].ldap_attr, &local_error) : NULL;
+			new_prop_bers = prop_info[i].ber_func ? prop_info[i].ber_func (bl, new, prop_info[i].ldap_attr, &local_error) : NULL;
 			new_prop_present = (new_prop_bers != NULL);
 		}
 
@@ -1364,7 +1368,7 @@ build_mods_from_contacts (EBookBackendLDAP *bl,
 			}
 			else {
 				gint j;
-				struct berval **current_prop_bers = prop_info[i].ber_func ? prop_info[i].ber_func (current, prop_info[i].ldap_attr, &local_error) : NULL;
+				struct berval **current_prop_bers = prop_info[i].ber_func ? prop_info[i].ber_func (bl, current, prop_info[i].ldap_attr, &local_error) : NULL;
 
 				current_prop_present = (current_prop_bers != NULL);
 
@@ -1377,7 +1381,7 @@ build_mods_from_contacts (EBookBackendLDAP *bl,
 					g_free (current_prop_bers);
 				}
 
-				include = prop_info[i].compare_func ? !prop_info[i].compare_func (new, current, prop_info[i].ldap_attr) : FALSE;
+				include = prop_info[i].compare_func ? !prop_info[i].compare_func (bl, new, current, prop_info[i].ldap_attr) : FALSE;
 			}
 		}
 
@@ -2528,8 +2532,9 @@ static EContactField email_ids[4] = {
 
 /* List property functions */
 static void
-email_populate (EContact *contact,
-                gchar **values)
+email_populate (EBookBackendLDAP *self,
+		EContact *contact,
+		gchar **values)
 {
 	gint i;
 	for (i = 0; values[i] && i < 4; i++)
@@ -2537,7 +2542,8 @@ email_populate (EContact *contact,
 }
 
 static struct berval **
-email_ber (EContact *contact,
+email_ber (EBookBackendLDAP *self,
+	   EContact *contact,
 	   const gchar *ldap_attr,
 	   GError **error)
 {
@@ -2576,7 +2582,8 @@ email_ber (EContact *contact,
 }
 
 static gboolean
-email_compare (EContact *contact1,
+email_compare (EBookBackendLDAP *self,
+	       EContact *contact1,
 	       EContact *contact2,
 	       const gchar *ldap_attr)
 {
@@ -2605,8 +2612,9 @@ email_compare (EContact *contact1,
 }
 
 static void
-member_populate (EContact *contact,
-                 gchar **values)
+member_populate (EBookBackendLDAP *self,
+		 EContact *contact,
+		 gchar **values)
 {
 	gint i;
 	gchar **member_info;
@@ -2640,7 +2648,8 @@ member_populate (EContact *contact,
 }
 
 static struct berval **
-member_ber (EContact *contact,
+member_ber (EBookBackendLDAP *self,
+	    EContact *contact,
 	    const gchar *ldap_attr,
 	    GError **error)
 {
@@ -2708,7 +2717,8 @@ member_ber (EContact *contact,
 }
 
 static gboolean
-member_compare (EContact *contact_new,
+member_compare (EBookBackendLDAP *self,
+		EContact *contact_new,
 		EContact *contact_current,
 		const gchar *ldap_attr)
 {
@@ -2801,8 +2811,9 @@ member_compare (EContact *contact_new,
 }
 
 static void
-homephone_populate (EContact *contact,
-                    gchar **values)
+homephone_populate (EBookBackendLDAP *self,
+		    EContact *contact,
+		    gchar **values)
 {
 	if (values[0]) {
 		e_contact_set (contact, E_CONTACT_PHONE_HOME, values[0]);
@@ -2812,7 +2823,8 @@ homephone_populate (EContact *contact,
 }
 
 static struct berval **
-homephone_ber (EContact *contact,
+homephone_ber (EBookBackendLDAP *self,
+	       EContact *contact,
 	       const gchar *ldap_attr,
 	       GError **error)
 {
@@ -2848,7 +2860,8 @@ homephone_ber (EContact *contact,
 }
 
 static gboolean
-homephone_compare (EContact *contact1,
+homephone_compare (EBookBackendLDAP *self,
+		   EContact *contact1,
 		   EContact *contact2,
 		   const gchar *ldap_attr)
 {
@@ -2877,8 +2890,9 @@ homephone_compare (EContact *contact1,
 }
 
 static void
-business_populate (EContact *contact,
-                   gchar **values)
+business_populate (EBookBackendLDAP *self,
+		   EContact *contact,
+		   gchar **values)
 {
 	if (values[0]) {
 		e_contact_set (contact, E_CONTACT_PHONE_BUSINESS, values[0]);
@@ -2888,7 +2902,8 @@ business_populate (EContact *contact,
 }
 
 static struct berval **
-business_ber (EContact *contact,
+business_ber (EBookBackendLDAP *self,
+	      EContact *contact,
 	      const gchar *ldap_attr,
 	      GError **error)
 {
@@ -2924,7 +2939,8 @@ business_ber (EContact *contact,
 }
 
 static gboolean
-business_compare (EContact *contact1,
+business_compare (EBookBackendLDAP *self,
+		  EContact *contact1,
 		  EContact *contact2,
 		  const gchar *ldap_attr)
 {
@@ -2953,8 +2969,9 @@ business_compare (EContact *contact1,
 }
 
 static void
-anniversary_populate (EContact *contact,
-                      gchar **values)
+anniversary_populate (EBookBackendLDAP *self,
+		      EContact *contact,
+		      gchar **values)
 {
 	if (values[0]) {
 		EContactDate *dt = e_contact_date_from_string (values[0]);
@@ -2964,7 +2981,8 @@ anniversary_populate (EContact *contact,
 }
 
 static struct berval **
-anniversary_ber (EContact *contact,
+anniversary_ber (EBookBackendLDAP *self,
+		 EContact *contact,
 		 const gchar *ldap_attr,
 		 GError **error)
 {
@@ -2992,7 +3010,8 @@ anniversary_ber (EContact *contact,
 }
 
 static gboolean
-anniversary_compare (EContact *contact1,
+anniversary_compare (EBookBackendLDAP *self,
+		     EContact *contact1,
 		     EContact *contact2,
 		     const gchar *ldap_attr)
 {
@@ -3011,8 +3030,9 @@ anniversary_compare (EContact *contact1,
 }
 
 static void
-birthday_populate (EContact *contact,
-                   gchar **values)
+birthday_populate (EBookBackendLDAP *self,
+		   EContact *contact,
+		   gchar **values)
 {
 	if (values[0]) {
 		EContactDate *dt = e_contact_date_from_string (values[0]);
@@ -3022,7 +3042,8 @@ birthday_populate (EContact *contact,
 }
 
 static struct berval **
-birthday_ber (EContact *contact,
+birthday_ber (EBookBackendLDAP *self,
+	      EContact *contact,
 	      const gchar *ldap_attr,
 	      GError **error)
 {
@@ -3049,7 +3070,8 @@ birthday_ber (EContact *contact,
 }
 
 static gboolean
-birthday_compare (EContact *contact1,
+birthday_compare (EBookBackendLDAP *self,
+		  EContact *contact1,
 		  EContact *contact2,
 		  const gchar *ldap_attr)
 {
@@ -3068,8 +3090,9 @@ birthday_compare (EContact *contact1,
 }
 
 static void
-category_populate (EContact *contact,
-                   gchar **values)
+category_populate (EBookBackendLDAP *self,
+		   EContact *contact,
+		   gchar **values)
 {
 	gint i;
 	GList *categories = NULL;
@@ -3084,7 +3107,8 @@ category_populate (EContact *contact,
 }
 
 static struct berval **
-category_ber (EContact *contact,
+category_ber (EBookBackendLDAP *self,
+	      EContact *contact,
 	      const gchar *ldap_attr,
 	      GError **error)
 {
@@ -3121,7 +3145,8 @@ category_ber (EContact *contact,
 }
 
 static gboolean
-category_compare (EContact *contact1,
+category_compare (EBookBackendLDAP *self,
+		  EContact *contact1,
 		  EContact *contact2,
 		  const gchar *ldap_attr)
 {
@@ -3182,8 +3207,9 @@ address_populate (EContact *card,
 }
 
 static void
-work_city_populate (EContact *card,
-                    gchar **values)
+work_city_populate (EBookBackendLDAP *self,
+		    EContact *card,
+		    gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
 	replace_address_member (&contact_addr->locality, g_strdup (values[0]));
@@ -3192,8 +3218,9 @@ work_city_populate (EContact *card,
 }
 
 static void
-work_state_populate (EContact *card,
-                     gchar **values)
+work_state_populate (EBookBackendLDAP *self,
+		     EContact *card,
+		     gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
 	replace_address_member (&contact_addr->region, g_strdup (values[0]));
@@ -3202,8 +3229,9 @@ work_state_populate (EContact *card,
 }
 
 static void
-work_po_populate (EContact *card,
-                  gchar **values)
+work_po_populate (EBookBackendLDAP *self,
+		  EContact *card,
+		  gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
 	replace_address_member (&contact_addr->po, g_strdup (values[0]));
@@ -3212,8 +3240,9 @@ work_po_populate (EContact *card,
 }
 
 static void
-work_zip_populate (EContact *card,
-                   gchar **values)
+work_zip_populate (EBookBackendLDAP *self,
+		   EContact *card,
+		   gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
 	replace_address_member (&contact_addr->code, g_strdup (values[0]));
@@ -3222,8 +3251,9 @@ work_zip_populate (EContact *card,
 }
 
 static void
-work_country_populate (EContact *card,
-                       gchar **values)
+work_country_populate (EBookBackendLDAP *self,
+		       EContact *card,
+		       gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
 	replace_address_member (&contact_addr->country, g_strdup (values[0]));
@@ -3232,8 +3262,9 @@ work_country_populate (EContact *card,
 }
 
 static void
-home_city_populate (EContact *card,
-                    gchar **values)
+home_city_populate (EBookBackendLDAP *self,
+		    EContact *card,
+		    gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_HOME);
 	replace_address_member (&contact_addr->locality, g_strdup (values[0]));
@@ -3242,8 +3273,9 @@ home_city_populate (EContact *card,
 }
 
 static void
-home_state_populate (EContact *card,
-                     gchar **values)
+home_state_populate (EBookBackendLDAP *self,
+		     EContact *card,
+		     gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_HOME);
 	replace_address_member (&contact_addr->region, g_strdup (values[0]));
@@ -3252,8 +3284,9 @@ home_state_populate (EContact *card,
 }
 
 static void
-home_zip_populate (EContact *card,
-                   gchar **values)
+home_zip_populate (EBookBackendLDAP *self,
+		   EContact *card,
+		   gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_HOME);
 	replace_address_member (&contact_addr->code, g_strdup (values[0]));
@@ -3262,8 +3295,9 @@ home_zip_populate (EContact *card,
 }
 
 static void
-home_country_populate (EContact *card,
-                       gchar **values)
+home_country_populate (EBookBackendLDAP *self,
+		       EContact *card,
+		       gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_HOME);
 	replace_address_member (&contact_addr->country, g_strdup (values[0]));
@@ -3272,22 +3306,25 @@ home_country_populate (EContact *card,
 }
 
 static void
-home_address_populate (EContact *card,
-                       gchar **values)
+home_address_populate (EBookBackendLDAP *self,
+		       EContact *card,
+		       gchar **values)
 {
 	address_populate (card, values, E_CONTACT_ADDRESS_LABEL_HOME, E_CONTACT_ADDRESS_HOME);
 }
 
 static void
-work_address_populate (EContact *card,
-                       gchar **values)
+work_address_populate (EBookBackendLDAP *self,
+		       EContact *card,
+		       gchar **values)
 {
 	address_populate (card, values, E_CONTACT_ADDRESS_LABEL_WORK, E_CONTACT_ADDRESS_WORK);
 }
 
 static void
-other_address_populate (EContact *card,
-                        gchar **values)
+other_address_populate (EBookBackendLDAP *self,
+			EContact *card,
+			gchar **values)
 {
 	address_populate (card, values, E_CONTACT_ADDRESS_LABEL_OTHER, E_CONTACT_ADDRESS_OTHER);
 }
@@ -3319,7 +3356,8 @@ address_ber (EContact *card,
 }
 
 static struct berval **
-home_address_ber (EContact *card,
+home_address_ber (EBookBackendLDAP *self,
+		  EContact *card,
 		  const gchar *ldap_attr,
 		  GError **error)
 {
@@ -3327,7 +3365,8 @@ home_address_ber (EContact *card,
 }
 
 static struct berval **
-work_address_ber (EContact *card,
+work_address_ber (EBookBackendLDAP *self,
+		  EContact *card,
 		  const gchar *ldap_attr,
 		  GError **error)
 {
@@ -3335,7 +3374,8 @@ work_address_ber (EContact *card,
 }
 
 static struct berval **
-other_address_ber (EContact *card,
+other_address_ber (EBookBackendLDAP *self,
+		   EContact *card,
 		   const gchar *ldap_attr,
 		   GError **error)
 {
@@ -3362,7 +3402,8 @@ address_compare (EContact *ecard1,
 }
 
 static gboolean
-home_address_compare (EContact *ecard1,
+home_address_compare (EBookBackendLDAP *self,
+		      EContact *ecard1,
 		      EContact *ecard2,
 		      const gchar *ldap_attr)
 {
@@ -3370,7 +3411,8 @@ home_address_compare (EContact *ecard1,
 }
 
 static gboolean
-work_address_compare (EContact *ecard1,
+work_address_compare (EBookBackendLDAP *self,
+		      EContact *ecard1,
 		      EContact *ecard2,
 		      const gchar *ldap_attr)
 {
@@ -3378,7 +3420,8 @@ work_address_compare (EContact *ecard1,
 }
 
 static gboolean
-other_address_compare (EContact *ecard1,
+other_address_compare (EBookBackendLDAP *self,
+		       EContact *ecard1,
 		       EContact *ecard2,
 		       const gchar *ldap_attr)
 {
@@ -3386,8 +3429,9 @@ other_address_compare (EContact *ecard1,
 }
 
 static void
-photo_populate (EContact *contact,
-                struct berval **ber_values)
+photo_populate (EBookBackendLDAP *self,
+		EContact *contact,
+		struct berval **ber_values)
 {
 	if (ber_values && ber_values[0]) {
 		EContactPhoto photo;
@@ -3401,7 +3445,8 @@ photo_populate (EContact *contact,
 }
 
 static struct berval **
-photo_ber (EContact *contact,
+photo_ber (EBookBackendLDAP *self,
+	   EContact *contact,
 	   const gchar *ldap_attr,
 	   GError **error)
 {
@@ -3426,7 +3471,8 @@ photo_ber (EContact *contact,
 }
 
 static gboolean
-photo_compare (EContact *ecard1,
+photo_compare (EBookBackendLDAP *self,
+	       EContact *ecard1,
 	       EContact *ecard2,
 	       const gchar *ldap_attr)
 {
@@ -3461,8 +3507,9 @@ photo_compare (EContact *ecard1,
 }
 
 static void
-cert_populate (EContact *contact,
-               struct berval **ber_values)
+cert_populate (EBookBackendLDAP *self,
+	       EContact *contact,
+	       struct berval **ber_values)
 {
 	if (ber_values && ber_values[0]) {
 		EContactCert cert;
@@ -3474,7 +3521,8 @@ cert_populate (EContact *contact,
 }
 
 static struct berval **
-cert_ber (EContact *contact,
+cert_ber (EBookBackendLDAP *self,
+	  EContact *contact,
 	  const gchar *ldap_attr,
 	  GError **error)
 {
@@ -3500,7 +3548,8 @@ cert_ber (EContact *contact,
 }
 
 static gboolean
-cert_compare (EContact *ecard1,
+cert_compare (EBookBackendLDAP *self,
+	      EContact *ecard1,
 	      EContact *ecard2,
 	      const gchar *ldap_attr)
 {
@@ -3524,7 +3573,8 @@ cert_compare (EContact *ecard1,
 }
 
 static void
-org_unit_populate (EContact *contact,
+org_unit_populate (EBookBackendLDAP *self,
+		   EContact *contact,
 		   gchar **values)
 {
 	GString *str;
@@ -3555,7 +3605,8 @@ org_unit_populate (EContact *contact,
 }
 
 static struct berval **
-org_unit_ber (EContact *contact,
+org_unit_ber (EBookBackendLDAP *self,
+	      EContact *contact,
 	      const gchar *ldap_attr,
 	      GError **error)
 {
@@ -3623,7 +3674,8 @@ org_unit_ber (EContact *contact,
 }
 
 static gboolean
-org_unit_compare (EContact *contact1,
+org_unit_compare (EBookBackendLDAP *self,
+		  EContact *contact1,
 		  EContact *contact2,
 		  const gchar *ldap_attr)
 {
@@ -3679,6 +3731,71 @@ org_unit_compare (EContact *contact1,
 
 	g_free (org_unit1);
 	g_free (org_unit2);
+
+	return equal;
+}
+
+static void
+nickname_populate (EBookBackendLDAP *self,
+		   EContact *contact,
+		   gchar **values)
+{
+	const gchar *nickname = values[0];
+
+	if (!nickname || !*nickname)
+		return;
+
+	e_contact_set (contact, E_CONTACT_NICKNAME, nickname);
+
+	/* When does not have the Evolution's Person scheme set the displayName
+	   also as the FileAs, if it has at least two words (a space in the value). */
+	if (!self->priv->evolutionPersonSupported &&
+	    strchr (nickname, ' ') != NULL) {
+		e_contact_set (contact, E_CONTACT_FILE_AS, nickname);
+	}
+}
+
+static struct berval **
+nickname_ber (EBookBackendLDAP *self,
+	      EContact *contact,
+	      const gchar *ldap_attr,
+	      GError **error)
+{
+	struct berval **result;
+	gchar *nickname;
+
+	nickname = e_contact_get (contact, E_CONTACT_NICKNAME);
+
+	if (!nickname || !*nickname) {
+		g_free (nickname);
+		return NULL;
+	}
+
+	result = g_new (struct berval *, 2);
+	result[0] = g_new (struct berval, 1);
+	result[0]->bv_val = nickname;
+	result[0]->bv_len = strlen (nickname);
+	result[1] = NULL;
+
+	return result;
+}
+
+static gboolean
+nickname_compare (EBookBackendLDAP *self,
+		  EContact *contact1,
+		  EContact *contact2,
+		  const gchar *ldap_attr)
+{
+	gchar *nickname1, *nickname2;
+	gboolean equal;
+
+	nickname1 = e_contact_get (contact1, E_CONTACT_NICKNAME);
+	nickname2 = e_contact_get (contact2, E_CONTACT_NICKNAME);
+
+	equal = g_strcmp0 (nickname1, nickname2) == 0;
+
+	g_free (nickname1);
+	g_free (nickname2);
 
 	return equal;
 }
@@ -4332,7 +4449,7 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 					ber_values = ldap_get_values_len (bl->priv->ldap, e, attr);
 
 					if (ber_values) {
-						info->binary_populate_contact_func (contact, ber_values);
+						info->binary_populate_contact_func (bl, contact, ber_values);
 
 						ldap_value_free_len (ber_values);
 					}
@@ -4351,8 +4468,7 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 						else if (info->prop_type & PROP_TYPE_COMPLEX) {
 							/* if it's a list call the contact-populate function,
 							 * which calls g_object_set to set the property */
-							info->populate_contact_func (contact,
-										    values);
+							info->populate_contact_func (bl, contact, values);
 						}
 						else if (info->prop_type & PROP_TYPE_GROUP) {
 							const gchar *grpattrs[3];
@@ -4433,7 +4549,7 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 								}
 							}
 							/* call populate function */
-							info->populate_contact_func (contact, member_info);
+							info->populate_contact_func (bl, contact, member_info);
 
 							for (j = 0; j < count; j++) {
 								g_free (*(member_info + j));
