@@ -300,7 +300,8 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 			uri, local_error ? local_error->message : _("Unknown error"));
 	}
 
-	if (success) {
+	/* The 'input_stream' can be NULL when the server returned SOUP_STATUS_NOT_MODIFIED */
+	if (success && input_stream) {
 		cbhttp->priv->icalstring = ecb_http_read_stream_sync (input_stream,
 			soup_message_headers_get_content_length (soup_message_get_response_headers (message)), cancellable, error);
 		success =  cbhttp->priv->icalstring != NULL;
@@ -388,7 +389,7 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 
 	g_rec_mutex_lock (&cbhttp->priv->conn_lock);
 
-	if (!cbhttp->priv->message || !cbhttp->priv->icalstring) {
+	if (!cbhttp->priv->message) {
 		g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
 		g_propagate_error (error, EC_ERROR (E_CLIENT_ERROR_REPOSITORY_OFFLINE));
 		return FALSE;
@@ -401,6 +402,8 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 
 		return TRUE;
 	}
+
+	g_warn_if_fail (cbhttp->priv->icalstring != NULL);
 
 	new_etag = soup_message_headers_get_one (soup_message_get_response_headers (cbhttp->priv->message), "ETag");
 	if (new_etag && !*new_etag) {
