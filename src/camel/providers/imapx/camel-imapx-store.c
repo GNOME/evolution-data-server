@@ -3177,12 +3177,20 @@ imapx_store_unsubscribe_folder_sync (CamelSubscribable *subscribable,
 	success = camel_imapx_conn_manager_unsubscribe_mailbox_sync (conn_man, mailbox, cancellable, error);
 
 	if (success) {
-		CamelFolderInfo *fi;
+		CamelSettings *settings;
 
-		fi = imapx_store_build_folder_info (
-			CAMEL_IMAPX_STORE (subscribable), folder_name, 0);
-		camel_subscribable_folder_unsubscribed (subscribable, fi);
-		camel_folder_info_free (fi);
+		settings = camel_service_ref_settings (CAMEL_SERVICE (imapx_store));
+
+		/* Notify about unsubscribed folder only if showing subscribed folders only */
+		if (camel_imapx_settings_get_use_subscriptions (CAMEL_IMAPX_SETTINGS (settings))) {
+			CamelFolderInfo *fi;
+
+			fi = imapx_store_build_folder_info (imapx_store, folder_name, 0);
+			camel_subscribable_folder_unsubscribed (subscribable, fi);
+			camel_folder_info_free (fi);
+		}
+
+		g_clear_object (&settings);
 	}
 
 exit:
