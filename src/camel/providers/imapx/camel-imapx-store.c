@@ -595,6 +595,7 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 	CamelIMAPXStoreInfo *si;
 	CamelStoreInfoFlags flags;
 	CamelSettings *settings;
+	gboolean in_personal_namespace;
 	gboolean use_subscriptions;
 	gboolean mailbox_is_subscribed;
 	gboolean mailbox_is_nonexistent;
@@ -624,6 +625,9 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 		camel_imapx_mailbox_has_attribute (
 		mailbox, CAMEL_IMAPX_LIST_ATTR_NONEXISTENT);
 
+	in_personal_namespace = camel_imapx_namespace_get_category (
+		camel_imapx_mailbox_get_namespace (mailbox)) == CAMEL_IMAPX_NAMESPACE_PERSONAL;
+
 	/* XXX The flags type transforms from CamelStoreInfoFlags
 	 *     to CamelFolderInfoFlags about half-way through this.
 	 *     We should really eliminate the confusing redundancy. */
@@ -649,8 +653,10 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 	}
 
 	/* Check whether the flags disagree. */
-	if (si->info.flags != flags) {
+	if (si->info.flags != flags ||
+	    (!si->in_personal_namespace) != (!in_personal_namespace)) {
 		si->info.flags = flags;
+		si->in_personal_namespace = in_personal_namespace;
 		camel_store_summary_touch (store->summary);
 	}
 
@@ -1352,17 +1358,10 @@ get_folder_info_offline (CamelStore *store,
 			continue;
 
 		if (!si_is_inbox && !use_subscriptions && !(si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) &&
-		    !(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST)) {
-			CamelIMAPXMailbox *mailbox;
-
-			mailbox = camel_imapx_store_ref_mailbox (imapx_store, ((CamelIMAPXStoreInfo *) si)->mailbox_name);
-			if (!mailbox || camel_imapx_namespace_get_category (camel_imapx_mailbox_get_namespace (mailbox)) != CAMEL_IMAPX_NAMESPACE_PERSONAL) {
-				/* Skip unsubscribed mailboxes which are not in the Personal namespace */
-				g_clear_object (&mailbox);
-				continue;
-			}
-
-			g_clear_object (&mailbox);
+		    !(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST) &&
+		    !((CamelIMAPXStoreInfo *) si)->in_personal_namespace) {
+			/* Skip unsubscribed mailboxes which are not in the Personal namespace */
+			continue;
 		}
 
 		fi = imapx_store_build_folder_info (imapx_store, folder_path, 0);

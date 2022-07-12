@@ -31,17 +31,15 @@
 #define d(...) camel_imapx_debug(debug, '?', __VA_ARGS__)
 
 /* Version 0: Original IMAPX file format. */
-#define CAMEL_IMAPX_STORE_SUMMARY_VERSION_0 (0)
-
 /* Version 1: (3.10) Store the hierarchy separator. */
-#define CAMEL_IMAPX_STORE_SUMMARY_VERSION_1 (1);
+/* Version 2: (3.46) Store the in_personal_namespace. */
+#define CAMEL_IMAPX_STORE_SUMMARY_VERSION (2)
 
-#define CAMEL_IMAPX_STORE_SUMMARY_VERSION (1)
+typedef struct _CamelIMAPXStoreSummaryPrivate {
+	gint32 saved_version;
+} CamelIMAPXStoreSummaryPrivate;
 
-G_DEFINE_TYPE (
-	CamelIMAPXStoreSummary,
-	camel_imapx_store_summary,
-	CAMEL_TYPE_STORE_SUMMARY)
+G_DEFINE_TYPE_WITH_PRIVATE (CamelIMAPXStoreSummary, camel_imapx_store_summary, CAMEL_TYPE_STORE_SUMMARY)
 
 static gboolean
 namespace_load (FILE *in)
@@ -92,8 +90,11 @@ static gint
 imapx_store_summary_summary_header_load (CamelStoreSummary *summary,
                                          FILE *in)
 {
+	CamelIMAPXStoreSummaryPrivate *priv = camel_imapx_store_summary_get_instance_private (CAMEL_IMAPX_STORE_SUMMARY (summary));
 	CamelStoreSummaryClass *store_summary_class;
 	gint32 version, unused;
+
+	priv->saved_version = -1;
 
 	store_summary_class =
 		CAMEL_STORE_SUMMARY_CLASS (
@@ -106,18 +107,22 @@ imapx_store_summary_summary_header_load (CamelStoreSummary *summary,
 	if (camel_file_util_decode_fixed_int32 (in, &version) == -1)
 		return -1;
 
-	if (version < CAMEL_IMAPX_STORE_SUMMARY_VERSION) {
+	if (version != CAMEL_IMAPX_STORE_SUMMARY_VERSION && version != 1) {
 		g_warning ("IMAPx: Unable to load store summary: Expected version (%d), got (%d)",
 			CAMEL_IMAPX_STORE_SUMMARY_VERSION, version);
 		return -1;
 	}
 
-	if (camel_file_util_decode_fixed_int32 (in, &unused) == -1)
-		return -1;
+	if (version <= 1) {
+		if (camel_file_util_decode_fixed_int32 (in, &unused) == -1)
+			return -1;
 
-	/* XXX This just eats old data that we no longer use. */
-	if (!namespace_load (in))
-		return -1;
+		/* XXX This just eats old data that we no longer use. */
+		if (!namespace_load (in))
+			return -1;
+	}
+
+	priv->saved_version = version;
 
 	return 0;
 }
@@ -126,6 +131,7 @@ static gint
 imapx_store_summary_summary_header_save (CamelStoreSummary *summary,
                                          FILE *out)
 {
+	CamelIMAPXStoreSummaryPrivate *priv = camel_imapx_store_summary_get_instance_private (CAMEL_IMAPX_STORE_SUMMARY (summary));
 	CamelStoreSummaryClass *store_summary_class;
 
 	store_summary_class =
@@ -141,21 +147,7 @@ imapx_store_summary_summary_header_save (CamelStoreSummary *summary,
 		out, CAMEL_IMAPX_STORE_SUMMARY_VERSION) == -1)
 		return -1;
 
-	if (camel_file_util_encode_fixed_int32 (out, 0) == -1)
-		return -1;
-
-	/* XXX This just saves zero-count namespace placeholders for
-	 *     backward compatibility.  Next time we bump the summary
-	 *     version, delete all this cruft. */
-
-	if (camel_file_util_encode_fixed_int32 (out, 0) == -1)
-		return -1;
-
-	if (camel_file_util_encode_fixed_int32 (out, 0) == -1)
-		return -1;
-
-	if (camel_file_util_encode_fixed_int32 (out, 0) == -1)
-		return -1;
+	priv->saved_version = CAMEL_IMAPX_STORE_SUMMARY_VERSION;
 
 	return 0;
 }
@@ -164,10 +156,12 @@ static CamelStoreInfo *
 imapx_store_summary_store_info_load (CamelStoreSummary *summary,
                                      FILE *in)
 {
+	CamelIMAPXStoreSummaryPrivate *priv = camel_imapx_store_summary_get_instance_private (CAMEL_IMAPX_STORE_SUMMARY (summary));
 	CamelStoreSummaryClass *store_summary_class;
 	CamelStoreInfo *si;
 	gchar *mailbox_name = NULL;
 	gchar *separator = NULL;
+	gint32 in_personal_namespace = 0;
 
 	store_summary_class =
 		CAMEL_STORE_SUMMARY_CLASS (
@@ -189,6 +183,14 @@ imapx_store_summary_store_info_load (CamelStoreSummary *summary,
 		return NULL;
 	}
 
+	if (priv->saved_version >= 2 &&
+	    camel_file_util_decode_fixed_int32 (in, &in_personal_namespace) == -1) {
+		camel_store_summary_info_unref (summary, si);
+		g_free (mailbox_name);
+		g_free (separator);
+		return NULL;
+	}
+
 	camel_imapx_normalize_mailbox (mailbox_name, *separator);
 
 	/* NB: this is done again for compatability */
@@ -199,6 +201,7 @@ imapx_store_summary_store_info_load (CamelStoreSummary *summary,
 
 	((CamelIMAPXStoreInfo *) si)->mailbox_name = mailbox_name;
 	((CamelIMAPXStoreInfo *) si)->separator = *separator;
+	((CamelIMAPXStoreInfo *) si)->in_personal_namespace = in_personal_namespace != 0;
 
 	g_free (separator);
 
@@ -213,6 +216,7 @@ imapx_store_summary_store_info_save (CamelStoreSummary *summary,
 	CamelStoreSummaryClass *store_summary_class;
 	gchar separator[] = { '\0', '\0' };
 	const gchar *mailbox_name;
+	gint32 in_personal_namespace;
 
 	store_summary_class =
 		CAMEL_STORE_SUMMARY_CLASS (
@@ -220,6 +224,7 @@ imapx_store_summary_store_info_save (CamelStoreSummary *summary,
 
 	mailbox_name = ((CamelIMAPXStoreInfo *) si)->mailbox_name;
 	separator[0] = ((CamelIMAPXStoreInfo *) si)->separator;
+	in_personal_namespace = ((CamelIMAPXStoreInfo *) si)->in_personal_namespace ? 1 : 0;
 
 	/* Chain up to parent's store_info_save() method. */
 	if (store_summary_class->store_info_save (summary, out, si) == -1)
@@ -229,6 +234,9 @@ imapx_store_summary_store_info_save (CamelStoreSummary *summary,
 		return -1;
 
 	if (camel_file_util_encode_string (out, mailbox_name) == -1)
+		return -1;
+
+	if (camel_file_util_encode_fixed_int32 (out, in_personal_namespace) == -1)
 		return -1;
 
 	return 0;
@@ -333,16 +341,24 @@ camel_imapx_store_summary_add_from_mailbox (CamelStoreSummary *summary,
 	const gchar *mailbox_name;
 	gchar *folder_path;
 	gchar separator;
+	gboolean in_personal_namespace;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE_SUMMARY (summary), NULL);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), NULL);
 
 	mailbox_name = camel_imapx_mailbox_get_name (mailbox);
 	separator = camel_imapx_mailbox_get_separator (mailbox);
+	in_personal_namespace = camel_imapx_namespace_get_category (camel_imapx_mailbox_get_namespace (mailbox)) == CAMEL_IMAPX_NAMESPACE_PERSONAL;
 
 	info = camel_imapx_store_summary_mailbox (summary, mailbox_name);
-	if (info != NULL)
+	if (info != NULL) {
+		if ((!in_personal_namespace) != (!info->in_personal_namespace)) {
+			info->in_personal_namespace = in_personal_namespace;
+
+			camel_store_summary_touch (summary);
+		}
 		return info;
+	}
 
 	folder_path = camel_imapx_mailbox_to_folder_path (
 		mailbox_name, separator);
@@ -358,6 +374,7 @@ camel_imapx_store_summary_add_from_mailbox (CamelStoreSummary *summary,
 
 	info->mailbox_name = g_strdup (mailbox_name);
 	info->separator = separator;
+	info->in_personal_namespace = in_personal_namespace;
 
 	if (camel_imapx_mailbox_is_inbox (mailbox_name))
 		info->info.flags |=

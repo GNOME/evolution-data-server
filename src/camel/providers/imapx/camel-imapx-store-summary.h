@@ -52,6 +52,7 @@ struct _CamelIMAPXStoreInfo {
 	CamelStoreInfo info;
 	gchar *mailbox_name;
 	gchar separator;
+	gboolean in_personal_namespace;
 };
 
 struct _CamelIMAPXStoreSummary {
