@@ -409,9 +409,9 @@ ecb_gtasks_connect_sync (ECalMetaBackend *meta_backend,
 	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (meta_backend), FALSE);
 	g_return_val_if_fail (out_auth_result != NULL, FALSE);
 
-	cbgtasks = E_CAL_BACKEND_GTASKS (meta_backend);
-
 	*out_auth_result = E_SOURCE_AUTHENTICATION_ACCEPTED;
+
+	cbgtasks = E_CAL_BACKEND_GTASKS (meta_backend);
 
 	g_rec_mutex_lock (&cbgtasks->priv->conn_lock);
 
@@ -433,45 +433,16 @@ ecb_gtasks_connect_sync (ECalMetaBackend *meta_backend,
 
 	success = ecb_gtasks_prepare_tasklist_locked (cbgtasks, cancellable, &local_error);
 
-	if (!success) {
-		gboolean credentials_empty;
-		gboolean is_tls_error;
-
-		credentials_empty = (!credentials || !e_named_parameters_count (credentials) ||
-			(e_named_parameters_count (credentials) == 1 && e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_SSL_TRUST))) &&
-			e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (cbgtasks->priv->gdata));
-		is_tls_error = g_error_matches (local_error, G_TLS_ERROR, G_TLS_ERROR_BAD_CERTIFICATE);
-
-		*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR;
-
-		if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_FORBIDDEN) && credentials_empty) {
-			*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
-		} else if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
-			if (credentials_empty)
-				*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
-			else
-				*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
-		} else if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED) ||
-			   (!e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (cbgtasks->priv->gdata)) &&
-			   g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))) {
-			*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
-		} else if (!local_error) {
-			g_set_error_literal (&local_error, G_IO_ERROR, G_IO_ERROR_FAILED, "Unknown error");
-		}
-
-		if (local_error) {
-			g_propagate_error (error, local_error);
-			local_error = NULL;
-		}
-
-		if (is_tls_error) {
-			*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED;
-
-			e_soup_session_get_ssl_error_details (E_SOUP_SESSION (cbgtasks->priv->gdata), out_certificate_pem, out_certificate_errors);
-		}
+	if (success) {
+		e_source_set_connection_status (e_backend_get_source (E_BACKEND (cbgtasks)), E_SOURCE_CONNECTION_STATUS_CONNECTED);
+	} else {
+		e_soup_session_handle_authentication_failure (E_SOUP_SESSION (cbgtasks->priv->gdata), credentials,
+			local_error, out_auth_result, out_certificate_pem, out_certificate_errors, error);
 	}
 
 	g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
+
+	g_clear_error (&local_error);
 
 	return success;
 }

@@ -95,6 +95,14 @@ gboolean	e_soup_session_get_authentication_requires_credentials
 gboolean	e_soup_session_get_ssl_error_details	(ESoupSession *session,
 							 gchar **out_certificate_pem,
 							 GTlsCertificateFlags *out_certificate_errors);
+void		e_soup_session_handle_authentication_failure
+							(ESoupSession *session,
+							 const ENamedParameters *credentials,
+							 const GError *op_error,
+							 ESourceAuthenticationResult *out_auth_result,
+							 gchar **out_certificate_pem,
+							 GTlsCertificateFlags *out_certificate_errors,
+							 GError **error);
 SoupMessage *	e_soup_session_new_message		(ESoupSession *session,
 							 const gchar *method,
 							 const gchar *uri_string,

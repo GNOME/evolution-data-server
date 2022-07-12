@@ -816,10 +816,10 @@ e_soup_session_get_authentication_requires_credentials (ESoupSession *session)
 /**
  * e_soup_session_get_ssl_error_details:
  * @session: an #ESoupSession
- * @out_certificate_pem: (out): return location for a server TLS/SSL certificate
- *   in PEM format, when the last operation failed with a TLS/SSL error
- * @out_certificate_errors: (out): return location for a #GTlsCertificateFlags,
- *   with certificate error flags when the operation failed with a TLS/SSL error
+ * @out_certificate_pem: (out) (optional): return location for a server TLS/SSL certificate
+ *   in PEM format, when the last operation failed with a TLS/SSL error, or %NULL
+ * @out_certificate_errors: (out) (optional): return location for a #GTlsCertificateFlags,
+ *   with certificate error flags when the operation failed with a TLS/SSL error, or %NULL
  *
  * Populates @out_certificate_pem and @out_certificate_errors with the last values
  * returned on #G_TLS_ERROR_BAD_CERTIFICATE error.
@@ -834,8 +834,6 @@ e_soup_session_get_ssl_error_details (ESoupSession *session,
 				      GTlsCertificateFlags *out_certificate_errors)
 {
 	g_return_val_if_fail (E_IS_SOUP_SESSION (session), FALSE);
-	g_return_val_if_fail (out_certificate_pem != NULL, FALSE);
-	g_return_val_if_fail (out_certificate_errors != NULL, FALSE);
 
 	g_mutex_lock (&session->priv->property_lock);
 	if (!session->priv->ssl_info_set) {
@@ -843,12 +841,88 @@ e_soup_session_get_ssl_error_details (ESoupSession *session,
 		return FALSE;
 	}
 
-	*out_certificate_pem = g_strdup (session->priv->ssl_certificate_pem);
-	*out_certificate_errors = session->priv->ssl_certificate_errors;
+	if (out_certificate_pem)
+		*out_certificate_pem = g_strdup (session->priv->ssl_certificate_pem);
+
+	if (out_certificate_errors)
+		*out_certificate_errors = session->priv->ssl_certificate_errors;
 
 	g_mutex_unlock (&session->priv->property_lock);
 
 	return TRUE;
+}
+
+/**
+ * e_soup_session_handle_authentication_failure:
+ * @session: an #ESoupSession
+ * @credentials: (nullable): credentials used for the authentication
+ * @op_error: a #GError of the authentication operation
+ * @out_auth_result: (out): an #ESourceAuthenticationResult with an authentication result
+ * @out_certificate_pem: (out) (optional): return location for a server TLS/SSL certificate
+ *   in PEM format, when the last operation failed with a TLS/SSL error, or %NULL
+ * @out_certificate_errors: (out) (optional): return location for a #GTlsCertificateFlags,
+ *   with certificate error flags when the operation failed with a TLS/SSL error, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Handles authentication failure and sets appropriate value to the @out_auth_result
+ * for the provided @op_error and used @credentials. Converts the @op_error
+ * into an appropriate error returned in the @error.
+ *
+ * Also updates connection status on the associated #ESource with the @session.
+ *
+ * Since: 3.46
+ **/
+void
+e_soup_session_handle_authentication_failure (ESoupSession *session,
+					      const ENamedParameters *credentials,
+					      const GError *op_error,
+					      ESourceAuthenticationResult *out_auth_result,
+					      gchar **out_certificate_pem,
+					      GTlsCertificateFlags *out_certificate_errors,
+					      GError **error)
+{
+	ESource *source;
+	gboolean requires_credentials;
+	gboolean credentials_empty;
+	gboolean is_tls_error;
+
+	g_return_if_fail (E_IS_SOUP_SESSION (session));
+	g_return_if_fail (out_auth_result != NULL);
+
+	source = e_soup_session_get_source (session);
+	requires_credentials = e_soup_session_get_authentication_requires_credentials (session);
+	credentials_empty = (!credentials || !e_named_parameters_count (credentials) ||
+		(e_named_parameters_count (credentials) == 1 && e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_SSL_TRUST))) &&
+		requires_credentials;
+	is_tls_error = g_error_matches (op_error, G_TLS_ERROR, G_TLS_ERROR_BAD_CERTIFICATE);
+
+	*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR;
+
+	if (g_error_matches (op_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_FORBIDDEN) && credentials_empty) {
+		*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
+	} else if (g_error_matches (op_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
+		if (credentials_empty)
+			*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
+		else
+			*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
+	} else if (g_error_matches (op_error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED) ||
+		   (!requires_credentials && g_error_matches (op_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))) {
+		*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
+	} else if (!op_error) {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Unknown error"));
+	}
+
+	if (op_error)
+		g_propagate_error (error, g_error_copy (op_error));
+
+	if (is_tls_error) {
+		*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED;
+
+		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_SSL_FAILED);
+		e_soup_session_get_ssl_error_details (session, out_certificate_pem, out_certificate_errors);
+	} else {
+		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+	}
 }
 
 static void
