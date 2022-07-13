@@ -134,6 +134,24 @@ reminders_widget_new_snooze_combo (void)
 	return combo;
 }
 
+static gint
+reminders_widget_cmp_snooze_minues_cb (gconstpointer aa,
+				       gconstpointer bb)
+{
+	gint mins1, mins2;
+
+	mins1 = GPOINTER_TO_INT (*((gint **) aa));
+	mins2 = GPOINTER_TO_INT (*((gint **) bb));
+
+	/* Place "until start time" as the last, not first */
+	if (!mins1)
+		return 1;
+	if (!mins2)
+		return -1;
+
+	return mins1 - mins2;
+}
+
 static void
 reminders_widget_fill_snooze_combo (ERemindersWidget *reminders,
 				    gint preselect_minutes)
@@ -148,10 +166,11 @@ reminders_widget_fill_snooze_combo (ERemindersWidget *reminders,
 		7 * 24 * 60,
 		0
 	};
-	gint ii, last_sel = -1;
+	gint ii, last_sel = -1, last_minutes;
 	GtkComboBox *combo;
 	GtkListStore *list_store;
 	GtkTreeIter iter, tosel_iter;
+	GPtrArray *snooze_minutes;
 	GVariant *variant;
 	gboolean tosel_set = FALSE;
 	gboolean any_stored_added = FALSE;
@@ -167,31 +186,9 @@ reminders_widget_fill_snooze_combo (ERemindersWidget *reminders,
 		gtk_tree_model_get (GTK_TREE_MODEL (list_store), &iter, 1, &last_sel, -1);
 	}
 
-	gtk_list_store_clear (list_store);
+	snooze_minutes = g_ptr_array_sized_new (G_N_ELEMENTS (predefined_minutes) + 1);
 
-	#define add_minutes(_minutes) G_STMT_START {				\
-		gint32 minutes = (_minutes);					\
-		gchar *text = NULL;						\
-										\
-		if (minutes > 0)						\
-			text = e_cal_util_seconds_to_string (minutes * 60);	\
-		gtk_list_store_append (list_store, &iter);			\
-		gtk_list_store_set (list_store, &iter,				\
-			/* Translators: meaning as "Snooze, until event start time" */ \
-			0, !minutes ? _("until start time") : text,		\
-			1, minutes,						\
-			-1);							\
-		g_free (text);							\
-										\
-		if (preselect_minutes >= 0 && preselect_minutes == minutes) {	\
-			tosel_set = TRUE;					\
-			tosel_iter = iter;					\
-			last_sel = -1;						\
-		} else if (last_sel >= 0 && minutes == last_sel) {		\
-			tosel_set = TRUE;					\
-			tosel_iter = iter;					\
-		}								\
-	} G_STMT_END
+	gtk_list_store_clear (list_store);
 
 	/* Custom user values first */
 	variant = g_settings_get_value (reminders->priv->settings, "notify-custom-snooze-minutes");
@@ -203,7 +200,7 @@ reminders_widget_fill_snooze_combo (ERemindersWidget *reminders,
 		if (stored && nstored > 0) {
 			for (ii = 0; ii < nstored; ii++) {
 				if (stored[ii] > 0) {
-					add_minutes (stored[ii]);
+					g_ptr_array_add (snooze_minutes, GINT_TO_POINTER (stored[ii]));
 					any_stored_added = TRUE;
 				}
 			}
@@ -219,10 +216,43 @@ reminders_widget_fill_snooze_combo (ERemindersWidget *reminders,
 	}
 
 	for (ii = 0; ii < G_N_ELEMENTS (predefined_minutes); ii++) {
-		add_minutes (predefined_minutes[ii]);
+		g_ptr_array_add (snooze_minutes, GINT_TO_POINTER (predefined_minutes[ii]));
 	}
 
-	#undef add_minutes
+	g_ptr_array_sort (snooze_minutes, reminders_widget_cmp_snooze_minues_cb);
+
+	last_minutes = -1;
+
+	for (ii = 0; ii < snooze_minutes->len; ii++) {
+		gint32 minutes = GPOINTER_TO_INT (g_ptr_array_index (snooze_minutes, ii));
+
+		if (!ii || minutes != last_minutes) {
+			gchar *text = NULL;
+
+			if (minutes > 0)
+				text = e_cal_util_seconds_to_string (minutes * 60);
+			gtk_list_store_append (list_store, &iter);
+			gtk_list_store_set (list_store, &iter,
+				/* Translators: meaning as "Snooze, until event start time" */
+				0, !minutes ? _("until start time") : text,
+				1, minutes,
+				-1);
+			g_free (text);
+
+			if (preselect_minutes >= 0 && preselect_minutes == minutes) {
+				tosel_set = TRUE;
+				tosel_iter = iter;
+				last_sel = -1;
+			} else if (last_sel >= 0 && minutes == last_sel) {
+				tosel_set = TRUE;
+				tosel_iter = iter;
+			}
+
+			last_minutes = minutes;
+		}
+	}
+
+	g_ptr_array_unref (snooze_minutes);
 
 	/* Separator */
 	gtk_list_store_append (list_store, &iter);
