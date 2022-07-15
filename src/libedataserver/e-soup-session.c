@@ -146,12 +146,16 @@ e_soup_session_ensure_auth_usage (ESoupSession *session,
 		}
 
 		if (!g_uri) {
-			ESourceWebdav *extension;
 			ESource *source;
 
 			source = e_soup_session_get_source (session);
-			extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-			g_uri = e_source_webdav_dup_uri (extension);
+
+			if (source) {
+				ESourceWebdav *extension;
+
+				extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+				g_uri = e_source_webdav_dup_uri (extension);
+			}
 		}
 	}
 
@@ -161,7 +165,7 @@ e_soup_session_ensure_auth_usage (ESoupSession *session,
 	   but do not set the same 'soup_auth' when it's already set (which can happen, when the session
 	   is reused by multiple sources, which connect to the same server, with the same user.
 	   See https://gitlab.gnome.org/GNOME/libsoup/-/issues/196 for more information. */
-	if (!e_soup_session_auth_already_set_locked (session, g_uri, soup_auth, &auth_was_set)) {
+	if (g_uri && !e_soup_session_auth_already_set_locked (session, g_uri, soup_auth, &auth_was_set)) {
 		if (auth_was_set)
 			soup_auth_manager_clear_cached_credentials (auth_manager);
 
@@ -170,7 +174,7 @@ e_soup_session_ensure_auth_usage (ESoupSession *session,
 
 	g_rec_mutex_unlock (&session->priv->session_lock);
 
-	if (!in_g_uri)
+	if (!in_g_uri && g_uri)
 		g_uri_unref (g_uri);
 }
 
@@ -191,6 +195,12 @@ e_soup_session_setup_bearer_auth (ESoupSession *session,
 	g_return_val_if_fail (E_IS_SOUP_AUTH_BEARER (bearer), FALSE);
 
 	source = e_soup_session_get_source (session);
+
+	if (!source) {
+		/* Do not localize this error message, it should not get into the UI */
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED, "No ESource specified");
+		return FALSE;
+	}
 
 	success = e_source_get_oauth2_access_token_sync (source, cancellable,
 		&access_token, &expires_in_seconds, error);
@@ -310,7 +320,7 @@ e_soup_session_maybe_prepare_auth (ESoupSession *session,
 
 	source = e_soup_session_get_source (session);
 
-	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+	if (source && e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
 		ESourceAuthentication *extension;
 
 		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
@@ -440,7 +450,7 @@ e_soup_session_authenticate_cb (SoupMessage *message,
 	credentials = e_soup_session_dup_credentials (session);
 
 	username = credentials ? e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_USERNAME) : NULL;
-	if ((!username || !*username) &&
+	if ((!username || !*username) && session->priv->source &&
 	    e_source_has_extension (session->priv->source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
 		ESourceAuthentication *auth_extension;
 
@@ -468,10 +478,11 @@ e_soup_session_set_source (ESoupSession *session,
 			   ESource *source)
 {
 	g_return_if_fail (E_IS_SOUP_SESSION (session));
-	g_return_if_fail (E_IS_SOURCE (source));
+	if (source)
+		g_return_if_fail (E_IS_SOURCE (source));
 	g_return_if_fail (!session->priv->source);
 
-	session->priv->source = g_object_ref (source);
+	session->priv->source = source ? g_object_ref (source) : NULL;
 }
 
 static void
@@ -711,7 +722,9 @@ e_soup_session_get_log_level (ESoupSession *session)
  * e_soup_session_get_source:
  * @session: an #ESoupSession
  *
- * Returns: (transfer none): Associated #ESource with the @session.
+ * Returns an #ESource associated with the @session, if such was set in the creation time.
+ *
+ * Returns: (transfer none) (nullable): Associated #ESource with the @session, or %NULL.
  *
  * Since: 3.26
  **/
@@ -918,9 +931,10 @@ e_soup_session_handle_authentication_failure (ESoupSession *session,
 	if (is_tls_error) {
 		*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED;
 
-		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_SSL_FAILED);
+		if (source)
+			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_SSL_FAILED);
 		e_soup_session_get_ssl_error_details (session, out_certificate_pem, out_certificate_errors);
-	} else {
+	} else if (source) {
 		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 	}
 }
