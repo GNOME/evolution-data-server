@@ -932,8 +932,7 @@ eos_send_message (SoupSession *session,
 		g_string_free (error_msg, TRUE);
 	}
 
-	if (response_body)
-		g_object_unref (response_body);
+	g_clear_pointer (&response_body, g_bytes_unref);
 
 	return success;
 }
