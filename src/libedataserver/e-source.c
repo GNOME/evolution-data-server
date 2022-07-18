@@ -4622,7 +4622,7 @@ e_source_invoke_credentials_required_sync (ESource *source,
 
 	flags_class = g_type_class_ref (G_TYPE_TLS_CERTIFICATE_FLAGS);
 	for (flags_value = g_flags_get_first_value (flags_class, certificate_errors);
-	     flags_value;
+	     flags_value && certificate_errors;
 	     flags_value = g_flags_get_first_value (flags_class, certificate_errors)) {
 		if (certificate_errors_str->len)
 			g_string_append_c (certificate_errors_str, ':');
