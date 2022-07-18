@@ -5187,13 +5187,13 @@ e_cal_client_modify_objects_sync (ECalClient *client,
 
 	mod_flags = g_string_new (NULL);
 	flags_class = g_type_class_ref (E_TYPE_CAL_OBJ_MOD_TYPE);
-	flags_value = g_flags_get_first_value (flags_class, mod);
-	while (flags_value != NULL) {
+	for (flags_value = g_flags_get_first_value (flags_class, mod);
+	     flags_value && mod;
+	     flags_value = g_flags_get_first_value (flags_class, mod)) {
 		if (mod_flags->len > 0)
 			g_string_append_c (mod_flags, ':');
 		g_string_append (mod_flags, flags_value->value_nick);
 		mod &= ~flags_value->value;
-		flags_value = g_flags_get_first_value (flags_class, mod);
 	}
 
 	strv = g_new0 (gchar *, g_slist_length (icalcomps) + 1);
@@ -5549,13 +5549,13 @@ e_cal_client_remove_objects_sync (ECalClient *client,
 
 	mod_flags = g_string_new (NULL);
 	flags_class = g_type_class_ref (E_TYPE_CAL_OBJ_MOD_TYPE);
-	flags_value = g_flags_get_first_value (flags_class, mod);
-	while (flags_value != NULL) {
+	for (flags_value = g_flags_get_first_value (flags_class, mod);
+	     flags_value && mod;
+	     flags_value = g_flags_get_first_value (flags_class, mod)) {
 		if (mod_flags->len > 0)
 			g_string_append_c (mod_flags, ':');
 		g_string_append (mod_flags, flags_value->value_nick);
 		mod &= ~flags_value->value;
-		flags_value = g_flags_get_first_value (flags_class, mod);
 	}
 
 	g_variant_builder_init (&builder, G_VARIANT_TYPE ("a(ss)"));
