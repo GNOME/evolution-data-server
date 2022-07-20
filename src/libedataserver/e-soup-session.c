@@ -331,14 +331,19 @@ e_soup_session_authenticate_cb (SoupSession *soup_session,
 
 	session = E_SOUP_SESSION (soup_session);
 
+	g_mutex_lock (&session->priv->property_lock);
 	if (E_IS_SOUP_AUTH_BEARER (auth)) {
 		g_object_ref (auth);
 		g_warn_if_fail ((gpointer) session->priv->using_bearer_auth == (gpointer) auth);
 		g_clear_object (&session->priv->using_bearer_auth);
 		session->priv->using_bearer_auth = E_SOUP_AUTH_BEARER (auth);
+	} else if (session->priv->using_bearer_auth) {
+		/* This can mean the bearer auth expired, then a Basic auth is used by the libsoup;
+		   that's not meant to be done here, thus fail early. */
+		g_mutex_unlock (&session->priv->property_lock);
+		return;
 	}
 
-	g_mutex_lock (&session->priv->property_lock);
 	if (retrying && !session->priv->auth_prefilled) {
 		g_mutex_unlock (&session->priv->property_lock);
 		return;
