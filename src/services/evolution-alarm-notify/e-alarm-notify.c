@@ -325,33 +325,16 @@ e_alarm_notify_display (EAlarmNotify *an,
 
 	if (!g_hash_table_contains (an->priv->notification_ids, notif_id)) {
 		GNotification *notification;
-		GtkIconInfo *icon_info;
+		GIcon *icon;
 		gchar *detailed_action;
 
 		notification = g_notification_new (_("Reminders"));
 		g_notification_set_body (notification, description);
 
-		icon_info = gtk_icon_theme_lookup_icon (gtk_icon_theme_get_default (), "appointment-soon", 48, 0);
-		if (icon_info) {
-			const gchar *filename;
-
-			filename = gtk_icon_info_get_filename (icon_info);
-			if (filename && *filename) {
-				GFile *file;
-				GIcon *icon;
-
-				file = g_file_new_for_path (filename);
-				icon = g_file_icon_new (file);
-
-				if (icon) {
-					g_notification_set_icon (notification, icon);
-					g_object_unref (icon);
-				}
-
-				g_object_unref (file);
-			}
-
-			gtk_icon_info_free (icon_info);
+		icon = g_themed_icon_new ("appointment-soon");
+		if (icon) {
+			g_notification_set_icon (notification, icon);
+			g_object_unref (icon);
 		}
 
 		detailed_action = g_action_print_detailed_name ("app.show-reminders", NULL);
