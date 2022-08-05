@@ -1,3 +1,15 @@
+Evolution-Data-Server 3.44.4 2022-08-05
+---------------------------------------
+
+Bug Fixes:
+	I#407 - IMAPx: Unsubscribed folder always removed from the UI
+
+Miscellaneous:
+	ESoupAuthBearer: Check for token expiration in e_soup_auth_bearer_is_authenticated()
+	ESoupSession: Avoid downgrade of Bearer (OAuth2) auth for authentication
+	Check for non-zero value passed to g_flags_get_first_value()
+	alarm-notify: Use themed icon instead of file icon for notifications
+
 Evolution-Data-Server 3.44.3 2022-07-01
 ---------------------------------------
 
