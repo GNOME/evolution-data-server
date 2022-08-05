@@ -1,3 +1,32 @@
+Evolution-Data-Server 3.45.2 2022-08-05
+---------------------------------------
+
+Bug Fixes:
+	I#351 - LDAP: Conditionally use displayName for file-as
+	I#402 - IMAPx: Unsubscribed folders in personal namespace hidden in offline
+	I#404 - ESoupSession: Remember server fail response for detailed error
+	I#405 - ECalClient: Remove libical errors from components on write
+	I#407 - IMAPx: Unsubscribed folder always removed from the UI
+	evo-I#1958 - reminders-widget: Sort snooze times by duration
+
+Miscellaneous:
+	Bump libsoup minimum version requirement to 3.1.1
+	CamelDataWrapper: Add function to construct it from data
+	ESourceMailAccount: Add 'builtin' property
+	Add functions to manipulate Google Task API
+	e_soup_session_util_normalize_uri_path: Normalize path only when not encoded
+	Replace libgdata dependency with built-in functions
+	Add camel_folder_get_full_display_name()
+	CamelFolderSummary: Hide empty email address in user visible strings
+	Calendar: Correct handling of a "not modified" On The Web calendar
+	ESoupSession: Extract common auth failure code into a utility function
+	ESoupAuthBearer: Check for token expiration in e_soup_auth_bearer_is_authenticated()
+	EOAuth2Service: Correct free function for GBytes structure
+	ESoupSession: Allow NULL source internally
+	Check for non-zero value passed to g_flags_get_first_value()
+	alarm-notify: Use themed icon instead of file icon for notifications
+	ESoupSession: Avoid downgrade of Bearer (OAuth2) auth for authentication
+
 Evolution-Data-Server 3.45.1 2022-07-01
 ---------------------------------------
 
