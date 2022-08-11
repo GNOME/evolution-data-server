@@ -22,6 +22,7 @@
 
 #include <libedataserverui@UI_VERSION@/e-buffer-tagger.h>
 #include <libedataserverui@UI_VERSION@/e-cell-renderer-color.h>
+#include <libedataserverui@UI_VERSION@/e-certificate-widget.h>
 #include <libedataserverui@UI_VERSION@/e-credentials-prompter.h>
 #include <libedataserverui@UI_VERSION@/e-credentials-prompter-impl.h>
 #include <libedataserverui@UI_VERSION@/e-credentials-prompter-impl-oauth2.h>

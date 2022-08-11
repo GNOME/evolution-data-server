@@ -13,6 +13,7 @@ configure_file(
 set(SOURCES
 	e-buffer-tagger.c
 	e-cell-renderer-color.c
+	e-certificate-widget.c
 	e-credentials-prompter.c
 	e-credentials-prompter-impl.c
 	e-credentials-prompter-impl-oauth2.c
@@ -28,6 +29,7 @@ set(HEADERS
 	${CMAKE_CURRENT_BINARY_DIR}/libedataserverui${UI_VERSION}.h
 	e-buffer-tagger.h
 	e-cell-renderer-color.h
+	e-certificate-widget.h
 	e-credentials-prompter.h
 	e-credentials-prompter-impl.h
 	e-credentials-prompter-impl-oauth2.h
@@ -172,6 +174,7 @@ configure_file(
 set(SOURCES
 	e-buffer-tagger.c
 	e-cell-renderer-color.c
+	e-certificate-widget.c
 	e-credentials-prompter.c
 	e-credentials-prompter-impl.c
 	e-credentials-prompter-impl-oauth2.c
@@ -187,6 +190,7 @@ set(HEADERS
 	${CMAKE_CURRENT_BINARY_DIR}/libedataserverui${UI_VERSION}.h
 	e-buffer-tagger.h
 	e-cell-renderer-color.h
+	e-certificate-widget.h
 	e-credentials-prompter.h
 	e-credentials-prompter-impl.h
 	e-credentials-prompter-impl-oauth2.h
