@@ -1745,7 +1745,7 @@ set_datetime (ICalComponent *icalcomp,
 }
 
 /* This tries to get the DTSTART + DURATION for a VEVENT or VTODO. In a
- * VEVENT this is used for the DTEND if no DTEND exists, In a VTOTO it is
+ * VEVENT this is used for the DTEND if no DTEND exists. In a VTODO it is
  * used for the DUE date if DUE doesn't exist. */
 static ECalComponentDateTime *
 e_cal_component_get_start_plus_duration (ECalComponent *comp)
