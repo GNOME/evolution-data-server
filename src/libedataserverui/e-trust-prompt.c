@@ -23,23 +23,10 @@
 #include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
 
-#define GCR_API_SUBJECT_TO_CHANGE
-#define GCK_API_SUBJECT_TO_CHANGE
-#if GTK_CHECK_VERSION(4, 0, 0)
-#include <gcr-gtk4/gcr-certificate-widget.h>
-#else
-#ifdef WITH_GCR3
-#include <gcr/gcr.h>
-#else
-#include <gcr-gtk3/gcr-gtk3.h>
-#endif
-#endif
-#undef GCK_API_SUBJECT_TO_CHANGE
-#undef GCR_API_SUBJECT_TO_CHANGE
-
 #include "camel/camel.h"
 #include "libedataserver/libedataserver.h"
 #include "libedataserverui-private.h"
+#include "e-certificate-widget.h"
 
 #include "e-trust-prompt.h"
 
@@ -112,19 +99,13 @@ trust_prompt_show (GtkWindow *parent,
 		   const gchar *source_display_name,
 		   const gchar *host,
 		   const gchar *error_text,
-		   GcrParsed *parsed,
+		   const gchar *certificate_pem,
 		   const gchar *reason,
 		   void (* dialog_ready_cb) (GtkDialog *dialog, gpointer user_data),
 		   gpointer user_data)
 {
 	ETrustPromptResponse response;
-	GcrCertificate *certificate;
-	const guchar *data;
-	gsize length;
 	GtkWidget *dialog, *widget;
-#if !defined(WITH_GCR3) || GTK_CHECK_VERSION(4, 0, 0)
-	GtkWidget *scrolled_window;
-#endif
 	GtkGrid *grid;
 	gchar *bhost, *tmp;
 	gint row = 0;
@@ -251,67 +232,10 @@ trust_prompt_show (GtkWindow *parent,
 	if (error_text)
 		trust_prompt_add_info_line (grid, _("Detailed error:"), error_text, FALSE, TRUE, FALSE, &row);
 
-#if defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0)
-	/* the certificate widget has its own scrollbars */
-#else /* defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0) */
-#if GTK_CHECK_VERSION(4, 0, 0)
-	scrolled_window = gtk_scrolled_window_new ();
-#else
-	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
-#endif
-	g_object_set (G_OBJECT (scrolled_window),
-		"halign", GTK_ALIGN_FILL,
-		"hexpand", TRUE,
-		"valign", GTK_ALIGN_FILL,
-		"vexpand", TRUE,
-		"hscrollbar-policy", GTK_POLICY_NEVER,
-		"vscrollbar-policy", GTK_POLICY_AUTOMATIC,
-		"propagate-natural-height", TRUE,
-#if GTK_CHECK_VERSION(4, 0, 0)
-		"has-frame", FALSE,
-#else
-		"shadow-type", GTK_SHADOW_NONE,
-#endif
-		NULL);
+	widget = e_certificate_widget_new ();
+	e_certificate_widget_set_pem (E_CERTIFICATE_WIDGET (widget), certificate_pem);
 
-	gtk_grid_attach (grid, scrolled_window, 1, row, 2, 1);
-#endif /* defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0) */
-
-	data = gcr_parsed_get_data (parsed, &length);
-	certificate = gcr_simple_certificate_new (data, length);
-	#if defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0)
-	{
-		GcrCertificateWidget *certificate_widget;
-		GckAttributes *attributes;
-
-		attributes = gcr_parsed_get_attributes (parsed);
-		certificate_widget = gcr_certificate_widget_new (certificate);
-		gcr_certificate_widget_set_attributes (certificate_widget, attributes);
-
-		widget = GTK_WIDGET (certificate_widget);
-
-		g_object_set (G_OBJECT (widget),
-			"halign", GTK_ALIGN_FILL,
-			"hexpand", TRUE,
-			"valign", GTK_ALIGN_FILL,
-			"vexpand", TRUE,
-			NULL);
-	}
-	#else /* defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0) */
-	widget = gcr_certificate_widget_new (certificate);
-	#endif /* defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0) */
-
-#if defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0)
 	gtk_grid_attach (grid, widget, 1, row, 2, 1);
-#else /* defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0) */
-#if GTK_CHECK_VERSION(4, 0, 0)
-	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (scrolled_window), widget);
-#else
-	gtk_container_add (GTK_CONTAINER (scrolled_window), widget);
-#endif
-#endif /* defined(WITH_GCR3) && !GTK_CHECK_VERSION(4, 0, 0) */
-
-	g_clear_object (&certificate);
 
 #if !GTK_CHECK_VERSION(4, 0, 0)
 	gtk_widget_show_all (GTK_WIDGET (grid));
@@ -393,18 +317,6 @@ e_trust_prompt_describe_certificate_errors (GTlsCertificateFlags flags)
 	return g_string_free (reason, FALSE);
 }
 
-static void
-trust_prompt_parser_parsed_cb (GcrParser *parser,
-			       GcrParsed **out_parsed)
-{
-	GcrParsed *parsed;
-
-	parsed = gcr_parser_get_parsed (parser);
-	g_return_if_fail (parsed != NULL);
-
-	*out_parsed = gcr_parsed_ref (parsed);
-}
-
 static ETrustPromptResponse
 e_trust_prompt_run_with_dialog_ready_callback (GtkWindow *parent,
 					       const gchar *source_extension,
@@ -417,51 +329,18 @@ e_trust_prompt_run_with_dialog_ready_callback (GtkWindow *parent,
 					       gpointer user_data)
 {
 	ETrustPromptResponse response = E_TRUST_PROMPT_RESPONSE_UNKNOWN;
-	GcrParser *parser;
-	GcrParsed *parsed = NULL;
-	GError *local_error = NULL;
+	gchar *reason;
 
 	if (parent)
 		g_return_val_if_fail (GTK_IS_WINDOW (parent), E_TRUST_PROMPT_RESPONSE_UNKNOWN);
 	g_return_val_if_fail (host != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
 	g_return_val_if_fail (certificate_pem != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
 
-	/* Continue even if PKCS#11 module registration fails.
-	 * Certificate details won't display correctly but the
-	 * user can still respond to the prompt. */
-	gcr_pkcs11_initialize (NULL, &local_error);
-	if (local_error != NULL) {
-		g_warning ("%s: gcr_pkcs11_initialize() call failed: %s", G_STRFUNC, local_error->message);
-		g_clear_error (&local_error);
-	}
+	reason = e_trust_prompt_describe_certificate_errors (certificate_errors);
 
-	parser = gcr_parser_new ();
+	response = trust_prompt_show (parent, source_extension, source_display_name, host, error_text, certificate_pem, reason, dialog_ready_cb, user_data);
 
-	g_signal_connect (
-		parser, "parsed",
-		G_CALLBACK (trust_prompt_parser_parsed_cb), &parsed);
-
-	gcr_parser_parse_data (parser, (const guchar *) certificate_pem, strlen (certificate_pem), &local_error);
-
-	g_object_unref (parser);
-
-	/* Sanity check. */
-	g_warn_if_fail (
-		((parsed != NULL) && (local_error == NULL)) ||
-		((parsed == NULL) && (local_error != NULL)));
-
-	if (parsed != NULL) {
-		gchar *reason;
-
-		reason = e_trust_prompt_describe_certificate_errors (certificate_errors);
-
-		response = trust_prompt_show (parent, source_extension, source_display_name, host, error_text, parsed, reason, dialog_ready_cb, user_data);
-
-		gcr_parsed_unref (parsed);
-		g_free (reason);
-	}
-
-	g_clear_error (&local_error);
+	g_free (reason);
 
 	return response;
 }

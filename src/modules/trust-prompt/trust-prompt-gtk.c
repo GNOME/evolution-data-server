@@ -21,14 +21,7 @@
 #include <glib/gi18n-lib.h>
 
 #include <libebackend/libebackend.h>
-
-#define GCR_API_SUBJECT_TO_CHANGE
-#ifdef WITH_GCR3
-#include <gcr/gcr.h>
-#else
-#include <gcr-gtk3/gcr-gtk3.h>
-#endif
-#undef GCR_API_SUBJECT_TO_CHANGE
+#include <libedataserverui/libedataserverui.h>
 
 #include "trust-prompt.h"
 
@@ -120,14 +113,13 @@ trust_prompt_show (EUserPrompterServerExtension *extension,
                    gint prompt_id,
                    const gchar *host,
                    const gchar *markup,
-                   GcrParsed *parsed,
+                   const gchar *base64_certificate_der,
                    const gchar *reason)
 {
-	GcrCertificate *certificate;
+	guchar *certificate_der;
+	gsize certificate_der_len = 0;
 	GtkWidget *dialog, *widget;
 	GtkGrid *grid;
-	const guchar *data;
-	gsize length;
 	gchar *tmp;
 	gint row = 0;
 
@@ -191,28 +183,16 @@ trust_prompt_show (EUserPrompterServerExtension *extension,
 
 	trust_prompt_add_info_line (grid, _("Reason:"), reason, FALSE, &row);
 
-	data = gcr_parsed_get_data (parsed, &length);
+	widget = e_certificate_widget_new ();
 
-	certificate = gcr_simple_certificate_new (data, length);
-
-	#ifdef WITH_GCR3
-	{
-		GcrCertificateWidget *certificate_widget;
-		GckAttributes *attributes;
-
-		attributes = gcr_parsed_get_attributes (parsed);
-		certificate_widget = gcr_certificate_widget_new (certificate);
-		gcr_certificate_widget_set_attributes (certificate_widget, attributes);
-
-		widget = GTK_WIDGET (certificate_widget);
+	certificate_der = g_base64_decode (base64_certificate_der, &certificate_der_len);
+	if (certificate_der) {
+		e_certificate_widget_set_der (E_CERTIFICATE_WIDGET (widget), certificate_der, certificate_der_len);
+		g_free (certificate_der);
 	}
-	#else
-	widget = gcr_certificate_widget_new (certificate);
-	#endif
+
 	gtk_grid_attach (grid, widget, 1, row, 2, 1);
 	gtk_widget_show (widget);
-
-	g_clear_object (&certificate);
 
 	g_object_set_data (G_OBJECT (dialog), TRUST_PROMP_ID_KEY, GINT_TO_POINTER (prompt_id));
 

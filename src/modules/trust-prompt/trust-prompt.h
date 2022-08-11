@@ -18,14 +18,6 @@
 #ifndef TRUST_PROMPT_H
 #define TRUST_PROMPT_H
 
-#define GCR_API_SUBJECT_TO_CHANGE
-#ifdef WITH_GCR3
-#include <gcr/gcr.h>
-#else
-#include <gcr-gtk3/gcr-gtk3.h>
-#endif
-#undef GCR_API_SUBJECT_TO_CHANGE
-
 #include <libebackend/libebackend.h>
 
 G_BEGIN_DECLS
@@ -45,7 +37,7 @@ trust_prompt_show (EUserPrompterServerExtension *extension,
 		   gint prompt_id,
 		   const gchar *host,
 		   const gchar *markup,
-		   GcrParsed *parsed,
+		   const gchar *base64_certificate_der,
 		   const gchar *reason);
 
 G_END_DECLS

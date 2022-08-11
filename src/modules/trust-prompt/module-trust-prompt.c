@@ -105,18 +105,6 @@ cert_errors_to_reason (GTlsCertificateFlags flags)
 	return g_string_free (reason, FALSE);
 }
 
-static void
-parser_parsed_cb (GcrParser *parser,
-                  GcrParsed **out_parsed)
-{
-	GcrParsed *parsed;
-
-	parsed = gcr_parser_get_parsed (parser);
-	g_return_if_fail (parsed != NULL);
-
-	*out_parsed = gcr_parsed_ref (parsed);
-}
-
 static gboolean
 trust_prompt_show_trust_prompt (EUserPrompterServerExtension *extension,
                                 gint prompt_id,
@@ -125,24 +113,10 @@ trust_prompt_show_trust_prompt (EUserPrompterServerExtension *extension,
 	const gchar *host, *markup, *base64_cert, *cert_errs_str;
 	gchar *reason;
 	gint64 cert_errs;
-	GcrParser *parser;
-	GcrParsed *parsed = NULL;
-	guchar *data;
-	gsize data_length;
-	gboolean success = FALSE;
-	GError *local_error = NULL;
+	gboolean success;
 
 	g_return_val_if_fail (extension != NULL, FALSE);
 	g_return_val_if_fail (parameters != NULL, FALSE);
-
-	/* Continue even if PKCS#11 module registration fails.
-	 * Certificate details won't display correctly but the
-	 * user can still respond to the prompt. */
-	gcr_pkcs11_initialize (NULL, &local_error);
-	if (local_error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, local_error->message);
-		g_clear_error (&local_error);
-	}
 
 	host = e_named_parameters_get (parameters, "host");
 	markup = e_named_parameters_get (parameters, "markup");
@@ -156,39 +130,13 @@ trust_prompt_show_trust_prompt (EUserPrompterServerExtension *extension,
 	cert_errs = g_ascii_strtoll (cert_errs_str, NULL, 16);
 	reason = cert_errors_to_reason (cert_errs);
 
-	parser = gcr_parser_new ();
-
-	g_signal_connect (
-		parser, "parsed",
-		G_CALLBACK (parser_parsed_cb), &parsed);
-
-	data = g_base64_decode (base64_cert, &data_length);
-	gcr_parser_parse_data (parser, data, data_length, &local_error);
-	g_free (data);
-
-	g_object_unref (parser);
-
-	/* Sanity check. */
-	g_warn_if_fail (
-		((parsed != NULL) && (local_error == NULL)) ||
-		((parsed == NULL) && (local_error != NULL)));
-
-	if (parsed != NULL) {
-		success = trust_prompt_show (
-			extension, prompt_id, host, markup, parsed, reason);
-		gcr_parsed_unref (parsed);
-	}
-
-	if (local_error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, local_error->message);
-		g_clear_error (&local_error);
-		success = FALSE;
-	}
+	success = trust_prompt_show (extension, prompt_id, host, markup, base64_cert, reason);
 
 	g_free (reason);
 
 	return success;
 }
+
 static void
 trust_prompt_register_dialogs (EExtension *extension,
                                EUserPrompterServer *server)

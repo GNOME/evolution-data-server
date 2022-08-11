@@ -116,8 +116,6 @@ add_definitions(-DSOUP_VERSION_MAX_ALLOWED=${soup_encoded_version})
 add_definitions(-DGLIB_VERSION_MIN_REQUIRED=${glib_encoded_version})
 add_definitions(-DSOUP_VERSION_MIN_REQUIRED=${soup_encoded_version})
 
-set(gcr3_minimum_version 3.4)
-set(gcr4_minimum_version 3.90)
 set(libical_glib_minimum_version 3.0.7)
 set(libsecret_minimum_version 0.5)
 set(libxml_minimum_version 2.0.0)
@@ -390,16 +388,10 @@ endif(NOT ICU_FOUND)
 # Check for GTK+
 # *************************
 
-add_printable_option(WITH_GCR3 "Use gcr3, instead of gcr4" OFF)
 add_printable_option(ENABLE_GTK "Enable gtk+ support" ON)
 
 if(ENABLE_GTK)
 	pkg_check_modules_for_option(ENABLE_GTK "GTK+ support" GTK gtk+-3.0>=${gdk_minimum_version})
-	if(WITH_GCR3)
-		pkg_check_modules_for_option(ENABLE_GTK "GTK+ support" GCR gcr-3>=${gcr3_minimum_version})
-	else(WITH_GCR3)
-		pkg_check_modules_for_option(ENABLE_GTK "GTK+ support" GCR gcr-4-gtk3>=${gcr4_minimum_version})
-	endif(WITH_GCR3)
 
 	set(HAVE_GTK 1)
 endif(ENABLE_GTK)
@@ -407,7 +399,6 @@ endif(ENABLE_GTK)
 add_printable_option(ENABLE_GTK4 "Enable gtk4 support" ON)
 if(ENABLE_GTK4)
 	pkg_check_modules_for_option(ENABLE_GTK4 "gtk4 support" GTK4 gtk4>=${gdk4_minimum_version})
-	pkg_check_modules_for_option(ENABLE_GTK4 "gtk4 support" GCR4 gcr-4-gtk4>=${gcr4_minimum_version})
 
 	set(HAVE_GTK4 1)
 endif(ENABLE_GTK4)

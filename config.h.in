@@ -199,6 +199,3 @@
 
 /* Defined, when time_t is of the 32bit size */
 #cmakedefine HAVE_32BIT_TIME_T 1
-
-/* Defined, when using gcr3, not gcr4 */
-#cmakedefine WITH_GCR3 1
