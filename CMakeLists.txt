@@ -928,8 +928,8 @@ unset(CMAKE_REQUIRED_LIBRARIES)
 
 pkg_check_modules(SOUP REQUIRED libsoup-3.0)
 pkg_check_modules(DATA_SERVER REQUIRED gio-2.0 gmodule-2.0 libsecret-1 libxml-2.0 libsoup-3.0 ${mozilla_nspr} ${mozilla_nss})
-set(E_DATA_SERVER_INCLUDES ${E_DATA_SERVER_INCLUDES} ${MANUAL_NSPR_INCLUDES} ${MANUAL_NSS_INCLUDES})
-set(E_DATA_SERVER_LDFLAGS ${E_DATA_SERVER_LDFLAGS} ${MANUAL_NSPR_LIBS} ${MANUAL_NSS_LIBS})
+set(DATA_SERVER_INCLUDE_DIRS ${DATA_SERVER_INCLUDE_DIRS} ${MANUAL_NSPR_INCLUDES} ${MANUAL_NSS_INCLUDES})
+set(DATA_SERVER_LDFLAGS ${DATA_SERVER_LDFLAGS} ${MANUAL_NSPR_LIBS} ${MANUAL_NSS_LIBS})
 
 pkg_check_modules(BACKEND REQUIRED gio-2.0 gmodule-2.0 libsecret-1 libsoup-3.0 libxml-2.0)
 pkg_check_modules(ADDRESSBOOK REQUIRED gio-2.0 libxml-2.0 libsoup-3.0 libsecret-1)
