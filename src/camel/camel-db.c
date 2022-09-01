@@ -2956,7 +2956,9 @@ camel_db_maybe_run_maintenance (CamelDB *cdb,
 			return FALSE;
 	}
 
-	cdb_writer_lock (cdb);
+	/* Do not call cdb_writer_lock() here, because it adds transaction, but
+	   the VACUUM cannot run in the transaction. */
+	g_rw_lock_writer_lock (&cdb->priv->rwlock);
 
 	if (cdb_sql_exec (cdb, "PRAGMA page_count;", get_number_cb, &page_count, NULL, &local_error) == SQLITE_OK &&
 	    cdb_sql_exec (cdb, "PRAGMA page_size;", get_number_cb, &page_size, NULL, &local_error) == SQLITE_OK &&
@@ -2966,7 +2968,8 @@ camel_db_maybe_run_maintenance (CamelDB *cdb,
 		    cdb_sql_exec (cdb, "vacuum;", NULL, NULL, NULL, &local_error) == SQLITE_OK;
 	}
 
-	cdb_writer_unlock (cdb);
+	/* Do not call cdb_writer_unlock() here, because ... see above */
+	g_rw_lock_writer_unlock (&cdb->priv->rwlock);
 
 	if (local_error) {
 		g_propagate_error (error, local_error);
