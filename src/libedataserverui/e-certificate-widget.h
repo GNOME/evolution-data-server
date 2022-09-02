@@ -66,8 +66,8 @@ struct _ECertificateWidgetClass {
 GType		e_certificate_widget_get_type	(void) G_GNUC_CONST;
 GtkWidget *	e_certificate_widget_new	(void);
 void		e_certificate_widget_set_der	(ECertificateWidget *self,
-						 gconstpointer cert_data,
-						 guint cert_data_len);
+						 gconstpointer der_data,
+						 guint der_data_len);
 void		e_certificate_widget_set_pem	(ECertificateWidget *self,
 						 const gchar *pem_data);
 
