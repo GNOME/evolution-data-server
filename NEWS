@@ -1,3 +1,15 @@
+Evolution-Data-Server 3.45.3 2022-09-02
+---------------------------------------
+
+Bug Fixes:
+	I#413 - Camel: VACUUM cannot run from within a transaction
+	M!96 - e-cal-component.c: typo VTOTO -> VTODO (Дилян Палаузов)
+
+Miscellaneous:
+	build: Correct use of manual NSS/NSPR build flags
+	libedataserverui: Add a widget to show certificate information
+	Replace GcrCertificateWidget with libedataserverui's ECertificateWidget
+
 Evolution-Data-Server 3.45.2 2022-08-05
 ---------------------------------------
 
