@@ -4,101 +4,42 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 0\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
-"issues\n"
-"POT-Creation-Date: 2022-02-12 14:50+0000\n"
-"PO-Revision-Date: 2022-02-15 14:02+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-09-05 12:13+0200\n"
+"PO-Revision-Date: 2022-09-05 12:50+0200\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Launchpad-Export-Date: 2020-03-28 23:52+0000\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 3.0.1\n"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:234
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:240
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Navedeni URL “%s” se ne odnosi CardDAV adresar"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:293
-#: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1149
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4590
-#: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
-#: ../src/addressbook/libebook-contacts/e-phone-number.c:54
-#: ../src/addressbook/libebook/e-book.c:1067
-#: ../src/addressbook/libebook/e-book-client.c:2125
-#: ../src/addressbook/libebook/e-book-client.c:2303
-#: ../src/addressbook/libebook/e-book-client.c:2522
-#: ../src/addressbook/libebook/e-book-client.c:2659
-#: ../src/addressbook/libebook/e-book-client.c:2824
-#: ../src/addressbook/libebook/e-book-client.c:2964
-#: ../src/addressbook/libebook/e-book-client.c:3101
-#: ../src/addressbook/libebook/e-book-client.c:3264
-#: ../src/addressbook/libebook/e-book-client.c:3459
-#: ../src/addressbook/libebook/e-book-client.c:3677
-#: ../src/addressbook/libedata-book/e-book-backend-sexp.c:873
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:275
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:288
-#: ../src/calendar/backends/http/e-cal-backend-http.c:313
-#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:236
-#: ../src/calendar/libecal/e-cal-client.c:257
-#: ../src/calendar/libecal/e-cal-client.c:3242
-#: ../src/calendar/libecal/e-cal-client.c:3415
-#: ../src/calendar/libecal/e-cal-client.c:3688
-#: ../src/calendar/libecal/e-cal-client.c:3926
-#: ../src/calendar/libecal/e-cal-client.c:4118
-#: ../src/calendar/libecal/e-cal-client.c:4301
-#: ../src/calendar/libecal/e-cal-client.c:4509
-#: ../src/calendar/libecal/e-cal-client.c:4686
-#: ../src/calendar/libecal/e-cal-client.c:4896
-#: ../src/calendar/libecal/e-cal-client.c:5052
-#: ../src/calendar/libecal/e-cal-client.c:5252
-#: ../src/calendar/libecal/e-cal-client.c:5418
-#: ../src/calendar/libecal/e-cal-client.c:5645
-#: ../src/calendar/libecal/e-cal-client.c:5805
-#: ../src/calendar/libecal/e-cal-client.c:6036
-#: ../src/calendar/libecal/e-cal-client.c:6235
-#: ../src/calendar/libecal/e-cal-client.c:6603
-#: ../src/calendar/libecal/e-cal-client.c:6827
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1847
-#: ../src/camel/camel-filter-driver.c:1724
-#: ../src/camel/camel-filter-driver.c:1853
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3330
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3336
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3346
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3358
-#: ../src/camel/providers/nntp/camel-nntp-store.c:419
-#: ../src/libebackend/e-server-side-source.c:498
-#: ../src/libedataserver/e-client.c:183
-#: ../src/libedataserver/e-soup-session.c:1239
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
-#: ../src/libedataserverui/e-reminders-widget.c:2010
-#: ../src/tools/list-sources/list-sources.c:429
-msgid "Unknown error"
-msgstr "Nepoznata greška"
-
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1155
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1376
-#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:972
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1127
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1337
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:934
 msgid "Server didn’t return object’s href"
 msgstr "Poslužitelj nije vratio href objekt"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1157
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1378
-#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:974
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1129
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1339
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:936
 msgid "Server didn’t return object’s ETag"
 msgstr "Poslužitelj nije vratio ETag objekt"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1159
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1131
 msgid "Received object is not a valid vCard"
 msgstr "Primljeni objekt nije valjani vCard"
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1276
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1248
 msgid ""
 "Missing information about vCard URL, local cache is possibly incomplete or "
 "broken. Remove it, please."
@@ -106,7 +47,7 @@ msgstr ""
 "Nedostaju informacije o vCard URL-a, lokalna predmemorija je nepotpuna ili "
 "slomljena. Uklonite ju."
 
-#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1279
+#: ../src/addressbook/backends/carddav/e-book-backend-carddav.c:1251
 msgid "Object to save is not a valid vCard"
 msgstr "Objekt spremanja nija valjani vCard"
 
@@ -140,7 +81,7 @@ msgid "Loading..."
 msgstr "Učitavanje..."
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1003
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4705
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4859
 msgid "Searching..."
 msgstr "Pretraživanje..."
 
@@ -171,7 +112,7 @@ msgid "Invalid Query “%s”"
 msgstr "Neispravan upit “%s”"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:2031
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2088
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2110
 msgid "Requested to delete an unrelated cursor"
 msgstr "Zatraženo je brisanje nepovezanog pokazivača"
 
@@ -180,55 +121,112 @@ msgstr "Zatraženo je brisanje nepovezanog pokazivača"
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Neuspjelo preimenovanje stare baze podataka iz “%s” u “%s”: %s"
 
+#: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1158
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4744
+#: ../src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
+#: ../src/addressbook/libebook-contacts/e-phone-number.c:54
+#: ../src/addressbook/libebook/e-book.c:1067
+#: ../src/addressbook/libebook/e-book-client.c:2125
+#: ../src/addressbook/libebook/e-book-client.c:2303
+#: ../src/addressbook/libebook/e-book-client.c:2522
+#: ../src/addressbook/libebook/e-book-client.c:2659
+#: ../src/addressbook/libebook/e-book-client.c:2824
+#: ../src/addressbook/libebook/e-book-client.c:2964
+#: ../src/addressbook/libebook/e-book-client.c:3101
+#: ../src/addressbook/libebook/e-book-client.c:3264
+#: ../src/addressbook/libebook/e-book-client.c:3459
+#: ../src/addressbook/libebook/e-book-client.c:3677
+#: ../src/addressbook/libedata-book/e-book-backend-sexp.c:873
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:288
+#: ../src/calendar/backends/http/e-cal-backend-http.c:300
+#: ../src/calendar/libecal/e-cal-client.c:257
+#: ../src/calendar/libecal/e-cal-client.c:3242
+#: ../src/calendar/libecal/e-cal-client.c:3415
+#: ../src/calendar/libecal/e-cal-client.c:3688
+#: ../src/calendar/libecal/e-cal-client.c:3926
+#: ../src/calendar/libecal/e-cal-client.c:4118
+#: ../src/calendar/libecal/e-cal-client.c:4301
+#: ../src/calendar/libecal/e-cal-client.c:4536
+#: ../src/calendar/libecal/e-cal-client.c:4713
+#: ../src/calendar/libecal/e-cal-client.c:4921
+#: ../src/calendar/libecal/e-cal-client.c:5077
+#: ../src/calendar/libecal/e-cal-client.c:5275
+#: ../src/calendar/libecal/e-cal-client.c:5441
+#: ../src/calendar/libecal/e-cal-client.c:5668
+#: ../src/calendar/libecal/e-cal-client.c:5825
+#: ../src/calendar/libecal/e-cal-client.c:6053
+#: ../src/calendar/libecal/e-cal-client.c:6252
+#: ../src/calendar/libecal/e-cal-client.c:6620
+#: ../src/calendar/libecal/e-cal-client.c:6844
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1847
+#: ../src/camel/camel-filter-driver.c:1724
+#: ../src/camel/camel-filter-driver.c:1853
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3330
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3336
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3346
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3358
+#: ../src/camel/providers/nntp/camel-nntp-store.c:419
+#: ../src/libebackend/e-server-side-source.c:498
+#: ../src/libedataserver/e-client.c:183
+#: ../src/libedataserver/e-soup-session.c:930
+#: ../src/libedataserver/e-soup-session.c:1766
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:230
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:778
+#: ../src/libedataserverui/e-reminders-widget.c:2141
+#: ../src/tools/list-sources/list-sources.c:429
+msgid "Unknown error"
+msgstr "Nepoznata greška"
+
 #. Translators: An error message shown to a user when trying to do an
 #. * operation on the LDAP address book which is not connected to the server
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:109
 msgid "Not connected"
 msgstr "Nije povezano"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:884
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:893
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr "Neuspjelo povezivanje ni sa v3 ni sa v2 povezivanjem"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:995
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1004
 msgid "Reconnecting to LDAP server..."
 msgstr "Ponovno povezivanje s LDAP poslužiteljem..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1130
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1139
 msgid "Invalid DN syntax"
 msgstr "Neispravna DN sintaksa"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1146
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4589
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1155
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4743
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP greška 0x%x (%s)"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1789
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2140
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2153
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1805
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2156
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2169
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: NULL je vraćen iz ldap prvpg unosa"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2068
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2212
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2084
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2228
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: Neobrađena vrsta rezultata %d je vraćena"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2355
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2493
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:6171
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2371
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2509
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:6325
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: Neobrađena vrsta pretrage rezultata %d je vraćena"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2646
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2667
 msgid "LDAP contact lists cannot be empty."
 msgstr "LDAP popis kontakata ne može biti prazan."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2684
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2705
 #, c-format
 msgid ""
 "Contact lists in LDAP address books require each member to be from the same "
@@ -246,46 +244,46 @@ msgstr[2] ""
 "Popis kontakta u LDAP adresaru zahtijeva da svaki član bude iz istog LDAP "
 "adresara, ali %d članova nije moguće prepoznati."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4528
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4682
 msgid "Receiving LDAP search results..."
 msgstr "Primanje LDAP rezultata pretrage..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4731
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4885
 msgid "Error performing search"
 msgstr "Greška izvršavanja pretrage"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4879
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5033
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Preuzimanje kontakata (%d)..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4980
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:805
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:706
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5134
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:821
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:722
 msgid "Refreshing…"
 msgstr "Osvježavanje…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5466
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5620
 msgid "The backend does not support bulk additions"
 msgstr "Pozadinski program ne podržava grupno dodavanje"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5561
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5715
 msgid "Adding contact to LDAP server..."
 msgstr "Dodavanje kontakta na LDAP poslužitelj..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5623
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5777
 msgid "The backend does not support bulk modifications"
 msgstr "Pozadinski program ne podržava grupne promjene"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5645
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5799
 msgid "Modifying contact from LDAP server..."
 msgstr "Promjena kontakata na LDAP poslužitelju..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5717
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5871
 msgid "Removing contact from LDAP server..."
 msgstr "Uklanjanje kontakta iz LDAP poslužitelja..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:6368
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:6522
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "Neuspjelo dobivanje naziva domena za korisnika “%s”"
@@ -345,6 +343,7 @@ msgid "Family Name"
 msgstr "Prezime"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:165
+#: ../src/libedataserverui/e-certificate-widget.c:401
 msgid "Nickname"
 msgstr "Nadimak"
 
@@ -462,6 +461,8 @@ msgstr "TTY"
 
 #. Organizational fields
 #: ../src/addressbook/libebook-contacts/e-contact.c:203
+#: ../src/libedataserverui/e-certificate-widget.c:403
+#: ../src/libedataserverui/e-certificate-widget.c:412
 msgid "Organization"
 msgstr "Organizacija"
 
@@ -720,7 +721,7 @@ msgstr "Logotip"
 #. Translators: This is an EContact field description, in this case it's a name
 #. * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
 #: ../src/addressbook/libebook-contacts/e-contact.c:288
-#: ../src/libedataserverui/e-webdav-discover-widget.c:180
+#: ../src/libedataserverui/e-webdav-discover-widget.c:195
 msgid "Name"
 msgstr "Ime"
 
@@ -1148,7 +1149,7 @@ msgstr "Nemoguće otvaranje baze podataka %s: %s"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2959
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3022
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3193
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1390
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1412
 #: ../src/libebackend/e-cache.c:1370 ../src/libebackend/e-cache.c:2348
 #: ../src/libebackend/e-cache.c:2388
 #, c-format
@@ -1180,21 +1181,30 @@ msgstr ""
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Nemoguće razvrstavanje po polju koje nije izraz"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1103
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1113
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1119
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1129
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Predučitani objekt za UID “%s” je neispravan"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1111
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1121
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1127
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1137
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Primljeni objekt za UID “%s” je neispravan"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1958
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2414
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3347
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1341
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1366
+msgid ""
+"Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
+"and repeat the action."
+msgstr ""
+"Osvježavanje je preskočeno jer je mogućnost štednje energije omogućen. "
+"Onemogućite mogućnost štednje energije i pokušajte ponovno."
+
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1980
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2436
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3369
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Neuspjelo stvaranje predmemorije “%s”:"
@@ -1293,13 +1303,13 @@ msgstr "Neusklađena revizija pri pomicanju pokazivača"
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Abecedni sadržaj je postavljen za pogrešan jezik"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:218
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:221
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Navedeni URL “%s” se ne odnosi na CalDAV kalendar"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1513
-#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1227
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1474
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1189
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. Remove it, please."
@@ -1307,7 +1317,7 @@ msgstr ""
 "Nedostaju informacije o URL komponenti, lokalna predmemorija je možda "
 "nepotpuna ili slomljena. Uklonite ju."
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:2025
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1986
 msgid "Failed to parse response data"
 msgstr "Neuspjela obrada podataka odgovora"
 
@@ -1355,25 +1365,25 @@ msgstr "Datoteka “%s” nije valjana VCALENDAR komponenta"
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3748
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3754
 #: ../src/calendar/backends/file/e-cal-backend-file.c:3781
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2574
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2596
 msgid "Unsupported method"
 msgstr "Nepodržan način"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:227
+#: ../src/calendar/backends/http/e-cal-backend-http.c:221
 msgid "URI not set"
 msgstr "URI nije naveden"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:312
+#: ../src/calendar/backends/http/e-cal-backend-http.c:299
 #, c-format
 msgid "Malformed URI “%s”: %s"
 msgstr "Oštećeni URI “%s”: %s"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:460
+#: ../src/calendar/backends/http/e-cal-backend-http.c:433
 #, c-format
 msgid "Bad file format."
 msgstr "Neispravan format datoteke."
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:469
+#: ../src/calendar/backends/http/e-cal-backend-http.c:442
 #, c-format
 msgid "Not a calendar."
 msgstr "Nije kalendar."
@@ -1454,8 +1464,8 @@ msgstr "Nemoguće stvaranje datoteke predmemorije"
 msgid "Could not create cache file: "
 msgstr "Nemoguće stvaranje datoteke predmemorije: "
 
-#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1015
-#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1044
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:977
+#: ../src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1006
 msgid "New note"
 msgstr "Nova bilješka"
 
@@ -1493,135 +1503,135 @@ msgstr "Nepoznato svojstvo kalendara “%s”"
 msgid "Cannot change value of calendar property “%s”"
 msgstr "Nemoguća promjena vrijednosti svojstva kalendara “%s”"
 
-#: ../src/calendar/libecal/e-cal-component.c:719
+#: ../src/calendar/libecal/e-cal-component.c:702
 msgid "Untitled appointment"
 msgstr "Neimenovani ugovoreni sastanak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4902
+#: ../src/calendar/libecal/e-cal-recur.c:4892
 msgid "1st"
 msgstr "1."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4903
+#: ../src/calendar/libecal/e-cal-recur.c:4893
 msgid "2nd"
 msgstr "2."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4904
+#: ../src/calendar/libecal/e-cal-recur.c:4894
 msgid "3rd"
 msgstr "3."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4905
+#: ../src/calendar/libecal/e-cal-recur.c:4895
 msgid "4th"
 msgstr "4."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4906
+#: ../src/calendar/libecal/e-cal-recur.c:4896
 msgid "5th"
 msgstr "5."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4907
+#: ../src/calendar/libecal/e-cal-recur.c:4897
 msgid "6th"
 msgstr "6."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4908
+#: ../src/calendar/libecal/e-cal-recur.c:4898
 msgid "7th"
 msgstr "7."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4909
+#: ../src/calendar/libecal/e-cal-recur.c:4899
 msgid "8th"
 msgstr "8."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4910
+#: ../src/calendar/libecal/e-cal-recur.c:4900
 msgid "9th"
 msgstr "9."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4911
+#: ../src/calendar/libecal/e-cal-recur.c:4901
 msgid "10th"
 msgstr "10."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4912
+#: ../src/calendar/libecal/e-cal-recur.c:4902
 msgid "11th"
 msgstr "11."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4913
+#: ../src/calendar/libecal/e-cal-recur.c:4903
 msgid "12th"
 msgstr "12."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4914
+#: ../src/calendar/libecal/e-cal-recur.c:4904
 msgid "13th"
 msgstr "13."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4915
+#: ../src/calendar/libecal/e-cal-recur.c:4905
 msgid "14th"
 msgstr "14."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4916
+#: ../src/calendar/libecal/e-cal-recur.c:4906
 msgid "15th"
 msgstr "15."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4917
+#: ../src/calendar/libecal/e-cal-recur.c:4907
 msgid "16th"
 msgstr "16."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4918
+#: ../src/calendar/libecal/e-cal-recur.c:4908
 msgid "17th"
 msgstr "17."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4919
+#: ../src/calendar/libecal/e-cal-recur.c:4909
 msgid "18th"
 msgstr "18."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4920
+#: ../src/calendar/libecal/e-cal-recur.c:4910
 msgid "19th"
 msgstr "19."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4921
+#: ../src/calendar/libecal/e-cal-recur.c:4911
 msgid "20th"
 msgstr "20."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4922
+#: ../src/calendar/libecal/e-cal-recur.c:4912
 msgid "21st"
 msgstr "21."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4923
+#: ../src/calendar/libecal/e-cal-recur.c:4913
 msgid "22nd"
 msgstr "22."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4924
+#: ../src/calendar/libecal/e-cal-recur.c:4914
 msgid "23rd"
 msgstr "23."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4925
+#: ../src/calendar/libecal/e-cal-recur.c:4915
 msgid "24th"
 msgstr "24."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4926
+#: ../src/calendar/libecal/e-cal-recur.c:4916
 msgid "25th"
 msgstr "25."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4927
+#: ../src/calendar/libecal/e-cal-recur.c:4917
 msgid "26th"
 msgstr "26."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4928
+#: ../src/calendar/libecal/e-cal-recur.c:4918
 msgid "27th"
 msgstr "27."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4929
+#: ../src/calendar/libecal/e-cal-recur.c:4919
 msgid "28th"
 msgstr "28."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4930
+#: ../src/calendar/libecal/e-cal-recur.c:4920
 msgid "29th"
 msgstr "29."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4931
+#: ../src/calendar/libecal/e-cal-recur.c:4921
 msgid "30th"
 msgstr "30."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4932
+#: ../src/calendar/libecal/e-cal-recur.c:4922
 msgid "31st"
 msgstr "31."
 
-#: ../src/calendar/libecal/e-cal-recur.c:5082
+#: ../src/calendar/libecal/e-cal-recur.c:5072
 #, c-format
 msgid "every day forever"
 msgid_plural "every %d days forever"
@@ -1629,7 +1639,7 @@ msgstr[0] "svaki %d dan zauvijek"
 msgstr[1] "svaka %d dana zauvijek"
 msgstr[2] "svakih %d dana zauvijek"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5088
+#: ../src/calendar/libecal/e-cal-recur.c:5078
 #, c-format
 msgid "Every day forever"
 msgid_plural "Every %d days forever"
@@ -1637,7 +1647,7 @@ msgstr[0] "Svaki %d dan zauvijek"
 msgstr[1] "Svaka %d dana zauvijek"
 msgstr[2] "Svakih %d dana zauvijek"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5096
+#: ../src/calendar/libecal/e-cal-recur.c:5086
 #, c-format
 msgid "every day"
 msgid_plural "every %d days"
@@ -1645,7 +1655,7 @@ msgstr[0] "svaki %d dan"
 msgstr[1] "svaka %d dana"
 msgstr[2] "svakih %d dana"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5102
+#: ../src/calendar/libecal/e-cal-recur.c:5092
 #, c-format
 msgid "Every day"
 msgid_plural "Every %d days"
@@ -1653,7 +1663,7 @@ msgstr[0] "Svaki %d dan"
 msgstr[1] "Svaka %d dana"
 msgstr[2] "Svakih %d dana"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5188
+#: ../src/calendar/libecal/e-cal-recur.c:5178
 #, c-format
 msgid "every week"
 msgid_plural "every %d weeks"
@@ -1661,7 +1671,7 @@ msgstr[0] "svaki %d tjedan"
 msgstr[1] "svaka %d tjedna"
 msgstr[2] "svakih %d tjedana"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5194
+#: ../src/calendar/libecal/e-cal-recur.c:5184
 #, c-format
 msgid "Every week"
 msgid_plural "Every %d weeks"
@@ -1674,118 +1684,118 @@ msgstr[2] "Svakih %d tjedana"
 #. with ", DAYNAME" or " and DAYNAME", thus it can be something like "on Monday and Tuesday"
 #. or "on Monday, Wednesday and Friday" or simply "on Saturday". The '%1$s' is replaced with
 #. the previously gathered text, while the '%2$s' is replaced with the text to append.
-#: ../src/calendar/libecal/e-cal-recur.c:5208
+#: ../src/calendar/libecal/e-cal-recur.c:5198
 #, c-format
 msgctxt "recur-description-dayname"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5225
+#: ../src/calendar/libecal/e-cal-recur.c:5215
 msgctxt "recur-description"
 msgid "on Sunday"
 msgstr "u Nedjelju"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5226
+#: ../src/calendar/libecal/e-cal-recur.c:5216
 msgctxt "recur-description"
 msgid ", Sunday"
 msgstr ", Nedjelju"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5227
+#: ../src/calendar/libecal/e-cal-recur.c:5217
 msgctxt "recur-description"
 msgid " and Sunday"
 msgstr " i Nedjelju"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5230
+#: ../src/calendar/libecal/e-cal-recur.c:5220
 msgctxt "recur-description"
 msgid "on Monday"
 msgstr "u Ponedjeljak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5231
+#: ../src/calendar/libecal/e-cal-recur.c:5221
 msgctxt "recur-description"
 msgid ", Monday"
 msgstr ", Ponedjeljak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5232
+#: ../src/calendar/libecal/e-cal-recur.c:5222
 msgctxt "recur-description"
 msgid " and Monday"
 msgstr " i Ponedjeljak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5235
+#: ../src/calendar/libecal/e-cal-recur.c:5225
 msgctxt "recur-description"
 msgid "on Tuesday"
 msgstr "u Utorak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5236
+#: ../src/calendar/libecal/e-cal-recur.c:5226
 msgctxt "recur-description"
 msgid ", Tuesday"
 msgstr ", Utorak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5237
+#: ../src/calendar/libecal/e-cal-recur.c:5227
 msgctxt "recur-description"
 msgid " and Tuesday"
 msgstr " i Utorak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5240
+#: ../src/calendar/libecal/e-cal-recur.c:5230
 msgctxt "recur-description"
 msgid "on Wednesday"
 msgstr "u Srijedu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5241
+#: ../src/calendar/libecal/e-cal-recur.c:5231
 msgctxt "recur-description"
 msgid ", Wednesday"
 msgstr ", Srijedu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5242
+#: ../src/calendar/libecal/e-cal-recur.c:5232
 msgctxt "recur-description"
 msgid " and Wednesday"
 msgstr " i Srijedu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5245
+#: ../src/calendar/libecal/e-cal-recur.c:5235
 msgctxt "recur-description"
 msgid "on Thursday"
 msgstr "u Četvrtak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5246
+#: ../src/calendar/libecal/e-cal-recur.c:5236
 msgctxt "recur-description"
 msgid ", Thursday"
 msgstr ", Četvrtak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5247
+#: ../src/calendar/libecal/e-cal-recur.c:5237
 msgctxt "recur-description"
 msgid " and Thursday"
 msgstr " i Četvrtak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5250
+#: ../src/calendar/libecal/e-cal-recur.c:5240
 msgctxt "recur-description"
 msgid "on Friday"
 msgstr "u Petak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5251
+#: ../src/calendar/libecal/e-cal-recur.c:5241
 msgctxt "recur-description"
 msgid ", Friday"
 msgstr ", Petak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5252
+#: ../src/calendar/libecal/e-cal-recur.c:5242
 msgctxt "recur-description"
 msgid " and Friday"
 msgstr " i Petak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5255
+#: ../src/calendar/libecal/e-cal-recur.c:5245
 msgctxt "recur-description"
 msgid "on Saturday"
 msgstr "u Subotu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5256
+#: ../src/calendar/libecal/e-cal-recur.c:5246
 msgctxt "recur-description"
 msgid ", Saturday"
 msgstr ",Subotu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5257
+#: ../src/calendar/libecal/e-cal-recur.c:5247
 msgctxt "recur-description"
 msgid " and Saturday"
 msgstr " i Subotu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5386
+#: ../src/calendar/libecal/e-cal-recur.c:5376
 #, c-format
 msgid "every month"
 msgid_plural "every %d months"
@@ -1793,7 +1803,7 @@ msgstr[0] "svaki %d mjesec"
 msgstr[1] "svaka %d mjeseca"
 msgstr[2] "svakih %d mjeseca"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5392
+#: ../src/calendar/libecal/e-cal-recur.c:5382
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
@@ -1801,410 +1811,410 @@ msgstr[0] "Svaki %d mjesec"
 msgstr[1] "Svaka %d mjeseca"
 msgstr[2] "Svakih %d mjeseca"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5402
-#: ../src/calendar/libecal/e-cal-recur.c:5723
+#: ../src/calendar/libecal/e-cal-recur.c:5392
+#: ../src/calendar/libecal/e-cal-recur.c:5713
 msgctxt "recur-description"
 msgid "on the last Sunday"
 msgstr "u posljednju Nedjelju"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5405
-#: ../src/calendar/libecal/e-cal-recur.c:5573
+#: ../src/calendar/libecal/e-cal-recur.c:5395
+#: ../src/calendar/libecal/e-cal-recur.c:5563
 msgctxt "recur-description"
 msgid "on the last Monday"
 msgstr "u posljednji Ponedjeljak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5408
-#: ../src/calendar/libecal/e-cal-recur.c:5598
+#: ../src/calendar/libecal/e-cal-recur.c:5398
+#: ../src/calendar/libecal/e-cal-recur.c:5588
 msgctxt "recur-description"
 msgid "on the last Tuesday"
 msgstr "u posljednji Utorak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5411
-#: ../src/calendar/libecal/e-cal-recur.c:5623
+#: ../src/calendar/libecal/e-cal-recur.c:5401
+#: ../src/calendar/libecal/e-cal-recur.c:5613
 msgctxt "recur-description"
 msgid "on the last Wednesday"
 msgstr "u posljednju Srijedu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5414
-#: ../src/calendar/libecal/e-cal-recur.c:5648
+#: ../src/calendar/libecal/e-cal-recur.c:5404
+#: ../src/calendar/libecal/e-cal-recur.c:5638
 msgctxt "recur-description"
 msgid "on the last Thursday"
 msgstr "u posljednji Četvrtak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5417
-#: ../src/calendar/libecal/e-cal-recur.c:5673
+#: ../src/calendar/libecal/e-cal-recur.c:5407
+#: ../src/calendar/libecal/e-cal-recur.c:5663
 msgctxt "recur-description"
 msgid "on the last Friday"
 msgstr "u posljednji Petak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5420
-#: ../src/calendar/libecal/e-cal-recur.c:5698
+#: ../src/calendar/libecal/e-cal-recur.c:5410
+#: ../src/calendar/libecal/e-cal-recur.c:5688
 msgctxt "recur-description"
 msgid "on the last Saturday"
 msgstr "u posljednju Subotu"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5430
+#: ../src/calendar/libecal/e-cal-recur.c:5420
 msgctxt "recur-description"
 msgid "on the 1st day"
 msgstr "prvog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5434
+#: ../src/calendar/libecal/e-cal-recur.c:5424
 msgctxt "recur-description"
 msgid "on the 2nd day"
 msgstr "drugog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5438
+#: ../src/calendar/libecal/e-cal-recur.c:5428
 msgctxt "recur-description"
 msgid "on the 3rd day"
 msgstr "trećeg dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5442
+#: ../src/calendar/libecal/e-cal-recur.c:5432
 msgctxt "recur-description"
 msgid "on the 4th day"
 msgstr "četvrtog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5446
+#: ../src/calendar/libecal/e-cal-recur.c:5436
 msgctxt "recur-description"
 msgid "on the 5th day"
 msgstr "petog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5450
+#: ../src/calendar/libecal/e-cal-recur.c:5440
 msgctxt "recur-description"
 msgid "on the 6th day"
 msgstr "šestog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5454
+#: ../src/calendar/libecal/e-cal-recur.c:5444
 msgctxt "recur-description"
 msgid "on the 7th day"
 msgstr "sedmog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5458
+#: ../src/calendar/libecal/e-cal-recur.c:5448
 msgctxt "recur-description"
 msgid "on the 8th day"
 msgstr "osmog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5462
+#: ../src/calendar/libecal/e-cal-recur.c:5452
 msgctxt "recur-description"
 msgid "on the 9th day"
 msgstr "devetog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5466
+#: ../src/calendar/libecal/e-cal-recur.c:5456
 msgctxt "recur-description"
 msgid "on the 10th day"
 msgstr "desetog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5470
+#: ../src/calendar/libecal/e-cal-recur.c:5460
 msgctxt "recur-description"
 msgid "on the 11th day"
 msgstr "jedanaestog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5474
+#: ../src/calendar/libecal/e-cal-recur.c:5464
 msgctxt "recur-description"
 msgid "on the 12th day"
 msgstr "dvanaestog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5478
+#: ../src/calendar/libecal/e-cal-recur.c:5468
 msgctxt "recur-description"
 msgid "on the 13th day"
 msgstr "trinaestog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5482
+#: ../src/calendar/libecal/e-cal-recur.c:5472
 msgctxt "recur-description"
 msgid "on the 14th day"
 msgstr "četrnaestog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5486
+#: ../src/calendar/libecal/e-cal-recur.c:5476
 msgctxt "recur-description"
 msgid "on the 15th day"
 msgstr "petnaestog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5490
+#: ../src/calendar/libecal/e-cal-recur.c:5480
 msgctxt "recur-description"
 msgid "on the 16th day"
 msgstr "šesnaestog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5494
+#: ../src/calendar/libecal/e-cal-recur.c:5484
 msgctxt "recur-description"
 msgid "on the 17th day"
 msgstr "sedamnaestog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5498
+#: ../src/calendar/libecal/e-cal-recur.c:5488
 msgctxt "recur-description"
 msgid "on the 18th day"
 msgstr "osamnaestog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5502
+#: ../src/calendar/libecal/e-cal-recur.c:5492
 msgctxt "recur-description"
 msgid "on the 19th day"
 msgstr "devetnaestog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5506
+#: ../src/calendar/libecal/e-cal-recur.c:5496
 msgctxt "recur-description"
 msgid "on the 20th day"
 msgstr "dvadesetog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5510
+#: ../src/calendar/libecal/e-cal-recur.c:5500
 msgctxt "recur-description"
 msgid "on the 21st day"
 msgstr "dvadeset prvog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5514
+#: ../src/calendar/libecal/e-cal-recur.c:5504
 msgctxt "recur-description"
 msgid "on the 22nd day"
 msgstr "dvadeset drugog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5518
+#: ../src/calendar/libecal/e-cal-recur.c:5508
 msgctxt "recur-description"
 msgid "on the 23rd day"
 msgstr "dvadeset trećeg dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5522
+#: ../src/calendar/libecal/e-cal-recur.c:5512
 msgctxt "recur-description"
 msgid "on the 24th day"
 msgstr "dvadeset četvrtog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5526
+#: ../src/calendar/libecal/e-cal-recur.c:5516
 msgctxt "recur-description"
 msgid "on the 25th day"
 msgstr "dvadeset petog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5530
+#: ../src/calendar/libecal/e-cal-recur.c:5520
 msgctxt "recur-description"
 msgid "on the 26th day"
 msgstr "dvadeset šestog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5534
+#: ../src/calendar/libecal/e-cal-recur.c:5524
 msgctxt "recur-description"
 msgid "on the 27th day"
 msgstr "dvadeset sedmog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5538
+#: ../src/calendar/libecal/e-cal-recur.c:5528
 msgctxt "recur-description"
 msgid "on the 28th day"
 msgstr "dvadeset osmog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5542
+#: ../src/calendar/libecal/e-cal-recur.c:5532
 msgctxt "recur-description"
 msgid "on the 29th day"
 msgstr "dvadeset devetog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5546
+#: ../src/calendar/libecal/e-cal-recur.c:5536
 msgctxt "recur-description"
 msgid "on the 30th day"
 msgstr "tridesetog dana"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: ../src/calendar/libecal/e-cal-recur.c:5550
+#: ../src/calendar/libecal/e-cal-recur.c:5540
 msgctxt "recur-description"
 msgid "on the 31st day"
 msgstr "trideset prvog dana"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5558
+#: ../src/calendar/libecal/e-cal-recur.c:5548
 msgctxt "recur-description"
 msgid "on the first Monday"
 msgstr "u prvi Ponedjeljak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5561
+#: ../src/calendar/libecal/e-cal-recur.c:5551
 msgctxt "recur-description"
 msgid "on the second Monday"
 msgstr "u drugi Ponedjeljak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5564
+#: ../src/calendar/libecal/e-cal-recur.c:5554
 msgctxt "recur-description"
 msgid "on the third Monday"
 msgstr "u treći Ponedjeljak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5567
+#: ../src/calendar/libecal/e-cal-recur.c:5557
 msgctxt "recur-description"
 msgid "on the fourth Monday"
 msgstr "u četvrti Ponedjeljak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5570
+#: ../src/calendar/libecal/e-cal-recur.c:5560
 msgctxt "recur-description"
 msgid "on the fifth Monday"
 msgstr "u peti Ponedjeljak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5583
+#: ../src/calendar/libecal/e-cal-recur.c:5573
 msgctxt "recur-description"
 msgid "on the first Tuesday"
 msgstr "u prvi utorak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5586
+#: ../src/calendar/libecal/e-cal-recur.c:5576
 msgctxt "recur-description"
 msgid "on the second Tuesday"
 msgstr "u drugi Utorak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5589
+#: ../src/calendar/libecal/e-cal-recur.c:5579
 msgctxt "recur-description"
 msgid "on the third Tuesday"
 msgstr "u treći Utorak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5592
+#: ../src/calendar/libecal/e-cal-recur.c:5582
 msgctxt "recur-description"
 msgid "on the fourth Tuesday"
 msgstr "u četvrti Utorak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5595
+#: ../src/calendar/libecal/e-cal-recur.c:5585
 msgctxt "recur-description"
 msgid "on the fifth Tuesday"
 msgstr "u peti Utorak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5608
+#: ../src/calendar/libecal/e-cal-recur.c:5598
 msgctxt "recur-description"
 msgid "on the first Wednesday"
 msgstr "u prvu Srijedu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5611
+#: ../src/calendar/libecal/e-cal-recur.c:5601
 msgctxt "recur-description"
 msgid "on the second Wednesday"
 msgstr "u drugu Srijedu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5614
+#: ../src/calendar/libecal/e-cal-recur.c:5604
 msgctxt "recur-description"
 msgid "on the third Wednesday"
 msgstr "u treću Srijedu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5617
+#: ../src/calendar/libecal/e-cal-recur.c:5607
 msgctxt "recur-description"
 msgid "on the fourth Wednesday"
 msgstr "u četvrtu Srijedu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5620
+#: ../src/calendar/libecal/e-cal-recur.c:5610
 msgctxt "recur-description"
 msgid "on the fifth Wednesday"
 msgstr "u petu Srijedu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5633
+#: ../src/calendar/libecal/e-cal-recur.c:5623
 msgctxt "recur-description"
 msgid "on the first Thursday"
 msgstr "u prvi Četvrtak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5636
+#: ../src/calendar/libecal/e-cal-recur.c:5626
 msgctxt "recur-description"
 msgid "on the second Thursday"
 msgstr "u drugi Četvrtak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5639
+#: ../src/calendar/libecal/e-cal-recur.c:5629
 msgctxt "recur-description"
 msgid "on the third Thursday"
 msgstr "u treći Četvrtak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5642
+#: ../src/calendar/libecal/e-cal-recur.c:5632
 msgctxt "recur-description"
 msgid "on the fourth Thursday"
 msgstr "u četvrti Četvrtak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5645
+#: ../src/calendar/libecal/e-cal-recur.c:5635
 msgctxt "recur-description"
 msgid "on the fifth Thursday"
 msgstr "u peti Četvrtak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5658
+#: ../src/calendar/libecal/e-cal-recur.c:5648
 msgctxt "recur-description"
 msgid "on the first Friday"
 msgstr "u prvi Petak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5661
+#: ../src/calendar/libecal/e-cal-recur.c:5651
 msgctxt "recur-description"
 msgid "on the second Friday"
 msgstr "u drugi Petak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5664
+#: ../src/calendar/libecal/e-cal-recur.c:5654
 msgctxt "recur-description"
 msgid "on the third Friday"
 msgstr "u treći Petak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5667
+#: ../src/calendar/libecal/e-cal-recur.c:5657
 msgctxt "recur-description"
 msgid "on the fourth Friday"
 msgstr "u četvrti Petak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5670
+#: ../src/calendar/libecal/e-cal-recur.c:5660
 msgctxt "recur-description"
 msgid "on the fifth Friday"
 msgstr "u peti Petak"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5683
+#: ../src/calendar/libecal/e-cal-recur.c:5673
 msgctxt "recur-description"
 msgid "on the first Saturday"
 msgstr "u prvu Subotu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5686
+#: ../src/calendar/libecal/e-cal-recur.c:5676
 msgctxt "recur-description"
 msgid "on the second Saturday"
 msgstr "u drugu Subotu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5689
+#: ../src/calendar/libecal/e-cal-recur.c:5679
 msgctxt "recur-description"
 msgid "on the third Saturday"
 msgstr "u treću Subotu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5692
+#: ../src/calendar/libecal/e-cal-recur.c:5682
 msgctxt "recur-description"
 msgid "on the fourth Saturday"
 msgstr "u četvrtu Subotu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5695
+#: ../src/calendar/libecal/e-cal-recur.c:5685
 msgctxt "recur-description"
 msgid "on the fifth Saturday"
 msgstr "u petu Subotu"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5708
+#: ../src/calendar/libecal/e-cal-recur.c:5698
 msgctxt "recur-description"
 msgid "on the first Sunday"
 msgstr "u prvu Nedjelju"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5711
+#: ../src/calendar/libecal/e-cal-recur.c:5701
 msgctxt "recur-description"
 msgid "on the second Sunday"
 msgstr "u drugu Nedjelju"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5714
+#: ../src/calendar/libecal/e-cal-recur.c:5704
 msgctxt "recur-description"
 msgid "on the third Sunday"
 msgstr "u treću Nedjelju"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5717
+#: ../src/calendar/libecal/e-cal-recur.c:5707
 msgctxt "recur-description"
 msgid "on the fourth Sunday"
 msgstr "u četvrtu Nedjelju"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5720
+#: ../src/calendar/libecal/e-cal-recur.c:5710
 msgctxt "recur-description"
 msgid "on the fifth Sunday"
 msgstr "u petu Nedjelju"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5749
+#: ../src/calendar/libecal/e-cal-recur.c:5739
 #, c-format
 msgid "every year forever"
 msgid_plural "every %d years forever"
@@ -2212,7 +2222,7 @@ msgstr[0] "svake %d godine zauvijek"
 msgstr[1] "svake %d godine zauvijek"
 msgstr[2] "svakih %d godina zauvijek"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5755
+#: ../src/calendar/libecal/e-cal-recur.c:5745
 #, c-format
 msgid "Every year forever"
 msgid_plural "Every %d years forever"
@@ -2220,7 +2230,7 @@ msgstr[0] "Svake %d godine zauvijek"
 msgstr[1] "Svake %d godine zauvijek"
 msgstr[2] "Svakih %d godina zauvijek"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5763
+#: ../src/calendar/libecal/e-cal-recur.c:5753
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
@@ -2228,7 +2238,7 @@ msgstr[0] "svake %d godine"
 msgstr[1] "svake %d godine"
 msgstr[2] "svakih %d godine"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5769
+#: ../src/calendar/libecal/e-cal-recur.c:5759
 #, c-format
 msgid "Every year"
 msgid_plural "Every %d years"
@@ -2239,7 +2249,7 @@ msgstr[2] "Svakih %d godina"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 3 days for 10 occurrences"
-#: ../src/calendar/libecal/e-cal-recur.c:5788
+#: ../src/calendar/libecal/e-cal-recur.c:5778
 #, c-format
 msgid "for one occurrence"
 msgid_plural "for %d occurrences"
@@ -2251,7 +2261,7 @@ msgstr[2] "za %d pojavljivanja"
 #. The '%s' is replaced with actual date, thus it can create something like
 #. "until Mon 15.1.2018". The text is appended at the end of the complete
 #. recurrence description, making it for example: "Every 3 days until Mon 15.1.2018"
-#: ../src/calendar/libecal/e-cal-recur.c:5824
+#: ../src/calendar/libecal/e-cal-recur.c:5814
 #, c-format
 msgctxt "recur-description"
 msgid "until %s"
@@ -2260,7 +2270,7 @@ msgstr "do %s"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 2 months on Tuesday, Thursday and Friday forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5830
+#: ../src/calendar/libecal/e-cal-recur.c:5820
 msgctxt "recur-description"
 msgid "forever"
 msgstr "zauvijek"
@@ -2268,7 +2278,7 @@ msgstr "zauvijek"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
 #. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
 #. together one sentence: "Every 2 weeks on Tuesday and Friday for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5840
+#: ../src/calendar/libecal/e-cal-recur.c:5830
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s %3$s"
@@ -2277,7 +2287,7 @@ msgstr "%1$s %2$s %3$s"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
 #. the '%2$s' is like "for 10 occurrences", constructing together one sentence:
 #. "Every 2 days for 10 occurrences".
-#: ../src/calendar/libecal/e-cal-recur.c:5845
+#: ../src/calendar/libecal/e-cal-recur.c:5835
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s"
@@ -2285,7 +2295,7 @@ msgstr "%1$s %2$s"
 
 #. Translators: This text is appended at the end of complete recur description using "%s%s" in
 #. context "recur-description"
-#: ../src/calendar/libecal/e-cal-recur.c:5861
+#: ../src/calendar/libecal/e-cal-recur.c:5851
 #, c-format
 msgid ", with one exception"
 msgid_plural ", with %d exceptions"
@@ -2296,33 +2306,33 @@ msgstr[2] ", s %d iznimaka"
 #. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
 #. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
 #. It will form something like: "Every 2 weeks on Tuesday and Friday for 10 occurrences, with 3 exceptions"
-#: ../src/calendar/libecal/e-cal-recur.c:5868
+#: ../src/calendar/libecal/e-cal-recur.c:5858
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5881
-#: ../src/calendar/libecal/e-cal-recur.c:5904
+#: ../src/calendar/libecal/e-cal-recur.c:5871
+#: ../src/calendar/libecal/e-cal-recur.c:5894
 msgctxt "recur-description"
 msgid "The meeting recurs"
 msgstr "Sastanak se ponavlja"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5883
-#: ../src/calendar/libecal/e-cal-recur.c:5906
+#: ../src/calendar/libecal/e-cal-recur.c:5873
+#: ../src/calendar/libecal/e-cal-recur.c:5896
 msgctxt "recur-description"
 msgid "The appointment recurs"
 msgstr "Ugovoreni sastanak se ponavlja"
 
-#: ../src/calendar/libecal/e-cal-recur.c:5886
-#: ../src/calendar/libecal/e-cal-recur.c:5909
+#: ../src/calendar/libecal/e-cal-recur.c:5876
+#: ../src/calendar/libecal/e-cal-recur.c:5899
 msgctxt "recur-description"
 msgid "The task recurs"
 msgstr "Zadatak se ponavlja"
 
 #. if (i_cal_component_isa (comp) == I_CAL_VJOURNAL_COMPONENT)
-#: ../src/calendar/libecal/e-cal-recur.c:5888
-#: ../src/calendar/libecal/e-cal-recur.c:5911
+#: ../src/calendar/libecal/e-cal-recur.c:5878
+#: ../src/calendar/libecal/e-cal-recur.c:5901
 msgctxt "recur-description"
 msgid "The memo recurs"
 msgstr "Dopis se ponavlja"
@@ -2331,7 +2341,7 @@ msgstr "Dopis se ponavlja"
 #. The '%1$s' is replaced with something like "The meeting recurs" and
 #. the '%2$s' with something like "every 2 days forever", thus forming
 #. sentence like "This meeting recurs every 2 days forever"
-#: ../src/calendar/libecal/e-cal-recur.c:5895
+#: ../src/calendar/libecal/e-cal-recur.c:5885
 #, c-format
 msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
@@ -2362,7 +2372,7 @@ msgid "Undefined"
 msgstr "Neodređeno"
 
 #: ../src/calendar/libecal/e-cal-util.c:904
-#: ../src/libedataserverui/e-reminders-widget.c:308
+#: ../src/libedataserverui/e-reminders-widget.c:337
 #, c-format
 msgid "%d week"
 msgid_plural "%d weeks"
@@ -2371,7 +2381,7 @@ msgstr[1] "%d tjedna"
 msgstr[2] "%d tjedana"
 
 #: ../src/calendar/libecal/e-cal-util.c:913
-#: ../src/libedataserverui/e-reminders-widget.c:304
+#: ../src/libedataserverui/e-reminders-widget.c:333
 #, c-format
 msgid "%d day"
 msgid_plural "%d days"
@@ -2380,7 +2390,7 @@ msgstr[1] "%d dana"
 msgstr[2] "%d dana"
 
 #: ../src/calendar/libecal/e-cal-util.c:922
-#: ../src/libedataserverui/e-reminders-widget.c:300
+#: ../src/libedataserverui/e-reminders-widget.c:329
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
@@ -2389,7 +2399,7 @@ msgstr[1] "%d sata"
 msgstr[2] "%d sati"
 
 #: ../src/calendar/libecal/e-cal-util.c:931
-#: ../src/libedataserverui/e-reminders-widget.c:296
+#: ../src/libedataserverui/e-reminders-widget.c:325
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -2406,14 +2416,14 @@ msgstr[0] "%d sekunda"
 msgstr[1] "%d sekunde"
 msgstr[2] "%d sekundi"
 
-#: ../src/calendar/libecal/e-reminder-watcher.c:2824
+#: ../src/calendar/libecal/e-reminder-watcher.c:2902
 msgid "No Summary"
 msgstr "Bez sažetka"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2840
+#: ../src/calendar/libecal/e-reminder-watcher.c:2918
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
@@ -2422,7 +2432,7 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2845
+#: ../src/calendar/libecal/e-reminder-watcher.c:2923
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
@@ -2431,7 +2441,7 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: ../src/calendar/libecal/e-reminder-watcher.c:2850
+#: ../src/calendar/libecal/e-reminder-watcher.c:2928
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
@@ -2577,12 +2587,12 @@ msgstr "Nemoguće dodavanje vremenske zone bez komponente"
 msgid "Cannot add timezone with invalid component"
 msgstr "Nemoguće dodavanje vremenske zone s neispravnom komponentom"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1168
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1184
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Primljeni objekt za UID “%s” ne sadrži ni jednu očekivanu komponentu"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4221
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:4243
 msgid "attachment.dat"
 msgstr "privitak.dat"
 
@@ -2838,7 +2848,7 @@ msgstr "Spremanje promjena u mapu “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:456
+#: ../src/camel/camel-folder.c:457
 #, c-format
 msgid "Learning new spam message in “%s : %s”"
 msgid_plural "Learning new spam messages in “%s : %s”"
@@ -2849,7 +2859,7 @@ msgstr[2] "Učenje novih poruka neželjene pošte u “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:499
+#: ../src/camel/camel-folder.c:500
 #, c-format
 msgid "Learning new ham message in “%s : %s”"
 msgid_plural "Learning new ham messages in “%s : %s”"
@@ -2860,7 +2870,7 @@ msgstr[2] "Učenje novih poruka koje nisu neželjena pošta u “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:547
+#: ../src/camel/camel-folder.c:548
 #, c-format
 msgid "Filtering new message in “%s : %s”"
 msgid_plural "Filtering new messages in “%s : %s”"
@@ -2868,19 +2878,19 @@ msgstr[0] "Filtriranje nove poruke u “%s : %s”"
 msgstr[1] "Filtriranje novih poruka u “%s : %s”"
 msgstr[2] "Filtriranje novih poruka u “%s : %s”"
 
-#: ../src/camel/camel-folder.c:1210
+#: ../src/camel/camel-folder.c:1211
 #: ../src/camel/providers/local/camel-maildir-folder.c:332
 msgid "Moving messages"
 msgstr "Premještanje poruka"
 
-#: ../src/camel/camel-folder.c:1213
+#: ../src/camel/camel-folder.c:1214
 msgid "Copying messages"
 msgstr "Kopiranje poruka"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1258
+#: ../src/camel/camel-folder.c:1259
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
 msgstr "Informacija kvota nije podržana u mapi “%s : %s”"
@@ -2888,7 +2898,7 @@ msgstr "Informacija kvota nije podržana u mapi “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1360
+#: ../src/camel/camel-folder.c:1361
 #, c-format
 msgid "Filtering folder “%s : %s”"
 msgstr "Filtriranje mape “%s : %s”"
@@ -2896,7 +2906,7 @@ msgstr "Filtriranje mape “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3326
+#: ../src/camel/camel-folder.c:3372
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "Uklanjanje mape “%s : %s”"
@@ -2904,7 +2914,7 @@ msgstr "Uklanjanje mape “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3461
+#: ../src/camel/camel-folder.c:3507
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "Primanje poruke “%s” u “%s : %s”"
@@ -2912,7 +2922,7 @@ msgstr "Primanje poruke “%s” u “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3686
+#: ../src/camel/camel-folder.c:3732
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "Primanje informacija kvota za “%s : %s”"
@@ -2920,7 +2930,7 @@ msgstr "Primanje informacija kvota za “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3986
+#: ../src/camel/camel-folder.c:4032
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "Osvježavanje mape “%s : %s”"
@@ -2986,23 +2996,23 @@ msgid "Release unused memory for folder “%s : %s”"
 msgstr "Oslobodi neiskorištenu memoriju za mapu “%s : %s”"
 
 #. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: ../src/camel/camel-gpg-context.c:447
+#: ../src/camel/camel-gpg-context.c:458
 #, c-format
 msgid "Output from %s:"
 msgstr "Izlaz iz %s:"
 
-#: ../src/camel/camel-gpg-context.c:928 ../src/camel/camel-gpg-context.c:933
-#: ../src/camel/camel-gpg-context.c:1674
+#: ../src/camel/camel-gpg-context.c:943 ../src/camel/camel-gpg-context.c:948
+#: ../src/camel/camel-gpg-context.c:1742
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Neuspjelo gpg izvršavanje: %s"
 
-#: ../src/camel/camel-gpg-context.c:933
+#: ../src/camel/camel-gpg-context.c:948
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1205
 msgid "Unknown"
 msgstr "Nepoznato"
 
-#: ../src/camel/camel-gpg-context.c:1045
+#: ../src/camel/camel-gpg-context.c:1060
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -3013,17 +3023,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/camel/camel-gpg-context.c:1081
+#: ../src/camel/camel-gpg-context.c:1096
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Neuspjela obrada gpg savjeta id-a korisnika."
 
-#: ../src/camel/camel-gpg-context.c:1106 ../src/camel/camel-gpg-context.c:1121
+#: ../src/camel/camel-gpg-context.c:1121 ../src/camel/camel-gpg-context.c:1136
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Neuspjela obrada zahtjeva gpg lozinke."
 
-#: ../src/camel/camel-gpg-context.c:1142
+#: ../src/camel/camel-gpg-context.c:1157
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -3032,7 +3042,7 @@ msgstr ""
 "Potrebna vam je PIN za otključavanje ključa vaše\n"
 "pametne kartice: \"%s\""
 
-#: ../src/camel/camel-gpg-context.c:1146
+#: ../src/camel/camel-gpg-context.c:1161
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -3041,12 +3051,12 @@ msgstr ""
 "Potrebna vam je lozinka za otključavanje ključa\n"
 "korisnika: \"%s\""
 
-#: ../src/camel/camel-gpg-context.c:1152
+#: ../src/camel/camel-gpg-context.c:1167
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "Neočekivan GnuPG zahtjev za “%s”"
 
-#: ../src/camel/camel-gpg-context.c:1164
+#: ../src/camel/camel-gpg-context.c:1179
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -3054,31 +3064,31 @@ msgstr ""
 "Imajte na umu da šifrirani sadržaj ne sadrži informacije o primatelju, stoga "
 "će postojati upit za lozinku za svaki spremljeni privatni ključ."
 
-#: ../src/camel/camel-gpg-context.c:1195 ../src/camel/camel-net-utils.c:524
+#: ../src/camel/camel-gpg-context.c:1210 ../src/camel/camel-net-utils.c:524
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:393
 #: ../src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
 msgstr "Prekinuto"
 
-#: ../src/camel/camel-gpg-context.c:1216
+#: ../src/camel/camel-gpg-context.c:1231
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "Nemoguće otključavanje tajnog ključa: 3 pogrešne lozinke su dane."
 
-#: ../src/camel/camel-gpg-context.c:1229
+#: ../src/camel/camel-gpg-context.c:1244
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Neočekivan GnuPG odgovor od: %s"
 
-#: ../src/camel/camel-gpg-context.c:1346
+#: ../src/camel/camel-gpg-context.c:1361
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Neuspjelo dešifriranje: Nema označenih valjanih primatelja."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: ../src/camel/camel-gpg-context.c:1359
+#: ../src/camel/camel-gpg-context.c:1382
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
@@ -3087,17 +3097,58 @@ msgstr ""
 "Neuspjelo šifriranje: Nevaljani primatelj %s je naveden. Uobičajeni problem "
 "je da %s nema uvezeni javni ključ navedenog primatelja."
 
-#: ../src/camel/camel-gpg-context.c:2185 ../src/camel/camel-smime-context.c:869
+#. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
+#: ../src/camel/camel-gpg-context.c:1389
+#, c-format
+msgid "Failed to encrypt: The public key for recipient %s was not found."
+msgstr "Neuspjelo šifriranje: Javni ključ za primatelja %s nije pronađen."
+
+#. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
+#: ../src/camel/camel-gpg-context.c:1396
+#, c-format
+msgid "Failed to encrypt: The key for recipient %s is revoked."
+msgstr "Neuspjelo šifriranje: Ključ za primatelja %s je opozvan."
+
+#. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
+#: ../src/camel/camel-gpg-context.c:1403
+#, c-format
+msgid "Failed to encrypt: The key for recipient %s is expired."
+msgstr "Neuspjelo šifriranje: Ključ za primatelja %s je istekao."
+
+#. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
+#: ../src/camel/camel-gpg-context.c:1410
+#, c-format
+msgid "Failed to encrypt: The key for recipient %s is not trusted."
+msgstr "Neuspjelo šifriranje: Ključ za primatelja %s nije pouzdan."
+
+#. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
+#: ../src/camel/camel-gpg-context.c:1417
+#, c-format
+msgid "Failed to encrypt: The key for recipient %s is disabled."
+msgstr "Neuspjelo šifriranje: Ključ za primatelja %s je onemogućen."
+
+#. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
+#. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
+#: ../src/camel/camel-gpg-context.c:1425
+#, c-format
+msgid ""
+"Failed to encrypt: Invalid recipient %s specified (code %d). A common issue "
+"is that the %s doesn’t have imported public key for this recipient."
+msgstr ""
+"Neuspjelo šifriranje: Nevaljani primatelj %s je naveden (kôd %d). Uobičajeni "
+"problem je da %s nema uvezeni javni ključ navedenog primatelja."
+
+#: ../src/camel/camel-gpg-context.c:2266 ../src/camel/camel-smime-context.c:869
 msgid "Could not generate signing data: "
 msgstr "Nemoguće stvaranje podataka potpisa: "
 
-#: ../src/camel/camel-gpg-context.c:2236 ../src/camel/camel-gpg-context.c:2475
-#: ../src/camel/camel-gpg-context.c:2614 ../src/camel/camel-gpg-context.c:2791
+#: ../src/camel/camel-gpg-context.c:2317 ../src/camel/camel-gpg-context.c:2556
+#: ../src/camel/camel-gpg-context.c:2696 ../src/camel/camel-gpg-context.c:2873
 msgid "Failed to execute gpg."
 msgstr "Neuspjelo gpg izvršavanje."
 
-#: ../src/camel/camel-gpg-context.c:2343 ../src/camel/camel-gpg-context.c:2351
-#: ../src/camel/camel-gpg-context.c:2359 ../src/camel/camel-gpg-context.c:2379
+#: ../src/camel/camel-gpg-context.c:2424 ../src/camel/camel-gpg-context.c:2432
+#: ../src/camel/camel-gpg-context.c:2440 ../src/camel/camel-gpg-context.c:2460
 #: ../src/camel/camel-smime-context.c:1000
 #: ../src/camel/camel-smime-context.c:1014
 #: ../src/camel/camel-smime-context.c:1026
@@ -3105,41 +3156,41 @@ msgstr "Neuspjelo gpg izvršavanje."
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Nemoguća provjera potpisa poruke: Neispravan format poruke"
 
-#: ../src/camel/camel-gpg-context.c:2425
+#: ../src/camel/camel-gpg-context.c:2506
 msgid "Cannot verify message signature: "
 msgstr "Nemoguća provjera potpisa poruke: "
 
-#: ../src/camel/camel-gpg-context.c:2573
+#: ../src/camel/camel-gpg-context.c:2654
 msgid "Could not generate encrypting data: "
 msgstr "Nemoguće stvaranje podataka šifriranja: "
 
-#: ../src/camel/camel-gpg-context.c:2654
+#: ../src/camel/camel-gpg-context.c:2736
 msgid "This is a digitally encrypted message part"
 msgstr "Ovo je digitalno šifrirani dio poruke"
 
-#: ../src/camel/camel-gpg-context.c:2714 ../src/camel/camel-gpg-context.c:2723
-#: ../src/camel/camel-gpg-context.c:2746
+#: ../src/camel/camel-gpg-context.c:2796 ../src/camel/camel-gpg-context.c:2805
+#: ../src/camel/camel-gpg-context.c:2828
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Nemoguće dešifriranje poruke: Neispravan format poruke"
 
-#: ../src/camel/camel-gpg-context.c:2734
+#: ../src/camel/camel-gpg-context.c:2816
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Neuspjelo dešifriranje MIME dijela: greška protokola"
 
-#: ../src/camel/camel-gpg-context.c:2806
+#: ../src/camel/camel-gpg-context.c:2888
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "Neuspjelo dešifriranje MIME dijela: Tajni ključ nije pronađen"
 
-#: ../src/camel/camel-gpg-context.c:2843
+#: ../src/camel/camel-gpg-context.c:2925
 #, c-format
 msgid "GPG blob contains unencrypted text: %s"
 msgstr "GPG blob sadrži neočekivani tekst: %s"
 
-#: ../src/camel/camel-gpg-context.c:2845
-#: ../src/camel/camel-smime-context.c:1546
+#: ../src/camel/camel-gpg-context.c:2927
+#: ../src/camel/camel-smime-context.c:1550
 msgid "Encrypted content"
 msgstr "Šifrirani sadržaj"
 
@@ -3831,7 +3882,7 @@ msgid "Signer: %s <%s>: %s\n"
 msgstr "Potpisao: %s <%s>: %s\n"
 
 #: ../src/camel/camel-smime-context.c:881
-#: ../src/camel/camel-smime-context.c:1403
+#: ../src/camel/camel-smime-context.c:1407
 msgid "Cannot create encoder context"
 msgstr "Nemoguće stvaranje sadržaja enkôdera"
 
@@ -3840,57 +3891,57 @@ msgid "Failed to add data to CMS encoder"
 msgstr "Nemoguće dodavanje podataka u CMS enkôder"
 
 #: ../src/camel/camel-smime-context.c:892
-#: ../src/camel/camel-smime-context.c:1420
+#: ../src/camel/camel-smime-context.c:1424
 msgid "Failed to encode data"
 msgstr "Neuspjelo enkôdiranje podataka"
 
 #: ../src/camel/camel-smime-context.c:1045
-#: ../src/camel/camel-smime-context.c:1521
+#: ../src/camel/camel-smime-context.c:1525
 msgid "Decoder failed"
 msgstr "Neuspjeh dekôdera"
 
-#: ../src/camel/camel-smime-context.c:1297
+#: ../src/camel/camel-smime-context.c:1301
 #, c-format
 msgid "No valid or appropriate certificate for “%s” was found"
 msgstr "Nema pronađenih valjanih ili prikladnih vjerodajnica za “%s”"
 
-#: ../src/camel/camel-smime-context.c:1337
+#: ../src/camel/camel-smime-context.c:1341
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "Nemoguće pronalazak zajedničkog algoritma za grupno šifriranje"
 
-#: ../src/camel/camel-smime-context.c:1345
+#: ../src/camel/camel-smime-context.c:1349
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "Nemoguća dodjela prostora za ključ grupnog šifriranja"
 
-#: ../src/camel/camel-smime-context.c:1356
+#: ../src/camel/camel-smime-context.c:1360
 msgid "Cannot create CMS Message"
 msgstr "Nemoguće stvaranje CMS poruke"
 
-#: ../src/camel/camel-smime-context.c:1362
+#: ../src/camel/camel-smime-context.c:1366
 msgid "Cannot create CMS Enveloped data"
 msgstr "Nemoguće stvaranje CMS obuhvaćenih podataka"
 
-#: ../src/camel/camel-smime-context.c:1368
+#: ../src/camel/camel-smime-context.c:1372
 msgid "Cannot attach CMS Enveloped data"
 msgstr "Nemoguće je priložiti CMS obuhvaćene podatke"
 
-#: ../src/camel/camel-smime-context.c:1374
+#: ../src/camel/camel-smime-context.c:1378
 msgid "Cannot attach CMS data object"
 msgstr "Nemoguće je priložiti objekte CMS podatka"
 
-#: ../src/camel/camel-smime-context.c:1383
+#: ../src/camel/camel-smime-context.c:1387
 msgid "Cannot create CMS Recipient information"
 msgstr "Nemoguće stvaranje informacija CMS primatelja"
 
-#: ../src/camel/camel-smime-context.c:1388
+#: ../src/camel/camel-smime-context.c:1392
 msgid "Cannot add CMS Recipient information"
 msgstr "Nemoguće dodavanje informacija CMS primatelja"
 
-#: ../src/camel/camel-smime-context.c:1414
+#: ../src/camel/camel-smime-context.c:1418
 msgid "Failed to add data to encoder"
 msgstr "Nemoguće dodavanje podataka u enkôder"
 
-#: ../src/camel/camel-smime-context.c:1528
+#: ../src/camel/camel-smime-context.c:1532
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME dešifriranje: Nema pronađenog šifriranog sadržaja"
 
@@ -4053,8 +4104,8 @@ msgstr "Morate biti u mrežnom načinu rada za završetak ove radnje (%s)"
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3423
 #: ../src/camel/providers/nntp/camel-nntp-store.c:348
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1343
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2153
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2308
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2156
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2311
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:447
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:630
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:916
@@ -4157,39 +4208,15 @@ msgid "_Listen for server change notifications"
 msgstr "_Osluškuj obavijesti promjene poslužitelja"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:47
-msgid "Connection to Server"
-msgstr "Povezivanje s poslužiteljem"
-
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:49
-msgid "Numbe_r of concurrent connections to use"
-msgstr "Bro_j istodobno korištenih povezivanja"
-
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:51
-msgid "Enable full folder update on _metered network"
-msgstr "Omogući potpunu nadopunu mape na _mreži ograničenoj podacima"
-
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:53
-msgid "Send client I_D to the server"
-msgstr "Pošalji I_D klijenta na poslužitelj"
-
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:56
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:43
 msgid "Folders"
 msgstr "Mape"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:58
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:49
 msgid "_Show only subscribed folders"
 msgstr "_Prikaži samo pretplaćene mape"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:61
-msgid "O_verride server-supplied folder namespace"
-msgstr "Z_aobiđi oblik naziva mape pružan od poslužitelja"
-
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:63
-msgid "Namespace:"
-msgstr "Oblik naziva:"
-
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:66
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:51
 #: ../src/camel/providers/local/camel-local-provider.c:37
 #: ../src/camel/providers/local/camel-local-provider.c:63
 #: ../src/camel/providers/local/camel-local-provider.c:84
@@ -4198,18 +4225,18 @@ msgstr "Oblik naziva:"
 msgid "Options"
 msgstr "Mogućnosti"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:68
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:53
 #: ../src/camel/providers/local/camel-local-provider.c:39
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:38
 msgid "Apply _filters to new messages in all folders"
 msgstr "Primjeni _filtre na nove poruke u svim mapama"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:70
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:55
 msgid "_Apply filters to new messages in Inbox on this server"
 msgstr ""
 "_Primijeni filtre na nove poruke za pristiglu poštu sa ovog poslužitelja"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:72
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:57
 #: ../src/camel/providers/local/camel-local-provider.c:41
 #: ../src/camel/providers/local/camel-local-provider.c:67
 #: ../src/camel/providers/local/camel-local-provider.c:88
@@ -4218,27 +4245,88 @@ msgstr ""
 msgid "Check new messages for _Junk contents"
 msgstr "Provjeri sadrže li nove poruke _neželjenu poštu"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:74
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:59
 msgid "Only check for Junk messages in the In_box folder"
 msgstr "Samo provjeri poruke neželjene pošte u mapi _pristigle pošte"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:76
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:61
 msgid "Synchroni_ze remote mail locally in all folders"
 msgstr "Uskla_di udaljenu poštu lokalno u svim mapama"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:83
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:66
+msgid "Numbe_r of concurrent connections to use"
+msgstr "Bro_j istodobno korištenih povezivanja"
+
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:68
+msgid "Enable full folder update on _metered network"
+msgstr "Omogući potpunu nadopunu mape na _mreži ograničenoj podacima"
+
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:70
+msgid "Send client I_D to the server"
+msgstr "Pošalji I_D klijenta na poslužitelj"
+
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:72
+msgid "O_verride server-supplied folder namespace"
+msgstr "Z_aobiđi oblik naziva mape pružan od poslužitelja"
+
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:74
+msgid "Namespace:"
+msgstr "Oblik naziva:"
+
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:76
+msgid "Ignore other users namespace"
+msgstr "Zanemari oblike naziva ostalih korisnika"
+
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:78
+msgid "Ignore shared folders namespace"
+msgstr "Zanemari oblike naziva dijeljenih mapa"
+
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:80
+msgid "Use shell command for connecting to the server"
+msgstr "Koristi naredbu ljuske za povezivanje s poslužiteljem"
+
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:82
+msgid "Command:"
+msgstr "Naredba:"
+
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:84
+msgid "Download large messages in chunks"
+msgstr "Preuzmi velike poruke u dijelovima"
+
+#. Translators: This constructs either "Fetch new messages in ascending order" or "Fetch new messages in descending order"
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:87
+msgid "Fetch new messages in"
+msgstr "Preuzmi nove poruke"
+
+#. Translators: This constructs "Fetch new messages in ascending order"
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:90
+msgid "ascending order"
+msgstr "uzlaznim redoslijedom"
+
+#. Translators: This constructs "Fetch new messages in descending order"
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:92
+msgid "descending order"
+msgstr "silaznim redoslijedom"
+
+#. Translators: The '%s' is replaced with a spin button with the actual value
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:95
+#, c-format
+msgid "Store folder changes after %s second(s)"
+msgstr "Spremi promjene mape nakon %s sekunde(a)"
+
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:101
 msgid "Default IMAP port"
 msgstr "Zadani IMAP ulaz"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:84
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:102
 msgid "IMAP over TLS"
 msgstr "IMAP preko TLS"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:91
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:109
 msgid "IMAP"
 msgstr "IMAP"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:93
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:111
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Za čitanje i spremanje pošte na IMAP poslužiteljima."
 
@@ -4402,71 +4490,71 @@ msgstr "Preuzimanje sažetka informacija za nove poruke u “%s : %s”"
 msgid "Error fetching message info"
 msgstr "Greška preuzimanja informacija poruka"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5618
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5626
 msgid "Error running STATUS"
 msgstr "Greška pokretanja STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6198
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6253
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6317
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6206
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6261
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6325
 msgid "Error syncing changes"
 msgstr "Greška usklađivanja promjena"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6211
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6263
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6336
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6477
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6219
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6271
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6344
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6485
 msgid "Error expunging message"
 msgstr "Greška uklanjanja poruka"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6559
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6567
 msgid "Error fetching folders"
 msgstr "Greška preuzimanja mapa"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6567
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6575
 msgid "Error fetching subscribed folders"
 msgstr "Greška preuzimanja pretplaćenih mapa"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6624
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6632
 msgid "Error creating folder"
 msgstr "Greška stvaranja mape"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6674
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6682
 msgid "Error deleting folder"
 msgstr "Greška brisanja mape"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6720
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6728
 msgid "Error renaming folder"
 msgstr "Greška preimenovanja mape"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6752
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6760
 msgid "Error subscribing to folder"
 msgstr "Greška pretplate na mapu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6788
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6796
 msgid "Error unsubscribing from folder"
 msgstr "Greška prekidanja pretplate na mapu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6828
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6836
 msgid "IMAP server does not support quotas"
 msgstr "IMAP poslužitelj ne podržava kvote"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6840
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6848
 msgid "Error retrieving quota information"
 msgstr "Greška preuzimanja informacija o kvotama"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6905
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6913
 msgid "Search failed"
 msgstr "Neuspjela pretraga"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:7033
+#: ../src/camel/providers/imapx/camel-imapx-server.c:7041
 msgid "Error running IDLE"
 msgstr "Greška pokretanja IDLE"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../src/camel/providers/imapx/camel-imapx-store.c:353
-#: ../src/camel/providers/local/camel-maildir-folder.c:477
+#: ../src/camel/providers/local/camel-maildir-folder.c:485
 #: ../src/camel/providers/local/camel-maildir-store.c:342
 #: ../src/camel/providers/local/camel-maildir-store.c:824
 #: ../src/camel/providers/local/camel-maildir-store.c:830
@@ -4475,49 +4563,56 @@ msgstr "Greška pokretanja IDLE"
 msgid "Inbox"
 msgstr "Pristigla pošta"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:956
+#: ../src/camel/providers/imapx/camel-imapx-store.c:962
 #, c-format
 msgid "IMAP server %s"
 msgstr "IMAP poslužitelj %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:959
+#: ../src/camel/providers/imapx/camel-imapx-store.c:965
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "IMAP usluga za %s na %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1050
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1056
 msgid "No IMAPx connection object provided"
 msgstr "Nema omogućenog objekta IMAPx povezivanja"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1067
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1073
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:95
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:82
 msgid "Password"
 msgstr "Lozinka"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1069
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1075
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Ova mogućnost će se povezati sa IMAP poslužiteljem koristeći lozinke u "
 "običnom tekstu."
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1154
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1160
 #, c-format
 msgid "No such folder %s"
 msgstr "Nema takve mape %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1621
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1620
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
 msgstr "Nema IMAP oblika naziva za putanju mape “%s”"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1888
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2083
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1887
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2082
 #, c-format
 msgid "Retrieving folder list for “%s”"
 msgstr "Preuzimanje popisa mapa za “%s”"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2362
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2325
+msgid ""
+"The account does not support folder hierarchy. Create the folder on the "
+"account level instead."
+msgstr ""
+"Račun ne podržava hijerarhiju mape. Umjesto stvorite mapu na razini računa."
+
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2372
 #, c-format
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "Naziv mape \"%s\" nije valjan jer sadrži znak \"%c\""
@@ -4527,97 +4622,97 @@ msgstr "Naziv mape \"%s\" nije valjan jer sadrži znak \"%c\""
 #. version as well. It's always the folder name (eventually path) as provided by the server,
 #. when returned in given localization. it can be checked semi-easily in the case of
 #. the GMail variants, by changing the GMail interface language in the GMail Preferences.
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2757
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2767
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
 msgstr "[Gmail]/Nedovršeno"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2758
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2768
 msgctxt "IMAPDefaults"
 msgid "Drafts"
 msgstr "Nedovršeno"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2759
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2769
 msgctxt "IMAPDefaults"
 msgid "Draft"
 msgstr "Nedovršena"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2762
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2772
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "Predlošci"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2765
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2775
 msgctxt "IMAPDefaults"
 msgid "Archive"
 msgstr "Arhiva"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2768
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2778
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[Gmail]/Slanje pošte"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2769
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2779
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "Slanje"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2770
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2780
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "Slanje stavki"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2771
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2781
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Slanje poruke"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2774
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2784
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "[Gmail]/Neželjena pošta"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2775
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2785
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "Neželjena pošta"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2776
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2786
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "Neželjena e-pošta"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2777
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2787
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "Neželjena e-pošta"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2778
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2788
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "Neželjena pošta"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2779
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2789
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "Grupna pošta"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2782
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2792
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr "[Gmail]/Smeće"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2783
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2793
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "Smeće"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2784
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2794
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "Obrisane stavke"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2785
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2795
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Obrisane poruke"
@@ -4793,7 +4888,7 @@ msgid "Could not rename “%s”: %s"
 msgstr "Nemoguće preimenovanje “%s”: %s"
 
 #: ../src/camel/providers/local/camel-maildir-folder.c:107
-#: ../src/camel/providers/local/camel-maildir-folder.c:346
+#: ../src/camel/providers/local/camel-maildir-folder.c:354
 #: ../src/camel/providers/local/camel-mbox-folder.c:133
 #: ../src/camel/providers/local/camel-mbox-folder.c:348
 #: ../src/camel/providers/local/camel-mh-folder.c:159
@@ -4814,7 +4909,7 @@ msgstr "Nemoguće dodavanje poruke u mapu pošte: %s: "
 msgid "Cannot get message %s from folder %s: "
 msgstr "Nemoguće dobivanje poruke %s iz mape %s: "
 
-#: ../src/camel/providers/local/camel-maildir-folder.c:364
+#: ../src/camel/providers/local/camel-maildir-folder.c:372
 #, c-format
 msgid "Cannot transfer message to destination folder: %s"
 msgstr "Nemoguć prijenos poruke u odredišnu mapu: %s"
@@ -4893,9 +4988,9 @@ msgid "Checking for new messages"
 msgstr "Provjeravanje novih poruka"
 
 #: ../src/camel/providers/local/camel-maildir-summary.c:853
-#: ../src/camel/providers/local/camel-mbox-summary.c:367
-#: ../src/camel/providers/local/camel-mbox-summary.c:585
-#: ../src/camel/providers/local/camel-mbox-summary.c:739
+#: ../src/camel/providers/local/camel-mbox-summary.c:372
+#: ../src/camel/providers/local/camel-mbox-summary.c:590
+#: ../src/camel/providers/local/camel-mbox-summary.c:744
 #: ../src/camel/providers/local/camel-spool-summary.c:141
 msgid "Storing folder"
 msgstr "Spremanje mape"
@@ -4982,53 +5077,53 @@ msgstr "Naziv nove mape je neispravan."
 msgid "Could not rename “%s”: “%s”: %s"
 msgstr "Nemoguće preimenovanje “%s”: “%s”: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:377
+#: ../src/camel/providers/local/camel-mbox-summary.c:382
 #, c-format
 msgid "Could not open folder: %s: %s"
 msgstr "Nemoguće otvaranje mape: %s: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:509
+#: ../src/camel/providers/local/camel-mbox-summary.c:514
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "Nemoguća provjera mape: %s: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:594
-#: ../src/camel/providers/local/camel-mbox-summary.c:748
+#: ../src/camel/providers/local/camel-mbox-summary.c:599
+#: ../src/camel/providers/local/camel-mbox-summary.c:753
 #: ../src/camel/providers/local/camel-spool-summary.c:148
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "Nemoguće otvaranje datoteke: %s: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:613
+#: ../src/camel/providers/local/camel-mbox-summary.c:618
 #: ../src/camel/providers/local/camel-spool-summary.c:163
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "Nemoguće otvaranje privremenog pretinca: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:630
-#: ../src/camel/providers/local/camel-mbox-summary.c:870
+#: ../src/camel/providers/local/camel-mbox-summary.c:635
+#: ../src/camel/providers/local/camel-mbox-summary.c:875
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Nemoguće zatvaranje izvorišne mape%s: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:643
+#: ../src/camel/providers/local/camel-mbox-summary.c:648
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "Nemoguće zatvaranje privremene mape: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:662
+#: ../src/camel/providers/local/camel-mbox-summary.c:667
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "Nemoguće preimenovanje mape: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:762
-#: ../src/camel/providers/local/camel-mbox-summary.c:1032
+#: ../src/camel/providers/local/camel-mbox-summary.c:767
+#: ../src/camel/providers/local/camel-mbox-summary.c:1037
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "Nemoguće spremanje mape: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:803
-#: ../src/camel/providers/local/camel-mbox-summary.c:1075
+#: ../src/camel/providers/local/camel-mbox-summary.c:808
+#: ../src/camel/providers/local/camel-mbox-summary.c:1080
 #, c-format
 msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn’t get "
@@ -5037,25 +5132,25 @@ msgstr ""
 "MBOX datoteka je oštećena, popravite ju. (Očekivana je adresa pošiljatelja, "
 "ali nije navedena.)"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:813
-#: ../src/camel/providers/local/camel-mbox-summary.c:1087
+#: ../src/camel/providers/local/camel-mbox-summary.c:818
+#: ../src/camel/providers/local/camel-mbox-summary.c:1092
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Sažetak i mapa se ne podudaraju, čak i nakon usklađivanja"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:979
+#: ../src/camel/providers/local/camel-mbox-summary.c:984
 #: ../src/camel/providers/local/camel-spool-summary.c:358
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Nepoznata greška: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:1148
-#: ../src/camel/providers/local/camel-mbox-summary.c:1178
+#: ../src/camel/providers/local/camel-mbox-summary.c:1153
+#: ../src/camel/providers/local/camel-mbox-summary.c:1183
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "Zapisivanje u privremeni pretinac neuspjelo: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:1167
+#: ../src/camel/providers/local/camel-mbox-summary.c:1172
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Zapisivanje u privremeni pretinac neuspjelo: %s: %s"
@@ -5331,7 +5426,7 @@ msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "Ne možete ukloniti mapu u spremištu vijesti: umjesto prekinite pretplatu."
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:1613
+#: ../src/camel/providers/nntp/camel-nntp-store.c:1616
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -5342,7 +5437,7 @@ msgstr ""
 "\n"
 "Takva grupa vijesti ne postoji. Odabrana stavka je vjerojatno sadržajna mapa."
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:1680
+#: ../src/camel/providers/nntp/camel-nntp-store.c:1683
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -5353,17 +5448,17 @@ msgstr ""
 "\n"
 "grupa vijesti ne postoji!"
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2104
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2107
 msgid "NNTP Command failed: "
 msgstr "NNTP naredba neuspjela: "
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2210
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2245
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2213
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2248
 #, c-format
 msgid "Not connected."
 msgstr "Nisam povezan."
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2322
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2325
 #, c-format
 msgid "No such folder: %s"
 msgstr "Nema takve mape: %s"
@@ -5945,13 +6040,13 @@ msgstr "%s ne podržava stvaranje udaljenih resursa"
 msgid "%s does not support deleting remote resources"
 msgstr "%s ne podržava brisanje udaljenih resursa"
 
-#: ../src/libebackend/e-data-factory.c:1442
+#: ../src/libebackend/e-data-factory.c:1447
 #: ../src/libebackend/e-subprocess-factory.c:288
 #, c-format
 msgid "No such source for UID “%s”"
 msgstr "Nema takvog izvora za UID “%s”"
 
-#: ../src/libebackend/e-data-factory.c:1597
+#: ../src/libebackend/e-data-factory.c:1602
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr ""
@@ -5967,7 +6062,7 @@ msgid "Failed to lookup credentials: "
 msgstr "Neuspjelo pretraživanje vjerodajnica: "
 
 #: ../src/libebackend/e-server-side-source.c:1389
-#: ../src/libedataserver/e-source.c:1585
+#: ../src/libedataserver/e-source.c:1601
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "Izvor podataka “%s” ne podržava stvaranje udaljenih resursa"
@@ -5980,7 +6075,7 @@ msgstr ""
 "Izvor podataka “%s” nema pozadinske kolekcije za stvaranje udaljenog resursa"
 
 #: ../src/libebackend/e-server-side-source.c:1431
-#: ../src/libedataserver/e-source.c:1698
+#: ../src/libedataserver/e-source.c:1714
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "Izvor podataka “%s” ne podržava brisanje udaljenih resursa"
@@ -5994,7 +6089,7 @@ msgstr ""
 
 #: ../src/libebackend/e-server-side-source.c:1484
 #: ../src/libebackend/e-source-registry-server.c:1038
-#: ../src/libedataserver/e-source.c:1827
+#: ../src/libedataserver/e-source.c:1843
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
 msgstr "Izvor podataka “%s” ne podržava OAuth 2.0 ovjeru"
@@ -6230,38 +6325,82 @@ msgstr "Objekt nije usklađen"
 msgid "Timeout was reached"
 msgstr "Vrijeme isteka dostignuto"
 
-#: ../src/libedataserver/e-oauth2-service.c:919
+#: ../src/libedataserver/e-gdata-session.c:207
+#, c-format
+msgid "Google server is busy, waiting to retry (%d:%02d minute)"
+msgid_plural "Google server is busy, waiting to retry (%d:%02d minutes)"
+msgstr[0] ""
+"Google poslužitelj je zauzet, čekanje ponovnog pokušaja (%d:%02d minuta)"
+msgstr[1] ""
+"Google poslužitelj je zauzet, čekanje ponovnog pokušaja (%d:%02d minute)"
+msgstr[2] ""
+"Google poslužitelj je zauzet, čekanje ponovnog pokušaja (%d:%02d minuta)"
+
+#: ../src/libedataserver/e-gdata-session.c:213
+#, c-format
+msgid "Google server is busy, waiting to retry (%d second)"
+msgid_plural "Google server is busy, waiting to retry (%d seconds)"
+msgstr[0] ""
+"Google poslužitelj je zauzet, čekanje ponovnog pokušaja (%d sekunda)"
+msgstr[1] ""
+"Google poslužitelj je zauzet, čekanje ponovnog pokušaja (%d sekunde)"
+msgstr[2] ""
+"Google poslužitelj je zauzet, čekanje ponovnog pokušaja (%d sekundi)"
+
+#: ../src/libedataserver/e-gdata-session.c:548
+msgid "No JSON object returned by the server"
+msgstr "Poslužitelj nije vratio JSON objekt"
+
+#: ../src/libedataserver/e-gdata-session.c:734
+#: ../src/libedataserver/e-gdata-session.c:793
+#: ../src/libedataserver/e-gdata-session.c:857
+#: ../src/libedataserver/e-gdata-session.c:893
+#: ../src/libedataserver/e-gdata-session.c:950
+#: ../src/libedataserver/e-gdata-session.c:1004
+#: ../src/libedataserver/e-gdata-session.c:1440
+#: ../src/libedataserver/e-gdata-session.c:1484
+#: ../src/libedataserver/e-gdata-session.c:1549
+#: ../src/libedataserver/e-gdata-session.c:1621
+#: ../src/libedataserver/e-gdata-session.c:1662
+#: ../src/libedataserver/e-gdata-session.c:1720
+#: ../src/libedataserver/e-gdata-session.c:1783
+#: ../src/libedataserver/e-gdata-session.c:1843
+#, c-format
+msgid "Failed to call %s: "
+msgstr "Neuspjelo pozivanje %s: "
+
+#: ../src/libedataserver/e-oauth2-service.c:918
 msgid "Malformed, no message body set"
 msgstr "Oštećeno, tijelo poruke nije postavljeno"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: ../src/libedataserver/e-oauth2-service.c:1203
+#: ../src/libedataserver/e-oauth2-service.c:1198
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Izvor “%s” (%s) nije valjan za “%s” OAuth2 uslugu"
 
-#: ../src/libedataserver/e-oauth2-service.c:1218
+#: ../src/libedataserver/e-oauth2-service.c:1213
 msgid "OAuth2 secret not found"
 msgstr "OAuth2 tajna nije pronađena"
 
-#: ../src/libedataserver/e-oauth2-service.c:1413
+#: ../src/libedataserver/e-oauth2-service.c:1410
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Primljen je neispravan odgovor s poslužitelja “%s”."
 
-#: ../src/libedataserver/e-oauth2-service.c:1422
+#: ../src/libedataserver/e-oauth2-service.c:1419
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 "Neuspjelo osvježavanje tokena pristupa. Prijavite se ponovno na poslužitelj."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: ../src/libedataserver/e-oauth2-service.c:1464
+#: ../src/libedataserver/e-oauth2-service.c:1462
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Izvor “%s” (%s) nije valjana OAuth2 usluga"
 
-#: ../src/libedataserver/e-oauth2-service.c:1538
+#: ../src/libedataserver/e-oauth2-service.c:1536
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -6270,48 +6409,52 @@ msgstr ""
 "poslužitelj."
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
-#: ../src/libedataserver/e-oauth2-service-google.c:56
+#: ../src/libedataserver/e-oauth2-service-google.c:58
 msgctxt "OAuth2Service"
 msgid "Google"
 msgstr "Google"
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
-#: ../src/libedataserver/e-oauth2-service-outlook.c:57
+#: ../src/libedataserver/e-oauth2-service-outlook.c:58
 msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
-#: ../src/libedataserver/e-oauth2-service-yahoo.c:53
+#: ../src/libedataserver/e-oauth2-service-yahoo.c:54
 msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: ../src/libedataserver/e-soup-session.c:963
-msgid "Operation was cancelled"
-msgstr "Radnja je prekinuta"
-
-#: ../src/libedataserver/e-soup-session.c:969
+#: ../src/libedataserver/e-soup-session.c:1169
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Neuspjelo s HTTP greškom %d: %s"
+
+#: ../src/libedataserver/e-soup-session.c:1245
+msgid "Failed to setup authentication"
+msgstr "Neuspjelo postavljanje ovjere"
+
+#: ../src/libedataserver/e-soup-session.c:1624
+msgid "Too many redirects"
+msgstr "Previše preusmjeravanja"
 
 #: ../src/libedataserver/e-source.c:772
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "Izvorišnoj datoteci nedostaje [%s] grupa"
 
-#: ../src/libedataserver/e-source.c:1365
+#: ../src/libedataserver/e-source.c:1381
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr "Izvor podataka “%s” nije uklonjiv"
 
-#: ../src/libedataserver/e-source.c:1488
+#: ../src/libedataserver/e-source.c:1504
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr "Izvor podataka “%s” nije zapisiv"
 
-#: ../src/libedataserver/e-source.c:2228
+#: ../src/libedataserver/e-source.c:2249
 msgid "Unnamed"
 msgstr "Bezimeno"
 
@@ -6480,7 +6623,7 @@ msgstr "%H%M"
 msgid "%I %p"
 msgstr "%I %p"
 
-#: ../src/libedataserver/e-webdav-discover.c:295
+#: ../src/libedataserver/e-webdav-discover.c:339
 msgid "Notes"
 msgstr "Bilješke"
 
@@ -6488,7 +6631,7 @@ msgstr "Bilješke"
 msgid "Cannot determine destination URL without WebDAV extension"
 msgstr "Nemoguće određivanje odredišnog URL-a bez WebDAV proširenja"
 
-#: ../src/libedataserver/e-webdav-session.c:1001
+#: ../src/libedataserver/e-webdav-session.c:993
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -6497,7 +6640,7 @@ msgstr ""
 "Poslužitelj je odgovorio s HTML stranicom, što znači da je došlo do greške "
 "na poslužitelju ili zahtjevu klijenta. Korišteni URI je: %s"
 
-#: ../src/libedataserver/e-webdav-session.c:1003
+#: ../src/libedataserver/e-webdav-session.c:995
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -6511,7 +6654,7 @@ msgstr ""
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1024
+#: ../src/libedataserver/e-webdav-session.c:1016
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
 msgstr "%s: HTTP kôd greške %d (%s): %s"
@@ -6519,7 +6662,7 @@ msgstr "%s: HTTP kôd greške %d (%s): %s"
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:1032
+#: ../src/libedataserver/e-webdav-session.c:1024
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
 msgstr "Neuspjelo s HTTP kôdom greške %d (%s): %s"
@@ -6528,182 +6671,293 @@ msgstr "Neuspjelo s HTTP kôdom greške %d (%s): %s"
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1047
+#: ../src/libedataserver/e-webdav-session.c:1039
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
 msgstr "%s: HTTP kôd greške %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:1053
+#: ../src/libedataserver/e-webdav-session.c:1045
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "Neuspjelo s HTTP kôdom greške %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:1348
+#: ../src/libedataserver/e-webdav-session.c:1357
 msgid "Failed to post data"
 msgstr "Neuspjela objava podataka"
 
-#: ../src/libedataserver/e-webdav-session.c:1479
-#: ../src/libedataserver/e-webdav-session.c:1556
-#: ../src/libedataserver/e-webdav-session.c:1658
-#: ../src/libedataserver/e-webdav-session.c:2911
-#: ../src/libedataserver/e-webdav-session.c:4184
+#: ../src/libedataserver/e-webdav-session.c:1438
+#: ../src/libedataserver/e-webdav-session.c:1504
+#: ../src/libedataserver/e-webdav-session.c:1595
+#: ../src/libedataserver/e-webdav-session.c:2719
+#: ../src/libedataserver/e-webdav-session.c:3966
 msgid "Failed to get input XML content"
 msgstr "Neuspjelo dobivanje ulaznog XML sadržaja"
 
-#: ../src/libedataserver/e-webdav-session.c:1490
+#: ../src/libedataserver/e-webdav-session.c:1449
 msgid "Failed to get properties"
 msgstr "Neuspjelo dobivanje svojstva"
 
-#: ../src/libedataserver/e-webdav-session.c:1566
+#: ../src/libedataserver/e-webdav-session.c:1514
 msgid "Failed to update properties"
 msgstr "Neuspjelo nadopuna svojstva"
 
-#: ../src/libedataserver/e-webdav-session.c:1668
+#: ../src/libedataserver/e-webdav-session.c:1605
 msgid "Failed to issue REPORT"
 msgstr "Neuspjelo REPORT izdavanje"
 
-#: ../src/libedataserver/e-webdav-session.c:1729
+#: ../src/libedataserver/e-webdav-session.c:1665
 msgid "Failed to create collection"
 msgstr "Neuspjelo stvaranje kolekcije"
 
-#: ../src/libedataserver/e-webdav-session.c:1822
-#: ../src/libedataserver/e-webdav-session.c:1983
+#: ../src/libedataserver/e-webdav-session.c:1748
+#: ../src/libedataserver/e-webdav-session.c:1898
 msgid "Failed to get XML request content"
 msgstr "Neuspjelo dobivanje sadržaja XML zahtjeva"
 
-#: ../src/libedataserver/e-webdav-session.c:1834
+#: ../src/libedataserver/e-webdav-session.c:1760
 msgid "Failed to create address book"
 msgstr "Neuspjelo stvaranje adresara"
 
-#: ../src/libedataserver/e-webdav-session.c:1996
+#: ../src/libedataserver/e-webdav-session.c:1911
 msgid "Failed to create calendar"
 msgstr "Neuspjelo stvaranje kalendara"
 
-#: ../src/libedataserver/e-webdav-session.c:2124
-#: ../src/libedataserver/e-webdav-session.c:2135
+#: ../src/libedataserver/e-webdav-session.c:2036
+#: ../src/libedataserver/e-webdav-session.c:2047
 msgid "Failed to read resource"
 msgstr "Neuspjelo čitanje izvora"
 
-#: ../src/libedataserver/e-webdav-session.c:2275
-msgid "Cannot rewind input stream: Not supported"
-msgstr "Nemoguće premotavanje ulaznog strujanja: Nije podržano"
-
-#: ../src/libedataserver/e-webdav-session.c:2439
-#: ../src/libedataserver/e-webdav-session.c:2580
+#: ../src/libedataserver/e-webdav-session.c:2283
+#: ../src/libedataserver/e-webdav-session.c:2425
 msgid "Failed to put data"
 msgstr "Neuspjelo stavljanje podataka"
 
-#: ../src/libedataserver/e-webdav-session.c:2453
-#: ../src/libedataserver/e-webdav-session.c:2588
+#: ../src/libedataserver/e-webdav-session.c:2291
+#: ../src/libedataserver/e-webdav-session.c:2433
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Neuspjelo stavljanje podataka u poslužitelja, kôd greške %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:2682
+#: ../src/libedataserver/e-webdav-session.c:2521
 msgid "Failed to delete resource"
 msgstr "Neuspjelo brisanja resursa"
 
-#: ../src/libedataserver/e-webdav-session.c:2751
+#: ../src/libedataserver/e-webdav-session.c:2580
 msgid "Failed to copy resource"
 msgstr "Neuspjelo kopiranje izvora"
 
-#: ../src/libedataserver/e-webdav-session.c:2815
+#: ../src/libedataserver/e-webdav-session.c:2634
 msgid "Failed to move resource"
 msgstr "Neuspjelo premještanje izvora"
 
-#: ../src/libedataserver/e-webdav-session.c:2922
+#: ../src/libedataserver/e-webdav-session.c:2730
 msgid "Failed to lock resource"
 msgstr "Neuspjelo zaključavanje izvora"
 
-#: ../src/libedataserver/e-webdav-session.c:2936
-#: ../src/libedataserver/e-webdav-session.c:3144
+#: ../src/libedataserver/e-webdav-session.c:2744
+#: ../src/libedataserver/e-webdav-session.c:2931
 msgid "Expected application/xml response, but none returned"
 msgstr "Očekivan je odgovor aplikacije/xml-a, ali odgovora nema"
 
-#: ../src/libedataserver/e-webdav-session.c:2939
-#: ../src/libedataserver/e-webdav-session.c:3147
+#: ../src/libedataserver/e-webdav-session.c:2747
+#: ../src/libedataserver/e-webdav-session.c:2934
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "Očekivan je odgovor aplikacije/xml-a, ali %s je vraćeno"
 
-#: ../src/libedataserver/e-webdav-session.c:2951
-#: ../src/libedataserver/e-webdav-session.c:3160
+#: ../src/libedataserver/e-webdav-session.c:2759
+#: ../src/libedataserver/e-webdav-session.c:2947
 msgid "Failed to parse XML data"
 msgstr "Neuspjela obrada XML podataka"
 
-#: ../src/libedataserver/e-webdav-session.c:3032
+#: ../src/libedataserver/e-webdav-session.c:2830
 msgid "Failed to refresh lock"
 msgstr "Neuspjelo osvježavanje zaključavanja"
 
-#: ../src/libedataserver/e-webdav-session.c:3093
+#: ../src/libedataserver/e-webdav-session.c:2881
 msgid "Failed to unlock"
 msgstr "Neuspjelo otključavanje"
 
-#: ../src/libedataserver/e-webdav-session.c:3132
+#: ../src/libedataserver/e-webdav-session.c:2919
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Očekivan je odgovor više stanja, ali %d je vratio (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:3169
+#: ../src/libedataserver/e-webdav-session.c:2956
 msgid "XML data does not have root node"
 msgstr "XML podaci ne sadrže root čvor"
 
-#: ../src/libedataserver/e-webdav-session.c:3192
+#: ../src/libedataserver/e-webdav-session.c:2979
 #, c-format
 msgid "XML data doesn't have required structure (%s)"
 msgstr "XML podaci nemaju potrebnu strukturu (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:4194
+#: ../src/libedataserver/e-webdav-session.c:3976
 msgid "Failed to get access control list"
 msgstr "Neuspjelo dobivanje popisa upravljanja pristupom"
 
-#: ../src/libedataserver/e-webdav-session.c:4878
+#: ../src/libedataserver/e-webdav-session.c:4659
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 "Nemoguće spremanje zaštićenog niti naslijeđenog unosa upravljanja pristupom."
 
-#: ../src/libedataserver/e-webdav-session.c:4885
+#: ../src/libedataserver/e-webdav-session.c:4666
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Pružena je nevaljana glavna vrsta za unos upravljanja pristupom."
 
-#: ../src/libedataserver/e-webdav-session.c:4892
+#: ../src/libedataserver/e-webdav-session.c:4673
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Nemoguće spremanje na svojstvu temeljenog unosa upravljanja pristupom."
 
-#: ../src/libedataserver/e-webdav-session.c:4899
+#: ../src/libedataserver/e-webdav-session.c:4680
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Unos upravljanja pristupa se može samo Dopustiti ili Odbaciti, ne može biti "
 "ništa."
 
-#: ../src/libedataserver/e-webdav-session.c:4907
+#: ../src/libedataserver/e-webdav-session.c:4688
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Unos upravljanja pristupa se može samo Dopustiti ili Odbaciti, ne može biti "
 "oboje."
 
-#: ../src/libedataserver/e-webdav-session.c:4966
+#: ../src/libedataserver/e-webdav-session.c:4747
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Ovlasti unosa kontrole pristupa ne mogu biti NULL."
 
-#: ../src/libedataserverui/e-buffer-tagger.c:71
+#: ../src/libedataserverui/e-buffer-tagger.c:79
 msgid "Could not open the link."
 msgstr "Nemoguće otvaranje poveznice."
 
-#. To Translators: The text is concatenated to a form: "Ctrl-click to open a link http://www.example.com"
-#: ../src/libedataserverui/e-buffer-tagger.c:548
-msgid "Ctrl-click to open a link"
-msgstr "Ctrl-klik za otvaranje poveznice"
-
-#: ../src/libedataserverui/e-buffer-tagger.c:810
+#: ../src/libedataserverui/e-buffer-tagger.c:562
+#: ../src/libedataserverui/e-buffer-tagger.c:976
 msgid "Copy _Link Location"
 msgstr "Kopiraj _lokaciju poveznice"
 
-#: ../src/libedataserverui/e-buffer-tagger.c:817
+#: ../src/libedataserverui/e-buffer-tagger.c:567
+#: ../src/libedataserverui/e-buffer-tagger.c:983
 msgid "O_pen Link in Browser"
 msgstr "O_tvori poveznicu u pregledniku"
+
+#. To Translators: The text is concatenated to a form: "Ctrl-click to open a link http://www.example.com"
+#: ../src/libedataserverui/e-buffer-tagger.c:712
+msgid "Ctrl-click to open a link"
+msgstr "Ctrl-klik za otvaranje poveznice"
+
+#. x509 certificate usage types
+#: ../src/libedataserverui/e-certificate-widget.c:288
+msgid "Digital Signature"
+msgstr "Digitalni potpis"
+
+#: ../src/libedataserverui/e-certificate-widget.c:289
+msgid "Key Encipherment"
+msgstr "Šifriranje ključa"
+
+#: ../src/libedataserverui/e-certificate-widget.c:397
+msgid "Certificate"
+msgstr "Vjerodajnica"
+
+#: ../src/libedataserverui/e-certificate-widget.c:397
+msgid "Identity"
+msgstr "Identitet"
+
+#: ../src/libedataserverui/e-certificate-widget.c:398
+#: ../src/libedataserverui/e-certificate-widget.c:410
+msgid "Issuer"
+msgstr "Izdavatelj"
+
+#: ../src/libedataserverui/e-certificate-widget.c:399
+msgid "Expires on"
+msgstr "Istječe"
+
+#: ../src/libedataserverui/e-certificate-widget.c:400
+msgid "Subject"
+msgstr "Predmet"
+
+#: ../src/libedataserverui/e-certificate-widget.c:400
+#: ../src/libedataserverui/e-certificate-widget.c:410
+msgid "Common Name"
+msgstr "Zajedničko ime"
+
+#: ../src/libedataserverui/e-certificate-widget.c:402
+#: ../src/libedataserverui/e-certificate-widget.c:411
+msgid "Email"
+msgstr "E-pošta"
+
+#: ../src/libedataserverui/e-certificate-widget.c:404
+#: ../src/libedataserverui/e-certificate-widget.c:413
+msgid "Organization Unit"
+msgstr "Organizacijska jedinica"
+
+#: ../src/libedataserverui/e-certificate-widget.c:405
+#: ../src/libedataserverui/e-certificate-widget.c:414
+msgid "Country"
+msgstr "Zemlja"
+
+#: ../src/libedataserverui/e-certificate-widget.c:406
+#: ../src/libedataserverui/e-certificate-widget.c:415
+msgid "State"
+msgstr "Stanje"
+
+#: ../src/libedataserverui/e-certificate-widget.c:407
+#: ../src/libedataserverui/e-certificate-widget.c:416
+msgid "Locality"
+msgstr "Mjesto"
+
+#: ../src/libedataserverui/e-certificate-widget.c:408
+#: ../src/libedataserverui/e-certificate-widget.c:417
+msgid "Domain Component Name"
+msgstr "Naziv komponente domene"
+
+#: ../src/libedataserverui/e-certificate-widget.c:409
+msgid "Alternative Emails"
+msgstr "Alternativna e-pošta"
+
+#: ../src/libedataserverui/e-certificate-widget.c:418
+msgid "Details"
+msgstr "Pojedinosti"
+
+#: ../src/libedataserverui/e-certificate-widget.c:418
+msgid "Not Before"
+msgstr "Ne prije"
+
+#: ../src/libedataserverui/e-certificate-widget.c:419
+msgid "Not After"
+msgstr "Ne poslije"
+
+#: ../src/libedataserverui/e-certificate-widget.c:420
+msgid "Usage"
+msgstr "Korištenje"
+
+#: ../src/libedataserverui/e-certificate-widget.c:421
+msgid "Version"
+msgstr "Inačica"
+
+#: ../src/libedataserverui/e-certificate-widget.c:422
+msgid "Serial Number"
+msgstr "Serijski broj"
+
+#: ../src/libedataserverui/e-certificate-widget.c:423
+msgid "Key ID"
+msgstr "ID ključa"
+
+#: ../src/libedataserverui/e-certificate-widget.c:424
+msgid "Signature Algorithm"
+msgstr "Algoritam potpisa"
+
+#: ../src/libedataserverui/e-certificate-widget.c:425
+msgid "SHA-256 Fingerprint"
+msgstr "SHA-256 otisak"
+
+#: ../src/libedataserverui/e-certificate-widget.c:426
+msgid "Public Key"
+msgstr "Javni ključ"
+
+#: ../src/libedataserverui/e-certificate-widget.c:426
+msgid "Algorithm"
+msgstr "Algoritam"
 
 #: ../src/libedataserverui/e-credentials-prompter.c:260
 #: ../src/libedataserverui/e-credentials-prompter.c:1755
@@ -6716,46 +6970,46 @@ msgstr "Upit vjerodajnice je otkazan"
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "Izvor “%s” ne podržava upit vjerodajnica"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:202
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:228
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "Neuspjelo dobivanje pristupnog tokena iz adrese “%s”: %s"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:246
-msgid "Requesting access token, please wait..."
-msgstr "Zahtijevanje pristupnog tokena, pričekajte..."
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:259
+msgid "Requesting access token, please wait…"
+msgstr "Zahtijevanje pristupnog tokena, pričekajte…"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:472
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:509
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "%s adresar zahtijeva ovjeru"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:477
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:514
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "%s kalendar zahtijeva ovjeru"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:482
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:519
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "%s popis dopisa zahtijeva ovjeru"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:487
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:524
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "%s popis zadataka zahtijeva ovjeru"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:493
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:530
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "%s pošta zahtijeva ovjeru"
@@ -6763,7 +7017,7 @@ msgstr "%s pošta zahtijeva ovjeru"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:498
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:535
 #, c-format
 msgid "%s account authentication request"
 msgstr "%s račun zahtijeva ovjeru"
@@ -6771,7 +7025,7 @@ msgstr "%s račun zahtijeva ovjeru"
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:512
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:549
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -6783,7 +7037,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:519
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:556
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -6795,7 +7049,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:526
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:563
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -6807,7 +7061,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:533
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:570
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -6819,7 +7073,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:540
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:577
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -6831,7 +7085,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:547
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:584
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -6843,7 +7097,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:554
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:591
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -6852,71 +7106,97 @@ msgstr ""
 "Prijavite se u svoj %s račun i prihvatite uvjete kako bi mogli pristupiti "
 "svojem računu “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:730
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:237
-#: ../src/libedataserverui/e-trust-prompt.c:114
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1094
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:778
+#, c-format
+msgid "Failed to open browser: %s"
+msgstr "Neuspjelo otvaranje preglednika: %s"
+
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:865
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:243
+#: ../src/libedataserverui/e-trust-prompt.c:117
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1149
 msgid "_Cancel"
 msgstr "_Odustani"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:804
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:947
 msgid "URL:"
 msgstr "URL:"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:134
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:977
+msgid "Click here to open the URL"
+msgstr "Kliknite ovdje za otvaranje URL-a"
+
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1015
+msgid ""
+"Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
+"the resulting authorization code below to continue the authentication "
+"process."
+msgstr ""
+"Otvorite gornji URL u pregledniku i prođite kroz OAuth2 čarobnjak. Kopirajte "
+"dobiveni kôd ovjere dolje za nastavak procesa ovjere."
+
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1052
+msgid "_Authorization code:"
+msgstr "_Kôd ovjere:"
+
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1065
+msgid "C_ontinue"
+msgstr "N_astavi"
+
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:136
 msgid "Address book authentication request"
 msgstr "Adresar zahtijeva ovjeru"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:139
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:141
 msgid "Calendar authentication request"
 msgstr "Kalendar zahtijeva ovjeru"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:143
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:145
 msgid "Mail authentication request"
 msgstr "Pošta zahtijeva ovjeru"
 
 #. generic account prompt
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:146
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:148
 msgid "Authentication request"
 msgstr "Potrebna je ovjera"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:155
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:157
 #, c-format
 msgid "Please enter the password for address book “%s”."
 msgstr "Upišite lozinku za adresar “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:159
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:161
 #, c-format
 msgid "Please enter the password for calendar “%s”."
 msgstr "Upišite lozinku za kalendar “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:163
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:165
 #, c-format
 msgid "Please enter the password for mail account “%s”."
 msgstr "Upišite lozinku za račun pošte “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:167
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:169
 #, c-format
 msgid "Please enter the password for mail transport “%s”."
 msgstr "Upišite lozinku za prijenos pošte “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:171
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:173
 #, c-format
 msgid "Please enter the password for memo list “%s”."
 msgstr "Upišite lozinku za popis dopisa “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:175
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:177
 #, c-format
 msgid "Please enter the password for task list “%s”."
 msgstr "Upišite lozinku za popis zadatka “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:179
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:181
 #, c-format
 msgid "Please enter the password for account “%s”."
 msgstr "Upišite lozinku za račun “%s”."
 
 #. Translators: This is part of a credential prompt, constructing for example: "Please enter the password for account “%s”.\n(host: hostname)"
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:185
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:187
 #, c-format
 msgid ""
 "\n"
@@ -6925,43 +7205,43 @@ msgstr ""
 "\n"
 "(poslužitelj: %s)"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:238
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1095
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:244
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1150
 msgid "_OK"
 msgstr "_U redu"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:356
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:380
 msgid "_User Name:"
 msgstr "_Korisničko ime:"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:368
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:392
 msgid "_Password:"
 msgstr "_Lozinka:"
 
 #. Remember password check
-#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:384
+#: ../src/libedataserverui/e-credentials-prompter-impl-password.c:408
 msgid "_Add this password to your keyring"
 msgstr "_Dodaj ovu lozinku svojem skupu ključeva"
 
 #. Translators: meaning as "Snooze, until event start time"
-#: ../src/libedataserverui/e-reminders-widget.c:182
+#: ../src/libedataserverui/e-reminders-widget.c:237
 msgid "until start time"
 msgstr "do vremena pokretanja"
 
-#: ../src/libedataserverui/e-reminders-widget.c:233
+#: ../src/libedataserverui/e-reminders-widget.c:262
 msgid "Add custom time…"
 msgstr "Dodaj prilagođeno vrijeme…"
 
-#: ../src/libedataserverui/e-reminders-widget.c:237
+#: ../src/libedataserverui/e-reminders-widget.c:266
 msgid "Clear custom times"
 msgstr "Ukloni prilagođena vremena"
 
-#: ../src/libedataserverui/e-reminders-widget.c:294
+#: ../src/libedataserverui/e-reminders-widget.c:323
 msgctxt "overdue"
 msgid "now"
 msgstr "odmah"
 
-#: ../src/libedataserverui/e-reminders-widget.c:312
+#: ../src/libedataserverui/e-reminders-widget.c:341
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -6969,116 +7249,116 @@ msgstr[0] "%d godina"
 msgstr[1] "%d godine"
 msgstr[2] "%d godina"
 
-#: ../src/libedataserverui/e-reminders-widget.c:318
+#: ../src/libedataserverui/e-reminders-widget.c:347
 msgctxt "overdue"
 msgid "overdue"
 msgstr "zakašnjelo"
 
-#: ../src/libedataserverui/e-reminders-widget.c:954
+#: ../src/libedataserverui/e-reminders-widget.c:983
 #, c-format
 msgid "Failed to launch URI “%s”:"
 msgstr "Neuspjelo pokretanje URI-a “%s”:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1005
+#: ../src/libedataserverui/e-reminders-widget.c:1034
 msgid "No reminder is selected."
 msgstr "Nema odabranih podsjetnika."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1083
+#: ../src/libedataserverui/e-reminders-widget.c:1116
 msgid "No details are available."
 msgstr "Nema dostupnih pojedinosti."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1087
+#: ../src/libedataserverui/e-reminders-widget.c:1120
 msgid "Multiple reminders are selected."
 msgstr "Odabrano je više podsjetnika."
 
-#: ../src/libedataserverui/e-reminders-widget.c:1121
+#: ../src/libedataserverui/e-reminders-widget.c:1154
 msgid "Failed to dismiss reminder:"
 msgstr "Neuspjelo odbacivanje podsjetnika:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1142
+#: ../src/libedataserverui/e-reminders-widget.c:1175
 msgid "Failed to dismiss all:"
 msgstr "Neuspjelo odbacivanje svega:"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1278
+#: ../src/libedataserverui/e-reminders-widget.c:1335
 msgid "Set a custom snooze time for"
 msgstr "Postavi prilagođeno vrijeme odgode za"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1291
+#: ../src/libedataserverui/e-reminders-widget.c:1348
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "da_na"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1307
+#: ../src/libedataserverui/e-reminders-widget.c:1364
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "_sata"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: ../src/libedataserverui/e-reminders-widget.c:1323
+#: ../src/libedataserverui/e-reminders-widget.c:1380
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "_minuta"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1329
+#: ../src/libedataserverui/e-reminders-widget.c:1386
 msgid "_Add Snooze time"
 msgstr "_Dodaj vrijeme odgode"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1647
+#: ../src/libedataserverui/e-reminders-widget.c:1749
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "_Odbaci"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1648
+#: ../src/libedataserverui/e-reminders-widget.c:1750
 msgid "Dismiss _All"
 msgstr "Odbaci _sve"
 
-#: ../src/libedataserverui/e-reminders-widget.c:1650
+#: ../src/libedataserverui/e-reminders-widget.c:1752
 msgid "_Snooze"
 msgstr "_Odgodi"
 
-#: ../src/libedataserverui/e-trust-prompt.c:113
-#: ../src/modules/trust-prompt/trust-prompt-gtk.c:131
+#: ../src/libedataserverui/e-trust-prompt.c:116
+#: ../src/modules/trust-prompt/trust-prompt-gtk.c:129
 msgid "Certificate trust..."
 msgstr "Pouzdane vjerodajnice..."
 
-#: ../src/libedataserverui/e-trust-prompt.c:115
-#: ../src/modules/trust-prompt/trust-prompt-gtk.c:132
+#: ../src/libedataserverui/e-trust-prompt.c:118
+#: ../src/modules/trust-prompt/trust-prompt-gtk.c:130
 msgid "_Reject"
 msgstr "_Odbaci"
 
-#: ../src/libedataserverui/e-trust-prompt.c:116
-#: ../src/modules/trust-prompt/trust-prompt-gtk.c:133
+#: ../src/libedataserverui/e-trust-prompt.c:119
+#: ../src/modules/trust-prompt/trust-prompt-gtk.c:131
 msgid "Accept _Temporarily"
 msgstr "Prihvati _privremeno"
 
-#: ../src/libedataserverui/e-trust-prompt.c:117
-#: ../src/modules/trust-prompt/trust-prompt-gtk.c:134
+#: ../src/libedataserverui/e-trust-prompt.c:120
+#: ../src/modules/trust-prompt/trust-prompt-gtk.c:132
 msgid "_Accept Permanently"
 msgstr "_Prihvati trajno"
 
-#: ../src/libedataserverui/e-trust-prompt.c:188
-#: ../src/modules/trust-prompt/trust-prompt-gtk.c:171
+#: ../src/libedataserverui/e-trust-prompt.c:208
+#: ../src/modules/trust-prompt/trust-prompt-gtk.c:169
 #, c-format
 msgid "SSL/TLS certificate for “%s” is not trusted. Do you wish to accept it?"
 msgstr "SSL/TLS vjerodajnica za “%s” nije pouzdana. Želite li ju prihvatiti?"
 
-#: ../src/libedataserverui/e-trust-prompt.c:210
-#: ../src/modules/trust-prompt/trust-prompt-gtk.c:186
+#: ../src/libedataserverui/e-trust-prompt.c:230
+#: ../src/modules/trust-prompt/trust-prompt-gtk.c:184
 msgid "Reason:"
 msgstr "Razlog:"
 
-#: ../src/libedataserverui/e-trust-prompt.c:213
+#: ../src/libedataserverui/e-trust-prompt.c:233
 msgid "Detailed error:"
 msgstr "Pojedinosti greške:"
 
-#: ../src/libedataserverui/e-trust-prompt.c:275
+#: ../src/libedataserverui/e-trust-prompt.c:292
 #: ../src/modules/trust-prompt/module-trust-prompt.c:80
 msgid "The signing certificate authority is not known."
 msgstr "Izdavatelj vjerodajnice potpisa nije poznat."
 
-#: ../src/libedataserverui/e-trust-prompt.c:277
+#: ../src/libedataserverui/e-trust-prompt.c:294
 #: ../src/modules/trust-prompt/module-trust-prompt.c:82
 msgid ""
 "The certificate does not match the expected identity of the site that it was "
@@ -7087,17 +7367,17 @@ msgstr ""
 "Vjerodajnica se ne podudara s očekivanim identitetom stranice s kojeg je "
 "primljena."
 
-#: ../src/libedataserverui/e-trust-prompt.c:279
+#: ../src/libedataserverui/e-trust-prompt.c:296
 #: ../src/modules/trust-prompt/module-trust-prompt.c:84
 msgid "The certificate’s activation time is still in the future."
 msgstr "Vrijeme aktivacije vjerodajnice još nije počelo."
 
-#: ../src/libedataserverui/e-trust-prompt.c:281
+#: ../src/libedataserverui/e-trust-prompt.c:298
 #: ../src/modules/trust-prompt/module-trust-prompt.c:86
 msgid "The certificate has expired."
 msgstr "[ISTEKLA]"
 
-#: ../src/libedataserverui/e-trust-prompt.c:283
+#: ../src/libedataserverui/e-trust-prompt.c:300
 #: ../src/modules/trust-prompt/module-trust-prompt.c:88
 msgid ""
 "The certificate has been revoked according to the connection’s certificate "
@@ -7105,48 +7385,48 @@ msgid ""
 msgstr ""
 "Vjerodajnica je opozvana prema popisu opoziva vjerodajnice povezivanja."
 
-#: ../src/libedataserverui/e-trust-prompt.c:285
+#: ../src/libedataserverui/e-trust-prompt.c:302
 #: ../src/modules/trust-prompt/module-trust-prompt.c:90
 msgid "The certificate’s algorithm is considered insecure."
 msgstr "Algoritam vjerodajnice se smatra nesigurnim."
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:193
+#: ../src/libedataserverui/e-webdav-discover-widget.c:208
 msgid "Supports"
 msgstr "Podrška"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:204
+#: ../src/libedataserverui/e-webdav-discover-widget.c:219
 msgid "_User mail:"
 msgstr "_E-pošta korisnika:"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:542
+#: ../src/libedataserverui/e-webdav-discover-widget.c:565
 msgctxt "WebDAVDiscover"
 msgid "Contacts"
 msgstr "Kontakti"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:543
+#: ../src/libedataserverui/e-webdav-discover-widget.c:566
 msgctxt "WebDAVDiscover"
 msgid "Events"
 msgstr "Događaj"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:544
+#: ../src/libedataserverui/e-webdav-discover-widget.c:567
 msgctxt "WebDAVDiscover"
 msgid "Memos"
 msgstr "Dopisi"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:545
+#: ../src/libedataserverui/e-webdav-discover-widget.c:568
 msgctxt "WebDAVDiscover"
 msgid "Tasks"
 msgstr "Zadaci"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:857
+#: ../src/libedataserverui/e-webdav-discover-widget.c:891
 msgid "Invalid URL"
 msgstr "Neispravan URL"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:902
+#: ../src/libedataserverui/e-webdav-discover-widget.c:940
 msgid "Cancel"
 msgstr "Odustani"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:905
+#: ../src/libedataserverui/e-webdav-discover-widget.c:943
 msgid "Searching server sources..."
 msgstr "Pretraživanje izvora poslužitelja..."
 
@@ -7164,42 +7444,42 @@ msgid "Failed to get password from GOA: "
 msgstr "Neuspjelo dobivanje lozinke iz GMR: "
 
 #. TODO: more specific
-#: ../src/modules/gnome-online-accounts/goaewsclient.c:220
+#: ../src/modules/gnome-online-accounts/goaewsclient.c:240
 #, c-format
 msgid "Code: %u — Unexpected response from server"
 msgstr "Kôd: %u — Neočekivan odgovor s poslužitelja"
 
 #. TODO: more specific
-#: ../src/modules/gnome-online-accounts/goaewsclient.c:241
+#: ../src/modules/gnome-online-accounts/goaewsclient.c:263
 #, c-format
 msgid "Failed to parse autodiscover response XML"
 msgstr "Nemoguća obrada automatskog otkrivanja odgovora XML-a"
 
 #. TODO: more specific
-#: ../src/modules/gnome-online-accounts/goaewsclient.c:250
+#: ../src/modules/gnome-online-accounts/goaewsclient.c:272
 #, c-format
 msgid "Failed to find Autodiscover element"
 msgstr "Nemoguće je pronaći element automatskog otkrivanja"
 
 #. TODO: more specific
-#: ../src/modules/gnome-online-accounts/goaewsclient.c:262
+#: ../src/modules/gnome-online-accounts/goaewsclient.c:284
 #, c-format
 msgid "Failed to find Response element"
 msgstr "Nemoguće je pronaći element odgovora"
 
 #. TODO: more specific
-#: ../src/modules/gnome-online-accounts/goaewsclient.c:274
+#: ../src/modules/gnome-online-accounts/goaewsclient.c:296
 #, c-format
 msgid "Failed to find Account element"
 msgstr "Nemoguće je pronaći element računa"
 
 #. TODO: more specific
-#: ../src/modules/gnome-online-accounts/goaewsclient.c:288
+#: ../src/modules/gnome-online-accounts/goaewsclient.c:310
 #, c-format
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Nemoguć pronalazak ASUrl i OABUrl u odgovoru automatskog otkrivanja"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1422
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1431
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -7208,7 +7488,7 @@ msgstr ""
 "Nemoguć pronalazak odgovarajućeg računa u org.gnome.OnlineAccounts usluzi iz "
 "koje se dobiva pristupni token za “%s”"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1472
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1481
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Neuspjelo dobivanje pristupnog tokena za “%s”: "
@@ -7234,26 +7514,26 @@ msgstr ""
 "koristi 1 za omogućavanje, 0 za onemogućavanje, bilo koja druga vrijednost "
 "će se koristit kao mogućnost vremena sastavljanja"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:331
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:359
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:889
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1137
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:332
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:343
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:879
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:1127
 msgid "Reminders"
 msgstr "Podsjetnici"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:471
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:460
 msgid "Warning"
 msgstr "Upozorenje"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:472
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:461
 msgid "_No"
 msgstr "_Ne"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:473
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:462
 msgid "_Yes"
 msgstr "_Da"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:477
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:466
 #, c-format
 msgid ""
 "A calendar reminder is about to trigger. This reminder is configured to run "
@@ -7270,35 +7550,39 @@ msgstr ""
 "\n"
 "Sigurno želite pokrenuti ovaj program?"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:492
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:481
 msgid "Do not ask me about this program again"
 msgstr "Ne pitaj me ponovno o ovome programu"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:793
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:782
 msgid "Display Reminders window with _notifications"
 msgstr "Prikaži prozor podsjetnika sa _obavijestima"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:794
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:783
 msgid "Keep reminder notification window always on _top"
 msgstr "Zadrži prozor obavijesti podsjetnika uvijek na _vrhu"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:795
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:784
+msgid "Enable _desktop notifications"
+msgstr "Omogući _obavijesti radne površine"
+
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:785
 msgid "Enable _audio notifications"
 msgstr "Omogući _zvučne obavijesti"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:796
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:786
 msgid "Display reminders for _completed tasks"
 msgstr "Prikaži podsjetnike za _završene zadatke"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:797
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:787
 msgid "Display reminders for _past events"
 msgstr "Prikaži podsjetnike za _protekle događaje"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:811
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:801
 msgid "Reminders Options:"
 msgstr "Mogućnosti podsjetnika:"
 
-#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:905
+#: ../src/services/evolution-alarm-notify/e-alarm-notify.c:895
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
@@ -7517,6 +7801,15 @@ msgstr "Neuspjelo povezivanje s izvornim registrom: %s\n"
 #, c-format
 msgid "No sources had been found\n"
 msgstr "Nema pronađenih izvora\n"
+
+#~ msgid "Connection to Server"
+#~ msgstr "Povezivanje s poslužiteljem"
+
+#~ msgid "Operation was cancelled"
+#~ msgstr "Radnja je prekinuta"
+
+#~ msgid "Cannot rewind input stream: Not supported"
+#~ msgstr "Nemoguće premotavanje ulaznog strujanja: Nije podržano"
 
 #~ msgid "Contact UID of a user"
 #~ msgstr "UID kontakta korisnika"
