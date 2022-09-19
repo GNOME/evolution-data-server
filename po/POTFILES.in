@@ -232,3 +232,23 @@ src/services/evolution-user-prompter/evolution-user-prompter.c
 src/services/evolution-user-prompter/prompt-user-gtk.c
 src/tools/addressbook-export/addressbook-export.c
 src/tools/list-sources/list-sources.c
+
+# special-case .source files, pretending they are .desktop, to be understood by the gettext
+src/services/evolution-source-registry/builtin/birthdays.source.desktop.in
+src/services/evolution-source-registry/builtin/caldav-stub.source.desktop.in
+src/services/evolution-source-registry/builtin/carddav-stub.source.desktop.in
+src/services/evolution-source-registry/builtin/contacts-stub.source.desktop.in
+src/services/evolution-source-registry/builtin/google-stub.source.desktop.in
+src/services/evolution-source-registry/builtin/ldap-stub.source.desktop.in
+src/services/evolution-source-registry/builtin/local.source.desktop.in
+src/services/evolution-source-registry/builtin/local-stub.source.desktop.in
+src/services/evolution-source-registry/builtin/sendmail.source.desktop.in
+src/services/evolution-source-registry/builtin/system-address-book.source.desktop.in
+src/services/evolution-source-registry/builtin/system-calendar.source.desktop.in
+src/services/evolution-source-registry/builtin/system-memo-list.source.desktop.in
+src/services/evolution-source-registry/builtin/system-proxy.source.desktop.in
+src/services/evolution-source-registry/builtin/system-task-list.source.desktop.in
+src/services/evolution-source-registry/builtin/vfolder.source.desktop.in
+src/services/evolution-source-registry/builtin/weather-stub.source.desktop.in
+src/services/evolution-source-registry/builtin/webcal-stub.source.desktop.in
+src/services/evolution-source-registry/builtin/webdav-notes-stub.source.desktop.in

@@ -3,10 +3,9 @@ find_program(GETTEXT_XGETTEXT_EXECUTABLE xgettext)
 set(DOMAIN ${FULL_PROJECT_NAME})
 set(POT_FILE ${GETTEXT_PACKAGE}.pot)
 
-file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/POTFILES.in TRANSLATED_FILES_1 ENCODING UTF-8 REGEX "^[^#].*")
-file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/POTFILES.source.in TRANSLATED_FILES_2 ENCODING UTF-8 REGEX "^[^#].*")
+file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/POTFILES.in TRANSLATED_FILES_IN ENCODING UTF-8 REGEX "^[^#].*")
 set(TRANSLATED_FILES)
-foreach(TRANSLATED_FILE ${TRANSLATED_FILES_1} ${TRANSLATED_FILES_2})
+foreach(TRANSLATED_FILE ${TRANSLATED_FILES_IN})
     list(APPEND TRANSLATED_FILES "../${TRANSLATED_FILE}")
 endforeach(TRANSLATED_FILE)
 
@@ -26,6 +25,7 @@ add_custom_command(
         --keyword=g_dcgettext:2
         --keyword=g_dngettext:2,3
         --keyword=g_dpgettext2:2c,3
+        --keyword=DisplayName
         --flag=N_:1:pass-c-format
         --flag=C_:2:pass-c-format
         --flag=NC_:2:pass-c-format
@@ -43,16 +43,6 @@ add_custom_command(
         --flag=g_fprintf:2:c-format
         --flag=g_sprintf:2:c-format
         --flag=g_snprintf:3:c-format
-# .source files are not standard so handle them the best we can
-    COMMAND ${GETTEXT_XGETTEXT_EXECUTABLE} -o ${POT_FILE}
-        --directory=${CMAKE_SOURCE_DIR}
-        --package-name=${GETTEXT_PACKAGE}
-        --language=Desktop
-        --join-existing
-        --files-from=${CMAKE_CURRENT_SOURCE_DIR}/POTFILES.source.in
-        --from-code=UTF-8
-        --add-comments
-        --keyword=DisplayName
     OUTPUT ${POT_FILE}
     DEPENDS ${TRANSLATED_FILES}
 )
