@@ -49,7 +49,7 @@ endif(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/builtin)
 set(builtin_sources)
 foreach(_file ${builtin_sources_files})
 	i18n_merge_file(
-		${CMAKE_CURRENT_SOURCE_DIR}/builtin/${_file}.in
+		${CMAKE_CURRENT_SOURCE_DIR}/builtin/${_file}.desktop.in
 		${CMAKE_CURRENT_BINARY_DIR}/builtin/${_file}
 		${CMAKE_SOURCE_DIR}/po
 		EXTRA_ARGS "--keyword=DisplayName"
