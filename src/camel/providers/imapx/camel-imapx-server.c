@@ -2678,7 +2678,7 @@ imapx_server_set_streams (CamelIMAPXServer *is,
 		GInputStream *temp_stream;
 
 		/* The logger produces debugging output. */
-		logger = camel_imapx_logger_new (is->priv->tagprefix);
+		logger = camel_imapx_logger_new (is->priv->tagprefix, NULL);
 		input_stream = g_converter_input_stream_new (
 			input_stream, logger);
 		g_clear_object (&logger);
@@ -2695,7 +2695,7 @@ imapx_server_set_streams (CamelIMAPXServer *is,
 
 	if (output_stream != NULL) {
 		/* The logger produces debugging output. */
-		logger = camel_imapx_logger_new (is->priv->tagprefix);
+		logger = camel_imapx_logger_new (is->priv->tagprefix, is);
 		output_stream = g_converter_output_stream_new (
 			output_stream, logger);
 		g_clear_object (&logger);
@@ -7502,4 +7502,28 @@ camel_imapx_server_ref_current_command (CamelIMAPXServer *is)
 	COMMAND_UNLOCK (is);
 
 	return command;
+}
+
+gboolean
+camel_imapx_server_should_discard_logging (CamelIMAPXServer *is,
+					   const gchar **out_replace_text)
+{
+	gboolean discard = FALSE;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
+	g_return_val_if_fail (out_replace_text != NULL, FALSE);
+
+	COMMAND_LOCK (is);
+
+	if (imapx_server_has_current_command (is, CAMEL_IMAPX_JOB_AUTHENTICATE)) {
+		discard = TRUE;
+		*out_replace_text = "AUTHENTICATE";
+	} else if (imapx_server_has_current_command (is, CAMEL_IMAPX_JOB_LOGIN)) {
+		discard = TRUE;
+		*out_replace_text = "LOGIN";
+	}
+
+	COMMAND_UNLOCK (is);
+
+	return discard;
 }
