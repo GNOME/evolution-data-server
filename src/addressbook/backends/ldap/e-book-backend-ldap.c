@@ -1277,9 +1277,9 @@ build_mods_from_contacts (EBookBackendLDAP *bl,
 
 	/* add LDAP uid attribute, if given */
 	if (ldap_uid) {
-		LDAPMod *mod = g_new (LDAPMod, 1);
 		gchar *ldap_uid_value = strchr (ldap_uid, '=');
 		if (ldap_uid_value) {
+			LDAPMod *mod = g_new (LDAPMod, 1);
 			mod->mod_op = LDAP_MOD_ADD;
 			mod->mod_type = g_strdup ("uid");
 			mod->mod_values = g_new (gchar *, 2);
