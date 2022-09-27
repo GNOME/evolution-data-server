@@ -1747,7 +1747,8 @@ imapx_store_mailbox_is_unknown (CamelIMAPXStore *imapx_store,
 			si = g_ptr_array_index (store_infos, ii);
 
 			if (si->mailbox_name && g_str_has_prefix (si->mailbox_name, mailbox_with_separator) && (
-			    !use_subscriptions || (((CamelStoreInfo *) si)->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0)) {
+			    !use_subscriptions || (((CamelStoreInfo *) si)->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0) &&
+			    !imapx_store_mailbox_is_unknown (imapx_store, store_infos, si)) {
 				/* This can be a 'virtual' parent folder of some subscribed subfolder */
 				break;
 			}
@@ -1756,6 +1757,8 @@ imapx_store_mailbox_is_unknown (CamelIMAPXStore *imapx_store,
 		is_unknown = ii == store_infos->len;
 
 		g_free (mailbox_with_separator);
+	} else if (!mailbox) {
+		is_unknown = TRUE;
 	}
 
 	g_clear_object (&mailbox);
