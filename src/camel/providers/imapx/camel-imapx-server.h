@@ -302,6 +302,10 @@ const CamelIMAPXUntaggedRespHandlerDesc *
 						(CamelIMAPXServer *is,
 						 const gchar *untagged_response,
 						 const CamelIMAPXUntaggedRespHandlerDesc *desc);
+gboolean	camel_imapx_server_should_discard_logging
+						(CamelIMAPXServer *is,
+						 const gchar **out_replace_text);
+
 G_END_DECLS
 
 #endif /* CAMEL_IMAPX_SERVER_H */

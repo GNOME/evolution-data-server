@@ -20,6 +20,8 @@
 
 #include <gio/gio.h>
 
+#include "camel-imapx-server.h"
+
 /* Standard GObject macros */
 #define CAMEL_TYPE_IMAPX_LOGGER \
 	(camel_imapx_logger_get_type ())
@@ -67,7 +69,8 @@ struct _CamelIMAPXLoggerClass {
 };
 
 GType		camel_imapx_logger_get_type	(void) G_GNUC_CONST;
-GConverter *	camel_imapx_logger_new		(gchar prefix);
+GConverter *	camel_imapx_logger_new		(gchar prefix,
+						 CamelIMAPXServer *server);
 gchar		camel_imapx_logger_get_prefix	(CamelIMAPXLogger *logger);
 
 G_END_DECLS
