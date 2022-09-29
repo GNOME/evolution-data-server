@@ -1599,13 +1599,15 @@ locale_supports_12_hour_format (void)
 	tmp_tm.tm_wday = 6;
 	tmp_tm.tm_yday = 6;
 
-	e_utf8_strftime (s, sizeof (s), "%p", &tmp_tm);
+	if (!e_utf8_strftime (s, sizeof (s), "%p", &tmp_tm))
+		s[0] = '\0';
 
 	if (!s[0]) {
 		tmp_tm.tm_hour = 13;
 		tmp_tm.tm_min = 0;
 
-		e_utf8_strftime (s, sizeof (s), "%p", &tmp_tm);
+		if (!e_utf8_strftime (s, sizeof (s), "%p", &tmp_tm))
+			s[0] = '\0';
 	}
 
 	return s[0] != '\0';
