@@ -922,7 +922,7 @@ e_webdav_discover_content_refresh (GtkWidget *content,
 			e_source_set_display_name (source, display_name);
 		e_source_webdav_set_uri (webdav_extension, parsed_uri);
 		e_source_authentication_set_host (auth_extension, g_uri_get_host (parsed_uri));
-		e_source_authentication_set_port (auth_extension, g_uri_get_port (parsed_uri));
+		e_source_authentication_set_port (auth_extension, g_uri_get_port (parsed_uri) > 0 ? g_uri_get_port (parsed_uri) : 0);
 		e_source_authentication_set_user (auth_extension, g_uri_get_user (parsed_uri));
 	}
 
