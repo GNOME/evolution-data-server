@@ -169,7 +169,7 @@ source_webdav_update_properties_from_uri (ESourceWebdav *webdav_extension)
 	g_object_set (
 		extension,
 		"host", g_uri_get_host (uri),
-		"port", g_uri_get_port (uri),
+		"port", g_uri_get_port (uri) > 0 ? g_uri_get_port (uri) : 0,
 		NULL);
 
 	if (g_uri_get_user (uri) && *g_uri_get_user (uri))
@@ -238,7 +238,7 @@ source_webdav_update_uri_from_properties (ESourceWebdav *webdav_extension)
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (webdav_extension));
 
 	if (port == 0)
-		port = g_uri_get_port (webdav_extension->priv->uri);
+		port = g_uri_get_port (webdav_extension->priv->uri) > 0 ? g_uri_get_port (webdav_extension->priv->uri) : 0;
 
 	scheme = g_uri_get_scheme (webdav_extension->priv->uri);
 
