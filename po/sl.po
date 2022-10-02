@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2022-09-26 09:58+0000\n"
-"PO-Revision-Date: 2022-09-27 10:30+0200\n"
+"POT-Creation-Date: 2022-09-29 17:00+0000\n"
+"PO-Revision-Date: 2022-10-02 08:26+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -1198,7 +1198,6 @@ msgstr "Prejet predmet za UID »%s« je neveljaven."
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1341
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1366
-#, fuzzy
 msgid ""
 "Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
 "and repeat the action."
@@ -4598,20 +4597,20 @@ msgstr "Mapa %s ne obstaja"
 msgid "No IMAP namespace for folder path “%s”"
 msgstr "Ni imenskega prostora IMAP za pot mape »%s«"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1887
-#: src/camel/providers/imapx/camel-imapx-store.c:2082
+#: src/camel/providers/imapx/camel-imapx-store.c:1890
+#: src/camel/providers/imapx/camel-imapx-store.c:2085
 #, c-format
 msgid "Retrieving folder list for “%s”"
 msgstr "Pridobivanje seznama map za »%s«"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2325
+#: src/camel/providers/imapx/camel-imapx-store.c:2328
 msgid ""
 "The account does not support folder hierarchy. Create the folder on the "
 "account level instead."
 msgstr ""
 "Račun ne podpira hierarhije map. Namesto tega ustvarite mapo na ravni računa."
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2372
+#: src/camel/providers/imapx/camel-imapx-store.c:2375
 #, c-format
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "Ime mape »%s« je neveljavno, ker vsebuje znak »%c«"
@@ -4621,97 +4620,97 @@ msgstr "Ime mape »%s« je neveljavno, ker vsebuje znak »%c«"
 #. version as well. It's always the folder name (eventually path) as provided by the server,
 #. when returned in given localization. it can be checked semi-easily in the case of
 #. the GMail variants, by changing the GMail interface language in the GMail Preferences.
-#: src/camel/providers/imapx/camel-imapx-store.c:2767
+#: src/camel/providers/imapx/camel-imapx-store.c:2770
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
 msgstr "[Gmail]/Osnutki"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2768
+#: src/camel/providers/imapx/camel-imapx-store.c:2771
 msgctxt "IMAPDefaults"
 msgid "Drafts"
 msgstr "Osnutki"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2769
+#: src/camel/providers/imapx/camel-imapx-store.c:2772
 msgctxt "IMAPDefaults"
 msgid "Draft"
 msgstr "Osnutek"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2772
+#: src/camel/providers/imapx/camel-imapx-store.c:2775
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "Predloge"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2775
+#: src/camel/providers/imapx/camel-imapx-store.c:2778
 msgctxt "IMAPDefaults"
 msgid "Archive"
 msgstr "Arhiv"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2778
+#: src/camel/providers/imapx/camel-imapx-store.c:2781
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[Gmail]/Poslano"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2779
+#: src/camel/providers/imapx/camel-imapx-store.c:2782
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "Poslano"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2780
+#: src/camel/providers/imapx/camel-imapx-store.c:2783
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "Poslani predmeti"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2781
+#: src/camel/providers/imapx/camel-imapx-store.c:2784
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Pošslana sporočila"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2784
+#: src/camel/providers/imapx/camel-imapx-store.c:2787
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "Neželena pošta"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2785
+#: src/camel/providers/imapx/camel-imapx-store.c:2788
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "Vsiljena pošta"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2786
+#: src/camel/providers/imapx/camel-imapx-store.c:2789
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "Vsiljena pošta"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2787
+#: src/camel/providers/imapx/camel-imapx-store.c:2790
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "Vsiljena pošta"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2788
+#: src/camel/providers/imapx/camel-imapx-store.c:2791
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "Neželena pošta"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2789
+#: src/camel/providers/imapx/camel-imapx-store.c:2792
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "Paketna pošta"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2792
+#: src/camel/providers/imapx/camel-imapx-store.c:2795
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr "[Gmail]/Smeti"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2793
+#: src/camel/providers/imapx/camel-imapx-store.c:2796
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "Smeti"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2794
+#: src/camel/providers/imapx/camel-imapx-store.c:2797
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "Izbrisani predmeti"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2795
+#: src/camel/providers/imapx/camel-imapx-store.c:2798
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Izbrisana sporočila"
@@ -6396,12 +6395,10 @@ msgstr ""
 "zahteva ponovni zagon."
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:91
-#, fuzzy
 msgid "Whether to limit operations in Power Saver mode"
 msgstr "Ali želite omejiti operacije v varčnem načinu delovanja"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:92
-#, fuzzy
 msgid ""
 "When set to “true”, possibly expensive operations required to refresh books/"
 "calendars/mail accounts/... are skipped when the machine is in the Power "
@@ -6802,7 +6799,7 @@ msgid "Timeout was reached"
 msgstr "Časovna omejitev je presežena"
 
 #: src/libedataserver/e-gdata-session.c:207
-#, fuzzy, c-format
+#, c-format
 msgid "Google server is busy, waiting to retry (%d:%02d minute)"
 msgid_plural "Google server is busy, waiting to retry (%d:%02d minutes)"
 msgstr[0] ""
@@ -7356,9 +7353,8 @@ msgstr "Zadeva"
 
 #: src/libedataserverui/e-certificate-widget.c:400
 #: src/libedataserverui/e-certificate-widget.c:410
-#, fuzzy
 msgid "Common Name"
-msgstr "Skupno/Obče ime"
+msgstr "Skupno ime"
 
 #: src/libedataserverui/e-certificate-widget.c:402
 #: src/libedataserverui/e-certificate-widget.c:411
@@ -7387,26 +7383,22 @@ msgstr "Lokacija"
 
 #: src/libedataserverui/e-certificate-widget.c:408
 #: src/libedataserverui/e-certificate-widget.c:417
-#, fuzzy
 msgid "Domain Component Name"
 msgstr "Ime komponente domene"
 
 #: src/libedataserverui/e-certificate-widget.c:409
-#, fuzzy
 msgid "Alternative Emails"
-msgstr "Alternativni/Drugi e-poštni naslovi"
+msgstr "Drugi e-poštni naslovi"
 
 #: src/libedataserverui/e-certificate-widget.c:418
 msgid "Details"
 msgstr "Podrobnosti"
 
 #: src/libedataserverui/e-certificate-widget.c:418
-#, fuzzy
 msgid "Not Before"
 msgstr "Ne prej kot"
 
 #: src/libedataserverui/e-certificate-widget.c:419
-#, fuzzy
 msgid "Not After"
 msgstr "Ne kasneje kot"
 
