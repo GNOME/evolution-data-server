@@ -85,10 +85,8 @@ mime_filter_pgp_run (CamelMimeFilter *mime_filter,
 		}
 
 		if (inptr == inend) {
-			if (!last) {
+			if (!last)
 				camel_mime_filter_backup (mime_filter, start, inend - start);
-				inend = start;
-			}
 			break;
 		}
 

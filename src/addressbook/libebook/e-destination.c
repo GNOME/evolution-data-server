@@ -453,7 +453,6 @@ e_destination_set_contact (EDestination *dest,
 				/* Make sure that when parent with parent_id does not exist the item will be appended to root
 				 * destination. */
 				if (parent_dest == NULL && lists_count == 0 && list_iterations > 0) {
-					parent_id = "0";
 					parent_dest = dest;
 				}
 				if (type != NONE && parent_dest) {

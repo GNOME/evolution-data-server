@@ -535,6 +535,8 @@ text_index_compress_nosync (CamelIndex *idx)
 
 	/* If this fails, we'll pick up something during restart? */
 	ret = camel_index_rename ((CamelIndex *) newidx, oldpath);
+	if (ret == -1)
+		goto fail;
 
 #define myswap(a, b) { gpointer tmp = a; a = b; b = tmp; }
 	/* Poke the private data across to the new object */

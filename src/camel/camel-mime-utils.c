@@ -235,8 +235,6 @@ camel_uuencode_close (guchar *in,
 			*bufptr++ = CAMEL_UUENCODE_CHAR (((b1 << 2) | ((b2 >> 6) & 0x3)) & 0x3f);
 			*bufptr++ = CAMEL_UUENCODE_CHAR (b2 & 0x3f);
 
-			i = 0;
-			saved = 0;
 			uulen += 3;
 		}
 	}

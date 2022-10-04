@@ -1932,7 +1932,6 @@ filter_driver_filter_message_internal (CamelFilterDriver *driver,
 	gboolean filtered = FALSE;
 	CamelSExpResult *r;
 	GList *list, *link;
-	gint result;
 
 	g_return_val_if_fail (message != NULL || (source != NULL && uid != NULL), -1);
 
@@ -1991,12 +1990,12 @@ filter_driver_filter_message_internal (CamelFilterDriver *driver,
 	}
 
 	list = g_queue_peek_head_link (&driver->priv->rules);
-	result = CAMEL_SEARCH_NOMATCH;
 	filtered = list != NULL;
 
 	for (link = list; link != NULL; link = g_list_next (link)) {
 		struct _filter_rule *rule = link->data;
 		struct _get_message data;
+		gint result;
 
 		if (driver->priv->terminated) {
 			camel_filter_driver_log (driver, FILTER_LOG_INFO, "Stopped processing per request");

@@ -430,8 +430,6 @@ camel_imapx_input_stream_astring (CamelIMAPXInputStream *is,
 		} else {
 			guchar *o, *oe;
 
-			tok = IMAPX_TOK_STRING;
-
 			/* <any %x01-7F except "(){ " / %x00-1F / %x7F > */
 			o = is->priv->tokenbuf;
 			oe = is->priv->tokenbuf + is->priv->bufsize - 1;

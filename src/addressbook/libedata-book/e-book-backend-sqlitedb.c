@@ -314,7 +314,7 @@ book_backend_sql_exec_real (sqlite3 *db,
                             GError **error)
 {
 	gchar *errmsg = NULL;
-	gint ret = -1, retries = 0;
+	gint ret, retries = 0;
 
 	ret = sqlite3_exec (db, stmt, callback, data, &errmsg);
 	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED || ret == -1) {
@@ -1111,9 +1111,11 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		sqlite3_free (stmt);
 
 		/* Give the UID an index in this table, always */
-		stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS LISTINDEX ON %Q (uid)", tmp);
-		success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
-		sqlite3_free (stmt);
+		if (success) {
+			stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS LISTINDEX ON %Q (uid)", tmp);
+			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+			sqlite3_free (stmt);
+		}
 
 		/* Create indexes if specified */
 		if (success && (ebsdb->priv->attr_list_indexes & INDEX_PREFIX) != 0) {
@@ -1154,7 +1156,7 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 			g_free (tmp);
 
 			/* For any indexed column, also index the localized column */
-			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
+			if (success && ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
 				tmp = g_strdup_printf (
 					"INDEX_%s_localized_%s",
 					summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
@@ -1184,7 +1186,7 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 			g_free (tmp);
 		}
 
-		if ((ebsdb->priv->summary_fields[i].index & INDEX_PHONE) != 0 &&
+		if (success && (ebsdb->priv->summary_fields[i].index & INDEX_PHONE) != 0 &&
 		    ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) {
 			/* Derive index name from field & folder */
 			tmp = g_strdup_printf (
@@ -1237,7 +1239,6 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 
 		if (success && g_strcmp0 (current_region, stored_region) != 0) {
 			success = upgrade_contacts_table (ebsdb, folderid, current_region, lc_collate, error);
-			relocalized = TRUE;
 		}
 
 		g_free (stored_region);
@@ -2646,7 +2647,7 @@ e_book_backend_sqlitedb_remove_contacts (EBookBackendSqliteDB *ebsdb,
 	}
 
 	/* Delete the auxillary contact infos first */
-	if (success && ebsdb->priv->have_attr_list) {
+	if (ebsdb->priv->have_attr_list) {
 		gchar *lists_folder = g_strdup_printf ("%s_lists", folderid);
 
 		stmt = generate_delete_stmt (lists_folder, uids);
@@ -5312,7 +5313,9 @@ upgrade_contacts_table (EBookBackendSqliteDB *ebsdb,
 		success = book_backend_sql_exec (
 			ebsdb->priv->db, stmt, NULL, NULL, error);
 		sqlite3_free (stmt);
+	}
 
+	if (success) {
 		stmt = sqlite3_mprintf (
 			"UPDATE folders SET lc_collate = %Q WHERE folder_id = %Q",
 			lc_collate, folderid);
