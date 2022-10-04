@@ -1472,6 +1472,193 @@ e_oauth2_service_delete_token_sync (EOAuth2Service *service,
 	return success;
 }
 
+G_LOCK_DEFINE_STATIC (access_token_requests);
+static GHashTable *access_token_requests = NULL;
+static guint access_token_requests_free_id = 0;
+
+static gboolean
+eos_free_access_token_requests_timeout_cb (gpointer user_data)
+{
+	G_LOCK (access_token_requests);
+
+	if (access_token_requests && !g_hash_table_size (access_token_requests)) {
+		g_hash_table_destroy (access_token_requests);
+		access_token_requests = NULL;
+		access_token_requests_free_id = 0;
+	} else if (g_main_current_source () && access_token_requests_free_id == g_source_get_id (g_main_current_source ())) {
+		access_token_requests_free_id = 0;
+	}
+
+	G_UNLOCK (access_token_requests);
+
+	return FALSE;
+}
+
+typedef enum {
+	RESPONSE_UNKNOWN,
+	RESPONSE_SUCCESS,
+	RESPONSE_FAILURE
+} ResponseCode;
+
+typedef struct _AccessTokenRequest {
+	gint ref_count;
+	gboolean finished;
+	GCond cond;
+	GMutex mutex;
+	gchar *access_token;
+	gint expires_in;
+	GError *error;
+} AccessTokenRequest;
+
+static AccessTokenRequest *
+access_token_request_new (void)
+{
+	AccessTokenRequest *atr;
+
+	atr = g_slice_new0 (AccessTokenRequest);
+	atr->ref_count = 1;
+	atr->finished = FALSE;
+	g_cond_init (&atr->cond);
+	g_mutex_init (&atr->mutex);
+
+	return atr;
+}
+
+static void
+access_token_request_ref (AccessTokenRequest *atr)
+{
+	g_return_if_fail (atr != NULL);
+	g_atomic_int_inc (&atr->ref_count);
+}
+
+static void
+access_token_request_unref (AccessTokenRequest *atr)
+{
+	g_return_if_fail (atr != NULL);
+
+	if (g_atomic_int_dec_and_test (&atr->ref_count)) {
+		g_cond_clear (&atr->cond);
+		g_mutex_clear (&atr->mutex);
+		g_clear_pointer (&atr->access_token, e_util_safe_free_string);
+		g_clear_error (&atr->error);
+		g_slice_free (AccessTokenRequest, atr);
+	}
+}
+
+/* Hold access_token_requests when calling this */
+static ResponseCode
+eos_wait_for_access_token_request_locked (ESource *source,
+					  gchar **out_access_token,
+					  gint *out_expires_in,
+					  GCancellable *cancellable,
+					  GError **out_error)
+{
+	AccessTokenRequest *atr;
+	ResponseCode resp = RESPONSE_UNKNOWN;
+
+	if (!access_token_requests)
+		return RESPONSE_UNKNOWN;
+
+	atr = g_hash_table_lookup (access_token_requests, e_source_get_uid (source));
+	if (!atr)
+		return RESPONSE_UNKNOWN;
+
+	access_token_request_ref (atr);
+
+	G_UNLOCK (access_token_requests);
+
+	g_mutex_lock (&atr->mutex);
+
+	while (!atr->finished) {
+		/* Check once per second whether this request was not cancelled meanwhile */
+		g_cond_wait_until (&atr->cond, &atr->mutex, g_get_monotonic_time () + G_TIME_SPAN_SECOND);
+
+		if (g_cancellable_set_error_if_cancelled (cancellable, out_error)) {
+			resp = RESPONSE_FAILURE;
+			break;
+		}
+	}
+
+	g_mutex_unlock (&atr->mutex);
+
+	G_LOCK (access_token_requests);
+
+	if (resp == RESPONSE_UNKNOWN && !g_error_matches (atr->error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+		g_warn_if_fail (atr->finished);
+
+		if (atr->error) {
+			resp = RESPONSE_FAILURE;
+			if (out_error)
+				g_propagate_error (out_error, g_error_copy (atr->error));
+		} else {
+			resp = RESPONSE_SUCCESS;
+			*out_access_token = g_strdup (atr->access_token);
+			*out_expires_in = atr->expires_in;
+		}
+	}
+
+	access_token_request_unref (atr);
+
+	return resp;
+}
+
+/* Hold access_token_requests when calling this */
+static void
+eos_reserve_access_token_request_locked (ESource *source)
+{
+	AccessTokenRequest *atr;
+
+	if (!access_token_requests) {
+		access_token_requests = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) access_token_request_unref);
+	} else if (access_token_requests_free_id > 0) {
+		g_source_remove (access_token_requests_free_id);
+		access_token_requests_free_id = 0;
+	}
+
+	g_warn_if_fail (!g_hash_table_contains (access_token_requests, e_source_get_uid (source)));
+
+	atr = access_token_request_new ();
+
+	g_hash_table_insert (access_token_requests, e_source_dup_uid (source), atr);
+}
+
+/* Hold access_token_requests when calling this */
+static void
+eos_finish_access_token_request_locked (ESource *source,
+					const gchar *access_token,
+					gint expires_in,
+					const GError *error)
+{
+	AccessTokenRequest *atr;
+
+	g_return_if_fail (access_token_requests != NULL);
+
+	atr = g_hash_table_lookup (access_token_requests, e_source_get_uid (source));
+	g_return_if_fail (atr != NULL);
+
+	g_mutex_lock (&atr->mutex);
+	g_warn_if_fail (!atr->finished);
+	if (atr->finished) {
+		g_mutex_unlock (&atr->mutex);
+		return;
+	}
+
+	atr->access_token = g_strdup (access_token);
+	atr->expires_in = expires_in;
+	if (error)
+		atr->error = g_error_copy (error);
+	atr->finished = TRUE;
+
+	g_cond_broadcast (&atr->cond);
+	g_mutex_unlock (&atr->mutex);
+
+	g_hash_table_remove (access_token_requests, e_source_get_uid (source));
+
+	/* Free the hash table a minute after it had been used the last time */
+	if (!g_hash_table_size (access_token_requests))
+		access_token_requests_free_id = g_timeout_add_seconds (60, eos_free_access_token_requests_timeout_cb, NULL);
+}
+
 /**
  * e_oauth2_service_get_access_token_sync:
  * @service: an #EOAuth2Service
@@ -1503,7 +1690,11 @@ e_oauth2_service_get_access_token_sync (EOAuth2Service *service,
 					GCancellable *cancellable,
 					GError **error)
 {
+	ResponseCode resp;
 	gchar *refresh_token = NULL;
+	gchar *local_access_token = NULL;
+	gint local_expires_in = 0;
+	GError *local_error = NULL;
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), FALSE);
@@ -1512,29 +1703,59 @@ e_oauth2_service_get_access_token_sync (EOAuth2Service *service,
 	g_return_val_if_fail (out_access_token != NULL, FALSE);
 	g_return_val_if_fail (out_expires_in != NULL, FALSE);
 
-	if (!eos_lookup_token_sync (service, source, &refresh_token, out_access_token, out_expires_in, cancellable, error))
-		return FALSE;
+	G_LOCK (access_token_requests);
+	resp = eos_wait_for_access_token_request_locked (source, out_access_token, out_expires_in, cancellable, error);
+	if (resp != RESPONSE_UNKNOWN) {
+		G_UNLOCK (access_token_requests);
 
-	if (*out_expires_in <= 0 && refresh_token) {
+		return resp != RESPONSE_FAILURE;
+	}
+
+	eos_reserve_access_token_request_locked (source);
+
+	G_UNLOCK (access_token_requests);
+
+	if (!eos_lookup_token_sync (service, source, &refresh_token, &local_access_token, &local_expires_in, cancellable, &local_error)) {
+		G_LOCK (access_token_requests);
+		eos_finish_access_token_request_locked (source, NULL, 0, local_error);
+		g_propagate_error (error, local_error);
+		G_UNLOCK (access_token_requests);
+		return FALSE;
+	}
+
+	if (local_expires_in <= 0 && refresh_token) {
 		success = e_oauth2_service_refresh_and_store_token_sync (service, source, refresh_token,
-			ref_source, ref_source_user_data, cancellable, error);
+			ref_source, ref_source_user_data, cancellable, &local_error);
 
 		g_clear_pointer (&refresh_token, e_util_safe_free_string);
-		g_clear_pointer (out_access_token, e_util_safe_free_string);
+		g_clear_pointer (&local_access_token, e_util_safe_free_string);
 
-		success = success && eos_lookup_token_sync (service, source, &refresh_token, out_access_token, out_expires_in, cancellable, error);
+		success = success && eos_lookup_token_sync (service, source, &refresh_token, &local_access_token, &local_expires_in, cancellable, &local_error);
 	}
 
 	e_util_safe_free_string (refresh_token);
 
-	if (success && *out_expires_in <= 0) {
-		g_clear_pointer (out_access_token, e_util_safe_free_string);
+	if (success && local_expires_in <= 0) {
+		g_clear_pointer (&local_access_token, e_util_safe_free_string);
 
 		success = FALSE;
 
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED,
+		g_set_error_literal (&local_error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED,
 			_("The access token is expired and it failed to refresh it. Sign to the server again, please."));
 	}
+
+	G_LOCK (access_token_requests);
+	if (success) {
+		g_warn_if_fail (local_error == NULL);
+		eos_finish_access_token_request_locked (source, local_access_token, local_expires_in, NULL);
+		*out_access_token = local_access_token;
+		*out_expires_in = local_expires_in;
+	} else {
+		g_warn_if_fail (local_access_token == NULL);
+		eos_finish_access_token_request_locked (source, NULL, 0, local_error);
+		g_propagate_error (error, local_error);
+	}
+	G_UNLOCK (access_token_requests);
 
 	return success;
 }
