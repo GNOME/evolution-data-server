@@ -5730,7 +5730,7 @@ book_backend_ldap_create_contacts (EBookBackend *backend,
 
 	if (LDAP_SUCCESS != err) {
 		e_data_book_respond_create_contacts (
-			create_op->op.book,
+			book,
 			opid,
 			ldap_error_to_response (err),
 			NULL);
@@ -5864,7 +5864,7 @@ book_backend_ldap_remove_contacts (EBookBackend *backend,
 	** capabilities, we should only get 1 length lists here, so
 	** the id we're deleting is the first and only id in the list.
 	*/
-	remove_op = g_new (LDAPRemoveOp, 1);
+	remove_op = g_new0 (LDAPRemoveOp, 1);
 	remove_op->id = g_strdup (uids[0]);
 
 	do {
@@ -5884,7 +5884,7 @@ book_backend_ldap_remove_contacts (EBookBackend *backend,
 
 	if (ldap_error != LDAP_SUCCESS) {
 		e_data_book_respond_remove_contacts (
-			remove_op->op.book,
+			book,
 			opid,
 			ldap_error_to_response (ldap_error),
 			NULL);
