@@ -3296,8 +3296,6 @@ camel_imapx_server_authenticate_sync (CamelIMAPXServer *is,
 		const gchar *password;
 		gchar *password_latin1;
 
-		can_retry_login = -1;
-
 		password = camel_service_get_password (service);
 		password_latin1 = g_convert_with_fallback (password, -1, "ISO-8859-1", "UTF-8", "", NULL, NULL, NULL);
 

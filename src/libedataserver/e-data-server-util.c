@@ -363,7 +363,6 @@ stripped_char (gunichar ch)
 	gunichar decomp[4];
 	gunichar retval;
 	GUnicodeType utype;
-	gsize dlen;
 
 	utype = g_unichar_type (ch);
 
@@ -379,7 +378,7 @@ stripped_char (gunichar ch)
 		ch = g_unichar_tolower (ch);
 		/* falls through */
 	case G_UNICODE_LOWERCASE_LETTER:
-		if ((dlen = g_unichar_fully_decompose (ch, FALSE, decomp, 4))) {
+		if (g_unichar_fully_decompose (ch, FALSE, decomp, 4)) {
 			retval = decomp[0];
 			return retval;
 		}

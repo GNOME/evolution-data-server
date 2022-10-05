@@ -158,7 +158,6 @@ stream_read (CamelStream *stream,
 					e = is->end;
 				} else {
 					*o++ = '\n';
-					state = 0;
 					goto state_0;
 				}
 			} else if (c != '\r') {

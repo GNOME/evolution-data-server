@@ -399,7 +399,6 @@ text_index_compress_nosync (CamelIndex *idx)
 	CamelTextIndexPrivate *newp, *oldp;
 	camel_key_t oldkeyid, newkeyid;
 	GHashTable *remap;
-	guint deleted;
 	camel_block_t data, newdata;
 	gint i, ret = -1;
 	gchar *name = NULL;
@@ -453,7 +452,6 @@ text_index_compress_nosync (CamelIndex *idx)
 	io (printf ("Copying undeleted names to new file\n"));
 	remap = g_hash_table_new (NULL, NULL);
 	oldkeyid = 0;
-	deleted = 0;
 	while ((oldkeyid = camel_key_table_next (oldp->name_index, oldkeyid, &name, &flags, &data))) {
 		if ((flags&1) == 0) {
 			io (printf ("copying name '%s'\n", name));
@@ -470,7 +468,6 @@ text_index_compress_nosync (CamelIndex *idx)
 		}
 		g_free (name);
 		name = NULL;
-		deleted |= flags;
 	}
 
 	/* Copy word data across, remapping/deleting and create new index for it */

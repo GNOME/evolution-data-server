@@ -158,7 +158,7 @@ canonicalize_locale (const gchar *posix_locale,
 	}
 
 	status = U_ZERO_ERROR;
-	len = uloc_getLanguage (icu_locale, language_buffer, 8, &status);
+	uloc_getLanguage (icu_locale, language_buffer, 8, &status);
 	if (U_FAILURE (status)) {
 		g_set_error (
 			error, E_COLLATOR_ERROR,

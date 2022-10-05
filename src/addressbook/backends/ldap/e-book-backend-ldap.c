@@ -2765,7 +2765,6 @@ member_compare (EBookBackendLDAP *self,
 			const gchar *param_name1 = e_vcard_attribute_param_get_name (param);
 
 			if (!g_ascii_strcasecmp (param_name1, EVC_X_DEST_CONTACT_UID)) {
-				gboolean found = FALSE;
 				GList *v = e_vcard_attribute_param_get_values (param);
 				dn_new = v ? v->data : NULL;
 				if (dn_new) {
@@ -2783,7 +2782,6 @@ member_compare (EBookBackendLDAP *self,
 
 								if (dn_cur) {
 									if (!g_ascii_strcasecmp (dn_new, dn_cur)) {
-										found = TRUE;
 										members_cur = g_list_remove (members_cur, attr_cur);
 										e_vcard_attribute_free (attr_cur);
 										goto next_member;
@@ -2792,11 +2790,9 @@ member_compare (EBookBackendLDAP *self,
 							}
 						}
 					}
-					if (!found) {
-						g_list_free_full (members_new, (GDestroyNotify) e_vcard_attribute_free);
-						g_list_free_full (members_cur, (GDestroyNotify) e_vcard_attribute_free);
-						return FALSE;
-					}
+					g_list_free_full (members_new, (GDestroyNotify) e_vcard_attribute_free);
+					g_list_free_full (members_cur, (GDestroyNotify) e_vcard_attribute_free);
+					return FALSE;
 				}
 			}
 		}

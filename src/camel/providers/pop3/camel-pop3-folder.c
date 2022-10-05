@@ -191,7 +191,7 @@ cmd_tocache (CamelPOP3Engine *pe,
 
 	/* We write an '*' to the start of the stream to say its not complete yet */
 	/* This should probably be part of the cache code */
-	if ((n = camel_stream_write (fi->stream, "*", 1, cancellable, &local_error)) == -1)
+	if (camel_stream_write (fi->stream, "*", 1, cancellable, &local_error) == -1)
 		goto done;
 
 	while ((n = camel_stream_read ((CamelStream *) stream, buffer, sizeof (buffer), cancellable, &local_error)) > 0) {

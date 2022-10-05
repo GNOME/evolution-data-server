@@ -1090,7 +1090,7 @@ decode_8bit (const gchar *text,
 		}
 	} while (inleft > 0);
 
-	while ((rc = g_iconv (cd, NULL, NULL, &outbuf, &outleft)) == (gsize) -1) {
+	while (g_iconv (cd, NULL, NULL, &outbuf, &outleft) == (gsize) -1) {
 		if (errno != E2BIG)
 			break;
 
