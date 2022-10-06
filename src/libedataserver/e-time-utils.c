@@ -1564,12 +1564,16 @@ correct_two_digit_year (struct tm *result,
 		*two_digit_year = FALSE;
 
 	/* If a 2-digit year was used we use the current century. */
-	if (result->tm_year < 0 && result->tm_year < -1800) {
+	if (result->tm_year < -1800 && result->tm_year >= -1900) {
 		time_t t = time (NULL);
 		struct tm *today_tm = localtime (&t);
 
-		/* This should convert it into a value from 0 to 99. */
+		/* This converts it into a value from 0 to 99. */
 		result->tm_year += 1900;
+
+		/* When the year is after the next year, then expect it be the previous century */
+		if ((today_tm->tm_year % 100) + 1 < result->tm_year)
+			result->tm_year -= 100;
 
 		/* Now add on the century. */
 		result->tm_year += today_tm->tm_year

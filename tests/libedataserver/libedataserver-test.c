@@ -86,6 +86,39 @@ test_webdav_href_compare (ETestServerFixture *fixture,
 	}
 }
 
+static void
+test_parse_date (ETestServerFixture *fixture,
+		 gconstpointer user_data)
+{
+	struct _tests {
+		const gchar *value;
+		gint expected_year;
+		gshort expected_month;
+		gshort expected_day;
+		gboolean two_digit_year;
+	} tests[] = {
+		{ "12/30/1980", 1980, 12, 30, FALSE },
+		{ "01/02/2020", 2020, 01, 02, FALSE },
+		{ "12/29/80",   1980, 12, 29, TRUE },
+		{ "12/28/02",   2002, 12, 28, TRUE },
+		{ "12/27/133",   133, 12, 27, FALSE },
+		{ "12/26/99",   1999, 12, 26, TRUE },
+		{ "11/25/00",   2000, 11, 25, TRUE }
+	};
+	gint ii;
+
+	for (ii = 0; ii < G_N_ELEMENTS (tests); ii++) {
+		struct tm tm;
+		gboolean two_digit_year = FALSE;
+
+		g_assert_cmpint (e_time_parse_date_ex (tests[ii].value, &tm, &two_digit_year), ==, E_TIME_PARSE_OK);
+		g_assert_cmpint (tm.tm_year + 1900, ==, tests[ii].expected_year);
+		g_assert_cmpint (tm.tm_mon + 1, ==, tests[ii].expected_month);
+		g_assert_cmpint (tm.tm_mday, ==, tests[ii].expected_day);
+		g_assert_cmpint ((two_digit_year ? 1 : 0), ==, (tests[ii].two_digit_year ? 1 : 0));
+	}
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -98,6 +131,12 @@ main (gint argc,
 		ETestServerFixture, &test_closure,
 		e_test_server_utils_setup,
 		test_webdav_href_compare,
+		e_test_server_utils_teardown);
+	g_test_add (
+		"/libedataserver-test/ParseDate",
+		ETestServerFixture, &test_closure,
+		e_test_server_utils_setup,
+		test_parse_date,
 		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run (argc, argv);
