@@ -328,6 +328,7 @@ direct_contacts_query (const gchar * const *uids)
 	query = e_book_query_or (len, qs, TRUE);
 	sexp = e_book_query_to_string (query);
 	e_book_query_unref (query);
+	g_free (qs);
 
 	return sexp;
 }

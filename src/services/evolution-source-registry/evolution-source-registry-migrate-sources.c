@@ -1137,7 +1137,7 @@ migrate_parse_url_foreach (GQuark key_id,
                            gpointer user_data)
 {
 	const gchar *param_name;
-	const gchar *key;
+	gchar *key;
 
 	struct {
 		GKeyFile *key_file;
@@ -1158,6 +1158,7 @@ migrate_parse_url_foreach (GQuark key_id,
 		foreach_data->key_file,
 		foreach_data->group_name,
 		key, value);
+	g_free (key);
 }
 
 static void
