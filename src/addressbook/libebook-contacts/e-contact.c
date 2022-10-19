@@ -971,7 +971,7 @@ adr_getter (EContact *contact,
 		addr->locality = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
 		addr->region = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
 		addr->code = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
-		addr->country = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
+		addr->country = g_strdup (p && p->data ? p->data : ""); /* if (p) p = p->next; */
 
 		return addr;
 	}

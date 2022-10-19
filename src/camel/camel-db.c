@@ -481,11 +481,11 @@ init_sqlite_vfs (void)
 			g_timer_reset (cdb->priv->timer); \
 		} \
 	}
-#define ENDTS \
+#define ENDTS(_explanation) \
 	if (camel_debug ("dbtimets")) { \
 		g_timer_stop (cdb->priv->timer); \
 		g_print ( \
-			"DB Operation ended. " \
+			"DB Operation ended. " _explanation \
 			"Time Taken : %f\n###########\n", \
 			g_timer_elapsed (cdb->priv->timer, NULL)); \
 	}
@@ -558,7 +558,7 @@ cdb_sql_exec (CamelDB *cdb,
 {
 	sqlite3 *db = cdb->priv->db;
 	gchar *errmsg = NULL;
-	gint   ret = -1, retries = 0;
+	gint   ret, retries = 0;
 
 	g_return_val_if_fail (stmt != NULL, -1);
 
@@ -597,7 +597,6 @@ cdb_sql_exec (CamelDB *cdb,
 				CAMEL_ERROR_GENERIC, "%s", errmsg);
 		}
 		sqlite3_free (errmsg);
-		errmsg = NULL;
 		return -1;
 	}
 
@@ -1013,6 +1012,11 @@ camel_db_begin_transaction (CamelDB *cdb,
 	res = cdb_sql_exec (cdb, stmt, NULL, NULL, NULL, error);
 	g_free (stmt);
 
+	if (res) {
+		ENDTS ("Transaction failed to start. ");
+		cdb_writer_unlock (cdb);
+	}
+
 	return res;
 }
 
@@ -1041,7 +1045,7 @@ camel_db_end_transaction (CamelDB *cdb,
 	ret = cdb_sql_exec (cdb, stmt, NULL, NULL, NULL, error);
 	g_free (stmt);
 
-	ENDTS;
+	ENDTS ("");
 	cdb_writer_unlock (cdb);
 	camel_db_release_cache_memory ();
 
@@ -1070,6 +1074,13 @@ camel_db_abort_transaction (CamelDB *cdb,
 	ret = cdb_sql_exec (cdb, stmt, NULL, NULL, NULL, error);
 	g_free (stmt);
 
+	if (!ret) {
+		stmt = cdb_construct_transaction_stmt (cdb, "RELEASE SAVEPOINT ");
+		ret = cdb_sql_exec (cdb, stmt, NULL, NULL, NULL, error);
+		g_free (stmt);
+	}
+
+	ENDTS ("Transaction aborted. ");
 	cdb_writer_unlock (cdb);
 	camel_db_release_cache_memory ();
 
@@ -1099,7 +1110,7 @@ camel_db_add_to_transaction (CamelDB *cdb,
 	g_return_val_if_fail (cdb_is_in_transaction (cdb), -1);
 	g_return_val_if_fail (query != NULL, -1);
 
-	return (cdb_sql_exec (cdb, query, NULL, NULL, NULL, error));
+	return cdb_sql_exec (cdb, query, NULL, NULL, NULL, error);
 }
 
 /**
@@ -1119,32 +1130,25 @@ camel_db_transaction_command (CamelDB *cdb,
                               const GList *qry_list,
                               GError **error)
 {
-	gboolean in_transaction = FALSE;
 	gint ret;
 	const gchar *query;
 
-	if (!cdb)
-		return -1;
-
 	ret = camel_db_begin_transaction (cdb, error);
 	if (ret)
-		goto end;
-
-	in_transaction = TRUE;
+		return ret;
 
 	while (qry_list) {
 		query = qry_list->data;
 		ret = cdb_sql_exec (cdb, query, NULL, NULL, NULL, error);
 		if (ret)
-			goto end;
+			break;
 		qry_list = g_list_next (qry_list);
 	}
 
-	ret = camel_db_end_transaction (cdb, error);
-	in_transaction = FALSE;
-end:
-	if (in_transaction)
-		ret = camel_db_abort_transaction (cdb, error);
+	if (ret)
+		camel_db_abort_transaction (cdb, NULL);
+	else
+		ret = camel_db_end_transaction (cdb, error);
 
 	return ret;
 }
@@ -1186,7 +1190,7 @@ camel_db_count_message_info (CamelDB *cdb,
                              guint32 *count,
                              GError **error)
 {
-	gint ret = -1;
+	gint ret;
 
 	g_return_val_if_fail (query != NULL, -1);
 
@@ -1754,14 +1758,13 @@ camel_db_migrate_folder_prepare (CamelDB *cdb,
                                  gint version,
                                  GError **error)
 {
-	gint ret = 0;
+	gint ret;
 	gchar *table_creation_query;
 
 	/* Migration stage one: storing the old data */
 
 	if (version < 0) {
 		ret = camel_db_create_message_info_table (cdb, folder_name, error);
-		g_clear_error (error);
 	} else if (version < 3) {
 
 		/* Between version 0-1 the following things are changed
@@ -1777,6 +1780,8 @@ camel_db_migrate_folder_prepare (CamelDB *cdb,
 		table_creation_query = sqlite3_mprintf ("DROP TABLE IF EXISTS 'mem.%q'", folder_name);
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 		sqlite3_free (table_creation_query);
+		if (ret)
+			return ret;
 
 		table_creation_query = sqlite3_mprintf (
 			"CREATE TEMP TABLE IF NOT EXISTS 'mem.%q' ( "
@@ -1813,7 +1818,8 @@ camel_db_migrate_folder_prepare (CamelDB *cdb,
 				folder_name);
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 		sqlite3_free (table_creation_query);
-		g_clear_error (error);
+		if (ret)
+			return ret;
 
 		table_creation_query = sqlite3_mprintf (
 			"INSERT INTO 'mem.%q' SELECT "
@@ -1828,15 +1834,16 @@ camel_db_migrate_folder_prepare (CamelDB *cdb,
 			folder_name, folder_name);
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 		sqlite3_free (table_creation_query);
-		g_clear_error (error);
+		if (ret)
+			return ret;
 
 		table_creation_query = sqlite3_mprintf ("DROP TABLE IF EXISTS %Q", folder_name);
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 		sqlite3_free (table_creation_query);
-		g_clear_error (error);
+		if (ret)
+			return ret;
 
 		ret = camel_db_create_message_info_table (cdb, folder_name, error);
-		g_clear_error (error);
 	}
 
 	/* Add later version migrations here */
@@ -1871,7 +1878,7 @@ camel_db_migrate_folder_recreate (CamelDB *cdb,
 		sqlite3_free (table_creation_query);
 
 		if (!local_error) {
-			table_creation_query = sqlite3_mprintf ("DROP TABLE 'mem.%q'", folder_name);
+			table_creation_query = sqlite3_mprintf ("DROP TABLE IF EXISTS 'mem.%q'", folder_name);
 			ret = camel_db_add_to_transaction (cdb, table_creation_query, &local_error);
 			sqlite3_free (table_creation_query);
 		}
@@ -1911,7 +1918,7 @@ camel_db_reset_folder_version (CamelDB *cdb,
                                gint reset_version,
                                GError **error)
 {
-	gint ret = 0;
+	gint ret;
 	gchar *version_creation_query;
 	gchar *version_insert_query;
 	gchar *drop_folder_query;
@@ -1922,8 +1929,10 @@ camel_db_reset_folder_version (CamelDB *cdb,
 	version_insert_query = sqlite3_mprintf ("INSERT INTO '%q_version' VALUES ('%d')", folder_name, reset_version);
 
 	ret = camel_db_add_to_transaction (cdb, drop_folder_query, error);
-	ret = camel_db_add_to_transaction (cdb, version_creation_query, error);
-	ret = camel_db_add_to_transaction (cdb, version_insert_query, error);
+	if (!ret)
+		ret = camel_db_add_to_transaction (cdb, version_creation_query, error);
+	if (!ret)
+		ret = camel_db_add_to_transaction (cdb, version_insert_query, error);
 
 	sqlite3_free (drop_folder_query);
 	sqlite3_free (version_creation_query);
@@ -1938,7 +1947,7 @@ camel_db_write_folder_version (CamelDB *cdb,
                                gint old_version,
                                GError **error)
 {
-	gint ret = 0;
+	gint ret;
 	gchar *version_creation_query;
 	gchar *version_insert_query;
 
@@ -1950,7 +1959,8 @@ camel_db_write_folder_version (CamelDB *cdb,
 		version_insert_query = sqlite3_mprintf ("UPDATE '%q_version' SET version='" G_STRINGIFY (MESSAGE_INFO_TABLE_VERSION) "'", folder_name);
 
 	ret = camel_db_add_to_transaction (cdb, version_creation_query, error);
-	ret = camel_db_add_to_transaction (cdb, version_insert_query, error);
+	if (!ret)
+		ret = camel_db_add_to_transaction (cdb, version_insert_query, error);
 
 	sqlite3_free (version_creation_query);
 	sqlite3_free (version_insert_query);
@@ -2009,13 +2019,18 @@ camel_db_prepare_message_info_table (CamelDB *cdb,
 	GError *err = NULL;
 
 	/* Make sure we have the table already */
-	camel_db_begin_transaction (cdb, &err);
+	ret = camel_db_begin_transaction (cdb, error);
+	if (ret)
+		return ret;
+
 	ret = camel_db_create_message_info_table (cdb, folder_name, &err);
-	if (err)
+	if (ret)
 		goto exit;
 
-	camel_db_end_transaction (cdb, &err);
+	ret = camel_db_end_transaction (cdb, &err);
 	in_transaction = FALSE;
+	if (ret)
+		goto exit;
 
 	/* Migration stage zero: version fetch */
 	current_version = camel_db_get_folder_version (cdb, folder_name, &err);
@@ -2028,25 +2043,27 @@ camel_db_prepare_message_info_table (CamelDB *cdb,
 	if (current_version == MESSAGE_INFO_TABLE_VERSION)
 		goto exit;
 
-	camel_db_begin_transaction (cdb, &err);
+	ret = camel_db_begin_transaction (cdb, error);
+	if (ret)
+		return ret;
 	in_transaction = TRUE;
 
 	/* Migration stage one: storing the old data if necessary */
 	ret = camel_db_migrate_folder_prepare (cdb, folder_name, current_version, &err);
-	if (err)
+	if (ret)
 		goto exit;
 
 	/* Migration stage two: rewriting the old data if necessary */
 	ret = camel_db_migrate_folder_recreate (cdb, folder_name, current_version, &err);
-	if (err)
+	if (ret)
 		goto exit;
 
 	/* Final step: (over)write the current version label */
 	ret = camel_db_write_folder_version (cdb, folder_name, current_version, &err);
-	if (err)
+	if (ret)
 		goto exit;
 
-	camel_db_end_transaction (cdb, &err);
+	ret = camel_db_end_transaction (cdb, &err);
 	in_transaction = FALSE;
 
 exit:
@@ -2175,7 +2192,8 @@ camel_db_write_folder_info_record (CamelDB *cdb,
 		record->folder_name);
 
 	ret = camel_db_add_to_transaction (cdb, del_query, error);
-	ret = camel_db_add_to_transaction (cdb, ins_query, error);
+	if (!ret)
+		ret = camel_db_add_to_transaction (cdb, ins_query, error);
 
 	sqlite3_free (del_query);
 	sqlite3_free (ins_query);
@@ -2320,7 +2338,7 @@ camel_db_read_message_info_record_with_uid (CamelDB *cdb,
 	ret = camel_db_select (cdb, query, callback, user_data, error);
 	sqlite3_free (query);
 
-	return (ret);
+	return ret;
 }
 
 /**
@@ -2354,7 +2372,7 @@ camel_db_read_message_info_records (CamelDB *cdb,
 	ret = camel_db_select (cdb, query, callback, user_data, error);
 	sqlite3_free (query);
 
-	return (ret);
+	return ret;
 }
 
 /**
@@ -2380,15 +2398,19 @@ camel_db_delete_uid (CamelDB *cdb,
 	gchar *tab;
 	gint ret;
 
-	camel_db_begin_transaction (cdb, error);
+	ret = camel_db_begin_transaction (cdb, error);
+	if (ret)
+		return ret;
 
 	tab = sqlite3_mprintf ("DELETE FROM %Q WHERE uid = %Q", folder_name, uid);
 	ret = camel_db_add_to_transaction (cdb, tab, error);
 	sqlite3_free (tab);
 
-	ret = camel_db_end_transaction (cdb, error);
+	if (ret)
+		camel_db_abort_transaction (cdb, NULL);
+	else
+		ret = camel_db_end_transaction (cdb, error);
 
-	camel_db_release_cache_memory ();
 	return ret;
 }
 
@@ -2403,11 +2425,14 @@ cdb_delete_ids (CamelDB *cdb,
 	gchar *tmp;
 	gint ret;
 	gboolean first = TRUE;
-	GString *str = g_string_new ("DELETE FROM ");
+	GString *str;
 	const GList *iterator;
 
-	camel_db_begin_transaction (cdb, error);
+	ret = camel_db_begin_transaction (cdb, error);
+	if (ret)
+		return ret;
 
+	str = g_string_new ("DELETE FROM ");
 	tmp = sqlite3_mprintf ("%Q WHERE %s IN (", folder_name, field);
 	g_string_append_printf (str, "%s ", tmp);
 	sqlite3_free (tmp);
@@ -2434,12 +2459,10 @@ cdb_delete_ids (CamelDB *cdb,
 
 	ret = camel_db_add_to_transaction (cdb, str->str, error);
 
-	if (ret == -1)
+	if (ret)
 		camel_db_abort_transaction (cdb, NULL);
 	else
 		ret = camel_db_end_transaction (cdb, error);
-
-	camel_db_release_cache_memory ();
 
 	g_string_free (str, TRUE);
 
@@ -2493,15 +2516,21 @@ camel_db_clear_folder_summary (CamelDB *cdb,
 	gchar *folders_del;
 	gchar *msginfo_del;
 
+	ret = camel_db_begin_transaction (cdb, error);
+	if (ret)
+		return ret;
+
 	folders_del = sqlite3_mprintf ("DELETE FROM folders WHERE folder_name = %Q", folder_name);
 	msginfo_del = sqlite3_mprintf ("DELETE FROM %Q ", folder_name);
 
-	camel_db_begin_transaction (cdb, error);
+	ret = camel_db_add_to_transaction (cdb, msginfo_del, error);
+	if (!ret)
+		ret = camel_db_add_to_transaction (cdb, folders_del, error);
 
-	camel_db_add_to_transaction (cdb, msginfo_del, error);
-	camel_db_add_to_transaction (cdb, folders_del, error);
-
-	ret = camel_db_end_transaction (cdb, error);
+	if (ret)
+		camel_db_abort_transaction (cdb, NULL);
+	else
+		ret = camel_db_end_transaction (cdb, error);
 
 	sqlite3_free (folders_del);
 	sqlite3_free (msginfo_del);
@@ -2530,19 +2559,25 @@ camel_db_delete_folder (CamelDB *cdb,
 	gint ret;
 	gchar *del;
 
-	camel_db_begin_transaction (cdb, error);
+	ret = camel_db_begin_transaction (cdb, error);
+	if (ret)
+		return ret;
 
 	del = sqlite3_mprintf ("DELETE FROM folders WHERE folder_name = %Q", folder_name);
 	ret = camel_db_add_to_transaction (cdb, del, error);
 	sqlite3_free (del);
 
-	del = sqlite3_mprintf ("DROP TABLE %Q ", folder_name);
-	ret = camel_db_add_to_transaction (cdb, del, error);
-	sqlite3_free (del);
+	if (!ret) {
+		del = sqlite3_mprintf ("DROP TABLE IF EXISTS %Q ", folder_name);
+		ret = camel_db_add_to_transaction (cdb, del, error);
+		sqlite3_free (del);
+	}
 
-	ret = camel_db_end_transaction (cdb, error);
+	if (ret)
+		camel_db_abort_transaction (cdb, NULL);
+	else
+		ret = camel_db_end_transaction (cdb, error);
 
-	camel_db_release_cache_memory ();
 	return ret;
 }
 
@@ -2568,27 +2603,37 @@ camel_db_rename_folder (CamelDB *cdb,
 	gint ret;
 	gchar *cmd;
 
-	camel_db_begin_transaction (cdb, error);
+	ret = camel_db_begin_transaction (cdb, error);
+	if (ret)
+		return ret;
 
 	cmd = sqlite3_mprintf ("ALTER TABLE %Q RENAME TO  %Q", old_folder_name, new_folder_name);
 	ret = camel_db_add_to_transaction (cdb, cmd, error);
 	sqlite3_free (cmd);
 
-	cmd = sqlite3_mprintf ("ALTER TABLE '%q_version' RENAME TO  '%q_version'", old_folder_name, new_folder_name);
-	ret = camel_db_add_to_transaction (cdb, cmd, error);
-	sqlite3_free (cmd);
+	if (!ret) {
+		cmd = sqlite3_mprintf ("ALTER TABLE '%q_version' RENAME TO  '%q_version'", old_folder_name, new_folder_name);
+		ret = camel_db_add_to_transaction (cdb, cmd, error);
+		sqlite3_free (cmd);
+	}
 
-	cmd = sqlite3_mprintf ("UPDATE %Q SET modified=strftime(\"%%s\", 'now'), created=strftime(\"%%s\", 'now')", new_folder_name);
-	ret = camel_db_add_to_transaction (cdb, cmd, error);
-	sqlite3_free (cmd);
+	if (!ret) {
+		cmd = sqlite3_mprintf ("UPDATE %Q SET modified=strftime(\"%%s\", 'now'), created=strftime(\"%%s\", 'now')", new_folder_name);
+		ret = camel_db_add_to_transaction (cdb, cmd, error);
+		sqlite3_free (cmd);
+	}
 
-	cmd = sqlite3_mprintf ("UPDATE folders SET folder_name = %Q WHERE folder_name = %Q", new_folder_name, old_folder_name);
-	ret = camel_db_add_to_transaction (cdb, cmd, error);
-	sqlite3_free (cmd);
+	if (!ret) {
+		cmd = sqlite3_mprintf ("UPDATE folders SET folder_name = %Q WHERE folder_name = %Q", new_folder_name, old_folder_name);
+		ret = camel_db_add_to_transaction (cdb, cmd, error);
+		sqlite3_free (cmd);
+	}
 
-	ret = camel_db_end_transaction (cdb, error);
+	if (ret)
+		camel_db_abort_transaction (cdb, NULL);
+	else
+		ret = camel_db_end_transaction (cdb, error);
 
-	camel_db_release_cache_memory ();
 	return ret;
 }
 
@@ -2735,6 +2780,8 @@ camel_db_start_in_memory_transactions (CamelDB *cdb,
 
 	ret = camel_db_command (cdb, cmd, error);
 	sqlite3_free (cmd);
+	if (ret)
+		return ret;
 
 	cmd = sqlite3_mprintf (
 		"CREATE TEMPORARY TABLE %Q ( "
@@ -2768,8 +2815,6 @@ camel_db_start_in_memory_transactions (CamelDB *cdb,
 			"preview TEXT)",
 		CAMEL_DB_IN_MEMORY_TABLE);
 	ret = camel_db_command (cdb, cmd, error);
-	if (ret != 0 )
-		abort ();
 	sqlite3_free (cmd);
 
 	return ret;
@@ -2798,10 +2843,14 @@ camel_db_flush_in_memory_transactions (CamelDB *cdb,
 
 	ret = camel_db_command (cdb, cmd, error);
 	sqlite3_free (cmd);
+	if (ret)
+		return ret;
 
-	cmd = sqlite3_mprintf ("DROP TABLE %Q", CAMEL_DB_IN_MEMORY_TABLE);
+	cmd = sqlite3_mprintf ("DROP TABLE IF EXISTS %Q", CAMEL_DB_IN_MEMORY_TABLE);
 	ret = camel_db_command (cdb, cmd, error);
 	sqlite3_free (cmd);
+	if (ret)
+		return ret;
 
 	cmd = sqlite3_mprintf ("DETACH %Q", CAMEL_DB_IN_MEMORY_DB);
 	ret = camel_db_command (cdb, cmd, error);
