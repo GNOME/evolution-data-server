@@ -1,3 +1,35 @@
+Evolution-Data-Server 3.46.1 2022-10-21
+---------------------------------------
+
+Bug Fixes:
+	I#416 - LDAP: Possible memory leak in build_mods_from_contacts()
+	I#417 - Serialize OAuth2 token refresh for an account
+	I#419 - IMAP: Does not forget renamed folders on the server
+	I#420 - LDAP: Use valid values for error paths of contact create/remove
+	I#427 - Tautology in e_named_parameters_equal()
+	M!104 - camel-db.c: Rearrange transaction handling (Дилян Палаузов)
+
+Miscellaneous:
+	po: Merge .source files back to the POTFILES.in
+	IMAPX: Hide complete requests in debug logs for some sensitive commands
+	Handle negative value for GUri's port
+	CamelDB: Fix an uninitialized variable warning
+
+Translations:
+	Aleksandr Melman (ru)
+	Asier Sarasua Garmendia (eu)
+	Aurimas Černius (lt)
+	emintufan (tr)
+	Fabio Tomat (fur)
+	Goran Vidović (hr)
+	Guillaume Bernard (fr)
+	Hugo Carvalho (pt)
+	Jürgen Benvenuti (de)
+	Martin (sl)
+	Rafael Fontenelle (pt_BR)
+	Yuri Chornoivan (uk)
+	Zurab Kargareteli (ka)
+
 Evolution-Data-Server 3.46.0 2022-09-16
 ---------------------------------------
 
