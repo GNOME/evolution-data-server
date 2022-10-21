@@ -528,7 +528,7 @@ e_named_parameters_equal (const ENamedParameters *parameters1,
 		return TRUE;
 
 	if (!parameters1 || !parameters2 ||
-	    e_named_parameters_count (parameters1) != e_named_parameters_count (parameters1))
+	    e_named_parameters_count (parameters1) != e_named_parameters_count (parameters2))
 		return FALSE;
 
 	arr1 = (GPtrArray *) parameters1;
