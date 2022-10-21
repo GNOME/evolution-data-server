@@ -1758,7 +1758,7 @@ camel_db_migrate_folder_prepare (CamelDB *cdb,
                                  gint version,
                                  GError **error)
 {
-	gint ret;
+	gint ret = 0;
 	gchar *table_creation_query;
 
 	/* Migration stage one: storing the old data */
