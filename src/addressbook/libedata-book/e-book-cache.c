@@ -809,7 +809,7 @@ convert_phone (const gchar *normal,
 		number = e_phone_number_from_string (normal, region_code, NULL);
 
 	if (number) {
-		EPhoneNumberCountrySource source;
+		EPhoneNumberCountrySource source = E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT;
 
 		national_number = e_phone_number_get_national_number (number);
 		country_code = e_phone_number_get_country_code (number, &source);
@@ -2341,7 +2341,6 @@ query_preflight_check (PreflightContext *context,
 				context->status = MAX (context->status, PREFLIGHT_UNSUPPORTED);
 			} else {
 				QueryPhoneTest *phone_test = (QueryPhoneTest *) test;
-				EPhoneNumberCountrySource source;
 				EPhoneNumber *number;
 				const gchar *region_code;
 
@@ -2357,6 +2356,8 @@ query_preflight_check (PreflightContext *context,
 				if (number == NULL) {
 					context->status = MAX (context->status, PREFLIGHT_INVALID);
 				} else {
+					EPhoneNumberCountrySource source = E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT;
+
 					/* Collect values we'll need later while generating field
 					 * tests, no need to parse the phone number more than once
 					 */

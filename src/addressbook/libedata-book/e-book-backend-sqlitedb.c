@@ -2033,7 +2033,7 @@ convert_phone (const gchar *normal,
 	gint country_code = 0;
 
 	if (number) {
-		EPhoneNumberCountrySource source;
+		EPhoneNumberCountrySource source = E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT;
 
 		national_number = e_phone_number_get_national_number (number);
 		country_code = e_phone_number_get_country_code (number, &source);
