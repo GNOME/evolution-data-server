@@ -449,7 +449,7 @@ sort_node_cb (gconstpointer a,
 			g_hash_table_insert (times_cache, (gpointer) b1, ptime2);
 		}
 
-		if (*ptime1 != *ptime2)
+		if (ptime1 && ptime2 && *ptime1 != *ptime2)
 			return *ptime1 < *ptime2 ? -1 : 1;
 	}
 

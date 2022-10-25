@@ -237,6 +237,11 @@ ebsql_origin_str (EbSqlCursorOrigin origin)
 				   "is not the same as the cancel object " \
 				   "passed to e_book_sqlite_lock()", \
 				   G_STRFUNC); \
+			g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED, \
+				   "The GCancellable passed to `%s' " \
+				   "is not the same as the cancel object " \
+				   "passed to e_book_sqlite_lock()", \
+				   G_STRFUNC); \
 			EBSQL_UNLOCK_MUTEX (&(ebsql)->priv->lock); \
 			return val; \
 		} \

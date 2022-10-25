@@ -1235,6 +1235,9 @@ free_mods (GPtrArray *mods)
 	gint i = 0;
 	LDAPMod *mod;
 
+	if (!mods)
+		return;
+
 	while ((mod = g_ptr_array_index (mods, i++))) {
 		gint j;
 		g_free (mod->mod_type);
