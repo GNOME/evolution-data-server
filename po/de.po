@@ -22,8 +22,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2022-10-07 06:27+0000\n"
-"PO-Revision-Date: 2022-10-16 11:43+0200\n"
+"POT-Creation-Date: 2022-10-21 14:11+0000\n"
+"PO-Revision-Date: 2022-10-25 11:13+0200\n"
 "Last-Translator: Jürgen Benvenuti <gastornis@posteo.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -1014,7 +1014,7 @@ msgstr "Fehler beim Auswerten des regulären Ausdrucks"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
 #: src/addressbook/libedata-book/e-book-cache.c:4586
-#: src/addressbook/libedata-book/e-book-sqlite.c:1877 src/camel/camel-db.c:829
+#: src/addressbook/libedata-book/e-book-sqlite.c:1877 src/camel/camel-db.c:828
 #, c-format
 msgid "Insufficient memory"
 msgstr "Nicht ausreichender Speicher"
@@ -2726,7 +2726,7 @@ msgstr "Zwischenspeicherdatei ist leer"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Cache-Eintrag konnte nicht entfernt werden: %s: %s"
 
-#: src/camel/camel-db.c:883 src/camel/providers/local/camel-mbox-store.c:913
+#: src/camel/camel-db.c:882 src/camel/providers/local/camel-mbox-store.c:913
 #, c-format
 msgid "Could not rename “%s” to %s: %s"
 msgstr "%s konnte nicht in %s umbenannt werden: %s"
@@ -6125,6 +6125,18 @@ msgstr "Vergangene Erinnerungen für EReminderWatcher"
 msgid "Snoozed reminders for EReminderWatcher"
 msgstr "Auf Wiederholung gesetzte Erinnerungen für EReminderWatcher"
 
+# Ich bin mir nicht sicher, ob ich den ersten Satz richtig verstanden bzw. übersetzt habe. - jb
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:37
+msgid ""
+"How many days the reminders-past can hold back. Reminders older than these "
+"days are automatically removed from the list of the past reminders. Use '0' "
+"to not remove old reminders."
+msgstr ""
+"Wie viele Tage in die Vergangenheit die Erinnerungen zurückreichen sollen. "
+"Erinnerungen, die älter sind als diese Tage, werden automatisch aus der "
+"Liste der vergangenen Erinnerungen entfernt. Verwenden Sie »0«, um keine "
+"alten Erinnerungen zu entfernen."
+
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:42
 msgid "Reminder programs"
 msgstr "Erinnerungsprogramme"
@@ -6136,6 +6148,12 @@ msgstr "Programme, die von Erinnerungen ausgeführt werden dürfen"
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:47
 msgid "Enable desktop notifications"
 msgstr "Arbeitsumgebung-Benachrichtigungen aktivieren"
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:48
+msgid "When set to true, the desktop/system notifications are shown"
+msgstr ""
+"Legt fest, ob die Benachrichtigungen der Arbeitsumgebung/des Systems "
+"angezeigt werden sollen"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:52
 msgid "Enable audio notifications"
@@ -6456,6 +6474,20 @@ msgstr ""
 "Benutzerdefiniertes OAuth2-Passwort für Yahoo!-Server. Eine leere "
 "Zeichenkette bedeutet, dass das bei der Erstellung angegebene Passwort "
 "verwendet wird. Änderungen erfordern einen Neustart."
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:91
+msgid "Whether to limit operations in Power Saver mode"
+msgstr "Legt fest, ob Vorgänge im Energiesparmodus eingeschränkt werden sollen"
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:92
+msgid ""
+"When set to “true”, possibly expensive operations required to refresh books/"
+"calendars/mail accounts/... are skipped when the machine is in the Power "
+"Saver mode."
+msgstr ""
+"Wenn auf »wahr« gesetzt, werden möglicherweise arbeitsintensive Vorgänge, "
+"die zum Aktualisieren der Adressbücher/Kalender/E-Mail-Konten/… notwendig "
+"sind, übersprungen, wenn sich das Gerät im Energiesparmodus befindet."
 
 #: data/org.gnome.evolution.shell.network-config.gschema.xml.in:11
 msgid "(Deprecated) Proxy type to use"
