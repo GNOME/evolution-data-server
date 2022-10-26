@@ -678,6 +678,9 @@ if((NOT HAVE_TM_GMTOFF) AND (NOT HAVE_TIMEZONE))
 	message(FATAL_ERROR "Unable to find a way to determine timezone")
 endif((NOT HAVE_TM_GMTOFF) AND (NOT HAVE_TIMEZONE))
 
+CHECK_C_SOURCE_COMPILES("#include <time.h>
+			int main(void) { localtime_r(NULL, NULL); return 0; }" HAVE_LOCALTIME_R)
+
 # ******************************
 # gethostbyaddr_r prototype
 # ******************************

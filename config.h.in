@@ -117,6 +117,9 @@
 /* Define if libc defines an altzone variable */
 #cmakedefine HAVE_ALTZONE 1
 
+/* Define if libc defines localtime_r function */
+#cmakedefine HAVE_LOCALTIME_R
+
 /* Define to 1 if you have the `gethostbyaddr_r' function. */
 #cmakedefine HAVE_GETHOSTBYADDR_R 1
 
