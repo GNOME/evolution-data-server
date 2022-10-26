@@ -599,8 +599,8 @@ if(ENABLE_BACKTRACES)
 						dwfl_linux_proc_report (NULL, 1);
 						dwfl_report_end (NULL, NULL, NULL);
 						dwfl_end (NULL);
-						dwfl_module_addrname (NULL, NULL);
-						dwfl_module_getsrc (NULL, NULL);
+						dwfl_module_addrname (module, module_low_addr);
+						dwfl_module_getsrc (module, module_low_addr);
 						dwfl_lineinfo (NULL, NULL, NULL, NULL, NULL, NULL);
 						DWARF_CB_ABORT; DWARF_CB_OK;
 						dwfl_getmodules (NULL, NULL, NULL, 0);
