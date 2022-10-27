@@ -222,7 +222,7 @@ e_xml_parse_data (gconstpointer data,
 	g_return_val_if_fail (data != NULL, NULL);
 	g_return_val_if_fail (length > 0, NULL);
 
-	return xmlReadMemory (data, length, "data.xml", NULL, XML_PARSE_NOWARNING | XML_PARSE_RECOVER);
+	return xmlReadMemory (data, length, "data.xml", NULL, XML_PARSE_NOWARNING | XML_PARSE_RECOVER | XML_PARSE_HUGE | XML_PARSE_NONET);
 }
 
 /**
