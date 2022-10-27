@@ -2700,7 +2700,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 				obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, recurrence);
 				g_hash_table_remove (obj_data->recurrences, rid);
 			} else {
-				if (*old_components)
+				if (old_components)
 					*old_components = g_slist_prepend (*old_components, obj_data->full_object ? e_cal_component_clone (obj_data->full_object) : NULL);
 			}
 
