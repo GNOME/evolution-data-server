@@ -23,7 +23,7 @@ main (gint argc,
 {
 	FILE *fp;
 	EVCard *vcard;
-	GString *str = g_string_new ("");
+	GString *str;
 	gchar *parsed_vcard;
 
 	if (argc < 2) {
@@ -37,6 +37,7 @@ main (gint argc,
 		return 1;
 	}
 
+	str = g_string_new ("");
 	while (!feof (fp)) {
 		gchar buf[1024];
 		if (fgets (buf, sizeof (buf), fp))

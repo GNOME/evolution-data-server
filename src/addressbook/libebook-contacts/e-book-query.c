@@ -905,6 +905,7 @@ e_book_query_to_string (EBookQuery *q)
 
 		if (fn == NULL) {
 			g_string_free (str, TRUE);
+			g_string_free (encoded, TRUE);
 			g_warn_if_reached ();
 			return NULL;
 		}

@@ -2822,8 +2822,10 @@ camel_folder_rename (CamelFolder *folder,
 
 	service = CAMEL_SERVICE (parent_store);
 	session = camel_service_ref_session (service);
-	if (!session)
+	if (!session) {
+		g_free (old_name);
 		return;
+	}
 
 	signal_closure = g_slice_new0 (SignalClosure);
 	signal_closure->folder = g_object_ref (folder);

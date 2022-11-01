@@ -694,6 +694,10 @@ smtp_transport_authenticate_sync (CamelService *service,
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 			_("No support for %s authentication"), mechanism);
+		if (restore_password) {
+			camel_service_set_password (service, restore_password);
+			g_free (restore_password);
+		}
 		return CAMEL_AUTHENTICATION_ERROR;
 	}
 

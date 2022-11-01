@@ -4914,6 +4914,7 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 		g_rec_mutex_unlock (&eds_ldap_handler_lock);
 		/* Ignore NULL query */
 		e_data_book_view_notify_complete (view, NULL /* Success */);
+		g_free (ldap_query);
 		return;
 	}
 }
