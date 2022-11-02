@@ -42,7 +42,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
 "POT-Creation-Date: 2022-10-25 17:01+0000\n"
-"PO-Revision-Date: 2022-11-01 22:04+0100\n"
+"PO-Revision-Date: 2022-11-02 01:42+0100\n"
 "Last-Translator: Nathan Follens <nfollens@gnome.org>\n"
 "Language-Team: Dutch <gnome-nl-list@gnome.org>\n"
 "Language: nl\n"
@@ -4279,19 +4279,19 @@ msgstr "Client-I_D naar de server sturen"
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:72
 msgid "O_verride server-supplied folder namespace"
-msgstr "Door server verstrekte mappen-namespace overschrijven"
+msgstr "Door server verstrekte mappen-naamruimte overschrijven"
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:74
 msgid "Namespace:"
-msgstr "Namespace:"
+msgstr "Naamruimte:"
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:76
 msgid "Ignore other users namespace"
-msgstr "Namespace van andere gebruikers negeren"
+msgstr "Naamruimte van andere gebruikers negeren"
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:78
 msgid "Ignore shared folders namespace"
-msgstr "Namespace van gedeelde mappen negeren"
+msgstr "Naamruimte van gedeelde mappen negeren"
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:80
 msgid "Use shell command for connecting to the server"
