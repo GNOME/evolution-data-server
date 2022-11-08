@@ -18,6 +18,9 @@
 /* Package name for gettext */
 #define GETTEXT_PACKAGE "@GETTEXT_PACKAGE@"
 
+/* Defined to prefix where out-of-tree extensions can be installed */
+#cmakedefine EXTENSIONS_DIR "@EXTENSIONS_DIR@"
+
 /* Defined to prefix used by the D-Bus services (usually when run in Flatpak) */
 #cmakedefine DBUS_SERVICES_PREFIX "@DBUS_SERVICES_PREFIX@"
 

@@ -165,6 +165,7 @@ add_printable_variable_path(LIBEXEC_INSTALL_DIR "Install directory for library e
 add_printable_variable_path(SHARE_INSTALL_PREFIX "Install directory for shared files, defaults to CMAKE_INSTALL_PREFIX/share" "")
 add_printable_variable_path(LOCALE_INSTALL_DIR "Install directory for locale files, defaults to SHARE_INSTALL_PREFIX/locale" "")
 add_printable_variable_path(SYSCONF_INSTALL_DIR "Install directory for system configuration files, defaults to CMAKE_INSTALL_PREFIX/etc" "")
+add_printable_variable_path(EXTENSIONS_DIR "Directory, where out-of-tree extensions can be installed, defaults to LIBEXEC_INSTALL_DIR/evolution/extensions" "")
 
 macro(ensure_default_value _var _defvalue)
 	if(${_var} STREQUAL "")
@@ -179,6 +180,7 @@ ensure_default_value(LIBEXEC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/libexec")
 ensure_default_value(SHARE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/share")
 ensure_default_value(LOCALE_INSTALL_DIR "${SHARE_INSTALL_PREFIX}/locale")
 ensure_default_value(SYSCONF_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/etc")
+ensure_default_value(EXTENSIONS_DIR "${LIBEXEC_INSTALL_DIR}/evolution/extensions")
 
 add_printable_variable(DBUS_SERVICES_PREFIX "Prefix for D-Bus services, usually left empty, without trailing dot" "")
 
