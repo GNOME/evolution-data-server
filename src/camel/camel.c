@@ -468,6 +468,7 @@ camel_util_get_directory_variants (const gchar *main_path,
 		add_path = main_path + len;
 
 		if (add_path[0] == G_DIR_SEPARATOR) {
+			GDir *dir;
 			const gchar *env = g_getenv ("EDS_EXTRA_PREFIXES");
 
 			/* Skip the directory separator */
@@ -499,6 +500,28 @@ camel_util_get_directory_variants (const gchar *main_path,
 				}
 
 				g_strfreev (strv);
+			}
+
+			dir = g_dir_open (EXTENSIONS_DIR, 0, NULL);
+			if (dir) {
+				const gchar *name;
+
+				while (name = g_dir_read_name (dir), name) {
+					gchar *prefix = g_build_filename (EXTENSIONS_DIR, name, NULL);
+
+					if (prefix && g_file_test (prefix, G_FILE_TEST_IS_DIR)) {
+						gchar *path = g_build_filename (prefix, add_path, NULL);
+
+						if (!path || g_hash_table_contains (paths_hash, path))
+							g_free (path);
+						else
+							g_hash_table_insert (paths_hash, path, GINT_TO_POINTER (index++));
+					}
+
+					g_free (prefix);
+				}
+
+				g_dir_close (dir);
 			}
 
 			if (with_modules_dir) {
