@@ -426,7 +426,7 @@ if(ENABLE_GTK4)
 
 	if(ENABLE_OAUTH2_WEBKITGTK4)
 		pkg_check_modules_for_option(ENABLE_OAUTH2_WEBKITGTK4 "WebKitGTK gtk4 for built-in OAuth2 authentications" OAUTH2_WEBKITGTK4
-			webkit2gtk-5.0>=${webkit2gtk4_minimum_version}
+			webkitgtk-6.0>=${webkit2gtk4_minimum_version}
 		)
 	endif(ENABLE_OAUTH2_WEBKITGTK4)
 endif(ENABLE_GTK4)
