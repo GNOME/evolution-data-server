@@ -1694,17 +1694,16 @@ cfs_schedule_info_release_timer (CamelFolderSummary *summary)
 		/* FIXME[disk-summary] LRU please and not timeouts */
 		if (can_do) {
 			GWeakRef *weakref;
+			GSource *source;
 
 			weakref = g_slice_new0 (GWeakRef);
 			g_weak_ref_init (weakref, summary);
 
-			summary->priv->timeout_handle = g_timeout_add_seconds_full (
-				G_PRIORITY_DEFAULT, SUMMARY_CACHE_DROP,
-				cfs_try_release_memory,
-				weakref, cfs_free_weakref);
-			g_source_set_name_by_id (
-				summary->priv->timeout_handle,
-				"[camel] cfs_try_release_memory");
+			source = g_timeout_source_new_seconds (SUMMARY_CACHE_DROP);
+			g_source_set_callback (source, cfs_try_release_memory, weakref, cfs_free_weakref);
+			g_source_set_name (source, "[camel] cfs_try_release_memory");
+			summary->priv->timeout_handle = g_source_attach (source, NULL);
+			g_source_unref (source);
 		}
 	}
 

@@ -184,8 +184,10 @@ sync_push_request (CamelSqlite3File *cFile,
 }
 
 static gboolean
-sync_push_request_timeout (CamelSqlite3File *cFile)
+sync_push_request_timeout (gpointer user_data)
 {
+	CamelSqlite3File *cFile = user_data;
+
 	g_rec_mutex_lock (&cFile->sync_mutex);
 
 	if (cFile->timeout_id != 0) {
@@ -313,6 +315,7 @@ camel_sqlite3_file_xSync (sqlite3_file *pFile,
                           gint flags)
 {
 	CamelSqlite3File *cFile;
+	GSource *source;
 
 	g_return_val_if_fail (old_vfs != NULL, SQLITE_ERROR);
 	g_return_val_if_fail (pFile != NULL, SQLITE_ERROR);
@@ -329,12 +332,11 @@ camel_sqlite3_file_xSync (sqlite3_file *pFile,
 		g_source_remove (cFile->timeout_id);
 
 	/* Wait SYNC_TIMEOUT_SECONDS before we actually sync. */
-	cFile->timeout_id = g_timeout_add_seconds (
-		SYNC_TIMEOUT_SECONDS, (GSourceFunc)
-		sync_push_request_timeout, cFile);
-	g_source_set_name_by_id (
-		cFile->timeout_id,
-		"[camel] sync_push_request_timeout");
+	source = g_timeout_source_new_seconds (SYNC_TIMEOUT_SECONDS);
+	g_source_set_callback (source, sync_push_request_timeout, cFile, NULL);
+	g_source_set_name (source, "[camel] sync_push_request_timeout");
+	cFile->timeout_id = g_source_attach (source, NULL);
+	g_source_unref (source);
 
 	g_rec_mutex_unlock (&cFile->sync_mutex);
 

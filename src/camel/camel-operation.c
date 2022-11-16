@@ -380,14 +380,13 @@ camel_operation_push_message (GCancellable *cancellable,
 			status_node_ref (node),
 			(GDestroyNotify) status_node_unref);
 	} else {
-		node->source_id = g_timeout_add_full (
-			G_PRIORITY_DEFAULT, TRANSIENT_DELAY,
-			operation_emit_status_cb,
-			status_node_ref (node),
-			(GDestroyNotify) status_node_unref);
-		g_source_set_name_by_id (
-			node->source_id,
-			"[camel] operation_emit_status_cb");
+		GSource *source;
+
+		source = g_timeout_source_new (TRANSIENT_DELAY);
+		g_source_set_callback (source, operation_emit_status_cb, status_node_ref (node), (GDestroyNotify) status_node_unref);
+		g_source_set_name (source, "[camel] operation_emit_status_cb");
+		node->source_id = g_source_attach (source, NULL);
+		g_source_unref (source);
 	}
 
 	g_queue_push_head (&operation->priv->status_stack, node);
@@ -441,17 +440,16 @@ camel_operation_pop_message (GCancellable *cancellable)
 	node = g_queue_peek_head (&operation->priv->status_stack);
 
 	if (node != NULL) {
+		GSource *source;
+
 		if (node->source_id != 0)
 			g_source_remove (node->source_id);
 
-		node->source_id = g_timeout_add_seconds_full (
-			G_PRIORITY_DEFAULT, POP_MESSAGE_DELAY,
-			operation_emit_status_cb,
-			status_node_ref (node),
-			(GDestroyNotify) status_node_unref);
-		g_source_set_name_by_id (
-			node->source_id,
-			"[camel] operation_emit_status_cb");
+		source = g_timeout_source_new_seconds (POP_MESSAGE_DELAY);
+		g_source_set_callback (source, operation_emit_status_cb, status_node_ref (node), (GDestroyNotify) status_node_unref);
+		g_source_set_name (source, "[camel] operation_emit_status_cb");
+		node->source_id = g_source_attach (source, NULL);
+		g_source_unref (source);
 	}
 
 	UNLOCK ();
@@ -500,14 +498,13 @@ camel_operation_progress (GCancellable *cancellable,
 
 		/* Rate limit progress updates. */
 		if (node->source_id == 0) {
-			node->source_id = g_timeout_add_full (
-				G_PRIORITY_DEFAULT, PROGRESS_DELAY,
-				operation_emit_status_cb,
-				status_node_ref (node),
-				(GDestroyNotify) status_node_unref);
-			g_source_set_name_by_id (
-				node->source_id,
-				"[camel] operation_emit_status_cb");
+			GSource *source;
+
+			source = g_timeout_source_new (PROGRESS_DELAY);
+			g_source_set_callback (source, operation_emit_status_cb, status_node_ref (node), (GDestroyNotify) status_node_unref);
+			g_source_set_name (source, "[camel] operation_emit_status_cb");
+			node->source_id = g_source_attach (source, NULL);
+			g_source_unref (source);
 		}
 	}
 

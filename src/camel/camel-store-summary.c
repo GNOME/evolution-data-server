@@ -995,16 +995,18 @@ store_summary_save_timeout (gpointer user_data)
 static void
 store_summary_schedule_save (CamelStoreSummary *summary)
 {
+	GSource *source;
+
 	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
 
 	if (summary->priv->scheduled_save_id != 0)
 		g_source_remove (summary->priv->scheduled_save_id);
 
-	summary->priv->scheduled_save_id = g_timeout_add_seconds (
-		5, store_summary_save_timeout, summary);
-	g_source_set_name_by_id (
-		summary->priv->scheduled_save_id,
-		"[camel] store_summary_save_timeout");
+	source = g_timeout_source_new_seconds (5);
+	g_source_set_callback (source, store_summary_save_timeout, summary, NULL);
+	g_source_set_name (source, "[camel] store_summary_save_timeout");
+	summary->priv->scheduled_save_id = g_source_attach (source, NULL);
+	g_source_unref (source);
 }
 
 static void

@@ -2292,13 +2292,22 @@ e_timeout_add_with_name (gint priority,
                          gpointer data,
                          GDestroyNotify notify)
 {
+	GSource *source;
 	guint tag;
 
 	g_return_val_if_fail (function != NULL, 0);
 
-	tag = g_timeout_add_full (
-		priority, interval, function, data, notify);
-	g_source_set_name_by_id (tag, name);
+	source = g_timeout_source_new (interval);
+
+	if (priority != G_PRIORITY_DEFAULT)
+		g_source_set_priority (source, priority);
+
+	g_source_set_callback (source, function, data, notify);
+	g_source_set_name (source, name);
+
+	tag = g_source_attach (source, NULL);
+
+	g_source_unref (source);
 
 	return tag;
 }
@@ -2333,13 +2342,22 @@ e_timeout_add_seconds_with_name (gint priority,
                                  gpointer data,
                                  GDestroyNotify notify)
 {
+	GSource *source;
 	guint tag;
 
 	g_return_val_if_fail (function != NULL, 0);
 
-	tag = g_timeout_add_seconds_full (
-		priority, interval, function, data, notify);
-	g_source_set_name_by_id (tag, name);
+	source = g_timeout_source_new_seconds (interval);
+
+	if (priority != G_PRIORITY_DEFAULT)
+		g_source_set_priority (source, priority);
+
+	g_source_set_callback (source, function, data, notify);
+	g_source_set_name (source, name);
+
+	tag = g_source_attach (source, NULL);
+
+	g_source_unref (source);
 
 	return tag;
 }
