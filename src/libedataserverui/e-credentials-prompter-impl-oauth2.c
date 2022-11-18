@@ -32,20 +32,18 @@
 #if GTK_CHECK_VERSION(4, 0, 0)
 #ifdef ENABLE_OAUTH2_WEBKITGTK4
 #define WITH_WEBKITGTK 1
+#include <webkit/webkit.h>
 #else
 #undef WITH_WEBKITGTK
 #endif
 #else
 #ifdef ENABLE_OAUTH2_WEBKITGTK
 #define WITH_WEBKITGTK 1
+#include <webkit2/webkit2.h>
 #else
 #undef WITH_WEBKITGTK
 #endif
 #endif
-
-#ifdef WITH_WEBKITGTK
-#include <webkit2/webkit2.h>
-#endif /* WITH_WEBKITGTK */
 
 struct _ECredentialsPrompterImplOAuth2Private {
 	GMutex property_lock;
