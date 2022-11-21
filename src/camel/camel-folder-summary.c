@@ -3058,7 +3058,11 @@ message_info_new_from_headers (CamelFolderSummary *summary,
 	if (ct)
 		camel_content_type_unref (ct);
 
-	camel_message_info_take_headers (mi, camel_name_value_array_copy (headers));
+	/* Headers are meant to be used when filtering, to speed things up.
+	   Do not save them, when the folder is not expected to be filtered. */
+	if (summary->priv->folder &&
+	    (camel_folder_get_flags (summary->priv->folder) & (CAMEL_FOLDER_FILTER_RECENT | CAMEL_FOLDER_FILTER_JUNK)) != 0)
+		camel_message_info_take_headers (mi, camel_name_value_array_copy (headers));
 
 	camel_message_info_set_abort_notifications (mi, FALSE);
 
