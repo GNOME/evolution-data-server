@@ -363,6 +363,20 @@ ecw_dup_signature_alg (CERTCertificate *cert)
 }
 
 static gchar *
+ecw_dup_issuer_fingerprint_sha256 (CERTCertificate *cert)
+{
+	guchar fingerprint[SHA256_LENGTH + 1];
+
+	if (!cert->derIssuer.data || !cert->derIssuer.len)
+		return NULL;
+
+	memset (fingerprint, 0, sizeof fingerprint);
+	PK11_HashBuf (SEC_OID_SHA256, fingerprint, cert->derIssuer.data, cert->derIssuer.len);
+
+	return ecw_dup_hexify (fingerprint, SHA256_LENGTH);
+}
+
+static gchar *
 ecw_dup_fingerprint_sha256 (CERTCertificate *cert)
 {
 	guchar fingerprint[SHA256_LENGTH + 1];
@@ -415,6 +429,7 @@ static struct _SectionKey {
 	{ NULL,			N_("State"), ecw_dup_issuer_state },
 	{ NULL,			N_("Locality"), ecw_dup_issuer_locality },
 	{ NULL,			N_("Domain Component Name"), ecw_dup_issuer_domain_component_name },
+	{ NULL,			N_("SHA-256 Fingerprint"), ecw_dup_issuer_fingerprint_sha256 },
 	{ N_("Details"),	N_("Not Before"), ecw_dup_not_before },
 	{ NULL,			N_("Not After"), ecw_dup_not_after },
 	{ NULL,			N_("Usage"), ecw_dup_usage },
