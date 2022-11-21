@@ -58,6 +58,10 @@
 
 #define MAX_COMMAND_LEN 1000
 
+/* Allow up to this number of message infos in a folder with message headers
+   stored in memory, to not use too much memory when fetching new messages. */
+#define MAX_N_MESSAGES_WITH_HEADERS 500
+
 /* Ping the server after a period of inactivity to avoid being logged off.
  * Using a 29 minute inactivity timeout as recommended in RFC 2177 (IDLE). */
 #define INACTIVITY_TIMEOUT_SECONDS (29 * 60)
@@ -310,6 +314,7 @@ struct _CamelIMAPXServerPrivate {
 	CamelFolder *fetch_changes_folder; /* not referenced */
 	GHashTable *fetch_changes_infos; /* gchar *uid ~> FetchChangesInfo-s */
 	gint64 fetch_changes_last_progress; /* when was called last progress */
+	gboolean fetch_changes_with_headers; /* whether can preserve message headers in the message info */
 
 	struct _status_info *copyuid_status;
 
@@ -1184,7 +1189,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 		if ((finfo->got & FETCH_UID) != 0 && is->priv->fetch_changes_folder && is->priv->fetch_changes_infos) {
 			FetchChangesInfo *nfo;
 			gint64 monotonic_time;
-			gint n_messages;
+			guint32 n_messages;
 
 			nfo = g_hash_table_lookup (is->priv->fetch_changes_infos, finfo->uid);
 			if (!nfo) {
@@ -1205,15 +1210,10 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 				COMMAND_LOCK (is);
 
 				if (is->priv->current_command) {
-					guint32 n_messages;
-
 					COMMAND_UNLOCK (is);
 
 					is->priv->fetch_changes_last_progress = monotonic_time;
-
-					n_messages = camel_imapx_mailbox_get_messages (is->priv->fetch_changes_mailbox);
-					if (n_messages > 0)
-						camel_operation_progress (cancellable, 100 * is->priv->context->id / n_messages);
+					camel_operation_progress (cancellable, 100 * is->priv->context->id / n_messages);
 				} else {
 					COMMAND_UNLOCK (is);
 				}
@@ -1423,6 +1423,9 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 					c (is->priv->tagprefix, "Not updating unseen count for new message %s\n", finfo->uid);
 				}
 			}
+
+			if (is->priv->fetch_changes_infos && !is->priv->fetch_changes_with_headers)
+				camel_message_info_take_headers (mi, NULL);
 
 			camel_message_info_set_size (mi, finfo->size);
 			camel_message_info_set_abort_notifications (mi, FALSE);
@@ -5376,6 +5379,20 @@ imapx_server_process_fetch_changes_infos (CamelIMAPXServer *is,
 	}
 }
 
+/* One would use `g_slist_length()`, but the actual length is not needed here,
+   thus this is quicker for large lists, due to not traversing all the items. */
+static gboolean
+imapx_server_slist_length_not_more_than (GSList *list,
+					 guint n_items)
+{
+	while (list && n_items) {
+		list = g_slist_next (list);
+		n_items--;
+	}
+
+	return !list;
+}
+
 static gboolean
 imapx_server_fetch_changes (CamelIMAPXServer *is,
 			    CamelIMAPXMailbox *mailbox,
@@ -5415,6 +5432,7 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 	is->priv->fetch_changes_folder = folder;
 	is->priv->fetch_changes_infos = infos;
 	is->priv->fetch_changes_last_progress = 0;
+	is->priv->fetch_changes_with_headers = TRUE;
 
 	camel_operation_push_message (cancellable,
 		/* Translators: The first “%s” is replaced with an account name and the second “%s”
@@ -5435,6 +5453,8 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 	g_hash_table_remove_all (infos);
 
 	if (success && fetch_summary_uids) {
+		CamelIMAPXStore *imapx_store;
+		gboolean bodystructure_enabled;
 		struct _uidset_state uidset;
 		GSList *link;
 
@@ -5449,6 +5469,10 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 			camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
 			camel_folder_get_full_display_name (folder));
 
+		imapx_store = camel_imapx_server_ref_store (is);
+		bodystructure_enabled = imapx_store && camel_imapx_store_get_bodystructure_enabled (imapx_store);
+		is->priv->fetch_changes_with_headers = imapx_server_slist_length_not_more_than (fetch_summary_uids, MAX_N_MESSAGES_WITH_HEADERS);
+
 		fetch_summary_uids = g_slist_sort (fetch_summary_uids, imapx_uids_desc_cmp);
 
 		for (link = fetch_summary_uids; link; link = g_slist_next (link)) {
@@ -5462,11 +5486,6 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 
 			if (imapx_uidset_add (&uidset, ic, uid) == 1 || (!link->next && ic && imapx_uidset_done (&uidset, ic))) {
 				GError *local_error = NULL;
-				gboolean bodystructure_enabled;
-				CamelIMAPXStore *imapx_store;
-
-				imapx_store = camel_imapx_server_ref_store (is);
-				bodystructure_enabled = imapx_store && camel_imapx_store_get_bodystructure_enabled (imapx_store);
 
 				if (bodystructure_enabled)
 					camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER BODYSTRUCTURE FLAGS)");
@@ -5482,12 +5501,11 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 				   even when it's not 100% sure the BODYSTRUCTURE response was the broken one. */
 				if (bodystructure_enabled && !success &&
 				    g_error_matches (local_error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED)) {
+					bodystructure_enabled = FALSE;
 					camel_imapx_store_set_bodystructure_enabled (imapx_store, FALSE);
 					local_error->domain = CAMEL_IMAPX_SERVER_ERROR;
 					local_error->code = CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT;
 				}
-
-				g_clear_object (&imapx_store);
 
 				if (local_error)
 					g_propagate_error (error, local_error);
@@ -5499,6 +5517,8 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 				g_hash_table_remove_all (infos);
 			}
 		}
+
+		g_clear_object (&imapx_store);
 
 		camel_operation_pop_message (cancellable);
 

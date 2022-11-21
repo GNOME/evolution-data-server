@@ -1861,6 +1861,15 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 	if (cache)
 		camel_uid_cache_save (cache);
 
+	/* Unset message headers on the infos, which are meant only for filtering,
+	   which just finished, thus the memory can be freed now */
+	for (i = 0; i < uids->len; i++) {
+		info = camel_folder_get_message_info (folder, uids->pdata[i]);
+		if (info)
+			camel_message_info_take_headers (info, NULL);
+		g_clear_object (&info);
+	}
+
 	if (driver->priv->defaultfolder) {
 		report_status (
 			driver, CAMEL_FILTER_STATUS_PROGRESS,
