@@ -174,6 +174,7 @@
       <xi:include href="xml/e-backend-enums.xml"/>
       <xi:include href="xml/e-backend-factory.xml"/>
       <xi:include href="xml/e-cache.xml"/>
+      <xi:include href="xml/e-cache-keys.xml"/>
       <xi:include href="xml/e-data-factory.xml"/>
       <xi:include href="xml/e-dbus-server.xml"/>
       <xi:include href="xml/e-extensible.xml"/>
@@ -362,6 +363,10 @@
   <index id="api-index-deprecated" role="deprecated">
     <title>Index of deprecated symbols</title>
     <xi:include href="xml/api-index-deprecated.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-3-48" role="3.48">
+    <title>Index of new symbols in 3.48</title>
+    <xi:include href="xml/api-index-3.48.xml"><xi:fallback /></xi:include>
   </index>
   <index id="api-index-3-46" role="3.46">
     <title>Index of new symbols in 3.46</title>

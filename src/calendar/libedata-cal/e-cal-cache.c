@@ -74,6 +74,7 @@
 struct _ECalCachePrivate {
 	gboolean initializing;
 
+	ECacheKeys *timezones_table;
 	GHashTable *loaded_timezones; /* gchar *tzid ~> ICalTimezone * */
 	GHashTable *modified_timezones; /* gchar *tzid ~> ICalTimezone * */
 
@@ -1798,18 +1799,7 @@ ecc_init_aux_tables (ECalCache *cal_cache,
 		     GCancellable *cancellable,
 		     GError **error)
 {
-	gchar *stmt;
-	gboolean success;
-
-	stmt = e_cache_sqlite_stmt_printf ("CREATE TABLE IF NOT EXISTS %Q ("
-		"tzid TEXT PRIMARY KEY, "
-		"zone TEXT, "
-		"refs INTEGER)",
-		ECC_TABLE_TIMEZONES);
-	success = e_cache_sqlite_exec (E_CACHE (cal_cache), stmt, cancellable, error);
-	e_cache_sqlite_stmt_free (stmt);
-
-	return success;
+	return e_cache_keys_init_table_sync (cal_cache->priv->timezones_table, cancellable, error);
 }
 
 static gboolean
@@ -3739,27 +3729,6 @@ e_cal_cache_delete_attachments (ECalCache *cal_cache,
 	return TRUE;
 }
 
-static gint
-e_cal_cache_get_current_timezone_refs (ECalCache *cal_cache,
-				       const gchar *tzid,
-				       GCancellable *cancellable)
-{
-	guint64 existing_refs = -1;
-	gchar *stmt;
-
-	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), -1);
-	g_return_val_if_fail (tzid != NULL, -1);
-
-	stmt = e_cache_sqlite_stmt_printf ("SELECT refs FROM " ECC_TABLE_TIMEZONES " WHERE tzid=%Q", tzid);
-
-	if (!e_cache_sqlite_select (E_CACHE (cal_cache), stmt, e_cal_cache_get_uint64_cb, &existing_refs, cancellable, NULL))
-		existing_refs = -1;
-
-	e_cache_sqlite_stmt_free (stmt);
-
-	return (gint) existing_refs;
-}
-
 /**
  * e_cal_cache_put_timezone:
  * @cal_cache: an #ECalCache
@@ -3786,7 +3755,6 @@ e_cal_cache_put_timezone (ECalCache *cal_cache,
 			  GError **error)
 {
 	gboolean success;
-	gchar *stmt;
 	const gchar *tzid;
 	gchar *component_str;
 	ICalComponent *component;
@@ -3817,31 +3785,10 @@ e_cal_cache_put_timezone (ECalCache *cal_cache,
 		return FALSE;
 	}
 
-	e_cache_lock (E_CACHE (cal_cache), E_CACHE_LOCK_WRITE);
-
-	if (inc_ref_counts > 0) {
-		gint current_refs;
-
-		current_refs = e_cal_cache_get_current_timezone_refs (cal_cache, tzid, cancellable);
-
-		/* Zero means keep forever */
-		if (current_refs == 0)
-			inc_ref_counts = 0;
-		else if (current_refs > 0)
-			inc_ref_counts += current_refs;
-	}
-
-	stmt = e_cache_sqlite_stmt_printf (
-		"INSERT or REPLACE INTO " ECC_TABLE_TIMEZONES " (tzid, zone, refs) VALUES (%Q, %Q, %u)",
-		tzid, component_str, inc_ref_counts);
-
-	success = e_cache_sqlite_exec (E_CACHE (cal_cache), stmt, cancellable, error);
-
-	e_cache_sqlite_stmt_free (stmt);
+	success = e_cache_keys_put_sync (cal_cache->priv->timezones_table,
+		tzid, component_str, inc_ref_counts, cancellable, error);
 
 	g_free (component_str);
-
-	e_cache_unlock (E_CACHE (cal_cache), E_CACHE_UNLOCK_COMMIT);
 
 	return success;
 }
@@ -3937,47 +3884,32 @@ e_cal_cache_dup_timezone_as_string (ECalCache *cal_cache,
 				    GCancellable *cancellable,
 				    GError **error)
 {
-	gchar *stmt;
-	gboolean success;
-
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
 	g_return_val_if_fail (tzid != NULL, FALSE);
 	g_return_val_if_fail (out_zone_string, FALSE);
 
-	*out_zone_string = NULL;
-
-	stmt = e_cache_sqlite_stmt_printf (
-		"SELECT zone FROM " ECC_TABLE_TIMEZONES " WHERE tzid=%Q",
-		tzid);
-
-	success = e_cache_sqlite_select (E_CACHE (cal_cache), stmt, e_cal_cache_get_string, out_zone_string, cancellable, error) &&
-		*out_zone_string != NULL;
-
-	e_cache_sqlite_stmt_free (stmt);
-
-	return success;
+	return e_cache_keys_get_sync (cal_cache->priv->timezones_table,
+		tzid, out_zone_string, cancellable, error);
 }
 
 static gboolean
-e_cal_cache_load_zones_cb (ECache *cache,
-			   gint ncols,
-			   const gchar *column_names[],
-			   const gchar *column_values[],
+e_cal_cache_load_zones_cb (ECacheKeys *self,
+			   const gchar *key,
+			   const gchar *value,
+			   guint ref_count,
 			   gpointer user_data)
 {
 	GHashTable *loaded_zones = user_data;
 
 	g_return_val_if_fail (loaded_zones != NULL, FALSE);
-	g_return_val_if_fail (ncols == 2, FALSE);
 
 	/* Do not overwrite already loaded timezones, they can be used anywhere around */
-	if (!g_hash_table_lookup (loaded_zones, column_values[0])) {
+	if (key && value && !g_hash_table_lookup (loaded_zones, key)) {
 		ICalTimezone *zone;
 
-		zone = ecc_timezone_from_string (column_values[1]);
-		if (zone) {
-			g_hash_table_insert (loaded_zones, g_strdup (column_values[0]), zone);
-		}
+		zone = ecc_timezone_from_string (value);
+		if (zone)
+			g_hash_table_insert (loaded_zones, g_strdup (key), zone);
 	}
 
 	return TRUE;
@@ -4009,8 +3941,7 @@ e_cal_cache_list_timezones (ECalCache *cal_cache,
 			    GCancellable *cancellable,
 			    GError **error)
 {
-	guint64 n_stored = 0;
-	gchar *stmt;
+	gint64 n_stored = 0;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
@@ -4018,9 +3949,7 @@ e_cal_cache_list_timezones (ECalCache *cal_cache,
 
 	e_cache_lock (E_CACHE (cal_cache), E_CACHE_LOCK_READ);
 
-	success = e_cache_sqlite_select (E_CACHE (cal_cache),
-		"SELECT COUNT(*) FROM " ECC_TABLE_TIMEZONES,
-		e_cal_cache_get_uint64_cb, &n_stored, cancellable, error);
+	success = e_cache_keys_count_keys_sync (cal_cache->priv->timezones_table, &n_stored, cancellable, error);
 
 	if (success && n_stored != g_hash_table_size (cal_cache->priv->loaded_timezones)) {
 		if (n_stored == 0) {
@@ -4030,10 +3959,8 @@ e_cal_cache_list_timezones (ECalCache *cal_cache,
 			return TRUE;
 		}
 
-		stmt = e_cache_sqlite_stmt_printf ("SELECT tzid, zone FROM " ECC_TABLE_TIMEZONES);
-		success = e_cache_sqlite_select (E_CACHE (cal_cache), stmt,
+		success = e_cache_keys_foreach_sync (cal_cache->priv->timezones_table,
 			e_cal_cache_load_zones_cb, cal_cache->priv->loaded_timezones, cancellable, error);
-		e_cache_sqlite_stmt_free (stmt);
 	}
 
 	if (success) {
@@ -4080,42 +4007,11 @@ e_cal_cache_remove_timezone (ECalCache *cal_cache,
 			     GCancellable *cancellable,
 			     GError **error)
 {
-	gchar *stmt;
-	gboolean success;
-
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
 	g_return_val_if_fail (tzid != NULL, FALSE);
 
-	e_cache_lock (E_CACHE (cal_cache), E_CACHE_LOCK_WRITE);
-
-	if (dec_ref_counts) {
-		gint current_refs;
-
-		current_refs = e_cal_cache_get_current_timezone_refs (cal_cache, tzid, cancellable);
-		if (current_refs <= 0) {
-			e_cache_unlock (E_CACHE (cal_cache), E_CACHE_UNLOCK_COMMIT);
-
-			return TRUE;
-		}
-
-		if (current_refs >= dec_ref_counts)
-			dec_ref_counts = current_refs - dec_ref_counts;
-		else
-			dec_ref_counts = 0;
-	}
-
-	if (dec_ref_counts)
-		stmt = e_cache_sqlite_stmt_printf ("UPDATE " ECC_TABLE_TIMEZONES " SET refs=%u WHERE tzid=%Q", dec_ref_counts, tzid);
-	else
-		stmt = e_cache_sqlite_stmt_printf ("DELETE FROM " ECC_TABLE_TIMEZONES " WHERE tzid=%Q", tzid);
-
-	success = e_cache_sqlite_exec (E_CACHE (cal_cache), stmt, cancellable, error);
-
-	e_cache_sqlite_stmt_free (stmt);
-
-	e_cache_unlock (E_CACHE (cal_cache), success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
-
-	return success;
+	return e_cache_keys_remove_sync (cal_cache->priv->timezones_table, tzid,
+		dec_ref_counts, cancellable, error);
 }
 
 /**
@@ -4135,17 +4031,9 @@ e_cal_cache_remove_timezones (ECalCache *cal_cache,
 			      GCancellable *cancellable,
 			      GError **error)
 {
-	gboolean success;
-
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
 
-	e_cache_lock (E_CACHE (cal_cache), E_CACHE_LOCK_WRITE);
-
-	success = e_cache_sqlite_exec (E_CACHE (cal_cache), "DELETE FROM " ECC_TABLE_TIMEZONES, cancellable, error);
-
-	e_cache_unlock (E_CACHE (cal_cache), success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
-
-	return success;
+	return e_cache_keys_remove_all_sync (cal_cache->priv->timezones_table, cancellable, error);
 }
 
 /* Private function, not meant to be part of the public API */
@@ -4229,16 +4117,13 @@ ecc_empty_aux_tables (ECache *cache,
 		      GCancellable *cancellable,
 		      GError **error)
 {
-	gchar *stmt;
-	gboolean success;
+	ECalCache *cal_cache;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cache), FALSE);
 
-	stmt = e_cache_sqlite_stmt_printf ("DELETE FROM %Q", ECC_TABLE_TIMEZONES);
-	success = e_cache_sqlite_exec (cache, stmt, cancellable, error);
-	e_cache_sqlite_stmt_free (stmt);
+	cal_cache = E_CAL_CACHE (cache);
 
-	return success;
+	return e_cache_keys_remove_all_sync (cal_cache->priv->timezones_table, cancellable, error);
 }
 
 /* The default revision is a concatenation of
@@ -4521,6 +4406,7 @@ e_cal_cache_finalize (GObject *object)
 {
 	ECalCache *cal_cache = E_CAL_CACHE (object);
 
+	g_clear_object (&cal_cache->priv->timezones_table);
 	g_hash_table_destroy (cal_cache->priv->loaded_timezones);
 	g_hash_table_destroy (cal_cache->priv->modified_timezones);
 	g_hash_table_destroy (cal_cache->priv->sexps);
@@ -4608,6 +4494,7 @@ static void
 e_cal_cache_init (ECalCache *cal_cache)
 {
 	cal_cache->priv = e_cal_cache_get_instance_private (cal_cache);
+	cal_cache->priv->timezones_table = e_cache_keys_new (E_CACHE (cal_cache), ECC_TABLE_TIMEZONES, "tzid", "zone");
 	cal_cache->priv->loaded_timezones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, cal_cache_free_zone);
 	cal_cache->priv->modified_timezones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, cal_cache_free_zone);
 

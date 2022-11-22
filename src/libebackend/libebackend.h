@@ -27,6 +27,7 @@
 #include <libebackend/e-backend-factory.h>
 #include <libebackend/e-backend.h>
 #include <libebackend/e-cache.h>
+#include <libebackend/e-cache-keys.h>
 #include <libebackend/e-cache-reaper.h>
 #include <libebackend/e-collection-backend-factory.h>
 #include <libebackend/e-collection-backend.h>

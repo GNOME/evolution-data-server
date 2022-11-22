@@ -11,6 +11,7 @@ set(SOURCES
 	e-backend.c
 	e-backend-factory.c
 	e-cache.c
+	e-cache-keys.c
 	e-cache-reaper.c
 	e-cache-reaper-utils.c
 	e-cache-reaper-utils.h
@@ -40,6 +41,7 @@ set(HEADERS
 	e-backend-enums.h
 	e-backend-factory.h
 	e-cache.h
+	e-cache-keys.h
 	e-cache-reaper.h
 	e-collection-backend.h
 	e-collection-backend-factory.h
