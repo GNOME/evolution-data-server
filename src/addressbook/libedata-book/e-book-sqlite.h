@@ -476,6 +476,38 @@ gint		e_book_sqlite_cursor_compare_contact
 						 EContact *contact,
 						 gboolean *matches_sexp);
 
+/**
+ * EBookSqliteSelectFunc:
+ * @ebsql: an #EBookSqlite
+ * @ncols: count of columns, items in column_names and column_values
+ * @column_names: (array length=ncols) (element-type utf8): column names
+ * @column_values: (array length=ncols) (element-type utf8): column values
+ * @user_data: user data, as used in e_book_sqlite_select()
+ *
+ * A callback called for each row of a SELECT statement executed
+ * with e_book_sqlite_select() function.
+ *
+ * Returns: %TRUE to continue, %FALSE to stop walk through.
+ *
+ * Since: 3.48
+ **/
+typedef gboolean (* EBookSqliteSelectFunc)	(EBookSqlite *ebsql,
+						 gint ncols,
+						 const gchar *column_names[],
+						 const gchar *column_values[],
+						 gpointer user_data);
+
+gboolean	e_book_sqlite_exec		(EBookSqlite *ebsql,
+						 const gchar *sql_stmt,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_book_sqlite_select		(EBookSqlite *ebsql,
+						 const gchar *sql_stmt,
+						 EBookSqliteSelectFunc func,
+						 gpointer user_data,
+						 GCancellable *cancellable,
+						 GError **error);
+
 G_END_DECLS
 
 #endif /* E_BOOK_SQLITE_H */

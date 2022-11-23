@@ -148,9 +148,11 @@ struct _EBookCacheClass {
 	gchar *		(* dup_contact_revision)
 						(EBookCache *book_cache,
 						 EContact *contact);
+	void		(* categories_changed)	(EBookCache *book_cache,
+						 const gchar *categories);
 
 	/* Padding for future expansion */
-	gpointer reserved[10];
+	gpointer reserved[9];
 };
 
 /**
@@ -218,6 +220,7 @@ gboolean	e_book_cache_set_locale		(EBookCache *book_cache,
 gchar *		e_book_cache_dup_locale		(EBookCache *book_cache);
 
 ECollator *	e_book_cache_ref_collator	(EBookCache *book_cache);
+gchar *		e_book_cache_dup_categories	(EBookCache *book_cache);
 
 /* Adding / Removing / Searching contacts */
 gboolean	e_book_cache_put_contact	(EBookCache *book_cache,

@@ -76,6 +76,7 @@ struct _EBookMetaBackendPrivate {
 	gulong source_changed_id;
 	gulong notify_online_id;
 	gulong revision_changed_id;
+	gulong categories_changed_id;
 	guint refresh_timeout_id;
 
 	gboolean refresh_after_authenticate;
@@ -1257,6 +1258,19 @@ ebmb_get_backend_property (EBookBackend *book_backend,
 		}
 
 		return g_string_free (fields, FALSE);
+	} else if (g_str_equal (prop_name, E_BOOK_BACKEND_PROPERTY_CATEGORIES)) {
+		EBookCache *book_cache;
+		gchar *categories = NULL;
+
+		book_cache = e_book_meta_backend_ref_cache (E_BOOK_META_BACKEND (book_backend));
+		if (book_cache) {
+			categories = e_book_cache_dup_categories (book_cache);
+			g_object_unref (book_cache);
+		} else {
+			g_warn_if_reached ();
+		}
+
+		return categories;
 	}
 
 	/* Chain up to parent's method. */
@@ -2480,6 +2494,12 @@ e_book_meta_backend_dispose (GObject *object)
 		meta_backend->priv->revision_changed_id = 0;
 	}
 
+	if (meta_backend->priv->categories_changed_id) {
+		if (meta_backend->priv->cache)
+			g_signal_handler_disconnect (meta_backend->priv->cache, meta_backend->priv->categories_changed_id);
+		meta_backend->priv->categories_changed_id = 0;
+	}
+
 	g_hash_table_foreach (meta_backend->priv->view_cancellables, ebmb_cancel_view_cb, NULL);
 
 	if (meta_backend->priv->refresh_cancellable) {
@@ -2846,6 +2866,19 @@ ebmb_cache_revision_changed_cb (ECache *cache,
 	}
 }
 
+static void
+ebmb_cache_categories_changed_cb (EBookCache *book_cache,
+				  const gchar *categories,
+				  gpointer user_data)
+{
+	EBookMetaBackend *meta_backend = user_data;
+
+	g_return_if_fail (E_IS_BOOK_META_BACKEND (meta_backend));
+
+	e_book_backend_notify_property_changed (E_BOOK_BACKEND (meta_backend),
+		E_BOOK_BACKEND_PROPERTY_CATEGORIES, categories);
+}
+
 /**
  * e_book_meta_backend_set_cache:
  * @meta_backend: an #EBookMetaBackend
@@ -2879,6 +2912,8 @@ e_book_meta_backend_set_cache (EBookMetaBackend *meta_backend,
 	if (meta_backend->priv->cache) {
 		g_signal_handler_disconnect (meta_backend->priv->cache,
 			meta_backend->priv->revision_changed_id);
+		g_signal_handler_disconnect (meta_backend->priv->cache,
+			meta_backend->priv->categories_changed_id);
 	}
 
 	g_clear_object (&meta_backend->priv->cache);
@@ -2886,6 +2921,8 @@ e_book_meta_backend_set_cache (EBookMetaBackend *meta_backend,
 
 	meta_backend->priv->revision_changed_id = g_signal_connect_object (meta_backend->priv->cache,
 		"revision-changed", G_CALLBACK (ebmb_cache_revision_changed_cb), meta_backend, 0);
+	meta_backend->priv->categories_changed_id = g_signal_connect_object (meta_backend->priv->cache,
+		"categories-changed", G_CALLBACK (ebmb_cache_categories_changed_cb), meta_backend, 0);
 
 	g_mutex_unlock (&meta_backend->priv->property_lock);
 

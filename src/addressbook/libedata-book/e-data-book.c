@@ -1660,6 +1660,13 @@ e_data_book_report_backend_property_changed (EDataBook *book,
 		g_strfreev (strv);
 	}
 
+	if (g_str_equal (prop_name, E_BOOK_BACKEND_PROPERTY_CATEGORIES)) {
+		strv = g_strsplit (prop_value, ",", -1);
+		e_dbus_address_book_set_categories (
+			dbus_interface, (const gchar * const *) strv);
+		g_strfreev (strv);
+	}
+
 	/* Ensure the property change signal on the D-Bus is invoked immediately, not on idle */
 	g_dbus_interface_skeleton_flush (G_DBUS_INTERFACE_SKELETON (dbus_interface));
 
@@ -1855,6 +1862,12 @@ data_book_constructed (GObject *object)
 	g_free (prop_value);
 
 	prop_name = E_BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS;
+	prop_value = e_book_backend_get_backend_property (backend, prop_name);
+	e_data_book_report_backend_property_changed (
+		book, prop_name, prop_value);
+	g_free (prop_value);
+
+	prop_name = E_BOOK_BACKEND_PROPERTY_CATEGORIES;
 	prop_value = e_book_backend_get_backend_property (backend, prop_name);
 	e_data_book_report_backend_property_changed (
 		book, prop_name, prop_value);

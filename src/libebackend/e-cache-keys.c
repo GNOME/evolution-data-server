@@ -563,7 +563,7 @@ e_cache_keys_put_sync (ECacheKeys *self,
 
 	e_cache_sqlite_stmt_free (stmt);
 
-	e_cache_unlock (self->priv->cache, E_CACHE_UNLOCK_COMMIT);
+	e_cache_unlock (self->priv->cache, success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
 
 	/* a new row had been inserted */
 	if (success && current_refs < 0)

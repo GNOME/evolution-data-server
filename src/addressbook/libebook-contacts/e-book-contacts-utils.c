@@ -207,3 +207,105 @@ e_book_util_foreach_address (const gchar *email_address,
 
 	g_object_unref (address);
 }
+
+static GHashTable *
+e_book_util_extract_categories (EContact *contact)
+{
+	GHashTable *categories_hash = NULL;
+	gchar *categories_str;
+
+	if (!contact)
+		return NULL;
+
+	g_return_val_if_fail (E_IS_CONTACT (contact), NULL);
+
+	categories_str = e_contact_get (contact, E_CONTACT_CATEGORIES);
+
+	if (categories_str && *categories_str) {
+		gchar **categories_strv;
+		guint ii;
+
+		categories_strv = g_strsplit (categories_str, ",", -1);
+
+		for (ii = 0; categories_strv && categories_strv[ii]; ii++) {
+			gchar *category = g_strstrip (categories_strv[ii]);
+
+			if (*category) {
+				if (!categories_hash)
+					categories_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+				g_hash_table_insert (categories_hash, g_strdup (category), GINT_TO_POINTER (1));
+			}
+		}
+
+		g_strfreev (categories_strv);
+	}
+
+	g_free (categories_str);
+
+	return categories_hash;
+}
+
+static gboolean
+e_book_util_remove_matching_category_cb (gpointer key,
+					 gpointer value,
+					 gpointer user_data)
+{
+	GHashTable *other_table = user_data;
+
+	/* Remove from both tables those common */
+	return g_hash_table_remove (other_table, key);
+}
+
+/**
+ * e_book_util_diff_categories:
+ * @old_contact: (nullable): an old #EContact, or %NULL
+ * @new_contact: (nullable): a new #EContact, or %NULL
+ * @out_added: (out) (transfer container) (element-type utf8 int): a #GHashTable with added categories
+ * @out_removed: (out) (transfer container) (element-type utf8 int): a #GHashTable with removed categories
+ *
+ * Compares list of categories on the @old_contact with the list of categories
+ * on the @new_contact and fills @out_added categories and @out_removed categories
+ * accordingly, as if the @old_contact is replaced with the @new_contact. When either
+ * of the contacts is %NULL, it's considered as having no categories set.
+ * Rather than returning empty #GHashTable, the return argument is set to %NULL
+ * when there are no added/removed categories.
+ *
+ * The key of the hash table is the category string, the value is an integer (1).
+ * There is used the hash table only for speed.
+ *
+ * The returned #GHashTable-s should be freed with g_hash_table_unref(),
+ * when no longer needed.
+ *
+ * Since: 3.48
+ **/
+void
+e_book_util_diff_categories (EContact *old_contact,
+			     EContact *new_contact,
+			     GHashTable **out_added, /* const gchar *category ~> 1 */
+			     GHashTable **out_removed) /* const gchar *category ~> 1 */
+{
+	if (old_contact)
+		g_return_if_fail (E_IS_CONTACT (old_contact));
+	if (new_contact)
+		g_return_if_fail (E_IS_CONTACT (new_contact));
+	g_return_if_fail (out_added != NULL);
+	g_return_if_fail (out_removed != NULL);
+
+	*out_added = e_book_util_extract_categories (new_contact);
+	*out_removed = e_book_util_extract_categories (old_contact);
+
+	if (*out_added && *out_removed) {
+		g_hash_table_foreach_remove (*out_added, e_book_util_remove_matching_category_cb, *out_removed);
+
+		if (!g_hash_table_size (*out_added)) {
+			g_hash_table_unref (*out_added);
+			*out_added = NULL;
+		}
+
+		if (!g_hash_table_size (*out_removed)) {
+			g_hash_table_unref (*out_removed);
+			*out_removed = NULL;
+		}
+	}
+}

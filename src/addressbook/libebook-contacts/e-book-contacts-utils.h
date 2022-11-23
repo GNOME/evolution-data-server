@@ -70,6 +70,16 @@
 #define E_BOOK_BACKEND_PROPERTY_REVISION		"revision"
 
 /**
+ * E_BOOK_BACKEND_PROPERTY_CATEGORIES: (value "categories")
+ *
+ * Provides comma-separated list of all known categories used by
+ * the contacts stored in the book backend.
+ *
+ * Since: 3.48
+ **/
+#define E_BOOK_BACKEND_PROPERTY_CATEGORIES		"categories"
+
+/**
  * E_BOOK_CLIENT_ERROR:
  *
  * Error domain for #EBookClient errors
@@ -117,6 +127,10 @@ guint32		e_book_util_conflict_resolution_to_operation_flags /* bit-or of EBookOp
 void		e_book_util_foreach_address	(const gchar *email_address,
 						 GHRFunc func,
 						 gpointer user_data);
+void		e_book_util_diff_categories	(EContact *old_contact,
+						 EContact *new_contact,
+						 GHashTable **out_added, /* const gchar *category ~> 1 */
+						 GHashTable **out_removed); /* const gchar *category ~> 1 */
 
 #ifndef EDS_DISABLE_DEPRECATED
 

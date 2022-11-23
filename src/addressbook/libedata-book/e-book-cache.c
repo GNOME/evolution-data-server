@@ -49,7 +49,7 @@
 
 #include "e-book-cache.h"
 
-#define E_BOOK_CACHE_VERSION		2
+#define E_BOOK_CACHE_VERSION		3
 #define INSERT_MULTI_STMT_BYTES		128
 #define COLUMN_DEFINITION_BYTES		32
 #define GENERATED_QUERY_BYTES		1024
@@ -98,6 +98,8 @@
 #define EBC_COLUMN_EXTRA	"bdata"
 #define EBC_COLUMN_CUSTOM_FLAGS	"custom_flags"
 
+#define EBC_TABLE_CATEGORIES	"categories"
+
 typedef struct {
 	EContactField field_id;		/* The EContact field */
 	GType type;			/* The GType (only support string or gboolean) */
@@ -112,6 +114,10 @@ typedef struct {
 } SummaryField;
 
 struct _EBookCachePrivate {
+	gboolean initializing;
+	gboolean categories_changed_while_frozen;
+	gint categories_changed_frozen;
+
 	ESource *source;		/* Optional, can be %NULL */
 
 	/* Parameters and settings */
@@ -123,6 +129,8 @@ struct _EBookCachePrivate {
 	gint n_summary_fields;
 
 	ECollator *collator;		/* The ECollator to create sort keys for any sortable fields */
+
+	ECacheKeys *categories_table;
 };
 
 enum {
@@ -133,6 +141,7 @@ enum {
 enum {
 	E164_CHANGED,
 	DUP_CONTACT_REVISION,
+	CATEGORIES_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -1005,6 +1014,9 @@ ebc_init_aux_tables (EBookCache *book_cache,
 		g_slist_free_full (aux_columns, e_cache_column_info_free);
 	}
 
+	if (success)
+		success = e_cache_keys_init_table_sync (book_cache->priv->categories_table, cancellable, error);
+
 	return success;
 }
 
@@ -1254,6 +1266,9 @@ ebc_empty_aux_tables (ECache *cache,
 		success = e_cache_sqlite_exec (cache, stmt, cancellable, error);
 		e_cache_sqlite_stmt_free (stmt);
 	}
+
+	if (success)
+		success = e_cache_keys_remove_all_sync (book_cache->priv->categories_table, cancellable, error);
 
 	return success;
 }
@@ -4293,19 +4308,133 @@ e_book_cache_gather_table_names_cb (ECache *cache,
 }
 
 static gboolean
-e_book_cache_fill_pgp_cert_column (ECache *cache,
-				   const gchar *uid,
-				   const gchar *revision,
-				   const gchar *object,
-				   EOfflineState offline_state,
-				   gint ncols,
-				   const gchar *column_names[],
-				   const gchar *column_values[],
-				   gchar **out_revision,
-				   gchar **out_object,
-				   EOfflineState *out_offline_state,
-				   ECacheColumnValues **out_other_columns,
-				   gpointer user_data)
+ebc_gather_categories_cb (ECacheKeys *self,
+			  const gchar *key,
+			  const gchar *value,
+			  guint ref_count,
+			  gpointer user_data)
+{
+	GString **pcategories = user_data;
+
+	g_return_val_if_fail (pcategories != NULL, FALSE);
+
+	if (key && *key) {
+		if (!*pcategories) {
+			*pcategories = g_string_new (key);
+		} else {
+			g_string_append_c (*pcategories, ',');
+			g_string_append (*pcategories, key);
+		}
+	}
+
+	return TRUE;
+}
+
+static void
+ebc_emit_categories_changed (EBookCache *self)
+{
+	gchar *categories;
+
+	g_return_if_fail (E_IS_BOOK_CACHE (self));
+
+	if (self->priv->initializing)
+		return;
+
+	if (g_atomic_int_get (&self->priv->categories_changed_frozen) > 0) {
+		self->priv->categories_changed_while_frozen = TRUE;
+		return;
+	}
+
+	if (!g_signal_has_handler_pending (self, signals[CATEGORIES_CHANGED], 0, FALSE))
+		return;
+
+	categories = e_book_cache_dup_categories (self);
+
+	g_signal_emit (self, signals[CATEGORIES_CHANGED], 0, categories ? categories : "", NULL);
+
+	g_free (categories);
+}
+
+static void
+ebc_freeze_categories_changed (EBookCache *self)
+{
+	g_return_if_fail (E_IS_BOOK_CACHE (self));
+
+	g_atomic_int_inc (&self->priv->categories_changed_frozen);
+}
+
+static void
+ebc_thaw_categories_changed (EBookCache *self)
+{
+	g_return_if_fail (E_IS_BOOK_CACHE (self));
+	g_return_if_fail (g_atomic_int_get (&self->priv->categories_changed_frozen) > 0);
+
+	if (g_atomic_int_dec_and_test (&self->priv->categories_changed_frozen) &&
+	    self->priv->categories_changed_while_frozen) {
+		self->priv->categories_changed_while_frozen = FALSE;
+		ebc_emit_categories_changed (self);
+	}
+}
+
+static gboolean
+ebc_update_categories_table (EBookCache *book_cache,
+			     EContact *old_contact,
+			     EContact *new_contact,
+			     GCancellable *cancellable,
+			     GError **error)
+{
+	GHashTable *added = NULL, *removed = NULL;
+	GHashTableIter iter;
+	gpointer key;
+	gboolean success = TRUE;
+
+	ebc_freeze_categories_changed (book_cache);
+
+	e_book_util_diff_categories (old_contact, new_contact, &added, &removed);
+
+	if (removed) {
+		g_hash_table_iter_init (&iter, removed);
+		while (success && g_hash_table_iter_next (&iter, &key, NULL)) {
+			const gchar *category = key;
+
+			success = e_cache_keys_remove_sync (book_cache->priv->categories_table,
+				category, 1, cancellable, error);
+		}
+
+		g_hash_table_unref (removed);
+	}
+
+	if (added) {
+		g_hash_table_iter_init (&iter, added);
+		while (success && g_hash_table_iter_next (&iter, &key, NULL)) {
+			const gchar *category = key;
+
+			success = e_cache_keys_put_sync (book_cache->priv->categories_table,
+				category, "", 1, cancellable, error);
+		}
+
+		g_hash_table_unref (added);
+	}
+
+	ebc_thaw_categories_changed (book_cache);
+
+	return success;
+}
+
+static gboolean
+e_book_cache_fill_pgp_cert_column_and_categories (ECache *cache,
+						  const gchar *uid,
+						  const gchar *revision,
+						  const gchar *object,
+						  EOfflineState offline_state,
+						  gint ncols,
+						  const gchar *column_names[],
+						  const gchar *column_values[],
+						  gchar **out_revision,
+						  gchar **out_object,
+						  EOfflineState *out_offline_state,
+						  ECacheColumnValues **out_other_columns,
+						  gpointer user_data)
 {
 	EContact *contact;
 	EContactCert *cert;
@@ -4322,7 +4451,35 @@ e_book_cache_fill_pgp_cert_column (ECache *cache,
 
 	e_cache_column_values_take_value (*out_other_columns, e_contact_field_name (E_CONTACT_PGP_CERT), g_strdup_printf ("%d", cert ? 1 : 0));
 
+	ebc_update_categories_table (E_BOOK_CACHE (cache), NULL, contact, NULL, NULL);
+
 	e_contact_cert_free (cert);
+	g_object_unref (contact);
+
+	return TRUE;
+}
+
+static gboolean
+e_book_cache_populate_categories (ECache *cache,
+				  const gchar *uid,
+				  const gchar *revision,
+				  const gchar *object,
+				  EOfflineState offline_state,
+				  gint ncols,
+				  const gchar *column_names[],
+				  const gchar *column_values[],
+				  gpointer user_data)
+{
+	EContact *contact;
+
+	g_return_val_if_fail (object != NULL, FALSE);
+
+	contact = e_contact_new_from_vcard (object);
+	if (!contact)
+		return TRUE;
+
+	ebc_update_categories_table (E_BOOK_CACHE (cache), NULL, contact, NULL, NULL);
+
 	g_object_unref (contact);
 
 	return TRUE;
@@ -4400,7 +4557,12 @@ e_book_cache_migrate (ECache *cache,
 	if (success && from_version > 0 && from_version < E_BOOK_CACHE_VERSION) {
 		if (from_version == 1) {
 			/* Version 2 added E_CONTACT_PGP_CERT existence into the summary */
-			success = e_cache_foreach_update (cache, E_CACHE_INCLUDE_DELETED, NULL, e_book_cache_fill_pgp_cert_column, NULL, cancellable, error);
+			success = e_cache_foreach_update (cache, E_CACHE_INCLUDE_DELETED, NULL, e_book_cache_fill_pgp_cert_column_and_categories, NULL, cancellable, error);
+		}
+
+		if (from_version == 2) {
+			/* Version 3 added EBC_TABLE_CATEGORIES */
+			success = e_cache_foreach (cache, E_CACHE_INCLUDE_DELETED, NULL, e_book_cache_populate_categories, NULL, cancellable, error);
 		}
 	}
 
@@ -4554,6 +4716,8 @@ e_book_cache_initialize (EBookCache *book_cache,
 
 	cache = E_CACHE (book_cache);
 
+	book_cache->priv->initializing = TRUE;
+
 	success = e_book_cache_populate_other_columns (book_cache, setup, &other_columns, error);
 	if (!success)
 		goto exit;
@@ -4611,6 +4775,8 @@ e_book_cache_initialize (EBookCache *book_cache,
 
  exit:
 	g_slist_free_full (other_columns, e_cache_column_info_free);
+
+	book_cache->priv->initializing = FALSE;
 
 	return success;
 }
@@ -4850,6 +5016,36 @@ e_book_cache_ref_collator (EBookCache *book_cache)
 	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), NULL);
 
 	return e_collator_ref (book_cache->priv->collator);
+}
+
+/**
+ * e_book_cache_dup_categories:
+ * @book_cache: An #EBookCache
+ *
+ * Returns a comma-separated list of categories used by the contacts
+ * stored in the @book_cache. Free the returned string with g_free(),
+ * when no longer needed.
+ *
+ * Returns: (transfer full) (nullable): a comma-separated list of categories
+ *    used by the contacts stored in the @book_cache, or %NULL, when no
+ *    category is used by any contact.
+ *
+ * Since: 3.48
+ **/
+gchar *
+e_book_cache_dup_categories (EBookCache *book_cache)
+{
+	GString *categories = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), NULL);
+
+	e_cache_keys_foreach_sync (book_cache->priv->categories_table,
+		ebc_gather_categories_cb, &categories, NULL, NULL);
+
+	if (categories)
+		return g_string_free (categories, FALSE);
+
+	return NULL;
 }
 
 /**
@@ -6310,7 +6506,7 @@ e_book_cache_put_locked (ECache *cache,
 			 GError **error)
 {
 	EBookCache *book_cache;
-	EContact *contact;
+	EContact *contact, *old_contact = NULL;
 	gchar *updated_vcard = NULL;
 	gboolean e164_changed;
 	gboolean success;
@@ -6330,14 +6526,21 @@ e_book_cache_put_locked (ECache *cache,
 		object = updated_vcard;
 	}
 
+	if (!book_cache->priv->initializing && is_replace) {
+		if (!e_book_cache_get_contact (book_cache, uid, FALSE, &old_contact, cancellable, NULL))
+			old_contact = NULL;
+	}
+
 	success = E_CACHE_CLASS (e_book_cache_parent_class)->put_locked (cache, uid, revision, object, other_columns, offline_state,
 		is_replace, cancellable, error);
 
 	success = success && ebc_update_aux_tables (cache, uid, revision, object, cancellable, error);
+	success = success && ebc_update_categories_table (book_cache, old_contact, contact, cancellable, error);
 
 	if (success && e164_changed)
 		g_signal_emit (book_cache, signals[E164_CHANGED], 0, contact, is_replace);
 
+	g_clear_object (&old_contact);
 	g_clear_object (&contact);
 	g_free (updated_vcard);
 
@@ -6350,12 +6553,24 @@ e_book_cache_remove_locked (ECache *cache,
 			    GCancellable *cancellable,
 			    GError **error)
 {
+	EBookCache *book_cache;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_BOOK_CACHE (cache), FALSE);
 	g_return_val_if_fail (E_CACHE_CLASS (e_book_cache_parent_class)->remove_locked != NULL, FALSE);
 
+	book_cache = E_BOOK_CACHE (cache);
+
 	success = ebc_delete_from_aux_tables (cache, uid, cancellable, error);
+
+	if (success && !book_cache->priv->initializing) {
+		EContact *old_contact = NULL;
+
+		if (e_book_cache_get_contact (book_cache, uid, FALSE, &old_contact, cancellable, NULL) && old_contact)
+			success = ebc_update_categories_table (book_cache, old_contact, NULL, cancellable, error);
+
+		g_clear_object (&old_contact);
+	}
 
 	success = success && E_CACHE_CLASS (e_book_cache_parent_class)->remove_locked (cache, uid, cancellable, error);
 
@@ -6424,6 +6639,7 @@ e_book_cache_finalize (GObject *object)
 {
 	EBookCache *book_cache = E_BOOK_CACHE (object);
 
+	g_clear_object (&book_cache->priv->categories_table);
 	g_clear_object (&book_cache->priv->source);
 
 	g_clear_pointer (&book_cache->priv->collator, e_collator_unref);
@@ -6496,10 +6712,34 @@ e_book_cache_class_init (EBookCacheClass *klass)
 		g_cclosure_marshal_generic,
 		G_TYPE_STRING, 1,
 		E_TYPE_CONTACT);
+
+	/**
+	 * EBookCache:categories-changed:
+	 * @book_cache: an #EBookCache
+	 * @categories: comma-separated list of categories
+	 *
+	 * A signal emitted when a list of the used categories in the @book_cache changed.
+	 *
+	 * Since: 3.48
+	 **/
+	signals[CATEGORIES_CHANGED] = g_signal_new (
+		"categories-changed",
+		G_OBJECT_CLASS_TYPE (klass),
+		G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+		G_STRUCT_OFFSET (EBookCacheClass, categories_changed),
+		NULL,
+		NULL,
+		g_cclosure_marshal_VOID__STRING,
+		G_TYPE_NONE, 1,
+		G_TYPE_STRING);
 }
 
 static void
 e_book_cache_init (EBookCache *book_cache)
 {
 	book_cache->priv = e_book_cache_get_instance_private (book_cache);
+	book_cache->priv->categories_table = e_cache_keys_new (E_CACHE (book_cache), EBC_TABLE_CATEGORIES, "category", "unusedvalue");
+
+	g_signal_connect_swapped (book_cache->priv->categories_table, "changed",
+		G_CALLBACK (ebc_emit_categories_changed), book_cache);
 }

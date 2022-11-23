@@ -8577,3 +8577,88 @@ e_book_sqlite_cursor_compare_contact (EBookSqlite *ebsql,
 
 	return comparison;
 }
+
+/**
+ * e_book_sqlite_exec:
+ * @ebsql: an #EBookSqlite
+ * @sql_stmt: an SQLite statement to execute
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Executes an SQLite statement. Use e_book_sqlite_select() for
+ * SELECT statements.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.48
+ **/
+gboolean
+e_book_sqlite_exec (EBookSqlite *ebsql,
+		    const gchar *sql_stmt,
+		    GCancellable *cancellable,
+		    GError **error)
+{
+	g_return_val_if_fail (E_IS_BOOK_SQLITE (ebsql), FALSE);
+
+	return ebsql_exec (ebsql, sql_stmt, NULL, NULL, cancellable, error);
+}
+
+typedef struct _SelectData {
+	EBookSqlite *ebsql;
+	EBookSqliteSelectFunc func;
+	gpointer user_data;
+} SelectData;
+
+static gint
+e_book_sqlite_select_cb (gpointer user_data,
+			 gint ncols,
+			 gchar **column_values,
+			 gchar **column_names)
+{
+	SelectData *sd = user_data;
+
+	g_return_val_if_fail (sd != NULL, SQLITE_MISUSE);
+	g_return_val_if_fail (sd->func != NULL, SQLITE_MISUSE);
+
+	if (!sd->func (sd->ebsql, ncols, (const gchar **) column_names, (const gchar **) column_values, sd->user_data))
+		return SQLITE_ABORT;
+
+	return SQLITE_OK;
+}
+
+/**
+ * e_book_sqlite_select:
+ * @ebsql: an #EBookSqlite
+ * @sql_stmt: an SQLite SELECT statement to execute
+ * @func: (scope call): an #EBookSqliteSelectFunc function to call for each row
+ * @user_data: user data for @func
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Executes a SELECT statement @sql_stmt and calls @func for each row of the result.
+ * Use e_book_sqlite_exec() for statements which do not return row sets.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.48
+ **/
+gboolean
+e_book_sqlite_select (EBookSqlite *ebsql,
+		      const gchar *sql_stmt,
+		      EBookSqliteSelectFunc func,
+		      gpointer user_data,
+		      GCancellable *cancellable,
+		      GError **error)
+{
+	SelectData sd;
+
+	g_return_val_if_fail (E_IS_BOOK_SQLITE (ebsql), FALSE);
+	g_return_val_if_fail (sql_stmt, FALSE);
+	g_return_val_if_fail (func, FALSE);
+
+	sd.ebsql = ebsql;
+	sd.func = func;
+	sd.user_data = user_data;
+
+	return ebsql_exec (ebsql, sql_stmt, func ? e_book_sqlite_select_cb : NULL, &sd, cancellable, error);
+}

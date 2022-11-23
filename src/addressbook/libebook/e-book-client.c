@@ -571,6 +571,10 @@ book_client_dbus_proxy_property_changed (EClient *client,
 		backend_prop_name = E_BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS;
 	}
 
+	if (g_str_equal (property_name, "categories")) {
+		backend_prop_name = E_BOOK_BACKEND_PROPERTY_CATEGORIES;
+	}
+
 	if (g_str_equal (property_name, "writable")) {
 		gboolean writable;
 
@@ -912,6 +916,16 @@ book_client_get_backend_property_sync (EClient *client,
 
 	if (g_str_equal (prop_name, E_BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
 		strv = e_dbus_address_book_dup_supported_fields (dbus_proxy);
+		if (strv != NULL)
+			*prop_value = g_strjoinv (",", strv);
+		else
+			*prop_value = g_strdup ("");
+		g_strfreev (strv);
+		return TRUE;
+	}
+
+	if (g_str_equal (prop_name, E_BOOK_BACKEND_PROPERTY_CATEGORIES)) {
+		strv = e_dbus_address_book_dup_categories (dbus_proxy);
 		if (strv != NULL)
 			*prop_value = g_strjoinv (",", strv);
 		else

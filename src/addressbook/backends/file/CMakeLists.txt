@@ -10,6 +10,8 @@ set(SOURCES
 	e-book-backend-file.c
 	e-book-backend-file.h
 	e-book-backend-file-factory.c
+	e-book-sqlite-keys.c
+	e-book-sqlite-keys.h
 )
 
 if(HAVE_LIBDB)
