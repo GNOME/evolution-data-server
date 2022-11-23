@@ -1027,6 +1027,23 @@ e_cal_component_set_categories (ECalComponent *comp,
 	i_cal_component_take_property (comp->priv->icalcomp, prop);
 }
 
+static gboolean
+e_cal_component_get_categories_list_cb (ICalComponent *comp,
+					gchar **inout_category,
+					gpointer user_data)
+{
+	GSList **pcateg_list = user_data;
+
+	g_return_val_if_fail (pcateg_list != NULL, FALSE);
+	g_return_val_if_fail (inout_category != NULL, FALSE);
+	g_return_val_if_fail (*inout_category != NULL, FALSE);
+
+	*pcateg_list = g_slist_prepend (*pcateg_list, *inout_category);
+	*inout_category = NULL;
+
+	return TRUE;
+}
+
 /**
  * e_cal_component_get_categories_list:
  * @comp: A calendar component object.
@@ -1044,38 +1061,12 @@ e_cal_component_set_categories (ECalComponent *comp,
 GSList *
 e_cal_component_get_categories_list (ECalComponent *comp)
 {
-	ICalProperty *prop;
-	const gchar *categories;
-	const gchar *p;
-	const gchar *cat_start;
 	GSList *categ_list = NULL;
-	gchar *str;
 
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	g_return_val_if_fail (comp->priv->icalcomp != NULL, NULL);
 
-	for (prop = i_cal_component_get_first_property (comp->priv->icalcomp, I_CAL_CATEGORIES_PROPERTY);
-	     prop;
-	     g_object_unref (prop), prop = i_cal_component_get_next_property (comp->priv->icalcomp, I_CAL_CATEGORIES_PROPERTY)) {
-		categories = i_cal_property_get_categories (prop);
-
-		if (!categories)
-			continue;
-
-		cat_start = categories;
-
-		for (p = categories; *p; p++) {
-			if (*p == ',') {
-				str = g_strndup (cat_start, p - cat_start);
-				categ_list = g_slist_prepend (categ_list, str);
-
-				cat_start = p + 1;
-			}
-		}
-
-		str = g_strndup (cat_start, p - cat_start);
-		categ_list = g_slist_prepend (categ_list, str);
-	}
+	e_cal_util_foreach_category (comp->priv->icalcomp, e_cal_component_get_categories_list_cb, &categ_list);
 
 	return g_slist_reverse (categ_list);
 }

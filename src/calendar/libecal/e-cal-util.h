@@ -382,6 +382,32 @@ ICalProperty *	e_cal_util_component_find_property_for_locale
 						(ICalComponent *icalcomp,
 						 ICalPropertyKind prop_kind,
 						 const gchar *locale);
+/**
+ * ECalUtilForeachCategoryFunc:
+ * @comp: an #ICalComponent
+ * @inout_category: (inout): the category name
+ * @user_data: user data for the callback
+ *
+ * Function called for each non-empty category from e_cal_util_foreach_category().
+ * The @func can assume owenrship of the @inout_category content, in which case
+ * it should also set its content to %NULL, to avoid free of it. The string itself,
+ * if taken, should be freed with g_free(), when no longer needed.
+ *
+ * Returns: %TRUE to continue, %FALSE to stop
+ *
+ * Since: 3.48
+ **/
+typedef gboolean (* ECalUtilForeachCategoryFunc)(ICalComponent *comp,
+						 gchar **inout_category,
+						 gpointer user_data);
+
+void		e_cal_util_foreach_category	(ICalComponent *comp,
+						 ECalUtilForeachCategoryFunc func,
+						 gpointer user_data);
+void		e_cal_util_diff_categories	(ICalComponent *old_comp,
+						 ICalComponent *new_comp,
+						 GHashTable **out_added, /* const gchar *category ~> 1 */
+						 GHashTable **out_removed); /* const gchar *category ~> 1 */
 
 G_END_DECLS
 

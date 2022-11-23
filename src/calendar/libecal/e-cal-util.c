@@ -3316,3 +3316,162 @@ e_cal_util_component_find_property_for_locale (ICalComponent *icalcomp,
 
 	return result;
 }
+
+/**
+ * e_cal_util_foreach_category:
+ * @comp: an #ICalComponent
+ * @func: (scope call): an #ECalUtilForeachCategoryFunc callback to call for each category
+ * @user_data: user data passed to the @func
+ *
+ * Calls @func for each category stored in the @comp.
+ *
+ * Since: 3.48
+ **/
+void
+e_cal_util_foreach_category (ICalComponent *comp,
+			     ECalUtilForeachCategoryFunc func,
+			     gpointer user_data)
+{
+	ICalProperty *prop;
+	const gchar *categories;
+	const gchar *p;
+	const gchar *cat_start;
+	gchar *str;
+	gboolean can_continue = TRUE;
+
+	g_return_if_fail (I_CAL_IS_COMPONENT (comp));
+	g_return_if_fail (func != NULL);
+
+	for (prop = i_cal_component_get_first_property (comp, I_CAL_CATEGORIES_PROPERTY);
+	     prop && can_continue;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (comp, I_CAL_CATEGORIES_PROPERTY)) {
+		categories = i_cal_property_get_categories (prop);
+
+		if (!categories)
+			continue;
+
+		cat_start = categories;
+
+		for (p = categories; *p && can_continue; p++) {
+			if (*p == ',') {
+				if (p - cat_start > 0) {
+					str = g_strstrip (g_strndup (cat_start, p - cat_start));
+					if (*str)
+						can_continue = func (comp, &str, user_data);
+					g_free (str);
+				}
+
+				cat_start = p + 1;
+			}
+		}
+
+		if (can_continue && p - cat_start > 0) {
+			str = g_strstrip (g_strndup (cat_start, p - cat_start));
+			if (*str)
+				can_continue = func (comp, &str, user_data);
+			g_free (str);
+		}
+	}
+
+	g_clear_object (&prop);
+}
+
+static gboolean
+e_cal_util_extract_categories_cb (ICalComponent *comp,
+				  gchar **inout_category,
+				  gpointer user_data)
+{
+	GHashTable **pcategories = user_data;
+
+	g_return_val_if_fail (pcategories != NULL, FALSE);
+	g_return_val_if_fail (inout_category != NULL, FALSE);
+	g_return_val_if_fail (*inout_category != NULL, FALSE);
+
+	if (!*pcategories)
+		*pcategories = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+	g_hash_table_insert (*pcategories, *inout_category, GINT_TO_POINTER (1));
+
+	*inout_category = NULL;
+
+	return TRUE;
+}
+
+static GHashTable *
+e_cal_util_extract_categories (ICalComponent *comp)
+{
+	GHashTable *categories = NULL;
+
+	if (!comp)
+		return NULL;
+
+	g_return_val_if_fail (I_CAL_IS_COMPONENT (comp), NULL);
+
+	e_cal_util_foreach_category (comp, e_cal_util_extract_categories_cb, &categories);
+
+	return categories;
+}
+
+static gboolean
+e_cal_util_remove_matching_category_cb (gpointer key,
+					gpointer value,
+					gpointer user_data)
+{
+	GHashTable *other_table = user_data;
+
+	/* Remove from both tables those common */
+	return g_hash_table_remove (other_table, key);
+}
+
+/**
+ * e_cal_util_diff_categories:
+ * @old_comp: (nullable): an old #ICalComponent, or %NULL
+ * @new_comp: (nullable): a new #ICalComponent, or %NULL
+ * @out_added: (out) (transfer container) (element-type utf8 int): a #GHashTable with added categories
+ * @out_removed: (out) (transfer container) (element-type utf8 int): a #GHashTable with removed categories
+ *
+ * Compares list of categories on the @old_comp with the list of categories
+ * on the @new_comp and fills @out_added categories and @out_removed categories
+ * accordingly, as if the @old_comp is replaced with the @new_comp. When either
+ * of the components is %NULL, it's considered as having no categories set.
+ * Rather than returning empty #GHashTable, the return argument is set to %NULL
+ * when there are no added/removed categories.
+ *
+ * The key of the hash table is the category string, the value is an integer (1).
+ * There is used the hash table only for speed.
+ *
+ * The returned #GHashTable-s should be freed with g_hash_table_unref(),
+ * when no longer needed.
+ *
+ * Since: 3.48
+ **/
+void
+e_cal_util_diff_categories (ICalComponent *old_comp,
+			    ICalComponent *new_comp,
+			    GHashTable **out_added, /* const gchar *category ~> 1 */
+			    GHashTable **out_removed) /* const gchar *category ~> 1 */
+{
+	if (old_comp)
+		g_return_if_fail (I_CAL_IS_COMPONENT (old_comp));
+	if (new_comp)
+		g_return_if_fail (I_CAL_IS_COMPONENT (new_comp));
+	g_return_if_fail (out_added != NULL);
+	g_return_if_fail (out_removed != NULL);
+
+	*out_added = e_cal_util_extract_categories (new_comp);
+	*out_removed = e_cal_util_extract_categories (old_comp);
+
+	if (*out_added && *out_removed) {
+		g_hash_table_foreach_remove (*out_added, e_cal_util_remove_matching_category_cb, *out_removed);
+
+		if (!g_hash_table_size (*out_added)) {
+			g_hash_table_unref (*out_added);
+			*out_added = NULL;
+		}
+
+		if (!g_hash_table_size (*out_removed)) {
+			g_hash_table_unref (*out_removed);
+			*out_removed = NULL;
+		}
+	}
+}

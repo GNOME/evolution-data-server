@@ -220,6 +220,142 @@ test_clamp_vtimezone (ETestServerFixture *fixture,
 	g_object_unref (vtimezone);
 }
 
+static void
+test_categories (ETestServerFixture *fixture,
+		 gconstpointer user_data)
+{
+	ICalComponent *old_comp, *new_comp;
+	GHashTable *added, *removed;
+
+	new_comp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"CATEGORIES:cat1,cat2, cat3 \r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (new_comp);
+	e_cal_util_diff_categories (NULL, new_comp, &added, &removed);
+	g_assert_nonnull (added);
+	g_assert_null (removed);
+	g_assert_cmpint (g_hash_table_size (added), ==, 3);
+	g_assert_true (g_hash_table_contains (added, "cat1"));
+	g_assert_true (g_hash_table_contains (added, "cat2"));
+	g_assert_true (g_hash_table_contains (added, "cat3"));
+	g_clear_pointer (&added, g_hash_table_unref);
+
+	e_cal_util_diff_categories (new_comp, NULL, &added, &removed);
+	g_assert_null (added);
+	g_assert_nonnull (removed);
+	g_assert_cmpint (g_hash_table_size (removed), ==, 3);
+	g_assert_true (g_hash_table_contains (removed, "cat1"));
+	g_assert_true (g_hash_table_contains (removed, "cat2"));
+	g_assert_true (g_hash_table_contains (removed, "cat3"));
+	g_clear_pointer (&removed, g_hash_table_unref);
+
+	old_comp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (old_comp);
+	e_cal_util_diff_categories (old_comp, NULL, &added, &removed);
+	g_assert_null (added);
+	g_assert_null (removed);
+
+	e_cal_util_diff_categories (NULL, old_comp, &added, &removed);
+	g_assert_null (added);
+	g_assert_null (removed);
+
+	e_cal_util_diff_categories (old_comp, new_comp, &added, &removed);
+	g_assert_nonnull (added);
+	g_assert_null (removed);
+	g_assert_cmpint (g_hash_table_size (added), ==, 3);
+	g_assert_true (g_hash_table_contains (added, "cat1"));
+	g_assert_true (g_hash_table_contains (added, "cat2"));
+	g_assert_true (g_hash_table_contains (added, "cat3"));
+	g_clear_pointer (&added, g_hash_table_unref);
+
+	e_cal_util_diff_categories (new_comp, old_comp, &added, &removed);
+	g_assert_null (added);
+	g_assert_nonnull (removed);
+	g_assert_cmpint (g_hash_table_size (removed), ==, 3);
+	g_assert_true (g_hash_table_contains (removed, "cat1"));
+	g_assert_true (g_hash_table_contains (removed, "cat2"));
+	g_assert_true (g_hash_table_contains (removed, "cat3"));
+	g_clear_pointer (&removed, g_hash_table_unref);
+	g_clear_object (&old_comp);
+
+	old_comp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"CATEGORIES:cat1\r\n"
+		"CATEGORIES: cat2 \r\n"
+		"CATEGORIES:cat3\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (old_comp);
+	e_cal_util_diff_categories (old_comp, new_comp, &added, &removed);
+	g_assert_null (added);
+	g_assert_null (removed);
+	g_clear_object (&old_comp);
+
+	old_comp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"CATEGORIES:cat1\r\n"
+		"CATEGORIES: cat2 \r\n"
+		"CATEGORIES:cat3\r\n"
+		"CATEGORIES:cat4\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (old_comp);
+	e_cal_util_diff_categories (old_comp, new_comp, &added, &removed);
+	g_assert_null (added);
+	g_assert_nonnull (removed);
+	g_assert_cmpint (g_hash_table_size (removed), ==, 1);
+	g_assert_true (g_hash_table_contains (removed, "cat4"));
+	g_clear_pointer (&removed, g_hash_table_unref);
+	g_clear_object (&old_comp);
+
+	old_comp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"CATEGORIES:cat0\r\n"
+		"CATEGORIES:cat3\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (old_comp);
+	e_cal_util_diff_categories (old_comp, new_comp, &added, &removed);
+	g_assert_nonnull (added);
+	g_assert_nonnull (removed);
+	g_assert_cmpint (g_hash_table_size (added), ==, 2);
+	g_assert_true (g_hash_table_contains (added, "cat1"));
+	g_assert_true (g_hash_table_contains (added, "cat2"));
+	g_assert_cmpint (g_hash_table_size (removed), ==, 1);
+	g_assert_true (g_hash_table_contains (removed, "cat0"));
+	g_clear_pointer (&added, g_hash_table_unref);
+	g_clear_pointer (&removed, g_hash_table_unref);
+	g_clear_object (&old_comp);
+
+	old_comp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"CATEGORIES:bat1\r\n"
+		"CATEGORIES:bat2\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (old_comp);
+	e_cal_util_diff_categories (old_comp, new_comp, &added, &removed);
+	g_assert_nonnull (added);
+	g_assert_nonnull (removed);
+	g_assert_cmpint (g_hash_table_size (added), ==, 3);
+	g_assert_true (g_hash_table_contains (added, "cat1"));
+	g_assert_true (g_hash_table_contains (added, "cat2"));
+	g_assert_true (g_hash_table_contains (added, "cat3"));
+	g_assert_cmpint (g_hash_table_size (removed), ==, 2);
+	g_assert_true (g_hash_table_contains (removed, "bat1"));
+	g_assert_true (g_hash_table_contains (removed, "bat2"));
+	g_clear_pointer (&added, g_hash_table_unref);
+	g_clear_pointer (&removed, g_hash_table_unref);
+	g_clear_object (&old_comp);
+
+	g_clear_object (&new_comp);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -229,6 +365,8 @@ main (gint argc,
 
 	g_test_add ("/ECalUtils/ClampVTIMEZONE", ETestServerFixture, &test_closure,
 		e_test_server_utils_setup, test_clamp_vtimezone, e_test_server_utils_teardown);
+	g_test_add ("/ECalUtils/Categories", ETestServerFixture, &test_closure,
+		e_test_server_utils_setup, test_categories, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run (argc, argv);
 }
