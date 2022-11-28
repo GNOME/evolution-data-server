@@ -46,6 +46,21 @@ struct _ECalBackendGTasksPrivate {
 G_DEFINE_TYPE_WITH_PRIVATE (ECalBackendGTasks, e_cal_backend_gtasks, E_TYPE_CAL_META_BACKEND)
 
 static gboolean
+ecb_gtasks_only_zeros (const gchar *str)
+{
+	if (!str)
+		return FALSE;
+
+	while (*str) {
+		if (*str != '0')
+			return FALSE;
+		str++;
+	}
+
+	return TRUE;
+}
+
+static gboolean
 ecb_gtasks_check_data_version (ECalCache *cal_cache)
 {
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
@@ -161,7 +176,7 @@ ecb_gtasks_gdata_to_comp (JsonObject *task)
 	}
 
 	position = e_gdata_task_get_position (task);
-	if (position)
+	if (position && !ecb_gtasks_only_zeros (position))
 		e_cal_util_component_set_x_property (icomp, X_EVO_GTASKS_POSITION, position);
 
 	parent = e_gdata_task_get_parent (task);
@@ -261,7 +276,7 @@ ecb_gtasks_comp_to_gdata (ECalComponent *comp,
 		}
 	}
 
-	if (position && *position)
+	if (position && *position && !ecb_gtasks_only_zeros (position))
 		*out_position = g_steal_pointer (&position);
 
 	g_free (position);
@@ -800,8 +815,9 @@ ecb_gtasks_save_component_sync (ECalMetaBackend *meta_backend,
 				e_gdata_task_get_id (new_task), parent, NULL /*position*/, cancellable, error);
 		}
 	} else {
+		/* TODO: Position is an ordering string, not a task id */
 		success = e_gdata_session_tasks_insert_sync (cbgtasks->priv->gdata, cbgtasks->priv->tasklist_id, comp_task,
-			parent, position, &new_task, cancellable, error);
+			parent, NULL /* position */, &new_task, cancellable, error);
 	}
 
 	g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
