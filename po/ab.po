@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2022-10-27 10:29+0000\n"
+"POT-Creation-Date: 2022-11-23 07:20+0000\n"
 "Last-Translator: Нанба Наала <naala-nanba@rambler.ru>\n"
 "Language-Team: Abkhazian <daniel.abzakh@gmail.com>\n"
 "Language: ab\n"
@@ -153,10 +153,10 @@ msgstr ""
 #: src/calendar/libecal/e-cal-client.c:6844
 #: src/calendar/libedata-cal/e-cal-cache.c:1847
 #: src/camel/camel-filter-driver.c:1724 src/camel/camel-filter-driver.c:1853
-#: src/camel/providers/imapx/camel-imapx-server.c:3330
-#: src/camel/providers/imapx/camel-imapx-server.c:3336
-#: src/camel/providers/imapx/camel-imapx-server.c:3346
-#: src/camel/providers/imapx/camel-imapx-server.c:3358
+#: src/camel/providers/imapx/camel-imapx-server.c:3333
+#: src/camel/providers/imapx/camel-imapx-server.c:3339
+#: src/camel/providers/imapx/camel-imapx-server.c:3349
+#: src/camel/providers/imapx/camel-imapx-server.c:3361
 #: src/camel/providers/nntp/camel-nntp-store.c:419
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
 #: src/libedataserver/e-soup-session.c:930
@@ -166,7 +166,7 @@ msgstr ""
 #: src/libedataserverui/e-reminders-widget.c:2141
 #: src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
-msgstr ""
+msgstr "Еилкаам агха"
 
 #. Translators: An error message shown to a user when trying to do an
 #. * operation on the LDAP address book which is not connected to the server
@@ -326,9 +326,9 @@ msgid "Family Name"
 msgstr ""
 
 #: src/addressbook/libebook-contacts/e-contact.c:165
-#: src/libedataserverui/e-certificate-widget.c:401
+#: src/libedataserverui/e-certificate-widget.c:415
 msgid "Nickname"
-msgstr ""
+msgstr "Ахьӡырҩашьа"
 
 #. Email fields
 #: src/addressbook/libebook-contacts/e-contact.c:168
@@ -403,7 +403,7 @@ msgstr ""
 
 #: src/addressbook/libebook-contacts/e-contact.c:190
 msgid "Home Fax"
-msgstr ""
+msgstr "Аҩнытәи афакс"
 
 #: src/addressbook/libebook-contacts/e-contact.c:191
 msgid "ISDN"
@@ -423,7 +423,7 @@ msgstr ""
 
 #: src/addressbook/libebook-contacts/e-contact.c:195
 msgid "Pager"
-msgstr ""
+msgstr "Пеиджер"
 
 #: src/addressbook/libebook-contacts/e-contact.c:196
 msgid "Primary Phone"
@@ -431,7 +431,7 @@ msgstr ""
 
 #: src/addressbook/libebook-contacts/e-contact.c:197
 msgid "Radio"
-msgstr ""
+msgstr "Арадио"
 
 #: src/addressbook/libebook-contacts/e-contact.c:198
 msgid "Telex"
@@ -444,8 +444,8 @@ msgstr "TTY"
 
 #. Organizational fields
 #: src/addressbook/libebook-contacts/e-contact.c:203
-#: src/libedataserverui/e-certificate-widget.c:403
-#: src/libedataserverui/e-certificate-widget.c:412
+#: src/libedataserverui/e-certificate-widget.c:417
+#: src/libedataserverui/e-certificate-widget.c:426
 msgid "Organization"
 msgstr "Еиҿкаара"
 
@@ -463,7 +463,7 @@ msgstr ""
 
 #: src/addressbook/libebook-contacts/e-contact.c:207
 msgid "Role"
-msgstr ""
+msgstr "Ароль"
 
 #: src/addressbook/libebook-contacts/e-contact.c:208
 msgid "Manager"
@@ -471,7 +471,7 @@ msgstr ""
 
 #: src/addressbook/libebook-contacts/e-contact.c:209
 msgid "Assistant"
-msgstr ""
+msgstr "Ацхырааҩ"
 
 #. Web fields
 #: src/addressbook/libebook-contacts/e-contact.c:212
@@ -1283,7 +1283,7 @@ msgstr ""
 
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:959
 msgid "Birthday"
-msgstr ""
+msgstr "Аирамш"
 
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:995
 #, c-format
@@ -2708,11 +2708,11 @@ msgstr ""
 msgid "Failed to transfer messages: %s"
 msgstr ""
 
-#: src/camel/camel-filter-driver.c:1734 src/camel/camel-filter-driver.c:1867
+#: src/camel/camel-filter-driver.c:1734 src/camel/camel-filter-driver.c:1876
 msgid "Syncing folder"
 msgstr ""
 
-#: src/camel/camel-filter-driver.c:1739 src/camel/camel-filter-driver.c:1875
+#: src/camel/camel-filter-driver.c:1739 src/camel/camel-filter-driver.c:1884
 msgid "Complete"
 msgstr "Ихырқәшоуп"
 
@@ -2726,17 +2726,17 @@ msgstr ""
 msgid "Failed at message %d of %d"
 msgstr ""
 
-#: src/camel/camel-filter-driver.c:2032 src/camel/camel-filter-driver.c:2056
+#: src/camel/camel-filter-driver.c:2041 src/camel/camel-filter-driver.c:2065
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr ""
 
-#: src/camel/camel-filter-driver.c:2046
+#: src/camel/camel-filter-driver.c:2055
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr ""
 
-#: src/camel/camel-filter-driver.c:2065
+#: src/camel/camel-filter-driver.c:2074
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr ""
@@ -3584,7 +3584,7 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr ""
 
 #: src/camel/camel-session.c:508
-#: src/camel/providers/imapx/camel-imapx-server.c:3249
+#: src/camel/providers/imapx/camel-imapx-server.c:3252
 #: src/camel/providers/pop3/camel-pop3-store.c:305
 #: src/camel/providers/pop3/camel-pop3-store.c:809
 #: src/camel/providers/smtp/camel-smtp-transport.c:696
@@ -3952,7 +3952,7 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr ""
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:987
-#: src/camel/providers/imapx/camel-imapx-server.c:3423
+#: src/camel/providers/imapx/camel-imapx-server.c:3426
 #: src/camel/providers/nntp/camel-nntp-store.c:348
 #: src/camel/providers/nntp/camel-nntp-store.c:1343
 #: src/camel/providers/nntp/camel-nntp-store.c:2156
@@ -4061,7 +4061,7 @@ msgstr ""
 #: src/camel/providers/imapx/camel-imapx-provider.c:47
 #: src/camel/providers/nntp/camel-nntp-provider.c:43
 msgid "Folders"
-msgstr ""
+msgstr "Аҭаӡқәа "
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:49
 msgid "_Show only subscribed folders"
@@ -4180,221 +4180,221 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:1152
+#: src/camel/providers/imapx/camel-imapx-server.c:1157
 msgid "Error writing to cache stream"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3044
-#: src/camel/providers/imapx/camel-imapx-server.c:3131
-#: src/camel/providers/imapx/camel-imapx-server.c:3456
+#: src/camel/providers/imapx/camel-imapx-server.c:3047
+#: src/camel/providers/imapx/camel-imapx-server.c:3134
+#: src/camel/providers/imapx/camel-imapx-server.c:3459
 msgid "Failed to get capabilities"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3063
+#: src/camel/providers/imapx/camel-imapx-server.c:3066
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3064
+#: src/camel/providers/imapx/camel-imapx-server.c:3067
 #: src/camel/providers/smtp/camel-smtp-transport.c:283
 msgid "STARTTLS not supported"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3073
+#: src/camel/providers/imapx/camel-imapx-server.c:3076
 msgid "Failed to issue STARTTLS"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3120
+#: src/camel/providers/imapx/camel-imapx-server.c:3123
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3236
+#: src/camel/providers/imapx/camel-imapx-server.c:3239
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3262
+#: src/camel/providers/imapx/camel-imapx-server.c:3265
 #, c-format
 msgid ""
 "Plaintext authentication disallowed on insecure connections. Change "
 "encryption to STARTTLS or TLS for account “%s”."
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3275
+#: src/camel/providers/imapx/camel-imapx-server.c:3278
 #: src/camel/providers/nntp/camel-nntp-store.c:454
 #: src/camel/providers/nntp/camel-nntp-store.c:596
 msgid "Cannot authenticate without a username"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3284
+#: src/camel/providers/imapx/camel-imapx-server.c:3287
 #: src/camel/providers/nntp/camel-nntp-store.c:605
 #: src/camel/providers/pop3/camel-pop3-store.c:709
 #: src/camel/providers/pop3/camel-pop3-store.c:747
 msgid "Authentication password not available"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3294
-#: src/camel/providers/imapx/camel-imapx-server.c:3309
+#: src/camel/providers/imapx/camel-imapx-server.c:3297
+#: src/camel/providers/imapx/camel-imapx-server.c:3312
 msgid "Failed to authenticate"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3381
+#: src/camel/providers/imapx/camel-imapx-server.c:3384
 msgid "Failed to issue ID"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3483
+#: src/camel/providers/imapx/camel-imapx-server.c:3486
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3505
+#: src/camel/providers/imapx/camel-imapx-server.c:3508
 msgid "Failed to issue NAMESPACE"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3523
+#: src/camel/providers/imapx/camel-imapx-server.c:3526
 msgid "Failed to enable QResync"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3560
+#: src/camel/providers/imapx/camel-imapx-server.c:3563
 msgid "Failed to issue NOTIFY"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4039
+#: src/camel/providers/imapx/camel-imapx-server.c:4042
 msgid "Failed to select mailbox"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4139
+#: src/camel/providers/imapx/camel-imapx-server.c:4142
 msgid "Cannot issue command, no stream available"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4405
+#: src/camel/providers/imapx/camel-imapx-server.c:4408
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4406
+#: src/camel/providers/imapx/camel-imapx-server.c:4409
 msgid "No such message available."
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4455
-#: src/camel/providers/imapx/camel-imapx-server.c:4480
-#: src/camel/providers/imapx/camel-imapx-server.c:4519
+#: src/camel/providers/imapx/camel-imapx-server.c:4458
+#: src/camel/providers/imapx/camel-imapx-server.c:4483
+#: src/camel/providers/imapx/camel-imapx-server.c:4522
 msgid "Error fetching message"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4497
-#: src/camel/providers/imapx/camel-imapx-server.c:5270
+#: src/camel/providers/imapx/camel-imapx-server.c:4500
+#: src/camel/providers/imapx/camel-imapx-server.c:5273
 msgid "Error performing NOOP"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4512
+#: src/camel/providers/imapx/camel-imapx-server.c:4515
 msgid "Failed to close the tmp stream"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4543
+#: src/camel/providers/imapx/camel-imapx-server.c:4546
 msgid "Failed to copy the tmp file"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4781
+#: src/camel/providers/imapx/camel-imapx-server.c:4784
 msgid "Error moving messages"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4781
+#: src/camel/providers/imapx/camel-imapx-server.c:4784
 msgid "Error copying messages"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5060
-#: src/camel/providers/imapx/camel-imapx-server.c:5081
+#: src/camel/providers/imapx/camel-imapx-server.c:5063
+#: src/camel/providers/imapx/camel-imapx-server.c:5084
 msgid "Cannot create spool file: "
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5167
+#: src/camel/providers/imapx/camel-imapx-server.c:5170
 msgid "Error appending message"
 msgstr ""
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5423
+#: src/camel/providers/imapx/camel-imapx-server.c:5441
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5427
+#: src/camel/providers/imapx/camel-imapx-server.c:5445
 msgid "Error scanning changes"
 msgstr ""
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5448
+#: src/camel/providers/imapx/camel-imapx-server.c:5468
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5476
+#: src/camel/providers/imapx/camel-imapx-server.c:5495
 msgid "Error fetching message info"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5626
+#: src/camel/providers/imapx/camel-imapx-server.c:5646
 msgid "Error running STATUS"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6206
-#: src/camel/providers/imapx/camel-imapx-server.c:6261
-#: src/camel/providers/imapx/camel-imapx-server.c:6325
+#: src/camel/providers/imapx/camel-imapx-server.c:6226
+#: src/camel/providers/imapx/camel-imapx-server.c:6281
+#: src/camel/providers/imapx/camel-imapx-server.c:6345
 msgid "Error syncing changes"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6219
-#: src/camel/providers/imapx/camel-imapx-server.c:6271
-#: src/camel/providers/imapx/camel-imapx-server.c:6344
-#: src/camel/providers/imapx/camel-imapx-server.c:6485
+#: src/camel/providers/imapx/camel-imapx-server.c:6239
+#: src/camel/providers/imapx/camel-imapx-server.c:6291
+#: src/camel/providers/imapx/camel-imapx-server.c:6364
+#: src/camel/providers/imapx/camel-imapx-server.c:6505
 msgid "Error expunging message"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6567
+#: src/camel/providers/imapx/camel-imapx-server.c:6587
 msgid "Error fetching folders"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6575
+#: src/camel/providers/imapx/camel-imapx-server.c:6595
 msgid "Error fetching subscribed folders"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6632
+#: src/camel/providers/imapx/camel-imapx-server.c:6652
 msgid "Error creating folder"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6682
+#: src/camel/providers/imapx/camel-imapx-server.c:6702
 msgid "Error deleting folder"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6728
+#: src/camel/providers/imapx/camel-imapx-server.c:6748
 msgid "Error renaming folder"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6760
+#: src/camel/providers/imapx/camel-imapx-server.c:6780
 msgid "Error subscribing to folder"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6796
+#: src/camel/providers/imapx/camel-imapx-server.c:6816
 msgid "Error unsubscribing from folder"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6836
+#: src/camel/providers/imapx/camel-imapx-server.c:6856
 msgid "IMAP server does not support quotas"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6848
+#: src/camel/providers/imapx/camel-imapx-server.c:6868
 msgid "Error retrieving quota information"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6913
+#: src/camel/providers/imapx/camel-imapx-server.c:6933
 msgid "Search failed"
 msgstr ""
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7041
+#: src/camel/providers/imapx/camel-imapx-server.c:7061
 msgid "Error running IDLE"
 msgstr ""
 
@@ -7013,107 +7013,108 @@ msgstr ""
 msgid "Key Encipherment"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:397
+#: src/libedataserverui/e-certificate-widget.c:411
 msgid "Certificate"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:397
+#: src/libedataserverui/e-certificate-widget.c:411
 msgid "Identity"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:398
-#: src/libedataserverui/e-certificate-widget.c:410
+#: src/libedataserverui/e-certificate-widget.c:412
+#: src/libedataserverui/e-certificate-widget.c:424
 msgid "Issuer"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:399
+#: src/libedataserverui/e-certificate-widget.c:413
 msgid "Expires on"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:400
+#: src/libedataserverui/e-certificate-widget.c:414
 msgid "Subject"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:400
-#: src/libedataserverui/e-certificate-widget.c:410
+#: src/libedataserverui/e-certificate-widget.c:414
+#: src/libedataserverui/e-certificate-widget.c:424
 msgid "Common Name"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:402
-#: src/libedataserverui/e-certificate-widget.c:411
+#: src/libedataserverui/e-certificate-widget.c:416
+#: src/libedataserverui/e-certificate-widget.c:425
 msgid "Email"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:404
-#: src/libedataserverui/e-certificate-widget.c:413
+#: src/libedataserverui/e-certificate-widget.c:418
+#: src/libedataserverui/e-certificate-widget.c:427
 msgid "Organization Unit"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:405
-#: src/libedataserverui/e-certificate-widget.c:414
+#: src/libedataserverui/e-certificate-widget.c:419
+#: src/libedataserverui/e-certificate-widget.c:428
 msgid "Country"
 msgstr "Атәыла"
 
-#: src/libedataserverui/e-certificate-widget.c:406
-#: src/libedataserverui/e-certificate-widget.c:415
+#: src/libedataserverui/e-certificate-widget.c:420
+#: src/libedataserverui/e-certificate-widget.c:429
 msgid "State"
 msgstr "Аҵакыра"
 
-#: src/libedataserverui/e-certificate-widget.c:407
-#: src/libedataserverui/e-certificate-widget.c:416
+#: src/libedataserverui/e-certificate-widget.c:421
+#: src/libedataserverui/e-certificate-widget.c:430
 msgid "Locality"
 msgstr "Аҭыҧ"
 
-#: src/libedataserverui/e-certificate-widget.c:408
-#: src/libedataserverui/e-certificate-widget.c:417
+#: src/libedataserverui/e-certificate-widget.c:422
+#: src/libedataserverui/e-certificate-widget.c:431
 msgid "Domain Component Name"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:409
+#: src/libedataserverui/e-certificate-widget.c:423
 msgid "Alternative Emails"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:418
-msgid "Details"
-msgstr ""
-
-#: src/libedataserverui/e-certificate-widget.c:418
-msgid "Not Before"
-msgstr ""
-
-#: src/libedataserverui/e-certificate-widget.c:419
-msgid "Not After"
-msgstr ""
-
-#: src/libedataserverui/e-certificate-widget.c:420
-msgid "Usage"
-msgstr ""
-
-#: src/libedataserverui/e-certificate-widget.c:421
-msgid "Version"
-msgstr "Аверсиа"
-
-#: src/libedataserverui/e-certificate-widget.c:422
-msgid "Serial Number"
-msgstr ""
-
-#: src/libedataserverui/e-certificate-widget.c:423
-msgid "Key ID"
-msgstr ""
-
-#: src/libedataserverui/e-certificate-widget.c:424
-msgid "Signature Algorithm"
-msgstr "Анапаҵыҩра алгоритм"
-
-#: src/libedataserverui/e-certificate-widget.c:425
+#: src/libedataserverui/e-certificate-widget.c:432
+#: src/libedataserverui/e-certificate-widget.c:440
 msgid "SHA-256 Fingerprint"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:426
-msgid "Public Key"
+#: src/libedataserverui/e-certificate-widget.c:433
+msgid "Details"
+msgstr "Аԥкаарақәа"
+
+#: src/libedataserverui/e-certificate-widget.c:433
+msgid "Not Before"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:426
+#: src/libedataserverui/e-certificate-widget.c:434
+msgid "Not After"
+msgstr ""
+
+#: src/libedataserverui/e-certificate-widget.c:435
+msgid "Usage"
+msgstr "Ахархәара"
+
+#: src/libedataserverui/e-certificate-widget.c:436
+msgid "Version"
+msgstr "Аверсиа"
+
+#: src/libedataserverui/e-certificate-widget.c:437
+msgid "Serial Number"
+msgstr ""
+
+#: src/libedataserverui/e-certificate-widget.c:438
+msgid "Key ID"
+msgstr ""
+
+#: src/libedataserverui/e-certificate-widget.c:439
+msgid "Signature Algorithm"
+msgstr "Анапаҵыҩра алгоритм"
+
+#: src/libedataserverui/e-certificate-widget.c:441
+msgid "Public Key"
+msgstr "Иаарту ацаҧха"
+
+#: src/libedataserverui/e-certificate-widget.c:441
 msgid "Algorithm"
 msgstr "Алгоритм"
 
@@ -7648,7 +7649,7 @@ msgstr ""
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:879
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:1127
 msgid "Reminders"
-msgstr ""
+msgstr "Агәаларшәарақәа"
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:460
 msgid "Warning"
@@ -7954,7 +7955,7 @@ msgstr ""
 #: src/services/evolution-source-registry/builtin/system-memo-list.source.desktop.in:4
 #: src/services/evolution-source-registry/builtin/system-task-list.source.desktop.in:4
 msgid "Personal"
-msgstr ""
+msgstr "Ахатәы"
 
 #: src/services/evolution-source-registry/builtin/system-proxy.source.desktop.in:4
 msgid "Default Proxy Settings"
