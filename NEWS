@@ -1,3 +1,27 @@
+Evolution-Data-Server 3.46.2 2022-12-02
+---------------------------------------
+
+Bug Fixes:
+	I#431 - e-xml-utils: Enable parse of huge XML files
+	I#432 - Fix possible NULL-dereference in e_cal_backend_file_modify_objects()
+	I#435 - ECalComponentAttendee: Default CUTYPE is INDIVIDUAL
+	I#437 - IMAP: Excessive memory usage on folder summary download
+	I#438 - Trust Prompt: Add issuer's certificate fingerprint
+	I#439 - Fails to add task with X-EVOLUTION-GTASKS-POSITION into Google Task list
+
+Miscellaneous:
+	build: Add a check for localtime_r()
+
+Translations:
+	Balázs Úr (hu)
+	Boyuan Yang (zh_CN)
+	Gianvito Cavasoli (it)
+	Jürgen Benvenuti (de)
+	Kukuh Syafaat (id)
+	Nart Tlisha (ab)
+	Nathan Follens (nl)
+	Мирослав Николић (sr)
+
 Evolution-Data-Server 3.46.1 2022-10-21
 ---------------------------------------
 
