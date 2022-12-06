@@ -32,6 +32,8 @@
 
 #include "evolution-data-server-config.h"
 
+#include "e-data-server-util.h"
+#include "e-time-utils.h"
 #include "e-soup-auth-bearer.h"
 
 #include <time.h>
@@ -50,6 +52,35 @@ G_DEFINE_TYPE_WITH_PRIVATE (
 	ESoupAuthBearer,
 	e_soup_auth_bearer,
 	SOUP_TYPE_AUTH)
+
+static gboolean
+e_soup_auth_bearer_debug_enabled (void)
+{
+	static gint oauth2_debug = -1;
+
+	if (oauth2_debug == -1)
+		oauth2_debug = g_strcmp0 (g_getenv ("OAUTH2_DEBUG"), "1") == 0 ? 1 : 0;
+
+	return oauth2_debug != 0;
+}
+
+static void
+e_soup_auth_bearer_debug_print (const gchar *format,
+				...) G_GNUC_PRINTF (1, 2);
+
+static void
+e_soup_auth_bearer_debug_print (const gchar *format,
+				...)
+{
+	va_list args;
+
+	if (!e_soup_auth_bearer_debug_enabled ())
+		return;
+
+	va_start (args, format);
+	e_util_debug_printv ("BEARER", format, args);
+	va_end (args);
+}
 
 static gboolean
 e_soup_auth_bearer_is_expired_locked (ESoupAuthBearer *bearer)
@@ -81,21 +112,38 @@ e_soup_auth_bearer_update (SoupAuth *auth,
                            SoupMessage *message,
                            GHashTable *auth_header)
 {
+	ESoupAuthBearer *bearer;
+
+	g_return_val_if_fail (E_IS_SOUP_AUTH_BEARER (auth), FALSE);
+
+	bearer = E_SOUP_AUTH_BEARER (auth);
+
 	if (message && soup_message_get_status (message) == SOUP_STATUS_UNAUTHORIZED) {
-		ESoupAuthBearer *bearer;
-
-		g_return_val_if_fail (E_IS_SOUP_AUTH_BEARER (auth), FALSE);
-
-		bearer = E_SOUP_AUTH_BEARER (auth);
-
 		g_mutex_lock (&bearer->priv->property_lock);
 
 		/* Expire the token, it's likely to be invalid. */
 		bearer->priv->expiry = EXPIRY_INVALID;
 
+		e_soup_auth_bearer_debug_print ("%s: bearer:%p message:%p token:%p did set it as expired\n", G_STRFUNC, bearer, message, bearer->priv->access_token);
+
 		g_mutex_unlock (&bearer->priv->property_lock);
 
 		return FALSE;
+	} else if (message) {
+		g_mutex_lock (&bearer->priv->property_lock);
+
+		e_soup_auth_bearer_debug_print ("%s: bearer:%p message:%p message status is not UNAUTHORIZED, but %u; token:%p expired:%d\n",
+			G_STRFUNC, bearer, message, soup_message_get_status (message),
+			bearer->priv->access_token, e_soup_auth_bearer_is_expired_locked (bearer));
+
+		g_mutex_unlock (&bearer->priv->property_lock);
+	} else {
+		g_mutex_lock (&bearer->priv->property_lock);
+
+		e_soup_auth_bearer_debug_print ("%s: bearer:%p no message; token:%p expired:%d\n",
+			G_STRFUNC, bearer, bearer->priv->access_token, e_soup_auth_bearer_is_expired_locked (bearer));
+
+		g_mutex_unlock (&bearer->priv->property_lock);
 	}
 
 	return TRUE;
@@ -123,6 +171,10 @@ e_soup_auth_bearer_is_authenticated (SoupAuth *auth)
 	authenticated = (bearer->priv->access_token != NULL) &&
 		!e_soup_auth_bearer_is_expired_locked (bearer);
 
+	e_soup_auth_bearer_debug_print ("%s: bearer:%p token:%p expired:%d authenticated:%d\n",
+		G_STRFUNC, bearer, bearer->priv->access_token,
+		e_soup_auth_bearer_is_expired_locked (bearer), authenticated);
+
 	g_mutex_unlock (&bearer->priv->property_lock);
 
 	return authenticated;
@@ -141,6 +193,10 @@ e_soup_auth_bearer_get_authorization (SoupAuth *auth,
 
 	res = g_strdup_printf ("Bearer %s", bearer->priv->access_token);
 
+	e_soup_auth_bearer_debug_print ("%s: bearer:%p message:%p; status:%u token:%p expired:%d\n",
+		G_STRFUNC, bearer, message, soup_message_get_status (message),
+		bearer->priv->access_token, e_soup_auth_bearer_is_expired_locked (bearer));
+
 	g_mutex_unlock (&bearer->priv->property_lock);
 
 	return res;
@@ -158,6 +214,8 @@ e_soup_auth_bearer_authenticate (SoupAuth *auth,
 				 const gchar *password)
 {
 	/* Not applicable here */
+	e_soup_auth_bearer_debug_print ("%s: bearer:%p tried to authenticate with username:'%s' password:%p\n",
+		G_STRFUNC, auth, username, password);
 }
 
 static void
@@ -233,6 +291,22 @@ e_soup_auth_bearer_set_access_token (ESoupAuthBearer *bearer,
 		bearer->priv->expiry = time (NULL) + expires_in_seconds - 5;
 	else
 		bearer->priv->expiry = EXPIRY_INVALID;
+
+	if (e_soup_auth_bearer_debug_enabled ()) {
+		gchar time_str[128];
+
+		if (bearer->priv->expiry != EXPIRY_INVALID) {
+			time_t tt = (time_t) bearer->priv->expiry;
+			e_time_format_time (localtime (&tt), TRUE, TRUE, time_str, sizeof (time_str));
+		} else {
+			time_str[0] = '-';
+			time_str[1] = '1';
+			time_str[2] = '\0';
+		}
+
+		e_soup_auth_bearer_debug_print ("%s: bearer:%p token:%p changed:%d expires in %d seconds, at %s\n",
+			G_STRFUNC, bearer, bearer->priv->access_token, changed, expires_in_seconds, time_str);
+	}
 
 	g_mutex_unlock (&bearer->priv->property_lock);
 
