@@ -11,8 +11,6 @@
 #ifndef E_GDATA_SESSION_H
 #define E_GDATA_SESSION_H
 
-#ifndef __GI_SCANNER__
-
 #include <json-glib/json-glib.h>
 #include <libedataserver/e-gdata-query.h>
 #include <libedataserver/e-soup-session.h>
@@ -221,8 +219,6 @@ gboolean	e_gdata_session_tasks_update_sync	(EGDataSession *self,
 							 JsonObject **out_updated_task,
 							 GCancellable *cancellable,
 							 GError **error);
-
-#endif /* __GI_SCANNER__ */
 
 G_END_DECLS
 

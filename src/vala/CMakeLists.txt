@@ -107,6 +107,7 @@ set(vala_deps
 	gio-2.0
 	libsoup-3.0
 	libxml-2.0
+	json-glib-1.0
 	posix
 )
 

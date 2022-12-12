@@ -6,14 +6,7 @@ xml_get_child_by_name skip=false type="Xml.Node*?"
 xml_get_child_by_name.parent type="Xml.Node*"
 xml_get_child_by_name.child_name type="string"
 
-xmlhash_add parent="E.XmlHash"
-xmlhash_compare parent="E.XmlHash"
-xmlhash_destroy parent="E.XmlHash"
-xmlhash_foreach_key_remove parent="E.XmlHash"
-xmlhash_foreach_key parent="E.XmlHash"
-xmlhash_new parent="E.XmlHash"
-xmlhash_remove parent="E.XmlHash"
-xmlhash_write parent="E.XmlHash"
+xmlhash_* name="xmlhash_(.+)" parent="E.XmlHash"
 
 time_parse_date.result type="Posix.tm"
 time_parse_date_and_time.result type="Posix.tm"
@@ -32,3 +25,5 @@ webdav_discover_sources_finish parent="E.Source" symbol_type="method" instance_i
 webdav_discover_sources_full parent="E.Source" symbol_type="method" instance_idx=0 finish_name="e_webdav_discover_sources_finish"
 webdav_discover_sources_full_sync parent="E.Source" symbol_type="method" instance_idx=0
 webdav_discover_sources_sync parent="E.Source" symbol_type="method" instance_idx=0
+
+gdata_* name="gdata_(.+)" parent="E.GData"
