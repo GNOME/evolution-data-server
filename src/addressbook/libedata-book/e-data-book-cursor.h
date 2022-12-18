@@ -103,7 +103,7 @@ typedef gboolean (*EDataBookCursorSetSexpFunc) (EDataBookCursor     *cursor,
  *
  * See e_data_book_cursor_step() for more details on the expected behaviour of this method.
  *
- * Returns: The number of contacts traversed if successfull, otherwise -1 is
+ * Returns: The number of contacts traversed if successful, otherwise -1 is
  * returned and @error is set.
  *
  * Since: 3.12

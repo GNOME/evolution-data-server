@@ -54,7 +54,7 @@ e_gdata_query_new (void)
 
 /**
  * e_gdata_query_ref:
- * @self: an #GEDataQuery
+ * @self: an #EGDataQuery
  *
  * Increases the reference count of the @self.
  * The added reference shuld be removed with e_gdata_query_unref().

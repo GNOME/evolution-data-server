@@ -664,7 +664,7 @@ camel_stream_write_string (CamelStream *stream,
  * Write all of a stream (until eos) into another stream, in a
  * blocking fashion.
  *
- * Returns: -1 on error, or the number of bytes succesfully
+ * Returns: -1 on error, or the number of bytes successfully
  * copied across streams.
  **/
 gssize

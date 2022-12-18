@@ -4967,7 +4967,7 @@ e_source_invoke_authenticate_finish (ESource *source,
  * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate
  * @op_error: (nullable): a #GError with a description of the previous credentials error, or %NULL
  *
- * Emits localy (in this process only) the ESource::credentials-required
+ * Emits locally (in this process only) the ESource::credentials-required
  * signal with given parameters. That's the difference with e_source_invoke_credentials_required(),
  * which calls the signal globally, within each client.
  *

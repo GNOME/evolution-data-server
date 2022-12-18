@@ -1707,7 +1707,7 @@ array_to_list_and_free (GArray *array)
  *    given @zone timezone. This is needed if the DTSTART is a DATE or floating
  *    time.
  * 
- * Finds out end time of (reccurent) event.
+ * Finds out end time of (recurrent) event.
  *
  * Returns: End timepoint of given event
  *

@@ -2777,7 +2777,7 @@ header_decode_mailbox (const gchar **in,
 				gsize l = strlen (last);
 				gsize p = strlen (pre);
 
-				/* don't append ' ' between sucsessive encoded words */
+				/* don't append ' ' between successive encoded words */
 				if ((l > 6 && last[l - 2] == '?' && last[l - 1] == '=')
 				    && (p > 6 && pre[0] == '=' && pre[1] == '?')) {
 					/* don't append ' ' */

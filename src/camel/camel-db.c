@@ -515,7 +515,7 @@ camel_db_finalize (GObject *object)
 	g_mutex_clear (&cdb->priv->transaction_lock);
 	g_free (cdb->priv->filename);
 
-	d (g_print ("\nDatabase succesfully closed \n"));
+	d (g_print ("\nDatabase successfully closed \n"));
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_db_parent_class)->finalize (object);
@@ -843,7 +843,7 @@ camel_db_new (const gchar *filename,
 	cdb = g_object_new (CAMEL_TYPE_DB, NULL);
 	cdb->priv->db = db;
 	cdb->priv->filename = g_strdup (filename);
-	d (g_print ("\nDatabase succesfully opened  \n"));
+	d (g_print ("\nDatabase successfully opened  \n"));
 
 	sqlite3_create_function (db, "MATCH", 2, SQLITE_UTF8, NULL, cdb_match_func, NULL, NULL);
 	sqlite3_create_function (db, "CAMELCOMPAREDATE", 2, SQLITE_UTF8, NULL, cdb_camel_compare_date_func, NULL, NULL);

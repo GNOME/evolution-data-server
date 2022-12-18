@@ -4263,7 +4263,7 @@ camel_folder_synchronize (CamelFolder *folder,
  *
  * Finishes the operation started with camel_folder_synchronize().
  *
- * Returns: %TRUE on sucess, %FALSE on error
+ * Returns: %TRUE on success, %FALSE on error
  *
  * Since: 3.0
  **/

@@ -476,7 +476,7 @@ error:
  * Writes the summary to disk.  The summary is only written if changes
  * have occurred.
  *
- * Returns: 0 on succes or -1 on fail
+ * Returns: 0 on success or -1 on fail
  **/
 gint
 camel_store_summary_save (CamelStoreSummary *summary)

@@ -2090,7 +2090,7 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 			*out_end = max_time;
 
 	} else {
-		/* ALARMS, EVENTS: DTEND and reccurences */
+		/* ALARMS, EVENTS: DTEND and recurrences */
 
 		time_t may_end = _TIME_MIN;
 

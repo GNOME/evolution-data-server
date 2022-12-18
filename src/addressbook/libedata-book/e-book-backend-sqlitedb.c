@@ -536,7 +536,7 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 	gint version = 0;
 	LocaleColumns locale_columns = { FALSE, FALSE };
 
-	/* sync_data points to syncronization data, it could be last_modified
+	/* sync_data points to synchronization data, it could be last_modified
 	 * time or a sequence number or some text depending on the backend.
 	 *
 	 * partial_content says whether the contents are partially downloaded

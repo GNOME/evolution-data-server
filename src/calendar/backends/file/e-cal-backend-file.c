@@ -1494,7 +1494,7 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 	e_source_set_connection_status (e_backend_get_source (E_BACKEND (backend)),
 		E_SOURCE_CONNECTION_STATUS_CONNECTED);
 
-	/* Claim a succesful open if we are already open */
+	/* Claim a successful open if we are already open */
 	if (priv->path && priv->comp_uid_hash) {
 		/* Success */
 		goto done;

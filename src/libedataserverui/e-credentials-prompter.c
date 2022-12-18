@@ -1903,7 +1903,7 @@ credentials_prompter_prompt_sync (ECredentialsPrompter *prompter,
  *    successfully or unsuccessfully. The function can be called from any
  *    thread, though a dedicated thread is preferred.
  *
- * Returns: %TRUE, when the credentials were provided sucessfully and they
+ * Returns: %TRUE, when the credentials were provided successfully and they
  *   can be used to authenticate the @source; %FALSE otherwise.
  *
  * Since: 3.16

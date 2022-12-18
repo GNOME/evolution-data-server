@@ -543,7 +543,7 @@ e_file_cache_thaw_changes (EFileCache *cache)
 
 /**
  * e_file_cache_get_filename:
- * @cache: A %EFileCache object.
+ * @cache: An #EFileCache object.
  *
  * Gets the name of the file where the cache is being stored.
  *

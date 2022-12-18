@@ -310,7 +310,7 @@ e_dbhash_destroy (EDbHash *edbh)
 
 	db = edbh->priv->db;
 
-	/* Close datbase */
+	/* Close database */
 	db->close (db, 0);
 
 	g_free (edbh->priv);
