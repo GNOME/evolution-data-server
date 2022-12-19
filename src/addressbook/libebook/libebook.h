@@ -32,6 +32,8 @@
 #include <libebook/e-book.h>
 #include <libebook/e-destination.h>
 
+#include <libebook/e-book-autocleanups.h>
+
 #undef __LIBEBOOK_H_INSIDE__
 
 #endif /* LIBEBOOK_H */

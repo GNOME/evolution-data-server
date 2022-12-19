@@ -27,6 +27,7 @@ set(SOURCES
 set(HEADERS
 	libebook.h
 	e-book.h
+	e-book-autocleanups.h
 	e-book-client.h
 	e-book-client-cursor.h
 	e-book-client-view.h

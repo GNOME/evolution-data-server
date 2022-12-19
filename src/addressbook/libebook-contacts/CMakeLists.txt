@@ -51,6 +51,7 @@ set(SOURCES
 set(HEADERS
 	libebook-contacts.h
 	e-address-western.h
+	e-book-contacts-autocleanups.h
 	e-book-contacts-enums.h
 	e-book-contacts-utils.h
 	e-book-query.h

@@ -33,6 +33,8 @@
 #include <libebook-contacts/e-source-backend-summary-setup.h>
 #include <libebook-contacts/e-phone-number.h>
 
+#include <libebook-contacts/e-book-contacts-autocleanups.h>
+
 #undef __LIBEBOOK_CONTACTS_H_INSIDE__
 
 #endif /* LIBEBOOK_CONTACTS_H */

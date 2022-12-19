@@ -25,12 +25,12 @@
 #ifndef __GI_SCANNER__
 #ifdef G_DEFINE_AUTOPTR_CLEANUP_FUNC
 
-G_DEFINE_AUTOPTR_CLEANUP_FUNC(EBackendFactory, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EBackend, g_object_unref)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(EBackendFactory, g_object_unref)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(ECache, g_object_unref)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(ECacheColumnInfo, e_cache_column_info_free)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ECacheColumnValues, e_cache_column_values_free)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ECacheOfflineChange, e_cache_offline_change_free)
-G_DEFINE_AUTOPTR_CLEANUP_FUNC(ECacheColumnInfo, e_cache_column_info_free)
-G_DEFINE_AUTOPTR_CLEANUP_FUNC(ECache, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ECacheReaper, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ECollectionBackend, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ECollectionBackendFactory, g_object_unref)
