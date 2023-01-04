@@ -1264,6 +1264,8 @@ typedef struct _AsyncSendData {
 	gulong restarted_id;
 	gchar *certificate_pem;
 	GTlsCertificateFlags certificate_errors;
+	gint io_priority;
+	gboolean caught_bearer_expired;
 } AsyncSendData;
 
 static void
@@ -1395,6 +1397,7 @@ e_soup_session_send_message_ready_cb (GObject *source_object,
 	SoupMessage *message;
 	GInputStream *input_stream;
 	GError *local_error = NULL;
+	gboolean caught_bearer_expired = FALSE;
 
 	g_return_if_fail (asd != NULL);
 
@@ -1426,14 +1429,36 @@ e_soup_session_send_message_ready_cb (GObject *source_object,
 
 	g_rec_mutex_unlock (&esession->priv->session_lock);
 
-	if (local_error) {
-		g_task_return_error (asd->task, local_error);
-		g_clear_object (&input_stream);
-	} else {
-		g_task_return_pointer (asd->task, input_stream, g_object_unref);
+	if (message && soup_message_get_status (message) == SOUP_STATUS_UNAUTHORIZED && !asd->caught_bearer_expired) {
+		g_mutex_lock (&esession->priv->property_lock);
+		if (esession->priv->using_bearer_auth && e_soup_auth_bearer_is_expired (esession->priv->using_bearer_auth)) {
+			g_signal_emit_by_name (message, "restarted");
+			asd->caught_bearer_expired = TRUE;
+			caught_bearer_expired = TRUE;
+		}
+		g_mutex_unlock (&esession->priv->property_lock);
 	}
 
-	g_object_unref (asd->task);
+	if (caught_bearer_expired) {
+		g_clear_error (&local_error);
+		g_clear_object (&input_stream);
+
+		g_rec_mutex_lock (&esession->priv->session_lock);
+
+		soup_session_send_async (session, message, asd->io_priority, g_task_get_cancellable (asd->task),
+			e_soup_session_send_message_ready_cb, asd);
+
+		g_rec_mutex_unlock (&esession->priv->session_lock);
+	} else {
+		if (local_error) {
+			g_task_return_error (asd->task, local_error);
+			g_clear_object (&input_stream);
+		} else {
+			g_task_return_pointer (asd->task, input_stream, g_object_unref);
+		}
+
+		g_object_unref (asd->task);
+	}
 }
 
 /**
@@ -1475,6 +1500,8 @@ e_soup_session_send_message (ESoupSession *session,
 
 	asd->session = g_object_ref (session);
 	asd->task = g_task_new (session, cancellable, callback, user_data);
+	asd->caught_bearer_expired = FALSE;
+	asd->io_priority = io_priority;
 	g_task_set_source_tag (asd->task, e_soup_session_send_message);
 	g_task_set_task_data (asd->task, asd, async_send_data_free);
 
@@ -1581,6 +1608,7 @@ e_soup_session_send_message_sync (ESoupSession *session,
 {
 	GInputStream *input_stream;
 	gboolean redirected;
+	gboolean caught_bearer_expired = FALSE;
 	gint resend_count = 0;
 	gulong authenticate_id = 0;
 	gulong restarted_id = 0;
@@ -1644,6 +1672,16 @@ e_soup_session_send_message_sync (ESoupSession *session,
 					}
 				}
 			}
+		} else if (soup_message_get_status (message) == SOUP_STATUS_UNAUTHORIZED && !caught_bearer_expired) {
+			g_mutex_lock (&session->priv->property_lock);
+			if (session->priv->using_bearer_auth && e_soup_auth_bearer_is_expired (session->priv->using_bearer_auth)) {
+				g_signal_emit_by_name (message, "restarted");
+				resend_count++;
+				redirected = TRUE;
+				caught_bearer_expired = TRUE;
+				g_clear_error (&local_error);
+			}
+			g_mutex_unlock (&session->priv->property_lock);
 		}
 	}
 

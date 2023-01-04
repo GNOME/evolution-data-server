@@ -42,6 +42,10 @@
 
 #include "e-oauth2-service.h"
 
+/* How many seconds earlier than reported by the server is the token considered expired
+   and will be refreshed. */
+#define TOKEN_VALIDITY_GAP_SECS 10
+
 G_DEFINE_INTERFACE (EOAuth2Service, e_oauth2_service, G_TYPE_OBJECT)
 
 static gboolean
@@ -1705,7 +1709,9 @@ e_oauth2_service_get_access_token_sync (EOAuth2Service *service,
 
 	G_LOCK (access_token_requests);
 	resp = eos_wait_for_access_token_request_locked (source, out_access_token, out_expires_in, cancellable, error);
-	if (resp != RESPONSE_UNKNOWN) {
+	if (resp != RESPONSE_UNKNOWN && resp != RESPONSE_FAILURE && *out_expires_in <= TOKEN_VALIDITY_GAP_SECS) {
+		*out_expires_in = 0;
+	} else if (resp != RESPONSE_UNKNOWN) {
 		G_UNLOCK (access_token_requests);
 
 		return resp != RESPONSE_FAILURE;
@@ -1723,7 +1729,7 @@ e_oauth2_service_get_access_token_sync (EOAuth2Service *service,
 		return FALSE;
 	}
 
-	if (local_expires_in <= 0 && refresh_token) {
+	if (local_expires_in <= TOKEN_VALIDITY_GAP_SECS && refresh_token) {
 		success = e_oauth2_service_refresh_and_store_token_sync (service, source, refresh_token,
 			ref_source, ref_source_user_data, cancellable, &local_error);
 
