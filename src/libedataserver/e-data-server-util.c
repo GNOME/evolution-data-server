@@ -2999,7 +2999,20 @@ e_util_change_uri_component (GUri **inout_uri,
 	g_return_if_fail (component != SOUP_URI_PORT);
 	g_return_if_fail (component != SOUP_URI_NONE);
 
-	tmp = soup_uri_copy (*inout_uri, component, value, SOUP_URI_NONE);
+	/* Make sure the default port is not "inherited" when changing scheme */
+	if (component == SOUP_URI_SCHEME && value && (
+	    g_uri_get_port (*inout_uri) == 80 ||
+	    g_uri_get_port (*inout_uri) == 443) && (
+	    g_ascii_strcasecmp (value, "http") == 0 ||
+	    g_ascii_strcasecmp (value, "https") == 0)) {
+		tmp = soup_uri_copy (*inout_uri,
+			component, value,
+			SOUP_URI_PORT, g_ascii_strcasecmp (value, "http") == 0 ? 80 : 443,
+			SOUP_URI_NONE);
+	} else {
+		tmp = soup_uri_copy (*inout_uri, component, value, SOUP_URI_NONE);
+	}
+
 	g_uri_unref (*inout_uri);
 	*inout_uri = tmp;
 }
