@@ -42,6 +42,9 @@
 
 #define EXPIRY_INVALID ((time_t) -1)
 
+/* How many seconds earlier than reported by the server is the token considered expired. */
+#define TOKEN_VALIDITY_GAP_SECS 5
+
 struct _ESoupAuthBearerPrivate {
 	GMutex property_lock;
 	gchar *access_token;
@@ -288,7 +291,7 @@ e_soup_auth_bearer_set_access_token (ESoupAuthBearer *bearer,
 	}
 
 	if (expires_in_seconds > 0)
-		bearer->priv->expiry = time (NULL) + expires_in_seconds - 5;
+		bearer->priv->expiry = time (NULL) + expires_in_seconds - TOKEN_VALIDITY_GAP_SECS;
 	else
 		bearer->priv->expiry = EXPIRY_INVALID;
 
