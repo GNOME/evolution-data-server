@@ -49,6 +49,8 @@
 #define d(x)
 
 struct _CamelMimeMessagePrivate {
+	gboolean parsing;
+
 	/* header fields */
 	time_t date;
 	gint date_offset;	/* GMT offset */
@@ -193,6 +195,16 @@ unref_recipient (gpointer key,
 }
 
 static void
+remove_all_recipients (gpointer key,
+		       gpointer value,
+		       gpointer user_data)
+{
+	CamelAddress *addr = value;
+
+	camel_address_remove (addr, -1);
+}
+
+static void
 mime_message_ensure_required_headers (CamelMimeMessage *message)
 {
 	CamelMedium *medium = CAMEL_MEDIUM (message);
@@ -284,9 +296,55 @@ mime_message_add_header (CamelMedium *medium,
                          const gchar *name,
                          const gchar *value)
 {
+	CamelMimeMessage *message = CAMEL_MIME_MESSAGE (medium);
 	CamelMediumClass *medium_class;
 
 	medium_class = CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class);
+
+	if (message->priv->parsing) {
+		CamelHeaderType header_type;
+		CamelAddress *addr;
+
+		/* Handle headers, which can be in the message only once; if they are duplicated,
+		   then prefer the first occurrence, not the last, to behave similar to other apps. */
+		header_type = (CamelHeaderType) GPOINTER_TO_INT (g_hash_table_lookup (header_name_table, name));
+
+		switch (header_type) {
+		case HEADER_FROM:
+			if (message->priv->from)
+				return;
+			break;
+		case HEADER_REPLY_TO:
+			if (message->priv->reply_to)
+				return;
+			break;
+		case HEADER_SUBJECT:
+			if (message->priv->subject)
+				return;
+			break;
+		case HEADER_TO:
+		case HEADER_CC:
+		case HEADER_BCC:
+			addr = g_hash_table_lookup (message->priv->recipients, name);
+			if (camel_address_length (addr) > 0)
+				return;
+			break;
+		case HEADER_RESENT_TO:
+		case HEADER_RESENT_CC:
+		case HEADER_RESENT_BCC:
+			break;
+		case HEADER_DATE:
+			if (message->priv->date != CAMEL_MESSAGE_DATE_CURRENT)
+				return;
+			break;
+		case HEADER_MESSAGE_ID:
+			if (message->priv->message_id)
+				return;
+			break;
+		default:
+			break;
+		}
+	}
 
 	/* if we process it, then it must be forced unique as well ... */
 	if (process_header (medium, name, value))
@@ -322,6 +380,7 @@ mime_message_construct_from_parser_sync (CamelMimePart *dw,
                                          GCancellable *cancellable,
                                          GError **error)
 {
+	CamelMimeMessage *message = CAMEL_MIME_MESSAGE (dw);
 	CamelMimePartClass *mime_part_class;
 	gchar *buf;
 	gsize len;
@@ -329,10 +388,27 @@ mime_message_construct_from_parser_sync (CamelMimePart *dw,
 	gint err;
 	gboolean success;
 
+	message->priv->parsing = TRUE;
+
+	/* Cleanup local structs, in case they are set, because while parsing
+	   only the first header is considered for some headers, thus the old
+	   values might confuse the code. */
+	g_clear_object (&message->priv->reply_to);
+	g_clear_object (&message->priv->from);
+	g_clear_pointer (&message->priv->subject, g_free);
+	g_clear_pointer (&message->priv->message_id, g_free);
+	message->priv->date = CAMEL_MESSAGE_DATE_CURRENT;
+	message->priv->date_offset = 0;
+	message->priv->date_received = CAMEL_MESSAGE_DATE_CURRENT;
+	message->priv->date_received_offset = 0;
+	g_hash_table_foreach (message->priv->recipients, remove_all_recipients, NULL);
+
 	/* let the mime-part construct the guts ... */
 	mime_part_class = CAMEL_MIME_PART_CLASS (camel_mime_message_parent_class);
 	success = mime_part_class->construct_from_parser_sync (
 		dw, mp, cancellable, error);
+
+	message->priv->parsing = FALSE;
 
 	if (!success)
 		return FALSE;
@@ -417,6 +493,7 @@ camel_mime_message_init (CamelMimeMessage *mime_message)
 			camel_internet_address_new ());
 	}
 
+	mime_message->priv->parsing = FALSE;
 	mime_message->priv->subject = NULL;
 	mime_message->priv->reply_to = NULL;
 	mime_message->priv->from = NULL;
