@@ -304,9 +304,14 @@ source_registry_dbus_object_dup_uid (GDBusObject *dbus_object)
 	EDBusObject *e_dbus_object;
 	EDBusSource *e_dbus_source;
 
-	/* EDBusSource interface should always be present. */
+	if (!E_DBUS_IS_OBJECT (dbus_object))
+		return NULL;
+
 	e_dbus_object = E_DBUS_OBJECT (dbus_object);
 	e_dbus_source = e_dbus_object_peek_source (e_dbus_object);
+
+	if (!E_DBUS_IS_SOURCE (e_dbus_source))
+		return NULL;
 
 	return e_dbus_source_dup_uid (e_dbus_source);
 }
@@ -840,6 +845,9 @@ source_registry_object_added_no_owner (ESourceRegistry *registry,
 
 	uid = source_registry_dbus_object_dup_uid (dbus_object);
 
+	if (!uid)
+		return;
+
 	if (source_registry_service_restart_table_remove (registry, uid))
 		source = e_source_registry_ref_source (registry, uid);
 
@@ -956,7 +964,8 @@ source_registry_object_removed_no_owner (ESourceRegistry *registry,
 		gchar *uid;
 
 		uid = source_registry_dbus_object_dup_uid (dbus_object);
-		source_registry_service_restart_table_add (registry, uid);
+		if (uid)
+			source_registry_service_restart_table_add (registry, uid);
 		g_free (uid);
 	}
 }
