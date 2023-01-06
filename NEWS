@@ -1,3 +1,73 @@
+Evolution-Data-Server 3.47.1 2023-01-06
+---------------------------------------
+
+Bug Fixes:
+	I#416 - LDAP: Possible memory leak in build_mods_from_contacts()
+	I#417 - Serialize OAuth2 token refresh for an account
+	I#418 - locale_supports_12_hour_format() can read uninitialized value
+	I#419 - IMAP: Does not forget renamed folders on the server
+	I#420 - LDAP: Use valid values for error paths of contact create/remove
+	I#421 - libedataserver: Enhance two-digit year parsing
+	I#427 - Tautology in e_named_parameters_equal()
+	I#428 - Addressbook: Fix possible read of uninitialized data
+	I#429 - Fix some (rarely) possible dereferences of NULL
+	I#431 - e-xml-utils: Enable parse of huge XML files
+	I#432 - Fix possible NULL-dereference in e_cal_backend_file_modify_objects()
+	I#435 - ECalComponentAttendee: Default CUTYPE is INDIVIDUAL
+	I#437 - IMAP: Excessive memory usage on folder summary download
+	I#438 - Trust Prompt: Add issuer's certificate fingerprint
+	I#439 - Fails to add task with X-EVOLUTION-GTASKS-POSITION into Google Task list
+	I#442 - e_util_change_uri_component: Reset default port when changing scheme
+	I#443 - Camel: Mail header order in malformed message matters
+	M!97 - desktop: Remove obsolete Bugzilla entries (Jake Dane)
+	M!102 - Stored values are never read (Дилян Палаузов)
+	M!106 - Fix few memory leaks (Дилян Палаузов)
+	M!107 - Use webkitgtk-6.0 API version (Michael Catanzaro)
+	M!108 - Try harder to support webkitgtk-6.0 (Michael Catanzaro)
+	M!109 - EGDataSession: Make it available to the GObject introspection (Corentin Noël)
+	M!110 - typos: success, successful (Дилян Палаузов)
+	M!111 - addressbook: Add autocleanups (Corentin Noël)
+	ews-I#208 - Prompting for password too often
+
+Miscellaneous:
+	po: Merge .source files back to the POTFILES.in
+	Handle negative value for GUri's port
+	Stored values are never read (Дилян Палаузов)
+	Fix memory leaks found by clang static analyzer (Дилян Палаузов)
+	EVCard: Slightly speed up vCard parsing and export to text
+	camel-db.c: Rearrange transaction handling (Дилян Палаузов)
+	CamelDB: Fix an uninitialized variable warning
+	build: Add a check for localtime_r()
+	build: Update check for elfutils/libdwfl.h
+	Add EXTENSIONS_DIR compile time option
+	Replace use of g_source_set_name_by_id()
+	Add ECacheKeys helper object for ref-counted data stored in an ECache table
+	Calendar: Extract categories parsing into a utility function
+	Contacts: Add 'categories' backend property with a list of used categories
+	Fix a crash under source_registry_object_added_no_owner()
+	ESoupAuthBearer: Add debug prints
+	IMAPX: Hide complete requests in debug logs for some sensitive commands
+
+Translations:
+	Aleksandr Melman (ru)
+	Asier Sarasua Garmendia (eu)
+	Aurimas Černius (lt)
+	Balázs Úr (hu)
+	Charles Monzat (fr)
+	Christian Kirbach (de)
+	Danial Behzadi (fa)
+	emintufan (tr)
+	Fabio Tomat (fur)
+	Gianvito Cavasoli (it)
+	Goran Vidović (hr)
+	Hugo Carvalho (pt)
+	Martin (sl)
+	Nathan Follens (nl)
+	Rafael Fontenelle (pt_BR)
+	Yuri Chornoivan (uk)
+	Zurab Kargareteli (ka)
+	Мирослав Николић (sr)
+
 Evolution-Data-Server 3.46.0 2022-09-16
 ---------------------------------------
 
