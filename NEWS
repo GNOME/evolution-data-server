@@ -1,3 +1,18 @@
+Evolution-Data-Server 3.46.3 2023-01-06
+---------------------------------------
+
+Bug Fixes:
+	I#442 - e_util_change_uri_component: Reset default port when changing scheme
+	ews-I#208 - Prompting for password too often
+
+Miscellaneous:
+	Fix a crash under source_registry_object_added_no_owner()
+	ESoupAuthBearer: Add debug prints
+
+Translations:
+	Danial Behzadi (fa)
+	Nart Tlisha (ab)
+
 Evolution-Data-Server 3.46.2 2022-12-02
 ---------------------------------------
 
