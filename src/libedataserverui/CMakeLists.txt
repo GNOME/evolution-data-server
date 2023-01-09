@@ -272,17 +272,27 @@ install(FILES ${HEADERS}
 )
 
 # create libedataserverui4/... in the build dir, thus .gir can find it
-file(COPY ${HEADERS}
+file(COPY ${HEADERS} ${SOURCES}
 	DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/libedataserverui${UI_VERSION}/
 )
 
-set(gir_sources ${SOURCES} ${HEADERS})
+set(INSTALLED_GIR_SOURCES)
+foreach(_item IN LISTS HEADERS SOURCES)
+	if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${_item}")
+		list(APPEND INSTALLED_GIR_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/libedataserverui${UI_VERSION}/${_item}")
+	else()
+		list(APPEND INSTALLED_GIR_SOURCES "${_item}")
+	endif()
+endforeach()
+
+set(gir_sources ${INSTALLED_GIR_SOURCES})
 set(gir_identifies_prefixes E)
 set(gir_includes GObject-2.0 Gio-2.0 Gtk-4.0 Soup-3.0)
 set(gir_cflags
 	-DLIBEDATASERVERUI_COMPILATION
 	-I${CMAKE_BINARY_DIR}/src/calendar
 	-I${CMAKE_SOURCE_DIR}/src/calendar
+	-I${CMAKE_CURRENT_BINARY_DIR}/libedataserverui${UI_VERSION}
 	-I${CMAKE_CURRENT_BINARY_DIR}
 )
 set(gir_libdirs
