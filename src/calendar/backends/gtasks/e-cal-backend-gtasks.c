@@ -41,6 +41,7 @@ struct _ECalBackendGTasksPrivate {
 	GRecMutex conn_lock;
 	GHashTable *preloaded; /* gchar *uid ~> ECalComponent * */
 	gboolean bad_request_for_timed_query;
+	gint64 last_updated;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (ECalBackendGTasks, e_cal_backend_gtasks, E_TYPE_CAL_META_BACKEND)
@@ -78,6 +79,8 @@ ecb_gtasks_store_data_version (ECalCache *cal_cache)
 	if (!e_cache_set_key_int (E_CACHE (cal_cache), GTASKS_DATA_VERSION_KEY, GTASKS_DATA_VERSION, &local_error)) {
 		g_warning ("%s: Failed to store data version: %s\n", G_STRFUNC, local_error ? local_error->message : "Unknown error");
 	}
+
+	g_clear_error (&local_error);
 }
 
 static void
@@ -509,8 +512,8 @@ ecb_gtasks_check_tasklist_changed_locked_sync (ECalBackendGTasks *cbgtasks,
 	tasklist_time = e_gdata_tasklist_get_updated (tasklist);
 
 	if (tasklist_time > 0 && last_sync_tag && ecb_gtasks_check_data_version (cal_cache)) {
-			*out_changed = tasklist_time != e_json_util_decode_iso8601 (last_sync_tag, 0);
-			*out_tasklist_time = tasklist_time;
+		*out_changed = tasklist_time != e_json_util_decode_iso8601 (last_sync_tag, 0);
+		*out_tasklist_time = tasklist_time;
 	}
 
 	g_clear_object (&cal_cache);
@@ -606,7 +609,7 @@ ecb_gtasks_get_changes_sync (ECalMetaBackend *meta_backend,
 	ECalCache *cal_cache;
 	EGDataQuery *query;
 	TasklistChangesData tcd;
-	gint64 tasklist_time = 0, last_updated;
+	gint64 tasklist_time = 0, last_updated, time_of_start;
 	gboolean changed = TRUE;
 	gboolean success;
 	GError *local_error = NULL;
@@ -630,16 +633,28 @@ ecb_gtasks_get_changes_sync (ECalMetaBackend *meta_backend,
 		return FALSE;
 	}
 
-	if (!changed) {
+	/* The Google server does not update the `updated` property (neither the `etag` property)
+	   of the task list when the user changes only the description or the due date of it
+	   in the web interface, which avoids proper update of the local content. The timed query
+	   can limit the downloaded data significantly, thus when it's available, use it, to
+	   workaround the server bug. */
+	if (!changed && cbgtasks->priv->bad_request_for_timed_query) {
 		g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
 		return TRUE;
 	}
 
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+	time_of_start = g_get_real_time () / G_USEC_PER_SEC;
+
+	/* When the list changed, use the last server time, to ensure all tasks are updated */
+	if (changed) {
+		cbgtasks->priv->last_updated = 0;
+		time_of_start = 0;
+	}
 
 	if (ecb_gtasks_check_data_version (cal_cache) &&
 	    last_sync_tag && !cbgtasks->priv->bad_request_for_timed_query)
-		last_updated = e_json_util_decode_iso8601 (last_sync_tag, 0);
+		last_updated = cbgtasks->priv->last_updated ? cbgtasks->priv->last_updated : e_json_util_decode_iso8601 (last_sync_tag, 0);
 	else
 		last_updated = 0;
 
@@ -682,14 +697,14 @@ ecb_gtasks_get_changes_sync (ECalMetaBackend *meta_backend,
 			ecb_gtasks_list_tasks_cb, &tcd, cancellable, &local_error);
 	}
 
-	g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
-	g_clear_pointer (&query, e_gdata_query_unref);
-
 	if (!g_cancellable_is_cancelled (cancellable) && !local_error) {
 		*out_new_sync_tag = e_json_util_encode_iso8601 (tasklist_time);
 		ecb_gtasks_store_data_version (cal_cache);
+		cbgtasks->priv->last_updated = time_of_start;
 	}
 
+	g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
+	g_clear_pointer (&query, e_gdata_query_unref);
 	g_clear_object (&cal_cache);
 
 	if (local_error)
