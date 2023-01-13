@@ -1349,7 +1349,7 @@ get_folder_info_offline (CamelStore *store,
 		 * that case.
 		 */
 		si_is_match =
-			!use_subscriptions ||
+			!use_subscriptions || si_is_inbox ||
 			(si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) ||
 			!(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) ||
 			(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST);
