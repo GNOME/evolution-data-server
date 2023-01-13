@@ -529,7 +529,7 @@ camel_imapx_namespace_response_lookup_for_path (CamelIMAPXNamespaceResponse *res
 	 * find the first namespace with an empty prefix string. */
 	find_empty_prefix =
 		(*folder_path == '\0') ||
-		(g_ascii_strcasecmp (folder_path, "INBOX") == 0);
+		camel_imapx_mailbox_is_inbox (folder_path);
 
 	head = g_queue_peek_head_link (&response->priv->namespaces);
 
@@ -546,7 +546,7 @@ camel_imapx_namespace_response_lookup_for_path (CamelIMAPXNamespaceResponse *res
 		/* Special handling when searching for an empty prefix. */
 		if (find_empty_prefix) {
 			if (*prefix == '\0' ||
-			    g_ascii_strcasecmp (prefix, "INBOX") == 0 ||
+			    camel_imapx_mailbox_is_inbox (prefix) ||
 			    (g_ascii_strncasecmp (prefix, "INBOX", 5) == 0 &&
 			     prefix[5] == separator && !prefix[6])) {
 				g_queue_push_tail (&candidates, namespace);

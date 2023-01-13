@@ -124,8 +124,7 @@ imapx_name_hash (gconstpointer key)
 {
 	const gchar *mailbox = key;
 
-	if (camel_imapx_mailbox_is_inbox (mailbox))
-		mailbox = "INBOX";
+	mailbox = camel_imapx_normalize_inbox_name (mailbox);
 
 	return g_str_hash (mailbox);
 }
@@ -137,11 +136,8 @@ imapx_name_equal (gconstpointer a,
 	const gchar *mailbox_a = a;
 	const gchar *mailbox_b = b;
 
-	if (camel_imapx_mailbox_is_inbox (mailbox_a))
-		mailbox_a = "INBOX";
-
-	if (camel_imapx_mailbox_is_inbox (mailbox_b))
-		mailbox_b = "INBOX";
+	mailbox_a = camel_imapx_normalize_inbox_name (mailbox_a);
+	mailbox_b = camel_imapx_normalize_inbox_name (mailbox_b);
 
 	return g_str_equal (mailbox_a, mailbox_b);
 }
@@ -1138,8 +1134,7 @@ get_folder_offline (CamelStore *store,
 	service = CAMEL_SERVICE (store);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
 
-	if (g_ascii_strcasecmp (folder_name, "INBOX") == 0)
-		folder_name = "INBOX";
+	folder_name = camel_imapx_normalize_inbox_name (folder_name);
 
 	si = camel_store_summary_path (imapx_store->summary, folder_name);
 
@@ -1325,7 +1320,7 @@ get_folder_info_offline (CamelStore *store,
 
 		si = g_ptr_array_index (array, ii);
 		folder_path = camel_store_info_path (imapx_store->summary, si);
-		si_is_inbox = (g_ascii_strcasecmp (folder_path, "INBOX") == 0);
+		si_is_inbox = camel_imapx_mailbox_is_inbox (folder_path);
 
 		/* Filter by folder path. */
 		si_is_match =
@@ -3038,8 +3033,7 @@ imapx_store_folder_is_subscribed (CamelSubscribable *subscribable,
 	if (folder_name && *folder_name == '/')
 		folder_name++;
 
-	if (g_ascii_strcasecmp (folder_name, "INBOX") == 0)
-		folder_name = "INBOX";
+	folder_name = camel_imapx_normalize_inbox_name (folder_name);
 
 	si = camel_store_summary_path (imapx_store->summary, folder_name);
 	if (si != NULL) {
@@ -3615,8 +3609,7 @@ imapx_store_ref_mailbox_unlocked (CamelIMAPXStore *imapx_store,
 	g_return_val_if_fail (mailbox_name != NULL, NULL);
 
 	/* The INBOX mailbox is case-insensitive. */
-	if (g_ascii_strcasecmp (mailbox_name, "INBOX") == 0)
-		mailbox_name = "INBOX";
+	mailbox_name = camel_imapx_normalize_inbox_name (mailbox_name);
 
 	mailbox = g_hash_table_lookup (imapx_store->priv->mailboxes, mailbox_name);
 

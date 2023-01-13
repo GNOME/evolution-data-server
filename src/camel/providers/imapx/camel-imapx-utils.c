@@ -3021,6 +3021,30 @@ camel_imapx_normalize_mailbox (gchar *mailbox_name,
 }
 
 /**
+ * camel_imapx_normalize_inbox_name:
+ * @mailbox_name: a mailbox name
+ *
+ * The Inbox folder name is case insensitive, thus use this
+ * function to normalize the name to be all letters in upper
+ * case, if the passed in @mailbox_name is "Inbox". Otherwise
+ * returns the @mailbox_name as is.
+ *
+ * Returns: Normalized Inbox name or the @mailbox_name.
+ *
+ * Since: 3.48
+ **/
+const gchar *
+camel_imapx_normalize_inbox_name (const gchar *mailbox_name)
+{
+	g_return_val_if_fail (mailbox_name != NULL, NULL);
+
+	if (camel_imapx_mailbox_is_inbox (mailbox_name))
+		return "INBOX";
+
+	return mailbox_name;
+}
+
+/**
  * camel_imapx_mailbox_is_inbox:
  * @mailbox_name: a mailbox name
  *

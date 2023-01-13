@@ -331,6 +331,7 @@ gchar *		camel_imapx_parse_mailbox	(CamelIMAPXInputStream *stream,
 						 GError **error);
 void		camel_imapx_normalize_mailbox	(gchar *mailbox_name,
 						 gchar separator);
+const gchar *	camel_imapx_normalize_inbox_name(const gchar *mailbox_name);
 gboolean	camel_imapx_mailbox_is_inbox	(const gchar *mailbox_name);
 gchar *		camel_imapx_mailbox_to_folder_path
 						(const gchar *mailbox_name,

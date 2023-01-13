@@ -163,8 +163,7 @@ camel_imapx_mailbox_new (CamelIMAPXListResponse *response,
 	attributes = camel_imapx_list_response_dup_attributes (response);
 
 	/* The INBOX mailbox is case-insensitive. */
-	if (g_ascii_strcasecmp (name, "INBOX") == 0)
-		name = "INBOX";
+	name = camel_imapx_normalize_inbox_name (name);
 
 	mailbox = g_object_new (CAMEL_TYPE_IMAPX_MAILBOX, NULL);
 	mailbox->priv->name = g_strdup (name);
@@ -207,8 +206,7 @@ camel_imapx_mailbox_clone (CamelIMAPXMailbox *mailbox,
 	g_return_val_if_fail (new_mailbox_name != NULL, NULL);
 
 	/* The INBOX mailbox is case-insensitive. */
-	if (g_ascii_strcasecmp (new_mailbox_name, "INBOX") == 0)
-		new_mailbox_name = "INBOX";
+	new_mailbox_name = camel_imapx_normalize_inbox_name (new_mailbox_name);
 
 	clone = g_object_new (CAMEL_TYPE_IMAPX_MAILBOX, NULL);
 	clone->priv->name = g_strdup (new_mailbox_name);
