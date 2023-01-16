@@ -791,16 +791,25 @@ cpi_oauth2_manual_continue_clicked_cb (GtkButton *button,
 				       gpointer user_data)
 {
 	ECredentialsPrompterImplOAuth2 *prompter_oauth2 = user_data;
-	const gchar *auth_code;
+	gchar *authorization_code = NULL;
+	const gchar *entered_text;
 
 	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_OAUTH2 (prompter_oauth2));
 
-	auth_code = _libedataserverui_entry_get_text (prompter_oauth2->priv->auth_code_entry);
+	entered_text = _libedataserverui_entry_get_text (prompter_oauth2->priv->auth_code_entry);
 
 	if (cpi_oauth2_get_debug ())
-		e_util_debug_print ("OAuth2", "Continue with user-entered authorization code: '%s'\n", auth_code);
+		e_util_debug_print ("OAuth2", "Continue with user-entered authorization code: '%s'\n", entered_text);
 
-	cpi_oauth2_test_authorization_code (prompter_oauth2, g_strdup (auth_code));
+	/* when the entered text looks like a URL, try to extract the code out of it */
+	if (entered_text && g_ascii_strncasecmp (entered_text, "https://", 8) == 0 &&
+	    e_oauth2_service_extract_authorization_code (prompter_oauth2->priv->service,
+		prompter_oauth2->priv->cred_source ? prompter_oauth2->priv->cred_source : prompter_oauth2->priv->auth_source,
+		NULL, entered_text, NULL, &authorization_code)) {
+		cpi_oauth2_test_authorization_code (prompter_oauth2, authorization_code);
+	} else {
+		cpi_oauth2_test_authorization_code (prompter_oauth2, g_strdup (entered_text));
+	}
 }
 
 static void
@@ -1010,7 +1019,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 
 	gtk_notebook_append_page (prompter_oauth2->priv->notebook, vbox, NULL);
 
-	widget = gtk_label_new (_("Open the above URL in a browser and go through the OAuth2 wizard there. Copy the resulting authorization code below to continue the authentication process."));
+	widget = gtk_label_new (_("Open the above URL in a browser and go through the OAuth2 wizard there. Copy the resulting authorization code, or the URL the OAuth2 wizard finished with, below to continue the authentication process."));
 	g_object_set (
 		G_OBJECT (widget),
 		"hexpand", FALSE,
