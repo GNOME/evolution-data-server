@@ -21,6 +21,10 @@
 
 #include "evolution-data-server-config.h"
 
+#ifdef HAVE_MALLOC_TRIM
+#include <malloc.h>
+#endif
+
 #include <string.h>
 #include <sys/stat.h>
 #include <time.h>
@@ -3059,4 +3063,23 @@ e_util_change_uri_port (GUri **inout_uri,
 	tmp = soup_uri_copy (*inout_uri, SOUP_URI_PORT, port, SOUP_URI_NONE);
 	g_uri_unref (*inout_uri);
 	*inout_uri = tmp;
+}
+
+/**
+ * e_util_call_malloc_trim: (skip)
+ *
+ * Calls malloc_trim() to free unused heap memory. The function
+ * does nothing, when the malloc_trim() is not available.
+ *
+ * This might be called after some operations which may use a lot
+ * of memory temporarily.
+ *
+ * Since: 3.48
+ **/
+void
+e_util_call_malloc_trim (void)
+{
+#ifdef HAVE_MALLOC_TRIM
+	malloc_trim (0);
+#endif
 }

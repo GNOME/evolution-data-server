@@ -262,6 +262,7 @@ void		e_util_change_uri_component	(GUri **inout_uri,
 						 const gchar *value);
 void		e_util_change_uri_port		(GUri **inout_uri,
 						 gint port);
+void		e_util_call_malloc_trim		(void);
 
 G_END_DECLS
 

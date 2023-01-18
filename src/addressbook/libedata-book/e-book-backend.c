@@ -552,6 +552,8 @@ book_backend_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_backend_parent_class)->finalize (object);
+
+	e_util_call_malloc_trim ();
 }
 
 static void
@@ -693,6 +695,8 @@ book_backend_shutdown (EBookBackend *backend)
 		"The %s instance for \"%s\" is shutting down.\n",
 		G_OBJECT_TYPE_NAME (backend),
 		e_source_get_display_name (source));
+
+	e_util_call_malloc_trim ();
 }
 
 static void
@@ -2778,6 +2782,8 @@ e_book_backend_start_view (EBookBackend *backend,
 	g_return_if_fail (class->impl_start_view);
 
 	class->impl_start_view (backend, view);
+
+	e_util_call_malloc_trim ();
 }
 
 /**
@@ -2801,6 +2807,8 @@ e_book_backend_stop_view (EBookBackend *backend,
 	g_return_if_fail (class->impl_stop_view != NULL);
 
 	class->impl_stop_view (backend, view);
+
+	e_util_call_malloc_trim ();
 }
 
 /**

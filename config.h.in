@@ -205,3 +205,6 @@
 
 /* Defined, when time_t is of the 32bit size */
 #cmakedefine HAVE_32BIT_TIME_T 1
+
+/* Defined, when malloc_trim symbol exists in malloc.h */
+#cmakedefine HAVE_MALLOC_TRIM 1

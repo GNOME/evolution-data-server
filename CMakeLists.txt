@@ -151,6 +151,7 @@ include(CheckCSourceRuns)
 include(CheckFunctionExists)
 include(CheckIncludeFile)
 include(CheckLibraryExists)
+include(CheckSymbolExists)
 include(CheckTypeSize)
 
 # Project custom modules
@@ -917,6 +918,8 @@ CHECK_C_SOURCE_COMPILES("#include <gio/gio.h>
 unset(CMAKE_REQUIRED_FLAGS)
 unset(CMAKE_REQUIRED_INCLUDES)
 unset(CMAKE_REQUIRED_LIBRARIES)
+
+CHECK_SYMBOL_EXISTS(malloc_trim malloc.h HAVE_MALLOC_TRIM)
 
 # ******************************
 # subparts flags

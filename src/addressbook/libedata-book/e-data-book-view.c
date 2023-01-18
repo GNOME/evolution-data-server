@@ -1179,6 +1179,8 @@ e_data_book_view_notify_complete (EDataBookView *view,
 
 	g_free (error_name);
 	g_free (error_message);
+
+	e_util_call_malloc_trim ();
 }
 
 /**

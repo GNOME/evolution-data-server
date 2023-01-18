@@ -1468,5 +1468,7 @@ e_data_cal_view_notify_complete (EDataCalView *view,
 	g_free (error_message);
 
 	g_mutex_unlock (&view->priv->pending_mutex);
+
+	e_util_call_malloc_trim ();
 }
 

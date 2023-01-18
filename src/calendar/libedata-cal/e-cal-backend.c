@@ -910,6 +910,8 @@ cal_backend_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_parent_class)->finalize (object);
+
+	e_util_call_malloc_trim ();
 }
 
 static void
@@ -998,6 +1000,8 @@ cal_backend_shutdown (ECalBackend *backend)
 		"The %s instance for \"%s\" is shutting down.\n",
 		G_OBJECT_TYPE_NAME (backend),
 		e_source_get_display_name (source));
+
+	e_util_call_malloc_trim ();
 }
 
 /* Private function, not meant to be part of the public API */
@@ -4672,6 +4676,8 @@ e_cal_backend_start_view (ECalBackend *backend,
 	g_return_if_fail (klass->impl_start_view != NULL);
 
 	klass->impl_start_view (backend, view);
+
+	e_util_call_malloc_trim ();
 }
 
 /**
@@ -4698,6 +4704,8 @@ e_cal_backend_stop_view (ECalBackend *backend,
 	/* backward compatibility, do not force each backend define this function */
 	if (klass->impl_stop_view)
 		klass->impl_stop_view (backend, view);
+
+	e_util_call_malloc_trim ();
 }
 
 /**
