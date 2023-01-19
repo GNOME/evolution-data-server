@@ -1,0 +1,263 @@
+{
+	"app-id": "org.gnome.evolution-data-server-nightly",
+	"runtime": "org.gnome.Platform",
+	"runtime-version": "master",
+	"sdk": "org.gnome.Sdk",
+	"branch": "master",
+	"tags": [ "devel" ],
+	"cleanup": [
+		"*.la",
+		"*.a"
+	],
+	"finish-args": [
+		"--share=ipc",
+		"--share=network",
+		"--socket=fallback-x11",
+		"--socket=wayland",
+		"--socket=pulseaudio",
+		"--socket=pcsc",
+		"--device=dri",
+		"--filesystem=~/.gnupg:rw",
+		"--filesystem=xdg-config/gnupg:rw",
+		"--filesystem=~/.pki:rw",
+		"--filesystem=xdg-config/pki:rw",
+		"--filesystem=xdg-run/gvfsd:rw",
+		"--filesystem=/run/.heim_org.h5l.kcm-socket",
+		"--metadata=X-DConf=migrate-path=/org/gnome/evolution/",
+		"--talk-name=org.freedesktop.Notifications",
+		"--talk-name=org.freedesktop.secrets",
+		"--talk-name=org.gnome.keyring.SystemPrompter",
+		"--talk-name=org.gnome.OnlineAccounts"
+	],
+	"add-extensions": {
+		"org.gnome.Evolution.Extension": {
+			"directory": "evolution/extensions",
+			"add-ld-path": "lib",
+			"merge-dirs": "lib;share",
+			"subdirectories": true,
+			"no-autodownload": true,
+			"autodelete": true
+		}
+	},
+	"modules": [
+		{
+			"name": "libcanberra",
+			"config-opts": [
+				"--disable-gtk",
+				"--disable-oss",
+				"--enable-alsa",
+				"--enable-gtk3",
+				"--enable-null",
+				"--without-systemdsystemunitdir",
+				"--with-builtin=dso",
+				"--disable-gtk-doc",
+				"--disable-gtk-doc-html"
+			],
+			"cleanup": [
+				"/bin",
+				"/share/gtk-doc",
+				"/share/gdm",
+				"/share/gnome",
+				"/share/vala"
+			],
+			"sources": [
+				{
+					"type": "git",
+					"url": "git://git.0pointer.net/libcanberra.git",
+					"branch": "master"
+				}
+			]
+		},
+
+		{
+			"name": "libical",
+			"cleanup": [
+				"/lib/cmake",
+				"/libexec/libical"
+			],
+			"buildsystem": "cmake-ninja",
+			"config-opts": [
+				"-DCMAKE_INSTALL_LIBDIR:PATH=/app/lib",
+				"-DBUILD_SHARED_LIBS:BOOL=ON",
+				"-DGOBJECT_INTROSPECTION:BOOL=ON",
+				"-DICAL_BUILD_DOCS:BOOL=OFF",
+				"-DICAL_GLIB_VAPI:BOOL=ON",
+				"-DICAL_GLIB:BOOL=ON"
+			],
+			"sources": [
+				{
+					"type": "git",
+					"url": "https://github.com/libical/libical.git",
+					"branch": "3.0"
+				}
+			]
+		},
+
+		{
+			"name": "liboauth",
+			"config-opts": [ "--enable-nss" ],
+			"cleanup": [ "/share/man" ],
+			"sources": [
+				{
+					"type": "archive",
+					"url": "https://downloads.sourceforge.net/project/liboauth/liboauth-1.0.3.tar.gz",
+					"sha256": "0df60157b052f0e774ade8a8bac59d6e8d4b464058cc55f9208d72e41156811f"
+				}
+			]
+		},
+
+		{
+			"name": "librest",
+			"buildsystem": "meson",
+			"config-opts": [
+				"-Dexamples=false",
+				"-Dgtk_doc=false",
+				"-Dtests=false"
+			],
+			"sources": [
+				{
+					"type": "git",
+					"url": "https://gitlab.gnome.org/GNOME/librest.git",
+					"branch": "master"
+				}
+			]
+		},
+
+		{
+			"name": "gnome-online-accounts",
+			"buildsystem": "meson",
+			"config-opts": [
+				"-Dvapi=false",
+				"-Dgoabackend=false",
+				"-Dintrospection=false"
+			],
+			"cleanup": [
+				"/bin"
+			],
+			"sources": [
+				{
+					"type": "git",
+					"url": "https://gitlab.gnome.org/GNOME/gnome-online-accounts.git",
+					"branch": "master"
+				}
+			]
+		},
+
+		{
+			"name": "geocode-glib",
+			"buildsystem": "meson",
+			"config-opts": [
+				"-Denable-installed-tests=false",
+				"-Denable-introspection=false",
+				"-Denable-gtk-doc=false",
+				"-Dsoup2=false"
+			],
+			"cleanup": [
+				"/share/gtk-doc"
+			],
+			"sources": [
+				{
+					"type": "archive",
+					"url": "https://download.gnome.org/sources/geocode-glib/3.26/geocode-glib-3.26.3.tar.xz",
+					"sha256": "1dfeae83b90eccca1b6cf7dcf7c5e3b317828cf0b56205c4471ef0f911999766"
+				}
+			]
+		},
+
+		{
+			"name": "libgweather4",
+			"buildsystem": "meson",
+			"config-opts": [
+				"-Denable_vala=false",
+				"-Dgtk_doc=false",
+				"-Dintrospection=false",
+				"-Dtests=false"
+			],
+			"cleanup": [
+				"/lib/girepository-1.0",
+				"/share/gtk-doc",
+				"/share/gir-1.0"
+			],
+			"sources": [
+				{
+					"type": "git",
+					"url": "https://gitlab.gnome.org/GNOME/libgweather.git",
+					"branch": "main"
+				}
+			]
+		},
+
+		{
+			"name": "openldap",
+			"rm-configure": true,
+			"cleanup": [
+				"/bin",
+				"/etc",
+				"/share/man"
+			],
+			"config-opts": [
+				"--disable-backends",
+				"--disable-overlays",
+				"--disable-slapd",
+				"--disable-debug",
+				"--enable-dynamic",
+				"--without-threads",
+				"--with-tls=gnutls"
+			],
+			"sources": [
+				{
+					"type": "archive",
+					"url": "https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.6.2.tgz",
+					"sha256": "81d09345232eb62486ecf5acacd2c56c0c45b4a6c8c066612e7f421a23a1cf87"
+				},
+
+				{
+					"type": "script",
+					"dest-filename": "autogen.sh",
+					"commands": [
+						"AUTOMAKE=\"/bin/true\" autoreconf -vfi"
+					]
+				}
+			]
+		},
+
+		{
+			"name": "evolution-data-server",
+			"buildsystem": "cmake-ninja",
+			"cleanup": [
+				"/etc/xdg",
+				"/share/GConf"
+			],
+			"config-opts": [
+				"-DDBUS_SERVICES_PREFIX=org.gnome.evolution-data-server-nightly",
+				"-DEXTENSIONS_DIR=/app/evolution/extensions",
+				"-DENABLE_MAINTAINER_MODE=ON",
+				"-DENABLE_FILE_LOCKING=fcntl",
+				"-DENABLE_DOT_LOCKING=OFF",
+				"-DENABLE_GTK=ON",
+				"-DENABLE_GTK4=ON",
+				"-DENABLE_GOA=ON",
+				"-DENABLE_EXAMPLES=ON",
+				"-DENABLE_INTROSPECTION=ON",
+				"-DENABLE_VALA_BINDINGS=ON",
+				"-DENABLE_INSTALLED_TESTS=ON",
+				"-DENABLE_GTK_DOC=OFF",
+				"-DWITH_LIBDB=OFF",
+				"-DWITH_PRIVATE_DOCS=OFF",
+				"-DWITH_PHONENUMBER=OFF",
+				"-DWITH_SYSTEMDUSERUNITDIR=OFF"
+			],
+			"sources": [
+				{
+					"type": "git",
+					"url": "https://gitlab.gnome.org/GNOME/evolution-data-server.git",
+					"branch": "master"
+				}
+			],
+			"post-install": [
+				"ctest --force-new-ctest-process --output-on-failure"
+			]
+
+		}
+	]
+}
