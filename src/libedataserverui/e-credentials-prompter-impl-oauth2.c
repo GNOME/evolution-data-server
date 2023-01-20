@@ -1149,7 +1149,9 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		NULL);
 
 	web_context = webkit_web_context_new ();
+#if !WEBKIT_CHECK_VERSION(2, 39, 5)
 	webkit_web_context_set_sandbox_enabled (web_context, TRUE);
+#endif
 	credentials_prompter_impl_oauth2_set_proxy (web_context,  e_credentials_prompter_get_registry (prompter), prompter_oauth2->priv->auth_source);
 
 	widget = g_object_new (WEBKIT_TYPE_WEB_VIEW,
