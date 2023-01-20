@@ -3362,6 +3362,7 @@ static struct flag_names_t {
 	{ "junk", CAMEL_MESSAGE_JUNK },
 	{ "notjunk", CAMEL_MESSAGE_NOTJUNK },
 	{ "secure", CAMEL_MESSAGE_SECURE },
+	{ "junklearn", CAMEL_MESSAGE_JUNK_LEARN },
 	{ NULL, 0 }
 };
 
