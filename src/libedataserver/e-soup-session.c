@@ -60,12 +60,14 @@ struct _ESoupSessionPrivate {
 	ESoupAuthBearer *using_bearer_auth;
 
 	gboolean auth_prefilled; /* When TRUE, the first 'retrying' is ignored in the "authenticate" handler */
+	gboolean force_http1;
 };
 
 enum {
 	PROP_0,
 	PROP_SOURCE,
-	PROP_CREDENTIALS
+	PROP_CREDENTIALS,
+	PROP_FORCE_HTTP1
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (ESoupSession, e_soup_session, SOUP_TYPE_SESSION)
@@ -508,6 +510,12 @@ e_soup_session_set_property (GObject *object,
 				E_SOUP_SESSION (object),
 				g_value_get_boxed (value));
 			return;
+
+		case PROP_FORCE_HTTP1:
+			e_soup_session_set_force_http1 (
+				E_SOUP_SESSION (object),
+				g_value_get_boolean (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -531,6 +539,13 @@ e_soup_session_get_property (GObject *object,
 			g_value_take_boxed (
 				value,
 				e_soup_session_dup_credentials (
+				E_SOUP_SESSION (object)));
+			return;
+
+		case PROP_FORCE_HTTP1:
+			g_value_set_boolean (
+				value,
+				e_soup_session_get_force_http1 (
 				E_SOUP_SESSION (object)));
 			return;
 	}
@@ -601,6 +616,29 @@ e_soup_session_class_init (ESoupSessionClass *klass)
 			"Credentials",
 			NULL,
 			E_TYPE_NAMED_PARAMETERS,
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * ESoupSession:force-http1:
+	 *
+	 * Whether the messages created by the session should force use
+	 * of HTTP/1 instead of trying HTTP/2 first and fallback to the HTTP/1
+	 * when the newer version failed to connect.
+	 *
+	 * See e_soup_session_set_force_http1() for more information about the limitations.
+	 *
+	 * Since: 3.48
+	 **/
+	g_object_class_install_property (
+		object_class,
+		PROP_FORCE_HTTP1,
+		g_param_spec_boolean (
+			"force-http1",
+			"Force HTTP/1",
+			NULL,
+			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
@@ -812,6 +850,57 @@ e_soup_session_dup_credentials (ESoupSession *session)
 	g_mutex_unlock (&session->priv->property_lock);
 
 	return credentials;
+}
+
+/**
+ * e_soup_session_set_force_http1:
+ * @session: an #ESoupSession
+ * @force_http1: the value to set
+ *
+ * Sets whether the messages created through the @session using
+ * e_soup_session_new_message() or e_soup_session_new_message_from_uri()
+ * should force use of the HTTP/1, instead of trying HTTP/2 and fallback to HTTP/1,
+ * when the newer version cannot be used.
+ *
+ * The property has no effect when e_soup_session_util_get_force_http1_supported()
+ * returns %FALSE.
+ *
+ * Since: 3.48
+ **/
+void
+e_soup_session_set_force_http1 (ESoupSession *session,
+				gboolean force_http1)
+{
+	g_return_if_fail (E_IS_SOUP_SESSION (session));
+
+	#ifdef HAVE_SOUP_MESSAGE_SET_FORCE_HTTP1
+	if ((session->priv->force_http1 ? 1 : 0) == (force_http1 ? 1 : 0))
+		return;
+
+	session->priv->force_http1 = force_http1;
+
+	g_object_notify (G_OBJECT (session), "force-http1");
+	#endif
+}
+
+/**
+ * e_soup_session_get_force_http1:
+ * @session: an #ESoupSession
+ *
+ * Returns whether it's forced to use HTTP/1 for the messages
+ * created by the @session. See e_soup_session_set_force_http1()
+ * for more information about the limitations.
+ *
+ * Returns: whether it's forced to use HTTP/1
+ *
+ * Since: 3.48
+ **/
+gboolean
+e_soup_session_get_force_http1 (ESoupSession *session)
+{
+	g_return_val_if_fail (E_IS_SOUP_SESSION (session), FALSE);
+
+	return session->priv->force_http1;
 }
 
 /**
@@ -1053,6 +1142,12 @@ e_soup_session_new_message_from_uri (ESoupSession *session,
 		return NULL;
 
 	e_soup_session_preset_message (message);
+
+	#ifdef HAVE_SOUP_MESSAGE_SET_FORCE_HTTP1
+	/* only set to TRUE, do not touch it otherwise */
+	if (session->priv->force_http1)
+		soup_message_set_force_http1 (message, TRUE);
+	#endif
 
 	return message;
 }
@@ -2219,4 +2314,25 @@ e_soup_session_util_get_message_bytes (SoupMessage *message)
 	g_return_val_if_fail (SOUP_IS_MESSAGE (message), NULL);
 
 	return g_object_get_data (G_OBJECT (message), E_SOUP_SESSION_MESSAGE_BYTES_KEY);
+}
+
+/**
+ * e_soup_session_util_get_force_http1_supported:
+ *
+ * Checks whether e_soup_session_set_force_http1() can be used
+ * to force HTTP/1 usage. This depends on the libsoup version
+ * the data server had been compiled with.
+ *
+ * Returns: %TRUE, when the force of HTTP/1 is supported, %FALSE otherwise
+ *
+ * Since: 3.48
+ **/
+gboolean
+e_soup_session_util_get_force_http1_supported (void)
+{
+	#ifdef HAVE_SOUP_MESSAGE_SET_FORCE_HTTP1
+	return TRUE;
+	#else
+	return FALSE;
+	#endif
 }

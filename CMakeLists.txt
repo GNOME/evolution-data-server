@@ -915,6 +915,7 @@ set(CMAKE_REQUIRED_INCLUDES ${GNOME_PLATFORM_INCLUDE_DIRS})
 set(CMAKE_REQUIRED_LIBRARIES ${GNOME_PLATFORM_LDFLAGS})
 CHECK_C_SOURCE_COMPILES("#include <gio/gio.h>
 			int main(void) { GPowerProfileMonitor *monitor = g_power_profile_monitor_dup_default (); g_clear_object (&monitor); return 0; }" HAVE_GPOWERPROFILEMONITOR)
+CHECK_SYMBOL_EXISTS(soup_message_set_force_http1 libsoup/soup.h HAVE_SOUP_MESSAGE_SET_FORCE_HTTP1)
 unset(CMAKE_REQUIRED_FLAGS)
 unset(CMAKE_REQUIRED_INCLUDES)
 unset(CMAKE_REQUIRED_LIBRARIES)

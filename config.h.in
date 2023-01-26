@@ -208,3 +208,6 @@
 
 /* Defined, when malloc_trim symbol exists in malloc.h */
 #cmakedefine HAVE_MALLOC_TRIM 1
+
+/* Defined, when libsoup has soup_message_set_force_http1() */
+#cmakedefine HAVE_SOUP_MESSAGE_SET_FORCE_HTTP1 1

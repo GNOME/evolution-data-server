@@ -90,6 +90,9 @@ void		e_soup_session_set_credentials		(ESoupSession *session,
 							 const ENamedParameters *credentials);
 ENamedParameters *
 		e_soup_session_dup_credentials		(ESoupSession *session);
+void		e_soup_session_set_force_http1		(ESoupSession *session,
+							 gboolean force_http1);
+gboolean	e_soup_session_get_force_http1		(ESoupSession *session);
 gboolean	e_soup_session_get_authentication_requires_credentials
 							(ESoupSession *session);
 gboolean	e_soup_session_get_ssl_error_details	(ESoupSession *session,
@@ -159,6 +162,8 @@ void		e_soup_session_util_set_message_request_body_from_data
 GInputStream *	e_soup_session_util_ref_message_request_body
 							(SoupMessage *message,
 							 gssize *out_length);
+gboolean	e_soup_session_util_get_force_http1_supported
+							(void);
 G_END_DECLS
 
 #endif /* E_SOUP_SESSION_H */
