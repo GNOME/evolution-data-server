@@ -156,9 +156,15 @@ struct _EOAuth2ServiceInterface {
 							(EOAuth2Service *service,
 							 ESource *source,
 							 SoupMessage *message);
+	gboolean	(* extract_error_message)	(EOAuth2Service *service,
+							 ESource *source,
+							 const gchar *page_title,
+							 const gchar *page_uri,
+							 const gchar *page_content,
+							 gchar **out_error_message);
 
 	/* Padding for future expansion */
-	gpointer reserved[10];
+	gpointer reserved[9];
 };
 
 GType		e_oauth2_service_get_type		(void) G_GNUC_CONST;
@@ -196,6 +202,12 @@ gboolean	e_oauth2_service_extract_authorization_code
 							 const gchar *page_uri,
 							 const gchar *page_content,
 							 gchar **out_authorization_code);
+gboolean	e_oauth2_service_extract_error_message	(EOAuth2Service *service,
+							 ESource *source,
+							 const gchar *page_title,
+							 const gchar *page_uri,
+							 const gchar *page_content,
+							 gchar **out_error_message);
 void		e_oauth2_service_prepare_get_token_form	(EOAuth2Service *service,
 							 ESource *source,
 							 const gchar *authorization_code,
@@ -249,6 +261,10 @@ void		e_oauth2_service_util_set_to_form	(GHashTable *form,
 void		e_oauth2_service_util_take_to_form	(GHashTable *form,
 							 const gchar *name,
 							 gchar *value);
+gboolean	e_oauth2_service_util_extract_from_uri	(const gchar *in_uri,
+							 gchar **out_authorization_code,
+							 gchar **out_error_code,
+							 gchar **out_error_description);
 const gchar *	e_oauth2_service_util_compile_value	(const gchar *compile_value,
 							 gchar *out_glob_buff,
 							 gsize out_glob_buff_size);

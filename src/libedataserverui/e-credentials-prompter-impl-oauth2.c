@@ -45,6 +45,8 @@
 #endif
 #endif
 
+#define ERROR_URI "none-local://"
+
 struct _ECredentialsPrompterImplOAuth2Private {
 	GMutex property_lock;
 
@@ -112,13 +114,47 @@ cpi_oauth2_create_auth_uri (EOAuth2Service *service,
 	return uri;
 }
 
+#ifdef WITH_WEBKITGTK
+static gchar *
+cpi_oauth2_replace_string (const gchar *text,
+			   const gchar *before,
+			   const gchar *after)
+{
+	const gchar *p, *next;
+	GString *str;
+	gint find_len;
+
+	g_return_val_if_fail (text != NULL, NULL);
+	g_return_val_if_fail (before != NULL, NULL);
+	g_return_val_if_fail (*before, NULL);
+
+	find_len = strlen (before);
+	str = g_string_new ("");
+
+	p = text;
+	while (next = strstr (p, before), next) {
+		if (p < next)
+			g_string_append_len (str, p, next - p);
+
+		if (after && *after)
+			g_string_append (str, after);
+
+		p = next + find_len;
+	}
+
+	g_string_append (str, p);
+
+	return g_string_free (str, FALSE);
+}
+#endif /* WITH_WEBKITGTK */
+
 static void
 cpi_oauth2_show_error (ECredentialsPrompterImplOAuth2 *prompter_oauth2,
 		       const gchar *title,
 		       const gchar *body_text)
 {
 #ifdef WITH_WEBKITGTK
-	gchar *html;
+	gchar *tmp, *html;
 
 	g_return_if_fail (WEBKIT_IS_WEB_VIEW (prompter_oauth2->priv->web_view));
 #endif /* WITH_WEBKITGTK */
@@ -126,15 +162,17 @@ cpi_oauth2_show_error (ECredentialsPrompterImplOAuth2 *prompter_oauth2,
 	g_return_if_fail (body_text != NULL);
 
 #ifdef WITH_WEBKITGTK
-	html = g_markup_printf_escaped (
+	tmp = g_markup_printf_escaped (
 		"<html>"
 		"<head><title>%s</title></head>"
-		"<body><div style=\"font-size:12pt; font-family:Helvetica,Arial;\">%s</div></body>"
+		"<body><div style=\"font-size:12pt; font-family:Helvetica,Arial; word-break:break-word;\">%s</div></body>"
 		"</html>",
 		title,
 		body_text);
-	webkit_web_view_load_html (prompter_oauth2->priv->web_view, html, "none-local://");
+	html = cpi_oauth2_replace_string (tmp, "\n", "<br>\n");
+	webkit_web_view_load_html (prompter_oauth2->priv->web_view, html, ERROR_URI);
 	g_free (html);
+	g_free (tmp);
 #endif /* WITH_WEBKITGTK */
 
 	gtk_label_set_text (prompter_oauth2->priv->error_text_label, body_text);
@@ -288,9 +326,25 @@ cpi_oauth2_extract_authentication_code (ECredentialsPrompterImplOAuth2 *prompter
 					const gchar *page_content)
 {
 	gchar *authorization_code = NULL;
+	gchar *error_message = NULL;
 
 	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_OAUTH2 (prompter_oauth2));
 	g_return_if_fail (prompter_oauth2->priv->service != NULL);
+
+	if (e_oauth2_service_extract_error_message (prompter_oauth2->priv->service,
+		prompter_oauth2->priv->cred_source ? prompter_oauth2->priv->cred_source : prompter_oauth2->priv->auth_source,
+		page_title, page_uri, page_content, &error_message) && error_message) {
+		gchar *complete_message;
+
+		/* Translators: The first "%s" is replaced with an error message, the second "%s' is a URI of the response. */
+		complete_message = g_strdup_printf ("%s\n\nResponse URI: %s", error_message, page_uri);
+		cpi_oauth2_show_error (prompter_oauth2, "Server error", complete_message);
+		g_free (complete_message);
+		g_free (error_message);
+		return;
+	}
+
+	g_clear_pointer (&error_message, g_free);
 
 	if (!e_oauth2_service_extract_authorization_code (prompter_oauth2->priv->service,
 		prompter_oauth2->priv->cred_source ? prompter_oauth2->priv->cred_source : prompter_oauth2->priv->auth_source,
@@ -332,7 +386,7 @@ cpi_oauth2_web_view_resource_get_data_done_cb (GObject *source_object,
 	title = webkit_web_view_get_title (prompter_oauth2->priv->web_view);
 	uri = webkit_web_view_get_uri (prompter_oauth2->priv->web_view);
 
-	cpi_oauth2_extract_authentication_code (prompter_oauth2, title, uri, page_content ? (const gchar *) page_content->data : NULL);
+	cpi_oauth2_extract_authentication_code (prompter_oauth2, title ? title : "", uri, page_content ? (const gchar *) page_content->data : NULL);
 
 	if (page_content)
 		g_byte_array_free (page_content, TRUE);
@@ -388,7 +442,7 @@ cpi_oauth2_document_load_changed_cb (WebKitWebView *web_view,
 				     WebKitLoadEvent load_event,
 				     ECredentialsPrompterImplOAuth2 *prompter_oauth2)
 {
-	const gchar *title, *uri;
+	const gchar *uri;
 
 	g_return_if_fail (WEBKIT_IS_WEB_VIEW (web_view));
 	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_OAUTH2 (prompter_oauth2));
@@ -396,9 +450,8 @@ cpi_oauth2_document_load_changed_cb (WebKitWebView *web_view,
 	if (load_event != WEBKIT_LOAD_FINISHED)
 		return;
 
-	title = webkit_web_view_get_title (web_view);
 	uri = webkit_web_view_get_uri (web_view);
-	if (!title || !uri)
+	if (!uri)
 		return;
 
 	if (cpi_oauth2_get_debug ()) {
@@ -406,6 +459,9 @@ cpi_oauth2_document_load_changed_cb (WebKitWebView *web_view,
 	}
 
 	g_return_if_fail (prompter_oauth2->priv->service != NULL);
+
+	if (g_ascii_strcasecmp (uri, ERROR_URI) == 0)
+		return;
 
 	if ((e_oauth2_service_get_flags (prompter_oauth2->priv->service) & E_OAUTH2_SERVICE_FLAG_EXTRACT_REQUIRES_PAGE_CONTENT) != 0) {
 		WebKitWebResource *main_resource;
@@ -416,6 +472,12 @@ cpi_oauth2_document_load_changed_cb (WebKitWebView *web_view,
 				cpi_oauth2_web_view_resource_get_data_done_cb, prompter_oauth2);
 		}
 	} else {
+		const gchar *title;
+
+		title = webkit_web_view_get_title (web_view);
+		if (!title)
+			title = "";
+
 		cpi_oauth2_extract_authentication_code (prompter_oauth2, title, uri, NULL);
 	}
 }

@@ -163,53 +163,6 @@ eos_yahoo_prepare_authentication_uri_query (EOAuth2Service *service,
 	g_free (nonce_str);
 }
 
-static gboolean
-eos_yahoo_extract_authorization_code (EOAuth2Service *service,
-				      ESource *source,
-				      const gchar *page_title,
-				      const gchar *page_uri,
-				      const gchar *page_content,
-				      gchar **out_authorization_code)
-{
-	g_return_val_if_fail (out_authorization_code != NULL, FALSE);
-
-	*out_authorization_code = NULL;
-
-	if (page_uri && *page_uri) {
-		GUri *suri;
-
-		suri = g_uri_parse (page_uri, SOUP_HTTP_URI_FLAGS, NULL);
-		if (suri) {
-			const gchar *query = g_uri_get_query (suri);
-			gboolean known = FALSE;
-
-			if (query && *query) {
-				GHashTable *params;
-
-				params = soup_form_decode (query);
-				if (params) {
-					const gchar *response;
-
-					response = g_hash_table_lookup (params, "code");
-					if (response) {
-						*out_authorization_code = g_strdup (response);
-						known = TRUE;
-					}
-
-					g_hash_table_destroy (params);
-				}
-			}
-
-			g_uri_unref (suri);
-
-			if (known)
-				return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
 static void
 e_oauth2_service_yahoo_oauth2_service_init (EOAuth2ServiceInterface *iface)
 {
@@ -222,7 +175,6 @@ e_oauth2_service_yahoo_oauth2_service_init (EOAuth2ServiceInterface *iface)
 	iface->get_refresh_uri = eos_yahoo_get_refresh_uri;
 	iface->get_redirect_uri = eos_yahoo_get_redirect_uri;
 	iface->prepare_authentication_uri_query = eos_yahoo_prepare_authentication_uri_query;
-	iface->extract_authorization_code = eos_yahoo_extract_authorization_code;
 }
 
 static void

@@ -219,6 +219,62 @@ eos_default_prepare_refresh_token_message (EOAuth2Service *service,
 {
 }
 
+static gboolean
+eos_default_extract_authorization_code (EOAuth2Service *service,
+					ESource *source,
+					const gchar *page_title,
+					const gchar *page_uri,
+					const gchar *page_content,
+					gchar **out_authorization_code)
+{
+	gchar *error_code = NULL, *error_message = NULL;
+	gboolean success;
+
+	g_return_val_if_fail (out_authorization_code != NULL, FALSE);
+
+	*out_authorization_code = NULL;
+
+	/* It is an acceptable response when either the authorization code or the error information is set. */
+	success = e_oauth2_service_util_extract_from_uri (page_uri, out_authorization_code, &error_code, &error_message);
+
+	g_free (error_code);
+	g_free (error_message);
+
+	return success;
+}
+
+static gboolean
+eos_default_extract_error_message (EOAuth2Service *service,
+				   ESource *source,
+				   const gchar *page_title,
+				   const gchar *page_uri,
+				   const gchar *page_content,
+				   gchar **out_error_message)
+{
+	gchar *error_code = NULL;
+	gboolean success;
+
+	g_return_val_if_fail (out_error_message != NULL, FALSE);
+
+	*out_error_message = NULL;
+
+	success = e_oauth2_service_util_extract_from_uri (page_uri, NULL, &error_code, out_error_message);
+
+	if (success) {
+		/* it means the user cancelled the wizard or did not allow access to the account data */
+		if (g_strcmp0 (error_code, "access_denied") == 0)
+			g_clear_pointer (out_error_message, g_free);
+		else if (!*out_error_message)
+			*out_error_message = g_steal_pointer (&error_code);
+
+		success = *out_error_message != NULL;
+	}
+
+	g_free (error_code);
+
+	return success;
+}
+
 static void
 e_oauth2_service_default_init (EOAuth2ServiceInterface *iface)
 {
@@ -232,6 +288,8 @@ e_oauth2_service_default_init (EOAuth2ServiceInterface *iface)
 	iface->prepare_get_token_message = eos_default_prepare_get_token_message;
 	iface->prepare_refresh_token_form = eos_default_prepare_refresh_token_form;
 	iface->prepare_refresh_token_message = eos_default_prepare_refresh_token_message;
+	iface->extract_authorization_code = eos_default_extract_authorization_code;
+	iface->extract_error_message = eos_default_extract_error_message;
 }
 
 /**
@@ -609,6 +667,8 @@ e_oauth2_service_get_authentication_policy (EOAuth2Service *service,
  *
  * Tries to extract an authorization code from a web page provided by the server.
  * The function can be called multiple times, whenever the page load is finished.
+ * The default implementation uses e_oauth2_service_util_extract_from_uri() to get
+ * the code from the given @page_uri.
  *
  * There can happen three states: 1) either the @service cannot determine
  * the authentication code from the page information, then the %FALSE is
@@ -646,6 +706,50 @@ e_oauth2_service_extract_authorization_code (EOAuth2Service *service,
 	g_return_val_if_fail (iface->extract_authorization_code != NULL, FALSE);
 
 	return iface->extract_authorization_code (service, source, page_title, page_uri, page_content, out_authorization_code);
+}
+
+/**
+ * e_oauth2_service_extract_error_message:
+ * @service: an #EOAuth2Service
+ * @source: an associated #ESource
+ * @page_title: a web page title
+ * @page_uri: a web page URI
+ * @page_content: (nullable): a web page content
+ * @out_error_message: (out) (transfer full): the extracted error message
+ *
+ * Tries to extract error message from the server response, return %TRUE,
+ * when an error message could be found, in which case also sets
+ * the @out_error_message with it. The default implementation uses
+ * e_oauth2_service_util_extract_from_uri(), returning either the error
+ * description or the error code, when the description is not found.
+ *
+ * The @out_error_message is expected to be plain text.
+ *
+ * Returns: whether could recognized failed server response.
+ *    The @out_error_message is populated on success.
+ *
+ * Since: 3.48
+ **/
+gboolean
+e_oauth2_service_extract_error_message (EOAuth2Service *service,
+					ESource *source,
+					const gchar *page_title,
+					const gchar *page_uri,
+					const gchar *page_content,
+					gchar **out_error_message)
+{
+	EOAuth2ServiceInterface *iface;
+
+	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	iface = E_OAUTH2_SERVICE_GET_INTERFACE (service);
+	g_return_val_if_fail (iface != NULL, FALSE);
+
+	if (!iface->extract_error_message)
+		return FALSE;
+
+	return iface->extract_error_message (service, source, page_title, page_uri, page_content, out_error_message);
 }
 
 /**
@@ -1825,6 +1929,73 @@ e_oauth2_service_util_take_to_form (GHashTable *form,
 		g_hash_table_insert (form, g_strdup (name), value);
 	else
 		g_hash_table_remove (form, name);
+}
+
+/**
+ * e_oauth2_service_util_extract_from_uri:
+ * @in_uri: a URI returned from the server
+ * @out_authorization_code: (optional) (out) (transfer full) (nullable): extracted authorization code, can be %NULL
+ * @out_error_code: (optional) (out) (transfer full) (nullable): extracted error code, can be %NULL
+ * @out_error_description: (optional) (out) (transfer full) (nullable): extracted error description, can be %NULL
+ *
+ * Extracts either an authorization code from a 'code' argument of the @in_uri,
+ * or an error code from an 'error' argument of the @in_uri and an error description
+ * from the 'error_description' argument of the @in_uri.
+ *
+ * Returns: %TRUE, when any of the non-NULL out arguments had been populated.
+ *
+ * Since: 3.48
+ **/
+gboolean
+e_oauth2_service_util_extract_from_uri (const gchar *in_uri,
+					gchar **out_authorization_code,
+					gchar **out_error_code,
+					gchar **out_error_description)
+{
+	GUri *uri;
+	gboolean any_set = FALSE;
+
+	if (!in_uri || !*in_uri)
+		return FALSE;
+
+	uri = g_uri_parse (in_uri, SOUP_HTTP_URI_FLAGS | G_URI_FLAGS_PARSE_RELAXED, NULL);
+	if (!uri)
+		return FALSE;
+
+	if (g_uri_get_query (uri)) {
+		GHashTable *uri_query = soup_form_decode (g_uri_get_query (uri));
+
+		if (uri_query) {
+			const gchar *value;
+
+			value = g_hash_table_lookup (uri_query, "code");
+
+			if (value && *value && out_authorization_code) {
+				any_set = TRUE;
+				*out_authorization_code = g_strdup (value);
+			} else {
+				value = g_hash_table_lookup (uri_query, "error");
+
+				if (value && *value && out_error_code) {
+					any_set = TRUE;
+					*out_error_code = g_strdup (value);
+				}
+
+				value = g_hash_table_lookup (uri_query, "error_description");
+
+				if (value && *value && out_error_description) {
+					any_set = TRUE;
+					*out_error_description = g_strdup (value);
+				}
+			}
+
+			g_hash_table_unref (uri_query);
+		}
+	}
+
+	g_uri_unref (uri);
+
+	return any_set;
 }
 
 /**

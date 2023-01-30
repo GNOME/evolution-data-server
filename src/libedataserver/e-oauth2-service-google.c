@@ -211,6 +211,9 @@ eos_google_extract_authorization_code (EOAuth2Service *service,
 				       const gchar *page_content,
 				       gchar **out_authorization_code)
 {
+	gchar *error_code = NULL, *error_message = NULL;
+	gboolean success;
+
 	g_return_val_if_fail (out_authorization_code != NULL, FALSE);
 
 	*out_authorization_code = NULL;
@@ -226,41 +229,13 @@ eos_google_extract_authorization_code (EOAuth2Service *service,
 		}
 	}
 
-	if (page_uri && *page_uri) {
-		GUri *suri;
+	/* It is an acceptable response when either the authorization code or the error information is set. */
+	success = e_oauth2_service_util_extract_from_uri (page_uri, out_authorization_code, &error_code, &error_message);
 
-		suri = g_uri_parse (page_uri, SOUP_HTTP_URI_FLAGS, NULL);
-		if (suri) {
-			const gchar *query = g_uri_get_query (suri);
-			gboolean known = FALSE;
+	g_free (error_code);
+	g_free (error_message);
 
-			if (query && *query) {
-				GHashTable *params;
-
-				params = soup_form_decode (query);
-				if (params) {
-					const gchar *code;
-
-					code = g_hash_table_lookup (params, "code");
-					if (code && *code) {
-						*out_authorization_code = g_strdup (code);
-						known = TRUE;
-					} else if (g_hash_table_lookup (params, "error")) {
-						known = TRUE;
-					}
-
-					g_hash_table_destroy (params);
-				}
-			}
-
-			g_uri_unref (suri);
-
-			if (known)
-				return TRUE;
-		}
-	}
-
-	return FALSE;
+	return success;
 }
 
 static void
