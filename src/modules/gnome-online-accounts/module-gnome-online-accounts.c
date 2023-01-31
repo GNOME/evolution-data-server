@@ -288,7 +288,7 @@ goa_ews_autodiscover_done_cb (GObject *source_object,
 		user = goa_account_dup_identity (goa_account);
 		email = goa_account_dup_presentation_identity (goa_account);
 
-		suri = g_uri_parse (as_url, SOUP_HTTP_URI_FLAGS, NULL);
+		suri = g_uri_parse (as_url, SOUP_HTTP_URI_FLAGS | G_URI_FLAGS_PARSE_RELAXED, NULL);
 
 		g_object_set (
 			source_extension,

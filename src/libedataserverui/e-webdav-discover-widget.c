@@ -883,7 +883,7 @@ e_webdav_discover_content_refresh (GtkWidget *content,
 	use_cancellable = cancellable ? g_object_ref (cancellable) : g_cancellable_new ();
 	task = g_task_new (self, use_cancellable, callback, user_data);
 	g_task_set_source_tag (task, e_webdav_discover_content_refresh);
-	parsed_uri = g_uri_parse (self->base_url, SOUP_HTTP_URI_FLAGS, NULL);
+	parsed_uri = g_uri_parse (self->base_url, SOUP_HTTP_URI_FLAGS | G_URI_FLAGS_PARSE_RELAXED, NULL);
 	if (!parsed_uri) {
 		g_task_return_new_error (task,
 			G_IO_ERROR,
