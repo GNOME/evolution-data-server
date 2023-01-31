@@ -1934,7 +1934,7 @@ e_webdav_session_extract_href_and_etag (SoupMessage *message,
 		if (header) {
 			GUri *uri;
 
-			uri = g_uri_parse_relative (soup_message_get_uri (message), header, SOUP_HTTP_URI_FLAGS, NULL);
+			uri = g_uri_parse_relative (soup_message_get_uri (message), header, SOUP_HTTP_URI_FLAGS | G_URI_FLAGS_PARSE_RELAXED, NULL);
 
 			if (uri && g_uri_get_host (uri))
 				*out_href = g_uri_to_string_partial (uri, G_URI_HIDE_PASSWORD);

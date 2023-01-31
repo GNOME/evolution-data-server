@@ -994,7 +994,7 @@ e_soup_session_new_message (ESoupSession *session,
 
 	g_return_val_if_fail (E_IS_SOUP_SESSION (session), NULL);
 
-	uri = g_uri_parse (uri_string, SOUP_HTTP_URI_FLAGS, error);
+	uri = g_uri_parse (uri_string, SOUP_HTTP_URI_FLAGS | G_URI_FLAGS_PARSE_RELAXED, error);
 	if (!uri)
 		return NULL;
 
@@ -1658,7 +1658,7 @@ e_soup_session_send_message_sync (ESoupSession *session,
 					if (new_location) {
 						GUri *new_uri;
 
-						new_uri = g_uri_parse_relative (soup_message_get_uri (message), new_location, SOUP_HTTP_URI_FLAGS, NULL);
+						new_uri = g_uri_parse_relative (soup_message_get_uri (message), new_location, SOUP_HTTP_URI_FLAGS | G_URI_FLAGS_PARSE_RELAXED, NULL);
 
 						soup_message_set_uri (message, new_uri);
 

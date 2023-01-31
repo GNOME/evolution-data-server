@@ -96,7 +96,7 @@ cpi_oauth2_create_auth_uri (EOAuth2Service *service,
 	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), NULL);
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
-	parsed_uri = g_uri_parse (e_oauth2_service_get_authentication_uri (service, source), SOUP_HTTP_URI_FLAGS, NULL);
+	parsed_uri = g_uri_parse (e_oauth2_service_get_authentication_uri (service, source), SOUP_HTTP_URI_FLAGS | G_URI_FLAGS_PARSE_RELAXED, NULL);
 	g_return_val_if_fail (parsed_uri != NULL, NULL);
 
 	uri_query = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);

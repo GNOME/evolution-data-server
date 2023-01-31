@@ -467,7 +467,7 @@ trust_prompt_get_host_from_url (const gchar *url)
 	if (!url || !*url)
 		return NULL;
 
-	suri = g_uri_parse (url, SOUP_HTTP_URI_FLAGS, NULL);
+	suri = g_uri_parse (url, SOUP_HTTP_URI_FLAGS | G_URI_FLAGS_PARSE_RELAXED, NULL);
 	if (!suri)
 		return NULL;
 

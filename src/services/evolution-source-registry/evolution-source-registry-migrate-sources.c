@@ -2780,7 +2780,7 @@ migrate_parse_source (ParseData *parse_data,
 		uri_string = g_strconcat (
 			parse_data->base_uri, "/", relative_uri, NULL);
 
-	parse_data->parsed_uri = g_uri_parse (uri_string, SOUP_HTTP_URI_FLAGS, NULL);
+	parse_data->parsed_uri = g_uri_parse (uri_string, SOUP_HTTP_URI_FLAGS | G_URI_FLAGS_PARSE_RELAXED, NULL);
 
 	/* Mangle the URI to not contain invalid characters.  We'll need
 	 * this later to rename the source's cache and data directories. */

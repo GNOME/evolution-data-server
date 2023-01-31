@@ -876,7 +876,7 @@ e_webdav_discover_sources_full_sync (ESource *source,
 
 	if (url_use_path && (g_ascii_strncasecmp (url_use_path, "http://", 7) == 0 ||
 	    g_ascii_strncasecmp (url_use_path, "https://", 8) == 0)) {
-		guri = g_uri_parse (url_use_path, SOUP_HTTP_URI_FLAGS, NULL);
+		guri = g_uri_parse (url_use_path, SOUP_HTTP_URI_FLAGS | G_URI_FLAGS_PARSE_RELAXED, NULL);
 		url_use_path = NULL;
 	} else {
 		g_return_val_if_fail (e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND), FALSE);
