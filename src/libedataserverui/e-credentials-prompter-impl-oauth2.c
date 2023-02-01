@@ -679,7 +679,12 @@ credentials_prompter_impl_oauth2_sanitize_host (gchar *host)
 }
 
 static void
-credentials_prompter_impl_oauth2_set_proxy (WebKitWebContext *web_context,
+credentials_prompter_impl_oauth2_set_proxy (
+#if GTK_CHECK_VERSION(4, 0, 0) && WEBKIT_CHECK_VERSION(2, 39, 6)
+					    WebKitNetworkSession *network_session,
+#else
+					    WebKitWebsiteDataManager *data_manager,
+#endif
 					    ESourceRegistry *registry,
 					    ESource *auth_source)
 {
@@ -704,7 +709,6 @@ credentials_prompter_impl_oauth2_set_proxy (WebKitWebContext *web_context,
 
 	if (proxy_source && e_source_has_extension (proxy_source, E_SOURCE_EXTENSION_PROXY)) {
 		ESourceProxy *proxy;
-		WebKitWebsiteDataManager *data_manager;
 		WebKitNetworkProxySettings *proxy_settings = NULL;
 		GUri *guri;
 		gchar **ignore_hosts = NULL;
@@ -712,11 +716,14 @@ credentials_prompter_impl_oauth2_set_proxy (WebKitWebContext *web_context,
 		guint16 port;
 
 		proxy = e_source_get_extension (proxy_source, E_SOURCE_EXTENSION_PROXY);
-		data_manager = webkit_web_context_get_website_data_manager (web_context);
 
 		switch (e_source_proxy_get_method (proxy)) {
 		case E_PROXY_METHOD_DEFAULT:
+#if GTK_CHECK_VERSION(4, 0, 0) && WEBKIT_CHECK_VERSION(2, 39, 6)
+			webkit_network_session_set_proxy_settings (network_session, WEBKIT_NETWORK_PROXY_MODE_DEFAULT, NULL);
+#else
 			webkit_website_data_manager_set_network_proxy_settings (data_manager, WEBKIT_NETWORK_PROXY_MODE_DEFAULT, NULL);
+#endif
 			break;
 		case E_PROXY_METHOD_MANUAL:
 			ignore_hosts = e_source_proxy_dup_ignore_hosts (proxy);
@@ -770,13 +777,21 @@ credentials_prompter_impl_oauth2_set_proxy (WebKitWebContext *web_context,
 			}
 			g_free (tmp);
 
+#if GTK_CHECK_VERSION(4, 0, 0) && WEBKIT_CHECK_VERSION(2, 39, 6)
+			webkit_network_session_set_proxy_settings (network_session, WEBKIT_NETWORK_PROXY_MODE_CUSTOM, proxy_settings);
+#else
 			webkit_website_data_manager_set_network_proxy_settings (data_manager, WEBKIT_NETWORK_PROXY_MODE_CUSTOM, proxy_settings);
+#endif
 			break;
 		case E_PROXY_METHOD_AUTO:
 			/* not supported by WebKitGTK */
 			break;
 		case E_PROXY_METHOD_NONE:
+#if GTK_CHECK_VERSION(4, 0, 0) && WEBKIT_CHECK_VERSION(2, 39, 6)
+			webkit_network_session_set_proxy_settings (network_session, WEBKIT_NETWORK_PROXY_MODE_NO_PROXY, proxy_settings);
+#else
 			webkit_website_data_manager_set_network_proxy_settings (data_manager, WEBKIT_NETWORK_PROXY_MODE_NO_PROXY, NULL);
+#endif
 			break;
 		}
 
@@ -899,6 +914,11 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	GtkWidget *progress_bar;
 	WebKitSettings *webkit_settings;
 	WebKitWebContext *web_context;
+#if GTK_CHECK_VERSION(4, 0, 0) && WEBKIT_CHECK_VERSION(2, 39, 6)
+	WebKitNetworkSession *network_session;
+#else
+	WebKitWebsiteDataManager *data_manager;
+#endif
 #endif /* WITH_WEBKITGTK */
 	gchar *title, *uri;
 	GString *info_markup;
@@ -1213,9 +1233,18 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 #if !GTK_CHECK_VERSION(4, 0, 0) || !WEBKIT_CHECK_VERSION(2, 39, 5)
 	webkit_web_context_set_sandbox_enabled (web_context, TRUE);
 #endif
-	credentials_prompter_impl_oauth2_set_proxy (web_context,  e_credentials_prompter_get_registry (prompter), prompter_oauth2->priv->auth_source);
+#if GTK_CHECK_VERSION(4, 0, 0) && WEBKIT_CHECK_VERSION(2, 39, 6)
+	network_session = webkit_network_session_new (NULL, NULL);
+	credentials_prompter_impl_oauth2_set_proxy (network_session, e_credentials_prompter_get_registry (prompter), prompter_oauth2->priv->auth_source);
+#else
+	data_manager = webkit_web_context_get_website_data_manager (web_context);
+	credentials_prompter_impl_oauth2_set_proxy (data_manager, e_credentials_prompter_get_registry (prompter), prompter_oauth2->priv->auth_source);
+#endif
 
 	widget = g_object_new (WEBKIT_TYPE_WEB_VIEW,
+#if GTK_CHECK_VERSION(4, 0, 0) && WEBKIT_CHECK_VERSION(2, 39, 6)
+			"network-session", network_session,
+#endif
 			"settings", webkit_settings,
 			"web-context", web_context,
 			NULL);
@@ -1231,6 +1260,9 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (scrolled_window), widget);
 #else
 	gtk_container_add (GTK_CONTAINER (scrolled_window), widget);
+#endif
+#if GTK_CHECK_VERSION(4, 0, 0) && WEBKIT_CHECK_VERSION(2, 39, 6)
+	g_object_unref (network_session);
 #endif
 	g_object_unref (webkit_settings);
 	g_object_unref (web_context);
