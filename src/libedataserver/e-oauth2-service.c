@@ -1931,6 +1931,42 @@ e_oauth2_service_util_take_to_form (GHashTable *form,
 		g_hash_table_remove (form, name);
 }
 
+static gboolean
+eos_util_extract_from_form (GHashTable *form,
+			    gchar **out_authorization_code,
+			    gchar **out_error_code,
+			    gchar **out_error_description)
+{
+	gboolean any_set = FALSE;
+	const gchar *value;
+
+	if (!form)
+		return FALSE;
+
+	value = g_hash_table_lookup (form, "code");
+
+	if (value && *value && out_authorization_code) {
+		any_set = TRUE;
+		*out_authorization_code = g_strdup (value);
+	} else {
+		value = g_hash_table_lookup (form, "error");
+
+		if (value && *value && out_error_code) {
+			any_set = TRUE;
+			*out_error_code = g_strdup (value);
+		}
+
+		value = g_hash_table_lookup (form, "error_description");
+
+		if (value && *value && out_error_description) {
+			any_set = TRUE;
+			*out_error_description = g_strdup (value);
+		}
+	}
+
+	return any_set;
+}
+
 /**
  * e_oauth2_service_util_extract_from_uri:
  * @in_uri: a URI returned from the server
@@ -1963,33 +1999,22 @@ e_oauth2_service_util_extract_from_uri (const gchar *in_uri,
 		return FALSE;
 
 	if (g_uri_get_query (uri)) {
-		GHashTable *uri_query = soup_form_decode (g_uri_get_query (uri));
+		GHashTable *form = soup_form_decode (g_uri_get_query (uri));
 
-		if (uri_query) {
-			const gchar *value;
+		if (form) {
+			any_set = eos_util_extract_from_form (form, out_authorization_code, out_error_code, out_error_description);
 
-			value = g_hash_table_lookup (uri_query, "code");
+			g_hash_table_unref (form);
+		}
+	}
 
-			if (value && *value && out_authorization_code) {
-				any_set = TRUE;
-				*out_authorization_code = g_strdup (value);
-			} else {
-				value = g_hash_table_lookup (uri_query, "error");
+	if (!any_set && g_uri_get_fragment (uri)) {
+		GHashTable *form = soup_form_decode (g_uri_get_fragment (uri));
 
-				if (value && *value && out_error_code) {
-					any_set = TRUE;
-					*out_error_code = g_strdup (value);
-				}
+		if (form) {
+			any_set = eos_util_extract_from_form (form, out_authorization_code, out_error_code, out_error_description);
 
-				value = g_hash_table_lookup (uri_query, "error_description");
-
-				if (value && *value && out_error_description) {
-					any_set = TRUE;
-					*out_error_description = g_strdup (value);
-				}
-			}
-
-			g_hash_table_unref (uri_query);
+			g_hash_table_unref (form);
 		}
 	}
 
