@@ -5624,6 +5624,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 	CamelFolder *folder;
 	CamelFolderChangeInfo *changes;
 	GHashTable *known_uids;
+	GPtrArray *summary_uids = NULL;
 	guint32 messages;
 	guint32 unseen;
 	guint32 uidnext;
@@ -5741,6 +5742,14 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 
 	skip_old_flags_update = camel_imapx_server_skip_old_flags_update (camel_folder_get_parent_store (folder));
 
+	if (!skip_old_flags_update) {
+		/* Remember summary state before running the update, in case there are
+		   added new messages into the folder meanwhile, like with a COPY/MOVE filter;
+		   such new messages would be considered removed, because not being part
+		   of the 'known_uids' hash table. */
+		summary_uids = camel_folder_summary_get_array (CAMEL_FOLDER_SUMMARY (imapx_summary));
+	}
+
 	success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, uidl, 0, cancellable, error);
 	if (success && uidl != 1 && !skip_old_flags_update)
 		success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, 0, uidl, cancellable, error);
@@ -5761,14 +5770,12 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 
 	if (success && !skip_old_flags_update) {
 		GList *removed = NULL;
-		GPtrArray *array;
 		gint ii;
 
 		camel_folder_summary_lock (CAMEL_FOLDER_SUMMARY (imapx_summary));
 
-		array = camel_folder_summary_get_array (CAMEL_FOLDER_SUMMARY (imapx_summary));
-		for (ii = 0; array && ii < array->len; ii++) {
-			const gchar *uid = array->pdata[ii];
+		for (ii = 0; summary_uids && ii < summary_uids->len; ii++) {
+			const gchar *uid = summary_uids->pdata[ii];
 
 			if (!uid)
 				continue;
@@ -5788,9 +5795,9 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 			/* Shares UIDs with the 'array'. */
 			g_list_free (removed);
 		}
-
-		camel_folder_summary_free_array (array);
 	}
+
+	g_clear_pointer (&summary_uids, camel_folder_summary_free_array);
 
 	camel_folder_summary_save (CAMEL_FOLDER_SUMMARY (imapx_summary), NULL);
 	imapx_update_store_summary (folder);
