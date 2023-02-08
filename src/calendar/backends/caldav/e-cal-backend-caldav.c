@@ -516,6 +516,9 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 		if (!link) {
 			link = *set2;
 			*set2 = NULL;
+			/* read created and modified sets separately, because md.from_link
+			   does not handle move between the sets */
+			left_to_go = 1;
 		}
 
 		if (!nfo)
