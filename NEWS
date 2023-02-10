@@ -1,3 +1,41 @@
+Evolution-Data-Server 3.47.2 2023-02-10
+---------------------------------------
+
+Bug Fixes:
+	I#231 - Release unused memory in factories after certain operations
+	I#445 - libedataserverui4: (almost) empty GIR/VAPI file (Corentin Noël)
+	I#446 - IMAP: Inbox hidden in offline with "Show only subscribed folders"
+	I#447 - Google Task modification not synced
+	I#452 - CalDAV: Can fail to refresh content in some cases
+	M!112 - Update for removal of WebKitGTK sandbox API (Michael Catanzaro)
+	M!113 - Don't accidentally disable sandbox for GTK 3 users (Michael Catanzaro)
+	M!114 - OAuth2: stop trying to disable WebKit plugins (Michael Catanzaro)
+	M!114 - OAuth2: use WebKitNetworkSession to manage proxy settings (Michael Catanzaro)
+	evo-I#2161 - Mail: Add 'Learn as Junk' message filter action
+	ews-I#210 - Add option to always use HTTP/1
+
+Miscellaneous:
+	IMAPx: Utilize normalization of the Inbox folder name
+	OAuth2 Credentials Prompter: Allow pasting the whole URL as an authorization code
+	Enable GitLab CI for easier testing of the changes
+	OAuth2: Show errors returned by the server in the prompt window
+	Parse URI strings into GUri in a relaxed mode
+	OAuth2: Extract returned information from URI query or fragment
+	IMAPx: Folder refresh could remove new message from local summary
+
+Translations:
+	Aleksandr Melman (ru)
+	Daniel Mustieles (es)
+	Fran Dieguez (gl)
+	Hugo Carvalho (pt)
+	Jordi Mas i Hernandez (ca)
+	Jürgen Benvenuti (de)
+	Kukuh Syafaat (id)
+	Quentin PAGÈS (oc)
+	Sabri Ünal (tr)
+	Yosef Or Boczko (he)
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.47.1 2023-01-06
 ---------------------------------------
 
