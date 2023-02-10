@@ -1,3 +1,19 @@
+Evolution-Data-Server 3.46.4 2023-02-10
+---------------------------------------
+
+Bug Fixes:
+	I#445 - libedataserverui4: (almost) empty GIR/VAPI file (Corentin Noël)
+	I#446 - IMAP: Inbox hidden in offline with "Show only subscribed folders"
+	I#447 - Google Task modification not synced
+	I#452 - CalDAV: Can fail to refresh content in some cases
+
+Miscellaneous:
+	Parse URI strings into GUri in a relaxed mode
+	IMAPx: Folder refresh could remove new message from local summary
+
+Translations:
+	Jordi Mas i Hernandez (ca)
+
 Evolution-Data-Server 3.46.3 2023-01-06
 ---------------------------------------
 
