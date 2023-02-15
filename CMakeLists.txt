@@ -6,7 +6,7 @@ cmake_policy(VERSION 3.1)
 project(evolution-data-server
 	VERSION 3.47.3
 	LANGUAGES C CXX)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 14 CACHE INTERNAL "C++ standard to use")
 set(PROJECT_BUGREPORT "https://gitlab.gnome.org/GNOME/evolution-data-server/issues/")
 
 # Base Version: This is for API/version tracking for things like
