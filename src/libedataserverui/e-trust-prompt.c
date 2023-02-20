@@ -120,11 +120,26 @@ trust_prompt_show (GtkWindow *parent,
 		_("_Accept Permanently"), GTK_RESPONSE_ACCEPT,
 		NULL);
 
+	widget = gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);
+	gtk_widget_set_tooltip_text (widget, _("Temporarily reject the certificate"));
+
+	widget = gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), GTK_RESPONSE_REJECT);
+	gtk_widget_set_tooltip_text (widget, _("Permanently reject the certificate"));
+
+	widget = gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), GTK_RESPONSE_YES);
+	gtk_widget_set_tooltip_text (widget, _("Temporarily accept the certificate"));
+
+	widget = gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), GTK_RESPONSE_ACCEPT);
+	gtk_widget_set_tooltip_text (widget, _("Permanently accept the certificate"));
+
 	widget = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 
-#if !GTK_CHECK_VERSION(4, 0, 0)
-	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
-#endif
+	g_object_set (widget,
+		"margin-start", 6,
+		"margin-end", 6,
+		"margin-top", 6,
+		"margin-bottom", 6,
+		NULL);
 
 	grid = g_object_new (
 		GTK_TYPE_GRID,
@@ -137,23 +152,18 @@ trust_prompt_show (GtkWindow *parent,
 		"halign", GTK_ALIGN_FILL,
 		"vexpand", TRUE,
 		"valign", GTK_ALIGN_FILL,
+		"margin-start", 6,
+		"margin-end", 6,
+		"margin-top", 6,
+		"margin-bottom", 6,
 		NULL);
 
 #if GTK_CHECK_VERSION(4, 0, 0)
-	g_object_set (G_OBJECT (grid),
-		"halign", GTK_ALIGN_FILL,
-		"valign", GTK_ALIGN_FILL,
-		"margin-start", 5,
-		"margin-end", 5,
-		"margin-top", 5,
-		"margin-bottom", 5,
-		NULL);
 	gtk_box_append (GTK_BOX (widget), GTK_WIDGET (grid));
 
 	widget = gtk_image_new_from_icon_name ("dialog-warning");
 	gtk_image_set_pixel_size (GTK_IMAGE (widget), 48);
 #else
-	gtk_container_set_border_width (GTK_CONTAINER (grid), 5);
 	gtk_container_add (GTK_CONTAINER (widget), GTK_WIDGET (grid));
 
 	widget = gtk_image_new_from_icon_name ("dialog-warning", GTK_ICON_SIZE_DIALOG);
