@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2023-02-01 09:33+0000\n"
-"PO-Revision-Date: 2023-02-04 12:28+0700\n"
+"POT-Creation-Date: 2023-02-20 09:59+0000\n"
+"PO-Revision-Date: 2023-02-20 17:58+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "Language: id\n"
@@ -32,13 +32,13 @@ msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "URL yang diberikan \"%s\" tidak mereferensikan buku alamat CardDAV"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1127
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1337
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1340
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:934
 msgid "Server didn’t return object’s href"
 msgstr "Peladen tidak mengembalikan berkas objek"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1129
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1339
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1342
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:936
 msgid "Server didn’t return object’s ETag"
 msgstr "Peladen tidak mengembalikan ETag objek"
@@ -178,7 +178,7 @@ msgstr "Gagal mengubah nama basis data lama dari \"%s\" menjadi \"%s\": %s"
 #: src/libedataserver/e-soup-session.c:1019
 #: src/libedataserver/e-soup-session.c:1899
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:266
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:838
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
 #: src/libedataserverui/e-reminders-widget.c:2141
 #: src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
@@ -1310,7 +1310,7 @@ msgstr "Indeks alfabetik ditata bagi locale yang salah"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "URL yang diberikan \"%s\" tidak mengacu pada kalender CalDAV"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1474
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1477
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1189
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
@@ -1319,7 +1319,7 @@ msgstr ""
 "Informasi yang hilang tentang URL komponen, singgahan lokal mungkin tidak "
 "lengkap atau rusak. Tolong, hapus."
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1986
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1989
 msgid "Failed to parse response data"
 msgstr "Gagal mengurai data tanggapan"
 
@@ -4420,65 +4420,65 @@ msgstr "Mengambil ringkasan informasi untuk pesan baru dalam \"%s : %s\""
 msgid "Error fetching message info"
 msgstr "Galat saat mengambil info pesan"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5644
+#: src/camel/providers/imapx/camel-imapx-server.c:5645
 msgid "Error running STATUS"
 msgstr "Galat saat menjalankan STATUS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6224
-#: src/camel/providers/imapx/camel-imapx-server.c:6279
-#: src/camel/providers/imapx/camel-imapx-server.c:6343
+#: src/camel/providers/imapx/camel-imapx-server.c:6231
+#: src/camel/providers/imapx/camel-imapx-server.c:6286
+#: src/camel/providers/imapx/camel-imapx-server.c:6350
 msgid "Error syncing changes"
 msgstr "Galat saat menyelaraskan perubahan"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6237
-#: src/camel/providers/imapx/camel-imapx-server.c:6289
-#: src/camel/providers/imapx/camel-imapx-server.c:6362
-#: src/camel/providers/imapx/camel-imapx-server.c:6503
+#: src/camel/providers/imapx/camel-imapx-server.c:6244
+#: src/camel/providers/imapx/camel-imapx-server.c:6296
+#: src/camel/providers/imapx/camel-imapx-server.c:6369
+#: src/camel/providers/imapx/camel-imapx-server.c:6510
 msgid "Error expunging message"
 msgstr "Galat saat menghapus pesan-pesan lama"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6585
+#: src/camel/providers/imapx/camel-imapx-server.c:6592
 msgid "Error fetching folders"
 msgstr "Galat saat mengambil folder"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6593
+#: src/camel/providers/imapx/camel-imapx-server.c:6600
 msgid "Error fetching subscribed folders"
 msgstr "Galat saat mengambil folder yang dilanggani"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6650
+#: src/camel/providers/imapx/camel-imapx-server.c:6657
 msgid "Error creating folder"
 msgstr "Galat saat membuat folder"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6700
+#: src/camel/providers/imapx/camel-imapx-server.c:6707
 msgid "Error deleting folder"
 msgstr "Galat saat menghapus folder"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6746
+#: src/camel/providers/imapx/camel-imapx-server.c:6753
 msgid "Error renaming folder"
 msgstr "Galat saat mengubah nama folder"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6778
+#: src/camel/providers/imapx/camel-imapx-server.c:6785
 msgid "Error subscribing to folder"
 msgstr "Galat saat berlangganan ke folder"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6814
+#: src/camel/providers/imapx/camel-imapx-server.c:6821
 msgid "Error unsubscribing from folder"
 msgstr "Galat saat berhenti langganan dari folder"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6854
+#: src/camel/providers/imapx/camel-imapx-server.c:6861
 msgid "IMAP server does not support quotas"
 msgstr "Peladen IMAP tidak mendukung kuota"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6866
+#: src/camel/providers/imapx/camel-imapx-server.c:6873
 msgid "Error retrieving quota information"
 msgstr "Galat saat mengambil informasi kuota"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6931
+#: src/camel/providers/imapx/camel-imapx-server.c:6938
 msgid "Search failed"
 msgstr "Pencarian gagal"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7059
+#: src/camel/providers/imapx/camel-imapx-server.c:7066
 msgid "Error running IDLE"
 msgstr "Galat saat menjalankan IDLE"
 
@@ -7377,7 +7377,7 @@ msgstr "Gagal mendapatkan token akses dari alamat \"%s\": %s"
 
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:295
 msgid "Requesting access token, please wait…"
-msgstr "Meminta token akses, harap tunggu..."
+msgstr "Meminta token akses, harap tunggu…"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
@@ -7506,27 +7506,27 @@ msgstr ""
 "Log masuk ke akun %s Anda dan terima persyaratan untuk mengakses akun \"%s\" "
 "Anda."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:838
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Gagal membuka peramban: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:934
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:954
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:243
 #: src/libedataserverui/e-trust-prompt.c:117
 #: src/libedataserverui/e-webdav-discover-widget.c:1149
 msgid "_Cancel"
 msgstr "_Batal"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1016
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1036
 msgid "URL:"
 msgstr "URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1046
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1066
 msgid "Click here to open the URL"
 msgstr "Klik di sini untuk membuka URL"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1084
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1104
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -7536,11 +7536,11 @@ msgstr ""
 "otorisasi yang dihasilkan, atau URL yang diselesaikan dengan wisaya OAuth2, "
 "di bawah ini untuk melanjutkan proses autentikasi."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1121
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1141
 msgid "_Authorization code:"
 msgstr "Kode Otoris_asi:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1134
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1154
 msgid "C_ontinue"
 msgstr "L_anjutkan"
 
@@ -7737,7 +7737,23 @@ msgstr "_Terima Sementara"
 msgid "_Accept Permanently"
 msgstr "Terim_a Seterusnya"
 
-#: src/libedataserverui/e-trust-prompt.c:208
+#: src/libedataserverui/e-trust-prompt.c:124
+msgid "Temporarily reject the certificate"
+msgstr "Tolak sertifikat untuk sementara waktu"
+
+#: src/libedataserverui/e-trust-prompt.c:127
+msgid "Permanently reject the certificate"
+msgstr "Tolak sertifikat secara permanen"
+
+#: src/libedataserverui/e-trust-prompt.c:130
+msgid "Temporarily accept the certificate"
+msgstr "Terima sertifikat untuk sementara waktu"
+
+#: src/libedataserverui/e-trust-prompt.c:133
+msgid "Permanently accept the certificate"
+msgstr "Terima sertifikat secara permanen"
+
+#: src/libedataserverui/e-trust-prompt.c:218
 #: src/modules/trust-prompt/trust-prompt-gtk.c:169
 #, c-format
 msgid "SSL/TLS certificate for “%s” is not trusted. Do you wish to accept it?"
@@ -7745,21 +7761,21 @@ msgstr ""
 "Sertifikat SSL/TLS bagi \"%s\" tidak terpercaya. Apakah Anda hendak "
 "menerimanya?"
 
-#: src/libedataserverui/e-trust-prompt.c:230
+#: src/libedataserverui/e-trust-prompt.c:240
 #: src/modules/trust-prompt/trust-prompt-gtk.c:184
 msgid "Reason:"
 msgstr "Alasan:"
 
-#: src/libedataserverui/e-trust-prompt.c:233
+#: src/libedataserverui/e-trust-prompt.c:243
 msgid "Detailed error:"
 msgstr "Galat terrinci:"
 
-#: src/libedataserverui/e-trust-prompt.c:292
+#: src/libedataserverui/e-trust-prompt.c:302
 #: src/modules/trust-prompt/module-trust-prompt.c:80
 msgid "The signing certificate authority is not known."
 msgstr "Certificate authority yang menandatangani tak dikenal."
 
-#: src/libedataserverui/e-trust-prompt.c:294
+#: src/libedataserverui/e-trust-prompt.c:304
 #: src/modules/trust-prompt/module-trust-prompt.c:82
 msgid ""
 "The certificate does not match the expected identity of the site that it was "
@@ -7768,17 +7784,17 @@ msgstr ""
 "Sertifikat tak cocok dengan identitas yang diharapkan dari situs tempat "
 "diambilnya."
 
-#: src/libedataserverui/e-trust-prompt.c:296
+#: src/libedataserverui/e-trust-prompt.c:306
 #: src/modules/trust-prompt/module-trust-prompt.c:84
 msgid "The certificate’s activation time is still in the future."
 msgstr "Waktu aktivasi sertifikat masih di masa depan."
 
-#: src/libedataserverui/e-trust-prompt.c:298
+#: src/libedataserverui/e-trust-prompt.c:308
 #: src/modules/trust-prompt/module-trust-prompt.c:86
 msgid "The certificate has expired."
 msgstr "Sertifikat telah kedaluwarsa."
 
-#: src/libedataserverui/e-trust-prompt.c:300
+#: src/libedataserverui/e-trust-prompt.c:310
 #: src/modules/trust-prompt/module-trust-prompt.c:88
 msgid ""
 "The certificate has been revoked according to the connection’s certificate "
@@ -7786,7 +7802,7 @@ msgid ""
 msgstr ""
 "Sertifikat telah dicabut menurut daftar pencabutan sertifikat milik koneksi."
 
-#: src/libedataserverui/e-trust-prompt.c:302
+#: src/libedataserverui/e-trust-prompt.c:312
 #: src/modules/trust-prompt/module-trust-prompt.c:90
 msgid "The certificate’s algorithm is considered insecure."
 msgstr "Algoritma sertifikat dianggap tidak aman."
