@@ -79,6 +79,10 @@ if(ENABLE_PHONENUMBER)
 		${PHONENUMBER_DEFINITIONS}
 	)
 
+	target_compile_features(ephonenumber-private PUBLIC
+		cxx_std_14
+	)
+
 	target_compile_options(ephonenumber-private PUBLIC
 		${ADDRESSBOOK_CFLAGS}
 	)
