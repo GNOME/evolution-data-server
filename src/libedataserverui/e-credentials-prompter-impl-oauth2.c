@@ -1318,6 +1318,10 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		progress_handler_id = g_signal_connect (web_view, "notify::estimated-load-progress",
 			G_CALLBACK (cpi_oauth2_notify_estimated_load_progress_cb), progress_bar);
 
+		if (cpi_oauth2_get_debug ()) {
+			e_util_debug_print ("OAuth2", "Loading URI: '%s'\n", uri);
+		}
+
 		webkit_web_view_load_uri (web_view, uri);
 #else /* WITH_WEBKITGTK */
 		_libedataserverui_entry_set_text (GTK_ENTRY (url_entry), uri);
