@@ -26,6 +26,7 @@
  * Contains functions to work with the #ECalComponentAlarmInstance structure.
  **/
 
+#include "e-cal-component.h"
 #include "e-cal-component-alarm-instance.h"
 
 G_DEFINE_BOXED_TYPE (ECalComponentAlarmInstance, e_cal_component_alarm_instance, e_cal_component_alarm_instance_copy, e_cal_component_alarm_instance_free)
@@ -36,6 +37,7 @@ struct _ECalComponentAlarmInstance {
 
 	/* recurrence ID of the component the alarm was generated from */
 	gchar *rid;
+	ECalComponent *comp;
 
 	/* Instance time, i.e. "5 minutes before the appointment" */
 	time_t instance_time;
@@ -105,6 +107,9 @@ e_cal_component_alarm_instance_copy (const ECalComponentAlarmInstance *instance)
 	e_cal_component_alarm_instance_set_rid (instnc,
 		e_cal_component_alarm_instance_get_rid (instance));
 
+	e_cal_component_alarm_instance_set_component (instnc,
+		e_cal_component_alarm_instance_get_component (instance));
+
 	return instnc;
 }
 
@@ -124,6 +129,7 @@ e_cal_component_alarm_instance_free (gpointer instance)
 	ECalComponentAlarmInstance *instnc = instance;
 
 	if (instnc) {
+		g_clear_object (&instnc->comp);
 		g_free (instnc->uid);
 		g_free (instnc->rid);
 		g_slice_free (ECalComponentAlarmInstance, instnc);
@@ -205,6 +211,46 @@ e_cal_component_alarm_instance_set_rid (ECalComponentAlarmInstance *instance,
 	if (g_strcmp0 (instance->rid, rid) != 0) {
 		g_free (instance->rid);
 		instance->rid = g_strdup (rid);
+	}
+}
+
+/**
+ * e_cal_component_alarm_instance_get_component:
+ * @instance: an #ECalComponentAlarmInstance
+ *
+ * Returns: (nullable) (transfer none): component associated with the instance, or %NULL
+ *
+ * Since: 3.48
+ **/
+ECalComponent *
+e_cal_component_alarm_instance_get_component (const ECalComponentAlarmInstance *instance)
+{
+	g_return_val_if_fail (instance != NULL, NULL);
+
+	return instance->comp;
+}
+
+/**
+ * e_cal_component_alarm_instance_set_component:
+ * @instance: an #ECalComponentAlarmInstance
+ * @component: (nullable): an #ECalComponent or %NULL
+ *
+ * Sets @component as the component associated with the @instance.
+ * It can be %NULL to unset it.
+ *
+ * Since: 3.48
+ **/
+void
+e_cal_component_alarm_instance_set_component (ECalComponentAlarmInstance *instance,
+					      ECalComponent *component)
+{
+	g_return_if_fail (instance != NULL);
+	if (component)
+		g_return_if_fail (E_IS_CAL_COMPONENT (component));
+
+	if (instance->comp != component) {
+		g_clear_object (&instance->comp);
+		instance->comp = component ? g_object_ref (component) : NULL;
 	}
 }
 

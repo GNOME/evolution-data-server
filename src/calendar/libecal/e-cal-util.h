@@ -240,6 +240,13 @@ ICalTimezone *	e_cal_util_copy_timezone	(const ICalTimezone *zone);
 ICalComponent *	e_cal_util_parse_ics_string	(const gchar *string);
 ICalComponent *	e_cal_util_parse_ics_file	(const gchar *filename);
 
+gboolean	e_cal_util_has_alarms_in_range	(ECalComponent *comp,
+						 time_t start,
+						 time_t end,
+						 ECalComponentAlarmAction *omit,
+						 ECalRecurResolveTimezoneCb resolve_tzid,
+						 gpointer user_data,
+						 ICalTimezone *default_timezone);
 ECalComponentAlarms *
 		e_cal_util_generate_alarms_for_comp
 						(ECalComponent *comp,
@@ -258,7 +265,18 @@ gint		e_cal_util_generate_alarms_for_list
 						 ECalRecurResolveTimezoneCb resolve_tzid,
 						 gpointer user_data,
 						 ICalTimezone *default_timezone);
-
+ECalComponentAlarms *
+		e_cal_util_generate_alarms_for_uid_sync
+						(struct _ECalClient *client,
+						 const gchar *uid,
+						 time_t start,
+						 time_t end,
+						 ECalComponentAlarmAction *omit,
+						 ECalRecurResolveTimezoneCb resolve_tzid,
+						 gpointer user_data,
+						 ICalTimezone *default_timezone,
+						 GCancellable *cancellable,
+						 GError **error);
 const gchar *	e_cal_util_priority_to_string	(gint priority);
 gint		e_cal_util_priority_from_string	(const gchar *string);
 

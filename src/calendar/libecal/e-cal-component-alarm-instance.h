@@ -28,6 +28,9 @@
 
 G_BEGIN_DECLS
 
+/* Forward declaration */
+struct _ECalComponent;
+
 /**
  * ECalComponentAlarmInstance:
  *
@@ -59,6 +62,12 @@ const gchar *	e_cal_component_alarm_instance_get_rid
 void		e_cal_component_alarm_instance_set_rid
 						(ECalComponentAlarmInstance *instance,
 						 const gchar *rid);
+struct _ECalComponent *
+		e_cal_component_alarm_instance_get_component
+						(const ECalComponentAlarmInstance *instance);
+void		e_cal_component_alarm_instance_set_component
+						(ECalComponentAlarmInstance *instance,
+						 struct _ECalComponent *component);
 time_t		e_cal_component_alarm_instance_get_time
 						(const ECalComponentAlarmInstance *instance);
 void		e_cal_component_alarm_instance_set_time

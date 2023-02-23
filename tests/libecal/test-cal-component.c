@@ -464,6 +464,7 @@ verify_struct_alarm_instance_equal (const ECalComponentAlarmInstance *expected,
 	g_assert_cmpint (e_cal_component_alarm_instance_get_time (expected), ==, e_cal_component_alarm_instance_get_time (received));
 	g_assert_cmpint (e_cal_component_alarm_instance_get_occur_start (expected), ==, e_cal_component_alarm_instance_get_occur_start (received));
 	g_assert_cmpint (e_cal_component_alarm_instance_get_occur_end (expected), ==, e_cal_component_alarm_instance_get_occur_end (received));
+	g_assert_true (e_cal_component_alarm_instance_get_component (expected) == e_cal_component_alarm_instance_get_component (received));
 }
 
 static void
@@ -838,17 +839,21 @@ test_component_struct_alarm_instance (void)
 	struct _values {
 		const gchar *uid;
 		const gchar *rid;
+		gboolean with_component;
 		gint instance_time;
 		gint occur_start;
 		gint occur_end;
 	} values[] = {
-		{ "1", NULL, 1, 2, 3 },
-		{ "2", "r1", 2, 3, 4 },
-		{ "3", "r2", 3, 4, 6 },
-		{ "4", NULL, 4, 5, 6 },
-		{ "5", "r3", 5, 6, 7 }
+		{ "1", NULL, TRUE,  1, 2, 3 },
+		{ "2", "r1", FALSE, 2, 3, 4 },
+		{ "3", "r2", TRUE,  3, 4, 6 },
+		{ "4", NULL, FALSE, 4, 5, 6 },
+		{ "5", "r3", FALSE, 5, 6, 7 }
 	};
+	ECalComponent *comp;
 	gint ii;
+
+	comp = e_cal_component_new ();
 
 	for (ii = 0; ii < G_N_ELEMENTS (values); ii++) {
 		ECalComponentAlarmInstance *expected, *received;
@@ -868,6 +873,11 @@ test_component_struct_alarm_instance (void)
 
 		e_cal_component_alarm_instance_set_rid (expected, values[ii].rid);
 
+		if (values[ii].with_component)
+			e_cal_component_alarm_instance_set_component (expected, comp);
+		else if (ii < 3)
+			e_cal_component_alarm_instance_set_component (expected, NULL);
+
 		g_assert_nonnull (expected);
 
 		g_assert_cmpstr (e_cal_component_alarm_instance_get_uid (expected), ==, values[ii].uid);
@@ -876,14 +886,30 @@ test_component_struct_alarm_instance (void)
 		g_assert_cmpint (e_cal_component_alarm_instance_get_occur_start (expected), ==, (time_t) values[ii].occur_start);
 		g_assert_cmpint (e_cal_component_alarm_instance_get_occur_end (expected), ==, (time_t) values[ii].occur_end);
 
+		if (values[ii].with_component)
+			g_assert_true (e_cal_component_alarm_instance_get_component (expected) == comp);
+		else
+			g_assert_null (e_cal_component_alarm_instance_get_component (expected));
+
 		received = e_cal_component_alarm_instance_copy (expected);
 		verify_struct_alarm_instance_equal (expected, received);
 		e_cal_component_alarm_instance_free (received);
+
+		if (values[ii].with_component && ii < 3) {
+			e_cal_component_alarm_instance_set_component (expected, NULL);
+			g_assert_null (e_cal_component_alarm_instance_get_component (expected));
+
+			received = e_cal_component_alarm_instance_copy (expected);
+			verify_struct_alarm_instance_equal (expected, received);
+			e_cal_component_alarm_instance_free (received);
+		}
 
 		e_cal_component_alarm_instance_free (expected);
 	}
 
 	g_assert_cmpint (ii, >, 1);
+
+	g_clear_object (&comp);
 }
 
 static void

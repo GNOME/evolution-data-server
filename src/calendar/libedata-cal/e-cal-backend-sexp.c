@@ -908,7 +908,6 @@ func_has_alarms_in_range (ESExp *esexp,
 	time_t start, end;
 	ESExpResult *result;
 	ICalTimezone *default_zone;
-	ECalComponentAlarms *alarms;
 	ECalComponentAlarmAction omit[] = {-1};
 	SearchContext *ctx = data;
 
@@ -942,17 +941,8 @@ func_has_alarms_in_range (ESExp *esexp,
 	/* See if the object has alarms in the given time range */
 	default_zone = i_cal_timezone_get_utc_timezone ();
 
-	alarms = e_cal_util_generate_alarms_for_comp (
-		ctx->comp, start, end,
-		omit, resolve_tzid,
-		ctx, default_zone);
-
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-	if (alarms) {
-		result->value.boolean = TRUE;
-		e_cal_component_alarms_free (alarms);
-	} else
-		result->value.boolean = FALSE;
+	result->value.boolean = e_cal_util_has_alarms_in_range (ctx->comp, start, end, omit, resolve_tzid, ctx, default_zone);
 
 	return result;
 }

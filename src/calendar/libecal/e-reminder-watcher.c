@@ -205,13 +205,19 @@ e_reminder_watcher_dump_scheduled (EReminderWatcher *watcher)
 			ECalComponent *comp;
 			ECalComponentAlarmInstance *alarm;
 			ICalComponent *icomp;
+			gchar *rid;
 
 			comp = e_reminder_data_get_component (rd);
 			alarm = e_reminder_data_get_instance (rd);
 			icomp = e_cal_component_get_icalcomponent (comp);
+			rid = e_cal_component_get_recurid_as_string (comp);
 
-			e_reminder_watcher_debug_print ("      - [%u] Event '%s' at %s\n", jj, i_cal_component_get_summary (icomp),
+			e_reminder_watcher_debug_print ("      - [%u] Event '%s' (%s|%s; alarm-rid:%s) at %s\n", jj, i_cal_component_get_summary (icomp),
+				i_cal_component_get_uid (icomp), rid ? rid : "",
+				e_cal_component_alarm_instance_get_rid (alarm) ? e_cal_component_alarm_instance_get_rid (alarm) : "",
 				e_reminder_watcher_timet_as_string (e_cal_component_alarm_instance_get_time (alarm)));
+
+			g_free (rid);
 		}
 
 		ii++;
@@ -867,10 +873,13 @@ e_reminder_watcher_objects_changed_thread (GTask *task,
 	ESource *source;
 	ObjectsChangedData *ocd = task_data;
 	const gchar *source_uid;
+	GHashTable *covered_uids; /* const gchar *uid ~> 1 - to not check multiple times for detached instances */
 	GSList *link, *reminders = NULL;
 
 	g_return_if_fail (E_IS_REMINDER_WATCHER (source_object));
 	g_return_if_fail (ocd != NULL);
+
+	covered_uids = g_hash_table_new (g_str_hash, g_str_equal);
 
 	watcher = E_REMINDER_WATCHER (source_object);
 	source = e_client_get_source (E_CLIENT (ocd->client));
@@ -878,106 +887,115 @@ e_reminder_watcher_objects_changed_thread (GTask *task,
 
 	for (link = ocd->ids; link && !g_cancellable_is_cancelled (cancellable); link = g_slist_next (link)) {
 		const ECalComponentId *id = link->data;
-		ICalComponent *icalcomp = NULL;
+		ECalComponentAlarmAction omit[] = { -1 };
+		ECalComponentAlarms *alarms;
 		GError *local_error = NULL;
 
-		if (!id || !e_cal_component_id_get_uid (id))
+		if (!id || !e_cal_component_id_get_uid (id) ||
+		    g_hash_table_contains (covered_uids, e_cal_component_id_get_uid (id)))
 			continue;
 
-		if (e_cal_client_get_object_sync (ocd->client, e_cal_component_id_get_uid (id), e_cal_component_id_get_rid (id),
-		    &icalcomp, cancellable, &local_error) && !local_error && icalcomp) {
-			ECalComponent *ecomp;
+		g_hash_table_insert (covered_uids, (gpointer) e_cal_component_id_get_uid (id), GINT_TO_POINTER (1));
 
-			ecomp = e_cal_component_new_from_icalcomponent (icalcomp);
-			if (ecomp) {
-				ECalComponentAlarmAction omit[] = { -1 };
-				ECalComponentAlarms *alarms;
+		alarms = e_cal_util_generate_alarms_for_uid_sync (ocd->client, e_cal_component_id_get_uid (id),
+			ocd->interval_start, ocd->interval_end, omit, e_cal_client_tzlookup_cb, ocd->client, ocd->zone,
+			cancellable, &local_error);
 
-				alarms = e_cal_util_generate_alarms_for_comp (
-					ecomp, ocd->interval_start, ocd->interval_end, omit, e_cal_client_tzlookup_cb,
-					ocd->client, ocd->zone);
+		if (alarms && e_cal_component_alarms_get_instances (alarms)) {
+			ECalComponent *def_comp = e_cal_component_alarms_get_component (alarms);
+			GHashTable *acknowledged_alarms; /* alarm uid ~> ICalTime * */
+			GSList *alink, *instances, *all_alarms;
 
-				if (alarms && e_cal_component_alarms_get_instances (alarms)) {
-					ECalComponent *alarms_comp = e_cal_component_alarms_get_component (alarms);
-					GHashTable *acknowledged_alarms; /* alarm uid ~> ICalTime * */
-					GSList *alink, *instances, *all_alarms;
+			acknowledged_alarms = g_hash_table_new (g_str_hash, g_str_equal);
+			all_alarms = NULL;
 
-					acknowledged_alarms = g_hash_table_new (g_str_hash, g_str_equal);
-					all_alarms = e_cal_component_get_all_alarms (alarms_comp);
+			instances = e_cal_component_alarms_get_instances (alarms);
 
-					for (alink = all_alarms; alink; alink = g_slist_next (alink)) {
-						ECalComponentAlarm *alarm = alink->data;
+			e_reminder_watcher_debug_print ("Source %s: Got %d alarms for object '%s' at interval %s .. %s\n",
+				source_uid, g_slist_length (instances), e_cal_component_id_get_uid (id),
+				e_reminder_watcher_timet_as_string (ocd->interval_start),
+				e_reminder_watcher_timet_as_string (ocd->interval_end));
 
-						if (e_cal_component_alarm_get_acknowledged (alarm)) {
-							g_hash_table_insert (acknowledged_alarms,
-								(gpointer) e_cal_component_alarm_get_uid (alarm),
-								e_cal_component_alarm_get_acknowledged (alarm));
+			for (alink = instances; alink; alink = g_slist_next (alink)) {
+				const ECalComponentAlarmInstance *instance = alink->data;
+				ECalComponent *instance_comp = e_cal_component_alarm_instance_get_component (instance);
+
+				if (instance_comp) {
+					GSList *alarms;
+
+					alarms = e_cal_component_get_all_alarms (instance_comp);
+					if (alarms)
+						all_alarms = g_slist_concat (all_alarms, alarms);
+				}
+			}
+
+			for (alink = all_alarms; alink; alink = g_slist_next (alink)) {
+				ECalComponentAlarm *alarm = alink->data;
+
+				if (e_cal_component_alarm_get_acknowledged (alarm)) {
+					g_hash_table_insert (acknowledged_alarms,
+						(gpointer) e_cal_component_alarm_get_uid (alarm),
+						e_cal_component_alarm_get_acknowledged (alarm));
+				}
+			}
+
+			for (alink = instances; alink; alink = g_slist_next (alink)) {
+				const ECalComponentAlarmInstance *instance = alink->data;
+
+				if (instance && e_cal_component_alarm_instance_get_uid (instance)) {
+					ICalTime *acknowledged;
+
+					acknowledged = g_hash_table_lookup (acknowledged_alarms, e_cal_component_alarm_instance_get_uid (instance));
+					if (acknowledged) {
+						gint64 ack_time, instance_time;
+
+						ack_time = i_cal_time_as_timet (acknowledged);
+						instance_time = e_cal_component_alarm_instance_get_time (instance);
+
+						if (instance_time <= ack_time) {
+							e_reminder_watcher_debug_print ("   Skipping alarm '%s' for '%s|%s' at '%s', because had been acknowledged at '%s'\n",
+								e_cal_component_alarm_instance_get_uid (instance),
+								e_cal_component_id_get_uid (id),
+								e_cal_component_alarm_instance_get_rid (instance) ? e_cal_component_alarm_instance_get_rid (instance) : "",
+								e_reminder_watcher_timet_as_string (instance_time),
+								e_reminder_watcher_timet_as_string (ack_time));
+
+							instance = NULL;
 						}
 					}
-
-					instances = e_cal_component_alarms_get_instances (alarms);
-
-					e_reminder_watcher_debug_print ("Source %s: Got %d alarms for object '%s':'%s' at interval %s .. %s\n",
-						source_uid, g_slist_length (instances), e_cal_component_id_get_uid (id),
-						e_cal_component_id_get_rid (id) ? e_cal_component_id_get_rid (id) : "",
-						e_reminder_watcher_timet_as_string (ocd->interval_start),
-						e_reminder_watcher_timet_as_string (ocd->interval_end));
-
-					for (alink = instances; alink; alink = g_slist_next (alink)) {
-						const ECalComponentAlarmInstance *instance = alink->data;
-
-						if (instance && e_cal_component_alarm_instance_get_uid (instance)) {
-							ICalTime *acknowledged;
-
-							acknowledged = g_hash_table_lookup (acknowledged_alarms, e_cal_component_alarm_instance_get_uid (instance));
-							if (acknowledged) {
-								gint64 ack_time, instance_time;
-
-								ack_time = i_cal_time_as_timet (acknowledged);
-								instance_time = e_cal_component_alarm_instance_get_time (instance);
-
-								if (instance_time <= ack_time) {
-									e_reminder_watcher_debug_print ("   Skipping alarm '%s' at '%s', because had been acknowledged at '%s'\n",
-										e_cal_component_alarm_instance_get_uid (instance),
-										e_reminder_watcher_timet_as_string (instance_time),
-										e_reminder_watcher_timet_as_string (ack_time));
-
-									instance = NULL;
-								}
-							}
-						}
-
-						if (instance) {
-							reminders = g_slist_prepend (reminders, e_reminder_data_new_take_component (
-								source_uid, g_object_ref (alarms_comp), instance));
-						}
-					}
-
-					g_hash_table_destroy (acknowledged_alarms);
-					/* Free all_alarms after the acknowledged_alarms, because it uses data from it */
-					g_slist_free_full (all_alarms, e_cal_component_alarm_free);
-				} else {
-					e_reminder_watcher_debug_print ("Source %s: Got no alarms for object '%s':'%s' at interval %s .. %s\n",
-						source_uid, e_cal_component_id_get_uid (id),
-						e_cal_component_id_get_rid (id) ? e_cal_component_id_get_rid (id) : "",
-						e_reminder_watcher_timet_as_string (ocd->interval_start),
-						e_reminder_watcher_timet_as_string (ocd->interval_end));
 				}
 
-				e_cal_component_alarms_free (alarms);
-				g_object_unref (ecomp);
+				if (instance) {
+					ECalComponent *instance_comp;
+
+					instance_comp = e_cal_component_alarm_instance_get_component (instance);
+					if (!instance_comp)
+						instance_comp = def_comp;
+
+					reminders = g_slist_prepend (reminders, e_reminder_data_new_take_component (
+						source_uid, g_object_ref (instance_comp), instance));
+				}
 			}
-		} else {
-			e_reminder_watcher_debug_print ("Source %s: Failed to get object '%s':'%s': %s\n",
+
+			g_hash_table_destroy (acknowledged_alarms);
+			/* Free all_alarms after the acknowledged_alarms, because it uses data from it */
+			g_slist_free_full (all_alarms, e_cal_component_alarm_free);
+		} else if (local_error) {
+			e_reminder_watcher_debug_print ("Source %s: Failed to get alarms for object '%s': %s\n",
 				source_uid, e_cal_component_id_get_uid (id),
-				e_cal_component_id_get_rid (id) ? e_cal_component_id_get_rid (id) : "",
-				local_error ? local_error->message : "Unknown error");
+				local_error->message);
 			g_clear_error (&local_error);
+		} else {
+			e_reminder_watcher_debug_print ("Source %s: Got no alarms for object '%s' at interval %s .. %s\n",
+				source_uid, e_cal_component_id_get_uid (id),
+				e_reminder_watcher_timet_as_string (ocd->interval_start),
+				e_reminder_watcher_timet_as_string (ocd->interval_end));
 		}
 
+		e_cal_component_alarms_free (alarms);
 	}
 
-	if (reminders && !g_cancellable_is_cancelled (cancellable)) {
+	if (!g_cancellable_is_cancelled (cancellable)) {
 		g_rec_mutex_lock (&watcher->priv->lock);
 
 		if (watcher->priv->scheduled) {
@@ -1006,7 +1024,8 @@ e_reminder_watcher_objects_changed_thread (GTask *task,
 				needs_reverse = !needs_reverse;
 			}
 
-			if (reminders->next && reminders->next->next && reminders->next->next->next && reminders->next->next->next->next) {
+			/* concat and sort longer lists, instead of insert_sorted() */
+			if (reminders && reminders->next && reminders->next->next && reminders->next->next->next && reminders->next->next->next->next) {
 				scheduled = g_slist_concat (reminders, scheduled);
 				scheduled = g_slist_sort (scheduled, e_reminder_data_compare);
 			} else {
@@ -1036,6 +1055,8 @@ e_reminder_watcher_objects_changed_thread (GTask *task,
 	}
 
 	e_reminder_watcher_dump_scheduled (watcher);
+
+	g_hash_table_destroy (covered_uids);
 }
 
 static void

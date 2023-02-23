@@ -42,10 +42,13 @@ struct _ECalComponentAlarms {
 
 /**
  * e_cal_component_alarms_new:
- * @comp: (type ECalComponent) (not nullable): the actual alarm component, as #ECalComponent
+ * @comp: (type ECalComponent) (nullable): the actual alarm component, as #ECalComponent, or %NULL
  *
  * Creates a new #ECalComponentAlarms structure, associated with @comp.
  * Free the alarms with e_cal_component_alarms_free(), when no longer needed.
+ *
+ * The @comp can be %NULL since 3.48, in which case the respective instances hold
+ * the component they belong to.
  *
  * Returns: (transfer full): a newly allocated #ECalComponentAlarms
  *
@@ -56,10 +59,8 @@ e_cal_component_alarms_new (ECalComponent *comp)
 {
 	ECalComponentAlarms *alarms;
 
-	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
-
 	alarms = g_slice_new0 (ECalComponentAlarms);
-	alarms->comp = g_object_ref (comp);
+	alarms->comp = comp ? g_object_ref (comp) : NULL;
 
 	return alarms;
 }
@@ -116,7 +117,7 @@ e_cal_component_alarms_free (gpointer alarms)
  *
  * The returned component is valid until the @alarms is freed.
  *
- * Returns: (type ECalComponent) (transfer none): an #ECalComponent associated with the @alarms structure
+ * Returns: (type ECalComponent) (transfer none) (nullable): an #ECalComponent associated with the @alarms structure, or %NULL
  *
  * Since: 3.34
  **/

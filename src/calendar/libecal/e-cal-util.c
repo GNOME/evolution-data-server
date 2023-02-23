@@ -392,14 +392,16 @@ struct alarm_occurrence_data {
 	time_t start;
 	time_t end;
 	ECalComponentAlarmAction *omit;
+	gboolean only_check;
+	gboolean any_exists;
 
 	/* This is what we compute */
 	GSList *triggers; /* ECalComponentAlarmInstance * */
-	gint n_triggers;
 };
 
 static void
 add_trigger (struct alarm_occurrence_data *aod,
+	     ECalComponent *instance_comp,
              const gchar *auid,
 	     const gchar *rid,
              time_t instance_time,
@@ -408,13 +410,19 @@ add_trigger (struct alarm_occurrence_data *aod,
 {
 	ECalComponentAlarmInstance *instance;
 
+	aod->any_exists = TRUE;
+
+	if (aod->only_check)
+		return;
+
 	instance = e_cal_component_alarm_instance_new (auid, instance_time, occur_start, occur_end);
 
 	if (rid && *rid)
 		e_cal_component_alarm_instance_set_rid (instance, rid);
 
+	e_cal_component_alarm_instance_set_component (instance, instance_comp);
+
 	aod->triggers = g_slist_prepend (aod->triggers, instance);
-	aod->n_triggers++;
 }
 
 /* Callback used from cal_recur_generate_instances(); generates triggers for all
@@ -428,12 +436,19 @@ add_alarm_occurrences_cb (ICalComponent *icalcomp,
 			  GCancellable *cancellable,
 			  GError **error)
 {
-	struct alarm_occurrence_data *aod;
+	struct alarm_occurrence_data *aod = user_data;
+	ECalComponent *comp;
 	time_t start, end;
 	GSList *link;
 	gchar *rid;
 
-	aod = user_data;
+	if (aod->comp)
+		comp = g_object_ref (aod->comp);
+	else
+		comp = e_cal_component_new_from_icalcomponent (i_cal_component_clone (icalcomp));
+
+	g_return_val_if_fail (comp != NULL, FALSE);
+
 	start = i_cal_time_as_timet_with_zone (instance_start, i_cal_time_get_timezone (instance_start));
 	end = i_cal_time_as_timet_with_zone (instance_end, i_cal_time_get_timezone (instance_end));
 	rid = e_cal_util_component_get_recurid_as_string (icalcomp);
@@ -443,7 +458,7 @@ add_alarm_occurrences_cb (ICalComponent *icalcomp,
 		rid = i_cal_time_as_ical_string (instance_start);
 	}
 
-	for (link = aod->alarm_uids; link; link = g_slist_next (link)) {
+	for (link = aod->alarm_uids; link && (!aod->only_check || !aod->any_exists); link = g_slist_next (link)) {
 		const gchar *auid;
 		ECalComponentAlarm *alarm;
 		ECalComponentAlarmAction action;
@@ -455,8 +470,9 @@ add_alarm_occurrences_cb (ICalComponent *icalcomp,
 		gint i;
 
 		auid = link->data;
-		alarm = e_cal_component_get_alarm (aod->comp, auid);
-		g_return_val_if_fail (alarm != NULL, FALSE);
+		alarm = e_cal_component_get_alarm (comp, auid);
+		if (!alarm)
+			continue;
 
 		action = e_cal_component_alarm_get_action (alarm);
 		trigger = e_cal_component_alarm_get_trigger (alarm);
@@ -514,21 +530,22 @@ add_alarm_occurrences_cb (ICalComponent *icalcomp,
 				t = trigger_time + (ii + 1) * repeat_time;
 
 				if (t >= aod->start && t < aod->end)
-					add_trigger (aod, auid, rid, t, start, end);
+					add_trigger (aod, comp, auid, rid, t, start, end);
 			}
 		}
 
 		/* Add the trigger itself */
 
 		if (trigger_time >= aod->start && trigger_time < aod->end)
-			add_trigger (aod, auid, rid, trigger_time, start, end);
+			add_trigger (aod, comp, auid, rid, trigger_time, start, end);
 
 		e_cal_component_alarm_free (alarm);
 	}
 
+	g_clear_object (&comp);
 	g_free (rid);
 
-	return TRUE;
+	return !aod->only_check || !aod->any_exists;
 }
 
 /* Generates the absolute triggers for a component */
@@ -592,7 +609,7 @@ generate_absolute_triggers (ECalComponent *comp,
 			occur_end = -1;
 	}
 
-	for (link = aod->alarm_uids; link; link = g_slist_next (link)) {
+	for (link = aod->alarm_uids; link && (!aod->only_check || !aod->any_exists); link = g_slist_next (link)) {
 		const gchar *auid;
 		ECalComponentAlarm *alarm;
 		ECalComponentAlarmAction action;
@@ -604,7 +621,8 @@ generate_absolute_triggers (ECalComponent *comp,
 
 		auid = link->data;
 		alarm = e_cal_component_get_alarm (comp, auid);
-		g_return_if_fail (alarm != NULL);
+		if (!alarm)
+			continue;
 
 		action = e_cal_component_alarm_get_action (alarm);
 		trigger = e_cal_component_alarm_get_trigger (alarm);
@@ -646,14 +664,14 @@ generate_absolute_triggers (ECalComponent *comp,
 				tt = abs_time + (ii + 1) * repeat_time;
 
 				if (tt >= aod->start && tt < aod->end)
-					add_trigger (aod, auid, rid, tt, occur_start, occur_end);
+					add_trigger (aod, comp, auid, rid, tt, occur_start, occur_end);
 			}
 		}
 
 		/* Add the trigger itself */
 
 		if (abs_time >= aod->start && abs_time < aod->end)
-			add_trigger (aod, auid, rid, abs_time, occur_start, occur_end);
+			add_trigger (aod, comp, auid, rid, abs_time, occur_start, occur_end);
 
 		e_cal_component_alarm_free (alarm);
 	}
@@ -685,6 +703,73 @@ compare_alarm_instance (gconstpointer a,
 		return 0;
 }
 
+static void
+ecu_generate_alarms_for_comp (ECalComponent *comp,
+			      time_t start,
+			      time_t end,
+			      ECalComponentAlarmAction *omit,
+			      ECalRecurResolveTimezoneCb resolve_tzid,
+			      gpointer user_data,
+			      ICalTimezone *default_timezone,
+			      gboolean *out_any_exists,
+			      ECalComponentAlarms **out_alarms)
+{
+	GSList *alarm_uids;
+	time_t alarm_start, alarm_end;
+	struct alarm_occurrence_data aod;
+	ICalTime *alarm_start_tt, *alarm_end_tt;
+
+	if (out_any_exists)
+		*out_any_exists = FALSE;
+
+	if (out_alarms)
+		*out_alarms = NULL;
+
+	if (!e_cal_component_has_alarms (comp))
+		return;
+
+	alarm_uids = e_cal_component_get_alarm_uids (comp);
+	compute_alarm_range (comp, alarm_uids, start, end, &alarm_start, &alarm_end);
+
+	aod.comp = comp;
+	aod.alarm_uids = alarm_uids;
+	aod.start = start;
+	aod.end = end;
+	aod.omit = omit;
+	aod.only_check = !out_alarms;
+	aod.any_exists = FALSE;
+	aod.triggers = NULL;
+
+	alarm_start_tt = i_cal_time_new_from_timet_with_zone (alarm_start, FALSE, i_cal_timezone_get_utc_timezone ());
+	alarm_end_tt = i_cal_time_new_from_timet_with_zone (alarm_end, FALSE, i_cal_timezone_get_utc_timezone ());
+
+	e_cal_recur_generate_instances_sync (e_cal_component_get_icalcomponent (comp),
+		alarm_start_tt, alarm_end_tt,
+		add_alarm_occurrences_cb, &aod,
+		resolve_tzid, user_data,
+		default_timezone, NULL, NULL);
+
+	g_clear_object (&alarm_start_tt);
+	g_clear_object (&alarm_end_tt);
+
+	if (!aod.only_check || !aod.any_exists) {
+		/* We add the ABSOLUTE triggers separately */
+		generate_absolute_triggers (comp, &aod, resolve_tzid, user_data, default_timezone);
+	}
+
+	g_slist_free_full (alarm_uids, g_free);
+
+	if (out_any_exists)
+		*out_any_exists = aod.any_exists;
+
+	if (out_alarms && aod.triggers) {
+		*out_alarms = e_cal_component_alarms_new (comp);
+		e_cal_component_alarms_take_instances (*out_alarms, g_slist_sort (aod.triggers, compare_alarm_instance));
+	} else {
+		g_warn_if_fail (aod.triggers == NULL);
+	}
+}
+
 /**
  * e_cal_util_generate_alarms_for_comp:
  * @comp: The #ECalComponent to generate alarms from
@@ -702,6 +787,8 @@ compare_alarm_instance (gconstpointer a,
  * range. Free the returned structure with e_cal_component_alarms_free(),
  * when no longer needed.
  *
+ * See e_cal_util_generate_alarms_for_uid_sync()
+ *
  * Returns: (transfer full) (nullable): a list of all the alarms found
  *    for the given component in the given time range.
  */
@@ -714,52 +801,43 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
                                      gpointer user_data,
                                      ICalTimezone *default_timezone)
 {
-	GSList *alarm_uids;
-	time_t alarm_start, alarm_end;
-	struct alarm_occurrence_data aod;
-	ICalTime *alarm_start_tt, *alarm_end_tt;
-	ECalComponentAlarms *alarms;
+	ECalComponentAlarms *alarms = NULL;
 
-	if (!e_cal_component_has_alarms (comp))
-		return NULL;
-
-	alarm_uids = e_cal_component_get_alarm_uids (comp);
-	compute_alarm_range (comp, alarm_uids, start, end, &alarm_start, &alarm_end);
-
-	aod.comp = comp;
-	aod.alarm_uids = alarm_uids;
-	aod.start = start;
-	aod.end = end;
-	aod.omit = omit;
-	aod.triggers = NULL;
-	aod.n_triggers = 0;
-
-	alarm_start_tt = i_cal_time_new_from_timet_with_zone (alarm_start, FALSE, i_cal_timezone_get_utc_timezone ());
-	alarm_end_tt = i_cal_time_new_from_timet_with_zone (alarm_end, FALSE, i_cal_timezone_get_utc_timezone ());
-
-	e_cal_recur_generate_instances_sync (e_cal_component_get_icalcomponent (comp),
-		alarm_start_tt, alarm_end_tt,
-		add_alarm_occurrences_cb, &aod,
-		resolve_tzid, user_data,
-		default_timezone, NULL, NULL);
-
-	g_clear_object (&alarm_start_tt);
-	g_clear_object (&alarm_end_tt);
-
-	/* We add the ABSOLUTE triggers separately */
-	generate_absolute_triggers (comp, &aod, resolve_tzid, user_data, default_timezone);
-
-	g_slist_free_full (alarm_uids, g_free);
-
-	if (aod.n_triggers == 0)
-		return NULL;
-
-	/* Create the component alarm instances structure */
-
-	alarms = e_cal_component_alarms_new (comp);
-	e_cal_component_alarms_take_instances (alarms, g_slist_sort (aod.triggers, compare_alarm_instance));
+	ecu_generate_alarms_for_comp (comp, start, end, omit, resolve_tzid, user_data, default_timezone, NULL, &alarms);
 
 	return alarms;
+}
+
+/**
+ * e_cal_util_has_alarms_in_range:
+ * @comp: an #ECalComponent to check alarms for
+ * @start: start time
+ * @end: end time
+ * @omit: alarm types to omit
+ * @resolve_tzid: (closure user_data) (scope call): Callback for resolving timezones
+ * @user_data: (closure): Data to be passed to the resolve_tzid callback
+ * @default_timezone: The timezone used to resolve DATE and floating DATE-TIME values.
+ *
+ * Checks whether the @comp has any alarms in the given time interval.
+ *
+ * Returns: %TRUE, when the #comp has any alarms in the given time interval
+ *
+ * Since: 3.48
+ **/
+gboolean
+e_cal_util_has_alarms_in_range (ECalComponent *comp,
+				time_t start,
+				time_t end,
+				ECalComponentAlarmAction *omit,
+				ECalRecurResolveTimezoneCb resolve_tzid,
+				gpointer user_data,
+				ICalTimezone *default_timezone)
+{
+	gboolean any_exists = FALSE;
+
+	ecu_generate_alarms_for_comp (comp, start, end, omit, resolve_tzid, user_data, default_timezone, &any_exists, NULL);
+
+	return any_exists;
 }
 
 /**
@@ -780,6 +858,8 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
  * instances for them; putting them in the @comp_alarms list. Free the @comp_alarms
  * with g_slist_free_full (comp_alarms, e_cal_component_alarms_free);, when
  * no longer neeed.
+ *
+ * See e_cal_util_generate_alarms_for_uid_sync()
  *
  * Returns: the number of elements it added to the list
  */
@@ -814,6 +894,97 @@ e_cal_util_generate_alarms_for_list (GList *comps,
 	}
 
 	return n;
+}
+
+/**
+ * e_cal_util_generate_alarms_for_uid_sync:
+ * @client: an #ECalClient
+ * @uid: a component UID to generate alarms for
+ * @start: start time
+ * @end: end time
+ * @omit: alarm types to omit
+ * @resolve_tzid: (closure user_data) (scope call): Callback for resolving timezones
+ * @user_data: (closure): Data to be passed to the resolve_tzid callback
+ * @default_timezone: The timezone used to resolve DATE and floating DATE-TIME values
+ *
+ * Generates alarm instances for a calendar component with UID @uid,
+ * which is stored within the @client. In contrast to e_cal_util_generate_alarms_for_comp(),
+ * this function handles detached instances of recurring events properly.
+ *
+ * Returns the instances structure, or %NULL if no alarm instances occurred in the specified
+ * time range. Free the returned structure with e_cal_component_alarms_free(),
+ * when no longer needed.
+ *
+ * Returns: (transfer full) (nullable): a list of all the alarms found
+ *    for the given component in the given time range.
+ *
+ * Since: 3.48
+ **/
+ECalComponentAlarms *
+e_cal_util_generate_alarms_for_uid_sync (ECalClient *client,
+					 const gchar *uid,
+					 time_t start,
+					 time_t end,
+					 ECalComponentAlarmAction *omit,
+					 ECalRecurResolveTimezoneCb resolve_tzid,
+					 gpointer user_data,
+					 ICalTimezone *default_timezone,
+					 GCancellable *cancellable,
+					 GError **error)
+{
+	GSList *alarm_uids = NULL;
+	GSList *objects = NULL, *link;
+	time_t alarm_start = start, alarm_end = end;
+	struct alarm_occurrence_data aod;
+	ECalComponentAlarms *alarms;
+
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), NULL);
+	g_return_val_if_fail (uid != NULL, NULL);
+
+	if (!e_cal_client_get_objects_for_uid_sync (client, uid, &objects, cancellable, error))
+		return NULL;
+
+	for (link = objects; link; link = g_slist_next (link)) {
+		ECalComponent *comp = link->data;
+		GSList *auids = e_cal_component_get_alarm_uids (comp);
+
+		if (auids) {
+			compute_alarm_range (comp, auids, alarm_start, alarm_end, &alarm_start, &alarm_end);
+			alarm_uids = g_slist_concat (alarm_uids, auids);
+		}
+	}
+
+	aod.comp = NULL;
+	aod.alarm_uids = alarm_uids;
+	aod.start = start;
+	aod.end = end;
+	aod.omit = omit;
+	aod.only_check = FALSE;
+	aod.any_exists = FALSE;
+	aod.triggers = NULL;
+
+	e_cal_client_generate_instances_for_uid_sync (client, uid, alarm_start, alarm_end,
+		cancellable, add_alarm_occurrences_cb, &aod);
+
+	for (link = objects; link; link = g_slist_next (link)) {
+		ECalComponent *comp = link->data;
+
+		/* We add the ABSOLUTE triggers separately */
+		generate_absolute_triggers (comp, &aod, resolve_tzid, user_data, default_timezone);
+	}
+
+	g_slist_free_full (objects, g_object_unref);
+	g_slist_free_full (alarm_uids, g_free);
+
+	if (!aod.triggers)
+		return NULL;
+
+	/* Create the component alarm instances structure */
+
+	alarms = e_cal_component_alarms_new (NULL);
+	e_cal_component_alarms_take_instances (alarms, g_slist_sort (aod.triggers, compare_alarm_instance));
+
+	return alarms;
 }
 
 /**

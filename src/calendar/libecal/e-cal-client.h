@@ -229,6 +229,14 @@ void		e_cal_client_generate_instances_for_object_sync
 						 GCancellable *cancellable,
 						 ECalRecurInstanceCb cb,
 						 gpointer cb_data);
+void		e_cal_client_generate_instances_for_uid_sync
+						(ECalClient *client,
+						 const gchar *uid,
+						 time_t start,
+						 time_t end,
+						 GCancellable *cancellable,
+						 ECalRecurInstanceCb cb,
+						 gpointer cb_data);
 gchar *		e_cal_client_get_component_as_string
 						(ECalClient *client,
 						 ICalComponent *icalcomp);

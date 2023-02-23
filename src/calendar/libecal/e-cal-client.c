@@ -2590,10 +2590,10 @@ struct get_objects_async_data {
 	gpointer cb_data;
 	GDestroyNotify destroy_cb_data;
 	gchar *uid;
+	gchar *rid;
 	gchar *query;
 	guint tries;
 	void (* ready_cb) (struct get_objects_async_data *goad, GSList *objects);
-	ECalComponent *comp;
 };
 
 static void
@@ -2602,16 +2602,13 @@ free_get_objects_async_data (struct get_objects_async_data *goad)
 	if (!goad)
 		return;
 
-	if (goad->cancellable)
-		g_object_unref (goad->cancellable);
 	if (goad->destroy_cb_data)
 		goad->destroy_cb_data (goad->cb_data);
-	if (goad->client)
-		g_object_unref (goad->client);
-	if (goad->comp)
-		g_object_unref (goad->comp);
+	g_clear_object (&goad->cancellable);
+	g_clear_object (&goad->client);
 	g_free (goad->query);
 	g_free (goad->uid);
+	g_free (goad->rid);
 	g_slice_free (struct get_objects_async_data, goad);
 }
 
@@ -2850,19 +2847,18 @@ e_cal_client_generate_instances_sync (ECalClient *client,
 /* also frees 'instances' GSList */
 static void
 process_instances (ECalClient *client,
-		   ECalComponent *comp,
-                   GSList *instances,
+		   const gchar *uid,
+		   const gchar *rid,
+                   GSList *instances, /* (transfer full) */
                    ECalRecurInstanceCb cb,
                    gpointer cb_data)
 {
-	gchar *rid;
+	GSList *link;
 	gboolean result;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
-	g_return_if_fail (comp != NULL);
+	g_return_if_fail (uid != NULL);
 	g_return_if_fail (cb != NULL);
-
-	rid = e_cal_component_get_recurid_as_string (comp);
 
 	/* Reverse the instances list because the add_instance_cb() function
 	 * is prepending. */
@@ -2870,32 +2866,22 @@ process_instances (ECalClient *client,
 
 	/* now only return back the instances for the given object */
 	result = TRUE;
-	while (instances != NULL) {
-		struct comp_instance *ci;
-		gchar *instance_rid = NULL;
+	for (link = instances; link && result; link = g_slist_next (link)) {
+		struct comp_instance *ci = link->data;
 
-		ci = instances->data;
+		if (rid && *rid) {
+			gchar *instance_rid = e_cal_component_get_recurid_as_string (ci->comp);
 
-		if (result) {
-			instance_rid = e_cal_component_get_recurid_as_string (ci->comp);
-
-			if (rid && *rid) {
-				if (instance_rid && *instance_rid && strcmp (rid, instance_rid) == 0) {
-					result = (* cb) (e_cal_component_get_icalcomponent (ci->comp), ci->start, ci->end, cb_data, NULL, NULL);
-				}
-			} else {
+			if (g_strcmp0 (rid, instance_rid) == 0)
 				result = (* cb) (e_cal_component_get_icalcomponent (ci->comp), ci->start, ci->end, cb_data, NULL, NULL);
-			}
-		}
 
-		/* remove instance from list */
-		instances = g_slist_remove (instances, ci);
-		comp_instance_free (ci);
-		g_free (instance_rid);
+			g_free (instance_rid);
+		} else {
+			result = (* cb) (e_cal_component_get_icalcomponent (ci->comp), ci->start, ci->end, cb_data, NULL, NULL);
+		}
 	}
 
-	/* clean up */
-	g_free (rid);
+	g_slist_free_full (instances, comp_instance_free);
 }
 
 static void
@@ -2917,7 +2903,7 @@ generate_instances_for_object_got_objects_cb (struct get_objects_async_data *goa
 
 	/* it also frees 'instances' GSList */
 	process_instances (
-		goad->client, goad->comp, *(instances_hold.instances),
+		goad->client, goad->uid, goad->rid, *(instances_hold.instances),
 		goad->cb, goad->cb_data);
 
 	/* clean up */
@@ -2958,8 +2944,6 @@ e_cal_client_generate_instances_for_object (ECalClient *client,
                                             gpointer cb_data,
                                             GDestroyNotify destroy_cb_data)
 {
-	ECalComponent *comp;
-	const gchar *uid;
 	struct get_objects_async_data *goad;
 	GCancellable *use_cancellable;
 
@@ -2988,11 +2972,6 @@ e_cal_client_generate_instances_for_object (ECalClient *client,
 		return;
 	}
 
-	comp = e_cal_component_new_from_icalcomponent (i_cal_component_clone (icalcomp));
-	g_return_if_fail (comp != NULL);
-
-	uid = e_cal_component_get_uid (comp);
-
 	use_cancellable = cancellable;
 	if (!use_cancellable)
 		use_cancellable = g_cancellable_new ();
@@ -3005,8 +2984,8 @@ e_cal_client_generate_instances_for_object (ECalClient *client,
 	goad->cb = cb;
 	goad->cb_data = cb_data;
 	goad->destroy_cb_data = destroy_cb_data;
-	goad->comp = comp;
-	goad->uid = g_strdup (uid);
+	goad->uid = g_strdup (i_cal_component_get_uid (icalcomp));
+	goad->rid = e_cal_util_component_get_recurid_as_string (icalcomp);
 
 	get_objects_async (generate_instances_for_object_got_objects_cb, goad);
 
@@ -3043,8 +3022,8 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
                                                  ECalRecurInstanceCb cb,
                                                  gpointer cb_data)
 {
-	ECalComponent *comp;
 	const gchar *uid;
+	gchar *rid;
 	GSList *instances = NULL;
 	struct instances_info instances_hold;
 
@@ -3071,10 +3050,8 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
 		return;
 	}
 
-	comp = e_cal_component_new_from_icalcomponent (i_cal_component_clone (icalcomp));
-	g_return_if_fail (comp != NULL);
-
-	uid = e_cal_component_get_uid (comp);
+	uid = i_cal_component_get_uid (icalcomp);
+	rid = e_cal_util_component_get_recurid_as_string (icalcomp);
 
 	memset (&instances_hold, 0, sizeof (struct instances_info));
 	instances_hold.instances = &instances;
@@ -3086,10 +3063,61 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
 		cancellable, add_instance_cb, &instances_hold);
 
 	/* it also frees 'instances' GSList */
-	process_instances (client, comp, *(instances_hold.instances), cb, cb_data);
+	process_instances (client, uid, rid, *(instances_hold.instances), cb, cb_data);
 
 	/* clean up */
-	g_object_unref (comp);
+	g_free (rid);
+}
+
+/**
+ * e_cal_client_generate_instances_for_uid_sync:
+ * @client: A calendar client
+ * @uid: A component UID to generate instances for
+ * @start: Start time for query
+ * @end: End time for query
+ * @cancellable: a #GCancellable; can be %NULL
+ * @cb: (closure cb_data) (scope call): Callback for each generated instance
+ * @cb_data: (closure): Closure data for the callback
+ *
+ * Does a combination of e_cal_client_get_object_list() and
+ * e_cal_recur_generate_instances_sync(), like
+ * e_cal_client_generate_instances_sync(), but for a single object.
+ *
+ * The callback function should do a g_object_ref() of the calendar component
+ * it gets passed if it intends to keep it around, since it will be unref'ed
+ * as soon as the callback returns.
+ *
+ * Since: 3.48
+ **/
+void
+e_cal_client_generate_instances_for_uid_sync (ECalClient *client,
+					      const gchar *uid,
+					      time_t start,
+					      time_t end,
+					      GCancellable *cancellable,
+					      ECalRecurInstanceCb cb,
+					      gpointer cb_data)
+{
+	GSList *instances = NULL;
+	struct instances_info instances_hold;
+
+	g_return_if_fail (E_IS_CAL_CLIENT (client));
+	g_return_if_fail (uid != NULL);
+	g_return_if_fail (start >= 0);
+	g_return_if_fail (end >= 0);
+	g_return_if_fail (cb != NULL);
+
+	memset (&instances_hold, 0, sizeof (struct instances_info));
+	instances_hold.instances = &instances;
+
+	/* generate all instances in the given time range */
+	generate_instances (
+		client, start, end,
+		get_objects_sync (client, start, end, uid),
+		cancellable, add_instance_cb, &instances_hold);
+
+	/* it also frees 'instances' GSList */
+	process_instances (client, uid, NULL, *(instances_hold.instances), cb, cb_data);
 }
 
 typedef struct _ForeachTZIDCallbackData ForeachTZIDCallbackData;
