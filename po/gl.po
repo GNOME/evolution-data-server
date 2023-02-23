@@ -20,8 +20,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server-master-po-gl-71644\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2023-01-29 08:40+0000\n"
-"PO-Revision-Date: 2023-02-05 21:55+0100\n"
+"POT-Creation-Date: 2023-02-20 09:59+0000\n"
+"PO-Revision-Date: 2023-02-23 09:29+0100\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
@@ -44,13 +44,13 @@ msgstr ""
 "O URL fornecido «%s» non fai referencia a un caderno de enderezos CardDAV"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1127
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1337
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1340
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:934
 msgid "Server didn’t return object’s href"
 msgstr "O servidor non devolveu unha referencia de obxecto"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1129
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1339
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1342
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:936
 msgid "Server didn’t return object’s ETag"
 msgstr "O servidor non devolveu un obxecto de ETag"
@@ -190,8 +190,8 @@ msgstr "Non foi posíbel renomear a base de datos antiga de «%s» a «%s»: %s"
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
 #: src/libedataserver/e-soup-session.c:1019
 #: src/libedataserver/e-soup-session.c:1899
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:228
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:776
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:266
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
 #: src/libedataserverui/e-reminders-widget.c:2141
 #: src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
@@ -1330,7 +1330,7 @@ msgstr "O índice alfabético foi configurado para un local incorrecto"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "O URL fornecido «%s» non fai referencia a un calendario CalDAV"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1474
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1477
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1189
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
@@ -1339,7 +1339,7 @@ msgstr ""
 "Información non dispoñíbel sobre o URL do compoñente, a caché local está "
 "posiblemente incompleta ou corrompida. Elimínea, por favor."
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1986
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1989
 msgid "Failed to parse response data"
 msgstr "Produciuse un erro ao analizar os datos da resposta"
 
@@ -4499,65 +4499,65 @@ msgstr "Recollendo a información de resumo para as mensaxes novas en «%s: %s»
 msgid "Error fetching message info"
 msgstr "Produciuse un erro ao obter a información da mensaxe"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5644
+#: src/camel/providers/imapx/camel-imapx-server.c:5645
 msgid "Error running STATUS"
 msgstr "Produciuse une erro ao executar STATUS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6224
-#: src/camel/providers/imapx/camel-imapx-server.c:6279
-#: src/camel/providers/imapx/camel-imapx-server.c:6343
+#: src/camel/providers/imapx/camel-imapx-server.c:6231
+#: src/camel/providers/imapx/camel-imapx-server.c:6286
+#: src/camel/providers/imapx/camel-imapx-server.c:6350
 msgid "Error syncing changes"
 msgstr "Produciuse un erro ao sincronizar os cambios"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6237
-#: src/camel/providers/imapx/camel-imapx-server.c:6289
-#: src/camel/providers/imapx/camel-imapx-server.c:6362
-#: src/camel/providers/imapx/camel-imapx-server.c:6503
+#: src/camel/providers/imapx/camel-imapx-server.c:6244
+#: src/camel/providers/imapx/camel-imapx-server.c:6296
+#: src/camel/providers/imapx/camel-imapx-server.c:6369
+#: src/camel/providers/imapx/camel-imapx-server.c:6510
 msgid "Error expunging message"
 msgstr "Produciuse un erro ao compactar a mensaxe"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6585
+#: src/camel/providers/imapx/camel-imapx-server.c:6592
 msgid "Error fetching folders"
 msgstr "Produciuse un erro ao obter os cartafoles"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6593
+#: src/camel/providers/imapx/camel-imapx-server.c:6600
 msgid "Error fetching subscribed folders"
 msgstr "Produciuse un fallo ao obter os cartafoles subscritos"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6650
+#: src/camel/providers/imapx/camel-imapx-server.c:6657
 msgid "Error creating folder"
 msgstr "Produciuse un erro ao crear o cartafol"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6700
+#: src/camel/providers/imapx/camel-imapx-server.c:6707
 msgid "Error deleting folder"
 msgstr "Produciuse un erro ao eliminar o cartafol"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6746
+#: src/camel/providers/imapx/camel-imapx-server.c:6753
 msgid "Error renaming folder"
 msgstr "Produciuse un erro ao renomear o cartafol"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6778
+#: src/camel/providers/imapx/camel-imapx-server.c:6785
 msgid "Error subscribing to folder"
 msgstr "Produciuse un erro ao subscribirse aos cartafoles"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6814
+#: src/camel/providers/imapx/camel-imapx-server.c:6821
 msgid "Error unsubscribing from folder"
 msgstr "Produciuse un erro ao desubscribirse do cartafol"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6854
+#: src/camel/providers/imapx/camel-imapx-server.c:6861
 msgid "IMAP server does not support quotas"
 msgstr "O servidor IMAP non permite cotas"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6866
+#: src/camel/providers/imapx/camel-imapx-server.c:6873
 msgid "Error retrieving quota information"
 msgstr "Produciuse un erro ao obter a información da cota"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6931
+#: src/camel/providers/imapx/camel-imapx-server.c:6938
 msgid "Search failed"
 msgstr "A busca fallou"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7059
+#: src/camel/providers/imapx/camel-imapx-server.c:7066
 msgid "Error running IDLE"
 msgstr "Produciuse un executar IDLE"
 
@@ -6868,39 +6868,39 @@ msgstr "O servidor non devolveu un obxecto JSON"
 msgid "Failed to call %s: "
 msgstr "Produciuse un fallo ao chamar %s: "
 
-#: src/libedataserver/e-oauth2-service.c:922
+#: src/libedataserver/e-oauth2-service.c:1026
 msgid "Malformed, no message body set"
 msgstr "Mal formado, non hai un corpo de mensaxe"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1202
+#: src/libedataserver/e-oauth2-service.c:1306
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "A orixe «%s» (%s) non é válido para un servizo Oauth2 «%s»"
 
-#: src/libedataserver/e-oauth2-service.c:1217
+#: src/libedataserver/e-oauth2-service.c:1321
 msgid "OAuth2 secret not found"
 msgstr "Non se atopou o segredo de OAuth2"
 
-#: src/libedataserver/e-oauth2-service.c:1414
+#: src/libedataserver/e-oauth2-service.c:1518
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Recibiuse unha resposta incorrecta desde o servidor «%s»."
 
-#: src/libedataserver/e-oauth2-service.c:1423
+#: src/libedataserver/e-oauth2-service.c:1527
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 "Produciuse un actualizar o token de acceso. Por favor, acceda ao servidor de "
 "novo."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1466
+#: src/libedataserver/e-oauth2-service.c:1570
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "A orixe «%s» (%s) non é unha orixe de OAuth2 válida"
 
-#: src/libedataserver/e-oauth2-service.c:1750
+#: src/libedataserver/e-oauth2-service.c:1854
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -7478,47 +7478,47 @@ msgstr "A consulta de credenciais foi cancelado"
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "A orixe de datos «%s» non permite a consulta de credenciais"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:226
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:264
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr ""
 "Produciuse un fallo ao obter un token de acceso desde o enderezo «%s»: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:257
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:295
 msgid "Requesting access token, please wait…"
 msgstr "Solicitando token de acceso, por favor agarde…"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:507
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:569
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "Solicitude de autenticación do caderno de enderezos de %s"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:512
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:574
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "Solicitude de autenticación ao Calendario de %s"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:517
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:579
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "Solicitude de autenticación á lista de recordatorios de %s"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:522
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:584
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "Solicitude de autenticación á lista de tarefas de %s"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:528
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:590
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "Solicitude de autenticación ao Correo de %s"
@@ -7526,7 +7526,7 @@ msgstr "Solicitude de autenticación ao Correo de %s"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:533
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:595
 #, c-format
 msgid "%s account authentication request"
 msgstr "Solicitude de autenticación para a conta de %s"
@@ -7534,7 +7534,7 @@ msgstr "Solicitude de autenticación para a conta de %s"
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:547
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:609
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -7546,7 +7546,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:554
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:616
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -7558,7 +7558,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:561
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:623
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -7570,7 +7570,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:568
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:630
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -7582,7 +7582,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:575
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:637
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -7594,7 +7594,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:582
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:644
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -7606,7 +7606,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:589
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:651
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -7615,41 +7615,41 @@ msgstr ""
 "Inicine sesión na súa conta de %s e acepte as condicións para acceder á súa "
 "conta «%s»."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:776
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Produciuse un fallo ao abrir o navegador: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:872
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:954
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:243
 #: src/libedataserverui/e-trust-prompt.c:117
 #: src/libedataserverui/e-webdav-discover-widget.c:1149
 msgid "_Cancel"
 msgstr "_Cancelar"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:954
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1036
 msgid "URL:"
 msgstr "URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:984
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1066
 msgid "Click here to open the URL"
 msgstr "Prema aquí para abrir o URL"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1022
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1104
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
 "with, below to continue the authentication process."
 msgstr ""
-"Abra o URL de embaixo no navegador e pase polo asistente de OAuth2. Copie o "
-"código de autorización resultante, ou a na que rematou o asistente de "
-"OAuth2, debaixo para continuar co proceso de autenticación:"
+"Abra o URL de arriba no navegador e complete o asistente de OAuth2 alí. "
+"Copie o código de autorización resultante, ou a URL do asistente de OAuth2 "
+"que rematou, debaixo para continuar co proceso de autenticación:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1059
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1141
 msgid "_Authorization code:"
 msgstr "Código de _autorización:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1072
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1154
 msgid "C_ontinue"
 msgstr "C_ontinuar"
 
@@ -7847,27 +7847,43 @@ msgstr "Aceptar _temporalmente"
 msgid "_Accept Permanently"
 msgstr "_Aceptar permanentemente"
 
-#: src/libedataserverui/e-trust-prompt.c:208
+#: src/libedataserverui/e-trust-prompt.c:124
+msgid "Temporarily reject the certificate"
+msgstr "Aceptar o certificado temporalmente"
+
+#: src/libedataserverui/e-trust-prompt.c:127
+msgid "Permanently reject the certificate"
+msgstr "Rexeitar o certificado permanentemente"
+
+#: src/libedataserverui/e-trust-prompt.c:130
+msgid "Temporarily accept the certificate"
+msgstr "Aceptar o certificado temporalmente"
+
+#: src/libedataserverui/e-trust-prompt.c:133
+msgid "Permanently accept the certificate"
+msgstr "Aceptar o certificado permanentemente"
+
+#: src/libedataserverui/e-trust-prompt.c:218
 #: src/modules/trust-prompt/trust-prompt-gtk.c:169
 #, c-format
 msgid "SSL/TLS certificate for “%s” is not trusted. Do you wish to accept it?"
 msgstr "O certificado SSL/TLS para «%s» non é de confianza. Desexa aceptalo?"
 
-#: src/libedataserverui/e-trust-prompt.c:230
+#: src/libedataserverui/e-trust-prompt.c:240
 #: src/modules/trust-prompt/trust-prompt-gtk.c:184
 msgid "Reason:"
 msgstr "Razón:"
 
-#: src/libedataserverui/e-trust-prompt.c:233
+#: src/libedataserverui/e-trust-prompt.c:243
 msgid "Detailed error:"
 msgstr "Erro detallado:"
 
-#: src/libedataserverui/e-trust-prompt.c:292
+#: src/libedataserverui/e-trust-prompt.c:302
 #: src/modules/trust-prompt/module-trust-prompt.c:80
 msgid "The signing certificate authority is not known."
 msgstr "O asinado da autoridade certificadora non se recoñece."
 
-#: src/libedataserverui/e-trust-prompt.c:294
+#: src/libedataserverui/e-trust-prompt.c:304
 #: src/modules/trust-prompt/module-trust-prompt.c:82
 msgid ""
 "The certificate does not match the expected identity of the site that it was "
@@ -7875,17 +7891,17 @@ msgid ""
 msgstr ""
 "O certificado non coincide coa identidade agardada do sitio da que se obtivo."
 
-#: src/libedataserverui/e-trust-prompt.c:296
+#: src/libedataserverui/e-trust-prompt.c:306
 #: src/modules/trust-prompt/module-trust-prompt.c:84
 msgid "The certificate’s activation time is still in the future."
 msgstr "A data de activación do certificado está aínda no futuro."
 
-#: src/libedataserverui/e-trust-prompt.c:298
+#: src/libedataserverui/e-trust-prompt.c:308
 #: src/modules/trust-prompt/module-trust-prompt.c:86
 msgid "The certificate has expired."
 msgstr "O certificado caducou."
 
-#: src/libedataserverui/e-trust-prompt.c:300
+#: src/libedataserverui/e-trust-prompt.c:310
 #: src/modules/trust-prompt/module-trust-prompt.c:88
 msgid ""
 "The certificate has been revoked according to the connection’s certificate "
@@ -7894,7 +7910,7 @@ msgstr ""
 "O certificado foi revogado de acordo ao lista de revogación do certificado "
 "da conexión."
 
-#: src/libedataserverui/e-trust-prompt.c:302
+#: src/libedataserverui/e-trust-prompt.c:312
 #: src/modules/trust-prompt/module-trust-prompt.c:90
 msgid "The certificate’s algorithm is considered insecure."
 msgstr "O algoritmo do certificado considérase inseguro."
