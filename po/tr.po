@@ -17,16 +17,16 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.tr\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2023-01-18 23:22+0000\n"
-"PO-Revision-Date: 2023-01-22 22:14+0300\n"
-"Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
+"POT-Creation-Date: 2023-02-23 12:58+0000\n"
+"PO-Revision-Date: 2023-02-20 15:57+0300\n"
+"Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.1.1\n"
 "X-POOTLE-MTIME: 1433363404.000000\n"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:240
@@ -35,13 +35,13 @@ msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Verilen URL “%s”, CardDAV adres defterine ait değil"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1127
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1337
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1340
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:934
 msgid "Server didn’t return object’s href"
 msgstr "Sunucu nesnenin hrefʼini döndürmedi"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1129
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1339
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1342
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:936
 msgid "Server didn’t return object’s ETag"
 msgstr "Sunucu nesnenin ETagʼini döndürmedi"
@@ -130,7 +130,7 @@ msgstr "İlgisiz bir imlecin silinmesi istendi"
 #: src/addressbook/backends/file/e-book-backend-file.c:2320
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
-msgstr "Eski veri tabanının “%s”den “%s”e adlandırılması başarısız: %s"
+msgstr "Eski veri tabanını “%s”, “%s” olarak adlandırılamadı: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1158
@@ -152,24 +152,24 @@ msgstr "Eski veri tabanının “%s”den “%s”e adlandırılması başarıs�
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:288
 #: src/calendar/backends/http/e-cal-backend-http.c:300
 #: src/calendar/libecal/e-cal-client.c:257
-#: src/calendar/libecal/e-cal-client.c:3242
-#: src/calendar/libecal/e-cal-client.c:3415
-#: src/calendar/libecal/e-cal-client.c:3688
-#: src/calendar/libecal/e-cal-client.c:3926
-#: src/calendar/libecal/e-cal-client.c:4118
-#: src/calendar/libecal/e-cal-client.c:4301
-#: src/calendar/libecal/e-cal-client.c:4536
-#: src/calendar/libecal/e-cal-client.c:4713
-#: src/calendar/libecal/e-cal-client.c:4921
-#: src/calendar/libecal/e-cal-client.c:5077
-#: src/calendar/libecal/e-cal-client.c:5275
-#: src/calendar/libecal/e-cal-client.c:5441
-#: src/calendar/libecal/e-cal-client.c:5668
-#: src/calendar/libecal/e-cal-client.c:5825
-#: src/calendar/libecal/e-cal-client.c:6053
-#: src/calendar/libecal/e-cal-client.c:6252
-#: src/calendar/libecal/e-cal-client.c:6620
-#: src/calendar/libecal/e-cal-client.c:6844
+#: src/calendar/libecal/e-cal-client.c:3270
+#: src/calendar/libecal/e-cal-client.c:3443
+#: src/calendar/libecal/e-cal-client.c:3716
+#: src/calendar/libecal/e-cal-client.c:3954
+#: src/calendar/libecal/e-cal-client.c:4146
+#: src/calendar/libecal/e-cal-client.c:4329
+#: src/calendar/libecal/e-cal-client.c:4564
+#: src/calendar/libecal/e-cal-client.c:4741
+#: src/calendar/libecal/e-cal-client.c:4949
+#: src/calendar/libecal/e-cal-client.c:5105
+#: src/calendar/libecal/e-cal-client.c:5303
+#: src/calendar/libecal/e-cal-client.c:5469
+#: src/calendar/libecal/e-cal-client.c:5696
+#: src/calendar/libecal/e-cal-client.c:5853
+#: src/calendar/libecal/e-cal-client.c:6081
+#: src/calendar/libecal/e-cal-client.c:6280
+#: src/calendar/libecal/e-cal-client.c:6648
+#: src/calendar/libecal/e-cal-client.c:6872
 #: src/calendar/libedata-cal/e-cal-cache.c:1837
 #: src/camel/camel-filter-driver.c:1724 src/camel/camel-filter-driver.c:1853
 #: src/camel/providers/imapx/camel-imapx-server.c:3331
@@ -178,10 +178,10 @@ msgstr "Eski veri tabanının “%s”den “%s”e adlandırılması başarıs�
 #: src/camel/providers/imapx/camel-imapx-server.c:3359
 #: src/camel/providers/nntp/camel-nntp-store.c:419
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
-#: src/libedataserver/e-soup-session.c:930
-#: src/libedataserver/e-soup-session.c:1804
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:228
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:776
+#: src/libedataserver/e-soup-session.c:1019
+#: src/libedataserver/e-soup-session.c:1899
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:266
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
 #: src/libedataserverui/e-reminders-widget.c:2141
 #: src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
@@ -195,7 +195,7 @@ msgstr "Bağlı değil"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:893
 msgid "Failed to bind using either v3 or v2 binds"
-msgstr "v3 ve v2 bağları kullanarak bağlama başarısız"
+msgstr "v3 ya da v2 bağları kullanarak bağlamamadı"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1004
 msgid "Reconnecting to LDAP server..."
@@ -1308,7 +1308,7 @@ msgstr "Alfabetik indeks geçersiz bir yerele ayarlanmış"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Verilen URL “%s”, CalDAV takvimine ait değil"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1474
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1477
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1189
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
@@ -1317,7 +1317,7 @@ msgstr ""
 "Bileşen URLʼsi hakkında eksik bilgi, yerel önbellek eksik veya hatalı, "
 "düzeltin veya kaldırın."
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1986
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1989
 msgid "Failed to parse response data"
 msgstr "Yanıt verisi ayrıştırılamadı"
 
@@ -2294,7 +2294,7 @@ msgstr "toplantı yinelenir"
 #: src/calendar/libecal/e-cal-recur.c:5896
 msgctxt "recur-description"
 msgid "The appointment recurs"
-msgstr "Not yinelenir"
+msgstr "randevu yinelenir"
 
 #: src/calendar/libecal/e-cal-recur.c:5876
 #: src/calendar/libecal/e-cal-recur.c:5899
@@ -2319,49 +2319,52 @@ msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%2$s %1$s"
 
-#: src/calendar/libecal/e-cal-util.c:837 src/calendar/libecal/e-cal-util.c:864
+#: src/calendar/libecal/e-cal-util.c:1008
+#: src/calendar/libecal/e-cal-util.c:1035
 msgctxt "Priority"
 msgid "High"
 msgstr "Yüksek"
 
-#: src/calendar/libecal/e-cal-util.c:839 src/calendar/libecal/e-cal-util.c:866
+#: src/calendar/libecal/e-cal-util.c:1010
+#: src/calendar/libecal/e-cal-util.c:1037
 msgctxt "Priority"
 msgid "Normal"
 msgstr "Olağan"
 
-#: src/calendar/libecal/e-cal-util.c:841 src/calendar/libecal/e-cal-util.c:868
+#: src/calendar/libecal/e-cal-util.c:1012
+#: src/calendar/libecal/e-cal-util.c:1039
 msgctxt "Priority"
 msgid "Low"
 msgstr "Düşük"
 
 #. An empty string is the same as 'None'.
-#: src/calendar/libecal/e-cal-util.c:862
+#: src/calendar/libecal/e-cal-util.c:1033
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Tanımlanmamış"
 
-#: src/calendar/libecal/e-cal-util.c:904
+#: src/calendar/libecal/e-cal-util.c:1075
 #: src/libedataserverui/e-reminders-widget.c:337
 #, c-format
 msgid "%d week"
 msgid_plural "%d weeks"
 msgstr[0] "%d hafta"
 
-#: src/calendar/libecal/e-cal-util.c:913
+#: src/calendar/libecal/e-cal-util.c:1084
 #: src/libedataserverui/e-reminders-widget.c:333
 #, c-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d gün"
 
-#: src/calendar/libecal/e-cal-util.c:922
+#: src/calendar/libecal/e-cal-util.c:1093
 #: src/libedataserverui/e-reminders-widget.c:329
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d saat"
 
-#: src/calendar/libecal/e-cal-util.c:931
+#: src/calendar/libecal/e-cal-util.c:1102
 #: src/libedataserverui/e-reminders-widget.c:325
 #, c-format
 msgid "%d minute"
@@ -2369,20 +2372,20 @@ msgid_plural "%d minutes"
 msgstr[0] "%d dakika"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: src/calendar/libecal/e-cal-util.c:936
+#: src/calendar/libecal/e-cal-util.c:1107
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d saniye"
 
-#: src/calendar/libecal/e-reminder-watcher.c:2902
+#: src/calendar/libecal/e-reminder-watcher.c:2923
 msgid "No Summary"
 msgstr "Özet Yok"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:2918
+#: src/calendar/libecal/e-reminder-watcher.c:2939
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
@@ -2391,7 +2394,7 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: src/calendar/libecal/e-reminder-watcher.c:2923
+#: src/calendar/libecal/e-reminder-watcher.c:2944
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
@@ -2400,26 +2403,26 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:2928
+#: src/calendar/libecal/e-reminder-watcher.c:2949
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
 msgstr "%s %s"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:77
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1173
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1234
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1579
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1706
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1755
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1163
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1224
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1569
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1696
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1745
 #, c-format
 msgid "“%s” expects one argument"
 msgstr "“%s” bir parametre istiyor"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:84
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:707
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1586
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1594
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1576
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1584
 #, c-format
 msgid "“%s” expects the first argument to be a string"
 msgstr "“%s” birinci parametrenin dizgi olmasını istiyor"
@@ -2432,12 +2435,12 @@ msgstr "“%s” iki ya da üç değişken bekliyor"
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:171
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:272
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:340
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:926
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1180
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1241
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1655
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1713
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1762
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:925
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1170
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1231
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1645
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1703
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1752
 #, c-format
 msgid "“%s” expects the first argument to be a time_t"
 msgstr "“%s” birinci parametrenin time_t olmasını istiyor"
@@ -2445,7 +2448,7 @@ msgstr "“%s” birinci parametrenin time_t olmasını istiyor"
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:180
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:280
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:350
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:935
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:934
 #, c-format
 msgid "“%s” expects the second argument to be a time_t"
 msgstr "“%s” ikinci parametrenin bir time_t olmasını bekliyor"
@@ -2462,8 +2465,8 @@ msgstr "“%s” hiç ya da iki parametre bekliyor"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:333
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:700
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:919
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1648
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:918
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1638
 #, c-format
 msgid "“%s” expects two arguments"
 msgstr "“%s” iki parametre bekliyor"
@@ -2475,9 +2478,9 @@ msgstr "“%s” iki parametre bekliyor"
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:834
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:857
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:883
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1092
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1125
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1540
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1082
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1115
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1530
 #, c-format
 msgid "“%s” expects no arguments"
 msgstr "“%s” hiçbir parametre istemiyor"
@@ -2498,12 +2501,12 @@ msgstr ""
 "“attendee”, “organizer” ya da “classification” değerlerinden birisinin "
 "olmasını istiyor"
 
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:987
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:977
 #, c-format
 msgid "“%s” expects at least one argument"
 msgstr "“%s” en az bir parametre istiyor"
 
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1002
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:992
 #, c-format
 msgid ""
 "“%s” expects all arguments to be strings or one and only one argument to be "
@@ -2512,13 +2515,13 @@ msgstr ""
 "“%s” tüm parametrelerin dizgi olmasını ve yalnızca bir tane parametrenin "
 "bool değeri false (#f) olmasını istiyor"
 
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1603
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1593
 #, c-format
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 "“%s” birinci parametrenin ISO 8601 tarih/zaman dizgisi olmasını istiyor"
 
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1664
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1654
 #, c-format
 msgid "“%s” expects the second argument to be an integer"
 msgstr "“%s” ikinci parametrenin bir tamsayı olmasını istiyor"
@@ -2756,7 +2759,7 @@ msgstr "%d/%d iletisinde hata"
 #: src/camel/camel-filter-driver.c:2040 src/camel/camel-filter-driver.c:2064
 #, c-format
 msgid "Execution of filter “%s” failed: "
-msgstr "“%s” süzgecini çalıştırma başarısız: "
+msgstr "“%s” süzgeci çalıştırılamadı: "
 
 #: src/camel/camel-filter-driver.c:2054
 #, c-format
@@ -2770,7 +2773,7 @@ msgstr "“%s” süzgeci çalıştırılırken hata: %s: %s"
 
 #: src/camel/camel-filter-search.c:173
 msgid "Failed to retrieve message"
-msgstr "İletinin alınmasında hata oluştu"
+msgstr "İletinin alınamadı"
 
 #: src/camel/camel-filter-search.c:637
 msgid "Invalid arguments to (system-flag)"
@@ -3026,7 +3029,7 @@ msgstr "GnuPGʼden beklenmeyen yanıt: %s"
 #: src/camel/camel-gpg-context.c:1361
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
-msgstr "Şifreleme başarısız: Geçerli alıcı belirtilmedi."
+msgstr "Şifrelenemedi: Geçerli alıcı belirtilmedi."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
@@ -3036,39 +3039,38 @@ msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
 "the %s doesn’t have imported public key for this recipient."
 msgstr ""
-"Şifreleme başarısız: Geçersiz alıcı %s belirtildi. Sık karşılaşılan sorun, "
-"bu alıcı için içe aktarılmış genel anahtara %s tarafından sahip "
-"olunmamasıdır."
+"Şifrelenemedi: Geçersiz alıcı %s belirtildi. Sık karşılaşılan sorun, bu "
+"alıcı için içe aktarılmış genel anahtara %s tarafından sahip olunmamasıdır."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1389
 #, c-format
 msgid "Failed to encrypt: The public key for recipient %s was not found."
-msgstr "Şifreleme başarısız: %s alıcısının genel anahtarı bulunamadı."
+msgstr "Şifrelenemedi: %s alıcısının genel anahtarı bulunamadı."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1396
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is revoked."
-msgstr "Şifreleme başarısız: %s alıcısının anahtarı iptal edilmiş."
+msgstr "Şifrelenemedi: %s alıcısının anahtarı iptal edilmiş."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1403
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is expired."
-msgstr "Şifreleme başarısız: %s alıcısının anahtar süresi dolmuş."
+msgstr "Şifrelenemedi: %s alıcısının anahtar süresi dolmuş."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1410
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is not trusted."
-msgstr "Şifreleme başarısız: %s alıcısının anahtarı güvenilir değil."
+msgstr "Şifrelenemedi: %s alıcısının anahtarı güvenilir değil."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1417
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is disabled."
-msgstr "Şifreleme başarısız: %s alıcısının anahtarı devre dışı bırakılmış."
+msgstr "Şifrelenemedi: %s alıcısının anahtarı devre dışı bırakılmış."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
@@ -3078,8 +3080,8 @@ msgid ""
 "Failed to encrypt: Invalid recipient %s specified (code %d). A common issue "
 "is that the %s doesn’t have imported public key for this recipient."
 msgstr ""
-"Şifreleme başarısız: Geçersiz alıcı %s belirtildi (kod %d). %s bu alıcının "
-"içe aktarılan genel anahtarına sahip olmadığı için bu sorun oluşmaktadır."
+"Şifrelenemedi: Geçersiz alıcı %s belirtildi (kod %d). %s bu alıcının içe "
+"aktarılan genel anahtarına sahip olmadığı için bu sorun oluşmaktadır."
 
 #: src/camel/camel-gpg-context.c:2266 src/camel/camel-smime-context.c:869
 msgid "Could not generate signing data: "
@@ -3119,7 +3121,7 @@ msgstr "İletinin şifresi çözülemedi: Geçersiz ileti biçimi"
 #: src/camel/camel-gpg-context.c:2816
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
-msgstr "MIME parçasının şifresi çözülürken hata: iletişim kuralı hatası"
+msgstr "MIME parçasının şifresi çözülemedi: İletişim kuralı hatası"
 
 #: src/camel/camel-gpg-context.c:2888
 #, c-format
@@ -3153,12 +3155,12 @@ msgstr ""
 #: src/camel/camel-lock.c:221
 #, c-format
 msgid "Failed to get lock using fcntl(2): %s"
-msgstr "fcntl(2) kullanılırken kilitleme hatası: %s"
+msgstr "fcntl(2) kullanılırken kilit alınmadı: %s"
 
 #: src/camel/camel-lock.c:293
 #, c-format
 msgid "Failed to get lock using flock(2): %s"
-msgstr "flock(2) kullanılırken kilitleme hatası: %s"
+msgstr "flock(2) kullanılırken kilit alınamadı: %s"
 
 #: src/camel/camel-lock-client.c:105
 #, c-format
@@ -3198,7 +3200,7 @@ msgstr "Geçici mektup dosyası %s açılamadı: %s"
 #: src/camel/camel-movemail.c:164
 #, c-format
 msgid "Failed to store mail in temp file %s: %s"
-msgstr "mektubu geçici %s dosyasında saklarken hata: %s"
+msgstr "Mektup geçici %s dosyasında saklanamadı: %s"
 
 #: src/camel/camel-movemail.c:198
 #, c-format
@@ -3364,7 +3366,7 @@ msgstr "Bu seçenek sunucuya anonim bağlantı kuracaktır."
 #: src/camel/camel-sasl-anonymous.c:70
 #, c-format
 msgid "Authentication failed."
-msgstr "Kimlik doğrulama başarısız."
+msgstr "Kimlik doğrulanamadı."
 
 #. Translators: the 'trace information' term comes from https://tools.ietf.org/html/rfc4505
 #. In this case the user set to use an email address as the trace information,
@@ -3523,7 +3525,8 @@ msgstr "input_token üzerinde yapılan tutarlılık kontrolleri başarısız old
 
 #: src/camel/camel-sasl-gssapi.c:228
 msgid "The consistency checks performed on the credential failed."
-msgstr "koşul üzerinde yapılan tutarlılık kontrolleri başarısız oldu."
+msgstr ""
+"Kimlik bilgilerinde gerçekleştirilen tutarlılık denetimleri başarısız oldu."
 
 #: src/camel/camel-sasl-gssapi.c:231
 msgid "The referenced credentials have expired."
@@ -3673,7 +3676,7 @@ msgstr "%s kimlik doğrulaması desteklenmiyor"
 #: src/camel/camel-session.c:523
 #, c-format
 msgid "%s authentication failed"
-msgstr "%s kimlik doğrulaması başarısız"
+msgstr "%s kimlik doğrulanamadı"
 
 #: src/camel/camel-session.c:592
 msgid "Forwarding messages is not supported"
@@ -3792,7 +3795,7 @@ msgstr "İleti içeriği atanamıyor"
 
 #: src/camel/camel-smime-context.c:615 src/camel/camel-smime-context.c:620
 msgid "Certificate import failed"
-msgstr "Sertifika aktarımı başarısız"
+msgstr "Sertifika içe aktarılamadı"
 
 #: src/camel/camel-smime-context.c:630
 #, c-format
@@ -3824,7 +3827,7 @@ msgstr "CMS kodlayıcısına veri eklenemedi"
 
 #: src/camel/camel-smime-context.c:892 src/camel/camel-smime-context.c:1424
 msgid "Failed to encode data"
-msgstr "Veri kodlanırken başarısız olundu"
+msgstr "Veri kodlanamadı"
 
 #: src/camel/camel-smime-context.c:1045 src/camel/camel-smime-context.c:1525
 msgid "Decoder failed"
@@ -4277,7 +4280,7 @@ msgstr "Yetenekler alınamadı"
 #: src/camel/providers/imapx/camel-imapx-server.c:3066
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
-msgstr "%s IMAP sunucusuna güvenli kipte bağlantı başarısız oldu: %s"
+msgstr "%s IMAP sunucusuna güvenli kipte bağlanamadı: %s"
 
 #: src/camel/providers/imapx/camel-imapx-server.c:3067
 #: src/camel/providers/smtp/camel-smtp-transport.c:283
@@ -4286,12 +4289,12 @@ msgstr "STARTTLS desteklenmiyor"
 
 #: src/camel/providers/imapx/camel-imapx-server.c:3076
 msgid "Failed to issue STARTTLS"
-msgstr "STARTTLS verme başarısız oldu"
+msgstr "STARTTLS verilemedi"
 
 #: src/camel/providers/imapx/camel-imapx-server.c:3123
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
-msgstr "%s IMAP sunucusuna güvenli kipte bağlantı başarısız oldu: "
+msgstr "%s IMAP sunucusuna güvenli kipte bağlanamadı: "
 
 #: src/camel/providers/imapx/camel-imapx-server.c:3239
 #, c-format
@@ -4323,31 +4326,31 @@ msgstr "Kimlik doğrulama parolası kullanılabilir değil"
 #: src/camel/providers/imapx/camel-imapx-server.c:3297
 #: src/camel/providers/imapx/camel-imapx-server.c:3310
 msgid "Failed to authenticate"
-msgstr "Kimlik doğrulama başarısız oldu"
+msgstr "Kimlik doğrulanamadı"
 
 #: src/camel/providers/imapx/camel-imapx-server.c:3382
 msgid "Failed to issue ID"
-msgstr "ID verilmesi başarısız oldu"
+msgstr "ID verilemedi"
 
 #: src/camel/providers/imapx/camel-imapx-server.c:3484
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
-msgstr "ENABLE UTF8=ACCEPT verilmesi başarısız oldu"
+msgstr "ENABLE UTF8=ACCEPT verilemedi"
 
 #: src/camel/providers/imapx/camel-imapx-server.c:3506
 msgid "Failed to issue NAMESPACE"
-msgstr "NAMESPACE verilmesi başarısız oldu"
+msgstr "NAMESPACE verilemedi"
 
 #: src/camel/providers/imapx/camel-imapx-server.c:3524
 msgid "Failed to enable QResync"
-msgstr "QResync etkinleştirme başarısız oldu"
+msgstr "QResync etkinleştirilemedi"
 
 #: src/camel/providers/imapx/camel-imapx-server.c:3561
 msgid "Failed to issue NOTIFY"
-msgstr "NOTIFY verilmesi başarısız oldu"
+msgstr "NOTIFY verilemedi"
 
 #: src/camel/providers/imapx/camel-imapx-server.c:4040
 msgid "Failed to select mailbox"
-msgstr "Posta kutusu seçme başarısız oldu"
+msgstr "Posta kutusu seçilemedi"
 
 #: src/camel/providers/imapx/camel-imapx-server.c:4140
 msgid "Cannot issue command, no stream available"
@@ -4422,65 +4425,65 @@ msgstr "“%s : %s” içindeki yeni iletilerin özet bilgisi getiriliyor"
 msgid "Error fetching message info"
 msgstr "İleti bilgisi getirilirken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5644
+#: src/camel/providers/imapx/camel-imapx-server.c:5645
 msgid "Error running STATUS"
 msgstr "STATUS çalıştırılırken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6224
-#: src/camel/providers/imapx/camel-imapx-server.c:6279
-#: src/camel/providers/imapx/camel-imapx-server.c:6343
+#: src/camel/providers/imapx/camel-imapx-server.c:6231
+#: src/camel/providers/imapx/camel-imapx-server.c:6286
+#: src/camel/providers/imapx/camel-imapx-server.c:6350
 msgid "Error syncing changes"
 msgstr "Değişiklikler eşlenirken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6237
-#: src/camel/providers/imapx/camel-imapx-server.c:6289
-#: src/camel/providers/imapx/camel-imapx-server.c:6362
-#: src/camel/providers/imapx/camel-imapx-server.c:6503
+#: src/camel/providers/imapx/camel-imapx-server.c:6244
+#: src/camel/providers/imapx/camel-imapx-server.c:6296
+#: src/camel/providers/imapx/camel-imapx-server.c:6369
+#: src/camel/providers/imapx/camel-imapx-server.c:6510
 msgid "Error expunging message"
 msgstr "İleti silinirken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6585
+#: src/camel/providers/imapx/camel-imapx-server.c:6592
 msgid "Error fetching folders"
 msgstr "Klasörler alınırken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6593
+#: src/camel/providers/imapx/camel-imapx-server.c:6600
 msgid "Error fetching subscribed folders"
 msgstr "Abone olunan klasörler getirilirken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6650
+#: src/camel/providers/imapx/camel-imapx-server.c:6657
 msgid "Error creating folder"
 msgstr "Klasör oluştururken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6700
+#: src/camel/providers/imapx/camel-imapx-server.c:6707
 msgid "Error deleting folder"
 msgstr "Klasör silinirken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6746
+#: src/camel/providers/imapx/camel-imapx-server.c:6753
 msgid "Error renaming folder"
 msgstr "Klasör yeniden adlandırılırken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6778
+#: src/camel/providers/imapx/camel-imapx-server.c:6785
 msgid "Error subscribing to folder"
 msgstr "Klasöre abone olunurken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6814
+#: src/camel/providers/imapx/camel-imapx-server.c:6821
 msgid "Error unsubscribing from folder"
 msgstr "Klasör aboneliği iptal edilirken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6854
+#: src/camel/providers/imapx/camel-imapx-server.c:6861
 msgid "IMAP server does not support quotas"
 msgstr "IMAP sunucusu kotaları desteklemiyor"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6866
+#: src/camel/providers/imapx/camel-imapx-server.c:6873
 msgid "Error retrieving quota information"
 msgstr "Kota bilgisi getirilirken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6931
+#: src/camel/providers/imapx/camel-imapx-server.c:6938
 msgid "Search failed"
 msgstr "Arama başarısız"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7059
+#: src/camel/providers/imapx/camel-imapx-server.c:7066
 msgid "Error running IDLE"
 msgstr "IDLE çalıştırılırken hata"
 
@@ -5312,7 +5315,7 @@ msgstr "NNTP sunucusu %s hata kodu %d verdi: %s"
 #: src/camel/providers/nntp/camel-nntp-store.c:407
 #, c-format
 msgid "Failed to issue STARTTLS for NNTP server %s: "
-msgstr "NNTP sunucusu için STARTTLS verme başarısız oldu %s: "
+msgstr "%s NNTP sunucusu için STARTTLS verilemedi: "
 
 #: src/camel/providers/nntp/camel-nntp-store.c:418
 #, c-format
@@ -5322,7 +5325,7 @@ msgstr "%s NNTP sunucusu STARTTLS’yi desteklemiyor: %s"
 #: src/camel/providers/nntp/camel-nntp-store.c:438
 #, c-format
 msgid "Failed to connect to NNTP server %s in secure mode: "
-msgstr "%s NNTP sunucusuna güvenli kipte bağlantı kurulamadı: "
+msgstr "%s NNTP sunucusuna güvenli kipte bağlanamadı: "
 
 #: src/camel/providers/nntp/camel-nntp-store.c:509
 #, c-format
@@ -5536,7 +5539,7 @@ msgstr "%s POP sunucusundan geçerli karşılama okunamadı"
 #: src/camel/providers/pop3/camel-pop3-store.c:172
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
-msgstr "%s POP sunucusuna güvenli kipta bağlantı başarısız oldu: %s"
+msgstr "%s POP sunucusuna güvenli kipte bağlanamadı: %s"
 
 #: src/camel/providers/pop3/camel-pop3-store.c:173
 msgid "STLS not supported by server"
@@ -5547,12 +5550,12 @@ msgstr "STLS sunucu tarafından desteklenmiyor"
 #: src/camel/providers/pop3/camel-pop3-store.c:194
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode%s"
-msgstr "%s POP sunucusuna güvenli kipte bağlantı başarısız %s"
+msgstr "%s POP sunucusuna güvenli kipte bağlanamadı%s"
 
 #: src/camel/providers/pop3/camel-pop3-store.c:214
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: "
-msgstr "%s POP sunucusuna güvenli kipte bağlantı başarısız: "
+msgstr "%s POP sunucusuna güvenli kipte bağlanamadı: "
 
 #: src/camel/providers/pop3/camel-pop3-store.c:356
 #, c-format
@@ -5562,7 +5565,7 @@ msgstr "%s POP sunucusuna bağlanılamadı: SASL İletişi Kuralı hatası"
 #: src/camel/providers/pop3/camel-pop3-store.c:378
 #, c-format
 msgid "Failed to authenticate on POP server %s: "
-msgstr "%s POP sunucusuyla kimlik doğrulaması başarısız oldu: "
+msgstr "%s POP sunucusuyla kimlik doğrulanamadı: "
 
 #: src/camel/providers/pop3/camel-pop3-store.c:486
 #, c-format
@@ -5730,7 +5733,7 @@ msgstr "Karşılama yanıtı hatası: "
 #: src/camel/providers/smtp/camel-smtp-transport.c:282
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
-msgstr "%s SMTP sunucusuna güvenli kipte bağlantı kurulamadı: %s"
+msgstr "%s SMTP sunucusuna güvenli kipte bağlanamadı: %s"
 
 #: src/camel/providers/smtp/camel-smtp-transport.c:291
 #: src/camel/providers/smtp/camel-smtp-transport.c:304
@@ -5741,7 +5744,7 @@ msgstr "STARTTLS komutu başarısız oldu: "
 #: src/camel/providers/smtp/camel-smtp-transport.c:332
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
-msgstr "%s SMTP sunucusuna güvenli kipte bağlantı kurulamadı: "
+msgstr "%s SMTP sunucusuna güvenli kipte bağlanamadı: "
 
 #: src/camel/providers/smtp/camel-smtp-transport.c:443
 #, c-format
@@ -5765,7 +5768,7 @@ msgstr "Herhangi bir SASL mekanizması belirtilmemiş"
 
 #: src/camel/providers/smtp/camel-smtp-transport.c:727
 msgid "AUTH command failed: Not connected."
-msgstr "AUTH komutu başarısız oldu: Bağlanılmadı."
+msgstr "AUTH komutu başarısız: Bağlanılmadı."
 
 #: src/camel/providers/smtp/camel-smtp-transport.c:734
 #: src/camel/providers/smtp/camel-smtp-transport.c:748
@@ -6458,7 +6461,7 @@ msgstr "Veri kaynağı [%s] grubu içermiyor"
 
 #: src/libebackend/e-server-side-source.c:467
 msgid "Failed to lookup credentials: "
-msgstr "Kimlik bilgilerini arama başarısız oldu: "
+msgstr "Kimlik bilgilerini aranamadı: "
 
 #: src/libebackend/e-server-side-source.c:1389
 #: src/libedataserver/e-source.c:1601
@@ -6525,7 +6528,7 @@ msgstr "“%s” kaynak UID’i için “%s” modülü yüklenemez"
 #: src/libebackend/e-subprocess-factory.c:297
 #, c-format
 msgid "Failed to create backend of type “%s” for source UID “%s”"
-msgstr "“%s” kaynak UID’i için “%s” türünün arka ucu oluşturulamad"
+msgstr "“%s” kaynak UID’i için “%s” türünün arka ucu oluşturulamadı"
 
 #: src/libebackend/e-user-prompter-server.c:301
 #, c-format
@@ -6658,7 +6661,7 @@ msgstr "Kaynak zaten yüklü"
 
 #: src/libedataserver/e-client.c:143
 msgid "Authentication failed"
-msgstr "Kimlik doğrulama başarısız"
+msgstr "Kimlik doğrulanamadı"
 
 #: src/libedataserver/e-client.c:147
 msgid "Repository offline"
@@ -6759,37 +6762,37 @@ msgstr "Sunucudan JSON nesnesi dönmedi"
 msgid "Failed to call %s: "
 msgstr "%s aranamıyor: "
 
-#: src/libedataserver/e-oauth2-service.c:922
+#: src/libedataserver/e-oauth2-service.c:1026
 msgid "Malformed, no message body set"
 msgstr "Hatalı biçimlendirilmiş, ileti gövdesi takımı yok"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1202
+#: src/libedataserver/e-oauth2-service.c:1306
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "“%s” (%s) kaynağı, “%s” OAuth2 hizmeti için geçerli değil"
 
-#: src/libedataserver/e-oauth2-service.c:1217
+#: src/libedataserver/e-oauth2-service.c:1321
 msgid "OAuth2 secret not found"
 msgstr "OAuth2 gizi bulunamadı"
 
-#: src/libedataserver/e-oauth2-service.c:1414
+#: src/libedataserver/e-oauth2-service.c:1518
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "“%s” sunucusundan geçersiz yanıt alındı."
 
-#: src/libedataserver/e-oauth2-service.c:1423
+#: src/libedataserver/e-oauth2-service.c:1527
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr "Erişim jetonu yenilenemedi. Lütfen sunucuya yeniden giriş yapın."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1466
+#: src/libedataserver/e-oauth2-service.c:1570
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "“%s” (%s) kaynağı geçerli bir OAuth2 kaynağı değil"
 
-#: src/libedataserver/e-oauth2-service.c:1750
+#: src/libedataserver/e-oauth2-service.c:1854
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -6814,16 +6817,16 @@ msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: src/libedataserver/e-soup-session.c:1169
+#: src/libedataserver/e-soup-session.c:1264
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "HTTP hatası %d ile başarısızlık: %s"
 
-#: src/libedataserver/e-soup-session.c:1245
+#: src/libedataserver/e-soup-session.c:1340
 msgid "Failed to setup authentication"
-msgstr "Kimlik doğrulama kurulumu başarısız"
+msgstr "Kimlik doğrulama kurulamadı"
 
-#: src/libedataserver/e-soup-session.c:1652
+#: src/libedataserver/e-soup-session.c:1747
 msgid "Too many redirects"
 msgstr "Çok sayıda yönlendirme"
 
@@ -7184,7 +7187,7 @@ msgstr "XML verisinde gerekli yapı (%s) yok"
 
 #: src/libedataserver/e-webdav-session.c:3976
 msgid "Failed to get access control list"
-msgstr "Denetim listesine erişilemiyor"
+msgstr "Denetim listesine erişilemedi"
 
 #: src/libedataserver/e-webdav-session.c:4659
 msgid "Cannot store protected nor inherited Access Control Entry."
@@ -7358,46 +7361,46 @@ msgstr "Kimlik bilgileri istemi iptal edildi"
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "“%s” kaynağı kimlik bilgilerinin sorulmasını desteklemiyor"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:226
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:264
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "“%s” adresinden erişim jetonu alınamadı: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:257
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:295
 msgid "Requesting access token, please wait…"
 msgstr "Erişim jetoni isteniyor, lütfen bekleyin…"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:507
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:569
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "%s Adres defteri kimlik doğrulama isteği"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:512
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:574
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "%s Takvim kimlik doğrulama isteği"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:517
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:579
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "%s Not Listesi kimlik doğrulama isteği"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:522
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:584
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "%s Görev Listesi kimlik doğrulama isteği"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:528
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:590
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "%s E-posta kimlik doğrulama isteği"
@@ -7405,7 +7408,7 @@ msgstr "%s E-posta kimlik doğrulama isteği"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:533
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:595
 #, c-format
 msgid "%s account authentication request"
 msgstr "%s hesabı kimlik doğrulama isteği"
@@ -7413,7 +7416,7 @@ msgstr "%s hesabı kimlik doğrulama isteği"
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:547
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:609
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -7425,7 +7428,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:554
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:616
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -7437,7 +7440,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:561
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:623
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -7449,7 +7452,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:568
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:630
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -7461,7 +7464,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:575
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:637
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -7473,7 +7476,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:582
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:644
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -7485,7 +7488,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:589
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:651
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -7494,27 +7497,27 @@ msgstr ""
 "%s hesabınıza giriş yapın ve “%s” hesabınıza erişmek için koşulları kabul "
 "edin."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:776
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Tarayıcı açılamadı: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:872
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:954
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:243
 #: src/libedataserverui/e-trust-prompt.c:117
 #: src/libedataserverui/e-webdav-discover-widget.c:1149
 msgid "_Cancel"
 msgstr "_İptal"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:954
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1036
 msgid "URL:"
 msgstr "URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:984
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1066
 msgid "Click here to open the URL"
 msgstr "Buraya tıklayarak URL’yi aç"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1022
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1104
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -7524,11 +7527,11 @@ msgstr ""
 "yetkilendirme kodunu veya OAuth2 sihirbazının bittiği URL’yi aşağıya "
 "kopyalayın ve kimlik doğrulama sürecini sürdürün."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1059
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1141
 msgid "_Authorization code:"
 msgstr "_Yetkilendirme kodu:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1072
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1154
 msgid "C_ontinue"
 msgstr "_Sürdür"
 
@@ -7725,52 +7728,68 @@ msgstr "_Geçici Olarak Kabul Et"
 msgid "_Accept Permanently"
 msgstr "_Kalıcı Olarak Kabul Et"
 
-#: src/libedataserverui/e-trust-prompt.c:208
+#: src/libedataserverui/e-trust-prompt.c:124
+msgid "Temporarily reject the certificate"
+msgstr "Sertifikayı geçici olarak reddet"
+
+#: src/libedataserverui/e-trust-prompt.c:127
+msgid "Permanently reject the certificate"
+msgstr "Sertifikayı kalıcı olarak reddet"
+
+#: src/libedataserverui/e-trust-prompt.c:130
+msgid "Temporarily accept the certificate"
+msgstr "Sertifikayı geçici olarak kabul et"
+
+#: src/libedataserverui/e-trust-prompt.c:133
+msgid "Permanently accept the certificate"
+msgstr "Sertifikayı kalıcı olarak kabul et"
+
+#: src/libedataserverui/e-trust-prompt.c:218
 #: src/modules/trust-prompt/trust-prompt-gtk.c:169
 #, c-format
 msgid "SSL/TLS certificate for “%s” is not trusted. Do you wish to accept it?"
 msgstr ""
 "“%s” için SSL/TLS sertifikası güvenilir değil. Kabul etmek istiyor musunuz?"
 
-#: src/libedataserverui/e-trust-prompt.c:230
+#: src/libedataserverui/e-trust-prompt.c:240
 #: src/modules/trust-prompt/trust-prompt-gtk.c:184
 msgid "Reason:"
 msgstr "Neden:"
 
-#: src/libedataserverui/e-trust-prompt.c:233
+#: src/libedataserverui/e-trust-prompt.c:243
 msgid "Detailed error:"
 msgstr "Ayrıntılı hata:"
 
-#: src/libedataserverui/e-trust-prompt.c:292
+#: src/libedataserverui/e-trust-prompt.c:302
 #: src/modules/trust-prompt/module-trust-prompt.c:80
 msgid "The signing certificate authority is not known."
 msgstr "İmzalayan sertifika yetkilisi bilinmiyor."
 
-#: src/libedataserverui/e-trust-prompt.c:294
+#: src/libedataserverui/e-trust-prompt.c:304
 #: src/modules/trust-prompt/module-trust-prompt.c:82
 msgid ""
 "The certificate does not match the expected identity of the site that it was "
 "retrieved from."
 msgstr "Sertifika, alındığı sitenin kimliğiyle eşleşmiyor."
 
-#: src/libedataserverui/e-trust-prompt.c:296
+#: src/libedataserverui/e-trust-prompt.c:306
 #: src/modules/trust-prompt/module-trust-prompt.c:84
 msgid "The certificate’s activation time is still in the future."
 msgstr "Sertifikanın etkinleştirilme tarihi henüz gelmemiş."
 
-#: src/libedataserverui/e-trust-prompt.c:298
+#: src/libedataserverui/e-trust-prompt.c:308
 #: src/modules/trust-prompt/module-trust-prompt.c:86
 msgid "The certificate has expired."
 msgstr "Sertifikanın süresi dolmuş."
 
-#: src/libedataserverui/e-trust-prompt.c:300
+#: src/libedataserverui/e-trust-prompt.c:310
 #: src/modules/trust-prompt/module-trust-prompt.c:88
 msgid ""
 "The certificate has been revoked according to the connection’s certificate "
 "revocation list."
 msgstr "Sertifika, bağlantının sertifika iptal listesine göre iptal edildi."
 
-#: src/libedataserverui/e-trust-prompt.c:302
+#: src/libedataserverui/e-trust-prompt.c:312
 #: src/modules/trust-prompt/module-trust-prompt.c:90
 msgid "The certificate’s algorithm is considered insecure."
 msgstr "Sertifikanın algoritması güvensiz kabul ediliyor."
@@ -7826,7 +7845,7 @@ msgstr ""
 
 #: src/modules/gnome-online-accounts/e-goa-password-based.c:315
 msgid "Failed to get password from GOA: "
-msgstr "GOAʼdan parola alma başarısız oldu: "
+msgstr "GOAʼdan parola alınamadı: "
 
 #. TODO: more specific
 #: src/modules/gnome-online-accounts/goaewsclient.c:240
