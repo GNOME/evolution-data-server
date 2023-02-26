@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2023-01-29 08:40+0000\n"
-"PO-Revision-Date: 2023-02-13 23:02+0200\n"
+"POT-Creation-Date: 2023-02-20 09:59+0000\n"
+"PO-Revision-Date: 2023-02-26 22:19+0200\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -31,13 +31,13 @@ msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Pateiktas URL „%s“ nenurodo WebDAV adresų knygos"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1127
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1337
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1340
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:934
 msgid "Server didn’t return object’s href"
 msgstr "Serveris negrąžino objekto nuorodos"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1129
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1339
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1342
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:936
 msgid "Server didn’t return object’s ETag"
 msgstr "Serveris negrąžino objekto ETag"
@@ -176,8 +176,8 @@ msgstr "Nepavyko pervadinti senos duomenų bazės iš „%s“ į „%s“: %s"
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
 #: src/libedataserver/e-soup-session.c:1019
 #: src/libedataserver/e-soup-session.c:1899
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:228
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:776
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:266
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
 #: src/libedataserverui/e-reminders-widget.c:2141
 #: src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
@@ -1305,7 +1305,7 @@ msgstr "Alfabetinis indeksas buvo nustatytas į neteisingą lokalę"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Pateiktas URL „%s“ nenurodo CalDAV kalendoriaus"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1474
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1477
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1189
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
@@ -1314,7 +1314,7 @@ msgstr ""
 "Trūksta informacijos apie komponento URL, vietinis podėlis yra nepilnas arba "
 "sugadintas. Pašalinkite jį."
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1986
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1989
 msgid "Failed to parse response data"
 msgstr "Nepavyko perskaityti atsako duomenų"
 
@@ -4462,65 +4462,65 @@ msgstr "Gaunama naujų laiškų santrauka aplankui „%s : %s“"
 msgid "Error fetching message info"
 msgstr "Klaida gaunant laiško informaciją"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5644
+#: src/camel/providers/imapx/camel-imapx-server.c:5645
 msgid "Error running STATUS"
 msgstr "Klaida vykdant STATUS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6224
-#: src/camel/providers/imapx/camel-imapx-server.c:6279
-#: src/camel/providers/imapx/camel-imapx-server.c:6343
+#: src/camel/providers/imapx/camel-imapx-server.c:6231
+#: src/camel/providers/imapx/camel-imapx-server.c:6286
+#: src/camel/providers/imapx/camel-imapx-server.c:6350
 msgid "Error syncing changes"
 msgstr "Klaida sinchronizuojant pakeitimus"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6237
-#: src/camel/providers/imapx/camel-imapx-server.c:6289
-#: src/camel/providers/imapx/camel-imapx-server.c:6362
-#: src/camel/providers/imapx/camel-imapx-server.c:6503
+#: src/camel/providers/imapx/camel-imapx-server.c:6244
+#: src/camel/providers/imapx/camel-imapx-server.c:6296
+#: src/camel/providers/imapx/camel-imapx-server.c:6369
+#: src/camel/providers/imapx/camel-imapx-server.c:6510
 msgid "Error expunging message"
 msgstr "Klaida sunaikinant laišką"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6585
+#: src/camel/providers/imapx/camel-imapx-server.c:6592
 msgid "Error fetching folders"
 msgstr "Klaida gaunant aplankus"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6593
+#: src/camel/providers/imapx/camel-imapx-server.c:6600
 msgid "Error fetching subscribed folders"
 msgstr "Klaida gaunant priregistruotus aplankus"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6650
+#: src/camel/providers/imapx/camel-imapx-server.c:6657
 msgid "Error creating folder"
 msgstr "Klaida kuriant aplanką"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6700
+#: src/camel/providers/imapx/camel-imapx-server.c:6707
 msgid "Error deleting folder"
 msgstr "Klaida trinant aplanką"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6746
+#: src/camel/providers/imapx/camel-imapx-server.c:6753
 msgid "Error renaming folder"
 msgstr "Klaida pervadinant aplanką"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6778
+#: src/camel/providers/imapx/camel-imapx-server.c:6785
 msgid "Error subscribing to folder"
 msgstr "Klaida registruojantis prie aplanko"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6814
+#: src/camel/providers/imapx/camel-imapx-server.c:6821
 msgid "Error unsubscribing from folder"
 msgstr "Klaida išsiregistruojant iš aplanko"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6854
+#: src/camel/providers/imapx/camel-imapx-server.c:6861
 msgid "IMAP server does not support quotas"
 msgstr "IMAP serveris nepalaiko kvotų"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6866
+#: src/camel/providers/imapx/camel-imapx-server.c:6873
 msgid "Error retrieving quota information"
 msgstr "Gaunama gaunant kvotos informaciją"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6931
+#: src/camel/providers/imapx/camel-imapx-server.c:6938
 msgid "Search failed"
 msgstr "Paieška nepavyko"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7059
+#: src/camel/providers/imapx/camel-imapx-server.c:7066
 msgid "Error running IDLE"
 msgstr "Klaida vykdant IDLE"
 
@@ -6808,38 +6808,38 @@ msgstr "Serveris negrąžino JSON objekto"
 msgid "Failed to call %s: "
 msgstr "Nepavyko išvkiesti %s: "
 
-#: src/libedataserver/e-oauth2-service.c:922
+#: src/libedataserver/e-oauth2-service.c:1026
 msgid "Malformed, no message body set"
 msgstr "Blogai suformuotas, nenustatytas laiško turinys"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1202
+#: src/libedataserver/e-oauth2-service.c:1306
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Šaltinis „%s“ (%s) nėra tinkamas „%s“ OAuth2 šaltinis"
 
-#: src/libedataserver/e-oauth2-service.c:1217
+#: src/libedataserver/e-oauth2-service.c:1321
 msgid "OAuth2 secret not found"
 msgstr "OAuth2 paslaptis nerasta"
 
-#: src/libedataserver/e-oauth2-service.c:1414
+#: src/libedataserver/e-oauth2-service.c:1518
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Gautas neteisingas atsakymas iš serverio %s"
 
-#: src/libedataserver/e-oauth2-service.c:1423
+#: src/libedataserver/e-oauth2-service.c:1527
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 "Nepavyko atnaujinti prieigos leksemos. Dar kartą prisijunkite prie serverio."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1466
+#: src/libedataserver/e-oauth2-service.c:1570
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Šaltinis „%s“ (%s) nėra tinkamas OAuth2 šaltinis"
 
-#: src/libedataserver/e-oauth2-service.c:1750
+#: src/libedataserver/e-oauth2-service.c:1854
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -7405,46 +7405,46 @@ msgstr "Įgaliojimų užklausa atšaukta"
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "Šaltinis „%s“ nepalaiko įgaliojimų užklausimo"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:226
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:264
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "Nepavyko gauti prieigos leksemos iš adreso „%s“: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:257
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:295
 msgid "Requesting access token, please wait…"
 msgstr "Prašoma prieigos leksemos, palaukite…"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:507
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:569
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "%s adresų knygos tapatybės patvirtinimo užklausa"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:512
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:574
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "%s kalendoriaus tapatybės patvirtinimo užklausa"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:517
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:579
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "%s raštelių sąrašo tapatybės patvirtinimo užklausa"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:522
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:584
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "%s užduočių sąrašo tapatybės patvirtinimo užklausa"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:528
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:590
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "%s el. pašto tapatybės patvirtinimo užklausa"
@@ -7452,7 +7452,7 @@ msgstr "%s el. pašto tapatybės patvirtinimo užklausa"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:533
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:595
 #, c-format
 msgid "%s account authentication request"
 msgstr "%s paskyros tapatybės patvirtinimo užklausa"
@@ -7460,7 +7460,7 @@ msgstr "%s paskyros tapatybės patvirtinimo užklausa"
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:547
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:609
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -7472,7 +7472,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:554
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:616
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -7484,7 +7484,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:561
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:623
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -7496,7 +7496,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:568
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:630
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -7508,7 +7508,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:575
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:637
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -7520,7 +7520,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:582
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:644
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -7532,7 +7532,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:589
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:651
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -7541,27 +7541,27 @@ msgstr ""
 "Prisijunkite prie savo %s paskyros ir sutikite su sąlygomis savo paskyrai "
 "„%s“ pasiekti."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:776
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Nepavyko atverti naršyklės: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:872
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:954
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:243
 #: src/libedataserverui/e-trust-prompt.c:117
 #: src/libedataserverui/e-webdav-discover-widget.c:1149
 msgid "_Cancel"
 msgstr "_Atsisakyti"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:954
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1036
 msgid "URL:"
 msgstr "URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:984
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1066
 msgid "Click here to open the URL"
 msgstr "Spauskite čia URL atverti"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1022
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1104
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -7571,11 +7571,11 @@ msgstr ""
 "autorizacijos kodą arba URL, kuriame OAuth2 vedlys baigėsi, žemiau ir "
 "tęskite tapatybės patvirtinimo procesą."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1059
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1141
 msgid "_Authorization code:"
 msgstr "_Autorizacijos kodas:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1072
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1154
 msgid "C_ontinue"
 msgstr "_Tęsti"
 
@@ -7774,27 +7774,43 @@ msgstr "Primti _laikinai"
 msgid "_Accept Permanently"
 msgstr "_Priimti visam laikui"
 
-#: src/libedataserverui/e-trust-prompt.c:208
+#: src/libedataserverui/e-trust-prompt.c:124
+msgid "Temporarily reject the certificate"
+msgstr "Laikinai atmesti liudijimą"
+
+#: src/libedataserverui/e-trust-prompt.c:127
+msgid "Permanently reject the certificate"
+msgstr "Atmesti liudijimą visam laikui"
+
+#: src/libedataserverui/e-trust-prompt.c:130
+msgid "Temporarily accept the certificate"
+msgstr "Laikinai priimti liudijimą"
+
+#: src/libedataserverui/e-trust-prompt.c:133
+msgid "Permanently accept the certificate"
+msgstr "Priimti liudijimą visam laikui"
+
+#: src/libedataserverui/e-trust-prompt.c:218
 #: src/modules/trust-prompt/trust-prompt-gtk.c:169
 #, c-format
 msgid "SSL/TLS certificate for “%s” is not trusted. Do you wish to accept it?"
 msgstr "SSL/TLS liudijimas „%s“ yra nepatikimas. Ar norite jį priimti?"
 
-#: src/libedataserverui/e-trust-prompt.c:230
+#: src/libedataserverui/e-trust-prompt.c:240
 #: src/modules/trust-prompt/trust-prompt-gtk.c:184
 msgid "Reason:"
 msgstr "Priežastis:"
 
-#: src/libedataserverui/e-trust-prompt.c:233
+#: src/libedataserverui/e-trust-prompt.c:243
 msgid "Detailed error:"
 msgstr "Detali klaida:"
 
-#: src/libedataserverui/e-trust-prompt.c:292
+#: src/libedataserverui/e-trust-prompt.c:302
 #: src/modules/trust-prompt/module-trust-prompt.c:80
 msgid "The signing certificate authority is not known."
 msgstr "Pasirašanti liudijimų įstaiga nežinoma."
 
-#: src/libedataserverui/e-trust-prompt.c:294
+#: src/libedataserverui/e-trust-prompt.c:304
 #: src/modules/trust-prompt/module-trust-prompt.c:82
 msgid ""
 "The certificate does not match the expected identity of the site that it was "
@@ -7802,24 +7818,24 @@ msgid ""
 msgstr ""
 "Liudijimas neatitinka laukto tinklalapio identiteto, iš kur jis buvo gautas."
 
-#: src/libedataserverui/e-trust-prompt.c:296
+#: src/libedataserverui/e-trust-prompt.c:306
 #: src/modules/trust-prompt/module-trust-prompt.c:84
 msgid "The certificate’s activation time is still in the future."
 msgstr "Liudijimo aktyvavimo laikas vis dar ateityje."
 
-#: src/libedataserverui/e-trust-prompt.c:298
+#: src/libedataserverui/e-trust-prompt.c:308
 #: src/modules/trust-prompt/module-trust-prompt.c:86
 msgid "The certificate has expired."
 msgstr "Liudijimo galiojimas pasibaigė."
 
-#: src/libedataserverui/e-trust-prompt.c:300
+#: src/libedataserverui/e-trust-prompt.c:310
 #: src/modules/trust-prompt/module-trust-prompt.c:88
 msgid ""
 "The certificate has been revoked according to the connection’s certificate "
 "revocation list."
 msgstr "Pagal ryšio liudijimų atšaukimo sąrašą liudijimas buvo atšauktas."
 
-#: src/libedataserverui/e-trust-prompt.c:302
+#: src/libedataserverui/e-trust-prompt.c:312
 #: src/modules/trust-prompt/module-trust-prompt.c:90
 msgid "The certificate’s algorithm is considered insecure."
 msgstr "Liudijimo algoritmas laikomas nesaugiu."
