@@ -1,3 +1,30 @@
+Evolution-Data-Server 3.47.3 2023-03-03
+---------------------------------------
+
+Bug Fixes:
+	I#276 - alarm-notify: Incorrectly handles changes in recurring events
+	I#453 - build: Make it possible to override C++ standard
+	I#454 - libedataserverui: Tweak lookout of the Trust Prompt dialog
+
+Miscellaneous:
+	OAuth2 credentials prompter: Log what URI is being opened in the WebKitWebView
+
+Translations:
+	Alan Mortensen (da)
+	Anders Jonsson (sv)
+	Asier Sarasua Garmendia (eu)
+	Aurimas Černius (lt)
+	Balázs Úr (hu)
+	Daniel Mustieles (es)
+	Fran Dieguez (gl)
+	Hugo Carvalho (pt)
+	Jürgen Benvenuti (de)
+	Kukuh Syafaat (id)
+	Matej Urbančič (sl)
+	Quentin PAGÈS (oc)
+	Sabri Ünal (tr)
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.47.2 2023-02-10
 ---------------------------------------
 
