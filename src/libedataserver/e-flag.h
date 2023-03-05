@@ -50,8 +50,10 @@ gboolean	e_flag_wait_until		(EFlag *flag,
 void		e_flag_free			(EFlag *flag);
 
 #ifndef EDS_DISABLE_DEPRECATED
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 gboolean	e_flag_timed_wait		(EFlag *flag,
 						 GTimeVal *abs_time);
+G_GNUC_END_IGNORE_DEPRECATIONS
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
