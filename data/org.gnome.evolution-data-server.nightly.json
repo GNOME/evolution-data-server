@@ -229,6 +229,46 @@
 		},
 
 		{
+			"name": "python3-gi-docgen",
+			"buildsystem": "simple",
+			"build-commands": [
+				"pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"gi-docgen\" --no-build-isolation"
+			],
+			"sources": [
+				{
+					"type": "file",
+					"url": "https://files.pythonhosted.org/packages/da/ed/1da76d11aa858ee23dac5b52d9ac2db7df02b89f7679d5d8970bcd44b59c/smartypants-2.0.1-py2.py3-none-any.whl",
+					"sha256": "8db97f7cbdf08d15b158a86037cd9e116b4cf37703d24e0419a0d64ca5808f0d"
+				},
+				{
+					"type": "file",
+					"url": "https://files.pythonhosted.org/packages/8a/bf/64959d6187d42472acb846bcf462347c9124952c05bd57e5769d5f28f9a6/typogrify-2.0.7.tar.gz",
+					"sha256": "8be4668cda434163ce229d87ca273a11922cb1614cb359970b7dc96eed13cb38"
+				},
+				{
+					"type": "file",
+					"url": "https://files.pythonhosted.org/packages/97/75/10a9ebee3fd790d20926a90a2547f0bf78f371b2f13aa822c759680ca7b9/tomli-2.0.1-py3-none-any.whl",
+					"sha256": "939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"
+				},
+				{
+					"type": "file",
+					"url": "https://files.pythonhosted.org/packages/95/7e/68018b70268fb4a2a605e2be44ab7b4dd7ce7808adae6c5ef32e34f4b55a/MarkupSafe-2.1.2.tar.gz",
+					"sha256": "abcabc8c2b26036d62d4c746381a6f7cf60aafcc653198ad678306986b09450d"
+				},
+				{
+					"type": "file",
+					"url": "https://files.pythonhosted.org/packages/bc/c3/f068337a370801f372f2f8f6bad74a5c140f6fda3d9de154052708dd3c65/Jinja2-3.1.2-py3-none-any.whl",
+					"sha256": "6088930bfe239f0e6710546ab9c19c9ef35e29792895fed6e6e31a023a182a61"
+				},
+				{
+					"type": "file",
+					"url": "https://files.pythonhosted.org/packages/2c/57/9b927fab538fe9acc932411aaa54785e3911917291773b1a95b7cfcdd0be/gi_docgen-2023.1-py2.py3-none-any.whl",
+					"sha256": "05959ff3489862a3e0bbef66ac0301c71d47bfe5e99883309e97b0197e50d27a"
+				}
+			]
+		},
+
+		{
 			"name": "evolution-data-server",
 			"buildsystem": "cmake-ninja",
 			"cleanup": [
@@ -249,6 +289,7 @@
 				"-DENABLE_VALA_BINDINGS=ON",
 				"-DENABLE_INSTALLED_TESTS=ON",
 				"-DENABLE_GTK_DOC=OFF",
+				"-DENABLE_GI_DOCGEN=ON",
 				"-DWITH_LIBDB=OFF",
 				"-DWITH_PRIVATE_DOCS=OFF",
 				"-DWITH_PHONENUMBER=OFF",
