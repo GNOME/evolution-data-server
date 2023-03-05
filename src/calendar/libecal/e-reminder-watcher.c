@@ -306,14 +306,13 @@ client_data_source_written_cb (GObject *source_object,
 	}
 }
 
-static time_t
+static gint64
 client_get_last_notification_time (ECalClient *client)
 {
 	ESource *source;
 	ESourceAlarms *alarms_extension;
 	gchar *last_notified;
-	GTimeVal tmval = { 0 };
-	time_t value = 0, now;
+	gint64 value = 0;
 
 	if (!client)
 		return -1;
@@ -325,13 +324,25 @@ client_get_last_notification_time (ECalClient *client)
 	alarms_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_ALARMS);
 	last_notified = e_source_alarms_dup_last_notified (alarms_extension);
 
-	if (last_notified && *last_notified &&
-	    g_time_val_from_iso8601 (last_notified, &tmval)) {
-		now = time (NULL);
-		value = (time_t) tmval.tv_sec;
+	if (last_notified && *last_notified) {
+		GDateTime *dt, *now;
 
-		if (value > now)
-			value = now;
+		dt = g_date_time_new_from_iso8601 (last_notified, NULL);
+		if (!dt) {
+			g_free (last_notified);
+			return -1;
+		}
+
+		now = g_date_time_new_now_utc ();
+
+		if (g_date_time_compare (dt, now) > 0) {
+			value = g_date_time_to_unix (now);
+		} else {
+			value = g_date_time_to_unix (dt);
+		}
+
+		g_date_time_unref (dt);
+		g_date_time_unref (now);
 	}
 
 	g_free (last_notified);
@@ -345,9 +356,8 @@ client_set_last_notification_time (ECalClient *client,
 {
 	ESource *source;
 	ESourceAlarms *alarms_extension;
-	GTimeVal tv = { 0 };
+	GDateTime *tt_dt, *now, *last_notified_dt = NULL;
 	gchar *iso8601;
-	time_t now;
 
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (tt > 0);
@@ -360,17 +370,16 @@ client_set_last_notification_time (ECalClient *client,
 	iso8601 = e_source_alarms_dup_last_notified (alarms_extension);
 
 	if (iso8601) {
-		if (!g_time_val_from_iso8601 (iso8601, &tv))
-			tv.tv_sec = 0;
-
+		last_notified_dt = g_date_time_new_from_iso8601 (iso8601, NULL);
 		g_free (iso8601);
 	}
 
-	now = time (NULL);
+	tt_dt = g_date_time_new_from_unix_utc (tt);
+	now = g_date_time_new_now_utc ();
 
-	if (tt > (time_t) tv.tv_sec || (time_t) tv.tv_sec > now) {
-		tv.tv_sec = (glong) tt;
-		iso8601 = g_time_val_to_iso8601 (&tv);
+	if (last_notified_dt &&
+	    (g_date_time_compare (tt_dt, last_notified_dt) > 0 || g_date_time_compare (last_notified_dt, now) > 0)) {
+		iso8601 = g_date_time_format_iso8601 (tt_dt);
 		e_source_alarms_set_last_notified (alarms_extension, iso8601);
 
 		e_reminder_watcher_debug_print ("Changed last-notified for source %s (%s) to %s\n",
@@ -382,6 +391,11 @@ client_set_last_notification_time (ECalClient *client,
 
 		e_source_write (source, NULL, client_data_source_written_cb, NULL);
 	}
+
+	if (last_notified_dt)
+		g_date_time_unref (last_notified_dt);
+	g_date_time_unref (tt_dt);
+	g_date_time_unref (now);
 }
 
 static void
@@ -437,7 +451,7 @@ client_data_start_view (ClientData *cd,
 			GCancellable *cancellable)
 {
 	gchar *iso_start, *iso_end;
-	time_t start_tt;
+	gint64 start_tt;
 
 	g_return_if_fail (cd != NULL);
 	g_return_if_fail (cd->client != NULL);
@@ -446,14 +460,14 @@ client_data_start_view (ClientData *cd,
 
 	start_tt = client_get_last_notification_time (cd->client) + 1;
 	if (start_tt <= 0)
-		start_tt = time_day_begin (time (NULL));
+		start_tt = (gint64) time_day_begin (time (NULL));
 
-	iso_start = isodate_from_time_t (start_tt);
+	iso_start = isodate_from_time_t ((time_t) start_tt);
 	iso_end = isodate_from_time_t ((time_t) next_midnight);
 
 	if (!iso_start || !iso_end) {
 		e_reminder_watcher_debug_print ("Failed to convert last notification %" G_GINT64_FORMAT " or next midnight %" G_GINT64_FORMAT " into iso strings for client %s\n",
-			(gint64) start_tt, next_midnight, e_source_get_uid (e_client_get_source (E_CLIENT (cd->client))));
+			start_tt, next_midnight, e_source_get_uid (e_client_get_source (E_CLIENT (cd->client))));
 	} else {
 		gchar *query;
 

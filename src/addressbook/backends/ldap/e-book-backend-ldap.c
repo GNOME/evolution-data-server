@@ -76,8 +76,6 @@
 /* timeout for ldap_result */
 #define LDAP_RESULT_TIMEOUT_MILLIS 10
 
-#define TV_TO_MILLIS(timeval) ((timeval).tv_sec * 1000 + (timeval).tv_usec / 1000)
-
 #define LDAP_SEARCH_OP_IDENT "EBookBackendLDAP.BookView::search_op"
 
 /* the objectClasses we need */
@@ -772,15 +770,15 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl,
 {
 	EBookBackendLDAPPrivate *blpriv = bl->priv;
 	gint protocol_version = LDAP_VERSION3;
-	GTimeVal start, end;
-	gulong diff;
+	gint64 start = 0, end;
+	GTimeSpan diff;
 #ifdef SUNLDAP
 	gint ldap_flag;
 #endif
 
 	if (enable_debug) {
 		printf ("e_book_backend_ldap_connect ... \n");
-		g_get_current_time (&start);
+		start = g_get_monotonic_time ();
 	}
 
 	/* close connection first if it's open first */
@@ -936,12 +934,11 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl,
 
 			if (enable_debug) {
 				printf ("e_book_backend_ldap_connect ... success \n");
-				g_get_current_time (&end);
-				diff = end.tv_sec * 1000 + end.tv_usec / 1000;
-				diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
+				end = g_get_monotonic_time ();
+				diff = end - start;
 				printf (
-					"e_book_backend_ldap_connect took %ld.%03ld seconds\n",
-					diff / 1000,diff % 1000);
+					"e_book_backend_ldap_connect took %" G_GINT64_FORMAT ".%03" G_GINT64_FORMAT " seconds\n",
+					diff / G_TIME_SPAN_SECOND, diff % G_TIME_SPAN_SECOND);
 			}
 			e_backend_ensure_source_status_connected (E_BACKEND (bl));
 			return TRUE;
@@ -980,12 +977,12 @@ e_book_backend_ldap_reconnect (EBookBackendLDAP *bl,
                                EDataBookView *book_view,
                                gint ldap_status)
 {
-	GTimeVal start, end;
-	gulong diff;
+	gint64 start = 0, end;
+	GTimeSpan diff;
 
 	if (enable_debug) {
 		printf ("e_book_backend_ldap_reconnect ... \n");
-		g_get_current_time (&start);
+		start = g_get_monotonic_time ();
 	}
 
 	g_rec_mutex_lock (&eds_ldap_handler_lock);
@@ -1026,12 +1023,11 @@ e_book_backend_ldap_reconnect (EBookBackendLDAP *bl,
 
 		if (enable_debug) {
 			printf ("e_book_backend_ldap_reconnect ... returning %d\n", ldap_error);
-			g_get_current_time (&end);
-			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
-			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
+			end = g_get_monotonic_time ();
+			diff = end - start;
 			printf (
-				"e_book_backend_ldap_reconnect took %ld.%03ld seconds\n",
-				diff / 1000,diff % 1000);
+				"e_book_backend_ldap_reconnect took %" G_GINT64_FORMAT ".%03" G_GINT64_FORMAT " seconds\n",
+				diff / G_TIME_SPAN_SECOND, diff % G_TIME_SPAN_SECOND);
 		}
 
 		return (ldap_error == LDAP_SUCCESS);
@@ -2117,12 +2113,12 @@ get_contact_handler (LDAPOp *op,
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
 	gint msg_type;
-	GTimeVal start, end;
-	gulong diff;
+	gint64 start = 0, end;
+	GTimeSpan diff;
 
 	if (enable_debug) {
 		printf ("get_contact_handler ... \n");
-		g_get_current_time (&start);
+		start = g_get_monotonic_time ();
 	}
 
 	g_rec_mutex_lock (&eds_ldap_handler_lock);
@@ -2185,12 +2181,11 @@ get_contact_handler (LDAPOp *op,
 		ldap_op_finished (op);
 
 		if (enable_debug) {
-			g_get_current_time (&end);
-			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
-			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
+			end = g_get_monotonic_time ();
+			diff = end - start;
 			printf (
-				"get_contact_handler took %ld.%03ld seconds \n",
-				diff / 1000, diff % 1000);
+				"get_contact_handler took %" G_GINT64_FORMAT ".%03" G_GINT64_FORMAT " seconds \n",
+				diff / G_TIME_SPAN_SECOND, diff % G_TIME_SPAN_SECOND);
 		}
 	} else if (msg_type == LDAP_RES_SEARCH_REFERENCE) {
 		/* ignore references */
@@ -2256,12 +2251,12 @@ contact_list_handler (LDAPOp *op,
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
 	LDAPMessage *e;
 	gint msg_type;
-	GTimeVal start, end;
-	gulong diff;
+	gint64 start = 0, end;
+	GTimeSpan diff;
 
 	if (enable_debug) {
 		printf ("contact_list_handler ...\n");
-		g_get_current_time (&start);
+		start = g_get_monotonic_time ();
 	}
 
 	g_rec_mutex_lock (&eds_ldap_handler_lock);
@@ -2359,10 +2354,9 @@ contact_list_handler (LDAPOp *op,
 		ldap_op_finished (op);
 		if (enable_debug) {
 			printf ("contact_list_handler success ");
-			g_get_current_time (&end);
-			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
-			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
-			printf ("and took %ld.%03ld seconds\n", diff / 1000, diff % 1000);
+			end = g_get_monotonic_time ();
+			diff = end - start;
+			printf ("and took %" G_GINT64_FORMAT ".%03" G_GINT64_FORMAT " seconds\n", diff / G_TIME_SPAN_SECOND, diff % G_TIME_SPAN_SECOND);
 		}
 	}
 	else {
@@ -2400,12 +2394,12 @@ contact_list_uids_handler (LDAPOp *op,
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
 	LDAPMessage *e;
 	gint msg_type;
-	GTimeVal start, end;
-	gulong diff;
+	gint64 start = 0, end;
+	GTimeSpan diff;
 
 	if (enable_debug) {
 		printf ("contact_list_uids_handler ...\n");
-		g_get_current_time (&start);
+		start = g_get_monotonic_time ();
 	}
 
 	g_rec_mutex_lock (&eds_ldap_handler_lock);
@@ -2498,10 +2492,9 @@ contact_list_uids_handler (LDAPOp *op,
 		ldap_op_finished (op);
 		if (enable_debug) {
 			printf ("contact_list_uids_handler success ");
-			g_get_current_time (&end);
-			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
-			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
-			printf ("and took %ld.%03ld seconds\n", diff / 1000, diff % 1000);
+			end = g_get_monotonic_time ();
+			diff = end - start;
+			printf ("and took %" G_GINT64_FORMAT ".%03" G_GINT64_FORMAT " seconds\n", diff / G_TIME_SPAN_SECOND, diff % G_TIME_SPAN_SECOND);
 		}
 	}
 	else {
@@ -4656,12 +4649,12 @@ ldap_search_handler (LDAPOp *op,
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
 	LDAPMessage *e;
 	gint msg_type;
-	GTimeVal start, end;
-	gulong diff;
+	gint64 start = 0, end;
+	GTimeSpan diff;
 
 	d (printf ("ldap_search_handler (%p)\n", view));
 	if (enable_debug)
-		g_get_current_time (&start);
+		start = g_get_monotonic_time ();
 
 	g_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!bl->priv->ldap) {
@@ -4747,11 +4740,10 @@ ldap_search_handler (LDAPOp *op,
 
 		ldap_op_finished (op);
 		if (enable_debug) {
-			g_get_current_time (&end);
-			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
-			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
+			end = g_get_monotonic_time ();
+			diff = end - start;
 			printf ("ldap_search_handler... completed with error code %d  ", ldap_error);
-			printf ("and took %ld.%03ld seconds\n", diff / 1000, diff % 1000);
+			printf ("and took %" G_GINT64_FORMAT ".%03" G_GINT64_FORMAT " seconds\n", diff / G_TIME_SPAN_SECOND, diff % G_TIME_SPAN_SECOND);
 		}
 	}
 	else {
@@ -4800,12 +4792,12 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 	gchar *ldap_query;
 	GList *contacts;
 	GList *l;
-	GTimeVal start, end;
-	gulong diff;
+	gint64 start = 0, end;
+	GTimeSpan diff;
 
 	if (enable_debug) {
 		printf ("e_book_backend_ldap_search ... \n");
-		g_get_current_time (&start);
+		start = g_get_monotonic_time ();
 	}
 
 	sexp = e_data_book_view_get_sexp (view);
@@ -4899,10 +4891,9 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 
 			if (enable_debug) {
 				printf ("e_book_backend_ldap_search invoked ldap_search_handler ");
-				g_get_current_time (&end);
-				diff = end.tv_sec * 1000 + end.tv_usec / 1000;
-				diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
-				printf ("and took  %ld.%03ld seconds\n", diff / 1000,diff % 1000);
+				end = g_get_monotonic_time ();
+				diff = end - start;
+				printf ("and took  %" G_GINT64_FORMAT ".%03" G_GINT64_FORMAT " seconds\n", diff / G_TIME_SPAN_SECOND, diff % G_TIME_SPAN_SECOND);
 			}
 
 			g_mutex_lock (&bl->priv->view_mutex);
@@ -4964,12 +4955,12 @@ generate_cache_handler (LDAPOp *op,
 	LDAPMessage *e;
 	gint msg_type;
 	EDataBookView *book_view;
-	GTimeVal start, end;
-	gulong diff;
+	gint64 start = 0, end;
+	GTimeSpan diff;
 
 	if (enable_debug) {
 		printf ("generate_cache_handler ... \n");
-		g_get_current_time (&start);
+		start = g_get_monotonic_time ();
 	}
 
 	g_rec_mutex_lock (&eds_ldap_handler_lock);
@@ -5010,7 +5001,7 @@ generate_cache_handler (LDAPOp *op,
 		GSList *l;
 		gint contact_num = 0;
 		gchar *status_msg;
-		GTimeVal now;
+		GDateTime *now;
 		gchar *update_str;
 		GList *contacts, *link;
 
@@ -5039,20 +5030,20 @@ generate_cache_handler (LDAPOp *op,
 			e_book_backend_notify_update (op->backend, contact);
 		}
 		e_book_backend_cache_set_populated (bl->priv->cache);
-		g_get_current_time (&now);
-		update_str = g_time_val_to_iso8601 (&now);
+		now = g_date_time_new_now_utc ();
+		update_str = g_date_time_format_iso8601 (now);
+		g_date_time_unref (now);
 		e_book_backend_cache_set_time (bl->priv->cache, update_str);
 		g_free (update_str);
 		e_file_cache_thaw_changes (E_FILE_CACHE (bl->priv->cache));
 		e_book_backend_notify_complete (op->backend);
 		ldap_op_finished (op);
 		if (enable_debug) {
-			g_get_current_time (&end);
-			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
-			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
+			end = g_get_monotonic_time ();
+			diff = end - start;
 			printf (
-				"generate_cache_handler ... completed in %ld.%03ld seconds\n",
-				diff / 1000,diff % 1000);
+				"generate_cache_handler ... completed in %" G_GINT64_FORMAT ".%03" G_GINT64_FORMAT " seconds\n",
+				diff / G_TIME_SPAN_SECOND, diff % G_TIME_SPAN_SECOND);
 		}
 	}
 }
@@ -5081,13 +5072,13 @@ generate_cache (EBookBackendLDAP *book_backend_ldap)
 	EBookBackendLDAPPrivate *priv;
 	gint contact_list_msgid;
 	gint ldap_error;
-	GTimeVal start, end;
+	gint64 start = 0, end;
 	gchar *last_update_str;
-	gulong diff;
+	GTimeSpan diff;
 
 	if (enable_debug) {
 		printf ("generating offline cache ... \n");
-		g_get_current_time (&start);
+		start = g_get_monotonic_time ();
 	}
 
 	priv = book_backend_ldap->priv;
@@ -5111,23 +5102,29 @@ generate_cache (EBookBackendLDAP *book_backend_ldap)
 
 	last_update_str = e_book_backend_cache_get_time (priv->cache);
 	if (last_update_str) {
-		GTimeVal now, last_update;
+		GDateTime *last_update;
 
-		if (g_time_val_from_iso8601 (last_update_str, &last_update)) {
-			g_get_current_time (&now);
+		last_update = g_date_time_new_from_iso8601 (last_update_str, NULL);
+		g_free (last_update_str);
+		if (last_update) {
+			GDateTime *now;
+			GTimeSpan time_span;
+
+			now = g_date_time_new_now_utc ();
+			time_span = g_date_time_difference (now, last_update);
+			g_date_time_unref (now);
+			g_date_time_unref (last_update);
 
 			/* update up to once a week */
-			if (now.tv_sec <= last_update.tv_sec + 7 * 24 * 60 * 60) {
+			if (time_span <= 7 * G_TIME_SPAN_DAY) {
 				g_rec_mutex_unlock (&eds_ldap_handler_lock);
 				g_free (contact_list_op);
-				g_free (last_update_str);
 				if (enable_debug)
 					printf ("LDAP generating offline cache skipped: it's not 7 days since the last check yet\n");
 				return;
 			}
 		}
 
-		g_free (last_update_str);
 	}
 
 	priv->generate_cache_in_progress = TRUE;
@@ -5159,10 +5156,9 @@ generate_cache (EBookBackendLDAP *book_backend_ldap)
 			generate_cache_handler, generate_cache_dtor);
 		if (enable_debug) {
 			printf ("generating offline cache invoked generate_cache_handler ");
-			g_get_current_time (&end);
-			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
-			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
-			printf ("and took %ld.%03ld seconds\n", diff / 1000, diff % 1000);
+			end = g_get_monotonic_time ();
+			diff = end - start;
+			printf ("and took %" G_GINT64_FORMAT ".%03" G_GINT64_FORMAT " seconds\n", diff / G_TIME_SPAN_SECOND, diff % G_TIME_SPAN_SECOND);
 		}
 	} else {
 		generate_cache_dtor ((LDAPOp *) contact_list_op);
@@ -5912,8 +5908,8 @@ book_backend_ldap_get_contact (EBookBackend *backend,
 	gint get_contact_msgid;
 	EDataBookView *book_view;
 	gint ldap_error;
-	GTimeVal start, end;
-	gulong diff;
+	gint64 start = 0, end;
+	GTimeSpan diff;
 
 	if (!e_backend_get_online (E_BACKEND (backend))) {
 		if (bl->priv->marked_for_offline && bl->priv->cache) {
@@ -5939,7 +5935,7 @@ book_backend_ldap_get_contact (EBookBackend *backend,
 
 	if (enable_debug) {
 		printf ("e_book_backend_ldap_get_contact ... \n");
-		g_get_current_time (&start);
+		start = g_get_monotonic_time ();
 	}
 
 	g_rec_mutex_lock (&eds_ldap_handler_lock);
@@ -5979,12 +5975,11 @@ book_backend_ldap_get_contact (EBookBackend *backend,
 
 		if (enable_debug) {
 			printf ("e_book_backend_ldap_get_contact invoked get_contact_handler\n");
-			g_get_current_time (&end);
-			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
-			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
+			end = g_get_monotonic_time ();
+			diff = end - start;
 			printf (
-				"and took %ld.%03ld seconds\n",
-				diff / 1000, diff % 1000);
+				"and took %" G_GINT64_FORMAT ".%03" G_GINT64_FORMAT " seconds\n",
+				diff / G_TIME_SPAN_SECOND, diff % G_TIME_SPAN_SECOND);
 		}
 	} else {
 		e_data_book_respond_get_contact (
@@ -6009,12 +6004,12 @@ book_backend_ldap_get_contact_list (EBookBackend *backend,
 	EDataBookView *book_view;
 	gint ldap_error;
 	gchar *ldap_query;
-	GTimeVal start, end;
-	gulong diff;
+	gint64 start = 0, end;
+	GTimeSpan diff;
 
 	if (enable_debug) {
 		printf ("e_book_backend_ldap_get_contact_list ... \n");
-		g_get_current_time (&start);
+		start = g_get_monotonic_time ();
 	}
 
 	if (!e_backend_get_online (E_BACKEND (backend))) {
@@ -6084,13 +6079,11 @@ book_backend_ldap_get_contact_list (EBookBackend *backend,
 			book_view, opid, contact_list_msgid,
 			contact_list_handler, contact_list_dtor);
 		if (enable_debug) {
-			g_get_current_time (&end);
-
-			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
-			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
+			end = g_get_monotonic_time ();
+			diff = end - start;
 
 			printf ("e_book_backend_ldap_get_contact_list invoked contact_list_handler ");
-			printf ("and took %ld.%03ld seconds\n", diff / 1000, diff % 1000);
+			printf ("and took %" G_GINT64_FORMAT ".%03" G_GINT64_FORMAT " seconds\n", diff / G_TIME_SPAN_SECOND, diff % G_TIME_SPAN_SECOND);
 		}
 	} else {
 		e_data_book_respond_get_contact_list (
@@ -6115,12 +6108,12 @@ book_backend_ldap_get_contact_list_uids (EBookBackend *backend,
 	EDataBookView *book_view;
 	gint ldap_error;
 	gchar *ldap_query;
-	GTimeVal start, end;
-	gulong diff;
+	gint64 start = 0, end;
+	GTimeSpan diff;
 
 	if (enable_debug) {
 		printf ("e_book_backend_ldap_get_contact_list_uids ... \n");
-		g_get_current_time (&start);
+		start = g_get_monotonic_time ();
 	}
 
 	if (!e_backend_get_online (E_BACKEND (backend))) {
@@ -6190,13 +6183,11 @@ book_backend_ldap_get_contact_list_uids (EBookBackend *backend,
 			book_view, opid, contact_list_uids_msgid,
 			contact_list_uids_handler, contact_list_uids_dtor);
 		if (enable_debug) {
-			g_get_current_time (&end);
-
-			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
-			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
+			end = g_get_monotonic_time ();
+			diff = end - start;
 
 			printf ("e_book_backend_ldap_get_contact_list_uids invoked contact_list_uids_handler ");
-			printf ("and took %ld.%03ld seconds\n", diff / 1000, diff % 1000);
+			printf ("and took %" G_GINT64_FORMAT ".%03" G_GINT64_FORMAT " seconds\n", diff / G_TIME_SPAN_SECOND, diff % G_TIME_SPAN_SECOND);
 		}
 	} else {
 		e_data_book_respond_get_contact_list_uids (book, opid, ldap_error_to_response (ldap_error), NULL);

@@ -725,11 +725,12 @@ google_backend_child_added (ECollectionBackend *backend,
 		/* To not notify about past reminders. */
 		alarms_extension = e_source_get_extension (child_source, E_SOURCE_EXTENSION_ALARMS);
 		if (!e_source_alarms_get_last_notified (alarms_extension)) {
-			GTimeVal today_tv;
+			GDateTime *today_dt;
 			gchar *today;
 
-			g_get_current_time (&today_tv);
-			today = g_time_val_to_iso8601 (&today_tv);
+			today_dt = g_date_time_new_now_utc ();
+			today = g_date_time_format_iso8601 (today_dt);
+			g_date_time_unref (today_dt);
 			e_source_alarms_set_last_notified (alarms_extension, today);
 			g_free (today);
 		}

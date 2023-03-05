@@ -3389,14 +3389,14 @@ e_webdav_session_extract_uint (xmlNodePtr parent,
 	return (guint) value;
 }
 
-static glong
+static gint64
 e_webdav_session_extract_datetime (xmlNodePtr parent,
 				   const gchar *ns_href,
 				   const gchar *prop,
 				   gboolean is_iso_property)
 {
 	gchar *value;
-	GTimeVal tv;
+	gint64 result = -1;
 
 	g_return_val_if_fail (parent != NULL, -1);
 	g_return_val_if_fail (prop != NULL, -1);
@@ -3405,15 +3405,20 @@ e_webdav_session_extract_datetime (xmlNodePtr parent,
 	if (!value)
 		return -1;
 
-	if (is_iso_property && !g_time_val_from_iso8601 (value, &tv)) {
-		tv.tv_sec = -1;
+	if (is_iso_property) {
+		GDateTime *datetime;
+
+		datetime = g_date_time_new_from_iso8601 (value, NULL);
+		if (datetime) {
+			result = g_date_time_to_unix (datetime);
+			g_date_time_unref (datetime);
+		}
 	} else if (!is_iso_property) {
-		tv.tv_sec = camel_header_decode_date (value, NULL);
+		result = (gint64) camel_header_decode_date (value, NULL);
 	}
 
 	g_free (value);
-
-	return tv.tv_sec;
+	return result;
 }
 
 static gboolean
@@ -3437,8 +3442,8 @@ e_webdav_session_list_cb (EWebDAVSession *webdav,
 		gchar *display_name;
 		gchar *content_type;
 		gsize content_length;
-		glong creation_date;
-		glong last_modified;
+		gint64 creation_date;
+		gint64 last_modified;
 		gchar *description;
 		gchar *color;
 		gchar *source_href = NULL;
@@ -3484,8 +3489,8 @@ e_webdav_session_list_cb (EWebDAVSession *webdav,
 			NULL, /* display_name */
 			NULL, /* content_type */
 			content_length,
-			creation_date,
-			last_modified,
+			(glong) creation_date,
+			(glong) last_modified,
 			NULL, /* description */
 			NULL, /* color */
 			order);

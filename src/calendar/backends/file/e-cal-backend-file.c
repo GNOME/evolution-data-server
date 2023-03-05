@@ -392,13 +392,13 @@ get_revision_property (ECalBackendFile *cbfile)
 static gchar *
 make_revision_string (ECalBackendFile *cbfile)
 {
-	GTimeVal timeval;
+	GDateTime *dt;
 	gchar   *datestr;
 	gchar   *revision;
 
-	g_get_current_time (&timeval);
-
-	datestr = g_time_val_to_iso8601 (&timeval);
+	dt = g_date_time_new_now_utc ();
+	datestr = g_date_time_format_iso8601 (dt);
+	g_date_time_unref (dt);
 	revision = g_strdup_printf ("%s(%d)", datestr, cbfile->priv->revision_counter++);
 
 	g_free (datestr);

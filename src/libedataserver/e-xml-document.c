@@ -555,17 +555,16 @@ e_xml_document_add_attribute_time (EXmlDocument *xml,
 				   const gchar *name,
 				   time_t value)
 {
-	GTimeVal tv;
+	GDateTime *dt;
 	gchar *strvalue;
 
 	g_return_if_fail (E_IS_XML_DOCUMENT (xml));
 	g_return_if_fail (xml->priv->current_element != NULL);
 	g_return_if_fail (name != NULL);
 
-	tv.tv_usec = 0;
-	tv.tv_sec = value;
-
-	strvalue = g_time_val_to_iso8601 (&tv);
+	dt = g_date_time_new_from_unix_utc ((gint64) value);
+	strvalue = g_date_time_format_iso8601 (dt);
+	g_date_time_unref (dt);
 	e_xml_document_add_attribute (xml, ns_href, name, strvalue);
 	g_free (strvalue);
 }
@@ -695,16 +694,15 @@ void
 e_xml_document_write_time (EXmlDocument *xml,
 			   time_t value)
 {
-	GTimeVal tv;
+	GDateTime *dt;
 	gchar *strvalue;
 
 	g_return_if_fail (E_IS_XML_DOCUMENT (xml));
 	g_return_if_fail (xml->priv->current_element != NULL);
 
-	tv.tv_usec = 0;
-	tv.tv_sec = value;
-
-	strvalue = g_time_val_to_iso8601 (&tv);
+	dt = g_date_time_new_from_unix_utc ((gint64) value);
+	strvalue = g_date_time_format_iso8601 (dt);
+	g_date_time_unref (dt);
 	e_xml_document_write_string (xml, strvalue);
 	g_free (strvalue);
 }

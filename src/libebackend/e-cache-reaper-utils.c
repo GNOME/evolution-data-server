@@ -79,25 +79,24 @@ e_reap_trash_directory_sync (GFile *trash_directory,
 
 	while (file_info != NULL) {
 		GFileType file_type;
-		GTimeVal mtime;
-		GDate *date_now;
-		GDate *date_mtime;
+		GDateTime *dt_modification;
 		const gchar *name;
 		gboolean reap_it;
-		gint days_old;
+		gint days_old = 0;
 
 		name = g_file_info_get_name (file_info);
 		file_type = g_file_info_get_file_type (file_info);
-		g_file_info_get_modification_time (file_info, &mtime);
+		dt_modification = g_file_info_get_modification_date_time (file_info);
 
 		/* Calculate how many days ago the file was modified. */
-		date_now = g_date_new ();
-		g_date_set_time_t (date_now, time (NULL));
-		date_mtime = g_date_new ();
-		g_date_set_time_val (date_mtime, &mtime);
-		days_old = g_date_days_between (date_mtime, date_now);
-		g_date_free (date_mtime);
-		g_date_free (date_now);
+		if (dt_modification) {
+			GDateTime *dt_now;
+
+			dt_now = g_date_time_new_now_utc ();
+			days_old = g_date_time_difference (dt_now, dt_modification) / G_TIME_SPAN_DAY;
+			g_date_time_unref (dt_now);
+			g_date_time_unref (dt_modification);
+		}
 
 		reap_it =
 			(file_type == G_FILE_TYPE_DIRECTORY) &&
