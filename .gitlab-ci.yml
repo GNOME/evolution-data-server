@@ -17,6 +17,10 @@ flatpak:
     - export CCACHE_BASEDIR="$PWD"
     - export CCACHE_DIR="$PWD/ccache"
   script:
+    - jq -M '(.modules[] | select(.name=="evolution-data-server")).sources[0].url = env.CI_REPOSITORY_URL' ${MANIFEST_PATH} > tmp.json && mv tmp.json ${MANIFEST_PATH}
+    - jq -M 'del((.modules[] | select(.name=="evolution-data-server")).sources[0].branch)' ${MANIFEST_PATH} > tmp.json && mv tmp.json ${MANIFEST_PATH}
+    - jq -M '(.modules[] | select(.name=="evolution-data-server")).sources[0].commit = env.CI_COMMIT_SHA' ${MANIFEST_PATH} > tmp.json && mv tmp.json ${MANIFEST_PATH}
+
     - >
       xvfb-run -a -s "-screen 0 1024x768x24"
       flatpak-builder --keep-build-dirs --user --disable-rofiles-fuse flatpak_app --repo=repo --ccache ${BRANCH:+--default-branch=$BRANCH} ${MANIFEST_PATH}
