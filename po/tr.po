@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.tr\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2023-02-23 12:58+0000\n"
-"PO-Revision-Date: 2023-02-20 15:57+0300\n"
+"POT-Creation-Date: 2023-02-26 06:49+0000\n"
+"PO-Revision-Date: 2023-03-06 16:06+0300\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -3433,7 +3433,7 @@ msgstr "Sunucudan hatalı yanıt\n"
 #: src/camel/camel-sasl-digest-md5.c:867
 #, c-format
 msgid "Server challenge contained invalid “Quality of Protection” token"
-msgstr "Sunucudan geçersiz “Quality of Protection” anahtarı geldi"
+msgstr "Sunucudan geçersiz “Quality of Protection” jetonu geldi"
 
 #: src/camel/camel-sasl-digest-md5.c:900
 #, c-format
@@ -7368,7 +7368,7 @@ msgstr "“%s” adresinden erişim jetonu alınamadı: %s"
 
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:295
 msgid "Requesting access token, please wait…"
-msgstr "Erişim jetoni isteniyor, lütfen bekleyin…"
+msgstr "Erişim jetonu isteniyor, lütfen bekleyin…"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
