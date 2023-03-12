@@ -34,8 +34,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2023-01-29 08:40+0000\n"
-"PO-Revision-Date: 2023-02-19 11:16+0100\n"
+"POT-Creation-Date: 2023-02-26 10:27+0000\n"
+"PO-Revision-Date: 2023-03-11 13:18+0100\n"
 "Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -51,13 +51,13 @@ msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Den givne URL “%s” refererer ikke en CardDAV-adressebog"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1127
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1337
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1340
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:934
 msgid "Server didn’t return object’s href"
 msgstr "Serveren returnerede ikke objektets href"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1129
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1339
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1342
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:936
 msgid "Server didn’t return object’s ETag"
 msgstr "Serveren returnerede ikke objektets ETag"
@@ -168,24 +168,24 @@ msgstr "Kunne ikke ændre den gamle database fra “%s” til “%s”: %s"
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:288
 #: src/calendar/backends/http/e-cal-backend-http.c:300
 #: src/calendar/libecal/e-cal-client.c:257
-#: src/calendar/libecal/e-cal-client.c:3242
-#: src/calendar/libecal/e-cal-client.c:3415
-#: src/calendar/libecal/e-cal-client.c:3688
-#: src/calendar/libecal/e-cal-client.c:3926
-#: src/calendar/libecal/e-cal-client.c:4118
-#: src/calendar/libecal/e-cal-client.c:4301
-#: src/calendar/libecal/e-cal-client.c:4536
-#: src/calendar/libecal/e-cal-client.c:4713
-#: src/calendar/libecal/e-cal-client.c:4921
-#: src/calendar/libecal/e-cal-client.c:5077
-#: src/calendar/libecal/e-cal-client.c:5275
-#: src/calendar/libecal/e-cal-client.c:5441
-#: src/calendar/libecal/e-cal-client.c:5668
-#: src/calendar/libecal/e-cal-client.c:5825
-#: src/calendar/libecal/e-cal-client.c:6053
-#: src/calendar/libecal/e-cal-client.c:6252
-#: src/calendar/libecal/e-cal-client.c:6620
-#: src/calendar/libecal/e-cal-client.c:6844
+#: src/calendar/libecal/e-cal-client.c:3270
+#: src/calendar/libecal/e-cal-client.c:3443
+#: src/calendar/libecal/e-cal-client.c:3716
+#: src/calendar/libecal/e-cal-client.c:3954
+#: src/calendar/libecal/e-cal-client.c:4146
+#: src/calendar/libecal/e-cal-client.c:4329
+#: src/calendar/libecal/e-cal-client.c:4564
+#: src/calendar/libecal/e-cal-client.c:4741
+#: src/calendar/libecal/e-cal-client.c:4949
+#: src/calendar/libecal/e-cal-client.c:5105
+#: src/calendar/libecal/e-cal-client.c:5303
+#: src/calendar/libecal/e-cal-client.c:5469
+#: src/calendar/libecal/e-cal-client.c:5696
+#: src/calendar/libecal/e-cal-client.c:5853
+#: src/calendar/libecal/e-cal-client.c:6081
+#: src/calendar/libecal/e-cal-client.c:6280
+#: src/calendar/libecal/e-cal-client.c:6648
+#: src/calendar/libecal/e-cal-client.c:6872
 #: src/calendar/libedata-cal/e-cal-cache.c:1837
 #: src/camel/camel-filter-driver.c:1724 src/camel/camel-filter-driver.c:1853
 #: src/camel/providers/imapx/camel-imapx-server.c:3331
@@ -196,8 +196,8 @@ msgstr "Kunne ikke ændre den gamle database fra “%s” til “%s”: %s"
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
 #: src/libedataserver/e-soup-session.c:1019
 #: src/libedataserver/e-soup-session.c:1899
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:228
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:776
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:266
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
 #: src/libedataserverui/e-reminders-widget.c:2141
 #: src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
@@ -1326,7 +1326,7 @@ msgstr "Alfabetisk indeks blev sat for forkerte regionsindstillinger"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Givne URL “%s” refererer ikke en CalDAV-kalender"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1474
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1477
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1189
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
@@ -1335,7 +1335,7 @@ msgstr ""
 "Mangler information om URL for komponenten, den lokale cache er muligvis "
 "ufuldstændig eller ødelagt. Fjern den venligst."
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1986
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1989
 msgid "Failed to parse response data"
 msgstr "Kunne ikke fortolke svardata"
 
@@ -2351,28 +2351,31 @@ msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#: src/calendar/libecal/e-cal-util.c:837 src/calendar/libecal/e-cal-util.c:864
+#: src/calendar/libecal/e-cal-util.c:1008
+#: src/calendar/libecal/e-cal-util.c:1035
 msgctxt "Priority"
 msgid "High"
 msgstr "Høj"
 
-#: src/calendar/libecal/e-cal-util.c:839 src/calendar/libecal/e-cal-util.c:866
+#: src/calendar/libecal/e-cal-util.c:1010
+#: src/calendar/libecal/e-cal-util.c:1037
 msgctxt "Priority"
 msgid "Normal"
 msgstr "Normal"
 
-#: src/calendar/libecal/e-cal-util.c:841 src/calendar/libecal/e-cal-util.c:868
+#: src/calendar/libecal/e-cal-util.c:1012
+#: src/calendar/libecal/e-cal-util.c:1039
 msgctxt "Priority"
 msgid "Low"
 msgstr "Lav"
 
 #. An empty string is the same as 'None'.
-#: src/calendar/libecal/e-cal-util.c:862
+#: src/calendar/libecal/e-cal-util.c:1033
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Udefineret"
 
-#: src/calendar/libecal/e-cal-util.c:904
+#: src/calendar/libecal/e-cal-util.c:1075
 #: src/libedataserverui/e-reminders-widget.c:337
 #, c-format
 msgid "%d week"
@@ -2380,7 +2383,7 @@ msgid_plural "%d weeks"
 msgstr[0] "%d uge"
 msgstr[1] "%d uger"
 
-#: src/calendar/libecal/e-cal-util.c:913
+#: src/calendar/libecal/e-cal-util.c:1084
 #: src/libedataserverui/e-reminders-widget.c:333
 #, c-format
 msgid "%d day"
@@ -2388,7 +2391,7 @@ msgid_plural "%d days"
 msgstr[0] "%d dag"
 msgstr[1] "%d dage"
 
-#: src/calendar/libecal/e-cal-util.c:922
+#: src/calendar/libecal/e-cal-util.c:1093
 #: src/libedataserverui/e-reminders-widget.c:329
 #, c-format
 msgid "%d hour"
@@ -2396,7 +2399,7 @@ msgid_plural "%d hours"
 msgstr[0] "%d time"
 msgstr[1] "%d timer"
 
-#: src/calendar/libecal/e-cal-util.c:931
+#: src/calendar/libecal/e-cal-util.c:1102
 #: src/libedataserverui/e-reminders-widget.c:325
 #, c-format
 msgid "%d minute"
@@ -2405,21 +2408,21 @@ msgstr[0] "%d minut"
 msgstr[1] "%d minutter"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: src/calendar/libecal/e-cal-util.c:936
+#: src/calendar/libecal/e-cal-util.c:1107
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d sekund"
 msgstr[1] "%d sekunder"
 
-#: src/calendar/libecal/e-reminder-watcher.c:2902
+#: src/calendar/libecal/e-reminder-watcher.c:2923
 msgid "No Summary"
 msgstr "Intet sammendrag"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:2918
+#: src/calendar/libecal/e-reminder-watcher.c:2939
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
@@ -2428,7 +2431,7 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: src/calendar/libecal/e-reminder-watcher.c:2923
+#: src/calendar/libecal/e-reminder-watcher.c:2944
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
@@ -2437,26 +2440,26 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:2928
+#: src/calendar/libecal/e-reminder-watcher.c:2949
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
 msgstr "%s %s"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:77
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1173
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1234
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1579
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1706
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1755
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1163
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1224
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1569
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1696
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1745
 #, c-format
 msgid "“%s” expects one argument"
 msgstr "“%s” forventer ét argument"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:84
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:707
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1586
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1594
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1576
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1584
 #, c-format
 msgid "“%s” expects the first argument to be a string"
 msgstr "“%s” forventer at det første argument er en streng"
@@ -2469,12 +2472,12 @@ msgstr "“%s” forventer to eller tre argumenter"
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:171
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:272
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:340
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:926
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1180
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1241
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1655
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1713
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1762
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:925
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1170
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1231
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1645
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1703
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1752
 #, c-format
 msgid "“%s” expects the first argument to be a time_t"
 msgstr "“%s” forventer det første argument er af typen time_t"
@@ -2482,7 +2485,7 @@ msgstr "“%s” forventer det første argument er af typen time_t"
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:180
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:280
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:350
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:935
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:934
 #, c-format
 msgid "“%s” expects the second argument to be a time_t"
 msgstr "“%s” forventer at det andet argument er af typen time_t"
@@ -2499,8 +2502,8 @@ msgstr "“%s” forventer intet eller to argumenter"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:333
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:700
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:919
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1648
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:918
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1638
 #, c-format
 msgid "“%s” expects two arguments"
 msgstr "“%s” forventer to argumenter"
@@ -2512,9 +2515,9 @@ msgstr "“%s” forventer to argumenter"
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:834
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:857
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:883
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1092
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1125
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1540
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1082
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1115
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1530
 #, c-format
 msgid "“%s” expects no arguments"
 msgstr "“%s” forventer intet argument"
@@ -2534,12 +2537,12 @@ msgstr ""
 "“%s” forventer at første argument er en af “any”, “summary”, “description”, "
 "“location”, “attendee”, “organizer” eller “classification”"
 
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:987
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:977
 #, c-format
 msgid "“%s” expects at least one argument"
 msgstr "“%s” forventer mindst ét argument"
 
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1002
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:992
 #, c-format
 msgid ""
 "“%s” expects all arguments to be strings or one and only one argument to be "
@@ -2548,14 +2551,14 @@ msgstr ""
 "“%s” forventer at alle argumenter er strenge eller ét og kun ét argument er "
 "sandhedsværdien falsk (#f)"
 
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1603
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1593
 #, c-format
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 "“%s” forventer at det første argument er en ISO-8601 formateret dato-/tids-"
 "streng"
 
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1664
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1654
 #, c-format
 msgid "“%s” expects the second argument to be an integer"
 msgstr "“%s” forventer at det andet argument er et heltal"
@@ -4467,65 +4470,65 @@ msgstr "Henter sammendragsinformation for nye breve i “%s : %s”"
 msgid "Error fetching message info"
 msgstr "Fejl under indhentning af brevinfo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5644
+#: src/camel/providers/imapx/camel-imapx-server.c:5645
 msgid "Error running STATUS"
 msgstr "Fejl ved kørsel af STATUS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6224
-#: src/camel/providers/imapx/camel-imapx-server.c:6279
-#: src/camel/providers/imapx/camel-imapx-server.c:6343
+#: src/camel/providers/imapx/camel-imapx-server.c:6231
+#: src/camel/providers/imapx/camel-imapx-server.c:6286
+#: src/camel/providers/imapx/camel-imapx-server.c:6350
 msgid "Error syncing changes"
 msgstr "Fejl under synkronisering af ændringer"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6237
-#: src/camel/providers/imapx/camel-imapx-server.c:6289
-#: src/camel/providers/imapx/camel-imapx-server.c:6362
-#: src/camel/providers/imapx/camel-imapx-server.c:6503
+#: src/camel/providers/imapx/camel-imapx-server.c:6244
+#: src/camel/providers/imapx/camel-imapx-server.c:6296
+#: src/camel/providers/imapx/camel-imapx-server.c:6369
+#: src/camel/providers/imapx/camel-imapx-server.c:6510
 msgid "Error expunging message"
 msgstr "Fejl under udrensning af brev"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6585
+#: src/camel/providers/imapx/camel-imapx-server.c:6592
 msgid "Error fetching folders"
 msgstr "Fejl under hentning af mapper"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6593
+#: src/camel/providers/imapx/camel-imapx-server.c:6600
 msgid "Error fetching subscribed folders"
 msgstr "Fejl under hentning af abonnerede mapper"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6650
+#: src/camel/providers/imapx/camel-imapx-server.c:6657
 msgid "Error creating folder"
 msgstr "Fejl under oprettelse af mappe"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6700
+#: src/camel/providers/imapx/camel-imapx-server.c:6707
 msgid "Error deleting folder"
 msgstr "Fejl under sletning af mappe"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6746
+#: src/camel/providers/imapx/camel-imapx-server.c:6753
 msgid "Error renaming folder"
 msgstr "Fejl under omdøbning af mappe"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6778
+#: src/camel/providers/imapx/camel-imapx-server.c:6785
 msgid "Error subscribing to folder"
 msgstr "Fejl under abonnering på mappe"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6814
+#: src/camel/providers/imapx/camel-imapx-server.c:6821
 msgid "Error unsubscribing from folder"
 msgstr "Fejl ved annullering af abonnement på mappe"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6854
+#: src/camel/providers/imapx/camel-imapx-server.c:6861
 msgid "IMAP server does not support quotas"
 msgstr "IMAP-serveren understøtter ikke kvoter"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6866
+#: src/camel/providers/imapx/camel-imapx-server.c:6873
 msgid "Error retrieving quota information"
 msgstr "Fejl under hentning af kvoteinformation"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6931
+#: src/camel/providers/imapx/camel-imapx-server.c:6938
 msgid "Search failed"
 msgstr "Søgning slog fejl"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7059
+#: src/camel/providers/imapx/camel-imapx-server.c:7066
 msgid "Error running IDLE"
 msgstr "Fejl under kørsel af IDLE"
 
@@ -6776,8 +6779,7 @@ msgstr "Tiden løb ud"
 msgid "Google server is busy, waiting to retry (%d:%02d minute)"
 msgid_plural "Google server is busy, waiting to retry (%d:%02d minutes)"
 msgstr[0] "Googleserver er optaget. Venter på at på prøve igen (%d:%02d minut)"
-msgstr[1] ""
-"Googleserver er optaget. Venter på at prøve igen (%d:%02d minutter)"
+msgstr[1] "Googleserver er optaget. Venter på at prøve igen (%d:%02d minutter)"
 
 #: src/libedataserver/e-gdata-session.c:213
 #, c-format
@@ -6808,37 +6810,37 @@ msgstr "Serveren returnerede ikke et JSON-objekt"
 msgid "Failed to call %s: "
 msgstr "Kunne ikke kalde %s: "
 
-#: src/libedataserver/e-oauth2-service.c:922
+#: src/libedataserver/e-oauth2-service.c:1026
 msgid "Malformed, no message body set"
 msgstr "Misdannet, ingen brevbrødtekst angivet"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1202
+#: src/libedataserver/e-oauth2-service.c:1306
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Kilden “%s” (%s) er ikke gyldig for “%s”-OAuth2-tjenesten"
 
-#: src/libedataserver/e-oauth2-service.c:1217
+#: src/libedataserver/e-oauth2-service.c:1321
 msgid "OAuth2 secret not found"
 msgstr "OAuth2-hemmeligheden blev ikke fundet"
 
-#: src/libedataserver/e-oauth2-service.c:1414
+#: src/libedataserver/e-oauth2-service.c:1518
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Modtog ugyldigt svar fra server: “%s”."
 
-#: src/libedataserver/e-oauth2-service.c:1423
+#: src/libedataserver/e-oauth2-service.c:1527
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr "Kunne ikke opdatere adgangssymbolet. Log på serveren igen."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1466
+#: src/libedataserver/e-oauth2-service.c:1570
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Kilden “%s” (%s) er ikke en gyldig OAuth2-kilde"
 
-#: src/libedataserver/e-oauth2-service.c:1750
+#: src/libedataserver/e-oauth2-service.c:1854
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -7407,46 +7409,46 @@ msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr ""
 "Datakilden “%s” understøtter ikke forespørgsel om legitimationsoplysninger"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:226
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:264
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "Kunne ikke få noget adgangssymbol fra adressen “%s”: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:257
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:295
 msgid "Requesting access token, please wait…"
 msgstr "Forespørger om adgangssymbol; vent venligst …"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:507
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:569
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "Anmodning om godkendelse af %s-adressebogen"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:512
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:574
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "Anmodning om godkendelse af %s-kalenderen"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:517
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:579
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "Anmodning om godkendelse af %s-memolisten"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:522
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:584
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "Anmodning om godkendelse af %s-opgavelisten"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:528
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:590
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "Anmodning om godkendelse af %s-mail"
@@ -7454,7 +7456,7 @@ msgstr "Anmodning om godkendelse af %s-mail"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:533
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:595
 #, c-format
 msgid "%s account authentication request"
 msgstr "Anmodning om godkendelse af %s-konto"
@@ -7462,7 +7464,7 @@ msgstr "Anmodning om godkendelse af %s-konto"
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:547
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:609
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -7474,7 +7476,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:554
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:616
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -7486,7 +7488,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:561
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:623
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -7498,7 +7500,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:568
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:630
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -7510,7 +7512,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:575
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:637
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -7522,7 +7524,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:582
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:644
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -7534,7 +7536,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:589
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:651
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -7543,27 +7545,27 @@ msgstr ""
 "Log ind på din %s-konto og acceptér betingelserne for at kunne tilgå din "
 "konto “%s”."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:776
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Kunne ikke åbne browser: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:872
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:954
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:243
 #: src/libedataserverui/e-trust-prompt.c:117
 #: src/libedataserverui/e-webdav-discover-widget.c:1149
 msgid "_Cancel"
 msgstr "_Annullér"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:954
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1036
 msgid "URL:"
 msgstr "URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:984
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1066
 msgid "Click here to open the URL"
 msgstr "Klik her for at åbne URL'en"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1022
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1104
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -7573,11 +7575,11 @@ msgstr ""
 "resulterende godkendelseskode eller den URL, som OAuth2-guiden afsluttede "
 "med, nedenfor for at fortsætte godkendelsesprocessen."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1059
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1141
 msgid "_Authorization code:"
 msgstr "_Godkendelseskode:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1072
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1154
 msgid "C_ontinue"
 msgstr "_Fortsæt"
 
@@ -7763,7 +7765,7 @@ msgstr "Certifikat-tillid …"
 #: src/libedataserverui/e-trust-prompt.c:118
 #: src/modules/trust-prompt/trust-prompt-gtk.c:130
 msgid "_Reject"
-msgstr "Fo_rkast"
+msgstr "Af_vis"
 
 #: src/libedataserverui/e-trust-prompt.c:119
 #: src/modules/trust-prompt/trust-prompt-gtk.c:131
@@ -7775,28 +7777,44 @@ msgstr "Accep_ter midlertidigt"
 msgid "_Accept Permanently"
 msgstr "_Accepter permanent"
 
-#: src/libedataserverui/e-trust-prompt.c:208
+#: src/libedataserverui/e-trust-prompt.c:124
+msgid "Temporarily reject the certificate"
+msgstr "Afvis certifikatet midlertidigt"
+
+#: src/libedataserverui/e-trust-prompt.c:127
+msgid "Permanently reject the certificate"
+msgstr "Afvis certifikatet permanent"
+
+#: src/libedataserverui/e-trust-prompt.c:130
+msgid "Temporarily accept the certificate"
+msgstr "Acceptér certifikatet midlertidigt"
+
+#: src/libedataserverui/e-trust-prompt.c:133
+msgid "Permanently accept the certificate"
+msgstr "Acceptér certifikatet permanent"
+
+#: src/libedataserverui/e-trust-prompt.c:218
 #: src/modules/trust-prompt/trust-prompt-gtk.c:169
 #, c-format
 msgid "SSL/TLS certificate for “%s” is not trusted. Do you wish to accept it?"
 msgstr ""
 "Der er ikke tillid til SSL/TLS-certifikatet for “%s”. Vil du acceptere det?"
 
-#: src/libedataserverui/e-trust-prompt.c:230
+#: src/libedataserverui/e-trust-prompt.c:240
 #: src/modules/trust-prompt/trust-prompt-gtk.c:184
 msgid "Reason:"
 msgstr "Årsag:"
 
-#: src/libedataserverui/e-trust-prompt.c:233
+#: src/libedataserverui/e-trust-prompt.c:243
 msgid "Detailed error:"
 msgstr "Detaljeret fejlmeddelelse:"
 
-#: src/libedataserverui/e-trust-prompt.c:292
+#: src/libedataserverui/e-trust-prompt.c:302
 #: src/modules/trust-prompt/module-trust-prompt.c:80
 msgid "The signing certificate authority is not known."
 msgstr "Den underskrivende certifikatmyndighed er ukendt."
 
-#: src/libedataserverui/e-trust-prompt.c:294
+#: src/libedataserverui/e-trust-prompt.c:304
 #: src/modules/trust-prompt/module-trust-prompt.c:82
 msgid ""
 "The certificate does not match the expected identity of the site that it was "
@@ -7805,17 +7823,17 @@ msgstr ""
 "Certifikatet svarer ikke overens med den forventede identitet på det "
 "websted, som det blev hentet fra."
 
-#: src/libedataserverui/e-trust-prompt.c:296
+#: src/libedataserverui/e-trust-prompt.c:306
 #: src/modules/trust-prompt/module-trust-prompt.c:84
 msgid "The certificate’s activation time is still in the future."
 msgstr "Aktiveringstidspunktet for certifikatet er stadig fremtidigt."
 
-#: src/libedataserverui/e-trust-prompt.c:298
+#: src/libedataserverui/e-trust-prompt.c:308
 #: src/modules/trust-prompt/module-trust-prompt.c:86
 msgid "The certificate has expired."
 msgstr "Certifikatet er udløbet."
 
-#: src/libedataserverui/e-trust-prompt.c:300
+#: src/libedataserverui/e-trust-prompt.c:310
 #: src/modules/trust-prompt/module-trust-prompt.c:88
 msgid ""
 "The certificate has been revoked according to the connection’s certificate "
@@ -7824,7 +7842,7 @@ msgstr ""
 "Ifølge forbindelsens liste over tilbagekaldte certifikater er certifikatet "
 "blevet tilbagekaldt."
 
-#: src/libedataserverui/e-trust-prompt.c:302
+#: src/libedataserverui/e-trust-prompt.c:312
 #: src/modules/trust-prompt/module-trust-prompt.c:90
 msgid "The certificate’s algorithm is considered insecure."
 msgstr "Certifikatets algoritme betragtes som usikker."
