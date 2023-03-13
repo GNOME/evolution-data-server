@@ -10,17 +10,16 @@
 # Pablo Gonzalo del Campo <pablodc@bigfoot.com>,2003 (revisión).
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2005, 2006.
 # Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2009, 2010, 2011.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011-2022.
-# Daniel Mustieles García <daniel.mustieles@gmail.com>, 2022-2023.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2022-2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2023-02-13 21:03+0000\n"
-"PO-Revision-Date: 2023-02-16 10:41+0100\n"
-"Last-Translator: Daniel Mustieles García <daniel.mustieles@gmail.com>\n"
+"POT-Creation-Date: 2023-02-20 09:59+0000\n"
+"PO-Revision-Date: 2023-03-13 10:41+0100\n"
+"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
@@ -1211,6 +1210,8 @@ msgid ""
 "Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
 "and repeat the action."
 msgstr ""
+"Actualizar los omitidos debido al modo de ahorro de energía. Desactive el "
+"modo de ahorro de energía y repita la acción."
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1994
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2450
@@ -4272,7 +4273,7 @@ msgstr "Comando:"
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:84
 msgid "Download large messages in chunks"
-msgstr ""
+msgstr "Descargar mensajes grandes por partes"
 
 #. Translators: This constructs either "Fetch new messages in ascending order" or "Fetch new messages in descending order"
 #: src/camel/providers/imapx/camel-imapx-provider.c:87
@@ -6052,6 +6053,9 @@ msgid ""
 "days are automatically removed from the list of the past reminders. Use '0' "
 "to not remove old reminders."
 msgstr ""
+"Cuántos días se pueden mantener los recordatorios pasados. Los recordatorios "
+"más antiguos de estos días se quitan automáticamente de la lista de "
+"recordatorios pasados. Use '0' para no quitarlos."
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:42
 msgid "Reminder programs"
@@ -6397,6 +6401,9 @@ msgid ""
 "calendars/mail accounts/... are skipped when the machine is in the Power "
 "Saver mode."
 msgstr ""
+"Cuando es cierto, las posibles operaciones costosas necesarias para "
+"actualizar libretas/calendarios/cuentas de correo/... se omiten cuando el "
+"equipo está en modo de ahorro de energía."
 
 #: data/org.gnome.evolution.shell.network-config.gschema.xml.in:11
 msgid "(Deprecated) Proxy type to use"
@@ -7592,6 +7599,9 @@ msgid ""
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
 "with, below to continue the authentication process."
 msgstr ""
+"Abra el URL en un navegador y vaya al asistente de OAuth2. Copie más abajo "
+"el código de autorización resultante o el URL con el que termina el "
+"asistente de OAuth2 para continuar el proceso de autenticación."
 
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1141
 msgid "_Authorization code:"
@@ -7795,28 +7805,44 @@ msgstr "Aceptar _temporalmente"
 msgid "_Accept Permanently"
 msgstr "_Aceptar permanentemente"
 
-#: src/libedataserverui/e-trust-prompt.c:208
+#: src/libedataserverui/e-trust-prompt.c:124
+msgid "Temporarily reject the certificate"
+msgstr "Rechazar temporalmente el certificado"
+
+#: src/libedataserverui/e-trust-prompt.c:127
+msgid "Permanently reject the certificate"
+msgstr "Rechazar permanentemente el certificado"
+
+#: src/libedataserverui/e-trust-prompt.c:130
+msgid "Temporarily accept the certificate"
+msgstr "Aceptar temporalmente el certificado"
+
+#: src/libedataserverui/e-trust-prompt.c:133
+msgid "Permanently accept the certificate"
+msgstr "Aceptar permanentemente el certificado"
+
+#: src/libedataserverui/e-trust-prompt.c:218
 #: src/modules/trust-prompt/trust-prompt-gtk.c:169
 #, c-format
 msgid "SSL/TLS certificate for “%s” is not trusted. Do you wish to accept it?"
 msgstr ""
 "El certificado SSL/TLS para «%s» no es de confianza. ¿Quiere aceptarlo?"
 
-#: src/libedataserverui/e-trust-prompt.c:230
+#: src/libedataserverui/e-trust-prompt.c:240
 #: src/modules/trust-prompt/trust-prompt-gtk.c:184
 msgid "Reason:"
 msgstr "Razón:"
 
-#: src/libedataserverui/e-trust-prompt.c:233
+#: src/libedataserverui/e-trust-prompt.c:243
 msgid "Detailed error:"
 msgstr "Error detallado:"
 
-#: src/libedataserverui/e-trust-prompt.c:292
+#: src/libedataserverui/e-trust-prompt.c:302
 #: src/modules/trust-prompt/module-trust-prompt.c:80
 msgid "The signing certificate authority is not known."
 msgstr "La autoridad de firma del certificado es desconocida."
 
-#: src/libedataserverui/e-trust-prompt.c:294
+#: src/libedataserverui/e-trust-prompt.c:304
 #: src/modules/trust-prompt/module-trust-prompt.c:82
 msgid ""
 "The certificate does not match the expected identity of the site that it was "
@@ -7825,17 +7851,17 @@ msgstr ""
 "El certificado no coincide con la identidad del sitio esperada del que se "
 "obtuvo."
 
-#: src/libedataserverui/e-trust-prompt.c:296
+#: src/libedataserverui/e-trust-prompt.c:306
 #: src/modules/trust-prompt/module-trust-prompt.c:84
 msgid "The certificate’s activation time is still in the future."
 msgstr "La fecha de activación del certificado todavía está en el futuro."
 
-#: src/libedataserverui/e-trust-prompt.c:298
+#: src/libedataserverui/e-trust-prompt.c:308
 #: src/modules/trust-prompt/module-trust-prompt.c:86
 msgid "The certificate has expired."
 msgstr "El certificado ha caducado."
 
-#: src/libedataserverui/e-trust-prompt.c:300
+#: src/libedataserverui/e-trust-prompt.c:310
 #: src/modules/trust-prompt/module-trust-prompt.c:88
 msgid ""
 "The certificate has been revoked according to the connection’s certificate "
@@ -7844,7 +7870,7 @@ msgstr ""
 "El certificado se ha revocado de acuerdo a la lista de revocación de "
 "certificados de la conexión."
 
-#: src/libedataserverui/e-trust-prompt.c:302
+#: src/libedataserverui/e-trust-prompt.c:312
 #: src/modules/trust-prompt/module-trust-prompt.c:90
 msgid "The certificate’s algorithm is considered insecure."
 msgstr "El algoritmo del certificado se considera no seguro."
@@ -8899,9 +8925,6 @@ msgstr "Notas de WebDAV"
 #~ msgid "Email Signer Certificate"
 #~ msgstr "Certificado del firmante del correo-e"
 
-#~ msgid "Email Recipient Certificate"
-#~ msgstr "Certificado del destinatario del correo-e"
-
 #~ msgid "Issued To"
 #~ msgstr "Emitido a"
 
@@ -9045,9 +9068,6 @@ msgstr "Notas de WebDAV"
 
 #~ msgid "_View Certificate"
 #~ msgstr "_Ver certificado"
-
-#~ msgid "Detailed information about the certificate:"
-#~ msgstr "Información detallada sobre el certificado:"
 
 #~ msgid "Issuer:"
 #~ msgstr "Emisor"
