@@ -2888,17 +2888,10 @@ e_cal_backend_file_discard_alarm_sync (ECalBackendSync *backend,
 		if (comp) {
 			g_object_ref (comp);
 		} else if (obj_data->full_object) {
-			ICalComponent *icomp;
-			ICalTime *itt;
-
-			itt = i_cal_time_new_from_string (rid);
-			icomp = e_cal_util_construct_instance (
-				e_cal_component_get_icalcomponent (obj_data->full_object),
-				itt);
-			g_object_unref (itt);
-
-			if (icomp)
-				comp = e_cal_component_new_from_icalcomponent (icomp);
+			/* if there's no detached instance, modify the main component without
+			   creating a new detached instance only for the acknowledge date/time */
+			comp = g_object_ref (obj_data->full_object);
+			rid = NULL;
 		}
 	} else if (obj_data->full_object) {
 		comp = g_object_ref (obj_data->full_object);
