@@ -241,6 +241,8 @@ client_data_new (EReminderWatcher *watcher,
 	cd->view = NULL;
 	cd->cancellable = NULL;
 
+	e_cal_client_set_default_timezone (client, watcher->priv->default_zone);
+
 	return cd;
 }
 
@@ -2657,6 +2659,7 @@ e_reminder_watcher_set_default_zone (EReminderWatcher *watcher,
 				     const ICalTimezone *zone)
 {
 	const gchar *new_location;
+	GSList *link;
 
 	g_return_if_fail (E_IS_REMINDER_WATCHER (watcher));
 
@@ -2675,6 +2678,12 @@ e_reminder_watcher_set_default_zone (EReminderWatcher *watcher,
 
 	g_clear_object (&watcher->priv->default_zone);
 	watcher->priv->default_zone = e_cal_util_copy_timezone (zone);
+
+	for (link = watcher->priv->clients; link; link = g_slist_next (link)) {
+		ClientData *cd = link->data;
+
+		e_cal_client_set_default_timezone (cd->client, watcher->priv->default_zone);
+	}
 
 	g_rec_mutex_unlock (&watcher->priv->lock);
 
