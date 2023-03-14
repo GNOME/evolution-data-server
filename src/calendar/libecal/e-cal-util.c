@@ -932,6 +932,7 @@ e_cal_util_generate_alarms_for_uid_sync (ECalClient *client,
 					 GCancellable *cancellable,
 					 GError **error)
 {
+	GHashTable *alarm_uids_hash;
 	GSList *alarm_uids = NULL;
 	GSList *objects = NULL, *link;
 	time_t alarm_start = start, alarm_end = end;
@@ -944,15 +945,31 @@ e_cal_util_generate_alarms_for_uid_sync (ECalClient *client,
 	if (!e_cal_client_get_objects_for_uid_sync (client, uid, &objects, cancellable, error))
 		return NULL;
 
+	alarm_uids_hash = g_hash_table_new (g_str_hash, g_str_equal);
+
 	for (link = objects; link; link = g_slist_next (link)) {
 		ECalComponent *comp = link->data;
 		GSList *auids = e_cal_component_get_alarm_uids (comp);
 
 		if (auids) {
+			GSList *alink;
+
 			compute_alarm_range (comp, auids, alarm_start, alarm_end, &alarm_start, &alarm_end);
-			alarm_uids = g_slist_concat (alarm_uids, auids);
+
+			for (alink = auids; alink; alink = g_slist_next (alink)) {
+				const gchar *auid = alink->data;
+				if (auid && !g_hash_table_contains (alarm_uids_hash, auid)) {
+					alarm_uids = g_slist_prepend (alarm_uids, (gpointer) auid);
+					g_hash_table_add (alarm_uids_hash, (gpointer) auid);
+					alink->data = NULL;
+				}
+			}
+
+			g_slist_free_full (auids, g_free);
 		}
 	}
+
+	g_clear_pointer (&alarm_uids_hash, g_hash_table_destroy);
 
 	aod.comp = NULL;
 	aod.alarm_uids = alarm_uids;
