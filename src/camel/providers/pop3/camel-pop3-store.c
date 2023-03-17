@@ -686,7 +686,7 @@ pop3_store_authenticate_sync (CamelService *service,
 	if ((pop3_engine->capa & CAMEL_POP3_CAP_UTF8) != 0 && enable_utf8) {
 		pcu = camel_pop3_engine_command_new (
 			pop3_engine, 0, NULL, NULL, cancellable, error,
-			"UTF8");
+			"UTF8\r\n");
 		if (error && *error) {
 			g_prefix_error (
 				error,
