@@ -1,3 +1,25 @@
+Evolution-Data-Server 3.48.0 2023-03-17
+---------------------------------------
+
+Miscellaneous:
+	e-cal-util: Check for duplicate UIDs when generating alarms
+	EReminderWatcher: Ensure correct default timezone set on ECalClient
+	M!115 - ci: Use CCache and store the flatpak-builder cache (Corentin Noël)
+	M!115 - ci: Run the CI for the current commit (Corentin Noël)
+
+Translations:
+	Aleksandr Melman (ru)
+	Ask Hjorth Larsen (da)
+	Bruce Cowan (en_GB)
+	Changwoo Ryu (ko)
+	Chao-Hsiung Liao (zh_TW)
+	Daniel Mustieles (es)
+	Fabio Tomat (fur)
+	Jean-Marc Tissières (fr)
+	Jiri Grönroos (fi)
+	Piotr Drąg (pl)
+	Sabri Ünal (tr)
+
 Evolution-Data-Server 3.47.3 2023-03-03
 ---------------------------------------
 
