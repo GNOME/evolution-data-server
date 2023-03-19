@@ -16,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
 "POT-Creation-Date: 2023-03-12 15:25+0000\n"
-"PO-Revision-Date: 2023-03-18 13:15+0200\n"
+"PO-Revision-Date: 2023-03-19 16:19+0200\n"
 "Last-Translator: Alexander Shopov <ash@kambanaria.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "Language: bg\n"
@@ -238,7 +238,11 @@ msgid_plural ""
 "Contact lists in LDAP address books require each member to be from the same "
 "LDAP address book, but %d members could not be recognized."
 msgstr[0] ""
+"Списъците с контакти в адресниците от LDAP изискват всеки член да е от един "
+"и същ адресник от LDAP, но един член липсва."
 msgstr[1] ""
+"Списъците с контакти в адресниците от LDAP изискват всеки член да е от един "
+"и същ адресник от LDAP, но %d члена липсват."
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:4681
 msgid "Receiving LDAP search results..."
@@ -1413,24 +1417,24 @@ msgstr "Време: гръмотевични бури"
 #: src/calendar/backends/weather/e-cal-backend-weather.c:392
 #, c-format
 msgid "%.1f °F"
-msgstr ""
+msgstr "%.1f °F"
 
 #. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN)
 #: src/calendar/backends/weather/e-cal-backend-weather.c:395
 #, c-format
 msgid "%.1f °C"
-msgstr ""
+msgstr "%.1f °C"
 
 #. TRANSLATOR: This is the temperature in kelvin
 #: src/calendar/backends/weather/e-cal-backend-weather.c:398
 #, c-format
 msgid "%.1f K"
-msgstr ""
+msgstr "%.1f K"
 
 #: src/calendar/backends/weather/e-cal-backend-weather.c:404
 #, c-format
 msgid "%.1f"
-msgstr ""
+msgstr "%.1f"
 
 #: src/calendar/backends/weather/e-cal-backend-weather.c:567
 #: src/calendar/backends/weather/e-cal-backend-weather.c:595
@@ -1448,7 +1452,7 @@ msgstr "Неуспешно създаване на файл с кеш: "
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:977
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1006
 msgid "New note"
-msgstr ""
+msgstr "Нова бележка"
 
 #: src/calendar/libecal/e-cal-client.c:244
 msgid "No such calendar"
@@ -1616,43 +1620,43 @@ msgstr "31-ви"
 #, c-format
 msgid "every day forever"
 msgid_plural "every %d days forever"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "всеки ден, завинаги"
+msgstr[1] "всеки %d дни, завинаги"
 
 #: src/calendar/libecal/e-cal-recur.c:5078
 #, c-format
 msgid "Every day forever"
 msgid_plural "Every %d days forever"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Всеки ден, завинаги"
+msgstr[1] "Всеки %d дни, завинаги"
 
 #: src/calendar/libecal/e-cal-recur.c:5086
 #, c-format
 msgid "every day"
 msgid_plural "every %d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "всеки ден"
+msgstr[1] "всеки %d дни"
 
 #: src/calendar/libecal/e-cal-recur.c:5092
 #, c-format
 msgid "Every day"
 msgid_plural "Every %d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Всеки ден"
+msgstr[1] "Всеки %d дни"
 
 #: src/calendar/libecal/e-cal-recur.c:5178
 #, c-format
 msgid "every week"
 msgid_plural "every %d weeks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "всяка седмица"
+msgstr[1] "всеки %d седмици"
 
 #: src/calendar/libecal/e-cal-recur.c:5184
 #, c-format
 msgid "Every week"
 msgid_plural "Every %d weeks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Всяка седмица"
+msgstr[1] "Всеки %d седмици"
 
 #. Translators: This is used to merge set of week day names in a recurrence, which can contain any
 #. of the week day names. The string always starts with "on DAYNAME", then it can continue either
@@ -1663,82 +1667,82 @@ msgstr[1] ""
 #, c-format
 msgctxt "recur-description-dayname"
 msgid "%1$s%2$s"
-msgstr ""
+msgstr "%1$s%2$s"
 
 #: src/calendar/libecal/e-cal-recur.c:5215
 msgctxt "recur-description"
 msgid "on Sunday"
-msgstr ""
+msgstr "неделя"
 
 #: src/calendar/libecal/e-cal-recur.c:5216
 msgctxt "recur-description"
 msgid ", Sunday"
-msgstr ""
+msgstr ", неделя"
 
 #: src/calendar/libecal/e-cal-recur.c:5217
 msgctxt "recur-description"
 msgid " and Sunday"
-msgstr ""
+msgstr "и неделя"
 
 #: src/calendar/libecal/e-cal-recur.c:5220
 msgctxt "recur-description"
 msgid "on Monday"
-msgstr ""
+msgstr "понеделник"
 
 #: src/calendar/libecal/e-cal-recur.c:5221
 msgctxt "recur-description"
 msgid ", Monday"
-msgstr ""
+msgstr ", понеделник"
 
 #: src/calendar/libecal/e-cal-recur.c:5222
 msgctxt "recur-description"
 msgid " and Monday"
-msgstr ""
+msgstr " и понеделник"
 
 #: src/calendar/libecal/e-cal-recur.c:5225
 msgctxt "recur-description"
 msgid "on Tuesday"
-msgstr ""
+msgstr "вторник"
 
 #: src/calendar/libecal/e-cal-recur.c:5226
 msgctxt "recur-description"
 msgid ", Tuesday"
-msgstr ""
+msgstr ", вторник"
 
 #: src/calendar/libecal/e-cal-recur.c:5227
 msgctxt "recur-description"
 msgid " and Tuesday"
-msgstr ""
+msgstr " и вторник"
 
 #: src/calendar/libecal/e-cal-recur.c:5230
 msgctxt "recur-description"
 msgid "on Wednesday"
-msgstr ""
+msgstr "сряда"
 
 #: src/calendar/libecal/e-cal-recur.c:5231
 msgctxt "recur-description"
 msgid ", Wednesday"
-msgstr ""
+msgstr ", сряда"
 
 #: src/calendar/libecal/e-cal-recur.c:5232
 msgctxt "recur-description"
 msgid " and Wednesday"
-msgstr ""
+msgstr " и сряда"
 
 #: src/calendar/libecal/e-cal-recur.c:5235
 msgctxt "recur-description"
 msgid "on Thursday"
-msgstr ""
+msgstr "четвъртък"
 
 #: src/calendar/libecal/e-cal-recur.c:5236
 msgctxt "recur-description"
 msgid ", Thursday"
-msgstr ""
+msgstr ", четвъртък"
 
 #: src/calendar/libecal/e-cal-recur.c:5237
 msgctxt "recur-description"
 msgid " and Thursday"
-msgstr ""
+msgstr " и четвъртък"
 
 #: src/calendar/libecal/e-cal-recur.c:5240
 msgctxt "recur-description"
@@ -1758,462 +1762,462 @@ msgstr " и петък"
 #: src/calendar/libecal/e-cal-recur.c:5245
 msgctxt "recur-description"
 msgid "on Saturday"
-msgstr ""
+msgstr "събота"
 
 #: src/calendar/libecal/e-cal-recur.c:5246
 msgctxt "recur-description"
 msgid ", Saturday"
-msgstr ""
+msgstr ", събота"
 
 #: src/calendar/libecal/e-cal-recur.c:5247
 msgctxt "recur-description"
 msgid " and Saturday"
-msgstr ""
+msgstr " и събота"
 
 #: src/calendar/libecal/e-cal-recur.c:5376
 #, c-format
 msgid "every month"
 msgid_plural "every %d months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "всеки месец"
+msgstr[1] "всеки %d месеца"
 
 #: src/calendar/libecal/e-cal-recur.c:5382
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Всеки месец"
+msgstr[1] "Всеки %d месеца"
 
 #: src/calendar/libecal/e-cal-recur.c:5392
 #: src/calendar/libecal/e-cal-recur.c:5713
 msgctxt "recur-description"
 msgid "on the last Sunday"
-msgstr ""
+msgstr "последната неделя"
 
 #: src/calendar/libecal/e-cal-recur.c:5395
 #: src/calendar/libecal/e-cal-recur.c:5563
 msgctxt "recur-description"
 msgid "on the last Monday"
-msgstr ""
+msgstr "последния понеделник"
 
 #: src/calendar/libecal/e-cal-recur.c:5398
 #: src/calendar/libecal/e-cal-recur.c:5588
 msgctxt "recur-description"
 msgid "on the last Tuesday"
-msgstr ""
+msgstr "последния вторник"
 
 #: src/calendar/libecal/e-cal-recur.c:5401
 #: src/calendar/libecal/e-cal-recur.c:5613
 msgctxt "recur-description"
 msgid "on the last Wednesday"
-msgstr ""
+msgstr "последната сряда"
 
 #: src/calendar/libecal/e-cal-recur.c:5404
 #: src/calendar/libecal/e-cal-recur.c:5638
 msgctxt "recur-description"
 msgid "on the last Thursday"
-msgstr ""
+msgstr "последния четвъртък"
 
 #: src/calendar/libecal/e-cal-recur.c:5407
 #: src/calendar/libecal/e-cal-recur.c:5663
 msgctxt "recur-description"
 msgid "on the last Friday"
-msgstr ""
+msgstr "последния петък"
 
 #: src/calendar/libecal/e-cal-recur.c:5410
 #: src/calendar/libecal/e-cal-recur.c:5688
 msgctxt "recur-description"
 msgid "on the last Saturday"
-msgstr ""
+msgstr "последната събота"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5420
 msgctxt "recur-description"
 msgid "on the 1st day"
-msgstr ""
+msgstr "1-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5424
 msgctxt "recur-description"
 msgid "on the 2nd day"
-msgstr ""
+msgstr "2-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5428
 msgctxt "recur-description"
 msgid "on the 3rd day"
-msgstr ""
+msgstr "3-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5432
 msgctxt "recur-description"
 msgid "on the 4th day"
-msgstr ""
+msgstr "4-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5436
 msgctxt "recur-description"
 msgid "on the 5th day"
-msgstr ""
+msgstr "5-я ден<"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5440
 msgctxt "recur-description"
 msgid "on the 6th day"
-msgstr ""
+msgstr "6-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5444
 msgctxt "recur-description"
 msgid "on the 7th day"
-msgstr ""
+msgstr "7-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5448
 msgctxt "recur-description"
 msgid "on the 8th day"
-msgstr ""
+msgstr "8-я ден<"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5452
 msgctxt "recur-description"
 msgid "on the 9th day"
-msgstr ""
+msgstr "9-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5456
 msgctxt "recur-description"
 msgid "on the 10th day"
-msgstr ""
+msgstr "10-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5460
 msgctxt "recur-description"
 msgid "on the 11th day"
-msgstr ""
+msgstr "11-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5464
 msgctxt "recur-description"
 msgid "on the 12th day"
-msgstr ""
+msgstr "12-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5468
 msgctxt "recur-description"
 msgid "on the 13th day"
-msgstr ""
+msgstr "13-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5472
 msgctxt "recur-description"
 msgid "on the 14th day"
-msgstr ""
+msgstr "14-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5476
 msgctxt "recur-description"
 msgid "on the 15th day"
-msgstr ""
+msgstr "15-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5480
 msgctxt "recur-description"
 msgid "on the 16th day"
-msgstr ""
+msgstr "16-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5484
 msgctxt "recur-description"
 msgid "on the 17th day"
-msgstr ""
+msgstr "17-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5488
 msgctxt "recur-description"
 msgid "on the 18th day"
-msgstr ""
+msgstr "18-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5492
 msgctxt "recur-description"
 msgid "on the 19th day"
-msgstr ""
+msgstr "19-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5496
 msgctxt "recur-description"
 msgid "on the 20th day"
-msgstr ""
+msgstr "20-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5500
 msgctxt "recur-description"
 msgid "on the 21st day"
-msgstr ""
+msgstr "21-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5504
 msgctxt "recur-description"
 msgid "on the 22nd day"
-msgstr ""
+msgstr "22-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5508
 msgctxt "recur-description"
 msgid "on the 23rd day"
-msgstr ""
+msgstr "23-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5512
 msgctxt "recur-description"
 msgid "on the 24th day"
-msgstr ""
+msgstr "24-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5516
 msgctxt "recur-description"
 msgid "on the 25th day"
-msgstr ""
+msgstr "25-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5520
 msgctxt "recur-description"
 msgid "on the 26th day"
-msgstr ""
+msgstr "26-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5524
 msgctxt "recur-description"
 msgid "on the 27th day"
-msgstr ""
+msgstr "27-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5528
 msgctxt "recur-description"
 msgid "on the 28th day"
-msgstr ""
+msgstr "28-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5532
 msgctxt "recur-description"
 msgid "on the 29th day"
-msgstr ""
+msgstr "29-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5536
 msgctxt "recur-description"
 msgid "on the 30th day"
-msgstr ""
+msgstr "30-я ден"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5540
 msgctxt "recur-description"
 msgid "on the 31st day"
-msgstr ""
+msgstr "31-я ден"
 
 #: src/calendar/libecal/e-cal-recur.c:5548
 msgctxt "recur-description"
 msgid "on the first Monday"
-msgstr ""
+msgstr "първия понеделник"
 
 #: src/calendar/libecal/e-cal-recur.c:5551
 msgctxt "recur-description"
 msgid "on the second Monday"
-msgstr ""
+msgstr "втория понеделник"
 
 #: src/calendar/libecal/e-cal-recur.c:5554
 msgctxt "recur-description"
 msgid "on the third Monday"
-msgstr ""
+msgstr "третия понеделник"
 
 #: src/calendar/libecal/e-cal-recur.c:5557
 msgctxt "recur-description"
 msgid "on the fourth Monday"
-msgstr ""
+msgstr "четвъртия понеделник"
 
 #: src/calendar/libecal/e-cal-recur.c:5560
 msgctxt "recur-description"
 msgid "on the fifth Monday"
-msgstr ""
+msgstr "петия понеделник"
 
 #: src/calendar/libecal/e-cal-recur.c:5573
 msgctxt "recur-description"
 msgid "on the first Tuesday"
-msgstr ""
+msgstr "първия вторник"
 
 #: src/calendar/libecal/e-cal-recur.c:5576
 msgctxt "recur-description"
 msgid "on the second Tuesday"
-msgstr ""
+msgstr "втория вторник"
 
 #: src/calendar/libecal/e-cal-recur.c:5579
 msgctxt "recur-description"
 msgid "on the third Tuesday"
-msgstr ""
+msgstr "третия вторник"
 
 #: src/calendar/libecal/e-cal-recur.c:5582
 msgctxt "recur-description"
 msgid "on the fourth Tuesday"
-msgstr ""
+msgstr "четвъртия вторник"
 
 #: src/calendar/libecal/e-cal-recur.c:5585
 msgctxt "recur-description"
 msgid "on the fifth Tuesday"
-msgstr ""
+msgstr "петия вторник"
 
 #: src/calendar/libecal/e-cal-recur.c:5598
 msgctxt "recur-description"
 msgid "on the first Wednesday"
-msgstr ""
+msgstr "първата сряда"
 
 #: src/calendar/libecal/e-cal-recur.c:5601
 msgctxt "recur-description"
 msgid "on the second Wednesday"
-msgstr ""
+msgstr "втората сряда"
 
 #: src/calendar/libecal/e-cal-recur.c:5604
 msgctxt "recur-description"
 msgid "on the third Wednesday"
-msgstr ""
+msgstr "третата сряда"
 
 #: src/calendar/libecal/e-cal-recur.c:5607
 msgctxt "recur-description"
 msgid "on the fourth Wednesday"
-msgstr ""
+msgstr "четвъртата сряда"
 
 #: src/calendar/libecal/e-cal-recur.c:5610
 msgctxt "recur-description"
 msgid "on the fifth Wednesday"
-msgstr ""
+msgstr "петата сряда"
 
 #: src/calendar/libecal/e-cal-recur.c:5623
 msgctxt "recur-description"
 msgid "on the first Thursday"
-msgstr ""
+msgstr "първия четвъртък"
 
 #: src/calendar/libecal/e-cal-recur.c:5626
 msgctxt "recur-description"
 msgid "on the second Thursday"
-msgstr ""
+msgstr "втория четвъртък"
 
 #: src/calendar/libecal/e-cal-recur.c:5629
 msgctxt "recur-description"
 msgid "on the third Thursday"
-msgstr ""
+msgstr "третия четвъртък"
 
 #: src/calendar/libecal/e-cal-recur.c:5632
 msgctxt "recur-description"
 msgid "on the fourth Thursday"
-msgstr ""
+msgstr "четвъртия четвъртък"
 
 #: src/calendar/libecal/e-cal-recur.c:5635
 msgctxt "recur-description"
 msgid "on the fifth Thursday"
-msgstr ""
+msgstr "петия четвъртък"
 
 #: src/calendar/libecal/e-cal-recur.c:5648
 msgctxt "recur-description"
 msgid "on the first Friday"
-msgstr ""
+msgstr "първия петък"
 
 #: src/calendar/libecal/e-cal-recur.c:5651
 msgctxt "recur-description"
 msgid "on the second Friday"
-msgstr ""
+msgstr "втория петък"
 
 #: src/calendar/libecal/e-cal-recur.c:5654
 msgctxt "recur-description"
 msgid "on the third Friday"
-msgstr ""
+msgstr "третия петък"
 
 #: src/calendar/libecal/e-cal-recur.c:5657
 msgctxt "recur-description"
 msgid "on the fourth Friday"
-msgstr ""
+msgstr "четвъртия петък"
 
 #: src/calendar/libecal/e-cal-recur.c:5660
 msgctxt "recur-description"
 msgid "on the fifth Friday"
-msgstr ""
+msgstr "петия петък"
 
 #: src/calendar/libecal/e-cal-recur.c:5673
 msgctxt "recur-description"
 msgid "on the first Saturday"
-msgstr ""
+msgstr "първата събота"
 
 #: src/calendar/libecal/e-cal-recur.c:5676
 msgctxt "recur-description"
 msgid "on the second Saturday"
-msgstr ""
+msgstr "втората събота"
 
 #: src/calendar/libecal/e-cal-recur.c:5679
 msgctxt "recur-description"
 msgid "on the third Saturday"
-msgstr ""
+msgstr "третата събота"
 
 #: src/calendar/libecal/e-cal-recur.c:5682
 msgctxt "recur-description"
 msgid "on the fourth Saturday"
-msgstr ""
+msgstr "четвъртата събота"
 
 #: src/calendar/libecal/e-cal-recur.c:5685
 msgctxt "recur-description"
 msgid "on the fifth Saturday"
-msgstr ""
+msgstr "петата събота"
 
 #: src/calendar/libecal/e-cal-recur.c:5698
 msgctxt "recur-description"
 msgid "on the first Sunday"
-msgstr ""
+msgstr "първата неделя"
 
 #: src/calendar/libecal/e-cal-recur.c:5701
 msgctxt "recur-description"
 msgid "on the second Sunday"
-msgstr ""
+msgstr "втората неделя"
 
 #: src/calendar/libecal/e-cal-recur.c:5704
 msgctxt "recur-description"
 msgid "on the third Sunday"
-msgstr ""
+msgstr "третата неделя"
 
 #: src/calendar/libecal/e-cal-recur.c:5707
 msgctxt "recur-description"
 msgid "on the fourth Sunday"
-msgstr ""
+msgstr "четвъртата неделя"
 
 #: src/calendar/libecal/e-cal-recur.c:5710
 msgctxt "recur-description"
 msgid "on the fifth Sunday"
-msgstr ""
+msgstr "петата неделя"
 
 #: src/calendar/libecal/e-cal-recur.c:5739
 #, c-format
 msgid "every year forever"
 msgid_plural "every %d years forever"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "всяка година, завинаги"
+msgstr[1] "всеки %d години, завинаги"
 
 #: src/calendar/libecal/e-cal-recur.c:5745
 #, c-format
 msgid "Every year forever"
 msgid_plural "Every %d years forever"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Всяка година, завинаги"
+msgstr[1] "Всеки %d години, завинаги"
 
 #: src/calendar/libecal/e-cal-recur.c:5753
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "всяка година"
+msgstr[1] "всеки %d години"
 
 #: src/calendar/libecal/e-cal-recur.c:5759
 #, c-format
 msgid "Every year"
 msgid_plural "Every %d years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Всяка година"
+msgstr[1] "Всеки %d години"
 
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
@@ -2222,8 +2226,8 @@ msgstr[1] ""
 #, c-format
 msgid "for one occurrence"
 msgid_plural "for %d occurrences"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "един път"
+msgstr[1] "%d пъти"
 
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The '%s' is replaced with actual date, thus it can create something like
@@ -2233,7 +2237,7 @@ msgstr[1] ""
 #, c-format
 msgctxt "recur-description"
 msgid "until %s"
-msgstr ""
+msgstr "до %s"
 
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
@@ -2241,7 +2245,7 @@ msgstr ""
 #: src/calendar/libecal/e-cal-recur.c:5820
 msgctxt "recur-description"
 msgid "forever"
-msgstr ""
+msgstr "завинаги"
 
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
 #. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
@@ -2250,7 +2254,7 @@ msgstr ""
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s %3$s"
-msgstr ""
+msgstr "%1$s %2$s, %3$s"
 
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
 #. the '%2$s' is like "for 10 occurrences", constructing together one sentence:
@@ -2259,7 +2263,7 @@ msgstr ""
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s"
-msgstr ""
+msgstr "%1$s, %2$s"
 
 #. Translators: This text is appended at the end of complete recur description using "%s%s" in
 #. context "recur-description"
@@ -2267,8 +2271,8 @@ msgstr ""
 #, c-format
 msgid ", with one exception"
 msgid_plural ", with %d exceptions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] ", с едно изключение"
+msgstr[1] ", с %d изключения"
 
 #. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
 #. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
@@ -2277,13 +2281,13 @@ msgstr[1] ""
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s%2$s"
-msgstr ""
+msgstr "%1$s%2$s"
 
 #: src/calendar/libecal/e-cal-recur.c:5871
 #: src/calendar/libecal/e-cal-recur.c:5894
 msgctxt "recur-description"
 msgid "The meeting recurs"
-msgstr ""
+msgstr "Събитието се повтаря"
 
 #: src/calendar/libecal/e-cal-recur.c:5873
 #: src/calendar/libecal/e-cal-recur.c:5896
@@ -2295,14 +2299,14 @@ msgstr "Срещата се повтаря"
 #: src/calendar/libecal/e-cal-recur.c:5899
 msgctxt "recur-description"
 msgid "The task recurs"
-msgstr ""
+msgstr "Задачата се повтаря"
 
 #. if (i_cal_component_isa (comp) == I_CAL_VJOURNAL_COMPONENT)
 #: src/calendar/libecal/e-cal-recur.c:5878
 #: src/calendar/libecal/e-cal-recur.c:5901
 msgctxt "recur-description"
 msgid "The memo recurs"
-msgstr ""
+msgstr "Бележката се повтаря"
 
 #. Translators: This adds a prefix in front of the complete recurrence description.
 #. The '%1$s' is replaced with something like "The meeting recurs" and
@@ -2312,7 +2316,7 @@ msgstr ""
 #, c-format
 msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
-msgstr ""
+msgstr "%1$s %2$s"
 
 #: src/calendar/libecal/e-cal-util.c:1008
 #: src/calendar/libecal/e-cal-util.c:1035
@@ -2343,40 +2347,40 @@ msgstr "Неопределен"
 #, c-format
 msgid "%d week"
 msgid_plural "%d weeks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d седмица"
+msgstr[1] "%d седмици"
 
 #: src/calendar/libecal/e-cal-util.c:1084
 #: src/libedataserverui/e-reminders-widget.c:333
 #, c-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d ден"
+msgstr[1] "%d дни"
 
 #: src/calendar/libecal/e-cal-util.c:1093
 #: src/libedataserverui/e-reminders-widget.c:329
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d час"
+msgstr[1] "%d ча̀са"
 
 #: src/calendar/libecal/e-cal-util.c:1102
 #: src/libedataserverui/e-reminders-widget.c:325
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d минута"
+msgstr[1] "%d минути"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
 #: src/calendar/libecal/e-cal-util.c:1107
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d секунда"
+msgstr[1] "%d секунди"
 
 #: src/calendar/libecal/e-reminder-watcher.c:2923
 msgid "No Summary"
@@ -3617,7 +3621,7 @@ msgstr ""
 
 #: src/camel/camel-sasl-xoauth2-google.c:23
 msgid "OAuth2 (Google)"
-msgstr ""
+msgstr "OAuth2 (Google)"
 
 #: src/camel/camel-sasl-xoauth2-google.c:24
 msgid ""
@@ -3627,7 +3631,7 @@ msgstr ""
 
 #: src/camel/camel-sasl-xoauth2-outlook.c:23
 msgid "OAuth2 (Outlook)"
-msgstr ""
+msgstr "OAuth2 (Outlook)"
 
 #: src/camel/camel-sasl-xoauth2-outlook.c:24
 msgid ""
@@ -3637,7 +3641,7 @@ msgstr ""
 
 #: src/camel/camel-sasl-xoauth2-yahoo.c:23
 msgid "OAuth2 (Yahoo!)"
-msgstr ""
+msgstr "OAuth2 (Yahoo!)"
 
 #: src/camel/camel-sasl-xoauth2-yahoo.c:24
 msgid ""
@@ -6654,14 +6658,16 @@ msgstr ""
 msgid "Google server is busy, waiting to retry (%d:%02d minute)"
 msgid_plural "Google server is busy, waiting to retry (%d:%02d minutes)"
 msgstr[0] ""
+"Сървърът на Google е зает, изчаква се за повторение (%d:%02d минута)"
 msgstr[1] ""
+"Сървърът на Google е зает, изчаква се за повторение (%d:%02d минути)<"
 
 #: src/libedataserver/e-gdata-session.c:213
 #, c-format
 msgid "Google server is busy, waiting to retry (%d second)"
 msgid_plural "Google server is busy, waiting to retry (%d seconds)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Сървърът на Google е зает, изчаква се за повторение (%d секунда)"
+msgstr[1] "Сървърът на Google е зает, изчаква се за повторение (%d секунди)"
 
 #: src/libedataserver/e-gdata-session.c:548
 msgid "No JSON object returned by the server"
@@ -7532,8 +7538,8 @@ msgstr "нисък"
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d година"
+msgstr[1] "%d години"
 
 #: src/libedataserverui/e-reminders-widget.c:347
 msgctxt "overdue"
@@ -7879,8 +7885,8 @@ msgstr ""
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Имате %d напомняне"
+msgstr[1] "Имате %d напомняния"
 
 #: src/services/evolution-source-registry/evolution-source-registry.c:41
 msgid "Don’t migrate user data from previous versions of Evolution"
