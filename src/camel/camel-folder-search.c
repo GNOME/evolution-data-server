@@ -2657,10 +2657,12 @@ camel_folder_search_util_make_time (gint argc,
 	g_return_val_if_fail (argv != NULL, res);
 
 	if (argc == 1 && argv[0]->type == CAMEL_SEXP_RES_STRING && argv[0]->value.string) {
-		GTimeVal tv;
+		GDateTime *datetime;
 
-		if (g_time_val_from_iso8601 (argv[0]->value.string, &tv)) {
-			res = tv.tv_sec;
+		datetime = g_date_time_new_from_iso8601 (argv[0]->value.string, NULL);
+		if (datetime) {
+			res = g_date_time_to_unix (datetime);
+			g_date_time_unref (datetime);
 		} else if (strlen (argv[0]->value.string) == 8) {
 			gint num;
 

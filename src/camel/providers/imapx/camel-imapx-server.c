@@ -6916,7 +6916,7 @@ camel_imapx_server_uid_search_sync (CamelIMAPXServer *is,
 	if (search_key && words) {
 		gboolean is_gmail_server = FALSE;
 
-		if (g_strcasecmp (search_key, "BODY") == 0) {
+		if (g_ascii_strcasecmp (search_key, "BODY") == 0) {
 			CamelIMAPXStore *imapx_store;
 
 			imapx_store = camel_imapx_server_ref_store (is);
