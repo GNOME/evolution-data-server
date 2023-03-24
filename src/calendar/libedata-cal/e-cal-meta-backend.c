@@ -3770,6 +3770,32 @@ e_cal_meta_backend_dup_sync_tag (ECalMetaBackend *meta_backend)
 	return sync_tag;
 }
 
+/**
+ * e_cal_meta_backend_set_sync_tag:
+ * @meta_backend: an #ECalMetaBackend
+ * @sync_tag: (nullable): a sync tag to set, or %NULL to unset the old one
+ *
+ * Sets the @sync_tag for the @meta_backend.
+ *
+ * Since: 3.48.1
+ **/
+void
+e_cal_meta_backend_set_sync_tag (ECalMetaBackend *meta_backend,
+				 const gchar *sync_tag)
+{
+	ECalCache *cal_cache;
+
+	g_return_if_fail (E_IS_CAL_META_BACKEND (meta_backend));
+
+	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+	if (!cal_cache)
+		return;
+
+	e_cache_set_key (E_CACHE (cal_cache), ECMB_KEY_SYNC_TAG, sync_tag, NULL);
+
+	g_clear_object (&cal_cache);
+}
+
 static void
 ecmb_cache_revision_changed_cb (ECache *cache,
 				gpointer user_data)
