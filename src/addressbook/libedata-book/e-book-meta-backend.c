@@ -2848,6 +2848,32 @@ e_book_meta_backend_dup_sync_tag (EBookMetaBackend *meta_backend)
 	return sync_tag;
 }
 
+/**
+ * e_book_meta_backend_set_sync_tag:
+ * @meta_backend: an #EBookMetaBackend
+ * @sync_tag: (nullable): a sync tag to set, or %NULL to unset the old one
+ *
+ * Sets the @sync_tag for the @meta_backend.
+ *
+ * Since: 3.50
+ **/
+void
+e_book_meta_backend_set_sync_tag (EBookMetaBackend *meta_backend,
+				  const gchar *sync_tag)
+{
+	EBookCache *book_cache;
+
+	g_return_if_fail (E_IS_BOOK_META_BACKEND (meta_backend));
+
+	book_cache = e_book_meta_backend_ref_cache (meta_backend);
+	if (!book_cache)
+		return;
+
+	e_cache_set_key (E_CACHE (book_cache), EBMB_KEY_SYNC_TAG, sync_tag, NULL);
+
+	g_clear_object (&book_cache);
+}
+
 static void
 ebmb_cache_revision_changed_cb (ECache *cache,
 				gpointer user_data)

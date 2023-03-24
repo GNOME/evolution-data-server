@@ -38,6 +38,7 @@ struct _ECalBackendHttpPrivate {
 
 	SoupMessage *message;
 	gchar *icalstring;
+	gchar *last_uri;
 	GRecMutex conn_lock;
 	GHashTable *components; /* gchar *uid ~> ICalComponent * */
 	gint64 hsts_until_time;
@@ -230,11 +231,22 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 	success = message != NULL;
 
 	if (success) {
+		gboolean uri_changed;
 		gchar *last_etag;
+
+		uri_changed = cbhttp->priv->last_uri && g_strcmp0 (cbhttp->priv->last_uri, uri) != 0;
+
+		if (!cbhttp->priv->last_uri || uri_changed) {
+			g_clear_pointer (&cbhttp->priv->last_uri, g_free);
+			cbhttp->priv->last_uri = g_strdup (uri);
+		}
+
+		if (uri_changed)
+			e_cal_meta_backend_set_sync_tag (meta_backend, NULL);
 
 		last_etag = e_cal_meta_backend_dup_sync_tag (meta_backend);
 
-		if (last_etag && *last_etag)
+		if (last_etag && *last_etag && !uri_changed)
 			soup_message_headers_append (soup_message_get_request_headers (message), "If-None-Match", last_etag);
 
 		g_free (last_etag);
@@ -675,6 +687,7 @@ e_cal_backend_http_dispose (GObject *object)
 
 	g_clear_object (&cbhttp->priv->message);
 	g_clear_pointer (&cbhttp->priv->icalstring, g_free);
+	g_clear_pointer (&cbhttp->priv->last_uri, g_free);
 
 	if (cbhttp->priv->session)
 		soup_session_abort (SOUP_SESSION (cbhttp->priv->session));

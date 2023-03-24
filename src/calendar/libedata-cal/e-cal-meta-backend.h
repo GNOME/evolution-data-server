@@ -189,6 +189,8 @@ void		e_cal_meta_backend_set_connected_writable
 gboolean	e_cal_meta_backend_get_connected_writable
 						(ECalMetaBackend *meta_backend);
 gchar *		e_cal_meta_backend_dup_sync_tag	(ECalMetaBackend *meta_backend);
+void		e_cal_meta_backend_set_sync_tag	(ECalMetaBackend *meta_backend,
+						 const gchar *sync_tag);
 void		e_cal_meta_backend_set_cache	(ECalMetaBackend *meta_backend,
 						 ECalCache *cache);
 ECalCache *	e_cal_meta_backend_ref_cache	(ECalMetaBackend *meta_backend);

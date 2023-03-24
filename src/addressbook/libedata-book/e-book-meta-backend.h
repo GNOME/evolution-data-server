@@ -197,6 +197,8 @@ void		e_book_meta_backend_set_connected_writable
 gboolean	e_book_meta_backend_get_connected_writable
 						(EBookMetaBackend *meta_backend);
 gchar *		e_book_meta_backend_dup_sync_tag(EBookMetaBackend *meta_backend);
+void		e_book_meta_backend_set_sync_tag(EBookMetaBackend *meta_backend,
+						 const gchar *sync_tag);
 void		e_book_meta_backend_set_cache	(EBookMetaBackend *meta_backend,
 						 EBookCache *cache);
 EBookCache *	e_book_meta_backend_ref_cache	(EBookMetaBackend *meta_backend);

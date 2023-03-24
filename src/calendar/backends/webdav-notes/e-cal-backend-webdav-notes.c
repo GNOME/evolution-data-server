@@ -32,6 +32,7 @@
 struct _ECalBackendWebDAVNotesPrivate {
 	/* The main WebDAV session  */
 	EWebDAVSession *webdav;
+	GUri *last_uri;
 	GMutex webdav_lock;
 
 	/* If already been connected, then the connect_sync() will relax server checks,
@@ -112,7 +113,7 @@ ecb_webdav_notes_connect_sync (ECalMetaBackend *meta_backend,
 	EWebDAVSession *webdav;
 	GHashTable *capabilities = NULL, *allows = NULL;
 	ESource *source;
-	gboolean success, is_writable = FALSE;
+	gboolean success, is_writable = FALSE, uri_changed = FALSE;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_WEBDAV_NOTES (meta_backend), FALSE);
@@ -121,15 +122,48 @@ ecb_webdav_notes_connect_sync (ECalMetaBackend *meta_backend,
 	*out_auth_result = E_SOURCE_AUTHENTICATION_ACCEPTED;
 
 	cbnotes = E_CAL_BACKEND_WEBDAV_NOTES (meta_backend);
+	source = e_backend_get_source (E_BACKEND (meta_backend));
 
 	g_mutex_lock (&cbnotes->priv->webdav_lock);
 	if (cbnotes->priv->webdav) {
 		g_mutex_unlock (&cbnotes->priv->webdav_lock);
 		return TRUE;
 	}
+
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
+		ESourceWebdav *webdav_extension;
+		GUri *current_uri;
+
+		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+		current_uri = e_source_webdav_dup_uri (webdav_extension);
+
+		#define uri_str_equal(_func) (g_strcmp0 (_func (cbnotes->priv->last_uri), _func (current_uri)) == 0)
+
+		uri_changed = cbnotes->priv->last_uri && current_uri && (
+			g_uri_get_port (cbnotes->priv->last_uri) != g_uri_get_port (current_uri) ||
+			!uri_str_equal (g_uri_get_auth_params) ||
+			!uri_str_equal (g_uri_get_host) ||
+			!uri_str_equal (g_uri_get_path) ||
+			!uri_str_equal (g_uri_get_query) ||
+			!uri_str_equal (g_uri_get_fragment) ||
+			!uri_str_equal (g_uri_get_scheme) ||
+			!uri_str_equal (g_uri_get_userinfo) ||
+			!uri_str_equal (g_uri_get_user) ||
+			!uri_str_equal (g_uri_get_password));
+
+		#undef uri_str_equal
+
+		if (!cbnotes->priv->last_uri || uri_changed) {
+			g_clear_pointer (&cbnotes->priv->last_uri, g_uri_unref);
+			cbnotes->priv->last_uri = current_uri;
+		} else if (current_uri) {
+			g_uri_unref (current_uri);
+		}
+	}
 	g_mutex_unlock (&cbnotes->priv->webdav_lock);
 
-	source = e_backend_get_source (E_BACKEND (meta_backend));
+	if (uri_changed)
+		e_cal_meta_backend_set_sync_tag (meta_backend, NULL);
 
 	webdav = e_webdav_session_new (source);
 
@@ -1476,6 +1510,7 @@ e_cal_backend_webdav_notes_dispose (GObject *object)
 
 	g_mutex_lock (&cbnotes->priv->webdav_lock);
 	g_clear_object (&cbnotes->priv->webdav);
+	g_clear_pointer (&cbnotes->priv->last_uri, g_uri_unref);
 	g_mutex_unlock (&cbnotes->priv->webdav_lock);
 
 	/* Chain up to parent's method. */
