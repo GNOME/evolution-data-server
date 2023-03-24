@@ -458,8 +458,32 @@ ecb_webdav_notes_new_icomp (glong creation_date,
 		i_cal_component_set_summary (icomp, summary);
 	}
 
-	if (description)
+	if (description && *description) {
+		const gchar *current_summary;
+
 		i_cal_component_set_description (icomp, description);
+
+		current_summary = i_cal_component_get_summary (icomp);
+
+		if (!current_summary || !*current_summary) {
+			const gchar *pos;
+
+			pos = strchr (description, '\n');
+			if (pos && pos > description && pos[-1] == '\r')
+				pos--;
+
+			if (!pos) {
+				/* single line description */
+				i_cal_component_set_summary (icomp, description);
+			} else if (pos > description) {
+				gchar *tmp;
+
+				tmp = g_strndup (description, pos - description);
+				i_cal_component_set_summary (icomp, tmp);
+				g_free (tmp);
+			}
+		}
+	}
 
 	e_cal_util_component_set_x_property (icomp, E_WEBDAV_NOTES_X_ETAG, revision);
 
