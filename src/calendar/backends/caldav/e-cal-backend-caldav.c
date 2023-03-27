@@ -1507,8 +1507,16 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 
 		g_free (new_etag);
 	} else if (uid && ical_string) {
+		ECalCache *cache;
+
+		cache = e_cal_meta_backend_ref_cache (meta_backend);
 		success = FALSE;
-		g_propagate_error (error, ECC_ERROR_EX (E_CAL_CLIENT_ERROR_INVALID_OBJECT, _("Missing information about component URL, local cache is possibly incomplete or broken. Remove it, please.")));
+
+		g_propagate_error (error, e_cal_client_error_create_fmt (E_CAL_CLIENT_ERROR_INVALID_OBJECT,
+			_("Missing information about component URL, local cache is possibly incomplete or broken. You can try to remove it and restart background evolution-data-server processes. Cache file: %s"),
+			e_cache_get_filename (E_CACHE (cache))));
+
+		g_clear_object (&cache);
 	} else {
 		success = FALSE;
 		g_propagate_error (error, ECC_ERROR (E_CAL_CLIENT_ERROR_INVALID_OBJECT));

@@ -1277,9 +1277,16 @@ ebb_carddav_save_contact_sync (EBookMetaBackend *meta_backend,
 
 		g_free (new_etag);
 	} else if (uid && vcard_string) {
+		EBookCache *cache;
+
+		cache = e_book_meta_backend_ref_cache (meta_backend);
 		success = FALSE;
-		g_propagate_error (error, EC_ERROR_EX (E_CLIENT_ERROR_OTHER_ERROR,
-			_("Missing information about vCard URL, local cache is possibly incomplete or broken. Remove it, please.")));
+
+		g_propagate_error (error, e_client_error_create_fmt (E_CLIENT_ERROR_OTHER_ERROR,
+			_("Missing information about component URL, local cache is possibly incomplete or broken. You can try to remove it and restart background evolution-data-server processes. Cache file: %s"),
+			e_cache_get_filename (E_CACHE (cache))));
+
+		g_clear_object (&cache);
 	} else {
 		success = FALSE;
 		g_propagate_error (error, EC_ERROR_EX (E_CLIENT_ERROR_OTHER_ERROR, _("Object to save is not a valid vCard")));
