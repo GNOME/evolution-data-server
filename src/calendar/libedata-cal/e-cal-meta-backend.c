@@ -110,6 +110,13 @@ static ICalTimezone *	(* ecmb_timezone_cache_parent_get_timezone) (ETimezoneCach
 static GList *		(* ecmb_timezone_cache_parent_list_timezones) (ETimezoneCache *cache);
 
 /* Forward Declarations */
+static gboolean		ecmb_maybe_remove_from_cache	(ECalMetaBackend *meta_backend,
+							 ECalCache *cal_cache,
+							 ECacheOfflineFlag offline_flag,
+							 const gchar *uid,
+							 guint32 custom_flags,
+							 GCancellable *cancellable,
+							 GError **error);
 static void e_cal_meta_backend_timezone_cache_init (ETimezoneCacheInterface *iface);
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (ECalMetaBackend, e_cal_meta_backend, E_TYPE_CAL_BACKEND_SYNC,
@@ -605,9 +612,24 @@ ecmb_upload_local_changes_sync (ECalMetaBackend *meta_backend,
 
 			success = e_cal_cache_get_components_by_uid (cal_cache, change->uid, &instances, cancellable, error);
 			if (success) {
+				GError *local_error = NULL;
+
 				success = ecmb_save_component_wrapper_sync (meta_backend, cal_cache,
 					change->state == E_OFFLINE_STATE_LOCALLY_MODIFIED,
-					conflict_resolution, instances, extra, opflags, change->uid, NULL, NULL, NULL, cancellable, error);
+					conflict_resolution, instances, extra, opflags, change->uid, NULL, NULL, NULL, cancellable, &local_error);
+
+				if (!success) {
+					if (g_error_matches (local_error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_INVALID_OBJECT)) {
+						g_clear_error (&local_error);
+						success = TRUE;
+
+						if (!ecmb_maybe_remove_from_cache (meta_backend, cal_cache, E_CACHE_IS_ONLINE, change->uid, 0, cancellable, NULL)) {
+							/* ignore any error here */
+						}
+					} else if (local_error) {
+						g_propagate_error (error, local_error);
+					}
+				}
 			}
 
 			g_slist_free_full (instances, g_object_unref);
@@ -618,7 +640,8 @@ ecmb_upload_local_changes_sync (ECalMetaBackend *meta_backend,
 				change->uid, extra, change->object, opflags, cancellable, &local_error);
 
 			if (!success) {
-				if (g_error_matches (local_error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND)) {
+				if (g_error_matches (local_error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND) ||
+				    g_error_matches (local_error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_INVALID_OBJECT)) {
 					g_clear_error (&local_error);
 					success = TRUE;
 				} else if (local_error) {
