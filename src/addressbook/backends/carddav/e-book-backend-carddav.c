@@ -1278,11 +1278,11 @@ ebb_carddav_save_contact_sync (EBookMetaBackend *meta_backend,
 		g_free (new_etag);
 	} else if (uid && vcard_string) {
 		success = FALSE;
-		g_propagate_error (error, EC_ERROR_EX (E_CLIENT_ERROR_OTHER_ERROR,
+		g_propagate_error (error, EC_ERROR_EX (E_CLIENT_ERROR_INVALID_ARG,
 			_("Missing information about vCard URL, local cache is possibly incomplete or broken. Remove it, please.")));
 	} else {
 		success = FALSE;
-		g_propagate_error (error, EC_ERROR_EX (E_CLIENT_ERROR_OTHER_ERROR, _("Object to save is not a valid vCard")));
+		g_propagate_error (error, EC_ERROR_EX (E_CLIENT_ERROR_INVALID_ARG, _("Object to save is not a valid vCard")));
 	}
 
 	g_free (vcard_string);

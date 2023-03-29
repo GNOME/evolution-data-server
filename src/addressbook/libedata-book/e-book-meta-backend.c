@@ -128,6 +128,13 @@ static gboolean ebmb_save_contact_wrapper_sync (EBookMetaBackend *meta_backend,
 						gchar **out_new_extra,
 						GCancellable *cancellable,
 						GError **error);
+static gboolean ebmb_maybe_remove_from_cache (EBookMetaBackend *meta_backend,
+					      EBookCache *book_cache,
+					      ECacheOfflineFlag offline_flag,
+					      const gchar *uid,
+					      guint32 opflags,
+					      GCancellable *cancellable,
+					      GError **error);
 
 static gboolean
 ebmb_is_power_saver_enabled (void)
@@ -687,9 +694,24 @@ ebmb_upload_local_changes_sync (EBookMetaBackend *meta_backend,
 
 			success = e_book_cache_get_contact (book_cache, change->uid, FALSE, &contact, cancellable, error);
 			if (success) {
+				GError *local_error = NULL;
+
 				success = ebmb_save_contact_wrapper_sync (meta_backend, book_cache,
 					change->state == E_OFFLINE_STATE_LOCALLY_MODIFIED,
-					conflict_resolution, contact, extra, opflags, change->uid, NULL, NULL, NULL, cancellable, error);
+					conflict_resolution, contact, extra, opflags, change->uid, NULL, NULL, NULL, cancellable, &local_error);
+
+				if (!success) {
+					if (g_error_matches (local_error, E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_ARG)) {
+						g_clear_error (&local_error);
+						success = TRUE;
+
+						if (!ebmb_maybe_remove_from_cache (meta_backend, book_cache, E_CACHE_IS_ONLINE, change->uid, 0, cancellable, NULL)) {
+							/* ignore any error here */
+						}
+					} else if (local_error) {
+						g_propagate_error (error, local_error);
+					}
+				}
 			}
 
 			g_clear_object (&contact);
@@ -700,7 +722,8 @@ ebmb_upload_local_changes_sync (EBookMetaBackend *meta_backend,
 				change->uid, extra, change->object, opflags, cancellable, &local_error);
 
 			if (!success) {
-				if (g_error_matches (local_error, E_BOOK_CLIENT_ERROR, E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND)) {
+				if (g_error_matches (local_error, E_BOOK_CLIENT_ERROR, E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND) ||
+				    g_error_matches (local_error, E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_ARG)) {
 					g_clear_error (&local_error);
 					success = TRUE;
 				} else if (local_error) {
