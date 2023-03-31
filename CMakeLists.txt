@@ -293,7 +293,7 @@ include(FindPhonenumber)
 include(FindSMIME)
 
 add_printable_option(ENABLE_MAINTAINER_MODE "Enable maintainer mode" OFF)
-add_printable_option(WITH_PRIVATE_DOCS "Build documentation for private libraries (requires -DENABLE-GTK-DOC=ON" OFF)
+add_printable_option(WITH_PRIVATE_DOCS "Build documentation for private libraries (requires -DENABLE_GTK_DOC=ON" OFF)
 
 if(ENABLE_MAINTAINER_MODE)
 	set(BUILD_TESTING ON)
