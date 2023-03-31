@@ -5556,13 +5556,36 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 	return success;
 }
 
+/* It does not verify single-client-mode, it only checks whether it's time
+   to do a full update according to folder's last-full-update property and
+   return TRUE, when the full update should be done. It also stores the current
+   time when returning TRUE. */
 static gboolean
-camel_imapx_server_skip_old_flags_update (CamelStore *store)
+camel_imapx_server_check_folder_last_full_update (CamelFolder *folder)
 {
+	gint64 now = g_get_real_time () / G_USEC_PER_SEC;
+	gint64 diff = now - camel_imapx_folder_get_last_full_update (CAMEL_IMAPX_FOLDER (folder));
+
+	if (diff > 0 && diff < 24 * 60 * 60)
+		return FALSE;
+
+	camel_imapx_folder_set_last_full_update (CAMEL_IMAPX_FOLDER (folder), now);
+	camel_object_state_write (CAMEL_OBJECT (folder));
+
+	return TRUE;
+}
+
+static gboolean
+camel_imapx_server_do_old_flags_update (CamelFolder *folder)
+{
+	CamelStore *store;
 	CamelSession *session;
 	CamelSettings *settings;
 	GNetworkMonitor *network_monitor;
-	gboolean skip_old_flags_update = FALSE;
+	gboolean do_old_flags_update = TRUE;
+	gboolean single_client_mode = FALSE;
+
+	store = camel_folder_get_parent_store (folder);
 
 	if (!CAMEL_IS_STORE (store))
 		return FALSE;
@@ -5572,23 +5595,28 @@ camel_imapx_server_skip_old_flags_update (CamelStore *store)
 		gboolean allow_update;
 
 		allow_update = camel_imapx_settings_get_full_update_on_metered_network (CAMEL_IMAPX_SETTINGS (settings));
+		single_client_mode = camel_imapx_settings_get_single_client_mode (CAMEL_IMAPX_SETTINGS (settings));
 
 		g_object_unref (settings);
 
-		if (allow_update)
-			return FALSE;
+		if (allow_update) {
+			if (single_client_mode)
+				do_old_flags_update = camel_imapx_server_check_folder_last_full_update (folder);
+
+			return do_old_flags_update;
+		}
 	}
 
 	session = camel_service_ref_session (CAMEL_SERVICE (store));
 	if (!session)
-		return skip_old_flags_update;
+		return do_old_flags_update;
 
 	network_monitor = camel_session_ref_network_monitor (session);
 
-	skip_old_flags_update = network_monitor && g_network_monitor_get_network_metered (network_monitor);
+	do_old_flags_update = !network_monitor || !g_network_monitor_get_network_metered (network_monitor);
 
 #ifdef HAVE_GPOWERPROFILEMONITOR
-	if (!skip_old_flags_update) {
+	if (do_old_flags_update) {
 		GSettings *eds_settings;
 
 		eds_settings = g_settings_new ("org.gnome.evolution-data-server");
@@ -5597,7 +5625,7 @@ camel_imapx_server_skip_old_flags_update (CamelStore *store)
 			GPowerProfileMonitor *power_monitor;
 
 			power_monitor = g_power_profile_monitor_dup_default ();
-			skip_old_flags_update = power_monitor && g_power_profile_monitor_get_power_saver_enabled (power_monitor);
+			do_old_flags_update = !power_monitor || !g_power_profile_monitor_get_power_saver_enabled (power_monitor);
 			g_clear_object (&power_monitor);
 		}
 
@@ -5607,7 +5635,10 @@ camel_imapx_server_skip_old_flags_update (CamelStore *store)
 	g_clear_object (&network_monitor);
 	g_clear_object (&session);
 
-	return skip_old_flags_update;
+	if (single_client_mode && do_old_flags_update)
+		do_old_flags_update = camel_imapx_server_check_folder_last_full_update (folder);
+
+	return do_old_flags_update;
 }
 
 gboolean
@@ -5630,7 +5661,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 	guint64 highestmodseq;
 	guint32 total;
 	guint64 uidl;
-	gboolean need_rescan, skip_old_flags_update;
+	gboolean need_rescan, do_old_flags_update;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
@@ -5738,9 +5769,9 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 
 	known_uids = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
 
-	skip_old_flags_update = camel_imapx_server_skip_old_flags_update (camel_folder_get_parent_store (folder));
+	do_old_flags_update = camel_imapx_server_do_old_flags_update (folder);
 
-	if (!skip_old_flags_update) {
+	if (do_old_flags_update) {
 		/* Remember summary state before running the update, in case there are
 		   added new messages into the folder meanwhile, like with a COPY/MOVE filter;
 		   such new messages would be considered removed, because not being part
@@ -5749,7 +5780,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 	}
 
 	success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, uidl, 0, cancellable, error);
-	if (success && uidl != 1 && !skip_old_flags_update)
+	if (success && uidl != 1 && do_old_flags_update)
 		success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, 0, uidl, cancellable, error);
 
 	if (success) {
@@ -5766,7 +5797,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 
 	g_mutex_unlock (&is->priv->changes_lock);
 
-	if (success && !skip_old_flags_update) {
+	if (success && do_old_flags_update) {
 		GList *removed = NULL;
 		gint ii;
 

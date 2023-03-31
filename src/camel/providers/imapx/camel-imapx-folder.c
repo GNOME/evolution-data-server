@@ -46,6 +46,7 @@ struct _CamelIMAPXFolderPrivate {
 	GHashTable *move_to_inbox_uids;
 
 	gboolean check_folder;
+	gint64 last_full_update;
 };
 
 /* The custom property ID is a CamelArg artifact.
@@ -54,7 +55,8 @@ enum {
 	PROP_0,
 	PROP_MAILBOX,
 	PROP_APPLY_FILTERS = 0x2501,
-	PROP_CHECK_FOLDER = 0x2502
+	PROP_CHECK_FOLDER = 0x2502,
+	PROP_LAST_FULL_UPDATE = 0x2503
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelIMAPXFolder, camel_imapx_folder, CAMEL_TYPE_OFFLINE_FOLDER)
@@ -161,6 +163,12 @@ imapx_folder_set_property (GObject *object,
 				g_value_get_boolean (value));
 			return;
 
+		case PROP_LAST_FULL_UPDATE:
+			camel_imapx_folder_set_last_full_update (
+				CAMEL_IMAPX_FOLDER (object),
+				g_value_get_int64 (value));
+			return;
+
 		case PROP_MAILBOX:
 			camel_imapx_folder_set_mailbox (
 				CAMEL_IMAPX_FOLDER (object),
@@ -189,6 +197,13 @@ imapx_folder_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				camel_imapx_folder_get_check_folder (
+				CAMEL_IMAPX_FOLDER (object)));
+			return;
+
+		case PROP_LAST_FULL_UPDATE:
+			g_value_set_int64 (
+				value,
+				camel_imapx_folder_get_last_full_update (
 				CAMEL_IMAPX_FOLDER (object)));
 			return;
 
@@ -1141,6 +1156,18 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_LAST_FULL_UPDATE,
+		g_param_spec_int64 (
+			"last-full-update",
+			"Last Full Update",
+			NULL,
+			G_MININT64, G_MAXINT64, 0,
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
+			CAMEL_PARAM_PERSISTENT));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_MAILBOX,
 		g_param_spec_object (
 			"mailbox",
@@ -1705,6 +1732,30 @@ camel_imapx_folder_set_check_folder (CamelIMAPXFolder *folder,
 	folder->priv->check_folder = check_folder;
 
 	g_object_notify (G_OBJECT (folder), "check-folder");
+}
+
+gint64
+camel_imapx_folder_get_last_full_update (CamelIMAPXFolder *folder)
+{
+	g_return_val_if_fail (folder != NULL, 0);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (folder), 0);
+
+	return folder->priv->last_full_update;
+}
+
+void
+camel_imapx_folder_set_last_full_update (CamelIMAPXFolder *folder,
+					gint64 last_full_update)
+{
+	g_return_if_fail (folder != NULL);
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
+
+	if (folder->priv->last_full_update == last_full_update)
+		return;
+
+	folder->priv->last_full_update = last_full_update;
+
+	g_object_notify (G_OBJECT (folder), "last-full-update");
 }
 
 void

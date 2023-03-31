@@ -181,6 +181,11 @@ gboolean	camel_imapx_settings_get_send_client_id
 void		camel_imapx_settings_set_send_client_id
 						(CamelIMAPXSettings *settings,
 						 gboolean send_client_id);
+gboolean	camel_imapx_settings_get_single_client_mode
+						(CamelIMAPXSettings *settings);
+void		camel_imapx_settings_set_single_client_mode
+						(CamelIMAPXSettings *settings,
+						 gboolean single_client_mode);
 
 G_END_DECLS
 

@@ -48,6 +48,8 @@ gint camel_file_util_encode_off_t (FILE *out, off_t value);
 gint camel_file_util_decode_off_t (FILE *in, off_t *dest);
 gint camel_file_util_encode_gsize (FILE *out, gsize value);
 gint camel_file_util_decode_gsize (FILE *in, gsize *dest);
+gint camel_file_util_encode_gint64 (FILE *out, gint64 value);
+gint camel_file_util_decode_gint64 (FILE *in, gint64 *dest);
 gint camel_file_util_encode_string (FILE *out, const gchar *str);
 gint camel_file_util_decode_string (FILE *in, gchar **str);
 gint camel_file_util_encode_fixed_string (FILE *out, const gchar *str, gsize len);

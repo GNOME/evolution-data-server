@@ -48,6 +48,7 @@ struct _CamelIMAPXSettingsPrivate {
 	gboolean ignore_shared_folders_namespace;
 	gboolean full_update_on_metered_network;
 	gboolean send_client_id;
+	gboolean single_client_mode;
 
 	CamelSortType fetch_order;
 };
@@ -81,7 +82,8 @@ enum {
 	PROP_IGNORE_OTHER_USERS_NAMESPACE,
 	PROP_IGNORE_SHARED_FOLDERS_NAMESPACE,
 	PROP_FULL_UPDATE_ON_METERED_NETWORK,
-	PROP_SEND_CLIENT_ID
+	PROP_SEND_CLIENT_ID,
+	PROP_SINGLE_CLIENT_MODE
 };
 
 G_DEFINE_TYPE_WITH_CODE (
@@ -263,6 +265,12 @@ imapx_settings_set_property (GObject *object,
 
 		case PROP_SEND_CLIENT_ID:
 			camel_imapx_settings_set_send_client_id (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_SINGLE_CLIENT_MODE:
+			camel_imapx_settings_set_single_client_mode (
 				CAMEL_IMAPX_SETTINGS (object),
 				g_value_get_boolean (value));
 			return;
@@ -471,6 +479,13 @@ imapx_settings_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				camel_imapx_settings_get_send_client_id (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_SINGLE_CLIENT_MODE:
+			g_value_set_boolean (
+				value,
+				camel_imapx_settings_get_single_client_mode (
 				CAMEL_IMAPX_SETTINGS (object)));
 			return;
 	}
@@ -834,6 +849,19 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 			"Send Client ID",
 			"Whether to send client ID to the server",
 			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_SINGLE_CLIENT_MODE,
+		g_param_spec_boolean (
+			"single-client-mode",
+			"Single Client Mode",
+			"When set to true, does full folder flags refresh only once per day",
+			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -2021,4 +2049,47 @@ camel_imapx_settings_set_send_client_id (CamelIMAPXSettings *settings,
 	settings->priv->send_client_id = send_client_id;
 
 	g_object_notify (G_OBJECT (settings), "send-client-id");
+}
+
+/**
+ * camel_imapx_settings_get_single_client_mode:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns whether using single client mode. That is, the full folder refresh
+ * flags are done only once per day, not on each folder refresh.
+ *
+ * Returns: whether the single client mode is enabled
+ *
+ * Since: 3.50
+ **/
+gboolean
+camel_imapx_settings_get_single_client_mode (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), FALSE);
+
+	return settings->priv->single_client_mode;
+}
+
+/**
+ * camel_imapx_settings_set_single_client_mode:
+ * @settings: a #CamelIMAPXSettings
+ * @single_client_mode: value to set
+ *
+ * Sets whether to use a single client mode. See camel_imapx_settings_get_single_client_mode()
+ * for an explanation what it means.
+ *
+ * Since: 3.50
+ **/
+void
+camel_imapx_settings_set_single_client_mode (CamelIMAPXSettings *settings,
+					     gboolean single_client_mode)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	if ((settings->priv->single_client_mode ? 1 : 0) == (single_client_mode ? 1 : 0))
+		return;
+
+	settings->priv->single_client_mode = single_client_mode;
+
+	g_object_notify (G_OBJECT (settings), "single-client-mode");
 }

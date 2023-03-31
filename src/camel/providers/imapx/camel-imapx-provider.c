@@ -93,6 +93,8 @@ CamelProviderConfEntry imapx_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_CHECKSPIN, "store-changes-interval", NULL,
 	  /* Translators: The '%s' is replaced with a spin button with the actual value */
 	  N_("Store folder changes after %s second(s)"), "" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "single-client-mode", NULL,
+	  N_("Single client mode"), "1" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };

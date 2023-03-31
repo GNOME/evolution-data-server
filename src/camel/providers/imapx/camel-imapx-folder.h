@@ -102,6 +102,11 @@ gboolean	camel_imapx_folder_get_check_folder
 void		camel_imapx_folder_set_check_folder
 						(CamelIMAPXFolder *folder,
 						 gboolean check_folder);
+gint64		camel_imapx_folder_get_last_full_update
+						(CamelIMAPXFolder *folder);
+void		camel_imapx_folder_set_last_full_update
+						(CamelIMAPXFolder *folder,
+						 gint64 last_full_update);
 void		camel_imapx_folder_claim_move_to_real_junk_uids
 						(CamelIMAPXFolder *folder,
 						 GPtrArray *out_uids_to_copy);

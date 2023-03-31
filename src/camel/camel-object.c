@@ -81,7 +81,8 @@ enum camel_arg_t {
 	CAMEL_ARG_STR = 0x30000000, /* c string */
 	CAMEL_ARG_PTR = 0x40000000, /* ptr */
 	CAMEL_ARG_BOO = 0x50000000, /* bool */
-	CAMEL_ARG_3ST = 0x60000000  /* three-state */
+	CAMEL_ARG_3ST = 0x60000000, /* three-state */
+	CAMEL_ARG_I64 = 0x70000000  /* gint64 */
 };
 
 #define CAMEL_ARGV_MAX (20)
@@ -197,6 +198,7 @@ object_state_read (CamelObject *object,
 		gboolean property_set = FALSE;
 		guint32 tag, v_uint32;
 		gint32 v_int32;
+		gint64 v_int64;
 
 		if (camel_file_util_decode_uint32 (fp, &tag) == -1)
 			goto exit;
@@ -221,6 +223,12 @@ object_state_read (CamelObject *object,
 					goto exit;
 				g_value_init (&value, CAMEL_TYPE_THREE_STATE);
 				g_value_set_enum (&value, (CamelThreeState) v_uint32);
+				break;
+			case CAMEL_ARG_I64:
+				if (camel_file_util_decode_gint64 (fp, &v_int64) == -1)
+					goto exit;
+				g_value_init (&value, G_TYPE_INT64);
+				g_value_set_int64 (&value, v_int64);
 				break;
 			default:
 				g_warn_if_reached ();
@@ -324,6 +332,7 @@ object_state_write (CamelObject *object,
 		GParamSpec *pspec = properties[ii];
 		guint32 tag, v_uint32;
 		gint32 v_int32;
+		gint64 v_int64;
 
 		if ((pspec->flags & CAMEL_PARAM_PERSISTENT) == 0)
 			continue;
@@ -352,6 +361,14 @@ object_state_write (CamelObject *object,
 				if (camel_file_util_encode_uint32 (fp, tag) == -1)
 					goto exit;
 				if (camel_file_util_encode_fixed_int32 (fp, v_int32) == -1)
+					goto exit;
+				break;
+			case G_TYPE_INT64:
+				tag |= CAMEL_ARG_I64;
+				v_int64 = g_value_get_int64 (&value);
+				if (camel_file_util_encode_uint32 (fp, tag) == -1)
+					goto exit;
+				if (camel_file_util_encode_gint64 (fp, v_int64) == -1)
 					goto exit;
 				break;
 			default:

@@ -249,6 +249,32 @@ CFU_ENCODE_T (gsize)
 CFU_DECODE_T (gsize)
 
 /**
+ * camel_file_util_encode_gint64:
+ * @out: file to output to
+ * @value: value to output
+ *
+ * Encode a gint64 type.
+ *
+ * Returns: 0 on success, -1 on error.
+ *
+ * Since: 3.50
+ **/
+CFU_ENCODE_T (gint64)
+
+/**
+ * camel_file_util_decode_gint64:
+ * @in: file to read from
+ * @dest: pointer to a variable to put the value in
+ *
+ * Decode a gint64 type.
+ *
+ * Returns: 0 on success, -1 on failure.
+ *
+ * Since: 3.50
+ **/
+CFU_DECODE_T (gint64)
+
+/**
  * camel_file_util_encode_string:
  * @out: file to output to
  * @str: value to output
