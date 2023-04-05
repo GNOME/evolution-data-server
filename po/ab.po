@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2022-11-23 07:20+0000\n"
+"POT-Creation-Date: 2023-02-10 07:15+0000\n"
 "Last-Translator: Нанба Наала <naala-nanba@rambler.ru>\n"
 "Language-Team: Abkhazian <daniel.abzakh@gmail.com>\n"
 "Language: ab\n"
@@ -10,28 +10,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-DamnedLies-Scope: partial\n"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:240
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
-msgstr ""
+msgstr "Иарбоу URL «%s» иазхьаԥшӡом аҭаыӡҭыԥтә шәҟәы CardDAV ахь"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1127
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1337
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1340
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:934
 msgid "Server didn’t return object’s href"
-msgstr ""
+msgstr "Асервер ихнамырҳәӡеит аобиект  href "
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1129
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1339
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1342
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:936
 msgid "Server didn’t return object’s ETag"
-msgstr ""
+msgstr "Асервер ихнамырҳәӡеит  аобиект ETag"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1131
 msgid "Received object is not a valid vCard"
-msgstr ""
+msgstr "Ишәоуз аобиект иҵабыргу vCard акәӡам"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1248
 msgid ""
@@ -41,46 +40,46 @@ msgstr ""
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1251
 msgid "Object to save is not a valid vCard"
-msgstr ""
+msgstr "Аиқәырхаразы аобиект иҵабыргу vCard акәӡам"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:117
 #, c-format
 msgid "Failed to remove file “%s”: %s"
-msgstr ""
+msgstr "Афаил %s аныхра залшом: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:145
 #, c-format
 msgid "Failed to make directory %s: %s"
-msgstr ""
+msgstr "Изалшом аизакхьӡынҵа %s аԥҵара: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:429
 #, c-format
 msgid "Failed to create hardlink for resource “%s”: %s"
-msgstr ""
+msgstr "Аресурс «%s» азы икьакьоу азхьарԥш аԥҵара залшом: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:534
 #: src/addressbook/backends/file/e-book-backend-file.c:1275
 msgid "No UID in the contact"
-msgstr ""
+msgstr "Аконтакт аҟны иҟаӡам UID"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:871
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
-msgstr ""
+msgstr "Иацҵоу аконтактқәа рҟны иԥшаауп аиҿагылара UID"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:1001
 msgid "Loading..."
-msgstr ""
+msgstr "Аҭагалара..."
 
 #: src/addressbook/backends/file/e-book-backend-file.c:1003
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:4859
 msgid "Searching..."
-msgstr ""
+msgstr "Аԥшаара..."
 
 #: src/addressbook/backends/file/e-book-backend-file.c:1303
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
-msgstr ""
+msgstr "Аконтакт «%s» аԥсахра "
 
 #: src/addressbook/backends/file/e-book-backend-file.c:1484
 #: src/addressbook/backends/file/e-book-backend-file.c:1570
@@ -89,29 +88,29 @@ msgstr ""
 #: src/addressbook/libedata-book/e-book-sqlite.c:7441
 #, c-format
 msgid "Contact “%s” not found"
-msgstr ""
+msgstr "Аконтакт «%s» ԥшааӡам"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:1634
 #: src/addressbook/backends/file/e-book-backend-file.c:1717
 #, c-format
 msgid "Query “%s” not supported"
-msgstr ""
+msgstr "Адҵаалара «%s»  иаднакылом"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:1643
 #: src/addressbook/backends/file/e-book-backend-file.c:1726
 #, c-format
 msgid "Invalid Query “%s”"
-msgstr ""
+msgstr "Иҟамло адҵаалара «%s»"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:2031
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2110
 msgid "Requested to delete an unrelated cursor"
-msgstr ""
+msgstr "Еидҳәалам ахырхага  аныхразы адҵаалара ҟаҵоуп"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:2102
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
-msgstr ""
+msgstr "Адыррақәа рбаза ахьӡ«%s» аҟынтәи  «%s» ахь аԥсахра залшом: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1158
@@ -160,7 +159,7 @@ msgstr ""
 #: src/camel/providers/nntp/camel-nntp-store.c:419
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
 #: src/libedataserver/e-soup-session.c:930
-#: src/libedataserver/e-soup-session.c:1766
+#: src/libedataserver/e-soup-session.c:1804
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:230
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:778
 #: src/libedataserverui/e-reminders-widget.c:2141
@@ -172,49 +171,49 @@ msgstr "Еилкаам агха"
 #. * operation on the LDAP address book which is not connected to the server
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:109
 msgid "Not connected"
-msgstr ""
+msgstr "Иаҿакӡам"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:893
 msgid "Failed to bind using either v3 or v2 binds"
-msgstr ""
+msgstr "Амодуль 2 мамзар 3 аверсиа ахархәараан иҟалеит аиԥшьра агха"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1004
 msgid "Reconnecting to LDAP server..."
-msgstr ""
+msgstr "Асервер LDAP еиҭа аҽаҿакра"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1139
 msgid "Invalid DN syntax"
-msgstr ""
+msgstr "Иҟамло асинтаксис алкааратә ахьӡ  (DN) аҟны"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1155
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:4743
 #, c-format
 msgid "LDAP error 0x%x (%s)"
-msgstr ""
+msgstr "LDAP 0x%x (%s) аҟны иҟалеит агха"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1805
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:2156
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:2169
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
-msgstr ""
+msgstr "%s:  NULL аҵакы ырхынҳәуп ldap_first_entry аҟынтә"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:2084
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:2228
 #, c-format
 msgid "%s: Unhandled result type %d returned"
-msgstr ""
+msgstr "%s:  аус зыдулам алҵшәа ахкы  %d ырхынҳәуп"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:2371
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:2509
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:6325
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
-msgstr ""
+msgstr "%s:  аус зыдулам алҵшәа аԥшаара ахкы  %d ырхынҳәуп"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:2667
 msgid "LDAP contact lists cannot be empty."
-msgstr ""
+msgstr "LDAP аконтактқәа рыхьӡынҵа ҭацәызар ҟалаӡом."
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:2705
 #, c-format
@@ -229,72 +228,72 @@ msgstr[1] ""
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:4682
 msgid "Receiving LDAP search results..."
-msgstr ""
+msgstr "Асервер LDAP аҟынтә алҵшәақәа риура...."
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:4885
 msgid "Error performing search"
-msgstr ""
+msgstr "Аԥшара аԥҵара агха"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5033
 #, c-format
 msgid "Downloading contacts (%d)..."
-msgstr ""
+msgstr "Аконтактқәа рҭагалара (%d)…"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5134
 #: src/addressbook/libedata-book/e-book-meta-backend.c:821
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:722
 msgid "Refreshing…"
-msgstr ""
+msgstr "Исырҿыцуеит..."
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5620
 msgid "The backend does not support bulk additions"
-msgstr ""
+msgstr "Адраивер азеԥш ацҵарақәа ирыцхрааӡом"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5715
 msgid "Adding contact to LDAP server..."
-msgstr ""
+msgstr "Асервер LDAP аҟны аконтакт аԥҵара..."
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5777
 msgid "The backend does not support bulk modifications"
-msgstr ""
+msgstr "Азеиԥш  ԥсахрақәа адраивер рыцхрааӡом"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5799
 msgid "Modifying contact from LDAP server..."
-msgstr ""
+msgstr "Асервер LDAP аҟны аконтакт аԥсахра..."
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5871
 msgid "Removing contact from LDAP server..."
-msgstr ""
+msgstr "Асервер LDAP аҟынтә аконтакт аныхра..."
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:6522
 #, c-format
 msgid "Failed to get the DN for user “%s”"
-msgstr ""
+msgstr "Ахархәаҩ «%s» изы DN аиура залымшеит"
 
 #: src/addressbook/libebook-contacts/e-book-contacts-utils.c:40
 msgid "No such book"
-msgstr ""
+msgstr "Ари аҩыза ашәҟәы ыҟаӡам"
 
 #: src/addressbook/libebook-contacts/e-book-contacts-utils.c:42
 msgid "Contact not found"
-msgstr ""
+msgstr "Аконтакт ԥшааӡам"
 
 #: src/addressbook/libebook-contacts/e-book-contacts-utils.c:44
 msgid "Contact ID already exists"
-msgstr ""
+msgstr "Аконтакт ахаҭашьақәыргылара шьҭа иҟоуп"
 
 #: src/addressbook/libebook-contacts/e-book-contacts-utils.c:46
 msgid "No such source"
-msgstr ""
+msgstr "Иҟаӡам ари аҩыза ахыҵхырҭа"
 
 #: src/addressbook/libebook-contacts/e-book-contacts-utils.c:48
 msgid "No space"
-msgstr ""
+msgstr "Аҭыԥ маҷуп"
 
 #. Dummy row as EContactField starts from 1
 #: src/addressbook/libebook-contacts/e-contact.c:149
 msgid "Unique ID"
-msgstr ""
+msgstr "Иуникалу ID"
 
 #. FILE_AS is not really a structured field - we use a getter/setter
 #. * so we can generate its value if necessary in the getter
@@ -302,12 +301,12 @@ msgstr ""
 #. * preferred user's description (or display name) of the contact. Note 'File' is a verb here.
 #: src/addressbook/libebook-contacts/e-contact.c:154
 msgid "File Under"
-msgstr ""
+msgstr "Аҵаҟа аиқәырхара"
 
 #. URI of the book to which the contact belongs to
 #: src/addressbook/libebook-contacts/e-contact.c:156
 msgid "Book UID"
-msgstr ""
+msgstr "UID ашәҟәқәа"
 
 #. Name fields
 #. FN isn't really a structured field - we use a getter/setter
@@ -315,15 +314,15 @@ msgstr ""
 #. * vcards that don't even have a N attribute.  *sigh*)
 #: src/addressbook/libebook-contacts/e-contact.c:162
 msgid "Full Name"
-msgstr ""
+msgstr "Ахьӡ нагӡаны"
 
 #: src/addressbook/libebook-contacts/e-contact.c:163
 msgid "Given Name"
-msgstr ""
+msgstr "Ахьӡ"
 
 #: src/addressbook/libebook-contacts/e-contact.c:164
 msgid "Family Name"
-msgstr ""
+msgstr "Ажәла"
 
 #: src/addressbook/libebook-contacts/e-contact.c:165
 #: src/libedataserverui/e-certificate-widget.c:415
@@ -333,73 +332,73 @@ msgstr "Ахьӡырҩашьа"
 #. Email fields
 #: src/addressbook/libebook-contacts/e-contact.c:168
 msgid "Email 1"
-msgstr ""
+msgstr "Аел.ԥошьҭа 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:169
 msgid "Email 2"
-msgstr ""
+msgstr "Аел.ԥошьҭа 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:170
 msgid "Email 3"
-msgstr ""
+msgstr "Аел. ԥошьҭа 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:171
 msgid "Email 4"
-msgstr ""
+msgstr "Аел. ԥошьҭа 4"
 
 #: src/addressbook/libebook-contacts/e-contact.c:173
 msgid "Mailer"
-msgstr ""
+msgstr "Аԥошьҭа аҭааҩ"
 
 #. Address Labels
 #: src/addressbook/libebook-contacts/e-contact.c:176
 msgid "Home Address Label"
-msgstr ""
+msgstr "Аҩныҟатәи аҭыӡҭыԥ адыргақәҵа"
 
 #: src/addressbook/libebook-contacts/e-contact.c:177
 msgid "Work Address Label"
-msgstr ""
+msgstr "Аусуратә ишәа адыргақәҵа"
 
 #: src/addressbook/libebook-contacts/e-contact.c:178
 msgid "Other Address Label"
-msgstr ""
+msgstr "Егьи аҭыӡҭыԥ адыргақәҵа"
 
 #. Phone fields
 #: src/addressbook/libebook-contacts/e-contact.c:181
 msgid "Assistant Phone"
-msgstr ""
+msgstr "Ацхырааҩ иҭел"
 
 #: src/addressbook/libebook-contacts/e-contact.c:182
 msgid "Business Phone"
-msgstr ""
+msgstr "Амаҵуратә ҭел"
 
 #: src/addressbook/libebook-contacts/e-contact.c:183
 msgid "Business Phone 2"
-msgstr ""
+msgstr "Амаҵуратә ҭел 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:184
 msgid "Business Fax"
-msgstr ""
+msgstr "Аусуратә факс"
 
 #: src/addressbook/libebook-contacts/e-contact.c:185
 msgid "Callback Phone"
-msgstr ""
+msgstr "Шьҭахьҟа асразы аҭел"
 
 #: src/addressbook/libebook-contacts/e-contact.c:186
 msgid "Car Phone"
-msgstr ""
+msgstr "Аҭел амашьынаҟны"
 
 #: src/addressbook/libebook-contacts/e-contact.c:187
 msgid "Company Phone"
-msgstr ""
+msgstr "Ахеидкыла аҭел"
 
 #: src/addressbook/libebook-contacts/e-contact.c:188
 msgid "Home Phone"
-msgstr ""
+msgstr "Аҩныҟатәи аҭел"
 
 #: src/addressbook/libebook-contacts/e-contact.c:189
 msgid "Home Phone 2"
-msgstr ""
+msgstr "Аҩныҟатәи аҭел 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:190
 msgid "Home Fax"
@@ -411,15 +410,15 @@ msgstr "ISDN"
 
 #: src/addressbook/libebook-contacts/e-contact.c:192
 msgid "Mobile Phone"
-msgstr ""
+msgstr "Амобилтә ҭел"
 
 #: src/addressbook/libebook-contacts/e-contact.c:193
 msgid "Other Phone"
-msgstr ""
+msgstr "Егьырҭ аҭелқәа"
 
 #: src/addressbook/libebook-contacts/e-contact.c:194
 msgid "Other Fax"
-msgstr ""
+msgstr "Егьи афакс"
 
 #: src/addressbook/libebook-contacts/e-contact.c:195
 msgid "Pager"
@@ -427,7 +426,7 @@ msgstr "Пеиджер"
 
 #: src/addressbook/libebook-contacts/e-contact.c:196
 msgid "Primary Phone"
-msgstr ""
+msgstr "Ихадоу аҭел"
 
 #: src/addressbook/libebook-contacts/e-contact.c:197
 msgid "Radio"
@@ -459,7 +458,7 @@ msgstr "Аофис"
 
 #: src/addressbook/libebook-contacts/e-contact.c:206
 msgid "Title"
-msgstr ""
+msgstr "Ахы"
 
 #: src/addressbook/libebook-contacts/e-contact.c:207
 msgid "Role"
@@ -467,7 +466,7 @@ msgstr "Ароль"
 
 #: src/addressbook/libebook-contacts/e-contact.c:208
 msgid "Manager"
-msgstr ""
+msgstr "Аменеджер"
 
 #: src/addressbook/libebook-contacts/e-contact.c:209
 msgid "Assistant"
@@ -476,11 +475,11 @@ msgstr "Ацхырааҩ"
 #. Web fields
 #: src/addressbook/libebook-contacts/e-contact.c:212
 msgid "Homepage URL"
-msgstr ""
+msgstr "Аҩныҟатәи адаҟьа URL"
 
 #: src/addressbook/libebook-contacts/e-contact.c:213
 msgid "Weblog URL"
-msgstr ""
+msgstr "Веблог URL"
 
 #. Contact categories
 #: src/addressbook/libebook-contacts/e-contact.c:216
@@ -490,24 +489,24 @@ msgstr "Акатегориақәа"
 #. Collaboration fields
 #: src/addressbook/libebook-contacts/e-contact.c:219
 msgid "Calendar URI"
-msgstr ""
+msgstr "Амзар URL"
 
 #: src/addressbook/libebook-contacts/e-contact.c:220
 msgid "Free/Busy URL"
-msgstr ""
+msgstr "Азхьарԥш (URL) \"ахы дақәиҭоуп/еилахоуп\""
 
 #: src/addressbook/libebook-contacts/e-contact.c:221
 msgid "ICS Calendar"
-msgstr ""
+msgstr "ICS аформат змоу амзар"
 
 #: src/addressbook/libebook-contacts/e-contact.c:222
 msgid "Video Conferencing URL"
-msgstr ""
+msgstr " Авидеоконференциа URL"
 
 #. Misc fields
 #: src/addressbook/libebook-contacts/e-contact.c:225
 msgid "Spouse’s Name"
-msgstr ""
+msgstr "ахаҵа/аԥҳәыс рыхьӡ"
 
 #: src/addressbook/libebook-contacts/e-contact.c:226
 msgid "Note"
@@ -516,181 +515,181 @@ msgstr "Азгәаҭа"
 #. Instant messaging fields
 #: src/addressbook/libebook-contacts/e-contact.c:229
 msgid "AIM Home Screen Name 1"
-msgstr ""
+msgstr "AIM — аҩныҟатәи аекрантә ахьӡ 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:230
 msgid "AIM Home Screen Name 2"
-msgstr ""
+msgstr "AIM — аҩныҟатәи аекрантә ахьӡ 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:231
 msgid "AIM Home Screen Name 3"
-msgstr ""
+msgstr "AIM — аҩныҟатәи аекрантә ахьӡ 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:232
 msgid "AIM Work Screen Name 1"
-msgstr ""
+msgstr "AIM —аусуратә аекрантә ахьӡ 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:233
 msgid "AIM Work Screen Name 2"
-msgstr ""
+msgstr "AIM — аусуратә аекрантә ахьӡ 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:234
 msgid "AIM Work Screen Name 3"
-msgstr ""
+msgstr "AIM — аусуратә аекрантә ахьӡ 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:235
 msgid "GroupWise Home Screen Name 1"
-msgstr ""
+msgstr "Groupwise — аҩныҟатәи аекрантә ахьӡ 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:236
 msgid "GroupWise Home Screen Name 2"
-msgstr ""
+msgstr "Groupwise — аҩныҟатәи аекрантә ахьӡ 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:237
 msgid "GroupWise Home Screen Name 3"
-msgstr ""
+msgstr "Groupwise — аҩныҟатәи аекрантә ахьӡ 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:238
 msgid "GroupWise Work Screen Name 1"
-msgstr ""
+msgstr "Groupwise — аусуратә аекрантә ахьӡ 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:239
 msgid "GroupWise Work Screen Name 2"
-msgstr ""
+msgstr "Groupwise — аусуратә аекрантә ахьӡ 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:240
 msgid "GroupWise Work Screen Name 3"
-msgstr ""
+msgstr "Groupwise — аусуратә аекрантә ахьӡ  3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:241
 msgid "Jabber Home ID 1"
-msgstr ""
+msgstr "Jabber — аҩныҟатәи ахаҭарбага 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:242
 msgid "Jabber Home ID 2"
-msgstr ""
+msgstr "Jabber — аҩныҟатәи хаҭарбага 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:243
 msgid "Jabber Home ID 3"
-msgstr ""
+msgstr "Jabber — аҩныҟатәи хаҭарбага 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:244
 msgid "Jabber Work ID 1"
-msgstr ""
+msgstr "Jabber — аусуратә хаҭарбага 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:245
 msgid "Jabber Work ID 2"
-msgstr ""
+msgstr "Jabber — аусуратә хаҭарбага 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:246
 msgid "Jabber Work ID 3"
-msgstr ""
+msgstr "Jabber — аусуратә хаҭарбага 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:247
 msgid "Yahoo! Home Screen Name 1"
-msgstr ""
+msgstr "Yahoo! — аҩныҟатәи аекрантә ахьӡ 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:248
 msgid "Yahoo! Home Screen Name 2"
-msgstr ""
+msgstr "Yahoo! — аҩныҟатәи аекрантә ахьӡ 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:249
 msgid "Yahoo! Home Screen Name 3"
-msgstr ""
+msgstr "Yahoo! — аҩныҟатәи аекрантә ахьӡ 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:250
 msgid "Yahoo! Work Screen Name 1"
-msgstr ""
+msgstr "Yahoo! — аусуратә аекрантә ахьӡ 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:251
 msgid "Yahoo! Work Screen Name 2"
-msgstr ""
+msgstr "Yahoo! — аусуратә аекрантә ахьӡ 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:252
 msgid "Yahoo! Work Screen Name 3"
-msgstr ""
+msgstr "Yahoo! — аусуратә аекрантә ахьӡ 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:253
 msgid "MSN Home Screen Name 1"
-msgstr ""
+msgstr "MSN — аҩныҟатәи аекрантә ахьӡ 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:254
 msgid "MSN Home Screen Name 2"
-msgstr ""
+msgstr "MSN — аҩныҟатәи аекрантә ахьӡ 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:255
 msgid "MSN Home Screen Name 3"
-msgstr ""
+msgstr "MSN — аҩныҟатәи аекрантә ахьӡ 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:256
 msgid "MSN Work Screen Name 1"
-msgstr ""
+msgstr "MSN — аусуратә аекрантә ахьӡ 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:257
 msgid "MSN Work Screen Name 2"
-msgstr ""
+msgstr "MSN — аусуратә аекрантә ахьӡ 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:258
 msgid "MSN Work Screen Name 3"
-msgstr ""
+msgstr "MSN — аусуратә аекрантә ахьӡ 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:259
 msgid "ICQ Home ID 1"
-msgstr ""
+msgstr "ICQ — аҩныҟатәи хаҭарбага 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:260
 msgid "ICQ Home ID 2"
-msgstr ""
+msgstr "ICQ — аҩныҟатәи хаҭарбага 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:261
 msgid "ICQ Home ID 3"
-msgstr ""
+msgstr "ICQ — аҩныҟатәи хаҭарбага 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:262
 msgid "ICQ Work ID 1"
-msgstr ""
+msgstr "ICQ — аусуратә хаҭарбага 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:263
 msgid "ICQ Work ID 2"
-msgstr ""
+msgstr "ICQ — аусуратә хаҭарбага 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:264
 msgid "ICQ Work ID 3"
-msgstr ""
+msgstr "ICQ — аусуратә хаҭарбага 3"
 
 #. Last modified time
 #: src/addressbook/libebook-contacts/e-contact.c:267
 msgid "Last Revision"
-msgstr ""
+msgstr "Аҵыхәтәантәи аверсиа"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * virtual field, which returns either name of the contact or the organization
 #. * name, recognized by multiple other fields, where the first filled is used.
 #: src/addressbook/libebook-contacts/e-contact.c:271
 msgid "Name or Org"
-msgstr ""
+msgstr "Ахьӡ мамзар Ахеид."
 
 #. Address fields
 #: src/addressbook/libebook-contacts/e-contact.c:274
 msgid "Address List"
-msgstr ""
+msgstr "Аҭыӡҭыҧқәа рыхьӡынҵа"
 
 #: src/addressbook/libebook-contacts/e-contact.c:275
 msgid "Home Address"
-msgstr ""
+msgstr "Аҩныҟатәи  ахьӡынҵа"
 
 #: src/addressbook/libebook-contacts/e-contact.c:276
 msgid "Work Address"
-msgstr ""
+msgstr "Аусуратә ахьӡынҵа"
 
 #: src/addressbook/libebook-contacts/e-contact.c:277
 msgid "Other Address"
-msgstr ""
+msgstr "Егьи аҭыӡҭыҧ"
 
 #. Contact categories
 #: src/addressbook/libebook-contacts/e-contact.c:280
 msgid "Category List"
-msgstr ""
+msgstr "Акатегориақәа рыхбӡынҵа"
 
 #. Photo/Logo
 #: src/addressbook/libebook-contacts/e-contact.c:283
@@ -699,7 +698,7 @@ msgstr "Аԥшранҵа"
 
 #: src/addressbook/libebook-contacts/e-contact.c:284
 msgid "Logo"
-msgstr ""
+msgstr "Алоготип"
 
 #. Translators: This is an EContact field description, in this case it's a name
 #. * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
@@ -710,36 +709,36 @@ msgstr "Ахьӡ"
 
 #: src/addressbook/libebook-contacts/e-contact.c:289
 msgid "Email List"
-msgstr ""
+msgstr "Аел. ҧошьҭақәа рыхьӡынҵа"
 
 #. Instant messaging fields
 #: src/addressbook/libebook-contacts/e-contact.c:292
 msgid "AIM Screen Name List"
-msgstr ""
+msgstr "Аекрантә ахьӡқәа  AIM рыхьӡынҵа"
 
 #: src/addressbook/libebook-contacts/e-contact.c:293
 msgid "GroupWise ID List"
-msgstr ""
+msgstr "Ахаҭарбагақәа Groupwise рыхьӡынҵа"
 
 #: src/addressbook/libebook-contacts/e-contact.c:294
 msgid "Jabber ID List"
-msgstr ""
+msgstr "Ахаҭарбагақәа Jabber  рыхьӡынҵа"
 
 #: src/addressbook/libebook-contacts/e-contact.c:295
 msgid "Yahoo! Screen Name List"
-msgstr ""
+msgstr "Аекрантә ахьӡқәа Yahoo рыхьӡынҵа!"
 
 #: src/addressbook/libebook-contacts/e-contact.c:296
 msgid "MSN Screen Name List"
-msgstr ""
+msgstr "Аекрантә ахьӡқәа MSN рыхьӡынҵа"
 
 #: src/addressbook/libebook-contacts/e-contact.c:297
 msgid "ICQ ID List"
-msgstr ""
+msgstr "Ахаҭарбагақәа ICQ  рыхьӡынҵа"
 
 #: src/addressbook/libebook-contacts/e-contact.c:299
 msgid "Wants HTML Mail"
-msgstr ""
+msgstr "Еиҳа еиӷьишьоит  HTML аҟны"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * field describing whether it's a Contact list (list of email addresses) or a
@@ -754,198 +753,198 @@ msgstr "Ахьӡынҵа"
 #. * message header when sending messages to this Contact list.
 #: src/addressbook/libebook-contacts/e-contact.c:309
 msgid "List Shows Addresses"
-msgstr ""
+msgstr "Ахьӡынҵа иунарбоит аҭыӡҭыҧқәа"
 
 #: src/addressbook/libebook-contacts/e-contact.c:311
 msgid "Birth Date"
-msgstr ""
+msgstr "Аира амш"
 
 #: src/addressbook/libebook-contacts/e-contact.c:312
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:957
 msgid "Anniversary"
-msgstr ""
+msgstr "Ашықәсхыҵра"
 
 #. Security fields
 #: src/addressbook/libebook-contacts/e-contact.c:315
 msgid "X.509 Certificate"
-msgstr ""
+msgstr "Асертификат X.509"
 
 #: src/addressbook/libebook-contacts/e-contact.c:316
 msgid "PGP Certificate"
-msgstr ""
+msgstr "Асертификат PGP"
 
 #: src/addressbook/libebook-contacts/e-contact.c:318
 msgid "Gadu-Gadu Home ID 1"
-msgstr ""
+msgstr "Gadu-Gadu — аҩныҟатәи ахаҭарбага 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:319
 msgid "Gadu-Gadu Home ID 2"
-msgstr ""
+msgstr "Gadu-Gadu — аҩныҟатәи ахаҭарбага 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:320
 msgid "Gadu-Gadu Home ID 3"
-msgstr ""
+msgstr "Gadu-Gadu — аҩныҟатәи ахаҭарбага 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:321
 msgid "Gadu-Gadu Work ID 1"
-msgstr ""
+msgstr "Gadu-Gadu — аусуратә ахаҭарбага 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:322
 msgid "Gadu-Gadu Work ID 2"
-msgstr ""
+msgstr "Gadu-Gadu — аусуратә ахаҭарбага 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:323
 msgid "Gadu-Gadu Work ID 3"
-msgstr ""
+msgstr "Gadu-Gadu — аусуратә ахаҭарбага 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:324
 msgid "Gadu-Gadu ID List"
-msgstr ""
+msgstr "Ахаҭарбагақәа рыхьӡынҵа Gadu-Gadu"
 
 #. Geo information
 #: src/addressbook/libebook-contacts/e-contact.c:327
 msgid "Geographic Information"
-msgstr ""
+msgstr "Агеографиатә дырра"
 
 #: src/addressbook/libebook-contacts/e-contact.c:329
 msgid "Telephone"
-msgstr ""
+msgstr "Аҭел"
 
 #: src/addressbook/libebook-contacts/e-contact.c:331
 msgid "Skype Home Name 1"
-msgstr ""
+msgstr "Skype - аҩныҟатәи аекрантә ахьӡ 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:332
 msgid "Skype Home Name 2"
-msgstr ""
+msgstr "Skype - аҩныҟатәи аекрантә ахьӡ 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:333
 msgid "Skype Home Name 3"
-msgstr ""
+msgstr "Skype - аҩныҟатәи аекрантә ахьӡ 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:334
 msgid "Skype Work Name 1"
-msgstr ""
+msgstr "Skype - аусуратә аекрантә ахьӡ 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:335
 msgid "Skype Work Name 2"
-msgstr ""
+msgstr "Skype - аусуратә аекрантә ахьӡ 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:336
 msgid "Skype Work Name 3"
-msgstr ""
+msgstr "Skype - аусуратә аекрантә ахьӡ 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:337
 msgid "Skype Name List"
-msgstr ""
+msgstr "Список экранных имён Skype"
 
 #: src/addressbook/libebook-contacts/e-contact.c:339
 msgid "SIP address"
-msgstr ""
+msgstr "Аҭыӡҭыҧ SIP"
 
 #: src/addressbook/libebook-contacts/e-contact.c:341
 msgid "Google Talk Home Name 1"
-msgstr ""
+msgstr "Google Talk — аҩныҟатәи аекрантә ахьӡ 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:342
 msgid "Google Talk Home Name 2"
-msgstr ""
+msgstr "Google Talk — аҩныҟатәи аекрантә ахьӡ 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:343
 msgid "Google Talk Home Name 3"
-msgstr ""
+msgstr "Google Talk — аҩныҟатәи аекрантә ахьӡ 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:344
 msgid "Google Talk Work Name 1"
-msgstr ""
+msgstr "Google Talk — аусуратә аекрантә ахьӡ 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:345
 msgid "Google Talk Work Name 2"
-msgstr ""
+msgstr "Google Talk — аусуратә аекрантә ахьӡ 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:346
 msgid "Google Talk Work Name 3"
-msgstr ""
+msgstr "Google Talk — аусуратә аекрантә ахьӡ 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:347
 msgid "Google Talk Name List"
-msgstr ""
+msgstr "Аекрантә ахьӡқәа рыхьӡынҵа  Google Talk"
 
 #: src/addressbook/libebook-contacts/e-contact.c:349
 msgid "Twitter Name List"
-msgstr ""
+msgstr "Ахьӡқәа рыхьӡынҵа Twitter"
 
 #: src/addressbook/libebook-contacts/e-contact.c:351
 msgid "Matrix Home ID 1"
-msgstr ""
+msgstr "Matrix Home ID 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:352
 msgid "Matrix Home ID 2"
-msgstr ""
+msgstr "Matrix Home ID 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:353
 msgid "Matrix Home ID 3"
-msgstr ""
+msgstr "Matrix Home ID 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:354
 msgid "Matrix Work ID 1"
-msgstr ""
+msgstr "Matrix Work ID 1"
 
 #: src/addressbook/libebook-contacts/e-contact.c:355
 msgid "Matrix Work ID 2"
-msgstr ""
+msgstr "Matrix Work ID 2"
 
 #: src/addressbook/libebook-contacts/e-contact.c:356
 msgid "Matrix Work ID 3"
-msgstr ""
+msgstr "Matrix Work ID 3"
 
 #: src/addressbook/libebook-contacts/e-contact.c:357
 msgid "Matrix ID List"
-msgstr ""
+msgstr "Matrix ID List"
 
 #: src/addressbook/libebook-contacts/e-contact.c:1924
 #: src/addressbook/libebook/e-destination.c:915
 msgid "Unnamed List"
-msgstr ""
+msgstr "Ихьӡыдоу ахьӡынҵа "
 
 #: src/addressbook/libebook-contacts/e-phone-number.c:39
 msgid "The library was built without phone number support."
-msgstr ""
+msgstr "Абиблиотека еизгоуп аҭел пномерқәа рыцхыраарада"
 
 #: src/addressbook/libebook-contacts/e-phone-number.c:41
 msgid "The phone number parser reported a yet unknown error code."
-msgstr ""
+msgstr "Аҭел аномерқәа анализҟаҵага иаанырԥшит  еилкаам агха акод"
 
 #: src/addressbook/libebook-contacts/e-phone-number.c:43
 msgid "Not a phone number"
-msgstr ""
+msgstr "Ииагам аномер"
 
 #: src/addressbook/libebook-contacts/e-phone-number.c:45
 msgid "Invalid country calling code"
-msgstr ""
+msgstr "Ииашам атәыла акод"
 
 #: src/addressbook/libebook-contacts/e-phone-number.c:47
 msgid ""
 "Remaining text after the country calling code is too short for a phone number"
-msgstr ""
+msgstr "Атәыла акод ашьҭахь ицо атекст амцхә икьаҿуп аҭел аномер азы "
 
 #: src/addressbook/libebook-contacts/e-phone-number.c:49
 msgid "Text is too short for a phone number"
-msgstr ""
+msgstr "Атекст амцхә икьаҿоуп аҭел аномар азы"
 
 #: src/addressbook/libebook-contacts/e-phone-number.c:51
 msgid "Text is too long for a phone number"
-msgstr ""
+msgstr "Атекст амцхә иауп  аҭел аномар азы"
 
 #: src/addressbook/libebook/e-book-client.c:925
 #, c-format
 msgid "Unknown book property “%s”"
-msgstr ""
+msgstr "Ашәҟәы «%s» еилкаам аҷыдаҟазшьа"
 
 #: src/addressbook/libebook/e-book-client.c:940
 #, c-format
 msgid "Cannot change value of book property “%s”"
-msgstr ""
+msgstr "Ашәҟәы «%s»  аҷыдаҟазшьа аҵакы аԥсахра ауам"
 
 #: src/addressbook/libebook/e-book-client.c:1383
 #: src/addressbook/libebook/e-book-client.c:1614
@@ -960,12 +959,12 @@ msgstr ""
 #: src/calendar/libecal/e-cal-client-view.c:667
 #, c-format
 msgid "Client disappeared"
-msgstr ""
+msgstr "Аҭааҩ дыӡит"
 
 #: src/addressbook/libedata-book/e-book-backend.c:3440
 #, c-format
 msgid "Addressbook backend does not support cursors"
-msgstr ""
+msgstr "Аҭыӡҭыԥтә сервер ахырхагақәа аднакылаӡом"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:895
 #: src/addressbook/libedata-book/e-book-sqlite.c:2254
@@ -1240,25 +1239,25 @@ msgstr ""
 
 #: src/addressbook/libedata-book/e-data-book-cursor.c:771
 msgid "Cursor does not support setting the search expression"
-msgstr ""
+msgstr "Ахырхага аҧшааратә ажәаҳәахьа  ашьақәыргылара  аднакылаӡом  "
 
 #: src/addressbook/libedata-book/e-data-book-cursor.c:858
 msgid "Cursor does not support step"
-msgstr ""
+msgstr "Ахырхага иаднакылаӡом ашьаҿа"
 
 #: src/addressbook/libedata-book/e-data-book-cursor.c:934
 msgid "Cursor does not support alphabetic indexes"
-msgstr ""
+msgstr "Ахырхага иаднакылаӡом алфавиттә индексқәа"
 
 #: src/addressbook/libedata-book/e-data-book-cursor-cache.c:92
 #: src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:260
 msgid "Unrecognized cursor origin"
-msgstr ""
+msgstr "Иеилкаамхаз ахырхага аоригинал"
 
 #: src/addressbook/libedata-book/e-data-book-cursor-cache.c:151
 #: src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:328
 msgid "Out of sync revision while moving cursor"
-msgstr ""
+msgstr "Аревизиа  асинхронркра аҧыхра ҟалеит ахырхага аиҭагараан"
 
 #: src/addressbook/libedata-book/e-data-book-cursor-cache.c:222
 #: src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:422
@@ -1268,18 +1267,18 @@ msgstr ""
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:221
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
-msgstr ""
+msgstr "Иарбоу URL «%s»  амзар CalDAV иазхьаҧшӡом"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1474
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1477
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1189
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. Remove it, please."
 msgstr ""
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1986
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1989
 msgid "Failed to parse response data"
-msgstr ""
+msgstr "Аҭак адыррақәа реилыргара залымшеит"
 
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:959
 msgid "Birthday"
@@ -1288,37 +1287,37 @@ msgstr "Аирамш"
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:995
 #, c-format
 msgid "Birthday: %s"
-msgstr ""
+msgstr "Аирамш: %s"
 
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:1026
 #, c-format
 msgid "Anniversary: %s"
-msgstr ""
+msgstr "Ашықәсхыҵра: %s"
 
 #: src/calendar/backends/file/e-cal-backend-file.c:43
 msgid "Cannot get URI"
-msgstr ""
+msgstr "URI аура ауам"
 
 #: src/calendar/backends/file/e-cal-backend-file.c:243
 msgid "Cannot save calendar data: Malformed URI."
-msgstr ""
+msgstr "Амзар  адыррақәа реиқәырхара залшом : Ииашам URI."
 
 #: src/calendar/backends/file/e-cal-backend-file.c:250
 #: src/calendar/backends/file/e-cal-backend-file.c:256
 msgid "Cannot save calendar data"
-msgstr ""
+msgstr "Амзар адыррақәа реиқәырхара залшом"
 
 #: src/calendar/backends/file/e-cal-backend-file.c:1187
 #: src/calendar/backends/file/e-cal-backend-file.c:1316
 #, c-format
 msgid "Cannot parse ISC file “%s”"
-msgstr ""
+msgstr "Афайл ISC «%s» аилыргара ауам"
 
 #: src/calendar/backends/file/e-cal-backend-file.c:1198
 #: src/calendar/backends/file/e-cal-backend-file.c:1327
 #, c-format
 msgid "File “%s” is not a VCALENDAR component"
-msgstr ""
+msgstr "Афаил «%s» VCALENDAR ахәҭа акәӡам"
 
 #. FIXME This should be doable once all the recurid stuff is done
 #: src/calendar/backends/file/e-cal-backend-file.c:3742
@@ -1327,66 +1326,66 @@ msgstr ""
 #: src/calendar/backends/file/e-cal-backend-file.c:3781
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:2596
 msgid "Unsupported method"
-msgstr ""
+msgstr "Адкылашьа змам аметод"
 
 #: src/calendar/backends/http/e-cal-backend-http.c:221
 msgid "URI not set"
-msgstr ""
+msgstr "URI  шьақәыргылаӡам"
 
 #: src/calendar/backends/http/e-cal-backend-http.c:299
 #, c-format
 msgid "Malformed URI “%s”: %s"
-msgstr ""
+msgstr "Ииашам URI «%s»: %s"
 
 #: src/calendar/backends/http/e-cal-backend-http.c:433
 #, c-format
 msgid "Bad file format."
-msgstr ""
+msgstr "Афаил ииашам аформат."
 
 #: src/calendar/backends/http/e-cal-backend-http.c:442
 #, c-format
 msgid "Not a calendar."
-msgstr ""
+msgstr "Амзар акәӡам."
 
 #: src/calendar/backends/weather/e-cal-backend-weather.c:214
 msgid "Could not retrieve weather data"
-msgstr ""
+msgstr "Амш зеиԥшрахо иазкны аинформациа аиура залымшеит"
 
 #: src/calendar/backends/weather/e-cal-backend-weather.c:358
 msgid "Weather: Fog"
-msgstr ""
+msgstr "Амш зеиҧшрахо: Анаҟә хылоит"
 
 #: src/calendar/backends/weather/e-cal-backend-weather.c:359
 msgid "Weather: Cloudy Night"
-msgstr ""
+msgstr "Амш зеиҧшрахо: Ишәшьу ацх"
 
 #: src/calendar/backends/weather/e-cal-backend-weather.c:360
 msgid "Weather: Cloudy"
-msgstr ""
+msgstr "Амш зеиҧшрахо: Ашәшьра"
 
 #: src/calendar/backends/weather/e-cal-backend-weather.c:361
 msgid "Weather: Overcast"
-msgstr ""
+msgstr "Амш зеиҧшрахо: Еихашьшьуп"
 
 #: src/calendar/backends/weather/e-cal-backend-weather.c:362
 msgid "Weather: Showers"
-msgstr ""
+msgstr "Амш зеиҧшрахо: Ақәа леиуеит"
 
 #: src/calendar/backends/weather/e-cal-backend-weather.c:363
 msgid "Weather: Snow"
-msgstr ""
+msgstr "Амш зеиҧшрахо: Асы"
 
 #: src/calendar/backends/weather/e-cal-backend-weather.c:364
 msgid "Weather: Clear Night"
-msgstr ""
+msgstr "Амш зеиҧшрахо: Ацх ҵәца"
 
 #: src/calendar/backends/weather/e-cal-backend-weather.c:365
 msgid "Weather: Sunny"
-msgstr ""
+msgstr "Амш зеиҧшрахо: Амра ҧхоит"
 
 #: src/calendar/backends/weather/e-cal-backend-weather.c:366
 msgid "Weather: Thunderstorms"
-msgstr ""
+msgstr "Амш зеиҧшрахо: Адыдмацәыс"
 
 #. TRANSLATOR: This is the temperature in degrees Fahrenheit (\302\260 is U+00B0 DEGREE SIGN)
 #: src/calendar/backends/weather/e-cal-backend-weather.c:392
@@ -1404,7 +1403,7 @@ msgstr "%.1f °C"
 #: src/calendar/backends/weather/e-cal-backend-weather.c:398
 #, c-format
 msgid "%.1f K"
-msgstr ""
+msgstr "%.1f K"
 
 #: src/calendar/backends/weather/e-cal-backend-weather.c:404
 #, c-format
@@ -1414,11 +1413,11 @@ msgstr "%.1f"
 #: src/calendar/backends/weather/e-cal-backend-weather.c:567
 #: src/calendar/backends/weather/e-cal-backend-weather.c:595
 msgid "Forecast"
-msgstr ""
+msgstr "Азҧхьагәаҭара"
 
 #: src/calendar/backends/weather/e-cal-backend-weather.c:691
 msgid "Could not create cache file"
-msgstr ""
+msgstr "Акеш афаил аҧҵара залымшахеит"
 
 #: src/calendar/backends/weather/e-cal-backend-weather.c:693
 msgid "Could not create cache file: "
@@ -1431,41 +1430,41 @@ msgstr "Азгәаҭа ҿыц"
 
 #: src/calendar/libecal/e-cal-client.c:244
 msgid "No such calendar"
-msgstr ""
+msgstr "Ари аҩыза амзар ыҟаӡам"
 
 #: src/calendar/libecal/e-cal-client.c:246
 msgid "Object not found"
-msgstr ""
+msgstr "Аобиект ҧшааӡам"
 
 #: src/calendar/libecal/e-cal-client.c:248
 msgid "Invalid object"
-msgstr ""
+msgstr "Ииашам аобиект"
 
 #: src/calendar/libecal/e-cal-client.c:250
 msgid "Unknown user"
-msgstr ""
+msgstr "Еилкаам  ахархәаҩ"
 
 #: src/calendar/libecal/e-cal-client.c:252
 msgid "Object ID already exists"
-msgstr ""
+msgstr "Аобиект ахаҭарбага ҟалахьеит"
 
 #: src/calendar/libecal/e-cal-client.c:254
 msgid "Invalid range"
-msgstr ""
+msgstr "Ззин ыҟам аҵакыра"
 
 #: src/calendar/libecal/e-cal-client.c:1073
 #, c-format
 msgid "Unknown calendar property “%s”"
-msgstr ""
+msgstr "Амзар «%s» еилкаам алшара"
 
 #: src/calendar/libecal/e-cal-client.c:1088
 #, c-format
 msgid "Cannot change value of calendar property “%s”"
-msgstr ""
+msgstr "Амзар  «%s» алшара аҵакы аҧсахра залшом"
 
 #: src/calendar/libecal/e-cal-component.c:702
 msgid "Untitled appointment"
-msgstr ""
+msgstr "Ахы змам аиҧылара"
 
 #: src/calendar/libecal/e-cal-recur.c:4892
 msgid "1st"
@@ -2393,7 +2392,7 @@ msgstr ""
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:1755
 #, c-format
 msgid "“%s” expects one argument"
-msgstr ""
+msgstr "«%s»иаанагоит ҵаҵӷәык"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:84
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:707
@@ -2401,12 +2400,12 @@ msgstr ""
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:1594
 #, c-format
 msgid "“%s” expects the first argument to be a string"
-msgstr ""
+msgstr "«%s»иаанагоит ацәаҳәа раҧхьатәи аҵаҵӷәы аҳасабла"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:164
 #, c-format
 msgid "“%s” expects two or three arguments"
-msgstr ""
+msgstr "«%s»иаанагоит ҩба мамзар х-ҵаҵӷәык"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:171
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:272
@@ -2419,7 +2418,7 @@ msgstr ""
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:1762
 #, c-format
 msgid "“%s” expects the first argument to be a time_t"
-msgstr ""
+msgstr "«%s»иаанагоит раҧхьатәи аҵаҵӷәы аҳасабла  ахкы time_t"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:180
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:280
@@ -2427,17 +2426,17 @@ msgstr ""
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:935
 #, c-format
 msgid "“%s” expects the second argument to be a time_t"
-msgstr ""
+msgstr "«%s»иаанагоит раҧхьатәи аҵаҵӷәы аҳасабла ахкы time_t"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:190
 #, c-format
 msgid "“%s” expects the third argument to be a string"
-msgstr ""
+msgstr "«%s»иаанагоит ацәаҳәа ахҧатәи аҵаҵӷәы аҳасабла"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:264
 #, c-format
 msgid "“%s” expects none or two arguments"
-msgstr ""
+msgstr "«%s» иаанагоит ҩ-ҵаҵӷәык мамзар акгьы аанагаӡом"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:333
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:700
@@ -2445,7 +2444,7 @@ msgstr ""
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:1648
 #, c-format
 msgid "“%s” expects two arguments"
-msgstr ""
+msgstr "«%s» иаанагоит ҩ-ҵаҵӷәык"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:639
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:662
@@ -2459,7 +2458,7 @@ msgstr ""
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:1540
 #, c-format
 msgid "“%s” expects no arguments"
-msgstr ""
+msgstr "«%s»аҵаҵӷәқәа аанагаӡом"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:716
 #, c-format
@@ -2507,19 +2506,19 @@ msgstr ""
 #: src/calendar/libedata-cal/e-cal-cache.c:3020
 #, c-format
 msgid "Object “%s”, “%s” not found"
-msgstr ""
+msgstr "Аобиект «%s»,«%s» ҧшааӡам"
 
 #: src/calendar/libedata-cal/e-cal-cache.c:3799
 msgid "Cannot add timezone without tzid"
-msgstr ""
+msgstr "tzib ада асаатҭә маҟа ацҵара ауам"
 
 #: src/calendar/libedata-cal/e-cal-cache.c:3808
 msgid "Cannot add timezone without component"
-msgstr ""
+msgstr "Акомпонент ада асаатҭә маҟа ацҵара ауам"
 
 #: src/calendar/libedata-cal/e-cal-cache.c:3816
 msgid "Cannot add timezone with invalid component"
-msgstr ""
+msgstr "Иҟамло акомпонент змоу асаатҭә маҟа ацҵара ауам"
 
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1184
 #, c-format
@@ -2603,53 +2602,53 @@ msgstr ""
 #: src/camel/camel-cipher-context.c:194
 #, c-format
 msgid "Signing is not supported by this cipher"
-msgstr ""
+msgstr "Ари ашрифт анапынцамҭа аднакылаӡом"
 
 #: src/camel/camel-cipher-context.c:207
 #, c-format
 msgid "Verifying is not supported by this cipher"
-msgstr ""
+msgstr "Ари ашрифт агәаҭара аднакылаӡом"
 
 #: src/camel/camel-cipher-context.c:223
 #, c-format
 msgid "Encryption is not supported by this cipher"
-msgstr ""
+msgstr "Ари ашрифт ашифрркра аднакылаӡом"
 
 #: src/camel/camel-cipher-context.c:237
 #, c-format
 msgid "Decryption is not supported by this cipher"
-msgstr ""
+msgstr "Ари ашифр ашифраартра аднакылаӡом"
 
 #: src/camel/camel-cipher-context.c:352
 msgid "Signing message"
-msgstr ""
+msgstr "Ацҳамҭаанапаҵаҩра ҟалаӡом"
 
 #: src/camel/camel-cipher-context.c:644
 msgid "Encrypting message"
-msgstr ""
+msgstr "Ацҳамҭа шифркхоит"
 
 #: src/camel/camel-cipher-context.c:817
 msgid "Decrypting message"
-msgstr ""
+msgstr "Ацҳамҭа аашифраартра ҟалоит"
 
 #: src/camel/camel-data-cache.c:199
 #, c-format
 msgid "Unable to create cache path"
-msgstr ""
+msgstr "Кеш азы амҩа аԥҵара залымшеит"
 
 #: src/camel/camel-data-cache.c:528
 msgid "Empty cache file"
-msgstr ""
+msgstr "Кеш-фаил ҭацәуп"
 
 #: src/camel/camel-data-cache.c:605
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
-msgstr ""
+msgstr "Кешзызу аелемент аныхра залымшеит:%s: %s"
 
 #: src/camel/camel-db.c:882 src/camel/providers/local/camel-mbox-store.c:913
 #, c-format
 msgid "Could not rename “%s” to %s: %s"
-msgstr ""
+msgstr "«%s» ахьӡ аԥсахра %s ахь залымшеит: %s"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2657,60 +2656,60 @@ msgstr ""
 #: src/camel/camel-filter-driver.c:264
 #, c-format
 msgid "Transferring filtered messages in “%s : %s”"
-msgstr ""
+msgstr "«%s»аформат змоу араӡага иахысыз ацҳамҭақәа риагара: %s"
 
 #: src/camel/camel-filter-driver.c:1126 src/camel/camel-filter-search.c:936
 #, c-format
 msgid "Failed to create child process “%s”: %s"
-msgstr ""
+msgstr "Аҿыгатә процесс аԥҵараан аиԥҟьара иҟалеит «%s»: %s"
 
 #: src/camel/camel-filter-driver.c:1180
 #, c-format
 msgid "Invalid message stream received from %s: %s"
-msgstr ""
+msgstr "«%s»аҟынтә ииашам ацҳамҭақәа реишьҭаҵа шәоуит: %s"
 
 #: src/camel/camel-filter-driver.c:1404 src/camel/camel-filter-driver.c:1417
 msgid "Syncing folders"
-msgstr ""
+msgstr "Аҭаӡқәа рсинхронркра"
 
 #: src/camel/camel-filter-driver.c:1525
 #, c-format
 msgid "Error parsing filter: %s: %s"
-msgstr ""
+msgstr "Араӡага аиларгара залымшеит «%s»: %s"
 
 #: src/camel/camel-filter-driver.c:1536
 #, c-format
 msgid "Error executing filter: %s: %s"
-msgstr ""
+msgstr "Араӡага анагӡара агха «%s»: %s"
 
 #: src/camel/camel-filter-driver.c:1634
 #, c-format
 msgid "Unable to open spool folder"
-msgstr ""
+msgstr "Спул аҭаӡ аартра  залымшеит"
 
 #: src/camel/camel-filter-driver.c:1646
 #, c-format
 msgid "Unable to process spool folder"
-msgstr ""
+msgstr "Спул аҭаӡ аус адулара  залымшеит"
 
 #: src/camel/camel-filter-driver.c:1674
 #, c-format
 msgid "Getting message %d (%d%%)"
-msgstr ""
+msgstr "Ацҳамҭа аиура %d (%d%%)"
 
 #: src/camel/camel-filter-driver.c:1683 src/camel/camel-filter-driver.c:1706
 #, c-format
 msgid "Failed on message %d"
-msgstr ""
+msgstr "Аиԥҟьара ацҳамҭаҟны %d"
 
 #: src/camel/camel-filter-driver.c:1724 src/camel/camel-filter-driver.c:1853
 #, c-format
 msgid "Failed to transfer messages: %s"
-msgstr ""
+msgstr "Ацҳамҭақәа рыҭара залымшеит: %s"
 
 #: src/camel/camel-filter-driver.c:1734 src/camel/camel-filter-driver.c:1876
 msgid "Syncing folder"
-msgstr ""
+msgstr "Аҭаӡ асинхронркра"
 
 #: src/camel/camel-filter-driver.c:1739 src/camel/camel-filter-driver.c:1884
 msgid "Complete"
@@ -2719,12 +2718,12 @@ msgstr "Ихырқәшоуп"
 #: src/camel/camel-filter-driver.c:1807
 #, c-format
 msgid "Getting message %d of %d"
-msgstr ""
+msgstr "Ацҳамҭа аиура %d аҟынтә %d"
 
 #: src/camel/camel-filter-driver.c:1825
 #, c-format
 msgid "Failed at message %d of %d"
-msgstr ""
+msgstr "Аиԥҟьара ацҳамҭаҟны %d аҟынтә %d"
 
 #: src/camel/camel-filter-driver.c:2041 src/camel/camel-filter-driver.c:2065
 #, c-format
@@ -2734,33 +2733,33 @@ msgstr ""
 #: src/camel/camel-filter-driver.c:2055
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
-msgstr ""
+msgstr "Араӡара аилыргара агха «%s»: %s; %s"
 
 #: src/camel/camel-filter-driver.c:2074
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
-msgstr ""
+msgstr "Араӡара анагӡара агха «%s»: %s; %s"
 
 #: src/camel/camel-filter-search.c:173
 msgid "Failed to retrieve message"
-msgstr ""
+msgstr "Аиԥҟьара ҟалеит ацҳамҭа аиураана"
 
 #: src/camel/camel-filter-search.c:637
 msgid "Invalid arguments to (system-flag)"
-msgstr ""
+msgstr "Иҟамло аҵаҵӷәқәа  (system-flag) азы"
 
 #: src/camel/camel-filter-search.c:656
 msgid "Invalid arguments to (user-tag)"
-msgstr ""
+msgstr "Иҟамло аҵаҵӷәқәа  (user-tag) азы"
 
 #: src/camel/camel-filter-search.c:1238
 msgid "Invalid arguments to (message-location)"
-msgstr ""
+msgstr "Иҟамло аҵаҵӷәқәа  (message-location) азы"
 
 #: src/camel/camel-filter-search.c:1451 src/camel/camel-filter-search.c:1462
 #, c-format
 msgid "Error executing filter search: %s: %s"
-msgstr ""
+msgstr "Араӡага аԥшаара анагӡараан иҟалеит агха :%s : %s"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2768,7 +2767,7 @@ msgstr ""
 #: src/camel/camel-folder.c:171
 #, c-format
 msgid "Storing changes in folder “%s : %s”"
-msgstr ""
+msgstr "Аԥсахрақәа реиқәырхара аҭаӡ аҟны «%s : %s»"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2803,11 +2802,11 @@ msgstr[1] ""
 #: src/camel/camel-folder.c:1211
 #: src/camel/providers/local/camel-maildir-folder.c:332
 msgid "Moving messages"
-msgstr ""
+msgstr "Ацҳамҭақәа рҭыԥ аԥсахра"
 
 #: src/camel/camel-folder.c:1214
 msgid "Copying messages"
-msgstr ""
+msgstr "Ацҳамҭақәа рыхкьыԥхьаара"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2815,7 +2814,7 @@ msgstr ""
 #: src/camel/camel-folder.c:1259
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
-msgstr ""
+msgstr "Аквота иазкны аинформациа аҭаӡ азы  иаднакылом «%s : %s»"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2823,7 +2822,7 @@ msgstr ""
 #: src/camel/camel-folder.c:1361
 #, c-format
 msgid "Filtering folder “%s : %s”"
-msgstr ""
+msgstr "Аҭаӡ араӡара «%s : %s»"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2831,7 +2830,7 @@ msgstr ""
 #: src/camel/camel-folder.c:3372
 #, c-format
 msgid "Expunging folder “%s : %s”"
-msgstr ""
+msgstr "Аҭаӡ акәхра «%s : %s»"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2839,7 +2838,7 @@ msgstr ""
 #: src/camel/camel-folder.c:3507
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
-msgstr ""
+msgstr "Ацҳамҭа аиура «%s»аҟны «%s : %s»"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2847,7 +2846,7 @@ msgstr ""
 #: src/camel/camel-folder.c:3732
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
-msgstr ""
+msgstr "Квотала аинформациа аиура «%s : %s» азы"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2855,37 +2854,37 @@ msgstr ""
 #: src/camel/camel-folder.c:4032
 #, c-format
 msgid "Refreshing folder “%s : %s”"
-msgstr ""
+msgstr "Аҭаӡ арҿыцра  «%s : %s»"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
 #: src/camel/camel-folder-search.c:930 src/camel/camel-folder-search.c:973
 #, c-format
 msgid "(%s) requires a single bool result"
-msgstr ""
+msgstr "(%s) иаҭахуп илогику алҵшәа заҵәык"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
 #: src/camel/camel-folder-search.c:1011
 #, c-format
 msgid "(%s) not allowed inside %s"
-msgstr ""
+msgstr "(%s) азин амаӡам  %s аҟны"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
 #: src/camel/camel-folder-search.c:1018 src/camel/camel-folder-search.c:1026
 #, c-format
 msgid "(%s) requires a match type string"
-msgstr ""
+msgstr "(%s) аишьашәалара ацәаҳәа аҭахуп"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
 #: src/camel/camel-folder-search.c:1054
 #, c-format
 msgid "(%s) expects an array result"
-msgstr ""
+msgstr "(%s) амассив асахьа змоу алҵшәа иазыԥшуп"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
 #: src/camel/camel-folder-search.c:1064
 #, c-format
 msgid "(%s) requires the folder set"
-msgstr ""
+msgstr "(%s) иаҭахуп аҭаӡқәа реизга"
 
 #: src/camel/camel-folder-search.c:2286 src/camel/camel-folder-search.c:2460
 #, c-format
@@ -3488,7 +3487,7 @@ msgstr ""
 
 #: src/camel/camel-sasl-login.c:31
 msgid "Login"
-msgstr "Аҭалара"
+msgstr "Аҭаҩра"
 
 #: src/camel/camel-sasl-login.c:33 src/camel/camel-sasl-plain.c:37
 msgid "This option will connect to the server using a simple password."
@@ -3595,7 +3594,7 @@ msgstr ""
 #: src/camel/camel-session.c:523
 #, c-format
 msgid "%s authentication failed"
-msgstr ""
+msgstr "%s аҵабыргра агәаҭараан иҟалеит агха"
 
 #: src/camel/camel-session.c:592
 msgid "Forwarding messages is not supported"
@@ -3604,131 +3603,134 @@ msgstr ""
 #: src/camel/camel-smime-context.c:343
 #, c-format
 msgid "Cannot find certificate for “%s”"
-msgstr ""
+msgstr "Асертификат «%s» азы аԥшаара залымшеит"
 
 #: src/camel/camel-smime-context.c:371
 msgid "Cannot create CMS message"
-msgstr ""
+msgstr "CMS ацҳамҭа аԥҵара залымшеит"
 
 #: src/camel/camel-smime-context.c:376
 msgid "Cannot create CMS signed data"
-msgstr ""
+msgstr "CMS signedData  аԥҵара залымшеит"
 
 #: src/camel/camel-smime-context.c:382
 msgid "Cannot attach CMS signed data"
-msgstr ""
+msgstr "CMS signedDat агәылаҵара залымшеит"
 
 #: src/camel/camel-smime-context.c:389
 msgid "Cannot attach CMS data"
-msgstr ""
+msgstr "CMS data  агәылаҵара залымшеит"
 
 #: src/camel/camel-smime-context.c:395
 msgid "Cannot create CMS Signer information"
-msgstr ""
+msgstr "CMS SignerInfo аԥҵара залымшеит"
 
 #: src/camel/camel-smime-context.c:401
 msgid "Cannot find certificate chain"
-msgstr ""
+msgstr "Асертификатқәа реибаркыра аԥшаара залымшеит"
 
 #: src/camel/camel-smime-context.c:407
 msgid "Cannot add CMS Signing time"
-msgstr ""
+msgstr "CMS SigningTime аԥшаара залымшеит"
 
 #: src/camel/camel-smime-context.c:431 src/camel/camel-smime-context.c:446
 #, c-format
 msgid "Encryption certificate for “%s” does not exist"
-msgstr ""
+msgstr "«%s» ашифрркра асертификат ыҟаӡам"
 
 #: src/camel/camel-smime-context.c:453
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
-msgstr ""
+msgstr "SMIMEEncKeyPrefs атрибут ацҵара залымшеит"
 
 #: src/camel/camel-smime-context.c:458
 msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
-msgstr ""
+msgstr "MS SMIMEEncKeyPrefs атрибут ацҵара залымшеит"
 
 #: src/camel/camel-smime-context.c:463
 msgid "Cannot add encryption certificate"
-msgstr ""
+msgstr "Ашифрркра асертификат ацҵара залымшеит"
 
 #: src/camel/camel-smime-context.c:469
 msgid "Cannot add CMS Signer information"
-msgstr ""
+msgstr "CMS SignerInf ацҵара залымшеит"
 
 #. Translators: A fallback message when couldn't verify an SMIME signature
 #: src/camel/camel-smime-context.c:502
 msgid "Unverified"
-msgstr ""
+msgstr "Игәаҭаӡам"
 
 #: src/camel/camel-smime-context.c:504
 msgid "Good signature"
-msgstr ""
+msgstr "Анапынҵамҭа иашоуп"
 
 #: src/camel/camel-smime-context.c:506
 msgid "Bad signature"
-msgstr ""
+msgstr "Анапынҵамҭа иашаӡам"
 
 #: src/camel/camel-smime-context.c:508
 msgid "Content tampered with or altered in transit"
-msgstr ""
+msgstr "Ацҳамҭа ԥаршеин, мамзар амҩа иахьықәыз иԥсахын"
 
 #: src/camel/camel-smime-context.c:510
 msgid "Signing certificate not found"
-msgstr ""
+msgstr "Анапынҵамҭа асертификат ԥшааӡам "
 
 #: src/camel/camel-smime-context.c:512
 msgid "Signing certificate not trusted"
-msgstr ""
+msgstr "Анапынҵамҭа асертификат ҵабыргӡам"
 
 #: src/camel/camel-smime-context.c:514
 msgid "Signature algorithm unknown"
-msgstr ""
+msgstr "Анапынҵамҭа еилкаам алгоритм"
 
 #: src/camel/camel-smime-context.c:516
 msgid "Signature algorithm unsupported"
-msgstr ""
+msgstr "Адкылашьа змам анапынҵамҭа алгоритм"
 
 #: src/camel/camel-smime-context.c:518
 msgid "Malformed signature"
-msgstr ""
+msgstr "Ииашамкәа еиҿкаау анапынҵамҭа"
 
 #: src/camel/camel-smime-context.c:520
 msgid "Processing error"
-msgstr ""
+msgstr "Аус адулара агха"
 
 #: src/camel/camel-smime-context.c:565
 msgid "No signed data in signature"
-msgstr ""
+msgstr "Анапаҵаҩраҟны иҟаӡам арҭ анапынҵамҭқәа"
 
 #: src/camel/camel-smime-context.c:570
 msgid "Digests missing from enveloped data"
-msgstr ""
+msgstr "Аконверт адыррақәа рҟны иҟаӡам адырраеизга"
 
 #: src/camel/camel-smime-context.c:583 src/camel/camel-smime-context.c:594
 msgid "Cannot calculate digests"
-msgstr ""
+msgstr "Адаиджестқәа рыҳасабра залымшеит"
 
 #: src/camel/camel-smime-context.c:601 src/camel/camel-smime-context.c:605
 msgid "Cannot set message digests"
-msgstr ""
+msgstr "Ацҳамҭа адаиджестқәа рықәыргылара залымшеит"
 
 #: src/camel/camel-smime-context.c:615 src/camel/camel-smime-context.c:620
 msgid "Certificate import failed"
-msgstr ""
+msgstr "Асертификат аимпорт агха ҟаҵоуп"
 
 #: src/camel/camel-smime-context.c:630
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr ""
+"Ацҳамҭа асертификат мацарала ишьықәгылоуп .Асертификатқәа ргәаҭара залымшеит."
 
 #: src/camel/camel-smime-context.c:633
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr ""
+"Ацҳамҭаҟны асертификатқәа рымацара роуп иҟоу, асертификат аимпорт рызуп  "
+"насгьы игәаҭоуп"
 
 #: src/camel/camel-smime-context.c:637
 msgid "Cannot find signature digests"
-msgstr ""
+msgstr "Анапынҵамҭа  адаиджестқәа рыԥшаара залымшеит"
 
 #: src/camel/camel-smime-context.c:656
 #, c-format
@@ -3737,74 +3739,74 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:881 src/camel/camel-smime-context.c:1407
 msgid "Cannot create encoder context"
-msgstr ""
+msgstr "Акодркыга аконтекст аԥҵара залымшеит"
 
 #: src/camel/camel-smime-context.c:887
 msgid "Failed to add data to CMS encoder"
-msgstr ""
+msgstr "Акодрккыга CMS ахь адыррақәа рацҵара залымшеит"
 
 #: src/camel/camel-smime-context.c:892 src/camel/camel-smime-context.c:1424
 msgid "Failed to encode data"
-msgstr ""
+msgstr "Адыррақәа ркодркра агха"
 
 #: src/camel/camel-smime-context.c:1045 src/camel/camel-smime-context.c:1525
 msgid "Decoder failed"
-msgstr ""
+msgstr "Адекодер агха"
 
 #: src/camel/camel-smime-context.c:1301
 #, c-format
 msgid "No valid or appropriate certificate for “%s” was found"
-msgstr ""
+msgstr "Иԥшааӡам иҵабыргу ма ианаало асертификат «%s» азы"
 
 #: src/camel/camel-smime-context.c:1341
 msgid "Cannot find common bulk encryption algorithm"
-msgstr ""
+msgstr "Ашифрркра еизаку алгоритм аԥшаара залымшеит"
 
 #: src/camel/camel-smime-context.c:1349
 msgid "Cannot allocate slot for encryption bulk key"
-msgstr ""
+msgstr "Азеиԥш шифрркра ацыԥхазыы аслот аихшара залымшеит"
 
 #: src/camel/camel-smime-context.c:1360
 msgid "Cannot create CMS Message"
-msgstr ""
+msgstr "CMS ацҳамҭа аԥҵара залымшеит"
 
 #: src/camel/camel-smime-context.c:1366
 msgid "Cannot create CMS Enveloped data"
-msgstr ""
+msgstr "CMS EnvelopedData аԥҵара залымшеит"
 
 #: src/camel/camel-smime-context.c:1372
 msgid "Cannot attach CMS Enveloped data"
-msgstr ""
+msgstr "CMS EnvelopedDat агәылаҵара залымшеит"
 
 #: src/camel/camel-smime-context.c:1378
 msgid "Cannot attach CMS data object"
-msgstr ""
+msgstr "CMS data аобиект агәылаҵара залымшеит"
 
 #: src/camel/camel-smime-context.c:1387
 msgid "Cannot create CMS Recipient information"
-msgstr ""
+msgstr "CMS RecipientInfo ахабар аԥҵара залымшеит"
 
 #: src/camel/camel-smime-context.c:1392
 msgid "Cannot add CMS Recipient information"
-msgstr ""
+msgstr "CMS RecipientInf ахабар ацҵара залымшеит"
 
 #: src/camel/camel-smime-context.c:1418
 msgid "Failed to add data to encoder"
-msgstr ""
+msgstr "Акодркыга ахь адыррақәа рацҵара залымшеит"
 
 #: src/camel/camel-smime-context.c:1532
 msgid "S/MIME Decrypt: No encrypted content found"
-msgstr ""
+msgstr "S/MIME Decrypt: Ишифррку аҭаҵа ԥшааӡам"
 
 #: src/camel/camel-store.c:1413
 #, c-format
 msgid "Opening folder “%s”"
-msgstr ""
+msgstr "Аҭаӡ «%s» аартра"
 
 #: src/camel/camel-store.c:1710
 #, c-format
 msgid "Scanning folders in “%s”"
-msgstr ""
+msgstr "«%s ахь аҭаӡқәа рысканрркра"
 
 #: src/camel/camel-store.c:1738 src/camel/camel-store.c:1783
 #: src/camel/camel-vtrash-folder.c:48
@@ -3814,82 +3816,82 @@ msgstr "Аклаҭ"
 #: src/camel/camel-store.c:1752 src/camel/camel-store.c:1800
 #: src/camel/camel-vtrash-folder.c:50
 msgid "Junk"
-msgstr ""
+msgstr "Аспам"
 
 #: src/camel/camel-store.c:2405
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
-msgstr ""
+msgstr "Аҭаӡ аԥҵара залымшеит: «%s» аҭаӡ ыҟоуп"
 
 #: src/camel/camel-store.c:2412
 #, c-format
 msgid "Creating folder “%s”"
-msgstr ""
+msgstr "Аҭаӡ «%s»аԥҵара"
 
 #: src/camel/camel-store.c:2590 src/camel/camel-vee-store.c:426
 #: src/camel/providers/local/camel-maildir-store.c:341
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
-msgstr ""
+msgstr "Аҭаӡ аныхра залымшеит: %s: ззин ыҟам аоперациа "
 
 #: src/camel/camel-store.c:2781 src/camel/camel-vee-store.c:477
 #: src/camel/providers/local/camel-maildir-store.c:912
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
-msgstr ""
+msgstr "Аҭаӡ ахьӡ аԥсахра  залымшеит: %s: ззин ыҟам аоперациа"
 
 #: src/camel/camel-stream.c:167
 msgid "Cannot write with no base stream"
-msgstr ""
+msgstr "Анҵара азин ыҟаӡам, избан акәзар иҟаӡам ихадоу аишьҭагыла"
 
 #: src/camel/camel-stream.c:287 src/camel/camel-stream.c:338
 #, c-format
 msgid "Stream type “%s” is not seekable"
-msgstr ""
+msgstr "Аишьҭагылара ахкы «%s» аишьҭагыларала аиҭаҵра азин шәнаҭаӡом"
 
 #: src/camel/camel-stream-filter.c:339
 msgid "Only reset to beginning is supported with CamelStreamFilter"
-msgstr ""
+msgstr "CamelStreamFilter азы иаднакылоит аханатә ахь аиасра  амацара"
 
 #: src/camel/camel-stream-null.c:89
 msgid "Only reset to beginning is supported with CamelHttpStream"
-msgstr ""
+msgstr "CamelHttpStream азы иаднакылоит аханатә ахь аиасра  амацара"
 
 #: src/camel/camel-stream-process.c:282
 #: src/camel/providers/smtp/camel-smtp-transport.c:743
 #, c-format
 msgid "Connection cancelled"
-msgstr ""
+msgstr "Аимадара  аԥыхуп"
 
 #: src/camel/camel-stream-process.c:287
 #, c-format
 msgid "Could not connect with command “%s”: %s"
-msgstr ""
+msgstr "«%s»акомандала аҽаҿакра залымшеит: %s"
 
 #: src/camel/camel-subscribable.c:234
 #, c-format
 msgid "Subscribing to folder “%s”"
-msgstr ""
+msgstr "Аҭаӡ «%s»  аҽаҵаҩҩра"
 
 #: src/camel/camel-subscribable.c:403
 #, c-format
 msgid "Unsubscribing from folder “%s”"
-msgstr ""
+msgstr "Аҭаӡ «%s» аҽаҵаҩҩра аԥыхра"
 
 #: src/camel/camel-url.c:325
 #, c-format
 msgid "Could not parse URL “%s”"
-msgstr ""
+msgstr "URL  аиларгара залымшеит  «%s»"
 
 #: src/camel/camel-vee-folder.c:558
 #, c-format
 msgid "Updating folder “%s”"
-msgstr ""
+msgstr "Аҭаӡа арҿыцра «%s»"
 
 #: src/camel/camel-vee-folder.c:1283 src/camel/camel-vee-folder.c:1419
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
-msgstr ""
+msgstr "Ивиртуалу аҭаӡ ахь ацҳамҭа аиагара мамзар ахкьыԥхьаара залымшеит"
 
 #. Translators: The first “%s” is replaced with a message UID, the second “%s”
 #. is replaced with an account name and the third “%s” is replaced with a full
@@ -3898,7 +3900,7 @@ msgstr ""
 #: src/camel/camel-vee-folder.c:1320
 #, c-format
 msgid "No such message %s in “%s : %s”"
-msgstr ""
+msgstr " %s аҟны иҟаӡам ари аҩыза ацҳамҭа «%s : %s»"
 
 #: src/camel/camel-vee-folder.c:1395
 #, c-format
@@ -3908,48 +3910,48 @@ msgstr ""
 #: src/camel/camel-vee-folder.c:1585
 #, c-format
 msgid "Updating search folder “%s”"
-msgstr ""
+msgstr "Аԥшаара аҭаӡ арҿыцра«%s»"
 
 #: src/camel/camel-vee-folder.c:1643
 msgid "Automatically _update on change in source folders"
-msgstr ""
+msgstr "Автоматла_арҿыцра аҭаӡқәа-ахыҵхырҭақәа рыԥсахраан"
 
 #. Translators: 'Unmatched' is a folder name under Search folders where are shown
 #. * all messages not belonging into any other configured search folder
 #: src/camel/camel-vee-store.c:34
 msgid "Unmatched"
-msgstr ""
+msgstr "Егьырҭгьы"
 
 #: src/camel/camel-vee-store.c:452
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
-msgstr ""
+msgstr "Аҭаӡ аныхра залымшеит: %s: ари аҩыза аҭаӡ ыҟаӡам"
 
 #: src/camel/camel-vee-store.c:487
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
-msgstr ""
+msgstr "Аҭаӡ ахьӡ аԥсахра  залымшеит: %s: ари аҩыза аҭаӡ ыҟаӡам"
 
 #: src/camel/camel-vee-store.c:556
 msgid "Enable _Unmatched folder"
-msgstr ""
+msgstr "Аҭаӡ аҿакра «_Егьырҭгьы»"
 
 #: src/camel/camel-vee-store.c:1112
 msgid "Updating Unmatched search folder"
-msgstr ""
+msgstr "Аԥшаара аҭаӡ арҿыцра «_Егьырҭгьы»"
 
 #: src/camel/camel-vtrash-folder.c:49
 msgid "Cannot copy messages to the Trash folder"
-msgstr ""
+msgstr "Ацҳамҭақәа акаҵкәыр ахь риагара залымшеит"
 
 #: src/camel/camel-vtrash-folder.c:51
 msgid "Cannot copy messages to the Junk folder"
-msgstr ""
+msgstr "Аҭаӡ «Аспам» ахь аиагара залымшеит"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:979
 #, c-format
 msgid "You must be working online to complete this operation (%s)"
-msgstr ""
+msgstr "Изаамҭанытәиу аоперациа иатахуп аҳа аҽаҿакра (%s)"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:987
 #: src/camel/providers/imapx/camel-imapx-server.c:3426
@@ -3967,27 +3969,27 @@ msgstr ""
 #: src/camel/providers/pop3/camel-pop3-store.c:673
 #: src/camel/providers/pop3/camel-pop3-store.c:1124
 #: src/camel/providers/smtp/camel-smtp-transport.c:547
-#, c-format
+#, fuzzy, c-format
 msgid "You must be working online to complete this operation"
-msgstr ""
+msgstr "Изаамҭанытәиу аоперациа иатахуп аҳа аҽаҿакра (%s)"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:1611
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:1707
 #, c-format
 msgid "No destination folder specified"
-msgstr ""
+msgstr "Ахықәкыратә ҭаӡ арбаӡам"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:1638
 msgid "Unable to move junk messages"
-msgstr ""
+msgstr "Аспам змоу ацҳамҭақәа риагара залымшеит"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:1741
 msgid "Unable to move deleted messages"
-msgstr ""
+msgstr "Ианыху ацҳамҭақәа риагара залымшеит"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:1809
 msgid "Unable to move messages to Inbox"
-msgstr ""
+msgstr "Ацҳамҭақәа аҭаӡ Иаашьҭу ахь аиагара залымшеит"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -3995,7 +3997,7 @@ msgstr ""
 #: src/camel/providers/imapx/camel-imapx-folder.c:765
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
-msgstr ""
+msgstr "Иҟаӡам аинформациа аквота аҭаӡ азы «%s : %s»"
 
 #. transfer ownership to 'rcf'
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
@@ -4004,7 +4006,7 @@ msgstr ""
 #: src/camel/providers/imapx/camel-imapx-folder.c:1032
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
-msgstr ""
+msgstr "Иажәу акеш афаилқәа рныхра аҭаӡ аҟны «%s : %s»"
 
 #: src/camel/providers/imapx/camel-imapx-folder.c:1124
 #: src/camel/providers/nntp/camel-nntp-folder.c:832
@@ -4013,12 +4015,12 @@ msgstr ""
 
 #: src/camel/providers/imapx/camel-imapx-folder.c:1136
 msgid "Always check for _new mail in this folder"
-msgstr ""
+msgstr "Ари аҭаӡ  аҟны ацҳамҭа ҿыцқәа рыҟазаара еснагь агәаҭара "
 
 #: src/camel/providers/imapx/camel-imapx-folder.c:1251
 #, c-format
 msgid "Could not create folder summary for %s"
-msgstr ""
+msgstr "Икьаҿу аинформациа аҭаӡ %s азы аԥҵара залымшеит"
 
 #: src/camel/providers/imapx/camel-imapx-folder.c:1263
 #, c-format
@@ -4036,15 +4038,15 @@ msgstr ""
 #: src/camel/providers/imapx/camel-imapx-input-stream.c:101
 #, c-format
 msgid "Source stream returned no data"
-msgstr ""
+msgstr "Аишьҭаца адыррақәа амырхынҳәӡит"
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:36
 msgid "Checking for New Mail"
-msgstr ""
+msgstr "Аԥошьҭа ҿыц агәаҭара"
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:38
 msgid "C_heck for new messages in all folders"
-msgstr ""
+msgstr "Аҭаӡкәа зегьы рҟны аԥошьҭа ҿыц агәаҭара"
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:40
 msgid "Ch_eck for new messages in subscribed folders"
@@ -4336,65 +4338,65 @@ msgstr ""
 msgid "Error fetching message info"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5646
+#: src/camel/providers/imapx/camel-imapx-server.c:5647
 msgid "Error running STATUS"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6226
-#: src/camel/providers/imapx/camel-imapx-server.c:6281
-#: src/camel/providers/imapx/camel-imapx-server.c:6345
+#: src/camel/providers/imapx/camel-imapx-server.c:6233
+#: src/camel/providers/imapx/camel-imapx-server.c:6288
+#: src/camel/providers/imapx/camel-imapx-server.c:6352
 msgid "Error syncing changes"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6239
-#: src/camel/providers/imapx/camel-imapx-server.c:6291
-#: src/camel/providers/imapx/camel-imapx-server.c:6364
-#: src/camel/providers/imapx/camel-imapx-server.c:6505
+#: src/camel/providers/imapx/camel-imapx-server.c:6246
+#: src/camel/providers/imapx/camel-imapx-server.c:6298
+#: src/camel/providers/imapx/camel-imapx-server.c:6371
+#: src/camel/providers/imapx/camel-imapx-server.c:6512
 msgid "Error expunging message"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6587
+#: src/camel/providers/imapx/camel-imapx-server.c:6594
 msgid "Error fetching folders"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6595
+#: src/camel/providers/imapx/camel-imapx-server.c:6602
 msgid "Error fetching subscribed folders"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6652
+#: src/camel/providers/imapx/camel-imapx-server.c:6659
 msgid "Error creating folder"
-msgstr ""
+msgstr "Аҭаӡ аҧҵараан иҟалеит агха"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6702
+#: src/camel/providers/imapx/camel-imapx-server.c:6709
 msgid "Error deleting folder"
-msgstr ""
+msgstr "Аҭаӡ ааныхраан иҟалеит агха"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6748
+#: src/camel/providers/imapx/camel-imapx-server.c:6755
 msgid "Error renaming folder"
-msgstr ""
+msgstr "Аҭаӡ ахьӡ аҧсахраан иҟалеит агха"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6780
+#: src/camel/providers/imapx/camel-imapx-server.c:6787
 msgid "Error subscribing to folder"
-msgstr ""
+msgstr "Аҭаӡ аҽаҵаҩраан иҟалеит агха"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6816
+#: src/camel/providers/imapx/camel-imapx-server.c:6823
 msgid "Error unsubscribing from folder"
-msgstr ""
+msgstr "Аҭаӡ аҽалгараан иҟалеит агха"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6856
+#: src/camel/providers/imapx/camel-imapx-server.c:6863
 msgid "IMAP server does not support quotas"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6868
+#: src/camel/providers/imapx/camel-imapx-server.c:6875
 msgid "Error retrieving quota information"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6933
+#: src/camel/providers/imapx/camel-imapx-server.c:6940
 msgid "Search failed"
 msgstr ""
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7061
+#: src/camel/providers/imapx/camel-imapx-server.c:7068
 msgid "Error running IDLE"
 msgstr ""
 
@@ -4567,7 +4569,7 @@ msgstr ""
 #: src/camel/providers/local/camel-local-folder.c:186
 #, c-format
 msgid "~%s (%s)"
-msgstr ""
+msgstr "~%s (%s)"
 
 #. Translators: This is used for a folder description, for
 #. * folders being under /var/spool/mail.  The first %s is
@@ -4582,7 +4584,7 @@ msgstr ""
 #: src/camel/providers/local/camel-local-folder.c:205
 #, c-format
 msgid "mailbox: %s (%s)"
-msgstr ""
+msgstr "аҧошьҭаҭра: %s: (%s)"
 
 #. Translators: This is used for a folder description.
 #. * The first %s is replaced with a folder's full path,
@@ -6426,82 +6428,82 @@ msgstr ""
 
 #: src/libedataserver/e-client.c:137
 msgid "Backend is busy"
-msgstr ""
+msgstr "Драйвер занят"
 
 #: src/libedataserver/e-client.c:139
 msgid "Source not loaded"
-msgstr ""
+msgstr "Ахыҵырҭа  ҭагалаӡам"
 
 #: src/libedataserver/e-client.c:141
 msgid "Source already loaded"
-msgstr ""
+msgstr "Ахыҵырҭа шьҭа иҭагалоуп"
 
 #: src/libedataserver/e-client.c:143
 msgid "Authentication failed"
-msgstr ""
+msgstr "Аҵабыргара агәаҭара агха"
 
 #: src/libedataserver/e-client.c:147
 msgid "Repository offline"
-msgstr ""
+msgstr "Арепозитори аҳа иаҿыхуп"
 
 #. Translators: This means that the EClient does not
 #. * support offline mode, or it's not set to by a user,
 #. * thus it is unavailable while user is not connected.
 #: src/libedataserver/e-client.c:152
 msgid "Offline unavailable"
-msgstr ""
+msgstr "Арежим«аҳа анҭыҵ» ахь анеира алшом"
 
 #: src/libedataserver/e-client.c:154
 msgid "Permission denied"
-msgstr ""
+msgstr "Анеира азин ыҟаӡам"
 
 #: src/libedataserver/e-client.c:158
 msgid "Could not cancel"
-msgstr ""
+msgstr "Аҧыхра залымшеит"
 
 #: src/libedataserver/e-client.c:160
 msgid "Not supported"
-msgstr ""
+msgstr "Иаднакылом"
 
 #: src/libedataserver/e-client.c:162
 msgid "Unsupported authentication method"
-msgstr ""
+msgstr "Дкылашьа змама ахаҭареилкаара аметод"
 
 #: src/libedataserver/e-client.c:164
 msgid "TLS not available"
-msgstr ""
+msgstr "TLS ахь анеира алшом"
 
 #: src/libedataserver/e-client.c:166
 msgid "Search size limit exceeded"
-msgstr ""
+msgstr "Аҧшаара алҵшәа ашәагаа  аҳәаакра иахысит"
 
 #: src/libedataserver/e-client.c:168
 msgid "Search time limit exceeded"
-msgstr ""
+msgstr "Аҧшаараа аамҭа аҳәаакра иахысит"
 
 #: src/libedataserver/e-client.c:172
 msgid "Query refused"
-msgstr ""
+msgstr "Адҵаалара мап ацәкуп"
 
 #: src/libedataserver/e-client.c:174
 msgid "D-Bus error"
-msgstr ""
+msgstr "Агха D-Bus"
 
 #: src/libedataserver/e-client.c:176
 msgid "Other error"
-msgstr ""
+msgstr "Егьи агха"
 
 #: src/libedataserver/e-client.c:178
 msgid "Backend is not opened yet"
-msgstr ""
+msgstr "Адраивер макьаана иаартӡам"
 
 #: src/libedataserver/e-client.c:180
 msgid "Object is out of sync"
-msgstr ""
+msgstr "Аобиект синхронркуп"
 
 #: src/libedataserver/e-client.c:2037
 msgid "Timeout was reached"
-msgstr ""
+msgstr "Азыԥшра аамҭа иахыԥеит"
 
 #: src/libedataserver/e-gdata-session.c:207
 #, c-format
@@ -6519,7 +6521,7 @@ msgstr[1] ""
 
 #: src/libedataserver/e-gdata-session.c:548
 msgid "No JSON object returned by the server"
-msgstr ""
+msgstr "Аобиеект JSON ыҟаӡам, асервер ала ирхынҳәу "
 
 #: src/libedataserver/e-gdata-session.c:734
 #: src/libedataserver/e-gdata-session.c:793
@@ -6539,41 +6541,44 @@ msgstr ""
 msgid "Failed to call %s: "
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:918
+#: src/libedataserver/e-oauth2-service.c:922
 msgid "Malformed, no message body set"
-msgstr ""
+msgstr "Ииашаны еиҿкааӡам, ацҿамҭа ацәа ықәыргылаӡам"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1198
+#: src/libedataserver/e-oauth2-service.c:1202
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr ""
+"Ахыҵхырҭа «%s» (%s) иҵабыргу хыҵхырҭаӡам асервис OAuth2 иатәу   «%s» азы"
 
-#: src/libedataserver/e-oauth2-service.c:1213
+#: src/libedataserver/e-oauth2-service.c:1217
 msgid "OAuth2 secret not found"
-msgstr ""
+msgstr "Амаӡа OAuth2 ԥшааӡам"
 
-#: src/libedataserver/e-oauth2-service.c:1410
+#: src/libedataserver/e-oauth2-service.c:1414
 #, c-format
 msgid "Received incorrect response from server “%s”."
-msgstr ""
+msgstr "Асервер «%s» аҟынтә иаашьҭуп ииашам аҭак"
 
-#: src/libedataserver/e-oauth2-service.c:1419
+#: src/libedataserver/e-oauth2-service.c:1423
 msgid "Failed to refresh access token. Sign to the server again, please."
-msgstr ""
+msgstr "Анеира амаркет арҿыцра залымшеит.Асервер шәеиҭаҭал, ҳшәыҳәоит"
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1462
+#: src/libedataserver/e-oauth2-service.c:1466
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
-msgstr ""
+msgstr "Ахыҵхырҭа «%s» (%s) иҵабыргу хыҵхырҭаӡам  OAuth2 азыы"
 
-#: src/libedataserver/e-oauth2-service.c:1744
+#: src/libedataserver/e-oauth2-service.c:1750
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
 msgstr ""
+"Анеира амаркет ахархәара аамҭа нҵәеит, арҿыцрагьы залшом.Асервер шәеиҭаҭала ,"
+"ҳшәыҳәоит."
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: src/libedataserver/e-oauth2-service-google.c:58
@@ -6596,30 +6601,30 @@ msgstr ""
 #: src/libedataserver/e-soup-session.c:1169
 #, c-format
 msgid "Failed with HTTP error %d: %s"
-msgstr ""
+msgstr "Отказ с ошибкой HTTP %d: %s"
 
 #: src/libedataserver/e-soup-session.c:1245
 msgid "Failed to setup authentication"
-msgstr ""
+msgstr "Ахаҭареилкаара ашьақәыргылара залшом"
 
-#: src/libedataserver/e-soup-session.c:1624
+#: src/libedataserver/e-soup-session.c:1652
 msgid "Too many redirects"
 msgstr "Аиҭахырхарҭақәа амцхә ирацәоуп"
 
 #: src/libedataserver/e-source.c:772
 #, c-format
 msgid "Source file is missing a [%s] group"
-msgstr ""
+msgstr "Ахалагаратә афаил аҟны иҟаӡам агәып [%s]"
 
 #: src/libedataserver/e-source.c:1381
 #, c-format
 msgid "Data source “%s” is not removable"
-msgstr ""
+msgstr "Ахыҵхырҭақәа рдырра «%s» аныхра залшом"
 
 #: src/libedataserver/e-source.c:1504
 #, c-format
 msgid "Data source “%s” is not writable"
-msgstr ""
+msgstr "Ахыцхырҭақәа рдырра «%s» анҵаразы азнера ауам"
 
 #: src/libedataserver/e-source.c:2249
 msgid "Unnamed"
@@ -6627,29 +6632,29 @@ msgstr "Хьӡыда"
 
 #: src/libedataserver/e-source-credentials-provider-impl.c:39
 msgid "Credentials lookup is not supported"
-msgstr ""
+msgstr "Аҳасабырбатә нҵамҭақәа рыԥшаара аднакылом"
 
 #: src/libedataserver/e-source-credentials-provider-impl.c:52
 msgid "Credentials store is not supported"
-msgstr ""
+msgstr "Аҳасабырбатә нҵамҭақәа реиқәырхара аднакылом"
 
 #: src/libedataserver/e-source-credentials-provider-impl.c:63
 msgid "Credentials delete is not supported"
-msgstr ""
+msgstr "Аҳасабырбатә нҵамҭақәа рныхра аднакылом"
 
 #: src/libedataserver/e-source-credentials-provider-impl-password.c:79
 msgid "Password not found"
-msgstr ""
+msgstr "Ажәамаӡа ԥшааӡам"
 
 #: src/libedataserver/e-source-mail-signature.c:473
 #, c-format
 msgid "Signature script must be a local file"
-msgstr ""
+msgstr "Анапаҵаҩра асценари илокалу афаил акәзароуп"
 
 #: src/libedataserver/e-source-proxy.c:1651
 #, c-format
 msgid "Source “%s” does not support proxy lookups"
-msgstr ""
+msgstr "Ахыцхырҭа «%s» прокси аԥшаара аднакылом"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
@@ -6676,7 +6681,7 @@ msgstr "%a, %d.%m.%Y %H:%M:%S"
 #: src/libedataserver/e-time-utils.c:1701
 #: src/libedataserver/e-time-utils.c:1986
 msgid "%a %m/%d/%Y %I:%M %p"
-msgstr ""
+msgstr "%A, %d.%m.%Y, %I:%M %p"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 24-hour format, without seconds.
@@ -6685,19 +6690,19 @@ msgstr ""
 #: src/libedataserver/e-time-utils.c:1706
 #: src/libedataserver/e-time-utils.c:1977
 msgid "%a %m/%d/%Y %H:%M"
-msgstr ""
+msgstr "%A, %d.%m.%Y, %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format, without minutes or seconds.
 #: src/libedataserver/e-time-utils.c:1711
 msgid "%a %m/%d/%Y %I %p"
-msgstr ""
+msgstr "%A, %d.%m.%Y, %I %p"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 24-hour format, without minutes or seconds.
 #: src/libedataserver/e-time-utils.c:1716
 msgid "%a %m/%d/%Y %H"
-msgstr ""
+msgstr "%A, %d.%m.%Y, %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
@@ -6705,48 +6710,48 @@ msgstr ""
 #: src/libedataserver/e-time-utils.c:1839
 #: src/libedataserver/e-time-utils.c:1972
 msgid "%a %m/%d/%Y"
-msgstr ""
+msgstr "%A, %d.%m.%Y"
 
 #. strptime format of a date and a time, in 12-hour format.
 #: src/libedataserver/e-time-utils.c:1726
 msgid "%m/%d/%Y %I:%M:%S %p"
-msgstr ""
+msgstr "%d.%m.%Y, %I:%M:%S %p"
 
 #. strptime format of a date and a time, in 24-hour format.
 #: src/libedataserver/e-time-utils.c:1730
 msgid "%m/%d/%Y %H:%M:%S"
-msgstr ""
+msgstr "%d.%m.%Y, %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. * without seconds.
 #: src/libedataserver/e-time-utils.c:1735
 msgid "%m/%d/%Y %I:%M %p"
-msgstr ""
+msgstr "%d.%m.%Y, %I:%M %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. * without seconds.
 #: src/libedataserver/e-time-utils.c:1740
 msgid "%m/%d/%Y %H:%M"
-msgstr ""
+msgstr "%d.%m.%Y, %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. * without minutes or seconds.
 #: src/libedataserver/e-time-utils.c:1745
 msgid "%m/%d/%Y %I %p"
-msgstr ""
+msgstr "%d.%m.%Y, %I %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. * without minutes or seconds.
 #: src/libedataserver/e-time-utils.c:1750
 msgid "%m/%d/%Y %H"
-msgstr ""
+msgstr "%d.%m.%Y, %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
 #: src/libedataserver/e-time-utils.c:1753
 #: src/libedataserver/e-time-utils.c:1842
 msgid "%m/%d/%Y"
-msgstr ""
+msgstr "%d.%m.%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
@@ -6769,7 +6774,7 @@ msgstr "%H:%M:%S"
 #: src/libedataserver/e-time-utils.c:1922
 #: src/libedataserver/e-time-utils.c:2031
 msgid "%I:%M %p"
-msgstr ""
+msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
@@ -6783,12 +6788,12 @@ msgstr "%H:%M"
 #. * and no colon.
 #: src/libedataserver/e-time-utils.c:1930
 msgid "%H%M"
-msgstr ""
+msgstr "%H%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
 #: src/libedataserver/e-time-utils.c:1934
 msgid "%I %p"
-msgstr ""
+msgstr "%I %p"
 
 #: src/libedataserver/e-webdav-discover.c:339
 msgid "Notes"
@@ -6811,6 +6816,8 @@ msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request."
 msgstr ""
+"Асервер HTML- адаҟьала аҭак шәынаҭеит, уи иаанагоит асервер аҟны мамзар "
+"ахархәаҩ идҵаалараҟны агха шыҟалаз ауп. "
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
@@ -6820,7 +6827,7 @@ msgstr ""
 #: src/libedataserver/e-webdav-session.c:1016
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
-msgstr ""
+msgstr "%s: Агха акод HTTP %d (%s): %s"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
@@ -6828,7 +6835,7 @@ msgstr ""
 #: src/libedataserver/e-webdav-session.c:1024
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
-msgstr ""
+msgstr "Ашьақәҟьара агха акод  HTTP %d (%s): %s"
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
@@ -6837,18 +6844,18 @@ msgstr ""
 #: src/libedataserver/e-webdav-session.c:1039
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
-msgstr ""
+msgstr "%s: Агха акод HTTP %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #: src/libedataserver/e-webdav-session.c:1045
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
-msgstr ""
+msgstr "Мап ацәкра агха акод  HTTP %d (%s)"
 
 #: src/libedataserver/e-webdav-session.c:1357
 msgid "Failed to post data"
-msgstr ""
+msgstr "Адыррақәа рҭыԥыркра залымшеит"
 
 #: src/libedataserver/e-webdav-session.c:1438
 #: src/libedataserver/e-webdav-session.c:1504
@@ -6856,68 +6863,68 @@ msgstr ""
 #: src/libedataserver/e-webdav-session.c:2719
 #: src/libedataserver/e-webdav-session.c:3966
 msgid "Failed to get input XML content"
-msgstr ""
+msgstr "Аҭаларатә XML -аҭаҵа аиура залымшеит"
 
 #: src/libedataserver/e-webdav-session.c:1449
 msgid "Failed to get properties"
-msgstr ""
+msgstr "Аҷыдаҟазшьақәа риура залымшеит"
 
 #: src/libedataserver/e-webdav-session.c:1514
 msgid "Failed to update properties"
-msgstr ""
+msgstr "Аҷыдаҟазшьақәа рырҿыцра залымшеит"
 
 #: src/libedataserver/e-webdav-session.c:1605
 msgid "Failed to issue REPORT"
-msgstr ""
+msgstr "Аҳасабырба аҭыгара залымшеит"
 
 #: src/libedataserver/e-webdav-session.c:1665
 msgid "Failed to create collection"
-msgstr ""
+msgstr "Аколлекциа аԥҵара залымшеит"
 
 #: src/libedataserver/e-webdav-session.c:1748
 #: src/libedataserver/e-webdav-session.c:1898
 msgid "Failed to get XML request content"
-msgstr ""
+msgstr " XML-адҵаалара аҭаҵа аиура залымшеит"
 
 #: src/libedataserver/e-webdav-session.c:1760
 msgid "Failed to create address book"
-msgstr ""
+msgstr "Аҭыӡҭыԥтә шәҟәы аԥҵара залымшеит"
 
 #: src/libedataserver/e-webdav-session.c:1911
 msgid "Failed to create calendar"
-msgstr ""
+msgstr "Амзар аԥҵара залымшеит"
 
 #: src/libedataserver/e-webdav-session.c:2036
 #: src/libedataserver/e-webdav-session.c:2047
 msgid "Failed to read resource"
-msgstr ""
+msgstr "Аресурс аԥхьара ауам"
 
 #: src/libedataserver/e-webdav-session.c:2283
 #: src/libedataserver/e-webdav-session.c:2425
 msgid "Failed to put data"
-msgstr ""
+msgstr "Адыррақәа рҭыԥыркра залымшеит"
 
 #: src/libedataserver/e-webdav-session.c:2291
 #: src/libedataserver/e-webdav-session.c:2433
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
-msgstr ""
+msgstr "Адыррақәа асервер ахь ашьҭара залымшеит агха акод %d (%s)"
 
 #: src/libedataserver/e-webdav-session.c:2521
 msgid "Failed to delete resource"
-msgstr ""
+msgstr "Арксурс аныхра залымшеит"
 
 #: src/libedataserver/e-webdav-session.c:2580
 msgid "Failed to copy resource"
-msgstr ""
+msgstr "Аресурс ахкьыԥхьаара залымшеит"
 
 #: src/libedataserver/e-webdav-session.c:2634
 msgid "Failed to move resource"
-msgstr ""
+msgstr "Аресурс аиагара залымшеит"
 
 #: src/libedataserver/e-webdav-session.c:2730
 msgid "Failed to lock resource"
-msgstr ""
+msgstr "Аресурс аанкылара залымшеит"
 
 #: src/libedataserver/e-webdav-session.c:2744
 #: src/libedataserver/e-webdav-session.c:2931
@@ -6933,15 +6940,15 @@ msgstr ""
 #: src/libedataserver/e-webdav-session.c:2759
 #: src/libedataserver/e-webdav-session.c:2947
 msgid "Failed to parse XML data"
-msgstr ""
+msgstr "XML адыррақәа реиларгара залымшеит"
 
 #: src/libedataserver/e-webdav-session.c:2830
 msgid "Failed to refresh lock"
-msgstr ""
+msgstr "Аанкылара арҿыцра залымшеит"
 
 #: src/libedataserver/e-webdav-session.c:2881
 msgid "Failed to unlock"
-msgstr ""
+msgstr "Аужьра ауам"
 
 #: src/libedataserver/e-webdav-session.c:2919
 #, c-format
@@ -6987,7 +6994,7 @@ msgstr ""
 
 #: src/libedataserverui/e-buffer-tagger.c:79
 msgid "Could not open the link."
-msgstr ""
+msgstr "Азхьарԥш аартра залымшеит"
 
 #: src/libedataserverui/e-buffer-tagger.c:562
 #: src/libedataserverui/e-buffer-tagger.c:976
@@ -6997,57 +7004,57 @@ msgstr "Азхьарԥш ахкьыԥхьаара"
 #: src/libedataserverui/e-buffer-tagger.c:567
 #: src/libedataserverui/e-buffer-tagger.c:983
 msgid "O_pen Link in Browser"
-msgstr ""
+msgstr "_Азхьарпш абраузер аҟны аартра"
 
 #. To Translators: The text is concatenated to a form: "Ctrl-click to open a link http://www.example.com"
 #: src/libedataserverui/e-buffer-tagger.c:712
 msgid "Ctrl-click to open a link"
-msgstr ""
+msgstr "Шәхыкәлас Ctrl шәақәыӷәӷәаны ишышәку, азхьарԥш аартразы"
 
 #. x509 certificate usage types
 #: src/libedataserverui/e-certificate-widget.c:288
 msgid "Digital Signature"
-msgstr ""
+msgstr "Аԥхьаӡацтә напаҵаҩра"
 
 #: src/libedataserverui/e-certificate-widget.c:289
 msgid "Key Encipherment"
-msgstr ""
+msgstr "Ацаԥха ашифрркра"
 
 #: src/libedataserverui/e-certificate-widget.c:411
 msgid "Certificate"
-msgstr ""
+msgstr "Асертификат"
 
 #: src/libedataserverui/e-certificate-widget.c:411
 msgid "Identity"
-msgstr ""
+msgstr "Аиԥшрагәаҭара"
 
 #: src/libedataserverui/e-certificate-widget.c:412
 #: src/libedataserverui/e-certificate-widget.c:424
 msgid "Issuer"
-msgstr ""
+msgstr "Аагаҩ"
 
 #: src/libedataserverui/e-certificate-widget.c:413
 msgid "Expires on"
-msgstr ""
+msgstr "Ахәарҭара"
 
 #: src/libedataserverui/e-certificate-widget.c:414
 msgid "Subject"
-msgstr ""
+msgstr "Атема"
 
 #: src/libedataserverui/e-certificate-widget.c:414
 #: src/libedataserverui/e-certificate-widget.c:424
 msgid "Common Name"
-msgstr ""
+msgstr "Азеԥш хьӡы"
 
 #: src/libedataserverui/e-certificate-widget.c:416
 #: src/libedataserverui/e-certificate-widget.c:425
 msgid "Email"
-msgstr ""
+msgstr "Аел. пошьҭа"
 
 #: src/libedataserverui/e-certificate-widget.c:418
 #: src/libedataserverui/e-certificate-widget.c:427
 msgid "Organization Unit"
-msgstr ""
+msgstr "Ахеидкылақәа раҟәша"
 
 #: src/libedataserverui/e-certificate-widget.c:419
 #: src/libedataserverui/e-certificate-widget.c:428
@@ -7067,16 +7074,16 @@ msgstr "Аҭыҧ"
 #: src/libedataserverui/e-certificate-widget.c:422
 #: src/libedataserverui/e-certificate-widget.c:431
 msgid "Domain Component Name"
-msgstr ""
+msgstr "Адомен акомпонент ахьӡ"
 
 #: src/libedataserverui/e-certificate-widget.c:423
 msgid "Alternative Emails"
-msgstr ""
+msgstr "Аел. пошьҭа ральтернатива"
 
 #: src/libedataserverui/e-certificate-widget.c:432
 #: src/libedataserverui/e-certificate-widget.c:440
 msgid "SHA-256 Fingerprint"
-msgstr ""
+msgstr "SHA-256 ашьҭа"
 
 #: src/libedataserverui/e-certificate-widget.c:433
 msgid "Details"
@@ -7084,11 +7091,11 @@ msgstr "Аԥкаарақәа"
 
 #: src/libedataserverui/e-certificate-widget.c:433
 msgid "Not Before"
-msgstr ""
+msgstr "Аԥхьанӡа акәымкәа"
 
 #: src/libedataserverui/e-certificate-widget.c:434
 msgid "Not After"
-msgstr ""
+msgstr "Ашьҭахьанӡа акәымкәа"
 
 #: src/libedataserverui/e-certificate-widget.c:435
 msgid "Usage"
@@ -7100,11 +7107,11 @@ msgstr "Аверсиа"
 
 #: src/libedataserverui/e-certificate-widget.c:437
 msgid "Serial Number"
-msgstr ""
+msgstr "Асериатә номер"
 
 #: src/libedataserverui/e-certificate-widget.c:438
 msgid "Key ID"
-msgstr ""
+msgstr "ID ацыпха"
 
 #: src/libedataserverui/e-certificate-widget.c:439
 msgid "Signature Algorithm"
@@ -7122,56 +7129,56 @@ msgstr "Алгоритм"
 #: src/libedataserverui/e-credentials-prompter.c:1755
 #: src/libedataserverui/e-credentials-prompter.c:1799
 msgid "Credentials prompt was cancelled"
-msgstr ""
+msgstr "Аҳасабырбатә дыррақәа рыдҵаалара аԥыхын"
 
 #: src/libedataserverui/e-credentials-prompter.c:776
 #, c-format
 msgid "Source “%s” doesn’t support prompt for credentials"
-msgstr ""
+msgstr "Ахыҵхырҭа «%s»  иаднакылаӡом  аҳасабырбатә дыррақәа рыдҵаалара"
 
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:228
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
-msgstr ""
+msgstr "Анеира амаркер аҭыӡҭыԥ «%s» аҟынтә аира залымшеит: %s"
 
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:259
 msgid "Requesting access token, please wait…"
-msgstr ""
+msgstr "Иадҵаалоит анеира атокен, ҳшәыҳәоит шәаапшы..."
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:509
 #, c-format
 msgid "%s Address Book authentication request"
-msgstr ""
+msgstr "%s Аҭыӡҭыԥтә шәҟәы ахаҭареилкааразы адҵаалара"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:514
 #, c-format
 msgid "%s Calendar authentication request"
-msgstr ""
+msgstr "%s Амзар ахаҭареилкааразы адҵаалара"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:519
 #, c-format
 msgid "%s Memo List authentication request"
-msgstr ""
+msgstr "%s Агәаларшәагақәа рыхьӡынҵа ахаҭареилкааразы адҵаалара"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:524
 #, c-format
 msgid "%s Task List authentication request"
-msgstr ""
+msgstr "%s Адҵақәа рыхьӡынҵа ахаҭареилкааразы адҵаалара"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:530
 #, c-format
 msgid "%s Mail authentication request"
-msgstr ""
+msgstr "%s Аԥошьҭа ахаҭареилкааразы адҵаалара"
 
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
@@ -7179,7 +7186,7 @@ msgstr ""
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:535
 #, c-format
 msgid "%s account authentication request"
-msgstr ""
+msgstr "%s Аҳасабырбатә нҵамҭа ахаҭареилкааразы адҵаалара"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7190,6 +7197,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "address book “%s”."
 msgstr ""
+"Шәҳасабырбатә нҵамҭа %s шәҭаланы ишәыдышәкыл аиқәшаҳаҭра, аҭыӡҭыԥтә шәҟәы "
+"«%s» ахь анеира азин шәоурц азы"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7200,6 +7209,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "calendar “%s”."
 msgstr ""
+"Шәҳасабырбатә нҵамҭа %s шәҭаланы ишәыдышәкыл аиқәшаҳаҭра, амзар «%s» ахь "
+"анеира азин шәоурц азы"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7210,6 +7221,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "account “%s”."
 msgstr ""
+"Шәҳасабырбатә нҵамҭа %s шәҭаланы ишәыдышәкыл аиқәшаҳаҭра, аԥошьҭа аккаунт "
+"«%s» ахь анеира азин шәоурц азы"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7220,6 +7233,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "transport “%s”."
 msgstr ""
+"Шәҳасабырбатә нҵамҭа %s шәҭаланы ишәыдышәкыл аиқәшаҳаҭра, шәԥошьҭатә  "
+"мҩангага «%s» ахь анеира азин шәоурц азы"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7230,6 +7245,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
 "list “%s”."
 msgstr ""
+"Шәҳасабырбатә нҵамҭа %s шәҭаланы ишәыдышәкыл аиқәшаҳаҭра, азгәаҭарақәа "
+"рыхьӡынҵа «%s» ахь анеира азин шәоурц азы"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7240,6 +7257,8 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your task "
 "list “%s”."
 msgstr ""
+"Шәҳасабырбатә нҵамҭа %s шәҭаланы ишәыдышәкыл аиқәшаҳаҭра, адҵақәа рыхьӡынҵа "
+"«%s» ахь анеира азин шәоурц азы"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
@@ -7250,11 +7269,13 @@ msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "account “%s”."
 msgstr ""
+"Шәҳасабырбатә нҵамҭа %s шәҭаланы ишәыдышәкыл аиқәшаҳаҭра,  шәҳасабырбатә "
+"нҵамҭа «%s» ахь анеира азин шәоурц азы"
 
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:778
 #, c-format
 msgid "Failed to open browser: %s"
-msgstr ""
+msgstr "Абраузерр аартра ауам:%s"
 
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:865
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:243
@@ -7269,7 +7290,7 @@ msgstr "URL:"
 
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:977
 msgid "Click here to open the URL"
-msgstr ""
+msgstr "Шәақәыӷәӷәа азхьарԥш ала аиасразы"
 
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1015
 msgid ""
@@ -7280,63 +7301,63 @@ msgstr ""
 
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1052
 msgid "_Authorization code:"
-msgstr ""
+msgstr "Ахаҭара_шьақәыргылара акод:"
 
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1065
 msgid "C_ontinue"
-msgstr ""
+msgstr "А_цҵара"
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:136
 msgid "Address book authentication request"
-msgstr ""
+msgstr "Ахаҭареилкаара адҵаалара аҭыӡҭыԥтә шәҟәы аҟынтә"
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:141
 msgid "Calendar authentication request"
-msgstr ""
+msgstr "Ахаҭареилкаара адҵаалара амзар аҟынтә"
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:145
 msgid "Mail authentication request"
-msgstr ""
+msgstr "Ахаҭареилкаара адҵаалара ааԥошьҭа аҟынтә"
 
 #. generic account prompt
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:148
 msgid "Authentication request"
-msgstr ""
+msgstr "Ахаҭареилкаара адҵаалара"
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:157
 #, c-format
 msgid "Please enter the password for address book “%s”."
-msgstr ""
+msgstr "Ажәамаӡа ҭажәыҩ аҭыӡҭыԥтә шәҟәы  «%s» азы"
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:161
 #, c-format
 msgid "Please enter the password for calendar “%s”."
-msgstr ""
+msgstr "Ажәамаӡа ҭажәыҩ аҭыӡҭыԥтә шәҟәы  «%s» азы"
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:165
 #, c-format
 msgid "Please enter the password for mail account “%s”."
-msgstr ""
+msgstr "Ажәамаӡа ҭажәыҩ аԥошьҭа аҳасабырбатә нҵамҭа«%s» азы"
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:169
 #, c-format
 msgid "Please enter the password for mail transport “%s”."
-msgstr ""
+msgstr "Ажәамаӡа ҭажәыҩ амҩангагатә ԥошьҭа  «%s» азы"
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:173
 #, c-format
 msgid "Please enter the password for memo list “%s”."
-msgstr ""
+msgstr "Ажәамаӡа ҭажәыҩ азгәаҭақәа рыхьӡынҵа  «%s» азы"
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:177
 #, c-format
 msgid "Please enter the password for task list “%s”."
-msgstr ""
+msgstr "Ажәамаӡа ҭажәыҩ адҵакәа рыхьӡынҵа  «%s» азы"
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:181
 #, c-format
 msgid "Please enter the password for account “%s”."
-msgstr ""
+msgstr "Ажәамаӡа ҭажәыҩ аҳасабырбатә нҵамҭа «%s» азы"
 
 #. Translators: This is part of a credential prompt, constructing for example: "Please enter the password for account “%s”.\n(host: hostname)"
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:187
@@ -7367,15 +7388,15 @@ msgstr ""
 #. Translators: meaning as "Snooze, until event start time"
 #: src/libedataserverui/e-reminders-widget.c:237
 msgid "until start time"
-msgstr ""
+msgstr "Аусура алагаанӡа"
 
 #: src/libedataserverui/e-reminders-widget.c:262
 msgid "Add custom time…"
-msgstr ""
+msgstr "Ахархәаҩ ихьӡ ацҵара..."
 
 #: src/libedataserverui/e-reminders-widget.c:266
 msgid "Clear custom times"
-msgstr ""
+msgstr "Ахархәаҩцәа ааамҭақәа ррыцқьара"
 
 #: src/libedataserverui/e-reminders-widget.c:323
 msgctxt "overdue"
@@ -7397,31 +7418,31 @@ msgstr ""
 #: src/libedataserverui/e-reminders-widget.c:983
 #, c-format
 msgid "Failed to launch URI “%s”:"
-msgstr ""
+msgstr "URI «%s» аус арура залымшеит:"
 
 #: src/libedataserverui/e-reminders-widget.c:1034
 msgid "No reminder is selected."
-msgstr ""
+msgstr "Агәаларшәара алхӡам"
 
 #: src/libedataserverui/e-reminders-widget.c:1116
 msgid "No details are available."
-msgstr ""
+msgstr "Аԥкаарақәа ыҟаӡам."
 
 #: src/libedataserverui/e-reminders-widget.c:1120
 msgid "Multiple reminders are selected."
-msgstr ""
+msgstr "Ԥыҭк агәаларшәагақәа алххоит"
 
 #: src/libedataserverui/e-reminders-widget.c:1154
 msgid "Failed to dismiss reminder:"
-msgstr ""
+msgstr "Агәаларшәара мап ацәкра залымшеит:"
 
 #: src/libedataserverui/e-reminders-widget.c:1175
 msgid "Failed to dismiss all:"
-msgstr ""
+msgstr "Зегьы раԥыхра залымшеит:"
 
 #: src/libedataserverui/e-reminders-widget.c:1335
 msgid "Set a custom snooze time for"
-msgstr ""
+msgstr "Иқәшәыргыл ахархәаратә ааԥшра аамҭа "
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: src/libedataserverui/e-reminders-widget.c:1348
@@ -7443,7 +7464,7 @@ msgstr ""
 
 #: src/libedataserverui/e-reminders-widget.c:1386
 msgid "_Add Snooze time"
-msgstr ""
+msgstr "Ааԥшра аамҭа ацҵара"
 
 #: src/libedataserverui/e-reminders-widget.c:1749
 #: src/services/evolution-user-prompter/prompt-user-gtk.c:119
@@ -7452,7 +7473,7 @@ msgstr "_Аԥыхра"
 
 #: src/libedataserverui/e-reminders-widget.c:1750
 msgid "Dismiss _All"
-msgstr ""
+msgstr "Зегьы_мап рыцәкра"
 
 #: src/libedataserverui/e-reminders-widget.c:1752
 msgid "_Snooze"
@@ -7461,7 +7482,7 @@ msgstr ""
 #: src/libedataserverui/e-trust-prompt.c:116
 #: src/modules/trust-prompt/trust-prompt-gtk.c:129
 msgid "Certificate trust..."
-msgstr ""
+msgstr "Асертификат агәра гара..."
 
 #: src/libedataserverui/e-trust-prompt.c:118
 #: src/modules/trust-prompt/trust-prompt-gtk.c:130
@@ -7471,12 +7492,12 @@ msgstr ""
 #: src/libedataserverui/e-trust-prompt.c:119
 #: src/modules/trust-prompt/trust-prompt-gtk.c:131
 msgid "Accept _Temporarily"
-msgstr ""
+msgstr "_Аамҭала адкылара"
 
 #: src/libedataserverui/e-trust-prompt.c:120
 #: src/modules/trust-prompt/trust-prompt-gtk.c:132
 msgid "_Accept Permanently"
-msgstr ""
+msgstr "_Адкылара"
 
 #: src/libedataserverui/e-trust-prompt.c:208
 #: src/modules/trust-prompt/trust-prompt-gtk.c:169
@@ -7487,11 +7508,11 @@ msgstr ""
 #: src/libedataserverui/e-trust-prompt.c:230
 #: src/modules/trust-prompt/trust-prompt-gtk.c:184
 msgid "Reason:"
-msgstr ""
+msgstr "Амзыз"
 
 #: src/libedataserverui/e-trust-prompt.c:233
 msgid "Detailed error:"
-msgstr ""
+msgstr "Агха иазку ацҳамҭа"
 
 #: src/libedataserverui/e-trust-prompt.c:292
 #: src/modules/trust-prompt/module-trust-prompt.c:80
@@ -7513,7 +7534,7 @@ msgstr "Асертификат арцыхцыхра аамҭа мааиӡацт"
 #: src/libedataserverui/e-trust-prompt.c:298
 #: src/modules/trust-prompt/module-trust-prompt.c:86
 msgid "The certificate has expired."
-msgstr ""
+msgstr "Асертификат аҽҳәара иахыԥеит."
 
 #: src/libedataserverui/e-trust-prompt.c:300
 #: src/modules/trust-prompt/module-trust-prompt.c:88
@@ -7529,7 +7550,7 @@ msgstr "Асертификат алгоритм ишәарҭоуп ҳәа иԥх
 
 #: src/libedataserverui/e-webdav-discover-widget.c:208
 msgid "Supports"
-msgstr ""
+msgstr "Адкылара"
 
 #: src/libedataserverui/e-webdav-discover-widget.c:219
 msgid "_User mail:"
@@ -7557,7 +7578,7 @@ msgstr ""
 
 #: src/libedataserverui/e-webdav-discover-widget.c:891
 msgid "Invalid URL"
-msgstr ""
+msgstr "Ииашам"
 
 #: src/libedataserverui/e-webdav-discover-widget.c:940
 msgid "Cancel"
@@ -7565,7 +7586,7 @@ msgstr "Аԥыхры"
 
 #: src/libedataserverui/e-webdav-discover-widget.c:943
 msgid "Searching server sources..."
-msgstr ""
+msgstr "Асервер ахыҵхырҭақәа рыԥшаара"
 
 #: src/modules/gnome-online-accounts/e-goa-password-based.c:248
 #, c-format
@@ -7582,7 +7603,7 @@ msgstr ""
 #: src/modules/gnome-online-accounts/goaewsclient.c:240
 #, c-format
 msgid "Code: %u — Unexpected response from server"
-msgstr ""
+msgstr "Акод:%u - Узқәымгәыӷуа аҭак асервер аҟынтә"
 
 #. TODO: more specific
 #: src/modules/gnome-online-accounts/goaewsclient.c:263
@@ -7594,19 +7615,19 @@ msgstr ""
 #: src/modules/gnome-online-accounts/goaewsclient.c:272
 #, c-format
 msgid "Failed to find Autodiscover element"
-msgstr ""
+msgstr "Autodiscover аелемент аԥшаара залымшеит"
 
 #. TODO: more specific
 #: src/modules/gnome-online-accounts/goaewsclient.c:284
 #, c-format
 msgid "Failed to find Response element"
-msgstr ""
+msgstr "Response аелемент аԥшаара залымшеит"
 
 #. TODO: more specific
 #: src/modules/gnome-online-accounts/goaewsclient.c:296
 #, c-format
 msgid "Failed to find Account element"
-msgstr ""
+msgstr "Account аелемент аԥшаара залымшеит"
 
 #. TODO: more specific
 #: src/modules/gnome-online-accounts/goaewsclient.c:310
@@ -7788,19 +7809,19 @@ msgstr "Ааи"
 
 #: src/tools/list-sources/list-sources.c:106
 msgid "no"
-msgstr ""
+msgstr "мап"
 
 #: src/tools/list-sources/list-sources.c:126
 msgid "Collection"
-msgstr ""
+msgstr "Аизга"
 
 #: src/tools/list-sources/list-sources.c:132
 msgid "Collection/GNOME Online Accounts"
-msgstr ""
+msgstr "Аизга/GNOME Online Accounts"
 
 #: src/tools/list-sources/list-sources.c:137
 msgid "Collection/Ubuntu Online Accounts"
-msgstr ""
+msgstr "Аизга/Аҳасабырбатә нҵамҭа Ubuntu Online"
 
 #: src/tools/list-sources/list-sources.c:147
 msgid "Address Book"
@@ -7808,108 +7829,108 @@ msgstr "Аҭыӡҭыԥтәи ашәҟәы"
 
 #: src/tools/list-sources/list-sources.c:148
 msgid "Calendar"
-msgstr ""
+msgstr "Амзар"
 
 #: src/tools/list-sources/list-sources.c:149
 msgid "Memo List"
-msgstr ""
+msgstr "Азгәаҭақәа рахьӡынҵа"
 
 #: src/tools/list-sources/list-sources.c:150
 msgid "Task List"
-msgstr ""
+msgstr "Адҵақәа рыхьӡынҵа"
 
 #: src/tools/list-sources/list-sources.c:151
 msgid "Mail Account"
-msgstr ""
+msgstr "Аԥошьҭа аҳасабырбатә нҵамҭа"
 
 #: src/tools/list-sources/list-sources.c:152
 msgid "Mail Transport"
-msgstr ""
+msgstr "Аԥошьҭа амҩангага"
 
 #: src/tools/list-sources/list-sources.c:153
 msgid "Mail Identity"
-msgstr ""
+msgstr "Аԥошьҭа ахаҭашьақәыргылара"
 
 #: src/tools/list-sources/list-sources.c:154
 msgid "Mail Submission"
-msgstr ""
+msgstr "Аԥошьҭала ашьҭра"
 
 #: src/tools/list-sources/list-sources.c:155
 msgid "Mail Signature"
-msgstr ""
+msgstr "Аԥошьҭатә напынҵамҭа"
 
 #: src/tools/list-sources/list-sources.c:156
 msgid "Proxy"
-msgstr ""
+msgstr "Апрокси"
 
 #: src/tools/list-sources/list-sources.c:224
 #, c-format
 msgid "UID: %s"
-msgstr ""
+msgstr "UID: %s"
 
 #: src/tools/list-sources/list-sources.c:228
 #, c-format
 msgid "Parent UID: %s"
-msgstr ""
+msgstr "UID изхылҵыз: %s"
 
 #: src/tools/list-sources/list-sources.c:231
 #, c-format
 msgid "Enabled: %s"
-msgstr ""
+msgstr "Иаҿакуп:%s"
 
 #: src/tools/list-sources/list-sources.c:233
 #, c-format
 msgid "Backend: %s"
-msgstr ""
+msgstr "Бекенд:%s"
 
 #: src/tools/list-sources/list-sources.c:238
 #, c-format
 msgid "Calendar enabled: %s"
-msgstr ""
+msgstr "Амзар аҿакуп:%s"
 
 #: src/tools/list-sources/list-sources.c:239
 #, c-format
 msgid "Contacts enabled: %s"
-msgstr ""
+msgstr "Аконтактқәа аҿакуп:%s"
 
 #: src/tools/list-sources/list-sources.c:240
 #, c-format
 msgid "Mail enabled: %s"
-msgstr ""
+msgstr "Аԥошьҭа аҿакуп:%s"
 
 #: src/tools/list-sources/list-sources.c:247
 #, c-format
 msgid "MIME Type: %s"
-msgstr ""
+msgstr "MIME Type: %s"
 
 #: src/tools/list-sources/list-sources.c:269
 #, c-format
 msgid "Auth Host: %s:%d"
-msgstr ""
+msgstr "Auth Host: %s:%d"
 
 #: src/tools/list-sources/list-sources.c:275
 #, c-format
 msgid "Auth Host: %s"
-msgstr ""
+msgstr "Auth Host: %s"
 
 #: src/tools/list-sources/list-sources.c:283
 #, c-format
 msgid "Auth User: %s"
-msgstr ""
+msgstr "Auth User: %s"
 
 #: src/tools/list-sources/list-sources.c:291
 #, c-format
 msgid "Auth Method: %s"
-msgstr ""
+msgstr "Ахаҭара ашьақәыргылара метод:%s"
 
 #: src/tools/list-sources/list-sources.c:299
 #, c-format
 msgid "Auth Proxy UID: %s"
-msgstr ""
+msgstr "Auth Proxy UID: %s"
 
 #: src/tools/list-sources/list-sources.c:420
 msgid "Failed to parse arguments: Unknown error"
-msgstr ""
+msgstr "Аҵаҵӷәқәа реиларгара залымшеит:еилкаам агха"
 
 #: src/tools/list-sources/list-sources.c:429
 #, c-format
@@ -7923,15 +7944,15 @@ msgstr ""
 
 #: src/services/evolution-source-registry/builtin/birthdays.source.desktop.in:4
 msgid "Birthdays & Anniversaries"
-msgstr ""
+msgstr "Аирамшқәеи ашықәсхыҵрақәеи"
 
 #: src/services/evolution-source-registry/builtin/caldav-stub.source.desktop.in:4
 msgid "CalDAV"
-msgstr ""
+msgstr "CalDAV"
 
 #: src/services/evolution-source-registry/builtin/carddav-stub.source.desktop.in:4
 msgid "CardDAV"
-msgstr ""
+msgstr "CardDAV"
 
 #: src/services/evolution-source-registry/builtin/contacts-stub.source.desktop.in:4
 msgid "Contacts"
@@ -7943,12 +7964,12 @@ msgstr "Google"
 
 #: src/services/evolution-source-registry/builtin/ldap-stub.source.desktop.in:4
 msgid "On LDAP Servers"
-msgstr ""
+msgstr "Асерверқәа LDAP рҟны"
 
 #: src/services/evolution-source-registry/builtin/local.source.desktop.in:5
 #: src/services/evolution-source-registry/builtin/local-stub.source.desktop.in:6
 msgid "On This Computer"
-msgstr ""
+msgstr "Ари акомпиутер аҟны"
 
 #: src/services/evolution-source-registry/builtin/system-address-book.source.desktop.in:4
 #: src/services/evolution-source-registry/builtin/system-calendar.source.desktop.in:4
@@ -7959,11 +7980,11 @@ msgstr "Ахатәы"
 
 #: src/services/evolution-source-registry/builtin/system-proxy.source.desktop.in:4
 msgid "Default Proxy Settings"
-msgstr ""
+msgstr "Апрокси архиарақәа ишыҟоу еиԥш"
 
 #: src/services/evolution-source-registry/builtin/vfolder.source.desktop.in:5
 msgid "Search Folders"
-msgstr ""
+msgstr "Аԥшаара аҭаӡқәа"
 
 #: src/services/evolution-source-registry/builtin/weather-stub.source.desktop.in:4
 msgid "Weather"
@@ -7971,8 +7992,4055 @@ msgstr "Амш зеиԥшроу"
 
 #: src/services/evolution-source-registry/builtin/webcal-stub.source.desktop.in:4
 msgid "On The Web"
-msgstr ""
+msgstr "Авеб-браузер аҟны"
 
 #: src/services/evolution-source-registry/builtin/webdav-notes-stub.source.desktop.in:4
 msgid "WebDAV Notes"
-msgstr ""
+msgstr "Азгәаҭақәа WebDAV"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#, fuzzy
