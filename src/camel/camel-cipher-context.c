@@ -1034,7 +1034,7 @@ camel_cipher_validity_set_valid (CamelCipherValidity *validity,
 	validity->sign.status = valid ? CAMEL_CIPHER_VALIDITY_SIGN_GOOD : CAMEL_CIPHER_VALIDITY_SIGN_BAD;
 }
 
-gchar *
+const gchar *
 camel_cipher_validity_get_description (CamelCipherValidity *validity)
 {
 	g_return_val_if_fail (validity != NULL, NULL);

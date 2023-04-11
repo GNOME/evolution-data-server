@@ -303,7 +303,7 @@ void		camel_cipher_validity_init	(CamelCipherValidity *validity);
 gboolean	camel_cipher_validity_get_valid	(CamelCipherValidity *validity);
 void		camel_cipher_validity_set_valid	(CamelCipherValidity *validity,
 						 gboolean valid);
-gchar *		camel_cipher_validity_get_description
+const gchar *	camel_cipher_validity_get_description
 						(CamelCipherValidity *validity);
 void		camel_cipher_validity_set_description
 						(CamelCipherValidity *validity,
