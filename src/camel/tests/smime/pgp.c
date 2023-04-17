@@ -46,24 +46,9 @@ GType camel_pgp_session_get_type (void);
 
 G_DEFINE_TYPE (CamelPgpSession, camel_pgp_session, camel_test_session_get_type ())
 
-static gchar *
-pgp_session_get_password (CamelSession *session,
-                          CamelService *service,
-                          const gchar *prompt,
-                          const gchar *item,
-                          guint32 flags,
-                          GError **error)
-{
-	return g_strdup ("no.secret");
-}
-
 static void
 camel_pgp_session_class_init (CamelPgpSessionClass *class)
 {
-	CamelSessionClass *session_class;
-
-	session_class = CAMEL_SESSION_CLASS (class);
-	session_class->get_password = pgp_session_get_password;
 }
 
 static void
@@ -76,7 +61,9 @@ camel_pgp_session_new (const gchar *path)
 {
 	return g_object_new (
 		CAMEL_TYPE_PGP_SESSION,
-		"user-data-dir", path, NULL);
+		"user-data-dir", path,
+		"user-cache-dir", path,
+		NULL);
 }
 
 gint main (gint argc, gchar **argv)
@@ -93,15 +80,16 @@ gint main (gint argc, gchar **argv)
 	gint ret;
 	GError *error = NULL;
 
-	if (getenv ("CAMEL_TEST_GPG") == NULL)
-		return 77;
-
 	camel_test_init (argc, argv);
 
 	/* clear out any camel-test data */
 	system ("/bin/rm -rf /tmp/camel-test");
-	system ("/bin/mkdir /tmp/camel-test");
-	setenv ("GNUPGHOME", "/tmp/camel-test/.gnupg", 1);
+	/*
+	 * You need to add the private-keys-v1.d folder for this
+	 * to work on newer versions of gnupg
+	 */
+	g_mkdir_with_parents ("/tmp/camel-test/.gnupg/private-keys-v1.d", 0700);
+	setenv ("GNUPGHOME", "/tmp/camel-test/.gnupg/", 1);
 
 	/* import the gpg keys */
 	if ((ret = system ("gpg < /dev/null > /dev/null 2>&1")) == -1)
@@ -149,7 +137,17 @@ gint main (gint argc, gchar **argv)
 
 	g_clear_error (&error);
 
-	camel_test_push ("PGP verify");
+	camel_test_push ("PGP verify untrusted");
+	valid = camel_cipher_context_verify_sync (ctx, sigpart, NULL, &error);
+	check_msg (error == NULL, "%s", error->message);
+	/* We do not trust the keys yet, so camel_cipher_validity_get_valid () will return false */
+	check_msg (!camel_cipher_validity_get_valid (valid), "%s", camel_cipher_validity_get_description (valid));
+	camel_cipher_validity_free (valid);
+	camel_test_pull ();
+
+	camel_test_push ("PGP verify trusted");
+	/* this sets the ultimate trust on the imported key */
+	system ("echo 1A7B616196E654BA5B8CF177A62EDCB3B1907A17:6: | gpg --import-ownertrust 2>/dev/null");
 	valid = camel_cipher_context_verify_sync (ctx, sigpart, NULL, &error);
 	check_msg (error == NULL, "%s", error->message);
 	check_msg (camel_cipher_validity_get_valid (valid), "%s", camel_cipher_validity_get_description (valid));
