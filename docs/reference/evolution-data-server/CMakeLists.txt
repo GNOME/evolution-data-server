@@ -24,7 +24,6 @@ set(DEPENDENCIES
 	ecal
 	edata-cal
 	etestserverutils
-	gtkdoc-camel
 )
 
 set(IGNORE_HEADERS
