@@ -5644,6 +5644,15 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 
 		success = camel_imapx_server_process_command_sync (is, ic, _("Error running STATUS"), cancellable, error);
 
+		/* Ignore permission errors from possibly write-only mailboxes */
+		if (!success && ic->status && ic->status->result == IMAPX_NO && ic->status->text &&
+		    camel_strstrcase (ic->status->text, "Permission denied")) {
+			camel_imapx_command_unref (ic);
+			g_clear_object (&selected_mailbox);
+			g_clear_error (error);
+			return TRUE;
+		}
+
 		camel_imapx_command_unref (ic);
 	}
 	g_clear_object (&selected_mailbox);
