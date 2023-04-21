@@ -1,3 +1,23 @@
+Evolution-Data-Server 3.48.1 2023-04-21
+---------------------------------------
+
+Bug Fixes:
+	I#459 - Camel: POP3's 'UTF8' command blocking login
+	I#461 - backends: React to destination URI changes
+	I#462 - Fails to refresh backend with offline changes and broken local cache state
+	I#469 - IMAPx: Ignore 'Permission denied' error on refresh
+	M!116 - libedataserver: Disable deprecation notice around e_flag_timed_wait (Corentin Noël)
+	M!119 - Calendar: Change file backend discard_alarm() function
+
+Miscellaneous:
+	WebDAV Notes: Fallback to derive component summary from description
+	CamelFilterDriver: Unset info's headers only when folder has summary
+
+Translations:
+	Alexander Shopov (bg)
+	Jiri Eischmann (cs)
+	Nathan Follens (nl)
+
 Evolution-Data-Server 3.48.0 2023-03-17
 ---------------------------------------
 
