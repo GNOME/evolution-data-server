@@ -281,6 +281,16 @@ nss_error_to_string (glong errorcode)
 	cs (SEC_ERROR_PKCS11_FUNCTION_FAILED, "A PKCS #11 module returned CKR_FUNCTION_FAILED, indicating that the requested function could not be performed.  Trying the same operation again might succeed.")
 	cs (SEC_ERROR_PKCS11_DEVICE_ERROR, "A PKCS #11 module returned CKR_DEVICE_ERROR, indicating that a problem has occurred with the token or slot.")
 	#endif
+
+	#if defined (NSS_VMAJOR) && defined (NSS_VMINOR) && (NSS_VMAJOR > 3 || (NSS_VMAJOR == 3 && NSS_VMINOR >= 89))
+	cs (SEC_ERROR_EXPIRED_PASSWORD, "Expired password")
+	cs (SEC_ERROR_LOCKED_PASSWORD, "Locked password")
+	cs (SEC_ERROR_UNKNOWN_PKCS11_ERROR, "Unknown PKCS11 error")
+	cs (SEC_ERROR_CERT_SIGNATURE_ALGORITHM_DISABLED, "Certificate signature algorithm disabled")
+	cs (SEC_ERROR_LEGACY_DATABASE, "Legacy database")
+	cs (SEC_ERROR_SIGNATURE_ALGORITHM_DISABLED, "Signature algorithm disabled")
+	cs (SEC_ERROR_ALGORITHM_MISMATCH, "Algorithm mismatch")
+	#endif
 	}
 
 	#undef cs
@@ -641,6 +651,7 @@ sm_verify_cmsg (CamelCipherContext *context,
 				for (j = 0; j < nsigners; j++) {
 					CERTCertificate *cert;
 					NSSCMSSignerInfo *si;
+					const gchar *status_description;
 					gchar *cn, *em;
 					gint idx;
 
@@ -648,6 +659,19 @@ sm_verify_cmsg (CamelCipherContext *context,
 					NSS_CMSSignedData_VerifySignerInfo (sigd, j, p->certdb, certUsageEmailSigner);
 
 					status = NSS_CMSSignerInfo_GetVerificationStatus (si);
+					status_description = sm_status_description (status);
+
+					#if defined (NSS_VMAJOR) && defined (NSS_VMINOR) && (NSS_VMAJOR > 3 || (NSS_VMAJOR == 3 && NSS_VMINOR >= 89))
+					if (status == NSSCMSVS_BadSignature) {
+						if (PORT_GetError () == SEC_ERROR_SIGNATURE_ALGORITHM_DISABLED) {
+							PORT_SetError (0);
+							status_description = _("Signature algorithm disabled");
+						} else if (PORT_GetError () == SEC_ERROR_CERT_SIGNATURE_ALGORITHM_DISABLED) {
+							PORT_SetError (0);
+							status_description = _("Certificate signature algorithm disabled");
+						}
+					}
+					#endif
 
 					cn = NSS_CMSSignerInfo_GetSignerCommonName (si);
 					em = NSS_CMSSignerInfo_GetSignerEmailAddress (si);
@@ -655,7 +679,7 @@ sm_verify_cmsg (CamelCipherContext *context,
 					g_string_append_printf (
 						description, _("Signer: %s <%s>: %s\n"),
 						cn ? cn:"<unknown>", em ? em:"<unknown>",
-						sm_status_description (status));
+						status_description);
 
 					cert = NSS_CMSSignerInfo_GetSigningCertificate (si, p->certdb);
 
