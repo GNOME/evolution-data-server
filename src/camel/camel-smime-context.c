@@ -527,6 +527,125 @@ sm_status_description (NSSCMSVerificationStatus status,
 	}
 }
 
+/* Below camel_smime_NSS_...() functions are copy&pasted from NSS,
+   because they are available in the header files, but not exported
+   in the libraries... */
+static SECOidTag
+camel_smime_NSS_CMSUtil_MapSignAlgs (SECOidTag signAlg)
+{
+	switch (signAlg) {
+	case SEC_OID_PKCS1_MD2_WITH_RSA_ENCRYPTION:
+		return SEC_OID_MD2;
+	case SEC_OID_PKCS1_MD5_WITH_RSA_ENCRYPTION:
+		return SEC_OID_MD5;
+	case SEC_OID_PKCS1_SHA1_WITH_RSA_ENCRYPTION:
+	case SEC_OID_ANSIX962_ECDSA_SHA1_SIGNATURE:
+	case SEC_OID_ANSIX9_DSA_SIGNATURE_WITH_SHA1_DIGEST:
+		return SEC_OID_SHA1;
+	case SEC_OID_PKCS1_SHA256_WITH_RSA_ENCRYPTION:
+	case SEC_OID_ANSIX962_ECDSA_SHA256_SIGNATURE:
+		return SEC_OID_SHA256;
+        case SEC_OID_PKCS1_SHA384_WITH_RSA_ENCRYPTION:
+        case SEC_OID_ANSIX962_ECDSA_SHA384_SIGNATURE:
+		return SEC_OID_SHA384;
+	case SEC_OID_PKCS1_SHA512_WITH_RSA_ENCRYPTION:
+	case SEC_OID_ANSIX962_ECDSA_SHA512_SIGNATURE:
+		return SEC_OID_SHA512;
+	default:
+		break;
+	}
+	/* not one of the algtags incorrectly sent to us*/
+	return signAlg;
+}
+
+static SECOidData *
+camel_smime_NSS_CMSSignerInfo_GetDigestAlg (NSSCMSSignerInfo *signerinfo)
+{
+	SECOidData *algdata;
+	SECOidTag algtag;
+
+	algdata = SECOID_FindOID (&(signerinfo->digestAlg.algorithm));
+	if (algdata == NULL) {
+		return algdata;
+	}
+	/* Windows may have given us a signer algorithm oid instead of a digest
+	 * algorithm oid. This call will map to a signer oid to a digest one,
+	 * otherwise it leaves the oid alone and let the chips fall as they may
+	 * if it's not a digest oid.
+	 */
+	algtag = camel_smime_NSS_CMSUtil_MapSignAlgs (algdata->offset);
+	if (algtag != algdata->offset) {
+		/* if the tags don't match, then we must have received a signer
+		 * algorithID. Now we need to get the oid data for the digest
+		 * oid, which the rest of the code is expecting */
+		algdata = SECOID_FindOIDByTag (algtag);
+	}
+
+	return algdata;
+}
+
+static gint
+camel_smime_NSS_CMSAlgArray_GetIndexByAlgTag (SECAlgorithmID **algorithmArray,
+					      SECOidTag algtag)
+{
+	SECOidData *algid;
+	int i = -1;
+
+	if (algorithmArray == NULL || algorithmArray[0] == NULL)
+		return i;
+
+	algid = SECOID_FindOIDByTag (algtag);
+	if (!algid)
+		return i;
+	for (i = 0; algorithmArray[i] != NULL; i++) {
+		if (SECITEM_ItemsAreEqual (&algorithmArray[i]->algorithm, &algid->oid))
+			break; /* bingo */
+		}
+
+	if (algorithmArray[i] == NULL)
+		return -1; /* not found */
+
+	return i;
+}
+
+static SECItem *
+camel_smime_NSS_CMSSignedData_GetDigestValue (NSSCMSSignedData *sigd, SECOidTag digestalgtag)
+{
+	int n;
+
+	if (!sigd) {
+		PORT_SetError(SEC_ERROR_INVALID_ARGS);
+		return NULL;
+	}
+
+	if (sigd->digestAlgorithms == NULL || sigd->digests == NULL) {
+		PORT_SetError(SEC_ERROR_DIGEST_NOT_FOUND);
+		return NULL;
+	}
+
+	n = camel_smime_NSS_CMSAlgArray_GetIndexByAlgTag (sigd->digestAlgorithms, digestalgtag);
+
+	return (n < 0) ? NULL : sigd->digests[n];
+}
+
+static SECItem *
+camel_smime_NSS_CMSContentInfo_GetContentTypeOID (NSSCMSContentInfo *cinfo)
+{
+	if (cinfo == NULL) {
+		return NULL;
+	}
+
+	if (cinfo->contentTypeTag == NULL) {
+		cinfo->contentTypeTag = SECOID_FindOID (&(cinfo->contentType));
+	}
+
+	if (cinfo->contentTypeTag == NULL) {
+		return NULL;
+	}
+
+	return &(cinfo->contentTypeTag->oid);
+}
+
 static CamelCipherValidity *
 sm_verify_cmsg (CamelCipherContext *context,
                 NSSCMSMessage *cmsg,
@@ -647,6 +766,7 @@ sm_verify_cmsg (CamelCipherContext *context,
 				for (j = 0; j < nsigners; j++) {
 					CERTCertificate *cert;
 					NSSCMSSignerInfo *si;
+					const gchar *status_description;
 					gchar *cn, *em;
 					gint idx;
 
@@ -654,6 +774,33 @@ sm_verify_cmsg (CamelCipherContext *context,
 					NSS_CMSSignedData_VerifySignerInfo (sigd, j, p->certdb, certUsageEmailSigner);
 
 					status = NSS_CMSSignerInfo_GetVerificationStatus (si);
+					status_description = sm_status_description (status, &sign_status);
+
+					/* certificate trust is verified first; check the signature itself,
+					   because CAMEL_CIPHER_VALIDITY_SIGN_UNKNOWN means "valid signature,
+					   but not trusted certificate" */
+					if (status == NSSCMSVS_SigningCertNotTrusted) {
+						NSSCMSContentInfo *cinfo;
+						SECOidData *algiddata;
+						SECItem *contentType, *digest;
+						SECOidTag oidTag;
+
+						cinfo = &(sigd->contentInfo);
+
+						/* find digest and contentType for signerinfo */
+						algiddata = camel_smime_NSS_CMSSignerInfo_GetDigestAlg (si);
+						oidTag = algiddata ? algiddata->offset : SEC_OID_UNKNOWN;
+						digest = camel_smime_NSS_CMSSignedData_GetDigestValue (sigd, oidTag);
+						/* NULL digest is acceptable. */
+						contentType = camel_smime_NSS_CMSContentInfo_GetContentTypeOID (cinfo);
+						/* NULL contentType is acceptable. */
+
+						/* now verify signature */
+						if (NSS_CMSSignerInfo_Verify (si, digest, contentType) != SECSuccess ||
+						    NSS_CMSSignerInfo_GetVerificationStatus (si) != NSSCMSVS_GoodSignature) {
+							sign_status = CAMEL_CIPHER_VALIDITY_SIGN_BAD;
+						}
+					}
 
 					cn = NSS_CMSSignerInfo_GetSignerCommonName (si);
 					em = NSS_CMSSignerInfo_GetSignerEmailAddress (si);
@@ -661,7 +808,7 @@ sm_verify_cmsg (CamelCipherContext *context,
 					g_string_append_printf (
 						description, _("Signer: %s <%s>: %s\n"),
 						cn ? cn:"<unknown>", em ? em:"<unknown>",
-						sm_status_description (status, &sign_status));
+						status_description);
 
 					cert = NSS_CMSSignerInfo_GetSigningCertificate (si, p->certdb);
 
