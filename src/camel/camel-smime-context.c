@@ -490,10 +490,13 @@ fail:
 }
 
 static const gchar *
-sm_status_description (NSSCMSVerificationStatus status)
+sm_status_description (NSSCMSVerificationStatus status,
+		       CamelCipherValiditySign *out_sign_status)
 {
 	/* could use this but then we can't control i18n? */
 	/*NSS_CMSUtil_VerificationStatusToString (status));*/
+
+	*out_sign_status = CAMEL_CIPHER_VALIDITY_SIGN_BAD;
 
 	switch (status) {
 	case NSSCMSVS_Unverified:
@@ -501,14 +504,17 @@ sm_status_description (NSSCMSVerificationStatus status)
 		/* Translators: A fallback message when couldn't verify an SMIME signature */
 		return _("Unverified");
 	case NSSCMSVS_GoodSignature:
+		*out_sign_status = CAMEL_CIPHER_VALIDITY_SIGN_GOOD;
 		return _("Good signature");
 	case NSSCMSVS_BadSignature:
 		return _("Bad signature");
 	case NSSCMSVS_DigestMismatch:
 		return _("Content tampered with or altered in transit");
 	case NSSCMSVS_SigningCertNotFound:
+		*out_sign_status = CAMEL_CIPHER_VALIDITY_SIGN_NEED_PUBLIC_KEY;
 		return _("Signing certificate not found");
 	case NSSCMSVS_SigningCertNotTrusted:
+		*out_sign_status = CAMEL_CIPHER_VALIDITY_SIGN_UNKNOWN;
 		return _("Signing certificate not trusted");
 	case NSSCMSVS_SignatureAlgorithmUnknown:
 		return _("Signature algorithm unknown");
@@ -541,12 +547,12 @@ sm_verify_cmsg (CamelCipherContext *context,
 	PLArenaPool *poolp = NULL;
 	CamelStream *mem;
 	NSSCMSVerificationStatus status;
+	CamelCipherValiditySign sign_status = CAMEL_CIPHER_VALIDITY_SIGN_UNKNOWN;
 	CamelCipherValidity *valid;
 	GString *description;
 
 	description = g_string_new ("");
 	valid = camel_cipher_validity_new ();
-	camel_cipher_validity_set_valid (valid, TRUE);
 	status = NSSCMSVS_Unverified;
 
 	/* NB: this probably needs to go into a decoding routine that can be used for processing
@@ -655,7 +661,7 @@ sm_verify_cmsg (CamelCipherContext *context,
 					g_string_append_printf (
 						description, _("Signer: %s <%s>: %s\n"),
 						cn ? cn:"<unknown>", em ? em:"<unknown>",
-						sm_status_description (status));
+						sm_status_description (status, &sign_status));
 
 					cert = NSS_CMSSignerInfo_GetSigningCertificate (si, p->certdb);
 
@@ -695,9 +701,6 @@ sm_verify_cmsg (CamelCipherContext *context,
 						PORT_Free (cn);
 					if (em)
 						PORT_Free (em);
-
-					if (status != NSSCMSVS_GoodSignature)
-						camel_cipher_validity_set_valid (valid, FALSE);
 				}
 			}
 			break;
@@ -716,7 +719,7 @@ sm_verify_cmsg (CamelCipherContext *context,
 		}
 	}
 
-	camel_cipher_validity_set_valid (valid, camel_cipher_validity_get_valid (valid) && status == NSSCMSVS_GoodSignature);
+	valid->sign.status = sign_status;
 	camel_cipher_validity_set_description (valid, description->str);
 	g_string_free (description, TRUE);
 
