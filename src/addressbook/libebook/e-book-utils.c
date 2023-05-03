@@ -18,6 +18,10 @@
 
 #include "evolution-data-server-config.h"
 
+#ifdef ENABLE_SMIME
+#include <cert.h>
+#endif
+
 #include "camel/camel.h"
 #include "libebook-contacts/libebook-contacts.h"
 
@@ -135,6 +139,22 @@ book_utils_get_recipient_certificates_thread (gpointer data,
 
 									decoded = e_vcard_attribute_get_value_decoded (cattr);
 									if (decoded && decoded->len) {
+										#ifdef ENABLE_SMIME
+										if (field_id == E_CONTACT_X509_CERT) {
+											CERTCertificate *nss_cert;
+											gboolean usable;
+
+											nss_cert = CERT_DecodeCertFromPackage (decoded->str, decoded->len);
+											usable = nss_cert && (nss_cert->keyUsage & certificateUsageEmailRecipient) != 0;
+											if (nss_cert)
+												CERT_DestroyCertificate (nss_cert);
+
+											if (!usable) {
+												g_string_free (decoded, TRUE);
+												continue;
+											}
+										}
+										#endif
 										base64_data = g_base64_encode ((const guchar *) decoded->str, decoded->len);
 										g_string_free (decoded, TRUE);
 										break;

@@ -61,6 +61,7 @@ target_compile_definitions(ebook PRIVATE
 
 target_compile_options(ebook PUBLIC
 	${ADDRESSBOOK_CFLAGS}
+	${CAMEL_CFLAGS}
 )
 
 target_include_directories(ebook PUBLIC
@@ -74,11 +75,13 @@ target_include_directories(ebook PUBLIC
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${ADDRESSBOOK_INCLUDE_DIRS}
+	${CAMEL_INCLUDE_DIRS}
 )
 
 target_link_libraries(ebook
 	${DEPENDENCIES}
 	${ADDRESSBOOK_LDFLAGS}
+	${CAMEL_LDFLAGS}
 )
 
 install(TARGETS ebook
