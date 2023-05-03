@@ -1269,6 +1269,7 @@ camel_smime_find_recipients_certs (CERTCertificate *cert,
 
 	/* Cannot short-circuit when frd->certs_missing is 0, because there can be better certificates */
 	if (!frd->recipients_table ||
+	    !(cert->keyUsage & certificateUsageEmailRecipient) ||
 	    CERT_CheckCertValidTimes (cert, frd->now, PR_FALSE) != secCertTimeValid) {
 		return SECFailure;
 	}
@@ -1421,7 +1422,8 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 
 			/* Default to the provided certificate, if valid */
 			if (cert) {
-				if (CERT_CheckCertValidTimes (cert, frd.now, PR_FALSE) == secCertTimeValid) {
+				if ((cert->keyUsage & certificateUsageEmailRecipient) != 0 &&
+				    CERT_CheckCertValidTimes (cert, frd.now, PR_FALSE) == secCertTimeValid) {
 					recipient_certs[i] = cert;
 					frd.certs_missing--;
 				} else {
