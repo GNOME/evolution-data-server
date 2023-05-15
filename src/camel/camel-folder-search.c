@@ -2668,6 +2668,8 @@ camel_folder_search_util_make_time (gint argc,
 
 			num = atoi (argv[0]->value.string);
 			res = folder_search_num_to_timet (num);
+		} else {
+			res = camel_header_decode_date (argv[0]->value.string, NULL);
 		}
 	} else if (argc == 1 && argv[0]->type == CAMEL_SEXP_RES_INT) {
 		res = folder_search_num_to_timet (argv[0]->value.number);
