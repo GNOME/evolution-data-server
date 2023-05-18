@@ -6379,11 +6379,30 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 
 					if (imapx_uidset_add (&uidset, ic, camel_message_info_get_uid (info)) == 1
 					    || (i == c->infos->len - 1 && imapx_uidset_done (&uidset, ic))) {
+						const gchar *renamed;
 						gchar *utf7;
+						gboolean did_add;
  store_changes:
-						utf7 = camel_utf8_utf7 (c->name);
+						did_add = FALSE;
+						renamed = imapx_rename_label_flag (c->name, FALSE);
+						utf7 = camel_utf8_utf7 (renamed);
 
-						camel_imapx_command_add (ic, " %tFLAGS.SILENT (%t)", on ? "+" : "-", utf7 ? utf7 : c->name);
+						if (!on) {
+							/* For backward compatibility, where the old code could
+							   write the original (used in evo) name to the server */
+							if (g_ascii_strcasecmp (renamed, c->name) != 0) {
+								gchar *orig_utf7;
+
+								orig_utf7 = camel_utf8_utf7 (c->name);
+								camel_imapx_command_add (ic, " -FLAGS.SILENT (%t %t)", utf7 ? utf7 : renamed, orig_utf7 ? orig_utf7 : c->name);
+								g_free (orig_utf7);
+
+								did_add = TRUE;
+							}
+						}
+
+						if (!did_add)
+							camel_imapx_command_add (ic, " %tFLAGS.SILENT (%t)", on ? "+" : "-", utf7 ? utf7 : renamed);
 
 						g_free (utf7);
 

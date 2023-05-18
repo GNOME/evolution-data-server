@@ -78,8 +78,6 @@ imapx_tokenise (register const gchar *str,
 	return 0;
 }
 
-static const gchar * rename_label_flag (const gchar *flag, gint len, gboolean server_to_evo);
-
 /* flag table */
 static struct {
 	const gchar *name;
@@ -154,9 +152,7 @@ imapx_parse_flags (CamelIMAPXInputStream *stream,
 				const gchar *flag_name;
 				gchar *utf8;
 
-				flag_name = rename_label_flag (
-					(gchar *) token,
-					strlen ((gchar *) token), TRUE);
+				flag_name = imapx_rename_label_flag ((const gchar *) token, TRUE);
 
 				utf8 = camel_utf7_utf8 (flag_name);
 				if (utf8 && !g_utf8_validate (utf8, -1, NULL)) {
@@ -187,19 +183,16 @@ imapx_parse_flags (CamelIMAPXInputStream *stream,
 }
 
 /*
- * rename_flag
  * Converts label flag name on server to name used in Evolution or back.
- * if the flags does not match returns the original one as it is.
+ * If the flag does not match any known, returns the original one as it is.
  * It will never return NULL, it will return empty string, instead.
  *
  * @flag: Flag to rename.
- * @len: Length of the flag name.
  * @server_to_evo: if TRUE, then converting server names to evo's names, if FALSE then opposite.
  */
-static const gchar *
-rename_label_flag (const gchar *flag,
-                   gint len,
-                   gboolean server_to_evo)
+const gchar *
+imapx_rename_label_flag (const gchar *flag,
+			 gboolean server_to_evo)
 {
 	gint i;
 	const gchar *labels[] = {
@@ -212,11 +205,11 @@ rename_label_flag (const gchar *flag,
 
 	/* It really can pass zero-length flags inside, in that case it was able
 	 * to always add first label, which is definitely wrong. */
-	if (!len || !flag || !*flag)
+	if (!flag || !*flag)
 		return "";
 
 	for (i = 0 + (server_to_evo ? 0 : 1); labels[i]; i = i + 2) {
-		if (!g_ascii_strncasecmp (flag, labels[i], len))
+		if (!g_ascii_strcasecmp (flag, labels[i]))
 			return labels[i + (server_to_evo ? 1 : -1)];
 	}
 
@@ -258,7 +251,7 @@ imapx_write_flags (GString *string,
 				continue;
 
 
-			flag_name = rename_label_flag (name, strlen (name), FALSE);
+			flag_name = imapx_rename_label_flag (name, FALSE);
 
 			if (!first)
 				g_string_append_c (string, ' ');
