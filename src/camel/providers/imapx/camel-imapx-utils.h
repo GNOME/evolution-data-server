@@ -412,6 +412,8 @@ gssize		imapx_splice_with_progress	(GOutputStream *output_stream,
 						 goffset file_size,
 						 GCancellable *cancellable,
 						 GError **error);
+const gchar *	imapx_rename_label_flag		(const gchar *flag,
+						 gboolean server_to_evo);
 
 G_END_DECLS
 
