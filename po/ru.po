@@ -15,9 +15,9 @@ msgstr ""
 "Project-Id-Version: evolution-data-server trunk\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2023-03-31 07:33+0000\n"
-"PO-Revision-Date: 2023-04-01 15:03+0300\n"
-"Last-Translator: Aleksandr Melman <Alexmelman88@gmail.com>\n"
+"POT-Creation-Date: 2023-05-08 04:13+0000\n"
+"PO-Revision-Date: 2023-05-13 20:40+1000\n"
+"Last-Translator: Ser82-png <asvmail.as@gmail.com>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:274
 #, c-format
@@ -2695,11 +2695,11 @@ msgstr "Расшифровка не поддерживается этим шиф
 msgid "Signing message"
 msgstr "Сообщение подписывается"
 
-#: src/camel/camel-cipher-context.c:644
+#: src/camel/camel-cipher-context.c:645
 msgid "Encrypting message"
 msgstr "Сообщение шифруется"
 
-#: src/camel/camel-cipher-context.c:817
+#: src/camel/camel-cipher-context.c:820
 msgid "Decrypting message"
 msgstr "Сообщение расшифровывается"
 
@@ -2779,11 +2779,11 @@ msgstr "Сбой на сообщении %d"
 msgid "Failed to transfer messages: %s"
 msgstr "Не удалось передать сообщения: %s"
 
-#: src/camel/camel-filter-driver.c:1734 src/camel/camel-filter-driver.c:1876
+#: src/camel/camel-filter-driver.c:1734 src/camel/camel-filter-driver.c:1878
 msgid "Syncing folder"
 msgstr "Синхронизация папки"
 
-#: src/camel/camel-filter-driver.c:1739 src/camel/camel-filter-driver.c:1884
+#: src/camel/camel-filter-driver.c:1739 src/camel/camel-filter-driver.c:1886
 msgid "Complete"
 msgstr "Завершена"
 
@@ -2797,17 +2797,17 @@ msgstr "Получение сообщения %d из %d"
 msgid "Failed at message %d of %d"
 msgstr "Сбой на сообщении %d из %d"
 
-#: src/camel/camel-filter-driver.c:2040 src/camel/camel-filter-driver.c:2064
+#: src/camel/camel-filter-driver.c:2042 src/camel/camel-filter-driver.c:2066
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Ошибка выполнения фильтра «%s»: "
 
-#: src/camel/camel-filter-driver.c:2054
+#: src/camel/camel-filter-driver.c:2056
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Ошибка разбора фильтра «%s»: %s; %s"
 
-#: src/camel/camel-filter-driver.c:2073
+#: src/camel/camel-filter-driver.c:2075
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Ошибка выполнения фильтра «%s»: %s; %s"
@@ -3136,7 +3136,7 @@ msgstr ""
 "проблема заключается в том, что у %s нет импортированного публичного ключа "
 "для этого получателя."
 
-#: src/camel/camel-gpg-context.c:2266 src/camel/camel-smime-context.c:869
+#: src/camel/camel-gpg-context.c:2266 src/camel/camel-smime-context.c:1041
 msgid "Could not generate signing data: "
 msgstr "Не удалось создать данные подписи: "
 
@@ -3147,8 +3147,8 @@ msgstr "Сбой при исполнении gpg."
 
 #: src/camel/camel-gpg-context.c:2424 src/camel/camel-gpg-context.c:2432
 #: src/camel/camel-gpg-context.c:2440 src/camel/camel-gpg-context.c:2460
-#: src/camel/camel-smime-context.c:1000 src/camel/camel-smime-context.c:1014
-#: src/camel/camel-smime-context.c:1026
+#: src/camel/camel-smime-context.c:1172 src/camel/camel-smime-context.c:1186
+#: src/camel/camel-smime-context.c:1198
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Не удалось проверить подпись сообщения: Неверный формат сообщения"
@@ -3186,7 +3186,7 @@ msgstr "Сбой при декодировании части MIME: секрет
 msgid "GPG blob contains unencrypted text: %s"
 msgstr "Блок GPG содержит незашифрованный текст: %s"
 
-#: src/camel/camel-gpg-context.c:2927 src/camel/camel-smime-context.c:1550
+#: src/camel/camel-gpg-context.c:2927 src/camel/camel-smime-context.c:1724
 msgid "Encrypted content"
 msgstr "Зашифрованное содержимое"
 
@@ -3734,199 +3734,207 @@ msgstr "Сбой при проверке подлинности %s"
 msgid "Forwarding messages is not supported"
 msgstr "Перенаправление сообщений не поддерживается"
 
-#: src/camel/camel-smime-context.c:343
+#: src/camel/camel-smime-context.c:353
 #, c-format
 msgid "Cannot find certificate for “%s”"
 msgstr "Не удалось найти сертификат для «%s»"
 
-#: src/camel/camel-smime-context.c:371
+#: src/camel/camel-smime-context.c:381
 msgid "Cannot create CMS message"
 msgstr "Не удалось создать сообщение CMS"
 
-#: src/camel/camel-smime-context.c:376
+#: src/camel/camel-smime-context.c:386
 msgid "Cannot create CMS signed data"
 msgstr "Не удалось создать CMS signedData"
 
-#: src/camel/camel-smime-context.c:382
+#: src/camel/camel-smime-context.c:392
 msgid "Cannot attach CMS signed data"
 msgstr "Не удалось вложить CMS signedData"
 
-#: src/camel/camel-smime-context.c:389
+#: src/camel/camel-smime-context.c:399
 msgid "Cannot attach CMS data"
 msgstr "Не удалось вложить CMS data"
 
-#: src/camel/camel-smime-context.c:395
+#: src/camel/camel-smime-context.c:405
 msgid "Cannot create CMS Signer information"
 msgstr "Не удалось создать CMS SignerInfo"
 
-#: src/camel/camel-smime-context.c:401
+#: src/camel/camel-smime-context.c:411
 msgid "Cannot find certificate chain"
 msgstr "Не удалось найти цепочку сертификатов"
 
-#: src/camel/camel-smime-context.c:407
+#: src/camel/camel-smime-context.c:417
 msgid "Cannot add CMS Signing time"
 msgstr "Не удалось добавить CMS SigningTime"
 
-#: src/camel/camel-smime-context.c:431 src/camel/camel-smime-context.c:446
+#: src/camel/camel-smime-context.c:441 src/camel/camel-smime-context.c:456
 #, c-format
 msgid "Encryption certificate for “%s” does not exist"
 msgstr "Сертификат шифрования для «%s» не существует"
 
-#: src/camel/camel-smime-context.c:453
+#: src/camel/camel-smime-context.c:463
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
 msgstr "Не удалось добавить атрибут SMIMEEncKeyPrefs"
 
-#: src/camel/camel-smime-context.c:458
+#: src/camel/camel-smime-context.c:468
 msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
 msgstr "Не удалось добавить атрибут MS SMIMEEncKeyPrefs"
 
-#: src/camel/camel-smime-context.c:463
+#: src/camel/camel-smime-context.c:473
 msgid "Cannot add encryption certificate"
 msgstr "Не удалось добавить сертификат шифрования"
 
-#: src/camel/camel-smime-context.c:469
+#: src/camel/camel-smime-context.c:479
 msgid "Cannot add CMS Signer information"
 msgstr "Не удалось добавить CMS SignerInfo"
 
 #. Translators: A fallback message when couldn't verify an SMIME signature
-#: src/camel/camel-smime-context.c:502
+#: src/camel/camel-smime-context.c:515
 msgid "Unverified"
 msgstr "Непроверено"
 
-#: src/camel/camel-smime-context.c:504
+#: src/camel/camel-smime-context.c:518
 msgid "Good signature"
 msgstr "Подпись верна"
 
-#: src/camel/camel-smime-context.c:506
+#: src/camel/camel-smime-context.c:520
 msgid "Bad signature"
 msgstr "Подпись неверна"
 
-#: src/camel/camel-smime-context.c:508
+#: src/camel/camel-smime-context.c:522
 msgid "Content tampered with or altered in transit"
 msgstr "Сообщение было подделано или изменено на пути"
 
-#: src/camel/camel-smime-context.c:510
+#: src/camel/camel-smime-context.c:525
 msgid "Signing certificate not found"
 msgstr "Сертификат подписи не найден"
 
-#: src/camel/camel-smime-context.c:512
+#: src/camel/camel-smime-context.c:528
 msgid "Signing certificate not trusted"
 msgstr "Сертификат подписи недостоверен"
 
-#: src/camel/camel-smime-context.c:514
+#: src/camel/camel-smime-context.c:530
 msgid "Signature algorithm unknown"
 msgstr "Неизвестный алгоритм подписи"
 
-#: src/camel/camel-smime-context.c:516
+#: src/camel/camel-smime-context.c:532
 msgid "Signature algorithm unsupported"
 msgstr "Неподдерживаемый алгоритм подписи"
 
-#: src/camel/camel-smime-context.c:518
+#: src/camel/camel-smime-context.c:534
 msgid "Malformed signature"
 msgstr "Неверно сформированная подпись"
 
-#: src/camel/camel-smime-context.c:520
+#: src/camel/camel-smime-context.c:536
 msgid "Processing error"
 msgstr "Ошибка обработки"
 
-#: src/camel/camel-smime-context.c:565
+#: src/camel/camel-smime-context.c:700
 msgid "No signed data in signature"
 msgstr "В подписи отсутствуют данные подписи"
 
-#: src/camel/camel-smime-context.c:570
+#: src/camel/camel-smime-context.c:705
 msgid "Digests missing from enveloped data"
 msgstr "В данных конверта отсутствует сводка"
 
-#: src/camel/camel-smime-context.c:583 src/camel/camel-smime-context.c:594
+#: src/camel/camel-smime-context.c:718 src/camel/camel-smime-context.c:729
 msgid "Cannot calculate digests"
 msgstr "Не удалось вычислить дайджесты"
 
-#: src/camel/camel-smime-context.c:601 src/camel/camel-smime-context.c:605
+#: src/camel/camel-smime-context.c:736 src/camel/camel-smime-context.c:740
 msgid "Cannot set message digests"
 msgstr "Не удалось установить дайджесты сообщения"
 
-#: src/camel/camel-smime-context.c:615 src/camel/camel-smime-context.c:620
+#: src/camel/camel-smime-context.c:750 src/camel/camel-smime-context.c:755
 msgid "Certificate import failed"
 msgstr "Сбой импорта сертификата"
 
-#: src/camel/camel-smime-context.c:630
+#: src/camel/camel-smime-context.c:765
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr ""
 "Сообщение состоит только из сертификатов, Не удалось проверить сертификаты"
 
-#: src/camel/camel-smime-context.c:633
+#: src/camel/camel-smime-context.c:768
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr "В сообщении только сертификаты, сертификаты импортированы и проверены"
 
-#: src/camel/camel-smime-context.c:637
+#: src/camel/camel-smime-context.c:772
 msgid "Cannot find signature digests"
 msgstr "Не удалось найти дайджесты подписи"
 
-#: src/camel/camel-smime-context.c:656
+#: src/camel/camel-smime-context.c:819
+msgid "Signature algorithm disabled"
+msgstr "Алгоритм подписи отключён"
+
+#: src/camel/camel-smime-context.c:822
+msgid "Certificate signature algorithm disabled"
+msgstr "Алгоритм подписи сертификата отключён"
+
+#: src/camel/camel-smime-context.c:831
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
 msgstr "Подписано: %s <%s>: %s\n"
 
-#: src/camel/camel-smime-context.c:881 src/camel/camel-smime-context.c:1407
+#: src/camel/camel-smime-context.c:1053 src/camel/camel-smime-context.c:1581
 msgid "Cannot create encoder context"
 msgstr "Не удалось создать контекст кодировщика"
 
-#: src/camel/camel-smime-context.c:887
+#: src/camel/camel-smime-context.c:1059
 msgid "Failed to add data to CMS encoder"
 msgstr "Не удалось добавить данные к кодировщику CMS"
 
-#: src/camel/camel-smime-context.c:892 src/camel/camel-smime-context.c:1424
+#: src/camel/camel-smime-context.c:1064 src/camel/camel-smime-context.c:1598
 msgid "Failed to encode data"
 msgstr "Ошибка кодирования данных"
 
-#: src/camel/camel-smime-context.c:1045 src/camel/camel-smime-context.c:1525
+#: src/camel/camel-smime-context.c:1217 src/camel/camel-smime-context.c:1699
 msgid "Decoder failed"
 msgstr "Сбой декодера"
 
-#: src/camel/camel-smime-context.c:1301
+#: src/camel/camel-smime-context.c:1475
 #, c-format
 msgid "No valid or appropriate certificate for “%s” was found"
 msgstr "Не найден действительный или подходящий сертификат для «%s»"
 
-#: src/camel/camel-smime-context.c:1341
+#: src/camel/camel-smime-context.c:1515
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "Не удалось найти общий алгоритм шифрования"
 
-#: src/camel/camel-smime-context.c:1349
+#: src/camel/camel-smime-context.c:1523
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "Не удалось распределить слот для ключа общего шифрования"
 
-#: src/camel/camel-smime-context.c:1360
+#: src/camel/camel-smime-context.c:1534
 msgid "Cannot create CMS Message"
 msgstr "Не удалось создать сообщение CMS"
 
-#: src/camel/camel-smime-context.c:1366
+#: src/camel/camel-smime-context.c:1540
 msgid "Cannot create CMS Enveloped data"
 msgstr "Не удалось создать CMS EnvelopedData"
 
-#: src/camel/camel-smime-context.c:1372
+#: src/camel/camel-smime-context.c:1546
 msgid "Cannot attach CMS Enveloped data"
 msgstr "Не удалось вложить CMS EnvelopedData"
 
-#: src/camel/camel-smime-context.c:1378
+#: src/camel/camel-smime-context.c:1552
 msgid "Cannot attach CMS data object"
 msgstr "Не удалось вложить объект CMS data"
 
-#: src/camel/camel-smime-context.c:1387
+#: src/camel/camel-smime-context.c:1561
 msgid "Cannot create CMS Recipient information"
 msgstr "Не удалось создать сведения CMS RecipientInfo"
 
-#: src/camel/camel-smime-context.c:1392
+#: src/camel/camel-smime-context.c:1566
 msgid "Cannot add CMS Recipient information"
 msgstr "Не удалось добавить сведения CMS RecipientInfo"
 
-#: src/camel/camel-smime-context.c:1418
+#: src/camel/camel-smime-context.c:1592
 msgid "Failed to add data to encoder"
 msgstr "Не удалось добавить данные к кодировщику"
 
-#: src/camel/camel-smime-context.c:1532
+#: src/camel/camel-smime-context.c:1706
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME Decrypt: Не найдено зашифрованного содержимого"
 
@@ -4485,61 +4493,61 @@ msgstr "Ошибка при получении информацию сообще
 msgid "Error running STATUS"
 msgstr "Ошибка выполнения STATUS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6262
-#: src/camel/providers/imapx/camel-imapx-server.c:6317
-#: src/camel/providers/imapx/camel-imapx-server.c:6381
+#: src/camel/providers/imapx/camel-imapx-server.c:6271
+#: src/camel/providers/imapx/camel-imapx-server.c:6326
+#: src/camel/providers/imapx/camel-imapx-server.c:6390
 msgid "Error syncing changes"
 msgstr "Ошибка при синхронизации изменений"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6275
-#: src/camel/providers/imapx/camel-imapx-server.c:6327
-#: src/camel/providers/imapx/camel-imapx-server.c:6400
-#: src/camel/providers/imapx/camel-imapx-server.c:6541
+#: src/camel/providers/imapx/camel-imapx-server.c:6284
+#: src/camel/providers/imapx/camel-imapx-server.c:6336
+#: src/camel/providers/imapx/camel-imapx-server.c:6409
+#: src/camel/providers/imapx/camel-imapx-server.c:6550
 msgid "Error expunging message"
 msgstr "Ошибка уничтожения сообщений"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6623
+#: src/camel/providers/imapx/camel-imapx-server.c:6632
 msgid "Error fetching folders"
 msgstr "Ошибка при получении папок"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6631
+#: src/camel/providers/imapx/camel-imapx-server.c:6640
 msgid "Error fetching subscribed folders"
 msgstr "Ошибка при получении подписных папок"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6688
+#: src/camel/providers/imapx/camel-imapx-server.c:6697
 msgid "Error creating folder"
 msgstr "Ошибка при создании папки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6738
+#: src/camel/providers/imapx/camel-imapx-server.c:6747
 msgid "Error deleting folder"
 msgstr "Ошибка при удалении папки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6784
+#: src/camel/providers/imapx/camel-imapx-server.c:6793
 msgid "Error renaming folder"
 msgstr "Ошибка при переименовании папки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6816
+#: src/camel/providers/imapx/camel-imapx-server.c:6825
 msgid "Error subscribing to folder"
 msgstr "Ошибка подписывания на папку"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6852
+#: src/camel/providers/imapx/camel-imapx-server.c:6861
 msgid "Error unsubscribing from folder"
 msgstr "Ошибка отписывания от папки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6892
+#: src/camel/providers/imapx/camel-imapx-server.c:6901
 msgid "IMAP server does not support quotas"
 msgstr "Сервер IMAP не поддерживает квоты"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6904
+#: src/camel/providers/imapx/camel-imapx-server.c:6913
 msgid "Error retrieving quota information"
 msgstr "Ошибка получения информации о квоте"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6969
+#: src/camel/providers/imapx/camel-imapx-server.c:6978
 msgid "Search failed"
 msgstr "Ошибка поиска"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7097
+#: src/camel/providers/imapx/camel-imapx-server.c:7106
 msgid "Error running IDLE"
 msgstr "Ошибка выполнения IDLE"
 
