@@ -3644,7 +3644,7 @@ e_webdav_session_list_sync (EWebDAVSession *webdav,
 			EWebDAVResource *resource = link->data;
 
 			if (resource && !resource->display_name && resource->href) {
-				gchar *href_decoded = g_filename_from_uri (resource->href, NULL, NULL);
+				gchar *href_decoded = g_uri_unescape_string (resource->href, NULL);
 
 				if (href_decoded) {
 					gchar *cp;
