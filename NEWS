@@ -1,3 +1,12 @@
+Evolution-Data-Server 3.48.2 2023-05-26
+---------------------------------------
+
+Bug Fixes:
+	I#474 - Camel: Set proper S/MIME signature verification status
+	I#478 - IMAP: Cannot remove labels added in Thunderbird
+	I#479 - WebDAV: Fails to discover iCloud address book
+	evo-I#2345 - Wrong S/MIME certificate selection for encrypted email
+
 Evolution-Data-Server 3.48.1 2023-04-21
 ---------------------------------------
 
