@@ -2999,8 +2999,32 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
 			E_WEBDAV_NS_DAV, "href", &href_node,
 			E_WEBDAV_NS_DAV, "propstat", &propstat_node);
 
-		if (!href_node || !propstat_node)
+		if (!href_node || !propstat_node) {
+			if (href_node) {
+				e_xml_find_children_nodes (node, 1,
+					E_WEBDAV_NS_DAV, "status", &status_node);
+
+				if (status_node) {
+					href_content = e_xml_get_node_text (href_node);
+					g_warn_if_fail (href_content != NULL);
+
+					if (!href_content)
+						continue;
+
+					full_uri = e_webdav_session_ensure_full_uri (webdav, request_uri, (const gchar *) href_content);
+					status_content = e_xml_get_node_text (status_node);
+
+					if (!status_content || !soup_headers_parse_status_line ((const gchar *) status_content, NULL, &status_code, NULL))
+						status_code = 0;
+
+					/* The 'status_node' is not the right node, but let it be something non-NULL */
+					do_stop = !func (webdav, status_node, request_uri, full_uri ? full_uri : (const gchar *) href_content, status_code, func_user_data);
+
+					g_free (full_uri);
+				}
+			}
 			continue;
+		}
 
 		href_content = e_xml_get_node_text (href_node);
 		g_warn_if_fail (href_content != NULL);
