@@ -209,7 +209,7 @@ e_util_strdup_strip (const gchar *string)
 
 /**
  * e_util_strcmp0:
- * @str1: (nullable): a C string on %NULL
+ * @str1: (nullable): a C string or %NULL
  * @str2: (nullable): another C string or %NULL
  *
  * Compares @str1 and @str2 like g_strcmp0(), except it handles %NULL and
