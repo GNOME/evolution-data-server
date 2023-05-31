@@ -758,6 +758,7 @@ e_xml_find_children_nodes (xmlNode *parent,
 	xmlNode *node;
 	guint ii;
 
+	g_return_if_fail (parent != NULL);
 	g_return_if_fail (count > 0);
 
 	data = g_alloca (sizeof (struct _data) * count);
