@@ -1,3 +1,9 @@
+Evolution-Data-Server 3.48.3 2023-06-02
+---------------------------------------
+
+Bug Fixes:
+	I#475 - EWebDAVSession: Claim also error nodes from propstat response
+
 Evolution-Data-Server 3.48.2 2023-05-26
 ---------------------------------------
 
