@@ -1000,17 +1000,51 @@ set_flag (struct _CamelSExp *f,
 
 	d (fprintf (stderr, "setting flag\n"));
 	if (argc == 1 && argv[0]->type == CAMEL_SEXP_RES_STRING) {
+		gboolean set_flag = TRUE;
 		flags = camel_system_flag (argv[0]->value.string);
-		if (driver->priv->source && driver->priv->uid && camel_folder_has_summary_capability (driver->priv->source))
-			camel_folder_set_message_flags (
-				driver->priv->source, driver->priv->uid, flags, ~0);
-		else
-			camel_message_info_set_flags (
-				driver->priv->info, flags |
-				CAMEL_MESSAGE_FOLDER_FLAGGED, ~0);
-		camel_filter_driver_log (
-			driver, FILTER_LOG_ACTION,
-			"Set %s flag", argv[0]->value.string);
+		if ((flags & CAMEL_MESSAGE_JUNK_LEARN) != 0) {
+			CamelJunkFilter *junk_filter;
+
+			junk_filter = camel_session_get_junk_filter (driver->priv->session);
+			if (junk_filter) {
+				GError *local_error = NULL;
+
+				if (!driver->priv->message) {
+					/* FIXME Pass a GCancellable */
+					driver->priv->message = camel_folder_get_message_sync (
+						driver->priv->source,
+						driver->priv->uid, NULL,
+						&local_error);
+					if (!driver->priv->message) {
+						camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Cannot learn junk, failed to get message: %s",
+							local_error ? local_error->message : "Unknown error");
+					}
+					g_clear_error (&local_error);
+				}
+
+				/* FIXME Pass a GCancellable */
+				if (driver->priv->message && !camel_junk_filter_learn_junk (junk_filter, driver->priv->message, NULL, &local_error)) {
+					camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Failed to learn junk: %s",
+						local_error ? local_error->message : "Unknown error");
+				} else if (driver->priv->message) {
+					camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Learn junk");
+					set_flag = FALSE;
+				}
+
+				g_clear_error (&local_error);
+			} else {
+				camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Cannot learn junk, no junk filter set");
+			}
+		}
+
+		if (set_flag) {
+			if (driver->priv->source && driver->priv->uid && camel_folder_has_summary_capability (driver->priv->source))
+				camel_folder_set_message_flags (driver->priv->source, driver->priv->uid, flags, ~0);
+			else
+				camel_message_info_set_flags (driver->priv->info, flags | CAMEL_MESSAGE_FOLDER_FLAGGED, ~0);
+
+			camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Set %s flag", argv[0]->value.string);
+		}
 	}
 
 	return NULL;
