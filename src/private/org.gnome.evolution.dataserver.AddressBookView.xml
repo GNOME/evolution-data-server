@@ -11,6 +11,10 @@
     This interface allows for interaction with an address book view.
 -->
 <interface name="org.gnome.evolution.dataserver.AddressBookView">
+  <property name="id" type="t" access="read"/>
+  <property name="n-total" type="u" access="read"/>
+  <property name="indices" type="a(su)" access="read"/>
+  <signal name="ContentChanged"/>
 
   <signal name="ObjectsAdded">
     <arg name="objects" type="as"/>
@@ -47,5 +51,15 @@
   </method>
 
   <method name="Dispose"/>
+
+  <method name="SetSortFields">
+    <arg name="fields" direction="in" type="a(uu)"/>
+  </method>
+
+  <method name="DupContacts">
+    <arg name="range_start" direction="in" type="u"/>
+    <arg name="range_length" direction="in" type="u"/>
+    <arg name="vcards" direction="out" type="as"/>
+  </method>
 
 </interface>

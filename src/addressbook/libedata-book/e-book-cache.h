@@ -350,6 +350,37 @@ gint		e_book_cache_cursor_compare_contact
 						 EBookCacheCursor *cursor,
 						 EContact *contact,
 						 gboolean *out_matches_sexp);
+gboolean	e_book_cache_count_query	(EBookCache *book_cache,
+						 const gchar *sexp,
+						 guint *out_n_total,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_book_cache_dup_query_field	(EBookCache *book_cache,
+						 EContactField summary_field,
+						 const gchar *sexp,
+						 EContactField sort_field,
+						 EBookCursorSortType sort_type,
+						 guint n_offset,
+						 guint n_limit,
+						 GPtrArray **out_uids, /* gchar * */
+						 GPtrArray **out_values, /* gchar * */
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_book_cache_dup_query_contacts	(EBookCache *book_cache,
+						 const gchar *sexp,
+						 EContactField sort_field,
+						 EBookCursorSortType sort_type,
+						 guint n_offset,
+						 guint n_limit,
+						 GPtrArray **out_contacts, /* EContact * */
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_book_cache_dup_summary_field	(EBookCache *book_cache,
+						 EContactField summary_field,
+						 const gchar *uid,
+						 gchar **out_value,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

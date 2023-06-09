@@ -60,6 +60,9 @@ struct _EBookClientViewPrivate {
 	gulong objects_removed_handler_id;
 	gulong progress_handler_id;
 	gulong complete_handler_id;
+	gulong content_changed_handler_id;
+	gulong notify_n_total_handler_id;
+	gulong notify_indices_handler_id;
 };
 
 struct _SignalClosure {
@@ -76,7 +79,9 @@ enum {
 	PROP_CLIENT,
 	PROP_CONNECTION,
 	PROP_DIRECT_BACKEND,
-	PROP_OBJECT_PATH
+	PROP_OBJECT_PATH,
+	PROP_N_TOTAL,
+	PROP_INDICES
 };
 
 enum {
@@ -85,6 +90,7 @@ enum {
 	OBJECTS_REMOVED,
 	PROGRESS,
 	COMPLETE,
+	CONTENT_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -669,6 +675,107 @@ book_client_view_complete_cb (EDBusAddressBookView *object,
 	}
 }
 
+/* the user_data for the @cb is a GWeakRef with the @self */
+static void
+book_client_view_schedule_on_idle_simple (EBookClientView *self,
+					  GSourceFunc cb)
+{
+	GSource *idle_source;
+	GMainContext *main_context;
+
+	main_context = book_client_view_ref_main_context (self);
+
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (idle_source, cb, e_weak_ref_new (self), (GDestroyNotify) e_weak_ref_free);
+	g_source_attach (idle_source, main_context);
+	g_source_unref (idle_source);
+
+	g_main_context_unref (main_context);
+}
+
+static gboolean
+book_client_view_emit_content_changed_idle_cb (gpointer user_data)
+{
+	GWeakRef *weak_ref = user_data;
+	EBookClientView *self;
+
+	self = g_weak_ref_get (weak_ref);
+
+	if (self) {
+		g_signal_emit (self, signals[CONTENT_CHANGED], 0, NULL);
+		g_object_unref (self);
+	}
+
+	return FALSE;
+}
+
+static void
+book_client_view_content_changed_cb (EDBusAddressBookView *object,
+				     gpointer user_data)
+{
+	EBookClientView *self = user_data;
+
+	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (self));
+
+	book_client_view_schedule_on_idle_simple (self, book_client_view_emit_content_changed_idle_cb);
+}
+
+static gboolean
+book_client_view_notify_n_total_idle_cb (gpointer user_data)
+{
+	GWeakRef *weak_ref = user_data;
+	EBookClientView *self;
+
+	self = g_weak_ref_get (weak_ref);
+
+	if (self) {
+		g_object_notify (G_OBJECT (self), "n-total");
+		g_object_unref (self);
+	}
+
+	return FALSE;
+}
+
+static void
+book_client_view_notify_n_total_cb (EDBusAddressBookView *object,
+				    GParamSpec *param,
+				    gpointer user_data)
+{
+	EBookClientView *self = user_data;
+
+	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (self));
+
+	book_client_view_schedule_on_idle_simple (self, book_client_view_notify_n_total_idle_cb);
+}
+
+static gboolean
+book_client_view_notify_indices_idle_cb (gpointer user_data)
+{
+	GWeakRef *weak_ref = user_data;
+	EBookClientView *self;
+
+	self = g_weak_ref_get (weak_ref);
+
+	if (self) {
+		g_object_notify (G_OBJECT (self), "indices");
+		g_object_unref (self);
+	}
+
+	return FALSE;
+}
+
+static void
+book_client_view_notify_indices_cb (EDBusAddressBookView *object,
+				    GParamSpec *param,
+				    gpointer user_data)
+{
+	EBookClientView *self = user_data;
+
+	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (self));
+
+	book_client_view_schedule_on_idle_simple (self, book_client_view_notify_indices_idle_cb);
+}
+
 static void
 book_client_view_set_client (EBookClientView *client_view,
                              EBookClient *client)
@@ -774,6 +881,20 @@ book_client_view_get_property (GObject *object,
 				e_book_client_view_get_object_path (
 				E_BOOK_CLIENT_VIEW (object)));
 			return;
+
+		case PROP_N_TOTAL:
+			g_value_set_uint (
+				value,
+				e_book_client_view_get_n_total (
+				E_BOOK_CLIENT_VIEW (object)));
+			return;
+
+		case PROP_INDICES:
+			g_value_take_boxed (
+				value,
+				e_book_client_view_dup_indices (
+				E_BOOK_CLIENT_VIEW (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -807,6 +928,15 @@ book_client_view_dispose (GObject *object)
 		g_signal_handler_disconnect (
 			priv->dbus_proxy,
 			priv->complete_handler_id);
+		g_signal_handler_disconnect (
+			priv->dbus_proxy,
+			priv->content_changed_handler_id);
+		g_signal_handler_disconnect (
+			priv->dbus_proxy,
+			priv->notify_n_total_handler_id);
+		g_signal_handler_disconnect (
+			priv->dbus_proxy,
+			priv->notify_indices_handler_id);
 
 		/* Call D-Bus dispose() asynchronously so we don't block this dispose().
 		 * Also omit a callback function, so the GDBusMessage
@@ -912,6 +1042,24 @@ book_client_view_initable_init (GInitable *initable,
 		(GClosureNotify) e_weak_ref_free, 0);
 	priv->complete_handler_id = handler_id;
 
+	handler_id = g_signal_connect_object (
+		priv->dbus_proxy, "content-changed",
+		G_CALLBACK (book_client_view_content_changed_cb),
+		initable, 0);
+	priv->content_changed_handler_id = handler_id;
+
+	handler_id = g_signal_connect_object (
+		priv->dbus_proxy, "notify::n-total",
+		G_CALLBACK (book_client_view_notify_n_total_cb),
+		initable, 0);
+	priv->notify_n_total_handler_id = handler_id;
+
+	handler_id = g_signal_connect_object (
+		priv->dbus_proxy, "notify::indices",
+		G_CALLBACK (book_client_view_notify_indices_cb),
+		initable, 0);
+	priv->notify_indices_handler_id = handler_id;
+
 	/* When in direct read access mode, we add a special field
 	 * to fields-of-interest indicating we only want uids sent. */
 	if (priv->direct_backend != NULL)
@@ -985,6 +1133,49 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
+	 * EBookClientView:n-total:
+	 *
+	 * How many contacts are available in the view.
+	 *
+	 * Note: This property can be used only with @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY.
+	 *
+	 * Since: 3.50
+	 **/
+	g_object_class_install_property (
+		object_class,
+		PROP_N_TOTAL,
+		g_param_spec_uint (
+			"n-total",
+			"How many contacts are in the view",
+			NULL,
+			0, G_MAXUINT, 0,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * EBookClientView:indices:
+	 *
+	 * A list of #EBookIndices holding indices of the contacts in the view.
+	 * These are received from the first sort field set by
+	 * e_book_client_view_set_sort_fields_sync(). The last item of the returned
+	 * array is the one with chr member being %NULL.
+	 *
+	 * Note: This property can be used only with @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY.
+	 *
+	 * Since: 3.50
+	 **/
+	g_object_class_install_property (
+		object_class,
+		PROP_INDICES,
+		g_param_spec_boxed (
+			"indices",
+			"Contact indices in the view",
+			NULL,
+			E_TYPE_BOOK_INDICES,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
+
+	/**
 	 * EBookClientView::objects-added:
 	 * @client_view: the #EBookClientView which emitted the signal
 	 * @objects: (type GSList) (transfer none) (element-type EContact): a #GSList
@@ -1047,6 +1238,27 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_ERROR);
+
+	/**
+	 * EBookClientView::content-changed:
+	 * @client_view: the #EBookClientView which emitted the signal
+	 *
+	 * The signal is emitted whenever content of any contact in the @client_view changes,
+	 * or a contact is added or removed. It may or may not change @EBookClientView:n-total
+	 * property too.
+	 *
+	 * Note: This signal can be used only with @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY.
+	 *
+	 * Since: 3.50
+	 **/
+	signals[CONTENT_CHANGED] = g_signal_new (
+		"content-changed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		0,
+		NULL, NULL, g_cclosure_marshal_VOID__VOID,
+		G_TYPE_NONE, 0,
+		G_TYPE_NONE);
 }
 
 static void
@@ -1292,3 +1504,270 @@ e_book_client_view_set_fields_of_interest (EBookClientView *client_view,
 	}
 }
 
+/**
+ * e_book_client_view_set_sort_fields_sync:
+ * @self: an #EBookClientView
+ * @fields: an array of #EBookClientViewSortFields, terminated by item with %E_CONTACT_FIELD_LAST field
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Sets @fields to sort the view by. The default is to sort by the file-as
+ * field in ascending order. Not every field can be used for sorting,
+ * usually available fields are %E_CONTACT_FILE_AS,
+ * %E_CONTACT_GIVEN_NAME and %E_CONTACT_FAMILY_NAME.
+ *
+ * The array is terminated by an item with an %E_CONTACT_FIELD_LAST field.
+ *
+ * The first sort field is used to populate indices, as returned
+ * by e_book_client_view_dup_indices().
+ *
+ * Note: This function can be used only with @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY.
+ *
+ * Returns: whether succeeded
+ *
+ * Since: 3.50
+ **/
+gboolean
+e_book_client_view_set_sort_fields_sync (EBookClientView *self,
+					 const EBookClientViewSortFields *fields,
+					 GCancellable *cancellable,
+					 GError **error)
+{
+	GVariantBuilder builder;
+	guint ii;
+
+	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (self), FALSE);
+	g_return_val_if_fail (fields != NULL, FALSE);
+
+	g_variant_builder_init (&builder, G_VARIANT_TYPE ("a(uu)"));
+
+	for (ii = 0; fields[ii].field != E_CONTACT_FIELD_LAST; ii++) {
+		g_variant_builder_add (&builder, "(uu)", fields[ii].field, fields[ii].sort_type);
+	}
+
+	return e_dbus_address_book_view_call_set_sort_fields_sync (self->priv->dbus_proxy,
+		g_variant_builder_end (&builder), cancellable, error);
+}
+
+/**
+ * e_book_client_view_get_id:
+ * @self: an #EBookClientView
+ *
+ * Returns an identifier of the @self. It does not change
+ * for the whole life time of the @self.
+ *
+ * Note: This function can be used only with @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY.
+ *
+ * Returns: an identifier of the view
+ *
+ * Since: 3.50
+ **/
+gsize
+e_book_client_view_get_id (EBookClientView *self)
+{
+	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (self), 0);
+
+	return (gsize) e_dbus_address_book_view_get_id (self->priv->dbus_proxy);
+}
+
+/**
+ * e_book_client_view_get_n_total:
+ * @self: an #EBookClientView
+ *
+ * Returns how many contacts are available in the view.
+ *
+ * Note: This function can be used only with @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY.
+ *
+ * Returns: how many contacts are available in the view
+ *
+ * Since: 3.50
+ **/
+guint
+e_book_client_view_get_n_total (EBookClientView *self)
+{
+	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (self), 0);
+
+	return e_dbus_address_book_view_get_n_total (self->priv->dbus_proxy);
+}
+
+/**
+ * e_book_client_view_dup_indices:
+ * @self: an #EBookClientView
+ *
+ * Returns a list of #EBookIndices holding indices of the contacts
+ * in the view. These are received from the first sort field set by
+ * e_book_client_view_set_sort_fields_sync(). The last item of the returned
+ * array is the one with chr member being %NULL.
+ *
+ * Free the returned array with e_book_indices_free(), when no longer needed.
+ *
+ * Note: This function can be used only with @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY.
+ *
+ * Returns: (transfer full): list of indices for the view
+ *
+ * Since: 3.50
+ **/
+EBookIndices *
+e_book_client_view_dup_indices (EBookClientView *self)
+{
+	GVariant *var_indices;
+	GVariantIter iter;
+	EBookIndices *indices;
+	guint index, ii;
+	gchar *chr = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (self), NULL);
+
+	var_indices = e_dbus_address_book_view_get_indices (self->priv->dbus_proxy);
+	if (!var_indices)
+		return NULL;
+
+	indices = g_new0 (EBookIndices, g_variant_iter_init (&iter, var_indices) + 1);
+
+	for (ii = 0; g_variant_iter_next (&iter, "(su)", &chr, &index); ii++) {
+		indices[ii].chr = chr;
+		indices[ii].index = index;
+	}
+
+	indices[ii].chr = NULL;
+	indices[ii].index = G_MAXUINT;
+
+	return indices;
+}
+
+typedef struct _DupContactsData {
+	EBookClientView *self;
+	GTask *task;
+	guint range_start;
+	guint range_length;
+} DupContactsData;
+
+static void
+dup_contacts_data_free (gpointer ptr)
+{
+	DupContactsData *dcd = ptr;
+
+	if (dcd) {
+		g_clear_object (&dcd->self);
+		g_clear_object (&dcd->task);
+		g_free (dcd);
+	}
+}
+
+static void
+e_book_client_view_got_contacts_cb (GObject *source_object,
+				    GAsyncResult *result,
+				    gpointer user_data)
+{
+	DupContactsData *dcd = user_data;
+	gchar **vcards = NULL;
+	GError *local_error = NULL;
+
+	if (!e_dbus_address_book_view_call_dup_contacts_finish (E_DBUS_ADDRESS_BOOK_VIEW (source_object), &vcards, result, &local_error)) {
+		g_task_return_error (dcd->task, local_error);
+	} else {
+		GPtrArray *contacts;
+		guint ii;
+
+		contacts = g_ptr_array_new_full (g_strv_length (vcards), g_object_unref);
+
+		for (ii = 0; vcards[ii]; ii++) {
+			EContact *contact = e_contact_new_from_vcard (vcards[ii]);
+			if (!contact)
+				g_warning ("%s: Failed to covert vCard from string: %s", G_STRFUNC, vcards[ii]);
+			g_ptr_array_add (contacts, contact);
+		}
+
+		g_task_return_pointer (dcd->task, contacts, (GDestroyNotify) g_ptr_array_unref);
+	}
+
+	g_strfreev (vcards);
+	g_clear_object (&dcd->task);
+}
+
+/**
+ * e_book_client_view_dup_contacts:
+ * @self: an #EBookClientView
+ * @range_start: 0-based range start to retrieve the contacts for
+ * @range_length: how many contacts to retrieve
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @cb: (scope async): a callback to call when the contacts are received
+ * @user_data: (closure cb): user data for @cb
+ *
+ * Asynchronously reads @range_length contacts from index @range_start.
+ * When there are asked more than e_book_client_view_get_n_total()
+ * contacts only those up to the total number of contacts are read.
+ * Asking for out of range contacts results in an error.
+ *
+ * Finish the call by e_book_client_view_dup_contacts_finish() from the @cb.
+ *
+ * Note: This function can be used only with @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY.
+ *
+ * Since: 3.50
+ **/
+void
+e_book_client_view_dup_contacts (EBookClientView *self,
+				 guint range_start,
+				 guint range_length,
+				 GCancellable *cancellable,
+				 GAsyncReadyCallback cb,
+				 gpointer user_data)
+{
+	DupContactsData *dcd;
+
+	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (self));
+
+	dcd = g_new0 (DupContactsData, 1);
+	dcd->range_start = range_start;
+	dcd->range_length = range_length;
+	dcd->self = g_object_ref (self);
+	dcd->task = g_task_new (self, cancellable, cb, user_data);
+	g_task_set_task_data (dcd->task, dcd, dup_contacts_data_free);
+	g_task_set_source_tag (dcd->task, e_book_client_view_dup_contacts);
+
+	e_dbus_address_book_view_call_dup_contacts (self->priv->dbus_proxy,
+		range_start, range_length, cancellable, e_book_client_view_got_contacts_cb, dcd);
+}
+
+/**
+ * e_book_client_view_dup_contacts_finish:
+ * @self: an #EBookClientView
+ * @result: an asynchronous call result
+ * @out_range_start: (out) (optional): output location where to store original range start, or %NULL
+ * @out_contacts: (out callee-allocates) (transfer container) (element-type EContact):
+ *    output location where to store array of the read contacts
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes previous call of e_book_client_view_dup_contacts();
+ * see it for further information.
+ *
+ * Free the returned #GPtrArray with g_ptr_array_unref(), when
+ * no longer needed.
+ *
+ * Note: This function can be used only with @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY.
+ *
+ * Returns: whether succeeded; if not, the @error is set
+ *
+ * Since: 3.50
+ **/
+gboolean
+e_book_client_view_dup_contacts_finish (EBookClientView *self,
+					GAsyncResult *result,
+					guint *out_range_start,
+					GPtrArray **out_contacts,
+					GError **error)
+{
+	DupContactsData *dcd;
+
+	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (self), FALSE);
+	g_return_val_if_fail (out_contacts != NULL, FALSE);
+
+	dcd = g_task_get_task_data (G_TASK (result));
+
+	*out_contacts = g_task_propagate_pointer (G_TASK (result), error);
+
+	if (*out_contacts && out_range_start)
+		*out_range_start = dcd->range_start;
+
+	return *out_contacts != NULL;
+}

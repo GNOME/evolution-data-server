@@ -36,6 +36,11 @@ G_BEGIN_DECLS
  *   If this flag is set then all contacts matching the view's query will
  *   be sent as notifications when starting the view, otherwise only future
  *   changes will be reported.  The default for an #EBookClientView is %TRUE.
+ * @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY:
+ *   Rather than receiving contact changes one-by-one, be notified only
+ *   by "content-changed" signal and query contacts by ranges. See
+ *   e_book_client_view_set_sort_fields_sync() for more information.
+ *   The default is %FALSE. Since: 3.50
  *
  * Flags that control the behaviour of an #EBookClientView.
  *
@@ -44,6 +49,7 @@ G_BEGIN_DECLS
 typedef enum { /*< flags >*/
 	E_BOOK_CLIENT_VIEW_FLAGS_NONE = 0,
 	E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL = (1 << 0),
+	E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY	= (1 << 1),
 } EBookClientViewFlags;
 
 /**

@@ -102,6 +102,7 @@ set(TESTS
 	test-book-cache-cursor-set-sexp
 	test-book-cache-cursor-change-locale
 	test-book-cache-offline
+	test-book-cache-query
 	test-book-meta-backend
 	test-sqlite-get-contact
 	test-sqlite-create-cursor
@@ -113,6 +114,7 @@ set(TESTS
 	test-sqlite-cursor-calculate
 	test-sqlite-cursor-set-sexp
 	test-sqlite-cursor-change-locale
+	test-sqlite-query
 )
 
 foreach(_test ${TESTS})

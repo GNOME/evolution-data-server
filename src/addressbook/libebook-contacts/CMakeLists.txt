@@ -37,6 +37,7 @@ set(DEPENDENCIES
 set(SOURCES
 	e-address-western.c
 	e-book-contacts-utils.c
+	e-book-indices-updater.c
 	e-book-query.c
 	e-contact.c
 	e-name-western.c
@@ -54,6 +55,7 @@ set(HEADERS
 	e-book-contacts-autocleanups.h
 	e-book-contacts-enums.h
 	e-book-contacts-utils.h
+	e-book-indices-updater.h
 	e-book-query.h
 	e-contact.h
 	e-name-western.h

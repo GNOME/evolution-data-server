@@ -119,6 +119,29 @@ void		e_book_client_view_set_flags	(EBookClientView *client_view,
 						 EBookClientViewFlags flags,
 						 GError **error);
 
+/* manual query (E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY) related functions follow */
+
+gboolean	e_book_client_view_set_sort_fields_sync
+						(EBookClientView *self,
+						 const EBookClientViewSortFields *fields,
+						 GCancellable *cancellable,
+						 GError **error);
+gsize		e_book_client_view_get_id	(EBookClientView *self);
+guint		e_book_client_view_get_n_total	(EBookClientView *self);
+EBookIndices *	e_book_client_view_dup_indices	(EBookClientView *self);
+void		e_book_client_view_dup_contacts	(EBookClientView *self,
+						 guint range_start,
+						 guint range_length,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback cb,
+						 gpointer user_data);
+gboolean	e_book_client_view_dup_contacts_finish
+						(EBookClientView *self,
+						 GAsyncResult *result,
+						 guint *out_range_start,
+						 GPtrArray **out_contacts, /* EContact */
+						 GError **error);
+
 #ifndef EDS_DISABLE_DEPRECATED
 struct _EBookClient *
 		e_book_client_view_get_client	(EBookClientView *client_view);

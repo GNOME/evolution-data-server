@@ -25,6 +25,7 @@
 #include <libebook-contacts/e-book-contacts-enums.h>
 #include <libebook-contacts/e-book-contacts-enumtypes.h>
 #include <libebook-contacts/e-book-contacts-utils.h>
+#include <libebook-contacts/e-book-indices-updater.h>
 #include <libebook-contacts/e-book-query.h>
 #include <libebook-contacts/e-name-western.h>
 #include <libebook-contacts/e-address-western.h>

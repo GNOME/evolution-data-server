@@ -43,6 +43,7 @@
 #include "e-book-backend.h"
 #include "e-data-book-cursor-cache.h"
 #include "e-data-book-factory.h"
+#include "e-data-book-view-watcher-cache.h"
 
 #include "e-book-meta-backend.h"
 
@@ -596,6 +597,25 @@ ebmb_start_view_thread_func (EBookBackend *book_backend,
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return;
 
+	if ((e_data_book_view_get_flags (view) & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY) != 0) {
+		EBookMetaBackend *ebmb = E_BOOK_META_BACKEND (book_backend);
+		EBookClientViewSortFields *sort_fields;
+		GObject *view_watcher;
+		gsize view_id;
+
+		view_id = e_data_book_view_get_id (view);
+		sort_fields = e_book_backend_dup_view_sort_fields (book_backend, view_id);
+
+		view_watcher = e_data_book_view_watcher_cache_new (book_backend, ebmb->priv->cache, view);
+		e_data_book_view_watcher_cache_take_sort_fields (E_DATA_BOOK_VIEW_WATCHER_CACHE (view_watcher), sort_fields);
+
+		e_book_backend_take_view_user_data (book_backend, view_id, view_watcher);
+
+		e_data_book_view_notify_complete (view, NULL);
+
+		return;
+	}
+
 	/* Fill the view with known (locally stored) contacts satisfying the expression */
 	sexp = e_data_book_view_get_sexp (view);
 	if (sexp)
@@ -776,7 +796,6 @@ ebmb_maybe_remove_from_cache (EBookMetaBackend *meta_backend,
 			      GCancellable *cancellable,
 			      GError **error)
 {
-	EBookBackend *book_backend;
 	EContact *contact = NULL;
 	GSList *local_photos, *link;
 	GError *local_error = NULL;
@@ -793,8 +812,6 @@ ebmb_maybe_remove_from_cache (EBookMetaBackend *meta_backend,
 		return FALSE;
 	}
 
-	book_backend = E_BOOK_BACKEND (meta_backend);
-
 	if (!e_book_cache_remove_contact (book_cache, uid, opflags, offline_flag, cancellable, error)) {
 		g_object_unref (contact);
 		return FALSE;
@@ -810,8 +827,6 @@ ebmb_maybe_remove_from_cache (EBookMetaBackend *meta_backend,
 	}
 
 	g_slist_free_full (local_photos, g_free);
-
-	e_book_backend_notify_remove (book_backend, uid);
 
 	ebmb_foreach_cursor (meta_backend, contact, e_data_book_cursor_contact_removed);
 
@@ -1112,9 +1127,6 @@ ebmb_put_contact (EBookMetaBackend *meta_backend,
 	}
 
 	success = success && e_book_cache_put_contact (book_cache, contact, extra, opflags, offline_flag, cancellable, error);
-
-	if (success)
-		e_book_backend_notify_update (E_BOOK_BACKEND (meta_backend), contact);
 
 	g_clear_object (&existing_contact);
 
@@ -1441,13 +1453,10 @@ ebmb_create_contact_sync (EBookMetaBackend *meta_backend,
 		}
 	}
 
-	if (requires_put) {
+	if (requires_put)
 		success = e_book_cache_put_contact (book_cache, contact, new_extra, opflags, *offline_flag, cancellable, error);
-		if (success)
-			e_book_backend_notify_update (E_BOOK_BACKEND (meta_backend), contact);
-	} else {
+	else
 		success = TRUE;
-	}
 
 	if (success) {
 		if (out_new_uid)
@@ -1925,6 +1934,8 @@ ebmb_stop_view (EBookBackend *book_backend,
 
 	g_return_if_fail (E_IS_BOOK_META_BACKEND (book_backend));
 
+	e_book_backend_take_view_user_data (book_backend, e_data_book_view_get_id (view), NULL);
+
 	cancellable = ebmb_steal_view_cancellable (E_BOOK_META_BACKEND (book_backend), view);
 	if (cancellable) {
 		g_cancellable_cancel (cancellable);
@@ -2150,6 +2161,49 @@ ebmb_delete_cursor (EBookBackend *book_backend,
 	g_mutex_unlock (&meta_backend->priv->property_lock);
 
 	return link != NULL;
+}
+
+static void
+ebmb_set_view_sort_fields (EBookBackend *backend,
+			   gsize view_id,
+			   const EBookClientViewSortFields *fields)
+{
+	GObject *view_watcher;
+
+	g_return_if_fail (E_IS_BOOK_META_BACKEND (backend));
+
+	/* Chain up to parent's method */
+	E_BOOK_BACKEND_CLASS (e_book_meta_backend_parent_class)->impl_set_view_sort_fields (backend, view_id, fields);
+
+	view_watcher = e_book_backend_ref_view_user_data (backend, view_id);
+
+	if (E_IS_DATA_BOOK_VIEW_WATCHER_CACHE (view_watcher)) {
+		e_data_book_view_watcher_cache_take_sort_fields (E_DATA_BOOK_VIEW_WATCHER_CACHE (view_watcher),
+			e_book_client_view_sort_fields_copy (fields));
+	}
+
+	g_clear_object (&view_watcher);
+}
+
+static GPtrArray *
+ebmb_dup_view_contacts (EBookBackend *backend,
+			gsize view_id,
+			guint range_start,
+			guint range_length)
+{
+	GObject *view_watcher;
+	GPtrArray *contacts = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (backend), NULL);
+
+	view_watcher = e_book_backend_ref_view_user_data (backend, view_id);
+
+	if (E_IS_DATA_BOOK_VIEW_WATCHER_CACHE (view_watcher))
+		contacts = e_data_book_view_watcher_cache_dup_contacts (E_DATA_BOOK_VIEW_WATCHER_CACHE (view_watcher), range_start, range_length);
+
+	g_clear_object (&view_watcher);
+
+	return contacts;
 }
 
 static ESourceAuthenticationResult
@@ -2613,6 +2667,8 @@ e_book_meta_backend_class_init (EBookMetaBackendClass *klass)
 	book_backend_class->impl_dup_locale = ebmb_dup_locale;
 	book_backend_class->impl_create_cursor = ebmb_create_cursor;
 	book_backend_class->impl_delete_cursor = ebmb_delete_cursor;
+	book_backend_class->impl_set_view_sort_fields = ebmb_set_view_sort_fields;
+	book_backend_class->impl_dup_view_contacts = ebmb_dup_view_contacts;
 
 	backend_class = E_BACKEND_CLASS (klass);
 	backend_class->authenticate_sync = ebmb_authenticate_sync;

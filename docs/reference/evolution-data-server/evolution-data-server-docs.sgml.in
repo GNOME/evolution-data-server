@@ -210,6 +210,9 @@
       <xi:include href="xml/e-data-book-cursor-sqlite.xml"/>
       <xi:include href="xml/e-data-book-factory.xml"/>
       <xi:include href="xml/e-data-book-view.xml"/>
+      <xi:include href="xml/e-data-book-view-watcher-cache.xml"/>
+      <xi:include href="xml/e-data-book-view-watcher-memory.xml"/>
+      <xi:include href="xml/e-data-book-view-watcher-sqlite.xml"/>
       <xi:include href="xml/e-subprocess-book-factory.xml"/>
       <xi:include href="xml/e-system-locale-watcher.xml"/>
     </chapter>
@@ -291,6 +294,7 @@
       <title>Addressbook related utilities</title>
       <xi:include href="xml/e-book-contacts-enums.xml"/>
       <xi:include href="xml/e-book-contacts-utils.xml"/>
+      <xi:include href="xml/e-book-indices-updater.xml"/>
       <xi:include href="xml/e-destination.xml"/>
       <xi:include href="xml/e-address-western.xml"/>
       <xi:include href="xml/e-name-western.xml"/>

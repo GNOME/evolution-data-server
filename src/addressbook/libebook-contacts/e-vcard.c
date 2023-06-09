@@ -849,7 +849,7 @@ parse (EVCard *evc,
 
 	attr = read_attribute (&p);
 	if (!attr || attr->group || g_ascii_strcasecmp (attr->name, "begin")) {
-		g_warning ("vcard began without a BEGIN:VCARD\n");
+		g_warning ("vcard began without a BEGIN:VCARD (%s)\n", str);
 	}
 	if (attr && !g_ascii_strcasecmp (attr->name, "begin")) {
 		e_vcard_attribute_free (attr);
@@ -879,7 +879,7 @@ parse (EVCard *evc,
 	}
 
 	if (!attr || attr->group || g_ascii_strcasecmp (attr->name, "end")) {
-		g_warning ("vcard ended without END:VCARD\n");
+		g_warning ("vcard ended without END:VCARD (%s)\n", str);
 	}
 
 	if (attr && !g_ascii_strcasecmp (attr->name, "end"))

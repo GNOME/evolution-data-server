@@ -87,6 +87,11 @@ EBookBackendSExp *
 		e_data_book_view_get_sexp	(EDataBookView *view);
 EBookClientViewFlags
 		e_data_book_view_get_flags	(EDataBookView *view);
+gboolean	e_data_book_view_get_force_initial_notifications
+						(EDataBookView *view);
+void		e_data_book_view_set_force_initial_notifications
+						(EDataBookView *view,
+						 gboolean value);
 gboolean	e_data_book_view_is_completed	(EDataBookView *view);
 void		e_data_book_view_notify_update	(EDataBookView *view,
 						 const EContact *contact);
@@ -112,6 +117,25 @@ void		e_data_book_view_notify_progress
 
 GHashTable *	e_data_book_view_get_fields_of_interest
 						(EDataBookView *view);
+
+/* Functions related to the "manual query" mode */
+gsize		e_data_book_view_get_id		(EDataBookView *self);
+void		e_data_book_view_set_sort_fields(EDataBookView *self,
+						 const EBookClientViewSortFields *fields);
+guint		e_data_book_view_get_n_total	(EDataBookView *self);
+void		e_data_book_view_set_n_total	(EDataBookView *self,
+						 guint n_total);
+EBookIndices *	e_data_book_view_dup_indices	(EDataBookView *self);
+void		e_data_book_view_set_indices	(EDataBookView *self,
+						 const EBookIndices *indices);
+GPtrArray *	e_data_book_view_dup_contacts	(EDataBookView *self, /* EContact * */
+						 guint range_start,
+						 guint range_length);
+void		e_data_book_view_notify_content_changed
+						(EDataBookView *self);
+void		e_data_book_view_claim_contact_uid
+						(EDataBookView *self,
+						 const gchar *uid);
 
 G_END_DECLS
 

@@ -39,6 +39,9 @@
 #include <libedata-book/e-data-book-direct.h>
 #include <libedata-book/e-data-book-factory.h>
 #include <libedata-book/e-data-book-view.h>
+#include <libedata-book/e-data-book-view-watcher-cache.h>
+#include <libedata-book/e-data-book-view-watcher-memory.h>
+#include <libedata-book/e-data-book-view-watcher-sqlite.h>
 #include <libedata-book/e-data-book.h>
 #include <libedata-book/e-subprocess-book-factory.h>
 #include <libedata-book/e-system-locale-watcher.h>

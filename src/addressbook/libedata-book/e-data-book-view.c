@@ -58,6 +58,7 @@ struct _EDataBookViewPrivate {
 	EBookBackendSExp *sexp;
 	EBookClientViewFlags flags;
 
+	gboolean force_initial_notifications;
 	gboolean running;
 	gboolean complete;
 	GMutex pending_mutex;
@@ -80,8 +81,19 @@ enum {
 	PROP_BACKEND,
 	PROP_CONNECTION,
 	PROP_OBJECT_PATH,
-	PROP_SEXP
+	PROP_SEXP,
+	PROP_N_TOTAL,
+	PROP_INDICES
 };
+
+enum {
+	OBJECTS_ADDED,
+	OBJECTS_MODIFIED,
+	OBJECTS_REMOVED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
 
 /* Forward Declarations */
 static void	e_data_book_view_initable_init	(GInitableIface *iface);
@@ -155,9 +167,14 @@ send_pending_adds (EDataBookView *view)
 	if (view->priv->adds->len == 0)
 		return;
 
-	e_dbus_address_book_view_emit_objects_added (
-		view->priv->dbus_object,
-		(const gchar * const *) view->priv->adds->data);
+	if ((view->priv->flags & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY) != 0) {
+		g_signal_emit (view, signals[OBJECTS_ADDED], 0, (const gchar * const *) view->priv->adds->data);
+	} else {
+		e_dbus_address_book_view_emit_objects_added (
+			view->priv->dbus_object,
+			(const gchar * const *) view->priv->adds->data);
+	}
+
 	reset_array (view->priv->adds);
 }
 
@@ -167,9 +184,14 @@ send_pending_changes (EDataBookView *view)
 	if (view->priv->changes->len == 0)
 		return;
 
-	e_dbus_address_book_view_emit_objects_modified (
-		view->priv->dbus_object,
-		(const gchar * const *) view->priv->changes->data);
+	if ((view->priv->flags & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY) != 0) {
+		g_signal_emit (view, signals[OBJECTS_MODIFIED], 0, (const gchar * const *) view->priv->changes->data);
+	} else {
+		e_dbus_address_book_view_emit_objects_modified (
+			view->priv->dbus_object,
+			(const gchar * const *) view->priv->changes->data);
+	}
+
 	reset_array (view->priv->changes);
 }
 
@@ -179,9 +201,14 @@ send_pending_removes (EDataBookView *view)
 	if (view->priv->removes->len == 0)
 		return;
 
-	e_dbus_address_book_view_emit_objects_removed (
-		view->priv->dbus_object,
-		(const gchar * const *) view->priv->removes->data);
+	if ((view->priv->flags & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY) != 0) {
+		g_signal_emit (view, signals[OBJECTS_REMOVED], 0, (const gchar * const *) view->priv->removes->data);
+	} else {
+		e_dbus_address_book_view_emit_objects_removed (
+			view->priv->dbus_object,
+			(const gchar * const *) view->priv->removes->data);
+	}
+
 	reset_array (view->priv->removes);
 }
 
@@ -377,6 +404,73 @@ impl_DataBookView_set_fields_of_interest (EDBusAddressBookView *object,
 	return TRUE;
 }
 
+static gboolean
+impl_DataBookView_set_sort_fields (EDBusAddressBookView *object,
+				   GDBusMethodInvocation *invocation,
+				   GVariant *arg_fields,
+				   EDataBookView *view)
+{
+	GVariantIter iter;
+	guint fld, st, ii;
+	EBookClientViewSortFields *fields;
+
+	fields = g_new0 (EBookClientViewSortFields, g_variant_iter_init (&iter, arg_fields) + 1);
+
+	for (ii = 0; g_variant_iter_next (&iter, "(uu)", &fld, &st); ii++) {
+		fields[ii].field = (EContactField) fld;
+		fields[ii].sort_type = (EBookCursorSortType) st;
+	}
+
+	fields[ii].field = E_CONTACT_FIELD_LAST;
+	fields[ii].sort_type = E_BOOK_CURSOR_SORT_ASCENDING;
+
+	e_data_book_view_set_sort_fields (view, fields);
+
+	e_book_client_view_sort_fields_free (fields);
+
+	e_dbus_address_book_view_complete_set_sort_fields (object, invocation);
+
+	return TRUE;
+}
+
+static gboolean
+impl_DataBookView_dup_contacts (EDBusAddressBookView *object,
+				GDBusMethodInvocation *invocation,
+				guint arg_range_start,
+				guint arg_range_length,
+				EDataBookView *view)
+{
+	GPtrArray *contacts;
+	const gchar *const empty_array[] = { NULL };
+	gchar **vcards;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (view), TRUE);
+
+	contacts = e_data_book_view_dup_contacts (view, arg_range_start, arg_range_length);
+
+	if (contacts) {
+		guint ii;
+
+		vcards = g_new0 (gchar *, contacts->len + 1);
+
+		for (ii = 0; ii < contacts->len; ii++) {
+			EContact *contact = g_ptr_array_index (contacts, ii);
+
+			vcards[ii] = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+		}
+
+		g_ptr_array_unref (contacts);
+	} else {
+		vcards = NULL;
+	}
+
+	e_dbus_address_book_view_complete_dup_contacts (object, invocation, vcards ? (const gchar * const *) vcards : empty_array);
+
+	g_strfreev (vcards);
+
+	return TRUE;
+}
+
 static void
 data_book_view_set_backend (EDataBookView *view,
                             EBookBackend *backend)
@@ -446,6 +540,18 @@ data_book_view_set_property (GObject *object,
 				E_DATA_BOOK_VIEW (object),
 				g_value_get_object (value));
 			return;
+
+		case PROP_N_TOTAL:
+			e_data_book_view_set_n_total (
+				E_DATA_BOOK_VIEW (object),
+				g_value_get_uint (value));
+			return;
+
+		case PROP_INDICES:
+			e_data_book_view_set_indices (
+				E_DATA_BOOK_VIEW (object),
+				g_value_get_boxed (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -483,6 +589,20 @@ data_book_view_get_property (GObject *object,
 			g_value_set_object (
 				value,
 				e_data_book_view_get_sexp (
+				E_DATA_BOOK_VIEW (object)));
+			return;
+
+		case PROP_N_TOTAL:
+			g_value_set_uint (
+				value,
+				e_data_book_view_get_n_total (
+				E_DATA_BOOK_VIEW (object)));
+			return;
+
+		case PROP_INDICES:
+			g_value_take_boxed (
+				value,
+				e_data_book_view_dup_indices (
 				E_DATA_BOOK_VIEW (object)));
 			return;
 	}
@@ -620,6 +740,86 @@ e_data_book_view_class_init (EDataBookViewClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_N_TOTAL,
+		g_param_spec_uint (
+			"n-total", NULL, NULL,
+			0, G_MAXUINT, 0,
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_INDICES,
+		g_param_spec_pointer (
+			"indices", NULL, NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * EDataBookView::objects-added:
+	 * @view: an #EDataBookView which emitted the signal
+	 * @vcards: (array zero-terminated=1): array of vCards as string
+	 *
+	 * Emitted when new objects are added into the @view.
+	 *
+	 * Note: This signal is used only when the view has
+	 *    set @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY flag.
+	 *
+	 * Since: 3.50
+	 **/
+	signals[OBJECTS_ADDED] = g_signal_new (
+		"objects-added",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		0,
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 1,
+		G_TYPE_STRV);
+
+	/**
+	 * EDataBookView::objects-modified:
+	 * @view: an #EDataBookView which emitted the signal
+	 * @vcards: (array zero-terminated=1): array of vCards as string
+	 *
+	 * Emitted when the objects in the @view are modified.
+	 *
+	 * Note: This signal is used only when the view has
+	 *    set @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY flag.
+	 *
+	 * Since: 3.50
+	 **/
+	signals[OBJECTS_MODIFIED] = g_signal_new (
+		"objects-modified",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		0,
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 1,
+		G_TYPE_STRV);
+
+	/**
+	 * EDataBookView::objects-removed:
+	 * @view: an #EDataBookView which emitted the signal
+	 * @uids: (array zero-terminated=1): array of UIDs as string
+	 *
+	 * Emitted when the objects are removed from the @view.
+	 *
+	 * Note: This signal is used only when the view has
+	 *    set @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY flag.
+	 *
+	 * Since: 3.50
+	 **/
+	signals[OBJECTS_REMOVED] = g_signal_new (
+		"objects-removed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		0,
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 1,
+		G_TYPE_STRV);
 }
 
 static void
@@ -653,6 +853,12 @@ e_data_book_view_init (EDataBookView *view)
 	g_signal_connect (
 		view->priv->dbus_object, "handle-set-fields-of-interest",
 		G_CALLBACK (impl_DataBookView_set_fields_of_interest), view);
+	g_signal_connect (
+		view->priv->dbus_object, "handle-set-sort-fields",
+		G_CALLBACK (impl_DataBookView_set_sort_fields), view);
+	g_signal_connect (
+		view->priv->dbus_object, "handle-dup-contacts",
+		G_CALLBACK (impl_DataBookView_dup_contacts), view);
 
 	view->priv->fields_of_interest = NULL;
 	view->priv->running = FALSE;
@@ -674,6 +880,8 @@ e_data_book_view_init (EDataBookView *view)
 		(GDestroyNotify) NULL);
 
 	view->priv->flush_id = 0;
+
+	e_dbus_address_book_view_set_id (view->priv->dbus_object, (guint64) GPOINTER_TO_SIZE (view));
 }
 
 /**
@@ -828,6 +1036,45 @@ e_data_book_view_get_flags (EDataBookView *view)
 }
 
 /**
+ * e_data_book_view_get_force_initial_notifications:
+ * @view: an #EDataBookView
+ *
+ * Returns whether the @view should do initial notifications
+ * even when the flags do not contain %E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL.
+ * The default is %FALSE.
+ *
+ * Returns: value set by e_data_book_view_set_force_initial_notifications()
+ *
+ * Since: 3.50
+ **/
+gboolean
+e_data_book_view_get_force_initial_notifications (EDataBookView *view)
+{
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (view), FALSE);
+
+	return view->priv->force_initial_notifications;
+}
+
+/**
+ * e_data_book_view_set_force_initial_notifications:
+ * @view: an #EDataBookView
+ * @value: value to set
+ *
+ * Sets whether the @view should do initial notifications
+ * even when the flags do not contain %E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL.
+ *
+ * Since: 3.50
+ **/
+void
+e_data_book_view_set_force_initial_notifications (EDataBookView *view,
+						  gboolean value)
+{
+	g_return_if_fail (E_IS_DATA_BOOK_VIEW (view));
+
+	view->priv->force_initial_notifications = value;
+}
+
+/**
  * e_data_book_view_is_completed:
  * @view: an #EDataBookView
  *
@@ -846,7 +1093,7 @@ e_data_book_view_is_completed (EDataBookView *view)
 }
 
 /*
- * Queue @vcard to be sent as a change notification.
+ * Queue @vcard and @id to be sent as a change notification.
  */
 static void
 notify_change (EDataBookView *view,
@@ -862,7 +1109,7 @@ notify_change (EDataBookView *view,
 		send_pending_changes (view);
 	}
 
-	if (view->priv->send_uids_only == FALSE) {
+	if (!view->priv->send_uids_only || (view->priv->flags & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY) != 0) {
 		utf8_vcard = e_util_utf8_make_valid (vcard);
 		g_array_append_val (view->priv->changes, utf8_vcard);
 	}
@@ -897,7 +1144,7 @@ notify_remove (EDataBookView *view,
 }
 
 /*
- * Queue @id and @vcard to be sent as a change notification.
+ * Queue @vcard and @id to be sent as a change notification.
  */
 static void
 notify_add (EDataBookView *view,
@@ -914,14 +1161,14 @@ notify_add (EDataBookView *view,
 
 	/* Do not send contact add notifications during initial stage */
 	flags = e_data_book_view_get_flags (view);
-	if (view->priv->complete || (flags & E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL) != 0) {
+	if (view->priv->complete || view->priv->force_initial_notifications || (flags & E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL) != 0) {
 		gchar *utf8_id_copy = g_strdup (utf8_id);
 
 		if (view->priv->adds->len == THRESHOLD_ITEMS) {
 			send_pending_adds (view);
 		}
 
-		if (view->priv->send_uids_only == FALSE) {
+		if (!view->priv->send_uids_only || (flags & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY) != 0) {
 			utf8_vcard = e_util_utf8_make_valid (vcard);
 			g_array_append_val (view->priv->adds, utf8_vcard);
 		}
@@ -1234,3 +1481,274 @@ e_data_book_view_get_fields_of_interest (EDataBookView *view)
 	return view->priv->fields_of_interest;
 }
 
+/**
+ * e_data_book_view_get_id:
+ * @self: an #EDataBookView
+ *
+ * Returns an identifier of the @self. It does not change
+ * for the whole life time of the @self.
+ *
+ * Note: This function can be used only with @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY.
+ *
+ * Returns: an identifier of the view
+ *
+ * Since: 3.50
+ **/
+gsize
+e_data_book_view_get_id (EDataBookView *self)
+{
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (self), 0);
+
+	return GPOINTER_TO_SIZE (self);
+}
+
+/**
+ * e_data_book_view_set_sort_fields:
+ * @self: an #EDataBookView
+ * @fields: an array of #EBookClientViewSortFields fields to sort by
+ *
+ * Sets @fields to sort the view by. The default is to sort by the file-as
+ * field. The contacts are always sorted in ascending order. Not every field
+ * can be used for sorting, the default available fields are %E_CONTACT_FILE_AS,
+ * %E_CONTACT_GIVEN_NAME and %E_CONTACT_FAMILY_NAME.
+ *
+ * The first sort field is used to populate indices, as returned
+ * by e_data_book_view_dup_indices().
+ *
+ * Note: This function can be used only with @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY.
+ *
+ * Since: 3.50
+ **/
+void
+e_data_book_view_set_sort_fields (EDataBookView *self,
+				  const EBookClientViewSortFields *fields)
+{
+	EBookBackend *backend;
+
+	g_return_if_fail (E_IS_DATA_BOOK_VIEW (self));
+
+	if (!(self->priv->flags & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY))
+		return;
+
+	backend = e_data_book_view_ref_backend (self);
+	if (backend)
+		e_book_backend_set_view_sort_fields (backend, e_data_book_view_get_id (self), fields);
+
+	g_clear_object (&backend);
+}
+
+/**
+ * e_data_book_view_get_n_total:
+ * @self: an #EDataBookView
+ *
+ * Returns how many contacts are available in the view.
+ *
+ * Note: This function can be used only with @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY.
+ *
+ * Returns: how many contacts are available in the view
+ *
+ * Since: 3.50
+ **/
+guint
+e_data_book_view_get_n_total (EDataBookView *self)
+{
+	guint n_total;
+	EBookBackend *backend;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (self), 0);
+
+	if (!(self->priv->flags & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY))
+		return 0;
+
+	backend = e_data_book_view_ref_backend (self);
+	n_total = backend ? e_book_backend_get_view_n_total (backend, e_data_book_view_get_id (self)) : 0;
+
+	g_clear_object (&backend);
+
+	return n_total;
+}
+
+/**
+ * e_data_book_view_set_n_total:
+ * @self: an #EDataBookView
+ * @n_total: a value to set
+ *
+ * Sets how many contacts are available in the view.
+ *
+ * Note: This function can be used only with @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY.
+ *
+ * Since: 3.50
+ **/
+void
+e_data_book_view_set_n_total (EDataBookView *self,
+			      guint n_total)
+{
+	g_return_if_fail (E_IS_DATA_BOOK_VIEW (self));
+
+	if (!(self->priv->flags & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY))
+		return;
+
+	e_dbus_address_book_view_set_n_total (self->priv->dbus_object, n_total);
+}
+
+/**
+ * e_data_book_view_dup_indices:
+ * @self: an #EDataBookView
+ *
+ * Returns a list of #EBookIndices holding indices of the contacts
+ * in the view. These are received from the first sort field set by
+ * e_data_book_view_set_sort_fields(). The last item of the returned
+ * array is the one with chr member being %NULL.
+ *
+ * Free the returned array with e_book_indices_free(), when no longer needed.
+ *
+ * Note: This function can be used only with @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY.
+ *
+ * Returns: (transfer full) (nullable): list of indices for the view,
+ *    or %NULL when cannot determine
+ *
+ * Since: 3.50
+ **/
+EBookIndices *
+e_data_book_view_dup_indices (EDataBookView *self)
+{
+	EBookIndices *indices;
+	EBookBackend *backend;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (self), NULL);
+
+	if (!(self->priv->flags & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY))
+		return NULL;
+
+	backend = e_data_book_view_ref_backend (self);
+	indices = backend ? e_book_backend_dup_view_indices (backend, e_data_book_view_get_id (self)) : NULL;
+
+	g_clear_object (&backend);
+
+	return indices;
+}
+
+/**
+ * e_data_book_view_set_indices:
+ * @self: an #EDataBookView
+ * @indices: an array of #EBookIndices
+ *
+ * Sets indices used by the @self. The array is terminated by an item
+ * with chr member being %NULL.
+ * See e_data_book_view_dup_indices() for more information.
+ *
+ * Note: This function can be used only with @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY.
+ *
+ * Since: 3.50
+ **/
+void
+e_data_book_view_set_indices (EDataBookView *self,
+			      const EBookIndices *indices)
+{
+	g_return_if_fail (E_IS_DATA_BOOK_VIEW (self));
+	g_return_if_fail (indices != NULL);
+
+	if (!(self->priv->flags & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY))
+		return;
+
+	if (indices) {
+		GVariantBuilder builder;
+		guint ii;
+
+		g_variant_builder_init (&builder, G_VARIANT_TYPE ("a(su)"));
+
+		for (ii = 0; indices[ii].chr != NULL; ii++) {
+			g_variant_builder_add (&builder, "(su)", indices[ii].chr, indices[ii].index);
+		}
+
+		e_dbus_address_book_view_set_indices (self->priv->dbus_object, g_variant_builder_end (&builder));
+	} else {
+		e_dbus_address_book_view_set_indices (self->priv->dbus_object, NULL);
+	}
+}
+
+/**
+ * e_data_book_view_dup_contacts:
+ * @self: an #EDataBookView
+ * @range_start: 0-based range start to retrieve the contacts for
+ * @range_length: how many contacts to retrieve
+ *
+ * Reads @range_length contacts from index @range_start.
+ * When there are asked more than e_data_book_view_get_n_total()
+ * contacts only those up to the total number of contacts are read.
+ *
+ * Free the returned #GPtrArray with g_ptr_array_unref(),
+ * when no longer needed.
+ *
+ * Note: This function can be used only with @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY.
+ *
+ * Returns: (transfer container) (element-type EContact) (nullable): array of the read contacts,
+ *    or %NULL, when not applicable or when the @range_start it out of bounds.
+ *
+ * Since: 3.50
+ **/
+GPtrArray *
+e_data_book_view_dup_contacts (EDataBookView *self,
+			       guint range_start,
+			       guint range_length)
+{
+	GPtrArray *contacts;
+	EBookBackend *backend;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (self), NULL);
+
+	if (!(self->priv->flags & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY))
+		return NULL;
+
+	backend = e_data_book_view_ref_backend (self);
+	contacts = backend ? e_book_backend_dup_view_contacts (backend, e_data_book_view_get_id (self), range_start, range_length) : NULL;
+
+	g_clear_object (&backend);
+
+	return contacts;
+}
+
+/**
+ * e_data_book_view_notify_content_changed:
+ * @self: an #EDataBookView
+ *
+ * Notifies the client side that the content of the @self changed,
+ * which it should use to refresh the view data.
+ *
+ * Note: This function can be used only with @E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY.
+ *
+ * Since: 3.50
+ **/
+void
+e_data_book_view_notify_content_changed (EDataBookView *self)
+{
+	g_return_if_fail (E_IS_DATA_BOOK_VIEW (self));
+
+	if (!(self->priv->flags & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY))
+		return;
+
+	e_dbus_address_book_view_emit_content_changed (self->priv->dbus_object);
+}
+
+/**
+ * e_data_book_view_claim_contact_uid:
+ * @self: an #EDataBookView
+ * @uid: a contact UID
+ *
+ * Tells the @self, that it contains a contact with UID @uid. This is useful
+ * for "manual query" view, which do not do initial notifications. It helps
+ * to not send "objects-added" signal for contacts, which are already part
+ * of the @self, because for them the "objects-modified" should be emitted
+ * instead.
+ *
+ * Since: 3.50
+ **/
+void
+e_data_book_view_claim_contact_uid (EDataBookView *self,
+				    const gchar *uid)
+{
+	g_return_if_fail (E_IS_DATA_BOOK_VIEW (self));
+	g_return_if_fail (uid != NULL);
+
+	g_hash_table_insert (self->priv->ids, e_util_utf8_make_valid (uid), GUINT_TO_POINTER (1));
+}

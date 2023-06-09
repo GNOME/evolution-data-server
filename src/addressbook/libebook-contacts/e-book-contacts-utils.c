@@ -309,3 +309,146 @@ e_book_util_diff_categories (EContact *old_contact,
 		}
 	}
 }
+
+/**
+ * EBookIndices:
+ * @chr: a character for the index
+ * @index: 0-based index of the first contact with this character
+ *
+ * This is a structure describing indices of the contacts in the view.
+ * See e_book_client_view_dup_indices() for more information.
+ *
+ * Since: 3.50
+ **/
+
+/**
+ * e_book_indices_copy: (skip)
+ * @src: (nullable): an array of #EBookIndices to copy, or %NULL
+ *
+ * Creates a copy of the @src. If the %src is %NULL, the %NULL is returned.
+ * Both the @src and the returned array is terminated by an item, which has
+ * the chr member set to %NULL.
+ *
+ * Free the returned array with e_book_indices_free(),
+ * when no longer needed.
+ *
+ * Returns: (transfer full): copy of the @src
+ *
+ * Since: 3.50
+ **/
+EBookIndices *
+e_book_indices_copy (const EBookIndices *src)
+{
+	EBookIndices *copy;
+	guint n_items;
+
+	if (!src)
+		return NULL;
+
+	for (n_items = 0; src[n_items].chr != NULL; n_items++) {
+		/* just count them first */
+	}
+
+	copy = g_new0 (EBookIndices, n_items + 1);
+
+	for (n_items = 0; src[n_items].chr != NULL; n_items++) {
+		copy[n_items].chr = g_strdup (src[n_items].chr);
+		copy[n_items].index = src[n_items].index;
+	}
+
+	copy[n_items].chr = NULL;
+	copy[n_items].index = G_MAXUINT;
+
+	return copy;
+}
+
+/**
+ * e_book_indices_free: (skip)
+ * @indices: (nullable): an array of #EBookIndices to free
+ *
+ * Frees the @indices array with each member. The array should be terminated
+ * by an item with chr member set to %NULL.
+ **/
+void
+e_book_indices_free (EBookIndices *indices)
+{
+	guint ii;
+
+	if (!indices)
+		return;
+
+	for (ii = 0; indices[ii].chr != NULL; ii++) {
+		g_free (indices[ii].chr);
+	}
+
+	g_free (indices);
+}
+
+G_DEFINE_BOXED_TYPE (EBookIndices, e_book_indices, e_book_indices_copy, e_book_indices_free);
+
+/**
+ * EBookClientViewSortFields:
+ * @field: an #EContactField to sort by
+ * @sort_type: an #EBookCursorSortType
+ *
+ * This is a structure describing sort settings in the view.
+ * See e_book_client_view_set_sort_fields_sync() for more information.
+ *
+ * Since: 3.50
+ **/
+
+/**
+ * e_book_client_view_sort_fields_copy: (skip)
+ * @src: (nullable): an array to copy, or %NULL
+ *
+ * Creates a copy of the @src. If the %src is %NULL, the %NULL is returned.
+ * Both the @src and the returned array is terminated by an item, which has
+ * the field member set to %E_CONTACT_FIELD_LAST.
+ *
+ * Free the returned array with e_book_client_view_sort_fields_free(),
+ * when no longer needed.
+ *
+ * Returns: (transfer full): copy of the @src
+ *
+ * Since: 3.50
+ **/
+EBookClientViewSortFields *
+e_book_client_view_sort_fields_copy (const EBookClientViewSortFields *src)
+{
+	EBookClientViewSortFields *copy;
+	guint n_items;
+
+	if (!src)
+		return NULL;
+
+	for (n_items = 0; src[n_items].field != E_CONTACT_FIELD_LAST; n_items++) {
+		/* just count them first */
+	}
+
+	copy = g_new0 (EBookClientViewSortFields, n_items + 1);
+
+	for (n_items = 0; src[n_items].field != E_CONTACT_FIELD_LAST; n_items++) {
+		copy[n_items].field = src[n_items].field;
+		copy[n_items].sort_type = src[n_items].sort_type;
+	}
+
+	copy[n_items].field = E_CONTACT_FIELD_LAST;
+	copy[n_items].sort_type = E_BOOK_CURSOR_SORT_ASCENDING;
+
+	return copy;
+}
+
+/**
+ * e_book_client_view_sort_fields_free: (skip)
+ * @fields: (nullable): an array of #EBookClientViewSortFields to free
+ *
+ * Frees the @fields array with each member. The array should be terminated
+ * by an item with field member set to %E_CONTACT_FIELD_LAST.
+ **/
+void
+e_book_client_view_sort_fields_free (EBookClientViewSortFields *fields)
+{
+	g_free (fields);
+}
+
+G_DEFINE_BOXED_TYPE (EBookClientViewSortFields, e_book_client_view_sort_fields, e_book_client_view_sort_fields_copy, e_book_client_view_sort_fields_free);

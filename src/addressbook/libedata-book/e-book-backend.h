@@ -98,6 +98,14 @@ struct _EBookBackend {
  * @impl_create_cursor: Create an #EDataBookCursor
  * @impl_delete_cursor: Delete an #EDataBookCursor previously created by this backend
  * @impl_contains_email: Checkes whether the backend contains an email address
+ * @impl_set_view_sort_fields: sets sort fields for "manual query" views; default implementation saves
+ *    the values into internal structures, which can be read back with e_book_backend_dup_view_sort_fields(). Since 3.50
+ * @impl_get_view_n_total: retrieve how many contacts a "manual query" view has; default implementation
+ *    returns value set by e_book_backend_set_view_n_total(). Since: 3.50
+ * @impl_dup_view_indices: retrieve indexes into an alphabet for contacts in the "manual query" view; default
+ *    implementation returns value set by e_book_backend_set_view_indices(). Since: 3.50
+ * @impl_dup_view_contacts: returns contacts in the given range of the sorted "manual query" view; default
+ *    implementation tracks view's connect and returns the contacts accordingly. Since: 3.50
  * @closed: A signal notifying that the backend was closed
  * @shutdown: A signal notifying that the backend is being shut down
  *
@@ -205,8 +213,23 @@ struct _EBookBackendClass {
 						 GCancellable *cancellable,
 						 const gchar *email_address);
 
+	/* Functions for EBookClientView's manual query support */
+	void		(*impl_set_view_sort_fields)
+						(EBookBackend *backend,
+						 gsize view_id,
+						 const EBookClientViewSortFields *fields);
+	guint		(*impl_get_view_n_total)(EBookBackend *backend,
+						 gsize view_id);
+	EBookIndices *	(*impl_dup_view_indices)(EBookBackend *backend,
+						 gsize view_id);
+	GPtrArray *	(*impl_dup_view_contacts) /* EContact * */
+						(EBookBackend *backend,
+						 gsize view_id,
+						 guint range_start,
+						 guint range_length);
+
 	/* Padding for future expansion */
-	gpointer reserved_padding[19];
+	gpointer reserved_padding[15];
 };
 
 GType		e_book_backend_get_type		(void) G_GNUC_CONST;
@@ -452,6 +475,37 @@ void		e_book_backend_schedule_custom_operation
 						 gpointer user_data,
 						 GDestroyNotify user_data_free);
 
+EDataBookView *	e_book_backend_ref_view		(EBookBackend *backend,
+						 gsize view_id);
+gpointer	e_book_backend_ref_view_user_data
+						(EBookBackend *backend,
+						 gsize view_id);
+void		e_book_backend_take_view_user_data
+						(EBookBackend *backend,
+						 gsize view_id,
+						 GObject *user_data);
+EBookClientViewSortFields *
+		e_book_backend_dup_view_sort_fields
+						(EBookBackend *backend,
+						 gsize view_id);
+void		e_book_backend_set_view_sort_fields
+						(EBookBackend *backend,
+						 gsize view_id,
+						 const EBookClientViewSortFields *fields);
+guint		e_book_backend_get_view_n_total	(EBookBackend *backend,
+						 gsize view_id);
+void		e_book_backend_set_view_n_total	(EBookBackend *backend,
+						 gsize view_id,
+						 guint n_total);
+EBookIndices *	e_book_backend_dup_view_indices	(EBookBackend *backend,
+						 gsize view_id);
+void		e_book_backend_set_view_indices	(EBookBackend *backend,
+						 gsize view_id,
+						 const EBookIndices *indices);
+GPtrArray *	e_book_backend_dup_view_contacts(EBookBackend *backend, /* EContact * */
+						 gsize view_id,
+						 guint range_start,
+						 guint range_length);
 
 G_END_DECLS
 

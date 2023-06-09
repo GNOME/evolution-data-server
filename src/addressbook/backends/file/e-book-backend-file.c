@@ -1207,6 +1207,28 @@ book_view_thread (gpointer user_data)
 	d (printf ("signalling parent thread\n"));
 	e_flag_set (closure->running);
 
+	if ((e_data_book_view_get_flags (book_view) & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY) != 0) {
+		EBookBackend *backend = E_BOOK_BACKEND (bf);
+		EBookClientViewSortFields *sort_fields;
+		GObject *view_watcher;
+		gsize view_id;
+
+		view_id = e_data_book_view_get_id (book_view);
+		sort_fields = e_book_backend_dup_view_sort_fields (backend, view_id);
+
+		view_watcher = e_data_book_view_watcher_sqlite_new (backend, bf->priv->sqlitedb, book_view);
+		e_data_book_view_watcher_sqlite_take_sort_fields (E_DATA_BOOK_VIEW_WATCHER_SQLITE (view_watcher), sort_fields);
+
+		e_book_backend_take_view_user_data (backend, view_id, view_watcher);
+
+		if (e_flag_is_set (closure->running))
+			e_data_book_view_notify_complete (book_view, NULL /* Success */);
+
+		g_object_unref (book_view);
+
+		return NULL;
+	}
+
 	g_rw_lock_reader_lock (&(bf->priv->lock));
 	success = e_book_sqlite_search (
 		bf->priv->sqlitedb,
@@ -2022,6 +2044,8 @@ book_backend_file_stop_view (EBookBackend *backend,
 	FileBackendSearchClosure *closure = get_closure (book_view);
 	gboolean need_join;
 
+	e_book_backend_take_view_user_data (backend, e_data_book_view_get_id (book_view), NULL);
+
 	if (!closure)
 		return;
 
@@ -2239,6 +2263,49 @@ book_backend_file_delete_cursor (EBookBackend *backend,
 	g_rw_lock_writer_unlock (&(bf->priv->lock));
 
 	return link != NULL;
+}
+
+static void
+book_backend_file_set_view_sort_fields (EBookBackend *backend,
+					gsize view_id,
+					const EBookClientViewSortFields *fields)
+{
+	GObject *view_watcher;
+
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+
+	/* Chain up to parent's method */
+	E_BOOK_BACKEND_CLASS (e_book_backend_file_parent_class)->impl_set_view_sort_fields (backend, view_id, fields);
+
+	view_watcher = e_book_backend_ref_view_user_data (backend, view_id);
+
+	if (E_IS_DATA_BOOK_VIEW_WATCHER_SQLITE (view_watcher)) {
+		e_data_book_view_watcher_sqlite_take_sort_fields (E_DATA_BOOK_VIEW_WATCHER_SQLITE (view_watcher),
+			e_book_client_view_sort_fields_copy (fields));
+	}
+
+	g_clear_object (&view_watcher);
+}
+
+static GPtrArray *
+book_backend_file_dup_view_contacts (EBookBackend *backend,
+				     gsize view_id,
+				     guint range_start,
+				     guint range_length)
+{
+	GObject *view_watcher;
+	GPtrArray *contacts = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+
+	view_watcher = e_book_backend_ref_view_user_data (backend, view_id);
+
+	if (E_IS_DATA_BOOK_VIEW_WATCHER_SQLITE (view_watcher))
+		contacts = e_data_book_view_watcher_sqlite_dup_contacts (E_DATA_BOOK_VIEW_WATCHER_SQLITE (view_watcher), range_start, range_length);
+
+	g_clear_object (&view_watcher);
+
+	return contacts;
 }
 
 static gboolean
@@ -2474,6 +2541,8 @@ e_book_backend_file_class_init (EBookBackendFileClass *class)
 	backend_class->impl_dup_locale = book_backend_file_dup_locale;
 	backend_class->impl_create_cursor = book_backend_file_create_cursor;
 	backend_class->impl_delete_cursor = book_backend_file_delete_cursor;
+	backend_class->impl_set_view_sort_fields = book_backend_file_set_view_sort_fields;
+	backend_class->impl_dup_view_contacts = book_backend_file_dup_view_contacts;
 }
 
 static void

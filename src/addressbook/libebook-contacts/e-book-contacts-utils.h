@@ -132,6 +132,30 @@ void		e_book_util_diff_categories	(EContact *old_contact,
 						 GHashTable **out_added, /* const gchar *category ~> 1 */
 						 GHashTable **out_removed); /* const gchar *category ~> 1 */
 
+#define E_TYPE_BOOK_INDICES (e_book_indices_get_type ())
+typedef struct _EBookIndices {
+	gchar *chr;
+	guint index; /* 0-based */
+} EBookIndices;
+
+EBookIndices *	e_book_indices_copy		(const EBookIndices *src);
+void		e_book_indices_free		(EBookIndices *indices);
+GType		e_book_indices_get_type		(void);
+
+#define E_TYPE_BOOK_CLIENT_VIEW_SORT_FIELDS (e_book_client_view_sort_fields_get_type ())
+typedef struct _EBookClientViewSortFields {
+	EContactField field;
+	EBookCursorSortType sort_type;
+} EBookClientViewSortFields;
+
+EBookClientViewSortFields *
+		e_book_client_view_sort_fields_copy
+						(const EBookClientViewSortFields *src);
+void		e_book_client_view_sort_fields_free
+						(EBookClientViewSortFields *fields);
+GType		e_book_client_view_sort_fields_get_type
+						(void);
+
 #ifndef EDS_DISABLE_DEPRECATED
 
 /**

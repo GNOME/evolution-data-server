@@ -2939,6 +2939,7 @@ typedef enum {
 	SEARCH_UID_AND_REV,   /* Get a list of EBookCacheSearchData, with shallow vcards only containing UID & REV */
 	SEARCH_UID,           /* Get a list of UID strings */
 	SEARCH_COUNT,         /* Get the number of matching rows */
+	SEARCH_SUMMARY_FIELD  /* Get UID and one summary field */
 } SearchType;
 
 static void
@@ -3128,6 +3129,7 @@ typedef void (* EBookCacheInternalSearchFunc)	(ECache *cache,
 static EBookCacheInternalSearchFunc
 ebc_generate_select (EBookCache *book_cache,
 		     GString *string,
+		     const gchar *summary_field,
 		     SearchType search_type,
 		     PreflightContext *context,
 		     GError **error)
@@ -3171,6 +3173,15 @@ ebc_generate_select (EBookCache *book_cache,
 			g_string_append (string, "count (DISTINCT summary." E_CACHE_COLUMN_UID ") ");
 		else
 			g_string_append (string, "count (*) ");
+		break;
+	case SEARCH_SUMMARY_FIELD:
+		/* intentionally no callback set */
+		if (context->aux_mask != 0)
+			g_string_append (string, "DISTINCT summary." E_CACHE_COLUMN_UID ", ");
+		else
+			g_string_append (string, "summary." E_CACHE_COLUMN_UID ", ");
+		g_string_append (string, summary_field);
+		g_string_append_c (string, ' ');
 		break;
 	}
 
@@ -3291,7 +3302,7 @@ ebc_generate_autocomplete_query (EBookCache *book_cache,
 		context->aux_mask = (1 << aux_index);
 		context->left_join_mask = 0;
 
-		callback = ebc_generate_select (book_cache, string, search_type, context, error);
+		callback = ebc_generate_select (book_cache, string, NULL, search_type, context, error);
 		e_cache_sqlite_stmt_append_printf (string, " WHERE summary." E_CACHE_COLUMN_STATE "!=%d AND (", E_OFFLINE_STATE_LOCALLY_DELETED);
 		context->aux_mask = aux_mask;
 		context->left_join_mask = left_join_mask;
@@ -3306,7 +3317,7 @@ ebc_generate_autocomplete_query (EBookCache *book_cache,
 
 	/* Finally, generate the SELECT for the primary fields. */
 	context->aux_mask = 0;
-	callback = ebc_generate_select (book_cache, string, search_type, context, error);
+	callback = ebc_generate_select (book_cache, string, NULL, search_type, context, error);
 	context->aux_mask = aux_mask;
 	if (!callback)
 		return NULL;
@@ -3472,7 +3483,7 @@ ebc_do_search_query (EBookCache *book_cache,
 		sd.func = ebc_generate_autocomplete_query (book_cache, stmt, search_type, context, error);
 	} else {
 		/* Generate the leading SELECT statement */
-		sd.func = ebc_generate_select (book_cache, stmt, search_type, context, error);
+		sd.func = ebc_generate_select (book_cache, stmt, NULL, search_type, context, error);
 
 		if (sd.func) {
 			e_cache_sqlite_stmt_append_printf (stmt,
@@ -3742,11 +3753,11 @@ ebc_cursor_setup_query (EBookCache *book_cache,
 
 	/* Generate the leading SELECT portions that we need */
 	string = g_string_new ("");
-	ebc_generate_select (book_cache, string, SEARCH_FULL, &context, NULL);
+	ebc_generate_select (book_cache, string, NULL, SEARCH_FULL, &context, NULL);
 	cursor->select_vcards = g_string_free (string, FALSE);
 
 	string = g_string_new ("");
-	ebc_generate_select (book_cache, string, SEARCH_COUNT, &context, NULL);
+	ebc_generate_select (book_cache, string, NULL, SEARCH_COUNT, &context, NULL);
 	cursor->select_count = g_string_free (string, FALSE);
 
 	where_clause = g_string_new ("");
@@ -6808,4 +6819,392 @@ e_book_cache_init (EBookCache *book_cache)
 
 	g_signal_connect_swapped (book_cache->priv->categories_table, "changed",
 		G_CALLBACK (ebc_emit_categories_changed), book_cache);
+}
+
+static gchar *
+ebc_prepare_ordered_stmt (EBookCache *book_cache,
+			  const gchar *what,
+			  const gchar *sexp,
+			  EContactField sort_field,
+			  EBookCursorSortType sort_type,
+			  guint n_offset,
+			  guint n_limit,
+			  GError **error)
+{
+	PreflightContext context = PREFLIGHT_CONTEXT_INIT;
+	GString *string;
+
+	if (sexp && *sexp) {
+		query_preflight (&context, book_cache, sexp);
+
+		if (context.status > PREFLIGHT_NOT_SUMMARIZED) {
+			g_set_error_literal (error, E_CACHE_ERROR, E_CACHE_ERROR_INVALID_QUERY,
+				_("Invalid query for a book cursor"));
+
+			preflight_context_clear (&context);
+			return NULL;
+
+		}
+	}
+
+	string = g_string_new ("");
+
+	ebc_generate_select (book_cache, string, what ? what : NULL, what ? SEARCH_SUMMARY_FIELD : SEARCH_COUNT, &context, NULL);
+
+	if (sexp && *sexp && context.status != PREFLIGHT_LIST_ALL) {
+		g_string_append (string, " WHERE ");
+		ebc_generate_constraints (book_cache, string, context.constraints, sexp);
+	}
+
+	preflight_context_clear (&context);
+
+	if (sort_field != E_CONTACT_FIELD_LAST) {
+		EContactField sort_fields[1];
+		EBookCursorSortType sort_types[1];
+		gchar *order_by;
+
+		sort_fields[0] = sort_field;
+		sort_types[0] = sort_type;
+
+		order_by = ebc_cursor_order_by_fragment (book_cache, sort_fields, sort_types, 1, FALSE);
+
+		g_string_append_printf (string, " %s", order_by);
+
+		g_free (order_by);
+	}
+
+	if (n_limit > 0 && n_limit != G_MAXUINT) {
+		g_string_append_printf (string, " LIMIT %u", n_limit);
+		if (n_offset > 0)
+			g_string_append_printf (string, " OFFSET %u", n_offset);
+	} else if (n_offset > 0) {
+		g_string_append_printf (string, " LIMIT -1 OFFSET %u", n_offset);
+	}
+
+	return g_string_free (string, FALSE);
+}
+
+static gboolean
+ebc_get_n_total_cb (ECache *cache,
+		    gint ncols,
+		    const gchar *column_names[],
+		    const gchar *column_values[],
+		    gpointer user_data)
+{
+	gint64 n_total = 0;
+	guint *out_n_total = user_data;
+	gint ii;
+
+	for (ii = 0; ii < ncols; ii++) {
+		if (column_names[ii] && strncmp (column_names[ii], "count", 5) == 0) {
+			n_total = g_ascii_strtoll (column_values[ii], NULL, 10);
+			break;
+		}
+	}
+
+	*out_n_total = (guint) n_total;
+
+	return TRUE;
+}
+
+/**
+ * e_book_cache_count_query:
+ * @book_cache: an #EBookCache
+ * @sexp: (nullable): search expression; use %NULL or an empty string to consider all stored contacts
+ * @out_n_total: (out): return location to store the count of the contacts
+ * @cancellable: A #GCancellable
+ * @error: A location to store any error that may have occurred
+ *
+ * Counts how many contacts satisfy the @sexp.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.50
+ **/
+gboolean
+e_book_cache_count_query (EBookCache *book_cache,
+			  const gchar *sexp,
+			  guint *out_n_total,
+			  GCancellable *cancellable,
+			  GError **error)
+{
+	gchar *stmt;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
+	g_return_val_if_fail (out_n_total, FALSE);
+
+	e_cache_lock (E_CACHE (book_cache), E_CACHE_LOCK_READ);
+
+	stmt = ebc_prepare_ordered_stmt (book_cache, NULL, sexp, E_CONTACT_FIELD_LAST, E_BOOK_CURSOR_SORT_ASCENDING, 0, 0, error);
+	if (stmt) {
+		success = e_cache_sqlite_select (E_CACHE (book_cache), stmt, ebc_get_n_total_cb, out_n_total, cancellable, error);
+
+		g_free (stmt);
+	}
+
+	e_cache_unlock (E_CACHE (book_cache), E_CACHE_UNLOCK_NONE);
+
+	return success;
+}
+
+typedef struct _QueryFieldData {
+	GPtrArray *uids;
+	GPtrArray *values;
+} QueryFieldData;
+
+static gboolean
+ebc_get_query_field_cb (ECache *cache,
+			gint ncols,
+			const gchar *column_names[],
+			const gchar *column_values[],
+			gpointer user_data)
+{
+	QueryFieldData *qfd = user_data;
+
+	if (ncols != 2) {
+		g_warn_if_reached ();
+		return FALSE;
+	}
+
+	g_ptr_array_add (qfd->uids, g_strdup (column_values[0]));
+	g_ptr_array_add (qfd->values, g_strdup (column_values[1]));
+
+	return TRUE;
+}
+
+/**
+ * e_book_cache_dup_query_field:
+ * @book_cache: an #EBookCache
+ * @summary_field: a field to query, which should be in the summary
+ * @sexp: (nullable): search expression; use %NULL or an empty string to consider all stored contacts
+ * @sort_field: a field to sort by, which should be in the summary
+ * @sort_type: an #EBookCursorSortType
+ * @n_offset: a 0-based offset in the sorted result to start reading from, or 0 to read from start
+ * @n_limit: how many values to return only; use 0 or G_MAXUINT to read everything from the @n_offset
+ * @out_uids: (transfer container) (element-type utf8): contact UID-s in the requested order
+ * @out_values: (transfer container) (element-type utf8): @summary_field values in the requested order
+ * @cancellable: A #GCancellable
+ * @error: A location to store any error that may have occurred
+ *
+ * Queries the @book_cache for a @summary_field value for contacts in the given range and order.
+ * To get complete contacts use e_book_cache_dup_query_contacts(). Note the field value may
+ * not correspond precisely to the value stored in the vCard (it can be in lower case).
+ *
+ * Both @summary_field and @sort_field should be in the summary, otherwise an error
+ * is returned.
+ *
+ * The @out_uids and @out_values will have the same number of elements,
+ * the indexes corresponding to each other. Free the arrays with
+ * g_ptr_aray_unref(), when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.50
+ **/
+gboolean
+e_book_cache_dup_query_field (EBookCache *book_cache,
+			      EContactField summary_field,
+			      const gchar *sexp,
+			      EContactField sort_field,
+			      EBookCursorSortType sort_type,
+			      guint n_offset,
+			      guint n_limit,
+			      GPtrArray **out_uids, /* gchar * */
+			      GPtrArray **out_values, /* gchar * */
+			      GCancellable *cancellable,
+			      GError **error)
+{
+	SummaryField *field;
+	gchar *stmt, *field_ref;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
+	g_return_val_if_fail (out_uids, FALSE);
+	g_return_val_if_fail (out_values, FALSE);
+
+	e_cache_lock (E_CACHE (book_cache), E_CACHE_LOCK_READ);
+
+	field = summary_field_get (book_cache, summary_field);
+	if (!field) {
+		e_cache_unlock (E_CACHE (book_cache), E_CACHE_UNLOCK_NONE);
+
+		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_UNSUPPORTED_FIELD,
+			_("Contact field “%s” not in summary"), e_contact_pretty_name (summary_field));
+
+		return FALSE;
+	}
+
+	field_ref = g_strconcat ("summary.", field->dbname, NULL);
+	stmt = ebc_prepare_ordered_stmt (book_cache, field_ref, sexp, sort_field, sort_type, n_offset, n_limit, error);
+	g_free (field_ref);
+	if (stmt) {
+		QueryFieldData qfd;
+
+		qfd.uids = g_ptr_array_new_with_free_func (g_free);
+		qfd.values = g_ptr_array_new_with_free_func (g_free);
+
+		success = e_cache_sqlite_select (E_CACHE (book_cache), stmt, ebc_get_query_field_cb, &qfd, cancellable, error);
+
+		g_free (stmt);
+
+		if (success) {
+			*out_uids = qfd.uids;
+			*out_values = qfd.values;
+		} else {
+			g_ptr_array_unref (qfd.uids);
+			g_ptr_array_unref (qfd.values);
+		}
+	}
+
+	e_cache_unlock (E_CACHE (book_cache), E_CACHE_UNLOCK_NONE);
+
+	return success;
+}
+
+static gboolean
+ebc_get_query_contacts_cb (ECache *cache,
+			   gint ncols,
+			   const gchar *column_names[],
+			   const gchar *column_values[],
+			   gpointer user_data)
+{
+	GPtrArray *contacts = user_data;
+	const gchar *uid, *vcard;
+
+	if (ncols != 2) {
+		g_warn_if_reached ();
+		return FALSE;
+	}
+
+	uid = column_values[0];
+	vcard = column_values[1];
+
+	g_ptr_array_add (contacts, e_contact_new_from_vcard_with_uid (vcard, uid));
+
+	return TRUE;
+}
+
+/**
+ * e_book_cache_dup_query_contacts:
+ * @book_cache: an #EBookCache
+ * @sexp: (nullable): search expression; use %NULL or an empty string to consider all stored contacts
+ * @sort_field: a field to sort by, which should be in the summary
+ * @sort_type: an #EBookCursorSortType
+ * @n_offset: a 0-based offset in the sorted result to start reading from, or 0 to read from start
+ * @n_limit: how many values to return only; use 0 or G_MAXUINT to read everything from the @n_offset
+ * @out_contacts: (transfer container) (element-type EContact): an array of #EContact-s in the requested order
+ * @cancellable: A #GCancellable
+ * @error: A location to store any error that may have occurred
+ *
+ * Queries the @book_cache for the contacts in the given range and order.
+ * The @sort_field should be in the summary, otherwise an error
+ * is returned.
+ *
+ * Free the @out_contacts with g_ptr_aray_unref(), when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.50
+ **/
+gboolean
+e_book_cache_dup_query_contacts (EBookCache *book_cache,
+				 const gchar *sexp,
+				 EContactField sort_field,
+				 EBookCursorSortType sort_type,
+				 guint n_offset,
+				 guint n_limit,
+				 GPtrArray **out_contacts, /* EContact * */
+				 GCancellable *cancellable,
+				 GError **error)
+{
+	gchar *stmt;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
+	g_return_val_if_fail (out_contacts, FALSE);
+
+	e_cache_lock (E_CACHE (book_cache), E_CACHE_LOCK_READ);
+
+	stmt = ebc_prepare_ordered_stmt (book_cache, "summary." E_CACHE_COLUMN_OBJECT, sexp, sort_field, sort_type, n_offset, n_limit, error);
+	if (stmt) {
+		GPtrArray *contacts;
+
+		contacts = g_ptr_array_new_with_free_func (g_object_unref);
+
+		success = e_cache_sqlite_select (E_CACHE (book_cache), stmt, ebc_get_query_contacts_cb, contacts, cancellable, error);
+
+		g_free (stmt);
+
+		if (success)
+			*out_contacts = contacts;
+		else
+			g_ptr_array_unref (contacts);
+	}
+
+	e_cache_unlock (E_CACHE (book_cache), E_CACHE_UNLOCK_NONE);
+
+	return success;
+}
+
+/**
+ * e_book_cache_dup_summary_field:
+ * @book_cache: an #EBookCache
+ * @summary_field: a field to query, which should be in the summary
+ * @uid: a contact UID to query the @summary_field for
+ * @out_value: (out callee-allocates) (transfer full): @summary_field value
+ * @cancellable: A #GCancellable
+ * @error: A location to store any error that may have occurred
+ *
+ * Queries the @book_cache for a @summary_field value for contact with UID @uid.
+ * Note the field value may not correspond precisely to the value stored
+ * in the vCard (it can be in lower case).
+ *
+ * Free the @out_value with g_free(), when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.50
+ **/
+gboolean
+e_book_cache_dup_summary_field (EBookCache *book_cache,
+				EContactField summary_field,
+				const gchar *uid,
+				gchar **out_value,
+				GCancellable *cancellable,
+				GError **error)
+{
+	SummaryField *field;
+	GString *stmt;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+	g_return_val_if_fail (out_value, FALSE);
+
+	e_cache_lock (E_CACHE (book_cache), E_CACHE_LOCK_READ);
+
+	field = summary_field_get (book_cache, summary_field);
+	if (!field) {
+		e_cache_unlock (E_CACHE (book_cache), E_CACHE_UNLOCK_NONE);
+
+		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_UNSUPPORTED_FIELD,
+			_("Contact field “%s” not in summary"), e_contact_pretty_name (summary_field));
+
+		return FALSE;
+	}
+
+	*out_value = NULL;
+
+	stmt = g_string_new ("SELECT ");
+	ebc_string_append_column (stmt, field, NULL);
+	e_cache_sqlite_stmt_append_printf (stmt, " FROM %Q AS summary WHERE summary." E_CACHE_COLUMN_UID " = %Q", E_CACHE_TABLE_OBJECTS, uid);
+
+	success = e_cache_sqlite_select (E_CACHE (book_cache), stmt->str, e_book_cache_get_string, out_value, cancellable, error);
+
+	g_string_free (stmt, TRUE);
+
+	e_cache_unlock (E_CACHE (book_cache), E_CACHE_UNLOCK_NONE);
+
+	return success;
 }
