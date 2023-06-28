@@ -1254,6 +1254,7 @@ get_folder_info_offline (CamelStore *store,
 	CamelFolderInfo *fi;
 	GPtrArray *folders;
 	GPtrArray *array;
+	gchar *str_namespace = NULL;
 	gboolean use_subscriptions;
 	gint top_len;
 	guint ii;
@@ -1291,8 +1292,6 @@ get_folder_info_offline (CamelStore *store,
 
 	use_subscriptions = camel_imapx_settings_get_use_subscriptions (
 		CAMEL_IMAPX_SETTINGS (settings));
-
-	g_object_unref (settings);
 
 	/* FIXME: obey other flags */
 
@@ -1407,9 +1406,34 @@ get_folder_info_offline (CamelStore *store,
 
 	camel_store_summary_array_free (imapx_store->summary, array);
 
+	if (!*top && camel_imapx_settings_get_use_namespace (CAMEL_IMAPX_SETTINGS (settings))) {
+		str_namespace = camel_imapx_settings_dup_namespace (CAMEL_IMAPX_SETTINGS (settings));
+		if (str_namespace && *str_namespace) {
+			/* Remove the namespace top folder, it's not meant to stay visible */
+			for (ii = 0; ii < folders->len; ii++) {
+				fi = g_ptr_array_index (folders, ii);
+				if (g_strcmp0 (fi->full_name, str_namespace) == 0) {
+					g_ptr_array_remove_index (folders, ii);
+					camel_folder_info_free (fi);
+					break;
+				}
+			}
+
+			if (!g_str_has_suffix (str_namespace, "/")) {
+				gchar *tmp = g_strconcat (str_namespace, "/", NULL);
+				g_free (str_namespace);
+				str_namespace = tmp;
+			}
+
+			top = str_namespace;
+		}
+	}
+
 	fi = camel_folder_info_build (folders, top, '/', TRUE);
 
 	g_ptr_array_free (folders, TRUE);
+	g_object_unref (settings);
+	g_free (str_namespace);
 
 	return fi;
 }
@@ -3701,9 +3725,18 @@ imapx_store_create_mailbox_unlocked (CamelIMAPXStore *imapx_store,
 		g_object_unref (namespace);
 
 	} else {
-		g_warning (
-			"%s: No matching namespace for \"%c\" %s",
-			G_STRFUNC, separator, mailbox_name);
+		CamelSettings *settings;
+
+		settings = camel_service_ref_settings (CAMEL_SERVICE (imapx_store));
+
+		/* warn only if not overriding the namespace */
+		if (!camel_imapx_settings_get_use_namespace (CAMEL_IMAPX_SETTINGS (settings))) {
+			g_warning (
+				"%s: No matching namespace for \"%c\" %s",
+				G_STRFUNC, separator, mailbox_name);
+		}
+
+		g_clear_object (&settings);
 	}
 
 	g_object_unref (namespace_response);
@@ -3908,6 +3941,7 @@ camel_imapx_store_handle_list_response (CamelIMAPXStore *imapx_store,
 					CamelIMAPXListResponse *response)
 {
 	CamelIMAPXMailbox *mailbox = NULL;
+	CamelSettings *settings;
 	const gchar *mailbox_name;
 	const gchar *old_mailbox_name;
 	gboolean emit_mailbox_created = FALSE;
@@ -3917,6 +3951,31 @@ camel_imapx_store_handle_list_response (CamelIMAPXStore *imapx_store,
 	g_return_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store));
 	g_return_if_fail (CAMEL_IS_IMAPX_SERVER (imapx_server));
 	g_return_if_fail (CAMEL_IS_IMAPX_LIST_RESPONSE (response));
+
+	settings = camel_service_ref_settings (CAMEL_SERVICE (imapx_store));
+	if (camel_imapx_settings_get_use_namespace (CAMEL_IMAPX_SETTINGS (settings))) {
+		gchar *str_namespace = camel_imapx_settings_dup_namespace (CAMEL_IMAPX_SETTINGS (settings));
+		gboolean ignore_toplevel_user_namespace = FALSE;
+
+		if (str_namespace && *str_namespace) {
+			gchar *folder_path = camel_imapx_mailbox_to_folder_path (
+				camel_imapx_list_response_get_mailbox_name (response),
+				camel_imapx_list_response_get_separator (response));
+
+			ignore_toplevel_user_namespace = g_strcmp0 (str_namespace, folder_path) == 0;
+
+			g_free (folder_path);
+		}
+
+		g_free (str_namespace);
+
+		if (ignore_toplevel_user_namespace) {
+			g_clear_object (&settings);
+			return;
+		}
+	}
+
+	g_clear_object (&settings);
 
 	mailbox_name = camel_imapx_list_response_get_mailbox_name (response);
 	old_mailbox_name = camel_imapx_list_response_get_oldname (response);
