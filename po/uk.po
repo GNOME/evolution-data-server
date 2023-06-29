@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/is"
 "sues\n"
-"POT-Creation-Date: 2023-05-08 04:13+0000\n"
-"PO-Revision-Date: 2023-05-09 21:37+0300\n"
+"POT-Creation-Date: 2023-06-29 14:13+0000\n"
+"PO-Revision-Date: 2023-06-29 20:44+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -79,7 +79,7 @@ msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "Не вдалося створити жорстке посилання для ресурсу «%s»: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:735
-#: src/addressbook/backends/file/e-book-backend-file.c:1480
+#: src/addressbook/backends/file/e-book-backend-file.c:1502
 msgid "No UID in the contact"
 msgstr "Немає UID у контакті"
 
@@ -97,38 +97,38 @@ msgstr "Завантаження…"
 msgid "Searching..."
 msgstr "Пошук…"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1508
+#: src/addressbook/backends/file/e-book-backend-file.c:1530
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr "Спроба змінити контакт «%s» із несинхронізованою версією"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1689
-#: src/addressbook/backends/file/e-book-backend-file.c:1775
+#: src/addressbook/backends/file/e-book-backend-file.c:1711
+#: src/addressbook/backends/file/e-book-backend-file.c:1797
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3077
-#: src/addressbook/libedata-book/e-book-sqlite.c:7378
-#: src/addressbook/libedata-book/e-book-sqlite.c:7447
+#: src/addressbook/libedata-book/e-book-sqlite.c:7453
+#: src/addressbook/libedata-book/e-book-sqlite.c:7522
 #, c-format
 msgid "Contact “%s” not found"
 msgstr "Контакт «%s» не знайдено"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1839
-#: src/addressbook/backends/file/e-book-backend-file.c:1922
+#: src/addressbook/backends/file/e-book-backend-file.c:1861
+#: src/addressbook/backends/file/e-book-backend-file.c:1944
 #, c-format
 msgid "Query “%s” not supported"
 msgstr "Підтримки запитів «%s» не передбачено"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1848
-#: src/addressbook/backends/file/e-book-backend-file.c:1931
+#: src/addressbook/backends/file/e-book-backend-file.c:1870
+#: src/addressbook/backends/file/e-book-backend-file.c:1953
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr "Некоректний запит «%s»"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:2236
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2147
+#: src/addressbook/backends/file/e-book-backend-file.c:2260
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2158
 msgid "Requested to delete an unrelated cursor"
 msgstr "Запитано видалення незв'язаного курсору"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:2320
+#: src/addressbook/backends/file/e-book-backend-file.c:2387
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Не вдалося перейменувати стару базу даних «%s» на «%s»: %s"
@@ -149,7 +149,7 @@ msgstr "Не вдалося перейменувати стару базу да�
 #: src/addressbook/libebook/e-book-client.c:3278
 #: src/addressbook/libebook/e-book-client.c:3473
 #: src/addressbook/libebook/e-book-client.c:3691
-#: src/addressbook/libedata-book/e-book-backend-sexp.c:873
+#: src/addressbook/libedata-book/e-book-backend-sexp.c:898
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:288
 #: src/calendar/backends/http/e-cal-backend-http.c:312
 #: src/calendar/libecal/e-cal-client.c:257
@@ -172,7 +172,7 @@ msgstr "Не вдалося перейменувати стару базу да�
 #: src/calendar/libecal/e-cal-client.c:6648
 #: src/calendar/libecal/e-cal-client.c:6872
 #: src/calendar/libedata-cal/e-cal-cache.c:1837
-#: src/camel/camel-filter-driver.c:1724 src/camel/camel-filter-driver.c:1853
+#: src/camel/camel-filter-driver.c:1758 src/camel/camel-filter-driver.c:1887
 #: src/camel/providers/imapx/camel-imapx-server.c:3331
 #: src/camel/providers/imapx/camel-imapx-server.c:3337
 #: src/camel/providers/imapx/camel-imapx-server.c:3347
@@ -271,7 +271,7 @@ msgid "Downloading contacts (%d)..."
 msgstr "Завантаження контактів (%d)…"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5111
-#: src/addressbook/libedata-book/e-book-meta-backend.c:845
+#: src/addressbook/libedata-book/e-book-meta-backend.c:860
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:745
 msgid "Refreshing…"
 msgstr "Оновлення…"
@@ -986,32 +986,32 @@ msgstr "Не вдалося змінити властивість книжки �
 msgid "Unable to connect to “%s”: "
 msgstr "Не вдалося з'єднатись з  «%s»"
 
-#: src/addressbook/libebook/e-book-client-view.c:858
+#: src/addressbook/libebook/e-book-client-view.c:988
 #: src/calendar/libecal/e-cal-client-view.c:667
 #, c-format
 msgid "Client disappeared"
 msgstr "Клієнт зникнув"
 
-#: src/addressbook/libedata-book/e-book-backend.c:3448
+#: src/addressbook/libedata-book/e-book-backend.c:3600
 #, c-format
 msgid "Addressbook backend does not support cursors"
 msgstr "У модулі обробки адресних книг не передбачено підтримки курсорів"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:895
-#: src/addressbook/libedata-book/e-book-sqlite.c:2259
+#: src/addressbook/libedata-book/e-book-sqlite.c:2288
 #, c-format
 msgid "Error introspecting unknown summary field “%s”"
 msgstr "Помилка при самоаналізі невідомого поля зведення «%s»"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1505
-#: src/addressbook/libedata-book/e-book-cache.c:558
-#: src/addressbook/libedata-book/e-book-sqlite.c:1398
+#: src/addressbook/libedata-book/e-book-cache.c:559
+#: src/addressbook/libedata-book/e-book-sqlite.c:1399
 msgid "Error parsing regular expression"
 msgstr "Помилка аналізу регулярного виразу"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1550
-#: src/addressbook/libedata-book/e-book-cache.c:4751
-#: src/addressbook/libedata-book/e-book-sqlite.c:1882 src/camel/camel-db.c:830
+#: src/addressbook/libedata-book/e-book-cache.c:4828
+#: src/addressbook/libedata-book/e-book-sqlite.c:1911 src/camel/camel-db.c:830
 #, c-format
 msgid "Insufficient memory"
 msgstr "Недостатньо пам'яті"
@@ -1022,8 +1022,8 @@ msgid "Invalid contact field “%d” specified in summary"
 msgstr "У звіті вказано невірне поле контакту «%d»"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1721
-#: src/addressbook/libedata-book/e-book-cache.c:381
-#: src/addressbook/libedata-book/e-book-sqlite.c:608
+#: src/addressbook/libedata-book/e-book-cache.c:382
+#: src/addressbook/libedata-book/e-book-sqlite.c:609
 #, c-format
 msgid ""
 "Contact field “%s” of type “%s” specified in summary, but only boolean, "
@@ -1043,8 +1043,8 @@ msgstr ""
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4297
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4390
-#: src/addressbook/libedata-book/e-book-cache.c:3484
-#: src/addressbook/libedata-book/e-book-sqlite.c:5854
+#: src/addressbook/libedata-book/e-book-cache.c:3561
+#: src/addressbook/libedata-book/e-book-sqlite.c:5929
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Запит містить непідтримувані елементи"
@@ -1108,8 +1108,8 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Неможливо відсортувати по полю, яке має декілька значень"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6210
-#: src/addressbook/libedata-book/e-book-cache.c:6082
-#: src/addressbook/libedata-book/e-book-sqlite.c:8152
+#: src/addressbook/libedata-book/e-book-cache.c:6159
+#: src/addressbook/libedata-book/e-book-sqlite.c:8227
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1119,8 +1119,8 @@ msgstr ""
 "списку контактів"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6218
-#: src/addressbook/libedata-book/e-book-cache.c:6089
-#: src/addressbook/libedata-book/e-book-sqlite.c:8160
+#: src/addressbook/libedata-book/e-book-cache.c:6166
+#: src/addressbook/libedata-book/e-book-sqlite.c:8235
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1129,34 +1129,35 @@ msgstr ""
 "Спроба перевести курсор на крок вперед, але курсор вже знаходиться в кінці "
 "списку контактів"
 
-#: src/addressbook/libedata-book/e-book-cache.c:346
-#: src/addressbook/libedata-book/e-book-sqlite.c:574
+#: src/addressbook/libedata-book/e-book-cache.c:347
+#: src/addressbook/libedata-book/e-book-sqlite.c:575
 #, c-format
 msgid "Unsupported contact field “%d” specified in summary"
 msgstr "У звіті зазначено непідтримуване поле контакту «%d»"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3479
-#: src/addressbook/libedata-book/e-book-sqlite.c:5847
+#: src/addressbook/libedata-book/e-book-cache.c:3556
+#: src/addressbook/libedata-book/e-book-sqlite.c:5922
 #: src/calendar/libedata-cal/e-cal-cache.c:1703
 #: src/calendar/libedata-cal/e-cal-cache.c:3550
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Некоректний запит: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3664
+#: src/addressbook/libedata-book/e-book-cache.c:3741
+#: src/addressbook/libedata-book/e-book-cache.c:6842
 msgid "Invalid query for a book cursor"
 msgstr "Некоректний запит щодо курсора книги"
 
-#: src/addressbook/libedata-book/e-book-cache.c:4755
+#: src/addressbook/libedata-book/e-book-cache.c:4832
 #: src/libebackend/e-cache.c:755
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Не вдалося відкрити базу даних %s: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5421
-#: src/addressbook/libedata-book/e-book-cache.c:5468
-#: src/addressbook/libedata-book/e-book-cache.c:5515
-#: src/addressbook/libedata-book/e-book-cache.c:5567
+#: src/addressbook/libedata-book/e-book-cache.c:5498
+#: src/addressbook/libedata-book/e-book-cache.c:5545
+#: src/addressbook/libedata-book/e-book-cache.c:5592
+#: src/addressbook/libedata-book/e-book-cache.c:5644
 #: src/calendar/libedata-cal/e-cal-cache.c:2832
 #: src/calendar/libedata-cal/e-cal-cache.c:2890
 #: src/calendar/libedata-cal/e-cal-cache.c:2949
@@ -1169,43 +1170,52 @@ msgstr "Не вдалося відкрити базу даних %s: %s"
 msgid "Object “%s” not found"
 msgstr "Об'єкта «%s» не існує"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5627
+#: src/addressbook/libedata-book/e-book-cache.c:5704
 #: src/calendar/libedata-cal/e-cal-cache.c:3074
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Не знайдено об'єкта із додатковим «%s»"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5803
+#: src/addressbook/libedata-book/e-book-cache.c:5880
 msgid "Search by email not supported"
 msgstr "Підтримки пошуку за адресою електронної пошти не передбачено"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5814
+#: src/addressbook/libedata-book/e-book-cache.c:5891
 msgid "No email address provided"
 msgstr "Не надано поштової адреси"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5869
+#: src/addressbook/libedata-book/e-book-cache.c:5946
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 "Для використання курсора має бути вказано принаймні одне поле сортування"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5878
-#: src/addressbook/libedata-book/e-book-sqlite.c:7992
+#: src/addressbook/libedata-book/e-book-cache.c:5955
+#: src/addressbook/libedata-book/e-book-sqlite.c:8067
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Неможливо відсортувати по полю, яке має нерядковий тип"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1143
+#: src/addressbook/libedata-book/e-book-cache.c:7033
+#: src/addressbook/libedata-book/e-book-cache.c:7192
+#: src/addressbook/libedata-book/e-book-sqlite.c:8954
+#: src/addressbook/libedata-book/e-book-sqlite.c:9115
+#, c-format
+#| msgid "Invalid contact field “%d” specified in summary"
+msgid "Contact field “%s” not in summary"
+msgstr "Поле контакту «%s» не перебуває у резюме"
+
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1155
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1152
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Попередньо завантажений об'єкт для UID «%s» недійсний"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1151
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1163
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1160
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Отриманий об'єкт для UID «%s» недійсний"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1378
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1390
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1389
 msgid ""
 "Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
@@ -1214,14 +1224,14 @@ msgstr ""
 "Освіження пропущено через вмикання режиму енергозаощадження. Вимкніть режим "
 "енергозаощадження і повторіть дію."
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2017
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2473
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2028
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2527
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:3392
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Не вдалося створити кеш «%s»:"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:1955
+#: src/addressbook/libedata-book/e-book-sqlite.c:1984
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the “folders” table first."
@@ -1229,11 +1239,12 @@ msgstr ""
 "Неможливо оновити базу даних контактів з наявної бази, в якій більше однієї "
 "адресної книги. Спочатку видаліть один із записів у таблиці «теки»."
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:6022
+#: src/addressbook/libedata-book/e-book-sqlite.c:6097
+#: src/addressbook/libedata-book/e-book-sqlite.c:8761
 msgid "Invalid query for EbSqlCursor"
 msgstr "Некоректний запит за EbSqlCursor"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:7974
+#: src/addressbook/libedata-book/e-book-sqlite.c:8049
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 "Для використання EbSqlCursor повинно бути вказано принаймні одне поле "
@@ -2749,84 +2760,84 @@ msgstr "Не вдалося перейменувати «%s»: у %s: %s"
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr "Передавання відфільтрованих повідомлень у «%s : %s»"
 
-#: src/camel/camel-filter-driver.c:1126 src/camel/camel-filter-search.c:936
+#: src/camel/camel-filter-driver.c:1160 src/camel/camel-filter-search.c:936
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "Не вдалося створити дочірній процес «%s»: %s"
 
-#: src/camel/camel-filter-driver.c:1180
+#: src/camel/camel-filter-driver.c:1214
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Отримано неправильний потік повідомлень з %s: %s"
 
-#: src/camel/camel-filter-driver.c:1404 src/camel/camel-filter-driver.c:1417
+#: src/camel/camel-filter-driver.c:1438 src/camel/camel-filter-driver.c:1451
 msgid "Syncing folders"
 msgstr "Синхронізація тек"
 
-#: src/camel/camel-filter-driver.c:1525
+#: src/camel/camel-filter-driver.c:1559
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Помилка аналізу фільтра: %s: %s"
 
-#: src/camel/camel-filter-driver.c:1536
+#: src/camel/camel-filter-driver.c:1570
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Помилка виконання фільтра: %s: %s"
 
-#: src/camel/camel-filter-driver.c:1634
+#: src/camel/camel-filter-driver.c:1668
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Не вдалося відкрити буферну теку"
 
-#: src/camel/camel-filter-driver.c:1646
+#: src/camel/camel-filter-driver.c:1680
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Не вдалося обробити буферну теку"
 
-#: src/camel/camel-filter-driver.c:1674
+#: src/camel/camel-filter-driver.c:1708
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Отримання повідомлення %d (%d%%)"
 
-#: src/camel/camel-filter-driver.c:1683 src/camel/camel-filter-driver.c:1706
+#: src/camel/camel-filter-driver.c:1717 src/camel/camel-filter-driver.c:1740
 #, c-format
 msgid "Failed on message %d"
 msgstr "Помилка на повідомленні %d"
 
-#: src/camel/camel-filter-driver.c:1724 src/camel/camel-filter-driver.c:1853
+#: src/camel/camel-filter-driver.c:1758 src/camel/camel-filter-driver.c:1887
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "Не вдалося перенести повідомлення: %s"
 
-#: src/camel/camel-filter-driver.c:1734 src/camel/camel-filter-driver.c:1878
+#: src/camel/camel-filter-driver.c:1768 src/camel/camel-filter-driver.c:1912
 msgid "Syncing folder"
 msgstr "Синхронізація теки"
 
-#: src/camel/camel-filter-driver.c:1739 src/camel/camel-filter-driver.c:1886
+#: src/camel/camel-filter-driver.c:1773 src/camel/camel-filter-driver.c:1920
 msgid "Complete"
 msgstr "Виконано"
 
-#: src/camel/camel-filter-driver.c:1807
+#: src/camel/camel-filter-driver.c:1841
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Отримання повідомлення %d з %d"
 
-#: src/camel/camel-filter-driver.c:1825
+#: src/camel/camel-filter-driver.c:1859
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Помилка на повідомленні %d з %d"
 
-#: src/camel/camel-filter-driver.c:2042 src/camel/camel-filter-driver.c:2066
+#: src/camel/camel-filter-driver.c:2076 src/camel/camel-filter-driver.c:2100
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Помилка виконання фільтра «%s»: "
 
-#: src/camel/camel-filter-driver.c:2056
+#: src/camel/camel-filter-driver.c:2090
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Помилка аналізу фільтра «%s»: %s: %s"
 
-#: src/camel/camel-filter-driver.c:2075
+#: src/camel/camel-filter-driver.c:2109
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Помилка виконання фільтра «%s»: %s: %s"
@@ -3885,12 +3896,10 @@ msgid "Cannot find signature digests"
 msgstr "Не вдалося знайти хеш-суму підпису"
 
 #: src/camel/camel-smime-context.c:819
-#| msgid "Signature algorithm unsupported"
 msgid "Signature algorithm disabled"
 msgstr "Алгоритм підписування вимкнено"
 
 #: src/camel/camel-smime-context.c:822
-#| msgid "Certificate import failed"
 msgid "Certificate signature algorithm disabled"
 msgstr "Алгоритм підписування сертифікатом вимкнено"
 
@@ -4515,59 +4524,59 @@ msgstr "Помилка виконання STATUS"
 
 #: src/camel/providers/imapx/camel-imapx-server.c:6271
 #: src/camel/providers/imapx/camel-imapx-server.c:6326
-#: src/camel/providers/imapx/camel-imapx-server.c:6390
+#: src/camel/providers/imapx/camel-imapx-server.c:6409
 msgid "Error syncing changes"
 msgstr "Помилка при синхронізації змін"
 
 #: src/camel/providers/imapx/camel-imapx-server.c:6284
 #: src/camel/providers/imapx/camel-imapx-server.c:6336
-#: src/camel/providers/imapx/camel-imapx-server.c:6409
-#: src/camel/providers/imapx/camel-imapx-server.c:6550
+#: src/camel/providers/imapx/camel-imapx-server.c:6428
+#: src/camel/providers/imapx/camel-imapx-server.c:6569
 msgid "Error expunging message"
 msgstr "Помилка очищення повідомлення"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6632
+#: src/camel/providers/imapx/camel-imapx-server.c:6651
 msgid "Error fetching folders"
 msgstr "Помилка отримання тек"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6640
+#: src/camel/providers/imapx/camel-imapx-server.c:6659
 msgid "Error fetching subscribed folders"
 msgstr "Помилка при отриманні підписних тек"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6697
+#: src/camel/providers/imapx/camel-imapx-server.c:6716
 msgid "Error creating folder"
 msgstr "Помилка створення теки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6747
+#: src/camel/providers/imapx/camel-imapx-server.c:6766
 msgid "Error deleting folder"
 msgstr "Помилка при вилученні теки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6793
+#: src/camel/providers/imapx/camel-imapx-server.c:6812
 msgid "Error renaming folder"
 msgstr "Помилка при перейменуванні теки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6825
+#: src/camel/providers/imapx/camel-imapx-server.c:6844
 msgid "Error subscribing to folder"
 msgstr "Помилка підписування на теку"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6861
+#: src/camel/providers/imapx/camel-imapx-server.c:6880
 msgid "Error unsubscribing from folder"
 msgstr "Помилка відписування від теки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6901
+#: src/camel/providers/imapx/camel-imapx-server.c:6920
 msgid "IMAP server does not support quotas"
 msgstr "Сервер IMAP %s не підтримує квоти"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6913
+#: src/camel/providers/imapx/camel-imapx-server.c:6932
 msgid "Error retrieving quota information"
 msgstr "Помилка при отриманні даних про квоту"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6978
+#: src/camel/providers/imapx/camel-imapx-server.c:6997
 msgid "Search failed"
 msgstr "Помилка пошуку"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7106
+#: src/camel/providers/imapx/camel-imapx-server.c:7125
 msgid "Error running IDLE"
 msgstr "Помилка виконання IDLE"
 
@@ -4612,18 +4621,18 @@ msgstr "З'єднуватись з IMAP сервером використову�
 msgid "No such folder %s"
 msgstr "Немає такої теки «%s»"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1615
+#: src/camel/providers/imapx/camel-imapx-store.c:1639
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
 msgstr "Немає простору імен IMAP для теки зі шляхом «%s»"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1885
-#: src/camel/providers/imapx/camel-imapx-store.c:2080
+#: src/camel/providers/imapx/camel-imapx-store.c:1909
+#: src/camel/providers/imapx/camel-imapx-store.c:2104
 #, c-format
 msgid "Retrieving folder list for “%s”"
 msgstr "Отримання списку тек для «%s»"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2323
+#: src/camel/providers/imapx/camel-imapx-store.c:2347
 msgid ""
 "The account does not support folder hierarchy. Create the folder on the "
 "account level instead."
@@ -4631,7 +4640,7 @@ msgstr ""
 "Для облікового запису не передбачено підтримки ієрархії тек. Натомість, "
 "створіть теку на рівні облікового запису."
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2370
+#: src/camel/providers/imapx/camel-imapx-store.c:2394
 #, c-format
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "Назва теки «%s» некоректна, оскільки містить символ «%c»"
@@ -4641,97 +4650,97 @@ msgstr "Назва теки «%s» некоректна, оскільки міс
 #. version as well. It's always the folder name (eventually path) as provided by the server,
 #. when returned in given localization. it can be checked semi-easily in the case of
 #. the GMail variants, by changing the GMail interface language in the GMail Preferences.
-#: src/camel/providers/imapx/camel-imapx-store.c:2765
+#: src/camel/providers/imapx/camel-imapx-store.c:2789
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
 msgstr "[Gmail]/Чернетки"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2766
+#: src/camel/providers/imapx/camel-imapx-store.c:2790
 msgctxt "IMAPDefaults"
 msgid "Drafts"
 msgstr "Чернетки"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2767
+#: src/camel/providers/imapx/camel-imapx-store.c:2791
 msgctxt "IMAPDefaults"
 msgid "Draft"
 msgstr "Чернетка"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2770
+#: src/camel/providers/imapx/camel-imapx-store.c:2794
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "Шаблони"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2773
+#: src/camel/providers/imapx/camel-imapx-store.c:2797
 msgctxt "IMAPDefaults"
 msgid "Archive"
 msgstr "Архів"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2776
+#: src/camel/providers/imapx/camel-imapx-store.c:2800
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[Gmail]/Надіслана пошта"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2777
+#: src/camel/providers/imapx/camel-imapx-store.c:2801
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "Надіслані"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2778
+#: src/camel/providers/imapx/camel-imapx-store.c:2802
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "Надіслані записи"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2779
+#: src/camel/providers/imapx/camel-imapx-store.c:2803
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Надіслані повідомлення"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2782
+#: src/camel/providers/imapx/camel-imapx-store.c:2806
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "[Gmail]/Спам"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2783
+#: src/camel/providers/imapx/camel-imapx-store.c:2807
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "Спам"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2784
+#: src/camel/providers/imapx/camel-imapx-store.c:2808
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "Небажана пошта"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2785
+#: src/camel/providers/imapx/camel-imapx-store.c:2809
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "Спам"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2786
+#: src/camel/providers/imapx/camel-imapx-store.c:2810
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "Спам"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2787
+#: src/camel/providers/imapx/camel-imapx-store.c:2811
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "Пакетне розсилання пошти"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2790
+#: src/camel/providers/imapx/camel-imapx-store.c:2814
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr "[Gmail]/Смітник"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2791
+#: src/camel/providers/imapx/camel-imapx-store.c:2815
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "Смітник"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2792
+#: src/camel/providers/imapx/camel-imapx-store.c:2816
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "Вилучені записи"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2793
+#: src/camel/providers/imapx/camel-imapx-store.c:2817
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Вилучені повідомлення"
@@ -7193,7 +7202,7 @@ msgstr "Не вдалося надіслати дані"
 #: src/libedataserver/e-webdav-session.c:1504
 #: src/libedataserver/e-webdav-session.c:1595
 #: src/libedataserver/e-webdav-session.c:2719
-#: src/libedataserver/e-webdav-session.c:3971
+#: src/libedataserver/e-webdav-session.c:3995
 msgid "Failed to get input XML content"
 msgstr "Не вдалося отримати вхідний XML-вміст"
 
@@ -7296,35 +7305,35 @@ msgstr "Дані XML не містять кореневого вузла"
 msgid "XML data doesn't have required structure (%s)"
 msgstr "Структура даних XML є відмінною від обов'язкової (%s)"
 
-#: src/libedataserver/e-webdav-session.c:3981
+#: src/libedataserver/e-webdav-session.c:4005
 msgid "Failed to get access control list"
 msgstr "Не вдалося отримати список керування доступом"
 
-#: src/libedataserver/e-webdav-session.c:4664
+#: src/libedataserver/e-webdav-session.c:4688
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 "Неможливо зберегти захищений або успадкований запис керування доступом"
 
-#: src/libedataserver/e-webdav-session.c:4671
+#: src/libedataserver/e-webdav-session.c:4695
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Надано недійсний основний тип для запису керування доступом"
 
-#: src/libedataserver/e-webdav-session.c:4678
+#: src/libedataserver/e-webdav-session.c:4702
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Неможливо зберегти запис керування доступом на основі властивостей."
 
-#: src/libedataserver/e-webdav-session.c:4685
+#: src/libedataserver/e-webdav-session.c:4709
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Запис керування доступом може бути лише «Grant» або «Deny», але не «None»"
 
-#: src/libedataserver/e-webdav-session.c:4693
+#: src/libedataserver/e-webdav-session.c:4717
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Запис керування доступом може бути лише «Grant» або «Deny», а не обидва "
 "водночас"
 
-#: src/libedataserver/e-webdav-session.c:4752
+#: src/libedataserver/e-webdav-session.c:4776
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Привілеї запису керування доступом не можуть бути порожніми."
 
