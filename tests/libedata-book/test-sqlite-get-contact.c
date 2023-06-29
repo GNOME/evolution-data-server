@@ -46,20 +46,62 @@ test_get_contact (EbSqlFixture *fixture,
 }
 
 static void
-test_search_boolean (EbSqlFixture *fixture,
-		     gconstpointer user_data)
+test_search_result (EbSqlFixture *fixture,
+		    const gchar *sexp,
+		    const gchar *expected_uid)
 {
+	gboolean success;
 	GSList *uids = NULL;
 	GError *error = NULL;
 
-	add_contact_from_test_case (fixture, "simple-1", NULL);
-
-	if (!e_book_sqlite_search_uids (fixture->ebsql, "(exists \"wants_html\")", &uids, NULL, &error))
-		g_error ("Failed to search for contact: %s", error->message);
-
-	g_assert_cmpint (g_slist_length (uids), ==, 1);
+	success = e_book_sqlite_search_uids (fixture->ebsql, sexp, &uids, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	if (expected_uid) {
+		g_assert_cmpint (g_slist_length (uids), ==, 1);
+		g_assert_cmpstr (expected_uid, ==, uids->data);
+	} else {
+		g_assert_cmpint (g_slist_length (uids), ==, 0);
+	}
 
 	g_slist_free_full (uids, g_free);
+}
+
+static void
+test_search_phone (EbSqlFixture *fixture,
+		   const gchar *expected_uid)
+{
+	test_search_result (fixture, "(contains \"phone\" \"not found\")", NULL);
+	test_search_result (fixture, "(contains \"phone\" \"1-221-54237\")", expected_uid);
+	test_search_result (fixture, "(contains \"phone\" \"122154237\")", expected_uid);
+	test_search_result (fixture, "(contains \"phone\" \"21542\")", expected_uid);
+	test_search_result (fixture, "(is \"phone\" \"215423\")", NULL);
+	test_search_result (fixture, "(is \"phone\" \"+1-221-5423789\")", expected_uid);
+	test_search_result (fixture, "(is \"phone\" \"12215423789\")", expected_uid);
+	test_search_result (fixture, "(beginswith \"phone\" \"007\")", NULL);
+	test_search_result (fixture, "(beginswith \"phone\" \"+1-221\")", expected_uid);
+	test_search_result (fixture, "(beginswith \"phone\" \"1221\")", expected_uid);
+	test_search_result (fixture, "(endswith \"phone\" \"789\")", expected_uid);
+	test_search_result (fixture, "(endswith \"phone\" \"221-5423789\")", expected_uid);
+	test_search_result (fixture, "(endswith \"phone\" \"-221-5423789\")", expected_uid);
+	test_search_result (fixture, "(endswith \"phone\" \"2215423789\")", expected_uid);
+	test_search_result (fixture, "(endswith \"phone\" \"+1-221-5423789\")", expected_uid);
+	test_search_result (fixture, "(endswith \"phone\" \"12215423789\")", expected_uid);
+}
+
+static void
+test_search (EbSqlFixture *fixture,
+	     gconstpointer user_data)
+{
+	add_contact_from_test_case (fixture, "simple-1", NULL);
+
+	test_search_result (fixture, "(exists \"wants_html\")", "simple-1");
+	test_search_phone (fixture, NULL);
+
+	add_contact_from_test_case (fixture, "custom-1", NULL);
+
+	test_search_result (fixture, "(exists \"wants_html\")", "simple-1");
+	test_search_phone (fixture, "custom-1");
 }
 
 static EbSqlClosure closures[] = {
@@ -78,10 +120,10 @@ static const gchar *paths[] = {
 	"/EBookSqlite/DefaultSummary/NoVCards/GetContact",
 	"/EBookSqlite/EmptySummary/StoreVCards/GetContact",
 	"/EBookSqlite/EmptrySummary/NoVCards/GetContact",
-	"/EBookSqlite/DefaultSummary/StoreVCards/SearchBoolean",
-	"/EBookSqlite/DefaultSummary/NoVCards/SearchBoolean",
-	"/EBookSqlite/EmptySummary/StoreVCards/SearchBoolean",
-	"/EBookSqlite/EmptrySummary/NoVCards/SearchBoolean"
+	"/EBookSqlite/DefaultSummary/StoreVCards/Search",
+	"/EBookSqlite/DefaultSummary/NoVCards/Search",
+	"/EBookSqlite/EmptySummary/StoreVCards/Search",
+	"/EBookSqlite/EmptrySummary/NoVCards/Search"
 };
 
 gint
@@ -105,7 +147,7 @@ main (gint argc,
 	for (i = 0; i < G_N_ELEMENTS (closures); i++)
 		g_test_add (
 			paths[i], EbSqlFixture, &closures[i],
-			e_sqlite_fixture_setup, i < 4 ? test_get_contact : test_search_boolean, e_sqlite_fixture_teardown);
+			e_sqlite_fixture_setup, i < 4 ? test_get_contact : test_search, e_sqlite_fixture_teardown);
 
 	return e_test_server_utils_run_full (argc, argv, 0);
 }

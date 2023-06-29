@@ -550,10 +550,6 @@ main (gint argc,
 			suites[i].custom,
 			FALSE);
 
-		/* This test proves that we do not get any results for
-		 * custom-7.vcf, which contains a phone number ending with
-		 * "88 99", if this were accidentally normalized, we would
-		 * get a result for it. */
 		add_client_test (
 			suites[i].prefix,
 			"/Suffix/Phone/NotNormalized",
@@ -562,7 +558,7 @@ main (gint argc,
 				E_CONTACT_TEL,
 				E_BOOK_QUERY_ENDS_WITH,
 				"8899"),
-			0,
+			1,
 			suites[i].direct,
 			suites[i].custom,
 			FALSE);

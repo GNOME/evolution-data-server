@@ -304,6 +304,7 @@ ebsql_origin_str (EbSqlCursorOrigin origin)
 #define EBSQL_FUNC_EQPHONE_EXACT     "eqphone_exact"
 #define EBSQL_FUNC_EQPHONE_NATIONAL  "eqphone_national"
 #define EBSQL_FUNC_EQPHONE_SHORT     "eqphone_short"
+#define EBSQL_FUNC_EQPHONE_COMPARE   "eqphone_compare"
 
 /* Fallback collations are generated as with a prefix and an EContactField name */
 #define EBSQL_COLLATE_PREFIX         "ebsql_"
@@ -1562,6 +1563,33 @@ ebsql_eqphone_short (sqlite3_context *context,
 	ebsql_eqphone (context, argc, argv, E_PHONE_NUMBER_MATCH_SHORT);
 }
 
+/* Compare phone number match function: EBSQL_FUNC_EQPHONE_COMPARE */
+static void
+ebsql_eqphone_compare (sqlite3_context *context,
+		       gint argc,
+		       sqlite3_value **argv)
+{
+	const gchar *lookup_value, *row_value, *cmp_str;
+	EBookBackendSexpCompareKind compare_kind = E_BOOK_BACKEND_SEXP_COMPARE_KIND_UNKNOWN;
+
+	row_value = (const gchar *) sqlite3_value_text (argv[0]);
+	lookup_value = (const gchar *) sqlite3_value_text (argv[1]);
+	cmp_str = (const gchar *) sqlite3_value_text (argv[2]);
+
+	if (g_strcmp0 (cmp_str, "beginswith") == 0)
+		compare_kind = E_BOOK_BACKEND_SEXP_COMPARE_KIND_BEGINS_WITH;
+	else if (g_strcmp0 (cmp_str, "endswith") == 0)
+		compare_kind = E_BOOK_BACKEND_SEXP_COMPARE_KIND_ENDS_WITH;
+	else if (g_strcmp0 (cmp_str, "contains") == 0)
+		compare_kind = E_BOOK_BACKEND_SEXP_COMPARE_KIND_CONTAINS;
+	else if (g_strcmp0 (cmp_str, "is") == 0)
+		compare_kind = E_BOOK_BACKEND_SEXP_COMPARE_KIND_IS;
+	else
+		g_warning ("%s: Unknown compare kind '%s'", G_STRFUNC, cmp_str);
+
+	sqlite3_result_int (context, e_book_backend_sexp_util_phone_compare (row_value, lookup_value, compare_kind) ? 1 : 0);
+}
+
 /* Implementation of EBSQL_FUNC_FETCH_VCARD (fallback for shallow addressbooks) */
 static void
 ebsql_fetch_vcard (sqlite3_context *context,
@@ -1602,7 +1630,8 @@ static EbSqlCustomFuncTab ebsql_custom_functions[] = {
 	{ EBSQL_FUNC_FETCH_VCARD,      ebsql_fetch_vcard,      2 }, /* fetch_vcard (uid, extra) */
 	{ EBSQL_FUNC_EQPHONE_EXACT,    ebsql_eqphone_exact,    2 }, /* eqphone_exact (search_input, column_data) */
 	{ EBSQL_FUNC_EQPHONE_NATIONAL, ebsql_eqphone_national, 2 }, /* eqphone_national (search_input, column_data) */
-	{ EBSQL_FUNC_EQPHONE_SHORT,    ebsql_eqphone_short,    2 }, /* eqphone_national (search_input, column_data) */
+	{ EBSQL_FUNC_EQPHONE_SHORT,    ebsql_eqphone_short,    2 }, /* eqphone_short (search_input, column_data) */
+	{ EBSQL_FUNC_EQPHONE_COMPARE,  ebsql_eqphone_compare,  3 }, /* eqphone_compare (search_input, column_data, compare_kind { "is" | "beginswith" | "endswith" | "contains" }) */
 };
 
 /******************************************************
@@ -5156,12 +5185,33 @@ ebsql_normalize_for_like (QueryFieldTest *test,
 }
 
 static void
+field_test_query_eqphone_compare (EBookSqlite *ebsql,
+				  GString *string,
+				  QueryFieldTest *test,
+				  EBookBackendSexpCompareKind compare_kind)
+{
+	SummaryField *field = test->field;
+
+	g_string_append (string, EBSQL_FUNC_EQPHONE_COMPARE " (");
+	ebsql_string_append_column (string, field, NULL);
+	e_cache_sqlite_stmt_append_printf (string, ", %Q, %Q)", test->value,
+		compare_kind == E_BOOK_BACKEND_SEXP_COMPARE_KIND_BEGINS_WITH ? "beginswith" :
+		compare_kind == E_BOOK_BACKEND_SEXP_COMPARE_KIND_ENDS_WITH ? "endswith" :
+		compare_kind == E_BOOK_BACKEND_SEXP_COMPARE_KIND_IS ? "is" : /* E_BOOK_BACKEND_SEXP_COMPARE_KIND_CONTAINS */ "contains");
+}
+
+static void
 field_test_query_is (EBookSqlite *ebsql,
                      GString *string,
                      QueryFieldTest *test)
 {
 	SummaryField *field = test->field;
 	gchar *normal;
+
+	if (test->field_id == E_CONTACT_TEL) {
+		field_test_query_eqphone_compare (ebsql, string, test, E_BOOK_BACKEND_SEXP_COMPARE_KIND_IS);
+		return;
+	}
 
 	ebsql_string_append_column (string, field, NULL);
 
@@ -5184,6 +5234,11 @@ field_test_query_contains (EBookSqlite *ebsql,
 	SummaryField *field = test->field;
 	gboolean need_escape;
 	gchar *escaped;
+
+	if (test->field_id == E_CONTACT_TEL) {
+		field_test_query_eqphone_compare (ebsql, string, test, E_BOOK_BACKEND_SEXP_COMPARE_KIND_CONTAINS);
+		return;
+	}
 
 	escaped = ebsql_normalize_for_like (test, FALSE, &need_escape);
 
@@ -5213,6 +5268,11 @@ field_test_query_begins_with (EBookSqlite *ebsql,
 	gboolean need_escape;
 	gchar *escaped;
 
+	if (test->field_id == E_CONTACT_TEL) {
+		field_test_query_eqphone_compare (ebsql, string, test, E_BOOK_BACKEND_SEXP_COMPARE_KIND_BEGINS_WITH);
+		return;
+	}
+
 	escaped = ebsql_normalize_for_like (test, FALSE, &need_escape);
 
 	g_string_append_c (string, '(');
@@ -5240,8 +5300,12 @@ field_test_query_ends_with (EBookSqlite *ebsql,
 	gboolean need_escape;
 	gchar *escaped;
 
-	if ((field->index & INDEX_FLAG (SUFFIX)) != 0) {
+	if (test->field_id == E_CONTACT_TEL) {
+		field_test_query_eqphone_compare (ebsql, string, test, E_BOOK_BACKEND_SEXP_COMPARE_KIND_ENDS_WITH);
+		return;
+	}
 
+	if ((field->index & INDEX_FLAG (SUFFIX)) != 0) {
 		escaped = ebsql_normalize_for_like (test, TRUE, &need_escape);
 
 		g_string_append_c (string, '(');

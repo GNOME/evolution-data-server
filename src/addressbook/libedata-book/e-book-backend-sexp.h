@@ -87,6 +87,31 @@ gboolean	e_book_backend_sexp_match_contact
 void		e_book_backend_sexp_lock	(EBookBackendSExp *sexp);
 void		e_book_backend_sexp_unlock	(EBookBackendSExp *sexp);
 
+/**
+ * EBookBackendSexpCompareKind:
+ * @E_BOOK_BACKEND_SEXP_COMPARE_KIND_UNKNOWN: Unknown compare kind
+ * @E_BOOK_BACKEND_SEXP_COMPARE_KIND_BEGINS_WITH: Check whether a value begins with a string
+ * @E_BOOK_BACKEND_SEXP_COMPARE_KIND_ENDS_WITH: Check whether a value ends with a string
+ * @E_BOOK_BACKEND_SEXP_COMPARE_KIND_CONTAINS: Check whether a value contains a string
+ * @E_BOOK_BACKEND_SEXP_COMPARE_KIND_IS: Check whether a value exactly matches a string
+ *
+ * What compare function should be used when comparing two values.
+ *
+ * Since: 3.50
+ **/
+typedef enum _EBookBackendSexpCompareKind {
+	E_BOOK_BACKEND_SEXP_COMPARE_KIND_UNKNOWN,
+	E_BOOK_BACKEND_SEXP_COMPARE_KIND_BEGINS_WITH,
+	E_BOOK_BACKEND_SEXP_COMPARE_KIND_ENDS_WITH,
+	E_BOOK_BACKEND_SEXP_COMPARE_KIND_CONTAINS,
+	E_BOOK_BACKEND_SEXP_COMPARE_KIND_IS
+} EBookBackendSexpCompareKind;
+
+gboolean	e_book_backend_sexp_util_phone_compare
+						(const gchar *phone_value,
+						 const gchar *lookup_value,
+						 EBookBackendSexpCompareKind compare_kind);
+
 G_END_DECLS
 
 #endif /* E_BOOK_BACKEND_SEXP_H */

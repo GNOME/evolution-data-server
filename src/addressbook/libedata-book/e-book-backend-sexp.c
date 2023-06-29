@@ -179,6 +179,11 @@ compare_email (EContact *contact,
 	return rv;
 }
 
+static gboolean contains_helper (const gchar *s1, const gchar *s2, const gchar *region);
+static gboolean beginswith_helper (const gchar *ps1, const gchar *ps2, const gchar *region);
+static gboolean endswith_helper (const gchar *ps1, const gchar *ps2, const gchar *region);
+static gboolean is_helper (const gchar *ps1, const gchar *ps2, const gchar *region);
+
 static gboolean
 compare_phone (EContact *contact,
                const gchar *str,
@@ -197,6 +202,26 @@ compare_phone (EContact *contact,
 
 		if (rv)
 			break;
+
+		/* try relaxed compare for some searches */
+		if (phone && *phone) {
+			EBookBackendSexpCompareKind compare_kind = E_BOOK_BACKEND_SEXP_COMPARE_KIND_UNKNOWN;
+
+			if (compare == contains_helper)
+				compare_kind = E_BOOK_BACKEND_SEXP_COMPARE_KIND_CONTAINS;
+			else if (compare == beginswith_helper)
+				compare_kind = E_BOOK_BACKEND_SEXP_COMPARE_KIND_BEGINS_WITH;
+			else if (compare == endswith_helper)
+				compare_kind = E_BOOK_BACKEND_SEXP_COMPARE_KIND_ENDS_WITH;
+			else if (compare == is_helper)
+				compare_kind = E_BOOK_BACKEND_SEXP_COMPARE_KIND_IS;
+
+			if (compare_kind != E_BOOK_BACKEND_SEXP_COMPARE_KIND_UNKNOWN) {
+				rv = e_book_backend_sexp_util_phone_compare (phone, str, compare_kind);
+				if (rv)
+					break;
+			}
+		}
 	}
 
 	e_contact_attr_list_free (list);
@@ -1290,4 +1315,70 @@ e_book_backend_sexp_unlock (EBookBackendSExp *sexp)
 	g_return_if_fail (E_IS_BOOK_BACKEND_SEXP (sexp));
 
 	g_rec_mutex_unlock (&sexp->priv->search_context_lock);
+}
+
+/**
+ * e_book_backend_sexp_util_phone_compare:
+ * @phone_value: a phone number to compare
+ * @lookup_value: a value to lookup for in the phone number
+ * @compare_kind: an #EBookBackendSexpCompareKind
+ *
+ * A utility function, which compares only numbers from the @phone_value with @lookup_value
+ * using @compare_kind method.
+ *
+ * Returns: whether numbers from the @phone_value match the @lookup_value using
+ *    the given @compare_kind
+ *
+ * Since: 3.50
+ **/
+gboolean
+e_book_backend_sexp_util_phone_compare (const gchar *phone_value,
+					const gchar *lookup_value,
+					EBookBackendSexpCompareKind compare_kind)
+{
+	gchar *only_numbers;
+	guint ii, last_char = 0;
+	gboolean success = FALSE;
+
+	if (compare_kind == E_BOOK_BACKEND_SEXP_COMPARE_KIND_UNKNOWN ||
+	    !phone_value || !*phone_value || !lookup_value || !*lookup_value)
+		return FALSE;
+
+	only_numbers = g_strdup (phone_value);
+
+	for (ii = 0; only_numbers[ii]; ii++) {
+		if (only_numbers[ii] >= '0' && only_numbers[ii] <= '9') {
+			if (last_char != ii)
+				only_numbers[last_char] = only_numbers[ii];
+			last_char++;
+		}
+	}
+
+	only_numbers[last_char] = '\0';
+
+	switch (compare_kind) {
+	case E_BOOK_BACKEND_SEXP_COMPARE_KIND_UNKNOWN:
+	case E_BOOK_BACKEND_SEXP_COMPARE_KIND_CONTAINS:
+		success = (last_char > 0 && strstr (only_numbers, lookup_value) != NULL) ||
+			  camel_strstrcase (phone_value, lookup_value) != NULL;
+		break;
+	case E_BOOK_BACKEND_SEXP_COMPARE_KIND_BEGINS_WITH:
+		success = (last_char > 0 && g_str_has_prefix (only_numbers, lookup_value)) ||
+			  camel_strstrcase (phone_value, lookup_value) == phone_value;
+		break;
+	case E_BOOK_BACKEND_SEXP_COMPARE_KIND_ENDS_WITH:
+		success = (last_char > 0 && g_str_has_suffix (only_numbers, lookup_value)) ||
+			  (strlen (phone_value) >= strlen (lookup_value) &&
+			   camel_strstrcase (phone_value + strlen (phone_value) - strlen (lookup_value), lookup_value) != NULL);
+		break;
+	case E_BOOK_BACKEND_SEXP_COMPARE_KIND_IS:
+		success = (last_char > 0 && g_strcmp0 (only_numbers, lookup_value) == 0) ||
+			  (strlen (phone_value) == strlen (lookup_value) &&
+			   camel_strstrcase (phone_value + strlen (phone_value) - strlen (lookup_value), lookup_value) != NULL);
+		break;
+	}
+
+	g_free (only_numbers);
+
+	return success;
 }
