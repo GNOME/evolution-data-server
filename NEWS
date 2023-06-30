@@ -1,3 +1,9 @@
+Evolution-Data-Server 3.48.4 2023-06-30
+---------------------------------------
+
+Bug Fixes:
+	I#480 - Camel: Learn as Junk filter action not actually running the learn function
+
 Evolution-Data-Server 3.48.3 2023-06-02
 ---------------------------------------
 
