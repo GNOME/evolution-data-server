@@ -1,3 +1,58 @@
+Evolution-Data-Server 3.49.1 2023-06-30
+---------------------------------------
+
+Bug Fixes:
+	I#458 - IMAP: Overriding "[Gmail]" namespace doesn't work
+	I#459 - Camel: POP3's 'UTF8' command blocking login
+	I#461 - backends: React to destination URI changes
+	I#462 - Fails to refresh backend with offline changes and broken local cache state
+	I#465 - camel-cipher-context: Make camel_cipher_validity_get_description() return a const (Chris Talbot)
+	I#468 - Camel: Update developer documentation for camel_cipher_context_encrypt()
+	I#469 - IMAPx: Ignore 'Permission denied' error on refresh
+	I#472 - Camel: Recognize disabled algorithms with S/MIME signatures
+	I#474 - Camel: Set proper S/MIME signature verification status
+	I#475 - EWebDAVSession: Claim also error nodes from propstat response
+	I#477 - Add search folder condition for overdue messages
+	I#478 - IMAP: Cannot remove labels added in Thunderbird
+	I#479 - WebDAV: Fails to discover iCloud address book
+	I#480 - Camel: Learn as Junk filter action not actually running the learn function
+	M!116 - libedataserver: Disable deprecation notice around e_flag_timed_wait (Corentin Noël)
+	M!117 - Replace GTimeVal by GDateTime or int64 (Corentin Noël)
+	M!119 - Calendar: Change file backend discard_alarm() function
+	M!120 - camel: Remove the last use of GTimeVal (Corentin Noël)
+	M!121 - build: Fix WITH_PRIVATE_DOCS hint (Jan Tojnar)
+	M!123 - Camel: Fix PGP test (Chris Talbot)
+	evo-I#1293 - Allow to Search Contact's Phone With Numbers Only
+	evo-I#2345 - Wrong S/MIME certificate selection for encrypted email
+
+Miscellaneous:
+	LDAP: Change how debug prints are printed
+	WebDAV Notes: Fallback to derive component summary from description
+	WebDAV backends: Specify cache file in an error message
+	IMAPX: Add option for "Single client mode"
+	CamelFilterDriver: Unset info's headers only when folder has summary
+	docs: Stop 'evolution-data-server' depend on 'gtkdoc-camel' target
+	DOAP: No more mailing lists on mail.gnome.org (Andre Klapper)
+	Fix a typo in a developer comment
+	e-xml-utils: Add parameter validity check into e_xml_find_children_nodes()
+	CI: Use org.freedesktop.Sdk.Extension.vala in nightly flatpak manifest
+	Contacts: Add "manual query" mode to the book view
+
+Translations:
+	Aleksandr Melman (ru)
+	Alexander Shopov (bg)
+	Asier Sarasua Garmendia (eu)
+	Ekaterine Papava (ka)
+	Fabio Tomat (fur)
+	Hugo Carvalho (pt)
+	Jiri Eischmann (cs)
+	Jordi Mas (ca)
+	Kukuh Syafaat (id)
+	Nathan Follens (nl)
+	Sabri Ünal (tr)
+	Sergej A (ru)
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.48.0 2023-03-17
 ---------------------------------------
 
