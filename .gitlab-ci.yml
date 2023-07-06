@@ -1,5 +1,6 @@
 stages:
   - test
+  - pages
 
 flatpak:
   image: "quay.io/gnome_infrastructure/gnome-runtime-images:gnome-master"
@@ -39,3 +40,17 @@ flatpak:
       - ".flatpak-builder/build/${FLATPAK_MODULE}/CMakeFiles/CMakeOutput.log"
       - ".flatpak-builder/build/${FLATPAK_MODULE}/docs/reference/"
     expire_in: 14 days
+
+pages:
+  stage: pages
+  dependencies:
+    - flatpak
+  interruptible: false
+  script:
+    - "mkdir public"
+    - "mv .flatpak-builder/build/${FLATPAK_MODULE}/docs/reference/* ./public"
+  artifacts:
+    paths:
+    - public
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
