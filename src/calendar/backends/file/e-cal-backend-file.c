@@ -3631,7 +3631,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 		const gchar *uid;
 		gchar *rid;
 		ECalBackendFileObject *obj_data;
-		gboolean is_declined;
+		gboolean is_declined, can_delete = TRUE;
 
 		subcomp = link->data;
 
@@ -3679,8 +3679,16 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 		case I_CAL_METHOD_REPLY:
 			is_declined = e_cal_backend_user_declined (registry, subcomp);
 
+			if (is_declined) {
+				GSettings *settings;
+
+				settings = g_settings_new ("org.gnome.evolution-data-server.calendar");
+				can_delete = g_settings_get_boolean (settings, "delete-meeting-on-decline");
+				g_clear_object (&settings);
+			}
+
 			/* handle attachments */
-			if (!is_declined && e_cal_component_has_attachments (comp))
+			if ((!is_declined || !can_delete) && e_cal_component_has_attachments (comp))
 				fetch_attachments (backend, comp);
 			obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 			if (obj_data) {
@@ -3701,13 +3709,13 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 					remove_component (cbfile, uid, obj_data);
 				}
 
-				if (!is_declined)
+				if (!is_declined || !can_delete)
 					add_component (cbfile, comp, FALSE);
 
-				if (!is_declined)
+				if (!is_declined || !can_delete) {
 					e_cal_backend_notify_component_modified (E_CAL_BACKEND (backend),
 										 old_component, comp);
-				else {
+				} else {
 					ECalComponentId *id = e_cal_component_get_id (comp);
 
 					e_cal_backend_notify_component_removed (E_CAL_BACKEND (backend),

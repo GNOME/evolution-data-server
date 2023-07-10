@@ -2594,6 +2594,14 @@ ecmb_receive_object_sync (ECalMetaBackend *meta_backend,
 	case I_CAL_METHOD_REPLY:
 		is_declined = e_cal_backend_user_declined (registry, e_cal_component_get_icalcomponent (comp));
 		if (is_in_cache) {
+			if (is_declined) {
+				GSettings *settings;
+
+				settings = g_settings_new ("org.gnome.evolution-data-server.calendar");
+				is_declined = g_settings_get_boolean (settings, "delete-meeting-on-decline");
+				g_clear_object (&settings);
+			}
+
 			if (!is_declined) {
 				success = ecmb_modify_object_sync (meta_backend, cal_cache, offline_flag, conflict_resolution,
 					mod, opflags, comp, NULL, NULL, cancellable, error);

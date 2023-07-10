@@ -98,5 +98,9 @@
       <default>[]</default>
       <summary>User-defined snooze times, in minutes</summary>
     </key>
+    <key name="delete-meeting-on-decline" type="b">
+      <default>true</default>
+      <summary>Delete meeting from calendar on Decline</summary>
+    </key>
   </schema>
 </schemalist>
