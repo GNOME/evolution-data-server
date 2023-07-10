@@ -4160,7 +4160,7 @@ struct _date_token {
 static struct _date_token *
 datetok (const gchar *date)
 {
-	struct _date_token *tokens = NULL, *token, *tail = (struct _date_token *) &tokens;
+	struct _date_token *tokens = NULL, *token, **tail = &tokens;
 	const gchar *start, *end;
 	guchar mask;
 
@@ -4187,8 +4187,8 @@ datetok (const gchar *date)
 			token->len = end - start;
 			token->mask = mask;
 
-			tail->next = token;
-			tail = token;
+			*tail = token;
+			tail = &token->next;
 		}
 
 		if (*end)
