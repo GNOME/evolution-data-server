@@ -162,6 +162,26 @@ ebmb_is_power_saver_enabled (void)
 #endif
 }
 
+static gboolean
+ebmb_can_run_on_metered_network (EBookMetaBackend *meta_backend)
+{
+	GNetworkMonitor *network_monitor;
+	EBackend *backend = E_BACKEND (meta_backend);
+	ESource *source;
+
+	network_monitor = e_backend_get_network_monitor (backend);
+
+	if (!g_network_monitor_get_network_metered (network_monitor))
+		return TRUE;
+
+	source = e_backend_get_source (backend);
+
+	if (!e_source_has_extension (source, E_SOURCE_EXTENSION_REFRESH))
+		return TRUE;
+
+	return e_source_refresh_get_enabled_on_metered_network (e_source_get_extension (source, E_SOURCE_EXTENSION_REFRESH));
+}
+
 /**
  * e_book_meta_backend_info_new:
  * @uid: a contact UID; cannot be %NULL
@@ -851,8 +871,10 @@ ebmb_refresh_internal_sync (EBookMetaBackend *meta_backend,
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		goto done;
 
-	/* Silently ignore the refresh request when in the power-saver mode */
-	if (ebmb_is_power_saver_enabled ()) {
+	/* Silently ignore the refresh request when in the power-saver mode
+	   or refresh on metered network is disabled */
+	if (ebmb_is_power_saver_enabled () ||
+	    !ebmb_can_run_on_metered_network (meta_backend)) {
 		success = TRUE;
 		goto done;
 	}
@@ -1388,6 +1410,12 @@ ebmb_refresh_sync (EBookBackendSync *book_backend,
 	if (ebmb_is_power_saver_enabled ()) {
 		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_OTHER_ERROR,
 			_("Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode and repeat the action."));
+		return FALSE;
+	}
+
+	if (!ebmb_can_run_on_metered_network (meta_backend)) {
+		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_OTHER_ERROR,
+			_("Refresh skipped due to being disabled on metered network."));
 		return FALSE;
 	}
 

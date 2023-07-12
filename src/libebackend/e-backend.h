@@ -101,6 +101,8 @@ struct _EBackendClass {
 };
 
 GType		e_backend_get_type		(void) G_GNUC_CONST;
+GNetworkMonitor *
+		e_backend_get_network_monitor	(EBackend *backend);
 gboolean	e_backend_get_online		(EBackend *backend);
 void		e_backend_set_online		(EBackend *backend,
 						 gboolean online);

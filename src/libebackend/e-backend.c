@@ -873,6 +873,25 @@ e_backend_init (EBackend *backend)
 }
 
 /**
+ * e_backend_get_network_monitor:
+ * @backend: an #EBackend
+ *
+ * Returns a #GNetworkMonitor used to check whether the backend can
+ * access the remote server. The instance is owned by the @backend.
+ *
+ * Returns: (transfer none): a #GNetworkMonitor used by the @backend
+ *
+ * Since: 3.50
+ **/
+GNetworkMonitor *
+e_backend_get_network_monitor (EBackend *backend)
+{
+	g_return_val_if_fail (E_IS_BACKEND (backend), NULL);
+
+	return backend->priv->network_monitor;
+}
+
+/**
  * e_backend_get_online:
  * @backend: an #EBackend
  *

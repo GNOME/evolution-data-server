@@ -91,6 +91,11 @@ GType		e_source_refresh_get_type	(void) G_GNUC_CONST;
 gboolean	e_source_refresh_get_enabled	(ESourceRefresh *extension);
 void		e_source_refresh_set_enabled	(ESourceRefresh *extension,
 						 gboolean enabled);
+gboolean	e_source_refresh_get_enabled_on_metered_network
+						(ESourceRefresh *extension);
+void		e_source_refresh_set_enabled_on_metered_network
+						(ESourceRefresh *extension,
+						 gboolean enabled);
 guint		e_source_refresh_get_interval_minutes
 						(ESourceRefresh *extension);
 void		e_source_refresh_set_interval_minutes

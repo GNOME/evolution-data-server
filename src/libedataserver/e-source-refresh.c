@@ -40,6 +40,7 @@ typedef struct _TimeoutNode TimeoutNode;
 
 struct _ESourceRefreshPrivate {
 	gboolean enabled;
+	gboolean enabled_on_metered_network;
 	guint interval_minutes;
 
 	GMutex timeout_lock;
@@ -60,6 +61,7 @@ struct _TimeoutNode {
 enum {
 	PROP_0,
 	PROP_ENABLED,
+	PROP_ENABLED_ON_METERED_NETWORK,
 	PROP_INTERVAL_MINUTES
 };
 
@@ -235,6 +237,12 @@ source_refresh_set_property (GObject *object,
 				g_value_get_boolean (value));
 			return;
 
+		case PROP_ENABLED_ON_METERED_NETWORK:
+			e_source_refresh_set_enabled_on_metered_network (
+				E_SOURCE_REFRESH (object),
+				g_value_get_boolean (value));
+			return;
+
 		case PROP_INTERVAL_MINUTES:
 			e_source_refresh_set_interval_minutes (
 				E_SOURCE_REFRESH (object),
@@ -256,6 +264,13 @@ source_refresh_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				e_source_refresh_get_enabled (
+				E_SOURCE_REFRESH (object)));
+			return;
+
+		case PROP_ENABLED_ON_METERED_NETWORK:
+			g_value_set_boolean (
+				value,
+				e_source_refresh_get_enabled_on_metered_network (
 				E_SOURCE_REFRESH (object)));
 			return;
 
@@ -351,6 +366,20 @@ e_source_refresh_class_init (ESourceRefreshClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_ENABLED_ON_METERED_NETWORK,
+		g_param_spec_boolean (
+			"enabled-on-metered-network",
+			"Enabled on Metered Network",
+			"Whether to enable refresh on metered network",
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_INTERVAL_MINUTES,
 		g_param_spec_uint (
 			"interval-minutes",
@@ -425,6 +454,55 @@ e_source_refresh_set_enabled (ESourceRefresh *extension,
 	g_object_notify (G_OBJECT (extension), "enabled");
 
 	source_refresh_update_timeouts (extension, FALSE);
+}
+
+/**
+ * e_source_refresh_get_enabled_on_metered_network:
+ * @extension: an #ESourceRefresh
+ *
+ * Returns whether can refresh content on metered network.
+ *
+ * The @extension itself doesn't use this option, it's up to
+ * the @extension user to determine what kind of connection is used
+ * and then decide whether refresh, or other expensive network
+ * operations, can be done.
+ *
+ * Returns: whether can refresh content on metered network
+ *
+ * Since: 3.50
+ **/
+gboolean
+e_source_refresh_get_enabled_on_metered_network (ESourceRefresh *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_REFRESH (extension), FALSE);
+
+	return extension->priv->enabled_on_metered_network;
+}
+
+/**
+ * e_source_refresh_set_enabled_on_metered_network:
+ * @extension: an #ESourceRefresh
+ * @enabled: whether can refresh content on metered network
+ *
+ * Sets whether can refresh content on metered network.
+ *
+ * See e_source_refresh_get_enabled_on_metered_network() for more information
+ * about what it means.
+ *
+ * Since: 3.50
+ **/
+void
+e_source_refresh_set_enabled_on_metered_network (ESourceRefresh *extension,
+						 gboolean enabled)
+{
+	g_return_if_fail (E_IS_SOURCE_REFRESH (extension));
+
+	if ((extension->priv->enabled_on_metered_network ? 1 : 0) == (enabled ? 1 : 0))
+		return;
+
+	extension->priv->enabled_on_metered_network = enabled;
+
+	g_object_notify (G_OBJECT (extension), "enabled-on-metered-network");
 }
 
 /**
