@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/is"
 "sues\n"
-"POT-Creation-Date: 2023-07-12 08:47+0000\n"
-"PO-Revision-Date: 2023-07-12 17:50+0300\n"
+"POT-Creation-Date: 2023-07-12 16:09+0000\n"
+"PO-Revision-Date: 2023-07-12 20:05+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -1231,7 +1231,7 @@ msgstr ""
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2056
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2555
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3429
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3436
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Не вдалося створити кеш «%s»:"
@@ -1385,7 +1385,7 @@ msgstr "Файл «%s» не є компонентом VCALENDAR"
 #: src/calendar/backends/file/e-cal-backend-file.c:3749
 #: src/calendar/backends/file/e-cal-backend-file.c:3755
 #: src/calendar/backends/file/e-cal-backend-file.c:3782
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2656
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2663
 msgid "Unsupported method"
 msgstr "Непідтримуваний метод"
 
@@ -2632,7 +2632,15 @@ msgid "Received object for UID “%s” doesn’t contain any expected component
 msgstr ""
 "Отриманий об'єкт для UID «%s» не містить жодного очікуваного компонента"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4329
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1971
+msgid ""
+"Cannot modify all instances from a detached instance. Modify a series "
+"instance instead."
+msgstr ""
+"Неможливо змінювати усі екземпляри з від'єднаного екземпляра. Замість цього,"
+" слід вносити зміни до екземпляра послідовності."
+
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4336
 msgid "attachment.dat"
 msgstr "attachment.dat"
 
