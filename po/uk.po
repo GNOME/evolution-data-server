@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/is"
 "sues\n"
-"POT-Creation-Date: 2023-07-10 15:48+0000\n"
-"PO-Revision-Date: 2023-07-10 22:37+0300\n"
+"POT-Creation-Date: 2023-07-12 08:47+0000\n"
+"PO-Revision-Date: 2023-07-12 17:50+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -124,7 +124,7 @@ msgid "Invalid Query “%s”"
 msgstr "Некоректний запит «%s»"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:2260
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2158
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2186
 msgid "Requested to delete an unrelated cursor"
 msgstr "Запитано видалення незв'язаного курсору"
 
@@ -271,8 +271,8 @@ msgid "Downloading contacts (%d)..."
 msgstr "Завантаження контактів (%d)…"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5111
-#: src/addressbook/libedata-book/e-book-meta-backend.c:860
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:745
+#: src/addressbook/libedata-book/e-book-meta-backend.c:882
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:768
 msgid "Refreshing…"
 msgstr "Оновлення…"
 
@@ -1163,7 +1163,7 @@ msgstr "Не вдалося відкрити базу даних %s: %s"
 #: src/calendar/libedata-cal/e-cal-cache.c:2949
 #: src/calendar/libedata-cal/e-cal-cache.c:3012
 #: src/calendar/libedata-cal/e-cal-cache.c:3183
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1435
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1464
 #: src/libebackend/e-cache.c:1370 src/libebackend/e-cache.c:2348
 #: src/libebackend/e-cache.c:2388
 #, c-format
@@ -1202,20 +1202,20 @@ msgstr "Неможливо відсортувати по полю, яке має
 msgid "Contact field “%s” not in summary"
 msgstr "Поле контакту «%s» не перебуває у резюме"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1155
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1152
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1177
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1175
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Попередньо завантажений об'єкт для UID «%s» недійсний"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1163
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1160
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1185
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1183
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Отриманий об'єкт для UID «%s» недійсний"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1390
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1389
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1412
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1412
 msgid ""
 "Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
 "and repeat the action."
@@ -1223,9 +1223,15 @@ msgstr ""
 "Освіження пропущено через вмикання режиму енергозаощадження. Вимкніть режим "
 "енергозаощадження і повторіть дію."
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2028
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2527
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3400
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1418
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1418
+msgid "Refresh skipped due to being disabled on metered network."
+msgstr ""
+"Оновлення пропущено, оскільки його вимкнено у мережах з обліком даних."
+
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2056
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2555
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3429
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Не вдалося створити кеш «%s»:"
@@ -1379,7 +1385,7 @@ msgstr "Файл «%s» не є компонентом VCALENDAR"
 #: src/calendar/backends/file/e-cal-backend-file.c:3749
 #: src/calendar/backends/file/e-cal-backend-file.c:3755
 #: src/calendar/backends/file/e-cal-backend-file.c:3782
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2627
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2656
 msgid "Unsupported method"
 msgstr "Непідтримуваний метод"
 
@@ -2620,13 +2626,13 @@ msgstr "Неможливо додати часовий пояс без комп�
 msgid "Cannot add timezone with invalid component"
 msgstr "Неможливо додати часовий пояс з недійсним компонентом"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1207
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1230
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr ""
 "Отриманий об'єкт для UID «%s» не містить жодного очікуваного компонента"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4300
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4329
 msgid "attachment.dat"
 msgstr "attachment.dat"
 
