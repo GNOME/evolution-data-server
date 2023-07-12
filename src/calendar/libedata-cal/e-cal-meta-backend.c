@@ -1966,6 +1966,13 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 		instances = g_slist_append (instances, e_cal_component_clone (comp));
 		break;
 	case E_CAL_OBJ_MOD_ALL:
+		if (e_cal_component_is_instance (comp)) {
+			g_set_error_literal (error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_INVALID_OBJECT,
+				_("Cannot modify all instances from a detached instance. Modify a series instance instead."));
+			success = FALSE;
+			break;
+		}
+
 		e_cal_recur_ensure_end_dates (comp, TRUE, e_cal_cache_resolve_timezone_cb, cal_cache, cancellable, NULL);
 
 		/* Replace master object */
