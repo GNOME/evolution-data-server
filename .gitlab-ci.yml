@@ -46,6 +46,8 @@ pages:
   dependencies:
     - flatpak
   interruptible: false
+  variables:
+    FLATPAK_MODULE: "evolution-data-server"
   script:
     - "mkdir public"
     - "mv .flatpak-builder/build/${FLATPAK_MODULE}/docs/reference/* ./public"
