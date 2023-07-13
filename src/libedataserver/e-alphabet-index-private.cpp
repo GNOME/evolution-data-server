@@ -55,6 +55,7 @@ _e_alphabet_index_cxx_new_for_language (const gchar *language)
 
 	alphabet_index = g_slice_new (EAlphabetIndex);
 	alphabet_index->priv = new AlphabeticIndex (Locale (language), status);
+	alphabet_index->priv->addLabels (Locale::getEnglish (), status);
 
 	return alphabet_index;
 }

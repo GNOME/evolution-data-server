@@ -271,7 +271,7 @@ ebsql_origin_str (EbSqlCursorOrigin origin)
 		} \
 	} G_STMT_END
 
-#define FOLDER_VERSION                12
+#define FOLDER_VERSION                13
 #define INSERT_MULTI_STMT_BYTES       128
 #define COLUMN_DEFINITION_BYTES       32
 #define GENERATED_QUERY_BYTES         1024
@@ -3129,8 +3129,12 @@ ebsql_new_internal (const gchar *path,
 
 	/* Schema 12 added E_CONTACT_PGP_CERT column into the summary;
 	   the ebsql_init_locale() also calls ebsql_upgrade() for schema 10-,
-	   thus call it here only for schema 11, to populate the PGP column */
-	if (success && previous_schema == 11)
+	   thus call it here only for schema 11, to populate the PGP column;
+
+	   Schema 13 is to rebuild locale dependent data, due to added Latin/English
+	   labels into the ECollator
+	*/
+	if (success && (previous_schema == 11 || previous_schema == 12))
 		success = ebsql_upgrade (ebsql, EBSQL_CHANGE_LAST, error);
 
 	if (success)

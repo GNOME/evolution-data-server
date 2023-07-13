@@ -112,9 +112,9 @@ test_el_GR (CollatorFixture *fixture,
   e_collator_get_index_labels (fixture->collator,
 			       &n_labels, &underflow, &inflow, &overflow);
 
-  g_assert_cmpint (n_labels, ==, 26);
+  g_assert_cmpint (n_labels, ==, 52);
   g_assert_cmpint (underflow, ==, 0);
-  g_assert_cmpint (overflow, ==, 25);
+  g_assert_cmpint (overflow, ==, 51);
   g_assert_cmpint (inflow, ==, -1);
 
   /* E is the 5th letter, the 0 index is the underflow bucket... Greek sorts 'ε' as an 'E' */
@@ -123,14 +123,14 @@ test_el_GR (CollatorFixture *fixture,
   /* Δ is the 4th letter, the 0 index is the underflow bucket... */
   g_assert_cmpint (e_collator_get_index (fixture->collator, "Δευτέρα"), ==, 4);
 
-  /* In greek 'D' does not sort under the 'Δ' bucket, instead it's in the underflow bucket */
-  g_assert_cmpint (e_collator_get_index (fixture->collator, "Damsel"), ==, 0);
+  /* In greek 'D' does not sort under the 'Δ' bucket, instead it's in the 'D' bucket */
+  g_assert_cmpint (e_collator_get_index (fixture->collator, "Damsel"), ==, 28);
 
   /* 'Τ' is the 19th letter */
   g_assert_cmpint (e_collator_get_index (fixture->collator, "Τρίτη"), ==, 19);
 
-  /* Texas doesn't start with 'T' ! --> Underflow */
-  g_assert_cmpint (e_collator_get_index (fixture->collator, "Texas"), ==, 0);
+  /* Texas doesn't start with 'T' ! --> 'T' bucket */
+  g_assert_cmpint (e_collator_get_index (fixture->collator, "Texas"), ==, 44);
 }
 
 static void
@@ -143,9 +143,9 @@ test_ru_RU (CollatorFixture *fixture,
   labels = e_collator_get_index_labels (fixture->collator,
 					&n_labels, &underflow, &inflow, &overflow);
 
-  g_assert_cmpint (n_labels, ==, 33);
+  g_assert_cmpint (n_labels, ==, 58);
   g_assert_cmpint (underflow, ==, 0);
-  g_assert_cmpint (overflow, ==, 32);
+  g_assert_cmpint (overflow, ==, 57);
   g_assert_cmpint (inflow, ==, -1);
 
   g_assert_cmpstr (labels[5], ==, "Д");
@@ -154,8 +154,8 @@ test_ru_RU (CollatorFixture *fixture,
   g_assert_cmpstr (labels[4], ==, "Г");
   g_assert_cmpint (e_collator_get_index (fixture->collator, "говорить"), ==, 4);
 
-  g_assert_cmpstr (labels[25], ==, "Ч");
-  g_assert_cmpint (e_collator_get_index (fixture->collator, "человек"), ==, 25);
+  g_assert_cmpstr (labels[24], ==, "Ч");
+  g_assert_cmpint (e_collator_get_index (fixture->collator, "человек"), ==, 24);
 }
 
 static void
@@ -168,19 +168,19 @@ test_ja_JP (CollatorFixture *fixture,
   labels = e_collator_get_index_labels (fixture->collator,
 					&n_labels, &underflow, &inflow, &overflow);
 
-  g_assert_cmpint (n_labels, ==, 12);
+  g_assert_cmpint (n_labels, ==, 39);
   g_assert_cmpint (underflow, ==, 0);
-  g_assert_cmpint (overflow, ==, 11);
-  g_assert_cmpint (inflow, ==, -1);
+  g_assert_cmpint (overflow, ==, 38);
+  g_assert_cmpint (inflow, ==, 27);
 
-  g_assert_cmpstr (labels[6], ==, "は");
-  g_assert_cmpint (e_collator_get_index (fixture->collator, "はじめまして"), ==, 6);
+  g_assert_cmpstr (labels[33], ==, "は");
+  g_assert_cmpint (e_collator_get_index (fixture->collator, "はじめまして"), ==, 33);
 
-  g_assert_cmpstr (labels[3], ==, "さ");
-  g_assert_cmpint (e_collator_get_index (fixture->collator, "それはいいですね。"), ==, 3);
+  g_assert_cmpstr (labels[30], ==, "さ");
+  g_assert_cmpint (e_collator_get_index (fixture->collator, "それはいいですね。"), ==, 30);
 
-  g_assert_cmpstr (labels[8], ==, "や");
-  g_assert_cmpint (e_collator_get_index (fixture->collator, "ゆっくりしゃべってくれますか"), ==, 8);
+  g_assert_cmpstr (labels[35], ==, "や");
+  g_assert_cmpint (e_collator_get_index (fixture->collator, "ゆっくりしゃべってくれますか"), ==, 35);
 }
 
 static void
@@ -222,18 +222,18 @@ test_ko_KR (CollatorFixture *fixture,
   labels = e_collator_get_index_labels (fixture->collator,
 					&n_labels, &underflow, &inflow, &overflow);
 
-  g_assert_cmpint (n_labels, ==, 16);
+  g_assert_cmpint (n_labels, ==, 43);
   g_assert_cmpint (underflow, ==, 0);
-  g_assert_cmpint (overflow, ==, 15);
-  g_assert_cmpint (inflow, ==, -1);
+  g_assert_cmpint (overflow, ==, 42);
+  g_assert_cmpint (inflow, ==, 15);
 
-  g_assert_cmpstr (labels[1], ==, "ᄀ");
+  g_assert_cmpstr (labels[1], ==, "ㄱ");
   g_assert_cmpint (e_collator_get_index (fixture->collator, "고새기"), ==, 1);
 
-  g_assert_cmpstr (labels[8], ==, "ᄋ");
+  g_assert_cmpstr (labels[8], ==, "ㅇ");
   g_assert_cmpint (e_collator_get_index (fixture->collator, "안성아"), ==, 8);
 
-  g_assert_cmpstr (labels[13], ==, "ᄑ");
+  g_assert_cmpstr (labels[13], ==, "ㅍ");
   g_assert_cmpint (e_collator_get_index (fixture->collator, "피자 모근 시간"), ==, 13);
 }
 
@@ -247,9 +247,9 @@ test_ar_TN (CollatorFixture *fixture,
   labels = e_collator_get_index_labels (fixture->collator,
 					&n_labels, &underflow, &inflow, &overflow);
 
-  g_assert_cmpint (n_labels, ==, 30);
+  g_assert_cmpint (n_labels, ==, 56);
   g_assert_cmpint (underflow, ==, 0);
-  g_assert_cmpint (overflow, ==, 29);
+  g_assert_cmpint (overflow, ==, 55);
   g_assert_cmpint (inflow, ==, -1);
 
   g_assert_cmpstr (labels[12], ==, "س");
@@ -260,6 +260,30 @@ test_ar_TN (CollatorFixture *fixture,
 
   g_assert_cmpstr (labels[23], ==, "ل");
   g_assert_cmpint (e_collator_get_index (fixture->collator, "لاأدري"), ==, 23);
+}
+
+static void
+test_cs_CZ (CollatorFixture *fixture,
+            gconstpointer data)
+{
+	gint n_labels, underflow, inflow, overflow;
+	const gchar *const *labels;
+
+	labels = e_collator_get_index_labels (fixture->collator, &n_labels, &underflow, &inflow, &overflow);
+
+	g_assert_cmpint (n_labels, ==, 33);
+	g_assert_cmpint (underflow, ==, 0);
+	g_assert_cmpint (overflow, ==, 32);
+	g_assert_cmpint (inflow, ==, -1);
+
+	g_assert_cmpstr (labels[4], ==, "Č");
+	g_assert_cmpint (e_collator_get_index (fixture->collator, "Čenda"), ==, 4);
+
+	g_assert_cmpstr (labels[7], ==, "F");
+	g_assert_cmpint (e_collator_get_index (fixture->collator, "Franta"), ==, 7);
+
+	g_assert_cmpstr (labels[10], ==, "CH");
+	g_assert_cmpint (e_collator_get_index (fixture->collator, "Chantal"), ==, 10);
 }
 
 gint
@@ -299,6 +323,10 @@ main (gint argc,
 	g_test_add (
 		"/ECollator/ar_TN", CollatorFixture, "ar_TN.UTF-8",
 		collator_test_setup, test_ar_TN, collator_test_teardown);
+
+	g_test_add (
+		"/ECollator/cs_CZ", CollatorFixture, "cs_CZ.UTF-8",
+		collator_test_setup, test_cs_CZ, collator_test_teardown);
 
 	return g_test_run ();
 }

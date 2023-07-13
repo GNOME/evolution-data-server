@@ -49,7 +49,7 @@
 
 #include "e-book-cache.h"
 
-#define E_BOOK_CACHE_VERSION		3
+#define E_BOOK_CACHE_VERSION		4
 #define INSERT_MULTI_STMT_BYTES		128
 #define COLUMN_DEFINITION_BYTES		32
 #define GENERATED_QUERY_BYTES		1024
@@ -4640,6 +4640,11 @@ e_book_cache_migrate (ECache *cache,
 		if (from_version == 2) {
 			/* Version 3 added EBC_TABLE_CATEGORIES */
 			success = e_cache_foreach (cache, E_CACHE_INCLUDE_DELETED, NULL, e_book_cache_populate_categories, NULL, cancellable, error);
+		}
+
+		if (from_version == 3) {
+			/* Version 4 is to rebuild locale dependent data, due to added Latin/English labels into the ECollator */
+			success = ebc_upgrade (book_cache, cancellable, error);
 		}
 	}
 
