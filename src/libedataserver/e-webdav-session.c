@@ -1183,6 +1183,9 @@ e_webdav_session_comma_header_to_hashtable (SoupMessageHeaders *headers,
 
 	soup_header_free_param_list (soup_params);
 
+	if (!g_hash_table_size (result))
+		g_clear_pointer (&result, g_hash_table_destroy);
+
 	return result;
 }
 
@@ -1378,36 +1381,16 @@ e_webdav_session_post_sync (EWebDAVSession *webdav,
 	return success;
 }
 
-/**
- * e_webdav_session_propfind_sync:
- * @webdav: an #EWebDAVSession
- * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
- * @depth: requested depth, can be one of %E_WEBDAV_DEPTH_THIS, %E_WEBDAV_DEPTH_THIS_AND_CHILDREN or %E_WEBDAV_DEPTH_INFINITY
- * @xml: (nullable): the request itself, as an #EXmlDocument, the root element should be DAV:propfind, or %NULL
- * @func: (scope call): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response
- * @func_user_data: (closure func): user data passed to @func
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Issues PROPFIND request on the provided @uri, or, in case it's %NULL, on the URI
- * defined in associated #ESource. On success, calls @func for each returned
- * DAV:propstat.
- *
- * The @xml can be %NULL, in which case the server should behave like DAV:allprop request.
- *
- * Returns: Whether succeeded.
- *
- * Since: 3.26
- **/
-gboolean
-e_webdav_session_propfind_sync (EWebDAVSession *webdav,
-				const gchar *uri,
-				const gchar *depth,
-				const EXmlDocument *xml,
-				EWebDAVPropstatTraverseFunc func,
-				gpointer func_user_data,
-				GCancellable *cancellable,
-				GError **error)
+static gboolean
+e_webdav_session_propfind_internal_sync (EWebDAVSession *webdav,
+					 const gchar *uri,
+					 const gchar *depth,
+					 const EXmlDocument *xml,
+					 EWebDAVPropstatTraverseFunc func,
+					 gpointer func_user_data,
+					 SoupMessage **out_message,
+					 GCancellable *cancellable,
+					 GError **error)
 {
 	SoupMessage *message;
 	GByteArray *bytes;
@@ -1420,6 +1403,9 @@ e_webdav_session_propfind_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (func != NULL, FALSE);
 
 	g_clear_pointer (&webdav->priv->last_dav_error_code, g_free);
+
+	if (out_message)
+		*out_message = NULL;
 
 	message = e_webdav_session_new_message (webdav, SOUP_METHOD_PROPFIND, uri, error);
 	if (!message)
@@ -1454,9 +1440,53 @@ e_webdav_session_propfind_sync (EWebDAVSession *webdav,
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
-	g_object_unref (message);
+
+	if (success && out_message)
+		*out_message = message;
+	else
+		g_object_unref (message);
 
 	return success;
+}
+
+/**
+ * e_webdav_session_propfind_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @depth: requested depth, can be one of %E_WEBDAV_DEPTH_THIS, %E_WEBDAV_DEPTH_THIS_AND_CHILDREN or %E_WEBDAV_DEPTH_INFINITY
+ * @xml: (nullable): the request itself, as an #EXmlDocument, the root element should be DAV:propfind, or %NULL
+ * @func: (scope call): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response
+ * @func_user_data: (closure func): user data passed to @func
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Issues PROPFIND request on the provided @uri, or, in case it's %NULL, on the URI
+ * defined in associated #ESource. On success, calls @func for each returned
+ * DAV:propstat.
+ *
+ * The @xml can be %NULL, in which case the server should behave like DAV:allprop request.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_propfind_sync (EWebDAVSession *webdav,
+				const gchar *uri,
+				const gchar *depth,
+				const EXmlDocument *xml,
+				EWebDAVPropstatTraverseFunc func,
+				gpointer func_user_data,
+				GCancellable *cancellable,
+				GError **error)
+{
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (depth != NULL, FALSE);
+	if (xml)
+		g_return_val_if_fail (E_IS_XML_DOCUMENT (xml), FALSE);
+	g_return_val_if_fail (func != NULL, FALSE);
+
+	return e_webdav_session_propfind_internal_sync (webdav, uri, depth, xml, func, func_user_data, NULL, cancellable, error);
 }
 
 /**
@@ -4150,6 +4180,42 @@ e_webdav_session_get_current_user_privilege_set_sync (EWebDAVSession *webdav,
 						      GCancellable *cancellable,
 						      GError **error)
 {
+	return e_webdav_session_get_current_user_privilege_set_full_sync (webdav, uri, out_privileges, NULL, NULL, cancellable, error);
+}
+
+/**
+ * e_webdav_session_get_current_user_privilege_set_full_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @out_privileges: (out) (transfer full) (element-type EWebDAVPrivilege): return location for a %GSList of #EWebDAVPrivilege
+ * @out_capabilities: (out) (transfer full) (optional): return location for DAV capabilities, or %NULL
+ * @out_allows: (out) (transfer full) (optional): return location for allowed operations, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Gets current user privileges for the @uri, or, in case it's %NULL, for the URI
+ * defined in associated #ESource, with optional read of the capabilities
+ * and what the user is allowed. See e_webdav_session_options_sync() for
+ * more information about the @out_capabilities and @out_allows values.
+ *
+ * Free the returned @out_privileges with
+ * g_slist_free_full (privileges, e_webdav_privilege_free);
+ * when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_get_current_user_privilege_set_full_sync (EWebDAVSession *webdav,
+							   const gchar *uri,
+							   GSList **out_privileges,
+							   GHashTable **out_capabilities,
+							   GHashTable **out_allows,
+							   GCancellable *cancellable,
+							   GError **error)
+{
+	SoupMessage *message = NULL;
 	EXmlDocument *xml;
 	PrivilegeSetData psd;
 	gboolean success;
@@ -4158,6 +4224,12 @@ e_webdav_session_get_current_user_privilege_set_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (out_privileges != NULL, FALSE);
 
 	*out_privileges = NULL;
+
+	if (out_capabilities)
+		*out_capabilities = NULL;
+
+	if (out_allows)
+		*out_allows = NULL;
 
 	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "propfind");
 	g_return_val_if_fail (xml != NULL, FALSE);
@@ -4169,8 +4241,8 @@ e_webdav_session_get_current_user_privilege_set_sync (EWebDAVSession *webdav,
 	psd.any_found = FALSE;
 	psd.out_privileges = out_privileges;
 
-	success = e_webdav_session_propfind_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
-		e_webdav_session_current_user_privilege_set_cb, &psd, cancellable, error);
+	success = e_webdav_session_propfind_internal_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
+		e_webdav_session_current_user_privilege_set_cb, &psd, &message, cancellable, error);
 
 	g_object_unref (xml);
 
@@ -4178,8 +4250,18 @@ e_webdav_session_get_current_user_privilege_set_sync (EWebDAVSession *webdav,
 		success = FALSE;
 		g_set_error_literal (error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND, soup_status_get_phrase (SOUP_STATUS_NOT_FOUND));
 	} else if (success) {
+		if (message) {
+			if (out_capabilities)
+				*out_capabilities = e_webdav_session_comma_header_to_hashtable (soup_message_get_response_headers (message), "DAV");
+
+			if (out_allows)
+				*out_allows = e_webdav_session_comma_header_to_hashtable (soup_message_get_response_headers (message), "Allow");
+		}
+
 		*out_privileges = g_slist_reverse (*out_privileges);
 	}
+
+	g_clear_object (&message);
 
 	return success;
 }

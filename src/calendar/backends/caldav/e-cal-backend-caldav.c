@@ -205,7 +205,9 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 		GSList *privileges = NULL, *link;
 
 		/* Ignore any errors here */
-		if (e_webdav_session_get_current_user_privilege_set_sync (webdav, NULL, &privileges, cancellable, NULL)) {
+		if (e_webdav_session_get_current_user_privilege_set_full_sync (webdav, NULL, &privileges,
+			capabilities ? NULL : &capabilities,
+			allows ? NULL : &allows, cancellable, NULL)) {
 			for (link = privileges; link && !is_writable; link = g_slist_next (link)) {
 				EWebDAVPrivilege *privilege = link->data;
 

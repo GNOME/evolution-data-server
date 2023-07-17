@@ -558,6 +558,14 @@ gboolean	e_webdav_session_get_current_user_privilege_set_sync
 							 GSList **out_privileges, /* EWebDAVPrivilege * */
 							 GCancellable *cancellable,
 							 GError **error);
+gboolean	e_webdav_session_get_current_user_privilege_set_full_sync
+							(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 GSList **out_privileges, /* EWebDAVPrivilege * */
+							 GHashTable **out_capabilities,
+							 GHashTable **out_allows,
+							 GCancellable *cancellable,
+							 GError **error);
 gboolean	e_webdav_session_get_acl_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 GSList **out_entries, /* EWebDAVAccessControlEntry * */
