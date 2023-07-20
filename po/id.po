@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2023-06-29 14:13+0000\n"
-"PO-Revision-Date: 2023-07-06 19:30+0700\n"
+"POT-Creation-Date: 2023-07-12 16:09+0000\n"
+"PO-Revision-Date: 2023-07-20 17:21+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "Language: id\n"
@@ -125,7 +125,7 @@ msgid "Invalid Query “%s”"
 msgstr "Kueri \"%s\" Tidak Valid"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:2260
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2158
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2186
 msgid "Requested to delete an unrelated cursor"
 msgstr "Diminta untuk menghapus kursor yang tak berhubungan"
 
@@ -263,8 +263,8 @@ msgid "Downloading contacts (%d)..."
 msgstr "Mengunduh kontak (%d)..."
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5111
-#: src/addressbook/libedata-book/e-book-meta-backend.c:860
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:745
+#: src/addressbook/libedata-book/e-book-meta-backend.c:882
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:768
 msgid "Refreshing…"
 msgstr "Menyegarkan…"
 
@@ -1157,7 +1157,7 @@ msgstr "Tidak dapat membuka basis data %s: %s"
 #: src/calendar/libedata-cal/e-cal-cache.c:2949
 #: src/calendar/libedata-cal/e-cal-cache.c:3012
 #: src/calendar/libedata-cal/e-cal-cache.c:3183
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1435
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1464
 #: src/libebackend/e-cache.c:1370 src/libebackend/e-cache.c:2348
 #: src/libebackend/e-cache.c:2388
 #, c-format
@@ -1196,20 +1196,20 @@ msgstr "Tak bisa mengurut berdasarkan ruas yang bukan bertipe string"
 msgid "Contact field “%s” not in summary"
 msgstr "Ruas kontak \"%s\" tidak ada dalam ringkasan"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1155
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1152
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1177
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1175
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Objek pramuat untuk UID \"%s\" tidak valid"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1163
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1160
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1185
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1183
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Objek yang diterima untuk UID \"%s\" tidak valid"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1390
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1389
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1412
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1412
 msgid ""
 "Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
 "and repeat the action."
@@ -1217,9 +1217,14 @@ msgstr ""
 "Penyegaran dilewati karena mode Penghemat Daya yang diaktifkan. Nonaktifkan "
 "mode Penghemat Daya dan ulangi tindakan tersebut."
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2028
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2527
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3392
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1418
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1418
+msgid "Refresh skipped due to being disabled on metered network."
+msgstr "Penyegaran dilewati karena dinonaktifkan pada jaringan berkuota."
+
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2056
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2555
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3436
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Gagal membuat singgahan \"%s\":"
@@ -1369,11 +1374,11 @@ msgid "File “%s” is not a VCALENDAR component"
 msgstr "Berkas “%s” bukan komponen VCALENDAR"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: src/calendar/backends/file/e-cal-backend-file.c:3735
-#: src/calendar/backends/file/e-cal-backend-file.c:3741
-#: src/calendar/backends/file/e-cal-backend-file.c:3747
-#: src/calendar/backends/file/e-cal-backend-file.c:3774
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2619
+#: src/calendar/backends/file/e-cal-backend-file.c:3743
+#: src/calendar/backends/file/e-cal-backend-file.c:3749
+#: src/calendar/backends/file/e-cal-backend-file.c:3755
+#: src/calendar/backends/file/e-cal-backend-file.c:3782
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2663
 msgid "Unsupported method"
 msgstr "Metode tidak didukung"
 
@@ -2559,14 +2564,22 @@ msgstr "Tidak dapat menambah zona waktu tanpa komponen"
 msgid "Cannot add timezone with invalid component"
 msgstr "Tidak dapat menambah zona waktu dengan komponen yang tidak valid"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1207
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1230
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr ""
 "Objek yang diterima untuk UID \"%s\" tidak mengandung komponen yang "
 "diharapkan"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4292
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1971
+msgid ""
+"Cannot modify all instances from a detached instance. Modify a series "
+"instance instead."
+msgstr ""
+"Tidak dapat memodifikasi semua instansi dari instansi yang terpisah. Sebagai "
+"gantinya, Anda dapat memodifikasi instansi seri."
+
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4336
 msgid "attachment.dat"
 msgstr "attachment.dat"
 
@@ -4208,7 +4221,7 @@ msgstr "Cacah koneksi konkur_en yang akan dipakai"
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:68
 msgid "Enable full folder update on _metered network"
-msgstr "Aktifkan pe_mbaruan folder lengkap pada jaringan terukur"
+msgstr "Aktifkan pe_mbaruan folder lengkap pada jaringan berkuota"
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:70
 msgid "Send client I_D to the server"
@@ -6111,6 +6124,10 @@ msgstr "Waktu jeda terakhir yang digunakan, dalam hitungan menit"
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:99
 msgid "User-defined snooze times, in minutes"
 msgstr "Waktu jeda pengguna, dalam hitungan menit"
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:103
+msgid "Delete meeting from calendar on Decline"
+msgstr "Hapus rapat dari kalender saat Ditolak"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:5
 msgid "Whether the migration of old setting was already done"
