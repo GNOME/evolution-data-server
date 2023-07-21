@@ -153,8 +153,7 @@ gboolean	imapx_update_message_info_flags	(CamelMessageInfo *info,
 						 guint32 server_flags,
 						 const CamelNamedFlags *server_user_flags,
 						 guint32 permanent_flags,
-						 CamelFolder *folder,
-						 gboolean unsolicited);
+						 CamelFolder *folder);
 void		imapx_set_message_info_flags_for_new_message
 						(CamelMessageInfo *info,
 						 guint32 server_flags,

@@ -311,8 +311,7 @@ imapx_update_message_info_flags (CamelMessageInfo *info,
                                  guint32 server_flags,
                                  const CamelNamedFlags *server_user_flags,
                                  guint32 permanent_flags,
-                                 CamelFolder *folder,
-                                 gboolean unsolicited)
+                                 CamelFolder *folder)
 {
 	gboolean changed = FALSE;
 	CamelIMAPXMessageInfo *xinfo = CAMEL_IMAPX_MESSAGE_INFO (info);

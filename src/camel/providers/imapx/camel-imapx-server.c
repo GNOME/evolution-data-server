@@ -1258,8 +1258,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 						mi, finfo->flags,
 						finfo->user_flags,
 						camel_imapx_mailbox_get_permanentflags (select_mailbox),
-						select_folder,
-						(select_pending == NULL));
+						select_folder);
 					c (is->priv->tagprefix, "found uid %s in '%s', changed:%d\n", uid,
 						camel_folder_get_full_name (select_folder), changed);
 				} else {
@@ -5367,7 +5366,7 @@ imapx_server_process_fetch_changes_infos (CamelIMAPXServer *is,
 			nfo->server_flags,
 			nfo->server_user_flags,
 			camel_imapx_mailbox_get_permanentflags (mailbox),
-			folder, FALSE)) {
+			folder)) {
 			g_mutex_lock (&is->priv->changes_lock);
 			camel_folder_change_info_change_uid (is->priv->changes, camel_message_info_get_uid (minfo));
 			g_mutex_unlock (&is->priv->changes_lock);
