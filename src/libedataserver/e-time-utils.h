@@ -51,6 +51,11 @@ ETimeParseStatus
 ETimeParseStatus
 		e_time_parse_date		(const gchar *value,
 						 struct tm *result);
+ETimeParseStatus
+		e_time_parse_date_format	(const gchar *value,
+						 const gchar *format,
+						 struct tm *out_result,
+						 gboolean *out_two_digit_year);
 
 /* Same behavior as the functions above with two_digit_year set to NULL. */
 ETimeParseStatus
