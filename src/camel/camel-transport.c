@@ -29,7 +29,7 @@
 typedef struct _AsyncContext AsyncContext;
 
 struct _CamelTransportPrivate {
-	gint placeholder;
+	gboolean request_dsn;
 };
 
 struct _AsyncContext {
@@ -65,6 +65,44 @@ static void
 camel_transport_init (CamelTransport *transport)
 {
 	transport->priv = camel_transport_get_instance_private (transport);
+}
+
+/**
+ * camel_transport_get_request_dsn:
+ * @transport: a #CamelTransport
+ *
+ * Returns whether should request Delivery Status Notification
+ * in the "send_to" operation.
+ *
+ * Returns: whether should request Delivery Status Notification
+ *
+ * Since: 3.50
+ **/
+gboolean
+camel_transport_get_request_dsn (CamelTransport *transport)
+{
+	g_return_val_if_fail (CAMEL_IS_TRANSPORT (transport), FALSE);
+
+	return transport->priv->request_dsn;
+}
+
+/**
+ * camel_transport_set_request_dsn:
+ * @transport: a #CamelTransport
+ * @request_dsn: a value to set
+ *
+ * Sets whether should request Delivery Status Notification
+ * during the "send_to" operation.
+ *
+ * Since: 3.50
+ **/
+void
+camel_transport_set_request_dsn (CamelTransport *transport,
+				 gboolean request_dsn)
+{
+	g_return_if_fail (CAMEL_IS_TRANSPORT (transport));
+
+	transport->priv->request_dsn = request_dsn;
 }
 
 /**

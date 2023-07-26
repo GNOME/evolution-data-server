@@ -64,6 +64,26 @@ gboolean	camel_smtp_settings_get_reencode_data
 void		camel_smtp_settings_set_reencode_data
 						(CamelSmtpSettings *settings,
 						 gboolean reencode_data);
+gboolean	camel_smtp_settings_get_dsn_ret_full
+						(CamelSmtpSettings *settings);
+void		camel_smtp_settings_set_dsn_ret_full
+						(CamelSmtpSettings *settings,
+						 gboolean dsn_ret_full);
+gboolean	camel_smtp_settings_get_dsn_notify_success
+						(CamelSmtpSettings *settings);
+void		camel_smtp_settings_set_dsn_notify_success
+						(CamelSmtpSettings *settings,
+						 gboolean dsn_notify_success);
+gboolean	camel_smtp_settings_get_dsn_notify_failure
+						(CamelSmtpSettings *settings);
+void		camel_smtp_settings_set_dsn_notify_failure
+						(CamelSmtpSettings *settings,
+						 gboolean dsn_notify_failure);
+gboolean	camel_smtp_settings_get_dsn_notify_delay
+						(CamelSmtpSettings *settings);
+void		camel_smtp_settings_set_dsn_notify_delay
+						(CamelSmtpSettings *settings,
+						 gboolean dsn_notify_delay);
 
 G_END_DECLS
 

@@ -52,9 +52,10 @@
 #define CAMEL_SMTP_TRANSPORT_8BITMIME               (1 << 1)
 #define CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES    (1 << 2)
 #define CAMEL_SMTP_TRANSPORT_STARTTLS               (1 << 3)
+#define CAMEL_SMTP_TRANSPORT_DSN		    (1 << 4) /* supports Delivery Status Notification */
 
 /* set if we are using authtypes from a broken AUTH= */
-#define CAMEL_SMTP_TRANSPORT_AUTH_EQUAL             (1 << 4)
+#define CAMEL_SMTP_TRANSPORT_AUTH_EQUAL             (1 << 5)
 
 enum {
 	PROP_0,
@@ -85,12 +86,15 @@ static gboolean		smtp_mail		(CamelSmtpTransport *transport,
 						 CamelStream *ostream,
 						 const gchar *sender,
 						 gboolean has_8bit_parts,
+						 gboolean request_dsn,
+						 const gchar *dsn_envid,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean		smtp_rcpt		(CamelSmtpTransport *transport,
 						 CamelStreamBuffer *istream,
 						 CamelStream *ostream,
 						 const gchar *recipient,
+						 gboolean request_dsn,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean		smtp_data		(CamelSmtpTransport *transport,
@@ -950,7 +954,8 @@ smtp_transport_send_to_sync (CamelTransport *transport,
 	CamelStreamBuffer *istream;
 	CamelStream *ostream;
 	gboolean has_8bit_parts = FALSE;
-	const gchar *addr;
+	gboolean request_dsn;
+	const gchar *addr, *message_id;
 	gint i, len;
 
 	smtp_debug_print_server_name (CAMEL_SERVICE (transport), "Sending with");
@@ -992,10 +997,13 @@ smtp_transport_send_to_sync (CamelTransport *transport,
 	}
 	smtp_transport->need_rset = FALSE;
 
+	message_id = camel_mime_message_get_message_id (message);
+	request_dsn = camel_transport_get_request_dsn (CAMEL_TRANSPORT (smtp_transport));
+
 	/* rfc1652 (8BITMIME) requires that you notify the ESMTP daemon that
 	 * you'll be sending an 8bit mime message at "MAIL FROM:" time. */
 	if (!smtp_mail (
-		smtp_transport, istream, ostream, addr, has_8bit_parts, cancellable, error)) {
+		smtp_transport, istream, ostream, addr, has_8bit_parts, request_dsn, message_id, cancellable, error)) {
 		camel_operation_pop_message (cancellable);
 		g_clear_object (&istream);
 		g_clear_object (&ostream);
@@ -1031,7 +1039,7 @@ smtp_transport_send_to_sync (CamelTransport *transport,
 		}
 
 		enc = camel_internet_address_encode_address (NULL, NULL, addr);
-		if (!smtp_rcpt (smtp_transport, istream, ostream, enc, cancellable, error)) {
+		if (!smtp_rcpt (smtp_transport, istream, ostream, enc, request_dsn, cancellable, error)) {
 			g_free (enc);
 			camel_operation_pop_message (cancellable);
 			smtp_transport->need_rset = TRUE;
@@ -1454,7 +1462,8 @@ smtp_helo (CamelSmtpTransport *transport,
 	 * are being called a second time (ie, after a STARTTLS) */
 	transport->flags &= ~(CAMEL_SMTP_TRANSPORT_8BITMIME |
 			      CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES |
-			      CAMEL_SMTP_TRANSPORT_STARTTLS);
+			      CAMEL_SMTP_TRANSPORT_STARTTLS |
+			      CAMEL_SMTP_TRANSPORT_DSN);
 
 	if (transport->authtypes) {
 		g_hash_table_foreach (transport->authtypes, authtypes_free, NULL);
@@ -1565,6 +1574,8 @@ smtp_helo (CamelSmtpTransport *transport,
 				transport->flags |= CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES;
 			} else if (!g_ascii_strncasecmp (token, "STARTTLS", 8)) {
 				transport->flags |= CAMEL_SMTP_TRANSPORT_STARTTLS;
+			} else if (!g_ascii_strncasecmp (token, "DSN", 3)) {
+				transport->flags |= CAMEL_SMTP_TRANSPORT_DSN;
 			} else if (!g_ascii_strncasecmp (token, "AUTH", 4)) {
 				if (!transport->authtypes || transport->flags & CAMEL_SMTP_TRANSPORT_AUTH_EQUAL) {
 					/* Don't bother parsing any authtypes if we already have a list.
@@ -1611,28 +1622,49 @@ smtp_mail (CamelSmtpTransport *transport,
 	   CamelStream *ostream,
            const gchar *sender,
            gboolean has_8bit_parts,
+	   gboolean request_dsn,
+	   const gchar *dsn_envid,
            GCancellable *cancellable,
            GError **error)
 {
 	/* we gotta tell the smtp server who we are. (our email addy) */
-	gchar *cmdbuf, *respbuf = NULL;
+	GString *cmd;
+	gchar *respbuf = NULL;
+
+	cmd = g_string_new ("MAIL");
 
 	if ((transport->flags & CAMEL_SMTP_TRANSPORT_8BITMIME) && has_8bit_parts)
-		cmdbuf = g_strdup_printf ("MAIL FROM:<%s> BODY=8BITMIME\r\n", sender);
+		g_string_append_printf (cmd, " FROM:<%s> BODY=8BITMIME", sender);
 	else
-		cmdbuf = g_strdup_printf ("MAIL FROM:<%s>\r\n", sender);
+		g_string_append_printf (cmd, " FROM:<%s>", sender);
 
-	d (fprintf (stderr, "[SMTP] sending: %s", cmdbuf));
+	if (request_dsn && (transport->flags & CAMEL_SMTP_TRANSPORT_DSN) != 0) {
+		CamelSettings *settings;
+		gboolean dsn_ret_full;
 
-	if (camel_stream_write_string (ostream, cmdbuf, cancellable, error) == -1) {
-		g_free (cmdbuf);
+		settings = camel_service_ref_settings (CAMEL_SERVICE (transport));
+		dsn_ret_full = camel_smtp_settings_get_dsn_ret_full (CAMEL_SMTP_SETTINGS (settings));
+		g_clear_object (&settings);
+
+		g_string_append_printf (cmd, " RET=%s", dsn_ret_full ? "FULL" : "HDRS");
+
+		if (dsn_envid && *dsn_envid)
+			g_string_append_printf (cmd, " ENVID=%s", dsn_envid);
+	}
+
+	g_string_append (cmd, "\r\n");
+
+	d (fprintf (stderr, "[SMTP] sending: %s", cmd->str));
+
+	if (camel_stream_write_string (ostream, cmd->str, cancellable, error) == -1) {
+		g_string_free (cmd, TRUE);
 		g_prefix_error (error, _("MAIL FROM command failed: "));
 		camel_service_disconnect_sync (
 			CAMEL_SERVICE (transport),
 			FALSE, cancellable, NULL);
 		return FALSE;
 	}
-	g_free (cmdbuf);
+	g_string_free (cmd, TRUE);
 
 	do {
 		/* Check for "250 Sender OK..." or anything starting with "2" */
@@ -1664,19 +1696,60 @@ smtp_rcpt (CamelSmtpTransport *transport,
 	   CamelStreamBuffer *istream,
 	   CamelStream *ostream,
            const gchar *recipient,
+	   gboolean request_dsn,
            GCancellable *cancellable,
            GError **error)
 {
 	/* we gotta tell the smtp server who we are going to be sending
 	 * our email to */
-	gchar *cmdbuf, *respbuf = NULL;
+	GString *cmd;
+	gchar *respbuf = NULL;
 
-	cmdbuf = g_strdup_printf ("RCPT TO:<%s>\r\n", recipient);
+	cmd = g_string_new ("RCPT");
 
-	d (fprintf (stderr, "[SMTP] sending: %s", cmdbuf));
+	g_string_append_printf (cmd, " TO:<%s>", recipient);
 
-	if (camel_stream_write_string (ostream, cmdbuf, cancellable, error) == -1) {
-		g_free (cmdbuf);
+	if (request_dsn && (transport->flags & CAMEL_SMTP_TRANSPORT_DSN) != 0) {
+		CamelSettings *settings;
+		gboolean any_added = FALSE;
+
+		settings = camel_service_ref_settings (CAMEL_SERVICE (transport));
+
+		if (camel_smtp_settings_get_dsn_notify_success (CAMEL_SMTP_SETTINGS (settings))) {
+			g_string_append (cmd, " NOTIFY=SUCCESS");
+			any_added = TRUE;
+		}
+
+		if (camel_smtp_settings_get_dsn_notify_failure (CAMEL_SMTP_SETTINGS (settings))) {
+			if (any_added)
+				g_string_append_c (cmd, ',');
+			else
+				g_string_append (cmd, " NOTIFY=");
+			g_string_append (cmd, "FAILURE");
+			any_added = TRUE;
+		}
+
+		if (camel_smtp_settings_get_dsn_notify_delay (CAMEL_SMTP_SETTINGS (settings))) {
+			if (any_added)
+				g_string_append_c (cmd, ',');
+			else
+				g_string_append (cmd, " NOTIFY=");
+			g_string_append (cmd, "DELAY");
+			any_added = TRUE;
+		}
+
+		if (!any_added)
+			g_string_append (cmd, " NOTIFY=NEVER");
+
+		g_clear_object (&settings);
+	}
+
+	g_string_append (cmd, "\r\n");
+
+	d (fprintf (stderr, "[SMTP] sending: %s", cmd->str));
+
+	if (camel_stream_write_string (ostream, cmd->str, cancellable, error) == -1) {
+		g_string_free (cmd, TRUE);
 		g_prefix_error (error, _("RCPT TO command failed: "));
 		camel_service_disconnect_sync (
 			CAMEL_SERVICE (transport),
@@ -1684,7 +1757,7 @@ smtp_rcpt (CamelSmtpTransport *transport,
 
 		return FALSE;
 	}
-	g_free (cmdbuf);
+	g_string_free (cmd, TRUE);
 
 	do {
 		/* Check for "250 Recipient OK..." */

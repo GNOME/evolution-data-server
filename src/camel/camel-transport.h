@@ -76,6 +76,9 @@ struct _CamelTransportClass {
 };
 
 GType		camel_transport_get_type	(void);
+gboolean	camel_transport_get_request_dsn	(CamelTransport *transport);
+void		camel_transport_set_request_dsn	(CamelTransport *transport,
+						 gboolean request_dsn);
 gboolean	camel_transport_send_to_sync	(CamelTransport *transport,
 						 CamelMimeMessage *message,
 						 CamelAddress *from,

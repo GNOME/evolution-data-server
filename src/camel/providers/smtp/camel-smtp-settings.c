@@ -19,6 +19,10 @@
 
 struct _CamelSmtpSettingsPrivate {
 	gboolean reencode_data;
+	gboolean dsn_ret_full;
+	gboolean dsn_notify_success;
+	gboolean dsn_notify_failure;
+	gboolean dsn_notify_delay;
 };
 
 enum {
@@ -28,7 +32,11 @@ enum {
 	PROP_PORT,
 	PROP_SECURITY_METHOD,
 	PROP_USER,
-	PROP_REENCODE_DATA
+	PROP_REENCODE_DATA,
+	PROP_DSN_RET_FULL,
+	PROP_DSN_NOTIFY_SUCCESS,
+	PROP_DSN_NOTIFY_FAILURE,
+	PROP_DSN_NOTIFY_DELAY
 };
 
 G_DEFINE_TYPE_WITH_CODE (CamelSmtpSettings, camel_smtp_settings, CAMEL_TYPE_SETTINGS,
@@ -74,6 +82,30 @@ smtp_settings_set_property (GObject *object,
 
 		case PROP_REENCODE_DATA:
 			camel_smtp_settings_set_reencode_data (
+				CAMEL_SMTP_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_DSN_RET_FULL:
+			camel_smtp_settings_set_dsn_ret_full (
+				CAMEL_SMTP_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_DSN_NOTIFY_SUCCESS:
+			camel_smtp_settings_set_dsn_notify_success (
+				CAMEL_SMTP_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_DSN_NOTIFY_FAILURE:
+			camel_smtp_settings_set_dsn_notify_failure (
+				CAMEL_SMTP_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_DSN_NOTIFY_DELAY:
+			camel_smtp_settings_set_dsn_notify_delay (
 				CAMEL_SMTP_SETTINGS (object),
 				g_value_get_boolean (value));
 			return;
@@ -128,6 +160,34 @@ smtp_settings_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				camel_smtp_settings_get_reencode_data (
+				CAMEL_SMTP_SETTINGS (object)));
+			return;
+
+		case PROP_DSN_RET_FULL:
+			g_value_set_boolean (
+				value,
+				camel_smtp_settings_get_dsn_ret_full (
+				CAMEL_SMTP_SETTINGS (object)));
+			return;
+
+		case PROP_DSN_NOTIFY_SUCCESS:
+			g_value_set_boolean (
+				value,
+				camel_smtp_settings_get_dsn_notify_success (
+				CAMEL_SMTP_SETTINGS (object)));
+			return;
+
+		case PROP_DSN_NOTIFY_FAILURE:
+			g_value_set_boolean (
+				value,
+				camel_smtp_settings_get_dsn_notify_failure (
+				CAMEL_SMTP_SETTINGS (object)));
+			return;
+
+		case PROP_DSN_NOTIFY_DELAY:
+			g_value_set_boolean (
+				value,
+				camel_smtp_settings_get_dsn_notify_delay (
 				CAMEL_SMTP_SETTINGS (object)));
 			return;
 	}
@@ -186,6 +246,58 @@ camel_smtp_settings_class_init (CamelSmtpSettingsClass *class)
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_DSN_RET_FULL,
+		g_param_spec_boolean (
+			"dsn-ret-full",
+			"DSN Ret Full",
+			"Whether to return full messages in DSN responses",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_DSN_NOTIFY_SUCCESS,
+		g_param_spec_boolean (
+			"dsn-notify-success",
+			"DSN Notify Success",
+			"Whether to DSN-notify on success",
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_DSN_NOTIFY_FAILURE,
+		g_param_spec_boolean (
+			"dsn-notify-failure",
+			"DSN Notify Failure",
+			"Whether to DSN-notify on failure",
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_DSN_NOTIFY_DELAY,
+		g_param_spec_boolean (
+			"dsn-notify-delay",
+			"DSN Notify Delay",
+			"Whether to DSN-notify on delay",
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -214,4 +326,92 @@ camel_smtp_settings_set_reencode_data (CamelSmtpSettings *settings,
 	settings->priv->reencode_data = reencode_data;
 
 	g_object_notify (G_OBJECT (settings), "reencode-data");
+}
+
+gboolean
+camel_smtp_settings_get_dsn_ret_full (CamelSmtpSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_SMTP_SETTINGS (settings), FALSE);
+
+	return settings->priv->dsn_ret_full;
+}
+
+void
+camel_smtp_settings_set_dsn_ret_full (CamelSmtpSettings *settings,
+				      gboolean dsn_ret_full)
+{
+	g_return_if_fail (CAMEL_IS_SMTP_SETTINGS (settings));
+
+	if ((settings->priv->dsn_ret_full ? 1 : 0) == (dsn_ret_full ? 1 : 0))
+		return;
+
+	settings->priv->dsn_ret_full = dsn_ret_full;
+
+	g_object_notify (G_OBJECT (settings), "dsn-ret-full");
+}
+
+gboolean
+camel_smtp_settings_get_dsn_notify_success (CamelSmtpSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_SMTP_SETTINGS (settings), FALSE);
+
+	return settings->priv->dsn_notify_success;
+}
+
+void
+camel_smtp_settings_set_dsn_notify_success (CamelSmtpSettings *settings,
+					    gboolean dsn_notify_success)
+{
+	g_return_if_fail (CAMEL_IS_SMTP_SETTINGS (settings));
+
+	if ((settings->priv->dsn_notify_success ? 1 : 0) == (dsn_notify_success ? 1 : 0))
+		return;
+
+	settings->priv->dsn_notify_success = dsn_notify_success;
+
+	g_object_notify (G_OBJECT (settings), "dsn-notify-success");
+}
+
+gboolean
+camel_smtp_settings_get_dsn_notify_failure (CamelSmtpSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_SMTP_SETTINGS (settings), FALSE);
+
+	return settings->priv->dsn_notify_failure;
+}
+
+void
+camel_smtp_settings_set_dsn_notify_failure (CamelSmtpSettings *settings,
+					    gboolean dsn_notify_failure)
+{
+	g_return_if_fail (CAMEL_IS_SMTP_SETTINGS (settings));
+
+	if ((settings->priv->dsn_notify_failure ? 1 : 0) == (dsn_notify_failure ? 1 : 0))
+		return;
+
+	settings->priv->dsn_notify_failure = dsn_notify_failure;
+
+	g_object_notify (G_OBJECT (settings), "dsn-notify-failure");
+}
+
+gboolean
+camel_smtp_settings_get_dsn_notify_delay (CamelSmtpSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_SMTP_SETTINGS (settings), FALSE);
+
+	return settings->priv->dsn_notify_delay;
+}
+
+void
+camel_smtp_settings_set_dsn_notify_delay (CamelSmtpSettings *settings,
+					  gboolean dsn_notify_delay)
+{
+	g_return_if_fail (CAMEL_IS_SMTP_SETTINGS (settings));
+
+	if ((settings->priv->dsn_notify_delay ? 1 : 0) == (dsn_notify_delay ? 1 : 0))
+		return;
+
+	settings->priv->dsn_notify_delay = dsn_notify_delay;
+
+	g_object_notify (G_OBJECT (settings), "dsn-notify-delay");
 }
