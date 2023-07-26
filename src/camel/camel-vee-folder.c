@@ -733,6 +733,7 @@ camel_vee_folder_propagate_skipped_changes (CamelVeeFolder *vf)
 	CamelFolderChangeInfo *changes = NULL;
 	GHashTableIter iter;
 	gpointer psub, pchanges;
+	GList *subfolders, *link;
 
 	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vf));
 
@@ -805,6 +806,18 @@ camel_vee_folder_propagate_skipped_changes (CamelVeeFolder *vf)
 			camel_folder_changed (CAMEL_FOLDER (vf), changes);
 		camel_folder_change_info_free (changes);
 	}
+
+	/* Update also virtual subfolders, to not have leftover messages in the list */
+	subfolders = camel_vee_folder_ref_folders (vf);
+
+	for (link = subfolders; link; link = g_list_next (link)) {
+		CamelFolder *folder = link->data;
+
+		if (CAMEL_IS_VEE_FOLDER (folder))
+			camel_vee_folder_propagate_skipped_changes (CAMEL_VEE_FOLDER (folder));
+	}
+
+	g_list_free_full (subfolders, g_object_unref);
 }
 
 static guint32
