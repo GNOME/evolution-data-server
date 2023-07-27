@@ -59,6 +59,8 @@ struct _EReminderWatcherPrivate {
 	ESourceRegistryWatcher *registry_watcher;
 	GCancellable *cancellable;
 	GSettings *settings;
+	GSettings *desktop_settings;
+	gboolean use_24h_format;
 	gboolean timers_enabled;
 	gulong past_changed_handler_id;
 	gulong snoozed_changed_handler_id;
@@ -1370,7 +1372,7 @@ e_reminder_watcher_format_time_impl (EReminderWatcher *watcher,
 	g_return_if_fail (buffer_size > 0);
 
 	tm = e_cal_util_icaltime_to_tm (itt);
-	e_time_format_date_and_time (&tm, FALSE, FALSE, FALSE, *inout_buffer, buffer_size);
+	e_time_format_date_and_time (&tm, watcher->priv->use_24h_format, FALSE, FALSE, *inout_buffer, buffer_size);
 }
 
 static GSList * /* EReminderData * */
@@ -2403,6 +2405,7 @@ e_reminder_watcher_dispose (GObject *object)
 
 	g_clear_object (&watcher->priv->cancellable);
 	g_clear_object (&watcher->priv->settings);
+	g_clear_object (&watcher->priv->desktop_settings);
 	g_clear_object (&watcher->priv->registry_watcher);
 	g_clear_object (&watcher->priv->registry);
 
@@ -2576,6 +2579,57 @@ e_reminder_watcher_class_init (EReminderWatcherClass *klass)
 }
 
 static void
+e_reminder_watcher_load_clock_format (EReminderWatcher *watcher)
+{
+	gchar *clock_format;
+
+	if (watcher->priv->desktop_settings == NULL) {
+		/* GNOME settings not detected, so fall back to locale. We'll
+		 * pick the 24-hour format, if the am/pm string is empty. */
+		struct tm now_tm;
+		time_t now;
+		gchar buf[64];
+
+		now = time (NULL);
+
+		if (now == -1 || localtime_r (&now, &now_tm) == NULL) {
+			watcher->priv->use_24h_format = FALSE;
+			return;
+		}
+
+		/* We want to differentiate between strftime() failures and
+		 * empty %p strings, hence the space in " %p". */
+		watcher->priv->use_24h_format = e_utf8_strftime (buf, sizeof buf, " %p", &now_tm) == 1;
+
+		return;
+	}
+
+	clock_format = g_settings_get_string (watcher->priv->desktop_settings, "clock-format");
+	watcher->priv->use_24h_format = g_strcmp0 (clock_format, "24h") == 0;
+	g_free (clock_format);
+}
+
+static GSettings*
+e_reminder_watcher_load_settings_tentative (const gchar *schema_id)
+{
+	GSettings *settings;
+	GSettingsSchemaSource *schema_source;
+	GSettingsSchema *schema;
+
+	schema_source = g_settings_schema_source_get_default ();
+	schema = g_settings_schema_source_lookup (schema_source, schema_id, TRUE);
+
+	if (schema == NULL) {
+		return NULL;
+	}
+
+	settings = g_settings_new (schema_id);
+	/* only unref after g_settings_new() to avoid needless realloc */
+	g_settings_schema_unref (schema);
+	return settings;
+}
+
+static void
 e_reminder_watcher_init (EReminderWatcher *watcher)
 {
 	ICalTimezone *zone = NULL;
@@ -2593,6 +2647,16 @@ e_reminder_watcher_init (EReminderWatcher *watcher)
 	watcher->priv = e_reminder_watcher_get_instance_private (watcher);
 	watcher->priv->cancellable = g_cancellable_new ();
 	watcher->priv->settings = g_settings_new ("org.gnome.evolution-data-server.calendar");
+	watcher->priv->desktop_settings = e_reminder_watcher_load_settings_tentative ("org.gnome.desktop.interface");
+	if (watcher->priv->desktop_settings) {
+		g_signal_connect_object (
+			watcher->priv->desktop_settings,
+			"changed::clock-format",
+			G_CALLBACK (e_reminder_watcher_load_clock_format),
+			watcher,
+			G_CONNECT_SWAPPED);
+	}
+	e_reminder_watcher_load_clock_format (watcher);
 	watcher->priv->scheduled = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, e_reminder_watcher_free_rd_slist);
 	watcher->priv->default_zone = e_cal_util_copy_timezone (zone);
 	watcher->priv->timers_enabled = TRUE;
