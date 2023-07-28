@@ -82,6 +82,26 @@ gboolean	camel_gpg_context_get_locate_keys
 void		camel_gpg_context_set_locate_keys
 						(CamelGpgContext *context,
 						 gboolean locate_keys);
+gboolean	camel_gpg_context_has_public_key_sync
+						(CamelGpgContext *context,
+						 const gchar *keyid,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_gpg_context_get_public_key_sync
+						(CamelGpgContext *context,
+						 const gchar *keyid,
+						 guint32 flags,
+						 guint8 **out_data,
+						 gsize *out_data_size,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_gpg_context_import_key_sync
+						(CamelGpgContext *context,
+						 const guint8 *data,
+						 gsize data_size,
+						 guint32 flags,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

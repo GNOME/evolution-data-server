@@ -115,7 +115,10 @@ enum _GpgCtxMode {
 	GPG_CTX_MODE_SIGN,
 	GPG_CTX_MODE_VERIFY,
 	GPG_CTX_MODE_ENCRYPT,
-	GPG_CTX_MODE_DECRYPT
+	GPG_CTX_MODE_DECRYPT,
+	GPG_CTX_MODE_HAS_PUBLIC_KEY,
+	GPG_CTX_MODE_GET_PUBLIC_KEY,
+	GPG_CTX_MODE_IMPORT_KEY
 };
 
 enum _GpgTrustMetric {
@@ -200,8 +203,9 @@ struct _GpgCtx {
 	guint diagflushed : 1;
 
 	guint utf8 : 1;
+	guint public_key_exists : 1;
 
-	guint padding : 10;
+	guint padding : 9;
 };
 
 static struct _GpgCtx *
@@ -802,6 +806,39 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 	case GPG_CTX_MODE_DECRYPT:
 		g_ptr_array_add (argv, (guint8 *) "--decrypt");
 		g_ptr_array_add (argv, (guint8 *) "--output");
+		g_ptr_array_add (argv, (guint8 *) "-");
+		break;
+	case GPG_CTX_MODE_HAS_PUBLIC_KEY:
+		g_ptr_array_add (argv, (guint8 *) "--list-public-keys");
+		g_ptr_array_add (argv, (guint8 *) "--with-colons");
+		if (gpg->userids) {
+			GSList *uiter;
+
+			for (uiter = gpg->userids; uiter; uiter = uiter->next) {
+				g_ptr_array_add (argv, (guint8 *) uiter->data);
+			}
+		} else {
+			/* this should not happen, but add an invalid address in such case */
+			g_warn_if_reached ();
+			g_ptr_array_add (argv, (guint8 *) "<@@@>");
+		}
+		break;
+	case GPG_CTX_MODE_GET_PUBLIC_KEY:
+		g_ptr_array_add (argv, (guint8 *) "--export");
+		if (gpg->userids) {
+			GSList *uiter;
+
+			for (uiter = gpg->userids; uiter; uiter = uiter->next) {
+				g_ptr_array_add (argv, (guint8 *) uiter->data);
+			}
+		} else {
+			/* this should not happen, but add an invalid address in such case */
+			g_warn_if_reached ();
+			g_ptr_array_add (argv, (guint8 *) "<@@@>");
+		}
+		break;
+	case GPG_CTX_MODE_IMPORT_KEY:
+		g_ptr_array_add (argv, (guint8 *) "--import");
 		g_ptr_array_add (argv, (guint8 *) "-");
 		break;
 	}
@@ -1428,6 +1465,22 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 				}
 				return -1;
 			}
+			break;
+		case GPG_CTX_MODE_HAS_PUBLIC_KEY:
+			if (!strncmp ((const gchar *) status, "KEY_CONSIDERED ", 15)) {
+				gpg->public_key_exists = TRUE;
+			} /*else if (!strncmp ((gchar *) status, "ERROR keylist.getkey ", 21)) {
+			}*/
+			break;
+		case GPG_CTX_MODE_GET_PUBLIC_KEY:
+			if (!strncmp ((const gchar *) status, "EXPORTED ", 9)) {
+				gpg->public_key_exists = TRUE;
+			}
+			break;
+		case GPG_CTX_MODE_IMPORT_KEY:
+			/*if (!strncmp ((const gchar *) status, "IMPORT_OK ", 10)) {
+			} else if (!strncmp ((const gchar *) status, "IMPORT_RES ", 11)) {
+			}*/
 			break;
 		}
 	}
@@ -3153,4 +3206,253 @@ camel_gpg_context_set_locate_keys (CamelGpgContext *context,
 	context->priv->locate_keys = locate_keys;
 
 	g_object_notify (G_OBJECT (context), "locate-keys");
+}
+
+/* keyid can be a key ID or an email; when it's an email, enclose it to "<>", to have exact match */
+static const gchar *
+camel_gpg_context_normalize_keyid (const gchar *keyid,
+				   gchar **out_free_memory)
+{
+	*out_free_memory = NULL;
+
+	if (!keyid || !*keyid || !strchr (keyid, '@'))
+		return keyid;
+
+	if (keyid[0] == '<' && keyid[strlen (keyid) - 1] == '>')
+		return keyid;
+
+	*out_free_memory = g_strconcat ("<", keyid, ">", NULL);
+
+	return *out_free_memory;
+}
+
+/**
+ * camel_gpg_context_has_public_key_sync:
+ * @context: a #CamelGpgContext
+ * @keyid: a key ID or an email address
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Checks whether there exists a public key with @keyid.
+ *
+ * The @keyid can be either key ID or an email address.
+ *
+ * Returns: whether the key could be found
+ *
+ * Since: 3.50
+ **/
+gboolean
+camel_gpg_context_has_public_key_sync (CamelGpgContext *context,
+				       const gchar *keyid,
+				       GCancellable *cancellable,
+				       GError **error)
+{
+	struct _GpgCtx *gpg = NULL;
+	gchar *tmp_keyid = NULL;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (CAMEL_IS_GPG_CONTEXT (context), FALSE);
+	g_return_val_if_fail (keyid && *keyid, FALSE);
+
+	gpg = gpg_ctx_new (CAMEL_CIPHER_CONTEXT (context), cancellable);
+	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_HAS_PUBLIC_KEY);
+	gpg_ctx_set_userid (gpg, camel_gpg_context_normalize_keyid (keyid, &tmp_keyid));
+	gpg->public_key_exists = FALSE;
+
+	if (!gpg_ctx_op_start (gpg, error))
+		success = FALSE;
+
+	while (success && !gpg_ctx_op_complete (gpg)) {
+		if (gpg_ctx_op_step (gpg, cancellable, error) == -1) {
+			gpg_ctx_op_cancel (gpg);
+			success = FALSE;
+			break;
+		}
+	}
+
+	if (success && gpg_ctx_op_wait (gpg) != 0 && gpg->public_key_exists) {
+		const gchar *diagnostics;
+
+		diagnostics = gpg_ctx_get_diagnostics (gpg);
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
+			(diagnostics != NULL && *diagnostics != '\0') ?
+			diagnostics : _("Failed to execute gpg."));
+
+		success = FALSE;
+	}
+
+	if (success && !gpg->public_key_exists) {
+		g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+			_("Public key “%s” was not found"), keyid);
+		success = FALSE;
+	}
+
+	g_clear_pointer (&gpg, gpg_ctx_free);
+	g_free (tmp_keyid);
+
+	return success;
+}
+
+/**
+ * camel_gpg_context_get_public_key_sync:
+ * @context: a #CamelGpgContext
+ * @keyid: a key ID or an email address
+ * @flags: flags for the operation
+ * @out_data: (out) (transfer full): return location for the public key data, in binary form
+ * @out_data_size: (out): return location to store the @out_data size to
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Returns a public key with @keyid.
+ *
+ * The @keyid can be either key ID or an email address.
+ *
+ * The @flags argument is currently unused and should be set to 0.
+ *
+ * The @out_data content should be freed with g_free(), when
+ * no longer needed.
+ *
+ * Returns: whether succeeded
+ *
+ * Since: 3.50
+ **/
+gboolean
+camel_gpg_context_get_public_key_sync (CamelGpgContext *context,
+				       const gchar *keyid,
+				       guint32 flags,
+				       guint8 **out_data,
+				       gsize *out_data_size,
+				       GCancellable *cancellable,
+				       GError **error)
+{
+	struct _GpgCtx *gpg = NULL;
+	CamelStream *ostream;
+	gchar *tmp_keyid = NULL;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (CAMEL_IS_GPG_CONTEXT (context), FALSE);
+	g_return_val_if_fail (keyid && *keyid, FALSE);
+	g_return_val_if_fail (out_data != NULL, FALSE);
+	g_return_val_if_fail (out_data_size != NULL, FALSE);
+
+	*out_data = NULL;
+	*out_data_size = 0;
+
+	ostream = camel_stream_mem_new ();
+
+	gpg = gpg_ctx_new (CAMEL_CIPHER_CONTEXT (context), cancellable);
+	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_GET_PUBLIC_KEY);
+	gpg_ctx_set_userid (gpg, camel_gpg_context_normalize_keyid (keyid, &tmp_keyid));
+	gpg_ctx_set_ostream (gpg, ostream);
+
+	if (!gpg_ctx_op_start (gpg, error))
+		success = FALSE;
+
+	while (success && !gpg_ctx_op_complete (gpg)) {
+		if (gpg_ctx_op_step (gpg, cancellable, error) == -1) {
+			gpg_ctx_op_cancel (gpg);
+			success = FALSE;
+			break;
+		}
+	}
+
+	if (success && gpg_ctx_op_wait (gpg) != 0 && gpg->public_key_exists) {
+		const gchar *diagnostics;
+
+		diagnostics = gpg_ctx_get_diagnostics (gpg);
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
+			(diagnostics != NULL && *diagnostics != '\0') ?
+			diagnostics : _("Failed to execute gpg."));
+
+		success = FALSE;
+	}
+
+	if (success && !gpg->public_key_exists) {
+		g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+			_("Public key “%s” was not found"), keyid);
+		success = FALSE;
+	} else if (success) {
+		GByteArray *buffer;
+
+		buffer = camel_stream_mem_get_byte_array (CAMEL_STREAM_MEM (ostream));
+
+		*out_data = g_byte_array_steal (buffer, out_data_size);
+	}
+
+	g_clear_pointer (&gpg, gpg_ctx_free);
+	g_clear_object (&ostream);
+	g_free (tmp_keyid);
+
+	return success;
+}
+
+/**
+ * camel_gpg_context_import_key_sync:
+ * @context: a #CamelGpgContext
+ * @data: the public key data, in binary form
+ * @data_size: the @data size
+ * @flags: flags for the operation
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Imports a (public) key provided in a binary form stored in the @data
+ * of size @data_size.
+ *
+ * The @flags argument is currently unused and should be set to 0.
+ *
+ * Returns: whether succeeded
+ *
+ * Since: 3.50
+ **/
+gboolean
+camel_gpg_context_import_key_sync (CamelGpgContext *context,
+				   const guint8 *data,
+				   gsize data_size,
+				   guint32 flags,
+				   GCancellable *cancellable,
+				   GError **error)
+{
+	struct _GpgCtx *gpg = NULL;
+	CamelStream *istream;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (CAMEL_IS_GPG_CONTEXT (context), FALSE);
+	g_return_val_if_fail (data != NULL, FALSE);
+	g_return_val_if_fail (data_size > 0, FALSE);
+
+	istream = camel_stream_mem_new_with_buffer ((const gchar *) data, data_size);
+
+	gpg = gpg_ctx_new (CAMEL_CIPHER_CONTEXT (context), cancellable);
+	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_IMPORT_KEY);
+	gpg_ctx_set_istream (gpg, istream);
+
+	if (!gpg_ctx_op_start (gpg, error))
+		success = FALSE;
+
+	while (success && !gpg_ctx_op_complete (gpg)) {
+		if (gpg_ctx_op_step (gpg, cancellable, error) == -1) {
+			gpg_ctx_op_cancel (gpg);
+			success = FALSE;
+			break;
+		}
+	}
+
+	if (success && gpg_ctx_op_wait (gpg) != 0) {
+		const gchar *diagnostics;
+
+		diagnostics = gpg_ctx_get_diagnostics (gpg);
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
+			(diagnostics != NULL && *diagnostics != '\0') ?
+			diagnostics : _("Failed to execute gpg."));
+
+		success = FALSE;
+	}
+
+	g_clear_pointer (&gpg, gpg_ctx_free);
+	g_clear_object (&istream);
+
+	return success;
 }
