@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/is"
 "sues\n"
-"POT-Creation-Date: 2023-07-12 16:09+0000\n"
-"PO-Revision-Date: 2023-07-12 20:05+0300\n"
+"POT-Creation-Date: 2023-07-28 10:19+0000\n"
+"PO-Revision-Date: 2023-07-28 16:33+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -25,30 +25,30 @@ msgstr ""
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Lokalize 20.12.0\n"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:274
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:276
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Вказана адреса, «%s» не є адресою адресної книги CardDAV"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1161
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1374
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:992
-msgid "Server didn’t return object’s href"
-msgstr "Сервер не повернув посилання об'єкта"
-
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1163
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1376
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:994
+msgid "Server didn’t return object’s href"
+msgstr "Сервер не повернув посилання об'єкта"
+
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1165
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1378
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:996
 msgid "Server didn’t return object’s ETag"
 msgstr "Сервер не повернув ETag об'єкта"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1165
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1167
 msgid "Received object is not a valid vCard"
 msgstr "Отриманий об'єкт не є коректною vCard"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1286
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1516
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1252
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1288
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1518
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1254
 #, c-format
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
@@ -59,7 +59,7 @@ msgstr ""
 "пошкоджений. Ви можете спробувати вилучити його і перезапустити фонові "
 "процеси evolution-data-server. Файл кешу: %s"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1292
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1294
 msgid "Object to save is not a valid vCard"
 msgstr "Об'єкт для збереження не є коректною візитною карткою vCard"
 
@@ -105,8 +105,8 @@ msgstr "Спроба змінити контакт «%s» із несинхро�
 #: src/addressbook/backends/file/e-book-backend-file.c:1711
 #: src/addressbook/backends/file/e-book-backend-file.c:1797
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3077
-#: src/addressbook/libedata-book/e-book-sqlite.c:7453
-#: src/addressbook/libedata-book/e-book-sqlite.c:7522
+#: src/addressbook/libedata-book/e-book-sqlite.c:7457
+#: src/addressbook/libedata-book/e-book-sqlite.c:7526
 #, c-format
 msgid "Contact “%s” not found"
 msgstr "Контакт «%s» не знайдено"
@@ -173,14 +173,14 @@ msgstr "Не вдалося перейменувати стару базу да�
 #: src/calendar/libecal/e-cal-client.c:6872
 #: src/calendar/libedata-cal/e-cal-cache.c:1837
 #: src/camel/camel-filter-driver.c:1758 src/camel/camel-filter-driver.c:1887
-#: src/camel/providers/imapx/camel-imapx-server.c:3331
-#: src/camel/providers/imapx/camel-imapx-server.c:3337
-#: src/camel/providers/imapx/camel-imapx-server.c:3347
-#: src/camel/providers/imapx/camel-imapx-server.c:3359
+#: src/camel/providers/imapx/camel-imapx-server.c:3330
+#: src/camel/providers/imapx/camel-imapx-server.c:3336
+#: src/camel/providers/imapx/camel-imapx-server.c:3346
+#: src/camel/providers/imapx/camel-imapx-server.c:3358
 #: src/camel/providers/nntp/camel-nntp-store.c:419
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
-#: src/libedataserver/e-soup-session.c:1019
-#: src/libedataserver/e-soup-session.c:1899
+#: src/libedataserver/e-soup-session.c:1025
+#: src/libedataserver/e-soup-session.c:1905
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:266
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
 #: src/libedataserverui/e-reminders-widget.c:2141
@@ -1010,7 +1010,7 @@ msgid "Error parsing regular expression"
 msgstr "Помилка аналізу регулярного виразу"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1550
-#: src/addressbook/libedata-book/e-book-cache.c:4828
+#: src/addressbook/libedata-book/e-book-cache.c:4833
 #: src/addressbook/libedata-book/e-book-sqlite.c:1911 src/camel/camel-db.c:830
 #, c-format
 msgid "Insufficient memory"
@@ -1044,7 +1044,7 @@ msgstr ""
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4297
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4390
 #: src/addressbook/libedata-book/e-book-cache.c:3561
-#: src/addressbook/libedata-book/e-book-sqlite.c:5929
+#: src/addressbook/libedata-book/e-book-sqlite.c:5933
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Запит містить непідтримувані елементи"
@@ -1108,8 +1108,8 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Неможливо відсортувати по полю, яке має декілька значень"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6210
-#: src/addressbook/libedata-book/e-book-cache.c:6159
-#: src/addressbook/libedata-book/e-book-sqlite.c:8227
+#: src/addressbook/libedata-book/e-book-cache.c:6164
+#: src/addressbook/libedata-book/e-book-sqlite.c:8231
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1119,8 +1119,8 @@ msgstr ""
 "списку контактів"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6218
-#: src/addressbook/libedata-book/e-book-cache.c:6166
-#: src/addressbook/libedata-book/e-book-sqlite.c:8235
+#: src/addressbook/libedata-book/e-book-cache.c:6171
+#: src/addressbook/libedata-book/e-book-sqlite.c:8239
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1136,7 +1136,7 @@ msgid "Unsupported contact field “%d” specified in summary"
 msgstr "У звіті зазначено непідтримуване поле контакту «%d»"
 
 #: src/addressbook/libedata-book/e-book-cache.c:3556
-#: src/addressbook/libedata-book/e-book-sqlite.c:5922
+#: src/addressbook/libedata-book/e-book-sqlite.c:5926
 #: src/calendar/libedata-cal/e-cal-cache.c:1703
 #: src/calendar/libedata-cal/e-cal-cache.c:3550
 #, c-format
@@ -1144,20 +1144,20 @@ msgid "Invalid query: %s"
 msgstr "Некоректний запит: %s"
 
 #: src/addressbook/libedata-book/e-book-cache.c:3741
-#: src/addressbook/libedata-book/e-book-cache.c:6842
+#: src/addressbook/libedata-book/e-book-cache.c:6847
 msgid "Invalid query for a book cursor"
 msgstr "Некоректний запит щодо курсора книги"
 
-#: src/addressbook/libedata-book/e-book-cache.c:4832
+#: src/addressbook/libedata-book/e-book-cache.c:4837
 #: src/libebackend/e-cache.c:755
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Не вдалося відкрити базу даних %s: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5498
-#: src/addressbook/libedata-book/e-book-cache.c:5545
-#: src/addressbook/libedata-book/e-book-cache.c:5592
-#: src/addressbook/libedata-book/e-book-cache.c:5644
+#: src/addressbook/libedata-book/e-book-cache.c:5503
+#: src/addressbook/libedata-book/e-book-cache.c:5550
+#: src/addressbook/libedata-book/e-book-cache.c:5597
+#: src/addressbook/libedata-book/e-book-cache.c:5649
 #: src/calendar/libedata-cal/e-cal-cache.c:2832
 #: src/calendar/libedata-cal/e-cal-cache.c:2890
 #: src/calendar/libedata-cal/e-cal-cache.c:2949
@@ -1170,34 +1170,34 @@ msgstr "Не вдалося відкрити базу даних %s: %s"
 msgid "Object “%s” not found"
 msgstr "Об'єкта «%s» не існує"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5704
+#: src/addressbook/libedata-book/e-book-cache.c:5709
 #: src/calendar/libedata-cal/e-cal-cache.c:3074
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Не знайдено об'єкта із додатковим «%s»"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5880
+#: src/addressbook/libedata-book/e-book-cache.c:5885
 msgid "Search by email not supported"
 msgstr "Підтримки пошуку за адресою електронної пошти не передбачено"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5891
+#: src/addressbook/libedata-book/e-book-cache.c:5896
 msgid "No email address provided"
 msgstr "Не надано поштової адреси"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5946
+#: src/addressbook/libedata-book/e-book-cache.c:5951
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 "Для використання курсора має бути вказано принаймні одне поле сортування"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5955
-#: src/addressbook/libedata-book/e-book-sqlite.c:8067
+#: src/addressbook/libedata-book/e-book-cache.c:5960
+#: src/addressbook/libedata-book/e-book-sqlite.c:8071
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Неможливо відсортувати по полю, яке має нерядковий тип"
 
-#: src/addressbook/libedata-book/e-book-cache.c:7033
-#: src/addressbook/libedata-book/e-book-cache.c:7192
-#: src/addressbook/libedata-book/e-book-sqlite.c:8954
-#: src/addressbook/libedata-book/e-book-sqlite.c:9115
+#: src/addressbook/libedata-book/e-book-cache.c:7038
+#: src/addressbook/libedata-book/e-book-cache.c:7197
+#: src/addressbook/libedata-book/e-book-sqlite.c:8958
+#: src/addressbook/libedata-book/e-book-sqlite.c:9119
 #, c-format
 msgid "Contact field “%s” not in summary"
 msgstr "Поле контакту «%s» не перебуває у резюме"
@@ -1244,12 +1244,12 @@ msgstr ""
 "Неможливо оновити базу даних контактів з наявної бази, в якій більше однієї "
 "адресної книги. Спочатку видаліть один із записів у таблиці «теки»."
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:6097
-#: src/addressbook/libedata-book/e-book-sqlite.c:8761
+#: src/addressbook/libedata-book/e-book-sqlite.c:6101
+#: src/addressbook/libedata-book/e-book-sqlite.c:8765
 msgid "Invalid query for EbSqlCursor"
 msgstr "Некоректний запит за EbSqlCursor"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:8049
+#: src/addressbook/libedata-book/e-book-sqlite.c:8053
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 "Для використання EbSqlCursor повинно бути вказано принаймні одне поле "
@@ -1332,12 +1332,12 @@ msgstr "Версія розсинхронізувалася під час пер
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Алфавітний індекс був встановлений для нечинної локалі"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:255
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:257
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Наданий URL «%s» не посилається на календар CalDAV"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2031
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2033
 msgid "Failed to parse response data"
 msgstr "Не вдалося проаналізувати дані відповіді"
 
@@ -1484,8 +1484,8 @@ msgstr "Не вдалося створити файл кешу"
 msgid "Could not create cache file: "
 msgstr "Не вдалося створити файл кешу: "
 
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1035
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1064
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1037
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1066
 msgid "New note"
 msgstr "Нова нотатка"
 
@@ -2637,8 +2637,8 @@ msgid ""
 "Cannot modify all instances from a detached instance. Modify a series "
 "instance instead."
 msgstr ""
-"Неможливо змінювати усі екземпляри з від'єднаного екземпляра. Замість цього,"
-" слід вносити зміни до екземпляра послідовності."
+"Неможливо змінювати усі екземпляри з від'єднаного екземпляра. Замість цього, "
+"слід вносити зміни до екземпляра послідовності."
 
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:4336
 msgid "attachment.dat"
@@ -3034,23 +3034,23 @@ msgid "Release unused memory for folder “%s : %s”"
 msgstr "Звільнення невикористаної пам'яті для теки «%s : %s»"
 
 #. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:458
+#: src/camel/camel-gpg-context.c:462
 #, c-format
 msgid "Output from %s:"
 msgstr "Виведене %s:"
 
-#: src/camel/camel-gpg-context.c:943 src/camel/camel-gpg-context.c:948
-#: src/camel/camel-gpg-context.c:1742
+#: src/camel/camel-gpg-context.c:980 src/camel/camel-gpg-context.c:985
+#: src/camel/camel-gpg-context.c:1795
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Не вдалося виконати gpg: %s"
 
-#: src/camel/camel-gpg-context.c:948
-#: src/camel/providers/smtp/camel-smtp-transport.c:1209
+#: src/camel/camel-gpg-context.c:985
+#: src/camel/providers/smtp/camel-smtp-transport.c:1217
 msgid "Unknown"
 msgstr "Невідоме"
 
-#: src/camel/camel-gpg-context.c:1060
+#: src/camel/camel-gpg-context.c:1097
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -3061,17 +3061,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/camel/camel-gpg-context.c:1096
+#: src/camel/camel-gpg-context.c:1133
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Не вдалося проаналізувати підказку gpg userid."
 
-#: src/camel/camel-gpg-context.c:1121 src/camel/camel-gpg-context.c:1136
+#: src/camel/camel-gpg-context.c:1158 src/camel/camel-gpg-context.c:1173
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Не вдалося проаналізувати запит паролю gpg."
 
-#: src/camel/camel-gpg-context.c:1157
+#: src/camel/camel-gpg-context.c:1194
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -3080,7 +3080,7 @@ msgstr ""
 "Введіть PIN, щоб розблокувати\n"
 "вашу SmartCard: «%s»"
 
-#: src/camel/camel-gpg-context.c:1161
+#: src/camel/camel-gpg-context.c:1198
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -3089,12 +3089,12 @@ msgstr ""
 "Введіть ключову фразу, щоб розблокувати\n"
 "ключ користувача: «%s»"
 
-#: src/camel/camel-gpg-context.c:1167
+#: src/camel/camel-gpg-context.c:1204
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "Неочікувана запит від GnuPG для «%s»"
 
-#: src/camel/camel-gpg-context.c:1179
+#: src/camel/camel-gpg-context.c:1216
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -3102,31 +3102,31 @@ msgstr ""
 "Зашифровані дані не містять відомостей про одержувача. Для кожного закритого "
 "ключа буде запропоновано ввести пароль."
 
-#: src/camel/camel-gpg-context.c:1210 src/camel/camel-net-utils.c:524
+#: src/camel/camel-gpg-context.c:1247 src/camel/camel-net-utils.c:524
 #: src/camel/providers/nntp/camel-nntp-summary.c:393
 #: src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
 msgstr "Скасовано"
 
-#: src/camel/camel-gpg-context.c:1231
+#: src/camel/camel-gpg-context.c:1268
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "Не вдалося відкрити секретний ключ: отримано 3 неправильних пароля."
 
-#: src/camel/camel-gpg-context.c:1244
+#: src/camel/camel-gpg-context.c:1281
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Неочікувана відповідь від GnuPG: %s"
 
-#: src/camel/camel-gpg-context.c:1361
+#: src/camel/camel-gpg-context.c:1398
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Не вдалося зашифрувати: не визначені коректні отримувачі."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1382
+#: src/camel/camel-gpg-context.c:1419
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
@@ -3137,38 +3137,38 @@ msgstr ""
 "цього отримувача."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1389
+#: src/camel/camel-gpg-context.c:1426
 #, c-format
 msgid "Failed to encrypt: The public key for recipient %s was not found."
 msgstr "Не вдалося зашифрувати: не знайдено відкритий ключ для отримувача %s."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1396
+#: src/camel/camel-gpg-context.c:1433
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is revoked."
 msgstr "Не вдалося зашифрувати: ключ для отримувача %s відкликано."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1403
+#: src/camel/camel-gpg-context.c:1440
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is expired."
 msgstr "Не вдалося зашифрувати: строк дії ключа для отримувача %s вичерпано."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1410
+#: src/camel/camel-gpg-context.c:1447
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is not trusted."
 msgstr "Не вдалося зашифрувати: ключ для отримувача %s не є довіреним."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1417
+#: src/camel/camel-gpg-context.c:1454
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is disabled."
 msgstr "Не вдалося зашифрувати: ключ для отримувача %s вимкнено."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1425
+#: src/camel/camel-gpg-context.c:1462
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified (code %d). A common issue "
@@ -3178,17 +3178,19 @@ msgstr ""
 "Зазвичай, проблема полягає в тому, що %s не має імпортованого відкритого "
 "ключа для цього отримувача."
 
-#: src/camel/camel-gpg-context.c:2266 src/camel/camel-smime-context.c:1041
+#: src/camel/camel-gpg-context.c:2319 src/camel/camel-smime-context.c:1041
 msgid "Could not generate signing data: "
 msgstr "Не вдалося створити підписані дані: "
 
-#: src/camel/camel-gpg-context.c:2317 src/camel/camel-gpg-context.c:2556
-#: src/camel/camel-gpg-context.c:2696 src/camel/camel-gpg-context.c:2873
+#: src/camel/camel-gpg-context.c:2370 src/camel/camel-gpg-context.c:2609
+#: src/camel/camel-gpg-context.c:2749 src/camel/camel-gpg-context.c:2926
+#: src/camel/camel-gpg-context.c:3280 src/camel/camel-gpg-context.c:3367
+#: src/camel/camel-gpg-context.c:3449
 msgid "Failed to execute gpg."
 msgstr "Не вдалося виконати gpg."
 
-#: src/camel/camel-gpg-context.c:2424 src/camel/camel-gpg-context.c:2432
-#: src/camel/camel-gpg-context.c:2440 src/camel/camel-gpg-context.c:2460
+#: src/camel/camel-gpg-context.c:2477 src/camel/camel-gpg-context.c:2485
+#: src/camel/camel-gpg-context.c:2493 src/camel/camel-gpg-context.c:2513
 #: src/camel/camel-smime-context.c:1172 src/camel/camel-smime-context.c:1186
 #: src/camel/camel-smime-context.c:1198
 #, c-format
@@ -3196,43 +3198,49 @@ msgid "Cannot verify message signature: Incorrect message format"
 msgstr ""
 "Не вдалося перевірити підпис повідомлення: неправильний формат повідомлення"
 
-#: src/camel/camel-gpg-context.c:2506
+#: src/camel/camel-gpg-context.c:2559
 msgid "Cannot verify message signature: "
 msgstr "Не вдалося перевірити підпис повідомлення: "
 
-#: src/camel/camel-gpg-context.c:2654
+#: src/camel/camel-gpg-context.c:2707
 msgid "Could not generate encrypting data: "
 msgstr "Не вдалося створити шифровані дані: "
 
-#: src/camel/camel-gpg-context.c:2736
+#: src/camel/camel-gpg-context.c:2789
 msgid "This is a digitally encrypted message part"
 msgstr "Ця частина повідомлення зашифрована"
 
-#: src/camel/camel-gpg-context.c:2796 src/camel/camel-gpg-context.c:2805
-#: src/camel/camel-gpg-context.c:2828
+#: src/camel/camel-gpg-context.c:2849 src/camel/camel-gpg-context.c:2858
+#: src/camel/camel-gpg-context.c:2881
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr ""
 "Не вдалося розшифрувати повідомлення: неправильний формат повідомлення"
 
-#: src/camel/camel-gpg-context.c:2816
+#: src/camel/camel-gpg-context.c:2869
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Не вдалося декодувати секцію MIME: помилка протоколу"
 
-#: src/camel/camel-gpg-context.c:2888
+#: src/camel/camel-gpg-context.c:2941
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "Не вдалося декодувати секцію MIME: не знайдено секретний ключ"
 
-#: src/camel/camel-gpg-context.c:2925
+#: src/camel/camel-gpg-context.c:2978
 #, c-format
 msgid "GPG blob contains unencrypted text: %s"
 msgstr "Об'єкт GPG містить незашифрований текст: %s"
 
-#: src/camel/camel-gpg-context.c:2927 src/camel/camel-smime-context.c:1724
+#: src/camel/camel-gpg-context.c:2980 src/camel/camel-smime-context.c:1724
 msgid "Encrypted content"
 msgstr "Зашифрований вміст"
+
+#: src/camel/camel-gpg-context.c:3287 src/camel/camel-gpg-context.c:3374
+#, c-format
+#| msgid "Object “%s” not found"
+msgid "Public key “%s” was not found"
+msgstr "Відкритий ключ «%s» не було знайдено"
 
 #: src/camel/camel-junk-filter.c:167
 msgid "Synchronizing junk database"
@@ -3626,7 +3634,7 @@ msgstr "Термін дії вказаних мандатів закінчивс
 
 #: src/camel/camel-sasl-gssapi.c:237 src/camel/camel-sasl-gssapi.c:441
 #: src/camel/camel-sasl-gssapi.c:491 src/camel/camel-sasl-gssapi.c:508
-#: src/camel/providers/smtp/camel-smtp-transport.c:860
+#: src/camel/providers/smtp/camel-smtp-transport.c:864
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Неправильна автентифікація від сервера."
@@ -3761,10 +3769,10 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "Неправильний зареєстрований GType для протоколу «%s»"
 
 #: src/camel/camel-session.c:508
-#: src/camel/providers/imapx/camel-imapx-server.c:3252
+#: src/camel/providers/imapx/camel-imapx-server.c:3251
 #: src/camel/providers/pop3/camel-pop3-store.c:305
 #: src/camel/providers/pop3/camel-pop3-store.c:809
-#: src/camel/providers/smtp/camel-smtp-transport.c:696
+#: src/camel/providers/smtp/camel-smtp-transport.c:700
 #, c-format
 msgid "No support for %s authentication"
 msgstr "Розпізнавання %s не підтримується"
@@ -4042,7 +4050,7 @@ msgid "Only reset to beginning is supported with CamelHttpStream"
 msgstr "Для CamelHttpStream підтримується тільки перехід до початку"
 
 #: src/camel/camel-stream-process.c:282
-#: src/camel/providers/smtp/camel-smtp-transport.c:747
+#: src/camel/providers/smtp/camel-smtp-transport.c:751
 #, c-format
 msgid "Connection cancelled"
 msgstr "З'єднання скасовано"
@@ -4072,7 +4080,7 @@ msgstr "Не вдалося обробити адресу «%s»"
 msgid "Updating folder “%s”"
 msgstr "Оновлення теки «%s»"
 
-#: src/camel/camel-vee-folder.c:1283 src/camel/camel-vee-folder.c:1419
+#: src/camel/camel-vee-folder.c:1296 src/camel/camel-vee-folder.c:1432
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr ""
@@ -4082,22 +4090,22 @@ msgstr ""
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: src/camel/camel-vee-folder.c:1320
+#: src/camel/camel-vee-folder.c:1333
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "Немає повідомлення %s у «%s : %s»"
 
-#: src/camel/camel-vee-folder.c:1395
+#: src/camel/camel-vee-folder.c:1408
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "Помилка при збереженні «%s»: "
 
-#: src/camel/camel-vee-folder.c:1585
+#: src/camel/camel-vee-folder.c:1598
 #, c-format
 msgid "Updating search folder “%s”"
 msgstr "Оновлення теки пошуку «%s»"
 
-#: src/camel/camel-vee-folder.c:1643
+#: src/camel/camel-vee-folder.c:1656
 msgid "Automatically _update on change in source folders"
 msgstr "Автоматично _оновлювати при зміні тек-джерел"
 
@@ -4139,7 +4147,7 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "Для завершення цієї операції необхідне підключення до мережі (%s)"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:987
-#: src/camel/providers/imapx/camel-imapx-server.c:3424
+#: src/camel/providers/imapx/camel-imapx-server.c:3423
 #: src/camel/providers/nntp/camel-nntp-store.c:348
 #: src/camel/providers/nntp/camel-nntp-store.c:1343
 #: src/camel/providers/nntp/camel-nntp-store.c:2156
@@ -4153,7 +4161,7 @@ msgstr "Для завершення цієї операції необхідне
 #: src/camel/providers/pop3/camel-pop3-store.c:576
 #: src/camel/providers/pop3/camel-pop3-store.c:673
 #: src/camel/providers/pop3/camel-pop3-store.c:1124
-#: src/camel/providers/smtp/camel-smtp-transport.c:547
+#: src/camel/providers/smtp/camel-smtp-transport.c:551
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "Для завершення цієї операції необхідне підключення до мережі"
@@ -4377,37 +4385,37 @@ msgstr "Зчитування та збереження пошти на серв�
 msgid "Error writing to cache stream"
 msgstr "Помилка при записуванні у потік кешу"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3047
-#: src/camel/providers/imapx/camel-imapx-server.c:3134
-#: src/camel/providers/imapx/camel-imapx-server.c:3457
+#: src/camel/providers/imapx/camel-imapx-server.c:3046
+#: src/camel/providers/imapx/camel-imapx-server.c:3133
+#: src/camel/providers/imapx/camel-imapx-server.c:3456
 msgid "Failed to get capabilities"
 msgstr "Не вдалося отримати список можливостей"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3066
+#: src/camel/providers/imapx/camel-imapx-server.c:3065
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Не вдалося під'єднатись до IMAP серверу %s в безпечному режимі: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3067
-#: src/camel/providers/smtp/camel-smtp-transport.c:283
+#: src/camel/providers/imapx/camel-imapx-server.c:3066
+#: src/camel/providers/smtp/camel-smtp-transport.c:287
 msgid "STARTTLS not supported"
 msgstr "STARTTLS не підтримується"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3076
+#: src/camel/providers/imapx/camel-imapx-server.c:3075
 msgid "Failed to issue STARTTLS"
 msgstr "Не вдалося оформити STARTTLS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3123
+#: src/camel/providers/imapx/camel-imapx-server.c:3122
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Не вдалося під'єднатись до IMAP серверу %s в безпечному режимі: "
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3239
+#: src/camel/providers/imapx/camel-imapx-server.c:3238
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Сервер IMAP %s не підтримує автентифікацію %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3265
+#: src/camel/providers/imapx/camel-imapx-server.c:3264
 #, c-format
 msgid ""
 "Plaintext authentication disallowed on insecure connections. Change "
@@ -4416,180 +4424,180 @@ msgstr ""
 "На незахищених з'єднаннях заборонено текстове розпізнавання. Змініть "
 "шифрування на STARTTLS або TLS для облікового запису «%s»."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3278
+#: src/camel/providers/imapx/camel-imapx-server.c:3277
 #: src/camel/providers/nntp/camel-nntp-store.c:454
 #: src/camel/providers/nntp/camel-nntp-store.c:596
 msgid "Cannot authenticate without a username"
 msgstr "Не вдалося пройти розпізнавання без імені користувача"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3287
+#: src/camel/providers/imapx/camel-imapx-server.c:3286
 #: src/camel/providers/nntp/camel-nntp-store.c:605
 #: src/camel/providers/pop3/camel-pop3-store.c:709
 #: src/camel/providers/pop3/camel-pop3-store.c:747
 msgid "Authentication password not available"
 msgstr "Пароль автентифікації недоступний"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3297
-#: src/camel/providers/imapx/camel-imapx-server.c:3310
+#: src/camel/providers/imapx/camel-imapx-server.c:3296
+#: src/camel/providers/imapx/camel-imapx-server.c:3309
 msgid "Failed to authenticate"
 msgstr "Не вдалося пройти розпізнавання"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3382
+#: src/camel/providers/imapx/camel-imapx-server.c:3381
 msgid "Failed to issue ID"
 msgstr "Не вдалося видати ідентифікатор"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3484
+#: src/camel/providers/imapx/camel-imapx-server.c:3483
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr "Не вдалося видати ENABLE UTF8=ACCEPT"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3506
+#: src/camel/providers/imapx/camel-imapx-server.c:3505
 msgid "Failed to issue NAMESPACE"
 msgstr "Не вдалося видати NAMESPACE"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3524
+#: src/camel/providers/imapx/camel-imapx-server.c:3523
 msgid "Failed to enable QResync"
 msgstr "Не вдалося увімкнути QResync"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3561
+#: src/camel/providers/imapx/camel-imapx-server.c:3560
 msgid "Failed to issue NOTIFY"
 msgstr "Не вдалося видати NOTIFY"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4040
+#: src/camel/providers/imapx/camel-imapx-server.c:4039
 msgid "Failed to select mailbox"
 msgstr "Не вдалося вибрати поштову скриньку"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4140
+#: src/camel/providers/imapx/camel-imapx-server.c:4139
 msgid "Cannot issue command, no stream available"
 msgstr "Не вдалося видати команду, немає доступного потоку"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4406
+#: src/camel/providers/imapx/camel-imapx-server.c:4405
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Не вдалося отримати повідомлення з ідентифікатором %s: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4407
+#: src/camel/providers/imapx/camel-imapx-server.c:4406
 msgid "No such message available."
 msgstr "Немає такого повідомлення."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4456
-#: src/camel/providers/imapx/camel-imapx-server.c:4481
-#: src/camel/providers/imapx/camel-imapx-server.c:4520
+#: src/camel/providers/imapx/camel-imapx-server.c:4455
+#: src/camel/providers/imapx/camel-imapx-server.c:4480
+#: src/camel/providers/imapx/camel-imapx-server.c:4519
 msgid "Error fetching message"
 msgstr "Помилка отримання повідомлення"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4498
-#: src/camel/providers/imapx/camel-imapx-server.c:5271
+#: src/camel/providers/imapx/camel-imapx-server.c:4497
+#: src/camel/providers/imapx/camel-imapx-server.c:5270
 msgid "Error performing NOOP"
 msgstr "Помилка виконання NOOP"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4513
+#: src/camel/providers/imapx/camel-imapx-server.c:4512
 msgid "Failed to close the tmp stream"
 msgstr "Не вдалося закрити тимчасовий потік"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4544
+#: src/camel/providers/imapx/camel-imapx-server.c:4543
 msgid "Failed to copy the tmp file"
 msgstr "Не вдалося скопіювати тимчасовий файл"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4782
+#: src/camel/providers/imapx/camel-imapx-server.c:4781
 msgid "Error moving messages"
 msgstr "Помилка переміщення повідомлень"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4782
+#: src/camel/providers/imapx/camel-imapx-server.c:4781
 msgid "Error copying messages"
 msgstr "Помилка копіювання повідомлень"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5061
-#: src/camel/providers/imapx/camel-imapx-server.c:5082
+#: src/camel/providers/imapx/camel-imapx-server.c:5060
+#: src/camel/providers/imapx/camel-imapx-server.c:5081
 msgid "Cannot create spool file: "
 msgstr "Не вдалося створити буферний файл: "
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5168
+#: src/camel/providers/imapx/camel-imapx-server.c:5167
 msgid "Error appending message"
 msgstr "Помилка додавання повідомлення"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5439
+#: src/camel/providers/imapx/camel-imapx-server.c:5438
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Пошук змінених повідомлень у «%s : %s»"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5443
+#: src/camel/providers/imapx/camel-imapx-server.c:5442
 msgid "Error scanning changes"
 msgstr "Помилка при скануванні змін"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5466
+#: src/camel/providers/imapx/camel-imapx-server.c:5465
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "Отримання відомостей про нові повідомлення у «%s : %s»"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5493
+#: src/camel/providers/imapx/camel-imapx-server.c:5492
 msgid "Error fetching message info"
 msgstr "Помилка при отриманні інформації повідомлення"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5676
+#: src/camel/providers/imapx/camel-imapx-server.c:5675
 msgid "Error running STATUS"
 msgstr "Помилка виконання STATUS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6271
-#: src/camel/providers/imapx/camel-imapx-server.c:6326
-#: src/camel/providers/imapx/camel-imapx-server.c:6409
+#: src/camel/providers/imapx/camel-imapx-server.c:6270
+#: src/camel/providers/imapx/camel-imapx-server.c:6325
+#: src/camel/providers/imapx/camel-imapx-server.c:6408
 msgid "Error syncing changes"
 msgstr "Помилка при синхронізації змін"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6284
-#: src/camel/providers/imapx/camel-imapx-server.c:6336
-#: src/camel/providers/imapx/camel-imapx-server.c:6428
-#: src/camel/providers/imapx/camel-imapx-server.c:6569
+#: src/camel/providers/imapx/camel-imapx-server.c:6283
+#: src/camel/providers/imapx/camel-imapx-server.c:6335
+#: src/camel/providers/imapx/camel-imapx-server.c:6427
+#: src/camel/providers/imapx/camel-imapx-server.c:6568
 msgid "Error expunging message"
 msgstr "Помилка очищення повідомлення"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6651
+#: src/camel/providers/imapx/camel-imapx-server.c:6650
 msgid "Error fetching folders"
 msgstr "Помилка отримання тек"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6659
+#: src/camel/providers/imapx/camel-imapx-server.c:6658
 msgid "Error fetching subscribed folders"
 msgstr "Помилка при отриманні підписних тек"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6716
+#: src/camel/providers/imapx/camel-imapx-server.c:6715
 msgid "Error creating folder"
 msgstr "Помилка створення теки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6766
+#: src/camel/providers/imapx/camel-imapx-server.c:6765
 msgid "Error deleting folder"
 msgstr "Помилка при вилученні теки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6812
+#: src/camel/providers/imapx/camel-imapx-server.c:6811
 msgid "Error renaming folder"
 msgstr "Помилка при перейменуванні теки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6844
+#: src/camel/providers/imapx/camel-imapx-server.c:6843
 msgid "Error subscribing to folder"
 msgstr "Помилка підписування на теку"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6880
+#: src/camel/providers/imapx/camel-imapx-server.c:6879
 msgid "Error unsubscribing from folder"
 msgstr "Помилка відписування від теки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6920
+#: src/camel/providers/imapx/camel-imapx-server.c:6919
 msgid "IMAP server does not support quotas"
 msgstr "Сервер IMAP %s не підтримує квоти"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6932
+#: src/camel/providers/imapx/camel-imapx-server.c:6931
 msgid "Error retrieving quota information"
 msgstr "Помилка при отриманні даних про квоту"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6997
+#: src/camel/providers/imapx/camel-imapx-server.c:6996
 msgid "Search failed"
 msgstr "Помилка пошуку"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7125
+#: src/camel/providers/imapx/camel-imapx-server.c:7124
 msgid "Error running IDLE"
 msgstr "Помилка виконання IDLE"
 
@@ -5833,228 +5841,228 @@ msgstr "SMTP"
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr "Доставка пошти шляхом з'єднання з віддаленим поштовим сервером SMTP."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:237
-#: src/camel/providers/smtp/camel-smtp-transport.c:244
+#: src/camel/providers/smtp/camel-smtp-transport.c:241
+#: src/camel/providers/smtp/camel-smtp-transport.c:248
 msgid "Welcome response error: "
 msgstr "Помилка відповіді на запрошення:"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:282
+#: src/camel/providers/smtp/camel-smtp-transport.c:286
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr "Не вдалося під'єднатись до POP серверу %s в безпечному режимі: %s"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:291
-#: src/camel/providers/smtp/camel-smtp-transport.c:304
-#: src/camel/providers/smtp/camel-smtp-transport.c:311
+#: src/camel/providers/smtp/camel-smtp-transport.c:295
+#: src/camel/providers/smtp/camel-smtp-transport.c:308
+#: src/camel/providers/smtp/camel-smtp-transport.c:315
 msgid "STARTTLS command failed: "
 msgstr "Помилка команди STARTTLS: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:332
+#: src/camel/providers/smtp/camel-smtp-transport.c:336
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
 msgstr "Не вдалося під'єднатись до SMTP сервера %s у безпечному режимі: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:443
+#: src/camel/providers/smtp/camel-smtp-transport.c:447
 #, c-format
 msgid "SMTP server %s"
 msgstr "Сервер SMTP %s"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:446
+#: src/camel/providers/smtp/camel-smtp-transport.c:450
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "Постачання пошти SMTP через %s"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:586
+#: src/camel/providers/smtp/camel-smtp-transport.c:590
 #, c-format
 msgid "SMTP server %s does not support %s authentication"
 msgstr "SMTP сервер %s не підтримує автентифікацію %s."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:686
+#: src/camel/providers/smtp/camel-smtp-transport.c:690
 #, c-format
 msgid "No SASL mechanism was specified"
 msgstr "Не зазначений механізм SASL"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:727
+#: src/camel/providers/smtp/camel-smtp-transport.c:731
 msgid "AUTH command failed: Not connected."
 msgstr "Помилка команди AUTH: не з'єднано."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:734
-#: src/camel/providers/smtp/camel-smtp-transport.c:748
-#: src/camel/providers/smtp/camel-smtp-transport.c:764
+#: src/camel/providers/smtp/camel-smtp-transport.c:738
+#: src/camel/providers/smtp/camel-smtp-transport.c:752
+#: src/camel/providers/smtp/camel-smtp-transport.c:768
 msgid "AUTH command failed: "
 msgstr "Помилка команди AUTH: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:967
+#: src/camel/providers/smtp/camel-smtp-transport.c:972
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "Не вдалося відіслати повідомлення: немає зв'язку з службою."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:976
+#: src/camel/providers/smtp/camel-smtp-transport.c:981
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "Не вдалося відіслати повідомлення: неправильна адреса відправника."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:980
+#: src/camel/providers/smtp/camel-smtp-transport.c:985
 msgid "Sending message"
 msgstr "Відсилання повідомлення"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1009
+#: src/camel/providers/smtp/camel-smtp-transport.c:1017
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "Не вдалося відіслати повідомлення: не визначені отримувачі."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1024
+#: src/camel/providers/smtp/camel-smtp-transport.c:1032
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr ""
 "Не вдалося відіслати повідомлення: один або більше неправильних отримувачів"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1156
+#: src/camel/providers/smtp/camel-smtp-transport.c:1164
 msgid "Syntax error, command unrecognized"
 msgstr "Синтаксична помилка, команду не розпізнано"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1158
+#: src/camel/providers/smtp/camel-smtp-transport.c:1166
 msgid "Syntax error in parameters or arguments"
 msgstr "Синтаксична помилка у параметрах чи аргументах"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1160
+#: src/camel/providers/smtp/camel-smtp-transport.c:1168
 msgid "Command not implemented"
 msgstr "Команди не реалізовано"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1162
+#: src/camel/providers/smtp/camel-smtp-transport.c:1170
 msgid "Command parameter not implemented"
 msgstr "Параметр команди не реалізовано"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1164
+#: src/camel/providers/smtp/camel-smtp-transport.c:1172
 msgid "System status, or system help reply"
 msgstr "Стан системи або відповідь довідки системи"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1166
+#: src/camel/providers/smtp/camel-smtp-transport.c:1174
 msgid "Help message"
 msgstr "Довідкове повідомлення"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1168
+#: src/camel/providers/smtp/camel-smtp-transport.c:1176
 msgid "Service ready"
 msgstr "Служба готова"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1170
+#: src/camel/providers/smtp/camel-smtp-transport.c:1178
 msgid "Service closing transmission channel"
 msgstr "Служба закриває канал передачі"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1172
+#: src/camel/providers/smtp/camel-smtp-transport.c:1180
 msgid "Service not available, closing transmission channel"
 msgstr "Служба не доступна, канал передачі закривається"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1174
+#: src/camel/providers/smtp/camel-smtp-transport.c:1182
 msgid "Requested mail action okay, completed"
 msgstr "Запитана поштова дія успішно виконана"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1176
+#: src/camel/providers/smtp/camel-smtp-transport.c:1184
 msgid "User not local; will forward to <forward-path>"
 msgstr "Користувач не локальний; буде відправлено на <шлях-перенаправлення>"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1178
+#: src/camel/providers/smtp/camel-smtp-transport.c:1186
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr "Запитана дія з поштою не виконана: поштова скринька недоступна"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1180
+#: src/camel/providers/smtp/camel-smtp-transport.c:1188
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "Запитана дія не виконана: поштова скринька недоступна"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1182
+#: src/camel/providers/smtp/camel-smtp-transport.c:1190
 msgid "Requested action aborted: error in processing"
 msgstr "Запитану дію перервано: помилка при обробці"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1184
+#: src/camel/providers/smtp/camel-smtp-transport.c:1192
 msgid "User not local; please try <forward-path>"
 msgstr "Користувач не локальний; встановіть <шлях-перенаправлення>"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1186
+#: src/camel/providers/smtp/camel-smtp-transport.c:1194
 msgid "Requested action not taken: insufficient system storage"
 msgstr "Запитану дію не виконано: недостатньо місця у системному сховищі"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1188
+#: src/camel/providers/smtp/camel-smtp-transport.c:1196
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "Запитану дію не виконано: скінчився вільний простір у сховищі"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1190
+#: src/camel/providers/smtp/camel-smtp-transport.c:1198
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "Запитану дію не виконано: неприпустиме ім'я поштової скриньки"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1192
+#: src/camel/providers/smtp/camel-smtp-transport.c:1200
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "Починається введення пошти; закінчення після  <CRLF>.<CRLF>"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1194
+#: src/camel/providers/smtp/camel-smtp-transport.c:1202
 msgid "Transaction failed"
 msgstr "Збій транзакції"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1198
+#: src/camel/providers/smtp/camel-smtp-transport.c:1206
 msgid "A password transition is needed"
 msgstr "Потрібно передати пароль"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1200
+#: src/camel/providers/smtp/camel-smtp-transport.c:1208
 msgid "Authentication mechanism is too weak"
 msgstr "Механізм автентифікації надто слабкий"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1202
+#: src/camel/providers/smtp/camel-smtp-transport.c:1210
 msgid "Encryption required for requested authentication mechanism"
 msgstr "Запитаний механізм автентифікації потребує шифрування"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1204
+#: src/camel/providers/smtp/camel-smtp-transport.c:1212
 msgid "Temporary authentication failure"
 msgstr "Тимчасовий збій автентифікації"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1206
+#: src/camel/providers/smtp/camel-smtp-transport.c:1214
 #: src/libedataserver/e-client.c:145
 msgid "Authentication required"
 msgstr "Вимагається автентифікація"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1516
+#: src/camel/providers/smtp/camel-smtp-transport.c:1525
 msgid "SMTP Greeting"
 msgstr "Привітання SMTP"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1525
-#: src/camel/providers/smtp/camel-smtp-transport.c:1538
-#: src/camel/providers/smtp/camel-smtp-transport.c:1545
+#: src/camel/providers/smtp/camel-smtp-transport.c:1534
+#: src/camel/providers/smtp/camel-smtp-transport.c:1547
+#: src/camel/providers/smtp/camel-smtp-transport.c:1554
 msgid "HELO command failed: "
 msgstr "Помилка команди HELO: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1629
-#: src/camel/providers/smtp/camel-smtp-transport.c:1643
-#: src/camel/providers/smtp/camel-smtp-transport.c:1652
+#: src/camel/providers/smtp/camel-smtp-transport.c:1661
+#: src/camel/providers/smtp/camel-smtp-transport.c:1675
+#: src/camel/providers/smtp/camel-smtp-transport.c:1684
 msgid "MAIL FROM command failed: "
 msgstr "Помилка команди MAIL FROM: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1680
+#: src/camel/providers/smtp/camel-smtp-transport.c:1753
 msgid "RCPT TO command failed: "
 msgstr "Помилка команди RCPT TO: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1696
-#: src/camel/providers/smtp/camel-smtp-transport.c:1705
+#: src/camel/providers/smtp/camel-smtp-transport.c:1769
+#: src/camel/providers/smtp/camel-smtp-transport.c:1778
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "Помилка команди RCPT TO <%s>: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1788
-#: src/camel/providers/smtp/camel-smtp-transport.c:1799
-#: src/camel/providers/smtp/camel-smtp-transport.c:1810
-#: src/camel/providers/smtp/camel-smtp-transport.c:1895
-#: src/camel/providers/smtp/camel-smtp-transport.c:1913
-#: src/camel/providers/smtp/camel-smtp-transport.c:1926
-#: src/camel/providers/smtp/camel-smtp-transport.c:1934
+#: src/camel/providers/smtp/camel-smtp-transport.c:1861
+#: src/camel/providers/smtp/camel-smtp-transport.c:1872
+#: src/camel/providers/smtp/camel-smtp-transport.c:1883
+#: src/camel/providers/smtp/camel-smtp-transport.c:1968
+#: src/camel/providers/smtp/camel-smtp-transport.c:1986
+#: src/camel/providers/smtp/camel-smtp-transport.c:1999
+#: src/camel/providers/smtp/camel-smtp-transport.c:2007
 msgid "DATA command failed: "
 msgstr "Помилка команди DATA: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1960
-#: src/camel/providers/smtp/camel-smtp-transport.c:1974
-#: src/camel/providers/smtp/camel-smtp-transport.c:1982
+#: src/camel/providers/smtp/camel-smtp-transport.c:2033
+#: src/camel/providers/smtp/camel-smtp-transport.c:2047
+#: src/camel/providers/smtp/camel-smtp-transport.c:2055
 msgid "RSET command failed: "
 msgstr "Помилка команди RSET: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:2008
-#: src/camel/providers/smtp/camel-smtp-transport.c:2020
-#: src/camel/providers/smtp/camel-smtp-transport.c:2026
+#: src/camel/providers/smtp/camel-smtp-transport.c:2081
+#: src/camel/providers/smtp/camel-smtp-transport.c:2093
+#: src/camel/providers/smtp/camel-smtp-transport.c:2099
 msgid "QUIT command failed: "
 msgstr "Помилка команди QUIT: "
 
@@ -6954,16 +6962,16 @@ msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: src/libedataserver/e-soup-session.c:1264
+#: src/libedataserver/e-soup-session.c:1270
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Помилка HTTP %d: %s"
 
-#: src/libedataserver/e-soup-session.c:1340
+#: src/libedataserver/e-soup-session.c:1346
 msgid "Failed to setup authentication"
 msgstr "Не вдалося налаштувати розпізнавання"
 
-#: src/libedataserver/e-soup-session.c:1747
+#: src/libedataserver/e-soup-session.c:1753
 msgid "Too many redirects"
 msgstr "Забагато переспрямовувань"
 
@@ -7017,7 +7025,7 @@ msgstr "Джерело «%s» не підтримує пошук проксі"
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format.
 #: src/libedataserver/e-time-utils.c:1697
-#: src/libedataserver/e-time-utils.c:1996
+#: src/libedataserver/e-time-utils.c:2037
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a, %d.%m.%Y %I:%M:%S %p"
 
@@ -7026,7 +7034,7 @@ msgstr "%a, %d.%m.%Y %I:%M:%S %p"
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format.
 #: src/libedataserver/e-time-utils.c:1702
-#: src/libedataserver/e-time-utils.c:1987
+#: src/libedataserver/e-time-utils.c:2028
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a, %d.%m.%Y %H:%M:%S"
 
@@ -7035,7 +7043,7 @@ msgstr "%a, %d.%m.%Y %H:%M:%S"
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format, without seconds.
 #: src/libedataserver/e-time-utils.c:1707
-#: src/libedataserver/e-time-utils.c:1992
+#: src/libedataserver/e-time-utils.c:2033
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a, %d.%m/%Y %I:%M %p"
 
@@ -7044,7 +7052,7 @@ msgstr "%a, %d.%m/%Y %I:%M %p"
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format, without seconds.
 #: src/libedataserver/e-time-utils.c:1712
-#: src/libedataserver/e-time-utils.c:1983
+#: src/libedataserver/e-time-utils.c:2024
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a, %d.%m.%Y %H:%M"
 
@@ -7064,7 +7072,7 @@ msgstr "%а, %d.%m.%Y %H"
 #. strftime format of a weekday and a date.
 #: src/libedataserver/e-time-utils.c:1725
 #: src/libedataserver/e-time-utils.c:1845
-#: src/libedataserver/e-time-utils.c:1978
+#: src/libedataserver/e-time-utils.c:2019
 msgid "%a %m/%d/%Y"
 msgstr "%a, %d.%m.%Y"
 
@@ -7111,15 +7119,15 @@ msgstr "%d.%m.%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: src/libedataserver/e-time-utils.c:1919
-#: src/libedataserver/e-time-utils.c:2040
+#: src/libedataserver/e-time-utils.c:1960
+#: src/libedataserver/e-time-utils.c:2081
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: src/libedataserver/e-time-utils.c:1923
-#: src/libedataserver/e-time-utils.c:2032
+#: src/libedataserver/e-time-utils.c:1964
+#: src/libedataserver/e-time-utils.c:2073
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -7127,27 +7135,27 @@ msgstr "%H:%M:%S"
 #. * in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. * without seconds.
-#: src/libedataserver/e-time-utils.c:1928
-#: src/libedataserver/e-time-utils.c:2037
+#: src/libedataserver/e-time-utils.c:1969
+#: src/libedataserver/e-time-utils.c:2078
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. * without seconds.
-#: src/libedataserver/e-time-utils.c:1932
-#: src/libedataserver/e-time-utils.c:2029
+#: src/libedataserver/e-time-utils.c:1973
+#: src/libedataserver/e-time-utils.c:2070
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for time of day, without seconds 24-hour format,
 #. * and no colon.
-#: src/libedataserver/e-time-utils.c:1936
+#: src/libedataserver/e-time-utils.c:1977
 msgid "%H%M"
 msgstr "%H%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: src/libedataserver/e-time-utils.c:1940
+#: src/libedataserver/e-time-utils.c:1981
 msgid "%I %p"
 msgstr "%I %p"
 
@@ -7211,146 +7219,146 @@ msgstr "%s: код помилки HTTP %d (%s)"
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "Помилка з кодом помилки HTTP %d (%s)"
 
-#: src/libedataserver/e-webdav-session.c:1357
+#: src/libedataserver/e-webdav-session.c:1360
 msgid "Failed to post data"
 msgstr "Не вдалося надіслати дані"
 
-#: src/libedataserver/e-webdav-session.c:1438
-#: src/libedataserver/e-webdav-session.c:1504
-#: src/libedataserver/e-webdav-session.c:1595
-#: src/libedataserver/e-webdav-session.c:2719
-#: src/libedataserver/e-webdav-session.c:3995
+#: src/libedataserver/e-webdav-session.c:1424
+#: src/libedataserver/e-webdav-session.c:1534
+#: src/libedataserver/e-webdav-session.c:1625
+#: src/libedataserver/e-webdav-session.c:2749
+#: src/libedataserver/e-webdav-session.c:4025
 msgid "Failed to get input XML content"
 msgstr "Не вдалося отримати вхідний XML-вміст"
 
-#: src/libedataserver/e-webdav-session.c:1449
+#: src/libedataserver/e-webdav-session.c:1435
 msgid "Failed to get properties"
 msgstr "Не вдалося отримати властивості"
 
-#: src/libedataserver/e-webdav-session.c:1514
+#: src/libedataserver/e-webdav-session.c:1544
 msgid "Failed to update properties"
 msgstr "Не вдалося оновити властивості"
 
-#: src/libedataserver/e-webdav-session.c:1605
+#: src/libedataserver/e-webdav-session.c:1635
 msgid "Failed to issue REPORT"
 msgstr "Не вдалося видати REPORT"
 
-#: src/libedataserver/e-webdav-session.c:1665
+#: src/libedataserver/e-webdav-session.c:1695
 msgid "Failed to create collection"
 msgstr "Не вдалося створити збірку"
 
-#: src/libedataserver/e-webdav-session.c:1748
-#: src/libedataserver/e-webdav-session.c:1898
+#: src/libedataserver/e-webdav-session.c:1778
+#: src/libedataserver/e-webdav-session.c:1928
 msgid "Failed to get XML request content"
 msgstr "Не вдалося отримати вміст запиту XML"
 
-#: src/libedataserver/e-webdav-session.c:1760
+#: src/libedataserver/e-webdav-session.c:1790
 msgid "Failed to create address book"
 msgstr "Не вдалося створити адресну книгу"
 
-#: src/libedataserver/e-webdav-session.c:1911
+#: src/libedataserver/e-webdav-session.c:1941
 msgid "Failed to create calendar"
 msgstr "Не вдалося створити календар"
 
-#: src/libedataserver/e-webdav-session.c:2036
-#: src/libedataserver/e-webdav-session.c:2047
+#: src/libedataserver/e-webdav-session.c:2066
+#: src/libedataserver/e-webdav-session.c:2077
 msgid "Failed to read resource"
 msgstr "Не вдалося прочитати ресурс"
 
-#: src/libedataserver/e-webdav-session.c:2283
-#: src/libedataserver/e-webdav-session.c:2425
+#: src/libedataserver/e-webdav-session.c:2313
+#: src/libedataserver/e-webdav-session.c:2455
 msgid "Failed to put data"
 msgstr "Не вдалося додати дані"
 
-#: src/libedataserver/e-webdav-session.c:2291
-#: src/libedataserver/e-webdav-session.c:2433
+#: src/libedataserver/e-webdav-session.c:2321
+#: src/libedataserver/e-webdav-session.c:2463
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Не вдалося додати дані на сервер, код помилки %d (%s)"
 
-#: src/libedataserver/e-webdav-session.c:2521
+#: src/libedataserver/e-webdav-session.c:2551
 msgid "Failed to delete resource"
 msgstr "Не вдалося вилучити ресурс"
 
-#: src/libedataserver/e-webdav-session.c:2580
+#: src/libedataserver/e-webdav-session.c:2610
 msgid "Failed to copy resource"
 msgstr "Не вдалося скопіювати ресурс"
 
-#: src/libedataserver/e-webdav-session.c:2634
+#: src/libedataserver/e-webdav-session.c:2664
 msgid "Failed to move resource"
 msgstr "Не вдалося перемістити ресурс"
 
-#: src/libedataserver/e-webdav-session.c:2730
+#: src/libedataserver/e-webdav-session.c:2760
 msgid "Failed to lock resource"
 msgstr "Не вдалося заблокувати ресурс"
 
-#: src/libedataserver/e-webdav-session.c:2744
-#: src/libedataserver/e-webdav-session.c:2931
+#: src/libedataserver/e-webdav-session.c:2774
+#: src/libedataserver/e-webdav-session.c:2961
 msgid "Expected application/xml response, but none returned"
 msgstr "Очікувалась відповідь application/xml, але нічого повернуто"
 
-#: src/libedataserver/e-webdav-session.c:2747
-#: src/libedataserver/e-webdav-session.c:2934
+#: src/libedataserver/e-webdav-session.c:2777
+#: src/libedataserver/e-webdav-session.c:2964
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "Очікувалась відповідь application/xml, але повернуто %s"
 
-#: src/libedataserver/e-webdav-session.c:2759
-#: src/libedataserver/e-webdav-session.c:2947
+#: src/libedataserver/e-webdav-session.c:2789
+#: src/libedataserver/e-webdav-session.c:2977
 msgid "Failed to parse XML data"
 msgstr "Не вдалося проаналізувати дані XML"
 
-#: src/libedataserver/e-webdav-session.c:2830
+#: src/libedataserver/e-webdav-session.c:2860
 msgid "Failed to refresh lock"
 msgstr "Не вдалося оновити блокування"
 
-#: src/libedataserver/e-webdav-session.c:2881
+#: src/libedataserver/e-webdav-session.c:2911
 msgid "Failed to unlock"
 msgstr "Не вдалося розблокувати"
 
-#: src/libedataserver/e-webdav-session.c:2919
+#: src/libedataserver/e-webdav-session.c:2949
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Очікувана багатостанова відповідь, але повернуто %d (%s)"
 
-#: src/libedataserver/e-webdav-session.c:2956
+#: src/libedataserver/e-webdav-session.c:2986
 msgid "XML data does not have root node"
 msgstr "Дані XML не містять кореневого вузла"
 
-#: src/libedataserver/e-webdav-session.c:2979
+#: src/libedataserver/e-webdav-session.c:3009
 #, c-format
 msgid "XML data doesn't have required structure (%s)"
 msgstr "Структура даних XML є відмінною від обов'язкової (%s)"
 
-#: src/libedataserver/e-webdav-session.c:4005
+#: src/libedataserver/e-webdav-session.c:4035
 msgid "Failed to get access control list"
 msgstr "Не вдалося отримати список керування доступом"
 
-#: src/libedataserver/e-webdav-session.c:4688
+#: src/libedataserver/e-webdav-session.c:4770
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 "Неможливо зберегти захищений або успадкований запис керування доступом"
 
-#: src/libedataserver/e-webdav-session.c:4695
+#: src/libedataserver/e-webdav-session.c:4777
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Надано недійсний основний тип для запису керування доступом"
 
-#: src/libedataserver/e-webdav-session.c:4702
+#: src/libedataserver/e-webdav-session.c:4784
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Неможливо зберегти запис керування доступом на основі властивостей."
 
-#: src/libedataserver/e-webdav-session.c:4709
+#: src/libedataserver/e-webdav-session.c:4791
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Запис керування доступом може бути лише «Grant» або «Deny», але не «None»"
 
-#: src/libedataserver/e-webdav-session.c:4717
+#: src/libedataserver/e-webdav-session.c:4799
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Запис керування доступом може бути лише «Grant» або «Deny», а не обидва "
 "водночас"
 
-#: src/libedataserver/e-webdav-session.c:4776
+#: src/libedataserver/e-webdav-session.c:4858
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Привілеї запису керування доступом не можуть бути порожніми."
 
