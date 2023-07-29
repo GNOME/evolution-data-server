@@ -7,14 +7,15 @@
 # Elnaz Sarbar <elnaz@farsiweb.info>, 2005.
 # Hedayat Vatankhah <hedayat@grad.com>, 2008.
 # Roozbeh Pournader <roozbeh@gmail.com>, 2008.
-# Danial Behzadi <dani.behzi@ubuntu.com>, 2021-2022.
+# Danial Behzadi <dani.behzi@ubuntu.com>, 2021-2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/issues\n"
-"POT-Creation-Date: 2022-11-20 14:08+0000\n"
-"PO-Revision-Date: 2022-12-14 16:30+0330\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
+"issues\n"
+"POT-Creation-Date: 2023-03-18 12:46+0000\n"
+"PO-Revision-Date: 2023-07-29 04:22+0330\n"
 "Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
 "Language-Team: Persian\n"
 "Language: fa\n"
@@ -23,7 +24,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n==0 || n==1);\n"
 "X-DamnedLies-Scope: partial\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:240
 #, c-format
@@ -31,13 +32,13 @@ msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr ""
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1127
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1337
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1340
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:934
 msgid "Server didn’t return object’s href"
 msgstr ""
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1129
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1339
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1342
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:936
 msgid "Server didn’t return object’s ETag"
 msgstr ""
@@ -48,123 +49,133 @@ msgstr ""
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1248
 msgid ""
-"Missing information about vCard URL, local cache is possibly incomplete or broken. "
-"Remove it, please."
+"Missing information about vCard URL, local cache is possibly incomplete or "
+"broken. Remove it, please."
 msgstr ""
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1251
 msgid "Object to save is not a valid vCard"
 msgstr ""
 
-#: src/addressbook/backends/file/e-book-backend-file.c:117
+#: src/addressbook/backends/file/e-book-backend-file.c:318
 #, c-format
 msgid "Failed to remove file “%s”: %s"
 msgstr "شکست در برداشتن پروندهٔ «%s»: %s"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:145
+#: src/addressbook/backends/file/e-book-backend-file.c:346
 #, c-format
 msgid "Failed to make directory %s: %s"
 msgstr "شکست در ایجاد شاخهٔ %s: %s"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:429
+#: src/addressbook/backends/file/e-book-backend-file.c:630
 #, c-format
 msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "شکست در ایجاد پیوند سخت برای منبع «%s»: %s"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:534
-#: src/addressbook/backends/file/e-book-backend-file.c:1275
+#: src/addressbook/backends/file/e-book-backend-file.c:735
+#: src/addressbook/backends/file/e-book-backend-file.c:1480
 msgid "No UID in the contact"
 msgstr ""
 
-#: src/addressbook/backends/file/e-book-backend-file.c:871
+#: src/addressbook/backends/file/e-book-backend-file.c:1072
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr ""
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1001
+#: src/addressbook/backends/file/e-book-backend-file.c:1202
 msgid "Loading..."
 msgstr "در حال بار کردن..."
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1003
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4859
+#: src/addressbook/backends/file/e-book-backend-file.c:1204
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4858
 msgid "Searching..."
 msgstr "جست‌وجو…"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1303
+#: src/addressbook/backends/file/e-book-backend-file.c:1508
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr ""
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1484
-#: src/addressbook/backends/file/e-book-backend-file.c:1570
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3076
-#: src/addressbook/libedata-book/e-book-sqlite.c:7372
-#: src/addressbook/libedata-book/e-book-sqlite.c:7441
+#: src/addressbook/backends/file/e-book-backend-file.c:1689
+#: src/addressbook/backends/file/e-book-backend-file.c:1775
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3077
+#: src/addressbook/libedata-book/e-book-sqlite.c:7378
+#: src/addressbook/libedata-book/e-book-sqlite.c:7447
 #, c-format
 msgid "Contact “%s” not found"
 msgstr ""
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1634
-#: src/addressbook/backends/file/e-book-backend-file.c:1717
+#: src/addressbook/backends/file/e-book-backend-file.c:1839
+#: src/addressbook/backends/file/e-book-backend-file.c:1922
 #, c-format
 msgid "Query “%s” not supported"
 msgstr "پرسش‌وجوی «%s» پشتیبانی نمی‌شود"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1643
-#: src/addressbook/backends/file/e-book-backend-file.c:1726
+#: src/addressbook/backends/file/e-book-backend-file.c:1848
+#: src/addressbook/backends/file/e-book-backend-file.c:1931
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr ""
 
-#: src/addressbook/backends/file/e-book-backend-file.c:2031
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2110
+#: src/addressbook/backends/file/e-book-backend-file.c:2236
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2124
 msgid "Requested to delete an unrelated cursor"
 msgstr ""
 
-#: src/addressbook/backends/file/e-book-backend-file.c:2102
+#: src/addressbook/backends/file/e-book-backend-file.c:2320
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "شکست در تغییر نام پایگاه دادهٔ قدیمی «%s» به «%s»: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1158
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4744
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4743
 #: src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
 #: src/addressbook/libebook-contacts/e-phone-number.c:54
-#: src/addressbook/libebook/e-book.c:1067 src/addressbook/libebook/e-book-client.c:2125
-#: src/addressbook/libebook/e-book-client.c:2303
-#: src/addressbook/libebook/e-book-client.c:2522
-#: src/addressbook/libebook/e-book-client.c:2659
-#: src/addressbook/libebook/e-book-client.c:2824
-#: src/addressbook/libebook/e-book-client.c:2964
-#: src/addressbook/libebook/e-book-client.c:3101
-#: src/addressbook/libebook/e-book-client.c:3264
-#: src/addressbook/libebook/e-book-client.c:3459
-#: src/addressbook/libebook/e-book-client.c:3677
+#: src/addressbook/libebook/e-book.c:1067
+#: src/addressbook/libebook/e-book-client.c:2139
+#: src/addressbook/libebook/e-book-client.c:2317
+#: src/addressbook/libebook/e-book-client.c:2536
+#: src/addressbook/libebook/e-book-client.c:2673
+#: src/addressbook/libebook/e-book-client.c:2838
+#: src/addressbook/libebook/e-book-client.c:2978
+#: src/addressbook/libebook/e-book-client.c:3115
+#: src/addressbook/libebook/e-book-client.c:3278
+#: src/addressbook/libebook/e-book-client.c:3473
+#: src/addressbook/libebook/e-book-client.c:3691
 #: src/addressbook/libedata-book/e-book-backend-sexp.c:873
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:288
 #: src/calendar/backends/http/e-cal-backend-http.c:300
-#: src/calendar/libecal/e-cal-client.c:257 src/calendar/libecal/e-cal-client.c:3242
-#: src/calendar/libecal/e-cal-client.c:3415 src/calendar/libecal/e-cal-client.c:3688
-#: src/calendar/libecal/e-cal-client.c:3926 src/calendar/libecal/e-cal-client.c:4118
-#: src/calendar/libecal/e-cal-client.c:4301 src/calendar/libecal/e-cal-client.c:4536
-#: src/calendar/libecal/e-cal-client.c:4713 src/calendar/libecal/e-cal-client.c:4921
-#: src/calendar/libecal/e-cal-client.c:5077 src/calendar/libecal/e-cal-client.c:5275
-#: src/calendar/libecal/e-cal-client.c:5441 src/calendar/libecal/e-cal-client.c:5668
-#: src/calendar/libecal/e-cal-client.c:5825 src/calendar/libecal/e-cal-client.c:6053
-#: src/calendar/libecal/e-cal-client.c:6252 src/calendar/libecal/e-cal-client.c:6620
-#: src/calendar/libecal/e-cal-client.c:6844
-#: src/calendar/libedata-cal/e-cal-cache.c:1847 src/camel/camel-filter-driver.c:1724
-#: src/camel/camel-filter-driver.c:1853
-#: src/camel/providers/imapx/camel-imapx-server.c:3330
-#: src/camel/providers/imapx/camel-imapx-server.c:3336
-#: src/camel/providers/imapx/camel-imapx-server.c:3346
-#: src/camel/providers/imapx/camel-imapx-server.c:3358
+#: src/calendar/libecal/e-cal-client.c:257 src/calendar/libecal/e-cal-client.c:3270
+#: src/calendar/libecal/e-cal-client.c:3443
+#: src/calendar/libecal/e-cal-client.c:3716
+#: src/calendar/libecal/e-cal-client.c:3954
+#: src/calendar/libecal/e-cal-client.c:4146
+#: src/calendar/libecal/e-cal-client.c:4329
+#: src/calendar/libecal/e-cal-client.c:4564
+#: src/calendar/libecal/e-cal-client.c:4741
+#: src/calendar/libecal/e-cal-client.c:4949
+#: src/calendar/libecal/e-cal-client.c:5105
+#: src/calendar/libecal/e-cal-client.c:5303
+#: src/calendar/libecal/e-cal-client.c:5469
+#: src/calendar/libecal/e-cal-client.c:5696
+#: src/calendar/libecal/e-cal-client.c:5853
+#: src/calendar/libecal/e-cal-client.c:6081
+#: src/calendar/libecal/e-cal-client.c:6280
+#: src/calendar/libecal/e-cal-client.c:6648
+#: src/calendar/libecal/e-cal-client.c:6872
+#: src/calendar/libedata-cal/e-cal-cache.c:1837
+#: src/camel/camel-filter-driver.c:1724 src/camel/camel-filter-driver.c:1853
+#: src/camel/providers/imapx/camel-imapx-server.c:3331
+#: src/camel/providers/imapx/camel-imapx-server.c:3337
+#: src/camel/providers/imapx/camel-imapx-server.c:3347
+#: src/camel/providers/imapx/camel-imapx-server.c:3359
 #: src/camel/providers/nntp/camel-nntp-store.c:419
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
-#: src/libedataserver/e-soup-session.c:930 src/libedataserver/e-soup-session.c:1766
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:230
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:778
+#: src/libedataserver/e-soup-session.c:1019
+#: src/libedataserver/e-soup-session.c:1899
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:266
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
 #: src/libedataserverui/e-reminders-widget.c:2141
 #: src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
@@ -191,36 +202,36 @@ msgid "Invalid DN syntax"
 msgstr "آرگومان نامعتبر"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1155
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4743
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4742
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr ""
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1805
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2156
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2169
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1808
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2159
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2172
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr ""
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2084
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2228
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2087
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2231
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr ""
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2371
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2509
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2374
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2512
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:6325
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr ""
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2667
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2670
 msgid "LDAP contact lists cannot be empty."
 msgstr ""
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2705
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2708
 #, c-format
 msgid ""
 "Contact lists in LDAP address books require each member to be from the same LDAP "
@@ -231,11 +242,11 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4682
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4681
 msgid "Receiving LDAP search results..."
 msgstr "در حال دریافت نتایج جست‌وجوی LDAP..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4885
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4884
 msgid "Error performing search"
 msgstr "خطا در انجام جست و جو"
 
@@ -245,7 +256,7 @@ msgid "Downloading contacts (%d)..."
 msgstr "بارگیری آشنایان (%Id)‏…"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5134
-#: src/addressbook/libedata-book/e-book-meta-backend.c:821
+#: src/addressbook/libedata-book/e-book-meta-backend.c:822
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:722
 msgid "Refreshing…"
 msgstr ""
@@ -330,7 +341,7 @@ msgid "Family Name"
 msgstr "نام خانوادگی"
 
 #: src/addressbook/libebook-contacts/e-contact.c:165
-#: src/libedataserverui/e-certificate-widget.c:401
+#: src/libedataserverui/e-certificate-widget.c:415
 msgid "Nickname"
 msgstr "لقب"
 
@@ -448,8 +459,8 @@ msgstr "TTY"
 
 #. Organizational fields
 #: src/addressbook/libebook-contacts/e-contact.c:203
-#: src/libedataserverui/e-certificate-widget.c:403
-#: src/libedataserverui/e-certificate-widget.c:412
+#: src/libedataserverui/e-certificate-widget.c:417
+#: src/libedataserverui/e-certificate-widget.c:426
 msgid "Organization"
 msgstr "سازمان"
 
@@ -851,27 +862,27 @@ msgstr "نشانی سیپ"
 
 #: src/addressbook/libebook-contacts/e-contact.c:341
 msgid "Google Talk Home Name 1"
-msgstr ""
+msgstr "نام گوگل تاک خانه ۱"
 
 #: src/addressbook/libebook-contacts/e-contact.c:342
 msgid "Google Talk Home Name 2"
-msgstr ""
+msgstr "نام گوگل تاک خانه ۲"
 
 #: src/addressbook/libebook-contacts/e-contact.c:343
 msgid "Google Talk Home Name 3"
-msgstr ""
+msgstr "نام گوگل تاک خانه ۳"
 
 #: src/addressbook/libebook-contacts/e-contact.c:344
 msgid "Google Talk Work Name 1"
-msgstr ""
+msgstr "نام گوگل تاک کاری ۱"
 
 #: src/addressbook/libebook-contacts/e-contact.c:345
 msgid "Google Talk Work Name 2"
-msgstr ""
+msgstr "نام گوگل تاک کاری ۲"
 
 #: src/addressbook/libebook-contacts/e-contact.c:346
 msgid "Google Talk Work Name 3"
-msgstr ""
+msgstr "نام گوگل تاک کاری ۳"
 
 #: src/addressbook/libebook-contacts/e-contact.c:347
 msgid "Google Talk Name List"
@@ -910,7 +921,7 @@ msgid "Matrix ID List"
 msgstr "سیاههٔ شناسه‌های ماتریکس"
 
 #: src/addressbook/libebook-contacts/e-contact.c:1924
-#: src/addressbook/libebook/e-destination.c:915
+#: src/addressbook/libebook/e-destination.c:914
 msgid "Unnamed List"
 msgstr "سیاههٔ بی‌نام"
 
@@ -931,7 +942,8 @@ msgid "Invalid country calling code"
 msgstr "کد تماس کشور نامعتبر"
 
 #: src/addressbook/libebook-contacts/e-phone-number.c:47
-msgid "Remaining text after the country calling code is too short for a phone number"
+msgid ""
+"Remaining text after the country calling code is too short for a phone number"
 msgstr ""
 
 #: src/addressbook/libebook-contacts/e-phone-number.c:49
@@ -942,251 +954,255 @@ msgstr ""
 msgid "Text is too long for a phone number"
 msgstr ""
 
-#: src/addressbook/libebook/e-book-client.c:925
+#: src/addressbook/libebook/e-book-client.c:939
 #, c-format
 msgid "Unknown book property “%s”"
 msgstr ""
 
-#: src/addressbook/libebook/e-book-client.c:940
+#: src/addressbook/libebook/e-book-client.c:954
 #, c-format
 msgid "Cannot change value of book property “%s”"
 msgstr ""
 
-#: src/addressbook/libebook/e-book-client.c:1383
-#: src/addressbook/libebook/e-book-client.c:1614
-#: src/addressbook/libebook/e-book-client.c:1890
-#: src/calendar/libecal/e-cal-client.c:1714 src/calendar/libecal/e-cal-client.c:1952
+#: src/addressbook/libebook/e-book-client.c:1397
+#: src/addressbook/libebook/e-book-client.c:1628
+#: src/addressbook/libebook/e-book-client.c:1904
+#: src/calendar/libecal/e-cal-client.c:1714
+#: src/calendar/libecal/e-cal-client.c:1952
 #, c-format
 msgid "Unable to connect to “%s”: "
 msgstr "ناتوان در وصل شدن به «%s»: "
 
-#: src/addressbook/libebook/e-book-client-view.c:857
+#: src/addressbook/libebook/e-book-client-view.c:858
 #: src/calendar/libecal/e-cal-client-view.c:667
 #, c-format
 msgid "Client disappeared"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-backend.c:3440
+#: src/addressbook/libedata-book/e-book-backend.c:3448
 #, c-format
 msgid "Addressbook backend does not support cursors"
 msgstr ""
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:895
-#: src/addressbook/libedata-book/e-book-sqlite.c:2254
+#: src/addressbook/libedata-book/e-book-sqlite.c:2259
 #, c-format
 msgid "Error introspecting unknown summary field “%s”"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1504
-#: src/addressbook/libedata-book/e-book-cache.c:549
-#: src/addressbook/libedata-book/e-book-sqlite.c:1393
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1505
+#: src/addressbook/libedata-book/e-book-cache.c:558
+#: src/addressbook/libedata-book/e-book-sqlite.c:1398
 msgid "Error parsing regular expression"
 msgstr "خطا در تجزیهٔ عبارت بی‌قاعده"
 
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
-#: src/addressbook/libedata-book/e-book-cache.c:4586
-#: src/addressbook/libedata-book/e-book-sqlite.c:1877 src/camel/camel-db.c:828
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1550
+#: src/addressbook/libedata-book/e-book-cache.c:4751
+#: src/addressbook/libedata-book/e-book-sqlite.c:1882 src/camel/camel-db.c:830
 #, c-format
 msgid "Insufficient memory"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1686
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1687
 #, c-format
 msgid "Invalid contact field “%d” specified in summary"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1720
-#: src/addressbook/libedata-book/e-book-cache.c:372
-#: src/addressbook/libedata-book/e-book-sqlite.c:603
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1721
+#: src/addressbook/libedata-book/e-book-cache.c:381
+#: src/addressbook/libedata-book/e-book-sqlite.c:608
 #, c-format
 msgid ""
-"Contact field “%s” of type “%s” specified in summary, but only boolean, string and "
-"string list field types are supported"
+"Contact field “%s” of type “%s” specified in summary, but only boolean, string "
+"and string list field types are supported"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3064
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4165
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3065
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4166
 #, c-format
 msgid "Full search_contacts are not stored in cache. vcards cannot be returned."
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4296
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4389
-#: src/addressbook/libedata-book/e-book-cache.c:3468
-#: src/addressbook/libedata-book/e-book-sqlite.c:5848
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4297
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4390
+#: src/addressbook/libedata-book/e-book-cache.c:3484
+#: src/addressbook/libedata-book/e-book-sqlite.c:5854
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4300
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4301
 #, c-format
 msgid "Invalid Query"
 msgstr "پرس‌وجوی نامعتبر"
 
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4324
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4325
 #, c-format
 msgid ""
-"Full search_contacts are not stored in cache. Hence only summary query is supported."
+"Full search_contacts are not stored in cache. Hence only summary query is "
+"supported."
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4393
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4394
 #: src/addressbook/libedata-book/e-data-book.c:868
 #: src/calendar/libedata-cal/e-data-cal.c:1143 src/libedataserver/e-client.c:170
 #, c-format
 msgid "Invalid query"
 msgstr "پرس‌وجوی نامعتبر"
 
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4436
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4437
 #, c-format
 msgid "Full vcards are not stored in cache. Hence only summary query is supported."
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:5259
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:5260
 #, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6046
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6446
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6049
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6449
 #, c-format
 msgid "Only summary queries are supported by EbSdbCursor"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6053
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6056
 #, c-format
 msgid "At least one sort field must be specified to use an EbSdbCursor"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6067
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6070
 #, c-format
 msgid "Cannot sort by a field that is not in the summary"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6074
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6077
 #, c-format
 msgid "Cannot sort by a field which may have multiple values"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6207
-#: src/addressbook/libedata-book/e-book-cache.c:5885
-#: src/addressbook/libedata-book/e-book-sqlite.c:8146
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6210
+#: src/addressbook/libedata-book/e-book-cache.c:6082
+#: src/addressbook/libedata-book/e-book-sqlite.c:8152
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of the "
 "contact list"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6215
-#: src/addressbook/libedata-book/e-book-cache.c:5892
-#: src/addressbook/libedata-book/e-book-sqlite.c:8154
+#: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6218
+#: src/addressbook/libedata-book/e-book-cache.c:6089
+#: src/addressbook/libedata-book/e-book-sqlite.c:8160
 #, c-format
 msgid ""
-"Tried to step a cursor forwards, but cursor is already at the end of the contact list"
+"Tried to step a cursor forwards, but cursor is already at the end of the contact "
+"list"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-cache.c:337
-#: src/addressbook/libedata-book/e-book-sqlite.c:569
+#: src/addressbook/libedata-book/e-book-cache.c:346
+#: src/addressbook/libedata-book/e-book-sqlite.c:574
 #, c-format
 msgid "Unsupported contact field “%d” specified in summary"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-cache.c:3463
-#: src/addressbook/libedata-book/e-book-sqlite.c:5841
-#: src/calendar/libedata-cal/e-cal-cache.c:1702
-#: src/calendar/libedata-cal/e-cal-cache.c:3560
+#: src/addressbook/libedata-book/e-book-cache.c:3479
+#: src/addressbook/libedata-book/e-book-sqlite.c:5847
+#: src/calendar/libedata-cal/e-cal-cache.c:1703
+#: src/calendar/libedata-cal/e-cal-cache.c:3550
 #, c-format
 msgid "Invalid query: %s"
 msgstr "پرس‌وجوی نامعتبر: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3648
+#: src/addressbook/libedata-book/e-book-cache.c:3664
 msgid "Invalid query for a book cursor"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-cache.c:4590 src/libebackend/e-cache.c:755
+#: src/addressbook/libedata-book/e-book-cache.c:4755 src/libebackend/e-cache.c:755
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "نمی‌توان پایگاه دادهٔ %s را گشود: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5224
-#: src/addressbook/libedata-book/e-book-cache.c:5271
-#: src/addressbook/libedata-book/e-book-cache.c:5318
-#: src/addressbook/libedata-book/e-book-cache.c:5370
-#: src/calendar/libedata-cal/e-cal-cache.c:2842
-#: src/calendar/libedata-cal/e-cal-cache.c:2900
-#: src/calendar/libedata-cal/e-cal-cache.c:2959
-#: src/calendar/libedata-cal/e-cal-cache.c:3022
-#: src/calendar/libedata-cal/e-cal-cache.c:3193
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1412 src/libebackend/e-cache.c:1370
-#: src/libebackend/e-cache.c:2348 src/libebackend/e-cache.c:2388
+#: src/addressbook/libedata-book/e-book-cache.c:5421
+#: src/addressbook/libedata-book/e-book-cache.c:5468
+#: src/addressbook/libedata-book/e-book-cache.c:5515
+#: src/addressbook/libedata-book/e-book-cache.c:5567
+#: src/calendar/libedata-cal/e-cal-cache.c:2832
+#: src/calendar/libedata-cal/e-cal-cache.c:2890
+#: src/calendar/libedata-cal/e-cal-cache.c:2949
+#: src/calendar/libedata-cal/e-cal-cache.c:3012
+#: src/calendar/libedata-cal/e-cal-cache.c:3183
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1412
+#: src/libebackend/e-cache.c:1370 src/libebackend/e-cache.c:2348
+#: src/libebackend/e-cache.c:2388
 #, fuzzy, c-format
 #| msgid "Object not found"
 msgid "Object “%s” not found"
 msgstr "شیء پیدا نشد"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5430
-#: src/calendar/libedata-cal/e-cal-cache.c:3084
+#: src/addressbook/libedata-book/e-book-cache.c:5627
+#: src/calendar/libedata-cal/e-cal-cache.c:3074
 #, fuzzy, c-format
 #| msgid "Object not found"
 msgid "Object with extra “%s” not found"
 msgstr "شیء پیدا نشد"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5606
+#: src/addressbook/libedata-book/e-book-cache.c:5803
 #, fuzzy
 #| msgid "Operation not supported"
 msgid "Search by email not supported"
 msgstr "عملیات پشتیبانی نمی‌شود"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5617
+#: src/addressbook/libedata-book/e-book-cache.c:5814
 msgid "No email address provided"
-msgstr ""
+msgstr "هیچ نشانی رایانامه‌ای فراهم نشده"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5672
+#: src/addressbook/libedata-book/e-book-cache.c:5869
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-cache.c:5681
-#: src/addressbook/libedata-book/e-book-sqlite.c:7986
+#: src/addressbook/libedata-book/e-book-cache.c:5878
+#: src/addressbook/libedata-book/e-book-sqlite.c:7992
 msgid "Cannot sort by a field that is not a string type"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1119
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1120
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1129
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1127
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1128
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1137
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1341
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1355
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1366
 msgid ""
-"Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode and repeat "
-"the action."
+"Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode and "
+"repeat the action."
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1980
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2436
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1994
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2450
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:3369
 #, fuzzy, c-format
 #| msgid "Unable to create cache path"
 msgid "Failed to create cache “%s”:"
 msgstr "ایجاد مسیر حافظهٔ نهان مقدور نیست"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:1950
+#: src/addressbook/libedata-book/e-book-sqlite.c:1955
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the “folders” table first."
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:6016
+#: src/addressbook/libedata-book/e-book-sqlite.c:6022
 msgid "Invalid query for EbSqlCursor"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:7968
+#: src/addressbook/libedata-book/e-book-sqlite.c:7974
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 
@@ -1274,14 +1290,14 @@ msgstr ""
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr ""
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1474
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1477
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1189
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete or "
 "broken. Remove it, please."
 msgstr ""
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1986
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1989
 msgid "Failed to parse response data"
 msgstr "تجزیهٔ داده‌های پاسخ شکست خورد"
 
@@ -1325,10 +1341,10 @@ msgid "File “%s” is not a VCALENDAR component"
 msgstr ""
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: src/calendar/backends/file/e-cal-backend-file.c:3742
-#: src/calendar/backends/file/e-cal-backend-file.c:3748
-#: src/calendar/backends/file/e-cal-backend-file.c:3754
-#: src/calendar/backends/file/e-cal-backend-file.c:3781
+#: src/calendar/backends/file/e-cal-backend-file.c:3735
+#: src/calendar/backends/file/e-cal-backend-file.c:3741
+#: src/calendar/backends/file/e-cal-backend-file.c:3747
+#: src/calendar/backends/file/e-cal-backend-file.c:3774
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:2596
 msgid "Unsupported method"
 msgstr "روش پشتیبانی نشده"
@@ -1413,7 +1429,7 @@ msgstr ""
 #: src/calendar/backends/weather/e-cal-backend-weather.c:404
 #, c-format
 msgid "%.1f"
-msgstr ""
+msgstr "%I.1f"
 
 #: src/calendar/backends/weather/e-cal-backend-weather.c:567
 #: src/calendar/backends/weather/e-cal-backend-weather.c:595
@@ -1433,7 +1449,7 @@ msgstr "ایجاد پروندهٔ حافظهٔ نهان ممکن نبود"
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:977
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1006
 msgid "New note"
-msgstr ""
+msgstr "یادداشت جدید"
 
 #: src/calendar/libecal/e-cal-client.c:244
 msgid "No such calendar"
@@ -1602,15 +1618,15 @@ msgstr "سی و یکم"
 #, c-format
 msgid "every day forever"
 msgid_plural "every %d days forever"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "هر %Id روز تا ابد"
+msgstr[1] "هر %Id روز تا ابد"
 
 #: src/calendar/libecal/e-cal-recur.c:5078
 #, c-format
 msgid "Every day forever"
 msgid_plural "Every %d days forever"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "هر %Id روز تا ابد"
+msgstr[1] "هر %Id روز تا ابد"
 
 #: src/calendar/libecal/e-cal-recur.c:5086
 #, c-format
@@ -1623,22 +1639,22 @@ msgstr[1] ""
 #, c-format
 msgid "Every day"
 msgid_plural "Every %d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "هر %Id روز"
+msgstr[1] "هر %Id روز"
 
 #: src/calendar/libecal/e-cal-recur.c:5178
 #, c-format
 msgid "every week"
 msgid_plural "every %d weeks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "هر %Id هفته"
+msgstr[1] "هر %Id هفته"
 
 #: src/calendar/libecal/e-cal-recur.c:5184
 #, c-format
 msgid "Every week"
 msgid_plural "Every %d weeks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "هر %Id هفته"
+msgstr[1] "هر %Id هفته"
 
 #. Translators: This is used to merge set of week day names in a recurrence, which can contain any
 #. of the week day names. The string always starts with "on DAYNAME", then it can continue either
@@ -1760,15 +1776,15 @@ msgstr ""
 #, c-format
 msgid "every month"
 msgid_plural "every %d months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "هر %Id ماه"
+msgstr[1] "هر %Id ماه"
 
 #: src/calendar/libecal/e-cal-recur.c:5382
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "هر %Id ماه"
+msgstr[1] "هر %Id ماه"
 
 #: src/calendar/libecal/e-cal-recur.c:5392 src/calendar/libecal/e-cal-recur.c:5713
 msgctxt "recur-description"
@@ -2170,29 +2186,29 @@ msgstr ""
 #, c-format
 msgid "every year forever"
 msgid_plural "every %d years forever"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "هر %Id سال تا ابد"
+msgstr[1] "هر %Id سال تا ابد"
 
 #: src/calendar/libecal/e-cal-recur.c:5745
 #, c-format
 msgid "Every year forever"
 msgid_plural "Every %d years forever"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "هر %Id سال تا ابد"
+msgstr[1] "هر %Id سال تا ابد"
 
 #: src/calendar/libecal/e-cal-recur.c:5753
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "هر %Id سال"
+msgstr[1] "هر %Id سال"
 
 #: src/calendar/libecal/e-cal-recur.c:5759
 #, c-format
 msgid "Every year"
 msgid_plural "Every %d years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "هر %Id سال"
+msgstr[1] "هر %Id سال"
 
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
@@ -2220,7 +2236,7 @@ msgstr ""
 #: src/calendar/libecal/e-cal-recur.c:5820
 msgctxt "recur-description"
 msgid "forever"
-msgstr ""
+msgstr "برای همیشه"
 
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
 #. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
@@ -2289,71 +2305,75 @@ msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr ""
 
-#: src/calendar/libecal/e-cal-util.c:837 src/calendar/libecal/e-cal-util.c:864
+#: src/calendar/libecal/e-cal-util.c:1025 src/calendar/libecal/e-cal-util.c:1052
 msgctxt "Priority"
 msgid "High"
 msgstr "بالا"
 
-#: src/calendar/libecal/e-cal-util.c:839 src/calendar/libecal/e-cal-util.c:866
+#: src/calendar/libecal/e-cal-util.c:1027 src/calendar/libecal/e-cal-util.c:1054
 msgctxt "Priority"
 msgid "Normal"
 msgstr "عادی"
 
-#: src/calendar/libecal/e-cal-util.c:841 src/calendar/libecal/e-cal-util.c:868
+#: src/calendar/libecal/e-cal-util.c:1029 src/calendar/libecal/e-cal-util.c:1056
 msgctxt "Priority"
 msgid "Low"
 msgstr "پایین"
 
 #. An empty string is the same as 'None'.
-#: src/calendar/libecal/e-cal-util.c:862
+#: src/calendar/libecal/e-cal-util.c:1050
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "تعریف نشده"
 
-#: src/calendar/libecal/e-cal-util.c:904 src/libedataserverui/e-reminders-widget.c:337
+#: src/calendar/libecal/e-cal-util.c:1092
+#: src/libedataserverui/e-reminders-widget.c:337
 #, c-format
 msgid "%d week"
 msgid_plural "%d weeks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%Id هفته"
+msgstr[1] "%Id هفته"
 
-#: src/calendar/libecal/e-cal-util.c:913 src/libedataserverui/e-reminders-widget.c:333
+#: src/calendar/libecal/e-cal-util.c:1101
+#: src/libedataserverui/e-reminders-widget.c:333
 #, c-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d روز"
+msgstr[1] "%d روز"
 
-#: src/calendar/libecal/e-cal-util.c:922 src/libedataserverui/e-reminders-widget.c:329
+#: src/calendar/libecal/e-cal-util.c:1110
+#: src/libedataserverui/e-reminders-widget.c:329
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%Id ساعت"
+msgstr[1] "%Id ساعت"
 
-#: src/calendar/libecal/e-cal-util.c:931 src/libedataserverui/e-reminders-widget.c:325
+#: src/calendar/libecal/e-cal-util.c:1119
+#: src/libedataserverui/e-reminders-widget.c:325
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%Id دقیقه"
+msgstr[1] "%Id دقیقه"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: src/calendar/libecal/e-cal-util.c:936
+#: src/calendar/libecal/e-cal-util.c:1124
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%Id ثانیه"
+msgstr[1] "%Id ثانیه"
 
-#: src/calendar/libecal/e-reminder-watcher.c:2902
+#: src/calendar/libecal/e-reminder-watcher.c:2932
 msgid "No Summary"
-msgstr ""
+msgstr "بدون خلاصه"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:2918
+#: src/calendar/libecal/e-reminder-watcher.c:2948
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
@@ -2362,7 +2382,7 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: src/calendar/libecal/e-reminder-watcher.c:2923
+#: src/calendar/libecal/e-reminder-watcher.c:2953
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
@@ -2371,18 +2391,18 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:2928
+#: src/calendar/libecal/e-reminder-watcher.c:2958
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
 msgstr ""
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:77
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1173
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1234
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1579
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1706
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1755
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1163
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1224
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1569
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1696
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1745
 #, fuzzy, c-format
 #| msgid "\"%s\" expects one argument"
 msgid "“%s” expects one argument"
@@ -2390,8 +2410,8 @@ msgstr "‏«%s» یک آرگومان انتظار دارد"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:84
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:707
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1586
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1594
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1576
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1584
 #, fuzzy, c-format
 #| msgid "\"%s\" expects the first argument to be a string"
 msgid "“%s” expects the first argument to be a string"
@@ -2406,12 +2426,12 @@ msgstr "‏«%s» دو آرگومان انتظار دارد"
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:171
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:272
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:340
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:926
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1180
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1241
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1655
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1713
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1762
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:925
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1170
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1231
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1645
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1703
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1752
 #, fuzzy, c-format
 #| msgid "\"%s\" expects the first argument to be a time_t"
 msgid "“%s” expects the first argument to be a time_t"
@@ -2420,7 +2440,7 @@ msgstr "‏«%s» انتظار دارد آرگومان اول یک time_t باش
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:180
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:280
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:350
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:935
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:934
 #, fuzzy, c-format
 #| msgid "\"%s\" expects the second argument to be a time_t"
 msgid "“%s” expects the second argument to be a time_t"
@@ -2440,8 +2460,8 @@ msgstr "‏«%s» دو آرگومان انتظار دارد"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:333
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:700
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:919
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1648
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:918
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1638
 #, fuzzy, c-format
 #| msgid "\"%s\" expects two arguments"
 msgid "“%s” expects two arguments"
@@ -2454,9 +2474,9 @@ msgstr "‏«%s» دو آرگومان انتظار دارد"
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:834
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:857
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:883
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1092
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1125
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1540
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1082
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1115
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1530
 #, fuzzy, c-format
 #| msgid "\"%s\" expects no arguments"
 msgid "“%s” expects no arguments"
@@ -2475,64 +2495,65 @@ msgstr "‏«%s» انتظار دارد آرگومان دوم رشته باشد"
 #| "\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
 #| "\"classification\""
 msgid ""
-"“%s” expects the first argument to be either “any”, “summary”, or “description”, or "
-"“location”, or “attendee”, or “organizer”, or “classification”"
+"“%s” expects the first argument to be either “any”, “summary”, or “description”, "
+"or “location”, or “attendee”, or “organizer”, or “classification”"
 msgstr ""
 "«%s» انتظار دارد آرگومان نخست «any»، ‏«summary»، ‏«description»، «location»، "
 "«location»، «attendee»، «organizer» یا «classification» باشد"
 
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:987
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:977
 #, fuzzy, c-format
 #| msgid "\"%s\" expects at least one argument"
 msgid "“%s” expects at least one argument"
 msgstr "‏«%s» حداقل یک آرگومان می‌خواهد"
 
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1002
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:992
 #, fuzzy, c-format
 #| msgid ""
-#| "\"%s\" expects all arguments to be strings or one and only one argument to be a "
-#| "boolean false (#f)"
+#| "\"%s\" expects all arguments to be strings or one and only one argument to be "
+#| "a boolean false (#f)"
 msgid ""
 "“%s” expects all arguments to be strings or one and only one argument to be a "
 "boolean false (#f)"
-msgstr "‏«%s» انتظار دارد همهٔ آرگومان‌ها رشته باشند یا فقط یک آرگومان بولی غلط (#f) باشد"
+msgstr ""
+"‏«%s» انتظار دارد همهٔ آرگومان‌ها رشته باشند یا فقط یک آرگومان بولی غلط (#f) باشد"
 
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1603
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1593
 #, fuzzy, c-format
 #| msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr "‏«%s» انتظار دارد آرگومان اول یک رشتهٔ تاریخ/زمان ISO 8601 باشد"
 
-#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1664
+#: src/calendar/libedata-cal/e-cal-backend-sexp.c:1654
 #, fuzzy, c-format
 #| msgid "\"%s\" expects the second argument to be an integer"
 msgid "“%s” expects the second argument to be an integer"
 msgstr "‏«%s» انتظار دارد آرگومان دوم عدد صحبح باشد"
 
-#: src/calendar/libedata-cal/e-cal-cache.c:1846
+#: src/calendar/libedata-cal/e-cal-cache.c:1836
 #, fuzzy, c-format
 #| msgid "Failed to create create child process '%s': %s"
 msgid "Failed to create SQLite function, error code “%d”: %s"
 msgstr "شکست در ایجاد فراروند فرزند «%s»: %s"
 
-#: src/calendar/libedata-cal/e-cal-cache.c:2840
-#: src/calendar/libedata-cal/e-cal-cache.c:2898
-#: src/calendar/libedata-cal/e-cal-cache.c:2957
-#: src/calendar/libedata-cal/e-cal-cache.c:3020
+#: src/calendar/libedata-cal/e-cal-cache.c:2830
+#: src/calendar/libedata-cal/e-cal-cache.c:2888
+#: src/calendar/libedata-cal/e-cal-cache.c:2947
+#: src/calendar/libedata-cal/e-cal-cache.c:3010
 #, fuzzy, c-format
 #| msgid "Object not found"
 msgid "Object “%s”, “%s” not found"
 msgstr "شیء پیدا نشد"
 
-#: src/calendar/libedata-cal/e-cal-cache.c:3799
+#: src/calendar/libedata-cal/e-cal-cache.c:3767
 msgid "Cannot add timezone without tzid"
 msgstr ""
 
-#: src/calendar/libedata-cal/e-cal-cache.c:3808
+#: src/calendar/libedata-cal/e-cal-cache.c:3776
 msgid "Cannot add timezone without component"
 msgstr ""
 
-#: src/calendar/libedata-cal/e-cal-cache.c:3816
+#: src/calendar/libedata-cal/e-cal-cache.c:3784
 #, fuzzy
 #| msgid "Cannot send message: one or more invalid recipients"
 msgid "Cannot add timezone with invalid component"
@@ -2545,7 +2566,7 @@ msgstr ""
 
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:4243
 msgid "attachment.dat"
-msgstr ""
+msgstr "پیوست.dat"
 
 #. Translators: This is prefix to a detailed error message
 #: src/calendar/libedata-cal/e-data-cal.c:1362
@@ -2690,7 +2711,7 @@ msgstr ""
 msgid "Could not remove cache entry: %s: %s"
 msgstr "ناتوان در برداشتن ورودی انباره: %s: %s"
 
-#: src/camel/camel-db.c:882 src/camel/providers/local/camel-mbox-store.c:913
+#: src/camel/camel-db.c:884 src/camel/providers/local/camel-mbox-store.c:913
 #, fuzzy, c-format
 #| msgid "Could not rename '%s' to %s: %s"
 msgid "Could not rename “%s” to %s: %s"
@@ -2755,11 +2776,11 @@ msgstr "شکست در پیام %Id"
 msgid "Failed to transfer messages: %s"
 msgstr "شکست در پیام %Id"
 
-#: src/camel/camel-filter-driver.c:1734 src/camel/camel-filter-driver.c:1867
+#: src/camel/camel-filter-driver.c:1734 src/camel/camel-filter-driver.c:1876
 msgid "Syncing folder"
 msgstr "در حال همگام‌سازی شاخه"
 
-#: src/camel/camel-filter-driver.c:1739 src/camel/camel-filter-driver.c:1875
+#: src/camel/camel-filter-driver.c:1739 src/camel/camel-filter-driver.c:1884
 msgid "Complete"
 msgstr "انجام شده"
 
@@ -2773,18 +2794,18 @@ msgstr "در حال دریافت پیام %Id از %Id"
 msgid "Failed at message %d of %d"
 msgstr "شکست در پیام %Id از %Id"
 
-#: src/camel/camel-filter-driver.c:2032 src/camel/camel-filter-driver.c:2056
+#: src/camel/camel-filter-driver.c:2040 src/camel/camel-filter-driver.c:2064
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr ""
 
-#: src/camel/camel-filter-driver.c:2046
+#: src/camel/camel-filter-driver.c:2054
 #, fuzzy, c-format
 #| msgid "Error parsing filter: %s: %s"
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "خطا در تجزیهٔ صافی: %s: %s"
 
-#: src/camel/camel-filter-driver.c:2065
+#: src/camel/camel-filter-driver.c:2073
 #, fuzzy, c-format
 #| msgid "Error executing filter: %s: %s"
 msgid "Error executing filter “%s”: %s: %s"
@@ -2854,7 +2875,8 @@ msgid_plural "Filtering new messages in “%s : %s”"
 msgstr[0] "در حال از صافی رد کردن پیام‌(های) جدید"
 msgstr[1] "در حال از صافی رد کردن پیام‌(های) جدید"
 
-#: src/camel/camel-folder.c:1211 src/camel/providers/local/camel-maildir-folder.c:332
+#: src/camel/camel-folder.c:1211
+#: src/camel/providers/local/camel-maildir-folder.c:332
 msgid "Moving messages"
 msgstr "در حال جابه‌جایی پیام‌ها"
 
@@ -2882,7 +2904,7 @@ msgstr "گشودن شاخه ممکن نبود: %s‏: %s"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3372
+#: src/camel/camel-folder.c:3374
 #, fuzzy, c-format
 #| msgid "Cannot get folder: %s: %s"
 msgid "Expunging folder “%s : %s”"
@@ -2891,7 +2913,7 @@ msgstr "نمی‌توان شاخه را گرفت: %s‏: %s"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3507
+#: src/camel/camel-folder.c:3509
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr ""
@@ -2899,7 +2921,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3732
+#: src/camel/camel-folder.c:3734
 #, fuzzy, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "در حال آوردن اطلاعات خلاصهٔ پیام‌های جدید"
@@ -2907,7 +2929,7 @@ msgstr "در حال آوردن اطلاعات خلاصهٔ پیام‌های ج�
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:4032
+#: src/camel/camel-folder.c:4034
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr ""
@@ -2981,7 +3003,7 @@ msgid "Failed to execute gpg: %s"
 msgstr "اجرای gpg شکست خورد: %s"
 
 #: src/camel/camel-gpg-context.c:948
-#: src/camel/providers/smtp/camel-smtp-transport.c:1205
+#: src/camel/providers/smtp/camel-smtp-transport.c:1209
 msgid "Unknown"
 msgstr "نامعلوم"
 
@@ -3038,12 +3060,13 @@ msgstr "درخواست نامنتظره از GnuPG‏ برای «%s»"
 
 #: src/camel/camel-gpg-context.c:1179
 msgid ""
-"Note the encrypted content doesn’t contain information about a recipient, thus there "
-"will be a password prompt for each of stored private key."
+"Note the encrypted content doesn’t contain information about a recipient, thus "
+"there will be a password prompt for each of stored private key."
 msgstr ""
 
 #: src/camel/camel-gpg-context.c:1210 src/camel/camel-net-utils.c:524
-#: src/camel/providers/nntp/camel-nntp-summary.c:393 src/libedataserver/e-client.c:156
+#: src/camel/providers/nntp/camel-nntp-summary.c:393
+#: src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
 msgstr "لغو شده"
@@ -3112,8 +3135,8 @@ msgstr "رمزنگاری شکست خورد: گیرندهٔ معتبری مشخص
 #: src/camel/camel-gpg-context.c:1425
 #, c-format
 msgid ""
-"Failed to encrypt: Invalid recipient %s specified (code %d). A common issue is that "
-"the %s doesn’t have imported public key for this recipient."
+"Failed to encrypt: Invalid recipient %s specified (code %d). A common issue is "
+"that the %s doesn’t have imported public key for this recipient."
 msgstr ""
 
 #: src/camel/camel-gpg-context.c:2266 src/camel/camel-smime-context.c:869
@@ -3445,8 +3468,8 @@ msgid ""
 "This option will connect to the server using a secure CRAM-MD5 password, if the "
 "server supports it."
 msgstr ""
-"این گزینه در صورت پشتیبانی کارساز، با استفاده از یک گذرواژهٔ امن CRAM-MD5 به آن متصل "
-"خواهد شد."
+"این گزینه در صورت پشتیبانی کارساز، با استفاده از یک گذرواژهٔ امن CRAM-MD5 به آن "
+"متصل خواهد شد."
 
 #: src/camel/camel-sasl-digest-md5.c:50
 msgid "DIGEST-MD5"
@@ -3454,8 +3477,8 @@ msgstr "DIGEST-MD5"
 
 #: src/camel/camel-sasl-digest-md5.c:52
 msgid ""
-"This option will connect to the server using a secure DIGEST-MD5 password, if the "
-"server supports it."
+"This option will connect to the server using a secure DIGEST-MD5 password, if "
+"the server supports it."
 msgstr ""
 "این گزینه در صورت پشتیبانی کارساز، با استفاده از یک گذرواژهٔ امن DIGEST-MD4 به آن "
 "متصل خواهد شد."
@@ -3523,7 +3546,8 @@ msgstr ""
 
 #: src/camel/camel-sasl-gssapi.c:204
 msgid ""
-"The provided target_name parameter contained an invalid or unsupported type of name."
+"The provided target_name parameter contained an invalid or unsupported type of "
+"name."
 msgstr ""
 
 #: src/camel/camel-sasl-gssapi.c:208
@@ -3540,8 +3564,8 @@ msgstr ""
 
 #: src/camel/camel-sasl-gssapi.c:217
 msgid ""
-"The supplied credentials were not valid for context initiation, or the credential "
-"handle did not reference any credentials."
+"The supplied credentials were not valid for context initiation, or the "
+"credential handle did not reference any credentials."
 msgstr ""
 
 #: src/camel/camel-sasl-gssapi.c:222
@@ -3562,7 +3586,7 @@ msgstr ""
 
 #: src/camel/camel-sasl-gssapi.c:237 src/camel/camel-sasl-gssapi.c:441
 #: src/camel/camel-sasl-gssapi.c:491 src/camel/camel-sasl-gssapi.c:508
-#: src/camel/providers/smtp/camel-smtp-transport.c:856
+#: src/camel/providers/smtp/camel-smtp-transport.c:860
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "پاسخ تأیید هویت نامناسب از کارساز."
@@ -3577,8 +3601,8 @@ msgstr "گرفتن پیام ممکن نبود"
 #, c-format
 msgid ""
 "Cannot ask for Kerberos ticket. Obtain the ticket manually, like on command line "
-"with “kinit” or open “Online Accounts” in “Settings” and add the Kerberos account "
-"there. Reported error was: %s"
+"with “kinit” or open “Online Accounts” in “Settings” and add the Kerberos "
+"account there. Reported error was: %s"
 msgstr ""
 
 #: src/camel/camel-sasl-gssapi.c:520
@@ -3653,7 +3677,8 @@ msgid "OAuth2 (Google)"
 msgstr ""
 
 #: src/camel/camel-sasl-xoauth2-google.c:24
-msgid "This option will use an OAuth 2.0 access token to connect to the Google server"
+msgid ""
+"This option will use an OAuth 2.0 access token to connect to the Google server"
 msgstr ""
 
 #: src/camel/camel-sasl-xoauth2-outlook.c:23
@@ -3662,7 +3687,8 @@ msgstr ""
 
 #: src/camel/camel-sasl-xoauth2-outlook.c:24
 msgid ""
-"This option will use an OAuth 2.0 access token to connect to the Outlook.com server"
+"This option will use an OAuth 2.0 access token to connect to the Outlook.com "
+"server"
 msgstr ""
 
 #: src/camel/camel-sasl-xoauth2-yahoo.c:23
@@ -3670,7 +3696,8 @@ msgid "OAuth2 (Yahoo!)"
 msgstr ""
 
 #: src/camel/camel-sasl-xoauth2-yahoo.c:24
-msgid "This option will use an OAuth 2.0 access token to connect to the Yahoo! server"
+msgid ""
+"This option will use an OAuth 2.0 access token to connect to the Yahoo! server"
 msgstr ""
 
 #: src/camel/camel-search-private.c:114
@@ -3683,7 +3710,8 @@ msgstr "ترجمهٔ عبارت منظم شکست خورد: %s‏: %s"
 msgid "Invalid GType registered for protocol “%s”"
 msgstr ""
 
-#: src/camel/camel-session.c:508 src/camel/providers/imapx/camel-imapx-server.c:3249
+#: src/camel/camel-session.c:508
+#: src/camel/providers/imapx/camel-imapx-server.c:3252
 #: src/camel/providers/pop3/camel-pop3-store.c:305
 #: src/camel/providers/pop3/camel-pop3-store.c:809
 #: src/camel/providers/smtp/camel-smtp-transport.c:696
@@ -3693,10 +3721,9 @@ msgid "No support for %s authentication"
 msgstr "تأیید هویت از نوع %s پشتیبانی نمی‌شود"
 
 #: src/camel/camel-session.c:523
-#, fuzzy, c-format
-#| msgid "Authentication failed"
+#, c-format
 msgid "%s authentication failed"
-msgstr "تأیید هویت شکست خورد"
+msgstr "تأیید هویت %s شکست خورد"
 
 #: src/camel/camel-session.c:592
 #, fuzzy
@@ -3961,7 +3988,7 @@ msgid "Only reset to beginning is supported with CamelHttpStream"
 msgstr ""
 
 #: src/camel/camel-stream-process.c:282
-#: src/camel/providers/smtp/camel-smtp-transport.c:743
+#: src/camel/providers/smtp/camel-smtp-transport.c:747
 #, c-format
 msgid "Connection cancelled"
 msgstr "از اتصال لغو شد"
@@ -4061,7 +4088,7 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "برای تکمیل این عملیات باید برخط کار کنید"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:987
-#: src/camel/providers/imapx/camel-imapx-server.c:3423
+#: src/camel/providers/imapx/camel-imapx-server.c:3424
 #: src/camel/providers/nntp/camel-nntp-store.c:348
 #: src/camel/providers/nntp/camel-nntp-store.c:1343
 #: src/camel/providers/nntp/camel-nntp-store.c:2156
@@ -4123,10 +4150,8 @@ msgstr ""
 
 #: src/camel/providers/imapx/camel-imapx-folder.c:1124
 #: src/camel/providers/nntp/camel-nntp-folder.c:832
-#, fuzzy
-#| msgid "Cannot copy messages to the Trash folder"
 msgid "Apply message _filters to this folder"
-msgstr "نمی‌توان از پیام‌ها در شاخهٔ زباله‌دان نسخه‌برداری کرد"
+msgstr "اعمال _پالایه‌های پیام به این شاخه"
 
 #: src/camel/providers/imapx/camel-imapx-folder.c:1136
 #, fuzzy
@@ -4315,54 +4340,54 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "برای خواندن و ذخیرهٔ نامه روی کارسازهای IMAP."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:1152
+#: src/camel/providers/imapx/camel-imapx-server.c:1157
 #, fuzzy
 #| msgid "Error writing to temp mailbox: %s"
 msgid "Error writing to cache stream"
 msgstr "خطا در نوشتن در نامه‌دان موقت: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3044
-#: src/camel/providers/imapx/camel-imapx-server.c:3131
-#: src/camel/providers/imapx/camel-imapx-server.c:3456
+#: src/camel/providers/imapx/camel-imapx-server.c:3047
+#: src/camel/providers/imapx/camel-imapx-server.c:3134
+#: src/camel/providers/imapx/camel-imapx-server.c:3457
 #, fuzzy
 #| msgid "Failed to authenticate.\n"
 msgid "Failed to get capabilities"
 msgstr "تأیید هویت شکست خورد.\n"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3063
+#: src/camel/providers/imapx/camel-imapx-server.c:3066
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "اتصال به کارساز IMAP ‏%s در حالت امن شکست خورد: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3064
+#: src/camel/providers/imapx/camel-imapx-server.c:3067
 #: src/camel/providers/smtp/camel-smtp-transport.c:283
 msgid "STARTTLS not supported"
 msgstr "پشتیبانی نمی‌شود STARTTLS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3073
+#: src/camel/providers/imapx/camel-imapx-server.c:3076
 msgid "Failed to issue STARTTLS"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3120
+#: src/camel/providers/imapx/camel-imapx-server.c:3123
 #, fuzzy, c-format
 #| msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "اتصال به کارساز IMAP ‏%s در حالت امن شکست خورد: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3236
+#: src/camel/providers/imapx/camel-imapx-server.c:3239
 #, fuzzy, c-format
 #| msgid "IMAP server %s does not support requested authentication type %s"
 msgid "IMAP server %s does not support %s authentication"
 msgstr "کارساز IMAP ‏%s از نوع تأیید هویت درخواست شدهٔ %s پشتیبانی نمی‌کند"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3262
+#: src/camel/providers/imapx/camel-imapx-server.c:3265
 #, c-format
 msgid ""
-"Plaintext authentication disallowed on insecure connections. Change encryption to "
-"STARTTLS or TLS for account “%s”."
+"Plaintext authentication disallowed on insecure connections. Change encryption "
+"to STARTTLS or TLS for account “%s”."
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3275
+#: src/camel/providers/imapx/camel-imapx-server.c:3278
 #: src/camel/providers/nntp/camel-nntp-store.c:454
 #: src/camel/providers/nntp/camel-nntp-store.c:596
 #, fuzzy
@@ -4370,7 +4395,7 @@ msgstr ""
 msgid "Cannot authenticate without a username"
 msgstr "نمی‌توان با کارساز تأیید هویت کرد: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3284
+#: src/camel/providers/imapx/camel-imapx-server.c:3287
 #: src/camel/providers/nntp/camel-nntp-store.c:605
 #: src/camel/providers/pop3/camel-pop3-store.c:709
 #: src/camel/providers/pop3/camel-pop3-store.c:747
@@ -4379,108 +4404,108 @@ msgstr "نمی‌توان با کارساز تأیید هویت کرد: %s"
 msgid "Authentication password not available"
 msgstr "تأیید هویت شکست خورد"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3294
-#: src/camel/providers/imapx/camel-imapx-server.c:3309
+#: src/camel/providers/imapx/camel-imapx-server.c:3297
+#: src/camel/providers/imapx/camel-imapx-server.c:3310
 #, fuzzy
 #| msgid "Failed to authenticate.\n"
 msgid "Failed to authenticate"
 msgstr "تأیید هویت شکست خورد.\n"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3381
+#: src/camel/providers/imapx/camel-imapx-server.c:3382
 #, fuzzy
 #| msgid "Failed on message %d"
 msgid "Failed to issue ID"
 msgstr "شکست در پیام %Id"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3483
+#: src/camel/providers/imapx/camel-imapx-server.c:3484
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3505
+#: src/camel/providers/imapx/camel-imapx-server.c:3506
 msgid "Failed to issue NAMESPACE"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3523
+#: src/camel/providers/imapx/camel-imapx-server.c:3524
 #, fuzzy
 #| msgid "Failed to encode data"
 msgid "Failed to enable QResync"
 msgstr "کدگذاری داده‌ها شکست خورد"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3560
+#: src/camel/providers/imapx/camel-imapx-server.c:3561
 #, fuzzy
 #| msgid "Failed on message %d"
 msgid "Failed to issue NOTIFY"
 msgstr "شکست در پیام %Id"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4039
+#: src/camel/providers/imapx/camel-imapx-server.c:4040
 #, fuzzy
 #| msgid "Failed to execute gpg."
 msgid "Failed to select mailbox"
 msgstr "اجرای gpg شکست خورد."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4139
+#: src/camel/providers/imapx/camel-imapx-server.c:4140
 msgid "Cannot issue command, no stream available"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4405
+#: src/camel/providers/imapx/camel-imapx-server.c:4406
 #, fuzzy, c-format
 #| msgid "Cannot get message %s: %s"
 msgid "Cannot get message with message ID %s: %s"
 msgstr "دسترسی به پیام %s ممکن نیست: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4406
+#: src/camel/providers/imapx/camel-imapx-server.c:4407
 #, fuzzy
 #| msgid "No such message"
 msgid "No such message available."
 msgstr "چنین پیامی وجود ندارد"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4455
-#: src/camel/providers/imapx/camel-imapx-server.c:4480
-#: src/camel/providers/imapx/camel-imapx-server.c:4519
+#: src/camel/providers/imapx/camel-imapx-server.c:4456
+#: src/camel/providers/imapx/camel-imapx-server.c:4481
+#: src/camel/providers/imapx/camel-imapx-server.c:4520
 #, fuzzy
 #| msgid "Encrypting message"
 msgid "Error fetching message"
 msgstr "در حال رمزنگاری پیام"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4497
-#: src/camel/providers/imapx/camel-imapx-server.c:5270
+#: src/camel/providers/imapx/camel-imapx-server.c:4498
+#: src/camel/providers/imapx/camel-imapx-server.c:5271
 #, fuzzy
 #| msgid "Error performing search"
 msgid "Error performing NOOP"
 msgstr "خطا در انجام جست و جو"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4512
+#: src/camel/providers/imapx/camel-imapx-server.c:4513
 #, fuzzy
 #| msgid "Failed to send username to server"
 msgid "Failed to close the tmp stream"
 msgstr "ارسال نام کاربر به کارگزار شکست خورد"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4543
+#: src/camel/providers/imapx/camel-imapx-server.c:4544
 #, fuzzy
 #| msgid "Failed to authenticate.\n"
 msgid "Failed to copy the tmp file"
 msgstr "تأیید هویت شکست خورد.\n"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4781
+#: src/camel/providers/imapx/camel-imapx-server.c:4782
 #, fuzzy
 #| msgid "Moving messages"
 msgid "Error moving messages"
 msgstr "در حال جابه‌جایی پیام‌ها"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4781
+#: src/camel/providers/imapx/camel-imapx-server.c:4782
 #, fuzzy
 #| msgid "Copying messages"
 msgid "Error copying messages"
 msgstr "در حال نسخه‌برداری از پیام‌ها"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5060
-#: src/camel/providers/imapx/camel-imapx-server.c:5081
+#: src/camel/providers/imapx/camel-imapx-server.c:5061
+#: src/camel/providers/imapx/camel-imapx-server.c:5082
 #, fuzzy
 #| msgid "Cannot create message: %s"
 msgid "Cannot create spool file: "
 msgstr "پیام ایجاد نمی‌شود: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5167
+#: src/camel/providers/imapx/camel-imapx-server.c:5168
 #, fuzzy
 #| msgid "Sending message"
 msgid "Error appending message"
@@ -4489,95 +4514,95 @@ msgstr "در حال ارسال پیام"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5423
+#: src/camel/providers/imapx/camel-imapx-server.c:5439
 #, fuzzy, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "پویش به دنبال پیام‌های تغییر‌ یافته"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5427
+#: src/camel/providers/imapx/camel-imapx-server.c:5443
 msgid "Error scanning changes"
 msgstr ""
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5448
+#: src/camel/providers/imapx/camel-imapx-server.c:5466
 #, fuzzy, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "در حال آوردن اطلاعات خلاصهٔ پیام‌های جدید"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5476
+#: src/camel/providers/imapx/camel-imapx-server.c:5493
 #, fuzzy
 #| msgid "Encrypting message"
 msgid "Error fetching message info"
 msgstr "در حال رمزنگاری پیام"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5626
+#: src/camel/providers/imapx/camel-imapx-server.c:5645
 msgid "Error running STATUS"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6206
-#: src/camel/providers/imapx/camel-imapx-server.c:6261
-#: src/camel/providers/imapx/camel-imapx-server.c:6325
+#: src/camel/providers/imapx/camel-imapx-server.c:6231
+#: src/camel/providers/imapx/camel-imapx-server.c:6286
+#: src/camel/providers/imapx/camel-imapx-server.c:6350
 msgid "Error syncing changes"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6219
-#: src/camel/providers/imapx/camel-imapx-server.c:6271
-#: src/camel/providers/imapx/camel-imapx-server.c:6344
-#: src/camel/providers/imapx/camel-imapx-server.c:6485
+#: src/camel/providers/imapx/camel-imapx-server.c:6244
+#: src/camel/providers/imapx/camel-imapx-server.c:6296
+#: src/camel/providers/imapx/camel-imapx-server.c:6369
+#: src/camel/providers/imapx/camel-imapx-server.c:6510
 #, fuzzy
 msgid "Error expunging message"
 msgstr "در حال پاکسازی پیام‌های حذف شده"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6567
+#: src/camel/providers/imapx/camel-imapx-server.c:6592
 #, fuzzy
 #| msgid "Storing folder"
 msgid "Error fetching folders"
 msgstr "در حال ذخیره‌سازی شاخه"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6575
+#: src/camel/providers/imapx/camel-imapx-server.c:6600
 #, fuzzy
 #| msgid "_Show only subscribed folders"
 msgid "Error fetching subscribed folders"
 msgstr "_نشان دادن فقط شاخه‌های آبونه شده"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6632
+#: src/camel/providers/imapx/camel-imapx-server.c:6657
 #, fuzzy
 #| msgid "Storing folder"
 msgid "Error creating folder"
 msgstr "در حال ذخیره‌سازی شاخه"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6682
+#: src/camel/providers/imapx/camel-imapx-server.c:6707
 #, fuzzy
 #| msgid "Storing folder"
 msgid "Error deleting folder"
 msgstr "در حال ذخیره‌سازی شاخه"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6728
+#: src/camel/providers/imapx/camel-imapx-server.c:6753
 #, fuzzy
 #| msgid "Storing folder"
 msgid "Error renaming folder"
 msgstr "در حال ذخیره‌سازی شاخه"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6760
+#: src/camel/providers/imapx/camel-imapx-server.c:6785
 #, fuzzy
 #| msgid "_Show only subscribed folders"
 msgid "Error subscribing to folder"
 msgstr "_نشان دادن فقط شاخه‌های آبونه شده"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6796
+#: src/camel/providers/imapx/camel-imapx-server.c:6821
 #, fuzzy
 msgid "Error unsubscribing from folder"
 msgstr "نمی‌توان آبونهٔ شاخهٔ «%s» را قطع کرد: فرمان نامناسب"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6836
+#: src/camel/providers/imapx/camel-imapx-server.c:6861
 #, fuzzy
 #| msgid "IMAP server %s does not support requested authentication type %s"
 msgid "IMAP server does not support quotas"
 msgstr "کارساز IMAP ‏%s از نوع تأیید هویت درخواست شدهٔ %s پشتیبانی نمی‌کند"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6848
+#: src/camel/providers/imapx/camel-imapx-server.c:6873
 #, fuzzy
 #| msgid ""
 #| "Error retrieving newsgroups:\n"
@@ -4589,21 +4614,21 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6913
+#: src/camel/providers/imapx/camel-imapx-server.c:6938
 #, fuzzy
 #| msgid "Decoder failed"
 msgid "Search failed"
 msgstr "کدگشا شکست خورد"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7041
+#: src/camel/providers/imapx/camel-imapx-server.c:7066
 #, fuzzy
 #| msgid "Error in CRL"
 msgid "Error running IDLE"
 msgstr "خطا در CRL"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: src/camel/providers/imapx/camel-imapx-store.c:353
+#: src/camel/providers/imapx/camel-imapx-store.c:349
 #: src/camel/providers/local/camel-maildir-folder.c:485
 #: src/camel/providers/local/camel-maildir-store.c:342
 #: src/camel/providers/local/camel-maildir-store.c:824
@@ -4613,55 +4638,56 @@ msgstr "خطا در CRL"
 msgid "Inbox"
 msgstr "دریافتی"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:962
+#: src/camel/providers/imapx/camel-imapx-store.c:958
 #, c-format
 msgid "IMAP server %s"
 msgstr "‏‏کارساز IMAP ‏%s"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:965
+#: src/camel/providers/imapx/camel-imapx-store.c:961
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "سرویس IMAP برای %s در %s"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1056
+#: src/camel/providers/imapx/camel-imapx-store.c:1052
 msgid "No IMAPx connection object provided"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1073
+#: src/camel/providers/imapx/camel-imapx-store.c:1069
 #: src/camel/providers/nntp/camel-nntp-provider.c:95
 #: src/camel/providers/pop3/camel-pop3-provider.c:82
 msgid "Password"
 msgstr "گذرواژه"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1075
+#: src/camel/providers/imapx/camel-imapx-store.c:1071
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "این گزینه با استفاده از گذرواژهٔ متن ساده به کارساز IMAP متصل خواهد شد."
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1160
+#: src/camel/providers/imapx/camel-imapx-store.c:1155
 #, c-format
 msgid "No such folder %s"
 msgstr "شاخهٔ %s وجود ندارد"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1620
+#: src/camel/providers/imapx/camel-imapx-store.c:1615
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1890
-#: src/camel/providers/imapx/camel-imapx-store.c:2085
+#: src/camel/providers/imapx/camel-imapx-store.c:1885
+#: src/camel/providers/imapx/camel-imapx-store.c:2080
 #, c-format
 msgid "Retrieving folder list for “%s”"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2328
+#: src/camel/providers/imapx/camel-imapx-store.c:2323
 msgid ""
 "The account does not support folder hierarchy. Create the folder on the account "
 "level instead."
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2375
+#: src/camel/providers/imapx/camel-imapx-store.c:2370
 #, fuzzy, c-format
-#| msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
+#| msgid ""
+#| "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "نام پروندهٔ «%s» نامعتبر است چون حاوی نویسهٔ «%c» است"
 
@@ -4670,97 +4696,97 @@ msgstr "نام پروندهٔ «%s» نامعتبر است چون حاوی نو�
 #. version as well. It's always the folder name (eventually path) as provided by the server,
 #. when returned in given localization. it can be checked semi-easily in the case of
 #. the GMail variants, by changing the GMail interface language in the GMail Preferences.
-#: src/camel/providers/imapx/camel-imapx-store.c:2770
+#: src/camel/providers/imapx/camel-imapx-store.c:2765
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
 msgstr "[جی‌میل]/پیش‌نویس‌ها"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2771
+#: src/camel/providers/imapx/camel-imapx-store.c:2766
 msgctxt "IMAPDefaults"
 msgid "Drafts"
 msgstr "پیش‌نویس‌ها"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2772
+#: src/camel/providers/imapx/camel-imapx-store.c:2767
 msgctxt "IMAPDefaults"
 msgid "Draft"
 msgstr "پیش‌نویس"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2775
+#: src/camel/providers/imapx/camel-imapx-store.c:2770
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "قالب‌ها"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2778
+#: src/camel/providers/imapx/camel-imapx-store.c:2773
 msgctxt "IMAPDefaults"
 msgid "Archive"
 msgstr "بایگانی"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2781
+#: src/camel/providers/imapx/camel-imapx-store.c:2776
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[جی‌میل]/نامه‌های فرستاده"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2782
+#: src/camel/providers/imapx/camel-imapx-store.c:2777
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "فرستاده"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2783
+#: src/camel/providers/imapx/camel-imapx-store.c:2778
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "موارد فرستاده"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2784
+#: src/camel/providers/imapx/camel-imapx-store.c:2779
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "پیام‌های فرستاده"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2787
+#: src/camel/providers/imapx/camel-imapx-store.c:2782
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "[جی‌میل]/هرزنامه"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2788
+#: src/camel/providers/imapx/camel-imapx-store.c:2783
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "هرزنامه"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2789
+#: src/camel/providers/imapx/camel-imapx-store.c:2784
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "رایانامهٔ هرز"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2790
+#: src/camel/providers/imapx/camel-imapx-store.c:2785
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "رایانامهٔ هرز"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2791
+#: src/camel/providers/imapx/camel-imapx-store.c:2786
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "هرزنامه"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2792
+#: src/camel/providers/imapx/camel-imapx-store.c:2787
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2795
+#: src/camel/providers/imapx/camel-imapx-store.c:2790
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2796
+#: src/camel/providers/imapx/camel-imapx-store.c:2791
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "زباله‌دان"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2797
+#: src/camel/providers/imapx/camel-imapx-store.c:2792
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "موارد حذف شده"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2798
+#: src/camel/providers/imapx/camel-imapx-store.c:2793
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "پیام‌های حذف شده"
@@ -4845,11 +4871,11 @@ msgstr "تحویل محلی"
 #: src/camel/providers/local/camel-local-provider.c:74
 #, fuzzy
 msgid ""
-"For retrieving (moving) local mail from standard mbox-formatted spools into folders "
-"managed by Evolution."
+"For retrieving (moving) local mail from standard mbox-formatted spools into "
+"folders managed by Evolution."
 msgstr ""
-"برای بازیابی (جابه‌جایی) نامه‌های محلی از قرقره‌های استاندارد با قالب mbox در شاخه‌هایی "
-"که توسط Evolution مدیریت می‌شوند."
+"برای بازیابی (جابه‌جایی) نامه‌های محلی از قرقره‌های استاندارد با قالب mbox در "
+"شاخه‌هایی که توسط Evolution مدیریت می‌شوند."
 
 #: src/camel/providers/local/camel-local-provider.c:86
 #: src/camel/providers/local/camel-local-provider.c:112
@@ -5441,8 +5467,10 @@ msgid ""
 msgstr "این گزینه با استفاده از تأیید هویت Kerberos 5 به کارساز متصل می‌شود."
 
 #: src/camel/providers/nntp/camel-nntp-provider.c:97
-msgid "This option will authenticate with the NNTP server using a plaintext password."
-msgstr "این گزینه با استفاده از یک گذرواژهٔ متنی ساده با کارساز NNTP تأیید هویت می‌کند."
+msgid ""
+"This option will authenticate with the NNTP server using a plaintext password."
+msgstr ""
+"این گزینه با استفاده از یک گذرواژهٔ متنی ساده با کارساز NNTP تأیید هویت می‌کند."
 
 #: src/camel/providers/nntp/camel-nntp-store.c:376
 #, fuzzy, c-format
@@ -5665,20 +5693,21 @@ msgstr "برای اتصال و بارگیری نامه از کارسازهای P
 
 #: src/camel/providers/pop3/camel-pop3-provider.c:84
 msgid ""
-"This option will connect to the POP server using a plaintext password. This is the "
-"only option supported by many POP servers."
+"This option will connect to the POP server using a plaintext password. This is "
+"the only option supported by many POP servers."
 msgstr ""
-"این گزینه با استفاده از یک گذرواژهٔ متنی ساده به کارساز POP متصل خواهد شد. این تنها "
-"گزینهٔ پشتیبانی شده برای بسیاری از کارسازهای POP است."
+"این گزینه با استفاده از یک گذرواژهٔ متنی ساده به کارساز POP متصل خواهد شد. این "
+"تنها گزینهٔ پشتیبانی شده برای بسیاری از کارسازهای POP است."
 
 #: src/camel/providers/pop3/camel-pop3-provider.c:94
 msgid ""
-"This option will connect to the POP server using an encrypted password via the APOP "
-"protocol. This may not work for all users even on servers that claim to support it."
+"This option will connect to the POP server using an encrypted password via the "
+"APOP protocol. This may not work for all users even on servers that claim to "
+"support it."
 msgstr ""
-"این گزینه با استفاده از گذرواژهٔ رمزبندی شده از طریق قرارداد APOP به کارساز POP متصل "
-"می‌شود.ممکن است این روش برای همهٔ کاربران قابل استفاده نباشد، حتی در کارسازهایی که "
-"ادعای پشتیبانی آن را دارند."
+"این گزینه با استفاده از گذرواژهٔ رمزبندی شده از طریق قرارداد APOP به کارساز POP "
+"متصل می‌شود.ممکن است این روش برای همهٔ کاربران قابل استفاده نباشد، حتی در "
+"کارسازهایی که ادعای پشتیبانی آن را دارند."
 
 #. Translators: This is the separator between an error and an explanation
 #: src/camel/providers/pop3/camel-pop3-store.c:90
@@ -5767,8 +5796,8 @@ msgstr ""
 #: src/camel/providers/pop3/camel-pop3-store.c:761
 #, c-format
 msgid ""
-"Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation attack "
-"suspected. Please contact your admin."
+"Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
+"attack suspected. Please contact your admin."
 msgstr ""
 
 #. Translators: Last %s is an optional explanation
@@ -5804,7 +5833,8 @@ msgstr "Sendmail"
 #: src/camel/providers/sendmail/camel-sendmail-provider.c:33
 #, fuzzy
 #| msgid ""
-#| "For delivering mail by passing it to the \"sendmail\" program on the local system."
+#| "For delivering mail by passing it to the \"sendmail\" program on the local "
+#| "system."
 msgid ""
 "For delivering mail by passing it to the “sendmail” program on the local system."
 msgstr "برای تحویل نامه از طریق فرستادن آن به برنامهٔ «sendmail» بر روی سیستم محلی."
@@ -5876,10 +5906,8 @@ msgid "“%s” exited with status %d: mail not sent."
 msgstr "sendmail با وضعیت %Id خارج شد: نامه ارسال نشد."
 
 #: src/camel/providers/smtp/camel-smtp-provider.c:38
-#, fuzzy
-#| msgid "Options"
 msgid "Send Options"
-msgstr "گزینه‌ها"
+msgstr "گزینه‌ها ارسال"
 
 #: src/camel/providers/smtp/camel-smtp-provider.c:40
 #, fuzzy
@@ -5956,205 +5984,557 @@ msgstr "کارساز SMTP ‏%s تشخیص هویت درخواست شدهٔ نو
 msgid "No SASL mechanism was specified"
 msgstr ""
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:723
+#: src/camel/providers/smtp/camel-smtp-transport.c:727
 #, fuzzy
 #| msgid "AUTH command failed: %s"
 msgid "AUTH command failed: Not connected."
 msgstr "فرمان AUTH شکست خورد: %s"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:730
-#: src/camel/providers/smtp/camel-smtp-transport.c:744
-#: src/camel/providers/smtp/camel-smtp-transport.c:760
+#: src/camel/providers/smtp/camel-smtp-transport.c:734
+#: src/camel/providers/smtp/camel-smtp-transport.c:748
+#: src/camel/providers/smtp/camel-smtp-transport.c:764
 #, fuzzy
 #| msgid "AUTH command failed: %s"
 msgid "AUTH command failed: "
 msgstr "فرمان AUTH شکست خورد: %s"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:963
+#: src/camel/providers/smtp/camel-smtp-transport.c:967
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "نمی‌توان پیام را ارسال کرد: سرویس متصل نیست."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:972
+#: src/camel/providers/smtp/camel-smtp-transport.c:976
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "نمی‌توان پیام را ارسال کرد: نشانی فرستنده معتبر نیست."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:976
+#: src/camel/providers/smtp/camel-smtp-transport.c:980
 msgid "Sending message"
 msgstr "در حال ارسال پیام"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1005
+#: src/camel/providers/smtp/camel-smtp-transport.c:1009
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "نمی‌توان پیام را ارسال کرد: گیرنده‌ای معین نشده است."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1020
+#: src/camel/providers/smtp/camel-smtp-transport.c:1024
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "نمی‌توان پیام را ارسال کرد: دست کم یکی از گیرنده‌ها معتبر نیست"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1152
+#: src/camel/providers/smtp/camel-smtp-transport.c:1156
 msgid "Syntax error, command unrecognized"
 msgstr "خطای نحوی، فرمان شناخته نشد"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1154
+#: src/camel/providers/smtp/camel-smtp-transport.c:1158
 msgid "Syntax error in parameters or arguments"
 msgstr "خطای نحوی در پارامترها یا آرگومان‌ها"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1156
+#: src/camel/providers/smtp/camel-smtp-transport.c:1160
 msgid "Command not implemented"
 msgstr "فرمان پیاده‌سازی نشده است"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1158
+#: src/camel/providers/smtp/camel-smtp-transport.c:1162
 msgid "Command parameter not implemented"
 msgstr "پارامتر فرمان پیاده سازی نشده است"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1160
+#: src/camel/providers/smtp/camel-smtp-transport.c:1164
 msgid "System status, or system help reply"
 msgstr "وضعیت سیستم، یا پاسخ راهنمای سیستم"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1162
+#: src/camel/providers/smtp/camel-smtp-transport.c:1166
 msgid "Help message"
 msgstr "پیام راهنما"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1164
+#: src/camel/providers/smtp/camel-smtp-transport.c:1168
 msgid "Service ready"
 msgstr "سرویس آماده است"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1166
+#: src/camel/providers/smtp/camel-smtp-transport.c:1170
 msgid "Service closing transmission channel"
 msgstr "سرویس در حال بستن کانال مخابره است"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1168
+#: src/camel/providers/smtp/camel-smtp-transport.c:1172
 msgid "Service not available, closing transmission channel"
 msgstr "سرویس موجود نیست، کانال مخابره بسته می‌شود"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1170
+#: src/camel/providers/smtp/camel-smtp-transport.c:1174
 msgid "Requested mail action okay, completed"
 msgstr "عمل پست درخواست شده درست است، انجام شد"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1172
+#: src/camel/providers/smtp/camel-smtp-transport.c:1176
 msgid "User not local; will forward to <forward-path>"
 msgstr "کاربر محلی نیست؛ به <مسیر-ارجاع> ارجاع خواهد شد"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1174
+#: src/camel/providers/smtp/camel-smtp-transport.c:1178
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr "عمل پست درخواست شده انجام نشد: جعبه نامه قابل دسترسی نیست"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1176
+#: src/camel/providers/smtp/camel-smtp-transport.c:1180
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "کنش درخواستی انجام نشد: صندوق نامه ناموجود"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1178
+#: src/camel/providers/smtp/camel-smtp-transport.c:1182
 msgid "Requested action aborted: error in processing"
 msgstr "عمل درخواست شده قطع شد: خطا در حال پردازش است"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1180
+#: src/camel/providers/smtp/camel-smtp-transport.c:1184
 msgid "User not local; please try <forward-path>"
 msgstr "کاربر محلی نیست؛ لطفاً <مسیر-ارجاع> را امتحان کنید"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1182
+#: src/camel/providers/smtp/camel-smtp-transport.c:1186
 msgid "Requested action not taken: insufficient system storage"
 msgstr "عمل درخواست شده انجام نشد: حافظهٔ سیستم کافی نیست"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1184
+#: src/camel/providers/smtp/camel-smtp-transport.c:1188
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "عمل پست درخواست شده قطع شد: تجاوز از حافظهٔ تخصیص یافته"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1186
+#: src/camel/providers/smtp/camel-smtp-transport.c:1190
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "عمل درخواست شده انجام نشد: نام نامه‌دان مجاز نیست"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1188
+#: src/camel/providers/smtp/camel-smtp-transport.c:1192
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "شروع ورود نامه؛ پایان با <CRLF>.<CRLF>"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1190
+#: src/camel/providers/smtp/camel-smtp-transport.c:1194
 msgid "Transaction failed"
 msgstr "تراکنش شکست خورد"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1194
+#: src/camel/providers/smtp/camel-smtp-transport.c:1198
 msgid "A password transition is needed"
 msgstr "گذار گذرواژه لازم است"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1196
+#: src/camel/providers/smtp/camel-smtp-transport.c:1200
 msgid "Authentication mechanism is too weak"
 msgstr "سازوکار تأیید هویت ضعیف است"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1198
+#: src/camel/providers/smtp/camel-smtp-transport.c:1202
 msgid "Encryption required for requested authentication mechanism"
 msgstr "برای سازوکار تأیید هویت خواسته شده رمزنگاری لازم است"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1200
+#: src/camel/providers/smtp/camel-smtp-transport.c:1204
 msgid "Temporary authentication failure"
 msgstr "شکست در تأیید هویت موقت"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1202
+#: src/camel/providers/smtp/camel-smtp-transport.c:1206
 #: src/libedataserver/e-client.c:145
 msgid "Authentication required"
 msgstr "تأیید هویت لازم است"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1512
+#: src/camel/providers/smtp/camel-smtp-transport.c:1516
 msgid "SMTP Greeting"
 msgstr "خوش‌آمدِ SMTP"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1521
-#: src/camel/providers/smtp/camel-smtp-transport.c:1534
-#: src/camel/providers/smtp/camel-smtp-transport.c:1541
+#: src/camel/providers/smtp/camel-smtp-transport.c:1525
+#: src/camel/providers/smtp/camel-smtp-transport.c:1538
+#: src/camel/providers/smtp/camel-smtp-transport.c:1545
 #, fuzzy
 #| msgid "HELO command failed: %s"
 msgid "HELO command failed: "
 msgstr "فرمان HELO شکست خورد: %s"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1625
-#: src/camel/providers/smtp/camel-smtp-transport.c:1639
-#: src/camel/providers/smtp/camel-smtp-transport.c:1648
+#: src/camel/providers/smtp/camel-smtp-transport.c:1629
+#: src/camel/providers/smtp/camel-smtp-transport.c:1643
+#: src/camel/providers/smtp/camel-smtp-transport.c:1652
 #, fuzzy
 #| msgid "MAIL FROM command failed"
 msgid "MAIL FROM command failed: "
 msgstr "فرمان MAIL FROM شکست خورد"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1676
+#: src/camel/providers/smtp/camel-smtp-transport.c:1680
 #, fuzzy
 #| msgid "RSET command failed: %s"
 msgid "RCPT TO command failed: "
 msgstr "فرمان RSET شکست خورد: %s"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1692
-#: src/camel/providers/smtp/camel-smtp-transport.c:1701
+#: src/camel/providers/smtp/camel-smtp-transport.c:1696
+#: src/camel/providers/smtp/camel-smtp-transport.c:1705
 #, fuzzy, c-format
 #| msgid "RCPT TO <%s> failed"
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> شکست خورد"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1784
-#: src/camel/providers/smtp/camel-smtp-transport.c:1795
-#: src/camel/providers/smtp/camel-smtp-transport.c:1806
-#: src/camel/providers/smtp/camel-smtp-transport.c:1891
-#: src/camel/providers/smtp/camel-smtp-transport.c:1909
-#: src/camel/providers/smtp/camel-smtp-transport.c:1922
-#: src/camel/providers/smtp/camel-smtp-transport.c:1930
+#: src/camel/providers/smtp/camel-smtp-transport.c:1788
+#: src/camel/providers/smtp/camel-smtp-transport.c:1799
+#: src/camel/providers/smtp/camel-smtp-transport.c:1810
+#: src/camel/providers/smtp/camel-smtp-transport.c:1895
+#: src/camel/providers/smtp/camel-smtp-transport.c:1913
+#: src/camel/providers/smtp/camel-smtp-transport.c:1926
+#: src/camel/providers/smtp/camel-smtp-transport.c:1934
 #, fuzzy
 #| msgid "DATA command failed"
 msgid "DATA command failed: "
 msgstr "فرمان DATA شکست خورد"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1956
-#: src/camel/providers/smtp/camel-smtp-transport.c:1970
-#: src/camel/providers/smtp/camel-smtp-transport.c:1978
+#: src/camel/providers/smtp/camel-smtp-transport.c:1960
+#: src/camel/providers/smtp/camel-smtp-transport.c:1974
+#: src/camel/providers/smtp/camel-smtp-transport.c:1982
 #, fuzzy
 #| msgid "RSET command failed: %s"
 msgid "RSET command failed: "
 msgstr "فرمان RSET شکست خورد: %s"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:2004
-#: src/camel/providers/smtp/camel-smtp-transport.c:2016
-#: src/camel/providers/smtp/camel-smtp-transport.c:2022
+#: src/camel/providers/smtp/camel-smtp-transport.c:2008
+#: src/camel/providers/smtp/camel-smtp-transport.c:2020
+#: src/camel/providers/smtp/camel-smtp-transport.c:2026
 #, fuzzy
 #| msgid "QUIT command failed: %s"
 msgid "QUIT command failed: "
 msgstr "فرمان QUIT شکست خورد: %s"
+
+#: data/org.gnome.evolution-data-server.addressbook.gschema.xml.in:5
+#, fuzzy
+#| msgid "Contact ID already exists"
+msgid "Contact UID of a user"
+msgstr "شناسهٔ آشنا از پیش وجود دارد"
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:13
+msgid "Birthday and anniversary reminder"
+msgstr "یادآور روزهای تولد و سالگردها"
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:14
+msgid "Whether to set a reminder for birthdays and anniversaries"
+msgstr "این که یادآوری برای تولّدها و سالگردها تنظیم شود یا نه"
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:18
+msgid "Birthday and anniversary reminder value"
+msgstr "مقدار یادآور تولد و سالگرد"
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:19
+msgid "Number of units for determining a birthday or anniversary reminder"
+msgstr "تعداد یکاهای قابل تعیین برای یک یادآور تولّد یا سالگرد"
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:23
+msgid "Birthday and anniversary reminder units"
+msgstr "یکاهای یادآور تولد و سالگرد"
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:24
+msgid "Units for a birthday or anniversary reminder, “minutes”, “hours” or “days”"
+msgstr "یکاهای یادآور تولد یا سالگرد، «دقیقه»، «ساعت» یا «روز»"
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:29
+msgid "Past reminders for EReminderWatcher"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:33
+msgid "Snoozed reminders for EReminderWatcher"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:37
+msgid ""
+"How many days the reminders-past can hold back. Reminders older than these days "
+"are automatically removed from the list of the past reminders. Use '0' to not "
+"remove old reminders."
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:42
+msgid "Reminder programs"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:43
+msgid "Programs that are allowed to be run by reminders"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:47
+msgid "Enable desktop notifications"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:48
+msgid "When set to true, the desktop/system notifications are shown"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:52
+msgid "Enable audio notifications"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:53
+msgid ""
+"When set to true, the audio reminders will be played, otherwise audio reminders "
+"will be silently ignored"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:57
+msgid "Show reminders in notification tray only"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:58
+msgid ""
+"When set to true, the reminders are shown only in the notification tray, "
+"otherwise the reminders dialog is shown immediately"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:62
+msgid "Show reminder notification dialog always on top"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:63
+msgid ""
+"Whether or not to show reminder notification dialog always on top. Note this "
+"works only as a hint for the window manager, which may or may not obey it."
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:67
+msgid "X position of the reminder notification dialog"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:71
+msgid "Y position of the reminder notification dialog"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:75
+msgid "Width of the reminder notification dialog"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:79
+msgid "Height of the reminder notification dialog"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:83
+msgid "Size in pixels of the event list in the reminder notification dialog"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:87
+msgid "Show reminder notification for completed tasks"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:91
+msgid "Show reminder notification for past events"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:95
+msgid "The last used snooze time, in minutes"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:99
+msgid "User-defined snooze times, in minutes"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:5
+msgid "Whether the migration of old setting was already done"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:9
+msgid "An absolute path where the gpg (or gpg2) binary is"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:10
+msgid ""
+"An example is “/usr/bin/gpg”; when it is left empty, or an incorrect value is "
+"set, then it will be searched for. Change requires restart of the application."
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:14
+msgid "Whether to load photos of signers/encrypters"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:15
+msgid ""
+"When set to “true”, tries to load also photo of the signers/encrypters, if "
+"available in the key/certificate."
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:19
+msgid "Override SMTP HELO/EHLO argument"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:20
+msgid ""
+"When not empty, it's used as the SMTP HELO/EHLO argument, instead of the local "
+"host name/IP."
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:24
+msgid "Array of user header names"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:25
+msgid ""
+"These headers can be stored in the folder summary, possibly being visible in the "
+"GUI. The value can contain a pipe character ('|'), which delimits the display "
+"name from the header name. Example: 'Spam Score|X-Spam-Score'"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:29
+msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:30
+msgid ""
+"When set to an unknown value, then the default GNetworkMonitor is used in the "
+"background. A special value “always-online” is used for no network monitoring."
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:34
+msgid ""
+"A full path to a directory where .source files with preconfigured options can be "
+"stored"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:35
+msgid ""
+"This directory, if filled with an existing path, is checked additionally to XDG "
+"configure directories."
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:39
+msgid "A list of variables which can be part of the autoconfig .source files"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:40
+msgid ""
+"Each item of the array is expected to be of the form: name=value. These "
+"variables are checked before environment variables, but after the predefined "
+"USER, REALNAME and HOST variables."
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:44
+msgid "A list of hints for OAuth2 services"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:45
+msgid ""
+"Users can extend the list of supported protocols and hostnames for defined "
+"OAuth2 services, in addition to those hard-coded. Each line can be of the form: "
+"servicename[-protocol]:hostname1,hostname2,... where “servicename” is the actual "
+"service name; the “-protocol” is optional, and if written, then the service can "
+"be used only if both “protocol” and “hostnameX” match; the “hostnameX” is the "
+"actual host name to compare with, case insensitively. Each line can contain "
+"multiple values, separated by comma. There can be provided multiple lines for "
+"one OAuth2 service. Note that the actual URL where the token is requested and "
+"refreshed cannot be changed here, the hostname is to allow other servers, where "
+"the OAuth2 service can be used. Examples: Company:mail.company.com — enables "
+"“Company” OAuth2 authentication for “mail.company.com” host Company-CalDAV:"
+"caldav.company.com — enables “Company” OAuth2 authentication for any “CalDAV” "
+"source, which reads data from “caldav.company.com” host"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:61
+msgid ""
+"An OAuth2 client ID to use to connect to Google servers, instead of the one "
+"provided during build time"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:62
+msgid ""
+"User-specified OAuth2 client ID for Google servers. Empty string means to use "
+"the one provided during build time. Change of this requires restart."
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:66
+msgid ""
+"An OAuth2 client secret to use to connect to Google servers, instead of the one "
+"provided during build time"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:67
+msgid ""
+"User-specified OAuth2 client secret for Google servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:71
+msgid ""
+"An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
+"provided during build time"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:72
+msgid ""
+"User-specified OAuth2 client ID for Outlook servers. Empty string means to use "
+"the one provided during build time. Change of this requires restart."
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:76
+msgid ""
+"An OAuth2 client secret to use to connect to Outlook servers, instead of the one "
+"provided during build time"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:77
+msgid ""
+"User-specified OAuth2 client secret for Outlook servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:81
+msgid ""
+"An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
+"provided during build time"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:82
+msgid ""
+"User-specified OAuth2 client ID for Yahoo! servers. Empty string means to use "
+"the one provided during build time. Change of this requires restart."
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:86
+msgid ""
+"An OAuth2 client secret to use to connect to Yahoo! servers, instead of the one "
+"provided during build time"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:87
+msgid ""
+"User-specified OAuth2 client secret for Yahoo! servers. Empty string means to "
+"use the one provided during build time. Change of this requires restart."
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:91
+msgid "Whether to limit operations in Power Saver mode"
+msgstr ""
+
+#: data/org.gnome.evolution-data-server.gschema.xml.in:92
+msgid ""
+"When set to “true”, possibly expensive operations required to refresh books/"
+"calendars/mail accounts/... are skipped when the machine is in the Power Saver "
+"mode."
+msgstr ""
+
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:11
+#, fuzzy
+#| msgid "Temporary authentication failure"
+msgid "(Deprecated) Proxy type to use"
+msgstr "شکست در تأیید هویت موقت"
+
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:12
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:17
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:22
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:27
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:32
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:37
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:42
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:47
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:52
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:57
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:62
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:67
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:72
+msgid ""
+"This key was deprecated in version 3.12 and should no longer be used. Proxy "
+"settings are now integrated into Evolution-Data-Server’s account system. See the "
+"ESourceProxy API documentation for details."
+msgstr ""
+
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:16
+msgid "(Deprecated) Whether to use http-proxy"
+msgstr ""
+
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:21
+#, fuzzy
+#| msgid "Temporary authentication failure"
+msgid "(Deprecated) Whether proxy server requires authentication"
+msgstr "شکست در تأیید هویت موقت"
+
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:26
+msgid "(Deprecated) Host name for HTTP requests"
+msgstr ""
+
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:31
+msgid "(Deprecated) Port number for HTTP requests"
+msgstr ""
 
 #: data/org.gnome.evolution.shell.network-config.gschema.xml.in:36
 #, fuzzy
@@ -6167,6 +6547,30 @@ msgstr "شکست در تأیید هویت موقت"
 #| msgid "Temporary authentication failure"
 msgid "(Deprecated) Proxy authentication password"
 msgstr "شکست در تأیید هویت موقت"
+
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:46
+msgid "(Deprecated) List of hosts to connect to without proxy"
+msgstr ""
+
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:51
+msgid "(Deprecated) Host name for HTTPS requests"
+msgstr ""
+
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:56
+msgid "(Deprecated) Port number for HTTPS requests"
+msgstr ""
+
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:61
+msgid "(Deprecated) Host name for SOCKS requests"
+msgstr ""
+
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:66
+msgid "(Deprecated) Port number for SOCKS requests"
+msgstr ""
+
+#: data/org.gnome.evolution.shell.network-config.gschema.xml.in:71
+msgid "(Deprecated) Automatic proxy configuration URL"
+msgstr ""
 
 #: data/org.gnome.Evolution-alarm-notify.desktop.in.in:4
 msgid "Evolution Alarm Notify"
@@ -6237,7 +6641,8 @@ msgid "Data source “%s” has no collection backend to delete the remote resou
 msgstr ""
 
 #: src/libebackend/e-server-side-source.c:1484
-#: src/libebackend/e-source-registry-server.c:1038 src/libedataserver/e-source.c:1843
+#: src/libebackend/e-source-registry-server.c:1038
+#: src/libedataserver/e-source.c:1843
 #, fuzzy, c-format
 #| msgid "IMAP server %s does not support requested authentication type %s"
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
@@ -6316,7 +6721,7 @@ msgstr "هدیه‌ها"
 #: src/libedataserver/e-categories.c:53
 msgctxt "CategoryName"
 msgid "Goals/Objectives"
-msgstr ""
+msgstr "اهداف"
 
 #: src/libedataserver/e-categories.c:54
 msgctxt "CategoryName"
@@ -6453,10 +6858,8 @@ msgid "Unsupported authentication method"
 msgstr "تأیید هویت از نوع %s پشتیبانی نمی‌شود"
 
 #: src/libedataserver/e-client.c:164
-#, fuzzy
-#| msgid "SSL unavailable"
 msgid "TLS not available"
-msgstr "SSL موجود نیست"
+msgstr "‫TLS در دسترس نیست"
 
 #: src/libedataserver/e-client.c:166
 msgid "Search size limit exceeded"
@@ -6496,7 +6899,7 @@ msgstr "شیء پیدا نشد"
 
 #: src/libedataserver/e-client.c:2037
 msgid "Timeout was reached"
-msgstr ""
+msgstr "زمان به پایان رسید"
 
 #: src/libedataserver/e-gdata-session.c:207
 #, c-format
@@ -6516,19 +6919,26 @@ msgstr[1] ""
 msgid "No JSON object returned by the server"
 msgstr ""
 
-#: src/libedataserver/e-gdata-session.c:734 src/libedataserver/e-gdata-session.c:793
-#: src/libedataserver/e-gdata-session.c:857 src/libedataserver/e-gdata-session.c:893
-#: src/libedataserver/e-gdata-session.c:950 src/libedataserver/e-gdata-session.c:1004
-#: src/libedataserver/e-gdata-session.c:1440 src/libedataserver/e-gdata-session.c:1484
-#: src/libedataserver/e-gdata-session.c:1549 src/libedataserver/e-gdata-session.c:1621
-#: src/libedataserver/e-gdata-session.c:1662 src/libedataserver/e-gdata-session.c:1720
-#: src/libedataserver/e-gdata-session.c:1783 src/libedataserver/e-gdata-session.c:1843
+#: src/libedataserver/e-gdata-session.c:734
+#: src/libedataserver/e-gdata-session.c:793
+#: src/libedataserver/e-gdata-session.c:857
+#: src/libedataserver/e-gdata-session.c:893
+#: src/libedataserver/e-gdata-session.c:950
+#: src/libedataserver/e-gdata-session.c:1004
+#: src/libedataserver/e-gdata-session.c:1440
+#: src/libedataserver/e-gdata-session.c:1484
+#: src/libedataserver/e-gdata-session.c:1549
+#: src/libedataserver/e-gdata-session.c:1621
+#: src/libedataserver/e-gdata-session.c:1662
+#: src/libedataserver/e-gdata-session.c:1720
+#: src/libedataserver/e-gdata-session.c:1783
+#: src/libedataserver/e-gdata-session.c:1843
 #, fuzzy, c-format
 #| msgid "Failed to create pipe to '%s': %s"
 msgid "Failed to call %s: "
 msgstr "ایجاد لوله به «%s» شکست خورد: %s"
 
-#: src/libedataserver/e-oauth2-service.c:918
+#: src/libedataserver/e-oauth2-service.c:1026
 #, fuzzy
 #| msgid "Failed on message %d"
 msgid "Malformed, no message body set"
@@ -6536,44 +6946,44 @@ msgstr "شکست در پیام %Id"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1198
+#: src/libedataserver/e-oauth2-service.c:1306
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:1213
+#: src/libedataserver/e-oauth2-service.c:1321
 #, fuzzy
 #| msgid "Object not found"
 msgid "OAuth2 secret not found"
 msgstr "شیء پیدا نشد"
 
-#: src/libedataserver/e-oauth2-service.c:1410
+#: src/libedataserver/e-oauth2-service.c:1518
 #, fuzzy, c-format
 #| msgid "Unexpected OK response from IMAP server: %s"
 msgid "Received incorrect response from server “%s”."
 msgstr "پاسخ «باشد» غیرمنتظره از کارساز %s :IMAP"
 
-#: src/libedataserver/e-oauth2-service.c:1419
+#: src/libedataserver/e-oauth2-service.c:1527
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1462
+#: src/libedataserver/e-oauth2-service.c:1570
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:1744
+#: src/libedataserver/e-oauth2-service.c:1854
 msgid ""
-"The access token is expired and it failed to refresh it. Sign to the server again, "
-"please."
+"The access token is expired and it failed to refresh it. Sign to the server "
+"again, please."
 msgstr ""
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: src/libedataserver/e-oauth2-service-google.c:58
 msgctxt "OAuth2Service"
 msgid "Google"
-msgstr ""
+msgstr "گوگل"
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: src/libedataserver/e-oauth2-service-outlook.c:58
@@ -6587,18 +6997,18 @@ msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr ""
 
-#: src/libedataserver/e-soup-session.c:1169
+#: src/libedataserver/e-soup-session.c:1264
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr ""
 
-#: src/libedataserver/e-soup-session.c:1245
+#: src/libedataserver/e-soup-session.c:1340
 #, fuzzy
 #| msgid "Failed to authenticate.\n"
 msgid "Failed to setup authentication"
 msgstr "تأیید هویت شکست خورد.\n"
 
-#: src/libedataserver/e-soup-session.c:1624
+#: src/libedataserver/e-soup-session.c:1747
 msgid "Too many redirects"
 msgstr ""
 
@@ -6618,10 +7028,8 @@ msgid "Data source “%s” is not writable"
 msgstr ""
 
 #: src/libedataserver/e-source.c:2249
-#, fuzzy
-#| msgid "Unnamed List"
 msgid "Unnamed"
-msgstr "سیاههٔ بی‌نام"
+msgstr "بی‌نام"
 
 #: src/libedataserver/e-source-credentials-provider-impl.c:39
 #, fuzzy
@@ -6661,7 +7069,7 @@ msgstr ""
 #. * in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format.
-#: src/libedataserver/e-time-utils.c:1691 src/libedataserver/e-time-utils.c:1990
+#: src/libedataserver/e-time-utils.c:1697 src/libedataserver/e-time-utils.c:1996
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%A %Oy/%Om/%Od %OH:%OM:%OS"
 
@@ -6669,7 +7077,7 @@ msgstr "%A %Oy/%Om/%Od %OH:%OM:%OS"
 #. * in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format.
-#: src/libedataserver/e-time-utils.c:1696 src/libedataserver/e-time-utils.c:1981
+#: src/libedataserver/e-time-utils.c:1702 src/libedataserver/e-time-utils.c:1987
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%A %Oy/%Om/%Od %OH:%OM:%OS"
 
@@ -6677,7 +7085,7 @@ msgstr "%A %Oy/%Om/%Od %OH:%OM:%OS"
 #. * in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format, without seconds.
-#: src/libedataserver/e-time-utils.c:1701 src/libedataserver/e-time-utils.c:1986
+#: src/libedataserver/e-time-utils.c:1707 src/libedataserver/e-time-utils.c:1992
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%A %Oy/%Om/%Od %OH:%OM"
 
@@ -6685,78 +7093,78 @@ msgstr "%A %Oy/%Om/%Od %OH:%OM"
 #. * in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format, without seconds.
-#: src/libedataserver/e-time-utils.c:1706 src/libedataserver/e-time-utils.c:1977
+#: src/libedataserver/e-time-utils.c:1712 src/libedataserver/e-time-utils.c:1983
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%A %Oy/%Om/%Od %OH:%OM"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format, without minutes or seconds.
-#: src/libedataserver/e-time-utils.c:1711
+#: src/libedataserver/e-time-utils.c:1717
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%A %Oy/%Om/%Od %OH"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 24-hour format, without minutes or seconds.
-#: src/libedataserver/e-time-utils.c:1716
+#: src/libedataserver/e-time-utils.c:1722
 msgid "%a %m/%d/%Y %H"
 msgstr "%A %Oy/%Om/%Od %OH"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: src/libedataserver/e-time-utils.c:1719 src/libedataserver/e-time-utils.c:1839
-#: src/libedataserver/e-time-utils.c:1972
+#: src/libedataserver/e-time-utils.c:1725 src/libedataserver/e-time-utils.c:1845
+#: src/libedataserver/e-time-utils.c:1978
 msgid "%a %m/%d/%Y"
 msgstr "%A %Oy/%Om/%Od"
 
 #. strptime format of a date and a time, in 12-hour format.
-#: src/libedataserver/e-time-utils.c:1726
+#: src/libedataserver/e-time-utils.c:1732
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%Oy/%Om/%Od %OH:%OM:%OS"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: src/libedataserver/e-time-utils.c:1730
+#: src/libedataserver/e-time-utils.c:1736
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%Oy/%Om/%Od %OH:%OM:%OS"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. * without seconds.
-#: src/libedataserver/e-time-utils.c:1735
+#: src/libedataserver/e-time-utils.c:1741
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%Oy/%Om/%Od %OH:%OM"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. * without seconds.
-#: src/libedataserver/e-time-utils.c:1740
+#: src/libedataserver/e-time-utils.c:1746
 msgid "%m/%d/%Y %H:%M"
 msgstr "%Oy/%Om/%Od %OH:%OM"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. * without minutes or seconds.
-#: src/libedataserver/e-time-utils.c:1745
+#: src/libedataserver/e-time-utils.c:1751
 msgid "%m/%d/%Y %I %p"
 msgstr "%Oy/%Om/%Od %OH"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. * without minutes or seconds.
-#: src/libedataserver/e-time-utils.c:1750
+#: src/libedataserver/e-time-utils.c:1756
 msgid "%m/%d/%Y %H"
 msgstr "%Oy/%Om/%Od %OH"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: src/libedataserver/e-time-utils.c:1753 src/libedataserver/e-time-utils.c:1842
+#: src/libedataserver/e-time-utils.c:1759 src/libedataserver/e-time-utils.c:1848
 msgid "%m/%d/%Y"
 msgstr "%Oy/%Om/%Od"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: src/libedataserver/e-time-utils.c:1913 src/libedataserver/e-time-utils.c:2034
+#: src/libedataserver/e-time-utils.c:1919 src/libedataserver/e-time-utils.c:2040
 msgid "%I:%M:%S %p"
 msgstr "%OH:%OM:%OS"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: src/libedataserver/e-time-utils.c:1917 src/libedataserver/e-time-utils.c:2026
+#: src/libedataserver/e-time-utils.c:1923 src/libedataserver/e-time-utils.c:2032
 msgid "%H:%M:%S"
 msgstr "%OH:%OM:%OS"
 
@@ -6764,25 +7172,25 @@ msgstr "%OH:%OM:%OS"
 #. * in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. * without seconds.
-#: src/libedataserver/e-time-utils.c:1922 src/libedataserver/e-time-utils.c:2031
+#: src/libedataserver/e-time-utils.c:1928 src/libedataserver/e-time-utils.c:2037
 msgid "%I:%M %p"
 msgstr "%OH:%OM"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. * without seconds.
-#: src/libedataserver/e-time-utils.c:1926 src/libedataserver/e-time-utils.c:2023
+#: src/libedataserver/e-time-utils.c:1932 src/libedataserver/e-time-utils.c:2029
 msgid "%H:%M"
 msgstr "%OH:%OM"
 
 #. strptime format for time of day, without seconds 24-hour format,
 #. * and no colon.
-#: src/libedataserver/e-time-utils.c:1930
+#: src/libedataserver/e-time-utils.c:1936
 msgid "%H%M"
 msgstr "%OH%OM"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: src/libedataserver/e-time-utils.c:1934
+#: src/libedataserver/e-time-utils.c:1940
 msgid "%I %p"
 msgstr "%OH"
 
@@ -7019,15 +7427,13 @@ msgid "Access Control Entry privilege cannot be NULL."
 msgstr ""
 
 #: src/libedataserverui/e-buffer-tagger.c:79
-#, fuzzy
-#| msgid "Could not open file: %s: %s"
 msgid "Could not open the link."
-msgstr "گشودن پرونده ممکن نبود: %s‏: %s"
+msgstr "نتوانست پیوند را بگشاید."
 
 #: src/libedataserverui/e-buffer-tagger.c:562
 #: src/libedataserverui/e-buffer-tagger.c:976
 msgid "Copy _Link Location"
-msgstr ""
+msgstr "رونوشت از مکان _پیوند"
 
 #: src/libedataserverui/e-buffer-tagger.c:567
 #: src/libedataserverui/e-buffer-tagger.c:983
@@ -7048,111 +7454,110 @@ msgstr "امضای دیجیتالی"
 msgid "Key Encipherment"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:397
+#: src/libedataserverui/e-certificate-widget.c:411
 msgid "Certificate"
 msgstr "گواهی"
 
-#: src/libedataserverui/e-certificate-widget.c:397
+#: src/libedataserverui/e-certificate-widget.c:411
 msgid "Identity"
-msgstr ""
+msgstr "هویت"
 
-#: src/libedataserverui/e-certificate-widget.c:398
-#: src/libedataserverui/e-certificate-widget.c:410
+#: src/libedataserverui/e-certificate-widget.c:412
+#: src/libedataserverui/e-certificate-widget.c:424
 msgid "Issuer"
-msgstr ""
+msgstr "صادرکننده"
 
-#: src/libedataserverui/e-certificate-widget.c:399
+#: src/libedataserverui/e-certificate-widget.c:413
 msgid "Expires on"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:400
+#: src/libedataserverui/e-certificate-widget.c:414
 msgid "Subject"
-msgstr ""
+msgstr "موضوع"
 
-#: src/libedataserverui/e-certificate-widget.c:400
-#: src/libedataserverui/e-certificate-widget.c:410
+#: src/libedataserverui/e-certificate-widget.c:414
+#: src/libedataserverui/e-certificate-widget.c:424
 msgid "Common Name"
-msgstr ""
+msgstr "نام مصطلح"
 
-#: src/libedataserverui/e-certificate-widget.c:402
-#: src/libedataserverui/e-certificate-widget.c:411
+#: src/libedataserverui/e-certificate-widget.c:416
+#: src/libedataserverui/e-certificate-widget.c:425
 msgid "Email"
 msgstr "رایانامه"
 
-#: src/libedataserverui/e-certificate-widget.c:404
-#: src/libedataserverui/e-certificate-widget.c:413
+#: src/libedataserverui/e-certificate-widget.c:418
+#: src/libedataserverui/e-certificate-widget.c:427
 msgid "Organization Unit"
 msgstr "واحد سازمانی"
 
-#: src/libedataserverui/e-certificate-widget.c:405
-#: src/libedataserverui/e-certificate-widget.c:414
+#: src/libedataserverui/e-certificate-widget.c:419
+#: src/libedataserverui/e-certificate-widget.c:428
 msgid "Country"
-msgstr ""
+msgstr "کشور"
 
-#: src/libedataserverui/e-certificate-widget.c:406
-#: src/libedataserverui/e-certificate-widget.c:415
+#: src/libedataserverui/e-certificate-widget.c:420
+#: src/libedataserverui/e-certificate-widget.c:429
 msgid "State"
 msgstr "ایالت"
 
-#: src/libedataserverui/e-certificate-widget.c:407
-#: src/libedataserverui/e-certificate-widget.c:416
+#: src/libedataserverui/e-certificate-widget.c:421
+#: src/libedataserverui/e-certificate-widget.c:430
 msgid "Locality"
 msgstr "محلّیّت"
 
-#: src/libedataserverui/e-certificate-widget.c:408
-#: src/libedataserverui/e-certificate-widget.c:417
+#: src/libedataserverui/e-certificate-widget.c:422
+#: src/libedataserverui/e-certificate-widget.c:431
 msgid "Domain Component Name"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:409
+#: src/libedataserverui/e-certificate-widget.c:423
 msgid "Alternative Emails"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:418
-msgid "Details"
-msgstr ""
-
-#: src/libedataserverui/e-certificate-widget.c:418
-msgid "Not Before"
-msgstr ""
-
-#: src/libedataserverui/e-certificate-widget.c:419
-msgid "Not After"
-msgstr ""
-
-#: src/libedataserverui/e-certificate-widget.c:420
-msgid "Usage"
-msgstr ""
-
-#: src/libedataserverui/e-certificate-widget.c:421
-msgid "Version"
-msgstr ""
-
-#: src/libedataserverui/e-certificate-widget.c:422
-msgid "Serial Number"
-msgstr ""
-
-#: src/libedataserverui/e-certificate-widget.c:423
-msgid "Key ID"
-msgstr ""
-
-#: src/libedataserverui/e-certificate-widget.c:424
-#, fuzzy
-#| msgid "Signature algorithm unknown"
-msgid "Signature Algorithm"
-msgstr "الگوریتم امضای نامعلوم"
-
-#: src/libedataserverui/e-certificate-widget.c:425
+#: src/libedataserverui/e-certificate-widget.c:432
+#: src/libedataserverui/e-certificate-widget.c:440
 msgid "SHA-256 Fingerprint"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:426
-msgid "Public Key"
+#: src/libedataserverui/e-certificate-widget.c:433
+msgid "Details"
+msgstr "جزئیات"
+
+#: src/libedataserverui/e-certificate-widget.c:433
+msgid "Not Before"
 msgstr ""
 
-#: src/libedataserverui/e-certificate-widget.c:426
-msgid "Algorithm"
+#: src/libedataserverui/e-certificate-widget.c:434
+msgid "Not After"
 msgstr ""
+
+#: src/libedataserverui/e-certificate-widget.c:435
+msgid "Usage"
+msgstr "استفاده"
+
+#: src/libedataserverui/e-certificate-widget.c:436
+msgid "Version"
+msgstr "نگارش"
+
+#: src/libedataserverui/e-certificate-widget.c:437
+msgid "Serial Number"
+msgstr "شمارهٔ سریال"
+
+#: src/libedataserverui/e-certificate-widget.c:438
+msgid "Key ID"
+msgstr "شناسه کلید"
+
+#: src/libedataserverui/e-certificate-widget.c:439
+msgid "Signature Algorithm"
+msgstr "الگوریتم امضا"
+
+#: src/libedataserverui/e-certificate-widget.c:441
+msgid "Public Key"
+msgstr "کلید عمومی"
+
+#: src/libedataserverui/e-certificate-widget.c:441
+msgid "Algorithm"
+msgstr "الگوریتم"
 
 #: src/libedataserverui/e-credentials-prompter.c:260
 #: src/libedataserverui/e-credentials-prompter.c:1755
@@ -7165,18 +7570,18 @@ msgstr ""
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr ""
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:228
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:264
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr ""
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:259
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:295
 msgid "Requesting access token, please wait…"
 msgstr ""
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:509
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:569
 #, fuzzy, c-format
 #| msgid "Authentication required"
 msgid "%s Address Book authentication request"
@@ -7184,7 +7589,7 @@ msgstr "تأیید هویت لازم است"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:514
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:574
 #, fuzzy, c-format
 #| msgid "Authentication required"
 msgid "%s Calendar authentication request"
@@ -7192,7 +7597,7 @@ msgstr "تأیید هویت لازم است"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:519
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:579
 #, fuzzy, c-format
 #| msgid "Authentication required"
 msgid "%s Memo List authentication request"
@@ -7200,7 +7605,7 @@ msgstr "تأیید هویت لازم است"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:524
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:584
 #, fuzzy, c-format
 #| msgid "Authentication required"
 msgid "%s Task List authentication request"
@@ -7208,7 +7613,7 @@ msgstr "تأیید هویت لازم است"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:530
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:590
 #, fuzzy, c-format
 #| msgid "Authentication required"
 msgid "%s Mail authentication request"
@@ -7217,7 +7622,7 @@ msgstr "تأیید هویت لازم است"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:535
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:595
 #, fuzzy, c-format
 #| msgid "Authentication required"
 msgid "%s account authentication request"
@@ -7226,36 +7631,37 @@ msgstr "تأیید هویت لازم است"
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:549
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:609
 #, c-format
 msgid ""
-"Login to your %s account and accept conditions in order to access your address book "
+"Login to your %s account and accept conditions in order to access your address "
+"book “%s”."
+msgstr ""
+
+#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
+#. like "On This Computer : Personal".
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:616
+#, c-format
+msgid ""
+"Login to your %s account and accept conditions in order to access your calendar "
 "“%s”."
 msgstr ""
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:556
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:623
 #, c-format
 msgid ""
-"Login to your %s account and accept conditions in order to access your calendar “%s”."
+"Login to your %s account and accept conditions in order to access your mail "
+"account “%s”."
 msgstr ""
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:563
-#, c-format
-msgid ""
-"Login to your %s account and accept conditions in order to access your mail account "
-"“%s”."
-msgstr ""
-
-#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
-#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
-#. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:570
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:630
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -7265,7 +7671,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:577
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:637
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo list "
@@ -7275,7 +7681,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:584
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:644
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task list "
@@ -7285,48 +7691,48 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:591
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:651
 #, c-format
 msgid ""
-"Login to your %s account and accept conditions in order to access your account “%s”."
+"Login to your %s account and accept conditions in order to access your account "
+"“%s”."
 msgstr ""
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:778
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
 #, fuzzy, c-format
 #| msgid "Failed to create pipe to '%s': %s"
 msgid "Failed to open browser: %s"
 msgstr "ایجاد لوله به «%s» شکست خورد: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:865
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:954
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:243
 #: src/libedataserverui/e-trust-prompt.c:117
 #: src/libedataserverui/e-webdav-discover-widget.c:1149
-#, fuzzy
-#| msgid "Canceled"
 msgid "_Cancel"
-msgstr "لغو شده"
+msgstr "_لغو"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:947
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1036
 msgid "URL:"
-msgstr ""
+msgstr "نشانی اینترنتی:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:977
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1066
 msgid "Click here to open the URL"
-msgstr ""
+msgstr "کلیک برای گشودن نشانی اینترنتی"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1015
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1104
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy the "
-"resulting authorization code below to continue the authentication process."
+"resulting authorization code, or the URL the OAuth2 wizard finished with, below "
+"to continue the authentication process."
 msgstr ""
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1052
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1141
 msgid "_Authorization code:"
 msgstr ""
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1065
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1154
 msgid "C_ontinue"
-msgstr ""
+msgstr "_ادامه"
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:136
 #, fuzzy
@@ -7406,17 +7812,15 @@ msgstr ""
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:244
 #: src/libedataserverui/e-webdav-discover-widget.c:1150
 msgid "_OK"
-msgstr ""
+msgstr "_تأیید"
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:380
 msgid "_User Name:"
 msgstr ""
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:392
-#, fuzzy
-#| msgid "Password"
 msgid "_Password:"
-msgstr "گذرواژه"
+msgstr "کلمهٔ _عبور:"
 
 #. Remember password check
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:408
@@ -7445,8 +7849,8 @@ msgstr "اکنون"
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%Id سال"
+msgstr[1] "%Id سال"
 
 #: src/libedataserverui/e-reminders-widget.c:347
 msgctxt "overdue"
@@ -7490,19 +7894,19 @@ msgstr ""
 #: src/libedataserverui/e-reminders-widget.c:1348
 msgctxt "reminders-snooze"
 msgid "da_ys"
-msgstr ""
+msgstr "روز"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: src/libedataserverui/e-reminders-widget.c:1364
 msgctxt "reminders-snooze"
 msgid "_hours"
-msgstr ""
+msgstr "_ساعت"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: src/libedataserverui/e-reminders-widget.c:1380
 msgctxt "reminders-snooze"
 msgid "_minutes"
-msgstr ""
+msgstr "_دقیقه"
 
 #: src/libedataserverui/e-reminders-widget.c:1386
 msgid "_Add Snooze time"
@@ -7511,7 +7915,7 @@ msgstr ""
 #: src/libedataserverui/e-reminders-widget.c:1749
 #: src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
-msgstr ""
+msgstr "_دور انداختن"
 
 #: src/libedataserverui/e-reminders-widget.c:1750
 msgid "Dismiss _All"
@@ -7543,58 +7947,76 @@ msgstr ""
 msgid "_Accept Permanently"
 msgstr ""
 
-#: src/libedataserverui/e-trust-prompt.c:208
+#: src/libedataserverui/e-trust-prompt.c:124
+msgid "Temporarily reject the certificate"
+msgstr ""
+
+#: src/libedataserverui/e-trust-prompt.c:127
+msgid "Permanently reject the certificate"
+msgstr ""
+
+#: src/libedataserverui/e-trust-prompt.c:130
+#, fuzzy
+#| msgid "Temporary authentication failure"
+msgid "Temporarily accept the certificate"
+msgstr "شکست در تأیید هویت موقت"
+
+#: src/libedataserverui/e-trust-prompt.c:133
+#, fuzzy
+#| msgid "Cannot add encryption certificate"
+msgid "Permanently accept the certificate"
+msgstr "نمی‌توان گواهی رمزنگاری را اضافه کرد"
+
+#: src/libedataserverui/e-trust-prompt.c:218
 #: src/modules/trust-prompt/trust-prompt-gtk.c:169
 #, c-format
 msgid "SSL/TLS certificate for “%s” is not trusted. Do you wish to accept it?"
 msgstr ""
 
-#: src/libedataserverui/e-trust-prompt.c:230
+#: src/libedataserverui/e-trust-prompt.c:240
 #: src/modules/trust-prompt/trust-prompt-gtk.c:184
 msgid "Reason:"
 msgstr ""
 
-#: src/libedataserverui/e-trust-prompt.c:233
+#: src/libedataserverui/e-trust-prompt.c:243
 #, fuzzy
 #| msgid "parse error"
 msgid "Detailed error:"
 msgstr "خطا در تجزیه"
 
-#: src/libedataserverui/e-trust-prompt.c:292
+#: src/libedataserverui/e-trust-prompt.c:302
 #: src/modules/trust-prompt/module-trust-prompt.c:80
-#, fuzzy
-#| msgid "Signing certificate not found"
 msgid "The signing certificate authority is not known."
-msgstr "گواهی امضا پیدا نشد"
+msgstr "هویت امضا کنندهٔ گواهینامه شناخته شده نیست."
 
-#: src/libedataserverui/e-trust-prompt.c:294
+#: src/libedataserverui/e-trust-prompt.c:304
 #: src/modules/trust-prompt/module-trust-prompt.c:82
 msgid ""
 "The certificate does not match the expected identity of the site that it was "
 "retrieved from."
-msgstr ""
+msgstr "گواهینامه با هویت مورد انتظار از پایگاهی که از آن صادر شده هم‌خوانی ندارد."
 
-#: src/libedataserverui/e-trust-prompt.c:296
+#: src/libedataserverui/e-trust-prompt.c:306
 #: src/modules/trust-prompt/module-trust-prompt.c:84
 msgid "The certificate’s activation time is still in the future."
-msgstr ""
+msgstr "زمان فعّال‌سازی گواهی‌نامه هم‌چنان در آینده است."
 
-#: src/libedataserverui/e-trust-prompt.c:298
+#: src/libedataserverui/e-trust-prompt.c:308
 #: src/modules/trust-prompt/module-trust-prompt.c:86
 msgid "The certificate has expired."
-msgstr ""
+msgstr "گواهینامه منقضی شده است."
 
-#: src/libedataserverui/e-trust-prompt.c:300
+#: src/libedataserverui/e-trust-prompt.c:310
 #: src/modules/trust-prompt/module-trust-prompt.c:88
 msgid ""
 "The certificate has been revoked according to the connection’s certificate "
 "revocation list."
 msgstr ""
 
-#: src/libedataserverui/e-trust-prompt.c:302
+#: src/libedataserverui/e-trust-prompt.c:312
 #: src/modules/trust-prompt/module-trust-prompt.c:90
 msgid "The certificate’s algorithm is considered insecure."
-msgstr ""
+msgstr "الگوریتم گواهی‌نامه ناامن به‌نظر می‌رسد."
 
 #: src/libedataserverui/e-webdav-discover-widget.c:208
 #, fuzzy
@@ -7616,12 +8038,12 @@ msgstr "آشنایان"
 #: src/libedataserverui/e-webdav-discover-widget.c:566
 msgctxt "WebDAVDiscover"
 msgid "Events"
-msgstr ""
+msgstr "رویدادها"
 
 #: src/libedataserverui/e-webdav-discover-widget.c:567
 msgctxt "WebDAVDiscover"
 msgid "Memos"
-msgstr ""
+msgstr "یادداشت‌ها"
 
 #: src/libedataserverui/e-webdav-discover-widget.c:568
 msgctxt "WebDAVDiscover"
@@ -7635,10 +8057,8 @@ msgid "Invalid URL"
 msgstr "نشانی اینترنتی کارساز نامعتبر"
 
 #: src/libedataserverui/e-webdav-discover-widget.c:940
-#, fuzzy
-#| msgid "Canceled"
 msgid "Cancel"
-msgstr "لغو شده"
+msgstr "لغو"
 
 #: src/libedataserverui/e-webdav-discover-widget.c:943
 #, fuzzy
@@ -7659,17 +8079,15 @@ msgstr ""
 
 #. TODO: more specific
 #: src/modules/gnome-online-accounts/goaewsclient.c:240
-#, fuzzy, c-format
-#| msgid "Unexpected response from IMAP server: %s"
+#, c-format
 msgid "Code: %u — Unexpected response from server"
-msgstr "پاسخ غیر منتظره از کارساز IMAP‏: %s"
+msgstr "کد: %Iu - پاسخ غیرمنتظره از کارساز"
 
 #. TODO: more specific
 #: src/modules/gnome-online-accounts/goaewsclient.c:263
-#, fuzzy, c-format
-#| msgid "Failed to retrieve message"
+#, c-format
 msgid "Failed to parse autodiscover response XML"
-msgstr "بازیابی پیام شکست خورد"
+msgstr "تجزیهٔ XML پاسخ کشف خودکار با شکست مواجه شد"
 
 #. TODO: more specific
 #: src/modules/gnome-online-accounts/goaewsclient.c:272
@@ -7694,7 +8112,7 @@ msgstr "ارسال نام کاربر به کارگزار شکست خورد"
 #: src/modules/gnome-online-accounts/goaewsclient.c:310
 #, c-format
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
-msgstr ""
+msgstr "یافتن ASUrl و OABUrl در پاسخ کشف خودکار با شکست مواجه شد"
 
 #: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1431
 #, c-format
@@ -7722,8 +8140,8 @@ msgstr ""
 #: src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:42
 #: src/services/evolution-calendar-factory/evolution-calendar-factory.c:44
 msgid ""
-"Overrides compile-time backend per process option; use 1 to enable, 0 to disable, "
-"any other value is to use compile-time option"
+"Overrides compile-time backend per process option; use 1 to enable, 0 to "
+"disable, any other value is to use compile-time option"
 msgstr ""
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:332
@@ -7731,13 +8149,11 @@ msgstr ""
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:879
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:1127
 msgid "Reminders"
-msgstr ""
+msgstr "یادآوری‌ها"
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:460
-#, fuzzy
-#| msgid "Learning junk"
 msgid "Warning"
-msgstr "در حال یاد گرفتن آشغال"
+msgstr "هشدار"
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:461
 msgid "_No"
@@ -7745,7 +8161,7 @@ msgstr ""
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:462
 msgid "_Yes"
-msgstr ""
+msgstr "_بله"
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:466
 #, c-format
@@ -7764,7 +8180,7 @@ msgstr ""
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:782
 msgid "Display Reminders window with _notifications"
-msgstr ""
+msgstr "نمایش پنجرهٔ یادآور با _آگاهی‌ها"
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:783
 msgid "Keep reminder notification window always on _top"
@@ -7776,7 +8192,7 @@ msgstr ""
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:785
 msgid "Enable _audio notifications"
-msgstr ""
+msgstr "به کار انداختن آگاهی‌‌های _صوتی"
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:786
 msgid "Display reminders for _completed tasks"
@@ -7784,7 +8200,7 @@ msgstr ""
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:787
 msgid "Display reminders for _past events"
-msgstr ""
+msgstr "نمایش یادآور برای رویدادهای _گذشته"
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:801
 msgid "Reminders Options:"
@@ -7866,8 +8282,8 @@ msgstr ""
 
 #: src/tools/list-sources/list-sources.c:92
 msgid ""
-"Write in machine readable format (one source per line, without localized property "
-"names and tab as separator)"
+"Write in machine readable format (one source per line, without localized "
+"property names and tab as separator)"
 msgstr ""
 
 #: src/tools/list-sources/list-sources.c:95
@@ -7876,7 +8292,7 @@ msgstr ""
 
 #: src/tools/list-sources/list-sources.c:106
 msgid "yes"
-msgstr ""
+msgstr "بله"
 
 #: src/tools/list-sources/list-sources.c:106
 #, fuzzy
@@ -7885,10 +8301,8 @@ msgid "no"
 msgstr "برفی"
 
 #: src/tools/list-sources/list-sources.c:126
-#, fuzzy
-#| msgid "Competition"
 msgid "Collection"
-msgstr "رقابت"
+msgstr "مجموعه"
 
 #: src/tools/list-sources/list-sources.c:132
 msgid "Collection/GNOME Online Accounts"
@@ -7907,16 +8321,12 @@ msgid "Calendar"
 msgstr "تقویم"
 
 #: src/tools/list-sources/list-sources.c:149
-#, fuzzy
-#| msgid "Category List"
 msgid "Memo List"
-msgstr "سیاههٔ دسته"
+msgstr "سیاههٔ یادداشت"
 
 #: src/tools/list-sources/list-sources.c:150
-#, fuzzy
-#| msgid "Tasks"
 msgid "Task List"
-msgstr "تکلیف‌ها"
+msgstr "سیاههٔ تکلیف"
 
 #: src/tools/list-sources/list-sources.c:151
 msgid "Mail Account"
@@ -7942,7 +8352,7 @@ msgstr "امضای نامناسب"
 
 #: src/tools/list-sources/list-sources.c:156
 msgid "Proxy"
-msgstr ""
+msgstr "پیشکار"
 
 #: src/tools/list-sources/list-sources.c:224
 #, c-format
@@ -8048,7 +8458,7 @@ msgstr "آشنا‌ها"
 
 #: src/services/evolution-source-registry/builtin/google-stub.source.desktop.in:4
 msgid "Google"
-msgstr ""
+msgstr "گوگل"
 
 #: src/services/evolution-source-registry/builtin/ldap-stub.source.desktop.in:4
 #, fuzzy
@@ -8073,16 +8483,12 @@ msgid "Default Proxy Settings"
 msgstr ""
 
 #: src/services/evolution-source-registry/builtin/vfolder.source.desktop.in:5
-#, fuzzy
-#| msgid "Personal Folders"
 msgid "Search Folders"
-msgstr "شاخه‌های شخصی"
+msgstr "شاخه‌های جست‌وجو"
 
 #: src/services/evolution-source-registry/builtin/weather-stub.source.desktop.in:4
-#, fuzzy
-#| msgid "Weather: Fog"
 msgid "Weather"
-msgstr "آب‌و‌هوا: مه آلود"
+msgstr "آب‌وهوا"
 
 #: src/services/evolution-source-registry/builtin/webcal-stub.source.desktop.in:4
 msgid "On The Web"
@@ -8460,8 +8866,10 @@ msgstr ""
 #~ msgid "Novell GroupWise"
 #~ msgstr "گروپ‌وایز ناول"
 
-#~ msgid "This option will connect to the GroupWise server using a plaintext password."
-#~ msgstr "این گزینه با استفاده از گذرواژهٔ متن ساده به کارساز گروپ‌وایز متصل خواهد شد."
+#~ msgid ""
+#~ "This option will connect to the GroupWise server using a plaintext password."
+#~ msgstr ""
+#~ "این گزینه با استفاده از گذرواژهٔ متن ساده به کارساز گروپ‌وایز متصل خواهد شد."
 
 #~ msgid "Host or user not available in url"
 #~ msgstr "میزبان یا کاربر در نشانی موجود نیست"
@@ -8596,9 +9004,11 @@ msgstr ""
 
 #, fuzzy
 #~ msgid ""
-#~ "Enable extended Mailing-List detection required for some filter and vFolder rules"
+#~ "Enable extended Mailing-List detection required for some filter and vFolder "
+#~ "rules"
 #~ msgstr ""
-#~ "به کار انداختن تشخیص سیاههٔ پستی مورد نیاز برای بعضی صافی‌ها و قواعد شاخه‌های مجازی"
+#~ "به کار انداختن تشخیص سیاههٔ پستی مورد نیاز برای بعضی صافی‌ها و قواعد شاخه‌های "
+#~ "مجازی"
 
 #, fuzzy, c-format
 #~ msgid "Cannot access folder '%s': %s"
@@ -8668,7 +9078,8 @@ msgstr ""
 #~ msgid ""
 #~ "This option will connect to the IMAPv4rev1 server using a plaintext password."
 #~ msgstr ""
-#~ "این گزینه با استفاده از یک گذرواژهٔ متنی ساده به کارساز IMAPv4rev1 متصل خواهد شد."
+#~ "این گزینه با استفاده از یک گذرواژهٔ متنی ساده به کارساز IMAPv4rev1 متصل خواهد "
+#~ "شد."
 
 #~ msgid "Connection canceled"
 #~ msgstr "اتصال لغو شد"
@@ -8684,8 +9095,10 @@ msgstr ""
 #~ msgstr "مذاکرهٔ SSL شکست خورد"
 
 #, c-format
-#~ msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
-#~ msgstr "تأیید هویت با کارساز IMAP ‏%s با استفاده از سازوکار تأیید هویت %s ممکن نیست"
+#~ msgid ""
+#~ "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+#~ msgstr ""
+#~ "تأیید هویت با کارساز IMAP ‏%s با استفاده از سازوکار تأیید هویت %s ممکن نیست"
 
 #, c-format
 #~ msgid "Cannot authenticate to IMAP server %s using %s"
@@ -8853,8 +9266,8 @@ msgstr ""
 #~ "Unable to connect to POP server %s: No support for requested authentication "
 #~ "mechanism."
 #~ msgstr ""
-#~ "اتصال به کارساز POP ‏%s امکان پذیر نیست: پشتیبانی برای سازوکار تشخیص هویت درخواست "
-#~ "شده وجود ندارد."
+#~ "اتصال به کارساز POP ‏%s امکان پذیر نیست: پشتیبانی برای سازوکار تشخیص هویت "
+#~ "درخواست شده وجود ندارد."
 
 #, fuzzy, c-format
 #~ msgid "SASL '%s' Login failed for POP server %s: %s"
@@ -8916,7 +9329,8 @@ msgstr ""
 #, c-format
 #~ msgid ""
 #~ "There is already a category '%s' in the configuration. Please use another name"
-#~ msgstr "از قبل یک دستهٔ «%s» در پیکربندی وجود دارد. لطفاً از یک نام دیگر استفاده کنید"
+#~ msgstr ""
+#~ "از قبل یک دستهٔ «%s» در پیکربندی وجود دارد. لطفاً از یک نام دیگر استفاده کنید"
 
 #~ msgid "Icon"
 #~ msgstr "نقشک"
