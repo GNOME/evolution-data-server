@@ -10,7 +10,7 @@ repository_url = "https://gitlab.gnome.org/GNOME/evolution-data-server.git"
 authors = "Evolution Data Server Development Team"
 license = "LGPL-2.0-only"
 description = "Utility library for Evolution Data Server"
-dependencies = [ "GObject-2.0" ]
+dependencies = [ "GObject-2.0", "Soup-3.0", "libxml2-2.0", "Json-1.0" ]
 devhelp = true
 search_index = true
 
@@ -18,6 +18,21 @@ search_index = true
   name = "GObject"
   description = "The base type system library"
   docs_url = "https://developer.gnome.org/gobject/stable"
+
+  [dependencies."Soup-3.0"]
+  name = "Soup"
+  description = "HTTP client/server library for GNOME"
+  docs_url = "https://libsoup.org/libsoup-3.0"
+
+  [dependencies."libxml2-2.0"]
+  name = "libxml2"
+  description = "XML parser and toolkit"
+  docs_url = "https://gnome.pages.gitlab.gnome.org/libxml2/devhelp/"
+
+  [dependencies."Json-1.0"]
+  name = "Json"
+  description = "JSON parser and generator"
+  docs_url = "https://gnome.pages.gitlab.gnome.org/json-glib/"
 
 [theme]
 name = "basic"

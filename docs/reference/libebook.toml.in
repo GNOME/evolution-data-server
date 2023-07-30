@@ -32,7 +32,7 @@ search_index = true
   [dependencies."EDataBook-@API_VERSION@"]
   name = "EDataBook"
   description = "Backend library for evolution address books"
-  docs_url = "https://gnome.pages.gitlab.gnome.org/evolution-data-server/libedatabook"
+  docs_url = "https://gnome.pages.gitlab.gnome.org/evolution-data-server/libedata-book"
 
 [theme]
 name = "basic"
