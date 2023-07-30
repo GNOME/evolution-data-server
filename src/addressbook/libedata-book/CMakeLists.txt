@@ -209,7 +209,7 @@ install(TARGETS evolution-addressbook-factory-subprocess
 
 set(gir_sources ${SOURCES} ${HEADERS})
 set(gir_identifies_prefixes E)
-set(gir_includes GObject-2.0 GLib-2.0 Gio-2.0 libxml2-2.0)
+set(gir_includes GObject-2.0 GLib-2.0 Gio-2.0)
 set(gir_cflags
 	-DLIBEDATA_BOOK_COMPILATION
 	-DEDS_DISABLE_DEPRECATED=1

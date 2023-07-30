@@ -31,7 +31,6 @@
 #include <libebook-contacts/libebook-contacts.h>
 #include <libebook/e-book.h>
 #include <libebook/e-book-client.h>
-#include <libxml/tree.h>
 
 /* Standard GObject macros */
 #define E_TYPE_DESTINATION \

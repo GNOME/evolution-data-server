@@ -160,7 +160,7 @@ install(FILES ${HEADERS}
 
 set(gir_sources ${SOURCES} ${HEADERS})
 set(gir_identifies_prefixes E)
-set(gir_includes GObject-2.0 GLib-2.0 Gio-2.0 libxml2-2.0)
+set(gir_includes GObject-2.0 GLib-2.0 Gio-2.0)
 set(gir_cflags
 	-DLIBEBOOK_CONTACTS_COMPILATION
 	-I${CMAKE_BINARY_DIR}/src/addressbook

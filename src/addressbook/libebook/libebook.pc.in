@@ -10,6 +10,6 @@ Name: libebook
 Description: Client library for evolution address books
 Version: @PROJECT_VERSION@
 Requires: libedataserver-@API_VERSION@ libebook-contacts-@API_VERSION@ libedata-book-@API_VERSION@
-Requires.private: camel-@API_VERSION@
+Requires.private: camel-@API_VERSION@ libxml-2.0
 Libs: -L${libdir} -lebook-@API_VERSION@
 Cflags: -I${privincludedir}
