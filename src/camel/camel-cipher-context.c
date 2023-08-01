@@ -101,10 +101,11 @@ static void
 cipher_context_set_session (CamelCipherContext *context,
                             CamelSession *session)
 {
-	g_return_if_fail (CAMEL_IS_SESSION (session));
+	if (session)
+		g_return_if_fail (CAMEL_IS_SESSION (session));
 	g_return_if_fail (context->priv->session == NULL);
 
-	context->priv->session = g_object_ref (session);
+	context->priv->session = session ? g_object_ref (session) : NULL;
 }
 
 static void
@@ -1495,7 +1496,7 @@ camel_cipher_certinfo_set_property (CamelCipherCertInfo *cert_info,
 
 /**
  * camel_cipher_context_new:
- * @session: a #CamelSession
+ * @session: (nullable): a #CamelSession
  *
  * This creates a new CamelCipherContext object which is used to sign,
  * verify, encrypt and decrypt streams.
@@ -1505,7 +1506,8 @@ camel_cipher_certinfo_set_property (CamelCipherCertInfo *cert_info,
 CamelCipherContext *
 camel_cipher_context_new (CamelSession *session)
 {
-	g_return_val_if_fail (session != NULL, NULL);
+	if (session)
+		g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 
 	return g_object_new (
 		CAMEL_TYPE_CIPHER_CONTEXT,
@@ -1516,7 +1518,7 @@ camel_cipher_context_new (CamelSession *session)
  * camel_cipher_context_get_session:
  * @context: a #CamelCipherContext
  *
- * Returns: (transfer none):
+ * Returns: (transfer none) (nullable): a #CamelSession the @context had been created with
  *
  * Since: 2.32
  **/

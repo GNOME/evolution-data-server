@@ -594,4 +594,26 @@ typedef enum {
 	CAMEL_TIME_UNIT_YEARS
 } CamelTimeUnit;
 
+/**
+ * CamelGpgTrust:
+ * @CAMEL_GPG_TRUST_NONE: no trust set
+ * @CAMEL_GPG_TRUST_UNKNOWN: unknown trust level
+ * @CAMEL_GPG_TRUST_NEVER: never trust the key
+ * @CAMEL_GPG_TRUST_MARGINAL: marginally trust the key
+ * @CAMEL_GPG_TRUST_FULL: fully trust the key
+ * @CAMEL_GPG_TRUST_ULTIMATE: ultimately trust the key
+ *
+ * GPG key trust levels.
+ *
+ * Since: 3.50
+ **/
+typedef enum {
+	CAMEL_GPG_TRUST_NONE		= 0,
+	CAMEL_GPG_TRUST_UNKNOWN		= 1,
+	CAMEL_GPG_TRUST_NEVER		= 2,
+	CAMEL_GPG_TRUST_MARGINAL	= 3,
+	CAMEL_GPG_TRUST_FULL		= 4,
+	CAMEL_GPG_TRUST_ULTIMATE	= 5
+} CamelGpgTrust;
+
 #endif /* CAMEL_ENUMS_H */

@@ -94,6 +94,162 @@ G_DEFINE_TYPE_WITH_PRIVATE (CamelGpgContext, camel_gpg_context, CAMEL_TYPE_CIPHE
 
 static const gchar *gpg_ctx_get_executable_name (void);
 
+/**
+ * CamelGpgKeyInfo:
+ *
+ * An opaque structure holding information about a user key.
+ *
+ * Since: 3.50
+ **/
+struct _CamelGpgKeyInfo {
+	gchar *id;
+	gchar *fingerprint;
+	GSList *user_ids; /* gchar * */
+	gint64 creation_date;
+	CamelGpgTrust trust;
+};
+
+G_DEFINE_BOXED_TYPE (CamelGpgKeyInfo, camel_gpg_key_info, camel_gpg_key_info_copy, camel_gpg_key_info_free)
+
+/**
+ * camel_gpg_key_info_copy:
+ * @src: (nullable): a source #CamelGpgKeyInfo to make a copy of
+ *
+ * Copies the @src to a new #CamelGpgKeyInfo structure.
+ *
+ * Returns: (transfer full) (nullable): a copy of the @src, or %NULL,
+ *    when the @src is also %NULL
+ *
+ * Since: 3.50
+ **/
+CamelGpgKeyInfo *
+camel_gpg_key_info_copy (const CamelGpgKeyInfo *src)
+{
+	CamelGpgKeyInfo *cpy;
+
+	if (!src)
+		return NULL;
+
+	cpy = g_new0 (CamelGpgKeyInfo, 1);
+	cpy->id = g_strdup (src->id);
+	cpy->fingerprint = g_strdup (src->fingerprint);
+	cpy->user_ids = g_slist_copy_deep (src->user_ids, (GCopyFunc) g_strdup, NULL);
+	cpy->creation_date = src->creation_date;
+	cpy->trust = src->trust;
+
+	return cpy;
+}
+
+/**
+ * camel_gpg_key_info_free:
+ * @info: a #CamelGpgKeyInfo
+ *
+ * Frees the @info previously allocated by camel_gpg_context_get_public_key_info_sync(),
+ * camel_gpg_context_get_key_data_info_sync() or camel_gpg_key_info_copy().
+ *
+ * Since: 3.50
+ **/
+void
+camel_gpg_key_info_free (CamelGpgKeyInfo *info)
+{
+	if (info) {
+		g_free (info->id);
+		g_free (info->fingerprint);
+		g_slist_free_full (info->user_ids, g_free);
+		g_free (info);
+	}
+}
+
+/**
+ * camel_gpg_key_info_get_id:
+ * @info: a #CamelGpgKeyInfo
+ *
+ * Gets the key ID.
+ *
+ * Returns: key ID
+ *
+ * Since: 3.50
+ **/
+const gchar *
+camel_gpg_key_info_get_id (const CamelGpgKeyInfo *info)
+{
+	g_return_val_if_fail (info != NULL, NULL);
+
+	return info->id;
+}
+
+/**
+ * camel_gpg_key_info_get_fingerprint:
+ * @info: a #CamelGpgKeyInfo
+ *
+ * Gets the key fingerprint.
+ *
+ * Returns: key fingerprint
+ *
+ * Since: 3.50
+ **/
+const gchar *
+camel_gpg_key_info_get_fingerprint (const CamelGpgKeyInfo *info)
+{
+	g_return_val_if_fail (info != NULL, NULL);
+
+	return info->fingerprint;
+}
+
+/**
+ * camel_gpg_key_info_get_creation_date:
+ * @info: a #CamelGpgKeyInfo
+ *
+ * Gets the key creating date, as seconds since the Unix Epoch.
+ *
+ * Returns: key creation date
+ *
+ * Since: 3.50
+ **/
+gint64
+camel_gpg_key_info_get_creation_date (const CamelGpgKeyInfo *info)
+{
+	g_return_val_if_fail (info != NULL, 0);
+
+	return info->creation_date;
+}
+
+/**
+ * camel_gpg_key_info_get_trust:
+ * @info: a #CamelGpgKeyInfo
+ *
+ * Gets the key trust level, as one of #CamelGpgTrust.
+ *
+ * Returns: key trust level
+ *
+ * Since: 3.50
+ **/
+CamelGpgTrust
+camel_gpg_key_info_get_trust (const CamelGpgKeyInfo *info)
+{
+	g_return_val_if_fail (info != NULL, CAMEL_GPG_TRUST_NONE);
+
+	return info->trust;
+}
+
+/**
+ * camel_gpg_key_info_get_user_ids:
+ * @info: a #CamelGpgKeyInfo
+ *
+ * Gets the user IDs associated with the key.
+ *
+ * Returns: (element-type utf8) (transfer none): key user IDs
+ *
+ * Since: 3.50
+ **/
+/* const */ GSList *
+camel_gpg_key_info_get_user_ids (const CamelGpgKeyInfo *info)
+{
+	g_return_val_if_fail (info != NULL, NULL);
+
+	return info->user_ids;
+}
+
 typedef struct _GpgRecipientsData {
 	gchar *keyid;
 	gchar *known_key_data;
@@ -118,7 +274,10 @@ enum _GpgCtxMode {
 	GPG_CTX_MODE_DECRYPT,
 	GPG_CTX_MODE_HAS_PUBLIC_KEY,
 	GPG_CTX_MODE_GET_PUBLIC_KEY,
-	GPG_CTX_MODE_IMPORT_KEY
+	GPG_CTX_MODE_GET_PUBLIC_KEY_INFO,
+	GPG_CTX_MODE_GET_KEY_DATA_INFO,
+	GPG_CTX_MODE_IMPORT_KEY,
+	GPG_CTX_MODE_SET_KEY_TRUST
 };
 
 enum _GpgTrustMetric {
@@ -147,7 +306,7 @@ struct _GpgCtx {
 	gint stdout_fd;
 	gint stderr_fd;
 	gint status_fd;
-	gint passwd_fd;  /* only needed for sign/decrypt */
+	gint command_fd;  /* only needed for sign/decrypt/edit-key */
 
 	/* status-fd buffer */
 	guchar *statusbuf;
@@ -178,7 +337,7 @@ struct _GpgCtx {
 	guint prefer_inline : 1;
 	guint locate_keys : 1;
 	guint armor : 1;
-	guint need_passwd : 1;
+	guint need_command_fd : 1;
 	guint send_passwd : 1;
 	guint load_photos : 1;
 
@@ -206,6 +365,8 @@ struct _GpgCtx {
 	guint public_key_exists : 1;
 
 	guint padding : 9;
+
+	CamelGpgTrust set_key_trust_value;
 };
 
 static struct _GpgCtx *
@@ -221,7 +382,7 @@ gpg_ctx_new (CamelCipherContext *context,
 
 	gpg = g_slice_new0 (struct _GpgCtx);
 	gpg->mode = GPG_CTX_MODE_SIGN;
-	gpg->session = g_object_ref (session);
+	gpg->session = session ? g_object_ref (session) : NULL;
 	gpg->cancellable = cancellable;
 	gpg->userid_hint = g_hash_table_new (g_str_hash, g_str_equal);
 	gpg->complete = FALSE;
@@ -248,7 +409,7 @@ gpg_ctx_new (CamelCipherContext *context,
 	gpg->stdout_fd = -1;
 	gpg->stderr_fd = -1;
 	gpg->status_fd = -1;
-	gpg->passwd_fd = -1;
+	gpg->command_fd = -1;
 
 	gpg->statusbuf = g_malloc (128);
 	gpg->statusptr = gpg->statusbuf;
@@ -256,7 +417,7 @@ gpg_ctx_new (CamelCipherContext *context,
 
 	gpg->bad_passwds = 0;
 	gpg->anonymous_recipient = FALSE;
-	gpg->need_passwd = FALSE;
+	gpg->need_command_fd = FALSE;
 	gpg->send_passwd = FALSE;
 	gpg->need_id = NULL;
 	gpg->passwd = NULL;
@@ -314,7 +475,7 @@ gpg_ctx_set_mode (struct _GpgCtx *gpg,
                   enum _GpgCtxMode mode)
 {
 	gpg->mode = mode;
-	gpg->need_passwd = ((gpg->mode == GPG_CTX_MODE_SIGN) || (gpg->mode == GPG_CTX_MODE_DECRYPT));
+	gpg->need_command_fd = gpg->mode == GPG_CTX_MODE_SIGN || gpg->mode == GPG_CTX_MODE_DECRYPT || gpg->mode == GPG_CTX_MODE_SET_KEY_TRUST;
 }
 
 static void
@@ -532,8 +693,8 @@ gpg_ctx_free (struct _GpgCtx *gpg)
 		close (gpg->stderr_fd);
 	if (gpg->status_fd != -1)
 		close (gpg->status_fd);
-	if (gpg->passwd_fd != -1)
-		close (gpg->passwd_fd);
+	if (gpg->command_fd != -1)
+		close (gpg->command_fd);
 
 	g_free (gpg->statusbuf);
 
@@ -650,8 +811,8 @@ static GPtrArray *
 gpg_ctx_get_argv (struct _GpgCtx *gpg,
                   gint status_fd,
                   gchar **sfd,
-                  gint passwd_fd,
-                  gchar **pfd)
+                  gint command_fd,
+                  gchar **cfd)
 {
 	const gchar *hash_str;
 	GPtrArray *argv;
@@ -666,7 +827,7 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 	g_ptr_array_add (argv, (guint8 *) "--no-greeting");
 	g_ptr_array_add (argv, (guint8 *) "--no-tty");
 
-	if (passwd_fd == -1) {
+	if (command_fd == -1) {
 		/* only use batch mode if we don't intend on using the
 		 * interactive --command-fd option */
 		g_ptr_array_add (argv, (guint8 *) "--batch");
@@ -676,8 +837,8 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 	*sfd = buf = g_strdup_printf ("--status-fd=%d", status_fd);
 	g_ptr_array_add (argv, buf);
 
-	if (passwd_fd != -1) {
-		*pfd = buf = g_strdup_printf ("--command-fd=%d", passwd_fd);
+	if (command_fd != -1) {
+		*cfd = buf = g_strdup_printf ("--command-fd=%d", command_fd);
 		g_ptr_array_add (argv, buf);
 	}
 
@@ -731,7 +892,7 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 		g_ptr_array_add (argv, (guint8 *) "-");
 		break;
 	case GPG_CTX_MODE_VERIFY:
-		if (!camel_session_get_online (gpg->session)) {
+		if (gpg->session && !camel_session_get_online (gpg->session)) {
 			/* this is a deprecated flag to gpg since 1.0.7 */
 			/*g_ptr_array_add (argv, "--no-auto-key-retrieve");*/
 			g_ptr_array_add (argv, (guint8 *) "--keyserver-options");
@@ -748,7 +909,7 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 			g_ptr_array_add (argv, (guint8 *) "--armor");
 		if (gpg->always_trust)
 			g_ptr_array_add (argv, (guint8 *) "--always-trust");
-		if (gpg->locate_keys && camel_session_get_online (gpg->session)) {
+		if (gpg->locate_keys && (!gpg->session || camel_session_get_online (gpg->session))) {
 			g_ptr_array_add (argv, (guint8 *) "--auto-key-locate");
 			g_ptr_array_add (argv, (guint8 *) "local,wkd");
 		}
@@ -837,9 +998,45 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 			g_ptr_array_add (argv, (guint8 *) "<@@@>");
 		}
 		break;
+	case GPG_CTX_MODE_GET_PUBLIC_KEY_INFO:
+		g_ptr_array_add (argv, (guint8 *) "--list-keys");
+		g_ptr_array_add (argv, (guint8 *) "--with-colons");
+		g_ptr_array_add (argv, (guint8 *) "--with-fingerprint");
+		if (gpg->userids) {
+			GSList *uiter;
+
+			for (uiter = gpg->userids; uiter; uiter = uiter->next) {
+				g_ptr_array_add (argv, (guint8 *) uiter->data);
+			}
+		} else {
+			/* this should not happen, but add an invalid address in such case */
+			g_warn_if_reached ();
+			g_ptr_array_add (argv, (guint8 *) "<@@@>");
+		}
+		break;
+	case GPG_CTX_MODE_GET_KEY_DATA_INFO:
+		g_ptr_array_add (argv, (guint8 *) "--show-keys");
+		g_ptr_array_add (argv, (guint8 *) "--with-colons");
+		g_ptr_array_add (argv, (guint8 *) "--with-fingerprint");
+		break;
 	case GPG_CTX_MODE_IMPORT_KEY:
 		g_ptr_array_add (argv, (guint8 *) "--import");
 		g_ptr_array_add (argv, (guint8 *) "-");
+		break;
+	case GPG_CTX_MODE_SET_KEY_TRUST:
+		g_ptr_array_add (argv, (guint8 *) "--edit-key");
+		if (gpg->userids) {
+			GSList *uiter;
+
+			for (uiter = gpg->userids; uiter; uiter = uiter->next) {
+				g_ptr_array_add (argv, (guint8 *) uiter->data);
+			}
+		} else {
+			/* this should not happen, but add an invalid address in such case */
+			g_warn_if_reached ();
+			g_ptr_array_add (argv, (guint8 *) "<@@@>");
+		}
+		g_ptr_array_add (argv, (guint8 *) "trust");
 		break;
 	}
 
@@ -855,7 +1052,7 @@ gpg_ctx_op_start (struct _GpgCtx *gpg,
                   GError **error)
 {
 #ifndef G_OS_WIN32
-	gchar *status_fd = NULL, *passwd_fd = NULL;
+	gchar *status_fd = NULL, *command_fd = NULL;
 	gint i, maxfd, errnosave, fds[10];
 	GPtrArray *argv;
 	gint flags;
@@ -863,13 +1060,13 @@ gpg_ctx_op_start (struct _GpgCtx *gpg,
 	for (i = 0; i < 10; i++)
 		fds[i] = -1;
 
-	maxfd = gpg->need_passwd ? 10 : 8;
+	maxfd = gpg->need_command_fd ? 10 : 8;
 	for (i = 0; i < maxfd; i += 2) {
 		if (pipe (fds + i) == -1)
 			goto exception;
 	}
 
-	argv = gpg_ctx_get_argv (gpg, fds[7], &status_fd, fds[8], &passwd_fd);
+	argv = gpg_ctx_get_argv (gpg, fds[7], &status_fd, fds[8], &command_fd);
 
 	if (camel_debug_start ("gpg")) {
 		guint ii;
@@ -917,13 +1114,13 @@ gpg_ctx_op_start (struct _GpgCtx *gpg,
 	} else if (gpg->pid < 0) {
 		g_ptr_array_free (argv, TRUE);
 		g_free (status_fd);
-		g_free (passwd_fd);
+		g_free (command_fd);
 		goto exception;
 	}
 
 	g_ptr_array_free (argv, TRUE);
 	g_free (status_fd);
-	g_free (passwd_fd);
+	g_free (command_fd);
 
 	/* Parent */
 	close (fds[0]);
@@ -935,11 +1132,11 @@ gpg_ctx_op_start (struct _GpgCtx *gpg,
 	gpg->status_fd = fds[6];
 	close (fds[7]);
 
-	if (gpg->need_passwd) {
+	if (gpg->need_command_fd) {
 		close (fds[8]);
-		gpg->passwd_fd = fds[9];
-		flags = fcntl (gpg->passwd_fd, F_GETFL);
-		CHECK_CALL (fcntl (gpg->passwd_fd, F_SETFL, flags | O_NONBLOCK));
+		gpg->command_fd = fds[9];
+		flags = fcntl (gpg->command_fd, F_GETFL);
+		CHECK_CALL (fcntl (gpg->command_fd, F_SETFL, flags | O_NONBLOCK));
 	}
 
 	flags = fcntl (gpg->stdin_fd, F_GETFL);
@@ -1184,6 +1381,12 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 
 		status += 11;
 
+		if (!gpg->session) {
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
+				"CamelGpgContext: Cannot ask for password without CamelSession");
+			return -1;
+		}
+
 		if (gpg->need_id && !(name = g_hash_table_lookup (gpg->userid_hint, gpg->need_id)))
 			name = gpg->need_id;
 		else if (!name)
@@ -1259,7 +1462,8 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 		if (!gpg->anonymous_recipient) {
 			gpg->bad_passwds++;
 
-			camel_session_forget_password (gpg->session, NULL, gpg->need_id, error);
+			if (gpg->session)
+				camel_session_forget_password (gpg->session, NULL, gpg->need_id, error);
 
 			if (gpg->bad_passwds == 3) {
 				g_set_error (
@@ -1477,10 +1681,72 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 				gpg->public_key_exists = TRUE;
 			}
 			break;
+		case GPG_CTX_MODE_GET_PUBLIC_KEY_INFO:
+			if (!strncmp ((const gchar *) status, "KEY_CONSIDERED ", 15)) {
+				gpg->public_key_exists = TRUE;
+			}
+			break;
+		case GPG_CTX_MODE_GET_KEY_DATA_INFO:
+			break;
 		case GPG_CTX_MODE_IMPORT_KEY:
 			/*if (!strncmp ((const gchar *) status, "IMPORT_OK ", 10)) {
 			} else if (!strncmp ((const gchar *) status, "IMPORT_RES ", 11)) {
 			}*/
+			break;
+		case GPG_CTX_MODE_SET_KEY_TRUST:
+			if (!strncmp ((const gchar *) status, "GET_LINE ", 9)) {
+				if (!strncmp ((const gchar *) status + 9, "edit_ownertrust.value", 21)) {
+					const gchar *choice = "m";
+
+					switch (gpg->set_key_trust_value) {
+					case CAMEL_GPG_TRUST_NONE:
+						choice = "m";
+						break;
+					case CAMEL_GPG_TRUST_UNKNOWN:
+						choice = "1";
+						break;
+					case CAMEL_GPG_TRUST_NEVER:
+						choice = "2";
+						break;
+					case CAMEL_GPG_TRUST_MARGINAL:
+						choice = "3";
+						break;
+					case CAMEL_GPG_TRUST_FULL:
+						choice = "4";
+						break;
+					case CAMEL_GPG_TRUST_ULTIMATE:
+						choice = "5";
+						break;
+					}
+
+					if (gpg->command_fd != -1) {
+						if (write (gpg->command_fd, choice, strlen (choice)) == -1 ||
+						    write (gpg->command_fd, "\n", 1) == -1) {
+							gint errn = errno;
+							g_set_error (error, G_IO_ERROR, g_io_error_from_errno (errn),
+								_("Failed to pass command to GPG: %s"), g_strerror (errn));
+							return -1;
+						}
+					} else {
+						return -1;
+					}
+				} else if (!strncmp ((const gchar *) status + 9, "keyedit.prompt", 14)) {
+					if (gpg->command_fd != -1) {
+						if (write (gpg->command_fd, "q\n", 2) == -1) {
+							gint errn = errno;
+							g_set_error (error, G_IO_ERROR, g_io_error_from_errno (errn),
+								_("Failed to pass command to GPG: %s"), g_strerror (errn));
+							return -1;
+						}
+					} else {
+						return -1;
+					}
+				} else {
+					g_set_error (error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+						"Unknown GPG prompt '%s'", (const gchar *) status);
+					return -1;
+				}
+			}
 			break;
 		}
 	}
@@ -1580,7 +1846,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 
 	polls[3].fd = gpg->stdin_fd;
 	polls[3].events = G_IO_OUT;
-	polls[4].fd = gpg->passwd_fd;
+	polls[4].fd = gpg->command_fd;
 	polls[4].events = G_IO_OUT;
 	polls[5].fd = g_cancellable_get_fd (cancellable);
 	polls[5].events = G_IO_IN;
@@ -1714,7 +1980,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 		}
 	}
 
-	if ((polls[4].revents & (G_IO_OUT | G_IO_HUP)) && gpg->need_passwd && gpg->send_passwd) {
+	if ((polls[4].revents & (G_IO_OUT | G_IO_HUP)) && gpg->need_command_fd && gpg->send_passwd) {
 		gssize w, nwritten = 0;
 		gsize n;
 
@@ -1724,7 +1990,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 		n = strlen (gpg->passwd);
 		do {
 			do {
-				w = write (gpg->passwd_fd, gpg->passwd + nwritten, n - nwritten);
+				w = write (gpg->command_fd, gpg->passwd + nwritten, n - nwritten);
 			} while (w == -1 && (errno == EINTR || errno == EAGAIN));
 
 			if (w > 0)
@@ -2691,7 +2957,8 @@ gpg_encrypt_sync (CamelCipherContext *context,
 
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 
-	if (!camel_session_get_recipient_certificates_sync (camel_cipher_context_get_session (context),
+	if (camel_cipher_context_get_session (context) &&
+	    !camel_session_get_recipient_certificates_sync (camel_cipher_context_get_session (context),
 		CAMEL_RECIPIENT_CERTIFICATE_PGP, recipients, &gathered_keys, cancellable, error))
 		return FALSE;
 
@@ -3072,7 +3339,7 @@ camel_gpg_context_init (CamelGpgContext *context)
 
 /**
  * camel_gpg_context_new:
- * @session: session
+ * @session: (nullable): session
  *
  * Creates a new gpg cipher context object.
  *
@@ -3081,7 +3348,8 @@ camel_gpg_context_init (CamelGpgContext *context)
 CamelCipherContext *
 camel_gpg_context_new (CamelSession *session)
 {
-	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
+	if (session)
+		g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 
 	return g_object_new (
 		CAMEL_TYPE_GPG_CONTEXT,
@@ -3388,19 +3656,480 @@ camel_gpg_context_get_public_key_sync (CamelGpgContext *context,
 	return success;
 }
 
+/* https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=blob;f=doc/DETAILS;h=e064c9d214506b4b9cea95448677afb2f885caee;hb=refs/heads/STABLE-BRANCH-2-2 */
+static gchar *
+camel_gpg_context_parse_key_info_field (const gchar *line,
+					guint len,
+					guint field) /* counts from 1 */
+{
+	const gchar *from;
+	gchar *value = NULL;
+
+	g_return_val_if_fail (line != NULL, NULL);
+	g_return_val_if_fail (field >= 1, NULL);
+
+	for (field--; field > 0 && len > 0 && *line != '\0'; field--) {
+		while (len > 0 && *line != '\0' && *line != ':') {
+			line++;
+			len--;
+		}
+
+		/* skip the colon */
+		if (len > 0 && *line != '\0') {
+			line++;
+			len--;
+		}
+	}
+
+	/* no enough fields */
+	if (field > 0)
+		return NULL;
+
+	from = line;
+
+	while (len > 0 && *line != '\0' && *line != ':') {
+		line++;
+		len--;
+	}
+
+	if (from < line) {
+		gchar *ptr, *place;
+
+		value = g_strndup (from, line - from);
+
+		/* decode escaped letters */
+		for (ptr = value, place = value; *ptr; ptr++) {
+			if (*ptr == '\\') {
+				if (ptr[1] == 'x' && g_ascii_isxdigit (ptr[2]) && g_ascii_isxdigit (ptr[3])) {
+					gint hex = 0, val;
+
+					val = g_ascii_xdigit_value (ptr[2]);
+					if (val >= 0) {
+						hex = hex * 16 + val;
+						val = g_ascii_xdigit_value (ptr[3]);
+						if (val >= 0)
+							hex = hex * 16 + val;
+					}
+
+					if (val >= 0) {
+						*place = (gchar) hex;
+						place++;
+						ptr += 3;
+					} else {
+						if (ptr != place)
+							*place = *ptr;
+						place++;
+					}
+				} else {
+					if (ptr != place)
+						*place = *ptr;
+					place++;
+				}
+			} else {
+				if (ptr != place)
+					*place = *ptr;
+				place++;
+			}
+		}
+
+		if (ptr != place)
+			*place = '\0';
+	}
+
+	return value;
+}
+
+static gint64
+camel_gpg_context_parse_key_info_creation_date (const gchar *line,
+						guint len,
+						guint field) /* counts from 1 */
+{
+	gchar *field_value;
+	gint64 value = 0;
+
+	field_value = camel_gpg_context_parse_key_info_field (line, len, field);
+
+	if (!field_value || !*field_value) {
+		g_free (field_value);
+		return 0;
+	}
+
+	if (strchr (field_value, 'T')) {
+		GDateTime *dt;
+
+		dt = g_date_time_new_from_iso8601 (field_value, NULL);
+		if (dt) {
+			value = g_date_time_to_unix (dt);
+			g_date_time_unref (dt);
+		}
+	} else {
+		value = g_ascii_strtoll (field_value, NULL, 10);
+	}
+
+	g_free (field_value);
+
+	return value;
+}
+
+static CamelGpgTrust
+camel_gpg_context_parse_key_info_trust (const gchar *line,
+					guint len,
+					guint field) /* counts from 1 */
+{
+	gchar *field_value;
+	CamelGpgTrust value = CAMEL_GPG_TRUST_NONE;
+
+	field_value = camel_gpg_context_parse_key_info_field (line, len, field);
+
+	if (!field_value || !*field_value) {
+		g_free (field_value);
+		return CAMEL_GPG_TRUST_NONE;
+	}
+
+	if (g_strcmp0 (field_value, "n") == 0)
+		value = CAMEL_GPG_TRUST_NEVER;
+	else if (g_strcmp0 (field_value, "m") == 0)
+		value = CAMEL_GPG_TRUST_MARGINAL;
+	else if (g_strcmp0 (field_value, "f") == 0)
+		value = CAMEL_GPG_TRUST_FULL;
+	else if (g_strcmp0 (field_value, "u") == 0)
+		value = CAMEL_GPG_TRUST_ULTIMATE;
+	else
+		value = CAMEL_GPG_TRUST_UNKNOWN;
+
+	g_free (field_value);
+
+	return value;
+}
+
+static gboolean
+camel_gpg_context_str_has_prefix_n (const gchar *str,
+				    gsize str_len,
+				    const gchar *prefix)
+{
+	while (str_len > 0 && *str == *prefix) {
+		str++;
+		prefix++;
+		str_len--;
+	}
+
+	return *prefix == '\0';
+}
+
+static GSList * /* CamelGpgKeyInfo * */
+camel_gpg_context_parse_key_info (GByteArray *buffer)
+{
+	GSList *infos = NULL;
+	CamelGpgKeyInfo *current_info = NULL;
+	guint ii;
+	gboolean in_sub = FALSE;
+
+	for (ii = 0; ii < buffer->len; ii++) {
+		if ((ii == 0 || buffer->data[ii - 1] == '\n') && ii + 4 < buffer->len) {
+			const gchar *line = (const gchar *) buffer->data + ii;
+			if (camel_gpg_context_str_has_prefix_n (line, buffer->len - ii, "pub:")) {
+				if (current_info) {
+					current_info->user_ids = g_slist_reverse (current_info->user_ids);
+					infos = g_slist_prepend (infos, current_info);
+				}
+				in_sub = FALSE;
+				current_info = g_new0 (CamelGpgKeyInfo, 1);
+				current_info->id = camel_gpg_context_parse_key_info_field (line, buffer->len - ii, 5);
+				current_info->creation_date = camel_gpg_context_parse_key_info_creation_date (line, buffer->len - ii, 6);
+				current_info->trust = camel_gpg_context_parse_key_info_trust (line, buffer->len - ii, 9);
+			} else if (camel_gpg_context_str_has_prefix_n (line, buffer->len - ii, "fpr:")) {
+				if (!in_sub && current_info && !current_info->fingerprint)
+					current_info->fingerprint = camel_gpg_context_parse_key_info_field (line, buffer->len - ii, 10);
+			} else if (camel_gpg_context_str_has_prefix_n (line, buffer->len - ii, "uid:")) {
+				if (!in_sub && current_info) {
+					current_info->user_ids = g_slist_prepend (current_info->user_ids,
+						camel_gpg_context_parse_key_info_field (line, buffer->len - ii, 10));
+				}
+			} else if (camel_gpg_context_str_has_prefix_n (line, buffer->len - ii, "sub:")) {
+				in_sub = TRUE;
+			}
+		}
+	}
+
+	if (current_info) {
+		current_info->user_ids = g_slist_reverse (current_info->user_ids);
+		infos = g_slist_prepend (infos, current_info);
+	}
+
+	return g_slist_reverse (infos);
+}
+
+/**
+ * camel_gpg_context_get_public_key_info_sync:
+ * @context: a #CamelGpgContext
+ * @keyid: a key ID or an email address
+ * @flags: flags for the operation
+ * @out_infos: (out callee-allocates) (transfer full) (element-type CamelGpgKeyInfo): an out parameter to get #GSList of #CamelGpgKeyInfo structures
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Receives information about a key @keyid.
+ *
+ * The @keyid can be either key ID or an email address.
+ *
+ * The @flags argument is currently unused and should be set to 0.
+ *
+ * Free the returned @out_infos with g_slist_free_full (infos, camel_gpg_key_info_free);
+ * when no longer needed.
+ *
+ * Returns: whether succeeded
+ *
+ * Since: 3.50
+ **/
+gboolean
+camel_gpg_context_get_public_key_info_sync (CamelGpgContext *context,
+					    const gchar *keyid,
+					    guint32 flags,
+					    GSList **out_infos, /* CamelGpgKeyInfo * */
+					    GCancellable *cancellable,
+					    GError **error)
+{
+	struct _GpgCtx *gpg = NULL;
+	CamelStream *ostream;
+	gchar *tmp_keyid = NULL;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (CAMEL_IS_GPG_CONTEXT (context), FALSE);
+	g_return_val_if_fail (keyid != NULL, FALSE);
+	g_return_val_if_fail (out_infos != NULL, FALSE);
+
+	*out_infos = NULL;
+
+	ostream = camel_stream_mem_new ();
+
+	gpg = gpg_ctx_new (CAMEL_CIPHER_CONTEXT (context), cancellable);
+	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_GET_PUBLIC_KEY_INFO);
+	gpg_ctx_set_userid (gpg, camel_gpg_context_normalize_keyid (keyid, &tmp_keyid));
+	gpg_ctx_set_ostream (gpg, ostream);
+
+	if (!gpg_ctx_op_start (gpg, error))
+		success = FALSE;
+
+	while (success && !gpg_ctx_op_complete (gpg)) {
+		if (gpg_ctx_op_step (gpg, cancellable, error) == -1) {
+			gpg_ctx_op_cancel (gpg);
+			success = FALSE;
+			break;
+		}
+	}
+
+	if (success && gpg_ctx_op_wait (gpg) != 0 && gpg->public_key_exists) {
+		const gchar *diagnostics;
+
+		diagnostics = gpg_ctx_get_diagnostics (gpg);
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
+			(diagnostics != NULL && *diagnostics != '\0') ?
+			diagnostics : _("Failed to execute gpg."));
+
+		success = FALSE;
+	}
+
+	if (success && !gpg->public_key_exists) {
+		g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+			_("Public key “%s” was not found"), keyid);
+		success = FALSE;
+	} else if (success) {
+		GByteArray *buffer;
+
+		buffer = camel_stream_mem_get_byte_array (CAMEL_STREAM_MEM (ostream));
+
+		*out_infos = camel_gpg_context_parse_key_info (buffer);
+
+		if (!*out_infos) {
+			g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+				_("Public key “%s” was not found"), keyid);
+			success = FALSE;
+		}
+	}
+
+	g_clear_pointer (&gpg, gpg_ctx_free);
+	g_clear_object (&ostream);
+	g_free (tmp_keyid);
+
+	return success;
+}
+
+/**
+ * camel_gpg_context_get_key_data_info_sync:
+ * @context: a #CamelGpgContext
+ * @data: the public key data
+ * @data_size: the @data size
+ * @flags: flags for the operation
+ * @out_infos: (out callee-allocates) (transfer full) (element-type CamelGpgKeyInfo): an out parameter to get #GSList of #CamelGpgKeyInfo structures
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Receives information about a key stored in @data of size @data_size.
+ *
+ * The @flags argument is currently unused and should be set to 0.
+ *
+ * Free the returned @out_infos with g_slist_free_full (infos, camel_gpg_key_info_free);
+ * when no longer needed.
+ *
+ * Returns: whether succeeded
+ *
+ * Since: 3.50
+ **/
+gboolean
+camel_gpg_context_get_key_data_info_sync (CamelGpgContext *context,
+					  const guint8 *data,
+					  gsize data_size,
+					  guint32 flags,
+					  GSList **out_infos, /* CamelGpgKeyInfo * */
+					  GCancellable *cancellable,
+					  GError **error)
+{
+	struct _GpgCtx *gpg = NULL;
+	CamelStream *istream;
+	CamelStream *ostream;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (CAMEL_IS_GPG_CONTEXT (context), FALSE);
+	g_return_val_if_fail (data != NULL, FALSE);
+	g_return_val_if_fail (data_size > 0, FALSE);
+	g_return_val_if_fail (out_infos != NULL, FALSE);
+
+	*out_infos = NULL;
+
+	istream = camel_stream_mem_new_with_buffer ((const gchar *) data, data_size);
+	ostream = camel_stream_mem_new ();
+
+	gpg = gpg_ctx_new (CAMEL_CIPHER_CONTEXT (context), cancellable);
+	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_GET_KEY_DATA_INFO);
+	gpg_ctx_set_istream (gpg, istream);
+	gpg_ctx_set_ostream (gpg, ostream);
+
+	if (!gpg_ctx_op_start (gpg, error))
+		success = FALSE;
+
+	while (success && !gpg_ctx_op_complete (gpg)) {
+		if (gpg_ctx_op_step (gpg, cancellable, error) == -1) {
+			gpg_ctx_op_cancel (gpg);
+			success = FALSE;
+			break;
+		}
+	}
+
+	if (success && gpg_ctx_op_wait (gpg) != 0 && !gpg->nodata) {
+		const gchar *diagnostics;
+
+		diagnostics = gpg_ctx_get_diagnostics (gpg);
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
+			(diagnostics != NULL && *diagnostics != '\0') ?
+			diagnostics : _("Failed to execute gpg."));
+
+		success = FALSE;
+	}
+
+	if (success && gpg->nodata) {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+			_("No public key was found in the provided data"));
+		success = FALSE;
+	}
+
+	if (success) {
+		GByteArray *buffer;
+
+		buffer = camel_stream_mem_get_byte_array (CAMEL_STREAM_MEM (ostream));
+
+		*out_infos = camel_gpg_context_parse_key_info (buffer);
+
+		if (!*out_infos) {
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+				_("Key information was not found in the provided data"));
+			success = FALSE;
+		}
+	}
+
+	g_clear_pointer (&gpg, gpg_ctx_free);
+	g_clear_object (&ostream);
+	g_clear_object (&istream);
+
+	return success;
+}
+
+/**
+ * camel_gpg_context_set_key_trust_sync:
+ * @context: a #CamelGpgContext
+ * @keyid: a key ID or an email address
+ * @trust: a #CamelGpgTrust to set
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Sets @trust level on the key @keyid.
+ *
+ * The @keyid can be either key ID or an email address.
+ *
+ * Returns: whether succeeded
+ *
+ * Since: 3.50
+ **/
+gboolean
+camel_gpg_context_set_key_trust_sync (CamelGpgContext *context,
+				      const gchar *keyid,
+				      CamelGpgTrust trust,
+				      GCancellable *cancellable,
+				      GError **error)
+{
+	struct _GpgCtx *gpg = NULL;
+	gchar *tmp_keyid = NULL;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (CAMEL_IS_GPG_CONTEXT (context), FALSE);
+	g_return_val_if_fail (keyid && *keyid, FALSE);
+
+	gpg = gpg_ctx_new (CAMEL_CIPHER_CONTEXT (context), cancellable);
+	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_SET_KEY_TRUST);
+	gpg_ctx_set_userid (gpg, camel_gpg_context_normalize_keyid (keyid, &tmp_keyid));
+	gpg->set_key_trust_value = trust;
+
+	if (!gpg_ctx_op_start (gpg, error))
+		success = FALSE;
+
+	while (success && !gpg_ctx_op_complete (gpg)) {
+		if (gpg_ctx_op_step (gpg, cancellable, error) == -1) {
+			gpg_ctx_op_cancel (gpg);
+			success = FALSE;
+			break;
+		}
+	}
+
+	if (success && gpg_ctx_op_wait (gpg) != 0) {
+		const gchar *diagnostics;
+
+		diagnostics = gpg_ctx_get_diagnostics (gpg);
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
+			(diagnostics != NULL && *diagnostics != '\0') ?
+			diagnostics : _("Failed to execute gpg."));
+
+		success = FALSE;
+	}
+
+	g_clear_pointer (&gpg, gpg_ctx_free);
+	g_free (tmp_keyid);
+
+	return success;
+}
+
 /**
  * camel_gpg_context_import_key_sync:
  * @context: a #CamelGpgContext
- * @data: the public key data, in binary form
+ * @data: the public key data
  * @data_size: the @data size
- * @flags: flags for the operation
+ * @flags: bit-or of CamelPgpImportFlags, flags for the operation
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Imports a (public) key provided in a binary form stored in the @data
  * of size @data_size.
- *
- * The @flags argument is currently unused and should be set to 0.
  *
  * Returns: whether succeeded
  *
