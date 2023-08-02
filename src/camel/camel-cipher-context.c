@@ -67,6 +67,7 @@ enum {
 	PROP_SESSION
 };
 
+G_DEFINE_QUARK (camel-cipher-context-error-quark, camel_cipher_context_error)
 G_DEFINE_TYPE_WITH_PRIVATE (CamelCipherContext, camel_cipher_context, G_TYPE_OBJECT)
 
 G_DEFINE_BOXED_TYPE (CamelCipherValidity,

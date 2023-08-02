@@ -1471,7 +1471,7 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 			CERTCertificate **hash_value = g_hash_table_lookup (frd.recipients_table, recipients->pdata[i]);
 			if (!hash_value || !*hash_value) {
 				g_set_error (
-					error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+					error, CAMEL_CIPHER_CONTEXT_ERROR, CAMEL_CIPHER_CONTEXT_ERROR_KEY_NOT_FOUND,
 					_("No valid or appropriate certificate for “%s” was found"),
 					(gchar *) recipients->pdata[i]);
 				g_hash_table_destroy (frd.recipients_table);
