@@ -1564,6 +1564,7 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 	ECalBackendCalDAV *cbdav;
 	EWebDAVSession *webdav;
 	ICalComponent *icomp;
+	SoupMessageHeaders *extra_headers = NULL;
 	gchar *etag = NULL;
 	gboolean success;
 	GError *local_error = NULL;
@@ -1590,8 +1591,14 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 
 	webdav = ecb_caldav_ref_session (cbdav);
 
-	success = e_webdav_session_delete_sync (webdav, extra,
-		NULL, etag, cancellable, &local_error);
+	if ((opflags & E_CAL_OPERATION_FLAG_DISABLE_ITIP_MESSAGE) != 0) {
+		extra_headers = soup_message_headers_new (SOUP_MESSAGE_HEADERS_REQUEST);
+
+		soup_message_headers_append (extra_headers, "Schedule-Reply", "F");
+	}
+
+	success = e_webdav_session_delete_with_headers_sync (webdav, extra,
+		NULL, etag, extra_headers, cancellable, &local_error);
 
 	if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND)) {
 		gchar *href;
@@ -1599,8 +1606,8 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 		href = ecb_caldav_uid_to_uri (cbdav, uid, ".ics");
 		if (href) {
 			g_clear_error (&local_error);
-			success = e_webdav_session_delete_sync (webdav, href,
-				NULL, etag, cancellable, &local_error);
+			success = e_webdav_session_delete_with_headers_sync (webdav, href,
+				NULL, etag, extra_headers, cancellable, &local_error);
 
 			g_free (href);
 		}
@@ -1609,14 +1616,15 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 			href = ecb_caldav_uid_to_uri (cbdav, uid, NULL);
 			if (href) {
 				g_clear_error (&local_error);
-				success = e_webdav_session_delete_sync (webdav, href,
-					NULL, etag, cancellable, &local_error);
+				success = e_webdav_session_delete_with_headers_sync (webdav, href,
+					NULL, etag, extra_headers, cancellable, &local_error);
 
 				g_free (href);
 			}
 		}
 	}
 
+	g_clear_pointer (&extra_headers, soup_message_headers_unref);
 	g_object_unref (icomp);
 	g_free (etag);
 
@@ -2347,7 +2355,8 @@ ecb_caldav_get_backend_property (ECalBackend *backend,
 			g_string_append (
 				caps,
 				"," E_CAL_STATIC_CAPABILITY_CREATE_MESSAGES
-				"," E_CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
+				"," E_CAL_STATIC_CAPABILITY_SAVE_SCHEDULES
+				"," E_CAL_STATIC_CAPABILITY_ITIP_SUPPRESS_ON_REMOVE_SUPPORTED);
 		}
 
 		return g_string_free (caps, FALSE);

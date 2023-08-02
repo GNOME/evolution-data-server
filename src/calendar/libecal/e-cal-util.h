@@ -231,6 +231,31 @@ G_BEGIN_DECLS
 
 #define E_CAL_STATIC_CAPABILITY_TASK_ESTIMATED_DURATION "task-estimated-duration"
 
+/**
+ * E_CAL_STATIC_CAPABILITY_ITIP_SUPPRESS_ON_REMOVE_SUPPORTED:
+ *
+ * Set, when the backend supports %E_CAL_STATIC_CAPABILITY_SAVE_SCHEDULES and
+ * it can suppress iTip message on component removal. The capability should
+ * be ignored when the %E_CAL_STATIC_CAPABILITY_SAVE_SCHEDULES is not present.
+ *
+ * The backend checks %E_CAL_OPERATION_FLAG_DISABLE_ITIP_MESSAGE flag when these
+ * capabilities are present and sends or does not send iTip message accordingly.
+ *
+ * Since: 3.50
+ **/
+#define E_CAL_STATIC_CAPABILITY_ITIP_SUPPRESS_ON_REMOVE_SUPPORTED "itip-suppress-on-remove-supported"
+
+/**
+ * E_CAL_STATIC_CAPABILITY_RETRACT_SUPPORTED:
+ *
+ * Set, when the backend supports retract. That's a way to ask for a meeting
+ * deletion with a comment, which is stored in a component as
+ * X-EVOLUTION-RETRACT-COMMENT property.
+ *
+ * Since: 3.50
+ **/
+#define E_CAL_STATIC_CAPABILITY_RETRACT_SUPPORTED "retract-supported"
+
 struct _ECalClient;
 
 ICalComponent *	e_cal_util_new_top_level	(void);

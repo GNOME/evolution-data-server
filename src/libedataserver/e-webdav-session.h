@@ -462,6 +462,14 @@ gboolean	e_webdav_session_delete_sync		(EWebDAVSession *webdav,
 							 const gchar *etag,
 							 GCancellable *cancellable,
 							 GError **error);
+gboolean	e_webdav_session_delete_with_headers_sync
+							(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 const gchar *depth,
+							 const gchar *etag,
+							 SoupMessageHeaders *in_headers,
+							 GCancellable *cancellable,
+							 GError **error);
 gboolean	e_webdav_session_copy_sync		(EWebDAVSession *webdav,
 							 const gchar *source_uri,
 							 const gchar *destination_uri,

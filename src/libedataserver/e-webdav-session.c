@@ -2513,6 +2513,48 @@ e_webdav_session_delete_sync (EWebDAVSession *webdav,
 			      GCancellable *cancellable,
 			      GError **error)
 {
+	return e_webdav_session_delete_with_headers_sync (webdav, uri, depth, etag, NULL, cancellable, error);
+}
+
+/**
+ * e_webdav_session_delete_with_headers_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: URI of the resource to delete
+ * @depth: (nullable): optional requested depth, can be one of %E_WEBDAV_DEPTH_THIS or %E_WEBDAV_DEPTH_INFINITY, or %NULL
+ * @etag: (nullable): an optional ETag of the resource, or %NULL
+ * @in_headers: (nullable): additional #SoupMessageHeaders to be added to the request, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Deletes a resource identified by @uri on the server. The URI can
+ * reference a collection, in which case @depth should be %E_WEBDAV_DEPTH_INFINITY.
+ * Use @depth %E_WEBDAV_DEPTH_THIS when deleting a regular resource, or %NULL,
+ * to let the server use default Depth.
+ *
+ * The @etag argument is used to avoid clashes when overwriting existing resources.
+ * Use %NULL @etag when deleting collection resources or to force the deletion,
+ * otherwise provide a valid ETag of a non-collection resource to verify that
+ * the version requested to delete is the same as on the server.
+ *
+ * The optional @in_headers can contain additional headers to be added to the request.
+ * These headers replace any existing in the request headers, without support for the list-values headers.
+ *
+ * Note that the actual usage of @etag is also influenced by #ESourceWebdav:avoid-ifmatch
+ * property of the associated #ESource.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.50
+ **/
+gboolean
+e_webdav_session_delete_with_headers_sync (EWebDAVSession *webdav,
+					   const gchar *uri,
+					   const gchar *depth,
+					   const gchar *etag,
+					   SoupMessageHeaders *in_headers,
+					   GCancellable *cancellable,
+					   GError **error)
+{
 	SoupMessage *message;
 	GByteArray *bytes;
 	gboolean success;
@@ -2525,6 +2567,8 @@ e_webdav_session_delete_sync (EWebDAVSession *webdav,
 	message = e_webdav_session_new_message (webdav, SOUP_METHOD_DELETE, uri, error);
 	if (!message)
 		return FALSE;
+
+	e_webdav_session_copy_request_headers (message, in_headers);
 
 	if (etag) {
 		ESource *source;
