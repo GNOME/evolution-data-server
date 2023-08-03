@@ -3143,7 +3143,7 @@ ebc_generate_select (EBookCache *book_cache,
 		add_auxiliary_tables = TRUE;
 
 	g_string_append (string, "SELECT ");
-	if (add_auxiliary_tables)
+	if (add_auxiliary_tables && search_type != SEARCH_COUNT)
 		g_string_append (string, "DISTINCT ");
 
 	switch (search_type) {
@@ -3175,8 +3175,7 @@ ebc_generate_select (EBookCache *book_cache,
 			g_string_append (string, "count (*) ");
 		break;
 	case SEARCH_SUMMARY_FIELD:
-		/* intentionally no callback set */
-		if (context->aux_mask != 0)
+		if (context->aux_mask != 0 && !add_auxiliary_tables)
 			g_string_append (string, "DISTINCT summary." E_CACHE_COLUMN_UID ", ");
 		else
 			g_string_append (string, "summary." E_CACHE_COLUMN_UID ", ");
