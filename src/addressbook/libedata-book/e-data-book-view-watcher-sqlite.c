@@ -597,6 +597,8 @@ e_data_book_view_watcher_sqlite_dup_contacts (EDataBookViewWatcherSqlite *self,
 	ebsql = data_book_view_watcher_sqlite_ref_sqlite (self);
 
 	if (view && ebsql) {
+		GError *error = NULL;
+
 		if (!e_book_sqlite_lock (ebsql, EBSQL_LOCK_READ, NULL, NULL)) {
 			g_object_unref (ebsql);
 			g_object_unref (view);
@@ -615,11 +617,19 @@ e_data_book_view_watcher_sqlite_dup_contacts (EDataBookViewWatcherSqlite *self,
 		if (!e_book_sqlite_dup_query_contacts (ebsql, e_book_backend_sexp_text (e_data_book_view_get_sexp (view)),
 			self->priv->sort_fields ? self->priv->sort_fields[0].field : E_CONTACT_FILE_AS,
 			self->priv->sort_fields ? self->priv->sort_fields[0].sort_type : E_BOOK_CURSOR_SORT_ASCENDING,
-			range_start, range_length, &contacts, NULL, NULL)) {
-			e_book_sqlite_dup_query_contacts (ebsql, e_book_backend_sexp_text (e_data_book_view_get_sexp (view)),
+			range_start, range_length, &contacts, NULL, &error)) {
+			g_warning ("%s: Failed to get contacts for range from:%u len:%u : %s", G_STRFUNC, range_start, range_length,
+				error ? error->message : "Unknown error");
+			g_clear_error (&error);
+
+			if (!e_book_sqlite_dup_query_contacts (ebsql, e_book_backend_sexp_text (e_data_book_view_get_sexp (view)),
 				E_CONTACT_FILE_AS,
 				E_BOOK_CURSOR_SORT_ASCENDING,
-				range_start, range_length, &contacts, NULL, NULL);
+				range_start, range_length, &contacts, NULL, &error)) {
+				g_warning ("%s: Failed to get contacts in fallback sort for range from:%u len:%u : %s", G_STRFUNC, range_start, range_length,
+					error ? error->message : "Unknown error");
+				g_clear_error (&error);
+			}
 		}
 
 		g_mutex_unlock (&self->priv->property_lock);
