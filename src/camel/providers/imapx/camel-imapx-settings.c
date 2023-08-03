@@ -861,7 +861,7 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 			"single-client-mode",
 			"Single Client Mode",
 			"When set to true, does full folder flags refresh only once per day",
-			TRUE,
+			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
