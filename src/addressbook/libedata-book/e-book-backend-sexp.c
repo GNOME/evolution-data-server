@@ -1341,7 +1341,15 @@ e_book_backend_sexp_util_phone_compare (const gchar *phone_value,
 	gboolean success = FALSE;
 
 	if (compare_kind == E_BOOK_BACKEND_SEXP_COMPARE_KIND_UNKNOWN ||
-	    !phone_value || !*phone_value || !lookup_value || !*lookup_value)
+	    !phone_value || !lookup_value)
+		return FALSE;
+
+	/* looking for an empty string => it's there */
+	if (!*lookup_value)
+		return TRUE;
+
+	/* looking for a non-empty string in an empty string => it's not there */
+	if (!*phone_value)
 		return FALSE;
 
 	only_numbers = g_strdup (phone_value);

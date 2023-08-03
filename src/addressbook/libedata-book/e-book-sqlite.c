@@ -5249,14 +5249,21 @@ field_test_query_contains (EBookSqlite *ebsql,
 	g_string_append_c (string, '(');
 
 	ebsql_string_append_column (string, field, NULL);
-	g_string_append (string, " IS NOT NULL AND ");
-	ebsql_string_append_column (string, field, NULL);
-	g_string_append (string, " LIKE '%");
-	g_string_append (string, escaped);
-	g_string_append (string, "%'");
+	if (test->field->type == E_TYPE_CONTACT_CERT && (!escaped || !*escaped))
+		ebsql_string_append_printf (string, " IS NOT '0'");
+	else
+		g_string_append (string, " IS NOT NULL");
 
-	if (need_escape)
-		g_string_append (string, EBSQL_ESCAPE_SEQUENCE);
+	if (escaped && *escaped) {
+		g_string_append (string, " AND ");
+		ebsql_string_append_column (string, field, NULL);
+		g_string_append (string, " LIKE '%");
+		g_string_append (string, escaped);
+		g_string_append (string, "%'");
+
+		if (need_escape)
+			g_string_append (string, EBSQL_ESCAPE_SEQUENCE);
+	}
 
 	g_string_append_c (string, ')');
 

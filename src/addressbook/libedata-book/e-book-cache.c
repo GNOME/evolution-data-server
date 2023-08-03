@@ -2698,15 +2698,21 @@ field_test_query_contains (EBookCache *book_cache,
 	g_string_append_c (string, '(');
 
 	ebc_string_append_column (string, field, NULL);
-	g_string_append (string, " IS NOT NULL AND ");
+	if (field->type == E_TYPE_CONTACT_CERT && (!escaped || !*escaped))
+		g_string_append (string, " IS NOT '0'");
+	else
+		g_string_append (string, " IS NOT NULL");
 
-	ebc_string_append_column (string, field, NULL);
-	g_string_append (string, " LIKE '%");
-	g_string_append (string, escaped);
-	g_string_append (string, "%'");
+	if (escaped && *escaped) {
+		g_string_append (string, " AND ");
+		ebc_string_append_column (string, field, NULL);
+		g_string_append (string, " LIKE '%");
+		g_string_append (string, escaped);
+		g_string_append (string, "%'");
 
-	if (need_escape)
-		g_string_append (string, EBC_ESCAPE_SEQUENCE);
+		if (need_escape)
+			g_string_append (string, EBC_ESCAPE_SEQUENCE);
+	}
 
 	g_string_append_c (string, ')');
 
