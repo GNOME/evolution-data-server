@@ -848,6 +848,7 @@ ebmb_maybe_remove_from_cache (EBookMetaBackend *meta_backend,
 
 	g_slist_free_full (local_photos, g_free);
 
+	e_book_backend_notify_remove (E_BOOK_BACKEND (meta_backend), uid);
 	ebmb_foreach_cursor (meta_backend, contact, e_data_book_cursor_contact_removed);
 
 	g_object_unref (contact);
@@ -1162,6 +1163,7 @@ ebmb_load_contact_wrapper_sync (EBookMetaBackend *meta_backend,
 				const gchar *preloaded_object,
 				const gchar *preloaded_extra,
 				gchar **out_new_uid,
+				EContact **out_contact,
 				GCancellable *cancellable,
 				GError **error)
 {
@@ -1193,7 +1195,11 @@ ebmb_load_contact_wrapper_sync (EBookMetaBackend *meta_backend,
 	if (success && out_new_uid)
 		*out_new_uid = e_contact_get (contact, E_CONTACT_UID);
 
-	g_object_unref (contact);
+	if (success && out_contact)
+		*out_contact = contact;
+	else
+		g_object_unref (contact);
+
 	g_free (extra);
 
 	if (local_error) {
@@ -1244,7 +1250,7 @@ ebmb_save_contact_wrapper_sync (EBookMetaBackend *meta_backend,
 		gchar *loaded_uid = NULL;
 
 		success = ebmb_load_contact_wrapper_sync (meta_backend, book_cache, new_uid, NULL,
-			new_extra ? new_extra : extra, &loaded_uid, cancellable, error);
+			new_extra ? new_extra : extra, &loaded_uid, NULL, cancellable, error);
 
 		if (success && g_strcmp0 (loaded_uid, orig_uid) != 0)
 			success = ebmb_maybe_remove_from_cache (meta_backend, book_cache, E_CACHE_IS_ONLINE, orig_uid, opflags, cancellable, error);
@@ -1867,7 +1873,7 @@ ebmb_get_contact_sync (EBookBackendSync *book_backend,
 
 		/* Ignore errors here, just try whether it's on the remote side, but not in the local cache */
 		if (e_book_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL) &&
-		    ebmb_load_contact_wrapper_sync (meta_backend, book_cache, uid, NULL, NULL, &loaded_uid, cancellable, NULL)) {
+		    ebmb_load_contact_wrapper_sync (meta_backend, book_cache, uid, NULL, NULL, &loaded_uid, NULL, cancellable, NULL)) {
 			found = e_book_cache_get_contact (book_cache, loaded_uid, FALSE, &contact, cancellable, NULL);
 		}
 
@@ -3772,6 +3778,7 @@ e_book_meta_backend_process_changes_sync (EBookMetaBackend *meta_backend,
 					  GCancellable *cancellable,
 					  GError **error)
 {
+	EBookBackend *backend;
 	EBookCache *book_cache;
 	GHashTable *covered_uids;
 	GString *invalid_objects = NULL;
@@ -3783,6 +3790,7 @@ e_book_meta_backend_process_changes_sync (EBookMetaBackend *meta_backend,
 	book_cache = e_book_meta_backend_ref_cache (meta_backend);
 	g_return_val_if_fail (book_cache != NULL, FALSE);
 
+	backend = E_BOOK_BACKEND (meta_backend);
 	covered_uids = g_hash_table_new (g_str_hash, g_str_equal);
 
 	/* Removed objects first */
@@ -3800,6 +3808,7 @@ e_book_meta_backend_process_changes_sync (EBookMetaBackend *meta_backend,
 	/* Then modified objects */
 	for (link = (GSList *) modified_objects; link && success; link = g_slist_next (link)) {
 		EBookMetaBackendInfo *nfo = link->data;
+		EContact *contact = NULL;
 		GError *local_error = NULL;
 
 		if (!nfo || !nfo->uid || !*nfo->uid ||
@@ -3808,7 +3817,12 @@ e_book_meta_backend_process_changes_sync (EBookMetaBackend *meta_backend,
 
 		g_hash_table_insert (covered_uids, nfo->uid, NULL);
 
-		success = ebmb_load_contact_wrapper_sync (meta_backend, book_cache, nfo->uid, nfo->object, nfo->extra, NULL, cancellable, &local_error);
+		success = ebmb_load_contact_wrapper_sync (meta_backend, book_cache, nfo->uid, nfo->object, nfo->extra, NULL, &contact, cancellable, &local_error);
+
+		if (contact) {
+			e_book_backend_notify_update (backend, contact);
+			g_clear_object (&contact);
+		}
 
 		/* Do not stop on invalid objects, just notify about them later, and load as many as possible */
 		if (!success && g_error_matches (local_error, E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_ARG)) {
@@ -3830,12 +3844,18 @@ e_book_meta_backend_process_changes_sync (EBookMetaBackend *meta_backend,
 	/* Finally created objects */
 	for (link = (GSList *) created_objects; link && success; link = g_slist_next (link)) {
 		EBookMetaBackendInfo *nfo = link->data;
+		EContact *contact = NULL;
 		GError *local_error = NULL;
 
 		if (!nfo || !nfo->uid || !*nfo->uid)
 			continue;
 
-		success = ebmb_load_contact_wrapper_sync (meta_backend, book_cache, nfo->uid, nfo->object, nfo->extra, NULL, cancellable, &local_error);
+		success = ebmb_load_contact_wrapper_sync (meta_backend, book_cache, nfo->uid, nfo->object, nfo->extra, NULL, &contact, cancellable, &local_error);
+
+		if (contact) {
+			e_book_backend_notify_update (backend, contact);
+			g_clear_object (&contact);
+		}
 
 		/* Do not stop on invalid objects, just notify about them later, and load as many as possible */
 		if (!success && g_error_matches (local_error, E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_ARG)) {
