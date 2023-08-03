@@ -607,6 +607,8 @@ e_data_book_view_watcher_sqlite_dup_contacts (EDataBookViewWatcherSqlite *self,
 
 		if (range_start >= self->priv->n_total) {
 			g_mutex_unlock (&self->priv->property_lock);
+			g_object_unref (ebsql);
+			g_object_unref (view);
 			return NULL;
 		}
 
@@ -624,6 +626,9 @@ e_data_book_view_watcher_sqlite_dup_contacts (EDataBookViewWatcherSqlite *self,
 
 		e_book_sqlite_unlock (ebsql, EBSQL_UNLOCK_NONE, NULL);
 	}
+
+	g_clear_object (&view);
+	g_clear_object (&ebsql);
 
 	return contacts;
 }

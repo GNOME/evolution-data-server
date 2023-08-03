@@ -596,6 +596,8 @@ e_data_book_view_watcher_cache_dup_contacts (EDataBookViewWatcherCache *self,
 		if (range_start >= self->priv->n_total) {
 			g_mutex_unlock (&self->priv->property_lock);
 			e_cache_unlock (E_CACHE (cache), E_CACHE_UNLOCK_NONE);
+			g_clear_object (&cache);
+			g_clear_object (&view);
 			return NULL;
 		}
 
@@ -613,6 +615,9 @@ e_data_book_view_watcher_cache_dup_contacts (EDataBookViewWatcherCache *self,
 
 		e_cache_unlock (E_CACHE (cache), E_CACHE_UNLOCK_NONE);
 	}
+
+	g_clear_object (&cache);
+	g_clear_object (&view);
 
 	return contacts;
 }
