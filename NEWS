@@ -1,3 +1,43 @@
+Evolution-Data-Server 3.49.2 2023-08-04
+---------------------------------------
+
+Bug Fixes:
+	I#59 - CalDAV: Allow to disable schedule reply on remove
+	I#180 - Add option to reduce book/cal data usage when on a metered connection
+	I#221 - CalDAV: Zimbra has incorrect OPTIONS response for shared calendars
+	I#483 - Calendar: Add option to (not) delete "Declined" meeting
+	I#484 - Camel MIME utils: fix aliasing issue in datetok (Enrik Berkhan)
+	I#486 - ECollator: Always include Latin/English letters
+	I#488 - Camel: Filtering Search folder leaves changed messages in the result
+	I#490 - EBookMetaBackend: Changes from refresh() not propagated to the opened views
+	M!125 - ci: Export the documentation with GitLab Pages (Corentin Noël)
+	M!125 - docs: Add gi-docgen based documentation for all the libraries (Corentin Noël)
+	evo-I#375 - Add functions to set and support Autocrypt for mail messages
+	evo-I#609 - Calendar: Use user-configured date format in the editor
+	evo-I#662 - Option to get Delivery Status Notification (DSN)
+	evo-I#1750 - CamelCipherContext: Add a specific error code for missing public key
+
+Miscellaneous:
+	ECalMetaBackend: Error when trying to modify all instances from a detached instance
+	ESoupSession: Setup GSSAPI/NTLM authentication also for insecure connections
+	Calendar: Correct function prototype declarations (-Wenum-int-mismatch)
+	IMAPx: Remove unused argument from imapx_update_message_info_flags()
+	Camel: Add functions related to GPG key import/info
+	IMAPx: Disable "Single client mode" by default
+	Fix a memory leak in EDataBookViewWatcher-s
+	libedata-book: Querying in aux tables fails with an SQLite error
+	libedata-book: Treat "contains" query with empty value as "exists"
+	EDataBookViewWatcher-s: Claim runtime warning when fails to get contacts
+
+Translations:
+	Balázs Úr (hu)
+	Danial Behzadi (fa)
+	Hugo Carvalho (pt)
+	Julia Dronova (ru)
+	Kukuh Syafaat (id)
+	Sergej A (ru)
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.49.1 2023-06-30
 ---------------------------------------
 
