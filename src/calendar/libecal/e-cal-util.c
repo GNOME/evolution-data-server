@@ -3663,3 +3663,264 @@ e_cal_util_diff_categories (ICalComponent *old_comp,
 		}
 	}
 }
+
+/**
+ * e_cal_util_strip_mailto:
+ * @address: (nullable): an address with or without "mailto:" prefix
+ *
+ * Strips "mailto:" prefix from the @address, if present. The returned
+ * pointer is either the @address or a shifted position within the @address.
+ *
+ * Returns: the @address without the "mailto:" prefix
+ *
+ * Since: 3.50
+ **/
+const gchar *
+e_cal_util_strip_mailto (const gchar *address)
+{
+	if (!address)
+		return NULL;
+
+	if (!g_ascii_strncasecmp (address, "mailto:", 7))
+		address += 7;
+
+	return address;
+}
+
+/**
+ * e_cal_util_email_addresses_equal:
+ * @email1: (nullable): the first email
+ * @email2: (nullable): the second email
+ *
+ * Compares two email addresses and returns whether they are equal.
+ * Each address can contain a "mailto:" prefix. The two addresses
+ * match only if they are non-NULL and non-empty. The address itself
+ * is compared case insensitively.
+ *
+ * Returns: %TRUE, when the @email1 equals to @email2
+ *
+ * Since: 3.50
+ **/
+gboolean
+e_cal_util_email_addresses_equal (const gchar *email1,
+				  const gchar *email2)
+{
+	if (!email1 || !email2)
+		return FALSE;
+
+	email1 = e_cal_util_strip_mailto (email1);
+	email2 = e_cal_util_strip_mailto (email2);
+
+	if (!email1 || !*email1 || !email2 || !*email2)
+		return FALSE;
+
+	return g_ascii_strcasecmp (email1, email2) == 0;
+}
+
+/**
+ * e_cal_util_get_default_name_and_address:
+ * @registry: an #ESourceRegistry
+ * @out_name: (out callee-allocates) (optional): return location for the user's real name, or %NULL
+ * @out_address: (out callee-allocates) (optional): return location for the user's email address, or %NULL
+ *
+ * Returns the real name and email address of the default mail identity,
+ * if available.  If no default mail identity is available, @out_name and
+ * @out_address are set to %NULL and the function returns %FALSE.
+ *
+ * Returns: %TRUE if @out_name and/or @out_address were set
+ *
+ * Since: 3.50
+ **/
+gboolean
+e_cal_util_get_default_name_and_address (ESourceRegistry *registry,
+					 gchar **out_name,
+					 gchar **out_address)
+{
+	ESource *source;
+	ESourceExtension *extension;
+	const gchar *extension_name;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
+
+	source = e_source_registry_ref_default_mail_identity (registry);
+
+	if (source) {
+		extension_name = E_SOURCE_EXTENSION_MAIL_IDENTITY;
+		extension = e_source_get_extension (source, extension_name);
+
+		if (out_name)
+			*out_name = e_source_mail_identity_dup_name (E_SOURCE_MAIL_IDENTITY (extension));
+
+		if (out_address)
+			*out_address = e_source_mail_identity_dup_address (E_SOURCE_MAIL_IDENTITY (extension));
+
+		g_object_unref (source);
+
+		success = TRUE;
+	} else {
+		if (out_name)
+			*out_name = NULL;
+
+		if (out_address)
+			*out_address = NULL;
+
+		success = FALSE;
+	}
+
+	return success;
+}
+
+static const gchar *
+e_cal_util_get_property_value_email (const gchar *value,
+				     ECalComponentParameterBag *params)
+{
+	const gchar *address = NULL;
+
+	if (params) {
+		guint email_index;
+
+		#ifdef HAVE_I_CAL_EMAIL_PARAMETER
+		email_index = e_cal_component_parameter_bag_get_first_by_kind (params, I_CAL_EMAIL_PARAMETER);
+		#else
+		email_index = e_cal_component_parameter_bag_get_first_by_kind (params, (ICalParameterKind) ICAL_EMAIL_PARAMETER);
+		#endif
+
+		if (email_index < e_cal_component_parameter_bag_get_count (params)) {
+			ICalParameter *param;
+
+			param = e_cal_component_parameter_bag_get (params, email_index);
+
+			if (param) {
+				#ifdef HAVE_I_CAL_EMAIL_PARAMETER
+				address = i_cal_parameter_get_email (param);
+				#else
+				address = icalparameter_get_email (i_cal_object_get_native (I_CAL_OBJECT (param)));
+				#endif
+
+				if (address && !*address)
+					address = NULL;
+			}
+		}
+	}
+
+	if (!address)
+		address = value;
+
+	if (address)
+		address = e_cal_util_strip_mailto (address);
+
+	if (address && !*address)
+		address = NULL;
+
+	return address;
+}
+
+/**
+ * e_cal_util_get_organizer_email:
+ * @organizer: (nullable): an #ECalComponentOrganizer
+ *
+ * Returns an organizer email, without the "mailto:" prefix, if
+ * the @organizer has it set. The email can be read from an "EMAIL"
+ * parameter, if present.
+ *
+ * Returns: (nullable): email of the @organizer, or %NULL
+ *
+ * Since: 3.50
+ **/
+const gchar *
+e_cal_util_get_organizer_email (const ECalComponentOrganizer *organizer)
+{
+	if (!organizer)
+		return NULL;
+
+	return e_cal_util_get_property_value_email (
+		e_cal_component_organizer_get_value (organizer),
+		e_cal_component_organizer_get_parameter_bag (organizer));
+}
+
+/**
+ * e_cal_util_get_attendee_email:
+ * @attendee: (nullable): an ECalComponentAttendee
+ *
+ * Returns an attendee email, without the "mailto:" prefix, if
+ * the @attendee has it set. The email can be read from an "EMAIL"
+ * parameter, if present.
+ *
+ * Returns: (nullable): email of the @attendee, or %NULL
+ *
+ * Since: 3.50
+ **/
+const gchar *
+e_cal_util_get_attendee_email (const ECalComponentAttendee *attendee)
+{
+	if (!attendee)
+		return NULL;
+
+	return e_cal_util_get_property_value_email (
+		e_cal_component_attendee_get_value (attendee),
+		e_cal_component_attendee_get_parameter_bag (attendee));
+}
+
+/**
+ * e_cal_util_get_property_email:
+ * @prop: an #ICalProperty
+ *
+ * Returns an @prop email, without the "mailto:" prefix, if
+ * the @prop has it set. The email can be read from an "EMAIL"
+ * parameter, if present. Otherwise the @prop can be only of
+ * type %I_CAL_ORGANIZER_PROPERTY or %I_CAL_ATTENDEE_PROPERTY.
+ *
+ * See also: e_cal_util_get_organizer_email(), e_cal_util_get_attendee_email()
+ *
+ * Returns: (nullable): email of the @prop, or %NULL
+ *
+ * Since: 3.50
+ **/
+const gchar *
+e_cal_util_get_property_email (ICalProperty *prop)
+{
+	ICalParameter *param;
+	const gchar *email = NULL;
+
+	if (!prop)
+		return NULL;
+
+	#ifdef HAVE_I_CAL_EMAIL_PARAMETER
+	param = i_cal_property_get_first_parameter (prop, I_CAL_EMAIL_PARAMETER);
+
+	if (param) {
+		email = i_cal_parameter_get_email (param);
+		if (email)
+			email = e_cal_util_strip_mailto (email);
+
+		g_clear_object (&param);
+	}
+	#else
+	param = i_cal_property_get_first_parameter (prop, (ICalParameterKind) ICAL_EMAIL_PARAMETER);
+
+	if (param) {
+		email = icalparameter_get_email (i_cal_object_get_native (I_CAL_OBJECT (param)));
+		if (email)
+			email = e_cal_util_strip_mailto (email);
+
+		g_clear_object (&param);
+	}
+	#endif /* HAVE_I_CAL_EMAIL_PARAMETER */
+
+	if (!email || !*email) {
+		if (i_cal_property_isa (prop) == I_CAL_ORGANIZER_PROPERTY)
+			email = i_cal_property_get_organizer (prop);
+		else if (i_cal_property_isa (prop) == I_CAL_ATTENDEE_PROPERTY)
+			email = i_cal_property_get_attendee (prop);
+		else
+			g_warn_if_reached ();
+
+		email = e_cal_util_strip_mailto (email);
+	}
+
+	if (email && !*email)
+		email = NULL;
+
+	return email;
+}

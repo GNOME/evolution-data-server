@@ -211,3 +211,6 @@
 
 /* Defined, when libsoup has soup_message_set_force_http1() */
 #cmakedefine HAVE_SOUP_MESSAGE_SET_FORCE_HTTP1 1
+
+/* Define if libical-glib has I_CAL_EMAIL_PARAMETER */
+#cmakedefine HAVE_I_CAL_EMAIL_PARAMETER 1

@@ -452,6 +452,18 @@ void		e_cal_util_diff_categories	(ICalComponent *old_comp,
 						 GHashTable **out_added, /* const gchar *category ~> 1 */
 						 GHashTable **out_removed); /* const gchar *category ~> 1 */
 
+const gchar *	e_cal_util_strip_mailto		(const gchar *address);
+gboolean	e_cal_util_email_addresses_equal(const gchar *email1,
+						 const gchar *email2);
+gboolean	e_cal_util_get_default_name_and_address
+						(ESourceRegistry *registry,
+						 gchar **out_name,
+						 gchar **out_address);
+const gchar *	e_cal_util_get_organizer_email	(const ECalComponentOrganizer *organizer);
+const gchar *	e_cal_util_get_attendee_email	(const ECalComponentAttendee *attendee);
+const gchar *	e_cal_util_get_property_email	(ICalProperty *prop);
+
+
 G_END_DECLS
 
 #endif /* E_CAL_UTIL_H */
