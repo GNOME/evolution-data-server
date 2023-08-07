@@ -38,7 +38,7 @@ flatpak:
       - ".flatpak-builder/build/${FLATPAK_MODULE}/evolution-data-server-config.h"
       - ".flatpak-builder/build/${FLATPAK_MODULE}/CMakeFiles/CMakeError.log"
       - ".flatpak-builder/build/${FLATPAK_MODULE}/CMakeFiles/CMakeOutput.log"
-      - ".flatpak-builder/build/${FLATPAK_MODULE}/docs/reference/"
+      - ".flatpak-builder/build/${FLATPAK_MODULE}/docs/"
     expire_in: 14 days
 
 pages:
@@ -50,7 +50,8 @@ pages:
     FLATPAK_MODULE: "evolution-data-server"
   script:
     - "mkdir public"
-    - "mv .flatpak-builder/build/${FLATPAK_MODULE}/docs/reference/* ./public"
+    - "mv .flatpak-builder/build/${FLATPAK_MODULE}/docs/* ./public"
+    - "rm -R ./public/reference"
   artifacts:
     paths:
     - public
