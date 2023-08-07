@@ -252,11 +252,46 @@ eos_default_extract_error_message (EOAuth2Service *service,
 				   gchar **out_error_message)
 {
 	gchar *error_code = NULL;
-	gboolean success;
+	gboolean success = FALSE;
 
 	g_return_val_if_fail (out_error_message != NULL, FALSE);
 
 	*out_error_message = NULL;
+
+	/* possibly JSON data */
+	if (page_content && *page_content == '{') {
+		JsonParser *parser;
+
+		parser = json_parser_new ();
+
+		if (json_parser_load_from_data (parser, page_content, strlen (page_content), NULL)) {
+			JsonReader *reader;
+
+			reader = json_reader_new (json_parser_get_root (parser));
+
+			if (json_reader_read_member (reader, "error")) {
+				json_reader_end_member (reader);
+
+				if (json_reader_read_member (reader, "error_description")) {
+					const gchar *value = json_reader_get_string_value (reader);
+
+					if (value && *value) {
+						*out_error_message = g_strdup (value);
+						success = TRUE;
+					}
+				}
+			}
+
+			json_reader_end_member (reader);
+
+			g_object_unref (reader);
+		}
+
+		g_object_unref (parser);
+
+		if (success)
+			return success;
+	}
 
 	success = e_oauth2_service_util_extract_from_uri (page_uri, NULL, &error_code, out_error_message);
 
@@ -1033,6 +1068,8 @@ eos_send_message (SoupSession *session,
 			g_string_append (error_msg, " (");
 			g_string_append_len (error_msg, (const gchar *) g_bytes_get_data (response_body, NULL), g_bytes_get_size (response_body));
 			g_string_append_c (error_msg, ')');
+
+			*out_response_body = g_steal_pointer (&response_body);
 		}
 
 		g_set_error_literal (error, E_SOUP_SESSION_ERROR, soup_message_get_status (message), error_msg->str);
@@ -1523,9 +1560,29 @@ e_oauth2_service_refresh_and_store_token_sync (EOAuth2Service *service,
 		g_free (new_refresh_token);
 		g_free (expires_in);
 	} else if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_BAD_REQUEST)) {
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED,
-			_("Failed to refresh access token. Sign to the server again, please."));
+		gchar *detailed_error = NULL;
+
+		if (response_json && g_bytes_get_size (response_json) > 0) {
+			gchar *str;
+
+			str = g_strndup ((const gchar *) g_bytes_get_data (response_json, NULL), g_bytes_get_size (response_json));
+
+			if (!e_oauth2_service_extract_error_message (service, source, NULL, NULL, str, &detailed_error))
+				detailed_error = NULL;
+
+			g_free (str);
+		}
+
+		if (detailed_error && *detailed_error) {
+			g_set_error (error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED,
+				_("Failed to refresh access token. Sign to the server again, please.\n\nDetailed error: %s"), detailed_error);
+		} else {
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED,
+				_("Failed to refresh access token. Sign to the server again, please."));
+		}
+
 		g_clear_error (&local_error);
+		g_free (detailed_error);
 	}
 
 	if (local_error)
