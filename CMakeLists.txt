@@ -499,14 +499,6 @@ endif(ENABLE_GOA)
 
 add_printable_option(ENABLE_BACKEND_PER_PROCESS "Enable backend per process support" OFF)
 
-# ***********************************
-# Check for libsecret
-# ***********************************
-
-if(NOT WIN32)
-	pkg_check_modules(LIBSECRET REQUIRED libsecret-unstable>=${libsecret_minimum_version})
-endif(NOT WIN32)
-
 # ******************************
 # libdb checking
 # ******************************
@@ -926,14 +918,13 @@ CHECK_SYMBOL_EXISTS(malloc_trim malloc.h HAVE_MALLOC_TRIM)
 # subparts flags
 # ******************************
 
-pkg_check_modules(SOUP REQUIRED libsoup-3.0)
-pkg_check_modules(DATA_SERVER REQUIRED gio-2.0 gmodule-2.0 libsecret-1 libxml-2.0 libsoup-3.0 ${mozilla_nspr} ${mozilla_nss})
+pkg_check_modules(DATA_SERVER REQUIRED gio-2.0 gmodule-2.0 libsecret-1>=${libsecret_minimum_version} libxml-2.0 libsoup-3.0 ${mozilla_nspr} ${mozilla_nss})
 set(DATA_SERVER_INCLUDE_DIRS ${DATA_SERVER_INCLUDE_DIRS} ${MANUAL_NSPR_INCLUDES} ${MANUAL_NSS_INCLUDES})
 set(DATA_SERVER_LDFLAGS ${DATA_SERVER_LDFLAGS} ${MANUAL_NSPR_LIBS} ${MANUAL_NSS_LIBS})
 
-pkg_check_modules(BACKEND REQUIRED gio-2.0 gmodule-2.0 libsecret-1 libsoup-3.0 libxml-2.0)
-pkg_check_modules(ADDRESSBOOK REQUIRED gio-2.0 libxml-2.0 libsoup-3.0 libsecret-1)
-pkg_check_modules(CALENDAR REQUIRED gio-2.0 libical-glib>=${libical_glib_minimum_version} libsoup-3.0 libxml-2.0 libsecret-1)
+pkg_check_modules(BACKEND REQUIRED gio-2.0 gmodule-2.0 libsoup-3.0 libxml-2.0)
+pkg_check_modules(ADDRESSBOOK REQUIRED gio-2.0 libxml-2.0 libsoup-3.0)
+pkg_check_modules(CALENDAR REQUIRED gio-2.0 libical-glib>=${libical_glib_minimum_version} libsoup-3.0 libxml-2.0)
 set(ADDRESSBOOK_CFLAGS ${ADDRESSBOOK_CFLAGS} ${PHONENUMBER_DEFINITIONS})
 set(ADDRESSBOOK_INCLUDE_DIRS ${ADDRESSBOOK_INCLUDE_DIRS} ${PHONENUMBER_INCLUDE_DIRS})
 set(ADDRESSBOOK_LDFLAGS ${ADDRESSBOOK_LDFLAGS} ${PHONENUMBER_LDFLAGS})
