@@ -255,6 +255,7 @@ struct _CamelIMAPXServerPrivate {
 	GWeakRef select_mailbox;
 	GWeakRef select_pending;
 	gint last_selected_mailbox_change_stamp;
+	gboolean select_mailbox_closed; /* set to TRUE after "OK [CLOSED]" during SELECT command */
 
 	GMutex changes_lock;
 	CamelFolderChangeInfo *changes;
@@ -1165,6 +1166,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 	if ((finfo->got & FETCH_FLAGS) && !(finfo->got & FETCH_HEADER)) {
 		CamelIMAPXMailbox *select_mailbox;
 		CamelIMAPXMailbox *select_pending;
+		gboolean select_mailbox_closed;
 
 		if (is->priv->fetch_changes_mailbox) {
 			if (!is->priv->fetch_changes_mailbox ||
@@ -1181,6 +1183,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 		g_mutex_lock (&is->priv->select_lock);
 		select_mailbox = g_weak_ref_get (&is->priv->select_mailbox);
 		select_pending = g_weak_ref_get (&is->priv->select_pending);
+		select_mailbox_closed = is->priv->select_mailbox_closed;
 		g_mutex_unlock (&is->priv->select_lock);
 
 		/* This is either a refresh_info job, check to see if it is
@@ -1226,7 +1229,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 			c (is->priv->tagprefix, "flag changed: %lu\n", is->priv->context->id);
 
-			if (select_pending)
+			if (select_mailbox_closed && select_pending)
 				select_folder = imapx_server_ref_folder (is, select_pending);
 			else
 				select_folder = imapx_server_ref_folder (is, select_mailbox);
@@ -2029,11 +2032,14 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 
 			if (select_mailbox == NULL) {
 				g_weak_ref_set (&is->priv->select_mailbox, select_pending);
+				is->priv->select_mailbox_closed = FALSE;
 
 				if (select_pending)
 					is->priv->last_selected_mailbox_change_stamp = camel_imapx_mailbox_get_change_stamp (select_pending);
 				else
 					is->priv->last_selected_mailbox_change_stamp = 0;
+			} else {
+				is->priv->select_mailbox_closed = TRUE;
 			}
 
 			g_mutex_unlock (&is->priv->select_lock);
@@ -3974,7 +3980,7 @@ camel_imapx_server_mailbox_selected (CamelIMAPXServer *is,
 
 	g_mutex_lock (&is->priv->select_lock);
 	selected_mailbox = g_weak_ref_get (&is->priv->select_mailbox);
-	res = selected_mailbox == mailbox;
+	res = selected_mailbox == mailbox && !is->priv->select_mailbox_closed;
 	g_clear_object (&selected_mailbox);
 	g_mutex_unlock (&is->priv->select_lock);
 
@@ -3999,7 +4005,7 @@ camel_imapx_server_ensure_selected_sync (CamelIMAPXServer *is,
 
 	g_mutex_lock (&is->priv->select_lock);
 	selected_mailbox = g_weak_ref_get (&is->priv->select_mailbox);
-	if (selected_mailbox == mailbox) {
+	if (selected_mailbox == mailbox && !is->priv->select_mailbox_closed) {
 		gboolean request_noop;
 		gint change_stamp;
 
@@ -4034,6 +4040,7 @@ camel_imapx_server_ensure_selected_sync (CamelIMAPXServer *is,
 	}
 
 	g_weak_ref_set (&is->priv->select_pending, mailbox);
+	is->priv->select_mailbox_closed = FALSE;
 	g_mutex_unlock (&is->priv->select_lock);
 
 	success = camel_imapx_server_process_command_sync (is, ic, _("Failed to select mailbox"), cancellable, error);
@@ -4043,6 +4050,7 @@ camel_imapx_server_ensure_selected_sync (CamelIMAPXServer *is,
 	g_mutex_lock (&is->priv->select_lock);
 
 	g_weak_ref_set (&is->priv->select_pending, NULL);
+	is->priv->select_mailbox_closed = FALSE;
 
 	if (success) {
 		is->priv->state = IMAPX_SELECTED;
@@ -4266,6 +4274,7 @@ imapx_disconnect (CamelIMAPXServer *is)
 
 	g_mutex_lock (&is->priv->select_lock);
 	is->priv->last_selected_mailbox_change_stamp = 0;
+	is->priv->select_mailbox_closed = FALSE;
 	g_weak_ref_set (&is->priv->select_mailbox, NULL);
 	g_weak_ref_set (&is->priv->select_pending, NULL);
 	g_mutex_unlock (&is->priv->select_lock);
