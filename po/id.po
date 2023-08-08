@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2023-07-12 16:09+0000\n"
-"PO-Revision-Date: 2023-07-20 17:21+0700\n"
+"POT-Creation-Date: 2023-08-07 13:21+0000\n"
+"PO-Revision-Date: 2023-08-08 20:16+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "Language: id\n"
@@ -24,32 +24,32 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3.1\n"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:274
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:276
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "URL yang diberikan \"%s\" tidak mereferensikan buku alamat CardDAV"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1161
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1374
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:992
-msgid "Server didn’t return object’s href"
-msgstr "Peladen tidak mengembalikan berkas objek"
-
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1163
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1376
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:994
+msgid "Server didn’t return object’s href"
+msgstr "Peladen tidak mengembalikan berkas objek"
+
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1165
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1378
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:996
 msgid "Server didn’t return object’s ETag"
 msgstr "Peladen tidak mengembalikan ETag objek"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1165
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1167
 msgid "Received object is not a valid vCard"
 msgstr "Objek yang diterima bukan vCard yang valid"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1286
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1516
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1252
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1288
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1518
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1254
 #, c-format
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
@@ -60,7 +60,7 @@ msgstr ""
 "lengkap atau rusak. Anda dapat mencoba menghapusnya dan memulai ulang proses "
 "evolution-data-server di latar belakang. Berkas singgahan: %s"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1292
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1294
 msgid "Object to save is not a valid vCard"
 msgstr "Objek yang akan disimpan bukan vCard yang valid"
 
@@ -106,8 +106,8 @@ msgstr "Mencoba mengubah kontak \"%s\" dengan revisi yang tak selaras"
 #: src/addressbook/backends/file/e-book-backend-file.c:1711
 #: src/addressbook/backends/file/e-book-backend-file.c:1797
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3077
-#: src/addressbook/libedata-book/e-book-sqlite.c:7453
-#: src/addressbook/libedata-book/e-book-sqlite.c:7522
+#: src/addressbook/libedata-book/e-book-sqlite.c:7463
+#: src/addressbook/libedata-book/e-book-sqlite.c:7532
 #, c-format
 msgid "Contact “%s” not found"
 msgstr "Kontak \"%s\" tidak ditemukan"
@@ -125,7 +125,7 @@ msgid "Invalid Query “%s”"
 msgstr "Kueri \"%s\" Tidak Valid"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:2260
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2186
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2192
 msgid "Requested to delete an unrelated cursor"
 msgstr "Diminta untuk menghapus kursor yang tak berhubungan"
 
@@ -174,14 +174,14 @@ msgstr "Gagal mengubah nama basis data lama dari \"%s\" menjadi \"%s\": %s"
 #: src/calendar/libecal/e-cal-client.c:6872
 #: src/calendar/libedata-cal/e-cal-cache.c:1837
 #: src/camel/camel-filter-driver.c:1758 src/camel/camel-filter-driver.c:1887
-#: src/camel/providers/imapx/camel-imapx-server.c:3331
-#: src/camel/providers/imapx/camel-imapx-server.c:3337
-#: src/camel/providers/imapx/camel-imapx-server.c:3347
-#: src/camel/providers/imapx/camel-imapx-server.c:3359
+#: src/camel/providers/imapx/camel-imapx-server.c:3330
+#: src/camel/providers/imapx/camel-imapx-server.c:3336
+#: src/camel/providers/imapx/camel-imapx-server.c:3346
+#: src/camel/providers/imapx/camel-imapx-server.c:3358
 #: src/camel/providers/nntp/camel-nntp-store.c:419
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
-#: src/libedataserver/e-soup-session.c:1019
-#: src/libedataserver/e-soup-session.c:1899
+#: src/libedataserver/e-soup-session.c:1025
+#: src/libedataserver/e-soup-session.c:1905
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:266
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
 #: src/libedataserverui/e-reminders-widget.c:2141
@@ -263,7 +263,7 @@ msgid "Downloading contacts (%d)..."
 msgstr "Mengunduh kontak (%d)..."
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5111
-#: src/addressbook/libedata-book/e-book-meta-backend.c:882
+#: src/addressbook/libedata-book/e-book-meta-backend.c:883
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:768
 msgid "Refreshing…"
 msgstr "Menyegarkan…"
@@ -1004,7 +1004,7 @@ msgid "Error parsing regular expression"
 msgstr "Galat saat mengurai ekspresi reguler"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1550
-#: src/addressbook/libedata-book/e-book-cache.c:4828
+#: src/addressbook/libedata-book/e-book-cache.c:4838
 #: src/addressbook/libedata-book/e-book-sqlite.c:1911 src/camel/camel-db.c:830
 #, c-format
 msgid "Insufficient memory"
@@ -1037,8 +1037,8 @@ msgstr ""
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4297
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4390
-#: src/addressbook/libedata-book/e-book-cache.c:3561
-#: src/addressbook/libedata-book/e-book-sqlite.c:5929
+#: src/addressbook/libedata-book/e-book-cache.c:3566
+#: src/addressbook/libedata-book/e-book-sqlite.c:5939
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Kuiri memuat elemen yang tak didukung"
@@ -1102,8 +1102,8 @@ msgstr ""
 "Tak bisa mengurut berdasarkan ruas yang mungkin bisa memiliki nilai berganda"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6210
-#: src/addressbook/libedata-book/e-book-cache.c:6159
-#: src/addressbook/libedata-book/e-book-sqlite.c:8227
+#: src/addressbook/libedata-book/e-book-cache.c:6169
+#: src/addressbook/libedata-book/e-book-sqlite.c:8237
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1113,8 +1113,8 @@ msgstr ""
 "kontak"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6218
-#: src/addressbook/libedata-book/e-book-cache.c:6166
-#: src/addressbook/libedata-book/e-book-sqlite.c:8235
+#: src/addressbook/libedata-book/e-book-cache.c:6176
+#: src/addressbook/libedata-book/e-book-sqlite.c:8245
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1129,29 +1129,29 @@ msgstr ""
 msgid "Unsupported contact field “%d” specified in summary"
 msgstr "Ruas kontak \"%d\" yang tak didukung dinyatakan dalam ringkasan"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3556
-#: src/addressbook/libedata-book/e-book-sqlite.c:5922
+#: src/addressbook/libedata-book/e-book-cache.c:3561
+#: src/addressbook/libedata-book/e-book-sqlite.c:5932
 #: src/calendar/libedata-cal/e-cal-cache.c:1703
 #: src/calendar/libedata-cal/e-cal-cache.c:3550
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Query tidak valid: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3741
-#: src/addressbook/libedata-book/e-book-cache.c:6842
+#: src/addressbook/libedata-book/e-book-cache.c:3746
+#: src/addressbook/libedata-book/e-book-cache.c:6852
 msgid "Invalid query for a book cursor"
 msgstr "Kueri tidak valid bagi kursor buku"
 
-#: src/addressbook/libedata-book/e-book-cache.c:4832
+#: src/addressbook/libedata-book/e-book-cache.c:4842
 #: src/libebackend/e-cache.c:755
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Tidak dapat membuka basis data %s: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5498
-#: src/addressbook/libedata-book/e-book-cache.c:5545
-#: src/addressbook/libedata-book/e-book-cache.c:5592
-#: src/addressbook/libedata-book/e-book-cache.c:5644
+#: src/addressbook/libedata-book/e-book-cache.c:5508
+#: src/addressbook/libedata-book/e-book-cache.c:5555
+#: src/addressbook/libedata-book/e-book-cache.c:5602
+#: src/addressbook/libedata-book/e-book-cache.c:5654
 #: src/calendar/libedata-cal/e-cal-cache.c:2832
 #: src/calendar/libedata-cal/e-cal-cache.c:2890
 #: src/calendar/libedata-cal/e-cal-cache.c:2949
@@ -1164,51 +1164,51 @@ msgstr "Tidak dapat membuka basis data %s: %s"
 msgid "Object “%s” not found"
 msgstr "Objek \"%s\" tidak ditemukan"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5704
+#: src/addressbook/libedata-book/e-book-cache.c:5714
 #: src/calendar/libedata-cal/e-cal-cache.c:3074
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Objek dengan ekstra \"%s\" tidak ditemukan"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5880
+#: src/addressbook/libedata-book/e-book-cache.c:5890
 msgid "Search by email not supported"
 msgstr "Pencarian melalui surel tidak didukung"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5891
+#: src/addressbook/libedata-book/e-book-cache.c:5901
 msgid "No email address provided"
 msgstr "Tak ada alamat surel yang diberikan"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5946
+#: src/addressbook/libedata-book/e-book-cache.c:5956
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 "Paling tidak satu ruas pengurutan mesti dinyatakan untuk memakai kursor"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5955
-#: src/addressbook/libedata-book/e-book-sqlite.c:8067
+#: src/addressbook/libedata-book/e-book-cache.c:5965
+#: src/addressbook/libedata-book/e-book-sqlite.c:8077
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Tak bisa mengurut berdasarkan ruas yang bukan bertipe string"
 
-#: src/addressbook/libedata-book/e-book-cache.c:7033
-#: src/addressbook/libedata-book/e-book-cache.c:7192
-#: src/addressbook/libedata-book/e-book-sqlite.c:8954
-#: src/addressbook/libedata-book/e-book-sqlite.c:9115
+#: src/addressbook/libedata-book/e-book-cache.c:7043
+#: src/addressbook/libedata-book/e-book-cache.c:7202
+#: src/addressbook/libedata-book/e-book-sqlite.c:8964
+#: src/addressbook/libedata-book/e-book-sqlite.c:9125
 #, c-format
 msgid "Contact field “%s” not in summary"
 msgstr "Ruas kontak \"%s\" tidak ada dalam ringkasan"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1177
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1179
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1175
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Objek pramuat untuk UID \"%s\" tidak valid"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1185
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1187
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1183
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Objek yang diterima untuk UID \"%s\" tidak valid"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1412
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1418
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1412
 msgid ""
 "Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
@@ -1217,13 +1217,13 @@ msgstr ""
 "Penyegaran dilewati karena mode Penghemat Daya yang diaktifkan. Nonaktifkan "
 "mode Penghemat Daya dan ulangi tindakan tersebut."
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1418
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1424
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1418
 msgid "Refresh skipped due to being disabled on metered network."
 msgstr "Penyegaran dilewati karena dinonaktifkan pada jaringan berkuota."
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2056
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2555
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2062
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2561
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:3436
 #, c-format
 msgid "Failed to create cache “%s”:"
@@ -1238,12 +1238,12 @@ msgstr ""
 "lebih dari satu buku alamat. Hapus satu entri dalam tabel \"folders\" "
 "terlebih dahulu."
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:6097
-#: src/addressbook/libedata-book/e-book-sqlite.c:8761
+#: src/addressbook/libedata-book/e-book-sqlite.c:6107
+#: src/addressbook/libedata-book/e-book-sqlite.c:8771
 msgid "Invalid query for EbSqlCursor"
 msgstr "Query tidak valid bagi EbSqlCursor"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:8049
+#: src/addressbook/libedata-book/e-book-sqlite.c:8059
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 "Paling tidak satu ruas pengurutan mesti dinyatakan untuk memakai EbSqlCursor"
@@ -1325,12 +1325,12 @@ msgstr "Revisi tak selaras ketika memindah kursor"
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Indeks alfabetik ditata bagi locale yang salah"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:255
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:257
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "URL yang diberikan \"%s\" tidak mengacu pada kalender CalDAV"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2031
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2041
 msgid "Failed to parse response data"
 msgstr "Gagal mengurai data tanggapan"
 
@@ -1477,8 +1477,8 @@ msgstr "Tidak dapat membuat berkas cache"
 msgid "Could not create cache file: "
 msgstr "Tidak dapat membuat berkas cache: "
 
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1035
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1064
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1037
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1066
 msgid "New note"
 msgstr "Catatan baru"
 
@@ -2653,35 +2653,35 @@ msgstr "Tidak dapat mengambil zona waktu kalender: "
 msgid "Could not add calendar time zone: "
 msgstr "Tidak dapat menambahkan zona waktu kalender: "
 
-#: src/camel/camel-cipher-context.c:194
+#: src/camel/camel-cipher-context.c:196
 #, c-format
 msgid "Signing is not supported by this cipher"
 msgstr "Penandatanganan tidak didukung oleh cipher ini"
 
-#: src/camel/camel-cipher-context.c:207
+#: src/camel/camel-cipher-context.c:209
 #, c-format
 msgid "Verifying is not supported by this cipher"
 msgstr "Verifikasi tidak didukung oleh cipher ini"
 
-#: src/camel/camel-cipher-context.c:223
+#: src/camel/camel-cipher-context.c:225
 #, c-format
 msgid "Encryption is not supported by this cipher"
 msgstr "Enkripsi tidak didukung oleh cipher ini"
 
-#: src/camel/camel-cipher-context.c:237
+#: src/camel/camel-cipher-context.c:239
 #, c-format
 msgid "Decryption is not supported by this cipher"
 msgstr "Dekripsi tidak didukung oleh cipher ini"
 
-#: src/camel/camel-cipher-context.c:352
+#: src/camel/camel-cipher-context.c:354
 msgid "Signing message"
 msgstr "Menandatangani pesan"
 
-#: src/camel/camel-cipher-context.c:645
+#: src/camel/camel-cipher-context.c:647
 msgid "Encrypting message"
 msgstr "Menyandikan pesan"
 
-#: src/camel/camel-cipher-context.c:820
+#: src/camel/camel-cipher-context.c:822
 msgid "Decrypting message"
 msgstr "Mendekripsi pesan"
 
@@ -2964,23 +2964,23 @@ msgid "Release unused memory for folder “%s : %s”"
 msgstr "Melepas memori tak terpakai bagi folder \"%s : %s\""
 
 #. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:458
+#: src/camel/camel-gpg-context.c:623
 #, c-format
 msgid "Output from %s:"
 msgstr "Keluaran dari %s:"
 
-#: src/camel/camel-gpg-context.c:943 src/camel/camel-gpg-context.c:948
-#: src/camel/camel-gpg-context.c:1742
+#: src/camel/camel-gpg-context.c:1177 src/camel/camel-gpg-context.c:1182
+#: src/camel/camel-gpg-context.c:2061
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Gagal mengeksekusi gpg: %s"
 
-#: src/camel/camel-gpg-context.c:948
-#: src/camel/providers/smtp/camel-smtp-transport.c:1209
+#: src/camel/camel-gpg-context.c:1182
+#: src/camel/providers/smtp/camel-smtp-transport.c:1217
 msgid "Unknown"
 msgstr "Tidak dikenal"
 
-#: src/camel/camel-gpg-context.c:1060
+#: src/camel/camel-gpg-context.c:1294
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -2991,17 +2991,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/camel/camel-gpg-context.c:1096
+#: src/camel/camel-gpg-context.c:1330
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Gagal mengurai petunjuk userid gpg."
 
-#: src/camel/camel-gpg-context.c:1121 src/camel/camel-gpg-context.c:1136
+#: src/camel/camel-gpg-context.c:1355 src/camel/camel-gpg-context.c:1370
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Gagal mengurai permintaan sandi gpg."
 
-#: src/camel/camel-gpg-context.c:1157
+#: src/camel/camel-gpg-context.c:1397
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -3010,7 +3010,7 @@ msgstr ""
 "Anda butuh PIN untuk membuka kunci untuk\n"
 "SmartCard Anda: \"%s\""
 
-#: src/camel/camel-gpg-context.c:1161
+#: src/camel/camel-gpg-context.c:1401
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -3019,12 +3019,12 @@ msgstr ""
 "Anda butuh frasa sandi untuk membuka kunci untuk\n"
 "pengguna: \"%s\""
 
-#: src/camel/camel-gpg-context.c:1167
+#: src/camel/camel-gpg-context.c:1407
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "Permintaan tak diharapkan dari GnuPG bagi \"%s\""
 
-#: src/camel/camel-gpg-context.c:1179
+#: src/camel/camel-gpg-context.c:1419
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -3032,31 +3032,31 @@ msgstr ""
 "Catat bahwa isi terenkripsi tak memuat informasi tentang penerima, sehingga "
 "akan ada permintaan kata sandi bagi setiap kunci privat yang disimpan."
 
-#: src/camel/camel-gpg-context.c:1210 src/camel/camel-net-utils.c:524
+#: src/camel/camel-gpg-context.c:1450 src/camel/camel-net-utils.c:524
 #: src/camel/providers/nntp/camel-nntp-summary.c:393
 #: src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
 msgstr "Dibatalkan"
 
-#: src/camel/camel-gpg-context.c:1231
+#: src/camel/camel-gpg-context.c:1472
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "Gagal membuka kunci rahasia: 3 sandi yang dimasukkan semuanya salah."
 
-#: src/camel/camel-gpg-context.c:1244
+#: src/camel/camel-gpg-context.c:1485
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Respon tak diharapkan dari GnuPG: %s"
 
-#: src/camel/camel-gpg-context.c:1361
+#: src/camel/camel-gpg-context.c:1602
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Gagal menyandikan: Penerima yang disebutkan tidak valid."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1382
+#: src/camel/camel-gpg-context.c:1623
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
@@ -3067,38 +3067,38 @@ msgstr ""
 "ini."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1389
+#: src/camel/camel-gpg-context.c:1630
 #, c-format
 msgid "Failed to encrypt: The public key for recipient %s was not found."
 msgstr "Gagal mengenkripsi: Kunci publik untuk penerima %s tidak ditemukan."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1396
+#: src/camel/camel-gpg-context.c:1637
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is revoked."
 msgstr "Gagal mengenkripsi: Kunci untuk penerima %s dicabut."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1403
+#: src/camel/camel-gpg-context.c:1644
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is expired."
 msgstr "Gagal mengenkripsi: Kunci untuk penerima %s kedaluwarsa."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1410
+#: src/camel/camel-gpg-context.c:1651
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is not trusted."
 msgstr "Gagal mengenkripsi: Kunci untuk penerima %s tidak dipercaya."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1417
+#: src/camel/camel-gpg-context.c:1658
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is disabled."
 msgstr "Gagal mengenkripsi: Kunci untuk penerima %s dinonaktifkan."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1425
+#: src/camel/camel-gpg-context.c:1666
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified (code %d). A common issue "
@@ -3107,59 +3107,81 @@ msgstr ""
 "Gagal mengenkripsi: %s penerima tidak valid yang ditentukan (kode %d). "
 "Masalah umum adalah %s tidak mengimpor kunci publik untuk penerima ini."
 
-#: src/camel/camel-gpg-context.c:2266 src/camel/camel-smime-context.c:1041
+#: src/camel/camel-gpg-context.c:1727 src/camel/camel-gpg-context.c:1738
+#, c-format
+msgid "Failed to pass command to GPG: %s"
+msgstr "Gagal meneruskan perintah ke GPG: %s"
+
+#: src/camel/camel-gpg-context.c:2585 src/camel/camel-smime-context.c:1041
 msgid "Could not generate signing data: "
 msgstr "Tidak dapat menjangkitkan data penandatanganan: "
 
-#: src/camel/camel-gpg-context.c:2317 src/camel/camel-gpg-context.c:2556
-#: src/camel/camel-gpg-context.c:2696 src/camel/camel-gpg-context.c:2873
+#: src/camel/camel-gpg-context.c:2636 src/camel/camel-gpg-context.c:2875
+#: src/camel/camel-gpg-context.c:3016 src/camel/camel-gpg-context.c:3193
+#: src/camel/camel-gpg-context.c:3548 src/camel/camel-gpg-context.c:3635
+#: src/camel/camel-gpg-context.c:3928 src/camel/camel-gpg-context.c:4026
+#: src/camel/camel-gpg-context.c:4111 src/camel/camel-gpg-context.c:4178
 msgid "Failed to execute gpg."
 msgstr "Gagal mengeksekusi gpg."
 
-#: src/camel/camel-gpg-context.c:2424 src/camel/camel-gpg-context.c:2432
-#: src/camel/camel-gpg-context.c:2440 src/camel/camel-gpg-context.c:2460
+#: src/camel/camel-gpg-context.c:2743 src/camel/camel-gpg-context.c:2751
+#: src/camel/camel-gpg-context.c:2759 src/camel/camel-gpg-context.c:2779
 #: src/camel/camel-smime-context.c:1172 src/camel/camel-smime-context.c:1186
 #: src/camel/camel-smime-context.c:1198
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Tidak bisa memverifikasi tandatangan pesan: Format pesan salah"
 
-#: src/camel/camel-gpg-context.c:2506
+#: src/camel/camel-gpg-context.c:2825
 msgid "Cannot verify message signature: "
 msgstr "Tidak dapat memverifikasi tanda tangan pesan: "
 
-#: src/camel/camel-gpg-context.c:2654
+#: src/camel/camel-gpg-context.c:2974
 msgid "Could not generate encrypting data: "
 msgstr "Tidak dapat menghasilkan data yang dienkripsi: "
 
-#: src/camel/camel-gpg-context.c:2736
+#: src/camel/camel-gpg-context.c:3056
 msgid "This is a digitally encrypted message part"
 msgstr "Ini adalah bagian pesan yang telah disandikan secara digital"
 
-#: src/camel/camel-gpg-context.c:2796 src/camel/camel-gpg-context.c:2805
-#: src/camel/camel-gpg-context.c:2828
+#: src/camel/camel-gpg-context.c:3116 src/camel/camel-gpg-context.c:3125
+#: src/camel/camel-gpg-context.c:3148
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Tidak bisa mendekripsi pesan: Format pesan salah"
 
-#: src/camel/camel-gpg-context.c:2816
+#: src/camel/camel-gpg-context.c:3136
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Gagal mendekripsikan bagian MIME: kesalahan protokol"
 
-#: src/camel/camel-gpg-context.c:2888
+#: src/camel/camel-gpg-context.c:3208
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "Gagal mendekripsikan bagian MIME: Kunci rahasia tak ditemukan"
 
-#: src/camel/camel-gpg-context.c:2925
+#: src/camel/camel-gpg-context.c:3245
 #, c-format
 msgid "GPG blob contains unencrypted text: %s"
 msgstr "Gumpalan GPG berisi teks tidak terenkripsi:%s"
 
-#: src/camel/camel-gpg-context.c:2927 src/camel/camel-smime-context.c:1724
+#: src/camel/camel-gpg-context.c:3247 src/camel/camel-smime-context.c:1724
 msgid "Encrypted content"
 msgstr "Isi dalam bentuk sandi"
+
+#: src/camel/camel-gpg-context.c:3555 src/camel/camel-gpg-context.c:3642
+#: src/camel/camel-gpg-context.c:3935 src/camel/camel-gpg-context.c:3946
+#, c-format
+msgid "Public key “%s” was not found"
+msgstr "Kunci publik “%s” tidak ditemukan"
+
+#: src/camel/camel-gpg-context.c:4033
+msgid "No public key was found in the provided data"
+msgstr "Tidak ada kunci publik yang ditemukan dalam data yang disediakan"
+
+#: src/camel/camel-gpg-context.c:4046
+msgid "Key information was not found in the provided data"
+msgstr "Informasi kunci tidak ditemukan dalam data yang disediakan"
 
 #: src/camel/camel-junk-filter.c:167
 msgid "Synchronizing junk database"
@@ -3553,7 +3575,7 @@ msgstr "Data acuan telah kedaluwarsa."
 
 #: src/camel/camel-sasl-gssapi.c:237 src/camel/camel-sasl-gssapi.c:441
 #: src/camel/camel-sasl-gssapi.c:491 src/camel/camel-sasl-gssapi.c:508
-#: src/camel/providers/smtp/camel-smtp-transport.c:860
+#: src/camel/providers/smtp/camel-smtp-transport.c:864
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Balasan autentikasi dari peladen tidak benar."
@@ -3687,10 +3709,10 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "GType yang tidak valid terdaftar untuk protokol \"%s\""
 
 #: src/camel/camel-session.c:508
-#: src/camel/providers/imapx/camel-imapx-server.c:3252
+#: src/camel/providers/imapx/camel-imapx-server.c:3251
 #: src/camel/providers/pop3/camel-pop3-store.c:305
 #: src/camel/providers/pop3/camel-pop3-store.c:809
-#: src/camel/providers/smtp/camel-smtp-transport.c:696
+#: src/camel/providers/smtp/camel-smtp-transport.c:700
 #, c-format
 msgid "No support for %s authentication"
 msgstr "Tak ada dukungan bagi autentikasi %s"
@@ -3967,7 +3989,7 @@ msgid "Only reset to beginning is supported with CamelHttpStream"
 msgstr "Hanya reset ke awal didukung dengan CamelHttpStream"
 
 #: src/camel/camel-stream-process.c:282
-#: src/camel/providers/smtp/camel-smtp-transport.c:747
+#: src/camel/providers/smtp/camel-smtp-transport.c:751
 #, c-format
 msgid "Connection cancelled"
 msgstr "Koneksi telah dibatalkan"
@@ -3997,7 +4019,7 @@ msgstr "Tidak dapat mengurai URL \"%s\""
 msgid "Updating folder “%s”"
 msgstr "Memutakhirkan folder \"%s\""
 
-#: src/camel/camel-vee-folder.c:1283 src/camel/camel-vee-folder.c:1419
+#: src/camel/camel-vee-folder.c:1296 src/camel/camel-vee-folder.c:1432
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Tidak bisa menyalin atau memindah pesan ke Folder Virtual"
@@ -4006,22 +4028,22 @@ msgstr "Tidak bisa menyalin atau memindah pesan ke Folder Virtual"
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: src/camel/camel-vee-folder.c:1320
+#: src/camel/camel-vee-folder.c:1333
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "Tidak ada pesan %s dalam \"%s : %s\""
 
-#: src/camel/camel-vee-folder.c:1395
+#: src/camel/camel-vee-folder.c:1408
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "Galat ketika menyimpan \"%s\": "
 
-#: src/camel/camel-vee-folder.c:1585
+#: src/camel/camel-vee-folder.c:1598
 #, c-format
 msgid "Updating search folder “%s”"
 msgstr "Memutakhirkan folder pencarin \"%s\""
 
-#: src/camel/camel-vee-folder.c:1643
+#: src/camel/camel-vee-folder.c:1656
 msgid "Automatically _update on change in source folders"
 msgstr "Secara otomatis m_utakhirkan pada perubahan di folder sumber"
 
@@ -4063,7 +4085,7 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "Anda mesti daring untuk menuntaskan operasi ini (%s)"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:987
-#: src/camel/providers/imapx/camel-imapx-server.c:3424
+#: src/camel/providers/imapx/camel-imapx-server.c:3423
 #: src/camel/providers/nntp/camel-nntp-store.c:348
 #: src/camel/providers/nntp/camel-nntp-store.c:1343
 #: src/camel/providers/nntp/camel-nntp-store.c:2156
@@ -4077,7 +4099,7 @@ msgstr "Anda mesti daring untuk menuntaskan operasi ini (%s)"
 #: src/camel/providers/pop3/camel-pop3-store.c:576
 #: src/camel/providers/pop3/camel-pop3-store.c:673
 #: src/camel/providers/pop3/camel-pop3-store.c:1124
-#: src/camel/providers/smtp/camel-smtp-transport.c:547
+#: src/camel/providers/smtp/camel-smtp-transport.c:551
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "Anda tersambung ke jaringan untuk menuntaskan operasi ini"
@@ -4300,37 +4322,37 @@ msgstr "Untuk membaca dan menyimpan surat pada peladen IMAP."
 msgid "Error writing to cache stream"
 msgstr "Galat saat menulis ke stream singgahan"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3047
-#: src/camel/providers/imapx/camel-imapx-server.c:3134
-#: src/camel/providers/imapx/camel-imapx-server.c:3457
+#: src/camel/providers/imapx/camel-imapx-server.c:3046
+#: src/camel/providers/imapx/camel-imapx-server.c:3133
+#: src/camel/providers/imapx/camel-imapx-server.c:3456
 msgid "Failed to get capabilities"
 msgstr "Gagal memperoleh kapabilitas"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3066
+#: src/camel/providers/imapx/camel-imapx-server.c:3065
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Gagal konek ke peladen IMAP %s dalam mode aman: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3067
-#: src/camel/providers/smtp/camel-smtp-transport.c:283
+#: src/camel/providers/imapx/camel-imapx-server.c:3066
+#: src/camel/providers/smtp/camel-smtp-transport.c:287
 msgid "STARTTLS not supported"
 msgstr "STARTTLS tidak didukung"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3076
+#: src/camel/providers/imapx/camel-imapx-server.c:3075
 msgid "Failed to issue STARTTLS"
 msgstr "Gagal menerbitkan STARTTLS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3123
+#: src/camel/providers/imapx/camel-imapx-server.c:3122
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Gagal menyambung ke peladen IMAP %s dalam mode aman: "
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3239
+#: src/camel/providers/imapx/camel-imapx-server.c:3238
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Peladen IMAP %s tidak mendukung autentikasi %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3265
+#: src/camel/providers/imapx/camel-imapx-server.c:3264
 #, c-format
 msgid ""
 "Plaintext authentication disallowed on insecure connections. Change "
@@ -4339,180 +4361,180 @@ msgstr ""
 "Autentikasi teks biasa tidak diizinkan pada sambungan tidak aman. Ubah "
 "enkripsi ke STARTTLS atau TLS untuk akun “%s”."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3278
+#: src/camel/providers/imapx/camel-imapx-server.c:3277
 #: src/camel/providers/nntp/camel-nntp-store.c:454
 #: src/camel/providers/nntp/camel-nntp-store.c:596
 msgid "Cannot authenticate without a username"
 msgstr "Tak bisa mengautentikasi tanpa nama pengguna"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3287
+#: src/camel/providers/imapx/camel-imapx-server.c:3286
 #: src/camel/providers/nntp/camel-nntp-store.c:605
 #: src/camel/providers/pop3/camel-pop3-store.c:709
 #: src/camel/providers/pop3/camel-pop3-store.c:747
 msgid "Authentication password not available"
 msgstr "Kata sandi autentikasi tak tersedia"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3297
-#: src/camel/providers/imapx/camel-imapx-server.c:3310
+#: src/camel/providers/imapx/camel-imapx-server.c:3296
+#: src/camel/providers/imapx/camel-imapx-server.c:3309
 msgid "Failed to authenticate"
 msgstr "Gagal mengautentikasi"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3382
+#: src/camel/providers/imapx/camel-imapx-server.c:3381
 msgid "Failed to issue ID"
 msgstr "Gagal menerbitkan ID"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3484
+#: src/camel/providers/imapx/camel-imapx-server.c:3483
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr "Gagal menerbitkan ENABLE UTF8=ACCEPT"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3506
+#: src/camel/providers/imapx/camel-imapx-server.c:3505
 msgid "Failed to issue NAMESPACE"
 msgstr "Gagal menerbitkan NAMESPACE"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3524
+#: src/camel/providers/imapx/camel-imapx-server.c:3523
 msgid "Failed to enable QResync"
 msgstr "Gagal memfungsikan QResync"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3561
+#: src/camel/providers/imapx/camel-imapx-server.c:3560
 msgid "Failed to issue NOTIFY"
 msgstr "Gagal menerbitkan NOTIFY"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4040
+#: src/camel/providers/imapx/camel-imapx-server.c:4039
 msgid "Failed to select mailbox"
 msgstr "Gagal memilih kotak surat"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4140
+#: src/camel/providers/imapx/camel-imapx-server.c:4139
 msgid "Cannot issue command, no stream available"
 msgstr "Tak bisa menerbitkan perintah, tak ada stream yang tersedia"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4406
+#: src/camel/providers/imapx/camel-imapx-server.c:4405
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Tidak dapat memperoleh pesan dengan ID %s: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4407
+#: src/camel/providers/imapx/camel-imapx-server.c:4406
 msgid "No such message available."
 msgstr "Tidak ada pesan yang tersedia."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4456
-#: src/camel/providers/imapx/camel-imapx-server.c:4481
-#: src/camel/providers/imapx/camel-imapx-server.c:4520
+#: src/camel/providers/imapx/camel-imapx-server.c:4455
+#: src/camel/providers/imapx/camel-imapx-server.c:4480
+#: src/camel/providers/imapx/camel-imapx-server.c:4519
 msgid "Error fetching message"
 msgstr "Galat saat mengambil pesan"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4498
-#: src/camel/providers/imapx/camel-imapx-server.c:5271
+#: src/camel/providers/imapx/camel-imapx-server.c:4497
+#: src/camel/providers/imapx/camel-imapx-server.c:5270
 msgid "Error performing NOOP"
 msgstr "Galat saat melaksanakan NOOP"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4513
+#: src/camel/providers/imapx/camel-imapx-server.c:4512
 msgid "Failed to close the tmp stream"
 msgstr "Gagal menutup stream tmp"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4544
+#: src/camel/providers/imapx/camel-imapx-server.c:4543
 msgid "Failed to copy the tmp file"
 msgstr "Galat menyalin berkas tmp"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4782
+#: src/camel/providers/imapx/camel-imapx-server.c:4781
 msgid "Error moving messages"
 msgstr "Galat saat memindah pesan"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4782
+#: src/camel/providers/imapx/camel-imapx-server.c:4781
 msgid "Error copying messages"
 msgstr "Galat saat menyalin pesan"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5061
-#: src/camel/providers/imapx/camel-imapx-server.c:5082
+#: src/camel/providers/imapx/camel-imapx-server.c:5060
+#: src/camel/providers/imapx/camel-imapx-server.c:5081
 msgid "Cannot create spool file: "
 msgstr "Tidak bisa membuat berkas spool: "
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5168
+#: src/camel/providers/imapx/camel-imapx-server.c:5167
 msgid "Error appending message"
 msgstr "Galat saat menambahkan pesan di belakang"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5439
+#: src/camel/providers/imapx/camel-imapx-server.c:5438
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Memindai pesan-pesan yang berubah dalam \"%s : %s\""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5443
+#: src/camel/providers/imapx/camel-imapx-server.c:5442
 msgid "Error scanning changes"
 msgstr "Galat saat memindai perubahan"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5466
+#: src/camel/providers/imapx/camel-imapx-server.c:5465
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "Mengambil ringkasan informasi untuk pesan baru dalam \"%s : %s\""
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5493
+#: src/camel/providers/imapx/camel-imapx-server.c:5492
 msgid "Error fetching message info"
 msgstr "Galat saat mengambil info pesan"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5676
+#: src/camel/providers/imapx/camel-imapx-server.c:5675
 msgid "Error running STATUS"
 msgstr "Galat saat menjalankan STATUS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6271
-#: src/camel/providers/imapx/camel-imapx-server.c:6326
-#: src/camel/providers/imapx/camel-imapx-server.c:6409
+#: src/camel/providers/imapx/camel-imapx-server.c:6270
+#: src/camel/providers/imapx/camel-imapx-server.c:6325
+#: src/camel/providers/imapx/camel-imapx-server.c:6408
 msgid "Error syncing changes"
 msgstr "Galat saat menyelaraskan perubahan"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6284
-#: src/camel/providers/imapx/camel-imapx-server.c:6336
-#: src/camel/providers/imapx/camel-imapx-server.c:6428
-#: src/camel/providers/imapx/camel-imapx-server.c:6569
+#: src/camel/providers/imapx/camel-imapx-server.c:6283
+#: src/camel/providers/imapx/camel-imapx-server.c:6335
+#: src/camel/providers/imapx/camel-imapx-server.c:6427
+#: src/camel/providers/imapx/camel-imapx-server.c:6568
 msgid "Error expunging message"
 msgstr "Galat saat menghapus pesan-pesan lama"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6651
+#: src/camel/providers/imapx/camel-imapx-server.c:6650
 msgid "Error fetching folders"
 msgstr "Galat saat mengambil folder"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6659
+#: src/camel/providers/imapx/camel-imapx-server.c:6658
 msgid "Error fetching subscribed folders"
 msgstr "Galat saat mengambil folder yang dilanggani"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6716
+#: src/camel/providers/imapx/camel-imapx-server.c:6715
 msgid "Error creating folder"
 msgstr "Galat saat membuat folder"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6766
+#: src/camel/providers/imapx/camel-imapx-server.c:6765
 msgid "Error deleting folder"
 msgstr "Galat saat menghapus folder"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6812
+#: src/camel/providers/imapx/camel-imapx-server.c:6811
 msgid "Error renaming folder"
 msgstr "Galat saat mengubah nama folder"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6844
+#: src/camel/providers/imapx/camel-imapx-server.c:6843
 msgid "Error subscribing to folder"
 msgstr "Galat saat berlangganan ke folder"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6880
+#: src/camel/providers/imapx/camel-imapx-server.c:6879
 msgid "Error unsubscribing from folder"
 msgstr "Galat saat berhenti langganan dari folder"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6920
+#: src/camel/providers/imapx/camel-imapx-server.c:6919
 msgid "IMAP server does not support quotas"
 msgstr "Peladen IMAP tidak mendukung kuota"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6932
+#: src/camel/providers/imapx/camel-imapx-server.c:6931
 msgid "Error retrieving quota information"
 msgstr "Galat saat mengambil informasi kuota"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6997
+#: src/camel/providers/imapx/camel-imapx-server.c:6996
 msgid "Search failed"
 msgstr "Pencarian gagal"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7125
+#: src/camel/providers/imapx/camel-imapx-server.c:7124
 msgid "Error running IDLE"
 msgstr "Galat saat menjalankan IDLE"
 
@@ -5761,227 +5783,227 @@ msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr ""
 "Mengirimkan surat dengan cara menguhubungi peladen surel menggunakan SMTP."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:237
-#: src/camel/providers/smtp/camel-smtp-transport.c:244
+#: src/camel/providers/smtp/camel-smtp-transport.c:241
+#: src/camel/providers/smtp/camel-smtp-transport.c:248
 msgid "Welcome response error: "
 msgstr "Respon sambutan galat: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:282
+#: src/camel/providers/smtp/camel-smtp-transport.c:286
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr "Gagal konek ke peladen SMTP %s dalam mode aman: %s"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:291
-#: src/camel/providers/smtp/camel-smtp-transport.c:304
-#: src/camel/providers/smtp/camel-smtp-transport.c:311
+#: src/camel/providers/smtp/camel-smtp-transport.c:295
+#: src/camel/providers/smtp/camel-smtp-transport.c:308
+#: src/camel/providers/smtp/camel-smtp-transport.c:315
 msgid "STARTTLS command failed: "
 msgstr "Perintah STARTTLS gagal: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:332
+#: src/camel/providers/smtp/camel-smtp-transport.c:336
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
 msgstr "Gagal menyambung ke peladen SMTP %s dalam mode aman: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:443
+#: src/camel/providers/smtp/camel-smtp-transport.c:447
 #, c-format
 msgid "SMTP server %s"
 msgstr "Peladen SMTP %s"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:446
+#: src/camel/providers/smtp/camel-smtp-transport.c:450
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "Penyerahan surat SMTP via %s"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:586
+#: src/camel/providers/smtp/camel-smtp-transport.c:590
 #, c-format
 msgid "SMTP server %s does not support %s authentication"
 msgstr "Peladen SMTP %s tidak mendukung autentikasi %s"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:686
+#: src/camel/providers/smtp/camel-smtp-transport.c:690
 #, c-format
 msgid "No SASL mechanism was specified"
 msgstr "Tak ada mekanisme SASL yang dinyatakan"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:727
+#: src/camel/providers/smtp/camel-smtp-transport.c:731
 msgid "AUTH command failed: Not connected."
 msgstr "Perintah AUTH gagal: Tak tersambung."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:734
-#: src/camel/providers/smtp/camel-smtp-transport.c:748
-#: src/camel/providers/smtp/camel-smtp-transport.c:764
+#: src/camel/providers/smtp/camel-smtp-transport.c:738
+#: src/camel/providers/smtp/camel-smtp-transport.c:752
+#: src/camel/providers/smtp/camel-smtp-transport.c:768
 msgid "AUTH command failed: "
 msgstr "Perintah AUTH gagal: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:967
+#: src/camel/providers/smtp/camel-smtp-transport.c:972
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "Tidak bisa mengirim pesan: layanan tidak terhubung."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:976
+#: src/camel/providers/smtp/camel-smtp-transport.c:981
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "Tidak bisa mengirim pesan:  alamat pengirim salah."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:980
+#: src/camel/providers/smtp/camel-smtp-transport.c:985
 msgid "Sending message"
 msgstr "Mengirim pesan"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1009
+#: src/camel/providers/smtp/camel-smtp-transport.c:1017
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "Tidak bisa mengirim pesan: penerima tidak disebutkan."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1024
+#: src/camel/providers/smtp/camel-smtp-transport.c:1032
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "Tidak bisa mengirim pesan: satu atau beberapa penerima salah"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1156
+#: src/camel/providers/smtp/camel-smtp-transport.c:1164
 msgid "Syntax error, command unrecognized"
 msgstr "Salah sintaks, perintah tak dikenal"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1158
+#: src/camel/providers/smtp/camel-smtp-transport.c:1166
 msgid "Syntax error in parameters or arguments"
 msgstr "Salah sintaks dalam parameter atau argumen"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1160
+#: src/camel/providers/smtp/camel-smtp-transport.c:1168
 msgid "Command not implemented"
 msgstr "Perintah tidak diimplementasikan"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1162
+#: src/camel/providers/smtp/camel-smtp-transport.c:1170
 msgid "Command parameter not implemented"
 msgstr "Parameter perintah tidak diimplementasikan"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1164
+#: src/camel/providers/smtp/camel-smtp-transport.c:1172
 msgid "System status, or system help reply"
 msgstr "Status sistem, atau jawaban bantuan sistem"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1166
+#: src/camel/providers/smtp/camel-smtp-transport.c:1174
 msgid "Help message"
 msgstr "Pesan bantuan"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1168
+#: src/camel/providers/smtp/camel-smtp-transport.c:1176
 msgid "Service ready"
 msgstr "Layanan siap"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1170
+#: src/camel/providers/smtp/camel-smtp-transport.c:1178
 msgid "Service closing transmission channel"
 msgstr "Layanan kanal transmisi sedang ditutup"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1172
+#: src/camel/providers/smtp/camel-smtp-transport.c:1180
 msgid "Service not available, closing transmission channel"
 msgstr "Layanan tidak tersedia, kanal transmisi sedang ditutup"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1174
+#: src/camel/providers/smtp/camel-smtp-transport.c:1182
 msgid "Requested mail action okay, completed"
 msgstr "Aksi surat yang diminta berhasil, selesai"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1176
+#: src/camel/providers/smtp/camel-smtp-transport.c:1184
 msgid "User not local; will forward to <forward-path>"
 msgstr "Pengguna tidak lokal; akan diteruskan ke <forward-path>"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1178
+#: src/camel/providers/smtp/camel-smtp-transport.c:1186
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr "Tindakan yang diminta tidak dapat dipenuhi: kotak surat tidak tersedia"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1180
+#: src/camel/providers/smtp/camel-smtp-transport.c:1188
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "Tindakan yang diminta tidak dapat dipenuhi: kotak surat tidak tersedia"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1182
+#: src/camel/providers/smtp/camel-smtp-transport.c:1190
 msgid "Requested action aborted: error in processing"
 msgstr "Tindakan yang diminta dibatalkan: kesalahan dalam pemrosesan"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1184
+#: src/camel/providers/smtp/camel-smtp-transport.c:1192
 msgid "User not local; please try <forward-path>"
 msgstr "Pengguna tidak berada pada sistem lokal; harap coba <forward-path>"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1186
+#: src/camel/providers/smtp/camel-smtp-transport.c:1194
 msgid "Requested action not taken: insufficient system storage"
 msgstr "Permintaan tidak dipenuhi: penyimpanan sistem tidak cukup"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1188
+#: src/camel/providers/smtp/camel-smtp-transport.c:1196
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "Permintaan surat dibatalkan: melebihi alokasi penyimpanan"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1190
+#: src/camel/providers/smtp/camel-smtp-transport.c:1198
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "Permintaan tidak dipenuhi: nama kotak surat tidak diperkenankan"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1192
+#: src/camel/providers/smtp/camel-smtp-transport.c:1200
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "Awali input surat ; akhiri dengan <CRLF>.<CRLF>"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1194
+#: src/camel/providers/smtp/camel-smtp-transport.c:1202
 msgid "Transaction failed"
 msgstr "Transaksi gagal"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1198
+#: src/camel/providers/smtp/camel-smtp-transport.c:1206
 msgid "A password transition is needed"
 msgstr "Diperlukan transisi kata sandi"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1200
+#: src/camel/providers/smtp/camel-smtp-transport.c:1208
 msgid "Authentication mechanism is too weak"
 msgstr "Mekanisme autentikasi terlalu lemah"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1202
+#: src/camel/providers/smtp/camel-smtp-transport.c:1210
 msgid "Encryption required for requested authentication mechanism"
 msgstr "Penyandian diperlukan untuk mekanisme autentikasi yang diminta"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1204
+#: src/camel/providers/smtp/camel-smtp-transport.c:1212
 msgid "Temporary authentication failure"
 msgstr "Autentikasi temporer gagal"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1206
+#: src/camel/providers/smtp/camel-smtp-transport.c:1214
 #: src/libedataserver/e-client.c:145
 msgid "Authentication required"
 msgstr "Autentikasi diperlukan"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1516
+#: src/camel/providers/smtp/camel-smtp-transport.c:1525
 msgid "SMTP Greeting"
 msgstr "Sambutan SMTP"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1525
-#: src/camel/providers/smtp/camel-smtp-transport.c:1538
-#: src/camel/providers/smtp/camel-smtp-transport.c:1545
+#: src/camel/providers/smtp/camel-smtp-transport.c:1534
+#: src/camel/providers/smtp/camel-smtp-transport.c:1547
+#: src/camel/providers/smtp/camel-smtp-transport.c:1554
 msgid "HELO command failed: "
 msgstr "Perintah HELO gagal: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1629
-#: src/camel/providers/smtp/camel-smtp-transport.c:1643
-#: src/camel/providers/smtp/camel-smtp-transport.c:1652
+#: src/camel/providers/smtp/camel-smtp-transport.c:1661
+#: src/camel/providers/smtp/camel-smtp-transport.c:1675
+#: src/camel/providers/smtp/camel-smtp-transport.c:1684
 msgid "MAIL FROM command failed: "
 msgstr "Perintah MAIL FROM gagal: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1680
+#: src/camel/providers/smtp/camel-smtp-transport.c:1753
 msgid "RCPT TO command failed: "
 msgstr "Perintah RCPT TO gagal: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1696
-#: src/camel/providers/smtp/camel-smtp-transport.c:1705
+#: src/camel/providers/smtp/camel-smtp-transport.c:1769
+#: src/camel/providers/smtp/camel-smtp-transport.c:1778
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> gagal: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1788
-#: src/camel/providers/smtp/camel-smtp-transport.c:1799
-#: src/camel/providers/smtp/camel-smtp-transport.c:1810
-#: src/camel/providers/smtp/camel-smtp-transport.c:1895
-#: src/camel/providers/smtp/camel-smtp-transport.c:1913
-#: src/camel/providers/smtp/camel-smtp-transport.c:1926
-#: src/camel/providers/smtp/camel-smtp-transport.c:1934
+#: src/camel/providers/smtp/camel-smtp-transport.c:1861
+#: src/camel/providers/smtp/camel-smtp-transport.c:1872
+#: src/camel/providers/smtp/camel-smtp-transport.c:1883
+#: src/camel/providers/smtp/camel-smtp-transport.c:1968
+#: src/camel/providers/smtp/camel-smtp-transport.c:1986
+#: src/camel/providers/smtp/camel-smtp-transport.c:1999
+#: src/camel/providers/smtp/camel-smtp-transport.c:2007
 msgid "DATA command failed: "
 msgstr "Perintah DATA gagal: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1960
-#: src/camel/providers/smtp/camel-smtp-transport.c:1974
-#: src/camel/providers/smtp/camel-smtp-transport.c:1982
+#: src/camel/providers/smtp/camel-smtp-transport.c:2033
+#: src/camel/providers/smtp/camel-smtp-transport.c:2047
+#: src/camel/providers/smtp/camel-smtp-transport.c:2055
 msgid "RSET command failed: "
 msgstr "Perintah RSET gagal: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:2008
-#: src/camel/providers/smtp/camel-smtp-transport.c:2020
-#: src/camel/providers/smtp/camel-smtp-transport.c:2026
+#: src/camel/providers/smtp/camel-smtp-transport.c:2081
+#: src/camel/providers/smtp/camel-smtp-transport.c:2093
+#: src/camel/providers/smtp/camel-smtp-transport.c:2099
 msgid "QUIT command failed: "
 msgstr "Perintah QUIT gagal: "
 
@@ -6806,37 +6828,48 @@ msgstr "Tidak ada objek JSON yang dikembalikan oleh peladen"
 msgid "Failed to call %s: "
 msgstr "Gagal memanggil %s: "
 
-#: src/libedataserver/e-oauth2-service.c:1026
+#: src/libedataserver/e-oauth2-service.c:1061
 msgid "Malformed, no message body set"
 msgstr "Bentuknya salah, tidak ada set pesan"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1306
+#: src/libedataserver/e-oauth2-service.c:1343
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Sumber \"%s\": (%s) tidak valid bagi layanan OAuth2 \"%s\""
 
-#: src/libedataserver/e-oauth2-service.c:1321
+#: src/libedataserver/e-oauth2-service.c:1358
 msgid "OAuth2 secret not found"
 msgstr "Rahasia OAuth2 tidak ditemukan"
 
-#: src/libedataserver/e-oauth2-service.c:1518
+#: src/libedataserver/e-oauth2-service.c:1555
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Menerima respons yang salah dari peladen \"%s\"."
 
-#: src/libedataserver/e-oauth2-service.c:1527
+#: src/libedataserver/e-oauth2-service.c:1578
+#, c-format
+msgid ""
+"Failed to refresh access token. Sign to the server again, please.\n"
+"\n"
+"Detailed error: %s"
+msgstr ""
+"Gagal menyegarkan token akses. Silakan masuk ke peladen lagi.\n"
+"\n"
+"Detail galat: %s"
+
+#: src/libedataserver/e-oauth2-service.c:1581
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr "Gagal menyegarkan token akses. Harap masuk ke peladen lagi."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1570
+#: src/libedataserver/e-oauth2-service.c:1627
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Sumber \"%s\" (%s) bukan sumber OAuth2 yang valid"
 
-#: src/libedataserver/e-oauth2-service.c:1854
+#: src/libedataserver/e-oauth2-service.c:1911
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -6862,16 +6895,16 @@ msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: src/libedataserver/e-soup-session.c:1264
+#: src/libedataserver/e-soup-session.c:1270
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Gagal dengan kesalahan HTTP %d: %s"
 
-#: src/libedataserver/e-soup-session.c:1340
+#: src/libedataserver/e-soup-session.c:1346
 msgid "Failed to setup authentication"
 msgstr "Gagal menyiapkan autentikasi"
 
-#: src/libedataserver/e-soup-session.c:1747
+#: src/libedataserver/e-soup-session.c:1753
 msgid "Too many redirects"
 msgstr "Terlalu banyak pengalihan"
 
@@ -6925,7 +6958,7 @@ msgstr "Sumber \"%s\" tidak mendukung pencarian proksi"
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format.
 #: src/libedataserver/e-time-utils.c:1697
-#: src/libedataserver/e-time-utils.c:1996
+#: src/libedataserver/e-time-utils.c:2037
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a, %d/%m/%Y %I:%M:%S %p"
 
@@ -6934,7 +6967,7 @@ msgstr "%a, %d/%m/%Y %I:%M:%S %p"
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format.
 #: src/libedataserver/e-time-utils.c:1702
-#: src/libedataserver/e-time-utils.c:1987
+#: src/libedataserver/e-time-utils.c:2028
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a, %d/%m/%Y %H:%M:%S"
 
@@ -6943,7 +6976,7 @@ msgstr "%a, %d/%m/%Y %H:%M:%S"
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format, without seconds.
 #: src/libedataserver/e-time-utils.c:1707
-#: src/libedataserver/e-time-utils.c:1992
+#: src/libedataserver/e-time-utils.c:2033
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a, %d/%m/%Y %I:%M %p"
 
@@ -6952,7 +6985,7 @@ msgstr "%a, %d/%m/%Y %I:%M %p"
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format, without seconds.
 #: src/libedataserver/e-time-utils.c:1712
-#: src/libedataserver/e-time-utils.c:1983
+#: src/libedataserver/e-time-utils.c:2024
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a, %d/%m/%Y %H:%M"
 
@@ -6972,7 +7005,7 @@ msgstr "%a, %d/%m/%Y %H"
 #. strftime format of a weekday and a date.
 #: src/libedataserver/e-time-utils.c:1725
 #: src/libedataserver/e-time-utils.c:1845
-#: src/libedataserver/e-time-utils.c:1978
+#: src/libedataserver/e-time-utils.c:2019
 msgid "%a %m/%d/%Y"
 msgstr "%a, %d/%m/%Y"
 
@@ -7019,15 +7052,15 @@ msgstr "%d/%m/%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: src/libedataserver/e-time-utils.c:1919
-#: src/libedataserver/e-time-utils.c:2040
+#: src/libedataserver/e-time-utils.c:1960
+#: src/libedataserver/e-time-utils.c:2081
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: src/libedataserver/e-time-utils.c:1923
-#: src/libedataserver/e-time-utils.c:2032
+#: src/libedataserver/e-time-utils.c:1964
+#: src/libedataserver/e-time-utils.c:2073
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -7035,27 +7068,27 @@ msgstr "%H:%M:%S"
 #. * in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. * without seconds.
-#: src/libedataserver/e-time-utils.c:1928
-#: src/libedataserver/e-time-utils.c:2037
+#: src/libedataserver/e-time-utils.c:1969
+#: src/libedataserver/e-time-utils.c:2078
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. * without seconds.
-#: src/libedataserver/e-time-utils.c:1932
-#: src/libedataserver/e-time-utils.c:2029
+#: src/libedataserver/e-time-utils.c:1973
+#: src/libedataserver/e-time-utils.c:2070
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for time of day, without seconds 24-hour format,
 #. * and no colon.
-#: src/libedataserver/e-time-utils.c:1936
+#: src/libedataserver/e-time-utils.c:1977
 msgid "%H%M"
 msgstr "%H:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: src/libedataserver/e-time-utils.c:1940
+#: src/libedataserver/e-time-utils.c:1981
 msgid "%I %p"
 msgstr "%I %p"
 
@@ -7119,148 +7152,148 @@ msgstr "%s: kode kesalahan HTTP %d (%s)"
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "Gagal dengan kode kesalahan HTTP %d (%s)"
 
-#: src/libedataserver/e-webdav-session.c:1357
+#: src/libedataserver/e-webdav-session.c:1360
 msgid "Failed to post data"
 msgstr "Gagal mengirim data"
 
-#: src/libedataserver/e-webdav-session.c:1438
-#: src/libedataserver/e-webdav-session.c:1504
-#: src/libedataserver/e-webdav-session.c:1595
-#: src/libedataserver/e-webdav-session.c:2719
-#: src/libedataserver/e-webdav-session.c:3995
+#: src/libedataserver/e-webdav-session.c:1424
+#: src/libedataserver/e-webdav-session.c:1534
+#: src/libedataserver/e-webdav-session.c:1625
+#: src/libedataserver/e-webdav-session.c:2793
+#: src/libedataserver/e-webdav-session.c:4069
 msgid "Failed to get input XML content"
 msgstr "Gagal mendapatkan masukan konten XML"
 
-#: src/libedataserver/e-webdav-session.c:1449
+#: src/libedataserver/e-webdav-session.c:1435
 msgid "Failed to get properties"
 msgstr "Gagal mendapatkan properti"
 
-#: src/libedataserver/e-webdav-session.c:1514
+#: src/libedataserver/e-webdav-session.c:1544
 msgid "Failed to update properties"
 msgstr "Gagal memperbarui properti"
 
-#: src/libedataserver/e-webdav-session.c:1605
+#: src/libedataserver/e-webdav-session.c:1635
 msgid "Failed to issue REPORT"
 msgstr "Gagal menerbitkan REPORT"
 
-#: src/libedataserver/e-webdav-session.c:1665
+#: src/libedataserver/e-webdav-session.c:1695
 msgid "Failed to create collection"
 msgstr "Gagal membuat koleksi"
 
-#: src/libedataserver/e-webdav-session.c:1748
-#: src/libedataserver/e-webdav-session.c:1898
+#: src/libedataserver/e-webdav-session.c:1778
+#: src/libedataserver/e-webdav-session.c:1928
 msgid "Failed to get XML request content"
 msgstr "Gagal mendapatkan konten permintaan XML"
 
-#: src/libedataserver/e-webdav-session.c:1760
+#: src/libedataserver/e-webdav-session.c:1790
 msgid "Failed to create address book"
 msgstr "Gagal membuat buku alamat"
 
-#: src/libedataserver/e-webdav-session.c:1911
+#: src/libedataserver/e-webdav-session.c:1941
 msgid "Failed to create calendar"
 msgstr "Gagal membuat kalender"
 
-#: src/libedataserver/e-webdav-session.c:2036
-#: src/libedataserver/e-webdav-session.c:2047
+#: src/libedataserver/e-webdav-session.c:2066
+#: src/libedataserver/e-webdav-session.c:2077
 msgid "Failed to read resource"
 msgstr "Gagal membaca sumber"
 
-#: src/libedataserver/e-webdav-session.c:2283
-#: src/libedataserver/e-webdav-session.c:2425
+#: src/libedataserver/e-webdav-session.c:2313
+#: src/libedataserver/e-webdav-session.c:2455
 msgid "Failed to put data"
 msgstr "Gagal memasukkan data"
 
-#: src/libedataserver/e-webdav-session.c:2291
-#: src/libedataserver/e-webdav-session.c:2433
+#: src/libedataserver/e-webdav-session.c:2321
+#: src/libedataserver/e-webdav-session.c:2463
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Gagal memasukkan data ke peladen, kode kesalahan %d (%s)"
 
-#: src/libedataserver/e-webdav-session.c:2521
+#: src/libedataserver/e-webdav-session.c:2595
 msgid "Failed to delete resource"
 msgstr "Gagal menghapus sumber"
 
-#: src/libedataserver/e-webdav-session.c:2580
+#: src/libedataserver/e-webdav-session.c:2654
 msgid "Failed to copy resource"
 msgstr "Gagal menyalin sumber daya"
 
-#: src/libedataserver/e-webdav-session.c:2634
+#: src/libedataserver/e-webdav-session.c:2708
 msgid "Failed to move resource"
 msgstr "Gagal memindahkan sumber daya"
 
-#: src/libedataserver/e-webdav-session.c:2730
+#: src/libedataserver/e-webdav-session.c:2804
 msgid "Failed to lock resource"
 msgstr "Gagal mengunci sumber daya"
 
-#: src/libedataserver/e-webdav-session.c:2744
-#: src/libedataserver/e-webdav-session.c:2931
+#: src/libedataserver/e-webdav-session.c:2818
+#: src/libedataserver/e-webdav-session.c:3005
 msgid "Expected application/xml response, but none returned"
 msgstr "Respon aplikasi/xml yang diharapkan, namun tidak ada yang kembali"
 
-#: src/libedataserver/e-webdav-session.c:2747
-#: src/libedataserver/e-webdav-session.c:2934
+#: src/libedataserver/e-webdav-session.c:2821
+#: src/libedataserver/e-webdav-session.c:3008
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "Respon aplikasi/xml yang diharapkan, namun %s dikembalikan"
 
-#: src/libedataserver/e-webdav-session.c:2759
-#: src/libedataserver/e-webdav-session.c:2947
+#: src/libedataserver/e-webdav-session.c:2833
+#: src/libedataserver/e-webdav-session.c:3021
 msgid "Failed to parse XML data"
 msgstr "Gagal mengurai data XML"
 
-#: src/libedataserver/e-webdav-session.c:2830
+#: src/libedataserver/e-webdav-session.c:2904
 msgid "Failed to refresh lock"
 msgstr "Gagal menyegarkan kunci"
 
-#: src/libedataserver/e-webdav-session.c:2881
+#: src/libedataserver/e-webdav-session.c:2955
 msgid "Failed to unlock"
 msgstr "Gagal membuka kunci"
 
-#: src/libedataserver/e-webdav-session.c:2919
+#: src/libedataserver/e-webdav-session.c:2993
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Respons multistatus yang diharapkan, namun %d kembali (%s)"
 
-#: src/libedataserver/e-webdav-session.c:2956
+#: src/libedataserver/e-webdav-session.c:3030
 msgid "XML data does not have root node"
 msgstr "Data XML tidak memiliki simpul akar"
 
-#: src/libedataserver/e-webdav-session.c:2979
+#: src/libedataserver/e-webdav-session.c:3053
 #, c-format
 msgid "XML data doesn't have required structure (%s)"
 msgstr "Data XML tidak memiliki struktur yang diperlukan (%s)"
 
-#: src/libedataserver/e-webdav-session.c:4005
+#: src/libedataserver/e-webdav-session.c:4079
 msgid "Failed to get access control list"
 msgstr "Gagal mendapatkan daftar kontrol akses"
 
-#: src/libedataserver/e-webdav-session.c:4688
+#: src/libedataserver/e-webdav-session.c:4814
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 "Tidak dapat menyimpan Entri Kontrol Akses yang dilindungi atau tidak "
 "diwarisi."
 
-#: src/libedataserver/e-webdav-session.c:4695
+#: src/libedataserver/e-webdav-session.c:4821
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Menyediakan jenis prinsipal tidak valid untuk Entri Kontrol Akses."
 
-#: src/libedataserver/e-webdav-session.c:4702
+#: src/libedataserver/e-webdav-session.c:4828
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Tidak dapat menyimpan Entri Kontrol Akses berbasis properti."
 
-#: src/libedataserver/e-webdav-session.c:4709
+#: src/libedataserver/e-webdav-session.c:4835
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Entri Kontrol Akses hanya bisa untuk Izin (Grant) atau Tolak (Deny), tapi "
 "bukan tak satupun (None)."
 
-#: src/libedataserver/e-webdav-session.c:4717
+#: src/libedataserver/e-webdav-session.c:4843
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Entri Kontrol Akses hanya bisa untuk Izin (Grant) atau Tolak (Deny), tapi "
 "tidak keduanya."
 
-#: src/libedataserver/e-webdav-session.c:4776
+#: src/libedataserver/e-webdav-session.c:4902
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Hak khusus Entri Kontrol Akses tidak bisa NULL."
 
