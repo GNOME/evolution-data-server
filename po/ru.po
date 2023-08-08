@@ -14,19 +14,19 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server trunk\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/iss"
-"ues\n"
-"POT-Creation-Date: 2023-07-28 10:19+0000\n"
-"PO-Revision-Date: 2023-07-28 21:11+0300\n"
-"Last-Translator: Дронова Юлия <juliette.tux@gmail.com>\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
+"issues\n"
+"POT-Creation-Date: 2023-08-07 13:21+0000\n"
+"PO-Revision-Date: 2023-08-09 00:18+1000\n"
+"Last-Translator: Ser82-png <asvmail.as@gmail.com>\n"
 "Language-Team: RU\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<"
-"=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 23.04.1\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:276
 #, c-format
@@ -108,8 +108,8 @@ msgstr "Попытка изменить контакт «%s» с рассинх�
 #: src/addressbook/backends/file/e-book-backend-file.c:1711
 #: src/addressbook/backends/file/e-book-backend-file.c:1797
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3077
-#: src/addressbook/libedata-book/e-book-sqlite.c:7457
-#: src/addressbook/libedata-book/e-book-sqlite.c:7526
+#: src/addressbook/libedata-book/e-book-sqlite.c:7463
+#: src/addressbook/libedata-book/e-book-sqlite.c:7532
 #, c-format
 msgid "Contact “%s” not found"
 msgstr "Контакт «%s» не найден"
@@ -127,7 +127,7 @@ msgid "Invalid Query “%s”"
 msgstr "Недопустимый запрос «%s»"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:2260
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2186
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2192
 msgid "Requested to delete an unrelated cursor"
 msgstr "Запрошено удаление несвязанного курсора"
 
@@ -271,7 +271,7 @@ msgid "Downloading contacts (%d)..."
 msgstr "Загрузка контактов (%d)…"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5111
-#: src/addressbook/libedata-book/e-book-meta-backend.c:882
+#: src/addressbook/libedata-book/e-book-meta-backend.c:883
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:768
 msgid "Refreshing…"
 msgstr "Обновляю…"
@@ -1010,7 +1010,7 @@ msgid "Error parsing regular expression"
 msgstr "Ошибка разбора регулярного выражения"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1550
-#: src/addressbook/libedata-book/e-book-cache.c:4833
+#: src/addressbook/libedata-book/e-book-cache.c:4838
 #: src/addressbook/libedata-book/e-book-sqlite.c:1911 src/camel/camel-db.c:830
 #, c-format
 msgid "Insufficient memory"
@@ -1043,8 +1043,8 @@ msgstr ""
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4297
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4390
-#: src/addressbook/libedata-book/e-book-cache.c:3561
-#: src/addressbook/libedata-book/e-book-sqlite.c:5933
+#: src/addressbook/libedata-book/e-book-cache.c:3566
+#: src/addressbook/libedata-book/e-book-sqlite.c:5939
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Запрос содержит неподдерживаемые элементы"
@@ -1108,8 +1108,8 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Невозможно отсортировать по полю, которое имеет несколько значений"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6210
-#: src/addressbook/libedata-book/e-book-cache.c:6164
-#: src/addressbook/libedata-book/e-book-sqlite.c:8231
+#: src/addressbook/libedata-book/e-book-cache.c:6169
+#: src/addressbook/libedata-book/e-book-sqlite.c:8237
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1119,8 +1119,8 @@ msgstr ""
 "списка контактов"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6218
-#: src/addressbook/libedata-book/e-book-cache.c:6171
-#: src/addressbook/libedata-book/e-book-sqlite.c:8239
+#: src/addressbook/libedata-book/e-book-cache.c:6176
+#: src/addressbook/libedata-book/e-book-sqlite.c:8245
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1135,29 +1135,29 @@ msgstr ""
 msgid "Unsupported contact field “%d” specified in summary"
 msgstr "В сводке указано неподдерживаемое поле контакта «%d»"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3556
-#: src/addressbook/libedata-book/e-book-sqlite.c:5926
+#: src/addressbook/libedata-book/e-book-cache.c:3561
+#: src/addressbook/libedata-book/e-book-sqlite.c:5932
 #: src/calendar/libedata-cal/e-cal-cache.c:1703
 #: src/calendar/libedata-cal/e-cal-cache.c:3550
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Недопустимый запрос: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3741
-#: src/addressbook/libedata-book/e-book-cache.c:6847
+#: src/addressbook/libedata-book/e-book-cache.c:3746
+#: src/addressbook/libedata-book/e-book-cache.c:6852
 msgid "Invalid query for a book cursor"
 msgstr "Неверный запрос для книжного курсора"
 
-#: src/addressbook/libedata-book/e-book-cache.c:4837
+#: src/addressbook/libedata-book/e-book-cache.c:4842
 #: src/libebackend/e-cache.c:755
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Не удается открыть базу данных %s: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5503
-#: src/addressbook/libedata-book/e-book-cache.c:5550
-#: src/addressbook/libedata-book/e-book-cache.c:5597
-#: src/addressbook/libedata-book/e-book-cache.c:5649
+#: src/addressbook/libedata-book/e-book-cache.c:5508
+#: src/addressbook/libedata-book/e-book-cache.c:5555
+#: src/addressbook/libedata-book/e-book-cache.c:5602
+#: src/addressbook/libedata-book/e-book-cache.c:5654
 #: src/calendar/libedata-cal/e-cal-cache.c:2832
 #: src/calendar/libedata-cal/e-cal-cache.c:2890
 #: src/calendar/libedata-cal/e-cal-cache.c:2949
@@ -1170,51 +1170,51 @@ msgstr "Не удается открыть базу данных %s: %s"
 msgid "Object “%s” not found"
 msgstr "Объект «%s» не найден"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5709
+#: src/addressbook/libedata-book/e-book-cache.c:5714
 #: src/calendar/libedata-cal/e-cal-cache.c:3074
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Объект с дополнительным «%s» не найден"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5885
+#: src/addressbook/libedata-book/e-book-cache.c:5890
 msgid "Search by email not supported"
 msgstr "Поиск по электронной почте не поддерживается"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5896
+#: src/addressbook/libedata-book/e-book-cache.c:5901
 msgid "No email address provided"
 msgstr "Адрес электронной почты не указан"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5951
+#: src/addressbook/libedata-book/e-book-cache.c:5956
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 "Для использования курсора должно быть указано хотя бы одно поле сортировки"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5960
-#: src/addressbook/libedata-book/e-book-sqlite.c:8071
+#: src/addressbook/libedata-book/e-book-cache.c:5965
+#: src/addressbook/libedata-book/e-book-sqlite.c:8077
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Невозможно отсортировать по полю, которое имеет нестроковый тип"
 
-#: src/addressbook/libedata-book/e-book-cache.c:7038
-#: src/addressbook/libedata-book/e-book-cache.c:7197
-#: src/addressbook/libedata-book/e-book-sqlite.c:8958
-#: src/addressbook/libedata-book/e-book-sqlite.c:9119
+#: src/addressbook/libedata-book/e-book-cache.c:7043
+#: src/addressbook/libedata-book/e-book-cache.c:7202
+#: src/addressbook/libedata-book/e-book-sqlite.c:8964
+#: src/addressbook/libedata-book/e-book-sqlite.c:9125
 #, c-format
 msgid "Contact field “%s” not in summary"
 msgstr "В сводке отсутствует поле контакта «%s»"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1177
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1179
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1175
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Предварительно загруженный объект для UID «%s» недействителен"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1185
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1187
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1183
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Полученный объект для UID «%s» недействителен"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1412
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1418
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1412
 msgid ""
 "Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
@@ -1223,14 +1223,14 @@ msgstr ""
 "Обновление пропущено из-за включенного режима энергосбережения. Отключите "
 "режим энергосбережения и повторите действие."
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1418
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1424
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1418
 msgid "Refresh skipped due to being disabled on metered network."
 msgstr ""
 "Обновление пропущено, так как оно отключено в сетях с ограниченным трафиком."
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2056
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2555
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2062
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2561
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:3436
 #, c-format
 msgid "Failed to create cache “%s”:"
@@ -1244,12 +1244,12 @@ msgstr ""
 "Невозможно обновить базу данных контактов из устаревшей базы данных с более "
 "чем одной адресной книгой. Сначала удалите одну из записей в таблице «папки»."
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:6101
-#: src/addressbook/libedata-book/e-book-sqlite.c:8765
+#: src/addressbook/libedata-book/e-book-sqlite.c:6107
+#: src/addressbook/libedata-book/e-book-sqlite.c:8771
 msgid "Invalid query for EbSqlCursor"
 msgstr "Недопустимый запрос для EbSqlCursor"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:8053
+#: src/addressbook/libedata-book/e-book-sqlite.c:8059
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 "Для использования EbSqlCursor должно быть указано по крайней мере одно поле "
@@ -1337,7 +1337,7 @@ msgstr "Алфавитный индекс был установлен для н�
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Указанный URL «%s» не ссылается на календарь CalDAV"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2033
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2041
 msgid "Failed to parse response data"
 msgstr "Не удалось разобрать данные ответа"
 
@@ -2696,35 +2696,35 @@ msgstr "Невозможно получить часовой пояс кален
 msgid "Could not add calendar time zone: "
 msgstr "Невозможно добавить часовой пояс календаря: "
 
-#: src/camel/camel-cipher-context.c:194
+#: src/camel/camel-cipher-context.c:196
 #, c-format
 msgid "Signing is not supported by this cipher"
 msgstr "Подпись не поддерживается этим шифром"
 
-#: src/camel/camel-cipher-context.c:207
+#: src/camel/camel-cipher-context.c:209
 #, c-format
 msgid "Verifying is not supported by this cipher"
 msgstr "Проверка не поддерживается этим шифром"
 
-#: src/camel/camel-cipher-context.c:223
+#: src/camel/camel-cipher-context.c:225
 #, c-format
 msgid "Encryption is not supported by this cipher"
 msgstr "Шифрование не поддерживается этим шифром"
 
-#: src/camel/camel-cipher-context.c:237
+#: src/camel/camel-cipher-context.c:239
 #, c-format
 msgid "Decryption is not supported by this cipher"
 msgstr "Расшифровка не поддерживается этим шифром"
 
-#: src/camel/camel-cipher-context.c:352
+#: src/camel/camel-cipher-context.c:354
 msgid "Signing message"
 msgstr "Сообщение подписывается"
 
-#: src/camel/camel-cipher-context.c:645
+#: src/camel/camel-cipher-context.c:647
 msgid "Encrypting message"
 msgstr "Сообщение шифруется"
 
-#: src/camel/camel-cipher-context.c:820
+#: src/camel/camel-cipher-context.c:822
 msgid "Decrypting message"
 msgstr "Сообщение расшифровывается"
 
@@ -3013,23 +3013,23 @@ msgid "Release unused memory for folder “%s : %s”"
 msgstr "Освободите неиспользуемую память для папки «%s : %s»"
 
 #. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:462
+#: src/camel/camel-gpg-context.c:623
 #, c-format
 msgid "Output from %s:"
 msgstr "Вывод из %s:"
 
-#: src/camel/camel-gpg-context.c:980 src/camel/camel-gpg-context.c:985
-#: src/camel/camel-gpg-context.c:1795
+#: src/camel/camel-gpg-context.c:1177 src/camel/camel-gpg-context.c:1182
+#: src/camel/camel-gpg-context.c:2061
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Сбой при исполнении gpg: %s"
 
-#: src/camel/camel-gpg-context.c:985
+#: src/camel/camel-gpg-context.c:1182
 #: src/camel/providers/smtp/camel-smtp-transport.c:1217
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: src/camel/camel-gpg-context.c:1097
+#: src/camel/camel-gpg-context.c:1294
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -3040,17 +3040,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/camel/camel-gpg-context.c:1133
+#: src/camel/camel-gpg-context.c:1330
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Ошибка при обработке подсказки gpg userid."
 
-#: src/camel/camel-gpg-context.c:1158 src/camel/camel-gpg-context.c:1173
+#: src/camel/camel-gpg-context.c:1355 src/camel/camel-gpg-context.c:1370
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Ошибка при обработке запроса парольной фразы gpg."
 
-#: src/camel/camel-gpg-context.c:1194
+#: src/camel/camel-gpg-context.c:1397
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -3059,7 +3059,7 @@ msgstr ""
 "Вам нужен PIN-код, чтобы разблокировать ключ для вашей\n"
 "смарт-карты: «%s»"
 
-#: src/camel/camel-gpg-context.c:1198
+#: src/camel/camel-gpg-context.c:1401
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -3068,12 +3068,12 @@ msgstr ""
 "Для разблокировки ключа необходима парольная фраза для\n"
 "пользователя: «%s»"
 
-#: src/camel/camel-gpg-context.c:1204
+#: src/camel/camel-gpg-context.c:1407
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "Неожиданный запрос от GnuPG для «%s»"
 
-#: src/camel/camel-gpg-context.c:1216
+#: src/camel/camel-gpg-context.c:1419
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -3082,26 +3082,26 @@ msgstr ""
 "получателе, поэтому для каждого хранимого закрытого ключа будет "
 "запрашиваться пароль."
 
-#: src/camel/camel-gpg-context.c:1247 src/camel/camel-net-utils.c:524
+#: src/camel/camel-gpg-context.c:1450 src/camel/camel-net-utils.c:524
 #: src/camel/providers/nntp/camel-nntp-summary.c:393
 #: src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
 msgstr "Отменено"
 
-#: src/camel/camel-gpg-context.c:1268
+#: src/camel/camel-gpg-context.c:1472
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr ""
 "Сбой при разблокировании секретного ключа: указано 3 некорректных парольных "
 "фразы."
 
-#: src/camel/camel-gpg-context.c:1281
+#: src/camel/camel-gpg-context.c:1485
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Неожиданный ответ от GnuPG: %s"
 
-#: src/camel/camel-gpg-context.c:1398
+#: src/camel/camel-gpg-context.c:1602
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr ""
@@ -3109,7 +3109,7 @@ msgstr ""
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1419
+#: src/camel/camel-gpg-context.c:1623
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
@@ -3120,108 +3120,122 @@ msgstr ""
 "получателя."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1426
+#: src/camel/camel-gpg-context.c:1630
 #, c-format
 msgid "Failed to encrypt: The public key for recipient %s was not found."
-msgstr "Не удалось зашифровать: Публичный ключ для получателя %s не найден."
+msgstr "Не удалось зашифровать: Открытый ключ для получателя %s не найден."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1433
+#: src/camel/camel-gpg-context.c:1637
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is revoked."
 msgstr "Не удалось зашифровать: Ключ для получателя %s отозван."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1440
+#: src/camel/camel-gpg-context.c:1644
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is expired."
 msgstr "Не удалось зашифровать: Ключ для получателя %s истек."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1447
+#: src/camel/camel-gpg-context.c:1651
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is not trusted."
 msgstr "Не удалось зашифровать: Ключ для получателя %s не является доверенным."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1454
+#: src/camel/camel-gpg-context.c:1658
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is disabled."
 msgstr "Не удалось зашифровать: Ключ для получателя %s отключен."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1462
+#: src/camel/camel-gpg-context.c:1666
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified (code %d). A common issue "
 "is that the %s doesn’t have imported public key for this recipient."
 msgstr ""
 "Не удалось зашифровать: Указан недопустимый получатель %s (код %d). Частая "
-"проблема заключается в том, что у %s нет импортированного публичного ключа "
+"проблема заключается в том, что у %s нет импортированного открытого ключа "
 "для этого получателя."
 
-#: src/camel/camel-gpg-context.c:2319 src/camel/camel-smime-context.c:1041
+#: src/camel/camel-gpg-context.c:1727 src/camel/camel-gpg-context.c:1738
+#, c-format
+msgid "Failed to pass command to GPG: %s"
+msgstr "Не удалось передать GPG команду: %s"
+
+#: src/camel/camel-gpg-context.c:2585 src/camel/camel-smime-context.c:1041
 msgid "Could not generate signing data: "
 msgstr "Не удалось создать данные подписи: "
 
-#: src/camel/camel-gpg-context.c:2370 src/camel/camel-gpg-context.c:2609
-#: src/camel/camel-gpg-context.c:2749 src/camel/camel-gpg-context.c:2926
-#: src/camel/camel-gpg-context.c:3280 src/camel/camel-gpg-context.c:3367
-#: src/camel/camel-gpg-context.c:3449
+#: src/camel/camel-gpg-context.c:2636 src/camel/camel-gpg-context.c:2875
+#: src/camel/camel-gpg-context.c:3016 src/camel/camel-gpg-context.c:3193
+#: src/camel/camel-gpg-context.c:3548 src/camel/camel-gpg-context.c:3635
+#: src/camel/camel-gpg-context.c:3928 src/camel/camel-gpg-context.c:4026
+#: src/camel/camel-gpg-context.c:4111 src/camel/camel-gpg-context.c:4178
 msgid "Failed to execute gpg."
 msgstr "Сбой при исполнении gpg."
 
-#: src/camel/camel-gpg-context.c:2477 src/camel/camel-gpg-context.c:2485
-#: src/camel/camel-gpg-context.c:2493 src/camel/camel-gpg-context.c:2513
+#: src/camel/camel-gpg-context.c:2743 src/camel/camel-gpg-context.c:2751
+#: src/camel/camel-gpg-context.c:2759 src/camel/camel-gpg-context.c:2779
 #: src/camel/camel-smime-context.c:1172 src/camel/camel-smime-context.c:1186
 #: src/camel/camel-smime-context.c:1198
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Не удалось проверить подпись сообщения: Неверный формат сообщения"
 
-#: src/camel/camel-gpg-context.c:2559
+#: src/camel/camel-gpg-context.c:2825
 msgid "Cannot verify message signature: "
 msgstr "Не удалось проверить подпись сообщения: "
 
-#: src/camel/camel-gpg-context.c:2707
+#: src/camel/camel-gpg-context.c:2974
 msgid "Could not generate encrypting data: "
 msgstr "Не удалось создать данные шифрования: "
 
-#: src/camel/camel-gpg-context.c:2789
+#: src/camel/camel-gpg-context.c:3056
 msgid "This is a digitally encrypted message part"
 msgstr "Это зашифрованная часть сообщения"
 
-#: src/camel/camel-gpg-context.c:2849 src/camel/camel-gpg-context.c:2858
-#: src/camel/camel-gpg-context.c:2881
+#: src/camel/camel-gpg-context.c:3116 src/camel/camel-gpg-context.c:3125
+#: src/camel/camel-gpg-context.c:3148
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Не удалось декодировать сообщение: Неверный формат сообщения"
 
-#: src/camel/camel-gpg-context.c:2869
+#: src/camel/camel-gpg-context.c:3136
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Сбой при декодировании части MIME: ошибка протокола"
 
-#: src/camel/camel-gpg-context.c:2941
+#: src/camel/camel-gpg-context.c:3208
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "Сбой при декодировании части MIME: секретный ключ не найден"
 
-#: src/camel/camel-gpg-context.c:2978
+#: src/camel/camel-gpg-context.c:3245
 #, c-format
 msgid "GPG blob contains unencrypted text: %s"
 msgstr "Блок GPG содержит незашифрованный текст: %s"
 
-#: src/camel/camel-gpg-context.c:2980 src/camel/camel-smime-context.c:1724
+#: src/camel/camel-gpg-context.c:3247 src/camel/camel-smime-context.c:1724
 msgid "Encrypted content"
 msgstr "Зашифрованное содержимое"
 
-#: src/camel/camel-gpg-context.c:3287 src/camel/camel-gpg-context.c:3374
+#: src/camel/camel-gpg-context.c:3555 src/camel/camel-gpg-context.c:3642
+#: src/camel/camel-gpg-context.c:3935 src/camel/camel-gpg-context.c:3946
 #, c-format
-#| msgid "Object “%s” not found"
 msgid "Public key “%s” was not found"
-msgstr "Открытый ключ “%s” не найден"
+msgstr "Открытый ключ «%s» не найден"
+
+#: src/camel/camel-gpg-context.c:4033
+msgid "No public key was found in the provided data"
+msgstr "В предоставленных данных не найдено открытого ключа"
+
+#: src/camel/camel-gpg-context.c:4046
+msgid "Key information was not found in the provided data"
+msgstr "В предоставленных данных не найдена информация о ключе"
 
 #: src/camel/camel-junk-filter.c:167
 msgid "Synchronizing junk database"
@@ -3514,7 +3528,7 @@ msgstr "Недопустимый ответ сервера\n"
 #: src/camel/camel-sasl-digest-md5.c:867
 #, c-format
 msgid "Server challenge contained invalid “Quality of Protection” token"
-msgstr "Ответ сервера содержит недопустимый токен «Качество защиты»"
+msgstr "Ответ сервера содержит недопустимый маркер «Качество защиты»"
 
 #: src/camel/camel-sasl-digest-md5.c:900
 #, c-format
@@ -3664,7 +3678,7 @@ msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
 msgstr ""
-"Эта опция подключает к серверу, основанному на Windows, используя для "
+"Этот параметр подключает к серверу, основанному на Windows, используя для "
 "аутентификации NTLM / Secure Password Authentication."
 
 #: src/camel/camel-sasl-plain.c:35
@@ -3700,7 +3714,7 @@ msgstr "OAuth2"
 #: src/camel/camel-sasl-xoauth2.c:27
 msgid "This option will use an OAuth 2.0 access token to connect to the server"
 msgstr ""
-"Эта опция будет использовать маркер доступа OAuth 2.0 для подключения к "
+"Этот параметр будет использовать маркер доступа OAuth 2.0 для подключения к "
 "серверу"
 
 #: src/camel/camel-sasl-xoauth2-google.c:23
@@ -3736,7 +3750,7 @@ msgid ""
 "This option will use an OAuth 2.0 access token to connect to the Yahoo! "
 "server"
 msgstr ""
-"Эта опция будет использовать токен доступа OAuth 2.0 для подключения к "
+"Этот параметр будет использовать маркер доступа OAuth 2.0 для подключения к "
 "серверу Yahoo!"
 
 #: src/camel/camel-search-private.c:114
@@ -6287,7 +6301,7 @@ msgid ""
 "can be stored"
 msgstr ""
 "Полный путь к каталогу, в котором могут храниться файлы .source с "
-"предварительно настроенными опциями"
+"предварительно настроенными параметрами"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:35
 msgid ""
@@ -6887,38 +6901,49 @@ msgstr "Нет объекта JSON, возвращенного сервером"
 msgid "Failed to call %s: "
 msgstr "Не удалось вызвать %s: "
 
-#: src/libedataserver/e-oauth2-service.c:1026
+#: src/libedataserver/e-oauth2-service.c:1061
 msgid "Malformed, no message body set"
 msgstr "Неправильно сформировано, тело сообщения не установлено"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1306
+#: src/libedataserver/e-oauth2-service.c:1343
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Источник «%s» (%s) не действителен для «%s» сервиса OAuth2"
 
-#: src/libedataserver/e-oauth2-service.c:1321
+#: src/libedataserver/e-oauth2-service.c:1358
 msgid "OAuth2 secret not found"
 msgstr "Секрет OAuth2 не найден"
 
-#: src/libedataserver/e-oauth2-service.c:1518
+#: src/libedataserver/e-oauth2-service.c:1555
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Получен неверный ответ от сервера «%s»."
 
-#: src/libedataserver/e-oauth2-service.c:1527
+#: src/libedataserver/e-oauth2-service.c:1578
+#, c-format
+msgid ""
+"Failed to refresh access token. Sign to the server again, please.\n"
+"\n"
+"Detailed error: %s"
+msgstr ""
+"Не удалось обновить маркер доступа. Пожалуйста, повторите вход на сервер.\n"
+"\n"
+"Подробно об ошибке: %s"
+
+#: src/libedataserver/e-oauth2-service.c:1581
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 "Не удалось обновить маркер доступа. Повторите вход на сервер, пожалуйста."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1570
+#: src/libedataserver/e-oauth2-service.c:1627
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Источник «%s» (%s) не является действительным источником OAuth2"
 
-#: src/libedataserver/e-oauth2-service.c:1854
+#: src/libedataserver/e-oauth2-service.c:1911
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -7208,8 +7233,8 @@ msgstr "Не удалось разместить данные"
 #: src/libedataserver/e-webdav-session.c:1424
 #: src/libedataserver/e-webdav-session.c:1534
 #: src/libedataserver/e-webdav-session.c:1625
-#: src/libedataserver/e-webdav-session.c:2749
-#: src/libedataserver/e-webdav-session.c:4025
+#: src/libedataserver/e-webdav-session.c:2793
+#: src/libedataserver/e-webdav-session.c:4069
 msgid "Failed to get input XML content"
 msgstr "Не удалось получить входное XML-содержимое"
 
@@ -7258,89 +7283,89 @@ msgstr "Не удалось разместить данные"
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Не удалось передать данные на сервер, код ошибки %d (%s)"
 
-#: src/libedataserver/e-webdav-session.c:2551
+#: src/libedataserver/e-webdav-session.c:2595
 msgid "Failed to delete resource"
 msgstr "Не удалось удалить ресурс"
 
-#: src/libedataserver/e-webdav-session.c:2610
+#: src/libedataserver/e-webdav-session.c:2654
 msgid "Failed to copy resource"
 msgstr "Не удалось скопировать ресурс"
 
-#: src/libedataserver/e-webdav-session.c:2664
+#: src/libedataserver/e-webdav-session.c:2708
 msgid "Failed to move resource"
 msgstr "Не удалось переместить ресурс"
 
-#: src/libedataserver/e-webdav-session.c:2760
+#: src/libedataserver/e-webdav-session.c:2804
 msgid "Failed to lock resource"
 msgstr "Не удалось заблокировать ресурс"
 
-#: src/libedataserver/e-webdav-session.c:2774
-#: src/libedataserver/e-webdav-session.c:2961
+#: src/libedataserver/e-webdav-session.c:2818
+#: src/libedataserver/e-webdav-session.c:3005
 msgid "Expected application/xml response, but none returned"
 msgstr "Ожидался ответ в формате application/xml, но он не был получен"
 
-#: src/libedataserver/e-webdav-session.c:2777
-#: src/libedataserver/e-webdav-session.c:2964
+#: src/libedataserver/e-webdav-session.c:2821
+#: src/libedataserver/e-webdav-session.c:3008
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "Ожидался ответ application/xml, но было получено %s"
 
-#: src/libedataserver/e-webdav-session.c:2789
-#: src/libedataserver/e-webdav-session.c:2977
+#: src/libedataserver/e-webdav-session.c:2833
+#: src/libedataserver/e-webdav-session.c:3021
 msgid "Failed to parse XML data"
 msgstr "Не удалось разобрать данные XML"
 
-#: src/libedataserver/e-webdav-session.c:2860
+#: src/libedataserver/e-webdav-session.c:2904
 msgid "Failed to refresh lock"
 msgstr "Не удалось обновить блокировку"
 
-#: src/libedataserver/e-webdav-session.c:2911
+#: src/libedataserver/e-webdav-session.c:2955
 msgid "Failed to unlock"
 msgstr "Не удалось разблокировать"
 
-#: src/libedataserver/e-webdav-session.c:2949
+#: src/libedataserver/e-webdav-session.c:2993
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Ожидался мультистатусный ответ, но %d возвращается (%s)"
 
-#: src/libedataserver/e-webdav-session.c:2986
+#: src/libedataserver/e-webdav-session.c:3030
 msgid "XML data does not have root node"
 msgstr "XML-данные не имеют корневого узла"
 
-#: src/libedataserver/e-webdav-session.c:3009
+#: src/libedataserver/e-webdav-session.c:3053
 #, c-format
 msgid "XML data doesn't have required structure (%s)"
 msgstr "XML-данные не имеют требуемой структуры (%s)"
 
-#: src/libedataserver/e-webdav-session.c:4035
+#: src/libedataserver/e-webdav-session.c:4079
 msgid "Failed to get access control list"
 msgstr "Не удалось получить список управления доступом"
 
-#: src/libedataserver/e-webdav-session.c:4770
+#: src/libedataserver/e-webdav-session.c:4814
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 "Невозможно хранить защищенные или унаследованные записи контроля доступа."
 
-#: src/libedataserver/e-webdav-session.c:4777
+#: src/libedataserver/e-webdav-session.c:4821
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Предоставляется недействительный основной вид для контроля доступа."
 
-#: src/libedataserver/e-webdav-session.c:4784
+#: src/libedataserver/e-webdav-session.c:4828
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Невозможно сохранить запись контроля доступа на основе свойств."
 
-#: src/libedataserver/e-webdav-session.c:4791
+#: src/libedataserver/e-webdav-session.c:4835
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Ввод контроля доступа может быть только Разрешить или Запретить, но не Нет."
 
-#: src/libedataserver/e-webdav-session.c:4799
+#: src/libedataserver/e-webdav-session.c:4843
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Ввод контроля доступа может быть только Разрешить или Запретить, но не оба "
 "варианта."
 
-#: src/libedataserver/e-webdav-session.c:4858
+#: src/libedataserver/e-webdav-session.c:4902
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Привилегия Access Control Entry не может быть NULL."
 
@@ -7471,7 +7496,7 @@ msgstr "Алгоритм подписи"
 
 #: src/libedataserverui/e-certificate-widget.c:441
 msgid "Public Key"
-msgstr "Публичный ключ"
+msgstr "Открытый ключ"
 
 #: src/libedataserverui/e-certificate-widget.c:441
 msgid "Algorithm"
@@ -7495,7 +7520,7 @@ msgstr "Не удалось получить маркер доступа с ад
 
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:295
 msgid "Requesting access token, please wait…"
-msgstr "Запрашивается токен доступа, пожалуйста, подождите…"
+msgstr "Запрашивается маркер доступа, пожалуйста, подождите…"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
@@ -8045,9 +8070,9 @@ msgid ""
 "Overrides compile-time backend per process option; use 1 to enable, 0 to "
 "disable, any other value is to use compile-time option"
 msgstr ""
-"Переопределяет опцию compile-time backend per process; используйте 1 для "
-"включения, 0 для отключения, любое другое значение будет использовать опцию "
-"compile-time"
+"Переопределяет параметр compile-time backend per process; используйте 1 для "
+"включения, 0 для отключения, любое другое значение будет использовать "
+"параметр compile-time"
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:332
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:343
@@ -8167,8 +8192,8 @@ msgstr "[vcard|csv]"
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
-"Ошибка аргументов командной строки, пожалуйста, используйте опцию --help для "
-"просмотра использования."
+"Ошибка аргументов командной строки, пожалуйста, используйте параметр --help "
+"для просмотра использования."
 
 #: src/tools/addressbook-export/addressbook-export.c:992
 msgid "Only support csv or vcard format."
