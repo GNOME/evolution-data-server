@@ -986,6 +986,8 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 		break;
 	case GPG_CTX_MODE_GET_PUBLIC_KEY:
 		g_ptr_array_add (argv, (guint8 *) "--export");
+		g_ptr_array_add (argv, (guint8 *) "--export-options");
+		g_ptr_array_add (argv, (guint8 *) "export-minimal,no-export-attributes");
 		if (gpg->userids) {
 			GSList *uiter;
 
