@@ -2599,7 +2599,7 @@ e_reminder_watcher_load_clock_format (EReminderWatcher *watcher)
 
 		/* We want to differentiate between strftime() failures and
 		 * empty %p strings, hence the space in " %p". */
-		watcher->priv->use_24h_format = e_utf8_strftime (buf, sizeof buf, " %p", &now_tm) == 1;
+		watcher->priv->use_24h_format = e_utf8_strftime (buf, sizeof (buf), " %p", &now_tm) == 1;
 
 		return;
 	}

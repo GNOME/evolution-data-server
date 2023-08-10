@@ -370,7 +370,7 @@ ecw_dup_issuer_fingerprint_sha256 (CERTCertificate *cert)
 	if (!cert->derIssuer.data || !cert->derIssuer.len)
 		return NULL;
 
-	memset (fingerprint, 0, sizeof fingerprint);
+	memset (fingerprint, 0, sizeof (fingerprint));
 	PK11_HashBuf (SEC_OID_SHA256, fingerprint, cert->derIssuer.data, cert->derIssuer.len);
 
 	return ecw_dup_hexify (fingerprint, SHA256_LENGTH);
@@ -381,7 +381,7 @@ ecw_dup_fingerprint_sha256 (CERTCertificate *cert)
 {
 	guchar fingerprint[SHA256_LENGTH + 1];
 
-	memset (fingerprint, 0, sizeof fingerprint);
+	memset (fingerprint, 0, sizeof (fingerprint));
 	PK11_HashBuf (SEC_OID_SHA256, fingerprint, cert->derCert.data, cert->derCert.len);
 
 	return ecw_dup_hexify (fingerprint, SHA256_LENGTH);
