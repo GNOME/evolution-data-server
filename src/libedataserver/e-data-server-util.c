@@ -2854,6 +2854,7 @@ e_util_can_use_collection_as_credential_source (ESource *collection_source,
 
 				can_use_collection = !method_source || !method_collection ||
 					g_ascii_strcasecmp (method_source, "none") == 0 ||
+					g_ascii_strcasecmp (method_collection, "none") == 0 ||
 					g_ascii_strcasecmp (method_source, method_collection) == 0;
 
 				g_free (method_source);
