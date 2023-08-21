@@ -78,7 +78,7 @@ e_cal_component_text_new_from_property (const ICalProperty *property)
 {
 	ECalComponentText *text;
 
-	g_return_val_if_fail (I_CAL_IS_PROPERTY (property), NULL);
+	g_return_val_if_fail (I_CAL_IS_PROPERTY ((ICalProperty *) property), NULL);
 
 	text = e_cal_component_text_new (NULL, NULL);
 
@@ -150,7 +150,7 @@ e_cal_component_text_set_from_property (ECalComponentText *text,
 	ICalParameter *param;
 
 	g_return_if_fail (text != NULL);
-	g_return_if_fail (I_CAL_IS_PROPERTY (property));
+	g_return_if_fail (I_CAL_IS_PROPERTY ((ICalProperty *) property));
 
 	value = i_cal_property_get_value (property);
 
