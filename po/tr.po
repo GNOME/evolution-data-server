@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.tr\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2023-05-18 07:36+0000\n"
-"PO-Revision-Date: 2023-05-12 13:46+0300\n"
+"POT-Creation-Date: 2023-08-10 14:16+0000\n"
+"PO-Revision-Date: 2023-08-16 22:30+0300\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Türkçe <takim@gnome.org.tr>\n"
 "Language: tr\n"
@@ -29,43 +29,41 @@ msgstr ""
 "X-Generator: Poedit 3.2.2\n"
 "X-POOTLE-MTIME: 1433363404.000000\n"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:274
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:276
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Verilen URL “%s”, CardDAV adres defterine ait değil"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1161
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1374
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:992
-msgid "Server didn’t return object’s href"
-msgstr "Sunucu nesnenin hrefʼini döndürmedi"
-
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1163
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1376
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:994
+msgid "Server didn’t return object’s href"
+msgstr "Sunucu nesnenin hrefʼini döndürmedi"
+
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1165
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1378
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:996
 msgid "Server didn’t return object’s ETag"
 msgstr "Sunucu nesnenin ETagʼini döndürmedi"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1165
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1167
 msgid "Received object is not a valid vCard"
 msgstr "Alınan nesne geçerli bir vCard değil"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1286
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1516
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1252
-#, fuzzy, c-format
-#| msgid ""
-#| "Missing information about component URL, local cache is possibly "
-#| "incomplete or broken. Remove it, please."
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1288
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1518
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1254
+#, c-format
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. You can try to remove it and restart background evolution-data-"
 "server processes. Cache file: %s"
 msgstr ""
-"Bileşen URLʼsi hakkında eksik bilgi, yerel önbellek eksik veya hatalı, "
-"düzeltin veya kaldırın."
+"Bileşen URLʼsi hakkında eksik bilgi, yerel önbellek eksik veya hatalı. Onu "
+"kaldırmayı ve evolution-data-server arka plan süreçlerini yeniden başlatmayı "
+"deneyebilirsiniz. Önbellek dosyası: %s"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1292
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1294
 msgid "Object to save is not a valid vCard"
 msgstr "Kaydedilecek nesne geçerli bir vCard değil"
 
@@ -85,7 +83,7 @@ msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "“%s” kaynağı için hardlink oluşturulamadı: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:735
-#: src/addressbook/backends/file/e-book-backend-file.c:1480
+#: src/addressbook/backends/file/e-book-backend-file.c:1502
 msgid "No UID in the contact"
 msgstr "Bağlantıda UID yok"
 
@@ -103,38 +101,38 @@ msgstr "Yükleniyor..."
 msgid "Searching..."
 msgstr "Aranıyor..."
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1508
+#: src/addressbook/backends/file/e-book-backend-file.c:1530
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
-msgstr "“%s” kişisi eşlenmemiş bir sürümle düzenlenmeye çalışıldı"
+msgstr "“%s” bağlantısı eşlenmemiş bir sürümle düzenlenmeye çalışıldı"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1689
-#: src/addressbook/backends/file/e-book-backend-file.c:1775
+#: src/addressbook/backends/file/e-book-backend-file.c:1711
+#: src/addressbook/backends/file/e-book-backend-file.c:1797
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3077
-#: src/addressbook/libedata-book/e-book-sqlite.c:7378
-#: src/addressbook/libedata-book/e-book-sqlite.c:7447
+#: src/addressbook/libedata-book/e-book-sqlite.c:7463
+#: src/addressbook/libedata-book/e-book-sqlite.c:7532
 #, c-format
 msgid "Contact “%s” not found"
-msgstr "“%s” kişisi bulunamadı"
+msgstr "“%s” bağlantısı bulunamadı"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1839
-#: src/addressbook/backends/file/e-book-backend-file.c:1922
+#: src/addressbook/backends/file/e-book-backend-file.c:1861
+#: src/addressbook/backends/file/e-book-backend-file.c:1944
 #, c-format
 msgid "Query “%s” not supported"
 msgstr "“%s” sorgusu desteklenmiyor"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1848
-#: src/addressbook/backends/file/e-book-backend-file.c:1931
+#: src/addressbook/backends/file/e-book-backend-file.c:1870
+#: src/addressbook/backends/file/e-book-backend-file.c:1953
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr "Geçersiz Sorgu “%s”"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:2236
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2147
+#: src/addressbook/backends/file/e-book-backend-file.c:2260
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2192
 msgid "Requested to delete an unrelated cursor"
 msgstr "İlgisiz bir imlecin silinmesi istendi"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:2320
+#: src/addressbook/backends/file/e-book-backend-file.c:2387
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Eski veri tabanını “%s”, “%s” olarak adlandırılamadı: %s"
@@ -155,7 +153,7 @@ msgstr "Eski veri tabanını “%s”, “%s” olarak adlandırılamadı: %s"
 #: src/addressbook/libebook/e-book-client.c:3278
 #: src/addressbook/libebook/e-book-client.c:3473
 #: src/addressbook/libebook/e-book-client.c:3691
-#: src/addressbook/libedata-book/e-book-backend-sexp.c:873
+#: src/addressbook/libedata-book/e-book-backend-sexp.c:898
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:288
 #: src/calendar/backends/http/e-cal-backend-http.c:312
 #: src/calendar/libecal/e-cal-client.c:257
@@ -178,15 +176,15 @@ msgstr "Eski veri tabanını “%s”, “%s” olarak adlandırılamadı: %s"
 #: src/calendar/libecal/e-cal-client.c:6648
 #: src/calendar/libecal/e-cal-client.c:6872
 #: src/calendar/libedata-cal/e-cal-cache.c:1837
-#: src/camel/camel-filter-driver.c:1724 src/camel/camel-filter-driver.c:1853
-#: src/camel/providers/imapx/camel-imapx-server.c:3331
-#: src/camel/providers/imapx/camel-imapx-server.c:3337
-#: src/camel/providers/imapx/camel-imapx-server.c:3347
-#: src/camel/providers/imapx/camel-imapx-server.c:3359
+#: src/camel/camel-filter-driver.c:1758 src/camel/camel-filter-driver.c:1887
+#: src/camel/providers/imapx/camel-imapx-server.c:3336
+#: src/camel/providers/imapx/camel-imapx-server.c:3342
+#: src/camel/providers/imapx/camel-imapx-server.c:3352
+#: src/camel/providers/imapx/camel-imapx-server.c:3364
 #: src/camel/providers/nntp/camel-nntp-store.c:419
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
-#: src/libedataserver/e-soup-session.c:1019
-#: src/libedataserver/e-soup-session.c:1899
+#: src/libedataserver/e-soup-session.c:1025
+#: src/libedataserver/e-soup-session.c:1905
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:266
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
 #: src/libedataserverui/e-reminders-widget.c:2141
@@ -268,8 +266,8 @@ msgid "Downloading contacts (%d)..."
 msgstr "Bağlantılar indiriliyor (%d)..."
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5111
-#: src/addressbook/libedata-book/e-book-meta-backend.c:845
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:745
+#: src/addressbook/libedata-book/e-book-meta-backend.c:883
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:768
 msgid "Refreshing…"
 msgstr "Tazeleniyor…"
 
@@ -304,7 +302,7 @@ msgstr "Böyle bir kitap yok"
 
 #: src/addressbook/libebook-contacts/e-book-contacts-utils.c:42
 msgid "Contact not found"
-msgstr "Kişi bulunamadı"
+msgstr "Bağlantı bulunamadı"
 
 #: src/addressbook/libebook-contacts/e-book-contacts-utils.c:44
 msgid "Contact ID already exists"
@@ -985,32 +983,32 @@ msgstr "“%s” defter özelliğinin değeri değiştirilemiyor"
 msgid "Unable to connect to “%s”: "
 msgstr "“%s”e bağlanılamadı: "
 
-#: src/addressbook/libebook/e-book-client-view.c:858
+#: src/addressbook/libebook/e-book-client-view.c:988
 #: src/calendar/libecal/e-cal-client-view.c:667
 #, c-format
 msgid "Client disappeared"
 msgstr "İstemci yitirildi"
 
-#: src/addressbook/libedata-book/e-book-backend.c:3448
+#: src/addressbook/libedata-book/e-book-backend.c:3600
 #, c-format
 msgid "Addressbook backend does not support cursors"
 msgstr "Adres defteri art alanı imleçleri desteklemiyor"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:895
-#: src/addressbook/libedata-book/e-book-sqlite.c:2259
+#: src/addressbook/libedata-book/e-book-sqlite.c:2288
 #, c-format
 msgid "Error introspecting unknown summary field “%s”"
 msgstr "“%s” bilinmeyen özet alanının incelenmesinde hata"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1505
-#: src/addressbook/libedata-book/e-book-cache.c:558
-#: src/addressbook/libedata-book/e-book-sqlite.c:1398
+#: src/addressbook/libedata-book/e-book-cache.c:559
+#: src/addressbook/libedata-book/e-book-sqlite.c:1399
 msgid "Error parsing regular expression"
 msgstr "Düzenli ifade ayrıştırmada hata"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1550
-#: src/addressbook/libedata-book/e-book-cache.c:4751
-#: src/addressbook/libedata-book/e-book-sqlite.c:1882 src/camel/camel-db.c:830
+#: src/addressbook/libedata-book/e-book-cache.c:4838
+#: src/addressbook/libedata-book/e-book-sqlite.c:1911 src/camel/camel-db.c:830
 #, c-format
 msgid "Insufficient memory"
 msgstr "Yetersiz bellek"
@@ -1018,18 +1016,18 @@ msgstr "Yetersiz bellek"
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1687
 #, c-format
 msgid "Invalid contact field “%d” specified in summary"
-msgstr "Özette belirtilen kişi alanı “%d” geçersiz"
+msgstr "Özette belirtilen bağlantı alanı “%d” geçersiz"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1721
-#: src/addressbook/libedata-book/e-book-cache.c:381
-#: src/addressbook/libedata-book/e-book-sqlite.c:608
+#: src/addressbook/libedata-book/e-book-cache.c:382
+#: src/addressbook/libedata-book/e-book-sqlite.c:609
 #, c-format
 msgid ""
 "Contact field “%s” of type “%s” specified in summary, but only boolean, "
 "string and string list field types are supported"
 msgstr ""
-"Özette belirtilen “%2$s” türünün kişi alanı “%1$s”; yalnızca bool, dizgi ve "
-"dizgi listesi tipleri destekleniyor"
+"Özette belirtilen “%2$s” türünün bağlantı alanı “%1$s”; yalnızca bool, dizge "
+"ve dizge listesi tipleri destekleniyor"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3065
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4166
@@ -1041,8 +1039,8 @@ msgstr ""
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4297
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4390
-#: src/addressbook/libedata-book/e-book-cache.c:3484
-#: src/addressbook/libedata-book/e-book-sqlite.c:5854
+#: src/addressbook/libedata-book/e-book-cache.c:3566
+#: src/addressbook/libedata-book/e-book-sqlite.c:5939
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Sorgu desteklenmeyen elemanlar içeriyordu"
@@ -1105,8 +1103,8 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Birden çok değeri olabilecek bir alan sıralanamıyor"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6210
-#: src/addressbook/libedata-book/e-book-cache.c:6082
-#: src/addressbook/libedata-book/e-book-sqlite.c:8152
+#: src/addressbook/libedata-book/e-book-cache.c:6169
+#: src/addressbook/libedata-book/e-book-sqlite.c:8237
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1116,8 +1114,8 @@ msgstr ""
 "başında"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6218
-#: src/addressbook/libedata-book/e-book-cache.c:6089
-#: src/addressbook/libedata-book/e-book-sqlite.c:8160
+#: src/addressbook/libedata-book/e-book-cache.c:6176
+#: src/addressbook/libedata-book/e-book-sqlite.c:8245
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1126,83 +1124,92 @@ msgstr ""
 "İmleç bir adım ileri götürülmeye çalışıldı, ama zaten bağlantı listesinin "
 "sonunda"
 
-#: src/addressbook/libedata-book/e-book-cache.c:346
-#: src/addressbook/libedata-book/e-book-sqlite.c:574
+#: src/addressbook/libedata-book/e-book-cache.c:347
+#: src/addressbook/libedata-book/e-book-sqlite.c:575
 #, c-format
 msgid "Unsupported contact field “%d” specified in summary"
-msgstr "Özette desteklenmeyen kişi alanı “%d” belirtilmiş"
+msgstr "Özette desteklenmeyen bağlantı alanı “%d” belirtilmiş"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3479
-#: src/addressbook/libedata-book/e-book-sqlite.c:5847
+#: src/addressbook/libedata-book/e-book-cache.c:3561
+#: src/addressbook/libedata-book/e-book-sqlite.c:5932
 #: src/calendar/libedata-cal/e-cal-cache.c:1703
 #: src/calendar/libedata-cal/e-cal-cache.c:3550
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Geçersiz sorgu: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3664
+#: src/addressbook/libedata-book/e-book-cache.c:3746
+#: src/addressbook/libedata-book/e-book-cache.c:6852
 msgid "Invalid query for a book cursor"
 msgstr "Defter imleci için geçersiz sorgu"
 
-#: src/addressbook/libedata-book/e-book-cache.c:4755
+#: src/addressbook/libedata-book/e-book-cache.c:4842
 #: src/libebackend/e-cache.c:755
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "%s veri tabanı açılamadı: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5421
-#: src/addressbook/libedata-book/e-book-cache.c:5468
-#: src/addressbook/libedata-book/e-book-cache.c:5515
-#: src/addressbook/libedata-book/e-book-cache.c:5567
+#: src/addressbook/libedata-book/e-book-cache.c:5508
+#: src/addressbook/libedata-book/e-book-cache.c:5555
+#: src/addressbook/libedata-book/e-book-cache.c:5602
+#: src/addressbook/libedata-book/e-book-cache.c:5654
 #: src/calendar/libedata-cal/e-cal-cache.c:2832
 #: src/calendar/libedata-cal/e-cal-cache.c:2890
 #: src/calendar/libedata-cal/e-cal-cache.c:2949
 #: src/calendar/libedata-cal/e-cal-cache.c:3012
 #: src/calendar/libedata-cal/e-cal-cache.c:3183
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1435
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1464
 #: src/libebackend/e-cache.c:1370 src/libebackend/e-cache.c:2348
 #: src/libebackend/e-cache.c:2388
 #, c-format
 msgid "Object “%s” not found"
 msgstr "“%s” nesnesi bulunamadı"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5627
+#: src/addressbook/libedata-book/e-book-cache.c:5714
 #: src/calendar/libedata-cal/e-cal-cache.c:3074
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "“%s” ekli nesne bulunamadı"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5803
+#: src/addressbook/libedata-book/e-book-cache.c:5890
 msgid "Search by email not supported"
 msgstr "E-posta ile arama desteklenmiyor"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5814
+#: src/addressbook/libedata-book/e-book-cache.c:5901
 msgid "No email address provided"
 msgstr "E-posta adresi sağlanmadı"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5869
+#: src/addressbook/libedata-book/e-book-cache.c:5956
 msgid "At least one sort field must be specified to use a cursor"
 msgstr "İmleç kullanabilmek için en az bir sıralama alanı belirtilmeli"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5878
-#: src/addressbook/libedata-book/e-book-sqlite.c:7992
+#: src/addressbook/libedata-book/e-book-cache.c:5965
+#: src/addressbook/libedata-book/e-book-sqlite.c:8077
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Metin biçiminde olmayan alan sıralanamaz"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1143
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1152
+#: src/addressbook/libedata-book/e-book-cache.c:7043
+#: src/addressbook/libedata-book/e-book-cache.c:7202
+#: src/addressbook/libedata-book/e-book-sqlite.c:8964
+#: src/addressbook/libedata-book/e-book-sqlite.c:9125
+#, c-format
+msgid "Contact field “%s” not in summary"
+msgstr "Bağlantı alanı “%s” özet değil"
+
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1179
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1175
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "UID “%s” için önceden yüklenmiş nesne geçersiz"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1151
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1160
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1187
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1183
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "UID “%s” için alınan nesne geçersiz"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1378
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1389
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1418
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1412
 msgid ""
 "Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
 "and repeat the action."
@@ -1210,26 +1217,32 @@ msgstr ""
 "Güç Tutumu kipi etkinleştirildiğinden yenileme atlandı. Güç Tutumu kipini "
 "devre dışı bırakın ve eylemi yineleyin."
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2017
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2473
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3392
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1424
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1418
+msgid "Refresh skipped due to being disabled on metered network."
+msgstr "Kotalı ağda devre dışı bırakıldığı için yenileme atlandı."
+
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2062
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2561
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3436
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "“%s” önbelleği oluşturulamadı:"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:1955
+#: src/addressbook/libedata-book/e-book-sqlite.c:1984
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the “folders” table first."
 msgstr ""
-"Kişiler, birden çok adres defteri olan eski veri tabanından güncellenemez. "
-"Önce “folders” tablosundaki girdilerden birini silin."
+"Bağlantılar, birden çok adres defteri olan eski veri tabanından "
+"güncellenemez. Önce “folders” tablosundaki girdilerden birini silin."
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:6022
+#: src/addressbook/libedata-book/e-book-sqlite.c:6107
+#: src/addressbook/libedata-book/e-book-sqlite.c:8771
 msgid "Invalid query for EbSqlCursor"
 msgstr "EbSqlCursor için geçersiz sorgu"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:7974
+#: src/addressbook/libedata-book/e-book-sqlite.c:8059
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr "EbSqlCursor kullanmak için en az bir arama alanı belirtilmeli"
 
@@ -1266,7 +1279,7 @@ msgstr "Bağlantı listesi uidʼleri alınamadı: "
 #. Translators: This is prefix to a detailed error message
 #: src/addressbook/libedata-book/e-data-book.c:1419
 msgid "Cannot add contact: "
-msgstr "Kişi eklenemiyor: "
+msgstr "Bağlantı eklenemiyor: "
 
 #. Translators: This is prefix to a detailed error message
 #: src/addressbook/libedata-book/e-data-book.c:1470
@@ -1276,7 +1289,7 @@ msgstr "Bağlantılar düzenlenemiyor: "
 #. Translators: This is prefix to a detailed error message
 #: src/addressbook/libedata-book/e-data-book.c:1522
 msgid "Cannot remove contacts: "
-msgstr "Kişiler kaldırılamıyor: "
+msgstr "Bağlantılar kaldırılamıyor: "
 
 #. Translators: This is prefix to a detailed error message
 #: src/addressbook/libedata-book/e-data-book.c:1569
@@ -1310,12 +1323,12 @@ msgstr "İmleç hareket ettirilirken eşleşmemiş sürüm"
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Alfabetik indeks geçersiz bir yerele ayarlanmış"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:255
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:257
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Verilen URL “%s”, CalDAV takvimine ait değil"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2031
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2041
 msgid "Failed to parse response data"
 msgstr "Yanıt verisi ayrıştırılamadı"
 
@@ -1359,11 +1372,11 @@ msgid "File “%s” is not a VCALENDAR component"
 msgstr "“%s” dosyası bir VCALENDAR bileşeni değil"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: src/calendar/backends/file/e-cal-backend-file.c:3735
-#: src/calendar/backends/file/e-cal-backend-file.c:3741
-#: src/calendar/backends/file/e-cal-backend-file.c:3747
-#: src/calendar/backends/file/e-cal-backend-file.c:3774
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2619
+#: src/calendar/backends/file/e-cal-backend-file.c:3743
+#: src/calendar/backends/file/e-cal-backend-file.c:3749
+#: src/calendar/backends/file/e-cal-backend-file.c:3755
+#: src/calendar/backends/file/e-cal-backend-file.c:3782
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2663
 msgid "Unsupported method"
 msgstr "Desteklenmeyen yöntem"
 
@@ -1462,8 +1475,8 @@ msgstr "Önbellek dosyası oluşturulamadı"
 msgid "Could not create cache file: "
 msgstr "Önbellek dosyası oluşturulamadı: "
 
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1035
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1064
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1037
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1066
 msgid "New note"
 msgstr "Yeni not"
 
@@ -2376,14 +2389,14 @@ msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d saniye"
 
-#: src/calendar/libecal/e-reminder-watcher.c:2946
+#: src/calendar/libecal/e-reminder-watcher.c:3010
 msgid "No Summary"
 msgstr "Özet Yok"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:2962
+#: src/calendar/libecal/e-reminder-watcher.c:3026
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
@@ -2392,7 +2405,7 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: src/calendar/libecal/e-reminder-watcher.c:2967
+#: src/calendar/libecal/e-reminder-watcher.c:3031
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
@@ -2401,7 +2414,7 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:2972
+#: src/calendar/libecal/e-reminder-watcher.c:3036
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
@@ -2423,12 +2436,12 @@ msgstr "“%s” bir parametre istiyor"
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:1584
 #, c-format
 msgid "“%s” expects the first argument to be a string"
-msgstr "“%s” birinci parametrenin dizgi olmasını istiyor"
+msgstr "“%s” birinci parametrenin dizge olmasını istiyor"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:164
 #, c-format
 msgid "“%s” expects two or three arguments"
-msgstr "“%s” iki ya da üç değişken bekliyor"
+msgstr "“%s” iki ya da üç değişken istiyor"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:171
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:272
@@ -2449,17 +2462,17 @@ msgstr "“%s” birinci parametrenin time_t olmasını istiyor"
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:934
 #, c-format
 msgid "“%s” expects the second argument to be a time_t"
-msgstr "“%s” ikinci parametrenin bir time_t olmasını bekliyor"
+msgstr "“%s” ikinci parametrenin bir time_t olmasını istiyor"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:190
 #, c-format
 msgid "“%s” expects the third argument to be a string"
-msgstr "“%s” üçüncü parametrenin dizgi olmasını bekliyor"
+msgstr "“%s” üçüncü parametrenin dizge olmasını istiyor"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:264
 #, c-format
 msgid "“%s” expects none or two arguments"
-msgstr "“%s” hiç ya da iki parametre bekliyor"
+msgstr "“%s” hiç ya da iki parametre istiyor"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:333
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:700
@@ -2467,7 +2480,7 @@ msgstr "“%s” hiç ya da iki parametre bekliyor"
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:1638
 #, c-format
 msgid "“%s” expects two arguments"
-msgstr "“%s” iki parametre bekliyor"
+msgstr "“%s” iki parametre istiyor"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:639
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:662
@@ -2486,7 +2499,7 @@ msgstr "“%s” hiçbir parametre istemiyor"
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:716
 #, c-format
 msgid "“%s” expects the second argument to be a string"
-msgstr "“%s” ikinci parametrenin bir dizgi olmasını bekliyor"
+msgstr "“%s” ikinci parametrenin bir dizge olmasını istiyor"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:747
 #, c-format
@@ -2510,14 +2523,14 @@ msgid ""
 "“%s” expects all arguments to be strings or one and only one argument to be "
 "a boolean false (#f)"
 msgstr ""
-"“%s” tüm parametrelerin dizgi olmasını ve yalnızca bir tane parametrenin "
+"“%s” tüm parametrelerin dizge olmasını ve yalnızca bir tane parametrenin "
 "bool değeri false (#f) olmasını istiyor"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:1593
 #, c-format
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
-"“%s” birinci parametrenin ISO 8601 tarih/zaman dizgisi olmasını istiyor"
+"“%s” birinci parametrenin ISO 8601 tarih/zaman dizgesi olmasını istiyor"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:1654
 #, c-format
@@ -2549,12 +2562,20 @@ msgstr "Bileşen olmadan saat dilimi eklenemez"
 msgid "Cannot add timezone with invalid component"
 msgstr "Geçersiz bileşenle saat dilimi eklenemez"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1207
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1230
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "UID “%s” için alınan nesne herhangi bir beklenen bileşeni içermiyor"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4292
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1971
+msgid ""
+"Cannot modify all instances from a detached instance. Modify a series "
+"instance instead."
+msgstr ""
+"Ayrılmış bir örnekten tüm örnekler değiştirilemez. Bunun yerine bir seri "
+"örneğini değiştirin."
+
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4336
 msgid "attachment.dat"
 msgstr "ek.dat"
 
@@ -2628,35 +2649,35 @@ msgstr "Takvim saat dilimi alınamadı: "
 msgid "Could not add calendar time zone: "
 msgstr "Takvim saat dilimi eklenemedi: "
 
-#: src/camel/camel-cipher-context.c:194
+#: src/camel/camel-cipher-context.c:196
 #, c-format
 msgid "Signing is not supported by this cipher"
 msgstr "Bu şifreleyici ile imza desteklenmiyor"
 
-#: src/camel/camel-cipher-context.c:207
+#: src/camel/camel-cipher-context.c:209
 #, c-format
 msgid "Verifying is not supported by this cipher"
 msgstr "Bu şifreleyici ile onaylama desteklenmiyor"
 
-#: src/camel/camel-cipher-context.c:223
+#: src/camel/camel-cipher-context.c:225
 #, c-format
 msgid "Encryption is not supported by this cipher"
 msgstr "Bu şifreleyici ile şifreleme desteklenmiyor"
 
-#: src/camel/camel-cipher-context.c:237
+#: src/camel/camel-cipher-context.c:239
 #, c-format
 msgid "Decryption is not supported by this cipher"
 msgstr "Bu şifreleyici ile şifre çözümü desteklenmiyor"
 
-#: src/camel/camel-cipher-context.c:352
+#: src/camel/camel-cipher-context.c:354
 msgid "Signing message"
 msgstr "İleti imzalanıyor"
 
-#: src/camel/camel-cipher-context.c:645
+#: src/camel/camel-cipher-context.c:647
 msgid "Encrypting message"
 msgstr "İleti şifreleniyor"
 
-#: src/camel/camel-cipher-context.c:820
+#: src/camel/camel-cipher-context.c:822
 msgid "Decrypting message"
 msgstr "İletinin şifresi çözülüyor"
 
@@ -2687,84 +2708,84 @@ msgstr "“%s”, %s olarak yeniden adlandırılamadı: %s"
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr "“%s : %s” içerisindeki süzülen iletiler aktarılıyor"
 
-#: src/camel/camel-filter-driver.c:1126 src/camel/camel-filter-search.c:936
+#: src/camel/camel-filter-driver.c:1160 src/camel/camel-filter-search.c:936
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "“%s” alt süreci oluşturulamadı: %s"
 
-#: src/camel/camel-filter-driver.c:1180
+#: src/camel/camel-filter-driver.c:1214
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "%s adresinden geçersiz ileti alındı: %s"
 
-#: src/camel/camel-filter-driver.c:1404 src/camel/camel-filter-driver.c:1417
+#: src/camel/camel-filter-driver.c:1438 src/camel/camel-filter-driver.c:1451
 msgid "Syncing folders"
 msgstr "Klasörler eşzamanlanıyor"
 
-#: src/camel/camel-filter-driver.c:1525
+#: src/camel/camel-filter-driver.c:1559
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "%s süzgecini ayrıştırırken hata oluştu: %s"
 
-#: src/camel/camel-filter-driver.c:1536
+#: src/camel/camel-filter-driver.c:1570
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "%s süzgecini çalıştırırken hata oluştu: %s"
 
-#: src/camel/camel-filter-driver.c:1634
+#: src/camel/camel-filter-driver.c:1668
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Kuyruk klasörü açılamadı"
 
-#: src/camel/camel-filter-driver.c:1646
+#: src/camel/camel-filter-driver.c:1680
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Kuyruk klasörü işlenemedi"
 
-#: src/camel/camel-filter-driver.c:1674
+#: src/camel/camel-filter-driver.c:1708
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "%d (%%%d) iletisi alınıyor"
 
-#: src/camel/camel-filter-driver.c:1683 src/camel/camel-filter-driver.c:1706
+#: src/camel/camel-filter-driver.c:1717 src/camel/camel-filter-driver.c:1740
 #, c-format
 msgid "Failed on message %d"
 msgstr "%d iletisinde hata"
 
-#: src/camel/camel-filter-driver.c:1724 src/camel/camel-filter-driver.c:1853
+#: src/camel/camel-filter-driver.c:1758 src/camel/camel-filter-driver.c:1887
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "İletiler aktarılamadı: %s"
 
-#: src/camel/camel-filter-driver.c:1734 src/camel/camel-filter-driver.c:1878
+#: src/camel/camel-filter-driver.c:1768 src/camel/camel-filter-driver.c:1912
 msgid "Syncing folder"
 msgstr "Klasör eşzamanlanıyor"
 
-#: src/camel/camel-filter-driver.c:1739 src/camel/camel-filter-driver.c:1886
+#: src/camel/camel-filter-driver.c:1773 src/camel/camel-filter-driver.c:1920
 msgid "Complete"
 msgstr "Tamamlandı"
 
-#: src/camel/camel-filter-driver.c:1807
+#: src/camel/camel-filter-driver.c:1841
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "%d/%d ileti alınıyor"
 
-#: src/camel/camel-filter-driver.c:1825
+#: src/camel/camel-filter-driver.c:1859
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "%d/%d iletisinde hata"
 
-#: src/camel/camel-filter-driver.c:2042 src/camel/camel-filter-driver.c:2066
+#: src/camel/camel-filter-driver.c:2076 src/camel/camel-filter-driver.c:2100
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "“%s” süzgeci çalıştırılamadı: "
 
-#: src/camel/camel-filter-driver.c:2056
+#: src/camel/camel-filter-driver.c:2090
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "“%s” süzgeci ayrıştırılırken hata: %s: %s"
 
-#: src/camel/camel-filter-driver.c:2075
+#: src/camel/camel-filter-driver.c:2109
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "“%s” süzgeci çalıştırılırken hata: %s: %s"
@@ -2898,7 +2919,7 @@ msgstr "(%s) %s içinde izin verilmedi"
 #: src/camel/camel-folder-search.c:1018 src/camel/camel-folder-search.c:1026
 #, c-format
 msgid "(%s) requires a match type string"
-msgstr "(%s) dizgi eşleme türü gerektiriyor"
+msgstr "(%s) dizge eşleme türü gerektiriyor"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
 #: src/camel/camel-folder-search.c:1054
@@ -2939,23 +2960,23 @@ msgid "Release unused memory for folder “%s : %s”"
 msgstr "“%s : %s” klasörü için kullanılmayan belleği serbest bırak"
 
 #. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:458
+#: src/camel/camel-gpg-context.c:623
 #, c-format
 msgid "Output from %s:"
 msgstr "%s konumundan çıktı:"
 
-#: src/camel/camel-gpg-context.c:943 src/camel/camel-gpg-context.c:948
-#: src/camel/camel-gpg-context.c:1742
+#: src/camel/camel-gpg-context.c:1179 src/camel/camel-gpg-context.c:1184
+#: src/camel/camel-gpg-context.c:2063
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "gpg çalıştırılamadı: %s"
 
-#: src/camel/camel-gpg-context.c:948
-#: src/camel/providers/smtp/camel-smtp-transport.c:1209
+#: src/camel/camel-gpg-context.c:1184
+#: src/camel/providers/smtp/camel-smtp-transport.c:1217
 msgid "Unknown"
 msgstr "Bilinmiyor"
 
-#: src/camel/camel-gpg-context.c:1060
+#: src/camel/camel-gpg-context.c:1296
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -2966,17 +2987,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/camel/camel-gpg-context.c:1096
+#: src/camel/camel-gpg-context.c:1332
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "gpg userid bilgisi ayrıştırılamadı."
 
-#: src/camel/camel-gpg-context.c:1121 src/camel/camel-gpg-context.c:1136
+#: src/camel/camel-gpg-context.c:1357 src/camel/camel-gpg-context.c:1372
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "gpg parola metni isteği ayrıştırılamadı."
 
-#: src/camel/camel-gpg-context.c:1157
+#: src/camel/camel-gpg-context.c:1399
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -2985,7 +3006,7 @@ msgstr ""
 "Kilidi kaldırmak için PIN girmeniz gerekiyor. Kilidi kaldırılacak\n"
 "SmartCard: “%s”"
 
-#: src/camel/camel-gpg-context.c:1161
+#: src/camel/camel-gpg-context.c:1403
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -2994,12 +3015,12 @@ msgstr ""
 "“%s” kullanıcısının anahtarının kilidini kaldırmak için\n"
 "parola metnine ihtiyacınız var"
 
-#: src/camel/camel-gpg-context.c:1167
+#: src/camel/camel-gpg-context.c:1409
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "“%s” için GnuPG’den beklenmeyen yanıt"
 
-#: src/camel/camel-gpg-context.c:1179
+#: src/camel/camel-gpg-context.c:1421
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -3007,31 +3028,31 @@ msgstr ""
 "Şifreli içeriğin alıcı ile ilgili bilgi içermediğini not edin, yani içerilen "
 "her özel anahtar için parola penceresi açılacak."
 
-#: src/camel/camel-gpg-context.c:1210 src/camel/camel-net-utils.c:524
+#: src/camel/camel-gpg-context.c:1452 src/camel/camel-net-utils.c:524
 #: src/camel/providers/nntp/camel-nntp-summary.c:393
 #: src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
 msgstr "İptal Edildi"
 
-#: src/camel/camel-gpg-context.c:1231
+#: src/camel/camel-gpg-context.c:1474
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "Gizli anahtarın kilidi kaldırılamadı: 3 yanlış parola metni girildi."
 
-#: src/camel/camel-gpg-context.c:1244
+#: src/camel/camel-gpg-context.c:1487
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "GnuPGʼden beklenmeyen yanıt: %s"
 
-#: src/camel/camel-gpg-context.c:1361
+#: src/camel/camel-gpg-context.c:1604
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Şifrelenemedi: Geçerli alıcı belirtilmedi."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1382
+#: src/camel/camel-gpg-context.c:1625
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
@@ -3041,38 +3062,38 @@ msgstr ""
 "alıcı için içe aktarılmış genel anahtara %s tarafından sahip olunmamasıdır."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1389
+#: src/camel/camel-gpg-context.c:1632
 #, c-format
 msgid "Failed to encrypt: The public key for recipient %s was not found."
 msgstr "Şifrelenemedi: %s alıcısının genel anahtarı bulunamadı."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1396
+#: src/camel/camel-gpg-context.c:1639
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is revoked."
 msgstr "Şifrelenemedi: %s alıcısının anahtarı iptal edilmiş."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1403
+#: src/camel/camel-gpg-context.c:1646
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is expired."
 msgstr "Şifrelenemedi: %s alıcısının anahtar süresi dolmuş."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1410
+#: src/camel/camel-gpg-context.c:1653
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is not trusted."
 msgstr "Şifrelenemedi: %s alıcısının anahtarı güvenilir değil."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1417
+#: src/camel/camel-gpg-context.c:1660
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is disabled."
 msgstr "Şifrelenemedi: %s alıcısının anahtarı devre dışı bırakılmış."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1425
+#: src/camel/camel-gpg-context.c:1668
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified (code %d). A common issue "
@@ -3081,59 +3102,81 @@ msgstr ""
 "Şifrelenemedi: Geçersiz alıcı %s belirtildi (kod %d). %s bu alıcının içe "
 "aktarılan genel anahtarına sahip olmadığı için bu sorun oluşmaktadır."
 
-#: src/camel/camel-gpg-context.c:2266 src/camel/camel-smime-context.c:1041
+#: src/camel/camel-gpg-context.c:1729 src/camel/camel-gpg-context.c:1740
+#, c-format
+msgid "Failed to pass command to GPG: %s"
+msgstr "Komut GPGʼye aktarılamadı: %s"
+
+#: src/camel/camel-gpg-context.c:2587 src/camel/camel-smime-context.c:1041
 msgid "Could not generate signing data: "
 msgstr "İmzalama verisi oluşturulamadı: "
 
-#: src/camel/camel-gpg-context.c:2317 src/camel/camel-gpg-context.c:2556
-#: src/camel/camel-gpg-context.c:2696 src/camel/camel-gpg-context.c:2873
+#: src/camel/camel-gpg-context.c:2638 src/camel/camel-gpg-context.c:2877
+#: src/camel/camel-gpg-context.c:3018 src/camel/camel-gpg-context.c:3195
+#: src/camel/camel-gpg-context.c:3550 src/camel/camel-gpg-context.c:3637
+#: src/camel/camel-gpg-context.c:3930 src/camel/camel-gpg-context.c:4028
+#: src/camel/camel-gpg-context.c:4113 src/camel/camel-gpg-context.c:4180
 msgid "Failed to execute gpg."
 msgstr "gpg çalıştırılamadı."
 
-#: src/camel/camel-gpg-context.c:2424 src/camel/camel-gpg-context.c:2432
-#: src/camel/camel-gpg-context.c:2440 src/camel/camel-gpg-context.c:2460
+#: src/camel/camel-gpg-context.c:2745 src/camel/camel-gpg-context.c:2753
+#: src/camel/camel-gpg-context.c:2761 src/camel/camel-gpg-context.c:2781
 #: src/camel/camel-smime-context.c:1172 src/camel/camel-smime-context.c:1186
 #: src/camel/camel-smime-context.c:1198
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "İleti imzası doğrulanamadı: Geçersiz ileti biçimi"
 
-#: src/camel/camel-gpg-context.c:2506
+#: src/camel/camel-gpg-context.c:2827
 msgid "Cannot verify message signature: "
 msgstr "İletiye ait imza doğrulanamıyor: "
 
-#: src/camel/camel-gpg-context.c:2654
+#: src/camel/camel-gpg-context.c:2976
 msgid "Could not generate encrypting data: "
 msgstr "Şifreleme verisi oluşturulamadı: "
 
-#: src/camel/camel-gpg-context.c:2736
+#: src/camel/camel-gpg-context.c:3058
 msgid "This is a digitally encrypted message part"
 msgstr "Bu dijital olarak şifrelenmiş ileti parçasıdır"
 
-#: src/camel/camel-gpg-context.c:2796 src/camel/camel-gpg-context.c:2805
-#: src/camel/camel-gpg-context.c:2828
+#: src/camel/camel-gpg-context.c:3118 src/camel/camel-gpg-context.c:3127
+#: src/camel/camel-gpg-context.c:3150
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "İletinin şifresi çözülemedi: Geçersiz ileti biçimi"
 
-#: src/camel/camel-gpg-context.c:2816
+#: src/camel/camel-gpg-context.c:3138
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "MIME parçasının şifresi çözülemedi: İletişim kuralı hatası"
 
-#: src/camel/camel-gpg-context.c:2888
+#: src/camel/camel-gpg-context.c:3210
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "MIME parçasının şifresi çözülemedi: Gizli anahtar bulunamadı"
 
-#: src/camel/camel-gpg-context.c:2925
+#: src/camel/camel-gpg-context.c:3247
 #, c-format
 msgid "GPG blob contains unencrypted text: %s"
 msgstr "GPG veri nesnesi şifrelenmemiş metin içeriyor: %s"
 
-#: src/camel/camel-gpg-context.c:2927 src/camel/camel-smime-context.c:1724
+#: src/camel/camel-gpg-context.c:3249 src/camel/camel-smime-context.c:1724
 msgid "Encrypted content"
 msgstr "Şifrelenmiş içerik"
+
+#: src/camel/camel-gpg-context.c:3557 src/camel/camel-gpg-context.c:3644
+#: src/camel/camel-gpg-context.c:3937 src/camel/camel-gpg-context.c:3948
+#, c-format
+msgid "Public key “%s” was not found"
+msgstr "“%s” genel anahtarı bulunamadı"
+
+#: src/camel/camel-gpg-context.c:4035
+msgid "No public key was found in the provided data"
+msgstr "Sağlanan verilerde genel anahtar bulunamadı"
+
+#: src/camel/camel-gpg-context.c:4048
+msgid "Key information was not found in the provided data"
+msgstr "Anahtar bilgisi sağlanan verilerde bulunamadı"
 
 #: src/camel/camel-junk-filter.c:167
 msgid "Synchronizing junk database"
@@ -3532,7 +3575,7 @@ msgstr "Yönlendirilen koşulların zamanı doldu."
 
 #: src/camel/camel-sasl-gssapi.c:237 src/camel/camel-sasl-gssapi.c:441
 #: src/camel/camel-sasl-gssapi.c:491 src/camel/camel-sasl-gssapi.c:508
-#: src/camel/providers/smtp/camel-smtp-transport.c:860
+#: src/camel/providers/smtp/camel-smtp-transport.c:864
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Sunucudan hatalı kimlik doğrulama yanıtı."
@@ -3663,10 +3706,10 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "“%s” iletişim kuralı için geçersiz GType kaydedilmiş"
 
 #: src/camel/camel-session.c:508
-#: src/camel/providers/imapx/camel-imapx-server.c:3252
+#: src/camel/providers/imapx/camel-imapx-server.c:3257
 #: src/camel/providers/pop3/camel-pop3-store.c:305
 #: src/camel/providers/pop3/camel-pop3-store.c:809
-#: src/camel/providers/smtp/camel-smtp-transport.c:696
+#: src/camel/providers/smtp/camel-smtp-transport.c:700
 #, c-format
 msgid "No support for %s authentication"
 msgstr "%s kimlik doğrulaması desteklenmiyor"
@@ -3944,7 +3987,7 @@ msgid "Only reset to beginning is supported with CamelHttpStream"
 msgstr "CamelHttpStream ile yalnızca başa dönme desteklenir"
 
 #: src/camel/camel-stream-process.c:282
-#: src/camel/providers/smtp/camel-smtp-transport.c:747
+#: src/camel/providers/smtp/camel-smtp-transport.c:751
 #, c-format
 msgid "Connection cancelled"
 msgstr "Bağlantı iptal edildi"
@@ -3974,7 +4017,7 @@ msgstr "URL “%s” ayrıştırılamadı"
 msgid "Updating folder “%s”"
 msgstr "“%s” klasörü güncelleniyor"
 
-#: src/camel/camel-vee-folder.c:1283 src/camel/camel-vee-folder.c:1419
+#: src/camel/camel-vee-folder.c:1296 src/camel/camel-vee-folder.c:1432
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "İletiler Sanal Klasöre kopyalanamıyor ya da taşınamıyor"
@@ -3983,22 +4026,22 @@ msgstr "İletiler Sanal Klasöre kopyalanamıyor ya da taşınamıyor"
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: src/camel/camel-vee-folder.c:1320
+#: src/camel/camel-vee-folder.c:1333
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "“%2$s : %3$s” içerisinde %1$s iletisi yok"
 
-#: src/camel/camel-vee-folder.c:1395
+#: src/camel/camel-vee-folder.c:1408
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "“%s” depolanırken hata oluştu: "
 
-#: src/camel/camel-vee-folder.c:1585
+#: src/camel/camel-vee-folder.c:1598
 #, c-format
 msgid "Updating search folder “%s”"
 msgstr "“%s” arama klasörü güncelleniyor"
 
-#: src/camel/camel-vee-folder.c:1643
+#: src/camel/camel-vee-folder.c:1656
 msgid "Automatically _update on change in source folders"
 msgstr "Kaynak klasörlerde değişikliklerde kendiliğinden _güncelle"
 
@@ -4041,7 +4084,7 @@ msgstr ""
 "Bu işlemi tamamlayabilmek için çevirim içi çalışıyor olmanız gerekir (%s)"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:987
-#: src/camel/providers/imapx/camel-imapx-server.c:3424
+#: src/camel/providers/imapx/camel-imapx-server.c:3429
 #: src/camel/providers/nntp/camel-nntp-store.c:348
 #: src/camel/providers/nntp/camel-nntp-store.c:1343
 #: src/camel/providers/nntp/camel-nntp-store.c:2156
@@ -4055,7 +4098,7 @@ msgstr ""
 #: src/camel/providers/pop3/camel-pop3-store.c:576
 #: src/camel/providers/pop3/camel-pop3-store.c:673
 #: src/camel/providers/pop3/camel-pop3-store.c:1124
-#: src/camel/providers/smtp/camel-smtp-transport.c:547
+#: src/camel/providers/smtp/camel-smtp-transport.c:551
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "Bu işlemi tamamlayabilmek için çevirim içi çalışmanız gerekiyor"
@@ -4277,41 +4320,41 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "IMAP sunucularından ileti alma ve göndermede kullanmak için."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:1157
+#: src/camel/providers/imapx/camel-imapx-server.c:1158
 msgid "Error writing to cache stream"
 msgstr "Ön bellek akışına yazmada hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3047
-#: src/camel/providers/imapx/camel-imapx-server.c:3134
-#: src/camel/providers/imapx/camel-imapx-server.c:3457
+#: src/camel/providers/imapx/camel-imapx-server.c:3052
+#: src/camel/providers/imapx/camel-imapx-server.c:3139
+#: src/camel/providers/imapx/camel-imapx-server.c:3462
 msgid "Failed to get capabilities"
 msgstr "Yetenekler alınamadı"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3066
+#: src/camel/providers/imapx/camel-imapx-server.c:3071
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "%s IMAP sunucusuna güvenli kipte bağlanamadı: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3067
-#: src/camel/providers/smtp/camel-smtp-transport.c:283
+#: src/camel/providers/imapx/camel-imapx-server.c:3072
+#: src/camel/providers/smtp/camel-smtp-transport.c:287
 msgid "STARTTLS not supported"
 msgstr "STARTTLS desteklenmiyor"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3076
+#: src/camel/providers/imapx/camel-imapx-server.c:3081
 msgid "Failed to issue STARTTLS"
 msgstr "STARTTLS verilemedi"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3123
+#: src/camel/providers/imapx/camel-imapx-server.c:3128
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "%s IMAP sunucusuna güvenli kipte bağlanamadı: "
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3239
+#: src/camel/providers/imapx/camel-imapx-server.c:3244
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "%s IMAP sunucusu %s kimlik doğrulamayı desteklemiyor"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3265
+#: src/camel/providers/imapx/camel-imapx-server.c:3270
 #, c-format
 msgid ""
 "Plaintext authentication disallowed on insecure connections. Change "
@@ -4320,180 +4363,180 @@ msgstr ""
 "Güvenli olmayan bağlantılarda düz metin kimlik doğrulamaya izin verilmedi. "
 "“%s” hesabı için şifrelemeyi STARTTLS veya TLS olarak değiştirin."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3278
+#: src/camel/providers/imapx/camel-imapx-server.c:3283
 #: src/camel/providers/nntp/camel-nntp-store.c:454
 #: src/camel/providers/nntp/camel-nntp-store.c:596
 msgid "Cannot authenticate without a username"
 msgstr "Kullanıcı adı olmadan kimlik doğrulanamaz"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3287
+#: src/camel/providers/imapx/camel-imapx-server.c:3292
 #: src/camel/providers/nntp/camel-nntp-store.c:605
 #: src/camel/providers/pop3/camel-pop3-store.c:709
 #: src/camel/providers/pop3/camel-pop3-store.c:747
 msgid "Authentication password not available"
 msgstr "Kimlik doğrulama parolası kullanılabilir değil"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3297
-#: src/camel/providers/imapx/camel-imapx-server.c:3310
+#: src/camel/providers/imapx/camel-imapx-server.c:3302
+#: src/camel/providers/imapx/camel-imapx-server.c:3315
 msgid "Failed to authenticate"
 msgstr "Kimlik doğrulanamadı"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3382
+#: src/camel/providers/imapx/camel-imapx-server.c:3387
 msgid "Failed to issue ID"
 msgstr "ID verilemedi"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3484
+#: src/camel/providers/imapx/camel-imapx-server.c:3489
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr "ENABLE UTF8=ACCEPT verilemedi"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3506
+#: src/camel/providers/imapx/camel-imapx-server.c:3511
 msgid "Failed to issue NAMESPACE"
 msgstr "NAMESPACE verilemedi"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3524
+#: src/camel/providers/imapx/camel-imapx-server.c:3529
 msgid "Failed to enable QResync"
 msgstr "QResync etkinleştirilemedi"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3561
+#: src/camel/providers/imapx/camel-imapx-server.c:3566
 msgid "Failed to issue NOTIFY"
 msgstr "NOTIFY verilemedi"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4040
+#: src/camel/providers/imapx/camel-imapx-server.c:4046
 msgid "Failed to select mailbox"
 msgstr "Posta kutusu seçilemedi"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4140
+#: src/camel/providers/imapx/camel-imapx-server.c:4147
 msgid "Cannot issue command, no stream available"
 msgstr "Komut verilemiyor, kullanılabilir akış yok"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4406
+#: src/camel/providers/imapx/camel-imapx-server.c:4414
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "%s ileti IDʼsine sahip ileti alınamıyor: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4407
+#: src/camel/providers/imapx/camel-imapx-server.c:4415
 msgid "No such message available."
 msgstr "Böyle bir ileti yok."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4456
-#: src/camel/providers/imapx/camel-imapx-server.c:4481
-#: src/camel/providers/imapx/camel-imapx-server.c:4520
+#: src/camel/providers/imapx/camel-imapx-server.c:4464
+#: src/camel/providers/imapx/camel-imapx-server.c:4489
+#: src/camel/providers/imapx/camel-imapx-server.c:4528
 msgid "Error fetching message"
 msgstr "İleti alınırken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4498
-#: src/camel/providers/imapx/camel-imapx-server.c:5271
+#: src/camel/providers/imapx/camel-imapx-server.c:4506
+#: src/camel/providers/imapx/camel-imapx-server.c:5279
 msgid "Error performing NOOP"
 msgstr "NOOP İşlemi başarısız"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4513
+#: src/camel/providers/imapx/camel-imapx-server.c:4521
 msgid "Failed to close the tmp stream"
 msgstr "Tmp akışı kapatılamadı"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4544
+#: src/camel/providers/imapx/camel-imapx-server.c:4552
 msgid "Failed to copy the tmp file"
 msgstr "Tmp dosyası kopyalanamadı"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4782
+#: src/camel/providers/imapx/camel-imapx-server.c:4790
 msgid "Error moving messages"
 msgstr "İletiler taşınırken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4782
+#: src/camel/providers/imapx/camel-imapx-server.c:4790
 msgid "Error copying messages"
 msgstr "İletiler kopyalanırken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5061
-#: src/camel/providers/imapx/camel-imapx-server.c:5082
+#: src/camel/providers/imapx/camel-imapx-server.c:5069
+#: src/camel/providers/imapx/camel-imapx-server.c:5090
 msgid "Cannot create spool file: "
 msgstr "Kuyruk dosyası oluşturulamadı: "
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5168
+#: src/camel/providers/imapx/camel-imapx-server.c:5176
 msgid "Error appending message"
 msgstr "İleti eklenirken hata"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5439
+#: src/camel/providers/imapx/camel-imapx-server.c:5447
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "“%s : %s” içerisindeki değiştirilen iletiler taranıyor"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5443
+#: src/camel/providers/imapx/camel-imapx-server.c:5451
 msgid "Error scanning changes"
 msgstr "Değişiklikler taranırken hata"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5466
+#: src/camel/providers/imapx/camel-imapx-server.c:5474
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "“%s : %s” içindeki yeni iletilerin özet bilgisi getiriliyor"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5493
+#: src/camel/providers/imapx/camel-imapx-server.c:5501
 msgid "Error fetching message info"
 msgstr "İleti bilgisi getirilirken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5676
+#: src/camel/providers/imapx/camel-imapx-server.c:5684
 msgid "Error running STATUS"
 msgstr "STATUS çalıştırılırken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6271
-#: src/camel/providers/imapx/camel-imapx-server.c:6326
-#: src/camel/providers/imapx/camel-imapx-server.c:6409
+#: src/camel/providers/imapx/camel-imapx-server.c:6279
+#: src/camel/providers/imapx/camel-imapx-server.c:6334
+#: src/camel/providers/imapx/camel-imapx-server.c:6417
 msgid "Error syncing changes"
 msgstr "Değişiklikler eşlenirken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6284
-#: src/camel/providers/imapx/camel-imapx-server.c:6336
-#: src/camel/providers/imapx/camel-imapx-server.c:6428
-#: src/camel/providers/imapx/camel-imapx-server.c:6569
+#: src/camel/providers/imapx/camel-imapx-server.c:6292
+#: src/camel/providers/imapx/camel-imapx-server.c:6344
+#: src/camel/providers/imapx/camel-imapx-server.c:6436
+#: src/camel/providers/imapx/camel-imapx-server.c:6577
 msgid "Error expunging message"
 msgstr "İleti silinirken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6651
+#: src/camel/providers/imapx/camel-imapx-server.c:6659
 msgid "Error fetching folders"
 msgstr "Klasörler alınırken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6659
+#: src/camel/providers/imapx/camel-imapx-server.c:6667
 msgid "Error fetching subscribed folders"
 msgstr "Abone olunan klasörler getirilirken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6716
+#: src/camel/providers/imapx/camel-imapx-server.c:6724
 msgid "Error creating folder"
 msgstr "Klasör oluştururken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6766
+#: src/camel/providers/imapx/camel-imapx-server.c:6774
 msgid "Error deleting folder"
 msgstr "Klasör silinirken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6812
+#: src/camel/providers/imapx/camel-imapx-server.c:6820
 msgid "Error renaming folder"
 msgstr "Klasör yeniden adlandırılırken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6844
+#: src/camel/providers/imapx/camel-imapx-server.c:6852
 msgid "Error subscribing to folder"
 msgstr "Klasöre abone olunurken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6880
+#: src/camel/providers/imapx/camel-imapx-server.c:6888
 msgid "Error unsubscribing from folder"
 msgstr "Klasör aboneliği iptal edilirken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6920
+#: src/camel/providers/imapx/camel-imapx-server.c:6928
 msgid "IMAP server does not support quotas"
 msgstr "IMAP sunucusu kotaları desteklemiyor"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6932
+#: src/camel/providers/imapx/camel-imapx-server.c:6940
 msgid "Error retrieving quota information"
 msgstr "Kota bilgisi getirilirken hata"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6997
+#: src/camel/providers/imapx/camel-imapx-server.c:7005
 msgid "Search failed"
 msgstr "Arama başarısız"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7125
+#: src/camel/providers/imapx/camel-imapx-server.c:7133
 msgid "Error running IDLE"
 msgstr "IDLE çalıştırılırken hata"
 
@@ -4539,18 +4582,18 @@ msgstr ""
 msgid "No such folder %s"
 msgstr "%s klasörü yok"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1615
+#: src/camel/providers/imapx/camel-imapx-store.c:1639
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
 msgstr "Klasör yolu “%s” için IMAP ad uzayı yok"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1885
-#: src/camel/providers/imapx/camel-imapx-store.c:2080
+#: src/camel/providers/imapx/camel-imapx-store.c:1909
+#: src/camel/providers/imapx/camel-imapx-store.c:2104
 #, c-format
 msgid "Retrieving folder list for “%s”"
 msgstr "“%s” için klasör listesi getiriliyor"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2323
+#: src/camel/providers/imapx/camel-imapx-store.c:2347
 msgid ""
 "The account does not support folder hierarchy. Create the folder on the "
 "account level instead."
@@ -4558,7 +4601,7 @@ msgstr ""
 "Bu hesap klasör hiyerarşisini desteklemiyor. Bunun yerine klasörü hesap "
 "düzeyinde oluşturun."
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2370
+#: src/camel/providers/imapx/camel-imapx-store.c:2394
 #, c-format
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "“%s” klasör adı geçersiz, çünkü “%c” karakteri içeriyor"
@@ -4568,97 +4611,97 @@ msgstr "“%s” klasör adı geçersiz, çünkü “%c” karakteri içeriyor"
 #. version as well. It's always the folder name (eventually path) as provided by the server,
 #. when returned in given localization. it can be checked semi-easily in the case of
 #. the GMail variants, by changing the GMail interface language in the GMail Preferences.
-#: src/camel/providers/imapx/camel-imapx-store.c:2765
+#: src/camel/providers/imapx/camel-imapx-store.c:2789
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
 msgstr "[Gmail]/Taslaklar"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2766
+#: src/camel/providers/imapx/camel-imapx-store.c:2790
 msgctxt "IMAPDefaults"
 msgid "Drafts"
 msgstr "Taslaklar"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2767
+#: src/camel/providers/imapx/camel-imapx-store.c:2791
 msgctxt "IMAPDefaults"
 msgid "Draft"
 msgstr "Taslak"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2770
+#: src/camel/providers/imapx/camel-imapx-store.c:2794
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "Şablonlar"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2773
+#: src/camel/providers/imapx/camel-imapx-store.c:2797
 msgctxt "IMAPDefaults"
 msgid "Archive"
 msgstr "Arşiv"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2776
+#: src/camel/providers/imapx/camel-imapx-store.c:2800
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[Gmail]/Gönderilen Posta"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2777
+#: src/camel/providers/imapx/camel-imapx-store.c:2801
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "Gönderilenler"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2778
+#: src/camel/providers/imapx/camel-imapx-store.c:2802
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "Gönderilmiş Ögeler"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2779
+#: src/camel/providers/imapx/camel-imapx-store.c:2803
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Gönderilmiş İletiler"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2782
+#: src/camel/providers/imapx/camel-imapx-store.c:2806
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "[Gmail]/Spam"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2783
+#: src/camel/providers/imapx/camel-imapx-store.c:2807
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "Gereksiz"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2784
+#: src/camel/providers/imapx/camel-imapx-store.c:2808
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "Gereksiz E-Posta"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2785
+#: src/camel/providers/imapx/camel-imapx-store.c:2809
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "Gereksiz E-posta"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2786
+#: src/camel/providers/imapx/camel-imapx-store.c:2810
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "Spam"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2787
+#: src/camel/providers/imapx/camel-imapx-store.c:2811
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "Önemsiz Posta"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2790
+#: src/camel/providers/imapx/camel-imapx-store.c:2814
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr "[Gmail]/Çöp"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2791
+#: src/camel/providers/imapx/camel-imapx-store.c:2815
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "Çöp"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2792
+#: src/camel/providers/imapx/camel-imapx-store.c:2816
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "Silinen Ögeler"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2793
+#: src/camel/providers/imapx/camel-imapx-store.c:2817
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Silinen İletiler"
@@ -5735,227 +5778,227 @@ msgstr "SMTP"
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr "Uzaktaki mailhubʼa SMTP kullanıp bağlanarak mektup göndermek için."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:237
-#: src/camel/providers/smtp/camel-smtp-transport.c:244
+#: src/camel/providers/smtp/camel-smtp-transport.c:241
+#: src/camel/providers/smtp/camel-smtp-transport.c:248
 msgid "Welcome response error: "
 msgstr "Karşılama yanıtı hatası: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:282
+#: src/camel/providers/smtp/camel-smtp-transport.c:286
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr "%s SMTP sunucusuna güvenli kipte bağlanamadı: %s"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:291
-#: src/camel/providers/smtp/camel-smtp-transport.c:304
-#: src/camel/providers/smtp/camel-smtp-transport.c:311
+#: src/camel/providers/smtp/camel-smtp-transport.c:295
+#: src/camel/providers/smtp/camel-smtp-transport.c:308
+#: src/camel/providers/smtp/camel-smtp-transport.c:315
 msgid "STARTTLS command failed: "
 msgstr "STARTTLS komutu başarısız oldu: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:332
+#: src/camel/providers/smtp/camel-smtp-transport.c:336
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
 msgstr "%s SMTP sunucusuna güvenli kipte bağlanamadı: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:443
+#: src/camel/providers/smtp/camel-smtp-transport.c:447
 #, c-format
 msgid "SMTP server %s"
 msgstr "SMTP sunucu %s"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:446
+#: src/camel/providers/smtp/camel-smtp-transport.c:450
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "%s üzerinden STMP mektup gönderimi"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:586
+#: src/camel/providers/smtp/camel-smtp-transport.c:590
 #, c-format
 msgid "SMTP server %s does not support %s authentication"
 msgstr "%s SMTP sunucusu %s kimlik doğrulama desteklemiyor"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:686
+#: src/camel/providers/smtp/camel-smtp-transport.c:690
 #, c-format
 msgid "No SASL mechanism was specified"
 msgstr "Herhangi bir SASL mekanizması belirtilmemiş"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:727
+#: src/camel/providers/smtp/camel-smtp-transport.c:731
 msgid "AUTH command failed: Not connected."
 msgstr "AUTH komutu başarısız: Bağlanılmadı."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:734
-#: src/camel/providers/smtp/camel-smtp-transport.c:748
-#: src/camel/providers/smtp/camel-smtp-transport.c:764
+#: src/camel/providers/smtp/camel-smtp-transport.c:738
+#: src/camel/providers/smtp/camel-smtp-transport.c:752
+#: src/camel/providers/smtp/camel-smtp-transport.c:768
 msgid "AUTH command failed: "
 msgstr "AUTH komutu başarısız: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:967
+#: src/camel/providers/smtp/camel-smtp-transport.c:972
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "İleti gönderilemiyor: hizmet bağlı değil."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:976
+#: src/camel/providers/smtp/camel-smtp-transport.c:981
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "İleti gönderilemiyor: gönderen adresi geçerli değil."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:980
+#: src/camel/providers/smtp/camel-smtp-transport.c:985
 msgid "Sending message"
 msgstr "İletiler gönderiliyor"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1009
+#: src/camel/providers/smtp/camel-smtp-transport.c:1017
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "İleti gönderilemiyor: hiçbir alıcı belirtilmemiş."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1024
+#: src/camel/providers/smtp/camel-smtp-transport.c:1032
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "İleti gönderilemiyor: bir ya da daha fazla hatalı alıcı"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1156
+#: src/camel/providers/smtp/camel-smtp-transport.c:1164
 msgid "Syntax error, command unrecognized"
 msgstr "Söz dizimi hatası, bilinmeyen komut"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1158
+#: src/camel/providers/smtp/camel-smtp-transport.c:1166
 msgid "Syntax error in parameters or arguments"
 msgstr "Parametre ya da argümanlarda söz dizimi hatası"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1160
+#: src/camel/providers/smtp/camel-smtp-transport.c:1168
 msgid "Command not implemented"
 msgstr "Komut henüz tanınmıyor"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1162
+#: src/camel/providers/smtp/camel-smtp-transport.c:1170
 msgid "Command parameter not implemented"
 msgstr "Komut parametresi henüz tanınmıyor"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1164
+#: src/camel/providers/smtp/camel-smtp-transport.c:1172
 msgid "System status, or system help reply"
 msgstr "Sistem durumu, ya da sistem yardım yanıtı"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1166
+#: src/camel/providers/smtp/camel-smtp-transport.c:1174
 msgid "Help message"
 msgstr "Yardım iletisi"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1168
+#: src/camel/providers/smtp/camel-smtp-transport.c:1176
 msgid "Service ready"
 msgstr "Hizmet hazır"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1170
+#: src/camel/providers/smtp/camel-smtp-transport.c:1178
 msgid "Service closing transmission channel"
 msgstr "Hizmet iletişim kanalını kapatıyor"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1172
+#: src/camel/providers/smtp/camel-smtp-transport.c:1180
 msgid "Service not available, closing transmission channel"
 msgstr "Hizmet uygun değil, iletişim kanalı kapatılıyor"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1174
+#: src/camel/providers/smtp/camel-smtp-transport.c:1182
 msgid "Requested mail action okay, completed"
 msgstr "İstenen mektup işlemi tamamlandı"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1176
+#: src/camel/providers/smtp/camel-smtp-transport.c:1184
 msgid "User not local; will forward to <forward-path>"
 msgstr "Kullanıcı yerel değil, <forward-path> üzerine yönlendirilecek"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1178
+#: src/camel/providers/smtp/camel-smtp-transport.c:1186
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr "İstenen mektup eylemi yapılmadı: posta kutusu kullanılabilir değil"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1180
+#: src/camel/providers/smtp/camel-smtp-transport.c:1188
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "İstenen eylem yapılmadı: posta kutusu kullanılabilir değil"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1182
+#: src/camel/providers/smtp/camel-smtp-transport.c:1190
 msgid "Requested action aborted: error in processing"
 msgstr "İstenen eylem iptal edildi: işlem sırasında hata"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1184
+#: src/camel/providers/smtp/camel-smtp-transport.c:1192
 msgid "User not local; please try <forward-path>"
 msgstr "Kullanıcı yerel değil; lütfen <forward-path> deneyin"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1186
+#: src/camel/providers/smtp/camel-smtp-transport.c:1194
 msgid "Requested action not taken: insufficient system storage"
 msgstr "İstenen eylem yapılmadı: disk alanı yetersiz"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1188
+#: src/camel/providers/smtp/camel-smtp-transport.c:1196
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "İstenen mektup eylemi iptal edildi: ayrılan saklama miktarı aşıldı"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1190
+#: src/camel/providers/smtp/camel-smtp-transport.c:1198
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "İstenen eylem yapılmadı: posta kutusu adına izin verilmedi"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1192
+#: src/camel/providers/smtp/camel-smtp-transport.c:1200
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "Mektup başlangıcını girin, <CRLF>.<CRLF> ile bitirin"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1194
+#: src/camel/providers/smtp/camel-smtp-transport.c:1202
 msgid "Transaction failed"
 msgstr "İletim başarısız oldu"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1198
+#: src/camel/providers/smtp/camel-smtp-transport.c:1206
 msgid "A password transition is needed"
 msgstr "Parola iletimi gerekiyor"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1200
+#: src/camel/providers/smtp/camel-smtp-transport.c:1208
 msgid "Authentication mechanism is too weak"
 msgstr "Kimlik doğrulama yöntemi çok zayıf"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1202
+#: src/camel/providers/smtp/camel-smtp-transport.c:1210
 msgid "Encryption required for requested authentication mechanism"
 msgstr "İstenen kimlik doğrulama yöntemi için şifreleme gerekiyor"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1204
+#: src/camel/providers/smtp/camel-smtp-transport.c:1212
 msgid "Temporary authentication failure"
 msgstr "Geçici kimlik doğrulama hatası"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1206
+#: src/camel/providers/smtp/camel-smtp-transport.c:1214
 #: src/libedataserver/e-client.c:145
 msgid "Authentication required"
 msgstr "Kimlik doğrulaması gerekli"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1516
+#: src/camel/providers/smtp/camel-smtp-transport.c:1525
 msgid "SMTP Greeting"
 msgstr "SMTP Karşılaması"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1525
-#: src/camel/providers/smtp/camel-smtp-transport.c:1538
-#: src/camel/providers/smtp/camel-smtp-transport.c:1545
+#: src/camel/providers/smtp/camel-smtp-transport.c:1534
+#: src/camel/providers/smtp/camel-smtp-transport.c:1547
+#: src/camel/providers/smtp/camel-smtp-transport.c:1554
 msgid "HELO command failed: "
 msgstr "HELO komutu başarısız: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1629
-#: src/camel/providers/smtp/camel-smtp-transport.c:1643
-#: src/camel/providers/smtp/camel-smtp-transport.c:1652
+#: src/camel/providers/smtp/camel-smtp-transport.c:1661
+#: src/camel/providers/smtp/camel-smtp-transport.c:1675
+#: src/camel/providers/smtp/camel-smtp-transport.c:1684
 msgid "MAIL FROM command failed: "
 msgstr "MAIL FROM komutu başarısız: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1680
+#: src/camel/providers/smtp/camel-smtp-transport.c:1753
 msgid "RCPT TO command failed: "
 msgstr "RCPT TO komutu başarısız: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1696
-#: src/camel/providers/smtp/camel-smtp-transport.c:1705
+#: src/camel/providers/smtp/camel-smtp-transport.c:1769
+#: src/camel/providers/smtp/camel-smtp-transport.c:1778
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> başarısız: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1788
-#: src/camel/providers/smtp/camel-smtp-transport.c:1799
-#: src/camel/providers/smtp/camel-smtp-transport.c:1810
-#: src/camel/providers/smtp/camel-smtp-transport.c:1895
-#: src/camel/providers/smtp/camel-smtp-transport.c:1913
-#: src/camel/providers/smtp/camel-smtp-transport.c:1926
-#: src/camel/providers/smtp/camel-smtp-transport.c:1934
+#: src/camel/providers/smtp/camel-smtp-transport.c:1861
+#: src/camel/providers/smtp/camel-smtp-transport.c:1872
+#: src/camel/providers/smtp/camel-smtp-transport.c:1883
+#: src/camel/providers/smtp/camel-smtp-transport.c:1968
+#: src/camel/providers/smtp/camel-smtp-transport.c:1986
+#: src/camel/providers/smtp/camel-smtp-transport.c:1999
+#: src/camel/providers/smtp/camel-smtp-transport.c:2007
 msgid "DATA command failed: "
 msgstr "DATA komutu başarısız: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1960
-#: src/camel/providers/smtp/camel-smtp-transport.c:1974
-#: src/camel/providers/smtp/camel-smtp-transport.c:1982
+#: src/camel/providers/smtp/camel-smtp-transport.c:2033
+#: src/camel/providers/smtp/camel-smtp-transport.c:2047
+#: src/camel/providers/smtp/camel-smtp-transport.c:2055
 msgid "RSET command failed: "
 msgstr "RSET komutu başarısız oldu: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:2008
-#: src/camel/providers/smtp/camel-smtp-transport.c:2020
-#: src/camel/providers/smtp/camel-smtp-transport.c:2026
+#: src/camel/providers/smtp/camel-smtp-transport.c:2081
+#: src/camel/providers/smtp/camel-smtp-transport.c:2093
+#: src/camel/providers/smtp/camel-smtp-transport.c:2099
 msgid "QUIT command failed: "
 msgstr "QUIT komutu başarısız oldu: "
 
@@ -6097,6 +6140,10 @@ msgstr "Son kullanılan erteleme vakti, dakika türünde"
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:99
 msgid "User-defined snooze times, in minutes"
 msgstr "Kullanıcı tanımlı erteleme vakitleri, dakika türünde"
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:103
+msgid "Delete meeting from calendar on Decline"
+msgstr "Reddedildiğinde toplantıyı takvimden sil"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:5
 msgid "Whether the migration of old setting was already done"
@@ -6772,37 +6819,48 @@ msgstr "Sunucudan JSON nesnesi dönmedi"
 msgid "Failed to call %s: "
 msgstr "%s aranamıyor: "
 
-#: src/libedataserver/e-oauth2-service.c:1026
+#: src/libedataserver/e-oauth2-service.c:1061
 msgid "Malformed, no message body set"
 msgstr "Hatalı biçimlendirilmiş, ileti gövdesi takımı yok"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1306
+#: src/libedataserver/e-oauth2-service.c:1343
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "“%s” (%s) kaynağı, “%s” OAuth2 hizmeti için geçerli değil"
 
-#: src/libedataserver/e-oauth2-service.c:1321
+#: src/libedataserver/e-oauth2-service.c:1358
 msgid "OAuth2 secret not found"
 msgstr "OAuth2 gizi bulunamadı"
 
-#: src/libedataserver/e-oauth2-service.c:1518
+#: src/libedataserver/e-oauth2-service.c:1555
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "“%s” sunucusundan geçersiz yanıt alındı."
 
-#: src/libedataserver/e-oauth2-service.c:1527
+#: src/libedataserver/e-oauth2-service.c:1578
+#, c-format
+msgid ""
+"Failed to refresh access token. Sign to the server again, please.\n"
+"\n"
+"Detailed error: %s"
+msgstr ""
+"Erişim jetonu yenilenemedi. Lütfen sunucuya yeniden giriş yapın.\n"
+"\n"
+"Ayrıntılı hata: %s"
+
+#: src/libedataserver/e-oauth2-service.c:1581
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr "Erişim jetonu yenilenemedi. Lütfen sunucuya yeniden giriş yapın."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1570
+#: src/libedataserver/e-oauth2-service.c:1627
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "“%s” (%s) kaynağı geçerli bir OAuth2 kaynağı değil"
 
-#: src/libedataserver/e-oauth2-service.c:1854
+#: src/libedataserver/e-oauth2-service.c:1911
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -6827,16 +6885,16 @@ msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: src/libedataserver/e-soup-session.c:1264
+#: src/libedataserver/e-soup-session.c:1270
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "HTTP hatası %d ile başarısızlık: %s"
 
-#: src/libedataserver/e-soup-session.c:1340
+#: src/libedataserver/e-soup-session.c:1346
 msgid "Failed to setup authentication"
 msgstr "Kimlik doğrulama kurulamadı"
 
-#: src/libedataserver/e-soup-session.c:1747
+#: src/libedataserver/e-soup-session.c:1753
 msgid "Too many redirects"
 msgstr "Çok sayıda yönlendirme"
 
@@ -6890,7 +6948,7 @@ msgstr "“%s” kaynağı vekil aramalarını desteklemiyor"
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format.
 #: src/libedataserver/e-time-utils.c:1697
-#: src/libedataserver/e-time-utils.c:1996
+#: src/libedataserver/e-time-utils.c:2037
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%d/%m/%Y %a %I:%M:%S %p"
 
@@ -6899,7 +6957,7 @@ msgstr "%d/%m/%Y %a %I:%M:%S %p"
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format.
 #: src/libedataserver/e-time-utils.c:1702
-#: src/libedataserver/e-time-utils.c:1987
+#: src/libedataserver/e-time-utils.c:2028
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%d/%m/%Y %a %H:%M:%S"
 
@@ -6908,7 +6966,7 @@ msgstr "%d/%m/%Y %a %H:%M:%S"
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format, without seconds.
 #: src/libedataserver/e-time-utils.c:1707
-#: src/libedataserver/e-time-utils.c:1992
+#: src/libedataserver/e-time-utils.c:2033
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%d/%m/%Y %a %I:%M %p"
 
@@ -6917,7 +6975,7 @@ msgstr "%d/%m/%Y %a %I:%M %p"
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format, without seconds.
 #: src/libedataserver/e-time-utils.c:1712
-#: src/libedataserver/e-time-utils.c:1983
+#: src/libedataserver/e-time-utils.c:2024
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%d/%m/%Y %a %H:%M"
 
@@ -6937,7 +6995,7 @@ msgstr "%d/%m/%Y %a %H"
 #. strftime format of a weekday and a date.
 #: src/libedataserver/e-time-utils.c:1725
 #: src/libedataserver/e-time-utils.c:1845
-#: src/libedataserver/e-time-utils.c:1978
+#: src/libedataserver/e-time-utils.c:2019
 msgid "%a %m/%d/%Y"
 msgstr "%d/%m/%Y %a"
 
@@ -6984,15 +7042,15 @@ msgstr "%d/%m/%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: src/libedataserver/e-time-utils.c:1919
-#: src/libedataserver/e-time-utils.c:2040
+#: src/libedataserver/e-time-utils.c:1960
+#: src/libedataserver/e-time-utils.c:2081
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: src/libedataserver/e-time-utils.c:1923
-#: src/libedataserver/e-time-utils.c:2032
+#: src/libedataserver/e-time-utils.c:1964
+#: src/libedataserver/e-time-utils.c:2073
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -7000,27 +7058,27 @@ msgstr "%H:%M:%S"
 #. * in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. * without seconds.
-#: src/libedataserver/e-time-utils.c:1928
-#: src/libedataserver/e-time-utils.c:2037
+#: src/libedataserver/e-time-utils.c:1969
+#: src/libedataserver/e-time-utils.c:2078
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. * without seconds.
-#: src/libedataserver/e-time-utils.c:1932
-#: src/libedataserver/e-time-utils.c:2029
+#: src/libedataserver/e-time-utils.c:1973
+#: src/libedataserver/e-time-utils.c:2070
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for time of day, without seconds 24-hour format,
 #. * and no colon.
-#: src/libedataserver/e-time-utils.c:1936
+#: src/libedataserver/e-time-utils.c:1977
 msgid "%H%M"
 msgstr "%H%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: src/libedataserver/e-time-utils.c:1940
+#: src/libedataserver/e-time-utils.c:1981
 msgid "%I %p"
 msgstr "%I %p"
 
@@ -7084,146 +7142,146 @@ msgstr "%s: HTTP hata kodu %d (%s)"
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "HTTP hatası %d ile başarısızlık (%s)"
 
-#: src/libedataserver/e-webdav-session.c:1357
+#: src/libedataserver/e-webdav-session.c:1360
 msgid "Failed to post data"
 msgstr "Veri gönderilemedi"
 
-#: src/libedataserver/e-webdav-session.c:1438
-#: src/libedataserver/e-webdav-session.c:1504
-#: src/libedataserver/e-webdav-session.c:1595
-#: src/libedataserver/e-webdav-session.c:2719
-#: src/libedataserver/e-webdav-session.c:3971
+#: src/libedataserver/e-webdav-session.c:1424
+#: src/libedataserver/e-webdav-session.c:1534
+#: src/libedataserver/e-webdav-session.c:1625
+#: src/libedataserver/e-webdav-session.c:2793
+#: src/libedataserver/e-webdav-session.c:4069
 msgid "Failed to get input XML content"
 msgstr "Girdi XML içeriği alınamadı"
 
-#: src/libedataserver/e-webdav-session.c:1449
+#: src/libedataserver/e-webdav-session.c:1435
 msgid "Failed to get properties"
 msgstr "Özellikler alınamadı"
 
-#: src/libedataserver/e-webdav-session.c:1514
+#: src/libedataserver/e-webdav-session.c:1544
 msgid "Failed to update properties"
 msgstr "Özellikler güncellenemedi"
 
-#: src/libedataserver/e-webdav-session.c:1605
+#: src/libedataserver/e-webdav-session.c:1635
 msgid "Failed to issue REPORT"
 msgstr "RAPOR bildirilemedi"
 
-#: src/libedataserver/e-webdav-session.c:1665
+#: src/libedataserver/e-webdav-session.c:1695
 msgid "Failed to create collection"
 msgstr "Koleksiyon oluşturulamadı"
 
-#: src/libedataserver/e-webdav-session.c:1748
-#: src/libedataserver/e-webdav-session.c:1898
+#: src/libedataserver/e-webdav-session.c:1778
+#: src/libedataserver/e-webdav-session.c:1928
 msgid "Failed to get XML request content"
 msgstr "XML istek içeriği alınamadı"
 
-#: src/libedataserver/e-webdav-session.c:1760
+#: src/libedataserver/e-webdav-session.c:1790
 msgid "Failed to create address book"
 msgstr "Adres defteri oluşturulamadı"
 
-#: src/libedataserver/e-webdav-session.c:1911
+#: src/libedataserver/e-webdav-session.c:1941
 msgid "Failed to create calendar"
 msgstr "Takvim oluşturulamadı"
 
-#: src/libedataserver/e-webdav-session.c:2036
-#: src/libedataserver/e-webdav-session.c:2047
+#: src/libedataserver/e-webdav-session.c:2066
+#: src/libedataserver/e-webdav-session.c:2077
 msgid "Failed to read resource"
 msgstr "Kaynak okunamadı"
 
-#: src/libedataserver/e-webdav-session.c:2283
-#: src/libedataserver/e-webdav-session.c:2425
+#: src/libedataserver/e-webdav-session.c:2313
+#: src/libedataserver/e-webdav-session.c:2455
 msgid "Failed to put data"
 msgstr "Veri konulamadı"
 
-#: src/libedataserver/e-webdav-session.c:2291
-#: src/libedataserver/e-webdav-session.c:2433
+#: src/libedataserver/e-webdav-session.c:2321
+#: src/libedataserver/e-webdav-session.c:2463
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Veri sunucuya konulamadı, hata kodu %d (%s)"
 
-#: src/libedataserver/e-webdav-session.c:2521
+#: src/libedataserver/e-webdav-session.c:2595
 msgid "Failed to delete resource"
 msgstr "Kaynak silinemedi"
 
-#: src/libedataserver/e-webdav-session.c:2580
+#: src/libedataserver/e-webdav-session.c:2654
 msgid "Failed to copy resource"
 msgstr "Kaynak kopyalanamadı"
 
-#: src/libedataserver/e-webdav-session.c:2634
+#: src/libedataserver/e-webdav-session.c:2708
 msgid "Failed to move resource"
 msgstr "Kaynak taşınamadı"
 
-#: src/libedataserver/e-webdav-session.c:2730
+#: src/libedataserver/e-webdav-session.c:2804
 msgid "Failed to lock resource"
 msgstr "Kaynak kilitlenemedi"
 
-#: src/libedataserver/e-webdav-session.c:2744
-#: src/libedataserver/e-webdav-session.c:2931
+#: src/libedataserver/e-webdav-session.c:2818
+#: src/libedataserver/e-webdav-session.c:3005
 msgid "Expected application/xml response, but none returned"
 msgstr "Uygulama/xml yanıtı beklendi ama hiçbiri dönmedi"
 
-#: src/libedataserver/e-webdav-session.c:2747
-#: src/libedataserver/e-webdav-session.c:2934
+#: src/libedataserver/e-webdav-session.c:2821
+#: src/libedataserver/e-webdav-session.c:3008
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "Uygulama/xml yanıtı beklendi ama %s döndü"
 
-#: src/libedataserver/e-webdav-session.c:2759
-#: src/libedataserver/e-webdav-session.c:2947
+#: src/libedataserver/e-webdav-session.c:2833
+#: src/libedataserver/e-webdav-session.c:3021
 msgid "Failed to parse XML data"
 msgstr "XML verisi ayrıştırılamadı"
 
-#: src/libedataserver/e-webdav-session.c:2830
+#: src/libedataserver/e-webdav-session.c:2904
 msgid "Failed to refresh lock"
 msgstr "Kilit yenilenemedi"
 
-#: src/libedataserver/e-webdav-session.c:2881
+#: src/libedataserver/e-webdav-session.c:2955
 msgid "Failed to unlock"
 msgstr "Kilit kaldırılamadı"
 
-#: src/libedataserver/e-webdav-session.c:2919
+#: src/libedataserver/e-webdav-session.c:2993
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Çoklu durum yanıtı beklendi, ama %d döndü (%s)"
 
-#: src/libedataserver/e-webdav-session.c:2956
+#: src/libedataserver/e-webdav-session.c:3030
 msgid "XML data does not have root node"
 msgstr "XML verisinde kök düğüm yok"
 
-#: src/libedataserver/e-webdav-session.c:2979
+#: src/libedataserver/e-webdav-session.c:3053
 #, c-format
 msgid "XML data doesn't have required structure (%s)"
 msgstr "XML verisinde gerekli yapı (%s) yok"
 
-#: src/libedataserver/e-webdav-session.c:3981
+#: src/libedataserver/e-webdav-session.c:4079
 msgid "Failed to get access control list"
 msgstr "Denetim listesine erişilemedi"
 
-#: src/libedataserver/e-webdav-session.c:4664
+#: src/libedataserver/e-webdav-session.c:4814
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr "Ne korunmuş ne de devralınan Erişim Denetimi Girdisi depolanabilir."
 
-#: src/libedataserver/e-webdav-session.c:4671
+#: src/libedataserver/e-webdav-session.c:4821
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Erişim Denetimi Girdisi için geçersiz temel tür girildi."
 
-#: src/libedataserver/e-webdav-session.c:4678
+#: src/libedataserver/e-webdav-session.c:4828
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Özellik tabanlı Erişim Denetimi Girdisi depolanamaz."
 
-#: src/libedataserver/e-webdav-session.c:4685
+#: src/libedataserver/e-webdav-session.c:4835
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Erişim Denetimi Girdisi yalnızca Grant (Ver) veya Deny (Reddet) olabilir, "
 "None (Hiçbiri) olamaz."
 
-#: src/libedataserver/e-webdav-session.c:4693
+#: src/libedataserver/e-webdav-session.c:4843
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Erişim Denetimi Girdisi yalnızca Grant (Ver) veya Deny (Reddet) olabilir, "
 "her ikisi birden olamaz."
 
-#: src/libedataserver/e-webdav-session.c:4752
+#: src/libedataserver/e-webdav-session.c:4902
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Erişim Denetimi Girdisi ayrıcalığı NULL olamaz."
 
@@ -8163,7 +8221,7 @@ msgstr "Takvim etkinleştirildi: %s"
 #: src/tools/list-sources/list-sources.c:239
 #, c-format
 msgid "Contacts enabled: %s"
-msgstr "Kişiler etkinleştirildi: %s"
+msgstr "Bağlantılar etkinleştirildi: %s"
 
 #: src/tools/list-sources/list-sources.c:240
 #, c-format
