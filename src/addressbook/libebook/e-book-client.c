@@ -54,6 +54,7 @@ typedef struct _AsyncContext AsyncContext;
 typedef struct _SignalClosure SignalClosure;
 typedef struct _ConnectClosure ConnectClosure;
 typedef struct _RunInThreadClosure RunInThreadClosure;
+typedef struct _RunTaskInThreadClosure RunTaskInThreadClosure;
 
 struct _EBookClientPrivate {
 	EDBusAddressBook *dbus_proxy;
@@ -69,7 +70,6 @@ struct _EBookClientPrivate {
 struct _AsyncContext {
 	EContact *contact;
 	EBookClientView *client_view;
-	EBookClientCursor *client_cursor;
 	GSList *object_list;
 	GSList *string_list;
 	EContactField *sort_fields;
@@ -99,6 +99,11 @@ struct _RunInThreadClosure {
 	GSimpleAsyncThreadFunc func;
 	GSimpleAsyncResult *simple;
 	GCancellable *cancellable;
+};
+
+struct _RunTaskInThreadClosure {
+	GTaskThreadFunc func;
+	GTask *task;
 };
 
 /* Forward Declarations */
@@ -134,9 +139,6 @@ async_context_free (AsyncContext *async_context)
 
 	if (async_context->client_view != NULL)
 		g_object_unref (async_context->client_view);
-
-	if (async_context->client_cursor != NULL)
-		g_object_unref (async_context->client_cursor);
 
 	if (async_context->context)
 		g_main_context_unref (async_context->context);
@@ -192,6 +194,13 @@ run_in_thread_closure_free (RunInThreadClosure *run_in_thread_closure)
 		g_object_unref (run_in_thread_closure->cancellable);
 
 	g_slice_free (RunInThreadClosure, run_in_thread_closure);
+}
+
+static void
+run_task_in_thread_closure_free (RunTaskInThreadClosure *run_task_in_thread_closure)
+{
+	g_clear_object (&run_task_in_thread_closure->task);
+	g_free (run_task_in_thread_closure);
 }
 
 /*
@@ -404,6 +413,48 @@ book_client_run_in_dbus_thread (GSimpleAsyncResult *simple,
 	g_source_set_callback (
 		idle_source, book_client_run_in_dbus_thread_idle_cb,
 		closure, (GDestroyNotify) run_in_thread_closure_free);
+	g_source_attach (idle_source, main_context);
+	g_source_unref (idle_source);
+
+	g_main_context_unref (main_context);
+}
+
+static gboolean
+book_client_run_task_in_dbus_thread_idle_cb (gpointer user_data)
+{
+	RunTaskInThreadClosure *closure = user_data;
+	GTask *task;
+
+	task = G_TASK (closure->task);
+
+	closure->func (
+		task,
+		g_task_get_source_object (task),
+		g_task_get_task_data (task),
+		g_task_get_cancellable (task));
+
+	return G_SOURCE_REMOVE;
+}
+
+static void
+book_client_run_task_in_dbus_thread (GTask *task,
+                                     GTaskThreadFunc func)
+{
+	RunTaskInThreadClosure *closure;
+	GMainContext *main_context;
+	GSource *idle_source;
+
+	main_context = book_client_ref_dbus_main_context ();
+
+	closure = g_new0 (RunTaskInThreadClosure, 1);
+	closure->func = func;
+	closure->task = g_object_ref (task);
+
+	idle_source = g_idle_source_new ();
+	g_source_set_priority (idle_source, g_task_get_priority (task));
+	g_source_set_callback (
+		idle_source, book_client_run_task_in_dbus_thread_idle_cb,
+		closure, (GDestroyNotify) run_task_in_thread_closure_free);
 	g_source_attach (idle_source, main_context);
 	g_source_unref (idle_source);
 
@@ -4305,19 +4356,19 @@ book_client_delete_direct_cursor (EBookClient *client,
 }
 
 static void
-book_client_get_cursor_in_dbus_thread (GSimpleAsyncResult *simple,
-                                       GObject *source_object,
+book_client_get_cursor_in_dbus_thread (GTask *task,
+                                       gpointer source_object,
+                                       gpointer task_data,
                                        GCancellable *cancellable)
 {
 	EBookClient *client = E_BOOK_CLIENT (source_object);
-	AsyncContext *async_context;
+	AsyncContext *async_context = task_data;
 	gchar *utf8_sexp;
 	gchar *object_path = NULL;
 	GError *local_error = NULL;
 	const gchar **sort_fields;
 	const gchar **sort_types;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	EBookClientCursor *client_cursor = NULL;
 
 	sort_fields = sort_param_to_strv (
 		async_context->sort_fields,
@@ -4354,8 +4405,6 @@ book_client_get_cursor_in_dbus_thread (GSimpleAsyncResult *simple,
 		}
 
 		if (cursor != NULL) {
-			EBookClientCursor *client_cursor;
-
 			/* The client cursor will take a ref, but
 			 * e_book_backend_create_cursor() returns
 			 * a pointer to a cursor owned by the backend,
@@ -4374,8 +4423,6 @@ book_client_get_cursor_in_dbus_thread (GSimpleAsyncResult *simple,
 			g_return_if_fail (
 					  ((client_cursor != NULL) && (local_error == NULL)) ||
 					  ((client_cursor == NULL) && (local_error != NULL)));
-
-			async_context->client_cursor = client_cursor;
 		}
 
 	} else {
@@ -4396,7 +4443,6 @@ book_client_get_cursor_in_dbus_thread (GSimpleAsyncResult *simple,
 
 		if (object_path != NULL) {
 			GDBusConnection *connection;
-			EBookClientCursor *client_cursor;
 
 			connection = g_dbus_proxy_get_connection (
 				G_DBUS_PROXY (client->priv->dbus_proxy));
@@ -4416,15 +4462,15 @@ book_client_get_cursor_in_dbus_thread (GSimpleAsyncResult *simple,
 					  ((client_cursor != NULL) && (local_error == NULL)) ||
 					  ((client_cursor == NULL) && (local_error != NULL)));
 
-			async_context->client_cursor = client_cursor;
-
 			g_free (object_path);
 		}
 	}
 
-	if (local_error != NULL) {
+	if (client_cursor) {
+		g_task_return_pointer (task, g_steal_pointer (&client_cursor), g_object_unref);
+	} else {
 		g_dbus_error_strip_remote_error (local_error);
-		g_simple_async_result_take_error (simple, local_error);
+		g_task_return_error (task, g_steal_pointer (&local_error));
 	}
 
 	g_free (sort_fields);
@@ -4447,7 +4493,7 @@ e_book_client_get_cursor_with_context (EBookClient *client,
                                        GAsyncReadyCallback callback,
                                        gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
@@ -4462,20 +4508,14 @@ e_book_client_get_cursor_with_context (EBookClient *client,
 	async_context->n_sort_fields = n_fields;
 	async_context->context = g_main_context_ref (context);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_book_client_get_cursor);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_book_client_get_cursor_with_context);
+	g_task_set_check_cancellable (task, TRUE);
+	g_task_set_task_data (task, async_context, (GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	book_client_run_task_in_dbus_thread (task, book_client_get_cursor_in_dbus_thread);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	book_client_run_in_dbus_thread (
-		simple, book_client_get_cursor_in_dbus_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -4490,7 +4530,7 @@ e_book_client_get_cursor_with_context (EBookClient *client,
  * @user_data: user data for the @callback
  *
  * Create an #EBookClientCursor.
- * The call is finished by e_book_client_get_view_finish()
+ * The call is finished by e_book_client_get_cursor_finish()
  * from the @callback.
  *
  * Note: @sexp can be obtained through #EBookQuery, by converting it
@@ -4545,27 +4585,13 @@ e_book_client_get_cursor_finish (EBookClient *client,
                                  EBookClientCursor **out_cursor,
                                  GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_book_client_get_cursor), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (out_cursor != NULL, FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	*out_cursor = g_task_propagate_pointer (G_TASK (result), error);
 
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	g_return_val_if_fail (async_context->client_cursor != NULL, FALSE);
-
-	if (out_cursor != NULL)
-		*out_cursor = g_object_ref (async_context->client_cursor);
-
-	return TRUE;
+	return *out_cursor != NULL;
 }
 
 /**
