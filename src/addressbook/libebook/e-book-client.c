@@ -199,6 +199,12 @@ run_task_in_thread_closure_free (RunTaskInThreadClosure *run_task_in_thread_clos
 	g_free (run_task_in_thread_closure);
 }
 
+static inline void
+free_string_slist (GSList *list)
+{
+	g_slist_free_full (list, g_free);
+}
+
 /*
  * Well-known book backend properties:
  * @E_BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS: Retrieves comma-separated list
@@ -3716,19 +3722,19 @@ e_book_client_get_contacts_sync (EBookClient *client,
 
 /* Helper for e_book_client_get_contacts_uids() */
 static void
-book_client_get_contacts_uids_thread (GSimpleAsyncResult *simple,
-                                      GObject *source_object,
+book_client_get_contacts_uids_thread (GTask *task,
+                                      gpointer source_object,
+                                      gpointer task_data,
                                       GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	const gchar *sexp = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	GSList *string_list = NULL;
 
 	if (!e_book_client_get_contacts_uids_sync (
 		E_BOOK_CLIENT (source_object),
-		async_context->sexp,
-		&async_context->string_list,
+		sexp,
+		&string_list,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -3739,7 +3745,12 @@ book_client_get_contacts_uids_thread (GSimpleAsyncResult *simple,
 	}
 
 	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+		g_task_return_error (task, g_steal_pointer (&local_error));
+	else
+		g_task_return_pointer (
+			task,
+			g_steal_pointer (&string_list),
+			(GDestroyNotify) free_string_slist);
 }
 
 /**
@@ -3766,29 +3777,19 @@ e_book_client_get_contacts_uids (EBookClient *client,
                                  GAsyncReadyCallback callback,
                                  gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (sexp != NULL);
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->sexp = g_strdup (sexp);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_book_client_get_contacts_uids);
+	g_task_set_check_cancellable (task, TRUE);
+	g_task_set_task_data (task, g_strdup (sexp), g_free);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_book_client_get_contacts_uids);
+	g_task_run_in_thread (task, book_client_get_contacts_uids_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, book_client_get_contacts_uids_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -3813,26 +3814,19 @@ e_book_client_get_contacts_uids_finish (EBookClient *client,
                                         GSList **out_contact_uids,
                                         GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GSList *contact_uids;
+	gboolean res;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_book_client_get_contacts_uids), FALSE);
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	contact_uids = g_task_propagate_pointer (G_TASK (result), error);
+	res = contact_uids != NULL;
+	if (out_contact_uids != NULL)
+		*out_contact_uids = g_steal_pointer (&contact_uids);
 
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	if (out_contact_uids != NULL) {
-		*out_contact_uids = async_context->string_list;
-		async_context->string_list = NULL;
-	}
-
-	return TRUE;
+	free_string_slist (contact_uids);
+	return res;
 }
 
 /**
