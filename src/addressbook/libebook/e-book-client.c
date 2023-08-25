@@ -53,7 +53,6 @@
 typedef struct _AsyncContext AsyncContext;
 typedef struct _SignalClosure SignalClosure;
 typedef struct _ConnectClosure ConnectClosure;
-typedef struct _RunInThreadClosure RunInThreadClosure;
 typedef struct _RunTaskInThreadClosure RunTaskInThreadClosure;
 
 struct _EBookClientPrivate {
@@ -92,12 +91,6 @@ struct _ConnectClosure {
 	ESource *source;
 	GCancellable *cancellable;
 	guint32 wait_for_connected_seconds;
-};
-
-struct _RunInThreadClosure {
-	GSimpleAsyncThreadFunc func;
-	GSimpleAsyncResult *simple;
-	GCancellable *cancellable;
 };
 
 struct _RunTaskInThreadClosure {
@@ -178,18 +171,6 @@ connect_closure_free (ConnectClosure *connect_closure)
 		g_object_unref (connect_closure->cancellable);
 
 	g_slice_free (ConnectClosure, connect_closure);
-}
-
-static void
-run_in_thread_closure_free (RunInThreadClosure *run_in_thread_closure)
-{
-	if (run_in_thread_closure->simple != NULL)
-		g_object_unref (run_in_thread_closure->simple);
-
-	if (run_in_thread_closure->cancellable != NULL)
-		g_object_unref (run_in_thread_closure->cancellable);
-
-	g_slice_free (RunInThreadClosure, run_in_thread_closure);
 }
 
 static void
@@ -366,59 +347,6 @@ book_client_ref_dbus_main_context (void)
 		book_client_dbus_thread_init, NULL);
 
 	return g_main_context_ref (book_client_dbus_thread_once.retval);
-}
-
-static gboolean
-book_client_run_in_dbus_thread_idle_cb (gpointer user_data)
-{
-	RunInThreadClosure *closure = user_data;
-	GObject *source_object;
-	GAsyncResult *result;
-
-	result = G_ASYNC_RESULT (closure->simple);
-	source_object = g_async_result_get_source_object (result);
-
-	closure->func (
-		closure->simple,
-		source_object,
-		closure->cancellable);
-
-	if (source_object != NULL)
-		g_object_unref (source_object);
-
-	g_simple_async_result_complete_in_idle (closure->simple);
-
-	return FALSE;
-}
-
-static void
-book_client_run_in_dbus_thread (GSimpleAsyncResult *simple,
-                                GSimpleAsyncThreadFunc func,
-                                gint io_priority,
-                                GCancellable *cancellable)
-{
-	RunInThreadClosure *closure;
-	GMainContext *main_context;
-	GSource *idle_source;
-
-	main_context = book_client_ref_dbus_main_context ();
-
-	closure = g_slice_new0 (RunInThreadClosure);
-	closure->func = func;
-	closure->simple = g_object_ref (simple);
-
-	if (G_IS_CANCELLABLE (cancellable))
-		closure->cancellable = g_object_ref (cancellable);
-
-	idle_source = g_idle_source_new ();
-	g_source_set_priority (idle_source, io_priority);
-	g_source_set_callback (
-		idle_source, book_client_run_in_dbus_thread_idle_cb,
-		closure, (GDestroyNotify) run_in_thread_closure_free);
-	g_source_attach (idle_source, main_context);
-	g_source_unref (idle_source);
-
-	g_main_context_unref (main_context);
 }
 
 static gboolean
@@ -1092,8 +1020,9 @@ book_client_retrieve_properties_sync (EClient *client,
 }
 
 static void
-book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
-                                 GObject *source_object,
+book_client_init_in_dbus_thread (GTask *task,
+                                 gpointer source_object,
+                                 gpointer task_data,
                                  GCancellable *cancellable)
 {
 	EBookClientPrivate *priv;
@@ -1124,7 +1053,7 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
-		g_simple_async_result_take_error (simple, local_error);
+		g_task_return_error (task, g_steal_pointer (&local_error));
 		return;
 	}
 
@@ -1142,7 +1071,7 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
-		g_simple_async_result_take_error (simple, local_error);
+		g_task_return_error (task, g_steal_pointer (&local_error));
 		g_object_unref (connection);
 		return;
 	}
@@ -1159,7 +1088,7 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
-		g_simple_async_result_take_error (simple, local_error);
+		g_task_return_error (task, g_steal_pointer (&local_error));
 		g_object_unref (connection);
 		return;
 	}
@@ -1181,7 +1110,7 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
-		g_simple_async_result_take_error (simple, local_error);
+		g_task_return_error (task, g_steal_pointer (&local_error));
 		g_object_unref (connection);
 		return;
 	}
@@ -1227,6 +1156,7 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		e_dbus_address_book_get_locale (priv->dbus_proxy));
 
 	g_object_unref (connection);
+	g_task_return_boolean (task, TRUE);
 }
 
 static gboolean
@@ -1262,19 +1192,16 @@ book_client_initable_init_async (GAsyncInitable *initable,
                                  GAsyncReadyCallback callback,
                                  gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (initable), callback, user_data,
-		book_client_initable_init_async);
+	task = g_task_new (initable, cancellable, callback, user_data);
+	g_task_set_source_tag (task, book_client_initable_init_async);
+	g_task_set_check_cancellable (task, TRUE);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	book_client_run_task_in_dbus_thread (task, book_client_init_in_dbus_thread);
 
-	book_client_run_in_dbus_thread (
-		simple, book_client_init_in_dbus_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 static gboolean
@@ -1282,17 +1209,9 @@ book_client_initable_init_finish (GAsyncInitable *initable,
                                   GAsyncResult *result,
                                   GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, initable), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (initable),
-		book_client_initable_init_async), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 static void
