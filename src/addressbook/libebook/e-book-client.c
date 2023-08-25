@@ -1386,16 +1386,14 @@ book_client_connect_wait_for_connected_cb (GObject *source_object,
 					   GAsyncResult *result,
 					   gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
+	EClient *client = E_CLIENT (source_object);
+	GTask *task = G_TASK (user_data);
 
 	/* These errors are ignored, the book is left opened in an offline mode. */
-	e_client_wait_for_connected_finish (E_CLIENT (source_object), result, NULL);
+	e_client_wait_for_connected_finish (client, result, NULL);
+	g_task_return_pointer (task, g_object_ref (client), g_object_unref);
 
-	g_simple_async_result_complete (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /* Helper for e_book_client_connect() */
@@ -1404,49 +1402,43 @@ book_client_connect_open_cb (GObject *source_object,
                              GAsyncResult *result,
                              gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task = G_TASK (user_data);
 	gchar **properties = NULL;
 	GObject *client_object;
 	GError *local_error = NULL;
 
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
-
 	e_dbus_address_book_call_open_finish (
 		E_DBUS_ADDRESS_BOOK (source_object), &properties, result, &local_error);
 
-	client_object = g_async_result_get_source_object (G_ASYNC_RESULT (simple));
+	client_object = g_task_get_source_object (task);
 	if (client_object) {
 		book_client_process_properties (E_BOOK_CLIENT (client_object), properties);
+		g_clear_pointer (&properties, g_strfreev);
 
 		if (!local_error) {
-			ConnectClosure *closure;
+			ConnectClosure *closure = g_task_get_task_data (task);
+			GCancellable *cancellable = g_task_get_cancellable (task);
 
-			closure = g_simple_async_result_get_op_res_gpointer (simple);
 			if (closure->wait_for_connected_seconds != (guint32) -1) {
 				e_client_wait_for_connected (E_CLIENT (client_object),
 					closure->wait_for_connected_seconds,
-					closure->cancellable,
-					book_client_connect_wait_for_connected_cb, g_object_ref (simple));
-
-				g_clear_object (&client_object);
-				g_object_unref (simple);
-				g_strfreev (properties);
+					cancellable,
+					book_client_connect_wait_for_connected_cb,
+					g_steal_pointer (&task));
 				return;
+			} else {
+				g_task_return_pointer (task, g_object_ref (client_object), g_object_unref);
 			}
 		}
-
-		g_clear_object (&client_object);
 	}
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
-		g_simple_async_result_take_error (simple, local_error);
+		g_task_return_error (task, g_steal_pointer (&local_error));
 	}
 
-	g_simple_async_result_complete (simple);
-
-	g_object_unref (simple);
-	g_strfreev (properties);
+	g_clear_object (&task);
+	g_clear_pointer (&properties, g_strfreev);
 }
 
 /* Helper for e_book_client_connect() */
@@ -1455,40 +1447,25 @@ book_client_connect_init_cb (GObject *source_object,
                              GAsyncResult *result,
                              gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	EBookClientPrivate *priv;
-	ConnectClosure *closure;
+	GTask *task = G_TASK (user_data);
+	EBookClient *client = E_BOOK_CLIENT (source_object);
 	GError *local_error = NULL;
-
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
+	GCancellable *cancellable = g_task_get_cancellable (task);
 
 	g_async_initable_init_finish (
 		G_ASYNC_INITABLE (source_object), result, &local_error);
 
 	if (local_error != NULL) {
-		g_simple_async_result_take_error (simple, local_error);
-		g_simple_async_result_complete (simple);
-		goto exit;
+		g_task_return_error (task, g_steal_pointer (&local_error));
+		g_object_unref (task);
+		return;
 	}
 
-	/* Note, we're repurposing some function parameters. */
-
-	result = G_ASYNC_RESULT (simple);
-	source_object = g_async_result_get_source_object (result);
-	closure = g_simple_async_result_get_op_res_gpointer (simple);
-
-	priv = E_BOOK_CLIENT (source_object)->priv;
-
 	e_dbus_address_book_call_open (
-		priv->dbus_proxy,
-		closure->cancellable,
+		client->priv->dbus_proxy,
+		cancellable,
 		book_client_connect_open_cb,
-		g_object_ref (simple));
-
-	g_object_unref (source_object);
-
-exit:
-	g_object_unref (simple);
+		g_steal_pointer (&task));
 }
 
 /**
@@ -1525,7 +1502,7 @@ e_book_client_connect (ESource *source,
                        GAsyncReadyCallback callback,
                        gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	ConnectClosure *closure;
 	EBookClient *client;
 
@@ -1548,22 +1525,17 @@ e_book_client_connect (ESource *source,
 		E_TYPE_BOOK_CLIENT,
 		"source", source, NULL);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback,
-		user_data, e_book_client_connect);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, closure, (GDestroyNotify) connect_closure_free);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_book_client_connect);
+	g_task_set_check_cancellable (task, TRUE);
+	g_task_set_task_data (task, closure, (GDestroyNotify) connect_closure_free);
 
 	g_async_initable_init_async (
 		G_ASYNC_INITABLE (client),
 		G_PRIORITY_DEFAULT, cancellable,
 		book_client_connect_init_cb,
-		g_object_ref (simple));
+		g_steal_pointer (&task));
 
-	g_object_unref (simple);
 	g_object_unref (client);
 }
 
@@ -1589,26 +1561,23 @@ EClient *
 e_book_client_connect_finish (GAsyncResult *result,
                               GError **error)
 {
-	GSimpleAsyncResult *simple;
-	ConnectClosure *closure;
-	gpointer source_tag;
+	GTask *task;
+	EClient *client;
 
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), NULL);
+	g_return_val_if_fail (G_IS_TASK (result), NULL);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_book_client_connect), NULL);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	closure = g_simple_async_result_get_op_res_gpointer (simple);
-
-	source_tag = g_simple_async_result_get_source_tag (simple);
-	g_return_val_if_fail (source_tag == e_book_client_connect, NULL);
-
-	if (g_simple_async_result_propagate_error (simple, error)) {
+	task = G_TASK (result);
+	client = g_task_propagate_pointer (task, error);
+	if (!client) {
+		ConnectClosure *closure = g_task_get_task_data (task);
 		g_prefix_error (
 			error, _("Unable to connect to “%s”: "),
 			e_source_get_display_name (closure->source));
 		return NULL;
 	}
 
-	return E_CLIENT (g_async_result_get_source_object (result));
+	return client;
 }
 
 /**
@@ -1742,42 +1711,30 @@ book_client_connect_direct_init_cb (GObject *source_object,
                                     GAsyncResult *result,
                                     gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	EBookClientPrivate *priv;
-	ConnectClosure *closure;
+	GTask *task = G_TASK (user_data);
+	EBookClient *client = E_BOOK_CLIENT (source_object);
+	GCancellable *cancellable = NULL;
 	GError *error = NULL;
-
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	g_async_initable_init_finish (
 		G_ASYNC_INITABLE (source_object), result, &error);
 
 	if (error != NULL) {
-		g_simple_async_result_take_error (simple, error);
-		g_simple_async_result_complete (simple);
-		goto exit;
+		g_task_return_error (task, g_steal_pointer (&error));
+		g_object_unref (task);
+		return;
 	}
 
-	/* Note, we're repurposing some function parameters. */
-	result = G_ASYNC_RESULT (simple);
-	source_object = g_async_result_get_source_object (result);
-	closure = g_simple_async_result_get_op_res_gpointer (simple);
-
-	priv = E_BOOK_CLIENT (source_object)->priv;
-
+	g_set_object (&cancellable, g_task_get_cancellable (task));
 	e_dbus_address_book_call_open (
-		priv->dbus_proxy,
-		closure->cancellable,
+		client->priv->dbus_proxy,
+		cancellable,
 		book_client_connect_open_cb,
-		g_object_ref (simple));
+		g_steal_pointer (&task));
 
 	/* Make the DRA connection */
-	connect_direct (E_BOOK_CLIENT (source_object), closure->cancellable, NULL);
-
-	g_object_unref (source_object);
-
-exit:
-	g_object_unref (simple);
+	connect_direct (client, cancellable, NULL);
+	g_clear_object (&cancellable);
 }
 
 /**
@@ -1803,7 +1760,7 @@ e_book_client_connect_direct (ESource *source,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	ConnectClosure *closure;
 	EBookClient *client;
 
@@ -1825,22 +1782,17 @@ e_book_client_connect_direct (ESource *source,
 		E_TYPE_BOOK_CLIENT,
 		"source", source, NULL);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback,
-		user_data, e_book_client_connect_direct);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, closure, (GDestroyNotify) connect_closure_free);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_book_client_connect_direct);
+	g_task_set_check_cancellable (task, TRUE);
+	g_task_set_task_data (task, closure, (GDestroyNotify) connect_closure_free);
 
 	g_async_initable_init_async (
 		G_ASYNC_INITABLE (client),
 		G_PRIORITY_DEFAULT, cancellable,
 		book_client_connect_direct_init_cb,
-		g_object_ref (simple));
+		g_steal_pointer (&task));
 
-	g_object_unref (simple);
 	g_object_unref (client);
 }
 
@@ -1865,26 +1817,23 @@ EClient *
 e_book_client_connect_direct_finish (GAsyncResult *result,
                                      GError **error)
 {
-	GSimpleAsyncResult *simple;
-	ConnectClosure *closure;
-	gpointer source_tag;
+	GTask *task;
+	EClient *client;
 
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), NULL);
+	g_return_val_if_fail (G_IS_TASK (result), NULL);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_book_client_connect_direct), NULL);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	closure = g_simple_async_result_get_op_res_gpointer (simple);
-
-	source_tag = g_simple_async_result_get_source_tag (simple);
-	g_return_val_if_fail (source_tag == e_book_client_connect_direct, NULL);
-
-	if (g_simple_async_result_propagate_error (simple, error)) {
+	task = G_TASK (result);
+	client = g_task_propagate_pointer (task, error);
+	if (!client) {
+		ConnectClosure *closure = g_task_get_task_data (task);
 		g_prefix_error (
 			error, _("Unable to connect to “%s”: "),
 			e_source_get_display_name (closure->source));
 		return NULL;
 	}
 
-	return E_CLIENT (g_async_result_get_source_object (result));
+	return client;
 }
 
 #define SELF_UID_PATH_ID "org.gnome.evolution-data-server.addressbook"
