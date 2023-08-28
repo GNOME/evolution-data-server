@@ -1694,10 +1694,11 @@ camel_imapx_folder_invalidate_local_cache (CamelIMAPXFolder *folder,
 
 	for (ii = 0; ii < array->len; ii++) {
 		const gchar *uid = array->pdata[ii];
-		camel_folder_change_info_change_uid (changes, uid);
+		camel_folder_change_info_remove_uid (changes, uid);
 	}
 
 	CAMEL_IMAPX_SUMMARY (summary)->validity = new_uidvalidity;
+	camel_folder_summary_clear (summary, NULL);
 	camel_folder_summary_touch (summary);
 	camel_folder_summary_save (summary, NULL);
 

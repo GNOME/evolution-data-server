@@ -5670,6 +5670,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 	guint32 total;
 	guint64 uidl;
 	gboolean need_rescan, do_old_flags_update;
+	gboolean uidvalidity_changed;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
@@ -5711,8 +5712,9 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 	highestmodseq = camel_imapx_mailbox_get_highestmodseq (mailbox);
 	total = camel_folder_summary_count (CAMEL_FOLDER_SUMMARY (imapx_summary));
 
+	uidvalidity_changed = uidvalidity > 0 && imapx_summary->validity > 0 && uidvalidity != imapx_summary->validity;
 	need_rescan =
-		(uidvalidity > 0 && uidvalidity != imapx_summary->validity) ||
+		uidvalidity_changed || !imapx_summary->validity ||
 		total != messages ||
 		imapx_summary->uidnext != uidnext ||
 		camel_folder_summary_get_unread_count (CAMEL_FOLDER_SUMMARY (imapx_summary)) != unseen ||
@@ -5728,7 +5730,15 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 		return FALSE;
 	}
 
-	if (is->priv->use_qresync && imapx_summary->modseq > 0 && uidvalidity > 0) {
+	if (uidvalidity_changed) {
+		c (
+			is->priv->tagprefix,
+			"UIDVALIDITY changed %" G_GUINT64_FORMAT "~>%u, drop all cached messages and start from scratch in folder:'%s'\n",
+			imapx_summary->validity, uidvalidity,
+			camel_folder_get_full_name (folder));
+		camel_imapx_folder_invalidate_local_cache (CAMEL_IMAPX_FOLDER (folder), uidvalidity);
+		total = 0;
+	} else if (is->priv->use_qresync && imapx_summary->modseq > 0 && uidvalidity > 0) {
 		if (total != messages ||
 		    camel_folder_summary_get_unread_count (CAMEL_FOLDER_SUMMARY (imapx_summary)) != unseen ||
 		    imapx_summary->modseq != highestmodseq) {
