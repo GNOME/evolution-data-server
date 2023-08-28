@@ -2043,20 +2043,20 @@ e_book_client_is_self (EContact *contact)
 
 /* Helper for e_book_client_add_contact() */
 static void
-book_client_add_contact_thread (GSimpleAsyncResult *simple,
-                                GObject *source_object,
+book_client_add_contact_thread (GTask *task,
+                                gpointer source_object,
+                                gpointer task_data,
                                 GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	AsyncContext *async_context = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	gchar *uid = NULL;
 
 	if (!e_book_client_add_contact_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->contact,
 		async_context->opflags,
-		&async_context->uid,
+		&uid,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -2066,8 +2066,10 @@ book_client_add_contact_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (uid)
+		g_task_return_pointer (task, g_steal_pointer (&uid), g_free);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -2093,7 +2095,7 @@ e_book_client_add_contact (EBookClient *client,
 			   GAsyncReadyCallback callback,
 			   gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
@@ -2103,20 +2105,14 @@ e_book_client_add_contact (EBookClient *client,
 	async_context->contact = g_object_ref (contact);
 	async_context->opflags = opflags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_book_client_add_contact);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_book_client_add_contact);
+	g_task_set_check_cancellable (task, TRUE);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, book_client_add_contact_thread);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, book_client_add_contact_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -2142,26 +2138,20 @@ e_book_client_add_contact_finish (EBookClient *client,
                                   gchar **out_added_uid,
                                   GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	gchar *added_uid;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_book_client_add_contact), FALSE);
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	added_uid = g_task_propagate_pointer (G_TASK (result), error);
 
-	if (g_simple_async_result_propagate_error (simple, error))
+	if (!added_uid)
 		return FALSE;
 
-	g_return_val_if_fail (async_context->uid != NULL, FALSE);
-
-	if (out_added_uid != NULL) {
-		*out_added_uid = async_context->uid;
-		async_context->uid = NULL;
-	}
+	if (out_added_uid != NULL)
+		*out_added_uid = g_steal_pointer (&added_uid);
+	else
+		g_clear_pointer (&added_uid, g_free);
 
 	return TRUE;
 }
@@ -2211,9 +2201,9 @@ e_book_client_add_contact_sync (EBookClient *client,
 
 	if (uids != NULL) {
 		if (out_added_uid != NULL)
-			*out_added_uid = g_strdup (uids->data);
+			*out_added_uid = g_steal_pointer (&uids->data);
 
-		g_slist_free_full (uids, (GDestroyNotify) g_free);
+		g_slist_free_full (uids, g_free);
 	}
 
 	return success;
