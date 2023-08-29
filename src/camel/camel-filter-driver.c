@@ -131,6 +131,7 @@ static CamelSExpResult *do_copy (struct _CamelSExp *f, gint argc, struct _CamelS
 static CamelSExpResult *do_move (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
 static CamelSExpResult *do_stop (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
 static CamelSExpResult *do_label (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
+static CamelSExpResult *do_unset_label (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
 static CamelSExpResult *do_color (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
 static CamelSExpResult *do_score (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
 static CamelSExpResult *do_adjust_score (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
@@ -167,6 +168,7 @@ static struct {
 	{ "move-to",           (CamelSExpFunc) do_move,      0 },
 	{ "stop",              (CamelSExpFunc) do_stop,      0 },
 	{ "set-label",         (CamelSExpFunc) do_label,     0 },
+	{ "unset-label",       (CamelSExpFunc) do_unset_label, 0 },
 	{ "set-color",         (CamelSExpFunc) do_color,    0 },
 	{ "set-score",         (CamelSExpFunc) do_score,     0 },
 	{ "adjust-score",      (CamelSExpFunc) do_adjust_score, 0 },
@@ -914,6 +916,77 @@ do_label (struct _CamelSExp *f,
 		camel_filter_driver_log (
 			driver, FILTER_LOG_ACTION,
 			"Set label to %s", label);
+	}
+
+	return NULL;
+}
+
+static CamelSExpResult *
+do_unset_label (struct _CamelSExp *f,
+		gint argc,
+		struct _CamelSExpResult **argv,
+		CamelFilterDriver *driver)
+{
+	d (fprintf (stderr, "unsetting label tag\n"));
+	if (argc > 0 && argv[0]->type == CAMEL_SEXP_RES_STRING) {
+		/* This is a list of new labels, we should use these in case of passing in old names.
+		 * This all is required only because backward compatibility. */
+		const gchar *new_labels[] = { "$Labelimportant", "$Labelwork", "$Labelpersonal", "$Labeltodo", "$Labellater", NULL};
+		const gchar *label;
+		gboolean any_unset = FALSE;
+		gint ii, jj;
+
+		for (jj = 0; jj < argc; jj++) {
+			label = argv[jj]->value.string;
+
+			for (ii = 0; new_labels[ii]; ii++) {
+				if (label && strcmp (new_labels[ii] + 6, label) == 0) {
+					label = new_labels[ii];
+					break;
+				}
+			}
+
+			if (driver->priv->source && driver->priv->uid && camel_folder_has_summary_capability (driver->priv->source)) {
+				if (camel_folder_get_message_user_flag (driver->priv->source, driver->priv->uid, label)) {
+					camel_folder_set_message_user_flag (driver->priv->source, driver->priv->uid, label, FALSE);
+					camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Unset label '%s'", label);
+					any_unset = TRUE;
+				}
+			} else if (camel_message_info_get_user_flag (driver->priv->info, label)) {
+				camel_message_info_set_user_flag (driver->priv->info, label, FALSE);
+				camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Unset label '%s'", label);
+				any_unset = TRUE;
+			}
+		}
+
+		if (!any_unset) {
+			if (argc == 1) {
+				camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Unset label '%s'", label);
+			} else {
+				GString *str = g_string_new ("");
+
+				for (jj = 0; jj < argc; jj++) {
+					label = argv[jj]->value.string;
+
+					for (ii = 0; new_labels[ii]; ii++) {
+						if (label && strcmp (new_labels[ii] + 6, label) == 0) {
+							label = new_labels[ii];
+							break;
+						}
+					}
+
+					if (str->len)
+						g_string_append (str, ", ");
+					g_string_append_c (str, '\'');
+					g_string_append (str, label);
+					g_string_append_c (str, '\'');
+				}
+
+				camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Unset labels %s", str->str);
+
+				g_string_free (str, TRUE);
+			}
+		}
 	}
 
 	return NULL;
