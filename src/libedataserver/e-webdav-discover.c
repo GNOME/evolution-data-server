@@ -77,11 +77,17 @@ e_webdav_discover_split_resources (WebDAVDiscoverData *wdd,
 		    resource->kind == E_WEBDAV_RESOURCE_KIND_ADDRESSBOOK ||
 		    resource->kind == E_WEBDAV_RESOURCE_KIND_CALENDAR ||
 		    resource->kind == E_WEBDAV_RESOURCE_KIND_SUBSCRIBED_ICALENDAR ||
-		    resource->kind == E_WEBDAV_RESOURCE_KIND_WEBDAV_NOTES)) {
+		    resource->kind == E_WEBDAV_RESOURCE_KIND_WEBDAV_NOTES ||
+		    resource->kind == E_WEBDAV_RESOURCE_KIND_SCHEDULE_INBOX ||
+		    resource->kind == E_WEBDAV_RESOURCE_KIND_SCHEDULE_OUTBOX)) {
 			EWebDAVDiscoveredSource *discovered;
 
 			if ((wdd->only_supports & (~CUSTOM_SUPPORTS_FLAGS)) != E_WEBDAV_DISCOVER_SUPPORTS_NONE &&
 			    (resource->supports & wdd->only_supports) == 0)
+				continue;
+
+			if (resource->kind == E_WEBDAV_RESOURCE_KIND_SCHEDULE_INBOX ||
+			    resource->kind == E_WEBDAV_RESOURCE_KIND_SCHEDULE_OUTBOX)
 				continue;
 
 			if (e_webdav_discovery_already_discovered (resource->href,

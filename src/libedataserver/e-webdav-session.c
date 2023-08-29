@@ -3330,6 +3330,12 @@ e_webdav_session_extract_kind (xmlNodePtr parent_node)
 	if (e_xml_find_child (resourcetype, E_WEBDAV_NS_CALDAV, "calendar"))
 		return E_WEBDAV_RESOURCE_KIND_CALENDAR;
 
+	if (e_xml_find_child (resourcetype, E_WEBDAV_NS_CALDAV, "schedule-inbox"))
+		return E_WEBDAV_RESOURCE_KIND_SCHEDULE_INBOX;
+
+	if (e_xml_find_child (resourcetype, E_WEBDAV_NS_CALDAV, "schedule-outbox"))
+		return E_WEBDAV_RESOURCE_KIND_SCHEDULE_OUTBOX;
+
 	/* These are subscribed iCalendar files, aka 'On The Web' calendars */
 	if (e_xml_find_child (resourcetype, E_WEBDAV_NS_DAV, "collection") &&
 	    e_xml_find_child (resourcetype, E_WEBDAV_NS_CALENDARSERVER, "subscribed") &&
@@ -3357,7 +3363,8 @@ e_webdav_session_extract_supports (xmlNodePtr prop_node,
 	    e_xml_find_in_hierarchy (prop_node, E_WEBDAV_NS_DAV, "resourcetype", E_WEBDAV_NS_CARDDAV, "addressbook", NULL, NULL))
 		supports = supports | E_WEBDAV_RESOURCE_SUPPORTS_CONTACTS;
 
-	if (kind == E_WEBDAV_RESOURCE_KIND_CALENDAR) {
+	if (kind == E_WEBDAV_RESOURCE_KIND_CALENDAR || kind == E_WEBDAV_RESOURCE_KIND_SCHEDULE_INBOX ||
+	    kind == E_WEBDAV_RESOURCE_KIND_SCHEDULE_OUTBOX) {
 		xmlNodePtr calendar_components;
 
 		calendar_components = e_xml_find_child (prop_node, E_WEBDAV_NS_CALDAV, "supported-calendar-component-set");
