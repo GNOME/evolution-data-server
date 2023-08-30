@@ -8,8 +8,8 @@
 msgid ""
 msgstr "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/issues\n"
-"POT-Creation-Date: 2023-04-25 14:50+0000\n"
-"PO-Revision-Date: 2023-05-21 06:00+0100\n"
+"POT-Creation-Date: 2023-08-07 13:21+0000\n"
+"PO-Revision-Date: 2023-08-30 06:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asiersarasua@ni.eus>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
@@ -18,30 +18,30 @@ msgstr "Project-Id-Version: evolution-data-server master\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:274
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:276
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Emandako “%s” URLak ez dauka CardDAV helbide-liburuaren erreferentziarik"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1161
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1374
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:992
-msgid "Server didn’t return object’s href"
-msgstr "Zerbitzariak ez du itzuli objektuaren href elementua."
-
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1163
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1376
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:994
+msgid "Server didn’t return object’s href"
+msgstr "Zerbitzariak ez du itzuli objektuaren href elementua."
+
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1165
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1378
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:996
 msgid "Server didn’t return object’s ETag"
 msgstr "Zerbitzariak ez du itzuli objektuaren ETag elementua."
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1165
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1167
 msgid "Received object is not a valid vCard"
 msgstr "Jasotako objektua ez da baliozko vCard bat"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1286
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1516
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1252
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1288
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1518
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1254
 #, c-format
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
@@ -49,7 +49,7 @@ msgid ""
 "server processes. Cache file: %s"
 msgstr "Osagaiaren URLari buruzko informazioa falta da, cache lokala osatu gabe edo hautsita dago agian. Saiatu hura kentzen eta atzeko planoko evolution-data-server prozesuak berrabiarazten. Cahe-fitxategia: %s"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1292
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1294
 msgid "Object to save is not a valid vCard"
 msgstr "Gordeko den objektua ez da baliozko vCard bat"
 
@@ -69,7 +69,7 @@ msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "Huts egin du “%s” baliabidearen esteka gogorra sortzean: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:735
-#: src/addressbook/backends/file/e-book-backend-file.c:1480
+#: src/addressbook/backends/file/e-book-backend-file.c:1502
 msgid "No UID in the contact"
 msgstr "Ez dago UIDrik kontaktuan"
 
@@ -87,38 +87,38 @@ msgstr "Kargatzen…"
 msgid "Searching..."
 msgstr "Bilatzen…"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1508
+#: src/addressbook/backends/file/e-book-backend-file.c:1530
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr "“%s” kontaktua sinkronizatu gabeko gainbegiraketarekin aldatzen saiatu da"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1689
-#: src/addressbook/backends/file/e-book-backend-file.c:1775
+#: src/addressbook/backends/file/e-book-backend-file.c:1711
+#: src/addressbook/backends/file/e-book-backend-file.c:1797
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3077
-#: src/addressbook/libedata-book/e-book-sqlite.c:7378
-#: src/addressbook/libedata-book/e-book-sqlite.c:7447
+#: src/addressbook/libedata-book/e-book-sqlite.c:7463
+#: src/addressbook/libedata-book/e-book-sqlite.c:7532
 #, c-format
 msgid "Contact “%s” not found"
 msgstr "Ez da “%s” kontaktua aurkitu"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1839
-#: src/addressbook/backends/file/e-book-backend-file.c:1922
+#: src/addressbook/backends/file/e-book-backend-file.c:1861
+#: src/addressbook/backends/file/e-book-backend-file.c:1944
 #, c-format
 msgid "Query “%s” not supported"
 msgstr "“%s” kontsulta ez da onartzen"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1848
-#: src/addressbook/backends/file/e-book-backend-file.c:1931
+#: src/addressbook/backends/file/e-book-backend-file.c:1870
+#: src/addressbook/backends/file/e-book-backend-file.c:1953
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr "Baliogabeko “%s” kontsulta"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:2236
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2147
+#: src/addressbook/backends/file/e-book-backend-file.c:2260
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2192
 msgid "Requested to delete an unrelated cursor"
 msgstr "Zerikusirik ez duen kurtsorea ezabatzea eskatu da"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:2320
+#: src/addressbook/backends/file/e-book-backend-file.c:2387
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Huts egin du “%s” datu-base zaharra “%s” gisa aldatzean: %s"
@@ -139,7 +139,7 @@ msgstr "Huts egin du “%s” datu-base zaharra “%s” gisa aldatzean: %s"
 #: src/addressbook/libebook/e-book-client.c:3278
 #: src/addressbook/libebook/e-book-client.c:3473
 #: src/addressbook/libebook/e-book-client.c:3691
-#: src/addressbook/libedata-book/e-book-backend-sexp.c:873
+#: src/addressbook/libedata-book/e-book-backend-sexp.c:898
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:288
 #: src/calendar/backends/http/e-cal-backend-http.c:312
 #: src/calendar/libecal/e-cal-client.c:257
@@ -162,15 +162,15 @@ msgstr "Huts egin du “%s” datu-base zaharra “%s” gisa aldatzean: %s"
 #: src/calendar/libecal/e-cal-client.c:6648
 #: src/calendar/libecal/e-cal-client.c:6872
 #: src/calendar/libedata-cal/e-cal-cache.c:1837
-#: src/camel/camel-filter-driver.c:1724 src/camel/camel-filter-driver.c:1853
-#: src/camel/providers/imapx/camel-imapx-server.c:3331
-#: src/camel/providers/imapx/camel-imapx-server.c:3337
-#: src/camel/providers/imapx/camel-imapx-server.c:3347
-#: src/camel/providers/imapx/camel-imapx-server.c:3359
+#: src/camel/camel-filter-driver.c:1758 src/camel/camel-filter-driver.c:1887
+#: src/camel/providers/imapx/camel-imapx-server.c:3330
+#: src/camel/providers/imapx/camel-imapx-server.c:3336
+#: src/camel/providers/imapx/camel-imapx-server.c:3346
+#: src/camel/providers/imapx/camel-imapx-server.c:3358
 #: src/camel/providers/nntp/camel-nntp-store.c:419
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
-#: src/libedataserver/e-soup-session.c:1019
-#: src/libedataserver/e-soup-session.c:1899
+#: src/libedataserver/e-soup-session.c:1025
+#: src/libedataserver/e-soup-session.c:1905
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:266
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
 #: src/libedataserverui/e-reminders-widget.c:2141
@@ -251,8 +251,8 @@ msgid "Downloading contacts (%d)..."
 msgstr "Kontaktuak deskargatzen (%d)…"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5111
-#: src/addressbook/libedata-book/e-book-meta-backend.c:845
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:745
+#: src/addressbook/libedata-book/e-book-meta-backend.c:883
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:768
 msgid "Refreshing…"
 msgstr "Freskatzen…"
 
@@ -966,32 +966,32 @@ msgstr "Ezin izan da liburuaren “%s” propietatearen balioa aldatu"
 msgid "Unable to connect to “%s”: "
 msgstr "Ezin da “%s”(r)ekin konektatu: "
 
-#: src/addressbook/libebook/e-book-client-view.c:858
+#: src/addressbook/libebook/e-book-client-view.c:988
 #: src/calendar/libecal/e-cal-client-view.c:667
 #, c-format
 msgid "Client disappeared"
 msgstr "Bezeroa desagertuta"
 
-#: src/addressbook/libedata-book/e-book-backend.c:3448
+#: src/addressbook/libedata-book/e-book-backend.c:3600
 #, c-format
 msgid "Addressbook backend does not support cursors"
 msgstr "Helbide-liburuen motorrak ez ditu kurtsoreak onartzen"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:895
-#: src/addressbook/libedata-book/e-book-sqlite.c:2259
+#: src/addressbook/libedata-book/e-book-sqlite.c:2288
 #, c-format
 msgid "Error introspecting unknown summary field “%s”"
 msgstr "Errorea “%s” laburpenaren eremu ezezagunean sakontzean"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1505
-#: src/addressbook/libedata-book/e-book-cache.c:558
-#: src/addressbook/libedata-book/e-book-sqlite.c:1398
+#: src/addressbook/libedata-book/e-book-cache.c:559
+#: src/addressbook/libedata-book/e-book-sqlite.c:1399
 msgid "Error parsing regular expression"
 msgstr "Errorea adierazpen erregularra analizatzea"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1550
-#: src/addressbook/libedata-book/e-book-cache.c:4751
-#: src/addressbook/libedata-book/e-book-sqlite.c:1882 src/camel/camel-db.c:830
+#: src/addressbook/libedata-book/e-book-cache.c:4838
+#: src/addressbook/libedata-book/e-book-sqlite.c:1911 src/camel/camel-db.c:830
 #, c-format
 msgid "Insufficient memory"
 msgstr "Ez dago nahikoa memoria"
@@ -999,16 +999,16 @@ msgstr "Ez dago nahikoa memoria"
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1687
 #, c-format
 msgid "Invalid contact field “%d” specified in summary"
-msgstr "Baliogabeko “%d” kontaktuaren eremua zehaztu da laburpenean"
+msgstr "Baliogabeko “%d” kontaktu-eremua zehaztu da laburpenean"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1721
-#: src/addressbook/libedata-book/e-book-cache.c:381
-#: src/addressbook/libedata-book/e-book-sqlite.c:608
+#: src/addressbook/libedata-book/e-book-cache.c:382
+#: src/addressbook/libedata-book/e-book-sqlite.c:609
 #, c-format
 msgid ""
 "Contact field “%s” of type “%s” specified in summary, but only boolean, "
 "string and string list field types are supported"
-msgstr "“%2$s' motako “%1$s” kontaktuaren eremua zehaztu da laburpenean, baina soilik boolear, kate eta kate zerrendaren eremu motak daude onartuta"
+msgstr "“%s” kontaktu-eremua, “%s” motakoa, zehaztu da laburpenean, baina soilik boolear, kate eta kate zerrendaren eremu motak daude onartuta"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3065
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4166
@@ -1019,8 +1019,8 @@ msgstr "'search_contacts' osoak ez daude cachean gordeta. Ezin dira vcard-ak itz
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4297
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4390
-#: src/addressbook/libedata-book/e-book-cache.c:3484
-#: src/addressbook/libedata-book/e-book-sqlite.c:5854
+#: src/addressbook/libedata-book/e-book-cache.c:3566
+#: src/addressbook/libedata-book/e-book-sqlite.c:5939
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Kontsultak onartu gabeko elementuak ditu"
@@ -1078,8 +1078,8 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Ezin da hainbat balio eduki ditzakeen eremu baten arabera ordenatu"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6210
-#: src/addressbook/libedata-book/e-book-cache.c:6082
-#: src/addressbook/libedata-book/e-book-sqlite.c:8152
+#: src/addressbook/libedata-book/e-book-cache.c:6169
+#: src/addressbook/libedata-book/e-book-sqlite.c:8237
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1087,114 +1087,129 @@ msgid ""
 msgstr "Kurtsore bat atzera eramatea saiatu da, baina kurtsorea jadanik kontaktuen zerrendaren hasieran dago"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6218
-#: src/addressbook/libedata-book/e-book-cache.c:6089
-#: src/addressbook/libedata-book/e-book-sqlite.c:8160
+#: src/addressbook/libedata-book/e-book-cache.c:6176
+#: src/addressbook/libedata-book/e-book-sqlite.c:8245
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
 "contact list"
 msgstr "Kurtsore bat aurrera eramatea saiatu da, baina kurtsorea jadanik kontaktuen zerrendaren amaieran dago"
 
-#: src/addressbook/libedata-book/e-book-cache.c:346
-#: src/addressbook/libedata-book/e-book-sqlite.c:574
+#: src/addressbook/libedata-book/e-book-cache.c:347
+#: src/addressbook/libedata-book/e-book-sqlite.c:575
 #, c-format
 msgid "Unsupported contact field “%d” specified in summary"
-msgstr "Onartu gabeko “%d” kontaktuaren eremua zehaztu da laburpenean"
+msgstr "Onartu gabeko “%d” kontaktu-eremua zehaztu da laburpenean"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3479
-#: src/addressbook/libedata-book/e-book-sqlite.c:5847
+#: src/addressbook/libedata-book/e-book-cache.c:3561
+#: src/addressbook/libedata-book/e-book-sqlite.c:5932
 #: src/calendar/libedata-cal/e-cal-cache.c:1703
 #: src/calendar/libedata-cal/e-cal-cache.c:3550
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Kontsulta baliogabea: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3664
+#: src/addressbook/libedata-book/e-book-cache.c:3746
+#: src/addressbook/libedata-book/e-book-cache.c:6852
 msgid "Invalid query for a book cursor"
 msgstr "Liburuaren kurtsorearen kontsulta baliogabea"
 
-#: src/addressbook/libedata-book/e-book-cache.c:4755
+#: src/addressbook/libedata-book/e-book-cache.c:4842
 #: src/libebackend/e-cache.c:755
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Ezin da “%s” datu-basea ireki: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5421
-#: src/addressbook/libedata-book/e-book-cache.c:5468
-#: src/addressbook/libedata-book/e-book-cache.c:5515
-#: src/addressbook/libedata-book/e-book-cache.c:5567
+#: src/addressbook/libedata-book/e-book-cache.c:5508
+#: src/addressbook/libedata-book/e-book-cache.c:5555
+#: src/addressbook/libedata-book/e-book-cache.c:5602
+#: src/addressbook/libedata-book/e-book-cache.c:5654
 #: src/calendar/libedata-cal/e-cal-cache.c:2832
 #: src/calendar/libedata-cal/e-cal-cache.c:2890
 #: src/calendar/libedata-cal/e-cal-cache.c:2949
 #: src/calendar/libedata-cal/e-cal-cache.c:3012
 #: src/calendar/libedata-cal/e-cal-cache.c:3183
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1435
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1464
 #: src/libebackend/e-cache.c:1370 src/libebackend/e-cache.c:2348
 #: src/libebackend/e-cache.c:2388
 #, c-format
 msgid "Object “%s” not found"
 msgstr "Ez da “%s” objektua aurkitu"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5627
+#: src/addressbook/libedata-book/e-book-cache.c:5714
 #: src/calendar/libedata-cal/e-cal-cache.c:3074
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Ez da “%s” gehigarria duen objekturik aurkitu"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5803
+#: src/addressbook/libedata-book/e-book-cache.c:5890
 msgid "Search by email not supported"
 msgstr "Helbide elektronikoaren bidez bilatzea ez dago onartuta"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5814
+#: src/addressbook/libedata-book/e-book-cache.c:5901
 msgid "No email address provided"
 msgstr "Ez da helbide elektronikorik eman"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5869
+#: src/addressbook/libedata-book/e-book-cache.c:5956
 msgid "At least one sort field must be specified to use a cursor"
 msgstr "Gutxienez ordenaren eremu bat zehaztu behar da kurtsore bat erabiltzeko"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5878
-#: src/addressbook/libedata-book/e-book-sqlite.c:7992
+#: src/addressbook/libedata-book/e-book-cache.c:5965
+#: src/addressbook/libedata-book/e-book-sqlite.c:8077
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Ezin da katea motakoa ez den eremu baten arabera ordenatu"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1143
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1152
+#: src/addressbook/libedata-book/e-book-cache.c:7043
+#: src/addressbook/libedata-book/e-book-cache.c:7202
+#: src/addressbook/libedata-book/e-book-sqlite.c:8964
+#: src/addressbook/libedata-book/e-book-sqlite.c:9125
+#, c-format
+msgid "Contact field “%s” not in summary"
+msgstr "“%s” kontaktu-eremua ez dago laburpenean"
+
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1179
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1175
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Aurre-kargatutako “%s” UIDaren objektua baliogabea da"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1151
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1160
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1187
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1183
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Jasotako “%s” UIDaren objektua baliogabea da"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1378
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1389
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1418
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1412
 msgid ""
 "Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
 "and repeat the action."
 msgstr "Freskatzea saltatu da energia aurrezteko modua gaituta dagoelako. Desgaitu energia aurrezteko modua eta errepikatu ekintza."
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2017
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2473
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3392
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1424
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1418
+msgid "Refresh skipped due to being disabled on metered network."
+msgstr "Freskatzea saltatu da, sare mugatuetan desgaituta baitago."
+
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2062
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2561
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3436
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Huts egin du “%s” cachea sortzean:"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:1955
+#: src/addressbook/libedata-book/e-book-sqlite.c:1984
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the “folders” table first."
 msgstr "Ezin da bost helbide-liburu baino gehiago dituen datu-base zahar batetik kontaktuen datu-basea eguneratu. Ezabatu aurrenik “folders” karpetako sarreratariko bat."
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:6022
+#: src/addressbook/libedata-book/e-book-sqlite.c:6107
+#: src/addressbook/libedata-book/e-book-sqlite.c:8771
 msgid "Invalid query for EbSqlCursor"
 msgstr "EbSqlCursor-ren kontsulta baliogabea"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:7974
+#: src/addressbook/libedata-book/e-book-sqlite.c:8059
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr "Gutxienez ordenatzeko eremu bat zehaztu behar da EbSqlCursor bat erabiltzeko"
 
@@ -1275,12 +1290,12 @@ msgstr "Gainbegiraketaren sinkronizazioaren galduta kurtsorea mugitzean"
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Indize alfabetikoa okerreko lokalarekin ezarrita"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:255
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:257
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Emandako “%s” URLak ez dauka CalDAV egutegiaren erreferentziarik"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2031
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2041
 msgid "Failed to parse response data"
 msgstr "Huts egin du erantzunaren datuak aztertzean"
 
@@ -1324,11 +1339,11 @@ msgid "File “%s” is not a VCALENDAR component"
 msgstr "“%s” fitxategia ez da VCALENDAR osagaia"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: src/calendar/backends/file/e-cal-backend-file.c:3735
-#: src/calendar/backends/file/e-cal-backend-file.c:3741
-#: src/calendar/backends/file/e-cal-backend-file.c:3747
-#: src/calendar/backends/file/e-cal-backend-file.c:3774
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2619
+#: src/calendar/backends/file/e-cal-backend-file.c:3743
+#: src/calendar/backends/file/e-cal-backend-file.c:3749
+#: src/calendar/backends/file/e-cal-backend-file.c:3755
+#: src/calendar/backends/file/e-cal-backend-file.c:3782
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2663
 msgid "Unsupported method"
 msgstr "Onartzen ez den metodoa"
 
@@ -1427,8 +1442,8 @@ msgstr "Cache-fitxategia ezin izan da sortu"
 msgid "Could not create cache file: "
 msgstr "Ezin izan da sortu cache-fitxategia: "
 
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1035
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1064
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1037
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1066
 msgid "New note"
 msgstr "Ohar berria"
 
@@ -2527,12 +2542,18 @@ msgstr "Ezin da osagairik gabeko ordu-zona gehitu"
 msgid "Cannot add timezone with invalid component"
 msgstr "Ezin da osagai baliogabea duen ordu-zona gehitu"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1207
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1230
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Jasotako “%s” UIDaren objektuak ez dauzka espero ziren osagairik"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4292
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1971
+msgid ""
+"Cannot modify all instances from a detached instance. Modify a series "
+"instance instead."
+msgstr "Ezin dira instantzia aske baten instantzia guztiak aldatu. Horren ordez, aldatu serie-instantzia bat."
+
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4336
 msgid "attachment.dat"
 msgstr "eranskina.dat"
 
@@ -2606,35 +2627,35 @@ msgstr "Ezin izan da egutegiaren ordu-zona eskuratu: "
 msgid "Could not add calendar time zone: "
 msgstr "Ezin izan da egutegiaren ordu-zona gehitu: "
 
-#: src/camel/camel-cipher-context.c:194
+#: src/camel/camel-cipher-context.c:196
 #, c-format
 msgid "Signing is not supported by this cipher"
 msgstr "Zifraketa honek ez du sinatzerik onartzen"
 
-#: src/camel/camel-cipher-context.c:207
+#: src/camel/camel-cipher-context.c:209
 #, c-format
 msgid "Verifying is not supported by this cipher"
 msgstr "Zifraketa honek ez du egiaztatzerik onartzen"
 
-#: src/camel/camel-cipher-context.c:223
+#: src/camel/camel-cipher-context.c:225
 #, c-format
 msgid "Encryption is not supported by this cipher"
 msgstr "Zifraketa honek ez du zifratzerik onartzen"
 
-#: src/camel/camel-cipher-context.c:237
+#: src/camel/camel-cipher-context.c:239
 #, c-format
 msgid "Decryption is not supported by this cipher"
 msgstr "Zifraketa honek ez du deszifratzerik onartzen"
 
-#: src/camel/camel-cipher-context.c:352
+#: src/camel/camel-cipher-context.c:354
 msgid "Signing message"
 msgstr "Mezua sinatzea"
 
-#: src/camel/camel-cipher-context.c:645
+#: src/camel/camel-cipher-context.c:647
 msgid "Encrypting message"
 msgstr "Mezua zifratzea"
 
-#: src/camel/camel-cipher-context.c:820
+#: src/camel/camel-cipher-context.c:822
 msgid "Decrypting message"
 msgstr "Mezua deszifratzea"
 
@@ -2665,84 +2686,84 @@ msgstr "Ezin izan da “%s”(r)en izena %s(e)ra aldatu: %s"
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr "Iragazitako mezuak transferitzen “%s : %s”(e)n"
 
-#: src/camel/camel-filter-driver.c:1126 src/camel/camel-filter-search.c:936
+#: src/camel/camel-filter-driver.c:1160 src/camel/camel-filter-search.c:936
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "Huts egin du “%s” prozesu haurra sortzean: %s"
 
-#: src/camel/camel-filter-driver.c:1180
+#: src/camel/camel-filter-driver.c:1214
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Ezin izan da %s(e)tik mezu-korrontea eskuratu: %s"
 
-#: src/camel/camel-filter-driver.c:1404 src/camel/camel-filter-driver.c:1417
+#: src/camel/camel-filter-driver.c:1438 src/camel/camel-filter-driver.c:1451
 msgid "Syncing folders"
 msgstr "Karpetak sinkronizatzen"
 
-#: src/camel/camel-filter-driver.c:1525
+#: src/camel/camel-filter-driver.c:1559
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Errorea iragazkia analizatzean: %s: %s"
 
-#: src/camel/camel-filter-driver.c:1536
+#: src/camel/camel-filter-driver.c:1570
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Errorea iragazkia exekutatzean: %s: %s"
 
-#: src/camel/camel-filter-driver.c:1634
+#: src/camel/camel-filter-driver.c:1668
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Ezin da ilara-karpeta ireki"
 
-#: src/camel/camel-filter-driver.c:1646
+#: src/camel/camel-filter-driver.c:1680
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Ezin da ilara-karpeta prozesatu"
 
-#: src/camel/camel-filter-driver.c:1674
+#: src/camel/camel-filter-driver.c:1708
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "%d (%%%d) mezua lortzen"
 
-#: src/camel/camel-filter-driver.c:1683 src/camel/camel-filter-driver.c:1706
+#: src/camel/camel-filter-driver.c:1717 src/camel/camel-filter-driver.c:1740
 #, c-format
 msgid "Failed on message %d"
 msgstr "Huts egin du %d mezuan"
 
-#: src/camel/camel-filter-driver.c:1724 src/camel/camel-filter-driver.c:1853
+#: src/camel/camel-filter-driver.c:1758 src/camel/camel-filter-driver.c:1887
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "Huts egin du mezuen transferentziak: %s"
 
-#: src/camel/camel-filter-driver.c:1734 src/camel/camel-filter-driver.c:1878
+#: src/camel/camel-filter-driver.c:1768 src/camel/camel-filter-driver.c:1912
 msgid "Syncing folder"
 msgstr "Karpeta sinkronizatzen"
 
-#: src/camel/camel-filter-driver.c:1739 src/camel/camel-filter-driver.c:1886
+#: src/camel/camel-filter-driver.c:1773 src/camel/camel-filter-driver.c:1920
 msgid "Complete"
 msgstr "Eginda"
 
-#: src/camel/camel-filter-driver.c:1807
+#: src/camel/camel-filter-driver.c:1841
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "%d/%d mezua hartzen"
 
-#: src/camel/camel-filter-driver.c:1825
+#: src/camel/camel-filter-driver.c:1859
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Huts egin du %d/%d mezuan"
 
-#: src/camel/camel-filter-driver.c:2042 src/camel/camel-filter-driver.c:2066
+#: src/camel/camel-filter-driver.c:2076 src/camel/camel-filter-driver.c:2100
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Huts egin du “%s” iragazkia exekutatzean: "
 
-#: src/camel/camel-filter-driver.c:2056
+#: src/camel/camel-filter-driver.c:2090
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Errorea “%s” iragazkia analizatzean: %s: %s"
 
-#: src/camel/camel-filter-driver.c:2075
+#: src/camel/camel-filter-driver.c:2109
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Errorea “%s” iragazkia exekutatzean: %s: %s"
@@ -2918,23 +2939,23 @@ msgid "Release unused memory for folder “%s : %s”"
 msgstr "Askatu “%s : %s” karpetaren erabili gabeko memoria"
 
 #. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:458
+#: src/camel/camel-gpg-context.c:623
 #, c-format
 msgid "Output from %s:"
 msgstr "“%s”(r)en irteera:"
 
-#: src/camel/camel-gpg-context.c:943 src/camel/camel-gpg-context.c:948
-#: src/camel/camel-gpg-context.c:1742
+#: src/camel/camel-gpg-context.c:1177 src/camel/camel-gpg-context.c:1182
+#: src/camel/camel-gpg-context.c:2061
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Huts egin du gpg exekutatzean: %s"
 
-#: src/camel/camel-gpg-context.c:948
-#: src/camel/providers/smtp/camel-smtp-transport.c:1209
+#: src/camel/camel-gpg-context.c:1182
+#: src/camel/providers/smtp/camel-smtp-transport.c:1217
 msgid "Unknown"
 msgstr "Ezezaguna"
 
-#: src/camel/camel-gpg-context.c:1060
+#: src/camel/camel-gpg-context.c:1294
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -2944,17 +2965,17 @@ msgstr "Ustekabeko GnuPG egoera-mezua aurkitu da:\n"
 "\n"
 "%s"
 
-#: src/camel/camel-gpg-context.c:1096
+#: src/camel/camel-gpg-context.c:1330
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Huts egin du gpg erabiltzaile-IDaren aholkua analizatzean."
 
-#: src/camel/camel-gpg-context.c:1121 src/camel/camel-gpg-context.c:1136
+#: src/camel/camel-gpg-context.c:1355 src/camel/camel-gpg-context.c:1370
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Errorea gpg pasaesaldi-eskaera analizatzean."
 
-#: src/camel/camel-gpg-context.c:1157
+#: src/camel/camel-gpg-context.c:1397
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -2962,7 +2983,7 @@ msgid ""
 msgstr "SmartCard: “%s”\n"
 "desblokeatzeko PIN behar duzu"
 
-#: src/camel/camel-gpg-context.c:1161
+#: src/camel/camel-gpg-context.c:1401
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -2970,42 +2991,42 @@ msgid ""
 msgstr "Pasaesaldia behar da erabiltzaile honen gakoa \n"
 "desblokeatzeko: “%s”"
 
-#: src/camel/camel-gpg-context.c:1167
+#: src/camel/camel-gpg-context.c:1407
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "“%s”(r)en ustekabeko erantzuna GnuPG-tik"
 
-#: src/camel/camel-gpg-context.c:1179
+#: src/camel/camel-gpg-context.c:1419
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
 msgstr "Oharra: zifratutako edukiak ez daukanez hartzaileari buruzko inolako informaziorik, gordetako gako pribatu bakoitzeko pasahitz bat eskatuko da."
 
-#: src/camel/camel-gpg-context.c:1210 src/camel/camel-net-utils.c:524
+#: src/camel/camel-gpg-context.c:1450 src/camel/camel-net-utils.c:524
 #: src/camel/providers/nntp/camel-nntp-summary.c:393
 #: src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
 msgstr "Bertan behera utzita"
 
-#: src/camel/camel-gpg-context.c:1231
+#: src/camel/camel-gpg-context.c:1472
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "Huts egin du gako sekretua desblokeatzean: 3 pasaesaldi oker eman dira."
 
-#: src/camel/camel-gpg-context.c:1244
+#: src/camel/camel-gpg-context.c:1485
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Ustekabeko erantzuna GnuPG-tik: %s"
 
-#: src/camel/camel-gpg-context.c:1361
+#: src/camel/camel-gpg-context.c:1602
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Ezin da mezua zifratu: ez da hartzailerik zehaztu."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1382
+#: src/camel/camel-gpg-context.c:1623
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
@@ -3013,97 +3034,119 @@ msgid ""
 msgstr "Huts egin du zifratzeak: baliogabeko “%s” hartzailea zehaztu da. Arazo arrunta izan ohi da %s(e)k ez duela hartzaile honen gako publikorik inportatuta."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1389
+#: src/camel/camel-gpg-context.c:1630
 #, c-format
 msgid "Failed to encrypt: The public key for recipient %s was not found."
 msgstr "Huts egin du zifratzeak: %s hartzailearen gako publikoa ez da aurkitu."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1396
+#: src/camel/camel-gpg-context.c:1637
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is revoked."
 msgstr "Huts egin du zifratzeak: %s hartzailearen gakoa errebokatu egin da."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1403
+#: src/camel/camel-gpg-context.c:1644
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is expired."
 msgstr "Huts egin du zifratzeak: %s hartzailearen gakoa iraungi da."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1410
+#: src/camel/camel-gpg-context.c:1651
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is not trusted."
 msgstr "Huts egin du zifratzeak: %s hartzailearen gakoa ez da fidagarria."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1417
+#: src/camel/camel-gpg-context.c:1658
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is disabled."
 msgstr "Huts egin du zifratzeak: %s hartzailearen gakoa desgaituta dago."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1425
+#: src/camel/camel-gpg-context.c:1666
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified (code %d). A common issue "
 "is that the %s doesn’t have imported public key for this recipient."
 msgstr "Huts egin du zifratzeak: baliogabeko %s hartzailea zehaztu da (%d kodea). Arazo arrunta izan ohi da %s(e)k ez duela hartzaile honen gako publikorik inportatuta."
 
-#: src/camel/camel-gpg-context.c:2266 src/camel/camel-smime-context.c:893
+#: src/camel/camel-gpg-context.c:1727 src/camel/camel-gpg-context.c:1738
+#, c-format
+msgid "Failed to pass command to GPG: %s"
+msgstr "Huts egin du komandoa GPGri bidaltzeak: %s"
+
+#: src/camel/camel-gpg-context.c:2585 src/camel/camel-smime-context.c:1041
 msgid "Could not generate signing data: "
 msgstr "Ezin izan da sinatutako daturik sortu: "
 
-#: src/camel/camel-gpg-context.c:2317 src/camel/camel-gpg-context.c:2556
-#: src/camel/camel-gpg-context.c:2696 src/camel/camel-gpg-context.c:2873
+#: src/camel/camel-gpg-context.c:2636 src/camel/camel-gpg-context.c:2875
+#: src/camel/camel-gpg-context.c:3016 src/camel/camel-gpg-context.c:3193
+#: src/camel/camel-gpg-context.c:3548 src/camel/camel-gpg-context.c:3635
+#: src/camel/camel-gpg-context.c:3928 src/camel/camel-gpg-context.c:4026
+#: src/camel/camel-gpg-context.c:4111 src/camel/camel-gpg-context.c:4178
 msgid "Failed to execute gpg."
 msgstr "Huts egin du gpg exekutatzean."
 
-#: src/camel/camel-gpg-context.c:2424 src/camel/camel-gpg-context.c:2432
-#: src/camel/camel-gpg-context.c:2440 src/camel/camel-gpg-context.c:2460
-#: src/camel/camel-smime-context.c:1024 src/camel/camel-smime-context.c:1038
-#: src/camel/camel-smime-context.c:1050
+#: src/camel/camel-gpg-context.c:2743 src/camel/camel-gpg-context.c:2751
+#: src/camel/camel-gpg-context.c:2759 src/camel/camel-gpg-context.c:2779
+#: src/camel/camel-smime-context.c:1172 src/camel/camel-smime-context.c:1186
+#: src/camel/camel-smime-context.c:1198
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Ezin da egiaztatu mezuaren sinadura: mezu-formatu baliogabea"
 
-#: src/camel/camel-gpg-context.c:2506
+#: src/camel/camel-gpg-context.c:2825
 msgid "Cannot verify message signature: "
 msgstr "Ezin da egiaztatu mezuaren sinadura: "
 
-#: src/camel/camel-gpg-context.c:2654
+#: src/camel/camel-gpg-context.c:2974
 msgid "Could not generate encrypting data: "
 msgstr "Ezin izan da zifratutako daturik sortu: "
 
-#: src/camel/camel-gpg-context.c:2736
+#: src/camel/camel-gpg-context.c:3056
 msgid "This is a digitally encrypted message part"
 msgstr "Hau digitalki sinatutako mezu-zatia da"
 
-#: src/camel/camel-gpg-context.c:2796 src/camel/camel-gpg-context.c:2805
-#: src/camel/camel-gpg-context.c:2828
+#: src/camel/camel-gpg-context.c:3116 src/camel/camel-gpg-context.c:3125
+#: src/camel/camel-gpg-context.c:3148
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Ezin da mezua deszifratu: mezu-formatu baliogabea"
 
-#: src/camel/camel-gpg-context.c:2816
+#: src/camel/camel-gpg-context.c:3136
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Huts egin du MIME zatia deszifratzeak: protokolo-errorea"
 
-#: src/camel/camel-gpg-context.c:2888
+#: src/camel/camel-gpg-context.c:3208
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "Huts egin du MIME zatia deszifratzeak: ez da ezkutuko gakoa aurkitu"
 
-#: src/camel/camel-gpg-context.c:2925
+#: src/camel/camel-gpg-context.c:3245
 #, c-format
 msgid "GPG blob contains unencrypted text: %s"
 msgstr "GPG blob fitxategiak zifratu gabeko testu du: %s"
 
-#: src/camel/camel-gpg-context.c:2927 src/camel/camel-smime-context.c:1574
+#: src/camel/camel-gpg-context.c:3247 src/camel/camel-smime-context.c:1724
 msgid "Encrypted content"
 msgstr "Zifratutako edukia"
+
+#: src/camel/camel-gpg-context.c:3555 src/camel/camel-gpg-context.c:3642
+#: src/camel/camel-gpg-context.c:3935 src/camel/camel-gpg-context.c:3946
+#, c-format
+msgid "Public key “%s” was not found"
+msgstr "Ez da “%s” gako publikoa aurkitu"
+
+#: src/camel/camel-gpg-context.c:4033
+msgid "No public key was found in the provided data"
+msgstr "Ez da gako publikorik aurkitu emandako datuetan"
+
+#: src/camel/camel-gpg-context.c:4046
+msgid "Key information was not found in the provided data"
+msgstr "Ez da gako-informaziorik aurkitu emandako datuetan"
 
 #: src/camel/camel-junk-filter.c:167
 msgid "Synchronizing junk database"
@@ -3478,7 +3521,7 @@ msgstr "Erreferentziatutako kredentzialak iraungita daude."
 
 #: src/camel/camel-sasl-gssapi.c:237 src/camel/camel-sasl-gssapi.c:441
 #: src/camel/camel-sasl-gssapi.c:491 src/camel/camel-sasl-gssapi.c:508
-#: src/camel/providers/smtp/camel-smtp-transport.c:860
+#: src/camel/providers/smtp/camel-smtp-transport.c:864
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Zerbitzariak autentifikazio-erantzun txarra eman du."
@@ -3598,10 +3641,10 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "Baliogabeko GType erregistratuta “%s” protokoloarentzako"
 
 #: src/camel/camel-session.c:508
-#: src/camel/providers/imapx/camel-imapx-server.c:3252
+#: src/camel/providers/imapx/camel-imapx-server.c:3251
 #: src/camel/providers/pop3/camel-pop3-store.c:305
 #: src/camel/providers/pop3/camel-pop3-store.c:809
-#: src/camel/providers/smtp/camel-smtp-transport.c:696
+#: src/camel/providers/smtp/camel-smtp-transport.c:700
 #, c-format
 msgid "No support for %s authentication"
 msgstr "%s autentifikazioa ez da onartzen"
@@ -3670,151 +3713,151 @@ msgid "Cannot add CMS Signer information"
 msgstr "Ezin da CMS sinatzailearen datua gehitu"
 
 #. Translators: A fallback message when couldn't verify an SMIME signature
-#: src/camel/camel-smime-context.c:512
+#: src/camel/camel-smime-context.c:515
 msgid "Unverified"
 msgstr "Egiaztatu gabe"
 
-#: src/camel/camel-smime-context.c:514
+#: src/camel/camel-smime-context.c:518
 msgid "Good signature"
 msgstr "Sinadura ona"
 
-#: src/camel/camel-smime-context.c:516
+#: src/camel/camel-smime-context.c:520
 msgid "Bad signature"
 msgstr "Sinadura txarra"
 
-#: src/camel/camel-smime-context.c:518
+#: src/camel/camel-smime-context.c:522
 msgid "Content tampered with or altered in transit"
 msgstr "Edukia faltsutu edo aldatu egin da bidean"
 
-#: src/camel/camel-smime-context.c:520
+#: src/camel/camel-smime-context.c:525
 msgid "Signing certificate not found"
 msgstr "Sinadura-ziurtagiria ez da aurkitu."
 
-#: src/camel/camel-smime-context.c:522
+#: src/camel/camel-smime-context.c:528
 msgid "Signing certificate not trusted"
 msgstr "Sinadura-ziurtagiria ez da fidagarria"
 
-#: src/camel/camel-smime-context.c:524
+#: src/camel/camel-smime-context.c:530
 msgid "Signature algorithm unknown"
 msgstr "Sinadura-algoritmoa ezezaguna"
 
-#: src/camel/camel-smime-context.c:526
+#: src/camel/camel-smime-context.c:532
 msgid "Signature algorithm unsupported"
 msgstr "Sinadura-algoritmoa onartu gabea"
 
-#: src/camel/camel-smime-context.c:528
+#: src/camel/camel-smime-context.c:534
 msgid "Malformed signature"
 msgstr "Formatu okerreko sinadura"
 
-#: src/camel/camel-smime-context.c:530
+#: src/camel/camel-smime-context.c:536
 msgid "Processing error"
 msgstr "Prozesatze-errorea"
 
-#: src/camel/camel-smime-context.c:575
+#: src/camel/camel-smime-context.c:700
 msgid "No signed data in signature"
 msgstr "Ez dago daturik sinaduran"
 
-#: src/camel/camel-smime-context.c:580
+#: src/camel/camel-smime-context.c:705
 msgid "Digests missing from enveloped data"
 msgstr "Laburpena falta da bildutako datuan"
 
-#: src/camel/camel-smime-context.c:593 src/camel/camel-smime-context.c:604
+#: src/camel/camel-smime-context.c:718 src/camel/camel-smime-context.c:729
 msgid "Cannot calculate digests"
 msgstr "Ezin da laburpena kalkulatu"
 
-#: src/camel/camel-smime-context.c:611 src/camel/camel-smime-context.c:615
+#: src/camel/camel-smime-context.c:736 src/camel/camel-smime-context.c:740
 msgid "Cannot set message digests"
 msgstr "Ezin da mezuaren laburpena ezarri"
 
-#: src/camel/camel-smime-context.c:625 src/camel/camel-smime-context.c:630
+#: src/camel/camel-smime-context.c:750 src/camel/camel-smime-context.c:755
 msgid "Certificate import failed"
 msgstr "Ziurtagiria inportatzeak huts egin du"
 
-#: src/camel/camel-smime-context.c:640
+#: src/camel/camel-smime-context.c:765
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr "Mezuaren edukiak ziurtagiria bakarrik du, ezin dira ziurtagiriak egiaztatu"
 
-#: src/camel/camel-smime-context.c:643
+#: src/camel/camel-smime-context.c:768
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr "Mezuaren edukiak ziurtagiria bakarrik du, inportatutako eta egiaztatutako ziurtagiriak"
 
-#: src/camel/camel-smime-context.c:647
+#: src/camel/camel-smime-context.c:772
 msgid "Cannot find signature digests"
 msgstr "Ezin da sinadura-laburpena aurkitu"
 
-#: src/camel/camel-smime-context.c:668
+#: src/camel/camel-smime-context.c:819
 msgid "Signature algorithm disabled"
 msgstr "Sinadura-algoritmoa desgaituta"
 
-#: src/camel/camel-smime-context.c:671
+#: src/camel/camel-smime-context.c:822
 msgid "Certificate signature algorithm disabled"
 msgstr "Ziurtagiriaren sinadura-algoritmoa desgaituta"
 
-#: src/camel/camel-smime-context.c:680
+#: src/camel/camel-smime-context.c:831
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
 msgstr "Sinatzailea: %s <%s>: %s\n"
 
-#: src/camel/camel-smime-context.c:905 src/camel/camel-smime-context.c:1431
+#: src/camel/camel-smime-context.c:1053 src/camel/camel-smime-context.c:1581
 msgid "Cannot create encoder context"
 msgstr "Ezin da kodetze-testuingurua sortu"
 
-#: src/camel/camel-smime-context.c:911
+#: src/camel/camel-smime-context.c:1059
 msgid "Failed to add data to CMS encoder"
 msgstr "Huts egin du CMS kodeketari datua gehitzean"
 
-#: src/camel/camel-smime-context.c:916 src/camel/camel-smime-context.c:1448
+#: src/camel/camel-smime-context.c:1064 src/camel/camel-smime-context.c:1598
 msgid "Failed to encode data"
 msgstr "Huts egin du datua kodetzean"
 
-#: src/camel/camel-smime-context.c:1069 src/camel/camel-smime-context.c:1549
+#: src/camel/camel-smime-context.c:1217 src/camel/camel-smime-context.c:1699
 msgid "Decoder failed"
 msgstr "Deskodetzaileak huts egin du"
 
-#: src/camel/camel-smime-context.c:1325
+#: src/camel/camel-smime-context.c:1475
 #, c-format
 msgid "No valid or appropriate certificate for “%s” was found"
 msgstr "Ez da aurkitu ziurtagiri baliozkoa edo egokia “%s”(e)rako"
 
-#: src/camel/camel-smime-context.c:1365
+#: src/camel/camel-smime-context.c:1515
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "Ezin da bloke-zifratzearen algoritmo arrunta aurkitu"
 
-#: src/camel/camel-smime-context.c:1373
+#: src/camel/camel-smime-context.c:1523
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "Ezin da zifratzearen gako-blokea esleitu"
 
-#: src/camel/camel-smime-context.c:1384
+#: src/camel/camel-smime-context.c:1534
 msgid "Cannot create CMS Message"
 msgstr "Ezin da CMS mezua sortu"
 
-#: src/camel/camel-smime-context.c:1390
+#: src/camel/camel-smime-context.c:1540
 msgid "Cannot create CMS Enveloped data"
 msgstr "Ezin da bildutako CMS datua sortu"
 
-#: src/camel/camel-smime-context.c:1396
+#: src/camel/camel-smime-context.c:1546
 msgid "Cannot attach CMS Enveloped data"
 msgstr "Ezin da bildutako CMS datua erantsi"
 
-#: src/camel/camel-smime-context.c:1402
+#: src/camel/camel-smime-context.c:1552
 msgid "Cannot attach CMS data object"
 msgstr "Ezin da CMS datu-objektua erantsi"
 
-#: src/camel/camel-smime-context.c:1411
+#: src/camel/camel-smime-context.c:1561
 msgid "Cannot create CMS Recipient information"
 msgstr "Ezin da CMS edukiaren informazioa sortu"
 
-#: src/camel/camel-smime-context.c:1416
+#: src/camel/camel-smime-context.c:1566
 msgid "Cannot add CMS Recipient information"
 msgstr "Ezin da CMS edukiaren informazioa gehitu"
 
-#: src/camel/camel-smime-context.c:1442
+#: src/camel/camel-smime-context.c:1592
 msgid "Failed to add data to encoder"
 msgstr "Huts egin du datuak kodetzailean gehitzean"
 
-#: src/camel/camel-smime-context.c:1556
+#: src/camel/camel-smime-context.c:1706
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME deszifratzea: ez da zifratutako edukirik aurkitu"
 
@@ -3878,7 +3921,7 @@ msgid "Only reset to beginning is supported with CamelHttpStream"
 msgstr "Hasierara berrezartzea CamelHttpStream-ekin soilik onartzen da"
 
 #: src/camel/camel-stream-process.c:282
-#: src/camel/providers/smtp/camel-smtp-transport.c:747
+#: src/camel/providers/smtp/camel-smtp-transport.c:751
 #, c-format
 msgid "Connection cancelled"
 msgstr "Konexioa etenda"
@@ -3908,7 +3951,7 @@ msgstr "Ezin izan da “%s” URLa analizatu"
 msgid "Updating folder “%s”"
 msgstr "“%s” karpeta eguneratzen"
 
-#: src/camel/camel-vee-folder.c:1283 src/camel/camel-vee-folder.c:1419
+#: src/camel/camel-vee-folder.c:1296 src/camel/camel-vee-folder.c:1432
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Ezin dira mezuak Karpeta Birtual batera kopiatu edo eraman"
@@ -3917,22 +3960,22 @@ msgstr "Ezin dira mezuak Karpeta Birtual batera kopiatu edo eraman"
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: src/camel/camel-vee-folder.c:1320
+#: src/camel/camel-vee-folder.c:1333
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "Ez dago “%s” bezalako mezurik “%s : %s”(e)n"
 
-#: src/camel/camel-vee-folder.c:1395
+#: src/camel/camel-vee-folder.c:1408
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "Errorea “%s” gordetzean: "
 
-#: src/camel/camel-vee-folder.c:1585
+#: src/camel/camel-vee-folder.c:1598
 #, c-format
 msgid "Updating search folder “%s”"
 msgstr "“%s” bilaketa-karpeta eguneratzen"
 
-#: src/camel/camel-vee-folder.c:1643
+#: src/camel/camel-vee-folder.c:1656
 msgid "Automatically _update on change in source folders"
 msgstr "Eguneratu _automatikoki iturburuko karpetak aldatzean"
 
@@ -3974,7 +4017,7 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "Linean jardun behar duzu lanean eragiketa hau bukatzeko (%s)"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:987
-#: src/camel/providers/imapx/camel-imapx-server.c:3424
+#: src/camel/providers/imapx/camel-imapx-server.c:3423
 #: src/camel/providers/nntp/camel-nntp-store.c:348
 #: src/camel/providers/nntp/camel-nntp-store.c:1343
 #: src/camel/providers/nntp/camel-nntp-store.c:2156
@@ -3988,7 +4031,7 @@ msgstr "Linean jardun behar duzu lanean eragiketa hau bukatzeko (%s)"
 #: src/camel/providers/pop3/camel-pop3-store.c:576
 #: src/camel/providers/pop3/camel-pop3-store.c:673
 #: src/camel/providers/pop3/camel-pop3-store.c:1124
-#: src/camel/providers/smtp/camel-smtp-transport.c:547
+#: src/camel/providers/smtp/camel-smtp-transport.c:551
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "Linean jardun behar duzu lanean eragiketa hau bukatzeko"
@@ -4210,217 +4253,217 @@ msgstr "IMAP zerbitzarietan posta irakurri eta gordetzeko."
 msgid "Error writing to cache stream"
 msgstr "Errorea cachearen korrontean idaztean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3047
-#: src/camel/providers/imapx/camel-imapx-server.c:3134
-#: src/camel/providers/imapx/camel-imapx-server.c:3457
+#: src/camel/providers/imapx/camel-imapx-server.c:3046
+#: src/camel/providers/imapx/camel-imapx-server.c:3133
+#: src/camel/providers/imapx/camel-imapx-server.c:3456
 msgid "Failed to get capabilities"
 msgstr "Huts egin du gaitasunak lortzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3066
+#: src/camel/providers/imapx/camel-imapx-server.c:3065
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Ezin da %s IMAP zerbitzariarekin konektatu modu seguruan: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3067
-#: src/camel/providers/smtp/camel-smtp-transport.c:283
+#: src/camel/providers/imapx/camel-imapx-server.c:3066
+#: src/camel/providers/smtp/camel-smtp-transport.c:287
 msgid "STARTTLS not supported"
 msgstr "STARTTLS ez da onartzen"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3076
+#: src/camel/providers/imapx/camel-imapx-server.c:3075
 msgid "Failed to issue STARTTLS"
 msgstr "Huts egin du STARTTLS igortzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3123
+#: src/camel/providers/imapx/camel-imapx-server.c:3122
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Ezin da %s IMAP zerbitzariarekin konektatu modu seguruan: "
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3239
+#: src/camel/providers/imapx/camel-imapx-server.c:3238
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "%s IMAP zerbitzariak ez du %s autentifikazioa onartzen"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3265
+#: src/camel/providers/imapx/camel-imapx-server.c:3264
 #, c-format
 msgid ""
 "Plaintext authentication disallowed on insecure connections. Change "
 "encryption to STARTTLS or TLS for account “%s”."
 msgstr "Testu soileko autentifikazioa ez da onartzen seguruak ez diren konexioetan. Aldatu zifratzea STARTTLS edo TLS izan dadin “%s” konturako."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3278
+#: src/camel/providers/imapx/camel-imapx-server.c:3277
 #: src/camel/providers/nntp/camel-nntp-store.c:454
 #: src/camel/providers/nntp/camel-nntp-store.c:596
 msgid "Cannot authenticate without a username"
 msgstr "Ezin da erabiltzaile-izenik gabe autentifikatu"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3287
+#: src/camel/providers/imapx/camel-imapx-server.c:3286
 #: src/camel/providers/nntp/camel-nntp-store.c:605
 #: src/camel/providers/pop3/camel-pop3-store.c:709
 #: src/camel/providers/pop3/camel-pop3-store.c:747
 msgid "Authentication password not available"
 msgstr "Autentifikazioaren pasahitza ez dago erabilgarri"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3297
-#: src/camel/providers/imapx/camel-imapx-server.c:3310
+#: src/camel/providers/imapx/camel-imapx-server.c:3296
+#: src/camel/providers/imapx/camel-imapx-server.c:3309
 msgid "Failed to authenticate"
 msgstr "Huts egin du autentifikatzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3382
+#: src/camel/providers/imapx/camel-imapx-server.c:3381
 msgid "Failed to issue ID"
 msgstr "Huts egin du IDa jaulkitzeak"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3484
+#: src/camel/providers/imapx/camel-imapx-server.c:3483
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr "Huts egin du ENABLE UTF8=ACCEPT igortzeak"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3506
+#: src/camel/providers/imapx/camel-imapx-server.c:3505
 msgid "Failed to issue NAMESPACE"
 msgstr "Huts egin du NAMESPACE (izen-espazioa) igortzeak"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3524
+#: src/camel/providers/imapx/camel-imapx-server.c:3523
 msgid "Failed to enable QResync"
 msgstr "Huts egin du QResync gaitzeak"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3561
+#: src/camel/providers/imapx/camel-imapx-server.c:3560
 msgid "Failed to issue NOTIFY"
 msgstr "Huts egin du NOTIFY (jakinarazi) igortzeak"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4040
+#: src/camel/providers/imapx/camel-imapx-server.c:4039
 msgid "Failed to select mailbox"
 msgstr "Huts egin du postontzia hautatzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4140
+#: src/camel/providers/imapx/camel-imapx-server.c:4139
 msgid "Cannot issue command, no stream available"
 msgstr "Ezin da komandoa  igorri, ez dago korronterik erabilgarri"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4406
+#: src/camel/providers/imapx/camel-imapx-server.c:4405
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Ezin da %s IDa duen mezua hartu: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4407
+#: src/camel/providers/imapx/camel-imapx-server.c:4406
 msgid "No such message available."
 msgstr "Ez dago horrelako mezurik erabilgarri."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4456
-#: src/camel/providers/imapx/camel-imapx-server.c:4481
-#: src/camel/providers/imapx/camel-imapx-server.c:4520
+#: src/camel/providers/imapx/camel-imapx-server.c:4455
+#: src/camel/providers/imapx/camel-imapx-server.c:4480
+#: src/camel/providers/imapx/camel-imapx-server.c:4519
 msgid "Error fetching message"
 msgstr "Errorea mezua hartzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4498
-#: src/camel/providers/imapx/camel-imapx-server.c:5271
+#: src/camel/providers/imapx/camel-imapx-server.c:4497
+#: src/camel/providers/imapx/camel-imapx-server.c:5270
 msgid "Error performing NOOP"
 msgstr "Errorea NOOP komandoa lantzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4513
+#: src/camel/providers/imapx/camel-imapx-server.c:4512
 msgid "Failed to close the tmp stream"
 msgstr "Huts egin du aldi baterako korrontea ixtean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4544
+#: src/camel/providers/imapx/camel-imapx-server.c:4543
 msgid "Failed to copy the tmp file"
 msgstr "Huts egin du aldi baterako fitxategia kopiatzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4782
+#: src/camel/providers/imapx/camel-imapx-server.c:4781
 msgid "Error moving messages"
 msgstr "Errorea mezuak lekuz aldatzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4782
+#: src/camel/providers/imapx/camel-imapx-server.c:4781
 msgid "Error copying messages"
 msgstr "Errorea mezuak kopiatzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5061
-#: src/camel/providers/imapx/camel-imapx-server.c:5082
+#: src/camel/providers/imapx/camel-imapx-server.c:5060
+#: src/camel/providers/imapx/camel-imapx-server.c:5081
 msgid "Cannot create spool file: "
 msgstr "Ezin da ilararen fitxategia sortu: "
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5168
+#: src/camel/providers/imapx/camel-imapx-server.c:5167
 msgid "Error appending message"
 msgstr "Errorea mezua eranstean"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5439
+#: src/camel/providers/imapx/camel-imapx-server.c:5438
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Aldatutako mezuen bila eskaneatzen “%s : %s”(e)n"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5443
+#: src/camel/providers/imapx/camel-imapx-server.c:5442
 msgid "Error scanning changes"
 msgstr "Errorea aldaketak aztertzean"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5466
+#: src/camel/providers/imapx/camel-imapx-server.c:5465
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "Mezu berrien laburpen-informazioa eskuratzen “%s : %s”(e)n"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5493
+#: src/camel/providers/imapx/camel-imapx-server.c:5492
 msgid "Error fetching message info"
 msgstr "Errorea mezuaren informazioa eskuratzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5676
+#: src/camel/providers/imapx/camel-imapx-server.c:5675
 msgid "Error running STATUS"
 msgstr "Errorea STATUS (egoera) exekutatzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6271
-#: src/camel/providers/imapx/camel-imapx-server.c:6326
-#: src/camel/providers/imapx/camel-imapx-server.c:6390
+#: src/camel/providers/imapx/camel-imapx-server.c:6270
+#: src/camel/providers/imapx/camel-imapx-server.c:6325
+#: src/camel/providers/imapx/camel-imapx-server.c:6408
 msgid "Error syncing changes"
 msgstr "Errorea aldaketak sinkronizatzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6284
-#: src/camel/providers/imapx/camel-imapx-server.c:6336
-#: src/camel/providers/imapx/camel-imapx-server.c:6409
-#: src/camel/providers/imapx/camel-imapx-server.c:6550
+#: src/camel/providers/imapx/camel-imapx-server.c:6283
+#: src/camel/providers/imapx/camel-imapx-server.c:6335
+#: src/camel/providers/imapx/camel-imapx-server.c:6427
+#: src/camel/providers/imapx/camel-imapx-server.c:6568
 msgid "Error expunging message"
 msgstr "Errorea mezua betirako borratzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6632
+#: src/camel/providers/imapx/camel-imapx-server.c:6650
 msgid "Error fetching folders"
 msgstr "Errorea karpetak hartzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6640
+#: src/camel/providers/imapx/camel-imapx-server.c:6658
 msgid "Error fetching subscribed folders"
 msgstr "Errorea harpidetutako karpetak eskuratzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6697
+#: src/camel/providers/imapx/camel-imapx-server.c:6715
 msgid "Error creating folder"
 msgstr "Errorea karpeta sortzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6747
+#: src/camel/providers/imapx/camel-imapx-server.c:6765
 msgid "Error deleting folder"
 msgstr "Errorea karpeta ezabatzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6793
+#: src/camel/providers/imapx/camel-imapx-server.c:6811
 msgid "Error renaming folder"
 msgstr "Errorea karpeta izenez aldatzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6825
+#: src/camel/providers/imapx/camel-imapx-server.c:6843
 msgid "Error subscribing to folder"
 msgstr "Errorea karpetara harpidetzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6861
+#: src/camel/providers/imapx/camel-imapx-server.c:6879
 msgid "Error unsubscribing from folder"
 msgstr "Errorea karpetatik harpidetza kentzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6901
+#: src/camel/providers/imapx/camel-imapx-server.c:6919
 msgid "IMAP server does not support quotas"
 msgstr "IMAP zerbitzariak ez du kuotarik onartzen"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6913
+#: src/camel/providers/imapx/camel-imapx-server.c:6931
 msgid "Error retrieving quota information"
 msgstr "Errorea kuotaren informazioa eskuratzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6978
+#: src/camel/providers/imapx/camel-imapx-server.c:6996
 msgid "Search failed"
 msgstr "Bilaketak huts egin du"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7106
+#: src/camel/providers/imapx/camel-imapx-server.c:7124
 msgid "Error running IDLE"
 msgstr "Errorea IDLE (inaktibo) exekutatzean"
 
@@ -4464,24 +4507,24 @@ msgstr "Aukera honek IMAP zerbitzariarekin konektatuko zaitu testu soileko pasah
 msgid "No such folder %s"
 msgstr "%s karpeta ez dago"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1615
+#: src/camel/providers/imapx/camel-imapx-store.c:1639
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
 msgstr "Ez dago “%s” karpetaren bidearen IMAP izen-espaziorik"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1885
-#: src/camel/providers/imapx/camel-imapx-store.c:2080
+#: src/camel/providers/imapx/camel-imapx-store.c:1909
+#: src/camel/providers/imapx/camel-imapx-store.c:2104
 #, c-format
 msgid "Retrieving folder list for “%s”"
 msgstr "“%s”(r)en karpeten zerrenda eskuratzen"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2323
+#: src/camel/providers/imapx/camel-imapx-store.c:2347
 msgid ""
 "The account does not support folder hierarchy. Create the folder on the "
 "account level instead."
 msgstr "Kontuak ez du onartzen karpeta-hierarkia. Sortu karpeta kontuaren mailan."
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2370
+#: src/camel/providers/imapx/camel-imapx-store.c:2394
 #, c-format
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "“%s” karpeta-izena ez da baliozkoa, “%c” karakterea duelako."
@@ -4491,97 +4534,97 @@ msgstr "“%s” karpeta-izena ez da baliozkoa, “%c” karakterea duelako."
 #. version as well. It's always the folder name (eventually path) as provided by the server,
 #. when returned in given localization. it can be checked semi-easily in the case of
 #. the GMail variants, by changing the GMail interface language in the GMail Preferences.
-#: src/camel/providers/imapx/camel-imapx-store.c:2765
+#: src/camel/providers/imapx/camel-imapx-store.c:2789
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
 msgstr "[Gmail]/Zirriborroak"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2766
+#: src/camel/providers/imapx/camel-imapx-store.c:2790
 msgctxt "IMAPDefaults"
 msgid "Drafts"
 msgstr "Zirriborroa"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2767
+#: src/camel/providers/imapx/camel-imapx-store.c:2791
 msgctxt "IMAPDefaults"
 msgid "Draft"
 msgstr "Zirriborroa"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2770
+#: src/camel/providers/imapx/camel-imapx-store.c:2794
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "Txantiloiak"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2773
+#: src/camel/providers/imapx/camel-imapx-store.c:2797
 msgctxt "IMAPDefaults"
 msgid "Archive"
 msgstr "Artxiboa"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2776
+#: src/camel/providers/imapx/camel-imapx-store.c:2800
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[Gmail]/Bidalitako mezua"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2777
+#: src/camel/providers/imapx/camel-imapx-store.c:2801
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "Bidalitakoak"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2778
+#: src/camel/providers/imapx/camel-imapx-store.c:2802
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "Bidalitako elementuak"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2779
+#: src/camel/providers/imapx/camel-imapx-store.c:2803
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Bidalitako mezuak"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2782
+#: src/camel/providers/imapx/camel-imapx-store.c:2806
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "[Gmail]/Baztergarriak"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2783
+#: src/camel/providers/imapx/camel-imapx-store.c:2807
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "Baztergarriak"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2784
+#: src/camel/providers/imapx/camel-imapx-store.c:2808
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "Mezu baztergarria"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2785
+#: src/camel/providers/imapx/camel-imapx-store.c:2809
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "Mezu baztergarria"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2786
+#: src/camel/providers/imapx/camel-imapx-store.c:2810
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "Baztergarria"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2787
+#: src/camel/providers/imapx/camel-imapx-store.c:2811
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "Mezu sorta"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2790
+#: src/camel/providers/imapx/camel-imapx-store.c:2814
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr "[Gmail]/Zakarrontzia"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2791
+#: src/camel/providers/imapx/camel-imapx-store.c:2815
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "Zakarrontzia"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2792
+#: src/camel/providers/imapx/camel-imapx-store.c:2816
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "Ezabatutako elementuak"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2793
+#: src/camel/providers/imapx/camel-imapx-store.c:2817
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Ezabatutako mezuak"
@@ -5629,227 +5672,227 @@ msgstr "SMTP"
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr "SMTP erabiliz urruneko mailhub batekin konektatuta posta banatzeko."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:237
-#: src/camel/providers/smtp/camel-smtp-transport.c:244
+#: src/camel/providers/smtp/camel-smtp-transport.c:241
+#: src/camel/providers/smtp/camel-smtp-transport.c:248
 msgid "Welcome response error: "
 msgstr "Ongi etorriko erantzunaren errorea: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:282
+#: src/camel/providers/smtp/camel-smtp-transport.c:286
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr "Huts egin du %s SMTP zerbitzariarekin modu seguruan konektatzean: %s"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:291
-#: src/camel/providers/smtp/camel-smtp-transport.c:304
-#: src/camel/providers/smtp/camel-smtp-transport.c:311
+#: src/camel/providers/smtp/camel-smtp-transport.c:295
+#: src/camel/providers/smtp/camel-smtp-transport.c:308
+#: src/camel/providers/smtp/camel-smtp-transport.c:315
 msgid "STARTTLS command failed: "
 msgstr "STARTTLS komandoak huts egin du: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:332
+#: src/camel/providers/smtp/camel-smtp-transport.c:336
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
 msgstr "Huts egin du %s SMTP zerbitzariarekin modu seguruan konektatzean: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:443
+#: src/camel/providers/smtp/camel-smtp-transport.c:447
 #, c-format
 msgid "SMTP server %s"
 msgstr "%s SMTP zerbitzaria"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:446
+#: src/camel/providers/smtp/camel-smtp-transport.c:450
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "SMTP posta-banaketa %s bidez"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:586
+#: src/camel/providers/smtp/camel-smtp-transport.c:590
 #, c-format
 msgid "SMTP server %s does not support %s authentication"
 msgstr "%s SMTP zerbitzariak ez du %s autentifikazioa onartzen"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:686
+#: src/camel/providers/smtp/camel-smtp-transport.c:690
 #, c-format
 msgid "No SASL mechanism was specified"
 msgstr "Ez da SASL mekanismorik zehaztu"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:727
+#: src/camel/providers/smtp/camel-smtp-transport.c:731
 msgid "AUTH command failed: Not connected."
 msgstr "AUTH komandoak huts egin du: ez dago konektatuta."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:734
-#: src/camel/providers/smtp/camel-smtp-transport.c:748
-#: src/camel/providers/smtp/camel-smtp-transport.c:764
+#: src/camel/providers/smtp/camel-smtp-transport.c:738
+#: src/camel/providers/smtp/camel-smtp-transport.c:752
+#: src/camel/providers/smtp/camel-smtp-transport.c:768
 msgid "AUTH command failed: "
 msgstr "AUTH komandoak huts egin du: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:967
+#: src/camel/providers/smtp/camel-smtp-transport.c:972
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "Ezin da mezua bidali: ez da zerbitzurik konektatu."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:976
+#: src/camel/providers/smtp/camel-smtp-transport.c:981
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "Ezin da mezua bidali: bidaltzailearen helbidea ez da baliozkoa."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:980
+#: src/camel/providers/smtp/camel-smtp-transport.c:985
 msgid "Sending message"
 msgstr "Mezua bidaltzen"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1009
+#: src/camel/providers/smtp/camel-smtp-transport.c:1017
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "Ezin da mezua bidali: ez da hartzailerik definitu."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1024
+#: src/camel/providers/smtp/camel-smtp-transport.c:1032
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "Ezin da mezua bidali: erabiltzaile bat edo gehiago baliogabeak dira"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1156
+#: src/camel/providers/smtp/camel-smtp-transport.c:1164
 msgid "Syntax error, command unrecognized"
 msgstr "Sintaxi-errorea; komandoa ezezaguna"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1158
+#: src/camel/providers/smtp/camel-smtp-transport.c:1166
 msgid "Syntax error in parameters or arguments"
 msgstr "Sintaxi-errorea parametroetan edo argumentuetan"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1160
+#: src/camel/providers/smtp/camel-smtp-transport.c:1168
 msgid "Command not implemented"
 msgstr "Komandoa inplementatu gabe"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1162
+#: src/camel/providers/smtp/camel-smtp-transport.c:1170
 msgid "Command parameter not implemented"
 msgstr "Komando-parametroa inplementatu gabe"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1164
+#: src/camel/providers/smtp/camel-smtp-transport.c:1172
 msgid "System status, or system help reply"
 msgstr "Sistema-egoera, edo sistema-laguntzaren erantzuna"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1166
+#: src/camel/providers/smtp/camel-smtp-transport.c:1174
 msgid "Help message"
 msgstr "Laguntza-mezua"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1168
+#: src/camel/providers/smtp/camel-smtp-transport.c:1176
 msgid "Service ready"
 msgstr "Zerbitzua prest"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1170
+#: src/camel/providers/smtp/camel-smtp-transport.c:1178
 msgid "Service closing transmission channel"
 msgstr "Zerbitzua transmisio-kanala ixten"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1172
+#: src/camel/providers/smtp/camel-smtp-transport.c:1180
 msgid "Service not available, closing transmission channel"
 msgstr "Zerbitzua ez dago erabilgarri; transmisio kanala ixten"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1174
+#: src/camel/providers/smtp/camel-smtp-transport.c:1182
 msgid "Requested mail action okay, completed"
 msgstr "Eskatutako posta-ekintza ondo; eginda"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1176
+#: src/camel/providers/smtp/camel-smtp-transport.c:1184
 msgid "User not local; will forward to <forward-path>"
 msgstr "Erabiltzailea ez da lokala;<forward-path>-era birbidaliko da"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1178
+#: src/camel/providers/smtp/camel-smtp-transport.c:1186
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr "Ez da egin eskatutako posta-ekintza: postontzia ez dago erabilgarri"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1180
+#: src/camel/providers/smtp/camel-smtp-transport.c:1188
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "Ez da egin eskatutako ekintza: postontzia ez dago erabilgarri"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1182
+#: src/camel/providers/smtp/camel-smtp-transport.c:1190
 msgid "Requested action aborted: error in processing"
 msgstr "Eskatutako ekintza abortatu egin da: errorea prozesatzean"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1184
+#: src/camel/providers/smtp/camel-smtp-transport.c:1192
 msgid "User not local; please try <forward-path>"
 msgstr "Erabiltzailea ez da lokala; proba egin <forward-path>-ekin"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1186
+#: src/camel/providers/smtp/camel-smtp-transport.c:1194
 msgid "Requested action not taken: insufficient system storage"
 msgstr "Ez da egin eskatutako ekintza: sistema-biltegia ez da nahikoa"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1188
+#: src/camel/providers/smtp/camel-smtp-transport.c:1196
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "Eskatutako posta-ekintza abortatu egin da: biltegi-esleipena gaindituta"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1190
+#: src/camel/providers/smtp/camel-smtp-transport.c:1198
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "Ez da egin eskatutako ekintza: postontzi-izena ez da onartu"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1192
+#: src/camel/providers/smtp/camel-smtp-transport.c:1200
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "Hasi posta-sarrera; bukatu <CRLF>.<CRLF>-rekin"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1194
+#: src/camel/providers/smtp/camel-smtp-transport.c:1202
 msgid "Transaction failed"
 msgstr "Transakzioak huts egin du"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1198
+#: src/camel/providers/smtp/camel-smtp-transport.c:1206
 msgid "A password transition is needed"
 msgstr "Pasahitz-trantsizioa behar da"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1200
+#: src/camel/providers/smtp/camel-smtp-transport.c:1208
 msgid "Authentication mechanism is too weak"
 msgstr "Autentifikazio-mekanismoa ahulegia da"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1202
+#: src/camel/providers/smtp/camel-smtp-transport.c:1210
 msgid "Encryption required for requested authentication mechanism"
 msgstr "Eskatutako autentifikazio-mekanismoak beharrezkoa du zifratzea"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1204
+#: src/camel/providers/smtp/camel-smtp-transport.c:1212
 msgid "Temporary authentication failure"
 msgstr "Aldi baterako autentifikazioak huts egin du"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1206
+#: src/camel/providers/smtp/camel-smtp-transport.c:1214
 #: src/libedataserver/e-client.c:145
 msgid "Authentication required"
 msgstr "Autentifikazioa behar da"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1516
+#: src/camel/providers/smtp/camel-smtp-transport.c:1525
 msgid "SMTP Greeting"
 msgstr "SMTP Agurra"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1525
-#: src/camel/providers/smtp/camel-smtp-transport.c:1538
-#: src/camel/providers/smtp/camel-smtp-transport.c:1545
+#: src/camel/providers/smtp/camel-smtp-transport.c:1534
+#: src/camel/providers/smtp/camel-smtp-transport.c:1547
+#: src/camel/providers/smtp/camel-smtp-transport.c:1554
 msgid "HELO command failed: "
 msgstr "HELO komandoak huts egin du: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1629
-#: src/camel/providers/smtp/camel-smtp-transport.c:1643
-#: src/camel/providers/smtp/camel-smtp-transport.c:1652
+#: src/camel/providers/smtp/camel-smtp-transport.c:1661
+#: src/camel/providers/smtp/camel-smtp-transport.c:1675
+#: src/camel/providers/smtp/camel-smtp-transport.c:1684
 msgid "MAIL FROM command failed: "
 msgstr "MAIL FROM komandoak huts egin du: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1680
+#: src/camel/providers/smtp/camel-smtp-transport.c:1753
 msgid "RCPT TO command failed: "
 msgstr "RCPT TO komandoak huts egin du: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1696
-#: src/camel/providers/smtp/camel-smtp-transport.c:1705
+#: src/camel/providers/smtp/camel-smtp-transport.c:1769
+#: src/camel/providers/smtp/camel-smtp-transport.c:1778
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> huts egin du: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1788
-#: src/camel/providers/smtp/camel-smtp-transport.c:1799
-#: src/camel/providers/smtp/camel-smtp-transport.c:1810
-#: src/camel/providers/smtp/camel-smtp-transport.c:1895
-#: src/camel/providers/smtp/camel-smtp-transport.c:1913
-#: src/camel/providers/smtp/camel-smtp-transport.c:1926
-#: src/camel/providers/smtp/camel-smtp-transport.c:1934
+#: src/camel/providers/smtp/camel-smtp-transport.c:1861
+#: src/camel/providers/smtp/camel-smtp-transport.c:1872
+#: src/camel/providers/smtp/camel-smtp-transport.c:1883
+#: src/camel/providers/smtp/camel-smtp-transport.c:1968
+#: src/camel/providers/smtp/camel-smtp-transport.c:1986
+#: src/camel/providers/smtp/camel-smtp-transport.c:1999
+#: src/camel/providers/smtp/camel-smtp-transport.c:2007
 msgid "DATA command failed: "
 msgstr "DATA komandoak huts egin du: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1960
-#: src/camel/providers/smtp/camel-smtp-transport.c:1974
-#: src/camel/providers/smtp/camel-smtp-transport.c:1982
+#: src/camel/providers/smtp/camel-smtp-transport.c:2033
+#: src/camel/providers/smtp/camel-smtp-transport.c:2047
+#: src/camel/providers/smtp/camel-smtp-transport.c:2055
 msgid "RSET command failed: "
 msgstr "RSET komandoak huts egin du: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:2008
-#: src/camel/providers/smtp/camel-smtp-transport.c:2020
-#: src/camel/providers/smtp/camel-smtp-transport.c:2026
+#: src/camel/providers/smtp/camel-smtp-transport.c:2081
+#: src/camel/providers/smtp/camel-smtp-transport.c:2093
+#: src/camel/providers/smtp/camel-smtp-transport.c:2099
 msgid "QUIT command failed: "
 msgstr "QUIT komandoak huts egin du: "
 
@@ -5978,6 +6021,10 @@ msgstr "Erabilitako azken errepikatze-denbora, minututan"
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:99
 msgid "User-defined snooze times, in minutes"
 msgstr "Erabiltzaileak definitutako errepikatze-denbora, minututan"
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:103
+msgid "Delete meeting from calendar on Decline"
+msgstr "Ezabatu bilera egutegitik hura ukatzen denean"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:5
 msgid "Whether the migration of old setting was already done"
@@ -6580,37 +6627,47 @@ msgstr "Zerbitzariak ez du JSON objekturik itzuli"
 msgid "Failed to call %s: "
 msgstr "Huts egin du %s(r)i deitzeak: "
 
-#: src/libedataserver/e-oauth2-service.c:1026
+#: src/libedataserver/e-oauth2-service.c:1061
 msgid "Malformed, no message body set"
 msgstr "Gaizki osatua, ez da mezu-gorputzik ezarri"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1306
+#: src/libedataserver/e-oauth2-service.c:1343
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "“%s” iturburua (%s) ez da baliozkoa “%s” OAuth2 zerbitzurako"
 
-#: src/libedataserver/e-oauth2-service.c:1321
+#: src/libedataserver/e-oauth2-service.c:1358
 msgid "OAuth2 secret not found"
 msgstr "Ez da aurkitu OAuth2 sekretua"
 
-#: src/libedataserver/e-oauth2-service.c:1518
+#: src/libedataserver/e-oauth2-service.c:1555
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Erantzun okerra jaso da “%s” zerbitzaritik."
 
-#: src/libedataserver/e-oauth2-service.c:1527
+#: src/libedataserver/e-oauth2-service.c:1578
+#, c-format
+msgid ""
+"Failed to refresh access token. Sign to the server again, please.\n"
+"\n"
+"Detailed error: %s"
+msgstr "Huts egin du atzipen-tokena freskatzeak. Hasi saioa zerbitzarian berriro.\n"
+"\n"
+"Errorearen xehetasunak: %s"
+
+#: src/libedataserver/e-oauth2-service.c:1581
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr "Huts egin du atzipen-tokenak freskatzeak. Hasi saioa zerbitzarian berriro."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1570
+#: src/libedataserver/e-oauth2-service.c:1627
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "“%s” iturburua (%s) ez da baliozko OAuth2 iturburua"
 
-#: src/libedataserver/e-oauth2-service.c:1854
+#: src/libedataserver/e-oauth2-service.c:1911
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -6634,16 +6691,16 @@ msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: src/libedataserver/e-soup-session.c:1264
+#: src/libedataserver/e-soup-session.c:1270
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Huts egin du HTTPren %d errorearekin: %s"
 
-#: src/libedataserver/e-soup-session.c:1340
+#: src/libedataserver/e-soup-session.c:1346
 msgid "Failed to setup authentication"
 msgstr "Huts egin du autentifikazioa konfiguratzeak"
 
-#: src/libedataserver/e-soup-session.c:1747
+#: src/libedataserver/e-soup-session.c:1753
 msgid "Too many redirects"
 msgstr "Berbideratze gehiegi"
 
@@ -6697,7 +6754,7 @@ msgstr "“%s” iturburuak ez du proxy-ak bilatzerik onartzen"
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format.
 #: src/libedataserver/e-time-utils.c:1697
-#: src/libedataserver/e-time-utils.c:1996
+#: src/libedataserver/e-time-utils.c:2037
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a %Y/%m/%d %I:%M:%S %p"
 
@@ -6706,7 +6763,7 @@ msgstr "%a %Y/%m/%d %I:%M:%S %p"
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format.
 #: src/libedataserver/e-time-utils.c:1702
-#: src/libedataserver/e-time-utils.c:1987
+#: src/libedataserver/e-time-utils.c:2028
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a %Y/%m/%d %H:%M:%S"
 
@@ -6715,7 +6772,7 @@ msgstr "%a %Y/%m/%d %H:%M:%S"
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format, without seconds.
 #: src/libedataserver/e-time-utils.c:1707
-#: src/libedataserver/e-time-utils.c:1992
+#: src/libedataserver/e-time-utils.c:2033
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a, %Y/%m/%d %I:%M %p"
 
@@ -6724,7 +6781,7 @@ msgstr "%a, %Y/%m/%d %I:%M %p"
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format, without seconds.
 #: src/libedataserver/e-time-utils.c:1712
-#: src/libedataserver/e-time-utils.c:1983
+#: src/libedataserver/e-time-utils.c:2024
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a, %Y/%m/%d %H:%M"
 
@@ -6744,7 +6801,7 @@ msgstr "%a, %Y/%m/%d %H"
 #. strftime format of a weekday and a date.
 #: src/libedataserver/e-time-utils.c:1725
 #: src/libedataserver/e-time-utils.c:1845
-#: src/libedataserver/e-time-utils.c:1978
+#: src/libedataserver/e-time-utils.c:2019
 msgid "%a %m/%d/%Y"
 msgstr "%a, %Y/%m/%d"
 
@@ -6791,15 +6848,15 @@ msgstr "%Y/%m/%d"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: src/libedataserver/e-time-utils.c:1919
-#: src/libedataserver/e-time-utils.c:2040
+#: src/libedataserver/e-time-utils.c:1960
+#: src/libedataserver/e-time-utils.c:2081
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: src/libedataserver/e-time-utils.c:1923
-#: src/libedataserver/e-time-utils.c:2032
+#: src/libedataserver/e-time-utils.c:1964
+#: src/libedataserver/e-time-utils.c:2073
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -6807,27 +6864,27 @@ msgstr "%H:%M:%S"
 #. * in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. * without seconds.
-#: src/libedataserver/e-time-utils.c:1928
-#: src/libedataserver/e-time-utils.c:2037
+#: src/libedataserver/e-time-utils.c:1969
+#: src/libedataserver/e-time-utils.c:2078
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. * without seconds.
-#: src/libedataserver/e-time-utils.c:1932
-#: src/libedataserver/e-time-utils.c:2029
+#: src/libedataserver/e-time-utils.c:1973
+#: src/libedataserver/e-time-utils.c:2070
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for time of day, without seconds 24-hour format,
 #. * and no colon.
-#: src/libedataserver/e-time-utils.c:1936
+#: src/libedataserver/e-time-utils.c:1977
 msgid "%H%M"
 msgstr "%H:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: src/libedataserver/e-time-utils.c:1940
+#: src/libedataserver/e-time-utils.c:1981
 msgid "%I %p"
 msgstr "%I %p"
 
@@ -6887,142 +6944,142 @@ msgstr "%s: HTTPren %d errore kodea (%s)"
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "Huts egin du HTTPren %d errore kodearekin (%s)"
 
-#: src/libedataserver/e-webdav-session.c:1357
+#: src/libedataserver/e-webdav-session.c:1360
 msgid "Failed to post data"
 msgstr "Huts egin du datuak bidaltzean"
 
-#: src/libedataserver/e-webdav-session.c:1438
-#: src/libedataserver/e-webdav-session.c:1504
-#: src/libedataserver/e-webdav-session.c:1595
-#: src/libedataserver/e-webdav-session.c:2719
-#: src/libedataserver/e-webdav-session.c:3971
+#: src/libedataserver/e-webdav-session.c:1424
+#: src/libedataserver/e-webdav-session.c:1534
+#: src/libedataserver/e-webdav-session.c:1625
+#: src/libedataserver/e-webdav-session.c:2793
+#: src/libedataserver/e-webdav-session.c:4069
 msgid "Failed to get input XML content"
 msgstr "Huts egin du sarrerako XML edukia eskuratzean"
 
-#: src/libedataserver/e-webdav-session.c:1449
+#: src/libedataserver/e-webdav-session.c:1435
 msgid "Failed to get properties"
 msgstr "Huts egin du propietatek eskuratzean"
 
-#: src/libedataserver/e-webdav-session.c:1514
+#: src/libedataserver/e-webdav-session.c:1544
 msgid "Failed to update properties"
 msgstr "Huts egin du propietateak eguneratzean"
 
-#: src/libedataserver/e-webdav-session.c:1605
+#: src/libedataserver/e-webdav-session.c:1635
 msgid "Failed to issue REPORT"
 msgstr "Huts egin du REPORT (txostena) igortzean"
 
-#: src/libedataserver/e-webdav-session.c:1665
+#: src/libedataserver/e-webdav-session.c:1695
 msgid "Failed to create collection"
 msgstr "Huts egin du bilduma sortzean"
 
-#: src/libedataserver/e-webdav-session.c:1748
-#: src/libedataserver/e-webdav-session.c:1898
+#: src/libedataserver/e-webdav-session.c:1778
+#: src/libedataserver/e-webdav-session.c:1928
 msgid "Failed to get XML request content"
 msgstr "Huts egin du eskaeraren XML eskuratzean"
 
-#: src/libedataserver/e-webdav-session.c:1760
+#: src/libedataserver/e-webdav-session.c:1790
 msgid "Failed to create address book"
 msgstr "Huts egin du helbide-liburua sortzean"
 
-#: src/libedataserver/e-webdav-session.c:1911
+#: src/libedataserver/e-webdav-session.c:1941
 msgid "Failed to create calendar"
 msgstr "Huts egin du egutegia sortzean"
 
-#: src/libedataserver/e-webdav-session.c:2036
-#: src/libedataserver/e-webdav-session.c:2047
+#: src/libedataserver/e-webdav-session.c:2066
+#: src/libedataserver/e-webdav-session.c:2077
 msgid "Failed to read resource"
 msgstr "Huts egin du baliabidea irakurtzean"
 
-#: src/libedataserver/e-webdav-session.c:2283
-#: src/libedataserver/e-webdav-session.c:2425
+#: src/libedataserver/e-webdav-session.c:2313
+#: src/libedataserver/e-webdav-session.c:2455
 msgid "Failed to put data"
 msgstr "Huts egin du datuak jartzean"
 
-#: src/libedataserver/e-webdav-session.c:2291
-#: src/libedataserver/e-webdav-session.c:2433
+#: src/libedataserver/e-webdav-session.c:2321
+#: src/libedataserver/e-webdav-session.c:2463
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Huts egin du datuak zerbitzarian jartzean: %d (%s) errore kodea"
 
-#: src/libedataserver/e-webdav-session.c:2521
+#: src/libedataserver/e-webdav-session.c:2595
 msgid "Failed to delete resource"
 msgstr "Huts egin du baliabidea ezabatzean"
 
-#: src/libedataserver/e-webdav-session.c:2580
+#: src/libedataserver/e-webdav-session.c:2654
 msgid "Failed to copy resource"
 msgstr "Huts egin du baliabidea kopiatzean"
 
-#: src/libedataserver/e-webdav-session.c:2634
+#: src/libedataserver/e-webdav-session.c:2708
 msgid "Failed to move resource"
 msgstr "Huts egin du baliabidea lekuz aldatzean"
 
-#: src/libedataserver/e-webdav-session.c:2730
+#: src/libedataserver/e-webdav-session.c:2804
 msgid "Failed to lock resource"
 msgstr "Huts egin du baliabidea blokeatzean"
 
-#: src/libedataserver/e-webdav-session.c:2744
-#: src/libedataserver/e-webdav-session.c:2931
+#: src/libedataserver/e-webdav-session.c:2818
+#: src/libedataserver/e-webdav-session.c:3005
 msgid "Expected application/xml response, but none returned"
 msgstr "\"application/xml\" erantzuna espero zen, baina ez da ezer itzuli"
 
-#: src/libedataserver/e-webdav-session.c:2747
-#: src/libedataserver/e-webdav-session.c:2934
+#: src/libedataserver/e-webdav-session.c:2821
+#: src/libedataserver/e-webdav-session.c:3008
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "\"application/xml\" erantzuna espero zen, baina “%s” itzuli da"
 
-#: src/libedataserver/e-webdav-session.c:2759
-#: src/libedataserver/e-webdav-session.c:2947
+#: src/libedataserver/e-webdav-session.c:2833
+#: src/libedataserver/e-webdav-session.c:3021
 msgid "Failed to parse XML data"
 msgstr "Huts egin du XML datuak aztertzean"
 
-#: src/libedataserver/e-webdav-session.c:2830
+#: src/libedataserver/e-webdav-session.c:2904
 msgid "Failed to refresh lock"
 msgstr "Huts egin du blokeoa freskatzean"
 
-#: src/libedataserver/e-webdav-session.c:2881
+#: src/libedataserver/e-webdav-session.c:2955
 msgid "Failed to unlock"
 msgstr "Huts egin du desblokeatzean"
 
-#: src/libedataserver/e-webdav-session.c:2919
+#: src/libedataserver/e-webdav-session.c:2993
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Egoera anitzeko erantzuna espero zen, baina %d itzuli da (%s)"
 
-#: src/libedataserver/e-webdav-session.c:2956
+#: src/libedataserver/e-webdav-session.c:3030
 msgid "XML data does not have root node"
 msgstr "XML datuak ez dute erro modurik"
 
-#: src/libedataserver/e-webdav-session.c:2979
+#: src/libedataserver/e-webdav-session.c:3053
 #, c-format
 msgid "XML data doesn't have required structure (%s)"
 msgstr "XML datuek ez dute behar den egitura (%s)"
 
-#: src/libedataserver/e-webdav-session.c:3981
+#: src/libedataserver/e-webdav-session.c:4079
 msgid "Failed to get access control list"
 msgstr "Huts egin du atzipen-kontrolaren zerrenda eskuratzean"
 
-#: src/libedataserver/e-webdav-session.c:4664
+#: src/libedataserver/e-webdav-session.c:4814
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr "Ezin da babestutako edo heredatutako atzipen-kontrolaren sarrera gorde."
 
-#: src/libedataserver/e-webdav-session.c:4671
+#: src/libedataserver/e-webdav-session.c:4821
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Emandako atzipen-kontrolaren sarreraren mota nagusia baliogabea"
 
-#: src/libedataserver/e-webdav-session.c:4678
+#: src/libedataserver/e-webdav-session.c:4828
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Ezin da propietatean oinarritutako atzipen-kontrolaren sarrera gorde."
 
-#: src/libedataserver/e-webdav-session.c:4685
+#: src/libedataserver/e-webdav-session.c:4835
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr "Atzipen-kontrolaren sarrera soilik \"Grant\" edo \"Deny\" izan daiteke, baina inola ere ez \"None\"."
 
-#: src/libedataserver/e-webdav-session.c:4693
+#: src/libedataserver/e-webdav-session.c:4843
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr "Atzipen-kontrolaren sarrera soilik \"Grant\" edo \"Deny\" izan daiteke, baina ez biak batera."
 
-#: src/libedataserver/e-webdav-session.c:4752
+#: src/libedataserver/e-webdav-session.c:4902
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Atzipen-kontrolaren sarreraren pribilegioa ezin da NULL (nulua) izan."
 
