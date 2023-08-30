@@ -3699,19 +3699,20 @@ e_book_client_get_contacts_uids_sync (EBookClient *client,
 
 /* Helper for e_book_client_contains_email() */
 static void
-book_client_contains_email_thread (GSimpleAsyncResult *simple,
-				   GObject *source_object,
-				   GCancellable *cancellable)
+book_client_contains_email_thread (GTask *task,
+                                   gpointer source_object,
+                                   gpointer task_data,
+                                   GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	const gchar *email_address = task_data;
 	GError *local_error = NULL;
+	gboolean res;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	async_context->success = e_book_client_contains_email_sync (E_BOOK_CLIENT (source_object), async_context->sexp, cancellable, &local_error);
-
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	res = e_book_client_contains_email_sync (E_BOOK_CLIENT (source_object), email_address, cancellable, &local_error);
+	if (!local_error)
+		g_task_return_boolean (task, res);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -3739,29 +3740,19 @@ e_book_client_contains_email (EBookClient *client,
 			      GAsyncReadyCallback callback,
 			      gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (email_address != NULL);
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->sexp = g_strdup (email_address);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_book_client_contains_email);
+	g_task_set_check_cancellable (task, TRUE);
+	g_task_set_task_data (task, g_strdup (email_address), g_free);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_book_client_contains_email);
+	g_task_run_in_thread (task, book_client_contains_email_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, book_client_contains_email_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -3781,21 +3772,10 @@ e_book_client_contains_email_finish (EBookClient *client,
 				     GAsyncResult *result,
 				     GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_book_client_contains_email), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_book_client_contains_email), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	return async_context->success;
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
