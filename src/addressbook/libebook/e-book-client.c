@@ -2955,14 +2955,13 @@ e_book_client_remove_contact_by_uid_sync (EBookClient *client,
 
 /* Helper for e_book_client_remove_contacts() */
 static void
-book_client_remove_contacts_thread (GSimpleAsyncResult *simple,
-                                    GObject *source_object,
+book_client_remove_contacts_thread (GTask *task,
+                                    gpointer source_object,
+                                    gpointer task_data,
                                     GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	AsyncContext *async_context = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	if (!e_book_client_remove_contacts_sync (
 		E_BOOK_CLIENT (source_object),
@@ -2977,8 +2976,10 @@ book_client_remove_contacts_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -3007,7 +3008,7 @@ e_book_client_remove_contacts (EBookClient *client,
 			       GAsyncReadyCallback callback,
 			       gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
@@ -3018,20 +3019,12 @@ e_book_client_remove_contacts (EBookClient *client,
 		(GSList *) uids, (GCopyFunc) g_strdup, NULL);
 	async_context->opflags = opflags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_book_client_remove_contacts);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, book_client_remove_contacts_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_book_client_remove_contacts);
+	g_task_set_check_cancellable (task, TRUE);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
+	g_task_run_in_thread (task, book_client_remove_contacts_thread);
+	g_object_unref (task);
 }
 
 /**
@@ -3051,16 +3044,10 @@ e_book_client_remove_contacts_finish (EBookClient *client,
                                       GAsyncResult *result,
                                       GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_book_client_remove_contacts), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_book_client_remove_contacts), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
