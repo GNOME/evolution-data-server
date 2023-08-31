@@ -1103,17 +1103,16 @@ collection_backend_create_resource (ECollectionBackend *backend,
                                     GAsyncReadyCallback callback,
                                     gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
-	simple = g_simple_async_result_new_error (
-		G_OBJECT (backend), callback, user_data,
+	task = g_task_new (backend, cancellable, callback, user_data);
+	g_task_set_source_tag (task, collection_backend_create_resource);
+	g_task_return_new_error (task,
 		G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
 		_("%s does not support creating remote resources"),
 		G_OBJECT_TYPE_NAME (backend));
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 static gboolean
@@ -1121,12 +1120,10 @@ collection_backend_create_resource_finish (ECollectionBackend *backend,
                                            GAsyncResult *result,
                                            GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, backend), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, collection_backend_create_resource), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 static gboolean
@@ -1162,17 +1159,16 @@ collection_backend_delete_resource (ECollectionBackend *backend,
                                     GAsyncReadyCallback callback,
                                     gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
-	simple = g_simple_async_result_new_error (
-		G_OBJECT (backend), callback, user_data,
+	task = g_task_new (backend, cancellable, callback, user_data);
+	g_task_set_source_tag (task, collection_backend_delete_resource);
+	g_task_return_new_error (task,
 		G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
 		_("%s does not support deleting remote resources"),
 		G_OBJECT_TYPE_NAME (backend));
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 static gboolean
@@ -1180,12 +1176,10 @@ collection_backend_delete_resource_finish (ECollectionBackend *backend,
                                            GAsyncResult *result,
                                            GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, backend), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, collection_backend_delete_resource), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 static void

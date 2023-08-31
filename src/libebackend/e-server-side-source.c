@@ -1148,7 +1148,7 @@ server_side_source_remove (ESource *source,
                            gpointer user_data)
 {
 	EServerSideSourcePrivate *priv;
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	ESourceRegistryServer *server;
 	GQueue queue = G_QUEUE_INIT;
 	GList *list, *link;
@@ -1159,11 +1159,9 @@ server_side_source_remove (ESource *source,
 
 	priv = E_SERVER_SIDE_SOURCE (source)->priv;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (source), callback, user_data,
-		server_side_source_remove);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, server_side_source_remove);
+	g_task_set_check_cancellable (task, TRUE);
 
 	/* Collect the source and its descendants into a queue.
 	 * Do this before unexporting so we hold references to
@@ -1209,11 +1207,12 @@ exit:
 	while (!g_queue_is_empty (&queue))
 		g_object_unref (g_queue_pop_head (&queue));
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (!error)
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&error));
 
-	g_simple_async_result_complete_in_idle (simple);
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 static gboolean
@@ -1221,17 +1220,10 @@ server_side_source_remove_finish (ESource *source,
                                   GAsyncResult *result,
                                   GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, server_side_source_remove), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (source),
-		server_side_source_remove), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 static gboolean
@@ -1264,7 +1256,7 @@ server_side_source_write (ESource *source,
                           gpointer user_data)
 {
 	EServerSideSourcePrivate *priv;
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	GDBusObject *dbus_object;
 	EDBusSource *dbus_source;
 	gboolean replace_file;
@@ -1277,11 +1269,9 @@ server_side_source_write (ESource *source,
 
 	priv = E_SERVER_SIDE_SOURCE (source)->priv;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (source), callback, user_data,
-		server_side_source_write);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, server_side_source_write);
+	g_task_set_check_cancellable (task, TRUE);
 
 	dbus_object = e_source_ref_dbus_object (source);
 	dbus_source = e_dbus_object_get_source (E_DBUS_OBJECT (dbus_object));
@@ -1346,11 +1336,12 @@ server_side_source_write (ESource *source,
 	g_object_unref (dbus_source);
 	g_object_unref (dbus_object);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (!error)
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&error));
 
-	g_simple_async_result_complete_in_idle (simple);
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 static gboolean
@@ -1358,17 +1349,10 @@ server_side_source_write_finish (ESource *source,
                                  GAsyncResult *result,
                                  GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, server_side_source_write), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (source),
-		server_side_source_write), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 static gboolean

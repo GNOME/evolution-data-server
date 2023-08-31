@@ -34,7 +34,6 @@
 typedef struct _AsyncContext AsyncContext;
 
 struct _AsyncContext {
-	ESource *source;
 	gchar *access_token;
 	gint expires_in;
 };
@@ -47,35 +46,34 @@ G_DEFINE_INTERFACE (
 static void
 async_context_free (AsyncContext *async_context)
 {
-	if (async_context->source != NULL)
-		g_object_unref (async_context->source);
-
-	g_free (async_context->access_token);
+	g_clear_pointer (&async_context->access_token, g_free);
 
 	g_slice_free (AsyncContext, async_context);
 }
 
 /* Helper for oauth2_support_get_access_token() */
 static void
-oauth2_support_get_access_token_thread (GSimpleAsyncResult *simple,
-                                        GObject *object,
+oauth2_support_get_access_token_thread (GTask *task,
+                                        gpointer source_object,
+                                        gpointer task_data,
                                         GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	ESource *source = task_data;
 	GError *error = NULL;
+	AsyncContext *async_context = g_slice_new0 (AsyncContext);
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	e_oauth2_support_get_access_token_sync (
-		E_OAUTH2_SUPPORT (simple),
-		async_context->source,
+	if (e_oauth2_support_get_access_token_sync (
+		E_OAUTH2_SUPPORT (source_object),
+		source,
 		cancellable,
 		&async_context->access_token,
 		&async_context->expires_in,
-		&error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+		&error)) {
+		g_task_return_pointer (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
+	} else {
+		g_task_return_error (task, g_steal_pointer (&error));
+		g_clear_pointer (&async_context, async_context_free);
+	}
 }
 
 static void
@@ -85,26 +83,16 @@ oauth2_support_get_access_token (EOAuth2Support *support,
                                  GAsyncReadyCallback callback,
                                  gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->source = g_object_ref (source);
+	task = g_task_new (support, cancellable, callback, user_data);
+	g_task_set_source_tag (task, oauth2_support_get_access_token);
+	g_task_set_check_cancellable (task, TRUE);
+	g_task_set_task_data (task, g_object_ref (source), g_object_unref);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (support), callback, user_data,
-		oauth2_support_get_access_token);
+	g_task_run_in_thread (task, oauth2_support_get_access_token_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, oauth2_support_get_access_token_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 static gboolean
@@ -114,30 +102,24 @@ oauth2_support_get_access_token_finish (EOAuth2Support *support,
                                         gint *out_expires_in,
                                         GError **error)
 {
-	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (support),
-		oauth2_support_get_access_token), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, support), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, oauth2_support_get_access_token), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	async_context = g_task_propagate_pointer (G_TASK (result), error);
+	if (!async_context)
 		return FALSE;
 
 	g_return_val_if_fail (async_context->access_token != NULL, FALSE);
 
-	if (out_access_token != NULL) {
-		*out_access_token = async_context->access_token;
-		async_context->access_token = NULL;
-	}
+	if (out_access_token != NULL)
+		*out_access_token = g_steal_pointer (&async_context->access_token);
 
 	if (out_expires_in != NULL)
 		*out_expires_in = async_context->expires_in;
 
+	g_clear_pointer (&async_context, async_context_free);
 	return TRUE;
 }
 
