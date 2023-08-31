@@ -23,22 +23,22 @@
 
 /* Helper for e_reap_trash_directory() */
 static void
-reap_trash_directory_thread (GSimpleAsyncResult *simple,
-                             GObject *object,
+reap_trash_directory_thread (GTask *task,
+                             gpointer source_object,
+                             gpointer task_data,
                              GCancellable *cancellable)
 {
-	gssize expiry_in_days;
+	gint expiry_in_days = GPOINTER_TO_INT (task_data);
 	GError *error = NULL;
 
-	expiry_in_days = g_simple_async_result_get_op_res_gssize (simple);
-
-	e_reap_trash_directory_sync (
-		G_FILE (object),
-		(gint) expiry_in_days,
-		cancellable, &error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (e_reap_trash_directory_sync (
+		G_FILE (source_object),
+		expiry_in_days,
+		cancellable, &error)) {
+		g_task_return_boolean (task, TRUE);
+	} else {
+		g_task_return_error (task, g_steal_pointer (&error));
+	}
 }
 
 gboolean
@@ -166,24 +166,20 @@ e_reap_trash_directory (GFile *trash_directory,
                         GAsyncReadyCallback callback,
                         gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
 	g_return_if_fail (G_IS_FILE (trash_directory));
 	g_return_if_fail (expiry_in_days > 0);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (trash_directory), callback,
-		user_data, e_reap_trash_directory);
+	task = g_task_new (trash_directory, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_reap_trash_directory);
+	g_task_set_check_cancellable (task, TRUE);
+	g_task_set_task_data (task, GINT_TO_POINTER (expiry_in_days), NULL);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, reap_trash_directory_thread);
 
-	g_simple_async_result_set_op_res_gssize (simple, expiry_in_days);
-
-	g_simple_async_result_run_in_thread (
-		simple, reap_trash_directory_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 gboolean
@@ -191,16 +187,9 @@ e_reap_trash_directory_finish (GFile *trash_directory,
                                GAsyncResult *result,
                                GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, trash_directory), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_reap_trash_directory), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (trash_directory),
-		e_reap_trash_directory), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
