@@ -69,7 +69,7 @@ typedef struct _PrompterAsyncData {
 	gchar *primary_text;
 	gchar *secondary_text;
 	gboolean use_markup;
-	GList *button_captions;
+	gchar **button_captions;
 
 	/* ExtensionPrompt data */
 	gchar *dialog_name;
@@ -80,7 +80,7 @@ typedef struct _PrompterAsyncData {
 	gint response_button;
 
 	/* callbacks */
-	gchar *response_signal_name;
+	const gchar *response_signal_name;
 	GCallback response_callback;
 	gboolean (* invoke) (EDBusUserPrompter *dbus_prompter,
 			     struct _PrompterAsyncData *async_data,
@@ -102,13 +102,11 @@ prompter_async_data_free (PrompterAsyncData *async_data)
 	g_free (async_data->title);
 	g_free (async_data->primary_text);
 	g_free (async_data->secondary_text);
-	g_list_free_full (async_data->button_captions, g_free);
+	g_strfreev (async_data->button_captions);
 
 	g_free (async_data->dialog_name);
 	e_named_parameters_free (async_data->in_parameters);
 	e_named_parameters_free (async_data->out_values);
-
-	g_free (async_data->response_signal_name);
 
 	g_slice_free (PrompterAsyncData, async_data);
 }
@@ -133,25 +131,10 @@ user_prompter_prompt_invoke (EDBusUserPrompter *dbus_prompter,
                              GCancellable *cancellable,
                              GError **error)
 {
-	GPtrArray *captions;
-	GList *list, *link;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (dbus_prompter != NULL, FALSE);
 	g_return_val_if_fail (async_data != NULL, FALSE);
-
-	list = async_data->button_captions;
-
-	captions = g_ptr_array_new ();
-
-	for (link = list; link != NULL; link = g_list_next (link)) {
-		gchar *caption = link->data;
-
-		g_ptr_array_add (captions, caption ? caption : (gchar *) "");
-	}
-
-	/* NULL-terminated array */
-	g_ptr_array_add (captions, NULL);
 
 	e_dbus_user_prompter_call_prompt_sync (
 		dbus_prompter,
@@ -160,11 +143,9 @@ user_prompter_prompt_invoke (EDBusUserPrompter *dbus_prompter,
 		async_data->primary_text ? async_data->primary_text : "",
 		async_data->secondary_text ? async_data->secondary_text : "",
 		async_data->use_markup,
-		(const gchar *const *) captions->pdata,
+		(const gchar *const *) async_data->button_captions,
 		&async_data->prompt_id,
 		cancellable, &local_error);
-
-	g_ptr_array_free (captions, TRUE);
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -354,9 +335,16 @@ e_user_prompter_prompt (EUserPrompter *prompter,
 {
 	GSimpleAsyncResult *simple;
 	PrompterAsyncData *async_data;
+	GStrvBuilder *captions_builder;
+	GList *l;
 
 	g_return_if_fail (E_IS_USER_PROMPTER (prompter));
 	g_return_if_fail (callback != NULL);
+
+	captions_builder = g_strv_builder_new ();
+	for (l = button_captions; l != NULL; l = l->next) {
+		g_strv_builder_add (captions_builder, l->data);
+	}
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (prompter), callback, user_data,
@@ -368,15 +356,15 @@ e_user_prompter_prompt (EUserPrompter *prompter,
 	async_data->primary_text = g_strdup (primary_text);
 	async_data->secondary_text = g_strdup (secondary_text);
 	async_data->use_markup = use_markup;
-	async_data->button_captions = g_list_copy_deep (
-		button_captions, (GCopyFunc) g_strdup, NULL);
+	async_data->button_captions = g_strv_builder_end (captions_builder);
 	async_data->prompt_id = -1;
 	async_data->response_button = -1;
 
-	async_data->response_signal_name = g_strdup ("response");
+	async_data->response_signal_name = "response";
 	async_data->response_callback = G_CALLBACK (user_prompter_response_cb);
 	async_data->invoke = user_prompter_prompt_invoke;
 
+	g_strv_builder_unref (captions_builder);
 	g_simple_async_result_set_op_res_gpointer (simple, async_data, (GDestroyNotify) prompter_async_data_free);
 	g_simple_async_result_run_in_thread (simple, user_prompter_prompt_thread, G_PRIORITY_DEFAULT, cancellable);
 
@@ -536,7 +524,7 @@ e_user_prompter_extension_prompt (EUserPrompter *prompter,
 	async_data->response_button = -1;
 	async_data->out_values = NULL;
 
-	async_data->response_signal_name = g_strdup ("extension-response");
+	async_data->response_signal_name = "extension-response";
 	async_data->response_callback = G_CALLBACK (user_prompter_extension_response_cb);
 	async_data->invoke = user_prompter_extension_prompt_invoke;
 
