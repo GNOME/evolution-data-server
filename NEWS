@@ -1,3 +1,33 @@
+Evolution-Data-Server 3.49.3 2023-09-01
+---------------------------------------
+
+Bug Fixes:
+	I#487 - IMAPx: Messages unexpectedly deleted from Inbox
+	I#491 - docs: Move the gi-docgen documentation to the parent folder (Corentin Noël)
+	I#493 - Use collection source also when it has no auth method set
+	I#497 - IMAP: Cache does not refresh after UIDVALIDITY changes
+	M!128 - reminder-watcher: Default to system set 24-hour format (Melker Narikka)
+	M!129 - docs: Add more dependencies to the gi-docgen generated documentation (Corentin Noël)
+	M!129 - Refine the pkgconfig and .gir dependencies (Corentin Noël)
+	evo-I#1234 - Add "Unset Label" action in filter rules
+	ews-I#241 - OAuth2: Provide detailed error on access token refresh failure
+
+Miscellaneous:
+	libecal: Move some basic utility functions from Evolution
+	build: Do not depend on libsecret-unstable
+	Harmonize `sizeof` keyword use
+	CamelGgpContext: Strip unneeded information from keys on export
+	ECalComponentText: Fix compiler warning from type-check of const object
+
+Translations:
+	Asier Sarasua Garmendia (eu)
+	Jürgen Benvenuti (de)
+	Kukuh Syafaat (id)
+	Piotr Drąg (pl)
+	Sabri Ünal (tr)
+	Sergej A (ru)
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.49.2 2023-08-04
 ---------------------------------------
 
