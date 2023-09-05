@@ -20,8 +20,12 @@ test_query (const gchar *query)
 {
 	ECalBackendSExp *sexp = e_cal_backend_sexp_new (query);
 	time_t start, end;
+	gboolean generator;
 
-	gboolean generator = e_cal_backend_sexp_evaluate_occur_times (sexp, &start, &end);
+	sexp = e_cal_backend_sexp_new (query);
+	g_assert_nonnull (sexp);
+
+	generator = e_cal_backend_sexp_evaluate_occur_times (sexp, &start, &end);
 
 	if (generator) {
 		printf ("%s: %" G_GINT64_FORMAT "- %" G_GINT64_FORMAT "\n", query, (gint64) start, (gint64) end);
@@ -38,8 +42,7 @@ main (gint argc,
 {
 	/* e_sexp_add_variable(f, 0, "test", NULL); */
 
-	if (argc < 2 || !argv[1])
-	{
+	if (argc <= 4 || !argv[5]) {
 		test_query ("(occur-in-time-range? (make-time \"20080727T220000Z\") (make-time \"20080907T220000Z\"))");
 		test_query ("(due-in-time-range? (make-time \"20080727T220000Z\") (make-time \"20080907T220000Z\"))");
 		test_query ("(has-alarms-in-range? (make-time \"20080727T220000Z\") (make-time \"20080907T220000Z\"))");
@@ -56,9 +59,9 @@ main (gint argc,
 
 		test_query ("(or (and (occur-in-time-range? (make-time \"20080727T220000Z\") (make-time \"20080907T220000Z\"))"
 			" (or (contains? \"substring\") (has-categories? \"blah\"))) (has-alarms?))");
+	} else {
+		test_query (argv[5]);
 	}
-	else
-		test_query (argv[1]);
 
 	return 0;
 }
