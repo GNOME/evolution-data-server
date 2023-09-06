@@ -3084,3 +3084,56 @@ e_util_call_malloc_trim (void)
 	malloc_trim (0);
 #endif
 }
+
+/**
+ * e_util_guess_source_is_readonly:
+ * @source: an #ESource
+ *
+ * Guesses whether the @source is read only. This is done on some heuristic
+ * like the source backend, where some are known to be read only. That this
+ * function returns %FALSE does not necessarily mean the source is writable,
+ * it only means the source is not well-known read-only source. To know
+ * for sure open the corresponding #EClient, if the @source references such,
+ * and use e_client_is_readonly().
+ *
+ * Returns: %TRUE, when the @source is well-known read-only source, or %FALSE otherwise
+ *
+ * Since: 3.50
+ **/
+gboolean
+e_util_guess_source_is_readonly	(ESource *source)
+{
+	gboolean res = FALSE;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK)) {
+		/* no well-known always read-only book backend */
+	} else {
+		ESourceBackend *backend_extension = NULL;
+
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_CALENDAR))
+			backend_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_CALENDAR);
+		else if (e_source_has_extension (source, E_SOURCE_EXTENSION_MEMO_LIST))
+			backend_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_MEMO_LIST);
+		else if (e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST))
+			backend_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_TASK_LIST);
+
+		if (backend_extension) {
+			const gchar *backend_name;
+
+			e_source_extension_property_lock (E_SOURCE_EXTENSION (backend_extension));
+
+			backend_name = e_source_backend_get_backend_name (backend_extension);
+
+			res = backend_name && (
+				g_ascii_strcasecmp (backend_name, "contacts") == 0 ||
+				g_ascii_strcasecmp (backend_name, "weather") == 0 ||
+				g_ascii_strcasecmp (backend_name, "webcal") == 0);
+
+			e_source_extension_property_unlock (E_SOURCE_EXTENSION (backend_extension));
+		}
+	}
+
+	return res;
+}

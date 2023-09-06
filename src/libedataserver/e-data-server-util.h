@@ -263,6 +263,7 @@ void		e_util_change_uri_component	(GUri **inout_uri,
 void		e_util_change_uri_port		(GUri **inout_uri,
 						 gint port);
 void		e_util_call_malloc_trim		(void);
+gboolean	e_util_guess_source_is_readonly	(struct _ESource *source);
 
 G_END_DECLS
 
