@@ -504,4 +504,7 @@ install(TARGETS camel-gpg-photo-saver
 )
 
 add_subdirectory(providers)
-add_subdirectory(tests)
+
+if(ENABLE_TESTS)
+	add_subdirectory(tests)
+endif(ENABLE_TESTS)

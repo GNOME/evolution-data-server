@@ -280,11 +280,19 @@ include(GLibTools)
 include(GObjectIntrospection)
 include(GIDocgen)
 include(GtkDoc)
+
+# defined here, to be printed above the installed tests option
+add_printable_option(ENABLE_TESTS "Build unit tests" ON)
+
 include(InstalledTests)
 include(PkgConfigEx)
 include(SetupBuildFlags)
 include(UninstallTarget)
 include(IconCache)
+
+if(NOT ENABLE_TESTS AND ENABLE_INSTALLED_TESTS)
+	message(FATAL_ERROR "Cannot install the tests, when build of the tests is disabled. Either enable build of the tests with -DENABLE_TESTS=ON or disable install of the tests with -DENABLE_INSTALLED_TESTS=OFF")
+endif(NOT ENABLE_TESTS AND ENABLE_INSTALLED_TESTS)
 
 include(FindGettext)
 include(I18n)
@@ -1004,7 +1012,9 @@ add_pkgconfig_file(evolution-data-server.pc.in evolution-data-server-${API_VERSI
 add_subdirectory(data)
 add_subdirectory(po)
 add_subdirectory(src)
-add_subdirectory(tests)
+if(ENABLE_TESTS)
+	add_subdirectory(tests)
+endif(ENABLE_TESTS)
 
 # Add it as the last, because it looks for targets defined above
 add_subdirectory(docs)
