@@ -1,5 +1,5 @@
 {
-	"app-id": "org.gnome.evolution-data-server-nightly",
+	"app-id": "org.gnome.EvolutionDataServer.Devel",
 	"runtime": "org.gnome.Platform",
 	"runtime-version": "master",
 	"sdk": "org.gnome.Sdk",
@@ -7,6 +7,7 @@
 		"org.freedesktop.Sdk.Extension.vala"
 	],
 	"branch": "master",
+	"command": "/usr/libexec/evolution-source-registry",
 	"tags": [ "devel" ],
 	"build-options" : {
 		"prepend-path" : "/usr/lib/sdk/vala/bin/",
@@ -276,7 +277,7 @@
 				"/share/GConf"
 			],
 			"config-opts": [
-				"-DDBUS_SERVICES_PREFIX=org.gnome.evolution-data-server-nightly",
+				"-DDBUS_SERVICES_PREFIX=org.gnome.EvolutionDataServer.Devel",
 				"-DEXTENSIONS_DIR=/app/evolution/extensions",
 				"-DENABLE_MAINTAINER_MODE=ON",
 				"-DENABLE_FILE_LOCKING=fcntl",
