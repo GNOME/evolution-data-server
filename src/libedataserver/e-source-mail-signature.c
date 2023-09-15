@@ -43,17 +43,9 @@
 
 #include "e-source-mail-signature.h"
 
-typedef struct _AsyncContext AsyncContext;
-
 struct _ESourceMailSignaturePrivate {
 	GFile *file;
 	gchar *mime_type;
-};
-
-struct _AsyncContext {
-	gchar *contents;
-	gchar *symlink_target;
-	gsize length;
 };
 
 enum {
@@ -66,15 +58,6 @@ G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceMailSignature,
 	e_source_mail_signature,
 	E_TYPE_SOURCE_EXTENSION)
-
-static void
-async_context_free (AsyncContext *async_context)
-{
-	g_free (async_context->contents);
-	g_free (async_context->symlink_target);
-
-	g_slice_free (AsyncContext, async_context);
-}
 
 static void
 source_mail_signature_set_property (GObject *object,
@@ -342,23 +325,23 @@ e_source_mail_signature_set_mime_type (ESourceMailSignature *extension,
 
 /* Helper for e_source_mail_signature_load() */
 static void
-source_mail_signature_load_thread (GSimpleAsyncResult *simple,
-                                   GObject *object,
+source_mail_signature_load_thread (GTask *task,
+                                   gpointer source_object,
+                                   gpointer task_data,
                                    GCancellable *cancellable)
 {
-	AsyncContext *async_context;
 	GError *error = NULL;
+	gchar *contents;
+	gsize length;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	e_source_mail_signature_load_sync (
-		E_SOURCE (object),
-		&async_context->contents,
-		&async_context->length,
-		cancellable, &error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (e_source_mail_signature_load_sync (
+		E_SOURCE (source_object),
+		&contents,
+		&length,
+		cancellable, &error))
+		g_task_return_pointer (task, g_bytes_new_take (contents, length), (GDestroyNotify) g_bytes_unref);
+	else
+		g_task_return_error (task, g_steal_pointer (&error));
 }
 
 /**
@@ -580,27 +563,18 @@ e_source_mail_signature_load (ESource *source,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_SOURCE (source));
 
-	async_context = g_slice_new0 (AsyncContext);
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_source_mail_signature_load);
+	g_task_set_check_cancellable (task, TRUE);
+	g_task_set_priority (task, io_priority);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (source), callback, user_data,
-		e_source_mail_signature_load);
+	g_task_run_in_thread (task, source_mail_signature_load_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, source_mail_signature_load_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -628,30 +602,16 @@ e_source_mail_signature_load_finish (ESource *source,
                                      gsize *length,
                                      GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GBytes *bytes;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (source),
-		e_source_mail_signature_load), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_source_mail_signature_load), FALSE);
 
-	g_return_val_if_fail (contents != NULL, FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	bytes = g_task_propagate_pointer (G_TASK (result), error);
+	if (!bytes)
 		return FALSE;
 
-	g_return_val_if_fail (async_context->contents != NULL, FALSE);
-
-	*contents = async_context->contents;
-	async_context->contents = NULL;
-
-	if (length != NULL)
-		*length = async_context->length;
-
+	*contents = g_bytes_unref_to_data (bytes, length);
 	return TRUE;
 }
 
@@ -659,21 +619,21 @@ e_source_mail_signature_load_finish (ESource *source,
 
 /* Helper for e_source_mail_signature_replace() */
 static void
-source_mail_signature_replace_thread (GSimpleAsyncResult *simple,
-                                      GObject *object,
-                                      GCancellable *cancellable)
+source_mail_signature_replace_thread (GTask         *task,
+                                      gpointer       source_object,
+                                      gpointer       task_data,
+                                      GCancellable  *cancellable)
 {
-	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
+	GBytes *bytes = task_data;
+	gsize length;
+	const gchar *contents = g_bytes_get_data (bytes, &length);
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	e_source_mail_signature_replace_sync (
-		E_SOURCE (object), async_context->contents,
-		async_context->length, cancellable, &error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (e_source_mail_signature_replace_sync (
+		E_SOURCE (source_object), contents, length, cancellable, &local_error))
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -745,30 +705,19 @@ e_source_mail_signature_replace (ESource *source,
                                  GAsyncReadyCallback callback,
                                  gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_SOURCE (source));
-	g_return_if_fail (contents != NULL);
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->contents = g_strdup (contents);
-	async_context->length = length;
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_source_mail_signature_replace);
+	g_task_set_check_cancellable (task, TRUE);
+	g_task_set_task_data (task, g_bytes_new (contents, length), (GDestroyNotify) g_bytes_unref);
+	g_task_set_priority (task, io_priority);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (source), callback, user_data,
-		e_source_mail_signature_replace);
+	g_task_run_in_thread (task, source_mail_signature_replace_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, source_mail_signature_replace_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -788,39 +737,31 @@ e_source_mail_signature_replace_finish (ESource *source,
                                         GAsyncResult *result,
                                         GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_source_mail_signature_replace), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (source),
-		e_source_mail_signature_replace), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /********************* e_source_mail_signature_symlink() *********************/
 
 /* Helper for e_source_mail_signature_symlink() */
 static void
-source_mail_signature_symlink_thread (GSimpleAsyncResult *simple,
-                                      GObject *object,
+source_mail_signature_symlink_thread (GTask *task,
+                                      gpointer source_object,
+                                      gpointer task_data,
                                       GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	const gchar *symlink_target = task_data;
 	GError *error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	e_source_mail_signature_symlink_sync (
-		E_SOURCE (object),
-		async_context->symlink_target,
-		cancellable, &error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (e_source_mail_signature_symlink_sync (
+		E_SOURCE (source_object),
+		symlink_target,
+		cancellable, &error))
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&error));
 }
 
 /**
@@ -894,29 +835,20 @@ e_source_mail_signature_symlink (ESource *source,
                                  GAsyncReadyCallback callback,
                                  gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_SOURCE (source));
 	g_return_if_fail (symlink_target != NULL);
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->symlink_target = g_strdup (symlink_target);
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_source_mail_signature_symlink);
+	g_task_set_check_cancellable (task, TRUE);
+	g_task_set_task_data (task, g_strdup (symlink_target), g_free);
+	g_task_set_priority (task, io_priority);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (source), callback, user_data,
-		e_source_mail_signature_symlink);
+	g_task_run_in_thread (task, source_mail_signature_symlink_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, source_mail_signature_symlink_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -936,16 +868,9 @@ e_source_mail_signature_symlink_finish (ESource *source,
                                         GAsyncResult *result,
                                         GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_source_mail_signature_symlink), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (source),
-		e_source_mail_signature_symlink), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
