@@ -23,6 +23,13 @@
 
 #include "camel-mime-filter-bestenc.h"
 
+typedef enum {
+	UTF16_CHECK_STATE_UNKNOWN = 0,
+	UTF16_CHECK_STATE_NOT_UTF16,
+	UTF16_CHECK_STATE_IS_UTF16BE,
+	UTF16_CHECK_STATE_IS_UTF16LE
+} UTF16CheckState;
+
 struct _CamelMimeFilterBestencPrivate {
 
 	guint flags;	/* our creation flags */
@@ -44,6 +51,7 @@ struct _CamelMimeFilterBestencPrivate {
 	guint maxline;	/* max length of any line */
 
 	CamelCharset charset;	/* used to determine the best charset to use */
+	UTF16CheckState utf16_check_state; /* stores whether it's UTF16 or not based on the BOM mark */
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelMimeFilterBestenc, camel_mime_filter_bestenc, CAMEL_TYPE_MIME_FILTER)
@@ -141,8 +149,20 @@ mime_filter_bestenc_filter (CamelMimeFilter *mime_filter,
 
 	priv->total += len;
 
-	if (priv->flags & CAMEL_BESTENC_GET_CHARSET)
-		camel_charset_step (&priv->charset, in, len);
+	if (priv->flags & CAMEL_BESTENC_GET_CHARSET) {
+		if (priv->utf16_check_state == UTF16_CHECK_STATE_UNKNOWN) {
+			/* check the UTF-16 BOM */
+			if (len >= 2 && ((guchar) in[0]) == 0xfe && ((guchar) in[1]) == 0xff)
+				priv->utf16_check_state = UTF16_CHECK_STATE_IS_UTF16BE;
+			else if (len >= 2 && ((guchar) in[0]) == 0xff && ((guchar) in[1]) == 0xfe)
+				priv->utf16_check_state = UTF16_CHECK_STATE_IS_UTF16LE;
+			else
+				priv->utf16_check_state = UTF16_CHECK_STATE_NOT_UTF16;
+		}
+
+		if (priv->utf16_check_state != UTF16_CHECK_STATE_IS_UTF16BE && priv->utf16_check_state != UTF16_CHECK_STATE_IS_UTF16LE)
+			camel_charset_step (&priv->charset, in, len);
+	}
 
 donothing:
 	*out = (gchar *) in;
@@ -187,6 +207,7 @@ mime_filter_bestenc_reset (CamelMimeFilter *mime_filter)
 	priv->fromcount = 0;
 	priv->hadfrom = FALSE;
 	priv->startofline = TRUE;
+	priv->utf16_check_state = UTF16_CHECK_STATE_UNKNOWN;
 
 	camel_charset_init (&priv->charset);
 }
@@ -308,6 +329,12 @@ const gchar *
 camel_mime_filter_bestenc_get_best_charset (CamelMimeFilterBestenc *filter)
 {
 	g_return_val_if_fail (CAMEL_IS_MIME_FILTER_BESTENC (filter), NULL);
+
+	if (filter->priv->utf16_check_state == UTF16_CHECK_STATE_IS_UTF16BE)
+		return "UTF-16BE";
+
+	if (filter->priv->utf16_check_state == UTF16_CHECK_STATE_IS_UTF16LE)
+		return "UTF-16LE";
 
 	return camel_charset_best_name (&filter->priv->charset);
 }
