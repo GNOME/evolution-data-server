@@ -83,7 +83,6 @@
 #define E_SETTINGS_DEFAULT_MEMO_LIST_KEY	"default-memo-list"
 #define E_SETTINGS_DEFAULT_TASK_LIST_KEY	"default-task-list"
 
-typedef struct _AsyncContext AsyncContext;
 typedef struct _CreateContext CreateContext;
 typedef struct _SourceClosure SourceClosure;
 typedef struct _ThreadClosure ThreadClosure;
@@ -114,11 +113,6 @@ struct _ESourceRegistryPrivate {
 	GMutex init_lock;
 
 	EOAuth2Services *oauth2_services;
-};
-
-struct _AsyncContext {
-	ESource *source;
-	GList *list_of_sources;
 };
 
 /* Used in e_source_registry_create_sources_sync() */
@@ -189,19 +183,6 @@ G_DEFINE_TYPE_WITH_CODE (ESourceRegistry, e_source_registry, G_TYPE_OBJECT,
 	G_ADD_PRIVATE (ESourceRegistry)
 	G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, e_source_registry_initable_init)
 	G_IMPLEMENT_INTERFACE (G_TYPE_ASYNC_INITABLE, NULL))
-
-static void
-async_context_free (AsyncContext *async_context)
-{
-	if (async_context->source != NULL)
-		g_object_unref (async_context->source);
-
-	g_list_free_full (
-		async_context->list_of_sources,
-		(GDestroyNotify) g_object_unref);
-
-	g_slice_free (AsyncContext, async_context);
-}
 
 static CreateContext *
 create_context_new (void)
@@ -1921,22 +1902,21 @@ e_source_registry_get_oauth2_services (ESourceRegistry *registry)
 
 /* Helper for e_source_registry_commit_source() */
 static void
-source_registry_commit_source_thread (GSimpleAsyncResult *simple,
-                                      GObject *object,
-                                      GCancellable *cancellable)
+source_registry_commit_source_thread (GTask         *task,
+                                      gpointer       source_object,
+                                      gpointer       task_data,
+                                      GCancellable  *cancellable)
 {
-	AsyncContext *async_context;
+	ESource *source = task_data;
 	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	e_source_registry_commit_source_sync (
-		E_SOURCE_REGISTRY (object),
-		async_context->source,
-		cancellable, &local_error);
-
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (e_source_registry_commit_source_sync (
+		E_SOURCE_REGISTRY (source_object),
+		source,
+		cancellable, &local_error))
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -2032,29 +2012,19 @@ e_source_registry_commit_source (ESourceRegistry *registry,
                                  GAsyncReadyCallback callback,
                                  gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_SOURCE_REGISTRY (registry));
 	g_return_if_fail (E_IS_SOURCE (source));
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->source = g_object_ref (source);
+	task = g_task_new (registry, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_source_registry_commit_source);
+	g_task_set_task_data (task, g_object_ref (source), g_object_unref);
+	g_task_set_check_cancellable (task, TRUE);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (registry), callback, user_data,
-		e_source_registry_commit_source);
+	g_task_run_in_thread (task, source_registry_commit_source_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, source_registry_commit_source_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -2076,37 +2046,29 @@ e_source_registry_commit_source_finish (ESourceRegistry *registry,
                                         GAsyncResult *result,
                                         GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, registry), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_source_registry_commit_source), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (registry),
-		e_source_registry_commit_source), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /* Helper for e_source_registry_create_sources() */
 static void
-source_registry_create_sources_thread (GSimpleAsyncResult *simple,
-                                       GObject *object,
+source_registry_create_sources_thread (GTask *task,
+                                       gpointer source_object,
+                                       gpointer task_data,
                                        GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	GList *list_of_sources = task_data;
 	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	e_source_registry_create_sources_sync (
-		E_SOURCE_REGISTRY (object),
-		async_context->list_of_sources,
-		cancellable, &local_error);
-
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (e_source_registry_create_sources_sync (
+		E_SOURCE_REGISTRY (source_object),
+		list_of_sources,
+		cancellable, &local_error))
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /* Helper for e_source_registry_create_sources_sync() */
@@ -2260,6 +2222,13 @@ e_source_registry_create_sources_sync (ESourceRegistry *registry,
 	return TRUE;
 }
 
+static void
+source_list_free (gpointer data)
+{
+	GList *list = data;
+	g_list_free_full (list, g_object_unref);
+}
+
 /**
  * e_source_registry_create_sources:
  * @registry: an #ESourceRegistry
@@ -2286,8 +2255,7 @@ e_source_registry_create_sources (ESourceRegistry *registry,
                                   GAsyncReadyCallback callback,
                                   gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 	GList *link;
 
 	g_return_if_fail (E_IS_SOURCE_REGISTRY (registry));
@@ -2296,27 +2264,14 @@ e_source_registry_create_sources (ESourceRegistry *registry,
 	for (link = list_of_sources; link != NULL; link = g_list_next (link))
 		g_return_if_fail (E_IS_SOURCE (link->data));
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->list_of_sources = g_list_copy (list_of_sources);
+	task = g_task_new (registry, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_source_registry_create_sources);
+	g_task_set_task_data (task, g_list_copy_deep (list_of_sources, (GCopyFunc) g_object_ref, NULL), source_list_free);
+	g_task_set_check_cancellable (task, TRUE);
 
-	g_list_foreach (
-		async_context->list_of_sources,
-		(GFunc) g_object_ref, NULL);
+	g_task_run_in_thread (task, source_registry_create_sources_thread);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (registry), callback, user_data,
-		e_source_registry_create_sources);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, source_registry_create_sources_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -2338,17 +2293,10 @@ e_source_registry_create_sources_finish (ESourceRegistry *registry,
                                          GAsyncResult *result,
                                          GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, registry), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_source_registry_create_sources), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (registry),
-		e_source_registry_create_sources), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
