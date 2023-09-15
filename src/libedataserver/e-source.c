@@ -154,7 +154,6 @@ struct _ESourcePrivate {
 };
 
 struct _AsyncContext {
-	ESource *scratch_source;
 	gchar *access_token;
 	gint expires_in;
 	gchar *password;
@@ -214,13 +213,11 @@ G_DEFINE_TYPE_WITH_CODE (
 		e_source_proxy_resolver_init))
 
 static void
-async_context_free (AsyncContext *async_context)
+async_context_free (gpointer data)
 {
-	if (async_context->scratch_source != NULL)
-		g_object_unref (async_context->scratch_source);
-
-	g_free (async_context->access_token);
-	g_free (async_context->password);
+	AsyncContext *async_context = data;
+	g_clear_pointer (&async_context->access_token, g_free);
+	g_clear_pointer (&async_context->password, g_free);
 
 	g_slice_free (AsyncContext, async_context);
 }
@@ -1430,16 +1427,17 @@ source_remove_sync (ESource *source,
 
 /* Helper for source_remove() */
 static void
-source_remove_thread (GSimpleAsyncResult *simple,
-                      GObject *object,
-                      GCancellable *cancellable)
+source_remove_thread (GTask         *task,
+                      gpointer       source_object,
+                      gpointer       task_data,
+                      GCancellable  *cancellable)
 {
 	GError *local_error = NULL;
 
-	e_source_remove_sync (E_SOURCE (object), cancellable, &local_error);
-
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (e_source_remove_sync (E_SOURCE (source_object), cancellable, &local_error))
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 static void
@@ -1448,18 +1446,15 @@ source_remove (ESource *source,
                GAsyncReadyCallback callback,
                gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (source), callback, user_data, source_remove);
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, source_remove);
+	g_task_set_check_cancellable (task, TRUE);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, source_remove_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, source_remove_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 static gboolean
@@ -1467,16 +1462,10 @@ source_remove_finish (ESource *source,
                       GAsyncResult *result,
                       GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, source_remove), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (source), source_remove), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 static gboolean
@@ -1526,16 +1515,17 @@ source_write_sync (ESource *source,
 
 /* Helper for source_write() */
 static void
-source_write_thread (GSimpleAsyncResult *simple,
-                     GObject *object,
-                     GCancellable *cancellable)
+source_write_thread (GTask         *task,
+                     gpointer       source_object,
+                     gpointer       task_data,
+                     GCancellable  *cancellable)
 {
 	GError *local_error = NULL;
 
-	e_source_write_sync (E_SOURCE (object), cancellable, &local_error);
-
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (e_source_write_sync (E_SOURCE (source_object), cancellable, &local_error))
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 static void
@@ -1544,18 +1534,15 @@ source_write (ESource *source,
               GAsyncReadyCallback callback,
               gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (source), callback, user_data, source_write);
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, source_write);
+	g_task_set_check_cancellable (task, TRUE);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, source_write_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, source_write_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 static gboolean
@@ -1563,16 +1550,10 @@ source_write_finish (ESource *source,
                      GAsyncResult *result,
                      GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, source_write), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (source), source_write), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 static gboolean
@@ -1626,22 +1607,21 @@ source_remote_create_sync (ESource *source,
 
 /* Helper for source_remote_create() */
 static void
-source_remote_create_thread (GSimpleAsyncResult *simple,
-                             GObject *object,
-                             GCancellable *cancellable)
+source_remote_create_thread (GTask         *task,
+                             gpointer       source_object,
+                             gpointer       task_data,
+                             GCancellable  *cancellable)
 {
-	AsyncContext *async_context;
+	ESource *scratch_source = task_data;
 	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	e_source_remote_create_sync (
-		E_SOURCE (object),
-		async_context->scratch_source,
-		cancellable, &local_error);
-
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (e_source_remote_create_sync (
+		E_SOURCE (source_object),
+		scratch_source,
+		cancellable, &local_error))
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 static void
@@ -1651,26 +1631,16 @@ source_remote_create (ESource *source,
                       GAsyncReadyCallback callback,
                       gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->scratch_source = g_object_ref (scratch_source);
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, source_remote_create);
+	g_task_set_check_cancellable (task, TRUE);
+	g_task_set_task_data (task, g_object_ref (scratch_source), g_object_unref);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (source), callback,
-		user_data, source_remote_create);
+	g_task_run_in_thread (task, source_remote_create_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, source_remote_create_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 static gboolean
@@ -1678,16 +1648,10 @@ source_remote_create_finish (ESource *source,
                              GAsyncResult *result,
                              GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, source_remote_create), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (source), source_remote_create), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 static gboolean
@@ -1733,17 +1697,19 @@ source_remote_delete_sync (ESource *source,
 
 /* Helper for source_remote_delete() */
 static void
-source_remote_delete_thread (GSimpleAsyncResult *simple,
-                             GObject *object,
-                             GCancellable *cancellable)
+source_remote_delete_thread (GTask         *task,
+                             gpointer       source_object,
+                             gpointer       task_data,
+                             GCancellable  *cancellable)
 {
 	GError *local_error = NULL;
 
-	e_source_remote_delete_sync (
-		E_SOURCE (object), cancellable, &local_error);
-
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (e_source_remote_delete_sync (
+		E_SOURCE (source_object),
+		cancellable, &local_error))
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 static void
@@ -1752,19 +1718,15 @@ source_remote_delete (ESource *source,
                       GAsyncReadyCallback callback,
                       gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (source), callback,
-		user_data, source_remote_delete);
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, source_remote_delete);
+	g_task_set_check_cancellable (task, TRUE);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, source_remote_delete_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, source_remote_delete_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 static gboolean
@@ -1772,16 +1734,10 @@ source_remote_delete_finish (ESource *source,
                              GAsyncResult *result,
                              GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, source_remote_delete), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (source), source_remote_delete), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 static gboolean
@@ -1863,23 +1819,24 @@ source_get_oauth2_access_token_sync (ESource *source,
 
 /* Helper for source_get_oauth2_access_token() */
 static void
-source_get_oauth2_access_token_thread (GSimpleAsyncResult *simple,
-                                       GObject *object,
-                                       GCancellable *cancellable)
+source_get_oauth2_access_token_thread (GTask         *task,
+                                       gpointer       source_object,
+                                       gpointer       task_data,
+                                       GCancellable  *cancellable)
 {
-	AsyncContext *async_context;
+	AsyncContext *async_context = g_slice_new0 (AsyncContext);
 	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	e_source_get_oauth2_access_token_sync (
-		E_SOURCE (object), cancellable,
+	if (e_source_get_oauth2_access_token_sync (
+		E_SOURCE (source_object), cancellable,
 		&async_context->access_token,
 		&async_context->expires_in,
-		&local_error);
+		&local_error))
+		g_task_return_pointer (task, g_steal_pointer (&async_context), async_context_free);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	g_clear_pointer (&async_context, async_context_free);
 }
 
 static void
@@ -1888,25 +1845,15 @@ source_get_oauth2_access_token (ESource *source,
                                 GAsyncReadyCallback callback,
                                 gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
-	async_context = g_slice_new0 (AsyncContext);
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, source_get_oauth2_access_token);
+	g_task_set_check_cancellable (task, TRUE);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (source), callback, user_data,
-		source_get_oauth2_access_token);
+	g_task_run_in_thread (task, source_get_oauth2_access_token_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, source_get_oauth2_access_token_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 static gboolean
@@ -1916,30 +1863,22 @@ source_get_oauth2_access_token_finish (ESource *source,
                                        gint *out_expires_in,
                                        GError **error)
 {
-	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (source),
-		source_get_oauth2_access_token), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, source_get_oauth2_access_token), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	async_context = g_task_propagate_pointer (G_TASK (result), error);
+	if (!async_context)
 		return FALSE;
 
-	g_return_val_if_fail (async_context->access_token != NULL, FALSE);
-
-	if (out_access_token != NULL) {
-		*out_access_token = async_context->access_token;
-		async_context->access_token = NULL;
-	}
+	if (out_access_token != NULL)
+		*out_access_token = g_steal_pointer (&async_context->access_token);
 
 	if (out_expires_in != NULL)
 		*out_expires_in = async_context->expires_in;
 
+	g_clear_pointer (&async_context, async_context_free);
 	return TRUE;
 }
 
@@ -2124,11 +2063,9 @@ source_proxy_resolver_lookup_ready_cb (GObject *object,
                                        GAsyncResult *result,
                                        gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task = user_data;
 	gchar **proxies;
 	GError *local_error = NULL;
-
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	proxies = e_source_proxy_lookup_finish (
 		E_SOURCE (object), result, &local_error);
@@ -2138,16 +2075,13 @@ source_proxy_resolver_lookup_ready_cb (GObject *object,
 		((proxies != NULL) && (local_error == NULL)) ||
 		((proxies == NULL) && (local_error != NULL)));
 
-	if (proxies != NULL) {
-		g_simple_async_result_set_op_res_gpointer (
-			simple, proxies, (GDestroyNotify) g_strfreev);
+	if (proxies) {
+		g_task_return_pointer (task, proxies, (GDestroyNotify) g_strfreev);
 	} else {
-		g_simple_async_result_take_error (simple, local_error);
+		g_task_return_error (task, g_steal_pointer (&local_error));
 	}
 
-	g_simple_async_result_complete (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 static void
@@ -2157,20 +2091,16 @@ source_proxy_resolver_lookup_async (GProxyResolver *resolver,
                                     GAsyncReadyCallback callback,
                                     gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (resolver), callback, user_data,
-		source_proxy_resolver_lookup_async);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	task = g_task_new (resolver, cancellable, callback, user_data);
+	g_task_set_source_tag (task, source_proxy_resolver_lookup_async);
+	g_task_set_check_cancellable (task, TRUE);
 
 	e_source_proxy_lookup (
 		E_SOURCE (resolver), uri, cancellable,
 		source_proxy_resolver_lookup_ready_cb,
-		g_object_ref (simple));
-
-	g_object_unref (simple);
+		g_steal_pointer (&task));
 }
 
 static gchar **
@@ -2178,22 +2108,10 @@ source_proxy_resolver_lookup_finish (GProxyResolver *resolver,
                                      GAsyncResult *result,
                                      GError **error)
 {
-	GSimpleAsyncResult *simple;
-	gchar **proxies;
+	g_return_val_if_fail (g_task_is_valid (result, resolver), NULL);
+	g_return_val_if_fail (g_async_result_is_tagged (result, source_proxy_resolver_lookup_async), NULL);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (resolver),
-		source_proxy_resolver_lookup_async), NULL);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	proxies = g_simple_async_result_get_op_res_gpointer (simple);
-
-	return g_strdupv (proxies);
+	return g_task_propagate_pointer (G_TASK (result), error);
 }
 
 static void
@@ -4233,9 +4151,7 @@ e_source_store_password (ESource *source,
 	task = g_task_new (source, cancellable, callback, user_data);
 	g_task_set_source_tag (task, e_source_store_password);
 
-	g_task_set_task_data (
-		task, async_context,
-		(GDestroyNotify) async_context_free);
+	g_task_set_task_data (task, async_context, async_context_free);
 
 	g_task_run_in_thread (task, source_store_password_thread);
 
@@ -4364,9 +4280,7 @@ e_source_lookup_password (ESource *source,
 	task = g_task_new (source, cancellable, callback, user_data);
 	g_task_set_source_tag (task, e_source_lookup_password);
 
-	g_task_set_task_data (
-		task, async_context,
-		(GDestroyNotify) async_context_free);
+	g_task_set_task_data (task, async_context, async_context_free);
 
 	g_task_run_in_thread (task, source_lookup_password_thread);
 
