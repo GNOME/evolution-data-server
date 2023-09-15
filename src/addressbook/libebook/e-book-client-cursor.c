@@ -462,9 +462,9 @@
 #include "e-book-client-cursor.h"
 
 /* Forward declarations */
-typedef struct _SetSexpContext        SetSexpContext;
+typedef struct _CurChange             CurChange;
 typedef struct _StepContext           StepContext;
-typedef struct _AlphabetIndexContext  AlphabetIndexContext;
+typedef struct _StepCurChange         StepCurChange;
 typedef enum   _NotificationType      NotificationType;
 typedef struct _Notification          Notification;
 
@@ -546,27 +546,6 @@ static void	     dra_total_changed_cb                  (EDataBookCursor        *
 static void	     dra_position_changed_cb               (EDataBookCursor        *direct_cursor,
 							    GParamSpec             *pspec,
 							    EBookClientCursor      *cursor);
-
-/* Threaded method call contexts */
-static SetSexpContext       *set_sexp_context_new          (const gchar            *sexp);
-static void                  set_sexp_context_free         (SetSexpContext         *context);
-static void                  set_sexp_thread               (GSimpleAsyncResult     *simple,
-							    GObject                *source_object,
-							    GCancellable           *cancellable);
-static StepContext          *step_context_new              (const gchar            *revision,
-							    EBookCursorStepFlags    flags,
-							    EBookCursorOrigin       origin,
-							    gint                    count);
-static void                  step_context_free             (StepContext            *context);
-static void                  step_thread                   (GSimpleAsyncResult     *simple,
-							    GObject                *source_object,
-							    GCancellable           *cancellable);
-static AlphabetIndexContext *alphabet_index_context_new    (gint                    index,
-							    const gchar            *locale);
-static void                  alphabet_index_context_free   (AlphabetIndexContext   *context);
-static void                  alphabet_index_thread         (GSimpleAsyncResult     *simple,
-							    GObject                *source_object,
-							    GCancellable           *cancellable);
 
 enum _NotificationType {
 	REVISION_CHANGED = 0,
@@ -1795,9 +1774,12 @@ struct _StepContext {
 	EBookCursorStepFlags flags;
 	EBookCursorOrigin origin;
 	gint count;
-	GSList *contacts;
+};
+
+struct _StepCurChange {
 	guint new_total;
 	guint new_position;
+	GSList *contacts;
 	gint n_results;
 };
 
@@ -1808,30 +1790,10 @@ struct _AlphabetIndexContext {
 	guint new_position;
 };
 
-struct _SetSexpContext {
-	gchar *sexp;
+struct _CurChange {
 	guint new_total;
 	guint new_position;
 };
-
-static SetSexpContext *
-set_sexp_context_new (const gchar *sexp)
-{
-	SetSexpContext *context = g_slice_new0 (SetSexpContext);
-
-	context->sexp = g_strdup (sexp);
-
-	return context;
-}
-
-static void
-set_sexp_context_free (SetSexpContext *context)
-{
-	if (context) {
-		g_free (context->sexp);
-		g_slice_free (SetSexpContext, context);
-	}
-}
 
 static gboolean
 set_sexp_sync_internal (EBookClientCursor *cursor,
@@ -1879,50 +1841,46 @@ set_sexp_sync_internal (EBookClientCursor *cursor,
 }
 
 static void
-set_sexp_thread (GSimpleAsyncResult *simple,
-                 GObject *source_object,
+set_sexp_thread (GTask *task,
+                 gpointer source_object,
+                 gpointer task_data,
                  GCancellable *cancellable)
 {
-	SetSexpContext *context;
+	CurChange *context = g_new0 (CurChange, 1);
 	GError *local_error = NULL;
+	const gchar *sexp = task_data;
 
-	context = g_simple_async_result_get_op_res_gpointer (simple);
-	set_sexp_sync_internal (
+	if (set_sexp_sync_internal (
 		E_BOOK_CLIENT_CURSOR (source_object),
-		context->sexp,
+		sexp,
 		&context->new_total,
 		&context->new_position,
 		cancellable,
-		&local_error);
+		&local_error))
+		g_task_return_pointer (task, g_steal_pointer (&context), g_free);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
-}
-
-static StepContext *
-step_context_new (const gchar *revision,
-                  EBookCursorStepFlags flags,
-                  EBookCursorOrigin origin,
-                  gint count)
-{
-	StepContext *context = g_slice_new0 (StepContext);
-
-	context->revision = g_strdup (revision);
-	context->flags = flags;
-	context->origin = origin;
-	context->count = count;
-	context->n_results = 0;
-
-	return context;
+	g_clear_pointer (&context, g_free);
 }
 
 static void
-step_context_free (StepContext *context)
+step_context_free (gpointer data)
 {
+	StepContext *context = data;
 	if (context) {
 		g_free (context->revision);
+		g_free (context);
+	}
+}
+
+static void
+step_cur_change_free (gpointer data)
+{
+	StepCurChange *context = data;
+	if (context) {
 		g_slist_free_full (context->contacts, g_object_unref);
-		g_slice_free (StepContext, context);
+		g_free (context);
 	}
 }
 
@@ -2023,49 +1981,32 @@ step_sync_internal (EBookClientCursor *cursor,
 }
 
 static void
-step_thread (GSimpleAsyncResult *simple,
-             GObject *source_object,
+step_thread (GTask *task,
+             gpointer source_object,
+             gpointer task_data,
              GCancellable *cancellable)
 {
-	StepContext *context;
+	StepContext *context = task_data;
+	StepCurChange *cur_change = g_new0 (StepCurChange, 1);
 	GError *local_error = NULL;
 
-	context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	context->n_results = step_sync_internal (
+	cur_change->n_results = step_sync_internal (
 		E_BOOK_CLIENT_CURSOR (source_object),
 		context->revision,
 		context->flags,
 		context->origin,
 		context->count,
-		&(context->contacts),
-		&context->new_total,
-		&context->new_position,
+		&cur_change->contacts,
+		&cur_change->new_total,
+		&cur_change->new_position,
 		cancellable, &local_error);
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
-}
+	if (!local_error)
+		g_task_return_pointer (task, g_steal_pointer (&cur_change), step_cur_change_free);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 
-static AlphabetIndexContext *
-alphabet_index_context_new (gint index,
-                            const gchar *locale)
-{
-	AlphabetIndexContext *context = g_slice_new0 (AlphabetIndexContext);
-
-	context->index = index;
-	context->locale = g_strdup (locale);
-
-	return context;
-}
-
-static void
-alphabet_index_context_free (AlphabetIndexContext *context)
-{
-	if (context) {
-		g_free (context->locale);
-		g_slice_free (AlphabetIndexContext, context);
-	}
+	g_clear_pointer (&cur_change, step_cur_change_free);
 }
 
 static gboolean
@@ -2115,26 +2056,31 @@ set_alphabetic_index_sync_internal (EBookClientCursor *cursor,
 }
 
 static void
-alphabet_index_thread (GSimpleAsyncResult *simple,
-                       GObject *source_object,
+alphabet_index_thread (GTask *task,
+                       gpointer source_object,
+                       gpointer task_data,
                        GCancellable *cancellable)
 {
-	AlphabetIndexContext *context;
+	EBookClientCursor *cursor = E_BOOK_CLIENT_CURSOR (source_object);
+	CurChange *context = g_new0 (CurChange, 1);
+	gint index = GPOINTER_TO_INT (task_data);
+	gchar *locale = g_strdup (cursor->priv->locale);
 	GError *local_error = NULL;
 
-	context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	set_alphabetic_index_sync_internal (
+	if (set_alphabetic_index_sync_internal (
 		E_BOOK_CLIENT_CURSOR (source_object),
-		context->index,
-		context->locale,
+		index,
+		locale,
 		&context->new_total,
 		&context->new_position,
 		cancellable,
-		&local_error);
+		&local_error))
+		g_task_return_pointer (task, g_steal_pointer (&context), g_free);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	g_clear_pointer (&locale, g_free);
+	g_clear_pointer (&context, g_free);
 }
 
 /****************************************************
@@ -2287,29 +2233,19 @@ e_book_client_cursor_set_sexp (EBookClientCursor *cursor,
                                GAsyncReadyCallback callback,
                                gpointer user_data)
 {
-
-	GSimpleAsyncResult *simple;
-	SetSexpContext *context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_CURSOR (cursor));
-	g_return_if_fail (callback != NULL);
+	g_return_if_fail (sexp != NULL);
 
-	context = set_sexp_context_new (sexp);
-	simple = g_simple_async_result_new (
-		G_OBJECT (cursor),
-		callback, user_data,
-		e_book_client_cursor_set_sexp);
+	task = g_task_new (cursor, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_book_client_cursor_set_sexp);
+	g_task_set_task_data (task, g_strdup (sexp), g_free);
+	g_task_set_check_cancellable (task, TRUE);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-	g_simple_async_result_set_op_res_gpointer (
-		simple, context,
-		(GDestroyNotify) set_sexp_context_free);
+	g_task_run_in_thread (task, set_sexp_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, set_sexp_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -2330,18 +2266,13 @@ e_book_client_cursor_set_sexp_finish (EBookClientCursor *cursor,
                                       GAsyncResult *result,
                                       GError **error)
 {
-	GSimpleAsyncResult *simple;
-	SetSexpContext *context;
+	CurChange *context;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (cursor),
-		e_book_client_cursor_set_sexp), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, cursor), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_book_client_cursor_set_sexp), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	context = g_task_propagate_pointer (G_TASK (result), error);
+	if (!context)
 		return FALSE;
 
 	/* If we are in the thread where the cursor was created, 
@@ -2354,6 +2285,7 @@ e_book_client_cursor_set_sexp_finish (EBookClientCursor *cursor,
 		g_object_thaw_notify (G_OBJECT (cursor));
 	}
 
+	g_clear_pointer (&context, g_free);
 	return TRUE;
 }
 
@@ -2445,30 +2377,26 @@ e_book_client_cursor_step (EBookClientCursor *cursor,
                            GAsyncReadyCallback callback,
                            gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	StepContext *context;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_CURSOR (cursor));
 	g_return_if_fail (callback != NULL);
 
-	context = step_context_new (
-		cursor->priv->revision,
-		flags, origin, count);
-	simple = g_simple_async_result_new (
-		G_OBJECT (cursor),
-		callback, user_data,
-		e_book_client_cursor_step);
+	context = g_new0 (StepContext, 1);
+	context->revision = g_strdup (cursor->priv->revision);
+	context->flags = flags;
+	context->origin = origin;
+	context->count = count;
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-	g_simple_async_result_set_op_res_gpointer (
-		simple, context,
-		(GDestroyNotify) step_context_free);
+	task = g_task_new (cursor, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_book_client_cursor_step);
+	g_task_set_task_data (task, g_steal_pointer (&context), step_context_free);
+	g_task_set_check_cancellable (task, TRUE);
 
-	g_simple_async_result_run_in_thread (
-		simple, step_thread,
-		G_PRIORITY_DEFAULT, cancellable);
+	g_task_run_in_thread (task, step_thread);
 
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -2492,24 +2420,18 @@ e_book_client_cursor_step_finish (EBookClientCursor *cursor,
                                   GSList **out_contacts,
                                   GError **error)
 {
-	GSimpleAsyncResult *simple;
-	StepContext *context;
+	StepCurChange *context;
+	gint n_results;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (cursor),
-		e_book_client_cursor_step), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, cursor), -1);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_book_client_cursor_step), -1);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	context = g_task_propagate_pointer (G_TASK (result), error);
+	if (!context)
 		return -1;
 
-	if (out_contacts != NULL) {
-		*out_contacts = context->contacts;
-		context->contacts = NULL;
-	}
+	if (out_contacts != NULL)
+		*out_contacts = g_steal_pointer (&context->contacts);
 
 	/* If we are in the thread where the cursor was created, 
 	 * then synchronize the new total & position right away
@@ -2521,7 +2443,9 @@ e_book_client_cursor_step_finish (EBookClientCursor *cursor,
 		g_object_thaw_notify (G_OBJECT (cursor));
 	}
 
-	return context->n_results;
+	n_results = context->n_results;
+	g_clear_pointer (&context, step_cur_change_free);
+	return n_results;
 }
 
 /**
@@ -2627,29 +2551,20 @@ e_book_client_cursor_set_alphabetic_index (EBookClientCursor *cursor,
                                            GAsyncReadyCallback callback,
                                            gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AlphabetIndexContext *context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_CURSOR (cursor));
 	g_return_if_fail (index >= 0 && index < cursor->priv->n_labels);
 	g_return_if_fail (callback != NULL);
 
-	context = alphabet_index_context_new (index, cursor->priv->locale);
-	simple = g_simple_async_result_new (
-		G_OBJECT (cursor),
-		callback, user_data,
-		e_book_client_cursor_set_alphabetic_index);
+	task = g_task_new (cursor, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_book_client_cursor_set_alphabetic_index);
+	g_task_set_task_data (task, GINT_TO_POINTER (index), NULL);
+	g_task_set_check_cancellable (task, TRUE);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-	g_simple_async_result_set_op_res_gpointer (
-		simple, context,
-		(GDestroyNotify) alphabet_index_context_free);
+	g_task_run_in_thread (task, alphabet_index_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, alphabet_index_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -2669,18 +2584,14 @@ e_book_client_cursor_set_alphabetic_index_finish (EBookClientCursor *cursor,
                                                   GAsyncResult *result,
                                                   GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AlphabetIndexContext *context;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (cursor),
-		e_book_client_cursor_set_alphabetic_index), FALSE);
+	CurChange *context;
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	context = g_simple_async_result_get_op_res_gpointer (simple);
+	g_return_val_if_fail (g_task_is_valid (result, cursor), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_book_client_cursor_set_alphabetic_index), FALSE);
 
-	if (g_simple_async_result_propagate_error (simple, error))
+	context = g_task_propagate_pointer (G_TASK (result), error);
+	if (!context)
 		return FALSE;
 
 	/* If we are in the thread where the cursor was created, 
@@ -2693,6 +2604,7 @@ e_book_client_cursor_set_alphabetic_index_finish (EBookClientCursor *cursor,
 		g_object_thaw_notify (G_OBJECT (cursor));
 	}
 
+	g_clear_pointer (&context, g_free);
 	return TRUE;
 }
 
