@@ -1270,16 +1270,19 @@ e_weak_ref_free (GWeakRef *weak_ref)
 
 /* Helper for e_file_recursive_delete() */
 static void
-file_recursive_delete_thread (GSimpleAsyncResult *simple,
-                              GObject *object,
+file_recursive_delete_thread (GTask *task,
+                              gpointer source_object,
+                              gpointer task_data,
                               GCancellable *cancellable)
 {
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	e_file_recursive_delete_sync (G_FILE (object), cancellable, &error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (e_file_recursive_delete_sync (
+		G_FILE (source_object),
+		cancellable, &local_error))
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -1396,21 +1399,18 @@ e_file_recursive_delete (GFile *file,
                          GAsyncReadyCallback callback,
                          gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
 	g_return_if_fail (G_IS_FILE (file));
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (file), callback, user_data,
-		e_file_recursive_delete);
+	task = g_task_new (file, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_file_recursive_delete);
+	g_task_set_check_cancellable (task, TRUE);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, file_recursive_delete_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, file_recursive_delete_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -1433,16 +1433,10 @@ e_file_recursive_delete_finish (GFile *file,
                                 GAsyncResult *result,
                                 GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, file), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_file_recursive_delete), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (file), e_file_recursive_delete), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
