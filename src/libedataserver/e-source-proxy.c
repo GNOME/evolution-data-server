@@ -44,8 +44,6 @@
 
 #include "e-source-proxy.h"
 
-typedef struct _AsyncContext AsyncContext;
-
 struct _ESourceProxyPrivate {
 	EProxyMethod method;
 	gchar *autoconfig_url;
@@ -65,11 +63,6 @@ struct _ESourceProxyPrivate {
 
 	gchar *socks_host;
 	guint16 socks_port;
-};
-
-struct _AsyncContext {
-	gchar *uri;
-	gchar **proxies;
 };
 
 enum {
@@ -94,15 +87,6 @@ G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceProxy,
 	e_source_proxy,
 	E_TYPE_SOURCE_EXTENSION)
-
-static void
-async_context_free (AsyncContext *async_context)
-{
-	g_free (async_context->uri);
-	g_strfreev (async_context->proxies);
-
-	g_slice_free (AsyncContext, async_context);
-}
 
 static gchar **
 source_proxy_direct (void)
@@ -1763,22 +1747,23 @@ e_source_proxy_lookup_sync (ESource *source,
 
 /* Helper for e_source_proxy_lookup() */
 static void
-source_proxy_lookup_thread (GSimpleAsyncResult *simple,
-                            GObject *object,
+source_proxy_lookup_thread (GTask *task,
+                            gpointer source_object,
+                            gpointer task_data,
                             GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	const gchar *uri = task_data;
 	GError *local_error = NULL;
+	gchar **proxies;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	async_context->proxies = e_source_proxy_lookup_sync (
-		E_SOURCE (object),
-		async_context->uri,
+	proxies = e_source_proxy_lookup_sync (
+		E_SOURCE (source_object), uri,
 		cancellable, &local_error);
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_pointer (task, g_steal_pointer (&proxies), (GDestroyNotify) g_strfreev);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -1804,29 +1789,19 @@ e_source_proxy_lookup (ESource *source,
                        GAsyncReadyCallback callback,
                        gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_SOURCE (source));
 	g_return_if_fail (uri != NULL);
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->uri = g_strdup (uri);
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_source_proxy_lookup);
+	g_task_set_task_data (task, g_strdup (uri), g_free);
+	g_task_set_check_cancellable (task, TRUE);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (source), callback,
-		user_data, e_source_proxy_lookup);
+	g_task_run_in_thread (task, source_proxy_lookup_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, source_proxy_lookup_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -1849,25 +1824,9 @@ e_source_proxy_lookup_finish (ESource *source,
                               GAsyncResult *result,
                               GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-	gchar **proxies;
+	g_return_val_if_fail (g_task_is_valid (result, source), NULL);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_source_proxy_lookup), NULL);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (source), e_source_proxy_lookup), NULL);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	g_return_val_if_fail (async_context->proxies != NULL, NULL);
-
-	proxies = async_context->proxies;
-	async_context->proxies = NULL;
-
-	return proxies;
+	return g_task_propagate_pointer (G_TASK (result), error);
 }
 
