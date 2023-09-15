@@ -1,3 +1,24 @@
+Evolution-Data-Server 3.50.0 2023-09-15
+---------------------------------------
+
+Bug Fixes:
+	I#499 - addressbook-export: Do not translate `--format` arg description
+	I#500 - Disable building tests in CMake
+	M!134 - Fix a typo (begining) in an openldap-extract.h comment (Дилян Палаузов)
+	M!136 - Allow to use the flatpak manifest directly from GNOME Builder (Corentin Noël)
+
+Miscellaneous:
+	Correct test-cal-backend-sexp expected arguments
+	Add e_util_guess_source_is_readonly() utility function
+
+Translations:
+	Anders Jonsson (sv)
+	Aurimas Černius (lt)
+	Balázs Úr (hu)
+	Daniel Rusek (cs)
+	Jürgen Benvenuti (de)
+	Martin Srebotnjak (sl)
+
 Evolution-Data-Server 3.49.3 2023-09-01
 ---------------------------------------
 
