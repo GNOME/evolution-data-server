@@ -74,7 +74,7 @@ mime_filter_bestenc_filter (CamelMimeFilter *mime_filter,
 		goto donothing;
 
 	if (priv->flags & CAMEL_BESTENC_GET_ENCODING) {
-		register guint /* hopefully reg's are assinged in the order they appear? */
+		register guint /* hopefully reg's are assigned in the order they appear? */
 			c,
 			lastc = priv->lastc,
 			countline = priv->countline,
